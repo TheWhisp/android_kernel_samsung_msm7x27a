@@ -662,6 +662,14 @@ failed_unregister_led1_R:
 static void bd2802_unregister_led_classdev(struct bd2802_led *led)
 {
 	cancel_work_sync(&led->work);
+<<<<<<< HEAD
+=======
+	led_classdev_unregister(&led->cdev_led2b);
+	led_classdev_unregister(&led->cdev_led2g);
+	led_classdev_unregister(&led->cdev_led2r);
+	led_classdev_unregister(&led->cdev_led1b);
+	led_classdev_unregister(&led->cdev_led1g);
+>>>>>>> refs/remotes/origin/cm-10.0
 	led_classdev_unregister(&led->cdev_led1r);
 }
 
@@ -683,8 +691,12 @@ static int __devinit bd2802_probe(struct i2c_client *client,
 	i2c_set_clientdata(client, led);
 
 	/* Configure RESET GPIO (L: RESET, H: RESET cancel) */
+<<<<<<< HEAD
 	gpio_request(pdata->reset_gpio, "RGB_RESETB");
 	gpio_direction_output(pdata->reset_gpio, 1);
+=======
+	gpio_request_one(pdata->reset_gpio, GPIOF_OUT_INIT_HIGH, "RGB_RESETB");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Tacss = min 0.1ms */
 	udelay(100);
@@ -808,6 +820,7 @@ static struct i2c_driver bd2802_i2c_driver = {
 	.id_table	= bd2802_id,
 };
 
+<<<<<<< HEAD
 static int __init bd2802_init(void)
 {
 	return i2c_add_driver(&bd2802_i2c_driver);
@@ -819,6 +832,9 @@ static void __exit bd2802_exit(void)
 	i2c_del_driver(&bd2802_i2c_driver);
 }
 module_exit(bd2802_exit);
+=======
+module_i2c_driver(bd2802_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Kim Kyuwon <q1.kim@samsung.com>");
 MODULE_DESCRIPTION("BD2802 LED driver");

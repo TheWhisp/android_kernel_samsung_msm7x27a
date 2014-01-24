@@ -1,7 +1,11 @@
 /*
  *	intel TCO Watchdog Driver
  *
+<<<<<<< HEAD
  *	(c) Copyright 2006-2010 Wim Van Sebroeck <wim@iguana.be>.
+=======
+ *	(c) Copyright 2006-2011 Wim Van Sebroeck <wim@iguana.be>.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *	This program is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -36,16 +40,28 @@
  *	document number TBD                   : Patsburg (PBG)
  *	document number TBD                   : DH89xxCC
  *	document number TBD                   : Panther Point
+<<<<<<< HEAD
+=======
+ *	document number TBD                   : Lynx Point
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 /*
  *	Includes, defines, variables, module parameters, ...
  */
 
+<<<<<<< HEAD
 /* Module and version information */
 #define DRV_NAME	"iTCO_wdt"
 #define DRV_VERSION	"1.06"
 #define PFX		DRV_NAME ": "
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+/* Module and version information */
+#define DRV_NAME	"iTCO_wdt"
+#define DRV_VERSION	"1.07"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Includes */
 #include <linux/module.h>		/* For module specific items */
@@ -120,6 +136,7 @@ enum iTCO_chipsets {
 	TCO_3420,	/* 3420 */
 	TCO_3450,	/* 3450 */
 	TCO_EP80579,	/* EP80579 */
+<<<<<<< HEAD
 	TCO_CPT1,	/* Cougar Point */
 	TCO_CPT2,	/* Cougar Point Desktop */
 	TCO_CPT3,	/* Cougar Point Mobile */
@@ -186,6 +203,15 @@ enum iTCO_chipsets {
 	TCO_PPT29,	/* Panther Point */
 	TCO_PPT30,	/* Panther Point */
 	TCO_PPT31,	/* Panther Point */
+=======
+	TCO_CPT,	/* Cougar Point */
+	TCO_CPTD,	/* Cougar Point Desktop */
+	TCO_CPTM,	/* Cougar Point Mobile */
+	TCO_PBG,	/* Patsburg */
+	TCO_DH89XXCC,	/* DH89xxCC */
+	TCO_PPT,	/* Panther Point */
+	TCO_LPT,	/* Lynx Point */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct {
@@ -244,6 +270,7 @@ static struct {
 	{"3450", 2},
 	{"EP80579", 2},
 	{"Cougar Point", 2},
+<<<<<<< HEAD
 	{"Cougar Point", 2},
 	{"Cougar Point", 2},
 	{"Cougar Point", 2},
@@ -321,6 +348,17 @@ static struct {
 	.class_mask = 0,		\
 	.driver_data = data
 
+=======
+	{"Cougar Point Desktop", 2},
+	{"Cougar Point Mobile", 2},
+	{"Patsburg", 2},
+	{"DH89xxCC", 2},
+	{"Panther Point", 2},
+	{"Lynx Point", 2},
+	{NULL, 0}
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This data only exists for exporting the supported PCI ids
  * via MODULE_DEVICE_TABLE.  We do not actually register a
@@ -328,6 +366,7 @@ static struct {
  * functions that probably will be registered by other drivers.
  */
 static DEFINE_PCI_DEVICE_TABLE(iTCO_wdt_pci_tbl) = {
+<<<<<<< HEAD
 	{ ITCO_PCI_DEVICE(PCI_DEVICE_ID_INTEL_82801AA_0,	TCO_ICH)},
 	{ ITCO_PCI_DEVICE(PCI_DEVICE_ID_INTEL_82801AB_0,	TCO_ICH0)},
 	{ ITCO_PCI_DEVICE(PCI_DEVICE_ID_INTEL_82801BA_0,	TCO_ICH2)},
@@ -460,6 +499,172 @@ static DEFINE_PCI_DEVICE_TABLE(iTCO_wdt_pci_tbl) = {
 	{ ITCO_PCI_DEVICE(0x1e5d,				TCO_PPT29)},
 	{ ITCO_PCI_DEVICE(0x1e5e,				TCO_PPT30)},
 	{ ITCO_PCI_DEVICE(0x1e5f,				TCO_PPT31)},
+=======
+	{ PCI_VDEVICE(INTEL, 0x2410), TCO_ICH},
+	{ PCI_VDEVICE(INTEL, 0x2420), TCO_ICH0},
+	{ PCI_VDEVICE(INTEL, 0x2440), TCO_ICH2},
+	{ PCI_VDEVICE(INTEL, 0x244c), TCO_ICH2M},
+	{ PCI_VDEVICE(INTEL, 0x2480), TCO_ICH3},
+	{ PCI_VDEVICE(INTEL, 0x248c), TCO_ICH3M},
+	{ PCI_VDEVICE(INTEL, 0x24c0), TCO_ICH4},
+	{ PCI_VDEVICE(INTEL, 0x24cc), TCO_ICH4M},
+	{ PCI_VDEVICE(INTEL, 0x2450), TCO_CICH},
+	{ PCI_VDEVICE(INTEL, 0x24d0), TCO_ICH5},
+	{ PCI_VDEVICE(INTEL, 0x25a1), TCO_6300ESB},
+	{ PCI_VDEVICE(INTEL, 0x2640), TCO_ICH6},
+	{ PCI_VDEVICE(INTEL, 0x2641), TCO_ICH6M},
+	{ PCI_VDEVICE(INTEL, 0x2642), TCO_ICH6W},
+	{ PCI_VDEVICE(INTEL, 0x2670), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x2671), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x2672), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x2673), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x2674), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x2675), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x2676), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x2677), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x2678), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x2679), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x267a), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x267b), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x267c), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x267d), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x267e), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x267f), TCO_631XESB},
+	{ PCI_VDEVICE(INTEL, 0x27b8), TCO_ICH7},
+	{ PCI_VDEVICE(INTEL, 0x27b0), TCO_ICH7DH},
+	{ PCI_VDEVICE(INTEL, 0x27b9), TCO_ICH7M},
+	{ PCI_VDEVICE(INTEL, 0x27bd), TCO_ICH7MDH},
+	{ PCI_VDEVICE(INTEL, 0x27bc), TCO_NM10},
+	{ PCI_VDEVICE(INTEL, 0x2810), TCO_ICH8},
+	{ PCI_VDEVICE(INTEL, 0x2812), TCO_ICH8DH},
+	{ PCI_VDEVICE(INTEL, 0x2814), TCO_ICH8DO},
+	{ PCI_VDEVICE(INTEL, 0x2815), TCO_ICH8M},
+	{ PCI_VDEVICE(INTEL, 0x2811), TCO_ICH8ME},
+	{ PCI_VDEVICE(INTEL, 0x2918), TCO_ICH9},
+	{ PCI_VDEVICE(INTEL, 0x2916), TCO_ICH9R},
+	{ PCI_VDEVICE(INTEL, 0x2912), TCO_ICH9DH},
+	{ PCI_VDEVICE(INTEL, 0x2914), TCO_ICH9DO},
+	{ PCI_VDEVICE(INTEL, 0x2919), TCO_ICH9M},
+	{ PCI_VDEVICE(INTEL, 0x2917), TCO_ICH9ME},
+	{ PCI_VDEVICE(INTEL, 0x3a18), TCO_ICH10},
+	{ PCI_VDEVICE(INTEL, 0x3a16), TCO_ICH10R},
+	{ PCI_VDEVICE(INTEL, 0x3a1a), TCO_ICH10D},
+	{ PCI_VDEVICE(INTEL, 0x3a14), TCO_ICH10DO},
+	{ PCI_VDEVICE(INTEL, 0x3b00), TCO_PCH},
+	{ PCI_VDEVICE(INTEL, 0x3b01), TCO_PCHM},
+	{ PCI_VDEVICE(INTEL, 0x3b02), TCO_P55},
+	{ PCI_VDEVICE(INTEL, 0x3b03), TCO_PM55},
+	{ PCI_VDEVICE(INTEL, 0x3b06), TCO_H55},
+	{ PCI_VDEVICE(INTEL, 0x3b07), TCO_QM57},
+	{ PCI_VDEVICE(INTEL, 0x3b08), TCO_H57},
+	{ PCI_VDEVICE(INTEL, 0x3b09), TCO_HM55},
+	{ PCI_VDEVICE(INTEL, 0x3b0a), TCO_Q57},
+	{ PCI_VDEVICE(INTEL, 0x3b0b), TCO_HM57},
+	{ PCI_VDEVICE(INTEL, 0x3b0d), TCO_PCHMSFF},
+	{ PCI_VDEVICE(INTEL, 0x3b0f), TCO_QS57},
+	{ PCI_VDEVICE(INTEL, 0x3b12), TCO_3400},
+	{ PCI_VDEVICE(INTEL, 0x3b14), TCO_3420},
+	{ PCI_VDEVICE(INTEL, 0x3b16), TCO_3450},
+	{ PCI_VDEVICE(INTEL, 0x5031), TCO_EP80579},
+	{ PCI_VDEVICE(INTEL, 0x1c41), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c42), TCO_CPTD},
+	{ PCI_VDEVICE(INTEL, 0x1c43), TCO_CPTM},
+	{ PCI_VDEVICE(INTEL, 0x1c44), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c45), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c46), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c47), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c48), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c49), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c4a), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c4b), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c4c), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c4d), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c4e), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c4f), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c50), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c51), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c52), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c53), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c54), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c55), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c56), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c57), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c58), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c59), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c5a), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c5b), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c5c), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c5d), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c5e), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1c5f), TCO_CPT},
+	{ PCI_VDEVICE(INTEL, 0x1d40), TCO_PBG},
+	{ PCI_VDEVICE(INTEL, 0x1d41), TCO_PBG},
+	{ PCI_VDEVICE(INTEL, 0x2310), TCO_DH89XXCC},
+	{ PCI_VDEVICE(INTEL, 0x1e40), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e41), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e42), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e43), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e44), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e45), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e46), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e47), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e48), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e49), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e4a), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e4b), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e4c), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e4d), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e4e), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e4f), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e50), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e51), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e52), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e53), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e54), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e55), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e56), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e57), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e58), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e59), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e5a), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e5b), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e5c), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e5d), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e5e), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x1e5f), TCO_PPT},
+	{ PCI_VDEVICE(INTEL, 0x8c40), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c41), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c42), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c43), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c44), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c45), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c46), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c47), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c48), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c49), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c4a), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c4b), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c4c), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c4d), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c4e), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c4f), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c50), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c51), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c52), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c53), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c54), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c55), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c56), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c57), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c58), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c59), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c5a), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c5b), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c5c), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c5d), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c5e), TCO_LPT},
+	{ PCI_VDEVICE(INTEL, 0x8c5f), TCO_LPT},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ 0, },			/* End of list */
 };
 MODULE_DEVICE_TABLE(pci, iTCO_wdt_pci_tbl);
@@ -507,12 +712,25 @@ MODULE_PARM_DESC(heartbeat, "Watchdog timeout in seconds. "
 	"5..76 (TCO v1) or 3..614 (TCO v2), default="
 				__MODULE_STRING(WATCHDOG_HEARTBEAT) ")");
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
+<<<<<<< HEAD
+=======
+static int turn_SMI_watchdog_clear_off = 1;
+module_param(turn_SMI_watchdog_clear_off, int, 0);
+MODULE_PARM_DESC(turn_SMI_watchdog_clear_off,
+	"Turn off SMI clearing watchdog (depends on TCO-version)(default=1)");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Some TCO specific functions
  */
@@ -578,8 +796,12 @@ static int iTCO_wdt_start(void)
 	/* disable chipset's NO_REBOOT bit */
 	if (iTCO_wdt_unset_NO_REBOOT_bit()) {
 		spin_unlock(&iTCO_wdt_private.io_lock);
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "failed to reset NO_REBOOT flag, "
 					"reboot disabled by hardware/BIOS\n");
+=======
+		pr_err("failed to reset NO_REBOOT flag, reboot disabled by hardware/BIOS\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 
@@ -750,8 +972,12 @@ static int iTCO_wdt_release(struct inode *inode, struct file *file)
 	if (expect_release == 42) {
 		iTCO_wdt_stop();
 	} else {
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 			"Unexpected close, not stopping watchdog!\n");
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		iTCO_wdt_keepalive();
 	}
 	clear_bit(0, &is_active);
@@ -893,8 +1119,12 @@ static int __devinit iTCO_wdt_init(struct pci_dev *pdev,
 	base_address &= 0x0000ff80;
 	if (base_address == 0x00000000) {
 		/* Something's wrong here, ACPIBASE has to be set */
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "failed to get TCOBASE address, "
 					"device disabled by hardware/BIOS\n");
+=======
+		pr_err("failed to get TCOBASE address, device disabled by hardware/BIOS\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 	iTCO_wdt_private.iTCO_version =
@@ -909,8 +1139,12 @@ static int __devinit iTCO_wdt_init(struct pci_dev *pdev,
 	if (iTCO_wdt_private.iTCO_version == 2) {
 		pci_read_config_dword(pdev, 0xf0, &base_address);
 		if ((base_address & 1) == 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR PFX "RCBA is disabled by hardware"
 						"/BIOS, device disabled\n");
+=======
+			pr_err("RCBA is disabled by hardware/BIOS, device disabled\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = -ENODEV;
 			goto out;
 		}
@@ -920,8 +1154,12 @@ static int __devinit iTCO_wdt_init(struct pci_dev *pdev,
 
 	/* Check chipset's NO_REBOOT bit */
 	if (iTCO_wdt_unset_NO_REBOOT_bit() && iTCO_vendor_check_noreboot_on()) {
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "unable to reset NO_REBOOT flag, "
 					"device disabled by hardware/BIOS\n");
+=======
+		pr_info("unable to reset NO_REBOOT flag, device disabled by hardware/BIOS\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENODEV;	/* Cannot reset NO_REBOOT bit */
 		goto out_unmap;
 	}
@@ -931,6 +1169,7 @@ static int __devinit iTCO_wdt_init(struct pci_dev *pdev,
 
 	/* The TCO logic uses the TCO_EN bit in the SMI_EN register */
 	if (!request_region(SMI_EN, 4, "iTCO_wdt")) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"I/O address 0x%04lx already in use, "
 						"device disabled\n", SMI_EN);
@@ -941,21 +1180,46 @@ static int __devinit iTCO_wdt_init(struct pci_dev *pdev,
 	val32 = inl(SMI_EN);
 	val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
 	outl(val32, SMI_EN);
+=======
+		pr_err("I/O address 0x%04lx already in use, device disabled\n",
+		       SMI_EN);
+		ret = -EIO;
+		goto out_unmap;
+	}
+	if (turn_SMI_watchdog_clear_off >= iTCO_wdt_private.iTCO_version) {
+		/* Bit 13: TCO_EN -> 0 = Disables TCO logic generating an SMI# */
+		val32 = inl(SMI_EN);
+		val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
+		outl(val32, SMI_EN);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* The TCO I/O registers reside in a 32-byte range pointed to
 	   by the TCOBASE value */
 	if (!request_region(TCOBASE, 0x20, "iTCO_wdt")) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "I/O address 0x%04lx already in use "
 						"device disabled\n", TCOBASE);
+=======
+		pr_err("I/O address 0x%04lx already in use, device disabled\n",
+		       TCOBASE);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -EIO;
 		goto unreg_smi_en;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO PFX
 		"Found a %s TCO device (Version=%d, TCOBASE=0x%04lx)\n",
 			iTCO_chipset_info[ent->driver_data].name,
 			iTCO_chipset_info[ent->driver_data].iTCO_version,
 			TCOBASE);
+=======
+	pr_info("Found a %s TCO device (Version=%d, TCOBASE=0x%04lx)\n",
+		iTCO_chipset_info[ent->driver_data].name,
+		iTCO_chipset_info[ent->driver_data].iTCO_version,
+		TCOBASE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Clear out the (probably old) status */
 	outw(0x0008, TCO1_STS);	/* Clear the Time Out Status bit */
@@ -969,12 +1233,17 @@ static int __devinit iTCO_wdt_init(struct pci_dev *pdev,
 	   if not reset to the default */
 	if (iTCO_wdt_set_heartbeat(heartbeat)) {
 		iTCO_wdt_set_heartbeat(WATCHDOG_HEARTBEAT);
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"timeout value out of range, using %d\n", heartbeat);
+=======
+		pr_info("timeout value out of range, using %d\n", heartbeat);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	ret = misc_register(&iTCO_wdt_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 							WATCHDOG_MINOR, ret);
@@ -983,6 +1252,15 @@ static int __devinit iTCO_wdt_init(struct pci_dev *pdev,
 
 	printk(KERN_INFO PFX "initialized. heartbeat=%d sec (nowayout=%d)\n",
 							heartbeat, nowayout);
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+		goto unreg_region;
+	}
+
+	pr_info("initialized. heartbeat=%d sec (nowayout=%d)\n",
+		heartbeat, nowayout);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 
@@ -1034,7 +1312,11 @@ static int __devinit iTCO_wdt_probe(struct platform_device *dev)
 	}
 
 	if (!found)
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "No device detected.\n");
+=======
+		pr_info("No device detected\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -1052,15 +1334,21 @@ static void iTCO_wdt_shutdown(struct platform_device *dev)
 	iTCO_wdt_stop();
 }
 
+<<<<<<< HEAD
 #define iTCO_wdt_suspend NULL
 #define iTCO_wdt_resume  NULL
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver iTCO_wdt_driver = {
 	.probe          = iTCO_wdt_probe,
 	.remove         = __devexit_p(iTCO_wdt_remove),
 	.shutdown       = iTCO_wdt_shutdown,
+<<<<<<< HEAD
 	.suspend        = iTCO_wdt_suspend,
 	.resume         = iTCO_wdt_resume,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver         = {
 		.owner  = THIS_MODULE,
 		.name   = DRV_NAME,
@@ -1071,8 +1359,12 @@ static int __init iTCO_wdt_init_module(void)
 {
 	int err;
 
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Intel TCO WatchDog Timer Driver v%s\n",
 		DRV_VERSION);
+=======
+	pr_info("Intel TCO WatchDog Timer Driver v%s\n", DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = platform_driver_register(&iTCO_wdt_driver);
 	if (err)
@@ -1096,7 +1388,11 @@ static void __exit iTCO_wdt_cleanup_module(void)
 {
 	platform_device_unregister(iTCO_wdt_platform_device);
 	platform_driver_unregister(&iTCO_wdt_driver);
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog Module Unloaded.\n");
+=======
+	pr_info("Watchdog Module Unloaded\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 module_init(iTCO_wdt_init_module);

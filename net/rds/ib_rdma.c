@@ -33,10 +33,17 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/rculist.h>
+<<<<<<< HEAD
 
 #include "rds.h"
 #include "ib.h"
 #include "xlist.h"
+=======
+#include <linux/llist.h>
+
+#include "rds.h"
+#include "ib.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static DEFINE_PER_CPU(unsigned long, clean_list_grace);
 #define CLEAN_LIST_BUSY_BIT 0
@@ -49,7 +56,11 @@ struct rds_ib_mr {
 	struct rds_ib_mr_pool	*pool;
 	struct ib_fmr		*fmr;
 
+<<<<<<< HEAD
 	struct xlist_head	xlist;
+=======
+	struct llist_node	llnode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* unmap_list is for freeing */
 	struct list_head	unmap_list;
@@ -71,9 +82,15 @@ struct rds_ib_mr_pool {
 	atomic_t		item_count;		/* total # of MRs */
 	atomic_t		dirty_count;		/* # dirty of MRs */
 
+<<<<<<< HEAD
 	struct xlist_head	drop_list;		/* MRs that have reached their max_maps limit */
 	struct xlist_head	free_list;		/* unused MRs */
 	struct xlist_head	clean_list;		/* global unused & unamapped MRs */
+=======
+	struct llist_head	drop_list;		/* MRs that have reached their max_maps limit */
+	struct llist_head	free_list;		/* unused MRs */
+	struct llist_head	clean_list;		/* global unused & unamapped MRs */
+>>>>>>> refs/remotes/origin/cm-10.0
 	wait_queue_head_t	flush_wait;
 
 	atomic_t		free_pinned;		/* memory pinned by free MRs */
@@ -220,9 +237,15 @@ struct rds_ib_mr_pool *rds_ib_create_mr_pool(struct rds_ib_device *rds_ibdev)
 	if (!pool)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	INIT_XLIST_HEAD(&pool->free_list);
 	INIT_XLIST_HEAD(&pool->drop_list);
 	INIT_XLIST_HEAD(&pool->clean_list);
+=======
+	init_llist_head(&pool->free_list);
+	init_llist_head(&pool->drop_list);
+	init_llist_head(&pool->clean_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_init(&pool->flush_lock);
 	init_waitqueue_head(&pool->flush_wait);
 	INIT_DELAYED_WORK(&pool->flush_worker, rds_ib_mr_pool_flush_worker);
@@ -260,6 +283,7 @@ void rds_ib_destroy_mr_pool(struct rds_ib_mr_pool *pool)
 	kfree(pool);
 }
 
+<<<<<<< HEAD
 static void refill_local(struct rds_ib_mr_pool *pool, struct xlist_head *xl,
 			 struct rds_ib_mr **ibmr_ret)
 {
@@ -272,14 +296,26 @@ static inline struct rds_ib_mr *rds_ib_reuse_fmr(struct rds_ib_mr_pool *pool)
 {
 	struct rds_ib_mr *ibmr = NULL;
 	struct xlist_head *ret;
+=======
+static inline struct rds_ib_mr *rds_ib_reuse_fmr(struct rds_ib_mr_pool *pool)
+{
+	struct rds_ib_mr *ibmr = NULL;
+	struct llist_node *ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long *flag;
 
 	preempt_disable();
 	flag = &__get_cpu_var(clean_list_grace);
 	set_bit(CLEAN_LIST_BUSY_BIT, flag);
+<<<<<<< HEAD
 	ret = xlist_del_head(&pool->clean_list);
 	if (ret)
 		ibmr = list_entry(ret, struct rds_ib_mr, xlist);
+=======
+	ret = llist_del_first(&pool->clean_list);
+	if (ret)
+		ibmr = llist_entry(ret, struct rds_ib_mr, llnode);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	clear_bit(CLEAN_LIST_BUSY_BIT, flag);
 	preempt_enable();
@@ -529,6 +565,7 @@ static inline unsigned int rds_ib_flush_goal(struct rds_ib_mr_pool *pool, int fr
 }
 
 /*
+<<<<<<< HEAD
  * given an xlist of mrs, put them all into the list_head for more processing
  */
 static void xlist_append_to_list(struct xlist_head *xlist, struct list_head *list)
@@ -546,10 +583,27 @@ static void xlist_append_to_list(struct xlist_head *xlist, struct list_head *lis
 		ibmr = list_entry(cur, struct rds_ib_mr, xlist);
 		list_add_tail(&ibmr->unmap_list, list);
 		cur = next;
+=======
+ * given an llist of mrs, put them all into the list_head for more processing
+ */
+static void llist_append_to_list(struct llist_head *llist, struct list_head *list)
+{
+	struct rds_ib_mr *ibmr;
+	struct llist_node *node;
+	struct llist_node *next;
+
+	node = llist_del_all(llist);
+	while (node) {
+		next = node->next;
+		ibmr = llist_entry(node, struct rds_ib_mr, llnode);
+		list_add_tail(&ibmr->unmap_list, list);
+		node = next;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
 /*
+<<<<<<< HEAD
  * this takes a list head of mrs and turns it into an xlist of clusters.
  * each cluster has an xlist of MR_CLUSTER_SIZE mrs that are ready for
  * reuse.
@@ -569,6 +623,28 @@ static void list_append_to_xlist(struct rds_ib_mr_pool *pool,
 		cur_mr = tail_mr;
 	}
 	*tail_ret = tail_mr;
+=======
+ * this takes a list head of mrs and turns it into linked llist nodes
+ * of clusters.  Each cluster has linked llist nodes of
+ * MR_CLUSTER_SIZE mrs that are ready for reuse.
+ */
+static void list_to_llist_nodes(struct rds_ib_mr_pool *pool,
+				struct list_head *list,
+				struct llist_node **nodes_head,
+				struct llist_node **nodes_tail)
+{
+	struct rds_ib_mr *ibmr;
+	struct llist_node *cur = NULL;
+	struct llist_node **next = nodes_head;
+
+	list_for_each_entry(ibmr, list, unmap_list) {
+		cur = &ibmr->llnode;
+		*next = cur;
+		next = &cur->next;
+	}
+	*next = NULL;
+	*nodes_tail = cur;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -581,8 +657,13 @@ static int rds_ib_flush_mr_pool(struct rds_ib_mr_pool *pool,
 			        int free_all, struct rds_ib_mr **ibmr_ret)
 {
 	struct rds_ib_mr *ibmr, *next;
+<<<<<<< HEAD
 	struct xlist_head clean_xlist;
 	struct xlist_head *clean_tail;
+=======
+	struct llist_node *clean_nodes;
+	struct llist_node *clean_tail;
+>>>>>>> refs/remotes/origin/cm-10.0
 	LIST_HEAD(unmap_list);
 	LIST_HEAD(fmr_list);
 	unsigned long unpinned = 0;
@@ -603,7 +684,11 @@ static int rds_ib_flush_mr_pool(struct rds_ib_mr_pool *pool,
 
 			prepare_to_wait(&pool->flush_wait, &wait,
 					TASK_UNINTERRUPTIBLE);
+<<<<<<< HEAD
 			if (xlist_empty(&pool->clean_list))
+=======
+			if (llist_empty(&pool->clean_list))
+>>>>>>> refs/remotes/origin/cm-10.0
 				schedule();
 
 			ibmr = rds_ib_reuse_fmr(pool);
@@ -628,10 +713,17 @@ static int rds_ib_flush_mr_pool(struct rds_ib_mr_pool *pool,
 	/* Get the list of all MRs to be dropped. Ordering matters -
 	 * we want to put drop_list ahead of free_list.
 	 */
+<<<<<<< HEAD
 	xlist_append_to_list(&pool->drop_list, &unmap_list);
 	xlist_append_to_list(&pool->free_list, &unmap_list);
 	if (free_all)
 		xlist_append_to_list(&pool->clean_list, &unmap_list);
+=======
+	llist_append_to_list(&pool->drop_list, &unmap_list);
+	llist_append_to_list(&pool->free_list, &unmap_list);
+	if (free_all)
+		llist_append_to_list(&pool->clean_list, &unmap_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	free_goal = rds_ib_flush_goal(pool, free_all);
 
@@ -663,15 +755,24 @@ static int rds_ib_flush_mr_pool(struct rds_ib_mr_pool *pool,
 	if (!list_empty(&unmap_list)) {
 		/* we have to make sure that none of the things we're about
 		 * to put on the clean list would race with other cpus trying
+<<<<<<< HEAD
 		 * to pull items off.  The xlist would explode if we managed to
 		 * remove something from the clean list and then add it back again
 		 * while another CPU was spinning on that same item in xlist_del_head.
 		 *
 		 * This is pretty unlikely, but just in case  wait for an xlist grace period
+=======
+		 * to pull items off.  The llist would explode if we managed to
+		 * remove something from the clean list and then add it back again
+		 * while another CPU was spinning on that same item in llist_del_first.
+		 *
+		 * This is pretty unlikely, but just in case  wait for an llist grace period
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * here before adding anything back into the clean list.
 		 */
 		wait_clean_list_grace();
 
+<<<<<<< HEAD
 		list_append_to_xlist(pool, &unmap_list, &clean_xlist, &clean_tail);
 		if (ibmr_ret)
 			refill_local(pool, &clean_xlist, ibmr_ret);
@@ -679,6 +780,15 @@ static int rds_ib_flush_mr_pool(struct rds_ib_mr_pool *pool,
 		/* refill_local may have emptied our list */
 		if (!xlist_empty(&clean_xlist))
 			xlist_add(clean_xlist.next, clean_tail, &pool->clean_list);
+=======
+		list_to_llist_nodes(pool, &unmap_list, &clean_nodes, &clean_tail);
+		if (ibmr_ret)
+			*ibmr_ret = llist_entry(clean_nodes, struct rds_ib_mr, llnode);
+
+		/* more than one entry in llist nodes */
+		if (clean_nodes->next)
+			llist_add_batch(clean_nodes->next, clean_tail, &pool->clean_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	}
 
@@ -711,9 +821,15 @@ void rds_ib_free_mr(void *trans_private, int invalidate)
 
 	/* Return it to the pool's free list */
 	if (ibmr->remap_count >= pool->fmr_attr.max_maps)
+<<<<<<< HEAD
 		xlist_add(&ibmr->xlist, &ibmr->xlist, &pool->drop_list);
 	else
 		xlist_add(&ibmr->xlist, &ibmr->xlist, &pool->free_list);
+=======
+		llist_add(&ibmr->llnode, &pool->drop_list);
+	else
+		llist_add(&ibmr->llnode, &pool->free_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	atomic_add(ibmr->sg_len, &pool->free_pinned);
 	atomic_inc(&pool->dirty_count);

@@ -379,6 +379,7 @@ static struct i2c_driver qt2160_driver = {
 	.remove		= __devexit_p(qt2160_remove),
 };
 
+<<<<<<< HEAD
 static int __init qt2160_init(void)
 {
 	return i2c_add_driver(&qt2160_driver);
@@ -390,6 +391,9 @@ static void __exit qt2160_cleanup(void)
 	i2c_del_driver(&qt2160_driver);
 }
 module_exit(qt2160_cleanup);
+=======
+module_i2c_driver(qt2160_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Raphael Derosso Pereira <raphaelpereira@gmail.com>");
 MODULE_DESCRIPTION("Driver for AT42QT2160 Touch Sensor");

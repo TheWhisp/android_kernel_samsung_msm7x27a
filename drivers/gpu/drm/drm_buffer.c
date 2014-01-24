@@ -32,6 +32,10 @@
  * Pauli Nieminen <suokkos-at-gmail-dot-com>
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drm_buffer.h"
 
 /**

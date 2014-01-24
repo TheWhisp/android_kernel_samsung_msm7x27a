@@ -28,7 +28,10 @@
 #include <linux/slab.h>
 #include <asm/io.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable.h>
 #include <asm/sn/addrs.h>
 #include <asm/sn/intr.h>

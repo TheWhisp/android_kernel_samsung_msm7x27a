@@ -25,6 +25,11 @@
 
 #include <mach/serial.h>
 
+<<<<<<< HEAD
+=======
+#define IOMEM(x)	((void __force __iomem *)(x))
+
+>>>>>>> refs/remotes/origin/cm-10.0
 u32 *uart;
 
 /* PORT_16C550A, in polled non-fifo mode */
@@ -43,7 +48,16 @@ static inline void flush(void)
 
 static inline void set_uart_info(u32 phys, void * __iomem virt)
 {
+<<<<<<< HEAD
 	u32 *uart_info = (u32 *)(DAVINCI_UART_INFO);
+=======
+	/*
+	 * Get address of some.bss variable and round it down
+	 * a la CONFIG_AUTO_ZRELADDR.
+	 */
+	u32 ram_start = (u32)&uart & 0xf8000000;
+	u32 *uart_info = (u32 *)(ram_start + DAVINCI_UART_INFO_OFS);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	uart = (u32 *)phys;
 	uart_info[0] = phys;

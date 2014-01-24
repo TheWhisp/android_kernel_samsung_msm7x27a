@@ -151,6 +151,7 @@ extern void __cpu_copy_user_highpage(struct page *to, struct page *from,
 #define clear_page(page)	memset((void *)(page), 0, PAGE_SIZE)
 extern void copy_page(void *to, const void *from);
 
+<<<<<<< HEAD
 typedef unsigned long pteval_t;
 
 #undef STRICT_MM_TYPECHECKS
@@ -192,6 +193,15 @@ typedef unsigned long pgprot_t;
 #define __pgprot(x)     (x)
 
 #endif /* STRICT_MM_TYPECHECKS */
+=======
+#define __HAVE_ARCH_GATE_AREA 1
+
+#ifdef CONFIG_ARM_LPAE
+#include <asm/pgtable-3level-types.h>
+#else
+#include <asm/pgtable-2level-types.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* CONFIG_MMU */
 

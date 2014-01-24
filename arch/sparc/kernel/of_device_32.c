@@ -2,7 +2,10 @@
 #include <linux/kernel.h>
 #include <linux/of.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mod_devicetable.h>
 #include <linux/slab.h>
 #include <linux/errno.h>

@@ -10,7 +10,11 @@
 #include <linux/types.h>
 #include <linux/ctype.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 const char hex_asc[] = "0123456789abcdef";
 EXPORT_SYMBOL(hex_asc);
@@ -38,6 +42,7 @@ EXPORT_SYMBOL(hex_to_bin);
  * @dst: binary result
  * @src: ascii hexadecimal string
  * @count: result length
+<<<<<<< HEAD
  */
 void hex2bin(u8 *dst, const char *src, size_t count)
 {
@@ -46,6 +51,23 @@ void hex2bin(u8 *dst, const char *src, size_t count)
 		*dst += hex_to_bin(*src++);
 		dst++;
 	}
+=======
+ *
+ * Return 0 on success, -1 in case of bad input.
+ */
+int hex2bin(u8 *dst, const char *src, size_t count)
+{
+	while (count--) {
+		int hi = hex_to_bin(*src++);
+		int lo = hex_to_bin(*src++);
+
+		if ((hi < 0) || (lo < 0))
+			return -1;
+
+		*dst++ = (hi << 4) | lo;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(hex2bin);
 

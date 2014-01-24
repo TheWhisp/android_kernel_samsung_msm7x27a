@@ -158,7 +158,11 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
 {
 	int ret;
 	struct device_node *flash_np;
+<<<<<<< HEAD
 	static const char *part_types[] = { "cmdlinepart", NULL, };
+=======
+	struct mtd_part_parser_data ppdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fun->chip.IO_ADDR_R = fun->io_base;
 	fun->chip.IO_ADDR_W = fun->io_base;
@@ -192,6 +196,7 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
 	if (ret)
 		goto err;
 
+<<<<<<< HEAD
 	ret = parse_mtd_partitions(&fun->mtd, part_types, &fun->parts, 0);
 
 #ifdef CONFIG_MTD_OF_PARTS
@@ -204,6 +209,14 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
 	ret = mtd_device_register(&fun->mtd, fun->parts, ret);
 err:
 	of_node_put(flash_np);
+=======
+	ppdata.of_node = flash_np;
+	ret = mtd_device_parse_register(&fun->mtd, NULL, &ppdata, NULL, 0);
+err:
+	of_node_put(flash_np);
+	if (ret)
+		kfree(fun->mtd.name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -359,6 +372,7 @@ static struct platform_driver of_fun_driver = {
 	.remove		= __devexit_p(fun_remove),
 };
 
+<<<<<<< HEAD
 static int __init fun_module_init(void)
 {
 	return platform_driver_register(&of_fun_driver);
@@ -370,6 +384,9 @@ static void __exit fun_module_exit(void)
 	platform_driver_unregister(&of_fun_driver);
 }
 module_exit(fun_module_exit);
+=======
+module_platform_driver(of_fun_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Anton Vorontsov <avorontsov@ru.mvista.com>");

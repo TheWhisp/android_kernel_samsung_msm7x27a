@@ -96,7 +96,11 @@ static void s3c64xx_irq_pm_resume(void)
 	S3C_PMDBG("%s: IRQ configuration restored\n", __func__);
 }
 
+<<<<<<< HEAD
 struct syscore_ops s3c64xx_irq_syscore_ops = {
+=======
+static struct syscore_ops s3c64xx_irq_syscore_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.suspend = s3c64xx_irq_pm_suspend,
 	.resume	 = s3c64xx_irq_pm_resume,
 };

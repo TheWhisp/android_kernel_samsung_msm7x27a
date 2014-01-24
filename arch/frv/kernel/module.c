@@ -22,6 +22,7 @@
 #define DEBUGP(fmt...)
 #endif
 
+<<<<<<< HEAD
 void *module_alloc(unsigned long size)
 {
 	if (size == 0)
@@ -76,3 +77,8 @@ int module_finalize(const Elf_Ehdr *hdr,
 void module_arch_cleanup(struct module *mod)
 {
 }
+=======
+/* TODO: At least one of apply_relocate or apply_relocate_add must be
+ * implemented in order to get working module support.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0

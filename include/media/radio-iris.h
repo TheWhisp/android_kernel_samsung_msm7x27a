@@ -44,7 +44,18 @@
 /* default data access */
 #define DEFAULT_DATA_OFFSET 2
 #define DEFAULT_DATA_SIZE 249
+<<<<<<< HEAD
 
+=======
+/* Power levels are 0-7, but SOC will expect values from 0-255
+ * So the each level step size will be 255/7 = 36 */
+#define FM_TX_PWR_LVL_STEP_SIZE 36
+#define FM_TX_PWR_LVL_0         0 /* Lowest power lvl that can be set for Tx */
+#define FM_TX_PWR_LVL_MAX       7 /* Max power lvl for Tx */
+#define FM_TX_PHY_CFG_MODE   0x3c
+#define FM_TX_PHY_CFG_LEN    0x10
+#define FM_TX_PWR_GAIN_OFFSET 14
+>>>>>>> refs/remotes/origin/cm-10.0
 /* HCI timeouts */
 #define RADIO_HCI_TIMEOUT	(10000)	/* 10 seconds */
 
@@ -203,8 +214,14 @@ void radio_hci_event_packet(struct radio_hci_dev *hdev, struct sk_buff *skb);
 #define HCI_FM_GET_DET_CH_TH_CMD 16
 
 /* Defines for FM TX*/
+<<<<<<< HEAD
 #define TX_PS_DATA_LENGTH 96
 #define TX_RT_DATA_LENGTH 64
+=======
+#define TX_PS_DATA_LENGTH 108
+#define TX_RT_DATA_LENGTH 64
+#define PS_STRING_LEN     9
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ----- HCI Command request ----- */
 struct hci_fm_recv_conf_req {
@@ -231,7 +248,11 @@ struct hci_fm_tx_ps {
 	__u16	pi;
 	__u8	pty;
 	__u8	ps_repeatcount;
+<<<<<<< HEAD
 	__u8	ps_len;
+=======
+	__u8	ps_num;
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u8    ps_data[TX_PS_DATA_LENGTH];
 } __packed;
 
@@ -239,7 +260,11 @@ struct hci_fm_tx_rt {
 	__u8    rt_control;
 	__u16	pi;
 	__u8	pty;
+<<<<<<< HEAD
 	__u8	ps_len;
+=======
+	__u8	rt_len;
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u8    rt_data[TX_RT_DATA_LENGTH];
 } __packed;
 
@@ -482,6 +507,32 @@ struct hci_fm_dbg_param_rsp {
 	__u8    in_det_out;
 } __packed;
 
+<<<<<<< HEAD
+=======
+#define CLKSPURID_INDEX0	0
+#define CLKSPURID_INDEX1	5
+#define CLKSPURID_INDEX2	10
+#define CLKSPURID_INDEX3	15
+#define CLKSPURID_INDEX4	20
+#define CLKSPURID_INDEX5	25
+
+#define MAX_SPUR_FREQ_LIMIT	30
+#define CKK_SPUR		0x3B
+#define SPUR_DATA_SIZE		0x4
+#define SPUR_ENTRIES_PER_ID	0x5
+
+#define COMPUTE_SPUR(val)         ((((val) - (76000)) / (50)))
+#define GET_FREQ(val, bit)        ((bit == 1) ? ((val) >> 8) : ((val) & 0xFF))
+#define GET_SPUR_ENTRY_LEVEL(val) ((val) / (5))
+
+struct hci_fm_spur_data {
+	__u32	freq[MAX_SPUR_FREQ_LIMIT];
+	__s8	rmssi[MAX_SPUR_FREQ_LIMIT];
+	__u8	enable[MAX_SPUR_FREQ_LIMIT];
+} __packed;
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* HCI dev events */
 #define RADIO_HCI_DEV_REG			1
 #define RADIO_HCI_DEV_WRITE			2
@@ -565,6 +616,13 @@ enum v4l2_cid_private_iris_t {
 	V4L2_CID_PRIVATE_INTF_HIGH_THRESHOLD,
 	V4L2_CID_PRIVATE_SINR_THRESHOLD,
 	V4L2_CID_PRIVATE_SINR_SAMPLES,
+<<<<<<< HEAD
+=======
+	V4L2_CID_PRIVATE_SPUR_FREQ,
+	V4L2_CID_PRIVATE_SPUR_FREQ_RMSSI,
+	V4L2_CID_PRIVATE_SPUR_SELECTION,
+	V4L2_CID_PRIVATE_UPDATE_SPUR_TABLE,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*using private CIDs under userclass*/
 	V4L2_CID_PRIVATE_IRIS_READ_DEFAULT = 0x00980928,
@@ -673,6 +731,17 @@ enum search_t {
 	RDS_AF_JUMP,
 };
 
+<<<<<<< HEAD
+=======
+enum spur_entry_levels {
+	ENTRY_0,
+	ENTRY_1,
+	ENTRY_2,
+	ENTRY_3,
+	ENTRY_4,
+	ENTRY_5,
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Band limits */
 #define REGION_US_EU_BAND_LOW              87500
@@ -702,7 +771,11 @@ enum search_t {
 /* constants */
 #define  RDS_BLOCKS_NUM	(4)
 #define BYTES_PER_BLOCK	(3)
+<<<<<<< HEAD
 #define MAX_PS_LENGTH	(96)
+=======
+#define MAX_PS_LENGTH	(108)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MAX_RT_LENGTH	(64)
 #define RDS_GRP_CNTR_LEN (36)
 #define RX_RT_DATA_LENGTH (63)
@@ -767,6 +840,10 @@ struct hci_cc_do_calibration_rsp {
 #define RDS_SYNC_INTR   (1 << 1)
 #define AUDIO_CTRL_INTR (1 << 2)
 #define AF_JUMP_ENABLE  (1 << 4)
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int hci_def_data_read(struct hci_fm_def_data_rd_req *arg,
 	struct radio_hci_dev *hdev);
 int hci_def_data_write(struct hci_fm_def_data_wr_req *arg,

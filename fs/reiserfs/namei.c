@@ -14,12 +14,21 @@
 #include <linux/time.h>
 #include <linux/bitops.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 #include <linux/reiserfs_acl.h>
 #include <linux/reiserfs_xattr.h>
 #include <linux/quotaops.h>
 
 #define INC_DIR_INODE_NLINK(i) if (i->i_nlink != 1) { inc_nlink(i); if (i->i_nlink >= REISERFS_LINK_MAX) i->i_nlink=1; }
+=======
+#include "reiserfs.h"
+#include "acl.h"
+#include "xattr.h"
+#include <linux/quotaops.h>
+
+#define INC_DIR_INODE_NLINK(i) if (i->i_nlink != 1) { inc_nlink(i); if (i->i_nlink >= REISERFS_LINK_MAX) set_nlink(i, 1); }
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DEC_DIR_INODE_NLINK(i) if (i->i_nlink != 1) drop_nlink(i);
 
 // directory item contains array of entry headers. This performs
@@ -559,7 +568,11 @@ static int drop_new_inode(struct inode *inode)
 ** outside of a transaction, so we had to pull some bits of
 ** reiserfs_new_inode out into this func.
 */
+<<<<<<< HEAD
 static int new_inode_init(struct inode *inode, struct inode *dir, int mode)
+=======
+static int new_inode_init(struct inode *inode, struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* Make inode invalid - just in case we are going to drop it before
 	 * the initialization happens */
@@ -572,7 +585,11 @@ static int new_inode_init(struct inode *inode, struct inode *dir, int mode)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int reiserfs_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int reiserfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   struct nameidata *nd)
 {
 	int retval;
@@ -622,7 +639,11 @@ static int reiserfs_create(struct inode *dir, struct dentry *dentry, int mode,
 			       dentry->d_name.len, inode, 1 /*visible */ );
 	if (retval) {
 		int err;
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		reiserfs_update_sd(&th, inode);
 		err = journal_end(&th, dir->i_sb, jbegin_count);
 		if (err)
@@ -643,7 +664,11 @@ static int reiserfs_create(struct inode *dir, struct dentry *dentry, int mode,
 	return retval;
 }
 
+<<<<<<< HEAD
 static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  dev_t rdev)
 {
 	int retval;
@@ -702,7 +727,11 @@ static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, int mode,
 			       dentry->d_name.len, inode, 1 /*visible */ );
 	if (retval) {
 		int err;
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		reiserfs_update_sd(&th, inode);
 		err = journal_end(&th, dir->i_sb, jbegin_count);
 		if (err)
@@ -721,7 +750,11 @@ static int reiserfs_mknod(struct inode *dir, struct dentry *dentry, int mode,
 	return retval;
 }
 
+<<<<<<< HEAD
 static int reiserfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int reiserfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int retval;
 	struct inode *inode;
@@ -787,7 +820,11 @@ static int reiserfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 			       dentry->d_name.len, inode, 1 /*visible */ );
 	if (retval) {
 		int err;
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		DEC_DIR_INODE_NLINK(dir);
 		reiserfs_update_sd(&th, inode);
 		err = journal_end(&th, dir->i_sb, jbegin_count);
@@ -964,7 +1001,11 @@ static int reiserfs_unlink(struct inode *dir, struct dentry *dentry)
 		reiserfs_warning(inode->i_sb, "reiserfs-7042",
 				 "deleting nonexistent file (%lu), %d",
 				 inode->i_ino, inode->i_nlink);
+<<<<<<< HEAD
 		inode->i_nlink = 1;
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	drop_nlink(inode);
@@ -1086,7 +1127,11 @@ static int reiserfs_symlink(struct inode *parent_dir,
 				    dentry->d_name.len, inode, 1 /*visible */ );
 	if (retval) {
 		int err;
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		reiserfs_update_sd(&th, inode);
 		err = journal_end(&th, parent_dir->i_sb, jbegin_count);
 		if (err)
@@ -1129,7 +1174,11 @@ static int reiserfs_link(struct dentry *old_dentry, struct inode *dir,
 
 	retval = journal_begin(&th, dir->i_sb, jbegin_count);
 	if (retval) {
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		reiserfs_write_unlock(dir->i_sb);
 		return retval;
 	}
@@ -1144,7 +1193,11 @@ static int reiserfs_link(struct dentry *old_dentry, struct inode *dir,
 
 	if (retval) {
 		int err;
+<<<<<<< HEAD
 		inode->i_nlink--;
+=======
+		drop_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = journal_end(&th, dir->i_sb, jbegin_count);
 		reiserfs_write_unlock(dir->i_sb);
 		return err ? err : retval;
@@ -1529,6 +1582,10 @@ const struct inode_operations reiserfs_dir_inode_operations = {
 	.listxattr = reiserfs_listxattr,
 	.removexattr = reiserfs_removexattr,
 	.permission = reiserfs_permission,
+<<<<<<< HEAD
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -1545,6 +1602,10 @@ const struct inode_operations reiserfs_symlink_inode_operations = {
 	.listxattr = reiserfs_listxattr,
 	.removexattr = reiserfs_removexattr,
 	.permission = reiserfs_permission,
+<<<<<<< HEAD
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 };
 
@@ -1558,5 +1619,9 @@ const struct inode_operations reiserfs_special_inode_operations = {
 	.listxattr = reiserfs_listxattr,
 	.removexattr = reiserfs_removexattr,
 	.permission = reiserfs_permission,
+<<<<<<< HEAD
 
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
 };

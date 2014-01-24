@@ -30,6 +30,12 @@
 #define XATTR_USER_PREFIX_LEN (sizeof (XATTR_USER_PREFIX) - 1)
 
 /* Security namespace */
+<<<<<<< HEAD
+=======
+#define XATTR_EVM_SUFFIX "evm"
+#define XATTR_NAME_EVM XATTR_SECURITY_PREFIX XATTR_EVM_SUFFIX
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define XATTR_SELINUX_SUFFIX "selinux"
 #define XATTR_NAME_SELINUX XATTR_SECURITY_PREFIX XATTR_SELINUX_SUFFIX
 
@@ -49,6 +55,14 @@
 #define XATTR_CAPS_SUFFIX "capability"
 #define XATTR_NAME_CAPS XATTR_SECURITY_PREFIX XATTR_CAPS_SUFFIX
 
+<<<<<<< HEAD
+=======
+#define XATTR_POSIX_ACL_ACCESS  "posix_acl_access"
+#define XATTR_NAME_POSIX_ACL_ACCESS XATTR_SYSTEM_PREFIX XATTR_POSIX_ACL_ACCESS
+#define XATTR_POSIX_ACL_DEFAULT  "posix_acl_default"
+#define XATTR_NAME_POSIX_ACL_DEFAULT XATTR_SYSTEM_PREFIX XATTR_POSIX_ACL_DEFAULT
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef  __KERNEL__
 
 #include <linux/types.h>
@@ -67,6 +81,15 @@ struct xattr_handler {
 		   size_t size, int flags, int handler_flags);
 };
 
+<<<<<<< HEAD
+=======
+struct xattr {
+	char *name;
+	void *value;
+	size_t value_len;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 ssize_t xattr_getsecurity(struct inode *, const char *, void *, size_t);
 ssize_t vfs_getxattr(struct dentry *, const char *, void *, size_t);
 ssize_t vfs_listxattr(struct dentry *d, char *list, size_t size);
@@ -78,7 +101,14 @@ ssize_t generic_getxattr(struct dentry *dentry, const char *name, void *buffer, 
 ssize_t generic_listxattr(struct dentry *dentry, char *buffer, size_t buffer_size);
 int generic_setxattr(struct dentry *dentry, const char *name, const void *value, size_t size, int flags);
 int generic_removexattr(struct dentry *dentry, const char *name);
+<<<<<<< HEAD
 
+=======
+ssize_t vfs_getxattr_alloc(struct dentry *dentry, const char *name,
+			   char **xattr_value, size_t size, gfp_t flags);
+int vfs_xattr_cmp(struct dentry *dentry, const char *xattr_name,
+		  const char *value, size_t size, gfp_t flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif  /*  __KERNEL__  */
 
 #endif	/* _LINUX_XATTR_H */

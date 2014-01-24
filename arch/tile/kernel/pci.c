@@ -24,6 +24,10 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/processor.h>
 #include <asm/sections.h>
@@ -140,7 +144,11 @@ static int __devinit tile_init_irqs(int controller_id,
  *
  * Returns the number of controllers discovered.
  */
+<<<<<<< HEAD
 int __devinit tile_pci_init(void)
+=======
+int __init tile_pci_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
@@ -228,7 +236,11 @@ err_cont:
  * (pin - 1) converts from the PCI standard's [1:4] convention to
  * a normal [0:3] range.
  */
+<<<<<<< HEAD
 static int tile_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int tile_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pci_controller *controller =
 		(struct pci_controller *)dev->sysdata;
@@ -286,7 +298,11 @@ static void __devinit fixup_read_and_payload_sizes(void)
  * The controllers have been set up by the time we get here, by a call to
  * tile_pci_init.
  */
+<<<<<<< HEAD
 int __devinit pcibios_init(void)
+=======
+int __init pcibios_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
@@ -394,6 +410,14 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
 	/* Nothing needs to be done. */
 }
 
+<<<<<<< HEAD
+=======
+void pcibios_set_master(struct pci_dev *dev)
+{
+	/* No special bus mastering setup handling. */
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This can be called from the generic PCI layer, but doesn't need to
  * do anything.
@@ -465,6 +489,7 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
 	return 0;
 }
 
+<<<<<<< HEAD
 void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
 {
 	unsigned long start = pci_resource_start(dev, bar);
@@ -486,6 +511,8 @@ void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
 EXPORT_SYMBOL(pci_iomap);
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /****************************************************************
  *
  * Tile PCI config space read/write routines

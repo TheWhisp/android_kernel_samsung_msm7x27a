@@ -39,6 +39,10 @@ enum CTCARDS {
 	CT20K2_MODEL_FIRST = CTSB0760,
 	CTHENDRIX,
 	CTSB0880,
+<<<<<<< HEAD
+=======
+	CTSB1270,
+>>>>>>> refs/remotes/origin/cm-10.0
 	CT20K2_UNKNOWN,
 	NUM_CTCARDS		/* This should always be the last */
 };
@@ -60,6 +64,16 @@ struct card_conf {
 	unsigned int msr;	/* master sample rate in rsrs */
 };
 
+<<<<<<< HEAD
+=======
+struct capabilities {
+	unsigned int digit_io_switch:1;
+	unsigned int dedicated_mic:1;
+	unsigned int output_switch:1;
+	unsigned int mic_source_switch:1;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct hw {
 	int (*card_init)(struct hw *hw, struct card_conf *info);
 	int (*card_stop)(struct hw *hw);
@@ -70,7 +84,15 @@ struct hw {
 #endif
 	int (*is_adc_source_selected)(struct hw *hw, enum ADCSRC source);
 	int (*select_adc_source)(struct hw *hw, enum ADCSRC source);
+<<<<<<< HEAD
 	int (*have_digit_io_switch)(struct hw *hw);
+=======
+	struct capabilities (*capabilities)(struct hw *hw);
+	int (*output_switch_get)(struct hw *hw);
+	int (*output_switch_put)(struct hw *hw, int position);
+	int (*mic_source_switch_get)(struct hw *hw);
+	int (*mic_source_switch_put)(struct hw *hw, int position);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* SRC operations */
 	int (*src_rsc_get_ctrl_blk)(void **rblk);

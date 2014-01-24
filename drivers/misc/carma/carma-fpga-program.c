@@ -513,7 +513,11 @@ static noinline int fpga_program_dma(struct fpga_dev *priv)
 	 * transaction, and then put it under external control
 	 */
 	memset(&config, 0, sizeof(config));
+<<<<<<< HEAD
 	config.direction = DMA_TO_DEVICE;
+=======
+	config.direction = DMA_MEM_TO_DEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
 	config.dst_maxburst = fpga_fifo_size(priv->regs) / 2 / 4;
 	ret = chan->device->device_control(chan, DMA_SLAVE_CONFIG,
@@ -945,8 +949,12 @@ static int fpga_of_remove(struct platform_device *op)
 /* CTL-CPLD Version Register */
 #define CTL_CPLD_VERSION	0x2000
 
+<<<<<<< HEAD
 static int fpga_of_probe(struct platform_device *op,
 			 const struct of_device_id *match)
+=======
+static int fpga_of_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct device_node *of_node = op->dev.of_node;
 	struct device *this_device;
@@ -1107,7 +1115,11 @@ static struct of_device_id fpga_of_match[] = {
 	{},
 };
 
+<<<<<<< HEAD
 static struct of_platform_driver fpga_of_driver = {
+=======
+static struct platform_driver fpga_of_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.probe		= fpga_of_probe,
 	.remove		= fpga_of_remove,
 	.driver		= {
@@ -1124,12 +1136,20 @@ static struct of_platform_driver fpga_of_driver = {
 static int __init fpga_init(void)
 {
 	led_trigger_register_simple("fpga", &ledtrig_fpga);
+<<<<<<< HEAD
 	return of_register_platform_driver(&fpga_of_driver);
+=======
+	return platform_driver_register(&fpga_of_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __exit fpga_exit(void)
 {
+<<<<<<< HEAD
 	of_unregister_platform_driver(&fpga_of_driver);
+=======
+	platform_driver_unregister(&fpga_of_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 	led_trigger_unregister_simple(ledtrig_fpga);
 }
 

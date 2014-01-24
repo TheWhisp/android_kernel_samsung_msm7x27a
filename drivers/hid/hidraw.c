@@ -259,7 +259,10 @@ static int hidraw_open(struct inode *inode, struct file *file)
 
 	mutex_lock(&minors_lock);
 	if (!hidraw_table[minor]) {
+<<<<<<< HEAD
 		kfree(list);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = -ENODEV;
 		goto out_unlock;
 	}
@@ -272,8 +275,15 @@ static int hidraw_open(struct inode *inode, struct file *file)
 	dev = hidraw_table[minor];
 	if (!dev->open++) {
 		err = hid_hw_power(dev->hid, PM_HINT_FULLON);
+<<<<<<< HEAD
 		if (err < 0)
 			goto out_unlock;
+=======
+		if (err < 0) {
+			dev->open--;
+			goto out_unlock;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		err = hid_hw_open(dev->hid);
 		if (err < 0) {
@@ -285,6 +295,11 @@ static int hidraw_open(struct inode *inode, struct file *file)
 out_unlock:
 	mutex_unlock(&minors_lock);
 out:
+<<<<<<< HEAD
+=======
+	if (err < 0)
+		kfree(list);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 
 }
@@ -510,13 +525,21 @@ void hidraw_disconnect(struct hid_device *hid)
 {
 	struct hidraw *hidraw = hid->hidraw;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&minors_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	hidraw->exist = 0;
 
 	device_destroy(hidraw_class, MKDEV(hidraw_major, hidraw->minor));
 
+<<<<<<< HEAD
 	mutex_lock(&minors_lock);
 	hidraw_table[hidraw->minor] = NULL;
 	mutex_unlock(&minors_lock);
+=======
+	hidraw_table[hidraw->minor] = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (hidraw->open) {
 		hid_hw_close(hid);
@@ -524,6 +547,10 @@ void hidraw_disconnect(struct hid_device *hid)
 	} else {
 		kfree(hidraw);
 	}
+<<<<<<< HEAD
+=======
+	mutex_unlock(&minors_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(hidraw_disconnect);
 

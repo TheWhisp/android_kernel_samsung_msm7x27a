@@ -39,10 +39,18 @@
 
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/ropes.h>
 #include <asm/mckinley.h>	/* for proc_mckinley_root */
 #include <asm/runway.h>		/* for proc_runway_root */
+<<<<<<< HEAD
+=======
+#include <asm/page.h>		/* for PAGE0 */
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pdc.h>		/* for PDC_MODEL_* */
 #include <asm/pdcpat.h>		/* for is_pdc_pat() */
 #include <asm/parisc-device.h>
@@ -668,7 +676,11 @@ sba_mark_invalid(struct ioc *ioc, dma_addr_t iova, size_t byte_cnt)
  * @dev: instance of PCI owned by the driver that's asking
  * @mask:  number of address bits this PCI device can handle
  *
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int sba_dma_supported( struct device *dev, u64 mask)
 {
@@ -680,7 +692,11 @@ static int sba_dma_supported( struct device *dev, u64 mask)
 		return(0);
 	}
 
+<<<<<<< HEAD
 	/* Documentation/PCI/PCI-DMA-mapping.txt tells drivers to try 64-bit
+=======
+	/* Documentation/DMA-API-HOWTO.txt tells drivers to try 64-bit
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * first, then fall back to 32-bit if that fails.
 	 * We are just "encouraging" 32-bit DMA masks here since we can
 	 * never allow IOMMU bypass unless we add special support for ZX1.
@@ -706,7 +722,11 @@ static int sba_dma_supported( struct device *dev, u64 mask)
  * @size:  number of bytes to map in driver buffer.
  * @direction:  R/W or both.
  *
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static dma_addr_t
 sba_map_single(struct device *dev, void *addr, size_t size,
@@ -785,7 +805,11 @@ sba_map_single(struct device *dev, void *addr, size_t size,
  * @size:  number of bytes mapped in driver buffer.
  * @direction:  R/W or both.
  *
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void
 sba_unmap_single(struct device *dev, dma_addr_t iova, size_t size,
@@ -861,7 +885,11 @@ sba_unmap_single(struct device *dev, dma_addr_t iova, size_t size,
  * @size:  number of bytes mapped in driver buffer.
  * @dma_handle:  IOVA of new buffer.
  *
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void *sba_alloc_consistent(struct device *hwdev, size_t size,
 					dma_addr_t *dma_handle, gfp_t gfp)
@@ -892,7 +920,11 @@ static void *sba_alloc_consistent(struct device *hwdev, size_t size,
  * @vaddr:  virtual address IOVA of "consistent" buffer.
  * @dma_handler:  IO virtual address of "consistent" buffer.
  *
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void
 sba_free_consistent(struct device *hwdev, size_t size, void *vaddr,
@@ -927,7 +959,11 @@ int dump_run_sg = 0;
  * @nents:  number of entries in list
  * @direction:  R/W or both.
  *
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int
 sba_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
@@ -1011,7 +1047,11 @@ sba_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
  * @nents:  number of entries in list
  * @direction:  R/W or both.
  *
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void 
 sba_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,

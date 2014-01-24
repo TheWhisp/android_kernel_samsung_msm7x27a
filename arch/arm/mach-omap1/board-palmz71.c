@@ -15,6 +15,10 @@
  */
 
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -26,13 +30,23 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/mtd/physmap.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
+=======
+#include <linux/omapfb.h>
+#include <linux/spi/spi.h>
+#include <linux/spi/ads7846.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/flash.h>
 #include <plat/mux.h>
 #include <plat/usb.h>
@@ -41,11 +55,18 @@
 #include <plat/board.h>
 #include <plat/irda.h>
 #include <plat/keypad.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/omap-alsa.h>
 
 #include <linux/spi/spi.h>
 #include <linux/spi/ads7846.h>
+=======
+
+#include <mach/hardware.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PALMZ71_USBDETECT_GPIO	0
 #define PALMZ71_PENIRQ_GPIO	6
@@ -57,6 +78,7 @@
 #define PALMZ71_SLIDER_GPIO	OMAP_MPUIO(3)
 #define PALMZ71_MMC_IN_GPIO	OMAP_MPUIO(4)
 
+<<<<<<< HEAD
 static void __init
 omap_palmz71_init_irq(void)
 {
@@ -64,6 +86,8 @@ omap_palmz71_init_irq(void)
 	omap_init_irq();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const unsigned int palmz71_keymap[] = {
 	KEY(0, 0, KEY_F1),
 	KEY(1, 0, KEY_F2),
@@ -230,7 +254,10 @@ static struct spi_board_info __initdata palmz71_boardinfo[] = { {
 	/* MicroWire (bus 2) CS0 has an ads7846e */
 	.modalias	= "ads7846",
 	.platform_data	= &palmz71_ts_info,
+<<<<<<< HEAD
 	.irq		= OMAP_GPIO_IRQ(PALMZ71_PENIRQ_GPIO),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.max_speed_hz	= 120000	/* max sample rate at 3V */
 				* 26	/* command + data + overhead */,
 	.bus_num	= 2,
@@ -247,10 +274,13 @@ static struct omap_lcd_config palmz71_lcd_config __initdata = {
 	.ctrl_name = "internal",
 };
 
+<<<<<<< HEAD
 static struct omap_board_config_kernel palmz71_config[] __initdata = {
 	{OMAP_TAG_LCD,	&palmz71_lcd_config},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static irqreturn_t
 palmz71_powercable(int irq, void *dev_id)
 {
@@ -321,17 +351,24 @@ omap_palmz71_init(void)
 	palmz71_gpio_setup(1);
 	omap_mpu_wdt_mode(0);
 
+<<<<<<< HEAD
 	omap_board_config = palmz71_config;
 	omap_board_config_size = ARRAY_SIZE(palmz71_config);
 
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 
+=======
+	platform_add_devices(devices, ARRAY_SIZE(devices));
+
+	palmz71_boardinfo[0].irq = gpio_to_irq(PALMZ71_PENIRQ_GPIO);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spi_register_board_info(palmz71_boardinfo,
 				ARRAY_SIZE(palmz71_boardinfo));
 	omap1_usb_init(&palmz71_usb_config);
 	omap_serial_init();
 	omap_register_i2c_bus(1, 100, NULL, 0);
 	palmz71_gpio_setup(0);
+<<<<<<< HEAD
 }
 
 static void __init
@@ -347,4 +384,19 @@ MACHINE_START(OMAP_PALMZ71, "OMAP310 based Palm Zire71")
 	.init_irq	= omap_palmz71_init_irq,
 	.init_machine	= omap_palmz71_init,
 	.timer		= &omap_timer,
+=======
+
+	omapfb_set_lcd_config(&palmz71_lcd_config);
+}
+
+MACHINE_START(OMAP_PALMZ71, "OMAP310 based Palm Zire71")
+	.atag_offset	= 0x100,
+	.map_io		= omap15xx_map_io,
+	.init_early     = omap1_init_early,
+	.reserve	= omap_reserve,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= omap_palmz71_init,
+	.timer		= &omap1_timer,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

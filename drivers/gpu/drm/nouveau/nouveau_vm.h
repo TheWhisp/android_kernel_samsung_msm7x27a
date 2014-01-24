@@ -41,6 +41,11 @@ struct nouveau_vm_pgd {
 };
 
 struct nouveau_vma {
+<<<<<<< HEAD
+=======
+	struct list_head head;
+	int refcount;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct nouveau_vm *vm;
 	struct nouveau_mm_node *node;
 	u64 offset;
@@ -49,7 +54,11 @@ struct nouveau_vma {
 
 struct nouveau_vm {
 	struct drm_device *dev;
+<<<<<<< HEAD
 	struct nouveau_mm *mm;
+=======
+	struct nouveau_mm mm;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int refcount;
 
 	struct list_head pgd_list;
@@ -87,7 +96,11 @@ void nouveau_vm_map_at(struct nouveau_vma *, u64 offset, struct nouveau_mem *);
 void nouveau_vm_unmap(struct nouveau_vma *);
 void nouveau_vm_unmap_at(struct nouveau_vma *, u64 offset, u64 length);
 void nouveau_vm_map_sg(struct nouveau_vma *, u64 offset, u64 length,
+<<<<<<< HEAD
 		       struct nouveau_mem *, dma_addr_t *);
+=======
+		       struct nouveau_mem *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* nv50_vm.c */
 void nv50_vm_map_pgt(struct nouveau_gpuobj *pgd, u32 pde,

@@ -32,7 +32,10 @@
 #include <asm/mipsmtregs.h>
 #include <asm/pgtable.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/bootinfo.h>
 

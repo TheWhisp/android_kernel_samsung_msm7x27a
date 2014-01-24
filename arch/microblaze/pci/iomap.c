@@ -6,6 +6,7 @@
 #include <linux/init.h>
 #include <linux/pci.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
 #include <asm/io.h>
 #include <asm/pci-bridge.h>
 
@@ -28,6 +29,12 @@ void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
 }
 EXPORT_SYMBOL(pci_iomap);
 
+=======
+#include <linux/export.h>
+#include <asm/io.h>
+#include <asm/pci-bridge.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
 {
 	if (isa_vaddr_is_ioport(addr))

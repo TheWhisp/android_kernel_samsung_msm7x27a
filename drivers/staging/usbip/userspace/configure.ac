@@ -1,8 +1,13 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
+<<<<<<< HEAD
 AC_INIT([usbip], [0.1.8], [usbip-devel@lists.sourceforge.net])
 AC_DEFINE([USBIP_VERSION], [0x000106], [numeric version number])
+=======
+AC_INIT([usbip-utils], [1.1.1], [linux-usb@vger.kernel.org])
+AC_DEFINE([USBIP_VERSION], [0x00000111], [binary-coded decimal version number])
+>>>>>>> refs/remotes/origin/cm-10.0
 
 CURRENT=0
 REVISION=1
@@ -29,7 +34,11 @@ AC_PROG_MAKE_SET
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdint.h stdlib.h dnl
+<<<<<<< HEAD
 		  string.h strings.h sys/socket.h syslog.h unistd.h])
+=======
+		  string.h sys/socket.h syslog.h unistd.h])
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_INT32_T
@@ -41,7 +50,11 @@ AC_TYPE_UINT8_T
 
 # Checks for library functions.
 AC_FUNC_REALLOC
+<<<<<<< HEAD
 AC_CHECK_FUNCS([bzero memset mkdir regcomp socket strchr strerror strstr dnl
+=======
+AC_CHECK_FUNCS([memset mkdir regcomp socket strchr strerror strstr dnl
+>>>>>>> refs/remotes/origin/cm-10.0
 		strtoul])
 
 AC_CHECK_HEADER([sysfs/libsysfs.h],
@@ -85,6 +98,7 @@ AC_ARG_WITH([tcp-wrappers],
 	       [AC_MSG_RESULT([no]); LIBS="$saved_LIBS"])])
 
 # Sets directory containing usb.ids.
+<<<<<<< HEAD
 USBIDS_DIR='${datadir}/usbip'
 AC_ARG_WITH([usbids-dir],
 	    [AS_HELP_STRING([--with-usbids-dir=DIR],
@@ -105,6 +119,14 @@ AC_ARG_ENABLE([usbids-install],
 		      )])
 AM_CONDITIONAL([INSTALL_USBIDS], [test x$usbids = xinstall])
 
+=======
+AC_ARG_WITH([usbids-dir],
+	    [AS_HELP_STRING([--with-usbids-dir=DIR],
+	       [where usb.ids is found (default /usr/share/hwdata/)])],
+	    [USBIDS_DIR=$withval], [USBIDS_DIR="/usr/share/hwdata/"])
+AC_SUBST([USBIDS_DIR])
+
+>>>>>>> refs/remotes/origin/cm-10.0
 GLIB2_REQUIRED=2.6.0
 PKG_CHECK_MODULES([PACKAGE], [glib-2.0 >= $GLIB2_REQUIRED])
 AC_SUBST([PACKAGE_CFLAGS])

@@ -20,9 +20,14 @@ static void kill_off_processes(void)
 		os_kill_ptraced_process(userspace_pid[0], 1);
 	else {
 		struct task_struct *p;
+<<<<<<< HEAD
 		int pid, me;
 
 		me = os_getpid();
+=======
+		int pid;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		for_each_process(p) {
 			if (p->mm == NULL)
 				continue;

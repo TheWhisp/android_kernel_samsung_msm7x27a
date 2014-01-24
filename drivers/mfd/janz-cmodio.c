@@ -33,7 +33,11 @@
 
 /* Module Parameters */
 static unsigned int num_modules = CMODIO_MAX_MODULES;
+<<<<<<< HEAD
 static unsigned char *modules[CMODIO_MAX_MODULES] = {
+=======
+static char *modules[CMODIO_MAX_MODULES] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	"empty", "empty", "empty", "empty",
 };
 

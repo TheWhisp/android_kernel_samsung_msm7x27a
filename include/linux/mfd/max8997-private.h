@@ -326,7 +326,10 @@ struct max8997_dev {
 	int irq;
 	int ono;
 	int irq_base;
+<<<<<<< HEAD
 	bool wakeup;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mutex irqlock;
 	int irq_masks_cur[MAX8997_IRQ_GROUP_NR];
 	int irq_masks_cache[MAX8997_IRQ_GROUP_NR];

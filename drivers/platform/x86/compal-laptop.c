@@ -189,7 +189,11 @@ struct compal_data{
 /* =============== */
 /* General globals */
 /* =============== */
+<<<<<<< HEAD
 static int force;
+=======
+static bool force;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(force, bool, 0);
 MODULE_PARM_DESC(force, "Force driver load, ignore DMI data");
 
@@ -882,6 +886,10 @@ static struct dmi_system_id __initdata compal_dmi_table[] = {
 	},
 	{ }
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(dmi, compal_dmi_table);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void initialize_power_supply_data(struct compal_data *data)
 {
@@ -1097,6 +1105,7 @@ MODULE_AUTHOR("Roald Frederickx (roald.frederickx@gmail.com)");
 MODULE_DESCRIPTION("Compal Laptop Support");
 MODULE_VERSION(DRIVER_VERSION);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 MODULE_ALIAS("dmi:*:rnIFL90:rvrIFT00:*");
 MODULE_ALIAS("dmi:*:rnIFL90:rvrREFERENCE:*");
@@ -1110,3 +1119,5 @@ MODULE_ALIAS("dmi:*:svnDellInc.:pnInspiron1011:*");
 MODULE_ALIAS("dmi:*:svnDellInc.:pnInspiron1012:*");
 MODULE_ALIAS("dmi:*:svnDellInc.:pnInspiron1110:*");
 MODULE_ALIAS("dmi:*:svnDellInc.:pnInspiron1210:*");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

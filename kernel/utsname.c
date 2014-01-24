@@ -9,7 +9,11 @@
  *  License.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/uts.h>
 #include <linux/utsname.h>
 #include <linux/err.h>

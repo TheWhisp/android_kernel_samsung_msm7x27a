@@ -207,21 +207,35 @@ void copy_user_highpage(struct page *to, struct page *from,
 {
 	void *vfrom, *vto;
 
+<<<<<<< HEAD
 	vto = kmap_atomic(to, KM_USER1);
+=======
+	vto = kmap_atomic(to);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (cpu_has_dc_aliases &&
 	    page_mapped(from) && !Page_dcache_dirty(from)) {
 		vfrom = kmap_coherent(from, vaddr);
 		copy_page(vto, vfrom);
 		kunmap_coherent();
 	} else {
+<<<<<<< HEAD
 		vfrom = kmap_atomic(from, KM_USER0);
 		copy_page(vto, vfrom);
 		kunmap_atomic(vfrom, KM_USER0);
+=======
+		vfrom = kmap_atomic(from);
+		copy_page(vto, vfrom);
+		kunmap_atomic(vfrom);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if ((!cpu_has_ic_fills_f_dc) ||
 	    pages_do_alias((unsigned long)vto, vaddr & PAGE_MASK))
 		flush_data_cache_page((unsigned long)vto);
+<<<<<<< HEAD
 	kunmap_atomic(vto, KM_USER1);
+=======
+	kunmap_atomic(vto);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Make sure this page is cleared on other CPU's too before using it */
 	smp_wmb();
 }
@@ -277,11 +291,19 @@ void __init fixrange_init(unsigned long start, unsigned long end,
 	k = __pmd_offset(vaddr);
 	pgd = pgd_base + i;
 
+<<<<<<< HEAD
 	for ( ; (i < PTRS_PER_PGD) && (vaddr != end); pgd++, i++) {
 		pud = (pud_t *)pgd;
 		for ( ; (j < PTRS_PER_PUD) && (vaddr != end); pud++, j++) {
 			pmd = (pmd_t *)pud;
 			for (; (k < PTRS_PER_PMD) && (vaddr != end); pmd++, k++) {
+=======
+	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
+		pud = (pud_t *)pgd;
+		for ( ; (j < PTRS_PER_PUD) && (vaddr < end); pud++, j++) {
+			pmd = (pmd_t *)pud;
+			for (; (k < PTRS_PER_PMD) && (vaddr < end); pmd++, k++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (pmd_none(*pmd)) {
 					pte = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
 					set_pmd(pmd, __pmd((unsigned long)pte));
@@ -304,9 +326,20 @@ int page_is_ram(unsigned long pagenr)
 	for (i = 0; i < boot_mem_map.nr_map; i++) {
 		unsigned long addr, end;
 
+<<<<<<< HEAD
 		if (boot_mem_map.map[i].type != BOOT_MEM_RAM)
 			/* not usable memory */
 			continue;
+=======
+		switch (boot_mem_map.map[i].type) {
+		case BOOT_MEM_RAM:
+		case BOOT_MEM_INIT_RAM:
+			break;
+		default:
+			/* not usable memory */
+			continue;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		addr = PFN_UP(boot_mem_map.map[i].addr);
 		end = PFN_DOWN(boot_mem_map.map[i].addr +
@@ -368,7 +401,11 @@ void __init mem_init(void)
 #ifdef CONFIG_DISCONTIGMEM
 #error "CONFIG_HIGHMEM and CONFIG_DISCONTIGMEM dont work together yet"
 #endif
+<<<<<<< HEAD
 	max_mapnr = highend_pfn;
+=======
+	max_mapnr = highend_pfn ? highend_pfn : max_low_pfn;
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 	max_mapnr = max_low_pfn;
 #endif
@@ -379,7 +416,11 @@ void __init mem_init(void)
 
 	reservedpages = ram = 0;
 	for (tmp = 0; tmp < max_low_pfn; tmp++)
+<<<<<<< HEAD
 		if (page_is_ram(tmp)) {
+=======
+		if (page_is_ram(tmp) && pfn_valid(tmp)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ram++;
 			if (PageReserved(pfn_to_page(tmp)))
 				reservedpages++;

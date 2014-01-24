@@ -52,6 +52,17 @@ static void pps_add_offset(struct pps_ktime *ts, struct pps_ktime *offset)
 	ts->sec += offset->sec;
 }
 
+<<<<<<< HEAD
+=======
+static void pps_echo_client_default(struct pps_device *pps, int event,
+		void *data)
+{
+	dev_info(pps->dev, "echo %s %s\n",
+		event & PPS_CAPTUREASSERT ? "assert" : "",
+		event & PPS_CAPTURECLEAR ? "clear" : "");
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Exported functions
  */
@@ -80,6 +91,7 @@ struct pps_device *pps_register_source(struct pps_source_info *info,
 		err = -EINVAL;
 		goto pps_register_source_exit;
 	}
+<<<<<<< HEAD
 	if ((info->mode & (PPS_ECHOASSERT | PPS_ECHOCLEAR)) != 0 &&
 			info->echo == NULL) {
 		pr_err("%s: echo function is not defined\n",
@@ -87,6 +99,8 @@ struct pps_device *pps_register_source(struct pps_source_info *info,
 		err = -EINVAL;
 		goto pps_register_source_exit;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((info->mode & (PPS_TSFMT_TSPEC | PPS_TSFMT_NTPFP)) == 0) {
 		pr_err("%s: unspecified time format\n",
 					info->name);
@@ -108,6 +122,14 @@ struct pps_device *pps_register_source(struct pps_source_info *info,
 	pps->params.mode = default_params;
 	pps->info = *info;
 
+<<<<<<< HEAD
+=======
+	/* check for default echo function */
+	if ((pps->info.mode & (PPS_ECHOASSERT | PPS_ECHOCLEAR)) &&
+			pps->info.echo == NULL)
+		pps->info.echo = pps_echo_client_default;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	init_waitqueue_head(&pps->queue);
 	spin_lock_init(&pps->lock);
 

@@ -22,6 +22,10 @@
 #include <linux/uaccess.h>
 #include <linux/msm_adsp.h>
 #include <linux/android_pmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "adsp.h"
 #include <mach/debug_mm.h>
 #include <linux/slab.h>

@@ -135,13 +135,22 @@ static inline void vring_init(struct vring *vr, unsigned int num, void *p,
 	vr->num = num;
 	vr->desc = p;
 	vr->avail = p + num*sizeof(struct vring_desc);
+<<<<<<< HEAD
 	vr->used = (void *)(((unsigned long)&vr->avail->ring[num] + align-1)
 			    & ~(align - 1));
+=======
+	vr->used = (void *)(((unsigned long)&vr->avail->ring[num] + sizeof(__u16)
+		+ align-1) & ~(align - 1));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline unsigned vring_size(unsigned int num, unsigned long align)
 {
+<<<<<<< HEAD
 	return ((sizeof(struct vring_desc) * num + sizeof(__u16) * (2 + num)
+=======
+	return ((sizeof(struct vring_desc) * num + sizeof(__u16) * (3 + num)
+>>>>>>> refs/remotes/origin/cm-10.0
 		 + align - 1) & ~(align - 1))
 		+ sizeof(__u16) * 3 + sizeof(struct vring_used_elem) * num;
 }
@@ -168,6 +177,10 @@ struct virtqueue;
 struct virtqueue *vring_new_virtqueue(unsigned int num,
 				      unsigned int vring_align,
 				      struct virtio_device *vdev,
+<<<<<<< HEAD
+=======
+				      bool weak_barriers,
+>>>>>>> refs/remotes/origin/cm-10.0
 				      void *pages,
 				      void (*notify)(struct virtqueue *vq),
 				      void (*callback)(struct virtqueue *vq),

@@ -16,7 +16,11 @@
 #include <linux/nodemask.h>
 #include <linux/pageblock-flags.h>
 #include <generated/bounds.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/page.h>
 
 /* Free memory management - zoned buddy allocator.  */
@@ -35,6 +39,7 @@
  */
 #define PAGE_ALLOC_COSTLY_ORDER 3
 
+<<<<<<< HEAD
 #define MIGRATE_UNMOVABLE     0
 #define MIGRATE_RECLAIMABLE   1
 #define MIGRATE_MOVABLE       2
@@ -42,6 +47,43 @@
 #define MIGRATE_RESERVE       3
 #define MIGRATE_ISOLATE       4 /* can't allocate from here */
 #define MIGRATE_TYPES         5
+=======
+enum {
+	MIGRATE_UNMOVABLE,
+	MIGRATE_RECLAIMABLE,
+	MIGRATE_MOVABLE,
+	MIGRATE_PCPTYPES,	/* the number of types on the pcp lists */
+	MIGRATE_RESERVE = MIGRATE_PCPTYPES,
+#ifdef CONFIG_CMA
+	/*
+	 * MIGRATE_CMA migration type is designed to mimic the way
+	 * ZONE_MOVABLE works.  Only movable pages can be allocated
+	 * from MIGRATE_CMA pageblocks and page allocator never
+	 * implicitly change migration type of MIGRATE_CMA pageblock.
+	 *
+	 * The way to use it is to change migratetype of a range of
+	 * pageblocks to MIGRATE_CMA which can be done by
+	 * __free_pageblock_cma() function.  What is important though
+	 * is that a range of pageblocks must be aligned to
+	 * MAX_ORDER_NR_PAGES should biggest page be bigger then
+	 * a single pageblock.
+	 */
+	MIGRATE_CMA,
+#endif
+	MIGRATE_ISOLATE,	/* can't allocate from here */
+	MIGRATE_TYPES
+};
+
+#ifdef CONFIG_CMA
+bool is_cma_pageblock(struct page *page);
+#  define is_migrate_cma(migratetype) unlikely((migratetype) == MIGRATE_CMA)
+#  define cma_wmark_pages(zone)	zone->min_cma_pages
+#else
+#  define is_cma_pageblock(page) false
+#  define is_migrate_cma(migratetype) false
+#  define cma_wmark_pages(zone) 0
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define for_each_migratetype_order(order, type) \
 	for (order = 0; order < MAX_ORDER; order++) \
@@ -100,6 +142,10 @@ enum zone_stat_item {
 	NR_UNSTABLE_NFS,	/* NFS unstable pages */
 	NR_BOUNCE,
 	NR_VMSCAN_WRITE,
+<<<<<<< HEAD
+=======
+	NR_VMSCAN_IMMEDIATE,	/* Prioritise for reclaim when writeback ends */
+>>>>>>> refs/remotes/origin/cm-10.0
 	NR_WRITEBACK_TEMP,	/* Writeback using temporary buffers */
 	NR_ISOLATED_ANON,	/* Temporary isolated pages from anon lru */
 	NR_ISOLATED_FILE,	/* Temporary isolated pages from file lru */
@@ -139,6 +185,7 @@ enum lru_list {
 	NR_LRU_LISTS
 };
 
+<<<<<<< HEAD
 #define for_each_lru(l) for (l = 0; l < NR_LRU_LISTS; l++)
 
 #define for_each_evictable_lru(l) for (l = 0; l <= LRU_ACTIVE_FILE; l++)
@@ -158,6 +205,37 @@ static inline int is_unevictable_lru(enum lru_list l)
 	return (l == LRU_UNEVICTABLE);
 }
 
+=======
+#define for_each_lru(lru) for (lru = 0; lru < NR_LRU_LISTS; lru++)
+
+#define for_each_evictable_lru(lru) for (lru = 0; lru <= LRU_ACTIVE_FILE; lru++)
+
+static inline int is_file_lru(enum lru_list lru)
+{
+	return (lru == LRU_INACTIVE_FILE || lru == LRU_ACTIVE_FILE);
+}
+
+static inline int is_active_lru(enum lru_list lru)
+{
+	return (lru == LRU_ACTIVE_ANON || lru == LRU_ACTIVE_FILE);
+}
+
+static inline int is_unevictable_lru(enum lru_list lru)
+{
+	return (lru == LRU_UNEVICTABLE);
+}
+
+struct lruvec {
+	struct list_head lists[NR_LRU_LISTS];
+};
+
+/* Mask used at gathering information at once (see memcontrol.c) */
+#define LRU_ALL_FILE (BIT(LRU_INACTIVE_FILE) | BIT(LRU_ACTIVE_FILE))
+#define LRU_ALL_ANON (BIT(LRU_INACTIVE_ANON) | BIT(LRU_ACTIVE_ANON))
+#define LRU_ALL_EVICTABLE (LRU_ALL_FILE | LRU_ALL_ANON)
+#define LRU_ALL	     ((1 << NR_LRU_LISTS) - 1)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Isolate inactive pages */
 #define ISOLATE_INACTIVE	((__force isolate_mode_t)0x1)
 /* Isolate active pages */
@@ -312,6 +390,15 @@ struct zone {
 	 */
 	unsigned long		lowmem_reserve[MAX_NR_ZONES];
 
+<<<<<<< HEAD
+=======
+	/*
+	 * This is a per-zone reserve of pages that should not be
+	 * considered dirtyable memory.
+	 */
+	unsigned long		dirty_balance_reserve;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_NUMA
 	int node;
 	/*
@@ -330,6 +417,16 @@ struct zone {
 	/* see spanned/present_pages for more description */
 	seqlock_t		span_seqlock;
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+	/*
+	 * CMA needs to increase watermark levels during the allocation
+	 * process to make sure that the system is not starved.
+	 */
+	unsigned long		min_cma_pages;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct free_area	free_area[MAX_ORDER];
 
 #ifndef CONFIG_SPARSEMEM
@@ -348,15 +445,24 @@ struct zone {
 	 */
 	unsigned int		compact_considered;
 	unsigned int		compact_defer_shift;
+<<<<<<< HEAD
+=======
+	int			compact_order_failed;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	ZONE_PADDING(_pad1_)
 
 	/* Fields commonly accessed by the page reclaim scanner */
+<<<<<<< HEAD
 	spinlock_t		lru_lock;	
 	struct zone_lru {
 		struct list_head list;
 	} lru[NR_LRU_LISTS];
+=======
+	spinlock_t		lru_lock;
+	struct lruvec		lruvec;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct zone_reclaim_stat reclaim_stat;
 
@@ -599,13 +705,21 @@ struct zonelist {
 #endif
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_POPULATES_NODE_MAP
+=======
+#ifdef CONFIG_HAVE_MEMBLOCK_NODE_MAP
+>>>>>>> refs/remotes/origin/cm-10.0
 struct node_active_region {
 	unsigned long start_pfn;
 	unsigned long end_pfn;
 	int nid;
 };
+<<<<<<< HEAD
 #endif /* CONFIG_ARCH_POPULATES_NODE_MAP */
+=======
+#endif /* CONFIG_HAVE_MEMBLOCK_NODE_MAP */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef CONFIG_DISCONTIGMEM
 /* The array of struct pages - for discontigmem use pgdat->lmem_map */
@@ -721,7 +835,11 @@ extern int movable_zone;
 
 static inline int zone_movable_is_highmem(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_HIGHMEM) && defined(CONFIG_ARCH_POPULATES_NODE_MAP)
+=======
+#if defined(CONFIG_HIGHMEM) && defined(CONFIG_HAVE_MEMBLOCK_NODE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	return movable_zone == ZONE_HIGHMEM;
 #else
 	return 0;
@@ -939,7 +1057,11 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 #endif
 
 #if !defined(CONFIG_HAVE_ARCH_EARLY_PFN_TO_NID) && \
+<<<<<<< HEAD
 	!defined(CONFIG_ARCH_POPULATES_NODE_MAP)
+=======
+	!defined(CONFIG_HAVE_MEMBLOCK_NODE_MAP)
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline unsigned long early_pfn_to_nid(unsigned long pfn)
 {
 	return 0;

@@ -795,7 +795,11 @@ static ssize_t applesmc_store_fan_speed(struct device *dev,
 	char newkey[5];
 	u8 buffer[2];
 
+<<<<<<< HEAD
 	if (strict_strtoul(sysfsbuf, 10, &speed) < 0 || speed >= 0x4000)
+=======
+	if (kstrtoul(sysfsbuf, 10, &speed) < 0 || speed >= 0x4000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;		/* Bigger than a 14-bit value */
 
 	sprintf(newkey, fan_speed_fmt[to_option(attr)], to_index(attr));
@@ -835,7 +839,11 @@ static ssize_t applesmc_store_fan_manual(struct device *dev,
 	unsigned long input;
 	u16 val;
 
+<<<<<<< HEAD
 	if (strict_strtoul(sysfsbuf, 10, &input) < 0)
+=======
+	if (kstrtoul(sysfsbuf, 10, &input) < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
@@ -990,7 +998,11 @@ static ssize_t applesmc_key_at_index_store(struct device *dev,
 {
 	unsigned long newkey;
 
+<<<<<<< HEAD
 	if (strict_strtoul(sysfsbuf, 10, &newkey) < 0
+=======
+	if (kstrtoul(sysfsbuf, 10, &newkey) < 0
+>>>>>>> refs/remotes/origin/cm-10.0
 	    || newkey >= smcreg.key_count)
 		return -EINVAL;
 
@@ -1202,8 +1214,15 @@ static int applesmc_dmi_match(const struct dmi_system_id *id)
 	return 1;
 }
 
+<<<<<<< HEAD
 /* Note that DMI_MATCH(...,"MacBook") will match "MacBookPro1,1".
  * So we need to put "Apple MacBook Pro" before "Apple MacBook". */
+=======
+/*
+ * Note that DMI_MATCH(...,"MacBook") will match "MacBookPro1,1".
+ * So we need to put "Apple MacBook Pro" before "Apple MacBook".
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 static __initdata struct dmi_system_id applesmc_whitelist[] = {
 	{ applesmc_dmi_match, "Apple MacBook Air", {
 	  DMI_MATCH(DMI_BOARD_VENDOR, "Apple"),

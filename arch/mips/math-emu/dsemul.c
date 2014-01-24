@@ -12,7 +12,10 @@
 #include <asm/uaccess.h>
 #include <asm/branch.h>
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 
 #include <asm/fpu_emulator.h>

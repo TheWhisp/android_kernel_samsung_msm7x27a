@@ -380,7 +380,11 @@ struct lmc___softc {
 /* CSR6 settings */
 #define OPERATION_MODE  0x00000200 /* Full Duplex      */
 #define PROMISC_MODE    0x00000040 /* Promiscuous Mode */
+<<<<<<< HEAD
 #define RECIEVE_ALL     0x40000000 /* Receive All      */
+=======
+#define RECEIVE_ALL     0x40000000 /* Receive All      */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PASS_BAD_FRAMES 0x00000008 /* Pass Bad Frames  */
 
 /* Dec control registers  CSR6 as well */

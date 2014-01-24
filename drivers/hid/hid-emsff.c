@@ -24,6 +24,10 @@
 #include <linux/hid.h>
 #include <linux/input.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "hid-ids.h"
 #include "usbhid/usbhid.h"
@@ -126,7 +130,16 @@ static int ems_probe(struct hid_device *hdev, const struct hid_device_id *id)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	emsff_init(hdev);
+=======
+	ret = emsff_init(hdev);
+	if (ret) {
+		dev_err(&hdev->dev, "force feedback init failed\n");
+		hid_hw_stop(hdev);
+		goto err;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 err:
@@ -134,7 +147,11 @@ err:
 }
 
 static const struct hid_device_id ems_devices[] = {
+<<<<<<< HEAD
 	{ HID_USB_DEVICE(USB_VENDOR_ID_EMS, 0x118) },
+=======
+	{ HID_USB_DEVICE(USB_VENDOR_ID_EMS, USB_DEVICE_ID_EMS_TRIO_LINKER_PLUS_II) },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ }
 };
 MODULE_DEVICE_TABLE(hid, ems_devices);

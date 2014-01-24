@@ -15,6 +15,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#if 0 // by bbelief
+#include <linux/export.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 #include <net/mac80211.h>
 
@@ -105,11 +111,22 @@ static bool ath_hw_keysetmac(struct ath_common *common,
 		if (mac[0] & 0x01)
 			unicast_flag = 0;
 
+<<<<<<< HEAD
+=======
+#if 0 // by bbelief
+		macLo = get_unaligned_le32(mac);
+		macHi = get_unaligned_le16(mac + 4);
+#else
+>>>>>>> refs/remotes/origin/cm-10.0
 		macHi = (mac[5] << 8) | mac[4];
 		macLo = (mac[3] << 24) |
 			(mac[2] << 16) |
 			(mac[1] << 8) |
 			mac[0];
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 		macLo >>= 1;
 		macLo |= (macHi & 1) << 31;
 		macHi >>= 1;
@@ -558,6 +575,12 @@ int ath_key_config(struct ath_common *common,
 		return -EIO;
 
 	set_bit(idx, common->keymap);
+<<<<<<< HEAD
+=======
+	if (key->cipher == WLAN_CIPHER_SUITE_CCMP)
+		set_bit(idx, common->ccmp_keymap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (key->cipher == WLAN_CIPHER_SUITE_TKIP) {
 		set_bit(idx + 64, common->keymap);
 		set_bit(idx, common->tkip_keymap);
@@ -584,6 +607,10 @@ void ath_key_delete(struct ath_common *common, struct ieee80211_key_conf *key)
 		return;
 
 	clear_bit(key->hw_key_idx, common->keymap);
+<<<<<<< HEAD
+=======
+	clear_bit(key->hw_key_idx, common->ccmp_keymap);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (key->cipher != WLAN_CIPHER_SUITE_TKIP)
 		return;
 

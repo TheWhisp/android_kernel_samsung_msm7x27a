@@ -118,7 +118,11 @@ int send_and_receive(int card, unsigned int procid, unsigned char type,
 		     unsigned char class, unsigned char code,
 		     unsigned char link, unsigned char data_len,
 		     unsigned char *data,  RspMessage *mesgdata, int timeout);
+<<<<<<< HEAD
 void flushreadfifo (int card);
+=======
+void flushreadfifo(int card);
+>>>>>>> refs/remotes/origin/cm-10.0
 int sendmessage(int card, unsigned int procid, unsigned int type,
 		unsigned int class, unsigned int code, unsigned int link,
 		unsigned int data_len, unsigned int *data);

@@ -15,6 +15,10 @@
 #include <linux/mm.h>
 #include <linux/dma-mapping.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlbflush.h>
 #include <asm/homecache.h>
 

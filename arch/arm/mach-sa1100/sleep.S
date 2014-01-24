@@ -22,6 +22,7 @@
 
 		.text
 /*
+<<<<<<< HEAD
  * sa1100_cpu_suspend()
  *
  * Causes sa11x0 to enter sleep state
@@ -44,14 +45,48 @@ ENTRY(sa1100_cpu_suspend)
         ldr     r1, [r0]
         orr     r1, r1, #MDREFR_K1DB2
         str     r1, [r0]
+=======
+ * sa1100_finish_suspend()
+ *
+ * Causes sa11x0 to enter sleep state
+ *
+ * Must be aligned to a cacheline.
+ */
+	.balign	32
+ENTRY(sa1100_finish_suspend)
+	@ disable clock switching
+	mcr	p15, 0, r1, c15, c2, 2
+
+	ldr	r6, =MDREFR
+	ldr	r4, [r6]
+	orr     r4, r4, #MDREFR_K1DB2
+	ldr	r5, =PPCR
+
+	@ Pre-load __udelay into the I-cache
+	mov	r0, #1
+	bl	__udelay
+	mov	r0, r0
+
+	@ The following must all exist in a single cache line to
+	@ avoid accessing memory until this sequence is complete,
+	@ otherwise we occasionally hang.
+
+	@ Adjust memory timing before lowering CPU clock
+	str     r4, [r6]
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	@ delay 90us and set CPU PLL to lowest speed
 	@ fixes resume problem on high speed SA1110
 	mov	r0, #90
 	bl	__udelay
+<<<<<<< HEAD
 	ldr	r0, =PPCR
 	mov	r1, #0
 	str	r1, [r0]
+=======
+	mov	r1, #0
+	str	r1, [r5]
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov	r0, #90
 	bl	__udelay
 
@@ -90,12 +125,19 @@ ENTRY(sa1100_cpu_suspend)
 	bic	r5, r5, #FMsk(MSC_RT)
 	bic	r5, r5, #FMsk(MSC_RT)<<16
 
+<<<<<<< HEAD
 	ldr	r6, =MDREFR
 
 	ldr	r7, [r6]
 bic	r7, r7, #0x0000FF00
 bic	r7, r7, #0x000000F0
 orr	r8, r7, #MDREFR_SLFRSH
+=======
+	ldr	r7, [r6]
+	bic	r7, r7, #0x0000FF00
+	bic	r7, r7, #0x000000F0
+	orr	r8, r7, #MDREFR_SLFRSH
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ldr	r9, =MDCNFG
 	ldr	r10, [r9]
@@ -139,6 +181,7 @@ sa1110_sdram_controller_fix:
 	str	r13, [r12]
 
 20:	b	20b			@ loop waiting for sleep
+<<<<<<< HEAD
 
 /*
  * cpu_sa1100_resume()
@@ -149,3 +192,5 @@ sa1110_sdram_controller_fix:
 sa1100_cpu_resume:
 	mcr	p15, 0, r1, c15, c1, 2		@ enable clock switching
 	ldmfd	sp!, {r4 - r12, pc}		@ return to caller
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

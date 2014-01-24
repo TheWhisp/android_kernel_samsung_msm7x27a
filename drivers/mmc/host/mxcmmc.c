@@ -33,6 +33,10 @@
 #include <linux/gpio.h>
 #include <linux/regulator/consumer.h>
 #include <linux/dmaengine.h>
+<<<<<<< HEAD
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/dma.h>
 #include <asm/irq.h>
@@ -40,6 +44,10 @@
 #include <mach/mmc.h>
 
 #include <mach/dma.h>
+<<<<<<< HEAD
+=======
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVER_NAME "mxc-mmc"
 
@@ -217,6 +225,10 @@ static int mxcmci_setup_data(struct mxcmci_host *host, struct mmc_data *data)
 	unsigned int blksz = data->blksz;
 	unsigned int datasize = nob * blksz;
 	struct scatterlist *sg;
+<<<<<<< HEAD
+=======
+	enum dma_transfer_direction slave_dirn;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i, nents;
 
 	if (data->flags & MMC_DATA_STREAM)
@@ -239,18 +251,33 @@ static int mxcmci_setup_data(struct mxcmci_host *host, struct mmc_data *data)
 		}
 	}
 
+<<<<<<< HEAD
 	if (data->flags & MMC_DATA_READ)
 		host->dma_dir = DMA_FROM_DEVICE;
 	else
 		host->dma_dir = DMA_TO_DEVICE;
+=======
+	if (data->flags & MMC_DATA_READ) {
+		host->dma_dir = DMA_FROM_DEVICE;
+		slave_dirn = DMA_DEV_TO_MEM;
+	} else {
+		host->dma_dir = DMA_TO_DEVICE;
+		slave_dirn = DMA_MEM_TO_DEV;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	nents = dma_map_sg(host->dma->device->dev, data->sg,
 				     data->sg_len,  host->dma_dir);
 	if (nents != data->sg_len)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	host->desc = host->dma->device->device_prep_slave_sg(host->dma,
 		data->sg, data->sg_len, host->dma_dir,
+=======
+	host->desc = dmaengine_prep_slave_sg(host->dma,
+		data->sg, data->sg_len, slave_dirn,
+>>>>>>> refs/remotes/origin/cm-10.0
 		DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
 
 	if (!host->desc) {
@@ -262,6 +289,10 @@ static int mxcmci_setup_data(struct mxcmci_host *host, struct mmc_data *data)
 	wmb();
 
 	dmaengine_submit(host->desc);
+<<<<<<< HEAD
+=======
+	dma_async_issue_pending(host->dma);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -705,6 +736,10 @@ static int mxcmci_setup_dma(struct mmc_host *mmc)
 	config->src_addr_width = 4;
 	config->dst_maxburst = host->burstlen;
 	config->src_maxburst = host->burstlen;
+<<<<<<< HEAD
+=======
+	config->device_fc = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return dmaengine_slave_config(host->dma, config);
 }
@@ -715,6 +750,7 @@ static void mxcmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	int burstlen, ret;
 
 	/*
+<<<<<<< HEAD
 	 * use burstlen of 64 in 4 bit mode (--> reg value  0)
 	 * use burstlen of 16 in 1 bit mode (--> reg value 16)
 	 */
@@ -722,6 +758,15 @@ static void mxcmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 		burstlen = 64;
 	else
 		burstlen = 16;
+=======
+	 * use burstlen of 64 (16 words) in 4 bit mode (--> reg value  0)
+	 * use burstlen of 16 (4 words) in 1 bit mode (--> reg value 16)
+	 */
+	if (ios->bus_width == MMC_BUS_WIDTH_4)
+		burstlen = 16;
+	else
+		burstlen = 4;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (mxcmci_use_dma(host) && burstlen != host->burstlen) {
 		host->burstlen = burstlen;
@@ -843,7 +888,11 @@ static int mxcmci_probe(struct platform_device *pdev)
 	int ret = 0, irq;
 	dma_cap_mask_t mask;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "i.MX SDHC driver\n");
+=======
+	pr_info("i.MX SDHC driver\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	irq = platform_get_irq(pdev, 0);
@@ -1046,6 +1095,7 @@ static struct platform_driver mxcmci_driver = {
 	}
 };
 
+<<<<<<< HEAD
 static int __init mxcmci_init(void)
 {
 	return platform_driver_register(&mxcmci_driver);
@@ -1058,6 +1108,9 @@ static void __exit mxcmci_exit(void)
 
 module_init(mxcmci_init);
 module_exit(mxcmci_exit);
+=======
+module_platform_driver(mxcmci_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("i.MX Multimedia Card Interface Driver");
 MODULE_AUTHOR("Sascha Hauer, Pengutronix");

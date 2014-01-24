@@ -141,6 +141,10 @@ machine-$(CONFIG_ARCH_EBSA110)		:= ebsa110
 machine-$(CONFIG_ARCH_EP93XX)		:= ep93xx
 machine-$(CONFIG_ARCH_GEMINI)		:= gemini
 machine-$(CONFIG_ARCH_H720X)		:= h720x
+<<<<<<< HEAD
+=======
+machine-$(CONFIG_ARCH_HIGHBANK)		:= highbank
+>>>>>>> refs/remotes/origin/cm-10.0
 machine-$(CONFIG_ARCH_INTEGRATOR)	:= integrator
 machine-$(CONFIG_ARCH_IOP13XX)		:= iop13xx
 machine-$(CONFIG_ARCH_IOP32X)		:= iop32x
@@ -150,16 +154,24 @@ machine-$(CONFIG_ARCH_IXP23XX)		:= ixp23xx
 machine-$(CONFIG_ARCH_IXP4XX)		:= ixp4xx
 machine-$(CONFIG_ARCH_KIRKWOOD)		:= kirkwood
 machine-$(CONFIG_ARCH_KS8695)		:= ks8695
+<<<<<<< HEAD
 machine-$(CONFIG_ARCH_LOKI) 		:= loki
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 machine-$(CONFIG_ARCH_LPC32XX)		:= lpc32xx
 machine-$(CONFIG_ARCH_MMP)		:= mmp
 machine-$(CONFIG_ARCH_MSM)		:= msm
 machine-$(CONFIG_ARCH_MV78XX0)		:= mv78xx0
+<<<<<<< HEAD
 machine-$(CONFIG_ARCH_MX1)		:= imx
 machine-$(CONFIG_ARCH_MX2)		:= imx
 machine-$(CONFIG_ARCH_MX25)		:= imx
 machine-$(CONFIG_ARCH_MX3)		:= imx
 machine-$(CONFIG_ARCH_MX5)		:= mx5
+=======
+machine-$(CONFIG_ARCH_IMX_V4_V5)	:= imx
+machine-$(CONFIG_ARCH_IMX_V6_V7)	:= imx
+>>>>>>> refs/remotes/origin/cm-10.0
 machine-$(CONFIG_ARCH_MXS)		:= mxs
 machine-$(CONFIG_ARCH_NETX)		:= netx
 machine-$(CONFIG_ARCH_NOMADIK)		:= nomadik
@@ -168,21 +180,39 @@ machine-$(CONFIG_ARCH_OMAP2)		:= omap2
 machine-$(CONFIG_ARCH_OMAP3)		:= omap2
 machine-$(CONFIG_ARCH_OMAP4)		:= omap2
 machine-$(CONFIG_ARCH_ORION5X)		:= orion5x
+<<<<<<< HEAD
 machine-$(CONFIG_ARCH_PNX4008)		:= pnx4008
 machine-$(CONFIG_ARCH_PXA)		:= pxa
 machine-$(CONFIG_ARCH_REALVIEW)		:= realview
 machine-$(CONFIG_ARCH_RPC)		:= rpc
 machine-$(CONFIG_ARCH_S3C2410)		:= s3c2410 s3c2400 s3c2412 s3c2416 s3c2440 s3c2443
 machine-$(CONFIG_ARCH_S3C24A0)		:= s3c24a0
+=======
+machine-$(CONFIG_ARCH_PICOXCELL)	:= picoxcell
+machine-$(CONFIG_ARCH_PNX4008)		:= pnx4008
+machine-$(CONFIG_ARCH_PRIMA2)		:= prima2
+machine-$(CONFIG_ARCH_PXA)		:= pxa
+machine-$(CONFIG_ARCH_REALVIEW)		:= realview
+machine-$(CONFIG_ARCH_RPC)		:= rpc
+machine-$(CONFIG_ARCH_S3C24XX)		:= s3c24xx s3c2412 s3c2440
+>>>>>>> refs/remotes/origin/cm-10.0
 machine-$(CONFIG_ARCH_S3C64XX)		:= s3c64xx
 machine-$(CONFIG_ARCH_S5P64X0)		:= s5p64x0
 machine-$(CONFIG_ARCH_S5PC100)		:= s5pc100
 machine-$(CONFIG_ARCH_S5PV210)		:= s5pv210
+<<<<<<< HEAD
 machine-$(CONFIG_ARCH_EXYNOS4)		:= exynos4
 machine-$(CONFIG_ARCH_SA1100)		:= sa1100
 machine-$(CONFIG_ARCH_SHARK)		:= shark
 machine-$(CONFIG_ARCH_SHMOBILE) 	:= shmobile
 machine-$(CONFIG_ARCH_TCC8K)		:= tcc8k
+=======
+machine-$(CONFIG_ARCH_EXYNOS4)		:= exynos
+machine-$(CONFIG_ARCH_EXYNOS5)		:= exynos
+machine-$(CONFIG_ARCH_SA1100)		:= sa1100
+machine-$(CONFIG_ARCH_SHARK)		:= shark
+machine-$(CONFIG_ARCH_SHMOBILE) 	:= shmobile
+>>>>>>> refs/remotes/origin/cm-10.0
 machine-$(CONFIG_ARCH_TEGRA)		:= tegra
 machine-$(CONFIG_ARCH_U300)		:= u300
 machine-$(CONFIG_ARCH_U8500)		:= ux500
@@ -190,19 +220,30 @@ machine-$(CONFIG_ARCH_VERSATILE)	:= versatile
 machine-$(CONFIG_ARCH_VEXPRESS)		:= vexpress
 machine-$(CONFIG_ARCH_VT8500)		:= vt8500
 machine-$(CONFIG_ARCH_W90X900)		:= w90x900
+<<<<<<< HEAD
 machine-$(CONFIG_ARCH_NUC93X)		:= nuc93x
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 machine-$(CONFIG_FOOTBRIDGE)		:= footbridge
 machine-$(CONFIG_MACH_SPEAR300)		:= spear3xx
 machine-$(CONFIG_MACH_SPEAR310)		:= spear3xx
 machine-$(CONFIG_MACH_SPEAR320)		:= spear3xx
 machine-$(CONFIG_MACH_SPEAR600)		:= spear6xx
+<<<<<<< HEAD
+=======
+machine-$(CONFIG_ARCH_ZYNQ)		:= zynq
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # Platform directory name.  This list is sorted alphanumerically
 # by CONFIG_* macro name.
 plat-$(CONFIG_ARCH_MXC)		:= mxc
 plat-$(CONFIG_ARCH_OMAP)	:= omap
 plat-$(CONFIG_ARCH_S3C64XX)	:= samsung
+<<<<<<< HEAD
 plat-$(CONFIG_ARCH_TCC_926)	:= tcc
+=======
+plat-$(CONFIG_ARCH_ZYNQ)	:= versatile
+>>>>>>> refs/remotes/origin/cm-10.0
 plat-$(CONFIG_PLAT_IOP)		:= iop
 plat-$(CONFIG_PLAT_NOMADIK)	:= nomadik
 plat-$(CONFIG_PLAT_ORION)	:= orion
@@ -252,7 +293,11 @@ core-$(CONFIG_VFP)		+= arch/arm/vfp/
 
 # If we have a machine-specific directory, then include it in the build.
 core-y				+= arch/arm/kernel/ arch/arm/mm/ arch/arm/common/
+<<<<<<< HEAD
 core-y        		+= arch/arm/crypto/
+=======
+core-y				+= arch/arm/net/
+>>>>>>> refs/remotes/origin/cm-10.0
 core-y				+= $(machdirs) $(platdirs)
 
 drivers-$(CONFIG_OPROFILE)      += arch/arm/oprofile/
@@ -283,6 +328,15 @@ zImage Image xipImage bootpImage uImage: vmlinux
 zinstall uinstall install: vmlinux
 	$(Q)$(MAKE) $(build)=$(boot) MACHINE=$(MACHINE) $@
 
+<<<<<<< HEAD
+=======
+%.dtb: scripts
+	$(Q)$(MAKE) $(build)=$(boot) MACHINE=$(MACHINE) $(boot)/$@
+
+dtbs: scripts
+	$(Q)$(MAKE) $(build)=$(boot) MACHINE=$(MACHINE) $(boot)/$@
+
+>>>>>>> refs/remotes/origin/cm-10.0
 # We use MRPROPER_FILES and CLEAN_FILES now
 archclean:
 	$(Q)$(MAKE) $(clean)=$(boot)
@@ -299,6 +353,10 @@ define archhelp
   echo  '  uImage        - U-Boot wrapped zImage'
   echo  '  bootpImage    - Combined zImage and initial RAM disk' 
   echo  '                  (supply initrd image via make variable INITRD=<path>)'
+<<<<<<< HEAD
+=======
+  echo  '  dtbs          - Build device tree blobs for enabled boards'
+>>>>>>> refs/remotes/origin/cm-10.0
   echo  '  install       - Install uncompressed kernel'
   echo  '  zinstall      - Install compressed kernel'
   echo  '  uinstall      - Install U-Boot wrapped compressed kernel'

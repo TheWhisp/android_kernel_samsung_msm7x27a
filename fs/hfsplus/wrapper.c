@@ -184,10 +184,13 @@ int hfsplus_read_wrapper(struct super_block *sb)
 
 	if (hfsplus_get_last_session(sb, &part_start, &part_size))
 		goto out;
+<<<<<<< HEAD
 	if ((u64)part_start + part_size > 0x100000000ULL) {
 		pr_err("hfs: volumes larger than 2TB are not supported yet\n");
 		goto out;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	error = -ENOMEM;
 	sbi->s_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
@@ -215,8 +218,14 @@ reread:
 		if (!hfsplus_read_mdb(sbi->s_vhdr, &wd))
 			goto out_free_backup_vhdr;
 		wd.ablk_size >>= HFSPLUS_SECTOR_SHIFT;
+<<<<<<< HEAD
 		part_start += wd.ablk_start + wd.embed_start * wd.ablk_size;
 		part_size = wd.embed_count * wd.ablk_size;
+=======
+		part_start += (sector_t)wd.ablk_start +
+			       (sector_t)wd.embed_start * wd.ablk_size;
+		part_size = (sector_t)wd.embed_count * wd.ablk_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto reread;
 	default:
 		/*

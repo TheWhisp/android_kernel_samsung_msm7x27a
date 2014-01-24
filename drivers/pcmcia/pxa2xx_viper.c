@@ -32,6 +32,7 @@
 
 static struct platform_device *arcom_pcmcia_dev;
 
+<<<<<<< HEAD
 static struct pcmcia_irqs irqs[] = {
 	{
 		.sock	= 0,
@@ -39,6 +40,8 @@ static struct pcmcia_irqs irqs[] = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline struct arcom_pcmcia_pdata *viper_get_pdata(void)
 {
 	return arcom_pcmcia_dev->dev.platform_data;
@@ -49,6 +52,7 @@ static int viper_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 	struct arcom_pcmcia_pdata *pdata = viper_get_pdata();
 	unsigned long flags;
 
+<<<<<<< HEAD
 	skt->socket.pci_irq = gpio_to_irq(pdata->rdy_gpio);
 	irqs[0].irq = gpio_to_irq(pdata->cd_gpio);
 
@@ -57,30 +61,47 @@ static int viper_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 
 	if (gpio_request(pdata->rdy_gpio, "CF ready"))
 		goto err_request_rdy;
+=======
+	skt->stat[SOC_STAT_CD].gpio = pdata->cd_gpio;
+	skt->stat[SOC_STAT_CD].name = "PCMCIA_CD";
+	skt->stat[SOC_STAT_RDY].gpio = pdata->rdy_gpio;
+	skt->stat[SOC_STAT_RDY].name = "CF ready";
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (gpio_request(pdata->pwr_gpio, "CF power"))
 		goto err_request_pwr;
 
 	local_irq_save(flags);
 
+<<<<<<< HEAD
 	if (gpio_direction_output(pdata->pwr_gpio, 0) ||
 	    gpio_direction_input(pdata->cd_gpio) ||
 	    gpio_direction_input(pdata->rdy_gpio)) {
+=======
+	if (gpio_direction_output(pdata->pwr_gpio, 0)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		local_irq_restore(flags);
 		goto err_dir;
 	}
 
 	local_irq_restore(flags);
 
+<<<<<<< HEAD
 	return soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 err_dir:
 	gpio_free(pdata->pwr_gpio);
 err_request_pwr:
+<<<<<<< HEAD
 	gpio_free(pdata->rdy_gpio);
 err_request_rdy:
 	gpio_free(pdata->cd_gpio);
 err_request_cd:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_err(&arcom_pcmcia_dev->dev, "Failed to setup PCMCIA GPIOs\n");
 	return -1;
 }
@@ -92,15 +113,20 @@ static void viper_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 {
 	struct arcom_pcmcia_pdata *pdata = viper_get_pdata();
 
+<<<<<<< HEAD
 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
 	gpio_free(pdata->pwr_gpio);
 	gpio_free(pdata->rdy_gpio);
 	gpio_free(pdata->cd_gpio);
+=======
+	gpio_free(pdata->pwr_gpio);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void viper_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 				      struct pcmcia_state *state)
 {
+<<<<<<< HEAD
 	struct arcom_pcmcia_pdata *pdata = viper_get_pdata();
 
 	state->detect = !gpio_get_value(pdata->cd_gpio);
@@ -108,6 +134,8 @@ static void viper_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 	state->bvd1   = 1;
 	state->bvd2   = 1;
 	state->wrprot = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	state->vs_3v  = 1; /* Can only apply 3.3V */
 	state->vs_Xv  = 0;
 }
@@ -136,6 +164,7 @@ static int viper_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void viper_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
 }
@@ -144,14 +173,19 @@ static void viper_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct pcmcia_low_level viper_pcmcia_ops = {
 	.owner          	= THIS_MODULE,
 	.hw_init        	= viper_pcmcia_hw_init,
 	.hw_shutdown		= viper_pcmcia_hw_shutdown,
 	.socket_state		= viper_pcmcia_socket_state,
 	.configure_socket	= viper_pcmcia_configure_socket,
+<<<<<<< HEAD
 	.socket_init		= viper_pcmcia_socket_init,
 	.socket_suspend		= viper_pcmcia_socket_suspend,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.nr         		= 1,
 };
 
@@ -214,6 +248,7 @@ static struct platform_driver viper_pcmcia_driver = {
 	.id_table	= viper_pcmcia_id_table,
 };
 
+<<<<<<< HEAD
 static int __init viper_pcmcia_init(void)
 {
 	return platform_driver_register(&viper_pcmcia_driver);
@@ -226,6 +261,9 @@ static void __exit viper_pcmcia_exit(void)
 
 module_init(viper_pcmcia_init);
 module_exit(viper_pcmcia_exit);
+=======
+module_platform_driver(viper_pcmcia_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DEVICE_TABLE(platform, viper_pcmcia_id_table);
 MODULE_LICENSE("GPL");

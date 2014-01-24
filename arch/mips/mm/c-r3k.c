@@ -18,7 +18,10 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/isadep.h>
 #include <asm/io.h>
 #include <asm/bootinfo.h>
@@ -299,6 +302,14 @@ static void r3k_flush_cache_sigtramp(unsigned long addr)
 	write_c0_status(flags);
 }
 
+<<<<<<< HEAD
+=======
+static void r3k_flush_kernel_vmap_range(unsigned long vaddr, int size)
+{
+	BUG();
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void r3k_dma_cache_wback_inv(unsigned long start, unsigned long size)
 {
 	/* Catch bad driver code */
@@ -323,6 +334,11 @@ void __cpuinit r3k_cache_init(void)
 	flush_icache_range = r3k_flush_icache_range;
 	local_flush_icache_range = r3k_flush_icache_range;
 
+<<<<<<< HEAD
+=======
+	__flush_kernel_vmap_range = r3k_flush_kernel_vmap_range;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	flush_cache_sigtramp = r3k_flush_cache_sigtramp;
 	local_flush_data_cache_page = local_r3k_flush_data_cache_page;
 	flush_data_cache_page = r3k_flush_data_cache_page;

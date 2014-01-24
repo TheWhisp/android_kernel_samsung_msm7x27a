@@ -21,7 +21,10 @@
 #include <linux/tracehook.h>
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/processor.h>
 #include <asm/cacheflush.h>
 #include <asm/fpu.h>

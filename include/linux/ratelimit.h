@@ -8,7 +8,11 @@
 #define DEFAULT_RATELIMIT_BURST		10
 
 struct ratelimit_state {
+<<<<<<< HEAD
 	spinlock_t	lock;		/* protect the state */
+=======
+	raw_spinlock_t	lock;		/* protect the state */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int		interval;
 	int		burst;
@@ -20,7 +24,11 @@ struct ratelimit_state {
 #define DEFINE_RATELIMIT_STATE(name, interval_init, burst_init)		\
 									\
 	struct ratelimit_state name = {					\
+<<<<<<< HEAD
 		.lock		= __SPIN_LOCK_UNLOCKED(name.lock),	\
+=======
+		.lock		= __RAW_SPIN_LOCK_UNLOCKED(name.lock),	\
+>>>>>>> refs/remotes/origin/cm-10.0
 		.interval	= interval_init,			\
 		.burst		= burst_init,				\
 	}
@@ -28,7 +36,11 @@ struct ratelimit_state {
 static inline void ratelimit_state_init(struct ratelimit_state *rs,
 					int interval, int burst)
 {
+<<<<<<< HEAD
 	spin_lock_init(&rs->lock);
+=======
+	raw_spin_lock_init(&rs->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	rs->interval = interval;
 	rs->burst = burst;
 	rs->printed = 0;

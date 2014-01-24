@@ -24,18 +24,30 @@
 #include <linux/tpm.h>
 #include <linux/audit.h>
 
+<<<<<<< HEAD
+=======
+#include "../integrity.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum ima_show_type { IMA_SHOW_BINARY, IMA_SHOW_ASCII };
 enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8 };
 
 /* digest size for IMA, fits SHA1 or MD5 */
+<<<<<<< HEAD
 #define IMA_DIGEST_SIZE		20
+=======
+#define IMA_DIGEST_SIZE		SHA1_DIGEST_SIZE
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IMA_EVENT_NAME_LEN_MAX	255
 
 #define IMA_HASH_BITS 9
 #define IMA_MEASURE_HTABLE_SIZE (1 << IMA_HASH_BITS)
 
 /* set during initialization */
+<<<<<<< HEAD
 extern int iint_initialized;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int ima_initialized;
 extern int ima_used_chip;
 extern char *ima_hash;
@@ -96,6 +108,7 @@ static inline unsigned long ima_hash_key(u8 *digest)
 	return hash_long(*digest, IMA_HASH_BITS);
 }
 
+<<<<<<< HEAD
 /* iint cache flags */
 #define IMA_MEASURED		0x01
 
@@ -118,12 +131,28 @@ int ima_store_template(struct ima_template_entry *entry, int violation,
 		       struct inode *inode);
 void ima_template_show(struct seq_file *m, void *e,
 		       enum ima_show_type show);
+=======
+/* LIM API function definitions */
+int ima_must_measure(struct inode *inode, int mask, int function);
+int ima_collect_measurement(struct integrity_iint_cache *iint,
+			    struct file *file);
+void ima_store_measurement(struct integrity_iint_cache *iint, struct file *file,
+			   const unsigned char *filename);
+int ima_store_template(struct ima_template_entry *entry, int violation,
+		       struct inode *inode);
+void ima_template_show(struct seq_file *m, void *e, enum ima_show_type show);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* rbtree tree calls to lookup, insert, delete
  * integrity data associated with an inode.
  */
+<<<<<<< HEAD
 struct ima_iint_cache *ima_iint_insert(struct inode *inode);
 struct ima_iint_cache *ima_iint_find(struct inode *inode);
+=======
+struct integrity_iint_cache *integrity_iint_insert(struct inode *inode);
+struct integrity_iint_cache *integrity_iint_find(struct inode *inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* IMA policy related functions */
 enum ima_hooks { FILE_CHECK = 1, FILE_MMAP, BPRM_CHECK };

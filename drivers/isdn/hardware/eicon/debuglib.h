@@ -1,6 +1,7 @@
 
 /*
  *
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -21,6 +22,28 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+ Copyright (c) Eicon Networks, 2002.
+ *
+ This source file is supplied for the use with
+ Eicon Networks range of DIVA Server Adapters.
+ *
+ Eicon File Revision :    2.1
+ *
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+ *
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY OF ANY KIND WHATSOEVER INCLUDING ANY
+ implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+ *
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 #if !defined(__DEBUGLIB_H__)
@@ -103,6 +126,7 @@
 #define DL_TO_KERNEL    0x40000000
 
 #ifdef DIVA_NO_DEBUGLIB
+<<<<<<< HEAD
 #define myDbgPrint_LOG(x...) do { } while(0);
 #define myDbgPrint_FTL(x...) do { } while(0);
 #define myDbgPrint_ERR(x...) do { } while(0);
@@ -127,19 +151,53 @@
 #define myDbgPrint_PRV3(x...) do { } while(0);
 #define DBG_TEST(func,args) do { } while(0);
 #define DBG_EVL_ID(args) do { } while(0);
+=======
+#define myDbgPrint_LOG(x...) do { } while (0);
+#define myDbgPrint_FTL(x...) do { } while (0);
+#define myDbgPrint_ERR(x...) do { } while (0);
+#define myDbgPrint_TRC(x...) do { } while (0);
+#define myDbgPrint_MXLOG(x...) do { } while (0);
+#define myDbgPrint_EVL(x...) do { } while (0);
+#define myDbgPrint_REG(x...) do { } while (0);
+#define myDbgPrint_MEM(x...) do { } while (0);
+#define myDbgPrint_SPL(x...) do { } while (0);
+#define myDbgPrint_IRP(x...) do { } while (0);
+#define myDbgPrint_TIM(x...) do { } while (0);
+#define myDbgPrint_BLK(x...) do { } while (0);
+#define myDbgPrint_TAPI(x...) do { } while (0);
+#define myDbgPrint_NDIS(x...) do { } while (0);
+#define myDbgPrint_CONN(x...) do { } while (0);
+#define myDbgPrint_STAT(x...) do { } while (0);
+#define myDbgPrint_SEND(x...) do { } while (0);
+#define myDbgPrint_RECV(x...) do { } while (0);
+#define myDbgPrint_PRV0(x...) do { } while (0);
+#define myDbgPrint_PRV1(x...) do { } while (0);
+#define myDbgPrint_PRV2(x...) do { } while (0);
+#define myDbgPrint_PRV3(x...) do { } while (0);
+#define DBG_TEST(func, args) do { } while (0);
+#define DBG_EVL_ID(args) do { } while (0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else /* DIVA_NO_DEBUGLIB */
 /*
  * define low level macros for formatted & raw debugging
  */
+<<<<<<< HEAD
 #define DBG_DECL(func) extern void  myDbgPrint_##func (char *, ...) ;
+=======
+#define DBG_DECL(func) extern void  myDbgPrint_##func(char *, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 DBG_DECL(LOG)
 DBG_DECL(FTL)
 DBG_DECL(ERR)
 DBG_DECL(TRC)
 DBG_DECL(MXLOG)
 DBG_DECL(FTL_MXLOG)
+<<<<<<< HEAD
 extern void  myDbgPrint_EVL (long, ...) ;
+=======
+extern void  myDbgPrint_EVL(long, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 DBG_DECL(REG)
 DBG_DECL(MEM)
 DBG_DECL(SPL)
@@ -156,6 +214,7 @@ DBG_DECL(PRV0)
 DBG_DECL(PRV1)
 DBG_DECL(PRV2)
 DBG_DECL(PRV3)
+<<<<<<< HEAD
 #ifdef  _KERNEL_DBG_PRINT_
 /*
  * tracing to maint and kernel if selected in the trace mask.
@@ -167,23 +226,50 @@ DBG_DECL(PRV3)
             {DbgPrint args; DbgPrint ("\r\n");} \
         myDbgPrint_##func args ; \
 } }
+=======
+#ifdef _KERNEL_DBG_PRINT_
+/*
+ * tracing to maint and kernel if selected in the trace mask.
+ */
+#define DBG_TEST(func, args)						\
+	{ if ((myDriverDebugHandle.dbgMask) & (unsigned long)DL_##func) \
+		{							\
+			if ((myDriverDebugHandle.dbgMask) & DL_TO_KERNEL) \
+			{ DbgPrint args; DbgPrint("\r\n"); }		\
+			myDbgPrint_##func args;			\
+		} }
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 /*
  * Standard tracing to maint driver.
  */
+<<<<<<< HEAD
 #define DBG_TEST(func,args) \
 { if ( (myDriverDebugHandle.dbgMask) & (unsigned long)DL_##func ) \
  { myDbgPrint_##func args ; \
 } }
+=======
+#define DBG_TEST(func, args)						\
+	{ if ((myDriverDebugHandle.dbgMask) & (unsigned long)DL_##func) \
+		{ myDbgPrint_##func args;				\
+		} }
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 /*
  * For event level debug use a separate define, the parameter are
  * different and cause compiler errors on some systems.
  */
+<<<<<<< HEAD
 #define DBG_EVL_ID(args) \
 { if ( (myDriverDebugHandle.dbgMask) & (unsigned long)DL_EVL ) \
  { myDbgPrint_EVL args ; \
 } }
+=======
+#define DBG_EVL_ID(args)						\
+	{ if ((myDriverDebugHandle.dbgMask) & (unsigned long)DL_EVL)	\
+		{ myDbgPrint_EVL args;					\
+		} }
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* DIVA_NO_DEBUGLIB */
 
@@ -214,6 +300,7 @@ DBG_DECL(PRV3)
  * prototypes for debug register/deregister functions in "debuglib.c"
  */
 #ifdef DIVA_NO_DEBUGLIB
+<<<<<<< HEAD
 #define DbgRegister(name,tag, mask) do { } while(0)
 #define DbgDeregister() do { } while(0)
 #define DbgSetLevel(mask) do { } while(0)
@@ -222,12 +309,23 @@ extern DIVA_DI_PRINTF dprintf;
 extern int  DbgRegister (char *drvName, char *drvTag, unsigned long dbgMask) ;
 extern void DbgDeregister (void) ;
 extern void DbgSetLevel (unsigned long dbgMask) ;
+=======
+#define DbgRegister(name, tag, mask) do { } while (0)
+#define DbgDeregister() do { } while (0)
+#define DbgSetLevel(mask) do { } while (0)
+#else
+extern DIVA_DI_PRINTF dprintf;
+extern int  DbgRegister(char *drvName, char *drvTag, unsigned long dbgMask);
+extern void DbgDeregister(void);
+extern void DbgSetLevel(unsigned long dbgMask);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 /*
  * driver internal structure for debug handling;
  * in client drivers this structure is maintained in "debuglib.c",
  * in the debug driver "debug.c" maintains a chain of such structs.
  */
+<<<<<<< HEAD
 typedef struct _DbgHandle_ *pDbgHandle ;
 typedef void ( * DbgEnd) (pDbgHandle) ;
 typedef void ( * DbgLog) (unsigned short, int, char *, va_list) ;
@@ -294,10 +392,79 @@ typedef struct _OldDbgHandle_
  new->next overlays old->pIrp, new->regTime matches old->regTime and
  thus these fields can be maintained in new struct whithout trouble;
  id, dbgMask, drvName, dbg_end and dbg_prt need special handling !
+=======
+typedef struct _DbgHandle_ *pDbgHandle;
+typedef void (*DbgEnd)(pDbgHandle);
+typedef void (*DbgLog)(unsigned short, int, char *, va_list);
+typedef void (*DbgOld)(unsigned short, char *, va_list);
+typedef void (*DbgEv)(unsigned short, unsigned long, va_list);
+typedef void (*DbgIrq)(unsigned short, int, char *, va_list);
+typedef struct _DbgHandle_
+{ char    Registered; /* driver successfully registered */
+#define DBG_HANDLE_REG_NEW 0x01  /* this (new) structure    */
+#define DBG_HANDLE_REG_OLD 0x7f  /* old structure (see below)  */
+	char    Version;  /* version of this structure  */
+#define DBG_HANDLE_VERSION 1   /* contains dbg_old function now */
+#define DBG_HANDLE_VER_EXT  2           /* pReserved points to extended info*/
+	short               id;   /* internal id of registered driver */
+	struct _DbgHandle_ *next;   /* ptr to next registered driver    */
+	struct /*LARGE_INTEGER*/ {
+		unsigned long LowPart;
+		long          HighPart;
+	}     regTime;  /* timestamp for registration       */
+	void               *pIrp;   /* ptr to pending i/o request       */
+	unsigned long       dbgMask;  /* current debug mask               */
+	char                drvName[128]; /* ASCII name of registered driver  */
+	char                drvTag[64]; /* revision string     */
+	DbgEnd              dbg_end;  /* function for debug closing       */
+	DbgLog              dbg_prt;  /* function for debug appending     */
+	DbgOld              dbg_old;  /* function for old debug appending */
+	DbgEv       dbg_ev;  /* function for Windows NT Eventlog */
+	DbgIrq    dbg_irq;  /* function for irql checked debug  */
+	void      *pReserved3;
+} _DbgHandle_;
+extern _DbgHandle_ myDriverDebugHandle;
+typedef struct _OldDbgHandle_
+{ struct _OldDbgHandle_ *next;
+	void                *pIrp;
+	long    regTime[2];
+	unsigned long       dbgMask;
+	short               id;
+	char                drvName[78];
+	DbgEnd              dbg_end;
+	DbgLog              dbg_prt;
+} _OldDbgHandle_;
+/* the differences in DbgHandles
+   old:    tmp:     new:
+   0 long next  char Registered  char Registered
+   char filler   char Version
+   short id    short id
+   4 long pIrp  long    regTime.lo  long next
+   8 long    regTime.lo long    regTime.hi  long    regTime.lo
+   12 long    regTime.hi long next   long regTime.hi
+   16 long dbgMask  long pIrp   long pIrp
+   20 short id   long dbgMask   long dbgMask
+   22 char    drvName[78] ..
+   24 ..     char drvName[16]  char drvName[16]
+   40 ..     char drvTag[64]  char drvTag[64]
+   100 void *dbg_end ..      ..
+   104 void *dbg_prt void *dbg_end  void *dbg_end
+   108 ..     void *dbg_prt  void *dbg_prt
+   112 ..     ..      void *dbg_old
+   116 ..     ..      void *dbg_ev
+   120 ..     ..      void *dbg_irq
+   124 ..     ..      void *pReserved3
+   ( new->id == 0 && *((short *)&new->dbgMask) == -1 ) identifies "old",
+   new->Registered and new->Version overlay old->next,
+   new->next overlays old->pIrp, new->regTime matches old->regTime and
+   thus these fields can be maintained in new struct whithout trouble;
+   id, dbgMask, drvName, dbg_end and dbg_prt need special handling !
+>>>>>>> refs/remotes/origin/cm-10.0
 */
 #define DBG_EXT_TYPE_CARD_TRACE     0x00000001
 typedef struct
 {
+<<<<<<< HEAD
     unsigned long       ExtendedType;
     union
     {
@@ -318,5 +485,27 @@ typedef struct
    ------------------------------------------------------------- */
 #define XDI_USE_XLOG 1
 void  xdi_dbg_xlog (char* x, ...);
+=======
+	unsigned long ExtendedType;
+	union
+	{
+		/* DBG_EXT_TYPE_CARD_TRACE */
+		struct
+		{
+			void (*MaskChangedNotify)(void *pContext);
+			unsigned long ModuleTxtMask;
+			unsigned long DebugLevel;
+			unsigned long B_ChannelMask;
+			unsigned long LogBufferSize;
+		} CardTrace;
+	} Data;
+} _DbgExtendedInfo_;
+#ifndef DIVA_NO_DEBUGLIB
+/* -------------------------------------------------------------
+   Function used for xlog-style debug
+   ------------------------------------------------------------- */
+#define XDI_USE_XLOG 1
+void xdi_dbg_xlog(char *x, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* DIVA_NO_DEBUGLIB */
 #endif /* __DEBUGLIB_H__ */

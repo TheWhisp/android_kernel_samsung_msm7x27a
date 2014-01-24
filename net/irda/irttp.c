@@ -29,6 +29,10 @@
 #include <linux/fs.h>
 #include <linux/seq_file.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/byteorder.h>
 #include <asm/unaligned.h>
@@ -350,7 +354,11 @@ static int irttp_param_max_sdu_size(void *instance, irda_param_t *param,
 {
 	struct tsap_cb *self;
 
+<<<<<<< HEAD
 	self = (struct tsap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return -1;);
 	IRDA_ASSERT(self->magic == TTP_TSAP_MAGIC, return -1;);
@@ -879,7 +887,11 @@ static int irttp_udata_indication(void *instance, void *sap,
 
 	IRDA_DEBUG(4, "%s()\n", __func__);
 
+<<<<<<< HEAD
 	self = (struct tsap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return -1;);
 	IRDA_ASSERT(self->magic == TTP_TSAP_MAGIC, return -1;);
@@ -914,7 +926,11 @@ static int irttp_data_indication(void *instance, void *sap,
 	unsigned long flags;
 	int n;
 
+<<<<<<< HEAD
 	self = (struct tsap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	n = skb->data[0] & 0x7f;     /* Extract the credits */
 
@@ -996,7 +1012,11 @@ static void irttp_status_indication(void *instance,
 
 	IRDA_DEBUG(4, "%s()\n", __func__);
 
+<<<<<<< HEAD
 	self = (struct tsap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == TTP_TSAP_MAGIC, return;);
@@ -1025,7 +1045,11 @@ static void irttp_flow_indication(void *instance, void *sap, LOCAL_FLOW flow)
 {
 	struct tsap_cb *self;
 
+<<<<<<< HEAD
 	self = (struct tsap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == TTP_TSAP_MAGIC, return;);
@@ -1208,7 +1232,11 @@ static void irttp_connect_confirm(void *instance, void *sap,
 
 	IRDA_DEBUG(4, "%s()\n", __func__);
 
+<<<<<<< HEAD
 	self = (struct tsap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == TTP_TSAP_MAGIC, return;);
@@ -1292,13 +1320,21 @@ static void irttp_connect_indication(void *instance, void *sap,
 	__u8 plen;
 	__u8 n;
 
+<<<<<<< HEAD
 	self = (struct tsap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == TTP_TSAP_MAGIC, return;);
 	IRDA_ASSERT(skb != NULL, return;);
 
+<<<<<<< HEAD
 	lsap = (struct lsap_cb *) sap;
+=======
+	lsap = sap;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	self->max_seg_size = max_seg_size - TTP_HEADER;
 	self->max_header_size = max_header_size+TTP_HEADER;
@@ -1460,14 +1496,21 @@ struct tsap_cb *irttp_dup(struct tsap_cb *orig, void *instance)
 	}
 
 	/* Allocate a new instance */
+<<<<<<< HEAD
 	new = kmalloc(sizeof(struct tsap_cb), GFP_ATOMIC);
+=======
+	new = kmemdup(orig, sizeof(struct tsap_cb), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!new) {
 		IRDA_DEBUG(0, "%s(), unable to kmalloc\n", __func__);
 		spin_unlock_irqrestore(&irttp->tsaps->hb_spinlock, flags);
 		return NULL;
 	}
+<<<<<<< HEAD
 	/* Dup */
 	memcpy(new, orig, sizeof(struct tsap_cb));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_init(&new->lock);
 
 	/* We don't need the old instance any more */
@@ -1602,7 +1645,11 @@ static void irttp_disconnect_indication(void *instance, void *sap,
 
 	IRDA_DEBUG(4, "%s()\n", __func__);
 
+<<<<<<< HEAD
 	self = (struct tsap_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == TTP_TSAP_MAGIC, return;);

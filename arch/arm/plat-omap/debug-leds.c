@@ -7,7 +7,11 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/leds.h>
@@ -15,11 +19,17 @@
 
 #include <mach/hardware.h>
 #include <asm/leds.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/mach-types.h>
 
 #include <plat/fpga.h>
 #include <mach/gpio.h>
+=======
+#include <asm/mach-types.h>
+
+#include <plat/fpga.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /* Many OMAP development platforms reuse the same "debug board"; these

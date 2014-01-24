@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /*
  * $Id: musycc.c,v 2.1 2007/08/15 23:32:17 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned int max_intcnt = 0;
 unsigned int max_bh = 0;
 
@@ -24,6 +27,7 @@ unsigned int max_bh = 0;
  * For further information, contact via email: support@onestopsystems.com
  * One Stop Systems, Inc.  Escondido, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 2.1 $
  * Last changed on $Date: 2007/08/15 23:32:17 $
@@ -71,6 +75,10 @@ unsigned int max_bh = 0;
 char        SBEid_pmcc4_musyccc[] =
 "@(#)musycc.c - $Revision: 2.1 $      (c) Copyright 2004-2006 SBE, Inc.";
 
+=======
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/types.h>

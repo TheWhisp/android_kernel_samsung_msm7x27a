@@ -18,7 +18,10 @@
 #include <asm/processor.h>
 #include <asm/mmu_context.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 
 

@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,6 +52,10 @@
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evgpeutil")
 
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/cm-10.0
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ev_walk_gpe_list
@@ -374,3 +382,8 @@ acpi_ev_delete_gpe_handlers(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
 
 	return_ACPI_STATUS(AE_OK);
 }
+<<<<<<< HEAD
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -2,8 +2,13 @@
 #define __LINUX_DEBUG_LOCKING_H
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct task_struct;
 

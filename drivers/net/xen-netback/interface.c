@@ -166,7 +166,12 @@ static int xenvif_change_mtu(struct net_device *dev, int mtu)
 	return 0;
 }
 
+<<<<<<< HEAD
 static u32 xenvif_fix_features(struct net_device *dev, u32 features)
+=======
+static netdev_features_t xenvif_fix_features(struct net_device *dev,
+	netdev_features_t features)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct xenvif *vif = netdev_priv(dev);
 
@@ -223,7 +228,11 @@ static void xenvif_get_strings(struct net_device *dev, u32 stringset, u8 * data)
 	}
 }
 
+<<<<<<< HEAD
 static struct ethtool_ops xenvif_ethtool_ops = {
+=======
+static const struct ethtool_ops xenvif_ethtool_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_link	= ethtool_op_get_link,
 
 	.get_sset_count = xenvif_get_sset_count,
@@ -231,7 +240,11 @@ static struct ethtool_ops xenvif_ethtool_ops = {
 	.get_strings = xenvif_get_strings,
 };
 
+<<<<<<< HEAD
 static struct net_device_ops xenvif_netdev_ops = {
+=======
+static const struct net_device_ops xenvif_netdev_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_start_xmit	= xenvif_start_xmit,
 	.ndo_get_stats	= xenvif_get_stats,
 	.ndo_open	= xenvif_open,
@@ -272,8 +285,12 @@ struct xenvif *xenvif_alloc(struct device *parent, domid_t domid,
 	vif->credit_bytes = vif->remaining_credit = ~0UL;
 	vif->credit_usec  = 0UL;
 	init_timer(&vif->credit_timeout);
+<<<<<<< HEAD
 	/* Initialize 'expires' now: it's used to track the credit window. */
 	vif->credit_timeout.expires = jiffies;
+=======
+	vif->credit_window_start = get_jiffies_64();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev->netdev_ops	= &xenvif_netdev_ops;
 	dev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_TSO;

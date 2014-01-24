@@ -26,8 +26,11 @@ extern void clockevents_shutdown(struct clock_event_device *dev);
 extern void tick_setup_oneshot(struct clock_event_device *newdev,
 			       void (*handler)(struct clock_event_device *),
 			       ktime_t nextevt);
+<<<<<<< HEAD
 extern int tick_dev_program_event(struct clock_event_device *dev,
 				  ktime_t expires, int force);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int tick_program_event(ktime_t expires, int force);
 extern void tick_oneshot_notify(void);
 extern int tick_switch_to_oneshot(void (*handler)(struct clock_event_device *));

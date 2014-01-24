@@ -376,7 +376,11 @@ static int pata_s3c_softreset(struct ata_link *link, unsigned int *classes,
 	rc = pata_s3c_bus_softreset(ap, deadline);
 	/* if link is occupied, -ENODEV too is an error */
 	if (rc && rc != -ENODEV) {
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_ERR, "SRST failed (errno=%d)\n", rc);
+=======
+		ata_link_err(link, "SRST failed (errno=%d)\n", rc);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return rc;
 	}
 

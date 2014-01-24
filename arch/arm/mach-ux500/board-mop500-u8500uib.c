@@ -4,6 +4,7 @@
  * Board data for the U8500 UIB, also known as the New UIB
  * License terms: GNU General Public License (GPL), version 2
  */
+<<<<<<< HEAD
 
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -15,10 +16,21 @@
 #include <../drivers/staging/ste_rmi4/synaptics_i2c_rmi4.h>
 
 #include <mach/gpio.h>
+=======
+#include <linux/gpio.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/i2c.h>
+#include <linux/interrupt.h>
+#include <linux/mfd/tc3589x.h>
+#include <linux/input/matrix_keypad.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/irqs.h>
 
 #include "board-mop500.h"
 
+<<<<<<< HEAD
 /*
  * Synaptics RMI4 touchscreen interface on the U8500 UIB
  */
@@ -40,6 +52,10 @@ static struct i2c_board_info __initdata mop500_i2c3_devices_u8500[] = {
 		I2C_BOARD_INFO("synaptics_rmi4_i2c", 0x4B),
 		.platform_data = &rmi4_i2c_dev_platformdata,
 	},
+=======
+/* Dummy data that can be overridden by staging driver */
+struct i2c_board_info __initdata __weak mop500_i2c3_devices_u8500[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*

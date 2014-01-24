@@ -62,6 +62,15 @@ struct ehci_stats {
 
 #define	EHCI_MAX_ROOT_PORTS	15		/* see HCS_N_PORTS */
 
+<<<<<<< HEAD
+=======
+enum ehci_rh_state {
+	EHCI_RH_HALTED,
+	EHCI_RH_SUSPENDED,
+	EHCI_RH_RUNNING
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ehci_hcd {			/* one per controller */
 	/* glue to PCI and HCD framework */
 	struct ehci_caps __iomem *caps;
@@ -70,6 +79,10 @@ struct ehci_hcd {			/* one per controller */
 
 	__u32			hcs_params;	/* cached register copy */
 	spinlock_t		lock;
+<<<<<<< HEAD
+=======
+	enum ehci_rh_state	rh_state;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* async schedule support */
 	struct ehci_qh		*async;
@@ -88,6 +101,11 @@ struct ehci_hcd {			/* one per controller */
 	union ehci_shadow	*pshadow;	/* mirror hw periodic table */
 	int			next_uframe;	/* scan periodic, start here */
 	unsigned		periodic_sched;	/* periodic activity count */
+<<<<<<< HEAD
+=======
+	unsigned		uframe_periodic_max; /* max periodic time per uframe */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* list of itds & sitds completed while clock_frame was still active */
 	struct list_head	cached_itd_list;
@@ -108,6 +126,11 @@ struct ehci_hcd {			/* one per controller */
 			the change-suspend feature turned on */
 	unsigned long		suspended_ports;	/* which ports are
 			suspended */
+<<<<<<< HEAD
+=======
+	unsigned long		resuming_ports;		/* which ports have
+			started to resume */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* per-HC memory pools (could be per-bus, but ...) */
 	struct dma_pool		*qh_pool;	/* qh per active urb */
@@ -124,7 +147,11 @@ struct ehci_hcd {			/* one per controller */
 	ktime_t			last_periodic_enable;
 	u32			command;
 
+<<<<<<< HEAD
 	void (*start_hnp)(struct ehci_hcd *ehci);
+=======
+	unsigned		log2_irq_thresh;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* SILICON QUIRKS */
 	unsigned		no_selective_suspend:1;
@@ -140,6 +167,12 @@ struct ehci_hcd {			/* one per controller */
 	unsigned		use_dummy_qh:1;	/* AMD Frame List table quirk*/
 	unsigned		has_synopsys_hc_bug:1; /* Synopsys HC */
 	unsigned		frame_index_bug:1; /* MosChip (AKA NetMos) */
+<<<<<<< HEAD
+=======
+	unsigned		susp_sof_bug:1; /*Chip Idea HC*/
+	unsigned		resume_sof_bug:1;/*Chip Idea HC*/
+	unsigned		reset_sof_bug:1; /*Chip Idea HC*/
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* required for usb32 quirk */
 	#define OHCI_CTRL_HCFS          (3 << 6)
@@ -169,7 +202,11 @@ struct ehci_hcd {			/* one per controller */
 	/*
 	 * OTG controllers and transceivers need software interaction
 	 */
+<<<<<<< HEAD
 	struct otg_transceiver	*transceiver;
+=======
+	struct usb_phy	*transceiver;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* convert between an HCD pointer and the corresponding EHCI_HCD */

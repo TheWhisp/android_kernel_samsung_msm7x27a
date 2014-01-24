@@ -95,7 +95,10 @@ extern const struct hc_driver musb_hc_driver;
 
 static inline struct urb *next_urb(struct musb_qh *qh)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head	*queue;
 
 	if (!qh)
@@ -104,9 +107,12 @@ static inline struct urb *next_urb(struct musb_qh *qh)
 	if (list_empty(queue))
 		return NULL;
 	return list_entry(queue->next, struct urb, urb_list);
+<<<<<<< HEAD
 #else
 	return NULL;
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #endif				/* _MUSB_HOST_H */

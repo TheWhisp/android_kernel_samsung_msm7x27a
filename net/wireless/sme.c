@@ -10,6 +10,10 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 #include <linux/wireless.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/iw_handler.h>
 #include <net/cfg80211.h>
 #include <net/rtnetlink.h>
@@ -110,6 +114,7 @@ static int cfg80211_conn_scan(struct wireless_dev *wdev)
 	else {
 		int i = 0, j;
 		enum ieee80211_band band;
+<<<<<<< HEAD
 
 		for (band = 0; band < IEEE80211_NUM_BANDS; band++) {
 			if (!wdev->wiphy->bands[band])
@@ -119,6 +124,24 @@ static int cfg80211_conn_scan(struct wireless_dev *wdev)
 				request->channels[i] =
 					&wdev->wiphy->bands[band]->channels[j];
 		}
+=======
+		struct ieee80211_supported_band *bands;
+		struct ieee80211_channel *channel;
+
+		for (band = 0; band < IEEE80211_NUM_BANDS; band++) {
+			bands = wdev->wiphy->bands[band];
+			if (!bands)
+				continue;
+			for (j = 0; j < bands->n_channels; j++) {
+				channel = &bands->channels[j];
+				if (channel->flags & IEEE80211_CHAN_DISABLED)
+					continue;
+				request->channels[i++] = channel;
+			}
+			request->rates[band] = (1 << bands->n_bitrates) - 1;
+		}
+		n_channels = i;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	request->n_channels = n_channels;
 	request->ssids = (void *)&request->channels[n_channels];
@@ -171,7 +194,11 @@ static int cfg80211_conn_do_work(struct wireless_dev *wdev)
 					    params->ssid, params->ssid_len,
 					    NULL, 0,
 					    params->key, params->key_len,
+<<<<<<< HEAD
 					    params->key_idx, false);
+=======
+					    params->key_idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 	case CFG80211_CONN_ASSOCIATE_NEXT:
 		BUG_ON(!rdev->ops->assoc);
 		wdev->conn->state = CFG80211_CONN_ASSOCIATING;
@@ -182,7 +209,13 @@ static int cfg80211_conn_do_work(struct wireless_dev *wdev)
 					    prev_bssid,
 					    params->ssid, params->ssid_len,
 					    params->ie, params->ie_len,
+<<<<<<< HEAD
 					    false, &params->crypto);
+=======
+					    false, &params->crypto,
+					    params->flags, &params->ht_capa,
+					    &params->ht_capa_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			__cfg80211_mlme_deauth(rdev, wdev->netdev, params->bssid,
 					       NULL, 0,
@@ -467,6 +500,10 @@ void __cfg80211_connect_result(struct net_device *dev, const u8 *bssid,
 		kfree(wdev->connect_keys);
 		wdev->connect_keys = NULL;
 		wdev->ssid_len = 0;
+<<<<<<< HEAD
+=======
+		cfg80211_put_bss(bss);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -543,6 +580,7 @@ void cfg80211_connect_result(struct net_device *dev, const u8 *bssid,
 EXPORT_SYMBOL(cfg80211_connect_result);
 
 void __cfg80211_roamed(struct wireless_dev *wdev,
+<<<<<<< HEAD
 		       struct ieee80211_channel *channel,
 		       const u8 *bssid,
 		       const u8 *req_ie, size_t req_ie_len,
@@ -553,10 +591,20 @@ void __cfg80211_roamed(struct wireless_dev *wdev,
 	union iwreq_data wrqu;
 #endif
 
+=======
+		       struct cfg80211_bss *bss,
+		       const u8 *req_ie, size_t req_ie_len,
+		       const u8 *resp_ie, size_t resp_ie_len)
+{
+#ifdef CONFIG_CFG80211_WEXT
+	union iwreq_data wrqu;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	ASSERT_WDEV_LOCK(wdev);
 
 	if (WARN_ON(wdev->iftype != NL80211_IFTYPE_STATION &&
 		    wdev->iftype != NL80211_IFTYPE_P2P_CLIENT))
+<<<<<<< HEAD
 		return;
 
 	if (wdev->sme_state != CFG80211_SME_CONNECTED)
@@ -565,12 +613,23 @@ void __cfg80211_roamed(struct wireless_dev *wdev,
 	/* internal error -- how did we get to CONNECTED w/o BSS? */
 	if (WARN_ON(!wdev->current_bss)) {
 		return;
+=======
+		goto out;
+
+	if (wdev->sme_state != CFG80211_SME_CONNECTED)
+		goto out;
+
+	/* internal error -- how did we get to CONNECTED w/o BSS? */
+	if (WARN_ON(!wdev->current_bss)) {
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	cfg80211_unhold_bss(wdev->current_bss);
 	cfg80211_put_bss(&wdev->current_bss->pub);
 	wdev->current_bss = NULL;
 
+<<<<<<< HEAD
 	bss = cfg80211_get_bss(wdev->wiphy, channel, bssid,
 			       wdev->ssid, wdev->ssid_len,
 			       WLAN_CAPABILITY_ESS, WLAN_CAPABILITY_ESS);
@@ -582,6 +641,12 @@ void __cfg80211_roamed(struct wireless_dev *wdev,
 	wdev->current_bss = bss_from_pub(bss);
 
 	nl80211_send_roamed(wiphy_to_dev(wdev->wiphy), wdev->netdev, bssid,
+=======
+	cfg80211_hold_bss(bss_from_pub(bss));
+	wdev->current_bss = bss_from_pub(bss);
+
+	nl80211_send_roamed(wiphy_to_dev(wdev->wiphy), wdev->netdev, bss->bssid,
+>>>>>>> refs/remotes/origin/cm-10.0
 			    req_ie, req_ie_len, resp_ie, resp_ie_len,
 			    GFP_KERNEL);
 
@@ -602,11 +667,23 @@ void __cfg80211_roamed(struct wireless_dev *wdev,
 
 	memset(&wrqu, 0, sizeof(wrqu));
 	wrqu.ap_addr.sa_family = ARPHRD_ETHER;
+<<<<<<< HEAD
 	memcpy(wrqu.ap_addr.sa_data, bssid, ETH_ALEN);
 	memcpy(wdev->wext.prev_bssid, bssid, ETH_ALEN);
 	wdev->wext.prev_bssid_valid = true;
 	wireless_send_event(wdev->netdev, SIOCGIWAP, &wrqu, NULL);
 #endif
+=======
+	memcpy(wrqu.ap_addr.sa_data, bss->bssid, ETH_ALEN);
+	memcpy(wdev->wext.prev_bssid, bss->bssid, ETH_ALEN);
+	wdev->wext.prev_bssid_valid = true;
+	wireless_send_event(wdev->netdev, SIOCGIWAP, &wrqu, NULL);
+#endif
+
+	return;
+out:
+	cfg80211_put_bss(bss);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void cfg80211_roamed(struct net_device *dev,
@@ -616,12 +693,37 @@ void cfg80211_roamed(struct net_device *dev,
 		     const u8 *resp_ie, size_t resp_ie_len, gfp_t gfp)
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
+<<<<<<< HEAD
+=======
+	struct cfg80211_bss *bss;
+
+	CFG80211_DEV_WARN_ON(wdev->sme_state != CFG80211_SME_CONNECTED);
+
+	bss = cfg80211_get_bss(wdev->wiphy, channel, bssid, wdev->ssid,
+			       wdev->ssid_len, WLAN_CAPABILITY_ESS,
+			       WLAN_CAPABILITY_ESS);
+	if (WARN_ON(!bss))
+		return;
+
+	cfg80211_roamed_bss(dev, bss, req_ie, req_ie_len, resp_ie,
+			    resp_ie_len, gfp);
+}
+EXPORT_SYMBOL(cfg80211_roamed);
+
+void cfg80211_roamed_bss(struct net_device *dev,
+			 struct cfg80211_bss *bss, const u8 *req_ie,
+			 size_t req_ie_len, const u8 *resp_ie,
+			 size_t resp_ie_len, gfp_t gfp)
+{
+	struct wireless_dev *wdev = dev->ieee80211_ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct cfg80211_registered_device *rdev = wiphy_to_dev(wdev->wiphy);
 	struct cfg80211_event *ev;
 	unsigned long flags;
 
 	CFG80211_DEV_WARN_ON(wdev->sme_state != CFG80211_SME_CONNECTED);
 
+<<<<<<< HEAD
 	ev = kzalloc(sizeof(*ev) + req_ie_len + resp_ie_len, gfp);
 	if (!ev)
 		return;
@@ -629,19 +731,39 @@ void cfg80211_roamed(struct net_device *dev,
 	ev->type = EVENT_ROAMED;
 	ev->rm.channel = channel;
 	memcpy(ev->rm.bssid, bssid, ETH_ALEN);
+=======
+	if (WARN_ON(!bss))
+		return;
+
+	ev = kzalloc(sizeof(*ev) + req_ie_len + resp_ie_len, gfp);
+	if (!ev) {
+		cfg80211_put_bss(bss);
+		return;
+	}
+
+	ev->type = EVENT_ROAMED;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ev->rm.req_ie = ((u8 *)ev) + sizeof(*ev);
 	ev->rm.req_ie_len = req_ie_len;
 	memcpy((void *)ev->rm.req_ie, req_ie, req_ie_len);
 	ev->rm.resp_ie = ((u8 *)ev) + sizeof(*ev) + req_ie_len;
 	ev->rm.resp_ie_len = resp_ie_len;
 	memcpy((void *)ev->rm.resp_ie, resp_ie, resp_ie_len);
+<<<<<<< HEAD
+=======
+	ev->rm.bss = bss;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_irqsave(&wdev->event_lock, flags);
 	list_add_tail(&ev->list, &wdev->event_list);
 	spin_unlock_irqrestore(&wdev->event_lock, flags);
 	queue_work(cfg80211_wq, &rdev->event_work);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(cfg80211_roamed);
+=======
+EXPORT_SYMBOL(cfg80211_roamed_bss);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __cfg80211_disconnected(struct net_device *dev, const u8 *ie,
 			     size_t ie_len, u16 reason, bool from_ap)
@@ -674,13 +796,17 @@ void __cfg80211_disconnected(struct net_device *dev, const u8 *ie,
 	wdev->ssid_len = 0;
 
 	if (wdev->conn) {
+<<<<<<< HEAD
 		const u8 *bssid;
 		int ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(wdev->conn->ie);
 		wdev->conn->ie = NULL;
 		kfree(wdev->conn);
 		wdev->conn = NULL;
+<<<<<<< HEAD
 
 		/*
 		 * If this disconnect was due to a disassoc, we
@@ -699,6 +825,8 @@ void __cfg80211_disconnected(struct net_device *dev, const u8 *ie,
 						false);
 			WARN(ret, "deauth failed: %d\n", ret);
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	nl80211_send_disconnected(rdev, dev, reason, ie, ie_len, from_ap);
@@ -772,6 +900,12 @@ int __cfg80211_connect(struct cfg80211_registered_device *rdev,
 		wdev->connect_keys = NULL;
 	}
 
+<<<<<<< HEAD
+=======
+	cfg80211_oper_and_ht_capa(&connect->ht_capa_mask,
+				  rdev->wiphy.ht_capa_mod_mask);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (connkeys && connkeys->def >= 0) {
 		int idx;
 		u32 cipher;
@@ -986,7 +1120,12 @@ int cfg80211_disconnect(struct cfg80211_registered_device *rdev,
 	return err;
 }
 
+<<<<<<< HEAD
 void cfg80211_sme_disassoc(struct net_device *dev, int idx)
+=======
+void cfg80211_sme_disassoc(struct net_device *dev,
+			   struct cfg80211_internal_bss *bss)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
 	struct cfg80211_registered_device *rdev = wiphy_to_dev(wdev->wiphy);
@@ -1005,6 +1144,7 @@ void cfg80211_sme_disassoc(struct net_device *dev, int idx)
 	 * want it any more so deauthenticate too.
 	 */
 
+<<<<<<< HEAD
 	if (!wdev->auth_bsses[idx])
 		return;
 
@@ -1017,4 +1157,10 @@ void cfg80211_sme_disassoc(struct net_device *dev, int idx)
 		cfg80211_put_bss(&wdev->auth_bsses[idx]->pub);
 		wdev->auth_bsses[idx] = NULL;
 	}
+=======
+	memcpy(bssid, bss->pub.bssid, ETH_ALEN);
+
+	__cfg80211_mlme_deauth(rdev, dev, bssid, NULL, 0,
+			       WLAN_REASON_DEAUTH_LEAVING, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

@@ -28,7 +28,10 @@ static const char version[] = "madgemc.c: v0.91 23/01/2000 by Adam Fritzler\n";
 #include <linux/netdevice.h>
 #include <linux/trdevice.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/irq.h>
 
@@ -171,7 +174,10 @@ static int __devinit madgemc_probe(struct device *device)
 
 	card = kmalloc(sizeof(struct card_info), GFP_KERNEL);
 	if (card==NULL) {
+<<<<<<< HEAD
 		printk("madgemc: unable to allocate card struct\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENOMEM;
 		goto getout1;
 	}
@@ -418,7 +424,11 @@ static irqreturn_t madgemc_interrupt(int irq, void *dev_id)
 		return IRQ_NONE;
 	}
 
+<<<<<<< HEAD
 	dev = (struct net_device *)dev_id;
+=======
+	dev = dev_id;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Make sure its really us. -- the Madge way */
 	pending = inb(dev->base_addr + MC_CONTROL_REG0);

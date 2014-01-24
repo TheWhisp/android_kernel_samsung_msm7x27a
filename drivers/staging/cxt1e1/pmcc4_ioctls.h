@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 /* RCSid: $Header: /home/rickd/projects/pmcc4/include/pmcc4_ioctls.h,v 2.0 2005/09/28 00:10:09 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _INC_PMCC4_IOCTLS_H_
 #define _INC_PMCC4_IOCTLS_H_
 
@@ -22,6 +25,7 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 2.0 $
  * Last changed on $Date: 2005/09/28 00:10:09 $
@@ -35,6 +39,8 @@
  * Add RCS tracking heading.
  *
  *-----------------------------------------------------------------------------
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include "sbew_ioc.h"

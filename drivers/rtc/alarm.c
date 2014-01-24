@@ -13,7 +13,11 @@
  *
  */
 
+<<<<<<< HEAD
 #include <asm/mach/time.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/android_alarm.h>
 #include <linux/device.h>
 #include <linux/miscdevice.h>
@@ -21,9 +25,16 @@
 #include <linux/rtc.h>
 #include <linux/sched.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/wakelock.h>
 
+=======
+#include <linux/wakelock.h>
+
+#include <asm/mach/time.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ANDROID_ALARM_PRINT_ERROR (1U << 0)
 #define ANDROID_ALARM_PRINT_INIT_STATUS (1U << 1)
 #define ANDROID_ALARM_PRINT_TSET (1U << 2)

@@ -382,7 +382,11 @@ static void ircomm_tty_discovery_indication(discinfo_t *discovery,
 	info.daddr = discovery->daddr;
 	info.saddr = discovery->saddr;
 
+<<<<<<< HEAD
 	self = (struct ircomm_tty_cb *) priv;
+=======
+	self = priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ircomm_tty_do_event(self, IRCOMM_TTY_DISCOVERY_INDICATION,
 			    NULL, &info);
 }

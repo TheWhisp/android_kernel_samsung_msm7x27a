@@ -38,6 +38,10 @@
 #include <linux/io.h>
 #include <linux/list.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/usb.h>
 #include <linux/usb/c67x00.h>
 
@@ -224,6 +228,7 @@ static struct platform_driver c67x00_driver = {
 		.name = "c67x00",
 	},
 };
+<<<<<<< HEAD
 MODULE_ALIAS("platform:c67x00");
 
 static int __init c67x00_init(void)
@@ -238,7 +243,15 @@ static void __exit c67x00_exit(void)
 
 module_init(c67x00_init);
 module_exit(c67x00_exit);
+=======
+
+module_platform_driver(c67x00_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Peter Korsgaard, Jan Veldeman, Grant Likely");
 MODULE_DESCRIPTION("Cypress C67X00 USB Controller Driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:c67x00");
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -3,7 +3,11 @@
  *  Routines for control of MPU-401 in UART mode
  *
  *  MPU-401 supports UART mode which is not capable generate transmit
+<<<<<<< HEAD
  *  interrupts thus output is done via polling. Also, if irq < 0, then
+=======
+ *  interrupts thus output is done via polling. Without interrupt,
+>>>>>>> refs/remotes/origin/cm-10.0
  *  input is done also via polling. Do not expect good performance.
  *
  *
@@ -33,6 +37,10 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/errno.h>
 #include <sound/core.h>
@@ -374,7 +382,11 @@ snd_mpu401_uart_input_trigger(struct snd_rawmidi_substream *substream, int up)
 			/* first time - flush FIFO */
 			while (max-- > 0)
 				mpu->read(mpu, MPU401D(mpu));
+<<<<<<< HEAD
 			if (mpu->irq < 0)
+=======
+			if (mpu->info_flags & MPU401_INFO_USE_TIMER)
+>>>>>>> refs/remotes/origin/cm-10.0
 				snd_mpu401_uart_add_timer(mpu, 1);
 		}
 		
@@ -383,7 +395,11 @@ snd_mpu401_uart_input_trigger(struct snd_rawmidi_substream *substream, int up)
 		snd_mpu401_uart_input_read(mpu);
 		spin_unlock_irqrestore(&mpu->input_lock, flags);
 	} else {
+<<<<<<< HEAD
 		if (mpu->irq < 0)
+=======
+		if (mpu->info_flags & MPU401_INFO_USE_TIMER)
+>>>>>>> refs/remotes/origin/cm-10.0
 			snd_mpu401_uart_remove_timer(mpu, 1);
 		clear_bit(MPU401_MODE_BIT_INPUT_TRIGGER, &mpu->mode);
 	}
@@ -496,7 +512,11 @@ static struct snd_rawmidi_ops snd_mpu401_uart_input =
 static void snd_mpu401_uart_free(struct snd_rawmidi *rmidi)
 {
 	struct snd_mpu401 *mpu = rmidi->private_data;
+<<<<<<< HEAD
 	if (mpu->irq_flags && mpu->irq >= 0)
+=======
+	if (mpu->irq >= 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_irq(mpu->irq, (void *) mpu);
 	release_and_free_resource(mpu->res);
 	kfree(mpu);
@@ -509,8 +529,12 @@ static void snd_mpu401_uart_free(struct snd_rawmidi *rmidi)
  * @hardware: the hardware type, MPU401_HW_XXXX
  * @port: the base address of MPU401 port
  * @info_flags: bitflags MPU401_INFO_XXX
+<<<<<<< HEAD
  * @irq: the irq number, -1 if no interrupt for mpu
  * @irq_flags: the irq request flags (SA_XXX), 0 if irq was already reserved.
+=======
+ * @irq: the ISA irq number, -1 if not to be allocated
+>>>>>>> refs/remotes/origin/cm-10.0
  * @rrawmidi: the pointer to store the new rawmidi instance
  *
  * Creates a new MPU-401 instance.
@@ -525,7 +549,11 @@ int snd_mpu401_uart_new(struct snd_card *card, int device,
 			unsigned short hardware,
 			unsigned long port,
 			unsigned int info_flags,
+<<<<<<< HEAD
 			int irq, int irq_flags,
+=======
+			int irq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			struct snd_rawmidi ** rrawmidi)
 {
 	struct snd_mpu401 *mpu;
@@ -578,8 +606,13 @@ int snd_mpu401_uart_new(struct snd_card *card, int device,
 		mpu->cport = port + 2;
 	else
 		mpu->cport = port + 1;
+<<<<<<< HEAD
 	if (irq >= 0 && irq_flags) {
 		if (request_irq(irq, snd_mpu401_uart_interrupt, irq_flags,
+=======
+	if (irq >= 0) {
+		if (request_irq(irq, snd_mpu401_uart_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"MPU401 UART", (void *) mpu)) {
 			snd_printk(KERN_ERR "mpu401_uart: "
 				   "unable to grab IRQ %d\n", irq);
@@ -587,9 +620,16 @@ int snd_mpu401_uart_new(struct snd_card *card, int device,
 			return -EBUSY;
 		}
 	}
+<<<<<<< HEAD
 	mpu->info_flags = info_flags;
 	mpu->irq = irq;
 	mpu->irq_flags = irq_flags;
+=======
+	if (irq < 0 && !(info_flags & MPU401_INFO_IRQ_HOOK))
+		info_flags |= MPU401_INFO_USE_TIMER;
+	mpu->info_flags = info_flags;
+	mpu->irq = irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (card->shortname[0])
 		snprintf(rmidi->name, sizeof(rmidi->name), "%s MIDI",
 			 card->shortname);

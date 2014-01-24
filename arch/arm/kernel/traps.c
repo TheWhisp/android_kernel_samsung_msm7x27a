@@ -26,14 +26,24 @@
 #include <linux/init.h>
 #include <linux/sched.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/cacheflush.h>
 #include <asm/exception.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <asm/cacheflush.h>
+#include <asm/exception.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unistd.h>
 #include <asm/traps.h>
 #include <asm/unwind.h>
 #include <asm/tls.h>
+<<<<<<< HEAD
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "signal.h"
 
@@ -227,6 +237,14 @@ void show_stack(struct task_struct *tsk, unsigned long *sp)
 #else
 #define S_SMP ""
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_THUMB2_KERNEL
+#define S_ISA " THUMB2"
+#else
+#define S_ISA " ARM"
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __die(const char *str, int err, struct thread_info *thread, struct pt_regs *regs)
 {
@@ -234,8 +252,13 @@ static int __die(const char *str, int err, struct thread_info *thread, struct pt
 	static int die_counter;
 	int ret;
 
+<<<<<<< HEAD
 	printk(KERN_EMERG "Internal error: %s: %x [#%d]" S_PREEMPT S_SMP "\n",
 	       str, err, ++die_counter);
+=======
+	printk(KERN_EMERG "Internal error: %s: %x [#%d]" S_PREEMPT S_SMP
+	       S_ISA "\n", str, err, ++die_counter);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* trap and error numbers are mostly meaningless on ARM */
 	ret = notify_die(DIE_OOPS, str, regs, err, tsk->thread.trap_no, SIGSEGV);
@@ -372,16 +395,45 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 	pc = (void __user *)instruction_pointer(regs);
 
 	if (processor_mode(regs) == SVC_MODE) {
+<<<<<<< HEAD
 		instr = *(u32 *) pc;
 	} else if (thumb_mode(regs)) {
 		get_user(instr, (u16 __user *)pc);
 	} else {
 		get_user(instr, (u32 __user *)pc);
+=======
+#ifdef CONFIG_THUMB2_KERNEL
+		if (thumb_mode(regs)) {
+			instr = ((u16 *)pc)[0];
+			if (is_wide_instruction(instr)) {
+				instr <<= 16;
+				instr |= ((u16 *)pc)[1];
+			}
+		} else
+#endif
+			instr = *(u32 *) pc;
+	} else if (thumb_mode(regs)) {
+		if (get_user(instr, (u16 __user *)pc))
+			goto die_sig;
+		if (is_wide_instruction(instr)) {
+			unsigned int instr2;
+			if (get_user(instr2, (u16 __user *)pc+1))
+				goto die_sig;
+			instr <<= 16;
+			instr |= instr2;
+		}
+	} else if (get_user(instr, (u32 __user *)pc)) {
+		goto die_sig;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (call_undef_hook(regs, instr) == 0)
 		return;
 
+<<<<<<< HEAD
+=======
+die_sig:
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_DEBUG_USER
 	if (user_debug & UDBG_UNDEFINED) {
 		printk(KERN_INFO "%s (%d): undefined instruction: pc=%p\n",
@@ -470,10 +522,13 @@ do_cache_op(unsigned long start, unsigned long end, int flags)
 
 		up_read(&mm->mmap_sem);
 		flush_cache_user_range(start, end);
+<<<<<<< HEAD
 
 #ifdef CONFIG_ARCH_MSM7X27
 		mb();
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	up_read(&mm->mmap_sem);
@@ -767,6 +822,7 @@ static void __init kuser_get_tls_init(unsigned long vectors)
 		memcpy((void *)vectors + 0xfe0, (void *)vectors + 0xfe8, 4);
 }
 
+<<<<<<< HEAD
 void __init early_trap_init(void)
 {
 #if defined(CONFIG_CPU_USE_DOMAINS)
@@ -774,11 +830,21 @@ void __init early_trap_init(void)
 #else
 	unsigned long vectors = (unsigned long)vectors_page;
 #endif
+=======
+void __init early_trap_init(void *vectors_base)
+{
+	unsigned long vectors = (unsigned long)vectors_base;
+>>>>>>> refs/remotes/origin/cm-10.0
 	extern char __stubs_start[], __stubs_end[];
 	extern char __vectors_start[], __vectors_end[];
 	extern char __kuser_helper_start[], __kuser_helper_end[];
 	int kuser_sz = __kuser_helper_end - __kuser_helper_start;
 
+<<<<<<< HEAD
+=======
+	vectors_page = vectors_base;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Copy the vectors, stubs and kuser helpers (in entry-armv.S)
 	 * into the vector page, mapped at 0xffff0000, and ensure these

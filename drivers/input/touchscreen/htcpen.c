@@ -40,6 +40,7 @@ MODULE_LICENSE("GPL");
 #define X_AXIS_MAX		2040
 #define Y_AXIS_MAX		2040
 
+<<<<<<< HEAD
 static int invert_x;
 module_param(invert_x, bool, 0644);
 MODULE_PARM_DESC(invert_x, "If set, X axis is inverted");
@@ -53,6 +54,15 @@ static struct pnp_device_id pnp_ids[] = {
 };
 MODULE_DEVICE_TABLE(pnp, pnp_ids);
 
+=======
+static bool invert_x;
+module_param(invert_x, bool, 0644);
+MODULE_PARM_DESC(invert_x, "If set, X axis is inverted");
+static bool invert_y;
+module_param(invert_y, bool, 0644);
+MODULE_PARM_DESC(invert_y, "If set, Y axis is inverted");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static irqreturn_t htcpen_interrupt(int irq, void *handle)
 {
 	struct input_dev *htcpen_dev = handle;
@@ -237,6 +247,10 @@ static struct dmi_system_id __initdata htcshift_dmi_table[] = {
 	},
 	{ }
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(dmi, htcshift_dmi_table);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init htcpen_isa_init(void)
 {

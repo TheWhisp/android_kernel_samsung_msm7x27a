@@ -18,7 +18,11 @@ MODULE_LICENSE("GPL");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+>>>>>>> refs/remotes/origin/cm-10.0
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;
 
 module_param_array(index, int, NULL, 0444);

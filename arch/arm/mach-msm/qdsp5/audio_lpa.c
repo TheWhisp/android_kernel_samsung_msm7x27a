@@ -1,7 +1,11 @@
 
 /* audio_lpa.c - low power audio driver
  *
+<<<<<<< HEAD
  * Copyright (c) 2012, Code Aurora Forum. All rights reserved.
+=======
+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Based on the PCM decoder driver in arch/arm/mach-msm/qdsp5/audio_pcm.c
  *
@@ -37,8 +41,13 @@
 #include <linux/debugfs.h>
 #include <linux/delay.h>
 #include <linux/earlysuspend.h>
+<<<<<<< HEAD
 #include <linux/list.h>
 #include <linux/android_pmem.h>
+=======
+#include <linux/ion.h>
+#include <linux/list.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/msm_audio.h>
 
@@ -46,9 +55,15 @@
 #include <mach/msm_adsp.h>
 #include <mach/iommu.h>
 #include <mach/iommu_domains.h>
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
 #include <mach/qdsp5/qdsp5audppcmdi.h>
 #include <mach/qdsp5/qdsp5audppmsg.h>
+=======
+#include <mach/qdsp5/qdsp5audppcmdi.h>
+#include <mach/qdsp5/qdsp5audppmsg.h>
+#include <mach/qdsp5/qdsp5audpp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/qdsp5/qdsp5audplaycmdi.h>
 #include <mach/qdsp5/qdsp5audplaymsg.h>
 #include <mach/qdsp5/qdsp5rmtcmdi.h>
@@ -138,9 +153,15 @@ struct audpcm_event {
 	union msm_audio_event_payload payload;
 };
 
+<<<<<<< HEAD
 struct audlpa_pmem_region {
 	struct list_head list;
 	struct file *file;
+=======
+struct audlpa_ion_region {
+	struct list_head list;
+	struct ion_handle *handle;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int fd;
 	void *vaddr;
 	unsigned long paddr;
@@ -218,9 +239,16 @@ struct audio {
 	struct mutex get_event_lock;
 	int event_abort;
 
+<<<<<<< HEAD
 	struct list_head pmem_region_queue;
 	int buffer_count;
 	int buffer_size;
+=======
+	struct list_head ion_region_queue;
+	int buffer_count;
+	int buffer_size;
+	struct ion_client *client;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int auddec_dsp_config(struct audio *audio, int enable);
@@ -228,7 +256,11 @@ static void audpp_cmd_cfg_adec_params(struct audio *audio);
 static void audio_dsp_event(void *private, unsigned id, uint16_t *msg);
 static void audpcm_post_event(struct audio *audio, int type,
 	union msm_audio_event_payload payload);
+<<<<<<< HEAD
 static unsigned long audlpa_pmem_fixup(struct audio *audio, void *addr,
+=======
+static unsigned long audlpa_ion_fixup(struct audio *audio, void *addr,
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long len, int ref_up);
 static void audpcm_async_send_data(struct audio *audio,
 	unsigned needed);
@@ -292,9 +324,16 @@ static int audio_enable(struct audio *audio)
 	cfg.snd_method = RPC_SND_METHOD_MIDI;
 
 	rc = audmgr_enable(&audio->audmgr, &cfg);
+<<<<<<< HEAD
 	if (rc < 0)
 		return rc;
 
+=======
+	if (rc < 0) {
+		msm_adsp_dump(audio->audplay);
+		return rc;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (msm_adsp_enable(audio->audplay)) {
 		MM_ERR("msm_adsp_enable(audplay) failed\n");
 		audmgr_disable(&audio->audmgr);
@@ -334,7 +373,13 @@ static int audio_disable(struct audio *audio)
 		wake_up(&audio->write_wait);
 		msm_adsp_disable(audio->audplay);
 		audpp_disable(audio->dec_id, audio);
+<<<<<<< HEAD
 		audmgr_disable(&audio->audmgr);
+=======
+		rc = audmgr_disable(&audio->audmgr);
+		if (rc < 0)
+			msm_adsp_dump(audio->audplay);
+>>>>>>> refs/remotes/origin/cm-10.0
 		audio->out_needed = 0;
 		rmt_put_resource(audio);
 		audio->rmt_resource_released = 1;
@@ -554,7 +599,13 @@ static void audpcm_async_flush(struct audio *audio)
 	struct audpcm_buffer_node *buf_node;
 	struct list_head *ptr, *next;
 	union msm_audio_event_payload payload;
+<<<<<<< HEAD
 
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	MM_DBG("\n"); /* Macro prints the file name and function */
 	list_for_each_safe(ptr, next, &audio->out_queue) {
 		buf_node = list_entry(ptr, struct audpcm_buffer_node, list);
@@ -567,6 +618,10 @@ static void audpcm_async_flush(struct audio *audio)
 	audio->drv_status &= ~ADRV_STATUS_OBUF_GIVEN;
 	audio->out_needed = 0;
 	atomic_set(&audio->out_bytes, 0);
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 static void audio_ioport_reset(struct audio *audio)
 {
@@ -678,7 +733,11 @@ static long audpcm_process_event_req(struct audio *audio, void __user *arg)
 
 	if (drv_evt && drv_evt->event_type == AUDIO_EVENT_WRITE_DONE) {
 		mutex_lock(&audio->lock);
+<<<<<<< HEAD
 		audlpa_pmem_fixup(audio, drv_evt->payload.aio_buf.buf_addr,
+=======
+		audlpa_ion_fixup(audio, drv_evt->payload.aio_buf.buf_addr,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  drv_evt->payload.aio_buf.buf_len, 0);
 		mutex_unlock(&audio->lock);
 	}
@@ -688,6 +747,7 @@ static long audpcm_process_event_req(struct audio *audio, void __user *arg)
 	return rc;
 }
 
+<<<<<<< HEAD
 static int audlpa_pmem_check(struct audio *audio,
 		void *vaddr, unsigned long len)
 {
@@ -704,12 +764,30 @@ static int audlpa_pmem_check(struct audio *audio,
 				region_elt->vaddr,
 				(void *)region_elt->paddr,
 				region_elt->len);
+=======
+static int audlpa_ion_check(struct audio *audio,
+		void *vaddr, unsigned long len)
+{
+	struct audlpa_ion_region *region_elt;
+	struct audlpa_ion_region t = {.vaddr = vaddr, .len = len };
+
+	list_for_each_entry(region_elt, &audio->ion_region_queue, list) {
+		if (CONTAINS(region_elt, &t) || CONTAINS(&t, region_elt) ||
+		    OVERLAPS(region_elt, &t)) {
+			MM_ERR("[%p]:region (vaddr %p len %ld)"
+				" clashes with registered region"
+				" (vaddr %p paddr %p len %ld)\n",
+				audio, vaddr, len,
+				region_elt->vaddr,
+				(void *)region_elt->paddr, region_elt->len);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EINVAL;
 		}
 	}
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static int audlpa_pmem_add(struct audio *audio,
 	struct msm_audio_pmem_info *info)
@@ -720,12 +798,27 @@ static int audlpa_pmem_add(struct audio *audio,
 	int rc = -EINVAL;
 
 	MM_DBG("\n"); /* Macro prints the file name and function */
+=======
+static int audlpa_ion_add(struct audio *audio,
+			struct msm_audio_ion_info *info)
+{
+	ion_phys_addr_t paddr;
+	size_t len;
+	unsigned long kvaddr;
+	struct audlpa_ion_region *region;
+	int rc = -EINVAL;
+	struct ion_handle *handle;
+	unsigned long ionflag;
+
+	MM_ERR("\n"); /* Macro prints the file name and function */
+>>>>>>> refs/remotes/origin/cm-10.0
 	region = kmalloc(sizeof(*region), GFP_KERNEL);
 
 	if (!region) {
 		rc = -ENOMEM;
 		goto end;
 	}
+<<<<<<< HEAD
 
 	if (get_pmem_file(info->fd, &paddr, &kvaddr, &len, &file)) {
 		kfree(region);
@@ -739,20 +832,67 @@ static int audlpa_pmem_add(struct audio *audio,
 		goto end;
 	}
 
+=======
+	handle = ion_import_dma_buf(audio->client, info->fd);
+	if (IS_ERR_OR_NULL(handle)) {
+		pr_err("%s: could not get handle of the given fd\n", __func__);
+		goto import_error;
+	}
+	rc = ion_handle_get_flags(audio->client, handle, &ionflag);
+	if (rc) {
+		pr_err("%s: could not get flags for the handle\n", __func__);
+		goto flag_error;
+	}
+	kvaddr = (unsigned long)ion_map_kernel(audio->client, handle, ionflag);
+	if (IS_ERR_OR_NULL((void *)kvaddr)) {
+		pr_err("%s: could not get virtual address\n", __func__);
+		goto map_error;
+	}
+	rc = ion_phys(audio->client, handle, &paddr, &len);
+	if (rc) {
+		pr_err("%s: could not get physical address\n", __func__);
+		goto ion_error;
+	}
+	rc = audlpa_ion_check(audio, info->vaddr, len);
+	if (rc < 0) {
+		MM_ERR("audpcm_ion_check failed\n");
+		goto ion_error;
+	}
+	region->handle = handle;
+>>>>>>> refs/remotes/origin/cm-10.0
 	region->vaddr = info->vaddr;
 	region->fd = info->fd;
 	region->paddr = paddr;
 	region->kvaddr = kvaddr;
 	region->len = len;
+<<<<<<< HEAD
 	region->file = file;
 	region->ref_cnt = 0;
 	MM_DBG("add region paddr %lx vaddr %p, len %lu\n", region->paddr,
 			region->vaddr, region->len);
 	list_add_tail(&region->list, &audio->pmem_region_queue);
+=======
+	region->ref_cnt = 0;
+	MM_DBG("[%p]:add region paddr %lx vaddr %p, len %lu kvaddr %lx\n",
+		audio, region->paddr, region->vaddr,
+		region->len, region->kvaddr);
+	list_add_tail(&region->list, &audio->ion_region_queue);
+
+	return rc;
+
+ion_error:
+	ion_unmap_kernel(audio->client, handle);
+map_error:
+flag_error:
+	ion_free(audio->client, handle);
+import_error:
+	kfree(region);
+>>>>>>> refs/remotes/origin/cm-10.0
 end:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int audlpa_pmem_remove(struct audio *audio,
 	struct msm_audio_pmem_info *info)
 {
@@ -770,12 +910,35 @@ static int audlpa_pmem_remove(struct audio *audio,
 			if (region->ref_cnt) {
 				MM_DBG("region %p in use ref_cnt %d\n",
 						region, region->ref_cnt);
+=======
+static int audlpa_ion_remove(struct audio *audio,
+			struct msm_audio_ion_info *info)
+{
+	struct audlpa_ion_region *region;
+	struct list_head *ptr, *next;
+	int rc = -EINVAL;
+
+	list_for_each_safe(ptr, next, &audio->ion_region_queue) {
+		region = list_entry(ptr, struct audlpa_ion_region, list);
+
+		if (region != NULL && (region->fd == info->fd) &&
+		    (region->vaddr == info->vaddr)) {
+			if (region->ref_cnt) {
+				MM_DBG("%s[%p]:region %p in use ref_cnt %d\n",
+					__func__, audio, region,
+					region->ref_cnt);
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 			MM_DBG("remove region fd %d vaddr %p\n",
 				info->fd, info->vaddr);
 			list_del(&region->list);
+<<<<<<< HEAD
 			put_pmem_file(region->file);
+=======
+			ion_unmap_kernel(audio->client, region->handle);
+			ion_free(audio->client, region->handle);
+>>>>>>> refs/remotes/origin/cm-10.0
 			kfree(region);
 			rc = 0;
 			break;
@@ -785,6 +948,7 @@ static int audlpa_pmem_remove(struct audio *audio,
 	return rc;
 }
 
+<<<<<<< HEAD
 static int audlpa_pmem_lookup_vaddr(struct audio *audio, void *addr,
 		     unsigned long len, struct audlpa_pmem_region **region)
 {
@@ -797,11 +961,26 @@ static int audlpa_pmem_lookup_vaddr(struct audio *audio, void *addr,
 	/* returns physical address or zero */
 	list_for_each_entry(region_elt, &audio->pmem_region_queue,
 		list) {
+=======
+static int audlpa_ion_lookup_vaddr(struct audio *audio, void *addr,
+			unsigned long len, struct audlpa_ion_region **region)
+{
+	struct audlpa_ion_region *region_elt;
+	int match_count = 0;
+	*region = NULL;
+
+	/* returns physical address or zero */
+	list_for_each_entry(region_elt, &audio->ion_region_queue, list) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (addr >= region_elt->vaddr &&
 		    addr < region_elt->vaddr + region_elt->len &&
 		    addr + len <= region_elt->vaddr + region_elt->len) {
 			/* offset since we could pass vaddr inside a registerd
+<<<<<<< HEAD
 			 * pmem buffer
+=======
+			 * ion buffer
+>>>>>>> refs/remotes/origin/cm-10.0
 			 */
 
 			match_count++;
@@ -811,6 +990,7 @@ static int audlpa_pmem_lookup_vaddr(struct audio *audio, void *addr,
 	}
 
 	if (match_count > 1) {
+<<<<<<< HEAD
 		MM_ERR("multiple hits for vaddr %p, len %ld\n", addr, len);
 		list_for_each_entry(region_elt,
 		  &audio->pmem_region_queue, list) {
@@ -818,10 +998,23 @@ static int audlpa_pmem_lookup_vaddr(struct audio *audio, void *addr,
 			    addr < region_elt->vaddr + region_elt->len &&
 			    addr + len <= region_elt->vaddr + region_elt->len)
 				MM_ERR("\t%p, %ld --> %p\n", region_elt->vaddr,
+=======
+		MM_ERR("%s[%p]:multiple hits for vaddr %p, len %ld\n",
+			 __func__, audio, addr, len);
+		list_for_each_entry(region_elt, &audio->ion_region_queue,
+					list) {
+			if (addr >= region_elt->vaddr &&
+			addr < region_elt->vaddr + region_elt->len &&
+			addr + len <= region_elt->vaddr + region_elt->len)
+					MM_ERR("\t%s[%p]:%p, %ld --> %p\n",
+						__func__, audio,
+						region_elt->vaddr,
+>>>>>>> refs/remotes/origin/cm-10.0
 						region_elt->len,
 						(void *)region_elt->paddr);
 		}
 	}
+<<<<<<< HEAD
 
 	return *region ? 0 : -1;
 }
@@ -836,6 +1029,21 @@ unsigned long audlpa_pmem_fixup(struct audio *audio, void *addr,
 	ret = audlpa_pmem_lookup_vaddr(audio, addr, len, &region);
 	if (ret) {
 		MM_ERR("lookup (%p, %ld) failed\n", addr, len);
+=======
+	return *region ? 0 : -1;
+}
+static unsigned long audlpa_ion_fixup(struct audio *audio, void *addr,
+		    unsigned long len, int ref_up)
+{
+	struct audlpa_ion_region *region;
+	unsigned long paddr;
+	int ret;
+
+	ret = audlpa_ion_lookup_vaddr(audio, addr, len, &region);
+	if (ret) {
+		MM_ERR("%s[%p]:lookup (%p, %ld) failed\n",
+			__func__, audio, addr, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 	if (ref_up)
@@ -869,10 +1077,16 @@ static int audlpa_aio_buf_add(struct audio *audio, unsigned dir,
 			buf_node->buf.buf_addr, buf_node->buf.buf_len,
 			buf_node->buf.data_len);
 
+<<<<<<< HEAD
 	buf_node->paddr = audlpa_pmem_fixup(
 		audio, buf_node->buf.buf_addr,
 		buf_node->buf.buf_len, 1);
 
+=======
+	buf_node->paddr = audlpa_ion_fixup(
+		audio, buf_node->buf.buf_addr,
+		buf_node->buf.buf_len, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dir) {
 		/* write */
 		if (!buf_node->paddr ||
@@ -1041,6 +1255,7 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		rc = audpp_pause(audio->dec_id, (int) arg);
 		break;
 
+<<<<<<< HEAD
 	case AUDIO_REGISTER_PMEM: {
 			struct msm_audio_pmem_info info;
 			MM_DBG("AUDIO_REGISTER_PMEM\n");
@@ -1058,6 +1273,25 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 				rc = -EFAULT;
 			else
 				rc = audlpa_pmem_remove(audio, &info);
+=======
+	case AUDIO_REGISTER_ION: {
+		struct msm_audio_ion_info info;
+		MM_ERR("AUDIO_REGISTER_ION\n");
+			if (copy_from_user(&info, (void *) arg, sizeof(info)))
+				rc = -EFAULT;
+			else
+				rc = audlpa_ion_add(audio, &info);
+			break;
+		}
+
+	case AUDIO_DEREGISTER_ION: {
+		struct msm_audio_ion_info info;
+		MM_ERR("AUDIO_DEREGISTER_ION\n");
+			if (copy_from_user(&info, (void *) arg, sizeof(info)))
+				rc = -EFAULT;
+			else
+				rc = audlpa_ion_remove(audio, &info);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 
@@ -1174,7 +1408,12 @@ done:
 	return rc;
 }
 
+<<<<<<< HEAD
 int audlpa_fsync(struct file *file, int datasync)
+=======
+int audlpa_fsync(struct file *file, loff_t a, loff_t b,
+	int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct audio *audio = file->private_data;
 
@@ -1184,6 +1423,7 @@ int audlpa_fsync(struct file *file, int datasync)
 	return audlpa_async_fsync(audio);
 }
 
+<<<<<<< HEAD
 static void audpcm_reset_pmem_region(struct audio *audio)
 {
 	struct audlpa_pmem_region *region;
@@ -1193,12 +1433,27 @@ static void audpcm_reset_pmem_region(struct audio *audio)
 		region = list_entry(ptr, struct audlpa_pmem_region, list);
 		list_del(&region->list);
 		put_pmem_file(region->file);
+=======
+static void audpcm_reset_ion_region(struct audio *audio)
+{
+	struct audlpa_ion_region *region;
+	struct list_head *ptr, *next;
+
+	list_for_each_safe(ptr, next, &audio->ion_region_queue) {
+		region = list_entry(ptr, struct audlpa_ion_region, list);
+		list_del(&region->list);
+		ion_unmap_kernel(audio->client, region->handle);
+		ion_free(audio->client, region->handle);
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(region);
 	}
 
 	return;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int audio_release(struct inode *inode, struct file *file)
 {
 	struct audio *audio = file->private_data;
@@ -1209,7 +1464,11 @@ static int audio_release(struct inode *inode, struct file *file)
 	if (audio->rmt_resource_released == 0)
 		rmt_put_resource(audio);
 	audpcm_async_flush(audio);
+<<<<<<< HEAD
 	audpcm_reset_pmem_region(audio);
+=======
+	audpcm_reset_ion_region(audio);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	msm_adsp_put(audio->audplay);
 	audpp_adec_free(audio->dec_id);
@@ -1220,16 +1479,23 @@ static int audio_release(struct inode *inode, struct file *file)
 	audio->event_abort = 1;
 	wake_up(&audio->event_wait);
 	audpcm_reset_event_queue(audio);
+<<<<<<< HEAD
 	MM_DBG("pmem area = 0x%8x\n", (unsigned int)audio->data);
 	if (audio->data) {
 		msm_subsystem_unmap_buffer(audio->map_v_write);
 		free_contiguous_memory_by_paddr(audio->phys);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&audio->lock);
 #ifdef CONFIG_DEBUG_FS
 	if (audio->dentry)
 		debugfs_remove(audio->dentry);
 #endif
+<<<<<<< HEAD
+=======
+	ion_client_destroy(audio->client);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(audio);
 	return 0;
 }
@@ -1415,7 +1681,11 @@ static int audio_open(struct inode *inode, struct file *file)
 	spin_lock_init(&audio->dsp_lock);
 	init_waitqueue_head(&audio->write_wait);
 	INIT_LIST_HEAD(&audio->out_queue);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&audio->pmem_region_queue);
+=======
+	INIT_LIST_HEAD(&audio->ion_region_queue);
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_LIST_HEAD(&audio->free_event_queue);
 	INIT_LIST_HEAD(&audio->event_queue);
 	init_waitqueue_head(&audio->wait);
@@ -1455,6 +1725,17 @@ static int audio_open(struct inode *inode, struct file *file)
 			break;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	audio->client = msm_ion_client_create(UINT_MAX, "Audio_LPA_Client");
+	if (IS_ERR_OR_NULL(audio->client)) {
+		pr_err("Unable to create ION client\n");
+		goto err;
+	}
+	MM_DBG("Ion client created\n");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 done:
 	return rc;
 err:

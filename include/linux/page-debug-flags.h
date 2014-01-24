@@ -13,6 +13,10 @@
 
 enum page_debug_flags {
 	PAGE_DEBUG_FLAG_POISON,		/* Page is poisoned */
+<<<<<<< HEAD
+=======
+	PAGE_DEBUG_FLAG_GUARD,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -21,7 +25,12 @@ enum page_debug_flags {
  */
 
 #ifdef CONFIG_WANT_PAGE_DEBUG_FLAGS
+<<<<<<< HEAD
 #if !defined(CONFIG_PAGE_POISONING) \
+=======
+#if !defined(CONFIG_PAGE_POISONING) && \
+    !defined(CONFIG_PAGE_GUARD) \
+>>>>>>> refs/remotes/origin/cm-10.0
 /* && !defined(CONFIG_PAGE_DEBUG_SOMETHING_ELSE) && ... */
 #error WANT_PAGE_DEBUG_FLAGS is turned on with no debug features!
 #endif

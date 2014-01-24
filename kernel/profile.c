@@ -13,7 +13,11 @@
  *	to resolve timer interrupt livelocks, William Irwin, Oracle, 2004
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/profile.h>
 #include <linux/bootmem.h>
 #include <linux/notifier.h>

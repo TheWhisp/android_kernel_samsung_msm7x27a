@@ -96,6 +96,11 @@ struct snd_usb_substream {
 	spinlock_t lock;
 
 	struct snd_urb_ops ops;		/* callbacks (must be filled at init) */
+<<<<<<< HEAD
+=======
+	int last_frame_number;          /* stored frame number */
+	int last_delay;                 /* stored delay */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct snd_usb_stream {

@@ -32,6 +32,11 @@ struct work_struct;
 struct bfin_serial_port {
 	struct uart_port port;
 	unsigned int old_status;
+<<<<<<< HEAD
+=======
+	int tx_irq;
+	int rx_irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int status_irq;
 #ifndef BFIN_UART_BF54X_STYLE
 	unsigned int lsr;
@@ -49,9 +54,12 @@ struct bfin_serial_port {
 #elif ANOMALY_05000363
 	unsigned int anomaly_threshold;
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_SERIAL_BFIN_HARD_CTSRTS
 	int scts;
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_SERIAL_BFIN_CTSRTS) || \
 	defined(CONFIG_SERIAL_BFIN_HARD_CTSRTS)
 	int cts_pin;

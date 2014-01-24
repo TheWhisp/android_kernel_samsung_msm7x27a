@@ -18,7 +18,12 @@
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
+<<<<<<< HEAD
  * the Free Software Foundation; only version 2 of the License.
+=======
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -361,29 +366,47 @@ static struct snd_pcm_ops atmel_pcm_ops = {
 /*--------------------------------------------------------------------------*\
  * ASoC platform driver
 \*--------------------------------------------------------------------------*/
+<<<<<<< HEAD
 static u64 atmel_pcm_dmamask = 0xffffffff;
+=======
+static u64 atmel_pcm_dmamask = DMA_BIT_MASK(32);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int atmel_pcm_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
+<<<<<<< HEAD
 	struct snd_soc_dai *dai = rtd->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_pcm *pcm = rtd->pcm;
 	int ret = 0;
 
 	if (!card->dev->dma_mask)
 		card->dev->dma_mask = &atmel_pcm_dmamask;
 	if (!card->dev->coherent_dma_mask)
+<<<<<<< HEAD
 		card->dev->coherent_dma_mask = 0xffffffff;
 
 	if (dai->driver->playback.channels_min) {
+=======
+		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = atmel_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
 			goto out;
 	}
 
+<<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
 		pr_debug("at32-pcm:"
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+		pr_debug("atmel-pcm:"
+>>>>>>> refs/remotes/origin/cm-10.0
 				"Allocating PCM capture DMA buffer\n");
 		ret = atmel_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_CAPTURE);
@@ -494,6 +517,7 @@ static struct platform_driver atmel_pcm_driver = {
 	.remove = __devexit_p(atmel_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init snd_atmel_pcm_init(void)
 {
 	return platform_driver_register(&atmel_pcm_driver);
@@ -509,3 +533,10 @@ module_exit(snd_atmel_pcm_exit);
 MODULE_AUTHOR("Sedji Gaouaou <sedji.gaouaou@atmel.com>");
 MODULE_DESCRIPTION("Atmel PCM module");
 MODULE_LICENSE("GPL v2");
+=======
+module_platform_driver(atmel_pcm_driver);
+
+MODULE_AUTHOR("Sedji Gaouaou <sedji.gaouaou@atmel.com>");
+MODULE_DESCRIPTION("Atmel PCM module");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/cm-10.0

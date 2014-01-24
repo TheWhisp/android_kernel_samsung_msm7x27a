@@ -19,7 +19,11 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/memory_hotplug.h>
 #include <linux/memblock.h>
 #include <linux/slab.h>
@@ -29,6 +33,10 @@
 #include <asm/prom.h>
 #include <asm/udbg.h>
 #include <asm/lv1call.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "platform.h"
 
@@ -319,7 +327,10 @@ static int __init ps3_mm_add_memory(void)
 	}
 
 	memblock_add(start_addr, map.r1.size);
+<<<<<<< HEAD
 	memblock_analyze();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = online_pages(start_pfn, nr_pages);
 

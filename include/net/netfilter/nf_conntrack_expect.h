@@ -91,7 +91,10 @@ static inline void nf_ct_unlink_expect(struct nf_conntrack_expect *exp)
 
 void nf_ct_remove_expectations(struct nf_conn *ct);
 void nf_ct_unexpect_related(struct nf_conntrack_expect *exp);
+<<<<<<< HEAD
 void nf_ct_remove_userspace_expectations(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Allocate space for an expectation: this is mandatory before calling
    nf_ct_expect_related.  You will have to call put afterwards. */

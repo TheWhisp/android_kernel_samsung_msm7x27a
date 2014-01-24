@@ -179,7 +179,10 @@
 #include <linux/stat.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 
 #include <scsi/scsi.h>

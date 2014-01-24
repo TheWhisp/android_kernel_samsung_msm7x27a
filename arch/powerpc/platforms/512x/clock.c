@@ -18,6 +18,10 @@
 #include <linux/list.h>
 #include <linux/errno.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string.h>
 #include <linux/clk.h>
 #include <linux/mutex.h>

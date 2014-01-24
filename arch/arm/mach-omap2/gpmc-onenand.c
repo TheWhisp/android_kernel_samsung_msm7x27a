@@ -10,6 +10,10 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/string.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/mtd/onenand_regs.h>
@@ -17,6 +21,10 @@
 
 #include <asm/mach/flash.h>
 
+<<<<<<< HEAD
+=======
+#include <plat/cpu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/onenand.h>
 #include <plat/board.h>
 #include <plat/gpmc.h>

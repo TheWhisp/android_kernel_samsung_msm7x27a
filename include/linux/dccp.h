@@ -236,6 +236,10 @@ enum dccp_packet_dequeueing_policy {
 #ifdef __KERNEL__
 
 #include <linux/in.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ktime.h>
 #include <linux/list.h>
 #include <linux/uio.h>
@@ -375,8 +379,15 @@ static inline unsigned int dccp_hdr_len(const struct sk_buff *skb)
 /**
  * struct dccp_request_sock  -  represent DCCP-specific connection request
  * @dreq_inet_rsk: structure inherited from
+<<<<<<< HEAD
  * @dreq_iss: initial sequence number sent on the Response (RFC 4340, 7.1)
  * @dreq_isr: initial sequence number received on the Request
+=======
+ * @dreq_iss: initial sequence number, sent on the first Response (RFC 4340, 7.1)
+ * @dreq_gss: greatest sequence number sent (for retransmitted Responses)
+ * @dreq_isr: initial sequence number received in the first Request
+ * @dreq_gsr: greatest sequence number received (for retransmitted Request(s))
+>>>>>>> refs/remotes/origin/cm-10.0
  * @dreq_service: service code present on the Request (there is just one)
  * @dreq_featneg: feature negotiation options for this connection
  * The following two fields are analogous to the ones in dccp_sock:
@@ -386,7 +397,13 @@ static inline unsigned int dccp_hdr_len(const struct sk_buff *skb)
 struct dccp_request_sock {
 	struct inet_request_sock dreq_inet_rsk;
 	__u64			 dreq_iss;
+<<<<<<< HEAD
 	__u64			 dreq_isr;
+=======
+	__u64			 dreq_gss;
+	__u64			 dreq_isr;
+	__u64			 dreq_gsr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	__be32			 dreq_service;
 	struct list_head	 dreq_featneg;
 	__u32			 dreq_timestamp_echo;

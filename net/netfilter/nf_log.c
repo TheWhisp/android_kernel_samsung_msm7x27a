@@ -74,7 +74,11 @@ void nf_log_unregister(struct nf_logger *logger)
 		c_logger = rcu_dereference_protected(nf_loggers[i],
 						     lockdep_is_held(&nf_log_mutex));
 		if (c_logger == logger)
+<<<<<<< HEAD
 			rcu_assign_pointer(nf_loggers[i], NULL);
+=======
+			RCU_INIT_POINTER(nf_loggers[i], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		list_del(&logger->list[i]);
 	}
 	mutex_unlock(&nf_log_mutex);
@@ -103,7 +107,11 @@ void nf_log_unbind_pf(u_int8_t pf)
 	if (pf >= ARRAY_SIZE(nf_loggers))
 		return;
 	mutex_lock(&nf_log_mutex);
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_loggers[pf], NULL);
+=======
+	RCU_INIT_POINTER(nf_loggers[pf], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&nf_log_mutex);
 }
 EXPORT_SYMBOL(nf_log_unbind_pf);

@@ -26,6 +26,10 @@
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/ip.h>
 #include <net/route.h>
 #include <net/tcp.h>
@@ -66,6 +70,10 @@ int fib_lookup(struct net *net, struct flowi4 *flp, struct fib_result *res)
 
 	return err;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(fib_lookup);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int fib4_rule_action(struct fib_rule *rule, struct flowi *flp,
 			    int flags, struct fib_lookup_arg *arg)

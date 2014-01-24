@@ -69,7 +69,11 @@ struct psbl_rec {
 	u32	ffs_size;
 };
 
+<<<<<<< HEAD
 static __initdata char psp_env_version[] = "TIENV0.8";
+=======
+static const char psp_env_version[] __initconst = "TIENV0.8";
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct psp_env_chunk {
 	u8	num;
@@ -77,14 +81,22 @@ struct psp_env_chunk {
 	u16	csum;
 	u8	len;
 	char	data[11];
+<<<<<<< HEAD
 } __attribute__ ((packed));
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct psp_var_map_entry {
 	u8	num;
 	char	*value;
 };
 
+<<<<<<< HEAD
 static struct psp_var_map_entry psp_var_map[] = {
+=======
+static const struct psp_var_map_entry psp_var_map[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{  1,	"cpufrequency" },
 	{  2,	"memsize" },
 	{  3,	"flashsize" },

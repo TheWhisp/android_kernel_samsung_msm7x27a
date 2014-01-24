@@ -28,7 +28,11 @@
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Version Information
@@ -56,7 +60,10 @@ static struct usb_driver empeg_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id =	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver empeg_device = {
@@ -65,7 +72,10 @@ static struct usb_serial_driver empeg_device = {
 		.name =		"empeg",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver =		&empeg_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports =		1,
 	.bulk_out_size =	256,
 	.throttle =		usb_serial_generic_throttle,
@@ -74,6 +84,13 @@ static struct usb_serial_driver empeg_device = {
 	.init_termios =		empeg_init_termios,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&empeg_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int empeg_startup(struct usb_serial *serial)
 {
 	int r;
@@ -136,6 +153,7 @@ static void empeg_init_termios(struct tty_struct *tty)
 	tty_encode_baud_rate(tty, 115200, 115200);
 }
 
+<<<<<<< HEAD
 static int __init empeg_init(void)
 {
 	int retval;
@@ -163,6 +181,9 @@ static void __exit empeg_exit(void)
 
 module_init(empeg_init);
 module_exit(empeg_exit);
+=======
+module_usb_serial_driver(empeg_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

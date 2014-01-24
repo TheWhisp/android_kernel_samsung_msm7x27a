@@ -74,12 +74,20 @@ register struct thread_info *__current_thread_info __asm__("$8");
 #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
 #define TIF_POLLING_NRFLAG	8	/* poll_idle is polling NEED_RESCHED */
 #define TIF_DIE_IF_KERNEL	9	/* dik recursion lock */
+<<<<<<< HEAD
 #define TIF_UAC_NOPRINT		10	/* see sysinfo.h */
 #define TIF_UAC_NOFIX		11
 #define TIF_UAC_SIGBUS		12
 #define TIF_MEMDIE		13	/* is terminating due to OOM killer */
 #define TIF_RESTORE_SIGMASK	14	/* restore signal mask in do_signal */
 #define TIF_FREEZE		16	/* is freezing for suspend */
+=======
+#define TIF_UAC_NOPRINT		10	/* ! Preserve sequence of following */
+#define TIF_UAC_NOFIX		11	/* ! flags as they match            */
+#define TIF_UAC_SIGBUS		12	/* ! userspace part of 'osf_sysinfo' */
+#define TIF_MEMDIE		13	/* is terminating due to OOM killer */
+#define TIF_RESTORE_SIGMASK	14	/* restore signal mask in do_signal */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
 #define _TIF_SIGPENDING		(1<<TIF_SIGPENDING)
@@ -87,7 +95,10 @@ register struct thread_info *__current_thread_info __asm__("$8");
 #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
 #define _TIF_RESTORE_SIGMASK	(1<<TIF_RESTORE_SIGMASK)
 #define _TIF_NOTIFY_RESUME	(1<<TIF_NOTIFY_RESUME)
+<<<<<<< HEAD
 #define _TIF_FREEZE		(1<<TIF_FREEZE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Work to do on interrupt/exception return.  */
 #define _TIF_WORK_MASK		(_TIF_SIGPENDING | _TIF_NEED_RESCHED | \
@@ -97,7 +108,11 @@ register struct thread_info *__current_thread_info __asm__("$8");
 #define _TIF_ALLWORK_MASK	(_TIF_WORK_MASK		\
 				 | _TIF_SYSCALL_TRACE)
 
+<<<<<<< HEAD
 #define ALPHA_UAC_SHIFT		10
+=======
+#define ALPHA_UAC_SHIFT		TIF_UAC_NOPRINT
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ALPHA_UAC_MASK		(1 << TIF_UAC_NOPRINT | 1 << TIF_UAC_NOFIX | \
 				 1 << TIF_UAC_SIGBUS)
 

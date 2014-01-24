@@ -585,12 +585,22 @@ static int alauda_init_media(struct alauda *al)
 	mtd->writesize = 1<<card->pageshift;
 	mtd->type = MTD_NANDFLASH;
 	mtd->flags = MTD_CAP_NANDFLASH;
+<<<<<<< HEAD
 	mtd->read = alauda_read;
 	mtd->write = alauda_write;
 	mtd->erase = alauda_erase;
 	mtd->block_isbad = alauda_isbad;
 	mtd->priv = al;
 	mtd->owner = THIS_MODULE;
+=======
+	mtd->_read = alauda_read;
+	mtd->_write = alauda_write;
+	mtd->_erase = alauda_erase;
+	mtd->_block_isbad = alauda_isbad;
+	mtd->priv = al;
+	mtd->owner = THIS_MODULE;
+	mtd->ecc_strength = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = mtd_device_register(mtd, NULL, 0);
 	if (err) {
@@ -717,6 +727,7 @@ static struct usb_driver alauda_driver = {
 	.id_table =	alauda_table,
 };
 
+<<<<<<< HEAD
 static int __init alauda_init(void)
 {
 	return usb_register(&alauda_driver);
@@ -729,5 +740,8 @@ static void __exit alauda_exit(void)
 
 module_init(alauda_init);
 module_exit(alauda_exit);
+=======
+module_usb_driver(alauda_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");

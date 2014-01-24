@@ -55,7 +55,11 @@
 #include <linux/pagemap.h>
 #include <linux/syscalls.h>
 #include <linux/signal.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/magic.h>
 #include <linux/pid.h>
 #include <linux/nsproxy.h>
@@ -285,7 +289,11 @@ again:
 		put_page(page);
 		/* serialize against __split_huge_page_splitting() */
 		local_irq_disable();
+<<<<<<< HEAD
 		if (likely(__get_user_pages_fast(address, 1, !ro, &page) == 1)) {
+=======
+		if (likely(__get_user_pages_fast(address, 1, 1, &page) == 1)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			page_head = compound_head(page);
 			/*
 			 * page_head is valid pointer but we must pin
@@ -874,7 +882,11 @@ static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *this)
 {
 	struct task_struct *new_owner;
 	struct futex_pi_state *pi_state = this->pi_state;
+<<<<<<< HEAD
 	u32 curval, newval;
+=======
+	u32 uninitialized_var(curval), newval;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!pi_state)
 		return -EINVAL;
@@ -936,7 +948,11 @@ static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *this)
 
 static int unlock_futex_pi(u32 __user *uaddr, u32 uval)
 {
+<<<<<<< HEAD
 	u32 oldval;
+=======
+	u32 uninitialized_var(oldval);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * There is no waiter, so we unlock the futex. The owner died
@@ -1609,7 +1625,11 @@ static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
 	u32 newtid = task_pid_vnr(newowner) | FUTEX_WAITERS;
 	struct futex_pi_state *pi_state = q->pi_state;
 	struct task_struct *oldowner = pi_state->owner;
+<<<<<<< HEAD
 	u32 uval, curval, newval;
+=======
+	u32 uval, uninitialized_var(curval), newval;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	/* Owner died? */
@@ -1826,7 +1846,11 @@ static void futex_wait_queue_me(struct futex_hash_bucket *hb, struct futex_q *q,
  *
  * Returns:
  *  0 - uaddr contains val and hb has been locked
+<<<<<<< HEAD
  * <1 - -EFAULT or -EWOULDBLOCK (uaddr does not contain val) and hb is unlcoked
+=======
+ * <1 - -EFAULT or -EWOULDBLOCK (uaddr does not contain val) and hb is unlocked
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
 			   struct futex_q *q, struct futex_hash_bucket **hb)
@@ -2506,7 +2530,11 @@ err_unlock:
  */
 int handle_futex_death(u32 __user *uaddr, struct task_struct *curr, int pi)
 {
+<<<<<<< HEAD
 	u32 uval, nval, mval;
+=======
+	u32 uval, uninitialized_var(nval), mval;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 retry:
 	if (get_user(uval, uaddr))
@@ -2641,7 +2669,11 @@ void exit_robust_list(struct task_struct *curr)
 long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
 		u32 __user *uaddr2, u32 val2, u32 val3)
 {
+<<<<<<< HEAD
 	int ret = -ENOSYS, cmd = op & FUTEX_CMD_MASK;
+=======
+	int cmd = op & FUTEX_CMD_MASK;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int flags = 0;
 
 	if (!(op & FUTEX_PRIVATE_FLAG))
@@ -2667,6 +2699,7 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
 	case FUTEX_WAIT:
 		val3 = FUTEX_BITSET_MATCH_ANY;
 	case FUTEX_WAIT_BITSET:
+<<<<<<< HEAD
 		ret = futex_wait(uaddr, flags, val, timeout, val3);
 		break;
 	case FUTEX_WAKE:
@@ -2704,6 +2737,33 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
 		ret = -ENOSYS;
 	}
 	return ret;
+=======
+		return futex_wait(uaddr, flags, val, timeout, val3);
+	case FUTEX_WAKE:
+		val3 = FUTEX_BITSET_MATCH_ANY;
+	case FUTEX_WAKE_BITSET:
+		return futex_wake(uaddr, flags, val, val3);
+	case FUTEX_REQUEUE:
+		return futex_requeue(uaddr, flags, uaddr2, val, val2, NULL, 0);
+	case FUTEX_CMP_REQUEUE:
+		return futex_requeue(uaddr, flags, uaddr2, val, val2, &val3, 0);
+	case FUTEX_WAKE_OP:
+		return futex_wake_op(uaddr, flags, uaddr2, val, val2, val3);
+	case FUTEX_LOCK_PI:
+		return futex_lock_pi(uaddr, flags, val, timeout, 0);
+	case FUTEX_UNLOCK_PI:
+		return futex_unlock_pi(uaddr, flags);
+	case FUTEX_TRYLOCK_PI:
+		return futex_lock_pi(uaddr, flags, 0, timeout, 1);
+	case FUTEX_WAIT_REQUEUE_PI:
+		val3 = FUTEX_BITSET_MATCH_ANY;
+		return futex_wait_requeue_pi(uaddr, flags, val, timeout, val3,
+					     uaddr2);
+	case FUTEX_CMP_REQUEUE_PI:
+		return futex_requeue(uaddr, flags, uaddr2, val, val2, &val3, 1);
+	}
+	return -ENOSYS;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 

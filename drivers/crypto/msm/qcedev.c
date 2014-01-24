@@ -1,6 +1,10 @@
 /* Qualcomm CE device driver.
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -172,7 +176,11 @@ static int qcedev_scm_cmd(int resource, int cmd, int *response)
 #endif
 }
 
+<<<<<<< HEAD
 static int qcedev_ce_high_bw_req(struct qcedev_control *podev,
+=======
+static void qcedev_ce_high_bw_req(struct qcedev_control *podev,
+>>>>>>> refs/remotes/origin/cm-10.0
 							bool high_bw_req)
 {
 	int ret = 0;
@@ -180,6 +188,7 @@ static int qcedev_ce_high_bw_req(struct qcedev_control *podev,
 	mutex_lock(&sent_bw_req);
 	if (high_bw_req) {
 		if (podev->high_bw_req_count == 0)
+<<<<<<< HEAD
 			msm_bus_scale_client_update_request(
 					podev->bus_scale_handle, 1);
 		podev->high_bw_req_count++;
@@ -192,6 +201,24 @@ static int qcedev_ce_high_bw_req(struct qcedev_control *podev,
 	mutex_unlock(&sent_bw_req);
 
 	return ret;
+=======
+			ret = msm_bus_scale_client_update_request(
+					podev->bus_scale_handle, 1);
+		if (ret)
+			pr_err("%s Unable to set to high bandwidth\n",
+							__func__);
+		podev->high_bw_req_count++;
+	} else {
+		if (podev->high_bw_req_count == 1)
+			ret = msm_bus_scale_client_update_request(
+					podev->bus_scale_handle, 0);
+		if (ret)
+			pr_err("%s Unable to set to low bandwidth\n",
+							__func__);
+		podev->high_bw_req_count--;
+	}
+	mutex_unlock(&sent_bw_req);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -331,7 +358,11 @@ static int qcedev_open(struct inode *inode, struct file *file)
 	handle->cntl = podev;
 	file->private_data = handle;
 	if (podev->platform_support.bus_scale_table != NULL)
+<<<<<<< HEAD
 		return qcedev_ce_high_bw_req(podev, true);
+=======
+		qcedev_ce_high_bw_req(podev, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -348,8 +379,13 @@ static int qcedev_release(struct inode *inode, struct file *file)
 	}
 	kzfree(handle);
 	file->private_data = NULL;
+<<<<<<< HEAD
 	if (podev->platform_support.bus_scale_table != NULL)
 		return qcedev_ce_high_bw_req(podev, false);
+=======
+	if (podev != NULL && podev->platform_support.bus_scale_table != NULL)
+		qcedev_ce_high_bw_req(podev, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -2218,7 +2254,11 @@ static void qcedev_exit(void)
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Mona Hossain <mhossain@codeaurora.org>");
 MODULE_DESCRIPTION("Qualcomm DEV Crypto driver");
+<<<<<<< HEAD
 MODULE_VERSION("1.25");
+=======
+MODULE_VERSION("1.26");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_init(qcedev_init);
 module_exit(qcedev_exit);

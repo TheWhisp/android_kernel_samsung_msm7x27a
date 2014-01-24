@@ -1,7 +1,11 @@
 /*
  *  Copyright (c) 2003 ARM Limited
  *  All Rights Reserved
+<<<<<<< HEAD
  *  Copyright (c) 2010, The Linux Foundation. All rights reserved.
+=======
+ *  Copyright (c) 2010, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -10,6 +14,11 @@
 #include <linux/linkage.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
+=======
+__CPUINIT
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * MSM specific entry point for secondary CPUs.  This provides
  * a "holding pen" into which all secondary cores are held until we're
@@ -25,10 +34,13 @@ ENTRY(msm_secondary_startup)
 	sub	r4, r4, r5		@ determine virtual/phys offsets
 	add	r6, r6, r4		@ apply
 pen:
+<<<<<<< HEAD
 	wfe
 	dsb				@ ensure subsequent access is
 					@ after event
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldr	r7, [r6]		@ pen_rel has cpu to remove from reset
 	cmp	r7, r0			@ are we lucky?
 	bne	pen
@@ -40,6 +52,10 @@ pen:
 	mvn	r7, #0			@ -1 to registers
 	str r7,[r6]			@ back to the pen for ack
 	b	secondary_startup
+<<<<<<< HEAD
+=======
+ENDPROC(msm_secondary_startup)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 1:	.long	.
 	.long	pen_release

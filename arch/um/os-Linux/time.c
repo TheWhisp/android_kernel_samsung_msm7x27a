@@ -8,11 +8,17 @@
 #include <signal.h>
 #include <time.h>
 #include <sys/time.h>
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "kern_util.h"
 #include "os.h"
 #include "process.h"
 #include "user.h"
+=======
+#include "kern_util.h"
+#include "os.h"
+#include "internal.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int set_interval(void)
 {

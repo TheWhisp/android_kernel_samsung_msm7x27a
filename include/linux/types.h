@@ -24,6 +24,10 @@ typedef __kernel_fd_set		fd_set;
 typedef __kernel_dev_t		dev_t;
 typedef __kernel_ino_t		ino_t;
 typedef __kernel_mode_t		mode_t;
+<<<<<<< HEAD
+=======
+typedef unsigned short		umode_t;
+>>>>>>> refs/remotes/origin/cm-10.0
 typedef __kernel_nlink_t	nlink_t;
 typedef __kernel_off_t		off_t;
 typedef __kernel_pid_t		pid_t;
@@ -188,7 +192,11 @@ typedef __u32 __bitwise __wsum;
  * aligned_u64 should be used in defining kernel<->userspace ABIs to avoid
  * common 32/64-bit compat problems.
  * 64-bit values align to 4-byte boundaries on x86_32 (and possibly other
+<<<<<<< HEAD
  * architectures) and to 8-byte boundaries on 64-bit architetures.  The new
+=======
+ * architectures) and to 8-byte boundaries on 64-bit architectures.  The new
+>>>>>>> refs/remotes/origin/cm-10.0
  * aligned_64 type enforces 8-byte alignment so that structs containing
  * aligned_64 values have the same alignment on 32-bit and 64-bit architectures.
  * No conversions are necessary between 32-bit user-space and a 64-bit kernel.
@@ -209,6 +217,15 @@ typedef u32 phys_addr_t;
 
 typedef phys_addr_t resource_size_t;
 
+<<<<<<< HEAD
+=======
+/*
+ * This type is the placeholder for a hardware interrupt number. It has to be
+ * big enough to enclose whatever representation is used by a given platform.
+ */
+typedef unsigned long irq_hw_number_t;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 typedef struct {
 	int counter;
 } atomic_t;
@@ -238,6 +255,19 @@ struct ustat {
 	char			f_fpack[6];
 };
 
+<<<<<<< HEAD
+=======
+/**
+ * struct rcu_head - callback structure for use with RCU
+ * @next: next update requests in a list
+ * @func: actual update function to call after the grace period.
+ */
+struct rcu_head {
+	struct rcu_head *next;
+	void (*func)(struct rcu_head *head);
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* __KERNEL__ */
 #endif /*  __ASSEMBLY__ */
 #endif /* _LINUX_TYPES_H */

@@ -387,7 +387,11 @@ static void send_tasklet(unsigned long arg)
  * Queues FM Channel-8 packet to FM TX queue and schedules FM TX tasklet for
  * transmission
  */
+<<<<<<< HEAD
 static u32 fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
+=======
+static int fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
+>>>>>>> refs/remotes/origin/cm-10.0
 		int payload_len, struct completion *wait_completion)
 {
 	struct sk_buff *skb;
@@ -456,13 +460,21 @@ static u32 fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
 }
 
 /* Sends FM Channel-8 command to the chip and waits for the response */
+<<<<<<< HEAD
 u32 fmc_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type, void *payload,
+=======
+int fmc_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type, void *payload,
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned int payload_len, void *response, int *response_len)
 {
 	struct sk_buff *skb;
 	struct fm_event_msg_hdr *evt_hdr;
 	unsigned long flags;
+<<<<<<< HEAD
 	u32 ret;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	init_completion(&fmdev->maintask_comp);
 	ret = fm_send_cmd(fmdev, fm_op, type, payload, payload_len,
@@ -470,8 +482,13 @@ u32 fmc_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type, void *payload,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	ret = wait_for_completion_timeout(&fmdev->maintask_comp, FM_DRV_TX_TIMEOUT);
 	if (!ret) {
+=======
+	if (!wait_for_completion_timeout(&fmdev->maintask_comp,
+					 FM_DRV_TX_TIMEOUT)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		fmerr("Timeout(%d sec),didn't get reg"
 			   "completion signal from RX tasklet\n",
 			   jiffies_to_msecs(FM_DRV_TX_TIMEOUT) / 1000);
@@ -508,7 +525,11 @@ u32 fmc_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type, void *payload,
 }
 
 /* --- Helper functions used in FM interrupt handlers ---*/
+<<<<<<< HEAD
 static inline u32 check_cmdresp_status(struct fmdev *fmdev,
+=======
+static inline int check_cmdresp_status(struct fmdev *fmdev,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct sk_buff **skb)
 {
 	struct fm_event_msg_hdr *fm_evt_hdr;
@@ -1058,7 +1079,11 @@ static void fm_irq_handle_intmsk_cmd_resp(struct fmdev *fmdev)
 }
 
 /* Returns availability of RDS data in internel buffer */
+<<<<<<< HEAD
 u32 fmc_is_rds_data_available(struct fmdev *fmdev, struct file *file,
+=======
+int fmc_is_rds_data_available(struct fmdev *fmdev, struct file *file,
+>>>>>>> refs/remotes/origin/cm-10.0
 				struct poll_table_struct *pts)
 {
 	poll_wait(file, &fmdev->rx.rds.read_queue, pts);
@@ -1069,7 +1094,11 @@ u32 fmc_is_rds_data_available(struct fmdev *fmdev, struct file *file,
 }
 
 /* Copies RDS data from internal buffer to user buffer */
+<<<<<<< HEAD
 u32 fmc_transfer_rds_from_internal_buff(struct fmdev *fmdev, struct file *file,
+=======
+int fmc_transfer_rds_from_internal_buff(struct fmdev *fmdev, struct file *file,
+>>>>>>> refs/remotes/origin/cm-10.0
 		u8 __user *buf, size_t count)
 {
 	u32 block_count;
@@ -1113,7 +1142,11 @@ u32 fmc_transfer_rds_from_internal_buff(struct fmdev *fmdev, struct file *file,
 	return ret;
 }
 
+<<<<<<< HEAD
 u32 fmc_set_freq(struct fmdev *fmdev, u32 freq_to_set)
+=======
+int fmc_set_freq(struct fmdev *fmdev, u32 freq_to_set)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1127,7 +1160,11 @@ u32 fmc_set_freq(struct fmdev *fmdev, u32 freq_to_set)
 	}
 }
 
+<<<<<<< HEAD
 u32 fmc_get_freq(struct fmdev *fmdev, u32 *cur_tuned_frq)
+=======
+int fmc_get_freq(struct fmdev *fmdev, u32 *cur_tuned_frq)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (fmdev->rx.freq == FM_UNDEFINED_FREQ) {
 		fmerr("RX frequency is not set\n");
@@ -1153,7 +1190,11 @@ u32 fmc_get_freq(struct fmdev *fmdev, u32 *cur_tuned_frq)
 
 }
 
+<<<<<<< HEAD
 u32 fmc_set_region(struct fmdev *fmdev, u8 region_to_set)
+=======
+int fmc_set_region(struct fmdev *fmdev, u8 region_to_set)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1167,7 +1208,11 @@ u32 fmc_set_region(struct fmdev *fmdev, u8 region_to_set)
 	}
 }
 
+<<<<<<< HEAD
 u32 fmc_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
+=======
+int fmc_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1181,7 +1226,11 @@ u32 fmc_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
 	}
 }
 
+<<<<<<< HEAD
 u32 fmc_set_stereo_mono(struct fmdev *fmdev, u16 mode)
+=======
+int fmc_set_stereo_mono(struct fmdev *fmdev, u16 mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1195,7 +1244,11 @@ u32 fmc_set_stereo_mono(struct fmdev *fmdev, u16 mode)
 	}
 }
 
+<<<<<<< HEAD
 u32 fmc_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
+=======
+int fmc_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (fmdev->curr_fmmode) {
 	case FM_MODE_RX:
@@ -1210,10 +1263,17 @@ u32 fmc_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
 }
 
 /* Sends power off command to the chip */
+<<<<<<< HEAD
 static u32 fm_power_down(struct fmdev *fmdev)
 {
 	u16 payload;
 	u32 ret;
+=======
+static int fm_power_down(struct fmdev *fmdev)
+{
+	u16 payload;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!test_bit(FM_CORE_READY, &fmdev->flag)) {
 		fmerr("FM core is not ready\n");
@@ -1234,7 +1294,11 @@ static u32 fm_power_down(struct fmdev *fmdev)
 }
 
 /* Reads init command from FM firmware file and loads to the chip */
+<<<<<<< HEAD
 static u32 fm_download_firmware(struct fmdev *fmdev, const u8 *fw_name)
+=======
+static int fm_download_firmware(struct fmdev *fmdev, const u8 *fw_name)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct firmware *fw_entry;
 	struct bts_header *fw_header;
@@ -1299,7 +1363,11 @@ rel_fw:
 }
 
 /* Loads default RX configuration to the chip */
+<<<<<<< HEAD
 static u32 load_default_rx_configuration(struct fmdev *fmdev)
+=======
+static int load_default_rx_configuration(struct fmdev *fmdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 
@@ -1311,7 +1379,11 @@ static u32 load_default_rx_configuration(struct fmdev *fmdev)
 }
 
 /* Does FM power on sequence */
+<<<<<<< HEAD
 static u32 fm_power_up(struct fmdev *fmdev, u8 mode)
+=======
+static int fm_power_up(struct fmdev *fmdev, u8 mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u16 payload, asic_id, asic_ver;
 	int resp_len, ret;
@@ -1374,7 +1446,11 @@ rel:
 }
 
 /* Set FM Modes(TX, RX, OFF) */
+<<<<<<< HEAD
 u32 fmc_set_mode(struct fmdev *fmdev, u8 fm_mode)
+=======
+int fmc_set_mode(struct fmdev *fmdev, u8 fm_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = 0;
 
@@ -1427,7 +1503,11 @@ u32 fmc_set_mode(struct fmdev *fmdev, u8 fm_mode)
 }
 
 /* Returns current FM mode (TX, RX, OFF) */
+<<<<<<< HEAD
 u32 fmc_get_mode(struct fmdev *fmdev, u8 *fmmode)
+=======
+int fmc_get_mode(struct fmdev *fmdev, u8 *fmmode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (!test_bit(FM_CORE_READY, &fmdev->flag)) {
 		fmerr("FM core is not ready\n");
@@ -1483,10 +1563,17 @@ static void fm_st_reg_comp_cb(void *arg, char data)
  * This function will be called from FM V4L2 open function.
  * Register with ST driver and initialize driver data.
  */
+<<<<<<< HEAD
 u32 fmc_prepare(struct fmdev *fmdev)
 {
 	static struct st_proto_s fm_st_proto;
 	u32 ret;
+=======
+int fmc_prepare(struct fmdev *fmdev)
+{
+	static struct st_proto_s fm_st_proto;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (test_bit(FM_CORE_READY, &fmdev->flag)) {
 		fmdbg("FM Core is already up\n");
@@ -1512,10 +1599,15 @@ u32 fmc_prepare(struct fmdev *fmdev)
 		fmdev->streg_cbdata = -EINPROGRESS;
 		fmdbg("%s waiting for ST reg completion signal\n", __func__);
 
+<<<<<<< HEAD
 		ret = wait_for_completion_timeout(&wait_for_fmdrv_reg_comp,
 				FM_ST_REG_TIMEOUT);
 
 		if (!ret) {
+=======
+		if (!wait_for_completion_timeout(&wait_for_fmdrv_reg_comp,
+						 FM_ST_REG_TIMEOUT)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			fmerr("Timeout(%d sec), didn't get reg "
 					"completion signal from ST\n",
 					jiffies_to_msecs(FM_ST_REG_TIMEOUT) / 1000);
@@ -1589,10 +1681,17 @@ u32 fmc_prepare(struct fmdev *fmdev)
  * This function will be called from FM V4L2 release function.
  * Unregister from ST driver.
  */
+<<<<<<< HEAD
 u32 fmc_release(struct fmdev *fmdev)
 {
 	static struct st_proto_s fm_st_proto;
 	u32 ret;
+=======
+int fmc_release(struct fmdev *fmdev)
+{
+	static struct st_proto_s fm_st_proto;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!test_bit(FM_CORE_READY, &fmdev->flag)) {
 		fmdbg("FM Core is already down\n");
@@ -1631,7 +1730,11 @@ u32 fmc_release(struct fmdev *fmdev)
 static int __init fm_drv_init(void)
 {
 	struct fmdev *fmdev = NULL;
+<<<<<<< HEAD
 	u32 ret = -ENOMEM;
+=======
+	int ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fmdbg("FM driver version %s\n", FM_DRV_VERSION);
 

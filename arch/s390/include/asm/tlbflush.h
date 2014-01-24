@@ -59,6 +59,10 @@ static inline void __tlb_flush_full(struct mm_struct *mm)
 }
 #else
 #define __tlb_flush_full(mm)	__tlb_flush_local()
+<<<<<<< HEAD
+=======
+#define __tlb_flush_global()	__tlb_flush_local()
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*
@@ -78,7 +82,11 @@ static inline void __tlb_flush_mm(struct mm_struct * mm)
 	 * on all cpus instead of doing a local flush if the mm
 	 * only ran on the local cpu.
 	 */
+<<<<<<< HEAD
 	if (MACHINE_HAS_IDTE)
+=======
+	if (MACHINE_HAS_IDTE && list_empty(&mm->context.gmap_list))
+>>>>>>> refs/remotes/origin/cm-10.0
 		__tlb_flush_idte((unsigned long) mm->pgd |
 				 mm->context.asce_bits);
 	else

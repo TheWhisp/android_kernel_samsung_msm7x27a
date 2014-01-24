@@ -12,6 +12,10 @@
 #include <linux/etherdevice.h>
 #include <net/arp.h>
 #include <net/cfg80211.h>
+<<<<<<< HEAD
+=======
+#include <net/cfg80211-wext.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/iw_handler.h>
 #include "core.h"
 #include "nl80211.h"
@@ -132,18 +136,29 @@ EXPORT_SYMBOL(cfg80211_sched_scan_stopped);
 int __cfg80211_stop_sched_scan(struct cfg80211_registered_device *rdev,
 			       bool driver_initiated)
 {
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct net_device *dev;
 
 	lockdep_assert_held(&rdev->sched_scan_mtx);
 
 	if (!rdev->sched_scan_req)
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev = rdev->sched_scan_req->dev;
 
 	if (!driver_initiated) {
+<<<<<<< HEAD
 		err = rdev->ops->sched_scan_stop(&rdev->wiphy, dev);
+=======
+		int err = rdev->ops->sched_scan_stop(&rdev->wiphy, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			return err;
 	}
@@ -153,7 +168,11 @@ int __cfg80211_stop_sched_scan(struct cfg80211_registered_device *rdev,
 	kfree(rdev->sched_scan_req);
 	rdev->sched_scan_req = NULL;
 
+<<<<<<< HEAD
 	return err;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void bss_release(struct kref *ref)
@@ -228,10 +247,41 @@ const u8 *cfg80211_find_ie(u8 eid, const u8 *ies, int len)
 }
 EXPORT_SYMBOL(cfg80211_find_ie);
 
+<<<<<<< HEAD
+=======
+const u8 *cfg80211_find_vendor_ie(unsigned int oui, u8 oui_type,
+				  const u8 *ies, int len)
+{
+	struct ieee80211_vendor_ie *ie;
+	const u8 *pos = ies, *end = ies + len;
+	int ie_oui;
+
+	while (pos < end) {
+		pos = cfg80211_find_ie(WLAN_EID_VENDOR_SPECIFIC, pos,
+				       end - pos);
+		if (!pos)
+			return NULL;
+
+		if (end - pos < sizeof(*ie))
+			return NULL;
+
+		ie = (struct ieee80211_vendor_ie *)pos;
+		ie_oui = ie->oui[0] << 16 | ie->oui[1] << 8 | ie->oui[2];
+		if (ie_oui == oui && ie->oui_type == oui_type)
+			return pos;
+
+		pos += 2 + ie->len;
+	}
+	return NULL;
+}
+EXPORT_SYMBOL(cfg80211_find_vendor_ie);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int cmp_ies(u8 num, u8 *ies1, size_t len1, u8 *ies2, size_t len2)
 {
 	const u8 *ie1 = cfg80211_find_ie(num, ies1, len1);
 	const u8 *ie2 = cfg80211_find_ie(num, ies2, len2);
+<<<<<<< HEAD
 	int r;
 
 	if (!ie1 && !ie2)
@@ -243,6 +293,22 @@ static int cmp_ies(u8 num, u8 *ies1, size_t len1, u8 *ies2, size_t len2)
 	if (r == 0 && ie1[1] != ie2[1])
 		return ie2[1] - ie1[1];
 	return r;
+=======
+
+	/* equal if both missing */
+	if (!ie1 && !ie2)
+		return 0;
+	/* sort missing IE before (left of) present IE */
+	if (!ie1)
+		return -1;
+	if (!ie2)
+		return 1;
+
+	/* sort by length first, then by contents */
+	if (ie1[1] != ie2[1])
+		return ie2[1] - ie1[1];
+	return memcmp(ie1 + 2, ie2 + 2, ie1[1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static bool is_bss(struct cfg80211_bss *a,
@@ -325,8 +391,13 @@ static bool is_mesh(struct cfg80211_bss *a,
 	    sizeof(struct ieee80211_meshconf_ie) - 2) == 0;
 }
 
+<<<<<<< HEAD
 static int cmp_bss(struct cfg80211_bss *a,
 		   struct cfg80211_bss *b)
+=======
+static int cmp_bss_core(struct cfg80211_bss *a,
+			struct cfg80211_bss *b)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int r;
 
@@ -348,7 +419,19 @@ static int cmp_bss(struct cfg80211_bss *a,
 			       b->len_information_elements);
 	}
 
+<<<<<<< HEAD
 	r = memcmp(a->bssid, b->bssid, ETH_ALEN);
+=======
+	return memcmp(a->bssid, b->bssid, ETH_ALEN);
+}
+
+static int cmp_bss(struct cfg80211_bss *a,
+		   struct cfg80211_bss *b)
+{
+	int r;
+
+	r = cmp_bss_core(a, b);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (r)
 		return r;
 
@@ -359,6 +442,55 @@ static int cmp_bss(struct cfg80211_bss *a,
 		       b->len_information_elements);
 }
 
+<<<<<<< HEAD
+=======
+static int cmp_hidden_bss(struct cfg80211_bss *a,
+		   struct cfg80211_bss *b)
+{
+	const u8 *ie1;
+	const u8 *ie2;
+	int i;
+	int r;
+
+	r = cmp_bss_core(a, b);
+	if (r)
+		return r;
+
+	ie1 = cfg80211_find_ie(WLAN_EID_SSID,
+			a->information_elements,
+			a->len_information_elements);
+	ie2 = cfg80211_find_ie(WLAN_EID_SSID,
+			b->information_elements,
+			b->len_information_elements);
+
+	/* Key comparator must use same algorithm in any rb-tree
+	 * search function (order is important), otherwise ordering
+	 * of items in the tree is broken and search gives incorrect
+	 * results. This code uses same order as cmp_ies() does. */
+
+	/* sort missing IE before (left of) present IE */
+	if (!ie1)
+		return -1;
+	if (!ie2)
+		return 1;
+
+	/* zero-size SSID is used as an indication of the hidden bss */
+	if (!ie2[1])
+		return 0;
+
+	/* sort by length first, then by contents */
+	if (ie1[1] != ie2[1])
+		return ie2[1] - ie1[1];
+
+	/* zeroed SSID ie is another indication of a hidden bss */
+	for (i = 0; i < ie2[1]; i++)
+		if (ie2[i + 2])
+			return -1;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct cfg80211_bss *cfg80211_get_bss(struct wiphy *wiphy,
 				      struct ieee80211_channel *channel,
 				      const u8 *bssid,
@@ -475,6 +607,51 @@ rb_find_bss(struct cfg80211_registered_device *dev,
 }
 
 static struct cfg80211_internal_bss *
+<<<<<<< HEAD
+=======
+rb_find_hidden_bss(struct cfg80211_registered_device *dev,
+	    struct cfg80211_internal_bss *res)
+{
+	struct rb_node *n = dev->bss_tree.rb_node;
+	struct cfg80211_internal_bss *bss;
+	int r;
+
+	while (n) {
+		bss = rb_entry(n, struct cfg80211_internal_bss, rbn);
+		r = cmp_hidden_bss(&res->pub, &bss->pub);
+
+		if (r == 0)
+			return bss;
+		else if (r < 0)
+			n = n->rb_left;
+		else
+			n = n->rb_right;
+	}
+
+	return NULL;
+}
+
+static void
+copy_hidden_ies(struct cfg80211_internal_bss *res,
+		 struct cfg80211_internal_bss *hidden)
+{
+	if (unlikely(res->pub.beacon_ies))
+		return;
+	if (WARN_ON(!hidden->pub.beacon_ies))
+		return;
+
+	res->pub.beacon_ies = kmalloc(hidden->pub.len_beacon_ies, GFP_ATOMIC);
+	if (unlikely(!res->pub.beacon_ies))
+		return;
+
+	res->beacon_ies_allocated = true;
+	res->pub.len_beacon_ies = hidden->pub.len_beacon_ies;
+	memcpy(res->pub.beacon_ies, hidden->pub.beacon_ies,
+			res->pub.len_beacon_ies);
+}
+
+static struct cfg80211_internal_bss *
+>>>>>>> refs/remotes/origin/cm-10.0
 cfg80211_bss_update(struct cfg80211_registered_device *dev,
 		    struct cfg80211_internal_bss *res)
 {
@@ -577,6 +754,24 @@ cfg80211_bss_update(struct cfg80211_registered_device *dev,
 
 		kref_put(&res->ref, bss_release);
 	} else {
+<<<<<<< HEAD
+=======
+		struct cfg80211_internal_bss *hidden;
+
+		/* First check if the beacon is a probe response from
+		 * a hidden bss. If so, copy beacon ies (with nullified
+		 * ssid) into the probe response bss entry (with real ssid).
+		 * It is required basically for PSM implementation
+		 * (probe responses do not contain tim ie) */
+
+		/* TODO: The code is not trying to update existing probe
+		 * response bss entries when beacon ies are
+		 * getting changed. */
+		hidden = rb_find_hidden_bss(dev, res);
+		if (hidden)
+			copy_hidden_ies(res, hidden);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* this "consumes" the reference */
 		list_add_tail(&res->list, &dev->bss_list);
 		rb_insert_bss(dev, res);
@@ -593,9 +788,14 @@ cfg80211_bss_update(struct cfg80211_registered_device *dev,
 struct cfg80211_bss*
 cfg80211_inform_bss(struct wiphy *wiphy,
 		    struct ieee80211_channel *channel,
+<<<<<<< HEAD
 		    const u8 *bssid,
 		    u64 timestamp, u16 capability, u16 beacon_interval,
 		    const u8 *ie, size_t ielen,
+=======
+		    const u8 *bssid, u64 tsf, u16 capability,
+		    u16 beacon_interval, const u8 *ie, size_t ielen,
+>>>>>>> refs/remotes/origin/cm-10.0
 		    s32 signal, gfp_t gfp)
 {
 	struct cfg80211_internal_bss *res;
@@ -617,7 +817,11 @@ cfg80211_inform_bss(struct wiphy *wiphy,
 	memcpy(res->pub.bssid, bssid, ETH_ALEN);
 	res->pub.channel = channel;
 	res->pub.signal = signal;
+<<<<<<< HEAD
 	res->pub.tsf = timestamp;
+=======
+	res->pub.tsf = tsf;
+>>>>>>> refs/remotes/origin/cm-10.0
 	res->pub.beacon_interval = beacon_interval;
 	res->pub.capability = capability;
 	/*
@@ -720,6 +924,21 @@ cfg80211_inform_bss_frame(struct wiphy *wiphy,
 }
 EXPORT_SYMBOL(cfg80211_inform_bss_frame);
 
+<<<<<<< HEAD
+=======
+void cfg80211_ref_bss(struct cfg80211_bss *pub)
+{
+	struct cfg80211_internal_bss *bss;
+
+	if (!pub)
+		return;
+
+	bss = container_of(pub, struct cfg80211_internal_bss, pub);
+	kref_get(&bss->ref);
+}
+EXPORT_SYMBOL(cfg80211_ref_bss);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void cfg80211_put_bss(struct cfg80211_bss *pub)
 {
 	struct cfg80211_internal_bss *bss;
@@ -865,6 +1084,13 @@ int cfg80211_wext_siwscan(struct net_device *dev,
 	for (i = 0; i < IEEE80211_NUM_BANDS; i++)
 		creq->rates[i] = (1 << wiphy->bands[i]->n_bitrates) - 1;
 
+<<<<<<< HEAD
+=======
+	for (i = 0; i < IEEE80211_NUM_BANDS; i++)
+		if (wiphy->bands[i])
+			creq->rates[i] = (1 << wiphy->bands[i]->n_bitrates) - 1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rdev->scan_req = creq;
 	err = rdev->ops->scan(wiphy, dev, creq);
 	if (err) {

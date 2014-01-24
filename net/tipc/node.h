@@ -42,6 +42,20 @@
 #include "net.h"
 #include "bearer.h"
 
+<<<<<<< HEAD
+=======
+/*
+ * Out-of-range value for node signature
+ */
+#define INVALID_NODE_SIG 0x10000
+
+/* Flags used to block (re)establishment of contact with a neighboring node */
+
+#define WAIT_PEER_DOWN	0x0001	/* wait to see that peer's links are down */
+#define WAIT_NAMES_GONE	0x0002	/* wait for peer's publications to be purged */
+#define WAIT_NODE_DOWN	0x0004	/* wait until peer node is declared down */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct tipc_node - TIPC node structure
  * @addr: network address of node
@@ -52,6 +66,7 @@
  * @active_links: pointers to active links to node
  * @links: pointers to all links to node
  * @working_links: number of working links to node (both active and standby)
+<<<<<<< HEAD
  * @cleanup_required: non-zero if cleaning up after a prior loss of contact
  * @link_cnt: number of links to node
  * @permit_changeover: non-zero if node has redundant links to this system
@@ -62,6 +77,20 @@
  *    @gap_after: sequence # of last message not requiring a NAK request
  *    @gap_to: sequence # of last message requiring a NAK request
  *    @nack_sync: counter that determines when NAK requests should be sent
+=======
+ * @block_setup: bit mask of conditions preventing link establishment to node
+ * @link_cnt: number of links to node
+ * @permit_changeover: non-zero if node has redundant links to this system
+ * @signature: node instance identifier
+ * @bclink: broadcast-related info
+ *    @supportable: non-zero if node supports TIPC b'cast link capability
+ *    @supported: non-zero if node supports TIPC b'cast capability
+ *    @acked: sequence # of last outbound b'cast message acknowledged by node
+ *    @last_in: sequence # of last in-sequence b'cast message received from node
+ *    @last_sent: sequence # of last b'cast message sent by node
+ *    @oos_state: state tracker for handling OOS b'cast messages
+ *    @deferred_size: number of OOS b'cast messages in deferred queue
+>>>>>>> refs/remotes/origin/cm-10.0
  *    @deferred_head: oldest OOS b'cast message received from node
  *    @deferred_tail: newest OOS b'cast message received from node
  *    @defragm: list of partially reassembled b'cast message fragments from node
@@ -73,6 +102,7 @@ struct tipc_node {
 	struct hlist_node hash;
 	struct list_head list;
 	struct list_head nsub;
+<<<<<<< HEAD
 	struct link *active_links[2];
 	struct link *links[MAX_BEARERS];
 	int link_cnt;
@@ -86,12 +116,30 @@ struct tipc_node {
 		u32 gap_after;
 		u32 gap_to;
 		u32 nack_sync;
+=======
+	struct tipc_link *active_links[2];
+	struct tipc_link *links[MAX_BEARERS];
+	int link_cnt;
+	int working_links;
+	int block_setup;
+	int permit_changeover;
+	u32 signature;
+	struct {
+		u8 supportable;
+		u8 supported;
+		u32 acked;
+		u32 last_in;
+		u32 last_sent;
+		u32 oos_state;
+		u32 deferred_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct sk_buff *deferred_head;
 		struct sk_buff *deferred_tail;
 		struct sk_buff *defragm;
 	} bclink;
 };
 
+<<<<<<< HEAD
 #define NODE_HTABLE_SIZE 512
 extern struct list_head tipc_node_list;
 
@@ -115,6 +163,17 @@ void tipc_node_attach_link(struct tipc_node *n_ptr, struct link *l_ptr);
 void tipc_node_detach_link(struct tipc_node *n_ptr, struct link *l_ptr);
 void tipc_node_link_down(struct tipc_node *n_ptr, struct link *l_ptr);
 void tipc_node_link_up(struct tipc_node *n_ptr, struct link *l_ptr);
+=======
+extern struct list_head tipc_node_list;
+
+struct tipc_node *tipc_node_find(u32 addr);
+struct tipc_node *tipc_node_create(u32 addr);
+void tipc_node_delete(struct tipc_node *n_ptr);
+void tipc_node_attach_link(struct tipc_node *n_ptr, struct tipc_link *l_ptr);
+void tipc_node_detach_link(struct tipc_node *n_ptr, struct tipc_link *l_ptr);
+void tipc_node_link_down(struct tipc_node *n_ptr, struct tipc_link *l_ptr);
+void tipc_node_link_up(struct tipc_node *n_ptr, struct tipc_link *l_ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
 int tipc_node_active_links(struct tipc_node *n_ptr);
 int tipc_node_redundant_links(struct tipc_node *n_ptr);
 int tipc_node_is_up(struct tipc_node *n_ptr);

@@ -5,11 +5,20 @@
  * This source code is licensed under the GNU General Public License,
  * Version 2.  See the file COPYING for more details.
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+#include <linux/thread_info.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ctype.h>
 #include <linux/errno.h>
 #include <linux/bitmap.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 
 /*
@@ -271,8 +280,11 @@ int __bitmap_weight(const unsigned long *bitmap, int bits)
 }
 EXPORT_SYMBOL(__bitmap_weight);
 
+<<<<<<< HEAD
 #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) % BITS_PER_LONG))
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void bitmap_set(unsigned long *map, int start, int nr)
 {
 	unsigned long *p = map + BIT_WORD(start);
@@ -423,7 +435,11 @@ int __bitmap_parse(const char *buf, unsigned int buflen,
 {
 	int c, old_c, totaldigits, ndigits, nchunks, nbits;
 	u32 chunk;
+<<<<<<< HEAD
 	const char __user *ubuf = buf;
+=======
+	const char __user __force *ubuf = (const char __user __force *)buf;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bitmap_zero(maskp, nmaskbits);
 
@@ -508,7 +524,13 @@ int bitmap_parse_user(const char __user *ubuf,
 {
 	if (!access_ok(VERIFY_READ, ubuf, ulen))
 		return -EFAULT;
+<<<<<<< HEAD
 	return __bitmap_parse((const char *)ubuf, ulen, 1, maskp, nmaskbits);
+=======
+	return __bitmap_parse((const char __force *)ubuf,
+				ulen, 1, maskp, nmaskbits);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(bitmap_parse_user);
 
@@ -598,7 +620,11 @@ static int __bitmap_parselist(const char *buf, unsigned int buflen,
 {
 	unsigned a, b;
 	int c, old_c, totaldigits;
+<<<<<<< HEAD
 	const char __user *ubuf = buf;
+=======
+	const char __user __force *ubuf = (const char __user __force *)buf;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int exp_digit, in_range;
 
 	totaldigits = c = 0;
@@ -698,7 +724,11 @@ int bitmap_parselist_user(const char __user *ubuf,
 {
 	if (!access_ok(VERIFY_READ, ubuf, ulen))
 		return -EFAULT;
+<<<<<<< HEAD
 	return __bitmap_parselist((const char *)ubuf,
+=======
+	return __bitmap_parselist((const char __force *)ubuf,
+>>>>>>> refs/remotes/origin/cm-10.0
 					ulen, 1, maskp, nmaskbits);
 }
 EXPORT_SYMBOL(bitmap_parselist_user);
@@ -758,7 +788,11 @@ static int bitmap_pos_to_ord(const unsigned long *buf, int pos, int bits)
  *
  * The bit positions 0 through @bits are valid positions in @buf.
  */
+<<<<<<< HEAD
 static int bitmap_ord_to_pos(const unsigned long *buf, int ord, int bits)
+=======
+int bitmap_ord_to_pos(const unsigned long *buf, int ord, int bits)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int pos = 0;
 

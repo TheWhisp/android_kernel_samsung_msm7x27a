@@ -230,17 +230,31 @@ typedef struct
 #define PSW_MASK_IO		0x02000000UL
 #define PSW_MASK_EXT		0x01000000UL
 #define PSW_MASK_KEY		0x00F00000UL
+<<<<<<< HEAD
+=======
+#define PSW_MASK_BASE		0x00080000UL	/* always one */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PSW_MASK_MCHECK		0x00040000UL
 #define PSW_MASK_WAIT		0x00020000UL
 #define PSW_MASK_PSTATE		0x00010000UL
 #define PSW_MASK_ASC		0x0000C000UL
 #define PSW_MASK_CC		0x00003000UL
 #define PSW_MASK_PM		0x00000F00UL
+<<<<<<< HEAD
+=======
+#define PSW_MASK_EA		0x00000000UL
+#define PSW_MASK_BA		0x00000000UL
+
+#define PSW_MASK_USER		0x0000FF00UL
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PSW_ADDR_AMODE		0x80000000UL
 #define PSW_ADDR_INSN		0x7FFFFFFFUL
 
+<<<<<<< HEAD
 #define PSW_BASE_BITS		0x00080000UL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PSW_DEFAULT_KEY		(((unsigned long) PAGE_DEFAULT_ACC) << 20)
 
 #define PSW_ASC_PRIMARY		0x00000000UL
@@ -254,6 +268,10 @@ typedef struct
 #define PSW_MASK_DAT		0x0400000000000000UL
 #define PSW_MASK_IO		0x0200000000000000UL
 #define PSW_MASK_EXT		0x0100000000000000UL
+<<<<<<< HEAD
+=======
+#define PSW_MASK_BASE		0x0000000000000000UL
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PSW_MASK_KEY		0x00F0000000000000UL
 #define PSW_MASK_MCHECK		0x0004000000000000UL
 #define PSW_MASK_WAIT		0x0002000000000000UL
@@ -261,12 +279,22 @@ typedef struct
 #define PSW_MASK_ASC		0x0000C00000000000UL
 #define PSW_MASK_CC		0x0000300000000000UL
 #define PSW_MASK_PM		0x00000F0000000000UL
+<<<<<<< HEAD
+=======
+#define PSW_MASK_EA		0x0000000100000000UL
+#define PSW_MASK_BA		0x0000000080000000UL
+
+#define PSW_MASK_USER		0x0000FF0180000000UL
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PSW_ADDR_AMODE		0x0000000000000000UL
 #define PSW_ADDR_INSN		0xFFFFFFFFFFFFFFFFUL
 
+<<<<<<< HEAD
 #define PSW_BASE_BITS		0x0000000180000000UL
 #define PSW_BASE32_BITS		0x0000000080000000UL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PSW_DEFAULT_KEY		(((unsigned long) PAGE_DEFAULT_ACC) << 52)
 
 #define PSW_ASC_PRIMARY		0x0000000000000000UL
@@ -279,6 +307,7 @@ typedef struct
 #ifdef __KERNEL__
 extern long psw_kernel_bits;
 extern long psw_user_bits;
+<<<<<<< HEAD
 #ifdef CONFIG_64BIT
 extern long psw_user32_bits;
 #endif
@@ -291,6 +320,9 @@ extern long psw_user32_bits;
 #define PSW_MASK_MERGE(CURRENT,NEW) \
 	(((CURRENT) & ~(PSW_MASK_CC|PSW_MASK_PM)) | \
 	 ((NEW) & (PSW_MASK_CC|PSW_MASK_PM)))
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The s390_regs structure is used to define the elf_gregset_t.
@@ -328,8 +360,13 @@ struct pt_regs
 	psw_t psw;
 	unsigned long gprs[NUM_GPRS];
 	unsigned long orig_gpr2;
+<<<<<<< HEAD
 	unsigned short ilc;
 	unsigned short svcnr;
+=======
+	unsigned int int_code;
+	unsigned long int_parm_long;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -487,6 +524,11 @@ typedef struct
 #define PTRACE_POKETEXT_AREA	      0x5004
 #define PTRACE_POKEDATA_AREA 	      0x5005
 #define PTRACE_GET_LAST_BREAK	      0x5006
+<<<<<<< HEAD
+=======
+#define PTRACE_PEEK_SYSTEM_CALL       0x5007
+#define PTRACE_POKE_SYSTEM_CALL	      0x5008
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * PT_PROT definition is loosely based on hppa bsd definition in
@@ -539,14 +581,27 @@ struct user_regs_struct
  * These are defined as per linux/ptrace.h, which see.
  */
 #define arch_has_single_step()	(1)
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs * regs);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define user_mode(regs) (((regs)->psw.mask & PSW_MASK_PSTATE) != 0)
 #define instruction_pointer(regs) ((regs)->psw.addr & PSW_ADDR_INSN)
 #define user_stack_pointer(regs)((regs)->gprs[15])
+<<<<<<< HEAD
 #define regs_return_value(regs)((regs)->gprs[2])
 #define profile_pc(regs) instruction_pointer(regs)
 
+=======
+#define profile_pc(regs) instruction_pointer(regs)
+
+static inline long regs_return_value(struct pt_regs *regs)
+{
+	return regs->gprs[2];
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int regs_query_register_offset(const char *name);
 const char *regs_query_register_name(unsigned int offset);
 unsigned long regs_get_register(struct pt_regs *regs, unsigned int offset);

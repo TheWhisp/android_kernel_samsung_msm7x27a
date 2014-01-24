@@ -50,6 +50,10 @@
 #define ROW_MASK	0xF0
 #define COLUMN_MASK	0x0F
 #define ROW_SHIFT	4
+<<<<<<< HEAD
+=======
+#define KEY_MATRIX_SHIFT	6
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct spear_kbd {
 	struct input_dev *input;
@@ -57,6 +61,10 @@ struct spear_kbd {
 	void __iomem *io_base;
 	struct clk *clk;
 	unsigned int irq;
+<<<<<<< HEAD
+=======
+	unsigned int mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned short last_key;
 	unsigned short keycodes[256];
 };
@@ -106,7 +114,12 @@ static int spear_kbd_open(struct input_dev *dev)
 		return error;
 
 	/* program keyboard */
+<<<<<<< HEAD
 	val = SCAN_RATE_80 | MODE_KEYBOARD | PCLK_FREQ_MSK;
+=======
+	val = SCAN_RATE_80 | MODE_KEYBOARD | PCLK_FREQ_MSK |
+		(kbd->mode << KEY_MATRIX_SHIFT);
+>>>>>>> refs/remotes/origin/cm-10.0
 	writew(val, kbd->io_base + MODE_REG);
 	writeb(1, kbd->io_base + STATUS_REG);
 
@@ -176,6 +189,11 @@ static int __devinit spear_kbd_probe(struct platform_device *pdev)
 
 	kbd->input = input_dev;
 	kbd->irq = irq;
+<<<<<<< HEAD
+=======
+	kbd->mode = pdata->mode;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	kbd->res = request_mem_region(res->start, resource_size(res),
 				      pdev->name);
 	if (!kbd->res) {
@@ -308,6 +326,7 @@ static int spear_kbd_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static const struct dev_pm_ops spear_kbd_pm_ops = {
 	.suspend	= spear_kbd_suspend,
@@ -315,12 +334,19 @@ static const struct dev_pm_ops spear_kbd_pm_ops = {
 };
 #endif
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(spear_kbd_pm_ops, spear_kbd_suspend, spear_kbd_resume);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver spear_kbd_driver = {
 	.probe		= spear_kbd_probe,
 	.remove		= __devexit_p(spear_kbd_remove),
 	.driver		= {
 		.name	= "keyboard",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 		.pm	= &spear_kbd_pm_ops,
 #endif
@@ -338,6 +364,12 @@ static void __exit spear_kbd_exit(void)
 	platform_driver_unregister(&spear_kbd_driver);
 }
 module_exit(spear_kbd_exit);
+=======
+		.pm	= &spear_kbd_pm_ops,
+	},
+};
+module_platform_driver(spear_kbd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Rajeev Kumar");
 MODULE_DESCRIPTION("SPEAr Keyboard Driver");

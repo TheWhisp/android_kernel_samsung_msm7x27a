@@ -21,6 +21,10 @@
 #include <linux/fb.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
@@ -662,7 +666,11 @@ static int __devinit pxa168fb_probe(struct platform_device *pdev)
 	info->fix.ypanstep = 0;
 	info->fix.ywrapstep = 0;
 	info->fix.mmio_start = res->start;
+<<<<<<< HEAD
 	info->fix.mmio_len = res->end - res->start + 1;
+=======
+	info->fix.mmio_len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	info->fix.accel = FB_ACCEL_NONE;
 	info->fbops = &pxa168fb_ops;
 	info->pseudo_palette = fbi->pseudo_palette;
@@ -670,7 +678,12 @@ static int __devinit pxa168fb_probe(struct platform_device *pdev)
 	/*
 	 * Map LCD controller registers.
 	 */
+<<<<<<< HEAD
 	fbi->reg_base = ioremap_nocache(res->start, resource_size(res));
+=======
+	fbi->reg_base = devm_ioremap_nocache(&pdev->dev, res->start,
+					     resource_size(res));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (fbi->reg_base == NULL) {
 		ret = -ENOMEM;
 		goto failed_free_info;
@@ -739,8 +752,13 @@ static int __devinit pxa168fb_probe(struct platform_device *pdev)
 	/*
 	 * Register irq handler.
 	 */
+<<<<<<< HEAD
 	ret = request_irq(irq, pxa168fb_handle_irq, IRQF_SHARED,
 					info->fix.id, fbi);
+=======
+	ret = devm_request_irq(&pdev->dev, irq, pxa168fb_handle_irq,
+			       IRQF_SHARED, info->fix.id, fbi);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0) {
 		dev_err(&pdev->dev, "unable to request IRQ\n");
 		ret = -ENXIO;
@@ -759,14 +777,21 @@ static int __devinit pxa168fb_probe(struct platform_device *pdev)
 	if (ret < 0) {
 		dev_err(&pdev->dev, "Failed to register pxa168-fb: %d\n", ret);
 		ret = -ENXIO;
+<<<<<<< HEAD
 		goto failed_free_irq;
+=======
+		goto failed_free_cmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	platform_set_drvdata(pdev, fbi);
 	return 0;
 
+<<<<<<< HEAD
 failed_free_irq:
 	free_irq(irq, fbi);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 failed_free_cmap:
 	fb_dealloc_cmap(&info->cmap);
 failed_free_clk:
@@ -808,13 +833,19 @@ static int __devexit pxa168fb_remove(struct platform_device *pdev)
 		fb_dealloc_cmap(&info->cmap);
 
 	irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
 	free_irq(irq, fbi);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dma_free_writecombine(fbi->dev, PAGE_ALIGN(info->fix.smem_len),
 				info->screen_base, info->fix.smem_start);
 
+<<<<<<< HEAD
 	iounmap(fbi->reg_base);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_disable(fbi->clk);
 	clk_put(fbi->clk);
 
@@ -832,6 +863,7 @@ static struct platform_driver pxa168fb_driver = {
 	.remove		= __devexit_p(pxa168fb_remove),
 };
 
+<<<<<<< HEAD
 static int __init pxa168fb_init(void)
 {
 	return platform_driver_register(&pxa168fb_driver);
@@ -843,6 +875,9 @@ static void __exit pxa168fb_exit(void)
 	platform_driver_unregister(&pxa168fb_driver);
 }
 module_exit(pxa168fb_exit);
+=======
+module_platform_driver(pxa168fb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Lennert Buytenhek <buytenh@marvell.com> "
 	      "Green Wan <gwan@marvell.com>");

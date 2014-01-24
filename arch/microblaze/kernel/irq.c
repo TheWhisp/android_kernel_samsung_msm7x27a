@@ -18,6 +18,10 @@
 #include <linux/kernel_stat.h>
 #include <linux/irq.h>
 #include <linux/of_irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/prom.h>
 
@@ -30,12 +34,21 @@ void __irq_entry do_IRQ(struct pt_regs *regs)
 	trace_hardirqs_off();
 
 	irq_enter();
+<<<<<<< HEAD
 	irq = get_irq(regs);
 next_irq:
 	BUG_ON(irq == -1U);
 	generic_handle_irq(irq);
 
 	irq = get_irq(regs);
+=======
+	irq = get_irq();
+next_irq:
+	BUG_ON(!irq);
+	generic_handle_irq(irq);
+
+	irq = get_irq();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (irq != -1U) {
 		pr_debug("next irq: %d\n", irq);
 		++concurrent_irq;
@@ -46,6 +59,7 @@ next_irq:
 	set_irq_regs(old_regs);
 	trace_hardirqs_on();
 }
+<<<<<<< HEAD
 
 /* MS: There is no any advance mapping mechanism. We are using simple 32bit
   intc without any cascades or any connection that's why mapping is 1:1 */
@@ -61,3 +75,5 @@ unsigned int irq_create_of_mapping(struct device_node *controller,
 	return intspec[0];
 }
 EXPORT_SYMBOL_GPL(irq_create_of_mapping);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

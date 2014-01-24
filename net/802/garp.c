@@ -15,6 +15,10 @@
 #include <linux/rtnetlink.h>
 #include <linux/llc.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/llc.h>
 #include <net/llc_pdu.h>
 #include <net/garp.h>
@@ -166,7 +170,12 @@ static struct garp_attr *garp_attr_lookup(const struct garp_applicant *app,
 	return NULL;
 }
 
+<<<<<<< HEAD
 static void garp_attr_insert(struct garp_applicant *app, struct garp_attr *new)
+=======
+static struct garp_attr *garp_attr_create(struct garp_applicant *app,
+					  const void *data, u8 len, u8 type)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct rb_node *parent = NULL, **p = &app->gid.rb_node;
 	struct garp_attr *attr;
@@ -175,11 +184,16 @@ static void garp_attr_insert(struct garp_applicant *app, struct garp_attr *new)
 	while (*p) {
 		parent = *p;
 		attr = rb_entry(parent, struct garp_attr, node);
+<<<<<<< HEAD
 		d = garp_attr_cmp(attr, new->data, new->dlen, new->type);
+=======
+		d = garp_attr_cmp(attr, data, len, type);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (d < 0)
 			p = &parent->rb_left;
 		else if (d > 0)
 			p = &parent->rb_right;
+<<<<<<< HEAD
 	}
 	rb_link_node(&new->node, parent, p);
 	rb_insert_color(&new->node, &app->gid);
@@ -190,6 +204,13 @@ static struct garp_attr *garp_attr_create(struct garp_applicant *app,
 {
 	struct garp_attr *attr;
 
+=======
+		else {
+			/* The attribute already exists; re-use it. */
+			return attr;
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	attr = kmalloc(sizeof(*attr) + len, GFP_ATOMIC);
 	if (!attr)
 		return attr;
@@ -197,7 +218,13 @@ static struct garp_attr *garp_attr_create(struct garp_applicant *app,
 	attr->type  = type;
 	attr->dlen  = len;
 	memcpy(attr->data, data, len);
+<<<<<<< HEAD
 	garp_attr_insert(app, attr);
+=======
+
+	rb_link_node(&attr->node, parent, p);
+	rb_insert_color(&attr->node, &app->gid);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return attr;
 }
 
@@ -553,7 +580,11 @@ static void garp_release_port(struct net_device *dev)
 		if (rtnl_dereference(port->applicants[i]))
 			return;
 	}
+<<<<<<< HEAD
 	rcu_assign_pointer(dev->garp_port, NULL);
+=======
+	RCU_INIT_POINTER(dev->garp_port, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree_rcu(port, rcu);
 }
 
@@ -605,7 +636,11 @@ void garp_uninit_applicant(struct net_device *dev, struct garp_application *appl
 
 	ASSERT_RTNL();
 
+<<<<<<< HEAD
 	rcu_assign_pointer(port->applicants[appl->type], NULL);
+=======
+	RCU_INIT_POINTER(port->applicants[appl->type], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Delete timer and generate a final TRANSMIT_PDU event to flush out
 	 * all pending messages before the applicant is gone. */

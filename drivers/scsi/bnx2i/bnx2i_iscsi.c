@@ -1,7 +1,11 @@
 /*
  * bnx2i_iscsi.c: Broadcom NetXtreme II iSCSI driver.
  *
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2010 Broadcom Corporation
+=======
+ * Copyright (c) 2006 - 2011 Broadcom Corporation
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright (c) 2007, 2008 Red Hat, Inc.  All rights reserved.
  * Copyright (c) 2007, 2008 Mike Christie
  *
@@ -27,6 +31,10 @@ static struct scsi_host_template bnx2i_host_template;
  */
 static DEFINE_SPINLOCK(bnx2i_resc_lock); /* protects global resources */
 
+<<<<<<< HEAD
+=======
+DECLARE_PER_CPU(struct bnx2i_percpu_s, bnx2i_percpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int bnx2i_adapter_ready(struct bnx2i_hba *hba)
 {
@@ -1212,9 +1220,16 @@ static int bnx2i_task_xmit(struct iscsi_task *task)
 	struct bnx2i_conn *bnx2i_conn = conn->dd_data;
 	struct scsi_cmnd *sc = task->sc;
 	struct bnx2i_cmd *cmd = task->dd_data;
+<<<<<<< HEAD
 	struct iscsi_cmd *hdr = (struct iscsi_cmd *) task->hdr;
 
 	if (bnx2i_conn->ep->num_active_cmds + 1 > hba->max_sqes)
+=======
+	struct iscsi_scsi_req *hdr = (struct iscsi_scsi_req *)task->hdr;
+
+	if (atomic_read(&bnx2i_conn->ep->num_active_cmds) + 1  >
+	    hba->max_sqes)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 
 	/*
@@ -1354,6 +1369,12 @@ bnx2i_conn_create(struct iscsi_cls_session *cls_session, uint32_t cid)
 	bnx2i_conn = conn->dd_data;
 	bnx2i_conn->cls_conn = cls_conn;
 	bnx2i_conn->hba = hba;
+<<<<<<< HEAD
+=======
+
+	atomic_set(&bnx2i_conn->work_cnt, 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* 'ep' ptr will be assigned in bind() call */
 	bnx2i_conn->ep = NULL;
 	init_completion(&bnx2i_conn->cmd_cleanup_cmpl);
@@ -1457,11 +1478,40 @@ static void bnx2i_conn_destroy(struct iscsi_cls_conn *cls_conn)
 	struct bnx2i_conn *bnx2i_conn = conn->dd_data;
 	struct Scsi_Host *shost;
 	struct bnx2i_hba *hba;
+<<<<<<< HEAD
+=======
+	struct bnx2i_work *work, *tmp;
+	unsigned cpu = 0;
+	struct bnx2i_percpu_s *p;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	shost = iscsi_session_to_shost(iscsi_conn_to_session(cls_conn));
 	hba = iscsi_host_priv(shost);
 
 	bnx2i_conn_free_login_resources(hba, bnx2i_conn);
+<<<<<<< HEAD
+=======
+
+	if (atomic_read(&bnx2i_conn->work_cnt)) {
+		for_each_online_cpu(cpu) {
+			p = &per_cpu(bnx2i_percpu, cpu);
+			spin_lock_bh(&p->p_work_lock);
+			list_for_each_entry_safe(work, tmp,
+						 &p->work_list, list) {
+				if (work->session == conn->session &&
+				    work->bnx2i_conn == bnx2i_conn) {
+					list_del_init(&work->list);
+					kfree(work);
+					if (!atomic_dec_and_test(
+							&bnx2i_conn->work_cnt))
+						break;
+				}
+			}
+			spin_unlock_bh(&p->p_work_lock);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	iscsi_conn_teardown(cls_conn);
 }
 
@@ -1769,7 +1819,11 @@ static struct iscsi_endpoint *bnx2i_ep_connect(struct Scsi_Host *shost,
 	}
 	bnx2i_ep = ep->dd_data;
 
+<<<<<<< HEAD
 	bnx2i_ep->num_active_cmds = 0;
+=======
+	atomic_set(&bnx2i_ep->num_active_cmds, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	iscsi_cid = bnx2i_alloc_iscsi_cid(hba);
 	if (iscsi_cid == -1) {
 		printk(KERN_ALERT "bnx2i (%s): alloc_ep - unable to allocate "
@@ -2149,6 +2203,62 @@ static int bnx2i_nl_set_path(struct Scsi_Host *shost, struct iscsi_path *params)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static umode_t bnx2i_attr_is_visible(int param_type, int param)
+{
+	switch (param_type) {
+	case ISCSI_HOST_PARAM:
+		switch (param) {
+		case ISCSI_HOST_PARAM_NETDEV_NAME:
+		case ISCSI_HOST_PARAM_HWADDRESS:
+		case ISCSI_HOST_PARAM_IPADDRESS:
+			return S_IRUGO;
+		default:
+			return 0;
+		}
+	case ISCSI_PARAM:
+		switch (param) {
+		case ISCSI_PARAM_MAX_RECV_DLENGTH:
+		case ISCSI_PARAM_MAX_XMIT_DLENGTH:
+		case ISCSI_PARAM_HDRDGST_EN:
+		case ISCSI_PARAM_DATADGST_EN:
+		case ISCSI_PARAM_CONN_ADDRESS:
+		case ISCSI_PARAM_CONN_PORT:
+		case ISCSI_PARAM_EXP_STATSN:
+		case ISCSI_PARAM_PERSISTENT_ADDRESS:
+		case ISCSI_PARAM_PERSISTENT_PORT:
+		case ISCSI_PARAM_PING_TMO:
+		case ISCSI_PARAM_RECV_TMO:
+		case ISCSI_PARAM_INITIAL_R2T_EN:
+		case ISCSI_PARAM_MAX_R2T:
+		case ISCSI_PARAM_IMM_DATA_EN:
+		case ISCSI_PARAM_FIRST_BURST:
+		case ISCSI_PARAM_MAX_BURST:
+		case ISCSI_PARAM_PDU_INORDER_EN:
+		case ISCSI_PARAM_DATASEQ_INORDER_EN:
+		case ISCSI_PARAM_ERL:
+		case ISCSI_PARAM_TARGET_NAME:
+		case ISCSI_PARAM_TPGT:
+		case ISCSI_PARAM_USERNAME:
+		case ISCSI_PARAM_PASSWORD:
+		case ISCSI_PARAM_USERNAME_IN:
+		case ISCSI_PARAM_PASSWORD_IN:
+		case ISCSI_PARAM_FAST_ABORT:
+		case ISCSI_PARAM_ABORT_TMO:
+		case ISCSI_PARAM_LU_RESET_TMO:
+		case ISCSI_PARAM_TGT_RESET_TMO:
+		case ISCSI_PARAM_IFACE_NAME:
+		case ISCSI_PARAM_INITIATOR_NAME:
+			return S_IRUGO;
+		default:
+			return 0;
+		}
+	}
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * 'Scsi_Host_Template' structure and 'iscsi_tranport' structure template
@@ -2163,9 +2273,15 @@ static struct scsi_host_template bnx2i_host_template = {
 	.eh_device_reset_handler = iscsi_eh_device_reset,
 	.eh_target_reset_handler = iscsi_eh_recover_target,
 	.change_queue_depth	= iscsi_change_queue_depth,
+<<<<<<< HEAD
 	.can_queue		= 1024,
 	.max_sectors		= 127,
 	.cmd_per_lun		= 24,
+=======
+	.can_queue		= 2048,
+	.max_sectors		= 127,
+	.cmd_per_lun		= 128,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.this_id		= -1,
 	.use_clustering		= ENABLE_CLUSTERING,
 	.sg_tablesize		= ISCSI_MAX_BDS_PER_CMD,
@@ -2179,6 +2295,7 @@ struct iscsi_transport bnx2i_iscsi_transport = {
 				  CAP_MULTI_R2T | CAP_DATADGST |
 				  CAP_DATA_PATH_OFFLOAD |
 				  CAP_TEXT_NEGO,
+<<<<<<< HEAD
 	.param_mask		= ISCSI_MAX_RECV_DLENGTH |
 				  ISCSI_MAX_XMIT_DLENGTH |
 				  ISCSI_HDRDGST_EN |
@@ -2205,11 +2322,17 @@ struct iscsi_transport bnx2i_iscsi_transport = {
 				  ISCSI_IFACE_NAME | ISCSI_INITIATOR_NAME,
 	.host_param_mask	= ISCSI_HOST_HWADDRESS | ISCSI_HOST_IPADDRESS |
 				  ISCSI_HOST_NETDEV_NAME,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.create_session		= bnx2i_session_create,
 	.destroy_session	= bnx2i_session_destroy,
 	.create_conn		= bnx2i_conn_create,
 	.bind_conn		= bnx2i_conn_bind,
 	.destroy_conn		= bnx2i_conn_destroy,
+<<<<<<< HEAD
+=======
+	.attr_is_visible	= bnx2i_attr_is_visible,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_param		= iscsi_set_param,
 	.get_conn_param		= iscsi_conn_get_param,
 	.get_session_param	= iscsi_session_get_param,

@@ -3,7 +3,11 @@
 #
 
 ifeq "$(CONFIG_PCI)" "y"
+<<<<<<< HEAD
 obj-y := pci-frv.o pci-irq.o pci-vdk.o pci-iomap.o
+=======
+obj-y := pci-frv.o pci-irq.o pci-vdk.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 ifeq "$(CONFIG_MMU)" "y"
 obj-y += pci-dma.o

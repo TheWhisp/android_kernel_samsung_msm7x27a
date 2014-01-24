@@ -24,8 +24,13 @@
 
 #include "main.h"
 
+<<<<<<< HEAD
 int mwifiex_register_cfg80211(struct net_device *, u8 *,
 				struct mwifiex_private *);
 
 void mwifiex_cfg80211_results(struct work_struct *work);
+=======
+int mwifiex_register_cfg80211(struct mwifiex_private *);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

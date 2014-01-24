@@ -10,6 +10,10 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/rio.h>
 #include <linux/rio_drv.h>
 #include <linux/rio_ids.h>

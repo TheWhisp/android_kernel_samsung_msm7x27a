@@ -225,5 +225,14 @@ extern int hard_smp_processor_id(void);
 
 #endif /* CONFIG_X86_LOCAL_APIC */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DEBUG_NMI_SELFTEST
+extern void nmi_selftest(void);
+#else
+#define nmi_selftest() do { } while (0)
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASSEMBLY__ */
 #endif /* _ASM_X86_SMP_H */

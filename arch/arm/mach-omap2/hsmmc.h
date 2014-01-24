@@ -12,6 +12,10 @@ struct omap2_hsmmc_info {
 	u8	mmc;		/* controller 1/2/3 */
 	u32	caps;		/* 4/8 wires and any additional host
 				 * capabilities OR'd (ref. linux/mmc/host.h) */
+<<<<<<< HEAD
+=======
+	u32	pm_caps;	/* PM capabilities */
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool	transceiver;	/* MMC-2 option */
 	bool	ext_clock;	/* use external pin for input clock */
 	bool	cover_only;	/* No card detect - just cover switch */
@@ -20,11 +24,22 @@ struct omap2_hsmmc_info {
 	bool	no_off;		/* power_saving and power is not to go off */
 	bool	no_off_init;	/* no power off when not in MMC sleep state */
 	bool	vcc_aux_disable_is_sleep; /* Regulator off remapped to sleep */
+<<<<<<< HEAD
 	int	gpio_cd;	/* or -EINVAL */
 	int	gpio_wp;	/* or -EINVAL */
 	char	*name;		/* or NULL for default */
 	struct device *dev;	/* returned: pointer to mmc adapter */
 	int	ocr_mask;	/* temporary HACK */
+=======
+	bool	deferred;	/* mmc needs a deferred probe */
+	int	gpio_cd;	/* or -EINVAL */
+	int	gpio_wp;	/* or -EINVAL */
+	char	*name;		/* or NULL for default */
+	struct platform_device *pdev;	/* mmc controller instance */
+	int	ocr_mask;	/* temporary HACK */
+	int	max_freq;	/* maximum clock, if constrained by external
+				 * circuitry, or 0 for default */
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Remux (pad configuration) when powering on/off */
 	void (*remux)(struct device *dev, int slot, int power_on);
 	/* init some special card */
@@ -33,11 +48,24 @@ struct omap2_hsmmc_info {
 
 #if defined(CONFIG_MMC_OMAP_HS) || defined(CONFIG_MMC_OMAP_HS_MODULE)
 
+<<<<<<< HEAD
 void omap2_hsmmc_init(struct omap2_hsmmc_info *);
 
 #else
 
 static inline void omap2_hsmmc_init(struct omap2_hsmmc_info *info)
+=======
+void omap_hsmmc_init(struct omap2_hsmmc_info *);
+void omap_hsmmc_late_init(struct omap2_hsmmc_info *);
+
+#else
+
+static inline void omap_hsmmc_init(struct omap2_hsmmc_info *info)
+{
+}
+
+static inline void omap_hsmmc_late_init(struct omap2_hsmmc_info *info)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 }
 

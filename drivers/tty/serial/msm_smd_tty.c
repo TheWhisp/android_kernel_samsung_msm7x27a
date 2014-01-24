@@ -203,7 +203,10 @@ static int __init smd_tty_init(void)
 	if (smd_tty_driver == 0)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	smd_tty_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	smd_tty_driver->driver_name = "smd_tty_driver";
 	smd_tty_driver->name = "smd";
 	smd_tty_driver->major = 0;

@@ -41,6 +41,10 @@
 #include <linux/vmalloc.h>
 #include <linux/bitmap.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "ipath_kernel.h"
 #include "ipath_verbs.h"

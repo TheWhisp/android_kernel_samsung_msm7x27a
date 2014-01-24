@@ -13,11 +13,14 @@
 #ifndef __ASM_ARCH_GPIO_H
 #define __ASM_ARCH_GPIO_H __FILE__
 
+<<<<<<< HEAD
 #define gpio_get_value	__gpio_get_value
 #define gpio_set_value	__gpio_set_value
 #define gpio_cansleep	__gpio_cansleep
 #define gpio_to_irq	__gpio_to_irq
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Practically, GPIO banks up to MP03 are the configurable gpio banks */
 
 /* GPIO bank sizes */
@@ -142,6 +145,9 @@ enum s5p_gpio_number {
 #define ARCH_NR_GPIOS		(S5PV210_MP05(S5PV210_GPIO_MP05_NR) +	\
 				 CONFIG_SAMSUNG_GPIO_EXTRA + 1)
 
+<<<<<<< HEAD
 #include <asm-generic/gpio.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASM_ARCH_GPIO_H */

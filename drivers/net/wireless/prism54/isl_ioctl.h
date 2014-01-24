@@ -43,8 +43,11 @@ void prism54_wpa_bss_ie_clean(islpci_private *priv);
 
 int prism54_set_mac_address(struct net_device *, void *);
 
+<<<<<<< HEAD
 int prism54_ioctl(struct net_device *, struct ifreq *, int);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern const struct iw_handler_def prism54_handler_def;
 
 #endif				/* _ISL_IOCTL_H */

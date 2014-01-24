@@ -1,6 +1,10 @@
 /* Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -23,8 +27,11 @@
 #include <linux/slab.h>
 #include <asm/atomic.h>
 #include <asm/ioctls.h>
+<<<<<<< HEAD
 #include <sound/q6asm.h>
 #include <sound/apr_audio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/debugfs.h>
 #include "audio_utils_aio.h"
 
@@ -35,7 +42,11 @@ ssize_t audio_aio_debug_open(struct inode *inode, struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
 ssize_t audio_aio_debug_read(struct file *file, char __user * buf,
+=======
+ssize_t audio_aio_debug_read(struct file *file, char __user *buf,
+>>>>>>> refs/remotes/origin/cm-10.0
 				size_t count, loff_t *ppos)
 {
 	const int debug_bufmax = 4096;
@@ -69,7 +80,11 @@ ssize_t audio_aio_debug_read(struct file *file, char __user * buf,
 }
 #endif
 
+<<<<<<< HEAD
 static int insert_eos_buf(struct q6audio_aio *audio,
+=======
+int insert_eos_buf(struct q6audio_aio *audio,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct audio_aio_buffer_node *buf_node)
 {
 	struct dec_meta_out *eos_buf = buf_node->kvaddr;
@@ -95,7 +110,11 @@ static int insert_meta_data_flush(struct q6audio_aio *audio,
 		sizeof(meta_data->meta_out_dsp[0]);
 }
 
+<<<<<<< HEAD
 static void extract_meta_out_info(struct q6audio_aio *audio,
+=======
+void extract_meta_out_info(struct q6audio_aio *audio,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct audio_aio_buffer_node *buf_node, int dir)
 {
 	struct dec_meta_out *meta_data = buf_node->kvaddr;
@@ -116,8 +135,12 @@ static void extract_meta_out_info(struct q6audio_aio *audio,
 			&buf_node->meta_info.meta_out,
 			sizeof(struct dec_meta_out));
 		meta_data->meta_out_dsp[0].nflags = 0x00000000;
+<<<<<<< HEAD
 		pr_debug("%s[%p]:o/p: msw_ts 0x%8x lsw_ts 0x%8x nflags 0x%8x,"
 				"num_frames = %d\n",
+=======
+		pr_debug("%s[%p]:o/p: msw_ts 0x%8x lsw_ts 0x%8x nflags 0x%8x, num_frames = %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		__func__, audio,
 		((struct dec_meta_out *)buf_node->kvaddr)->\
 			meta_out_dsp[0].msw_ts,
@@ -129,23 +152,39 @@ static void extract_meta_out_info(struct q6audio_aio *audio,
 	}
 }
 
+<<<<<<< HEAD
 static int audio_aio_pmem_lookup_vaddr(struct q6audio_aio *audio, void *addr,
 					unsigned long len,
 					struct audio_aio_pmem_region **region)
 {
 	struct audio_aio_pmem_region *region_elt;
+=======
+static int audio_aio_ion_lookup_vaddr(struct q6audio_aio *audio, void *addr,
+					unsigned long len,
+					struct audio_aio_ion_region **region)
+{
+	struct audio_aio_ion_region *region_elt;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int match_count = 0;
 
 	*region = NULL;
 
 	/* returns physical address or zero */
+<<<<<<< HEAD
 	list_for_each_entry(region_elt, &audio->pmem_region_queue, list) {
+=======
+	list_for_each_entry(region_elt, &audio->ion_region_queue, list) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (addr >= region_elt->vaddr &&
 			addr < region_elt->vaddr + region_elt->len &&
 			addr + len <= region_elt->vaddr + region_elt->len) {
 			/* offset since we could pass vaddr inside a registerd
+<<<<<<< HEAD
 			* pmem buffer
+=======
+			* ion buffer
+>>>>>>> refs/remotes/origin/cm-10.0
 			*/
 
 			match_count++;
@@ -157,7 +196,11 @@ static int audio_aio_pmem_lookup_vaddr(struct q6audio_aio *audio, void *addr,
 	if (match_count > 1) {
 		pr_err("%s[%p]:multiple hits for vaddr %p, len %ld\n",
 			__func__, audio, addr, len);
+<<<<<<< HEAD
 		list_for_each_entry(region_elt, &audio->pmem_region_queue,
+=======
+		list_for_each_entry(region_elt, &audio->ion_region_queue,
+>>>>>>> refs/remotes/origin/cm-10.0
 					list) {
 			if (addr >= region_elt->vaddr &&
 			addr < region_elt->vaddr + region_elt->len &&
@@ -173,6 +216,7 @@ static int audio_aio_pmem_lookup_vaddr(struct q6audio_aio *audio, void *addr,
 	return *region ? 0 : -1;
 }
 
+<<<<<<< HEAD
 static unsigned long audio_aio_pmem_fixup(struct q6audio_aio *audio, void *addr,
 				unsigned long len, int ref_up, void **kvaddr)
 {
@@ -181,6 +225,16 @@ static unsigned long audio_aio_pmem_fixup(struct q6audio_aio *audio, void *addr,
 	int ret;
 
 	ret = audio_aio_pmem_lookup_vaddr(audio, addr, len, &region);
+=======
+static unsigned long audio_aio_ion_fixup(struct q6audio_aio *audio, void *addr,
+				unsigned long len, int ref_up, void **kvaddr)
+{
+	struct audio_aio_ion_region *region;
+	unsigned long paddr;
+	int ret;
+
+	ret = audio_aio_ion_lookup_vaddr(audio, addr, len, &region);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		pr_err("%s[%p]:lookup (%p, %ld) failed\n",
 				__func__, audio, addr, len);
@@ -201,7 +255,11 @@ static unsigned long audio_aio_pmem_fixup(struct q6audio_aio *audio, void *addr,
 
 static int audio_aio_pause(struct q6audio_aio  *audio)
 {
+<<<<<<< HEAD
 	int rc = -EINVAL;
+=======
+	int rc = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pr_debug("%s[%p], enabled = %d\n", __func__, audio,
 			audio->enabled);
@@ -295,8 +353,13 @@ void audio_aio_async_write_ack(struct q6audio_aio *audio, uint32_t token,
 		kfree(used_buf);
 		if (list_empty(&audio->out_queue) &&
 			(audio->drv_status & ADRV_STATUS_FSYNC)) {
+<<<<<<< HEAD
 			pr_debug("%s[%p]: list is empty, reached EOS in\
 				Tunnel\n", __func__, audio);
+=======
+			pr_debug("%s[%p]: list is empty, reached EOS in Tunnel\n",
+				 __func__, audio);
+>>>>>>> refs/remotes/origin/cm-10.0
 			wake_up(&audio->write_wait);
 		}
 	} else {
@@ -306,6 +369,7 @@ void audio_aio_async_write_ack(struct q6audio_aio *audio, uint32_t token,
 	}
 }
 
+<<<<<<< HEAD
 /* Read buffer from DSP / Handle Ack from DSP */
 void audio_aio_async_read_ack(struct q6audio_aio *audio, uint32_t token,
 			uint32_t *payload)
@@ -360,6 +424,8 @@ void audio_aio_async_read_ack(struct q6audio_aio *audio, uint32_t token,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ------------------- device --------------------- */
 void audio_aio_async_out_flush(struct q6audio_aio *audio)
 {
@@ -406,8 +472,13 @@ void audio_aio_async_in_flush(struct q6audio_aio *audio)
 		/* Forcefull send o/p eos buffer after flush, if no eos response
 		 * received by dsp even after sending eos command */
 		if ((audio->eos_rsp != 1) && audio->eos_flag) {
+<<<<<<< HEAD
 			pr_debug("%s[%p]: send eos on o/p buffer during"
 				"flush\n", __func__, audio);
+=======
+			pr_debug("%s[%p]: send eos on o/p buffer during flush\n",
+				 __func__, audio);
+>>>>>>> refs/remotes/origin/cm-10.0
 			payload.aio_buf = buf_node->buf;
 			payload.aio_buf.data_len =
 					insert_eos_buf(audio, buf_node);
@@ -424,6 +495,7 @@ void audio_aio_async_in_flush(struct q6audio_aio *audio)
 	}
 }
 
+<<<<<<< HEAD
 static void audio_aio_unmap_pmem_region(struct q6audio_aio *audio)
 {
 	struct audio_aio_pmem_region *region;
@@ -511,6 +583,8 @@ void audio_aio_cb(uint32_t opcode, uint32_t token,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int audio_aio_enable(struct q6audio_aio  *audio)
 {
 	/* 2nd arg: 0 -> run immediately
@@ -540,6 +614,7 @@ int audio_aio_disable(struct q6audio_aio *audio)
 	return rc;
 }
 
+<<<<<<< HEAD
 void audio_aio_reset_pmem_region(struct q6audio_aio *audio)
 {
 	struct audio_aio_pmem_region *region;
@@ -549,6 +624,18 @@ void audio_aio_reset_pmem_region(struct q6audio_aio *audio)
 		region = list_entry(ptr, struct audio_aio_pmem_region, list);
 		list_del(&region->list);
 		put_pmem_file(region->file);
+=======
+void audio_aio_reset_ion_region(struct q6audio_aio *audio)
+{
+	struct audio_aio_ion_region *region;
+	struct list_head *ptr, *next;
+
+	list_for_each_safe(ptr, next, &audio->ion_region_queue) {
+		region = list_entry(ptr, struct audio_aio_ion_region, list);
+		list_del(&region->list);
+		ion_unmap_kernel(audio->client, region->handle);
+		ion_free(audio->client, region->handle);
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(region);
 	}
 
@@ -579,6 +666,30 @@ void audio_aio_reset_event_queue(struct q6audio_aio *audio)
 	return;
 }
 
+<<<<<<< HEAD
+=======
+static void audio_aio_unmap_ion_region(struct q6audio_aio *audio)
+{
+	struct audio_aio_ion_region *region;
+	struct list_head *ptr, *next;
+	int rc = -EINVAL;
+
+	pr_debug("%s[%p]:\n", __func__, audio);
+	list_for_each_safe(ptr, next, &audio->ion_region_queue) {
+		region = list_entry(ptr, struct audio_aio_ion_region, list);
+		pr_debug("%s[%p]: phy_address = 0x%lx\n",
+				__func__, audio, region->paddr);
+		if (region != NULL) {
+			rc = q6asm_memory_unmap(audio->ac,
+						(uint32_t)region->paddr, IN);
+			if (rc < 0)
+				pr_err("%s[%p]: memory unmap failed\n",
+					__func__, audio);
+		}
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int audio_aio_release(struct inode *inode, struct file *file)
 {
 	struct q6audio_aio *audio = file->private_data;
@@ -591,8 +702,14 @@ int audio_aio_release(struct inode *inode, struct file *file)
 	audio->drv_ops.out_flush(audio);
 	audio->drv_ops.in_flush(audio);
 	audio_aio_disable(audio);
+<<<<<<< HEAD
 	audio_aio_unmap_pmem_region(audio);
 	audio_aio_reset_pmem_region(audio);
+=======
+	audio_aio_unmap_ion_region(audio);
+	audio_aio_reset_ion_region(audio);
+	ion_client_destroy(audio->client);
+>>>>>>> refs/remotes/origin/cm-10.0
 	audio->event_abort = 1;
 	wake_up(&audio->event_wait);
 	audio_aio_reset_event_queue(audio);
@@ -611,7 +728,11 @@ int audio_aio_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
 int audio_aio_fsync(struct file *file, int datasync)
+=======
+int audio_aio_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int rc = 0;
 	struct q6audio_aio *audio = file->private_data;
@@ -746,14 +867,22 @@ static long audio_aio_process_event_req(struct q6audio_aio *audio,
 		pr_debug("%s[%p]:posted AUDIO_EVENT_WRITE_DONE to user\n",
 			__func__, audio);
 		mutex_lock(&audio->write_lock);
+<<<<<<< HEAD
 		audio_aio_pmem_fixup(audio, drv_evt->payload.aio_buf.buf_addr,
+=======
+		audio_aio_ion_fixup(audio, drv_evt->payload.aio_buf.buf_addr,
+>>>>>>> refs/remotes/origin/cm-10.0
 		drv_evt->payload.aio_buf.buf_len, 0, 0);
 		mutex_unlock(&audio->write_lock);
 	} else if (drv_evt->event_type == AUDIO_EVENT_READ_DONE) {
 		pr_debug("%s[%p]:posted AUDIO_EVENT_READ_DONE to user\n",
 			__func__, audio);
 		mutex_lock(&audio->read_lock);
+<<<<<<< HEAD
 		audio_aio_pmem_fixup(audio, drv_evt->payload.aio_buf.buf_addr,
+=======
+		audio_aio_ion_fixup(audio, drv_evt->payload.aio_buf.buf_addr,
+>>>>>>> refs/remotes/origin/cm-10.0
 		drv_evt->payload.aio_buf.buf_len, 0, 0);
 		mutex_unlock(&audio->read_lock);
 	}
@@ -773,6 +902,7 @@ static long audio_aio_process_event_req(struct q6audio_aio *audio,
 	return rc;
 }
 
+<<<<<<< HEAD
 static int audio_aio_pmem_check(struct q6audio_aio *audio,
 				void *vaddr, unsigned long len)
 {
@@ -785,6 +915,18 @@ static int audio_aio_pmem_check(struct q6audio_aio *audio,
 			pr_err("%s[%p]:region (vaddr %p len %ld)"
 				" clashes with registered region"
 				" (vaddr %p paddr %p len %ld)\n",
+=======
+static int audio_aio_ion_check(struct q6audio_aio *audio,
+				void *vaddr, unsigned long len)
+{
+	struct audio_aio_ion_region *region_elt;
+	struct audio_aio_ion_region t = {.vaddr = vaddr, .len = len };
+
+	list_for_each_entry(region_elt, &audio->ion_region_queue, list) {
+		if (CONTAINS(region_elt, &t) || CONTAINS(&t, region_elt) ||
+			OVERLAPS(region_elt, &t)) {
+			pr_err("%s[%p]:region (vaddr %p len %ld) clashes with registered region (vaddr %p paddr %p len %ld)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__, audio, vaddr, len,
 				region_elt->vaddr,
 				(void *)region_elt->paddr, region_elt->len);
@@ -795,6 +937,7 @@ static int audio_aio_pmem_check(struct q6audio_aio *audio,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int audio_aio_pmem_add(struct q6audio_aio *audio,
 				struct msm_audio_pmem_info *info)
 {
@@ -802,6 +945,19 @@ static int audio_aio_pmem_add(struct q6audio_aio *audio,
 	struct file *file;
 	struct audio_aio_pmem_region *region;
 	int rc = -EINVAL;
+=======
+static int audio_aio_ion_add(struct q6audio_aio *audio,
+				struct msm_audio_ion_info *info)
+{
+	ion_phys_addr_t paddr;
+	size_t len;
+	unsigned long kvaddr;
+	struct audio_aio_ion_region *region;
+	int rc = -EINVAL;
+	struct ion_handle *handle;
+	unsigned long ionflag;
+	void *temp_ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pr_debug("%s[%p]:\n", __func__, audio);
 	region = kmalloc(sizeof(*region), GFP_KERNEL);
@@ -811,6 +967,7 @@ static int audio_aio_pmem_add(struct q6audio_aio *audio,
 		goto end;
 	}
 
+<<<<<<< HEAD
 	if (get_pmem_file(info->fd, &paddr, &kvaddr, &len, &file)) {
 		kfree(region);
 		goto end;
@@ -823,38 +980,107 @@ static int audio_aio_pmem_add(struct q6audio_aio *audio,
 		goto end;
 	}
 
+=======
+	handle = ion_import_dma_buf(audio->client, info->fd);
+	if (IS_ERR_OR_NULL(handle)) {
+		pr_err("%s: could not get handle of the given fd\n", __func__);
+		goto import_error;
+	}
+
+	rc = ion_handle_get_flags(audio->client, handle, &ionflag);
+	if (rc) {
+		pr_err("%s: could not get flags for the handle\n", __func__);
+		goto flag_error;
+	}
+
+	temp_ptr = ion_map_kernel(audio->client, handle, ionflag);
+	if (IS_ERR_OR_NULL(temp_ptr)) {
+		pr_err("%s: could not get virtual address\n", __func__);
+		goto map_error;
+	}
+	kvaddr = (unsigned long)temp_ptr;
+
+	rc = ion_phys(audio->client, handle, &paddr, &len);
+	if (rc) {
+		pr_err("%s: could not get physical address\n", __func__);
+		goto ion_error;
+	}
+
+	rc = audio_aio_ion_check(audio, info->vaddr, len);
+	if (rc < 0) {
+		pr_err("%s: audio_aio_ion_check failed\n", __func__);
+		goto ion_error;
+	}
+
+	region->handle = handle;
+>>>>>>> refs/remotes/origin/cm-10.0
 	region->vaddr = info->vaddr;
 	region->fd = info->fd;
 	region->paddr = paddr;
 	region->kvaddr = kvaddr;
 	region->len = len;
+<<<<<<< HEAD
 	region->file = file;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	region->ref_cnt = 0;
 	pr_debug("%s[%p]:add region paddr %lx vaddr %p, len %lu kvaddr %lx\n",
 		__func__, audio,
 		region->paddr, region->vaddr, region->len, region->kvaddr);
+<<<<<<< HEAD
 	list_add_tail(&region->list, &audio->pmem_region_queue);
 
 	rc = q6asm_memory_map(audio->ac, (uint32_t) paddr, IN, (uint32_t) len,
 				1);
 	if (rc < 0)
 		pr_err("%s[%p]: memory map failed\n", __func__, audio);
+=======
+	list_add_tail(&region->list, &audio->ion_region_queue);
+	rc = q6asm_memory_map(audio->ac, (uint32_t) paddr, IN, (uint32_t) len,
+				1);
+	if (rc < 0) {
+		pr_err("%s[%p]: memory map failed\n", __func__, audio);
+		goto ion_error;
+	} else {
+		goto end;
+	}
+
+ion_error:
+	ion_unmap_kernel(audio->client, handle);
+map_error:
+flag_error:
+	ion_free(audio->client, handle);
+import_error:
+	kfree(region);
+>>>>>>> refs/remotes/origin/cm-10.0
 end:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int audio_aio_pmem_remove(struct q6audio_aio *audio,
 				struct msm_audio_pmem_info *info)
 {
 	struct audio_aio_pmem_region *region;
+=======
+static int audio_aio_ion_remove(struct q6audio_aio *audio,
+				struct msm_audio_ion_info *info)
+{
+	struct audio_aio_ion_region *region;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head *ptr, *next;
 	int rc = -EINVAL;
 
 	pr_debug("%s[%p]:info fd %d vaddr %p\n",
 		__func__, audio, info->fd, info->vaddr);
 
+<<<<<<< HEAD
 	list_for_each_safe(ptr, next, &audio->pmem_region_queue) {
 		region = list_entry(ptr, struct audio_aio_pmem_region, list);
+=======
+	list_for_each_safe(ptr, next, &audio->ion_region_queue) {
+		region = list_entry(ptr, struct audio_aio_ion_region, list);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if ((region->fd == info->fd) &&
 			(region->vaddr == info->vaddr)) {
@@ -873,7 +1099,12 @@ static int audio_aio_pmem_remove(struct q6audio_aio *audio,
 					__func__, audio);
 
 			list_del(&region->list);
+<<<<<<< HEAD
 			put_pmem_file(region->file);
+=======
+			ion_unmap_kernel(audio->client, region->handle);
+			ion_free(audio->client, region->handle);
+>>>>>>> refs/remotes/origin/cm-10.0
 			kfree(region);
 			rc = 0;
 			break;
@@ -890,16 +1121,32 @@ static void audio_aio_async_write(struct q6audio_aio *audio,
 	struct audio_client *ac;
 	struct audio_aio_write_param param;
 
+<<<<<<< HEAD
 	pr_debug("%s[%p]: Send write buff %p phy %lx len %d"
 		"meta_enable = %d\n",
+=======
+	pr_debug("%s[%p]: Send write buff %p phy %lx len %d meta_enable = %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		__func__, audio, buf_node, buf_node->paddr,
 		buf_node->buf.data_len,
 		audio->buf_cfg.meta_info_enable);
 
 	ac = audio->ac;
 	/* Offset with  appropriate meta */
+<<<<<<< HEAD
 	param.paddr = buf_node->paddr + sizeof(struct dec_meta_in);
 	param.len = buf_node->buf.data_len - sizeof(struct dec_meta_in);
+=======
+	if (audio->feedback) {
+		/* Non Tunnel mode */
+		param.paddr = buf_node->paddr + sizeof(struct dec_meta_in);
+		param.len = buf_node->buf.data_len - sizeof(struct dec_meta_in);
+	} else {
+		/* Tunnel mode */
+		param.paddr = buf_node->paddr;
+		param.len = buf_node->buf.data_len;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	param.msw_ts = buf_node->meta_info.meta_in.ntimestamp.highpart;
 	param.lsw_ts = buf_node->meta_info.meta_in.ntimestamp.lowpart;
 	/* If no meta_info enaled, indicate no time stamp valid */
@@ -986,11 +1233,18 @@ static int audio_aio_buf_add(struct q6audio_aio *audio, unsigned dir,
 		return -EFAULT;
 	}
 
+<<<<<<< HEAD
 	pr_debug("%s[%p]:node %p dir %x buf_addr %p buf_len %d data_len \
 		%d\n", __func__, audio, buf_node, dir, buf_node->buf.buf_addr,
 		buf_node->buf.buf_len, buf_node->buf.data_len);
 
 	buf_node->paddr = audio_aio_pmem_fixup(audio, buf_node->buf.buf_addr,
+=======
+	pr_debug("%s[%p]:node %p dir %x buf_addr %p buf_len %d data_len %d\n",
+		 __func__, audio, buf_node, dir, buf_node->buf.buf_addr,
+		buf_node->buf.buf_len, buf_node->buf.data_len);
+	buf_node->paddr = audio_aio_ion_fixup(audio, buf_node->buf.buf_addr,
+>>>>>>> refs/remotes/origin/cm-10.0
 						buf_node->buf.buf_len, 1,
 						&buf_node->kvaddr);
 	if (dir) {
@@ -1125,7 +1379,11 @@ int audio_aio_open(struct q6audio_aio *audio, struct file *file)
 	init_waitqueue_head(&audio->event_wait);
 	INIT_LIST_HEAD(&audio->out_queue);
 	INIT_LIST_HEAD(&audio->in_queue);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&audio->pmem_region_queue);
+=======
+	INIT_LIST_HEAD(&audio->ion_region_queue);
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_LIST_HEAD(&audio->free_event_queue);
 	INIT_LIST_HEAD(&audio->event_queue);
 
@@ -1141,12 +1399,30 @@ int audio_aio_open(struct q6audio_aio *audio, struct file *file)
 		else {
 			pr_err("%s[%p]:event pkt alloc failed\n",
 				__func__, audio);
+<<<<<<< HEAD
 			rc = -ENOMEM;
 			goto fail;
 		}
 	}
 fail:
 
+=======
+			break;
+		}
+	}
+	audio->client = msm_ion_client_create(UINT_MAX, "Audio_Dec_Client");
+	if (IS_ERR_OR_NULL(audio->client)) {
+		pr_err("Unable to create ION client\n");
+		rc = -EACCES;
+		goto fail;
+	}
+	pr_debug("Ion client create in audio_aio_open %p", audio->client);
+	return 0;
+fail:
+	q6asm_audio_client_free(audio->ac);
+	kfree(audio->codec_cfg);
+	kfree(audio);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 }
 
@@ -1237,12 +1513,18 @@ long audio_aio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		mutex_lock(&audio->lock);
 		if (arg == 1) {
 			rc = audio_aio_pause(audio);
+<<<<<<< HEAD
 			if (rc < 0) {
 				pr_err("%s[%p]: pause FAILED rc=%d\n",
 					__func__, audio, rc);
 				mutex_unlock(&audio->lock);
 				break;
 			}
+=======
+			if (rc < 0)
+				pr_err("%s[%p]: pause FAILED rc=%d\n",
+					__func__, audio, rc);
+>>>>>>> refs/remotes/origin/cm-10.0
 			audio->drv_status |= ADRV_STATUS_PAUSE;
 		} else if (arg == 0) {
 			if (audio->drv_status & ADRV_STATUS_PAUSE) {
@@ -1282,13 +1564,20 @@ long audio_aio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		mutex_unlock(&audio->lock);
 		break;
 	}
+<<<<<<< HEAD
 	case AUDIO_REGISTER_PMEM: {
 		struct msm_audio_pmem_info info;
 		pr_debug("%s[%p]:AUDIO_REGISTER_PMEM\n", __func__, audio);
+=======
+	case AUDIO_REGISTER_ION: {
+		struct msm_audio_ion_info info;
+		pr_debug("%s[%p]:AUDIO_REGISTER_ION\n", __func__, audio);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mutex_lock(&audio->lock);
 		if (copy_from_user(&info, (void *)arg, sizeof(info)))
 			rc = -EFAULT;
 		else
+<<<<<<< HEAD
 			rc = audio_aio_pmem_add(audio, &info);
 		mutex_unlock(&audio->lock);
 		break;
@@ -1301,6 +1590,20 @@ long audio_aio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			rc = -EFAULT;
 		else
 			rc = audio_aio_pmem_remove(audio, &info);
+=======
+			rc = audio_aio_ion_add(audio, &info);
+		mutex_unlock(&audio->lock);
+		break;
+	}
+	case AUDIO_DEREGISTER_ION: {
+		struct msm_audio_ion_info info;
+		mutex_lock(&audio->lock);
+		pr_debug("%s[%p]:AUDIO_DEREGISTER_ION\n", __func__, audio);
+		if (copy_from_user(&info, (void *)arg, sizeof(info)))
+			rc = -EFAULT;
+		else
+			rc = audio_aio_ion_remove(audio, &info);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mutex_unlock(&audio->lock);
 		break;
 	}
@@ -1350,8 +1653,13 @@ long audio_aio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			break;
 		}
 		if (audio->feedback != NON_TUNNEL_MODE) {
+<<<<<<< HEAD
 			pr_err("%s[%p]:Not sufficient permission to"
 				"change the playback mode\n", __func__, audio);
+=======
+			pr_err("%s[%p]:Not sufficient permission to change the playback mode\n",
+				 __func__, audio);
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc = -EACCES;
 			mutex_unlock(&audio->lock);
 			break;
@@ -1394,8 +1702,13 @@ long audio_aio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		break;
 	}
 	case AUDIO_GET_BUF_CFG: {
+<<<<<<< HEAD
 		pr_debug("%s[%p]:session id %d: Get-buf-cfg: meta[%d]\
 			framesperbuf[%d]\n", __func__, audio,
+=======
+		pr_debug("%s[%p]:session id %d: Get-buf-cfg: meta[%d] framesperbuf[%d]\n",
+			 __func__, audio,
+>>>>>>> refs/remotes/origin/cm-10.0
 			audio->ac->session, audio->buf_cfg.meta_info_enable,
 			audio->buf_cfg.frames_per_buf);
 

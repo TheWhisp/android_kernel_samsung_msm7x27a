@@ -68,8 +68,18 @@ struct schib {
 	__u8 mda[4];		 /* model dependent area */
 } __attribute__ ((packed,aligned(4)));
 
+<<<<<<< HEAD
 enum sch_todo {
 	SCH_TODO_NOTHING,
+=======
+/*
+ * When rescheduled, todo's with higher values will overwrite those
+ * with lower values.
+ */
+enum sch_todo {
+	SCH_TODO_NOTHING,
+	SCH_TODO_EVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 	SCH_TODO_UNREG,
 };
 

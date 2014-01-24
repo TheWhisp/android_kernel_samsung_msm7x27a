@@ -99,7 +99,10 @@ static int i810_mmap_buffers(struct file *filp, struct vm_area_struct *vma)
 	buf_priv = buf->dev_private;
 
 	vma->vm_flags |= (VM_IO | VM_DONTCOPY);
+<<<<<<< HEAD
 	vma->vm_file = filp;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	buf_priv->currently_mapped = I810_BUF_MAPPED;
 
@@ -130,6 +133,10 @@ static int i810_map_buffer(struct drm_buf *buf, struct drm_file *file_priv)
 	if (buf_priv->currently_mapped == I810_BUF_MAPPED)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	/* This is all entirely broken */
+>>>>>>> refs/remotes/origin/cm-10.0
 	down_write(&current->mm->mmap_sem);
 	old_fops = file_priv->filp->f_op;
 	file_priv->filp->f_op = &i810_buffer_fops;
@@ -158,11 +165,16 @@ static int i810_unmap_buffer(struct drm_buf *buf)
 	if (buf_priv->currently_mapped != I810_BUF_MAPPED)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	down_write(&current->mm->mmap_sem);
 	retcode = do_munmap(current->mm,
 			    (unsigned long)buf_priv->virtual,
 			    (size_t) buf->total);
 	up_write(&current->mm->mmap_sem);
+=======
+	retcode = vm_munmap((unsigned long)buf_priv->virtual,
+			    (size_t) buf->total);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	buf_priv->currently_mapped = I810_BUF_UNMAPPED;
 	buf_priv->virtual = NULL;
@@ -222,8 +234,11 @@ static int i810_dma_cleanup(struct drm_device *dev)
 			pci_free_consistent(dev->pdev, PAGE_SIZE,
 					    dev_priv->hw_status_page,
 					    dev_priv->dma_status_page);
+<<<<<<< HEAD
 			/* Need to rewrite hardware status page */
 			I810_WRITE(0x02080, 0x1ffff000);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		kfree(dev->dev_private);
 		dev->dev_private = NULL;
@@ -1210,6 +1225,11 @@ int i810_driver_load(struct drm_device *dev, unsigned long flags)
 	dev->types[8] = _DRM_STAT_SECONDARY;
 	dev->types[9] = _DRM_STAT_DMA;
 
+<<<<<<< HEAD
+=======
+	pci_set_master(dev->pdev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2008-2009, 2012 The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2008-2009, 2012-2013 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -51,12 +55,15 @@ extern uint32 mdp_intr_mask;
 int first_pixel_start_x;
 int first_pixel_start_y;
 
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_JENA)
 extern unsigned long mdp_timer_duration;
 /* Defined in mdp.c to indicate support appboot logo display*/
 extern boolean mdp_continues_display;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t vsync_show_event(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -70,7 +77,11 @@ static ssize_t vsync_show_event(struct device *dev,
 
 	wait_for_completion(&vsync_cntrl.vsync_wait);
 	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu",
+<<<<<<< HEAD
 			ktime_to_ns(vsync_cntrl.vsync_time));
+=======
+	ktime_to_ns(vsync_cntrl.vsync_time));
+>>>>>>> refs/remotes/origin/cm-10.0
 	buf[strlen(buf) + 1] = '\0';
 	return ret;
 }
@@ -126,6 +137,10 @@ int mdp_lcdc_on(struct platform_device *pdev)
 	uint32 timer_base = LCDC_BASE;
 	uint32 block = MDP_DMA2_BLOCK;
 	int ret;
+<<<<<<< HEAD
+=======
+	uint32_t mask, curr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mfd = (struct msm_fb_data_type *)platform_get_drvdata(pdev);
 
@@ -148,11 +163,15 @@ int mdp_lcdc_on(struct platform_device *pdev)
 
 	buf += calc_fb_offset(mfd, fbi, bpp);
 
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_JENA)
 	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_DITHER_EN | DMA_OUT_SEL_LCDC;
 #else
 	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_OUT_SEL_LCDC;
 #endif
+=======
+	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_DITHER_EN | DMA_OUT_SEL_LCDC;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (mfd->fb_imgType == MDP_BGR_565)
 		dma2_cfg_reg |= DMA_PACK_PATTERN_BGR;
@@ -209,6 +228,12 @@ int mdp_lcdc_on(struct platform_device *pdev)
 	/* x/y coordinate = always 0 for lcdc */
 	MDP_OUTP(MDP_BASE + dma_base + 0x10, 0);
 	/* dma config */
+<<<<<<< HEAD
+=======
+	curr = inpdw(MDP_BASE + DMA_P_BASE);
+	mask = 0x0FFFFFFF;
+	dma2_cfg_reg = (dma2_cfg_reg & mask) | (curr & ~mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 	MDP_OUTP(MDP_BASE + dma_base, dma2_cfg_reg);
 
 	/*
@@ -284,6 +309,15 @@ int mdp_lcdc_on(struct platform_device *pdev)
 	ctrl_polarity =
 	    (data_en_polarity << 2) | (vsync_polarity << 1) | (hsync_polarity);
 
+<<<<<<< HEAD
+=======
+	if (!(mfd->cont_splash_done)) {
+		mdp_pipe_ctrl(MDP_CMD_BLOCK,
+			MDP_BLOCK_POWER_OFF, FALSE);
+		MDP_OUTP(MDP_BASE + timer_base, 0);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	MDP_OUTP(MDP_BASE + timer_base + 0x4, hsync_ctrl);
 	MDP_OUTP(MDP_BASE + timer_base + 0x8, vsync_period);
 	MDP_OUTP(MDP_BASE + timer_base + 0xc, vsync_pulse_width * hsync_period);
@@ -333,6 +367,7 @@ int mdp_lcdc_on(struct platform_device *pdev)
 		pr_debug("%s: kobject_uevent(KOBJ_ADD)\n", __func__);
 		vsync_cntrl.sysfs_created = 1;
 	}
+<<<<<<< HEAD
 
 #if defined(CONFIG_MACH_JENA)
 if (mdp_continues_display) {
@@ -340,6 +375,10 @@ if (mdp_continues_display) {
 	mdp_timer_duration = (HZ);
 }
 #endif
+=======
+	mdp_histogram_ctrl_all(TRUE);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -358,6 +397,10 @@ int mdp_lcdc_off(struct platform_device *pdev)
 		timer_base = DTV_BASE;
 	}
 #endif
+<<<<<<< HEAD
+=======
+	mdp_histogram_ctrl_all(FALSE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	down(&mfd->dma->mutex);
 	/* MDP cmd block enable */
@@ -391,6 +434,7 @@ void mdp_dma_lcdc_vsync_ctrl(int enable)
 		INIT_COMPLETION(vsync_cntrl.vsync_wait);
 
 	vsync_cntrl.vsync_irq_enabled = enable;
+<<<<<<< HEAD
 	if (!enable)
 		vsync_cntrl.disabled_clocks = 0;
 	disabled_clocks = vsync_cntrl.disabled_clocks;
@@ -399,12 +443,28 @@ void mdp_dma_lcdc_vsync_ctrl(int enable)
 	if (enable && disabled_clocks) {
 		mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 		spin_lock_irqsave(&mdp_spin_lock, flag);
+=======
+	disabled_clocks = vsync_cntrl.disabled_clocks;
+	spin_unlock_irqrestore(&mdp_spin_lock, flag);
+
+	if (enable && disabled_clocks)
+		mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
+
+	spin_lock_irqsave(&mdp_spin_lock, flag);
+	if (enable && vsync_cntrl.disabled_clocks) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		outp32(MDP_INTR_CLEAR, LCDC_FRAME_START);
 		mdp_intr_mask |= LCDC_FRAME_START;
 		outp32(MDP_INTR_ENABLE, mdp_intr_mask);
 		mdp_enable_irq(MDP_VSYNC_TERM);
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&mdp_spin_lock, flag);
 	}
+=======
+		vsync_cntrl.disabled_clocks = 0;
+	}
+	spin_unlock_irqrestore(&mdp_spin_lock, flag);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (vsync_cntrl.vsync_irq_enabled &&
 		atomic_read(&vsync_cntrl.suspend) == 0)

@@ -402,6 +402,11 @@
 #define __NR_syncfs			(__NR_SYSCALL_BASE+373)
 #define __NR_sendmmsg			(__NR_SYSCALL_BASE+374)
 #define __NR_setns			(__NR_SYSCALL_BASE+375)
+<<<<<<< HEAD
+=======
+#define __NR_process_vm_readv		(__NR_SYSCALL_BASE+376)
+#define __NR_process_vm_writev		(__NR_SYSCALL_BASE+377)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The following SWIs are ARM private.
@@ -425,7 +430,12 @@
 /*
  * The following syscalls are obsolete and no longer available for EABI.
  */
+<<<<<<< HEAD
 #if defined(__ARM_EABI__) && !defined(__KERNEL__)
+=======
+#if !defined(__KERNEL__)
+#if defined(__ARM_EABI__)
+>>>>>>> refs/remotes/origin/cm-10.0
 #undef __NR_time
 #undef __NR_umount
 #undef __NR_stime
@@ -439,6 +449,10 @@
 #undef __NR_syscall
 #undef __NR_ipc
 #endif
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
 
@@ -478,8 +492,13 @@
 /*
  * Unimplemented (or alternatively implemented) syscalls
  */
+<<<<<<< HEAD
 #define __IGNORE_fadvise64_64		1
 #define __IGNORE_migrate_pages		1
+=======
+#define __IGNORE_fadvise64_64
+#define __IGNORE_migrate_pages
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __KERNEL__ */
 #endif /* __ASM_ARM_UNISTD_H */

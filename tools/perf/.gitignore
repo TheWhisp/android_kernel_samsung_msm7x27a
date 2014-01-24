@@ -19,3 +19,8 @@ TAGS
 cscope*
 config.mak
 config.mak.autogen
+<<<<<<< HEAD
+=======
+*-bison.*
+*-flex.*
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -18,7 +18,10 @@
 
 #include <linux/kmemcheck.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/timer.h>
 #include <linux/types.h>
 #include <linux/workqueue.h>
@@ -28,7 +31,11 @@
 #include <net/tcp_states.h>
 #include <net/timewait_sock.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct inet_hashinfo;
 
@@ -126,13 +133,22 @@ struct inet_timewait_sock {
 	/* And these are ours. */
 	unsigned int		tw_ipv6only     : 1,
 				tw_transparent  : 1,
+<<<<<<< HEAD
 				tw_pad		: 14,	/* 14 bits hole */
+=======
+				tw_pad		: 6,	/* 6 bits hole */
+				tw_tos		: 8,
+>>>>>>> refs/remotes/origin/cm-10.0
 				tw_ipv6_offset  : 16;
 	kmemcheck_bitfield_end(flags);
 	unsigned long		tw_ttd;
 	struct inet_bind_bucket	*tw_tb;
 	struct hlist_node	tw_death_node;
 };
+<<<<<<< HEAD
+=======
+#define tw_tclass tw_tos
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void inet_twsk_add_node_rcu(struct inet_timewait_sock *tw,
 				      struct hlist_nulls_head *list)
@@ -217,6 +233,7 @@ extern void inet_twsk_purge(struct inet_hashinfo *hashinfo,
 static inline
 struct net *twsk_net(const struct inet_timewait_sock *twsk)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_NET_NS
 	return rcu_dereference_raw(twsk->tw_net); /* protected by locking, */
 						  /* reference counting, */
@@ -224,13 +241,20 @@ struct net *twsk_net(const struct inet_timewait_sock *twsk)
 #else
 	return &init_net;
 #endif
+=======
+	return read_pnet(&twsk->tw_net);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline
 void twsk_net_set(struct inet_timewait_sock *twsk, struct net *net)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_NET_NS
 	rcu_assign_pointer(twsk->tw_net, net);
 #endif
+=======
+	write_pnet(&twsk->tw_net, net);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif	/* _INET_TIMEWAIT_SOCK_ */

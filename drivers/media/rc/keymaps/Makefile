@@ -4,6 +4,10 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
 			rc-apac-viewcomp.o \
 			rc-asus-pc39.o \
 			rc-ati-tv-wonder-hd-600.o \
+<<<<<<< HEAD
+=======
+			rc-ati-x10.o \
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc-avermedia-a16d.o \
 			rc-avermedia.o \
 			rc-avermedia-cardbus.o \
@@ -40,13 +44,25 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
 			rc-imon-mce.o \
 			rc-imon-pad.o \
 			rc-iodata-bctv7e.o \
+<<<<<<< HEAD
 			rc-kaiomy.o \
 			rc-kworld-315u.o \
+=======
+			rc-it913x-v1.o \
+			rc-it913x-v2.o \
+			rc-kaiomy.o \
+			rc-kworld-315u.o \
+			rc-kworld-pc150u.o \
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc-kworld-plus-tv-analog.o \
 			rc-leadtek-y04g0051.o \
 			rc-lirc.o \
 			rc-lme2510.o \
 			rc-manli.o \
+<<<<<<< HEAD
+=======
+			rc-medion-x10.o \
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc-msi-digivox-ii.o \
 			rc-msi-digivox-iii.o \
 			rc-msi-tvanywhere.o \
@@ -56,6 +72,10 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
 			rc-norwood.o \
 			rc-npgtech.o \
 			rc-pctv-sedna.o \
+<<<<<<< HEAD
+=======
+			rc-philips.o \
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc-pinnacle-color.o \
 			rc-pinnacle-grey.o \
 			rc-pinnacle-pctv-hd.o \
@@ -70,6 +90,11 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
 			rc-hauppauge.o \
 			rc-rc6-mce.o \
 			rc-real-audio-220-32-keys.o \
+<<<<<<< HEAD
+=======
+			rc-snapstream-firefly.o \
+			rc-samsung-necx.o\
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc-streamzap.o \
 			rc-tbs-nec.o \
 			rc-technisat-usb2.o \
@@ -82,6 +107,10 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
 			rc-trekstor.o \
 			rc-tt-1500.o \
 			rc-twinhan1027.o \
+<<<<<<< HEAD
+=======
+			rc-ue-rf4ce.o \
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc-videomate-m1f.o \
 			rc-videomate-s350.o \
 			rc-videomate-tv-pvr.o \

@@ -104,7 +104,11 @@ void i1480_usb_destroy(struct i1480_usb *i1480_usb)
  *
  * Data buffers to USB cannot be on the stack or in vmalloc'ed areas,
  * so we copy it to the local i1480 buffer before proceeding. In any
+<<<<<<< HEAD
  * case, we have a max size we can send, soooo.
+=======
+ * case, we have a max size we can send.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static
 int i1480_usb_write(struct i1480 *i1480, u32 memory_address,
@@ -451,6 +455,7 @@ static struct usb_driver i1480_dfu_driver = {
 	.disconnect =	NULL,
 };
 
+<<<<<<< HEAD
 
 /*
  * Initialize the i1480 DFU driver.
@@ -470,6 +475,9 @@ static void __exit i1480_dfu_driver_exit(void)
 }
 module_exit(i1480_dfu_driver_exit);
 
+=======
+module_usb_driver(i1480_dfu_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>");
 MODULE_DESCRIPTION("Intel Wireless UWB Link 1480 firmware uploader for USB");

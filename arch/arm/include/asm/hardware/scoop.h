@@ -61,7 +61,10 @@ struct scoop_pcmcia_dev {
 struct scoop_pcmcia_config {
 	struct scoop_pcmcia_dev *devs;
 	int num_devs;
+<<<<<<< HEAD
 	void (*pcmcia_init)(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	void (*power_ctrl)(struct device *scoop, unsigned short cpr, int nr);
 };
 

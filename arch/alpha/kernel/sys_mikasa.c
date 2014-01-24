@@ -17,7 +17,11 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/mce.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -146,7 +150,11 @@ mikasa_init_irq(void)
  */
 
 static int __init
+<<<<<<< HEAD
 mikasa_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+mikasa_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static char irq_tab[8][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */

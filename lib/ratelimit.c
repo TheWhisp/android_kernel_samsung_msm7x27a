@@ -11,7 +11,11 @@
 
 #include <linux/ratelimit.h>
 #include <linux/jiffies.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * __ratelimit - rate limiting
@@ -39,7 +43,11 @@ int ___ratelimit(struct ratelimit_state *rs, const char *func)
 	 * in addition to the one that will be printed by
 	 * the entity that is holding the lock already:
 	 */
+<<<<<<< HEAD
 	if (!spin_trylock_irqsave(&rs->lock, flags))
+=======
+	if (!raw_spin_trylock_irqsave(&rs->lock, flags))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	if (!rs->begin)
@@ -60,7 +68,11 @@ int ___ratelimit(struct ratelimit_state *rs, const char *func)
 		rs->missed++;
 		ret = 0;
 	}
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&rs->lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&rs->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }

@@ -40,8 +40,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  *
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/module.h>
@@ -93,15 +96,31 @@ static void sja1000_write_cmdreg(struct sja1000_priv *priv, u8 val)
 	 */
 	spin_lock_irqsave(&priv->cmdreg_lock, flags);
 	priv->write_reg(priv, REG_CMR, val);
+<<<<<<< HEAD
 	priv->read_reg(priv, REG_SR);
 	spin_unlock_irqrestore(&priv->cmdreg_lock, flags);
 }
 
+=======
+	priv->read_reg(priv, SJA1000_REG_SR);
+	spin_unlock_irqrestore(&priv->cmdreg_lock, flags);
+}
+
+static int sja1000_is_absent(struct sja1000_priv *priv)
+{
+	return (priv->read_reg(priv, REG_MOD) == 0xFF);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int sja1000_probe_chip(struct net_device *dev)
 {
 	struct sja1000_priv *priv = netdev_priv(dev);
 
+<<<<<<< HEAD
 	if (priv->reg_base && (priv->read_reg(priv, 0) == 0xFF)) {
+=======
+	if (priv->reg_base && sja1000_is_absent(priv)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_INFO "%s: probing @0x%lX failed\n",
 		       DRV_NAME, dev->base_addr);
 		return 0;
@@ -130,7 +149,11 @@ static void set_reset_mode(struct net_device *dev)
 		status = priv->read_reg(priv, REG_MOD);
 	}
 
+<<<<<<< HEAD
 	dev_err(dev->dev.parent, "setting SJA1000 into reset mode failed!\n");
+=======
+	netdev_err(dev, "setting SJA1000 into reset mode failed!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void set_normal_mode(struct net_device *dev)
@@ -158,7 +181,11 @@ static void set_normal_mode(struct net_device *dev)
 		status = priv->read_reg(priv, REG_MOD);
 	}
 
+<<<<<<< HEAD
 	dev_err(dev->dev.parent, "setting SJA1000 into normal mode failed!\n");
+=======
+	netdev_err(dev, "setting SJA1000 into normal mode failed!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void sja1000_start(struct net_device *dev)
@@ -211,8 +238,12 @@ static int sja1000_set_bittiming(struct net_device *dev)
 	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
 		btr1 |= 0x80;
 
+<<<<<<< HEAD
 	dev_info(dev->dev.parent,
 		 "setting BTR0=0x%02x BTR1=0x%02x\n", btr0, btr1);
+=======
+	netdev_info(dev, "setting BTR0=0x%02x BTR1=0x%02x\n", btr0, btr1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	priv->write_reg(priv, REG_BTR0, btr0);
 	priv->write_reg(priv, REG_BTR1, btr1);
@@ -380,7 +411,11 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
 
 	if (isrc & IRQ_DOI) {
 		/* data overrun interrupt */
+<<<<<<< HEAD
 		dev_dbg(dev->dev.parent, "data overrun interrupt\n");
+=======
+		netdev_dbg(dev, "data overrun interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		cf->can_id |= CAN_ERR_CRTL;
 		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
 		stats->rx_over_errors++;
@@ -390,7 +425,11 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
 
 	if (isrc & IRQ_EI) {
 		/* error warning interrupt */
+<<<<<<< HEAD
 		dev_dbg(dev->dev.parent, "error warning interrupt\n");
+=======
+		netdev_dbg(dev, "error warning interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (status & SR_BS) {
 			state = CAN_STATE_BUS_OFF;
@@ -431,7 +470,11 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
 	}
 	if (isrc & IRQ_EPI) {
 		/* error passive interrupt */
+<<<<<<< HEAD
 		dev_dbg(dev->dev.parent, "error passive interrupt\n");
+=======
+		netdev_dbg(dev, "error passive interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (status & SR_ES)
 			state = CAN_STATE_ERROR_PASSIVE;
 		else
@@ -439,7 +482,11 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
 	}
 	if (isrc & IRQ_ALI) {
 		/* arbitration lost interrupt */
+<<<<<<< HEAD
 		dev_dbg(dev->dev.parent, "arbitration lost interrupt\n");
+=======
+		netdev_dbg(dev, "arbitration lost interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		alc = priv->read_reg(priv, REG_ALC);
 		priv->can.can_stats.arbitration_lost++;
 		stats->tx_errors++;
@@ -494,10 +541,20 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
 
 	while ((isrc = priv->read_reg(priv, REG_IR)) && (n < SJA1000_MAX_IRQ)) {
 		n++;
+<<<<<<< HEAD
 		status = priv->read_reg(priv, REG_SR);
 
 		if (isrc & IRQ_WUI)
 			dev_warn(dev->dev.parent, "wakeup interrupt\n");
+=======
+		status = priv->read_reg(priv, SJA1000_REG_SR);
+		/* check for absent controller due to hw unplug */
+		if (status == 0xFF && sja1000_is_absent(priv))
+			return IRQ_NONE;
+
+		if (isrc & IRQ_WUI)
+			netdev_warn(dev, "wakeup interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (isrc & IRQ_TI) {
 			/* transmission complete interrupt */
@@ -510,7 +567,14 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
 			/* receive interrupt */
 			while (status & SR_RBS) {
 				sja1000_rx(dev);
+<<<<<<< HEAD
 				status = priv->read_reg(priv, REG_SR);
+=======
+				status = priv->read_reg(priv, SJA1000_REG_SR);
+				/* check for absent controller */
+				if (status == 0xFF && sja1000_is_absent(priv))
+					return IRQ_NONE;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
@@ -524,7 +588,11 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
 		priv->post_irq(priv);
 
 	if (n >= SJA1000_MAX_IRQ)
+<<<<<<< HEAD
 		dev_dbg(dev->dev.parent, "%d messages handled in ISR", n);
+=======
+		netdev_dbg(dev, "%d messages handled in ISR", n);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return (n) ? IRQ_HANDLED : IRQ_NONE;
 }

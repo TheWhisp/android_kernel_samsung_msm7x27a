@@ -106,9 +106,12 @@ enum {
 	IB_UCM_MAX_DEVICES = 32
 };
 
+<<<<<<< HEAD
 /* ib_cm and ib_user_cm modules share /sys/class/infiniband_cm */
 extern struct class cm_class;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IB_UCM_BASE_DEV MKDEV(IB_UCM_MAJOR, IB_UCM_BASE_MINOR)
 
 static void ib_ucm_add_one(struct ib_device *device);
@@ -1122,7 +1125,11 @@ static ssize_t ib_ucm_write(struct file *filp, const char __user *buf,
 	if (copy_from_user(&hdr, buf, sizeof(hdr)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	if (hdr.cmd < 0 || hdr.cmd >= ARRAY_SIZE(ucm_cmd_table))
+=======
+	if (hdr.cmd >= ARRAY_SIZE(ucm_cmd_table))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	if (hdr.in + sizeof(hdr) > len)

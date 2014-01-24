@@ -10,6 +10,10 @@
 
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/notifier.h>
 #include <linux/usb.h>
 #include <linux/mutex.h>

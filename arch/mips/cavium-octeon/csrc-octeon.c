@@ -7,6 +7,10 @@
  * Copyright (C) 2009, 2010 Cavium Networks, Inc.
  */
 #include <linux/clocksource.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/smp.h>
 

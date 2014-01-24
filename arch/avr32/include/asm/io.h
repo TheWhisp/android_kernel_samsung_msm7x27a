@@ -1,6 +1,10 @@
 #ifndef __ASM_AVR32_IO_H
 #define __ASM_AVR32_IO_H
 
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/types.h>

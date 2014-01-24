@@ -6,7 +6,11 @@
  *  Manage the dynamic fd arrays in the process files_struct.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 #include <linux/mm.h>
 #include <linux/mmzone.h>
@@ -40,7 +44,11 @@ int sysctl_nr_open_max = 1024 * 1024; /* raised later */
  */
 static DEFINE_PER_CPU(struct fdtable_defer, fdtable_defer_list);
 
+<<<<<<< HEAD
 static void *alloc_fdmem(unsigned int size)
+=======
+static void *alloc_fdmem(size_t size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/*
 	 * Very large allocations can stress page reclaim, so fall back to
@@ -142,7 +150,11 @@ static void copy_fdtable(struct fdtable *nfdt, struct fdtable *ofdt)
 static struct fdtable * alloc_fdtable(unsigned int nr)
 {
 	struct fdtable *fdt;
+<<<<<<< HEAD
 	char *data;
+=======
+	void *data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Figure out how many fds we actually want to support in this fdtable.
@@ -172,6 +184,7 @@ static struct fdtable * alloc_fdtable(unsigned int nr)
 	data = alloc_fdmem(nr * sizeof(struct file *));
 	if (!data)
 		goto out_fdt;
+<<<<<<< HEAD
 	fdt->fd = (struct file **)data;
 	data = alloc_fdmem(max_t(unsigned int,
 				 2 * nr / BITS_PER_BYTE, L1_CACHE_BYTES));
@@ -180,6 +193,17 @@ static struct fdtable * alloc_fdtable(unsigned int nr)
 	fdt->open_fds = (fd_set *)data;
 	data += nr / BITS_PER_BYTE;
 	fdt->close_on_exec = (fd_set *)data;
+=======
+	fdt->fd = data;
+
+	data = alloc_fdmem(max_t(size_t,
+				 2 * nr / BITS_PER_BYTE, L1_CACHE_BYTES));
+	if (!data)
+		goto out_arr;
+	fdt->open_fds = data;
+	data += nr / BITS_PER_BYTE;
+	fdt->close_on_exec = data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	fdt->next = NULL;
 
 	return fdt;
@@ -275,11 +299,19 @@ static int count_open_files(struct fdtable *fdt)
 	int i;
 
 	/* Find the last open fd */
+<<<<<<< HEAD
 	for (i = size/(8*sizeof(long)); i > 0; ) {
 		if (fdt->open_fds->fds_bits[--i])
 			break;
 	}
 	i = (i+1) * 8 * sizeof(long);
+=======
+	for (i = size / BITS_PER_LONG; i > 0; ) {
+		if (fdt->open_fds[--i])
+			break;
+	}
+	i = (i + 1) * BITS_PER_LONG;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return i;
 }
 
@@ -306,8 +338,13 @@ struct files_struct *dup_fd(struct files_struct *oldf, int *errorp)
 	newf->next_fd = 0;
 	new_fdt = &newf->fdtab;
 	new_fdt->max_fds = NR_OPEN_DEFAULT;
+<<<<<<< HEAD
 	new_fdt->close_on_exec = (fd_set *)&newf->close_on_exec_init;
 	new_fdt->open_fds = (fd_set *)&newf->open_fds_init;
+=======
+	new_fdt->close_on_exec = newf->close_on_exec_init;
+	new_fdt->open_fds = newf->open_fds_init;
+>>>>>>> refs/remotes/origin/cm-10.0
 	new_fdt->fd = &newf->fd_array[0];
 	new_fdt->next = NULL;
 
@@ -350,10 +387,15 @@ struct files_struct *dup_fd(struct files_struct *oldf, int *errorp)
 	old_fds = old_fdt->fd;
 	new_fds = new_fdt->fd;
 
+<<<<<<< HEAD
 	memcpy(new_fdt->open_fds->fds_bits,
 		old_fdt->open_fds->fds_bits, open_files/8);
 	memcpy(new_fdt->close_on_exec->fds_bits,
 		old_fdt->close_on_exec->fds_bits, open_files/8);
+=======
+	memcpy(new_fdt->open_fds, old_fdt->open_fds, open_files / 8);
+	memcpy(new_fdt->close_on_exec, old_fdt->close_on_exec, open_files / 8);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = open_files; i != 0; i--) {
 		struct file *f = *old_fds++;
@@ -366,7 +408,11 @@ struct files_struct *dup_fd(struct files_struct *oldf, int *errorp)
 			 * is partway through open().  So make sure that this
 			 * fd is available to the new process.
 			 */
+<<<<<<< HEAD
 			FD_CLR(open_files - i, new_fdt->open_fds);
+=======
+			__clear_open_fd(open_files - i, new_fdt);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		rcu_assign_pointer(*new_fds++, f);
 	}
@@ -379,11 +425,19 @@ struct files_struct *dup_fd(struct files_struct *oldf, int *errorp)
 	memset(new_fds, 0, size);
 
 	if (new_fdt->max_fds > open_files) {
+<<<<<<< HEAD
 		int left = (new_fdt->max_fds-open_files)/8;
 		int start = open_files / (8 * sizeof(unsigned long));
 
 		memset(&new_fdt->open_fds->fds_bits[start], 0, left);
 		memset(&new_fdt->close_on_exec->fds_bits[start], 0, left);
+=======
+		int left = (new_fdt->max_fds - open_files) / 8;
+		int start = open_files / BITS_PER_LONG;
+
+		memset(&new_fdt->open_fds[start], 0, left);
+		memset(&new_fdt->close_on_exec[start], 0, left);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	rcu_assign_pointer(newf->fdt, new_fdt);
@@ -419,8 +473,13 @@ struct files_struct init_files = {
 	.fdtab		= {
 		.max_fds	= NR_OPEN_DEFAULT,
 		.fd		= &init_files.fd_array[0],
+<<<<<<< HEAD
 		.close_on_exec	= (fd_set *)&init_files.close_on_exec_init,
 		.open_fds	= (fd_set *)&init_files.open_fds_init,
+=======
+		.close_on_exec	= init_files.close_on_exec_init,
+		.open_fds	= init_files.open_fds_init,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.file_lock	= __SPIN_LOCK_UNLOCKED(init_task.file_lock),
 };
@@ -443,8 +502,12 @@ repeat:
 		fd = files->next_fd;
 
 	if (fd < fdt->max_fds)
+<<<<<<< HEAD
 		fd = find_next_zero_bit(fdt->open_fds->fds_bits,
 					   fdt->max_fds, fd);
+=======
+		fd = find_next_zero_bit(fdt->open_fds, fdt->max_fds, fd);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	error = expand_files(files, fd);
 	if (error < 0)
@@ -460,11 +523,19 @@ repeat:
 	if (start <= files->next_fd)
 		files->next_fd = fd + 1;
 
+<<<<<<< HEAD
 	FD_SET(fd, fdt->open_fds);
 	if (flags & O_CLOEXEC)
 		FD_SET(fd, fdt->close_on_exec);
 	else
 		FD_CLR(fd, fdt->close_on_exec);
+=======
+	__set_open_fd(fd, fdt);
+	if (flags & O_CLOEXEC)
+		__set_close_on_exec(fd, fdt);
+	else
+		__clear_close_on_exec(fd, fdt);
+>>>>>>> refs/remotes/origin/cm-10.0
 	error = fd;
 #if 1
 	/* Sanity check */

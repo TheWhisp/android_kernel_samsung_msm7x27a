@@ -26,6 +26,10 @@
 #include <asm/cacheflush.h>
 #include <linux/clk.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pagemap.h>
 #include <linux/scatterlist.h>
 #include <linux/sched.h>
@@ -210,14 +214,24 @@ static void isp_video_pix_to_mbus(const struct v4l2_pix_format *pix,
 	mbus->width = pix->width;
 	mbus->height = pix->height;
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(formats); ++i) {
+=======
+	/* Skip the last format in the loop so that it will be selected if no
+	 * match is found.
+	 */
+	for (i = 0; i < ARRAY_SIZE(formats) - 1; ++i) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (formats[i].pixelformat == pix->pixelformat)
 			break;
 	}
 
+<<<<<<< HEAD
 	if (WARN_ON(i == ARRAY_SIZE(formats)))
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mbus->code = formats[i].code;
 	mbus->colorspace = pix->colorspace;
 	mbus->field = pix->field;
@@ -278,7 +292,12 @@ isp_video_far_end(struct isp_video *video)
  * limits reported by every block in the pipeline.
  *
  * Return 0 if all formats match, or -EPIPE if at least one link is found with
+<<<<<<< HEAD
  * different formats on its two ends.
+=======
+ * different formats on its two ends or if the pipeline doesn't start with a
+ * video source (either a subdev with no input pad, or a non-subdev entity).
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int isp_video_validate_pipeline(struct isp_pipeline *pipe)
 {
@@ -329,10 +348,22 @@ static int isp_video_validate_pipeline(struct isp_pipeline *pipe)
 		 * in the middle of it. */
 		shifter_link = subdev == &isp->isp_ccdc.subdev;
 
+<<<<<<< HEAD
 		/* Retrieve the source format */
 		pad = media_entity_remote_source(pad);
 		if (pad == NULL ||
 		    media_entity_type(pad->entity) != MEDIA_ENT_T_V4L2_SUBDEV)
+=======
+		/* Retrieve the source format. Return an error if no source
+		 * entity can be found, and stop checking the pipeline if the
+		 * source entity isn't a subdev.
+		 */
+		pad = media_entity_remote_source(pad);
+		if (pad == NULL)
+			return -EPIPE;
+
+		if (media_entity_type(pad->entity) != MEDIA_ENT_T_V4L2_SUBDEV)
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 
 		subdev = media_entity_to_v4l2_subdev(pad->entity);
@@ -446,7 +477,11 @@ ispmmu_vmap(struct isp_device *isp, const struct scatterlist *sglist, int sglen)
 	sgt->nents = sglen;
 	sgt->orig_nents = sglen;
 
+<<<<<<< HEAD
 	da = iommu_vmap(isp->iommu, 0, sgt, IOMMU_FLAG);
+=======
+	da = omap_iommu_vmap(isp->domain, isp->dev, 0, sgt, IOMMU_FLAG);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR_VALUE(da))
 		kfree(sgt);
 
@@ -462,7 +497,11 @@ static void ispmmu_vunmap(struct isp_device *isp, dma_addr_t da)
 {
 	struct sg_table *sgt;
 
+<<<<<<< HEAD
 	sgt = iommu_vunmap(isp->iommu, (u32)da);
+=======
+	sgt = omap_iommu_vunmap(isp->domain, isp->dev, (u32)da);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(sgt);
 }
 
@@ -574,21 +613,34 @@ static const struct isp_video_queue_operations isp_video_queue_ops = {
 /*
  * omap3isp_video_buffer_next - Complete the current buffer and return the next
  * @video: ISP video object
+<<<<<<< HEAD
  * @error: Whether an error occurred during capture
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Remove the current video buffer from the DMA queue and fill its timestamp,
  * field count and state fields before waking up its completion handler.
  *
+<<<<<<< HEAD
  * The buffer state is set to VIDEOBUF_DONE if no error occurred (@error is 0)
  * or VIDEOBUF_ERROR otherwise (@error is non-zero).
+=======
+ * For capture video nodes the buffer state is set to ISP_BUF_STATE_DONE if no
+ * error has been flagged in the pipeline, or to ISP_BUF_STATE_ERROR otherwise.
+ * For video output nodes the buffer state is always set to ISP_BUF_STATE_DONE.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * The DMA queue is expected to contain at least one buffer.
  *
  * Return a pointer to the next buffer in the DMA queue, or NULL if the queue is
  * empty.
  */
+<<<<<<< HEAD
 struct isp_buffer *omap3isp_video_buffer_next(struct isp_video *video,
 					      unsigned int error)
+=======
+struct isp_buffer *omap3isp_video_buffer_next(struct isp_video *video)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct isp_pipeline *pipe = to_isp_pipeline(&video->video.entity);
 	struct isp_video_queue *queue = video->queue;
@@ -623,7 +675,17 @@ struct isp_buffer *omap3isp_video_buffer_next(struct isp_video *video,
 	else
 		buf->vbuf.sequence = atomic_read(&pipe->frame_number);
 
+<<<<<<< HEAD
 	buf->state = error ? ISP_BUF_STATE_ERROR : ISP_BUF_STATE_DONE;
+=======
+	/* Report pipeline errors to userspace on the capture device side. */
+	if (queue->type == V4L2_BUF_TYPE_VIDEO_CAPTURE && pipe->error) {
+		buf->state = ISP_BUF_STATE_ERROR;
+		pipe->error = false;
+	} else {
+		buf->state = ISP_BUF_STATE_DONE;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	wake_up(&buf->wait);
 
@@ -695,7 +757,10 @@ isp_video_querycap(struct file *file, void *fh, struct v4l2_capability *cap)
 	strlcpy(cap->driver, ISP_VIDEO_DRIVER_NAME, sizeof(cap->driver));
 	strlcpy(cap->card, video->video.name, sizeof(cap->card));
 	strlcpy(cap->bus_info, "media", sizeof(cap->bus_info));
+<<<<<<< HEAD
 	cap->version = ISP_VIDEO_DRIVER_VERSION;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (video->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
 		cap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
@@ -1010,6 +1075,11 @@ isp_video_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
 	if (ret < 0)
 		goto error;
 
+<<<<<<< HEAD
+=======
+	pipe->error = false;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&pipe->lock, flags);
 	pipe->state &= ~ISP_PIPELINE_STREAM;
 	pipe->state |= state;
@@ -1051,6 +1121,17 @@ error:
 		if (video->isp->pdata->set_constraints)
 			video->isp->pdata->set_constraints(video->isp, false);
 		media_entity_pipeline_stop(&video->video.entity);
+<<<<<<< HEAD
+=======
+		/* The DMA queue must be emptied here, otherwise CCDC interrupts
+		 * that will get triggered the next time the CCDC is powered up
+		 * will try to access buffers that might have been freed but
+		 * still present in the DMA queue. This can easily get triggered
+		 * if the above omap3isp_pipeline_set_stream() call fails on a
+		 * system with a free-running sensor.
+		 */
+		INIT_LIST_HEAD(&video->dmaqueue);
+>>>>>>> refs/remotes/origin/cm-10.0
 		video->queue = NULL;
 	}
 
@@ -1312,6 +1393,16 @@ int omap3isp_video_init(struct isp_video *video, const char *name)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+void omap3isp_video_cleanup(struct isp_video *video)
+{
+	media_entity_cleanup(&video->video.entity);
+	mutex_destroy(&video->stream_lock);
+	mutex_destroy(&video->mutex);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int omap3isp_video_register(struct isp_video *video, struct v4l2_device *vdev)
 {
 	int ret;
@@ -1328,8 +1419,13 @@ int omap3isp_video_register(struct isp_video *video, struct v4l2_device *vdev)
 
 void omap3isp_video_unregister(struct isp_video *video)
 {
+<<<<<<< HEAD
 	if (video_is_registered(&video->video)) {
 		media_entity_cleanup(&video->video.entity);
 		video_unregister_device(&video->video);
 	}
+=======
+	if (video_is_registered(&video->video))
+		video_unregister_device(&video->video);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

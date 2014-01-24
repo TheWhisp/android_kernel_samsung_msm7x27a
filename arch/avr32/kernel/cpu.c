@@ -6,7 +6,11 @@
  * published by the Free Software Foundation.
  */
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/seq_file.h>
 #include <linux/cpu.h>
 #include <linux/module.h>
@@ -26,16 +30,26 @@ static DEFINE_PER_CPU(struct cpu, cpu_devices);
  * XXX: If/when a SMP-capable implementation of AVR32 will ever be
  * made, we must make sure that the code executes on the correct CPU.
  */
+<<<<<<< HEAD
 static ssize_t show_pc0event(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *buf)
+=======
+static ssize_t show_pc0event(struct device *dev,
+			struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long pccr;
 
 	pccr = sysreg_read(PCCR);
 	return sprintf(buf, "0x%lx\n", (pccr >> 12) & 0x3f);
 }
+<<<<<<< HEAD
 static ssize_t store_pc0event(struct sys_device *dev,
 			struct sysdev_attribute *attr, const char *buf,
+=======
+static ssize_t store_pc0event(struct device *dev,
+			struct device_attribute *attr, const char *buf,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      size_t count)
 {
 	unsigned long val;
@@ -48,16 +62,26 @@ static ssize_t store_pc0event(struct sys_device *dev,
 	sysreg_write(PCCR, val);
 	return count;
 }
+<<<<<<< HEAD
 static ssize_t show_pc0count(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *buf)
+=======
+static ssize_t show_pc0count(struct device *dev,
+			struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long pcnt0;
 
 	pcnt0 = sysreg_read(PCNT0);
 	return sprintf(buf, "%lu\n", pcnt0);
 }
+<<<<<<< HEAD
 static ssize_t store_pc0count(struct sys_device *dev,
 				struct sysdev_attribute *attr,
+=======
+static ssize_t store_pc0count(struct device *dev,
+				struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 				const char *buf, size_t count)
 {
 	unsigned long val;
@@ -71,16 +95,26 @@ static ssize_t store_pc0count(struct sys_device *dev,
 	return count;
 }
 
+<<<<<<< HEAD
 static ssize_t show_pc1event(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
+=======
+static ssize_t show_pc1event(struct device *dev,
+				struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long pccr;
 
 	pccr = sysreg_read(PCCR);
 	return sprintf(buf, "0x%lx\n", (pccr >> 18) & 0x3f);
 }
+<<<<<<< HEAD
 static ssize_t store_pc1event(struct sys_device *dev,
 			      struct sysdev_attribute *attr, const char *buf,
+=======
+static ssize_t store_pc1event(struct device *dev,
+			      struct device_attribute *attr, const char *buf,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      size_t count)
 {
 	unsigned long val;
@@ -93,16 +127,26 @@ static ssize_t store_pc1event(struct sys_device *dev,
 	sysreg_write(PCCR, val);
 	return count;
 }
+<<<<<<< HEAD
 static ssize_t show_pc1count(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
+=======
+static ssize_t show_pc1count(struct device *dev,
+				struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long pcnt1;
 
 	pcnt1 = sysreg_read(PCNT1);
 	return sprintf(buf, "%lu\n", pcnt1);
 }
+<<<<<<< HEAD
 static ssize_t store_pc1count(struct sys_device *dev,
 				struct sysdev_attribute *attr, const char *buf,
+=======
+static ssize_t store_pc1count(struct device *dev,
+				struct device_attribute *attr, const char *buf,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      size_t count)
 {
 	unsigned long val;
@@ -116,16 +160,26 @@ static ssize_t store_pc1count(struct sys_device *dev,
 	return count;
 }
 
+<<<<<<< HEAD
 static ssize_t show_pccycles(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
+=======
+static ssize_t show_pccycles(struct device *dev,
+				struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long pccnt;
 
 	pccnt = sysreg_read(PCCNT);
 	return sprintf(buf, "%lu\n", pccnt);
 }
+<<<<<<< HEAD
 static ssize_t store_pccycles(struct sys_device *dev,
 				struct sysdev_attribute *attr, const char *buf,
+=======
+static ssize_t store_pccycles(struct device *dev,
+				struct device_attribute *attr, const char *buf,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      size_t count)
 {
 	unsigned long val;
@@ -139,16 +193,26 @@ static ssize_t store_pccycles(struct sys_device *dev,
 	return count;
 }
 
+<<<<<<< HEAD
 static ssize_t show_pcenable(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *buf)
+=======
+static ssize_t show_pcenable(struct device *dev,
+			struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long pccr;
 
 	pccr = sysreg_read(PCCR);
 	return sprintf(buf, "%c\n", (pccr & 1)?'1':'0');
 }
+<<<<<<< HEAD
 static ssize_t store_pcenable(struct sys_device *dev,
 			      struct sysdev_attribute *attr, const char *buf,
+=======
+static ssize_t store_pcenable(struct device *dev,
+			      struct device_attribute *attr, const char *buf,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      size_t count)
 {
 	unsigned long pccr, val;
@@ -167,12 +231,21 @@ static ssize_t store_pcenable(struct sys_device *dev,
 	return count;
 }
 
+<<<<<<< HEAD
 static SYSDEV_ATTR(pc0event, 0600, show_pc0event, store_pc0event);
 static SYSDEV_ATTR(pc0count, 0600, show_pc0count, store_pc0count);
 static SYSDEV_ATTR(pc1event, 0600, show_pc1event, store_pc1event);
 static SYSDEV_ATTR(pc1count, 0600, show_pc1count, store_pc1count);
 static SYSDEV_ATTR(pccycles, 0600, show_pccycles, store_pccycles);
 static SYSDEV_ATTR(pcenable, 0600, show_pcenable, store_pcenable);
+=======
+static DEVICE_ATTR(pc0event, 0600, show_pc0event, store_pc0event);
+static DEVICE_ATTR(pc0count, 0600, show_pc0count, store_pc0count);
+static DEVICE_ATTR(pc1event, 0600, show_pc1event, store_pc1event);
+static DEVICE_ATTR(pc1count, 0600, show_pc1count, store_pc1count);
+static DEVICE_ATTR(pccycles, 0600, show_pccycles, store_pccycles);
+static DEVICE_ATTR(pcenable, 0600, show_pcenable, store_pcenable);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* CONFIG_PERFORMANCE_COUNTERS */
 
@@ -186,12 +259,21 @@ static int __init topology_init(void)
 		register_cpu(c, cpu);
 
 #ifdef CONFIG_PERFORMANCE_COUNTERS
+<<<<<<< HEAD
 		sysdev_create_file(&c->sysdev, &attr_pc0event);
 		sysdev_create_file(&c->sysdev, &attr_pc0count);
 		sysdev_create_file(&c->sysdev, &attr_pc1event);
 		sysdev_create_file(&c->sysdev, &attr_pc1count);
 		sysdev_create_file(&c->sysdev, &attr_pccycles);
 		sysdev_create_file(&c->sysdev, &attr_pcenable);
+=======
+		device_create_file(&c->dev, &dev_attr_pc0event);
+		device_create_file(&c->dev, &dev_attr_pc0count);
+		device_create_file(&c->dev, &dev_attr_pc1event);
+		device_create_file(&c->dev, &dev_attr_pc1count);
+		device_create_file(&c->dev, &dev_attr_pccycles);
+		device_create_file(&c->dev, &dev_attr_pcenable);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	}
 

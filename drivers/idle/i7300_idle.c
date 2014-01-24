@@ -516,12 +516,15 @@ static struct notifier_block i7300_idle_nb = {
 
 MODULE_DEVICE_TABLE(pci, pci_tbl);
 
+<<<<<<< HEAD
 int stats_open_generic(struct inode *inode, struct file *fp)
 {
 	fp->private_data = inode->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t stats_read_ul(struct file *fp, char __user *ubuf, size_t count,
 				loff_t *off)
 {
@@ -534,7 +537,11 @@ static ssize_t stats_read_ul(struct file *fp, char __user *ubuf, size_t count,
 }
 
 static const struct file_operations idle_fops = {
+<<<<<<< HEAD
 	.open	= stats_open_generic,
+=======
+	.open	= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read	= stats_read_ul,
 	.llseek = default_llseek,
 };

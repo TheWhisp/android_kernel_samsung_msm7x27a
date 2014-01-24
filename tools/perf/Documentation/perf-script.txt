@@ -106,7 +106,11 @@ OPTIONS
 
 -i::
 --input=::
+<<<<<<< HEAD
         Input file name.
+=======
+        Input file name. (default: perf.data unless stdin is a fifo)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 -d::
 --debug-mode::
@@ -115,10 +119,17 @@ OPTIONS
 -f::
 --fields::
         Comma separated list of fields to print. Options are:
+<<<<<<< HEAD
         comm, tid, pid, time, cpu, event, trace, sym. Field
         list can be prepended with the type, trace, sw or hw,
         to indicate to which event type the field list applies.
         e.g., -f sw:comm,tid,time,sym  and -f trace:time,cpu,trace
+=======
+        comm, tid, pid, time, cpu, event, trace, ip, sym, dso, addr, symoff.
+        Field list can be prepended with the type, trace, sw or hw,
+        to indicate to which event type the field list applies.
+        e.g., -f sw:comm,tid,time,ip,sym  and -f trace:time,cpu,trace
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		perf script -f <fields>
 
@@ -132,17 +143,28 @@ OPTIONS
 	The arguments are processed in the order received. A later usage can
 	reset a prior request. e.g.:
     
+<<<<<<< HEAD
 		-f trace: -f comm,tid,time,sym
     
 	The first -f suppresses trace events (field list is ""), but then the
 	second invocation sets the fields to comm,tid,time,sym. In this case a
+=======
+		-f trace: -f comm,tid,time,ip,sym
+    
+	The first -f suppresses trace events (field list is ""), but then the
+	second invocation sets the fields to comm,tid,time,ip,sym. In this case a
+>>>>>>> refs/remotes/origin/cm-10.0
 	warning is given to the user:
     
 		"Overriding previous field request for all events."
     
 	Alternativey, consider the order:
     
+<<<<<<< HEAD
 		-f comm,tid,time,sym -f trace:
+=======
+		-f comm,tid,time,ip,sym -f trace:
+>>>>>>> refs/remotes/origin/cm-10.0
     
 	The first -f sets the fields for all events and the second -f
 	suppresses trace events. The user is given a warning message about
@@ -182,6 +204,30 @@ OPTIONS
 --hide-call-graph::
         When printing symbols do not display call chain.
 
+<<<<<<< HEAD
+=======
+-C::
+--cpu:: Only report samples for the list of CPUs provided. Multiple CPUs can
+	be provided as a comma-separated list with no space: 0,1. Ranges of
+	CPUs are specified with -: 0-2. Default is to report samples on all
+	CPUs.
+
+-c::
+--comms=::
+	Only display events for these comms. CSV that understands
+	file://filename entries.
+
+-I::
+--show-info::
+	Display extended information about the perf.data file. This adds
+	information which may be very large and thus may clutter the display.
+	It currently includes: cpu and numa topology of the host system.
+	It can only be used with the perf script report mode.
+
+--show-kernel-path::
+	Try to resolve the path of [kernel.kallsyms]
+
+>>>>>>> refs/remotes/origin/cm-10.0
 SEE ALSO
 --------
 linkperf:perf-record[1], linkperf:perf-script-perl[1],

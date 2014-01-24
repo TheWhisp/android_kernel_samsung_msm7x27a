@@ -57,8 +57,13 @@
 #define warn(format, arg...) printk(KERN_WARNING "%s: " format "\n", MY_NAME , ## arg)
 
 /* local variables */
+<<<<<<< HEAD
 static int debug;
 static int poll;
+=======
+static bool debug;
+static bool poll;
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct cpci_hp_controller_ops zt5550_hpc_ops;
 static struct cpci_hp_controller zt5550_hpc;
 

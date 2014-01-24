@@ -6,7 +6,11 @@
 #include <linux/ctype.h>
 #include <linux/string.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const char *skip_arg(const char *cp)
 {

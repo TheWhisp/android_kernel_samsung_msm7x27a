@@ -39,5 +39,9 @@
 #define RIO_DID_IDTCPS1616		0x0379
 #define RIO_DID_IDTVPS1616		0x0377
 #define RIO_DID_IDTSPS1616		0x0378
+<<<<<<< HEAD
+=======
+#define RIO_DID_TSI721			0x80ab
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif				/* LINUX_RIO_IDS_H */

@@ -15,12 +15,21 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/mtd/physmap.h>
+<<<<<<< HEAD
 #ifdef CONFIG_MTD
 #include <linux/mtd/map.h>
 #endif
 #include <asm/machvec.h>
 #include <asm/io.h>
 
+=======
+#include <linux/mtd/map.h>
+#include <asm/machvec.h>
+#include <asm/io.h>
+
+static const char *part_probes[] = { "cmdlinepart", NULL };
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct mtd_partition rsk_partitions[] = {
 	{
 		.name		= "Bootloader",
@@ -39,9 +48,16 @@ static struct mtd_partition rsk_partitions[] = {
 };
 
 static struct physmap_flash_data flash_data = {
+<<<<<<< HEAD
 	.parts		= rsk_partitions,
 	.nr_parts	= ARRAY_SIZE(rsk_partitions),
 	.width		= 2,
+=======
+	.parts			= rsk_partitions,
+	.nr_parts		= ARRAY_SIZE(rsk_partitions),
+	.width			= 2,
+	.part_probe_types	= part_probes,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct resource flash_resource = {
@@ -60,6 +76,7 @@ static struct platform_device flash_device = {
 	},
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_MTD
 static const char *probes[] = { "cmdlinepart", NULL };
 
@@ -91,13 +108,18 @@ static void __init set_mtd_partitions(void)
 static inline void set_mtd_partitions(void) {}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device *rsk_devices[] __initdata = {
 	&flash_device,
 };
 
 static int __init rsk_devices_setup(void)
 {
+<<<<<<< HEAD
 	set_mtd_partitions();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return platform_add_devices(rsk_devices,
 				    ARRAY_SIZE(rsk_devices));
 }

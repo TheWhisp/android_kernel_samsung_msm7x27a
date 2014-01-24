@@ -1,7 +1,10 @@
 #ifndef __SAA7146__
 #define __SAA7146__
 
+<<<<<<< HEAD
 #include <linux/module.h>	/* for module-version */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>	/* for delay-stuff */
 #include <linux/slab.h>		/* for kmalloc/kfree */
 #include <linux/pci.h>		/* for pci-config-stuff, vendor ids etc. */
@@ -25,12 +28,16 @@
 
 extern unsigned int saa7146_debug;
 
+<<<<<<< HEAD
 //#define DEBUG_PROLOG printk("(0x%08x)(0x%08x) %s: %s(): ",(dev==0?-1:(dev->mem==0?-1:saa7146_read(dev,RPS_ADDR0))),(dev==0?-1:(dev->mem==0?-1:saa7146_read(dev,IER))),KBUILD_MODNAME,__func__)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef DEBUG_VARIABLE
 	#define DEBUG_VARIABLE saa7146_debug
 #endif
 
+<<<<<<< HEAD
 #define DEBUG_PROLOG printk("%s: %s(): ",KBUILD_MODNAME, __func__)
 #define INFO(x) { printk("%s: ",KBUILD_MODNAME); printk x; }
 
@@ -43,10 +50,39 @@ extern unsigned int saa7146_debug;
 #define DEB_VBI(x)  if (0!=(DEBUG_VARIABLE&0x10)) { DEBUG_PROLOG; printk x; } /* vbi debug messages */
 #define DEB_INT(x)  if (0!=(DEBUG_VARIABLE&0x20)) { DEBUG_PROLOG; printk x; } /* interrupt debug messages */
 #define DEB_CAP(x)  if (0!=(DEBUG_VARIABLE&0x40)) { DEBUG_PROLOG; printk x; } /* capture debug messages */
+=======
+#define ERR(fmt, ...)	pr_err("%s: " fmt, __func__, ##__VA_ARGS__)
+
+#define _DBG(mask, fmt, ...)						\
+do {									\
+	if (DEBUG_VARIABLE & mask)					\
+		pr_debug("%s(): " fmt, __func__, ##__VA_ARGS__);	\
+} while (0)
+
+/* simple debug messages */
+#define DEB_S(fmt, ...)		_DBG(0x01, fmt, ##__VA_ARGS__)
+/* more detailed debug messages */
+#define DEB_D(fmt, ...)		_DBG(0x02, fmt, ##__VA_ARGS__)
+/* print enter and exit of functions */
+#define DEB_EE(fmt, ...)	_DBG(0x04, fmt, ##__VA_ARGS__)
+/* i2c debug messages */
+#define DEB_I2C(fmt, ...)	_DBG(0x08, fmt, ##__VA_ARGS__)
+/* vbi debug messages */
+#define DEB_VBI(fmt, ...)	_DBG(0x10, fmt, ##__VA_ARGS__)
+/* interrupt debug messages */
+#define DEB_INT(fmt, ...)	_DBG(0x20, fmt, ##__VA_ARGS__)
+/* capture debug messages */
+#define DEB_CAP(fmt, ...)	_DBG(0x40, fmt, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SAA7146_ISR_CLEAR(x,y) \
 	saa7146_write(x, ISR, (y));
 
+<<<<<<< HEAD
+=======
+struct module;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct saa7146_dev;
 struct saa7146_extension;
 struct saa7146_vv;

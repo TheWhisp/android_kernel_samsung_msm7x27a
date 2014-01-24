@@ -7,6 +7,10 @@
 struct mpc_bus;
 struct mpc_cpu;
 struct mpc_table;
+<<<<<<< HEAD
+=======
+struct cpuinfo_x86;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * struct x86_init_mpparse - platform specific mpparse ops
@@ -144,28 +148,57 @@ struct x86_init_ops {
 /**
  * struct x86_cpuinit_ops - platform specific cpu hotplug setups
  * @setup_percpu_clockev:	set up the per cpu clock event device
+<<<<<<< HEAD
  */
 struct x86_cpuinit_ops {
 	void (*setup_percpu_clockev)(void);
+=======
+ * @early_percpu_clock_init:	early init of the per cpu clock event device
+ */
+struct x86_cpuinit_ops {
+	void (*setup_percpu_clockev)(void);
+	void (*early_percpu_clock_init)(void);
+	void (*fixup_cpu_id)(struct cpuinfo_x86 *c, int node);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
  * struct x86_platform_ops - platform specific runtime functions
  * @calibrate_tsc:		calibrate TSC
+<<<<<<< HEAD
+=======
+ * @wallclock_init:		init the wallclock device
+>>>>>>> refs/remotes/origin/cm-10.0
  * @get_wallclock:		get time from HW clock like RTC etc.
  * @set_wallclock:		set time back to HW clock
  * @is_untracked_pat_range	exclude from PAT logic
  * @nmi_init			enable NMI on cpus
  * @i8042_detect		pre-detect if i8042 controller exists
+<<<<<<< HEAD
  */
 struct x86_platform_ops {
 	unsigned long (*calibrate_tsc)(void);
+=======
+ * @save_sched_clock_state:	save state for sched_clock() on suspend
+ * @restore_sched_clock_state:	restore state for sched_clock() on resume
+ */
+struct x86_platform_ops {
+	unsigned long (*calibrate_tsc)(void);
+	void (*wallclock_init)(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long (*get_wallclock)(void);
 	int (*set_wallclock)(unsigned long nowtime);
 	void (*iommu_shutdown)(void);
 	bool (*is_untracked_pat_range)(u64 start, u64 end);
 	void (*nmi_init)(void);
+<<<<<<< HEAD
 	int (*i8042_detect)(void);
+=======
+	unsigned char (*get_nmi_reason)(void);
+	int (*i8042_detect)(void);
+	void (*save_sched_clock_state)(void);
+	void (*restore_sched_clock_state)(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct pci_dev;
@@ -174,6 +207,10 @@ struct x86_msi_ops {
 	int (*setup_msi_irqs)(struct pci_dev *dev, int nvec, int type);
 	void (*teardown_msi_irq)(unsigned int irq);
 	void (*teardown_msi_irqs)(struct pci_dev *dev);
+<<<<<<< HEAD
+=======
+	void (*restore_msi_irqs)(struct pci_dev *dev, int irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 extern struct x86_init_ops x86_init;

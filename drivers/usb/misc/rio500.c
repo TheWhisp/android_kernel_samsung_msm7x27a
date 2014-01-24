@@ -531,6 +531,7 @@ static struct usb_driver rio_driver = {
 	.id_table =	rio_table,
 };
 
+<<<<<<< HEAD
 static int __init usb_rio_init(void)
 {
 	int retval;
@@ -558,6 +559,9 @@ static void __exit usb_rio_cleanup(void)
 
 module_init(usb_rio_init);
 module_exit(usb_rio_cleanup);
+=======
+module_usb_driver(rio_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR( DRIVER_AUTHOR );
 MODULE_DESCRIPTION( DRIVER_DESC );

@@ -22,6 +22,7 @@ void arch_trigger_all_cpu_backtrace(void);
 #define arch_trigger_all_cpu_backtrace arch_trigger_all_cpu_backtrace
 #endif
 
+<<<<<<< HEAD
 /*
  * Define some priorities for the nmi notifier call chain.
  *
@@ -44,5 +45,28 @@ void arch_trigger_all_cpu_backtrace(void);
 
 void stop_nmi(void);
 void restart_nmi(void);
+=======
+#define NMI_FLAG_FIRST	1
+
+enum {
+	NMI_LOCAL=0,
+	NMI_UNKNOWN,
+	NMI_MAX
+};
+
+#define NMI_DONE	0
+#define NMI_HANDLED	1
+
+typedef int (*nmi_handler_t)(unsigned int, struct pt_regs *);
+
+int register_nmi_handler(unsigned int, nmi_handler_t, unsigned long,
+			 const char *);
+
+void unregister_nmi_handler(unsigned int, const char *);
+
+void stop_nmi(void);
+void restart_nmi(void);
+void local_touch_nmi(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _ASM_X86_NMI_H */

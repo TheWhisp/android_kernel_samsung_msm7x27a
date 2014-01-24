@@ -7,11 +7,15 @@ typedef greg_t gregset_t[NGREG];
 
 typedef struct fpregset {
 	int f_fpcntl[3];
+<<<<<<< HEAD
 #ifdef __mcoldfire__
 	int f_fpregs[8][2];
 #else
 	int f_fpregs[8*3];
 #endif
+=======
+	int f_fpregs[8*3];
+>>>>>>> refs/remotes/origin/cm-10.0
 } fpregset_t;
 
 struct mcontext {

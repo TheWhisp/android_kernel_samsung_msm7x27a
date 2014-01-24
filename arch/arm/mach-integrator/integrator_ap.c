@@ -32,16 +32,31 @@
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/mtd/physmap.h>
+<<<<<<< HEAD
+=======
+#include <linux/clk.h>
+#include <video/vga.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
 #include <mach/platform.h>
 #include <asm/hardware/arm_timer.h>
+<<<<<<< HEAD
 #include <asm/irq.h>
 #include <asm/setup.h>
 #include <asm/param.h>		/* HZ */
 #include <asm/mach-types.h>
 
 #include <mach/lm.h>
+=======
+#include <asm/setup.h>
+#include <asm/param.h>		/* HZ */
+#include <asm/mach-types.h>
+#include <asm/sched_clock.h>
+
+#include <mach/lm.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/arch.h>
 #include <asm/mach/irq.h>
@@ -154,6 +169,10 @@ static struct map_desc ap_io_desc[] __initdata = {
 static void __init ap_map_io(void)
 {
 	iotable_init(ap_io_desc, ARRAY_SIZE(ap_io_desc));
+<<<<<<< HEAD
+=======
+	vga_base = PCI_MEMORY_VADDR;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #define INTEGRATOR_SC_VALID_INT	0x003fffff
@@ -320,6 +339,7 @@ static void __init ap_init(void)
 #define TIMER1_VA_BASE IO_ADDRESS(INTEGRATOR_TIMER1_BASE)
 #define TIMER2_VA_BASE IO_ADDRESS(INTEGRATOR_TIMER2_BASE)
 
+<<<<<<< HEAD
 /*
  * How long is the timer interval?
  */
@@ -341,6 +361,23 @@ static void integrator_clocksource_init(u32 khz)
 
 	if (khz >= 1500) {
 		khz /= 16;
+=======
+static unsigned long timer_reload;
+
+static u32 notrace integrator_read_sched_clock(void)
+{
+	return -readl((void __iomem *) TIMER2_VA_BASE + TIMER_VALUE);
+}
+
+static void integrator_clocksource_init(unsigned long inrate)
+{
+	void __iomem *base = (void __iomem *)TIMER2_VA_BASE;
+	u32 ctrl = TIMER_CTRL_ENABLE | TIMER_CTRL_PERIODIC;
+	unsigned long rate = inrate;
+
+	if (rate >= 1500000) {
+		rate /= 16;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ctrl |= TIMER_CTRL_DIV16;
 	}
 
@@ -348,7 +385,12 @@ static void integrator_clocksource_init(u32 khz)
 	writel(ctrl, base + TIMER_CTRL);
 
 	clocksource_mmio_init(base + TIMER_VALUE, "timer2",
+<<<<<<< HEAD
 		khz * 1000, 200, 16, clocksource_mmio_readl_down);
+=======
+			rate, 200, 16, clocksource_mmio_readl_down);
+	setup_sched_clock(integrator_read_sched_clock, 16, rate);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __iomem * const clkevt_base = (void __iomem *)TIMER1_VA_BASE;
@@ -372,6 +414,7 @@ static void clkevt_set_mode(enum clock_event_mode mode, struct clock_event_devic
 {
 	u32 ctrl = readl(clkevt_base + TIMER_CTRL) & ~TIMER_CTRL_ENABLE;
 
+<<<<<<< HEAD
 	BUG_ON(mode == CLOCK_EVT_MODE_ONESHOT);
 
 	if (mode == CLOCK_EVT_MODE_PERIODIC) {
@@ -381,6 +424,31 @@ static void clkevt_set_mode(enum clock_event_mode mode, struct clock_event_devic
 	}
 
 	writel(ctrl, clkevt_base + TIMER_CTRL);
+=======
+	/* Disable timer */
+	writel(ctrl, clkevt_base + TIMER_CTRL);
+
+	switch (mode) {
+	case CLOCK_EVT_MODE_PERIODIC:
+		/* Enable the timer and start the periodic tick */
+		writel(timer_reload, clkevt_base + TIMER_LOAD);
+		ctrl |= TIMER_CTRL_PERIODIC | TIMER_CTRL_ENABLE;
+		writel(ctrl, clkevt_base + TIMER_CTRL);
+		break;
+	case CLOCK_EVT_MODE_ONESHOT:
+		/* Leave the timer disabled, .set_next_event will enable it */
+		ctrl &= ~TIMER_CTRL_PERIODIC;
+		writel(ctrl, clkevt_base + TIMER_CTRL);
+		break;
+	case CLOCK_EVT_MODE_UNUSED:
+	case CLOCK_EVT_MODE_SHUTDOWN:
+	case CLOCK_EVT_MODE_RESUME:
+	default:
+		/* Just leave in disabled state */
+		break;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int clkevt_set_next_event(unsigned long next, struct clock_event_device *evt)
@@ -396,12 +464,19 @@ static int clkevt_set_next_event(unsigned long next, struct clock_event_device *
 
 static struct clock_event_device integrator_clockevent = {
 	.name		= "timer1",
+<<<<<<< HEAD
 	.shift		= 34,
 	.features	= CLOCK_EVT_FEAT_PERIODIC,
 	.set_mode	= clkevt_set_mode,
 	.set_next_event	= clkevt_set_next_event,
 	.rating		= 300,
 	.cpumask	= cpu_all_mask,
+=======
+	.features	= CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
+	.set_mode	= clkevt_set_mode,
+	.set_next_event	= clkevt_set_next_event,
+	.rating		= 300,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct irqaction integrator_timer_irq = {
@@ -411,6 +486,7 @@ static struct irqaction integrator_timer_irq = {
 	.dev_id		= &integrator_clockevent,
 };
 
+<<<<<<< HEAD
 static void integrator_clockevent_init(u32 khz)
 {
 	struct clock_event_device *evt = &integrator_clockevent;
@@ -434,6 +510,29 @@ static void integrator_clockevent_init(u32 khz)
 
 	setup_irq(IRQ_TIMERINT1, &integrator_timer_irq);
 	clockevents_register_device(evt);
+=======
+static void integrator_clockevent_init(unsigned long inrate)
+{
+	unsigned long rate = inrate;
+	unsigned int ctrl = 0;
+
+	/* Calculate and program a divisor */
+	if (rate > 0x100000 * HZ) {
+		rate /= 256;
+		ctrl |= TIMER_CTRL_DIV256;
+	} else if (rate > 0x10000 * HZ) {
+		rate /= 16;
+		ctrl |= TIMER_CTRL_DIV16;
+	}
+	timer_reload = rate / HZ;
+	writel(ctrl, clkevt_base + TIMER_CTRL);
+
+	setup_irq(IRQ_TIMERINT1, &integrator_timer_irq);
+	clockevents_config_and_register(&integrator_clockevent,
+					rate,
+					1,
+					0xffffU);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -441,14 +540,29 @@ static void integrator_clockevent_init(u32 khz)
  */
 static void __init ap_init_timer(void)
 {
+<<<<<<< HEAD
 	u32 khz = TICKS_PER_uSEC * 1000;
+=======
+	struct clk *clk;
+	unsigned long rate;
+
+	clk = clk_get_sys("ap_timer", NULL);
+	BUG_ON(IS_ERR(clk));
+	clk_enable(clk);
+	rate = clk_get_rate(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	writel(0, TIMER0_VA_BASE + TIMER_CTRL);
 	writel(0, TIMER1_VA_BASE + TIMER_CTRL);
 	writel(0, TIMER2_VA_BASE + TIMER_CTRL);
 
+<<<<<<< HEAD
 	integrator_clocksource_init(khz);
 	integrator_clockevent_init(khz);
+=======
+	integrator_clocksource_init(rate);
+	integrator_clockevent_init(rate);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct sys_timer ap_timer = {
@@ -457,11 +571,22 @@ static struct sys_timer ap_timer = {
 
 MACHINE_START(INTEGRATOR, "ARM-Integrator")
 	/* Maintainer: ARM Ltd/Deep Blue Solutions Ltd */
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 	.reserve	= integrator_reserve,
 	.map_io		= ap_map_io,
+=======
+	.atag_offset	= 0x100,
+	.reserve	= integrator_reserve,
+	.map_io		= ap_map_io,
+	.nr_irqs	= NR_IRQS_INTEGRATOR_AP,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_early	= integrator_init_early,
 	.init_irq	= ap_init_irq,
 	.timer		= &ap_timer,
 	.init_machine	= ap_init,
+<<<<<<< HEAD
+=======
+	.restart	= integrator_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

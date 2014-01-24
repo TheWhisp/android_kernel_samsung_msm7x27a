@@ -28,8 +28,13 @@
 #include <asm/mach/mmc.h>
 
 #include <mach/vreg.h>
+<<<<<<< HEAD
 
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "devices.h"
 
 #define FPGA_BASE		0x70000000

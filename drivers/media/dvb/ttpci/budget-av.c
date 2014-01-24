@@ -33,6 +33,11 @@
  * the project's page is at http://www.linuxtv.org/ 
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "budget.h"
 #include "stv0299.h"
 #include "stb0899_drv.h"
@@ -149,7 +154,11 @@ static int ciintf_read_attribute_mem(struct dvb_ca_en50221 *ca, int slot, int ad
 	result = ttpci_budget_debiread(&budget_av->budget, DEBICICAM, address & 0xfff, 1, 0, 1);
 	if (result == -ETIMEDOUT) {
 		ciintf_slot_shutdown(ca, slot);
+<<<<<<< HEAD
 		printk(KERN_INFO "budget-av: cam ejected 1\n");
+=======
+		pr_info("cam ejected 1\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return result;
 }
@@ -168,7 +177,11 @@ static int ciintf_write_attribute_mem(struct dvb_ca_en50221 *ca, int slot, int a
 	result = ttpci_budget_debiwrite(&budget_av->budget, DEBICICAM, address & 0xfff, 1, value, 0, 1);
 	if (result == -ETIMEDOUT) {
 		ciintf_slot_shutdown(ca, slot);
+<<<<<<< HEAD
 		printk(KERN_INFO "budget-av: cam ejected 2\n");
+=======
+		pr_info("cam ejected 2\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return result;
 }
@@ -187,7 +200,11 @@ static int ciintf_read_cam_control(struct dvb_ca_en50221 *ca, int slot, u8 addre
 	result = ttpci_budget_debiread(&budget_av->budget, DEBICICAM, address & 3, 1, 0, 0);
 	if (result == -ETIMEDOUT) {
 		ciintf_slot_shutdown(ca, slot);
+<<<<<<< HEAD
 		printk(KERN_INFO "budget-av: cam ejected 3\n");
+=======
+		pr_info("cam ejected 3\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ETIMEDOUT;
 	}
 	return result;
@@ -207,7 +224,11 @@ static int ciintf_write_cam_control(struct dvb_ca_en50221 *ca, int slot, u8 addr
 	result = ttpci_budget_debiwrite(&budget_av->budget, DEBICICAM, address & 3, 1, value, 0, 0);
 	if (result == -ETIMEDOUT) {
 		ciintf_slot_shutdown(ca, slot);
+<<<<<<< HEAD
 		printk(KERN_INFO "budget-av: cam ejected 5\n");
+=======
+		pr_info("cam ejected 5\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return result;
 }
@@ -289,7 +310,11 @@ static int ciintf_poll_slot_status(struct dvb_ca_en50221 *ca, int slot, int open
 		if (saa7146_read(saa, PSR) & MASK_06) {
 			if (budget_av->slot_status == SLOTSTATUS_NONE) {
 				budget_av->slot_status = SLOTSTATUS_PRESENT;
+<<<<<<< HEAD
 				printk(KERN_INFO "budget-av: cam inserted A\n");
+=======
+				pr_info("cam inserted A\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 		saa7146_setgpio(saa, 3, SAA7146_GPIO_OUTLO);
@@ -306,11 +331,19 @@ static int ciintf_poll_slot_status(struct dvb_ca_en50221 *ca, int slot, int open
 		result = ttpci_budget_debiread(&budget_av->budget, DEBICICAM, 0, 1, 0, 1);
 		if ((result >= 0) && (budget_av->slot_status == SLOTSTATUS_NONE)) {
 			budget_av->slot_status = SLOTSTATUS_PRESENT;
+<<<<<<< HEAD
 			printk(KERN_INFO "budget-av: cam inserted B\n");
 		} else if (result < 0) {
 			if (budget_av->slot_status != SLOTSTATUS_NONE) {
 				ciintf_slot_shutdown(ca, slot);
 				printk(KERN_INFO "budget-av: cam ejected 5\n");
+=======
+			pr_info("cam inserted B\n");
+		} else if (result < 0) {
+			if (budget_av->slot_status != SLOTSTATUS_NONE) {
+				ciintf_slot_shutdown(ca, slot);
+				pr_info("cam ejected 5\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 				return 0;
 			}
 		}
@@ -365,11 +398,19 @@ static int ciintf_init(struct budget_av *budget_av)
 
 	if ((result = dvb_ca_en50221_init(&budget_av->budget.dvb_adapter,
 					  &budget_av->ca, 0, 1)) != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "budget-av: ci initialisation failed.\n");
 		goto error;
 	}
 
 	printk(KERN_INFO "budget-av: ci interface initialised.\n");
+=======
+		pr_err("ci initialisation failed\n");
+		goto error;
+	}
+
+	pr_info("ci interface initialised\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 error:
@@ -500,23 +541,37 @@ static int philips_su1278_ty_ci_set_symbol_rate(struct dvb_frontend *fe, u32 sra
 	return 0;
 }
 
+<<<<<<< HEAD
 static int philips_su1278_ty_ci_tuner_set_params(struct dvb_frontend *fe,
 						 struct dvb_frontend_parameters *params)
 {
+=======
+static int philips_su1278_ty_ci_tuner_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 div;
 	u8 buf[4];
 	struct budget *budget = (struct budget *) fe->dvb->priv;
 	struct i2c_msg msg = {.addr = 0x61,.flags = 0,.buf = buf,.len = sizeof(buf) };
 
+<<<<<<< HEAD
 	if ((params->frequency < 950000) || (params->frequency > 2150000))
 		return -EINVAL;
 
 	div = (params->frequency + (125 - 1)) / 125;	// round correctly
+=======
+	if ((c->frequency < 950000) || (c->frequency > 2150000))
+		return -EINVAL;
+
+	div = (c->frequency + (125 - 1)) / 125;	/* round correctly */
+>>>>>>> refs/remotes/origin/cm-10.0
 	buf[0] = (div >> 8) & 0x7f;
 	buf[1] = div & 0xff;
 	buf[2] = 0x80 | ((div & 0x18000) >> 10) | 4;
 	buf[3] = 0x20;
 
+<<<<<<< HEAD
 	if (params->u.qpsk.symbol_rate < 4000000)
 		buf[3] |= 1;
 
@@ -527,6 +582,18 @@ static int philips_su1278_ty_ci_tuner_set_params(struct dvb_frontend *fe,
 	else if (params->frequency < 2050000)
 		buf[3] |= 0x80;
 	else if (params->frequency < 2150000)
+=======
+	if (c->symbol_rate < 4000000)
+		buf[3] |= 1;
+
+	if (c->frequency < 1250000)
+		buf[3] |= 0;
+	else if (c->frequency < 1550000)
+		buf[3] |= 0x40;
+	else if (c->frequency < 2050000)
+		buf[3] |= 0x80;
+	else if (c->frequency < 2150000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		buf[3] |= 0xC0;
 
 	if (fe->ops.i2c_gate_ctrl)
@@ -615,8 +682,14 @@ static struct stv0299_config cinergy_1200s_1894_0010_config = {
 	.set_symbol_rate = philips_su1278_ty_ci_set_symbol_rate,
 };
 
+<<<<<<< HEAD
 static int philips_cu1216_tuner_set_params(struct dvb_frontend *fe, struct dvb_frontend_parameters *params)
 {
+=======
+static int philips_cu1216_tuner_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct budget *budget = (struct budget *) fe->dvb->priv;
 	u8 buf[6];
 	struct i2c_msg msg = {.addr = 0x60,.flags = 0,.buf = buf,.len = sizeof(buf) };
@@ -625,13 +698,22 @@ static int philips_cu1216_tuner_set_params(struct dvb_frontend *fe, struct dvb_f
 #define CU1216_IF 36125000
 #define TUNER_MUL 62500
 
+<<<<<<< HEAD
 	u32 div = (params->frequency + CU1216_IF + TUNER_MUL / 2) / TUNER_MUL;
+=======
+	u32 div = (c->frequency + CU1216_IF + TUNER_MUL / 2) / TUNER_MUL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	buf[0] = (div >> 8) & 0x7f;
 	buf[1] = div & 0xff;
 	buf[2] = 0xce;
+<<<<<<< HEAD
 	buf[3] = (params->frequency < 150000000 ? 0x01 :
 		  params->frequency < 445000000 ? 0x02 : 0x04);
+=======
+	buf[3] = (c->frequency < 150000000 ? 0x01 :
+		  c->frequency < 445000000 ? 0x02 : 0x04);
+>>>>>>> refs/remotes/origin/cm-10.0
 	buf[4] = 0xde;
 	buf[5] = 0x20;
 
@@ -695,8 +777,14 @@ static int philips_tu1216_tuner_init(struct dvb_frontend *fe)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int philips_tu1216_tuner_set_params(struct dvb_frontend *fe, struct dvb_frontend_parameters *params)
 {
+=======
+static int philips_tu1216_tuner_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct budget *budget = (struct budget *) fe->dvb->priv;
 	u8 tuner_buf[4];
 	struct i2c_msg tuner_msg = {.addr = 0x60,.flags = 0,.buf = tuner_buf,.len =
@@ -705,7 +793,11 @@ static int philips_tu1216_tuner_set_params(struct dvb_frontend *fe, struct dvb_f
 	u8 band, cp, filter;
 
 	// determine charge pump
+<<<<<<< HEAD
 	tuner_frequency = params->frequency + 36166000;
+=======
+	tuner_frequency = c->frequency + 36166000;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (tuner_frequency < 87000000)
 		return -EINVAL;
 	else if (tuner_frequency < 130000000)
@@ -730,6 +822,7 @@ static int philips_tu1216_tuner_set_params(struct dvb_frontend *fe, struct dvb_f
 		return -EINVAL;
 
 	// determine band
+<<<<<<< HEAD
 	if (params->frequency < 49000000)
 		return -EINVAL;
 	else if (params->frequency < 161000000)
@@ -737,11 +830,21 @@ static int philips_tu1216_tuner_set_params(struct dvb_frontend *fe, struct dvb_f
 	else if (params->frequency < 444000000)
 		band = 2;
 	else if (params->frequency < 861000000)
+=======
+	if (c->frequency < 49000000)
+		return -EINVAL;
+	else if (c->frequency < 161000000)
+		band = 1;
+	else if (c->frequency < 444000000)
+		band = 2;
+	else if (c->frequency < 861000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		band = 4;
 	else
 		return -EINVAL;
 
 	// setup PLL filter
+<<<<<<< HEAD
 	switch (params->u.ofdm.bandwidth) {
 	case BANDWIDTH_6_MHZ:
 		filter = 0;
@@ -752,6 +855,18 @@ static int philips_tu1216_tuner_set_params(struct dvb_frontend *fe, struct dvb_f
 		break;
 
 	case BANDWIDTH_8_MHZ:
+=======
+	switch (c->bandwidth_hz) {
+	case 6000000:
+		filter = 0;
+		break;
+
+	case 7000000:
+		filter = 0;
+		break;
+
+	case 8000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 		filter = 1;
 		break;
 
@@ -761,7 +876,11 @@ static int philips_tu1216_tuner_set_params(struct dvb_frontend *fe, struct dvb_f
 
 	// calculate divisor
 	// ((36166000+((1000000/6)/2)) + Finput)/(1000000/6)
+<<<<<<< HEAD
 	tuner_frequency = (((params->frequency / 1000) * 6) + 217496) / 1000;
+=======
+	tuner_frequency = (((c->frequency / 1000) * 6) + 217496) / 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	// setup tuner buffer
 	tuner_buf[0] = (tuner_frequency >> 8) & 0x7f;
@@ -896,7 +1015,10 @@ static const struct stb0899_s1_reg knc1_stb0899_s1_init_1[] = {
 	{ STB0899_DISRX_ST0		, 0x04 },
 	{ STB0899_DISRX_ST1		, 0x00 },
 	{ STB0899_DISPARITY		, 0x00 },
+<<<<<<< HEAD
 	{ STB0899_DISFIFO		, 0x00 },
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ STB0899_DISSTATUS		, 0x20 },
 	{ STB0899_DISF22		, 0x8c },
 	{ STB0899_DISF22RX		, 0x9a },
@@ -1197,6 +1319,10 @@ static u8 read_pwm(struct budget_av *budget_av)
 #define SUBID_DVBC_KNC1			0x0020
 #define SUBID_DVBC_KNC1_PLUS		0x0021
 #define SUBID_DVBC_KNC1_MK3		0x0022
+<<<<<<< HEAD
+=======
+#define SUBID_DVBC_KNC1_TDA10024	0x0028
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SUBID_DVBC_KNC1_PLUS_MK3	0x0023
 #define SUBID_DVBC_CINERGY1200		0x1156
 #define SUBID_DVBC_CINERGY1200_MK3	0x1176
@@ -1316,6 +1442,10 @@ static void frontend_init(struct budget_av *budget_av)
 	case SUBID_DVBC_EASYWATCH_MK3:
 	case SUBID_DVBC_CINERGY1200_MK3:
 	case SUBID_DVBC_KNC1_MK3:
+<<<<<<< HEAD
+=======
+	case SUBID_DVBC_KNC1_TDA10024:
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SUBID_DVBC_KNC1_PLUS_MK3:
 		budget_av->reinitialise_demod = 1;
 		budget_av->budget.dev->i2c_bitrate = SAA7146_I2C_BUS_BIT_RATE_240;
@@ -1343,8 +1473,12 @@ static void frontend_init(struct budget_av *budget_av)
 	}
 
 	if (fe == NULL) {
+<<<<<<< HEAD
 		printk(KERN_ERR "budget-av: A frontend driver was not found "
 				"for device [%04x:%04x] subsystem [%04x:%04x]\n",
+=======
+		pr_err("A frontend driver was not found for device [%04x:%04x] subsystem [%04x:%04x]\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       saa->pci->vendor,
 		       saa->pci->device,
 		       saa->pci->subsystem_vendor,
@@ -1356,7 +1490,11 @@ static void frontend_init(struct budget_av *budget_av)
 
 	if (dvb_register_frontend(&budget_av->budget.dvb_adapter,
 				  budget_av->budget.dvb_frontend)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "budget-av: Frontend registration failed!\n");
+=======
+		pr_err("Frontend registration failed!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		dvb_frontend_detach(budget_av->budget.dvb_frontend);
 		budget_av->budget.dvb_frontend = NULL;
 	}
@@ -1414,7 +1552,11 @@ static struct v4l2_input knc1_inputs[KNC1_INPUTS] = {
 
 static int vidioc_enum_input(struct file *file, void *fh, struct v4l2_input *i)
 {
+<<<<<<< HEAD
 	dprintk(1, "VIDIOC_ENUMINPUT %d.\n", i->index);
+=======
+	dprintk(1, "VIDIOC_ENUMINPUT %d\n", i->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (i->index >= KNC1_INPUTS)
 		return -EINVAL;
 	memcpy(i, &knc1_inputs[i->index], sizeof(struct v4l2_input));
@@ -1428,7 +1570,11 @@ static int vidioc_g_input(struct file *file, void *fh, unsigned int *i)
 
 	*i = budget_av->cur_input;
 
+<<<<<<< HEAD
 	dprintk(1, "VIDIOC_G_INPUT %d.\n", *i);
+=======
+	dprintk(1, "VIDIOC_G_INPUT %d\n", *i);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1437,7 +1583,11 @@ static int vidioc_s_input(struct file *file, void *fh, unsigned int input)
 	struct saa7146_dev *dev = ((struct saa7146_fh *)fh)->dev;
 	struct budget_av *budget_av = (struct budget_av *)dev->ext_priv;
 
+<<<<<<< HEAD
 	dprintk(1, "VIDIOC_S_INPUT %d.\n", input);
+=======
+	dprintk(1, "VIDIOC_S_INPUT %d\n", input);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return saa7113_setinput(budget_av, input);
 }
 
@@ -1476,7 +1626,11 @@ static int budget_av_attach(struct saa7146_dev *dev, struct saa7146_pci_extensio
 
 		if (0 != saa7146_vv_init(dev, &vv_data)) {
 			/* fixme: proper cleanup here */
+<<<<<<< HEAD
 			ERR(("cannot init vv subsystem.\n"));
+=======
+			ERR("cannot init vv subsystem\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return err;
 		}
 		vv_data.ops.vidioc_enum_input = vidioc_enum_input;
@@ -1485,7 +1639,11 @@ static int budget_av_attach(struct saa7146_dev *dev, struct saa7146_pci_extensio
 
 		if ((err = saa7146_register_device(&budget_av->vd, dev, "knc1", VFL_TYPE_GRABBER))) {
 			/* fixme: proper cleanup here */
+<<<<<<< HEAD
 			ERR(("cannot register capture v4l2 device.\n"));
+=======
+			ERR("cannot register capture v4l2 device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			saa7146_vv_release(dev);
 			return err;
 		}
@@ -1502,6 +1660,7 @@ static int budget_av_attach(struct saa7146_dev *dev, struct saa7146_pci_extensio
 
 	mac = budget_av->budget.dvb_adapter.proposed_mac;
 	if (i2c_readregs(&budget_av->budget.i2c_adap, 0xa0, 0x30, mac, 6)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "KNC1-%d: Could not read MAC from KNC1 card\n",
 		       budget_av->budget.dvb_adapter.num);
 		memset(mac, 0, 6);
@@ -1509,6 +1668,14 @@ static int budget_av_attach(struct saa7146_dev *dev, struct saa7146_pci_extensio
 		printk(KERN_INFO "KNC1-%d: MAC addr = %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
 		       budget_av->budget.dvb_adapter.num,
 		       mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+=======
+		pr_err("KNC1-%d: Could not read MAC from KNC1 card\n",
+		       budget_av->budget.dvb_adapter.num);
+		memset(mac, 0, 6);
+	} else {
+		pr_info("KNC1-%d: MAC addr = %pM\n",
+			budget_av->budget.dvb_adapter.num, mac);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	budget_av->budget.dvb_adapter.priv = budget_av;
@@ -1558,6 +1725,10 @@ MAKE_BUDGET_INFO(knc1sp, "KNC1 DVB-S Plus", BUDGET_KNC1SP);
 MAKE_BUDGET_INFO(knc1spx4, "KNC1 DVB-S Plus X4", BUDGET_KNC1SP);
 MAKE_BUDGET_INFO(knc1cp, "KNC1 DVB-C Plus", BUDGET_KNC1CP);
 MAKE_BUDGET_INFO(knc1cmk3, "KNC1 DVB-C MK3", BUDGET_KNC1C_MK3);
+<<<<<<< HEAD
+=======
+MAKE_BUDGET_INFO(knc1ctda10024, "KNC1 DVB-C TDA10024", BUDGET_KNC1C_TDA10024);
+>>>>>>> refs/remotes/origin/cm-10.0
 MAKE_BUDGET_INFO(knc1cpmk3, "KNC1 DVB-C Plus MK3", BUDGET_KNC1CP_MK3);
 MAKE_BUDGET_INFO(knc1tp, "KNC1 DVB-T Plus", BUDGET_KNC1TP);
 MAKE_BUDGET_INFO(cin1200s, "TerraTec Cinergy 1200 DVB-S", BUDGET_CIN1200S);
@@ -1587,6 +1758,10 @@ static struct pci_device_id pci_tbl[] = {
 	MAKE_EXTENSION_PCI(knc1c, 0x1894, 0x0020),
 	MAKE_EXTENSION_PCI(knc1cp, 0x1894, 0x0021),
 	MAKE_EXTENSION_PCI(knc1cmk3, 0x1894, 0x0022),
+<<<<<<< HEAD
+=======
+	MAKE_EXTENSION_PCI(knc1ctda10024, 0x1894, 0x0028),
+>>>>>>> refs/remotes/origin/cm-10.0
 	MAKE_EXTENSION_PCI(knc1cpmk3, 0x1894, 0x0023),
 	MAKE_EXTENSION_PCI(knc1t, 0x1894, 0x0030),
 	MAKE_EXTENSION_PCI(knc1tp, 0x1894, 0x0031),

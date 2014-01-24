@@ -21,8 +21,29 @@
 #include <linux/path.h>
 #include <linux/key.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 
+=======
+
+struct lsm_network_audit {
+	int netif;
+	struct sock *sk;
+	u16 family;
+	__be16 dport;
+	__be16 sport;
+	union {
+		struct {
+			__be32 daddr;
+			__be32 saddr;
+		} v4;
+		struct {
+			struct in6_addr daddr;
+			struct in6_addr saddr;
+		} v6;
+	} fam;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Auxiliary data to use in generating the audit record. */
 struct common_audit_data {
@@ -42,6 +63,7 @@ struct common_audit_data {
 		struct path path;
 		struct dentry *dentry;
 		struct inode *inode;
+<<<<<<< HEAD
 		struct {
 			int netif;
 			struct sock *sk;
@@ -59,6 +81,9 @@ struct common_audit_data {
 				} v6;
 			} fam;
 		} net;
+=======
+		struct lsm_network_audit *net;
+>>>>>>> refs/remotes/origin/cm-10.0
 		int cap;
 		int ipc_id;
 		struct task_struct *tsk;
@@ -73,6 +98,7 @@ struct common_audit_data {
 	/* this union contains LSM specific data */
 	union {
 #ifdef CONFIG_SECURITY_SMACK
+<<<<<<< HEAD
 		/* SMACK data */
 		struct smack_audit_data {
 			const char *function;
@@ -131,6 +157,17 @@ struct common_audit_data {
 	/* these callback will be implemented by a specific LSM */
 	void (*lsm_pre_audit)(struct audit_buffer *, void *);
 	void (*lsm_post_audit)(struct audit_buffer *, void *);
+=======
+		struct smack_audit_data *smack_audit_data;
+#endif
+#ifdef CONFIG_SECURITY_SELINUX
+		struct selinux_audit_data *selinux_audit_data;
+#endif
+#ifdef CONFIG_SECURITY_APPARMOR
+		struct apparmor_audit_data *apparmor_audit_data;
+#endif
+	}; /* per LSM data pointer union */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define v4info fam.v4
@@ -147,6 +184,12 @@ int ipv6_skb_to_auditdata(struct sk_buff *skb,
 	{ memset((_d), 0, sizeof(struct common_audit_data)); \
 	 (_d)->type = LSM_AUDIT_DATA_##_t; }
 
+<<<<<<< HEAD
 void common_lsm_audit(struct common_audit_data *a);
+=======
+void common_lsm_audit(struct common_audit_data *a,
+	void (*pre_audit)(struct audit_buffer *, void *),
+	void (*post_audit)(struct audit_buffer *, void *));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

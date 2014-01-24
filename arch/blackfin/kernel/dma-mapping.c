@@ -12,6 +12,10 @@
 #include <linux/spinlock.h>
 #include <linux/dma-mapping.h>
 #include <linux/scatterlist.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static spinlock_t dma_page_lock;
 static unsigned long *dma_page;

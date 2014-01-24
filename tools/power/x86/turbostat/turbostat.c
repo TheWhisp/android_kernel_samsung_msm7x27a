@@ -2,7 +2,11 @@
  * turbostat -- show CPU frequency and C-state residency
  * on modern Intel turbo-capable processors.
  *
+<<<<<<< HEAD
  * Copyright (c) 2010, Intel Corporation.
+=======
+ * Copyright (c) 2012 Intel Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Len Brown <len.brown@intel.com>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -19,6 +23,10 @@
  * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+<<<<<<< HEAD
+=======
+#define _GNU_SOURCE
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -32,6 +40,10 @@
 #include <dirent.h>
 #include <string.h>
 #include <ctype.h>
+<<<<<<< HEAD
+=======
+#include <sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MSR_TSC	0x10
 #define MSR_NEHALEM_PLATFORM_INFO	0xCE
@@ -49,6 +61,10 @@
 char *proc_stat = "/proc/stat";
 unsigned int interval_sec = 5;	/* set with -i interval_sec */
 unsigned int verbose;		/* set with -v */
+<<<<<<< HEAD
+=======
+unsigned int summary_only;	/* set with -s */
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned int skip_c0;
 unsigned int skip_c1;
 unsigned int do_nhm_cstates;
@@ -68,9 +84,16 @@ unsigned int show_cpu;
 int aperf_mperf_unstable;
 int backwards_count;
 char *progname;
+<<<<<<< HEAD
 int need_reinitialize;
 
 int num_cpus;
+=======
+
+int num_cpus;
+cpu_set_t *cpu_mask;
+size_t cpu_mask_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct counters {
 	unsigned long long tsc;		/* per thread */
@@ -99,15 +122,56 @@ struct timeval tv_even;
 struct timeval tv_odd;
 struct timeval tv_delta;
 
+<<<<<<< HEAD
 unsigned long long get_msr(int cpu, off_t offset)
 {
 	ssize_t retval;
 	unsigned long long msr;
+=======
+/*
+ * cpu_mask_init(ncpus)
+ *
+ * allocate and clear cpu_mask
+ * set cpu_mask_size
+ */
+void cpu_mask_init(int ncpus)
+{
+	cpu_mask = CPU_ALLOC(ncpus);
+	if (cpu_mask == NULL) {
+		perror("CPU_ALLOC");
+		exit(3);
+	}
+	cpu_mask_size = CPU_ALLOC_SIZE(ncpus);
+	CPU_ZERO_S(cpu_mask_size, cpu_mask);
+}
+
+void cpu_mask_uninit()
+{
+	CPU_FREE(cpu_mask);
+	cpu_mask = NULL;
+	cpu_mask_size = 0;
+}
+
+int cpu_migrate(int cpu)
+{
+	CPU_ZERO_S(cpu_mask_size, cpu_mask);
+	CPU_SET_S(cpu, cpu_mask_size, cpu_mask);
+	if (sched_setaffinity(0, cpu_mask_size, cpu_mask) == -1)
+		return -1;
+	else
+		return 0;
+}
+
+int get_msr(int cpu, off_t offset, unsigned long long *msr)
+{
+	ssize_t retval;
+>>>>>>> refs/remotes/origin/cm-10.0
 	char pathname[32];
 	int fd;
 
 	sprintf(pathname, "/dev/cpu/%d/msr", cpu);
 	fd = open(pathname, O_RDONLY);
+<<<<<<< HEAD
 	if (fd < 0) {
 		perror(pathname);
 		need_reinitialize = 1;
@@ -123,11 +187,24 @@ unsigned long long get_msr(int cpu, off_t offset)
 
 	close(fd);
 	return msr;
+=======
+	if (fd < 0)
+		return -1;
+
+	retval = pread(fd, msr, sizeof *msr, offset);
+	close(fd);
+
+	if (retval != sizeof *msr)
+		return -1;
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void print_header(void)
 {
 	if (show_pkg)
+<<<<<<< HEAD
 		fprintf(stderr, "pkg ");
 	if (show_core)
 		fprintf(stderr, "core");
@@ -135,10 +212,24 @@ void print_header(void)
 		fprintf(stderr, " CPU");
 	if (do_nhm_cstates)
 		fprintf(stderr, "   %%c0 ");
+=======
+		fprintf(stderr, "pk");
+	if (show_pkg)
+		fprintf(stderr, " ");
+	if (show_core)
+		fprintf(stderr, "cor");
+	if (show_cpu)
+		fprintf(stderr, " CPU");
+	if (show_pkg || show_core || show_cpu)
+		fprintf(stderr, " ");
+	if (do_nhm_cstates)
+		fprintf(stderr, "   %%c0");
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (has_aperf)
 		fprintf(stderr, "  GHz");
 	fprintf(stderr, "  TSC");
 	if (do_nhm_cstates)
+<<<<<<< HEAD
 		fprintf(stderr, "   %%c1 ");
 	if (do_nhm_cstates)
 		fprintf(stderr, "   %%c3 ");
@@ -156,12 +247,32 @@ void print_header(void)
 		fprintf(stderr, "  %%pc7 ");
 	if (extra_msr_offset)
 		fprintf(stderr, "       MSR 0x%x ", extra_msr_offset);
+=======
+		fprintf(stderr, "    %%c1");
+	if (do_nhm_cstates)
+		fprintf(stderr, "    %%c3");
+	if (do_nhm_cstates)
+		fprintf(stderr, "    %%c6");
+	if (do_snb_cstates)
+		fprintf(stderr, "    %%c7");
+	if (do_snb_cstates)
+		fprintf(stderr, "   %%pc2");
+	if (do_nhm_cstates)
+		fprintf(stderr, "   %%pc3");
+	if (do_nhm_cstates)
+		fprintf(stderr, "   %%pc6");
+	if (do_snb_cstates)
+		fprintf(stderr, "   %%pc7");
+	if (extra_msr_offset)
+		fprintf(stderr, "        MSR 0x%x ", extra_msr_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	putc('\n', stderr);
 }
 
 void dump_cnt(struct counters *cnt)
 {
+<<<<<<< HEAD
 	fprintf(stderr, "package: %d ", cnt->pkg);
 	fprintf(stderr, "core:: %d ", cnt->core);
 	fprintf(stderr, "CPU: %d ", cnt->cpu);
@@ -175,6 +286,23 @@ void dump_cnt(struct counters *cnt)
 	fprintf(stderr, "pc6: %016llX\n", cnt->pc6);
 	fprintf(stderr, "pc7: %016llX\n", cnt->pc7);
 	fprintf(stderr, "msr0x%x: %016llX\n", extra_msr_offset, cnt->extra_msr);
+=======
+	if (!cnt)
+		return;
+	if (cnt->pkg) fprintf(stderr, "package: %d ", cnt->pkg);
+	if (cnt->core) fprintf(stderr, "core:: %d ", cnt->core);
+	if (cnt->cpu) fprintf(stderr, "CPU: %d ", cnt->cpu);
+	if (cnt->tsc) fprintf(stderr, "TSC: %016llX\n", cnt->tsc);
+	if (cnt->c3) fprintf(stderr, "c3: %016llX\n", cnt->c3);
+	if (cnt->c6) fprintf(stderr, "c6: %016llX\n", cnt->c6);
+	if (cnt->c7) fprintf(stderr, "c7: %016llX\n", cnt->c7);
+	if (cnt->aperf) fprintf(stderr, "aperf: %016llX\n", cnt->aperf);
+	if (cnt->pc2) fprintf(stderr, "pc2: %016llX\n", cnt->pc2);
+	if (cnt->pc3) fprintf(stderr, "pc3: %016llX\n", cnt->pc3);
+	if (cnt->pc6) fprintf(stderr, "pc6: %016llX\n", cnt->pc6);
+	if (cnt->pc7) fprintf(stderr, "pc7: %016llX\n", cnt->pc7);
+	if (cnt->extra_msr) fprintf(stderr, "msr0x%x: %016llX\n", extra_msr_offset, cnt->extra_msr);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void dump_list(struct counters *cnt)
@@ -185,6 +313,18 @@ void dump_list(struct counters *cnt)
 		dump_cnt(cnt);
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * column formatting convention & formats
+ * package: "pk" 2 columns %2d
+ * core: "cor" 3 columns %3d
+ * CPU: "CPU" 3 columns %3d
+ * GHz: "GHz" 3 columns %3.2
+ * TSC: "TSC" 3 columns %3.2
+ * percentage " %pc3" %6.2
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 void print_cnt(struct counters *p)
 {
 	double interval_float;
@@ -194,6 +334,7 @@ void print_cnt(struct counters *p)
 	/* topology columns, print blanks on 1st (average) line */
 	if (p == cnt_average) {
 		if (show_pkg)
+<<<<<<< HEAD
 			fprintf(stderr, "    ");
 		if (show_core)
 			fprintf(stderr, "    ");
@@ -206,27 +347,64 @@ void print_cnt(struct counters *p)
 			fprintf(stderr, "%4d", p->core);
 		if (show_cpu)
 			fprintf(stderr, "%4d", p->cpu);
+=======
+			fprintf(stderr, "  ");
+		if (show_pkg && show_core)
+			fprintf(stderr, " ");
+		if (show_core)
+			fprintf(stderr, "   ");
+		if (show_cpu)
+			fprintf(stderr, " " "   ");
+	} else {
+		if (show_pkg)
+			fprintf(stderr, "%2d", p->pkg);
+		if (show_pkg && show_core)
+			fprintf(stderr, " ");
+		if (show_core)
+			fprintf(stderr, "%3d", p->core);
+		if (show_cpu)
+			fprintf(stderr, " %3d", p->cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* %c0 */
 	if (do_nhm_cstates) {
+<<<<<<< HEAD
 		if (!skip_c0)
 			fprintf(stderr, "%7.2f", 100.0 * p->mperf/p->tsc);
 		else
 			fprintf(stderr, "   ****");
+=======
+		if (show_pkg || show_core || show_cpu)
+			fprintf(stderr, " ");
+		if (!skip_c0)
+			fprintf(stderr, "%6.2f", 100.0 * p->mperf/p->tsc);
+		else
+			fprintf(stderr, "  ****");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* GHz */
 	if (has_aperf) {
 		if (!aperf_mperf_unstable) {
+<<<<<<< HEAD
 			fprintf(stderr, "%5.2f",
+=======
+			fprintf(stderr, " %3.2f",
+>>>>>>> refs/remotes/origin/cm-10.0
 				1.0 * p->tsc / units * p->aperf /
 				p->mperf / interval_float);
 		} else {
 			if (p->aperf > p->tsc || p->mperf > p->tsc) {
+<<<<<<< HEAD
 				fprintf(stderr, " ****");
 			} else {
 				fprintf(stderr, "%4.1f*",
+=======
+				fprintf(stderr, " ***");
+			} else {
+				fprintf(stderr, "%3.1f*",
+>>>>>>> refs/remotes/origin/cm-10.0
 					1.0 * p->tsc /
 					units * p->aperf /
 					p->mperf / interval_float);
@@ -239,6 +417,7 @@ void print_cnt(struct counters *p)
 
 	if (do_nhm_cstates) {
 		if (!skip_c1)
+<<<<<<< HEAD
 			fprintf(stderr, "%7.2f", 100.0 * p->c1/p->tsc);
 		else
 			fprintf(stderr, "   ****");
@@ -257,6 +436,26 @@ void print_cnt(struct counters *p)
 		fprintf(stderr, "%7.2f", 100.0 * p->pc6/p->tsc);
 	if (do_snb_cstates)
 		fprintf(stderr, "%7.2f", 100.0 * p->pc7/p->tsc);
+=======
+			fprintf(stderr, " %6.2f", 100.0 * p->c1/p->tsc);
+		else
+			fprintf(stderr, "  ****");
+	}
+	if (do_nhm_cstates)
+		fprintf(stderr, " %6.2f", 100.0 * p->c3/p->tsc);
+	if (do_nhm_cstates)
+		fprintf(stderr, " %6.2f", 100.0 * p->c6/p->tsc);
+	if (do_snb_cstates)
+		fprintf(stderr, " %6.2f", 100.0 * p->c7/p->tsc);
+	if (do_snb_cstates)
+		fprintf(stderr, " %6.2f", 100.0 * p->pc2/p->tsc);
+	if (do_nhm_cstates)
+		fprintf(stderr, " %6.2f", 100.0 * p->pc3/p->tsc);
+	if (do_nhm_cstates)
+		fprintf(stderr, " %6.2f", 100.0 * p->pc6/p->tsc);
+	if (do_snb_cstates)
+		fprintf(stderr, " %6.2f", 100.0 * p->pc7/p->tsc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (extra_msr_offset)
 		fprintf(stderr, "  0x%016llx", p->extra_msr);
 	putc('\n', stderr);
@@ -265,12 +464,28 @@ void print_cnt(struct counters *p)
 void print_counters(struct counters *counters)
 {
 	struct counters *cnt;
+<<<<<<< HEAD
 
 	print_header();
+=======
+	static int printed;
+
+
+	if (!printed || !summary_only)
+		print_header();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (num_cpus > 1)
 		print_cnt(cnt_average);
 
+<<<<<<< HEAD
+=======
+	printed = 1;
+
+	if (summary_only)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (cnt = counters; cnt != NULL; cnt = cnt->next)
 		print_cnt(cnt);
 
@@ -438,6 +653,7 @@ void compute_average(struct counters *delta, struct counters *avg)
 	free(sum);
 }
 
+<<<<<<< HEAD
 void get_counters(struct counters *cnt)
 {
 	for ( ; cnt; cnt = cnt->next) {
@@ -463,6 +679,53 @@ void get_counters(struct counters *cnt)
 		if (extra_msr_offset)
 			cnt->extra_msr = get_msr(cnt->cpu, extra_msr_offset);
 	}
+=======
+int get_counters(struct counters *cnt)
+{
+	for ( ; cnt; cnt = cnt->next) {
+
+		if (cpu_migrate(cnt->cpu))
+			return -1;
+
+		if (get_msr(cnt->cpu, MSR_TSC, &cnt->tsc))
+			return -1;
+
+		if (has_aperf) {
+			if (get_msr(cnt->cpu, MSR_APERF, &cnt->aperf))
+				return -1;
+			if (get_msr(cnt->cpu, MSR_MPERF, &cnt->mperf))
+				return -1;
+		}
+
+		if (do_nhm_cstates) {
+			if (get_msr(cnt->cpu, MSR_CORE_C3_RESIDENCY, &cnt->c3))
+				return -1;
+			if (get_msr(cnt->cpu, MSR_CORE_C6_RESIDENCY, &cnt->c6))
+				return -1;
+		}
+
+		if (do_snb_cstates)
+			if (get_msr(cnt->cpu, MSR_CORE_C7_RESIDENCY, &cnt->c7))
+				return -1;
+
+		if (do_nhm_cstates) {
+			if (get_msr(cnt->cpu, MSR_PKG_C3_RESIDENCY, &cnt->pc3))
+				return -1;
+			if (get_msr(cnt->cpu, MSR_PKG_C6_RESIDENCY, &cnt->pc6))
+				return -1;
+		}
+		if (do_snb_cstates) {
+			if (get_msr(cnt->cpu, MSR_PKG_C2_RESIDENCY, &cnt->pc2))
+				return -1;
+			if (get_msr(cnt->cpu, MSR_PKG_C7_RESIDENCY, &cnt->pc7))
+				return -1;
+		}
+		if (extra_msr_offset)
+			if (get_msr(cnt->cpu, extra_msr_offset, &cnt->extra_msr))
+				return -1;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void print_nehalem_info(void)
@@ -473,7 +736,11 @@ void print_nehalem_info(void)
 	if (!do_nehalem_platform_info)
 		return;
 
+<<<<<<< HEAD
 	msr = get_msr(0, MSR_NEHALEM_PLATFORM_INFO);
+=======
+	get_msr(0, MSR_NEHALEM_PLATFORM_INFO, &msr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ratio = (msr >> 40) & 0xFF;
 	fprintf(stderr, "%d * %.0f = %.0f MHz max efficiency\n",
@@ -489,7 +756,11 @@ void print_nehalem_info(void)
 	if (!do_nehalem_turbo_ratio_limit)
 		return;
 
+<<<<<<< HEAD
 	msr = get_msr(0, MSR_NEHALEM_TURBO_RATIO_LIMIT);
+=======
+	get_msr(0, MSR_NEHALEM_TURBO_RATIO_LIMIT, &msr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ratio = (msr >> 24) & 0xFF;
 	if (ratio)
@@ -555,7 +826,12 @@ void insert_counters(struct counters **list,
 		return;
 	}
 
+<<<<<<< HEAD
 	show_cpu = 1;	/* there is more than one CPU */
+=======
+	if (!summary_only)
+		show_cpu = 1;	/* there is more than one CPU */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * insert on front of list.
@@ -573,13 +849,23 @@ void insert_counters(struct counters **list,
 
 	while (prev->next && (prev->next->pkg < new->pkg)) {
 		prev = prev->next;
+<<<<<<< HEAD
 		show_pkg = 1;	/* there is more than 1 package */
+=======
+		if (!summary_only)
+			show_pkg = 1;	/* there is more than 1 package */
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	while (prev->next && (prev->next->pkg == new->pkg)
 		&& (prev->next->core < new->core)) {
 		prev = prev->next;
+<<<<<<< HEAD
 		show_core = 1;	/* there is more than 1 core */
+=======
+		if (!summary_only)
+			show_core = 1;	/* there is more than 1 core */
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	while (prev->next && (prev->next->pkg == new->pkg)
@@ -679,7 +965,11 @@ int get_core_id(int cpu)
 }
 
 /*
+<<<<<<< HEAD
  * run func(index, cpu) on every cpu in /proc/stat
+=======
+ * run func(pkg, core, cpu) on every cpu in /proc/stat
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 int for_all_cpus(void (func)(int, int, int))
@@ -715,18 +1005,30 @@ int for_all_cpus(void (func)(int, int, int))
 
 void re_initialize(void)
 {
+<<<<<<< HEAD
 	printf("turbostat: topology changed, re-initializing.\n");
 	free_all_counters();
 	num_cpus = for_all_cpus(alloc_new_counters);
 	need_reinitialize = 0;
 	printf("num_cpus is now %d\n", num_cpus);
+=======
+	free_all_counters();
+	num_cpus = for_all_cpus(alloc_new_counters);
+	cpu_mask_uninit();
+	cpu_mask_init(num_cpus);
+	printf("turbostat: re-initialized with num_cpus %d\n", num_cpus);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void dummy(int pkg, int core, int cpu) { return; }
 /*
  * check to see if a cpu came on-line
  */
+<<<<<<< HEAD
 void verify_num_cpus(void)
+=======
+int verify_num_cpus(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int new_num_cpus;
 
@@ -736,8 +1038,14 @@ void verify_num_cpus(void)
 		if (verbose)
 			printf("num_cpus was %d, is now  %d\n",
 				num_cpus, new_num_cpus);
+<<<<<<< HEAD
 		need_reinitialize = 1;
 	}
+=======
+		return -1;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void turbostat_loop()
@@ -747,25 +1055,45 @@ restart:
 	gettimeofday(&tv_even, (struct timezone *)NULL);
 
 	while (1) {
+<<<<<<< HEAD
 		verify_num_cpus();
 		if (need_reinitialize) {
+=======
+		if (verify_num_cpus()) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			re_initialize();
 			goto restart;
 		}
 		sleep(interval_sec);
+<<<<<<< HEAD
 		get_counters(cnt_odd);
 		gettimeofday(&tv_odd, (struct timezone *)NULL);
 
+=======
+		if (get_counters(cnt_odd)) {
+			re_initialize();
+			goto restart;
+		}
+		gettimeofday(&tv_odd, (struct timezone *)NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		compute_delta(cnt_odd, cnt_even, cnt_delta);
 		timersub(&tv_odd, &tv_even, &tv_delta);
 		compute_average(cnt_delta, cnt_average);
 		print_counters(cnt_delta);
+<<<<<<< HEAD
 		if (need_reinitialize) {
 			re_initialize();
 			goto restart;
 		}
 		sleep(interval_sec);
 		get_counters(cnt_even);
+=======
+		sleep(interval_sec);
+		if (get_counters(cnt_even)) {
+			re_initialize();
+			goto restart;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		gettimeofday(&tv_even, (struct timezone *)NULL);
 		compute_delta(cnt_even, cnt_odd, cnt_delta);
 		timersub(&tv_even, &tv_odd, &tv_delta);
@@ -809,6 +1137,11 @@ int has_nehalem_turbo_ratio_limit(unsigned int family, unsigned int model)
 	case 0x2C:	/* Westmere EP - Gulftown */
 	case 0x2A:	/* SNB */
 	case 0x2D:	/* SNB Xeon */
+<<<<<<< HEAD
+=======
+	case 0x3A:	/* IVB */
+	case 0x3D:	/* IVB Xeon */
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 	case 0x2E:	/* Nehalem-EX Xeon - Beckton */
 	case 0x2F:	/* Westmere-EX Xeon - Eagleton */
@@ -949,6 +1282,10 @@ void turbostat_init()
 	check_super_user();
 
 	num_cpus = for_all_cpus(alloc_new_counters);
+<<<<<<< HEAD
+=======
+	cpu_mask_init(num_cpus);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (verbose)
 		print_nehalem_info();
@@ -1001,8 +1338,16 @@ void cmdline(int argc, char **argv)
 
 	progname = argv[0];
 
+<<<<<<< HEAD
 	while ((opt = getopt(argc, argv, "+vi:M:")) != -1) {
 		switch (opt) {
+=======
+	while ((opt = getopt(argc, argv, "+svi:M:")) != -1) {
+		switch (opt) {
+		case 's':
+			summary_only++;
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		case 'v':
 			verbose++;
 			break;

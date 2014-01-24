@@ -51,4 +51,9 @@ do {						\
 
 #include <asm-generic/bug.h>
 
+<<<<<<< HEAD
+=======
+extern void die_if_kernel(const char *, ...) __attribute__((format(printf, 1, 2)));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

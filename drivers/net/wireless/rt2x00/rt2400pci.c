@@ -645,11 +645,14 @@ static void rt2400pci_start_queue(struct data_queue *queue)
 		rt2x00pci_register_write(rt2x00dev, RXCSR0, reg);
 		break;
 	case QID_BEACON:
+<<<<<<< HEAD
 		/*
 		 * Allow the tbtt tasklet to be scheduled.
 		 */
 		tasklet_enable(&rt2x00dev->tbtt_tasklet);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		rt2x00pci_register_read(rt2x00dev, CSR14, &reg);
 		rt2x00_set_field32(&reg, CSR14_TSF_COUNT, 1);
 		rt2x00_set_field32(&reg, CSR14_TBCN, 1);
@@ -715,7 +718,11 @@ static void rt2400pci_stop_queue(struct data_queue *queue)
 		/*
 		 * Wait for possibly running tbtt tasklets.
 		 */
+<<<<<<< HEAD
 		tasklet_disable(&rt2x00dev->tbtt_tasklet);
+=======
+		tasklet_kill(&rt2x00dev->tbtt_tasklet);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		break;
@@ -982,12 +989,15 @@ static void rt2400pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 	if (state == STATE_RADIO_IRQ_ON) {
 		rt2x00pci_register_read(rt2x00dev, CSR7, &reg);
 		rt2x00pci_register_write(rt2x00dev, CSR7, reg);
+<<<<<<< HEAD
 
 		/*
 		 * Enable tasklets.
 		 */
 		tasklet_enable(&rt2x00dev->txstatus_tasklet);
 		tasklet_enable(&rt2x00dev->rxdone_tasklet);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -1011,8 +1021,14 @@ static void rt2400pci_toggle_irq(struct rt2x00_dev *rt2x00dev,
 		 * Ensure that all tasklets are finished before
 		 * disabling the interrupts.
 		 */
+<<<<<<< HEAD
 		tasklet_disable(&rt2x00dev->txstatus_tasklet);
 		tasklet_disable(&rt2x00dev->rxdone_tasklet);
+=======
+		tasklet_kill(&rt2x00dev->txstatus_tasklet);
+		tasklet_kill(&rt2x00dev->rxdone_tasklet);
+		tasklet_kill(&rt2x00dev->tbtt_tasklet);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -1249,7 +1265,11 @@ static void rt2400pci_fill_rxdone(struct queue_entry *entry,
 	 * call, we must decrease the higher 32bits with 1 to get
 	 * to correct value.
 	 */
+<<<<<<< HEAD
 	tsf = rt2x00dev->ops->hw->get_tsf(rt2x00dev->hw);
+=======
+	tsf = rt2x00dev->ops->hw->get_tsf(rt2x00dev->hw, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	rx_low = rt2x00_get_field32(word4, RXD_W4_RX_END_TIME);
 	rx_high = upper_32_bits(tsf);
 
@@ -1347,6 +1367,7 @@ static void rt2400pci_txstatus_tasklet(unsigned long data)
 	/*
 	 * Enable all TXDONE interrupts again.
 	 */
+<<<<<<< HEAD
 	spin_lock_irq(&rt2x00dev->irqmask_lock);
 
 	rt2x00pci_register_read(rt2x00dev, CSR8, &reg);
@@ -1356,13 +1377,31 @@ static void rt2400pci_txstatus_tasklet(unsigned long data)
 	rt2x00pci_register_write(rt2x00dev, CSR8, reg);
 
 	spin_unlock_irq(&rt2x00dev->irqmask_lock);
+=======
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags)) {
+		spin_lock_irq(&rt2x00dev->irqmask_lock);
+
+		rt2x00pci_register_read(rt2x00dev, CSR8, &reg);
+		rt2x00_set_field32(&reg, CSR8_TXDONE_TXRING, 0);
+		rt2x00_set_field32(&reg, CSR8_TXDONE_ATIMRING, 0);
+		rt2x00_set_field32(&reg, CSR8_TXDONE_PRIORING, 0);
+		rt2x00pci_register_write(rt2x00dev, CSR8, reg);
+
+		spin_unlock_irq(&rt2x00dev->irqmask_lock);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rt2400pci_tbtt_tasklet(unsigned long data)
 {
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
 	rt2x00lib_beacondone(rt2x00dev);
+<<<<<<< HEAD
 	rt2400pci_enable_interrupt(rt2x00dev, CSR8_TBCN_EXPIRE);
+=======
+	if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		rt2400pci_enable_interrupt(rt2x00dev, CSR8_TBCN_EXPIRE);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rt2400pci_rxdone_tasklet(unsigned long data)
@@ -1370,7 +1409,11 @@ static void rt2400pci_rxdone_tasklet(unsigned long data)
 	struct rt2x00_dev *rt2x00dev = (struct rt2x00_dev *)data;
 	if (rt2x00pci_rxdone(rt2x00dev))
 		tasklet_schedule(&rt2x00dev->rxdone_tasklet);
+<<<<<<< HEAD
 	else
+=======
+	else if (test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+>>>>>>> refs/remotes/origin/cm-10.0
 		rt2400pci_enable_interrupt(rt2x00dev, CSR8_RXDONE);
 }
 
@@ -1664,7 +1707,12 @@ static int rt2400pci_probe_hw(struct rt2x00_dev *rt2x00dev)
 /*
  * IEEE80211 stack callback functions.
  */
+<<<<<<< HEAD
 static int rt2400pci_conf_tx(struct ieee80211_hw *hw, u16 queue,
+=======
+static int rt2400pci_conf_tx(struct ieee80211_hw *hw,
+			     struct ieee80211_vif *vif, u16 queue,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     const struct ieee80211_tx_queue_params *params)
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
@@ -1677,7 +1725,11 @@ static int rt2400pci_conf_tx(struct ieee80211_hw *hw, u16 queue,
 	if (queue != 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (rt2x00mac_conf_tx(hw, queue, params))
+=======
+	if (rt2x00mac_conf_tx(hw, vif, queue, params))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	/*
@@ -1689,7 +1741,12 @@ static int rt2400pci_conf_tx(struct ieee80211_hw *hw, u16 queue,
 	return 0;
 }
 
+<<<<<<< HEAD
 static u64 rt2400pci_get_tsf(struct ieee80211_hw *hw)
+=======
+static u64 rt2400pci_get_tsf(struct ieee80211_hw *hw,
+			     struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
 	u64 tsf;
@@ -1732,6 +1789,10 @@ static const struct ieee80211_ops rt2400pci_mac80211_ops = {
 	.set_antenna		= rt2x00mac_set_antenna,
 	.get_antenna		= rt2x00mac_get_antenna,
 	.get_ringparam		= rt2x00mac_get_ringparam,
+<<<<<<< HEAD
+=======
+	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct rt2x00lib_ops rt2400pci_rt2x00_ops = {

@@ -850,6 +850,10 @@ static struct pci_device_id agp_intel_pci_table[] = {
 	.subvendor	= PCI_ANY_ID,			\
 	.subdevice	= PCI_ANY_ID,			\
 	}
+<<<<<<< HEAD
+=======
+	ID(PCI_DEVICE_ID_INTEL_82441), /* for HAS2 support */
+>>>>>>> refs/remotes/origin/cm-10.0
 	ID(PCI_DEVICE_ID_INTEL_82443LX_0),
 	ID(PCI_DEVICE_ID_INTEL_82443BX_0),
 	ID(PCI_DEVICE_ID_INTEL_82443GX_0),

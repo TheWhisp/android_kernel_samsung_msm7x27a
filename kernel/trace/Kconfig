@@ -82,7 +82,11 @@ config EVENT_POWER_TRACING_DEPRECATED
 	  power:power_frequency
 	  This is for userspace compatibility
 	  and will vanish after 5 kernel iterations,
+<<<<<<< HEAD
 	  namely 2.6.41.
+=======
+	  namely 3.1.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config CONTEXT_SWITCH_TRACER
 	bool
@@ -141,7 +145,11 @@ if FTRACE
 config FUNCTION_TRACER
 	bool "Kernel Function Tracer"
 	depends on HAVE_FUNCTION_TRACER
+<<<<<<< HEAD
 	select FRAME_POINTER if !ARM_UNWIND && !S390 && !MICROBLAZE
+=======
+	select FRAME_POINTER if !ARM_UNWIND && !PPC && !S390 && !MICROBLAZE
+>>>>>>> refs/remotes/origin/cm-10.0
 	select KALLSYMS
 	select GENERIC_TRACER
 	select CONTEXT_SWITCH_TRACER

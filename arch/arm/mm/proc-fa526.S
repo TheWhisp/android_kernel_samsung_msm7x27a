@@ -22,7 +22,10 @@
 #include <asm/pgtable.h>
 #include <asm/page.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "proc-macros.S"
 
@@ -57,6 +60,10 @@ ENTRY(cpu_fa526_proc_fin)
  * loc: location to jump to for soft reset
  */
 	.align	4
+<<<<<<< HEAD
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
 ENTRY(cpu_fa526_reset)
 /* TODO: Use CP8 if possible... */
 	mov	ip, #0
@@ -73,6 +80,11 @@ ENTRY(cpu_fa526_reset)
 	nop
 	nop
 	mov	pc, r0
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_fa526_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * cpu_fa526_do_idle()
@@ -180,6 +192,7 @@ fa526_cr1_set:
 
 	__INITDATA
 
+<<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
  *	     come through these
@@ -216,6 +229,16 @@ cpu_elf_name:
 cpu_fa526_name:
 	.asciz	"FA526"
 	.size	cpu_fa526_name, . - cpu_fa526_name
+=======
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions fa526, dabort=v4_early_abort, pabort=legacy_pabort
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv4"
+	string	cpu_elf_name, "v4"
+	string	cpu_fa526_name, "FA526"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.align
 

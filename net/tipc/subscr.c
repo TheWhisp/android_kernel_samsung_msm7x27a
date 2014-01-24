@@ -40,14 +40,22 @@
 #include "subscr.h"
 
 /**
+<<<<<<< HEAD
  * struct subscriber - TIPC network topology subscriber
+=======
+ * struct tipc_subscriber - TIPC network topology subscriber
+>>>>>>> refs/remotes/origin/cm-10.0
  * @port_ref: object reference to server port connecting to subscriber
  * @lock: pointer to spinlock controlling access to subscriber's server port
  * @subscriber_list: adjacent subscribers in top. server's list of subscribers
  * @subscription_list: list of subscription objects for this subscriber
  */
 
+<<<<<<< HEAD
 struct subscriber {
+=======
+struct tipc_subscriber {
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 port_ref;
 	spinlock_t *lock;
 	struct list_head subscriber_list;
@@ -92,7 +100,11 @@ static u32 htohl(u32 in, int swap)
  *       try to take the lock if the message is rejected and returned!
  */
 
+<<<<<<< HEAD
 static void subscr_send_event(struct subscription *sub,
+=======
+static void subscr_send_event(struct tipc_subscription *sub,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      u32 found_lower,
 			      u32 found_upper,
 			      u32 event,
@@ -118,7 +130,11 @@ static void subscr_send_event(struct subscription *sub,
  * Returns 1 if there is overlap, otherwise 0.
  */
 
+<<<<<<< HEAD
 int tipc_subscr_overlap(struct subscription *sub,
+=======
+int tipc_subscr_overlap(struct tipc_subscription *sub,
+>>>>>>> refs/remotes/origin/cm-10.0
 			u32 found_lower,
 			u32 found_upper)
 
@@ -138,7 +154,11 @@ int tipc_subscr_overlap(struct subscription *sub,
  * Protected by nameseq.lock in name_table.c
  */
 
+<<<<<<< HEAD
 void tipc_subscr_report_overlap(struct subscription *sub,
+=======
+void tipc_subscr_report_overlap(struct tipc_subscription *sub,
+>>>>>>> refs/remotes/origin/cm-10.0
 				u32 found_lower,
 				u32 found_upper,
 				u32 event,
@@ -151,14 +171,22 @@ void tipc_subscr_report_overlap(struct subscription *sub,
 	if (!must && !(sub->filter & TIPC_SUB_PORTS))
 		return;
 
+<<<<<<< HEAD
 	sub->event_cb(sub, found_lower, found_upper, event, port_ref, node);
+=======
+	subscr_send_event(sub, found_lower, found_upper, event, port_ref, node);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
  * subscr_timeout - subscription timeout has occurred
  */
 
+<<<<<<< HEAD
 static void subscr_timeout(struct subscription *sub)
+=======
+static void subscr_timeout(struct tipc_subscription *sub)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tipc_port *server_port;
 
@@ -205,7 +233,11 @@ static void subscr_timeout(struct subscription *sub)
  * Called with subscriber port locked.
  */
 
+<<<<<<< HEAD
 static void subscr_del(struct subscription *sub)
+=======
+static void subscr_del(struct tipc_subscription *sub)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	tipc_nametbl_unsubscribe(sub);
 	list_del(&sub->subscription_list);
@@ -224,11 +256,19 @@ static void subscr_del(struct subscription *sub)
  * simply wait for it to be released, then claim it.)
  */
 
+<<<<<<< HEAD
 static void subscr_terminate(struct subscriber *subscriber)
 {
 	u32 port_ref;
 	struct subscription *sub;
 	struct subscription *sub_temp;
+=======
+static void subscr_terminate(struct tipc_subscriber *subscriber)
+{
+	u32 port_ref;
+	struct tipc_subscription *sub;
+	struct tipc_subscription *sub_temp;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Invalidate subscriber reference */
 
@@ -278,10 +318,17 @@ static void subscr_terminate(struct subscriber *subscriber)
  */
 
 static void subscr_cancel(struct tipc_subscr *s,
+<<<<<<< HEAD
 			  struct subscriber *subscriber)
 {
 	struct subscription *sub;
 	struct subscription *sub_temp;
+=======
+			  struct tipc_subscriber *subscriber)
+{
+	struct tipc_subscription *sub;
+	struct tipc_subscription *sub_temp;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int found = 0;
 
 	/* Find first matching subscription, exit if not found */
@@ -314,10 +361,17 @@ static void subscr_cancel(struct tipc_subscr *s,
  * Called with subscriber port locked.
  */
 
+<<<<<<< HEAD
 static struct subscription *subscr_subscribe(struct tipc_subscr *s,
 					     struct subscriber *subscriber)
 {
 	struct subscription *sub;
+=======
+static struct tipc_subscription *subscr_subscribe(struct tipc_subscr *s,
+					     struct tipc_subscriber *subscriber)
+{
+	struct tipc_subscription *sub;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int swap;
 
 	/* Determine subscriber's endianness */
@@ -365,7 +419,10 @@ static struct subscription *subscr_subscribe(struct tipc_subscr *s,
 		subscr_terminate(subscriber);
 		return NULL;
 	}
+<<<<<<< HEAD
 	sub->event_cb = subscr_send_event;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_LIST_HEAD(&sub->nameseq_list);
 	list_add(&sub->subscription_list, &subscriber->subscription_list);
 	sub->server_ref = subscriber->port_ref;
@@ -394,7 +451,11 @@ static void subscr_conn_shutdown_event(void *usr_handle,
 				       unsigned int size,
 				       int reason)
 {
+<<<<<<< HEAD
 	struct subscriber *subscriber = usr_handle;
+=======
+	struct tipc_subscriber *subscriber = usr_handle;
+>>>>>>> refs/remotes/origin/cm-10.0
 	spinlock_t *subscriber_lock;
 
 	if (tipc_port_lock(port_ref) == NULL)
@@ -417,9 +478,15 @@ static void subscr_conn_msg_event(void *usr_handle,
 				  const unchar *data,
 				  u32 size)
 {
+<<<<<<< HEAD
 	struct subscriber *subscriber = usr_handle;
 	spinlock_t *subscriber_lock;
 	struct subscription *sub;
+=======
+	struct tipc_subscriber *subscriber = usr_handle;
+	spinlock_t *subscriber_lock;
+	struct tipc_subscription *sub;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Lock subscriber's server port (& make a local copy of lock pointer,
@@ -472,12 +539,20 @@ static void subscr_named_msg_event(void *usr_handle,
 				   struct tipc_portid const *orig,
 				   struct tipc_name_seq const *dest)
 {
+<<<<<<< HEAD
 	struct subscriber *subscriber;
+=======
+	struct tipc_subscriber *subscriber;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 server_port_ref;
 
 	/* Create subscriber object */
 
+<<<<<<< HEAD
 	subscriber = kzalloc(sizeof(struct subscriber), GFP_ATOMIC);
+=======
+	subscriber = kzalloc(sizeof(struct tipc_subscriber), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (subscriber == NULL) {
 		warn("Subscriber rejected, no memory\n");
 		return;
@@ -553,7 +628,11 @@ int tipc_subscr_start(void)
 	if (res)
 		goto failed;
 
+<<<<<<< HEAD
 	res = tipc_nametbl_publish_rsv(topsrv.setup_port, TIPC_NODE_SCOPE, &seq);
+=======
+	res = tipc_publish(topsrv.setup_port, TIPC_NODE_SCOPE, &seq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (res) {
 		tipc_deleteport(topsrv.setup_port);
 		topsrv.setup_port = 0;
@@ -569,8 +648,13 @@ failed:
 
 void tipc_subscr_stop(void)
 {
+<<<<<<< HEAD
 	struct subscriber *subscriber;
 	struct subscriber *subscriber_temp;
+=======
+	struct tipc_subscriber *subscriber;
+	struct tipc_subscriber *subscriber_temp;
+>>>>>>> refs/remotes/origin/cm-10.0
 	spinlock_t *subscriber_lock;
 
 	if (topsrv.setup_port) {

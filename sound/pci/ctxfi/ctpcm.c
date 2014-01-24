@@ -404,7 +404,11 @@ int ct_alsa_pcm_create(struct ct_atc *atc,
 	int err;
 	int playback_count, capture_count;
 
+<<<<<<< HEAD
 	playback_count = (IEC958 == device) ? 1 : 8;
+=======
+	playback_count = (IEC958 == device) ? 1 : 256;
+>>>>>>> refs/remotes/origin/cm-10.0
 	capture_count = (FRONT == device) ? 1 : 0;
 	err = snd_pcm_new(atc->card, "ctxfi", device,
 			  playback_count, capture_count, &pcm);

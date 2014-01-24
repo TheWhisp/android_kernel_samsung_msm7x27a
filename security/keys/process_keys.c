@@ -270,7 +270,11 @@ static int install_session_keyring(struct key *keyring)
 	if (!new)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	ret = install_session_keyring_to_cred(new, NULL);
+=======
+	ret = install_session_keyring_to_cred(new, keyring);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0) {
 		abort_creds(new);
 		return ret;
@@ -589,12 +593,30 @@ try_again:
 			ret = install_user_keyrings();
 			if (ret < 0)
 				goto error;
+<<<<<<< HEAD
 			ret = install_session_keyring(
 				cred->user->session_keyring);
+=======
+			if (lflags & KEY_LOOKUP_CREATE)
+				ret = join_session_keyring(NULL);
+			else
+				ret = install_session_keyring(
+					cred->user->session_keyring);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (ret < 0)
 				goto error;
 			goto reget_creds;
+<<<<<<< HEAD
+=======
+		} else if (cred->tgcred->session_keyring ==
+			   cred->user->session_keyring &&
+			   lflags & KEY_LOOKUP_CREATE) {
+			ret = join_session_keyring(NULL);
+			if (ret < 0)
+				goto error;
+			goto reget_creds;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		rcu_read_lock();
@@ -647,7 +669,12 @@ try_again:
 			goto error;
 
 		down_read(&cred->request_key_auth->sem);
+<<<<<<< HEAD
 		if (cred->request_key_auth->flags & KEY_FLAG_REVOKED) {
+=======
+		if (test_bit(KEY_FLAG_REVOKED,
+			     &cred->request_key_auth->flags)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			key_ref = ERR_PTR(-EKEYREVOKED);
 			key = NULL;
 		} else {

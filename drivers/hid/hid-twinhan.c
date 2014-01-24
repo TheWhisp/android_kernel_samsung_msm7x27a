@@ -3,7 +3,11 @@
  *
  * Based on hid-gyration.c
  *
+<<<<<<< HEAD
  * Copyright (c) 2009 Bruno PrÈmont <bonbons@linux-vserver.org>
+=======
+ * Copyright (c) 2009 Bruno Pr√©mont <bonbons@linux-vserver.org>
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 /*

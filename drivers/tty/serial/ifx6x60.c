@@ -36,6 +36,10 @@
  *	you need to use this driver for another platform.
  *
  *****************************************************************************/
+<<<<<<< HEAD
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/termios.h>
 #include <linux/tty.h>
@@ -1334,7 +1338,10 @@ MODULE_DEVICE_TABLE(spi, ifx_id_table);
 static const struct spi_driver ifx_spi_driver = {
 	.driver = {
 		.name = DRVNAME,
+<<<<<<< HEAD
 		.bus = &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.pm = &ifx_spi_pm,
 		.owner = THIS_MODULE},
 	.probe = ifx_spi_spi_probe,
@@ -1376,12 +1383,18 @@ static int __init ifx_spi_init(void)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	tty_drv->magic = TTY_DRIVER_MAGIC;
 	tty_drv->owner = THIS_MODULE;
 	tty_drv->driver_name = DRVNAME;
 	tty_drv->name = TTYNAME;
 	tty_drv->minor_start = IFX_SPI_TTY_ID;
 	tty_drv->num = 1;
+=======
+	tty_drv->driver_name = DRVNAME;
+	tty_drv->name = TTYNAME;
+	tty_drv->minor_start = IFX_SPI_TTY_ID;
+>>>>>>> refs/remotes/origin/cm-10.0
 	tty_drv->type = TTY_DRIVER_TYPE_SERIAL;
 	tty_drv->subtype = SERIAL_TYPE_NORMAL;
 	tty_drv->flags = TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV;

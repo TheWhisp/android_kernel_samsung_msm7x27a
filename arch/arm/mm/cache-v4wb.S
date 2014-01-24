@@ -184,7 +184,11 @@ ENTRY(v4wb_coherent_user_range)
  *	- start  - virtual start address
  *	- end	 - virtual end address
  */
+<<<<<<< HEAD
 ENTRY(v4wb_dma_inv_range)
+=======
+v4wb_dma_inv_range:
+>>>>>>> refs/remotes/origin/cm-10.0
 	tst	r0, #CACHE_DLINESIZE - 1
 	bic	r0, r0, #CACHE_DLINESIZE - 1
 	mcrne	p15, 0, r0, c7, c10, 1		@ clean D entry
@@ -205,7 +209,11 @@ ENTRY(v4wb_dma_inv_range)
  *	- start  - virtual start address
  *	- end	 - virtual end address
  */
+<<<<<<< HEAD
 ENTRY(v4wb_dma_clean_range)
+=======
+v4wb_dma_clean_range:
+>>>>>>> refs/remotes/origin/cm-10.0
 	bic	r0, r0, #CACHE_DLINESIZE - 1
 1:	mcr	p15, 0, r0, c7, c10, 1		@ clean D entry
 	add	r0, r0, #CACHE_DLINESIZE
@@ -253,6 +261,7 @@ ENDPROC(v4wb_dma_unmap_area)
 
 	__INITDATA
 
+<<<<<<< HEAD
 	.type	v4wb_cache_fns, #object
 ENTRY(v4wb_cache_fns)
 	.long	v4wb_flush_icache_all
@@ -268,3 +277,7 @@ ENTRY(v4wb_cache_fns)
 	.long	v4wb_dma_clean_range
 	.long	v4wb_dma_flush_range
 	.size	v4wb_cache_fns, . - v4wb_cache_fns
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions v4wb
+>>>>>>> refs/remotes/origin/cm-10.0

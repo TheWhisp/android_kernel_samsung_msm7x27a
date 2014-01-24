@@ -21,8 +21,15 @@
 #include <linux/list.h>
 #include <linux/mm.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
+=======
+#include <linux/export.h>
+#include <linux/suspend.h>
+#include <linux/syscore_ops.h>
+#include <linux/rtc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ftrace.h>
 #include <trace/events/power.h>
 
@@ -39,6 +46,7 @@ const char *const pm_states[PM_SUSPEND_MAX] = {
 static const struct platform_suspend_ops *suspend_ops;
 
 /**
+<<<<<<< HEAD
  *	suspend_set_ops - Set the global suspend method table.
  *	@ops:	Pointer to ops structure.
  */
@@ -48,6 +56,18 @@ void suspend_set_ops(const struct platform_suspend_ops *ops)
 	suspend_ops = ops;
 	mutex_unlock(&pm_mutex);
 }
+=======
+ * suspend_set_ops - Set the global suspend method table.
+ * @ops: Suspend operations to use.
+ */
+void suspend_set_ops(const struct platform_suspend_ops *ops)
+{
+	lock_system_sleep();
+	suspend_ops = ops;
+	unlock_system_sleep();
+}
+EXPORT_SYMBOL_GPL(suspend_set_ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 bool valid_state(suspend_state_t state)
 {
@@ -59,16 +79,28 @@ bool valid_state(suspend_state_t state)
 }
 
 /**
+<<<<<<< HEAD
  * suspend_valid_only_mem - generic memory-only valid callback
  *
  * Platform drivers that implement mem suspend only and only need
  * to check for that in their .valid callback can use this instead
  * of rolling their own .valid callback.
+=======
+ * suspend_valid_only_mem - Generic memory-only valid callback.
+ *
+ * Platform drivers that implement mem suspend only and only need to check for
+ * that in their .valid() callback can use this instead of rolling their own
+ * .valid() callback.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 int suspend_valid_only_mem(suspend_state_t state)
 {
 	return state == PM_SUSPEND_MEM;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(suspend_valid_only_mem);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int suspend_test(int level)
 {
@@ -83,10 +115,18 @@ static int suspend_test(int level)
 }
 
 /**
+<<<<<<< HEAD
  *	suspend_prepare - Do prep work before entering low-power state.
  *
  *	This is common code that is called for each state that we're entering.
  *	Run suspend notifiers, allocate a console and stop all processes.
+=======
+ * suspend_prepare - Prepare for entering system sleep state.
+ *
+ * Common code run for every system sleep state that can be entered (except for
+ * hibernation).  Run suspend notifiers, allocate the "suspend" console and
+ * freeze processes.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int suspend_prepare(void)
 {
@@ -101,16 +141,24 @@ static int suspend_prepare(void)
 	if (error)
 		goto Finish;
 
+<<<<<<< HEAD
 	error = usermodehelper_disable();
 	if (error)
 		goto Finish;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	error = suspend_freeze_processes();
 	if (!error)
 		return 0;
 
+<<<<<<< HEAD
 	suspend_thaw_processes();
 	usermodehelper_enable();
+=======
+	suspend_stats.failed_freeze++;
+	dpm_save_failed_step(SUSPEND_FREEZE);
+>>>>>>> refs/remotes/origin/cm-10.0
  Finish:
 	pm_notifier_call_chain(PM_POST_SUSPEND);
 	pm_restore_console();
@@ -130,12 +178,22 @@ void __attribute__ ((weak)) arch_suspend_enable_irqs(void)
 }
 
 /**
+<<<<<<< HEAD
  *	suspend_enter - enter the desired system sleep state.
  *	@state:		state to enter
  *
  *	This function should be called after devices have been suspended.
  */
 static int suspend_enter(suspend_state_t state)
+=======
+ * suspend_enter - Make the system enter the given sleep state.
+ * @state: System sleep state to enter.
+ * @wakeup: Returns information that the sleep state should not be re-entered.
+ *
+ * This function should be called after devices have been suspended.
+ */
+static int suspend_enter(suspend_state_t state, bool *wakeup)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int error;
 
@@ -145,7 +203,11 @@ static int suspend_enter(suspend_state_t state)
 			goto Platform_finish;
 	}
 
+<<<<<<< HEAD
 	error = dpm_suspend_noirq(PMSG_SUSPEND);
+=======
+	error = dpm_suspend_end(PMSG_SUSPEND);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error) {
 		printk(KERN_ERR "PM: Some devices failed to power down\n");
 		goto Platform_finish;
@@ -169,7 +231,12 @@ static int suspend_enter(suspend_state_t state)
 
 	error = syscore_suspend();
 	if (!error) {
+<<<<<<< HEAD
 		if (!(suspend_test(TEST_CORE) || pm_wakeup_pending())) {
+=======
+		*wakeup = pm_wakeup_pending();
+		if (!(suspend_test(TEST_CORE) || *wakeup)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			error = suspend_ops->enter(state);
 			events_check_enabled = false;
 		}
@@ -186,7 +253,11 @@ static int suspend_enter(suspend_state_t state)
 	if (suspend_ops->wake)
 		suspend_ops->wake();
 
+<<<<<<< HEAD
 	dpm_resume_noirq(PMSG_RESUME);
+=======
+	dpm_resume_start(PMSG_RESUME);
+>>>>>>> refs/remotes/origin/cm-10.0
 
  Platform_finish:
 	if (suspend_ops->finish)
@@ -196,13 +267,22 @@ static int suspend_enter(suspend_state_t state)
 }
 
 /**
+<<<<<<< HEAD
  *	suspend_devices_and_enter - suspend devices and enter the desired system
  *				    sleep state.
  *	@state:		  state to enter
+=======
+ * suspend_devices_and_enter - Suspend devices and enter system sleep state.
+ * @state: System sleep state to enter.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 int suspend_devices_and_enter(suspend_state_t state)
 {
 	int error;
+<<<<<<< HEAD
+=======
+	bool wakeup = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!suspend_ops)
 		return -ENOSYS;
@@ -225,7 +305,14 @@ int suspend_devices_and_enter(suspend_state_t state)
 	if (suspend_test(TEST_DEVICES))
 		goto Recover_platform;
 
+<<<<<<< HEAD
 	error = suspend_enter(state);
+=======
+	do {
+		error = suspend_enter(state, &wakeup);
+	} while (!error && !wakeup
+		&& suspend_ops->suspend_again && suspend_ops->suspend_again());
+>>>>>>> refs/remotes/origin/cm-10.0
 
  Resume_devices:
 	suspend_test_start();
@@ -246,20 +333,31 @@ int suspend_devices_and_enter(suspend_state_t state)
 }
 
 /**
+<<<<<<< HEAD
  *	suspend_finish - Do final work before exiting suspend sequence.
  *
  *	Call platform code to clean up, restart processes, and free the
  *	console that we've allocated. This is not called for suspend-to-disk.
+=======
+ * suspend_finish - Clean up before finishing the suspend sequence.
+ *
+ * Call platform code to clean up, restart processes, and free the console that
+ * we've allocated. This routine is not called for hibernation.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void suspend_finish(void)
 {
 	suspend_thaw_processes();
+<<<<<<< HEAD
 	usermodehelper_enable();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pm_notifier_call_chain(PM_POST_SUSPEND);
 	pm_restore_console();
 }
 
 /**
+<<<<<<< HEAD
  *	enter_state - Do common work of entering low-power state.
  *	@state:		pm_state structure for state we're entering.
  *
@@ -270,6 +368,16 @@ static void suspend_finish(void)
  *	we've woken up).
  */
 int enter_state(suspend_state_t state)
+=======
+ * enter_state - Do common work needed to enter system sleep state.
+ * @state: System sleep state to enter.
+ *
+ * Make sure that no one else is trying to put the system into a sleep state.
+ * Fail if that's not the case.  Otherwise, prepare for system suspend, make the
+ * system enter the given sleep state and clean up after wakeup.
+ */
+static int enter_state(suspend_state_t state)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int error;
 
@@ -280,7 +388,10 @@ int enter_state(suspend_state_t state)
 		return -EBUSY;
 
 	suspend_sys_sync_queue();
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pr_debug("PM: Preparing system for %s sleep\n", pm_states[state]);
 	error = suspend_prepare();
 	if (error)
@@ -302,6 +413,7 @@ int enter_state(suspend_state_t state)
 	return error;
 }
 
+<<<<<<< HEAD
 /**
  *	pm_suspend - Externally visible function for suspending system.
  *	@state:		Enumerated value of state to enter.
@@ -314,5 +426,43 @@ int pm_suspend(suspend_state_t state)
 	if (state > PM_SUSPEND_ON && state < PM_SUSPEND_MAX)
 		return enter_state(state);
 	return -EINVAL;
+=======
+static void pm_suspend_marker(char *annotation)
+{
+	struct timespec ts;
+	struct rtc_time tm;
+
+	getnstimeofday(&ts);
+	rtc_time_to_tm(ts.tv_sec, &tm);
+	pr_info("PM: suspend %s %d-%02d-%02d %02d:%02d:%02d.%09lu UTC\n",
+		annotation, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+		tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
+}
+
+/**
+ * pm_suspend - Externally visible function for suspending the system.
+ * @state: System sleep state to enter.
+ *
+ * Check if the value of @state represents one of the supported states,
+ * execute enter_state() and update system suspend statistics.
+ */
+int pm_suspend(suspend_state_t state)
+{
+	int error;
+
+	if (state <= PM_SUSPEND_ON || state >= PM_SUSPEND_MAX)
+		return -EINVAL;
+
+	pm_suspend_marker("entry");
+	error = enter_state(state);
+	if (error) {
+		suspend_stats.fail++;
+		dpm_save_failed_errno(error);
+	} else {
+		suspend_stats.success++;
+	}
+	pm_suspend_marker("exit");
+	return error;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(pm_suspend);

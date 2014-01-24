@@ -25,7 +25,11 @@
 
 #include <plat/mcspi.h>
 #include <plat/board.h>
+<<<<<<< HEAD
 #include <plat/common.h>
+=======
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/dma.h>
 #include <plat/gpmc.h>
 #include <plat/usb.h>
@@ -79,6 +83,7 @@ static struct cpuidle_params rx51_cpuidle_params[] = {
 	{7505 + 15274, 484329, 1},
 };
 
+<<<<<<< HEAD
 static struct omap_lcd_config rx51_lcd_config = {
 	.ctrl_name	= "internal",
 };
@@ -111,6 +116,8 @@ static void __init rx51_init_early(void)
 	omap2_init_common_devices(sdrc_params, sdrc_params);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void __init rx51_peripherals_init(void);
 
 #ifdef CONFIG_OMAP_MUX
@@ -127,11 +134,23 @@ static struct omap_musb_board_data musb_board_data = {
 
 static void __init rx51_init(void)
 {
+<<<<<<< HEAD
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
 	omap_board_config = rx51_config;
 	omap_board_config_size = ARRAY_SIZE(rx51_config);
 	omap3_pm_init_cpuidle(rx51_cpuidle_params);
 	omap_serial_init();
+=======
+	struct omap_sdrc_params *sdrc_params;
+
+	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+	omap3_pm_init_cpuidle(rx51_cpuidle_params);
+	omap_serial_init();
+
+	sdrc_params = nokia_get_sdram_timings();
+	omap_sdrc_init(sdrc_params, sdrc_params);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_musb_init(&musb_board_data);
 	rx51_peripherals_init();
 
@@ -142,12 +161,15 @@ static void __init rx51_init(void)
 	platform_device_register(&leds_gpio);
 }
 
+<<<<<<< HEAD
 static void __init rx51_map_io(void)
 {
 	omap2_set_globals_3xxx();
 	omap34xx_map_common_io();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init rx51_reserve(void)
 {
 	rx51_video_mem_init();
@@ -156,6 +178,7 @@ static void __init rx51_reserve(void)
 
 MACHINE_START(NOKIA_RX51, "Nokia RX-51 board")
 	/* Maintainer: Lauri Leukkunen <lauri.leukkunen@nokia.com> */
+<<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.reserve	= rx51_reserve,
 	.map_io		= rx51_map_io,
@@ -163,4 +186,15 @@ MACHINE_START(NOKIA_RX51, "Nokia RX-51 board")
 	.init_irq	= omap_init_irq,
 	.init_machine	= rx51_init,
 	.timer		= &omap_timer,
+=======
+	.atag_offset	= 0x100,
+	.reserve	= rx51_reserve,
+	.map_io		= omap3_map_io,
+	.init_early	= omap3430_init_early,
+	.init_irq	= omap3_init_irq,
+	.handle_irq	= omap3_intc_handle_irq,
+	.init_machine	= rx51_init,
+	.timer		= &omap3_timer,
+	.restart	= omap_prcm_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

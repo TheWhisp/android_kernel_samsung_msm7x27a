@@ -210,8 +210,13 @@ static int vt8500lcd_pan_display(struct fb_var_screeninfo *var,
 	struct vt8500lcd_info *fbi = to_vt8500lcd_info(info);
 
 	writel((1 << 31)
+<<<<<<< HEAD
 		| (((var->xres_virtual - var->xres) * pixlen / 4) << 20)
 		| (off >> 2), fbi->regbase + 0x20);
+=======
+	     | (((info->var.xres_virtual - info->var.xres) * pixlen / 4) << 20)
+	     | (off >> 2), fbi->regbase + 0x20);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -355,7 +360,11 @@ static int __devinit vt8500lcd_probe(struct platform_device *pdev)
 		goto failed_free_palette;
 	}
 
+<<<<<<< HEAD
 	ret = request_irq(irq, vt8500lcd_handle_irq, IRQF_DISABLED, "LCD", fbi);
+=======
+	ret = request_irq(irq, vt8500lcd_handle_irq, 0, "LCD", fbi);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(&pdev->dev, "request_irq failed: %d\n", ret);
 		ret = -EBUSY;
@@ -457,6 +466,7 @@ static struct platform_driver vt8500lcd_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init vt8500lcd_init(void)
 {
 	return platform_driver_register(&vt8500lcd_driver);
@@ -469,6 +479,9 @@ static void __exit vt8500lcd_exit(void)
 
 module_init(vt8500lcd_init);
 module_exit(vt8500lcd_exit);
+=======
+module_platform_driver(vt8500lcd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alexey Charkov <alchark@gmail.com>");
 MODULE_DESCRIPTION("LCD controller driver for VIA VT8500");

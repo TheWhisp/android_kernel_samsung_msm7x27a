@@ -356,7 +356,11 @@ int prism2_scan(struct wiphy *wiphy, struct net_device *dev,
 	msg1.msgcode = DIDmsg_dot11req_scan;
 	msg1.bsstype.data = P80211ENUM_bsstype_any;
 
+<<<<<<< HEAD
 	memset(&(msg1.bssid.data), 0xFF, sizeof(p80211item_pstr6_t));
+=======
+	memset(&msg1.bssid.data.data, 0xFF, sizeof(msg1.bssid.data.data));
+>>>>>>> refs/remotes/origin/cm-10.0
 	msg1.bssid.data.len = 6;
 
 	if (request->n_ssids > 0) {

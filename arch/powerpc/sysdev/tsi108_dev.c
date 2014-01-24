@@ -16,14 +16,22 @@
 #include <linux/major.h>
 #include <linux/delay.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/device.h>
 #include <linux/platform_device.h>
 #include <linux/of_net.h>
 #include <asm/tsi108.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/prom.h>

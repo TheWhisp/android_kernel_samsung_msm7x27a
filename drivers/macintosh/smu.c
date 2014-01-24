@@ -32,7 +32,10 @@
 #include <linux/completion.h>
 #include <linux/miscdevice.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/poll.h>
 #include <linux/mutex.h>
 #include <linux/of_device.h>
@@ -681,9 +684,12 @@ static struct platform_driver smu_of_platform_driver =
 static int __init smu_init_sysfs(void)
 {
 	/*
+<<<<<<< HEAD
 	 * Due to sysfs bogosity, a sysdev is not a real device, so
 	 * we should in fact create both if we want sysdev semantics
 	 * for power management.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * For now, we don't power manage machines with an SMU chip,
 	 * I'm a bit too far from figuring out how that works with those
 	 * new chipsets, but that will come back and bite us

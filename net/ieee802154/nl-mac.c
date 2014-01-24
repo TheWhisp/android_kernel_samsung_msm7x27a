@@ -30,6 +30,10 @@
 #include <net/genetlink.h>
 #include <net/sock.h>
 #include <linux/nl802154.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/af_ieee802154.h>
 #include <net/nl802154.h>
 #include <net/ieee802154.h>

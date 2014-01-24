@@ -6,7 +6,13 @@ driver matching.
 
 Required properties:
 
+<<<<<<< HEAD
 - compatible : should be a specific value for peripheral and "arm,primecell"
+=======
+- compatible : should be a specific name for the peripheral and
+               "arm,primecell".  The specific name will match the ARM
+               engineering name for the logic block in the form: "arm,pl???"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 Optional properties:
 

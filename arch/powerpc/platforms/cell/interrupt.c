@@ -31,7 +31,11 @@
 
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/percpu.h>
 #include <linux/types.h>
 #include <linux/ioport.h>
@@ -56,7 +60,11 @@ struct iic {
 
 static DEFINE_PER_CPU(struct iic, cpu_iic);
 #define IIC_NODE_COUNT	2
+<<<<<<< HEAD
 static struct irq_host *iic_host;
+=======
+static struct irq_domain *iic_host;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Convert between "pending" bits and hw irq number */
 static irq_hw_number_t iic_pending_to_hwnum(struct cbe_iic_pending_bits bits)
@@ -186,7 +194,11 @@ void iic_message_pass(int cpu, int msg)
 	out_be64(&per_cpu(cpu_iic, cpu).regs->generate, (0xf - msg) << 4);
 }
 
+<<<<<<< HEAD
 struct irq_host *iic_get_irq_host(int node)
+=======
+struct irq_domain *iic_get_irq_host(int node)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return iic_host;
 }
@@ -222,13 +234,21 @@ void iic_request_IPIs(void)
 #endif /* CONFIG_SMP */
 
 
+<<<<<<< HEAD
 static int iic_host_match(struct irq_host *h, struct device_node *node)
+=======
+static int iic_host_match(struct irq_domain *h, struct device_node *node)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return of_device_is_compatible(node,
 				    "IBM,CBEA-Internal-Interrupt-Controller");
 }
 
+<<<<<<< HEAD
 static int iic_host_map(struct irq_host *h, unsigned int virq,
+=======
+static int iic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			irq_hw_number_t hw)
 {
 	switch (hw & IIC_IRQ_TYPE_MASK) {
@@ -245,7 +265,11 @@ static int iic_host_map(struct irq_host *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int iic_host_xlate(struct irq_host *h, struct device_node *ct,
+=======
+static int iic_host_xlate(struct irq_domain *h, struct device_node *ct,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   const u32 *intspec, unsigned int intsize,
 			   irq_hw_number_t *out_hwirq, unsigned int *out_flags)
 
@@ -285,7 +309,11 @@ static int iic_host_xlate(struct irq_host *h, struct device_node *ct,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct irq_host_ops iic_host_ops = {
+=======
+static const struct irq_domain_ops iic_host_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.match = iic_host_match,
 	.map = iic_host_map,
 	.xlate = iic_host_xlate,
@@ -378,8 +406,13 @@ static int __init setup_iic(void)
 void __init iic_init_IRQ(void)
 {
 	/* Setup an irq host data structure */
+<<<<<<< HEAD
 	iic_host = irq_alloc_host(NULL, IRQ_HOST_MAP_LINEAR, IIC_SOURCE_COUNT,
 				  &iic_host_ops, IIC_IRQ_INVALID);
+=======
+	iic_host = irq_domain_add_linear(NULL, IIC_SOURCE_COUNT, &iic_host_ops,
+					 NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(iic_host == NULL);
 	irq_set_default_host(iic_host);
 

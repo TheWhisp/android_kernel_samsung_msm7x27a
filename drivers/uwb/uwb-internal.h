@@ -28,7 +28,10 @@
 #ifndef __UWB_INTERNAL_H__
 #define __UWB_INTERNAL_H__
 
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/device.h>
 #include <linux/uwb.h>

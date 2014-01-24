@@ -6,6 +6,7 @@
  * the terms of the GNU General Public License version 2 as published by the
  * Free Software Foundation.
  */
+<<<<<<< HEAD
 #include <linux/compiler.h>
 #include <linux/err.h>
 #include <linux/init.h>
@@ -62,10 +63,32 @@ static struct platform_device __init __maybe_unused *imx_add_imx_sdma(
 		}, {
 			.start = data->irq,
 			.end = data->irq,
+=======
+#include <mach/devices-common.h>
+
+struct platform_device __init __maybe_unused *imx_add_imx_dma(void)
+{
+	return platform_device_register_resndata(&mxc_ahb_bus,
+			"imx-dma", -1, NULL, 0, NULL, 0);
+}
+
+struct platform_device __init __maybe_unused *imx_add_imx_sdma(char *name,
+	resource_size_t iobase, int irq, struct sdma_platform_data *pdata)
+{
+	struct resource res[] = {
+		{
+			.start = iobase,
+			.end = iobase + SZ_16K - 1,
+			.flags = IORESOURCE_MEM,
+		}, {
+			.start = irq,
+			.end = irq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			.flags = IORESOURCE_IRQ,
 		},
 	};
 
+<<<<<<< HEAD
 	return imx_add_platform_device("imx-sdma", -1,
 			res, ARRAY_SIZE(res),
 			&data->pdata, sizeof(data->pdata));
@@ -210,3 +233,8 @@ static int __init imxXX_add_imx_dma(void)
 	return 0;
 }
 arch_initcall(imxXX_add_imx_dma);
+=======
+	return platform_device_register_resndata(&mxc_ahb_bus, name,
+			-1, res, ARRAY_SIZE(res), pdata, sizeof(*pdata));
+}
+>>>>>>> refs/remotes/origin/cm-10.0

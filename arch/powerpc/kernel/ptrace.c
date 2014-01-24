@@ -30,16 +30,23 @@
 #include <linux/seccomp.h>
 #include <linux/audit.h>
 #include <trace/syscall.h>
+<<<<<<< HEAD
 #ifdef CONFIG_PPC32
 #include <linux/module.h>
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/hw_breakpoint.h>
 #include <linux/perf_event.h>
 
 #include <asm/uaccess.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/syscalls.h>
@@ -882,7 +889,11 @@ void user_disable_single_step(struct task_struct *task)
 }
 
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
+<<<<<<< HEAD
 void ptrace_triggered(struct perf_event *bp, int nmi,
+=======
+void ptrace_triggered(struct perf_event *bp,
+>>>>>>> refs/remotes/origin/cm-10.0
 		      struct perf_sample_data *data, struct pt_regs *regs)
 {
 	struct perf_event_attr attr;
@@ -973,7 +984,11 @@ int ptrace_set_debugreg(struct task_struct *task, unsigned long addr,
 								&attr.bp_type);
 
 	thread->ptrace_bps[0] = bp = register_user_hw_breakpoint(&attr,
+<<<<<<< HEAD
 							ptrace_triggered, task);
+=======
+					       ptrace_triggered, NULL, task);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(bp)) {
 		thread->ptrace_bps[0] = NULL;
 		ptrace_put_breakpoints(task);
@@ -1727,6 +1742,7 @@ long do_syscall_trace_enter(struct pt_regs *regs)
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_enter(regs, regs->gpr[0]);
 
+<<<<<<< HEAD
 	if (unlikely(current->audit_context)) {
 #ifdef CONFIG_PPC64
 		if (!is_32bit_task())
@@ -1743,6 +1759,22 @@ long do_syscall_trace_enter(struct pt_regs *regs)
 					    regs->gpr[5] & 0xffffffff,
 					    regs->gpr[6] & 0xffffffff);
 	}
+=======
+#ifdef CONFIG_PPC64
+	if (!is_32bit_task())
+		audit_syscall_entry(AUDIT_ARCH_PPC64,
+				    regs->gpr[0],
+				    regs->gpr[3], regs->gpr[4],
+				    regs->gpr[5], regs->gpr[6]);
+	else
+#endif
+		audit_syscall_entry(AUDIT_ARCH_PPC,
+				    regs->gpr[0],
+				    regs->gpr[3] & 0xffffffff,
+				    regs->gpr[4] & 0xffffffff,
+				    regs->gpr[5] & 0xffffffff,
+				    regs->gpr[6] & 0xffffffff);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret ?: regs->gpr[0];
 }
@@ -1751,9 +1783,13 @@ void do_syscall_trace_leave(struct pt_regs *regs)
 {
 	int step;
 
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_exit((regs->ccr&0x10000000)?AUDITSC_FAILURE:AUDITSC_SUCCESS,
 				   regs->result);
+=======
+	audit_syscall_exit(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_exit(regs, regs->result);

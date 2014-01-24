@@ -181,7 +181,11 @@ static int asd_clear_nexus_I_T(struct domain_device *dev,
 int asd_I_T_nexus_reset(struct domain_device *dev)
 {
 	int res, tmp_res, i;
+<<<<<<< HEAD
 	struct sas_phy *phy = sas_find_local_phy(dev);
+=======
+	struct sas_phy *phy = sas_get_local_phy(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Standard mandates link reset for ATA  (type 0) and
 	 * hard reset for SSP (type 1) */
 	int reset_type = (dev->dev_type == SATA_DEV ||
@@ -192,7 +196,11 @@ int asd_I_T_nexus_reset(struct domain_device *dev)
 	ASD_DPRINTK("sending %s reset to %s\n",
 		    reset_type ? "hard" : "soft", dev_name(&phy->dev));
 	res = sas_phy_reset(phy, reset_type);
+<<<<<<< HEAD
 	if (res == TMF_RESP_FUNC_COMPLETE) {
+=======
+	if (res == TMF_RESP_FUNC_COMPLETE || res == -ENODEV) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* wait for the maximum settle time */
 		msleep(500);
 		/* clear all outstanding commands (keep nexus suspended) */
@@ -201,7 +209,11 @@ int asd_I_T_nexus_reset(struct domain_device *dev)
 	for (i = 0 ; i < 3; i++) {
 		tmp_res = asd_clear_nexus_I_T(dev, NEXUS_PHASE_RESUME);
 		if (tmp_res == TC_RESUME)
+<<<<<<< HEAD
 			return res;
+=======
+			goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 		msleep(500);
 	}
 
@@ -211,7 +223,14 @@ int asd_I_T_nexus_reset(struct domain_device *dev)
 	dev_printk(KERN_ERR, &phy->dev,
 		   "Failed to resume nexus after reset 0x%x\n", tmp_res);
 
+<<<<<<< HEAD
 	return TMF_RESP_FUNC_FAILED;
+=======
+	res = TMF_RESP_FUNC_FAILED;
+ out:
+	sas_put_local_phy(phy);
+	return res;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int asd_clear_nexus_I_T_L(struct domain_device *dev, u8 *lun)

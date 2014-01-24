@@ -30,7 +30,10 @@
 #include <linux/swap.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "delegation.h"
 #include "internal.h"
@@ -40,6 +43,7 @@
 
 #define NFSDBG_FACILITY		NFSDBG_FILE
 
+<<<<<<< HEAD
 static int nfs_file_open(struct inode *, struct file *);
 static int nfs_file_release(struct inode *, struct file *);
 static loff_t nfs_file_llseek(struct file *file, loff_t offset, int origin);
@@ -82,6 +86,10 @@ const struct file_operations nfs_file_operations = {
 	.setlease	= nfs_setlease,
 };
 
+=======
+static const struct vm_operations_struct nfs_file_vm_ops;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 const struct inode_operations nfs_file_inode_operations = {
 	.permission	= nfs_permission,
 	.getattr	= nfs_getattr,
@@ -137,11 +145,17 @@ nfs_file_open(struct inode *inode, struct file *filp)
 static int
 nfs_file_release(struct inode *inode, struct file *filp)
 {
+<<<<<<< HEAD
 	struct dentry *dentry = filp->f_path.dentry;
 
 	dprintk("NFS: release(%s/%s)\n",
 			dentry->d_parent->d_name.name,
 			dentry->d_name.name);
+=======
+	dprintk("NFS: release(%s/%s)\n",
+			filp->f_path.dentry->d_parent->d_name.name,
+			filp->f_path.dentry->d_name.name);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	nfs_inc_stats(inode, NFSIOS_VFSRELEASE);
 	return nfs_release(inode, filp);
@@ -180,20 +194,32 @@ force_reval:
 
 static loff_t nfs_file_llseek(struct file *filp, loff_t offset, int origin)
 {
+<<<<<<< HEAD
 	loff_t loff;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dprintk("NFS: llseek file(%s/%s, %lld, %d)\n",
 			filp->f_path.dentry->d_parent->d_name.name,
 			filp->f_path.dentry->d_name.name,
 			offset, origin);
 
+<<<<<<< HEAD
 	/* origin == SEEK_END => we must revalidate the cached file length */
 	if (origin == SEEK_END) {
+=======
+	/*
+	 * origin == SEEK_END || SEEK_DATA || SEEK_HOLE => we must revalidate
+	 * the cached file length
+	 */
+	if (origin != SEEK_SET && origin != SEEK_CUR) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct inode *inode = filp->f_mapping->host;
 
 		int retval = nfs_revalidate_file_size(inode, filp);
 		if (retval < 0)
 			return (loff_t)retval;
+<<<<<<< HEAD
 
 		spin_lock(&inode->i_lock);
 		loff = generic_file_llseek_unlocked(filp, offset, origin);
@@ -201,6 +227,11 @@ static loff_t nfs_file_llseek(struct file *filp, loff_t offset, int origin)
 	} else
 		loff = generic_file_llseek_unlocked(filp, offset, origin);
 	return loff;
+=======
+	}
+
+	return generic_file_llseek(filp, offset, origin);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -231,14 +262,21 @@ nfs_file_read(struct kiocb *iocb, const struct iovec *iov,
 	struct dentry * dentry = iocb->ki_filp->f_path.dentry;
 	struct inode * inode = dentry->d_inode;
 	ssize_t result;
+<<<<<<< HEAD
 	size_t count = iov_length(iov, nr_segs);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (iocb->ki_filp->f_flags & O_DIRECT)
 		return nfs_file_direct_read(iocb, iov, nr_segs, pos);
 
 	dprintk("NFS: read(%s/%s, %lu@%lu)\n",
 		dentry->d_parent->d_name.name, dentry->d_name.name,
+<<<<<<< HEAD
 		(unsigned long) count, (unsigned long) pos);
+=======
+		(unsigned long) iov_length(iov, nr_segs), (unsigned long) pos);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = nfs_revalidate_mapping(inode, iocb->ki_filp->f_mapping);
 	if (!result) {
@@ -305,7 +343,11 @@ nfs_file_mmap(struct file * file, struct vm_area_struct * vma)
  * fall back to doing a synchronous write.
  */
 static int
+<<<<<<< HEAD
 nfs_file_fsync(struct file *file, int datasync)
+=======
+nfs_file_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct dentry *dentry = file->f_path.dentry;
 	struct nfs_open_context *ctx = nfs_file_open_context(file);
@@ -313,14 +355,28 @@ nfs_file_fsync(struct file *file, int datasync)
 	int have_error, status;
 	int ret = 0;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dprintk("NFS: fsync file(%s/%s) datasync %d\n",
 			dentry->d_parent->d_name.name, dentry->d_name.name,
 			datasync);
 
+<<<<<<< HEAD
 	nfs_inc_stats(inode, NFSIOS_VFSFSYNC);
 	have_error = test_and_clear_bit(NFS_CONTEXT_ERROR_WRITE, &ctx->flags);
 	status = nfs_commit_inode(inode, FLUSH_SYNC);
+=======
+	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	mutex_lock(&inode->i_mutex);
+
+	nfs_inc_stats(inode, NFSIOS_VFSFSYNC);
+	have_error = test_and_clear_bit(NFS_CONTEXT_ERROR_WRITE, &ctx->flags);
+	status = nfs_commit_inode(inode, FLUSH_SYNC);
+	if (status >= 0 && ret < 0)
+		status = ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	have_error |= test_bit(NFS_CONTEXT_ERROR_WRITE, &ctx->flags);
 	if (have_error)
 		ret = xchg(&ctx->error, 0);
@@ -329,6 +385,10 @@ nfs_file_fsync(struct file *file, int datasync)
 	if (!ret && !datasync)
 		/* application has asked for meta-data sync */
 		ret = pnfs_layoutcommit_inode(inode, true);
+<<<<<<< HEAD
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -574,6 +634,11 @@ static int nfs_vm_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 	if (mapping != dentry->d_inode->i_mapping)
 		goto out_unlock;
 
+<<<<<<< HEAD
+=======
+	wait_on_page_writeback(page);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	pagelen = nfs_page_length(page);
 	if (pagelen == 0)
 		goto out_unlock;
@@ -891,6 +956,28 @@ static int nfs_setlease(struct file *file, long arg, struct file_lock **fl)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
+=======
+const struct file_operations nfs_file_operations = {
+	.llseek		= nfs_file_llseek,
+	.read		= do_sync_read,
+	.write		= do_sync_write,
+	.aio_read	= nfs_file_read,
+	.aio_write	= nfs_file_write,
+	.mmap		= nfs_file_mmap,
+	.open		= nfs_file_open,
+	.flush		= nfs_file_flush,
+	.release	= nfs_file_release,
+	.fsync		= nfs_file_fsync,
+	.lock		= nfs_lock,
+	.flock		= nfs_flock,
+	.splice_read	= nfs_file_splice_read,
+	.splice_write	= nfs_file_splice_write,
+	.check_flags	= nfs_check_flags,
+	.setlease	= nfs_setlease,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_NFS_V4
 static int
 nfs4_file_open(struct inode *inode, struct file *filp)

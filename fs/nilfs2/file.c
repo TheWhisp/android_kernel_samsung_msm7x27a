@@ -27,7 +27,11 @@
 #include "nilfs.h"
 #include "segment.h"
 
+<<<<<<< HEAD
 int nilfs_sync_file(struct file *file, int datasync)
+=======
+int nilfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/*
 	 * Called from fsync() system call
@@ -40,8 +44,20 @@ int nilfs_sync_file(struct file *file, int datasync)
 	struct inode *inode = file->f_mapping->host;
 	int err;
 
+<<<<<<< HEAD
 	if (!nilfs_inode_dirty(inode))
 		return 0;
+=======
+	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (err)
+		return err;
+	mutex_lock(&inode->i_mutex);
+
+	if (!nilfs_inode_dirty(inode)) {
+		mutex_unlock(&inode->i_mutex);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (datasync)
 		err = nilfs_construct_dsync_segment(inode->i_sb, inode, 0,
@@ -49,6 +65,10 @@ int nilfs_sync_file(struct file *file, int datasync)
 	else
 		err = nilfs_construct_segment(inode->i_sb);
 
+<<<<<<< HEAD
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 

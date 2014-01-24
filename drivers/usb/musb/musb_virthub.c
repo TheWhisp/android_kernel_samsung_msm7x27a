@@ -47,6 +47,10 @@
 
 static void musb_port_suspend(struct musb *musb, bool do_suspend)
 {
+<<<<<<< HEAD
+=======
+	struct usb_otg	*otg = musb->xceiv->otg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8		power;
 	void __iomem	*mbase = musb->mregs;
 
@@ -81,13 +85,18 @@ static void musb_port_suspend(struct musb *musb, bool do_suspend)
 		case OTG_STATE_A_HOST:
 			musb->xceiv->state = OTG_STATE_A_SUSPEND;
 			musb->is_active = is_otg_enabled(musb)
+<<<<<<< HEAD
 					&& musb->xceiv->host->b_hnp_enable;
+=======
+					&& otg->host->b_hnp_enable;
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (musb->is_active)
 				mod_timer(&musb->otg_timer, jiffies
 					+ msecs_to_jiffies(
 						OTG_TIME_A_AIDL_BDIS));
 			musb_platform_try_idle(musb, 0);
 			break;
+<<<<<<< HEAD
 #ifdef	CONFIG_USB_MUSB_OTG
 		case OTG_STATE_B_HOST:
 			musb->xceiv->state = OTG_STATE_B_WAIT_ACON;
@@ -96,6 +105,14 @@ static void musb_port_suspend(struct musb *musb, bool do_suspend)
 			musb_platform_try_idle(musb, 0);
 			break;
 #endif
+=======
+		case OTG_STATE_B_HOST:
+			musb->xceiv->state = OTG_STATE_B_WAIT_ACON;
+			musb->is_active = is_otg_enabled(musb)
+					&& otg->host->b_hnp_enable;
+			musb_platform_try_idle(musb, 0);
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		default:
 			dev_dbg(musb->controller, "bogus rh suspend? %s\n",
 				otg_state_string(musb->xceiv->state));
@@ -118,13 +135,19 @@ static void musb_port_reset(struct musb *musb, bool do_reset)
 	u8		power;
 	void __iomem	*mbase = musb->mregs;
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_OTG
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (musb->xceiv->state == OTG_STATE_B_IDLE) {
 		dev_dbg(musb->controller, "HNP: Returning from HNP; no hub reset from b_idle\n");
 		musb->port1_status &= ~USB_PORT_STAT_RESET;
 		return;
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!is_host_active(musb))
 		return;
@@ -183,6 +206,11 @@ static void musb_port_reset(struct musb *musb, bool do_reset)
 
 void musb_root_disconnect(struct musb *musb)
 {
+<<<<<<< HEAD
+=======
+	struct usb_otg	*otg = musb->xceiv->otg;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	musb->port1_status = USB_PORT_STAT_POWER
 			| (USB_PORT_STAT_C_CONNECTION << 16);
 
@@ -191,14 +219,22 @@ void musb_root_disconnect(struct musb *musb)
 
 	switch (musb->xceiv->state) {
 	case OTG_STATE_A_SUSPEND:
+<<<<<<< HEAD
 #ifdef	CONFIG_USB_MUSB_OTG
 		if (is_otg_enabled(musb)
 				&& musb->xceiv->host->b_hnp_enable) {
+=======
+		if (is_otg_enabled(musb)
+				&& otg->host->b_hnp_enable) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			musb->xceiv->state = OTG_STATE_A_PERIPHERAL;
 			musb->g.is_a_peripheral = 1;
 			break;
 		}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* FALLTHROUGH */
 	case OTG_STATE_A_HOST:
 		musb->xceiv->state = OTG_STATE_A_WAIT_BCON;

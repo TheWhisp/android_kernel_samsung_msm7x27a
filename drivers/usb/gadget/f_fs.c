@@ -2,7 +2,11 @@
  * f_fs.c -- user mode file system API for USB composite function controllers
  *
  * Copyright (C) 2010 Samsung Electronics
+<<<<<<< HEAD
  * Author: Michal Nazarewicz <m.nazarewicz@samsung.com>
+=======
+ * Author: Michal Nazarewicz <mina86@mina86.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Based on inode.c (GadgetFS) which was:
  * Copyright (C) 2003-2004 David Brownell
@@ -12,6 +16,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 
@@ -29,6 +36,10 @@
 
 #include <linux/blkdev.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 
 #include <linux/usb/composite.h>
@@ -1045,7 +1056,10 @@ static int ffs_sb_fill(struct super_block *sb, void *_data, int silent)
 {
 	struct ffs_sb_fill_data *data = _data;
 	struct inode	*inode;
+<<<<<<< HEAD
 	struct dentry	*d;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ffs_data	*ffs;
 
 	ENTER();
@@ -1053,7 +1067,11 @@ static int ffs_sb_fill(struct super_block *sb, void *_data, int silent)
 	/* Initialise data */
 	ffs = ffs_data_new();
 	if (unlikely(!ffs))
+<<<<<<< HEAD
 		goto enomem0;
+=======
+		goto Enomem;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ffs->sb              = sb;
 	ffs->dev_name        = data->dev_name;
@@ -1072,16 +1090,23 @@ static int ffs_sb_fill(struct super_block *sb, void *_data, int silent)
 				  &simple_dir_operations,
 				  &simple_dir_inode_operations,
 				  &data->perms);
+<<<<<<< HEAD
 	if (unlikely(!inode))
 		goto enomem1;
 	d = d_alloc_root(inode);
 	if (unlikely(!d))
 		goto enomem2;
 	sb->s_root = d;
+=======
+	sb->s_root = d_make_root(inode);
+	if (unlikely(!sb->s_root))
+		goto Enomem;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* EP0 file */
 	if (unlikely(!ffs_sb_create_file(sb, "ep0", ffs,
 					 &ffs_ep0_operations, NULL)))
+<<<<<<< HEAD
 		goto enomem3;
 
 	return 0;
@@ -1093,6 +1118,13 @@ enomem2:
 enomem1:
 	ffs_data_put(ffs);
 enomem0:
+=======
+		goto Enomem;
+
+	return 0;
+
+Enomem:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ENOMEM;
 }
 
@@ -1204,6 +1236,7 @@ ffs_fs_mount(struct file_system_type *t, int flags,
 static void
 ffs_fs_kill_sb(struct super_block *sb)
 {
+<<<<<<< HEAD
 	void *ptr;
 
 	ENTER();
@@ -1212,6 +1245,13 @@ ffs_fs_kill_sb(struct super_block *sb)
 	ptr = xchg(&sb->s_fs_info, NULL);
 	if (ptr)
 		ffs_data_put(ptr);
+=======
+	ENTER();
+
+	kill_litter_super(sb);
+	if (sb->s_fs_info)
+		ffs_data_put(sb->s_fs_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct file_system_type ffs_fs_type = {
@@ -1275,9 +1315,13 @@ static void ffs_data_put(struct ffs_data *ffs)
 	if (unlikely(atomic_dec_and_test(&ffs->ref))) {
 		pr_info("%s(): freeing\n", __func__);
 		ffs_data_clear(ffs);
+<<<<<<< HEAD
 		BUG_ON(mutex_is_locked(&ffs->mutex) ||
 		       spin_is_locked(&ffs->ev.waitq.lock) ||
 		       waitqueue_active(&ffs->ev.waitq) ||
+=======
+		BUG_ON(waitqueue_active(&ffs->ev.waitq) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 		       waitqueue_active(&ffs->ep0req_completion.wait));
 		kfree(ffs);
 	}
@@ -1405,6 +1449,10 @@ static void functionfs_unbind(struct ffs_data *ffs)
 		ffs->ep0req = NULL;
 		ffs->gadget = NULL;
 		ffs_data_put(ffs);
+<<<<<<< HEAD
+=======
+		clear_bit(FFS_FL_BOUND, &ffs->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -1416,7 +1464,11 @@ static int ffs_epfiles_create(struct ffs_data *ffs)
 	ENTER();
 
 	count = ffs->eps_count;
+<<<<<<< HEAD
 	epfiles = kzalloc(count * sizeof *epfiles, GFP_KERNEL);
+=======
+	epfiles = kcalloc(count, sizeof(*epfiles), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!epfiles)
 		return -ENOMEM;
 
@@ -1544,7 +1596,12 @@ static int ffs_func_eps_enable(struct ffs_function *func)
 		ds = ep->descs[ep->descs[1] ? 1 : 0];
 
 		ep->ep->driver_data = ep;
+<<<<<<< HEAD
 		ret = usb_ep_enable(ep->ep, ds);
+=======
+		ep->ep->desc = ds;
+		ret = usb_ep_enable(ep->ep);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (likely(!ret)) {
 			epfile->ep = ep;
 			epfile->in = usb_endpoint_dir_in(ds);

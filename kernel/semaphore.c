@@ -27,7 +27,11 @@
 
 #include <linux/compiler.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/semaphore.h>
 #include <linux/spinlock.h>
@@ -54,12 +58,20 @@ void down(struct semaphore *sem)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&sem->lock, flags);
+=======
+	raw_spin_lock_irqsave(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (likely(sem->count > 0))
 		sem->count--;
 	else
 		__down(sem);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&sem->lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(down);
 
@@ -77,12 +89,20 @@ int down_interruptible(struct semaphore *sem)
 	unsigned long flags;
 	int result = 0;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&sem->lock, flags);
+=======
+	raw_spin_lock_irqsave(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (likely(sem->count > 0))
 		sem->count--;
 	else
 		result = __down_interruptible(sem);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&sem->lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return result;
 }
@@ -103,12 +123,20 @@ int down_killable(struct semaphore *sem)
 	unsigned long flags;
 	int result = 0;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&sem->lock, flags);
+=======
+	raw_spin_lock_irqsave(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (likely(sem->count > 0))
 		sem->count--;
 	else
 		result = __down_killable(sem);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&sem->lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return result;
 }
@@ -132,11 +160,19 @@ int down_trylock(struct semaphore *sem)
 	unsigned long flags;
 	int count;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&sem->lock, flags);
 	count = sem->count - 1;
 	if (likely(count >= 0))
 		sem->count = count;
 	spin_unlock_irqrestore(&sem->lock, flags);
+=======
+	raw_spin_lock_irqsave(&sem->lock, flags);
+	count = sem->count - 1;
+	if (likely(count >= 0))
+		sem->count = count;
+	raw_spin_unlock_irqrestore(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return (count < 0);
 }
@@ -157,12 +193,20 @@ int down_timeout(struct semaphore *sem, long jiffies)
 	unsigned long flags;
 	int result = 0;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&sem->lock, flags);
+=======
+	raw_spin_lock_irqsave(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (likely(sem->count > 0))
 		sem->count--;
 	else
 		result = __down_timeout(sem, jiffies);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&sem->lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return result;
 }
@@ -179,12 +223,20 @@ void up(struct semaphore *sem)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&sem->lock, flags);
+=======
+	raw_spin_lock_irqsave(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (likely(list_empty(&sem->wait_list)))
 		sem->count++;
 	else
 		__up(sem);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&sem->lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&sem->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(up);
 
@@ -217,9 +269,15 @@ static inline int __sched __down_common(struct semaphore *sem, long state,
 		if (timeout <= 0)
 			goto timed_out;
 		__set_task_state(task, state);
+<<<<<<< HEAD
 		spin_unlock_irq(&sem->lock);
 		timeout = schedule_timeout(timeout);
 		spin_lock_irq(&sem->lock);
+=======
+		raw_spin_unlock_irq(&sem->lock);
+		timeout = schedule_timeout(timeout);
+		raw_spin_lock_irq(&sem->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (waiter.up)
 			return 0;
 	}

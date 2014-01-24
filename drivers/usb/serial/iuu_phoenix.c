@@ -34,9 +34,15 @@
 
 
 #ifdef CONFIG_USB_SERIAL_DEBUG
+<<<<<<< HEAD
 static int debug = 1;
 #else
 static int debug;
+=======
+static bool debug = 1;
+#else
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*
@@ -56,7 +62,10 @@ static struct usb_driver iuu_driver = {
 	.probe = usb_serial_probe,
 	.disconnect = usb_serial_disconnect,
 	.id_table = id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* turbo parameter */
@@ -65,7 +74,11 @@ static int clockmode = 1;
 static int cdmode = 1;
 static int iuu_cardin;
 static int iuu_cardout;
+<<<<<<< HEAD
 static int xmas;
+=======
+static bool xmas;
+>>>>>>> refs/remotes/origin/cm-10.0
 static int vcc_default = 5;
 
 static void read_rxcmd_callback(struct urb *urb);
@@ -1168,15 +1181,25 @@ static int iuu_open(struct tty_struct *tty, struct usb_serial_port *port)
 			  port->write_urb->transfer_buffer, 1,
 			  read_rxcmd_callback, port);
 	result = usb_submit_urb(port->write_urb, GFP_KERNEL);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (result) {
 		dev_err(&port->dev, "%s - failed submitting read urb,"
 			" error %d\n", __func__, result);
 		iuu_close(port);
+<<<<<<< HEAD
 		return -EPROTO;
 	} else {
 		dbg("%s - rxcmd OK", __func__);
 	}
+=======
+	} else {
+		dbg("%s - rxcmd OK", __func__);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 }
 
@@ -1275,7 +1298,10 @@ static struct usb_serial_driver iuu_device = {
 		   .name = "iuu_phoenix",
 		   },
 	.id_table = id_table,
+<<<<<<< HEAD
 	.usb_driver = &iuu_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports = 1,
 	.bulk_in_size = 512,
 	.bulk_out_size = 512,
@@ -1293,6 +1319,7 @@ static struct usb_serial_driver iuu_device = {
 	.release = iuu_release,
 };
 
+<<<<<<< HEAD
 static int __init iuu_init(void)
 {
 	int retval;
@@ -1319,6 +1346,13 @@ static void __exit iuu_exit(void)
 
 module_init(iuu_init);
 module_exit(iuu_exit);
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&iuu_device, NULL
+};
+
+module_usb_serial_driver(iuu_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alain Degreffe eczema@ecze.com");
 

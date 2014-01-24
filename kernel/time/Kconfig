@@ -1,6 +1,13 @@
 #
 # Timer subsystem related configuration options
 #
+<<<<<<< HEAD
+=======
+
+# Core internal switch. Selected by NO_HZ / HIGH_RES_TIMERS. This is
+# only related to the tick functionality. Oneshot clockevent devices
+# are supported independ of this.
+>>>>>>> refs/remotes/origin/cm-10.0
 config TICK_ONESHOT
 	bool
 
@@ -25,5 +32,12 @@ config HIGH_RES_TIMERS
 config GENERIC_CLOCKEVENTS_BUILD
 	bool
 	default y
+<<<<<<< HEAD
 	depends on GENERIC_CLOCKEVENTS || GENERIC_CLOCKEVENTS_MIGR
 
+=======
+	depends on GENERIC_CLOCKEVENTS
+
+config GENERIC_CLOCKEVENTS_MIN_ADJUST
+	bool
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -127,7 +127,10 @@ struct ibmvscsi_ops {
 	int (*resume) (struct ibmvscsi_host_data *hostdata);
 };
 
+<<<<<<< HEAD
 extern struct ibmvscsi_ops iseriesvscsi_ops;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct ibmvscsi_ops rpavscsi_ops;
 
 #endif				/* IBMVSCSI_H */

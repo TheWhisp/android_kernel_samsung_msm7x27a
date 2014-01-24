@@ -24,10 +24,16 @@
  * along with this driver.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+<<<<<<< HEAD
 #include <linux/slab.h>
 
 #include "crystalhd_misc.h"
 #include "crystalhd_lnx.h"
+=======
+#include "crystalhd.h"
+
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 uint32_t g_linklog_level;
 

@@ -51,5 +51,11 @@ static inline int pci_cleanup_aer_uncorrect_error_status(struct pci_dev *dev)
 
 extern void cper_print_aer(const char *prefix, int cper_severity,
 			   struct aer_capability_regs *aer);
+<<<<<<< HEAD
+=======
+extern int cper_severity_to_aer(int cper_severity);
+extern void aer_recover_queue(int domain, unsigned int bus, unsigned int devfn,
+			      int severity);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif //_AER_H_
 

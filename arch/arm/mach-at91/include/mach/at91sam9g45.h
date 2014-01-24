@@ -82,6 +82,7 @@
 #define AT91SAM9G45_BASE_TC3		0xfffd4000
 #define AT91SAM9G45_BASE_TC4		0xfffd4040
 #define AT91SAM9G45_BASE_TC5		0xfffd4080
+<<<<<<< HEAD
 #define AT91_BASE_SYS			0xffffe200
 
 /*
@@ -108,6 +109,31 @@
 #define AT91_WDT	(0xfffffd40 - AT91_BASE_SYS)
 #define AT91_GPBR	(0xfffffd60 - AT91_BASE_SYS)
 #define AT91_RTC	(0xfffffdb0 - AT91_BASE_SYS)
+=======
+
+/*
+ * System Peripherals
+ */
+#define AT91SAM9G45_BASE_ECC	0xffffe200
+#define AT91SAM9G45_BASE_DDRSDRC1 0xffffe400
+#define AT91SAM9G45_BASE_DDRSDRC0 0xffffe600
+#define AT91SAM9G45_BASE_DMA	0xffffec00
+#define AT91SAM9G45_BASE_SMC	0xffffe800
+#define AT91SAM9G45_BASE_MATRIX	0xffffea00
+#define AT91SAM9G45_BASE_DBGU	AT91_BASE_DBGU1
+#define AT91SAM9G45_BASE_PIOA	0xfffff200
+#define AT91SAM9G45_BASE_PIOB	0xfffff400
+#define AT91SAM9G45_BASE_PIOC	0xfffff600
+#define AT91SAM9G45_BASE_PIOD	0xfffff800
+#define AT91SAM9G45_BASE_PIOE	0xfffffa00
+#define AT91SAM9G45_BASE_RSTC	0xfffffd00
+#define AT91SAM9G45_BASE_SHDWC	0xfffffd10
+#define AT91SAM9G45_BASE_RTT	0xfffffd20
+#define AT91SAM9G45_BASE_PIT	0xfffffd30
+#define AT91SAM9G45_BASE_WDT	0xfffffd40
+#define AT91SAM9G45_BASE_RTC	0xfffffdb0
+#define AT91SAM9G45_BASE_GPBR	0xfffffd60
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define AT91_USART0	AT91SAM9G45_BASE_US0
 #define AT91_USART1	AT91SAM9G45_BASE_US1
@@ -129,8 +155,11 @@
 #define AT91SAM9G45_EHCI_BASE	0x00800000	/* USB Host controller (EHCI) */
 #define AT91SAM9G45_VDEC_BASE	0x00900000	/* Video Decoder Controller */
 
+<<<<<<< HEAD
 #define CONSISTENT_DMA_SIZE	SZ_4M
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * DMA peripheral identifiers
  * for hardware handshaking interface

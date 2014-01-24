@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -11,6 +15,11 @@
  */
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/soc.h>
@@ -36,13 +45,25 @@ static struct snd_soc_dai_driver msm_stub_dais[] = {
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 		},
+<<<<<<< HEAD
 	}
+=======
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct snd_soc_codec_driver soc_msm_stub = {};
 
 static int __devinit msm_stub_dev_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
+=======
+	if (pdev->dev.of_node)
+		dev_set_name(&pdev->dev, "%s.%d", "msm-stub-codec", 1);
+
+	dev_dbg(&pdev->dev, "dev name %s\n", dev_name(&pdev->dev));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return snd_soc_register_codec(&pdev->dev,
 	&soc_msm_stub, msm_stub_dais, ARRAY_SIZE(msm_stub_dais));
 }
@@ -52,11 +73,22 @@ static int __devexit msm_stub_dev_remove(struct platform_device *pdev)
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+static const struct of_device_id msm_stub_codec_dt_match[] = {
+	{ .compatible = "qcom,msm-stub-codec", },
+	{}
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct platform_driver msm_stub_driver = {
 	.driver = {
 		.name = "msm-stub-codec",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = msm_stub_codec_dt_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe = msm_stub_dev_probe,
 	.remove = __devexit_p(msm_stub_dev_remove),

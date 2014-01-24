@@ -11,7 +11,11 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 		.macro	addruart, rp, rv
+=======
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 		mov	\rp, #0x00ff0000
 		orr	\rp, \rp, #0x0000f700
 		orr	\rv, #0xfe000000	@ virtual

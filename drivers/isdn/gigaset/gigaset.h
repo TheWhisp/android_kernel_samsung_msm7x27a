@@ -34,7 +34,11 @@
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define GIG_VERSION {0, 5, 0, 0}
 #define GIG_COMPAT  {0, 4, 0, 0}
@@ -91,11 +95,19 @@ enum debuglevel {
 
 #ifdef CONFIG_GIGASET_DEBUG
 
+<<<<<<< HEAD
 #define gig_dbg(level, format, arg...) \
 	do { \
 		if (unlikely(((enum debuglevel)gigaset_debuglevel) & (level))) \
 			printk(KERN_DEBUG KBUILD_MODNAME ": " format "\n", \
 			       ## arg); \
+=======
+#define gig_dbg(level, format, arg...)					\
+	do {								\
+		if (unlikely(((enum debuglevel)gigaset_debuglevel) & (level))) \
+			printk(KERN_DEBUG KBUILD_MODNAME ": " format "\n", \
+			       ## arg);					\
+>>>>>>> refs/remotes/origin/cm-10.0
 	} while (0)
 #define DEBUG_DEFAULT (DEBUG_TRANSCMD | DEBUG_CMD | DEBUG_USBREQ)
 
@@ -164,7 +176,11 @@ void gigaset_dbg_buffer(enum debuglevel level, const unsigned char *msg,
 #define BAS_CORRFRAMES	4	/* flow control multiplicator */
 
 #define BAS_INBUFSIZE	(BAS_MAXFRAME * BAS_NUMFRAMES)
+<<<<<<< HEAD
 					/* size of isoc in buf per URB */
+=======
+/* size of isoc in buf per URB */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define BAS_OUTBUFSIZE	4096		/* size of common isoc out buffer */
 #define BAS_OUTBUFPAD	BAS_MAXFRAME	/* size of pad area for isoc out buf */
 
@@ -433,8 +449,12 @@ struct cardstate {
 	spinlock_t cmdlock;
 	unsigned curlen, cmdbytes;
 
+<<<<<<< HEAD
 	unsigned open_count;
 	struct tty_struct *tty;
+=======
+	struct tty_port port;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct tasklet_struct if_wake_tasklet;
 	unsigned control_state;
 
@@ -473,6 +493,7 @@ struct cardstate {
 	int commands_pending;		/* flag(s) in xxx.commands_pending have
 					   been set */
 	struct tasklet_struct event_tasklet;
+<<<<<<< HEAD
 					/* tasklet for serializing AT commands.
 					 * Scheduled
 					 *   -> for modem reponses (and
@@ -484,6 +505,19 @@ struct cardstate {
 	struct tasklet_struct write_tasklet;
 					/* tasklet for serial output
 					 * (not used in base driver) */
+=======
+	/* tasklet for serializing AT commands.
+	 * Scheduled
+	 *   -> for modem reponses (and
+	 *      incoming data for M10x)
+	 *   -> on timeout
+	 *   -> after setting bits in
+	 *      xxx.at_state.pending_command
+	 *      (e.g. command from LL) */
+	struct tasklet_struct write_tasklet;
+	/* tasklet for serial output
+	 * (not used in base driver) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* event queue */
 	struct event_t events[MAX_EVENTS];
@@ -491,7 +525,11 @@ struct cardstate {
 	spinlock_t ev_lock;
 
 	/* current modem response */
+<<<<<<< HEAD
 	unsigned char respdata[MAX_RESP_SIZE+1];
+=======
+	unsigned char respdata[MAX_RESP_SIZE + 1];
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned cbytes;
 
 	/* private data of hardware drivers */

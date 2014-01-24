@@ -2,7 +2,11 @@
  * drivers/serial/msm_serial.c - driver for msm7k serial device and console
  *
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Author: Robert Love <rlove@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -73,6 +77,10 @@ struct msm_port {
 #ifdef CONFIG_SERIAL_MSM_RX_WAKEUP
 	struct msm_wakeup wakeup;
 #endif
+<<<<<<< HEAD
+=======
+	int			uim;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define UART_TO_MSM(uart_port)	((struct msm_port *) uart_port)
@@ -102,48 +110,68 @@ static void msm_stop_tx(struct uart_port *port)
 {
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
+<<<<<<< HEAD
 	clk_enable(msm_port->clk);
 
 	msm_port->imr &= ~UART_IMR_TXLEV;
 	msm_write(port, msm_port->imr, UART_IMR);
 
 	clk_disable(msm_port->clk);
+=======
+	msm_port->imr &= ~UART_IMR_TXLEV;
+	msm_write(port, msm_port->imr, UART_IMR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void msm_start_tx(struct uart_port *port)
 {
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
+<<<<<<< HEAD
 	clk_enable(msm_port->clk);
 
 	msm_port->imr |= UART_IMR_TXLEV;
 	msm_write(port, msm_port->imr, UART_IMR);
 
 	clk_disable(msm_port->clk);
+=======
+	msm_port->imr |= UART_IMR_TXLEV;
+	msm_write(port, msm_port->imr, UART_IMR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void msm_stop_rx(struct uart_port *port)
 {
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
+<<<<<<< HEAD
 	clk_enable(msm_port->clk);
 
 	msm_port->imr &= ~(UART_IMR_RXLEV | UART_IMR_RXSTALE);
 	msm_write(port, msm_port->imr, UART_IMR);
 
 	clk_disable(msm_port->clk);
+=======
+	msm_port->imr &= ~(UART_IMR_RXLEV | UART_IMR_RXSTALE);
+	msm_write(port, msm_port->imr, UART_IMR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void msm_enable_ms(struct uart_port *port)
 {
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
+<<<<<<< HEAD
 	clk_enable(msm_port->clk);
 
 	msm_port->imr |= UART_IMR_DELTA_CTS;
 	msm_write(port, msm_port->imr, UART_IMR);
 
 	clk_disable(msm_port->clk);
+=======
+	msm_port->imr |= UART_IMR_DELTA_CTS;
+	msm_write(port, msm_port->imr, UART_IMR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_SERIAL_MSM_CLOCK_CONTROL
@@ -365,7 +393,10 @@ static irqreturn_t msm_irq(int irq, void *dev_id)
 	unsigned int misr;
 
 	spin_lock_irqsave(&port->lock, flags);
+<<<<<<< HEAD
 	clk_enable(msm_port->clk);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	misr = msm_read(port, UART_MISR);
 	msm_write(port, 0, UART_IMR); /* disable interrupt */
 
@@ -377,7 +408,10 @@ static irqreturn_t msm_irq(int irq, void *dev_id)
 		handle_delta_cts(port);
 
 	msm_write(port, msm_port->imr, UART_IMR); /* restore interrupt */
+<<<<<<< HEAD
 	clk_disable(msm_port->clk);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&port->lock, flags);
 
 	return IRQ_HANDLED;
@@ -386,12 +420,17 @@ static irqreturn_t msm_irq(int irq, void *dev_id)
 static unsigned int msm_tx_empty(struct uart_port *port)
 {
 	unsigned int ret;
+<<<<<<< HEAD
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
 	clk_enable(msm_port->clk);
 	ret = (msm_read(port, UART_SR) & UART_SR_TX_EMPTY) ? TIOCSER_TEMT : 0;
 	clk_disable(msm_port->clk);
 
+=======
+
+	ret = (msm_read(port, UART_SR) & UART_SR_TX_EMPTY) ? TIOCSER_TEMT : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -403,9 +442,12 @@ static unsigned int msm_get_mctrl(struct uart_port *port)
 static void msm_set_mctrl(struct uart_port *port, unsigned int mctrl)
 {
 	unsigned int mr;
+<<<<<<< HEAD
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
 	clk_enable(msm_port->clk);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mr = msm_read(port, UART_MR1);
 
@@ -417,22 +459,31 @@ static void msm_set_mctrl(struct uart_port *port, unsigned int mctrl)
 		mr |= UART_MR1_RX_RDY_CTL;
 		msm_write(port, mr, UART_MR1);
 	}
+<<<<<<< HEAD
 
 	clk_disable(msm_port->clk);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void msm_break_ctl(struct uart_port *port, int break_ctl)
 {
+<<<<<<< HEAD
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
 	clk_enable(msm_port->clk);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (break_ctl)
 		msm_write(port, UART_CR_CMD_START_BREAK, UART_CR);
 	else
 		msm_write(port, UART_CR_CMD_STOP_BREAK, UART_CR);
+<<<<<<< HEAD
 
 	clk_disable(msm_port->clk);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void msm_set_baud_rate(struct uart_port *port, unsigned int baud)
@@ -520,15 +571,45 @@ static void msm_reset(struct uart_port *port)
 
 static void msm_init_clock(struct uart_port *port)
 {
+<<<<<<< HEAD
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
 	clk_enable(msm_port->clk);
+=======
+	int ret;
+	struct msm_port *msm_port = UART_TO_MSM(port);
+
+	ret = clk_prepare_enable(msm_port->clk);
+	if (ret) {
+		pr_err("%s(): Can't enable uartclk. ret:%d\n", __func__, ret);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_SERIAL_MSM_CLOCK_CONTROL
 	msm_port->clk_state = MSM_CLK_ON;
 #endif
 
+<<<<<<< HEAD
 	if (port->uartclk == 19200000) {
+=======
+	if (msm_port->uim) {
+		msm_write(port,
+			UART_SIM_CFG_UIM_TX_MODE |
+			UART_SIM_CFG_UIM_RX_MODE |
+			UART_SIM_CFG_STOP_BIT_LEN_N(1) |
+			UART_SIM_CFG_SIM_CLK_ON |
+			UART_SIM_CFG_SIM_CLK_STOP_HIGH |
+			UART_SIM_CFG_SIM_SEL,
+			UART_SIM_CFG);
+
+		/* (TCXO * 16) / (5 * 372) = TCXO * 16 / 1860 */
+		msm_write(port, 0x08, UART_MREG);
+		msm_write(port, 0x19, UART_NREG);
+		msm_write(port, 0xe8, UART_DREG);
+		msm_write(port, 0x0e, UART_MNDREG);
+	} else if (port->uartclk == 19200000) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* clock is TCXO (19.2MHz) */
 		msm_write(port, 0x06, UART_MREG);
 		msm_write(port, 0xF1, UART_NREG);
@@ -552,7 +633,11 @@ static void msm_deinit_clock(struct uart_port *port)
 		clk_disable(msm_port->clk);
 	msm_port->clk_state = MSM_CLK_PORT_OFF;
 #else
+<<<<<<< HEAD
 	clk_disable(msm_port->clk);
+=======
+	clk_disable_unprepare(msm_port->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 }
@@ -627,13 +712,23 @@ static void msm_shutdown(struct uart_port *port)
 {
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
+<<<<<<< HEAD
 	clk_enable(msm_port->clk);
+=======
+	if (msm_port->uim)
+		msm_write(port,
+			UART_SIM_CFG_SIM_CLK_STOP_HIGH,
+			UART_SIM_CFG);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	msm_port->imr = 0;
 	msm_write(port, 0, UART_IMR); /* disable interrupts */
 
+<<<<<<< HEAD
 	clk_disable(msm_port->clk);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	free_irq(port->irq, port);
 
 #ifdef CONFIG_SERIAL_MSM_RX_WAKEUP
@@ -653,10 +748,18 @@ static void msm_set_termios(struct uart_port *port, struct ktermios *termios,
 {
 	unsigned long flags;
 	unsigned int baud, mr;
+<<<<<<< HEAD
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
 	spin_lock_irqsave(&port->lock, flags);
 	clk_enable(msm_port->clk);
+=======
+
+	if (!termios->c_cflag)
+		return;
+
+	spin_lock_irqsave(&port->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* calculate and set baud rate */
 	baud = uart_get_baud_rate(port, termios, old, 300, 115200);
@@ -719,8 +822,11 @@ static void msm_set_termios(struct uart_port *port, struct ktermios *termios,
 		port->read_status_mask |= UART_SR_RX_BREAK;
 
 	uart_update_timeout(port, termios->c_cflag, baud);
+<<<<<<< HEAD
 
 	clk_disable(msm_port->clk);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&port->lock, flags);
 }
 
@@ -788,11 +894,16 @@ static int msm_verify_port(struct uart_port *port, struct serial_struct *ser)
 static void msm_power(struct uart_port *port, unsigned int state,
 		      unsigned int oldstate)
 {
+<<<<<<< HEAD
 #ifndef CONFIG_SERIAL_MSM_CLOCK_CONTROL
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct msm_port *msm_port = UART_TO_MSM(port);
 
 	switch (state) {
 	case 0:
+<<<<<<< HEAD
 		clk_enable(msm_port->clk);
 		break;
 	case 3:
@@ -802,6 +913,20 @@ static void msm_power(struct uart_port *port, unsigned int state,
 		printk(KERN_ERR "msm_serial: Unknown PM state %d\n", state);
 	}
 #endif
+=======
+		ret = clk_prepare_enable(msm_port->clk);
+		if (ret)
+			pr_err("msm_serial: %s(): Can't enable uartclk.\n",
+						__func__);
+		break;
+	case 3:
+		clk_disable_unprepare(msm_port->clk);
+		break;
+	default:
+		pr_err("msm_serial: %s(): Unknown PM state %d\n",
+						__func__, state);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct uart_ops msm_uart_pops = {
@@ -854,8 +979,12 @@ static struct msm_port msm_uart_ports[] = {
 	},
 };
 
+<<<<<<< HEAD
 #define UART_NR	ARRAY_SIZE(msm_uart_ports)
 
+=======
+#define UART_NR 256
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline struct uart_port * get_port_from_line(unsigned int line)
 {
 	return &msm_uart_ports[line].uart;
@@ -1008,9 +1137,13 @@ static int __init msm_serial_probe(struct platform_device *pdev)
 	struct resource *resource;
 	struct uart_port *port;
 	int irq;
+<<<<<<< HEAD
 #ifdef CONFIG_SERIAL_MSM_RX_WAKEUP
 	struct msm_serial_platform_data *pdata = pdev->dev.platform_data;
 #endif
+=======
+	struct msm_serial_platform_data *pdata = pdev->dev.platform_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (unlikely(pdev->id < 0 || pdev->id >= UART_NR))
 		return -ENXIO;
@@ -1063,6 +1196,44 @@ static int __init msm_serial_probe(struct platform_device *pdev)
 #endif
 
 	pm_runtime_enable(port->dev);
+<<<<<<< HEAD
+=======
+	if (pdata != NULL && pdata->userid && pdata->userid <= UART_NR)
+		port->line = pdata->userid;
+	return uart_add_one_port(&msm_uart_driver, port);
+}
+
+static int __init msm_uim_probe(struct platform_device *pdev)
+{
+	struct msm_port *msm_port;
+	struct resource *resource;
+	struct uart_port *port;
+	int irq;
+
+	if (unlikely(pdev->id < 0 || pdev->id >= UART_NR))
+		return -ENXIO;
+
+	pr_info("msm_uim: detected port #%d\n", pdev->id);
+
+	port = get_port_from_line(pdev->id);
+	port->dev = &pdev->dev;
+	msm_port = UART_TO_MSM(port);
+
+	msm_port->uim = true;
+
+	resource = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (unlikely(!resource))
+		return -ENXIO;
+	port->mapbase = resource->start;
+
+	irq = platform_get_irq(pdev, 0);
+	if (unlikely(irq < 0))
+		return -ENXIO;
+	port->irq = irq;
+
+	platform_set_drvdata(pdev, port);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return uart_add_one_port(&msm_uart_driver, port);
 }
 
@@ -1151,6 +1322,17 @@ static struct platform_driver msm_platform_driver = {
 	},
 };
 
+<<<<<<< HEAD
+=======
+static struct platform_driver msm_platform_uim_driver = {
+	.remove = msm_serial_remove,
+	.driver = {
+		.name = "msm_uim",
+		.owner = THIS_MODULE,
+	},
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init msm_serial_init(void)
 {
 	int ret;
@@ -1163,6 +1345,11 @@ static int __init msm_serial_init(void)
 	if (unlikely(ret))
 		uart_unregister_driver(&msm_uart_driver);
 
+<<<<<<< HEAD
+=======
+	platform_driver_probe(&msm_platform_uim_driver, msm_uim_probe);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_INFO "msm_serial: driver initialized\n");
 
 	return ret;

@@ -54,7 +54,10 @@ static const char * osst_version = "0.99.4";
 #include <linux/mutex.h>
 #include <asm/uaccess.h>
 #include <asm/dma.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* The driver prints some debugging information on the console if DEBUG
    is defined and non-zero. */

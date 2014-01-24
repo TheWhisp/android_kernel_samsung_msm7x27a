@@ -30,6 +30,10 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/wss.h>
 #include <sound/pcm_params.h>
@@ -1833,7 +1837,11 @@ int snd_wss_create(struct snd_card *card,
 	}
 	chip->cport = cport;
 	if (!(hwshare & WSS_HWSHARE_IRQ))
+<<<<<<< HEAD
 		if (request_irq(irq, snd_wss_interrupt, IRQF_DISABLED,
+=======
+		if (request_irq(irq, snd_wss_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"WSS", (void *) chip)) {
 			snd_printk(KERN_ERR "wss: can't grab IRQ %d\n", irq);
 			snd_wss_free(chip);

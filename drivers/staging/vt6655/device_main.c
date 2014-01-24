@@ -815,6 +815,7 @@ else  CARDbRadioPowerOn(pDevice);
             pMgmt->eScanType = WMAC_SCAN_PASSIVE;
     // get Permanent network address
     SROMvReadEtherAddress(pDevice->PortOffset, pDevice->abyCurrentNetAddr);
+<<<<<<< HEAD
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Network address = %02x-%02x-%02x=%02x-%02x-%02x\n",
         pDevice->abyCurrentNetAddr[0],
         pDevice->abyCurrentNetAddr[1],
@@ -823,6 +824,10 @@ else  CARDbRadioPowerOn(pDevice);
         pDevice->abyCurrentNetAddr[4],
         pDevice->abyCurrentNetAddr[5]);
 
+=======
+	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Network address = %pM\n",
+		pDevice->abyCurrentNetAddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
     // reset Tx pointer
     CARDvSafeResetRx(pDevice);
@@ -911,7 +916,11 @@ static const struct net_device_ops device_netdev_ops = {
     .ndo_do_ioctl           = device_ioctl,
     .ndo_get_stats          = device_get_stats,
     .ndo_start_xmit         = device_xmit,
+<<<<<<< HEAD
     .ndo_set_multicast_list = device_set_multi,
+=======
+    .ndo_set_rx_mode	    = device_set_multi,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -3159,11 +3168,15 @@ static int  device_ioctl(struct net_device *dev, struct ifreq *rq, int cmd) {
 		break;
 
 	case SIOCGIWNWID:     //0x8b03  support
+<<<<<<< HEAD
 	#ifdef  WPA_SUPPLICANT_DRIVER_WEXT_SUPPORT
           rc = iwctl_giwnwid(dev, NULL, &(wrq->u.nwid), NULL);
 	#else
         rc = -EOPNOTSUPP;
 	#endif
+=======
+		rc = -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 		// Set frequency/channel

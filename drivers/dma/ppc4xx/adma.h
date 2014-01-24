@@ -81,7 +81,10 @@ struct ppc440spe_adma_device {
  * @common: common dmaengine channel object members
  * @all_slots: complete domain of slots usable by the channel
  * @pending: allows batching of hardware operations
+<<<<<<< HEAD
  * @completed_cookie: identifier for the most recently completed operation
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @slots_allocated: records the actual size of the descriptor slot pool
  * @hw_chain_inited: h/w descriptor chain initialization flag
  * @irq_tasklet: bottom half where ppc440spe_adma_slot_cleanup runs
@@ -99,7 +102,10 @@ struct ppc440spe_adma_chan {
 	struct list_head all_slots;
 	struct ppc440spe_adma_desc_slot *last_used;
 	int pending;
+<<<<<<< HEAD
 	dma_cookie_t completed_cookie;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int slots_allocated;
 	int hw_chain_inited;
 	struct tasklet_struct irq_tasklet;

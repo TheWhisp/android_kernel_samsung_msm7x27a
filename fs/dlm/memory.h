@@ -16,7 +16,11 @@
 
 int dlm_memory_init(void);
 void dlm_memory_exit(void);
+<<<<<<< HEAD
 struct dlm_rsb *dlm_allocate_rsb(struct dlm_ls *ls, int namelen);
+=======
+struct dlm_rsb *dlm_allocate_rsb(struct dlm_ls *ls);
+>>>>>>> refs/remotes/origin/cm-10.0
 void dlm_free_rsb(struct dlm_rsb *r);
 struct dlm_lkb *dlm_allocate_lkb(struct dlm_ls *ls);
 void dlm_free_lkb(struct dlm_lkb *l);

@@ -1,7 +1,13 @@
 config PPC_PSERIES
 	depends on PPC64 && PPC_BOOK3S
 	bool "IBM pSeries & new (POWER5-based) iSeries"
+<<<<<<< HEAD
 	select MPIC
+=======
+	select HAVE_PCSPKR_PLATFORM
+	select MPIC
+	select OF_DYNAMIC
+>>>>>>> refs/remotes/origin/cm-10.0
 	select PCI_MSI
 	select PPC_XICS
 	select PPC_ICP_NATIVE
@@ -14,6 +20,10 @@ config PPC_PSERIES
 	select PPC_UDBG_16550
 	select PPC_NATIVE
 	select PPC_PCI_CHOICE if EXPERT
+<<<<<<< HEAD
+=======
+	select ZLIB_DEFLATE
+>>>>>>> refs/remotes/origin/cm-10.0
 	default y
 
 config PPC_SPLPAR
@@ -27,9 +37,15 @@ config PPC_SPLPAR
 	  two or more partitions.
 
 config EEH
+<<<<<<< HEAD
 	bool "PCI Extended Error Handling (EEH)" if EXPERT
 	depends on PPC_PSERIES && PCI
 	default y if !EXPERT
+=======
+	bool
+	depends on PPC_PSERIES && PCI
+	default y
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config PSERIES_MSI
        bool
@@ -70,7 +86,11 @@ config IO_EVENT_IRQ
 
 config LPARCFG
 	bool "LPAR Configuration Data"
+<<<<<<< HEAD
 	depends on PPC_PSERIES || PPC_ISERIES
+=======
+	depends on PPC_PSERIES
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	Provide system capacity information via human readable
 	<key word>=<value> pairs through a /proc/ppc64/lparcfg interface.
@@ -118,3 +138,15 @@ config DTL
 	  which are accessible through a debugfs file.
 
 	  Say N if you are unsure.
+<<<<<<< HEAD
+=======
+
+config PSERIES_IDLE
+	bool "Cpuidle driver for pSeries platforms"
+	depends on CPU_IDLE
+	depends on PPC_PSERIES
+	default y
+	help
+	  Select this option to enable processor idle state management
+	  through cpuidle subsystem.
+>>>>>>> refs/remotes/origin/cm-10.0

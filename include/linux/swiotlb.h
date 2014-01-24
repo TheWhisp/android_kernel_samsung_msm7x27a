@@ -24,7 +24,11 @@ extern int swiotlb_force;
 
 extern void swiotlb_init(int verbose);
 extern void swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
+<<<<<<< HEAD
 extern unsigned long swioltb_nr_tbl(void);
+=======
+extern unsigned long swiotlb_nr_tbl(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Enumeration for sync targets

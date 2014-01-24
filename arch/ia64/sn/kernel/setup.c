@@ -33,9 +33,15 @@
 #include <asm/io.h>
 #include <asm/sal.h>
 #include <asm/machvec.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/processor.h>
 #include <asm/vga.h>
+=======
+#include <asm/processor.h>
+#include <asm/vga.h>
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sn/arch.h>
 #include <asm/sn/addrs.h>
 #include <asm/sn/pda.h>

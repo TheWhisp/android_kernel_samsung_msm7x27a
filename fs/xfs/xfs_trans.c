@@ -681,7 +681,10 @@ xfs_trans_reserve(
 	uint		flags,
 	uint		logcount)
 {
+<<<<<<< HEAD
 	int		log_flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int		error = 0;
 	int		rsvd = (tp->t_flags & XFS_TRANS_RESERVE) != 0;
 
@@ -707,6 +710,7 @@ xfs_trans_reserve(
 	 * Reserve the log space needed for this transaction.
 	 */
 	if (logspace > 0) {
+<<<<<<< HEAD
 		ASSERT((tp->t_log_res == 0) || (tp->t_log_res == logspace));
 		ASSERT((tp->t_log_count == 0) ||
 			(tp->t_log_count == logcount));
@@ -725,6 +729,34 @@ xfs_trans_reserve(
 		if (error) {
 			goto undo_blocks;
 		}
+=======
+		bool	permanent = false;
+
+		ASSERT(tp->t_log_res == 0 || tp->t_log_res == logspace);
+		ASSERT(tp->t_log_count == 0 || tp->t_log_count == logcount);
+
+		if (flags & XFS_TRANS_PERM_LOG_RES) {
+			tp->t_flags |= XFS_TRANS_PERM_LOG_RES;
+			permanent = true;
+		} else {
+			ASSERT(tp->t_ticket == NULL);
+			ASSERT(!(tp->t_flags & XFS_TRANS_PERM_LOG_RES));
+		}
+
+		if (tp->t_ticket != NULL) {
+			ASSERT(flags & XFS_TRANS_PERM_LOG_RES);
+			error = xfs_log_regrant(tp->t_mountp, tp->t_ticket);
+		} else {
+			error = xfs_log_reserve(tp->t_mountp, logspace,
+						logcount, &tp->t_ticket,
+						XFS_TRANSACTION, permanent,
+						tp->t_type);
+		}
+
+		if (error)
+			goto undo_blocks;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		tp->t_log_res = logspace;
 		tp->t_log_count = logcount;
 	}
@@ -752,6 +784,11 @@ xfs_trans_reserve(
 	 */
 undo_log:
 	if (logspace > 0) {
+<<<<<<< HEAD
+=======
+		int		log_flags;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (flags & XFS_TRANS_PERM_LOG_RES) {
 			log_flags = XFS_LOG_REL_PERM_RESERV;
 		} else {
@@ -1151,14 +1188,22 @@ xfs_trans_add_item(
 {
 	struct xfs_log_item_desc *lidp;
 
+<<<<<<< HEAD
 	ASSERT(lip->li_mountp = tp->t_mountp);
 	ASSERT(lip->li_ailp = tp->t_mountp->m_ail);
+=======
+	ASSERT(lip->li_mountp == tp->t_mountp);
+	ASSERT(lip->li_ailp == tp->t_mountp->m_ail);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	lidp = kmem_zone_zalloc(xfs_log_item_desc_zone, KM_SLEEP | KM_NOFS);
 
 	lidp->lid_item = lip;
 	lidp->lid_flags = 0;
+<<<<<<< HEAD
 	lidp->lid_size = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_add_tail(&lidp->lid_trans, &tp->t_items);
 
 	lip->li_desc = lidp;
@@ -1210,6 +1255,7 @@ xfs_trans_free_items(
 	}
 }
 
+<<<<<<< HEAD
 /*
  * Unlock the items associated with a transaction.
  *
@@ -1423,6 +1469,8 @@ xfs_trans_committed(
 	xfs_trans_free(tp);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void
 xfs_log_item_batch_insert(
 	struct xfs_ail		*ailp,
@@ -1538,6 +1586,7 @@ xfs_trans_committed_bulk(
 }
 
 /*
+<<<<<<< HEAD
  * Called from the trans_commit code when we notice that the filesystem is in
  * the middle of a forced shutdown.
  *
@@ -1793,6 +1842,9 @@ xfs_trans_commit_cil(
  * xfs_trans_commit
  *
  * Commit the given transaction to the log a/synchronously.
+=======
+ * Commit the given transaction to the log.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * XFS disk error handling mechanism is not based on a typical
  * transaction abort mechanism. Logically after the filesystem
@@ -1804,10 +1856,16 @@ xfs_trans_commit_cil(
  * Do not reference the transaction structure after this call.
  */
 int
+<<<<<<< HEAD
 _xfs_trans_commit(
 	struct xfs_trans	*tp,
 	uint			flags,
 	int			*log_flushed)
+=======
+xfs_trans_commit(
+	struct xfs_trans	*tp,
+	uint			flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct xfs_mount	*mp = tp->t_mountp;
 	xfs_lsn_t		commit_lsn = -1;
@@ -1848,17 +1906,27 @@ _xfs_trans_commit(
 		xfs_trans_apply_sb_deltas(tp);
 	xfs_trans_apply_dquot_deltas(tp);
 
+<<<<<<< HEAD
 	if (mp->m_flags & XFS_MOUNT_DELAYLOG)
 		error = xfs_trans_commit_cil(mp, tp, &commit_lsn, flags);
 	else
 		error = xfs_trans_commit_iclog(mp, tp, &commit_lsn, flags);
 
+=======
+	error = xfs_log_commit_cil(mp, tp, &commit_lsn, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error == ENOMEM) {
 		xfs_force_shutdown(mp, SHUTDOWN_LOG_IO_ERROR);
 		error = XFS_ERROR(EIO);
 		goto out_unreserve;
 	}
 
+<<<<<<< HEAD
+=======
+	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
+	xfs_trans_free(tp);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * If the transaction needs to be synchronous, then force the
 	 * log out now and wait for it.
@@ -1866,7 +1934,11 @@ _xfs_trans_commit(
 	if (sync) {
 		if (!error) {
 			error = _xfs_log_force_lsn(mp, commit_lsn,
+<<<<<<< HEAD
 				      XFS_LOG_SYNC, log_flushed);
+=======
+				      XFS_LOG_SYNC, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		XFS_STATS_INC(xs_trans_sync);
 	} else {
@@ -2021,6 +2093,10 @@ xfs_trans_roll(
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 	xfs_trans_ijoin(trans, dp);
+=======
+	xfs_trans_ijoin(trans, dp, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }

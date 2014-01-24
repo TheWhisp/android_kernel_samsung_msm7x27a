@@ -13,6 +13,10 @@
  * =====================================================================
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "gigaset.h"
 
 /* ========================================================== */
@@ -152,6 +156,7 @@ struct reply_t gigaset_tab_nocid[] =
  * action, command */
 
 /* initialize device, set cid mode if possible */
+<<<<<<< HEAD
 {RSP_INIT,	 -1,  -1, SEQ_INIT,		100,  1, {ACT_TIMEOUT} },
 
 {EV_TIMEOUT,	100, 100, -1,			101,  3, {0},	"Z\r"},
@@ -250,6 +255,106 @@ struct reply_t gigaset_tab_nocid[] =
 {RSP_NONE,	 -1,  -1, -1,			 -1, -1, {ACT_DEBUG} },
 {RSP_ANY,	 -1,  -1, -1,			 -1, -1, {ACT_WARN} },
 {RSP_LAST}
+=======
+	{RSP_INIT,	 -1,  -1, SEQ_INIT,		100,  1, {ACT_TIMEOUT} },
+
+	{EV_TIMEOUT,	100, 100, -1,			101,  3, {0},	"Z\r"},
+	{RSP_OK,	101, 103, -1,			120,  5, {ACT_GETSTRING},
+	 "+GMR\r"},
+
+	{EV_TIMEOUT,	101, 101, -1,			102,  5, {0},	"Z\r"},
+	{RSP_ERROR,	101, 101, -1,			102,  5, {0},	"Z\r"},
+
+	{EV_TIMEOUT,	102, 102, -1,			108,  5, {ACT_SETDLE1},
+	 "^SDLE=0\r"},
+	{RSP_OK,	108, 108, -1,			104, -1},
+	{RSP_ZDLE,	104, 104,  0,			103,  5, {0},	"Z\r"},
+	{EV_TIMEOUT,	104, 104, -1,			  0,  0, {ACT_FAILINIT} },
+	{RSP_ERROR,	108, 108, -1,			  0,  0, {ACT_FAILINIT} },
+
+	{EV_TIMEOUT,	108, 108, -1,			105,  2, {ACT_SETDLE0,
+								  ACT_HUPMODEM,
+								  ACT_TIMEOUT} },
+	{EV_TIMEOUT,	105, 105, -1,			103,  5, {0},	"Z\r"},
+
+	{RSP_ERROR,	102, 102, -1,			107,  5, {0},	"^GETPRE\r"},
+	{RSP_OK,	107, 107, -1,			  0,  0, {ACT_CONFIGMODE} },
+	{RSP_ERROR,	107, 107, -1,			  0,  0, {ACT_FAILINIT} },
+	{EV_TIMEOUT,	107, 107, -1,			  0,  0, {ACT_FAILINIT} },
+
+	{RSP_ERROR,	103, 103, -1,			  0,  0, {ACT_FAILINIT} },
+	{EV_TIMEOUT,	103, 103, -1,			  0,  0, {ACT_FAILINIT} },
+
+	{RSP_STRING,	120, 120, -1,			121, -1, {ACT_SETVER} },
+
+	{EV_TIMEOUT,	120, 121, -1,			  0,  0, {ACT_FAILVER,
+								  ACT_INIT} },
+	{RSP_ERROR,	120, 121, -1,			  0,  0, {ACT_FAILVER,
+								  ACT_INIT} },
+	{RSP_OK,	121, 121, -1,			  0,  0, {ACT_GOTVER,
+								  ACT_INIT} },
+
+/* leave dle mode */
+	{RSP_INIT,	  0,   0, SEQ_DLE0,		201,  5, {0},	"^SDLE=0\r"},
+	{RSP_OK,	201, 201, -1,			202, -1},
+	{RSP_ZDLE,	202, 202,  0,			  0,  0, {ACT_DLE0} },
+	{RSP_NODEV,	200, 249, -1,			  0,  0, {ACT_FAKEDLE0} },
+	{RSP_ERROR,	200, 249, -1,			  0,  0, {ACT_FAILDLE0} },
+	{EV_TIMEOUT,	200, 249, -1,			  0,  0, {ACT_FAILDLE0} },
+
+/* enter dle mode */
+	{RSP_INIT,	  0,   0, SEQ_DLE1,		251,  5, {0},	"^SDLE=1\r"},
+	{RSP_OK,	251, 251, -1,			252, -1},
+	{RSP_ZDLE,	252, 252,  1,			  0,  0, {ACT_DLE1} },
+	{RSP_ERROR,	250, 299, -1,			  0,  0, {ACT_FAILDLE1} },
+	{EV_TIMEOUT,	250, 299, -1,			  0,  0, {ACT_FAILDLE1} },
+
+/* incoming call */
+	{RSP_RING,	 -1,  -1, -1,			 -1, -1, {ACT_RING} },
+
+/* get cid */
+	{RSP_INIT,	  0,   0, SEQ_CID,		301,  5, {0},	"^SGCI?\r"},
+	{RSP_OK,	301, 301, -1,			302, -1},
+	{RSP_ZGCI,	302, 302, -1,			  0,  0, {ACT_CID} },
+	{RSP_ERROR,	301, 349, -1,			  0,  0, {ACT_FAILCID} },
+	{EV_TIMEOUT,	301, 349, -1,			  0,  0, {ACT_FAILCID} },
+
+/* enter cid mode */
+	{RSP_INIT,	  0,   0, SEQ_CIDMODE,		150,  5, {0},	"^SGCI=1\r"},
+	{RSP_OK,	150, 150, -1,			  0,  0, {ACT_CMODESET} },
+	{RSP_ERROR,	150, 150, -1,			  0,  0, {ACT_FAILCMODE} },
+	{EV_TIMEOUT,	150, 150, -1,			  0,  0, {ACT_FAILCMODE} },
+
+/* leave cid mode */
+	{RSP_INIT,	  0,   0, SEQ_UMMODE,		160,  5, {0},	"Z\r"},
+	{RSP_OK,	160, 160, -1,			  0,  0, {ACT_UMODESET} },
+	{RSP_ERROR,	160, 160, -1,			  0,  0, {ACT_FAILUMODE} },
+	{EV_TIMEOUT,	160, 160, -1,			  0,  0, {ACT_FAILUMODE} },
+
+/* abort getting cid */
+	{RSP_INIT,	  0,   0, SEQ_NOCID,		  0,  0, {ACT_ABORTCID} },
+
+/* reset */
+	{RSP_INIT,	  0,   0, SEQ_SHUTDOWN,		504,  5, {0},	"Z\r"},
+	{RSP_OK,	504, 504, -1,			  0,  0, {ACT_SDOWN} },
+	{RSP_ERROR,	501, 599, -1,			  0,  0, {ACT_FAILSDOWN} },
+	{EV_TIMEOUT,	501, 599, -1,			  0,  0, {ACT_FAILSDOWN} },
+	{RSP_NODEV,	501, 599, -1,			  0,  0, {ACT_FAKESDOWN} },
+
+	{EV_PROC_CIDMODE, -1, -1, -1,			 -1, -1, {ACT_PROC_CIDMODE} },
+	{EV_IF_LOCK,	 -1,  -1, -1,			 -1, -1, {ACT_IF_LOCK} },
+	{EV_IF_VER,	 -1,  -1, -1,			 -1, -1, {ACT_IF_VER} },
+	{EV_START,	 -1,  -1, -1,			 -1, -1, {ACT_START} },
+	{EV_STOP,	 -1,  -1, -1,			 -1, -1, {ACT_STOP} },
+	{EV_SHUTDOWN,	 -1,  -1, -1,			 -1, -1, {ACT_SHUTDOWN} },
+
+/* misc. */
+	{RSP_ERROR,	 -1,  -1, -1,			 -1, -1, {ACT_ERROR} },
+	{RSP_ZCAU,	 -1,  -1, -1,			 -1, -1, {ACT_ZCAU} },
+	{RSP_NONE,	 -1,  -1, -1,			 -1, -1, {ACT_DEBUG} },
+	{RSP_ANY,	 -1,  -1, -1,			 -1, -1, {ACT_WARN} },
+	{RSP_LAST}
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* 600: start dialing, 650: dial in progress, 800: connection is up, 700: ring,
@@ -260,6 +365,7 @@ struct reply_t gigaset_tab_cid[] =
  * action, command */
 
 /* dial */
+<<<<<<< HEAD
 {EV_DIAL,	 -1,  -1, -1,			 -1, -1, {ACT_DIAL} },
 {RSP_INIT,	  0,   0, SEQ_DIAL,		601,  5, {ACT_CMD+AT_BC} },
 {RSP_OK,	601, 601, -1,			603,  5, {ACT_CMD+AT_PROTO} },
@@ -345,6 +451,93 @@ struct reply_t gigaset_tab_cid[] =
 {RSP_NONE,	 -1,  -1, -1,			 -1, -1, {ACT_DEBUG} },
 {RSP_ANY,	 -1,  -1, -1,			 -1, -1, {ACT_WARN} },
 {RSP_LAST}
+=======
+	{EV_DIAL,	 -1,  -1, -1,			 -1, -1, {ACT_DIAL} },
+	{RSP_INIT,	  0,   0, SEQ_DIAL,		601,  5, {ACT_CMD + AT_BC} },
+	{RSP_OK,	601, 601, -1,			603,  5, {ACT_CMD + AT_PROTO} },
+	{RSP_OK,	603, 603, -1,			604,  5, {ACT_CMD + AT_TYPE} },
+	{RSP_OK,	604, 604, -1,			605,  5, {ACT_CMD + AT_MSN} },
+	{RSP_NULL,	605, 605, -1,			606,  5, {ACT_CMD + AT_CLIP} },
+	{RSP_OK,	605, 605, -1,			606,  5, {ACT_CMD + AT_CLIP} },
+	{RSP_NULL,	606, 606, -1,			607,  5, {ACT_CMD + AT_ISO} },
+	{RSP_OK,	606, 606, -1,			607,  5, {ACT_CMD + AT_ISO} },
+	{RSP_OK,	607, 607, -1,			608,  5, {0},	"+VLS=17\r"},
+	{RSP_OK,	608, 608, -1,			609, -1},
+	{RSP_ZSAU,	609, 609, ZSAU_PROCEEDING,	610,  5, {ACT_CMD + AT_DIAL} },
+	{RSP_OK,	610, 610, -1,			650,  0, {ACT_DIALING} },
+
+	{RSP_ERROR,	601, 610, -1,			  0,  0, {ACT_ABORTDIAL} },
+	{EV_TIMEOUT,	601, 610, -1,			  0,  0, {ACT_ABORTDIAL} },
+
+/* optional dialing responses */
+	{EV_BC_OPEN,	650, 650, -1,			651, -1},
+	{RSP_ZVLS,	609, 651, 17,			 -1, -1, {ACT_DEBUG} },
+	{RSP_ZCTP,	610, 651, -1,			 -1, -1, {ACT_DEBUG} },
+	{RSP_ZCPN,	610, 651, -1,			 -1, -1, {ACT_DEBUG} },
+	{RSP_ZSAU,	650, 651, ZSAU_CALL_DELIVERED,	 -1, -1, {ACT_DEBUG} },
+
+/* connect */
+	{RSP_ZSAU,	650, 650, ZSAU_ACTIVE,		800, -1, {ACT_CONNECT} },
+	{RSP_ZSAU,	651, 651, ZSAU_ACTIVE,		800, -1, {ACT_CONNECT,
+								  ACT_NOTIFY_BC_UP} },
+	{RSP_ZSAU,	750, 750, ZSAU_ACTIVE,		800, -1, {ACT_CONNECT} },
+	{RSP_ZSAU,	751, 751, ZSAU_ACTIVE,		800, -1, {ACT_CONNECT,
+								  ACT_NOTIFY_BC_UP} },
+	{EV_BC_OPEN,	800, 800, -1,			800, -1, {ACT_NOTIFY_BC_UP} },
+
+/* remote hangup */
+	{RSP_ZSAU,	650, 651, ZSAU_DISCONNECT_IND,	  0,  0, {ACT_REMOTEREJECT} },
+	{RSP_ZSAU,	750, 751, ZSAU_DISCONNECT_IND,	  0,  0, {ACT_REMOTEHUP} },
+	{RSP_ZSAU,	800, 800, ZSAU_DISCONNECT_IND,	  0,  0, {ACT_REMOTEHUP} },
+
+/* hangup */
+	{EV_HUP,	 -1,  -1, -1,			 -1, -1, {ACT_HUP} },
+	{RSP_INIT,	 -1,  -1, SEQ_HUP,		401,  5, {0},	"+VLS=0\r"},
+	{RSP_OK,	401, 401, -1,			402,  5},
+	{RSP_ZVLS,	402, 402,  0,			403,  5},
+	{RSP_ZSAU,	403, 403, ZSAU_DISCONNECT_REQ,	 -1, -1, {ACT_DEBUG} },
+	{RSP_ZSAU,	403, 403, ZSAU_NULL,		  0,  0, {ACT_DISCONNECT} },
+	{RSP_NODEV,	401, 403, -1,			  0,  0, {ACT_FAKEHUP} },
+	{RSP_ERROR,	401, 401, -1,			  0,  0, {ACT_ABORTHUP} },
+	{EV_TIMEOUT,	401, 403, -1,			  0,  0, {ACT_ABORTHUP} },
+
+	{EV_BC_CLOSED,	  0,   0, -1,			  0, -1, {ACT_NOTIFY_BC_DOWN} },
+
+/* ring */
+	{RSP_ZBC,	700, 700, -1,			 -1, -1, {0} },
+	{RSP_ZHLC,	700, 700, -1,			 -1, -1, {0} },
+	{RSP_NMBR,	700, 700, -1,			 -1, -1, {0} },
+	{RSP_ZCPN,	700, 700, -1,			 -1, -1, {0} },
+	{RSP_ZCTP,	700, 700, -1,			 -1, -1, {0} },
+	{EV_TIMEOUT,	700, 700, -1,			720, 720, {ACT_ICALL} },
+	{EV_BC_CLOSED,	720, 720, -1,			  0, -1, {ACT_NOTIFY_BC_DOWN} },
+
+/*accept icall*/
+	{EV_ACCEPT,	 -1,  -1, -1,			 -1, -1, {ACT_ACCEPT} },
+	{RSP_INIT,	720, 720, SEQ_ACCEPT,		721,  5, {ACT_CMD + AT_PROTO} },
+	{RSP_OK,	721, 721, -1,			722,  5, {ACT_CMD + AT_ISO} },
+	{RSP_OK,	722, 722, -1,			723,  5, {0},	"+VLS=17\r"},
+	{RSP_OK,	723, 723, -1,			724,  5, {0} },
+	{RSP_ZVLS,	724, 724, 17,			750, 50, {ACT_ACCEPTED} },
+	{RSP_ERROR,	721, 729, -1,			  0,  0, {ACT_ABORTACCEPT} },
+	{EV_TIMEOUT,	721, 729, -1,			  0,  0, {ACT_ABORTACCEPT} },
+	{RSP_ZSAU,	700, 729, ZSAU_NULL,		  0,  0, {ACT_ABORTACCEPT} },
+	{RSP_ZSAU,	700, 729, ZSAU_ACTIVE,		  0,  0, {ACT_ABORTACCEPT} },
+	{RSP_ZSAU,	700, 729, ZSAU_DISCONNECT_IND,	  0,  0, {ACT_ABORTACCEPT} },
+
+	{EV_BC_OPEN,	750, 750, -1,			751, -1},
+	{EV_TIMEOUT,	750, 751, -1,			  0,  0, {ACT_CONNTIMEOUT} },
+
+/* B channel closed (general case) */
+	{EV_BC_CLOSED,	 -1,  -1, -1,			 -1, -1, {ACT_NOTIFY_BC_DOWN} },
+
+/* misc. */
+	{RSP_ZCON,	 -1,  -1, -1,			 -1, -1, {ACT_DEBUG} },
+	{RSP_ZCAU,	 -1,  -1, -1,			 -1, -1, {ACT_ZCAU} },
+	{RSP_NONE,	 -1,  -1, -1,			 -1, -1, {ACT_DEBUG} },
+	{RSP_ANY,	 -1,  -1, -1,			 -1, -1, {ACT_WARN} },
+	{RSP_LAST}
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -452,7 +645,11 @@ void gigaset_handle_modem_response(struct cardstate *cs)
 			case '=':
 				if (params > MAX_REC_PARAMS) {
 					dev_warn(cs->dev,
+<<<<<<< HEAD
 					   "too many parameters in response\n");
+=======
+						 "too many parameters in response\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 					/* need last parameter (might be CID) */
 					params--;
 				}
@@ -460,7 +657,11 @@ void gigaset_handle_modem_response(struct cardstate *cs)
 			}
 
 		rawstring = 0;
+<<<<<<< HEAD
 		cid = params > 1 ? cid_of_response(argv[params-1]) : 0;
+=======
+		cid = params > 1 ? cid_of_response(argv[params - 1]) : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (cid < 0) {
 			gigaset_add_event(cs, &cs->at_state, RSP_INVAL,
 					  NULL, 0, NULL);
@@ -549,7 +750,11 @@ void gigaset_handle_modem_response(struct cardstate *cs)
 			event->parameter = zr->code;
 			if (!zr->str)
 				dev_warn(cs->dev,
+<<<<<<< HEAD
 					"%s: unknown parameter %s after ZSAU\n",
+=======
+					 "%s: unknown parameter %s after ZSAU\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 					 __func__, argv[curarg]);
 			++curarg;
 			break;
@@ -647,8 +852,13 @@ static void disconnect(struct at_state_t **at_state_p)
 static inline struct at_state_t *get_free_channel(struct cardstate *cs,
 						  int cid)
 /* cids: >0: siemens-cid
+<<<<<<< HEAD
 	  0: without cid
 	 -1: no cid assigned yet
+=======
+   0: without cid
+   -1: no cid assigned yet
+>>>>>>> refs/remotes/origin/cm-10.0
 */
 {
 	unsigned long flags;
@@ -721,12 +931,21 @@ static void send_command(struct cardstate *cs, const char *cmd, int cid,
 	}
 	if (cid > 0 && cid <= 65535)
 		cb->len = snprintf(cb->buf, buflen,
+<<<<<<< HEAD
 				  dle ? "\020(AT%d%s\020)" : "AT%d%s",
 				  cid, cmd);
 	else
 		cb->len = snprintf(cb->buf, buflen,
 				  dle ? "\020(AT%s\020)" : "AT%s",
 				  cmd);
+=======
+				   dle ? "\020(AT%d%s\020)" : "AT%d%s",
+				   cid, cmd);
+	else
+		cb->len = snprintf(cb->buf, buflen,
+				   dle ? "\020(AT%s\020)" : "AT%s",
+				   cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cb->offset = 0;
 	cb->next = NULL;
 	cb->wake_tasklet = NULL;
@@ -789,7 +1008,11 @@ static void bchannel_up(struct bc_state *bcs)
 }
 
 static void start_dial(struct at_state_t *at_state, void *data,
+<<<<<<< HEAD
 			unsigned seq_index)
+=======
+		       unsigned seq_index)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bc_state *bcs = at_state->bcs;
 	struct cardstate *cs = at_state->cs;
@@ -936,10 +1159,17 @@ static int reinit_and_retry(struct cardstate *cs, int channel)
 
 	if (channel < 0)
 		dev_warn(cs->dev,
+<<<<<<< HEAD
 		    "Could not enter cid mode. Reinit device and try again.\n");
 	else {
 		dev_warn(cs->dev,
 		    "Could not get a call id. Reinit device and try again.\n");
+=======
+			 "Could not enter cid mode. Reinit device and try again.\n");
+	else {
+		dev_warn(cs->dev,
+			 "Could not get a call id. Reinit device and try again.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		cs->bcs[channel].at_state.pending_commands |= PC_CID;
 	}
 	schedule_init(cs, MS_INIT);
@@ -1154,7 +1384,11 @@ static void do_action(int action, struct cardstate *cs,
 		at_state2 = get_free_channel(cs, ev->parameter);
 		if (!at_state2) {
 			dev_warn(cs->dev,
+<<<<<<< HEAD
 			"RING ignored: could not allocate channel structure\n");
+=======
+				 "RING ignored: could not allocate channel structure\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 
@@ -1371,7 +1605,11 @@ static void do_action(int action, struct cardstate *cs,
 			 ev->parameter, at_state->ConState);
 		break;
 
+<<<<<<< HEAD
 	/* events from the LL */
+=======
+		/* events from the LL */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ACT_DIAL:
 		start_dial(at_state, ev->ptr, ev->parameter);
 		break;
@@ -1384,7 +1622,11 @@ static void do_action(int action, struct cardstate *cs,
 		cs->commands_pending = 1;
 		break;
 
+<<<<<<< HEAD
 	/* hotplug events */
+=======
+		/* hotplug events */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ACT_STOP:
 		do_stop(cs);
 		break;
@@ -1392,7 +1634,11 @@ static void do_action(int action, struct cardstate *cs,
 		do_start(cs);
 		break;
 
+<<<<<<< HEAD
 	/* events from the interface */
+=======
+		/* events from the interface */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ACT_IF_LOCK:
 		cs->cmd_result = ev->parameter ? do_lock(cs) : do_unlock(cs);
 		cs->waiting = 0;
@@ -1411,7 +1657,11 @@ static void do_action(int action, struct cardstate *cs,
 		wake_up(&cs->waitqueue);
 		break;
 
+<<<<<<< HEAD
 	/* events from the proc file system */
+=======
+		/* events from the proc file system */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ACT_PROC_CIDMODE:
 		spin_lock_irqsave(&cs->lock, flags);
 		if (ev->parameter != cs->cidmode) {
@@ -1430,7 +1680,11 @@ static void do_action(int action, struct cardstate *cs,
 		wake_up(&cs->waitqueue);
 		break;
 
+<<<<<<< HEAD
 	/* events from the hardware drivers */
+=======
+		/* events from the hardware drivers */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ACT_NOTIFY_BC_DOWN:
 		bchannel_down(bcs);
 		break;
@@ -1532,15 +1786,26 @@ static void process_event(struct cardstate *cs, struct event_t *ev)
 		if (rcode == RSP_LAST) {
 			/* found nothing...*/
 			dev_warn(cs->dev, "%s: rcode=RSP_LAST: "
+<<<<<<< HEAD
 					"resp_code %d in ConState %d!\n",
+=======
+				 "resp_code %d in ConState %d!\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				 __func__, ev->type, at_state->ConState);
 			return;
 		}
 		if ((rcode == RSP_ANY || rcode == ev->type)
+<<<<<<< HEAD
 		  && ((int) at_state->ConState >= rep->min_ConState)
 		  && (rep->max_ConState < 0
 		      || (int) at_state->ConState <= rep->max_ConState)
 		  && (rep->parameter < 0 || rep->parameter == ev->parameter))
+=======
+		    && ((int) at_state->ConState >= rep->min_ConState)
+		    && (rep->max_ConState < 0
+			|| (int) at_state->ConState <= rep->max_ConState)
+		    && (rep->parameter < 0 || rep->parameter == ev->parameter))
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 	}
 

@@ -271,6 +271,10 @@ struct in6_flowlabel_req {
 #define IPV6_ORIGDSTADDR        74
 #define IPV6_RECVORIGDSTADDR    IPV6_ORIGDSTADDR
 #define IPV6_TRANSPARENT        75
+<<<<<<< HEAD
+=======
+#define IPV6_UNICAST_IF         76
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Multicast Routing:

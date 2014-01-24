@@ -188,7 +188,10 @@ static int print_unex = 1;
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/mod_devicetable.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h>	/* for invalidate_buffers() */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <linux/io.h>
 #include <linux/uaccess.h>
@@ -203,7 +206,10 @@ static int slow_floppy;
 
 #include <asm/dma.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int FLOPPY_IRQ = 6;
 static int FLOPPY_DMA = 2;
@@ -3798,7 +3804,11 @@ static int __floppy_read_block_0(struct block_device *bdev)
 	bio.bi_size = size;
 	bio.bi_bdev = bdev;
 	bio.bi_sector = 0;
+<<<<<<< HEAD
 	bio.bi_flags = BIO_QUIET;
+=======
+	bio.bi_flags = (1 << BIO_QUIET);
+>>>>>>> refs/remotes/origin/cm-10.0
 	init_completion(&complete);
 	bio.bi_private = &complete;
 	bio.bi_end_io = floppy_rb0_complete;
@@ -4335,8 +4345,19 @@ out_unreg_blkdev:
 out_put_disk:
 	while (dr--) {
 		del_timer_sync(&motor_off_timer[dr]);
+<<<<<<< HEAD
 		if (disks[dr]->queue)
 			blk_cleanup_queue(disks[dr]->queue);
+=======
+		if (disks[dr]->queue) {
+			blk_cleanup_queue(disks[dr]->queue);
+			/*
+			 * put_disk() is not paired with add_disk() and
+			 * will put queue reference one extra time. fix it.
+			 */
+			disks[dr]->queue = NULL;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		put_disk(disks[dr]);
 	}
 	return err;
@@ -4545,6 +4566,18 @@ static void __exit floppy_module_exit(void)
 			platform_device_unregister(&floppy_device[drive]);
 		}
 		blk_cleanup_queue(disks[drive]->queue);
+<<<<<<< HEAD
+=======
+
+		/*
+		 * These disks have not called add_disk().  Don't put down
+		 * queue reference in put_disk().
+		 */
+		if (!(allowed_drive_mask & (1 << drive)) ||
+		    fdc_state[FDC(drive)].version == FDC_NONE)
+			disks[drive]->queue = NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		put_disk(disks[drive]);
 	}
 

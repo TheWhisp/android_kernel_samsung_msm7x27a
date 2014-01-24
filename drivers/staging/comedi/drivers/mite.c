@@ -55,7 +55,10 @@
 #include "comedi_pci.h"
 #include "../comedidev.h"
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PCI_MITE_SIZE		4096
 #define PCI_DAQ_SIZE		4096

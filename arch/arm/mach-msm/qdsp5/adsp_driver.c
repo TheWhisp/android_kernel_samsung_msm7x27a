@@ -1,7 +1,11 @@
 /* arch/arm/mach-msm/qdsp5/adsp_driver.c
  *
  * Copyright (C) 2008 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2009, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Author: Iliyan Malchev <ibm@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -22,6 +26,10 @@
 #include <linux/sched.h>
 #include <linux/uaccess.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "adsp.h"
 

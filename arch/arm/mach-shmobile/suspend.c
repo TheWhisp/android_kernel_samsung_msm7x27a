@@ -12,8 +12,13 @@
 #include <linux/suspend.h>
 #include <linux/module.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/io.h>
+=======
+#include <asm/io.h>
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int shmobile_suspend_default_enter(suspend_state_t suspend_state)
 {

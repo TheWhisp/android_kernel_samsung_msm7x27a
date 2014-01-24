@@ -155,8 +155,11 @@ static int socrates_nand_device_ready(struct mtd_info *mtd)
 	return 1;
 }
 
+<<<<<<< HEAD
 static const char *part_probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Probe for the NAND device.
  */
@@ -166,8 +169,12 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
 	struct mtd_info *mtd;
 	struct nand_chip *nand_chip;
 	int res;
+<<<<<<< HEAD
 	struct mtd_partition *partitions = NULL;
 	int num_partitions = 0;
+=======
+	struct mtd_part_parser_data ppdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Allocate memory for the device structure (and zero it) */
 	host = kzalloc(sizeof(struct socrates_nand_host), GFP_KERNEL);
@@ -193,6 +200,10 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
 	mtd->name = "socrates_nand";
 	mtd->owner = THIS_MODULE;
 	mtd->dev.parent = &ofdev->dev;
+<<<<<<< HEAD
+=======
+	ppdata.of_node = ofdev->dev.of_node;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*should never be accessed directly */
 	nand_chip->IO_ADDR_R = (void *)0xdeadbeef;
@@ -225,6 +236,7 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
 		goto out;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_MTD_CMDLINE_PARTS
 	num_partitions = parse_mtd_partitions(mtd, part_probes,
 					      &partitions, 0);
@@ -249,6 +261,12 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
 		return res;
 
 release:
+=======
+	res = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+	if (!res)
+		return res;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	nand_release(mtd);
 
 out:
@@ -295,6 +313,7 @@ static struct platform_driver socrates_nand_driver = {
 	.remove		= __devexit_p(socrates_nand_remove),
 };
 
+<<<<<<< HEAD
 static int __init socrates_nand_init(void)
 {
 	return platform_driver_register(&socrates_nand_driver);
@@ -307,6 +326,9 @@ static void __exit socrates_nand_exit(void)
 
 module_init(socrates_nand_init);
 module_exit(socrates_nand_exit);
+=======
+module_platform_driver(socrates_nand_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Ilya Yanok");

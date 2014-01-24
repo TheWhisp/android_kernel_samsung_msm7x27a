@@ -88,12 +88,21 @@ int kvmppc_mmu_map_page(struct kvm_vcpu *vcpu, struct kvmppc_pte *orig_pte)
 	int vflags = 0;
 	int attempt = 0;
 	struct kvmppc_sid_map *map;
+<<<<<<< HEAD
+=======
+	int r = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Get host physical address for gpa */
 	hpaddr = kvmppc_gfn_to_pfn(vcpu, orig_pte->raddr >> PAGE_SHIFT);
 	if (is_error_pfn(hpaddr)) {
 		printk(KERN_INFO "Couldn't get guest page for gfn %lx!\n", orig_pte->eaddr);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		r = -EINVAL;
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	hpaddr <<= PAGE_SHIFT;
 	hpaddr |= orig_pte->raddr & (~0xfffULL & ~PAGE_MASK);
@@ -110,7 +119,12 @@ int kvmppc_mmu_map_page(struct kvm_vcpu *vcpu, struct kvmppc_pte *orig_pte)
 		printk(KERN_ERR "KVM: Segment map for 0x%llx (0x%lx) failed\n",
 				vsid, orig_pte->eaddr);
 		WARN_ON(true);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		r = -EINVAL;
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	vsid = map->host_vsid;
@@ -131,8 +145,15 @@ map_again:
 
 	/* In case we tried normal mapping already, let's nuke old entries */
 	if (attempt > 1)
+<<<<<<< HEAD
 		if (ppc_md.hpte_remove(hpteg) < 0)
 			return -1;
+=======
+		if (ppc_md.hpte_remove(hpteg) < 0) {
+			r = -1;
+			goto out;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = ppc_md.hpte_insert(hpteg, va, hpaddr, rflags, vflags, MMU_PAGE_4K, MMU_SEGSIZE_256M);
 
@@ -162,7 +183,12 @@ map_again:
 		kvmppc_mmu_hpte_cache_map(vcpu, pte);
 	}
 
+<<<<<<< HEAD
 	return 0;
+=======
+out:
+	return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct kvmppc_sid_map *create_sid_map(struct kvm_vcpu *vcpu, u64 gvsid)
@@ -188,14 +214,23 @@ static struct kvmppc_sid_map *create_sid_map(struct kvm_vcpu *vcpu, u64 gvsid)
 	backwards_map = !backwards_map;
 
 	/* Uh-oh ... out of mappings. Let's flush! */
+<<<<<<< HEAD
 	if (vcpu_book3s->vsid_next == vcpu_book3s->vsid_max) {
 		vcpu_book3s->vsid_next = vcpu_book3s->vsid_first;
+=======
+	if (vcpu_book3s->proto_vsid_next == vcpu_book3s->proto_vsid_max) {
+		vcpu_book3s->proto_vsid_next = vcpu_book3s->proto_vsid_first;
+>>>>>>> refs/remotes/origin/cm-10.0
 		memset(vcpu_book3s->sid_map, 0,
 		       sizeof(struct kvmppc_sid_map) * SID_MAP_NUM);
 		kvmppc_mmu_pte_flush(vcpu, 0, 0);
 		kvmppc_mmu_flush_segments(vcpu);
 	}
+<<<<<<< HEAD
 	map->host_vsid = vcpu_book3s->vsid_next++;
+=======
+	map->host_vsid = vsid_scramble(vcpu_book3s->proto_vsid_next++, 256M);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	map->guest_vsid = gvsid;
 	map->valid = true;
@@ -207,11 +242,16 @@ static struct kvmppc_sid_map *create_sid_map(struct kvm_vcpu *vcpu, u64 gvsid)
 
 static int kvmppc_mmu_next_segment(struct kvm_vcpu *vcpu, ulong esid)
 {
+<<<<<<< HEAD
+=======
+	struct kvmppc_book3s_shadow_vcpu *svcpu = svcpu_get(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 	int max_slb_size = 64;
 	int found_inval = -1;
 	int r;
 
+<<<<<<< HEAD
 	if (!to_svcpu(vcpu)->slb_max)
 		to_svcpu(vcpu)->slb_max = 1;
 
@@ -226,6 +266,26 @@ static int kvmppc_mmu_next_segment(struct kvm_vcpu *vcpu, ulong esid)
 	/* Found a spare entry that was invalidated before */
 	if (found_inval > 0)
 		return found_inval;
+=======
+	if (!svcpu->slb_max)
+		svcpu->slb_max = 1;
+
+	/* Are we overwriting? */
+	for (i = 1; i < svcpu->slb_max; i++) {
+		if (!(svcpu->slb[i].esid & SLB_ESID_V))
+			found_inval = i;
+		else if ((svcpu->slb[i].esid & ESID_MASK) == esid) {
+			r = i;
+			goto out;
+		}
+	}
+
+	/* Found a spare entry that was invalidated before */
+	if (found_inval > 0) {
+		r = found_inval;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* No spare invalid entry, so create one */
 
@@ -233,30 +293,55 @@ static int kvmppc_mmu_next_segment(struct kvm_vcpu *vcpu, ulong esid)
 		max_slb_size = mmu_slb_size;
 
 	/* Overflowing -> purge */
+<<<<<<< HEAD
 	if ((to_svcpu(vcpu)->slb_max) == max_slb_size)
 		kvmppc_mmu_flush_segments(vcpu);
 
 	r = to_svcpu(vcpu)->slb_max;
 	to_svcpu(vcpu)->slb_max++;
 
+=======
+	if ((svcpu->slb_max) == max_slb_size)
+		kvmppc_mmu_flush_segments(vcpu);
+
+	r = svcpu->slb_max;
+	svcpu->slb_max++;
+
+out:
+	svcpu_put(svcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return r;
 }
 
 int kvmppc_mmu_map_segment(struct kvm_vcpu *vcpu, ulong eaddr)
 {
+<<<<<<< HEAD
+=======
+	struct kvmppc_book3s_shadow_vcpu *svcpu = svcpu_get(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u64 esid = eaddr >> SID_SHIFT;
 	u64 slb_esid = (eaddr & ESID_MASK) | SLB_ESID_V;
 	u64 slb_vsid = SLB_VSID_USER;
 	u64 gvsid;
 	int slb_index;
 	struct kvmppc_sid_map *map;
+<<<<<<< HEAD
+=======
+	int r = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	slb_index = kvmppc_mmu_next_segment(vcpu, eaddr & ESID_MASK);
 
 	if (vcpu->arch.mmu.esid_to_vsid(vcpu, esid, &gvsid)) {
 		/* Invalidate an entry */
+<<<<<<< HEAD
 		to_svcpu(vcpu)->slb[slb_index].esid = 0;
 		return -ENOENT;
+=======
+		svcpu->slb[slb_index].esid = 0;
+		r = -ENOENT;
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	map = find_sid_vsid(vcpu, gvsid);
@@ -269,18 +354,36 @@ int kvmppc_mmu_map_segment(struct kvm_vcpu *vcpu, ulong eaddr)
 	slb_vsid &= ~SLB_VSID_KP;
 	slb_esid |= slb_index;
 
+<<<<<<< HEAD
 	to_svcpu(vcpu)->slb[slb_index].esid = slb_esid;
 	to_svcpu(vcpu)->slb[slb_index].vsid = slb_vsid;
 
 	trace_kvm_book3s_slbmte(slb_vsid, slb_esid);
 
 	return 0;
+=======
+	svcpu->slb[slb_index].esid = slb_esid;
+	svcpu->slb[slb_index].vsid = slb_vsid;
+
+	trace_kvm_book3s_slbmte(slb_vsid, slb_esid);
+
+out:
+	svcpu_put(svcpu);
+	return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void kvmppc_mmu_flush_segments(struct kvm_vcpu *vcpu)
 {
+<<<<<<< HEAD
 	to_svcpu(vcpu)->slb_max = 1;
 	to_svcpu(vcpu)->slb[0].esid = 0;
+=======
+	struct kvmppc_book3s_shadow_vcpu *svcpu = svcpu_get(vcpu);
+	svcpu->slb_max = 1;
+	svcpu->slb[0].esid = 0;
+	svcpu_put(svcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void kvmppc_mmu_destroy(struct kvm_vcpu *vcpu)
@@ -299,9 +402,16 @@ int kvmppc_mmu_init(struct kvm_vcpu *vcpu)
 		return -1;
 	vcpu3s->context_id[0] = err;
 
+<<<<<<< HEAD
 	vcpu3s->vsid_max = ((vcpu3s->context_id[0] + 1) << USER_ESID_BITS) - 1;
 	vcpu3s->vsid_first = vcpu3s->context_id[0] << USER_ESID_BITS;
 	vcpu3s->vsid_next = vcpu3s->vsid_first;
+=======
+	vcpu3s->proto_vsid_max = ((vcpu3s->context_id[0] + 1)
+				  << USER_ESID_BITS) - 1;
+	vcpu3s->proto_vsid_first = vcpu3s->context_id[0] << USER_ESID_BITS;
+	vcpu3s->proto_vsid_next = vcpu3s->proto_vsid_first;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kvmppc_mmu_hpte_init(vcpu);
 

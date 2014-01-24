@@ -26,6 +26,10 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/initval.h>
 #include "ice1712.h"

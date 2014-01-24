@@ -4,7 +4,11 @@
 
   debugfs driver debugging code
 
+<<<<<<< HEAD
   Copyright (c) 2005-2007 Michael Buesch <mb@bu3sch.de>
+=======
+  Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -500,12 +504,15 @@ out:
 
 #undef fappend
 
+<<<<<<< HEAD
 static int b43_debugfs_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t b43_debugfs_read(struct file *file, char __user *userbuf,
 				size_t count, loff_t *ppos)
 {
@@ -624,7 +631,11 @@ out_unlock:
 		.read	= _read,				\
 		.write	= _write,				\
 		.fops	= {					\
+<<<<<<< HEAD
 			.open	= b43_debugfs_open,		\
+=======
+			.open	= simple_open,			\
+>>>>>>> refs/remotes/origin/cm-10.0
 			.read	= b43_debugfs_read,		\
 			.write	= b43_debugfs_write,		\
 			.llseek = generic_file_llseek,		\

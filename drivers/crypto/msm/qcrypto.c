@@ -1,6 +1,10 @@
 /* Qualcomm Crypto driver
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,6 +16,10 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/clk.h>
 #include <linux/types.h>
 #include <linux/platform_device.h>
@@ -329,7 +337,11 @@ static void _words_to_byte_stream(uint32_t *iv, unsigned char *b,
 	}
 }
 
+<<<<<<< HEAD
 static int qcrypto_ce_high_bw_req(struct crypto_priv *cp, bool high_bw_req)
+=======
+static void qcrypto_ce_high_bw_req(struct crypto_priv *cp, bool high_bw_req)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = 0;
 
@@ -338,16 +350,31 @@ static int qcrypto_ce_high_bw_req(struct crypto_priv *cp, bool high_bw_req)
 		if (cp->high_bw_req_count == 0)
 			ret = msm_bus_scale_client_update_request(
 				cp->bus_scale_handle, 1);
+<<<<<<< HEAD
+=======
+		if (ret)
+			pr_err("%s Unable to set to high bandwidth\n",
+							__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		cp->high_bw_req_count++;
 	} else {
 		if (cp->high_bw_req_count == 1)
 			ret = msm_bus_scale_client_update_request(
 				cp->bus_scale_handle, 0);
+<<<<<<< HEAD
 		cp->high_bw_req_count--;
 	}
 	mutex_unlock(&sent_bw_req);
 
 	return ret;
+=======
+		if (ret)
+			pr_err("%s Unable to set to low bandwidth\n",
+							__func__);
+		cp->high_bw_req_count--;
+	}
+	mutex_unlock(&sent_bw_req);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void _start_qcrypto_process(struct crypto_priv *cp);
@@ -403,7 +430,11 @@ static int _qcrypto_cipher_cra_init(struct crypto_tfm *tfm)
 	/* random first IV */
 	get_random_bytes(ctx->iv, QCRYPTO_MAX_IV_LENGTH);
 	if (ctx->cp->platform_support.bus_scale_table != NULL)
+<<<<<<< HEAD
 		return  qcrypto_ce_high_bw_req(ctx->cp, true);
+=======
+		qcrypto_ce_high_bw_req(ctx->cp, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 };
@@ -440,7 +471,11 @@ static int _qcrypto_ahash_cra_init(struct crypto_tfm *tfm)
 
 	sha_ctx->ahash_req = NULL;
 	if (sha_ctx->cp->platform_support.bus_scale_table != NULL)
+<<<<<<< HEAD
 		return qcrypto_ce_high_bw_req(sha_ctx->cp, true);
+=======
+		qcrypto_ce_high_bw_req(sha_ctx->cp, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 };
@@ -884,7 +919,11 @@ static void _qce_aead_complete(void *cookie, unsigned char *icv,
 						ctx->authsize, 1);
 
 			} else {
+<<<<<<< HEAD
 				unsigned char tmp[SHA256_DIGESTSIZE];
+=======
+				unsigned char tmp[SHA256_DIGESTSIZE] = {0};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 				/* compare icv from src */
 				scatterwalk_map_and_copy(tmp,
@@ -3359,4 +3398,8 @@ module_exit(_qcrypto_exit);
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Mona Hossain <mhossain@codeaurora.org>");
 MODULE_DESCRIPTION("Qualcomm Crypto driver");
+<<<<<<< HEAD
 MODULE_VERSION("1.20");
+=======
+MODULE_VERSION("1.21");
+>>>>>>> refs/remotes/origin/cm-10.0

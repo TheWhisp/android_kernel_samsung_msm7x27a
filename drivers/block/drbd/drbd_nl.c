@@ -94,7 +94,11 @@ static int name ## _from_tags(struct drbd_conf *mdev, \
 		 arg->member ## _len = dlen; \
 		 memcpy(arg->member, tags, min_t(size_t, dlen, len)); \
 		 break;
+<<<<<<< HEAD
 #include "linux/drbd_nl.h"
+=======
+#include <linux/drbd_nl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Generate the struct to tag_list functions */
 #define NL_PACKET(name, number, fields) \
@@ -129,7 +133,11 @@ name ## _to_tags(struct drbd_conf *mdev, \
 	put_unaligned(arg->member ## _len, tags++);	\
 	memcpy(tags, arg->member, arg->member ## _len); \
 	tags = (unsigned short *)((char *)tags + arg->member ## _len);
+<<<<<<< HEAD
 #include "linux/drbd_nl.h"
+=======
+#include <linux/drbd_nl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void drbd_bcast_ev_helper(struct drbd_conf *mdev, char *helper_name);
 void drbd_nl_send_reply(struct cn_msg *, int);
@@ -179,7 +187,11 @@ int drbd_khelper(struct drbd_conf *mdev, char *cmd)
 	dev_info(DEV, "helper command: %s %s %s\n", usermode_helper, cmd, mb);
 
 	drbd_bcast_ev_helper(mdev, cmd);
+<<<<<<< HEAD
 	ret = call_usermodehelper(usermode_helper, argv, envp, 1);
+=======
+	ret = call_usermodehelper(usermode_helper, argv, envp, UMH_WAIT_PROC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		dev_warn(DEV, "helper command: %s %s %s exit code %u (0x%x)\n",
 				usermode_helper, cmd, mb,
@@ -1829,10 +1841,17 @@ static int drbd_nl_syncer_conf(struct drbd_conf *mdev, struct drbd_nl_cfg_req *n
 
 	/* silently ignore cpu mask on UP kernel */
 	if (nr_cpu_ids > 1 && sc.cpu_mask[0] != 0) {
+<<<<<<< HEAD
 		err = __bitmap_parse(sc.cpu_mask, 32, 0,
 				cpumask_bits(new_cpu_mask), nr_cpu_ids);
 		if (err) {
 			dev_warn(DEV, "__bitmap_parse() failed with %d\n", err);
+=======
+		err = bitmap_parse(sc.cpu_mask, 32,
+				cpumask_bits(new_cpu_mask), nr_cpu_ids);
+		if (err) {
+			dev_warn(DEV, "bitmap_parse() failed with %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 			retcode = ERR_CPU_MASK_PARSE;
 			goto fail;
 		}
@@ -2297,7 +2316,11 @@ static void drbd_connector_callback(struct cn_msg *req, struct netlink_skb_parms
 		return;
 	}
 
+<<<<<<< HEAD
 	if (!cap_raised(current_cap(), CAP_SYS_ADMIN)) {
+=======
+	if (!capable(CAP_SYS_ADMIN)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		retcode = ERR_PERM;
 		goto fail;
 	}
@@ -2526,10 +2549,17 @@ void drbd_bcast_ee(struct drbd_conf *mdev,
 
 	page = e->pages;
 	page_chain_for_each(page) {
+<<<<<<< HEAD
 		void *d = kmap_atomic(page, KM_USER0);
 		unsigned l = min_t(unsigned, len, PAGE_SIZE);
 		memcpy(tl, d, l);
 		kunmap_atomic(d, KM_USER0);
+=======
+		void *d = kmap_atomic(page);
+		unsigned l = min_t(unsigned, len, PAGE_SIZE);
+		memcpy(tl, d, l);
+		kunmap_atomic(d);
+>>>>>>> refs/remotes/origin/cm-10.0
 		tl = (unsigned short*)((char*)tl + l);
 		len -= l;
 		if (len == 0)

@@ -132,10 +132,18 @@ subsys_initcall(ts219_pci_init);
 
 MACHINE_START(TS219, "QNAP TS-119/TS-219")
 	/* Maintainer: Martin Michlmayr <tbm@cyrius.com> */
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= qnap_ts219_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
 	.timer		= &kirkwood_timer,
+<<<<<<< HEAD
+=======
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

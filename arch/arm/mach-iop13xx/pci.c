@@ -21,6 +21,10 @@
 #include <linux/slab.h>
 #include <linux/delay.h>
 #include <linux/jiffies.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <mach/hardware.h>
 #include <asm/sizes.h>
@@ -39,8 +43,11 @@ u32 iop13xx_atue_mem_base;
 u32 iop13xx_atux_mem_base;
 size_t iop13xx_atue_mem_size;
 size_t iop13xx_atux_mem_size;
+<<<<<<< HEAD
 unsigned long iop13xx_pcibios_min_io = 0;
 unsigned long iop13xx_pcibios_min_mem = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 EXPORT_SYMBOL(iop13xx_atue_mem_base);
 EXPORT_SYMBOL(iop13xx_atux_mem_base);
@@ -390,7 +397,11 @@ static int iop13xx_atue_pci_status(int clear)
 }
 
 static int
+<<<<<<< HEAD
 iop13xx_pcie_map_irq(struct pci_dev *dev, u8 idsel, u8 pin)
+=======
+iop13xx_pcie_map_irq(const struct pci_dev *dev, u8 idsel, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	WARN_ON(idsel != 0);
 
@@ -538,6 +549,7 @@ struct pci_bus *iop13xx_scan_bus(int nr, struct pci_sys_data *sys)
 			while(time_before(jiffies, atux_trhfa_timeout))
 				udelay(100);
 
+<<<<<<< HEAD
 		bus = pci_bus_atux = pci_scan_bus(sys->busnr,
 						  &iop13xx_atux_ops,
 						  sys);
@@ -546,6 +558,16 @@ struct pci_bus *iop13xx_scan_bus(int nr, struct pci_sys_data *sys)
 		bus = pci_bus_atue = pci_scan_bus(sys->busnr,
 						  &iop13xx_atue_ops,
 						  sys);
+=======
+		bus = pci_bus_atux = pci_scan_root_bus(NULL, sys->busnr,
+						       &iop13xx_atux_ops,
+						       sys, &sys->resources);
+		break;
+	case IOP13XX_INIT_ATU_ATUE:
+		bus = pci_bus_atue = pci_scan_root_bus(NULL, sys->busnr,
+						       &iop13xx_atue_ops,
+						       sys, &sys->resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 
@@ -971,7 +993,12 @@ void __init iop13xx_pci_init(void)
 	__raw_writel(__raw_readl(IOP13XX_XBG_BECSR) & 3, IOP13XX_XBG_BECSR);
 
 	/* Setup the Min Address for PCI memory... */
+<<<<<<< HEAD
 	iop13xx_pcibios_min_mem = IOP13XX_PCIX_LOWER_MEM_BA;
+=======
+	pcibios_min_io = 0;
+	pcibios_min_mem = IOP13XX_PCIX_LOWER_MEM_BA;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* if Linux is given control of an ATU
 	 * clear out its prior configuration,
@@ -1084,9 +1111,14 @@ int iop13xx_pci_setup(int nr, struct pci_sys_data *sys)
 	request_resource(&ioport_resource, &res[0]);
 	request_resource(&iomem_resource, &res[1]);
 
+<<<<<<< HEAD
 	sys->resource[0] = &res[0];
 	sys->resource[1] = &res[1];
 	sys->resource[2] = NULL;
+=======
+	pci_add_resource_offset(&sys->resources, &res[0], sys->io_offset);
+	pci_add_resource_offset(&sys->resources, &res[1], sys->mem_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 1;
 }

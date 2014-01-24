@@ -713,6 +713,10 @@ static int llc_ui_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct sk_buff *skb = NULL;
 	struct sock *sk = sock->sk;
 	struct llc_sock *llc = llc_sk(sk);
+<<<<<<< HEAD
+=======
+	unsigned long cpu_flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 	size_t copied = 0;
 	u32 peek_seq = 0;
 	u32 *seq;
@@ -840,7 +844,13 @@ static int llc_ui_recvmsg(struct kiocb *iocb, struct socket *sock,
 			goto copy_uaddr;
 
 		if (!(flags & MSG_PEEK)) {
+<<<<<<< HEAD
 			sk_eat_skb(sk, skb, 0);
+=======
+			spin_lock_irqsave(&sk->sk_receive_queue.lock, cpu_flags);
+			sk_eat_skb(sk, skb, 0);
+			spin_unlock_irqrestore(&sk->sk_receive_queue.lock, cpu_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 			*seq = 0;
 		}
 
@@ -861,7 +871,13 @@ copy_uaddr:
 		llc_cmsg_rcv(msg, skb);
 
 	if (!(flags & MSG_PEEK)) {
+<<<<<<< HEAD
 			sk_eat_skb(sk, skb, 0);
+=======
+			spin_lock_irqsave(&sk->sk_receive_queue.lock, cpu_flags);
+			sk_eat_skb(sk, skb, 0);
+			spin_unlock_irqrestore(&sk->sk_receive_queue.lock, cpu_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 			*seq = 0;
 	}
 

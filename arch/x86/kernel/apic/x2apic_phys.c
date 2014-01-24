@@ -126,6 +126,10 @@ static struct apic apic_x2apic_phys = {
 	.name				= "physical x2apic",
 	.probe				= x2apic_phys_probe,
 	.acpi_madt_oem_check		= x2apic_acpi_madt_oem_check,
+<<<<<<< HEAD
+=======
+	.apic_id_valid			= x2apic_apic_id_valid,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.apic_id_registered		= x2apic_apic_id_registered,
 
 	.irq_delivery_mode		= dest_Fixed,

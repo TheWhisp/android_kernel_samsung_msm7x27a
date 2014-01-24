@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -33,6 +37,7 @@
 #define RX_CMD_QUEUE				1
 #define RX_MAX_QUEUE				2
 
+<<<<<<< HEAD
 #define DESC92S_RATE1M				0x00
 #define DESC92S_RATE2M				0x01
 #define DESC92S_RATE5_5M			0x02
@@ -64,6 +69,8 @@
 #define DESC92S_RATEMCS15_SG			0x1c
 #define DESC92S_RATEMCS32			0x20
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SHORT_SLOT_TIME				9
 #define NON_SHORT_SLOT_TIME			20
 
@@ -490,11 +497,19 @@ do {								\
 #define SET_RX_STATUS__DESC_BUFF_ADDR(__pdesc, __val)	\
 	SET_BITS_OFFSET_LE(__pdesc + 24, 0, 32, __val)
 
+<<<<<<< HEAD
 #define RX_HAL_IS_CCK_RATE(_pdesc)\
 	(GET_RX_STATUS_DESC_RX_MCS(_pdesc) == DESC92S_RATE1M ||	\
 	 GET_RX_STATUS_DESC_RX_MCS(_pdesc) == DESC92S_RATE2M ||	\
 	 GET_RX_STATUS_DESC_RX_MCS(_pdesc) == DESC92S_RATE5_5M ||\
 	 GET_RX_STATUS_DESC_RX_MCS(_pdesc) == DESC92S_RATE11M)
+=======
+#define SE_RX_HAL_IS_CCK_RATE(_pdesc)\
+	(GET_RX_STATUS_DESC_RX_MCS(_pdesc) == DESC92_RATE1M ||	\
+	 GET_RX_STATUS_DESC_RX_MCS(_pdesc) == DESC92_RATE2M ||	\
+	 GET_RX_STATUS_DESC_RX_MCS(_pdesc) == DESC92_RATE5_5M ||\
+	 GET_RX_STATUS_DESC_RX_MCS(_pdesc) == DESC92_RATE11M)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum rf_optype {
 	RF_OP_BY_SW_3WIRE = 0,

@@ -108,6 +108,7 @@ config IOMMU_HELPER
 	depends on IOMMU_SBA || IOMMU_CCIO
 	default y
 
+<<<<<<< HEAD
 #config PCI_EPIC
 #	bool "EPIC/SAGA PCI support"
 #	depends on PCI
@@ -115,6 +116,8 @@ config IOMMU_HELPER
 #	help
 #	  Say Y here for V-class PCI, DMA/IOMMU, IRQ subsystem support.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/pcmcia/Kconfig"
 
 source "drivers/pci/hotplug/Kconfig"

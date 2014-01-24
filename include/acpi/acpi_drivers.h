@@ -128,7 +128,11 @@ extern int is_dock_device(acpi_handle handle);
 extern int register_dock_notifier(struct notifier_block *nb);
 extern void unregister_dock_notifier(struct notifier_block *nb);
 extern int register_hotplug_dock_device(acpi_handle handle,
+<<<<<<< HEAD
 					struct acpi_dock_ops *ops,
+=======
+					const struct acpi_dock_ops *ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 					void *context);
 extern void unregister_hotplug_dock_device(acpi_handle handle);
 #else
@@ -144,7 +148,11 @@ static inline void unregister_dock_notifier(struct notifier_block *nb)
 {
 }
 static inline int register_hotplug_dock_device(acpi_handle handle,
+<<<<<<< HEAD
 					       struct acpi_dock_ops *ops,
+=======
+					       const struct acpi_dock_ops *ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 					       void *context)
 {
 	return -ENODEV;

@@ -81,6 +81,7 @@ struct ip6t_ip6 {
 	 *   MH do not match any packets.
 	 * - You also need to set IP6T_FLAGS_PROTO to "flags" to check protocol.
 	 */
+<<<<<<< HEAD
 	u_int16_t proto;
 	/* TOS to match iff flags & IP6T_F_TOS */
 	u_int8_t tos;
@@ -89,6 +90,16 @@ struct ip6t_ip6 {
 	u_int8_t flags;
 	/* Inverse flags */
 	u_int8_t invflags;
+=======
+	__u16 proto;
+	/* TOS to match iff flags & IP6T_F_TOS */
+	__u8 tos;
+
+	/* Flags word */
+	__u8 flags;
+	/* Inverse flags */
+	__u8 invflags;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Values for "flag" field in struct ip6t_ip6 (general ip6 structure). */
@@ -118,9 +129,15 @@ struct ip6t_entry {
 	unsigned int nfcache;
 
 	/* Size of ipt_entry + matches */
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	/* Size of ipt_entry + matches + target */
 	u_int16_t next_offset;
+=======
+	__u16 target_offset;
+	/* Size of ipt_entry + matches + target */
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Back pointer */
 	unsigned int comefrom;
@@ -186,9 +203,15 @@ struct ip6t_error {
 
 /* ICMP matching stuff */
 struct ip6t_icmp {
+<<<<<<< HEAD
 	u_int8_t type;				/* type to match */
 	u_int8_t code[2];			/* range of code */
 	u_int8_t invflags;			/* Inverse flags */
+=======
+	__u8 type;				/* type to match */
+	__u8 code[2];				/* range of code */
+	__u8 invflags;				/* Inverse flags */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Values for "inv" field for struct ipt_icmp. */
@@ -287,7 +310,21 @@ extern unsigned int ip6t_do_table(struct sk_buff *skb,
 				  struct xt_table *table);
 
 /* Check for an extension */
+<<<<<<< HEAD
 extern int ip6t_ext_hdr(u8 nexthdr);
+=======
+static inline int
+ip6t_ext_hdr(u8 nexthdr)
+{	return (nexthdr == IPPROTO_HOPOPTS) ||
+	       (nexthdr == IPPROTO_ROUTING) ||
+	       (nexthdr == IPPROTO_FRAGMENT) ||
+	       (nexthdr == IPPROTO_ESP) ||
+	       (nexthdr == IPPROTO_AH) ||
+	       (nexthdr == IPPROTO_NONE) ||
+	       (nexthdr == IPPROTO_DSTOPTS);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* find specified header and get offset to it */
 extern int ipv6_find_hdr(const struct sk_buff *skb, unsigned int *offset,
 			 int target, unsigned short *fragoff);
@@ -298,8 +335,13 @@ extern int ipv6_find_hdr(const struct sk_buff *skb, unsigned int *offset,
 struct compat_ip6t_entry {
 	struct ip6t_ip6 ipv6;
 	compat_uint_t nfcache;
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	u_int16_t next_offset;
+=======
+	__u16 target_offset;
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 	compat_uint_t comefrom;
 	struct compat_xt_counters counters;
 	unsigned char elems[0];

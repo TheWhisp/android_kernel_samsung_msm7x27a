@@ -11,7 +11,10 @@
  */
 
 #include <linux/ip.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "2t3e3.h"
 #include "ctrl.h"
 

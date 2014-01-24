@@ -64,9 +64,15 @@
 * software indicates your acceptance of these terms and conditions.  If you do
 * not agree with these terms and conditions, do not use the software.
 *
+<<<<<<< HEAD
 * COPYRIGHT © 1994 - 1995	by AT&T.				All Rights Reserved
 * COPYRIGHT © 1996 - 2000 by Lucent Technologies.	All Rights Reserved
 * COPYRIGHT © 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+=======
+* COPYRIGHT Â© 1994 - 1995	by AT&T.				All Rights Reserved
+* COPYRIGHT Â© 1996 - 2000 by Lucent Technologies.	All Rights Reserved
+* COPYRIGHT Â© 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+>>>>>>> refs/remotes/origin/cm-10.0
 * All rights reserved.
 *
 * Redistribution and use in source or binary forms, with or without
@@ -300,6 +306,7 @@ typedef unsigned long			hcf_32;
 #define HCF_TALLIES_HCF			0x0002	// HCF Tallies accumulated in IFB
 #define HCF_TALLIES_RESET		0x8000	// Tallies in IFB are reset when reported via hcf_get_info
 
+<<<<<<< HEAD
 
 /************************************************************************************************/
 /******************************  M I N I P O R T    N D I S *************************************/
@@ -787,6 +794,8 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /************************************************************************************************/
 /******************************************  L I N U X  *****************************************/
 /************************************************************************************************/
@@ -803,16 +812,37 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 //#define HCF_SLEEP (HCF_CDS | HCF_DDS )
 #define HCF_SLEEP (HCF_CDS)
 
+<<<<<<< HEAD
 //#define HCF_TYPE    (HCF_TYPE_HII5|HCF_TYPE_STA|HCF_TYPE_AP)
+=======
+/* Note: Non-WARP firmware all support WPA. However the original Agere
+ * linux driver does not enable WPA. Enabling WPA here causes whatever
+ * preliminary WPA logic to be included, some of which may be specific
+ * to HERMESI.
+ *
+ * Various comment are clear that WARP and WPA are not compatible
+ * (which may just mean WARP does WPA in a different fashion).
+ */
+
+/* #define HCF_TYPE    (HCF_TYPE_HII5|HCF_TYPE_STA|HCF_TYPE_AP) */
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef HERMES25
 #ifdef WARP
 #define HCF_TYPE    ( HCF_TYPE_WARP | HCF_TYPE_HII5 )
 #else
+<<<<<<< HEAD
 #define HCF_TYPE    HCF_TYPE_HII5
 #endif // WARP
 #else
 #define HCF_TYPE    HCF_TYPE_NONE
 #endif // HERMES25
+=======
+#define HCF_TYPE    (HCF_TYPE_HII5 | HCF_TYPE_WPA)
+#endif /* WARP */
+#else
+#define HCF_TYPE    HCF_TYPE_WPA
+#endif /* HERMES25 */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef ENABLE_DMA
 #define HCF_DMA		1
@@ -934,6 +964,7 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 #define  IN_PORT_STRING_8_16(port, addr, len)	IN_PORT_STRING_16(port, addr, len)
 #define  OUT_PORT_STRING_8_16(port, addr, len)	OUT_PORT_STRING_16(port, addr, len)
 
+<<<<<<< HEAD
 
 #ifndef OUTPUTDEBUGMSG
 #define OUTPUTDEBUGMSG(dprintf_exp)
@@ -944,6 +975,8 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 #define ASSERTDEBUGMSG(cond, dprintf_exp)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef CFG_SCAN_CHANNELS_2GHZ
 #define CFG_SCAN_CHANNELS_2GHZ 0xFCC2
 #endif /* CFG_SCAN_CHANNELS_2GHZ */
@@ -951,6 +984,7 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 #define HCF_MAX_MSG 1600 //get going ;?
 #endif	// WVLAN_49
 
+<<<<<<< HEAD
 
 
 /************************************************************************************************/
@@ -1988,6 +2022,8 @@ err: /* commented here */ /*	"BSP is not defined..." */
 
 #endif /*IPT_T8300 */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /************************************************************************************************************/
 /***********************************                                   **************************************/
 /************************************************************************************************************/
@@ -2003,10 +2039,13 @@ err: /* commented here */ /*	"BSP is not defined..." */
 #define 		HCF_BIG_ENDIAN		0
 #endif // 		HCF_BIG_ENDIAN
 
+<<<<<<< HEAD
 #if ! defined	HCF_DL_ONLY
 #define 		HCF_DL_ONLY			0
 #endif // 		HCF_DL_ONLY
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if ! defined	HCF_DMA
 #define 		HCF_DMA				0
 #endif // 		HCF_DMA
@@ -2015,6 +2054,7 @@ err: /* commented here */ /*	"BSP is not defined..." */
 #define			HCF_ENCAP			HCF_ENC
 #endif //		HCF_ENCAP
 
+<<<<<<< HEAD
 #if ! defined	HCF_ENTRY
 #define			HCF_ENTRY( ifbp )
 #endif //		HCF_ENTRY
@@ -2023,6 +2063,8 @@ err: /* commented here */ /*	"BSP is not defined..." */
 #define			HCF_EXIT( ifbp )
 #endif //		HCF_EXIT
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if ! defined	HCF_EXT
 #define			HCF_EXT				0
 #endif //		HCF_EXT
@@ -2064,11 +2106,14 @@ err: /* commented here */ /*	"BSP is not defined..." */
 #define			HCF_BIG_ENDIAN		1		//just for convenience of generating cfg_hcf_opt
 #endif //	 	HCF_BIG_ENDIAN
 
+<<<<<<< HEAD
 #if				HCF_DL_ONLY
 #undef			HCF_DL_ONLY
 #define			HCF_DL_ONLY			1		//just for convenience of generating cfg_hcf_opt
 #endif //		HCF_DL_ONLY
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if				HCF_DMA
 #undef			HCF_DMA
 #define			HCF_DMA				1		//just for convenience of generating cfg_hcf_opt
@@ -2244,6 +2289,7 @@ err: primary variants 1 and 2 correspond with H-I only;
 #define			TEXT(x)	x
 #endif //		TEXT
 
+<<<<<<< HEAD
 #if !defined	_TCHAR_DEFINED
 #define 		TCHAR	char
 #endif //		_TCHAR_DEFINED
@@ -2259,6 +2305,11 @@ err: HCF_LITTLE_ENDIAN is obsolete;
 err: HCF_INT_OFF is obsolete;
 #endif //HCF_INT_OFF
 
+=======
+/************************************************************************************************************/
+/*********************** C O N F L I C T   D E T E C T I O N  &  R E S O L U T I O N ************************/
+/************************************************************************************************************/
+>>>>>>> refs/remotes/origin/cm-10.0
 #if HCF_ALIGN != 1 && HCF_ALIGN != 2 && HCF_ALIGN != 4 && HCF_ALIGN != 8
 err: invalid value for HCF_ALIGN;
 #endif // HCF_ALIGN
@@ -2276,10 +2327,13 @@ err: these macros are not used consistently;
 err: invalid value for HCF_BIG_ENDIAN;
 #endif // HCF_BIG_ENDIAN
 
+<<<<<<< HEAD
 #if HCF_DL_ONLY != 0 && HCF_DL_ONLY != 1
 err: invalid value for HCF_DL_ONLY;
 #endif // HCF_DL_ONLY
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if HCF_DMA != 0 && HCF_DMA != 1
 err: invalid value for HCF_DMA;
 #endif // HCF_DMA

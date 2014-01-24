@@ -92,6 +92,10 @@ static struct snd_soc_ops at91sam9g20ek_ops = {
 };
 
 static int at91sam9g20ek_set_bias_level(struct snd_soc_card *card,
+<<<<<<< HEAD
+=======
+					struct snd_soc_dapm_context *dapm,
+>>>>>>> refs/remotes/origin/cm-10.0
 					enum snd_soc_bias_level level)
 {
 	static int mclk_on;
@@ -172,8 +176,11 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
 	/* always connected */
 	snd_soc_dapm_enable_pin(dapm, "Ext Spk");
 
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -190,6 +197,10 @@ static struct snd_soc_dai_link at91sam9g20ek_dai = {
 
 static struct snd_soc_card snd_soc_at91sam9g20ek = {
 	.name = "AT91SAMG20-EK",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = &at91sam9g20ek_dai,
 	.num_links = 1,
 	.set_bias_level = at91sam9g20ek_set_bias_level,

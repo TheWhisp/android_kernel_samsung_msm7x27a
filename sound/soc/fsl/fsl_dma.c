@@ -297,7 +297,10 @@ static irqreturn_t fsl_dma_isr(int irq, void *dev_id)
 static int fsl_dma_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
+<<<<<<< HEAD
 	struct snd_soc_dai *dai = rtd->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_pcm *pcm = rtd->pcm;
 	static u64 fsl_dma_dmamask = DMA_BIT_MASK(36);
 	int ret;
@@ -312,16 +315,24 @@ static int fsl_dma_new(struct snd_soc_pcm_runtime *rtd)
 	 * should allocate a DMA buffer only for the streams that are valid.
 	 */
 
+<<<<<<< HEAD
 	if (pcm->streams[0].substream) {
 		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
 			fsl_dma_hardware.buffer_bytes_max,
 			&pcm->streams[0].substream->dma_buffer);
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+			fsl_dma_hardware.buffer_bytes_max,
+			&pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->dma_buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret) {
 			dev_err(card->dev, "can't alloc playback dma buffer\n");
 			return ret;
 		}
 	}
 
+<<<<<<< HEAD
 	if (pcm->streams[1].substream) {
 		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
 			fsl_dma_hardware.buffer_bytes_max,
@@ -329,6 +340,15 @@ static int fsl_dma_new(struct snd_soc_pcm_runtime *rtd)
 		if (ret) {
 			dev_err(card->dev, "can't alloc capture dma buffer\n");
 			snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+			fsl_dma_hardware.buffer_bytes_max,
+			&pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->dma_buffer);
+		if (ret) {
+			dev_err(card->dev, "can't alloc capture dma buffer\n");
+			snd_dma_free_pages(&pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->dma_buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return ret;
 		}
 	}
@@ -879,10 +899,18 @@ static struct device_node *find_ssi_node(struct device_node *dma_channel_np)
 		 * assume that device_node pointers are a valid comparison.
 		 */
 		np = of_parse_phandle(ssi_np, "fsl,playback-dma", 0);
+<<<<<<< HEAD
+=======
+		of_node_put(np);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (np == dma_channel_np)
 			return ssi_np;
 
 		np = of_parse_phandle(ssi_np, "fsl,capture-dma", 0);
+<<<<<<< HEAD
+=======
+		of_node_put(np);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (np == dma_channel_np)
 			return ssi_np;
 	}
@@ -941,7 +969,11 @@ static int __devinit fsl_soc_dma_probe(struct platform_device *pdev)
 
 	iprop = of_get_property(ssi_np, "fsl,fifo-depth", NULL);
 	if (iprop)
+<<<<<<< HEAD
 		dma->ssi_fifo_depth = *iprop;
+=======
+		dma->ssi_fifo_depth = be32_to_cpup(iprop);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
                 /* Older 8610 DTs didn't have the fifo-depth property */
 		dma->ssi_fifo_depth = 8;
@@ -991,6 +1023,7 @@ static struct platform_driver fsl_soc_dma_driver = {
 	.remove = __devexit_p(fsl_soc_dma_remove),
 };
 
+<<<<<<< HEAD
 static int __init fsl_soc_dma_init(void)
 {
 	pr_info("Freescale Elo DMA ASoC PCM Driver\n");
@@ -1005,6 +1038,9 @@ static void __exit fsl_soc_dma_exit(void)
 
 module_init(fsl_soc_dma_init);
 module_exit(fsl_soc_dma_exit);
+=======
+module_platform_driver(fsl_soc_dma_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
 MODULE_DESCRIPTION("Freescale Elo DMA ASoC PCM Driver");

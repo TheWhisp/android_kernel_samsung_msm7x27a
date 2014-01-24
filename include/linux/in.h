@@ -111,6 +111,10 @@ struct in_addr {
 #define MCAST_LEAVE_SOURCE_GROUP	47
 #define MCAST_MSFILTER			48
 #define IP_MULTICAST_ALL		49
+<<<<<<< HEAD
+=======
+#define IP_UNICAST_IF			50
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MCAST_EXCLUDE	0
 #define MCAST_INCLUDE	1
@@ -182,7 +186,11 @@ struct in_pktinfo {
 /* Structure describing an Internet (IP) socket address. */
 #define __SOCK_SIZE__	16		/* sizeof(struct sockaddr)	*/
 struct sockaddr_in {
+<<<<<<< HEAD
   sa_family_t		sin_family;	/* Address family		*/
+=======
+  __kernel_sa_family_t	sin_family;	/* Address family		*/
+>>>>>>> refs/remotes/origin/cm-10.0
   __be16		sin_port;	/* Port number			*/
   struct in_addr	sin_addr;	/* Internet address		*/
 

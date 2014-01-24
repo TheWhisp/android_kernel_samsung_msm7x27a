@@ -17,14 +17,23 @@ struct sock_extended_err {
 #define SO_EE_ORIGIN_LOCAL	1
 #define SO_EE_ORIGIN_ICMP	2
 #define SO_EE_ORIGIN_ICMP6	3
+<<<<<<< HEAD
 #define SO_EE_ORIGIN_TIMESTAMPING 4
+=======
+#define SO_EE_ORIGIN_TXSTATUS	4
+#define SO_EE_ORIGIN_TIMESTAMPING SO_EE_ORIGIN_TXSTATUS
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SO_EE_OFFENDER(ee)	((struct sockaddr*)((ee)+1))
 
 #ifdef __KERNEL__
 
 #include <net/ip.h>
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined (CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ipv6.h>
 #endif
 
@@ -33,7 +42,11 @@ struct sock_extended_err {
 struct sock_exterr_skb {
 	union {
 		struct inet_skb_parm	h4;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined (CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct inet6_skb_parm	h6;
 #endif
 	} header;

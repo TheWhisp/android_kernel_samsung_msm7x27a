@@ -455,6 +455,7 @@ static struct i2c_driver isl29003_driver = {
 	.id_table = isl29003_id,
 };
 
+<<<<<<< HEAD
 static int __init isl29003_init(void)
 {
 	return i2c_add_driver(&isl29003_driver);
@@ -464,12 +465,18 @@ static void __exit isl29003_exit(void)
 {
 	i2c_del_driver(&isl29003_driver);
 }
+=======
+module_i2c_driver(isl29003_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
 MODULE_DESCRIPTION("ISL29003 ambient light sensor driver");
 MODULE_LICENSE("GPL v2");
 MODULE_VERSION(DRIVER_VERSION);
+<<<<<<< HEAD
 
 module_init(isl29003_init);
 module_exit(isl29003_exit);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

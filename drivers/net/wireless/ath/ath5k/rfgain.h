@@ -18,19 +18,35 @@
  *
  */
 
+<<<<<<< HEAD
 /*
+=======
+/**
+ * struct ath5k_ini_rfgain - RF Gain table
+ * @rfg_register: RF Gain register address
+ * @rfg_value: Register value for 5 and 2GHz
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * Mode-specific RF Gain table (64bytes) for RF5111/5112
  * (RF5110 only comes with AR5210 and only supports a/turbo a mode so initial
  * RF Gain values are included in AR5K_AR5210_INI)
  */
 struct ath5k_ini_rfgain {
+<<<<<<< HEAD
 	u16	rfg_register;	/* RF Gain register address */
+=======
+	u16	rfg_register;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32	rfg_value[2];	/* [freq (see below)] */
 };
 
 /* Initial RF Gain settings for RF5111 */
 static const struct ath5k_ini_rfgain rfgain_5111[] = {
+<<<<<<< HEAD
 	/*			      5Ghz	2Ghz	*/
+=======
+	/*			      5GHz	2GHz	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ AR5K_RF_GAIN(0),	{ 0x000001a9, 0x00000000 } },
 	{ AR5K_RF_GAIN(1),	{ 0x000001e9, 0x00000040 } },
 	{ AR5K_RF_GAIN(2),	{ 0x00000029, 0x00000080 } },
@@ -99,7 +115,11 @@ static const struct ath5k_ini_rfgain rfgain_5111[] = {
 
 /* Initial RF Gain settings for RF5112 */
 static const struct ath5k_ini_rfgain rfgain_5112[] = {
+<<<<<<< HEAD
 	/*			      5Ghz	2Ghz	*/
+=======
+	/*			      5GHz	2GHz	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ AR5K_RF_GAIN(0),	{ 0x00000007, 0x00000007 } },
 	{ AR5K_RF_GAIN(1),	{ 0x00000047, 0x00000047 } },
 	{ AR5K_RF_GAIN(2),	{ 0x00000087, 0x00000087 } },
@@ -305,7 +325,11 @@ static const struct ath5k_ini_rfgain rfgain_2316[] = {
 
 /* Initial RF Gain settings for RF5413 */
 static const struct ath5k_ini_rfgain rfgain_5413[] = {
+<<<<<<< HEAD
 	/*			      5Ghz	2Ghz	*/
+=======
+	/*			      5GHz	2GHz	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ AR5K_RF_GAIN(0),	{ 0x00000000, 0x00000000 } },
 	{ AR5K_RF_GAIN(1),	{ 0x00000040, 0x00000040 } },
 	{ AR5K_RF_GAIN(2),	{ 0x00000080, 0x00000080 } },
@@ -452,21 +476,47 @@ static const struct ath5k_ini_rfgain rfgain_2425[] = {
 
 /* Check if our current measurement is inside our
  * current variable attenuation window */
+<<<<<<< HEAD
 #define AR5K_GAIN_CHECK_ADJUST(_g) 		\
 	((_g)->g_current <= (_g)->g_low || (_g)->g_current >= (_g)->g_high)
 
+=======
+#define AR5K_GAIN_CHECK_ADJUST(_g)		\
+	((_g)->g_current <= (_g)->g_low || (_g)->g_current >= (_g)->g_high)
+
+/**
+ * struct ath5k_gain_opt_step - An RF gain optimization step
+ * @gos_param: Set of parameters
+ * @gos_gain: Gain
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ath5k_gain_opt_step {
 	s8				gos_param[AR5K_GAIN_CRN_MAX_FIX_BITS];
 	s8				gos_gain;
 };
 
+<<<<<<< HEAD
+=======
+/**
+ * struct ath5k_gain_opt - RF Gain optimization ladder
+ * @go_default: The default step
+ * @go_steps_count: How many optimization steps
+ * @go_step: Array of &struct ath5k_gain_opt_step
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ath5k_gain_opt {
 	u8				go_default;
 	u8				go_steps_count;
 	const struct ath5k_gain_opt_step	go_step[AR5K_GAIN_STEP_COUNT];
 };
 
+<<<<<<< HEAD
 /*
+=======
+
+/*
+ * RF5111
+>>>>>>> refs/remotes/origin/cm-10.0
  * Parameters on gos_param:
  * 1) Tx clip PHY register
  * 2) PWD 90 RF register
@@ -490,6 +540,10 @@ static const struct ath5k_gain_opt rfgain_opt_5111 = {
 };
 
 /*
+<<<<<<< HEAD
+=======
+ * RF5112
+>>>>>>> refs/remotes/origin/cm-10.0
  * Parameters on gos_param:
  * 1) Mixgain ovr RF register
  * 2) PWD 138 RF register

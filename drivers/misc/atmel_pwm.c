@@ -329,7 +329,11 @@ static int __init pwm_probe(struct platform_device *pdev)
 	p->pdev = pdev;
 	p->mask = *mp;
 	p->irq = irq;
+<<<<<<< HEAD
 	p->base = ioremap(r->start, r->end - r->start + 1);
+=======
+	p->base = ioremap(r->start, resource_size(r));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!p->base)
 		goto fail;
 	p->clk = clk_get(&pdev->dev, "pwm_clk");

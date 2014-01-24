@@ -17,10 +17,17 @@ config PPC_CELL_NATIVE
 	select PPC_CELL_COMMON
 	select MPIC
 	select PPC_IO_WORKAROUNDS
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_EMAC4
 	select IBM_NEW_EMAC_RGMII
 	select IBM_NEW_EMAC_ZMII #test only
 	select IBM_NEW_EMAC_TAH  #test only
+=======
+	select IBM_EMAC_EMAC4
+	select IBM_EMAC_RGMII
+	select IBM_EMAC_ZMII #test only
+	select IBM_EMAC_TAH  #test only
+>>>>>>> refs/remotes/origin/cm-10.0
 	default n
 
 config PPC_IBM_CELL_BLADE

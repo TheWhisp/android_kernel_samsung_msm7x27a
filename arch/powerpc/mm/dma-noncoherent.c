@@ -30,6 +30,10 @@
 #include <linux/types.h>
 #include <linux/highmem.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/tlbflush.h>
 
@@ -364,12 +368,20 @@ static inline void __dma_sync_page_highmem(struct page *page,
 	local_irq_save(flags);
 
 	do {
+<<<<<<< HEAD
 		start = (unsigned long)kmap_atomic(page + seg_nr,
 				KM_PPC_SYNC_PAGE) + seg_offset;
 
 		/* Sync this buffer segment */
 		__dma_sync((void *)start, seg_size, direction);
 		kunmap_atomic((void *)start, KM_PPC_SYNC_PAGE);
+=======
+		start = (unsigned long)kmap_atomic(page + seg_nr) + seg_offset;
+
+		/* Sync this buffer segment */
+		__dma_sync((void *)start, seg_size, direction);
+		kunmap_atomic((void *)start);
+>>>>>>> refs/remotes/origin/cm-10.0
 		seg_nr++;
 
 		/* Calculate next buffer segment size */

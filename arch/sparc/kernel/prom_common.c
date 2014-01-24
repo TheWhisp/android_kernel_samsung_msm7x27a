@@ -15,7 +15,11 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/errno.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
@@ -58,12 +62,19 @@ int of_set_property(struct device_node *dp, const char *name, void *val, int len
 	void *new_val;
 	int err;
 
+<<<<<<< HEAD
 	new_val = kmalloc(len, GFP_KERNEL);
 	if (!new_val)
 		return -ENOMEM;
 
 	memcpy(new_val, val, len);
 
+=======
+	new_val = kmemdup(val, len, GFP_KERNEL);
+	if (!new_val)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = -ENODEV;
 
 	mutex_lock(&of_set_property_mutex);

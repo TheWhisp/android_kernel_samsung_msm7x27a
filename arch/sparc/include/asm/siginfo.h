@@ -16,8 +16,11 @@
 
 #ifdef __KERNEL__
 
+<<<<<<< HEAD
 #include <linux/compat.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_COMPAT
 
 struct compat_siginfo;

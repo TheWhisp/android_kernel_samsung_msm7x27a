@@ -218,6 +218,10 @@ ipq_build_packet_message(struct nf_queue_entry *entry, int *errp)
 	return skb;
 
 nlmsg_failure:
+<<<<<<< HEAD
+=======
+	kfree_skb(skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*errp = -EINVAL;
 	printk(KERN_ERR "ip_queue: error creating packet message\n");
 	return NULL;
@@ -313,7 +317,11 @@ ipq_set_verdict(struct ipq_verdict_msg *vmsg, unsigned int len)
 {
 	struct nf_queue_entry *entry;
 
+<<<<<<< HEAD
 	if (vmsg->value > NF_MAX_VERDICT)
+=======
+	if (vmsg->value > NF_MAX_VERDICT || vmsg->value == NF_STOLEN)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	entry = ipq_find_dequeue_entry(vmsg->id);
@@ -358,12 +366,18 @@ ipq_receive_peer(struct ipq_peer_msg *pmsg,
 		break;
 
 	case IPQM_VERDICT:
+<<<<<<< HEAD
 		if (pmsg->msg.verdict.value > NF_MAX_VERDICT)
 			status = -EINVAL;
 		else
 			status = ipq_set_verdict(&pmsg->msg.verdict,
 						 len - sizeof(*pmsg));
 			break;
+=======
+		status = ipq_set_verdict(&pmsg->msg.verdict,
+					 len - sizeof(*pmsg));
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		status = -EINVAL;
 	}
@@ -406,6 +420,10 @@ __ipq_rcv_skb(struct sk_buff *skb)
 	int status, type, pid, flags;
 	unsigned int nlmsglen, skblen;
 	struct nlmsghdr *nlh;
+<<<<<<< HEAD
+=======
+	bool enable_timestamp = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	skblen = skb->len;
 	if (skblen < sizeof(*nlh))
@@ -432,7 +450,11 @@ __ipq_rcv_skb(struct sk_buff *skb)
 	if (type <= IPQM_BASE)
 		return;
 
+<<<<<<< HEAD
 	if (security_netlink_recv(skb, CAP_NET_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/cm-10.0
 		RCV_SKB_FAIL(-EPERM);
 
 	spin_lock_bh(&queue_lock);
@@ -443,12 +465,21 @@ __ipq_rcv_skb(struct sk_buff *skb)
 			RCV_SKB_FAIL(-EBUSY);
 		}
 	} else {
+<<<<<<< HEAD
 		net_enable_timestamp();
+=======
+		enable_timestamp = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 		peer_pid = pid;
 	}
 
 	spin_unlock_bh(&queue_lock);
+<<<<<<< HEAD
 
+=======
+	if (enable_timestamp)
+		net_enable_timestamp();
+>>>>>>> refs/remotes/origin/cm-10.0
 	status = ipq_receive_peer(NLMSG_DATA(nlh), type,
 				  nlmsglen - NLMSG_LENGTH(0));
 	if (status < 0)

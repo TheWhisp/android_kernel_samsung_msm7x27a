@@ -170,17 +170,24 @@ static uint r8712_get_rateset_len(u8 *rateset)
 	return i;
 }
 
+<<<<<<< HEAD
 int r8712_generate_ie(struct registry_priv *pregistrypriv,
 		      struct _adapter *padapter)
+=======
+int r8712_generate_ie(struct registry_priv *pregistrypriv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int sz = 0, rateLen;
 	struct wlan_bssid_ex *pdev_network = &pregistrypriv->dev_network;
 	u8 *ie = pdev_network->IEs;
+<<<<<<< HEAD
 	struct ieee80211_ht_cap ht_capie;
 	struct ieee80211_ht_addt_info ht_addt_info;
 	unsigned char WMM_IE[] = {0x00, 0x50, 0xf2, 0x02, 0x00, 0x01, 0x00};
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct qos_priv *pqospriv = &pmlmepriv->qospriv;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*timestamp will be inserted by hardware*/
 	sz += 8;
@@ -219,6 +226,7 @@ int r8712_generate_ie(struct registry_priv *pregistrypriv,
 	/*IBSS Parameter Set*/
 	ie = r8712_set_ie(ie, _IBSS_PARA_IE_, 2,
 		    (u8 *)&(pdev_network->Configuration.ATIMWindow), &sz);
+<<<<<<< HEAD
 	if (pregistrypriv->ht_enable == 1) {
 		if (pqospriv->qos_option == 0) {
 			ie = r8712_set_ie(ie, _VENDOR_SPECIFIC_IE_,
@@ -246,6 +254,8 @@ int r8712_generate_ie(struct registry_priv *pregistrypriv,
 			    sizeof(struct ieee80211_ht_addt_info),
 			    (unsigned char *)&ht_addt_info, &sz);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return sz;
 }
 

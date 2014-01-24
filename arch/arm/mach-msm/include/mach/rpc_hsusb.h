@@ -1,6 +1,10 @@
 /* linux/include/mach/rpc_hsusb.h
  *
+<<<<<<< HEAD
  * Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2010, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * All source code in this file is licensed under the following license except
  * where indicated.
@@ -42,7 +46,11 @@ int msm_chg_usb_i_is_not_available(void);
 int msm_chg_usb_charger_disconnected(void);
 int msm_chg_rpc_close(void);
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_MSM_72K
+=======
+#ifdef CONFIG_USB_MSM_72K
+>>>>>>> refs/remotes/origin/cm-10.0
 int hsusb_chg_init(int connect);
 void hsusb_chg_vbus_draw(unsigned mA);
 void hsusb_chg_connected(enum chg_type chgtype);
@@ -78,7 +86,11 @@ static inline int msm_chg_usb_i_is_not_available(void) { return 0; }
 static inline int msm_chg_usb_charger_disconnected(void) { return 0; }
 static inline int msm_chg_rpc_close(void) { return 0; }
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_MSM_72K
+=======
+#ifdef CONFIG_USB_MSM_72K
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int hsusb_chg_init(int connect) { return 0; }
 static inline void hsusb_chg_vbus_draw(unsigned mA) { }
 static inline void hsusb_chg_connected(enum chg_type chgtype) { }

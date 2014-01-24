@@ -27,6 +27,7 @@
 
 #include "pwc.h"
 
+<<<<<<< HEAD
 const struct pwc_coord pwc_image_sizes[PSZ_MAX] =
 {
 	{ 128,  96, 0 }, /* sqcif */
@@ -78,16 +79,58 @@ int pwc_decode_size(struct pwc_device *pdev, int width, int height)
 }
 
 /* initialize variables depending on type and decompressor*/
+=======
+const int pwc_image_sizes[PSZ_MAX][2] =
+{
+	{ 128,  96 }, /* sqcif */
+	{ 160, 120 }, /* qsif */
+	{ 176, 144 }, /* qcif */
+	{ 320, 240 }, /* sif */
+	{ 352, 288 }, /* cif */
+	{ 640, 480 }, /* vga */
+};
+
+/* x,y -> PSZ_ */
+int pwc_get_size(struct pwc_device *pdev, int width, int height)
+{
+	int i;
+
+	/* Find the largest size supported by the camera that fits into the
+	   requested size. */
+	for (i = PSZ_MAX - 1; i >= 0; i--) {
+		if (!(pdev->image_mask & (1 << i)))
+			continue;
+
+		if (pwc_image_sizes[i][0] <= width &&
+		    pwc_image_sizes[i][1] <= height)
+			return i;
+	}
+
+	/* No mode found, return the smallest mode we have */
+	for (i = 0; i < PSZ_MAX; i++) {
+		if (pdev->image_mask & (1 << i))
+			return i;
+	}
+
+	/* Never reached there always is atleast one supported mode */
+	return 0;
+}
+
+/* initialize variables depending on type and decompressor */
+>>>>>>> refs/remotes/origin/cm-10.0
 void pwc_construct(struct pwc_device *pdev)
 {
 	if (DEVICE_USE_CODEC1(pdev->type)) {
 
+<<<<<<< HEAD
 		pdev->view_min.x = 128;
 		pdev->view_min.y =  96;
 		pdev->view_max.x = 352;
 		pdev->view_max.y = 288;
 		pdev->abs_max.x  = 352;
 		pdev->abs_max.y  = 288;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		pdev->image_mask = 1 << PSZ_SQCIF | 1 << PSZ_QCIF | 1 << PSZ_CIF;
 		pdev->vcinterface = 2;
 		pdev->vendpoint = 4;
@@ -96,6 +139,7 @@ void pwc_construct(struct pwc_device *pdev)
 
 	} else if (DEVICE_USE_CODEC3(pdev->type)) {
 
+<<<<<<< HEAD
 		pdev->view_min.x = 160;
 		pdev->view_min.y = 120;
 		pdev->view_max.x = 640;
@@ -103,6 +147,9 @@ void pwc_construct(struct pwc_device *pdev)
 		pdev->image_mask = 1 << PSZ_QSIF | 1 << PSZ_SIF | 1 << PSZ_VGA;
 		pdev->abs_max.x = 640;
 		pdev->abs_max.y = 480;
+=======
+		pdev->image_mask = 1 << PSZ_QSIF | 1 << PSZ_SIF | 1 << PSZ_VGA;
+>>>>>>> refs/remotes/origin/cm-10.0
 		pdev->vcinterface = 3;
 		pdev->vendpoint = 5;
 		pdev->frame_header_size = TOUCAM_HEADER_SIZE;
@@ -110,6 +157,7 @@ void pwc_construct(struct pwc_device *pdev)
 
 	} else /* if (DEVICE_USE_CODEC2(pdev->type)) */ {
 
+<<<<<<< HEAD
 		pdev->view_min.x = 128;
 		pdev->view_min.y =  96;
 		/* Anthill bug #38: PWC always reports max size, even without PWCX */
@@ -118,11 +166,15 @@ void pwc_construct(struct pwc_device *pdev)
 		pdev->image_mask = 1 << PSZ_SQCIF | 1 << PSZ_QSIF | 1 << PSZ_QCIF | 1 << PSZ_SIF | 1 << PSZ_CIF | 1 << PSZ_VGA;
 		pdev->abs_max.x = 640;
 		pdev->abs_max.y = 480;
+=======
+		pdev->image_mask = 1 << PSZ_SQCIF | 1 << PSZ_QSIF | 1 << PSZ_QCIF | 1 << PSZ_SIF | 1 << PSZ_CIF | 1 << PSZ_VGA;
+>>>>>>> refs/remotes/origin/cm-10.0
 		pdev->vcinterface = 3;
 		pdev->vendpoint = 4;
 		pdev->frame_header_size = 0;
 		pdev->frame_trailer_size = 0;
 	}
+<<<<<<< HEAD
 	pdev->pixfmt = V4L2_PIX_FMT_YUV420; /* default */
 	pdev->view_min.size = pdev->view_min.x * pdev->view_min.y;
 	pdev->view_max.size = pdev->view_max.x * pdev->view_max.y;
@@ -131,3 +183,6 @@ void pwc_construct(struct pwc_device *pdev)
 }
 
 
+=======
+}
+>>>>>>> refs/remotes/origin/cm-10.0

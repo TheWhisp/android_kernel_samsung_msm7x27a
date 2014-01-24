@@ -30,7 +30,11 @@
 
 #include "ttm/ttm_lock.h"
 #include "ttm/ttm_module.h"
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/errno.h>
 #include <linux/wait.h>
 #include <linux/sched.h>

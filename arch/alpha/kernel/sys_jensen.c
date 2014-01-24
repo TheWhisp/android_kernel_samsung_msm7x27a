@@ -15,7 +15,10 @@
 #include <linux/init.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define __EXTERN_INLINE inline
 #include <asm/io.h>

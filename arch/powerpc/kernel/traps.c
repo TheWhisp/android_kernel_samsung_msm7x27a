@@ -39,7 +39,10 @@
 #include <asm/emulated_ops.h>
 #include <asm/pgtable.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/machdep.h>
 #include <asm/rtas.h>
@@ -57,6 +60,12 @@
 #include <asm/kexec.h>
 #include <asm/ppc-opcode.h>
 #include <asm/rio.h>
+<<<<<<< HEAD
+=======
+#include <asm/fadump.h>
+#include <asm/switch_to.h>
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_DEBUGGER) || defined(CONFIG_KEXEC)
 int (*__debugger)(struct pt_regs *regs) __read_mostly;
@@ -98,6 +107,7 @@ static void pmac_backlight_unblank(void)
 static inline void pmac_backlight_unblank(void) { }
 #endif
 
+<<<<<<< HEAD
 int die(const char *str, struct pt_regs *regs, long err)
 {
 	static struct {
@@ -110,6 +120,16 @@ int die(const char *str, struct pt_regs *regs, long err)
 		.lock_owner_depth =	0
 	};
 	static int die_counter;
+=======
+static arch_spinlock_t die_lock = __ARCH_SPIN_LOCK_UNLOCKED;
+static int die_owner = -1;
+static unsigned int die_nest_count;
+static int die_counter;
+
+static unsigned __kprobes long oops_begin(struct pt_regs *regs)
+{
+	int cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long flags;
 
 	if (debugger(regs))
@@ -117,6 +137,7 @@ int die(const char *str, struct pt_regs *regs, long err)
 
 	oops_enter();
 
+<<<<<<< HEAD
 	if (die.lock_owner != raw_smp_processor_id()) {
 		console_verbose();
 		raw_spin_lock_irqsave(&die.lock, flags);
@@ -173,10 +194,116 @@ int die(const char *str, struct pt_regs *regs, long err)
 
 	oops_exit();
 	do_exit(err);
+=======
+	/* racy, but better than risking deadlock. */
+	raw_local_irq_save(flags);
+	cpu = smp_processor_id();
+	if (!arch_spin_trylock(&die_lock)) {
+		if (cpu == die_owner)
+			/* nested oops. should stop eventually */;
+		else
+			arch_spin_lock(&die_lock);
+	}
+	die_nest_count++;
+	die_owner = cpu;
+	console_verbose();
+	bust_spinlocks(1);
+	if (machine_is(powermac))
+		pmac_backlight_unblank();
+	return flags;
+}
+
+static void __kprobes oops_end(unsigned long flags, struct pt_regs *regs,
+			       int signr)
+{
+	bust_spinlocks(0);
+	die_owner = -1;
+	add_taint(TAINT_DIE);
+	die_nest_count--;
+	oops_exit();
+	printk("\n");
+	if (!die_nest_count)
+		/* Nest count reaches zero, release the lock. */
+		arch_spin_unlock(&die_lock);
+	raw_local_irq_restore(flags);
+
+	crash_fadump(regs, "die oops");
+
+	/*
+	 * A system reset (0x100) is a request to dump, so we always send
+	 * it through the crashdump code.
+	 */
+	if (kexec_should_crash(current) || (TRAP(regs) == 0x100)) {
+		crash_kexec(regs);
+
+		/*
+		 * We aren't the primary crash CPU. We need to send it
+		 * to a holding pattern to avoid it ending up in the panic
+		 * code.
+		 */
+		crash_kexec_secondary(regs);
+	}
+
+	if (!signr)
+		return;
+
+	/*
+	 * While our oops output is serialised by a spinlock, output
+	 * from panic() called below can race and corrupt it. If we
+	 * know we are going to panic, delay for 1 second so we have a
+	 * chance to get clean backtraces from all CPUs that are oopsing.
+	 */
+	if (in_interrupt() || panic_on_oops || !current->pid ||
+	    is_global_init(current)) {
+		mdelay(MSEC_PER_SEC);
+	}
+
+	if (in_interrupt())
+		panic("Fatal exception in interrupt");
+	if (panic_on_oops)
+		panic("Fatal exception");
+	do_exit(signr);
+}
+
+static int __kprobes __die(const char *str, struct pt_regs *regs, long err)
+{
+	printk("Oops: %s, sig: %ld [#%d]\n", str, err, ++die_counter);
+#ifdef CONFIG_PREEMPT
+	printk("PREEMPT ");
+#endif
+#ifdef CONFIG_SMP
+	printk("SMP NR_CPUS=%d ", NR_CPUS);
+#endif
+#ifdef CONFIG_DEBUG_PAGEALLOC
+	printk("DEBUG_PAGEALLOC ");
+#endif
+#ifdef CONFIG_NUMA
+	printk("NUMA ");
+#endif
+	printk("%s\n", ppc_md.name ? ppc_md.name : "");
+
+	if (notify_die(DIE_OOPS, str, regs, err, 255, SIGSEGV) == NOTIFY_STOP)
+		return 1;
+
+	print_modules();
+	show_regs(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+void die(const char *str, struct pt_regs *regs, long err)
+{
+	unsigned long flags = oops_begin(regs);
+
+	if (__die(str, regs, err))
+		err = 0;
+	oops_end(flags, regs, err);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void user_single_step_siginfo(struct task_struct *tsk,
 				struct pt_regs *regs, siginfo_t *info)
 {
@@ -195,15 +322,29 @@ void _exception(int signr, struct pt_regs *regs, int code, unsigned long addr)
 			"at %016lx nip %016lx lr %016lx code %x\n";
 
 	if (!user_mode(regs)) {
+<<<<<<< HEAD
 		if (die("Exception in kernel mode", regs, signr))
 			return;
 	} else if (show_unhandled_signals &&
 		   unhandled_signal(current, signr)) {
+=======
+		die("Exception in kernel mode", regs, signr);
+		return;
+	}
+
+	if (show_unhandled_signals && unhandled_signal(current, signr)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk_ratelimited(regs->msr & MSR_64BIT ? fmt64 : fmt32,
 				   current->comm, current->pid, signr,
 				   addr, regs->nip, regs->link, code);
 	}
 
+<<<<<<< HEAD
+=======
+	if (arch_irqs_disabled() && !arch_irq_disabled_regs(regs))
+		local_irq_enable();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	memset(&info, 0, sizeof(info));
 	info.si_signo = signr;
 	info.si_code = code;
@@ -220,6 +361,7 @@ void system_reset_exception(struct pt_regs *regs)
 			return;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_KEXEC
 	cpumask_set_cpu(smp_processor_id(), &cpus_in_sr);
 #endif
@@ -239,6 +381,10 @@ void system_reset_exception(struct pt_regs *regs)
 	 */
 	crash_kexec_secondary(regs);
 
+=======
+	die("System Reset", regs, SIGABRT);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Must die if the interrupt is not recoverable */
 	if (!(regs->msr & MSR_RI))
 		panic("Unrecoverable System Reset");
@@ -457,7 +603,18 @@ int machine_check_e500mc(struct pt_regs *regs)
 
 	if (reason & MCSR_DCPERR_MC) {
 		printk("Data Cache Parity Error\n");
+<<<<<<< HEAD
 		recoverable = 0;
+=======
+
+		/*
+		 * In write shadow mode we auto-recover from the error, but it
+		 * may still get logged and cause a machine check.  We should
+		 * only treat the non-write shadow case as non-recoverable.
+		 */
+		if (!(mfspr(SPRN_L1CSR2) & L1CSR2_DCWS))
+			recoverable = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (reason & MCSR_L2MMU_MHIT) {
@@ -923,7 +1080,14 @@ static int emulate_instruction(struct pt_regs *regs)
 
 #ifdef CONFIG_PPC64
 	/* Emulate the mfspr rD, DSCR. */
+<<<<<<< HEAD
 	if (((instword & PPC_INST_MFSPR_DSCR_MASK) == PPC_INST_MFSPR_DSCR) &&
+=======
+	if ((((instword & PPC_INST_MFSPR_DSCR_USER_MASK) ==
+		PPC_INST_MFSPR_DSCR_USER) ||
+	     ((instword & PPC_INST_MFSPR_DSCR_MASK) ==
+		PPC_INST_MFSPR_DSCR)) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 			cpu_has_feature(CPU_FTR_DSCR)) {
 		PPC_WARN_EMULATED(mfdscr, regs);
 		rd = (instword >> 21) & 0x1f;
@@ -931,7 +1095,14 @@ static int emulate_instruction(struct pt_regs *regs)
 		return 0;
 	}
 	/* Emulate the mtspr DSCR, rD. */
+<<<<<<< HEAD
 	if (((instword & PPC_INST_MTSPR_DSCR_MASK) == PPC_INST_MTSPR_DSCR) &&
+=======
+	if ((((instword & PPC_INST_MTSPR_DSCR_USER_MASK) ==
+		PPC_INST_MTSPR_DSCR_USER) ||
+	     ((instword & PPC_INST_MTSPR_DSCR_MASK) ==
+		PPC_INST_MTSPR_DSCR)) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 			cpu_has_feature(CPU_FTR_DSCR)) {
 		PPC_WARN_EMULATED(mtdscr, regs);
 		rd = (instword >> 21) & 0x1f;
@@ -983,7 +1154,13 @@ void __kprobes program_check_exception(struct pt_regs *regs)
 		return;
 	}
 
+<<<<<<< HEAD
 	local_irq_enable();
+=======
+	/* We restore the interrupt state now */
+	if (!arch_irq_disabled_regs(regs))
+		local_irq_enable();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_MATH_EMULATION
 	/* (reason & REASON_ILLEGAL) would be the obvious thing here,
@@ -1033,6 +1210,13 @@ void alignment_exception(struct pt_regs *regs)
 {
 	int sig, code, fixed = 0;
 
+<<<<<<< HEAD
+=======
+	/* We restore the interrupt state now */
+	if (!arch_irq_disabled_regs(regs))
+		local_irq_enable();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* we don't implement logging of alignment exceptions */
 	if (!(current->thread.align_ctl & PR_UNALIGN_SIGBUS))
 		fixed = fix_alignment(regs);
@@ -1292,14 +1476,20 @@ void __kprobes DebugException(struct pt_regs *regs, unsigned long debug_status)
 
 		if (user_mode(regs)) {
 			current->thread.dbcr0 &= ~DBCR0_IC;
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (DBCR_ACTIVE_EVENTS(current->thread.dbcr0,
 					       current->thread.dbcr1))
 				regs->msr |= MSR_DE;
 			else
 				/* Make sure the IDM bit is off */
 				current->thread.dbcr0 &= ~DBCR0_IDM;
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		_exception(SIGTRAP, regs, TRAP_TRACE, regs->nip);
@@ -1388,10 +1578,14 @@ void SPEFloatingPointException(struct pt_regs *regs)
 	int code = 0;
 	int err;
 
+<<<<<<< HEAD
 	preempt_disable();
 	if (regs->msr & MSR_SPE)
 		giveup_spe(current);
 	preempt_enable();
+=======
+	flush_spe_to_thread(current);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spefscr = current->thread.spefscr;
 	fpexc_mode = current->thread.fpexc_mode;

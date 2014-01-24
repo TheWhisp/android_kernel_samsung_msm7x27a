@@ -35,7 +35,10 @@
 #include <linux/sched.h>
 #include <linux/mutex.h>
 #include <linux/jiffies.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/videodev2.h>
 #include <asm/uaccess.h>
 #include <media/v4l2-device.h>
@@ -73,7 +76,11 @@ struct qcam {
 
 static int parport[MAX_CAMS] = { [1 ... MAX_CAMS-1] = -1 };
 static int probe = 2;
+<<<<<<< HEAD
 static int force_rgb;
+=======
+static bool force_rgb;
+>>>>>>> refs/remotes/origin/cm-10.0
 static int video_nr = -1;
 
 /* FIXME: parport=auto would never have worked, surely? --RR */
@@ -517,7 +524,10 @@ static int qcam_querycap(struct file *file, void  *priv,
 	strlcpy(vcap->driver, qcam->v4l2_dev.name, sizeof(vcap->driver));
 	strlcpy(vcap->card, "Color Quickcam", sizeof(vcap->card));
 	strlcpy(vcap->bus_info, "parport", sizeof(vcap->bus_info));
+<<<<<<< HEAD
 	vcap->version = KERNEL_VERSION(0, 0, 3);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	vcap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE;
 	return 0;
 }
@@ -752,6 +762,10 @@ static struct qcam *qcam_init(struct parport *port)
 
 	if (v4l2_device_register(NULL, v4l2_dev) < 0) {
 		v4l2_err(v4l2_dev, "Could not register v4l2_device\n");
+<<<<<<< HEAD
+=======
+		kfree(qcam);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return NULL;
 	}
 
@@ -886,6 +900,10 @@ static void __exit cqcam_cleanup(void)
 MODULE_AUTHOR("Philip Blundell <philb@gnu.org>");
 MODULE_DESCRIPTION(BANNER);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION("0.0.4");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_init(cqcam_init);
 module_exit(cqcam_cleanup);

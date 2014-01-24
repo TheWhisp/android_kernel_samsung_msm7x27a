@@ -18,6 +18,10 @@
 #include <linux/regulator/driver.h>
 #include <linux/mfd/pm8xxx/core.h>
 #include <linux/regulator/pmic8901-regulator.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Regulator types */
 #define REGULATOR_TYPE_LDO		0
@@ -954,7 +958,11 @@ static int __devinit pm8901_vreg_probe(struct platform_device *pdev)
 			      &= ~(REGULATOR_MODE_NORMAL | REGULATOR_MODE_IDLE);
 
 		vreg->rdev = regulator_register(rdesc, &pdev->dev,
+<<<<<<< HEAD
 				&vreg->pdata->init_data, vreg);
+=======
+				&vreg->pdata->init_data, vreg, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(vreg->rdev)) {
 			rc = PTR_ERR(vreg->rdev);
 			pr_err("%s: regulator_register failed for %s, rc=%d\n",

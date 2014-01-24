@@ -22,7 +22,11 @@
 #include <linux/serial_core.h>
 #include <linux/mtd/physmap.h>
 #include <linux/leds.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/irq.h>
 #include <asm/bootinfo.h>
@@ -897,10 +901,20 @@ void __init txx9_aclc_init(unsigned long baseaddr, int irq,
 #endif
 }
 
+<<<<<<< HEAD
 static struct sysdev_class txx9_sramc_sysdev_class;
 
 struct txx9_sramc_sysdev {
 	struct sys_device dev;
+=======
+static struct bus_type txx9_sramc_subsys = {
+	.name = "txx9_sram",
+	.dev_name = "txx9_sram",
+};
+
+struct txx9_sramc_dev {
+	struct device dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct bin_attribute bindata_attr;
 	void __iomem *base;
 };
@@ -909,7 +923,11 @@ static ssize_t txx9_sram_read(struct file *filp, struct kobject *kobj,
 			      struct bin_attribute *bin_attr,
 			      char *buf, loff_t pos, size_t size)
 {
+<<<<<<< HEAD
 	struct txx9_sramc_sysdev *dev = bin_attr->private;
+=======
+	struct txx9_sramc_dev *dev = bin_attr->private;
+>>>>>>> refs/remotes/origin/cm-10.0
 	size_t ramsize = bin_attr->size;
 
 	if (pos >= ramsize)
@@ -924,7 +942,11 @@ static ssize_t txx9_sram_write(struct file *filp, struct kobject *kobj,
 			       struct bin_attribute *bin_attr,
 			       char *buf, loff_t pos, size_t size)
 {
+<<<<<<< HEAD
 	struct txx9_sramc_sysdev *dev = bin_attr->private;
+=======
+	struct txx9_sramc_dev *dev = bin_attr->private;
+>>>>>>> refs/remotes/origin/cm-10.0
 	size_t ramsize = bin_attr->size;
 
 	if (pos >= ramsize)
@@ -937,6 +959,7 @@ static ssize_t txx9_sram_write(struct file *filp, struct kobject *kobj,
 
 void __init txx9_sramc_init(struct resource *r)
 {
+<<<<<<< HEAD
 	struct txx9_sramc_sysdev *dev;
 	size_t size;
 	int err;
@@ -949,6 +972,15 @@ void __init txx9_sramc_init(struct resource *r)
 			return;
 		}
 	}
+=======
+	struct txx9_sramc_dev *dev;
+	size_t size;
+	int err;
+
+	err = subsys_system_register(&txx9_sramc_subsys, NULL);
+	if (err)
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 	if (!dev)
 		return;
@@ -956,7 +988,11 @@ void __init txx9_sramc_init(struct resource *r)
 	dev->base = ioremap(r->start, size);
 	if (!dev->base)
 		goto exit;
+<<<<<<< HEAD
 	dev->dev.cls = &txx9_sramc_sysdev_class;
+=======
+	dev->dev.bus = &txx9_sramc_subsys;
+>>>>>>> refs/remotes/origin/cm-10.0
 	sysfs_bin_attr_init(&dev->bindata_attr);
 	dev->bindata_attr.attr.name = "bindata";
 	dev->bindata_attr.attr.mode = S_IRUSR | S_IWUSR;
@@ -964,12 +1000,20 @@ void __init txx9_sramc_init(struct resource *r)
 	dev->bindata_attr.write = txx9_sram_write;
 	dev->bindata_attr.size = size;
 	dev->bindata_attr.private = dev;
+<<<<<<< HEAD
 	err = sysdev_register(&dev->dev);
+=======
+	err = device_register(&dev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto exit;
 	err = sysfs_create_bin_file(&dev->dev.kobj, &dev->bindata_attr);
 	if (err) {
+<<<<<<< HEAD
 		sysdev_unregister(&dev->dev);
+=======
+		device_unregister(&dev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto exit;
 	}
 	return;

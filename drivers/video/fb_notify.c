@@ -12,6 +12,10 @@
  */
 #include <linux/fb.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static BLOCKING_NOTIFIER_HEAD(fb_notifier_list);
 

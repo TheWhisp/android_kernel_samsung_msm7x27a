@@ -22,7 +22,10 @@
 #include <linux/of_platform.h>
 #include <linux/memblock.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -35,6 +38,12 @@
 
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
+<<<<<<< HEAD
+=======
+#include "smp.h"
+
+#include "mpc85xx.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef DEBUG
 
@@ -60,14 +69,20 @@ static void mpc85xx_8259_cascade(unsigned int irq, struct irq_desc *desc)
 void __init mpc85xx_ds_pic_init(void)
 {
 	struct mpic *mpic;
+<<<<<<< HEAD
 	struct resource r;
 	struct device_node *np;
 #ifdef CONFIG_PPC_I8259
+=======
+#ifdef CONFIG_PPC_I8259
+	struct device_node *np;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct device_node *cascade_node = NULL;
 	int cascade_irq;
 #endif
 	unsigned long root = of_get_flat_dt_root();
 
+<<<<<<< HEAD
 	np = of_find_node_by_type(NULL, "open-pic");
 	if (np == NULL) {
 		printk(KERN_ERR "Could not find open-pic node\n");
@@ -89,13 +104,27 @@ void __init mpc85xx_ds_pic_init(void)
 		mpic = mpic_alloc(np, r.start,
 			  MPIC_PRIMARY | MPIC_WANTS_RESET |
 			  MPIC_BIG_ENDIAN | MPIC_BROKEN_FRR_NIRQS |
+=======
+	if (of_flat_dt_is_compatible(root, "fsl,MPC8572DS-CAMP")) {
+		mpic = mpic_alloc(NULL, 0,
+			MPIC_NO_RESET |
+			MPIC_BIG_ENDIAN |
+			MPIC_SINGLE_DEST_CPU,
+			0, 256, " OpenPIC  ");
+	} else {
+		mpic = mpic_alloc(NULL, 0,
+			  MPIC_BIG_ENDIAN |
+>>>>>>> refs/remotes/origin/cm-10.0
 			  MPIC_SINGLE_DEST_CPU,
 			0, 256, " OpenPIC  ");
 	}
 
 	BUG_ON(mpic == NULL);
+<<<<<<< HEAD
 	of_node_put(np);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mpic_init(mpic);
 
 #ifdef CONFIG_PPC_I8259
@@ -151,9 +180,12 @@ static int mpc85xx_exclude_device(struct pci_controller *hose,
 /*
  * Setup the architecture
  */
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 extern void __init mpc85xx_smp_init(void);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init mpc85xx_ds_setup_arch(void)
 {
 #ifdef CONFIG_PCI
@@ -186,9 +218,13 @@ static void __init mpc85xx_ds_setup_arch(void)
 	ppc_md.pci_exclude_device = mpc85xx_exclude_device;
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	mpc85xx_smp_init();
 #endif
+=======
+	mpc85xx_smp_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_SWIOTLB
 	if (memblock_end_of_DRAM() > max) {
@@ -218,6 +254,7 @@ static int __init mpc8544_ds_probe(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct of_device_id __initdata mpc85xxds_ids[] = {
 	{ .type = "soc", },
 	{ .compatible = "soc", },
@@ -233,6 +270,11 @@ static int __init mpc85xxds_publish_devices(void)
 machine_device_initcall(mpc8544_ds, mpc85xxds_publish_devices);
 machine_device_initcall(mpc8572_ds, mpc85xxds_publish_devices);
 machine_device_initcall(p2020_ds, mpc85xxds_publish_devices);
+=======
+machine_device_initcall(mpc8544_ds, mpc85xx_common_publish_devices);
+machine_device_initcall(mpc8572_ds, mpc85xx_common_publish_devices);
+machine_device_initcall(p2020_ds, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 machine_arch_initcall(mpc8544_ds, swiotlb_setup_bus_notifier);
 machine_arch_initcall(mpc8572_ds, swiotlb_setup_bus_notifier);

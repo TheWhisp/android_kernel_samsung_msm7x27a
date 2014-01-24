@@ -470,7 +470,11 @@ void __init dmi_scan_machine(void)
 	char __iomem *p, *q;
 	int rc;
 
+<<<<<<< HEAD
 	if (efi_enabled) {
+=======
+	if (efi_enabled(EFI_CONFIG_TABLES)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (efi.smbios == EFI_INVALID_TABLE_ADDR)
 			goto error;
 
@@ -631,14 +635,22 @@ int dmi_name_in_serial(const char *str)
 }
 
 /**
+<<<<<<< HEAD
  *	dmi_name_in_vendors - Check if string is anywhere in the DMI vendor information.
+=======
+ *	dmi_name_in_vendors - Check if string is in the DMI system or board vendor name
+>>>>>>> refs/remotes/origin/cm-10.0
  *	@str: 	Case sensitive Name
  */
 int dmi_name_in_vendors(const char *str)
 {
+<<<<<<< HEAD
 	static int fields[] = { DMI_BIOS_VENDOR, DMI_BIOS_VERSION, DMI_SYS_VENDOR,
 				DMI_PRODUCT_NAME, DMI_PRODUCT_VERSION, DMI_BOARD_VENDOR,
 				DMI_BOARD_NAME, DMI_BOARD_VERSION, DMI_NONE };
+=======
+	static int fields[] = { DMI_SYS_VENDOR, DMI_BOARD_VENDOR, DMI_NONE };
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 	for (i = 0; fields[i] != DMI_NONE; i++) {
 		int f = fields[i];

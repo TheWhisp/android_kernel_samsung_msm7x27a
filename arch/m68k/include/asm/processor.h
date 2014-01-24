@@ -48,10 +48,19 @@ static inline void wrusp(unsigned long usp)
  * so don't change it unless you know what you are doing.
  */
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
 #ifndef CONFIG_SUN3
 #define TASK_SIZE	(0xF0000000UL)
 #else
 #define TASK_SIZE	(0x0E000000UL)
+=======
+#if defined(CONFIG_COLDFIRE)
+#define TASK_SIZE	(0xC0000000UL)
+#elif defined(CONFIG_SUN3)
+#define TASK_SIZE	(0x0E000000UL)
+#else
+#define TASK_SIZE	(0xF0000000UL)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 #else
 #define TASK_SIZE	(0xFFFFFFFFUL)
@@ -66,10 +75,19 @@ static inline void wrusp(unsigned long usp)
  * space during mmap's.
  */
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
 #ifndef CONFIG_SUN3
 #define TASK_UNMAPPED_BASE	0xC0000000UL
 #else
 #define TASK_UNMAPPED_BASE	0x0A000000UL
+=======
+#if defined(CONFIG_COLDFIRE)
+#define TASK_UNMAPPED_BASE	0x60000000UL
+#elif defined(CONFIG_SUN3)
+#define TASK_UNMAPPED_BASE	0x0A000000UL
+#else
+#define TASK_UNMAPPED_BASE	0xC0000000UL
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 #define TASK_UNMAPPED_ALIGN(addr, off)	PAGE_ALIGN(addr)
 #else
@@ -88,14 +106,20 @@ struct thread_struct {
 	unsigned long  fp[8*3];
 	unsigned long  fpcntl[3];	/* fp control regs */
 	unsigned char  fpstate[FPSTATESIZE];  /* floating point state */
+<<<<<<< HEAD
 	struct thread_info info;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define INIT_THREAD  {							\
 	.ksp	= sizeof(init_stack) + (unsigned long) init_stack,	\
 	.sr	= PS_S,							\
 	.fs	= __KERNEL_DS,						\
+<<<<<<< HEAD
 	.info	= INIT_THREAD_INFO(init_task),				\
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_MMU
@@ -105,9 +129,12 @@ struct thread_struct {
 static inline void start_thread(struct pt_regs * regs, unsigned long pc,
 				unsigned long usp)
 {
+<<<<<<< HEAD
 	/* reads from user space */
 	set_fs(USER_DS);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	regs->pc = pc;
 	regs->sr &= ~0x2000;
 	wrusp(usp);
@@ -129,7 +156,10 @@ extern int handle_kernel_fault(struct pt_regs *regs);
 
 #define start_thread(_regs, _pc, _usp)                  \
 do {                                                    \
+<<<<<<< HEAD
 	set_fs(USER_DS); /* reads from user space */    \
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	(_regs)->pc = (_pc);                            \
 	((struct switch_stack *)(_regs))[-1].a6 = 0;    \
 	reformat(_regs);                                \
@@ -139,6 +169,15 @@ do {                                                    \
 	wrusp(_usp);                                    \
 } while(0)
 
+<<<<<<< HEAD
+=======
+static inline  int handle_kernel_fault(struct pt_regs *regs)
+{
+	/* Any fault in kernel is fatal on non-mmu */
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /* Forward declaration, a strange C thing */

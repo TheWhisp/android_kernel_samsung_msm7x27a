@@ -119,7 +119,11 @@ static int init_freecom(struct us_data *us);
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
+<<<<<<< HEAD
 struct usb_device_id freecom_usb_ids[] = {
+=======
+static struct usb_device_id freecom_usb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 #	include "unusual_freecom.h"
 	{ }		/* Terminating entry */
 };
@@ -553,6 +557,7 @@ static struct usb_driver freecom_driver = {
 	.post_reset =	usb_stor_post_reset,
 	.id_table =	freecom_usb_ids,
 	.soft_unbind =	1,
+<<<<<<< HEAD
 };
 
 static int __init freecom_init(void)
@@ -567,3 +572,9 @@ static void __exit freecom_exit(void)
 
 module_init(freecom_init);
 module_exit(freecom_exit);
+=======
+	.no_dynamic_id = 1,
+};
+
+module_usb_driver(freecom_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

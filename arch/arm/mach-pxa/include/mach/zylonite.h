@@ -19,7 +19,11 @@ extern int wm9713_irq;
 extern int lcd_id;
 extern int lcd_orientation;
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_PXA300
+=======
+#ifdef CONFIG_MACH_ZYLONITE300
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void zylonite_pxa300_init(void);
 #else
 static inline void zylonite_pxa300_init(void)
@@ -29,7 +33,11 @@ static inline void zylonite_pxa300_init(void)
 }
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_PXA320
+=======
+#ifdef CONFIG_MACH_ZYLONITE320
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void zylonite_pxa320_init(void);
 #else
 static inline void zylonite_pxa320_init(void)

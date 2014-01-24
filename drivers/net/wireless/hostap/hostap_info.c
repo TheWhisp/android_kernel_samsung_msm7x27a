@@ -3,6 +3,10 @@
 #include <linux/if_arp.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "hostap_wlan.h"
 #include "hostap.h"
 #include "hostap_ap.h"

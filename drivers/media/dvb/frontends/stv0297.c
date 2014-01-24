@@ -404,8 +404,14 @@ static int stv0297_read_ucblocks(struct dvb_frontend *fe, u32 * ucblocks)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int stv0297_set_frontend(struct dvb_frontend *fe, struct dvb_frontend_parameters *p)
 {
+=======
+static int stv0297_set_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct stv0297_state *state = fe->demodulator_priv;
 	int u_threshold;
 	int initial_u;
@@ -417,7 +423,11 @@ static int stv0297_set_frontend(struct dvb_frontend *fe, struct dvb_frontend_par
 	unsigned long timeout;
 	fe_spectral_inversion_t inversion;
 
+<<<<<<< HEAD
 	switch (p->u.qam.modulation) {
+=======
+	switch (p->modulation) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case QAM_16:
 	case QAM_32:
 	case QAM_64:
@@ -455,7 +465,11 @@ static int stv0297_set_frontend(struct dvb_frontend *fe, struct dvb_frontend_par
 
 	stv0297_init(fe);
 	if (fe->ops.tuner_ops.set_params) {
+<<<<<<< HEAD
 		fe->ops.tuner_ops.set_params(fe, p);
+=======
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl) fe->ops.i2c_gate_ctrl(fe, 0);
 	}
 
@@ -519,16 +533,27 @@ static int stv0297_set_frontend(struct dvb_frontend *fe, struct dvb_frontend_par
 	stv0297_writereg_mask(state, 0x69, 0x0f, 0x00);
 
 	/* set parameters */
+<<<<<<< HEAD
 	stv0297_set_qam(state, p->u.qam.modulation);
 	stv0297_set_symbolrate(state, p->u.qam.symbol_rate / 1000);
 	stv0297_set_sweeprate(state, sweeprate, p->u.qam.symbol_rate / 1000);
+=======
+	stv0297_set_qam(state, p->modulation);
+	stv0297_set_symbolrate(state, p->symbol_rate / 1000);
+	stv0297_set_sweeprate(state, sweeprate, p->symbol_rate / 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
 	stv0297_set_carrieroffset(state, carrieroffset);
 	stv0297_set_inversion(state, inversion);
 
 	/* kick off lock */
 	/* Disable corner detection for higher QAMs */
+<<<<<<< HEAD
 	if (p->u.qam.modulation == QAM_128 ||
 		p->u.qam.modulation == QAM_256)
+=======
+	if (p->modulation == QAM_128 ||
+		p->modulation == QAM_256)
+>>>>>>> refs/remotes/origin/cm-10.0
 		stv0297_writereg_mask(state, 0x88, 0x08, 0x00);
 	else
 		stv0297_writereg_mask(state, 0x88, 0x08, 0x08);
@@ -613,8 +638,14 @@ timeout:
 	return 0;
 }
 
+<<<<<<< HEAD
 static int stv0297_get_frontend(struct dvb_frontend *fe, struct dvb_frontend_parameters *p)
 {
+=======
+static int stv0297_get_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct stv0297_state *state = fe->demodulator_priv;
 	int reg_00, reg_83;
 
@@ -625,6 +656,7 @@ static int stv0297_get_frontend(struct dvb_frontend *fe, struct dvb_frontend_par
 	p->inversion = (reg_83 & 0x08) ? INVERSION_ON : INVERSION_OFF;
 	if (state->config->invert)
 		p->inversion = (p->inversion == INVERSION_ON) ? INVERSION_OFF : INVERSION_ON;
+<<<<<<< HEAD
 	p->u.qam.symbol_rate = stv0297_get_symbolrate(state) * 1000;
 	p->u.qam.fec_inner = FEC_NONE;
 
@@ -643,6 +675,26 @@ static int stv0297_get_frontend(struct dvb_frontend *fe, struct dvb_frontend_par
 		break;
 	case 4:
 		p->u.qam.modulation = QAM_64;
+=======
+	p->symbol_rate = stv0297_get_symbolrate(state) * 1000;
+	p->fec_inner = FEC_NONE;
+
+	switch ((reg_00 >> 4) & 0x7) {
+	case 0:
+		p->modulation = QAM_16;
+		break;
+	case 1:
+		p->modulation = QAM_32;
+		break;
+	case 2:
+		p->modulation = QAM_128;
+		break;
+	case 3:
+		p->modulation = QAM_256;
+		break;
+	case 4:
+		p->modulation = QAM_64;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 
@@ -688,10 +740,16 @@ error:
 }
 
 static struct dvb_frontend_ops stv0297_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		 .name = "ST STV0297 DVB-C",
 		 .type = FE_QAM,
+=======
+	.delsys = { SYS_DVBC_ANNEX_A },
+	.info = {
+		 .name = "ST STV0297 DVB-C",
+>>>>>>> refs/remotes/origin/cm-10.0
 		 .frequency_min = 47000000,
 		 .frequency_max = 862000000,
 		 .frequency_stepsize = 62500,

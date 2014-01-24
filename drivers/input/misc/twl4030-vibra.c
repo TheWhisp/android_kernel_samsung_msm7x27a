@@ -172,7 +172,11 @@ static void twl4030_vibra_close(struct input_dev *input)
 }
 
 /*** Module ***/
+<<<<<<< HEAD
 #if CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/cm-10.0
 static int twl4030_vibra_suspend(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
@@ -189,10 +193,17 @@ static int twl4030_vibra_resume(struct device *dev)
 	vibra_disable_leds();
 	return 0;
 }
+<<<<<<< HEAD
 
 static SIMPLE_DEV_PM_OPS(twl4030_vibra_pm_ops,
 			 twl4030_vibra_suspend, twl4030_vibra_resume);
 #endif
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(twl4030_vibra_pm_ops,
+			 twl4030_vibra_suspend, twl4030_vibra_resume);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __devinit twl4030_vibra_probe(struct platform_device *pdev)
 {
@@ -273,6 +284,7 @@ static struct platform_driver twl4030_vibra_driver = {
 	.driver		= {
 		.name	= "twl4030-vibra",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 		.pm	= &twl4030_vibra_pm_ops,
 #endif
@@ -293,6 +305,14 @@ module_exit(twl4030_vibra_exit);
 
 MODULE_ALIAS("platform:twl4030-vibra");
 
+=======
+		.pm	= &twl4030_vibra_pm_ops,
+	},
+};
+module_platform_driver(twl4030_vibra_driver);
+
+MODULE_ALIAS("platform:twl4030-vibra");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("TWL4030 Vibra driver");
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Nokia Corporation");

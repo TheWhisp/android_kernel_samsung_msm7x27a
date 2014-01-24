@@ -26,6 +26,20 @@ _GLOBAL(e500_idle)
 	ori	r4,r4,_TLF_NAPPING	/* so when we take an exception */
 	stw	r4,TI_LOCAL_FLAGS(r3)	/* it will return to our caller */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_E500MC
+	wrteei	1
+1:	wait
+
+	/*
+	 * Guard against spurious wakeups (e.g. from a hypervisor) --
+	 * any real interrupt will cause us to return to LR due to
+	 * _TLF_NAPPING.
+	 */
+	b	1b
+#else
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Check if we can nap or doze, put HID0 mask in r3 */
 	lis	r3,0
 BEGIN_FTR_SECTION
@@ -72,6 +86,10 @@ END_FTR_SECTION_IFSET(CPU_FTR_L2CSR|CPU_FTR_CAN_NAP)
 	mtmsr	r7
 	isync
 2:	b	2b
+<<<<<<< HEAD
+=======
+#endif /* !E500MC */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Return from NAP/DOZE mode, restore some CPU specific registers,

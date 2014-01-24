@@ -8,6 +8,10 @@
 #include <linux/swap.h>
 #include <linux/bootmem.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/bfin-global.h>
 #include <asm/pda.h>
 #include <asm/cplbinit.h>

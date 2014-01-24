@@ -3,7 +3,12 @@
  *
  *  This program is free software; you can redistribute	 it and/or modify it
  *  under  the terms of	 the GNU General  Public License as published by the
+<<<<<<< HEAD
  *  Free Software Foundation;  only version 2 of the License.
+=======
+ *  Free Software Foundation;  either version 2 of the	License, or (at your
+ *  option) any later version.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *  You should have received a copy of the  GNU General Public License along
  *  with this program; if not, write  to the Free Software Foundation, Inc.,
@@ -298,10 +303,16 @@ static void jz4740_pcm_free(struct snd_pcm *pcm)
 
 static u64 jz4740_pcm_dmamask = DMA_BIT_MASK(32);
 
+<<<<<<< HEAD
 int jz4740_pcm_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
 	struct snd_soc_dai *dai = rtd->cpu_dai;
+=======
+static int jz4740_pcm_new(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_card *card = rtd->card->snd_card;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_pcm *pcm = rtd->pcm;
 	int ret = 0;
 
@@ -311,14 +322,22 @@ int jz4740_pcm_new(struct snd_soc_pcm_runtime *rtd)
 	if (!card->dev->coherent_dma_mask)
 		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
 
+<<<<<<< HEAD
 	if (dai->driver->playback.channels_min) {
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = jz4740_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
 			goto err;
 	}
 
+<<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = jz4740_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_CAPTURE);
 		if (ret)
@@ -355,6 +374,7 @@ static struct platform_driver jz4740_pcm_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init jz4740_soc_platform_init(void)
 {
 	return platform_driver_register(&jz4740_pcm_driver);
@@ -370,3 +390,10 @@ module_exit(jz4740_soc_platform_exit);
 MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
 MODULE_DESCRIPTION("Ingenic SoC JZ4740 PCM driver");
 MODULE_LICENSE("GPL v2");
+=======
+module_platform_driver(jz4740_pcm_driver);
+
+MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+MODULE_DESCRIPTION("Ingenic SoC JZ4740 PCM driver");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/cm-10.0

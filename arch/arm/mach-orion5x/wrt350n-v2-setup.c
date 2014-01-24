@@ -5,7 +5,11 @@
  * License version 2.  This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -20,7 +24,10 @@
 #include <linux/input.h>
 #include <net/dsa.h>
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach/arch.h>
 #include <asm/mach/pci.h>
 #include <mach/orion5x.h>
@@ -221,7 +228,12 @@ static void __init wrt350n_v2_init(void)
 	platform_device_register(&wrt350n_v2_button_device);
 }
 
+<<<<<<< HEAD
 static int __init wrt350n_v2_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init wrt350n_v2_pci_map_irq(const struct pci_dev *dev, u8 slot,
+	u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int irq;
 
@@ -260,11 +272,19 @@ subsys_initcall(wrt350n_v2_pci_init);
 
 MACHINE_START(WRT350N_V2, "Linksys WRT350N v2")
 	/* Maintainer: Lennert Buytenhek <buytenh@marvell.com> */
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= wrt350n_v2_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
+<<<<<<< HEAD
+=======
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

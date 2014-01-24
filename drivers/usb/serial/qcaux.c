@@ -79,7 +79,10 @@ static struct usb_driver qcaux_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver qcaux_device = {
@@ -88,6 +91,7 @@ static struct usb_serial_driver qcaux_device = {
 		.name =		"qcaux",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver =		&qcaux_driver,
 	.num_ports =		1,
 };
@@ -113,4 +117,14 @@ static void __exit qcaux_exit(void)
 
 module_init(qcaux_init);
 module_exit(qcaux_exit);
+=======
+	.num_ports =		1,
+};
+
+static struct usb_serial_driver * const serial_drivers[] = {
+	&qcaux_device, NULL
+};
+
+module_usb_serial_driver(qcaux_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");

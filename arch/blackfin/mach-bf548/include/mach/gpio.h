@@ -170,6 +170,11 @@
 
 #define MAX_BLACKFIN_GPIOS 160
 
+<<<<<<< HEAD
+=======
+#define BFIN_GPIO_PINT 1
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef __ASSEMBLY__
 
 struct gpio_port_t {

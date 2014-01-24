@@ -128,12 +128,20 @@ in the bash (as said, 1000 is default), do:
 echo `$(($(cat cpuinfo_transition_latency) * 750 / 1000)) \
     >ondemand/sampling_rate
 
+<<<<<<< HEAD
 show_sampling_rate_min:
+=======
+sampling_rate_min:
+>>>>>>> refs/remotes/origin/cm-10.0
 The sampling rate is limited by the HW transition latency:
 transition_latency * 100
 Or by kernel restrictions:
 If CONFIG_NO_HZ is set, the limit is 10ms fixed.
+<<<<<<< HEAD
 If CONFIG_NO_HZ is not set or no_hz=off boot parameter is used, the
+=======
+If CONFIG_NO_HZ is not set or nohz=off boot parameter is used, the
+>>>>>>> refs/remotes/origin/cm-10.0
 limits depend on the CONFIG_HZ option:
 HZ=1000: min=20000us  (20ms)
 HZ=250:  min=80000us  (80ms)
@@ -141,8 +149,11 @@ HZ=100:  min=200000us (200ms)
 The highest value of kernel and HW latency restrictions is shown and
 used as the minimum sampling rate.
 
+<<<<<<< HEAD
 show_sampling_rate_max: THIS INTERFACE IS DEPRECATED, DON'T USE IT.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 up_threshold: defines what the average CPU usage between the samplings
 of 'sampling_rate' needs to be for the kernel to make a decision on
 whether it should increase the frequency.  For example when it is set
@@ -236,7 +247,21 @@ Default is 99%.
 
 above_hispeed_delay: When speed is at or above hispeed_freq, wait for
 this long before raising speed in response to continued high load.
+<<<<<<< HEAD
 Default is 20000 uS.
+=======
+The format is a single delay value, optionally followed by pairs of
+CPU speeds and the delay to use at or above those speeds.  Colons can
+be used between the speeds and associated delays for readability.  For
+example:
+
+   80000 1300000:200000 1500000:40000
+
+uses delay 80000 uS until CPU speed 1.3 GHz, at which speed delay
+200000 uS is used until speed 1.5 GHz, at which speed (and above)
+delay 40000 uS is used.  If speeds are specified these must appear in
+ascending order.  Default is 20000 uS.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 timer_rate: Sample rate for reevaluating CPU load when the CPU is not
 idle.  A deferrable timer is used, such that the CPU will not be woken
@@ -268,6 +293,10 @@ boostpulse_duration: Length of time to hold CPU speed at hispeed_freq
 on a write to boostpulse, before allowing speed to drop according to
 load as usual.  Default is 80000 uS.
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 3. The Governor Interface in the CPUfreq Core
 =============================================
 

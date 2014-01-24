@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -121,7 +125,11 @@ void acpi_ns_dump_root_devices(void)
 		return;
 	}
 
+<<<<<<< HEAD
 	status = acpi_get_handle(NULL, ACPI_NS_SYSTEM_BUS, &sys_bus_handle);
+=======
+	status = acpi_get_handle(NULL, METHOD_NAME__SB_, &sys_bus_handle);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ACPI_FAILURE(status)) {
 		return;
 	}

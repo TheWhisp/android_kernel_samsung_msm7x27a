@@ -32,7 +32,10 @@
 #include <linux/slab.h>
 #include <net/sock.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
@@ -139,7 +142,12 @@ out:
 	return lapb;
 }
 
+<<<<<<< HEAD
 int lapb_register(struct net_device *dev, struct lapb_register_struct *callbacks)
+=======
+int lapb_register(struct net_device *dev,
+		  const struct lapb_register_struct *callbacks)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct lapb_cb *lapb;
 	int rc = LAPB_BADTOKEN;
@@ -158,7 +166,11 @@ int lapb_register(struct net_device *dev, struct lapb_register_struct *callbacks
 		goto out;
 
 	lapb->dev       = dev;
+<<<<<<< HEAD
 	lapb->callbacks = *callbacks;
+=======
+	lapb->callbacks = callbacks;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__lapb_insert_cb(lapb);
 
@@ -300,6 +312,7 @@ int lapb_disconnect_request(struct net_device *dev)
 		goto out;
 
 	switch (lapb->state) {
+<<<<<<< HEAD
 		case LAPB_STATE_0:
 			rc = LAPB_NOTCONNECTED;
 			goto out_put;
@@ -320,6 +333,28 @@ int lapb_disconnect_request(struct net_device *dev)
 		case LAPB_STATE_2:
 			rc = LAPB_OK;
 			goto out_put;
+=======
+	case LAPB_STATE_0:
+		rc = LAPB_NOTCONNECTED;
+		goto out_put;
+
+	case LAPB_STATE_1:
+#if LAPB_DEBUG > 1
+		printk(KERN_DEBUG "lapb: (%p) S1 TX DISC(1)\n", lapb->dev);
+#endif
+#if LAPB_DEBUG > 0
+		printk(KERN_DEBUG "lapb: (%p) S1 -> S0\n", lapb->dev);
+#endif
+		lapb_send_control(lapb, LAPB_DISC, LAPB_POLLON, LAPB_COMMAND);
+		lapb->state = LAPB_STATE_0;
+		lapb_start_t1timer(lapb);
+		rc = LAPB_NOTCONNECTED;
+		goto out_put;
+
+	case LAPB_STATE_2:
+		rc = LAPB_OK;
+		goto out_put;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	lapb_clear_queues(lapb);
@@ -380,32 +415,57 @@ int lapb_data_received(struct net_device *dev, struct sk_buff *skb)
 
 void lapb_connect_confirmation(struct lapb_cb *lapb, int reason)
 {
+<<<<<<< HEAD
 	if (lapb->callbacks.connect_confirmation)
 		lapb->callbacks.connect_confirmation(lapb->dev, reason);
+=======
+	if (lapb->callbacks->connect_confirmation)
+		lapb->callbacks->connect_confirmation(lapb->dev, reason);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void lapb_connect_indication(struct lapb_cb *lapb, int reason)
 {
+<<<<<<< HEAD
 	if (lapb->callbacks.connect_indication)
 		lapb->callbacks.connect_indication(lapb->dev, reason);
+=======
+	if (lapb->callbacks->connect_indication)
+		lapb->callbacks->connect_indication(lapb->dev, reason);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void lapb_disconnect_confirmation(struct lapb_cb *lapb, int reason)
 {
+<<<<<<< HEAD
 	if (lapb->callbacks.disconnect_confirmation)
 		lapb->callbacks.disconnect_confirmation(lapb->dev, reason);
+=======
+	if (lapb->callbacks->disconnect_confirmation)
+		lapb->callbacks->disconnect_confirmation(lapb->dev, reason);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void lapb_disconnect_indication(struct lapb_cb *lapb, int reason)
 {
+<<<<<<< HEAD
 	if (lapb->callbacks.disconnect_indication)
 		lapb->callbacks.disconnect_indication(lapb->dev, reason);
+=======
+	if (lapb->callbacks->disconnect_indication)
+		lapb->callbacks->disconnect_indication(lapb->dev, reason);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int lapb_data_indication(struct lapb_cb *lapb, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	if (lapb->callbacks.data_indication)
 		return lapb->callbacks.data_indication(lapb->dev, skb);
+=======
+	if (lapb->callbacks->data_indication)
+		return lapb->callbacks->data_indication(lapb->dev, skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree_skb(skb);
 	return NET_RX_SUCCESS; /* For now; must be != NET_RX_DROP */
@@ -415,8 +475,13 @@ int lapb_data_transmit(struct lapb_cb *lapb, struct sk_buff *skb)
 {
 	int used = 0;
 
+<<<<<<< HEAD
 	if (lapb->callbacks.data_transmit) {
 		lapb->callbacks.data_transmit(lapb->dev, skb);
+=======
+	if (lapb->callbacks->data_transmit) {
+		lapb->callbacks->data_transmit(lapb->dev, skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		used = 1;
 	}
 

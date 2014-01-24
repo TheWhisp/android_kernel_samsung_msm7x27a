@@ -24,7 +24,10 @@
 #include <asm/processor.h>
 #include <asm/reboot.h>
 #include <asm/smp-ops.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq_cpu.h>
 #include <asm/mipsregs.h>
 #include <asm/bootinfo.h>
@@ -642,6 +645,7 @@ void __init plat_mem_setup(void)
 
 	total = 0;
 
+<<<<<<< HEAD
 	/* First add the init memory we will be returning.  */
 	memory = __pa_symbol(&__init_begin) & PAGE_MASK;
 	mem_alloc_size = (__pa_symbol(&__init_end) & PAGE_MASK) - memory;
@@ -650,6 +654,8 @@ void __init plat_mem_setup(void)
 		total += mem_alloc_size;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * The Mips memory init uses the first memory location for
 	 * some memory vectors. When SPARSEMEM is in use, it doesn't
@@ -767,11 +773,19 @@ void prom_free_prom_memory(void)
 			: "=r" (insn) : : "$31", "memory");
 
 		if ((insn >> 26) != 0x33)
+<<<<<<< HEAD
 			panic("No PREF instruction at Core-14449 probe point.\n");
 
 		if (((insn >> 16) & 0x1f) != 28)
 			panic("Core-14449 WAR not in place (%04x).\n"
 			      "Please build kernel with proper options (CONFIG_CAVIUM_CN63XXP1).\n", insn);
+=======
+			panic("No PREF instruction at Core-14449 probe point.");
+
+		if (((insn >> 16) & 0x1f) != 28)
+			panic("Core-14449 WAR not in place (%04x).\n"
+			      "Please build kernel with proper options (CONFIG_CAVIUM_CN63XXP1).", insn);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 #ifdef CONFIG_CAVIUM_DECODE_RSL
 	cvmx_interrupt_rsl_enable();
@@ -779,7 +793,11 @@ void prom_free_prom_memory(void)
 	/* Add an interrupt handler for general failures. */
 	if (request_irq(OCTEON_IRQ_RML, octeon_rlm_interrupt, IRQF_SHARED,
 			"RML/RSL", octeon_rlm_interrupt)) {
+<<<<<<< HEAD
 		panic("Unable to request_irq(OCTEON_IRQ_RML)\n");
+=======
+		panic("Unable to request_irq(OCTEON_IRQ_RML)");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 #endif
 }

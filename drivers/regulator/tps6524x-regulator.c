@@ -108,9 +108,13 @@
 #define N_DCDC			3
 #define N_LDO			2
 #define N_SWITCH		2
+<<<<<<< HEAD
 #define N_REGULATORS		(3 /* DCDC */ + \
 				 2 /* LDO */  + \
 				 2 /* switch */)
+=======
+#define N_REGULATORS		(N_DCDC + N_LDO + N_SWITCH)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define FIXED_ILIMSEL		BIT(0)
 #define FIXED_VOLTAGE		BIT(1)
@@ -651,7 +655,11 @@ static int __devinit pmic_probe(struct spi_device *spi)
 			hw->desc[i].n_voltages = 1;
 
 		hw->rdev[i] = regulator_register(&hw->desc[i], dev,
+<<<<<<< HEAD
 						 init_data, hw);
+=======
+						 init_data, hw, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(hw->rdev[i])) {
 			ret = PTR_ERR(hw->rdev[i]);
 			hw->rdev[i] = NULL;

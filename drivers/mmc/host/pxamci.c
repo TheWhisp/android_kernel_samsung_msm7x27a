@@ -558,7 +558,11 @@ static void pxamci_dma_irq(int dma, void *devid)
 	if (dcsr & DCSR_ENDINTR) {
 		writel(BUF_PART_FULL, host->base + MMC_PRTBUF);
 	} else {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: DMA error on channel %d (DCSR=%#x)\n",
+=======
+		pr_err("%s: DMA error on channel %d (DCSR=%#x)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       mmc_hostname(host->mmc), dma, dcsr);
 		host->data->error = -EIO;
 		pxamci_data_done(host, 0);
@@ -872,6 +876,7 @@ static struct platform_driver pxamci_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init pxamci_init(void)
 {
 	return platform_driver_register(&pxamci_driver);
@@ -884,6 +889,9 @@ static void __exit pxamci_exit(void)
 
 module_init(pxamci_init);
 module_exit(pxamci_exit);
+=======
+module_platform_driver(pxamci_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("PXA Multimedia Card Interface Driver");
 MODULE_LICENSE("GPL");

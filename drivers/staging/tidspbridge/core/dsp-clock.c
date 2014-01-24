@@ -29,9 +29,12 @@
 #include <dspbridge/dev.h>
 #include "_tiomap.h"
 
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*  ----------------------------------- This */
 #include <dspbridge/clk.h>
 
@@ -54,6 +57,10 @@
 
 /* Bridge GPT id (1 - 4), DM Timer id (5 - 8) */
 #define DMT_ID(id) ((id) + 4)
+<<<<<<< HEAD
+=======
+#define DM_TIMER_CLOCKS		4
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Bridge MCBSP id (6 - 10), OMAP Mcbsp id (0 - 4) */
 #define MCBSP_ID(id) ((id) - 6)
@@ -114,8 +121,18 @@ static s8 get_clk_type(u8 id)
  */
 void dsp_clk_exit(void)
 {
+<<<<<<< HEAD
 	dsp_clock_disable_all(dsp_clocks);
 
+=======
+	int i;
+
+	dsp_clock_disable_all(dsp_clocks);
+
+	for (i = 0; i < DM_TIMER_CLOCKS; i++)
+		omap_dm_timer_free(timer[i]);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_put(iva2_clk);
 	clk_put(ssi.sst_fck);
 	clk_put(ssi.ssr_fck);
@@ -130,9 +147,19 @@ void dsp_clk_exit(void)
 void dsp_clk_init(void)
 {
 	static struct platform_device dspbridge_device;
+<<<<<<< HEAD
 
 	dspbridge_device.dev.bus = &platform_bus_type;
 
+=======
+	int i, id;
+
+	dspbridge_device.dev.bus = &platform_bus_type;
+
+	for (i = 0, id = 5; i < DM_TIMER_CLOCKS; i++, id++)
+		timer[i] = omap_dm_timer_request_specific(id);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	iva2_clk = clk_get(&dspbridge_device.dev, "iva2_ck");
 	if (IS_ERR(iva2_clk))
 		dev_err(bridge, "failed to get iva2 clock %p\n", iva2_clk);
@@ -204,12 +231,19 @@ int dsp_clk_enable(enum dsp_clk_id clk_id)
 		clk_enable(iva2_clk);
 		break;
 	case GPT_CLK:
+<<<<<<< HEAD
 		timer[clk_id - 1] =
 				omap_dm_timer_request_specific(DMT_ID(clk_id));
 		break;
 #ifdef CONFIG_OMAP_MCBSP
 	case MCBSP_CLK:
 		omap_mcbsp_set_io_type(MCBSP_ID(clk_id), OMAP_MCBSP_POLL_IO);
+=======
+		status = omap_dm_timer_start(timer[clk_id - 1]);
+		break;
+#ifdef CONFIG_OMAP_MCBSP
+	case MCBSP_CLK:
+>>>>>>> refs/remotes/origin/cm-10.0
 		omap_mcbsp_request(MCBSP_ID(clk_id));
 		omap2_mcbsp_set_clks_src(MCBSP_ID(clk_id), MCBSP_CLKS_PAD_SRC);
 		break;
@@ -282,7 +316,11 @@ int dsp_clk_disable(enum dsp_clk_id clk_id)
 		clk_disable(iva2_clk);
 		break;
 	case GPT_CLK:
+<<<<<<< HEAD
 		omap_dm_timer_free(timer[clk_id - 1]);
+=======
+		status = omap_dm_timer_stop(timer[clk_id - 1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 #ifdef CONFIG_OMAP_MCBSP
 	case MCBSP_CLK:

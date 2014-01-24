@@ -188,8 +188,12 @@ irqreturn_t bfin_gptmr0_interrupt(int irq, void *dev_id)
 
 static struct irqaction gptmr0_irq = {
 	.name		= "Blackfin GPTimer0",
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_TIMER | \
 			  IRQF_IRQPOLL | IRQF_PERCPU,
+=======
+	.flags		= IRQF_TIMER | IRQF_IRQPOLL | IRQF_PERCPU,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.handler	= bfin_gptmr0_interrupt,
 };
 
@@ -220,7 +224,11 @@ static void __init bfin_gptmr0_clockevent_init(struct clock_event_device *evt)
 
 #if defined(CONFIG_TICKSOURCE_CORETMR)
 /* per-cpu local core timer */
+<<<<<<< HEAD
 static DEFINE_PER_CPU(struct clock_event_device, coretmr_events);
+=======
+DEFINE_PER_CPU(struct clock_event_device, coretmr_events);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int bfin_coretmr_set_next_event(unsigned long cycles,
 				struct clock_event_device *evt)
@@ -282,6 +290,10 @@ void bfin_coretmr_init(void)
 #ifdef CONFIG_CORE_TIMER_IRQ_L1
 __attribute__((l1_text))
 #endif
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 irqreturn_t bfin_coretmr_interrupt(int irq, void *dev_id)
 {
 	int cpu = smp_processor_id();
@@ -297,8 +309,12 @@ irqreturn_t bfin_coretmr_interrupt(int irq, void *dev_id)
 
 static struct irqaction coretmr_irq = {
 	.name		= "Blackfin CoreTimer",
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_TIMER | \
 			  IRQF_IRQPOLL | IRQF_PERCPU,
+=======
+	.flags		= IRQF_TIMER | IRQF_IRQPOLL | IRQF_PERCPU,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.handler	= bfin_coretmr_interrupt,
 };
 
@@ -308,6 +324,14 @@ void bfin_coretmr_clockevent_init(void)
 	unsigned int cpu = smp_processor_id();
 	struct clock_event_device *evt = &per_cpu(coretmr_events, cpu);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SMP
+	evt->broadcast = smp_timer_broadcast;
+#endif
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	evt->name = "bfin_core_timer";
 	evt->rating = 350;
 	evt->irq = -1;

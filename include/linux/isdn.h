@@ -68,7 +68,11 @@
 #define ISDN_NET_ENCAP_SYNCPPP    4
 #define ISDN_NET_ENCAP_UIHDLC     5
 #define ISDN_NET_ENCAP_CISCOHDLCK 6 /* With SLARP and keepalive    */
+<<<<<<< HEAD
 #define ISDN_NET_ENCAP_X25IFACE   7 /* Documentation/networking/x25-iface.txt*/
+=======
+#define ISDN_NET_ENCAP_X25IFACE   7 /* Documentation/networking/x25-iface.txt */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ISDN_NET_ENCAP_MAX_ENCAP  ISDN_NET_ENCAP_X25IFACE
 
 /* Facility which currently uses an ISDN-channel */
@@ -187,7 +191,11 @@ typedef struct {
 #endif
 
 #include <linux/ppp_defs.h>
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/isdn_ppp.h>
 #endif

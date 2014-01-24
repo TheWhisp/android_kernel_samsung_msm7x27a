@@ -8,7 +8,11 @@ void *snd_usb_find_csint_desc(void *descstart, int desclen, void *after, u8 dsub
 
 int snd_usb_ctl_msg(struct usb_device *dev, unsigned int pipe,
 		    __u8 request, __u8 requesttype, __u16 value, __u16 index,
+<<<<<<< HEAD
 		    void *data, __u16 size, int timeout);
+=======
+		    void *data, __u16 size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned char snd_usb_parse_datainterval(struct snd_usb_audio *chip,
 					 struct usb_host_interface *alts);

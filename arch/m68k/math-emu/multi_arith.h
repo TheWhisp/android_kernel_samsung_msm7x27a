@@ -19,6 +19,7 @@
 #ifndef MULTI_ARITH_H
 #define MULTI_ARITH_H
 
+<<<<<<< HEAD
 #if 0	/* old code... */
 
 /* Unsigned only, because we don't need signs to multiply and divide. */
@@ -259,6 +260,8 @@ static inline void lsr64(int count, unsigned long long *dest)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void fp_denormalize(struct fp_ext *reg, unsigned int cnt)
 {
 	reg->exp += cnt;
@@ -481,6 +484,7 @@ static inline void fp_dividemant(union fp_mant128 *dest, struct fp_ext *src,
 	}
 }
 
+<<<<<<< HEAD
 #if 0
 static inline unsigned int fp_fls128(union fp_mant128 *src)
 {
@@ -592,6 +596,8 @@ static inline void fp_shiftmant128(union fp_mant128 *src, int shift)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void fp_putmant128(struct fp_ext *dest, union fp_mant128 *src,
 				 int shift)
 {
@@ -637,6 +643,7 @@ static inline void fp_putmant128(struct fp_ext *dest, union fp_mant128 *src,
 	}
 }
 
+<<<<<<< HEAD
 #if 0 /* old code... */
 static inline int fls(unsigned int a)
 {
@@ -816,4 +823,6 @@ inline void div128(int128 a, int128 b, int128 c)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* MULTI_ARITH_H */

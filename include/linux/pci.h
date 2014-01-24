@@ -49,7 +49,11 @@
 #include <linux/compiler.h>
 #include <linux/errno.h>
 #include <linux/kobject.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/device.h>
 #include <linux/io.h>
 #include <linux/irqreturn.h>
@@ -111,7 +115,11 @@ enum {
 	PCI_NUM_RESOURCES,
 
 	/* preserve this for compatibility */
+<<<<<<< HEAD
 	DEVICE_COUNT_RESOURCE
+=======
+	DEVICE_COUNT_RESOURCE = PCI_NUM_RESOURCES,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 typedef int __bitwise pci_power_t;
@@ -174,6 +182,11 @@ enum pci_dev_flags {
 	PCI_DEV_FLAGS_MSI_INTX_DISABLE_BUG = (__force pci_dev_flags_t) 1,
 	/* Device configuration is irrevocably lost if disabled into D3 */
 	PCI_DEV_FLAGS_NO_D3 = (__force pci_dev_flags_t) 2,
+<<<<<<< HEAD
+=======
+	/* Provide indication device is assigned by a Virtual Machine Manager */
+	PCI_DEV_FLAGS_ASSIGNED = (__force pci_dev_flags_t) 4,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum pci_irq_reroute_variant {
@@ -251,7 +264,12 @@ struct pci_dev {
 	u8		revision;	/* PCI revision, low byte of class word */
 	u8		hdr_type;	/* PCI header type (`multi' flag masked out) */
 	u8		pcie_cap;	/* PCI-E capability offset */
+<<<<<<< HEAD
 	u8		pcie_type;	/* PCI-E device/port type */
+=======
+	u8		pcie_type:4;	/* PCI-E device/port type */
+	u8		pcie_mpss:3;	/* PCI-E Max Payload Size Supported */
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8		rom_base_reg;	/* which config register controls the ROM */
 	u8		pin;  		/* which interrupt pin this device uses */
 
@@ -272,6 +290,10 @@ struct pci_dev {
 	unsigned int	pme_support:5;	/* Bitmask of states from which PME#
 					   can be generated */
 	unsigned int	pme_interrupt:1;
+<<<<<<< HEAD
+=======
+	unsigned int	pme_poll:1;	/* Poll device's PME status bit */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int	d1_support:1;	/* Low power state D1 is supported */
 	unsigned int	d2_support:1;	/* Low power state D2 is supported */
 	unsigned int	no_d1d2:1;	/* Only allow D0 and D3 */
@@ -295,7 +317,10 @@ struct pci_dev {
 	 */
 	unsigned int	irq;
 	struct resource resource[DEVICE_COUNT_RESOURCE]; /* I/O and memory regions + expansion ROMs */
+<<<<<<< HEAD
 	resource_size_t	fw_addr[DEVICE_COUNT_RESOURCE]; /* FW-assigned addr */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* These fields are used by common fixups */
 	unsigned int	transparent:1;	/* Transparent PCI bridge */
@@ -304,7 +329,11 @@ struct pci_dev {
 	unsigned int	is_added:1;
 	unsigned int	is_busmaster:1; /* device is busmaster */
 	unsigned int	no_msi:1;	/* device may not use msi */
+<<<<<<< HEAD
 	unsigned int	block_ucfg_access:1;	/* userspace config space access is blocked */
+=======
+	unsigned int	block_cfg_access:1;	/* config space access is blocked */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int	broken_parity_status:1;	/* Device generates false positive parity */
 	unsigned int	irq_reroute_variant:2;	/* device needs IRQ rerouting variant */
 	unsigned int 	msi_enabled:1;
@@ -332,9 +361,16 @@ struct pci_dev {
 	struct bin_attribute *res_attr_wc[DEVICE_COUNT_RESOURCE]; /* sysfs file for WC mapping of resources */
 #ifdef CONFIG_PCI_MSI
 	struct list_head msi_list;
+<<<<<<< HEAD
 #endif
 	struct pci_vpd *vpd;
 #ifdef CONFIG_PCI_IOV
+=======
+	struct kset *msi_kset;
+#endif
+	struct pci_vpd *vpd;
+#ifdef CONFIG_PCI_ATS
+>>>>>>> refs/remotes/origin/cm-10.0
 	union {
 		struct pci_sriov *sriov;	/* SR-IOV capability related */
 		struct pci_dev *physfn;	/* the PF this VF is associated with */
@@ -364,6 +400,7 @@ static inline int pci_channel_offline(struct pci_dev *pdev)
 	return (pdev->error_state != pci_channel_io_normal);
 }
 
+<<<<<<< HEAD
 static inline struct pci_cap_saved_state *pci_find_saved_cap(
 	struct pci_dev *pci_dev, char cap)
 {
@@ -382,6 +419,19 @@ static inline void pci_add_saved_cap(struct pci_dev *pci_dev,
 {
 	hlist_add_head(&new_cap->next, &pci_dev->saved_cap_space);
 }
+=======
+struct pci_host_bridge_window {
+	struct list_head list;
+	struct resource *res;		/* host bridge aperture (CPU address) */
+	resource_size_t offset;		/* bus address + offset = CPU address */
+};
+
+struct pci_host_bridge {
+	struct list_head list;
+	struct pci_bus *bus;		/* root bus */
+	struct list_head windows;	/* pci_host_bridge_windows */
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The first PCI_BRIDGE_RESOURCE_NUM PCI bus resources (those that correspond
@@ -617,6 +667,20 @@ struct pci_driver {
 /* these external functions are only available when PCI support is enabled */
 #ifdef CONFIG_PCI
 
+<<<<<<< HEAD
+=======
+extern void pcie_bus_configure_settings(struct pci_bus *bus, u8 smpss);
+
+enum pcie_bus_config_types {
+	PCIE_BUS_TUNE_OFF,
+	PCIE_BUS_SAFE,
+	PCIE_BUS_PERFORMANCE,
+	PCIE_BUS_PEER2PEER,
+};
+
+extern enum pcie_bus_config_types pcie_bus_config;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct bus_type pci_bus_type;
 
 /* Do NOT directly access these two variables, unless you are arch specific pci
@@ -640,11 +704,19 @@ void pci_fixup_cardbus(struct pci_bus *);
 
 /* Generic PCI functions used internally */
 
+<<<<<<< HEAD
+=======
+void pcibios_resource_to_bus(struct pci_dev *dev, struct pci_bus_region *region,
+			     struct resource *res);
+void pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
+			     struct pci_bus_region *region);
+>>>>>>> refs/remotes/origin/cm-10.0
 void pcibios_scan_specific_bus(int busn);
 extern struct pci_bus *pci_find_bus(int domain, int busnr);
 void pci_bus_add_devices(const struct pci_bus *bus);
 struct pci_bus *pci_scan_bus_parented(struct device *parent, int bus,
 				      struct pci_ops *ops, void *sysdata);
+<<<<<<< HEAD
 static inline struct pci_bus * __devinit pci_scan_bus(int bus, struct pci_ops *ops,
 					   void *sysdata)
 {
@@ -656,6 +728,15 @@ static inline struct pci_bus * __devinit pci_scan_bus(int bus, struct pci_ops *o
 }
 struct pci_bus *pci_create_bus(struct device *parent, int bus,
 			       struct pci_ops *ops, void *sysdata);
+=======
+struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops, void *sysdata);
+struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+				    struct pci_ops *ops, void *sysdata,
+				    struct list_head *resources);
+struct pci_bus * __devinit pci_scan_root_bus(struct device *parent, int bus,
+					     struct pci_ops *ops, void *sysdata,
+					     struct list_head *resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 struct pci_bus *pci_add_new_bus(struct pci_bus *parent, struct pci_dev *dev,
 				int busnr);
 void pcie_update_link_speed(struct pci_bus *bus, u16 link_status);
@@ -678,7 +759,12 @@ u8 pci_common_swizzle(struct pci_dev *dev, u8 *pinp);
 extern struct pci_dev *pci_dev_get(struct pci_dev *dev);
 extern void pci_dev_put(struct pci_dev *dev);
 extern void pci_remove_bus(struct pci_bus *b);
+<<<<<<< HEAD
 extern void pci_remove_bus_device(struct pci_dev *dev);
+=======
+extern void __pci_remove_bus_device(struct pci_dev *dev);
+extern void pci_stop_and_remove_bus_device(struct pci_dev *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void pci_stop_bus_device(struct pci_dev *dev);
 void pci_setup_cardbus(struct pci_bus *bus);
 extern void pci_sort_breadthfirst(void);
@@ -734,6 +820,7 @@ int pci_bus_write_config_dword(struct pci_bus *bus, unsigned int devfn,
 			       int where, u32 val);
 struct pci_ops *pci_bus_set_ops(struct pci_bus *bus, struct pci_ops *ops);
 
+<<<<<<< HEAD
 static inline int pci_read_config_byte(struct pci_dev *dev, int where, u8 *val)
 {
 	return pci_bus_read_config_byte(dev->bus, dev->devfn, where, val);
@@ -743,10 +830,22 @@ static inline int pci_read_config_word(struct pci_dev *dev, int where, u16 *val)
 	return pci_bus_read_config_word(dev->bus, dev->devfn, where, val);
 }
 static inline int pci_read_config_dword(struct pci_dev *dev, int where,
+=======
+static inline int pci_read_config_byte(const struct pci_dev *dev, int where, u8 *val)
+{
+	return pci_bus_read_config_byte(dev->bus, dev->devfn, where, val);
+}
+static inline int pci_read_config_word(const struct pci_dev *dev, int where, u16 *val)
+{
+	return pci_bus_read_config_word(dev->bus, dev->devfn, where, val);
+}
+static inline int pci_read_config_dword(const struct pci_dev *dev, int where,
+>>>>>>> refs/remotes/origin/cm-10.0
 					u32 *val)
 {
 	return pci_bus_read_config_dword(dev->bus, dev->devfn, where, val);
 }
+<<<<<<< HEAD
 static inline int pci_write_config_byte(struct pci_dev *dev, int where, u8 val)
 {
 	return pci_bus_write_config_byte(dev->bus, dev->devfn, where, val);
@@ -756,6 +855,17 @@ static inline int pci_write_config_word(struct pci_dev *dev, int where, u16 val)
 	return pci_bus_write_config_word(dev->bus, dev->devfn, where, val);
 }
 static inline int pci_write_config_dword(struct pci_dev *dev, int where,
+=======
+static inline int pci_write_config_byte(const struct pci_dev *dev, int where, u8 val)
+{
+	return pci_bus_write_config_byte(dev->bus, dev->devfn, where, val);
+}
+static inline int pci_write_config_word(const struct pci_dev *dev, int where, u16 val)
+{
+	return pci_bus_write_config_word(dev->bus, dev->devfn, where, val);
+}
+static inline int pci_write_config_dword(const struct pci_dev *dev, int where,
+>>>>>>> refs/remotes/origin/cm-10.0
 					 u32 val)
 {
 	return pci_bus_write_config_dword(dev->bus, dev->devfn, where, val);
@@ -779,8 +889,16 @@ static inline int pci_is_managed(struct pci_dev *pdev)
 }
 
 void pci_disable_device(struct pci_dev *dev);
+<<<<<<< HEAD
 void pci_set_master(struct pci_dev *dev);
 void pci_clear_master(struct pci_dev *dev);
+=======
+
+extern unsigned int pcibios_max_latency;
+void pci_set_master(struct pci_dev *dev);
+void pci_clear_master(struct pci_dev *dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int pci_set_pcie_reset_state(struct pci_dev *dev, enum pcie_reset_state state);
 int pci_set_cacheline_size(struct pci_dev *dev);
 #define HAVE_PCI_SET_MWI
@@ -788,6 +906,12 @@ int __must_check pci_set_mwi(struct pci_dev *dev);
 int pci_try_set_mwi(struct pci_dev *dev);
 void pci_clear_mwi(struct pci_dev *dev);
 void pci_intx(struct pci_dev *dev, int enable);
+<<<<<<< HEAD
+=======
+bool pci_intx_mask_supported(struct pci_dev *dev);
+bool pci_check_and_mask_intx(struct pci_dev *dev);
+bool pci_check_and_unmask_intx(struct pci_dev *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 void pci_msi_off(struct pci_dev *dev);
 int pci_set_dma_max_seg_size(struct pci_dev *dev, unsigned int size);
 int pci_set_dma_seg_boundary(struct pci_dev *dev, unsigned long mask);
@@ -796,7 +920,14 @@ int pcix_get_mmrbc(struct pci_dev *dev);
 int pcix_set_mmrbc(struct pci_dev *dev, int mmrbc);
 int pcie_get_readrq(struct pci_dev *dev);
 int pcie_set_readrq(struct pci_dev *dev, int rq);
+<<<<<<< HEAD
 int __pci_reset_function(struct pci_dev *dev);
+=======
+int pcie_get_mps(struct pci_dev *dev);
+int pcie_set_mps(struct pci_dev *dev, int mps);
+int __pci_reset_function(struct pci_dev *dev);
+int __pci_reset_function_locked(struct pci_dev *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 int pci_reset_function(struct pci_dev *dev);
 void pci_update_resource(struct pci_dev *dev, int resno);
 int __must_check pci_assign_resource(struct pci_dev *dev, int i);
@@ -844,8 +975,13 @@ void pci_enable_ido(struct pci_dev *dev, unsigned long type);
 void pci_disable_ido(struct pci_dev *dev, unsigned long type);
 
 enum pci_obff_signal_type {
+<<<<<<< HEAD
 	PCI_EXP_OBFF_SIGNAL_L0,
 	PCI_EXP_OBFF_SIGNAL_ALWAYS,
+=======
+	PCI_EXP_OBFF_SIGNAL_L0 = 0,
+	PCI_EXP_OBFF_SIGNAL_ALWAYS = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 int pci_enable_obff(struct pci_dev *dev, enum pci_obff_signal_type);
 void pci_disable_obff(struct pci_dev *dev);
@@ -862,6 +998,10 @@ void set_pcie_hotplug_bridge(struct pci_dev *pdev);
 /* Functions for PCI Hotplug drivers to use */
 int pci_bus_find_capability(struct pci_bus *bus, unsigned int devfn, int cap);
 #ifdef CONFIG_HOTPLUG
+<<<<<<< HEAD
+=======
+unsigned int pci_rescan_bus_bridge_resize(struct pci_dev *bridge);
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned int pci_rescan_bus(struct pci_bus *bus);
 #endif
 
@@ -871,16 +1011,26 @@ ssize_t pci_write_vpd(struct pci_dev *dev, loff_t pos, size_t count, const void 
 int pci_vpd_truncate(struct pci_dev *dev, size_t size);
 
 /* Helper functions for low-level code (drivers/pci/setup-[bus,res].c) */
+<<<<<<< HEAD
+=======
+resource_size_t pcibios_retrieve_fw_addr(struct pci_dev *dev, int idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 void pci_bus_assign_resources(const struct pci_bus *bus);
 void pci_bus_size_bridges(struct pci_bus *bus);
 int pci_claim_resource(struct pci_dev *, int);
 void pci_assign_unassigned_resources(void);
 void pci_assign_unassigned_bridge_resources(struct pci_dev *bridge);
 void pdev_enable_device(struct pci_dev *);
+<<<<<<< HEAD
 void pdev_sort_resources(struct pci_dev *, struct resource_list *);
 int pci_enable_resources(struct pci_dev *, int mask);
 void pci_fixup_irqs(u8 (*)(struct pci_dev *, u8 *),
 		    int (*)(struct pci_dev *, u8, u8));
+=======
+int pci_enable_resources(struct pci_dev *, int mask);
+void pci_fixup_irqs(u8 (*)(struct pci_dev *, u8 *),
+		    int (*)(const struct pci_dev *, u8, u8));
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HAVE_PCI_REQ_REGIONS	2
 int __must_check pci_request_regions(struct pci_dev *, const char *);
 int __must_check pci_request_regions_exclusive(struct pci_dev *, const char *);
@@ -893,6 +1043,13 @@ int pci_request_selected_regions_exclusive(struct pci_dev *, int, const char *);
 void pci_release_selected_regions(struct pci_dev *, int);
 
 /* drivers/pci/bus.c */
+<<<<<<< HEAD
+=======
+void pci_add_resource(struct list_head *resources, struct resource *res);
+void pci_add_resource_offset(struct list_head *resources, struct resource *res,
+			     resource_size_t offset);
+void pci_free_resource_list(struct list_head *resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 void pci_bus_add_resource(struct pci_bus *bus, struct resource *res, unsigned int flags);
 struct resource *pci_bus_resource_n(const struct pci_bus *bus, int n);
 void pci_bus_remove_resources(struct pci_bus *bus);
@@ -924,7 +1081,24 @@ int __must_check __pci_register_driver(struct pci_driver *, struct module *,
 	__pci_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
 
 void pci_unregister_driver(struct pci_driver *dev);
+<<<<<<< HEAD
 void pci_remove_behind_bridge(struct pci_dev *dev);
+=======
+
+/**
+ * module_pci_driver() - Helper macro for registering a PCI driver
+ * @__pci_driver: pci_driver struct
+ *
+ * Helper macro for PCI drivers which do not do anything special in module
+ * init/exit. This eliminates a lot of boilerplate. Each module may only
+ * use this macro once, and calling it replaces module_init() and module_exit()
+ */
+#define module_pci_driver(__pci_driver) \
+	module_driver(__pci_driver, pci_register_driver, \
+		       pci_unregister_driver)
+
+void pci_stop_and_remove_behind_bridge(struct pci_dev *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 struct pci_driver *pci_dev_driver(const struct pci_dev *dev);
 int pci_add_dynid(struct pci_driver *drv,
 		  unsigned int vendor, unsigned int device,
@@ -941,6 +1115,10 @@ void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
 int pci_cfg_space_size_ext(struct pci_dev *dev);
 int pci_cfg_space_size(struct pci_dev *dev);
 unsigned char pci_bus_max_busnr(struct pci_bus *bus);
+<<<<<<< HEAD
+=======
+void pci_setup_bridge(struct pci_bus *bus);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PCI_VGA_STATE_CHANGE_BRIDGE (1 << 0)
 #define PCI_VGA_STATE_CHANGE_DECODES (1 << 1)
@@ -1066,8 +1244,14 @@ int  ht_create_irq(struct pci_dev *dev, int idx);
 void ht_destroy_irq(unsigned int irq);
 #endif /* CONFIG_HT_IRQ */
 
+<<<<<<< HEAD
 extern void pci_block_user_cfg_access(struct pci_dev *dev);
 extern void pci_unblock_user_cfg_access(struct pci_dev *dev);
+=======
+extern void pci_cfg_access_lock(struct pci_dev *dev);
+extern bool pci_cfg_access_trylock(struct pci_dev *dev);
+extern void pci_cfg_access_unlock(struct pci_dev *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * PCI domain support.  Sometimes called PCI segment (eg by ACPI),
@@ -1264,10 +1448,20 @@ static inline void pci_release_regions(struct pci_dev *dev)
 
 #define pci_dma_burst_advice(pdev, strat, strategy_parameter) do { } while (0)
 
+<<<<<<< HEAD
 static inline void pci_block_user_cfg_access(struct pci_dev *dev)
 { }
 
 static inline void pci_unblock_user_cfg_access(struct pci_dev *dev)
+=======
+static inline void pci_block_cfg_access(struct pci_dev *dev)
+{ }
+
+static inline int pci_block_cfg_access_in_atomic(struct pci_dev *dev)
+{ return 0; }
+
+static inline void pci_unblock_cfg_access(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 { }
 
 static inline struct pci_bus *pci_find_next_bus(const struct pci_bus *from)
@@ -1355,7 +1549,14 @@ static inline void pci_resource_to_user(const struct pci_dev *dev, int bar,
  */
 
 struct pci_fixup {
+<<<<<<< HEAD
 	u16 vendor, device;	/* You can use PCI_ANY_ID here of course */
+=======
+	u16 vendor;		/* You can use PCI_ANY_ID here of course */
+	u16 device;		/* You can use PCI_ANY_ID here of course */
+	u32 class;		/* You can use PCI_ANY_ID here too */
+	unsigned int class_shift;	/* should be 0, 8, 16 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	void (*hook)(struct pci_dev *dev);
 };
 
@@ -1370,6 +1571,7 @@ enum pci_fixup_pass {
 };
 
 /* Anonymous variables would be nice... */
+<<<<<<< HEAD
 #define DECLARE_PCI_FIXUP_SECTION(section, name, vendor, device, hook)	\
 	static const struct pci_fixup __pci_fixup_##name __used		\
 	__attribute__((__section__(#section))) = { vendor, device, hook };
@@ -1394,6 +1596,70 @@ enum pci_fixup_pass {
 #define DECLARE_PCI_FIXUP_SUSPEND(vendor, device, hook)			\
 	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_suspend,			\
 			suspend##vendor##device##hook, vendor, device, hook)
+=======
+#define DECLARE_PCI_FIXUP_SECTION(section, name, vendor, device, class,	\
+				  class_shift, hook)			\
+	static const struct pci_fixup const __pci_fixup_##name __used	\
+	__attribute__((__section__(#section), aligned((sizeof(void *)))))    \
+		= { vendor, device, class, class_shift, hook };
+
+#define DECLARE_PCI_FIXUP_CLASS_EARLY(vendor, device, class,		\
+					 class_shift, hook)		\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_early,			\
+		vendor##device##hook, vendor, device, class, class_shift, hook)
+#define DECLARE_PCI_FIXUP_CLASS_HEADER(vendor, device, class,		\
+					 class_shift, hook)		\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_header,			\
+		vendor##device##hook, vendor, device, class, class_shift, hook)
+#define DECLARE_PCI_FIXUP_CLASS_FINAL(vendor, device, class,		\
+					 class_shift, hook)		\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_final,			\
+		vendor##device##hook, vendor, device, class, class_shift, hook)
+#define DECLARE_PCI_FIXUP_CLASS_ENABLE(vendor, device, class,		\
+					 class_shift, hook)		\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_enable,			\
+		vendor##device##hook, vendor, device, class, class_shift, hook)
+#define DECLARE_PCI_FIXUP_CLASS_RESUME(vendor, device, class,		\
+					 class_shift, hook)		\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_resume,			\
+		resume##vendor##device##hook, vendor, device, class,	\
+		class_shift, hook)
+#define DECLARE_PCI_FIXUP_CLASS_RESUME_EARLY(vendor, device, class,	\
+					 class_shift, hook)		\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_resume_early,		\
+		resume_early##vendor##device##hook, vendor, device,	\
+		class, class_shift, hook)
+#define DECLARE_PCI_FIXUP_CLASS_SUSPEND(vendor, device, class,		\
+					 class_shift, hook)		\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_suspend,			\
+		suspend##vendor##device##hook, vendor, device, class,	\
+		class_shift, hook)
+
+#define DECLARE_PCI_FIXUP_EARLY(vendor, device, hook)			\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_early,			\
+		vendor##device##hook, vendor, device, PCI_ANY_ID, 0, hook)
+#define DECLARE_PCI_FIXUP_HEADER(vendor, device, hook)			\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_header,			\
+		vendor##device##hook, vendor, device, PCI_ANY_ID, 0, hook)
+#define DECLARE_PCI_FIXUP_FINAL(vendor, device, hook)			\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_final,			\
+		vendor##device##hook, vendor, device, PCI_ANY_ID, 0, hook)
+#define DECLARE_PCI_FIXUP_ENABLE(vendor, device, hook)			\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_enable,			\
+		vendor##device##hook, vendor, device, PCI_ANY_ID, 0, hook)
+#define DECLARE_PCI_FIXUP_RESUME(vendor, device, hook)			\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_resume,			\
+		resume##vendor##device##hook, vendor, device,		\
+		PCI_ANY_ID, 0, hook)
+#define DECLARE_PCI_FIXUP_RESUME_EARLY(vendor, device, hook)		\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_resume_early,		\
+		resume_early##vendor##device##hook, vendor, device,	\
+		PCI_ANY_ID, 0, hook)
+#define DECLARE_PCI_FIXUP_SUSPEND(vendor, device, hook)			\
+	DECLARE_PCI_FIXUP_SECTION(.pci_fixup_suspend,			\
+		suspend##vendor##device##hook, vendor, device,		\
+		PCI_ANY_ID, 0, hook)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_PCI_QUIRKS
 void pci_fixup_device(enum pci_fixup_pass pass, struct pci_dev *dev);
@@ -1405,10 +1671,17 @@ static inline void pci_fixup_device(enum pci_fixup_pass pass,
 void __iomem *pcim_iomap(struct pci_dev *pdev, int bar, unsigned long maxlen);
 void pcim_iounmap(struct pci_dev *pdev, void __iomem *addr);
 void __iomem * const *pcim_iomap_table(struct pci_dev *pdev);
+<<<<<<< HEAD
 int pcim_iomap_regions(struct pci_dev *pdev, u16 mask, const char *name);
 int pcim_iomap_regions_request_all(struct pci_dev *pdev, u16 mask,
 				   const char *name);
 void pcim_iounmap_regions(struct pci_dev *pdev, u16 mask);
+=======
+int pcim_iomap_regions(struct pci_dev *pdev, int mask, const char *name);
+int pcim_iomap_regions_request_all(struct pci_dev *pdev, int mask,
+				   const char *name);
+void pcim_iounmap_regions(struct pci_dev *pdev, int mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int pci_pci_problems;
 #define PCIPCI_FAIL		1	/* No PCI PCI DMA */
@@ -1427,8 +1700,15 @@ extern u8 pci_cache_line_size;
 extern unsigned long pci_hotplug_io_size;
 extern unsigned long pci_hotplug_mem_size;
 
+<<<<<<< HEAD
 int pcibios_add_platform_entries(struct pci_dev *dev);
 void pcibios_disable_device(struct pci_dev *dev);
+=======
+/* Architecture specific versions may override these (weak) */
+int pcibios_add_platform_entries(struct pci_dev *dev);
+void pcibios_disable_device(struct pci_dev *dev);
+void pcibios_set_master(struct pci_dev *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 int pcibios_set_pcie_reset_state(struct pci_dev *dev,
 				 enum pcie_reset_state state);
 
@@ -1590,5 +1870,54 @@ int pci_vpd_find_tag(const u8 *buf, unsigned int off, unsigned int len, u8 rdt);
 int pci_vpd_find_info_keyword(const u8 *buf, unsigned int off,
 			      unsigned int len, const char *kw);
 
+<<<<<<< HEAD
+=======
+/* PCI <-> OF binding helpers */
+#ifdef CONFIG_OF
+struct device_node;
+extern void pci_set_of_node(struct pci_dev *dev);
+extern void pci_release_of_node(struct pci_dev *dev);
+extern void pci_set_bus_of_node(struct pci_bus *bus);
+extern void pci_release_bus_of_node(struct pci_bus *bus);
+
+/* Arch may override this (weak) */
+extern struct device_node * __weak pcibios_get_phb_of_node(struct pci_bus *bus);
+
+static inline struct device_node *pci_device_to_OF_node(struct pci_dev *pdev)
+{
+	return pdev ? pdev->dev.of_node : NULL;
+}
+
+static inline struct device_node *pci_bus_to_OF_node(struct pci_bus *bus)
+{
+	return bus ? bus->dev.of_node : NULL;
+}
+
+#else /* CONFIG_OF */
+static inline void pci_set_of_node(struct pci_dev *dev) { }
+static inline void pci_release_of_node(struct pci_dev *dev) { }
+static inline void pci_set_bus_of_node(struct pci_bus *bus) { }
+static inline void pci_release_bus_of_node(struct pci_bus *bus) { }
+#endif  /* CONFIG_OF */
+
+#ifdef CONFIG_EEH
+static inline struct eeh_dev *pci_dev_to_eeh_dev(struct pci_dev *pdev)
+{
+	return pdev->dev.archdata.edev;
+}
+#endif
+
+/**
+ * pci_find_upstream_pcie_bridge - find upstream PCIe-to-PCI bridge of a device
+ * @pdev: the PCI device
+ *
+ * if the device is PCIE, return NULL
+ * if the device isn't connected to a PCIe bridge (that is its parent is a
+ * legacy PCI bridge and the bridge is directly connected to bus 0), return its
+ * parent
+ */
+struct pci_dev *pci_find_upstream_pcie_bridge(struct pci_dev *pdev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KERNEL__ */
 #endif /* LINUX_PCI_H */

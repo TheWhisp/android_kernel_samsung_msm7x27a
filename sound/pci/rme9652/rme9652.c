@@ -24,7 +24,11 @@
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/core.h>
 #include <sound/control.h>
@@ -38,8 +42,13 @@
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
 static int precise_ptr[SNDRV_CARDS];			/* Enable precise pointer */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+static bool precise_ptr[SNDRV_CARDS];			/* Enable precise pointer */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for RME Digi9652 (Hammerfall) soundcard.");
@@ -2479,7 +2488,11 @@ static int __devinit snd_rme9652_create(struct snd_card *card,
 	}
 	
 	if (request_irq(pci->irq, snd_rme9652_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
 			"rme9652", rme9652)) {
+=======
+			KBUILD_MODNAME, rme9652)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_printk(KERN_ERR "unable to request IRQ %d\n", pci->irq);
 		return -EBUSY;
 	}
@@ -2632,7 +2645,11 @@ static void __devexit snd_rme9652_remove(struct pci_dev *pci)
 }
 
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name	  = "RME Digi9652 (Hammerfall)",
+=======
+	.name	  = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_rme9652_ids,
 	.probe	  = snd_rme9652_probe,
 	.remove	  = __devexit_p(snd_rme9652_remove),

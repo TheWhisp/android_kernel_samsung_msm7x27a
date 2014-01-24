@@ -28,7 +28,11 @@
 #include <linux/init.h>
 #include <linux/prctl.h>
 #include <linux/init_task.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kallsyms.h>
 #include <linux/mqueue.h>
 #include <linux/hardirq.h>
@@ -41,14 +45,24 @@
 
 #include <asm/pgtable.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/processor.h>
 #include <asm/mmu.h>
 #include <asm/prom.h>
 #include <asm/machdep.h>
 #include <asm/time.h>
+<<<<<<< HEAD
 #include <asm/syscalls.h>
+=======
+#include <asm/runlatch.h>
+#include <asm/syscalls.h>
+#include <asm/switch_to.h>
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PPC64
 #include <asm/firmware.h>
 #endif
@@ -96,6 +110,10 @@ void flush_fp_to_thread(struct task_struct *tsk)
 		preempt_enable();
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(flush_fp_to_thread);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void enable_kernel_fp(void)
 {
@@ -145,6 +163,10 @@ void flush_altivec_to_thread(struct task_struct *tsk)
 		preempt_enable();
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(flush_altivec_to_thread);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_ALTIVEC */
 
 #ifdef CONFIG_VSX
@@ -186,6 +208,10 @@ void flush_vsx_to_thread(struct task_struct *tsk)
 		preempt_enable();
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(flush_vsx_to_thread);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_VSX */
 
 #ifdef CONFIG_SPE
@@ -213,6 +239,10 @@ void flush_spe_to_thread(struct task_struct *tsk)
 #ifdef CONFIG_SMP
 			BUG_ON(tsk != current);
 #endif
+<<<<<<< HEAD
+=======
+			tsk->thread.spefscr = mfspr(SPRN_SPEFSCR);
+>>>>>>> refs/remotes/origin/cm-10.0
 			giveup_spe(tsk);
 		}
 		preempt_enable();
@@ -482,6 +512,7 @@ struct task_struct *__switch_to(struct task_struct *prev,
 	new_thread = &new->thread;
 	old_thread = &current->thread;
 
+<<<<<<< HEAD
 #if defined(CONFIG_PPC_BOOK3E_64)
 	/* XXX Current Book3E code doesn't deal with kernel side DBCR0,
 	 * we always hold the user values, so we set it now.
@@ -504,6 +535,8 @@ struct task_struct *__switch_to(struct task_struct *prev,
 	}
 #endif /* CONFIG_PPC64_BOOK3E */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PPC64
 	/*
 	 * Collect processor utilization data per process
@@ -584,12 +617,21 @@ static void show_instructions(struct pt_regs *regs)
 		 */
 		if (!__kernel_text_address(pc) ||
 		     __get_user(instr, (unsigned int __user *)pc)) {
+<<<<<<< HEAD
 			printk("XXXXXXXX ");
 		} else {
 			if (regs->nip == pc)
 				printk("<%08x> ", instr);
 			else
 				printk("%08x ", instr);
+=======
+			printk(KERN_CONT "XXXXXXXX ");
+		} else {
+			if (regs->nip == pc)
+				printk(KERN_CONT "<%08x> ", instr);
+			else
+				printk(KERN_CONT "%08x ", instr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		pc += sizeof(int);
@@ -602,6 +644,7 @@ static struct regbit {
 	unsigned long bit;
 	const char *name;
 } msr_bits[] = {
+<<<<<<< HEAD
 	{MSR_EE,	"EE"},
 	{MSR_PR,	"PR"},
 	{MSR_FP,	"FP"},
@@ -612,6 +655,34 @@ static struct regbit {
 	{MSR_DE,	"DE"},
 	{MSR_IR,	"IR"},
 	{MSR_DR,	"DR"},
+=======
+#if defined(CONFIG_PPC64) && !defined(CONFIG_BOOKE)
+	{MSR_SF,	"SF"},
+	{MSR_HV,	"HV"},
+#endif
+	{MSR_VEC,	"VEC"},
+	{MSR_VSX,	"VSX"},
+#ifdef CONFIG_BOOKE
+	{MSR_CE,	"CE"},
+#endif
+	{MSR_EE,	"EE"},
+	{MSR_PR,	"PR"},
+	{MSR_FP,	"FP"},
+	{MSR_ME,	"ME"},
+#ifdef CONFIG_BOOKE
+	{MSR_DE,	"DE"},
+#else
+	{MSR_SE,	"SE"},
+	{MSR_BE,	"BE"},
+#endif
+	{MSR_IR,	"IR"},
+	{MSR_DR,	"DR"},
+	{MSR_PMM,	"PMM"},
+#ifndef CONFIG_BOOKE
+	{MSR_RI,	"RI"},
+	{MSR_LE,	"LE"},
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	{0,		NULL}
 };
 
@@ -649,9 +720,20 @@ void show_regs(struct pt_regs * regs)
 	printk("MSR: "REG" ", regs->msr);
 	printbits(regs->msr, msr_bits);
 	printk("  CR: %08lx  XER: %08lx\n", regs->ccr, regs->xer);
+<<<<<<< HEAD
 	trap = TRAP(regs);
 	if (trap == 0x300 || trap == 0x600)
 #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+=======
+#ifdef CONFIG_PPC64
+	printk("SOFTE: %ld\n", regs->softe);
+#endif
+	trap = TRAP(regs);
+	if ((regs->trap != 0xc00) && cpu_has_feature(CPU_FTR_CFAR))
+		printk("CFAR: "REG"\n", regs->orig_gpr3);
+	if (trap == 0x300 || trap == 0x600)
+#if defined(CONFIG_4xx) || defined(CONFIG_BOOKE)
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk("DEAR: "REG", ESR: "REG"\n", regs->dar, regs->dsisr);
 #else
 		printk("DAR: "REG", DSISR: %08lx\n", regs->dar, regs->dsisr);
@@ -823,8 +905,11 @@ void start_thread(struct pt_regs *regs, unsigned long start, unsigned long sp)
 	unsigned long load_addr = regs->gpr[2];	/* saved by ELF_PLAT_INIT */
 #endif
 
+<<<<<<< HEAD
 	set_fs(USER_DS);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * If we exec out of a kernel thread then thread.regs will not be
 	 * set.  Do it now.
@@ -1214,6 +1299,7 @@ void dump_stack(void)
 EXPORT_SYMBOL(dump_stack);
 
 #ifdef CONFIG_PPC64
+<<<<<<< HEAD
 void ppc64_runlatch_on(void)
 {
 	unsigned long ctrl;
@@ -1236,12 +1322,38 @@ void __ppc64_runlatch_off(void)
 	HMT_medium();
 
 	clear_thread_flag(TIF_RUNLATCH);
+=======
+/* Called with hard IRQs off */
+void notrace __ppc64_runlatch_on(void)
+{
+	struct thread_info *ti = current_thread_info();
+	unsigned long ctrl;
+
+	ctrl = mfspr(SPRN_CTRLF);
+	ctrl |= CTRL_RUNLATCH;
+	mtspr(SPRN_CTRLT, ctrl);
+
+	ti->local_flags |= _TLF_RUNLATCH;
+}
+
+/* Called with hard IRQs off */
+void notrace __ppc64_runlatch_off(void)
+{
+	struct thread_info *ti = current_thread_info();
+	unsigned long ctrl;
+
+	ti->local_flags &= ~_TLF_RUNLATCH;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ctrl = mfspr(SPRN_CTRLF);
 	ctrl &= ~CTRL_RUNLATCH;
 	mtspr(SPRN_CTRLT, ctrl);
 }
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_PPC64 */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if THREAD_SHIFT < PAGE_SHIFT
 

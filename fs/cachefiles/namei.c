@@ -646,7 +646,12 @@ lookup_again:
 		 * (this is used to keep track of culling, and atimes are only
 		 * updated by read, write and readdir but not lookup or
 		 * open) */
+<<<<<<< HEAD
 		touch_atime(cache->mnt, next);
+=======
+		path.dentry = next;
+		touch_atime(&path);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* open a file interface onto a data file */

@@ -227,9 +227,15 @@ static void nilfs_segbuf_fill_in_data_crc(struct nilfs_segment_buffer *segbuf,
 		crc = crc32_le(crc, bh->b_data, bh->b_size);
 	}
 	list_for_each_entry(bh, &segbuf->sb_payload_buffers, b_assoc_buffers) {
+<<<<<<< HEAD
 		kaddr = kmap_atomic(bh->b_page, KM_USER0);
 		crc = crc32_le(crc, kaddr + bh_offset(bh), bh->b_size);
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kaddr = kmap_atomic(bh->b_page);
+		crc = crc32_le(crc, kaddr + bh_offset(bh), bh->b_size);
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	raw_sum->ss_datasum = cpu_to_le32(crc);
 }

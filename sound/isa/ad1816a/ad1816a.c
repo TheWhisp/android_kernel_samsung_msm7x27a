@@ -22,7 +22,11 @@
 #include <linux/time.h>
 #include <linux/wait.h>
 #include <linux/pnp.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/ad1816a.h>
@@ -44,7 +48,11 @@ MODULE_SUPPORTED_DEVICE("{{Highscreen,Sound-Boostar 16 3D},"
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 1-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP;	/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP;	/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
 static long mpu_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
 static long fm_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
@@ -204,7 +212,11 @@ static int __devinit snd_card_ad1816a_probe(int dev, struct pnp_card_link *pcard
 
 	if (mpu_port[dev] > 0) {
 		if (snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
+<<<<<<< HEAD
 					mpu_port[dev], 0, mpu_irq[dev], IRQF_DISABLED,
+=======
+					mpu_port[dev], 0, mpu_irq[dev],
+>>>>>>> refs/remotes/origin/cm-10.0
 					NULL) < 0)
 			printk(KERN_ERR PFX "no MPU-401 device at 0x%lx.\n", mpu_port[dev]);
 	}

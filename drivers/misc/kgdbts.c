@@ -102,6 +102,10 @@
 #include <linux/nmi.h>
 #include <linux/delay.h>
 #include <linux/kthread.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define v1printk(a...) do { \
 	if (verbose) \

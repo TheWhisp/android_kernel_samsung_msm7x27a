@@ -12,6 +12,10 @@
 #ifndef _CTC_MPC_H_
 #define _CTC_MPC_H_
 
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/skbuff.h>
 #include "fsm.h"
 

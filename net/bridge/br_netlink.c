@@ -18,6 +18,10 @@
 #include <net/sock.h>
 
 #include "br_private.h"
+<<<<<<< HEAD
+=======
+#include "br_private_stp.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline size_t br_nlmsg_size(void)
 {
@@ -188,6 +192,16 @@ static int br_rtm_setlink(struct sk_buff *skb,  struct nlmsghdr *nlh, void *arg)
 
 	p->state = new_state;
 	br_log_state(p);
+<<<<<<< HEAD
+=======
+
+	spin_lock_bh(&p->br->lock);
+	br_port_state_selection(p->br);
+	spin_unlock_bh(&p->br->lock);
+
+	br_ifinfo_notify(RTM_NEWLINK, p);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

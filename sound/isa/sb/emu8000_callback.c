@@ -20,6 +20,10 @@
  */
 
 #include "emu8000_local.h"
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/asoundef.h>
 
 /*

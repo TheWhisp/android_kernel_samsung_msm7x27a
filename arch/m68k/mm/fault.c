@@ -13,7 +13,10 @@
 
 #include <asm/setup.h>
 #include <asm/traps.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/pgalloc.h>
 

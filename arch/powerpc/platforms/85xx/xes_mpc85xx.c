@@ -21,7 +21,10 @@
 #include <linux/interrupt.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -32,6 +35,12 @@
 
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
+<<<<<<< HEAD
+=======
+#include "smp.h"
+
+#include "mpc85xx.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* A few bit definitions needed for fixups on some boards */
 #define MPC85xx_L2CTL_L2E		0x80000000 /* L2 enable */
@@ -40,6 +49,7 @@
 
 void __init xes_mpc85xx_pic_init(void)
 {
+<<<<<<< HEAD
 	struct mpic *mpic;
 	struct resource r;
 	struct device_node *np;
@@ -63,6 +73,11 @@ void __init xes_mpc85xx_pic_init(void)
 	BUG_ON(mpic == NULL);
 	of_node_put(np);
 
+=======
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mpic_init(mpic);
 }
 
@@ -123,7 +138,11 @@ static void xes_mpc85xx_fixups(void)
 			continue;
 		}
 
+<<<<<<< HEAD
 		l2_base = ioremap(r[0].start, r[0].end - r[0].start + 1);
+=======
+		l2_base = ioremap(r[0].start, resource_size(&r[0]));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		xes_mpc85xx_configure_l2(l2_base);
 	}
@@ -136,9 +155,12 @@ static int primary_phb_addr;
 /*
  * Setup the architecture
  */
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 extern void __init mpc85xx_smp_init(void);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init xes_mpc85xx_setup_arch(void)
 {
 #ifdef CONFIG_PCI
@@ -172,6 +194,7 @@ static void __init xes_mpc85xx_setup_arch(void)
 	}
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	mpc85xx_smp_init();
 #endif
@@ -192,6 +215,14 @@ static int __init xes_mpc85xx_publish_devices(void)
 machine_device_initcall(xes_mpc8572, xes_mpc85xx_publish_devices);
 machine_device_initcall(xes_mpc8548, xes_mpc85xx_publish_devices);
 machine_device_initcall(xes_mpc8540, xes_mpc85xx_publish_devices);
+=======
+	mpc85xx_smp_init();
+}
+
+machine_device_initcall(xes_mpc8572, mpc85xx_common_publish_devices);
+machine_device_initcall(xes_mpc8548, mpc85xx_common_publish_devices);
+machine_device_initcall(xes_mpc8540, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Called very early, device-tree isn't unflattened

@@ -12,11 +12,19 @@
  * License.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/mm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/vmalloc.h>
 
 #include "include/audit.h"
+<<<<<<< HEAD
+=======
+#include "include/apparmor.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /**
@@ -63,8 +71,15 @@ void aa_info_message(const char *str)
 {
 	if (audit_enabled) {
 		struct common_audit_data sa;
+<<<<<<< HEAD
 		COMMON_AUDIT_DATA_INIT(&sa, NONE);
 		sa.aad.info = str;
+=======
+		struct apparmor_audit_data aad = {0,};
+		COMMON_AUDIT_DATA_INIT(&sa, NONE);
+		sa.aad = &aad;
+		aad.info = str;
+>>>>>>> refs/remotes/origin/cm-10.0
 		aa_audit_msg(AUDIT_APPARMOR_STATUS, &sa, NULL);
 	}
 	printk(KERN_INFO "AppArmor: %s\n", str);

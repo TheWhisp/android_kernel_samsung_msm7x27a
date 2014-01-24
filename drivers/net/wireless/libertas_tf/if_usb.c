@@ -15,7 +15,11 @@
 #include "if_usb.h"
 
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/firmware.h>
 #include <linux/netdevice.h>
 #include <linux/slab.h>
@@ -153,10 +157,15 @@ static int if_usb_probe(struct usb_interface *intf,
 	udev = interface_to_usbdev(intf);
 
 	cardp = kzalloc(sizeof(struct if_usb_card), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!cardp) {
 		pr_err("Out of memory allocating private data.\n");
 		goto error;
 	}
+=======
+	if (!cardp)
+		goto error;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	setup_timer(&cardp->fw_timeout, if_usb_fw_timeo, (unsigned long)cardp);
 	init_waitqueue_head(&cardp->fw_wq);
@@ -924,6 +933,7 @@ static struct usb_driver if_usb_driver = {
 	.resume = if_usb_resume,
 };
 
+<<<<<<< HEAD
 static int __init if_usb_init_module(void)
 {
 	int ret = 0;
@@ -945,6 +955,9 @@ static void __exit if_usb_exit_module(void)
 
 module_init(if_usb_init_module);
 module_exit(if_usb_exit_module);
+=======
+module_usb_driver(if_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("8388 USB WLAN Thinfirm Driver");
 MODULE_AUTHOR("Cozybit Inc.");

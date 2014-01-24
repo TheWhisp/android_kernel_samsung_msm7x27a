@@ -24,6 +24,7 @@
 #include <linux/rbtree.h>
 #include <linux/ion.h>
 #include <linux/iommu.h>
+<<<<<<< HEAD
 
 struct ion_mapping;
 
@@ -36,6 +37,9 @@ struct ion_kernel_mapping {
 	struct kref ref;
 	void *vaddr;
 };
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum {
 	DI_PARTITION_NUM = 0,
@@ -91,7 +95,11 @@ struct ion_buffer *ion_handle_buffer(struct ion_handle *handle);
  * @kmap_cnt:		number of times the buffer is mapped to the kernel
  * @vaddr:		the kenrel mapping if kmap_cnt is not zero
  * @dmap_cnt:		number of times the buffer is mapped for dma
+<<<<<<< HEAD
  * @sglist:		the scatterlist for the buffer is dmap_cnt is not zero
+=======
+ * @sg_table:		the sg table for the buffer if dmap_cnt is not zero
+>>>>>>> refs/remotes/origin/cm-10.0
 */
 struct ion_buffer {
 	struct kref ref;
@@ -108,7 +116,11 @@ struct ion_buffer {
 	int kmap_cnt;
 	void *vaddr;
 	int dmap_cnt;
+<<<<<<< HEAD
 	struct scatterlist *sglist;
+=======
+	struct sg_table *sg_table;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int umap_cnt;
 	unsigned int iommu_map_cnt;
 	struct rb_root iommu_maps;
@@ -135,6 +147,7 @@ struct ion_heap_ops {
 	void (*free) (struct ion_buffer *buffer);
 	int (*phys) (struct ion_heap *heap, struct ion_buffer *buffer,
 		     ion_phys_addr_t *addr, size_t *len);
+<<<<<<< HEAD
 	struct scatterlist *(*map_dma) (struct ion_heap *heap,
 					struct ion_buffer *buffer);
 	void (*unmap_dma) (struct ion_heap *heap, struct ion_buffer *buffer);
@@ -143,6 +156,15 @@ struct ion_heap_ops {
 	void (*unmap_kernel) (struct ion_heap *heap, struct ion_buffer *buffer);
 	int (*map_user) (struct ion_heap *mapper, struct ion_buffer *buffer,
 			 struct vm_area_struct *vma, unsigned long flags);
+=======
+	struct sg_table *(*map_dma) (struct ion_heap *heap,
+					struct ion_buffer *buffer);
+	void (*unmap_dma) (struct ion_heap *heap, struct ion_buffer *buffer);
+	void * (*map_kernel) (struct ion_heap *heap, struct ion_buffer *buffer);
+	void (*unmap_kernel) (struct ion_heap *heap, struct ion_buffer *buffer);
+	int (*map_user) (struct ion_heap *mapper, struct ion_buffer *buffer,
+			 struct vm_area_struct *vma);
+>>>>>>> refs/remotes/origin/cm-10.0
 	void (*unmap_user) (struct ion_heap *mapper, struct ion_buffer *buffer);
 	int (*cache_op)(struct ion_heap *heap, struct ion_buffer *buffer,
 			void *vaddr, unsigned int offset,
@@ -155,9 +177,16 @@ struct ion_heap_ops {
 				unsigned long iova_length,
 				unsigned long flags);
 	void (*unmap_iommu)(struct ion_iommu_map *data);
+<<<<<<< HEAD
 	int (*print_debug)(struct ion_heap *heap, struct seq_file *s);
 	int (*secure_heap)(struct ion_heap *heap);
 	int (*unsecure_heap)(struct ion_heap *heap);
+=======
+	int (*print_debug)(struct ion_heap *heap, struct seq_file *s,
+			   const struct rb_root *mem_map);
+	int (*secure_heap)(struct ion_heap *heap, int version, void *data);
+	int (*unsecure_heap)(struct ion_heap *heap, int version, void *data);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -170,6 +199,10 @@ struct ion_heap_ops {
  *			allocating.  These are specified by platform data and
  *			MUST be unique
  * @name:		used for debugging
+<<<<<<< HEAD
+=======
+ * @priv:		private heap data
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Represents a pool of memory from which buffers can be made.  In some
  * systems the only heap is regular system memory allocated via vmalloc.
@@ -183,9 +216,31 @@ struct ion_heap {
 	struct ion_heap_ops *ops;
 	int id;
 	const char *name;
+<<<<<<< HEAD
 };
 
 
+=======
+	void *priv;
+};
+
+/**
+ * struct mem_map_data - represents information about the memory map for a heap
+ * @node:		rb node used to store in the tree of mem_map_data
+ * @addr:		start address of memory region.
+ * @addr:		end address of memory region.
+ * @size:		size of memory region
+ * @client_name:		name of the client who owns this buffer.
+ *
+ */
+struct mem_map_data {
+	struct rb_node node;
+	unsigned long addr;
+	unsigned long addr_end;
+	unsigned long size;
+	const char *client_name;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define iommu_map_domain(__m)		((__m)->domain_info[1])
 #define iommu_map_partition(__m)	((__m)->domain_info[0])
@@ -250,6 +305,13 @@ ion_phys_addr_t ion_carveout_allocate(struct ion_heap *heap, unsigned long size,
 void ion_carveout_free(struct ion_heap *heap, ion_phys_addr_t addr,
 		       unsigned long size);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+struct ion_heap *ion_cma_heap_create(struct ion_platform_heap *);
+void ion_cma_heap_destroy(struct ion_heap *);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct ion_heap *msm_get_contiguous_heap(void);
 /**
@@ -298,4 +360,12 @@ int ion_do_cache_op(struct ion_client *client, struct ion_handle *handle,
 			void *uaddr, unsigned long offset, unsigned long len,
 			unsigned int cmd);
 
+<<<<<<< HEAD
+=======
+void ion_cp_heap_get_base(struct ion_heap *heap, unsigned long *base,
+			unsigned long *size);
+
+void ion_mem_map_show(struct ion_heap *heap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ION_PRIV_H */

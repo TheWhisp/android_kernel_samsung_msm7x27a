@@ -24,6 +24,7 @@
 #include "yenta_socket.h"
 #include "i82365.h"
 
+<<<<<<< HEAD
 static int disable_clkrun;
 module_param(disable_clkrun, bool, 0444);
 MODULE_PARM_DESC(disable_clkrun, "If PC card doesn't function properly, please try this option");
@@ -33,6 +34,17 @@ module_param(isa_probe, bool, 0444);
 MODULE_PARM_DESC(isa_probe, "If set ISA interrupts are probed (default). Set to N to disable probing");
 
 static int pwr_irqs_off;
+=======
+static bool disable_clkrun;
+module_param(disable_clkrun, bool, 0444);
+MODULE_PARM_DESC(disable_clkrun, "If PC card doesn't function properly, please try this option");
+
+static bool isa_probe = 1;
+module_param(isa_probe, bool, 0444);
+MODULE_PARM_DESC(isa_probe, "If set ISA interrupts are probed (default). Set to N to disable probing");
+
+static bool pwr_irqs_off;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(pwr_irqs_off, bool, 0644);
 MODULE_PARM_DESC(pwr_irqs_off, "Force IRQs off during power-on of slot. Use only when seeing IRQ storms!");
 
@@ -1352,7 +1364,11 @@ static const struct dev_pm_ops yenta_pm_ops = {
 		.driver_data	= CARDBUS_TYPE_##type,	\
 	}
 
+<<<<<<< HEAD
 static struct pci_device_id yenta_table[] = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(yenta_table) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	CB_ID(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_1031, TI),
 
 	/*

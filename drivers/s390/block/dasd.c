@@ -11,17 +11,29 @@
 #define KMSG_COMPONENT "dasd"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
+<<<<<<< HEAD
 #include <linux/kernel_stat.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kmod.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/ctype.h>
 #include <linux/major.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
 #include <linux/hdreg.h>
 #include <linux/async.h>
 #include <linux/mutex.h>
+=======
+#include <linux/hdreg.h>
+#include <linux/async.h>
+#include <linux/mutex.h>
+#include <linux/debugfs.h>
+#include <linux/seq_file.h>
+#include <linux/vmalloc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/ccwdev.h>
 #include <asm/ebcdic.h>
@@ -45,6 +57,10 @@
  * SECTION: exported variables of dasd.c
  */
 debug_info_t *dasd_debug_area;
+<<<<<<< HEAD
+=======
+static struct dentry *dasd_debugfs_root_entry;
+>>>>>>> refs/remotes/origin/cm-10.0
 struct dasd_discipline *dasd_diag_discipline_pointer;
 void dasd_int_handler(struct ccw_device *, unsigned long, struct irb *);
 
@@ -71,6 +87,11 @@ static void dasd_return_cqr_cb(struct dasd_ccw_req *, void *);
 static void dasd_device_timeout(unsigned long);
 static void dasd_block_timeout(unsigned long);
 static void __dasd_process_erp(struct dasd_device *, struct dasd_ccw_req *);
+<<<<<<< HEAD
+=======
+static void dasd_profile_init(struct dasd_profile *, struct dentry *);
+static void dasd_profile_exit(struct dasd_profile *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * SECTION: Operations on the device structure.
@@ -121,7 +142,11 @@ struct dasd_device *dasd_alloc_device(void)
 	device->state = DASD_STATE_NEW;
 	device->target = DASD_STATE_NEW;
 	mutex_init(&device->state_mutex);
+<<<<<<< HEAD
 
+=======
+	spin_lock_init(&device->profile.lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return device;
 }
 
@@ -159,6 +184,10 @@ struct dasd_block *dasd_alloc_block(void)
 	init_timer(&block->timer);
 	block->timer.function = dasd_block_timeout;
 	block->timer.data = (unsigned long) block;
+<<<<<<< HEAD
+=======
+	spin_lock_init(&block->profile.lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return block;
 }
@@ -222,11 +251,28 @@ static int dasd_state_known_to_new(struct dasd_device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static struct dentry *dasd_debugfs_setup(const char *name,
+					 struct dentry *base_dentry)
+{
+	struct dentry *pde;
+
+	if (!base_dentry)
+		return NULL;
+	pde = debugfs_create_dir(name, base_dentry);
+	if (!pde || IS_ERR(pde))
+		return NULL;
+	return pde;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Request the irq line for the device.
  */
 static int dasd_state_known_to_basic(struct dasd_device *device)
 {
+<<<<<<< HEAD
 	int rc;
 
 	/* Allocate and register gendisk structure. */
@@ -235,6 +281,28 @@ static int dasd_state_known_to_basic(struct dasd_device *device)
 		if (rc)
 			return rc;
 	}
+=======
+	struct dasd_block *block = device->block;
+	int rc;
+
+	/* Allocate and register gendisk structure. */
+	if (block) {
+		rc = dasd_gendisk_alloc(block);
+		if (rc)
+			return rc;
+		block->debugfs_dentry =
+			dasd_debugfs_setup(block->gdp->disk_name,
+					   dasd_debugfs_root_entry);
+		dasd_profile_init(&block->profile, block->debugfs_dentry);
+		if (dasd_global_profile_level == DASD_PROFILE_ON)
+			dasd_profile_on(&device->block->profile);
+	}
+	device->debugfs_dentry =
+		dasd_debugfs_setup(dev_name(&device->cdev->dev),
+				   dasd_debugfs_root_entry);
+	dasd_profile_init(&device->profile, device->debugfs_dentry);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* register 'device' debug area, used for all DBF_DEV_XXX calls */
 	device->debug_area = debug_register(dev_name(&device->cdev->dev), 4, 1,
 					    8 * sizeof(long));
@@ -253,6 +321,12 @@ static int dasd_state_basic_to_known(struct dasd_device *device)
 {
 	int rc;
 	if (device->block) {
+<<<<<<< HEAD
+=======
+		dasd_profile_exit(&device->block->profile);
+		if (device->block->debugfs_dentry)
+			debugfs_remove(device->block->debugfs_dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
 		dasd_gendisk_free(device->block);
 		dasd_block_clear_timer(device->block);
 	}
@@ -260,6 +334,12 @@ static int dasd_state_basic_to_known(struct dasd_device *device)
 	if (rc)
 		return rc;
 	dasd_device_clear_timer(device);
+<<<<<<< HEAD
+=======
+	dasd_profile_exit(&device->profile);
+	if (device->debugfs_dentry)
+		debugfs_remove(device->debugfs_dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	DBF_DEV_EVENT(DBF_EMERG, device, "%p debug area deleted", device);
 	if (device->debug_area != NULL) {
@@ -604,11 +684,19 @@ void dasd_enable_device(struct dasd_device *device)
 		dasd_set_target_state(device, DASD_STATE_NEW);
 	/* Now wait for the devices to come up. */
 	wait_event(dasd_init_waitq, _wait_for_device(device));
+<<<<<<< HEAD
+=======
+
+	dasd_reload_device(device);
+	if (device->discipline->kick_validate)
+		device->discipline->kick_validate(device);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
  * SECTION: device operation (interrupt handler, start i/o, term i/o ...)
  */
+<<<<<<< HEAD
 #ifdef CONFIG_DASD_PROFILE
 
 struct dasd_profile_info_t dasd_global_profile;
@@ -624,6 +712,15 @@ unsigned int dasd_profile_level = DASD_PROFILE_OFF;
 	dasd_global_profile.counter[index]++; \
 	block->profile.counter[index]++; \
 }
+=======
+
+unsigned int dasd_global_profile_level = DASD_PROFILE_OFF;
+
+#ifdef CONFIG_DASD_PROFILE
+struct dasd_profile_info dasd_global_profile_data;
+static struct dentry *dasd_global_profile_dentry;
+static struct dentry *dasd_debugfs_global_entry;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Add profiling information for cqr before execution.
@@ -634,6 +731,7 @@ static void dasd_profile_start(struct dasd_block *block,
 {
 	struct list_head *l;
 	unsigned int counter;
+<<<<<<< HEAD
 
 	if (dasd_profile_level != DASD_PROFILE_ON)
 		return;
@@ -645,19 +743,131 @@ static void dasd_profile_start(struct dasd_block *block,
 			break;
 	dasd_global_profile.dasd_io_nr_req[counter]++;
 	block->profile.dasd_io_nr_req[counter]++;
+=======
+	struct dasd_device *device;
+
+	/* count the length of the chanq for statistics */
+	counter = 0;
+	if (dasd_global_profile_level || block->profile.data)
+		list_for_each(l, &block->ccw_queue)
+			if (++counter >= 31)
+				break;
+
+	if (dasd_global_profile_level) {
+		dasd_global_profile_data.dasd_io_nr_req[counter]++;
+		if (rq_data_dir(req) == READ)
+			dasd_global_profile_data.dasd_read_nr_req[counter]++;
+	}
+
+	spin_lock(&block->profile.lock);
+	if (block->profile.data)
+		block->profile.data->dasd_io_nr_req[counter]++;
+		if (rq_data_dir(req) == READ)
+			block->profile.data->dasd_read_nr_req[counter]++;
+	spin_unlock(&block->profile.lock);
+
+	/*
+	 * We count the request for the start device, even though it may run on
+	 * some other device due to error recovery. This way we make sure that
+	 * we count each request only once.
+	 */
+	device = cqr->startdev;
+	if (device->profile.data) {
+		counter = 1; /* request is not yet queued on the start device */
+		list_for_each(l, &device->ccw_queue)
+			if (++counter >= 31)
+				break;
+	}
+	spin_lock(&device->profile.lock);
+	if (device->profile.data) {
+		device->profile.data->dasd_io_nr_req[counter]++;
+		if (rq_data_dir(req) == READ)
+			device->profile.data->dasd_read_nr_req[counter]++;
+	}
+	spin_unlock(&device->profile.lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
  * Add profiling information for cqr after execution.
  */
+<<<<<<< HEAD
+=======
+
+#define dasd_profile_counter(value, index)			   \
+{								   \
+	for (index = 0; index < 31 && value >> (2+index); index++) \
+		;						   \
+}
+
+static void dasd_profile_end_add_data(struct dasd_profile_info *data,
+				      int is_alias,
+				      int is_tpm,
+				      int is_read,
+				      long sectors,
+				      int sectors_ind,
+				      int tottime_ind,
+				      int tottimeps_ind,
+				      int strtime_ind,
+				      int irqtime_ind,
+				      int irqtimeps_ind,
+				      int endtime_ind)
+{
+	/* in case of an overflow, reset the whole profile */
+	if (data->dasd_io_reqs == UINT_MAX) {
+			memset(data, 0, sizeof(*data));
+			getnstimeofday(&data->starttod);
+	}
+	data->dasd_io_reqs++;
+	data->dasd_io_sects += sectors;
+	if (is_alias)
+		data->dasd_io_alias++;
+	if (is_tpm)
+		data->dasd_io_tpm++;
+
+	data->dasd_io_secs[sectors_ind]++;
+	data->dasd_io_times[tottime_ind]++;
+	data->dasd_io_timps[tottimeps_ind]++;
+	data->dasd_io_time1[strtime_ind]++;
+	data->dasd_io_time2[irqtime_ind]++;
+	data->dasd_io_time2ps[irqtimeps_ind]++;
+	data->dasd_io_time3[endtime_ind]++;
+
+	if (is_read) {
+		data->dasd_read_reqs++;
+		data->dasd_read_sects += sectors;
+		if (is_alias)
+			data->dasd_read_alias++;
+		if (is_tpm)
+			data->dasd_read_tpm++;
+		data->dasd_read_secs[sectors_ind]++;
+		data->dasd_read_times[tottime_ind]++;
+		data->dasd_read_time1[strtime_ind]++;
+		data->dasd_read_time2[irqtime_ind]++;
+		data->dasd_read_time3[endtime_ind]++;
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void dasd_profile_end(struct dasd_block *block,
 			     struct dasd_ccw_req *cqr,
 			     struct request *req)
 {
 	long strtime, irqtime, endtime, tottime;	/* in microseconds */
 	long tottimeps, sectors;
+<<<<<<< HEAD
 
 	if (dasd_profile_level != DASD_PROFILE_ON)
+=======
+	struct dasd_device *device;
+	int sectors_ind, tottime_ind, tottimeps_ind, strtime_ind;
+	int irqtime_ind, irqtimeps_ind, endtime_ind;
+
+	device = cqr->startdev;
+	if (!(dasd_global_profile_level ||
+	      block->profile.data ||
+	      device->profile.data))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	sectors = blk_rq_sectors(req);
@@ -672,6 +882,7 @@ static void dasd_profile_end(struct dasd_block *block,
 	tottime = ((cqr->endclk - cqr->buildclk) >> 12);
 	tottimeps = tottime / sectors;
 
+<<<<<<< HEAD
 	if (!dasd_global_profile.dasd_io_reqs)
 		memset(&dasd_global_profile, 0,
 		       sizeof(struct dasd_profile_info_t));
@@ -695,6 +906,394 @@ static void dasd_profile_end(struct dasd_block *block,
 #else
 #define dasd_profile_start(block, cqr, req) do {} while (0)
 #define dasd_profile_end(block, cqr, req) do {} while (0)
+=======
+	dasd_profile_counter(sectors, sectors_ind);
+	dasd_profile_counter(tottime, tottime_ind);
+	dasd_profile_counter(tottimeps, tottimeps_ind);
+	dasd_profile_counter(strtime, strtime_ind);
+	dasd_profile_counter(irqtime, irqtime_ind);
+	dasd_profile_counter(irqtime / sectors, irqtimeps_ind);
+	dasd_profile_counter(endtime, endtime_ind);
+
+	if (dasd_global_profile_level) {
+		dasd_profile_end_add_data(&dasd_global_profile_data,
+					  cqr->startdev != block->base,
+					  cqr->cpmode == 1,
+					  rq_data_dir(req) == READ,
+					  sectors, sectors_ind, tottime_ind,
+					  tottimeps_ind, strtime_ind,
+					  irqtime_ind, irqtimeps_ind,
+					  endtime_ind);
+	}
+
+	spin_lock(&block->profile.lock);
+	if (block->profile.data)
+		dasd_profile_end_add_data(block->profile.data,
+					  cqr->startdev != block->base,
+					  cqr->cpmode == 1,
+					  rq_data_dir(req) == READ,
+					  sectors, sectors_ind, tottime_ind,
+					  tottimeps_ind, strtime_ind,
+					  irqtime_ind, irqtimeps_ind,
+					  endtime_ind);
+	spin_unlock(&block->profile.lock);
+
+	spin_lock(&device->profile.lock);
+	if (device->profile.data)
+		dasd_profile_end_add_data(device->profile.data,
+					  cqr->startdev != block->base,
+					  cqr->cpmode == 1,
+					  rq_data_dir(req) == READ,
+					  sectors, sectors_ind, tottime_ind,
+					  tottimeps_ind, strtime_ind,
+					  irqtime_ind, irqtimeps_ind,
+					  endtime_ind);
+	spin_unlock(&device->profile.lock);
+}
+
+void dasd_profile_reset(struct dasd_profile *profile)
+{
+	struct dasd_profile_info *data;
+
+	spin_lock_bh(&profile->lock);
+	data = profile->data;
+	if (!data) {
+		spin_unlock_bh(&profile->lock);
+		return;
+	}
+	memset(data, 0, sizeof(*data));
+	getnstimeofday(&data->starttod);
+	spin_unlock_bh(&profile->lock);
+}
+
+void dasd_global_profile_reset(void)
+{
+	memset(&dasd_global_profile_data, 0, sizeof(dasd_global_profile_data));
+	getnstimeofday(&dasd_global_profile_data.starttod);
+}
+
+int dasd_profile_on(struct dasd_profile *profile)
+{
+	struct dasd_profile_info *data;
+
+	data = kzalloc(sizeof(*data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+	spin_lock_bh(&profile->lock);
+	if (profile->data) {
+		spin_unlock_bh(&profile->lock);
+		kfree(data);
+		return 0;
+	}
+	getnstimeofday(&data->starttod);
+	profile->data = data;
+	spin_unlock_bh(&profile->lock);
+	return 0;
+}
+
+void dasd_profile_off(struct dasd_profile *profile)
+{
+	spin_lock_bh(&profile->lock);
+	kfree(profile->data);
+	profile->data = NULL;
+	spin_unlock_bh(&profile->lock);
+}
+
+char *dasd_get_user_string(const char __user *user_buf, size_t user_len)
+{
+	char *buffer;
+
+	buffer = vmalloc(user_len + 1);
+	if (buffer == NULL)
+		return ERR_PTR(-ENOMEM);
+	if (copy_from_user(buffer, user_buf, user_len) != 0) {
+		vfree(buffer);
+		return ERR_PTR(-EFAULT);
+	}
+	/* got the string, now strip linefeed. */
+	if (buffer[user_len - 1] == '\n')
+		buffer[user_len - 1] = 0;
+	else
+		buffer[user_len] = 0;
+	return buffer;
+}
+
+static ssize_t dasd_stats_write(struct file *file,
+				const char __user *user_buf,
+				size_t user_len, loff_t *pos)
+{
+	char *buffer, *str;
+	int rc;
+	struct seq_file *m = (struct seq_file *)file->private_data;
+	struct dasd_profile *prof = m->private;
+
+	if (user_len > 65536)
+		user_len = 65536;
+	buffer = dasd_get_user_string(user_buf, user_len);
+	if (IS_ERR(buffer))
+		return PTR_ERR(buffer);
+
+	str = skip_spaces(buffer);
+	rc = user_len;
+	if (strncmp(str, "reset", 5) == 0) {
+		dasd_profile_reset(prof);
+	} else if (strncmp(str, "on", 2) == 0) {
+		rc = dasd_profile_on(prof);
+		if (!rc)
+			rc = user_len;
+	} else if (strncmp(str, "off", 3) == 0) {
+		dasd_profile_off(prof);
+	} else
+		rc = -EINVAL;
+	vfree(buffer);
+	return rc;
+}
+
+static void dasd_stats_array(struct seq_file *m, unsigned int *array)
+{
+	int i;
+
+	for (i = 0; i < 32; i++)
+		seq_printf(m, "%u ", array[i]);
+	seq_putc(m, '\n');
+}
+
+static void dasd_stats_seq_print(struct seq_file *m,
+				 struct dasd_profile_info *data)
+{
+	seq_printf(m, "start_time %ld.%09ld\n",
+		   data->starttod.tv_sec, data->starttod.tv_nsec);
+	seq_printf(m, "total_requests %u\n", data->dasd_io_reqs);
+	seq_printf(m, "total_sectors %u\n", data->dasd_io_sects);
+	seq_printf(m, "total_pav %u\n", data->dasd_io_alias);
+	seq_printf(m, "total_hpf %u\n", data->dasd_io_tpm);
+	seq_printf(m, "histogram_sectors ");
+	dasd_stats_array(m, data->dasd_io_secs);
+	seq_printf(m, "histogram_io_times ");
+	dasd_stats_array(m, data->dasd_io_times);
+	seq_printf(m, "histogram_io_times_weighted ");
+	dasd_stats_array(m, data->dasd_io_timps);
+	seq_printf(m, "histogram_time_build_to_ssch ");
+	dasd_stats_array(m, data->dasd_io_time1);
+	seq_printf(m, "histogram_time_ssch_to_irq ");
+	dasd_stats_array(m, data->dasd_io_time2);
+	seq_printf(m, "histogram_time_ssch_to_irq_weighted ");
+	dasd_stats_array(m, data->dasd_io_time2ps);
+	seq_printf(m, "histogram_time_irq_to_end ");
+	dasd_stats_array(m, data->dasd_io_time3);
+	seq_printf(m, "histogram_ccw_queue_length ");
+	dasd_stats_array(m, data->dasd_io_nr_req);
+	seq_printf(m, "total_read_requests %u\n", data->dasd_read_reqs);
+	seq_printf(m, "total_read_sectors %u\n", data->dasd_read_sects);
+	seq_printf(m, "total_read_pav %u\n", data->dasd_read_alias);
+	seq_printf(m, "total_read_hpf %u\n", data->dasd_read_tpm);
+	seq_printf(m, "histogram_read_sectors ");
+	dasd_stats_array(m, data->dasd_read_secs);
+	seq_printf(m, "histogram_read_times ");
+	dasd_stats_array(m, data->dasd_read_times);
+	seq_printf(m, "histogram_read_time_build_to_ssch ");
+	dasd_stats_array(m, data->dasd_read_time1);
+	seq_printf(m, "histogram_read_time_ssch_to_irq ");
+	dasd_stats_array(m, data->dasd_read_time2);
+	seq_printf(m, "histogram_read_time_irq_to_end ");
+	dasd_stats_array(m, data->dasd_read_time3);
+	seq_printf(m, "histogram_read_ccw_queue_length ");
+	dasd_stats_array(m, data->dasd_read_nr_req);
+}
+
+static int dasd_stats_show(struct seq_file *m, void *v)
+{
+	struct dasd_profile *profile;
+	struct dasd_profile_info *data;
+
+	profile = m->private;
+	spin_lock_bh(&profile->lock);
+	data = profile->data;
+	if (!data) {
+		spin_unlock_bh(&profile->lock);
+		seq_printf(m, "disabled\n");
+		return 0;
+	}
+	dasd_stats_seq_print(m, data);
+	spin_unlock_bh(&profile->lock);
+	return 0;
+}
+
+static int dasd_stats_open(struct inode *inode, struct file *file)
+{
+	struct dasd_profile *profile = inode->i_private;
+	return single_open(file, dasd_stats_show, profile);
+}
+
+static const struct file_operations dasd_stats_raw_fops = {
+	.owner		= THIS_MODULE,
+	.open		= dasd_stats_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+	.write		= dasd_stats_write,
+};
+
+static ssize_t dasd_stats_global_write(struct file *file,
+				       const char __user *user_buf,
+				       size_t user_len, loff_t *pos)
+{
+	char *buffer, *str;
+	ssize_t rc;
+
+	if (user_len > 65536)
+		user_len = 65536;
+	buffer = dasd_get_user_string(user_buf, user_len);
+	if (IS_ERR(buffer))
+		return PTR_ERR(buffer);
+	str = skip_spaces(buffer);
+	rc = user_len;
+	if (strncmp(str, "reset", 5) == 0) {
+		dasd_global_profile_reset();
+	} else if (strncmp(str, "on", 2) == 0) {
+		dasd_global_profile_reset();
+		dasd_global_profile_level = DASD_PROFILE_GLOBAL_ONLY;
+	} else if (strncmp(str, "off", 3) == 0) {
+		dasd_global_profile_level = DASD_PROFILE_OFF;
+	} else
+		rc = -EINVAL;
+	vfree(buffer);
+	return rc;
+}
+
+static int dasd_stats_global_show(struct seq_file *m, void *v)
+{
+	if (!dasd_global_profile_level) {
+		seq_printf(m, "disabled\n");
+		return 0;
+	}
+	dasd_stats_seq_print(m, &dasd_global_profile_data);
+	return 0;
+}
+
+static int dasd_stats_global_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, dasd_stats_global_show, NULL);
+}
+
+static const struct file_operations dasd_stats_global_fops = {
+	.owner		= THIS_MODULE,
+	.open		= dasd_stats_global_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+	.write		= dasd_stats_global_write,
+};
+
+static void dasd_profile_init(struct dasd_profile *profile,
+			      struct dentry *base_dentry)
+{
+	umode_t mode;
+	struct dentry *pde;
+
+	if (!base_dentry)
+		return;
+	profile->dentry = NULL;
+	profile->data = NULL;
+	mode = (S_IRUSR | S_IWUSR | S_IFREG);
+	pde = debugfs_create_file("statistics", mode, base_dentry,
+				  profile, &dasd_stats_raw_fops);
+	if (pde && !IS_ERR(pde))
+		profile->dentry = pde;
+	return;
+}
+
+static void dasd_profile_exit(struct dasd_profile *profile)
+{
+	dasd_profile_off(profile);
+	if (profile->dentry) {
+		debugfs_remove(profile->dentry);
+		profile->dentry = NULL;
+	}
+}
+
+static void dasd_statistics_removeroot(void)
+{
+	dasd_global_profile_level = DASD_PROFILE_OFF;
+	if (dasd_global_profile_dentry) {
+		debugfs_remove(dasd_global_profile_dentry);
+		dasd_global_profile_dentry = NULL;
+	}
+	if (dasd_debugfs_global_entry)
+		debugfs_remove(dasd_debugfs_global_entry);
+	if (dasd_debugfs_root_entry)
+		debugfs_remove(dasd_debugfs_root_entry);
+}
+
+static void dasd_statistics_createroot(void)
+{
+	umode_t mode;
+	struct dentry *pde;
+
+	dasd_debugfs_root_entry = NULL;
+	dasd_debugfs_global_entry = NULL;
+	dasd_global_profile_dentry = NULL;
+	pde = debugfs_create_dir("dasd", NULL);
+	if (!pde || IS_ERR(pde))
+		goto error;
+	dasd_debugfs_root_entry = pde;
+	pde = debugfs_create_dir("global", dasd_debugfs_root_entry);
+	if (!pde || IS_ERR(pde))
+		goto error;
+	dasd_debugfs_global_entry = pde;
+
+	mode = (S_IRUSR | S_IWUSR | S_IFREG);
+	pde = debugfs_create_file("statistics", mode, dasd_debugfs_global_entry,
+				  NULL, &dasd_stats_global_fops);
+	if (!pde || IS_ERR(pde))
+		goto error;
+	dasd_global_profile_dentry = pde;
+	return;
+
+error:
+	DBF_EVENT(DBF_ERR, "%s",
+		  "Creation of the dasd debugfs interface failed");
+	dasd_statistics_removeroot();
+	return;
+}
+
+#else
+#define dasd_profile_start(block, cqr, req) do {} while (0)
+#define dasd_profile_end(block, cqr, req) do {} while (0)
+
+static void dasd_statistics_createroot(void)
+{
+	return;
+}
+
+static void dasd_statistics_removeroot(void)
+{
+	return;
+}
+
+int dasd_stats_generic_show(struct seq_file *m, void *v)
+{
+	seq_printf(m, "Statistics are not activated in this kernel\n");
+	return 0;
+}
+
+static void dasd_profile_init(struct dasd_profile *profile,
+			      struct dentry *base_dentry)
+{
+	return;
+}
+
+static void dasd_profile_exit(struct dasd_profile *profile)
+{
+	return;
+}
+
+int dasd_profile_on(struct dasd_profile *profile)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif				/* CONFIG_DASD_PROFILE */
 
 /*
@@ -1110,7 +1709,10 @@ void dasd_int_handler(struct ccw_device *cdev, unsigned long intparm,
 	unsigned long long now;
 	int expires;
 
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[IOINT_DAS]++;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(irb)) {
 		switch (PTR_ERR(irb)) {
 		case -EIO:
@@ -1577,13 +2179,21 @@ void dasd_add_request_tail(struct dasd_ccw_req *cqr)
 /*
  * Wakeup helper for the 'sleep_on' functions.
  */
+<<<<<<< HEAD
 static void dasd_wakeup_cb(struct dasd_ccw_req *cqr, void *data)
+=======
+void dasd_wakeup_cb(struct dasd_ccw_req *cqr, void *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	spin_lock_irq(get_ccwdev_lock(cqr->startdev->cdev));
 	cqr->callback_data = DASD_SLEEPON_END_TAG;
 	spin_unlock_irq(get_ccwdev_lock(cqr->startdev->cdev));
 	wake_up(&generic_waitq);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(dasd_wakeup_cb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int _wait_for_wakeup(struct dasd_ccw_req *cqr)
 {
@@ -1683,7 +2293,13 @@ static int _dasd_sleep_on(struct dasd_ccw_req *maincqr, int interruptible)
 		} else
 			wait_event(generic_waitq, !(device->stopped));
 
+<<<<<<< HEAD
 		cqr->callback = dasd_wakeup_cb;
+=======
+		if (!cqr->callback)
+			cqr->callback = dasd_wakeup_cb;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		cqr->callback_data = DASD_SLEEPON_START_TAG;
 		dasd_add_request_tail(cqr);
 		if (interruptible) {
@@ -1779,7 +2395,15 @@ int dasd_sleep_on_immediatly(struct dasd_ccw_req *cqr)
 	cqr->callback = dasd_wakeup_cb;
 	cqr->callback_data = DASD_SLEEPON_START_TAG;
 	cqr->status = DASD_CQR_QUEUED;
+<<<<<<< HEAD
 	list_add(&cqr->devlist, &device->ccw_queue);
+=======
+	/*
+	 * add new request as second
+	 * first the terminated cqr needs to be finished
+	 */
+	list_add(&cqr->devlist, device->ccw_queue.next);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* let the bh start the request to keep them in order */
 	dasd_schedule_device_bh(device);
@@ -2441,6 +3065,10 @@ dasd_exit(void)
 		debug_unregister(dasd_debug_area);
 		dasd_debug_area = NULL;
 	}
+<<<<<<< HEAD
+=======
+	dasd_statistics_removeroot();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -2772,6 +3400,15 @@ void dasd_generic_path_event(struct ccw_device *cdev, int *path_event)
 			device->path_data.tbvpm |= eventlpm;
 			dasd_schedule_device_bh(device);
 		}
+<<<<<<< HEAD
+=======
+		if (path_event[chp] & PE_PATHGROUP_ESTABLISHED) {
+			DBF_DEV_EVENT(DBF_WARNING, device, "%s",
+				      "Pathgroup re-established\n");
+			if (device->discipline->kick_validate)
+				device->discipline->kick_validate(device);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	dasd_put_device(device);
 }
@@ -2799,6 +3436,12 @@ int dasd_generic_pm_freeze(struct ccw_device *cdev)
 	if (IS_ERR(device))
 		return PTR_ERR(device);
 
+<<<<<<< HEAD
+=======
+	/* mark device as suspended */
+	set_bit(DASD_FLAG_SUSPENDED, &device->flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (device->discipline->freeze)
 		rc = device->discipline->freeze(device);
 
@@ -2873,6 +3516,10 @@ int dasd_generic_restore_device(struct ccw_device *cdev)
 	if (device->block)
 		dasd_schedule_block_bh(device->block);
 
+<<<<<<< HEAD
+=======
+	clear_bit(DASD_FLAG_SUSPENDED, &device->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dasd_put_device(device);
 	return 0;
 }
@@ -2992,6 +3639,11 @@ static int __init dasd_init(void)
 
 	dasd_diag_discipline_pointer = NULL;
 
+<<<<<<< HEAD
+=======
+	dasd_statistics_createroot();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rc = dasd_devmap_init();
 	if (rc)
 		goto failed;

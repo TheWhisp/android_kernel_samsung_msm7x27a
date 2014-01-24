@@ -32,10 +32,14 @@
 #include "xfs_discard.h"
 
 /*
+<<<<<<< HEAD
  * Perform initial CIL structure initialisation. If the CIL is not
  * enabled in this filesystem, ensure the log->l_cilp is null so
  * we can check this conditional to determine if we are doing delayed
  * logging or not.
+=======
+ * Perform initial CIL structure initialisation.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 int
 xlog_cil_init(
@@ -44,10 +48,13 @@ xlog_cil_init(
 	struct xfs_cil	*cil;
 	struct xfs_cil_ctx *ctx;
 
+<<<<<<< HEAD
 	log->l_cilp = NULL;
 	if (!(log->l_mp->m_flags & XFS_MOUNT_DELAYLOG))
 		return 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	cil = kmem_zalloc(sizeof(*cil), KM_SLEEP|KM_MAYFAIL);
 	if (!cil)
 		return ENOMEM;
@@ -80,9 +87,12 @@ void
 xlog_cil_destroy(
 	struct log	*log)
 {
+<<<<<<< HEAD
 	if (!log->l_cilp)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (log->l_cilp->xc_ctx) {
 		if (log->l_cilp->xc_ctx->ticket)
 			xfs_log_ticket_put(log->l_cilp->xc_ctx->ticket);
@@ -137,9 +147,12 @@ void
 xlog_cil_init_post_recovery(
 	struct log	*log)
 {
+<<<<<<< HEAD
 	if (!log->l_cilp)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	log->l_cilp->xc_ctx->ticket = xlog_cil_ticket_alloc(log);
 	log->l_cilp->xc_ctx->sequence = 1;
 	log->l_cilp->xc_ctx->commit_lsn = xlog_assign_lsn(log->l_curr_cycle,
@@ -172,6 +185,7 @@ xlog_cil_init_post_recovery(
  * format the regions into the iclog as though they are being formatted
  * directly out of the objects themselves.
  */
+<<<<<<< HEAD
 static void
 xlog_cil_format_items(
 	struct log		*log,
@@ -196,13 +210,80 @@ xlog_cil_format_items(
 
 		for (index = 0; index < lv->lv_niovecs; index++) {
 			struct xfs_log_iovec *vec = &lv->lv_iovecp[index];
+=======
+static struct xfs_log_vec *
+xlog_cil_prepare_log_vecs(
+	struct xfs_trans	*tp)
+{
+	struct xfs_log_item_desc *lidp;
+	struct xfs_log_vec	*lv = NULL;
+	struct xfs_log_vec	*ret_lv = NULL;
+
+
+	/* Bail out if we didn't find a log item.  */
+	if (list_empty(&tp->t_items)) {
+		ASSERT(0);
+		return NULL;
+	}
+
+	list_for_each_entry(lidp, &tp->t_items, lid_trans) {
+		struct xfs_log_vec *new_lv;
+		void	*ptr;
+		int	index;
+		int	len = 0;
+		uint	niovecs;
+
+		/* Skip items which aren't dirty in this transaction. */
+		if (!(lidp->lid_flags & XFS_LID_DIRTY))
+			continue;
+
+		/* Skip items that do not have any vectors for writing */
+		niovecs = IOP_SIZE(lidp->lid_item);
+		if (!niovecs)
+			continue;
+
+		new_lv = kmem_zalloc(sizeof(*new_lv) +
+				niovecs * sizeof(struct xfs_log_iovec),
+				KM_SLEEP);
+
+		/* The allocated iovec region lies beyond the log vector. */
+		new_lv->lv_iovecp = (struct xfs_log_iovec *)&new_lv[1];
+		new_lv->lv_niovecs = niovecs;
+		new_lv->lv_item = lidp->lid_item;
+
+		/* build the vector array and calculate it's length */
+		IOP_FORMAT(new_lv->lv_item, new_lv->lv_iovecp);
+		for (index = 0; index < new_lv->lv_niovecs; index++)
+			len += new_lv->lv_iovecp[index].i_len;
+
+		new_lv->lv_buf_len = len;
+		new_lv->lv_buf = kmem_alloc(new_lv->lv_buf_len,
+				KM_SLEEP|KM_NOFS);
+		ptr = new_lv->lv_buf;
+
+		for (index = 0; index < new_lv->lv_niovecs; index++) {
+			struct xfs_log_iovec *vec = &new_lv->lv_iovecp[index];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			memcpy(ptr, vec->i_addr, vec->i_len);
 			vec->i_addr = ptr;
 			ptr += vec->i_len;
 		}
+<<<<<<< HEAD
 		ASSERT(ptr == lv->lv_buf + lv->lv_buf_len);
 	}
+=======
+		ASSERT(ptr == new_lv->lv_buf + new_lv->lv_buf_len);
+
+		if (!ret_lv)
+			ret_lv = new_lv;
+		else
+			lv->lv_next = new_lv;
+		lv = new_lv;
+	}
+
+	return ret_lv;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -256,7 +337,11 @@ xfs_cil_prepare_item(
  * Insert the log items into the CIL and calculate the difference in space
  * consumed by the item. Add the space to the checkpoint ticket and calculate
  * if the change requires additional log metadata. If it does, take that space
+<<<<<<< HEAD
  * as well. Remove the amount of space we addded to the checkpoint ticket from
+=======
+ * as well. Remove the amount of space we added to the checkpoint ticket from
+>>>>>>> refs/remotes/origin/cm-10.0
  * the current transaction ticket so that the accounting works out correctly.
  */
 static void
@@ -635,28 +720,49 @@ out_abort:
  * background commit, returns without it held once background commits are
  * allowed again.
  */
+<<<<<<< HEAD
 void
 xfs_log_commit_cil(
 	struct xfs_mount	*mp,
 	struct xfs_trans	*tp,
 	struct xfs_log_vec	*log_vector,
+=======
+int
+xfs_log_commit_cil(
+	struct xfs_mount	*mp,
+	struct xfs_trans	*tp,
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_lsn_t		*commit_lsn,
 	int			flags)
 {
 	struct log		*log = mp->m_log;
 	int			log_flags = 0;
 	int			push = 0;
+<<<<<<< HEAD
+=======
+	struct xfs_log_vec	*log_vector;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (flags & XFS_TRANS_RELEASE_LOG_RES)
 		log_flags = XFS_LOG_REL_PERM_RESERV;
 
 	/*
+<<<<<<< HEAD
 	 * do all the hard work of formatting items (including memory
+=======
+	 * Do all the hard work of formatting items (including memory
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * allocation) outside the CIL context lock. This prevents stalling CIL
 	 * pushes when we are low on memory and a transaction commit spends a
 	 * lot of time in memory reclaim.
 	 */
+<<<<<<< HEAD
 	xlog_cil_format_items(log, log_vector);
+=======
+	log_vector = xlog_cil_prepare_log_vecs(tp);
+	if (!log_vector)
+		return ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* lock out background commit */
 	down_read(&log->l_cilp->xc_ctx_lock);
@@ -709,6 +815,10 @@ xfs_log_commit_cil(
 	 */
 	if (push)
 		xlog_cil_push(log, 0);
+<<<<<<< HEAD
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -786,8 +896,11 @@ xfs_log_item_in_current_chkpt(
 {
 	struct xfs_cil_ctx *ctx;
 
+<<<<<<< HEAD
 	if (!(lip->li_mountp->m_flags & XFS_MOUNT_DELAYLOG))
 		return false;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (list_empty(&lip->li_cil))
 		return false;
 

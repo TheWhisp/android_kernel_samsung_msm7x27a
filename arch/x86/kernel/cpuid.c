@@ -43,7 +43,10 @@
 
 #include <asm/processor.h>
 #include <asm/msr.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct class *cpuid_class;
 
@@ -177,7 +180,11 @@ static struct notifier_block __refdata cpuid_class_cpu_notifier =
 	.notifier_call = cpuid_class_cpu_callback,
 };
 
+<<<<<<< HEAD
 static char *cpuid_devnode(struct device *dev, mode_t *mode)
+=======
+static char *cpuid_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return kasprintf(GFP_KERNEL, "cpu/%u/cpuid", MINOR(dev->devt));
 }

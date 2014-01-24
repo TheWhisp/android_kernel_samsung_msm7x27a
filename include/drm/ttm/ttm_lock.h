@@ -51,7 +51,11 @@
 
 #include "ttm/ttm_object.h"
 #include <linux/wait.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * struct ttm_lock

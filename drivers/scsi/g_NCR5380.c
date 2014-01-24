@@ -100,7 +100,10 @@
 #undef NCR5380_STAT_LIMIT
 #endif
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <linux/signal.h>
 #include <linux/blkdev.h>

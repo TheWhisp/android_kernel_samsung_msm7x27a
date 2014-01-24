@@ -5,8 +5,13 @@ Although RCU is usually used to protect read-mostly data structures,
 it is possible to use RCU to provide dynamic non-maskable interrupt
 handlers, as well as dynamic irq handlers.  This document describes
 how to do this, drawing loosely from Zwane Mwaikambo's NMI-timer
+<<<<<<< HEAD
 work in "arch/i386/oprofile/nmi_timer_int.c" and in
 "arch/i386/kernel/traps.c".
+=======
+work in "arch/x86/oprofile/nmi_timer_int.c" and in
+"arch/x86/kernel/traps.c".
+>>>>>>> refs/remotes/origin/cm-10.0
 
 The relevant pieces of code are listed below, each followed by a
 brief explanation.
@@ -95,7 +100,11 @@ not to return until all ongoing NMI handlers exit.  It is therefore safe
 to free up the handler's data as soon as synchronize_sched() returns.
 
 Important note: for this to work, the architecture in question must
+<<<<<<< HEAD
 invoke irq_enter() and irq_exit() on NMI entry and exit, respectively.
+=======
+invoke nmi_enter() and nmi_exit() on NMI entry and exit, respectively.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 Answer to Quick Quiz

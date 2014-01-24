@@ -13,9 +13,14 @@
 #include <linux/kernel.h>
 #include <linux/bitops.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/intrinsics.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <asm/intrinsics.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define arch_spin_lock_init(x)			((x)->lock = 0)
 

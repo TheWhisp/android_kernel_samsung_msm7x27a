@@ -14,6 +14,10 @@
 #include <linux/sunrpc/svc_xprt.h>
 #include <linux/sunrpc/svcsock.h>
 #include <linux/sunrpc/xprt.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define RPCDBG_FACILITY	RPCDBG_SVCXPRT
 
@@ -21,6 +25,10 @@ static struct svc_deferred_req *svc_deferred_dequeue(struct svc_xprt *xprt);
 static int svc_deferred_recv(struct svc_rqst *rqstp);
 static struct cache_deferred_req *svc_defer(struct cache_req *req);
 static void svc_age_temp_xprts(unsigned long closure);
+<<<<<<< HEAD
+=======
+static void svc_delete_xprt(struct svc_xprt *xprt);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* apparently the "standard" is that clients close
  * idle connections after 5 minutes, servers after
@@ -146,8 +154,13 @@ EXPORT_SYMBOL_GPL(svc_xprt_put);
  * Called by transport drivers to initialize the transport independent
  * portion of the transport instance.
  */
+<<<<<<< HEAD
 void svc_xprt_init(struct svc_xprt_class *xcl, struct svc_xprt *xprt,
 		   struct svc_serv *serv)
+=======
+void svc_xprt_init(struct net *net, struct svc_xprt_class *xcl,
+		   struct svc_xprt *xprt, struct svc_serv *serv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	memset(xprt, 0, sizeof(*xprt));
 	xprt->xpt_class = xcl;
@@ -162,7 +175,11 @@ void svc_xprt_init(struct svc_xprt_class *xcl, struct svc_xprt *xprt,
 	spin_lock_init(&xprt->xpt_lock);
 	set_bit(XPT_BUSY, &xprt->xpt_flags);
 	rpc_init_wait_queue(&xprt->xpt_bc_pending, "xpt_bc_pending");
+<<<<<<< HEAD
 	xprt->xpt_net = get_net(&init_net);
+=======
+	xprt->xpt_net = get_net(net);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(svc_xprt_init);
 
@@ -178,13 +195,21 @@ static struct svc_xprt *__svc_xpo_create(struct svc_xprt_class *xcl,
 		.sin_addr.s_addr	= htonl(INADDR_ANY),
 		.sin_port		= htons(port),
 	};
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sockaddr_in6 sin6 = {
 		.sin6_family		= AF_INET6,
 		.sin6_addr		= IN6ADDR_ANY_INIT,
 		.sin6_port		= htons(port),
 	};
+<<<<<<< HEAD
 #endif	/* defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE) */
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sockaddr *sap;
 	size_t len;
 
@@ -193,12 +218,20 @@ static struct svc_xprt *__svc_xpo_create(struct svc_xprt_class *xcl,
 		sap = (struct sockaddr *)&sin;
 		len = sizeof(sin);
 		break;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 	case PF_INET6:
 		sap = (struct sockaddr *)&sin6;
 		len = sizeof(sin6);
 		break;
+<<<<<<< HEAD
 #endif	/* defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE) */
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		return ERR_PTR(-EAFNOSUPPORT);
 	}
@@ -254,8 +287,11 @@ EXPORT_SYMBOL_GPL(svc_create_xprt);
  */
 void svc_xprt_copy_addrs(struct svc_rqst *rqstp, struct svc_xprt *xprt)
 {
+<<<<<<< HEAD
 	struct sockaddr *sin;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(&rqstp->rq_addr, &xprt->xpt_remote, xprt->xpt_remotelen);
 	rqstp->rq_addrlen = xprt->xpt_remotelen;
 
@@ -263,6 +299,7 @@ void svc_xprt_copy_addrs(struct svc_rqst *rqstp, struct svc_xprt *xprt)
 	 * Destination address in request is needed for binding the
 	 * source address in RPC replies/callbacks later.
 	 */
+<<<<<<< HEAD
 	sin = (struct sockaddr *)&xprt->xpt_local;
 	switch (sin->sa_family) {
 	case AF_INET:
@@ -272,6 +309,10 @@ void svc_xprt_copy_addrs(struct svc_rqst *rqstp, struct svc_xprt *xprt)
 		rqstp->rq_daddr.addr6 = ((struct sockaddr_in6 *)sin)->sin6_addr;
 		break;
 	}
+=======
+	memcpy(&rqstp->rq_daddr, &xprt->xpt_local, xprt->xpt_locallen);
+	rqstp->rq_daddrlen = xprt->xpt_locallen;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(svc_xprt_copy_addrs);
 
@@ -873,7 +914,11 @@ static void call_xpt_users(struct svc_xprt *xprt)
 /*
  * Remove a dead transport
  */
+<<<<<<< HEAD
 void svc_delete_xprt(struct svc_xprt *xprt)
+=======
+static void svc_delete_xprt(struct svc_xprt *xprt)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct svc_serv	*serv = xprt->xpt_server;
 	struct svc_deferred_req *dr;
@@ -916,41 +961,89 @@ void svc_close_xprt(struct svc_xprt *xprt)
 }
 EXPORT_SYMBOL_GPL(svc_close_xprt);
 
+<<<<<<< HEAD
 static void svc_close_list(struct list_head *xprt_list)
+=======
+static void svc_close_list(struct list_head *xprt_list, struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct svc_xprt *xprt;
 
 	list_for_each_entry(xprt, xprt_list, xpt_list) {
+<<<<<<< HEAD
+=======
+		if (xprt->xpt_net != net)
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		set_bit(XPT_CLOSE, &xprt->xpt_flags);
 		set_bit(XPT_BUSY, &xprt->xpt_flags);
 	}
 }
 
+<<<<<<< HEAD
 void svc_close_all(struct svc_serv *serv)
+=======
+static void svc_clear_pools(struct svc_serv *serv, struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct svc_pool *pool;
 	struct svc_xprt *xprt;
 	struct svc_xprt *tmp;
 	int i;
 
+<<<<<<< HEAD
 	svc_close_list(&serv->sv_tempsocks);
 	svc_close_list(&serv->sv_permsocks);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < serv->sv_nrpools; i++) {
 		pool = &serv->sv_pools[i];
 
 		spin_lock_bh(&pool->sp_lock);
+<<<<<<< HEAD
 		while (!list_empty(&pool->sp_sockets)) {
 			xprt = list_first_entry(&pool->sp_sockets, struct svc_xprt, xpt_ready);
+=======
+		list_for_each_entry_safe(xprt, tmp, &pool->sp_sockets, xpt_ready) {
+			if (xprt->xpt_net != net)
+				continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 			list_del_init(&xprt->xpt_ready);
 		}
 		spin_unlock_bh(&pool->sp_lock);
 	}
+<<<<<<< HEAD
+=======
+}
+
+static void svc_clear_list(struct list_head *xprt_list, struct net *net)
+{
+	struct svc_xprt *xprt;
+	struct svc_xprt *tmp;
+
+	list_for_each_entry_safe(xprt, tmp, xprt_list, xpt_list) {
+		if (xprt->xpt_net != net)
+			continue;
+		svc_delete_xprt(xprt);
+	}
+	list_for_each_entry(xprt, xprt_list, xpt_list)
+		BUG_ON(xprt->xpt_net == net);
+}
+
+void svc_close_net(struct svc_serv *serv, struct net *net)
+{
+	svc_close_list(&serv->sv_tempsocks, net);
+	svc_close_list(&serv->sv_permsocks, net);
+
+	svc_clear_pools(serv, net);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * At this point the sp_sockets lists will stay empty, since
 	 * svc_enqueue will not add new entries without taking the
 	 * sp_lock and checking XPT_BUSY.
 	 */
+<<<<<<< HEAD
 	list_for_each_entry_safe(xprt, tmp, &serv->sv_tempsocks, xpt_list)
 		svc_delete_xprt(xprt);
 	list_for_each_entry_safe(xprt, tmp, &serv->sv_permsocks, xpt_list)
@@ -958,6 +1051,10 @@ void svc_close_all(struct svc_serv *serv)
 
 	BUG_ON(!list_empty(&serv->sv_permsocks));
 	BUG_ON(!list_empty(&serv->sv_tempsocks));
+=======
+	svc_clear_list(&serv->sv_tempsocks, net);
+	svc_clear_list(&serv->sv_permsocks, net);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1083,6 +1180,10 @@ static struct svc_deferred_req *svc_deferred_dequeue(struct svc_xprt *xprt)
  * svc_find_xprt - find an RPC transport instance
  * @serv: pointer to svc_serv to search
  * @xcl_name: C string containing transport's class name
+<<<<<<< HEAD
+=======
+ * @net: owner net pointer
+>>>>>>> refs/remotes/origin/cm-10.0
  * @af: Address family of transport's local address
  * @port: transport's IP port number
  *
@@ -1095,7 +1196,12 @@ static struct svc_deferred_req *svc_deferred_dequeue(struct svc_xprt *xprt)
  * service's list that has a matching class name.
  */
 struct svc_xprt *svc_find_xprt(struct svc_serv *serv, const char *xcl_name,
+<<<<<<< HEAD
 			       const sa_family_t af, const unsigned short port)
+=======
+			       struct net *net, const sa_family_t af,
+			       const unsigned short port)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct svc_xprt *xprt;
 	struct svc_xprt *found = NULL;
@@ -1106,6 +1212,11 @@ struct svc_xprt *svc_find_xprt(struct svc_serv *serv, const char *xcl_name,
 
 	spin_lock_bh(&serv->sv_lock);
 	list_for_each_entry(xprt, &serv->sv_permsocks, xpt_list) {
+<<<<<<< HEAD
+=======
+		if (xprt->xpt_net != net)
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (strcmp(xprt->xpt_class->xcl_name, xcl_name))
 			continue;
 		if (af != AF_UNSPEC && af != xprt->xpt_local.ss_family)

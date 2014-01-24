@@ -21,6 +21,10 @@
 #include <net/netfilter/nf_conntrack_expect.h>
 #include <net/netfilter/nf_conntrack_acct.h>
 #include <linux/rculist_nulls.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct ct_iter_state {
 	struct seq_net_private p;

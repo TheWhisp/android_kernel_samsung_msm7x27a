@@ -22,6 +22,10 @@
 #include <linux/slab.h>
 #include <linux/kobject.h>
 #include <linux/dm-ioctl.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "dm.h"
 #include "dm-uevent.h"

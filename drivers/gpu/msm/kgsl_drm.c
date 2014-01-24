@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -17,7 +21,10 @@
 #include "drmP.h"
 #include "drm.h"
 #include <linux/android_pmem.h>
+<<<<<<< HEAD
 #include <linux/notifier.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "kgsl.h"
 #include "kgsl_device.h"
@@ -39,6 +46,12 @@
 #define ENTRY_EMPTY -1
 #define ENTRY_NEEDS_CLEANUP -2
 
+<<<<<<< HEAD
+=======
+#define DRM_KGSL_NOT_INITED -1
+#define DRM_KGSL_INITED   1
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DRM_KGSL_NUM_FENCE_ENTRIES (DRM_KGSL_HANDLE_WAIT_ENTRIES << 2)
 #define DRM_KGSL_HANDLE_WAIT_ENTRIES 5
 
@@ -127,6 +140,11 @@ struct drm_kgsl_gem_object {
 	struct list_head wait_list;
 };
 
+<<<<<<< HEAD
+=======
+static int kgsl_drm_inited = DRM_KGSL_NOT_INITED;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* This is a global list of all the memory currently mapped in the MMU */
 static struct list_head kgsl_mem_list;
 
@@ -152,6 +170,7 @@ static void kgsl_gem_mem_flush(struct kgsl_memdesc *memdesc, int type, int op)
 	kgsl_cache_range_op(memdesc, cacheop);
 }
 
+<<<<<<< HEAD
 /* Flush all the memory mapped in the MMU */
 
 void kgsl_gpu_mem_flush(int op)
@@ -168,6 +187,8 @@ void kgsl_gpu_mem_flush(int op)
 	dmb();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* TODO:
  * Add vsync wait */
 
@@ -186,6 +207,7 @@ struct kgsl_drm_device_priv {
 	struct kgsl_device_private *devpriv[KGSL_DEVICE_MAX];
 };
 
+<<<<<<< HEAD
 static int kgsl_ts_notifier_cb(struct notifier_block *blk,
 			       unsigned long code, void *_param);
 
@@ -221,6 +243,8 @@ void kgsl_drm_lastclose(struct drm_device *dev)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void kgsl_drm_preclose(struct drm_device *dev, struct drm_file *file_priv)
 {
 }
@@ -268,12 +292,17 @@ kgsl_gem_alloc_memory(struct drm_gem_object *obj)
 {
 	struct drm_kgsl_gem_object *priv = obj->driver_private;
 	int index;
+<<<<<<< HEAD
+=======
+	int result = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Return if the memory is already allocated */
 
 	if (kgsl_gem_memory_allocated(obj) || TYPE_IS_FD(priv->type))
 		return 0;
 
+<<<<<<< HEAD
 	if (TYPE_IS_PMEM(priv->type)) {
 		int type;
 
@@ -311,11 +340,65 @@ kgsl_gem_alloc_memory(struct drm_gem_object *obj)
 	for (index = 0; index < priv->bufcount; index++)
 		priv->bufs[index].offset = index * obj->size;
 
+=======
+	if (priv->pagetable == NULL) {
+		priv->pagetable = kgsl_mmu_getpagetable(KGSL_MMU_GLOBAL_PT);
+
+		if (priv->pagetable == NULL) {
+			DRM_ERROR("Unable to get the GPU MMU pagetable\n");
+			return -EINVAL;
+		}
+	}
+
+	if (TYPE_IS_PMEM(priv->type)) {
+		if (priv->type == DRM_KGSL_GEM_TYPE_EBI ||
+		    priv->type & DRM_KGSL_GEM_PMEM_EBI) {
+				result = kgsl_sharedmem_ebimem_user(
+						&priv->memdesc,
+						priv->pagetable,
+						obj->size * priv->bufcount,
+						0);
+				if (result) {
+					DRM_ERROR(
+					"Unable to allocate PMEM memory\n");
+					return result;
+				}
+		}
+		else
+			return -EINVAL;
+
+	} else if (TYPE_IS_MEM(priv->type)) {
+
+		if (priv->type == DRM_KGSL_GEM_TYPE_KMEM ||
+			priv->type & DRM_KGSL_GEM_CACHE_MASK)
+				list_add(&priv->list, &kgsl_mem_list);
+
+		result = kgsl_sharedmem_page_alloc_user(&priv->memdesc,
+					priv->pagetable,
+					obj->size * priv->bufcount, 0);
+
+		if (result != 0) {
+				DRM_ERROR(
+				"Unable to allocate Vmalloc user memory\n");
+				return result;
+		}
+	} else
+		return -EINVAL;
+
+	for (index = 0; index < priv->bufcount; index++) {
+		priv->bufs[index].offset = index * obj->size;
+		priv->bufs[index].gpuaddr =
+			priv->memdesc.gpuaddr +
+			priv->bufs[index].offset;
+	}
+	priv->flags |= DRM_KGSL_GEM_FLAG_MAPPED;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
 static void
+<<<<<<< HEAD
 kgsl_gem_unmap(struct drm_gem_object *obj)
 {
 	struct drm_kgsl_gem_object *priv = obj->driver_private;
@@ -324,6 +407,19 @@ kgsl_gem_unmap(struct drm_gem_object *obj)
 		return;
 
 	kgsl_mmu_unmap(priv->pagetable, &priv->memdesc);
+=======
+kgsl_gem_free_memory(struct drm_gem_object *obj)
+{
+	struct drm_kgsl_gem_object *priv = obj->driver_private;
+
+	if (!kgsl_gem_memory_allocated(obj) || TYPE_IS_FD(priv->type))
+		return;
+
+	kgsl_gem_mem_flush(&priv->memdesc,  priv->type,
+			   DRM_KGSL_GEM_CACHE_OP_FROM_DEV);
+
+	kgsl_sharedmem_free(&priv->memdesc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kgsl_mmu_putpagetable(priv->pagetable);
 	priv->pagetable = NULL;
@@ -333,6 +429,7 @@ kgsl_gem_unmap(struct drm_gem_object *obj)
 		list_del(&priv->list);
 
 	priv->flags &= ~DRM_KGSL_GEM_FLAG_MAPPED;
+<<<<<<< HEAD
 }
 
 static void
@@ -352,6 +449,9 @@ kgsl_gem_free_memory(struct drm_gem_object *obj)
 		pmem_kfree(priv->memdesc.physaddr);
 
 	kgsl_sharedmem_free(&priv->memdesc);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int
@@ -447,7 +547,11 @@ kgsl_gem_obj_addr(int drm_fd, int handle, unsigned long *start,
 
 	filp = fget(drm_fd);
 	if (unlikely(filp == NULL)) {
+<<<<<<< HEAD
 		DRM_ERROR("Unable to ghet the DRM file descriptor\n");
+=======
+		DRM_ERROR("Unable to get the DRM file descriptor\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 	file_priv = filp->private_data;
@@ -520,7 +624,11 @@ kgsl_gem_init_obj(struct drm_device *dev,
 
 	ret = drm_gem_handle_create(file_priv, obj, handle);
 
+<<<<<<< HEAD
 	drm_gem_object_handle_unreference(obj);
+=======
+	drm_gem_object_unreference(obj);
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_LIST_HEAD(&priv->wait_list);
 
 	for (i = 0; i < DRM_KGSL_HANDLE_WAIT_ENTRIES; i++) {
@@ -695,6 +803,7 @@ int
 kgsl_gem_unbind_gpu_ioctl(struct drm_device *dev, void *data,
 			struct drm_file *file_priv)
 {
+<<<<<<< HEAD
 	struct drm_kgsl_gem_bind_gpu *args = data;
 	struct drm_gem_object *obj;
 	struct drm_kgsl_gem_object *priv;
@@ -762,10 +871,16 @@ kgsl_gem_map(struct drm_gem_object *obj)
 	return ret;
 }
 
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int
 kgsl_gem_bind_gpu_ioctl(struct drm_device *dev, void *data,
 			struct drm_file *file_priv)
 {
+<<<<<<< HEAD
 	struct drm_kgsl_gem_bind_gpu *args = data;
 	struct drm_gem_object *obj;
 	struct drm_kgsl_gem_object *priv;
@@ -798,6 +913,9 @@ out:
 	drm_gem_object_unreference(obj);
 	mutex_unlock(&dev->struct_mutex);
 	return ret;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Allocate the memory and prepare it for CPU mapping */
@@ -1345,6 +1463,7 @@ wakeup_fence_entries(struct drm_kgsl_gem_object_fence *fence)
 	fence->fence_id = ENTRY_NEEDS_CLEANUP;  /* Mark it as needing cleanup */
 }
 
+<<<<<<< HEAD
 static int kgsl_ts_notifier_cb(struct notifier_block *blk,
 			       unsigned long code, void *_param)
 {
@@ -1366,6 +1485,8 @@ static int kgsl_ts_notifier_cb(struct notifier_block *blk,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int
 kgsl_gem_lock_handle_ioctl(struct drm_device *dev, void *data,
 						   struct drm_file *file_priv)
@@ -1558,7 +1679,11 @@ kgsl_gem_unlock_on_ts_ioctl(struct drm_device *dev, void *data,
 	}
 
 	device = kgsl_get_device(ts_device);
+<<<<<<< HEAD
 	ts_done = kgsl_check_timestamp(device, args->timestamp);
+=======
+	ts_done = kgsl_check_timestamp(device, NULL, args->timestamp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&dev->struct_mutex);
 
@@ -1609,11 +1734,17 @@ struct drm_ioctl_desc kgsl_drm_ioctls[] = {
 };
 
 static struct drm_driver driver = {
+<<<<<<< HEAD
 	.driver_features = DRIVER_USE_PLATFORM_DEVICE | DRIVER_GEM,
 	.load = kgsl_drm_load,
 	.unload = kgsl_drm_unload,
 	.firstopen = kgsl_drm_firstopen,
 	.lastclose = kgsl_drm_lastclose,
+=======
+	.driver_features = DRIVER_GEM,
+	.load = kgsl_drm_load,
+	.unload = kgsl_drm_unload,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.preclose = kgsl_drm_preclose,
 	.suspend = kgsl_drm_suspend,
 	.resume = kgsl_drm_resume,
@@ -1644,8 +1775,18 @@ int kgsl_drm_init(struct platform_device *dev)
 {
 	int i;
 
+<<<<<<< HEAD
 	driver.num_ioctls = DRM_ARRAY_SIZE(kgsl_drm_ioctls);
 	driver.platform_device = dev;
+=======
+	/* Only initialize once */
+	if (kgsl_drm_inited == DRM_KGSL_INITED)
+		return 0;
+
+	kgsl_drm_inited = DRM_KGSL_INITED;
+
+	driver.num_ioctls = DRM_ARRAY_SIZE(kgsl_drm_ioctls);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	INIT_LIST_HEAD(&kgsl_mem_list);
 
@@ -1655,10 +1796,19 @@ int kgsl_drm_init(struct platform_device *dev)
 		gem_buf_fence[i].fence_id = ENTRY_EMPTY;
 	}
 
+<<<<<<< HEAD
 	return drm_init(&driver);
+=======
+	return drm_platform_init(&driver, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void kgsl_drm_exit(void)
 {
+<<<<<<< HEAD
 	drm_exit(&driver);
+=======
+	kgsl_drm_inited = DRM_KGSL_NOT_INITED;
+	drm_platform_exit(&driver, driver.kdriver.platform_device);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

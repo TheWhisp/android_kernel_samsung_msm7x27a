@@ -61,6 +61,10 @@ hcall(unsigned long call,
 		     : "memory");
 	return call;
 }
+<<<<<<< HEAD
+=======
+/*:*/
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Can't use our min() macro here: needs to be a constant */
 #define LGUEST_IRQS (NR_IRQS < 32 ? NR_IRQS: 32)

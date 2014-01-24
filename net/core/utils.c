@@ -30,7 +30,10 @@
 #include <net/net_ratelimit.h>
 
 #include <asm/byteorder.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 
 int net_msg_warn __read_mostly = 1;

@@ -38,7 +38,11 @@ static int mvs_find_tag(struct mvs_info *mvi, struct sas_task *task, u32 *tag)
 
 void mvs_tag_clear(struct mvs_info *mvi, u32 tag)
 {
+<<<<<<< HEAD
 	void *bitmap = &mvi->tags;
+=======
+	void *bitmap = mvi->tags;
+>>>>>>> refs/remotes/origin/cm-10.0
 	clear_bit(tag, bitmap);
 }
 
@@ -49,14 +53,22 @@ void mvs_tag_free(struct mvs_info *mvi, u32 tag)
 
 void mvs_tag_set(struct mvs_info *mvi, unsigned int tag)
 {
+<<<<<<< HEAD
 	void *bitmap = &mvi->tags;
+=======
+	void *bitmap = mvi->tags;
+>>>>>>> refs/remotes/origin/cm-10.0
 	set_bit(tag, bitmap);
 }
 
 inline int mvs_tag_alloc(struct mvs_info *mvi, u32 *tag_out)
 {
 	unsigned int index, tag;
+<<<<<<< HEAD
 	void *bitmap = &mvi->tags;
+=======
+	void *bitmap = mvi->tags;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	index = find_first_zero_bit(bitmap, mvi->tags_num);
 	tag = index;
@@ -74,6 +86,7 @@ void mvs_tag_init(struct mvs_info *mvi)
 		mvs_tag_clear(mvi, i);
 }
 
+<<<<<<< HEAD
 void mvs_hexdump(u32 size, u8 *data, u32 baseaddr)
 {
 	u32 i;
@@ -194,6 +207,8 @@ void mvs_get_sas_addr(void *buf, u32 buflen)
 	/*memcpy(buf, "\x50\x05\x04\x30\x11\xab\x64\x40", 8);*/
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mvs_info *mvs_find_dev_mvi(struct domain_device *dev)
 {
 	unsigned long i = 0, j = 0, hi = 0;
@@ -222,7 +237,10 @@ struct mvs_info *mvs_find_dev_mvi(struct domain_device *dev)
 
 }
 
+<<<<<<< HEAD
 /* FIXME */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int mvs_find_dev_phyno(struct domain_device *dev, int *phyno)
 {
 	unsigned long i = 0, j = 0, n = 0, num = 0;
@@ -253,6 +271,23 @@ int mvs_find_dev_phyno(struct domain_device *dev, int *phyno)
 	return num;
 }
 
+<<<<<<< HEAD
+=======
+struct mvs_device *mvs_find_dev_by_reg_set(struct mvs_info *mvi,
+						u8 reg_set)
+{
+	u32 dev_no;
+	for (dev_no = 0; dev_no < MVS_MAX_DEVICES; dev_no++) {
+		if (mvi->devices[dev_no].taskfileset == MVS_ID_NOT_MAPPED)
+			continue;
+
+		if (mvi->devices[dev_no].taskfileset == reg_set)
+			return &mvi->devices[dev_no];
+	}
+	return NULL;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void mvs_free_reg_set(struct mvs_info *mvi,
 				struct mvs_device *dev)
 {
@@ -283,7 +318,10 @@ void mvs_phys_reset(struct mvs_info *mvi, u32 phy_mask, int hard)
 	}
 }
 
+<<<<<<< HEAD
 /* FIXME: locking? */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int mvs_phy_control(struct asd_sas_phy *sas_phy, enum phy_func func,
 			void *funcdata)
 {
@@ -309,12 +347,20 @@ int mvs_phy_control(struct asd_sas_phy *sas_phy, enum phy_func func,
 		tmp = MVS_CHIP_DISP->read_phy_ctl(mvi, phy_id);
 		if (tmp & PHY_RST_HARD)
 			break;
+<<<<<<< HEAD
 		MVS_CHIP_DISP->phy_reset(mvi, phy_id, 1);
+=======
+		MVS_CHIP_DISP->phy_reset(mvi, phy_id, MVS_HARD_RESET);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case PHY_FUNC_LINK_RESET:
 		MVS_CHIP_DISP->phy_enable(mvi, phy_id);
+<<<<<<< HEAD
 		MVS_CHIP_DISP->phy_reset(mvi, phy_id, 0);
+=======
+		MVS_CHIP_DISP->phy_reset(mvi, phy_id, MVS_SOFT_RESET);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case PHY_FUNC_DISABLE:
@@ -322,7 +368,11 @@ int mvs_phy_control(struct asd_sas_phy *sas_phy, enum phy_func func,
 		break;
 	case PHY_FUNC_RELEASE_SPINUP_HOLD:
 	default:
+<<<<<<< HEAD
 		rc = -EOPNOTSUPP;
+=======
+		rc = -ENOSYS;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	msleep(200);
 	return rc;
@@ -373,6 +423,15 @@ static void mvs_bytes_dmaed(struct mvs_info *mvi, int i)
 		id->dev_type = phy->identify.device_type;
 		id->initiator_bits = SAS_PROTOCOL_ALL;
 		id->target_bits = phy->identify.target_port_protocols;
+<<<<<<< HEAD
+=======
+
+		/* direct attached SAS device */
+		if (phy->att_dev_info & PORT_SSP_TRGT_MASK) {
+			MVS_CHIP_DISP->write_port_cfg_addr(mvi, i, PHYR_PHY_STAT);
+			MVS_CHIP_DISP->write_port_cfg_data(mvi, i, 0x00);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else if (phy->phy_type & PORT_TYPE_SATA) {
 		/*Nothing*/
 	}
@@ -384,6 +443,7 @@ static void mvs_bytes_dmaed(struct mvs_info *mvi, int i)
 				   PORTE_BYTES_DMAED);
 }
 
+<<<<<<< HEAD
 int mvs_slave_alloc(struct scsi_device *scsi_dev)
 {
 	struct domain_device *dev = sdev_to_domain_dev(scsi_dev);
@@ -418,12 +478,18 @@ int mvs_slave_configure(struct scsi_device *sdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void mvs_scan_start(struct Scsi_Host *shost)
 {
 	int i, j;
 	unsigned short core_nr;
 	struct mvs_info *mvi;
 	struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
+<<<<<<< HEAD
+=======
+	struct mvs_prv_info *mvs_prv = sha->lldd_ha;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	core_nr = ((struct mvs_prv_info *)sha->lldd_ha)->n_host;
 
@@ -432,16 +498,30 @@ void mvs_scan_start(struct Scsi_Host *shost)
 		for (i = 0; i < mvi->chip->n_phy; ++i)
 			mvs_bytes_dmaed(mvi, i);
 	}
+<<<<<<< HEAD
+=======
+	mvs_prv->scan_finished = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int mvs_scan_finished(struct Scsi_Host *shost, unsigned long time)
 {
+<<<<<<< HEAD
 	/* give the phy enabling interrupt event time to come in (1s
 	 * is empirically about all it takes) */
 	if (time < HZ)
 		return 0;
 	/* Wait for discovery to finish */
 	scsi_flush_work(shost);
+=======
+	struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
+	struct mvs_prv_info *mvs_prv = sha->lldd_ha;
+
+	if (mvs_prv->scan_finished == 0)
+		return 0;
+
+	sas_drain_work(sha);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 
@@ -461,10 +541,14 @@ static int mvs_task_prep_smp(struct mvs_info *mvi,
 	void *buf_prd;
 	struct mvs_slot_info *slot = &mvi->slot_info[tag];
 	u32 flags = (tei->n_elem << MCH_PRD_LEN_SHIFT);
+<<<<<<< HEAD
 #if _MV_DUMP
 	u8 *buf_cmd;
 	void *from;
 #endif
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * DMA-map SMP request, response buffers
 	 */
@@ -496,6 +580,7 @@ static int mvs_task_prep_smp(struct mvs_info *mvi,
 	buf_tmp = slot->buf;
 	buf_tmp_dma = slot->buf_dma;
 
+<<<<<<< HEAD
 #if _MV_DUMP
 	buf_cmd = buf_tmp;
 	hdr->cmd_tbl = cpu_to_le64(buf_tmp_dma);
@@ -505,6 +590,9 @@ static int mvs_task_prep_smp(struct mvs_info *mvi,
 #else
 	hdr->cmd_tbl = cpu_to_le64(sg_dma_address(sg_req));
 #endif
+=======
+	hdr->cmd_tbl = cpu_to_le64(sg_dma_address(sg_req));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* region 2: open address frame area (MVS_OAF_SZ bytes) ********* */
 	buf_oaf = buf_tmp;
@@ -546,19 +634,26 @@ static int mvs_task_prep_smp(struct mvs_info *mvi,
 	/* generate open address frame hdr (first 12 bytes) */
 	/* initiator, SMP, ftype 1h */
 	buf_oaf[0] = (1 << 7) | (PROTOCOL_SMP << 4) | 0x01;
+<<<<<<< HEAD
 	buf_oaf[1] = dev->linkrate & 0xf;
+=======
+	buf_oaf[1] = min(sas_port->linkrate, dev->linkrate) & 0xf;
+>>>>>>> refs/remotes/origin/cm-10.0
 	*(u16 *)(buf_oaf + 2) = 0xFFFF;		/* SAS SPEC */
 	memcpy(buf_oaf + 4, dev->sas_addr, SAS_ADDR_SIZE);
 
 	/* fill in PRD (scatter/gather) table, if any */
 	MVS_CHIP_DISP->make_prd(task->scatter, tei->n_elem, buf_prd);
 
+<<<<<<< HEAD
 #if _MV_DUMP
 	/* copy cmd table */
 	from = kmap_atomic(sg_page(sg_req), KM_IRQ0);
 	memcpy(buf_cmd, from + sg_req->offset, req_len);
 	kunmap_atomic(from, KM_IRQ0);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 err_out_2:
@@ -616,14 +711,21 @@ static int mvs_task_prep_ata(struct mvs_info *mvi,
 		(mvi_dev->taskfileset << TXQ_SRS_SHIFT);
 	mvi->tx[mvi->tx_prod] = cpu_to_le32(del_q);
 
+<<<<<<< HEAD
 #ifndef DISABLE_HOTPLUG_DMA_FIX
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (task->data_dir == DMA_FROM_DEVICE)
 		flags = (MVS_CHIP_DISP->prd_count() << MCH_PRD_LEN_SHIFT);
 	else
 		flags = (tei->n_elem << MCH_PRD_LEN_SHIFT);
+<<<<<<< HEAD
 #else
 	flags = (tei->n_elem << MCH_PRD_LEN_SHIFT);
 #endif
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (task->ata_task.use_ncq)
 		flags |= MCH_FPDMA;
 	if (dev->sata_dev.command_set == ATAPI_COMMAND_SET) {
@@ -631,11 +733,16 @@ static int mvs_task_prep_ata(struct mvs_info *mvi,
 			flags |= MCH_ATAPI;
 	}
 
+<<<<<<< HEAD
 	/* FIXME: fill in port multiplier number */
 
 	hdr->flags = cpu_to_le32(flags);
 
 	/* FIXME: the low order order 5 bits for the TAG if enable NCQ */
+=======
+	hdr->flags = cpu_to_le32(flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (task->ata_task.use_ncq && mvs_get_ncq_tag(task, &hdr_tag))
 		task->ata_task.fis.sector_count |= (u8) (hdr_tag << 3);
 	else
@@ -657,9 +764,12 @@ static int mvs_task_prep_ata(struct mvs_info *mvi,
 
 	buf_tmp += MVS_ATA_CMD_SZ;
 	buf_tmp_dma += MVS_ATA_CMD_SZ;
+<<<<<<< HEAD
 #if _MV_DUMP
 	slot->cmd_size = MVS_ATA_CMD_SZ;
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* region 2: open address frame area (MVS_OAF_SZ bytes) ********* */
 	/* used for STP.  unused for SATA? */
@@ -682,9 +792,12 @@ static int mvs_task_prep_ata(struct mvs_info *mvi,
 	buf_tmp_dma += i;
 
 	/* region 4: status buffer (larger the PRD, smaller this buf) ****** */
+<<<<<<< HEAD
 	/* FIXME: probably unused, for SATA.  kept here just in case
 	 * we get a STP/SATA error information record
 	 */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	slot->response = buf_tmp;
 	hdr->status_buf = cpu_to_le64(buf_tmp_dma);
 	if (mvi->flags & MVF_FLAG_SOC)
@@ -709,17 +822,29 @@ static int mvs_task_prep_ata(struct mvs_info *mvi,
 	/* generate open address frame hdr (first 12 bytes) */
 	/* initiator, STP, ftype 1h */
 	buf_oaf[0] = (1 << 7) | (PROTOCOL_STP << 4) | 0x1;
+<<<<<<< HEAD
 	buf_oaf[1] = dev->linkrate & 0xf;
+=======
+	buf_oaf[1] = min(sas_port->linkrate, dev->linkrate) & 0xf;
+>>>>>>> refs/remotes/origin/cm-10.0
 	*(u16 *)(buf_oaf + 2) = cpu_to_be16(mvi_dev->device_id + 1);
 	memcpy(buf_oaf + 4, dev->sas_addr, SAS_ADDR_SIZE);
 
 	/* fill in PRD (scatter/gather) table, if any */
 	MVS_CHIP_DISP->make_prd(task->scatter, tei->n_elem, buf_prd);
+<<<<<<< HEAD
 #ifndef DISABLE_HOTPLUG_DMA_FIX
 	if (task->data_dir == DMA_FROM_DEVICE)
 		MVS_CHIP_DISP->dma_fix(mvi->bulk_buffer_dma,
 				TRASH_BUCKET_SIZE, tei->n_elem, buf_prd);
 #endif
+=======
+
+	if (task->data_dir == DMA_FROM_DEVICE)
+		MVS_CHIP_DISP->dma_fix(mvi, sas_port->phy_mask,
+				TRASH_BUCKET_SIZE, tei->n_elem, buf_prd);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -761,6 +886,12 @@ static int mvs_task_prep_ssp(struct mvs_info *mvi,
 	}
 	if (is_tmf)
 		flags |= (MCH_SSP_FR_TASK << MCH_SSP_FR_TYPE_SHIFT);
+<<<<<<< HEAD
+=======
+	else
+		flags |= (MCH_SSP_FR_CMD << MCH_SSP_FR_TYPE_SHIFT);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	hdr->flags = cpu_to_le32(flags | (tei->n_elem << MCH_PRD_LEN_SHIFT));
 	hdr->tags = cpu_to_le32(tag);
 	hdr->data_len = cpu_to_le32(task->total_xfer_len);
@@ -777,9 +908,12 @@ static int mvs_task_prep_ssp(struct mvs_info *mvi,
 
 	buf_tmp += MVS_SSP_CMD_SZ;
 	buf_tmp_dma += MVS_SSP_CMD_SZ;
+<<<<<<< HEAD
 #if _MV_DUMP
 	slot->cmd_size = MVS_SSP_CMD_SZ;
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* region 2: open address frame area (MVS_OAF_SZ bytes) ********* */
 	buf_oaf = buf_tmp;
@@ -817,7 +951,11 @@ static int mvs_task_prep_ssp(struct mvs_info *mvi,
 	/* generate open address frame hdr (first 12 bytes) */
 	/* initiator, SSP, ftype 1h */
 	buf_oaf[0] = (1 << 7) | (PROTOCOL_SSP << 4) | 0x1;
+<<<<<<< HEAD
 	buf_oaf[1] = dev->linkrate & 0xf;
+=======
+	buf_oaf[1] = min(sas_port->linkrate, dev->linkrate) & 0xf;
+>>>>>>> refs/remotes/origin/cm-10.0
 	*(u16 *)(buf_oaf + 2) = cpu_to_be16(mvi_dev->device_id + 1);
 	memcpy(buf_oaf + 4, dev->sas_addr, SAS_ADDR_SIZE);
 
@@ -986,7 +1124,10 @@ static int mvs_task_prep(struct sas_task *task, struct mvs_info *mvi, int is_tmf
 	task->task_state_flags |= SAS_TASK_AT_INITIATOR;
 	spin_unlock(&task->task_state_lock);
 
+<<<<<<< HEAD
 	mvs_hba_memory_dump(mvi, tag, task->task_proto);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mvi_dev->running_req++;
 	++(*pass);
 	mvi->tx_prod = (mvi->tx_prod + 1) & (MVS_CHIP_SLOT_SZ - 1);
@@ -1048,7 +1189,10 @@ static int mvs_task_exec(struct sas_task *task, const int num, gfp_t gfp_flags,
 				struct completion *completion, int is_tmf,
 				struct mvs_tmf_task *tmf)
 {
+<<<<<<< HEAD
 	struct domain_device *dev = task->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mvs_info *mvi = NULL;
 	u32 rc = 0;
 	u32 pass = 0;
@@ -1056,9 +1200,12 @@ static int mvs_task_exec(struct sas_task *task, const int num, gfp_t gfp_flags,
 
 	mvi = ((struct mvs_device *)task->dev->lldd_dev)->mvi_info;
 
+<<<<<<< HEAD
 	if ((dev->dev_type == SATA_DEV) && (dev->sata_dev.ap != NULL))
 		spin_unlock_irq(dev->sata_dev.ap->lock);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&mvi->lock, flags);
 	rc = mvs_task_prep(task, mvi, is_tmf, tmf, &pass);
 	if (rc)
@@ -1069,9 +1216,12 @@ static int mvs_task_exec(struct sas_task *task, const int num, gfp_t gfp_flags,
 				(MVS_CHIP_SLOT_SZ - 1));
 	spin_unlock_irqrestore(&mvi->lock, flags);
 
+<<<<<<< HEAD
 	if ((dev->dev_type == SATA_DEV) && (dev->sata_dev.ap != NULL))
 		spin_lock_irq(dev->sata_dev.ap->lock);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 }
 
@@ -1189,9 +1339,15 @@ static void mvs_slot_task_free(struct mvs_info *mvi, struct sas_task *task,
 	mvs_slot_free(mvi, slot_idx);
 }
 
+<<<<<<< HEAD
 static void mvs_update_wideport(struct mvs_info *mvi, int i)
 {
 	struct mvs_phy *phy = &mvi->phy[i];
+=======
+static void mvs_update_wideport(struct mvs_info *mvi, int phy_no)
+{
+	struct mvs_phy *phy = &mvi->phy[phy_no];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mvs_port *port = phy->port;
 	int j, no;
 
@@ -1246,6 +1402,7 @@ static void *mvs_get_d2h_reg(struct mvs_info *mvi, int i, void *buf)
 		return NULL;
 
 	MVS_CHIP_DISP->write_port_cfg_addr(mvi, i, PHYR_SATA_SIG3);
+<<<<<<< HEAD
 	s[3] = MVS_CHIP_DISP->read_port_cfg_data(mvi, i);
 
 	MVS_CHIP_DISP->write_port_cfg_addr(mvi, i, PHYR_SATA_SIG2);
@@ -1258,6 +1415,19 @@ static void *mvs_get_d2h_reg(struct mvs_info *mvi, int i, void *buf)
 	s[0] = MVS_CHIP_DISP->read_port_cfg_data(mvi, i);
 
 	/* Workaround: take some ATAPI devices for ATA */
+=======
+	s[3] = cpu_to_le32(MVS_CHIP_DISP->read_port_cfg_data(mvi, i));
+
+	MVS_CHIP_DISP->write_port_cfg_addr(mvi, i, PHYR_SATA_SIG2);
+	s[2] = cpu_to_le32(MVS_CHIP_DISP->read_port_cfg_data(mvi, i));
+
+	MVS_CHIP_DISP->write_port_cfg_addr(mvi, i, PHYR_SATA_SIG1);
+	s[1] = cpu_to_le32(MVS_CHIP_DISP->read_port_cfg_data(mvi, i));
+
+	MVS_CHIP_DISP->write_port_cfg_addr(mvi, i, PHYR_SATA_SIG0);
+	s[0] = cpu_to_le32(MVS_CHIP_DISP->read_port_cfg_data(mvi, i));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (((s[1] & 0x00FFFFFF) == 0x00EB1401) && (*(u8 *)&s[3] == 0x01))
 		s[1] = 0x00EB1401 | (*((u8 *)&s[1] + 3) & 0x10);
 
@@ -1269,6 +1439,16 @@ static u32 mvs_is_sig_fis_received(u32 irq_status)
 	return irq_status & PHYEV_SIG_FIS;
 }
 
+<<<<<<< HEAD
+=======
+static void mvs_sig_remove_timer(struct mvs_phy *phy)
+{
+	if (phy->timer.function)
+		del_timer(&phy->timer);
+	phy->timer.function = NULL;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void mvs_update_phyinfo(struct mvs_info *mvi, int i, int get_st)
 {
 	struct mvs_phy *phy = &mvi->phy[i];
@@ -1291,6 +1471,10 @@ void mvs_update_phyinfo(struct mvs_info *mvi, int i, int get_st)
 		if (phy->phy_type & PORT_TYPE_SATA) {
 			phy->identify.target_port_protocols = SAS_PROTOCOL_STP;
 			if (mvs_is_sig_fis_received(phy->irq_status)) {
+<<<<<<< HEAD
+=======
+				mvs_sig_remove_timer(phy);
+>>>>>>> refs/remotes/origin/cm-10.0
 				phy->phy_attached = 1;
 				phy->att_dev_sas_addr =
 					i + mvi->id * mvi->chip->n_phy;
@@ -1308,7 +1492,10 @@ void mvs_update_phyinfo(struct mvs_info *mvi, int i, int get_st)
 						tmp | PHYEV_SIG_FIS);
 				phy->phy_attached = 0;
 				phy->phy_type &= ~PORT_TYPE_SATA;
+<<<<<<< HEAD
 				MVS_CHIP_DISP->phy_reset(mvi, i, 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto out_done;
 			}
 		}	else if (phy->phy_type & PORT_TYPE_SAS
@@ -1334,9 +1521,15 @@ void mvs_update_phyinfo(struct mvs_info *mvi, int i, int get_st)
 		if (MVS_CHIP_DISP->phy_work_around)
 			MVS_CHIP_DISP->phy_work_around(mvi, i);
 	}
+<<<<<<< HEAD
 	mv_dprintk("port %d attach dev info is %x\n",
 		i + mvi->id * mvi->chip->n_phy, phy->att_dev_info);
 	mv_dprintk("port %d attach sas addr is %llx\n",
+=======
+	mv_dprintk("phy %d attach dev info is %x\n",
+		i + mvi->id * mvi->chip->n_phy, phy->att_dev_info);
+	mv_dprintk("phy %d attach sas addr is %llx\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		i + mvi->id * mvi->chip->n_phy, phy->att_dev_sas_addr);
 out_done:
 	if (get_st)
@@ -1361,10 +1554,17 @@ static void mvs_port_notify_formed(struct asd_sas_phy *sas_phy, int lock)
 	}
 	hi = i/((struct mvs_prv_info *)sas_ha->lldd_ha)->n_phy;
 	mvi = ((struct mvs_prv_info *)sas_ha->lldd_ha)->mvi[hi];
+<<<<<<< HEAD
 	if (sas_port->id >= mvi->chip->n_phy)
 		port = &mvi->port[sas_port->id - mvi->chip->n_phy];
 	else
 		port = &mvi->port[sas_port->id];
+=======
+	if (i >= mvi->chip->n_phy)
+		port = &mvi->port[i - mvi->chip->n_phy];
+	else
+		port = &mvi->port[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (lock)
 		spin_lock_irqsave(&mvi->lock, flags);
 	port->port_attached = 1;
@@ -1374,6 +1574,15 @@ static void mvs_port_notify_formed(struct asd_sas_phy *sas_phy, int lock)
 		port->wide_port_phymap = sas_port->phy_mask;
 		mv_printk("set wide port phy map %x\n", sas_port->phy_mask);
 		mvs_update_wideport(mvi, sas_phy->id);
+<<<<<<< HEAD
+=======
+
+		/* direct attached SAS device */
+		if (phy->att_dev_info & PORT_SSP_TRGT_MASK) {
+			MVS_CHIP_DISP->write_port_cfg_addr(mvi, i, PHYR_PHY_STAT);
+			MVS_CHIP_DISP->write_port_cfg_data(mvi, i, 0x04);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (lock)
 		spin_unlock_irqrestore(&mvi->lock, flags);
@@ -1393,7 +1602,11 @@ static void mvs_port_notify_deformed(struct asd_sas_phy *sas_phy, int lock)
 			return;
 	}
 	list_for_each_entry(dev, &port->dev_list, dev_list_node)
+<<<<<<< HEAD
 		mvs_do_release_task(phy->mvi, phy_no, NULL);
+=======
+		mvs_do_release_task(phy->mvi, phy_no, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 }
 
@@ -1457,6 +1670,10 @@ int mvs_dev_found_notify(struct domain_device *dev, int lock)
 	mvi_device->dev_status = MVS_DEV_NORMAL;
 	mvi_device->dev_type = dev->dev_type;
 	mvi_device->mvi_info = mvi;
+<<<<<<< HEAD
+=======
+	mvi_device->sas_device = dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (parent_dev && DEV_IS_EXPANDER(parent_dev->dev_type)) {
 		int phy_id;
 		u8 phy_num = parent_dev->ex_dev.num_phys;
@@ -1508,6 +1725,10 @@ void mvs_dev_gone_notify(struct domain_device *dev)
 		mv_dprintk("found dev has gone.\n");
 	}
 	dev->lldd_dev = NULL;
+<<<<<<< HEAD
+=======
+	mvi_dev->sas_device = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_unlock_irqrestore(&mvi->lock, flags);
 }
@@ -1518,6 +1739,7 @@ void mvs_dev_gone(struct domain_device *dev)
 	mvs_dev_gone_notify(dev);
 }
 
+<<<<<<< HEAD
 static  struct sas_task *mvs_alloc_task(void)
 {
 	struct sas_task *task = kzalloc(sizeof(struct sas_task), GFP_KERNEL);
@@ -1540,6 +1762,8 @@ static  void mvs_free_task(struct sas_task *task)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void mvs_task_done(struct sas_task *task)
 {
 	if (!del_timer(&task->timer))
@@ -1555,7 +1779,10 @@ static void mvs_tmf_timedout(unsigned long data)
 	complete(&task->completion);
 }
 
+<<<<<<< HEAD
 /* XXX */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MVS_TASK_TIMEOUT 20
 static int mvs_exec_internal_tmf_task(struct domain_device *dev,
 			void *parameter, u32 para_len, struct mvs_tmf_task *tmf)
@@ -1564,7 +1791,11 @@ static int mvs_exec_internal_tmf_task(struct domain_device *dev,
 	struct sas_task *task = NULL;
 
 	for (retry = 0; retry < 3; retry++) {
+<<<<<<< HEAD
 		task = mvs_alloc_task();
+=======
+		task = sas_alloc_task(GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!task)
 			return -ENOMEM;
 
@@ -1588,7 +1819,11 @@ static int mvs_exec_internal_tmf_task(struct domain_device *dev,
 		}
 
 		wait_for_completion(&task->completion);
+<<<<<<< HEAD
 		res = -TMF_RESP_FUNC_FAILED;
+=======
+		res = TMF_RESP_FUNC_FAILED;
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Even TMF timed out, return direct. */
 		if ((task->task_state_flags & SAS_TASK_STATE_ABORTED)) {
 			if (!(task->task_state_flags & SAS_TASK_STATE_DONE)) {
@@ -1622,15 +1857,23 @@ static int mvs_exec_internal_tmf_task(struct domain_device *dev,
 				    SAS_ADDR(dev->sas_addr),
 				    task->task_status.resp,
 				    task->task_status.stat);
+<<<<<<< HEAD
 			mvs_free_task(task);
+=======
+			sas_free_task(task);
+>>>>>>> refs/remotes/origin/cm-10.0
 			task = NULL;
 
 		}
 	}
 ex_err:
 	BUG_ON(retry == 3 && task != NULL);
+<<<<<<< HEAD
 	if (task != NULL)
 		mvs_free_task(task);
+=======
+	sas_free_task(task);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return res;
 }
 
@@ -1638,11 +1881,18 @@ static int mvs_debug_issue_ssp_tmf(struct domain_device *dev,
 				u8 *lun, struct mvs_tmf_task *tmf)
 {
 	struct sas_ssp_task ssp_task;
+<<<<<<< HEAD
 	DECLARE_COMPLETION_ONSTACK(completion);
 	if (!(dev->tproto & SAS_PROTOCOL_SSP))
 		return TMF_RESP_FUNC_ESUPP;
 
 	strncpy((u8 *)&ssp_task.LUN, lun, 8);
+=======
+	if (!(dev->tproto & SAS_PROTOCOL_SSP))
+		return TMF_RESP_FUNC_ESUPP;
+
+	memcpy(ssp_task.LUN, lun, 8);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return mvs_exec_internal_tmf_task(dev, &ssp_task,
 				sizeof(ssp_task), tmf);
@@ -1654,10 +1904,18 @@ static int mvs_debug_issue_ssp_tmf(struct domain_device *dev,
 static int mvs_debug_I_T_nexus_reset(struct domain_device *dev)
 {
 	int rc;
+<<<<<<< HEAD
 	struct sas_phy *phy = sas_find_local_phy(dev);
 	int reset_type = (dev->dev_type == SATA_DEV ||
 			(dev->tproto & SAS_PROTOCOL_STP)) ? 0 : 1;
 	rc = sas_phy_reset(phy, reset_type);
+=======
+	struct sas_phy *phy = sas_get_local_phy(dev);
+	int reset_type = (dev->dev_type == SATA_DEV ||
+			(dev->tproto & SAS_PROTOCOL_STP)) ? 0 : 1;
+	rc = sas_phy_reset(phy, reset_type);
+	sas_put_local_phy(phy);
+>>>>>>> refs/remotes/origin/cm-10.0
 	msleep(2000);
 	return rc;
 }
@@ -1666,7 +1924,11 @@ static int mvs_debug_I_T_nexus_reset(struct domain_device *dev)
 int mvs_lu_reset(struct domain_device *dev, u8 *lun)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	int i, phyno[WIDE_PORT_MAX_PHY], num , rc = TMF_RESP_FUNC_FAILED;
+=======
+	int rc = TMF_RESP_FUNC_FAILED;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mvs_tmf_task tmf_task;
 	struct mvs_device * mvi_dev = dev->lldd_dev;
 	struct mvs_info *mvi = mvi_dev->mvi_info;
@@ -1675,10 +1937,15 @@ int mvs_lu_reset(struct domain_device *dev, u8 *lun)
 	mvi_dev->dev_status = MVS_DEV_EH;
 	rc = mvs_debug_issue_ssp_tmf(dev, lun, &tmf_task);
 	if (rc == TMF_RESP_FUNC_COMPLETE) {
+<<<<<<< HEAD
 		num = mvs_find_dev_phyno(dev, phyno);
 		spin_lock_irqsave(&mvi->lock, flags);
 		for (i = 0; i < num; i++)
 			mvs_release_task(mvi, dev);
+=======
+		spin_lock_irqsave(&mvi->lock, flags);
+		mvs_release_task(mvi, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock_irqrestore(&mvi->lock, flags);
 	}
 	/* If failed, fall-through I_T_Nexus reset */
@@ -1696,11 +1963,19 @@ int mvs_I_T_nexus_reset(struct domain_device *dev)
 
 	if (mvi_dev->dev_status != MVS_DEV_EH)
 		return TMF_RESP_FUNC_COMPLETE;
+<<<<<<< HEAD
+=======
+	else
+		mvi_dev->dev_status = MVS_DEV_NORMAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rc = mvs_debug_I_T_nexus_reset(dev);
 	mv_printk("%s for device[%x]:rc= %d\n",
 		__func__, mvi_dev->device_id, rc);
 
+<<<<<<< HEAD
 	/* housekeeper */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&mvi->lock, flags);
 	mvs_release_task(mvi, dev);
 	spin_unlock_irqrestore(&mvi->lock, flags);
@@ -1739,9 +2014,12 @@ int mvs_query_task(struct sas_task *task)
 		case TMF_RESP_FUNC_FAILED:
 		case TMF_RESP_FUNC_COMPLETE:
 			break;
+<<<<<<< HEAD
 		default:
 			rc = TMF_RESP_FUNC_COMPLETE;
 			break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	mv_printk("%s:rc= %d\n", __func__, rc);
@@ -1761,8 +2039,13 @@ int mvs_abort_task(struct sas_task *task)
 	u32 tag;
 
 	if (!mvi_dev) {
+<<<<<<< HEAD
 		mv_printk("%s:%d TMF_RESP_FUNC_FAILED\n", __func__, __LINE__);
 		rc = TMF_RESP_FUNC_FAILED;
+=======
+		mv_printk("Device has removed\n");
+		return TMF_RESP_FUNC_FAILED;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	mvi = mvi_dev->mvi_info;
@@ -1807,6 +2090,7 @@ int mvs_abort_task(struct sas_task *task)
 
 	} else if (task->task_proto & SAS_PROTOCOL_SATA ||
 		task->task_proto & SAS_PROTOCOL_STP) {
+<<<<<<< HEAD
 		/* to do free register_set */
 		if (SATA_DEV == dev->dev_type) {
 			struct mvs_slot_info *slot = task->lldd_task;
@@ -1826,6 +2110,19 @@ int mvs_abort_task(struct sas_task *task)
 		}
 	} else {
 		/* SMP */
+=======
+		if (SATA_DEV == dev->dev_type) {
+			struct mvs_slot_info *slot = task->lldd_task;
+			u32 slot_idx = (u32)(slot - mvi->slot_info);
+			mv_dprintk("mvs_abort_task() mvi=%p task=%p "
+				   "slot=%p slot_idx=x%x\n",
+				   mvi, task, slot, slot_idx);
+			task->task_state_flags |= SAS_TASK_STATE_ABORTED;
+			mvs_slot_task_free(mvi, task, slot, slot_idx);
+			rc = TMF_RESP_FUNC_COMPLETE;
+			goto out;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	}
 out:
@@ -1891,12 +2188,70 @@ static int mvs_sata_done(struct mvs_info *mvi, struct sas_task *task,
 	return stat;
 }
 
+<<<<<<< HEAD
+=======
+void mvs_set_sense(u8 *buffer, int len, int d_sense,
+		int key, int asc, int ascq)
+{
+	memset(buffer, 0, len);
+
+	if (d_sense) {
+		/* Descriptor format */
+		if (len < 4) {
+			mv_printk("Length %d of sense buffer too small to "
+				"fit sense %x:%x:%x", len, key, asc, ascq);
+		}
+
+		buffer[0] = 0x72;		/* Response Code	*/
+		if (len > 1)
+			buffer[1] = key;	/* Sense Key */
+		if (len > 2)
+			buffer[2] = asc;	/* ASC	*/
+		if (len > 3)
+			buffer[3] = ascq;	/* ASCQ	*/
+	} else {
+		if (len < 14) {
+			mv_printk("Length %d of sense buffer too small to "
+				"fit sense %x:%x:%x", len, key, asc, ascq);
+		}
+
+		buffer[0] = 0x70;		/* Response Code	*/
+		if (len > 2)
+			buffer[2] = key;	/* Sense Key */
+		if (len > 7)
+			buffer[7] = 0x0a;	/* Additional Sense Length */
+		if (len > 12)
+			buffer[12] = asc;	/* ASC */
+		if (len > 13)
+			buffer[13] = ascq; /* ASCQ */
+	}
+
+	return;
+}
+
+void mvs_fill_ssp_resp_iu(struct ssp_response_iu *iu,
+				u8 key, u8 asc, u8 asc_q)
+{
+	iu->datapres = 2;
+	iu->response_data_len = 0;
+	iu->sense_data_len = 17;
+	iu->status = 02;
+	mvs_set_sense(iu->sense_data, 17, 0,
+			key, asc, asc_q);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int mvs_slot_err(struct mvs_info *mvi, struct sas_task *task,
 			 u32 slot_idx)
 {
 	struct mvs_slot_info *slot = &mvi->slot_info[slot_idx];
 	int stat;
+<<<<<<< HEAD
 	u32 err_dw0 = le32_to_cpu(*(u32 *) (slot->response));
+=======
+	u32 err_dw0 = le32_to_cpu(*(u32 *)slot->response);
+	u32 err_dw1 = le32_to_cpu(*((u32 *)slot->response + 1));
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 tfs = 0;
 	enum mvs_port_type type = PORT_TYPE_SAS;
 
@@ -1908,8 +2263,24 @@ static int mvs_slot_err(struct mvs_info *mvi, struct sas_task *task,
 	stat = SAM_STAT_CHECK_CONDITION;
 	switch (task->task_proto) {
 	case SAS_PROTOCOL_SSP:
+<<<<<<< HEAD
 		stat = SAS_ABORTED_TASK;
 		break;
+=======
+	{
+		stat = SAS_ABORTED_TASK;
+		if ((err_dw0 & NO_DEST) || err_dw1 & bit(31)) {
+			struct ssp_response_iu *iu = slot->response +
+				sizeof(struct mvs_err_info);
+			mvs_fill_ssp_resp_iu(iu, NOT_READY, 0x04, 01);
+			sas_ssp_task_response(mvi->dev, task, iu);
+			stat = SAM_STAT_CHECK_CONDITION;
+		}
+		if (err_dw1 & bit(31))
+			mv_printk("reuse same slot, retry command.\n");
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SAS_PROTOCOL_SMP:
 		stat = SAM_STAT_CHECK_CONDITION;
 		break;
@@ -1918,10 +2289,15 @@ static int mvs_slot_err(struct mvs_info *mvi, struct sas_task *task,
 	case SAS_PROTOCOL_STP:
 	case SAS_PROTOCOL_SATA | SAS_PROTOCOL_STP:
 	{
+<<<<<<< HEAD
 		if (err_dw0 == 0x80400002)
 			mv_printk("find reserved error, why?\n");
 
 		task->ata_task.use_ncq = 0;
+=======
+		task->ata_task.use_ncq = 0;
+		stat = SAS_PROTO_RESPONSE;
+>>>>>>> refs/remotes/origin/cm-10.0
 		mvs_sata_done(mvi, task, slot_idx, err_dw0);
 	}
 		break;
@@ -1945,8 +2321,11 @@ int mvs_slot_complete(struct mvs_info *mvi, u32 rx_desc, u32 flags)
 	void *to;
 	enum exec_status sts;
 
+<<<<<<< HEAD
 	if (mvi->exp_req)
 		mvi->exp_req--;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(!task || !task->lldd_task || !task->dev))
 		return -1;
 
@@ -1954,8 +2333,11 @@ int mvs_slot_complete(struct mvs_info *mvi, u32 rx_desc, u32 flags)
 	dev = task->dev;
 	mvi_dev = dev->lldd_dev;
 
+<<<<<<< HEAD
 	mvs_hba_cq_dump(mvi);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock(&task->task_state_lock);
 	task->task_state_flags &=
 		~(SAS_TASK_STATE_PENDING | SAS_TASK_AT_INITIATOR);
@@ -1978,6 +2360,10 @@ int mvs_slot_complete(struct mvs_info *mvi, u32 rx_desc, u32 flags)
 		return -1;
 	}
 
+<<<<<<< HEAD
+=======
+	/* when no device attaching, go ahead and complete by error handling*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(!mvi_dev || flags)) {
 		if (!mvi_dev)
 			mv_dprintk("port has not device.\n");
@@ -1987,6 +2373,12 @@ int mvs_slot_complete(struct mvs_info *mvi, u32 rx_desc, u32 flags)
 
 	/* error info record present */
 	if (unlikely((rx_desc & RXQ_ERR) && (*(u64 *) slot->response))) {
+<<<<<<< HEAD
+=======
+		mv_dprintk("port %d slot %d rx_desc %X has error info"
+			"%016llX.\n", slot->port->sas_port.id, slot_idx,
+			 rx_desc, (u64)(*(u64 *)slot->response));
+>>>>>>> refs/remotes/origin/cm-10.0
 		tstat->stat = mvs_slot_err(mvi, task, slot_idx);
 		tstat->resp = SAS_TASK_COMPLETE;
 		goto out;
@@ -2011,11 +2403,19 @@ int mvs_slot_complete(struct mvs_info *mvi, u32 rx_desc, u32 flags)
 	case SAS_PROTOCOL_SMP: {
 			struct scatterlist *sg_resp = &task->smp_task.smp_resp;
 			tstat->stat = SAM_STAT_GOOD;
+<<<<<<< HEAD
 			to = kmap_atomic(sg_page(sg_resp), KM_IRQ0);
 			memcpy(to + sg_resp->offset,
 				slot->response + sizeof(struct mvs_err_info),
 				sg_dma_len(sg_resp));
 			kunmap_atomic(to, KM_IRQ0);
+=======
+			to = kmap_atomic(sg_page(sg_resp));
+			memcpy(to + sg_resp->offset,
+				slot->response + sizeof(struct mvs_err_info),
+				sg_dma_len(sg_resp));
+			kunmap_atomic(to);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 
@@ -2048,8 +2448,12 @@ out:
 	spin_unlock(&mvi->lock);
 	if (task->task_done)
 		task->task_done(task);
+<<<<<<< HEAD
 	else
 		mv_dprintk("why has not task_done.\n");
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock(&mvi->lock);
 
 	return sts;
@@ -2092,7 +2496,10 @@ void mvs_release_task(struct mvs_info *mvi,
 		      struct domain_device *dev)
 {
 	int i, phyno[WIDE_PORT_MAX_PHY], num;
+<<<<<<< HEAD
 	/* housekeeper */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	num = mvs_find_dev_phyno(dev, phyno);
 	for (i = 0; i < num; i++)
 		mvs_do_release_task(mvi, phyno[i], dev);
@@ -2111,6 +2518,7 @@ static void mvs_work_queue(struct work_struct *work)
 	struct mvs_wq *mwq = container_of(dw, struct mvs_wq, work_q);
 	struct mvs_info *mvi = mwq->mvi;
 	unsigned long flags;
+<<<<<<< HEAD
 
 	spin_lock_irqsave(&mvi->lock, flags);
 	if (mwq->handler & PHY_PLUG_EVENT) {
@@ -2118,6 +2526,15 @@ static void mvs_work_queue(struct work_struct *work)
 		struct sas_ha_struct *sas_ha = mvi->sas;
 		struct mvs_phy *phy = &mvi->phy[phy_no];
 		struct asd_sas_phy *sas_phy = &phy->sas_phy;
+=======
+	u32 phy_no = (unsigned long) mwq->data;
+	struct sas_ha_struct *sas_ha = mvi->sas;
+	struct mvs_phy *phy = &mvi->phy[phy_no];
+	struct asd_sas_phy *sas_phy = &phy->sas_phy;
+
+	spin_lock_irqsave(&mvi->lock, flags);
+	if (mwq->handler & PHY_PLUG_EVENT) {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (phy->phy_event & PHY_PLUG_OUT) {
 			u32 tmp;
@@ -2139,6 +2556,14 @@ static void mvs_work_queue(struct work_struct *work)
 				mv_dprintk("phy%d Attached Device\n", phy_no);
 			}
 		}
+<<<<<<< HEAD
+=======
+	} else if (mwq->handler & EXP_BRCT_CHG) {
+		phy->phy_event &= ~EXP_BRCT_CHG;
+		sas_ha->notify_port_event(sas_phy,
+				PORTE_BROADCAST_RCVD);
+		mv_dprintk("phy%d Got Broadcast Change\n", phy_no);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	list_del(&mwq->entry);
 	spin_unlock_irqrestore(&mvi->lock, flags);
@@ -2174,11 +2599,16 @@ static void mvs_sig_time_out(unsigned long tphy)
 		if (&mvi->phy[phy_no] == phy) {
 			mv_dprintk("Get signature time out, reset phy %d\n",
 				phy_no+mvi->id*mvi->chip->n_phy);
+<<<<<<< HEAD
 			MVS_CHIP_DISP->phy_reset(mvi, phy_no, 1);
+=======
+			MVS_CHIP_DISP->phy_reset(mvi, phy_no, MVS_HARD_RESET);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }
 
+<<<<<<< HEAD
 static void mvs_sig_remove_timer(struct mvs_phy *phy)
 {
 	if (phy->timer.function)
@@ -2197,6 +2627,18 @@ void mvs_int_port(struct mvs_info *mvi, int phy_no, u32 events)
 	mv_dprintk("port %d ctrl sts=0x%X.\n", phy_no+mvi->id*mvi->chip->n_phy,
 		MVS_CHIP_DISP->read_phy_ctl(mvi, phy_no));
 	mv_dprintk("Port %d irq sts = 0x%X\n", phy_no+mvi->id*mvi->chip->n_phy,
+=======
+void mvs_int_port(struct mvs_info *mvi, int phy_no, u32 events)
+{
+	u32 tmp;
+	struct mvs_phy *phy = &mvi->phy[phy_no];
+
+	phy->irq_status = MVS_CHIP_DISP->read_port_irq_stat(mvi, phy_no);
+	MVS_CHIP_DISP->write_port_irq_stat(mvi, phy_no, phy->irq_status);
+	mv_dprintk("phy %d ctrl sts=0x%08X.\n", phy_no+mvi->id*mvi->chip->n_phy,
+		MVS_CHIP_DISP->read_phy_ctl(mvi, phy_no));
+	mv_dprintk("phy %d irq sts = 0x%08X\n", phy_no+mvi->id*mvi->chip->n_phy,
+>>>>>>> refs/remotes/origin/cm-10.0
 		phy->irq_status);
 
 	/*
@@ -2205,11 +2647,19 @@ void mvs_int_port(struct mvs_info *mvi, int phy_no, u32 events)
 	*/
 
 	if (phy->irq_status & PHYEV_DCDR_ERR) {
+<<<<<<< HEAD
 		mv_dprintk("port %d STP decoding error.\n",
+=======
+		mv_dprintk("phy %d STP decoding error.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		phy_no + mvi->id*mvi->chip->n_phy);
 	}
 
 	if (phy->irq_status & PHYEV_POOF) {
+<<<<<<< HEAD
+=======
+		mdelay(500);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!(phy->phy_event & PHY_PLUG_OUT)) {
 			int dev_sata = phy->phy_type & PORT_TYPE_SATA;
 			int ready;
@@ -2220,17 +2670,24 @@ void mvs_int_port(struct mvs_info *mvi, int phy_no, u32 events)
 				(void *)(unsigned long)phy_no,
 				PHY_PLUG_EVENT);
 			ready = mvs_is_phy_ready(mvi, phy_no);
+<<<<<<< HEAD
 			if (!ready)
 				mv_dprintk("phy%d Unplug Notice\n",
 					phy_no +
 					mvi->id * mvi->chip->n_phy);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (ready || dev_sata) {
 				if (MVS_CHIP_DISP->stp_reset)
 					MVS_CHIP_DISP->stp_reset(mvi,
 							phy_no);
 				else
 					MVS_CHIP_DISP->phy_reset(mvi,
+<<<<<<< HEAD
 							phy_no, 0);
+=======
+							phy_no, MVS_SOFT_RESET);
+>>>>>>> refs/remotes/origin/cm-10.0
 				return;
 			}
 		}
@@ -2243,13 +2700,20 @@ void mvs_int_port(struct mvs_info *mvi, int phy_no, u32 events)
 		if (phy->timer.function == NULL) {
 			phy->timer.data = (unsigned long)phy;
 			phy->timer.function = mvs_sig_time_out;
+<<<<<<< HEAD
 			phy->timer.expires = jiffies + 10*HZ;
+=======
+			phy->timer.expires = jiffies + 5*HZ;
+>>>>>>> refs/remotes/origin/cm-10.0
 			add_timer(&phy->timer);
 		}
 	}
 	if (phy->irq_status & (PHYEV_SIG_FIS | PHYEV_ID_DONE)) {
 		phy->phy_status = mvs_is_phy_ready(mvi, phy_no);
+<<<<<<< HEAD
 		mvs_sig_remove_timer(phy);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		mv_dprintk("notify plug in on phy[%d]\n", phy_no);
 		if (phy->phy_status) {
 			mdelay(10);
@@ -2263,14 +2727,22 @@ void mvs_int_port(struct mvs_info *mvi, int phy_no, u32 events)
 			}
 			mvs_update_phyinfo(mvi, phy_no, 0);
 			if (phy->phy_type & PORT_TYPE_SAS) {
+<<<<<<< HEAD
 				MVS_CHIP_DISP->phy_reset(mvi, phy_no, 2);
+=======
+				MVS_CHIP_DISP->phy_reset(mvi, phy_no, MVS_PHY_TUNE);
+>>>>>>> refs/remotes/origin/cm-10.0
 				mdelay(10);
 			}
 
 			mvs_bytes_dmaed(mvi, phy_no);
 			/* whether driver is going to handle hot plug */
 			if (phy->phy_event & PHY_PLUG_OUT) {
+<<<<<<< HEAD
 				mvs_port_notify_formed(sas_phy, 0);
+=======
+				mvs_port_notify_formed(&phy->sas_phy, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 				phy->phy_event &= ~PHY_PLUG_OUT;
 			}
 		} else {
@@ -2278,6 +2750,7 @@ void mvs_int_port(struct mvs_info *mvi, int phy_no, u32 events)
 				phy_no + mvi->id*mvi->chip->n_phy);
 		}
 	} else if (phy->irq_status & PHYEV_BROAD_CH) {
+<<<<<<< HEAD
 		mv_dprintk("port %d broadcast change.\n",
 			phy_no + mvi->id*mvi->chip->n_phy);
 		/* exception for Samsung disk drive*/
@@ -2285,6 +2758,13 @@ void mvs_int_port(struct mvs_info *mvi, int phy_no, u32 events)
 		sas_ha->notify_port_event(sas_phy, PORTE_BROADCAST_RCVD);
 	}
 	MVS_CHIP_DISP->write_port_irq_stat(mvi, phy_no, phy->irq_status);
+=======
+		mv_dprintk("phy %d broadcast change.\n",
+			phy_no + mvi->id*mvi->chip->n_phy);
+		mvs_handle_event(mvi, (void *)(unsigned long)phy_no,
+				EXP_BRCT_CHG);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int mvs_int_rx(struct mvs_info *mvi, bool self_clear)

@@ -21,8 +21,14 @@
 #include <linux/perf_event.h>
 
 #include <asm/exception.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/pgtable.h>
+=======
+#include <asm/pgtable.h>
+#include <asm/system_misc.h>
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlbflush.h>
 #include <asm/cputype.h>
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
@@ -36,6 +42,7 @@
 
 #include "fault.h"
 
+<<<<<<< HEAD
 /*
  * Fault status register encodings.  We steal bit 31 for our own purposes.
  */
@@ -49,6 +56,8 @@ static inline int fsr_fs(unsigned int fsr)
 	return (fsr & FSR_FS3_0) | (fsr & FSR_FS4) >> 6;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_MMU
 
 #ifdef CONFIG_KPROBES
@@ -104,7 +113,11 @@ void show_pte(struct mm_struct *mm, unsigned long addr)
 
 		pud = pud_offset(pgd, addr);
 		if (PTRS_PER_PUD != 1)
+<<<<<<< HEAD
 			printk(", *pud=%08lx", pud_val(*pud));
+=======
+			printk(", *pud=%08llx", (long long)pud_val(*pud));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (pud_none(*pud))
 			break;
@@ -132,8 +145,15 @@ void show_pte(struct mm_struct *mm, unsigned long addr)
 
 		pte = pte_offset_map(pmd, addr);
 		printk(", *pte=%08llx", (long long)pte_val(*pte));
+<<<<<<< HEAD
 		printk(", *ppte=%08llx",
 		       (long long)pte_val(pte[PTE_HWTABLE_PTRS]));
+=======
+#ifndef CONFIG_ARM_LPAE
+		printk(", *ppte=%08llx",
+		       (long long)pte_val(pte[PTE_HWTABLE_PTRS]));
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 		pte_unmap(pte);
 	} while(0);
 
@@ -184,7 +204,12 @@ __do_user_fault(struct task_struct *tsk, unsigned long addr,
 	struct siginfo si;
 
 #ifdef CONFIG_DEBUG_USER
+<<<<<<< HEAD
 	if (user_debug & UDBG_SEGV) {
+=======
+	if (((user_debug & UDBG_SEGV) && (sig == SIGSEGV)) ||
+	    ((user_debug & UDBG_BUS)  && (sig == SIGBUS))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_DEBUG "%s: unhandled page fault (%d) at 0x%08lx, code 0x%03x\n",
 		       tsk->comm, sig, addr, fsr);
 		show_pte(tsk->mm, addr);
@@ -240,7 +265,11 @@ static inline bool access_error(unsigned int fsr, struct vm_area_struct *vma)
 
 static int __kprobes
 __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
+<<<<<<< HEAD
 		struct task_struct *tsk)
+=======
+		unsigned int flags, struct task_struct *tsk)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct vm_area_struct *vma;
 	int fault;
@@ -262,6 +291,7 @@ good_area:
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * If for any reason at all we couldn't handle the fault, make
 	 * sure we exit gracefully rather than endlessly redo the fault.
@@ -274,6 +304,9 @@ good_area:
 	else
 		tsk->min_flt++;
 	return fault;
+=======
+	return handle_mm_fault(mm, vma, addr & PAGE_MASK, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 check_stack:
 	/* Don't allow expansion below FIRST_USER_ADDRESS */
@@ -290,6 +323,12 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	struct task_struct *tsk;
 	struct mm_struct *mm;
 	int fault, sig, code;
+<<<<<<< HEAD
+=======
+	int write = fsr & FSR_WRITE;
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
+				(write ? FAULT_FLAG_WRITE : 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (notify_page_fault(regs, fsr))
 		return 0;
@@ -297,6 +336,13 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	tsk = current;
 	mm  = tsk->mm;
 
+<<<<<<< HEAD
+=======
+	/* Enable interrupts if they were enabled in the parent context. */
+	if (interrupts_enabled(regs))
+		local_irq_enable();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * If we're in an interrupt or have no user
 	 * context, we must not take the fault..
@@ -312,6 +358,10 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	if (!down_read_trylock(&mm->mmap_sem)) {
 		if (!user_mode(regs) && !search_exception_tables(regs->ARM_pc))
 			goto no_context;
+<<<<<<< HEAD
+=======
+retry:
+>>>>>>> refs/remotes/origin/cm-10.0
 		down_read(&mm->mmap_sem);
 	} else {
 		/*
@@ -327,6 +377,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 #endif
 	}
 
+<<<<<<< HEAD
 	fault = __do_page_fault(mm, addr, fsr, tsk);
 	up_read(&mm->mmap_sem);
 
@@ -335,6 +386,43 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1, 0, regs, addr);
 	else if (fault & VM_FAULT_MINOR)
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, 0, regs, addr);
+=======
+	fault = __do_page_fault(mm, addr, fsr, flags, tsk);
+
+	/* If we need to retry but a fatal signal is pending, handle the
+	 * signal first. We do not need to release the mmap_sem because
+	 * it would already be released in __lock_page_or_retry in
+	 * mm/filemap.c. */
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return 0;
+
+	/*
+	 * Major/minor page fault accounting is only done on the
+	 * initial attempt. If we go through a retry, it is extremely
+	 * likely that the page will be found in page cache at that point.
+	 */
+
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
+	if (!(fault & VM_FAULT_ERROR) && flags & FAULT_FLAG_ALLOW_RETRY) {
+		if (fault & VM_FAULT_MAJOR) {
+			tsk->maj_flt++;
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
+					regs, addr);
+		} else {
+			tsk->min_flt++;
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
+					regs, addr);
+		}
+		if (fault & VM_FAULT_RETRY) {
+			/* Clear FAULT_FLAG_ALLOW_RETRY to avoid any risk
+			* of starvation. */
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+			goto retry;
+		}
+	}
+
+	up_read(&mm->mmap_sem);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Handle the "normal" case first - VM_FAULT_MAJOR / VM_FAULT_MINOR
@@ -448,6 +536,15 @@ do_translation_fault(unsigned long addr, unsigned int fsr,
 	pmd = pmd_offset(pud, addr);
 	pmd_k = pmd_offset(pud_k, addr);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARM_LPAE
+	/*
+	 * Only one hardware entry per PMD with LPAE.
+	 */
+	index = 0;
+#else
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * On ARM one Linux PGD entry contains two hardware entries (see page
 	 * tables layout in pgtable.h). We normally guarantee that we always
@@ -457,6 +554,10 @@ do_translation_fault(unsigned long addr, unsigned int fsr,
 	 * for the first of pair.
 	 */
 	index = (addr >> SECTION_SHIFT) & 1;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pmd_none(pmd_k[index]))
 		goto bad_area;
 
@@ -510,7 +611,11 @@ do_bad(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 
 #endif
 
+<<<<<<< HEAD
 static int
+=======
+int
+>>>>>>> refs/remotes/origin/cm-10.0
 do_imprecise_ext(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 {
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
@@ -539,11 +644,16 @@ do_imprecise_ext(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	return 1;
 }
 
+<<<<<<< HEAD
 static struct fsr_info {
+=======
+struct fsr_info {
+>>>>>>> refs/remotes/origin/cm-10.0
 	int	(*fn)(unsigned long addr, unsigned int fsr, struct pt_regs *regs);
 	int	sig;
 	int	code;
 	const char *name;
+<<<<<<< HEAD
 } fsr_info[] = {
 	/*
 	 * The following are the standard ARMv3 and ARMv4 aborts.  ARMv5
@@ -588,6 +698,17 @@ static struct fsr_info {
 	{ do_bad,		SIGBUS,  0,		"unknown 31"			   }
 };
 
+=======
+};
+
+/* FSR definition */
+#ifdef CONFIG_ARM_LPAE
+#include "fsr-3level.c"
+#else
+#include "fsr-2level.c"
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init
 hook_fault_code(int nr, int (*fn)(unsigned long, unsigned int, struct pt_regs *),
 		int sig, int code, const char *name)
@@ -702,6 +823,7 @@ do_DataAbort(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	arm_notify_die("", regs, &info, fsr, 0);
 }
 
+<<<<<<< HEAD
 
 static struct fsr_info ifsr_info[] = {
 	{ do_bad,		SIGBUS,  0,		"unknown 0"			   },
@@ -738,6 +860,8 @@ static struct fsr_info ifsr_info[] = {
 	{ do_bad,		SIGBUS,  0,		"unknown 31"			   },
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init
 hook_ifault_code(int nr, int (*fn)(unsigned long, unsigned int, struct pt_regs *),
 		 int sig, int code, const char *name)
@@ -775,6 +899,10 @@ do_PrefetchAbort(unsigned long addr, unsigned int ifsr, struct pt_regs *regs)
 	arm_notify_die("", regs, &info, ifsr, 0);
 }
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_ARM_LPAE
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init exceptions_init(void)
 {
 	if (cpu_architecture() >= CPU_ARCH_ARMv6) {
@@ -797,3 +925,7 @@ static int __init exceptions_init(void)
 }
 
 arch_initcall(exceptions_init);
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0

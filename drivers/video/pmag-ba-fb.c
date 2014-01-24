@@ -33,7 +33,10 @@
 #include <linux/types.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <video/pmag-ba-fb.h>
 

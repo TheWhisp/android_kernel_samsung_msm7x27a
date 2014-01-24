@@ -15,6 +15,10 @@
 
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/workqueue.h>
 #include <linux/init.h>
 #include <linux/rfkill.h>

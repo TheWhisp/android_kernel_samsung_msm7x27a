@@ -1,5 +1,9 @@
 #ifndef P54PCI_H
 #define P54PCI_H
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Defines for PCI based mac80211 Prism54 driver

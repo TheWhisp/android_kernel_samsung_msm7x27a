@@ -2,8 +2,14 @@
  * IOMMU helper functions for the free area management
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/bitmap.h>
+=======
+#include <linux/export.h>
+#include <linux/bitmap.h>
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int iommu_is_span_boundary(unsigned int index, unsigned int nr,
 			   unsigned long shift,

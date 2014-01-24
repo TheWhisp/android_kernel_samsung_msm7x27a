@@ -44,7 +44,10 @@
 #define HD_IRQ 14
 
 #define REALLY_SLOW_IO
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/uaccess.h>
 
@@ -155,7 +158,11 @@ else \
 
 #if (HD_DELAY > 0)
 
+<<<<<<< HEAD
 #include <asm/i8253.h>
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned long last_req;
 

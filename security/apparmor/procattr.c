@@ -16,6 +16,10 @@
 #include "include/context.h"
 #include "include/policy.h"
 #include "include/domain.h"
+<<<<<<< HEAD
+=======
+#include "include/procattr.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /**

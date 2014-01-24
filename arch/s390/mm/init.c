@@ -26,9 +26,15 @@
 #include <linux/pfn.h>
 #include <linux/poison.h>
 #include <linux/initrd.h>
+<<<<<<< HEAD
 #include <linux/gfp.h>
 #include <asm/processor.h>
 #include <asm/system.h>
+=======
+#include <linux/export.h>
+#include <linux/gfp.h>
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -37,6 +43,10 @@
 #include <asm/tlb.h>
 #include <asm/tlbflush.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
+=======
+#include <asm/ctl_reg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 pgd_t swapper_pg_dir[PTRS_PER_PGD] __attribute__((__aligned__(PAGE_SIZE)));
 
@@ -92,6 +102,7 @@ static unsigned long setup_zero_pages(void)
 void __init paging_init(void)
 {
 	unsigned long max_zone_pfns[MAX_NR_ZONES];
+<<<<<<< HEAD
 	unsigned long pgd_type;
 
 	init_mm.pgd = swapper_pg_dir;
@@ -104,6 +115,24 @@ void __init paging_init(void)
 	S390_lowcore.kernel_asce |= _ASCE_TABLE_LENGTH;
 	pgd_type = _SEGMENT_ENTRY_EMPTY;
 #endif
+=======
+	unsigned long pgd_type, asce_bits;
+
+	init_mm.pgd = swapper_pg_dir;
+#ifdef CONFIG_64BIT
+	if (VMALLOC_END > (1UL << 42)) {
+		asce_bits = _ASCE_TYPE_REGION2 | _ASCE_TABLE_LENGTH;
+		pgd_type = _REGION2_ENTRY_EMPTY;
+	} else {
+		asce_bits = _ASCE_TYPE_REGION3 | _ASCE_TABLE_LENGTH;
+		pgd_type = _REGION3_ENTRY_EMPTY;
+	}
+#else
+	asce_bits = _ASCE_TABLE_LENGTH;
+	pgd_type = _SEGMENT_ENTRY_EMPTY;
+#endif
+	S390_lowcore.kernel_asce = (__pa(init_mm.pgd) & PAGE_MASK) | asce_bits;
+>>>>>>> refs/remotes/origin/cm-10.0
 	clear_table((unsigned long *) init_mm.pgd, pgd_type,
 		    sizeof(unsigned long)*2048);
 	vmem_map_init();
@@ -218,6 +247,7 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 #ifdef CONFIG_MEMORY_HOTPLUG
 int arch_add_memory(int nid, u64 start, u64 size)
 {
+<<<<<<< HEAD
 	struct pglist_data *pgdat;
 	struct zone *zone;
 	int rc;
@@ -228,6 +258,40 @@ int arch_add_memory(int nid, u64 start, u64 size)
 	if (rc)
 		return rc;
 	rc = __add_pages(nid, zone, PFN_DOWN(start), PFN_DOWN(size));
+=======
+	unsigned long zone_start_pfn, zone_end_pfn, nr_pages;
+	unsigned long start_pfn = PFN_DOWN(start);
+	unsigned long size_pages = PFN_DOWN(size);
+	struct zone *zone;
+	int rc;
+
+	rc = vmem_add_mapping(start, size);
+	if (rc)
+		return rc;
+	for_each_zone(zone) {
+		if (zone_idx(zone) != ZONE_MOVABLE) {
+			/* Add range within existing zone limits */
+			zone_start_pfn = zone->zone_start_pfn;
+			zone_end_pfn = zone->zone_start_pfn +
+				       zone->spanned_pages;
+		} else {
+			/* Add remaining range to ZONE_MOVABLE */
+			zone_start_pfn = start_pfn;
+			zone_end_pfn = start_pfn + size_pages;
+		}
+		if (start_pfn < zone_start_pfn || start_pfn >= zone_end_pfn)
+			continue;
+		nr_pages = (start_pfn + size_pages > zone_end_pfn) ?
+			   zone_end_pfn - start_pfn : size_pages;
+		rc = __add_pages(nid, zone, start_pfn, nr_pages);
+		if (rc)
+			break;
+		start_pfn += nr_pages;
+		size_pages -= nr_pages;
+		if (!size_pages)
+			break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc)
 		vmem_remove_mapping(start, size);
 	return rc;

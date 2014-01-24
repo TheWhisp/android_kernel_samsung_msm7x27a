@@ -21,6 +21,7 @@
 #include <linux/io.h>
 #include <linux/err.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <mach/common.h>
@@ -28,11 +29,25 @@
 #include <asm/system.h>
 #include <asm/mach-types.h>
 
+=======
+#include <linux/module.h>
+
+#include <mach/hardware.h>
+#include <mach/common.h>
+#include <asm/system_misc.h>
+#include <asm/proc-fns.h>
+#include <asm/mach-types.h>
+
+void __iomem *(*imx_ioremap)(unsigned long, size_t, unsigned int) = NULL;
+EXPORT_SYMBOL_GPL(imx_ioremap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __iomem *wdog_base;
 
 /*
  * Reset the system. It is called by machine_restart().
  */
+<<<<<<< HEAD
 void arch_reset(char mode, const char *cmd)
 {
 	unsigned int wcr_enable;
@@ -44,6 +59,12 @@ void arch_reset(char mode, const char *cmd)
 	}
 #endif
 
+=======
+void mxc_restart(char mode, const char *cmd)
+{
+	unsigned int wcr_enable;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (cpu_is_mx1()) {
 		wcr_enable = (1 << 0);
 	} else {
@@ -51,7 +72,11 @@ void arch_reset(char mode, const char *cmd)
 
 		clk = clk_get_sys("imx2-wdt.0", NULL);
 		if (!IS_ERR(clk))
+<<<<<<< HEAD
 			clk_enable(clk);
+=======
+			clk_prepare_enable(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		wcr_enable = (1 << 2);
 	}
 
@@ -67,7 +92,11 @@ void arch_reset(char mode, const char *cmd)
 	mdelay(50);
 
 	/* we'll take a jump through zero as a poor second */
+<<<<<<< HEAD
 	cpu_reset(0);
+=======
+	soft_restart(0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void mxc_arch_reset_init(void __iomem *base)

@@ -23,8 +23,13 @@
 #include <linux/tracehook.h>
 
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/uaccess.h>
+=======
+#include <asm/uaccess.h>
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* #define ALLOW_INIT_TRACING */
 

@@ -170,7 +170,11 @@ static void ufs2_init_inodes_chunk(struct super_block *sb,
  * For other inodes, search forward from the parent directory's block
  * group to find a free inode.
  */
+<<<<<<< HEAD
 struct inode * ufs_new_inode(struct inode * dir, int mode)
+=======
+struct inode *ufs_new_inode(struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct super_block * sb;
 	struct ufs_sb_info * sbi;
@@ -341,7 +345,11 @@ cg_found:
 
 fail_remove_inode:
 	unlock_super(sb);
+<<<<<<< HEAD
 	inode->i_nlink = 0;
+=======
+	clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	iput(inode);
 	UFSD("EXIT (FAILED): err %d\n", err);
 	return ERR_PTR(err);

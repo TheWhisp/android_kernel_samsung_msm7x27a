@@ -40,6 +40,10 @@ static char *dirname(const char *path)
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+FILE *depfile; /* = NULL */
+>>>>>>> refs/remotes/origin/cm-10.0
 struct srcfile_state *current_srcfile; /* = NULL */
 
 /* Detect infinite include recursion. */
@@ -67,6 +71,12 @@ FILE *srcfile_relative_open(const char *fname, char **fullnamep)
 			    strerror(errno));
 	}
 
+<<<<<<< HEAD
+=======
+	if (depfile)
+		fprintf(depfile, " %s", fullname);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (fullnamep)
 		*fullnamep = fullname;
 	else

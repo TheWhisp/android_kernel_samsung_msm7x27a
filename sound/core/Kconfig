@@ -5,7 +5,10 @@ config SND_TIMER
 config SND_PCM
 	tristate
 	select SND_TIMER
+<<<<<<< HEAD
 	select GCD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SND_HWDEP
 	tristate
@@ -13,6 +16,12 @@ config SND_HWDEP
 config SND_RAWMIDI
 	tristate
 
+<<<<<<< HEAD
+=======
+config SND_COMPRESS_OFFLOAD
+	tristate
+
+>>>>>>> refs/remotes/origin/cm-10.0
 # To be effective this also requires INPUT - users should say:
 #    select SND_JACK if INPUT=y || INPUT=SND
 # to avoid having to force INPUT on.
@@ -208,6 +217,12 @@ config SND_PCM_XRUN_DEBUG
 config SND_VMASTER
 	bool
 
+<<<<<<< HEAD
+=======
+config SND_KCTL_JACK
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config SND_DMA_SGBUF
 	def_bool y
 	depends on X86

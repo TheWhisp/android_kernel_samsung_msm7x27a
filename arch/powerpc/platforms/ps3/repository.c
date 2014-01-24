@@ -44,7 +44,11 @@ static void _dump_field(const char *hdr, u64 n, const char *func, int line)
 		s[i] = (in[i] <= 126 && in[i] >= 32) ? in[i] : '.';
 	s[i] = 0;
 
+<<<<<<< HEAD
 	pr_debug("%s:%d: %s%016llx : %s\n", func, line, hdr, n, s);
+=======
+	pr_devel("%s:%d: %s%016llx : %s\n", func, line, hdr, n, s);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 }
 
@@ -53,7 +57,11 @@ static void _dump_field(const char *hdr, u64 n, const char *func, int line)
 static void _dump_node_name(unsigned int lpar_id, u64 n1, u64 n2, u64 n3,
 	u64 n4, const char *func, int line)
 {
+<<<<<<< HEAD
 	pr_debug("%s:%d: lpar: %u\n", func, line, lpar_id);
+=======
+	pr_devel("%s:%d: lpar: %u\n", func, line, lpar_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	_dump_field("n1: ", n1, func, line);
 	_dump_field("n2: ", n2, func, line);
 	_dump_field("n3: ", n3, func, line);
@@ -65,13 +73,22 @@ static void _dump_node_name(unsigned int lpar_id, u64 n1, u64 n2, u64 n3,
 static void _dump_node(unsigned int lpar_id, u64 n1, u64 n2, u64 n3, u64 n4,
 	u64 v1, u64 v2, const char *func, int line)
 {
+<<<<<<< HEAD
 	pr_debug("%s:%d: lpar: %u\n", func, line, lpar_id);
+=======
+	pr_devel("%s:%d: lpar: %u\n", func, line, lpar_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	_dump_field("n1: ", n1, func, line);
 	_dump_field("n2: ", n2, func, line);
 	_dump_field("n3: ", n3, func, line);
 	_dump_field("n4: ", n4, func, line);
+<<<<<<< HEAD
 	pr_debug("%s:%d: v1: %016llx\n", func, line, v1);
 	pr_debug("%s:%d: v2: %016llx\n", func, line, v2);
+=======
+	pr_devel("%s:%d: v1: %016llx\n", func, line, v1);
+	pr_devel("%s:%d: v2: %016llx\n", func, line, v2);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -131,11 +148,19 @@ static int read_node(unsigned int lpar_id, u64 n1, u64 n2, u64 n3, u64 n4,
 		lpar_id = id;
 	}
 
+<<<<<<< HEAD
 	result = lv1_get_repository_node_value(lpar_id, n1, n2, n3, n4, &v1,
 		&v2);
 
 	if (result) {
 		pr_debug("%s:%d: lv1_get_repository_node_value failed: %s\n",
+=======
+	result = lv1_read_repository_node(lpar_id, n1, n2, n3, n4, &v1,
+		&v2);
+
+	if (result) {
+		pr_warn("%s:%d: lv1_read_repository_node failed: %s\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			__func__, __LINE__, ps3_result(result));
 		dump_node_name(lpar_id, n1, n2, n3, n4);
 		return -ENOENT;
@@ -149,10 +174,17 @@ static int read_node(unsigned int lpar_id, u64 n1, u64 n2, u64 n3, u64 n4,
 		*_v2 = v2;
 
 	if (v1 && !_v1)
+<<<<<<< HEAD
 		pr_debug("%s:%d: warning: discarding non-zero v1: %016llx\n",
 			__func__, __LINE__, v1);
 	if (v2 && !_v2)
 		pr_debug("%s:%d: warning: discarding non-zero v2: %016llx\n",
+=======
+		pr_devel("%s:%d: warning: discarding non-zero v1: %016llx\n",
+			__func__, __LINE__, v1);
+	if (v2 && !_v2)
+		pr_devel("%s:%d: warning: discarding non-zero v2: %016llx\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			__func__, __LINE__, v2);
 
 	return 0;
@@ -184,7 +216,11 @@ int ps3_repository_read_bus_type(unsigned int bus_index,
 	enum ps3_bus_type *bus_type)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_PME,
 		make_first_field("bus", bus_index),
@@ -199,7 +235,11 @@ int ps3_repository_read_bus_num_dev(unsigned int bus_index,
 	unsigned int *num_dev)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_PME,
 		make_first_field("bus", bus_index),
@@ -239,7 +279,11 @@ int ps3_repository_read_dev_type(unsigned int bus_index,
 	unsigned int dev_index, enum ps3_dev_type *dev_type)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_PME,
 		make_first_field("bus", bus_index),
@@ -256,8 +300,13 @@ int ps3_repository_read_dev_intr(unsigned int bus_index,
 	enum ps3_interrupt_type *intr_type, unsigned int *interrupt_id)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
 	u64 v2;
+=======
+	u64 v1 = 0;
+	u64 v2 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_PME,
 		make_first_field("bus", bus_index),
@@ -275,7 +324,11 @@ int ps3_repository_read_dev_reg_type(unsigned int bus_index,
 	enum ps3_reg_type *reg_type)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_PME,
 		make_first_field("bus", bus_index),
@@ -323,16 +376,28 @@ int ps3_repository_find_device(struct ps3_repository_device *repo)
 	result = ps3_repository_read_bus_num_dev(tmp.bus_index, &num_dev);
 
 	if (result) {
+<<<<<<< HEAD
 		pr_debug("%s:%d read_bus_num_dev failed\n", __func__, __LINE__);
 		return result;
 	}
 
 	pr_debug("%s:%d: bus_type %u, bus_index %u, bus_id %llu, num_dev %u\n",
+=======
+		pr_devel("%s:%d read_bus_num_dev failed\n", __func__, __LINE__);
+		return result;
+	}
+
+	pr_devel("%s:%d: bus_type %u, bus_index %u, bus_id %llu, num_dev %u\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		__func__, __LINE__, tmp.bus_type, tmp.bus_index, tmp.bus_id,
 		num_dev);
 
 	if (tmp.dev_index >= num_dev) {
+<<<<<<< HEAD
 		pr_debug("%s:%d: no device found\n", __func__, __LINE__);
+=======
+		pr_devel("%s:%d: no device found\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
@@ -340,7 +405,11 @@ int ps3_repository_find_device(struct ps3_repository_device *repo)
 		&tmp.dev_type);
 
 	if (result) {
+<<<<<<< HEAD
 		pr_debug("%s:%d read_dev_type failed\n", __func__, __LINE__);
+=======
+		pr_devel("%s:%d read_dev_type failed\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return result;
 	}
 
@@ -348,12 +417,20 @@ int ps3_repository_find_device(struct ps3_repository_device *repo)
 		&tmp.dev_id);
 
 	if (result) {
+<<<<<<< HEAD
 		pr_debug("%s:%d ps3_repository_read_dev_id failed\n", __func__,
+=======
+		pr_devel("%s:%d ps3_repository_read_dev_id failed\n", __func__,
+>>>>>>> refs/remotes/origin/cm-10.0
 		__LINE__);
 		return result;
 	}
 
+<<<<<<< HEAD
 	pr_debug("%s:%d: found: dev_type %u, dev_index %u, dev_id %llu\n",
+=======
+	pr_devel("%s:%d: found: dev_type %u, dev_index %u, dev_id %llu\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		__func__, __LINE__, tmp.dev_type, tmp.dev_index, tmp.dev_id);
 
 	*repo = tmp;
@@ -367,14 +444,22 @@ int ps3_repository_find_device_by_id(struct ps3_repository_device *repo,
 	struct ps3_repository_device tmp;
 	unsigned int num_dev;
 
+<<<<<<< HEAD
 	pr_debug(" -> %s:%u: find device by id %llu:%llu\n", __func__, __LINE__,
+=======
+	pr_devel(" -> %s:%u: find device by id %llu:%llu\n", __func__, __LINE__,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 bus_id, dev_id);
 
 	for (tmp.bus_index = 0; tmp.bus_index < 10; tmp.bus_index++) {
 		result = ps3_repository_read_bus_id(tmp.bus_index,
 						    &tmp.bus_id);
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%u read_bus_id(%u) failed\n", __func__,
+=======
+			pr_devel("%s:%u read_bus_id(%u) failed\n", __func__,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 __LINE__, tmp.bus_index);
 			return result;
 		}
@@ -382,23 +467,38 @@ int ps3_repository_find_device_by_id(struct ps3_repository_device *repo,
 		if (tmp.bus_id == bus_id)
 			goto found_bus;
 
+<<<<<<< HEAD
 		pr_debug("%s:%u: skip, bus_id %llu\n", __func__, __LINE__,
 			 tmp.bus_id);
 	}
 	pr_debug(" <- %s:%u: bus not found\n", __func__, __LINE__);
+=======
+		pr_devel("%s:%u: skip, bus_id %llu\n", __func__, __LINE__,
+			 tmp.bus_id);
+	}
+	pr_devel(" <- %s:%u: bus not found\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 
 found_bus:
 	result = ps3_repository_read_bus_type(tmp.bus_index, &tmp.bus_type);
 	if (result) {
+<<<<<<< HEAD
 		pr_debug("%s:%u read_bus_type(%u) failed\n", __func__,
+=======
+		pr_devel("%s:%u read_bus_type(%u) failed\n", __func__,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 __LINE__, tmp.bus_index);
 		return result;
 	}
 
 	result = ps3_repository_read_bus_num_dev(tmp.bus_index, &num_dev);
 	if (result) {
+<<<<<<< HEAD
 		pr_debug("%s:%u read_bus_num_dev failed\n", __func__,
+=======
+		pr_devel("%s:%u read_bus_num_dev failed\n", __func__,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 __LINE__);
 		return result;
 	}
@@ -408,7 +508,11 @@ found_bus:
 						    tmp.dev_index,
 						    &tmp.dev_id);
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%u read_dev_id(%u:%u) failed\n", __func__,
+=======
+			pr_devel("%s:%u read_dev_id(%u:%u) failed\n", __func__,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 __LINE__, tmp.bus_index, tmp.dev_index);
 			return result;
 		}
@@ -416,21 +520,36 @@ found_bus:
 		if (tmp.dev_id == dev_id)
 			goto found_dev;
 
+<<<<<<< HEAD
 		pr_debug("%s:%u: skip, dev_id %llu\n", __func__, __LINE__,
 			 tmp.dev_id);
 	}
 	pr_debug(" <- %s:%u: dev not found\n", __func__, __LINE__);
+=======
+		pr_devel("%s:%u: skip, dev_id %llu\n", __func__, __LINE__,
+			 tmp.dev_id);
+	}
+	pr_devel(" <- %s:%u: dev not found\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 
 found_dev:
 	result = ps3_repository_read_dev_type(tmp.bus_index, tmp.dev_index,
 					      &tmp.dev_type);
 	if (result) {
+<<<<<<< HEAD
 		pr_debug("%s:%u read_dev_type failed\n", __func__, __LINE__);
 		return result;
 	}
 
 	pr_debug(" <- %s:%u: found: type (%u:%u) index (%u:%u) id (%llu:%llu)\n",
+=======
+		pr_devel("%s:%u read_dev_type failed\n", __func__, __LINE__);
+		return result;
+	}
+
+	pr_devel(" <- %s:%u: found: type (%u:%u) index (%u:%u) id (%llu:%llu)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		 __func__, __LINE__, tmp.bus_type, tmp.dev_type, tmp.bus_index,
 		 tmp.dev_index, tmp.bus_id, tmp.dev_id);
 	*repo = tmp;
@@ -443,18 +562,30 @@ int __devinit ps3_repository_find_devices(enum ps3_bus_type bus_type,
 	int result = 0;
 	struct ps3_repository_device repo;
 
+<<<<<<< HEAD
 	pr_debug(" -> %s:%d: find bus_type %u\n", __func__, __LINE__, bus_type);
+=======
+	pr_devel(" -> %s:%d: find bus_type %u\n", __func__, __LINE__, bus_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	repo.bus_type = bus_type;
 	result = ps3_repository_find_bus(repo.bus_type, 0, &repo.bus_index);
 	if (result) {
+<<<<<<< HEAD
 		pr_debug(" <- %s:%u: bus not found\n", __func__, __LINE__);
+=======
+		pr_devel(" <- %s:%u: bus not found\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return result;
 	}
 
 	result = ps3_repository_read_bus_id(repo.bus_index, &repo.bus_id);
 	if (result) {
+<<<<<<< HEAD
 		pr_debug("%s:%d read_bus_id(%u) failed\n", __func__, __LINE__,
+=======
+		pr_devel("%s:%d read_bus_id(%u) failed\n", __func__, __LINE__,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 repo.bus_index);
 		return result;
 	}
@@ -469,13 +600,21 @@ int __devinit ps3_repository_find_devices(enum ps3_bus_type bus_type,
 
 		result = callback(&repo);
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%d: abort at callback\n", __func__,
+=======
+			pr_devel("%s:%d: abort at callback\n", __func__,
+>>>>>>> refs/remotes/origin/cm-10.0
 				__LINE__);
 			break;
 		}
 	}
 
+<<<<<<< HEAD
 	pr_debug(" <- %s:%d\n", __func__, __LINE__);
+=======
+	pr_devel(" <- %s:%d\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 }
 
@@ -489,7 +628,11 @@ int ps3_repository_find_bus(enum ps3_bus_type bus_type, unsigned int from,
 	for (i = from; i < 10; i++) {
 		error = ps3_repository_read_bus_type(i, &type);
 		if (error) {
+<<<<<<< HEAD
 			pr_debug("%s:%d read_bus_type failed\n",
+=======
+			pr_devel("%s:%d read_bus_type failed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__, __LINE__);
 			*bus_index = UINT_MAX;
 			return error;
@@ -509,7 +652,11 @@ int ps3_repository_find_interrupt(const struct ps3_repository_device *repo,
 	int result = 0;
 	unsigned int res_index;
 
+<<<<<<< HEAD
 	pr_debug("%s:%d: find intr_type %u\n", __func__, __LINE__, intr_type);
+=======
+	pr_devel("%s:%d: find intr_type %u\n", __func__, __LINE__, intr_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*interrupt_id = UINT_MAX;
 
@@ -521,7 +668,11 @@ int ps3_repository_find_interrupt(const struct ps3_repository_device *repo,
 			repo->dev_index, res_index, &t, &id);
 
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%d read_dev_intr failed\n",
+=======
+			pr_devel("%s:%d read_dev_intr failed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__, __LINE__);
 			return result;
 		}
@@ -535,7 +686,11 @@ int ps3_repository_find_interrupt(const struct ps3_repository_device *repo,
 	if (res_index == 10)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	pr_debug("%s:%d: found intr_type %u at res_index %u\n",
+=======
+	pr_devel("%s:%d: found intr_type %u at res_index %u\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		__func__, __LINE__, intr_type, res_index);
 
 	return result;
@@ -547,7 +702,11 @@ int ps3_repository_find_reg(const struct ps3_repository_device *repo,
 	int result = 0;
 	unsigned int res_index;
 
+<<<<<<< HEAD
 	pr_debug("%s:%d: find reg_type %u\n", __func__, __LINE__, reg_type);
+=======
+	pr_devel("%s:%d: find reg_type %u\n", __func__, __LINE__, reg_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*bus_addr = *len = 0;
 
@@ -560,7 +719,11 @@ int ps3_repository_find_reg(const struct ps3_repository_device *repo,
 			repo->dev_index, res_index, &t, &a, &l);
 
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%d read_dev_reg failed\n",
+=======
+			pr_devel("%s:%d read_dev_reg failed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__, __LINE__);
 			return result;
 		}
@@ -575,7 +738,11 @@ int ps3_repository_find_reg(const struct ps3_repository_device *repo,
 	if (res_index == 10)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	pr_debug("%s:%d: found reg_type %u at res_index %u\n",
+=======
+	pr_devel("%s:%d: found reg_type %u at res_index %u\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		__func__, __LINE__, reg_type, res_index);
 
 	return result;
@@ -615,7 +782,11 @@ int ps3_repository_read_stor_dev_num_regions(unsigned int bus_index,
 	unsigned int dev_index, unsigned int *num_regions)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_PME,
 		make_first_field("bus", bus_index),
@@ -631,7 +802,11 @@ int ps3_repository_read_stor_dev_region_id(unsigned int bus_index,
 	unsigned int *region_id)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_PME,
 	    make_first_field("bus", bus_index),
@@ -786,7 +961,11 @@ int ps3_repository_read_mm_info(u64 *rm_base, u64 *rm_size, u64 *region_total)
 int ps3_repository_read_num_spu_reserved(unsigned int *num_spu_reserved)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_CURRENT,
 		make_first_field("bi", 0),
@@ -805,7 +984,11 @@ int ps3_repository_read_num_spu_reserved(unsigned int *num_spu_reserved)
 int ps3_repository_read_num_spu_resource_id(unsigned int *num_resource_id)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_CURRENT,
 		make_first_field("bi", 0),
@@ -827,8 +1010,13 @@ int ps3_repository_read_spu_resource_id(unsigned int res_index,
 	enum ps3_spu_resource_type *resource_type, unsigned int *resource_id)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
 	u64 v2;
+=======
+	u64 v1 = 0;
+	u64 v2 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_CURRENT,
 		make_first_field("bi", 0),
@@ -854,7 +1042,11 @@ static int ps3_repository_read_boot_dat_address(u64 *address)
 int ps3_repository_read_boot_dat_size(unsigned int *size)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_CURRENT,
 		make_first_field("bi", 0),
@@ -869,7 +1061,11 @@ int ps3_repository_read_boot_dat_size(unsigned int *size)
 int ps3_repository_read_vuart_av_port(unsigned int *port)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_CURRENT,
 		make_first_field("bi", 0),
@@ -884,7 +1080,11 @@ int ps3_repository_read_vuart_av_port(unsigned int *port)
 int ps3_repository_read_vuart_sysmgr_port(unsigned int *port)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_CURRENT,
 		make_first_field("bi", 0),
@@ -919,7 +1119,11 @@ int ps3_repository_read_boot_dat_info(u64 *lpar_addr, unsigned int *size)
 int ps3_repository_read_num_be(unsigned int *num_be)
 {
 	int result;
+<<<<<<< HEAD
 	u64 v1;
+=======
+	u64 v1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	result = read_node(PS3_LPAR_ID_PME,
 		make_first_field("ben", 0),
@@ -1009,7 +1213,11 @@ int ps3_repository_dump_resource_info(const struct ps3_repository_device *repo)
 	int result = 0;
 	unsigned int res_index;
 
+<<<<<<< HEAD
 	pr_debug(" -> %s:%d: (%u:%u)\n", __func__, __LINE__,
+=======
+	pr_devel(" -> %s:%d: (%u:%u)\n", __func__, __LINE__,
+>>>>>>> refs/remotes/origin/cm-10.0
 		repo->bus_index, repo->dev_index);
 
 	for (res_index = 0; res_index < 10; res_index++) {
@@ -1021,13 +1229,21 @@ int ps3_repository_dump_resource_info(const struct ps3_repository_device *repo)
 
 		if (result) {
 			if (result !=  LV1_NO_ENTRY)
+<<<<<<< HEAD
 				pr_debug("%s:%d ps3_repository_read_dev_intr"
+=======
+				pr_devel("%s:%d ps3_repository_read_dev_intr"
+>>>>>>> refs/remotes/origin/cm-10.0
 					" (%u:%u) failed\n", __func__, __LINE__,
 					repo->bus_index, repo->dev_index);
 			break;
 		}
 
+<<<<<<< HEAD
 		pr_debug("%s:%d (%u:%u) intr_type %u, interrupt_id %u\n",
+=======
+		pr_devel("%s:%d (%u:%u) intr_type %u, interrupt_id %u\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			__func__, __LINE__, repo->bus_index, repo->dev_index,
 			intr_type, interrupt_id);
 	}
@@ -1042,18 +1258,30 @@ int ps3_repository_dump_resource_info(const struct ps3_repository_device *repo)
 
 		if (result) {
 			if (result !=  LV1_NO_ENTRY)
+<<<<<<< HEAD
 				pr_debug("%s:%d ps3_repository_read_dev_reg"
+=======
+				pr_devel("%s:%d ps3_repository_read_dev_reg"
+>>>>>>> refs/remotes/origin/cm-10.0
 					" (%u:%u) failed\n", __func__, __LINE__,
 					repo->bus_index, repo->dev_index);
 			break;
 		}
 
+<<<<<<< HEAD
 		pr_debug("%s:%d (%u:%u) reg_type %u, bus_addr %lxh, len %lxh\n",
+=======
+		pr_devel("%s:%d (%u:%u) reg_type %u, bus_addr %llxh, len %llxh\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			__func__, __LINE__, repo->bus_index, repo->dev_index,
 			reg_type, bus_addr, len);
 	}
 
+<<<<<<< HEAD
 	pr_debug(" <- %s:%d\n", __func__, __LINE__);
+=======
+	pr_devel(" <- %s:%d\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 }
 
@@ -1063,22 +1291,37 @@ static int dump_stor_dev_info(struct ps3_repository_device *repo)
 	unsigned int num_regions, region_index;
 	u64 port, blk_size, num_blocks;
 
+<<<<<<< HEAD
 	pr_debug(" -> %s:%d: (%u:%u)\n", __func__, __LINE__,
+=======
+	pr_devel(" -> %s:%d: (%u:%u)\n", __func__, __LINE__,
+>>>>>>> refs/remotes/origin/cm-10.0
 		repo->bus_index, repo->dev_index);
 
 	result = ps3_repository_read_stor_dev_info(repo->bus_index,
 		repo->dev_index, &port, &blk_size, &num_blocks, &num_regions);
 	if (result) {
+<<<<<<< HEAD
 		pr_debug("%s:%d ps3_repository_read_stor_dev_info"
+=======
+		pr_devel("%s:%d ps3_repository_read_stor_dev_info"
+>>>>>>> refs/remotes/origin/cm-10.0
 			" (%u:%u) failed\n", __func__, __LINE__,
 			repo->bus_index, repo->dev_index);
 		goto out;
 	}
 
+<<<<<<< HEAD
 	pr_debug("%s:%d  (%u:%u): port %lu, blk_size %lu, num_blocks "
 		 "%lu, num_regions %u\n",
 		 __func__, __LINE__, repo->bus_index, repo->dev_index, port,
 		 blk_size, num_blocks, num_regions);
+=======
+	pr_devel("%s:%d  (%u:%u): port %llu, blk_size %llu, num_blocks "
+		 "%llu, num_regions %u\n",
+		 __func__, __LINE__, repo->bus_index, repo->dev_index,
+		port, blk_size, num_blocks, num_regions);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (region_index = 0; region_index < num_regions; region_index++) {
 		unsigned int region_id;
@@ -1088,12 +1331,17 @@ static int dump_stor_dev_info(struct ps3_repository_device *repo)
 			repo->dev_index, region_index, &region_id,
 			&region_start, &region_size);
 		if (result) {
+<<<<<<< HEAD
 			 pr_debug("%s:%d ps3_repository_read_stor_dev_region"
+=======
+			 pr_devel("%s:%d ps3_repository_read_stor_dev_region"
+>>>>>>> refs/remotes/origin/cm-10.0
 				  " (%u:%u) failed\n", __func__, __LINE__,
 				  repo->bus_index, repo->dev_index);
 			break;
 		}
 
+<<<<<<< HEAD
 		pr_debug("%s:%d (%u:%u) region_id %u, start %lxh, size %lxh\n",
 			__func__, __LINE__, repo->bus_index, repo->dev_index,
 			region_id, region_start, region_size);
@@ -1101,6 +1349,16 @@ static int dump_stor_dev_info(struct ps3_repository_device *repo)
 
 out:
 	pr_debug(" <- %s:%d\n", __func__, __LINE__);
+=======
+		pr_devel("%s:%d (%u:%u) region_id %u, start %lxh, size %lxh\n",
+			__func__, __LINE__, repo->bus_index, repo->dev_index,
+			region_id, (unsigned long)region_start,
+			(unsigned long)region_size);
+	}
+
+out:
+	pr_devel(" <- %s:%d\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 }
 
@@ -1109,7 +1367,11 @@ static int dump_device_info(struct ps3_repository_device *repo,
 {
 	int result = 0;
 
+<<<<<<< HEAD
 	pr_debug(" -> %s:%d: bus_%u\n", __func__, __LINE__, repo->bus_index);
+=======
+	pr_devel(" -> %s:%d: bus_%u\n", __func__, __LINE__, repo->bus_index);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (repo->dev_index = 0; repo->dev_index < num_dev;
 		repo->dev_index++) {
@@ -1118,7 +1380,11 @@ static int dump_device_info(struct ps3_repository_device *repo,
 			repo->dev_index, &repo->dev_type);
 
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%d ps3_repository_read_dev_type"
+=======
+			pr_devel("%s:%d ps3_repository_read_dev_type"
+>>>>>>> refs/remotes/origin/cm-10.0
 				" (%u:%u) failed\n", __func__, __LINE__,
 				repo->bus_index, repo->dev_index);
 			break;
@@ -1128,15 +1394,25 @@ static int dump_device_info(struct ps3_repository_device *repo,
 			repo->dev_index, &repo->dev_id);
 
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%d ps3_repository_read_dev_id"
+=======
+			pr_devel("%s:%d ps3_repository_read_dev_id"
+>>>>>>> refs/remotes/origin/cm-10.0
 				" (%u:%u) failed\n", __func__, __LINE__,
 				repo->bus_index, repo->dev_index);
 			continue;
 		}
 
+<<<<<<< HEAD
 		pr_debug("%s:%d  (%u:%u): dev_type %u, dev_id %lu\n", __func__,
 			__LINE__, repo->bus_index, repo->dev_index,
 			repo->dev_type, repo->dev_id);
+=======
+		pr_devel("%s:%d  (%u:%u): dev_type %u, dev_id %lu\n", __func__,
+			__LINE__, repo->bus_index, repo->dev_index,
+			repo->dev_type, (unsigned long)repo->dev_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ps3_repository_dump_resource_info(repo);
 
@@ -1144,7 +1420,11 @@ static int dump_device_info(struct ps3_repository_device *repo,
 			dump_stor_dev_info(repo);
 	}
 
+<<<<<<< HEAD
 	pr_debug(" <- %s:%d\n", __func__, __LINE__);
+=======
+	pr_devel(" <- %s:%d\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 }
 
@@ -1153,7 +1433,11 @@ int ps3_repository_dump_bus_info(void)
 	int result = 0;
 	struct ps3_repository_device repo;
 
+<<<<<<< HEAD
 	pr_debug(" -> %s:%d\n", __func__, __LINE__);
+=======
+	pr_devel(" -> %s:%d\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memset(&repo, 0, sizeof(repo));
 
@@ -1164,7 +1448,11 @@ int ps3_repository_dump_bus_info(void)
 			&repo.bus_type);
 
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%d read_bus_type(%u) failed\n",
+=======
+			pr_devel("%s:%d read_bus_type(%u) failed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__, __LINE__, repo.bus_index);
 			break;
 		}
@@ -1173,32 +1461,54 @@ int ps3_repository_dump_bus_info(void)
 			&repo.bus_id);
 
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%d read_bus_id(%u) failed\n",
+=======
+			pr_devel("%s:%d read_bus_id(%u) failed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__, __LINE__, repo.bus_index);
 			continue;
 		}
 
 		if (repo.bus_index != repo.bus_id)
+<<<<<<< HEAD
 			pr_debug("%s:%d bus_index != bus_id\n",
+=======
+			pr_devel("%s:%d bus_index != bus_id\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__, __LINE__);
 
 		result = ps3_repository_read_bus_num_dev(repo.bus_index,
 			&num_dev);
 
 		if (result) {
+<<<<<<< HEAD
 			pr_debug("%s:%d read_bus_num_dev(%u) failed\n",
+=======
+			pr_devel("%s:%d read_bus_num_dev(%u) failed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__, __LINE__, repo.bus_index);
 			continue;
 		}
 
+<<<<<<< HEAD
 		pr_debug("%s:%d bus_%u: bus_type %u, bus_id %lu, num_dev %u\n",
 			__func__, __LINE__, repo.bus_index, repo.bus_type,
 			repo.bus_id, num_dev);
+=======
+		pr_devel("%s:%d bus_%u: bus_type %u, bus_id %lu, num_dev %u\n",
+			__func__, __LINE__, repo.bus_index, repo.bus_type,
+			(unsigned long)repo.bus_id, num_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		dump_device_info(&repo, num_dev);
 	}
 
+<<<<<<< HEAD
 	pr_debug(" <- %s:%d\n", __func__, __LINE__);
+=======
+	pr_devel(" <- %s:%d\n", __func__, __LINE__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 }
 

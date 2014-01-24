@@ -13,6 +13,10 @@
 #include <linux/mbus.h>
 #include <asm/mach/pci.h>
 #include <plat/pcie.h>
+<<<<<<< HEAD
+=======
+#include <plat/addr-map.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 
 /*
@@ -175,8 +179,12 @@ static void __init orion_pcie_setup_wins(void __iomem *base,
 	writel(((size - 1) & 0xffff0000) | 1, base + PCIE_BAR_CTRL_OFF(1));
 }
 
+<<<<<<< HEAD
 void __init orion_pcie_setup(void __iomem *base,
 			     struct mbus_dram_target_info *dram)
+=======
+void __init orion_pcie_setup(void __iomem *base)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u16 cmd;
 	u32 mask;
@@ -184,7 +192,11 @@ void __init orion_pcie_setup(void __iomem *base,
 	/*
 	 * Point PCIe unit MBUS decode windows to DRAM space.
 	 */
+<<<<<<< HEAD
 	orion_pcie_setup_wins(base, dram);
+=======
+	orion_pcie_setup_wins(base, &orion_mbus_dram_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Master + slave enable.

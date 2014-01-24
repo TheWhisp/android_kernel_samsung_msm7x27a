@@ -6,7 +6,11 @@
 #ifndef __START_H__
 #define __START_H__
 
+<<<<<<< HEAD
 #include "kern_constants.h"
+=======
+#include <generated/asm-offsets.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Stolen from linux/const.h, which can't be directly included since

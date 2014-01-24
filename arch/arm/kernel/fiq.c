@@ -39,12 +39,22 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/seq_file.h>
 
 #include <asm/cacheflush.h>
 #include <asm/fiq.h>
 #include <asm/irq.h>
 #include <asm/system.h>
+=======
+#include <linux/irq.h>
+#include <linux/seq_file.h>
+
+#include <asm/cacheflush.h>
+#include <asm/cp15.h>
+#include <asm/fiq.h>
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 
 static unsigned long no_fiq_insn;
@@ -132,6 +142,14 @@ void disable_fiq(int fiq)
 	disable_irq(fiq + FIQ_START);
 }
 
+<<<<<<< HEAD
+=======
+void fiq_set_type(int fiq, unsigned int type)
+{
+	irq_set_irq_type(fiq + FIQ_START, type);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(set_fiq_handler);
 EXPORT_SYMBOL(__set_fiq_regs);	/* defined in fiqasm.S */
 EXPORT_SYMBOL(__get_fiq_regs);	/* defined in fiqasm.S */
@@ -139,6 +157,10 @@ EXPORT_SYMBOL(claim_fiq);
 EXPORT_SYMBOL(release_fiq);
 EXPORT_SYMBOL(enable_fiq);
 EXPORT_SYMBOL(disable_fiq);
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(fiq_set_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __init init_FIQ(void)
 {

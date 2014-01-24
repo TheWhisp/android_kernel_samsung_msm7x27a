@@ -1,7 +1,11 @@
 /* arch/arm/mach-msm/qdsp5/adsp.h
  *
  * Copyright (C) 2008 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2010, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Author: Iliyan Malchev <ibm@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -117,6 +121,13 @@ struct adsp_info {
 	struct adsp_rtos_mp_mtoa_init_info_type	*init_info_ptr;
 	wait_queue_head_t	init_info_wait;
 	unsigned 		init_info_state;
+<<<<<<< HEAD
+=======
+	struct mutex lock;
+
+	/* Interrupt value */
+	int int_adsp;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define RPC_ADSP_RTOS_ATOM_NULL_PROC 0
@@ -144,6 +155,10 @@ enum {
 	RPC_ADSP_RTOS_CMD_SET_STATE,
 	RPC_ADSP_RTOS_CMD_REMOTE_INIT_INFO_EVENT,
 	RPC_ADSP_RTOS_CMD_GET_INIT_INFO,
+<<<<<<< HEAD
+=======
+	RPC_ADSP_RTOS_CMD_CORE_DUMP,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum rpc_adsp_rtos_mod_status_type {

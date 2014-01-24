@@ -74,6 +74,10 @@ static struct snd_soc_dai_link bf5xx_board_dai[] = {
 
 static struct snd_soc_card bf5xx_board = {
 	.name = "bfin-ad1980",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = &bf5xx_board_dai[CONFIG_SND_BF5XX_SPORT_NUM],
 	.num_links = 1,
 };

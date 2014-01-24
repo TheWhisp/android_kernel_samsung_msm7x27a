@@ -44,6 +44,10 @@ void task_mem(struct seq_file *m, struct mm_struct *mm)
 		"VmPeak:\t%8lu kB\n"
 		"VmSize:\t%8lu kB\n"
 		"VmLck:\t%8lu kB\n"
+<<<<<<< HEAD
+=======
+		"VmPin:\t%8lu kB\n"
+>>>>>>> refs/remotes/origin/cm-10.0
 		"VmHWM:\t%8lu kB\n"
 		"VmRSS:\t%8lu kB\n"
 		"VmData:\t%8lu kB\n"
@@ -55,6 +59,10 @@ void task_mem(struct seq_file *m, struct mm_struct *mm)
 		hiwater_vm << (PAGE_SHIFT-10),
 		(total_vm - mm->reserved_vm) << (PAGE_SHIFT-10),
 		mm->locked_vm << (PAGE_SHIFT-10),
+<<<<<<< HEAD
+=======
+		mm->pinned_vm << (PAGE_SHIFT-10),
+>>>>>>> refs/remotes/origin/cm-10.0
 		hiwater_rss << (PAGE_SHIFT-10),
 		total_rss << (PAGE_SHIFT-10),
 		data << (PAGE_SHIFT-10),
@@ -207,16 +215,30 @@ static int do_maps_open(struct inode *inode, struct file *file,
 	return ret;
 }
 
+<<<<<<< HEAD
 static void show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
 {
 	struct mm_struct *mm = vma->vm_mm;
 	struct file *file = vma->vm_file;
+=======
+static void
+show_map_vma(struct seq_file *m, struct vm_area_struct *vma, int is_pid)
+{
+	struct mm_struct *mm = vma->vm_mm;
+	struct file *file = vma->vm_file;
+	struct proc_maps_private *priv = m->private;
+	struct task_struct *task = priv->task;
+>>>>>>> refs/remotes/origin/cm-10.0
 	vm_flags_t flags = vma->vm_flags;
 	unsigned long ino = 0;
 	unsigned long long pgoff = 0;
 	unsigned long start, end;
 	dev_t dev = 0;
 	int len;
+<<<<<<< HEAD
+=======
+	const char *name = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (file) {
 		struct inode *inode = vma->vm_file->f_path.dentry->d_inode;
@@ -250,6 +272,7 @@ static void show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
 	if (file) {
 		pad_len_spaces(m, len);
 		seq_path(m, &file->f_path, "\n");
+<<<<<<< HEAD
 	} else {
 		const char *name = arch_vma_name(vma);
 		if (!name) {
@@ -269,17 +292,67 @@ static void show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
 			pad_len_spaces(m, len);
 			seq_puts(m, name);
 		}
+=======
+		goto done;
+	}
+
+	name = arch_vma_name(vma);
+	if (!name) {
+		pid_t tid;
+
+		if (!mm) {
+			name = "[vdso]";
+			goto done;
+		}
+
+		if (vma->vm_start <= mm->brk &&
+		    vma->vm_end >= mm->start_brk) {
+			name = "[heap]";
+			goto done;
+		}
+
+		tid = vm_is_stack(task, vma, is_pid);
+
+		if (tid != 0) {
+			/*
+			 * Thread stack in /proc/PID/task/TID/maps or
+			 * the main process stack.
+			 */
+			if (!is_pid || (vma->vm_start <= mm->start_stack &&
+			    vma->vm_end >= mm->start_stack)) {
+				name = "[stack]";
+			} else {
+				/* Thread stack in /proc/PID/maps */
+				pad_len_spaces(m, len);
+				seq_printf(m, "[stack:%d]", tid);
+			}
+		}
+	}
+
+done:
+	if (name) {
+		pad_len_spaces(m, len);
+		seq_puts(m, name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	seq_putc(m, '\n');
 }
 
+<<<<<<< HEAD
 static int show_map(struct seq_file *m, void *v)
+=======
+static int show_map(struct seq_file *m, void *v, int is_pid)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct vm_area_struct *vma = v;
 	struct proc_maps_private *priv = m->private;
 	struct task_struct *task = priv->task;
 
+<<<<<<< HEAD
 	show_map_vma(m, vma);
+=======
+	show_map_vma(m, vma, is_pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (m->count < m->size)  /* vma is copied successfully */
 		m->version = (vma != get_gate_vma(task->mm))
@@ -287,20 +360,64 @@ static int show_map(struct seq_file *m, void *v)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int show_pid_map(struct seq_file *m, void *v)
+{
+	return show_map(m, v, 1);
+}
+
+static int show_tid_map(struct seq_file *m, void *v)
+{
+	return show_map(m, v, 0);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct seq_operations proc_pid_maps_op = {
 	.start	= m_start,
 	.next	= m_next,
 	.stop	= m_stop,
+<<<<<<< HEAD
 	.show	= show_map
 };
 
 static int maps_open(struct inode *inode, struct file *file)
+=======
+	.show	= show_pid_map
+};
+
+static const struct seq_operations proc_tid_maps_op = {
+	.start	= m_start,
+	.next	= m_next,
+	.stop	= m_stop,
+	.show	= show_tid_map
+};
+
+static int pid_maps_open(struct inode *inode, struct file *file)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return do_maps_open(inode, file, &proc_pid_maps_op);
 }
 
+<<<<<<< HEAD
 const struct file_operations proc_maps_operations = {
 	.open		= maps_open,
+=======
+static int tid_maps_open(struct inode *inode, struct file *file)
+{
+	return do_maps_open(inode, file, &proc_tid_maps_op);
+}
+
+const struct file_operations proc_pid_maps_operations = {
+	.open		= pid_maps_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= seq_release_private,
+};
+
+const struct file_operations proc_tid_maps_operations = {
+	.open		= tid_maps_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= seq_release_private,
@@ -392,6 +509,7 @@ static int smaps_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
 	pte_t *pte;
 	spinlock_t *ptl;
 
+<<<<<<< HEAD
 	spin_lock(&walk->mm->page_table_lock);
 	if (pmd_trans_huge(*pmd)) {
 		if (pmd_trans_splitting(*pmd)) {
@@ -406,6 +524,13 @@ static int smaps_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
 		}
 	} else {
 		spin_unlock(&walk->mm->page_table_lock);
+=======
+	if (pmd_trans_huge_lock(pmd, vma) == 1) {
+		smaps_pte_entry(*(pte_t *)pmd, addr, HPAGE_PMD_SIZE, walk);
+		spin_unlock(&walk->mm->page_table_lock);
+		mss->anonymous_thp += HPAGE_PMD_SIZE;
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (pmd_trans_unstable(pmd))
@@ -423,7 +548,11 @@ static int smaps_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int show_smap(struct seq_file *m, void *v)
+=======
+static int show_smap(struct seq_file *m, void *v, int is_pid)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct proc_maps_private *priv = m->private;
 	struct task_struct *task = priv->task;
@@ -441,7 +570,11 @@ static int show_smap(struct seq_file *m, void *v)
 	if (vma->vm_mm && !is_vm_hugetlb_page(vma))
 		walk_page_range(vma->vm_start, vma->vm_end, &smaps_walk);
 
+<<<<<<< HEAD
 	show_map_vma(m, vma);
+=======
+	show_map_vma(m, vma, is_pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	seq_printf(m,
 		   "Size:           %8lu kB\n"
@@ -480,20 +613,64 @@ static int show_smap(struct seq_file *m, void *v)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int show_pid_smap(struct seq_file *m, void *v)
+{
+	return show_smap(m, v, 1);
+}
+
+static int show_tid_smap(struct seq_file *m, void *v)
+{
+	return show_smap(m, v, 0);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct seq_operations proc_pid_smaps_op = {
 	.start	= m_start,
 	.next	= m_next,
 	.stop	= m_stop,
+<<<<<<< HEAD
 	.show	= show_smap
 };
 
 static int smaps_open(struct inode *inode, struct file *file)
+=======
+	.show	= show_pid_smap
+};
+
+static const struct seq_operations proc_tid_smaps_op = {
+	.start	= m_start,
+	.next	= m_next,
+	.stop	= m_stop,
+	.show	= show_tid_smap
+};
+
+static int pid_smaps_open(struct inode *inode, struct file *file)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return do_maps_open(inode, file, &proc_pid_smaps_op);
 }
 
+<<<<<<< HEAD
 const struct file_operations proc_smaps_operations = {
 	.open		= smaps_open,
+=======
+static int tid_smaps_open(struct inode *inode, struct file *file)
+{
+	return do_maps_open(inode, file, &proc_tid_smaps_op);
+}
+
+const struct file_operations proc_pid_smaps_operations = {
+	.open		= pid_smaps_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= seq_release_private,
+};
+
+const struct file_operations proc_tid_smaps_operations = {
+	.open		= tid_smaps_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= seq_release_private,
@@ -521,9 +698,12 @@ static int clear_refs_pte_range(pmd_t *pmd, unsigned long addr,
 		if (!page)
 			continue;
 
+<<<<<<< HEAD
 		if (PageReserved(page))
 			continue;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Clear accessed and referenced bits. */
 		ptep_test_and_clear_young(vma, addr, pte);
 		ClearPageReferenced(page);
@@ -601,12 +781,28 @@ const struct file_operations proc_clear_refs_operations = {
 	.llseek		= noop_llseek,
 };
 
+<<<<<<< HEAD
 struct pagemapread {
 	int pos, len;
 	u64 *buffer;
 };
 
 #define PM_ENTRY_BYTES      sizeof(u64)
+=======
+typedef struct {
+	u64 pme;
+} pagemap_entry_t;
+
+struct pagemapread {
+	int pos, len;		/* units: PM_ENTRY_BYTES, not bytes */
+	pagemap_entry_t *buffer;
+};
+
+#define PAGEMAP_WALK_SIZE	(PMD_SIZE)
+#define PAGEMAP_WALK_MASK	(PMD_MASK)
+
+#define PM_ENTRY_BYTES      sizeof(pagemap_entry_t)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PM_STATUS_BITS      3
 #define PM_STATUS_OFFSET    (64 - PM_STATUS_BITS)
 #define PM_STATUS_MASK      (((1LL << PM_STATUS_BITS) - 1) << PM_STATUS_OFFSET)
@@ -623,10 +819,22 @@ struct pagemapread {
 #define PM_NOT_PRESENT      PM_PSHIFT(PAGE_SHIFT)
 #define PM_END_OF_BUFFER    1
 
+<<<<<<< HEAD
 static int add_to_pagemap(unsigned long addr, u64 pfn,
 			  struct pagemapread *pm)
 {
 	pm->buffer[pm->pos++] = pfn;
+=======
+static inline pagemap_entry_t make_pme(u64 val)
+{
+	return (pagemap_entry_t) { .pme = val };
+}
+
+static int add_to_pagemap(unsigned long addr, pagemap_entry_t *pme,
+			  struct pagemapread *pm)
+{
+	pm->buffer[pm->pos++] = *pme;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pm->pos >= pm->len)
 		return PM_END_OF_BUFFER;
 	return 0;
@@ -638,8 +846,15 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
 	struct pagemapread *pm = walk->private;
 	unsigned long addr;
 	int err = 0;
+<<<<<<< HEAD
 	for (addr = start; addr < end; addr += PAGE_SIZE) {
 		err = add_to_pagemap(addr, PM_NOT_PRESENT, pm);
+=======
+	pagemap_entry_t pme = make_pme(PM_NOT_PRESENT);
+
+	for (addr = start; addr < end; addr += PAGE_SIZE) {
+		err = add_to_pagemap(addr, &pme, pm);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			break;
 	}
@@ -652,6 +867,7 @@ static u64 swap_pte_to_pagemap_entry(pte_t pte)
 	return swp_type(e) | (swp_offset(e) << MAX_SWAPFILES_SHIFT);
 }
 
+<<<<<<< HEAD
 static u64 pte_to_pagemap_entry(pte_t pte)
 {
 	u64 pme = 0;
@@ -663,6 +879,41 @@ static u64 pte_to_pagemap_entry(pte_t pte)
 			| PM_PSHIFT(PAGE_SHIFT) | PM_PRESENT;
 	return pme;
 }
+=======
+static void pte_to_pagemap_entry(pagemap_entry_t *pme, pte_t pte)
+{
+	if (is_swap_pte(pte))
+		*pme = make_pme(PM_PFRAME(swap_pte_to_pagemap_entry(pte))
+				| PM_PSHIFT(PAGE_SHIFT) | PM_SWAP);
+	else if (pte_present(pte))
+		*pme = make_pme(PM_PFRAME(pte_pfn(pte))
+				| PM_PSHIFT(PAGE_SHIFT) | PM_PRESENT);
+	else
+		*pme = make_pme(PM_NOT_PRESENT);
+}
+
+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+static void thp_pmd_to_pagemap_entry(pagemap_entry_t *pme,
+					pmd_t pmd, int offset)
+{
+	/*
+	 * Currently pmd for thp is always present because thp can not be
+	 * swapped-out, migrated, or HWPOISONed (split in such cases instead.)
+	 * This if-check is just to prepare for future implementation.
+	 */
+	if (pmd_present(pmd))
+		*pme = make_pme(PM_PFRAME(pmd_pfn(pmd) + offset)
+				| PM_PSHIFT(PAGE_SHIFT) | PM_PRESENT);
+	else
+		*pme = make_pme(PM_NOT_PRESENT);
+}
+#else
+static inline void thp_pmd_to_pagemap_entry(pagemap_entry_t *pme,
+						pmd_t pmd, int offset)
+{
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int pagemap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
 			     struct mm_walk *walk)
@@ -671,6 +922,7 @@ static int pagemap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
 	struct pagemapread *pm = walk->private;
 	pte_t *pte;
 	int err = 0;
+<<<<<<< HEAD
 
 	split_huge_page_pmd(walk->mm, pmd);
 	if (pmd_trans_unstable(pmd))
@@ -685,17 +937,56 @@ static int pagemap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
 		 * and need a new, higher one */
 		if (vma && (addr >= vma->vm_end))
 			vma = find_vma(walk->mm, addr);
+=======
+	pagemap_entry_t pme = make_pme(PM_NOT_PRESENT);
+
+	/* find the first VMA at or above 'addr' */
+	vma = find_vma(walk->mm, addr);
+	if (vma && pmd_trans_huge_lock(pmd, vma) == 1) {
+		for (; addr != end; addr += PAGE_SIZE) {
+			unsigned long offset;
+
+			offset = (addr & ~PAGEMAP_WALK_MASK) >>
+					PAGE_SHIFT;
+			thp_pmd_to_pagemap_entry(&pme, *pmd, offset);
+			err = add_to_pagemap(addr, &pme, pm);
+			if (err)
+				break;
+		}
+		spin_unlock(&walk->mm->page_table_lock);
+		return err;
+	}
+
+	if (pmd_trans_unstable(pmd))
+		return 0;
+	for (; addr != end; addr += PAGE_SIZE) {
+
+		/* check to see if we've left 'vma' behind
+		 * and need a new, higher one */
+		if (vma && (addr >= vma->vm_end)) {
+			vma = find_vma(walk->mm, addr);
+			pme = make_pme(PM_NOT_PRESENT);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* check that 'vma' actually covers this address,
 		 * and that it isn't a huge page vma */
 		if (vma && (vma->vm_start <= addr) &&
 		    !is_vm_hugetlb_page(vma)) {
 			pte = pte_offset_map(pmd, addr);
+<<<<<<< HEAD
 			pfn = pte_to_pagemap_entry(*pte);
 			/* unmap before userspace copy */
 			pte_unmap(pte);
 		}
 		err = add_to_pagemap(addr, pfn, pm);
+=======
+			pte_to_pagemap_entry(&pme, *pte);
+			/* unmap before userspace copy */
+			pte_unmap(pte);
+		}
+		err = add_to_pagemap(addr, &pme, pm);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			return err;
 	}
@@ -706,6 +997,7 @@ static int pagemap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
 }
 
 #ifdef CONFIG_HUGETLB_PAGE
+<<<<<<< HEAD
 static u64 huge_pte_to_pagemap_entry(pte_t pte, int offset)
 {
 	u64 pme = 0;
@@ -713,6 +1005,16 @@ static u64 huge_pte_to_pagemap_entry(pte_t pte, int offset)
 		pme = PM_PFRAME(pte_pfn(pte) + offset)
 			| PM_PSHIFT(PAGE_SHIFT) | PM_PRESENT;
 	return pme;
+=======
+static void huge_pte_to_pagemap_entry(pagemap_entry_t *pme,
+					pte_t pte, int offset)
+{
+	if (pte_present(pte))
+		*pme = make_pme(PM_PFRAME(pte_pfn(pte) + offset)
+				| PM_PSHIFT(PAGE_SHIFT) | PM_PRESENT);
+	else
+		*pme = make_pme(PM_NOT_PRESENT);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* This function walks within one hugetlb entry in the single call */
@@ -722,12 +1024,21 @@ static int pagemap_hugetlb_range(pte_t *pte, unsigned long hmask,
 {
 	struct pagemapread *pm = walk->private;
 	int err = 0;
+<<<<<<< HEAD
 	u64 pfn;
 
 	for (; addr != end; addr += PAGE_SIZE) {
 		int offset = (addr & ~hmask) >> PAGE_SHIFT;
 		pfn = huge_pte_to_pagemap_entry(*pte, offset);
 		err = add_to_pagemap(addr, pfn, pm);
+=======
+	pagemap_entry_t pme;
+
+	for (; addr != end; addr += PAGE_SIZE) {
+		int offset = (addr & ~hmask) >> PAGE_SHIFT;
+		huge_pte_to_pagemap_entry(&pme, *pte, offset);
+		err = add_to_pagemap(addr, &pme, pm);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			return err;
 	}
@@ -762,8 +1073,11 @@ static int pagemap_hugetlb_range(pte_t *pte, unsigned long hmask,
  * determine which areas of memory are actually mapped and llseek to
  * skip over unmapped regions.
  */
+<<<<<<< HEAD
 #define PAGEMAP_WALK_SIZE	(PMD_SIZE)
 #define PAGEMAP_WALK_MASK	(PMD_MASK)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t pagemap_read(struct file *file, char __user *buf,
 			    size_t count, loff_t *ppos)
 {
@@ -790,8 +1104,13 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
 	if (!count)
 		goto out_task;
 
+<<<<<<< HEAD
 	pm.len = PM_ENTRY_BYTES * (PAGEMAP_WALK_SIZE >> PAGE_SHIFT);
 	pm.buffer = kmalloc(pm.len, GFP_TEMPORARY);
+=======
+	pm.len = (PAGEMAP_WALK_SIZE >> PAGE_SHIFT);
+	pm.buffer = kmalloc(pm.len * PM_ENTRY_BYTES, GFP_TEMPORARY);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = -ENOMEM;
 	if (!pm.buffer)
 		goto out_task;
@@ -946,6 +1265,7 @@ static int gather_pte_stats(pmd_t *pmd, unsigned long addr,
 	pte_t *pte;
 
 	md = walk->private;
+<<<<<<< HEAD
 	spin_lock(&walk->mm->page_table_lock);
 	if (pmd_trans_huge(*pmd)) {
 		if (pmd_trans_splitting(*pmd)) {
@@ -964,6 +1284,19 @@ static int gather_pte_stats(pmd_t *pmd, unsigned long addr,
 		}
 	} else {
 		spin_unlock(&walk->mm->page_table_lock);
+=======
+
+	if (pmd_trans_huge_lock(pmd, md->vma) == 1) {
+		pte_t huge_pte = *(pte_t *)pmd;
+		struct page *page;
+
+		page = can_gather_numa_stats(huge_pte, md->vma, addr);
+		if (page)
+			gather_stats(page, md, pte_dirty(huge_pte),
+				     HPAGE_PMD_SIZE/PAGE_SIZE);
+		spin_unlock(&walk->mm->page_table_lock);
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (pmd_trans_unstable(pmd))
@@ -1009,7 +1342,11 @@ static int gather_hugetbl_stats(pte_t *pte, unsigned long hmask,
 /*
  * Display pages allocated per node and memory policy via /proc.
  */
+<<<<<<< HEAD
 static int show_numa_map(struct seq_file *m, void *v)
+=======
+static int show_numa_map(struct seq_file *m, void *v, int is_pid)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct numa_maps_private *numa_priv = m->private;
 	struct proc_maps_private *proc_priv = &numa_priv->proc_maps;
@@ -1046,9 +1383,25 @@ static int show_numa_map(struct seq_file *m, void *v)
 		seq_path(m, &file->f_path, "\n\t= ");
 	} else if (vma->vm_start <= mm->brk && vma->vm_end >= mm->start_brk) {
 		seq_printf(m, " heap");
+<<<<<<< HEAD
 	} else if (vma->vm_start <= mm->start_stack &&
 			vma->vm_end >= mm->start_stack) {
 		seq_printf(m, " stack");
+=======
+	} else {
+		pid_t tid = vm_is_stack(proc_priv->task, vma, is_pid);
+		if (tid != 0) {
+			/*
+			 * Thread stack in /proc/PID/task/TID/maps or
+			 * the main process stack.
+			 */
+			if (!is_pid || (vma->vm_start <= mm->start_stack &&
+			    vma->vm_end >= mm->start_stack))
+				seq_printf(m, " stack");
+			else
+				seq_printf(m, " stack:%d", tid);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (is_vm_hugetlb_page(vma))
@@ -1091,6 +1444,7 @@ out:
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct seq_operations proc_pid_numa_maps_op = {
         .start  = m_start,
         .next   = m_next,
@@ -1099,13 +1453,45 @@ static const struct seq_operations proc_pid_numa_maps_op = {
 };
 
 static int numa_maps_open(struct inode *inode, struct file *file)
+=======
+static int show_pid_numa_map(struct seq_file *m, void *v)
+{
+	return show_numa_map(m, v, 1);
+}
+
+static int show_tid_numa_map(struct seq_file *m, void *v)
+{
+	return show_numa_map(m, v, 0);
+}
+
+static const struct seq_operations proc_pid_numa_maps_op = {
+	.start  = m_start,
+	.next   = m_next,
+	.stop   = m_stop,
+	.show   = show_pid_numa_map,
+};
+
+static const struct seq_operations proc_tid_numa_maps_op = {
+	.start  = m_start,
+	.next   = m_next,
+	.stop   = m_stop,
+	.show   = show_tid_numa_map,
+};
+
+static int numa_maps_open(struct inode *inode, struct file *file,
+			  const struct seq_operations *ops)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct numa_maps_private *priv;
 	int ret = -ENOMEM;
 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
 	if (priv) {
 		priv->proc_maps.pid = proc_pid(inode);
+<<<<<<< HEAD
 		ret = seq_open(file, &proc_pid_numa_maps_op);
+=======
+		ret = seq_open(file, ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!ret) {
 			struct seq_file *m = file->private_data;
 			m->private = priv;
@@ -1116,8 +1502,30 @@ static int numa_maps_open(struct inode *inode, struct file *file)
 	return ret;
 }
 
+<<<<<<< HEAD
 const struct file_operations proc_numa_maps_operations = {
 	.open		= numa_maps_open,
+=======
+static int pid_numa_maps_open(struct inode *inode, struct file *file)
+{
+	return numa_maps_open(inode, file, &proc_pid_numa_maps_op);
+}
+
+static int tid_numa_maps_open(struct inode *inode, struct file *file)
+{
+	return numa_maps_open(inode, file, &proc_tid_numa_maps_op);
+}
+
+const struct file_operations proc_pid_numa_maps_operations = {
+	.open		= pid_numa_maps_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= seq_release_private,
+};
+
+const struct file_operations proc_tid_numa_maps_operations = {
+	.open		= tid_numa_maps_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= seq_release_private,

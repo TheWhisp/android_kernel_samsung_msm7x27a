@@ -168,6 +168,10 @@ module_exit(pvr_exit);
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION("0.9.1");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /*

@@ -263,6 +263,7 @@ static reg_val common_regs[] = {
         
 static char *mode_option;
 static char *monitor_layout;
+<<<<<<< HEAD
 static int noaccel = 0;
 static int default_dynclk = -2;
 static int nomodeset = 0;
@@ -276,6 +277,21 @@ static int nomtrr = 0;
 #endif
 static int force_sleep;
 static int ignore_devlist;
+=======
+static bool noaccel = 0;
+static int default_dynclk = -2;
+static bool nomodeset = 0;
+static bool ignore_edid = 0;
+static bool mirror = 0;
+static int panel_yres = 0;
+static bool force_dfp = 0;
+static bool force_measure_pll = 0;
+#ifdef CONFIG_MTRR
+static bool nomtrr = 0;
+#endif
+static bool force_sleep;
+static bool ignore_devlist;
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PMAC_BACKLIGHT
 static int backlight = 1;
 #else
@@ -845,16 +861,27 @@ static int radeonfb_pan_display (struct fb_var_screeninfo *var,
 {
         struct radeonfb_info *rinfo = info->par;
 
+<<<<<<< HEAD
         if ((var->xoffset + var->xres > var->xres_virtual)
 	    || (var->yoffset + var->yres > var->yres_virtual))
                return -EINVAL;
+=======
+	if ((var->xoffset + info->var.xres > info->var.xres_virtual)
+	    || (var->yoffset + info->var.yres > info->var.yres_virtual))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
                 
         if (rinfo->asleep)
         	return 0;
 
 	radeon_fifo_wait(2);
+<<<<<<< HEAD
         OUTREG(CRTC_OFFSET, ((var->yoffset * var->xres_virtual + var->xoffset)
 			     * var->bits_per_pixel / 8) & ~7);
+=======
+	OUTREG(CRTC_OFFSET, (var->yoffset * info->fix.line_length +
+			     var->xoffset * info->var.bits_per_pixel / 8) & ~7);
+>>>>>>> refs/remotes/origin/cm-10.0
         return 0;
 }
 

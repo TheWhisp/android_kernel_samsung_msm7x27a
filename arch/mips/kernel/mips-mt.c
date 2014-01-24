@@ -6,14 +6,22 @@
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/security.h>
 
 #include <asm/cpu.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardirq.h>
 #include <asm/mmu_context.h>
 #include <asm/mipsmtregs.h>

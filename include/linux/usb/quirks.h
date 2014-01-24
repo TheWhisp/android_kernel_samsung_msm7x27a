@@ -30,4 +30,9 @@
    descriptor */
 #define USB_QUIRK_DELAY_INIT		0x00000040
 
+<<<<<<< HEAD
+=======
+#define USB_QUIRK_OTG_PET		0x00000080
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __LINUX_USB_QUIRKS_H */

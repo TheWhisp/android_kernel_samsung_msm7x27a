@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,6 +31,10 @@
  *
  *****************************************************************************/
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "wifi.h"
 #include "base.h"
 #include "ps.h"
@@ -43,10 +51,18 @@ bool rtl_ps_enable_nic(struct ieee80211_hw *hw)
 
 	if (is_hal_stop(rtlhal))
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_WARNING,
+<<<<<<< HEAD
 			 ("Driver is already down!\n"));
 
 	/*<2> Enable Adapter */
 	rtlpriv->cfg->ops->hw_init(hw);
+=======
+			 "Driver is already down!\n");
+
+	/*<2> Enable Adapter */
+	if (rtlpriv->cfg->ops->hw_init(hw))
+		return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	RT_CLEAR_PS_LEVEL(ppsc, RT_RF_OFF_LEVL_HALT_NIC);
 
 	/*<3> Enable Interrupt */
@@ -68,6 +84,10 @@ bool rtl_ps_disable_nic(struct ieee80211_hw *hw)
 
 	/*<2> Disable Interrupt */
 	rtlpriv->cfg->ops->disable_interrupt(hw);
+<<<<<<< HEAD
+=======
+	tasklet_kill(&rtlpriv->works.irq_tasklet);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*<3> Disable Adapter */
 	rtlpriv->cfg->ops->hw_disable(hw);
@@ -78,6 +98,7 @@ EXPORT_SYMBOL(rtl_ps_disable_nic);
 
 bool rtl_ps_set_rf_state(struct ieee80211_hw *hw,
 			 enum rf_pwrstate state_toset,
+<<<<<<< HEAD
 			 u32 changesource, bool protect_or_not)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
@@ -130,13 +151,24 @@ bool rtl_ps_set_rf_state(struct ieee80211_hw *hw,
 
 no_protect:
 	rtstate = ppsc->rfpwr_state;
+=======
+			 u32 changesource)
+{
+	struct rtl_priv *rtlpriv = rtl_priv(hw);
+	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
+	bool actionallowed = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (state_toset) {
 	case ERFON:
 		ppsc->rfoff_reason &= (~changesource);
 
 		if ((changesource == RF_CHANGE_BY_HW) &&
+<<<<<<< HEAD
 		    (ppsc->hwradiooff == true)) {
+=======
+		    (ppsc->hwradiooff)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ppsc->hwradiooff = false;
 		}
 
@@ -149,8 +181,12 @@ no_protect:
 
 	case ERFOFF:
 
+<<<<<<< HEAD
 		if ((changesource == RF_CHANGE_BY_HW)
 		    && (ppsc->hwradiooff == false)) {
+=======
+		if ((changesource == RF_CHANGE_BY_HW) && !ppsc->hwradiooff) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ppsc->hwradiooff = true;
 		}
 
@@ -165,19 +201,26 @@ no_protect:
 
 	default:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
+<<<<<<< HEAD
 			 ("switch case not process\n"));
+=======
+			 "switch case not processed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 
 	if (actionallowed)
 		rtlpriv->cfg->ops->set_rf_power_state(hw, state_toset);
 
+<<<<<<< HEAD
 	if (!protect_or_not) {
 		spin_lock_irqsave(&rtlpriv->locks.rf_ps_lock, flag);
 		ppsc->rfchange_inprogress = false;
 		spin_unlock_irqrestore(&rtlpriv->locks.rf_ps_lock, flag);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return actionallowed;
 }
 EXPORT_SYMBOL(rtl_ps_set_rf_state);
@@ -200,8 +243,12 @@ static void _rtl_ps_inactive_ps(struct ieee80211_hw *hw)
 		}
 	}
 
+<<<<<<< HEAD
 	rtl_ps_set_rf_state(hw, ppsc->inactive_pwrstate,
 			    RF_CHANGE_BY_IPS, false);
+=======
+	rtl_ps_set_rf_state(hw, ppsc->inactive_pwrstate, RF_CHANGE_BY_IPS);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ppsc->inactive_pwrstate == ERFOFF &&
 	    rtlhal->interface == INTF_PCI) {
@@ -228,7 +275,11 @@ void rtl_ips_nic_off_wq_callback(void *data)
 
 	if (mac->opmode != NL80211_IFTYPE_STATION) {
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_WARNING,
+<<<<<<< HEAD
 			 ("not station return\n"));
+=======
+			 "not station return\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -259,7 +310,11 @@ void rtl_ips_nic_off_wq_callback(void *data)
 		    (mac->link_state == MAC80211_NOLINK) &&
 		    !mac->act_scanning) {
 			RT_TRACE(rtlpriv, COMP_RF, DBG_TRACE,
+<<<<<<< HEAD
 				 ("IPSEnter(): Turn off RF.\n"));
+=======
+				 "IPSEnter(): Turn off RF\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			ppsc->inactive_pwrstate = ERFOFF;
 			ppsc->in_powersavemode = true;
@@ -332,8 +387,12 @@ static bool rtl_get_fwlps_doze(struct ieee80211_hw *hw)
 
 	if (ps_timediff < 2000) {
 		RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+<<<<<<< HEAD
 			 ("Delay enter Fw LPS for DHCP, ARP,"
 			  " or EAPOL exchanging state.\n"));
+=======
+			 "Delay enter Fw LPS for DHCP, ARP, or EAPOL exchanging state\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return false;
 	}
 
@@ -380,8 +439,13 @@ static void rtl_lps_set_psmode(struct ieee80211_hw *hw, u8 rt_psmode)
 		bool fw_current_inps;
 		if (ppsc->dot11_psmode == EACTIVE) {
 			RT_TRACE(rtlpriv, COMP_RF, DBG_DMESG,
+<<<<<<< HEAD
 				 ("FW LPS leave ps_mode:%x\n",
 				  FW_PS_ACTIVE_MODE));
+=======
+				 "FW LPS leave ps_mode:%x\n",
+				 FW_PS_ACTIVE_MODE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			rpwm_val = 0x0C;	/* RF on */
 			fw_pwrmode = FW_PS_ACTIVE_MODE;
@@ -399,8 +463,13 @@ static void rtl_lps_set_psmode(struct ieee80211_hw *hw, u8 rt_psmode)
 		} else {
 			if (rtl_get_fwlps_doze(hw)) {
 				RT_TRACE(rtlpriv, COMP_RF, DBG_DMESG,
+<<<<<<< HEAD
 						("FW LPS enter ps_mode:%x\n",
 						 ppsc->fwctrl_psmode));
+=======
+					 "FW LPS enter ps_mode:%x\n",
+					 ppsc->fwctrl_psmode);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 				rpwm_val = 0x02;	/* RF off */
 				fw_current_inps = true;
@@ -428,7 +497,10 @@ void rtl_lps_enter(struct ieee80211_hw *hw)
 	struct rtl_mac *mac = rtl_mac(rtl_priv(hw));
 	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
+<<<<<<< HEAD
 	unsigned long flag;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!ppsc->fwctrl_lps)
 		return;
@@ -449,19 +521,31 @@ void rtl_lps_enter(struct ieee80211_hw *hw)
 	if (mac->link_state != MAC80211_LINKED)
 		return;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&rtlpriv->locks.lps_lock, flag);
+=======
+	mutex_lock(&rtlpriv->locks.ps_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Idle for a while if we connect to AP a while ago. */
 	if (mac->cnt_after_linked >= 2) {
 		if (ppsc->dot11_psmode == EACTIVE) {
 			RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+<<<<<<< HEAD
 					("Enter 802.11 power save mode...\n"));
+=======
+				 "Enter 802.11 power save mode...\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			rtl_lps_set_psmode(hw, EAUTOPS);
 		}
 	}
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&rtlpriv->locks.lps_lock, flag);
+=======
+	mutex_unlock(&rtlpriv->locks.ps_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*Leave the leisure power save mode.*/
@@ -470,9 +554,14 @@ void rtl_lps_leave(struct ieee80211_hw *hw)
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
 	struct rtl_hal *rtlhal = rtl_hal(rtl_priv(hw));
+<<<<<<< HEAD
 	unsigned long flag;
 
 	spin_lock_irqsave(&rtlpriv->locks.lps_lock, flag);
+=======
+
+	mutex_lock(&rtlpriv->locks.ps_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ppsc->fwctrl_lps) {
 		if (ppsc->dot11_psmode != EACTIVE) {
@@ -488,12 +577,20 @@ void rtl_lps_leave(struct ieee80211_hw *hw)
 			}
 
 			RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+<<<<<<< HEAD
 				 ("Busy Traffic,Leave 802.11 power save..\n"));
+=======
+				 "Busy Traffic,Leave 802.11 power save..\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			rtl_lps_set_psmode(hw, EACTIVE);
 		}
 	}
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&rtlpriv->locks.lps_lock, flag);
+=======
+	mutex_unlock(&rtlpriv->locks.ps_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* For sw LPS*/
@@ -572,8 +669,13 @@ void rtl_swlps_beacon(struct ieee80211_hw *hw, void *data, unsigned int len)
 		queue_delayed_work(rtlpriv->works.rtl_wq,
 				&rtlpriv->works.ps_work, MSECS(5));
 	} else {
+<<<<<<< HEAD
 		RT_TRACE(rtlpriv, COMP_POWER, DBG_DMESG, ("u_bufferd: %x, "
 				"m_buffered: %x\n", u_buffed, m_buffed));
+=======
+		RT_TRACE(rtlpriv, COMP_POWER, DBG_DMESG,
+			 "u_bufferd: %x, m_buffered: %x\n", u_buffed, m_buffed);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -582,7 +684,10 @@ void rtl_swlps_rf_awake(struct ieee80211_hw *hw)
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
 	struct rtl_mac *mac = rtl_mac(rtl_priv(hw));
+<<<<<<< HEAD
 	unsigned long flag;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!rtlpriv->psc.swctrl_lps)
 		return;
@@ -595,9 +700,15 @@ void rtl_swlps_rf_awake(struct ieee80211_hw *hw)
 		RT_CLEAR_PS_LEVEL(ppsc, RT_PS_LEVEL_ASPM);
 	}
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&rtlpriv->locks.lps_lock, flag);
 	rtl_ps_set_rf_state(hw, ERFON, RF_CHANGE_BY_PS, false);
 	spin_unlock_irqrestore(&rtlpriv->locks.lps_lock, flag);
+=======
+	mutex_lock(&rtlpriv->locks.ps_mutex);
+	rtl_ps_set_rf_state(hw, ERFON, RF_CHANGE_BY_PS);
+	mutex_unlock(&rtlpriv->locks.ps_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void rtl_swlps_rfon_wq_callback(void *data)
@@ -614,7 +725,10 @@ void rtl_swlps_rf_sleep(struct ieee80211_hw *hw)
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rtl_mac *mac = rtl_mac(rtl_priv(hw));
 	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
+<<<<<<< HEAD
 	unsigned long flag;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 sleep_intv;
 
 	if (!rtlpriv->psc.sw_ps_enabled)
@@ -631,6 +745,7 @@ void rtl_swlps_rf_sleep(struct ieee80211_hw *hw)
 	if (rtlpriv->link_info.busytraffic)
 		return;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&rtlpriv->locks.rf_ps_lock, flag);
 	if (rtlpriv->psc.rfchange_inprogress) {
 		spin_unlock_irqrestore(&rtlpriv->locks.rf_ps_lock, flag);
@@ -641,6 +756,11 @@ void rtl_swlps_rf_sleep(struct ieee80211_hw *hw)
 	spin_lock_irqsave(&rtlpriv->locks.lps_lock, flag);
 	rtl_ps_set_rf_state(hw, ERFSLEEP, RF_CHANGE_BY_PS, false);
 	spin_unlock_irqrestore(&rtlpriv->locks.lps_lock, flag);
+=======
+	mutex_lock(&rtlpriv->locks.ps_mutex);
+	rtl_ps_set_rf_state(hw, ERFSLEEP, RF_CHANGE_BY_PS);
+	mutex_unlock(&rtlpriv->locks.ps_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ppsc->reg_rfps_level & RT_RF_OFF_LEVL_ASPM &&
 		!RT_IN_PS_LEVEL(ppsc, RT_PS_LEVEL_ASPM)) {
@@ -670,8 +790,13 @@ void rtl_swlps_rf_sleep(struct ieee80211_hw *hw)
 	 * sleep  = dtim_period, that meaons, we should
 	 * awake before every dtim */
 	RT_TRACE(rtlpriv, COMP_POWER, DBG_DMESG,
+<<<<<<< HEAD
 		 ("dtim_counter:%x will sleep :%d"
 		 " beacon_intv\n", rtlpriv->psc.dtim_counter, sleep_intv));
+=======
+		 "dtim_counter:%x will sleep :%d beacon_intv\n",
+		 rtlpriv->psc.dtim_counter, sleep_intv);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* we tested that 40ms is enough for sw & hw sw delay */
 	queue_delayed_work(rtlpriv->works.rtl_wq, &rtlpriv->works.ps_rfon_wq,

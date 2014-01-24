@@ -29,6 +29,11 @@
  *    Gareth Hughes <gareth@valinux.com>
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 #include "drm.h"
 #include "r128_drm.h"
@@ -40,6 +45,23 @@ static struct pci_device_id pciidlist[] = {
 	r128_PCI_IDS
 };
 
+<<<<<<< HEAD
+=======
+static const struct file_operations r128_driver_fops = {
+	.owner = THIS_MODULE,
+	.open = drm_open,
+	.release = drm_release,
+	.unlocked_ioctl = drm_ioctl,
+	.mmap = drm_mmap,
+	.poll = drm_poll,
+	.fasync = drm_fasync,
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = r128_compat_ioctl,
+#endif
+	.llseek = noop_llseek,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct drm_driver driver = {
 	.driver_features =
 	    DRIVER_USE_AGP | DRIVER_USE_MTRR | DRIVER_PCI_DMA | DRIVER_SG |
@@ -58,6 +80,7 @@ static struct drm_driver driver = {
 	.reclaim_buffers = drm_core_reclaim_buffers,
 	.ioctls = r128_ioctls,
 	.dma_ioctl = r128_cce_buffers,
+<<<<<<< HEAD
 	.fops = {
 		.owner = THIS_MODULE,
 		.open = drm_open,
@@ -73,6 +96,9 @@ static struct drm_driver driver = {
 	},
 
 
+=======
+	.fops = &r128_driver_fops,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name = DRIVER_NAME,
 	.desc = DRIVER_DESC,
 	.date = DRIVER_DATE,
@@ -83,6 +109,10 @@ static struct drm_driver driver = {
 
 int r128_driver_load(struct drm_device *dev, unsigned long flags)
 {
+<<<<<<< HEAD
+=======
+	pci_set_master(dev->pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return drm_vblank_init(dev, 1);
 }
 

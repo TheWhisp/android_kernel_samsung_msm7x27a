@@ -12,6 +12,10 @@
 #include <linux/kernel.h>
 #include <linux/kobject.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/completion.h>
 #include <linux/device.h>
 #include <linux/delay.h>

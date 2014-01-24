@@ -262,8 +262,12 @@ static int i2sbus_add_dev(struct macio_dev *macio,
 		 */
 		dev->allocated_resource[i] =
 			request_mem_region(dev->resources[i].start,
+<<<<<<< HEAD
 					   dev->resources[i].end -
 					   dev->resources[i].start + 1,
+=======
+					   resource_size(&dev->resources[i]),
+>>>>>>> refs/remotes/origin/cm-10.0
 					   dev->rnames[i]);
 		if (!dev->allocated_resource[i]) {
 			printk(KERN_ERR "i2sbus: failed to claim resource %d!\n", i);
@@ -272,19 +276,31 @@ static int i2sbus_add_dev(struct macio_dev *macio,
 	}
 
 	r = &dev->resources[aoa_resource_i2smmio];
+<<<<<<< HEAD
 	rlen = r->end - r->start + 1;
+=======
+	rlen = resource_size(r);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rlen < sizeof(struct i2s_interface_regs))
 		goto err;
 	dev->intfregs = ioremap(r->start, rlen);
 
 	r = &dev->resources[aoa_resource_txdbdma];
+<<<<<<< HEAD
 	rlen = r->end - r->start + 1;
+=======
+	rlen = resource_size(r);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rlen < sizeof(struct dbdma_regs))
 		goto err;
 	dev->out.dbdma = ioremap(r->start, rlen);
 
 	r = &dev->resources[aoa_resource_rxdbdma];
+<<<<<<< HEAD
 	rlen = r->end - r->start + 1;
+=======
+	rlen = resource_size(r);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rlen < sizeof(struct dbdma_regs))
 		goto err;
 	dev->in.dbdma = ioremap(r->start, rlen);

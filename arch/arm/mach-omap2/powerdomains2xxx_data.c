@@ -1,7 +1,11 @@
 /*
  * OMAP2XXX powerdomain definitions
  *
+<<<<<<< HEAD
  * Copyright (C) 2007-2008 Texas Instruments, Inc.
+=======
+ * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright (C) 2007-2011 Nokia Corporation
  *
  * Paul Walmsley, Jouni Högander
@@ -28,7 +32,10 @@
 static struct powerdomain dsp_pwrdm = {
 	.name		  = "dsp_pwrdm",
 	.prcm_offs	  = OMAP24XX_DSP_MOD,
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP24XX),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_RET,
 	.banks		  = 1,
@@ -38,12 +45,19 @@ static struct powerdomain dsp_pwrdm = {
 	.pwrsts_mem_on	  = {
 		[0] = PWRSTS_ON,
 	},
+<<<<<<< HEAD
+=======
+	.voltdm           = { .name = "core" },
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct powerdomain mpu_24xx_pwrdm = {
 	.name		  = "mpu_pwrdm",
 	.prcm_offs	  = MPU_MOD,
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP24XX),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_OFF_RET,
 	.banks		  = 1,
@@ -53,12 +67,19 @@ static struct powerdomain mpu_24xx_pwrdm = {
 	.pwrsts_mem_on	  = {
 		[0] = PWRSTS_ON,
 	},
+<<<<<<< HEAD
+=======
+	.voltdm           = { .name = "core" },
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct powerdomain core_24xx_pwrdm = {
 	.name		  = "core_pwrdm",
 	.prcm_offs	  = CORE_MOD,
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP24XX),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.banks		  = 3,
 	.pwrsts_mem_ret	  = {
@@ -71,6 +92,10 @@ static struct powerdomain core_24xx_pwrdm = {
 		[1] = PWRSTS_OFF_RET_ON, /* MEM2ONSTATE */
 		[2] = PWRSTS_OFF_RET_ON, /* MEM3ONSTATE */
 	},
+<<<<<<< HEAD
+=======
+	.voltdm           = { .name = "core" },
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -78,14 +103,20 @@ static struct powerdomain core_24xx_pwrdm = {
  * 2430-specific powerdomains
  */
 
+<<<<<<< HEAD
 #ifdef CONFIG_SOC_OMAP2430
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* XXX 2430 KILLDOMAINWKUP bit?  No current users apparently */
 
 static struct powerdomain mdm_pwrdm = {
 	.name		  = "mdm_pwrdm",
 	.prcm_offs	  = OMAP2430_MDM_MOD,
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP2430),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_RET,
 	.banks		  = 1,
@@ -95,6 +126,7 @@ static struct powerdomain mdm_pwrdm = {
 	.pwrsts_mem_on	  = {
 		[0] = PWRSTS_ON,  /* MEMONSTATE */
 	},
+<<<<<<< HEAD
 };
 
 #endif     /* CONFIG_SOC_OMAP2430 */
@@ -120,4 +152,46 @@ static struct powerdomain *powerdomains_omap2xxx[] __initdata = {
 void __init omap2xxx_powerdomains_init(void)
 {
 	pwrdm_init(powerdomains_omap2xxx, &omap2_pwrdm_operations);
+=======
+	.voltdm           = { .name = "core" },
+};
+
+/*
+ *
+ */
+
+static struct powerdomain *powerdomains_omap24xx[] __initdata = {
+	&wkup_omap2_pwrdm,
+	&gfx_omap2_pwrdm,
+	&dsp_pwrdm,
+	&mpu_24xx_pwrdm,
+	&core_24xx_pwrdm,
+	NULL
+};
+
+static struct powerdomain *powerdomains_omap2430[] __initdata = {
+	&mdm_pwrdm,
+	NULL
+};
+
+void __init omap242x_powerdomains_init(void)
+{
+	if (!cpu_is_omap2420())
+		return;
+
+	pwrdm_register_platform_funcs(&omap2_pwrdm_operations);
+	pwrdm_register_pwrdms(powerdomains_omap24xx);
+	pwrdm_complete_init();
+}
+
+void __init omap243x_powerdomains_init(void)
+{
+	if (!cpu_is_omap2430())
+		return;
+
+	pwrdm_register_platform_funcs(&omap2_pwrdm_operations);
+	pwrdm_register_pwrdms(powerdomains_omap24xx);
+	pwrdm_register_pwrdms(powerdomains_omap2430);
+	pwrdm_complete_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 }

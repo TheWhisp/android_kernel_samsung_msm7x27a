@@ -20,6 +20,10 @@
 #include <linux/firmware.h>
 #include <linux/sched.h>
 #include <asm/div64.h>
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "softing.h"
 

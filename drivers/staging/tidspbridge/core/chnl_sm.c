@@ -50,9 +50,12 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/sync.h>
 
@@ -123,7 +126,10 @@ int bridge_chnl_add_io_req(struct chnl_object *chnl_obj, void *host_buf,
 				CHNL_IS_OUTPUT(pchnl->chnl_mode))
 			return -EPIPE;
 		/* No other possible states left */
+<<<<<<< HEAD
 		DBC_ASSERT(0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dev_obj = dev_get_first();
@@ -190,7 +196,10 @@ func_cont:
 	 * Note: for dma chans dw_dsp_addr contains dsp address
 	 * of SM buffer.
 	 */
+<<<<<<< HEAD
 	DBC_ASSERT(chnl_mgr_obj->word_size != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* DSP address */
 	chnl_packet_obj->dsp_tx_addr = dw_dsp_addr / chnl_mgr_obj->word_size;
 	chnl_packet_obj->byte_size = byte_size;
@@ -201,7 +210,10 @@ func_cont:
 			CHNL_IOCSTATCOMPLETE);
 	list_add_tail(&chnl_packet_obj->link, &pchnl->io_requests);
 	pchnl->cio_reqs++;
+<<<<<<< HEAD
 	DBC_ASSERT(pchnl->cio_reqs <= pchnl->chnl_packets);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * If end of stream, update the channel state to prevent
 	 * more IOR's.
@@ -209,8 +221,11 @@ func_cont:
 	if (is_eos)
 		pchnl->state |= CHNL_STATEEOS;
 
+<<<<<<< HEAD
 	/* Legacy DSM Processor-Copy */
 	DBC_ASSERT(pchnl->chnl_type == CHNL_PCPY);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Request IO from the DSP */
 	io_request_chnl(chnl_mgr_obj->iomgr, pchnl,
 			(CHNL_IS_INPUT(pchnl->chnl_mode) ? IO_INPUT :
@@ -283,7 +298,10 @@ int bridge_chnl_cancel_io(struct chnl_object *chnl_obj)
 		list_add_tail(&chirp->link, &pchnl->io_completions);
 		pchnl->cio_cs++;
 		pchnl->cio_reqs--;
+<<<<<<< HEAD
 		DBC_ASSERT(pchnl->cio_reqs >= 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	spin_unlock_bh(&chnl_mgr_obj->chnl_mgr_lock);
@@ -311,8 +329,11 @@ int bridge_chnl_close(struct chnl_object *chnl_obj)
 	status = bridge_chnl_cancel_io(chnl_obj);
 	if (status)
 		return status;
+<<<<<<< HEAD
 	/* Assert I/O on this channel is now cancelled: Protects from io_dpc */
 	DBC_ASSERT((pchnl->state & CHNL_STATECANCEL));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Invalidate channel object: Protects from CHNL_GetIOCompletion() */
 	/* Free the slot in the channel manager: */
 	pchnl->chnl_mgr_obj->channels[pchnl->chnl_id] = NULL;
@@ -358,6 +379,7 @@ int bridge_chnl_create(struct chnl_mgr **channel_mgr,
 	struct chnl_mgr *chnl_mgr_obj = NULL;
 	u8 max_channels;
 
+<<<<<<< HEAD
 	/* Check DBC requirements: */
 	DBC_REQUIRE(channel_mgr != NULL);
 	DBC_REQUIRE(mgr_attrts != NULL);
@@ -365,6 +387,8 @@ int bridge_chnl_create(struct chnl_mgr **channel_mgr,
 	DBC_REQUIRE(mgr_attrts->max_channels <= CHNL_MAXCHANNELS);
 	DBC_REQUIRE(mgr_attrts->word_size != 0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Allocate channel manager object */
 	chnl_mgr_obj = kzalloc(sizeof(struct chnl_mgr), GFP_KERNEL);
 	if (chnl_mgr_obj) {
@@ -374,7 +398,10 @@ int bridge_chnl_create(struct chnl_mgr **channel_mgr,
 		 *      mgr_attrts->max_channels = CHNL_MAXCHANNELS =
 		 *                       DDMA_MAXDDMACHNLS = DDMA_MAXZCPYCHNLS.
 		 */
+<<<<<<< HEAD
 		DBC_ASSERT(mgr_attrts->max_channels == CHNL_MAXCHANNELS);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		max_channels = CHNL_MAXCHANNELS + CHNL_MAXCHANNELS * CHNL_PCPY;
 		/* Create array of channels */
 		chnl_mgr_obj->channels = kzalloc(sizeof(struct chnl_object *)
@@ -491,7 +518,10 @@ int bridge_chnl_flush_io(struct chnl_object *chnl_obj, u32 timeout)
 			pchnl->state &= ~CHNL_STATECANCEL;
 		}
 	}
+<<<<<<< HEAD
 	DBC_ENSURE(status || list_empty(&pchnl->io_requests));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return status;
 }
 
@@ -592,7 +622,10 @@ int bridge_chnl_get_ioc(struct chnl_object *chnl_obj, u32 timeout,
 	omap_mbox_disable_irq(dev_ctxt->mbox, IRQ_RX);
 	if (dequeue_ioc) {
 		/* Dequeue IOC and set chan_ioc; */
+<<<<<<< HEAD
 		DBC_ASSERT(!list_empty(&pchnl->io_completions));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		chnl_packet_obj = list_first_entry(&pchnl->io_completions,
 				struct chnl_irp, link);
 		list_del(&chnl_packet_obj->link);
@@ -705,8 +738,11 @@ int bridge_chnl_idle(struct chnl_object *chnl_obj, u32 timeout,
 	struct chnl_mgr *chnl_mgr_obj;
 	int status = 0;
 
+<<<<<<< HEAD
 	DBC_REQUIRE(chnl_obj);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	chnl_mode = chnl_obj->chnl_mode;
 	chnl_mgr_obj = chnl_obj->chnl_mgr_obj;
 
@@ -736,10 +772,14 @@ int bridge_chnl_open(struct chnl_object **chnl,
 	struct chnl_mgr *chnl_mgr_obj = hchnl_mgr;
 	struct chnl_object *pchnl = NULL;
 	struct sync_object *sync_event = NULL;
+<<<<<<< HEAD
 	/* Ensure DBC requirements: */
 	DBC_REQUIRE(chnl != NULL);
 	DBC_REQUIRE(pattrs != NULL);
 	DBC_REQUIRE(hchnl_mgr != NULL);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	*chnl = NULL;
 
 	/* Validate Args: */
@@ -761,7 +801,10 @@ int bridge_chnl_open(struct chnl_object **chnl,
 			return status;
 	}
 
+<<<<<<< HEAD
 	DBC_ASSERT(ch_id < chnl_mgr_obj->max_channels);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Create channel object: */
 	pchnl = kzalloc(sizeof(struct chnl_object), GFP_KERNEL);
@@ -850,7 +893,10 @@ int bridge_chnl_register_notify(struct chnl_object *chnl_obj,
 {
 	int status = 0;
 
+<<<<<<< HEAD
 	DBC_ASSERT(!(event_mask & ~(DSP_STREAMDONE | DSP_STREAMIOCOMPLETION)));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (event_mask)
 		status = ntfy_register(chnl_obj->ntfy_obj, hnotification,
@@ -906,8 +952,11 @@ static void free_chirp_list(struct list_head *chirp_list)
 {
 	struct chnl_irp *chirp, *tmp;
 
+<<<<<<< HEAD
 	DBC_REQUIRE(chirp_list != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each_entry_safe(chirp, tmp, chirp_list, link) {
 		list_del(&chirp->link);
 		kfree(chirp);
@@ -924,8 +973,11 @@ static int search_free_channel(struct chnl_mgr *chnl_mgr_obj,
 	int status = -ENOSR;
 	u32 i;
 
+<<<<<<< HEAD
 	DBC_REQUIRE(chnl_mgr_obj);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < chnl_mgr_obj->max_channels; i++) {
 		if (chnl_mgr_obj->channels[i] == NULL) {
 			status = 0;

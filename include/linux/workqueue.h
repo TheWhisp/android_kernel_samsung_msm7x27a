@@ -10,7 +10,11 @@
 #include <linux/bitops.h>
 #include <linux/lockdep.h>
 #include <linux/threads.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct workqueue_struct;
 
@@ -255,7 +259,11 @@ enum {
 	WQ_HIGHPRI		= 1 << 4, /* high priority */
 	WQ_CPU_INTENSIVE	= 1 << 5, /* cpu instensive workqueue */
 
+<<<<<<< HEAD
 	WQ_DYING		= 1 << 6, /* internal: workqueue is dying */
+=======
+	WQ_DRAINING		= 1 << 6, /* internal: workqueue is draining */
+>>>>>>> refs/remotes/origin/cm-10.0
 	WQ_RESCUER		= 1 << 7, /* internal: workqueue has rescuer */
 
 	WQ_MAX_ACTIVE		= 512,	  /* I like 512, better ideas? */
@@ -301,15 +309,40 @@ extern struct workqueue_struct *system_freezable_wq;
 extern struct workqueue_struct *system_nrt_freezable_wq;
 
 extern struct workqueue_struct *
+<<<<<<< HEAD
 __alloc_workqueue_key(const char *name, unsigned int flags, int max_active,
 		      struct lock_class_key *key, const char *lock_name);
 
 #ifdef CONFIG_LOCKDEP
 #define alloc_workqueue(name, flags, max_active)		\
+=======
+__alloc_workqueue_key(const char *fmt, unsigned int flags, int max_active,
+	struct lock_class_key *key, const char *lock_name, ...) __printf(1, 6);
+
+/**
+ * alloc_workqueue - allocate a workqueue
+ * @fmt: printf format for the name of the workqueue
+ * @flags: WQ_* flags
+ * @max_active: max in-flight work items, 0 for default
+ * @args: args for @fmt
+ *
+ * Allocate a workqueue with the specified parameters.  For detailed
+ * information on WQ_* flags, please refer to Documentation/workqueue.txt.
+ *
+ * The __lock_name macro dance is to guarantee that single lock_class_key
+ * doesn't end up with different namesm, which isn't allowed by lockdep.
+ *
+ * RETURNS:
+ * Pointer to the allocated workqueue on success, %NULL on failure.
+ */
+#ifdef CONFIG_LOCKDEP
+#define alloc_workqueue(fmt, flags, max_active, args...)	\
+>>>>>>> refs/remotes/origin/cm-10.0
 ({								\
 	static struct lock_class_key __key;			\
 	const char *__lock_name;				\
 								\
+<<<<<<< HEAD
 	if (__builtin_constant_p(name))				\
 		__lock_name = (name);				\
 	else							\
@@ -321,12 +354,32 @@ __alloc_workqueue_key(const char *name, unsigned int flags, int max_active,
 #else
 #define alloc_workqueue(name, flags, max_active)		\
 	__alloc_workqueue_key((name), (flags), (max_active), NULL, NULL)
+=======
+	if (__builtin_constant_p(fmt))				\
+		__lock_name = (fmt);				\
+	else							\
+		__lock_name = #fmt;				\
+								\
+	__alloc_workqueue_key((fmt), (flags), (max_active),	\
+			      &__key, __lock_name, ##args);	\
+})
+#else
+#define alloc_workqueue(fmt, flags, max_active, args...)	\
+	__alloc_workqueue_key((fmt), (flags), (max_active),	\
+			      NULL, NULL, ##args)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /**
  * alloc_ordered_workqueue - allocate an ordered workqueue
+<<<<<<< HEAD
  * @name: name of the workqueue
  * @flags: WQ_* flags (only WQ_FREEZABLE and WQ_MEM_RECLAIM are meaningful)
+=======
+ * @fmt: printf format for the name of the workqueue
+ * @flags: WQ_* flags (only WQ_FREEZABLE and WQ_MEM_RECLAIM are meaningful)
+ * @args: args for @fmt
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Allocate an ordered workqueue.  An ordered workqueue executes at
  * most one work item at any given time in the queued order.  They are
@@ -335,11 +388,16 @@ __alloc_workqueue_key(const char *name, unsigned int flags, int max_active,
  * RETURNS:
  * Pointer to the allocated workqueue on success, %NULL on failure.
  */
+<<<<<<< HEAD
 static inline struct workqueue_struct *
 alloc_ordered_workqueue(const char *name, unsigned int flags)
 {
 	return alloc_workqueue(name, WQ_UNBOUND | flags, 1);
 }
+=======
+#define alloc_ordered_workqueue(fmt, flags, args...)		\
+	alloc_workqueue(fmt, WQ_UNBOUND | (flags), 1, ##args)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define create_workqueue(name)					\
 	alloc_workqueue((name), WQ_MEM_RECLAIM, 1)
@@ -359,6 +417,10 @@ extern int queue_delayed_work_on(int cpu, struct workqueue_struct *wq,
 			struct delayed_work *work, unsigned long delay);
 
 extern void flush_workqueue(struct workqueue_struct *wq);
+<<<<<<< HEAD
+=======
+extern void drain_workqueue(struct workqueue_struct *wq);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void flush_scheduled_work(void);
 
 extern int schedule_work(struct work_struct *work);
@@ -416,6 +478,7 @@ static inline bool __cancel_delayed_work(struct delayed_work *work)
 	return ret;
 }
 
+<<<<<<< HEAD
 /* Obsolete. use cancel_delayed_work_sync() */
 static inline __deprecated
 void cancel_rearming_delayed_workqueue(struct workqueue_struct *wq,
@@ -431,6 +494,8 @@ void cancel_rearming_delayed_work(struct delayed_work *work)
 	cancel_delayed_work_sync(work);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef CONFIG_SMP
 static inline long work_on_cpu(unsigned int cpu, long (*fn)(void *), void *arg)
 {

@@ -219,6 +219,7 @@ static struct platform_driver pmic8xxx_pwrkey_driver = {
 		.pm	= &pm8xxx_pwr_key_pm_ops,
 	},
 };
+<<<<<<< HEAD
 
 static int __init pmic8xxx_pwrkey_init(void)
 {
@@ -231,6 +232,9 @@ static void __exit pmic8xxx_pwrkey_exit(void)
 	platform_driver_unregister(&pmic8xxx_pwrkey_driver);
 }
 module_exit(pmic8xxx_pwrkey_exit);
+=======
+module_platform_driver(pmic8xxx_pwrkey_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_ALIAS("platform:pmic8xxx_pwrkey");
 MODULE_DESCRIPTION("PMIC8XXX Power Key driver");

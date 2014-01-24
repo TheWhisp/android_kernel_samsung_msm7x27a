@@ -33,6 +33,10 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/uaccess.h>
 #include <video/w100fb.h>
@@ -1619,6 +1623,7 @@ static struct platform_driver w100fb_driver = {
 	},
 };
 
+<<<<<<< HEAD
 int __init w100fb_init(void)
 {
 	return platform_driver_register(&w100fb_driver);
@@ -1631,6 +1636,9 @@ void __exit w100fb_cleanup(void)
 
 module_init(w100fb_init);
 module_exit(w100fb_cleanup);
+=======
+module_platform_driver(w100fb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("ATI Imageon w100 framebuffer driver");
 MODULE_LICENSE("GPL");

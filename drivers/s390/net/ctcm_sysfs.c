@@ -159,7 +159,11 @@ static ssize_t ctcm_proto_store(struct device *dev,
 	return count;
 }
 
+<<<<<<< HEAD
 const char *ctcm_type[] = {
+=======
+static const char *ctcm_type[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	"not a channel",
 	"CTC/A",
 	"FICON channel",

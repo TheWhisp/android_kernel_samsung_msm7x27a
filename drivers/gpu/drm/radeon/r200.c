@@ -87,6 +87,10 @@ int r200_copy_dma(struct radeon_device *rdev,
 		  unsigned num_gpu_pages,
 		  struct radeon_fence *fence)
 {
+<<<<<<< HEAD
+=======
+	struct radeon_ring *ring = &rdev->ring[RADEON_RING_TYPE_GFX_INDEX];
+>>>>>>> refs/remotes/origin/cm-10.0
 	uint32_t size;
 	uint32_t cur_size;
 	int i, num_loops;
@@ -95,20 +99,30 @@ int r200_copy_dma(struct radeon_device *rdev,
 	/* radeon pitch is /64 */
 	size = num_gpu_pages << RADEON_GPU_PAGE_SHIFT;
 	num_loops = DIV_ROUND_UP(size, 0x1FFFFF);
+<<<<<<< HEAD
 	r = radeon_ring_lock(rdev, num_loops * 4 + 64);
+=======
+	r = radeon_ring_lock(rdev, ring, num_loops * 4 + 64);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (r) {
 		DRM_ERROR("radeon: moving bo (%d).\n", r);
 		return r;
 	}
 	/* Must wait for 2D idle & clean before DMA or hangs might happen */
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(RADEON_WAIT_UNTIL, 0));
 	radeon_ring_write(rdev, (1 << 16));
+=======
+	radeon_ring_write(ring, PACKET0(RADEON_WAIT_UNTIL, 0));
+	radeon_ring_write(ring, (1 << 16));
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < num_loops; i++) {
 		cur_size = size;
 		if (cur_size > 0x1FFFFF) {
 			cur_size = 0x1FFFFF;
 		}
 		size -= cur_size;
+<<<<<<< HEAD
 		radeon_ring_write(rdev, PACKET0(0x720, 2));
 		radeon_ring_write(rdev, src_offset);
 		radeon_ring_write(rdev, dst_offset);
@@ -122,6 +136,21 @@ int r200_copy_dma(struct radeon_device *rdev,
 		r = radeon_fence_emit(rdev, fence);
 	}
 	radeon_ring_unlock_commit(rdev);
+=======
+		radeon_ring_write(ring, PACKET0(0x720, 2));
+		radeon_ring_write(ring, src_offset);
+		radeon_ring_write(ring, dst_offset);
+		radeon_ring_write(ring, cur_size | (1 << 31) | (1 << 30));
+		src_offset += cur_size;
+		dst_offset += cur_size;
+	}
+	radeon_ring_write(ring, PACKET0(RADEON_WAIT_UNTIL, 0));
+	radeon_ring_write(ring, RADEON_WAIT_DMA_GUI_IDLE);
+	if (fence) {
+		r = radeon_fence_emit(rdev, fence);
+	}
+	radeon_ring_unlock_commit(rdev, ring);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return r;
 }
 
@@ -214,7 +243,21 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 			r100_cs_dump_packet(p, pkt);
 			return r;
 		}
+<<<<<<< HEAD
 		ib[idx] = idx_value + ((u32)reloc->lobj.gpu_offset);
+=======
+		if (!(p->cs_flags & RADEON_CS_KEEP_TILING_FLAGS)) {
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MACRO)
+				tile_flags |= R200_TXO_MACRO_TILE;
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO)
+				tile_flags |= R200_TXO_MICRO_TILE;
+
+			tmp = idx_value & ~(0x7 << 2);
+			tmp |= tile_flags;
+			ib[idx] = tmp + ((u32)reloc->lobj.gpu_offset);
+		} else
+			ib[idx] = idx_value + ((u32)reloc->lobj.gpu_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 		track->textures[i].robj = reloc->robj;
 		track->tex_dirty = true;
 		break;
@@ -276,6 +319,7 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 			return r;
 		}
 
+<<<<<<< HEAD
 		if (reloc->lobj.tiling_flags & RADEON_TILING_MACRO)
 			tile_flags |= RADEON_COLOR_TILE_ENABLE;
 		if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO)
@@ -284,6 +328,19 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 		tmp = idx_value & ~(0x7 << 16);
 		tmp |= tile_flags;
 		ib[idx] = tmp;
+=======
+		if (!(p->cs_flags & RADEON_CS_KEEP_TILING_FLAGS)) {
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MACRO)
+				tile_flags |= RADEON_COLOR_TILE_ENABLE;
+			if (reloc->lobj.tiling_flags & RADEON_TILING_MICRO)
+				tile_flags |= RADEON_COLOR_MICROTILE_ENABLE;
+
+			tmp = idx_value & ~(0x7 << 16);
+			tmp |= tile_flags;
+			ib[idx] = tmp;
+		} else
+			ib[idx] = idx_value;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		track->cb[0].pitch = idx_value & RADEON_COLORPITCH_MASK;
 		track->cb_dirty = true;

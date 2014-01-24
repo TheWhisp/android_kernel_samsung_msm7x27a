@@ -9,12 +9,20 @@
 #include <net/sock.h>
 #include <net/tcp.h>
 
+<<<<<<< HEAD
 #define TARGET_CORE_MOD_VERSION		"v4.0.0-rc7-ml"
 #define SHUTDOWN_SIGS	(sigmask(SIGKILL)|sigmask(SIGINT)|sigmask(SIGABRT))
 
 /* Used by transport_generic_allocate_iovecs() */
 #define TRANSPORT_IOV_DATA_BUFFER		5
 /* Maximum Number of LUNs per Target Portal Group */
+=======
+#define TARGET_CORE_MOD_VERSION		"v4.1.0-rc2-ml"
+#define TARGET_CORE_VERSION		TARGET_CORE_MOD_VERSION
+
+/* Maximum Number of LUNs per Target Portal Group */
+/* Don't raise above 511 or REPORT_LUNS needs to handle >1 page */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TRANSPORT_MAX_LUNS_PER_TPG		256
 /*
  * By default we use 32-byte CDBs in TCM Core and subsystem plugin code.
@@ -56,6 +64,77 @@
 /* Used by transport_get_inquiry_vpd_device_ident() */
 #define INQUIRY_VPD_DEVICE_IDENTIFIER_LEN	254
 
+<<<<<<< HEAD
+=======
+/* Attempts before moving from SHORT to LONG */
+#define PYX_TRANSPORT_WINDOW_CLOSED_THRESHOLD	3
+#define PYX_TRANSPORT_WINDOW_CLOSED_WAIT_SHORT	3  /* In milliseconds */
+#define PYX_TRANSPORT_WINDOW_CLOSED_WAIT_LONG	10 /* In milliseconds */
+
+#define PYX_TRANSPORT_STATUS_INTERVAL		5 /* In seconds */
+
+/*
+ * struct se_subsystem_dev->su_dev_flags
+*/
+#define SDF_FIRMWARE_VPD_UNIT_SERIAL		0x00000001
+#define SDF_EMULATED_VPD_UNIT_SERIAL		0x00000002
+#define SDF_USING_UDEV_PATH			0x00000004
+#define SDF_USING_ALIAS				0x00000008
+
+/*
+ * struct se_device->dev_flags
+ */
+#define DF_READ_ONLY				0x00000001
+#define DF_SPC2_RESERVATIONS			0x00000002
+#define DF_SPC2_RESERVATIONS_WITH_ISID		0x00000004
+
+/* struct se_dev_attrib sanity values */
+/* Default max_unmap_lba_count */
+#define DA_MAX_UNMAP_LBA_COUNT			0
+/* Default max_unmap_block_desc_count */
+#define DA_MAX_UNMAP_BLOCK_DESC_COUNT		0
+/* Default unmap_granularity */
+#define DA_UNMAP_GRANULARITY_DEFAULT		0
+/* Default unmap_granularity_alignment */
+#define DA_UNMAP_GRANULARITY_ALIGNMENT_DEFAULT	0
+/* Default max transfer length */
+#define DA_FABRIC_MAX_SECTORS			8192
+/* Emulation for Direct Page Out */
+#define DA_EMULATE_DPO				0
+/* Emulation for Forced Unit Access WRITEs */
+#define DA_EMULATE_FUA_WRITE			1
+/* Emulation for Forced Unit Access READs */
+#define DA_EMULATE_FUA_READ			0
+/* Emulation for WriteCache and SYNCHRONIZE_CACHE */
+#define DA_EMULATE_WRITE_CACHE			0
+/* Emulation for UNIT ATTENTION Interlock Control */
+#define DA_EMULATE_UA_INTLLCK_CTRL		0
+/* Emulation for TASK_ABORTED status (TAS) by default */
+#define DA_EMULATE_TAS				1
+/* Emulation for Thin Provisioning UNMAP using block/blk-lib.c:blkdev_issue_discard() */
+#define DA_EMULATE_TPU				0
+/*
+ * Emulation for Thin Provisioning WRITE_SAME w/ UNMAP=1 bit using
+ * block/blk-lib.c:blkdev_issue_discard()
+ */
+#define DA_EMULATE_TPWS				0
+/* No Emulation for PSCSI by default */
+#define DA_EMULATE_RESERVATIONS			0
+/* No Emulation for PSCSI by default */
+#define DA_EMULATE_ALUA				0
+/* Enforce SCSI Initiator Port TransportID with 'ISID' for PR */
+#define DA_ENFORCE_PR_ISIDS			1
+#define DA_STATUS_MAX_SECTORS_MIN		16
+#define DA_STATUS_MAX_SECTORS_MAX		8192
+/* By default don't report non-rotating (solid state) medium */
+#define DA_IS_NONROT				0
+/* Queue Algorithm Modifier default for restricted reordering in control mode page */
+#define DA_EMULATE_REST_REORD			0
+
+#define SE_INQUIRY_BUF				512
+#define SE_MODE_PAGE_BUF			512
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* struct se_hba->hba_flags */
 enum hba_flags_table {
 	HBA_FLAGS_INTERNAL_USE	= 0x01,
@@ -74,16 +153,26 @@ enum transport_tpg_type_table {
 	TRANSPORT_TPG_TYPE_DISCOVERY = 1,
 };
 
+<<<<<<< HEAD
 /* Used for generate timer flags */
 enum timer_flags_table {
 	TF_RUNNING	= 0x01,
 	TF_STOP		= 0x02,
+=======
+/* struct se_task->task_flags */
+enum se_task_flags {
+	TF_ACTIVE		= (1 << 0),
+	TF_SENT			= (1 << 1),
+	TF_REQUEST_STOP		= (1 << 2),
+	TF_HAS_SENSE		= (1 << 3),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Special transport agnostic struct se_cmd->t_states */
 enum transport_state_table {
 	TRANSPORT_NO_STATE	= 0,
 	TRANSPORT_NEW_CMD	= 1,
+<<<<<<< HEAD
 	TRANSPORT_DEFERRED_CMD	= 2,
 	TRANSPORT_WRITE_PENDING	= 3,
 	TRANSPORT_PROCESS_WRITE	= 4,
@@ -100,6 +189,17 @@ enum transport_state_table {
 	TRANSPORT_FREE		= 15,
 	TRANSPORT_NEW_CMD_MAP	= 16,
 	TRANSPORT_FREE_CMD_INTR = 17,
+=======
+	TRANSPORT_WRITE_PENDING	= 3,
+	TRANSPORT_PROCESS_WRITE	= 4,
+	TRANSPORT_PROCESSING	= 5,
+	TRANSPORT_COMPLETE	= 6,
+	TRANSPORT_PROCESS_TMR	= 9,
+	TRANSPORT_ISTATE_PROCESSING = 11,
+	TRANSPORT_NEW_CMD_MAP	= 16,
+	TRANSPORT_COMPLETE_QF_WP = 18,
+	TRANSPORT_COMPLETE_QF_OK = 19,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Used for struct se_cmd->se_cmd_flags */
@@ -109,6 +209,7 @@ enum se_cmd_flags_table {
 	SCF_EMULATED_TASK_SENSE		= 0x00000004,
 	SCF_SCSI_DATA_SG_IO_CDB		= 0x00000008,
 	SCF_SCSI_CONTROL_SG_IO_CDB	= 0x00000010,
+<<<<<<< HEAD
 	SCF_SCSI_CONTROL_NONSG_IO_CDB	= 0x00000020,
 	SCF_SCSI_NON_DATA_CDB		= 0x00000040,
 	SCF_SCSI_CDB_EXCEPTION		= 0x00000080,
@@ -118,18 +219,34 @@ enum se_cmd_flags_table {
 	SCF_SE_LUN_CMD			= 0x00000800,
 	SCF_SE_ALLOW_EOO		= 0x00001000,
 	SCF_SE_DISABLE_ONLINE_CHECK	= 0x00002000,
+=======
+	SCF_SCSI_NON_DATA_CDB		= 0x00000020,
+	SCF_SCSI_TMR_CDB		= 0x00000040,
+	SCF_SCSI_CDB_EXCEPTION		= 0x00000080,
+	SCF_SCSI_RESERVATION_CONFLICT	= 0x00000100,
+	SCF_FUA				= 0x00000200,
+	SCF_SE_LUN_CMD			= 0x00000800,
+	SCF_SE_ALLOW_EOO		= 0x00001000,
+	SCF_BIDI			= 0x00002000,
+>>>>>>> refs/remotes/origin/cm-10.0
 	SCF_SENT_CHECK_CONDITION	= 0x00004000,
 	SCF_OVERFLOW_BIT		= 0x00008000,
 	SCF_UNDERFLOW_BIT		= 0x00010000,
 	SCF_SENT_DELAYED_TAS		= 0x00020000,
 	SCF_ALUA_NON_OPTIMIZED		= 0x00040000,
 	SCF_DELAYED_CMD_FROM_SAM_ATTR	= 0x00080000,
+<<<<<<< HEAD
 	SCF_PASSTHROUGH_SG_TO_MEM	= 0x00100000,
 	SCF_PASSTHROUGH_CONTIG_TO_SG	= 0x00200000,
 	SCF_PASSTHROUGH_SG_TO_MEM_NOALLOC = 0x00400000,
 	SCF_EMULATE_SYNC_CACHE		= 0x00800000,
 	SCF_EMULATE_CDB_ASYNC		= 0x01000000,
 	SCF_EMULATE_SYNC_UNMAP		= 0x02000000
+=======
+	SCF_UNUSED			= 0x00100000,
+	SCF_PASSTHROUGH_SG_TO_MEM_NOALLOC = 0x00200000,
+	SCF_ACK_KREF			= 0x00400000,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* struct se_dev_entry->lun_flags and struct se_lun->lun_access */
@@ -170,11 +287,50 @@ enum tcm_sense_reason_table {
 	TCM_CHECK_CONDITION_ABORT_CMD		= 0x0d,
 	TCM_CHECK_CONDITION_UNIT_ATTENTION	= 0x0e,
 	TCM_CHECK_CONDITION_NOT_READY		= 0x0f,
+<<<<<<< HEAD
+=======
+	TCM_RESERVATION_CONFLICT		= 0x10,
+	TCM_ADDRESS_OUT_OF_RANGE		= 0x11,
+};
+
+enum target_sc_flags_table {
+	TARGET_SCF_BIDI_OP		= 0x01,
+	TARGET_SCF_ACK_KREF		= 0x02,
+	TARGET_SCF_UNKNOWN_SIZE		= 0x04,
+};
+
+/* fabric independent task management function values */
+enum tcm_tmreq_table {
+	TMR_ABORT_TASK		= 1,
+	TMR_ABORT_TASK_SET	= 2,
+	TMR_CLEAR_ACA		= 3,
+	TMR_CLEAR_TASK_SET	= 4,
+	TMR_LUN_RESET		= 5,
+	TMR_TARGET_WARM_RESET	= 6,
+	TMR_TARGET_COLD_RESET	= 7,
+	TMR_FABRIC_TMR		= 255,
+};
+
+/* fabric independent task management response values */
+enum tcm_tmrsp_table {
+	TMR_FUNCTION_COMPLETE		= 0,
+	TMR_TASK_DOES_NOT_EXIST		= 1,
+	TMR_LUN_DOES_NOT_EXIST		= 2,
+	TMR_TASK_STILL_ALLEGIANT	= 3,
+	TMR_TASK_FAILOVER_NOT_SUPPORTED	= 4,
+	TMR_TASK_MGMT_FUNCTION_NOT_SUPPORTED	= 5,
+	TMR_FUNCTION_AUTHORIZATION_FAILED = 6,
+	TMR_FUNCTION_REJECTED		= 255,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct se_obj {
 	atomic_t obj_access_count;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Used by TCM Core internally to signal if ALUA emulation is enabled or
@@ -206,11 +362,14 @@ typedef enum {
 	SCSI_INDEX_TYPE_MAX
 } scsi_index_t;
 
+<<<<<<< HEAD
 struct scsi_index_table {
 	spinlock_t	lock;
 	u32		scsi_mib_index[SCSI_INDEX_TYPE_MAX];
 } ____cacheline_aligned;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct se_cmd;
 
 struct t10_alua {
@@ -226,12 +385,17 @@ struct t10_alua {
 	struct config_group alua_tg_pt_gps_group;
 	int (*alua_state_check)(struct se_cmd *, unsigned char *, u8 *);
 	struct list_head tg_pt_gps_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct t10_alua_lu_gp {
 	u16	lu_gp_id;
 	int	lu_gp_valid_id;
 	u32	lu_gp_members;
+<<<<<<< HEAD
 	atomic_t lu_gp_shutdown;
 	atomic_t lu_gp_ref_cnt;
 	spinlock_t lu_gp_lock;
@@ -239,6 +403,14 @@ struct t10_alua_lu_gp {
 	struct list_head lu_gp_list;
 	struct list_head lu_gp_mem_list;
 } ____cacheline_aligned;
+=======
+	atomic_t lu_gp_ref_cnt;
+	spinlock_t lu_gp_lock;
+	struct config_group lu_gp_group;
+	struct list_head lu_gp_node;
+	struct list_head lu_gp_mem_list;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct t10_alua_lu_gp_member {
 	bool lu_gp_assoc;
@@ -247,7 +419,11 @@ struct t10_alua_lu_gp_member {
 	struct t10_alua_lu_gp *lu_gp;
 	struct se_device *lu_gp_mem_dev;
 	struct list_head lu_gp_mem_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct t10_alua_tg_pt_gp {
 	u16	tg_pt_gp_id;
@@ -270,7 +446,11 @@ struct t10_alua_tg_pt_gp {
 	struct config_group tg_pt_gp_group;
 	struct list_head tg_pt_gp_list;
 	struct list_head tg_pt_gp_mem_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct t10_alua_tg_pt_gp_member {
 	bool tg_pt_gp_assoc;
@@ -279,7 +459,11 @@ struct t10_alua_tg_pt_gp_member {
 	struct t10_alua_tg_pt_gp *tg_pt_gp;
 	struct se_port *tg_pt;
 	struct list_head tg_pt_gp_mem_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct t10_vpd {
 	unsigned char device_identifier[INQUIRY_VPD_DEVICE_IDENTIFIER_LEN];
@@ -289,6 +473,7 @@ struct t10_vpd {
 	u32 association;
 	u32 device_identifier_type;
 	struct list_head vpd_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
 
 struct t10_wwn {
@@ -296,11 +481,24 @@ struct t10_wwn {
 	unsigned char model[16];
 	unsigned char revision[4];
 	unsigned char unit_serial[INQUIRY_VPD_SERIAL_LEN];
+=======
+};
+
+struct t10_wwn {
+	char vendor[8];
+	char model[16];
+	char revision[4];
+	char unit_serial[INQUIRY_VPD_SERIAL_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
 	spinlock_t t10_vpd_lock;
 	struct se_subsystem_dev *t10_sub_dev;
 	struct config_group t10_wwn_group;
 	struct list_head t10_vpd_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /*
@@ -353,7 +551,11 @@ struct t10_pr_registration {
 	struct list_head pr_reg_aptpl_list;
 	struct list_head pr_reg_atp_list;
 	struct list_head pr_reg_atp_mem_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * This set of function pointer ops is set based upon SPC3_PERSISTENT_RESERVATIONS,
@@ -367,13 +569,21 @@ struct t10_reservation_ops {
 	int (*t10_pr_clear)(struct se_cmd *);
 };
 
+<<<<<<< HEAD
 struct t10_reservation_template {
+=======
+struct t10_reservation {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Reservation effects all target ports */
 	int pr_all_tg_pt;
 	/* Activate Persistence across Target Power Loss enabled
 	 * for SCSI device */
 	int pr_aptpl_active;
+<<<<<<< HEAD
 	/* Used by struct t10_reservation_template->pr_aptpl_buf_len */
+=======
+	/* Used by struct t10_reservation->pr_aptpl_buf_len */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PR_APTPL_BUF_LEN			8192
 	u32 pr_aptpl_buf_len;
 	u32 pr_generation;
@@ -394,6 +604,7 @@ struct t10_reservation_template {
 	struct list_head registration_list;
 	struct list_head aptpl_reg_list;
 	struct t10_reservation_ops pr_ops;
+<<<<<<< HEAD
 } ____cacheline_aligned;
 
 struct se_queue_req {
@@ -401,12 +612,16 @@ struct se_queue_req {
 	void			*cmd;
 	struct list_head	qr_list;
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_queue_obj {
 	atomic_t		queue_cnt;
 	spinlock_t		cmd_queue_lock;
 	struct list_head	qobj_list;
 	wait_queue_head_t	thread_wq;
+<<<<<<< HEAD
 } ____cacheline_aligned;
 
 /*
@@ -498,6 +713,44 @@ struct se_task {
 
 #define TASK_CMD(task)	((task)->task_se_cmd)
 #define TASK_DEV(task)	((task)->se_dev)
+=======
+};
+
+struct se_task {
+	unsigned long long	task_lba;
+	u32			task_sectors;
+	u32			task_size;
+	struct se_cmd		*task_se_cmd;
+	struct scatterlist	*task_sg;
+	u32			task_sg_nents;
+	u16			task_flags;
+	u8			task_scsi_status;
+	enum dma_data_direction	task_data_direction;
+	struct list_head	t_list;
+	struct list_head	t_execute_list;
+	struct list_head	t_state_list;
+	bool			t_state_active;
+	struct completion	task_stop_comp;
+};
+
+struct se_tmr_req {
+	/* Task Management function to be performed */
+	u8			function;
+	/* Task Management response to send */
+	u8			response;
+	int			call_transport;
+	/* Reference to ITT that Task Mgmt should be performed */
+	u32			ref_task_tag;
+	/* 64-bit encoded SAM LUN from $FABRIC_MOD TMR header */
+	u64			ref_task_lun;
+	void 			*fabric_tmr_ptr;
+	struct se_cmd		*task_cmd;
+	struct se_cmd		*ref_cmd;
+	struct se_device	*tmr_dev;
+	struct se_lun		*tmr_lun;
+	struct list_head	tmr_list;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_cmd {
 	/* SAM response code being sent to initiator */
@@ -514,10 +767,17 @@ struct se_cmd {
 	int			sam_task_attr;
 	/* Transport protocol dependent state, see transport_state_table */
 	enum transport_state_table t_state;
+<<<<<<< HEAD
 	/* Transport protocol dependent state for out of order CmdSNs */
 	int			deferred_t_state;
 	/* Transport specific error status */
 	int			transport_error_status;
+=======
+	/* Used to signal cmd->se_tfo->check_release_cmd() usage per cmd */
+	unsigned		check_release:1;
+	unsigned		cmd_wait_set:1;
+	unsigned		unknown_data_length:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* See se_cmd_flags_table */
 	u32			se_cmd_flags;
 	u32			se_ordered_id;
@@ -529,6 +789,7 @@ struct se_cmd {
 	u32			orig_fe_lun;
 	/* Persistent Reservation key */
 	u64			pr_res_key;
+<<<<<<< HEAD
 	atomic_t                transport_sent;
 	/* Used for sense data */
 	void			*sense_buffer;
@@ -539,10 +800,20 @@ struct se_cmd {
 	struct se_dev_entry   *se_deve;
 	struct se_device	*se_obj_ptr;
 	struct se_device	*se_orig_obj_ptr;
+=======
+	/* Used for sense data */
+	void			*sense_buffer;
+	struct list_head	se_delayed_node;
+	struct list_head	se_lun_node;
+	struct list_head	se_qf_node;
+	struct se_device      *se_dev;
+	struct se_dev_entry   *se_deve;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct se_lun		*se_lun;
 	/* Only used for internal passthrough and legacy TCM fabric modules */
 	struct se_session	*se_sess;
 	struct se_tmr_req	*se_tmr_req;
+<<<<<<< HEAD
 	/* t_task is setup to t_task_backstore in transport_init_se_cmd() */
 	struct se_transport_task *t_task;
 	struct se_transport_task t_task_backstore;
@@ -573,6 +844,55 @@ struct se_tmr_req {
 	struct se_lun		*tmr_lun;
 	struct list_head	tmr_list;
 } ____cacheline_aligned;
+=======
+	struct list_head	se_queue_node;
+	struct list_head	se_cmd_list;
+	struct completion	cmd_wait_comp;
+	struct kref		cmd_kref;
+	struct target_core_fabric_ops *se_tfo;
+	int (*execute_task)(struct se_task *);
+	void (*transport_complete_callback)(struct se_cmd *);
+
+	unsigned char		*t_task_cdb;
+	unsigned char		__t_task_cdb[TCM_MAX_COMMAND_SIZE];
+	unsigned long long	t_task_lba;
+	u32			t_tasks_sg_chained_no;
+	atomic_t		t_fe_count;
+	atomic_t		t_se_count;
+	atomic_t		t_task_cdbs_left;
+	atomic_t		t_task_cdbs_ex_left;
+	atomic_t		t_task_cdbs_sent;
+	unsigned int		transport_state;
+#define CMD_T_ABORTED		(1 << 0)
+#define CMD_T_ACTIVE		(1 << 1)
+#define CMD_T_COMPLETE		(1 << 2)
+#define CMD_T_QUEUED		(1 << 3)
+#define CMD_T_SENT		(1 << 4)
+#define CMD_T_STOP		(1 << 5)
+#define CMD_T_FAILED		(1 << 6)
+#define CMD_T_LUN_STOP		(1 << 7)
+#define CMD_T_LUN_FE_STOP	(1 << 8)
+#define CMD_T_DEV_ACTIVE	(1 << 9)
+	spinlock_t		t_state_lock;
+	struct completion	t_transport_stop_comp;
+	struct completion	transport_lun_fe_stop_comp;
+	struct completion	transport_lun_stop_comp;
+	struct scatterlist	*t_tasks_sg_chained;
+
+	struct work_struct	work;
+
+	struct scatterlist	*t_data_sg;
+	unsigned int		t_data_nents;
+	void			*t_data_vmap;
+	struct scatterlist	*t_bidi_data_sg;
+	unsigned int		t_bidi_data_nents;
+
+	/* Used for BIDI READ */
+	struct list_head	t_task_list;
+	u32			t_task_list_num;
+
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_ua {
 	u8			ua_asc;
@@ -580,12 +900,20 @@ struct se_ua {
 	struct se_node_acl	*ua_nacl;
 	struct list_head	ua_dev_list;
 	struct list_head	ua_nacl_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_node_acl {
 	char			initiatorname[TRANSPORT_IQN_LEN];
 	/* Used to signal demo mode created ACL, disabled by default */
 	bool			dynamic_node_acl;
+<<<<<<< HEAD
+=======
+	bool			acl_stop:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32			queue_depth;
 	u32			acl_index;
 	u64			num_cmds;
@@ -594,7 +922,11 @@ struct se_node_acl {
 	spinlock_t		stats_lock;
 	/* Used for PR SPEC_I_PT=1 and REGISTER_AND_MOVE */
 	atomic_t		acl_pr_ref_count;
+<<<<<<< HEAD
 	struct se_dev_entry	*device_list;
+=======
+	struct se_dev_entry	**device_list;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct se_session	*nacl_sess;
 	struct se_portal_group *se_tpg;
 	spinlock_t		device_list_lock;
@@ -607,19 +939,36 @@ struct se_node_acl {
 	struct config_group	*acl_default_groups[5];
 	struct list_head	acl_list;
 	struct list_head	acl_sess_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
 
 struct se_session {
+=======
+	struct completion	acl_free_comp;
+	struct kref		acl_kref;
+};
+
+struct se_session {
+	unsigned		sess_tearing_down:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u64			sess_bin_isid;
 	struct se_node_acl	*se_node_acl;
 	struct se_portal_group *se_tpg;
 	void			*fabric_sess_ptr;
 	struct list_head	sess_list;
 	struct list_head	sess_acl_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
 
 #define SE_SESS(cmd)		((cmd)->se_sess)
 #define SE_NODE_ACL(sess)	((sess)->se_node_acl)
+=======
+	struct list_head	sess_cmd_list;
+	struct list_head	sess_wait_list;
+	spinlock_t		sess_cmd_lock;
+	struct kref		sess_kref;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_device;
 struct se_transform_info;
@@ -639,9 +988,13 @@ struct se_lun_acl {
 	struct list_head	lacl_list;
 	struct config_group	se_lun_group;
 	struct se_ml_stat_grps	ml_stat_grps;
+<<<<<<< HEAD
 }  ____cacheline_aligned;
 
 #define ML_STAT_GRPS(lacl)	(&(lacl)->ml_stat_grps)
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_dev_entry {
 	bool			def_pr_registered;
@@ -666,7 +1019,11 @@ struct se_dev_entry {
 	struct se_lun		*se_lun;
 	struct list_head	alua_port_list;
 	struct list_head	ua_list;
+<<<<<<< HEAD
 }  ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_dev_limits {
 	/* Max supported HW queue depth */
@@ -675,7 +1032,11 @@ struct se_dev_limits {
 	u32		queue_depth;
 	/* From include/linux/blkdev.h for the other HW/SW limits. */
 	struct queue_limits limits;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_dev_attrib {
 	int		emulate_dpo;
@@ -689,21 +1050,37 @@ struct se_dev_attrib {
 	int		emulate_reservations;
 	int		emulate_alua;
 	int		enforce_pr_isids;
+<<<<<<< HEAD
+=======
+	int		is_nonrot;
+	int		emulate_rest_reord;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32		hw_block_size;
 	u32		block_size;
 	u32		hw_max_sectors;
 	u32		max_sectors;
+<<<<<<< HEAD
 	u32		optimal_sectors;
 	u32		hw_queue_depth;
 	u32		queue_depth;
 	u32		task_timeout;
+=======
+	u32		fabric_max_sectors;
+	u32		optimal_sectors;
+	u32		hw_queue_depth;
+	u32		queue_depth;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32		max_unmap_lba_count;
 	u32		max_unmap_block_desc_count;
 	u32		unmap_granularity;
 	u32		unmap_granularity_alignment;
 	struct se_subsystem_dev *da_sub_dev;
 	struct config_group da_group;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_dev_stat_grps {
 	struct config_group stat_group;
@@ -728,15 +1105,22 @@ struct se_subsystem_dev {
 	/* T10 Inquiry and VPD WWN Information */
 	struct t10_wwn	t10_wwn;
 	/* T10 SPC-2 + SPC-3 Reservations */
+<<<<<<< HEAD
 	struct t10_reservation_template t10_reservation;
 	spinlock_t      se_dev_lock;
 	void            *se_dev_su_ptr;
 	struct list_head g_se_dev_list;
+=======
+	struct t10_reservation t10_pr;
+	spinlock_t      se_dev_lock;
+	void            *se_dev_su_ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct config_group se_dev_group;
 	/* For T10 Reservations */
 	struct config_group se_dev_pr_group;
 	/* For target_core_stat.c groups */
 	struct se_dev_stat_grps dev_stat_grps;
+<<<<<<< HEAD
 } ____cacheline_aligned;
 
 #define T10_ALUA(su_dev)	(&(su_dev)->t10_alua)
@@ -748,6 +1132,13 @@ struct se_device {
 	/* Set to 1 if thread is NOT sleeping on thread_sem */
 	u8			thread_active;
 	u8			dev_status_timer_flags;
+=======
+};
+
+struct se_device {
+#define SE_DEV_LINK_MAGIC			0xfeeddeef
+	u32			dev_link_magic;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* RELATIVE TARGET PORT IDENTIFER Counter */
 	u16			dev_rpti_counter;
 	/* Used for SAM Task Attribute ordering */
@@ -756,7 +1147,10 @@ struct se_device {
 	u32			dev_port_count;
 	/* See transport_device_status_table */
 	u32			dev_status;
+<<<<<<< HEAD
 	u32			dev_tcq_window_closed;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Physical device queue depth */
 	u32			queue_depth;
 	/* Used for SPC-2 reservations enforce of ISIDs */
@@ -772,6 +1166,7 @@ struct se_device {
 	u64			write_bytes;
 	spinlock_t		stats_lock;
 	/* Active commands on this virtual SE device */
+<<<<<<< HEAD
 	atomic_t		active_cmds;
 	atomic_t		simple_cmds;
 	atomic_t		depth_left;
@@ -797,6 +1192,24 @@ struct se_device {
 	spinlock_t		dev_status_thr_lock;
 	spinlock_t		se_port_lock;
 	spinlock_t		se_tmr_lock;
+=======
+	atomic_t		simple_cmds;
+	atomic_t		dev_ordered_id;
+	atomic_t		execute_tasks;
+	atomic_t		dev_ordered_sync;
+	atomic_t		dev_qf_count;
+	struct se_obj		dev_obj;
+	struct se_obj		dev_access_obj;
+	struct se_obj		dev_export_obj;
+	struct se_queue_obj	dev_queue_obj;
+	spinlock_t		delayed_cmd_lock;
+	spinlock_t		execute_task_lock;
+	spinlock_t		dev_reservation_lock;
+	spinlock_t		dev_status_lock;
+	spinlock_t		se_port_lock;
+	spinlock_t		se_tmr_lock;
+	spinlock_t		qf_cmd_lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Used for legacy SPC-2 reservationsa */
 	struct se_node_acl	*dev_reserved_node_acl;
 	/* Used for ALUA Logical Unit Group membership */
@@ -805,6 +1218,7 @@ struct se_device {
 	struct t10_pr_registration *dev_pr_res_holder;
 	struct list_head	dev_sep_list;
 	struct list_head	dev_tmr_list;
+<<<<<<< HEAD
 	struct timer_list	dev_status_timer;
 	/* Pointer to descriptor for processing thread */
 	struct task_struct	*process_thread;
@@ -814,6 +1228,15 @@ struct se_device {
 	struct list_head	ordered_cmd_list;
 	struct list_head	execute_task_list;
 	struct list_head	state_task_list;
+=======
+	/* Pointer to descriptor for processing thread */
+	struct task_struct	*process_thread;
+	struct work_struct	qf_work_queue;
+	struct list_head	delayed_cmd_list;
+	struct list_head	execute_task_list;
+	struct list_head	state_task_list;
+	struct list_head	qf_cmd_list;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Pointer to associated SE HBA */
 	struct se_hba		*se_hba;
 	struct se_subsystem_dev *se_sub_dev;
@@ -821,6 +1244,7 @@ struct se_device {
 	struct se_subsystem_api *transport;
 	/* Linked list for struct se_hba struct se_device list */
 	struct list_head	dev_list;
+<<<<<<< HEAD
 	/* Linked list for struct se_global->g_se_dev_list */
 	struct list_head	g_se_dev_list;
 }  ____cacheline_aligned;
@@ -829,6 +1253,9 @@ struct se_device {
 #define SU_DEV(dev)		((dev)->se_sub_dev)
 #define DEV_ATTRIB(dev)		(&(dev)->se_sub_dev->se_dev_attrib)
 #define DEV_T10_WWN(dev)	(&(dev)->se_sub_dev->t10_wwn)
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_hba {
 	u16			hba_tpgt;
@@ -838,14 +1265,18 @@ struct se_hba {
 	/* Virtual iSCSI devices attached. */
 	u32			dev_count;
 	u32			hba_index;
+<<<<<<< HEAD
 	atomic_t		load_balance_queue;
 	atomic_t		left_queue_depth;
 	/* Maximum queue depth the HBA can handle. */
 	atomic_t		max_queue_depth;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Pointer to transport specific host structure. */
 	void			*hba_ptr;
 	/* Linked list for struct se_device */
 	struct list_head	hba_dev_list;
+<<<<<<< HEAD
 	struct list_head	hba_list;
 	spinlock_t		device_lock;
 	spinlock_t		hba_queue_lock;
@@ -855,6 +1286,14 @@ struct se_hba {
 }  ____cacheline_aligned;
 
 #define SE_HBA(dev)		((dev)->se_hba)
+=======
+	struct list_head	hba_node;
+	spinlock_t		device_lock;
+	struct config_group	hba_group;
+	struct mutex		hba_access_mutex;
+	struct se_subsystem_api *transport;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_port_stat_grps {
 	struct config_group stat_group;
@@ -864,6 +1303,11 @@ struct se_port_stat_grps {
 };
 
 struct se_lun {
+<<<<<<< HEAD
+=======
+#define SE_LUN_LINK_MAGIC			0xffff7771
+	u32			lun_link_magic;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* See transport_lun_status_table */
 	enum transport_lun_status_table lun_status;
 	u32			lun_access;
@@ -880,16 +1324,24 @@ struct se_lun {
 	struct se_port		*lun_sep;
 	struct config_group	lun_group;
 	struct se_port_stat_grps port_stat_grps;
+<<<<<<< HEAD
 } ____cacheline_aligned;
 
 #define SE_LUN(cmd)		((cmd)->se_lun)
 #define PORT_STAT_GRP(lun)	(&(lun)->port_stat_grps)
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct scsi_port_stats {
        u64     cmd_pdus;
        u64     tx_data_octets;
        u64     rx_data_octets;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_port {
 	/* RELATIVE TARGET PORT IDENTIFER */
@@ -899,7 +1351,10 @@ struct se_port {
 	u32		sep_index;
 	struct scsi_port_stats sep_stats;
 	/* Used for ALUA Target Port Groups membership */
+<<<<<<< HEAD
 	atomic_t	sep_tg_pt_gp_active;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	atomic_t	sep_tg_pt_secondary_offline;
 	/* Used for PR ALL_TG_PT=1 */
 	atomic_t	sep_tg_pt_ref_cnt;
@@ -910,12 +1365,20 @@ struct se_port {
 	struct se_portal_group *sep_tpg;
 	struct list_head sep_alua_list;
 	struct list_head sep_list;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_tpg_np {
 	struct se_portal_group *tpg_np_parent;
 	struct config_group	tpg_np_group;
+<<<<<<< HEAD
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_portal_group {
 	/* Type of target portal group, see transport_tpg_type_table */
@@ -931,10 +1394,17 @@ struct se_portal_group {
 	spinlock_t		tpg_lun_lock;
 	/* Pointer to $FABRIC_MOD portal group */
 	void			*se_tpg_fabric_ptr;
+<<<<<<< HEAD
 	struct list_head	se_tpg_list;
 	/* linked list for initiator ACL list */
 	struct list_head	acl_node_list;
 	struct se_lun		*tpg_lun_list;
+=======
+	struct list_head	se_tpg_node;
+	/* linked list for initiator ACL list */
+	struct list_head	acl_node_list;
+	struct se_lun		**tpg_lun_list;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct se_lun		tpg_virt_lun0;
 	/* List of TCM sessions associated wth this TPG */
 	struct list_head	tpg_sess_list;
@@ -948,15 +1418,20 @@ struct se_portal_group {
 	struct config_group	tpg_acl_group;
 	struct config_group	tpg_attrib_group;
 	struct config_group	tpg_param_group;
+<<<<<<< HEAD
 } ____cacheline_aligned;
 
 #define TPG_TFO(se_tpg)	((se_tpg)->se_tpg_tfo)
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct se_wwn {
 	struct target_fabric_configfs *wwn_tf;
 	struct config_group	wwn_group;
 	struct config_group	*wwn_default_groups[2];
 	struct config_group	fabric_stat_group;
+<<<<<<< HEAD
 } ____cacheline_aligned;
 
 struct se_global {
@@ -982,5 +1457,8 @@ struct se_global {
 	spinlock_t		lu_gps_lock;
 	spinlock_t		plugin_class_lock;
 } ____cacheline_aligned;
+=======
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* TARGET_CORE_BASE_H */

@@ -21,14 +21,20 @@
 #include <linux/major.h>
 #include <linux/mm.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/sysctl.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/device.h>
 #include <linux/uaccess.h>
 #include <linux/bitops.h>
 #include <linux/devpts_fs.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_UNIX98_PTYS
 static struct tty_driver *ptm_driver;
@@ -393,7 +399,10 @@ static void __init legacy_pty_init(void)
 	if (!pty_slave_driver)
 		panic("Couldn't allocate pty slave driver");
 
+<<<<<<< HEAD
 	pty_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pty_driver->driver_name = "pty_master";
 	pty_driver->name = "pty";
 	pty_driver->major = PTY_MASTER_MAJOR;
@@ -411,7 +420,10 @@ static void __init legacy_pty_init(void)
 	pty_driver->other = pty_slave_driver;
 	tty_set_operations(pty_driver, &master_pty_ops_bsd);
 
+<<<<<<< HEAD
 	pty_slave_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pty_slave_driver->driver_name = "pty_slave";
 	pty_slave_driver->name = "ttyp";
 	pty_slave_driver->major = PTY_SLAVE_MAJOR;
@@ -438,6 +450,7 @@ static inline void legacy_pty_init(void) { }
 
 /* Unix98 devices */
 #ifdef CONFIG_UNIX98_PTYS
+<<<<<<< HEAD
 /*
  * sysctl support for setting limits on the number of Unix98 ptys allocated.
  * Otherwise one can eat up all kernel memory by opening /dev/ptmx repeatedly.
@@ -498,6 +511,11 @@ static struct ctl_table pty_root_table[] = {
 };
 
 
+=======
+
+static struct cdev ptmx_cdev;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int pty_unix98_ioctl(struct tty_struct *tty,
 			    unsigned int cmd, unsigned long arg)
 {
@@ -525,10 +543,15 @@ static int pty_unix98_ioctl(struct tty_struct *tty,
 static struct tty_struct *ptm_unix98_lookup(struct tty_driver *driver,
 		struct inode *ptm_inode, int idx)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = devpts_get_tty(ptm_inode, idx);
 	if (tty)
 		tty = tty->link;
 	return tty;
+=======
+	/* Master must be open via /dev/ptmx */
+	return ERR_PTR(-EIO);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -599,8 +622,11 @@ static int pty_unix98_install(struct tty_driver *driver, struct tty_struct *tty)
 	 */
 	tty_driver_kref_get(driver);
 	tty->count++;
+<<<<<<< HEAD
 	pty_inc_count(); /* tty */
 	pty_inc_count(); /* tty->link */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 err_free_mem:
 	deinitialize_tty_struct(o_tty);
@@ -612,15 +638,28 @@ err_free_tty:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static void pty_unix98_remove(struct tty_driver *driver, struct tty_struct *tty)
 {
 	pty_dec_count();
+=======
+static void ptm_unix98_remove(struct tty_driver *driver, struct tty_struct *tty)
+{
+}
+
+static void pts_unix98_remove(struct tty_driver *driver, struct tty_struct *tty)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static const struct tty_operations ptm_unix98_ops = {
 	.lookup = ptm_unix98_lookup,
 	.install = pty_unix98_install,
+<<<<<<< HEAD
 	.remove = pty_unix98_remove,
+=======
+	.remove = ptm_unix98_remove,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.open = pty_open,
 	.close = pty_close,
 	.write = pty_write,
@@ -637,7 +676,11 @@ static const struct tty_operations ptm_unix98_ops = {
 static const struct tty_operations pty_unix98_ops = {
 	.lookup = pts_unix98_lookup,
 	.install = pty_unix98_install,
+<<<<<<< HEAD
 	.remove = pty_unix98_remove,
+=======
+	.remove = pts_unix98_remove,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.open = pty_open,
 	.close = pty_close,
 	.write = pty_write,
@@ -687,7 +730,11 @@ static int ptmx_open(struct inode *inode, struct file *filp)
 
 	mutex_lock(&tty_mutex);
 	tty_lock();
+<<<<<<< HEAD
 	tty = tty_init_dev(ptm_driver, index, 1);
+=======
+	tty = tty_init_dev(ptm_driver, index);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&tty_mutex);
 
 	if (IS_ERR(tty)) {
@@ -732,7 +779,10 @@ static void __init unix98_pty_init(void)
 	if (!pts_driver)
 		panic("Couldn't allocate Unix98 pts driver");
 
+<<<<<<< HEAD
 	ptm_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ptm_driver->driver_name = "pty_master";
 	ptm_driver->name = "ptm";
 	ptm_driver->major = UNIX98_PTY_MASTER_MAJOR;
@@ -751,7 +801,10 @@ static void __init unix98_pty_init(void)
 	ptm_driver->other = pts_driver;
 	tty_set_operations(ptm_driver, &ptm_unix98_ops);
 
+<<<<<<< HEAD
 	pts_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pts_driver->driver_name = "pty_slave";
 	pts_driver->name = "pts";
 	pts_driver->major = UNIX98_PTY_SLAVE_MAJOR;
@@ -772,8 +825,11 @@ static void __init unix98_pty_init(void)
 	if (tty_register_driver(pts_driver))
 		panic("Couldn't register Unix98 pts driver");
 
+<<<<<<< HEAD
 	register_sysctl_table(pty_root_table);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Now create the /dev/ptmx special device */
 	tty_default_fops(&ptmx_fops);
 	ptmx_fops.open = ptmx_open;

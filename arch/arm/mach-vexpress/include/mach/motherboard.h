@@ -39,6 +39,7 @@
 #define V2M_CF			(V2M_PA_CS7 + 0x0001a000)
 #define V2M_CLCD		(V2M_PA_CS7 + 0x0001f000)
 
+<<<<<<< HEAD
 #define V2M_SYS_ID		(V2M_SYSREGS + 0x000)
 #define V2M_SYS_SW		(V2M_SYSREGS + 0x004)
 #define V2M_SYS_LED		(V2M_SYSREGS + 0x008)
@@ -66,6 +67,32 @@
 
 #define V2M_TIMER2		(V2M_TIMER23 + 0x000)
 #define V2M_TIMER3		(V2M_TIMER23 + 0x020)
+=======
+/*
+ * Offsets from SYSREGS base
+ */
+#define V2M_SYS_ID		0x000
+#define V2M_SYS_SW		0x004
+#define V2M_SYS_LED		0x008
+#define V2M_SYS_100HZ		0x024
+#define V2M_SYS_FLAGS		0x030
+#define V2M_SYS_FLAGSSET	0x030
+#define V2M_SYS_FLAGSCLR	0x034
+#define V2M_SYS_NVFLAGS		0x038
+#define V2M_SYS_NVFLAGSSET	0x038
+#define V2M_SYS_NVFLAGSCLR	0x03c
+#define V2M_SYS_MCI		0x048
+#define V2M_SYS_FLASH		0x03c
+#define V2M_SYS_CFGSW		0x058
+#define V2M_SYS_24MHZ		0x05c
+#define V2M_SYS_MISC		0x060
+#define V2M_SYS_DMA		0x064
+#define V2M_SYS_PROCID0		0x084
+#define V2M_SYS_PROCID1		0x088
+#define V2M_SYS_CFGDATA		0x0a0
+#define V2M_SYS_CFGCTRL		0x0a4
+#define V2M_SYS_CFGSTAT		0x0a8
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /*
@@ -117,6 +144,16 @@
 
 int v2m_cfg_write(u32 devfn, u32 data);
 int v2m_cfg_read(u32 devfn, u32 *data);
+<<<<<<< HEAD
+=======
+void v2m_flags_set(u32 data);
+
+/*
+ * Miscellaneous
+ */
+#define SYS_MISC_MASTERSITE	(1 << 14)
+#define SYS_PROCIDx_HBI_MASK	0xfff
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Core tile IDs

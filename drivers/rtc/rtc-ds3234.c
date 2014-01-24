@@ -173,6 +173,7 @@ static struct spi_driver ds3234_driver = {
 	.remove = __devexit_p(ds3234_remove),
 };
 
+<<<<<<< HEAD
 static __init int ds3234_init(void)
 {
 	return spi_register_driver(&ds3234_driver);
@@ -184,6 +185,9 @@ static __exit void ds3234_exit(void)
 	spi_unregister_driver(&ds3234_driver);
 }
 module_exit(ds3234_exit);
+=======
+module_spi_driver(ds3234_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("DS3234 SPI RTC driver");
 MODULE_AUTHOR("Dennis Aberilla <denzzzhome@yahoo.com>");

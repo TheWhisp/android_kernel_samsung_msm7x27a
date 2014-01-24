@@ -100,9 +100,12 @@ extern unsigned int nw_gpio_read(void);
 extern void nw_cpld_modify(unsigned int mask, unsigned int set);
 #endif
 
+<<<<<<< HEAD
 #define pcibios_assign_all_busses()	1
 
 #define PCIBIOS_MIN_IO		0x1000
 #define PCIBIOS_MIN_MEM 	0x81000000
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

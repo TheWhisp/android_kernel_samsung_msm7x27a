@@ -177,7 +177,11 @@ static int __devinit tc6387xb_probe(struct platform_device *dev)
 	if (ret)
 		goto err_resource;
 
+<<<<<<< HEAD
 	tc6387xb->scr = ioremap(rscr->start, rscr->end - rscr->start + 1);
+=======
+	tc6387xb->scr = ioremap(rscr->start, resource_size(rscr));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!tc6387xb->scr) {
 		ret = -ENOMEM;
 		goto err_ioremap;
@@ -234,6 +238,7 @@ static struct platform_driver tc6387xb_platform_driver = {
 	.resume         = tc6387xb_resume,
 };
 
+<<<<<<< HEAD
 
 static int __init tc6387xb_init(void)
 {
@@ -247,6 +252,9 @@ static void __exit tc6387xb_exit(void)
 
 module_init(tc6387xb_init);
 module_exit(tc6387xb_exit);
+=======
+module_platform_driver(tc6387xb_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Toshiba TC6387XB core driver");
 MODULE_LICENSE("GPL v2");

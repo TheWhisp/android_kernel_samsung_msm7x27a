@@ -36,7 +36,10 @@
 #include <asm/processor.h>
 #include <asm/irq.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mmu.h>
 #include <asm/pgtable.h>
 #include <asm/sections.h>
@@ -53,6 +56,7 @@ void * __init early_init_dt_alloc_memory_arch(u64 size, u64 align)
 }
 
 #ifdef CONFIG_EARLY_PRINTK
+<<<<<<< HEAD
 /* MS this is Microblaze specifig function */
 static int __init early_init_dt_scan_serial(unsigned long node,
 				const char *uname, int depth, void *data)
@@ -86,10 +90,16 @@ int __init early_uartlite_console(void)
 
 /* MS this is Microblaze specifig function */
 static int __init early_init_dt_scan_serial_full(unsigned long node,
+=======
+char *stdout;
+
+int __init early_init_dt_scan_chosen_serial(unsigned long node,
+>>>>>>> refs/remotes/origin/cm-10.0
 				const char *uname, int depth, void *data)
 {
 	unsigned long l;
 	char *p;
+<<<<<<< HEAD
 	unsigned int addr;
 
 	pr_debug("search \"chosen\", depth: %d, uname: %s\n", depth, uname);
@@ -116,6 +126,53 @@ static int __init early_init_dt_scan_serial_full(unsigned long node,
 int __init early_uart16550_console(void)
 {
 	return of_scan_flat_dt(early_init_dt_scan_serial_full, NULL);
+=======
+
+	pr_debug("%s: depth: %d, uname: %s\n", __func__, depth, uname);
+
+	if (depth == 1 && (strcmp(uname, "chosen") == 0 ||
+				strcmp(uname, "chosen@0") == 0)) {
+		p = of_get_flat_dt_prop(node, "linux,stdout-path", &l);
+		if (p != NULL && l > 0)
+			stdout = p; /* store pointer to stdout-path */
+	}
+
+	if (stdout && strstr(stdout, uname)) {
+		p = of_get_flat_dt_prop(node, "compatible", &l);
+		pr_debug("Compatible string: %s\n", p);
+
+		if ((strncmp(p, "xlnx,xps-uart16550", 18) == 0) ||
+			(strncmp(p, "xlnx,axi-uart16550", 18) == 0)) {
+			unsigned int addr;
+
+			*(u32 *)data = UART16550;
+
+			addr = *(u32 *)of_get_flat_dt_prop(node, "reg", &l);
+			addr += *(u32 *)of_get_flat_dt_prop(node,
+							"reg-offset", &l);
+			/* clear register offset */
+			return be32_to_cpu(addr) & ~3;
+		}
+		if ((strncmp(p, "xlnx,xps-uartlite", 17) == 0) ||
+				(strncmp(p, "xlnx,opb-uartlite", 17) == 0) ||
+				(strncmp(p, "xlnx,axi-uartlite", 17) == 0) ||
+				(strncmp(p, "xlnx,mdm", 8) == 0)) {
+			unsigned int *addrp;
+
+			*(u32 *)data = UARTLITE;
+
+			addrp = of_get_flat_dt_prop(node, "reg", &l);
+			return be32_to_cpup(addrp); /* return address */
+		}
+	}
+	return 0;
+}
+
+/* this function is looking for early console - Microblaze specific */
+int __init of_early_console(void *version)
+{
+	return of_scan_flat_dt(early_init_dt_scan_chosen_serial, version);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 
@@ -133,7 +190,10 @@ void __init early_init_devtree(void *params)
 	of_scan_flat_dt(early_init_dt_scan_chosen, cmd_line);
 
 	/* Scan memory nodes and rebuild MEMBLOCKs */
+<<<<<<< HEAD
 	memblock_init();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	of_scan_flat_dt(early_init_dt_scan_root, NULL);
 	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
 
@@ -141,7 +201,11 @@ void __init early_init_devtree(void *params)
 	strlcpy(boot_command_line, cmd_line, COMMAND_LINE_SIZE);
 	parse_early_param();
 
+<<<<<<< HEAD
 	memblock_analyze();
+=======
+	memblock_allow_resize();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pr_debug("Phys. mem: %lx\n", (unsigned long) memblock_phys_mem_size());
 

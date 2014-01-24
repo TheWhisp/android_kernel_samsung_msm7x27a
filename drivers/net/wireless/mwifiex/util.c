@@ -93,10 +93,17 @@ int mwifiex_get_debug_info(struct mwifiex_private *priv,
 		       sizeof(priv->wmm.packets_out));
 		info->max_tx_buf_size = (u32) adapter->max_tx_buf_size;
 		info->tx_buf_size = (u32) adapter->tx_buf_size;
+<<<<<<< HEAD
 		info->rx_tbl_num = mwifiex_get_rx_reorder_tbl(
 					priv, info->rx_tbl);
 		info->tx_tbl_num = mwifiex_get_tx_ba_stream_tbl(
 					priv, info->tx_tbl);
+=======
+		info->rx_tbl_num = mwifiex_get_rx_reorder_tbl(priv,
+							      info->rx_tbl);
+		info->tx_tbl_num = mwifiex_get_tx_ba_stream_tbl(priv,
+								info->tx_tbl);
+>>>>>>> refs/remotes/origin/cm-10.0
 		info->ps_mode = adapter->ps_mode;
 		info->ps_state = adapter->ps_state;
 		info->is_deep_sleep = adapter->is_deep_sleep;
@@ -105,19 +112,33 @@ int mwifiex_get_debug_info(struct mwifiex_private *priv,
 		info->is_hs_configured = adapter->is_hs_configured;
 		info->hs_activated = adapter->hs_activated;
 		info->num_cmd_host_to_card_failure
+<<<<<<< HEAD
 			= adapter->dbg.num_cmd_host_to_card_failure;
 		info->num_cmd_sleep_cfm_host_to_card_failure
 			= adapter->dbg.num_cmd_sleep_cfm_host_to_card_failure;
 		info->num_tx_host_to_card_failure
 			= adapter->dbg.num_tx_host_to_card_failure;
+=======
+				= adapter->dbg.num_cmd_host_to_card_failure;
+		info->num_cmd_sleep_cfm_host_to_card_failure
+			= adapter->dbg.num_cmd_sleep_cfm_host_to_card_failure;
+		info->num_tx_host_to_card_failure
+				= adapter->dbg.num_tx_host_to_card_failure;
+>>>>>>> refs/remotes/origin/cm-10.0
 		info->num_event_deauth = adapter->dbg.num_event_deauth;
 		info->num_event_disassoc = adapter->dbg.num_event_disassoc;
 		info->num_event_link_lost = adapter->dbg.num_event_link_lost;
 		info->num_cmd_deauth = adapter->dbg.num_cmd_deauth;
 		info->num_cmd_assoc_success =
+<<<<<<< HEAD
 			adapter->dbg.num_cmd_assoc_success;
 		info->num_cmd_assoc_failure =
 			adapter->dbg.num_cmd_assoc_failure;
+=======
+					adapter->dbg.num_cmd_assoc_success;
+		info->num_cmd_assoc_failure =
+					adapter->dbg.num_cmd_assoc_failure;
+>>>>>>> refs/remotes/origin/cm-10.0
 		info->num_tx_timeout = adapter->dbg.num_tx_timeout;
 		info->num_cmd_timeout = adapter->dbg.num_cmd_timeout;
 		info->timeout_cmd_id = adapter->dbg.timeout_cmd_id;
@@ -159,7 +180,12 @@ int mwifiex_recv_packet(struct mwifiex_adapter *adapter, struct sk_buff *skb)
 		return -1;
 
 	rx_info = MWIFIEX_SKB_RXCB(skb);
+<<<<<<< HEAD
 	priv = mwifiex_bss_index_to_priv(adapter, rx_info->bss_index);
+=======
+	priv = mwifiex_get_priv_by_id(adapter, rx_info->bss_num,
+				      rx_info->bss_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!priv)
 		return -1;
 
@@ -185,6 +211,7 @@ int mwifiex_recv_packet(struct mwifiex_adapter *adapter, struct sk_buff *skb)
  * corresponding waiting function. Otherwise, it processes the
  * IOCTL response and frees the response buffer.
  */
+<<<<<<< HEAD
 int mwifiex_complete_cmd(struct mwifiex_adapter *adapter)
 {
 	atomic_dec(&adapter->cmd_pending);
@@ -192,6 +219,16 @@ int mwifiex_complete_cmd(struct mwifiex_adapter *adapter)
 					adapter->cmd_wait_q.status);
 
 	adapter->cmd_wait_q.condition = true;
+=======
+int mwifiex_complete_cmd(struct mwifiex_adapter *adapter,
+			 struct cmd_ctrl_node *cmd_node)
+{
+	atomic_dec(&adapter->cmd_pending);
+	dev_dbg(adapter->dev, "cmd completed: status=%d\n",
+		adapter->cmd_wait_q.status);
+
+	*(cmd_node->condition) = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (adapter->cmd_wait_q.status == -ETIMEDOUT)
 		dev_err(adapter->dev, "cmd timeout\n");

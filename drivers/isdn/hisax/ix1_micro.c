@@ -7,7 +7,11 @@
  * Copyright    by Klaus-Peter Nischke, ITK AG
  *                                   <klaus@nischke.do.eunet.de>
  *              by Karsten Keil      <keil@isdn4linux.de>
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -26,7 +30,11 @@
 
 static const char *ix1_revision = "$Revision: 2.12.2.4 $";
 
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define bytein(addr) inb(addr)
 
 #define SPECIAL_PORT_OFFSET 3
@@ -49,7 +57,11 @@ readreg(unsigned int ale, unsigned int adr, u_char off)
 }
 
 static inline void
+<<<<<<< HEAD
 readfifo(unsigned int ale, unsigned int adr, u_char off, u_char * data, int size)
+=======
+readfifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	byteout(ale, off);
 	insb(adr, data, size);
@@ -64,7 +76,11 @@ writereg(unsigned int ale, unsigned int adr, u_char off, u_char data)
 }
 
 static inline void
+<<<<<<< HEAD
 writefifo(unsigned int ale, unsigned int adr, u_char off, u_char * data, int size)
+=======
+writefifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	byteout(ale, off);
 	outsb(adr, data, size);
@@ -85,13 +101,21 @@ WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 }
 
 static void
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	readfifo(cs->hw.ix1.isac_ale, cs->hw.ix1.isac, 0, data, size);
 }
 
 static void
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	writefifo(cs->hw.ix1.isac_ale, cs->hw.ix1.isac, 0, data, size);
 }
@@ -110,6 +134,7 @@ WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset, u_char value)
 		 cs->hw.ix1.hscx, offset + (hscx ? 0x40 : 0), value);
 }
 
+<<<<<<< HEAD
 #define READHSCX(cs, nr, reg) readreg(cs->hw.ix1.hscx_ale, \
 		cs->hw.ix1.hscx, reg + (nr ? 0x40 : 0))
 #define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.ix1.hscx_ale, \
@@ -120,6 +145,18 @@ WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset, u_char value)
 
 #define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.ix1.hscx_ale, \
 		cs->hw.ix1.hscx, (nr ? 0x40 : 0), ptr, cnt)
+=======
+#define READHSCX(cs, nr, reg) readreg(cs->hw.ix1.hscx_ale,		\
+				      cs->hw.ix1.hscx, reg + (nr ? 0x40 : 0))
+#define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.ix1.hscx_ale,	\
+					      cs->hw.ix1.hscx, reg + (nr ? 0x40 : 0), data)
+
+#define READHSCXFIFO(cs, nr, ptr, cnt) readfifo(cs->hw.ix1.hscx_ale,	\
+						cs->hw.ix1.hscx, (nr ? 0x40 : 0), ptr, cnt)
+
+#define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.ix1.hscx_ale,	\
+						  cs->hw.ix1.hscx, (nr ? 0x40 : 0), ptr, cnt)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "hscx_irq.c"
 
@@ -132,11 +169,19 @@ ix1micro_interrupt(int intno, void *dev_id)
 
 	spin_lock_irqsave(&cs->lock, flags);
 	val = readreg(cs->hw.ix1.hscx_ale, cs->hw.ix1.hscx, HSCX_ISTA + 0x40);
+<<<<<<< HEAD
       Start_HSCX:
 	if (val)
 		hscx_int_main(cs, val);
 	val = readreg(cs->hw.ix1.isac_ale, cs->hw.ix1.isac, ISAC_ISTA);
       Start_ISAC:
+=======
+Start_HSCX:
+	if (val)
+		hscx_int_main(cs, val);
+	val = readreg(cs->hw.ix1.isac_ale, cs->hw.ix1.isac, ISAC_ISTA);
+Start_ISAC:
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (val)
 		isac_interrupt(cs, val);
 	val = readreg(cs->hw.ix1.hscx_ale, cs->hw.ix1.hscx, HSCX_ISTA + 0x40);
@@ -188,6 +233,7 @@ ix1_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	u_long flags;
 
 	switch (mt) {
+<<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
 			ix1_reset(cs);
@@ -206,15 +252,42 @@ ix1_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 			return(0);
 	}
 	return(0);
+=======
+	case CARD_RESET:
+		spin_lock_irqsave(&cs->lock, flags);
+		ix1_reset(cs);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_RELEASE:
+		release_io_ix1micro(cs);
+		return (0);
+	case CARD_INIT:
+		spin_lock_irqsave(&cs->lock, flags);
+		ix1_reset(cs);
+		inithscxisac(cs, 3);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_TEST:
+		return (0);
+	}
+	return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef __ISAPNP__
 static struct isapnp_device_id itk_ids[] __devinitdata = {
 	{ ISAPNP_VENDOR('I', 'T', 'K'), ISAPNP_FUNCTION(0x25),
+<<<<<<< HEAD
 	  ISAPNP_VENDOR('I', 'T', 'K'), ISAPNP_FUNCTION(0x25), 
 	  (unsigned long) "ITK micro 2" },
 	{ ISAPNP_VENDOR('I', 'T', 'K'), ISAPNP_FUNCTION(0x29),
 	  ISAPNP_VENDOR('I', 'T', 'K'), ISAPNP_FUNCTION(0x29), 
+=======
+	  ISAPNP_VENDOR('I', 'T', 'K'), ISAPNP_FUNCTION(0x25),
+	  (unsigned long) "ITK micro 2" },
+	{ ISAPNP_VENDOR('I', 'T', 'K'), ISAPNP_FUNCTION(0x29),
+	  ISAPNP_VENDOR('I', 'T', 'K'), ISAPNP_FUNCTION(0x29),
+>>>>>>> refs/remotes/origin/cm-10.0
 	  (unsigned long) "ITK micro 2." },
 	{ 0, }
 };
@@ -238,6 +311,7 @@ setup_ix1micro(struct IsdnCard *card)
 #ifdef __ISAPNP__
 	if (!card->para[1] && isapnp_present()) {
 		struct pnp_dev *pnp_d;
+<<<<<<< HEAD
 		while(ipid->card_vendor) {
 			if ((pnp_c = pnp_find_card(ipid->card_vendor,
 				ipid->card_device, pnp_c))) {
@@ -254,14 +328,38 @@ setup_ix1micro(struct IsdnCard *card)
 						printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
 							__func__, err);
 						return(0);
+=======
+		while (ipid->card_vendor) {
+			if ((pnp_c = pnp_find_card(ipid->card_vendor,
+						   ipid->card_device, pnp_c))) {
+				pnp_d = NULL;
+				if ((pnp_d = pnp_find_dev(pnp_c,
+							  ipid->vendor, ipid->function, pnp_d))) {
+					int err;
+
+					printk(KERN_INFO "HiSax: %s detected\n",
+					       (char *)ipid->driver_data);
+					pnp_disable_dev(pnp_d);
+					err = pnp_activate_dev(pnp_d);
+					if (err < 0) {
+						printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
+						       __func__, err);
+						return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
 					}
 					card->para[1] = pnp_port_start(pnp_d, 0);
 					card->para[0] = pnp_irq(pnp_d, 0);
 					if (!card->para[0] || !card->para[1]) {
 						printk(KERN_ERR "ITK PnP:some resources are missing %ld/%lx\n",
+<<<<<<< HEAD
 							card->para[0], card->para[1]);
 						pnp_disable_dev(pnp_d);
 						return(0);
+=======
+						       card->para[0], card->para[1]);
+						pnp_disable_dev(pnp_d);
+						return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
 					}
 					break;
 				} else {
@@ -270,10 +368,17 @@ setup_ix1micro(struct IsdnCard *card)
 			}
 			ipid++;
 			pnp_c = NULL;
+<<<<<<< HEAD
 		} 
 		if (!ipid->card_vendor) {
 			printk(KERN_INFO "ITK PnP: no ISAPnP card found\n");
 			return(0);
+=======
+		}
+		if (!ipid->card_vendor) {
+			printk(KERN_INFO "ITK PnP: no ISAPnP card found\n");
+			return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 #endif
@@ -287,15 +392,24 @@ setup_ix1micro(struct IsdnCard *card)
 	if (cs->hw.ix1.cfg_reg) {
 		if (!request_region(cs->hw.ix1.cfg_reg, 4, "ix1micro cfg")) {
 			printk(KERN_WARNING
+<<<<<<< HEAD
 			  "HiSax: ITK ix1-micro Rev.2 config port "
 			  "%x-%x already in use\n",
+=======
+			       "HiSax: ITK ix1-micro Rev.2 config port "
+			       "%x-%x already in use\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			       cs->hw.ix1.cfg_reg,
 			       cs->hw.ix1.cfg_reg + 4);
 			return (0);
 		}
 	}
 	printk(KERN_INFO "HiSax: ITK ix1-micro Rev.2 config irq:%d io:0x%X\n",
+<<<<<<< HEAD
 		cs->irq, cs->hw.ix1.cfg_reg);
+=======
+	       cs->irq, cs->hw.ix1.cfg_reg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	setup_isac(cs);
 	cs->readisac = &ReadISAC;
 	cs->writeisac = &WriteISAC;
@@ -309,7 +423,11 @@ setup_ix1micro(struct IsdnCard *card)
 	ISACVersion(cs, "ix1-Micro:");
 	if (HscxVersion(cs, "ix1-Micro:")) {
 		printk(KERN_WARNING
+<<<<<<< HEAD
 		    "ix1-Micro: wrong HSCX versions check IO address\n");
+=======
+		       "ix1-Micro: wrong HSCX versions check IO address\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		release_io_ix1micro(cs);
 		return (0);
 	}

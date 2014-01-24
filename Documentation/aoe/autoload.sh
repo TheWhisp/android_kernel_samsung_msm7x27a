@@ -1,8 +1,14 @@
 #!/bin/sh
 # set aoe to autoload by installing the
+<<<<<<< HEAD
 # aliases in /etc/modprobe.conf
 
 f=/etc/modprobe.conf
+=======
+# aliases in /etc/modprobe.d/
+
+f=/etc/modprobe.d/aoe.conf
+>>>>>>> refs/remotes/origin/cm-10.0
 
 if test ! -r $f || test ! -w $f; then
 	echo "cannot configure $f for module autoloading" 1>&2

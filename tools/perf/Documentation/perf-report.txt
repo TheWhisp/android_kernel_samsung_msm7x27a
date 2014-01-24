@@ -19,7 +19,11 @@ OPTIONS
 -------
 -i::
 --input=::
+<<<<<<< HEAD
         Input file name. (default: perf.data)
+=======
+        Input file name. (default: perf.data unless stdin is a fifo)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 -v::
 --verbose::
@@ -39,7 +43,11 @@ OPTIONS
 -T::
 --threads::
 	Show per-thread event counters
+<<<<<<< HEAD
 -C::
+=======
+-c::
+>>>>>>> refs/remotes/origin/cm-10.0
 --comms=::
 	Only consider symbols in these comms. CSV that understands
 	file://filename entries.
@@ -48,6 +56,12 @@ OPTIONS
 	Only consider these symbols. CSV that understands
 	file://filename entries.
 
+<<<<<<< HEAD
+=======
+--symbol-filter=::
+	Only show symbols that match (partially) with this filter.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 -U::
 --hide-unresolved::
         Only display entries resolved to a symbol.
@@ -80,15 +94,35 @@ OPTIONS
 --dump-raw-trace::
         Dump raw trace in ASCII.
 
+<<<<<<< HEAD
 -g [type,min]::
 --call-graph::
         Display call chains using type and min percent threshold.
+=======
+-g [type,min[,limit],order]::
+--call-graph::
+        Display call chains using type, min percent threshold, optional print
+	limit and order.
+>>>>>>> refs/remotes/origin/cm-10.0
 	type can be either:
 	- flat: single column, linear exposure of call chains.
 	- graph: use a graph tree, displaying absolute overhead rates.
 	- fractal: like graph, but displays relative rates. Each branch of
 		 the tree is considered as a new profiled object. +
+<<<<<<< HEAD
 	Default: fractal,0.5.
+=======
+
+	order can be either:
+	- callee: callee based call graph.
+	- caller: inverted caller based call graph.
+
+	Default: fractal,0.5,callee.
+
+-G::
+--inverted::
+        alias for inverted caller based call graph.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 --pretty=<key>::
         Pretty printing style.  key: normal, raw
@@ -100,6 +134,11 @@ OPTIONS
 	requires a tty, if one is not present, as when piping to other
 	commands, the stdio interface is used.
 
+<<<<<<< HEAD
+=======
+--gtk:: Use the GTK2 interface.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 -k::
 --vmlinux=<file>::
         vmlinux pathname
@@ -119,6 +158,46 @@ OPTIONS
 --symfs=<directory>::
         Look for files with symbols relative to this directory.
 
+<<<<<<< HEAD
 SEE ALSO
 --------
 linkperf:perf-stat[1]
+=======
+-C::
+--cpu:: Only report samples for the list of CPUs provided. Multiple CPUs can
+	be provided as a comma-separated list with no space: 0,1. Ranges of
+	CPUs are specified with -: 0-2. Default is to report samples on all
+	CPUs.
+
+-M::
+--disassembler-style=:: Set disassembler style for objdump.
+
+--source::
+	Interleave source code with assembly code. Enabled by default,
+	disable with --no-source.
+
+--asm-raw::
+	Show raw instruction encoding of assembly instructions.
+
+--show-total-period:: Show a column with the sum of periods.
+
+-I::
+--show-info::
+	Display extended information about the perf.data file. This adds
+	information which may be very large and thus may clutter the display.
+	It currently includes: cpu and numa topology of the host system.
+
+-b::
+--branch-stack::
+	Use the addresses of sampled taken branches instead of the instruction
+	address to build the histograms. To generate meaningful output, the
+	perf.data file must have been obtained using perf record -b or
+	perf record --branch-filter xxx where xxx is a branch filter option.
+	perf report is able to auto-detect whether a perf.data file contains
+	branch stacks and it will automatically switch to the branch view mode,
+	unless --no-branch-stack is used.
+
+SEE ALSO
+--------
+linkperf:perf-stat[1], linkperf:perf-annotate[1]
+>>>>>>> refs/remotes/origin/cm-10.0

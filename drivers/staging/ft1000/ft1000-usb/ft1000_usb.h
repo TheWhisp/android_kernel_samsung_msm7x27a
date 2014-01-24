@@ -2,14 +2,22 @@
 #define _FT1000_USB_H_
 
 /*Jim*/
+<<<<<<< HEAD
 #include "ft1000_ioctl.h"
 #define FT1000_DRV_VER      0x01010403
 
 #define  MODESZ              2
+=======
+#include "../ft1000.h"
+#include "ft1000_ioctl.h"
+#define FT1000_DRV_VER      0x01010403
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define  MAX_NUM_APP         6
 #define  MAX_MSG_LIMIT       200
 #define  NUM_OF_FREE_BUFFERS 1500
 
+<<<<<<< HEAD
 // Driver message types
 #define MEDIA_STATE        0x0010
 #define DSP_PROVISION      0x0030
@@ -77,6 +85,12 @@ struct dsp_init_msg {
 } __attribute__ ((packed));
 
 
+=======
+#define PSEUDOSZ                16
+
+#define  SUCCESS             0x00
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct app_info_block {
 	u32 nTxMsg;                    // DPRAM msg sent to DSP with app_id
 	u32 nRxMsg;                    // DPRAM msg rcv from dsp with app_id
@@ -90,11 +104,14 @@ struct app_info_block {
 	struct list_head app_sqlist;   // link list of msgs for applicaton on slow queue
 } __attribute__((packed));
 
+<<<<<<< HEAD
 struct prov_record {
 	struct list_head list;
 	u8 *pprov_data;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*end of Jim*/
 #define DEBUG(args...) printk(KERN_INFO args)
 
@@ -108,6 +125,7 @@ struct prov_record {
 
 #define LARGE_TIMEOUT   5000
 
+<<<<<<< HEAD
 #define MAX_DSP_SESS_REC        1024
 
 #define MAX_NUM_CARDS        32
@@ -452,6 +470,27 @@ struct drv_msg {
 	u8  data[0];
 } __attribute__ ((packed));
 
+=======
+#define DSPBCMSGID              0x10
+
+/* Electrabuzz specific DPRAM mapping */
+/* this is used by ft1000_usb driver - isn't that a bug? */
+#undef FT1000_DPRAM_RX_BASE
+#define FT1000_DPRAM_RX_BASE	0x1800	/* RX AREA (SlowQ) */
+
+// MEMORY MAP FOR MAGNEMITE
+/* the indexes are swapped comparing to PCMCIA - is it OK or a bug? */
+#undef FT1000_MAG_DSP_LED_INDX
+#define FT1000_MAG_DSP_LED_INDX		0x1	/* dsp led status for PAD device */
+#undef FT1000_MAG_DSP_CON_STATE_INDX
+#define FT1000_MAG_DSP_CON_STATE_INDX	0x0	/* DSP Connection Status Info */
+
+// Maximum times trying to get ASIC out of reset
+#define MAX_ASIC_RESET_CNT      20
+
+#define MAX_BUF_SIZE            4096
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ft1000_device
 {
 	struct usb_device *dev;

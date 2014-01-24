@@ -28,7 +28,11 @@
 #include <linux/isa.h>
 #include <linux/delay.h>
 #include <linux/pnp.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/dma.h>
 #include <sound/core.h>
@@ -63,9 +67,15 @@ MODULE_SUPPORTED_DEVICE("{{OPTi,82C924 (AD1848)},"
 
 static int index = SNDRV_DEFAULT_IDX1;	/* Index 0-MAX */
 static char *id = SNDRV_DEFAULT_STR1;		/* ID for this card */
+<<<<<<< HEAD
 //static int enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
 #ifdef CONFIG_PNP
 static int isapnp = 1;			/* Enable ISA PnP detection */
+=======
+//static bool enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
+#ifdef CONFIG_PNP
+static bool isapnp = true;			/* Enable ISA PnP detection */
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 static long port = SNDRV_DEFAULT_PORT1; 	/* 0x530,0xe80,0xf40,0x604 */
 static long mpu_port = SNDRV_DEFAULT_PORT1;	/* 0x300,0x310,0x320,0x330 */
@@ -888,7 +898,11 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
 #endif
 #ifdef OPTi93X
 	error = request_irq(irq, snd_opti93x_interrupt,
+<<<<<<< HEAD
 			    IRQF_DISABLED, DEV_NAME" - WSS", chip);
+=======
+			    0, DEV_NAME" - WSS", chip);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error < 0) {
 		snd_printk(KERN_ERR "opti9xx: can't grab IRQ %d\n", irq);
 		return error;
@@ -910,7 +924,11 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
 		rmidi = NULL;
 	else {
 		error = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
+<<<<<<< HEAD
 				mpu_port, 0, mpu_irq, IRQF_DISABLED, &rmidi);
+=======
+				mpu_port, 0, mpu_irq, &rmidi);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error)
 			snd_printk(KERN_WARNING "no MPU-401 device at 0x%lx?\n",
 				   mpu_port);

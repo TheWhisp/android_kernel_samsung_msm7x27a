@@ -27,7 +27,10 @@
 #include <asm/errno.h>
 #include <asm/irq_regs.h>
 #include <asm/signal.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 #include <asm/sibyte/bcm1480_regs.h>

@@ -151,13 +151,22 @@ int kvmppc_mmu_map_page(struct kvm_vcpu *vcpu, struct kvmppc_pte *orig_pte)
 	bool primary = false;
 	bool evict = false;
 	struct hpte_cache *pte;
+<<<<<<< HEAD
+=======
+	int r = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Get host physical address for gpa */
 	hpaddr = kvmppc_gfn_to_pfn(vcpu, orig_pte->raddr >> PAGE_SHIFT);
 	if (is_error_pfn(hpaddr)) {
 		printk(KERN_INFO "Couldn't get guest page for gfn %lx!\n",
 				 orig_pte->eaddr);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		r = -EINVAL;
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	hpaddr <<= PAGE_SHIFT;
 
@@ -249,7 +258,12 @@ next_pteg:
 
 	kvmppc_mmu_hpte_cache_map(vcpu, pte);
 
+<<<<<<< HEAD
 	return 0;
+=======
+out:
+	return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct kvmppc_sid_map *create_sid_map(struct kvm_vcpu *vcpu, u64 gvsid)
@@ -297,12 +311,22 @@ int kvmppc_mmu_map_segment(struct kvm_vcpu *vcpu, ulong eaddr)
 	u64 gvsid;
 	u32 sr;
 	struct kvmppc_sid_map *map;
+<<<<<<< HEAD
 	struct kvmppc_book3s_shadow_vcpu *svcpu = to_svcpu(vcpu);
+=======
+	struct kvmppc_book3s_shadow_vcpu *svcpu = svcpu_get(vcpu);
+	int r = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (vcpu->arch.mmu.esid_to_vsid(vcpu, esid, &gvsid)) {
 		/* Invalidate an entry */
 		svcpu->sr[esid] = SR_INVALID;
+<<<<<<< HEAD
 		return -ENOENT;
+=======
+		r = -ENOENT;
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	map = find_sid_vsid(vcpu, gvsid);
@@ -315,17 +339,32 @@ int kvmppc_mmu_map_segment(struct kvm_vcpu *vcpu, ulong eaddr)
 
 	dprintk_sr("MMU: mtsr %d, 0x%x\n", esid, sr);
 
+<<<<<<< HEAD
 	return 0;
+=======
+out:
+	svcpu_put(svcpu);
+	return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void kvmppc_mmu_flush_segments(struct kvm_vcpu *vcpu)
 {
 	int i;
+<<<<<<< HEAD
 	struct kvmppc_book3s_shadow_vcpu *svcpu = to_svcpu(vcpu);
+=======
+	struct kvmppc_book3s_shadow_vcpu *svcpu = svcpu_get(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dprintk_sr("MMU: flushing all segments (%d)\n", ARRAY_SIZE(svcpu->sr));
 	for (i = 0; i < ARRAY_SIZE(svcpu->sr); i++)
 		svcpu->sr[i] = SR_INVALID;
+<<<<<<< HEAD
+=======
+
+	svcpu_put(svcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void kvmppc_mmu_destroy(struct kvm_vcpu *vcpu)

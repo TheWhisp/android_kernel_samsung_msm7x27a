@@ -14,7 +14,10 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -26,8 +29,11 @@
 
 #include "wm8960.h"
 
+<<<<<<< HEAD
 #define AUDIO_NAME "wm8960"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* R25 - Power 1 */
 #define WM8960_VMID_MASK 0x180
 #define WM8960_VREF      0x40
@@ -72,7 +78,10 @@ static const u16 wm8960_reg[WM8960_CACHEREGNUM] = {
 
 struct wm8960_priv {
 	enum snd_soc_control_type control_type;
+<<<<<<< HEAD
 	void *control_data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*set_bias_level)(struct snd_soc_codec *,
 			      enum snd_soc_bias_level level);
 	struct snd_soc_dapm_widget *lout1;
@@ -266,7 +275,11 @@ SND_SOC_DAPM_INPUT("RINPUT2"),
 SND_SOC_DAPM_INPUT("LINPUT3"),
 SND_SOC_DAPM_INPUT("RINPUT3"),
 
+<<<<<<< HEAD
 SND_SOC_DAPM_MICBIAS("MICB", WM8960_POWER1, 1, 0),
+=======
+SND_SOC_DAPM_SUPPLY("MICB", WM8960_POWER1, 1, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
 
 SND_SOC_DAPM_MIXER("Left Boost Mixer", WM8960_POWER1, 5, 0,
 		   wm8960_lin_boost, ARRAY_SIZE(wm8960_lin_boost)),
@@ -547,40 +560,61 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
 static int wm8960_mute(struct snd_soc_dai *dai, int mute)
 {
 	struct snd_soc_codec *codec = dai->codec;
+<<<<<<< HEAD
 	u16 mute_reg = snd_soc_read(codec, WM8960_DACCTL1) & 0xfff7;
 
 	if (mute)
 		snd_soc_write(codec, WM8960_DACCTL1, mute_reg | 0x8);
 	else
 		snd_soc_write(codec, WM8960_DACCTL1, mute_reg);
+=======
+
+	if (mute)
+		snd_soc_update_bits(codec, WM8960_DACCTL1, 0x8, 0x8);
+	else
+		snd_soc_update_bits(codec, WM8960_DACCTL1, 0x8, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
 				      enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
 	u16 reg;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (level) {
 	case SND_SOC_BIAS_ON:
 		break;
 
 	case SND_SOC_BIAS_PREPARE:
 		/* Set VMID to 2x50k */
+<<<<<<< HEAD
 		reg = snd_soc_read(codec, WM8960_POWER1);
 		reg &= ~0x180;
 		reg |= 0x80;
 		snd_soc_write(codec, WM8960_POWER1, reg);
+=======
+		snd_soc_update_bits(codec, WM8960_POWER1, 0x180, 0x80);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case SND_SOC_BIAS_STANDBY:
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+<<<<<<< HEAD
+=======
+			snd_soc_cache_sync(codec);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* Enable anti-pop features */
 			snd_soc_write(codec, WM8960_APOP1,
 				      WM8960_POBCTRL | WM8960_SOFT_ST |
 				      WM8960_BUFDCOPEN | WM8960_BUFIOEN);
 
 			/* Enable & ramp VMID at 2x50k */
+<<<<<<< HEAD
 			reg = snd_soc_read(codec, WM8960_POWER1);
 			reg |= 0x80;
 			snd_soc_write(codec, WM8960_POWER1, reg);
@@ -588,16 +622,28 @@ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
 
 			/* Enable VREF */
 			snd_soc_write(codec, WM8960_POWER1, reg | WM8960_VREF);
+=======
+			snd_soc_update_bits(codec, WM8960_POWER1, 0x80, 0x80);
+			msleep(100);
+
+			/* Enable VREF */
+			snd_soc_update_bits(codec, WM8960_POWER1, WM8960_VREF,
+					    WM8960_VREF);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			/* Disable anti-pop features */
 			snd_soc_write(codec, WM8960_APOP1, WM8960_BUFIOEN);
 		}
 
 		/* Set VMID to 2x250k */
+<<<<<<< HEAD
 		reg = snd_soc_read(codec, WM8960_POWER1);
 		reg &= ~0x180;
 		reg |= 0x100;
 		snd_soc_write(codec, WM8960_POWER1, reg);
+=======
+		snd_soc_update_bits(codec, WM8960_POWER1, 0x180, 0x100);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case SND_SOC_BIAS_OFF:
@@ -677,6 +723,12 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
 					    WM8960_VREF | WM8960_VMID_MASK, 0);
 			break;
 
+<<<<<<< HEAD
+=======
+		case SND_SOC_BIAS_OFF:
+			snd_soc_cache_sync(codec);
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		default:
 			break;
 		}
@@ -786,10 +838,15 @@ static int wm8960_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
 
 	/* Disable the PLL: even if we are changing the frequency the
 	 * PLL needs to be disabled while we do so. */
+<<<<<<< HEAD
 	snd_soc_write(codec, WM8960_CLOCK1,
 		     snd_soc_read(codec, WM8960_CLOCK1) & ~1);
 	snd_soc_write(codec, WM8960_POWER2,
 		     snd_soc_read(codec, WM8960_POWER2) & ~1);
+=======
+	snd_soc_update_bits(codec, WM8960_CLOCK1, 0x1, 0);
+	snd_soc_update_bits(codec, WM8960_POWER2, 0x1, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!freq_in || !freq_out)
 		return 0;
@@ -808,11 +865,17 @@ static int wm8960_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
 	snd_soc_write(codec, WM8960_PLL1, reg);
 
 	/* Turn it on */
+<<<<<<< HEAD
 	snd_soc_write(codec, WM8960_POWER2,
 		     snd_soc_read(codec, WM8960_POWER2) | 1);
 	msleep(250);
 	snd_soc_write(codec, WM8960_CLOCK1,
 		     snd_soc_read(codec, WM8960_CLOCK1) | 1);
+=======
+	snd_soc_update_bits(codec, WM8960_POWER2, 0x1, 0x1);
+	msleep(250);
+	snd_soc_update_bits(codec, WM8960_CLOCK1, 0x1, 0x1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -865,7 +928,11 @@ static int wm8960_set_bias_level(struct snd_soc_codec *codec,
 	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
 	SNDRV_PCM_FMTBIT_S24_LE)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8960_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8960_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.hw_params = wm8960_hw_params,
 	.digital_mute = wm8960_mute,
 	.set_fmt = wm8960_set_dai_fmt,
@@ -891,7 +958,11 @@ static struct snd_soc_dai_driver wm8960_dai = {
 	.symmetric_rates = 1,
 };
 
+<<<<<<< HEAD
 static int wm8960_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8960_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
 
@@ -902,6 +973,7 @@ static int wm8960_suspend(struct snd_soc_codec *codec, pm_message_t state)
 static int wm8960_resume(struct snd_soc_codec *codec)
 {
 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	int i;
 	u8 data[2];
 	u16 *cache = codec->reg_cache;
@@ -912,6 +984,8 @@ static int wm8960_resume(struct snd_soc_codec *codec)
 		data[1] = cache[i] & 0x00ff;
 		codec->hw_write(codec->control_data, data, 2);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	wm8960->set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 	return 0;
@@ -922,10 +996,15 @@ static int wm8960_probe(struct snd_soc_codec *codec)
 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
 	struct wm8960_data *pdata = dev_get_platdata(codec->dev);
 	int ret;
+<<<<<<< HEAD
 	u16 reg;
 
 	wm8960->set_bias_level = wm8960_set_bias_level_out3;
 	codec->control_data = wm8960->control_data;
+=======
+
+	wm8960->set_bias_level = wm8960_set_bias_level_out3;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!pdata) {
 		dev_warn(codec->dev, "No platform data supplied\n");
@@ -954,6 +1033,7 @@ static int wm8960_probe(struct snd_soc_codec *codec)
 	wm8960->set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 	/* Latch the update bits */
+<<<<<<< HEAD
 	reg = snd_soc_read(codec, WM8960_LINVOL);
 	snd_soc_write(codec, WM8960_LINVOL, reg | 0x100);
 	reg = snd_soc_read(codec, WM8960_RINVOL);
@@ -976,6 +1056,20 @@ static int wm8960_probe(struct snd_soc_codec *codec)
 	snd_soc_write(codec, WM8960_ROUT2, reg | 0x100);
 
 	snd_soc_add_controls(codec, wm8960_snd_controls,
+=======
+	snd_soc_update_bits(codec, WM8960_LINVOL, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8960_RINVOL, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8960_LADC, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8960_RADC, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8960_LDAC, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8960_RDAC, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8960_LOUT1, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8960_ROUT1, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8960_LOUT2, 0x100, 0x100);
+	snd_soc_update_bits(codec, WM8960_ROUT2, 0x100, 0x100);
+
+	snd_soc_add_codec_controls(codec, wm8960_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     ARRAY_SIZE(wm8960_snd_controls));
 	wm8960_add_widgets(codec);
 
@@ -1002,32 +1096,50 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8960 = {
 	.reg_cache_default = wm8960_reg,
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static __devinit int wm8960_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
 {
 	struct wm8960_priv *wm8960;
 	int ret;
 
+<<<<<<< HEAD
 	wm8960 = kzalloc(sizeof(struct wm8960_priv), GFP_KERNEL);
+=======
+	wm8960 = devm_kzalloc(&i2c->dev, sizeof(struct wm8960_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (wm8960 == NULL)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, wm8960);
 	wm8960->control_type = SND_SOC_I2C;
+<<<<<<< HEAD
 	wm8960->control_data = i2c;
 
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8960, &wm8960_dai, 1);
 	if (ret < 0)
 		kfree(wm8960);
+=======
+
+	ret = snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_wm8960, &wm8960_dai, 1);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8960_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
+<<<<<<< HEAD
 	kfree(i2c_get_clientdata(client));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1039,34 +1151,51 @@ MODULE_DEVICE_TABLE(i2c, wm8960_i2c_id);
 
 static struct i2c_driver wm8960_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name = "wm8960-codec",
+=======
+		.name = "wm8960",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8960_i2c_probe,
 	.remove =   __devexit_p(wm8960_i2c_remove),
 	.id_table = wm8960_i2c_id,
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init wm8960_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = i2c_add_driver(&wm8960_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register WM8960 I2C driver: %d\n",
 		       ret);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 module_init(wm8960_modinit);
 
 static void __exit wm8960_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 	i2c_del_driver(&wm8960_i2c_driver);
 #endif
+=======
+	i2c_del_driver(&wm8960_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 module_exit(wm8960_exit);
 

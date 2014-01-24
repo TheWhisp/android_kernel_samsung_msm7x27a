@@ -18,6 +18,10 @@
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/stddef.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/unistd.h>
 #include <linux/user.h>
 #include <linux/reboot.h>
@@ -139,7 +143,11 @@ static int __devinit cell_setup_phb(struct pci_controller *phb)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct of_device_id cell_bus_ids[] __initdata = {
+=======
+static const struct of_device_id cell_bus_ids[] __initconst = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ .type = "soc", },
 	{ .compatible = "soc", },
 	{ .type = "spider", },
@@ -183,6 +191,7 @@ static int __init cell_publish_devices(void)
 }
 machine_subsys_initcall(cell, cell_publish_devices);
 
+<<<<<<< HEAD
 static void cell_mpic_cascade(unsigned int irq, struct irq_desc *desc)
 {
 	struct irq_chip *chip = irq_desc_get_chip(desc);
@@ -196,11 +205,16 @@ static void cell_mpic_cascade(unsigned int irq, struct irq_desc *desc)
 	chip->irq_eoi(&desc->irq_data);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init mpic_init_IRQ(void)
 {
 	struct device_node *dn;
 	struct mpic *mpic;
+<<<<<<< HEAD
 	unsigned int virq;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (dn = NULL;
 	     (dn = of_find_node_by_name(dn, "interrupt-controller"));) {
@@ -210,6 +224,7 @@ static void __init mpic_init_IRQ(void)
 		/* The MPIC driver will get everything it needs from the
 		 * device-tree, just pass 0 to all arguments
 		 */
+<<<<<<< HEAD
 		mpic = mpic_alloc(dn, 0, 0, 0, 0, " MPIC     ");
 		if (mpic == NULL)
 			continue;
@@ -223,6 +238,13 @@ static void __init mpic_init_IRQ(void)
 		       dn->full_name, virq);
 		irq_set_handler_data(virq, mpic);
 		irq_set_chained_handler(virq, cell_mpic_cascade);
+=======
+		mpic = mpic_alloc(dn, 0, MPIC_SECONDARY | MPIC_NO_RESET,
+				0, 0, " MPIC     ");
+		if (mpic == NULL)
+			continue;
+		mpic_init(mpic);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 

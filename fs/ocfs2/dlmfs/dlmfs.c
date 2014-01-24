@@ -354,7 +354,10 @@ static struct inode *dlmfs_alloc_inode(struct super_block *sb)
 static void dlmfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kmem_cache_free(dlmfs_inode_cache, DLMFS_I(inode));
 }
 
@@ -401,16 +404,24 @@ static struct backing_dev_info dlmfs_backing_dev_info = {
 static struct inode *dlmfs_get_root_inode(struct super_block *sb)
 {
 	struct inode *inode = new_inode(sb);
+<<<<<<< HEAD
 	int mode = S_IFDIR | 0755;
+=======
+	umode_t mode = S_IFDIR | 0755;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dlmfs_inode_private *ip;
 
 	if (inode) {
 		ip = DLMFS_I(inode);
 
 		inode->i_ino = get_next_ino();
+<<<<<<< HEAD
 		inode->i_mode = mode;
 		inode->i_uid = current_fsuid();
 		inode->i_gid = current_fsgid();
+=======
+		inode_init_owner(inode, NULL, mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		inode->i_mapping->backing_dev_info = &dlmfs_backing_dev_info;
 		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
 		inc_nlink(inode);
@@ -424,7 +435,11 @@ static struct inode *dlmfs_get_root_inode(struct super_block *sb)
 
 static struct inode *dlmfs_get_inode(struct inode *parent,
 				     struct dentry *dentry,
+<<<<<<< HEAD
 				     int mode)
+=======
+				     umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct super_block *sb = parent->i_sb;
 	struct inode * inode = new_inode(sb);
@@ -434,9 +449,13 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
 		return NULL;
 
 	inode->i_ino = get_next_ino();
+<<<<<<< HEAD
 	inode->i_mode = mode;
 	inode->i_uid = current_fsuid();
 	inode->i_gid = current_fsgid();
+=======
+	inode_init_owner(inode, parent, mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_mapping->backing_dev_info = &dlmfs_backing_dev_info;
 	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
 
@@ -473,6 +492,7 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
 		inc_nlink(inode);
 		break;
 	}
+<<<<<<< HEAD
 
 	if (parent->i_mode & S_ISGID) {
 		inode->i_gid = parent->i_gid;
@@ -480,6 +500,8 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
 			inode->i_mode |= S_ISGID;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return inode;
 }
 
@@ -489,7 +511,11 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
 /* SMP-safe */
 static int dlmfs_mkdir(struct inode * dir,
 		       struct dentry * dentry,
+<<<<<<< HEAD
 		       int mode)
+=======
+		       umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int status;
 	struct inode *inode = NULL;
@@ -537,7 +563,11 @@ bail:
 
 static int dlmfs_create(struct inode *dir,
 			struct dentry *dentry,
+<<<<<<< HEAD
 			int mode,
+=======
+			umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 			struct nameidata *nd)
 {
 	int status = 0;
@@ -594,14 +624,18 @@ static int dlmfs_fill_super(struct super_block * sb,
 			    void * data,
 			    int silent)
 {
+<<<<<<< HEAD
 	struct inode * inode;
 	struct dentry * root;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	sb->s_maxbytes = MAX_LFS_FILESIZE;
 	sb->s_blocksize = PAGE_CACHE_SIZE;
 	sb->s_blocksize_bits = PAGE_CACHE_SHIFT;
 	sb->s_magic = DLMFS_MAGIC;
 	sb->s_op = &dlmfs_ops;
+<<<<<<< HEAD
 	inode = dlmfs_get_root_inode(sb);
 	if (!inode)
 		return -ENOMEM;
@@ -612,6 +646,11 @@ static int dlmfs_fill_super(struct super_block * sb,
 		return -ENOMEM;
 	}
 	sb->s_root = root;
+=======
+	sb->s_root = d_make_root(dlmfs_get_root_inode(sb));
+	if (!sb->s_root)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

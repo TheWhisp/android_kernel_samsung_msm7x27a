@@ -500,10 +500,16 @@ exit:
 
 #define HEX2STR_BUFFERS 4
 #define HEX2STR_MAX_LEN 64
+<<<<<<< HEAD
 #define BIN2HEX(x) ((x) < 10 ? '0' + (x) : (x) + 'A' - 10)
 
 /* Convert binary data into hex string */
 static char *hex2str(void *buf, int len)
+=======
+
+/* Convert binary data into hex string */
+static char *hex2str(void *buf, size_t len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static atomic_t a = ATOMIC_INIT(0);
 	static char bufs[HEX2STR_BUFFERS][3 * HEX2STR_MAX_LEN + 1];
@@ -514,6 +520,7 @@ static char *hex2str(void *buf, int len)
 	if (len > HEX2STR_MAX_LEN)
 		len = HEX2STR_MAX_LEN;
 
+<<<<<<< HEAD
 	if (len <= 0) {
 		ret[0] = '\0';
 		return ret;
@@ -526,6 +533,19 @@ static char *hex2str(void *buf, int len)
 		ibuf++;
 	}
 	*(--obuf) = '\0';
+=======
+	if (len == 0)
+		goto exit;
+
+	while (len--) {
+		obuf = hex_byte_pack(obuf, *ibuf++);
+		*obuf++ = '-';
+	}
+	obuf--;
+
+exit:
+	*obuf = '\0';
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }

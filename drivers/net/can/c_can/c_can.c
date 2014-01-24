@@ -26,7 +26,10 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include <linux/delay.h>
@@ -34,7 +37,10 @@
 #include <linux/if_arp.h>
 #include <linux/if_ether.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/io.h>
 
 #include <linux/can.h>

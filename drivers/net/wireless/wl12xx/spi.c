@@ -21,11 +21,19 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/irq.h>
 #include <linux/module.h>
 #include <linux/crc7.h>
 #include <linux/spi/spi.h>
 #include <linux/wl12xx.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 
 #include "wl12xx.h"
@@ -68,6 +76,7 @@
 
 #define WSPI_MAX_NUM_OF_CHUNKS (WL1271_AGGR_BUFFER_SIZE / WSPI_MAX_CHUNK_SIZE)
 
+<<<<<<< HEAD
 static inline struct spi_device *wl_to_spi(struct wl1271 *wl)
 {
 	return wl->if_priv;
@@ -90,13 +99,28 @@ static void wl1271_spi_enable_interrupts(struct wl1271 *wl)
 
 static void wl1271_spi_reset(struct wl1271 *wl)
 {
+=======
+struct wl12xx_spi_glue {
+	struct device *dev;
+	struct platform_device *core;
+};
+
+static void wl12xx_spi_reset(struct device *child)
+{
+	struct wl12xx_spi_glue *glue = dev_get_drvdata(child->parent);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 *cmd;
 	struct spi_transfer t;
 	struct spi_message m;
 
 	cmd = kzalloc(WSPI_INIT_CMD_LEN, GFP_KERNEL);
 	if (!cmd) {
+<<<<<<< HEAD
 		wl1271_error("could not allocate cmd for spi reset");
+=======
+		dev_err(child->parent,
+			"could not allocate cmd for spi reset\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -109,6 +133,7 @@ static void wl1271_spi_reset(struct wl1271 *wl)
 	t.len = WSPI_INIT_CMD_LEN;
 	spi_message_add_tail(&t, &m);
 
+<<<<<<< HEAD
 	spi_sync(wl_to_spi(wl), &m);
 
 	wl1271_dump(DEBUG_SPI, "spi reset -> ", cmd, WSPI_INIT_CMD_LEN);
@@ -117,13 +142,28 @@ static void wl1271_spi_reset(struct wl1271 *wl)
 
 static void wl1271_spi_init(struct wl1271 *wl)
 {
+=======
+	spi_sync(to_spi_device(glue->dev), &m);
+
+	kfree(cmd);
+}
+
+static void wl12xx_spi_init(struct device *child)
+{
+	struct wl12xx_spi_glue *glue = dev_get_drvdata(child->parent);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 crc[WSPI_INIT_CMD_CRC_LEN], *cmd;
 	struct spi_transfer t;
 	struct spi_message m;
 
 	cmd = kzalloc(WSPI_INIT_CMD_LEN, GFP_KERNEL);
 	if (!cmd) {
+<<<<<<< HEAD
 		wl1271_error("could not allocate cmd for spi init");
+=======
+		dev_err(child->parent,
+			"could not allocate cmd for spi init\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -164,15 +204,26 @@ static void wl1271_spi_init(struct wl1271 *wl)
 	t.len = WSPI_INIT_CMD_LEN;
 	spi_message_add_tail(&t, &m);
 
+<<<<<<< HEAD
 	spi_sync(wl_to_spi(wl), &m);
 	wl1271_dump(DEBUG_SPI, "spi init -> ", cmd, WSPI_INIT_CMD_LEN);
+=======
+	spi_sync(to_spi_device(glue->dev), &m);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(cmd);
 }
 
 #define WL1271_BUSY_WORD_TIMEOUT 1000
 
+<<<<<<< HEAD
 static int wl1271_spi_read_busy(struct wl1271 *wl)
 {
+=======
+static int wl12xx_spi_read_busy(struct device *child)
+{
+	struct wl12xx_spi_glue *glue = dev_get_drvdata(child->parent);
+	struct wl1271 *wl = dev_get_drvdata(child);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct spi_transfer t[1];
 	struct spi_message m;
 	u32 *busy_buf;
@@ -193,13 +244,18 @@ static int wl1271_spi_read_busy(struct wl1271 *wl)
 		t[0].len = sizeof(u32);
 		t[0].cs_change = true;
 		spi_message_add_tail(&t[0], &m);
+<<<<<<< HEAD
 		spi_sync(wl_to_spi(wl), &m);
+=======
+		spi_sync(to_spi_device(glue->dev), &m);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (*busy_buf & 0x1)
 			return 0;
 	}
 
 	/* The SPI bus is unresponsive, the read failed. */
+<<<<<<< HEAD
 	wl1271_error("SPI read busy-word timeout!\n");
 	return -ETIMEDOUT;
 }
@@ -207,6 +263,17 @@ static int wl1271_spi_read_busy(struct wl1271 *wl)
 static void wl1271_spi_raw_read(struct wl1271 *wl, int addr, void *buf,
 				size_t len, bool fixed)
 {
+=======
+	dev_err(child->parent, "SPI read busy-word timeout!\n");
+	return -ETIMEDOUT;
+}
+
+static void wl12xx_spi_raw_read(struct device *child, int addr, void *buf,
+				size_t len, bool fixed)
+{
+	struct wl12xx_spi_glue *glue = dev_get_drvdata(child->parent);
+	struct wl1271 *wl = dev_get_drvdata(child);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct spi_transfer t[2];
 	struct spi_message m;
 	u32 *busy_buf;
@@ -242,10 +309,17 @@ static void wl1271_spi_raw_read(struct wl1271 *wl, int addr, void *buf,
 		t[1].cs_change = true;
 		spi_message_add_tail(&t[1], &m);
 
+<<<<<<< HEAD
 		spi_sync(wl_to_spi(wl), &m);
 
 		if (!(busy_buf[WL1271_BUSY_WORD_CNT - 1] & 0x1) &&
 		    wl1271_spi_read_busy(wl)) {
+=======
+		spi_sync(to_spi_device(glue->dev), &m);
+
+		if (!(busy_buf[WL1271_BUSY_WORD_CNT - 1] & 0x1) &&
+		    wl12xx_spi_read_busy(child)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			memset(buf, 0, chunk_len);
 			return;
 		}
@@ -258,10 +332,14 @@ static void wl1271_spi_raw_read(struct wl1271 *wl, int addr, void *buf,
 		t[0].cs_change = true;
 		spi_message_add_tail(&t[0], &m);
 
+<<<<<<< HEAD
 		spi_sync(wl_to_spi(wl), &m);
 
 		wl1271_dump(DEBUG_SPI, "spi_read cmd -> ", cmd, sizeof(*cmd));
 		wl1271_dump(DEBUG_SPI, "spi_read buf <- ", buf, chunk_len);
+=======
+		spi_sync(to_spi_device(glue->dev), &m);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (!fixed)
 			addr += chunk_len;
@@ -270,9 +348,16 @@ static void wl1271_spi_raw_read(struct wl1271 *wl, int addr, void *buf,
 	}
 }
 
+<<<<<<< HEAD
 static void wl1271_spi_raw_write(struct wl1271 *wl, int addr, void *buf,
 			  size_t len, bool fixed)
 {
+=======
+static void wl12xx_spi_raw_write(struct device *child, int addr, void *buf,
+				 size_t len, bool fixed)
+{
+	struct wl12xx_spi_glue *glue = dev_get_drvdata(child->parent);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct spi_transfer t[2 * WSPI_MAX_NUM_OF_CHUNKS];
 	struct spi_message m;
 	u32 commands[WSPI_MAX_NUM_OF_CHUNKS];
@@ -307,9 +392,12 @@ static void wl1271_spi_raw_write(struct wl1271 *wl, int addr, void *buf,
 		t[i].len = chunk_len;
 		spi_message_add_tail(&t[i++], &m);
 
+<<<<<<< HEAD
 		wl1271_dump(DEBUG_SPI, "spi_write cmd -> ", cmd, sizeof(*cmd));
 		wl1271_dump(DEBUG_SPI, "spi_write buf -> ", buf, chunk_len);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!fixed)
 			addr += chunk_len;
 		buf += chunk_len;
@@ -317,6 +405,7 @@ static void wl1271_spi_raw_write(struct wl1271 *wl, int addr, void *buf,
 		cmd++;
 	}
 
+<<<<<<< HEAD
 	spi_sync(wl_to_spi(wl), &m);
 }
 
@@ -356,11 +445,22 @@ static struct wl1271_if_operations spi_ops = {
 	.dev		= wl1271_spi_wl_to_dev,
 	.enable_irq	= wl1271_spi_enable_interrupts,
 	.disable_irq	= wl1271_spi_disable_interrupts,
+=======
+	spi_sync(to_spi_device(glue->dev), &m);
+}
+
+static struct wl1271_if_operations spi_ops = {
+	.read		= wl12xx_spi_raw_read,
+	.write		= wl12xx_spi_raw_write,
+	.reset		= wl12xx_spi_reset,
+	.init		= wl12xx_spi_init,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_block_size = NULL,
 };
 
 static int __devinit wl1271_probe(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	struct wl12xx_platform_data *pdata;
 	struct ieee80211_hw *hw;
 	struct wl1271 *wl;
@@ -383,6 +483,30 @@ static int __devinit wl1271_probe(struct spi_device *spi)
 	wl->if_priv = spi;
 
 	wl->if_ops = &spi_ops;
+=======
+	struct wl12xx_spi_glue *glue;
+	struct wl12xx_platform_data *pdata;
+	struct resource res[1];
+	int ret = -ENOMEM;
+
+	pdata = spi->dev.platform_data;
+	if (!pdata) {
+		dev_err(&spi->dev, "no platform data\n");
+		return -ENODEV;
+	}
+
+	pdata->ops = &spi_ops;
+
+	glue = kzalloc(sizeof(*glue), GFP_KERNEL);
+	if (!glue) {
+		dev_err(&spi->dev, "can't allocate glue\n");
+		goto out;
+	}
+
+	glue->dev = &spi->dev;
+
+	spi_set_drvdata(spi, glue);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* This is the only SPI value that we need to set here, the rest
 	 * comes from the board-peripherals file */
@@ -390,6 +514,7 @@ static int __devinit wl1271_probe(struct spi_device *spi)
 
 	ret = spi_setup(spi);
 	if (ret < 0) {
+<<<<<<< HEAD
 		wl1271_error("spi_setup failed");
 		goto out_free;
 	}
@@ -445,16 +570,71 @@ static int __devinit wl1271_probe(struct spi_device *spi)
  out_free:
 	wl1271_free_hw(wl);
 
+=======
+		dev_err(glue->dev, "spi_setup failed\n");
+		goto out_free_glue;
+	}
+
+	glue->core = platform_device_alloc("wl12xx", -1);
+	if (!glue->core) {
+		dev_err(glue->dev, "can't allocate platform_device\n");
+		ret = -ENOMEM;
+		goto out_free_glue;
+	}
+
+	glue->core->dev.parent = &spi->dev;
+
+	memset(res, 0x00, sizeof(res));
+
+	res[0].start = spi->irq;
+	res[0].flags = IORESOURCE_IRQ;
+	res[0].name = "irq";
+
+	ret = platform_device_add_resources(glue->core, res, ARRAY_SIZE(res));
+	if (ret) {
+		dev_err(glue->dev, "can't add resources\n");
+		goto out_dev_put;
+	}
+
+	ret = platform_device_add_data(glue->core, pdata, sizeof(*pdata));
+	if (ret) {
+		dev_err(glue->dev, "can't add platform data\n");
+		goto out_dev_put;
+	}
+
+	ret = platform_device_add(glue->core);
+	if (ret) {
+		dev_err(glue->dev, "can't register platform device\n");
+		goto out_dev_put;
+	}
+
+	return 0;
+
+out_dev_put:
+	platform_device_put(glue->core);
+
+out_free_glue:
+	kfree(glue);
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit wl1271_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	struct wl1271 *wl = dev_get_drvdata(&spi->dev);
 
 	wl1271_unregister_hw(wl);
 	free_irq(wl->irq, wl);
 	wl1271_free_hw(wl);
+=======
+	struct wl12xx_spi_glue *glue = spi_get_drvdata(spi);
+
+	platform_device_del(glue->core);
+	platform_device_put(glue->core);
+	kfree(glue);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -463,7 +643,10 @@ static int __devexit wl1271_remove(struct spi_device *spi)
 static struct spi_driver wl1271_spi_driver = {
 	.driver = {
 		.name		= "wl1271_spi",
+<<<<<<< HEAD
 		.bus		= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner		= THIS_MODULE,
 	},
 
@@ -473,6 +656,7 @@ static struct spi_driver wl1271_spi_driver = {
 
 static int __init wl1271_init(void)
 {
+<<<<<<< HEAD
 	int ret;
 
 	ret = spi_register_driver(&wl1271_spi_driver);
@@ -483,13 +667,19 @@ static int __init wl1271_init(void)
 
 out:
 	return ret;
+=======
+	return spi_register_driver(&wl1271_spi_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __exit wl1271_exit(void)
 {
 	spi_unregister_driver(&wl1271_spi_driver);
+<<<<<<< HEAD
 
 	wl1271_notice("unloaded");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 module_init(wl1271_init);
@@ -498,8 +688,17 @@ module_exit(wl1271_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Luciano Coelho <coelho@ti.com>");
 MODULE_AUTHOR("Juuso Oikarinen <juuso.oikarinen@nokia.com>");
+<<<<<<< HEAD
 MODULE_FIRMWARE(WL1271_FW_NAME);
 MODULE_FIRMWARE(WL128X_FW_NAME);
 MODULE_FIRMWARE(WL127X_AP_FW_NAME);
 MODULE_FIRMWARE(WL128X_AP_FW_NAME);
+=======
+MODULE_FIRMWARE(WL127X_FW_NAME_SINGLE);
+MODULE_FIRMWARE(WL127X_FW_NAME_MULTI);
+MODULE_FIRMWARE(WL127X_PLT_FW_NAME);
+MODULE_FIRMWARE(WL128X_FW_NAME_SINGLE);
+MODULE_FIRMWARE(WL128X_FW_NAME_MULTI);
+MODULE_FIRMWARE(WL128X_PLT_FW_NAME);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_ALIAS("spi:wl1271");

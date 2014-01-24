@@ -23,6 +23,7 @@
 
 #ifndef _IIO_RING_SW_H_
 #define _IIO_RING_SW_H_
+<<<<<<< HEAD
 #include "ring_generic.h"
 
 /**
@@ -32,4 +33,10 @@ extern const struct iio_ring_access_funcs ring_sw_access_funcs;
 
 struct iio_ring_buffer *iio_sw_rb_allocate(struct iio_dev *indio_dev);
 void iio_sw_rb_free(struct iio_ring_buffer *ring);
+=======
+#include "buffer.h"
+
+struct iio_buffer *iio_sw_rb_allocate(struct iio_dev *indio_dev);
+void iio_sw_rb_free(struct iio_buffer *ring);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _IIO_RING_SW_H_ */

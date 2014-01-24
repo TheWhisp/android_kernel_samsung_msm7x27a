@@ -30,6 +30,11 @@
 #include <linux/seq_file.h>
 #include <linux/file.h>
 #include <linux/crypto.h>
+<<<<<<< HEAD
+=======
+#include <linux/statfs.h>
+#include <linux/magic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ecryptfs_kernel.h"
 
 struct kmem_cache *ecryptfs_inode_info_cache;
@@ -69,7 +74,10 @@ static void ecryptfs_i_callback(struct rcu_head *head)
 	struct ecryptfs_inode_info *inode_info;
 	inode_info = ecryptfs_inode_to_private(inode);
 
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kmem_cache_free(ecryptfs_inode_info_cache, inode_info);
 }
 
@@ -103,10 +111,27 @@ static void ecryptfs_destroy_inode(struct inode *inode)
 static int ecryptfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 {
 	struct dentry *lower_dentry = ecryptfs_dentry_to_lower(dentry);
+<<<<<<< HEAD
 
 	if (!lower_dentry->d_sb->s_op->statfs)
 		return -ENOSYS;
 	return lower_dentry->d_sb->s_op->statfs(lower_dentry, buf);
+=======
+	int rc;
+
+	if (!lower_dentry->d_sb->s_op->statfs)
+		return -ENOSYS;
+
+	rc = lower_dentry->d_sb->s_op->statfs(lower_dentry, buf);
+	if (rc)
+		return rc;
+
+	buf->f_type = ECRYPTFS_SUPER_MAGIC;
+	rc = ecryptfs_set_f_namelen(&buf->f_namelen, buf->f_namelen,
+	       &ecryptfs_superblock_to_private(dentry->d_sb)->mount_crypt_stat);
+
+	return rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -132,9 +157,15 @@ static void ecryptfs_evict_inode(struct inode *inode)
  * Prints the mount options for a given superblock.
  * Returns zero; does not fail.
  */
+<<<<<<< HEAD
 static int ecryptfs_show_options(struct seq_file *m, struct vfsmount *mnt)
 {
 	struct super_block *sb = mnt->mnt_sb;
+=======
+static int ecryptfs_show_options(struct seq_file *m, struct dentry *root)
+{
+	struct super_block *sb = root->d_sb;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ecryptfs_mount_crypt_stat *mount_crypt_stat =
 		&ecryptfs_superblock_to_private(sb)->mount_crypt_stat;
 	struct ecryptfs_global_auth_tok *walker;
@@ -173,7 +204,10 @@ static int ecryptfs_show_options(struct seq_file *m, struct vfsmount *mnt)
 const struct super_operations ecryptfs_sops = {
 	.alloc_inode = ecryptfs_alloc_inode,
 	.destroy_inode = ecryptfs_destroy_inode,
+<<<<<<< HEAD
 	.drop_inode = generic_drop_inode,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.statfs = ecryptfs_statfs,
 	.remount_fs = NULL,
 	.evict_inode = ecryptfs_evict_inode,

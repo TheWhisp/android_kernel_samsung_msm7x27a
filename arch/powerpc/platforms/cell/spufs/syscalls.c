@@ -1,6 +1,10 @@
 #include <linux/file.h>
 #include <linux/fs.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mount.h>
 #include <linux/namei.h>
 #include <linux/slab.h>
@@ -60,6 +64,7 @@ out:
 }
 
 static long do_spu_create(const char __user *pathname, unsigned int flags,
+<<<<<<< HEAD
 		mode_t mode, struct file *neighbor)
 {
 	char *tmp;
@@ -77,6 +82,19 @@ static long do_spu_create(const char __user *pathname, unsigned int flags,
 			path_put(&nd.path);
 		}
 		putname(tmp);
+=======
+		umode_t mode, struct file *neighbor)
+{
+	struct path path;
+	struct dentry *dentry;
+	int ret;
+
+	dentry = user_path_create(AT_FDCWD, pathname, &path, 1);
+	ret = PTR_ERR(dentry);
+	if (!IS_ERR(dentry)) {
+		ret = spufs_create(&path, dentry, flags, mode, neighbor);
+		path_put(&path);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return ret;

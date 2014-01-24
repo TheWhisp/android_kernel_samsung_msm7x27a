@@ -14,7 +14,11 @@
 #include <linux/nodemask.h>
 #include <linux/spinlock.h>
 #include <linux/seqlock.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct super_block;
 struct vfsmount;
@@ -47,6 +51,7 @@ struct mnt_namespace;
 
 #define MNT_INTERNAL	0x4000
 
+<<<<<<< HEAD
 struct mnt_pcp {
 	int mnt_count;
 	int mnt_writers;
@@ -86,6 +91,12 @@ struct vfsmount {
 	int mnt_expiry_mark;		/* true if marked for expiry */
 	int mnt_pinned;
 	int mnt_ghosts;
+=======
+struct vfsmount {
+	struct dentry *mnt_root;	/* root of the mounted tree */
+	struct super_block *mnt_sb;	/* pointer to superblock */
+	int mnt_flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct file; /* forward dec */
@@ -94,15 +105,22 @@ extern int mnt_want_write(struct vfsmount *mnt);
 extern int mnt_want_write_file(struct file *file);
 extern int mnt_clone_write(struct vfsmount *mnt);
 extern void mnt_drop_write(struct vfsmount *mnt);
+<<<<<<< HEAD
+=======
+extern void mnt_drop_write_file(struct file *file);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void mntput(struct vfsmount *mnt);
 extern struct vfsmount *mntget(struct vfsmount *mnt);
 extern void mnt_pin(struct vfsmount *mnt);
 extern void mnt_unpin(struct vfsmount *mnt);
 extern int __mnt_is_readonly(struct vfsmount *mnt);
 
+<<<<<<< HEAD
 extern struct vfsmount *do_kern_mount(const char *fstype, int flags,
 				      const char *name, void *data);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct file_system_type;
 extern struct vfsmount *vfs_kern_mount(struct file_system_type *type,
 				      int flags, const char *name,

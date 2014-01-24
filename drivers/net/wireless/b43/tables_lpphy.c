@@ -3,7 +3,11 @@
   Broadcom B43 wireless driver
   IEEE 802.11a/g LP-PHY and radio device data tables
 
+<<<<<<< HEAD
   Copyright (c) 2009 Michael Buesch <mb@bu3sch.de>
+=======
+  Copyright (c) 2009 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
   Copyright (c) 2009 Gábor Stefanik <netrolller.3d@gmail.com>
 
   This program is free software; you can redistribute it and/or modify
@@ -2304,7 +2308,10 @@ void lpphy_rev0_1_table_init(struct b43_wldev *dev)
 
 void lpphy_rev2plus_table_init(struct b43_wldev *dev)
 {
+<<<<<<< HEAD
 	struct ssb_bus *bus = dev->sdev->bus;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 
 	B43_WARN_ON(dev->phy.rev < 2);
@@ -2341,7 +2348,11 @@ void lpphy_rev2plus_table_init(struct b43_wldev *dev)
 	b43_lptab_write_bulk(dev, B43_LPTAB32(10, 0),
 		ARRAY_SIZE(lpphy_papd_mult_table), lpphy_papd_mult_table);
 
+<<<<<<< HEAD
 	if ((bus->chip_id == 0x4325) && (bus->chip_rev == 0)) {
+=======
+	if ((dev->dev->chip_id == 0x4325) && (dev->dev->chip_rev == 0)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		b43_lptab_write_bulk(dev, B43_LPTAB32(13, 0),
 			ARRAY_SIZE(lpphy_a0_gain_idx_table), lpphy_a0_gain_idx_table);
 		b43_lptab_write_bulk(dev, B43_LPTAB16(14, 0),
@@ -2416,12 +2427,21 @@ void lpphy_write_gain_table_bulk(struct b43_wldev *dev, int offset, int count,
 
 void lpphy_init_tx_gain_table(struct b43_wldev *dev)
 {
+<<<<<<< HEAD
 	struct ssb_bus *bus = dev->sdev->bus;
 
 	switch (dev->phy.rev) {
 	case 0:
 		if ((bus->sprom.boardflags_hi & B43_BFH_NOPA) ||
 		    (bus->sprom.boardflags_lo & B43_BFL_HGPA))
+=======
+	struct ssb_sprom *sprom = dev->dev->bus_sprom;
+
+	switch (dev->phy.rev) {
+	case 0:
+		if ((sprom->boardflags_hi & B43_BFH_NOPA) ||
+		    (sprom->boardflags_lo & B43_BFL_HGPA))
+>>>>>>> refs/remotes/origin/cm-10.0
 			lpphy_write_gain_table_bulk(dev, 0, 128,
 					lpphy_rev0_nopa_tx_gain_table);
 		else if (b43_current_band(dev->wl) == IEEE80211_BAND_2GHZ)
@@ -2432,8 +2452,13 @@ void lpphy_init_tx_gain_table(struct b43_wldev *dev)
 					lpphy_rev0_5ghz_tx_gain_table);
 		break;
 	case 1:
+<<<<<<< HEAD
 		if ((bus->sprom.boardflags_hi & B43_BFH_NOPA) ||
 		    (bus->sprom.boardflags_lo & B43_BFL_HGPA))
+=======
+		if ((sprom->boardflags_hi & B43_BFH_NOPA) ||
+		    (sprom->boardflags_lo & B43_BFL_HGPA))
+>>>>>>> refs/remotes/origin/cm-10.0
 			lpphy_write_gain_table_bulk(dev, 0, 128,
 					lpphy_rev1_nopa_tx_gain_table);
 		else if (b43_current_band(dev->wl) == IEEE80211_BAND_2GHZ)
@@ -2444,7 +2469,11 @@ void lpphy_init_tx_gain_table(struct b43_wldev *dev)
 					lpphy_rev1_5ghz_tx_gain_table);
 		break;
 	default:
+<<<<<<< HEAD
 		if (bus->sprom.boardflags_hi & B43_BFH_NOPA)
+=======
+		if (sprom->boardflags_hi & B43_BFH_NOPA)
+>>>>>>> refs/remotes/origin/cm-10.0
 			lpphy_write_gain_table_bulk(dev, 0, 128,
 					lpphy_rev2_nopa_tx_gain_table);
 		else if (b43_current_band(dev->wl) == IEEE80211_BAND_2GHZ)

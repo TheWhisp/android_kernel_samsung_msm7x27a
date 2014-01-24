@@ -13,6 +13,10 @@ struct olpc_platform_t {
 
 #define OLPC_F_PRESENT		0x01
 #define OLPC_F_DCON		0x02
+<<<<<<< HEAD
+=======
+#define OLPC_F_EC_WIDE_SCI	0x04
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_OLPC
 
@@ -62,6 +66,16 @@ static inline int olpc_board_at_least(uint32_t rev)
 	return olpc_platform_info.boardrev >= rev;
 }
 
+<<<<<<< HEAD
+=======
+extern void olpc_ec_wakeup_set(u16 value);
+extern void olpc_ec_wakeup_clear(u16 value);
+extern bool olpc_ec_wakeup_available(void);
+
+extern int olpc_ec_mask_write(u16 bits);
+extern int olpc_ec_sci_query(u16 *sci_value);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 
 static inline int machine_is_olpc(void)
@@ -74,6 +88,23 @@ static inline int olpc_has_dcon(void)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static inline void olpc_ec_wakeup_set(u16 value) { }
+static inline void olpc_ec_wakeup_clear(u16 value) { }
+
+static inline bool olpc_ec_wakeup_available(void)
+{
+	return false;
+}
+
+#endif
+
+#ifdef CONFIG_OLPC_XO1_PM
+extern void do_olpc_suspend_lowlevel(void);
+extern void olpc_xo1_pm_wakeup_set(u16 value);
+extern void olpc_xo1_pm_wakeup_clear(u16 value);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 extern int pci_olpc_init(void);
@@ -83,6 +114,7 @@ extern int pci_olpc_init(void);
 extern int olpc_ec_cmd(unsigned char cmd, unsigned char *inbuf, size_t inlen,
 		unsigned char *outbuf, size_t outlen);
 
+<<<<<<< HEAD
 extern int olpc_ec_mask_set(uint8_t bits);
 extern int olpc_ec_mask_unset(uint8_t bits);
 
@@ -91,6 +123,21 @@ extern int olpc_ec_mask_unset(uint8_t bits);
 #define EC_FIRMWARE_REV		0x08
 #define EC_WLAN_ENTER_RESET	0x35
 #define EC_WLAN_LEAVE_RESET	0x25
+=======
+/* EC commands */
+
+#define EC_FIRMWARE_REV			0x08
+#define EC_WRITE_SCI_MASK		0x1b
+#define EC_WAKE_UP_WLAN			0x24
+#define EC_WLAN_LEAVE_RESET		0x25
+#define EC_READ_EB_MODE			0x2a
+#define EC_SET_SCI_INHIBIT		0x32
+#define EC_SET_SCI_INHIBIT_RELEASE	0x34
+#define EC_WLAN_ENTER_RESET		0x35
+#define EC_WRITE_EXT_SCI_MASK		0x38
+#define EC_SCI_QUERY			0x84
+#define EC_EXT_SCI_QUERY		0x85
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* SCI source values */
 
@@ -99,10 +146,19 @@ extern int olpc_ec_mask_unset(uint8_t bits);
 #define EC_SCI_SRC_BATTERY	0x02
 #define EC_SCI_SRC_BATSOC	0x04
 #define EC_SCI_SRC_BATERR	0x08
+<<<<<<< HEAD
 #define EC_SCI_SRC_EBOOK	0x10
 #define EC_SCI_SRC_WLAN		0x20
 #define EC_SCI_SRC_ACPWR	0x40
 #define EC_SCI_SRC_ALL		0x7F
+=======
+#define EC_SCI_SRC_EBOOK	0x10	/* XO-1 only */
+#define EC_SCI_SRC_WLAN		0x20	/* XO-1 only */
+#define EC_SCI_SRC_ACPWR	0x40
+#define EC_SCI_SRC_BATCRIT	0x80
+#define EC_SCI_SRC_GPWAKE	0x100	/* XO-1.5 only */
+#define EC_SCI_SRC_ALL		0x1FF
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* GPIO assignments */
 
@@ -116,7 +172,12 @@ extern int olpc_ec_mask_unset(uint8_t bits);
 #define OLPC_GPIO_SMB_CLK      14
 #define OLPC_GPIO_SMB_DATA     15
 #define OLPC_GPIO_WORKAUX	geode_gpio(24)
+<<<<<<< HEAD
 #define OLPC_GPIO_LID		geode_gpio(26)
 #define OLPC_GPIO_ECSCI		geode_gpio(27)
+=======
+#define OLPC_GPIO_LID		26
+#define OLPC_GPIO_ECSCI		27
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _ASM_X86_OLPC_H */

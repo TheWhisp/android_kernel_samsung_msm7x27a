@@ -19,6 +19,10 @@
 #include <linux/blkdev.h>
 #include <linux/raid/md_u.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include "md.h"
 #include "linear.h"
@@ -26,10 +30,17 @@
 /*
  * find which device holds a particular offset 
  */
+<<<<<<< HEAD
 static inline dev_info_t *which_dev(mddev_t *mddev, sector_t sector)
 {
 	int lo, mid, hi;
 	linear_conf_t *conf;
+=======
+static inline struct dev_info *which_dev(struct mddev *mddev, sector_t sector)
+{
+	int lo, mid, hi;
+	struct linear_conf *conf;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	lo = 0;
 	hi = mddev->raid_disks - 1;
@@ -63,14 +74,33 @@ static int linear_mergeable_bvec(struct request_queue *q,
 				 struct bvec_merge_data *bvm,
 				 struct bio_vec *biovec)
 {
+<<<<<<< HEAD
 	mddev_t *mddev = q->queuedata;
 	dev_info_t *dev0;
 	unsigned long maxsectors, bio_sectors = bvm->bi_size >> 9;
 	sector_t sector = bvm->bi_sector + get_start_sect(bvm->bi_bdev);
+=======
+	struct mddev *mddev = q->queuedata;
+	struct dev_info *dev0;
+	unsigned long maxsectors, bio_sectors = bvm->bi_size >> 9;
+	sector_t sector = bvm->bi_sector + get_start_sect(bvm->bi_bdev);
+	int maxbytes = biovec->bv_len;
+	struct request_queue *subq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rcu_read_lock();
 	dev0 = which_dev(mddev, sector);
 	maxsectors = dev0->end_sector - sector;
+<<<<<<< HEAD
+=======
+	subq = bdev_get_queue(dev0->rdev->bdev);
+	if (subq->merge_bvec_fn) {
+		bvm->bi_bdev = dev0->rdev->bdev;
+		bvm->bi_sector -= dev0->end_sector - dev0->rdev->sectors;
+		maxbytes = min(maxbytes, subq->merge_bvec_fn(subq, bvm,
+							     biovec));
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	rcu_read_unlock();
 
 	if (maxsectors < bio_sectors)
@@ -79,18 +109,32 @@ static int linear_mergeable_bvec(struct request_queue *q,
 		maxsectors -= bio_sectors;
 
 	if (maxsectors <= (PAGE_SIZE >> 9 ) && bio_sectors == 0)
+<<<<<<< HEAD
 		return biovec->bv_len;
 	/* The bytes available at this offset could be really big,
 	 * so we cap at 2^31 to avoid overflow */
 	if (maxsectors > (1 << (31-9)))
 		return 1<<31;
 	return maxsectors << 9;
+=======
+		return maxbytes;
+
+	if (maxsectors > (maxbytes >> 9))
+		return maxbytes;
+	else
+		return maxsectors << 9;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int linear_congested(void *data, int bits)
 {
+<<<<<<< HEAD
 	mddev_t *mddev = data;
 	linear_conf_t *conf;
+=======
+	struct mddev *mddev = data;
+	struct linear_conf *conf;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i, ret = 0;
 
 	if (mddev_congested(mddev, bits))
@@ -108,9 +152,15 @@ static int linear_congested(void *data, int bits)
 	return ret;
 }
 
+<<<<<<< HEAD
 static sector_t linear_size(mddev_t *mddev, sector_t sectors, int raid_disks)
 {
 	linear_conf_t *conf;
+=======
+static sector_t linear_size(struct mddev *mddev, sector_t sectors, int raid_disks)
+{
+	struct linear_conf *conf;
+>>>>>>> refs/remotes/origin/cm-10.0
 	sector_t array_sectors;
 
 	rcu_read_lock();
@@ -123,6 +173,7 @@ static sector_t linear_size(mddev_t *mddev, sector_t sectors, int raid_disks)
 	return array_sectors;
 }
 
+<<<<<<< HEAD
 static linear_conf_t *linear_conf(mddev_t *mddev, int raid_disks)
 {
 	linear_conf_t *conf;
@@ -130,6 +181,15 @@ static linear_conf_t *linear_conf(mddev_t *mddev, int raid_disks)
 	int i, cnt;
 
 	conf = kzalloc (sizeof (*conf) + raid_disks*sizeof(dev_info_t),
+=======
+static struct linear_conf *linear_conf(struct mddev *mddev, int raid_disks)
+{
+	struct linear_conf *conf;
+	struct md_rdev *rdev;
+	int i, cnt;
+
+	conf = kzalloc (sizeof (*conf) + raid_disks*sizeof(struct dev_info),
+>>>>>>> refs/remotes/origin/cm-10.0
 			GFP_KERNEL);
 	if (!conf)
 		return NULL;
@@ -137,9 +197,15 @@ static linear_conf_t *linear_conf(mddev_t *mddev, int raid_disks)
 	cnt = 0;
 	conf->array_sectors = 0;
 
+<<<<<<< HEAD
 	list_for_each_entry(rdev, &mddev->disks, same_set) {
 		int j = rdev->raid_disk;
 		dev_info_t *disk = conf->disks + j;
+=======
+	rdev_for_each(rdev, mddev) {
+		int j = rdev->raid_disk;
+		struct dev_info *disk = conf->disks + j;
+>>>>>>> refs/remotes/origin/cm-10.0
 		sector_t sectors;
 
 		if (j < 0 || j >= raid_disks || disk->rdev) {
@@ -157,6 +223,7 @@ static linear_conf_t *linear_conf(mddev_t *mddev, int raid_disks)
 
 		disk_stack_limits(mddev->gendisk, rdev->bdev,
 				  rdev->data_offset << 9);
+<<<<<<< HEAD
 		/* as we don't honour merge_bvec_fn, we must never risk
 		 * violating it, so limit max_segments to 1 lying within
 		 * a single page.
@@ -166,6 +233,8 @@ static linear_conf_t *linear_conf(mddev_t *mddev, int raid_disks)
 			blk_queue_segment_boundary(mddev->queue,
 						   PAGE_CACHE_SIZE - 1);
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		conf->array_sectors += rdev->sectors;
 		cnt++;
@@ -194,9 +263,16 @@ out:
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int linear_run (mddev_t *mddev)
 {
 	linear_conf_t *conf;
+=======
+static int linear_run (struct mddev *mddev)
+{
+	struct linear_conf *conf;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (md_check_no_bitmap(mddev))
 		return -EINVAL;
@@ -210,6 +286,7 @@ static int linear_run (mddev_t *mddev)
 	blk_queue_merge_bvec(mddev->queue, linear_mergeable_bvec);
 	mddev->queue->backing_dev_info.congested_fn = linear_congested;
 	mddev->queue->backing_dev_info.congested_data = mddev;
+<<<<<<< HEAD
 	return md_integrity_register(mddev);
 }
 
@@ -220,6 +297,18 @@ static void free_conf(struct rcu_head *head)
 }
 
 static int linear_add(mddev_t *mddev, mdk_rdev_t *rdev)
+=======
+
+	ret =  md_integrity_register(mddev);
+	if (ret) {
+		kfree(conf);
+		mddev->private = NULL;
+	}
+	return ret;
+}
+
+static int linear_add(struct mddev *mddev, struct md_rdev *rdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* Adding a drive to a linear array allows the array to grow.
 	 * It is permitted if the new drive has a matching superblock
@@ -229,12 +318,20 @@ static int linear_add(mddev_t *mddev, mdk_rdev_t *rdev)
 	 * The current one is never freed until the array is stopped.
 	 * This avoids races.
 	 */
+<<<<<<< HEAD
 	linear_conf_t *newconf, *oldconf;
+=======
+	struct linear_conf *newconf, *oldconf;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (rdev->saved_raid_disk != mddev->raid_disks)
 		return -EINVAL;
 
 	rdev->raid_disk = rdev->saved_raid_disk;
+<<<<<<< HEAD
+=======
+	rdev->saved_raid_disk = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	newconf = linear_conf(mddev,mddev->raid_disks+1);
 
@@ -247,6 +344,7 @@ static int linear_add(mddev_t *mddev, mdk_rdev_t *rdev)
 	md_set_array_sectors(mddev, linear_size(mddev, 0, 0));
 	set_capacity(mddev->gendisk, mddev->array_sectors);
 	revalidate_disk(mddev->gendisk);
+<<<<<<< HEAD
 	call_rcu(&oldconf->rcu, free_conf);
 	return 0;
 }
@@ -254,6 +352,15 @@ static int linear_add(mddev_t *mddev, mdk_rdev_t *rdev)
 static int linear_stop (mddev_t *mddev)
 {
 	linear_conf_t *conf = mddev->private;
+=======
+	kfree_rcu(oldconf, rcu);
+	return 0;
+}
+
+static int linear_stop (struct mddev *mddev)
+{
+	struct linear_conf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * We do not require rcu protection here since
@@ -270,14 +377,24 @@ static int linear_stop (mddev_t *mddev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int linear_make_request (mddev_t *mddev, struct bio *bio)
 {
 	dev_info_t *tmp_dev;
+=======
+static void linear_make_request(struct mddev *mddev, struct bio *bio)
+{
+	struct dev_info *tmp_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	sector_t start_sector;
 
 	if (unlikely(bio->bi_rw & REQ_FLUSH)) {
 		md_flush_request(mddev, bio);
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	rcu_read_lock();
@@ -299,7 +416,11 @@ static int linear_make_request (mddev_t *mddev, struct bio *bio)
 		       (unsigned long long)start_sector);
 		rcu_read_unlock();
 		bio_io_error(bio);
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (unlikely(bio->bi_sector + (bio->bi_size >> 9) >
 		     tmp_dev->end_sector)) {
@@ -313,30 +434,48 @@ static int linear_make_request (mddev_t *mddev, struct bio *bio)
 
 		bp = bio_split(bio, end_sector - bio->bi_sector);
 
+<<<<<<< HEAD
 		if (linear_make_request(mddev, &bp->bio1))
 			generic_make_request(&bp->bio1);
 		if (linear_make_request(mddev, &bp->bio2))
 			generic_make_request(&bp->bio2);
 		bio_pair_release(bp);
 		return 0;
+=======
+		linear_make_request(mddev, &bp->bio1);
+		linear_make_request(mddev, &bp->bio2);
+		bio_pair_release(bp);
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 		    
 	bio->bi_bdev = tmp_dev->rdev->bdev;
 	bio->bi_sector = bio->bi_sector - start_sector
 		+ tmp_dev->rdev->data_offset;
 	rcu_read_unlock();
+<<<<<<< HEAD
 
 	return 1;
 }
 
 static void linear_status (struct seq_file *seq, mddev_t *mddev)
+=======
+	generic_make_request(bio);
+}
+
+static void linear_status (struct seq_file *seq, struct mddev *mddev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 
 	seq_printf(seq, " %dk rounding", mddev->chunk_sectors / 2);
 }
 
 
+<<<<<<< HEAD
 static struct mdk_personality linear_personality =
+=======
+static struct md_personality linear_personality =
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	.name		= "linear",
 	.level		= LEVEL_LINEAR,

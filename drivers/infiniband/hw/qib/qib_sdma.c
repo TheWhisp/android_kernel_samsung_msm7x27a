@@ -32,6 +32,10 @@
 
 #include <linux/spinlock.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "qib.h"
 #include "qib_common.h"

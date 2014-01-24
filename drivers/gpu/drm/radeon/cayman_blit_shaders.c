@@ -24,6 +24,10 @@
  *     Alex Deucher <alexander.deucher@amd.com>
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include <linux/kernel.h>
 

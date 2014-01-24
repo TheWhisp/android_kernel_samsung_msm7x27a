@@ -31,7 +31,10 @@
 #include "xfs_dinode.h"
 #include "xfs_inode.h"
 #include "xfs_btree.h"
+<<<<<<< HEAD
 #include "xfs_btree_trace.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xfs_ialloc.h"
 #include "xfs_alloc.h"
 #include "xfs_error.h"
@@ -205,6 +208,7 @@ xfs_inobt_recs_inorder(
 }
 #endif	/* DEBUG */
 
+<<<<<<< HEAD
 #ifdef XFS_BTREE_TRACE
 ktrace_t	*xfs_inobt_trace_buf;
 
@@ -271,6 +275,8 @@ xfs_inobt_trace_record(
 }
 #endif /* XFS_BTREE_TRACE */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct xfs_btree_ops xfs_inobt_ops = {
 	.rec_len		= sizeof(xfs_inobt_rec_t),
 	.key_len		= sizeof(xfs_inobt_key_t),
@@ -286,11 +292,15 @@ static const struct xfs_btree_ops xfs_inobt_ops = {
 	.init_rec_from_cur	= xfs_inobt_init_rec_from_cur,
 	.init_ptr_from_cur	= xfs_inobt_init_ptr_from_cur,
 	.key_diff		= xfs_inobt_key_diff,
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef DEBUG
 	.keys_inorder		= xfs_inobt_keys_inorder,
 	.recs_inorder		= xfs_inobt_recs_inorder,
 #endif
+<<<<<<< HEAD
 
 #ifdef XFS_BTREE_TRACE
 	.trace_enter		= xfs_inobt_trace_enter,
@@ -298,6 +308,8 @@ static const struct xfs_btree_ops xfs_inobt_ops = {
 	.trace_key		= xfs_inobt_trace_key,
 	.trace_record		= xfs_inobt_trace_record,
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*

@@ -13,8 +13,11 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 typedef unsigned short umode_t;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* A address type so that arithmetic can be done on it & it can be upgraded to
    64 bit when necessary 
 */

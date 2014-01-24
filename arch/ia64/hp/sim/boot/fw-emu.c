@@ -13,6 +13,10 @@
 #include <asm/io.h>
 #include <asm/pal.h>
 #include <asm/sal.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "ssc.h"
 
@@ -160,18 +164,25 @@ sal_emulator (long index, unsigned long in1, unsigned long in2,
 	 */
 	status = 0;
 	if (index == SAL_FREQ_BASE) {
+<<<<<<< HEAD
 		switch (in1) {
 		      case SAL_FREQ_BASE_PLATFORM:
 			r9 = 200000000;
 			break;
 
 		      case SAL_FREQ_BASE_INTERVAL_TIMER:
+=======
+		if (in1 == SAL_FREQ_BASE_PLATFORM)
+			r9 = 200000000;
+		else if (in1 == SAL_FREQ_BASE_INTERVAL_TIMER) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * Is this supposed to be the cr.itc frequency
 			 * or something platform specific?  The SAL
 			 * doc ain't exactly clear on this...
 			 */
 			r9 = 700000000;
+<<<<<<< HEAD
 			break;
 
 		      case SAL_FREQ_BASE_REALTIME_CLOCK:
@@ -182,6 +193,12 @@ sal_emulator (long index, unsigned long in1, unsigned long in2,
 			status = -1;
 			break;
 		}
+=======
+		} else if (in1 == SAL_FREQ_BASE_REALTIME_CLOCK)
+			r9 = 1;
+		else
+			status = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else if (index == SAL_SET_VECTORS) {
 		;
 	} else if (index == SAL_GET_STATE_INFO) {

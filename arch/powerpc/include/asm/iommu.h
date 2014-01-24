@@ -112,7 +112,10 @@ extern void iommu_unmap_page(struct iommu_table *tbl, dma_addr_t dma_handle,
 			     struct dma_attrs *attrs);
 
 extern void iommu_init_early_pSeries(void);
+<<<<<<< HEAD
 extern void iommu_init_early_iSeries(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void iommu_init_early_dart(void);
 extern void iommu_init_early_pasemi(void);
 

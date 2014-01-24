@@ -3,6 +3,7 @@
 
 #include <asm/page.h>
 
+<<<<<<< HEAD
 /*
  * If CONFIG_RELOCATABLE is enabled we can place the kdump kernel anywhere.
  * To keep enough space in the RMO for the first stage kernel on 64bit, we
@@ -14,6 +15,9 @@
 #else
 #define KDUMP_KERNELBASE	0x2000000
 #endif
+=======
+#define KDUMP_KERNELBASE	0x2000000
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* How many bytes to reserve at zero for kdump. The reserve limit should
  * be greater or equal to the trampoline's end address.
@@ -42,11 +46,19 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 #if defined(CONFIG_CRASH_DUMP) && !defined(CONFIG_RELOCATABLE)
 extern void reserve_kdump_trampoline(void);
 extern void setup_kdump_trampoline(void);
 #else
 /* !CRASH_DUMP || RELOCATABLE */
+=======
+#if defined(CONFIG_CRASH_DUMP) && !defined(CONFIG_NONSTATIC_KERNEL)
+extern void reserve_kdump_trampoline(void);
+extern void setup_kdump_trampoline(void);
+#else
+/* !CRASH_DUMP || !NONSTATIC_KERNEL */
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void reserve_kdump_trampoline(void) { ; }
 static inline void setup_kdump_trampoline(void) { ; }
 #endif

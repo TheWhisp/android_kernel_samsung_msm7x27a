@@ -24,6 +24,10 @@
 #include <linux/input.h>
 #include <linux/gpio_keys.h>
 
+<<<<<<< HEAD
+=======
+#include <linux/regulator/fixed.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/regulator/machine.h>
 #include <linux/i2c/twl.h>
 #include <linux/mmc/host.h>
@@ -35,12 +39,20 @@
 #include <asm/mach/flash.h>
 
 #include <plat/board.h>
+<<<<<<< HEAD
 #include <plat/common.h>
+=======
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/gpmc.h>
 #include <plat/nand.h>
 #include <plat/usb.h>
 #include <video/omapdss.h>
 #include <video/omap-panel-generic-dpi.h>
+<<<<<<< HEAD
+=======
+#include <video/omap-panel-dvi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/mcspi.h>
 #include <linux/input/matrix_keypad.h>
@@ -52,7 +64,10 @@
 #include "sdram-micron-mt46h32m32lf-6.h"
 #include "mux.h"
 #include "hsmmc.h"
+<<<<<<< HEAD
 #include "timer-gp.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "common-board-devices.h"
 
 #if defined(CONFIG_SMSC911X) || defined(CONFIG_SMSC911X_MODULE)
@@ -72,6 +87,7 @@ static struct omap_smsc911x_platform_data smsc911x_cfg = {
 
 static inline void __init omap3stalker_init_eth(void)
 {
+<<<<<<< HEAD
 	struct clk *l3ck;
 	unsigned int rate;
 
@@ -81,6 +97,8 @@ static inline void __init omap3stalker_init_eth(void)
 	else
 		rate = clk_get_rate(l3ck);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap_mux_init_gpio(19, OMAP_PIN_INPUT_PULLUP);
 	gpmc_smsc911x_init(&smsc911x_cfg);
 }
@@ -108,6 +126,7 @@ static void __init omap3_stalker_display_init(void)
 	return;
 }
 
+<<<<<<< HEAD
 static int omap3_stalker_enable_lcd(struct omap_dss_device *dssdev)
 {
 	if (dvi_enabled) {
@@ -141,6 +160,8 @@ static struct omap_dss_device omap3_stalker_lcd_device = {
 	.type			= OMAP_DISPLAY_TYPE_DPI,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int omap3_stalker_enable_tv(struct omap_dss_device *dssdev)
 {
 	return 0;
@@ -180,8 +201,12 @@ static void omap3_stalker_disable_dvi(struct omap_dss_device *dssdev)
 	dvi_enabled = 0;
 }
 
+<<<<<<< HEAD
 static struct panel_generic_dpi_data dvi_panel = {
 	.name			= "generic",
+=======
+static struct panel_dvi_platform_data dvi_panel = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.platform_enable	= omap3_stalker_enable_dvi,
 	.platform_disable	= omap3_stalker_disable_dvi,
 };
@@ -189,13 +214,20 @@ static struct panel_generic_dpi_data dvi_panel = {
 static struct omap_dss_device omap3_stalker_dvi_device = {
 	.name			= "dvi",
 	.type			= OMAP_DISPLAY_TYPE_DPI,
+<<<<<<< HEAD
 	.driver_name		= "generic_dpi_panel",
+=======
+	.driver_name		= "dvi",
+>>>>>>> refs/remotes/origin/cm-10.0
 	.data			= &dvi_panel,
 	.phy.dpi.data_lines	= 24,
 };
 
 static struct omap_dss_device *omap3_stalker_dss_devices[] = {
+<<<<<<< HEAD
 	&omap3_stalker_lcd_device,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	&omap3_stalker_tv_device,
 	&omap3_stalker_dvi_device,
 };
@@ -206,12 +238,21 @@ static struct omap_dss_board_info omap3_stalker_dss_data = {
 	.default_device	= &omap3_stalker_dvi_device,
 };
 
+<<<<<<< HEAD
 static struct regulator_consumer_supply omap3stalker_vmmc1_supply = {
 	.supply		= "vmmc",
 };
 
 static struct regulator_consumer_supply omap3stalker_vsim_supply = {
 	.supply		= "vmmc_aux",
+=======
+static struct regulator_consumer_supply omap3stalker_vmmc1_supply[] = {
+	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.0"),
+};
+
+static struct regulator_consumer_supply omap3stalker_vsim_supply[] = {
+	REGULATOR_SUPPLY("vmmc_aux", "omap_hsmmc.0"),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
@@ -224,8 +265,13 @@ static struct regulator_init_data omap3stalker_vmmc1 = {
 		.valid_ops_mask		= REGULATOR_CHANGE_VOLTAGE
 		| REGULATOR_CHANGE_MODE | REGULATOR_CHANGE_STATUS,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &omap3stalker_vmmc1_supply,
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(omap3stalker_vmmc1_supply),
+	.consumer_supplies	= omap3stalker_vmmc1_supply,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* VSIM for MMC1 pins DAT4..DAT7 (2 mA, plus card == max 50 mA) */
@@ -238,16 +284,29 @@ static struct regulator_init_data omap3stalker_vsim = {
 		.valid_ops_mask		= REGULATOR_CHANGE_VOLTAGE
 		| REGULATOR_CHANGE_MODE | REGULATOR_CHANGE_STATUS,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &omap3stalker_vsim_supply,
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(omap3stalker_vsim_supply),
+	.consumer_supplies	= omap3stalker_vsim_supply,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct omap2_hsmmc_info mmc[] = {
 	{
+<<<<<<< HEAD
 	 .mmc		= 1,
 	 .caps		= MMC_CAP_4_BIT_DATA,
 	 .gpio_cd	= -EINVAL,
 	 .gpio_wp	= 23,
+=======
+		.mmc		= 1,
+		.caps		= MMC_CAP_4_BIT_DATA,
+		.gpio_cd	= -EINVAL,
+		.gpio_wp	= 23,
+		.deferred	= true,
+>>>>>>> refs/remotes/origin/cm-10.0
 	 },
 	{}			/* Terminator */
 };
@@ -317,6 +376,7 @@ omap3stalker_twl_gpio_setup(struct device *dev,
 			    unsigned gpio, unsigned ngpio)
 {
 	/* gpio + 0 is "mmc0_cd" (input/IRQ) */
+<<<<<<< HEAD
 	omap_mux_init_gpio(23, OMAP_PIN_INPUT);
 	mmc[0].gpio_cd = gpio + 0;
 	omap2_hsmmc_init(mmc);
@@ -324,6 +384,10 @@ omap3stalker_twl_gpio_setup(struct device *dev,
 	/* link regulators to MMC adapters */
 	omap3stalker_vmmc1_supply.dev = mmc[0].dev;
 	omap3stalker_vsim_supply.dev = mmc[0].dev;
+=======
+	mmc[0].gpio_cd = gpio + 0;
+	omap_hsmmc_late_init(mmc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Most GPIOs are for USB OTG.  Some are mostly sent to
@@ -416,6 +480,10 @@ static int __init omap3_stalker_i2c_init(void)
 			TWL_COMMON_PDATA_USB | TWL_COMMON_PDATA_MADC |
 			TWL_COMMON_PDATA_AUDIO,
 			TWL_COMMON_REGULATOR_VDAC | TWL_COMMON_REGULATOR_VPLL2);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap3stalker_twldata.vdac->constraints.apply_uV = true;
 	omap3stalker_twldata.vpll2->constraints.apply_uV = true;
 	omap3stalker_twldata.vpll2->constraints.name = "VDVI";
@@ -432,6 +500,7 @@ static int __init omap3_stalker_i2c_init(void)
 static struct omap_board_config_kernel omap3_stalker_config[] __initdata = {
 };
 
+<<<<<<< HEAD
 static void __init omap3_stalker_init_early(void)
 {
 	omap2_init_common_infrastructure();
@@ -446,6 +515,8 @@ static void __init omap3_stalker_init_irq(void)
 #endif
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device *omap3_stalker_devices[] __initdata = {
 	&keys_gpio,
 };
@@ -471,12 +542,29 @@ static struct omap_board_mux board_mux[] __initdata = {
 };
 #endif
 
+<<<<<<< HEAD
 static void __init omap3_stalker_init(void)
 {
+=======
+static struct regulator_consumer_supply dummy_supplies[] = {
+	REGULATOR_SUPPLY("vddvario", "smsc911x.0"),
+	REGULATOR_SUPPLY("vdd33a", "smsc911x.0"),
+};
+
+static void __init omap3_stalker_init(void)
+{
+	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CUS);
 	omap_board_config = omap3_stalker_config;
 	omap_board_config_size = ARRAY_SIZE(omap3_stalker_config);
 
+<<<<<<< HEAD
+=======
+	omap_mux_init_gpio(23, OMAP_PIN_INPUT);
+	omap_hsmmc_init(mmc);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap3_stalker_i2c_init();
 
 	platform_add_devices(omap3_stalker_devices,
@@ -485,6 +573,10 @@ static void __init omap3_stalker_init(void)
 	omap_display_init(&omap3_stalker_dss_data);
 
 	omap_serial_init();
+<<<<<<< HEAD
+=======
+	omap_sdrc_init(mt46h32m32lf6_sdrc_params, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_musb_init(NULL);
 	usbhs_init(&usbhs_bdata);
 	omap_ads7846_init(1, OMAP3_STALKER_TS_GPIO, 310, NULL);
@@ -501,10 +593,21 @@ static void __init omap3_stalker_init(void)
 
 MACHINE_START(SBC3530, "OMAP3 STALKER")
 	/* Maintainer: Jason Lam -lzg@ema-tech.com */
+<<<<<<< HEAD
 	.boot_params		= 0x80000100,
 	.map_io			= omap3_map_io,
 	.init_early		= omap3_stalker_init_early,
 	.init_irq		= omap3_stalker_init_irq,
 	.init_machine		= omap3_stalker_init,
 	.timer			= &omap_timer,
+=======
+	.atag_offset		= 0x100,
+	.map_io			= omap3_map_io,
+	.init_early		= omap35xx_init_early,
+	.init_irq		= omap3_init_irq,
+	.handle_irq		= omap3_intc_handle_irq,
+	.init_machine		= omap3_stalker_init,
+	.timer			= &omap3_secure_timer,
+	.restart		= omap_prcm_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

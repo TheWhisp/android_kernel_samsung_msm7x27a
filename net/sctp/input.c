@@ -105,7 +105,11 @@ static inline int sctp_rcv_checksum(struct sk_buff *skb)
 struct sctp_input_cb {
 	union {
 		struct inet_skb_parm	h4;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined (CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct inet6_skb_parm	h6;
 #endif
 	} header;
@@ -510,8 +514,12 @@ struct sock *sctp_err_lookup(int family, struct sk_buff *skb,
 	 * discard the packet.
 	 */
 	if (vtag == 0) {
+<<<<<<< HEAD
 		chunkhdr = (struct sctp_init_chunk *)((void *)sctphdr
 				+ sizeof(struct sctphdr));
+=======
+		chunkhdr = (void *)sctphdr + sizeof(struct sctphdr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (len < sizeof(struct sctphdr) + sizeof(sctp_chunkhdr_t)
 			  + sizeof(__be32) ||
 		    chunkhdr->chunk_hdr.type != SCTP_CID_INIT ||

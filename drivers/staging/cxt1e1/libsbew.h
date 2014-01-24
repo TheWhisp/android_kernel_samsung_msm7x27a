@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /*
  * $Id: libsbew.h,v 2.1 2005/10/27 18:54:19 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _INC_LIBSBEW_H_
 #define _INC_LIBSBEW_H_
 
@@ -25,6 +28,7 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 2.1 $
  * Last changed on $Date: 2005/10/27 18:54:19 $
@@ -51,6 +55,10 @@ extern      "C"
 {
 #endif
 
+=======
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /********************************/
 /**  set driver logging level  **/
 /********************************/
@@ -323,7 +331,11 @@ struct sbecom_port_param
 #define CFG_CH_DINV_TX      0x02
 
 
+<<<<<<< HEAD
 /* Posssible resettable chipsets/functions */
+=======
+/* Possible resettable chipsets/functions */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define RESET_DEV_TEMUX     1
 #define RESET_DEV_TECT3     RESET_DEV_TEMUX
 #define RESET_DEV_PLL       2
@@ -574,8 +586,11 @@ struct sbecom_port_param
     extern int  wancfg_set_tsioc (wcfg_t *, struct wanc1t3_ts_param *);
 #endif
 
+<<<<<<< HEAD
 #ifdef __cplusplus
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif                          /*** _INC_LIBSBEW_H_ ***/

@@ -46,6 +46,7 @@ struct cflayer *cfrfml_create(u8 channel_id, struct dev_info *dev_info,
 					int mtu_size)
 {
 	int tmp;
+<<<<<<< HEAD
 	struct cfrfml *this =
 		kzalloc(sizeof(struct cfrfml), GFP_ATOMIC);
 
@@ -53,6 +54,12 @@ struct cflayer *cfrfml_create(u8 channel_id, struct dev_info *dev_info,
 		pr_warn("Out of memory\n");
 		return NULL;
 	}
+=======
+	struct cfrfml *this = kzalloc(sizeof(struct cfrfml), GFP_ATOMIC);
+
+	if (!this)
+		return NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cfsrvl_init(&this->serv, channel_id, dev_info, false);
 	this->serv.release = cfrfml_release;
@@ -187,13 +194,25 @@ out:
 					rfml->serv.dev_info.id);
 	}
 	spin_unlock(&rfml->sync);
+<<<<<<< HEAD
+=======
+
+	if (unlikely(err == -EAGAIN))
+		/* It is not possible to recover after drop of a fragment */
+		err = -EIO;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 
 
 static int cfrfml_transmit_segment(struct cfrfml *rfml, struct cfpkt *pkt)
 {
+<<<<<<< HEAD
 	caif_assert(cfpkt_getlen(pkt) < rfml->fragment_size);
+=======
+	caif_assert(cfpkt_getlen(pkt) < rfml->fragment_size + RFM_HEAD_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Add info for MUX-layer to route the packet out. */
 	cfpkt_info(pkt)->channel_id = rfml->serv.layer.id;
@@ -221,7 +240,11 @@ static int cfrfml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 	caif_assert(layr->dn->transmit != NULL);
 
 	if (!cfsrvl_ready(&rfml->serv, &err))
+<<<<<<< HEAD
 		return err;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = -EPROTO;
 	if (cfpkt_getlen(pkt) <= RFM_HEAD_SIZE-1)
@@ -254,8 +277,16 @@ static int cfrfml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 
 		err = cfrfml_transmit_segment(rfml, frontpkt);
 
+<<<<<<< HEAD
 		if (err != 0)
 			goto out;
+=======
+		if (err != 0) {
+			frontpkt = NULL;
+			goto out;
+		}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		frontpkt = rearpkt;
 		rearpkt = NULL;
 
@@ -289,6 +320,7 @@ out:
 		if (rearpkt)
 			cfpkt_destroy(rearpkt);
 
+<<<<<<< HEAD
 		if (frontpkt && frontpkt != pkt) {
 
 			cfpkt_destroy(frontpkt);
@@ -302,6 +334,10 @@ out:
 			 */
 			err = 0;
 		}
+=======
+		if (frontpkt)
+			cfpkt_destroy(frontpkt);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return err;

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,23 +25,37 @@
 #include <linux/gfp.h>
 #include <linux/msm_ipc.h>
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ANDROID_PARANOID_NETWORK
+#include <linux/android_aid.h>
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/string.h>
 #include <asm/atomic.h>
 
 #include <net/sock.h>
 
+<<<<<<< HEAD
 #include <mach/peripheral-loader.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ipc_router.h"
 
 #define msm_ipc_sk(sk) ((struct msm_ipc_sock *)(sk))
 #define msm_ipc_sk_port(sk) ((struct msm_ipc_port *)(msm_ipc_sk(sk)->port))
+<<<<<<< HEAD
 #define MODEM_LOAD_TIMEOUT (10 * HZ)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int sockets_enabled;
 static struct proto msm_ipc_proto;
 static const struct proto_ops msm_ipc_proto_ops;
 
+<<<<<<< HEAD
 static void msm_ipc_router_unload_modem(void *pil)
 {
 	if (pil)
@@ -69,6 +87,22 @@ static void *msm_ipc_router_load_modem(void)
 
 	return pil;
 }
+=======
+#ifdef CONFIG_ANDROID_PARANOID_NETWORK
+static inline int check_permissions(void)
+{
+	int rc = 0;
+	if (!current_euid() || in_egroup_p(AID_NET_RAW))
+		rc = 1;
+	return rc;
+}
+# else
+static inline int check_permissions(void)
+{
+	return 1;
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct sk_buff_head *msm_ipc_router_build_msg(unsigned int num_sect,
 					  struct iovec const *msg_sect,
@@ -206,6 +240,14 @@ static int msm_ipc_router_create(struct net *net,
 	struct msm_ipc_port *port_ptr;
 	void *pil;
 
+<<<<<<< HEAD
+=======
+	if (!check_permissions()) {
+		pr_err("%s: Do not have permissions\n", __func__);
+		return -EPERM;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(protocol != 0)) {
 		pr_err("%s: Protocol not supported\n", __func__);
 		return -EPROTONOSUPPORT;
@@ -236,9 +278,15 @@ static int msm_ipc_router_create(struct net *net,
 	sock_init_data(sock, sk);
 	sk->sk_rcvtimeo = DEFAULT_RCV_TIMEO;
 
+<<<<<<< HEAD
 	pil = msm_ipc_router_load_modem();
 	msm_ipc_sk(sk)->port = port_ptr;
 	msm_ipc_sk(sk)->modem_pil = pil;
+=======
+	pil = msm_ipc_load_default_node();
+	msm_ipc_sk(sk)->port = port_ptr;
+	msm_ipc_sk(sk)->default_pil = pil;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -487,12 +535,20 @@ static int msm_ipc_router_close(struct socket *sock)
 {
 	struct sock *sk = sock->sk;
 	struct msm_ipc_port *port_ptr = msm_ipc_sk_port(sk);
+<<<<<<< HEAD
 	void *pil = msm_ipc_sk(sk)->modem_pil;
+=======
+	void *pil = msm_ipc_sk(sk)->default_pil;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	lock_sock(sk);
 	ret = msm_ipc_router_close_port(port_ptr);
+<<<<<<< HEAD
 	msm_ipc_router_unload_modem(pil);
+=======
+	msm_ipc_unload_default_node(pil);
+>>>>>>> refs/remotes/origin/cm-10.0
 	release_sock(sk);
 	sock_put(sk);
 	sock->sk = NULL;

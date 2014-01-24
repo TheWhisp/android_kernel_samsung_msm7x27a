@@ -13,6 +13,10 @@
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include <linux/leds.h>
 #include <linux/interrupt.h>

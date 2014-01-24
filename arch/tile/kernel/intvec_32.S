@@ -21,7 +21,11 @@
 #include <asm/ptrace.h>
 #include <asm/thread_info.h>
 #include <asm/irqflags.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <asm/atomic_32.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/asm-offsets.h>
 #include <hv/hypervisor.h>
 #include <arch/abi.h>
@@ -799,6 +803,13 @@ handle_interrupt:
  * This routine takes a boolean in r30 indicating if this is an NMI.
  * If so, we also expect a boolean in r31 indicating whether to
  * re-enable the oprofile interrupts.
+<<<<<<< HEAD
+=======
+ *
+ * Note that .Lresume_userspace is jumped to directly in several
+ * places, and we need to make sure r30 is set correctly in those
+ * callers as well.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 STD_ENTRY(interrupt_return)
 	/* If we're resuming to kernel space, don't check thread flags. */
@@ -835,6 +846,21 @@ STD_ENTRY(interrupt_return)
 	FEEDBACK_REENTER(interrupt_return)
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Use r33 to hold whether we have already loaded the callee-saves
+	 * into ptregs.  We don't want to do it twice in this loop, since
+	 * then we'd clobber whatever changes are made by ptrace, etc.
+	 * Get base of stack in r32.
+	 */
+	{
+	 GET_THREAD_INFO(r32)
+	 movei  r33, 0
+	}
+
+.Lretry_work_pending:
+	/*
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * Disable interrupts so as to make sure we don't
 	 * miss an interrupt that sets any of the thread flags (like
 	 * need_resched or sigpending) between sampling and the iret.
@@ -844,9 +870,12 @@ STD_ENTRY(interrupt_return)
 	IRQ_DISABLE(r20, r21)
 	TRACE_IRQS_OFF  /* Note: clobbers registers r0-r29 */
 
+<<<<<<< HEAD
 	/* Get base of stack in r32; note r30/31 are used as arguments here. */
 	GET_THREAD_INFO(r32)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Check to see if there is any work to do before returning to user. */
 	{
@@ -862,6 +891,7 @@ STD_ENTRY(interrupt_return)
 
 	/*
 	 * Make sure we have all the registers saved for signal
+<<<<<<< HEAD
 	 * handling or single-step.  Call out to C code to figure out
 	 * exactly what we need to do for each flag bit, then if
 	 * necessary, reload the flags and recheck.
@@ -872,6 +902,20 @@ STD_ENTRY(interrupt_return)
 	 jal    do_work_pending
 	}
 	bnz     r0, .Lresume_userspace
+=======
+	 * handling, notify-resume, or single-step.  Call out to C
+	 * code to figure out exactly what we need to do for each flag bit,
+	 * then if necessary, reload the flags and recheck.
+	 */
+	{
+	 PTREGS_PTR(r0, PTREGS_OFFSET_BASE)
+	 bnz    r33, 1f
+	}
+	push_extra_callee_saves r0
+	movei   r33, 1
+1:	jal     do_work_pending
+	bnz     r0, .Lretry_work_pending
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * In the NMI case we
@@ -1176,10 +1220,19 @@ handle_syscall:
 	add     r20, r20, tp
 	lw      r21, r20
 	addi    r21, r21, 1
+<<<<<<< HEAD
 	sw      r20, r21
 
 	/* Trace syscalls, if requested. */
 	GET_THREAD_INFO(r31)
+=======
+	{
+	 sw     r20, r21
+	 GET_THREAD_INFO(r31)
+	}
+
+	/* Trace syscalls, if requested. */
+>>>>>>> refs/remotes/origin/cm-10.0
 	addi	r31, r31, THREAD_INFO_FLAGS_OFFSET
 	lw	r30, r31
 	andi    r30, r30, _TIF_SYSCALL_TRACE
@@ -1237,7 +1290,14 @@ handle_syscall:
 	bzt     r30, 1f
 	jal	do_syscall_trace
 	FEEDBACK_REENTER(handle_syscall)
+<<<<<<< HEAD
 1:	j       .Lresume_userspace   /* jump into middle of interrupt_return */
+=======
+1:	{
+	 movei  r30, 0               /* not an NMI */
+	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 .Linvalid_syscall:
 	/* Report an invalid syscall back to the user program */
@@ -1246,7 +1306,14 @@ handle_syscall:
 	 movei  r28, -ENOSYS
 	}
 	sw      r29, r28
+<<<<<<< HEAD
 	j       .Lresume_userspace   /* jump into middle of interrupt_return */
+=======
+	{
+	 movei  r30, 0               /* not an NMI */
+	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	STD_ENDPROC(handle_syscall)
 
 	/* Return the address for oprofile to suppress in backtraces. */
@@ -1262,7 +1329,14 @@ STD_ENTRY(ret_from_fork)
 	jal     sim_notify_fork
 	jal     schedule_tail
 	FEEDBACK_REENTER(ret_from_fork)
+<<<<<<< HEAD
 	j       .Lresume_userspace   /* jump into middle of interrupt_return */
+=======
+	{
+	 movei  r30, 0               /* not an NMI */
+	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	STD_ENDPROC(ret_from_fork)
 
 	/*
@@ -1349,7 +1423,14 @@ handle_ill:
 3:
 	/* set PC and continue */
 	lw      r26, r24
+<<<<<<< HEAD
 	sw      r28, r26
+=======
+	{
+	 sw     r28, r26
+	 GET_THREAD_INFO(r0)
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Clear TIF_SINGLESTEP to prevent recursion if we execute an ill.
@@ -1357,7 +1438,10 @@ handle_ill:
 	 * need to clear it here and can't really impose on all other arches.
 	 * So what's another write between friends?
 	 */
+<<<<<<< HEAD
 	GET_THREAD_INFO(r0)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	addi    r1, r0, THREAD_INFO_FLAGS_OFFSET
 	{
@@ -1376,7 +1460,14 @@ handle_ill:
 
 	jal     send_sigtrap    /* issue a SIGTRAP */
 	FEEDBACK_REENTER(handle_ill)
+<<<<<<< HEAD
 	j       .Lresume_userspace   /* jump into middle of interrupt_return */
+=======
+	{
+	 movei  r30, 0               /* not an NMI */
+	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 .Ldispatch_normal_ill:
 	{

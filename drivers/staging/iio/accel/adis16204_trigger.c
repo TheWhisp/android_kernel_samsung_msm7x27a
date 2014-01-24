@@ -1,4 +1,5 @@
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/irq.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
@@ -9,6 +10,13 @@
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+#include <linux/kernel.h>
+#include <linux/spi/spi.h>
+#include <linux/export.h>
+
+#include "../iio.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "../trigger.h"
 #include "adis16204.h"
 
@@ -18,6 +26,7 @@
 static int adis16204_data_rdy_trigger_set_state(struct iio_trigger *trig,
 						bool state)
 {
+<<<<<<< HEAD
 	struct adis16204_state *st = trig->private_data;
 	struct iio_dev *indio_dev = st->indio_dev;
 
@@ -29,6 +38,23 @@ int adis16204_probe_trigger(struct iio_dev *indio_dev)
 {
 	int ret;
 	struct adis16204_state *st = indio_dev->dev_data;
+=======
+	struct iio_dev *indio_dev = trig->private_data;
+
+	dev_dbg(&indio_dev->dev, "%s (%d)\n", __func__, state);
+	return adis16204_set_irq(indio_dev, state);
+}
+
+static const struct iio_trigger_ops adis16204_trigger_ops = {
+	.owner = THIS_MODULE,
+	.set_trigger_state = &adis16204_data_rdy_trigger_set_state,
+};
+
+int adis16204_probe_trigger(struct iio_dev *indio_dev)
+{
+	int ret;
+	struct adis16204_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	st->trig = iio_allocate_trigger("adis16204-dev%d", indio_dev->id);
 	if (st->trig == NULL) {
@@ -45,9 +71,14 @@ int adis16204_probe_trigger(struct iio_dev *indio_dev)
 		goto error_free_trig;
 
 	st->trig->dev.parent = &st->us->dev;
+<<<<<<< HEAD
 	st->trig->owner = THIS_MODULE;
 	st->trig->private_data = st;
 	st->trig->set_trigger_state = &adis16204_data_rdy_trigger_set_state;
+=======
+	st->trig->ops = &adis16204_trigger_ops;
+	st->trig->private_data = indio_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = iio_trigger_register(st->trig);
 
 	/* select default trigger */
@@ -67,7 +98,11 @@ error_ret:
 
 void adis16204_remove_trigger(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
 	struct adis16204_state *state = indio_dev->dev_data;
+=======
+	struct adis16204_state *state = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	iio_trigger_unregister(state->trig);
 	free_irq(state->us->irq, state->trig);

@@ -311,7 +311,11 @@ int blk_rq_map_kern(struct request_queue *q, struct request *rq, void *kbuf,
 	if (IS_ERR(bio))
 		return PTR_ERR(bio);
 
+<<<<<<< HEAD
 	if (rq_data_dir(rq) == WRITE)
+=======
+	if (!reading)
+>>>>>>> refs/remotes/origin/cm-10.0
 		bio->bi_rw |= REQ_WRITE;
 
 	if (do_copy)

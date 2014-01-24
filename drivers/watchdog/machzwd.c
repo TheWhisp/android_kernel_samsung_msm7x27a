@@ -28,6 +28,11 @@
  *      Added nowayout module option to override CONFIG_WATCHDOG_NOWAYOUT
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -43,7 +48,10 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ports */
 #define ZF_IOBASE	0x218
@@ -93,8 +101,13 @@ MODULE_DESCRIPTION("MachZ ZF-Logic Watchdog driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -141,10 +154,17 @@ static unsigned long next_heartbeat;
 #define ZF_CTIMEOUT 0xffff
 
 #ifndef ZF_DEBUG
+<<<<<<< HEAD
 #	define dprintk(format, args...)
 #else
 #	define dprintk(format, args...) printk(KERN_DEBUG PFX \
 				":%s:%d: " format, __func__, __LINE__ , ## args)
+=======
+#define dprintk(format, args...)
+#else
+#define dprintk(format, args...)					\
+	pr_debug(":%s:%d: " format, __func__, __LINE__ , ## args)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 
@@ -203,7 +223,11 @@ static void zf_timer_off(void)
 	zf_set_control(ctrl_reg);
 	spin_unlock_irqrestore(&zf_port_lock, flags);
 
+<<<<<<< HEAD
 	printk(KERN_INFO PFX ": Watchdog timer is now disabled\n");
+=======
+	pr_info("Watchdog timer is now disabled\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -233,7 +257,11 @@ static void zf_timer_on(void)
 	zf_set_control(ctrl_reg);
 	spin_unlock_irqrestore(&zf_port_lock, flags);
 
+<<<<<<< HEAD
 	printk(KERN_INFO PFX ": Watchdog timer is now enabled\n");
+=======
+	pr_info("Watchdog timer is now enabled\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -263,7 +291,11 @@ static void zf_ping(unsigned long data)
 
 		mod_timer(&zf_timer, jiffies + ZF_HW_TIMEO);
 	} else
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX ": I will reset your machine\n");
+=======
+		pr_crit("I will reset your machine\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t zf_write(struct file *file, const char __user *buf, size_t count,
@@ -342,8 +374,12 @@ static int zf_close(struct inode *inode, struct file *file)
 		zf_timer_off();
 	else {
 		del_timer(&zf_timer);
+<<<<<<< HEAD
 		printk(KERN_ERR PFX ": device file closed unexpectedly. "
 						"Will not stop the WDT!\n");
+=======
+		pr_err("device file closed unexpectedly. Will not stop the WDT!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	clear_bit(0, &zf_is_open);
 	zf_expect_close = 0;
@@ -390,19 +426,31 @@ static void __init zf_show_action(int act)
 {
 	static const char * const str[] = { "RESET", "SMI", "NMI", "SCI" };
 
+<<<<<<< HEAD
 	printk(KERN_INFO PFX ": Watchdog using action = %s\n", str[act]);
+=======
+	pr_info("Watchdog using action = %s\n", str[act]);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __init zf_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 	printk(KERN_INFO PFX
 		": MachZ ZF-Logic Watchdog driver initializing.\n");
 
 	ret = zf_get_ZFL_version();
 	if (!ret || ret == 0xffff) {
 		printk(KERN_WARNING PFX ": no ZF-Logic found\n");
+=======
+	pr_info("MachZ ZF-Logic Watchdog driver initializing\n");
+
+	ret = zf_get_ZFL_version();
+	if (!ret || ret == 0xffff) {
+		pr_warn("no ZF-Logic found\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
@@ -414,23 +462,35 @@ static int __init zf_init(void)
 	zf_show_action(action);
 
 	if (!request_region(ZF_IOBASE, 3, "MachZ ZFL WDT")) {
+<<<<<<< HEAD
 		printk(KERN_ERR "cannot reserve I/O ports at %d\n",
 							ZF_IOBASE);
+=======
+		pr_err("cannot reserve I/O ports at %d\n", ZF_IOBASE);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -EBUSY;
 		goto no_region;
 	}
 
 	ret = register_reboot_notifier(&zf_notifier);
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR "can't register reboot notifier (err=%d)\n",
 									ret);
+=======
+		pr_err("can't register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto no_reboot;
 	}
 
 	ret = misc_register(&zf_miscdev);
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR "can't misc_register on minor=%d\n",
 							WATCHDOG_MINOR);
+=======
+		pr_err("can't misc_register on minor=%d\n", WATCHDOG_MINOR);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto no_misc;
 	}
 

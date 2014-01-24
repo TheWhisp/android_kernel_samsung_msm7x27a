@@ -24,6 +24,10 @@
 
 
 #include <linux/list.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-dev.h>
 #include <media/tuner.h>
 #include "usbvision.h"

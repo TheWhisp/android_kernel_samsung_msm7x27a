@@ -276,8 +276,11 @@ static int puv3_i2c_resume(struct platform_device *dev)
 #define puv3_i2c_resume NULL
 #endif
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform:puv3_i2c");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver puv3_i2c_driver = {
 	.probe		= puv3_i2c_probe,
 	.remove		= __devexit_p(puv3_i2c_remove),
@@ -289,6 +292,7 @@ static struct platform_driver puv3_i2c_driver = {
 	}
 };
 
+<<<<<<< HEAD
 static int __init puv3_i2c_init(void)
 {
 	return platform_driver_register(&puv3_i2c_driver);
@@ -304,3 +308,10 @@ module_exit(puv3_i2c_exit);
 
 MODULE_DESCRIPTION("PKUnity v3 I2C driver");
 MODULE_LICENSE("GPL v2");
+=======
+module_platform_driver(puv3_i2c_driver);
+
+MODULE_DESCRIPTION("PKUnity v3 I2C driver");
+MODULE_LICENSE("GPL v2");
+MODULE_ALIAS("platform:puv3_i2c");
+>>>>>>> refs/remotes/origin/cm-10.0

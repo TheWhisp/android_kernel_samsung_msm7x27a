@@ -145,6 +145,10 @@
 #define ULPI_INT_SESS_VALID			(1 << 2)
 #define ULPI_INT_SESS_END			(1 << 3)
 #define ULPI_INT_IDGRD				(1 << 4)
+<<<<<<< HEAD
+=======
+#define ULPI_INT_DP				(1 << 7)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Debug */
 #define ULPI_DEBUG_LINESTATE0			(1 << 0)
@@ -181,12 +185,20 @@
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 struct otg_transceiver *otg_ulpi_create(struct otg_io_access_ops *ops,
+=======
+struct usb_phy *otg_ulpi_create(struct usb_phy_io_ops *ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 					unsigned int flags);
 
 #ifdef CONFIG_USB_ULPI_VIEWPORT
 /* access ops for controllers with a viewport register */
+<<<<<<< HEAD
 extern struct otg_io_access_ops ulpi_viewport_access_ops;
+=======
+extern struct usb_phy_io_ops ulpi_viewport_access_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #endif /* __LINUX_USB_ULPI_H */

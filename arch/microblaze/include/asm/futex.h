@@ -24,7 +24,11 @@
 			.word	1b,4b,2b,4b;				\
 			.previous;"					\
 	: "=&r" (oldval), "=&r" (ret)					\
+<<<<<<< HEAD
 	: "b" (uaddr), "i" (-EFAULT), "r" (oparg)			\
+=======
+	: "r" (uaddr), "i" (-EFAULT), "r" (oparg)			\
+>>>>>>> refs/remotes/origin/cm-10.0
 	);								\
 })
 

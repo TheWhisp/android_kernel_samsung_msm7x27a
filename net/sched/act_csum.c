@@ -500,7 +500,11 @@ fail:
 }
 
 static int tcf_csum(struct sk_buff *skb,
+<<<<<<< HEAD
 		    struct tc_action *a, struct tcf_result *res)
+=======
+		    const struct tc_action *a, struct tcf_result *res)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tcf_csum *p = a->priv;
 	int action;

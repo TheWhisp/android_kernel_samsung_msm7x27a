@@ -18,7 +18,14 @@ enum tcp_conntrack {
 	TCP_CONNTRACK_LISTEN,	/* obsolete */
 #define TCP_CONNTRACK_SYN_SENT2	TCP_CONNTRACK_LISTEN
 	TCP_CONNTRACK_MAX,
+<<<<<<< HEAD
 	TCP_CONNTRACK_IGNORE
+=======
+	TCP_CONNTRACK_IGNORE,
+	TCP_CONNTRACK_RETRANS,
+	TCP_CONNTRACK_UNACK,
+	TCP_CONNTRACK_TIMEOUT_MAX
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Window scaling is advertised by the sender */

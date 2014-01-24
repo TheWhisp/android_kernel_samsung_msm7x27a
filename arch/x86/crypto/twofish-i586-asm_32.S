@@ -26,7 +26,11 @@
 
 #define in_blk    12  /* input byte array address parameter*/
 #define out_blk   8  /* output byte array address parameter*/
+<<<<<<< HEAD
 #define tfm       4  /* Twofish context structure */
+=======
+#define ctx       4  /* Twofish context structure */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define a_offset	0
 #define b_offset	4
@@ -229,8 +233,13 @@ twofish_enc_blk:
 	push    %esi
 	push    %edi
 
+<<<<<<< HEAD
 	mov	tfm + 16(%esp),	%ebp	/* abuse the base pointer: set new base bointer to the crypto tfm */
 	add	$crypto_tfm_ctx_offset, %ebp	/* ctx address */
+=======
+	mov	ctx + 16(%esp),	%ebp	/* abuse the base pointer: set new base
+					 * pointer to the ctx address */
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov     in_blk+16(%esp),%edi	/* input address in edi */
 
 	mov	(%edi),		%eax
@@ -285,8 +294,13 @@ twofish_dec_blk:
 	push    %edi
 
 
+<<<<<<< HEAD
 	mov	tfm + 16(%esp),	%ebp	/* abuse the base pointer: set new base bointer to the crypto tfm */
 	add	$crypto_tfm_ctx_offset, %ebp	/* ctx address */
+=======
+	mov	ctx + 16(%esp),	%ebp	/* abuse the base pointer: set new base
+					 * pointer to the ctx address */
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov     in_blk+16(%esp),%edi	/* input address in edi */
 
 	mov	(%edi),		%eax

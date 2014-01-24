@@ -103,16 +103,22 @@ static int sharpsl_nand_calculate_ecc(struct mtd_info *mtd, const u_char * dat, 
 	return readb(sharpsl->io + ECCCNTR) != 0;
 }
 
+<<<<<<< HEAD
 static const char *part_probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Main initialization routine
  */
 static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
 {
 	struct nand_chip *this;
+<<<<<<< HEAD
 	struct mtd_partition *sharpsl_partition_info;
 	int nr_partitions;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct resource *r;
 	int err = 0;
 	struct sharpsl_nand *sharpsl;
@@ -171,6 +177,10 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
 	this->ecc.mode = NAND_ECC_HW;
 	this->ecc.size = 256;
 	this->ecc.bytes = 3;
+<<<<<<< HEAD
+=======
+	this->ecc.strength = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	this->badblock_pattern = data->badblock_pattern;
 	this->ecc.layout = data->ecc_layout;
 	this->ecc.hwctl = sharpsl_nand_enable_hwecc;
@@ -184,6 +194,7 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
 
 	/* Register the partitions */
 	sharpsl->mtd.name = "sharpsl-nand";
+<<<<<<< HEAD
 	nr_partitions = parse_mtd_partitions(&sharpsl->mtd, part_probes, &sharpsl_partition_info, 0);
 	if (nr_partitions <= 0) {
 		nr_partitions = data->nr_partitions;
@@ -192,6 +203,11 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
 
 	err = mtd_device_register(&sharpsl->mtd, sharpsl_partition_info,
 				  nr_partitions);
+=======
+
+	err = mtd_device_parse_register(&sharpsl->mtd, NULL, NULL,
+					data->partitions, data->nr_partitions);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto err_add;
 
@@ -239,6 +255,7 @@ static struct platform_driver sharpsl_nand_driver = {
 	.remove		= __devexit_p(sharpsl_nand_remove),
 };
 
+<<<<<<< HEAD
 static int __init sharpsl_nand_init(void)
 {
 	return platform_driver_register(&sharpsl_nand_driver);
@@ -250,6 +267,9 @@ static void __exit sharpsl_nand_exit(void)
 	platform_driver_unregister(&sharpsl_nand_driver);
 }
 module_exit(sharpsl_nand_exit);
+=======
+module_platform_driver(sharpsl_nand_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Richard Purdie <rpurdie@rpsys.net>");

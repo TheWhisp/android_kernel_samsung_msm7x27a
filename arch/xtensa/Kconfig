@@ -9,6 +9,10 @@ config XTENSA
 	select HAVE_IDE
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_SHOW
+<<<<<<< HEAD
+=======
+	select GENERIC_CPU_DEVICES
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Xtensa processors are 32-bit RISC machines designed by Tensilica
 	  primarily for embedded systems.  These processors are both
@@ -80,6 +84,7 @@ config XTENSA_UNALIGNED_USER
 
 	  Say Y here to enable unaligned memory access in user space.
 
+<<<<<<< HEAD
 config PREEMPT
 	bool "Preemptible Kernel"
 	help
@@ -92,6 +97,9 @@ config PREEMPT
 
           Say Y here if you are building a kernel for a desktop, embedded
           or real-time system.  Say N if you are unsure.
+=======
+source "kernel/Kconfig.preempt"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config MATH_EMULATION
 	bool "Math emulation"

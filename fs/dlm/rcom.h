@@ -14,7 +14,11 @@
 #ifndef __RCOM_DOT_H__
 #define __RCOM_DOT_H__
 
+<<<<<<< HEAD
 int dlm_rcom_status(struct dlm_ls *ls, int nodeid);
+=======
+int dlm_rcom_status(struct dlm_ls *ls, int nodeid, uint32_t status_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 int dlm_rcom_names(struct dlm_ls *ls, int nodeid, char *last_name,int last_len);
 int dlm_send_rcom_lookup(struct dlm_rsb *r, int dir_nodeid);
 int dlm_send_rcom_lock(struct dlm_rsb *r, struct dlm_lkb *lkb);

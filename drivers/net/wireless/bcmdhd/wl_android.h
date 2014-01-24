@@ -1,14 +1,24 @@
 /*
  * Linux cfg80211 driver - Android related functions
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  *
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
  * following added to such license:
+<<<<<<< HEAD
  *
+=======
+ * 
+>>>>>>> refs/remotes/origin/cm-10.0
  *      As a special exception, the copyright holders of this software give you
  * permission to link this software with independent modules, and to copy and
  * distribute the resulting executable under terms of your choice, provided that
@@ -16,12 +26,20 @@
  * the license of that module.  An independent module is a module which is not
  * derived from this software.  The special exception does not apply to any
  * modifications of the software.
+<<<<<<< HEAD
  *
+=======
+ * 
+>>>>>>> refs/remotes/origin/cm-10.0
  *      Notwithstanding the above, under no circumstances may you combine this
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: wl_android.c,v 1.1.4.1.2.14 2011/02/09 01:40:07 Exp $
+=======
+ * $Id: wl_android.h 307885 2012-01-12 23:30:48Z $
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/module.h>

@@ -384,7 +384,11 @@ static int bfin_kpad_resume(struct platform_device *pdev)
 # define bfin_kpad_resume  NULL
 #endif
 
+<<<<<<< HEAD
 struct platform_driver bfin_kpad_device_driver = {
+=======
+static struct platform_driver bfin_kpad_device_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver		= {
 		.name	= DRV_NAME,
 		.owner	= THIS_MODULE,
@@ -394,6 +398,7 @@ struct platform_driver bfin_kpad_device_driver = {
 	.suspend	= bfin_kpad_suspend,
 	.resume		= bfin_kpad_resume,
 };
+<<<<<<< HEAD
 
 static int __init bfin_kpad_init(void)
 {
@@ -407,6 +412,9 @@ static void __exit bfin_kpad_exit(void)
 
 module_init(bfin_kpad_init);
 module_exit(bfin_kpad_exit);
+=======
+module_platform_driver(bfin_kpad_device_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");

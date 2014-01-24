@@ -30,6 +30,10 @@
  * SOFTWARE.
  *
  */
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <rdma/rdma_cm.h>
 
 #include "rdma_transport.h"

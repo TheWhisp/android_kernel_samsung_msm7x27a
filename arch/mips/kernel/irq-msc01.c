@@ -9,7 +9,10 @@
  *
  * Copyright (C) 2004, 06 Ralf Baechle <ralf@linux-mips.org>
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>

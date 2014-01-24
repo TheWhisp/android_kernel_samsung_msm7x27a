@@ -87,6 +87,7 @@ static inline void fill_flush(struct vmw_escape_video_flush *cmd,
 }
 
 /**
+<<<<<<< HEAD
  * Pin or unpin a buffer in vram.
  *
  * @dev_priv:  Driver private.
@@ -129,6 +130,8 @@ err:
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Send put command to hw.
  *
  * Returns
@@ -139,6 +142,7 @@ static int vmw_overlay_send_put(struct vmw_private *dev_priv,
 				struct drm_vmw_control_stream_arg *arg,
 				bool interruptible)
 {
+<<<<<<< HEAD
 	struct {
 		struct vmw_escape_header escape;
 		struct {
@@ -201,6 +205,82 @@ static int vmw_overlay_send_put(struct vmw_private *dev_priv,
 	fill_flush(&cmds->flush, arg->stream_id);
 
 	vmw_fifo_commit(dev_priv, sizeof(*cmds));
+=======
+	struct vmw_escape_video_flush *flush;
+	size_t fifo_size;
+	bool have_so = dev_priv->sou_priv ? true : false;
+	int i, num_items;
+	SVGAGuestPtr ptr;
+
+	struct {
+		struct vmw_escape_header escape;
+		struct {
+			uint32_t cmdType;
+			uint32_t streamId;
+		} header;
+	} *cmds;
+	struct {
+		uint32_t registerId;
+		uint32_t value;
+	} *items;
+
+	/* defines are a index needs + 1 */
+	if (have_so)
+		num_items = SVGA_VIDEO_DST_SCREEN_ID + 1;
+	else
+		num_items = SVGA_VIDEO_PITCH_3 + 1;
+
+	fifo_size = sizeof(*cmds) + sizeof(*flush) + sizeof(*items) * num_items;
+
+	cmds = vmw_fifo_reserve(dev_priv, fifo_size);
+	/* hardware has hung, can't do anything here */
+	if (!cmds)
+		return -ENOMEM;
+
+	items = (typeof(items))&cmds[1];
+	flush = (struct vmw_escape_video_flush *)&items[num_items];
+
+	/* the size is header + number of items */
+	fill_escape(&cmds->escape, sizeof(*items) * (num_items + 1));
+
+	cmds->header.cmdType = SVGA_ESCAPE_VMWARE_VIDEO_SET_REGS;
+	cmds->header.streamId = arg->stream_id;
+
+	/* the IDs are neatly numbered */
+	for (i = 0; i < num_items; i++)
+		items[i].registerId = i;
+
+	vmw_bo_get_guest_ptr(&buf->base, &ptr);
+	ptr.offset += arg->offset;
+
+	items[SVGA_VIDEO_ENABLED].value     = true;
+	items[SVGA_VIDEO_FLAGS].value       = arg->flags;
+	items[SVGA_VIDEO_DATA_OFFSET].value = ptr.offset;
+	items[SVGA_VIDEO_FORMAT].value      = arg->format;
+	items[SVGA_VIDEO_COLORKEY].value    = arg->color_key;
+	items[SVGA_VIDEO_SIZE].value        = arg->size;
+	items[SVGA_VIDEO_WIDTH].value       = arg->width;
+	items[SVGA_VIDEO_HEIGHT].value      = arg->height;
+	items[SVGA_VIDEO_SRC_X].value       = arg->src.x;
+	items[SVGA_VIDEO_SRC_Y].value       = arg->src.y;
+	items[SVGA_VIDEO_SRC_WIDTH].value   = arg->src.w;
+	items[SVGA_VIDEO_SRC_HEIGHT].value  = arg->src.h;
+	items[SVGA_VIDEO_DST_X].value       = arg->dst.x;
+	items[SVGA_VIDEO_DST_Y].value       = arg->dst.y;
+	items[SVGA_VIDEO_DST_WIDTH].value   = arg->dst.w;
+	items[SVGA_VIDEO_DST_HEIGHT].value  = arg->dst.h;
+	items[SVGA_VIDEO_PITCH_1].value     = arg->pitch[0];
+	items[SVGA_VIDEO_PITCH_2].value     = arg->pitch[1];
+	items[SVGA_VIDEO_PITCH_3].value     = arg->pitch[2];
+	if (have_so) {
+		items[SVGA_VIDEO_DATA_GMRID].value    = ptr.gmrId;
+		items[SVGA_VIDEO_DST_SCREEN_ID].value = SVGA_ID_INVALID;
+	}
+
+	fill_flush(flush, arg->stream_id);
+
+	vmw_fifo_commit(dev_priv, fifo_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -248,6 +328,28 @@ static int vmw_overlay_send_stop(struct vmw_private *dev_priv,
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * Move a buffer to vram or gmr if @pin is set, else unpin the buffer.
+ *
+ * With the introduction of screen objects buffers could now be
+ * used with GMRs instead of being locked to vram.
+ */
+static int vmw_overlay_move_buffer(struct vmw_private *dev_priv,
+				   struct vmw_dma_buffer *buf,
+				   bool pin, bool inter)
+{
+	if (!pin)
+		return vmw_dmabuf_unpin(dev_priv, buf, inter);
+
+	if (!dev_priv->sou_priv)
+		return vmw_dmabuf_to_vram(dev_priv, buf, true, inter);
+
+	return vmw_dmabuf_to_vram_or_gmr(dev_priv, buf, true, inter);
+}
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * Stop or pause a stream.
  *
  * If the stream is paused the no evict flag is removed from the buffer
@@ -279,8 +381,13 @@ static int vmw_overlay_stop(struct vmw_private *dev_priv,
 			return ret;
 
 		/* We just remove the NO_EVICT flag so no -ENOMEM */
+<<<<<<< HEAD
 		ret = vmw_dmabuf_pin_in_vram(dev_priv, stream->buf, false,
 					     interruptible);
+=======
+		ret = vmw_overlay_move_buffer(dev_priv, stream->buf, false,
+					      interruptible);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (interruptible && ret == -ERESTARTSYS)
 			return ret;
 		else
@@ -342,7 +449,11 @@ static int vmw_overlay_update_stream(struct vmw_private *dev_priv,
 	/* We don't start the old stream if we are interrupted.
 	 * Might return -ENOMEM if it can't fit the buffer in vram.
 	 */
+<<<<<<< HEAD
 	ret = vmw_dmabuf_pin_in_vram(dev_priv, buf, true, interruptible);
+=======
+	ret = vmw_overlay_move_buffer(dev_priv, buf, true, interruptible);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		return ret;
 
@@ -351,7 +462,12 @@ static int vmw_overlay_update_stream(struct vmw_private *dev_priv,
 		/* This one needs to happen no matter what. We only remove
 		 * the NO_EVICT flag so this is safe from -ENOMEM.
 		 */
+<<<<<<< HEAD
 		BUG_ON(vmw_dmabuf_pin_in_vram(dev_priv, buf, false, false) != 0);
+=======
+		BUG_ON(vmw_overlay_move_buffer(dev_priv, buf, false, false)
+		       != 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 	}
 
@@ -585,11 +701,18 @@ int vmw_overlay_init(struct vmw_private *dev_priv)
 		return -ENOSYS;
 	}
 
+<<<<<<< HEAD
 	overlay = kmalloc(sizeof(*overlay), GFP_KERNEL);
 	if (!overlay)
 		return -ENOMEM;
 
 	memset(overlay, 0, sizeof(*overlay));
+=======
+	overlay = kzalloc(sizeof(*overlay), GFP_KERNEL);
+	if (!overlay)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_init(&overlay->mutex);
 	for (i = 0; i < VMW_MAX_NUM_STREAMS; i++) {
 		overlay->stream[i].buf = NULL;

@@ -268,7 +268,11 @@ union sil24_cmd_block {
 	struct sil24_atapi_block atapi;
 };
 
+<<<<<<< HEAD
 static struct sil24_cerr_info {
+=======
+static const struct sil24_cerr_info {
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int err_mask, action;
 	const char *desc;
 } sil24_cerr_db[] = {
@@ -417,7 +421,11 @@ static struct ata_port_operations sil24_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int sata_sil24_msi;    /* Disable MSI */
+=======
+static bool sata_sil24_msi;    /* Disable MSI */
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(msi, sata_sil24_msi, bool, S_IRUGO);
 MODULE_PARM_DESC(msi, "Enable MSI (Default: false)");
 
@@ -694,7 +702,11 @@ static int sil24_softreset(struct ata_link *link, unsigned int *class,
 	return 0;
 
  err:
+<<<<<<< HEAD
 	ata_link_printk(link, KERN_ERR, "softreset failed (%s)\n", reason);
+=======
+	ata_link_err(link, "softreset failed (%s)\n", reason);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -EIO;
 }
 
@@ -714,8 +726,13 @@ static int sil24_hardreset(struct ata_link *link, unsigned int *class,
 	 * This happens often after PM DMA CS errata.
 	 */
 	if (pp->do_port_rst) {
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING, "controller in dubious "
 				"state, performing PORT_RST\n");
+=======
+		ata_port_warn(ap,
+			      "controller in dubious state, performing PORT_RST\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		writel(PORT_CS_PORT_RST, port + PORT_CTRL_STAT);
 		ata_msleep(ap, 10);
@@ -773,7 +790,11 @@ static int sil24_hardreset(struct ata_link *link, unsigned int *class,
 		goto retry;
 	}
 
+<<<<<<< HEAD
 	ata_link_printk(link, KERN_ERR, "hardreset failed (%s)\n", reason);
+=======
+	ata_link_err(link, "hardreset failed (%s)\n", reason);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -EIO;
 }
 
@@ -925,7 +946,11 @@ static void sil24_pmp_attach(struct ata_port *ap)
 
 	if (sata_pmp_gscr_vendor(gscr) == 0x11ab &&
 	    sata_pmp_gscr_devid(gscr) == 0x4140) {
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_INFO,
+=======
+		ata_port_info(ap,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"disabling NCQ support due to sil24-mv4140 quirk\n");
 		ap->flags &= ~ATA_FLAG_NCQ;
 	}
@@ -946,8 +971,12 @@ static int sil24_pmp_hardreset(struct ata_link *link, unsigned int *class,
 
 	rc = sil24_init_port(link->ap);
 	if (rc) {
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_ERR,
 				"hardreset failed (port not ready)\n");
+=======
+		ata_link_err(link, "hardreset failed (port not ready)\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return rc;
 	}
 
@@ -1020,7 +1049,11 @@ static void sil24_error_intr(struct ata_port *ap)
 
 	/* deal with command error */
 	if (irq_stat & PORT_IRQ_ERROR) {
+<<<<<<< HEAD
 		struct sil24_cerr_info *ci = NULL;
+=======
+		const struct sil24_cerr_info *ci = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned int err_mask = 0, action = 0;
 		u32 context, cerr;
 		int pmp;
@@ -1141,8 +1174,13 @@ static inline void sil24_host_intr(struct ata_port *ap)
 
 	/* spurious interrupts are expected if PCIX_IRQ_WOC */
 	if (!(ap->flags & SIL24_FLAG_PCIX_IRQ_WOC) && ata_ratelimit())
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_INFO, "spurious interrupt "
 			"(slot_stat 0x%x active_tag %d sactive 0x%x)\n",
+=======
+		ata_port_info(ap,
+			"spurious interrupt (slot_stat 0x%x active_tag %d sactive 0x%x)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			slot_stat, ap->link.active_tag, ap->link.sactive);
 }
 
@@ -1256,8 +1294,13 @@ static void sil24_init_controller(struct ata_host *host)
 						PORT_CS_PORT_RST,
 						PORT_CS_PORT_RST, 10, 100);
 			if (tmp & PORT_CS_PORT_RST)
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, host->dev,
 					   "failed to clear port RST\n");
+=======
+				dev_err(host->dev,
+					"failed to clear port RST\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* configure port */
@@ -1271,7 +1314,10 @@ static void sil24_init_controller(struct ata_host *host)
 static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	extern int __MARKER__sil24_cmd_block_is_sized_wrongly;
+<<<<<<< HEAD
 	static int printed_version;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ata_port_info pi = sil24_port_info[ent->driver_data];
 	const struct ata_port_info *ppi[] = { &pi, NULL };
 	void __iomem * const *iomap;
@@ -1283,8 +1329,12 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (sizeof(union sil24_cmd_block) != PAGE_SIZE)
 		__MARKER__sil24_cmd_block_is_sized_wrongly = 1;
 
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* acquire resources */
 	rc = pcim_enable_device(pdev);
@@ -1302,9 +1352,14 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (pi.flags & SIL24_FLAG_PCIX_IRQ_WOC) {
 		tmp = readl(iomap[SIL24_HOST_BAR] + HOST_CTRL);
 		if (tmp & (HOST_CTRL_TRDY | HOST_CTRL_STOP | HOST_CTRL_DEVSEL))
+<<<<<<< HEAD
 			dev_printk(KERN_INFO, &pdev->dev,
 				   "Applying completion IRQ loss on PCI-X "
 				   "errata fix\n");
+=======
+			dev_info(&pdev->dev,
+				 "Applying completion IRQ loss on PCI-X errata fix\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			pi.flags &= ~SIL24_FLAG_PCIX_IRQ_WOC;
 	}
@@ -1322,22 +1377,36 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		if (rc) {
 			rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 			if (rc) {
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, &pdev->dev,
 					   "64-bit DMA enable failed\n");
+=======
+				dev_err(&pdev->dev,
+					"64-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 				return rc;
 			}
 		}
 	} else {
 		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 				   "32-bit DMA enable failed\n");
+=======
+			dev_err(&pdev->dev, "32-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return rc;
 		}
 		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 				   "32-bit consistent DMA enable failed\n");
+=======
+			dev_err(&pdev->dev,
+				"32-bit consistent DMA enable failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return rc;
 		}
 	}
@@ -1350,7 +1419,11 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	sil24_init_controller(host);
 
 	if (sata_sil24_msi && !pci_enable_msi(pdev)) {
+<<<<<<< HEAD
 		dev_printk(KERN_INFO, &pdev->dev, "Using MSI\n");
+=======
+		dev_info(&pdev->dev, "Using MSI\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		pci_intx(pdev, 0);
 	}
 

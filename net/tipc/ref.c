@@ -110,8 +110,12 @@ int tipc_ref_table_init(u32 requested_size, u32 start)
 
 	/* allocate table & mark all entries as uninitialized */
 
+<<<<<<< HEAD
 	table = __vmalloc(actual_size * sizeof(struct reference),
 			  GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO, PAGE_KERNEL);
+=======
+	table = vzalloc(actual_size * sizeof(struct reference));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (table == NULL)
 		return -ENOMEM;
 

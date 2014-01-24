@@ -157,6 +157,11 @@ static __devexit int tps65911_comparator_remove(struct platform_device *pdev)
 	struct tps65910 *tps65910;
 
 	tps65910 = dev_get_drvdata(pdev->dev.parent);
+<<<<<<< HEAD
+=======
+	device_remove_file(&pdev->dev, &dev_attr_comp2_threshold);
+	device_remove_file(&pdev->dev, &dev_attr_comp1_threshold);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

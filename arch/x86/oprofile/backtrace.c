@@ -12,10 +12,16 @@
 #include <linux/sched.h>
 #include <linux/mm.h>
 #include <linux/compat.h>
+<<<<<<< HEAD
 #include <linux/highmem.h>
 
 #include <asm/ptrace.h>
 #include <asm/uaccess.h>
+=======
+#include <linux/uaccess.h>
+
+#include <asm/ptrace.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/stacktrace.h>
 
 static int backtrace_stack(void *data, char *name)
@@ -38,6 +44,7 @@ static struct stacktrace_ops backtrace_ops = {
 	.walk_stack	= print_context_stack,
 };
 
+<<<<<<< HEAD
 /* from arch/x86/kernel/cpu/perf_event.c: */
 
 /*
@@ -74,6 +81,8 @@ copy_from_user_nmi(void *to, const void __user *from, unsigned long n)
 	return len;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_COMPAT
 static struct stack_frame_ia32 *
 dump_user_backtrace_32(struct stack_frame_ia32 *head)
@@ -104,7 +113,11 @@ x86_backtrace_32(struct pt_regs * const regs, unsigned int depth)
 {
 	struct stack_frame_ia32 *head;
 
+<<<<<<< HEAD
 	/* User process is 32-bit */
+=======
+	/* User process is IA32 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!current || !test_thread_flag(TIF_IA32))
 		return 0;
 

@@ -41,6 +41,10 @@
 #include <linux/io.h>
 #include <linux/fs.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/core.h>
 #include <sound/initval.h>

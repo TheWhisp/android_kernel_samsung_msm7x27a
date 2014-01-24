@@ -319,10 +319,18 @@ static unsigned long hugetlb_get_unmapped_area_topdown(struct file *file,
 {
 	struct hstate *h = hstate_file(file);
 	struct mm_struct *mm = current->mm;
+<<<<<<< HEAD
 	struct vm_area_struct *vma, *prev_vma;
 	unsigned long base = mm->mmap_base, addr = addr0;
 	unsigned long largest_hole = mm->cached_hole_size;
 	int first_time = 1;
+=======
+	struct vm_area_struct *vma;
+	unsigned long base = mm->mmap_base;
+	unsigned long addr = addr0;
+	unsigned long largest_hole = mm->cached_hole_size;
+	unsigned long start_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* don't allow allocations above current base */
 	if (mm->free_area_cache > base)
@@ -333,6 +341,11 @@ static unsigned long hugetlb_get_unmapped_area_topdown(struct file *file,
 		mm->free_area_cache  = base;
 	}
 try_again:
+<<<<<<< HEAD
+=======
+	start_addr = mm->free_area_cache;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* make sure it can fit in the remaining address space */
 	if (mm->free_area_cache < len)
 		goto fail;
@@ -344,6 +357,7 @@ try_again:
 		 * Lookup failure means no vma is above this address,
 		 * i.e. return with success:
 		 */
+<<<<<<< HEAD
 		if (!(vma = find_vma_prev(mm, addr, &prev_vma)))
 			return addr;
 
@@ -362,6 +376,20 @@ try_again:
 				mm->free_area_cache = vma->vm_start;
 				mm->cached_hole_size = largest_hole;
 			}
+=======
+		vma = find_vma(mm, addr);
+		if (!vma)
+			return addr;
+
+		if (addr + len <= vma->vm_start) {
+			/* remember the address as a hint for next time */
+		        mm->cached_hole_size = largest_hole;
+		        return (mm->free_area_cache = addr);
+		} else if (mm->free_area_cache == vma->vm_end) {
+			/* pull free_area_cache down to the first hole */
+			mm->free_area_cache = vma->vm_start;
+			mm->cached_hole_size = largest_hole;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* remember the largest hole we saw so far */
@@ -377,10 +405,16 @@ fail:
 	 * if hint left us with no space for the requested
 	 * mapping then try again:
 	 */
+<<<<<<< HEAD
 	if (first_time) {
 		mm->free_area_cache = base;
 		largest_hole = 0;
 		first_time = 0;
+=======
+	if (start_addr != base) {
+		mm->free_area_cache = base;
+		largest_hole = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto try_again;
 	}
 	/*

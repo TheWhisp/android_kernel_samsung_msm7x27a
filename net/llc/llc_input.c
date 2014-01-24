@@ -13,6 +13,10 @@
  */
 #include <linux/netdevice.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/net_namespace.h>
 #include <net/llc.h>
 #include <net/llc_pdu.h>

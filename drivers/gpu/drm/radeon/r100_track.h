@@ -92,6 +92,7 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 		       struct radeon_cs_packet *pkt,
 		       unsigned idx, unsigned reg);
 
+<<<<<<< HEAD
 
 
 static inline int r100_reloc_pitch_offset(struct radeon_cs_parser *p,
@@ -195,3 +196,12 @@ static inline int r100_packet3_load_vbpntr(struct radeon_cs_parser *p,
 	}
 	return r;
 }
+=======
+int r100_reloc_pitch_offset(struct radeon_cs_parser *p,
+			    struct radeon_cs_packet *pkt,
+			    unsigned idx,
+			    unsigned reg);
+int r100_packet3_load_vbpntr(struct radeon_cs_parser *p,
+			     struct radeon_cs_packet *pkt,
+			     int idx);
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -8,14 +8,18 @@
 
 /* inode in-kernel data */
 
+<<<<<<< HEAD
 #define SHMEM_NR_DIRECT 16
 
 #define SHMEM_SYMLINK_INLINE_LEN (SHMEM_NR_DIRECT * sizeof(swp_entry_t))
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct shmem_inode_info {
 	spinlock_t		lock;
 	unsigned long		flags;
 	unsigned long		alloced;	/* data pages alloced to file */
+<<<<<<< HEAD
 	unsigned long		swapped;	/* subtotal assigned to swap */
 	unsigned long		next_index;	/* highest alloced index + 1 */
 	struct shared_policy	policy;		/* NUMA memory alloc policy */
@@ -24,6 +28,13 @@ struct shmem_inode_info {
 		swp_entry_t	i_direct[SHMEM_NR_DIRECT]; /* first blocks */
 		char		inline_symlink[SHMEM_SYMLINK_INLINE_LEN];
 	};
+=======
+	union {
+		unsigned long	swapped;	/* subtotal assigned to swap */
+		char		*symlink;	/* unswappable short symlink */
+	};
+	struct shared_policy	policy;		/* NUMA memory alloc policy */
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head	swaplist;	/* chain of maybes on swap */
 	struct list_head	xattr_list;	/* list of shmem_xattr */
 	struct inode		vfs_inode;
@@ -37,7 +48,11 @@ struct shmem_sb_info {
 	spinlock_t stat_lock;	    /* Serialize shmem_sb_info changes */
 	uid_t uid;		    /* Mount uid for root directory */
 	gid_t gid;		    /* Mount gid for root directory */
+<<<<<<< HEAD
 	mode_t mode;		    /* Mount mode for root directory */
+=======
+	umode_t mode;		    /* Mount mode for root directory */
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mempolicy *mpol;     /* default memory policy for mappings */
 };
 
@@ -49,18 +64,29 @@ static inline struct shmem_inode_info *SHMEM_I(struct inode *inode)
 /*
  * Functions in mm/shmem.c called directly from elsewhere:
  */
+<<<<<<< HEAD
 extern int init_tmpfs(void);
+=======
+extern int shmem_init(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int shmem_fill_super(struct super_block *sb, void *data, int silent);
 extern struct file *shmem_file_setup(const char *name,
 					loff_t size, unsigned long flags);
 extern int shmem_zero_setup(struct vm_area_struct *);
 extern int shmem_lock(struct file *file, int lock, struct user_struct *user);
+<<<<<<< HEAD
+=======
+extern void shmem_unlock_mapping(struct address_space *mapping);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
 					pgoff_t index, gfp_t gfp_mask);
 extern void shmem_truncate_range(struct inode *inode, loff_t start, loff_t end);
 extern int shmem_unuse(swp_entry_t entry, struct page *page);
+<<<<<<< HEAD
 extern void mem_cgroup_get_shmem_target(struct inode *inode, pgoff_t pgoff,
 					struct page **pagep, swp_entry_t *ent);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline struct page *shmem_read_mapping_page(
 				struct address_space *mapping, pgoff_t index)

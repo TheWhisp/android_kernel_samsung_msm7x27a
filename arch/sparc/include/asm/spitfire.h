@@ -43,6 +43,11 @@
 #define SUN4V_CHIP_NIAGARA1	0x01
 #define SUN4V_CHIP_NIAGARA2	0x02
 #define SUN4V_CHIP_NIAGARA3	0x03
+<<<<<<< HEAD
+=======
+#define SUN4V_CHIP_NIAGARA4	0x04
+#define SUN4V_CHIP_NIAGARA5	0x05
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SUN4V_CHIP_UNKNOWN	0xff
 
 #ifndef __ASSEMBLY__

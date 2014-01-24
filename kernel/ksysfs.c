@@ -11,10 +11,18 @@
 #include <linux/kobject.h>
 #include <linux/string.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/kexec.h>
 #include <linux/profile.h>
+=======
+#include <linux/export.h>
+#include <linux/init.h>
+#include <linux/kexec.h>
+#include <linux/profile.h>
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/capability.h>
 

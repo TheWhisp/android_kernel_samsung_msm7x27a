@@ -90,7 +90,11 @@ static int dtt200u_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
 
 static int dtt200u_frontend_attach(struct dvb_usb_adapter *adap)
 {
+<<<<<<< HEAD
 	adap->fe = dtt200u_fe_attach(adap->dev);
+=======
+	adap->fe_adap[0].fe = dtt200u_fe_attach(adap->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -140,6 +144,11 @@ static struct dvb_usb_device_properties dtt200u_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.caps = DVB_USB_ADAP_HAS_PID_FILTER | DVB_USB_ADAP_NEED_PID_FILTERING,
 			.pid_filter_count = 15,
 
@@ -157,6 +166,10 @@ static struct dvb_usb_device_properties dtt200u_properties = {
 			}
 		}
 	},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 	.power_ctrl      = dtt200u_power_ctrl,
@@ -187,6 +200,11 @@ static struct dvb_usb_device_properties wt220u_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.caps = DVB_USB_ADAP_HAS_PID_FILTER | DVB_USB_ADAP_NEED_PID_FILTERING,
 			.pid_filter_count = 15,
 
@@ -204,6 +222,10 @@ static struct dvb_usb_device_properties wt220u_properties = {
 			}
 		}
 	},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 	.power_ctrl      = dtt200u_power_ctrl,
@@ -234,6 +256,11 @@ static struct dvb_usb_device_properties wt220u_fc_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.caps = DVB_USB_ADAP_HAS_PID_FILTER | DVB_USB_ADAP_NEED_PID_FILTERING,
 			.pid_filter_count = 15,
 
@@ -251,6 +278,10 @@ static struct dvb_usb_device_properties wt220u_fc_properties = {
 			}
 		}
 	},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 	.power_ctrl      = dtt200u_power_ctrl,
@@ -281,6 +312,11 @@ static struct dvb_usb_device_properties wt220u_zl0353_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.caps = DVB_USB_ADAP_HAS_PID_FILTER | DVB_USB_ADAP_NEED_PID_FILTERING,
 			.pid_filter_count = 15,
 
@@ -298,6 +334,10 @@ static struct dvb_usb_device_properties wt220u_zl0353_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 	.power_ctrl      = dtt200u_power_ctrl,
@@ -348,6 +388,7 @@ static struct usb_driver dtt200u_usb_driver = {
 	.id_table	= dtt200u_usb_table,
 };
 
+<<<<<<< HEAD
 /* module stuff */
 static int __init dtt200u_usb_module_init(void)
 {
@@ -368,6 +409,9 @@ static void __exit dtt200u_usb_module_exit(void)
 
 module_init(dtt200u_usb_module_init);
 module_exit(dtt200u_usb_module_exit);
+=======
+module_usb_driver(dtt200u_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Patrick Boettcher <patrick.boettcher@desy.de>");
 MODULE_DESCRIPTION("Driver for the WideView/Yakumo/Hama/Typhoon/Club3D/Miglia DVB-T USB2.0 devices");

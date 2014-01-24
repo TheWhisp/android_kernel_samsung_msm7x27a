@@ -48,6 +48,10 @@ struct adb_dev {
 	atomic_t read_excl;
 	atomic_t write_excl;
 	atomic_t open_excl;
+<<<<<<< HEAD
+=======
+	struct delayed_work adb_release_w;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct list_head tx_idle;
 
@@ -207,7 +211,11 @@ static void adb_complete_out(struct usb_ep *ep, struct usb_request *req)
 	struct adb_dev *dev = _adb_dev;
 
 	dev->rx_done = 1;
+<<<<<<< HEAD
 	if (req->status != 0)
+=======
+	if (req->status != 0 && req->status != -ECONNRESET)
+>>>>>>> refs/remotes/origin/cm-10.0
 		atomic_set(&dev->error, 1);
 
 	wake_up(&dev->read_wq);
@@ -316,6 +324,10 @@ requeue_req:
 	/* wait for a request to complete */
 	ret = wait_event_interruptible(dev->read_wq, dev->rx_done);
 	if (ret < 0) {
+<<<<<<< HEAD
+=======
+		if (ret != -ERESTARTSYS)
+>>>>>>> refs/remotes/origin/cm-10.0
 		atomic_set(&dev->error, 1);
 		r = ret;
 		usb_ep_dequeue(dev->ep_out, req);
@@ -408,6 +420,14 @@ static ssize_t adb_write(struct file *fp, const char __user *buf,
 	return r;
 }
 
+<<<<<<< HEAD
+=======
+static void adb_release_work(struct work_struct *w)
+{
+	adb_closed_callback();
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int adb_open(struct inode *ip, struct file *fp)
 {
 	pr_info("adb_open\n");
@@ -422,7 +442,12 @@ static int adb_open(struct inode *ip, struct file *fp)
 	/* clear the error latch */
 	atomic_set(&_adb_dev->error, 0);
 
+<<<<<<< HEAD
 	adb_ready_callback();
+=======
+	if (!cancel_delayed_work_sync(&_adb_dev->adb_release_w))
+		adb_ready_callback();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -431,14 +456,31 @@ static int adb_release(struct inode *ip, struct file *fp)
 {
 	pr_info("adb_release\n");
 
+<<<<<<< HEAD
 	adb_closed_callback();
+=======
+	/*
+	 * When USB cable is plugged out, adb reader is unblocked and
+	 * -EIO is returned to user space. adb daemon reopen the port
+	 * which would disable and enable USB configuration unnecessarily.
+	 *
+	 * Delay notifying the adb close event to android by 1 sec. If
+	 * ADB daemon opens the port with in 1 sec, USB configuration
+	 * re-enable does not happen.
+	 */
+	schedule_delayed_work(&_adb_dev->adb_release_w, msecs_to_jiffies(1000));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	adb_unlock(&_adb_dev->open_excl);
 	return 0;
 }
 
 /* file operations for ADB device /dev/android_adb */
+<<<<<<< HEAD
 static struct file_operations adb_fops = {
+=======
+static const struct file_operations adb_fops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.owner = THIS_MODULE,
 	.read = adb_read,
 	.write = adb_write,
@@ -517,6 +559,7 @@ static int adb_function_set_alt(struct usb_function *f,
 	int ret;
 
 	DBG(cdev, "adb_function_set_alt intf: %d alt: %d\n", intf, alt);
+<<<<<<< HEAD
 	ret = usb_ep_enable(dev->ep_in,
 			ep_choose(cdev->gadget,
 				&adb_highspeed_in_desc,
@@ -528,6 +571,35 @@ static int adb_function_set_alt(struct usb_function *f,
 				&adb_highspeed_out_desc,
 				&adb_fullspeed_out_desc));
 	if (ret) {
+=======
+
+	ret = config_ep_by_speed(cdev->gadget, f, dev->ep_in);
+	if (ret) {
+		dev->ep_in->desc = NULL;
+		ERROR(cdev, "config_ep_by_speed failes for ep %s, result %d\n",
+				dev->ep_in->name, ret);
+		return ret;
+	}
+	ret = usb_ep_enable(dev->ep_in);
+	if (ret) {
+		ERROR(cdev, "failed to enable ep %s, result %d\n",
+			dev->ep_in->name, ret);
+		return ret;
+	}
+
+	ret = config_ep_by_speed(cdev->gadget, f, dev->ep_out);
+	if (ret) {
+		dev->ep_out->desc = NULL;
+		ERROR(cdev, "config_ep_by_speed failes for ep %s, result %d\n",
+			dev->ep_out->name, ret);
+		usb_ep_disable(dev->ep_in);
+		return ret;
+	}
+	ret = usb_ep_enable(dev->ep_out);
+	if (ret) {
+		ERROR(cdev, "failed to enable ep %s, result %d\n",
+				dev->ep_out->name, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		usb_ep_disable(dev->ep_in);
 		return ret;
 	}
@@ -591,6 +663,10 @@ static int adb_setup(void)
 	atomic_set(&dev->read_excl, 0);
 	atomic_set(&dev->write_excl, 0);
 
+<<<<<<< HEAD
+=======
+	INIT_DELAYED_WORK(&dev->adb_release_w, adb_release_work);
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_LIST_HEAD(&dev->tx_idle);
 
 	_adb_dev = dev;

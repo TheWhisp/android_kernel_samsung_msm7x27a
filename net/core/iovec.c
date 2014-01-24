@@ -35,7 +35,11 @@
  *	in any case.
  */
 
+<<<<<<< HEAD
 int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr *address, int mode)
+=======
+int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr_storage *address, int mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int size, ct, err;
 

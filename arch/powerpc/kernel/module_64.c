@@ -243,6 +243,7 @@ int module_frob_arch_sections(Elf64_Ehdr *hdr,
 	return 0;
 }
 
+<<<<<<< HEAD
 int apply_relocate(Elf64_Shdr *sechdrs,
 		   const char *strtab,
 		   unsigned int symindex,
@@ -253,6 +254,8 @@ int apply_relocate(Elf64_Shdr *sechdrs,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* r2 is the TOC pointer: it actually points 0x8000 into the TOC (this
    gives the value maximum span in an instruction which uses a signed
    offset) */

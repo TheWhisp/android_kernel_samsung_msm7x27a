@@ -1198,7 +1198,12 @@ ebt_register_table(struct net *net, const struct ebt_table *input_table)
 
 	if (table->check && table->check(newinfo, table->valid_hooks)) {
 		BUGPRINT("The table doesn't like its own initial data, lol\n");
+<<<<<<< HEAD
 		return ERR_PTR(-EINVAL);
+=======
+		ret = -EINVAL;
+		goto free_chainstack;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	table->private = newinfo;
@@ -1334,7 +1339,16 @@ static inline int ebt_make_matchname(const struct ebt_entry_match *m,
     const char *base, char __user *ubase)
 {
 	char __user *hlp = ubase + ((char *)m - base);
+<<<<<<< HEAD
 	if (copy_to_user(hlp, m->u.match->name, EBT_FUNCTION_MAXNAMELEN))
+=======
+	char name[EBT_FUNCTION_MAXNAMELEN] = {};
+
+	/* ebtables expects 32 bytes long names but xt_match names are 29 bytes
+	   long. Copy 29 bytes and fill remaining bytes with zeroes. */
+	strncpy(name, m->u.match->name, sizeof(name));
+	if (copy_to_user(hlp, name, EBT_FUNCTION_MAXNAMELEN))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EFAULT;
 	return 0;
 }
@@ -1343,7 +1357,14 @@ static inline int ebt_make_watchername(const struct ebt_entry_watcher *w,
     const char *base, char __user *ubase)
 {
 	char __user *hlp = ubase + ((char *)w - base);
+<<<<<<< HEAD
 	if (copy_to_user(hlp , w->u.watcher->name, EBT_FUNCTION_MAXNAMELEN))
+=======
+	char name[EBT_FUNCTION_MAXNAMELEN] = {};
+
+	strncpy(name, w->u.watcher->name, sizeof(name));
+	if (copy_to_user(hlp , name, EBT_FUNCTION_MAXNAMELEN))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EFAULT;
 	return 0;
 }
@@ -1354,6 +1375,10 @@ ebt_make_names(struct ebt_entry *e, const char *base, char __user *ubase)
 	int ret;
 	char __user *hlp;
 	const struct ebt_entry_target *t;
+<<<<<<< HEAD
+=======
+	char name[EBT_FUNCTION_MAXNAMELEN] = {};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (e->bitmask == 0)
 		return 0;
@@ -1367,7 +1392,12 @@ ebt_make_names(struct ebt_entry *e, const char *base, char __user *ubase)
 	ret = EBT_WATCHER_ITERATE(e, ebt_make_watchername, base, ubase);
 	if (ret != 0)
 		return ret;
+<<<<<<< HEAD
 	if (copy_to_user(hlp, t->u.target->name, EBT_FUNCTION_MAXNAMELEN))
+=======
+	strncpy(name, t->u.target->name, sizeof(name));
+	if (copy_to_user(hlp, name, EBT_FUNCTION_MAXNAMELEN))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EFAULT;
 	return 0;
 }
@@ -1892,10 +1922,14 @@ static int compat_mtw_from_user(struct compat_ebt_entry_mwt *mwt,
 
 	switch (compat_mwt) {
 	case EBT_COMPAT_MATCH:
+<<<<<<< HEAD
 		match = try_then_request_module(xt_find_match(NFPROTO_BRIDGE,
 						name, 0), "ebt_%s", name);
 		if (match == NULL)
 			return -ENOENT;
+=======
+		match = xt_request_find_match(NFPROTO_BRIDGE, name, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(match))
 			return PTR_ERR(match);
 
@@ -1914,10 +1948,14 @@ static int compat_mtw_from_user(struct compat_ebt_entry_mwt *mwt,
 		break;
 	case EBT_COMPAT_WATCHER: /* fallthrough */
 	case EBT_COMPAT_TARGET:
+<<<<<<< HEAD
 		wt = try_then_request_module(xt_find_target(NFPROTO_BRIDGE,
 						name, 0), "ebt_%s", name);
 		if (wt == NULL)
 			return -ENOENT;
+=======
+		wt = xt_request_find_target(NFPROTO_BRIDGE, name, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(wt))
 			return PTR_ERR(wt);
 		off = xt_compat_target_offset(wt);

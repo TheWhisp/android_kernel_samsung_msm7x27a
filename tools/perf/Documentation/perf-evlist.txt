@@ -18,7 +18,11 @@ OPTIONS
 -------
 -i::
 --input=::
+<<<<<<< HEAD
         Input file name. (default: perf.data)
+=======
+        Input file name. (default: perf.data unless stdin is a fifo)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 SEE ALSO
 --------

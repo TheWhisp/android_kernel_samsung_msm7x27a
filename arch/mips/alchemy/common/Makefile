@@ -6,6 +6,7 @@
 #
 
 obj-y += prom.o time.o clocks.o platform.o power.o setup.o \
+<<<<<<< HEAD
 	sleeper.o dma.o dbdma.o
 
 obj-$(CONFIG_ALCHEMY_GPIOINT_AU1000) += irq.o
@@ -18,3 +19,11 @@ ifeq ($(CONFIG_ALCHEMY_GPIO_INDIRECT),)
 endif
 
 obj-$(CONFIG_PCI)		+= pci.o
+=======
+	sleeper.o dma.o dbdma.o vss.o irq.o
+
+# optional gpiolib support
+ifeq ($(CONFIG_ALCHEMY_GPIO_INDIRECT),)
+ obj-$(CONFIG_GPIOLIB) += gpiolib.o
+endif
+>>>>>>> refs/remotes/origin/cm-10.0

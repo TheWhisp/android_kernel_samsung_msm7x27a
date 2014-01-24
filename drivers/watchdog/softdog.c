@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  *	SoftDog	0.07:	A Software Watchdog Device
+=======
+ *	SoftDog:	A Software Watchdog Device
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *	(c) Copyright 1996 Alan Cox <alan@lxorguk.ukuu.org.uk>,
  *							All Rights Reserved.
@@ -36,17 +40,26 @@
  *	Added Matt Domsch's nowayout module option.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
 #include <linux/timer.h>
 #include <linux/miscdevice.h>
 #include <linux/watchdog.h>
+<<<<<<< HEAD
 #include <linux/fs.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/notifier.h>
 #include <linux/reboot.h>
 #include <linux/init.h>
 #include <linux/jiffies.h>
+<<<<<<< HEAD
 #include <linux/uaccess.h>
 #include <linux/kernel.h>
 
@@ -55,16 +68,29 @@
 #define TIMER_MARGIN	60		/* Default is 60 seconds */
 static int soft_margin = TIMER_MARGIN;	/* in seconds */
 module_param(soft_margin, int, 0);
+=======
+#include <linux/kernel.h>
+
+#define TIMER_MARGIN	60		/* Default is 60 seconds */
+static unsigned int soft_margin = TIMER_MARGIN;	/* in seconds */
+module_param(soft_margin, uint, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(soft_margin,
 	"Watchdog soft_margin in seconds. (0 < soft_margin < 65536, default="
 					__MODULE_STRING(TIMER_MARGIN) ")");
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
+<<<<<<< HEAD
 #ifdef ONLY_TESTING
 static int soft_noboot = 1;
 #else
@@ -75,6 +101,12 @@ module_param(soft_noboot, int, 0);
 MODULE_PARM_DESC(soft_noboot,
 	"Softdog action, set to 1 to ignore reboots, 0 to reboot "
 					"(default depends on ONLY_TESTING)");
+=======
+static int soft_noboot = 0;
+module_param(soft_noboot, int, 0);
+MODULE_PARM_DESC(soft_noboot,
+	"Softdog action, set to 1 to ignore reboots, 0 to reboot (default=0)");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int soft_panic;
 module_param(soft_panic, int, 0);
@@ -89,9 +121,12 @@ static void watchdog_fire(unsigned long);
 
 static struct timer_list watchdog_ticktock =
 		TIMER_INITIALIZER(watchdog_fire, 0, 0);
+<<<<<<< HEAD
 static unsigned long driver_open, orphan_timer;
 static char expect_close;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	If the timer expires..
@@ -99,6 +134,7 @@ static char expect_close;
 
 static void watchdog_fire(unsigned long data)
 {
+<<<<<<< HEAD
 	if (test_and_clear_bit(0, &orphan_timer))
 		module_put(THIS_MODULE);
 
@@ -111,6 +147,17 @@ static void watchdog_fire(unsigned long data)
 		printk(KERN_CRIT PFX "Initiating system reboot.\n");
 		emergency_restart();
 		printk(KERN_CRIT PFX "Reboot didn't ?????\n");
+=======
+	if (soft_noboot)
+		pr_crit("Triggered - Reboot ignored\n");
+	else if (soft_panic) {
+		pr_crit("Initiating panic\n");
+		panic("Software Watchdog Timer expired");
+	} else {
+		pr_crit("Initiating system reboot\n");
+		emergency_restart();
+		pr_crit("Reboot didn't ?????\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -118,6 +165,7 @@ static void watchdog_fire(unsigned long data)
  *	Softdog operations
  */
 
+<<<<<<< HEAD
 static int softdog_keepalive(void)
 {
 	mod_timer(&watchdog_ticktock, jiffies+(soft_margin*HZ));
@@ -125,11 +173,21 @@ static int softdog_keepalive(void)
 }
 
 static int softdog_stop(void)
+=======
+static int softdog_ping(struct watchdog_device *w)
+{
+	mod_timer(&watchdog_ticktock, jiffies+(w->timeout*HZ));
+	return 0;
+}
+
+static int softdog_stop(struct watchdog_device *w)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	del_timer(&watchdog_ticktock);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int softdog_set_heartbeat(int t)
 {
 	if ((t < 0x0001) || (t > 0xFFFF))
@@ -239,6 +297,14 @@ static long softdog_ioctl(struct file *file, unsigned int cmd,
 	}
 }
 
+=======
+static int softdog_set_timeout(struct watchdog_device *w, unsigned int t)
+{
+	w->timeout = t;
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *	Notifier for system down
  */
@@ -248,7 +314,11 @@ static int softdog_notify_sys(struct notifier_block *this, unsigned long code,
 {
 	if (code == SYS_DOWN || code == SYS_HALT)
 		/* Turn the WDT off */
+<<<<<<< HEAD
 		softdog_stop();
+=======
+		softdog_stop(NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return NOTIFY_DONE;
 }
 
@@ -256,6 +326,7 @@ static int softdog_notify_sys(struct notifier_block *this, unsigned long code,
  *	Kernel Interfaces
  */
 
+<<<<<<< HEAD
 static const struct file_operations softdog_fops = {
 	.owner		= THIS_MODULE,
 	.llseek		= no_llseek,
@@ -278,6 +349,31 @@ static struct notifier_block softdog_notifier = {
 static char banner[] __initdata = KERN_INFO "Software Watchdog Timer: 0.07 "
 	"initialized. soft_noboot=%d soft_margin=%d sec soft_panic=%d "
 	"(nowayout= %d)\n";
+=======
+static struct notifier_block softdog_notifier = {
+	.notifier_call	= softdog_notify_sys,
+};
+
+static struct watchdog_info softdog_info = {
+	.identity = "Software Watchdog",
+	.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
+};
+
+static struct watchdog_ops softdog_ops = {
+	.owner = THIS_MODULE,
+	.start = softdog_ping,
+	.stop = softdog_stop,
+	.ping = softdog_ping,
+	.set_timeout = softdog_set_timeout,
+};
+
+static struct watchdog_device softdog_dev = {
+	.info = &softdog_info,
+	.ops = &softdog_ops,
+	.min_timeout = 1,
+	.max_timeout = 0xFFFF
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init watchdog_init(void)
 {
@@ -285,6 +381,7 @@ static int __init watchdog_init(void)
 
 	/* Check that the soft_margin value is within it's range;
 	   if not reset to the default */
+<<<<<<< HEAD
 	if (softdog_set_heartbeat(soft_margin)) {
 		softdog_set_heartbeat(TIMER_MARGIN);
 		printk(KERN_INFO PFX
@@ -304,18 +401,46 @@ static int __init watchdog_init(void)
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 						WATCHDOG_MINOR, ret);
+=======
+	if (soft_margin < 1 || soft_margin > 65535) {
+		pr_info("soft_margin must be 0 < soft_margin < 65536, using %d\n",
+			TIMER_MARGIN);
+		return -EINVAL;
+	}
+	softdog_dev.timeout = soft_margin;
+
+	watchdog_set_nowayout(&softdog_dev, nowayout);
+
+	ret = register_reboot_notifier(&softdog_notifier);
+	if (ret) {
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+		return ret;
+	}
+
+	ret = watchdog_register_device(&softdog_dev);
+	if (ret) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		unregister_reboot_notifier(&softdog_notifier);
 		return ret;
 	}
 
+<<<<<<< HEAD
 	printk(banner, soft_noboot, soft_margin, soft_panic, nowayout);
+=======
+	pr_info("Software Watchdog Timer: 0.08 initialized. soft_noboot=%d soft_margin=%d sec soft_panic=%d (nowayout=%d)\n",
+		soft_noboot, soft_margin, soft_panic, nowayout);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
 static void __exit watchdog_exit(void)
 {
+<<<<<<< HEAD
 	misc_deregister(&softdog_miscdev);
+=======
+	watchdog_unregister_device(&softdog_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unregister_reboot_notifier(&softdog_notifier);
 }
 

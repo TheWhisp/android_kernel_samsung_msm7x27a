@@ -44,7 +44,11 @@ SECTIONS {
 	__fdt_blob : AT(ADDR(__fdt_blob) - LOAD_OFFSET) {
 		_fdt_start = . ;		/* place for fdt blob */
 		*(__fdt_blob) ;			/* Any link-placed DTB */
+<<<<<<< HEAD
 	        . = _fdt_start + 0x4000;	/* Pad up to 16kbyte */
+=======
+	        . = _fdt_start + 0x8000;	/* Pad up to 32kbyte */
+>>>>>>> refs/remotes/origin/cm-10.0
 		_fdt_end = . ;
 	}
 

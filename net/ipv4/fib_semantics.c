@@ -14,7 +14,10 @@
  */
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bitops.h>
 #include <linux/types.h>
 #include <linux/kernel.h>
@@ -152,13 +155,22 @@ static void free_fib_info_rcu(struct rcu_head *head)
 	} endfor_nexthops(fi);
 
 	release_net(fi->fib_net);
+<<<<<<< HEAD
+=======
+	if (fi->fib_metrics != (u32 *) dst_default_metrics)
+		kfree(fi->fib_metrics);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(fi);
 }
 
 void free_fib_info(struct fib_info *fi)
 {
 	if (fi->fib_dead == 0) {
+<<<<<<< HEAD
 		pr_warning("Freeing alive fib_info %p\n", fi);
+=======
+		pr_warn("Freeing alive fib_info %p\n", fi);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	fib_info_cnt--;

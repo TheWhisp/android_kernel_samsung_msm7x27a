@@ -34,7 +34,10 @@
 #include <linux/if_arp.h>
 #include <linux/skbuff.h>
 #include <net/sock.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <linux/fcntl.h>
 #include <linux/termios.h>

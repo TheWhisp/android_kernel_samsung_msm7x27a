@@ -52,7 +52,10 @@
 #include <linux/of_platform.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/mpc8xx.h>
 #include <asm/8xx_immap.h>
@@ -1304,6 +1307,7 @@ static struct platform_driver m8xx_pcmcia_driver = {
 	.remove = m8xx_remove,
 };
 
+<<<<<<< HEAD
 static int __init m8xx_init(void)
 {
 	return platform_driver_register(&m8xx_pcmcia_driver);
@@ -1316,3 +1320,6 @@ static void __exit m8xx_exit(void)
 
 module_init(m8xx_init);
 module_exit(m8xx_exit);
+=======
+module_platform_driver(m8xx_pcmcia_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

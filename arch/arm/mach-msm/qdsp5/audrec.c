@@ -2,7 +2,11 @@
  *
  * common code to deal with the AUDREC dsp task (audio recording)
  *
+<<<<<<< HEAD
  * Copyright (c) 2009, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009,2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Based on the audpp layer in arch/arm/mach-msm/qdsp5/audpp.c
  *
@@ -34,6 +38,10 @@
 
 #include <mach/qdsp5/qdsp5audreccmdi.h>
 #include <mach/qdsp5/qdsp5audrecmsg.h>
+<<<<<<< HEAD
+=======
+#include <mach/qdsp5/qdsp5audpreproc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "audmgr.h"
 #include <mach/debug_mm.h>

@@ -20,7 +20,10 @@
 
 #include <linux/interrupt.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ptrace.h>
 #include <linux/wait.h>
 #include <linux/mm.h>

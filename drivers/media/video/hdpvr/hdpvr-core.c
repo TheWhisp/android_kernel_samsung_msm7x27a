@@ -17,7 +17,11 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/usb.h>
 #include <linux/mutex.h>
 #include <linux/i2c.h>
@@ -49,7 +53,11 @@ module_param(default_audio_input, uint, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(default_audio_input, "default audio input: 0=RCA back / "
 		 "1=RCA front / 2=S/PDIF");
 
+<<<<<<< HEAD
 static int boost_audio;
+=======
+static bool boost_audio;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(boost_audio, bool, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(boost_audio, "boost the audio signal");
 
@@ -154,10 +162,27 @@ static int device_authorization(struct hdpvr_device *dev)
 	}
 #endif
 
+<<<<<<< HEAD
 	v4l2_info(&dev->v4l2_dev, "firmware version 0x%x dated %s\n",
 			  dev->usbc_buf[1], &dev->usbc_buf[2]);
 
 	switch (dev->usbc_buf[1]) {
+=======
+	dev->fw_ver = dev->usbc_buf[1];
+
+	v4l2_info(&dev->v4l2_dev, "firmware version 0x%x dated %s\n",
+			  dev->fw_ver, &dev->usbc_buf[2]);
+
+	if (dev->fw_ver > 0x15) {
+		dev->options.brightness	= 0x80;
+		dev->options.contrast	= 0x40;
+		dev->options.hue	= 0xf;
+		dev->options.saturation	= 0x40;
+		dev->options.sharpness	= 0x80;
+	}
+
+	switch (dev->fw_ver) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case HDPVR_FIRMWARE_VERSION:
 		dev->flags &= ~HDPVR_FLAG_AC3_CAP;
 		break;
@@ -169,7 +194,11 @@ static int device_authorization(struct hdpvr_device *dev)
 	default:
 		v4l2_info(&dev->v4l2_dev, "untested firmware, the driver might"
 			  " not work.\n");
+<<<<<<< HEAD
 		if (dev->usbc_buf[1] >= HDPVR_FIRMWARE_VERSION_AC3)
+=======
+		if (dev->fw_ver >= HDPVR_FIRMWARE_VERSION_AC3)
+>>>>>>> refs/remotes/origin/cm-10.0
 			dev->flags |= HDPVR_FLAG_AC3_CAP;
 		else
 			dev->flags &= ~HDPVR_FLAG_AC3_CAP;
@@ -270,6 +299,11 @@ static const struct hdpvr_options hdpvr_default_options = {
 	.bitrate_mode	= HDPVR_CONSTANT,
 	.gop_mode	= HDPVR_SIMPLE_IDR_GOP,
 	.audio_codec	= V4L2_MPEG_AUDIO_ENCODING_AAC,
+<<<<<<< HEAD
+=======
+	/* original picture controls for firmware version <= 0x15 */
+	/* updated in device_authorization() for newer firmware */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.brightness	= 0x86,
 	.contrast	= 0x80,
 	.hue		= 0x80,
@@ -452,6 +486,7 @@ static struct usb_driver hdpvr_usb_driver = {
 	.id_table =	hdpvr_table,
 };
 
+<<<<<<< HEAD
 static int __init hdpvr_init(void)
 {
 	int result;
@@ -474,5 +509,11 @@ module_init(hdpvr_init);
 module_exit(hdpvr_exit);
 
 MODULE_LICENSE("GPL");
+=======
+module_usb_driver(hdpvr_usb_driver);
+
+MODULE_LICENSE("GPL");
+MODULE_VERSION("0.2.1");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_AUTHOR("Janne Grunau");
 MODULE_DESCRIPTION("Hauppauge HD PVR driver");

@@ -51,11 +51,19 @@ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
 }
 EXPORT_SYMBOL(kmap_atomic_prot);
 
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
 {
 	return kmap_atomic_prot(page, kmap_prot);
 }
 EXPORT_SYMBOL(__kmap_atomic);
+=======
+void *kmap_atomic(struct page *page)
+{
+	return kmap_atomic_prot(page, kmap_prot);
+}
+EXPORT_SYMBOL(kmap_atomic);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * This is the same as kmap_atomic() but can map memory that doesn't

@@ -1,4 +1,8 @@
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ide.h>
 
 static void ide_legacy_init_one(struct ide_hw **hws, struct ide_hw *hw,

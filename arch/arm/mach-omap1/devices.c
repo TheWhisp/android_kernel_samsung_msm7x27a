@@ -10,24 +10,44 @@
  */
 
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/io.h>
 #include <linux/spi/spi.h>
 
 #include <mach/camera.h>
 #include <mach/hardware.h>
+=======
+#include <linux/spi/spi.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach/map.h>
 
 #include <plat/tc.h>
 #include <plat/board.h>
 #include <plat/mux.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <plat/mmc.h>
 #include <plat/omap7xx.h>
 #include <plat/mcbsp.h>
+=======
+#include <plat/mmc.h>
+#include <plat/omap7xx.h>
+
+#include <mach/camera.h>
+#include <mach/hardware.h>
+
+#include "common.h"
+#include "clock.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*-------------------------------------------------------------------------*/
 
@@ -247,6 +267,7 @@ static struct platform_device omap_pcm = {
 	.id	= -1,
 };
 
+<<<<<<< HEAD
 OMAP_MCBSP_PLATFORM_DEVICE(1);
 OMAP_MCBSP_PLATFORM_DEVICE(2);
 OMAP_MCBSP_PLATFORM_DEVICE(3);
@@ -257,6 +278,10 @@ static void omap_init_audio(void)
 	platform_device_register(&omap_mcbsp2);
 	if (!cpu_is_omap7xx())
 		platform_device_register(&omap_mcbsp3);
+=======
+static void omap_init_audio(void)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_device_register(&omap_pcm);
 }
 
@@ -291,6 +316,12 @@ static int __init omap1_init_devices(void)
 	if (!cpu_class_is_omap1())
 		return -ENODEV;
 
+<<<<<<< HEAD
+=======
+	omap_sram_init();
+	omap1_clk_late_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* please keep these calls, and their implementations above,
 	 * in alphabetical order so they're easier to sort through.
 	 */

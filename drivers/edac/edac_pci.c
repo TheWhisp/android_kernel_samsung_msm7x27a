@@ -19,7 +19,10 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ctype.h>
 #include <linux/workqueue.h>
 #include <asm/uaccess.h>

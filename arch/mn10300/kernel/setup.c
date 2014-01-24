@@ -26,7 +26,10 @@
 #include <asm/processor.h>
 #include <linux/console.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/setup.h>
 #include <asm/io.h>
 #include <asm/smp.h>

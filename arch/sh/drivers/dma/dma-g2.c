@@ -170,7 +170,11 @@ static int __init g2_dma_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = request_irq(HW_EVENT_G2_DMA, g2_dma_interrupt, IRQF_DISABLED,
+=======
+	ret = request_irq(HW_EVENT_G2_DMA, g2_dma_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  "g2 DMA handler", &g2_dma_info);
 	if (unlikely(ret))
 		return -EINVAL;
@@ -181,14 +185,22 @@ static int __init g2_dma_init(void)
 
 	ret = register_dmac(&g2_dma_info);
 	if (unlikely(ret != 0))
+<<<<<<< HEAD
 		free_irq(HW_EVENT_G2_DMA, 0);
+=======
+		free_irq(HW_EVENT_G2_DMA, &g2_dma_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
 
 static void __exit g2_dma_exit(void)
 {
+<<<<<<< HEAD
 	free_irq(HW_EVENT_G2_DMA, 0);
+=======
+	free_irq(HW_EVENT_G2_DMA, &g2_dma_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unregister_dmac(&g2_dma_info);
 }
 

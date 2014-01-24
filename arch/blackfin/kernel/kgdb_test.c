@@ -13,7 +13,10 @@
 
 #include <asm/current.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/blackfin.h>
 
@@ -50,8 +53,12 @@ void kgdb_l2_test(void)
 
 #endif
 
+<<<<<<< HEAD
 
 int kgdb_test(char *name, int len, int count, int z)
+=======
+noinline int kgdb_test(char *name, int len, int count, int z)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	pr_alert("kgdb name(%d): %s, %d, %d\n", len, name, count, z);
 	count = z;

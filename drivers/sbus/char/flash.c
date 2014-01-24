@@ -16,7 +16,10 @@
 #include <linux/of.h>
 #include <linux/of_device.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/io.h>
@@ -216,6 +219,7 @@ static struct platform_driver flash_driver = {
 	.remove		= __devexit_p(flash_remove),
 };
 
+<<<<<<< HEAD
 static int __init flash_init(void)
 {
 	return platform_driver_register(&flash_driver);
@@ -228,4 +232,8 @@ static void __exit flash_cleanup(void)
 
 module_init(flash_init);
 module_exit(flash_cleanup);
+=======
+module_platform_driver(flash_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");

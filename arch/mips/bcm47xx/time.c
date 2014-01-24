@@ -30,7 +30,11 @@
 
 void __init plat_time_init(void)
 {
+<<<<<<< HEAD
 	unsigned long hz;
+=======
+	unsigned long hz = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Use deterministic values for initial counter interrupt
@@ -39,7 +43,23 @@ void __init plat_time_init(void)
 	write_c0_count(0);
 	write_c0_compare(0xffff);
 
+<<<<<<< HEAD
 	hz = ssb_cpu_clock(&ssb_bcm47xx.mipscore) / 2;
+=======
+	switch (bcm47xx_bus_type) {
+#ifdef CONFIG_BCM47XX_SSB
+	case BCM47XX_BUS_TYPE_SSB:
+		hz = ssb_cpu_clock(&bcm47xx_bus.ssb.mipscore) / 2;
+		break;
+#endif
+#ifdef CONFIG_BCM47XX_BCMA
+	case BCM47XX_BUS_TYPE_BCMA:
+		hz = bcma_cpu_clock(&bcm47xx_bus.bcma.bus.drv_mips) / 2;
+		break;
+#endif
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!hz)
 		hz = 100000000;
 

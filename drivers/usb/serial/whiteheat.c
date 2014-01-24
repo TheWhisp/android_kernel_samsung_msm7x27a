@@ -14,6 +14,7 @@
  *
  * See Documentation/usb/usb-serial.txt for more information on using this
  * driver
+<<<<<<< HEAD
  *
  * (10/09/2002) Stuart MacDonald (stuartm@connecttech.com)
  *	Upgrade to full working driver
@@ -65,6 +66,8 @@
  * (03/26/2000) gkh
  *	Split driver up into device specific pieces.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/kernel.h>
@@ -87,7 +90,11 @@
 #include <linux/ihex.h>
 #include "whiteheat.h"			/* WhiteHEAT specific commands */
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef CMSPAR
 #define CMSPAR 0
@@ -134,7 +141,10 @@ static struct usb_driver whiteheat_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* function prototypes for the Connect Tech WhiteHEAT prerenumeration device */
@@ -172,7 +182,10 @@ static struct usb_serial_driver whiteheat_fake_device = {
 		.name =		"whiteheatnofirm",
 	},
 	.description =		"Connect Tech - WhiteHEAT - (prerenumeration)",
+<<<<<<< HEAD
 	.usb_driver =		&whiteheat_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		id_table_prerenumeration,
 	.num_ports =		1,
 	.probe =		whiteheat_firmware_download,
@@ -185,7 +198,10 @@ static struct usb_serial_driver whiteheat_device = {
 		.name =		"whiteheat",
 	},
 	.description =		"Connect Tech - WhiteHEAT",
+<<<<<<< HEAD
 	.usb_driver =		&whiteheat_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		id_table_std,
 	.num_ports =		4,
 	.attach =		whiteheat_attach,
@@ -206,6 +222,12 @@ static struct usb_serial_driver whiteheat_device = {
 	.write_bulk_callback =	whiteheat_write_callback,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&whiteheat_fake_device, &whiteheat_device, NULL
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct whiteheat_command_private {
 	struct mutex		mutex;
@@ -754,7 +776,10 @@ static void whiteheat_close(struct usb_serial_port *port)
 static int whiteheat_write(struct tty_struct *tty,
 	struct usb_serial_port *port, const unsigned char *buf, int count)
 {
+<<<<<<< HEAD
 	struct usb_serial *serial = port->serial;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct whiteheat_private *info = usb_get_serial_port_data(port);
 	struct whiteheat_urb_wrap *wrap;
 	struct urb *urb;
@@ -790,11 +815,18 @@ static int whiteheat_write(struct tty_struct *tty,
 		usb_serial_debug_data(debug, &port->dev,
 				__func__, bytes, urb->transfer_buffer);
 
+<<<<<<< HEAD
 		urb->dev = serial->dev;
 		urb->transfer_buffer_length = bytes;
 		result = usb_submit_urb(urb, GFP_ATOMIC);
 		if (result) {
 			dev_err(&port->dev,
+=======
+		urb->transfer_buffer_length = bytes;
+		result = usb_submit_urb(urb, GFP_ATOMIC);
+		if (result) {
+			dev_err_console(port,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"%s - failed submitting write urb, error %d\n",
 				__func__, result);
 			sent = result;
@@ -1036,7 +1068,10 @@ static void command_port_read_callback(struct urb *urb)
 		dbg("%s - bad reply from firmware", __func__);
 
 	/* Continue trying to always read */
+<<<<<<< HEAD
 	command_port->read_urb->dev = command_port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	result = usb_submit_urb(command_port->read_urb, GFP_ATOMIC);
 	if (result)
 		dbg("%s - failed resubmitting read urb, error %d",
@@ -1142,7 +1177,10 @@ static int firm_send_command(struct usb_serial_port *port, __u8 command,
 	transfer_buffer[0] = command;
 	memcpy(&transfer_buffer[1], data, datasize);
 	command_port->write_urb->transfer_buffer_length = datasize + 1;
+<<<<<<< HEAD
 	command_port->write_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = usb_submit_urb(command_port->write_urb, GFP_NOIO);
 	if (retval) {
 		dbg("%s - submit urb failed", __func__);
@@ -1363,7 +1401,10 @@ static int start_command_port(struct usb_serial *serial)
 		/* Work around HCD bugs */
 		usb_clear_halt(serial->dev, command_port->read_urb->pipe);
 
+<<<<<<< HEAD
 		command_port->read_urb->dev = serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = usb_submit_urb(command_port->read_urb, GFP_KERNEL);
 		if (retval) {
 			dev_err(&serial->dev->dev,
@@ -1411,7 +1452,10 @@ static int start_port_read(struct usb_serial_port *port)
 		list_del(tmp);
 		wrap = list_entry(tmp, struct whiteheat_urb_wrap, list);
 		urb = wrap->urb;
+<<<<<<< HEAD
 		urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock_irqrestore(&info->lock, flags);
 		retval = usb_submit_urb(urb, GFP_KERNEL);
 		if (retval) {
@@ -1491,7 +1535,10 @@ static void rx_data_softint(struct work_struct *work)
 			sent += tty_insert_flip_string(tty,
 				urb->transfer_buffer, urb->actual_length);
 
+<<<<<<< HEAD
 		urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		result = usb_submit_urb(urb, GFP_ATOMIC);
 		if (result) {
 			dev_err(&port->dev,
@@ -1513,6 +1560,7 @@ out:
 	tty_kref_put(tty);
 }
 
+<<<<<<< HEAD
 
 /*****************************************************************************
  * Connect Tech's White Heat module functions
@@ -1551,6 +1599,9 @@ static void __exit whiteheat_exit(void)
 
 module_init(whiteheat_init);
 module_exit(whiteheat_exit);
+=======
+module_usb_serial_driver(whiteheat_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

@@ -21,6 +21,10 @@
 struct msm_psy_batt_pdata {
 	u32 voltage_max_design;
 	u32 voltage_min_design;
+<<<<<<< HEAD
+=======
+	u32 voltage_fail_safe;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 avail_chg_sources;
 	u32 batt_technology;
 	u32 (*calculate_capacity)(u32 voltage);

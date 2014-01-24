@@ -50,7 +50,11 @@
 					       GAYLE_NUM_HWIFS-1)
 #define GAYLE_HAS_CONTROL_REG	(!ide_doubler)
 
+<<<<<<< HEAD
 static int ide_doubler;
+=======
+static bool ide_doubler;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(doubler, ide_doubler, bool, 0);
 MODULE_PARM_DESC(doubler, "enable support for IDE doublers");
 

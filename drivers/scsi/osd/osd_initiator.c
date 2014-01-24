@@ -40,6 +40,10 @@
  */
 
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <scsi/osd_initiator.h>
 #include <scsi/osd_sec.h>

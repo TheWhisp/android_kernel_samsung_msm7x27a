@@ -202,7 +202,10 @@ static void __init atari_init_mfp_port(int cflag)
 
 static void __init atari_init_scc_port(int cflag)
 {
+<<<<<<< HEAD
 	extern int atari_SCC_reset_done;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	static int clksrc_table[9] =
 		/* reg 11: 0x50 = BRG, 0x00 = RTxC, 0x28 = TRxC */
 		{ 0x50, 0x50, 0x50, 0x50, 0x50, 0x50, 0x50, 0x00, 0x00 };

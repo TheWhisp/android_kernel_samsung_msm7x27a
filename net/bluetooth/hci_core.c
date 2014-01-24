@@ -305,12 +305,15 @@ static void hci_le_init_req(struct hci_dev *hdev, unsigned long opt)
 
 	/* Read LE buffer size */
 	hci_send_cmd(hdev, HCI_OP_LE_READ_BUFFER_SIZE, 0, NULL);
+<<<<<<< HEAD
 
 	/* Read LE clear white list */
 	hci_send_cmd(hdev, HCI_OP_LE_CLEAR_WHITE_LIST, 0, NULL);
 
 	/* Read LE white list size */
 	hci_send_cmd(hdev, HCI_OP_LE_READ_WHITE_LIST_SIZE, 0, NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void hci_scan_req(struct hci_dev *hdev, unsigned long opt)
@@ -1474,8 +1477,11 @@ int hci_register_dev(struct hci_dev *hdev)
 	hdev->sniff_max_interval = 800;
 	hdev->sniff_min_interval = 80;
 
+<<<<<<< HEAD
 	set_bit(HCI_SETUP, &hdev->flags);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	tasklet_init(&hdev->cmd_task, hci_cmd_task, (unsigned long) hdev);
 	tasklet_init(&hdev->rx_task, hci_rx_task, (unsigned long) hdev);
 	tasklet_init(&hdev->tx_task, hci_tx_task, (unsigned long) hdev);
@@ -1544,6 +1550,10 @@ int hci_register_dev(struct hci_dev *hdev)
 	}
 
 	set_bit(HCI_AUTO_OFF, &hdev->flags);
+<<<<<<< HEAD
+=======
+	set_bit(HCI_SETUP, &hdev->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	queue_work(hdev->workqueue, &hdev->power_on);
 
 	hci_notify(hdev, HCI_DEV_REG);
@@ -2131,6 +2141,7 @@ void hci_send_sco(struct hci_conn *conn, struct sk_buff *skb)
 EXPORT_SYMBOL(hci_send_sco);
 
 /* ---- HCI TX task (outgoing data) ---- */
+<<<<<<< HEAD
 /* HCI ACL Connection scheduler */
 static inline struct hci_conn *hci_low_sent_acl(struct hci_dev *hdev,
 								int *quote)
@@ -2180,6 +2191,8 @@ static inline struct hci_conn *hci_low_sent_acl(struct hci_dev *hdev,
 	BT_DBG("conn %p quote %d", conn, *quote);
 	return conn;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* HCI Connection scheduler */
 static inline struct hci_conn *hci_low_sent(struct hci_dev *hdev, __u8 type, int *quote)
@@ -2273,10 +2286,15 @@ static inline void hci_sched_acl(struct hci_dev *hdev)
 	}
 
 	while (hdev->acl_cnt > 0 &&
+<<<<<<< HEAD
 		((conn = hci_low_sent_acl(hdev, &quote)) != NULL)) {
 
 		while (quote > 0 &&
 			  (skb = skb_dequeue(&conn->data_q))) {
+=======
+		(conn = hci_low_sent(hdev, ACL_LINK, &quote))) {
+		while (quote > 0 && (skb = skb_dequeue(&conn->data_q))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			int count = 1;
 
 			BT_DBG("skb %p len %d", skb, skb->len);

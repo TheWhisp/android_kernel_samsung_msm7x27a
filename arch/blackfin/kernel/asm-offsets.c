@@ -14,6 +14,10 @@
 #include <linux/irq.h>
 #include <linux/thread_info.h>
 #include <linux/kbuild.h>
+<<<<<<< HEAD
+=======
+#include <asm/pda.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int main(void)
 {
@@ -138,6 +142,19 @@ int main(void)
 	DEFINE(PDA_DF_SEQSTAT, offsetof(struct blackfin_pda, seqstat_doublefault));
 	DEFINE(PDA_DF_RETX, offsetof(struct blackfin_pda, retx_doublefault));
 #endif
+<<<<<<< HEAD
+=======
+
+	/* PDA initial management */
+	DEFINE(PDA_INIT_RETX, offsetof(struct blackfin_initial_pda, retx));
+#ifdef CONFIG_DEBUG_DOUBLEFAULT
+	DEFINE(PDA_INIT_DF_DCPLB, offsetof(struct blackfin_initial_pda, dcplb_doublefault_addr));
+	DEFINE(PDA_INIT_DF_ICPLB, offsetof(struct blackfin_initial_pda, icplb_doublefault_addr));
+	DEFINE(PDA_INIT_DF_SEQSTAT, offsetof(struct blackfin_initial_pda, seqstat_doublefault));
+	DEFINE(PDA_INIT_DF_RETX, offsetof(struct blackfin_initial_pda, retx_doublefault));
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SMP
 	/* Inter-core lock (in L2 SRAM) */
 	DEFINE(SIZEOF_CORELOCK, sizeof(struct corelock_slot));

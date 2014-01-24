@@ -9,7 +9,13 @@
 #include "util/debug.h"
 #include "util/event.h"
 #include "util/hist.h"
+<<<<<<< HEAD
 #include "util/session.h"
+=======
+#include "util/evsel.h"
+#include "util/session.h"
+#include "util/tool.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "util/sort.h"
 #include "util/symbol.h"
 #include "util/util.h"
@@ -22,6 +28,14 @@ static char	  diff__default_sort_order[] = "dso,symbol";
 static bool  force;
 static bool show_displacement;
 
+<<<<<<< HEAD
+=======
+struct perf_diff {
+	struct perf_tool tool;
+	struct perf_session *session;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int hists__add_entry(struct hists *self,
 			    struct addr_location *al, u64 period)
 {
@@ -30,6 +44,7 @@ static int hists__add_entry(struct hists *self,
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static int diff__process_sample_event(union perf_event *event,
 				      struct perf_sample *sample,
 				      struct perf_evsel *evsel __used,
@@ -38,6 +53,19 @@ static int diff__process_sample_event(union perf_event *event,
 	struct addr_location al;
 
 	if (perf_event__preprocess_sample(event, session, &al, sample, NULL) < 0) {
+=======
+static int diff__process_sample_event(struct perf_tool *tool,
+				      union perf_event *event,
+				      struct perf_sample *sample,
+				      struct perf_evsel *evsel __used,
+				      struct machine *machine)
+{
+	struct perf_diff *_diff = container_of(tool, struct perf_diff, tool);
+	struct perf_session *session = _diff->session;
+	struct addr_location al;
+
+	if (perf_event__preprocess_sample(event, machine, &al, sample, NULL) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_warning("problem processing %d event, skipping it.\n",
 			   event->header.type);
 		return -1;
@@ -55,6 +83,7 @@ static int diff__process_sample_event(union perf_event *event,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct perf_event_ops event_ops = {
 	.sample	= diff__process_sample_event,
 	.mmap	= perf_event__process_mmap,
@@ -64,6 +93,19 @@ static struct perf_event_ops event_ops = {
 	.lost	= perf_event__process_lost,
 	.ordered_samples = true,
 	.ordering_requires_timestamps = true,
+=======
+static struct perf_diff diff = {
+	.tool = {
+		.sample	= diff__process_sample_event,
+		.mmap	= perf_event__process_mmap,
+		.comm	= perf_event__process_comm,
+		.exit	= perf_event__process_task,
+		.fork	= perf_event__process_task,
+		.lost	= perf_event__process_lost,
+		.ordered_samples = true,
+		.ordering_requires_timestamps = true,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void perf_session__insert_hist_entry_by_name(struct rb_root *root,
@@ -104,12 +146,15 @@ static void hists__resort_entries(struct hists *self)
 	self->entries = tmp;
 }
 
+<<<<<<< HEAD
 static void hists__set_positions(struct hists *self)
 {
 	hists__output_resort(self);
 	hists__resort_entries(self);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct hist_entry *hists__find_entry(struct hists *self,
 					    struct hist_entry *he)
 {
@@ -143,14 +188,26 @@ static void hists__match(struct hists *older, struct hists *newer)
 static int __cmd_diff(void)
 {
 	int ret, i;
+<<<<<<< HEAD
 	struct perf_session *session[2];
 
 	session[0] = perf_session__new(input_old, O_RDONLY, force, false, &event_ops);
 	session[1] = perf_session__new(input_new, O_RDONLY, force, false, &event_ops);
+=======
+#define older (session[0])
+#define newer (session[1])
+	struct perf_session *session[2];
+
+	older = perf_session__new(input_old, O_RDONLY, force, false,
+				  &diff.tool);
+	newer = perf_session__new(input_new, O_RDONLY, force, false,
+				  &diff.tool);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (session[0] == NULL || session[1] == NULL)
 		return -ENOMEM;
 
 	for (i = 0; i < 2; ++i) {
+<<<<<<< HEAD
 		ret = perf_session__process_events(session[i], &event_ops);
 		if (ret)
 			goto out_delete;
@@ -163,10 +220,30 @@ static int __cmd_diff(void)
 	hists__match(&session[0]->hists, &session[1]->hists);
 	hists__fprintf(&session[1]->hists, &session[0]->hists,
 		       show_displacement, stdout);
+=======
+		diff.session = session[i];
+		ret = perf_session__process_events(session[i], &diff.tool);
+		if (ret)
+			goto out_delete;
+		hists__output_resort(&session[i]->hists);
+	}
+
+	if (show_displacement)
+		hists__resort_entries(&older->hists);
+
+	hists__match(&older->hists, &newer->hists);
+	hists__fprintf(&newer->hists, &older->hists,
+		       show_displacement, true, 0, 0, stdout);
+>>>>>>> refs/remotes/origin/cm-10.0
 out_delete:
 	for (i = 0; i < 2; ++i)
 		perf_session__delete(session[i]);
 	return ret;
+<<<<<<< HEAD
+=======
+#undef older
+#undef newer
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static const char * const diff_usage[] = {

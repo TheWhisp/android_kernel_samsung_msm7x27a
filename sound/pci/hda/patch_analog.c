@@ -23,11 +23,19 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/core.h>
 #include "hda_codec.h"
 #include "hda_local.h"
 #include "hda_beep.h"
+<<<<<<< HEAD
+=======
+#include "hda_jack.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct ad198x_spec {
 	const struct snd_kcontrol_new *mixers[6];
@@ -48,6 +56,11 @@ struct ad198x_spec {
 
 	const hda_nid_t *alt_dac_nid;
 	const struct hda_pcm_stream *stream_analog_alt_playback;
+<<<<<<< HEAD
+=======
+	int independent_hp;
+	int num_active_streams;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* capture */
 	unsigned int num_adc_nids;
@@ -78,6 +91,10 @@ struct ad198x_spec {
 	unsigned int inv_jack_detect: 1;/* inverted jack-detection */
 	unsigned int inv_eapd: 1;	/* inverted EAPD implementation */
 	unsigned int analog_beep: 1;	/* analog beep input present */
+<<<<<<< HEAD
+=======
+	unsigned int avoid_init_slave_vol:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_SND_HDA_POWER_SAVE
 	struct hda_loopback_check loopback;
@@ -133,6 +150,7 @@ static int ad198x_init(struct hda_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const char * const ad_slave_vols[] = {
 	"Front Playback Volume",
 	"Surround Playback Volume",
@@ -178,6 +196,19 @@ static const char * const ad1988_6stack_fp_slave_sws[] = {
 	"IEC958 Playback Switch",
 	NULL
 };
+=======
+static const char * const ad_slave_pfxs[] = {
+	"Front", "Surround", "Center", "LFE", "Side",
+	"Headphone", "Mono", "Speaker", "IEC958",
+	NULL
+};
+
+static const char * const ad1988_6stack_fp_slave_pfxs[] = {
+	"Front", "Surround", "Center", "LFE", "Side", "IEC958",
+	NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void ad198x_free_kctls(struct hda_codec *codec);
 
 #ifdef CONFIG_SND_HDA_INPUT_BEEP
@@ -213,7 +244,13 @@ static int ad198x_build_controls(struct hda_codec *codec)
 			return err;
 	}
 	if (spec->multiout.dig_out_nid) {
+<<<<<<< HEAD
 		err = snd_hda_create_spdif_out_ctls(codec, spec->multiout.dig_out_nid);
+=======
+		err = snd_hda_create_spdif_out_ctls(codec,
+						    spec->multiout.dig_out_nid,
+						    spec->multiout.dig_out_nid);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err < 0)
 			return err;
 		err = snd_hda_create_spdif_share_sw(codec,
@@ -251,10 +288,19 @@ static int ad198x_build_controls(struct hda_codec *codec)
 		unsigned int vmaster_tlv[4];
 		snd_hda_set_vmaster_tlv(codec, spec->vmaster_nid,
 					HDA_OUTPUT, vmaster_tlv);
+<<<<<<< HEAD
 		err = snd_hda_add_vmaster(codec, "Master Playback Volume",
 					  vmaster_tlv,
 					  (spec->slave_vols ?
 					   spec->slave_vols : ad_slave_vols));
+=======
+		err = __snd_hda_add_vmaster(codec, "Master Playback Volume",
+					  vmaster_tlv,
+					  (spec->slave_vols ?
+					   spec->slave_vols : ad_slave_pfxs),
+					  "Playback Volume",
+					  !spec->avoid_init_slave_vol, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err < 0)
 			return err;
 	}
@@ -262,7 +308,12 @@ static int ad198x_build_controls(struct hda_codec *codec)
 		err = snd_hda_add_vmaster(codec, "Master Playback Switch",
 					  NULL,
 					  (spec->slave_sws ?
+<<<<<<< HEAD
 					   spec->slave_sws : ad_slave_sws));
+=======
+					   spec->slave_sws : ad_slave_pfxs),
+					  "Playback Switch");
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err < 0)
 			return err;
 	}
@@ -300,6 +351,75 @@ static int ad198x_check_power_status(struct hda_codec *codec, hda_nid_t nid)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+static void activate_ctl(struct hda_codec *codec, const char *name, int active)
+{
+	struct snd_kcontrol *ctl = snd_hda_find_mixer_ctl(codec, name);
+	if (ctl) {
+		ctl->vd[0].access &= ~SNDRV_CTL_ELEM_ACCESS_INACTIVE;
+		ctl->vd[0].access |= active ? 0 :
+			SNDRV_CTL_ELEM_ACCESS_INACTIVE;
+		ctl->vd[0].access &= ~SNDRV_CTL_ELEM_ACCESS_WRITE;
+		ctl->vd[0].access |= active ?
+			SNDRV_CTL_ELEM_ACCESS_WRITE : 0;
+		snd_ctl_notify(codec->bus->card,
+			       SNDRV_CTL_EVENT_MASK_INFO, &ctl->id);
+	}
+}
+
+static void set_stream_active(struct hda_codec *codec, bool active)
+{
+	struct ad198x_spec *spec = codec->spec;
+	if (active)
+		spec->num_active_streams++;
+	else
+		spec->num_active_streams--;
+	activate_ctl(codec, "Independent HP", spec->num_active_streams == 0);
+}
+
+static int ad1988_independent_hp_info(struct snd_kcontrol *kcontrol,
+				   struct snd_ctl_elem_info *uinfo)
+{
+	static const char * const texts[] = { "OFF", "ON", NULL};
+	int index;
+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+	uinfo->count = 1;
+	uinfo->value.enumerated.items = 2;
+	index = uinfo->value.enumerated.item;
+	if (index >= 2)
+		index = 1;
+	strcpy(uinfo->value.enumerated.name, texts[index]);
+	return 0;
+}
+
+static int ad1988_independent_hp_get(struct snd_kcontrol *kcontrol,
+				  struct snd_ctl_elem_value *ucontrol)
+{
+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+	struct ad198x_spec *spec = codec->spec;
+	ucontrol->value.enumerated.item[0] = spec->independent_hp;
+	return 0;
+}
+
+static int ad1988_independent_hp_put(struct snd_kcontrol *kcontrol,
+				  struct snd_ctl_elem_value *ucontrol)
+{
+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+	struct ad198x_spec *spec = codec->spec;
+	unsigned int select = ucontrol->value.enumerated.item[0];
+	if (spec->independent_hp != select) {
+		spec->independent_hp = select;
+		if (spec->independent_hp)
+			spec->multiout.hp_nid = 0;
+		else
+			spec->multiout.hp_nid = spec->alt_dac_nid[0];
+		return 1;
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Analog playback callbacks
  */
@@ -308,8 +428,20 @@ static int ad198x_playback_pcm_open(struct hda_pcm_stream *hinfo,
 				    struct snd_pcm_substream *substream)
 {
 	struct ad198x_spec *spec = codec->spec;
+<<<<<<< HEAD
 	return snd_hda_multi_out_analog_open(codec, &spec->multiout, substream,
 					     hinfo);
+=======
+	int err;
+	set_stream_active(codec, true);
+	err = snd_hda_multi_out_analog_open(codec, &spec->multiout, substream,
+					     hinfo);
+	if (err < 0) {
+		set_stream_active(codec, false);
+		return err;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int ad198x_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
@@ -331,11 +463,48 @@ static int ad198x_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
 	return snd_hda_multi_out_analog_cleanup(codec, &spec->multiout);
 }
 
+<<<<<<< HEAD
+=======
+static int ad198x_playback_pcm_close(struct hda_pcm_stream *hinfo,
+				 struct hda_codec *codec,
+				 struct snd_pcm_substream *substream)
+{
+	set_stream_active(codec, false);
+	return 0;
+}
+
+static int ad1988_alt_playback_pcm_open(struct hda_pcm_stream *hinfo,
+				 struct hda_codec *codec,
+				 struct snd_pcm_substream *substream)
+{
+	struct ad198x_spec *spec = codec->spec;
+	if (!spec->independent_hp)
+		return -EBUSY;
+	set_stream_active(codec, true);
+	return 0;
+}
+
+static int ad1988_alt_playback_pcm_close(struct hda_pcm_stream *hinfo,
+				 struct hda_codec *codec,
+				 struct snd_pcm_substream *substream)
+{
+	set_stream_active(codec, false);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct hda_pcm_stream ad198x_pcm_analog_alt_playback = {
 	.substreams = 1,
 	.channels_min = 2,
 	.channels_max = 2,
+<<<<<<< HEAD
 	/* NID is set in ad198x_build_pcms */
+=======
+	.ops = {
+		.open  = ad1988_alt_playback_pcm_open,
+		.close = ad1988_alt_playback_pcm_close
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -400,7 +569,10 @@ static int ad198x_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
 	return 0;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  */
 static const struct hda_pcm_stream ad198x_pcm_analog_playback = {
@@ -411,7 +583,12 @@ static const struct hda_pcm_stream ad198x_pcm_analog_playback = {
 	.ops = {
 		.open = ad198x_playback_pcm_open,
 		.prepare = ad198x_playback_pcm_prepare,
+<<<<<<< HEAD
 		.cleanup = ad198x_playback_pcm_cleanup
+=======
+		.cleanup = ad198x_playback_pcm_cleanup,
+		.close = ad198x_playback_pcm_close
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -562,7 +739,11 @@ static void ad198x_free(struct hda_codec *codec)
 	snd_hda_detach_beep_device(codec);
 }
 
+<<<<<<< HEAD
 #ifdef SND_HDA_NEEDS_RESUME
+=======
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/cm-10.0
 static int ad198x_suspend(struct hda_codec *codec, pm_message_t state)
 {
 	ad198x_shutup(codec);
@@ -578,7 +759,11 @@ static const struct hda_codec_ops ad198x_patch_ops = {
 #ifdef CONFIG_SND_HDA_POWER_SAVE
 	.check_power_status = ad198x_check_power_status,
 #endif
+<<<<<<< HEAD
 #ifdef SND_HDA_NEEDS_RESUME
+=======
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/cm-10.0
 	.suspend = ad198x_suspend,
 #endif
 	.reboot_notify = ad198x_shutup,
@@ -1921,7 +2106,12 @@ static int patch_ad1981(struct hda_codec *codec)
 		spec->mixers[0] = ad1981_hp_mixers;
 		spec->num_init_verbs = 2;
 		spec->init_verbs[1] = ad1981_hp_init_verbs;
+<<<<<<< HEAD
 		spec->multiout.dig_out_nid = 0;
+=======
+		if (!is_jack_available(codec, 0x0a))
+			spec->multiout.dig_out_nid = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		spec->input_mux = &ad1981_hp_capture_source;
 
 		codec->patch_ops.init = ad1981_hp_init;
@@ -2056,7 +2246,10 @@ static int patch_ad1981(struct hda_codec *codec)
 enum {
 	AD1988_6STACK,
 	AD1988_6STACK_DIG,
+<<<<<<< HEAD
 	AD1988_6STACK_DIG_FP,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	AD1988_3STACK,
 	AD1988_3STACK_DIG,
 	AD1988_LAPTOP,
@@ -2166,6 +2359,20 @@ static int ad198x_ch_mode_put(struct snd_kcontrol *kcontrol,
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static const struct snd_kcontrol_new ad1988_hp_mixers[] = {
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Independent HP",
+		.info = ad1988_independent_hp_info,
+		.get = ad1988_independent_hp_get,
+		.put = ad1988_independent_hp_put,
+	},
+	{ } /* end */
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* 6-stack mode */
 static const struct snd_kcontrol_new ad1988_6stack_mixers1[] = {
 	HDA_CODEC_VOLUME("Front Playback Volume", 0x04, 0x0, HDA_OUTPUT),
@@ -2186,6 +2393,10 @@ static const struct snd_kcontrol_new ad1988_6stack_mixers1_rev2[] = {
 };
 
 static const struct snd_kcontrol_new ad1988_6stack_mixers2[] = {
+<<<<<<< HEAD
+=======
+	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x03, 0x0, HDA_OUTPUT),
+>>>>>>> refs/remotes/origin/cm-10.0
 	HDA_BIND_MUTE("Front Playback Switch", 0x29, 2, HDA_INPUT),
 	HDA_BIND_MUTE("Surround Playback Switch", 0x2a, 2, HDA_INPUT),
 	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x27, 1, 2, HDA_INPUT),
@@ -2208,6 +2419,7 @@ static const struct snd_kcontrol_new ad1988_6stack_mixers2[] = {
 
 	HDA_CODEC_VOLUME("Front Mic Boost Volume", 0x39, 0x0, HDA_OUTPUT),
 	HDA_CODEC_VOLUME("Mic Boost Volume", 0x3c, 0x0, HDA_OUTPUT),
+<<<<<<< HEAD
 
 	{ } /* end */
 };
@@ -2215,6 +2427,8 @@ static const struct snd_kcontrol_new ad1988_6stack_mixers2[] = {
 static const struct snd_kcontrol_new ad1988_6stack_fp_mixers[] = {
 	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x03, 0x0, HDA_OUTPUT),
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ } /* end */
 };
 
@@ -2236,6 +2450,10 @@ static const struct snd_kcontrol_new ad1988_3stack_mixers1_rev2[] = {
 };
 
 static const struct snd_kcontrol_new ad1988_3stack_mixers2[] = {
+<<<<<<< HEAD
+=======
+	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x03, 0x0, HDA_OUTPUT),
+>>>>>>> refs/remotes/origin/cm-10.0
 	HDA_BIND_MUTE("Front Playback Switch", 0x29, 2, HDA_INPUT),
 	HDA_BIND_MUTE("Surround Playback Switch", 0x2c, 2, HDA_INPUT),
 	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x26, 1, 2, HDA_INPUT),
@@ -2270,6 +2488,10 @@ static const struct snd_kcontrol_new ad1988_3stack_mixers2[] = {
 
 /* laptop mode */
 static const struct snd_kcontrol_new ad1988_laptop_mixers[] = {
+<<<<<<< HEAD
+=======
+	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x03, 0x0, HDA_OUTPUT),
+>>>>>>> refs/remotes/origin/cm-10.0
 	HDA_CODEC_VOLUME("PCM Playback Volume", 0x04, 0x0, HDA_OUTPUT),
 	HDA_CODEC_MUTE("PCM Playback Switch", 0x29, 0x0, HDA_INPUT),
 	HDA_BIND_MUTE("Mono Playback Switch", 0x1e, 2, HDA_INPUT),
@@ -2444,7 +2666,11 @@ static const struct hda_verb ad1988_6stack_init_verbs[] = {
 	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
 	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
 	/* Port-A front headphon path */
+<<<<<<< HEAD
 	{0x37, AC_VERB_SET_CONNECT_SEL, 0x01}, /* DAC1:04h */
+=======
+	{0x37, AC_VERB_SET_CONNECT_SEL, 0x00}, /* DAC0:03h */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
 	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
 	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
@@ -2592,7 +2818,11 @@ static const struct hda_verb ad1988_3stack_init_verbs[] = {
 	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
 	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
 	/* Port-A front headphon path */
+<<<<<<< HEAD
 	{0x37, AC_VERB_SET_CONNECT_SEL, 0x01}, /* DAC1:04h */
+=======
+	{0x37, AC_VERB_SET_CONNECT_SEL, 0x00}, /* DAC0:03h */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
 	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
 	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
@@ -2667,7 +2897,11 @@ static const struct hda_verb ad1988_laptop_init_verbs[] = {
 	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
 	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
 	/* Port-A front headphon path */
+<<<<<<< HEAD
 	{0x37, AC_VERB_SET_CONNECT_SEL, 0x01}, /* DAC1:04h */
+=======
+	{0x37, AC_VERB_SET_CONNECT_SEL, 0x00}, /* DAC0:03h */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
 	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
 	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
@@ -2780,11 +3014,19 @@ static inline hda_nid_t ad1988_idx_to_dac(struct hda_codec *codec, int idx)
 {
 	static const hda_nid_t idx_to_dac[8] = {
 		/* A     B     C     D     E     F     G     H */
+<<<<<<< HEAD
 		0x04, 0x06, 0x05, 0x04, 0x0a, 0x06, 0x05, 0x0a
 	};
 	static const hda_nid_t idx_to_dac_rev2[8] = {
 		/* A     B     C     D     E     F     G     H */
 		0x04, 0x05, 0x0a, 0x04, 0x06, 0x05, 0x0a, 0x06
+=======
+		0x03, 0x06, 0x05, 0x04, 0x0a, 0x06, 0x05, 0x0a
+	};
+	static const hda_nid_t idx_to_dac_rev2[8] = {
+		/* A     B     C     D     E     F     G     H */
+		0x03, 0x05, 0x0a, 0x04, 0x06, 0x05, 0x0a, 0x06
+>>>>>>> refs/remotes/origin/cm-10.0
 	};
 	if (is_rev2(codec))
 		return idx_to_dac_rev2[idx];
@@ -3021,8 +3263,13 @@ static void ad1988_auto_set_output_and_unmute(struct hda_codec *codec,
 	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, pin_type);
 	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
 	switch (nid) {
+<<<<<<< HEAD
 	case 0x11: /* port-A - DAC 04 */
 		snd_hda_codec_write(codec, 0x37, 0, AC_VERB_SET_CONNECT_SEL, 0x01);
+=======
+	case 0x11: /* port-A - DAC 03 */
+		snd_hda_codec_write(codec, 0x37, 0, AC_VERB_SET_CONNECT_SEL, 0x00);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case 0x14: /* port-B - DAC 06 */
 		snd_hda_codec_write(codec, 0x30, 0, AC_VERB_SET_CONNECT_SEL, 0x02);
@@ -3148,7 +3395,10 @@ static int ad1988_auto_init(struct hda_codec *codec)
 static const char * const ad1988_models[AD1988_MODEL_LAST] = {
 	[AD1988_6STACK]		= "6stack",
 	[AD1988_6STACK_DIG]	= "6stack-dig",
+<<<<<<< HEAD
 	[AD1988_6STACK_DIG_FP]	= "6stack-dig-fp",
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	[AD1988_3STACK]		= "3stack",
 	[AD1988_3STACK_DIG]	= "3stack-dig",
 	[AD1988_LAPTOP]		= "laptop",
@@ -3206,10 +3456,18 @@ static int patch_ad1988(struct hda_codec *codec)
 	}
 	set_beep_amp(spec, 0x10, 0, HDA_OUTPUT);
 
+<<<<<<< HEAD
 	switch (board_config) {
 	case AD1988_6STACK:
 	case AD1988_6STACK_DIG:
 	case AD1988_6STACK_DIG_FP:
+=======
+	if (!spec->multiout.hp_nid)
+		spec->multiout.hp_nid = ad1988_alt_dac_nid[0];
+	switch (board_config) {
+	case AD1988_6STACK:
+	case AD1988_6STACK_DIG:
+>>>>>>> refs/remotes/origin/cm-10.0
 		spec->multiout.max_channels = 8;
 		spec->multiout.num_dacs = 4;
 		if (is_rev2(codec))
@@ -3225,6 +3483,7 @@ static int patch_ad1988(struct hda_codec *codec)
 		spec->mixers[1] = ad1988_6stack_mixers2;
 		spec->num_init_verbs = 1;
 		spec->init_verbs[0] = ad1988_6stack_init_verbs;
+<<<<<<< HEAD
 		if (board_config == AD1988_6STACK_DIG_FP) {
 			spec->num_mixers++;
 			spec->mixers[2] = ad1988_6stack_fp_mixers;
@@ -3238,6 +3497,9 @@ static int patch_ad1988(struct hda_codec *codec)
 		}
 		if ((board_config == AD1988_6STACK_DIG) ||
 			(board_config == AD1988_6STACK_DIG_FP)) {
+=======
+		if (board_config == AD1988_6STACK_DIG) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			spec->multiout.dig_out_nid = AD1988_SPDIF_OUT;
 			spec->dig_in_nid = AD1988_SPDIF_IN;
 		}
@@ -3280,6 +3542,18 @@ static int patch_ad1988(struct hda_codec *codec)
 		break;
 	}
 
+<<<<<<< HEAD
+=======
+	if (spec->autocfg.hp_pins[0]) {
+		spec->mixers[spec->num_mixers++] = ad1988_hp_mixers;
+		spec->slave_vols = ad1988_6stack_fp_slave_pfxs;
+		spec->slave_sws = ad1988_6stack_fp_slave_pfxs;
+		spec->alt_dac_nid = ad1988_alt_dac_nid;
+		spec->stream_analog_alt_playback =
+			&ad198x_pcm_analog_alt_playback;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spec->num_adc_nids = ARRAY_SIZE(ad1988_adc_nids);
 	spec->adc_nids = ad1988_adc_nids;
 	spec->capsrc_nids = ad1988_capsrc_nids;
@@ -3482,6 +3756,7 @@ static const struct hda_amp_list ad1884_loopbacks[] = {
 #endif
 
 static const char * const ad1884_slave_vols[] = {
+<<<<<<< HEAD
 	"PCM Playback Volume",
 	"Mic Playback Volume",
 	"Mono Playback Volume",
@@ -3492,6 +3767,10 @@ static const char * const ad1884_slave_vols[] = {
 	"Docking Mic Playback Volume",
 	/* "Beep Playback Volume", */
 	"IEC958 Playback Volume",
+=======
+	"PCM", "Mic", "Mono", "Front Mic", "Mic", "CD",
+	"Internal Mic", "Docking Mic", /* "Beep", */ "IEC958",
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL
 };
 
@@ -3532,6 +3811,11 @@ static int patch_ad1884(struct hda_codec *codec)
 	spec->vmaster_nid = 0x04;
 	/* we need to cover all playback volumes */
 	spec->slave_vols = ad1884_slave_vols;
+<<<<<<< HEAD
+=======
+	/* slaves may contain input volumes, so we can't raise to 0dB blindly */
+	spec->avoid_init_slave_vol = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	codec->patch_ops = ad198x_patch_ops;
 

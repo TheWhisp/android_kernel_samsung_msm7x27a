@@ -217,7 +217,10 @@ void ddl_set_default_decoder_metadata_buffer_size(struct ddl_decoder_data
 	DDL_METADATA_ALIGNSIZE(suffix);
 	decoder->suffix = suffix;
 	output_buf_req->sz += suffix;
+<<<<<<< HEAD
 	decoder->meta_data_offset = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	DDL_MSG_LOW("metadata output buf size : %d", suffix);
 }
 

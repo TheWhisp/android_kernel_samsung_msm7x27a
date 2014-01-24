@@ -32,6 +32,28 @@ struct device platform_bus = {
 EXPORT_SYMBOL_GPL(platform_bus);
 
 /**
+<<<<<<< HEAD
+=======
+ * arch_setup_pdev_archdata - Allow manipulation of archdata before its used
+ * @pdev: platform device
+ *
+ * This is called before platform_device_add() such that any pdev_archdata may
+ * be setup before the platform_notifier is called.  So if a user needs to
+ * manipulate any relevant information in the pdev_archdata they can do:
+ *
+ * 	platform_devic_alloc()
+ * 	... manipulate ...
+ * 	platform_device_add()
+ *
+ * And if they don't care they can just call platform_device_register() and
+ * everything will just work out.
+ */
+void __weak arch_setup_pdev_archdata(struct platform_device *pdev)
+{
+}
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * platform_get_resource - get a resource for a device
  * @dev: platform device
  * @type: resource type
@@ -173,6 +195,10 @@ struct platform_device *platform_device_alloc(const char *name, int id)
 		pa->pdev.id = id;
 		device_initialize(&pa->pdev.dev);
 		pa->pdev.dev.release = platform_device_release;
+<<<<<<< HEAD
+=======
+		arch_setup_pdev_archdata(&pa->pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return pa ? &pa->pdev : NULL;
@@ -334,6 +360,10 @@ EXPORT_SYMBOL_GPL(platform_device_del);
 int platform_device_register(struct platform_device *pdev)
 {
 	device_initialize(&pdev->dev);
+<<<<<<< HEAD
+=======
+	arch_setup_pdev_archdata(pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return platform_device_add(pdev);
 }
 EXPORT_SYMBOL_GPL(platform_device_register);
@@ -354,6 +384,7 @@ void platform_device_unregister(struct platform_device *pdev)
 EXPORT_SYMBOL_GPL(platform_device_unregister);
 
 /**
+<<<<<<< HEAD
  * platform_device_register_resndata - add a platform-level device with
  * resources and platform-specific data
  *
@@ -372,10 +403,22 @@ struct platform_device *platform_device_register_resndata(
 		const char *name, int id,
 		const struct resource *res, unsigned int num,
 		const void *data, size_t size)
+=======
+ * platform_device_register_full - add a platform-level device with
+ * resources and platform-specific data
+ *
+ * @pdevinfo: data used to create device
+ *
+ * Returns &struct platform_device pointer on success, or ERR_PTR() on error.
+ */
+struct platform_device *platform_device_register_full(
+		const struct platform_device_info *pdevinfo)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = -ENOMEM;
 	struct platform_device *pdev;
 
+<<<<<<< HEAD
 	pdev = platform_device_alloc(name, id);
 	if (!pdev)
 		goto err;
@@ -387,19 +430,60 @@ struct platform_device *platform_device_register_resndata(
 		goto err;
 
 	ret = platform_device_add_data(pdev, data, size);
+=======
+	pdev = platform_device_alloc(pdevinfo->name, pdevinfo->id);
+	if (!pdev)
+		goto err_alloc;
+
+	pdev->dev.parent = pdevinfo->parent;
+
+	if (pdevinfo->dma_mask) {
+		/*
+		 * This memory isn't freed when the device is put,
+		 * I don't have a nice idea for that though.  Conceptually
+		 * dma_mask in struct device should not be a pointer.
+		 * See http://thread.gmane.org/gmane.linux.kernel.pci/9081
+		 */
+		pdev->dev.dma_mask =
+			kmalloc(sizeof(*pdev->dev.dma_mask), GFP_KERNEL);
+		if (!pdev->dev.dma_mask)
+			goto err;
+
+		*pdev->dev.dma_mask = pdevinfo->dma_mask;
+		pdev->dev.coherent_dma_mask = pdevinfo->dma_mask;
+	}
+
+	ret = platform_device_add_resources(pdev,
+			pdevinfo->res, pdevinfo->num_res);
+	if (ret)
+		goto err;
+
+	ret = platform_device_add_data(pdev,
+			pdevinfo->data, pdevinfo->size_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto err;
 
 	ret = platform_device_add(pdev);
 	if (ret) {
 err:
+<<<<<<< HEAD
+=======
+		kfree(pdev->dev.dma_mask);
+
+err_alloc:
+>>>>>>> refs/remotes/origin/cm-10.0
 		platform_device_put(pdev);
 		return ERR_PTR(ret);
 	}
 
 	return pdev;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(platform_device_register_resndata);
+=======
+EXPORT_SYMBOL_GPL(platform_device_register_full);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int platform_drv_probe(struct device *_dev)
 {
@@ -588,12 +672,20 @@ static int platform_uevent(struct device *dev, struct kobj_uevent_env *env)
 	int rc;
 
 	/* Some devices have extra OF data and an OF-style MODALIAS */
+<<<<<<< HEAD
 	rc = of_device_uevent(dev,env);
+=======
+	rc = of_device_uevent_modalias(dev,env);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc != -ENODEV)
 		return rc;
 
 	add_uevent_var(env, "MODALIAS=%s%s", PLATFORM_MODULE_PREFIX,
+<<<<<<< HEAD
 		(pdev->id_entry) ? pdev->id_entry->name : pdev->name);
+=======
+			pdev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -667,6 +759,7 @@ static int platform_legacy_resume(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 int platform_pm_prepare(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -686,6 +779,8 @@ void platform_pm_complete(struct device *dev)
 		drv->pm->complete(dev);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_PM_SLEEP */
 
 #ifdef CONFIG_SUSPEND
@@ -708,6 +803,7 @@ int platform_pm_suspend(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 int platform_pm_suspend_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -724,6 +820,8 @@ int platform_pm_suspend_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int platform_pm_resume(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -742,6 +840,7 @@ int platform_pm_resume(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 int platform_pm_resume_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -758,6 +857,8 @@ int platform_pm_resume_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_SUSPEND */
 
 #ifdef CONFIG_HIBERNATE_CALLBACKS
@@ -780,6 +881,7 @@ int platform_pm_freeze(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 int platform_pm_freeze_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -796,6 +898,8 @@ int platform_pm_freeze_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int platform_pm_thaw(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -814,6 +918,7 @@ int platform_pm_thaw(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 int platform_pm_thaw_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -830,6 +935,8 @@ int platform_pm_thaw_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int platform_pm_poweroff(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -848,6 +955,7 @@ int platform_pm_poweroff(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 int platform_pm_poweroff_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -864,6 +972,8 @@ int platform_pm_poweroff_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int platform_pm_restore(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -882,6 +992,7 @@ int platform_pm_restore(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 int platform_pm_restore_noirq(struct device *dev)
 {
 	struct device_driver *drv = dev->driver;
@@ -898,6 +1009,8 @@ int platform_pm_restore_noirq(struct device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_HIBERNATE_CALLBACKS */
 
 static const struct dev_pm_ops platform_dev_pm_ops = {

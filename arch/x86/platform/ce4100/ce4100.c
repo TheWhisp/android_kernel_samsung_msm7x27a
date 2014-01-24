@@ -109,7 +109,11 @@ static __init void sdv_serial_fixup(void)
 }
 
 #else
+<<<<<<< HEAD
 static inline void sdv_serial_fixup(void);
+=======
+static inline void sdv_serial_fixup(void) {};
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static void __init sdv_arch_setup(void)

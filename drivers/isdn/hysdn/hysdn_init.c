@@ -169,8 +169,13 @@ hysdn_init(void)
 		hysdn_have_procfs = 1;
 
 #ifdef CONFIG_HYSDN_CAPI
+<<<<<<< HEAD
 	if(cardmax > 0) {
 		if(hycapi_init()) {
+=======
+	if (cardmax > 0) {
+		if (hycapi_init()) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			printk(KERN_ERR "HYCAPI: init failed\n");
 
 			if (hysdn_have_procfs)

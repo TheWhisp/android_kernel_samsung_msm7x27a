@@ -17,6 +17,10 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/delay.h>
 #include <asm/uaccess.h>
 #include <asm/rtas.h>
@@ -567,6 +571,15 @@ static void rtas_flash_firmware(int reboot_type)
 	}
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Just before starting the firmware flash, cancel the event scan work
+	 * to avoid any soft lockup issues.
+	 */
+	rtas_cancel_event_scan();
+
+	/*
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * NOTE: the "first" block must be under 4GB, so we create
 	 * an entry with no data blocks in the reserved buffer in
 	 * the kernel data segment.

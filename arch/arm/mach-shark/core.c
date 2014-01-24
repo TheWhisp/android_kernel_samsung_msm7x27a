@@ -15,6 +15,10 @@
 #include <asm/mach-types.h>
 #include <asm/leds.h>
 #include <asm/param.h>
+<<<<<<< HEAD
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/map.h>
 #include <asm/mach/arch.h>
@@ -26,10 +30,16 @@
 #define ROMCARD_SIZE            0x08000000
 #define ROMCARD_START           0x10000000
 
+<<<<<<< HEAD
 void arch_reset(char mode, const char *cmd)
 {
         short temp;
         local_irq_disable();
+=======
+static void shark_restart(char mode, const char *cmd)
+{
+        short temp;
+>>>>>>> refs/remotes/origin/cm-10.0
         /* Reset the Machine via pc[3] of the sequoia chipset */
         outw(0x09,0x24);
         temp=inw(0x26);
@@ -150,10 +160,27 @@ static struct sys_timer shark_timer = {
 	.init		= shark_timer_init,
 };
 
+<<<<<<< HEAD
 MACHINE_START(SHARK, "Shark")
 	/* Maintainer: Alexander Schulz */
 	.boot_params	= 0x08003000,
 	.map_io		= shark_map_io,
 	.init_irq	= shark_init_irq,
 	.timer		= &shark_timer,
+=======
+static void shark_init_early(void)
+{
+	disable_hlt();
+}
+
+MACHINE_START(SHARK, "Shark")
+	/* Maintainer: Alexander Schulz */
+	.atag_offset	= 0x3000,
+	.map_io		= shark_map_io,
+	.init_early	= shark_init_early,
+	.init_irq	= shark_init_irq,
+	.timer		= &shark_timer,
+	.dma_zone_size	= SZ_4M,
+	.restart	= shark_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

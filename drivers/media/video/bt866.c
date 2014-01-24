@@ -240,6 +240,7 @@ static struct i2c_driver bt866_driver = {
 	.id_table	= bt866_id,
 };
 
+<<<<<<< HEAD
 static __init int init_bt866(void)
 {
 	return i2c_add_driver(&bt866_driver);
@@ -252,3 +253,6 @@ static __exit void exit_bt866(void)
 
 module_init(init_bt866);
 module_exit(exit_bt866);
+=======
+module_i2c_driver(bt866_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

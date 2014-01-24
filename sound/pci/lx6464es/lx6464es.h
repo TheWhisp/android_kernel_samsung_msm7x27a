@@ -26,7 +26,11 @@
 #define LX6464ES_H
 
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -69,6 +73,11 @@ struct lx6464es {
 	struct pci_dev         *pci;
 	int			irq;
 
+<<<<<<< HEAD
+=======
+	u8			mac_address[6];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spinlock_t		lock;        /* interrupt spinlock */
 	struct mutex            setup_mutex; /* mutex used in hw_params, open
 					      * and close */

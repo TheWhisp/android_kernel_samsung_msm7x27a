@@ -33,6 +33,10 @@
 #include <linux/i2c-gpio.h>
 
 #include <asm/mach-types.h>
+<<<<<<< HEAD
+=======
+#include <asm/suspend.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
@@ -398,9 +402,20 @@ static void __init palmz72_init(void)
 }
 
 MACHINE_START(PALMZ72, "Palm Zire72")
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= pxa27x_map_io,
 	.init_irq	= pxa27x_init_irq,
 	.timer		= &pxa_timer,
 	.init_machine	= palmz72_init
+=======
+	.atag_offset	= 0x100,
+	.map_io		= pxa27x_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa27x_init_irq,
+	.handle_irq	= pxa27x_handle_irq,
+	.timer		= &pxa_timer,
+	.init_machine	= palmz72_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

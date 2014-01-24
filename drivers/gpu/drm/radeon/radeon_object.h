@@ -52,6 +52,7 @@ static inline unsigned radeon_mem_type_to_domain(u32 mem_type)
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  * radeon_bo_reserve - reserve bo
  * @bo:		bo structure
@@ -74,6 +75,9 @@ static inline int radeon_bo_reserve(struct radeon_bo *bo, bool no_wait)
 	}
 	return 0;
 }
+=======
+int radeon_bo_reserve(struct radeon_bo *bo, bool no_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void radeon_bo_unreserve(struct radeon_bo *bo)
 {
@@ -104,6 +108,19 @@ static inline bool radeon_bo_is_reserved(struct radeon_bo *bo)
 	return !!atomic_read(&bo->tbo.reserved);
 }
 
+<<<<<<< HEAD
+=======
+static inline unsigned radeon_bo_ngpu_pages(struct radeon_bo *bo)
+{
+	return (bo->tbo.num_pages << PAGE_SHIFT) / RADEON_GPU_PAGE_SIZE;
+}
+
+static inline unsigned radeon_bo_gpu_page_alignment(struct radeon_bo *bo)
+{
+	return (bo->tbo.mem.page_alignment << PAGE_SHIFT) / RADEON_GPU_PAGE_SIZE;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * radeon_bo_mmap_offset - return mmap offset of bo
  * @bo:	radeon object for which we query the offset
@@ -118,6 +135,7 @@ static inline u64 radeon_bo_mmap_offset(struct radeon_bo *bo)
 	return bo->tbo.addr_space_offset;
 }
 
+<<<<<<< HEAD
 static inline int radeon_bo_wait(struct radeon_bo *bo, u32 *mem_type,
 					bool no_wait)
 {
@@ -135,6 +153,10 @@ static inline int radeon_bo_wait(struct radeon_bo *bo, u32 *mem_type,
 	ttm_bo_unreserve(&bo->tbo);
 	return r;
 }
+=======
+extern int radeon_bo_wait(struct radeon_bo *bo, u32 *mem_type,
+			  bool no_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int radeon_bo_create(struct radeon_device *rdev,
 				unsigned long size, int byte_align,
@@ -166,4 +188,29 @@ extern void radeon_bo_move_notify(struct ttm_buffer_object *bo,
 					struct ttm_mem_reg *mem);
 extern int radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo);
 extern int radeon_bo_get_surface_reg(struct radeon_bo *bo);
+<<<<<<< HEAD
+=======
+extern struct radeon_bo_va *radeon_bo_va(struct radeon_bo *rbo,
+					 struct radeon_vm *vm);
+
+/*
+ * sub allocation
+ */
+extern int radeon_sa_bo_manager_init(struct radeon_device *rdev,
+				     struct radeon_sa_manager *sa_manager,
+				     unsigned size, u32 domain);
+extern void radeon_sa_bo_manager_fini(struct radeon_device *rdev,
+				      struct radeon_sa_manager *sa_manager);
+extern int radeon_sa_bo_manager_start(struct radeon_device *rdev,
+				      struct radeon_sa_manager *sa_manager);
+extern int radeon_sa_bo_manager_suspend(struct radeon_device *rdev,
+					struct radeon_sa_manager *sa_manager);
+extern int radeon_sa_bo_new(struct radeon_device *rdev,
+			    struct radeon_sa_manager *sa_manager,
+			    struct radeon_sa_bo *sa_bo,
+			    unsigned size, unsigned align);
+extern void radeon_sa_bo_free(struct radeon_device *rdev,
+			      struct radeon_sa_bo *sa_bo);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

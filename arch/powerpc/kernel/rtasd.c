@@ -27,7 +27,11 @@
 #include <asm/rtas.h>
 #include <asm/prom.h>
 #include <asm/nvram.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/machdep.h>
 
 
@@ -472,6 +476,16 @@ static void start_event_scan(void)
 				 &event_scan_work, event_scan_delay);
 }
 
+<<<<<<< HEAD
+=======
+/* Cancel the rtas event scan work */
+void rtas_cancel_event_scan(void)
+{
+	cancel_delayed_work_sync(&event_scan_work);
+}
+EXPORT_SYMBOL_GPL(rtas_cancel_event_scan);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init rtas_init(void)
 {
 	struct proc_dir_entry *entry;

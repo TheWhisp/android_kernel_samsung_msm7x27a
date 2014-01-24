@@ -1,7 +1,11 @@
 /*
  * Range add and subtract
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/sort.h>
 

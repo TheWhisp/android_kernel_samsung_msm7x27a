@@ -133,6 +133,7 @@ out_both:
 	return;
 }
 
+<<<<<<< HEAD
 /* the PPS echo function */
 static void pps_echo(struct pps_device *pps, int event, void *data)
 {
@@ -141,6 +142,8 @@ static void pps_echo(struct pps_device *pps, int event, void *data)
 		event & PPS_CAPTURECLEAR ? "clear" : "");
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void parport_attach(struct parport *port)
 {
 	struct pps_client_pp *device;
@@ -151,7 +154,10 @@ static void parport_attach(struct parport *port)
 				  PPS_OFFSETASSERT | PPS_OFFSETCLEAR | \
 				  PPS_ECHOASSERT | PPS_ECHOCLEAR | \
 				  PPS_CANWAIT | PPS_TSFMT_TSPEC,
+<<<<<<< HEAD
 		.echo		= pps_echo,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner		= THIS_MODULE,
 		.dev		= NULL
 	};

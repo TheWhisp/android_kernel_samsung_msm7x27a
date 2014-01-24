@@ -52,7 +52,11 @@ static int palm_os_4_probe(struct usb_serial *serial,
 					const struct usb_device_id *id);
 
 /* Parameters that may be passed into the module. */
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 static __u16 vendor;
 static __u16 product;
 
@@ -173,7 +177,10 @@ static struct usb_driver visor_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* All of the device info needed for the Handspring Visor,
@@ -184,7 +191,10 @@ static struct usb_serial_driver handspring_device = {
 		.name =		"visor",
 	},
 	.description =		"Handspring Visor / Palm OS",
+<<<<<<< HEAD
 	.usb_driver =		&visor_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		id_table,
 	.num_ports =		2,
 	.bulk_out_size =	256,
@@ -205,7 +215,10 @@ static struct usb_serial_driver clie_5_device = {
 		.name =		"clie_5",
 	},
 	.description =		"Sony Clie 5.0",
+<<<<<<< HEAD
 	.usb_driver =		&visor_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		clie_id_5_table,
 	.num_ports =		2,
 	.bulk_out_size =	256,
@@ -226,7 +239,10 @@ static struct usb_serial_driver clie_3_5_device = {
 		.name =		"clie_3.5",
 	},
 	.description =		"Sony Clie 3.5",
+<<<<<<< HEAD
 	.usb_driver =		&visor_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		clie_id_3_5_table,
 	.num_ports =		1,
 	.bulk_out_size =	256,
@@ -237,6 +253,13 @@ static struct usb_serial_driver clie_3_5_device = {
 	.attach =		clie_3_5_startup,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&handspring_device, &clie_5_device, &clie_3_5_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /******************************************************************************
  * Handspring Visor specific driver functions
  ******************************************************************************/
@@ -596,9 +619,23 @@ static int treo_attach(struct usb_serial *serial)
 	*/
 #define COPY_PORT(dest, src)						\
 	do { \
+<<<<<<< HEAD
 		dest->read_urb = src->read_urb;				\
 		dest->bulk_in_endpointAddress = src->bulk_in_endpointAddress;\
 		dest->bulk_in_buffer = src->bulk_in_buffer;		\
+=======
+		int i;							\
+									\
+		for (i = 0; i < ARRAY_SIZE(src->read_urbs); ++i) {	\
+			dest->read_urbs[i] = src->read_urbs[i];		\
+			dest->read_urbs[i]->context = dest;		\
+			dest->bulk_in_buffers[i] = src->bulk_in_buffers[i]; \
+		}							\
+		dest->read_urb = src->read_urb;				\
+		dest->bulk_in_endpointAddress = src->bulk_in_endpointAddress;\
+		dest->bulk_in_buffer = src->bulk_in_buffer;		\
+		dest->bulk_in_size = src->bulk_in_size;			\
+>>>>>>> refs/remotes/origin/cm-10.0
 		dest->interrupt_in_urb = src->interrupt_in_urb;		\
 		dest->interrupt_in_urb->context = dest;			\
 		dest->interrupt_in_endpointAddress = \
@@ -686,6 +723,7 @@ static int __init visor_init(void)
 		       ": Adding Palm OS protocol 4.x support for unknown device: 0x%x/0x%x\n",
 			vendor, product);
 	}
+<<<<<<< HEAD
 	retval = usb_serial_register(&handspring_device);
 	if (retval)
 		goto failed_handspring_register;
@@ -708,16 +746,26 @@ failed_clie_5_register:
 failed_clie_3_5_register:
 	usb_serial_deregister(&handspring_device);
 failed_handspring_register:
+=======
+
+	retval = usb_serial_register_drivers(&visor_driver, serial_drivers);
+	if (retval == 0)
+		printk(KERN_INFO KBUILD_MODNAME ": " DRIVER_DESC "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
 
 static void __exit visor_exit (void)
 {
+<<<<<<< HEAD
 	usb_deregister(&visor_driver);
 	usb_serial_deregister(&handspring_device);
 	usb_serial_deregister(&clie_3_5_device);
 	usb_serial_deregister(&clie_5_device);
+=======
+	usb_serial_deregister_drivers(&visor_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 

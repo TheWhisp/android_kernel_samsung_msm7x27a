@@ -17,6 +17,10 @@
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/net.h>
+<<<<<<< HEAD
+=======
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/ip.h>
 #include <net/inetpeer.h>
 #include <net/secure_seq.h>
@@ -55,6 +59,7 @@
  *  1.  Nodes may appear in the tree only with the pool lock held.
  *  2.  Nodes may disappear from the tree only with the pool lock held
  *      AND reference count being 0.
+<<<<<<< HEAD
  *  3.  Nodes appears and disappears from unused node list only under
  *      "inet_peer_unused_lock".
  *  4.  Global variable peer_total is modified under the pool lock.
@@ -64,12 +69,27 @@
  *		refcnt: atomically against modifications on other CPU;
  *		   usually under some other lock to prevent node disappearing
  *		dtime: unused node list lock
+=======
+ *  3.  Global variable peer_total is modified under the pool lock.
+ *  4.  struct inet_peer fields modification:
+ *		avl_left, avl_right, avl_parent, avl_height: pool lock
+ *		refcnt: atomically against modifications on other CPU;
+ *		   usually under some other lock to prevent node disappearing
+>>>>>>> refs/remotes/origin/cm-10.0
  *		daddr: unchangeable
  *		ip_id_count: atomic value (no lock needed)
  */
 
 static struct kmem_cache *peer_cachep __read_mostly;
 
+<<<<<<< HEAD
+=======
+static LIST_HEAD(gc_list);
+static const int gc_delay = 60 * HZ;
+static struct delayed_work gc_work;
+static DEFINE_SPINLOCK(gc_lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define node_height(x) x->avl_height
 
 #define peer_avl_empty ((struct inet_peer *)&peer_fake_node)
@@ -105,6 +125,7 @@ int inet_peer_threshold __read_mostly = 65536 + 128;	/* start to throw entries m
 					 * aggressively at this stage */
 int inet_peer_minttl __read_mostly = 120 * HZ;	/* TTL under high load: 120 sec */
 int inet_peer_maxttl __read_mostly = 10 * 60 * HZ;	/* usual time to live: 10 min */
+<<<<<<< HEAD
 int inet_peer_gc_mintime __read_mostly = 10 * HZ;
 int inet_peer_gc_maxtime __read_mostly = 120 * HZ;
 
@@ -119,6 +140,53 @@ static struct {
 static void peer_check_expire(unsigned long dummy);
 static DEFINE_TIMER(peer_periodic_timer, peer_check_expire, 0, 0);
 
+=======
+
+static void inetpeer_gc_worker(struct work_struct *work)
+{
+	struct inet_peer *p, *n;
+	LIST_HEAD(list);
+
+	spin_lock_bh(&gc_lock);
+	list_replace_init(&gc_list, &list);
+	spin_unlock_bh(&gc_lock);
+
+	if (list_empty(&list))
+		return;
+
+	list_for_each_entry_safe(p, n, &list, gc_list) {
+
+		if(need_resched())
+			cond_resched();
+
+		if (p->avl_left != peer_avl_empty) {
+			list_add_tail(&p->avl_left->gc_list, &list);
+			p->avl_left = peer_avl_empty;
+		}
+
+		if (p->avl_right != peer_avl_empty) {
+			list_add_tail(&p->avl_right->gc_list, &list);
+			p->avl_right = peer_avl_empty;
+		}
+
+		n = list_entry(p->gc_list.next, struct inet_peer, gc_list);
+
+		if (!atomic_read(&p->refcnt)) {
+			list_del(&p->gc_list);
+			kmem_cache_free(peer_cachep, p);
+		}
+	}
+
+	if (list_empty(&list))
+		return;
+
+	spin_lock_bh(&gc_lock);
+	list_splice(&list, &gc_list);
+	spin_unlock_bh(&gc_lock);
+
+	schedule_delayed_work(&gc_work, gc_delay);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Called from ip_output.c:ip_init  */
 void __init inet_initpeers(void)
@@ -143,6 +211,7 @@ void __init inet_initpeers(void)
 			0, SLAB_HWCACHE_ALIGN | SLAB_PANIC,
 			NULL);
 
+<<<<<<< HEAD
 	/* All the timers, started at system startup tend
 	   to synchronize. Perturb it a bit.
 	 */
@@ -158,6 +227,9 @@ static void unlink_from_unused(struct inet_peer *p)
 	spin_lock_bh(&unused_peers.lock);
 	list_del_init(&p->unused);
 	spin_unlock_bh(&unused_peers.lock);
+=======
+	INIT_DELAYED_WORK_DEFERRABLE(&gc_work, inetpeer_gc_worker);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int addr_compare(const struct inetpeer_addr *a,
@@ -168,7 +240,11 @@ static int addr_compare(const struct inetpeer_addr *a,
 	for (i = 0; i < n; i++) {
 		if (a->addr.a6[i] == b->addr.a6[i])
 			continue;
+<<<<<<< HEAD
 		if (a->addr.a6[i] < b->addr.a6[i])
+=======
+		if ((__force u32)a->addr.a6[i] < (__force u32)b->addr.a6[i])
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -1;
 		return 1;
 	}
@@ -204,6 +280,7 @@ static int addr_compare(const struct inetpeer_addr *a,
 	u;							\
 })
 
+<<<<<<< HEAD
 static bool atomic_add_unless_return(atomic_t *ptr, int a, int u, int *newv)
 {
 	int cur, old = atomic_read(ptr);
@@ -218,6 +295,8 @@ static bool atomic_add_unless_return(atomic_t *ptr, int a, int u, int *newv)
 	return false;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Called with rcu_read_lock()
  * Because we hold no lock against a writer, its quite possible we fall
@@ -226,8 +305,12 @@ static bool atomic_add_unless_return(atomic_t *ptr, int a, int u, int *newv)
  * We exit from this function if number of links exceeds PEER_MAXDEPTH
  */
 static struct inet_peer *lookup_rcu(const struct inetpeer_addr *daddr,
+<<<<<<< HEAD
 				    struct inet_peer_base *base,
 				    int *newrefcnt)
+=======
+				    struct inet_peer_base *base)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inet_peer *u = rcu_dereference(base->root);
 	int count = 0;
@@ -236,11 +319,17 @@ static struct inet_peer *lookup_rcu(const struct inetpeer_addr *daddr,
 		int cmp = addr_compare(daddr, &u->daddr);
 		if (cmp == 0) {
 			/* Before taking a reference, check if this entry was
+<<<<<<< HEAD
 			 * deleted, unlink_from_pool() sets refcnt=-1 to make
 			 * distinction between an unused entry (refcnt=0) and
 			 * a freed one.
 			 */
 			if (!atomic_add_unless_return(&u->refcnt, 1, -1, newrefcnt))
+=======
+			 * deleted (refcnt=-1)
+			 */
+			if (!atomic_add_unless(&u->refcnt, 1, -1))
+>>>>>>> refs/remotes/origin/cm-10.0
 				u = NULL;
 			return u;
 		}
@@ -367,6 +456,7 @@ static void inetpeer_free_rcu(struct rcu_head *head)
 	kmem_cache_free(peer_cachep, container_of(head, struct inet_peer, rcu));
 }
 
+<<<<<<< HEAD
 /* May be called with local BH enabled. */
 static void unlink_from_pool(struct inet_peer *p, struct inet_peer_base *base,
 			     struct inet_peer __rcu **stack[PEER_MAXDEPTH])
@@ -423,10 +513,43 @@ static void unlink_from_pool(struct inet_peer *p, struct inet_peer_base *base,
 		 * recent deletion time and will not be cleaned again soon.
 		 */
 		inet_putpeer(p);
+=======
+static void unlink_from_pool(struct inet_peer *p, struct inet_peer_base *base,
+			     struct inet_peer __rcu **stack[PEER_MAXDEPTH])
+{
+	struct inet_peer __rcu ***stackptr, ***delp;
+
+	if (lookup(&p->daddr, stack, base) != p)
+		BUG();
+	delp = stackptr - 1; /* *delp[0] == p */
+	if (p->avl_left == peer_avl_empty_rcu) {
+		*delp[0] = p->avl_right;
+		--stackptr;
+	} else {
+		/* look for a node to insert instead of p */
+		struct inet_peer *t;
+		t = lookup_rightempty(p, base);
+		BUG_ON(rcu_deref_locked(*stackptr[-1], base) != t);
+		**--stackptr = t->avl_left;
+		/* t is removed, t->daddr > x->daddr for any
+		 * x in p->avl_left subtree.
+		 * Put t in the old place of p. */
+		RCU_INIT_POINTER(*delp[0], t);
+		t->avl_left = p->avl_left;
+		t->avl_right = p->avl_right;
+		t->avl_height = p->avl_height;
+		BUG_ON(delp[1] != &p->avl_left);
+		delp[1] = &t->avl_left; /* was &p->avl_left */
+	}
+	peer_avl_rebalance(stack, stackptr, base);
+	base->total--;
+	call_rcu(&p->rcu, inetpeer_free_rcu);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct inet_peer_base *family_to_base(int family)
 {
+<<<<<<< HEAD
 	return (family == AF_INET ? &v4_peers : &v6_peers);
 }
 
@@ -474,18 +597,68 @@ static int cleanup_once(unsigned long ttl, struct inet_peer __rcu **stack[PEER_M
 
 /* Called with or without local BH being disabled. */
 struct inet_peer *inet_getpeer(struct inetpeer_addr *daddr, int create)
+=======
+	return family == AF_INET ? &v4_peers : &v6_peers;
+}
+
+/* perform garbage collect on all items stacked during a lookup */
+static int inet_peer_gc(struct inet_peer_base *base,
+			struct inet_peer __rcu **stack[PEER_MAXDEPTH],
+			struct inet_peer __rcu ***stackptr)
+{
+	struct inet_peer *p, *gchead = NULL;
+	__u32 delta, ttl;
+	int cnt = 0;
+
+	if (base->total >= inet_peer_threshold)
+		ttl = 0; /* be aggressive */
+	else
+		ttl = inet_peer_maxttl
+				- (inet_peer_maxttl - inet_peer_minttl) / HZ *
+					base->total / inet_peer_threshold * HZ;
+	stackptr--; /* last stack slot is peer_avl_empty */
+	while (stackptr > stack) {
+		stackptr--;
+		p = rcu_deref_locked(**stackptr, base);
+		if (atomic_read(&p->refcnt) == 0) {
+			smp_rmb();
+			delta = (__u32)jiffies - p->dtime;
+			if (delta >= ttl &&
+			    atomic_cmpxchg(&p->refcnt, 0, -1) == 0) {
+				p->gc_next = gchead;
+				gchead = p;
+			}
+		}
+	}
+	while ((p = gchead) != NULL) {
+		gchead = p->gc_next;
+		cnt++;
+		unlink_from_pool(p, base, stack);
+	}
+	return cnt;
+}
+
+struct inet_peer *inet_getpeer(const struct inetpeer_addr *daddr, int create)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inet_peer __rcu **stack[PEER_MAXDEPTH], ***stackptr;
 	struct inet_peer_base *base = family_to_base(daddr->family);
 	struct inet_peer *p;
 	unsigned int sequence;
+<<<<<<< HEAD
 	int invalidated, newrefcnt = 0;
 
 	/* Look up for the address quickly, lockless.
+=======
+	int invalidated, gccnt = 0;
+
+	/* Attempt a lockless lookup first.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * Because of a concurrent writer, we might not find an existing entry.
 	 */
 	rcu_read_lock();
 	sequence = read_seqbegin(&base->lock);
+<<<<<<< HEAD
 	p = lookup_rcu(daddr, base, &newrefcnt);
 	invalidated = read_seqretry(&base->lock, sequence);
 	rcu_read_unlock();
@@ -498,6 +671,14 @@ found:		/* The existing node has been found.
 			unlink_from_unused(p);
 		return p;
 	}
+=======
+	p = lookup_rcu(daddr, base);
+	invalidated = read_seqretry(&base->lock, sequence);
+	rcu_read_unlock();
+
+	if (p)
+		return p;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* If no writer did a change during our lookup, we can return early. */
 	if (!create && !invalidated)
@@ -507,18 +688,39 @@ found:		/* The existing node has been found.
 	 * At least, nodes should be hot in our cache.
 	 */
 	write_seqlock_bh(&base->lock);
+<<<<<<< HEAD
 	p = lookup(daddr, stack, base);
 	if (p != peer_avl_empty) {
 		newrefcnt = atomic_inc_return(&p->refcnt);
 		write_sequnlock_bh(&base->lock);
 		goto found;
+=======
+relookup:
+	p = lookup(daddr, stack, base);
+	if (p != peer_avl_empty) {
+		atomic_inc(&p->refcnt);
+		write_sequnlock_bh(&base->lock);
+		return p;
+	}
+	if (!gccnt) {
+		gccnt = inet_peer_gc(base, stack, stackptr);
+		if (gccnt && create)
+			goto relookup;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	p = create ? kmem_cache_alloc(peer_cachep, GFP_ATOMIC) : NULL;
 	if (p) {
 		p->daddr = *daddr;
 		atomic_set(&p->refcnt, 1);
 		atomic_set(&p->rid, 0);
+<<<<<<< HEAD
 		atomic_set(&p->ip_id_count, secure_ip_id(daddr->addr.a4));
+=======
+		atomic_set(&p->ip_id_count,
+				(daddr->family == AF_INET) ?
+					secure_ip_id(daddr->addr.a4) :
+					secure_ipv6_id(daddr->addr.a6));
+>>>>>>> refs/remotes/origin/cm-10.0
 		p->tcp_ts_stamp = 0;
 		p->metrics[RTAX_LOCK-1] = INETPEER_METRICS_NEW;
 		p->rate_tokens = 0;
@@ -526,8 +728,12 @@ found:		/* The existing node has been found.
 		p->pmtu_expires = 0;
 		p->pmtu_orig = 0;
 		memset(&p->redirect_learned, 0, sizeof(p->redirect_learned));
+<<<<<<< HEAD
 		INIT_LIST_HEAD(&p->unused);
 
+=======
+		INIT_LIST_HEAD(&p->gc_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Link the node. */
 		link_to_pool(p, base);
@@ -535,6 +741,7 @@ found:		/* The existing node has been found.
 	}
 	write_sequnlock_bh(&base->lock);
 
+<<<<<<< HEAD
 	if (base->total >= inet_peer_threshold)
 		/* Remove one less-recently-used entry. */
 		cleanup_once(0, stack);
@@ -592,6 +799,17 @@ void inet_putpeer(struct inet_peer *p)
 	}
 
 	local_bh_enable();
+=======
+	return p;
+}
+EXPORT_SYMBOL_GPL(inet_getpeer);
+
+void inet_putpeer(struct inet_peer *p)
+{
+	p->dtime = (__u32)jiffies;
+	smp_mb__before_atomic_dec();
+	atomic_dec(&p->refcnt);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(inet_putpeer);
 
@@ -635,3 +853,41 @@ bool inet_peer_xrlim_allow(struct inet_peer *peer, int timeout)
 	return rc;
 }
 EXPORT_SYMBOL(inet_peer_xrlim_allow);
+<<<<<<< HEAD
+=======
+
+static void inetpeer_inval_rcu(struct rcu_head *head)
+{
+	struct inet_peer *p = container_of(head, struct inet_peer, gc_rcu);
+
+	spin_lock_bh(&gc_lock);
+	list_add_tail(&p->gc_list, &gc_list);
+	spin_unlock_bh(&gc_lock);
+
+	schedule_delayed_work(&gc_work, gc_delay);
+}
+
+void inetpeer_invalidate_tree(int family)
+{
+	struct inet_peer *old, *new, *prev;
+	struct inet_peer_base *base = family_to_base(family);
+
+	write_seqlock_bh(&base->lock);
+
+	old = base->root;
+	if (old == peer_avl_empty_rcu)
+		goto out;
+
+	new = peer_avl_empty_rcu;
+
+	prev = cmpxchg(&base->root, old, new);
+	if (prev == old) {
+		base->total = 0;
+		call_rcu(&prev->gc_rcu, inetpeer_inval_rcu);
+	}
+
+out:
+	write_sequnlock_bh(&base->lock);
+}
+EXPORT_SYMBOL(inetpeer_invalidate_tree);
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -5,6 +5,10 @@ struct sys_timer;
 
 extern struct sys_timer pxa168_timer;
 extern void __init pxa168_init_irq(void);
+<<<<<<< HEAD
+=======
+extern void pxa168_restart(char, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void pxa168_clear_keypad_wakeup(void);
 
 #include <linux/i2c.h>
@@ -14,9 +18,17 @@ extern void pxa168_clear_keypad_wakeup(void);
 #include <video/pxa168fb.h>
 #include <plat/pxa27x_keypad.h>
 #include <mach/cputype.h>
+<<<<<<< HEAD
 
 extern struct pxa_device_desc pxa168_device_uart1;
 extern struct pxa_device_desc pxa168_device_uart2;
+=======
+#include <linux/pxa168_eth.h>
+
+extern struct pxa_device_desc pxa168_device_uart1;
+extern struct pxa_device_desc pxa168_device_uart2;
+extern struct pxa_device_desc pxa168_device_uart3;
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct pxa_device_desc pxa168_device_twsi0;
 extern struct pxa_device_desc pxa168_device_twsi1;
 extern struct pxa_device_desc pxa168_device_pwm1;
@@ -31,6 +43,19 @@ extern struct pxa_device_desc pxa168_device_ssp5;
 extern struct pxa_device_desc pxa168_device_nand;
 extern struct pxa_device_desc pxa168_device_fb;
 extern struct pxa_device_desc pxa168_device_keypad;
+<<<<<<< HEAD
+=======
+extern struct pxa_device_desc pxa168_device_eth;
+
+struct pxa168_usb_pdata {
+	/* If NULL, default phy init routine for PXA168 would be called */
+	int (*phy_init)(void __iomem *usb_phy_reg_base);
+};
+/* pdata can be NULL */
+int __init pxa168_add_usb_host(struct pxa168_usb_pdata *pdata);
+
+extern struct platform_device pxa168_device_gpio;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int pxa168_add_uart(int id)
 {
@@ -39,6 +64,10 @@ static inline int pxa168_add_uart(int id)
 	switch (id) {
 	case 1: d = &pxa168_device_uart1; break;
 	case 2: d = &pxa168_device_uart2; break;
+<<<<<<< HEAD
+=======
+	case 3: d = &pxa168_device_uart3; break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (d == NULL)
@@ -117,4 +146,11 @@ static inline int pxa168_add_keypad(struct pxa27x_keypad_platform_data *data)
 	return pxa_register_device(&pxa168_device_keypad, data, sizeof(*data));
 }
 
+<<<<<<< HEAD
+=======
+static inline int pxa168_add_eth(struct pxa168_eth_platform_data *data)
+{
+	return pxa_register_device(&pxa168_device_eth, data, sizeof(*data));
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASM_MACH_PXA168_H */

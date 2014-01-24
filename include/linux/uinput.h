@@ -68,7 +68,11 @@ struct uinput_device {
 	unsigned char		head;
 	unsigned char		tail;
 	struct input_event	buff[UINPUT_BUFFER_SIZE];
+<<<<<<< HEAD
 	int			ff_effects_max;
+=======
+	unsigned int		ff_effects_max;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct uinput_request	*requests[UINPUT_NUM_REQUESTS];
 	wait_queue_head_t	requests_waitq;

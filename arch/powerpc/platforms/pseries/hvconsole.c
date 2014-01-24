@@ -24,7 +24,12 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hvcall.h>
 #include <asm/hvconsole.h>
 #include "plpar_wrappers.h"

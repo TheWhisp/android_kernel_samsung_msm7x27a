@@ -121,10 +121,18 @@ extern unsigned long ixp4xx_timer_freq;
  * Functions used by platform-level setup code
  */
 extern void ixp4xx_map_io(void);
+<<<<<<< HEAD
+=======
+extern void ixp4xx_init_early(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void ixp4xx_init_irq(void);
 extern void ixp4xx_sys_init(void);
 extern void ixp4xx_timer_init(void);
 extern struct sys_timer ixp4xx_timer;
+<<<<<<< HEAD
+=======
+extern void ixp4xx_restart(char, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void ixp4xx_pci_preinit(void);
 struct pci_sys_data;
 extern int ixp4xx_setup(int nr, struct pci_sys_data *sys);

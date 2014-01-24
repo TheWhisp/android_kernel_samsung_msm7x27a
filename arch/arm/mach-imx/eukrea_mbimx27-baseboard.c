@@ -32,7 +32,10 @@
 #include <mach/common.h>
 #include <mach/iomux-mx27.h>
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/audmux.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "devices-imx27.h"
 
@@ -112,7 +115,11 @@ eukrea_mbimx27_keymap_data __initconst = {
 	.keymap_size    = ARRAY_SIZE(eukrea_mbimx27_keymap),
 };
 
+<<<<<<< HEAD
 static struct gpio_led gpio_leds[] = {
+=======
+static const struct gpio_led eukrea_mbimx27_gpio_leds[] __initconst = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.name			= "led1",
 		.default_trigger	= "heartbeat",
@@ -127,6 +134,7 @@ static struct gpio_led gpio_leds[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct gpio_led_platform_data gpio_led_info = {
 	.leds		= gpio_leds,
 	.num_leds	= ARRAY_SIZE(gpio_leds),
@@ -138,6 +146,12 @@ static struct platform_device leds_gpio = {
 	.dev	= {
 		.platform_data	= &gpio_led_info,
 	},
+=======
+static const struct gpio_led_platform_data
+		eukrea_mbimx27_gpio_led_info __initconst = {
+	.leds		= eukrea_mbimx27_gpio_leds,
+	.num_leds	= ARRAY_SIZE(eukrea_mbimx27_gpio_leds),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct imx_fb_videomode eukrea_mbimx27_modes[] = {
@@ -293,10 +307,13 @@ static struct i2c_board_info eukrea_mbimx27_i2c_devices[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct platform_device *platform_devices[] __initdata = {
 	&leds_gpio,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct imxmmc_platform_data sdhc_pdata __initconst = {
 	.dat3_card_detect = 1,
 };
@@ -317,6 +334,7 @@ void __init eukrea_mbimx27_baseboard_init(void)
 	mxc_gpio_setup_multiple_pins(eukrea_mbimx27_pins,
 		ARRAY_SIZE(eukrea_mbimx27_pins), "MBIMX27");
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_SOC_EUKREA_TLV320) \
 	|| defined(CONFIG_SND_SOC_EUKREA_TLV320_MODULE)
 	/* SSI unit master I2S codec connected to SSI_PINS_4*/
@@ -336,6 +354,8 @@ void __init eukrea_mbimx27_baseboard_init(void)
 	);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	imx27_add_imx_uart1(&uart_pdata);
 	imx27_add_imx_uart2(&uart_pdata);
 #if !defined(MACH_EUKREA_CPUIMX27_USEUART4)
@@ -377,5 +397,9 @@ void __init eukrea_mbimx27_baseboard_init(void)
 
 	imx27_add_imx_keypad(&eukrea_mbimx27_keymap_data);
 
+<<<<<<< HEAD
 	platform_add_devices(platform_devices, ARRAY_SIZE(platform_devices));
+=======
+	gpio_led_register_device(-1, &eukrea_mbimx27_gpio_led_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

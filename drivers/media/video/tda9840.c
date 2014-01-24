@@ -208,6 +208,7 @@ static struct i2c_driver tda9840_driver = {
 	.id_table	= tda9840_id,
 };
 
+<<<<<<< HEAD
 static __init int init_tda9840(void)
 {
 	return i2c_add_driver(&tda9840_driver);
@@ -220,3 +221,6 @@ static __exit void exit_tda9840(void)
 
 module_init(init_tda9840);
 module_exit(exit_tda9840);
+=======
+module_i2c_driver(tda9840_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

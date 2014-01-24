@@ -41,21 +41,52 @@
 
 #include "rbd_types.h"
 
+<<<<<<< HEAD
 #define DRV_NAME "rbd"
 #define DRV_NAME_LONG "rbd (rados block device)"
 
 #define RBD_MINORS_PER_MAJOR	256		/* max minors per blkdev */
 
 #define RBD_MAX_MD_NAME_LEN	(96 + sizeof(RBD_SUFFIX))
+=======
+/*
+ * The basic unit of block I/O is a sector.  It is interpreted in a
+ * number of contexts in Linux (blk, bio, genhd), but the default is
+ * universally 512 bytes.  These symbols are just slightly more
+ * meaningful than the bare numbers they represent.
+ */
+#define	SECTOR_SHIFT	9
+#define	SECTOR_SIZE	(1ULL << SECTOR_SHIFT)
+
+#define RBD_DRV_NAME "rbd"
+#define RBD_DRV_NAME_LONG "rbd (rados block device)"
+
+#define RBD_MINORS_PER_MAJOR	256		/* max minors per blkdev */
+
+#define RBD_MAX_MD_NAME_LEN	(RBD_MAX_OBJ_NAME_LEN + sizeof(RBD_SUFFIX))
+>>>>>>> refs/remotes/origin/cm-10.0
 #define RBD_MAX_POOL_NAME_LEN	64
 #define RBD_MAX_SNAP_NAME_LEN	32
 #define RBD_MAX_OPT_LEN		1024
 
 #define RBD_SNAP_HEAD_NAME	"-"
 
+<<<<<<< HEAD
 #define DEV_NAME_LEN		32
 
 #define RBD_NOTIFY_TIMEOUT_DEFAULT 10
+=======
+/*
+ * An RBD device name will be "rbd#", where the "rbd" comes from
+ * RBD_DRV_NAME above, and # is a unique integer identifier.
+ * MAX_INT_FORMAT_WIDTH is used in ensuring DEV_NAME_LEN is big
+ * enough to hold all possible device names.
+ */
+#define DEV_NAME_LEN		32
+#define MAX_INT_FORMAT_WIDTH	((5 * sizeof (int)) / 2 + 1)
+
+#define RBD_READ_ONLY_DEFAULT		false
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * block device image metadata (in-memory version)
@@ -66,7 +97,10 @@ struct rbd_image_header {
 	__u8 obj_order;
 	__u8 crypt_type;
 	__u8 comp_type;
+<<<<<<< HEAD
 	struct rw_semaphore snap_rwsem;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ceph_snap_context *snapc;
 	size_t snap_names_len;
 	u64 snap_seq;
@@ -79,11 +113,19 @@ struct rbd_image_header {
 };
 
 struct rbd_options {
+<<<<<<< HEAD
 	int	notify_timeout;
 };
 
 /*
  * an instance of the client.  multiple devices may share a client.
+=======
+	bool	read_only;
+};
+
+/*
+ * an instance of the client.  multiple devices may share an rbd client.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct rbd_client {
 	struct ceph_client	*client;
@@ -92,6 +134,7 @@ struct rbd_client {
 	struct list_head	node;
 };
 
+<<<<<<< HEAD
 struct rbd_req_coll;
 
 /*
@@ -106,6 +149,11 @@ struct rbd_request {
 	struct rbd_req_coll	*coll;
 };
 
+=======
+/*
+ * a request completion status
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 struct rbd_req_status {
 	int done;
 	int rc;
@@ -122,6 +170,21 @@ struct rbd_req_coll {
 	struct rbd_req_status	status[0];
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * a single io request
+ */
+struct rbd_request {
+	struct request		*rq;		/* blk layer request */
+	struct bio		*bio;		/* cloned bio */
+	struct page		**pages;	/* list of used pages */
+	u64			len;
+	int			coll_index;
+	struct rbd_req_coll	*coll;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct rbd_snap {
 	struct	device		dev;
 	const char		*name;
@@ -140,7 +203,10 @@ struct rbd_device {
 	struct gendisk		*disk;		/* blkdev's gendisk and rq */
 	struct request_queue	*q;
 
+<<<<<<< HEAD
 	struct ceph_client	*client;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct rbd_client	*rbd_client;
 
 	char			name[DEV_NAME_LEN]; /* blkdev name, e.g. rbd3 */
@@ -157,10 +223,22 @@ struct rbd_device {
 	struct ceph_osd_event   *watch_event;
 	struct ceph_osd_request *watch_request;
 
+<<<<<<< HEAD
 	char                    snap_name[RBD_MAX_SNAP_NAME_LEN];
 	u32 cur_snap;	/* index+1 of current snapshot within snap context
 			   0 - for the head */
 	int read_only;
+=======
+	/* protects updating the header */
+	struct rw_semaphore     header_rwsem;
+	/* name of the snapshot this device reads from */
+	char                    snap_name[RBD_MAX_SNAP_NAME_LEN];
+	/* id of the snapshot this device reads from */
+	u64                     snap_id;	/* current snapshot id */
+	/* whether the snap_id this device reads from still exists */
+	bool                    snap_exists;
+	bool			read_only;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct list_head	node;
 
@@ -169,6 +247,7 @@ struct rbd_device {
 
 	/* sysfs related */
 	struct device		dev;
+<<<<<<< HEAD
 };
 
 static struct bus_type rbd_bus_type = {
@@ -200,6 +279,50 @@ static struct rbd_device *dev_to_rbd(struct device *dev)
 	return container_of(dev, struct rbd_device, dev);
 }
 
+=======
+	unsigned long		open_count;
+};
+
+static DEFINE_MUTEX(ctl_mutex);	  /* Serialize open/close/setup/teardown */
+
+static LIST_HEAD(rbd_dev_list);    /* devices */
+static DEFINE_SPINLOCK(rbd_dev_list_lock);
+
+static LIST_HEAD(rbd_client_list);		/* clients */
+static DEFINE_SPINLOCK(rbd_client_list_lock);
+
+static int __rbd_init_snaps_header(struct rbd_device *rbd_dev);
+static void rbd_dev_release(struct device *dev);
+static void __rbd_remove_snap_dev(struct rbd_device *rbd_dev,
+				  struct rbd_snap *snap);
+
+static ssize_t rbd_add(struct bus_type *bus, const char *buf,
+		       size_t count);
+static ssize_t rbd_remove(struct bus_type *bus, const char *buf,
+			  size_t count);
+
+static struct bus_attribute rbd_bus_attrs[] = {
+	__ATTR(add, S_IWUSR, NULL, rbd_add),
+	__ATTR(remove, S_IWUSR, NULL, rbd_remove),
+	__ATTR_NULL
+};
+
+static struct bus_type rbd_bus_type = {
+	.name		= "rbd",
+	.bus_attrs	= rbd_bus_attrs,
+};
+
+static void rbd_root_dev_release(struct device *dev)
+{
+}
+
+static struct device rbd_root_dev = {
+	.init_name =    "rbd",
+	.release =      rbd_root_dev_release,
+};
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct device *rbd_get_dev(struct rbd_device *rbd_dev)
 {
 	return get_device(&rbd_dev->dev);
@@ -214,16 +337,29 @@ static int __rbd_update_snaps(struct rbd_device *rbd_dev);
 
 static int rbd_open(struct block_device *bdev, fmode_t mode)
 {
+<<<<<<< HEAD
 	struct gendisk *disk = bdev->bd_disk;
 	struct rbd_device *rbd_dev = disk->private_data;
 
 	rbd_get_dev(rbd_dev);
 
 	set_device_ro(bdev, rbd_dev->read_only);
+=======
+	struct rbd_device *rbd_dev = bdev->bd_disk->private_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((mode & FMODE_WRITE) && rbd_dev->read_only)
 		return -EROFS;
 
+<<<<<<< HEAD
+=======
+	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
+	rbd_get_dev(rbd_dev);
+	set_device_ro(bdev, rbd_dev->read_only);
+	rbd_dev->open_count++;
+	mutex_unlock(&ctl_mutex);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -231,7 +367,15 @@ static int rbd_release(struct gendisk *disk, fmode_t mode)
 {
 	struct rbd_device *rbd_dev = disk->private_data;
 
+<<<<<<< HEAD
 	rbd_put_dev(rbd_dev);
+=======
+	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
+	BUG_ON(!rbd_dev->open_count);
+	rbd_dev->open_count--;
+	rbd_put_dev(rbd_dev);
+	mutex_unlock(&ctl_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -260,9 +404,17 @@ static struct rbd_client *rbd_client_create(struct ceph_options *opt,
 	kref_init(&rbdc->kref);
 	INIT_LIST_HEAD(&rbdc->node);
 
+<<<<<<< HEAD
 	rbdc->client = ceph_create_client(opt, rbdc);
 	if (IS_ERR(rbdc->client))
 		goto out_rbdc;
+=======
+	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
+
+	rbdc->client = ceph_create_client(opt, rbdc, 0, 0);
+	if (IS_ERR(rbdc->client))
+		goto out_mutex;
+>>>>>>> refs/remotes/origin/cm-10.0
 	opt = NULL; /* Now rbdc->client is responsible for opt */
 
 	ret = ceph_open_session(rbdc->client);
@@ -271,16 +423,29 @@ static struct rbd_client *rbd_client_create(struct ceph_options *opt,
 
 	rbdc->rbd_opts = rbd_opts;
 
+<<<<<<< HEAD
 	spin_lock(&node_lock);
 	list_add_tail(&rbdc->node, &rbd_client_list);
 	spin_unlock(&node_lock);
+=======
+	spin_lock(&rbd_client_list_lock);
+	list_add_tail(&rbdc->node, &rbd_client_list);
+	spin_unlock(&rbd_client_list_lock);
+
+	mutex_unlock(&ctl_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dout("rbd_client_create created %p\n", rbdc);
 	return rbdc;
 
 out_err:
 	ceph_destroy_client(rbdc->client);
+<<<<<<< HEAD
 out_rbdc:
+=======
+out_mutex:
+	mutex_unlock(&ctl_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(rbdc);
 out_opt:
 	if (opt)
@@ -308,17 +473,37 @@ static struct rbd_client *__rbd_client_find(struct ceph_options *opt)
  * mount options
  */
 enum {
+<<<<<<< HEAD
 	Opt_notify_timeout,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	Opt_last_int,
 	/* int args above */
 	Opt_last_string,
 	/* string args above */
+<<<<<<< HEAD
 };
 
 static match_table_t rbdopt_tokens = {
 	{Opt_notify_timeout, "notify_timeout=%d"},
 	/* int args above */
 	/* string args above */
+=======
+	Opt_read_only,
+	Opt_read_write,
+	/* Boolean args above */
+	Opt_last_bool,
+};
+
+static match_table_t rbdopt_tokens = {
+	/* int args above */
+	/* string args above */
+	{Opt_read_only, "read_only"},
+	{Opt_read_only, "ro"},		/* Alternate spelling */
+	{Opt_read_write, "read_write"},
+	{Opt_read_write, "rw"},		/* Alternate spelling */
+	/* Boolean args above */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{-1, NULL}
 };
 
@@ -328,7 +513,11 @@ static int parse_rbd_opts_token(char *c, void *private)
 	substring_t argstr[MAX_OPT_ARGS];
 	int token, intval, ret;
 
+<<<<<<< HEAD
 	token = match_token((char *)c, rbdopt_tokens, argstr);
+=======
+	token = match_token(c, rbdopt_tokens, argstr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (token < 0)
 		return -EINVAL;
 
@@ -343,13 +532,26 @@ static int parse_rbd_opts_token(char *c, void *private)
 	} else if (token > Opt_last_int && token < Opt_last_string) {
 		dout("got string token %d val %s\n", token,
 		     argstr[0].from);
+<<<<<<< HEAD
+=======
+	} else if (token > Opt_last_string && token < Opt_last_bool) {
+		dout("got Boolean token %d\n", token);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		dout("got token %d\n", token);
 	}
 
 	switch (token) {
+<<<<<<< HEAD
 	case Opt_notify_timeout:
 		rbdopt->notify_timeout = intval;
+=======
+	case Opt_read_only:
+		rbdopt->read_only = true;
+		break;
+	case Opt_read_write:
+		rbdopt->read_only = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		BUG_ON(token);
@@ -361,16 +563,26 @@ static int parse_rbd_opts_token(char *c, void *private)
  * Get a ceph client with specific addr and configuration, if one does
  * not exist create it.
  */
+<<<<<<< HEAD
 static int rbd_get_client(struct rbd_device *rbd_dev, const char *mon_addr,
 			  char *options)
 {
 	struct rbd_client *rbdc;
 	struct ceph_options *opt;
 	int ret;
+=======
+static struct rbd_client *rbd_get_client(const char *mon_addr,
+					 size_t mon_addr_len,
+					 char *options)
+{
+	struct rbd_client *rbdc;
+	struct ceph_options *opt;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct rbd_options *rbd_opts;
 
 	rbd_opts = kzalloc(sizeof(*rbd_opts), GFP_KERNEL);
 	if (!rbd_opts)
+<<<<<<< HEAD
 		return -ENOMEM;
 
 	rbd_opts->notify_timeout = RBD_NOTIFY_TIMEOUT_DEFAULT;
@@ -406,19 +618,64 @@ static int rbd_get_client(struct rbd_device *rbd_dev, const char *mon_addr,
 done_err:
 	kfree(rbd_opts);
 	return ret;
+=======
+		return ERR_PTR(-ENOMEM);
+
+	rbd_opts->read_only = RBD_READ_ONLY_DEFAULT;
+
+	opt = ceph_parse_options(options, mon_addr,
+				mon_addr + mon_addr_len,
+				parse_rbd_opts_token, rbd_opts);
+	if (IS_ERR(opt)) {
+		kfree(rbd_opts);
+		return ERR_CAST(opt);
+	}
+
+	spin_lock(&rbd_client_list_lock);
+	rbdc = __rbd_client_find(opt);
+	if (rbdc) {
+		/* using an existing client */
+		kref_get(&rbdc->kref);
+		spin_unlock(&rbd_client_list_lock);
+
+		ceph_destroy_options(opt);
+		kfree(rbd_opts);
+
+		return rbdc;
+	}
+	spin_unlock(&rbd_client_list_lock);
+
+	rbdc = rbd_client_create(opt, rbd_opts);
+
+	if (IS_ERR(rbdc))
+		kfree(rbd_opts);
+
+	return rbdc;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
  * Destroy ceph client
+<<<<<<< HEAD
+=======
+ *
+ * Caller must hold rbd_client_list_lock.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void rbd_client_release(struct kref *kref)
 {
 	struct rbd_client *rbdc = container_of(kref, struct rbd_client, kref);
 
 	dout("rbd_release_client %p\n", rbdc);
+<<<<<<< HEAD
 	spin_lock(&node_lock);
 	list_del(&rbdc->node);
 	spin_unlock(&node_lock);
+=======
+	spin_lock(&rbd_client_list_lock);
+	list_del(&rbdc->node);
+	spin_unlock(&rbd_client_list_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ceph_destroy_client(rbdc->client);
 	kfree(rbdc->rbd_opts);
@@ -433,7 +690,10 @@ static void rbd_put_client(struct rbd_device *rbd_dev)
 {
 	kref_put(&rbd_dev->rbd_client->kref, rbd_client_release);
 	rbd_dev->rbd_client = NULL;
+<<<<<<< HEAD
 	rbd_dev->client = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -458,6 +718,7 @@ static int rbd_header_from_disk(struct rbd_image_header *header,
 				 gfp_t gfp_flags)
 {
 	int i;
+<<<<<<< HEAD
 	u32 snap_count = le32_to_cpu(ondisk->snap_count);
 	int ret = -ENOMEM;
 
@@ -469,6 +730,21 @@ static int rbd_header_from_disk(struct rbd_image_header *header,
 				gfp_flags);
 	if (!header->snapc)
 		return -ENOMEM;
+=======
+	u32 snap_count;
+
+	if (memcmp(ondisk, RBD_HEADER_TEXT, sizeof(RBD_HEADER_TEXT)))
+		return -ENXIO;
+
+	snap_count = le32_to_cpu(ondisk->snap_count);
+	header->snapc = kmalloc(sizeof(struct ceph_snap_context) +
+				snap_count * sizeof(u64),
+				gfp_flags);
+	if (!header->snapc)
+		return -ENOMEM;
+
+	header->snap_names_len = le64_to_cpu(ondisk->snap_names_len);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (snap_count) {
 		header->snap_names = kmalloc(header->snap_names_len,
 					     GFP_KERNEL);
@@ -495,8 +771,12 @@ static int rbd_header_from_disk(struct rbd_image_header *header,
 	header->snapc->num_snaps = snap_count;
 	header->total_snaps = snap_count;
 
+<<<<<<< HEAD
 	if (snap_count &&
 	    allocated_snaps == snap_count) {
+=======
+	if (snap_count && allocated_snaps == snap_count) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (i = 0; i < snap_count; i++) {
 			header->snapc->snaps[i] =
 				le64_to_cpu(ondisk->snaps[i].id);
@@ -515,6 +795,7 @@ err_names:
 	kfree(header->snap_names);
 err_snapc:
 	kfree(header->snapc);
+<<<<<<< HEAD
 	return ret;
 }
 
@@ -531,6 +812,9 @@ static u64 cur_snap_id(struct rbd_device *rbd_dev)
 		return 0;
 
 	return header->snapc->snaps[snap_index(header, rbd_dev->cur_snap)];
+=======
+	return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int snap_by_name(struct rbd_image_header *header, const char *snap_name,
@@ -539,6 +823,7 @@ static int snap_by_name(struct rbd_image_header *header, const char *snap_name,
 	int i;
 	char *p = header->snap_names;
 
+<<<<<<< HEAD
 	for (i = 0; i < header->total_snaps; i++, p += strlen(p) + 1) {
 		if (strcmp(snap_name, p) == 0)
 			break;
@@ -557,21 +842,50 @@ static int snap_by_name(struct rbd_image_header *header, const char *snap_name,
 static int rbd_header_set_snap(struct rbd_device *dev,
 			       const char *snap_name,
 			       u64 *size)
+=======
+	for (i = 0; i < header->total_snaps; i++) {
+		if (!strcmp(snap_name, p)) {
+
+			/* Found it.  Pass back its id and/or size */
+
+			if (seq)
+				*seq = header->snapc->snaps[i];
+			if (size)
+				*size = header->snap_sizes[i];
+			return i;
+		}
+		p += strlen(p) + 1;	/* Skip ahead to the next name */
+	}
+	return -ENOENT;
+}
+
+static int rbd_header_set_snap(struct rbd_device *dev, u64 *size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct rbd_image_header *header = &dev->header;
 	struct ceph_snap_context *snapc = header->snapc;
 	int ret = -ENOENT;
 
+<<<<<<< HEAD
 	down_write(&header->snap_rwsem);
 
 	if (!snap_name ||
 	    !*snap_name ||
 	    strcmp(snap_name, "-") == 0 ||
 	    strcmp(snap_name, RBD_SNAP_HEAD_NAME) == 0) {
+=======
+	BUILD_BUG_ON(sizeof (dev->snap_name) < sizeof (RBD_SNAP_HEAD_NAME));
+
+	down_write(&dev->header_rwsem);
+
+	if (!memcmp(dev->snap_name, RBD_SNAP_HEAD_NAME,
+		    sizeof (RBD_SNAP_HEAD_NAME))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (header->total_snaps)
 			snapc->seq = header->snap_seq;
 		else
 			snapc->seq = 0;
+<<<<<<< HEAD
 		dev->cur_snap = 0;
 		dev->read_only = 0;
 		if (size)
@@ -583,17 +897,39 @@ static int rbd_header_set_snap(struct rbd_device *dev,
 
 		dev->cur_snap = header->total_snaps - ret;
 		dev->read_only = 1;
+=======
+		dev->snap_id = CEPH_NOSNAP;
+		dev->snap_exists = false;
+		dev->read_only = dev->rbd_client->rbd_opts->read_only;
+		if (size)
+			*size = header->image_size;
+	} else {
+		ret = snap_by_name(header, dev->snap_name, &snapc->seq, size);
+		if (ret < 0)
+			goto done;
+		dev->snap_id = snapc->seq;
+		dev->snap_exists = true;
+		dev->read_only = true;	/* No choice for snapshots */
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	ret = 0;
 done:
+<<<<<<< HEAD
 	up_write(&header->snap_rwsem);
+=======
+	up_write(&dev->header_rwsem);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static void rbd_header_free(struct rbd_image_header *header)
 {
+<<<<<<< HEAD
 	kfree(header->snapc);
+=======
+	ceph_put_snap_context(header->snapc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(header->snap_names);
 	kfree(header->snap_sizes);
 }
@@ -630,6 +966,17 @@ static int rbd_get_num_segments(struct rbd_image_header *header,
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * returns the size of an object in the image
+ */
+static u64 rbd_obj_bytes(struct rbd_image_header *header)
+{
+	return 1 << header->obj_order;
+}
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * bio helpers
  */
 
@@ -706,7 +1053,11 @@ static struct bio *bio_chain_clone(struct bio **old, struct bio **next,
 
 			/* split the bio. We'll release it either in the next
 			   call, or it will have to be released outside */
+<<<<<<< HEAD
 			bp = bio_split(old_chain, (len - total) / 512ULL);
+=======
+			bp = bio_split(old_chain, (len - total) / SECTOR_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!bp)
 				goto err_out;
 
@@ -846,7 +1197,11 @@ static int rbd_do_request(struct request *rq,
 	struct timespec mtime = CURRENT_TIME;
 	struct rbd_request *req_data;
 	struct ceph_osd_request_head *reqhead;
+<<<<<<< HEAD
 	struct rbd_image_header *header = &dev->header;
+=======
+	struct ceph_osd_client *osdc;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	req_data = kzalloc(sizeof(*req_data), GFP_NOIO);
 	if (!req_data) {
@@ -863,6 +1218,7 @@ static int rbd_do_request(struct request *rq,
 
 	dout("rbd_do_request obj=%s ofs=%lld len=%lld\n", obj, len, ofs);
 
+<<<<<<< HEAD
 	down_read(&header->snap_rwsem);
 
 	req = ceph_osdc_alloc_request(&dev->client->osdc, flags,
@@ -872,6 +1228,12 @@ static int rbd_do_request(struct request *rq,
 				      GFP_NOIO, pages, bio);
 	if (!req) {
 		up_read(&header->snap_rwsem);
+=======
+	osdc = &dev->rbd_client->client->osdc;
+	req = ceph_osdc_alloc_request(osdc, flags, snapc, ops,
+					false, GFP_NOIO, pages, bio);
+	if (!req) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENOMEM;
 		goto done_pages;
 	}
@@ -898,14 +1260,21 @@ static int rbd_do_request(struct request *rq,
 	layout->fl_object_size = cpu_to_le32(1 << RBD_MAX_OBJ_ORDER);
 	layout->fl_pg_preferred = cpu_to_le32(-1);
 	layout->fl_pg_pool = cpu_to_le32(dev->poolid);
+<<<<<<< HEAD
 	ceph_calc_raw_layout(&dev->client->osdc, layout, snapid,
 			     ofs, &len, &bno, req, ops);
+=======
+	ret = ceph_calc_raw_layout(osdc, layout, snapid, ofs, &len, &bno,
+				   req, ops);
+	BUG_ON(ret != 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ceph_osdc_build_request(req, ofs, &len,
 				ops,
 				snapc,
 				&mtime,
 				req->r_oid, req->r_oid_len);
+<<<<<<< HEAD
 	up_read(&header->snap_rwsem);
 
 	if (linger_req) {
@@ -914,11 +1283,24 @@ static int rbd_do_request(struct request *rq,
 	}
 
 	ret = ceph_osdc_start_request(&dev->client->osdc, req, false);
+=======
+
+	if (linger_req) {
+		ceph_osdc_set_request_linger(osdc, req);
+		*linger_req = req;
+	}
+
+	ret = ceph_osdc_start_request(osdc, req, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		goto done_err;
 
 	if (!rbd_cb) {
+<<<<<<< HEAD
 		ret = ceph_osdc_wait_request(&dev->client->osdc, req);
+=======
+		ret = ceph_osdc_wait_request(osdc, req);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ver)
 			*ver = le64_to_cpu(req->r_reassert_version.version);
 		dout("reassert_ver=%lld\n",
@@ -1171,7 +1553,11 @@ static int rbd_req_sync_notify_ack(struct rbd_device *dev,
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	ops[0].watch.ver = cpu_to_le64(dev->header.obj_version);
+=======
+	ops[0].watch.ver = cpu_to_le64(ver);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ops[0].watch.cookie = notify_id;
 	ops[0].watch.flag = 0;
 
@@ -1191,6 +1577,10 @@ static int rbd_req_sync_notify_ack(struct rbd_device *dev,
 static void rbd_watch_cb(u64 ver, u64 notify_id, u8 opcode, void *data)
 {
 	struct rbd_device *dev = (struct rbd_device *)data;
+<<<<<<< HEAD
+=======
+	u64 hver;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int rc;
 
 	if (!dev)
@@ -1200,12 +1590,22 @@ static void rbd_watch_cb(u64 ver, u64 notify_id, u8 opcode, void *data)
 		notify_id, (int)opcode);
 	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
 	rc = __rbd_update_snaps(dev);
+<<<<<<< HEAD
 	mutex_unlock(&ctl_mutex);
 	if (rc)
 		pr_warning(DRV_NAME "%d got notification but failed to update"
 			   " snaps: %d\n", dev->major, rc);
 
 	rbd_req_sync_notify_ack(dev, ver, notify_id, dev->obj_md_name);
+=======
+	hver = dev->header.obj_version;
+	mutex_unlock(&ctl_mutex);
+	if (rc)
+		pr_warning(RBD_DRV_NAME "%d got notification but failed to "
+			   " update snaps: %d\n", dev->major, rc);
+
+	rbd_req_sync_notify_ack(dev, hver, notify_id, dev->obj_md_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1216,7 +1616,11 @@ static int rbd_req_sync_watch(struct rbd_device *dev,
 			      u64 ver)
 {
 	struct ceph_osd_req_op *ops;
+<<<<<<< HEAD
 	struct ceph_osd_client *osdc = &dev->client->osdc;
+=======
+	struct ceph_osd_client *osdc = &dev->rbd_client->client->osdc;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int ret = rbd_create_rw_ops(&ops, 1, CEPH_OSD_OP_WATCH, 0);
 	if (ret < 0)
@@ -1253,6 +1657,7 @@ fail:
 	return ret;
 }
 
+<<<<<<< HEAD
 struct rbd_notify_info {
 	struct rbd_device *dev;
 };
@@ -1344,6 +1749,38 @@ static int rbd_req_sync_rollback_obj(struct rbd_device *dev,
 	return ret;
 }
 
+=======
+/*
+ * Request sync osd unwatch
+ */
+static int rbd_req_sync_unwatch(struct rbd_device *dev,
+				const char *obj)
+{
+	struct ceph_osd_req_op *ops;
+
+	int ret = rbd_create_rw_ops(&ops, 1, CEPH_OSD_OP_WATCH, 0);
+	if (ret < 0)
+		return ret;
+
+	ops[0].watch.ver = 0;
+	ops[0].watch.cookie = cpu_to_le64(dev->watch_event->cookie);
+	ops[0].watch.flag = 0;
+
+	ret = rbd_req_sync_op(dev, NULL,
+			      CEPH_NOSNAP,
+			      0,
+			      CEPH_OSD_FLAG_WRITE | CEPH_OSD_FLAG_ONDISK,
+			      ops,
+			      1, obj, 0, 0, NULL, NULL, NULL);
+
+	rbd_destroy_ops(ops);
+	ceph_osdc_cancel_event(dev->watch_event);
+	dev->watch_event = NULL;
+	return ret;
+}
+
+#if 0
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Request sync osd read
  */
@@ -1383,6 +1820,10 @@ static int rbd_req_sync_exec(struct rbd_device *dev,
 	dout("cls_exec returned %d\n", ret);
 	return ret;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct rbd_req_coll *rbd_alloc_coll(int num_reqs)
 {
@@ -1407,9 +1848,13 @@ static void rbd_rq_fn(struct request_queue *q)
 	struct request *rq;
 	struct bio_pair *bp = NULL;
 
+<<<<<<< HEAD
 	rq = blk_fetch_request(q);
 
 	while (1) {
+=======
+	while ((rq = blk_fetch_request(q))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct bio *bio;
 		struct bio *rq_bio, *next_bio = NULL;
 		bool do_write;
@@ -1417,6 +1862,10 @@ static void rbd_rq_fn(struct request_queue *q)
 		u64 ofs;
 		int num_segs, cur_seg = 0;
 		struct rbd_req_coll *coll;
+<<<<<<< HEAD
+=======
+		struct ceph_snap_context *snapc;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* peek at request from block layer */
 		if (!rq)
@@ -1427,32 +1876,69 @@ static void rbd_rq_fn(struct request_queue *q)
 		/* filter out block requests we don't understand */
 		if ((rq->cmd_type != REQ_TYPE_FS)) {
 			__blk_end_request_all(rq, 0);
+<<<<<<< HEAD
 			goto next;
+=======
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* deduce our operation (read, write) */
 		do_write = (rq_data_dir(rq) == WRITE);
 
 		size = blk_rq_bytes(rq);
+<<<<<<< HEAD
 		ofs = blk_rq_pos(rq) * 512ULL;
 		rq_bio = rq->bio;
 		if (do_write && rbd_dev->read_only) {
 			__blk_end_request_all(rq, -EROFS);
 			goto next;
+=======
+		ofs = blk_rq_pos(rq) * SECTOR_SIZE;
+		rq_bio = rq->bio;
+		if (do_write && rbd_dev->read_only) {
+			__blk_end_request_all(rq, -EROFS);
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		spin_unlock_irq(q->queue_lock);
 
+<<<<<<< HEAD
 		dout("%s 0x%x bytes at 0x%llx\n",
 		     do_write ? "write" : "read",
 		     size, blk_rq_pos(rq) * 512ULL);
+=======
+		down_read(&rbd_dev->header_rwsem);
+
+		if (rbd_dev->snap_id != CEPH_NOSNAP && !rbd_dev->snap_exists) {
+			up_read(&rbd_dev->header_rwsem);
+			dout("request for non-existent snapshot");
+			spin_lock_irq(q->queue_lock);
+			__blk_end_request_all(rq, -ENXIO);
+			continue;
+		}
+
+		snapc = ceph_get_snap_context(rbd_dev->header.snapc);
+
+		up_read(&rbd_dev->header_rwsem);
+
+		dout("%s 0x%x bytes at 0x%llx\n",
+		     do_write ? "write" : "read",
+		     size, blk_rq_pos(rq) * SECTOR_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		num_segs = rbd_get_num_segments(&rbd_dev->header, ofs, size);
 		coll = rbd_alloc_coll(num_segs);
 		if (!coll) {
 			spin_lock_irq(q->queue_lock);
 			__blk_end_request_all(rq, -ENOMEM);
+<<<<<<< HEAD
 			goto next;
+=======
+			ceph_put_snap_context(snapc);
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		do {
@@ -1475,13 +1961,21 @@ static void rbd_rq_fn(struct request_queue *q)
 			/* init OSD command: write or read */
 			if (do_write)
 				rbd_req_write(rq, rbd_dev,
+<<<<<<< HEAD
 					      rbd_dev->header.snapc,
+=======
+					      snapc,
+>>>>>>> refs/remotes/origin/cm-10.0
 					      ofs,
 					      op_size, bio,
 					      coll, cur_seg);
 			else
 				rbd_req_read(rq, rbd_dev,
+<<<<<<< HEAD
 					     cur_snap_id(rbd_dev),
+=======
+					     rbd_dev->snap_id,
+>>>>>>> refs/remotes/origin/cm-10.0
 					     ofs,
 					     op_size, bio,
 					     coll, cur_seg);
@@ -1498,8 +1992,13 @@ next_seg:
 		if (bp)
 			bio_pair_release(bp);
 		spin_lock_irq(q->queue_lock);
+<<<<<<< HEAD
 next:
 		rq = blk_fetch_request(q);
+=======
+
+		ceph_put_snap_context(snapc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -1512,6 +2011,7 @@ static int rbd_merge_bvec(struct request_queue *q, struct bvec_merge_data *bmd,
 			  struct bio_vec *bvec)
 {
 	struct rbd_device *rbd_dev = q->queuedata;
+<<<<<<< HEAD
 	unsigned int chunk_sectors = 1 << (rbd_dev->header.obj_order - 9);
 	sector_t sector = bmd->bi_sector + get_start_sect(bmd->bi_bdev);
 	unsigned int bio_sectors = bmd->bi_size >> 9;
@@ -1519,6 +2019,19 @@ static int rbd_merge_bvec(struct request_queue *q, struct bvec_merge_data *bmd,
 
 	max =  (chunk_sectors - ((sector & (chunk_sectors - 1))
 				 + bio_sectors)) << 9;
+=======
+	unsigned int chunk_sectors;
+	sector_t sector;
+	unsigned int bio_sectors;
+	int max;
+
+	chunk_sectors = 1 << (rbd_dev->header.obj_order - SECTOR_SHIFT);
+	sector = bmd->bi_sector + get_start_sect(bmd->bi_bdev);
+	bio_sectors = bmd->bi_size >> SECTOR_SHIFT;
+
+	max =  (chunk_sectors - ((sector & (chunk_sectors - 1))
+				 + bio_sectors)) << SECTOR_SHIFT;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (max < 0)
 		max = 0; /* bio_add cannot handle a negative return */
 	if (max <= bvec->bv_len && bio_sectors == 0)
@@ -1551,6 +2064,7 @@ static int rbd_read_header(struct rbd_device *rbd_dev,
 	ssize_t rc;
 	struct rbd_image_header_ondisk *dh;
 	int snap_count = 0;
+<<<<<<< HEAD
 	u64 snap_names_len = 0;
 	u64 ver;
 
@@ -1560,6 +2074,18 @@ static int rbd_read_header(struct rbd_device *rbd_dev,
 			  snap_names_len;
 
 		rc = -ENOMEM;
+=======
+	u64 ver;
+	size_t len;
+
+	/*
+	 * First reads the fixed-size header to determine the number
+	 * of snapshots, then re-reads it, along with all snapshot
+	 * records as well as their stored names.
+	 */
+	len = sizeof (*dh);
+	while (1) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dh = kmalloc(len, GFP_KERNEL);
 		if (!dh)
 			return -ENOMEM;
@@ -1573,6 +2099,7 @@ static int rbd_read_header(struct rbd_device *rbd_dev,
 			goto out_dh;
 
 		rc = rbd_header_from_disk(header, dh, snap_count, GFP_KERNEL);
+<<<<<<< HEAD
 		if (rc < 0)
 			goto out_dh;
 
@@ -1584,6 +2111,25 @@ static int rbd_read_header(struct rbd_device *rbd_dev,
 			continue;
 		}
 		break;
+=======
+		if (rc < 0) {
+			if (rc == -ENXIO)
+				pr_warning("unrecognized header format"
+					   " for image %s", rbd_dev->obj);
+			goto out_dh;
+		}
+
+		if (snap_count == header->total_snaps)
+			break;
+
+		snap_count = header->total_snaps;
+		len = sizeof (*dh) +
+			snap_count * sizeof(struct rbd_image_snap_ondisk) +
+			header->snap_names_len;
+
+		rbd_header_free(header);
+		kfree(dh);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	header->obj_version = ver;
 
@@ -1592,6 +2138,7 @@ out_dh:
 	return rc;
 }
 
+<<<<<<< HEAD
 /*
  * create a snapshot
  */
@@ -1640,6 +2187,8 @@ bad:
 	return -ERANGE;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __rbd_remove_all_snaps(struct rbd_device *rbd_dev)
 {
 	struct rbd_snap *snap;
@@ -1664,10 +2213,22 @@ static int __rbd_update_snaps(struct rbd_device *rbd_dev)
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	/* resized? */
 	set_capacity(rbd_dev->disk, h.image_size / 512ULL);
 
 	down_write(&rbd_dev->header.snap_rwsem);
+=======
+	down_write(&rbd_dev->header_rwsem);
+
+	/* resized? */
+	if (rbd_dev->snap_id == CEPH_NOSNAP) {
+		sector_t size = (sector_t) h.image_size / SECTOR_SIZE;
+
+		dout("setting size to %llu sectors", (unsigned long long) size);
+		set_capacity(rbd_dev->disk, size);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	snap_seq = rbd_dev->header.snapc->seq;
 	if (rbd_dev->header.total_snaps &&
@@ -1676,10 +2237,19 @@ static int __rbd_update_snaps(struct rbd_device *rbd_dev)
 		   if head moves */
 		follow_seq = 1;
 
+<<<<<<< HEAD
 	kfree(rbd_dev->header.snapc);
 	kfree(rbd_dev->header.snap_names);
 	kfree(rbd_dev->header.snap_sizes);
 
+=======
+	ceph_put_snap_context(rbd_dev->header.snapc);
+	kfree(rbd_dev->header.snap_names);
+	kfree(rbd_dev->header.snap_sizes);
+
+	rbd_dev->header.obj_version = h.obj_version;
+	rbd_dev->header.image_size = h.image_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rbd_dev->header.total_snaps = h.total_snaps;
 	rbd_dev->header.snapc = h.snapc;
 	rbd_dev->header.snap_names = h.snap_names;
@@ -1692,7 +2262,11 @@ static int __rbd_update_snaps(struct rbd_device *rbd_dev)
 
 	ret = __rbd_init_snaps_header(rbd_dev);
 
+<<<<<<< HEAD
 	up_write(&rbd_dev->header.snap_rwsem);
+=======
+	up_write(&rbd_dev->header_rwsem);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -1702,6 +2276,10 @@ static int rbd_init_disk(struct rbd_device *rbd_dev)
 	struct gendisk *disk;
 	struct request_queue *q;
 	int rc;
+<<<<<<< HEAD
+=======
+	u64 segment_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u64 total_size = 0;
 
 	/* contact OSD, request size info about the object being mapped */
@@ -1714,7 +2292,11 @@ static int rbd_init_disk(struct rbd_device *rbd_dev)
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 	rc = rbd_header_set_snap(rbd_dev, rbd_dev->snap_name, &total_size);
+=======
+	rc = rbd_header_set_snap(rbd_dev, &total_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc)
 		return rc;
 
@@ -1724,7 +2306,11 @@ static int rbd_init_disk(struct rbd_device *rbd_dev)
 	if (!disk)
 		goto out;
 
+<<<<<<< HEAD
 	snprintf(disk->disk_name, sizeof(disk->disk_name), DRV_NAME "%d",
+=======
+	snprintf(disk->disk_name, sizeof(disk->disk_name), RBD_DRV_NAME "%d",
+>>>>>>> refs/remotes/origin/cm-10.0
 		 rbd_dev->id);
 	disk->major = rbd_dev->major;
 	disk->first_minor = 0;
@@ -1736,6 +2322,20 @@ static int rbd_init_disk(struct rbd_device *rbd_dev)
 	q = blk_init_queue(rbd_rq_fn, &rbd_dev->lock);
 	if (!q)
 		goto out_disk;
+<<<<<<< HEAD
+=======
+
+	/* We use the default size, but let's be explicit about it. */
+	blk_queue_physical_block_size(q, SECTOR_SIZE);
+
+	/* set io sizes to object size */
+	segment_size = rbd_obj_bytes(&rbd_dev->header);
+	blk_queue_max_hw_sectors(q, segment_size / SECTOR_SIZE);
+	blk_queue_max_segment_size(q, segment_size);
+	blk_queue_io_min(q, segment_size);
+	blk_queue_io_opt(q, segment_size);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	blk_queue_merge_bvec(q, rbd_merge_bvec);
 	disk->queue = q;
 
@@ -1745,7 +2345,11 @@ static int rbd_init_disk(struct rbd_device *rbd_dev)
 	rbd_dev->q = q;
 
 	/* finally, announce the disk to the world */
+<<<<<<< HEAD
 	set_capacity(disk, total_size / 512ULL);
+=======
+	set_capacity(disk, total_size / SECTOR_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	add_disk(disk);
 
 	pr_info("%s: added with size 0x%llx\n",
@@ -1762,18 +2366,41 @@ out:
   sysfs
 */
 
+<<<<<<< HEAD
 static ssize_t rbd_size_show(struct device *dev,
 			     struct device_attribute *attr, char *buf)
 {
 	struct rbd_device *rbd_dev = dev_to_rbd(dev);
 
 	return sprintf(buf, "%llu\n", (unsigned long long)rbd_dev->header.image_size);
+=======
+static struct rbd_device *dev_to_rbd_dev(struct device *dev)
+{
+	return container_of(dev, struct rbd_device, dev);
+}
+
+static ssize_t rbd_size_show(struct device *dev,
+			     struct device_attribute *attr, char *buf)
+{
+	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+	sector_t size;
+
+	down_read(&rbd_dev->header_rwsem);
+	size = get_capacity(rbd_dev->disk);
+	up_read(&rbd_dev->header_rwsem);
+
+	return sprintf(buf, "%llu\n", (unsigned long long) size * SECTOR_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t rbd_major_show(struct device *dev,
 			      struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct rbd_device *rbd_dev = dev_to_rbd(dev);
+=======
+	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return sprintf(buf, "%d\n", rbd_dev->major);
 }
@@ -1781,15 +2408,26 @@ static ssize_t rbd_major_show(struct device *dev,
 static ssize_t rbd_client_id_show(struct device *dev,
 				  struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct rbd_device *rbd_dev = dev_to_rbd(dev);
 
 	return sprintf(buf, "client%lld\n", ceph_client_id(rbd_dev->client));
+=======
+	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+
+	return sprintf(buf, "client%lld\n",
+			ceph_client_id(rbd_dev->rbd_client->client));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t rbd_pool_show(struct device *dev,
 			     struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct rbd_device *rbd_dev = dev_to_rbd(dev);
+=======
+	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return sprintf(buf, "%s\n", rbd_dev->pool_name);
 }
@@ -1797,7 +2435,11 @@ static ssize_t rbd_pool_show(struct device *dev,
 static ssize_t rbd_name_show(struct device *dev,
 			     struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	struct rbd_device *rbd_dev = dev_to_rbd(dev);
+=======
+	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return sprintf(buf, "%s\n", rbd_dev->obj);
 }
@@ -1806,7 +2448,11 @@ static ssize_t rbd_snap_show(struct device *dev,
 			     struct device_attribute *attr,
 			     char *buf)
 {
+<<<<<<< HEAD
 	struct rbd_device *rbd_dev = dev_to_rbd(dev);
+=======
+	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return sprintf(buf, "%s\n", rbd_dev->snap_name);
 }
@@ -1816,7 +2462,11 @@ static ssize_t rbd_image_refresh(struct device *dev,
 				 const char *buf,
 				 size_t size)
 {
+<<<<<<< HEAD
 	struct rbd_device *rbd_dev = dev_to_rbd(dev);
+=======
+	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int rc;
 	int ret = size;
 
@@ -1837,8 +2487,11 @@ static DEVICE_ATTR(pool, S_IRUGO, rbd_pool_show, NULL);
 static DEVICE_ATTR(name, S_IRUGO, rbd_name_show, NULL);
 static DEVICE_ATTR(refresh, S_IWUSR, NULL, rbd_image_refresh);
 static DEVICE_ATTR(current_snap, S_IRUGO, rbd_snap_show, NULL);
+<<<<<<< HEAD
 static DEVICE_ATTR(create_snap, S_IWUSR, NULL, rbd_snap_add);
 static DEVICE_ATTR(rollback_snap, S_IWUSR, NULL, rbd_snap_rollback);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct attribute *rbd_attrs[] = {
 	&dev_attr_size.attr,
@@ -1848,8 +2501,11 @@ static struct attribute *rbd_attrs[] = {
 	&dev_attr_name.attr,
 	&dev_attr_current_snap.attr,
 	&dev_attr_refresh.attr,
+<<<<<<< HEAD
 	&dev_attr_create_snap.attr,
 	&dev_attr_rollback_snap.attr,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL
 };
 
@@ -1883,7 +2539,11 @@ static ssize_t rbd_snap_size_show(struct device *dev,
 {
 	struct rbd_snap *snap = container_of(dev, struct rbd_snap, dev);
 
+<<<<<<< HEAD
 	return sprintf(buf, "%lld\n", (long long)snap->size);
+=======
+	return sprintf(buf, "%zd\n", snap->size);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t rbd_snap_id_show(struct device *dev,
@@ -1892,7 +2552,11 @@ static ssize_t rbd_snap_id_show(struct device *dev,
 {
 	struct rbd_snap *snap = container_of(dev, struct rbd_snap, dev);
 
+<<<<<<< HEAD
 	return sprintf(buf, "%lld\n", (long long)snap->id);
+=======
+	return sprintf(buf, "%llu\n", (unsigned long long) snap->id);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static DEVICE_ATTR(snap_size, S_IRUGO, rbd_snap_size_show, NULL);
@@ -2018,7 +2682,18 @@ static int __rbd_init_snaps_header(struct rbd_device *rbd_dev)
 			cur_id = rbd_dev->header.snapc->snaps[i - 1];
 
 		if (!i || old_snap->id < cur_id) {
+<<<<<<< HEAD
 			/* old_snap->id was skipped, thus was removed */
+=======
+			/*
+			 * old_snap->id was skipped, thus was
+			 * removed.  If this rbd_dev is mapped to
+			 * the removed snapshot, record that it no
+			 * longer exists, to prevent further I/O.
+			 */
+			if (rbd_dev->snap_id == old_snap->id)
+				rbd_dev->snap_exists = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 			__rbd_remove_snap_dev(rbd_dev, old_snap);
 			continue;
 		}
@@ -2064,6 +2739,7 @@ static int __rbd_init_snaps_header(struct rbd_device *rbd_dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 
 static void rbd_root_dev_release(struct device *dev)
 {
@@ -2077,6 +2753,11 @@ static struct device rbd_root_dev = {
 static int rbd_bus_add_dev(struct rbd_device *rbd_dev)
 {
 	int ret = -ENOMEM;
+=======
+static int rbd_bus_add_dev(struct rbd_device *rbd_dev)
+{
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct device *dev;
 	struct rbd_snap *snap;
 
@@ -2090,7 +2771,11 @@ static int rbd_bus_add_dev(struct rbd_device *rbd_dev)
 	dev_set_name(dev, "%d", rbd_dev->id);
 	ret = device_register(dev);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto done_free;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	list_for_each_entry(snap, &rbd_dev->snaps, node) {
 		ret = rbd_register_snap_dev(rbd_dev, snap,
@@ -2098,10 +2783,14 @@ static int rbd_bus_add_dev(struct rbd_device *rbd_dev)
 		if (ret < 0)
 			break;
 	}
+<<<<<<< HEAD
 
 	mutex_unlock(&ctl_mutex);
 	return 0;
 done_free:
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&ctl_mutex);
 	return ret;
 }
@@ -2130,10 +2819,185 @@ static int rbd_init_watch_dev(struct rbd_device *rbd_dev)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static atomic64_t rbd_id_max = ATOMIC64_INIT(0);
+
+/*
+ * Get a unique rbd identifier for the given new rbd_dev, and add
+ * the rbd_dev to the global list.  The minimum rbd id is 1.
+ */
+static void rbd_id_get(struct rbd_device *rbd_dev)
+{
+	rbd_dev->id = atomic64_inc_return(&rbd_id_max);
+
+	spin_lock(&rbd_dev_list_lock);
+	list_add_tail(&rbd_dev->node, &rbd_dev_list);
+	spin_unlock(&rbd_dev_list_lock);
+}
+
+/*
+ * Remove an rbd_dev from the global list, and record that its
+ * identifier is no longer in use.
+ */
+static void rbd_id_put(struct rbd_device *rbd_dev)
+{
+	struct list_head *tmp;
+	int rbd_id = rbd_dev->id;
+	int max_id;
+
+	BUG_ON(rbd_id < 1);
+
+	spin_lock(&rbd_dev_list_lock);
+	list_del_init(&rbd_dev->node);
+
+	/*
+	 * If the id being "put" is not the current maximum, there
+	 * is nothing special we need to do.
+	 */
+	if (rbd_id != atomic64_read(&rbd_id_max)) {
+		spin_unlock(&rbd_dev_list_lock);
+		return;
+	}
+
+	/*
+	 * We need to update the current maximum id.  Search the
+	 * list to find out what it is.  We're more likely to find
+	 * the maximum at the end, so search the list backward.
+	 */
+	max_id = 0;
+	list_for_each_prev(tmp, &rbd_dev_list) {
+		struct rbd_device *rbd_dev;
+
+		rbd_dev = list_entry(tmp, struct rbd_device, node);
+		if (rbd_dev->id > max_id)
+			max_id = rbd_dev->id;
+	}
+	spin_unlock(&rbd_dev_list_lock);
+
+	/*
+	 * The max id could have been updated by rbd_id_get(), in
+	 * which case it now accurately reflects the new maximum.
+	 * Be careful not to overwrite the maximum value in that
+	 * case.
+	 */
+	atomic64_cmpxchg(&rbd_id_max, rbd_id, max_id);
+}
+
+/*
+ * Skips over white space at *buf, and updates *buf to point to the
+ * first found non-space character (if any). Returns the length of
+ * the token (string of non-white space characters) found.  Note
+ * that *buf must be terminated with '\0'.
+ */
+static inline size_t next_token(const char **buf)
+{
+        /*
+        * These are the characters that produce nonzero for
+        * isspace() in the "C" and "POSIX" locales.
+        */
+        const char *spaces = " \f\n\r\t\v";
+
+        *buf += strspn(*buf, spaces);	/* Find start of token */
+
+	return strcspn(*buf, spaces);   /* Return token length */
+}
+
+/*
+ * Finds the next token in *buf, and if the provided token buffer is
+ * big enough, copies the found token into it.  The result, if
+ * copied, is guaranteed to be terminated with '\0'.  Note that *buf
+ * must be terminated with '\0' on entry.
+ *
+ * Returns the length of the token found (not including the '\0').
+ * Return value will be 0 if no token is found, and it will be >=
+ * token_size if the token would not fit.
+ *
+ * The *buf pointer will be updated to point beyond the end of the
+ * found token.  Note that this occurs even if the token buffer is
+ * too small to hold it.
+ */
+static inline size_t copy_token(const char **buf,
+				char *token,
+				size_t token_size)
+{
+        size_t len;
+
+	len = next_token(buf);
+	if (len < token_size) {
+		memcpy(token, *buf, len);
+		*(token + len) = '\0';
+	}
+	*buf += len;
+
+        return len;
+}
+
+/*
+ * This fills in the pool_name, obj, obj_len, snap_name, obj_len,
+ * rbd_dev, rbd_md_name, and name fields of the given rbd_dev, based
+ * on the list of monitor addresses and other options provided via
+ * /sys/bus/rbd/add.
+ */
+static int rbd_add_parse_args(struct rbd_device *rbd_dev,
+			      const char *buf,
+			      const char **mon_addrs,
+			      size_t *mon_addrs_size,
+			      char *options,
+			      size_t options_size)
+{
+	size_t	len;
+
+	/* The first four tokens are required */
+
+	len = next_token(&buf);
+	if (!len)
+		return -EINVAL;
+	*mon_addrs_size = len + 1;
+	*mon_addrs = buf;
+
+	buf += len;
+
+	len = copy_token(&buf, options, options_size);
+	if (!len || len >= options_size)
+		return -EINVAL;
+
+	len = copy_token(&buf, rbd_dev->pool_name, sizeof (rbd_dev->pool_name));
+	if (!len || len >= sizeof (rbd_dev->pool_name))
+		return -EINVAL;
+
+	len = copy_token(&buf, rbd_dev->obj, sizeof (rbd_dev->obj));
+	if (!len || len >= sizeof (rbd_dev->obj))
+		return -EINVAL;
+
+	/* We have the object length in hand, save it. */
+
+	rbd_dev->obj_len = len;
+
+	BUILD_BUG_ON(RBD_MAX_MD_NAME_LEN
+				< RBD_MAX_OBJ_NAME_LEN + sizeof (RBD_SUFFIX));
+	sprintf(rbd_dev->obj_md_name, "%s%s", rbd_dev->obj, RBD_SUFFIX);
+
+	/*
+	 * The snapshot name is optional, but it's an error if it's
+	 * too long.  If no snapshot is supplied, fill in the default.
+	 */
+	len = copy_token(&buf, rbd_dev->snap_name, sizeof (rbd_dev->snap_name));
+	if (!len)
+		memcpy(rbd_dev->snap_name, RBD_SNAP_HEAD_NAME,
+			sizeof (RBD_SNAP_HEAD_NAME));
+	else if (len >= sizeof (rbd_dev->snap_name))
+		return -EINVAL;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t rbd_add(struct bus_type *bus,
 		       const char *buf,
 		       size_t count)
 {
+<<<<<<< HEAD
 	struct ceph_osd_client *osdc;
 	struct rbd_device *rbd_dev;
 	ssize_t rc = -ENOMEM;
@@ -2141,10 +3005,19 @@ static ssize_t rbd_add(struct bus_type *bus,
 	struct list_head *tmp;
 	char *mon_dev_name;
 	char *options;
+=======
+	struct rbd_device *rbd_dev;
+	const char *mon_addrs = NULL;
+	size_t mon_addrs_size = 0;
+	char *options = NULL;
+	struct ceph_osd_client *osdc;
+	int rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!try_module_get(THIS_MODULE))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	mon_dev_name = kmalloc(RBD_MAX_OPT_LEN, GFP_KERNEL);
 	if (!mon_dev_name)
 		goto err_out_mod;
@@ -2157,11 +3030,20 @@ static ssize_t rbd_add(struct bus_type *bus,
 	rbd_dev = kzalloc(sizeof(*rbd_dev), GFP_KERNEL);
 	if (!rbd_dev)
 		goto err_out_opt;
+=======
+	rbd_dev = kzalloc(sizeof(*rbd_dev), GFP_KERNEL);
+	if (!rbd_dev)
+		goto err_nomem;
+	options = kmalloc(count, GFP_KERNEL);
+	if (!options)
+		goto err_nomem;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* static rbd_device initialization */
 	spin_lock_init(&rbd_dev->lock);
 	INIT_LIST_HEAD(&rbd_dev->node);
 	INIT_LIST_HEAD(&rbd_dev->snaps);
+<<<<<<< HEAD
 
 	/* generate unique id: find highest unique id, add one */
 	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
@@ -2208,24 +3090,69 @@ static ssize_t rbd_add(struct bus_type *bus,
 
 	/* pick the pool */
 	osdc = &rbd_dev->client->osdc;
+=======
+	init_rwsem(&rbd_dev->header_rwsem);
+
+	init_rwsem(&rbd_dev->header_rwsem);
+
+	/* generate unique id: find highest unique id, add one */
+	rbd_id_get(rbd_dev);
+
+	/* Fill in the device name, now that we have its id. */
+	BUILD_BUG_ON(DEV_NAME_LEN
+			< sizeof (RBD_DRV_NAME) + MAX_INT_FORMAT_WIDTH);
+	sprintf(rbd_dev->name, "%s%d", RBD_DRV_NAME, rbd_dev->id);
+
+	/* parse add command */
+	rc = rbd_add_parse_args(rbd_dev, buf, &mon_addrs, &mon_addrs_size,
+				options, count);
+	if (rc)
+		goto err_put_id;
+
+	rbd_dev->rbd_client = rbd_get_client(mon_addrs, mon_addrs_size - 1,
+						options);
+	if (IS_ERR(rbd_dev->rbd_client)) {
+		rc = PTR_ERR(rbd_dev->rbd_client);
+		goto err_put_id;
+	}
+
+	/* pick the pool */
+	osdc = &rbd_dev->rbd_client->client->osdc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rc = ceph_pg_poolid_by_name(osdc->osdmap, rbd_dev->pool_name);
 	if (rc < 0)
 		goto err_out_client;
 	rbd_dev->poolid = rc;
 
 	/* register our block device */
+<<<<<<< HEAD
 	irc = register_blkdev(0, rbd_dev->name);
 	if (irc < 0) {
 		rc = irc;
 		goto err_out_client;
 	}
 	rbd_dev->major = irc;
+=======
+	rc = register_blkdev(0, rbd_dev->name);
+	if (rc < 0)
+		goto err_out_client;
+	rbd_dev->major = rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rc = rbd_bus_add_dev(rbd_dev);
 	if (rc)
 		goto err_out_blkdev;
 
+<<<<<<< HEAD
 	/* set up and announce blkdev mapping */
+=======
+	/*
+	 * At this point cleanup in the event of an error is the job
+	 * of the sysfs code (initiated by rbd_bus_del_dev()).
+	 *
+	 * Set up and announce blkdev mapping.
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	rc = rbd_init_disk(rbd_dev);
 	if (rc)
 		goto err_out_bus;
@@ -2237,21 +3164,28 @@ static ssize_t rbd_add(struct bus_type *bus,
 	return count;
 
 err_out_bus:
+<<<<<<< HEAD
 	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
 	list_del_init(&rbd_dev->node);
 	mutex_unlock(&ctl_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* this will also clean up rest of rbd_dev stuff */
 
 	rbd_bus_del_dev(rbd_dev);
 	kfree(options);
+<<<<<<< HEAD
 	kfree(mon_dev_name);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 
 err_out_blkdev:
 	unregister_blkdev(rbd_dev->major, rbd_dev->name);
 err_out_client:
 	rbd_put_client(rbd_dev);
+<<<<<<< HEAD
 	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
 err_out_slot:
 	list_del_init(&rbd_dev->node);
@@ -2266,6 +3200,18 @@ err_out_mod:
 	dout("Error adding device %s\n", buf);
 	module_put(THIS_MODULE);
 	return rc;
+=======
+err_put_id:
+	rbd_id_put(rbd_dev);
+err_nomem:
+	kfree(options);
+	kfree(rbd_dev);
+
+	dout("Error adding device %s\n", buf);
+	module_put(THIS_MODULE);
+
+	return (ssize_t) rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct rbd_device *__rbd_get_dev(unsigned long id)
@@ -2273,16 +3219,29 @@ static struct rbd_device *__rbd_get_dev(unsigned long id)
 	struct list_head *tmp;
 	struct rbd_device *rbd_dev;
 
+<<<<<<< HEAD
 	list_for_each(tmp, &rbd_dev_list) {
 		rbd_dev = list_entry(tmp, struct rbd_device, node);
 		if (rbd_dev->id == id)
 			return rbd_dev;
 	}
+=======
+	spin_lock(&rbd_dev_list_lock);
+	list_for_each(tmp, &rbd_dev_list) {
+		rbd_dev = list_entry(tmp, struct rbd_device, node);
+		if (rbd_dev->id == id) {
+			spin_unlock(&rbd_dev_list_lock);
+			return rbd_dev;
+		}
+	}
+	spin_unlock(&rbd_dev_list_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return NULL;
 }
 
 static void rbd_dev_release(struct device *dev)
 {
+<<<<<<< HEAD
 	struct rbd_device *rbd_dev =
 			container_of(dev, struct rbd_device, dev);
 
@@ -2291,12 +3250,30 @@ static void rbd_dev_release(struct device *dev)
 						    rbd_dev->watch_request);
 	if (rbd_dev->watch_event)
 		ceph_osdc_cancel_event(rbd_dev->watch_event);
+=======
+	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+
+	if (rbd_dev->watch_request) {
+		struct ceph_client *client = rbd_dev->rbd_client->client;
+
+		ceph_osdc_unregister_linger_request(&client->osdc,
+						    rbd_dev->watch_request);
+	}
+	if (rbd_dev->watch_event)
+		rbd_req_sync_unwatch(rbd_dev, rbd_dev->obj_md_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rbd_put_client(rbd_dev);
 
 	/* clean up and free blkdev */
 	rbd_free_disk(rbd_dev);
 	unregister_blkdev(rbd_dev->major, rbd_dev->name);
+<<<<<<< HEAD
+=======
+
+	/* done with the id, and with the rbd_dev */
+	rbd_id_put(rbd_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(rbd_dev);
 
 	/* release module ref */
@@ -2329,7 +3306,14 @@ static ssize_t rbd_remove(struct bus_type *bus,
 		goto done;
 	}
 
+<<<<<<< HEAD
 	list_del_init(&rbd_dev->node);
+=======
+	if (rbd_dev->open_count) {
+		ret = -EBUSY;
+		goto done;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__rbd_remove_all_snaps(rbd_dev);
 	rbd_bus_del_dev(rbd_dev);
@@ -2339,6 +3323,7 @@ done:
 	return ret;
 }
 
+<<<<<<< HEAD
 static ssize_t rbd_snap_add(struct device *dev,
 			    struct device_attribute *attr,
 			    const char *buf,
@@ -2444,6 +3429,8 @@ static struct bus_attribute rbd_bus_attrs[] = {
 	__ATTR_NULL
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * create control files in sysfs
  * /sys/bus/rbd/...
@@ -2452,6 +3439,7 @@ static int rbd_sysfs_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 	rbd_bus_type.bus_attrs = rbd_bus_attrs;
 
 	ret = bus_register(&rbd_bus_type);
@@ -2459,14 +3447,28 @@ static int rbd_sysfs_init(void)
 		return ret;
 
 	ret = device_register(&rbd_root_dev);
+=======
+	ret = device_register(&rbd_root_dev);
+	if (ret < 0)
+		return ret;
+
+	ret = bus_register(&rbd_bus_type);
+	if (ret < 0)
+		device_unregister(&rbd_root_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
 
 static void rbd_sysfs_cleanup(void)
 {
+<<<<<<< HEAD
 	device_unregister(&rbd_root_dev);
 	bus_unregister(&rbd_bus_type);
+=======
+	bus_unregister(&rbd_bus_type);
+	device_unregister(&rbd_root_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int __init rbd_init(void)
@@ -2476,8 +3478,12 @@ int __init rbd_init(void)
 	rc = rbd_sysfs_init();
 	if (rc)
 		return rc;
+<<<<<<< HEAD
 	spin_lock_init(&node_lock);
 	pr_info("loaded " DRV_NAME_LONG "\n");
+=======
+	pr_info("loaded " RBD_DRV_NAME_LONG "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

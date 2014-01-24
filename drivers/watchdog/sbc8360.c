@@ -36,6 +36,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/miscdevice.h>
@@ -51,13 +56,19 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static unsigned long sbc8360_is_open;
 static char expect_close;
 
+<<<<<<< HEAD
 #define PFX "sbc8360: "
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *
  * Watchdog Timer Configuration
@@ -197,11 +208,19 @@ static int wd_times[64][2] = {
 static int timeout = 27;
 static int wd_margin = 0xB;
 static int wd_multiplier = 2;
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 
 module_param(timeout, int, 0);
 MODULE_PARM_DESC(timeout, "Index into timeout table (0-63) (default=27 (60s))");
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+
+module_param(timeout, int, 0);
+MODULE_PARM_DESC(timeout, "Index into timeout table (0-63) (default=27 (60s))");
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 		 "Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -280,8 +299,12 @@ static int sbc8360_close(struct inode *inode, struct file *file)
 	if (expect_close == 42)
 		sbc8360_stop();
 	else
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX "SBC8360 device closed unexpectedly.  "
 						"SBC8360 will not stop!\n");
+=======
+		pr_crit("SBC8360 device closed unexpectedly.  SBC8360 will not stop!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	clear_bit(0, &sbc8360_is_open);
 	expect_close = 0;
@@ -334,20 +357,32 @@ static int __init sbc8360_init(void)
 	unsigned long int mseconds = 60000;
 
 	if (timeout < 0 || timeout > 63) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Invalid timeout index (must be 0-63).\n");
+=======
+		pr_err("Invalid timeout index (must be 0-63)\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		res = -EINVAL;
 		goto out;
 	}
 
 	if (!request_region(SBC8360_ENABLE, 1, "SBC8360")) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "ENABLE method I/O %X is not available.\n",
+=======
+		pr_err("ENABLE method I/O %X is not available\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       SBC8360_ENABLE);
 		res = -EIO;
 		goto out;
 	}
 	if (!request_region(SBC8360_BASETIME, 1, "SBC8360")) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 		       "BASETIME method I/O %X is not available.\n",
+=======
+		pr_err("BASETIME method I/O %X is not available\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       SBC8360_BASETIME);
 		res = -EIO;
 		goto out_nobasetimereg;
@@ -355,13 +390,21 @@ static int __init sbc8360_init(void)
 
 	res = register_reboot_notifier(&sbc8360_notifier);
 	if (res) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Failed to register reboot notifier.\n");
+=======
+		pr_err("Failed to register reboot notifier\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_noreboot;
 	}
 
 	res = misc_register(&sbc8360_miscdev);
 	if (res) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "failed to register misc device\n");
+=======
+		pr_err("failed to register misc device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_nomisc;
 	}
 
@@ -378,7 +421,11 @@ static int __init sbc8360_init(void)
 		mseconds = (wd_margin + 1) * 100000;
 
 	/* My kingdom for the ability to print "0.5 seconds" in the kernel! */
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Timeout set at %ld ms.\n", mseconds);
+=======
+	pr_info("Timeout set at %ld ms\n", mseconds);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 

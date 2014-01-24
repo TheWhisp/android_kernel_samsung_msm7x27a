@@ -21,8 +21,11 @@
 #include <mach/hardware.h>
 #include <plat/orion_nand.h>
 
+<<<<<<< HEAD
 static const char *part_probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 {
 	struct nand_chip *nc = mtd->priv;
@@ -81,8 +84,11 @@ static int __init orion_nand_probe(struct platform_device *pdev)
 	struct resource *res;
 	void __iomem *io_base;
 	int ret = 0;
+<<<<<<< HEAD
 	struct mtd_partition *partitions = NULL;
 	int num_part = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	nc = kzalloc(sizeof(struct nand_chip) + sizeof(struct mtd_info), GFP_KERNEL);
 	if (!nc) {
@@ -132,6 +138,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
 		goto no_dev;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_MTD_CMDLINE_PARTS
 	mtd->name = "orion_nand";
 	num_part = parse_mtd_partitions(mtd, part_probes, &partitions, 0);
@@ -143,6 +150,11 @@ static int __init orion_nand_probe(struct platform_device *pdev)
 	}
 
 	ret = mtd_device_register(mtd, partitions, num_part);
+=======
+	mtd->name = "orion_nand";
+	ret = mtd_device_parse_register(mtd, NULL, NULL, board->parts,
+					board->nr_parts);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		nand_release(mtd);
 		goto no_dev;

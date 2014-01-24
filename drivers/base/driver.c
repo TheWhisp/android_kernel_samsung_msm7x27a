@@ -123,6 +123,7 @@ void driver_remove_file(struct device_driver *drv,
 }
 EXPORT_SYMBOL_GPL(driver_remove_file);
 
+<<<<<<< HEAD
 /**
  * driver_add_kobj - add a kobject below the specified driver
  * @drv: requesting device driver
@@ -181,6 +182,8 @@ void put_driver(struct device_driver *drv)
 }
 EXPORT_SYMBOL_GPL(put_driver);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int driver_add_groups(struct device_driver *drv,
 			     const struct attribute_group **groups)
 {
@@ -234,7 +237,10 @@ int driver_register(struct device_driver *drv)
 
 	other = driver_find(drv->name, drv->bus);
 	if (other) {
+<<<<<<< HEAD
 		put_driver(other);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "Error: Driver '%s' is already registered, "
 			"aborting...\n", drv->name);
 		return -EBUSY;
@@ -275,7 +281,13 @@ EXPORT_SYMBOL_GPL(driver_unregister);
  * Call kset_find_obj() to iterate over list of drivers on
  * a bus to find driver by name. Return driver if found.
  *
+<<<<<<< HEAD
  * Note that kset_find_obj increments driver's reference count.
+=======
+ * This routine provides no locking to prevent the driver it returns
+ * from being unregistered or unloaded while the caller is using it.
+ * The caller is responsible for preventing this.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct device_driver *driver_find(const char *name, struct bus_type *bus)
 {
@@ -283,6 +295,11 @@ struct device_driver *driver_find(const char *name, struct bus_type *bus)
 	struct driver_private *priv;
 
 	if (k) {
+<<<<<<< HEAD
+=======
+		/* Drop reference added by kset_find_obj() */
+		kobject_put(k);
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv = to_driver(k);
 		return priv->driver;
 	}

@@ -22,6 +22,10 @@ enum die_val {
 	DIE_NMI_IPI,
 };
 
+<<<<<<< HEAD
 extern void die(const char *, struct pt_regs *, long);
+=======
+extern void die(struct pt_regs *, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

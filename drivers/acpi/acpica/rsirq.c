@@ -5,7 +5,11 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -264,3 +268,37 @@ struct acpi_rsconvert_info acpi_rs_convert_dma[6] = {
 	 AML_OFFSET(dma.dma_channel_mask),
 	 ACPI_RS_OFFSET(data.dma.channel_count)}
 };
+<<<<<<< HEAD
+=======
+
+/*******************************************************************************
+ *
+ * acpi_rs_convert_fixed_dma
+ *
+ ******************************************************************************/
+
+struct acpi_rsconvert_info acpi_rs_convert_fixed_dma[4] = {
+	{ACPI_RSC_INITGET, ACPI_RESOURCE_TYPE_FIXED_DMA,
+	 ACPI_RS_SIZE(struct acpi_resource_fixed_dma),
+	 ACPI_RSC_TABLE_SIZE(acpi_rs_convert_fixed_dma)},
+
+	{ACPI_RSC_INITSET, ACPI_RESOURCE_NAME_FIXED_DMA,
+	 sizeof(struct aml_resource_fixed_dma),
+	 0},
+
+	/*
+	 * These fields are contiguous in both the source and destination:
+	 * request_lines
+	 * Channels
+	 */
+
+	{ACPI_RSC_MOVE16, ACPI_RS_OFFSET(data.fixed_dma.request_lines),
+	 AML_OFFSET(fixed_dma.request_lines),
+	 2},
+
+	{ACPI_RSC_MOVE8, ACPI_RS_OFFSET(data.fixed_dma.width),
+	 AML_OFFSET(fixed_dma.width),
+	 1},
+
+};
+>>>>>>> refs/remotes/origin/cm-10.0

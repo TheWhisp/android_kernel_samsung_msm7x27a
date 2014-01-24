@@ -5,6 +5,10 @@ struct clkops {
 	void			(*enable)(struct clk *);
 	void			(*disable)(struct clk *);
 	unsigned long		(*getrate)(struct clk *);
+<<<<<<< HEAD
+=======
+	int			(*setrate)(struct clk *, unsigned long);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct clk {

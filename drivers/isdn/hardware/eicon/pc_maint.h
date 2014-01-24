@@ -1,6 +1,7 @@
 
 /*
  *
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -21,11 +22,37 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+ Copyright (c) Eicon Networks, 2002.
+ *
+ This source file is supplied for the use with
+ Eicon Networks range of DIVA Server Adapters.
+ *
+ Eicon File Revision :    2.1
+ *
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+ *
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY OF ANY KIND WHATSOEVER INCLUDING ANY
+ implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+ *
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 #ifdef PLATFORM_GT_32BIT
 /* #define POINTER_32BIT byte * __ptr32 */
+<<<<<<< HEAD
 #define POINTER_32BIT dword 
+=======
+#define POINTER_32BIT dword
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define POINTER_32BIT byte *
 #endif
@@ -70,6 +97,7 @@
 #define NO_EVENT 1
 struct DSigStruc
 {
+<<<<<<< HEAD
   byte Id;
   byte u;
   byte listen;
@@ -122,10 +150,65 @@ typedef union
   word   w[MIPS_BUFFER_SZ>>1];
   word   l[BUFFER_SZ>>2]; /* word is wrong, do not use! Use 'd' instead. */
   dword  d[MIPS_BUFFER_SZ>>2];
+=======
+	byte Id;
+	byte u;
+	byte listen;
+	byte active;
+	byte sin[3];
+	byte bc[6];
+	byte llc[6];
+	byte hlc[6];
+	byte oad[20];
+};
+struct BL1Struc {
+	dword cx_b1;
+	dword cx_b2;
+	dword cr_b1;
+	dword cr_b2;
+	dword px_b1;
+	dword px_b2;
+	dword pr_b1;
+	dword pr_b2;
+	word er_b1;
+	word er_b2;
+};
+struct L2Struc {
+	dword XTotal;
+	dword RTotal;
+	word XError;
+	word RError;
+};
+struct OSStruc {
+	dword free_n;
+};
+typedef union
+{
+	struct DSigStruc DSigStats;
+	struct BL1Struc BL1Stats;
+	struct L2Struc L2Stats;
+	struct OSStruc OSStats;
+	byte   b[BUFFER_SZ];
+	word   w[BUFFER_SZ >> 1];
+	word   l[BUFFER_SZ >> 2]; /* word is wrong, do not use! Use 'd' instead. */
+	dword  d[BUFFER_SZ >> 2];
+} BUFFER;
+typedef union
+{
+	struct DSigStruc DSigStats;
+	struct BL1Struc BL1Stats;
+	struct L2Struc L2Stats;
+	struct OSStruc OSStats;
+	byte   b[MIPS_BUFFER_SZ];
+	word   w[MIPS_BUFFER_SZ >> 1];
+	word   l[BUFFER_SZ >> 2]; /* word is wrong, do not use! Use 'd' instead. */
+	dword  d[MIPS_BUFFER_SZ >> 2];
+>>>>>>> refs/remotes/origin/cm-10.0
 } MIPS_BUFFER;
 #if !defined(MIPS_SCOM)
 struct pc_maint
 {
+<<<<<<< HEAD
   byte req;
   byte rc;
   POINTER_32BIT mem;
@@ -133,10 +216,20 @@ struct pc_maint
   word port;
   byte fill[6];
   BUFFER data;
+=======
+	byte req;
+	byte rc;
+	POINTER_32BIT mem;
+	short length;
+	word port;
+	byte fill[6];
+	BUFFER data;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #else
 struct pc_maint
 {
+<<<<<<< HEAD
   byte req;
   byte rc;
   byte reserved[2];     /* R3000 alignment ... */
@@ -145,10 +238,21 @@ struct pc_maint
   word port;
   byte fill[4];         /* data at offset 16   */
   BUFFER data;
+=======
+	byte req;
+	byte rc;
+	byte reserved[2];     /* R3000 alignment ... */
+	POINTER_32BIT mem;
+	short length;
+	word port;
+	byte fill[4];         /* data at offset 16   */
+	BUFFER data;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 struct mi_pc_maint
 {
+<<<<<<< HEAD
   byte req;
   byte rc;
   byte reserved[2];     /* R3000 alignment ... */
@@ -157,4 +261,14 @@ struct mi_pc_maint
   word port;
   byte fill[4];         /* data at offset 16   */
   MIPS_BUFFER data;
+=======
+	byte req;
+	byte rc;
+	byte reserved[2];     /* R3000 alignment ... */
+	POINTER_32BIT mem;
+	short length;
+	word port;
+	byte fill[4];         /* data at offset 16   */
+	MIPS_BUFFER data;
+>>>>>>> refs/remotes/origin/cm-10.0
 };

@@ -21,7 +21,11 @@
 #include <linux/slab.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ebcdic.h>
 
 #include "dasd_int.h"

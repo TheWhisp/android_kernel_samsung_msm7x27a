@@ -2,7 +2,11 @@
  * smdk_wm9713.c  --  SoC audio for SMDK
  *
  * Copyright 2010 Samsung Electronics Co. Ltd.
+<<<<<<< HEAD
  * Author: Jaswinder Singh Brar <jassi.brar@samsung.com>
+=======
+ * Author: Jaswinder Singh Brar <jassisinghbrar@gmail.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -11,6 +15,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/soc.h>
 
 static struct snd_soc_card smdk;
@@ -49,6 +57,10 @@ static struct snd_soc_dai_link smdk_dai = {
 
 static struct snd_soc_card smdk = {
 	.name = "SMDK WM9713",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = &smdk_dai,
 	.num_links = 1,
 };
@@ -101,6 +113,10 @@ module_init(smdk_init);
 module_exit(smdk_exit);
 
 /* Module information */
+<<<<<<< HEAD
 MODULE_AUTHOR("Jaswinder Singh Brar, jassi.brar@samsung.com");
+=======
+MODULE_AUTHOR("Jaswinder Singh Brar, jassisinghbrar@gmail.com");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("ALSA SoC SMDK+WM9713");
 MODULE_LICENSE("GPL");

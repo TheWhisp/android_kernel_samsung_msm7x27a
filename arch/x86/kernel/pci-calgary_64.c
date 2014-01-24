@@ -42,7 +42,10 @@
 #include <asm/calgary.h>
 #include <asm/tce.h>
 #include <asm/pci-direct.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 #include <asm/rio.h>
 #include <asm/bios_ebda.h>
@@ -431,7 +434,11 @@ static void calgary_unmap_page(struct device *dev, dma_addr_t dma_addr,
 }
 
 static void* calgary_alloc_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
 	dma_addr_t *dma_handle, gfp_t flag)
+=======
+	dma_addr_t *dma_handle, gfp_t flag, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void *ret = NULL;
 	dma_addr_t mapping;
@@ -464,7 +471,12 @@ error:
 }
 
 static void calgary_free_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
 				  void *vaddr, dma_addr_t dma_handle)
+=======
+				  void *vaddr, dma_addr_t dma_handle,
+				  struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned int npages;
 	struct iommu_table *tbl = find_iommu_table(dev);
@@ -477,8 +489,13 @@ static void calgary_free_coherent(struct device *dev, size_t size,
 }
 
 static struct dma_map_ops calgary_dma_ops = {
+<<<<<<< HEAD
 	.alloc_coherent = calgary_alloc_coherent,
 	.free_coherent = calgary_free_coherent,
+=======
+	.alloc = calgary_alloc_coherent,
+	.free = calgary_free_coherent,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_sg = calgary_map_sg,
 	.unmap_sg = calgary_unmap_sg,
 	.map_page = calgary_map_page,
@@ -1553,7 +1570,11 @@ static void __init calgary_fixup_one_tce_space(struct pci_dev *dev)
 			continue;
 
 		/* cover the whole region */
+<<<<<<< HEAD
 		npages = (r->end - r->start) >> PAGE_SHIFT;
+=======
+		npages = resource_size(r) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/cm-10.0
 		npages++;
 
 		iommu_range_reserve(tbl, r->start, npages);

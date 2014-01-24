@@ -19,8 +19,14 @@ Supported adapters:
   * Intel 6 Series (PCH)
   * Intel Patsburg (PCH)
   * Intel DH89xxCC (PCH)
+<<<<<<< HEAD
   * Intel Avoton (SOC)
   * Intel Panther Point (PCH)
+=======
+  * Intel Panther Point (PCH)
+  * Intel Lynx Point (PCH)
+  * Intel Lynx Point-LP (PCH)
+>>>>>>> refs/remotes/origin/cm-10.0
    Datasheets: Publicly available at the Intel website
 
 On Intel Patsburg and later chipsets, both the normal host SMBus controller

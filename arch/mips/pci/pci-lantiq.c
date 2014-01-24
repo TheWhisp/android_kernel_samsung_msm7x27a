@@ -13,6 +13,10 @@
 #include <linux/delay.h>
 #include <linux/mm.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 
 #include <asm/pci.h>
@@ -171,8 +175,18 @@ static int __devinit ltq_pci_startup(struct ltq_pci_data *conf)
 	u32 temp_buffer;
 
 	/* set clock to 33Mhz */
+<<<<<<< HEAD
 	ltq_cgu_w32(ltq_cgu_r32(LTQ_CGU_IFCCR) & ~0xf00000, LTQ_CGU_IFCCR);
 	ltq_cgu_w32(ltq_cgu_r32(LTQ_CGU_IFCCR) | 0x800000, LTQ_CGU_IFCCR);
+=======
+	if (ltq_is_ar9()) {
+		ltq_cgu_w32(ltq_cgu_r32(LTQ_CGU_IFCCR) & ~0x1f00000, LTQ_CGU_IFCCR);
+		ltq_cgu_w32(ltq_cgu_r32(LTQ_CGU_IFCCR) | 0xe00000, LTQ_CGU_IFCCR);
+	} else {
+		ltq_cgu_w32(ltq_cgu_r32(LTQ_CGU_IFCCR) & ~0xf00000, LTQ_CGU_IFCCR);
+		ltq_cgu_w32(ltq_cgu_r32(LTQ_CGU_IFCCR) | 0x800000, LTQ_CGU_IFCCR);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* external or internal clock ? */
 	if (conf->clock) {
@@ -264,7 +278,12 @@ static int __devinit ltq_pci_probe(struct platform_device *pdev)
 {
 	struct ltq_pci_data *ltq_pci_data =
 		(struct ltq_pci_data *) pdev->dev.platform_data;
+<<<<<<< HEAD
 	pci_probe_only = 0;
+=======
+
+	pci_clear_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ltq_pci_irq_map = ltq_pci_data->irq;
 	ltq_pci_membase = ioremap_nocache(PCI_CR_BASE_ADDR, PCI_CR_SIZE);
 	ltq_pci_mapped_cfg =

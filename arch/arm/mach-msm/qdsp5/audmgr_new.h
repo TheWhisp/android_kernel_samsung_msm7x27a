@@ -1,6 +1,10 @@
 /* arch/arm/mach-msm/qdsp5/audmgr.h
  *
+<<<<<<< HEAD
  * Copyright 2008 (c) The Linux Foundation. All rights reserved.
+=======
+ * Copyright 2008,2012 (c) The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright (C) 2008 Google, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
@@ -75,6 +79,10 @@ enum rpc_aud_def_codec_type {
 	RPC_AUD_DEF_CODEC_AMR_NB,
 	RPC_AUD_DEF_CODEC_13K,
 	RPC_AUD_DEF_CODEC_EVRC,
+<<<<<<< HEAD
+=======
+	RPC_AUD_DEF_CODEC_AC3,
+>>>>>>> refs/remotes/origin/cm-10.0
 	RPC_AUD_DEF_CODEC_MAX_002,
 };
 
@@ -193,6 +201,7 @@ int audmgr_open(struct audmgr *am);
 int audmgr_close(struct audmgr *am);
 int audmgr_enable(struct audmgr *am, struct audmgr_config *cfg);
 int audmgr_disable(struct audmgr *am);
+<<<<<<< HEAD
 
 typedef void (*audpp_event_func)(void *private, unsigned id, uint16_t *msg);
 
@@ -210,4 +219,6 @@ void audpp_avsync(int id, unsigned rate);
 unsigned audpp_avsync_sample_count(int id);
 unsigned audpp_avsync_byte_count(int id);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

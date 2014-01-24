@@ -33,6 +33,10 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/in.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/tcp.h>
 
 #include "rds.h"

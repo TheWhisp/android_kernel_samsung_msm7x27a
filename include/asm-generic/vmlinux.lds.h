@@ -167,6 +167,10 @@
 	CPU_KEEP(exit.data)						\
 	MEM_KEEP(init.data)						\
 	MEM_KEEP(exit.data)						\
+<<<<<<< HEAD
+=======
+	*(.data.unlikely)						\
+>>>>>>> refs/remotes/origin/cm-10.0
 	STRUCT_ALIGN();							\
 	*(__tracepoints)						\
 	/* implement dynamic printk debug */				\
@@ -222,7 +226,10 @@
 		VMLINUX_SYMBOL(__start___tracepoints_ptrs) = .;		\
 		*(__tracepoints_ptrs)	/* Tracepoints: pointer array */\
 		VMLINUX_SYMBOL(__stop___tracepoints_ptrs) = .;		\
+<<<<<<< HEAD
 		*(__markers_strings)	/* Markers: strings */		\
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		*(__tracepoints_strings)/* Tracepoints: strings */	\
 	}								\
 									\
@@ -616,6 +623,7 @@
 		*(.init.setup)						\
 		VMLINUX_SYMBOL(__setup_end) = .;
 
+<<<<<<< HEAD
 #define INITCALLS							\
 	*(.initcallearly.init)						\
 	VMLINUX_SYMBOL(__early_initcall_end) = .;			\
@@ -640,6 +648,25 @@
 #define INIT_CALLS							\
 		VMLINUX_SYMBOL(__initcall_start) = .;			\
 		INITCALLS						\
+=======
+#define INIT_CALLS_LEVEL(level)						\
+		VMLINUX_SYMBOL(__initcall##level##_start) = .;		\
+		*(.initcall##level##.init)				\
+		*(.initcall##level##s.init)				\
+
+#define INIT_CALLS							\
+		VMLINUX_SYMBOL(__initcall_start) = .;			\
+		*(.initcallearly.init)					\
+		INIT_CALLS_LEVEL(0)					\
+		INIT_CALLS_LEVEL(1)					\
+		INIT_CALLS_LEVEL(2)					\
+		INIT_CALLS_LEVEL(3)					\
+		INIT_CALLS_LEVEL(4)					\
+		INIT_CALLS_LEVEL(5)					\
+		INIT_CALLS_LEVEL(rootfs)				\
+		INIT_CALLS_LEVEL(6)					\
+		INIT_CALLS_LEVEL(7)					\
+>>>>>>> refs/remotes/origin/cm-10.0
 		VMLINUX_SYMBOL(__initcall_end) = .;
 
 #define CON_INITCALL							\

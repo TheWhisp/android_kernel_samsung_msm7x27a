@@ -67,6 +67,10 @@ Configuration options:
 #include <linux/delay.h>
 #include <linux/gfp.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "amcc_s5933.h"
 #include "8253.h"

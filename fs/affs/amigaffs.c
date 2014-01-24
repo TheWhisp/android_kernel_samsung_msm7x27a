@@ -215,7 +215,11 @@ affs_remove_link(struct dentry *dentry)
 				break;
 			default:
 				if (!AFFS_TAIL(sb, bh)->link_chain)
+<<<<<<< HEAD
 					inode->i_nlink = 1;
+=======
+					set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			affs_free_block(sb, link_ino);
 			goto done;
@@ -316,7 +320,11 @@ affs_remove_header(struct dentry *dentry)
 	if (inode->i_nlink > 1)
 		retval = affs_remove_link(dentry);
 	else
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	affs_unlock_link(inode);
 	inode->i_ctime = CURRENT_TIME_SEC;
 	mark_inode_dirty(inode);
@@ -390,10 +398,17 @@ secs_to_datestamp(time_t secs, struct affs_date *ds)
 	ds->ticks = cpu_to_be32(secs * 50);
 }
 
+<<<<<<< HEAD
 mode_t
 prot_to_mode(u32 prot)
 {
 	int mode = 0;
+=======
+umode_t
+prot_to_mode(u32 prot)
+{
+	umode_t mode = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!(prot & FIBF_NOWRITE))
 		mode |= S_IWUSR;
@@ -421,7 +436,11 @@ void
 mode_to_prot(struct inode *inode)
 {
 	u32 prot = AFFS_I(inode)->i_protect;
+<<<<<<< HEAD
 	mode_t mode = inode->i_mode;
+=======
+	umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!(mode & S_IXUSR))
 		prot |= FIBF_NOEXECUTE;

@@ -19,10 +19,13 @@ config GENERIC_CMOS_UPDATE
 config ARCH_USES_GETTIMEOFFSET
 	def_bool n
 
+<<<<<<< HEAD
 config GENERIC_IOMAP
        bool
        default y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config ARCH_HAS_ILOG2_U32
 	bool
 	default n
@@ -52,6 +55,10 @@ config CRIS
 	select HAVE_IDE
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_SHOW
+<<<<<<< HEAD
+=======
+	select GENERIC_IOMAP
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config HZ
 	int
@@ -282,8 +289,13 @@ config ETRAX_RTC
 	  Enables drivers for the Real-Time Clock battery-backed chips on
 	  some products. The kernel reads the time when booting, and
 	  the date can be set using ioctl(fd, RTC_SET_TIME, &rt) with rt a
+<<<<<<< HEAD
 	  rtc_time struct (see <file:include/asm-cris/rtc.h>) on the /dev/rtc
 	  device.  You can check the time with cat /proc/rtc, but
+=======
+	  rtc_time struct (see <file:arch/cris/include/asm/rtc.h>) on the
+	  /dev/rtc device.  You can check the time with cat /proc/rtc, but
+>>>>>>> refs/remotes/origin/cm-10.0
 	  normal time reading should be done using libc function time and
 	  friends.
 

@@ -1,7 +1,11 @@
 /******************************************************************************
 
     AudioScience HPI driver
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/cm-10.0
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -30,6 +34,7 @@
 
 #ifndef _HPI_H_
 #define _HPI_H_
+<<<<<<< HEAD
 /* HPI Version
 If HPI_VER_MINOR is odd then its a development release not intended for the
 public. If HPI_VER_MINOR is even then is a release version
@@ -51,6 +56,10 @@ i.e 3.05.02 is a development version
 
 #include <linux/types.h>
 #define HPI_BUILD_EXCLUDE_DEPRECATED
+=======
+
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HPI_BUILD_KERNEL_MODE
 
 /******************************************************************************/
@@ -211,8 +220,17 @@ enum HPI_SOURCENODES {
 	HPI_SOURCENODE_COBRANET = 109,
 	HPI_SOURCENODE_ANALOG = 110,	     /**< analog input node. */
 	HPI_SOURCENODE_ADAPTER = 111,	     /**< adapter node. */
+<<<<<<< HEAD
 	/* !!!Update this  AND hpidebug.h if you add a new sourcenode type!!! */
 	HPI_SOURCENODE_LAST_INDEX = 111	     /**< largest ID */
+=======
+	/** RTP stream input node - This node is a destination for
+	    packets of RTP audio samples from other devices. */
+	HPI_SOURCENODE_RTP_DESTINATION = 112,
+	HPI_SOURCENODE_INTERNAL = 113,	     /**< node internal to the device. */
+	/* !!!Update this  AND hpidebug.h if you add a new sourcenode type!!! */
+	HPI_SOURCENODE_LAST_INDEX = 113	     /**< largest ID */
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* AX6 max sourcenode types = 15 */
 };
 
@@ -228,7 +246,11 @@ enum HPI_DESTNODES {
 	HPI_DESTNODE_NONE = 200,
 	/** In Stream (Record) node. */
 	HPI_DESTNODE_ISTREAM = 201,
+<<<<<<< HEAD
 	HPI_DESTNODE_LINEOUT = 202,	    /**< line out node. */
+=======
+	HPI_DESTNODE_LINEOUT = 202,	     /**< line out node. */
+>>>>>>> refs/remotes/origin/cm-10.0
 	HPI_DESTNODE_AESEBU_OUT = 203,	     /**< AES/EBU output node. */
 	HPI_DESTNODE_RF = 204,		     /**< RF output node. */
 	HPI_DESTNODE_SPEAKER = 205,	     /**< speaker output node. */
@@ -236,9 +258,17 @@ enum HPI_DESTNODES {
 	    Audio samples from the device are sent out on the Cobranet network.*/
 	HPI_DESTNODE_COBRANET = 206,
 	HPI_DESTNODE_ANALOG = 207,	     /**< analog output node. */
+<<<<<<< HEAD
 
 	/* !!!Update this AND hpidebug.h if you add a new destnode type!!! */
 	HPI_DESTNODE_LAST_INDEX = 207	     /**< largest ID */
+=======
+	/** RTP stream output node - This node is a source for
+	    packets of RTP audio samples that are sent to other devices. */
+	HPI_DESTNODE_RTP_SOURCE = 208,
+	/* !!!Update this AND hpidebug.h if you add a new destnode type!!! */
+	HPI_DESTNODE_LAST_INDEX = 208	     /**< largest ID */
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* AX6 max destnode types = 15 */
 };
 
@@ -444,7 +474,23 @@ Indicates that the adapter in it's current mode supports interrupts
 across the host bus. Note, this does not imply that interrupts are
 enabled. Instead it indicates that they can be enabled.
 */
+<<<<<<< HEAD
 	HPI_ADAPTER_PROPERTY_SUPPORTS_IRQ = 272
+=======
+	HPI_ADAPTER_PROPERTY_SUPPORTS_IRQ = 272,
+/** Readonly supports firmware updating.
+Indicates that the adapter implements an interface to update firmware
+on the adapter.
+*/
+	HPI_ADAPTER_PROPERTY_SUPPORTS_FW_UPDATE = 273,
+/** Readonly Firmware IDs
+Identifiy firmware independent of individual adapter type.
+May be used as a filter for firmware update images.
+Property 1 = Bootloader ID
+Property 2 = Main program ID
+*/
+	HPI_ADAPTER_PROPERTY_FIRMWARE_ID = 274
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /** Adapter mode commands
@@ -632,7 +678,11 @@ enum HPI_MIXER_STORE_COMMAND {
 	HPI_MIXER_STORE_ENABLE = 4,
 /** Disable auto storage of some control settings. */
 	HPI_MIXER_STORE_DISABLE = 5,
+<<<<<<< HEAD
 /** Save the attributes of a single control. */
+=======
+/** Unimplemented - save the attributes of a single control. */
+>>>>>>> refs/remotes/origin/cm-10.0
 	HPI_MIXER_STORE_SAVE_SINGLE = 6
 };
 
@@ -935,7 +985,11 @@ enum HPI_ERROR_CODES {
 	HPI_ERROR_BAD_ADAPTER_NUMBER = 202,
 	/** 2 adapters with the same adapter number. */
 	HPI_ERROR_DUPLICATE_ADAPTER_NUMBER = 203,
+<<<<<<< HEAD
 	/** DSP code failed to bootload. (unused?) */
+=======
+	/** DSP code failed to bootload. Usually a DSP memory test failure. */
+>>>>>>> refs/remotes/origin/cm-10.0
 	HPI_ERROR_DSP_BOOTLOAD = 204,
 	/** Couldn't find or open the DSP code file. */
 	HPI_ERROR_DSP_FILE_NOT_FOUND = 206,
@@ -972,6 +1026,12 @@ enum HPI_ERROR_CODES {
 	HPI_ERROR_FLASH_VERIFY = 225,
 	HPI_ERROR_FLASH_TYPE = 226,
 	HPI_ERROR_FLASH_START = 227,
+<<<<<<< HEAD
+=======
+	HPI_ERROR_FLASH_READ = 228,
+	HPI_ERROR_FLASH_READ_NO_FILE = 229,
+	HPI_ERROR_FLASH_SIZE = 230,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/** Reserved for OEMs. */
 	HPI_ERROR_RESERVED_1 = 290,
@@ -1014,6 +1074,11 @@ enum HPI_ERROR_CODES {
 	HPI_ERROR_NO_INTERDSP_GROUPS = 315,
 	/** Stream wait cancelled before threshold reached. */
 	HPI_ERROR_WAIT_CANCELLED = 316,
+<<<<<<< HEAD
+=======
+	/** A character string is invalid. */
+	HPI_ERROR_INVALID_STRING = 317,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/** Invalid mixer node for this adapter. */
 	HPI_ERROR_INVALID_NODE = 400,
@@ -1040,11 +1105,23 @@ enum HPI_ERROR_CODES {
 	/** I2C */
 	HPI_ERROR_I2C_BAD_ADR = 460,
 
+<<<<<<< HEAD
 	/** Entity errors */
 	HPI_ERROR_ENTITY_TYPE_MISMATCH = 470,
 	HPI_ERROR_ENTITY_ITEM_COUNT = 471,
 	HPI_ERROR_ENTITY_TYPE_INVALID = 472,
 	HPI_ERROR_ENTITY_ROLE_INVALID = 473,
+=======
+	/** Entity type did not match requested type */
+	HPI_ERROR_ENTITY_TYPE_MISMATCH = 470,
+	/** Entity item count did not match requested count */
+	HPI_ERROR_ENTITY_ITEM_COUNT = 471,
+	/** Entity type is not one of the valid types */
+	HPI_ERROR_ENTITY_TYPE_INVALID = 472,
+	/** Entity role is not one of the valid roles */
+	HPI_ERROR_ENTITY_ROLE_INVALID = 473,
+	/** Entity size doesn't match target size */
+>>>>>>> refs/remotes/origin/cm-10.0
 	HPI_ERROR_ENTITY_SIZE_MISMATCH = 474,
 
 	/* AES18 specific errors were 500..507 */
@@ -1072,8 +1149,12 @@ enum HPI_ERROR_CODES {
 /** \defgroup maximums HPI maximum values
 \{
 */
+<<<<<<< HEAD
 /** Maximum number of adapters per HPI sub-system
    WARNING: modifying this value changes the response structure size.*/
+=======
+/** Maximum number of PCI HPI adapters */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HPI_MAX_ADAPTERS                20
 /** Maximum number of in or out streams per adapter */
 #define HPI_MAX_STREAMS                 16
@@ -1084,6 +1165,12 @@ enum HPI_ERROR_CODES {
 #define HPI_MAX_ANC_BYTES_PER_FRAME     (64)
 #define HPI_STRING_LEN                  16
 
+<<<<<<< HEAD
+=======
+/** Networked adapters have index >= 100 */
+#define HPI_MIN_NETWORK_ADAPTER_IDX 100
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /** Velocity units */
 #define HPI_OSTREAM_VELOCITY_UNITS      4096
 /** OutStream timescale units */
@@ -1105,14 +1192,24 @@ enum HPI_ERROR_CODES {
 struct hpi_format {
 	u32 sample_rate;
 				/**< 11025, 32000, 44100 ... */
+<<<<<<< HEAD
 	u32 bit_rate;	      /**< for MPEG */
+=======
+	u32 bit_rate;		  /**< for MPEG */
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 attributes;
 				/**< Stereo/JointStereo/Mono */
 	u16 mode_legacy;
 				/**< Legacy ancillary mode or idle bit  */
+<<<<<<< HEAD
 	u16 unused;	      /**< Unused */
 	u16 channels; /**< 1,2..., (or ancillary mode or idle bit */
 	u16 format;   /**< HPI_FORMAT_PCM16, _MPEG etc. see #HPI_FORMATS. */
+=======
+	u16 unused;		  /**< Unused */
+	u16 channels;	  /**< 1,2..., (or ancillary mode or idle bit */
+	u16 format;	  /**< HPI_FORMAT_PCM16, _MPEG etc. see #HPI_FORMATS. */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct hpi_anc_frame {
@@ -1138,9 +1235,12 @@ struct hpi_async_event {
 	} u;
 };
 
+<<<<<<< HEAD
 /* skip host side function declarations for
    DSP compile and documentation extraction */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef DISABLE_PRAGMA_PACK1
 #pragma pack(pop)
 #endif
@@ -1351,7 +1451,11 @@ u16 hpi_volume_get_mute(u32 h_control, u32 *mute);
 u16 hpi_volume_query_range(u32 h_control, short *min_gain_01dB,
 	short *max_gain_01dB, short *step_gain_01dB);
 
+<<<<<<< HEAD
 u16 hpi_volume_query_channels(const u32 h_volume, u32 *p_channels);
+=======
+u16 hpi_volume_query_channels(const u32 h_control, u32 *p_channels);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 u16 hpi_volume_auto_fade(u32 h_control,
 	short an_stop_gain0_01dB[HPI_MAX_CHANNELS], u32 duration_ms);
@@ -1360,6 +1464,12 @@ u16 hpi_volume_auto_fade_profile(u32 h_control,
 	short an_stop_gain0_01dB[HPI_MAX_CHANNELS], u32 duration_ms,
 	u16 profile);
 
+<<<<<<< HEAD
+=======
+u16 hpi_volume_query_auto_fade_profile(const u32 h_control, const u32 i,
+	u16 *profile);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*****************/
 /* Level control */
 /*****************/

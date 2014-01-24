@@ -9,12 +9,20 @@
  * This file is released under the GPLv2.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/suspend.h>
 #include <linux/syscalls.h>
 #include <linux/reboot.h>
 #include <linux/string.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/kmod.h>
+=======
+#include <linux/async.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/fs.h>
 #include <linux/mount.h>
@@ -29,18 +37,32 @@
 #include "power.h"
 
 
+<<<<<<< HEAD
 static int nocompress = 0;
 static int noresume = 0;
 static char resume_file[256] = CONFIG_PM_STD_PARTITION;
 dev_t swsusp_resume_device;
 sector_t swsusp_resume_block;
 int in_suspend __nosavedata = 0;
+=======
+static int nocompress;
+static int noresume;
+static int resume_wait;
+static int resume_delay;
+static char resume_file[256] = CONFIG_PM_STD_PARTITION;
+dev_t swsusp_resume_device;
+sector_t swsusp_resume_block;
+int in_suspend __nosavedata;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum {
 	HIBERNATION_INVALID,
 	HIBERNATION_PLATFORM,
+<<<<<<< HEAD
 	HIBERNATION_TEST,
 	HIBERNATION_TESTPROC,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	HIBERNATION_SHUTDOWN,
 	HIBERNATION_REBOOT,
 	/* keep last */
@@ -51,6 +73,11 @@ enum {
 
 static int hibernation_mode = HIBERNATION_SHUTDOWN;
 
+<<<<<<< HEAD
+=======
+bool freezer_test_done;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct platform_hibernation_ops *hibernation_ops;
 
 /**
@@ -65,14 +92,22 @@ void hibernation_set_ops(const struct platform_hibernation_ops *ops)
 		WARN_ON(1);
 		return;
 	}
+<<<<<<< HEAD
 	mutex_lock(&pm_mutex);
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 	hibernation_ops = ops;
 	if (ops)
 		hibernation_mode = HIBERNATION_PLATFORM;
 	else if (hibernation_mode == HIBERNATION_PLATFORM)
 		hibernation_mode = HIBERNATION_SHUTDOWN;
 
+<<<<<<< HEAD
 	mutex_unlock(&pm_mutex);
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static bool entering_platform_hibernation;
@@ -90,6 +125,7 @@ static void hibernation_debug_sleep(void)
 	mdelay(5000);
 }
 
+<<<<<<< HEAD
 static int hibernation_testmode(int mode)
 {
 	if (hibernation_mode == mode) {
@@ -99,6 +135,8 @@ static int hibernation_testmode(int mode)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int hibernation_test(int level)
 {
 	if (pm_test_level == level) {
@@ -108,7 +146,10 @@ static int hibernation_test(int level)
 	return 0;
 }
 #else /* !CONFIG_PM_DEBUG */
+<<<<<<< HEAD
 static int hibernation_testmode(int mode) { return 0; }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int hibernation_test(int level) { return 0; }
 #endif /* !CONFIG_PM_DEBUG */
 
@@ -251,8 +292,13 @@ void swsusp_show_speed(struct timeval *start, struct timeval *stop,
  * create_image - Create a hibernation image.
  * @platform_mode: Whether or not to use the platform driver.
  *
+<<<<<<< HEAD
  * Execute device drivers' .freeze_noirq() callbacks, create a hibernation image
  * and execute the drivers' .thaw_noirq() callbacks.
+=======
+ * Execute device drivers' "late" and "noirq" freeze callbacks, create a
+ * hibernation image and run the drivers' "noirq" and "early" thaw callbacks.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Control reappears in this routine after the subsequent restore.
  */
@@ -260,7 +306,11 @@ static int create_image(int platform_mode)
 {
 	int error;
 
+<<<<<<< HEAD
 	error = dpm_suspend_noirq(PMSG_FREEZE);
+=======
+	error = dpm_suspend_end(PMSG_FREEZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error) {
 		printk(KERN_ERR "PM: Some devices failed to power down, "
 			"aborting hibernation\n");
@@ -272,8 +322,12 @@ static int create_image(int platform_mode)
 		goto Platform_finish;
 
 	error = disable_nonboot_cpus();
+<<<<<<< HEAD
 	if (error || hibernation_test(TEST_CPUS)
 	    || hibernation_testmode(HIBERNATION_TEST))
+=======
+	if (error || hibernation_test(TEST_CPUS))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto Enable_cpus;
 
 	local_irq_disable();
@@ -313,7 +367,11 @@ static int create_image(int platform_mode)
  Platform_finish:
 	platform_finish(platform_mode);
 
+<<<<<<< HEAD
 	dpm_resume_noirq(in_suspend ?
+=======
+	dpm_resume_start(in_suspend ?
+>>>>>>> refs/remotes/origin/cm-10.0
 		(error ? PMSG_RECOVER : PMSG_THAW) : PMSG_RESTORE);
 
 	return error;
@@ -327,13 +385,18 @@ static int create_image(int platform_mode)
  */
 int hibernation_snapshot(int platform_mode)
 {
+<<<<<<< HEAD
 	pm_message_t msg = PMSG_RECOVER;
+=======
+	pm_message_t msg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int error;
 
 	error = platform_begin(platform_mode);
 	if (error)
 		goto Close;
 
+<<<<<<< HEAD
 	error = dpm_prepare(PMSG_FREEZE);
 	if (error)
 		goto Complete_devices;
@@ -342,10 +405,37 @@ int hibernation_snapshot(int platform_mode)
 	error = hibernate_preallocate_memory();
 	if (error)
 		goto Complete_devices;
+=======
+	/* Preallocate image memory before shutting down devices. */
+	error = hibernate_preallocate_memory();
+	if (error)
+		goto Close;
+
+	error = freeze_kernel_threads();
+	if (error)
+		goto Cleanup;
+
+	if (hibernation_test(TEST_FREEZER)) {
+
+		/*
+		 * Indicate to the caller that we are returning due to a
+		 * successful freezer test.
+		 */
+		freezer_test_done = true;
+		goto Thaw;
+	}
+
+	error = dpm_prepare(PMSG_FREEZE);
+	if (error) {
+		dpm_complete(PMSG_RECOVER);
+		goto Thaw;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	suspend_console();
 	ftrace_stop();
 	pm_restrict_gfp_mask();
+<<<<<<< HEAD
 	error = dpm_suspend(PMSG_FREEZE);
 	if (error)
 		goto Recover_platform;
@@ -360,6 +450,22 @@ int hibernation_snapshot(int platform_mode)
 	 */
 
  Resume_devices:
+=======
+
+	error = dpm_suspend(PMSG_FREEZE);
+
+	if (error || hibernation_test(TEST_DEVICES))
+		platform_recover(platform_mode);
+	else
+		error = create_image(platform_mode);
+
+	/*
+	 * In the case that we call create_image() above, the control
+	 * returns here (1) after the image has been created or the
+	 * image creation has failed and (2) after a successful restore.
+	 */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* We may need to release the preallocated image pages here. */
 	if (error || !in_suspend)
 		swsusp_free();
@@ -372,33 +478,55 @@ int hibernation_snapshot(int platform_mode)
 
 	ftrace_start();
 	resume_console();
+<<<<<<< HEAD
 
  Complete_devices:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dpm_complete(msg);
 
  Close:
 	platform_end(platform_mode);
 	return error;
 
+<<<<<<< HEAD
  Recover_platform:
 	platform_recover(platform_mode);
 	goto Resume_devices;
+=======
+ Thaw:
+	thaw_kernel_threads();
+ Cleanup:
+	swsusp_free();
+	goto Close;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
  * resume_target_kernel - Restore system state from a hibernation image.
  * @platform_mode: Whether or not to use the platform driver.
  *
+<<<<<<< HEAD
  * Execute device drivers' .freeze_noirq() callbacks, restore the contents of
  * highmem that have not been restored yet from the image and run the low-level
  * code that will restore the remaining contents of memory and switch to the
  * just restored target kernel.
+=======
+ * Execute device drivers' "noirq" and "late" freeze callbacks, restore the
+ * contents of highmem that have not been restored yet from the image and run
+ * the low-level code that will restore the remaining contents of memory and
+ * switch to the just restored target kernel.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int resume_target_kernel(bool platform_mode)
 {
 	int error;
 
+<<<<<<< HEAD
 	error = dpm_suspend_noirq(PMSG_QUIESCE);
+=======
+	error = dpm_suspend_end(PMSG_QUIESCE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error) {
 		printk(KERN_ERR "PM: Some devices failed to power down, "
 			"aborting resume\n");
@@ -455,7 +583,11 @@ static int resume_target_kernel(bool platform_mode)
  Cleanup:
 	platform_restore_cleanup(platform_mode);
 
+<<<<<<< HEAD
 	dpm_resume_noirq(PMSG_RECOVER);
+=======
+	dpm_resume_start(PMSG_RECOVER);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return error;
 }
@@ -465,7 +597,11 @@ static int resume_target_kernel(bool platform_mode)
  * @platform_mode: If set, use platform driver to prepare for the transition.
  *
  * This routine must be called with pm_mutex held.  If it is successful, control
+<<<<<<< HEAD
  * reappears in the restored target kernel in hibernation_snaphot().
+=======
+ * reappears in the restored target kernel in hibernation_snapshot().
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 int hibernation_restore(int platform_mode)
 {
@@ -516,7 +652,11 @@ int hibernation_platform_enter(void)
 		goto Resume_devices;
 	}
 
+<<<<<<< HEAD
 	error = dpm_suspend_noirq(PMSG_HIBERNATE);
+=======
+	error = dpm_suspend_end(PMSG_HIBERNATE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		goto Resume_devices;
 
@@ -547,7 +687,11 @@ int hibernation_platform_enter(void)
  Platform_finish:
 	hibernation_ops->finish();
 
+<<<<<<< HEAD
 	dpm_resume_noirq(PMSG_RESTORE);
+=======
+	dpm_resume_start(PMSG_RESTORE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
  Resume_devices:
 	entering_platform_hibernation = false;
@@ -571,9 +715,12 @@ int hibernation_platform_enter(void)
 static void power_down(void)
 {
 	switch (hibernation_mode) {
+<<<<<<< HEAD
 	case HIBERNATION_TEST:
 	case HIBERNATION_TESTPROC:
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	case HIBERNATION_REBOOT:
 		kernel_restart(NULL);
 		break;
@@ -592,6 +739,7 @@ static void power_down(void)
 	while(1);
 }
 
+<<<<<<< HEAD
 static int prepare_processes(void)
 {
 	int error = 0;
@@ -603,6 +751,8 @@ static int prepare_processes(void)
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * hibernate - Carry out system hibernation, including saving the image.
  */
@@ -610,7 +760,11 @@ int hibernate(void)
 {
 	int error;
 
+<<<<<<< HEAD
 	mutex_lock(&pm_mutex);
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* The snapshot device should not be opened while we're running */
 	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
 		error = -EBUSY;
@@ -622,6 +776,7 @@ int hibernate(void)
 	if (error)
 		goto Exit;
 
+<<<<<<< HEAD
 	error = usermodehelper_disable();
 	if (error)
 		goto Exit;
@@ -630,11 +785,18 @@ int hibernate(void)
 	error = create_basic_memory_bitmaps();
 	if (error)
 		goto Enable_umh;
+=======
+	/* Allocate memory management structures */
+	error = create_basic_memory_bitmaps();
+	if (error)
+		goto Exit;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "PM: Syncing filesystems ... ");
 	sys_sync();
 	printk("done.\n");
 
+<<<<<<< HEAD
 	error = prepare_processes();
 	if (error)
 		goto Free_bitmaps;
@@ -647,6 +809,14 @@ int hibernate(void)
 
 	error = hibernation_snapshot(hibernation_mode == HIBERNATION_PLATFORM);
 	if (error)
+=======
+	error = freeze_processes();
+	if (error)
+		goto Free_bitmaps;
+
+	error = hibernation_snapshot(hibernation_mode == HIBERNATION_PLATFORM);
+	if (error || freezer_test_done)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto Thaw;
 
 	if (in_suspend) {
@@ -656,6 +826,12 @@ int hibernate(void)
 			flags |= SF_PLATFORM_MODE;
 		if (nocompress)
 			flags |= SF_NOCOMPRESS_MODE;
+<<<<<<< HEAD
+=======
+		else
+		        flags |= SF_CRC32_MODE;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_debug("PM: writing image.\n");
 		error = swsusp_write(flags);
 		swsusp_free();
@@ -669,16 +845,29 @@ int hibernate(void)
 
  Thaw:
 	thaw_processes();
+<<<<<<< HEAD
  Free_bitmaps:
 	free_basic_memory_bitmaps();
  Enable_umh:
 	usermodehelper_enable();
+=======
+
+	/* Don't bother checking whether freezer_test_done is true */
+	freezer_test_done = false;
+
+ Free_bitmaps:
+	free_basic_memory_bitmaps();
+>>>>>>> refs/remotes/origin/cm-10.0
  Exit:
 	pm_notifier_call_chain(PM_POST_HIBERNATION);
 	pm_restore_console();
 	atomic_inc(&snapshot_device_available);
  Unlock:
+<<<<<<< HEAD
 	mutex_unlock(&pm_mutex);
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return error;
 }
 
@@ -731,6 +920,15 @@ static int software_resume(void)
 
 	pr_debug("PM: Checking hibernation image partition %s\n", resume_file);
 
+<<<<<<< HEAD
+=======
+	if (resume_delay) {
+		printk(KERN_INFO "Waiting %dsec before reading resume device...\n",
+			resume_delay);
+		ssleep(resume_delay);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Check if the device is there */
 	swsusp_resume_device = name_to_dev_t(resume_file);
 	if (!swsusp_resume_device) {
@@ -739,6 +937,16 @@ static int software_resume(void)
 		 * to wait for this to finish.
 		 */
 		wait_for_device_probe();
+<<<<<<< HEAD
+=======
+
+		if (resume_wait) {
+			while ((swsusp_resume_device = name_to_dev_t(resume_file)) == 0)
+				msleep(10);
+			async_synchronize_full();
+		}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * We can't depend on SCSI devices being available after loading
 		 * one of their modules until scsi_complete_async_scans() is
@@ -774,16 +982,23 @@ static int software_resume(void)
 	if (error)
 		goto close_finish;
 
+<<<<<<< HEAD
 	error = usermodehelper_disable();
 	if (error)
 		goto close_finish;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	error = create_basic_memory_bitmaps();
 	if (error)
 		goto close_finish;
 
 	pr_debug("PM: Preparing processes for restore.\n");
+<<<<<<< HEAD
 	error = prepare_processes();
+=======
+	error = freeze_processes();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error) {
 		swsusp_close(FMODE_READ);
 		goto Done;
@@ -801,7 +1016,10 @@ static int software_resume(void)
 	thaw_processes();
  Done:
 	free_basic_memory_bitmaps();
+<<<<<<< HEAD
 	usermodehelper_enable();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  Finish:
 	pm_notifier_call_chain(PM_POST_RESTORE);
 	pm_restore_console();
@@ -823,8 +1041,11 @@ static const char * const hibernation_modes[] = {
 	[HIBERNATION_PLATFORM]	= "platform",
 	[HIBERNATION_SHUTDOWN]	= "shutdown",
 	[HIBERNATION_REBOOT]	= "reboot",
+<<<<<<< HEAD
 	[HIBERNATION_TEST]	= "test",
 	[HIBERNATION_TESTPROC]	= "testproc",
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -833,17 +1054,28 @@ static const char * const hibernation_modes[] = {
  * Hibernation can be handled in several ways.  There are a few different ways
  * to put the system into the sleep state: using the platform driver (e.g. ACPI
  * or other hibernation_ops), powering it off or rebooting it (for testing
+<<<<<<< HEAD
  * mostly), or using one of the two available test modes.
  *
  * The sysfs file /sys/power/disk provides an interface for selecting the
  * hibernation mode to use.  Reading from this file causes the available modes
  * to be printed.  There are 5 modes that can be supported:
+=======
+ * mostly).
+ *
+ * The sysfs file /sys/power/disk provides an interface for selecting the
+ * hibernation mode to use.  Reading from this file causes the available modes
+ * to be printed.  There are 3 modes that can be supported:
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *	'platform'
  *	'shutdown'
  *	'reboot'
+<<<<<<< HEAD
  *	'test'
  *	'testproc'
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * If a platform hibernation driver is in use, 'platform' will be supported
  * and will be used by default.  Otherwise, 'shutdown' will be used by default.
@@ -867,8 +1099,11 @@ static ssize_t disk_show(struct kobject *kobj, struct kobj_attribute *attr,
 		switch (i) {
 		case HIBERNATION_SHUTDOWN:
 		case HIBERNATION_REBOOT:
+<<<<<<< HEAD
 		case HIBERNATION_TEST:
 		case HIBERNATION_TESTPROC:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case HIBERNATION_PLATFORM:
 			if (hibernation_ops)
@@ -897,7 +1132,11 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
 	p = memchr(buf, '\n', n);
 	len = p ? p - buf : n;
 
+<<<<<<< HEAD
 	mutex_lock(&pm_mutex);
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = HIBERNATION_FIRST; i <= HIBERNATION_MAX; i++) {
 		if (len == strlen(hibernation_modes[i])
 		    && !strncmp(buf, hibernation_modes[i], len)) {
@@ -909,8 +1148,11 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
 		switch (mode) {
 		case HIBERNATION_SHUTDOWN:
 		case HIBERNATION_REBOOT:
+<<<<<<< HEAD
 		case HIBERNATION_TEST:
 		case HIBERNATION_TESTPROC:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			hibernation_mode = mode;
 			break;
 		case HIBERNATION_PLATFORM:
@@ -925,7 +1167,11 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
 	if (!error)
 		pr_debug("PM: Hibernation mode set to '%s'\n",
 			 hibernation_modes[mode]);
+<<<<<<< HEAD
 	mutex_unlock(&pm_mutex);
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return error ? error : n;
 }
 
@@ -952,9 +1198,15 @@ static ssize_t resume_store(struct kobject *kobj, struct kobj_attribute *attr,
 	if (maj != MAJOR(res) || min != MINOR(res))
 		goto out;
 
+<<<<<<< HEAD
 	mutex_lock(&pm_mutex);
 	swsusp_resume_device = res;
 	mutex_unlock(&pm_mutex);
+=======
+	lock_system_sleep();
+	swsusp_resume_device = res;
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_INFO "PM: Starting manual resume from disk\n");
 	noresume = 0;
 	software_resume();
@@ -1067,7 +1319,27 @@ static int __init noresume_setup(char *str)
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+static int __init resumewait_setup(char *str)
+{
+	resume_wait = 1;
+	return 1;
+}
+
+static int __init resumedelay_setup(char *str)
+{
+	resume_delay = simple_strtoul(str, NULL, 0);
+	return 1;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 __setup("noresume", noresume_setup);
 __setup("resume_offset=", resume_offset_setup);
 __setup("resume=", resume_setup);
 __setup("hibernate=", hibernate_setup);
+<<<<<<< HEAD
+=======
+__setup("resumewait", resumewait_setup);
+__setup("resumedelay=", resumedelay_setup);
+>>>>>>> refs/remotes/origin/cm-10.0

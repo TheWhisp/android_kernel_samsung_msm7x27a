@@ -5,11 +5,15 @@
  * Copyright (C) 2001 by Andreas Gruenbacher, <a.gruenbacher@computer.org>
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/string.h>
 #include <linux/fs.h>
 #include <linux/ext3_jbd.h>
 #include <linux/ext3_fs.h>
+=======
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xattr.h"
 
 static size_t

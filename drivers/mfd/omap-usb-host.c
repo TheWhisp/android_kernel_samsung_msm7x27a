@@ -17,6 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
@@ -24,10 +28,18 @@
 #include <linux/clk.h>
 #include <linux/dma-mapping.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 #include <plat/usb.h>
 
 #define USBHS_DRIVER_NAME	"usbhs-omap"
+=======
+#include <plat/cpu.h>
+#include <plat/usb.h>
+#include <linux/pm_runtime.h>
+
+#define USBHS_DRIVER_NAME	"usbhs_omap"
+>>>>>>> refs/remotes/origin/cm-10.0
 #define OMAP_EHCI_DEVICE	"ehci-omap"
 #define OMAP_OHCI_DEVICE	"ohci-omap3"
 
@@ -146,9 +158,12 @@
 
 
 struct usbhs_hcd_omap {
+<<<<<<< HEAD
 	struct clk			*usbhost_ick;
 	struct clk			*usbhost_hs_fck;
 	struct clk			*usbhost_fs_fck;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct clk			*xclk60mhsp1_ck;
 	struct clk			*xclk60mhsp2_ck;
 	struct clk			*utmi_p1_fck;
@@ -158,8 +173,12 @@ struct usbhs_hcd_omap {
 	struct clk			*usbhost_p2_fck;
 	struct clk			*usbtll_p2_fck;
 	struct clk			*init_60m_fclk;
+<<<<<<< HEAD
 	struct clk			*usbtll_fck;
 	struct clk			*usbtll_ick;
+=======
+	struct clk			*ehci_logic_fck;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	void __iomem			*uhh_base;
 	void __iomem			*tll_base;
@@ -168,12 +187,19 @@ struct usbhs_hcd_omap {
 
 	u32				usbhs_rev;
 	spinlock_t			lock;
+<<<<<<< HEAD
 	int				count;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 /*-------------------------------------------------------------------------*/
 
 const char usbhs_driver_name[] = USBHS_DRIVER_NAME;
+<<<<<<< HEAD
 static u64 usbhs_dmamask = ~(u32)0;
+=======
+static u64 usbhs_dmamask = DMA_BIT_MASK(32);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*-------------------------------------------------------------------------*/
 
@@ -226,7 +252,11 @@ static struct platform_device *omap_usbhs_alloc_child(const char *name,
 	}
 
 	child->dev.dma_mask		= &usbhs_dmamask;
+<<<<<<< HEAD
 	child->dev.coherent_dma_mask	= 0xffffffff;
+=======
+	dma_set_coherent_mask(&child->dev, DMA_BIT_MASK(32));
+>>>>>>> refs/remotes/origin/cm-10.0
 	child->dev.parent		= dev;
 
 	ret = platform_device_add(child);
@@ -318,6 +348,7 @@ err_end:
 	return ret;
 }
 
+<<<<<<< HEAD
 /**
  * usbhs_omap_probe - initialize TI-based HCDs
  *
@@ -581,6 +612,8 @@ static int __devexit usbhs_omap_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static bool is_ohci_port(enum usbhs_omap_port_mode pmode)
 {
 	switch (pmode) {
@@ -688,6 +721,7 @@ static void usbhs_omap_tll_init(struct device *dev, u8 tll_channel_count)
 	}
 }
 
+<<<<<<< HEAD
 static int usbhs_enable(struct device *dev)
 {
 	struct usbhs_hcd_omap		*omap = dev_get_drvdata(dev);
@@ -698,12 +732,23 @@ static int usbhs_enable(struct device *dev)
 	unsigned			reg;
 
 	dev_dbg(dev, "starting TI HSUSB Controller\n");
+=======
+static int usbhs_runtime_resume(struct device *dev)
+{
+	struct usbhs_hcd_omap		*omap = dev_get_drvdata(dev);
+	struct usbhs_omap_platform_data	*pdata = &omap->platdata;
+	unsigned long			flags;
+
+	dev_dbg(dev, "usbhs_runtime_resume\n");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!pdata) {
 		dev_dbg(dev, "missing platform_data\n");
 		return  -ENODEV;
 	}
 
 	spin_lock_irqsave(&omap->lock, flags);
+<<<<<<< HEAD
 	if (omap->count > 0)
 		goto end_count;
 
@@ -778,6 +823,76 @@ static int usbhs_enable(struct device *dev)
 	}
 
 	usbhs_write(omap->uhh_base, OMAP_UHH_SYSCONFIG, reg);
+=======
+
+	if (omap->ehci_logic_fck && !IS_ERR(omap->ehci_logic_fck))
+		clk_enable(omap->ehci_logic_fck);
+
+	if (is_ehci_tll_mode(pdata->port_mode[0])) {
+		clk_enable(omap->usbhost_p1_fck);
+		clk_enable(omap->usbtll_p1_fck);
+	}
+	if (is_ehci_tll_mode(pdata->port_mode[1])) {
+		clk_enable(omap->usbhost_p2_fck);
+		clk_enable(omap->usbtll_p2_fck);
+	}
+	clk_enable(omap->utmi_p1_fck);
+	clk_enable(omap->utmi_p2_fck);
+
+	spin_unlock_irqrestore(&omap->lock, flags);
+
+	return 0;
+}
+
+static int usbhs_runtime_suspend(struct device *dev)
+{
+	struct usbhs_hcd_omap		*omap = dev_get_drvdata(dev);
+	struct usbhs_omap_platform_data	*pdata = &omap->platdata;
+	unsigned long			flags;
+
+	dev_dbg(dev, "usbhs_runtime_suspend\n");
+
+	if (!pdata) {
+		dev_dbg(dev, "missing platform_data\n");
+		return  -ENODEV;
+	}
+
+	spin_lock_irqsave(&omap->lock, flags);
+
+	if (is_ehci_tll_mode(pdata->port_mode[0])) {
+		clk_disable(omap->usbhost_p1_fck);
+		clk_disable(omap->usbtll_p1_fck);
+	}
+	if (is_ehci_tll_mode(pdata->port_mode[1])) {
+		clk_disable(omap->usbhost_p2_fck);
+		clk_disable(omap->usbtll_p2_fck);
+	}
+	clk_disable(omap->utmi_p2_fck);
+	clk_disable(omap->utmi_p1_fck);
+
+	if (omap->ehci_logic_fck && !IS_ERR(omap->ehci_logic_fck))
+		clk_disable(omap->ehci_logic_fck);
+
+	spin_unlock_irqrestore(&omap->lock, flags);
+
+	return 0;
+}
+
+static void omap_usbhs_init(struct device *dev)
+{
+	struct usbhs_hcd_omap		*omap = dev_get_drvdata(dev);
+	struct usbhs_omap_platform_data	*pdata = &omap->platdata;
+	unsigned long			flags;
+	unsigned			reg;
+
+	dev_dbg(dev, "starting TI HSUSB Controller\n");
+
+	pm_runtime_get_sync(dev);
+	spin_lock_irqsave(&omap->lock, flags);
+
+	omap->usbhs_rev = usbhs_read(omap->uhh_base, OMAP_UHH_REVISION);
+	dev_dbg(dev, "OMAP UHH_REVISION 0x%x\n", omap->usbhs_rev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	reg = usbhs_read(omap->uhh_base, OMAP_UHH_HOSTCONFIG);
 	/* setup ULPI bypass and burst configurations */
@@ -824,6 +939,7 @@ static int usbhs_enable(struct device *dev)
 		reg &= ~OMAP4_P1_MODE_CLEAR;
 		reg &= ~OMAP4_P2_MODE_CLEAR;
 
+<<<<<<< HEAD
 		if (is_ehci_phy_mode(pdata->port_mode[0])) {
 			ret = clk_set_parent(omap->utmi_p1_fck,
 						omap->xclk60mhsp1_ck);
@@ -867,6 +983,8 @@ static int usbhs_enable(struct device *dev)
 		clk_enable(omap->utmi_p1_fck);
 		clk_enable(omap->utmi_p2_fck);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (is_ehci_tll_mode(pdata->port_mode[0]) ||
 			(is_ohci_port(pdata->port_mode[0])))
 			reg |= OMAP4_P1_MODE_TLL;
@@ -897,6 +1015,7 @@ static int usbhs_enable(struct device *dev)
 			usbhs_omap_tll_init(dev, OMAP_TLL_CHANNEL_COUNT);
 	}
 
+<<<<<<< HEAD
 	if (pdata->ehci_data->phy_reset) {
 		/* Hold the PHY in RESET for enough time till
 		 * PHY is settled and ready
@@ -1037,11 +1156,277 @@ void omap_usbhs_disable(struct device *dev)
 	usbhs_disable(dev->parent);
 }
 EXPORT_SYMBOL_GPL(omap_usbhs_disable);
+=======
+	spin_unlock_irqrestore(&omap->lock, flags);
+	pm_runtime_put_sync(dev);
+}
+
+
+/**
+ * usbhs_omap_probe - initialize TI-based HCDs
+ *
+ * Allocates basic resources for this USB host controller.
+ */
+static int __devinit usbhs_omap_probe(struct platform_device *pdev)
+{
+	struct device			*dev =  &pdev->dev;
+	struct usbhs_omap_platform_data	*pdata = dev->platform_data;
+	struct usbhs_hcd_omap		*omap;
+	struct resource			*res;
+	int				ret = 0;
+	int				i;
+
+	if (!pdata) {
+		dev_err(dev, "Missing platform data\n");
+		ret = -ENOMEM;
+		goto end_probe;
+	}
+
+	omap = kzalloc(sizeof(*omap), GFP_KERNEL);
+	if (!omap) {
+		dev_err(dev, "Memory allocation failed\n");
+		ret = -ENOMEM;
+		goto end_probe;
+	}
+
+	spin_lock_init(&omap->lock);
+
+	for (i = 0; i < OMAP3_HS_USB_PORTS; i++)
+		omap->platdata.port_mode[i] = pdata->port_mode[i];
+
+	omap->platdata.ehci_data = pdata->ehci_data;
+	omap->platdata.ohci_data = pdata->ohci_data;
+
+	pm_runtime_enable(dev);
+
+
+	for (i = 0; i < OMAP3_HS_USB_PORTS; i++)
+		if (is_ehci_phy_mode(i) || is_ehci_tll_mode(i) ||
+			is_ehci_hsic_mode(i)) {
+			omap->ehci_logic_fck = clk_get(dev, "ehci_logic_fck");
+			if (IS_ERR(omap->ehci_logic_fck)) {
+				ret = PTR_ERR(omap->ehci_logic_fck);
+				dev_warn(dev, "ehci_logic_fck failed:%d\n",
+					 ret);
+			}
+			break;
+		}
+
+	omap->utmi_p1_fck = clk_get(dev, "utmi_p1_gfclk");
+	if (IS_ERR(omap->utmi_p1_fck)) {
+		ret = PTR_ERR(omap->utmi_p1_fck);
+		dev_err(dev, "utmi_p1_gfclk failed error:%d\n",	ret);
+		goto err_end;
+	}
+
+	omap->xclk60mhsp1_ck = clk_get(dev, "xclk60mhsp1_ck");
+	if (IS_ERR(omap->xclk60mhsp1_ck)) {
+		ret = PTR_ERR(omap->xclk60mhsp1_ck);
+		dev_err(dev, "xclk60mhsp1_ck failed error:%d\n", ret);
+		goto err_utmi_p1_fck;
+	}
+
+	omap->utmi_p2_fck = clk_get(dev, "utmi_p2_gfclk");
+	if (IS_ERR(omap->utmi_p2_fck)) {
+		ret = PTR_ERR(omap->utmi_p2_fck);
+		dev_err(dev, "utmi_p2_gfclk failed error:%d\n", ret);
+		goto err_xclk60mhsp1_ck;
+	}
+
+	omap->xclk60mhsp2_ck = clk_get(dev, "xclk60mhsp2_ck");
+	if (IS_ERR(omap->xclk60mhsp2_ck)) {
+		ret = PTR_ERR(omap->xclk60mhsp2_ck);
+		dev_err(dev, "xclk60mhsp2_ck failed error:%d\n", ret);
+		goto err_utmi_p2_fck;
+	}
+
+	omap->usbhost_p1_fck = clk_get(dev, "usb_host_hs_utmi_p1_clk");
+	if (IS_ERR(omap->usbhost_p1_fck)) {
+		ret = PTR_ERR(omap->usbhost_p1_fck);
+		dev_err(dev, "usbhost_p1_fck failed error:%d\n", ret);
+		goto err_xclk60mhsp2_ck;
+	}
+
+	omap->usbtll_p1_fck = clk_get(dev, "usb_tll_hs_usb_ch0_clk");
+	if (IS_ERR(omap->usbtll_p1_fck)) {
+		ret = PTR_ERR(omap->usbtll_p1_fck);
+		dev_err(dev, "usbtll_p1_fck failed error:%d\n", ret);
+		goto err_usbhost_p1_fck;
+	}
+
+	omap->usbhost_p2_fck = clk_get(dev, "usb_host_hs_utmi_p2_clk");
+	if (IS_ERR(omap->usbhost_p2_fck)) {
+		ret = PTR_ERR(omap->usbhost_p2_fck);
+		dev_err(dev, "usbhost_p2_fck failed error:%d\n", ret);
+		goto err_usbtll_p1_fck;
+	}
+
+	omap->usbtll_p2_fck = clk_get(dev, "usb_tll_hs_usb_ch1_clk");
+	if (IS_ERR(omap->usbtll_p2_fck)) {
+		ret = PTR_ERR(omap->usbtll_p2_fck);
+		dev_err(dev, "usbtll_p2_fck failed error:%d\n", ret);
+		goto err_usbhost_p2_fck;
+	}
+
+	omap->init_60m_fclk = clk_get(dev, "init_60m_fclk");
+	if (IS_ERR(omap->init_60m_fclk)) {
+		ret = PTR_ERR(omap->init_60m_fclk);
+		dev_err(dev, "init_60m_fclk failed error:%d\n", ret);
+		goto err_usbtll_p2_fck;
+	}
+
+	if (is_ehci_phy_mode(pdata->port_mode[0])) {
+		/* for OMAP3 , the clk set paretn fails */
+		ret = clk_set_parent(omap->utmi_p1_fck,
+					omap->xclk60mhsp1_ck);
+		if (ret != 0)
+			dev_err(dev, "xclk60mhsp1_ck set parent"
+				"failed error:%d\n", ret);
+	} else if (is_ehci_tll_mode(pdata->port_mode[0])) {
+		ret = clk_set_parent(omap->utmi_p1_fck,
+					omap->init_60m_fclk);
+		if (ret != 0)
+			dev_err(dev, "init_60m_fclk set parent"
+				"failed error:%d\n", ret);
+	}
+
+	if (is_ehci_phy_mode(pdata->port_mode[1])) {
+		ret = clk_set_parent(omap->utmi_p2_fck,
+					omap->xclk60mhsp2_ck);
+		if (ret != 0)
+			dev_err(dev, "xclk60mhsp2_ck set parent"
+					"failed error:%d\n", ret);
+	} else if (is_ehci_tll_mode(pdata->port_mode[1])) {
+		ret = clk_set_parent(omap->utmi_p2_fck,
+						omap->init_60m_fclk);
+		if (ret != 0)
+			dev_err(dev, "init_60m_fclk set parent"
+				"failed error:%d\n", ret);
+	}
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "uhh");
+	if (!res) {
+		dev_err(dev, "UHH EHCI get resource failed\n");
+		ret = -ENODEV;
+		goto err_init_60m_fclk;
+	}
+
+	omap->uhh_base = ioremap(res->start, resource_size(res));
+	if (!omap->uhh_base) {
+		dev_err(dev, "UHH ioremap failed\n");
+		ret = -ENOMEM;
+		goto err_init_60m_fclk;
+	}
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "tll");
+	if (!res) {
+		dev_err(dev, "UHH EHCI get resource failed\n");
+		ret = -ENODEV;
+		goto err_tll;
+	}
+
+	omap->tll_base = ioremap(res->start, resource_size(res));
+	if (!omap->tll_base) {
+		dev_err(dev, "TLL ioremap failed\n");
+		ret = -ENOMEM;
+		goto err_tll;
+	}
+
+	platform_set_drvdata(pdev, omap);
+
+	omap_usbhs_init(dev);
+	ret = omap_usbhs_alloc_children(pdev);
+	if (ret) {
+		dev_err(dev, "omap_usbhs_alloc_children failed\n");
+		goto err_alloc;
+	}
+
+	goto end_probe;
+
+err_alloc:
+	iounmap(omap->tll_base);
+
+err_tll:
+	iounmap(omap->uhh_base);
+
+err_init_60m_fclk:
+	clk_put(omap->init_60m_fclk);
+
+err_usbtll_p2_fck:
+	clk_put(omap->usbtll_p2_fck);
+
+err_usbhost_p2_fck:
+	clk_put(omap->usbhost_p2_fck);
+
+err_usbtll_p1_fck:
+	clk_put(omap->usbtll_p1_fck);
+
+err_usbhost_p1_fck:
+	clk_put(omap->usbhost_p1_fck);
+
+err_xclk60mhsp2_ck:
+	clk_put(omap->xclk60mhsp2_ck);
+
+err_utmi_p2_fck:
+	clk_put(omap->utmi_p2_fck);
+
+err_xclk60mhsp1_ck:
+	clk_put(omap->xclk60mhsp1_ck);
+
+err_utmi_p1_fck:
+	clk_put(omap->utmi_p1_fck);
+
+err_end:
+	clk_put(omap->ehci_logic_fck);
+	pm_runtime_disable(dev);
+	kfree(omap);
+
+end_probe:
+	return ret;
+}
+
+/**
+ * usbhs_omap_remove - shutdown processing for UHH & TLL HCDs
+ * @pdev: USB Host Controller being removed
+ *
+ * Reverses the effect of usbhs_omap_probe().
+ */
+static int __devexit usbhs_omap_remove(struct platform_device *pdev)
+{
+	struct usbhs_hcd_omap *omap = platform_get_drvdata(pdev);
+
+	iounmap(omap->tll_base);
+	iounmap(omap->uhh_base);
+	clk_put(omap->init_60m_fclk);
+	clk_put(omap->usbtll_p2_fck);
+	clk_put(omap->usbhost_p2_fck);
+	clk_put(omap->usbtll_p1_fck);
+	clk_put(omap->usbhost_p1_fck);
+	clk_put(omap->xclk60mhsp2_ck);
+	clk_put(omap->utmi_p2_fck);
+	clk_put(omap->xclk60mhsp1_ck);
+	clk_put(omap->utmi_p1_fck);
+	clk_put(omap->ehci_logic_fck);
+	pm_runtime_disable(&pdev->dev);
+	kfree(omap);
+
+	return 0;
+}
+
+static const struct dev_pm_ops usbhsomap_dev_pm_ops = {
+	.runtime_suspend	= usbhs_runtime_suspend,
+	.runtime_resume		= usbhs_runtime_resume,
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct platform_driver usbhs_omap_driver = {
 	.driver = {
 		.name		= (char *)usbhs_driver_name,
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.pm		= &usbhsomap_dev_pm_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.remove		= __exit_p(usbhs_omap_remove),
 };

@@ -12,7 +12,12 @@
 #include <linux/backlight.h>
 #include <linux/adb.h>
 #include <linux/pmu.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/prom.h>
 #include <asm/backlight.h>
 

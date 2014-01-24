@@ -25,6 +25,10 @@
 #include <linux/module.h>
 #include <linux/sunrpc/stats.h>
 #include <linux/nfsd/stats.h>
+<<<<<<< HEAD
+=======
+#include <net/net_namespace.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "nfsd.h"
 
@@ -94,11 +98,19 @@ static const struct file_operations nfsd_proc_fops = {
 void
 nfsd_stat_init(void)
 {
+<<<<<<< HEAD
 	svc_proc_register(&nfsd_svcstats, &nfsd_proc_fops);
+=======
+	svc_proc_register(&init_net, &nfsd_svcstats, &nfsd_proc_fops);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void
 nfsd_stat_shutdown(void)
 {
+<<<<<<< HEAD
 	svc_proc_unregister("nfsd");
+=======
+	svc_proc_unregister(&init_net, "nfsd");
+>>>>>>> refs/remotes/origin/cm-10.0
 }

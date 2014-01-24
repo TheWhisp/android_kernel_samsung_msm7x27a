@@ -170,6 +170,12 @@ extern int ptep_set_access_flags(struct vm_area_struct *vma, unsigned long addre
 #define pgprot_cached_wthru(prot) (__pgprot((pgprot_val(prot) & ~_PAGE_CACHE_CTL) | \
 				            _PAGE_COHERENT | _PAGE_WRITETHRU))
 
+<<<<<<< HEAD
+=======
+#define pgprot_cached_noncoherent(prot) \
+		(__pgprot(pgprot_val(prot) & ~_PAGE_CACHE_CTL))
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define pgprot_writecombine pgprot_noncached_wc
 
 struct file;

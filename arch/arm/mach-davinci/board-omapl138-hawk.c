@@ -21,7 +21,11 @@
 #include <mach/da8xx.h>
 #include <mach/mux.h>
 
+<<<<<<< HEAD
 #define HAWKBOARD_PHY_ID		"0:07"
+=======
+#define HAWKBOARD_PHY_ID		"davinci_mdio-0:07"
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DA850_HAWK_MMCSD_CD_PIN		GPIO_TO_PIN(3, 12)
 #define DA850_HAWK_MMCSD_WP_PIN		GPIO_TO_PIN(3, 13)
 
@@ -338,9 +342,18 @@ static void __init omapl138_hawk_map_io(void)
 }
 
 MACHINE_START(OMAPL138_HAWKBOARD, "AM18x/OMAP-L138 Hawkboard")
+<<<<<<< HEAD
 	.boot_params	= (DA8XX_DDR_BASE + 0x100),
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= omapl138_hawk_map_io,
 	.init_irq	= cp_intc_init,
 	.timer		= &davinci_timer,
 	.init_machine	= omapl138_hawk_init,
+<<<<<<< HEAD
+=======
+	.dma_zone_size	= SZ_128M,
+	.restart	= da8xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

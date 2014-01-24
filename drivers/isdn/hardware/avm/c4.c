@@ -1,7 +1,13 @@
 /* $Id: c4.c,v 1.1.2.2 2004/01/16 21:09:27 keil Exp $
+<<<<<<< HEAD
  * 
  * Module for AVM C4 & C2 card.
  * 
+=======
+ *
+ * Module for AVM C4 & C2 card.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright 1999 by Carsten Paeth <calle@calle.de>
  *
  * This software may be used and distributed according to the terms
@@ -40,7 +46,11 @@ static char *revision = "$Revision: 1.1.2.2 $";
 
 /* ------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int suppress_pollack;
+=======
+static bool suppress_pollack;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct pci_device_id c4_pci_tbl[] = {
 	{ PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_21285, PCI_VENDOR_ID_AVM, PCI_DEVICE_ID_AVM_C4, 0, 0, (unsigned long)4 },
@@ -129,8 +139,13 @@ static void c4_dispatch_tx(avmcard *card);
 
 /* ------------------------------------------------------------- */
 
+<<<<<<< HEAD
 #define	RESET_TIMEOUT		(15*HZ)	/* 15 sec */
 #define	PEEK_POKE_TIMEOUT	(HZ/10)	/* 0.1 sec */
+=======
+#define	RESET_TIMEOUT		(15 * HZ)	/* 15 sec */
+#define	PEEK_POKE_TIMEOUT	(HZ / 10)	/* 0.1 sec */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ------------------------------------------------------------- */
 
@@ -148,7 +163,11 @@ static inline int wait_for_doorbell(avmcard *card, unsigned long t)
 	unsigned long stop;
 
 	stop = jiffies + t;
+<<<<<<< HEAD
 	while (c4inmeml(card->mbase+DOORBELL) != 0xffffffff) {
+=======
+	while (c4inmeml(card->mbase + DOORBELL) != 0xffffffff) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!time_before(jiffies, stop))
 			return -1;
 		mb();
@@ -159,6 +178,7 @@ static inline int wait_for_doorbell(avmcard *card, unsigned long t)
 static int c4_poke(avmcard *card,  unsigned long off, unsigned long value)
 {
 
+<<<<<<< HEAD
 	if (wait_for_doorbell(card, HZ/10) < 0)
 		return -1;
 	
@@ -170,12 +190,26 @@ static int c4_poke(avmcard *card,  unsigned long off, unsigned long value)
 
 	c4outmeml(card->mbase+MBOX_PEEK_POKE, value);
 	c4outmeml(card->mbase+DOORBELL, DBELL_DATA | DBELL_ADDR);
+=======
+	if (wait_for_doorbell(card, HZ / 10) < 0)
+		return -1;
+
+	c4outmeml(card->mbase + MBOX_PEEK_POKE, off);
+	c4outmeml(card->mbase + DOORBELL, DBELL_ADDR);
+
+	if (wait_for_doorbell(card, HZ / 10) < 0)
+		return -1;
+
+	c4outmeml(card->mbase + MBOX_PEEK_POKE, value);
+	c4outmeml(card->mbase + DOORBELL, DBELL_DATA | DBELL_ADDR);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
 static int c4_peek(avmcard *card,  unsigned long off, unsigned long *valuep)
 {
+<<<<<<< HEAD
 	if (wait_for_doorbell(card, HZ/10) < 0)
 		return -1;
 
@@ -186,13 +220,29 @@ static int c4_peek(avmcard *card,  unsigned long off, unsigned long *valuep)
 		return -1;
 
 	*valuep = c4inmeml(card->mbase+MBOX_PEEK_POKE);
+=======
+	if (wait_for_doorbell(card, HZ / 10) < 0)
+		return -1;
+
+	c4outmeml(card->mbase + MBOX_PEEK_POKE, off);
+	c4outmeml(card->mbase + DOORBELL, DBELL_RNWR | DBELL_ADDR);
+
+	if (wait_for_doorbell(card, HZ / 10) < 0)
+		return -1;
+
+	*valuep = c4inmeml(card->mbase + MBOX_PEEK_POKE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
 /* ------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int c4_load_t4file(avmcard *card, capiloaddatapart * t4file)
+=======
+static int c4_load_t4file(avmcard *card, capiloaddatapart *t4file)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u32 val;
 	unsigned char *dp;
@@ -202,7 +252,11 @@ static int c4_load_t4file(avmcard *card, capiloaddatapart * t4file)
 	dp = t4file->data;
 	left = t4file->len;
 	while (left >= sizeof(u32)) {
+<<<<<<< HEAD
 	        if (t4file->user) {
+=======
+		if (t4file->user) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (copy_from_user(&val, dp, sizeof(val)))
 				return -EFAULT;
 		} else {
@@ -210,7 +264,11 @@ static int c4_load_t4file(avmcard *card, capiloaddatapart * t4file)
 		}
 		if (c4_poke(card, loadoff, val)) {
 			printk(KERN_ERR "%s: corrupted firmware file ?\n",
+<<<<<<< HEAD
 					card->name);
+=======
+			       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EIO;
 		}
 		left -= sizeof(u32);
@@ -227,7 +285,11 @@ static int c4_load_t4file(avmcard *card, capiloaddatapart * t4file)
 		}
 		if (c4_poke(card, loadoff, val)) {
 			printk(KERN_ERR "%s: corrupted firmware file ?\n",
+<<<<<<< HEAD
 					card->name);
+=======
+			       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EIO;
 		}
 	}
@@ -297,6 +359,7 @@ static void c4_reset(avmcard *card)
 {
 	unsigned long stop;
 
+<<<<<<< HEAD
 	c4outmeml(card->mbase+DOORBELL, DBELL_RESET_ARM);
 
 	stop = jiffies + HZ*10;
@@ -304,6 +367,15 @@ static void c4_reset(avmcard *card)
 		if (!time_before(jiffies, stop))
 			return;
 		c4outmeml(card->mbase+DOORBELL, DBELL_ADDR);
+=======
+	c4outmeml(card->mbase + DOORBELL, DBELL_RESET_ARM);
+
+	stop = jiffies + HZ * 10;
+	while (c4inmeml(card->mbase + DOORBELL) != 0xffffffff) {
+		if (!time_before(jiffies, stop))
+			return;
+		c4outmeml(card->mbase + DOORBELL, DBELL_ADDR);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mb();
 	}
 
@@ -317,6 +389,7 @@ static int c4_detect(avmcard *card)
 {
 	unsigned long stop, dummy;
 
+<<<<<<< HEAD
 	c4outmeml(card->mbase+PCI_OUT_INT_MASK, 0x0c);
 	if (c4inmeml(card->mbase+PCI_OUT_INT_MASK) != 0x0c)
 		return	1;
@@ -328,12 +401,26 @@ static int c4_detect(avmcard *card)
 		if (!time_before(jiffies, stop))
 			return 2;
 		c4outmeml(card->mbase+DOORBELL, DBELL_ADDR);
+=======
+	c4outmeml(card->mbase + PCI_OUT_INT_MASK, 0x0c);
+	if (c4inmeml(card->mbase + PCI_OUT_INT_MASK) != 0x0c)
+		return	1;
+
+	c4outmeml(card->mbase + DOORBELL, DBELL_RESET_ARM);
+
+	stop = jiffies + HZ * 10;
+	while (c4inmeml(card->mbase + DOORBELL) != 0xffffffff) {
+		if (!time_before(jiffies, stop))
+			return 2;
+		c4outmeml(card->mbase + DOORBELL, DBELL_ADDR);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mb();
 	}
 
 	c4_poke(card, DC21285_ARMCSR_BASE + CHAN_1_CONTROL, 0);
 	c4_poke(card, DC21285_ARMCSR_BASE + CHAN_2_CONTROL, 0);
 
+<<<<<<< HEAD
 	c4outmeml(card->mbase+MAILBOX_0, 0x55aa55aa);
 	if (c4inmeml(card->mbase+MAILBOX_0) != 0x55aa55aa) return 3;
 
@@ -351,12 +438,32 @@ static int c4_detect(avmcard *card)
 	if (c4_poke(card, DC21285_ARMCSR_BASE+DRAM_TIMING, 0)) return 9;
 
         mdelay(1);
+=======
+	c4outmeml(card->mbase + MAILBOX_0, 0x55aa55aa);
+	if (c4inmeml(card->mbase + MAILBOX_0) != 0x55aa55aa) return 3;
+
+	c4outmeml(card->mbase + MAILBOX_0, 0xaa55aa55);
+	if (c4inmeml(card->mbase + MAILBOX_0) != 0xaa55aa55) return 4;
+
+	if (c4_poke(card, DC21285_ARMCSR_BASE + DBELL_SA_MASK, 0)) return 5;
+	if (c4_poke(card, DC21285_ARMCSR_BASE + DBELL_PCI_MASK, 0)) return 6;
+	if (c4_poke(card, DC21285_ARMCSR_BASE + SA_CONTROL, SA_CTL_ALLRIGHT))
+		return 7;
+	if (c4_poke(card, DC21285_ARMCSR_BASE + XBUS_CYCLE, INIT_XBUS_CYCLE))
+		return 8;
+	if (c4_poke(card, DC21285_ARMCSR_BASE + XBUS_STROBE, INIT_XBUS_STROBE))
+		return 8;
+	if (c4_poke(card, DC21285_ARMCSR_BASE + DRAM_TIMING, 0)) return 9;
+
+	mdelay(1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (c4_peek(card, DC21285_DRAM_A0MR, &dummy)) return 10;
 	if (c4_peek(card, DC21285_DRAM_A1MR, &dummy)) return 11;
 	if (c4_peek(card, DC21285_DRAM_A2MR, &dummy)) return 12;
 	if (c4_peek(card, DC21285_DRAM_A3MR, &dummy)) return 13;
 
+<<<<<<< HEAD
 	if (c4_poke(card, DC21285_DRAM_A0MR+CAS_OFFSET, 0)) return 14;
 	if (c4_poke(card, DC21285_DRAM_A1MR+CAS_OFFSET, 0)) return 15;
 	if (c4_poke(card, DC21285_DRAM_A2MR+CAS_OFFSET, 0)) return 16;
@@ -400,6 +507,51 @@ static int c4_detect(avmcard *card)
 	    || c4_peek(card, 0x400000, &dummy) || dummy != 0x66666666
 	    || c4_peek(card, 0x800000, &dummy) || dummy != 0x77777777
 	    || c4_peek(card, 0xC00000, &dummy) || dummy != 0x88888888)
+=======
+	if (c4_poke(card, DC21285_DRAM_A0MR + CAS_OFFSET, 0)) return 14;
+	if (c4_poke(card, DC21285_DRAM_A1MR + CAS_OFFSET, 0)) return 15;
+	if (c4_poke(card, DC21285_DRAM_A2MR + CAS_OFFSET, 0)) return 16;
+	if (c4_poke(card, DC21285_DRAM_A3MR + CAS_OFFSET, 0)) return 17;
+
+	mdelay(1);
+
+	if (c4_poke(card, DC21285_ARMCSR_BASE + DRAM_TIMING, DRAM_TIMING_DEF))
+		return 18;
+
+	if (c4_poke(card, DC21285_ARMCSR_BASE + DRAM_ADDR_SIZE_0, DRAM_AD_SZ_DEF0))
+		return 19;
+	if (c4_poke(card, DC21285_ARMCSR_BASE + DRAM_ADDR_SIZE_1, DRAM_AD_SZ_NULL))
+		return 20;
+	if (c4_poke(card, DC21285_ARMCSR_BASE + DRAM_ADDR_SIZE_2, DRAM_AD_SZ_NULL))
+		return 21;
+	if (c4_poke(card, DC21285_ARMCSR_BASE + DRAM_ADDR_SIZE_3, DRAM_AD_SZ_NULL))
+		return 22;
+
+	/* Transputer test */
+
+	if (c4_poke(card, 0x000000, 0x11111111)
+	    || c4_poke(card, 0x400000, 0x22222222)
+	       || c4_poke(card, 0x800000, 0x33333333)
+	       || c4_poke(card, 0xC00000, 0x44444444))
+		return 23;
+
+	if (c4_peek(card, 0x000000, &dummy) || dummy != 0x11111111
+	    || c4_peek(card, 0x400000, &dummy) || dummy != 0x22222222
+	       || c4_peek(card, 0x800000, &dummy) || dummy != 0x33333333
+	       || c4_peek(card, 0xC00000, &dummy) || dummy != 0x44444444)
+		return 24;
+
+	if (c4_poke(card, 0x000000, 0x55555555)
+	    || c4_poke(card, 0x400000, 0x66666666)
+	       || c4_poke(card, 0x800000, 0x77777777)
+	       || c4_poke(card, 0xC00000, 0x88888888))
+		return 25;
+
+	if (c4_peek(card, 0x000000, &dummy) || dummy != 0x55555555
+	    || c4_peek(card, 0x400000, &dummy) || dummy != 0x66666666
+	       || c4_peek(card, 0x800000, &dummy) || dummy != 0x77777777
+	       || c4_peek(card, 0xC00000, &dummy) || dummy != 0x88888888)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 26;
 
 	return 0;
@@ -451,26 +603,43 @@ static void c4_dispatch_tx(avmcard *card)
 		printk(KERN_DEBUG "%s: tx put msg len=%d\n", card->name, txlen);
 #endif
 	} else {
+<<<<<<< HEAD
 		txlen = skb->len-2;
+=======
+		txlen = skb->len - 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef AVM_C4_POLLDEBUG
 		if (skb->data[2] == SEND_POLLACK)
 			printk(KERN_INFO "%s: ack to c4\n", card->name);
 #endif
 #ifdef AVM_C4_DEBUG
 		printk(KERN_DEBUG "%s: tx put 0x%x len=%d\n",
+<<<<<<< HEAD
 				card->name, skb->data[2], txlen);
+=======
+		       card->name, skb->data[2], txlen);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 		skb_copy_from_linear_data_offset(skb, 2, dma->sendbuf.dmabuf,
 						 skb->len - 2);
 	}
 	txlen = (txlen + 3) & ~3;
 
+<<<<<<< HEAD
 	c4outmeml(card->mbase+MBOX_DOWN_ADDR, dma->sendbuf.dmaaddr);
 	c4outmeml(card->mbase+MBOX_DOWN_LEN, txlen);
 
 	card->csr |= DBELL_DOWN_ARM;
 
 	c4outmeml(card->mbase+DOORBELL, DBELL_DOWN_ARM);
+=======
+	c4outmeml(card->mbase + MBOX_DOWN_ADDR, dma->sendbuf.dmaaddr);
+	c4outmeml(card->mbase + MBOX_DOWN_LEN, txlen);
+
+	card->csr |= DBELL_DOWN_ARM;
+
+	c4outmeml(card->mbase + DOORBELL, DBELL_DOWN_ARM);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_kfree_skb_any(skb);
 }
@@ -485,7 +654,11 @@ static void queue_pollack(avmcard *card)
 	skb = alloc_skb(3, GFP_ATOMIC);
 	if (!skb) {
 		printk(KERN_CRIT "%s: no memory, lost poll ack\n",
+<<<<<<< HEAD
 					card->name);
+=======
+		       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	p = skb->data;
@@ -514,9 +687,15 @@ static void c4_handle_rx(avmcard *card)
 
 #ifdef AVM_C4_DEBUG
 	printk(KERN_DEBUG "%s: rx 0x%x len=%lu\n", card->name,
+<<<<<<< HEAD
 				b1cmd, (unsigned long)dma->recvlen);
 #endif
 	
+=======
+	       b1cmd, (unsigned long)dma->recvlen);
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (b1cmd) {
 	case RECEIVE_DATA_B3_IND:
 
@@ -528,6 +707,7 @@ static void c4_handle_rx(avmcard *card)
 		ctrl = &card->ctrlinfo[cidx].capi_ctrl;
 
 		if (MsgLen < 30) { /* not CAPI 64Bit */
+<<<<<<< HEAD
 			memset(card->msgbuf+MsgLen, 0, 30-MsgLen);
 			MsgLen = 30;
 			CAPIMSG_SETLEN(card->msgbuf, 30);
@@ -535,6 +715,15 @@ static void c4_handle_rx(avmcard *card)
 		if (!(skb = alloc_skb(DataB3Len+MsgLen, GFP_ATOMIC))) {
 			printk(KERN_ERR "%s: incoming packet dropped\n",
 					card->name);
+=======
+			memset(card->msgbuf + MsgLen, 0, 30 - MsgLen);
+			MsgLen = 30;
+			CAPIMSG_SETLEN(card->msgbuf, 30);
+		}
+		if (!(skb = alloc_skb(DataB3Len + MsgLen, GFP_ATOMIC))) {
+			printk(KERN_ERR "%s: incoming packet dropped\n",
+			       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 			memcpy(skb_put(skb, MsgLen), card->msgbuf, MsgLen);
 			memcpy(skb_put(skb, DataB3Len), card->databuf, DataB3Len);
@@ -553,7 +742,11 @@ static void c4_handle_rx(avmcard *card)
 
 		if (!(skb = alloc_skb(MsgLen, GFP_ATOMIC))) {
 			printk(KERN_ERR "%s: incoming packet dropped\n",
+<<<<<<< HEAD
 					card->name);
+=======
+			       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 			memcpy(skb_put(skb, MsgLen), card->msgbuf, MsgLen);
 			if (CAPIMSG_CMD(skb->data) == CAPI_DATA_B3_CONF)
@@ -570,7 +763,11 @@ static void c4_handle_rx(avmcard *card)
 		ApplId = _get_word(&p);
 		NCCI = _get_word(&p);
 		WindowSize = _get_word(&p);
+<<<<<<< HEAD
 		cidx = (NCCI&0x7f) - card->cardnr;
+=======
+		cidx = (NCCI & 0x7f) - card->cardnr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (cidx >= card->nlogcontr) cidx = 0;
 
 		capilib_new_ncci(&card->ctrlinfo[cidx].ncci_head, ApplId, NCCI, WindowSize);
@@ -583,7 +780,11 @@ static void c4_handle_rx(avmcard *card)
 		NCCI = _get_word(&p);
 
 		if (NCCI != 0xffffffff) {
+<<<<<<< HEAD
 			cidx = (NCCI&0x7f) - card->cardnr;
+=======
+			cidx = (NCCI & 0x7f) - card->cardnr;
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (cidx >= card->nlogcontr) cidx = 0;
 			capilib_free_ncci(&card->ctrlinfo[cidx].ncci_head, ApplId, NCCI);
 		}
@@ -595,14 +796,22 @@ static void c4_handle_rx(avmcard *card)
 #endif
 		if (!suppress_pollack)
 			queue_pollack(card);
+<<<<<<< HEAD
 		for (cidx=0; cidx < card->nr_controllers; cidx++) {
+=======
+		for (cidx = 0; cidx < card->nr_controllers; cidx++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ctrl = &card->ctrlinfo[cidx].capi_ctrl;
 			capi_ctr_resume_output(ctrl);
 		}
 		break;
 
 	case RECEIVE_STOP:
+<<<<<<< HEAD
 		for (cidx=0; cidx < card->nr_controllers; cidx++) {
+=======
+		for (cidx = 0; cidx < card->nr_controllers; cidx++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ctrl = &card->ctrlinfo[cidx].capi_ctrl;
 			capi_ctr_suspend_output(ctrl);
 		}
@@ -610,6 +819,7 @@ static void c4_handle_rx(avmcard *card)
 
 	case RECEIVE_INIT:
 
+<<<<<<< HEAD
 	        cidx = card->nlogcontr;
 		if (cidx >= card->nr_controllers) {
 			printk(KERN_ERR "%s: card with %d controllers ??\n",
@@ -618,6 +828,16 @@ static void c4_handle_rx(avmcard *card)
 		}
 	        card->nlogcontr++;
 	        cinfo = &card->ctrlinfo[cidx];
+=======
+		cidx = card->nlogcontr;
+		if (cidx >= card->nr_controllers) {
+			printk(KERN_ERR "%s: card with %d controllers ??\n",
+			       card->name, cidx + 1);
+			break;
+		}
+		card->nlogcontr++;
+		cinfo = &card->ctrlinfo[cidx];
+>>>>>>> refs/remotes/origin/cm-10.0
 		ctrl = &cinfo->capi_ctrl;
 		cinfo->versionlen = _get_slice(&p, cinfo->versionbuf);
 		b1_parse_version(cinfo);
@@ -632,6 +852,7 @@ static void c4_handle_rx(avmcard *card)
 		ApplId = (unsigned) _get_word(&p);
 		MsgLen = _get_slice(&p, card->msgbuf);
 		card->msgbuf[MsgLen] = 0;
+<<<<<<< HEAD
 		while (    MsgLen > 0
 		       && (   card->msgbuf[MsgLen-1] == '\n'
 			   || card->msgbuf[MsgLen-1] == '\r')) {
@@ -640,15 +861,32 @@ static void c4_handle_rx(avmcard *card)
 		}
 		printk(KERN_INFO "%s: task %d \"%s\" ready.\n",
 				card->name, ApplId, card->msgbuf);
+=======
+		while (MsgLen > 0
+		       && (card->msgbuf[MsgLen - 1] == '\n'
+			   || card->msgbuf[MsgLen - 1] == '\r')) {
+			card->msgbuf[MsgLen - 1] = 0;
+			MsgLen--;
+		}
+		printk(KERN_INFO "%s: task %d \"%s\" ready.\n",
+		       card->name, ApplId, card->msgbuf);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case RECEIVE_DEBUGMSG:
 		MsgLen = _get_slice(&p, card->msgbuf);
 		card->msgbuf[MsgLen] = 0;
+<<<<<<< HEAD
 		while (    MsgLen > 0
 		       && (   card->msgbuf[MsgLen-1] == '\n'
 			   || card->msgbuf[MsgLen-1] == '\r')) {
 			card->msgbuf[MsgLen-1] = 0;
+=======
+		while (MsgLen > 0
+		       && (card->msgbuf[MsgLen - 1] == '\n'
+			   || card->msgbuf[MsgLen - 1] == '\r')) {
+			card->msgbuf[MsgLen - 1] = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 			MsgLen--;
 		}
 		printk(KERN_INFO "%s: DEBUG: %s\n", card->name, card->msgbuf);
@@ -656,7 +894,11 @@ static void c4_handle_rx(avmcard *card)
 
 	default:
 		printk(KERN_ERR "%s: c4_interrupt: 0x%x ???\n",
+<<<<<<< HEAD
 				card->name, b1cmd);
+=======
+		       card->name, b1cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 }
@@ -669,16 +911,28 @@ static irqreturn_t c4_handle_interrupt(avmcard *card)
 	u32 status;
 
 	spin_lock_irqsave(&card->lock, flags);
+<<<<<<< HEAD
 	status = c4inmeml(card->mbase+DOORBELL);
 
 	if (status & DBELL_RESET_HOST) {
 		u_int i;
 		c4outmeml(card->mbase+PCI_OUT_INT_MASK, 0x0c);
+=======
+	status = c4inmeml(card->mbase + DOORBELL);
+
+	if (status & DBELL_RESET_HOST) {
+		u_int i;
+		c4outmeml(card->mbase + PCI_OUT_INT_MASK, 0x0c);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock_irqrestore(&card->lock, flags);
 		if (card->nlogcontr == 0)
 			return IRQ_HANDLED;
 		printk(KERN_ERR "%s: unexpected reset\n", card->name);
+<<<<<<< HEAD
                 for (i=0; i < card->nr_controllers; i++) {
+=======
+		for (i = 0; i < card->nr_controllers; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			avmctrl_info *cinfo = &card->ctrlinfo[i];
 			memset(cinfo->version, 0, sizeof(cinfo->version));
 			spin_lock_irqsave(&card->lock, flags);
@@ -695,6 +949,7 @@ static irqreturn_t c4_handle_interrupt(avmcard *card)
 		spin_unlock_irqrestore(&card->lock, flags);
 		return IRQ_HANDLED;
 	}
+<<<<<<< HEAD
 	c4outmeml(card->mbase+DOORBELL, status);
 
 	if ((status & DBELL_UP_HOST) != 0) {
@@ -704,14 +959,32 @@ static irqreturn_t c4_handle_interrupt(avmcard *card)
 		card->dma->recvlen = 0;
 		c4outmeml(card->mbase+MBOX_UP_LEN, card->dma->recvbuf.size);
 		c4outmeml(card->mbase+DOORBELL, DBELL_UP_ARM);
+=======
+	c4outmeml(card->mbase + DOORBELL, status);
+
+	if ((status & DBELL_UP_HOST) != 0) {
+		card->dma->recvlen = c4inmeml(card->mbase + MBOX_UP_LEN);
+		c4outmeml(card->mbase + MBOX_UP_LEN, 0);
+		c4_handle_rx(card);
+		card->dma->recvlen = 0;
+		c4outmeml(card->mbase + MBOX_UP_LEN, card->dma->recvbuf.size);
+		c4outmeml(card->mbase + DOORBELL, DBELL_UP_ARM);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if ((status & DBELL_DOWN_HOST) != 0) {
 		card->csr &= ~DBELL_DOWN_ARM;
+<<<<<<< HEAD
 	        c4_dispatch_tx(card);
 	} else if (card->csr & DBELL_DOWN_HOST) {
 		if (c4inmeml(card->mbase+MBOX_DOWN_LEN) == 0) {
 		        card->csr &= ~DBELL_DOWN_ARM;
+=======
+		c4_dispatch_tx(card);
+	} else if (card->csr & DBELL_DOWN_HOST) {
+		if (c4inmeml(card->mbase + MBOX_DOWN_LEN) == 0) {
+			card->csr &= ~DBELL_DOWN_ARM;
+>>>>>>> refs/remotes/origin/cm-10.0
 			c4_dispatch_tx(card);
 		}
 	}
@@ -737,7 +1010,11 @@ static void c4_send_init(avmcard *card)
 	skb = alloc_skb(15, GFP_ATOMIC);
 	if (!skb) {
 		printk(KERN_CRIT "%s: no memory, lost register appl.\n",
+<<<<<<< HEAD
 					card->name);
+=======
+		       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	p = skb->data;
@@ -745,7 +1022,11 @@ static void c4_send_init(avmcard *card)
 	_put_byte(&p, 0);
 	_put_byte(&p, SEND_INIT);
 	_put_word(&p, CAPI_MAXAPPL);
+<<<<<<< HEAD
 	_put_word(&p, AVM_NCCI_PER_CHANNEL*30);
+=======
+	_put_word(&p, AVM_NCCI_PER_CHANNEL * 30);
+>>>>>>> refs/remotes/origin/cm-10.0
 	_put_word(&p, card->cardnr - 1);
 	skb_put(skb, (u8 *)p - (u8 *)skb->data);
 
@@ -761,10 +1042,17 @@ static int queue_sendconfigword(avmcard *card, u32 val)
 	unsigned long flags;
 	void *p;
 
+<<<<<<< HEAD
 	skb = alloc_skb(3+4, GFP_ATOMIC);
 	if (!skb) {
 		printk(KERN_CRIT "%s: no memory, send config\n",
 					card->name);
+=======
+	skb = alloc_skb(3 + 4, GFP_ATOMIC);
+	if (!skb) {
+		printk(KERN_CRIT "%s: no memory, send config\n",
+		       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 	p = skb->data;
@@ -787,10 +1075,17 @@ static int queue_sendconfig(avmcard *card, char cval[4])
 	unsigned long flags;
 	void *p;
 
+<<<<<<< HEAD
 	skb = alloc_skb(3+4, GFP_ATOMIC);
 	if (!skb) {
 		printk(KERN_CRIT "%s: no memory, send config\n",
 					card->name);
+=======
+	skb = alloc_skb(3 + 4, GFP_ATOMIC);
+	if (!skb) {
+		printk(KERN_CRIT "%s: no memory, send config\n",
+		       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 	p = skb->data;
@@ -804,20 +1099,32 @@ static int queue_sendconfig(avmcard *card, char cval[4])
 	skb_put(skb, (u8 *)p - (u8 *)skb->data);
 
 	skb_queue_tail(&card->dma->send_queue, skb);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&card->lock, flags);
 	c4_dispatch_tx(card);
 	spin_unlock_irqrestore(&card->lock, flags);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int c4_send_config(avmcard *card, capiloaddatapart * config)
+=======
+static int c4_send_config(avmcard *card, capiloaddatapart *config)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u8 val[4];
 	unsigned char *dp;
 	u_int left;
 	int retval;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((retval = queue_sendconfigword(card, 1)) != 0)
 		return retval;
 	if ((retval = queue_sendconfigword(card, config->len)) != 0)
@@ -826,7 +1133,11 @@ static int c4_send_config(avmcard *card, capiloaddatapart * config)
 	dp = config->data;
 	left = config->len;
 	while (left >= sizeof(u32)) {
+<<<<<<< HEAD
 	        if (config->user) {
+=======
+		if (config->user) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (copy_from_user(val, dp, sizeof(val)))
 				return -EFAULT;
 		} else {
@@ -860,12 +1171,17 @@ static int c4_load_firmware(struct capi_ctr *ctrl, capiloaddata *data)
 
 	if ((retval = c4_load_t4file(card, &data->firmware))) {
 		printk(KERN_ERR "%s: failed to load t4file!!\n",
+<<<<<<< HEAD
 					card->name);
+=======
+		       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		c4_reset(card);
 		return retval;
 	}
 
 	card->csr = 0;
+<<<<<<< HEAD
 	c4outmeml(card->mbase+MBOX_UP_LEN, 0);
 	c4outmeml(card->mbase+MBOX_DOWN_LEN, 0);
 	c4outmeml(card->mbase+DOORBELL, DBELL_INIT);
@@ -879,18 +1195,41 @@ static int c4_load_firmware(struct capi_ctr *ctrl, capiloaddata *data)
 	c4outmeml(card->mbase+MBOX_UP_ADDR, card->dma->recvbuf.dmaaddr);
 	c4outmeml(card->mbase+MBOX_UP_LEN, card->dma->recvbuf.size);
 	c4outmeml(card->mbase+DOORBELL, DBELL_UP_ARM);
+=======
+	c4outmeml(card->mbase + MBOX_UP_LEN, 0);
+	c4outmeml(card->mbase + MBOX_DOWN_LEN, 0);
+	c4outmeml(card->mbase + DOORBELL, DBELL_INIT);
+	mdelay(1);
+	c4outmeml(card->mbase + DOORBELL,
+		  DBELL_UP_HOST | DBELL_DOWN_HOST | DBELL_RESET_HOST);
+
+	c4outmeml(card->mbase + PCI_OUT_INT_MASK, 0x08);
+
+	card->dma->recvlen = 0;
+	c4outmeml(card->mbase + MBOX_UP_ADDR, card->dma->recvbuf.dmaaddr);
+	c4outmeml(card->mbase + MBOX_UP_LEN, card->dma->recvbuf.size);
+	c4outmeml(card->mbase + DOORBELL, DBELL_UP_ARM);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (data->configuration.len > 0 && data->configuration.data) {
 		retval = c4_send_config(card, &data->configuration);
 		if (retval) {
 			printk(KERN_ERR "%s: failed to set config!!\n",
+<<<<<<< HEAD
 					card->name);
+=======
+			       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 			c4_reset(card);
 			return retval;
 		}
 	}
 
+<<<<<<< HEAD
         c4_send_init(card);
+=======
+	c4_send_init(card);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -905,11 +1244,19 @@ static void c4_reset_ctr(struct capi_ctr *ctrl)
 
 	spin_lock_irqsave(&card->lock, flags);
 
+<<<<<<< HEAD
  	c4_reset(card);
 
 	spin_unlock_irqrestore(&card->lock, flags);
 
         for (i=0; i < card->nr_controllers; i++) {
+=======
+	c4_reset(card);
+
+	spin_unlock_irqrestore(&card->lock, flags);
+
+	for (i = 0; i < card->nr_controllers; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		cinfo = &card->ctrlinfo[i];
 		memset(cinfo->version, 0, sizeof(cinfo->version));
 		capi_ctr_down(&cinfo->capi_ctrl);
@@ -926,9 +1273,15 @@ static void c4_remove(struct pci_dev *pdev)
 	if (!card)
 		return;
 
+<<<<<<< HEAD
  	c4_reset(card);
 
         for (i=0; i < card->nr_controllers; i++) {
+=======
+	c4_reset(card);
+
+	for (i = 0; i < card->nr_controllers; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		cinfo = &card->ctrlinfo[i];
 		detach_capi_ctr(&cinfo->capi_ctrl);
 	}
@@ -936,8 +1289,13 @@ static void c4_remove(struct pci_dev *pdev)
 	free_irq(card->irq, card);
 	iounmap(card->mbase);
 	release_region(card->port, AVMB1_PORTLEN);
+<<<<<<< HEAD
         avmcard_dma_free(card->dma);
         pci_set_drvdata(pdev, NULL);
+=======
+	avmcard_dma_free(card->dma);
+	pci_set_drvdata(pdev, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	b1_free_card(card);
 }
 
@@ -945,8 +1303,13 @@ static void c4_remove(struct pci_dev *pdev)
 
 
 static void c4_register_appl(struct capi_ctr *ctrl,
+<<<<<<< HEAD
 				u16 appl,
 				capi_register_params *rp)
+=======
+			     u16 appl,
+			     capi_register_params *rp)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	avmctrl_info *cinfo = (avmctrl_info *)(ctrl->driverdata);
 	avmcard *card = cinfo->card;
@@ -965,7 +1328,11 @@ static void c4_register_appl(struct capi_ctr *ctrl,
 		skb = alloc_skb(23, GFP_ATOMIC);
 		if (!skb) {
 			printk(KERN_CRIT "%s: no memory, lost register appl.\n",
+<<<<<<< HEAD
 						card->name);
+=======
+			       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 		p = skb->data;
@@ -973,14 +1340,22 @@ static void c4_register_appl(struct capi_ctr *ctrl,
 		_put_byte(&p, 0);
 		_put_byte(&p, SEND_REGISTER);
 		_put_word(&p, appl);
+<<<<<<< HEAD
 		_put_word(&p, 1024 * (nconn+1));
+=======
+		_put_word(&p, 1024 * (nconn + 1));
+>>>>>>> refs/remotes/origin/cm-10.0
 		_put_word(&p, nconn);
 		_put_word(&p, rp->datablkcnt);
 		_put_word(&p, rp->datablklen);
 		skb_put(skb, (u8 *)p - (u8 *)skb->data);
 
 		skb_queue_tail(&card->dma->send_queue, skb);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_lock_irqsave(&card->lock, flags);
 		c4_dispatch_tx(card);
 		spin_unlock_irqrestore(&card->lock, flags);
@@ -1005,7 +1380,11 @@ static void c4_release_appl(struct capi_ctr *ctrl, u16 appl)
 		skb = alloc_skb(7, GFP_ATOMIC);
 		if (!skb) {
 			printk(KERN_CRIT "%s: no memory, lost release appl.\n",
+<<<<<<< HEAD
 						card->name);
+=======
+			       card->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 		p = skb->data;
@@ -1098,6 +1477,7 @@ static int c4_proc_show(struct seq_file *m, void *v)
 		seq_printf(m, "%-16s %s\n", "ver_serial", s);
 
 	if (card->cardtype != avm_m1) {
+<<<<<<< HEAD
         	flag = ((u8 *)(ctrl->profile.manu))[3];
         	if (flag)
 			seq_printf(m, "%-16s%s%s%s%s%s%s%s\n",
@@ -1121,6 +1501,31 @@ static int c4_proc_show(struct seq_file *m, void *v)
 			(flag & 0x08) ? " leased line without D-channel" : "",
 			(flag & 0x04) ? " leased line with D-channel" : ""
 			);
+=======
+		flag = ((u8 *)(ctrl->profile.manu))[3];
+		if (flag)
+			seq_printf(m, "%-16s%s%s%s%s%s%s%s\n",
+				   "protocol",
+				   (flag & 0x01) ? " DSS1" : "",
+				   (flag & 0x02) ? " CT1" : "",
+				   (flag & 0x04) ? " VN3" : "",
+				   (flag & 0x08) ? " NI1" : "",
+				   (flag & 0x10) ? " AUSTEL" : "",
+				   (flag & 0x20) ? " ESS" : "",
+				   (flag & 0x40) ? " 1TR6" : ""
+				);
+	}
+	if (card->cardtype != avm_m1) {
+		flag = ((u8 *)(ctrl->profile.manu))[5];
+		if (flag)
+			seq_printf(m, "%-16s%s%s%s%s\n",
+				   "linetype",
+				   (flag & 0x01) ? " point to point" : "",
+				   (flag & 0x02) ? " point to multipoint" : "",
+				   (flag & 0x08) ? " leased line without D-channel" : "",
+				   (flag & 0x04) ? " leased line with D-channel" : ""
+				);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	seq_printf(m, "%-16s %s\n", "cardname", cinfo->cardname);
 
@@ -1156,7 +1561,11 @@ static int c4_add_card(struct capicardparams *p, struct pci_dev *dev,
 		retval = -ENOMEM;
 		goto err;
 	}
+<<<<<<< HEAD
         card->dma = avmcard_dma_alloc("c4", dev, 2048+128, 2048+128);
+=======
+	card->dma = avmcard_dma_alloc("c4", dev, 2048 + 128, 2048 + 128);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!card->dma) {
 		printk(KERN_WARNING "c4: no memory.\n");
 		retval = -ENOMEM;
@@ -1195,12 +1604,20 @@ static int c4_add_card(struct capicardparams *p, struct pci_dev *dev,
 
 	retval = request_irq(card->irq, c4_interrupt, IRQF_SHARED, card->name, card);
 	if (retval) {
+<<<<<<< HEAD
 		printk(KERN_ERR "c4: unable to get IRQ %d.\n",card->irq);
+=======
+		printk(KERN_ERR "c4: unable to get IRQ %d.\n", card->irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = -EBUSY;
 		goto err_unmap;
 	}
 
+<<<<<<< HEAD
 	for (i=0; i < nr_controllers ; i++) {
+=======
+	for (i = 0; i < nr_controllers; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		cinfo = &card->ctrlinfo[i];
 		cinfo->capi_ctrl.owner = THIS_MODULE;
 		cinfo->capi_ctrl.driver_name   = "c4";
@@ -1233,6 +1650,7 @@ static int c4_add_card(struct capicardparams *p, struct pci_dev *dev,
 	pci_set_drvdata(dev, card);
 	return 0;
 
+<<<<<<< HEAD
  err_free_irq:
 	free_irq(card->irq, card);
  err_unmap:
@@ -1244,6 +1662,19 @@ static int c4_add_card(struct capicardparams *p, struct pci_dev *dev,
  err_free:
 	b1_free_card(card);
  err:
+=======
+err_free_irq:
+	free_irq(card->irq, card);
+err_unmap:
+	iounmap(card->mbase);
+err_release_region:
+	release_region(card->port, AVMB1_PORTLEN);
+err_free_dma:
+	avmcard_dma_free(card->dma);
+err_free:
+	b1_free_card(card);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
@@ -1265,10 +1696,17 @@ static int __devinit c4_probe(struct pci_dev *dev,
 	param.port = pci_resource_start(dev, 1);
 	param.irq = dev->irq;
 	param.membase = pci_resource_start(dev, 0);
+<<<<<<< HEAD
 	
 	printk(KERN_INFO "c4: PCI BIOS reports AVM-C%d at i/o %#x, irq %d, mem %#x\n",
 	       nr, param.port, param.irq, param.membase);
 	
+=======
+
+	printk(KERN_INFO "c4: PCI BIOS reports AVM-C%d at i/o %#x, irq %d, mem %#x\n",
+	       nr, param.port, param.irq, param.membase);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = c4_add_card(&param, dev, nr);
 	if (retval != 0) {
 		printk(KERN_ERR "c4: no AVM-C%d at i/o %#x, irq %d detected, mem %#x\n",
@@ -1280,10 +1718,17 @@ static int __devinit c4_probe(struct pci_dev *dev,
 }
 
 static struct pci_driver c4_pci_driver = {
+<<<<<<< HEAD
        .name           = "c4",
        .id_table       = c4_pci_tbl,
        .probe          = c4_probe,
        .remove         = c4_remove,
+=======
+	.name           = "c4",
+	.id_table       = c4_pci_tbl,
+	.probe          = c4_probe,
+	.remove         = c4_remove,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct capi_driver capi_driver_c2 = {
@@ -1305,7 +1750,11 @@ static int __init c4_init(void)
 	if ((p = strchr(revision, ':')) != NULL && p[1]) {
 		strlcpy(rev, p + 2, 32);
 		if ((p = strchr(rev, '$')) != NULL && p > rev)
+<<<<<<< HEAD
 		   *(p-1) = 0;
+=======
+			*(p - 1) = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		strcpy(rev, "1.0");
 

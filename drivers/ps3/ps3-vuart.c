@@ -952,7 +952,11 @@ static int ps3_vuart_bus_interrupt_get(void)
 	}
 
 	result = request_irq(vuart_bus_priv.virq, ps3_vuart_irq_handler,
+<<<<<<< HEAD
 		IRQF_DISABLED, "vuart", &vuart_bus_priv);
+=======
+		0, "vuart", &vuart_bus_priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (result) {
 		pr_debug("%s:%d: request_irq failed (%d)\n",

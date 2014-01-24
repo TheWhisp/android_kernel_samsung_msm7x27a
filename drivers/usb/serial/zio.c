@@ -27,7 +27,10 @@ static struct usb_driver zio_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id =	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver zio_device = {
@@ -36,6 +39,7 @@ static struct usb_serial_driver zio_device = {
 		.name =		"zio",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver =		&zio_driver,
 	.num_ports =		1,
 };
@@ -61,4 +65,14 @@ static void __exit zio_exit(void)
 
 module_init(zio_init);
 module_exit(zio_exit);
+=======
+	.num_ports =		1,
+};
+
+static struct usb_serial_driver * const serial_drivers[] = {
+	&zio_device, NULL
+};
+
+module_usb_serial_driver(zio_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");

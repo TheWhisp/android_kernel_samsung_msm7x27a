@@ -146,8 +146,12 @@ static __wsum lro_tcp_data_csum(struct iphdr *iph, struct tcphdr *tcph, int len)
 }
 
 static void lro_init_desc(struct net_lro_desc *lro_desc, struct sk_buff *skb,
+<<<<<<< HEAD
 			  struct iphdr *iph, struct tcphdr *tcph,
 			  u16 vlan_tag, struct vlan_group *vgrp)
+=======
+			  struct iphdr *iph, struct tcphdr *tcph)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int nr_frags;
 	__be32 *ptr;
@@ -173,8 +177,11 @@ static void lro_init_desc(struct net_lro_desc *lro_desc, struct sk_buff *skb,
 	}
 
 	lro_desc->mss = tcp_data_len;
+<<<<<<< HEAD
 	lro_desc->vgrp = vgrp;
 	lro_desc->vlan_tag = vlan_tag;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	lro_desc->active = 1;
 
 	lro_desc->data_csum = lro_tcp_data_csum(iph, tcph,
@@ -247,11 +254,19 @@ static void lro_add_frags(struct net_lro_desc *lro_desc,
 	skb->truesize += truesize;
 
 	skb_frags[0].page_offset += hlen;
+<<<<<<< HEAD
 	skb_frags[0].size -= hlen;
 
 	while (tcp_data_len > 0) {
 		*(lro_desc->next_frag) = *skb_frags;
 		tcp_data_len -= skb_frags->size;
+=======
+	skb_frag_size_sub(&skb_frags[0], hlen);
+
+	while (tcp_data_len > 0) {
+		*(lro_desc->next_frag) = *skb_frags;
+		tcp_data_len -= skb_frag_size(skb_frags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		lro_desc->next_frag++;
 		skb_frags++;
 		skb_shinfo(skb)->nr_frags++;
@@ -309,6 +324,7 @@ static void lro_flush(struct net_lro_mgr *lro_mgr,
 
 	skb_shinfo(lro_desc->parent)->gso_size = lro_desc->mss;
 
+<<<<<<< HEAD
 	if (lro_desc->vgrp) {
 		if (lro_mgr->features & LRO_F_NAPI)
 			vlan_hwaccel_receive_skb(lro_desc->parent,
@@ -325,13 +341,23 @@ static void lro_flush(struct net_lro_mgr *lro_mgr,
 		else
 			netif_rx(lro_desc->parent);
 	}
+=======
+	if (lro_mgr->features & LRO_F_NAPI)
+		netif_receive_skb(lro_desc->parent);
+	else
+		netif_rx(lro_desc->parent);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	LRO_INC_STATS(lro_mgr, flushed);
 	lro_clear_desc(lro_desc);
 }
 
 static int __lro_proc_skb(struct net_lro_mgr *lro_mgr, struct sk_buff *skb,
+<<<<<<< HEAD
 			  struct vlan_group *vgrp, u16 vlan_tag, void *priv)
+=======
+			  void *priv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct net_lro_desc *lro_desc;
 	struct iphdr *iph;
@@ -360,7 +386,11 @@ static int __lro_proc_skb(struct net_lro_mgr *lro_mgr, struct sk_buff *skb,
 			goto out;
 
 		skb->ip_summed = lro_mgr->ip_summed_aggr;
+<<<<<<< HEAD
 		lro_init_desc(lro_desc, skb, iph, tcph, vlan_tag, vgrp);
+=======
+		lro_init_desc(lro_desc, skb, iph, tcph);
+>>>>>>> refs/remotes/origin/cm-10.0
 		LRO_INC_STATS(lro_mgr, aggregated);
 		return 0;
 	}
@@ -415,14 +445,22 @@ static struct sk_buff *lro_gen_skb(struct net_lro_mgr *lro_mgr,
 	skb_frags = skb_shinfo(skb)->frags;
 	while (data_len > 0) {
 		*skb_frags = *frags;
+<<<<<<< HEAD
 		data_len -= frags->size;
+=======
+		data_len -= skb_frag_size(frags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		skb_frags++;
 		frags++;
 		skb_shinfo(skb)->nr_frags++;
 	}
 
 	skb_shinfo(skb)->frags[0].page_offset += hdr_len;
+<<<<<<< HEAD
 	skb_shinfo(skb)->frags[0].size -= hdr_len;
+=======
+	skb_frag_size_sub(&skb_shinfo(skb)->frags[0], hdr_len);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	skb->ip_summed = ip_summed;
 	skb->csum = sum;
@@ -433,8 +471,12 @@ static struct sk_buff *lro_gen_skb(struct net_lro_mgr *lro_mgr,
 static struct sk_buff *__lro_proc_segment(struct net_lro_mgr *lro_mgr,
 					  struct skb_frag_struct *frags,
 					  int len, int true_size,
+<<<<<<< HEAD
 					  struct vlan_group *vgrp,
 					  u16 vlan_tag, void *priv, __wsum sum)
+=======
+					  void *priv, __wsum sum)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct net_lro_desc *lro_desc;
 	struct iphdr *iph;
@@ -449,7 +491,11 @@ static struct sk_buff *__lro_proc_segment(struct net_lro_mgr *lro_mgr,
 	if (!lro_mgr->get_frag_header ||
 	    lro_mgr->get_frag_header(frags, (void *)&mac_hdr, (void *)&iph,
 				     (void *)&tcph, &flags, priv)) {
+<<<<<<< HEAD
 		mac_hdr = page_address(frags->page) + frags->page_offset;
+=======
+		mac_hdr = skb_frag_address(frags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out1;
 	}
 
@@ -480,7 +526,11 @@ static struct sk_buff *__lro_proc_segment(struct net_lro_mgr *lro_mgr,
 		tcph = (void *)((u8 *)skb->data + vlan_hdr_len
 				+ IP_HDR_LEN(iph));
 
+<<<<<<< HEAD
 		lro_init_desc(lro_desc, skb, iph, tcph, 0, NULL);
+=======
+		lro_init_desc(lro_desc, skb, iph, tcph);
+>>>>>>> refs/remotes/origin/cm-10.0
 		LRO_INC_STATS(lro_mgr, aggregated);
 		return NULL;
 	}
@@ -514,7 +564,11 @@ void lro_receive_skb(struct net_lro_mgr *lro_mgr,
 		     struct sk_buff *skb,
 		     void *priv)
 {
+<<<<<<< HEAD
 	if (__lro_proc_skb(lro_mgr, skb, NULL, 0, priv)) {
+=======
+	if (__lro_proc_skb(lro_mgr, skb, priv)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (lro_mgr->features & LRO_F_NAPI)
 			netif_receive_skb(skb);
 		else
@@ -523,6 +577,7 @@ void lro_receive_skb(struct net_lro_mgr *lro_mgr,
 }
 EXPORT_SYMBOL(lro_receive_skb);
 
+<<<<<<< HEAD
 void lro_vlan_hwaccel_receive_skb(struct net_lro_mgr *lro_mgr,
 				  struct sk_buff *skb,
 				  struct vlan_group *vgrp,
@@ -538,14 +593,20 @@ void lro_vlan_hwaccel_receive_skb(struct net_lro_mgr *lro_mgr,
 }
 EXPORT_SYMBOL(lro_vlan_hwaccel_receive_skb);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void lro_receive_frags(struct net_lro_mgr *lro_mgr,
 		       struct skb_frag_struct *frags,
 		       int len, int true_size, void *priv, __wsum sum)
 {
 	struct sk_buff *skb;
 
+<<<<<<< HEAD
 	skb = __lro_proc_segment(lro_mgr, frags, len, true_size, NULL, 0,
 				 priv, sum);
+=======
+	skb = __lro_proc_segment(lro_mgr, frags, len, true_size, priv, sum);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!skb)
 		return;
 
@@ -556,6 +617,7 @@ void lro_receive_frags(struct net_lro_mgr *lro_mgr,
 }
 EXPORT_SYMBOL(lro_receive_frags);
 
+<<<<<<< HEAD
 void lro_vlan_hwaccel_receive_frags(struct net_lro_mgr *lro_mgr,
 				    struct skb_frag_struct *frags,
 				    int len, int true_size,
@@ -576,6 +638,8 @@ void lro_vlan_hwaccel_receive_frags(struct net_lro_mgr *lro_mgr,
 }
 EXPORT_SYMBOL(lro_vlan_hwaccel_receive_frags);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void lro_flush_all(struct net_lro_mgr *lro_mgr)
 {
 	int i;

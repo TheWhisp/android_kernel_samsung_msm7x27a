@@ -18,6 +18,12 @@
 #include <asm/ptrace.h>
 #include <asm/page.h>
 
+<<<<<<< HEAD
+=======
+/* Don't hold the runqueue lock over context switch */
+#define __ARCH_WANT_UNLOCKED_CTXSW
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* The sparc has no problems with write protection */
 #define wp_works_ok 1
 #define wp_works_ok__is_a_macro /* for versions in ksyms.c */

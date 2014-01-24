@@ -677,7 +677,11 @@ mem2hex(char *buf, unsigned char *mem, int count)
                 /* Valid mem address. */
 		for (i = 0; i < count; i++) {
 			ch = *mem++;
+<<<<<<< HEAD
 			buf = pack_hex_byte(buf, ch);
+=======
+			buf = hex_byte_pack(buf, ch);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
         }
         /* Terminate properly. */
@@ -695,7 +699,11 @@ mem2hex_nbo(char *buf, unsigned char *mem, int count)
 	mem += count - 1;
 	for (i = 0; i < count; i++) {
 		ch = *mem--;
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch);
+=======
+		buf = hex_byte_pack(buf, ch);
+>>>>>>> refs/remotes/origin/cm-10.0
         }
 
         /* Terminate properly. */
@@ -880,7 +888,11 @@ stub_is_stopped(int sigval)
 	/* Send trap type (converted to signal) */
 
 	*ptr++ = 'T';
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, sigval);
+=======
+	ptr = hex_byte_pack(ptr, sigval);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (((reg.exs & 0xff00) >> 8) == 0xc) {
 
@@ -988,26 +1000,42 @@ stub_is_stopped(int sigval)
 	}
 	/* Only send PC, frame and stack pointer. */
 	read_register(PC, &reg_cont);
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, PC);
+=======
+	ptr = hex_byte_pack(ptr, PC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*ptr++ = ':';
 	ptr = mem2hex(ptr, (unsigned char *)&reg_cont, register_size[PC]);
 	*ptr++ = ';';
 
 	read_register(R8, &reg_cont);
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, R8);
+=======
+	ptr = hex_byte_pack(ptr, R8);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*ptr++ = ':';
 	ptr = mem2hex(ptr, (unsigned char *)&reg_cont, register_size[R8]);
 	*ptr++ = ';';
 
 	read_register(SP, &reg_cont);
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, SP);
+=======
+	ptr = hex_byte_pack(ptr, SP);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*ptr++ = ':';
 	ptr = mem2hex(ptr, (unsigned char *)&reg_cont, register_size[SP]);
 	*ptr++ = ';';
 
 	/* Send ERP as well; this will save us an entire register fetch in some cases. */
         read_register(ERP, &reg_cont);
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, ERP);
+=======
+	ptr = hex_byte_pack(ptr, ERP);
+>>>>>>> refs/remotes/origin/cm-10.0
         *ptr++ = ':';
         ptr = mem2hex(ptr, (unsigned char *)&reg_cont, register_size[ERP]);
         *ptr++ = ';';

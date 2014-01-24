@@ -22,7 +22,10 @@
 
 #include <asm/smp.h>
 #include <asm/delay.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ptrace.h>
 #include <asm/oplib.h>
 #include <asm/page.h>
@@ -41,6 +44,10 @@
 #include <asm/head.h>
 #include <asm/prom.h>
 #include <asm/memctrl.h>
+<<<<<<< HEAD
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "entry.h"
 #include "kstack.h"

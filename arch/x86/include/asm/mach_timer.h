@@ -15,7 +15,11 @@
 
 #define CALIBRATE_TIME_MSEC 30 /* 30 msecs */
 #define CALIBRATE_LATCH	\
+<<<<<<< HEAD
 	((CLOCK_TICK_RATE * CALIBRATE_TIME_MSEC + 1000/2)/1000)
+=======
+	((PIT_TICK_RATE * CALIBRATE_TIME_MSEC + 1000/2)/1000)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void mach_prepare_counter(void)
 {

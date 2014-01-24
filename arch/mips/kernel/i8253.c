@@ -3,6 +3,7 @@
  *
  */
 #include <linux/clockchips.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/jiffies.h>
@@ -93,12 +94,25 @@ static struct clock_event_device pit_clockevent = {
 static irqreturn_t timer_interrupt(int irq, void *dev_id)
 {
 	pit_clockevent.event_handler(&pit_clockevent);
+=======
+#include <linux/i8253.h>
+#include <linux/export.h>
+#include <linux/smp.h>
+#include <linux/irq.h>
+
+#include <asm/time.h>
+
+static irqreturn_t timer_interrupt(int irq, void *dev_id)
+{
+	i8253_clockevent.event_handler(&i8253_clockevent);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return IRQ_HANDLED;
 }
 
 static struct irqaction irq0  = {
 	.handler = timer_interrupt,
+<<<<<<< HEAD
 	.flags = IRQF_DISABLED | IRQF_NOBALANCING | IRQF_TIMER,
 	.name = "timer"
 };
@@ -122,6 +136,15 @@ void __init setup_pit_timer(void)
 	cd->min_delta_ns = clockevent_delta2ns(0xF, cd);
 	clockevents_register_device(cd);
 
+=======
+	.flags = IRQF_NOBALANCING | IRQF_TIMER,
+	.name = "timer"
+};
+
+void __init setup_pit_timer(void)
+{
+	clockevent_i8253_init(true);
+>>>>>>> refs/remotes/origin/cm-10.0
 	setup_irq(0, &irq0);
 }
 

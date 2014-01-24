@@ -143,7 +143,10 @@ static inline int tboot_enabled(void)
 
 extern void tboot_probe(void);
 extern void tboot_shutdown(u32 shutdown_type);
+<<<<<<< HEAD
 extern void tboot_sleep(u8 sleep_state, u32 pm1a_control, u32 pm1b_control);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct acpi_table_header *tboot_get_dmar_table(
 				      struct acpi_table_header *dmar_tbl);
 extern int tboot_force_iommu(void);

@@ -1,14 +1,27 @@
 #ifndef __ASM_ARM_IRQ_H
 #define __ASM_ARM_IRQ_H
 
+<<<<<<< HEAD
 #include <mach/irqs.h>
+=======
+#define NR_IRQS_LEGACY	16
+
+#ifndef CONFIG_SPARSE_IRQ
+#include <mach/irqs.h>
+#else
+#define NR_IRQS NR_IRQS_LEGACY
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef irq_canonicalize
 #define irq_canonicalize(i)	(i)
 #endif
 
+<<<<<<< HEAD
 #define NR_IRQS_LEGACY	16
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Use this value to indicate lack of interrupt
  * capability

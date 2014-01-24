@@ -812,7 +812,11 @@ acpi_thermal_unbind_cooling_device(struct thermal_zone_device *thermal,
 				thermal_zone_unbind_cooling_device);
 }
 
+<<<<<<< HEAD
 static struct thermal_zone_device_ops acpi_thermal_zone_ops = {
+=======
+static const struct thermal_zone_device_ops acpi_thermal_zone_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.bind = acpi_thermal_bind_cooling_device,
 	.unbind	= acpi_thermal_unbind_cooling_device,
 	.get_temp = thermal_get_temp,
@@ -941,6 +945,7 @@ static int acpi_thermal_get_info(struct acpi_thermal *tz)
 	if (!tz)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	/* Get temperature [_TMP] (required) */
 	result = acpi_thermal_get_temperature(tz);
 	if (result)
@@ -948,6 +953,15 @@ static int acpi_thermal_get_info(struct acpi_thermal *tz)
 
 	/* Get trip points [_CRT, _PSV, etc.] (required) */
 	result = acpi_thermal_get_trip_points(tz);
+=======
+	/* Get trip points [_CRT, _PSV, etc.] (required) */
+	result = acpi_thermal_get_trip_points(tz);
+	if (result)
+		return result;
+
+	/* Get temperature [_TMP] (required) */
+	result = acpi_thermal_get_temperature(tz);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (result)
 		return result;
 

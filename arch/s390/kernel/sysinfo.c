@@ -442,7 +442,11 @@ void s390_adjust_jiffies(void)
 		 */
 		FP_UNPACK_SP(SA, &fmil);
 		if ((info->capability >> 23) == 0)
+<<<<<<< HEAD
 			FP_FROM_INT_S(SB, info->capability, 32, int);
+=======
+			FP_FROM_INT_S(SB, (long) info->capability, 64, long);
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			FP_UNPACK_SP(SB, &info->capability);
 		FP_DIV_S(SR, SA, SB);

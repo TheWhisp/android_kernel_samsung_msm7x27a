@@ -154,8 +154,11 @@ int drm_getsareactx(struct drm_device *dev, void *data,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	mutex_unlock(&dev->struct_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	request->handle = NULL;
 	list_for_each_entry(_entry, &dev->maplist, head) {
 		if (_entry->map == map) {
@@ -164,6 +167,12 @@ int drm_getsareactx(struct drm_device *dev, void *data,
 			break;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	mutex_unlock(&dev->struct_mutex);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (request->handle == NULL)
 		return -EINVAL;
 

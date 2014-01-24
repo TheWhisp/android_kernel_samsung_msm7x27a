@@ -425,5 +425,9 @@ void omap3isp_h3a_af_cleanup(struct isp_device *isp)
 {
 	kfree(isp->isp_af.priv);
 	kfree(isp->isp_af.recover_priv);
+<<<<<<< HEAD
 	omap3isp_stat_free(&isp->isp_af);
+=======
+	omap3isp_stat_cleanup(&isp->isp_af);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

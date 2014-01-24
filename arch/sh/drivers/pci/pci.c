@@ -20,6 +20,10 @@
 #include <linux/io.h>
 #include <linux/mutex.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned long PCIBIOS_MIN_IO = 0x0000;
 unsigned long PCIBIOS_MIN_MEM = 0;
@@ -35,9 +39,30 @@ static void __devinit pcibios_scanbus(struct pci_channel *hose)
 {
 	static int next_busno;
 	static int need_domain_info;
+<<<<<<< HEAD
 	struct pci_bus *bus;
 
 	bus = pci_scan_bus(next_busno, hose->pci_ops, hose);
+=======
+	LIST_HEAD(resources);
+	struct resource *res;
+	resource_size_t offset;
+	int i;
+	struct pci_bus *bus;
+
+	for (i = 0; i < hose->nr_resources; i++) {
+		res = hose->resources + i;
+		offset = 0;
+		if (res->flags & IORESOURCE_IO)
+			offset = hose->io_offset;
+		else if (res->flags & IORESOURCE_MEM)
+			offset = hose->mem_offset;
+		pci_add_resource_offset(&resources, res, offset);
+	}
+
+	bus = pci_scan_root_bus(NULL, next_busno, hose->pci_ops, hose,
+				&resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 	hose->bus = bus;
 
 	need_domain_info = need_domain_info || hose->index;
@@ -54,6 +79,11 @@ static void __devinit pcibios_scanbus(struct pci_channel *hose)
 		pci_bus_size_bridges(bus);
 		pci_bus_assign_resources(bus);
 		pci_enable_bridges(bus);
+<<<<<<< HEAD
+=======
+	} else {
+		pci_free_resource_list(&resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -134,6 +164,7 @@ static int __init pcibios_init(void)
 }
 subsys_initcall(pcibios_init);
 
+<<<<<<< HEAD
 static void pcibios_fixup_device_resources(struct pci_dev *dev,
 	struct pci_bus *bus)
 {
@@ -155,12 +186,15 @@ static void pcibios_fixup_device_resources(struct pci_dev *dev,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *  Called after each bus is probed, but before its children
  *  are examined.
  */
 void __devinit pcibios_fixup_bus(struct pci_bus *bus)
 {
+<<<<<<< HEAD
 	struct pci_dev *dev = bus->self;
 	struct list_head *ln;
 	struct pci_channel *hose = bus->sysdata;
@@ -178,6 +212,8 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
 		if ((dev->class >> 8) != PCI_CLASS_BRIDGE_PCI)
 			pcibios_fixup_device_resources(dev, bus);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -207,6 +243,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
 	return start;
 }
 
+<<<<<<< HEAD
 void pcibios_resource_to_bus(struct pci_dev *dev, struct pci_bus_region *region,
 			     struct resource *res)
 {
@@ -237,11 +274,14 @@ void pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 	res->end = region->end + offset;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int pcibios_enable_device(struct pci_dev *dev, int mask)
 {
 	return pci_enable_resources(dev, mask);
 }
 
+<<<<<<< HEAD
 /*
  *  If we set up a device for bus mastering, we need to check and set
  *  the latency timer as it may not be properly set.
@@ -263,6 +303,8 @@ void pcibios_set_master(struct pci_dev *dev)
 	pci_write_config_byte(dev, PCI_LATENCY_TIMER, lat);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init pcibios_update_irq(struct pci_dev *dev, int irq)
 {
 	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
@@ -376,8 +418,13 @@ int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 
 #ifndef CONFIG_GENERIC_IOMAP
 
+<<<<<<< HEAD
 static void __iomem *ioport_map_pci(struct pci_dev *dev,
 				    unsigned long port, unsigned int nr)
+=======
+void __iomem *__pci_ioport_map(struct pci_dev *dev,
+			       unsigned long port, unsigned int nr)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pci_channel *chan = dev->sysdata;
 
@@ -392,6 +439,7 @@ static void __iomem *ioport_map_pci(struct pci_dev *dev,
 	return (void __iomem *)(chan->io_map_base + port);
 }
 
+<<<<<<< HEAD
 void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
 {
 	resource_size_t start = pci_resource_start(dev, bar);
@@ -415,6 +463,8 @@ void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
 }
 EXPORT_SYMBOL(pci_iomap);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
 {
 	iounmap(addr);
@@ -424,8 +474,11 @@ EXPORT_SYMBOL(pci_iounmap);
 #endif /* CONFIG_GENERIC_IOMAP */
 
 #ifdef CONFIG_HOTPLUG
+<<<<<<< HEAD
 EXPORT_SYMBOL(pcibios_resource_to_bus);
 EXPORT_SYMBOL(pcibios_bus_to_resource);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(PCIBIOS_MIN_IO);
 EXPORT_SYMBOL(PCIBIOS_MIN_MEM);
 #endif

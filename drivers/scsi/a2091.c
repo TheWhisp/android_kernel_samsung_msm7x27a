@@ -5,6 +5,10 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/zorro.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/page.h>
 #include <asm/pgtable.h>

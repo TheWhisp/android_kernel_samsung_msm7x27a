@@ -1,7 +1,13 @@
 /*
+<<<<<<< HEAD
  * OMAP2/3 clockdomains
  *
  * Copyright (C) 2008-2009 Texas Instruments, Inc.
+=======
+ * OMAP2/3 clockdomain common data
+ *
+ * Copyright (C) 2008-2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright (C) 2008-2010 Nokia Corporation
  *
  * Paul Walmsley, Jouni Högander
@@ -51,6 +57,7 @@
  * changed in software) are not included here yet, but should be.
  */
 
+<<<<<<< HEAD
 /* OMAP2/3-common wakeup dependencies */
 
 /*
@@ -419,6 +426,30 @@ static struct clkdm_dep gfx_sgx_sleepdeps[] = {
 
 #endif /* CONFIG_ARCH_OMAP3 */
 
+=======
+/* Wakeup dependency source arrays */
+
+/* 2xxx-specific possible dependencies */
+
+/* 2xxx PM_WKDEP_GFX: CORE, MPU, WKUP */
+struct clkdm_dep gfx_24xx_wkdeps[] = {
+	{ .clkdm_name = "core_l3_clkdm" },
+	{ .clkdm_name = "core_l4_clkdm" },
+	{ .clkdm_name = "mpu_clkdm" },
+	{ .clkdm_name = "wkup_clkdm" },
+	{ NULL },
+};
+
+/* 2xxx PM_WKDEP_DSP: CORE, MPU, WKUP */
+struct clkdm_dep dsp_24xx_wkdeps[] = {
+	{ .clkdm_name = "core_l3_clkdm" },
+	{ .clkdm_name = "core_l4_clkdm" },
+	{ .clkdm_name = "mpu_clkdm" },
+	{ .clkdm_name = "wkup_clkdm" },
+	{ NULL },
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * OMAP2/3-common clockdomains
@@ -430,6 +461,7 @@ static struct clkdm_dep gfx_sgx_sleepdeps[] = {
  */
 
 /* This is an implicit clockdomain - it is never defined as such in TRM */
+<<<<<<< HEAD
 static struct clockdomain wkup_clkdm = {
 	.name		= "wkup_clkdm",
 	.pwrdm		= { .name = "wkup_pwrdm" },
@@ -866,3 +898,20 @@ void __init omap3xxx_clockdomains_init(void)
 {
 	clkdm_init(clockdomains_omap2, clkdm_autodeps, &omap3_clkdm_operations);
 }
+=======
+struct clockdomain wkup_common_clkdm = {
+	.name		= "wkup_clkdm",
+	.pwrdm		= { .name = "wkup_pwrdm" },
+	.dep_bit	= OMAP_EN_WKUP_SHIFT,
+};
+
+struct clockdomain prm_common_clkdm = {
+	.name		= "prm_clkdm",
+	.pwrdm		= { .name = "wkup_pwrdm" },
+};
+
+struct clockdomain cm_common_clkdm = {
+	.name		= "cm_clkdm",
+	.pwrdm		= { .name = "core_pwrdm" },
+};
+>>>>>>> refs/remotes/origin/cm-10.0

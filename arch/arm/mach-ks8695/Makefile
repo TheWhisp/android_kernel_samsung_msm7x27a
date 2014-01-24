@@ -3,7 +3,11 @@
 # Makefile for KS8695 architecture support
 #
 
+<<<<<<< HEAD
 obj-y				:= cpu.o irq.o time.o gpio.o devices.o
+=======
+obj-y				:= cpu.o irq.o time.o devices.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-m				:=
 obj-n				:=
 obj-				:=

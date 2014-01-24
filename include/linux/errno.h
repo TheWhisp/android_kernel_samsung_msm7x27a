@@ -16,6 +16,10 @@
 #define ERESTARTNOHAND	514	/* restart if no handler.. */
 #define ENOIOCTLCMD	515	/* No ioctl command */
 #define ERESTART_RESTARTBLOCK 516 /* restart by calling sys_restart_syscall */
+<<<<<<< HEAD
+=======
+#define EPROBE_DEFER	517	/* Driver requests probe retry */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Defined for the NFSv3 protocol */
 #define EBADHANDLE	521	/* Illegal NFS file handle */

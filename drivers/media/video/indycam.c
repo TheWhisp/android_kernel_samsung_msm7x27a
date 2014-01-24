@@ -387,6 +387,7 @@ static struct i2c_driver indycam_driver = {
 	.id_table	= indycam_id,
 };
 
+<<<<<<< HEAD
 static __init int init_indycam(void)
 {
 	return i2c_add_driver(&indycam_driver);
@@ -399,3 +400,6 @@ static __exit void exit_indycam(void)
 
 module_init(init_indycam);
 module_exit(exit_indycam);
+=======
+module_i2c_driver(indycam_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

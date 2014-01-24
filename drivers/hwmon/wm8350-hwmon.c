@@ -34,7 +34,11 @@ static ssize_t show_name(struct device *dev,
 	return sprintf(buf, "wm8350\n");
 }
 
+<<<<<<< HEAD
 static const char *input_names[] = {
+=======
+static const char * const input_names[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	[WM8350_AUXADC_USB]  = "USB",
 	[WM8350_AUXADC_LINE] = "Line",
 	[WM8350_AUXADC_BATT] = "Battery",
@@ -133,6 +137,7 @@ static struct platform_driver wm8350_hwmon_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init wm8350_hwmon_init(void)
 {
 	return platform_driver_register(&wm8350_hwmon_driver);
@@ -144,6 +149,9 @@ static void __exit wm8350_hwmon_exit(void)
 	platform_driver_unregister(&wm8350_hwmon_driver);
 }
 module_exit(wm8350_hwmon_exit);
+=======
+module_platform_driver(wm8350_hwmon_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_DESCRIPTION("WM8350 Hardware Monitoring");

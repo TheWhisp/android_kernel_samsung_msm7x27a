@@ -40,7 +40,11 @@
 #define XINTC_IVR	24	/* Interrupt Vector */
 #define XINTC_MER	28	/* Master Enable */
 
+<<<<<<< HEAD
 static struct irq_host *master_irqhost;
+=======
+static struct irq_domain *master_irqhost;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define XILINX_INTC_MAXIRQS	(32)
 
@@ -141,7 +145,11 @@ static struct irq_chip xilinx_intc_edge_irqchip = {
 /**
  * xilinx_intc_xlate - translate virq# from device tree interrupts property
  */
+<<<<<<< HEAD
 static int xilinx_intc_xlate(struct irq_host *h, struct device_node *ct,
+=======
+static int xilinx_intc_xlate(struct irq_domain *h, struct device_node *ct,
+>>>>>>> refs/remotes/origin/cm-10.0
 				const u32 *intspec, unsigned int intsize,
 				irq_hw_number_t *out_hwirq,
 				unsigned int *out_flags)
@@ -161,7 +169,11 @@ static int xilinx_intc_xlate(struct irq_host *h, struct device_node *ct,
 
 	return 0;
 }
+<<<<<<< HEAD
 static int xilinx_intc_map(struct irq_host *h, unsigned int virq,
+=======
+static int xilinx_intc_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  irq_hw_number_t irq)
 {
 	irq_set_chip_data(virq, h->host_data);
@@ -177,15 +189,26 @@ static int xilinx_intc_map(struct irq_host *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct irq_host_ops xilinx_intc_ops = {
+=======
+static struct irq_domain_ops xilinx_intc_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map = xilinx_intc_map,
 	.xlate = xilinx_intc_xlate,
 };
 
+<<<<<<< HEAD
 struct irq_host * __init
 xilinx_intc_init(struct device_node *np)
 {
 	struct irq_host * irq;
+=======
+struct irq_domain * __init
+xilinx_intc_init(struct device_node *np)
+{
+	struct irq_domain * irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void * regs;
 
 	/* Find and map the intc registers */
@@ -200,12 +223,20 @@ xilinx_intc_init(struct device_node *np)
 	out_be32(regs + XINTC_IAR, ~(u32) 0); /* Acknowledge pending irqs */
 	out_be32(regs + XINTC_MER, 0x3UL); /* Turn on the Master Enable. */
 
+<<<<<<< HEAD
 	/* Allocate and initialize an irq_host structure. */
 	irq = irq_alloc_host(np, IRQ_HOST_MAP_LINEAR, XILINX_INTC_MAXIRQS,
 			     &xilinx_intc_ops, -1);
 	if (!irq)
 		panic(__FILE__ ": Cannot allocate IRQ host\n");
 	irq->host_data = regs;
+=======
+	/* Allocate and initialize an irq_domain structure. */
+	irq = irq_domain_add_linear(np, XILINX_INTC_MAXIRQS, &xilinx_intc_ops,
+				    regs);
+	if (!irq)
+		panic(__FILE__ ": Cannot allocate IRQ host\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return irq;
 }

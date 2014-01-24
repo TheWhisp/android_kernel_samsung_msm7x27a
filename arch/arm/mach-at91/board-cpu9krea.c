@@ -21,6 +21,10 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -40,9 +44,15 @@
 
 #include <mach/hardware.h>
 #include <mach/board.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/at91sam9_smc.h>
 #include <mach/at91sam9260_matrix.h>
+=======
+#include <mach/at91sam9_smc.h>
+#include <mach/at91sam9260_matrix.h>
+#include <mach/at91_matrix.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "sam9_smc.h"
 #include "generic.h"
@@ -50,7 +60,11 @@
 static void __init cpu9krea_init_early(void)
 {
 	/* Initialize processor: 18.432 MHz crystal */
+<<<<<<< HEAD
 	at91sam9260_initialize(18432000);
+=======
+	at91_initialize(18432000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* DGBU on ttyS0. (Rx & Tx only) */
 	at91_register_uart(0, 0, 0);
@@ -81,16 +95,24 @@ static void __init cpu9krea_init_early(void)
 	at91_set_serial_console(0);
 }
 
+<<<<<<< HEAD
 static void __init cpu9krea_init_irq(void)
 {
 	at91sam9260_init_interrupts(NULL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * USB Host port
  */
 static struct at91_usbh_data __initdata cpu9krea_usbh_data = {
 	.ports		= 2,
+<<<<<<< HEAD
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -98,13 +120,22 @@ static struct at91_usbh_data __initdata cpu9krea_usbh_data = {
  */
 static struct at91_udc_data __initdata cpu9krea_udc_data = {
 	.vbus_pin	= AT91_PIN_PC8,
+<<<<<<< HEAD
 	.pullup_pin	= 0,		/* pull-up driven by UDC */
+=======
+	.pullup_pin	= -EINVAL,		/* pull-up driven by UDC */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
  * MACB Ethernet device
  */
+<<<<<<< HEAD
 static struct at91_eth_data __initdata cpu9krea_macb_data = {
+=======
+static struct macb_platform_data __initdata cpu9krea_macb_data = {
+	.phy_irq_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.is_rmii	= 1,
 };
 
@@ -117,6 +148,11 @@ static struct atmel_nand_data __initdata cpu9krea_nand_data = {
 	.rdy_pin	= AT91_PIN_PC13,
 	.enable_pin	= AT91_PIN_PC14,
 	.bus_width_16	= 0,
+<<<<<<< HEAD
+=======
+	.det_pin	= -EINVAL,
+	.ecc_mode	= NAND_ECC_SOFT,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #ifdef CONFIG_MACH_CPU9260
@@ -161,7 +197,11 @@ static struct sam9_smc_config __initdata cpu9krea_nand_smc_config = {
 
 static void __init cpu9krea_add_device_nand(void)
 {
+<<<<<<< HEAD
 	sam9_smc_configure(3, &cpu9krea_nand_smc_config);
+=======
+	sam9_smc_configure(0, 3, &cpu9krea_nand_smc_config);
+>>>>>>> refs/remotes/origin/cm-10.0
 	at91_add_device_nand(&cpu9krea_nand_data);
 }
 
@@ -239,11 +279,19 @@ static __init void cpu9krea_add_device_nor(void)
 {
 	unsigned long csa;
 
+<<<<<<< HEAD
 	csa = at91_sys_read(AT91_MATRIX_EBICSA);
 	at91_sys_write(AT91_MATRIX_EBICSA, csa | AT91_MATRIX_VDDIOMSEL_3_3V);
 
 	/* configure chip-select 0 (NOR) */
 	sam9_smc_configure(0, &cpu9krea_nor_smc_config);
+=======
+	csa = at91_matrix_read(AT91_MATRIX_EBICSA);
+	at91_matrix_write(AT91_MATRIX_EBICSA, csa | AT91_MATRIX_VDDIOMSEL_3_3V);
+
+	/* configure chip-select 0 (NOR) */
+	sam9_smc_configure(0, 0, &cpu9krea_nor_smc_config);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	platform_device_register(&cpu9krea_nor_flash);
 }
@@ -342,6 +390,11 @@ static struct at91_mmc_data __initdata cpu9krea_mmc_data = {
 	.slot_b		= 0,
 	.wire4		= 1,
 	.det_pin	= AT91_PIN_PA29,
+<<<<<<< HEAD
+=======
+	.wp_pin		= -EINVAL,
+	.vcc_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void __init cpu9krea_board_init(void)
@@ -376,8 +429,14 @@ MACHINE_START(CPUAT9G20, "Eukrea CPU9G20")
 #endif
 	/* Maintainer: Eric Benard - EUKREA Electromatique */
 	.timer		= &at91sam926x_timer,
+<<<<<<< HEAD
 	.map_io		= at91sam9260_map_io,
 	.init_early	= cpu9krea_init_early,
 	.init_irq	= cpu9krea_init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= cpu9krea_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= cpu9krea_board_init,
 MACHINE_END

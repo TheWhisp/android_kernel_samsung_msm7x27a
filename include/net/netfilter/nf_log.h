@@ -53,12 +53,20 @@ int nf_log_bind_pf(u_int8_t pf, const struct nf_logger *logger);
 void nf_log_unbind_pf(u_int8_t pf);
 
 /* Calls the registered backend logging function */
+<<<<<<< HEAD
+=======
+__printf(7, 8)
+>>>>>>> refs/remotes/origin/cm-10.0
 void nf_log_packet(u_int8_t pf,
 		   unsigned int hooknum,
 		   const struct sk_buff *skb,
 		   const struct net_device *in,
 		   const struct net_device *out,
 		   const struct nf_loginfo *li,
+<<<<<<< HEAD
 		   const char *fmt, ...) __attribute__ ((format(printf,7,8)));
+=======
+		   const char *fmt, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _NF_LOG_H */

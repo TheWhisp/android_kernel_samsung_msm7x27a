@@ -75,7 +75,11 @@
  *        device is up and running or shutdown (through ifconfig up /
  *        down). Bus-generic only.
  *
+<<<<<<< HEAD
  *  - control ops: control.c - implements various commmands for
+=======
+ *  - control ops: control.c - implements various commands for
+>>>>>>> refs/remotes/origin/cm-10.0
  *        controlling the device. bus-generic only.
  *
  *  - device model glue: driver.c - implements helpers for the
@@ -155,7 +159,11 @@
 #include <linux/netdevice.h>
 #include <linux/completion.h>
 #include <linux/rwsem.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/wimax.h>
 #include <linux/wimax/i2400m.h>
 #include <asm/byteorder.h>

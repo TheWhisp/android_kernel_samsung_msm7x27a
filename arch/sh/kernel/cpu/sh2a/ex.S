@@ -66,6 +66,10 @@ vector	=	0
 	.long	exception_entry0 + vector * 6
 vector	=	vector + 1
 	.endr
+<<<<<<< HEAD
+=======
+vector	=	0
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rept	256
 	.long	exception_entry1 + vector * 6
 vector	=	vector + 1

@@ -1,6 +1,10 @@
 include include/asm-generic/Kbuild.asm
 
 header-y += break.h
+<<<<<<< HEAD
+=======
+header-y += cmpxchg.h
+>>>>>>> refs/remotes/origin/cm-10.0
 header-y += fpu.h
 header-y += gcc_intrin.h
 header-y += ia64regs.h

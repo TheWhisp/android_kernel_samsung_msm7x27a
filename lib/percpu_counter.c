@@ -10,8 +10,15 @@
 #include <linux/module.h>
 #include <linux/debugobjects.h>
 
+<<<<<<< HEAD
 static LIST_HEAD(percpu_counters);
 static DEFINE_MUTEX(percpu_counters_lock);
+=======
+#ifdef CONFIG_HOTPLUG_CPU
+static LIST_HEAD(percpu_counters);
+static DEFINE_MUTEX(percpu_counters_lock);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER
 
@@ -59,13 +66,21 @@ void percpu_counter_set(struct percpu_counter *fbc, s64 amount)
 {
 	int cpu;
 
+<<<<<<< HEAD
 	spin_lock(&fbc->lock);
+=======
+	raw_spin_lock(&fbc->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	for_each_possible_cpu(cpu) {
 		s32 *pcount = per_cpu_ptr(fbc->counters, cpu);
 		*pcount = 0;
 	}
 	fbc->count = amount;
+<<<<<<< HEAD
 	spin_unlock(&fbc->lock);
+=======
+	raw_spin_unlock(&fbc->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(percpu_counter_set);
 
@@ -76,10 +91,17 @@ void __percpu_counter_add(struct percpu_counter *fbc, s64 amount, s32 batch)
 	preempt_disable();
 	count = __this_cpu_read(*fbc->counters) + amount;
 	if (count >= batch || count <= -batch) {
+<<<<<<< HEAD
 		spin_lock(&fbc->lock);
 		fbc->count += count;
 		__this_cpu_write(*fbc->counters, 0);
 		spin_unlock(&fbc->lock);
+=======
+		raw_spin_lock(&fbc->lock);
+		fbc->count += count;
+		__this_cpu_write(*fbc->counters, 0);
+		raw_spin_unlock(&fbc->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		__this_cpu_write(*fbc->counters, count);
 	}
@@ -96,13 +118,21 @@ s64 __percpu_counter_sum(struct percpu_counter *fbc)
 	s64 ret;
 	int cpu;
 
+<<<<<<< HEAD
 	spin_lock(&fbc->lock);
+=======
+	raw_spin_lock(&fbc->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = fbc->count;
 	for_each_online_cpu(cpu) {
 		s32 *pcount = per_cpu_ptr(fbc->counters, cpu);
 		ret += *pcount;
 	}
+<<<<<<< HEAD
 	spin_unlock(&fbc->lock);
+=======
+	raw_spin_unlock(&fbc->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 EXPORT_SYMBOL(__percpu_counter_sum);
@@ -110,7 +140,11 @@ EXPORT_SYMBOL(__percpu_counter_sum);
 int __percpu_counter_init(struct percpu_counter *fbc, s64 amount,
 			  struct lock_class_key *key)
 {
+<<<<<<< HEAD
 	spin_lock_init(&fbc->lock);
+=======
+	raw_spin_lock_init(&fbc->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	lockdep_set_class(&fbc->lock, key);
 	fbc->count = amount;
 	fbc->counters = alloc_percpu(s32);
@@ -173,11 +207,19 @@ static int __cpuinit percpu_counter_hotcpu_callback(struct notifier_block *nb,
 		s32 *pcount;
 		unsigned long flags;
 
+<<<<<<< HEAD
 		spin_lock_irqsave(&fbc->lock, flags);
 		pcount = per_cpu_ptr(fbc->counters, cpu);
 		fbc->count += *pcount;
 		*pcount = 0;
 		spin_unlock_irqrestore(&fbc->lock, flags);
+=======
+		raw_spin_lock_irqsave(&fbc->lock, flags);
+		pcount = per_cpu_ptr(fbc->counters, cpu);
+		fbc->count += *pcount;
+		*pcount = 0;
+		raw_spin_unlock_irqrestore(&fbc->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	mutex_unlock(&percpu_counters_lock);
 #endif

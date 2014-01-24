@@ -6,6 +6,10 @@ menuconfig FSL_SOC_BOOKE
 	select MPIC
 	select PPC_PCI_CHOICE
 	select FSL_PCI if PCI
+<<<<<<< HEAD
+=======
+	select SERIAL_8250_EXTENDED if SERIAL_8250
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SERIAL_8250_SHARE_IRQ if SERIAL_8250
 	default y
 
@@ -13,6 +17,18 @@ if FSL_SOC_BOOKE
 
 if PPC32
 
+<<<<<<< HEAD
+=======
+config FSL_85XX_CACHE_SRAM
+	bool
+	select PPC_LIB_RHEAP
+	help
+	  When selected, this option enables cache-sram support
+	  for memory allocation on P1/P2 QorIQ platforms.
+	  cache-sram-size and cache-sram-offset kernel boot
+	  parameters should be passed when this option is enabled.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config MPC8540_ADS
 	bool "Freescale MPC8540 ADS"
 	select DEFAULT_UIMAGE
@@ -30,6 +46,10 @@ config MPC85xx_CDS
 	bool "Freescale MPC85xx CDS"
 	select DEFAULT_UIMAGE
 	select PPC_I8259
+<<<<<<< HEAD
+=======
+	select HAS_RAPIDIO
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the MPC85xx CDS board
 
@@ -67,14 +87,39 @@ config MPC85xx_RDB
 	help
 	  This option enables support for the MPC85xx RDB (P2020 RDB) board
 
+<<<<<<< HEAD
 config P1022_DS
 	bool "Freescale P1022 DS"
 	select DEFAULT_UIMAGE
 	select CONFIG_PHYS_64BIT	# The DTS has 36-bit addresses
+=======
+config P1010_RDB
+	bool "Freescale P1010RDB"
+	select DEFAULT_UIMAGE
+	help
+	  This option enables support for the MPC85xx RDB (P1010 RDB) board
+
+	  P1010RDB contains P1010Si, which provides CPU performance up to 800
+	  MHz and 1600 DMIPS, additional functionality and faster interfaces
+	  (DDR3/3L, SATA II, and PCI  Express).
+
+config P1022_DS
+	bool "Freescale P1022 DS"
+	select DEFAULT_UIMAGE
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SWIOTLB
 	help
 	  This option enables support for the Freescale P1022DS reference board.
 
+<<<<<<< HEAD
+=======
+config P1023_RDS
+	bool "Freescale P1023 RDS"
+	select DEFAULT_UIMAGE
+	help
+	  This option enables support for the P1023 RDS board
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config SOCRATES
 	bool "Socrates"
 	select DEFAULT_UIMAGE
@@ -155,25 +200,85 @@ config SBC8560
 	help
 	  This option enables support for the Wind River SBC8560 board
 
+<<<<<<< HEAD
+=======
+config GE_IMP3A
+	bool "GE Intelligent Platforms IMP3A"
+	select DEFAULT_UIMAGE
+	select SWIOTLB
+	select MMIO_NVRAM
+	select GENERIC_GPIO
+	select ARCH_REQUIRE_GPIOLIB
+	select GE_FPGA
+	help
+	  This option enables support for the GE Intelligent Platforms IMP3A
+	  board.
+
+	  This board is a 3U CompactPCI Single Board Computer with a Freescale
+	  P2020 processor.
+
+config P2041_RDB
+	bool "Freescale P2041 RDB"
+	select DEFAULT_UIMAGE
+	select PPC_E500MC
+	select PHYS_64BIT
+	select SWIOTLB
+	select ARCH_REQUIRE_GPIOLIB
+	select GPIO_MPC8XXX
+	select HAS_RAPIDIO
+	select PPC_EPAPR_HV_PIC
+	help
+	  This option enables support for the P2041 RDB board
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config P3041_DS
 	bool "Freescale P3041 DS"
 	select DEFAULT_UIMAGE
 	select PPC_E500MC
 	select PHYS_64BIT
 	select SWIOTLB
+<<<<<<< HEAD
 	select MPC8xxx_GPIO
 	select HAS_RAPIDIO
 	help
 	  This option enables support for the P3041 DS board
 
+=======
+	select ARCH_REQUIRE_GPIOLIB
+	select GPIO_MPC8XXX
+	select HAS_RAPIDIO
+	select PPC_EPAPR_HV_PIC
+	help
+	  This option enables support for the P3041 DS board
+
+config P3060_QDS
+	bool "Freescale P3060 QDS"
+	select DEFAULT_UIMAGE
+	select PPC_E500MC
+	select PHYS_64BIT
+	select SWIOTLB
+	select GPIO_MPC8XXX
+	select HAS_RAPIDIO
+	select PPC_EPAPR_HV_PIC
+	help
+	  This option enables support for the P3060 QDS board
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config P4080_DS
 	bool "Freescale P4080 DS"
 	select DEFAULT_UIMAGE
 	select PPC_E500MC
 	select PHYS_64BIT
 	select SWIOTLB
+<<<<<<< HEAD
 	select MPC8xxx_GPIO
 	select HAS_RAPIDIO
+=======
+	select ARCH_REQUIRE_GPIOLIB
+	select GPIO_MPC8XXX
+	select HAS_RAPIDIO
+	select PPC_EPAPR_HV_PIC
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the P4080 DS board
 
@@ -186,8 +291,15 @@ config P5020_DS
 	select PPC_E500MC
 	select PHYS_64BIT
 	select SWIOTLB
+<<<<<<< HEAD
 	select MPC8xxx_GPIO
 	select HAS_RAPIDIO
+=======
+	select ARCH_REQUIRE_GPIOLIB
+	select GPIO_MPC8XXX
+	select HAS_RAPIDIO
+	select PPC_EPAPR_HV_PIC
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the P5020 DS board
 

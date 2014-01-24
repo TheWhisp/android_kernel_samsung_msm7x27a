@@ -18,8 +18,13 @@
 
 #include <mach/clk.h>
 #include <mach/socinfo.h>
+<<<<<<< HEAD
 
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "clock.h"
 #include "clock-pcom.h"
 
@@ -178,7 +183,10 @@ static bool pc_clk_is_local(struct clk *clk)
 struct clk_ops clk_ops_pcom = {
 	.enable = pc_clk_enable,
 	.disable = pc_clk_disable,
+<<<<<<< HEAD
 	.auto_off = pc_clk_disable,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.reset = pc_reset,
 	.set_rate = pc_clk_set_rate,
 	.set_max_rate = pc_clk_set_max_rate,
@@ -192,7 +200,10 @@ struct clk_ops clk_ops_pcom = {
 struct clk_ops clk_ops_pcom_ext_config = {
 	.enable = pc_clk_enable,
 	.disable = pc_clk_disable,
+<<<<<<< HEAD
 	.auto_off = pc_clk_disable,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.reset = pc_reset,
 	.set_rate = pc_clk_set_ext_config,
 	.set_max_rate = pc_clk_set_max_rate,

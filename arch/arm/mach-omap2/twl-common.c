@@ -30,12 +30,29 @@
 #include <plat/usb.h>
 
 #include "twl-common.h"
+<<<<<<< HEAD
+=======
+#include "pm.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct i2c_board_info __initdata pmic_i2c_board_info = {
 	.addr		= 0x48,
 	.flags		= I2C_CLIENT_WAKE,
 };
 
+<<<<<<< HEAD
+=======
+static struct i2c_board_info __initdata omap4_i2c1_board_info[] = {
+	{
+		.addr		= 0x48,
+		.flags		= I2C_CLIENT_WAKE,
+	},
+	{
+		I2C_BOARD_INFO("twl6040", 0x4b),
+	},
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init omap_pmic_init(int bus, u32 clkrate,
 			   const char *pmic_type, int pmic_irq,
 			   struct twl4030_platform_data *pmic_data)
@@ -48,6 +65,7 @@ void __init omap_pmic_init(int bus, u32 clkrate,
 	omap_register_i2c_bus(bus, clkrate, &pmic_i2c_board_info, 1);
 }
 
+<<<<<<< HEAD
 static struct twl4030_usb_data omap4_usb_pdata = {
 	.phy_init	= omap4430_phy_init,
 	.phy_exit	= omap4430_phy_exit,
@@ -56,6 +74,36 @@ static struct twl4030_usb_data omap4_usb_pdata = {
 	.phy_suspend	= omap4430_phy_suspend,
 };
 
+=======
+void __init omap4_pmic_init(const char *pmic_type,
+		    struct twl4030_platform_data *pmic_data,
+		    struct twl6040_platform_data *twl6040_data, int twl6040_irq)
+{
+	/* PMIC part*/
+	strncpy(omap4_i2c1_board_info[0].type, pmic_type,
+		sizeof(omap4_i2c1_board_info[0].type));
+	omap4_i2c1_board_info[0].irq = OMAP44XX_IRQ_SYS_1N;
+	omap4_i2c1_board_info[0].platform_data = pmic_data;
+
+	/* TWL6040 audio IC part */
+	omap4_i2c1_board_info[1].irq = twl6040_irq;
+	omap4_i2c1_board_info[1].platform_data = twl6040_data;
+
+	omap_register_i2c_bus(1, 400, omap4_i2c1_board_info, 2);
+
+}
+
+void __init omap_pmic_late_init(void)
+{
+	/* Init the OMAP TWL parameters (if PMIC has been registerd) */
+	if (pmic_i2c_board_info.irq)
+		omap3_twl_init();
+	if (omap4_i2c1_board_info[0].irq)
+		omap4_twl_init();
+}
+
+#if defined(CONFIG_ARCH_OMAP3)
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct twl4030_usb_data omap3_usb_pdata = {
 	.usb_mode	= T2_USB_MODE_ULPI,
 };
@@ -106,7 +154,11 @@ static struct regulator_init_data omap3_vdac_idata = {
 
 static struct regulator_consumer_supply omap3_vpll2_supplies[] = {
 	REGULATOR_SUPPLY("vdds_dsi", "omapdss"),
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dsi1"),
+=======
+	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dsi.0"),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct regulator_init_data omap3_vpll2_idata = {
@@ -122,13 +174,59 @@ static struct regulator_init_data omap3_vpll2_idata = {
 	.consumer_supplies		= omap3_vpll2_supplies,
 };
 
+<<<<<<< HEAD
+=======
+void __init omap3_pmic_get_config(struct twl4030_platform_data *pmic_data,
+				  u32 pdata_flags, u32 regulators_flags)
+{
+	if (!pmic_data->irq_base)
+		pmic_data->irq_base = TWL4030_IRQ_BASE;
+	if (!pmic_data->irq_end)
+		pmic_data->irq_end = TWL4030_IRQ_END;
+
+	/* Common platform data configurations */
+	if (pdata_flags & TWL_COMMON_PDATA_USB && !pmic_data->usb)
+		pmic_data->usb = &omap3_usb_pdata;
+
+	if (pdata_flags & TWL_COMMON_PDATA_BCI && !pmic_data->bci)
+		pmic_data->bci = &omap3_bci_pdata;
+
+	if (pdata_flags & TWL_COMMON_PDATA_MADC && !pmic_data->madc)
+		pmic_data->madc = &omap3_madc_pdata;
+
+	if (pdata_flags & TWL_COMMON_PDATA_AUDIO && !pmic_data->audio)
+		pmic_data->audio = &omap3_audio_pdata;
+
+	/* Common regulator configurations */
+	if (regulators_flags & TWL_COMMON_REGULATOR_VDAC && !pmic_data->vdac)
+		pmic_data->vdac = &omap3_vdac_idata;
+
+	if (regulators_flags & TWL_COMMON_REGULATOR_VPLL2 && !pmic_data->vpll2)
+		pmic_data->vpll2 = &omap3_vpll2_idata;
+}
+#endif /* CONFIG_ARCH_OMAP3 */
+
+#if defined(CONFIG_ARCH_OMAP4)
+static struct twl4030_usb_data omap4_usb_pdata = {
+	.phy_init	= omap4430_phy_init,
+	.phy_exit	= omap4430_phy_exit,
+	.phy_power	= omap4430_phy_power,
+	.phy_set_clock	= omap4430_phy_set_clk,
+	.phy_suspend	= omap4430_phy_suspend,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct regulator_init_data omap4_vdac_idata = {
 	.constraints = {
 		.min_uV			= 1800000,
 		.max_uV			= 1800000,
 		.valid_modes_mask	= REGULATOR_MODE_NORMAL
 					| REGULATOR_MODE_STANDBY,
+<<<<<<< HEAD
 		.valid_ops_mask	 = REGULATOR_CHANGE_MODE
+=======
+		.valid_ops_mask		= REGULATOR_CHANGE_MODE
+>>>>>>> refs/remotes/origin/cm-10.0
 					| REGULATOR_CHANGE_STATUS,
 	},
 };
@@ -140,7 +238,11 @@ static struct regulator_init_data omap4_vaux2_idata = {
 		.apply_uV		= true,
 		.valid_modes_mask	= REGULATOR_MODE_NORMAL
 					| REGULATOR_MODE_STANDBY,
+<<<<<<< HEAD
 		.valid_ops_mask	 = REGULATOR_CHANGE_VOLTAGE
+=======
+		.valid_ops_mask		= REGULATOR_CHANGE_VOLTAGE
+>>>>>>> refs/remotes/origin/cm-10.0
 					| REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
@@ -153,7 +255,11 @@ static struct regulator_init_data omap4_vaux3_idata = {
 		.apply_uV		= true,
 		.valid_modes_mask	= REGULATOR_MODE_NORMAL
 					| REGULATOR_MODE_STANDBY,
+<<<<<<< HEAD
 		.valid_ops_mask	 = REGULATOR_CHANGE_VOLTAGE
+=======
+		.valid_ops_mask		= REGULATOR_CHANGE_VOLTAGE
+>>>>>>> refs/remotes/origin/cm-10.0
 					| REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
@@ -171,7 +277,11 @@ static struct regulator_init_data omap4_vmmc_idata = {
 		.apply_uV		= true,
 		.valid_modes_mask	= REGULATOR_MODE_NORMAL
 					| REGULATOR_MODE_STANDBY,
+<<<<<<< HEAD
 		.valid_ops_mask	 = REGULATOR_CHANGE_VOLTAGE
+=======
+		.valid_ops_mask		= REGULATOR_CHANGE_VOLTAGE
+>>>>>>> refs/remotes/origin/cm-10.0
 					| REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
@@ -186,7 +296,11 @@ static struct regulator_init_data omap4_vpp_idata = {
 		.apply_uV		= true,
 		.valid_modes_mask	= REGULATOR_MODE_NORMAL
 					| REGULATOR_MODE_STANDBY,
+<<<<<<< HEAD
 		.valid_ops_mask	 = REGULATOR_CHANGE_VOLTAGE
+=======
+		.valid_ops_mask		= REGULATOR_CHANGE_VOLTAGE
+>>>>>>> refs/remotes/origin/cm-10.0
 					| REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
@@ -198,30 +312,58 @@ static struct regulator_init_data omap4_vana_idata = {
 		.max_uV			= 2100000,
 		.valid_modes_mask	= REGULATOR_MODE_NORMAL
 					| REGULATOR_MODE_STANDBY,
+<<<<<<< HEAD
 		.valid_ops_mask	 = REGULATOR_CHANGE_MODE
+=======
+		.valid_ops_mask		= REGULATOR_CHANGE_MODE
+>>>>>>> refs/remotes/origin/cm-10.0
 					| REGULATOR_CHANGE_STATUS,
 	},
 };
 
+<<<<<<< HEAD
+=======
+static struct regulator_consumer_supply omap4_vcxio_supply[] = {
+	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dss"),
+	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dsi.0"),
+	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dsi.1"),
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct regulator_init_data omap4_vcxio_idata = {
 	.constraints = {
 		.min_uV			= 1800000,
 		.max_uV			= 1800000,
 		.valid_modes_mask	= REGULATOR_MODE_NORMAL
 					| REGULATOR_MODE_STANDBY,
+<<<<<<< HEAD
 		.valid_ops_mask	 = REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
+=======
+		.valid_ops_mask		= REGULATOR_CHANGE_MODE
+					| REGULATOR_CHANGE_STATUS,
+		.always_on		= true,
+	},
+	.num_consumer_supplies	= ARRAY_SIZE(omap4_vcxio_supply),
+	.consumer_supplies	= omap4_vcxio_supply,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct regulator_init_data omap4_vusb_idata = {
 	.constraints = {
 		.min_uV			= 3300000,
 		.max_uV			= 3300000,
+<<<<<<< HEAD
 		.apply_uV		= true,
 		.valid_modes_mask	= REGULATOR_MODE_NORMAL
 					| REGULATOR_MODE_STANDBY,
 		.valid_ops_mask	 =	REGULATOR_CHANGE_MODE
+=======
+		.valid_modes_mask	= REGULATOR_MODE_NORMAL
+					| REGULATOR_MODE_STANDBY,
+		.valid_ops_mask		= REGULATOR_CHANGE_MODE
+>>>>>>> refs/remotes/origin/cm-10.0
 					| REGULATOR_CHANGE_STATUS,
 	},
 };
@@ -273,6 +415,7 @@ void __init omap4_pmic_get_config(struct twl4030_platform_data *pmic_data,
 	    !pmic_data->clk32kg)
 		pmic_data->clk32kg = &omap4_clk32kg_idata;
 }
+<<<<<<< HEAD
 
 void __init omap3_pmic_get_config(struct twl4030_platform_data *pmic_data,
 				  u32 pdata_flags, u32 regulators_flags)
@@ -302,3 +445,6 @@ void __init omap3_pmic_get_config(struct twl4030_platform_data *pmic_data,
 	if (regulators_flags & TWL_COMMON_REGULATOR_VPLL2 && !pmic_data->vpll2)
 		pmic_data->vpll2 = &omap3_vpll2_idata;
 }
+=======
+#endif /* CONFIG_ARCH_OMAP4 */
+>>>>>>> refs/remotes/origin/cm-10.0

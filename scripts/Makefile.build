@@ -46,7 +46,11 @@ include $(kbuild-file)
 # If the save-* variables changed error out
 ifeq ($(KBUILD_NOPEDANTIC),)
         ifneq ("$(save-cflags)","$(CFLAGS)")
+<<<<<<< HEAD
                 $(error CFLAGS was changed in "$(kbuild-file)". Fix it to use EXTRA_CFLAGS)
+=======
+                $(error CFLAGS was changed in "$(kbuild-file)". Fix it to use ccflags-y)
+>>>>>>> refs/remotes/origin/cm-10.0
         endif
 endif
 
@@ -69,6 +73,10 @@ warning-1 += -Wmissing-prototypes
 warning-1 += -Wold-style-definition
 warning-1 += $(call cc-option, -Wmissing-include-dirs)
 warning-1 += $(call cc-option, -Wunused-but-set-variable)
+<<<<<<< HEAD
+=======
+warning-1 += $(call cc-disable-warning, missing-field-initializers)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 warning-2 := -Waggregate-return
 warning-2 += -Wcast-align
@@ -76,6 +84,10 @@ warning-2 += -Wdisabled-optimization
 warning-2 += -Wnested-externs
 warning-2 += -Wshadow
 warning-2 += $(call cc-option, -Wlogical-op)
+<<<<<<< HEAD
+=======
+warning-2 += $(call cc-option, -Wmissing-field-initializers)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 warning-3 := -Wbad-function-cast
 warning-3 += -Wcast-qual

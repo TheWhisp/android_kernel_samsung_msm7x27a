@@ -6,12 +6,20 @@
  * Copyright (c) 2005 Stefano Brivio <st3@riseup.net>
  * Copyright (c) 2005 Danny van Dyk <kugelfang@gentoo.org>
  * Copyright (c) 2005 Andreas Jaggi <andreas.jaggi@waterwave.ch>
+<<<<<<< HEAD
  * Copyright (c) 2005-2007 Michael Buesch <mbuesch@freenet.de>
+=======
+ * Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  */
 
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/ssb/ssb.h>
 
@@ -53,8 +61,13 @@ static int ssb_pcihost_resume(struct pci_dev *dev)
 # define ssb_pcihost_resume	NULL
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
 static int ssb_pcihost_probe(struct pci_dev *dev,
 			     const struct pci_device_id *id)
+=======
+static int __devinit ssb_pcihost_probe(struct pci_dev *dev,
+				       const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ssb_bus *ssb;
 	int err = -ENOMEM;
@@ -110,7 +123,11 @@ static void ssb_pcihost_remove(struct pci_dev *dev)
 	pci_set_drvdata(dev, NULL);
 }
 
+<<<<<<< HEAD
 int ssb_pcihost_register(struct pci_driver *driver)
+=======
+int __devinit ssb_pcihost_register(struct pci_driver *driver)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	driver->probe = ssb_pcihost_probe;
 	driver->remove = ssb_pcihost_remove;

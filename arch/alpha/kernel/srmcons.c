@@ -30,10 +30,16 @@ static int srm_is_registered_console = 0;
 #define MAX_SRM_CONSOLE_DEVICES 1	/* only support 1 console device */
 
 struct srmcons_private {
+<<<<<<< HEAD
 	struct tty_struct *tty;
 	struct timer_list timer;
 	spinlock_t lock;
 };
+=======
+	struct tty_port port;
+	struct timer_list timer;
+} srmcons_singleton;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 typedef union _srmcons_result {
 	struct {
@@ -68,22 +74,37 @@ static void
 srmcons_receive_chars(unsigned long data)
 {
 	struct srmcons_private *srmconsp = (struct srmcons_private *)data;
+<<<<<<< HEAD
+=======
+	struct tty_port *port = &srmconsp->port;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long flags;
 	int incr = 10;
 
 	local_irq_save(flags);
 	if (spin_trylock(&srmcons_callback_lock)) {
+<<<<<<< HEAD
 		if (!srmcons_do_receive_chars(srmconsp->tty))
+=======
+		if (!srmcons_do_receive_chars(port->tty))
+>>>>>>> refs/remotes/origin/cm-10.0
 			incr = 100;
 		spin_unlock(&srmcons_callback_lock);
 	} 
 
+<<<<<<< HEAD
 	spin_lock(&srmconsp->lock);
 	if (srmconsp->tty) {
 		srmconsp->timer.expires = jiffies + incr;
 		add_timer(&srmconsp->timer);
 	}
 	spin_unlock(&srmconsp->lock);
+=======
+	spin_lock(&port->lock);
+	if (port->tty)
+		mod_timer(&srmconsp->timer, jiffies + incr);
+	spin_unlock(&port->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	local_irq_restore(flags);
 }
@@ -156,6 +177,7 @@ srmcons_chars_in_buffer(struct tty_struct *tty)
 }
 
 static int
+<<<<<<< HEAD
 srmcons_get_private_struct(struct srmcons_private **ps)
 {
 	static struct srmcons_private *srmconsp = NULL;
@@ -206,6 +228,24 @@ srmcons_open(struct tty_struct *tty, struct file *filp)
 	}
 
 	spin_unlock_irqrestore(&srmconsp->lock, flags);
+=======
+srmcons_open(struct tty_struct *tty, struct file *filp)
+{
+	struct srmcons_private *srmconsp = &srmcons_singleton;
+	struct tty_port *port = &srmconsp->port;
+	unsigned long flags;
+
+	spin_lock_irqsave(&port->lock, flags);
+
+	if (!port->tty) {
+		tty->driver_data = srmconsp;
+		tty->port = port;
+		port->tty = tty; /* XXX proper refcounting */
+		mod_timer(&srmconsp->timer, jiffies + 10);
+	}
+
+	spin_unlock_irqrestore(&port->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -214,6 +254,7 @@ static void
 srmcons_close(struct tty_struct *tty, struct file *filp)
 {
 	struct srmcons_private *srmconsp = tty->driver_data;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&srmconsp->lock, flags);
@@ -224,6 +265,19 @@ srmcons_close(struct tty_struct *tty, struct file *filp)
 	}
 
 	spin_unlock_irqrestore(&srmconsp->lock, flags);
+=======
+	struct tty_port *port = &srmconsp->port;
+	unsigned long flags;
+
+	spin_lock_irqsave(&port->lock, flags);
+
+	if (tty->count == 1) {
+		port->tty = NULL;
+		del_timer(&srmconsp->timer);
+	}
+
+	spin_unlock_irqrestore(&port->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -240,6 +294,12 @@ static const struct tty_operations srmcons_ops = {
 static int __init
 srmcons_init(void)
 {
+<<<<<<< HEAD
+=======
+	tty_port_init(&srmcons_singleton.port);
+	setup_timer(&srmcons_singleton.timer, srmcons_receive_chars,
+			(unsigned long)&srmcons_singleton);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (srm_is_registered_console) {
 		struct tty_driver *driver;
 		int err;

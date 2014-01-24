@@ -11,7 +11,10 @@
 #include <linux/string.h>
 #include <linux/thread_info.h>
 #include <asm/asi.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/spitfire.h>
 #include <asm-generic/uaccess-unaligned.h>
 #endif

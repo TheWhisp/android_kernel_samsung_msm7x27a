@@ -46,9 +46,12 @@ static int emi62_set_reset(struct usb_device *dev, unsigned char reset_bit);
 static int emi62_load_firmware (struct usb_device *dev);
 static int emi62_probe(struct usb_interface *intf, const struct usb_device_id *id);
 static void emi62_disconnect(struct usb_interface *intf);
+<<<<<<< HEAD
 static int __init emi62_init (void);
 static void __exit emi62_exit (void);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* thanks to drivers/usb/serial/keyspan_pda.c code */
 static int emi62_writememory(struct usb_device *dev, int address,
@@ -290,6 +293,7 @@ static struct usb_driver emi62_driver = {
 	.id_table	= id_table,
 };
 
+<<<<<<< HEAD
 static int __init emi62_init (void)
 {
 	int retval;
@@ -306,6 +310,9 @@ static void __exit emi62_exit (void)
 
 module_init(emi62_init);
 module_exit(emi62_exit);
+=======
+module_usb_driver(emi62_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Tapio Laxström");
 MODULE_DESCRIPTION("Emagic EMI 6|2m firmware loader.");

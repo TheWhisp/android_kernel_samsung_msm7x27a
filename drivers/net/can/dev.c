@@ -130,6 +130,7 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
 		/* Error in one-tenth of a percent */
 		error = (best_error * 1000) / bt->bitrate;
 		if (error > CAN_CALC_MAX_ERROR) {
+<<<<<<< HEAD
 			dev_err(dev->dev.parent,
 				"bitrate error %ld.%ld%% too high\n",
 				error / 10, error % 10);
@@ -137,6 +138,15 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
 		} else {
 			dev_warn(dev->dev.parent, "bitrate error %ld.%ld%%\n",
 				 error / 10, error % 10);
+=======
+			netdev_err(dev,
+				   "bitrate error %ld.%ld%% too high\n",
+				   error / 10, error % 10);
+			return -EDOM;
+		} else {
+			netdev_warn(dev, "bitrate error %ld.%ld%%\n",
+				    error / 10, error % 10);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -150,7 +160,23 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
 	bt->prop_seg = tseg1 / 2;
 	bt->phase_seg1 = tseg1 - bt->prop_seg;
 	bt->phase_seg2 = tseg2;
+<<<<<<< HEAD
 	bt->sjw = 1;
+=======
+
+	/* check for sjw user settings */
+	if (!bt->sjw || !btc->sjw_max)
+		bt->sjw = 1;
+	else {
+		/* bt->sjw is at least 1 -> sanitize upper bound to sjw_max */
+		if (bt->sjw > btc->sjw_max)
+			bt->sjw = btc->sjw_max;
+		/* bt->sjw must not be higher than tseg2 */
+		if (tseg2 < bt->sjw)
+			bt->sjw = tseg2;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	bt->brp = best_brp;
 	/* real bit-rate */
 	bt->bitrate = priv->clock.freq / (bt->brp * (tseg1 + tseg2 + 1));
@@ -160,7 +186,11 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
 #else /* !CONFIG_CAN_CALC_BITTIMING */
 static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
 {
+<<<<<<< HEAD
 	dev_err(dev->dev.parent, "bit-timing calculation not available\n");
+=======
+	netdev_err(dev, "bit-timing calculation not available\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -EINVAL;
 }
 #endif /* CONFIG_CAN_CALC_BITTIMING */
@@ -208,7 +238,11 @@ static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt)
 	return 0;
 }
 
+<<<<<<< HEAD
 int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt)
+=======
+static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct can_priv *priv = netdev_priv(dev);
 	int err;
@@ -301,8 +335,12 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
 		priv->echo_skb[idx] = skb;
 	} else {
 		/* locking problem with netif_stop_queue() ?? */
+<<<<<<< HEAD
 		dev_err(dev->dev.parent, "%s: BUG! echo_skb is occupied!\n",
 			__func__);
+=======
+		netdev_err(dev, "%s: BUG! echo_skb is occupied!\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree_skb(skb);
 	}
 }
@@ -315,16 +353,34 @@ EXPORT_SYMBOL_GPL(can_put_echo_skb);
  * is handled in the device driver. The driver must protect
  * access to priv->echo_skb, if necessary.
  */
+<<<<<<< HEAD
 void can_get_echo_skb(struct net_device *dev, unsigned int idx)
+=======
+unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct can_priv *priv = netdev_priv(dev);
 
 	BUG_ON(idx >= priv->echo_skb_max);
 
 	if (priv->echo_skb[idx]) {
+<<<<<<< HEAD
 		netif_rx(priv->echo_skb[idx]);
 		priv->echo_skb[idx] = NULL;
 	}
+=======
+		struct sk_buff *skb = priv->echo_skb[idx];
+		struct can_frame *cf = (struct can_frame *)skb->data;
+		u8 dlc = cf->can_dlc;
+
+		netif_rx(priv->echo_skb[idx]);
+		priv->echo_skb[idx] = NULL;
+
+		return dlc;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(can_get_echo_skb);
 
@@ -380,7 +436,11 @@ void can_restart(unsigned long data)
 	stats->rx_bytes += cf->can_dlc;
 
 restart:
+<<<<<<< HEAD
 	dev_dbg(dev->dev.parent, "restarted\n");
+=======
+	netdev_dbg(dev, "restarted\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	priv->can_stats.restarts++;
 
 	/* Now restart the device */
@@ -388,7 +448,11 @@ restart:
 
 	netif_carrier_on(dev);
 	if (err)
+<<<<<<< HEAD
 		dev_err(dev->dev.parent, "Error %d during restart", err);
+=======
+		netdev_err(dev, "Error %d during restart", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int can_restart_now(struct net_device *dev)
@@ -421,7 +485,11 @@ void can_bus_off(struct net_device *dev)
 {
 	struct can_priv *priv = netdev_priv(dev);
 
+<<<<<<< HEAD
 	dev_dbg(dev->dev.parent, "bus-off\n");
+=======
+	netdev_dbg(dev, "bus-off\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	netif_carrier_off(dev);
 	priv->can_stats.bus_off++;
@@ -442,7 +510,11 @@ static void can_setup(struct net_device *dev)
 
 	/* New-style flags. */
 	dev->flags = IFF_NOARP;
+<<<<<<< HEAD
 	dev->features = NETIF_F_NO_CSUM;
+=======
+	dev->features = NETIF_F_HW_CSUM;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
@@ -533,7 +605,11 @@ int open_candev(struct net_device *dev)
 	struct can_priv *priv = netdev_priv(dev);
 
 	if (!priv->bittiming.tq && !priv->bittiming.bitrate) {
+<<<<<<< HEAD
 		dev_err(dev->dev.parent, "bit-timing not yet defined\n");
+=======
+		netdev_err(dev, "bit-timing not yet defined\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -646,6 +722,7 @@ static size_t can_get_size(const struct net_device *dev)
 	size_t size;
 
 	size = nla_total_size(sizeof(u32));   /* IFLA_CAN_STATE */
+<<<<<<< HEAD
 	size += sizeof(struct can_ctrlmode);  /* IFLA_CAN_CTRLMODE */
 	size += nla_total_size(sizeof(u32));  /* IFLA_CAN_RESTART_MS */
 	size += sizeof(struct can_bittiming); /* IFLA_CAN_BITTIMING */
@@ -654,6 +731,16 @@ static size_t can_get_size(const struct net_device *dev)
 		size += sizeof(struct can_berr_counter);
 	if (priv->bittiming_const)	      /* IFLA_CAN_BITTIMING_CONST */
 		size += sizeof(struct can_bittiming_const);
+=======
+	size += nla_total_size(sizeof(struct can_ctrlmode));  /* IFLA_CAN_CTRLMODE */
+	size += nla_total_size(sizeof(u32));  /* IFLA_CAN_RESTART_MS */
+	size += nla_total_size(sizeof(struct can_bittiming)); /* IFLA_CAN_BITTIMING */
+	size += nla_total_size(sizeof(struct can_clock));     /* IFLA_CAN_CLOCK */
+	if (priv->do_get_berr_counter)        /* IFLA_CAN_BERR_COUNTER */
+		size += nla_total_size(sizeof(struct can_berr_counter));
+	if (priv->bittiming_const)	      /* IFLA_CAN_BITTIMING_CONST */
+		size += nla_total_size(sizeof(struct can_bittiming_const));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return size;
 }

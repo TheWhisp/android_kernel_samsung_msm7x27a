@@ -19,7 +19,10 @@
 #include <linux/seq_file.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -35,6 +38,11 @@
 #include <sysdev/cpm2_pic.h>
 #endif
 
+<<<<<<< HEAD
+=======
+#include "mpc85xx.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PCI
 static int mpc85xx_exclude_device(struct pci_controller *hose,
 				   u_char bus, u_char devfn)
@@ -46,6 +54,7 @@ static int mpc85xx_exclude_device(struct pci_controller *hose,
 }
 #endif /* CONFIG_PCI */
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPM2
 
 static void cpm2_cascade(unsigned int irq, struct irq_desc *desc)
@@ -103,6 +112,16 @@ static void __init mpc85xx_ads_pic_init(void)
 	of_node_put(np);
 	irq_set_chained_handler(irq, cpm2_cascade);
 #endif
+=======
+static void __init mpc85xx_ads_pic_init(void)
+{
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+	mpic_init(mpic);
+
+	mpc85xx_cpm2_pic_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -221,6 +240,7 @@ static void mpc85xx_ads_show_cpuinfo(struct seq_file *m)
 	seq_printf(m, "PLL setting\t: 0x%x\n", ((phid1 >> 24) & 0x3f));
 }
 
+<<<<<<< HEAD
 static struct of_device_id __initdata of_bus_ids[] = {
 	{ .name = "soc", },
 	{ .type = "soc", },
@@ -238,6 +258,9 @@ static int __init declare_of_platform_devices(void)
 	return 0;
 }
 machine_device_initcall(mpc85xx_ads, declare_of_platform_devices);
+=======
+machine_device_initcall(mpc85xx_ads, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Called very early, device-tree isn't unflattened

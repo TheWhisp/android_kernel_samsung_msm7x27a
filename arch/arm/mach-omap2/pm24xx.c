@@ -26,22 +26,39 @@
 #include <linux/module.h>
 #include <linux/delay.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/io.h>
 #include <linux/irq.h>
 #include <linux/time.h>
 #include <linux/gpio.h>
 #include <linux/console.h>
+=======
+#include <linux/irq.h>
+#include <linux/time.h>
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/time.h>
 #include <asm/mach/irq.h>
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 
 #include <mach/irqs.h>
+=======
+#include <asm/system_misc.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/clock.h>
 #include <plat/sram.h>
 #include <plat/dma.h>
 #include <plat/board.h>
 
+<<<<<<< HEAD
+=======
+#include <mach/irqs.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "prm2xxx_3xxx.h"
 #include "prm-regbits-24xx.h"
 #include "cm2xxx_3xxx.h"
@@ -49,6 +66,7 @@
 #include "sdrc.h"
 #include "pm.h"
 #include "control.h"
+<<<<<<< HEAD
 
 #include "powerdomain.h"
 #include "clockdomain.h"
@@ -66,6 +84,11 @@ static inline bool is_suspending(void)
 }
 #endif
 
+=======
+#include "powerdomain.h"
+#include "clockdomain.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void (*omap2_sram_idle)(void);
 static void (*omap2_sram_suspend)(u32 dllctrl, void __iomem *sdrc_dlla_ctrl,
 				  void __iomem *sdrc_power);
@@ -82,6 +105,7 @@ static int omap2_fclks_active(void)
 	f1 = omap2_cm_read_mod_reg(CORE_MOD, CM_FCLKEN1);
 	f2 = omap2_cm_read_mod_reg(CORE_MOD, OMAP24XX_CM_FCLKEN2);
 
+<<<<<<< HEAD
 	/* Ignore UART clocks.  These are handled by UART core (serial.c) */
 	f1 &= ~(OMAP24XX_EN_UART1_MASK | OMAP24XX_EN_UART2_MASK);
 	f2 &= ~OMAP24XX_EN_UART3_MASK;
@@ -95,6 +119,14 @@ static void omap2_enter_full_retention(void)
 {
 	u32 l;
 	struct timespec ts_preidle, ts_postidle, ts_idle;
+=======
+	return (f1 | f2) ? 1 : 0;
+}
+
+static int omap2_enter_full_retention(void)
+{
+	u32 l;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* There is 1 reference hold for all children of the oscillator
 	 * clock, the following will remove it. If no one else uses the
@@ -122,16 +154,20 @@ static void omap2_enter_full_retention(void)
 
 	omap2_gpio_prepare_for_idle(0);
 
+<<<<<<< HEAD
 	if (omap2_pm_debug) {
 		omap2_pm_dump(0, 0, 0);
 		getnstimeofday(&ts_preidle);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* One last check for pending IRQs to avoid extra latency due
 	 * to sleeping unnecessarily. */
 	if (omap_irq_pending())
 		goto no_sleep;
 
+<<<<<<< HEAD
 	/* Block console output in case it is on one of the OMAP UARTs */
 	if (!is_suspending())
 		if (!console_trylock())
@@ -141,11 +177,14 @@ static void omap2_enter_full_retention(void)
 	omap_uart_prepare_idle(1);
 	omap_uart_prepare_idle(2);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Jump to SRAM suspend code */
 	omap2_sram_suspend(sdrc_read_reg(SDRC_DLLA_CTRL),
 			   OMAP_SDRC_REGADDR(SDRC_DLLA_CTRL),
 			   OMAP_SDRC_REGADDR(SDRC_POWER));
 
+<<<<<<< HEAD
 	omap_uart_resume_idle(2);
 	omap_uart_resume_idle(1);
 	omap_uart_resume_idle(0);
@@ -162,6 +201,9 @@ no_sleep:
 		tmp = timespec_to_ns(&ts_idle) * NSEC_PER_USEC;
 		omap2_pm_dump(0, 1, tmp);
 	}
+=======
+no_sleep:
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap2_gpio_resume_after_idle();
 
 	clk_enable(osc_ck);
@@ -184,6 +226,11 @@ no_sleep:
 
 	/* Mask future PRCM-to-MPU interrupts */
 	omap2_prm_write_mod_reg(0x0, OCP_MOD, OMAP2_PRCM_IRQSTATUS_MPU_OFFSET);
+<<<<<<< HEAD
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int omap2_i2c_active(void)
@@ -219,7 +266,10 @@ static int omap2_allow_mpu_retention(void)
 static void omap2_enter_mpu_retention(void)
 {
 	int only_idle = 0;
+<<<<<<< HEAD
 	struct timespec ts_preidle, ts_postidle, ts_idle;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Putting MPU into the WFI state while a transfer is active
 	 * seems to cause the I2C block to timeout. Why? Good question. */
@@ -246,6 +296,7 @@ static void omap2_enter_mpu_retention(void)
 		only_idle = 1;
 	}
 
+<<<<<<< HEAD
 	if (omap2_pm_debug) {
 		omap2_pm_dump(only_idle ? 2 : 1, 0, 0);
 		getnstimeofday(&ts_preidle);
@@ -261,14 +312,20 @@ static void omap2_enter_mpu_retention(void)
 		tmp = timespec_to_ns(&ts_idle) * NSEC_PER_USEC;
 		omap2_pm_dump(only_idle ? 2 : 1, 1, tmp);
 	}
+=======
+	omap2_sram_idle();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int omap2_can_sleep(void)
 {
 	if (omap2_fclks_active())
 		return 0;
+<<<<<<< HEAD
 	if (!omap_uart_can_sleep())
 		return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (osc_ck->usecount > 1)
 		return 0;
 	if (omap_dma_running())
@@ -279,7 +336,10 @@ static int omap2_can_sleep(void)
 
 static void omap2_pm_idle(void)
 {
+<<<<<<< HEAD
 	local_irq_disable();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_fiq_disable();
 
 	if (!omap2_can_sleep()) {
@@ -296,6 +356,7 @@ static void omap2_pm_idle(void)
 
 out:
 	local_fiq_enable();
+<<<<<<< HEAD
 	local_irq_enable();
 }
 
@@ -369,6 +430,8 @@ static int __init clkdms_setup(struct clockdomain *clkdm, void *unused)
 		 atomic_read(&clkdm->usecount) == 0)
 		clkdm_sleep(clkdm);
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __init prcm_setup_regs(void)
@@ -412,9 +475,19 @@ static void __init prcm_setup_regs(void)
 	clkdm_sleep(gfx_clkdm);
 
 	/* Enable hardware-supervised idle for all clkdms */
+<<<<<<< HEAD
 	clkdm_for_each(clkdms_setup, NULL);
 	clkdm_add_wkdep(mpu_clkdm, wkup_clkdm);
 
+=======
+	clkdm_for_each(omap_pm_clkdms_setup, NULL);
+	clkdm_add_wkdep(mpu_clkdm, wkup_clkdm);
+
+#ifdef CONFIG_SUSPEND
+	omap_pm_suspend = omap2_enter_full_retention;
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* REVISIT: Configure number of 32 kHz clock cycles for sys_clk
 	 * stabilisation */
 	omap2_prm_write_mod_reg(15 << OMAP_SETUP_TIME_SHIFT, OMAP24XX_GR_MOD,
@@ -515,8 +588,12 @@ static int __init omap2_pm_init(void)
 						    omap24xx_cpu_suspend_sz);
 	}
 
+<<<<<<< HEAD
 	suspend_set_ops(&omap_pm_ops);
 	pm_idle = omap2_pm_idle;
+=======
+	arm_pm_idle = omap2_pm_idle;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

@@ -161,11 +161,19 @@ that only one external action is invoked at a time.
 #include <linux/firmware.h>
 #include <linux/acpi.h>
 #include <linux/ctype.h>
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <net/lib80211.h>
 
 #include "ipw2100.h"
+<<<<<<< HEAD
+=======
+#include "ipw.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define IPW2100_VERSION "git-1.2.2"
 
@@ -174,7 +182,11 @@ that only one external action is invoked at a time.
 #define DRV_DESCRIPTION	"Intel(R) PRO/Wireless 2100 Network Driver"
 #define DRV_COPYRIGHT	"Copyright(c) 2003-2006 Intel Corporation"
 
+<<<<<<< HEAD
 static struct pm_qos_request_list ipw2100_pm_qos_req;
+=======
+static struct pm_qos_request ipw2100_pm_qos_req;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Debugging stuff */
 #ifdef CONFIG_IPW2100_DEBUG
@@ -287,7 +299,11 @@ static const char *command_types[] = {
 	"unused",		/* HOST_INTERRUPT_COALESCING */
 	"undefined",
 	"CARD_DISABLE_PHY_OFF",
+<<<<<<< HEAD
 	"MSDU_TX_RATES" "undefined",
+=======
+	"MSDU_TX_RATES",
+>>>>>>> refs/remotes/origin/cm-10.0
 	"undefined",
 	"SET_STATION_STAT_BITS",
 	"CLEAR_STATIONS_STAT_BITS",
@@ -298,8 +314,11 @@ static const char *command_types[] = {
 };
 #endif
 
+<<<<<<< HEAD
 #define WEXT_USECHANNELS 1
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const long ipw2100_frequencies[] = {
 	2412, 2417, 2422, 2427,
 	2432, 2437, 2442, 2447,
@@ -309,6 +328,7 @@ static const long ipw2100_frequencies[] = {
 
 #define FREQ_COUNT	ARRAY_SIZE(ipw2100_frequencies)
 
+<<<<<<< HEAD
 static const long ipw2100_rates_11b[] = {
 	1000000,
 	2000000,
@@ -316,6 +336,8 @@ static const long ipw2100_rates_11b[] = {
 	11000000
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct ieee80211_rate ipw2100_bg_rates[] = {
 	{ .bitrate = 10 },
 	{ .bitrate = 20, .flags = IEEE80211_RATE_SHORT_PREAMBLE },
@@ -323,7 +345,11 @@ static struct ieee80211_rate ipw2100_bg_rates[] = {
 	{ .bitrate = 110, .flags = IEEE80211_RATE_SHORT_PREAMBLE },
 };
 
+<<<<<<< HEAD
 #define RATE_COUNT ARRAY_SIZE(ipw2100_rates_11b)
+=======
+#define RATE_COUNT ARRAY_SIZE(ipw2100_bg_rates)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Pre-decl until we get the code solid and then we can clean it up */
 static void ipw2100_tx_send_commands(struct ipw2100_priv *priv);
@@ -1903,6 +1929,7 @@ static void ipw2100_down(struct ipw2100_priv *priv)
 static int ipw2100_net_init(struct net_device *dev)
 {
 	struct ipw2100_priv *priv = libipw_priv(dev);
+<<<<<<< HEAD
 	const struct libipw_geo *geo = libipw_get_geo(priv->ieee);
 	struct wireless_dev *wdev = &priv->ieee->wdev;
 	int ret;
@@ -1912,6 +1939,19 @@ static int ipw2100_net_init(struct net_device *dev)
 	if (ret)
 		return ret;
 
+=======
+
+	return ipw2100_up(priv, 1);
+}
+
+static int ipw2100_wdev_init(struct net_device *dev)
+{
+	struct ipw2100_priv *priv = libipw_priv(dev);
+	const struct libipw_geo *geo = libipw_get_geo(priv->ieee);
+	struct wireless_dev *wdev = &priv->ieee->wdev;
+	int i;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(wdev->wiphy->perm_addr, priv->mac_addr, ETH_ALEN);
 
 	/* fill-out priv->ieee->bg_band */
@@ -1953,6 +1993,12 @@ static int ipw2100_net_init(struct net_device *dev)
 		wdev->wiphy->bands[IEEE80211_BAND_2GHZ] = bg_band;
 	}
 
+<<<<<<< HEAD
+=======
+	wdev->wiphy->cipher_suites = ipw_cipher_suites;
+	wdev->wiphy->n_cipher_suites = ARRAY_SIZE(ipw_cipher_suites);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	set_wiphy_dev(wdev->wiphy, &priv->pci_dev->dev);
 	if (wiphy_register(wdev->wiphy)) {
 		ipw2100_down(priv);
@@ -3462,11 +3508,16 @@ static int ipw2100_msg_allocate(struct ipw2100_priv *priv)
 	priv->msg_buffers =
 	    kmalloc(IPW_COMMAND_POOL_SIZE * sizeof(struct ipw2100_tx_packet),
 		    GFP_KERNEL);
+<<<<<<< HEAD
 	if (!priv->msg_buffers) {
 		printk(KERN_ERR DRV_NAME ": %s: PCI alloc failed for msg "
 		       "buffers.\n", priv->net_dev->name);
 		return -ENOMEM;
 	}
+=======
+	if (!priv->msg_buffers)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < IPW_COMMAND_POOL_SIZE; i++) {
 		v = pci_alloc_consistent(priv->pci_dev,
@@ -5979,8 +6030,13 @@ static void ipw_ethtool_get_drvinfo(struct net_device *dev,
 	struct ipw2100_priv *priv = libipw_priv(dev);
 	char fw_ver[64], ucode_ver[64];
 
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ipw2100_get_fwversion(priv, fw_ver, sizeof(fw_ver));
 	ipw2100_get_ucodeversion(priv, ucode_ver, sizeof(ucode_ver));
@@ -5988,7 +6044,12 @@ static void ipw_ethtool_get_drvinfo(struct net_device *dev,
 	snprintf(info->fw_version, sizeof(info->fw_version), "%s:%d:%s",
 		 fw_ver, priv->eeprom_version, ucode_ver);
 
+<<<<<<< HEAD
 	strcpy(info->bus_info, pci_name(priv->pci_dev));
+=======
+	strlcpy(info->bus_info, pci_name(priv->pci_dev),
+		sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static u32 ipw2100_ethtool_get_link(struct net_device *dev)
@@ -6350,9 +6411,19 @@ static int ipw2100_pci_init_one(struct pci_dev *pci_dev,
 		       "Error calling register_netdev.\n");
 		goto fail;
 	}
+<<<<<<< HEAD
 
 	mutex_lock(&priv->action_mutex);
 	registered = 1;
+=======
+	registered = 1;
+
+	err = ipw2100_wdev_init(dev);
+	if (err)
+		goto fail;
+
+	mutex_lock(&priv->action_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IPW_DEBUG_INFO("%s: Bound to %s\n", dev->name, pci_name(pci_dev));
 
@@ -6389,7 +6460,12 @@ static int ipw2100_pci_init_one(struct pci_dev *pci_dev,
 
       fail_unlock:
 	mutex_unlock(&priv->action_mutex);
+<<<<<<< HEAD
 
+=======
+	wiphy_unregister(priv->ieee->wdev.wiphy);
+	kfree(priv->ieee->bg_band.channels);
+>>>>>>> refs/remotes/origin/cm-10.0
       fail:
 	if (dev) {
 		if (registered)
@@ -6888,7 +6964,11 @@ static int ipw2100_wx_get_range(struct net_device *dev,
 	range->num_bitrates = RATE_COUNT;
 
 	for (i = 0; i < RATE_COUNT && i < IW_MAX_BITRATES; i++) {
+<<<<<<< HEAD
 		range->bitrate[i] = ipw2100_rates_11b[i];
+=======
+		range->bitrate[i] = ipw2100_bg_rates[i].bitrate * 100 * 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	range->min_rts = MIN_RTS_THRESHOLD;
@@ -8100,6 +8180,7 @@ static int ipw2100_wx_get_crc_check(struct net_device *dev,
 #endif				/* CONFIG_IPW2100_MONITOR */
 
 static iw_handler ipw2100_wx_handlers[] = {
+<<<<<<< HEAD
 	NULL,			/* SIOCSIWCOMMIT */
 	ipw2100_wx_get_name,	/* SIOCGIWNAME */
 	NULL,			/* SIOCSIWNWID */
@@ -8155,6 +8236,43 @@ static iw_handler ipw2100_wx_handlers[] = {
 	ipw2100_wx_set_encodeext,	/* SIOCSIWENCODEEXT */
 	ipw2100_wx_get_encodeext,	/* SIOCGIWENCODEEXT */
 	NULL,			/* SIOCSIWPMKSA */
+=======
+	IW_HANDLER(SIOCGIWNAME, ipw2100_wx_get_name),
+	IW_HANDLER(SIOCSIWFREQ, ipw2100_wx_set_freq),
+	IW_HANDLER(SIOCGIWFREQ, ipw2100_wx_get_freq),
+	IW_HANDLER(SIOCSIWMODE, ipw2100_wx_set_mode),
+	IW_HANDLER(SIOCGIWMODE, ipw2100_wx_get_mode),
+	IW_HANDLER(SIOCGIWRANGE, ipw2100_wx_get_range),
+	IW_HANDLER(SIOCSIWAP, ipw2100_wx_set_wap),
+	IW_HANDLER(SIOCGIWAP, ipw2100_wx_get_wap),
+	IW_HANDLER(SIOCSIWMLME, ipw2100_wx_set_mlme),
+	IW_HANDLER(SIOCSIWSCAN, ipw2100_wx_set_scan),
+	IW_HANDLER(SIOCGIWSCAN, ipw2100_wx_get_scan),
+	IW_HANDLER(SIOCSIWESSID, ipw2100_wx_set_essid),
+	IW_HANDLER(SIOCGIWESSID, ipw2100_wx_get_essid),
+	IW_HANDLER(SIOCSIWNICKN, ipw2100_wx_set_nick),
+	IW_HANDLER(SIOCGIWNICKN, ipw2100_wx_get_nick),
+	IW_HANDLER(SIOCSIWRATE, ipw2100_wx_set_rate),
+	IW_HANDLER(SIOCGIWRATE, ipw2100_wx_get_rate),
+	IW_HANDLER(SIOCSIWRTS, ipw2100_wx_set_rts),
+	IW_HANDLER(SIOCGIWRTS, ipw2100_wx_get_rts),
+	IW_HANDLER(SIOCSIWFRAG, ipw2100_wx_set_frag),
+	IW_HANDLER(SIOCGIWFRAG, ipw2100_wx_get_frag),
+	IW_HANDLER(SIOCSIWTXPOW, ipw2100_wx_set_txpow),
+	IW_HANDLER(SIOCGIWTXPOW, ipw2100_wx_get_txpow),
+	IW_HANDLER(SIOCSIWRETRY, ipw2100_wx_set_retry),
+	IW_HANDLER(SIOCGIWRETRY, ipw2100_wx_get_retry),
+	IW_HANDLER(SIOCSIWENCODE, ipw2100_wx_set_encode),
+	IW_HANDLER(SIOCGIWENCODE, ipw2100_wx_get_encode),
+	IW_HANDLER(SIOCSIWPOWER, ipw2100_wx_set_power),
+	IW_HANDLER(SIOCGIWPOWER, ipw2100_wx_get_power),
+	IW_HANDLER(SIOCSIWGENIE, ipw2100_wx_set_genie),
+	IW_HANDLER(SIOCGIWGENIE, ipw2100_wx_get_genie),
+	IW_HANDLER(SIOCSIWAUTH, ipw2100_wx_set_auth),
+	IW_HANDLER(SIOCGIWAUTH, ipw2100_wx_get_auth),
+	IW_HANDLER(SIOCSIWENCODEEXT, ipw2100_wx_set_encodeext),
+	IW_HANDLER(SIOCGIWENCODEEXT, ipw2100_wx_get_encodeext),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define IPW2100_PRIV_SET_MONITOR	SIOCIWFIRSTPRIV

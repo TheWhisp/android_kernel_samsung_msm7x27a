@@ -33,9 +33,15 @@ demonstrate this problem using nested bash shells:
 
 	From a second, unrelated bash shell:
 	$ kill -SIGSTOP 16690
+<<<<<<< HEAD
 	$ kill -SIGCONT 16990
 
 	<at this point 16990 exits and causes 16644 to exit too>
+=======
+	$ kill -SIGCONT 16690
+
+	<at this point 16690 exits and causes 16644 to exit too>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 This happens because bash can observe both signals and choose how it
 responds to them.

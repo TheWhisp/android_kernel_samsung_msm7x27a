@@ -1,6 +1,7 @@
 
 /*
  *
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -21,6 +22,28 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+ Copyright (c) Eicon Networks, 2002.
+ *
+ This source file is supplied for the use with
+ Eicon Networks range of DIVA Server Adapters.
+ *
+ Eicon File Revision :    2.1
+ *
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+ *
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY OF ANY KIND WHATSOEVER INCLUDING ANY
+ implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+ *
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 /*----------------------------------------------------------------------------
@@ -68,6 +91,7 @@
 /* CPU exception context structure in MP shared ram after trap */
 typedef struct mp_xcptcontext_s MP_XCPTC;
 struct mp_xcptcontext_s {
+<<<<<<< HEAD
     dword       sr;
     dword       cr;
     dword       epc;
@@ -92,6 +116,32 @@ struct mp_load {
   dword     volatile rest[((0x1020>>2)-6) - 0x1b - 1 - 0x03 - (sizeof(MP_XCPTC)>>2)];
   dword     volatile signature;
   dword data[60000]; /* real interface description */
+=======
+	dword       sr;
+	dword       cr;
+	dword       epc;
+	dword       vaddr;
+	dword       regs[32];
+	dword       mdlo;
+	dword       mdhi;
+	dword       reseverd;
+	dword       xclass;
+};
+/* boot interface structure for PRI */
+struct mp_load {
+	dword     volatile cmd;
+	dword     volatile addr;
+	dword     volatile len;
+	dword     volatile err;
+	dword     volatile live;
+	dword     volatile res1[0x1b];
+	dword     volatile TrapId;    /* has value 0x999999XX on a CPU trap */
+	dword     volatile res2[0x03];
+	MP_XCPTC  volatile xcpt;      /* contains register dump */
+	dword     volatile rest[((0x1020 >> 2) - 6) - 0x1b - 1 - 0x03 - (sizeof(MP_XCPTC) >> 2)];
+	dword     volatile signature;
+	dword data[60000]; /* real interface description */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 /*----------------------------------------------------------------------------*/
 /* SERVER 4BRI (Quattro PCI)                                                  */
@@ -150,11 +200,19 @@ struct mp_load {
 #define CS_BASEREG    0x0018
 #define BOOT_BASEREG  0x001c
 #define GTREGS_BASEREG 0x0024   /*GTRegsBase reg-contain the base addr where*/
+<<<<<<< HEAD
                                 /*the GT64010 internal regs where mapped    */
 /*
  *  GT64010 internal registers
  */
         /* DRAM device coding  */
+=======
+				/*the GT64010 internal regs where mapped    */
+/*
+ *  GT64010 internal registers
+ */
+/* DRAM device coding  */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define LOW_RAS0_DREG 0x0400    /*Ras0 low decode address*/
 #define HI_RAS0_DREG  0x0404    /*Ras0 high decode address*/
 #define LOW_RAS1_DREG 0x0408    /*Ras1 low decode address*/
@@ -163,7 +221,11 @@ struct mp_load {
 #define HI_RAS2_DREG  0x0414    /*Ras2 high decode address*/
 #define LOW_RAS3_DREG 0x0418    /*Ras3 low decode address*/
 #define HI_RAS3_DREG  0x041c    /*Ras3 high decode address*/
+<<<<<<< HEAD
         /* I/O CS device coding  */
+=======
+/* I/O CS device coding  */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define LOW_CS0_DREG  0x0420 /* CS0* low decode register */
 #define HI_CS0_DREG   0x0424 /* CS0* high decode register */
 #define LOW_CS1_DREG  0x0428 /* CS1* low decode register */
@@ -172,20 +234,35 @@ struct mp_load {
 #define HI_CS2_DREG   0x0434 /* CS2* high decode register */
 #define LOW_CS3_DREG  0x0438 /* CS3* low decode register */
 #define HI_CS3_DREG   0x043c /* CS3* high decode register */
+<<<<<<< HEAD
         /* Boot PROM device coding */
 #define LOW_BOOTCS_DREG 0x0440 /* Boot CS low decode register */
 #define HI_BOOTCS_DREG 0x0444 /* Boot CS High decode register */
         /* DRAM group coding (for CPU)  */
+=======
+/* Boot PROM device coding */
+#define LOW_BOOTCS_DREG 0x0440 /* Boot CS low decode register */
+#define HI_BOOTCS_DREG 0x0444 /* Boot CS High decode register */
+/* DRAM group coding (for CPU)  */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define LO_RAS10_GREG 0x0008    /*Ras1..0 group low decode address*/
 #define HI_RAS10_GREG 0x0010    /*Ras1..0 group high decode address*/
 #define LO_RAS32_GREG 0x0018    /*Ras3..2 group low decode address  */
 #define HI_RAS32_GREG 0x0020    /*Ras3..2 group high decode address  */
+<<<<<<< HEAD
         /* I/O CS group coding for (CPU)  */
+=======
+/* I/O CS group coding for (CPU)  */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define LO_CS20_GREG  0x0028 /* CS2..0 group low decode register */
 #define HI_CS20_GREG  0x0030 /* CS2..0 group high decode register */
 #define LO_CS3B_GREG  0x0038 /* CS3 & PROM group low decode register */
 #define HI_CS3B_GREG  0x0040 /* CS3 & PROM group high decode register */
+<<<<<<< HEAD
         /* Galileo specific PCI config. */
+=======
+/* Galileo specific PCI config. */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PCI_TIMEOUT_RET 0x0c04 /* Time Out and retry register */
 #define RAS10_BANKSIZE 0x0c08 /* RAS 1..0 group PCI bank size */
 #define RAS32_BANKSIZE 0x0c0c /* RAS 3..2 group PCI bank size */

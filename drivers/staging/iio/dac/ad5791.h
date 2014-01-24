@@ -68,35 +68,55 @@ struct ad5791_platform_data {
 
 /**
  * struct ad5791_chip_info - chip specific information
+<<<<<<< HEAD
  * @bits:		accuracy of the DAC in bits
  * @left_shift:		number of bits the datum must be shifted
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @get_lin_comp:	function pointer to the device specific function
  */
 
 struct ad5791_chip_info {
+<<<<<<< HEAD
 	u8			bits;
 	u8			left_shift;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*get_lin_comp)	(unsigned int span);
 };
 
 /**
  * struct ad5791_state - driver instance specific data
+<<<<<<< HEAD
  * @indio_dev:		the industrial I/O device
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @us:			spi_device
  * @reg_vdd:		positive supply regulator
  * @reg_vss:		negative supply regulator
  * @chip_info:		chip model specific constants
  * @vref_mv:		actual reference voltage used
+<<<<<<< HEAD
+=======
+ * @vref_neg_mv:	voltage of the negative supply
+>>>>>>> refs/remotes/origin/cm-10.0
  * @pwr_down_mode	current power down mode
  */
 
 struct ad5791_state {
+<<<<<<< HEAD
 	struct iio_dev			*indio_dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct spi_device		*spi;
 	struct regulator		*reg_vdd;
 	struct regulator		*reg_vss;
 	const struct ad5791_chip_info	*chip_info;
 	unsigned short			vref_mv;
+<<<<<<< HEAD
+=======
+	unsigned int			vref_neg_mv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned			ctrl;
 	unsigned			pwr_down_mode;
 	bool				pwr_down;

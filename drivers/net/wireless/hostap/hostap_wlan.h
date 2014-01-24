@@ -1,6 +1,10 @@
 #ifndef HOSTAP_WLAN_H
 #define HOSTAP_WLAN_H
 
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/wireless.h>
 #include <linux/netdevice.h>
 #include <linux/mutex.h>

@@ -152,7 +152,11 @@ static int spear_ohci_hcd_drv_probe(struct platform_device *pdev)
 	spear_start_ohci(ohci_p);
 	ohci_hcd_init(hcd_to_ohci(hcd));
 
+<<<<<<< HEAD
 	retval = usb_add_hcd(hcd, platform_get_irq(pdev, 0), IRQF_DISABLED);
+=======
+	retval = usb_add_hcd(hcd, platform_get_irq(pdev, 0), 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval == 0)
 		return retval;
 
@@ -203,7 +207,10 @@ static int spear_ohci_hcd_drv_suspend(struct platform_device *dev,
 	ohci->next_statechange = jiffies;
 
 	spear_stop_ohci(ohci_p);
+<<<<<<< HEAD
 	ohci_to_hcd(ohci)->state = HC_STATE_SUSPENDED;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

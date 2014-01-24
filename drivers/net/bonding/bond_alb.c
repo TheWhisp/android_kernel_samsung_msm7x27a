@@ -99,16 +99,37 @@ static inline u8 _simple_hash(const u8 *hash_start, int hash_size)
 
 /*********************** tlb specific functions ***************************/
 
+<<<<<<< HEAD
 static inline void _lock_tx_hashtbl(struct bonding *bond)
+=======
+static inline void _lock_tx_hashtbl_bh(struct bonding *bond)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	spin_lock_bh(&(BOND_ALB_INFO(bond).tx_hashtbl_lock));
 }
 
+<<<<<<< HEAD
 static inline void _unlock_tx_hashtbl(struct bonding *bond)
+=======
+static inline void _unlock_tx_hashtbl_bh(struct bonding *bond)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	spin_unlock_bh(&(BOND_ALB_INFO(bond).tx_hashtbl_lock));
 }
 
+<<<<<<< HEAD
+=======
+static inline void _lock_tx_hashtbl(struct bonding *bond)
+{
+	spin_lock(&(BOND_ALB_INFO(bond).tx_hashtbl_lock));
+}
+
+static inline void _unlock_tx_hashtbl(struct bonding *bond)
+{
+	spin_unlock(&(BOND_ALB_INFO(bond).tx_hashtbl_lock));
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Caller must hold tx_hashtbl lock */
 static inline void tlb_init_table_entry(struct tlb_client_info *entry, int save_load)
 {
@@ -129,14 +150,23 @@ static inline void tlb_init_slave(struct slave *slave)
 	SLAVE_TLB_INFO(slave).head = TLB_NULL_INDEX;
 }
 
+<<<<<<< HEAD
 /* Caller must hold bond lock for read */
 static void tlb_clear_slave(struct bonding *bond, struct slave *slave, int save_load)
+=======
+/* Caller must hold bond lock for read, BH disabled */
+static void __tlb_clear_slave(struct bonding *bond, struct slave *slave,
+			 int save_load)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tlb_client_info *tx_hash_table;
 	u32 index;
 
+<<<<<<< HEAD
 	_lock_tx_hashtbl(bond);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* clear slave from tx_hashtbl */
 	tx_hash_table = BOND_ALB_INFO(bond).tx_hashtbl;
 
@@ -151,8 +181,20 @@ static void tlb_clear_slave(struct bonding *bond, struct slave *slave, int save_
 	}
 
 	tlb_init_slave(slave);
+<<<<<<< HEAD
 
 	_unlock_tx_hashtbl(bond);
+=======
+}
+
+/* Caller must hold bond lock for read */
+static void tlb_clear_slave(struct bonding *bond, struct slave *slave,
+			 int save_load)
+{
+	_lock_tx_hashtbl_bh(bond);
+	__tlb_clear_slave(bond, slave, save_load);
+	_unlock_tx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Must be called before starting the monitor timer */
@@ -164,12 +206,19 @@ static int tlb_initialize(struct bonding *bond)
 	int i;
 
 	new_hashtbl = kzalloc(size, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!new_hashtbl) {
 		pr_err("%s: Error: Failed to allocate TLB hash table\n",
 		       bond->dev->name);
 		return -1;
 	}
 	_lock_tx_hashtbl(bond);
+=======
+	if (!new_hashtbl)
+		return -1;
+
+	_lock_tx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bond_info->tx_hashtbl = new_hashtbl;
 
@@ -177,7 +226,11 @@ static int tlb_initialize(struct bonding *bond)
 		tlb_init_table_entry(&bond_info->tx_hashtbl[i], 0);
 	}
 
+<<<<<<< HEAD
 	_unlock_tx_hashtbl(bond);
+=======
+	_unlock_tx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -187,12 +240,20 @@ static void tlb_deinitialize(struct bonding *bond)
 {
 	struct alb_bond_info *bond_info = &(BOND_ALB_INFO(bond));
 
+<<<<<<< HEAD
 	_lock_tx_hashtbl(bond);
+=======
+	_lock_tx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree(bond_info->tx_hashtbl);
 	bond_info->tx_hashtbl = NULL;
 
+<<<<<<< HEAD
 	_unlock_tx_hashtbl(bond);
+=======
+	_unlock_tx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static long long compute_gap(struct slave *slave)
@@ -226,15 +287,23 @@ static struct slave *tlb_get_least_loaded_slave(struct bonding *bond)
 	return least_loaded;
 }
 
+<<<<<<< HEAD
 /* Caller must hold bond lock for read */
 static struct slave *tlb_choose_channel(struct bonding *bond, u32 hash_index, u32 skb_len)
+=======
+static struct slave *__tlb_choose_channel(struct bonding *bond, u32 hash_index,
+						u32 skb_len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct alb_bond_info *bond_info = &(BOND_ALB_INFO(bond));
 	struct tlb_client_info *hash_table;
 	struct slave *assigned_slave;
 
+<<<<<<< HEAD
 	_lock_tx_hashtbl(bond);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	hash_table = bond_info->tx_hashtbl;
 	assigned_slave = hash_table[hash_index].tx_slave;
 	if (!assigned_slave) {
@@ -263,6 +332,7 @@ static struct slave *tlb_choose_channel(struct bonding *bond, u32 hash_index, u3
 		hash_table[hash_index].tx_bytes += skb_len;
 	}
 
+<<<<<<< HEAD
 	_unlock_tx_hashtbl(bond);
 
 	return assigned_slave;
@@ -270,15 +340,55 @@ static struct slave *tlb_choose_channel(struct bonding *bond, u32 hash_index, u3
 
 /*********************** rlb specific functions ***************************/
 static inline void _lock_rx_hashtbl(struct bonding *bond)
+=======
+	return assigned_slave;
+}
+
+/* Caller must hold bond lock for read */
+static struct slave *tlb_choose_channel(struct bonding *bond, u32 hash_index,
+					u32 skb_len)
+{
+	struct slave *tx_slave;
+	/*
+	 * We don't need to disable softirq here, becase
+	 * tlb_choose_channel() is only called by bond_alb_xmit()
+	 * which already has softirq disabled.
+	 */
+	_lock_tx_hashtbl(bond);
+	tx_slave = __tlb_choose_channel(bond, hash_index, skb_len);
+	_unlock_tx_hashtbl(bond);
+	return tx_slave;
+}
+
+/*********************** rlb specific functions ***************************/
+static inline void _lock_rx_hashtbl_bh(struct bonding *bond)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	spin_lock_bh(&(BOND_ALB_INFO(bond).rx_hashtbl_lock));
 }
 
+<<<<<<< HEAD
 static inline void _unlock_rx_hashtbl(struct bonding *bond)
+=======
+static inline void _unlock_rx_hashtbl_bh(struct bonding *bond)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	spin_unlock_bh(&(BOND_ALB_INFO(bond).rx_hashtbl_lock));
 }
 
+<<<<<<< HEAD
+=======
+static inline void _lock_rx_hashtbl(struct bonding *bond)
+{
+	spin_lock(&(BOND_ALB_INFO(bond).rx_hashtbl_lock));
+}
+
+static inline void _unlock_rx_hashtbl(struct bonding *bond)
+{
+	spin_unlock(&(BOND_ALB_INFO(bond).rx_hashtbl_lock));
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* when an ARP REPLY is received from a client update its info
  * in the rx_hashtbl
  */
@@ -288,7 +398,11 @@ static void rlb_update_entry_from_arp(struct bonding *bond, struct arp_pkt *arp)
 	struct rlb_client_info *client_info;
 	u32 hash_index;
 
+<<<<<<< HEAD
 	_lock_rx_hashtbl(bond);
+=======
+	_lock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	hash_index = _simple_hash((u8*)&(arp->ip_src), sizeof(arp->ip_src));
 	client_info = &(bond_info->rx_hashtbl[hash_index]);
@@ -303,20 +417,32 @@ static void rlb_update_entry_from_arp(struct bonding *bond, struct arp_pkt *arp)
 		bond_info->rx_ntt = 1;
 	}
 
+<<<<<<< HEAD
 	_unlock_rx_hashtbl(bond);
 }
 
 static void rlb_arp_recv(struct sk_buff *skb, struct bonding *bond,
+=======
+	_unlock_rx_hashtbl_bh(bond);
+}
+
+static int rlb_arp_recv(struct sk_buff *skb, struct bonding *bond,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 struct slave *slave)
 {
 	struct arp_pkt *arp;
 
 	if (skb->protocol != cpu_to_be16(ETH_P_ARP))
+<<<<<<< HEAD
 		return;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	arp = (struct arp_pkt *) skb->data;
 	if (!arp) {
 		pr_debug("Packet has no ARP data\n");
+<<<<<<< HEAD
 		return;
 	}
 
@@ -326,6 +452,17 @@ static void rlb_arp_recv(struct sk_buff *skb, struct bonding *bond,
 	if (skb->len < sizeof(struct arp_pkt)) {
 		pr_debug("Packet is too small to be an ARP\n");
 		return;
+=======
+		goto out;
+	}
+
+	if (!pskb_may_pull(skb, arp_hdr_len(bond->dev)))
+		goto out;
+
+	if (skb->len < sizeof(struct arp_pkt)) {
+		pr_debug("Packet is too small to be an ARP\n");
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (arp->op_code == htons(ARPOP_REPLY)) {
@@ -333,6 +470,11 @@ static void rlb_arp_recv(struct sk_buff *skb, struct bonding *bond,
 		rlb_update_entry_from_arp(bond, arp);
 		pr_debug("Server received an ARP Reply from client\n");
 	}
+<<<<<<< HEAD
+=======
+out:
+	return RX_HANDLER_ANOTHER;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Caller must hold bond lock for read */
@@ -401,7 +543,11 @@ static void rlb_clear_slave(struct bonding *bond, struct slave *slave)
 	u32 index, next_index;
 
 	/* clear slave from rx_hashtbl */
+<<<<<<< HEAD
 	_lock_rx_hashtbl(bond);
+=======
+	_lock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rx_hash_table = bond_info->rx_hashtbl;
 	index = bond_info->rx_hashtbl_head;
@@ -432,7 +578,11 @@ static void rlb_clear_slave(struct bonding *bond, struct slave *slave)
 		}
 	}
 
+<<<<<<< HEAD
 	_unlock_rx_hashtbl(bond);
+=======
+	_unlock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	write_lock_bh(&bond->curr_slave_lock);
 
@@ -489,7 +639,11 @@ static void rlb_update_rx_clients(struct bonding *bond)
 	struct rlb_client_info *client_info;
 	u32 hash_index;
 
+<<<<<<< HEAD
 	_lock_rx_hashtbl(bond);
+=======
+	_lock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	hash_index = bond_info->rx_hashtbl_head;
 	for (; hash_index != RLB_NULL_INDEX; hash_index = client_info->next) {
@@ -507,7 +661,11 @@ static void rlb_update_rx_clients(struct bonding *bond)
 	 */
 	bond_info->rlb_update_delay_counter = RLB_UPDATE_DELAY;
 
+<<<<<<< HEAD
 	_unlock_rx_hashtbl(bond);
+=======
+	_unlock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* The slave was assigned a new mac address - update the clients */
@@ -518,7 +676,11 @@ static void rlb_req_update_slave_clients(struct bonding *bond, struct slave *sla
 	int ntt = 0;
 	u32 hash_index;
 
+<<<<<<< HEAD
 	_lock_rx_hashtbl(bond);
+=======
+	_lock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	hash_index = bond_info->rx_hashtbl_head;
 	for (; hash_index != RLB_NULL_INDEX; hash_index = client_info->next) {
@@ -538,7 +700,11 @@ static void rlb_req_update_slave_clients(struct bonding *bond, struct slave *sla
 		bond_info->rlb_update_retry_counter = RLB_UPDATE_RETRY;
 	}
 
+<<<<<<< HEAD
 	_unlock_rx_hashtbl(bond);
+=======
+	_unlock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* mark all clients using src_ip to be updated */
@@ -635,7 +801,11 @@ static struct slave *rlb_choose_channel(struct sk_buff *skb, struct bonding *bon
 			client_info->ntt = 0;
 		}
 
+<<<<<<< HEAD
 		if (bond->vlgrp) {
+=======
+		if (bond_vlan_used(bond)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!vlan_get_tag(skb, &client_info->vlan_id))
 				client_info->tag = 1;
 		}
@@ -666,6 +836,15 @@ static struct slave *rlb_arp_xmit(struct sk_buff *skb, struct bonding *bond)
 	struct arp_pkt *arp = arp_pkt(skb);
 	struct slave *tx_slave = NULL;
 
+<<<<<<< HEAD
+=======
+	/* Don't modify or load balance ARPs that do not originate locally
+	 * (e.g.,arrive via a bridge).
+	 */
+	if (!bond_slave_has_mac(bond, arp->mac_src))
+		return NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (arp->op_code == htons(ARPOP_REPLY)) {
 		/* the arp must be sent on the selected
 		* rx channel
@@ -709,7 +888,11 @@ static void rlb_rebalance(struct bonding *bond)
 	int ntt;
 	u32 hash_index;
 
+<<<<<<< HEAD
 	_lock_rx_hashtbl(bond);
+=======
+	_lock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ntt = 0;
 	hash_index = bond_info->rx_hashtbl_head;
@@ -727,7 +910,11 @@ static void rlb_rebalance(struct bonding *bond)
 	if (ntt) {
 		bond_info->rx_ntt = 1;
 	}
+<<<<<<< HEAD
 	_unlock_rx_hashtbl(bond);
+=======
+	_unlock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Caller must hold rx_hashtbl lock */
@@ -746,12 +933,19 @@ static int rlb_initialize(struct bonding *bond)
 	int i;
 
 	new_hashtbl = kmalloc(size, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!new_hashtbl) {
 		pr_err("%s: Error: Failed to allocate RLB hash table\n",
 		       bond->dev->name);
 		return -1;
 	}
 	_lock_rx_hashtbl(bond);
+=======
+	if (!new_hashtbl)
+		return -1;
+
+	_lock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bond_info->rx_hashtbl = new_hashtbl;
 
@@ -761,7 +955,11 @@ static int rlb_initialize(struct bonding *bond)
 		rlb_init_table_entry(bond_info->rx_hashtbl + i);
 	}
 
+<<<<<<< HEAD
 	_unlock_rx_hashtbl(bond);
+=======
+	_unlock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* register to receive ARPs */
 	bond->recv_probe = rlb_arp_recv;
@@ -773,13 +971,21 @@ static void rlb_deinitialize(struct bonding *bond)
 {
 	struct alb_bond_info *bond_info = &(BOND_ALB_INFO(bond));
 
+<<<<<<< HEAD
 	_lock_rx_hashtbl(bond);
+=======
+	_lock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree(bond_info->rx_hashtbl);
 	bond_info->rx_hashtbl = NULL;
 	bond_info->rx_hashtbl_head = RLB_NULL_INDEX;
 
+<<<<<<< HEAD
 	_unlock_rx_hashtbl(bond);
+=======
+	_unlock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rlb_clear_vlan(struct bonding *bond, unsigned short vlan_id)
@@ -787,7 +993,11 @@ static void rlb_clear_vlan(struct bonding *bond, unsigned short vlan_id)
 	struct alb_bond_info *bond_info = &(BOND_ALB_INFO(bond));
 	u32 curr_index;
 
+<<<<<<< HEAD
 	_lock_rx_hashtbl(bond);
+=======
+	_lock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	curr_index = bond_info->rx_hashtbl_head;
 	while (curr_index != RLB_NULL_INDEX) {
@@ -812,7 +1022,11 @@ static void rlb_clear_vlan(struct bonding *bond, unsigned short vlan_id)
 		curr_index = next_index;
 	}
 
+<<<<<<< HEAD
 	_unlock_rx_hashtbl(bond);
+=======
+	_unlock_rx_hashtbl_bh(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*********************** tlb/rlb shared functions *********************/
@@ -847,7 +1061,11 @@ static void alb_send_learning_packets(struct slave *slave, u8 mac_addr[])
 		skb->priority = TC_PRIO_CONTROL;
 		skb->dev = slave->dev;
 
+<<<<<<< HEAD
 		if (bond->vlgrp) {
+=======
+		if (bond_vlan_used(bond)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			struct vlan_entry *vlan;
 
 			vlan = bond_next_vlan(bond,
@@ -1314,7 +1532,13 @@ int bond_alb_xmit(struct sk_buff *skb, struct net_device *bond_dev)
 		res = bond_dev_queue_xmit(bond, skb, tx_slave->dev);
 	} else {
 		if (tx_slave) {
+<<<<<<< HEAD
 			tlb_clear_slave(bond, tx_slave, 0);
+=======
+			_lock_tx_hashtbl(bond);
+			__tlb_clear_slave(bond, tx_slave, 0);
+			_unlock_tx_hashtbl(bond);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -1337,10 +1561,13 @@ void bond_alb_monitor(struct work_struct *work)
 
 	read_lock(&bond->lock);
 
+<<<<<<< HEAD
 	if (bond->kill_timers) {
 		goto out;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (bond->slave_cnt == 0) {
 		bond_info->tx_rebalance_counter = 0;
 		bond_info->lp_counter = 0;
@@ -1395,10 +1622,20 @@ void bond_alb_monitor(struct work_struct *work)
 
 			/*
 			 * dev_set_promiscuity requires rtnl and
+<<<<<<< HEAD
 			 * nothing else.
 			 */
 			read_unlock(&bond->lock);
 			rtnl_lock();
+=======
+			 * nothing else.  Avoid race with bond_close.
+			 */
+			read_unlock(&bond->lock);
+			if (!rtnl_trylock()) {
+				read_lock(&bond->lock);
+				goto re_arm;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			bond_info->rlb_promisc_timeout_counter = 0;
 
@@ -1435,7 +1672,11 @@ void bond_alb_monitor(struct work_struct *work)
 
 re_arm:
 	queue_delayed_work(bond->wq, &bond->alb_work, alb_delta_in_ticks);
+<<<<<<< HEAD
 out:
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	read_unlock(&bond->lock);
 }
 

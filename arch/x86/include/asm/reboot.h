@@ -23,7 +23,11 @@ void machine_real_restart(unsigned int type);
 #define MRR_BIOS	0
 #define MRR_APM		1
 
+<<<<<<< HEAD
 typedef void (*nmi_shootdown_cb)(int, struct die_args*);
+=======
+typedef void (*nmi_shootdown_cb)(int, struct pt_regs*);
+>>>>>>> refs/remotes/origin/cm-10.0
 void nmi_shootdown_cpus(nmi_shootdown_cb callback);
 
 #endif /* _ASM_X86_REBOOT_H */

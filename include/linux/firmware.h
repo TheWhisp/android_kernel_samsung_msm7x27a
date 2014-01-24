@@ -1,7 +1,10 @@
 #ifndef _LINUX_FIRMWARE_H
 #define _LINUX_FIRMWARE_H
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include <linux/compiler.h>
 #include <linux/gfp.h>
@@ -15,6 +18,10 @@ struct firmware {
 	struct page **pages;
 };
 
+<<<<<<< HEAD
+=======
+struct module;
+>>>>>>> refs/remotes/origin/cm-10.0
 struct device;
 
 struct builtin_fw {

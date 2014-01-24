@@ -23,6 +23,10 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include "hda_beep.h"
 #include "hda_local.h"

@@ -432,6 +432,7 @@ static struct usb_driver hanwang_driver = {
 	.id_table	= hanwang_ids,
 };
 
+<<<<<<< HEAD
 static int __init hanwang_init(void)
 {
 	return usb_register(&hanwang_driver);
@@ -444,3 +445,6 @@ static void __exit hanwang_exit(void)
 
 module_init(hanwang_init);
 module_exit(hanwang_exit);
+=======
+module_usb_driver(hanwang_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

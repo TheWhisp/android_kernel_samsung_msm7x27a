@@ -15,8 +15,13 @@
 
 #include <media/msm_gemini.h>
 #include "msm_gemini_hw_reg.h"
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
 #include <linux/ion.h>
+=======
+#include <linux/ion.h>
+#include <mach/iommu_domains.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct msm_gemini_hw_buf {
 	struct msm_gemini_buf vbuf;
@@ -94,7 +99,11 @@ uint32_t msm_gemini_hw_read(struct msm_gemini_hw_cmd *hw_cmd_p);
 void msm_gemini_hw_write(struct msm_gemini_hw_cmd *hw_cmd_p);
 int msm_gemini_hw_wait(struct msm_gemini_hw_cmd *hw_cmd_p, int m_us);
 void msm_gemini_hw_delay(struct msm_gemini_hw_cmd *hw_cmd_p, int m_us);
+<<<<<<< HEAD
 int msm_gemini_hw_exec_cmds(struct msm_gemini_hw_cmd *hw_cmd_p, int m_cmds);
+=======
+int msm_gemini_hw_exec_cmds(struct msm_gemini_hw_cmd *hw_cmd_p, uint32_t m_cmds);
+>>>>>>> refs/remotes/origin/cm-10.0
 void msm_gemini_hw_region_dump(int size);
 
 #define MSM_GEMINI_PIPELINE_CLK_128MHZ 128 /* 8MP  128MHz */

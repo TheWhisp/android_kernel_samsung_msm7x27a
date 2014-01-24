@@ -21,7 +21,11 @@
 static void __init
 pdev_fixup_irq(struct pci_dev *dev,
 	       u8 (*swizzle)(struct pci_dev *, u8 *),
+<<<<<<< HEAD
 	       int (*map_irq)(struct pci_dev *, u8, u8))
+=======
+	       int (*map_irq)(const struct pci_dev *, u8, u8))
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u8 pin, slot;
 	int irq = 0;
@@ -56,7 +60,11 @@ pdev_fixup_irq(struct pci_dev *dev,
 
 void __init
 pci_fixup_irqs(u8 (*swizzle)(struct pci_dev *, u8 *),
+<<<<<<< HEAD
 	       int (*map_irq)(struct pci_dev *, u8, u8))
+=======
+	       int (*map_irq)(const struct pci_dev *, u8, u8))
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pci_dev *dev = NULL;
 	for_each_pci_dev(dev)

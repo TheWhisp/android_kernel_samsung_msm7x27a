@@ -7,14 +7,21 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/init.h>
 
 #include <asm/leds.h>
 #include <mach/devices.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 static inline void ks8695_led_on(unsigned int led)

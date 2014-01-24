@@ -124,6 +124,7 @@ struct ad799x_platform_data {
 int ad7997_8_set_scan_mode(struct ad799x_state *st, unsigned mask);
 
 #ifdef CONFIG_AD799X_RING_BUFFER
+<<<<<<< HEAD
 int ad799x_single_channel_from_ring(struct ad799x_state *st, long mask);
 int ad799x_register_ring_funcs_and_init(struct iio_dev *indio_dev);
 void ad799x_ring_cleanup(struct iio_dev *indio_dev);
@@ -133,6 +134,11 @@ int ad799x_single_channel_from_ring(struct ad799x_state *st, long mask)
 	return -EINVAL;
 }
 
+=======
+int ad799x_register_ring_funcs_and_init(struct iio_dev *indio_dev);
+void ad799x_ring_cleanup(struct iio_dev *indio_dev);
+#else /* CONFIG_AD799X_RING_BUFFER */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int
 ad799x_register_ring_funcs_and_init(struct iio_dev *indio_dev)

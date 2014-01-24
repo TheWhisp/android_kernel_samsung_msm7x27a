@@ -35,6 +35,10 @@
 #include <rdma/ib_user_verbs.h>
 #include <linux/io.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/utsname.h>
 #include <linux/rculist.h>
 

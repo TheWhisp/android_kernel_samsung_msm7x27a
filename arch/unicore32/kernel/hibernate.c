@@ -15,7 +15,10 @@
 #include <linux/suspend.h>
 #include <linux/bootmem.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>

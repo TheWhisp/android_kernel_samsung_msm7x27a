@@ -81,7 +81,11 @@ static int vram __devinitdata = 0;
 static int bpp __devinitdata = 8;
 static int reverse_i2c __devinitdata;
 #ifdef CONFIG_MTRR
+<<<<<<< HEAD
 static int nomtrr __devinitdata = 0;
+=======
+static bool nomtrr __devinitdata = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 #ifdef CONFIG_PMAC_BACKLIGHT
 static int backlight __devinitdata = 1;
@@ -1509,7 +1513,11 @@ static int __devinit nvidiafb_setup(char *options)
 			backlight = simple_strtoul(this_opt+10, NULL, 0);
 #ifdef CONFIG_MTRR
 		} else if (!strncmp(this_opt, "nomtrr", 6)) {
+<<<<<<< HEAD
 			nomtrr = 1;
+=======
+			nomtrr = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 		} else if (!strncmp(this_opt, "fpdither:", 9)) {
 			fpdither = simple_strtol(this_opt+9, NULL, 0);
@@ -1599,7 +1607,11 @@ MODULE_PARM_DESC(bpp, "pixel width in bits"
 module_param(reverse_i2c, int, 0);
 MODULE_PARM_DESC(reverse_i2c, "reverse port assignment of the i2c bus");
 #ifdef CONFIG_MTRR
+<<<<<<< HEAD
 module_param(nomtrr, bool, 0);
+=======
+module_param(nomtrr, bool, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nomtrr, "Disables MTRR support (0 or 1=disabled) "
 		 "(default=0)");
 #endif

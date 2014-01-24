@@ -11,13 +11,22 @@
 
 #include <linux/clockchips.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/time.h>
+=======
+#include <linux/i8253.h>
+#include <linux/time.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mca.h>
 
 #include <asm/vsyscall.h>
 #include <asm/x86_init.h>
 #include <asm/i8259.h>
+<<<<<<< HEAD
 #include <asm/i8253.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/timer.h>
 #include <asm/hpet.h>
 #include <asm/time.h>
@@ -56,9 +65,12 @@ EXPORT_SYMBOL(profile_pc);
  */
 static irqreturn_t timer_interrupt(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	/* Keep nmi watchdog up to date */
 	inc_irq_stat(irq0_irqs);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	global_clock_event->event_handler(global_clock_event);
 
 	/* MCA bus quirk: Acknowledge irq0 by setting bit 7 in port 0x61 */

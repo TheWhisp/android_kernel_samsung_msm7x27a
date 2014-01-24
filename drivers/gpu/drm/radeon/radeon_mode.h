@@ -363,6 +363,10 @@ struct radeon_encoder_atom_dig {
 	struct backlight_device *bl_dev;
 	int dpms_mode;
 	uint8_t backlight_level;
+<<<<<<< HEAD
+=======
+	int panel_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct radeon_encoder_atom_dac {
@@ -460,6 +464,11 @@ struct radeon_framebuffer {
 	struct drm_gem_object *obj;
 };
 
+<<<<<<< HEAD
+=======
+#define ENCODER_MODE_IS_DP(em) (((em) == ATOM_ENCODER_MODE_DP) || \
+				((em) == ATOM_ENCODER_MODE_DP_MST))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern enum radeon_tv_std
 radeon_combios_get_tv_info(struct radeon_device *rdev);
@@ -468,9 +477,19 @@ radeon_atombios_get_tv_info(struct radeon_device *rdev);
 
 extern struct drm_connector *
 radeon_get_connector_for_encoder(struct drm_encoder *encoder);
+<<<<<<< HEAD
 
 extern bool radeon_encoder_is_dp_bridge(struct drm_encoder *encoder);
 extern bool radeon_connector_encoder_is_dp_bridge(struct drm_connector *connector);
+=======
+extern struct drm_connector *
+radeon_get_connector_for_encoder_init(struct drm_encoder *encoder);
+extern bool radeon_dig_monitor_is_duallink(struct drm_encoder *encoder,
+				    u32 pixel_clock);
+
+extern u16 radeon_encoder_get_dp_bridge_encoder_id(struct drm_encoder *encoder);
+extern u16 radeon_connector_encoder_get_dp_bridge_encoder_id(struct drm_connector *connector);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern bool radeon_connector_encoder_is_hbr2(struct drm_connector *connector);
 extern bool radeon_connector_is_dp12_capable(struct drm_connector *connector);
 
@@ -484,13 +503,25 @@ extern void radeon_dp_link_train(struct drm_encoder *encoder,
 extern bool radeon_dp_needs_link_train(struct radeon_connector *radeon_connector);
 extern u8 radeon_dp_getsinktype(struct radeon_connector *radeon_connector);
 extern bool radeon_dp_getdpcd(struct radeon_connector *radeon_connector);
+<<<<<<< HEAD
 extern void atombios_dig_encoder_setup(struct drm_encoder *encoder, int action, int panel_mode);
 extern void radeon_atom_encoder_init(struct radeon_device *rdev);
+=======
+extern int radeon_dp_get_panel_mode(struct drm_encoder *encoder,
+				    struct drm_connector *connector);
+extern void atombios_dig_encoder_setup(struct drm_encoder *encoder, int action, int panel_mode);
+extern void radeon_atom_encoder_init(struct radeon_device *rdev);
+extern void radeon_atom_disp_eng_pll_init(struct radeon_device *rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void atombios_dig_transmitter_setup(struct drm_encoder *encoder,
 					   int action, uint8_t lane_num,
 					   uint8_t lane_set);
 extern void radeon_atom_ext_encoder_setup_ddc(struct drm_encoder *encoder);
+<<<<<<< HEAD
 extern struct drm_encoder *radeon_atom_get_external_encoder(struct drm_encoder *encoder);
+=======
+extern struct drm_encoder *radeon_get_external_encoder(struct drm_encoder *encoder);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int radeon_dp_i2c_aux_ch(struct i2c_adapter *adapter, int mode,
 				u8 write_byte, u8 *read_byte);
 
@@ -520,8 +551,12 @@ extern void radeon_i2c_put_byte(struct radeon_i2c_chan *i2c,
 				u8 val);
 extern void radeon_router_select_ddc_port(struct radeon_connector *radeon_connector);
 extern void radeon_router_select_cd_port(struct radeon_connector *radeon_connector);
+<<<<<<< HEAD
 extern bool radeon_ddc_probe(struct radeon_connector *radeon_connector,
 			bool requires_extended_probe);
+=======
+extern bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int radeon_ddc_get_modes(struct radeon_connector *radeon_connector);
 
 extern struct drm_encoder *radeon_best_encoder(struct drm_connector *connector);
@@ -644,9 +679,15 @@ extern void radeon_crtc_fb_gamma_set(struct drm_crtc *crtc, u16 red, u16 green,
 				     u16 blue, int regno);
 extern void radeon_crtc_fb_gamma_get(struct drm_crtc *crtc, u16 *red, u16 *green,
 				     u16 *blue, int regno);
+<<<<<<< HEAD
 void radeon_framebuffer_init(struct drm_device *dev,
 			     struct radeon_framebuffer *rfb,
 			     struct drm_mode_fb_cmd *mode_cmd,
+=======
+int radeon_framebuffer_init(struct drm_device *dev,
+			     struct radeon_framebuffer *rfb,
+			     struct drm_mode_fb_cmd2 *mode_cmd,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     struct drm_gem_object *obj);
 
 int radeonfb_remove(struct drm_device *dev, struct drm_framebuffer *fb);

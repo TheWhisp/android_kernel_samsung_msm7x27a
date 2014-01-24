@@ -133,10 +133,16 @@ void MACvWriteMultiAddr(PSDevice pDevice, unsigned int uByteIdx, BYTE byData)
  *  Out:
  *      none
  *
+<<<<<<< HEAD
  * Return Value: TRUE if success; otherwise FALSE
  *
  */
 BOOL MACbShutdown (PSDevice pDevice)
+=======
+ *
+ */
+void MACbShutdown(PSDevice pDevice)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
     CONTROLnsRequestOutAsyn(pDevice,
                         MESSAGE_TYPE_MACSHUTDOWN,
@@ -145,7 +151,10 @@ BOOL MACbShutdown (PSDevice pDevice)
                         0,
                         NULL
                         );
+<<<<<<< HEAD
     return TRUE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void MACvSetBBType(PSDevice pDevice,BYTE byType)

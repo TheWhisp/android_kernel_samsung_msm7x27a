@@ -16,6 +16,10 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/clk.h>
 #include <linux/io.h>

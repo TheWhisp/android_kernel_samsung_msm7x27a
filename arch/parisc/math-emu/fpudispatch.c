@@ -50,6 +50,10 @@
 #define FPUDEBUG 0
 
 #include "float.h"
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <asm/processor.h>
 /* #include <sys/debug.h> */

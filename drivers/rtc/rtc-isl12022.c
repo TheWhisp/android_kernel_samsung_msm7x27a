@@ -15,6 +15,10 @@
 #include <linux/bcd.h>
 #include <linux/rtc.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRV_VERSION "0.1"
 
@@ -308,6 +312,7 @@ static struct i2c_driver isl12022_driver = {
 	.id_table	= isl12022_id,
 };
 
+<<<<<<< HEAD
 static int __init isl12022_init(void)
 {
 	return i2c_add_driver(&isl12022_driver);
@@ -320,6 +325,9 @@ static void __exit isl12022_exit(void)
 
 module_init(isl12022_init);
 module_exit(isl12022_exit);
+=======
+module_i2c_driver(isl12022_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("roman.fietze@telemotive.de");
 MODULE_DESCRIPTION("ISL 12022 RTC driver");

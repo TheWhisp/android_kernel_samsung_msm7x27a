@@ -303,15 +303,21 @@ config X86_GENERIC
 config X86_INTERNODE_CACHE_SHIFT
 	int
 	default "12" if X86_VSMP
+<<<<<<< HEAD
 	default "7" if NUMA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	default X86_L1_CACHE_SHIFT
 
 config X86_CMPXCHG
 	def_bool X86_64 || (X86_32 && !M386)
 
+<<<<<<< HEAD
 config CMPXCHG_LOCAL
 	def_bool X86_64 || (X86_32 && !M386)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config X86_L1_CACHE_SHIFT
 	int
 	default "7" if MPENTIUM4 || MPSC
@@ -444,7 +450,11 @@ config CPU_SUP_INTEL
 config CPU_SUP_CYRIX_32
 	default y
 	bool "Support Cyrix processors" if PROCESSOR_SELECT
+<<<<<<< HEAD
 	depends on !64BIT
+=======
+	depends on M386 || M486 || M586 || M586TSC || M586MMX || (EXPERT && !64BIT)
+>>>>>>> refs/remotes/origin/cm-10.0
 	---help---
 	  This enables detection, tunings and quirks for Cyrix processors
 
@@ -498,7 +508,11 @@ config CPU_SUP_TRANSMETA_32
 config CPU_SUP_UMC_32
 	default y
 	bool "Support UMC processors" if PROCESSOR_SELECT
+<<<<<<< HEAD
 	depends on !64BIT
+=======
+	depends on M386 || M486 || (EXPERT && !64BIT)
+>>>>>>> refs/remotes/origin/cm-10.0
 	---help---
 	  This enables detection, tunings and quirks for UMC processors
 

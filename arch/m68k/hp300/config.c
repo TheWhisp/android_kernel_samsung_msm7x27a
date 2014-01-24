@@ -24,7 +24,12 @@
 
 unsigned long hp300_model;
 unsigned long hp300_uart_scode = -1;
+<<<<<<< HEAD
 unsigned char ledstate;
+=======
+unsigned char hp300_ledstate;
+EXPORT_SYMBOL(hp300_ledstate);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static char s_hp330[] __initdata = "330";
 static char s_hp340[] __initdata = "340";

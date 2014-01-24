@@ -16,6 +16,10 @@
 
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <asm/natfeat.h>
 #include <asm/virtconvert.h>
@@ -38,7 +42,11 @@ enum {
 #define MAX_UNIT	8
 
 /* These identify the driver base version and may not be removed. */
+<<<<<<< HEAD
 static const char version[] __devinitdata =
+=======
+static const char version[] __devinitconst =
+>>>>>>> refs/remotes/origin/cm-10.0
 	KERN_INFO KBUILD_MODNAME ".c:v" DRV_VERSION " " DRV_RELDATE
 	" S.Opichal, M.Jurik, P.Stehlik\n"
 	KERN_INFO " http://aranym.org/\n";
@@ -204,7 +212,10 @@ static struct net_device * __init nfeth_probe(int unit)
 	dev->irq = nfEtherIRQ;
 	dev->netdev_ops = &nfeth_netdev_ops;
 
+<<<<<<< HEAD
 	dev->flags |= NETIF_F_NO_CSUM;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(dev->dev_addr, mac, ETH_ALEN);
 
 	priv = netdev_priv(dev);

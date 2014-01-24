@@ -161,7 +161,13 @@
 #include <asm/xen/page.h>
 #include <asm/xen/hypercall.h>
 #include <asm/xen/hypervisor.h>
+<<<<<<< HEAD
 
+=======
+#include <xen/grant_table.h>
+
+#include "multicalls.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xen-ops.h"
 
 static void __init m2p_override_init(void);
@@ -192,11 +198,14 @@ RESERVE_BRK(p2m_mid_mfn, PAGE_SIZE * (MAX_DOMAIN_PAGES / (P2M_PER_PAGE * P2M_MID
  * boundary violation will require three middle nodes. */
 RESERVE_BRK(p2m_mid_identity, PAGE_SIZE * 2 * 3);
 
+<<<<<<< HEAD
 /* When we populate back during bootup, the amount of pages can vary. The
  * max we have is seen is 395979, but that does not mean it can't be more.
  * But some machines can have 3GB I/O holes even. So lets reserve enough
  * for 4GB of I/O and E820 holes. */
 RESERVE_BRK(p2m_populated, PMD_SIZE * 4);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline unsigned p2m_top_index(unsigned long pfn)
 {
 	BUG_ON(pfn >= MAX_P2M_PFN);
@@ -681,7 +690,12 @@ static unsigned long mfn_hash(unsigned long mfn)
 }
 
 /* Add an MFN override for a particular page */
+<<<<<<< HEAD
 int m2p_add_override(unsigned long mfn, struct page *page, bool clear_pte)
+=======
+int m2p_add_override(unsigned long mfn, struct page *page,
+		struct gnttab_map_grant_ref *kmap_op)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long flags;
 	unsigned long pfn;
@@ -698,16 +712,36 @@ int m2p_add_override(unsigned long mfn, struct page *page, bool clear_pte)
 					"m2p_add_override: pfn %lx not mapped", pfn))
 			return -EINVAL;
 	}
+<<<<<<< HEAD
 
 	page->private = mfn;
+=======
+	WARN_ON(PagePrivate(page));
+	SetPagePrivate(page);
+	set_page_private(page, mfn);
+>>>>>>> refs/remotes/origin/cm-10.0
 	page->index = pfn_to_mfn(pfn);
 
 	if (unlikely(!set_phys_to_machine(pfn, FOREIGN_FRAME(mfn))))
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	if (clear_pte && !PageHighMem(page))
 		/* Just zap old mapping for now */
 		pte_clear(&init_mm, address, ptep);
+=======
+	if (kmap_op != NULL) {
+		if (!PageHighMem(page)) {
+			struct multicall_space mcs =
+				xen_mc_entry(sizeof(*kmap_op));
+
+			MULTI_grant_table_op(mcs.mc,
+					GNTTABOP_map_grant_ref, kmap_op, 1);
+
+			xen_mc_issue(PARAVIRT_LAZY_MMU);
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&m2p_override_lock, flags);
 	list_add(&page->lru,  &m2p_overrides[mfn_hash(mfn)]);
 	spin_unlock_irqrestore(&m2p_override_lock, flags);
@@ -733,7 +767,12 @@ int m2p_add_override(unsigned long mfn, struct page *page, bool clear_pte)
 	return 0;
 }
 EXPORT_SYMBOL_GPL(m2p_add_override);
+<<<<<<< HEAD
 int m2p_remove_override(struct page *page, bool clear_pte)
+=======
+int m2p_remove_override(struct page *page,
+		struct gnttab_map_grant_ref *kmap_op)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long flags;
 	unsigned long mfn;
@@ -760,6 +799,7 @@ int m2p_remove_override(struct page *page, bool clear_pte)
 	spin_lock_irqsave(&m2p_override_lock, flags);
 	list_del(&page->lru);
 	spin_unlock_irqrestore(&m2p_override_lock, flags);
+<<<<<<< HEAD
 	set_phys_to_machine(pfn, page->index);
 
 	if (clear_pte && !PageHighMem(page))
@@ -767,6 +807,55 @@ int m2p_remove_override(struct page *page, bool clear_pte)
 				pfn_pte(pfn, PAGE_KERNEL));
 		/* No tlb flush necessary because the caller already
 		 * left the pte unmapped. */
+=======
+	WARN_ON(!PagePrivate(page));
+	ClearPagePrivate(page);
+
+	set_phys_to_machine(pfn, page->index);
+	if (kmap_op != NULL) {
+		if (!PageHighMem(page)) {
+			struct multicall_space mcs;
+			struct gnttab_unmap_grant_ref *unmap_op;
+
+			/*
+			 * It might be that we queued all the m2p grant table
+			 * hypercalls in a multicall, then m2p_remove_override
+			 * get called before the multicall has actually been
+			 * issued. In this case handle is going to -1 because
+			 * it hasn't been modified yet.
+			 */
+			if (kmap_op->handle == -1)
+				xen_mc_flush();
+			/*
+			 * Now if kmap_op->handle is negative it means that the
+			 * hypercall actually returned an error.
+			 */
+			if (kmap_op->handle == GNTST_general_error) {
+				printk(KERN_WARNING "m2p_remove_override: "
+						"pfn %lx mfn %lx, failed to modify kernel mappings",
+						pfn, mfn);
+				return -1;
+			}
+
+			mcs = xen_mc_entry(
+					sizeof(struct gnttab_unmap_grant_ref));
+			unmap_op = mcs.args;
+			unmap_op->host_addr = kmap_op->host_addr;
+			unmap_op->handle = kmap_op->handle;
+			unmap_op->dev_bus_addr = 0;
+
+			MULTI_grant_table_op(mcs.mc,
+					GNTTABOP_unmap_grant_ref, unmap_op, 1);
+
+			xen_mc_issue(PARAVIRT_LAZY_MMU);
+
+			set_pte_at(&init_mm, address, ptep,
+					pfn_pte(pfn, PAGE_KERNEL));
+			__flush_tlb_single(address);
+			kmap_op->host_addr = 0;
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* p2m(m2p(mfn)) == FOREIGN_FRAME(mfn): the mfn is already present
 	 * somewhere in this domain, even before being added to the
@@ -799,7 +888,11 @@ struct page *m2p_find_override(unsigned long mfn)
 	spin_lock_irqsave(&m2p_override_lock, flags);
 
 	list_for_each_entry(p, bucket, lru) {
+<<<<<<< HEAD
 		if (p->private == mfn) {
+=======
+		if (page_private(p) == mfn) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = p;
 			break;
 		}
@@ -823,6 +916,7 @@ unsigned long m2p_find_override_pfn(unsigned long mfn, unsigned long pfn)
 EXPORT_SYMBOL_GPL(m2p_find_override_pfn);
 
 #ifdef CONFIG_XEN_DEBUG_FS
+<<<<<<< HEAD
 
 int p2m_dump_show(struct seq_file *m, void *v)
 {
@@ -830,10 +924,26 @@ int p2m_dump_show(struct seq_file *m, void *v)
 						"entry", "abnormal" };
 	static const char * const type_name[] = { "identity", "missing",
 						"pfn", "abnormal"};
+=======
+#include <linux/debugfs.h>
+#include "debugfs.h"
+static int p2m_dump_show(struct seq_file *m, void *v)
+{
+	static const char * const level_name[] = { "top", "middle",
+						"entry", "abnormal", "error"};
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TYPE_IDENTITY 0
 #define TYPE_MISSING 1
 #define TYPE_PFN 2
 #define TYPE_UNKNOWN 3
+<<<<<<< HEAD
+=======
+	static const char * const type_name[] = {
+				[TYPE_IDENTITY] = "identity",
+				[TYPE_MISSING] = "missing",
+				[TYPE_PFN] = "pfn",
+				[TYPE_UNKNOWN] = "abnormal"};
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long pfn, prev_pfn_type = 0, prev_pfn_level = 0;
 	unsigned int uninitialized_var(prev_level);
 	unsigned int uninitialized_var(prev_type);
@@ -897,4 +1007,36 @@ int p2m_dump_show(struct seq_file *m, void *v)
 #undef TYPE_PFN
 #undef TYPE_UNKNOWN
 }
+<<<<<<< HEAD
 #endif
+=======
+
+static int p2m_dump_open(struct inode *inode, struct file *filp)
+{
+	return single_open(filp, p2m_dump_show, NULL);
+}
+
+static const struct file_operations p2m_dump_fops = {
+	.open		= p2m_dump_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+static struct dentry *d_mmu_debug;
+
+static int __init xen_p2m_debugfs(void)
+{
+	struct dentry *d_xen = xen_init_debugfs();
+
+	if (d_xen == NULL)
+		return -ENOMEM;
+
+	d_mmu_debug = debugfs_create_dir("mmu", d_xen);
+
+	debugfs_create_file("p2m", 0600, d_mmu_debug, NULL, &p2m_dump_fops);
+	return 0;
+}
+fs_initcall(xen_p2m_debugfs);
+#endif /* CONFIG_XEN_DEBUG_FS */
+>>>>>>> refs/remotes/origin/cm-10.0

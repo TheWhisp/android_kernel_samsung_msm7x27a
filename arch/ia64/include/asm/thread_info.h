@@ -113,7 +113,10 @@ struct thread_info {
 #define TIF_MEMDIE		17	/* is terminating due to OOM killer */
 #define TIF_MCA_INIT		18	/* this task is processing MCA or INIT */
 #define TIF_DB_DISABLED		19	/* debug trap disabled for fsyscall */
+<<<<<<< HEAD
 #define TIF_FREEZE		20	/* is freezing for suspend */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TIF_RESTORE_RSE		21	/* user RBS is newer than kernel RBS */
 
 #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
@@ -126,7 +129,10 @@ struct thread_info {
 #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
 #define _TIF_MCA_INIT		(1 << TIF_MCA_INIT)
 #define _TIF_DB_DISABLED	(1 << TIF_DB_DISABLED)
+<<<<<<< HEAD
 #define _TIF_FREEZE		(1 << TIF_FREEZE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define _TIF_RESTORE_RSE	(1 << TIF_RESTORE_RSE)
 
 /* "work to do on user-return" bits */

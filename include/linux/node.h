@@ -14,12 +14,20 @@
 #ifndef _LINUX_NODE_H_
 #define _LINUX_NODE_H_
 
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/cpumask.h>
 #include <linux/workqueue.h>
 
 struct node {
+<<<<<<< HEAD
 	struct sys_device	sysdev;
+=======
+	struct device	dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_MEMORY_HOTPLUG_SPARSE) && defined(CONFIG_HUGETLBFS)
 	struct work_struct	node_work;
@@ -80,6 +88,10 @@ static inline void register_hugetlbfs_with_node(node_registration_func_t reg,
 }
 #endif
 
+<<<<<<< HEAD
 #define to_node(sys_device) container_of(sys_device, struct node, sysdev)
+=======
+#define to_node(device) container_of(device, struct node, dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _LINUX_NODE_H_ */

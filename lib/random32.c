@@ -35,7 +35,11 @@
 
 #include <linux/types.h>
 #include <linux/percpu.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/jiffies.h>
 #include <linux/random.h>
 

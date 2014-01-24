@@ -24,6 +24,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drm_encoder_slave.h"
 
 /**

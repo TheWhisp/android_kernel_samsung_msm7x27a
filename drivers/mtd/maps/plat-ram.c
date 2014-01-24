@@ -44,8 +44,11 @@ struct platram_info {
 	struct device		*dev;
 	struct mtd_info		*mtd;
 	struct map_info		 map;
+<<<<<<< HEAD
 	struct mtd_partition	*partitions;
 	bool			free_partitions;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct resource		*area;
 	struct platdata_mtd_ram	*pdata;
 };
@@ -95,10 +98,13 @@ static int platram_remove(struct platform_device *pdev)
 
 	if (info->mtd) {
 		mtd_device_unregister(info->mtd);
+<<<<<<< HEAD
 		if (info->partitions) {
 			if (info->free_partitions)
 				kfree(info->partitions);
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		map_destroy(info->mtd);
 	}
 
@@ -228,6 +234,7 @@ static int platram_probe(struct platform_device *pdev)
 	/* check to see if there are any available partitions, or wether
 	 * to add this device whole */
 
+<<<<<<< HEAD
 	if (!pdata->nr_partitions) {
 		/* try to probe using the supplied probe type */
 		if (pdata->probes) {
@@ -250,6 +257,22 @@ static int platram_probe(struct platform_device *pdev)
 	err = mtd_device_register(info->mtd, NULL, 0);
 	if (err)
 		dev_err(&pdev->dev, "failed to register the entire device\n");
+=======
+	err = mtd_device_parse_register(info->mtd, pdata->probes, NULL,
+					pdata->partitions,
+					pdata->nr_partitions);
+	if (!err)
+		dev_info(&pdev->dev, "registered mtd device\n");
+
+	if (pdata->nr_partitions) {
+		/* add the whole device. */
+		err = mtd_device_register(info->mtd, NULL, 0);
+		if (err) {
+			dev_err(&pdev->dev,
+				"failed to register the entire device\n");
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return err;
 

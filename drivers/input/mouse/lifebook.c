@@ -33,7 +33,11 @@ static const char *desired_serio_phys;
 static int lifebook_limit_serio3(const struct dmi_system_id *d)
 {
 	desired_serio_phys = "isa0060/serio3";
+<<<<<<< HEAD
 	return 0;
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static bool lifebook_use_6byte_proto;
@@ -41,7 +45,11 @@ static bool lifebook_use_6byte_proto;
 static int lifebook_set_6byte_proto(const struct dmi_system_id *d)
 {
 	lifebook_use_6byte_proto = true;
+<<<<<<< HEAD
 	return 0;
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static const struct dmi_system_id __initconst lifebook_dmi_table[] = {
@@ -169,8 +177,13 @@ static psmouse_ret_t lifebook_process_byte(struct psmouse *psmouse)
 
 	if (relative_packet) {
 		if (!dev2)
+<<<<<<< HEAD
 			printk(KERN_WARNING "lifebook.c: got relative packet "
 				"but no relative device set up\n");
+=======
+			psmouse_warn(psmouse,
+				     "got relative packet but no relative device set up\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		if (lifebook_use_6byte_proto) {
 			input_report_abs(dev1, ABS_X,
@@ -212,7 +225,11 @@ static int lifebook_absolute_mode(struct psmouse *psmouse)
 
 	/*
 	 * Enable absolute output -- ps2_command fails always but if
+<<<<<<< HEAD
 	 * you leave this call out the touchsreen will never send
+=======
+	 * you leave this call out the touchscreen will never send
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * absolute coordinates
 	 */
 	param = lifebook_use_6byte_proto ? 0x08 : 0x07;

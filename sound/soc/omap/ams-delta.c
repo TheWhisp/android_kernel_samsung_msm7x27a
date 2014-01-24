@@ -25,6 +25,10 @@
 #include <linux/gpio.h>
 #include <linux/spinlock.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/soc.h>
 #include <sound/jack.h>
@@ -330,7 +334,11 @@ static int cx81801_hangup(struct tty_struct *tty)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Line discipline .recieve_buf() */
+=======
+/* Line discipline .receive_buf() */
+>>>>>>> refs/remotes/origin/cm-10.0
 static void cx81801_receive(struct tty_struct *tty,
 				const unsigned char *cp, char *fp, int count)
 {
@@ -425,6 +433,7 @@ static struct snd_soc_ops ams_delta_ops = {
 };
 
 
+<<<<<<< HEAD
 /* Board specific codec bias level control */
 static int ams_delta_set_bias_level(struct snd_soc_card *card,
 					enum snd_soc_bias_level level)
@@ -449,6 +458,8 @@ static int ams_delta_set_bias_level(struct snd_soc_card *card,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Digital mute implemented using modem/CPU multiplexer.
  * Shares hardware with codec config pulse generation */
 static bool ams_delta_muted = 1;
@@ -472,7 +483,11 @@ static int ams_delta_digital_mute(struct snd_soc_dai *dai, int mute)
 }
 
 /* Our codec DAI probably doesn't have its own .ops structure */
+<<<<<<< HEAD
 static struct snd_soc_dai_ops ams_delta_dai_ops = {
+=======
+static const struct snd_soc_dai_ops ams_delta_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.digital_mute = ams_delta_digital_mute,
 };
 
@@ -512,9 +527,12 @@ static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
 		ams_delta_ops.shutdown = ams_delta_shutdown;
 	}
 
+<<<<<<< HEAD
 	/* Set codec bias level */
 	ams_delta_set_bias_level(card, SND_SOC_BIAS_STANDBY);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Add hook switch - can be used to control the codec from userspace
 	 * even if line discipline fails */
 	ret = snd_soc_jack_new(rtd->codec, "hook_switch",
@@ -568,10 +586,16 @@ static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_disable_pin(dapm, "Speaker");
 	snd_soc_dapm_disable_pin(dapm, "AGCIN");
 	snd_soc_dapm_disable_pin(dapm, "AGCOUT");
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
 	/* Add virtual switch */
 	ret = snd_soc_add_controls(codec, ams_delta_audio_controls,
+=======
+
+	/* Add virtual switch */
+	ret = snd_soc_add_codec_controls(codec, ams_delta_audio_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 					ARRAY_SIZE(ams_delta_audio_controls));
 	if (ret)
 		dev_warn(card->dev,
@@ -585,7 +609,11 @@ static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
 static struct snd_soc_dai_link ams_delta_dai_link = {
 	.name = "CX20442",
 	.stream_name = "CX20442",
+<<<<<<< HEAD
 	.cpu_dai_name ="omap-mcbsp-dai.0",
+=======
+	.cpu_dai_name = "omap-mcbsp.1",
+>>>>>>> refs/remotes/origin/cm-10.0
 	.codec_dai_name = "cx20442-voice",
 	.init = ams_delta_cx20442_init,
 	.platform_name = "omap-pcm-audio",
@@ -596,9 +624,15 @@ static struct snd_soc_dai_link ams_delta_dai_link = {
 /* Audio card driver */
 static struct snd_soc_card ams_delta_audio_card = {
 	.name = "AMS_DELTA",
+<<<<<<< HEAD
 	.dai_link = &ams_delta_dai_link,
 	.num_links = 1,
 	.set_bias_level = ams_delta_set_bias_level,
+=======
+	.owner = THIS_MODULE,
+	.dai_link = &ams_delta_dai_link,
+	.num_links = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Module init/exit */
@@ -635,7 +669,11 @@ err:
 	platform_device_put(ams_delta_audio_platform_device);
 	return ret;
 }
+<<<<<<< HEAD
 module_init(ams_delta_module_init);
+=======
+late_initcall(ams_delta_module_init);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __exit ams_delta_module_exit(void)
 {
@@ -647,9 +685,12 @@ static void __exit ams_delta_module_exit(void)
 			ARRAY_SIZE(ams_delta_hook_switch_gpios),
 			ams_delta_hook_switch_gpios);
 
+<<<<<<< HEAD
 	/* Keep modem power on */
 	ams_delta_set_bias_level(&ams_delta_audio_card, SND_SOC_BIAS_STANDBY);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_device_unregister(cx20442_platform_device);
 	platform_device_unregister(ams_delta_audio_platform_device);
 }

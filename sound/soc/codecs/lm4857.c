@@ -3,7 +3,11 @@
  *
  * Copyright 2007 Wolfson Microelectronics PLC.
  * Author: Graeme Gregory
+<<<<<<< HEAD
  *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
+=======
+ *         graeme.gregory@wolfsonmicro.com
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright 2011 Lars-Peter Clausen <lars@metafoo.de>
  *
  *  This program is free software; you can redistribute  it and/or modify it
@@ -179,7 +183,11 @@ static int lm4857_probe(struct snd_soc_codec *codec)
 
 	codec->control_data = lm4857->i2c;
 
+<<<<<<< HEAD
 	ret = snd_soc_add_controls(codec, lm4857_controls,
+=======
+	ret = snd_soc_add_codec_controls(codec, lm4857_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 			ARRAY_SIZE(lm4857_controls));
 	if (ret)
 		return ret;
@@ -215,7 +223,11 @@ static int __devinit lm4857_i2c_probe(struct i2c_client *i2c,
 	struct lm4857 *lm4857;
 	int ret;
 
+<<<<<<< HEAD
 	lm4857 = kzalloc(sizeof(*lm4857), GFP_KERNEL);
+=======
+	lm4857 = devm_kzalloc(&i2c->dev, sizeof(*lm4857), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!lm4857)
 		return -ENOMEM;
 
@@ -225,21 +237,29 @@ static int __devinit lm4857_i2c_probe(struct i2c_client *i2c,
 
 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_lm4857, NULL, 0);
 
+<<<<<<< HEAD
 	if (ret) {
 		kfree(lm4857);
 		return ret;
 	}
 
 	return 0;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devexit lm4857_i2c_remove(struct i2c_client *i2c)
 {
+<<<<<<< HEAD
 	struct lm4857 *lm4857 = i2c_get_clientdata(i2c);
 
 	snd_soc_unregister_codec(&i2c->dev);
 	kfree(lm4857);
 
+=======
+	snd_soc_unregister_codec(&i2c->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

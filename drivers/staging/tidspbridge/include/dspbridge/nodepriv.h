@@ -96,7 +96,10 @@ struct node_createargs {
  *      -EINVAL:     The node's stream corresponding to index and dir
  *                      is not a stream to or from the host.
  *  Requires:
+<<<<<<< HEAD
  *      node_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      Valid dir.
  *      chan_id != NULL.
  *  Ensures:

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -95,6 +99,10 @@ struct rr_header {
 /* internals */
 
 #define IPC_ROUTER_MAX_REMOTE_SERVERS		100
+<<<<<<< HEAD
+=======
+#define MAX_WAKELOCK_NAME_SZ 32
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct rr_packet {
 	struct list_head list;
@@ -116,6 +124,10 @@ struct msm_ipc_port {
 
 	struct list_head port_rx_q;
 	struct mutex port_rx_q_lock;
+<<<<<<< HEAD
+=======
+	char rx_wakelock_name[MAX_WAKELOCK_NAME_SZ];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct wake_lock port_rx_wake_lock;
 	wait_queue_head_t port_rx_wait_q;
 
@@ -136,7 +148,11 @@ struct msm_ipc_port {
 struct msm_ipc_sock {
 	struct sock sk;
 	struct msm_ipc_port *port;
+<<<<<<< HEAD
 	void *modem_pil;
+=======
+	void *default_pil;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum write_data_type {
@@ -150,11 +166,22 @@ struct msm_ipc_router_xprt {
 	uint32_t link_id;
 	void *priv;
 
+<<<<<<< HEAD
 	int (*read_avail)(void);
 	int (*read)(void *data, uint32_t len);
 	int (*write_avail)(void);
 	int (*write)(void *data, uint32_t len, enum write_data_type type);
 	int (*close)(void);
+=======
+	int (*read_avail)(struct msm_ipc_router_xprt *xprt);
+	int (*read)(void *data, uint32_t len,
+		    struct msm_ipc_router_xprt *xprt);
+	int (*write_avail)(struct msm_ipc_router_xprt *xprt);
+	int (*write)(void *data, uint32_t len,
+		     struct msm_ipc_router_xprt *xprt);
+	int (*close)(struct msm_ipc_router_xprt *xprt);
+	void (*sft_close_done)(struct msm_ipc_router_xprt *xprt);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 extern struct completion msm_ipc_remote_router_up;
@@ -202,4 +229,18 @@ int msm_ipc_router_unregister_server(struct msm_ipc_port *server_port);
 int msm_ipc_router_init_sockets(void);
 void msm_ipc_router_exit_sockets(void);
 
+<<<<<<< HEAD
+=======
+#if defined CONFIG_MSM_IPC_ROUTER_SMD_XPRT
+extern void *msm_ipc_load_default_node(void);
+
+extern void msm_ipc_unload_default_node(void *pil);
+#else
+static inline void *msm_ipc_load_default_node(void)
+{ return NULL; }
+
+static inline void msm_ipc_unload_default_node(void *pil) { }
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

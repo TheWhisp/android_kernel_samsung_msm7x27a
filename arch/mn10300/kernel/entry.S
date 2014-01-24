@@ -15,7 +15,10 @@
 #include <linux/sys.h>
 #include <linux/linkage.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irqflags.h>
 #include <asm/thread_info.h>
 #include <asm/intctl-regs.h>
@@ -589,7 +592,11 @@ ENTRY(sys_call_table)
 	.long sys_ni_syscall	/* vm86 */
 	.long sys_ni_syscall	/* Old sys_query_module */
 	.long sys_poll
+<<<<<<< HEAD
 	.long sys_nfsservctl
+=======
+	.long sys_ni_syscall	/* was nfsservctl */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.long sys_setresgid16	/* 170 */
 	.long sys_getresgid16
 	.long sys_prctl

@@ -16,6 +16,10 @@ platforms += lasat
 platforms += loongson
 platforms += mipssim
 platforms += mti-malta
+<<<<<<< HEAD
+=======
+platforms += netlogic
+>>>>>>> refs/remotes/origin/cm-10.0
 platforms += pmc-sierra
 platforms += pnx833x
 platforms += pnx8550

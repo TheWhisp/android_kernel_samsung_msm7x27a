@@ -20,6 +20,10 @@
 
 #include "emu10k1_synth_local.h"
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Takashi Iwai");
 MODULE_DESCRIPTION("Routines for control of EMU10K1 WaveTable synth");

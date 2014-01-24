@@ -208,16 +208,30 @@
 					interrupts = <14 1>;
 				};
 
+<<<<<<< HEAD
 				gpio@b,1 {
+=======
+				pcigpio: gpio@b,1 {
+					#gpio-cells = <2>;
+					#interrupt-cells = <2>;
+>>>>>>> refs/remotes/origin/cm-10.0
 					compatible = "pci8086,2e67.2",
 						   "pci8086,2e67",
 						   "pciclassff0000",
 						   "pciclassff00";
 
+<<<<<<< HEAD
 					#gpio-cells = <2>;
 					reg = <0x15900 0x0 0x0 0x0 0x0>;
 					interrupts = <15 1>;
 					gpio-controller;
+=======
+					reg = <0x15900 0x0 0x0 0x0 0x0>;
+					interrupts = <15 1>;
+					interrupt-controller;
+					gpio-controller;
+					intel,muxctl = <0>;
+>>>>>>> refs/remotes/origin/cm-10.0
 				};
 
 				i2c-controller@b,2 {

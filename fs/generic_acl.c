@@ -82,18 +82,27 @@ generic_acl_set(struct dentry *dentry, const char *name, const void *value,
 			return PTR_ERR(acl);
 	}
 	if (acl) {
+<<<<<<< HEAD
 		mode_t mode;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		error = posix_acl_valid(acl);
 		if (error)
 			goto failed;
 		switch (type) {
 		case ACL_TYPE_ACCESS:
+<<<<<<< HEAD
 			mode = inode->i_mode;
 			error = posix_acl_equiv_mode(acl, &mode);
 			if (error < 0)
 				goto failed;
 			inode->i_mode = mode;
+=======
+			error = posix_acl_equiv_mode(acl, &inode->i_mode);
+			if (error < 0)
+				goto failed;
+>>>>>>> refs/remotes/origin/cm-10.0
 			inode->i_ctime = CURRENT_TIME;
 			if (error == 0) {
 				posix_acl_release(acl);
@@ -125,6 +134,7 @@ int
 generic_acl_init(struct inode *inode, struct inode *dir)
 {
 	struct posix_acl *acl = NULL;
+<<<<<<< HEAD
 	mode_t mode = inode->i_mode;
 	int error;
 
@@ -157,6 +167,25 @@ generic_acl_init(struct inode *inode, struct inode *dir)
 	error = 0;
 
 cleanup:
+=======
+	int error;
+
+	if (!S_ISLNK(inode->i_mode))
+		acl = get_cached_acl(dir, ACL_TYPE_DEFAULT);
+	if (acl) {
+		if (S_ISDIR(inode->i_mode))
+			set_cached_acl(inode, ACL_TYPE_DEFAULT, acl);
+		error = posix_acl_create(&acl, GFP_KERNEL, &inode->i_mode);
+		if (error < 0)
+			return error;
+		if (error > 0)
+			set_cached_acl(inode, ACL_TYPE_ACCESS, acl);
+	} else {
+		inode->i_mode &= ~current_umask();
+	}
+	error = 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	posix_acl_release(acl);
 	return error;
 }
@@ -170,13 +199,18 @@ cleanup:
 int
 generic_acl_chmod(struct inode *inode)
 {
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
+=======
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int error = 0;
 
 	if (S_ISLNK(inode->i_mode))
 		return -EOPNOTSUPP;
 	acl = get_cached_acl(inode, ACL_TYPE_ACCESS);
 	if (acl) {
+<<<<<<< HEAD
 		clone = posix_acl_clone(acl, GFP_KERNEL);
 		posix_acl_release(acl);
 		if (!clone)
@@ -185,10 +219,18 @@ generic_acl_chmod(struct inode *inode)
 		if (!error)
 			set_cached_acl(inode, ACL_TYPE_ACCESS, clone);
 		posix_acl_release(clone);
+=======
+		error = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+		if (error)
+			return error;
+		set_cached_acl(inode, ACL_TYPE_ACCESS, acl);
+		posix_acl_release(acl);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return error;
 }
 
+<<<<<<< HEAD
 int
 generic_check_acl(struct inode *inode, int mask, unsigned int flags)
 {
@@ -208,6 +250,8 @@ generic_check_acl(struct inode *inode, int mask, unsigned int flags)
 	return -EAGAIN;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 const struct xattr_handler generic_acl_access_handler = {
 	.prefix = POSIX_ACL_XATTR_ACCESS,
 	.flags	= ACL_TYPE_ACCESS,

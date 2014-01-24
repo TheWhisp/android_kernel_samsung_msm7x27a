@@ -26,6 +26,7 @@
 #ifndef _FT1000IOCTLH_
 #define _FT1000IOCTLH_
 
+<<<<<<< HEAD
 #define DSPVERSZ                4
 #define HWSERNUMSZ              16
 #define SKUSZ                   20
@@ -58,6 +59,8 @@ struct pseudo_hdr {
    unsigned short    checksum;         //Pseudo header checksum
 } __attribute__ ((packed));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 typedef struct _IOCTL_GET_VER
 {
     unsigned long drv_ver;

@@ -665,6 +665,11 @@ static void atom_op_delay(atom_exec_context *ctx, int *ptr, int arg)
 	SDEBUG("   count: %d\n", count);
 	if (arg == ATOM_UNIT_MICROSEC)
 		udelay(count);
+<<<<<<< HEAD
+=======
+	else if (!drm_can_sleep())
+		mdelay(count);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		msleep(count);
 }
@@ -1259,6 +1264,12 @@ struct atom_context *atom_parse(struct card_info *card, void *bios)
 	char name[512];
 	int i;
 
+<<<<<<< HEAD
+=======
+	if (!ctx)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ctx->card = card;
 	ctx->bios = bios;
 

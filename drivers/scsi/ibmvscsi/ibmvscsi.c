@@ -55,6 +55,7 @@
  * and sends a CRQ message back to inform the client that the request has
  * completed.
  *
+<<<<<<< HEAD
  * Note that some of the underlying infrastructure is different between
  * machines conforming to the "RS/6000 Platform Architecture" (RPA) and
  * the older iSeries hypervisor models.  To support both, some low level
@@ -62,6 +63,9 @@
  * The Makefile should pick one, not two, not zero, of these.
  *
  * TODO: This is currently pretty tied to the IBM i/pSeries hypervisor
+=======
+ * TODO: This is currently pretty tied to the IBM pSeries hypervisor
+>>>>>>> refs/remotes/origin/cm-10.0
  * interfaces.  It would be really nice to abstract this above an RDMA
  * layer.
  */
@@ -2070,11 +2074,16 @@ static struct vio_driver ibmvscsi_driver = {
 	.probe = ibmvscsi_probe,
 	.remove = ibmvscsi_remove,
 	.get_desired_dma = ibmvscsi_get_desired_dma,
+<<<<<<< HEAD
 	.driver = {
 		.name = "ibmvscsi",
 		.owner = THIS_MODULE,
 		.pm = &ibmvscsi_pm_ops,
 	}
+=======
+	.name = "ibmvscsi",
+	.pm = &ibmvscsi_pm_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct srp_function_template ibmvscsi_transport_functions = {
@@ -2088,9 +2097,13 @@ int __init ibmvscsi_module_init(void)
 	driver_template.can_queue = max_requests;
 	max_events = max_requests + 2;
 
+<<<<<<< HEAD
 	if (firmware_has_feature(FW_FEATURE_ISERIES))
 		ibmvscsi_ops = &iseriesvscsi_ops;
 	else if (firmware_has_feature(FW_FEATURE_VIO))
+=======
+	if (firmware_has_feature(FW_FEATURE_VIO))
+>>>>>>> refs/remotes/origin/cm-10.0
 		ibmvscsi_ops = &rpavscsi_ops;
 	else
 		return -ENODEV;

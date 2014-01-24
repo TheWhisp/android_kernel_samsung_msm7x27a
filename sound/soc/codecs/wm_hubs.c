@@ -17,7 +17,11 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+#include <linux/mfd/wm8994/registers.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -39,7 +43,11 @@ static const DECLARE_TLV_DB_SCALE(outmix_tlv, -2100, 300, 0);
 static const DECLARE_TLV_DB_SCALE(spkmixout_tlv, -1800, 600, 1);
 static const DECLARE_TLV_DB_SCALE(outpga_tlv, -5700, 100, 0);
 static const unsigned int spkboost_tlv[] = {
+<<<<<<< HEAD
 	TLV_DB_RANGE_HEAD(7),
+=======
+	TLV_DB_RANGE_HEAD(2),
+>>>>>>> refs/remotes/origin/cm-10.0
 	0, 6, TLV_DB_SCALE_ITEM(0, 150, 0),
 	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0),
 };
@@ -63,8 +71,15 @@ static const struct soc_enum speaker_mode =
 
 static void wait_for_dc_servo(struct snd_soc_codec *codec, unsigned int op)
 {
+<<<<<<< HEAD
 	unsigned int reg;
 	int count = 0;
+=======
+	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+	unsigned int reg;
+	int count = 0;
+	int timeout;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int val;
 
 	val = op | WM8993_DCS_ENA_CHAN_0 | WM8993_DCS_ENA_CHAN_1;
@@ -74,18 +89,51 @@ static void wait_for_dc_servo(struct snd_soc_codec *codec, unsigned int op)
 
 	dev_dbg(codec->dev, "Waiting for DC servo...\n");
 
+<<<<<<< HEAD
 	do {
 		count++;
 		msleep(1);
 		reg = snd_soc_read(codec, WM8993_DC_SERVO_0);
 		dev_dbg(codec->dev, "DC servo: %x\n", reg);
 	} while (reg & op && count < 400);
+=======
+	if (hubs->dcs_done_irq)
+		timeout = 4;
+	else
+		timeout = 400;
+
+	do {
+		count++;
+
+		if (hubs->dcs_done_irq)
+			wait_for_completion_timeout(&hubs->dcs_done,
+						    msecs_to_jiffies(250));
+		else
+			msleep(1);
+
+		reg = snd_soc_read(codec, WM8993_DC_SERVO_0);
+		dev_dbg(codec->dev, "DC servo: %x\n", reg);
+	} while (reg & op && count < timeout);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (reg & op)
 		dev_err(codec->dev, "Timed out waiting for DC Servo %x\n",
 			op);
 }
 
+<<<<<<< HEAD
+=======
+irqreturn_t wm_hubs_dcs_done(int irq, void *data)
+{
+	struct wm_hubs_data *hubs = data;
+
+	complete(&hubs->dcs_done);
+
+	return IRQ_HANDLED;
+}
+EXPORT_SYMBOL_GPL(wm_hubs_dcs_done);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Startup calibration of the DC servo
  */
@@ -93,22 +141,43 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
 {
 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
 	s8 offset;
+<<<<<<< HEAD
 	u16 reg, reg_l, reg_r, dcs_cfg;
+=======
+	u16 reg, reg_l, reg_r, dcs_cfg, dcs_reg;
+
+	switch (hubs->dcs_readback_mode) {
+	case 2:
+		dcs_reg = WM8994_DC_SERVO_4E;
+		break;
+	default:
+		dcs_reg = WM8993_DC_SERVO_3;
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* If we're using a digital only path and have a previously
 	 * callibrated DC servo offset stored then use that. */
 	if (hubs->class_w && hubs->class_w_dcs) {
 		dev_dbg(codec->dev, "Using cached DC servo offset %x\n",
 			hubs->class_w_dcs);
+<<<<<<< HEAD
 		snd_soc_write(codec, WM8993_DC_SERVO_3, hubs->class_w_dcs);
+=======
+		snd_soc_write(codec, dcs_reg, hubs->class_w_dcs);
+>>>>>>> refs/remotes/origin/cm-10.0
 		wait_for_dc_servo(codec,
 				  WM8993_DCS_TRIG_DAC_WR_0 |
 				  WM8993_DCS_TRIG_DAC_WR_1);
 		return;
 	}
 
+<<<<<<< HEAD
 	/* Devices not using a DCS code correction have startup mode */
 	if (hubs->dcs_codes) {
+=======
+	if (hubs->series_startup) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Set for 32 series updates */
 		snd_soc_update_bits(codec, WM8993_DC_SERVO_1,
 				    WM8993_DCS_SERIES_NO_01_MASK,
@@ -132,6 +201,7 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
 		reg_r = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_2)
 			& WM8993_DCS_INTEG_CHAN_1_MASK;
 		break;
+<<<<<<< HEAD
 	case 1:
 		reg = snd_soc_read(codec, WM8993_DC_SERVO_3);
 		reg_l = (reg & WM8993_DCS_DAC_WR_VAL_1_MASK)
@@ -141,11 +211,24 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
 	default:
 		WARN(1, "Unknown DCS readback method\n");
 		break;
+=======
+	case 2:
+	case 1:
+		reg = snd_soc_read(codec, dcs_reg);
+		reg_r = (reg & WM8993_DCS_DAC_WR_VAL_1_MASK)
+			>> WM8993_DCS_DAC_WR_VAL_1_SHIFT;
+		reg_l = reg & WM8993_DCS_DAC_WR_VAL_0_MASK;
+		break;
+	default:
+		WARN(1, "Unknown DCS readback method\n");
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dev_dbg(codec->dev, "DCS input: %x %x\n", reg_l, reg_r);
 
 	/* Apply correction to DC servo result */
+<<<<<<< HEAD
 	if (hubs->dcs_codes) {
 		dev_dbg(codec->dev, "Applying %d code DC servo correction\n",
 			hubs->dcs_codes);
@@ -158,23 +241,51 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
 		/* HPOUT1R */
 		offset = reg_r;
 		offset += hubs->dcs_codes;
+=======
+	if (hubs->dcs_codes_l || hubs->dcs_codes_r) {
+		dev_dbg(codec->dev,
+			"Applying %d/%d code DC servo correction\n",
+			hubs->dcs_codes_l, hubs->dcs_codes_r);
+
+		/* HPOUT1R */
+		offset = reg_r;
+		offset += hubs->dcs_codes_r;
+		dcs_cfg = (u8)offset << WM8993_DCS_DAC_WR_VAL_1_SHIFT;
+
+		/* HPOUT1L */
+		offset = reg_l;
+		offset += hubs->dcs_codes_l;
+>>>>>>> refs/remotes/origin/cm-10.0
 		dcs_cfg |= (u8)offset;
 
 		dev_dbg(codec->dev, "DCS result: %x\n", dcs_cfg);
 
 		/* Do it */
+<<<<<<< HEAD
 		snd_soc_write(codec, WM8993_DC_SERVO_3, dcs_cfg);
+=======
+		snd_soc_write(codec, dcs_reg, dcs_cfg);
+>>>>>>> refs/remotes/origin/cm-10.0
 		wait_for_dc_servo(codec,
 				  WM8993_DCS_TRIG_DAC_WR_0 |
 				  WM8993_DCS_TRIG_DAC_WR_1);
 	} else {
+<<<<<<< HEAD
 		dcs_cfg = reg_l << WM8993_DCS_DAC_WR_VAL_1_SHIFT;
 		dcs_cfg |= reg_r;
+=======
+		dcs_cfg = reg_r << WM8993_DCS_DAC_WR_VAL_1_SHIFT;
+		dcs_cfg |= reg_l;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Save the callibrated offset if we're in class W mode and
 	 * therefore don't have any analogue signal mixed in. */
+<<<<<<< HEAD
 	if (hubs->class_w)
+=======
+	if (hubs->class_w && !hubs->no_cache_class_w)
+>>>>>>> refs/remotes/origin/cm-10.0
 		hubs->class_w_dcs = dcs_cfg;
 }
 
@@ -188,14 +299,22 @@ static int wm8993_put_dc_servo(struct snd_kcontrol *kcontrol,
 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
 	int ret;
 
+<<<<<<< HEAD
 	ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
+=======
+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Updating the analogue gains invalidates the DC servo cache */
 	hubs->class_w_dcs = 0;
 
 	/* If we're applying an offset correction then updating the
 	 * callibration would be likely to introduce further offsets. */
+<<<<<<< HEAD
 	if (hubs->dcs_codes)
+=======
+	if (hubs->dcs_codes_l || hubs->dcs_codes_r || hubs->no_series_update)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 
 	/* Only need to do this if the outputs are active */
@@ -328,6 +447,7 @@ SOC_DOUBLE_TLV("Speaker Boost Volume", WM8993_SPKOUT_BOOST, 3, 0, 7, 0,
 SOC_ENUM("Speaker Reference", speaker_ref),
 SOC_ENUM("Speaker Mode", speaker_mode),
 
+<<<<<<< HEAD
 {
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = "Headphone Volume",
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |
@@ -341,6 +461,13 @@ SOC_ENUM("Speaker Mode", speaker_mode),
 		.shift = 0, .max = 63
 	},
 },
+=======
+SOC_DOUBLE_R_EXT_TLV("Headphone Volume",
+		     WM8993_LEFT_OUTPUT_VOLUME, WM8993_RIGHT_OUTPUT_VOLUME,
+		     0, 63, 0, snd_soc_get_volsw, wm8993_put_dc_servo,
+		     outpga_tlv),
+
+>>>>>>> refs/remotes/origin/cm-10.0
 SOC_DOUBLE_R("Headphone Switch", WM8993_LEFT_OUTPUT_VOLUME,
 	     WM8993_RIGHT_OUTPUT_VOLUME, 6, 1, 0),
 SOC_DOUBLE_R("Headphone ZC Switch", WM8993_LEFT_OUTPUT_VOLUME,
@@ -388,6 +515,10 @@ static int hp_supply_event(struct snd_soc_dapm_widget *w,
 				hubs->hp_startup_mode);
 			break;
 		}
+<<<<<<< HEAD
+=======
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	case SND_SOC_DAPM_PRE_PMD:
 		snd_soc_update_bits(codec, WM8993_CHARGE_PUMP_1,
@@ -418,9 +549,14 @@ static int hp_event(struct snd_soc_dapm_widget *w,
 		reg |= WM8993_HPOUT1L_DLY | WM8993_HPOUT1R_DLY;
 		snd_soc_write(codec, WM8993_ANALOGUE_HP_0, reg);
 
+<<<<<<< HEAD
 		/* Smallest supported update interval */
 		snd_soc_update_bits(codec, WM8993_DC_SERVO_1,
 				    WM8993_DCS_TIMER_PERIOD_01_MASK, 1);
+=======
+		snd_soc_update_bits(codec, WM8993_DC_SERVO_1,
+				    WM8993_DCS_TIMER_PERIOD_01_MASK, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		calibrate_dc_servo(codec);
 
@@ -476,6 +612,39 @@ static int earpiece_event(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int lineout_event(struct snd_soc_dapm_widget *w,
+			 struct snd_kcontrol *control, int event)
+{
+	struct snd_soc_codec *codec = w->codec;
+	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+	bool *flag;
+
+	switch (w->shift) {
+	case WM8993_LINEOUT1N_ENA_SHIFT:
+		flag = &hubs->lineout1n_ena;
+		break;
+	case WM8993_LINEOUT1P_ENA_SHIFT:
+		flag = &hubs->lineout1p_ena;
+		break;
+	case WM8993_LINEOUT2N_ENA_SHIFT:
+		flag = &hubs->lineout2n_ena;
+		break;
+	case WM8993_LINEOUT2P_ENA_SHIFT:
+		flag = &hubs->lineout2p_ena;
+		break;
+	default:
+		WARN(1, "Unknown line output");
+		return -EINVAL;
+	}
+
+	*flag = SND_SOC_DAPM_EVENT_ON(event);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct snd_kcontrol_new in1l_pga[] = {
 SOC_DAPM_SINGLE("IN1LP Switch", WM8993_INPUT_MIXER2, 5, 1, 0),
 SOC_DAPM_SINGLE("IN1LN Switch", WM8993_INPUT_MIXER2, 4, 1, 0),
@@ -586,8 +755,13 @@ SND_SOC_DAPM_INPUT("IN1RP"),
 SND_SOC_DAPM_INPUT("IN2RN"),
 SND_SOC_DAPM_INPUT("IN2RP:VXRP"),
 
+<<<<<<< HEAD
 SND_SOC_DAPM_MICBIAS("MICBIAS2", WM8993_POWER_MANAGEMENT_1, 5, 0),
 SND_SOC_DAPM_MICBIAS("MICBIAS1", WM8993_POWER_MANAGEMENT_1, 4, 0),
+=======
+SND_SOC_DAPM_SUPPLY("MICBIAS2", WM8993_POWER_MANAGEMENT_1, 5, 0, NULL, 0),
+SND_SOC_DAPM_SUPPLY("MICBIAS1", WM8993_POWER_MANAGEMENT_1, 4, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
 
 SND_SOC_DAPM_SUPPLY("LINEOUT_VMID_BUF", WM8993_ANTIPOP1, 7, 0, NULL, 0),
 
@@ -601,9 +775,12 @@ SND_SOC_DAPM_MIXER("IN2L PGA", WM8993_POWER_MANAGEMENT_2, 7, 0,
 SND_SOC_DAPM_MIXER("IN2R PGA", WM8993_POWER_MANAGEMENT_2, 5, 0,
 		   in2r_pga, ARRAY_SIZE(in2r_pga)),
 
+<<<<<<< HEAD
 /* Dummy widgets to represent differential paths */
 SND_SOC_DAPM_PGA("Direct Voice", SND_SOC_NOPM, 0, 0, NULL, 0),
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 SND_SOC_DAPM_MIXER("MIXINL", WM8993_POWER_MANAGEMENT_2, 9, 0,
 		   mixinl, ARRAY_SIZE(mixinl)),
 SND_SOC_DAPM_MIXER("MIXINR", WM8993_POWER_MANAGEMENT_2, 8, 0,
@@ -619,9 +796,14 @@ SND_SOC_DAPM_PGA("Right Output PGA", WM8993_POWER_MANAGEMENT_3, 6, 0, NULL, 0),
 
 SND_SOC_DAPM_SUPPLY("Headphone Supply", SND_SOC_NOPM, 0, 0, hp_supply_event, 
 		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
+<<<<<<< HEAD
 SND_SOC_DAPM_PGA_E("Headphone PGA", SND_SOC_NOPM, 0, 0,
 		   NULL, 0,
 		   hp_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+=======
+SND_SOC_DAPM_OUT_DRV_E("Headphone PGA", SND_SOC_NOPM, 0, 0, NULL, 0,
+		       hp_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+>>>>>>> refs/remotes/origin/cm-10.0
 
 SND_SOC_DAPM_MIXER("Earpiece Mixer", SND_SOC_NOPM, 0, 0,
 		   earpiece_mixer, ARRAY_SIZE(earpiece_mixer)),
@@ -634,10 +816,18 @@ SND_SOC_DAPM_MIXER("SPKL Boost", SND_SOC_NOPM, 0, 0,
 SND_SOC_DAPM_MIXER("SPKR Boost", SND_SOC_NOPM, 0, 0,
 		   right_speaker_boost, ARRAY_SIZE(right_speaker_boost)),
 
+<<<<<<< HEAD
 SND_SOC_DAPM_PGA("SPKL Driver", WM8993_POWER_MANAGEMENT_1, 12, 0,
 		 NULL, 0),
 SND_SOC_DAPM_PGA("SPKR Driver", WM8993_POWER_MANAGEMENT_1, 13, 0,
 		 NULL, 0),
+=======
+SND_SOC_DAPM_SUPPLY("TSHUT", WM8993_POWER_MANAGEMENT_2, 14, 0, NULL, 0),
+SND_SOC_DAPM_OUT_DRV("SPKL Driver", WM8993_POWER_MANAGEMENT_1, 12, 0,
+		     NULL, 0),
+SND_SOC_DAPM_OUT_DRV("SPKR Driver", WM8993_POWER_MANAGEMENT_1, 13, 0,
+		     NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
 
 SND_SOC_DAPM_MIXER("LINEOUT1 Mixer", SND_SOC_NOPM, 0, 0,
 		   line1_mix, ARRAY_SIZE(line1_mix)),
@@ -653,6 +843,7 @@ SND_SOC_DAPM_MIXER("LINEOUT2N Mixer", SND_SOC_NOPM, 0, 0,
 SND_SOC_DAPM_MIXER("LINEOUT2P Mixer", SND_SOC_NOPM, 0, 0,
 		   line2p_mix, ARRAY_SIZE(line2p_mix)),
 
+<<<<<<< HEAD
 SND_SOC_DAPM_PGA("LINEOUT1N Driver", WM8993_POWER_MANAGEMENT_3, 13, 0,
 		 NULL, 0),
 SND_SOC_DAPM_PGA("LINEOUT1P Driver", WM8993_POWER_MANAGEMENT_3, 12, 0,
@@ -661,6 +852,20 @@ SND_SOC_DAPM_PGA("LINEOUT2N Driver", WM8993_POWER_MANAGEMENT_3, 11, 0,
 		 NULL, 0),
 SND_SOC_DAPM_PGA("LINEOUT2P Driver", WM8993_POWER_MANAGEMENT_3, 10, 0,
 		 NULL, 0),
+=======
+SND_SOC_DAPM_OUT_DRV_E("LINEOUT1N Driver", WM8993_POWER_MANAGEMENT_3, 13, 0,
+		       NULL, 0, lineout_event,
+		     SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+SND_SOC_DAPM_OUT_DRV_E("LINEOUT1P Driver", WM8993_POWER_MANAGEMENT_3, 12, 0,
+		       NULL, 0, lineout_event,
+		       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+SND_SOC_DAPM_OUT_DRV_E("LINEOUT2N Driver", WM8993_POWER_MANAGEMENT_3, 11, 0,
+		       NULL, 0, lineout_event,
+		       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+SND_SOC_DAPM_OUT_DRV_E("LINEOUT2P Driver", WM8993_POWER_MANAGEMENT_3, 10, 0,
+		       NULL, 0, lineout_event,
+		       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+>>>>>>> refs/remotes/origin/cm-10.0
 
 SND_SOC_DAPM_OUTPUT("SPKOUTLP"),
 SND_SOC_DAPM_OUTPUT("SPKOUTLN"),
@@ -683,6 +888,14 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
 	{ "IN1L PGA", "IN1LP Switch", "IN1LP" },
 	{ "IN1L PGA", "IN1LN Switch", "IN1LN" },
 
+<<<<<<< HEAD
+=======
+	{ "IN1L PGA", NULL, "VMID" },
+	{ "IN1R PGA", NULL, "VMID" },
+	{ "IN2L PGA", NULL, "VMID" },
+	{ "IN2R PGA", NULL, "VMID" },
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ "IN1R PGA", "IN1RP Switch", "IN1RP" },
 	{ "IN1R PGA", "IN1RN Switch", "IN1RN" },
 
@@ -700,12 +913,20 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
 	{ "MIXINL", NULL, "Direct Voice" },
 	{ "MIXINL", NULL, "IN1LP" },
 	{ "MIXINL", NULL, "Left Output Mixer" },
+<<<<<<< HEAD
+=======
+	{ "MIXINL", NULL, "VMID" },
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	{ "MIXINR", "IN1R Switch", "IN1R PGA" },
 	{ "MIXINR", "IN2R Switch", "IN2R PGA" },
 	{ "MIXINR", NULL, "Direct Voice" },
 	{ "MIXINR", NULL, "IN1RP" },
 	{ "MIXINR", NULL, "Right Output Mixer" },
+<<<<<<< HEAD
+=======
+	{ "MIXINR", NULL, "VMID" },
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	{ "ADCL", NULL, "MIXINL" },
 	{ "ADCR", NULL, "MIXINR" },
@@ -736,6 +957,10 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
 	{ "Earpiece Mixer", "Left Output Switch", "Left Output PGA" },
 	{ "Earpiece Mixer", "Right Output Switch", "Right Output PGA" },
 
+<<<<<<< HEAD
+=======
+	{ "Earpiece Driver", NULL, "VMID" },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ "Earpiece Driver", NULL, "Earpiece Mixer" },
 	{ "HPOUT2N", NULL, "Earpiece Driver" },
 	{ "HPOUT2P", NULL, "Earpiece Driver" },
@@ -758,11 +983,23 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
 	{ "SPKR Boost", "SPKR Switch", "SPKR" },
 	{ "SPKR Boost", "SPKL Switch", "SPKL" },
 
+<<<<<<< HEAD
 	{ "SPKL Driver", NULL, "SPKL Boost" },
 	{ "SPKL Driver", NULL, "CLK_SYS" },
 
 	{ "SPKR Driver", NULL, "SPKR Boost" },
 	{ "SPKR Driver", NULL, "CLK_SYS" },
+=======
+	{ "SPKL Driver", NULL, "VMID" },
+	{ "SPKL Driver", NULL, "SPKL Boost" },
+	{ "SPKL Driver", NULL, "CLK_SYS" },
+	{ "SPKL Driver", NULL, "TSHUT" },
+
+	{ "SPKR Driver", NULL, "VMID" },
+	{ "SPKR Driver", NULL, "SPKR Boost" },
+	{ "SPKR Driver", NULL, "CLK_SYS" },
+	{ "SPKR Driver", NULL, "TSHUT" },
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	{ "SPKOUTLP", NULL, "SPKL Driver" },
 	{ "SPKOUTLN", NULL, "SPKL Driver" },
@@ -774,12 +1011,24 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
 
 	{ "Headphone PGA", NULL, "Left Headphone Mux" },
 	{ "Headphone PGA", NULL, "Right Headphone Mux" },
+<<<<<<< HEAD
+=======
+	{ "Headphone PGA", NULL, "VMID" },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ "Headphone PGA", NULL, "CLK_SYS" },
 	{ "Headphone PGA", NULL, "Headphone Supply" },
 
 	{ "HPOUT1L", NULL, "Headphone PGA" },
 	{ "HPOUT1R", NULL, "Headphone PGA" },
 
+<<<<<<< HEAD
+=======
+	{ "LINEOUT1N Driver", NULL, "VMID" },
+	{ "LINEOUT1P Driver", NULL, "VMID" },
+	{ "LINEOUT2N Driver", NULL, "VMID" },
+	{ "LINEOUT2P Driver", NULL, "VMID" },
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ "LINEOUT1N", NULL, "LINEOUT1N Driver" },
 	{ "LINEOUT1P", NULL, "LINEOUT1P Driver" },
 	{ "LINEOUT2N", NULL, "LINEOUT2N Driver" },
@@ -861,7 +1110,11 @@ int wm_hubs_add_analogue_controls(struct snd_soc_codec *codec)
 			    WM8993_MIXOUTR_ZC | WM8993_MIXOUT_VU,
 			    WM8993_MIXOUTR_ZC | WM8993_MIXOUT_VU);
 
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, analogue_snd_controls,
+=======
+	snd_soc_add_codec_controls(codec, analogue_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     ARRAY_SIZE(analogue_snd_controls));
 
 	snd_soc_dapm_new_controls(dapm, analogue_dapm_widgets,
@@ -873,8 +1126,16 @@ EXPORT_SYMBOL_GPL(wm_hubs_add_analogue_controls);
 int wm_hubs_add_analogue_routes(struct snd_soc_codec *codec,
 				int lineout1_diff, int lineout2_diff)
 {
+<<<<<<< HEAD
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 
+=======
+	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+	struct snd_soc_dapm_context *dapm = &codec->dapm;
+
+	init_completion(&hubs->dcs_done);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	snd_soc_dapm_add_routes(dapm, analogue_routes,
 				ARRAY_SIZE(analogue_routes));
 
@@ -906,6 +1167,14 @@ int wm_hubs_handle_analogue_pdata(struct snd_soc_codec *codec,
 				  int jd_scthr, int jd_thr, int micbias1_lvl,
 				  int micbias2_lvl)
 {
+<<<<<<< HEAD
+=======
+	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+
+	hubs->lineout1_se = !lineout1_diff;
+	hubs->lineout2_se = !lineout2_diff;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!lineout1_diff)
 		snd_soc_update_bits(codec, WM8993_LINE_MIXER1,
 				    WM8993_LINEOUT1_MODE,
@@ -915,11 +1184,18 @@ int wm_hubs_handle_analogue_pdata(struct snd_soc_codec *codec,
 				    WM8993_LINEOUT2_MODE,
 				    WM8993_LINEOUT2_MODE);
 
+<<<<<<< HEAD
 	/* If the line outputs are differential then we aren't presenting
 	 * VMID as an output and can disable it.
 	 */
 	if (lineout1_diff && lineout2_diff)
 		codec->dapm.idle_bias_off = 1;
+=======
+	if (!lineout1_diff && !lineout2_diff)
+		snd_soc_update_bits(codec, WM8993_ANTIPOP1,
+				    WM8993_LINEOUT_VMID_BUF_ENA,
+				    WM8993_LINEOUT_VMID_BUF_ENA);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (lineout1fb)
 		snd_soc_update_bits(codec, WM8993_ADDITIONAL_CONTROL,
@@ -941,6 +1217,75 @@ int wm_hubs_handle_analogue_pdata(struct snd_soc_codec *codec,
 }
 EXPORT_SYMBOL_GPL(wm_hubs_handle_analogue_pdata);
 
+<<<<<<< HEAD
+=======
+void wm_hubs_vmid_ena(struct snd_soc_codec *codec)
+{
+	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+	int val = 0;
+
+	if (hubs->lineout1_se)
+		val |= WM8993_LINEOUT1N_ENA | WM8993_LINEOUT1P_ENA;
+
+	if (hubs->lineout2_se)
+		val |= WM8993_LINEOUT2N_ENA | WM8993_LINEOUT2P_ENA;
+
+	/* Enable the line outputs while we power up */
+	snd_soc_update_bits(codec, WM8993_POWER_MANAGEMENT_3, val, val);
+}
+EXPORT_SYMBOL_GPL(wm_hubs_vmid_ena);
+
+void wm_hubs_set_bias_level(struct snd_soc_codec *codec,
+			    enum snd_soc_bias_level level)
+{
+	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+	int mask, val;
+
+	switch (level) {
+	case SND_SOC_BIAS_STANDBY:
+		/* Clamp the inputs to VMID while we ramp to charge caps */
+		snd_soc_update_bits(codec, WM8993_INPUTS_CLAMP_REG,
+				    WM8993_INPUTS_CLAMP, WM8993_INPUTS_CLAMP);
+		break;
+
+	case SND_SOC_BIAS_ON:
+		/* Turn off any unneded single ended outputs */
+		val = 0;
+		mask = 0;
+
+		if (hubs->lineout1_se)
+			mask |= WM8993_LINEOUT1N_ENA | WM8993_LINEOUT1P_ENA;
+
+		if (hubs->lineout2_se)
+			mask |= WM8993_LINEOUT2N_ENA | WM8993_LINEOUT2P_ENA;
+
+		if (hubs->lineout1_se && hubs->lineout1n_ena)
+			val |= WM8993_LINEOUT1N_ENA;
+
+		if (hubs->lineout1_se && hubs->lineout1p_ena)
+			val |= WM8993_LINEOUT1P_ENA;
+
+		if (hubs->lineout2_se && hubs->lineout2n_ena)
+			val |= WM8993_LINEOUT2N_ENA;
+
+		if (hubs->lineout2_se && hubs->lineout2p_ena)
+			val |= WM8993_LINEOUT2P_ENA;
+
+		snd_soc_update_bits(codec, WM8993_POWER_MANAGEMENT_3,
+				    mask, val);
+
+		/* Remove the input clamps */
+		snd_soc_update_bits(codec, WM8993_INPUTS_CLAMP_REG,
+				    WM8993_INPUTS_CLAMP, 0);
+		break;
+
+	default:
+		break;
+	}
+}
+EXPORT_SYMBOL_GPL(wm_hubs_set_bias_level);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("Shared support for Wolfson hubs products");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_LICENSE("GPL");

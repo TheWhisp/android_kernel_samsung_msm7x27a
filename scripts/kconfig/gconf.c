@@ -285,8 +285,11 @@ void init_left_tree(void)
 static void renderer_edited(GtkCellRendererText * cell,
 			    const gchar * path_string,
 			    const gchar * new_text, gpointer user_data);
+<<<<<<< HEAD
 static void renderer_toggled(GtkCellRendererToggle * cellrenderertoggle,
 			     gchar * arg1, gpointer user_data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void init_right_tree(void)
 {
@@ -320,8 +323,11 @@ void init_right_tree(void)
 					    "inconsistent", COL_BTNINC,
 					    "visible", COL_BTNVIS,
 					    "radio", COL_BTNRAD, NULL);
+<<<<<<< HEAD
 	/*g_signal_connect(G_OBJECT(renderer), "toggled",
 	   G_CALLBACK(renderer_toggled), NULL); */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_column_pack_start(GTK_TREE_VIEW_COLUMN(column),
 					renderer, FALSE);
@@ -687,7 +693,11 @@ void on_introduction1_activate(GtkMenuItem * menuitem, gpointer user_data)
 	dialog = gtk_message_dialog_new(GTK_WINDOW(main_wnd),
 					GTK_DIALOG_DESTROY_WITH_PARENT,
 					GTK_MESSAGE_INFO,
+<<<<<<< HEAD
 					GTK_BUTTONS_CLOSE, intro_text);
+=======
+					GTK_BUTTONS_CLOSE, "%s", intro_text);
+>>>>>>> refs/remotes/origin/cm-10.0
 	g_signal_connect_swapped(GTK_OBJECT(dialog), "response",
 				 G_CALLBACK(gtk_widget_destroy),
 				 GTK_OBJECT(dialog));
@@ -705,7 +715,11 @@ void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 	dialog = gtk_message_dialog_new(GTK_WINDOW(main_wnd),
 					GTK_DIALOG_DESTROY_WITH_PARENT,
 					GTK_MESSAGE_INFO,
+<<<<<<< HEAD
 					GTK_BUTTONS_CLOSE, about_text);
+=======
+					GTK_BUTTONS_CLOSE, "%s", about_text);
+>>>>>>> refs/remotes/origin/cm-10.0
 	g_signal_connect_swapped(GTK_OBJECT(dialog), "response",
 				 G_CALLBACK(gtk_widget_destroy),
 				 GTK_OBJECT(dialog));
@@ -724,7 +738,11 @@ void on_license1_activate(GtkMenuItem * menuitem, gpointer user_data)
 	dialog = gtk_message_dialog_new(GTK_WINDOW(main_wnd),
 					GTK_DIALOG_DESTROY_WITH_PARENT,
 					GTK_MESSAGE_INFO,
+<<<<<<< HEAD
 					GTK_BUTTONS_CLOSE, license_text);
+=======
+					GTK_BUTTONS_CLOSE, "%s", license_text);
+>>>>>>> refs/remotes/origin/cm-10.0
 	g_signal_connect_swapped(GTK_OBJECT(dialog), "response",
 				 G_CALLBACK(gtk_widget_destroy),
 				 GTK_OBJECT(dialog));
@@ -834,7 +852,11 @@ static void renderer_edited(GtkCellRendererText * cell,
 static void change_sym_value(struct menu *menu, gint col)
 {
 	struct symbol *sym = menu->sym;
+<<<<<<< HEAD
 	tristate oldval, newval;
+=======
+	tristate newval;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!sym)
 		return;
@@ -851,7 +873,10 @@ static void change_sym_value(struct menu *menu, gint col)
 	switch (sym_get_type(sym)) {
 	case S_BOOLEAN:
 	case S_TRISTATE:
+<<<<<<< HEAD
 		oldval = sym_get_tristate_value(sym);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!sym_tristate_within_range(sym, newval))
 			newval = yes;
 		sym_set_tristate_value(sym, newval);
@@ -888,6 +913,7 @@ static void toggle_sym_value(struct menu *menu)
 		display_tree_part();	//fixme: keep exp/coll
 }
 
+<<<<<<< HEAD
 static void renderer_toggled(GtkCellRendererToggle * cell,
 			     gchar * path_string, gpointer user_data)
 {
@@ -917,6 +943,8 @@ static void renderer_toggled(GtkCellRendererToggle * cell,
 	gtk_tree_path_free(path);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static gint column2index(GtkTreeViewColumn * column)
 {
 	gint i;
@@ -1172,6 +1200,10 @@ static gchar **fill_row(struct menu *menu)
 			row[COL_BTNVIS] = GINT_TO_POINTER(TRUE);
 		if (sym_is_choice(sym))
 			break;
+<<<<<<< HEAD
+=======
+		/* fall through */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case S_TRISTATE:
 		val = sym_get_tristate_value(sym);
 		switch (val) {
@@ -1310,7 +1342,10 @@ static void update_tree(struct menu *src, GtkTreeIter * dst)
 	gboolean valid;
 	GtkTreeIter *sibling;
 	struct symbol *sym;
+<<<<<<< HEAD
 	struct property *prop;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct menu *menu1, *menu2;
 
 	if (src == &rootmenu)
@@ -1319,7 +1354,10 @@ static void update_tree(struct menu *src, GtkTreeIter * dst)
 	valid = gtk_tree_model_iter_children(model2, child2, dst);
 	for (child1 = src->list; child1; child1 = child1->next) {
 
+<<<<<<< HEAD
 		prop = child1->prompt;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		sym = child1->sym;
 
 	      reparse:
@@ -1506,10 +1544,13 @@ int main(int ac, char *av[])
 	char *env;
 	gchar *glade_file;
 
+<<<<<<< HEAD
 #ifndef LKC_DIRECT_LINK
 	kconfig_load();
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset(PACKAGE, "UTF-8");
 	textdomain(PACKAGE);

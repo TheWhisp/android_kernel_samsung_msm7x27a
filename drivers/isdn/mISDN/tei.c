@@ -34,7 +34,11 @@
 
 #define DATIMER_VAL	10000
 
+<<<<<<< HEAD
 static 	u_int	*debug;
+=======
+static	u_int	*debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct Fsm deactfsm = {NULL, 0, 0, NULL, NULL};
 static struct Fsm teifsmu = {NULL, 0, 0, NULL, NULL};
@@ -45,7 +49,11 @@ enum {
 	ST_L1_DEACT_PENDING,
 	ST_L1_ACTIV,
 };
+<<<<<<< HEAD
 #define DEACT_STATE_COUNT (ST_L1_ACTIV+1)
+=======
+#define DEACT_STATE_COUNT (ST_L1_ACTIV + 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static char *strDeactState[] =
 {
@@ -63,7 +71,11 @@ enum {
 	EV_DATIMER,
 };
 
+<<<<<<< HEAD
 #define DEACT_EVENT_COUNT (EV_DATIMER+1)
+=======
+#define DEACT_EVENT_COUNT (EV_DATIMER + 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static char *strDeactEvent[] =
 {
@@ -130,7 +142,11 @@ da_deactivate(struct FsmInst *fi, int event, void *arg)
 	/* All TEI are inactiv */
 	if (!test_bit(OPTION_L1_HOLD, &mgr->options)) {
 		mISDN_FsmAddTimer(&mgr->datimer, DATIMER_VAL, EV_DATIMER,
+<<<<<<< HEAD
 			NULL, 1);
+=======
+				  NULL, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mISDN_FsmChangeState(fi, ST_L1_DEACT_PENDING);
 	}
 }
@@ -144,7 +160,11 @@ da_ui(struct FsmInst *fi, int event, void *arg)
 	if (!test_bit(OPTION_L1_HOLD, &mgr->options)) {
 		mISDN_FsmDelTimer(&mgr->datimer, 2);
 		mISDN_FsmAddTimer(&mgr->datimer, DATIMER_VAL, EV_DATIMER,
+<<<<<<< HEAD
 			NULL, 2);
+=======
+				  NULL, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -169,7 +189,11 @@ da_timer(struct FsmInst *fi, int event, void *arg)
 	/* All TEI are inactiv */
 	mISDN_FsmChangeState(fi, ST_L1_DEACT);
 	_queue_data(&mgr->ch, PH_DEACTIVATE_REQ, MISDN_ID_ANY, 0, NULL,
+<<<<<<< HEAD
 	    GFP_ATOMIC);
+=======
+		    GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct FsmNode DeactFnList[] =
@@ -188,7 +212,11 @@ enum {
 	ST_TEI_IDVERIFY,
 };
 
+<<<<<<< HEAD
 #define TEI_STATE_COUNT (ST_TEI_IDVERIFY+1)
+=======
+#define TEI_STATE_COUNT (ST_TEI_IDVERIFY + 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static char *strTeiState[] =
 {
@@ -209,7 +237,11 @@ enum {
 	EV_TIMER,
 };
 
+<<<<<<< HEAD
 #define TEI_EVENT_COUNT (EV_TIMER+1)
+=======
+#define TEI_EVENT_COUNT (EV_TIMER + 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static char *strTeiEvent[] =
 {
@@ -257,8 +289,13 @@ get_free_id(struct manager *mgr)
 	list_for_each_entry(l2, &mgr->layer2, list) {
 		if (l2->ch.nr > 63) {
 			printk(KERN_WARNING
+<<<<<<< HEAD
 			    "%s: more as 63 layer2 for one device\n",
 			    __func__);
+=======
+			       "%s: more as 63 layer2 for one device\n",
+			       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EBUSY;
 		}
 		test_and_set_bit(l2->ch.nr, (u_long *)&ids);
@@ -267,7 +304,11 @@ get_free_id(struct manager *mgr)
 		if (!test_bit(i, (u_long *)&ids))
 			return i;
 	printk(KERN_WARNING "%s: more as 63 layer2 for one device\n",
+<<<<<<< HEAD
 	    __func__);
+=======
+	       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -EBUSY;
 }
 
@@ -294,7 +335,11 @@ get_free_tei(struct manager *mgr)
 		if (!test_bit(i, (u_long *)&ids))
 			return i + 64;
 	printk(KERN_WARNING "%s: more as 63 dynamic tei for one device\n",
+<<<<<<< HEAD
 	    __func__);
+=======
+	       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -1;
 }
 
@@ -385,7 +430,11 @@ mgr_send_down(struct manager *mgr, struct sk_buff *skb)
 	skb_queue_tail(&mgr->sendq, skb);
 	if (!test_bit(MGR_PH_ACTIVE, &mgr->options)) {
 		_queue_data(&mgr->ch, PH_ACTIVATE_REQ, MISDN_ID_ANY, 0,
+<<<<<<< HEAD
 		    NULL, GFP_KERNEL);
+=======
+			    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		do_send(mgr);
 	}
@@ -398,7 +447,11 @@ dl_unit_data(struct manager *mgr, struct sk_buff *skb)
 		return -EINVAL;
 	if (!test_bit(MGR_PH_ACTIVE, &mgr->options))
 		_queue_data(&mgr->ch, PH_ACTIVATE_REQ, MISDN_ID_ANY, 0,
+<<<<<<< HEAD
 		    NULL, GFP_KERNEL);
+=======
+			    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	skb_push(skb, 3);
 	skb->data[0] = 0x02; /* SAPI 0 C/R = 1 */
 	skb->data[1] = 0xff; /* TEI 127 */
@@ -468,14 +521,23 @@ tei_id_request(struct FsmInst *fi, int event, void *arg)
 
 	if (tm->l2->tei != GROUP_TEI) {
 		tm->tei_m.printdebug(&tm->tei_m,
+<<<<<<< HEAD
 			"assign request for already assigned tei %d",
 			tm->l2->tei);
+=======
+				     "assign request for already assigned tei %d",
+				     tm->l2->tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	tm->ri = random_ri();
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(&tm->tei_m,
+<<<<<<< HEAD
 			"assign request ri %d", tm->ri);
+=======
+				     "assign request ri %d", tm->ri);
+>>>>>>> refs/remotes/origin/cm-10.0
 	put_tei_msg(tm->mgr, ID_REQUEST, tm->ri, GROUP_TEI);
 	mISDN_FsmChangeState(fi, ST_TEI_IDREQ);
 	mISDN_FsmAddTimer(&tm->timer, tm->tval, EV_TIMER, NULL, 1);
@@ -496,12 +558,20 @@ tei_id_assign(struct FsmInst *fi, int event, void *arg)
 	tei = *dp >> 1;
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(fi, "identity assign ri %d tei %d",
+<<<<<<< HEAD
 			ri, tei);
+=======
+				     ri, tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	l2 = findtei(tm->mgr, tei);
 	if (l2) {	/* same tei is in use */
 		if (ri != l2->tm->ri) {
 			tm->tei_m.printdebug(fi,
+<<<<<<< HEAD
 				"possible duplicate assignment tei %d", tei);
+=======
+					     "possible duplicate assignment tei %d", tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 			tei_l2(l2, MDL_ERROR_RSP, 0);
 		}
 	} else if (ri == tm->ri) {
@@ -525,12 +595,20 @@ tei_id_test_dup(struct FsmInst *fi, int event, void *arg)
 	tei = *dp >> 1;
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(fi, "foreign identity assign ri %d tei %d",
+<<<<<<< HEAD
 			ri, tei);
+=======
+				     ri, tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	l2 = findtei(tm->mgr, tei);
 	if (l2) {	/* same tei is in use */
 		if (ri != l2->tm->ri) {	/* and it wasn't our request */
 			tm->tei_m.printdebug(fi,
+<<<<<<< HEAD
 				"possible duplicate assignment tei %d", tei);
+=======
+					     "possible duplicate assignment tei %d", tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 			mISDN_FsmEvent(&l2->tm->tei_m, EV_VERIFY, NULL);
 		}
 	}
@@ -549,7 +627,11 @@ tei_id_denied(struct FsmInst *fi, int event, void *arg)
 	tei = *dp >> 1;
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(fi, "identity denied ri %d tei %d",
+<<<<<<< HEAD
 			ri, tei);
+=======
+				     ri, tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void
@@ -559,11 +641,19 @@ tei_id_chk_req(struct FsmInst *fi, int event, void *arg)
 	u_char *dp = arg;
 	int tei;
 
+<<<<<<< HEAD
 	tei = *(dp+3) >> 1;
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(fi, "identity check req tei %d", tei);
 	if ((tm->l2->tei != GROUP_TEI) && ((tei == GROUP_TEI) ||
 	    (tei == tm->l2->tei))) {
+=======
+	tei = *(dp + 3) >> 1;
+	if (*debug & DEBUG_L2_TEI)
+		tm->tei_m.printdebug(fi, "identity check req tei %d", tei);
+	if ((tm->l2->tei != GROUP_TEI) && ((tei == GROUP_TEI) ||
+					   (tei == tm->l2->tei))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		mISDN_FsmDelTimer(&tm->timer, 4);
 		mISDN_FsmChangeState(&tm->tei_m, ST_TEI_NOP);
 		put_tei_msg(tm->mgr, ID_CHK_RES, random_ri(), tm->l2->tei);
@@ -577,7 +667,11 @@ tei_id_remove(struct FsmInst *fi, int event, void *arg)
 	u_char *dp = arg;
 	int tei;
 
+<<<<<<< HEAD
 	tei = *(dp+3) >> 1;
+=======
+	tei = *(dp + 3) >> 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(fi, "identity remove tei %d", tei);
 	if ((tm->l2->tei != GROUP_TEI) &&
@@ -595,7 +689,11 @@ tei_id_verify(struct FsmInst *fi, int event, void *arg)
 
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(fi, "id verify request for tei %d",
+<<<<<<< HEAD
 			tm->l2->tei);
+=======
+				     tm->l2->tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	put_tei_msg(tm->mgr, ID_VERIFY, 0, tm->l2->tei);
 	mISDN_FsmChangeState(&tm->tei_m, ST_TEI_IDVERIFY);
 	mISDN_FsmAddTimer(&tm->timer, tm->tval, EV_TIMER, NULL, 2);
@@ -611,7 +709,11 @@ tei_id_req_tout(struct FsmInst *fi, int event, void *arg)
 		tm->ri = random_ri();
 		if (*debug & DEBUG_L2_TEI)
 			tm->tei_m.printdebug(fi, "assign req(%d) ri %d",
+<<<<<<< HEAD
 				4 - tm->nval, tm->ri);
+=======
+					     4 - tm->nval, tm->ri);
+>>>>>>> refs/remotes/origin/cm-10.0
 		put_tei_msg(tm->mgr, ID_REQUEST, tm->ri, GROUP_TEI);
 		mISDN_FsmAddTimer(&tm->timer, tm->tval, EV_TIMER, NULL, 3);
 	} else {
@@ -629,13 +731,22 @@ tei_id_ver_tout(struct FsmInst *fi, int event, void *arg)
 	if (--tm->nval) {
 		if (*debug & DEBUG_L2_TEI)
 			tm->tei_m.printdebug(fi,
+<<<<<<< HEAD
 				"id verify req(%d) for tei %d",
 				3 - tm->nval, tm->l2->tei);
+=======
+					     "id verify req(%d) for tei %d",
+					     3 - tm->nval, tm->l2->tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 		put_tei_msg(tm->mgr, ID_VERIFY, 0, tm->l2->tei);
 		mISDN_FsmAddTimer(&tm->timer, tm->tval, EV_TIMER, NULL, 4);
 	} else {
 		tm->tei_m.printdebug(fi, "verify req for tei %d failed",
+<<<<<<< HEAD
 			tm->l2->tei);
+=======
+				     tm->l2->tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 		tei_l2(tm->l2, MDL_REMOVE_REQ, 0);
 		mISDN_FsmChangeState(fi, ST_TEI_NOP);
 	}
@@ -673,14 +784,22 @@ tei_assign_req(struct FsmInst *fi, int event, void *arg)
 
 	if (tm->l2->tei == GROUP_TEI) {
 		tm->tei_m.printdebug(&tm->tei_m,
+<<<<<<< HEAD
 			"net tei assign request without tei");
+=======
+				     "net tei assign request without tei");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	tm->ri = ((unsigned int) *dp++ << 8);
 	tm->ri += *dp++;
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(&tm->tei_m,
+<<<<<<< HEAD
 			"net assign request ri %d teim %d", tm->ri, *dp);
+=======
+				     "net assign request ri %d teim %d", tm->ri, *dp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	put_tei_msg(tm->mgr, ID_ASSIGNED, tm->ri, tm->l2->tei);
 	mISDN_FsmChangeState(fi, ST_TEI_NOP);
 }
@@ -692,7 +811,11 @@ tei_id_chk_req_net(struct FsmInst *fi, int event, void *arg)
 
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(fi, "id check request for tei %d",
+<<<<<<< HEAD
 		    tm->l2->tei);
+=======
+				     tm->l2->tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	tm->rcnt = 0;
 	put_tei_msg(tm->mgr, ID_CHK_REQ, 0, tm->l2->tei);
 	mISDN_FsmChangeState(&tm->tei_m, ST_TEI_IDVERIFY);
@@ -724,7 +847,11 @@ tei_id_verify_net(struct FsmInst *fi, int event, void *arg)
 	tei = dp[3] >> 1;
 	if (*debug & DEBUG_L2_TEI)
 		tm->tei_m.printdebug(fi, "identity verify req tei %d/%d",
+<<<<<<< HEAD
 		    tei, tm->l2->tei);
+=======
+				     tei, tm->l2->tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (tei == tm->l2->tei)
 		tei_id_chk_req_net(fi, event, arg);
 }
@@ -737,7 +864,11 @@ tei_id_ver_tout_net(struct FsmInst *fi, int event, void *arg)
 	if (tm->rcnt == 1) {
 		if (*debug & DEBUG_L2_TEI)
 			tm->tei_m.printdebug(fi,
+<<<<<<< HEAD
 			    "check req for tei %d successful\n", tm->l2->tei);
+=======
+					     "check req for tei %d successful\n", tm->l2->tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mISDN_FsmChangeState(fi, ST_TEI_NOP);
 	} else if (tm->rcnt > 1) {
 		/* duplicate assignment; remove */
@@ -745,13 +876,22 @@ tei_id_ver_tout_net(struct FsmInst *fi, int event, void *arg)
 	} else if (--tm->nval) {
 		if (*debug & DEBUG_L2_TEI)
 			tm->tei_m.printdebug(fi,
+<<<<<<< HEAD
 				"id check req(%d) for tei %d",
 				3 - tm->nval, tm->l2->tei);
+=======
+					     "id check req(%d) for tei %d",
+					     3 - tm->nval, tm->l2->tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 		put_tei_msg(tm->mgr, ID_CHK_REQ, 0, tm->l2->tei);
 		mISDN_FsmAddTimer(&tm->timer, tm->tval, EV_TIMER, NULL, 4);
 	} else {
 		tm->tei_m.printdebug(fi, "check req for tei %d failed",
+<<<<<<< HEAD
 			tm->l2->tei);
+=======
+				     tm->l2->tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mISDN_FsmChangeState(fi, ST_TEI_NOP);
 		tei_l2remove(tm->l2);
 	}
@@ -800,7 +940,11 @@ create_new_tei(struct manager *mgr, int tei, int sapi)
 	if ((tei >= 0) && (tei < 64))
 		test_and_set_bit(OPTION_L2_FIXEDTEI, &opt);
 	if (mgr->ch.st->dev->Dprotocols
+<<<<<<< HEAD
 	  & ((1 << ISDN_P_TE_E1) | (1 << ISDN_P_NT_E1)))
+=======
+	    & ((1 << ISDN_P_TE_E1) | (1 << ISDN_P_NT_E1)))
+>>>>>>> refs/remotes/origin/cm-10.0
 		test_and_set_bit(OPTION_L2_PMX, &opt);
 	l2 = create_l2(mgr->up, ISDN_P_LAPD_NT, opt, tei, sapi);
 	if (!l2) {
@@ -880,7 +1024,11 @@ ph_data_ind(struct manager *mgr, struct sk_buff *skb)
 	if (skb->len < 8) {
 		if (*debug  & DEBUG_L2_TEI)
 			printk(KERN_DEBUG "%s: short mgr frame %d/8\n",
+<<<<<<< HEAD
 			    __func__, skb->len);
+=======
+			       __func__, skb->len);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto done;
 	}
 
@@ -979,15 +1127,25 @@ static int
 create_teimgr(struct manager *mgr, struct channel_req *crq)
 {
 	struct layer2	*l2;
+<<<<<<< HEAD
 	u_long 		opt = 0;
+=======
+	u_long		opt = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u_long		flags;
 	int		id;
 
 	if (*debug & DEBUG_L2_TEI)
 		printk(KERN_DEBUG "%s: %s proto(%x) adr(%d %d %d %d)\n",
+<<<<<<< HEAD
 			__func__, dev_name(&mgr->ch.st->dev->dev),
 			crq->protocol, crq->adr.dev, crq->adr.channel,
 			crq->adr.sapi, crq->adr.tei);
+=======
+		       __func__, dev_name(&mgr->ch.st->dev->dev),
+		       crq->protocol, crq->adr.dev, crq->adr.channel,
+		       crq->adr.sapi, crq->adr.tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (crq->adr.tei > GROUP_TEI)
 		return -EINVAL;
 	if (crq->adr.tei < 64)
@@ -1001,8 +1159,13 @@ create_teimgr(struct manager *mgr, struct channel_req *crq)
 			return -EINVAL;
 		if (mgr->up) {
 			printk(KERN_WARNING
+<<<<<<< HEAD
 			    "%s: only one network manager is allowed\n",
 			    __func__);
+=======
+			       "%s: only one network manager is allowed\n",
+			       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EBUSY;
 		}
 	} else if (test_bit(MGR_OPT_USER, &mgr->options)) {
@@ -1017,7 +1180,11 @@ create_teimgr(struct manager *mgr, struct channel_req *crq)
 			test_and_set_bit(MGR_OPT_USER, &mgr->options);
 	}
 	if (mgr->ch.st->dev->Dprotocols
+<<<<<<< HEAD
 	  & ((1 << ISDN_P_TE_E1) | (1 << ISDN_P_NT_E1)))
+=======
+	    & ((1 << ISDN_P_TE_E1) | (1 << ISDN_P_NT_E1)))
+>>>>>>> refs/remotes/origin/cm-10.0
 		test_and_set_bit(OPTION_L2_PMX, &opt);
 	if ((crq->protocol == ISDN_P_LAPD_NT) && (crq->adr.tei == 127)) {
 		mgr->up = crq->ch;
@@ -1035,7 +1202,11 @@ create_teimgr(struct manager *mgr, struct channel_req *crq)
 		return 0;
 	}
 	l2 = create_l2(crq->ch, crq->protocol, opt,
+<<<<<<< HEAD
 		crq->adr.tei, crq->adr.sapi);
+=======
+		       crq->adr.tei, crq->adr.sapi);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!l2)
 		return -ENOMEM;
 	l2->tm = kzalloc(sizeof(struct teimgr), GFP_KERNEL);
@@ -1084,7 +1255,11 @@ mgr_send(struct mISDNchannel *ch, struct sk_buff *skb)
 	mgr = container_of(ch, struct manager, ch);
 	if (*debug & DEBUG_L2_RECV)
 		printk(KERN_DEBUG "%s: prim(%x) id(%x)\n",
+<<<<<<< HEAD
 		    __func__, hh->prim, hh->id);
+=======
+		       __func__, hh->prim, hh->id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (hh->prim) {
 	case PH_DATA_IND:
 		mISDN_FsmEvent(&mgr->deact, EV_UI, NULL);
@@ -1181,7 +1356,11 @@ check_data(struct manager *mgr, struct sk_buff *skb)
 
 	if (*debug & DEBUG_L2_CTRL)
 		printk(KERN_DEBUG "%s: prim(%x) id(%x)\n",
+<<<<<<< HEAD
 		    __func__, hh->prim, hh->id);
+=======
+		       __func__, hh->prim, hh->id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (test_bit(MGR_OPT_USER, &mgr->options))
 		return -ENOTCONN;
 	if (hh->prim != PH_DATA_IND)
@@ -1201,12 +1380,20 @@ check_data(struct manager *mgr, struct sk_buff *skb)
 	/* We got a SABME for a fixed TEI */
 	if (*debug & DEBUG_L2_CTRL)
 		printk(KERN_DEBUG "%s: SABME sapi(%d) tei(%d)\n",
+<<<<<<< HEAD
 		    __func__, sapi, tei);
+=======
+		       __func__, sapi, tei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	l2 = create_new_tei(mgr, tei, sapi);
 	if (!l2) {
 		if (*debug & DEBUG_L2_CTRL)
 			printk(KERN_DEBUG "%s: failed to create new tei\n",
+<<<<<<< HEAD
 			    __func__);
+=======
+			       __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 	ret = l2->ch.send(&l2->ch, skb);
@@ -1285,15 +1472,26 @@ mgr_bcast(struct mISDNchannel *ch, struct sk_buff *skb)
 				if (ret) {
 					if (*debug & DEBUG_SEND_ERR)
 						printk(KERN_DEBUG
+<<<<<<< HEAD
 						    "%s ch%d prim(%x) addr(%x)"
 						    " err %d\n",
 						    __func__, l2->ch.nr,
 						    hh->prim, l2->ch.addr, ret);
+=======
+						       "%s ch%d prim(%x) addr(%x)"
+						       " err %d\n",
+						       __func__, l2->ch.nr,
+						       hh->prim, l2->ch.addr, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 				} else
 					cskb = NULL;
 			} else {
 				printk(KERN_WARNING "%s ch%d addr %x no mem\n",
+<<<<<<< HEAD
 				    __func__, ch->nr, ch->addr);
+=======
+				       __func__, ch->nr, ch->addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto out;
 			}
 		}

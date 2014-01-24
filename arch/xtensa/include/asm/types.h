@@ -23,8 +23,11 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 typedef unsigned short umode_t;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * These aren't exported outside the kernel to avoid name space clashes
  */

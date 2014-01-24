@@ -64,6 +64,7 @@ static const char *const tcp_conntrack_names[] = {
 #define HOURS * 60 MINS
 #define DAYS * 24 HOURS
 
+<<<<<<< HEAD
 /* RFC1122 says the R2 limit should be at least 100 seconds.
    Linux uses 15 packets as limit, which corresponds
    to ~13-30min depending on RTO. */
@@ -71,6 +72,9 @@ static unsigned int nf_ct_tcp_timeout_max_retrans __read_mostly    =   5 MINS;
 static unsigned int nf_ct_tcp_timeout_unacknowledged __read_mostly =   5 MINS;
 
 static unsigned int tcp_timeouts[TCP_CONNTRACK_MAX] __read_mostly = {
+=======
+static unsigned int tcp_timeouts[TCP_CONNTRACK_TIMEOUT_MAX] __read_mostly = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	[TCP_CONNTRACK_SYN_SENT]	= 2 MINS,
 	[TCP_CONNTRACK_SYN_RECV]	= 60 SECS,
 	[TCP_CONNTRACK_ESTABLISHED]	= 5 DAYS,
@@ -80,6 +84,14 @@ static unsigned int tcp_timeouts[TCP_CONNTRACK_MAX] __read_mostly = {
 	[TCP_CONNTRACK_TIME_WAIT]	= 2 MINS,
 	[TCP_CONNTRACK_CLOSE]		= 10 SECS,
 	[TCP_CONNTRACK_SYN_SENT2]	= 2 MINS,
+<<<<<<< HEAD
+=======
+/* RFC1122 says the R2 limit should be at least 100 seconds.
+   Linux uses 15 packets as limit, which corresponds
+   to ~13-30min depending on RTO. */
+	[TCP_CONNTRACK_RETRANS]		= 5 MINS,
+	[TCP_CONNTRACK_UNACK]		= 5 MINS,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define sNO TCP_CONNTRACK_NONE
@@ -406,7 +418,11 @@ static void tcp_options(const struct sk_buff *skb,
 			if (opsize < 2) /* "silly options" */
 				return;
 			if (opsize > length)
+<<<<<<< HEAD
 				break;	/* don't parse partial options */
+=======
+				return;	/* don't parse partial options */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (opcode == TCPOPT_SACK_PERM
 			    && opsize == TCPOLEN_SACK_PERM)
@@ -444,7 +460,11 @@ static void tcp_sack(const struct sk_buff *skb, unsigned int dataoff,
 	BUG_ON(ptr == NULL);
 
 	/* Fast path for timestamp-only option */
+<<<<<<< HEAD
 	if (length == TCPOLEN_TSTAMP_ALIGNED*4
+=======
+	if (length == TCPOLEN_TSTAMP_ALIGNED
+>>>>>>> refs/remotes/origin/cm-10.0
 	    && *(__be32 *)ptr == htonl((TCPOPT_NOP << 24)
 				       | (TCPOPT_NOP << 16)
 				       | (TCPOPT_TIMESTAMP << 8)
@@ -466,7 +486,11 @@ static void tcp_sack(const struct sk_buff *skb, unsigned int dataoff,
 			if (opsize < 2) /* "silly options" */
 				return;
 			if (opsize > length)
+<<<<<<< HEAD
 				break;	/* don't parse partial options */
+=======
+				return;	/* don't parse partial options */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (opcode == TCPOPT_SACK
 			    && opsize >= (TCPOLEN_SACK_BASE
@@ -582,8 +606,13 @@ static bool tcp_in_window(const struct nf_conn *ct,
 			 * Let's try to use the data from the packet.
 			 */
 			sender->td_end = end;
+<<<<<<< HEAD
 			win <<= sender->td_scale;
 			sender->td_maxwin = (win == 0 ? 1 : win);
+=======
+			swin = win << sender->td_scale;
+			sender->td_maxwin = (swin == 0 ? 1 : swin);
+>>>>>>> refs/remotes/origin/cm-10.0
 			sender->td_maxend = end + sender->td_maxwin;
 			/*
 			 * We haven't seen traffic in the other direction yet
@@ -805,13 +834,26 @@ static int tcp_error(struct net *net, struct nf_conn *tmpl,
 	return NF_ACCEPT;
 }
 
+<<<<<<< HEAD
+=======
+static unsigned int *tcp_get_timeouts(struct net *net)
+{
+	return tcp_timeouts;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Returns verdict for packet, or -1 for invalid. */
 static int tcp_packet(struct nf_conn *ct,
 		      const struct sk_buff *skb,
 		      unsigned int dataoff,
 		      enum ip_conntrack_info ctinfo,
 		      u_int8_t pf,
+<<<<<<< HEAD
 		      unsigned int hooknum)
+=======
+		      unsigned int hooknum,
+		      unsigned int *timeouts)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct net *net = nf_ct_net(ct);
 	struct nf_conntrack_tuple *tuple;
@@ -1006,6 +1048,7 @@ static int tcp_packet(struct nf_conn *ct,
 		ct->proto.tcp.seen[dir].flags |= IP_CT_TCP_FLAG_CLOSE_INIT;
 
 	if (ct->proto.tcp.retrans >= nf_ct_tcp_max_retrans &&
+<<<<<<< HEAD
 	    tcp_timeouts[new_state] > nf_ct_tcp_timeout_max_retrans)
 		timeout = nf_ct_tcp_timeout_max_retrans;
 	else if ((ct->proto.tcp.seen[0].flags | ct->proto.tcp.seen[1].flags) &
@@ -1014,6 +1057,16 @@ static int tcp_packet(struct nf_conn *ct,
 		timeout = nf_ct_tcp_timeout_unacknowledged;
 	else
 		timeout = tcp_timeouts[new_state];
+=======
+	    timeouts[new_state] > timeouts[TCP_CONNTRACK_RETRANS])
+		timeout = timeouts[TCP_CONNTRACK_RETRANS];
+	else if ((ct->proto.tcp.seen[0].flags | ct->proto.tcp.seen[1].flags) &
+		 IP_CT_TCP_FLAG_DATA_UNACKNOWLEDGED &&
+		 timeouts[new_state] > timeouts[TCP_CONNTRACK_UNACK])
+		timeout = timeouts[TCP_CONNTRACK_UNACK];
+	else
+		timeout = timeouts[new_state];
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_bh(&ct->lock);
 
 	if (new_state != old_state)
@@ -1045,7 +1098,11 @@ static int tcp_packet(struct nf_conn *ct,
 
 /* Called when a new connection for this protocol found. */
 static bool tcp_new(struct nf_conn *ct, const struct sk_buff *skb,
+<<<<<<< HEAD
 		    unsigned int dataoff)
+=======
+		    unsigned int dataoff, unsigned int *timeouts)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	enum tcp_conntrack new_state;
 	const struct tcphdr *th;
@@ -1117,7 +1174,11 @@ static bool tcp_new(struct nf_conn *ct, const struct sk_buff *skb,
 	return true;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_NF_CT_NETLINK) || defined(CONFIG_NF_CT_NETLINK_MODULE)
+=======
+#if IS_ENABLED(CONFIG_NF_CT_NETLINK)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/netfilter/nfnetlink_conntrack.h>
@@ -1230,6 +1291,116 @@ static int tcp_nlattr_tuple_size(void)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
+
+#include <linux/netfilter/nfnetlink.h>
+#include <linux/netfilter/nfnetlink_cttimeout.h>
+
+static int tcp_timeout_nlattr_to_obj(struct nlattr *tb[], void *data)
+{
+	unsigned int *timeouts = data;
+	int i;
+
+	/* set default TCP timeouts. */
+	for (i=0; i<TCP_CONNTRACK_TIMEOUT_MAX; i++)
+		timeouts[i] = tcp_timeouts[i];
+
+	if (tb[CTA_TIMEOUT_TCP_SYN_SENT]) {
+		timeouts[TCP_CONNTRACK_SYN_SENT] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_SYN_SENT]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_SYN_RECV]) {
+		timeouts[TCP_CONNTRACK_SYN_RECV] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_SYN_RECV]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_ESTABLISHED]) {
+		timeouts[TCP_CONNTRACK_ESTABLISHED] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_ESTABLISHED]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_FIN_WAIT]) {
+		timeouts[TCP_CONNTRACK_FIN_WAIT] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_FIN_WAIT]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_CLOSE_WAIT]) {
+		timeouts[TCP_CONNTRACK_CLOSE_WAIT] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_CLOSE_WAIT]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_LAST_ACK]) {
+		timeouts[TCP_CONNTRACK_LAST_ACK] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_LAST_ACK]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_TIME_WAIT]) {
+		timeouts[TCP_CONNTRACK_TIME_WAIT] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_TIME_WAIT]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_CLOSE]) {
+		timeouts[TCP_CONNTRACK_CLOSE] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_CLOSE]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_SYN_SENT2]) {
+		timeouts[TCP_CONNTRACK_SYN_SENT2] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_SYN_SENT2]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_RETRANS]) {
+		timeouts[TCP_CONNTRACK_RETRANS] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_RETRANS]))*HZ;
+	}
+	if (tb[CTA_TIMEOUT_TCP_UNACK]) {
+		timeouts[TCP_CONNTRACK_UNACK] =
+			ntohl(nla_get_be32(tb[CTA_TIMEOUT_TCP_UNACK]))*HZ;
+	}
+	return 0;
+}
+
+static int
+tcp_timeout_obj_to_nlattr(struct sk_buff *skb, const void *data)
+{
+	const unsigned int *timeouts = data;
+
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_SYN_SENT,
+			htonl(timeouts[TCP_CONNTRACK_SYN_SENT] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_SYN_RECV,
+			htonl(timeouts[TCP_CONNTRACK_SYN_RECV] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_ESTABLISHED,
+			htonl(timeouts[TCP_CONNTRACK_ESTABLISHED] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_FIN_WAIT,
+			htonl(timeouts[TCP_CONNTRACK_FIN_WAIT] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_CLOSE_WAIT,
+			htonl(timeouts[TCP_CONNTRACK_CLOSE_WAIT] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_LAST_ACK,
+			htonl(timeouts[TCP_CONNTRACK_LAST_ACK] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_TIME_WAIT,
+			htonl(timeouts[TCP_CONNTRACK_TIME_WAIT] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_CLOSE,
+			htonl(timeouts[TCP_CONNTRACK_CLOSE] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_SYN_SENT2,
+			htonl(timeouts[TCP_CONNTRACK_SYN_SENT2] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_RETRANS,
+			htonl(timeouts[TCP_CONNTRACK_RETRANS] / HZ));
+	NLA_PUT_BE32(skb, CTA_TIMEOUT_TCP_UNACK,
+			htonl(timeouts[TCP_CONNTRACK_UNACK] / HZ));
+	return 0;
+
+nla_put_failure:
+	return -ENOSPC;
+}
+
+static const struct nla_policy tcp_timeout_nla_policy[CTA_TIMEOUT_TCP_MAX+1] = {
+	[CTA_TIMEOUT_TCP_SYN_SENT]	= { .type = NLA_U32 },
+	[CTA_TIMEOUT_TCP_SYN_RECV]	= { .type = NLA_U32 },
+	[CTA_TIMEOUT_TCP_ESTABLISHED]	= { .type = NLA_U32 },
+	[CTA_TIMEOUT_TCP_FIN_WAIT]	= { .type = NLA_U32 },
+	[CTA_TIMEOUT_TCP_CLOSE_WAIT]	= { .type = NLA_U32 },
+	[CTA_TIMEOUT_TCP_LAST_ACK]	= { .type = NLA_U32 },
+	[CTA_TIMEOUT_TCP_TIME_WAIT]	= { .type = NLA_U32 },
+	[CTA_TIMEOUT_TCP_CLOSE]		= { .type = NLA_U32 },
+	[CTA_TIMEOUT_TCP_SYN_SENT2]	= { .type = NLA_U32 },
+};
+#endif /* CONFIG_NF_CT_NETLINK_TIMEOUT */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SYSCTL
 static unsigned int tcp_sysctl_table_users;
 static struct ctl_table_header *tcp_sysctl_header;
@@ -1292,14 +1463,22 @@ static struct ctl_table tcp_sysctl_table[] = {
 	},
 	{
 		.procname	= "nf_conntrack_tcp_timeout_max_retrans",
+<<<<<<< HEAD
 		.data		= &nf_ct_tcp_timeout_max_retrans,
+=======
+		.data		= &tcp_timeouts[TCP_CONNTRACK_RETRANS],
+>>>>>>> refs/remotes/origin/cm-10.0
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "nf_conntrack_tcp_timeout_unacknowledged",
+<<<<<<< HEAD
 		.data		= &nf_ct_tcp_timeout_unacknowledged,
+=======
+		.data		= &tcp_timeouts[TCP_CONNTRACK_UNACK],
+>>>>>>> refs/remotes/origin/cm-10.0
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
@@ -1395,7 +1574,11 @@ static struct ctl_table tcp_compat_sysctl_table[] = {
 	},
 	{
 		.procname	= "ip_conntrack_tcp_timeout_max_retrans",
+<<<<<<< HEAD
 		.data		= &nf_ct_tcp_timeout_max_retrans,
+=======
+		.data		= &tcp_timeouts[TCP_CONNTRACK_RETRANS],
+>>>>>>> refs/remotes/origin/cm-10.0
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
@@ -1436,9 +1619,16 @@ struct nf_conntrack_l4proto nf_conntrack_l4proto_tcp4 __read_mostly =
 	.print_tuple 		= tcp_print_tuple,
 	.print_conntrack 	= tcp_print_conntrack,
 	.packet 		= tcp_packet,
+<<<<<<< HEAD
 	.new 			= tcp_new,
 	.error			= tcp_error,
 #if defined(CONFIG_NF_CT_NETLINK) || defined(CONFIG_NF_CT_NETLINK_MODULE)
+=======
+	.get_timeouts		= tcp_get_timeouts,
+	.new 			= tcp_new,
+	.error			= tcp_error,
+#if IS_ENABLED(CONFIG_NF_CT_NETLINK)
+>>>>>>> refs/remotes/origin/cm-10.0
 	.to_nlattr		= tcp_to_nlattr,
 	.nlattr_size		= tcp_nlattr_size,
 	.from_nlattr		= nlattr_to_tcp,
@@ -1447,6 +1637,19 @@ struct nf_conntrack_l4proto nf_conntrack_l4proto_tcp4 __read_mostly =
 	.nlattr_tuple_size	= tcp_nlattr_tuple_size,
 	.nla_policy		= nf_ct_port_nla_policy,
 #endif
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
+	.ctnl_timeout		= {
+		.nlattr_to_obj	= tcp_timeout_nlattr_to_obj,
+		.obj_to_nlattr	= tcp_timeout_obj_to_nlattr,
+		.nlattr_max	= CTA_TIMEOUT_TCP_MAX,
+		.obj_size	= sizeof(unsigned int) *
+					TCP_CONNTRACK_TIMEOUT_MAX,
+		.nla_policy	= tcp_timeout_nla_policy,
+	},
+#endif /* CONFIG_NF_CT_NETLINK_TIMEOUT */
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SYSCTL
 	.ctl_table_users	= &tcp_sysctl_table_users,
 	.ctl_table_header	= &tcp_sysctl_header,
@@ -1468,9 +1671,16 @@ struct nf_conntrack_l4proto nf_conntrack_l4proto_tcp6 __read_mostly =
 	.print_tuple 		= tcp_print_tuple,
 	.print_conntrack 	= tcp_print_conntrack,
 	.packet 		= tcp_packet,
+<<<<<<< HEAD
 	.new 			= tcp_new,
 	.error			= tcp_error,
 #if defined(CONFIG_NF_CT_NETLINK) || defined(CONFIG_NF_CT_NETLINK_MODULE)
+=======
+	.get_timeouts		= tcp_get_timeouts,
+	.new 			= tcp_new,
+	.error			= tcp_error,
+#if IS_ENABLED(CONFIG_NF_CT_NETLINK)
+>>>>>>> refs/remotes/origin/cm-10.0
 	.to_nlattr		= tcp_to_nlattr,
 	.nlattr_size		= tcp_nlattr_size,
 	.from_nlattr		= nlattr_to_tcp,
@@ -1479,6 +1689,19 @@ struct nf_conntrack_l4proto nf_conntrack_l4proto_tcp6 __read_mostly =
 	.nlattr_tuple_size	= tcp_nlattr_tuple_size,
 	.nla_policy		= nf_ct_port_nla_policy,
 #endif
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
+	.ctnl_timeout		= {
+		.nlattr_to_obj	= tcp_timeout_nlattr_to_obj,
+		.obj_to_nlattr	= tcp_timeout_obj_to_nlattr,
+		.nlattr_max	= CTA_TIMEOUT_TCP_MAX,
+		.obj_size	= sizeof(unsigned int) *
+					TCP_CONNTRACK_TIMEOUT_MAX,
+		.nla_policy	= tcp_timeout_nla_policy,
+	},
+#endif /* CONFIG_NF_CT_NETLINK_TIMEOUT */
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SYSCTL
 	.ctl_table_users	= &tcp_sysctl_table_users,
 	.ctl_table_header	= &tcp_sysctl_header,

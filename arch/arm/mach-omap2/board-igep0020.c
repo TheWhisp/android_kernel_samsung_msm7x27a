@@ -28,11 +28,19 @@
 #include <asm/mach/arch.h>
 
 #include <plat/board.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/gpmc.h>
 #include <plat/usb.h>
 #include <video/omapdss.h>
 #include <video/omap-panel-generic-dpi.h>
+=======
+#include "common.h"
+#include <plat/gpmc.h>
+#include <plat/usb.h>
+#include <video/omapdss.h>
+#include <video/omap-panel-dvi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/onenand.h>
 
 #include "mux.h"
@@ -222,8 +230,14 @@ static inline void __init igep2_init_smsc911x(void)
 static inline void __init igep2_init_smsc911x(void) { }
 #endif
 
+<<<<<<< HEAD
 static struct regulator_consumer_supply igep_vmmc1_supply =
 	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.0");
+=======
+static struct regulator_consumer_supply igep_vmmc1_supply[] = {
+	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.0"),
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* VMMC1 for OMAP VDD_MMC1 (i/o) and MMC1 card */
 static struct regulator_init_data igep_vmmc1 = {
@@ -236,12 +250,22 @@ static struct regulator_init_data igep_vmmc1 = {
 					| REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies  = 1,
 	.consumer_supplies      = &igep_vmmc1_supply,
 };
 
 static struct regulator_consumer_supply igep_vio_supply =
 	REGULATOR_SUPPLY("vmmc_aux", "omap_hsmmc.1");
+=======
+	.num_consumer_supplies  = ARRAY_SIZE(igep_vmmc1_supply),
+	.consumer_supplies      = igep_vmmc1_supply,
+};
+
+static struct regulator_consumer_supply igep_vio_supply[] = {
+	REGULATOR_SUPPLY("vmmc_aux", "omap_hsmmc.1"),
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct regulator_init_data igep_vio = {
 	.constraints = {
@@ -254,20 +278,35 @@ static struct regulator_init_data igep_vio = {
 					| REGULATOR_CHANGE_MODE
 					| REGULATOR_CHANGE_STATUS,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies  = 1,
 	.consumer_supplies      = &igep_vio_supply,
 };
 
 static struct regulator_consumer_supply igep_vmmc2_supply =
 	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.1");
+=======
+	.num_consumer_supplies  = ARRAY_SIZE(igep_vio_supply),
+	.consumer_supplies      = igep_vio_supply,
+};
+
+static struct regulator_consumer_supply igep_vmmc2_supply[] = {
+	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.1"),
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct regulator_init_data igep_vmmc2 = {
 	.constraints		= {
 		.valid_modes_mask	= REGULATOR_MODE_NORMAL,
 		.always_on		= 1,
 	},
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &igep_vmmc2_supply,
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(igep_vmmc2_supply),
+	.consumer_supplies	= igep_vmmc2_supply,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct fixed_voltage_config igep_vwlan = {
@@ -292,6 +331,10 @@ static struct omap2_hsmmc_info mmc[] = {
 		.caps		= MMC_CAP_4_BIT_DATA,
 		.gpio_cd	= -EINVAL,
 		.gpio_wp	= -EINVAL,
+<<<<<<< HEAD
+=======
+		.deferred	= true,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 #if defined(CONFIG_LIBERTAS_SDIO) || defined(CONFIG_LIBERTAS_SDIO_MODULE)
 	{
@@ -399,7 +442,11 @@ static int igep_twl_gpio_setup(struct device *dev,
 
 	/* gpio + 0 is "mmc0_cd" (input/IRQ) */
 	mmc[0].gpio_cd = gpio + 0;
+<<<<<<< HEAD
 	omap2_hsmmc_init(mmc);
+=======
+	omap_hsmmc_late_init(mmc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* TWL4030_GPIO_MAX + 1 == ledB (out, active low LED) */
 #if !defined(CONFIG_LEDS_GPIO) && !defined(CONFIG_LEDS_GPIO_MODULE)
@@ -452,16 +499,27 @@ static void igep2_disable_dvi(struct omap_dss_device *dssdev)
 	gpio_direction_output(IGEP2_GPIO_DVI_PUP, 0);
 }
 
+<<<<<<< HEAD
 static struct panel_generic_dpi_data dvi_panel = {
 	.name			= "generic",
 	.platform_enable	= igep2_enable_dvi,
 	.platform_disable	= igep2_disable_dvi,
+=======
+static struct panel_dvi_platform_data dvi_panel = {
+	.platform_enable	= igep2_enable_dvi,
+	.platform_disable	= igep2_disable_dvi,
+	.i2c_bus_num = 3,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct omap_dss_device igep2_dvi_device = {
 	.type			= OMAP_DISPLAY_TYPE_DPI,
 	.name			= "dvi",
+<<<<<<< HEAD
 	.driver_name		= "generic_dpi_panel",
+=======
+	.driver_name		= "dvi",
+>>>>>>> refs/remotes/origin/cm-10.0
 	.data			= &dvi_panel,
 	.phy.dpi.data_lines	= 24,
 };
@@ -488,6 +546,7 @@ static struct platform_device *igep_devices[] __initdata = {
 	&igep_vwlan_device,
 };
 
+<<<<<<< HEAD
 static void __init igep_init_early(void)
 {
 	omap2_init_common_infrastructure();
@@ -495,6 +554,8 @@ static void __init igep_init_early(void)
 				  m65kxxxxam_sdrc_params);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int igep2_keymap[] = {
 	KEY(0, 0, KEY_LEFT),
 	KEY(0, 1, KEY_RIGHT),
@@ -637,16 +698,38 @@ static void __init igep_wlan_bt_init(void)
 static inline void __init igep_wlan_bt_init(void) { }
 #endif
 
+<<<<<<< HEAD
 static void __init igep_init(void)
 {
+=======
+static struct regulator_consumer_supply dummy_supplies[] = {
+	REGULATOR_SUPPLY("vddvario", "smsc911x.0"),
+	REGULATOR_SUPPLY("vdd33a", "smsc911x.0"),
+};
+
+static void __init igep_init(void)
+{
+	regulator_register_fixed(1, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
 
 	/* Get IGEP2 hardware revision */
 	igep2_get_revision();
+<<<<<<< HEAD
+=======
+
+	omap_hsmmc_init(mmc);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Register I2C busses and drivers */
 	igep_i2c_init();
 	platform_add_devices(igep_devices, ARRAY_SIZE(igep_devices));
 	omap_serial_init();
+<<<<<<< HEAD
+=======
+	omap_sdrc_init(m65kxxxxam_sdrc_params,
+				  m65kxxxxam_sdrc_params);
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_musb_init(NULL);
 
 	igep_flash_init();
@@ -669,6 +752,7 @@ static void __init igep_init(void)
 }
 
 MACHINE_START(IGEP0020, "IGEP v2 board")
+<<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.reserve	= omap_reserve,
 	.map_io		= omap3_map_io,
@@ -686,4 +770,27 @@ MACHINE_START(IGEP0030, "IGEP OMAP3 module")
 	.init_irq	= omap_init_irq,
 	.init_machine	= igep_init,
 	.timer		= &omap_timer,
+=======
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap3_map_io,
+	.init_early	= omap35xx_init_early,
+	.init_irq	= omap3_init_irq,
+	.handle_irq	= omap3_intc_handle_irq,
+	.init_machine	= igep_init,
+	.timer		= &omap3_timer,
+	.restart	= omap_prcm_restart,
+MACHINE_END
+
+MACHINE_START(IGEP0030, "IGEP OMAP3 module")
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap3_map_io,
+	.init_early	= omap35xx_init_early,
+	.init_irq	= omap3_init_irq,
+	.handle_irq	= omap3_intc_handle_irq,
+	.init_machine	= igep_init,
+	.timer		= &omap3_timer,
+	.restart	= omap_prcm_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

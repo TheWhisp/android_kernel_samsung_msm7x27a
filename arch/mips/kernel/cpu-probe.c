@@ -16,14 +16,23 @@
 #include <linux/ptrace.h>
 #include <linux/smp.h>
 #include <linux/stddef.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/bugs.h>
 #include <asm/cpu.h>
 #include <asm/fpu.h>
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/watch.h>
+=======
+#include <asm/watch.h>
+#include <asm/elf.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/spram.h>
 #include <asm/uaccess.h>
 
@@ -71,7 +80,10 @@ void r4k_wait_irqoff(void)
 	local_irq_enable();
 	__asm__(" 	.globl __pastwait	\n"
 		"__pastwait:			\n");
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -191,6 +203,11 @@ void __init check_wait(void)
 	case CPU_CAVIUM_OCTEON_PLUS:
 	case CPU_CAVIUM_OCTEON2:
 	case CPU_JZRISC:
+<<<<<<< HEAD
+=======
+	case CPU_XLR:
+	case CPU_XLP:
+>>>>>>> refs/remotes/origin/cm-10.0
 		cpu_wait = r4k_wait;
 		break;
 
@@ -979,7 +996,14 @@ static inline void cpu_probe_cavium(struct cpuinfo_mips *c, unsigned int cpu)
 platform:
 		set_elf_platform(cpu, "octeon");
 		break;
+<<<<<<< HEAD
 	case PRID_IMP_CAVIUM_CN63XX:
+=======
+	case PRID_IMP_CAVIUM_CN61XX:
+	case PRID_IMP_CAVIUM_CN63XX:
+	case PRID_IMP_CAVIUM_CN66XX:
+	case PRID_IMP_CAVIUM_CN68XX:
+>>>>>>> refs/remotes/origin/cm-10.0
 		c->cputype = CPU_CAVIUM_OCTEON2;
 		__cpu_name[cpu] = "Cavium Octeon II";
 		set_elf_platform(cpu, "octeon2");
@@ -1011,6 +1035,16 @@ static inline void cpu_probe_netlogic(struct cpuinfo_mips *c, int cpu)
 {
 	decode_configs(c);
 
+<<<<<<< HEAD
+=======
+	if ((c->processor_id & 0xff00) == PRID_IMP_NETLOGIC_AU13XX) {
+		c->cputype = CPU_ALCHEMY;
+		__cpu_name[cpu] = "Au1300";
+		/* following stuff is not for Alchemy */
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	c->options = (MIPS_CPU_TLB       |
 			MIPS_CPU_4KEX    |
 			MIPS_CPU_COUNTER |
@@ -1020,6 +1054,15 @@ static inline void cpu_probe_netlogic(struct cpuinfo_mips *c, int cpu)
 			MIPS_CPU_LLSC);
 
 	switch (c->processor_id & 0xff00) {
+<<<<<<< HEAD
+=======
+	case PRID_IMP_NETLOGIC_XLP8XX:
+	case PRID_IMP_NETLOGIC_XLP3XX:
+		c->cputype = CPU_XLP;
+		__cpu_name[cpu] = "Netlogic XLP";
+		break;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	case PRID_IMP_NETLOGIC_XLR732:
 	case PRID_IMP_NETLOGIC_XLR716:
 	case PRID_IMP_NETLOGIC_XLR532:
@@ -1050,14 +1093,30 @@ static inline void cpu_probe_netlogic(struct cpuinfo_mips *c, int cpu)
 		break;
 
 	default:
+<<<<<<< HEAD
 		printk(KERN_INFO "Unknown Netlogic chip id [%02x]!\n",
+=======
+		pr_info("Unknown Netlogic chip id [%02x]!\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       c->processor_id);
 		c->cputype = CPU_XLR;
 		break;
 	}
 
+<<<<<<< HEAD
 	c->isa_level = MIPS_CPU_ISA_M64R1;
 	c->tlbsize = ((read_c0_config1() >> 25) & 0x3f) + 1;
+=======
+	if (c->cputype == CPU_XLP) {
+		c->isa_level = MIPS_CPU_ISA_M64R2;
+		c->options |= (MIPS_CPU_FPU | MIPS_CPU_ULRI | MIPS_CPU_MCHECK);
+		/* This will be updated again after all threads are woken up */
+		c->tlbsize = ((read_c0_config6() >> 16) & 0xffff) + 1;
+	} else {
+		c->isa_level = MIPS_CPU_ISA_M64R1;
+		c->tlbsize = ((read_c0_config1() >> 25) & 0x3f) + 1;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_64BIT

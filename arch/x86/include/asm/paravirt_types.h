@@ -41,6 +41,10 @@
 
 #include <asm/desc_defs.h>
 #include <asm/kmap_types.h>
+<<<<<<< HEAD
+=======
+#include <asm/pgtable_types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct page;
 struct thread_struct;
@@ -63,6 +67,14 @@ struct paravirt_callee_save {
 struct pv_info {
 	unsigned int kernel_rpl;
 	int shared_kernel_pmd;
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_X86_64
+	u16 extra_user_64bit_cs;  /* __USER_CS if none */
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	int paravirt_enabled;
 	const char *name;
 };
@@ -90,6 +102,10 @@ struct pv_lazy_ops {
 
 struct pv_time_ops {
 	unsigned long long (*sched_clock)(void);
+<<<<<<< HEAD
+=======
+	unsigned long long (*steal_clock)(int cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long (*get_tsc_khz)(void);
 };
 

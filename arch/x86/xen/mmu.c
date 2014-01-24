@@ -48,6 +48,11 @@
 #include <linux/memblock.h>
 #include <linux/seq_file.h>
 
+<<<<<<< HEAD
+=======
+#include <trace/events/xen.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable.h>
 #include <asm/tlbflush.h>
 #include <asm/fixmap.h>
@@ -194,6 +199,11 @@ void xen_set_domain_pte(pte_t *ptep, pte_t pteval, unsigned domid)
 	struct multicall_space mcs;
 	struct mmu_update *u;
 
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_set_domain_pte(ptep, pteval, domid);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mcs = xen_mc_entry(sizeof(*u));
 	u = mcs.args;
 
@@ -225,6 +235,27 @@ static void xen_extend_mmu_update(const struct mmu_update *update)
 	*u = *update;
 }
 
+<<<<<<< HEAD
+=======
+static void xen_extend_mmuext_op(const struct mmuext_op *op)
+{
+	struct multicall_space mcs;
+	struct mmuext_op *u;
+
+	mcs = xen_mc_extend_args(__HYPERVISOR_mmuext_op, sizeof(*u));
+
+	if (mcs.mc != NULL) {
+		mcs.mc->args[1]++;
+	} else {
+		mcs = __xen_mc_entry(sizeof(*u));
+		MULTI_mmuext_op(mcs.mc, mcs.args, 1, NULL, DOMID_SELF);
+	}
+
+	u = mcs.args;
+	*u = *op;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void xen_set_pmd_hyper(pmd_t *ptr, pmd_t val)
 {
 	struct mmu_update u;
@@ -245,6 +276,11 @@ static void xen_set_pmd_hyper(pmd_t *ptr, pmd_t val)
 
 static void xen_set_pmd(pmd_t *ptr, pmd_t val)
 {
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_set_pmd(ptr, val);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* If page is not pinned, we can just update the entry
 	   directly */
 	if (!xen_page_pinned(ptr)) {
@@ -282,22 +318,44 @@ static bool xen_batched_set_pte(pte_t *ptep, pte_t pteval)
 	return true;
 }
 
+<<<<<<< HEAD
 static void xen_set_pte(pte_t *ptep, pte_t pteval)
+=======
+static inline void __xen_set_pte(pte_t *ptep, pte_t pteval)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (!xen_batched_set_pte(ptep, pteval))
 		native_set_pte(ptep, pteval);
 }
 
+<<<<<<< HEAD
 static void xen_set_pte_at(struct mm_struct *mm, unsigned long addr,
 		    pte_t *ptep, pte_t pteval)
 {
 	xen_set_pte(ptep, pteval);
+=======
+static void xen_set_pte(pte_t *ptep, pte_t pteval)
+{
+	trace_xen_mmu_set_pte(ptep, pteval);
+	__xen_set_pte(ptep, pteval);
+}
+
+static void xen_set_pte_at(struct mm_struct *mm, unsigned long addr,
+		    pte_t *ptep, pte_t pteval)
+{
+	trace_xen_mmu_set_pte_at(mm, addr, ptep, pteval);
+	__xen_set_pte(ptep, pteval);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 pte_t xen_ptep_modify_prot_start(struct mm_struct *mm,
 				 unsigned long addr, pte_t *ptep)
 {
 	/* Just return the pte as-is.  We preserve the bits on commit */
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_ptep_modify_prot_start(mm, addr, ptep, *ptep);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return *ptep;
 }
 
@@ -306,6 +364,10 @@ void xen_ptep_modify_prot_commit(struct mm_struct *mm, unsigned long addr,
 {
 	struct mmu_update u;
 
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_ptep_modify_prot_commit(mm, addr, ptep, pte);
+>>>>>>> refs/remotes/origin/cm-10.0
 	xen_mc_batch();
 
 	u.ptr = virt_to_machine(ptep).maddr | MMU_PT_UPDATE_PRESERVE_AD;
@@ -387,13 +449,21 @@ static pteval_t iomap_pte(pteval_t val)
 static pteval_t xen_pte_val(pte_t pte)
 {
 	pteval_t pteval = pte.pte;
+<<<<<<< HEAD
 
+=======
+#if 0
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* If this is a WC pte, convert back from Xen WC to Linux WC */
 	if ((pteval & (_PAGE_PAT | _PAGE_PCD | _PAGE_PWT)) == _PAGE_PAT) {
 		WARN_ON(!pat_enabled);
 		pteval = (pteval & ~_PAGE_PAT) | _PAGE_PWT;
 	}
+<<<<<<< HEAD
 
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (xen_initial_domain() && (pteval & _PAGE_IOMAP))
 		return pteval;
 
@@ -435,7 +505,11 @@ void xen_set_pat(u64 pat)
 static pte_t xen_make_pte(pteval_t pte)
 {
 	phys_addr_t addr = (pte & PTE_PFN_MASK);
+<<<<<<< HEAD
 
+=======
+#if 0
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* If Linux is trying to set a WC pte, then map to the Xen WC.
 	 * If _PAGE_PAT is set, then it probably means it is really
 	 * _PAGE_PSE, so avoid fiddling with the PAT mapping and hope
@@ -448,7 +522,11 @@ static pte_t xen_make_pte(pteval_t pte)
 		if ((pte & (_PAGE_PCD | _PAGE_PWT)) == _PAGE_PWT)
 			pte = (pte & ~(_PAGE_PCD | _PAGE_PWT)) | _PAGE_PAT;
 	}
+<<<<<<< HEAD
 
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Unprivileged domains are allowed to do IOMAPpings for
 	 * PCI passthrough, but not map ISA space.  The ISA
@@ -467,6 +545,7 @@ static pte_t xen_make_pte(pteval_t pte)
 }
 PV_CALLEE_SAVE_REGS_THUNK(xen_make_pte);
 
+<<<<<<< HEAD
 #ifdef CONFIG_XEN_DEBUG
 pte_t xen_make_pte_debug(pteval_t pte)
 {
@@ -502,6 +581,8 @@ pte_t xen_make_pte_debug(pteval_t pte)
 PV_CALLEE_SAVE_REGS_THUNK(xen_make_pte_debug);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static pgd_t xen_make_pgd(pgdval_t pgd)
 {
 	pgd = pte_pfn_to_mfn(pgd);
@@ -535,6 +616,11 @@ static void xen_set_pud_hyper(pud_t *ptr, pud_t val)
 
 static void xen_set_pud(pud_t *ptr, pud_t val)
 {
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_set_pud(ptr, val);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* If page is not pinned, we can just update the entry
 	   directly */
 	if (!xen_page_pinned(ptr)) {
@@ -548,17 +634,29 @@ static void xen_set_pud(pud_t *ptr, pud_t val)
 #ifdef CONFIG_X86_PAE
 static void xen_set_pte_atomic(pte_t *ptep, pte_t pte)
 {
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_set_pte_atomic(ptep, pte);
+>>>>>>> refs/remotes/origin/cm-10.0
 	set_64bit((u64 *)ptep, native_pte_val(pte));
 }
 
 static void xen_pte_clear(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
 {
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_pte_clear(mm, addr, ptep);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!xen_batched_set_pte(ptep, native_make_pte(0)))
 		native_pte_clear(mm, addr, ptep);
 }
 
 static void xen_pmd_clear(pmd_t *pmdp)
 {
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_pmd_clear(pmdp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	set_pmd(pmdp, __pmd(0));
 }
 #endif	/* CONFIG_X86_PAE */
@@ -634,6 +732,11 @@ static void xen_set_pgd(pgd_t *ptr, pgd_t val)
 {
 	pgd_t *user_ptr = xen_get_user_pgd(ptr);
 
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_set_pgd(ptr, user_ptr, val);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* If page is not pinned, we can just update the entry
 	   directly */
 	if (!xen_page_pinned(ptr)) {
@@ -793,6 +896,7 @@ static void xen_pte_unlock(void *v)
 
 static void xen_do_pin(unsigned level, unsigned long pfn)
 {
+<<<<<<< HEAD
 	struct mmuext_op *op;
 	struct multicall_space mcs;
 
@@ -801,6 +905,14 @@ static void xen_do_pin(unsigned level, unsigned long pfn)
 	op->cmd = level;
 	op->arg1.mfn = pfn_to_mfn(pfn);
 	MULTI_mmuext_op(mcs.mc, op, 1, NULL, DOMID_SELF);
+=======
+	struct mmuext_op op;
+
+	op.cmd = level;
+	op.arg1.mfn = pfn_to_mfn(pfn);
+
+	xen_extend_mmuext_op(&op);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int xen_pin_page(struct mm_struct *mm, struct page *page,
@@ -868,6 +980,11 @@ static int xen_pin_page(struct mm_struct *mm, struct page *page,
    read-only, and can be pinned. */
 static void __xen_pgd_pin(struct mm_struct *mm, pgd_t *pgd)
 {
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_pgd_pin(mm, pgd);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	xen_mc_batch();
 
 	if (__xen_pgd_walk(mm, pgd, xen_pin_page, USER_LIMIT)) {
@@ -993,6 +1110,11 @@ static int xen_unpin_page(struct mm_struct *mm, struct page *page,
 /* Release a pagetables pages back as normal RW */
 static void __xen_pgd_unpin(struct mm_struct *mm, pgd_t *pgd)
 {
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_pgd_unpin(mm, pgd);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	xen_mc_batch();
 
 	xen_do_pin(MMUEXT_UNPIN_TABLE, PFN_DOWN(__pa(pgd)));
@@ -1069,14 +1191,24 @@ static void drop_other_mm_ref(void *info)
 	struct mm_struct *mm = info;
 	struct mm_struct *active_mm;
 
+<<<<<<< HEAD
 	active_mm = percpu_read(cpu_tlbstate.active_mm);
 
 	if (active_mm == mm && percpu_read(cpu_tlbstate.state) != TLBSTATE_OK)
+=======
+	active_mm = this_cpu_read(cpu_tlbstate.active_mm);
+
+	if (active_mm == mm && this_cpu_read(cpu_tlbstate.state) != TLBSTATE_OK)
+>>>>>>> refs/remotes/origin/cm-10.0
 		leave_mm(smp_processor_id());
 
 	/* If this cpu still has a stale cr3 reference, then make sure
 	   it has been flushed. */
+<<<<<<< HEAD
 	if (percpu_read(xen_current_cr3) == __pa(mm->pgd))
+=======
+	if (this_cpu_read(xen_current_cr3) == __pa(mm->pgd))
+>>>>>>> refs/remotes/origin/cm-10.0
 		load_cr3(swapper_pg_dir);
 }
 
@@ -1183,24 +1315,62 @@ static void __init xen_pagetable_setup_done(pgd_t *base)
 
 static void xen_write_cr2(unsigned long cr2)
 {
+<<<<<<< HEAD
 	percpu_read(xen_vcpu)->arch.cr2 = cr2;
+=======
+	this_cpu_read(xen_vcpu)->arch.cr2 = cr2;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static unsigned long xen_read_cr2(void)
 {
+<<<<<<< HEAD
 	return percpu_read(xen_vcpu)->arch.cr2;
+=======
+	return this_cpu_read(xen_vcpu)->arch.cr2;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 unsigned long xen_read_cr2_direct(void)
 {
+<<<<<<< HEAD
 	return percpu_read(xen_vcpu_info.arch.cr2);
 }
 
+=======
+	return this_cpu_read(xen_vcpu_info.arch.cr2);
+}
+
+void xen_flush_tlb_all(void)
+{
+	struct mmuext_op *op;
+	struct multicall_space mcs;
+
+	trace_xen_mmu_flush_tlb_all(0);
+
+	preempt_disable();
+
+	mcs = xen_mc_entry(sizeof(*op));
+
+	op = mcs.args;
+	op->cmd = MMUEXT_TLB_FLUSH_ALL;
+	MULTI_mmuext_op(mcs.mc, op, 1, NULL, DOMID_SELF);
+
+	xen_mc_issue(PARAVIRT_LAZY_MMU);
+
+	preempt_enable();
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 static void xen_flush_tlb(void)
 {
 	struct mmuext_op *op;
 	struct multicall_space mcs;
 
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_flush_tlb(0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	preempt_disable();
 
 	mcs = xen_mc_entry(sizeof(*op));
@@ -1219,6 +1389,11 @@ static void xen_flush_tlb_single(unsigned long addr)
 	struct mmuext_op *op;
 	struct multicall_space mcs;
 
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_flush_tlb_single(addr);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	preempt_disable();
 
 	mcs = xen_mc_entry(sizeof(*op));
@@ -1245,6 +1420,11 @@ static void xen_flush_tlb_others(const struct cpumask *cpus,
 	} *args;
 	struct multicall_space mcs;
 
+<<<<<<< HEAD
+=======
+	trace_xen_mmu_flush_tlb_others(cpus, mm, va);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (cpumask_empty(cpus))
 		return;		/* nothing to do */
 
@@ -1270,20 +1450,36 @@ static void xen_flush_tlb_others(const struct cpumask *cpus,
 
 static unsigned long xen_read_cr3(void)
 {
+<<<<<<< HEAD
 	return percpu_read(xen_cr3);
+=======
+	return this_cpu_read(xen_cr3);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void set_current_cr3(void *v)
 {
+<<<<<<< HEAD
 	percpu_write(xen_current_cr3, (unsigned long)v);
+=======
+	this_cpu_write(xen_current_cr3, (unsigned long)v);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __xen_write_cr3(bool kernel, unsigned long cr3)
 {
+<<<<<<< HEAD
 	struct mmuext_op *op;
 	struct multicall_space mcs;
 	unsigned long mfn;
 
+=======
+	struct mmuext_op op;
+	unsigned long mfn;
+
+	trace_xen_mmu_write_cr3(kernel, cr3);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (cr3)
 		mfn = pfn_to_mfn(PFN_DOWN(cr3));
 	else
@@ -1291,6 +1487,7 @@ static void __xen_write_cr3(bool kernel, unsigned long cr3)
 
 	WARN_ON(mfn == 0 && kernel);
 
+<<<<<<< HEAD
 	mcs = __xen_mc_entry(sizeof(*op));
 
 	op = mcs.args;
@@ -1301,6 +1498,15 @@ static void __xen_write_cr3(bool kernel, unsigned long cr3)
 
 	if (kernel) {
 		percpu_write(xen_cr3, cr3);
+=======
+	op.cmd = kernel ? MMUEXT_NEW_BASEPTR : MMUEXT_NEW_USER_BASEPTR;
+	op.arg1.mfn = mfn;
+
+	xen_extend_mmuext_op(&op);
+
+	if (kernel) {
+		this_cpu_write(xen_cr3, cr3);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Update xen_current_cr3 once the batch has actually
 		   been submitted. */
@@ -1316,7 +1522,11 @@ static void xen_write_cr3(unsigned long cr3)
 
 	/* Update while interrupts are disabled, so its atomic with
 	   respect to ipis */
+<<<<<<< HEAD
 	percpu_write(xen_cr3, cr3);
+=======
+	this_cpu_write(xen_cr3, cr3);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__xen_write_cr3(true, cr3);
 
@@ -1456,6 +1666,7 @@ static void __init xen_release_pmd_init(unsigned long pfn)
 	make_lowmem_page_readwrite(__va(PFN_PHYS(pfn)));
 }
 
+<<<<<<< HEAD
 /* This needs to make sure the new pte page is pinned iff its being
    attached to a pinned pagetable. */
 static void xen_alloc_ptpage(struct mm_struct *mm, unsigned long pfn, unsigned level)
@@ -1469,6 +1680,54 @@ static void xen_alloc_ptpage(struct mm_struct *mm, unsigned long pfn, unsigned l
 			make_lowmem_page_readonly(__va(PFN_PHYS((unsigned long)pfn)));
 			if (level == PT_PTE && USE_SPLIT_PTLOCKS)
 				pin_pagetable_pfn(MMUEXT_PIN_L1_TABLE, pfn);
+=======
+static inline void __pin_pagetable_pfn(unsigned cmd, unsigned long pfn)
+{
+	struct multicall_space mcs;
+	struct mmuext_op *op;
+
+	mcs = __xen_mc_entry(sizeof(*op));
+	op = mcs.args;
+	op->cmd = cmd;
+	op->arg1.mfn = pfn_to_mfn(pfn);
+
+	MULTI_mmuext_op(mcs.mc, mcs.args, 1, NULL, DOMID_SELF);
+}
+
+static inline void __set_pfn_prot(unsigned long pfn, pgprot_t prot)
+{
+	struct multicall_space mcs;
+	unsigned long addr = (unsigned long)__va(pfn << PAGE_SHIFT);
+
+	mcs = __xen_mc_entry(0);
+	MULTI_update_va_mapping(mcs.mc, (unsigned long)addr,
+				pfn_pte(pfn, prot), 0);
+}
+
+/* This needs to make sure the new pte page is pinned iff its being
+   attached to a pinned pagetable. */
+static inline void xen_alloc_ptpage(struct mm_struct *mm, unsigned long pfn,
+				    unsigned level)
+{
+	bool pinned = PagePinned(virt_to_page(mm->pgd));
+
+	trace_xen_mmu_alloc_ptpage(mm, pfn, level, pinned);
+
+	if (pinned) {
+		struct page *page = pfn_to_page(pfn);
+
+		SetPagePinned(page);
+
+		if (!PageHighMem(page)) {
+			xen_mc_batch();
+
+			__set_pfn_prot(pfn, PAGE_KERNEL_RO);
+
+			if (level == PT_PTE && USE_SPLIT_PTLOCKS)
+				__pin_pagetable_pfn(MMUEXT_PIN_L1_TABLE, pfn);
+
+			xen_mc_issue(PARAVIRT_LAZY_MMU);
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 			/* make sure there are no stray mappings of
 			   this page */
@@ -1488,6 +1747,7 @@ static void xen_alloc_pmd(struct mm_struct *mm, unsigned long pfn)
 }
 
 /* This should never happen until we're OK to use struct page */
+<<<<<<< HEAD
 static void xen_release_ptpage(unsigned long pfn, unsigned level)
 {
 	struct page *page = pfn_to_page(pfn);
@@ -1497,6 +1757,25 @@ static void xen_release_ptpage(unsigned long pfn, unsigned level)
 			if (level == PT_PTE && USE_SPLIT_PTLOCKS)
 				pin_pagetable_pfn(MMUEXT_UNPIN_TABLE, pfn);
 			make_lowmem_page_readwrite(__va(PFN_PHYS(pfn)));
+=======
+static inline void xen_release_ptpage(unsigned long pfn, unsigned level)
+{
+	struct page *page = pfn_to_page(pfn);
+	bool pinned = PagePinned(page);
+
+	trace_xen_mmu_release_ptpage(pfn, level, pinned);
+
+	if (pinned) {
+		if (!PageHighMem(page)) {
+			xen_mc_batch();
+
+			if (level == PT_PTE && USE_SPLIT_PTLOCKS)
+				__pin_pagetable_pfn(MMUEXT_UNPIN_TABLE, pfn);
+
+			__set_pfn_prot(pfn, PAGE_KERNEL);
+
+			xen_mc_issue(PARAVIRT_LAZY_MMU);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		ClearPagePinned(page);
 	}
@@ -1639,10 +1918,15 @@ void __init xen_setup_machphys_mapping(void)
 		machine_to_phys_nr = MACH2PHYS_NR_ENTRIES;
 	}
 #ifdef CONFIG_X86_32
+<<<<<<< HEAD
 	if ((machine_to_phys_mapping + machine_to_phys_nr)
 	    < machine_to_phys_mapping)
 		machine_to_phys_nr = (unsigned long *)NULL
 				     - machine_to_phys_mapping;
+=======
+	WARN_ON((machine_to_phys_mapping + (machine_to_phys_nr - 1))
+		< machine_to_phys_mapping);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 }
 
@@ -1729,10 +2013,15 @@ pgd_t * __init xen_setup_kernel_pagetable(pgd_t *pgd,
 	__xen_write_cr3(true, __pa(pgd));
 	xen_mc_issue(PARAVIRT_LAZY_CPU);
 
+<<<<<<< HEAD
 	memblock_x86_reserve_range(__pa(xen_start_info->pt_base),
 		      __pa(xen_start_info->pt_base +
 			   xen_start_info->nr_pt_frames * PAGE_SIZE),
 		      "XEN PAGETABLES");
+=======
+	memblock_reserve(__pa(xen_start_info->pt_base),
+			 xen_start_info->nr_pt_frames * PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return pgd;
 }
@@ -1785,7 +2074,13 @@ pgd_t * __init xen_setup_kernel_pagetable(pgd_t *pgd,
 	initial_kernel_pmd =
 		extend_brk(sizeof(pmd_t) * PTRS_PER_PMD, PAGE_SIZE);
 
+<<<<<<< HEAD
 	max_pfn_mapped = PFN_DOWN(__pa(xen_start_info->mfn_list));
+=======
+	max_pfn_mapped = PFN_DOWN(__pa(xen_start_info->pt_base) +
+				  xen_start_info->nr_pt_frames * PAGE_SIZE +
+				  512*1024);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kernel_pmd = m2v(pgd[KERNEL_PGD_BOUNDARY].pgd);
 	memcpy(initial_kernel_pmd, kernel_pmd, sizeof(pmd_t) * PTRS_PER_PMD);
@@ -1806,16 +2101,25 @@ pgd_t * __init xen_setup_kernel_pagetable(pgd_t *pgd,
 			  PFN_DOWN(__pa(initial_page_table)));
 	xen_write_cr3(__pa(initial_page_table));
 
+<<<<<<< HEAD
 	memblock_x86_reserve_range(__pa(xen_start_info->pt_base),
 		      __pa(xen_start_info->pt_base +
 			   xen_start_info->nr_pt_frames * PAGE_SIZE),
 		      "XEN PAGETABLES");
+=======
+	memblock_reserve(__pa(xen_start_info->pt_base),
+			 xen_start_info->nr_pt_frames * PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return initial_page_table;
 }
 #endif	/* CONFIG_X86_64 */
 
 static unsigned char dummy_mapping[PAGE_SIZE] __page_aligned_bss;
+<<<<<<< HEAD
+=======
+static unsigned char fake_ioapic_mapping[PAGE_SIZE] __page_aligned_bss;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void xen_set_fixmap(unsigned idx, phys_addr_t phys, pgprot_t prot)
 {
@@ -1836,6 +2140,10 @@ static void xen_set_fixmap(unsigned idx, phys_addr_t phys, pgprot_t prot)
 # endif
 #else
 	case VSYSCALL_LAST_PAGE ... VSYSCALL_FIRST_PAGE:
+<<<<<<< HEAD
+=======
+	case VVAR_PAGE:
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	case FIX_TEXT_POKE0:
 	case FIX_TEXT_POKE1:
@@ -1855,7 +2163,11 @@ static void xen_set_fixmap(unsigned idx, phys_addr_t phys, pgprot_t prot)
 		 * We just don't map the IO APIC - all access is via
 		 * hypercalls.  Keep the address in the pte for reference.
 		 */
+<<<<<<< HEAD
 		pte = pfn_pte(PFN_DOWN(__pa(dummy_mapping)), PAGE_KERNEL);
+=======
+		pte = pfn_pte(PFN_DOWN(__pa(fake_ioapic_mapping)), PAGE_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 #endif
 
@@ -1876,7 +2188,12 @@ static void xen_set_fixmap(unsigned idx, phys_addr_t phys, pgprot_t prot)
 #ifdef CONFIG_X86_64
 	/* Replicate changes to map the vsyscall page into the user
 	   pagetable vsyscall mapping. */
+<<<<<<< HEAD
 	if (idx >= VSYSCALL_LAST_PAGE && idx <= VSYSCALL_FIRST_PAGE) {
+=======
+	if ((idx >= VSYSCALL_LAST_PAGE && idx <= VSYSCALL_FIRST_PAGE) ||
+	    idx == VVAR_PAGE) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned long vaddr = __fix_to_virt(idx);
 		set_pte_vaddr_pud(level3_user_vsyscall, vaddr, pte);
 	}
@@ -1908,9 +2225,12 @@ void __init xen_ident_map_ISA(void)
 
 static void __init xen_post_allocator_init(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_XEN_DEBUG
 	pv_mmu_ops.make_pte = PV_CALLEE_SAVE(xen_make_pte_debug);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pv_mmu_ops.set_pte = xen_set_pte;
 	pv_mmu_ops.set_pmd = xen_set_pmd;
 	pv_mmu_ops.set_pud = xen_set_pud;
@@ -2023,6 +2343,10 @@ void __init xen_init_mmu_ops(void)
 	pv_mmu_ops = xen_mmu_ops;
 
 	memset(dummy_mapping, 0xff, PAGE_SIZE);
+<<<<<<< HEAD
+=======
+	memset(fake_ioapic_mapping, 0xfd, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Protected by xen_reservation_lock. */
@@ -2316,11 +2640,16 @@ int xen_remap_domain_mfn_range(struct vm_area_struct *vma,
 	err = 0;
 out:
 
+<<<<<<< HEAD
 	flush_tlb_all();
+=======
+	xen_flush_tlb_all();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return err;
 }
 EXPORT_SYMBOL_GPL(xen_remap_domain_mfn_range);
+<<<<<<< HEAD
 
 #ifdef CONFIG_XEN_DEBUG_FS
 static int p2m_dump_open(struct inode *inode, struct file *filp)
@@ -2335,3 +2664,5 @@ static const struct file_operations p2m_dump_fops = {
 	.release	= single_release,
 };
 #endif /* CONFIG_XEN_DEBUG_FS */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

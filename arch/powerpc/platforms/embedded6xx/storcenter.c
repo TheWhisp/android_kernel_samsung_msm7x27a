@@ -16,7 +16,10 @@
 #include <linux/initrd.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/prom.h>
 #include <asm/mpic.h>
@@ -77,12 +80,17 @@ static void __init storcenter_setup_arch(void)
 }
 
 /*
+<<<<<<< HEAD
  * Interrupt setup and service.  Interrrupts on the turbostation come
+=======
+ * Interrupt setup and service.  Interrupts on the turbostation come
+>>>>>>> refs/remotes/origin/cm-10.0
  * from the four PCI slots plus onboard 8241 devices: I2C, DUART.
  */
 static void __init storcenter_init_IRQ(void)
 {
 	struct mpic *mpic;
+<<<<<<< HEAD
 	struct device_node *dnp;
 	const void *prop;
 	int size;
@@ -104,14 +112,23 @@ static void __init storcenter_init_IRQ(void)
 
 	of_node_put(dnp);
 
+=======
+
+	mpic = mpic_alloc(NULL, 0, 0, 16, 0, " OpenPIC  ");
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(mpic == NULL);
 
 	/*
 	 * 16 Serial Interrupts followed by 16 Internal Interrupts.
 	 * I2C is the second internal, so it is at 17, 0x11020.
 	 */
+<<<<<<< HEAD
 	mpic_assign_isu(mpic, 0, paddr + 0x10200);
 	mpic_assign_isu(mpic, 1, paddr + 0x11000);
+=======
+	mpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);
+	mpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mpic_init(mpic);
 }

@@ -71,9 +71,19 @@ struct ath_regulatory {
 	char alpha2[2];
 	u16 country_code;
 	u16 max_power_level;
+<<<<<<< HEAD
 	u32 tp_scale;
 	u16 current_rd;
 	u16 current_rd_ext;
+=======
+#if 1 // by bbelief
+	u32 tp_scale;
+#endif
+	u16 current_rd;
+#if 1 // by bbelief
+	u16 current_rd_ext;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	int16_t power_limit;
 	struct reg_dmn_pair_mapping *regpair;
 };
@@ -140,14 +150,25 @@ struct ath_common {
 	u8 curbssid[ETH_ALEN];
 	u8 bssidmask[ETH_ALEN];
 
+<<<<<<< HEAD
 	u8 tx_chainmask;
 	u8 rx_chainmask;
+=======
+#if 1 // by bbelief
+	u8 tx_chainmask;
+	u8 rx_chainmask;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	u32 rx_bufsize;
 
 	u32 keymax;
 	DECLARE_BITMAP(keymap, ATH_KEYMAX);
 	DECLARE_BITMAP(tkip_keymap, ATH_KEYMAX);
+<<<<<<< HEAD
+=======
+	DECLARE_BITMAP(ccmp_keymap, ATH_KEYMAX);
+>>>>>>> refs/remotes/origin/cm-10.0
 	enum ath_crypt_caps crypt_caps;
 
 	unsigned int clockrate;
@@ -161,6 +182,12 @@ struct ath_common {
 	const struct ath_bus_ops *bus_ops;
 
 	bool btcoex_enabled;
+<<<<<<< HEAD
+=======
+#if 0 // by bbelief	
+	bool disable_ani;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct sk_buff *ath_rxbuf_alloc(struct ath_common *common,
@@ -238,6 +265,10 @@ enum ATH_DEBUG {
 	ATH_DBG_BTCOEX		= 0x00002000,
 	ATH_DBG_WMI		= 0x00004000,
 	ATH_DBG_BSTUCK		= 0x00008000,
+<<<<<<< HEAD
+=======
+	ATH_DBG_MCI		= 0x00010000,
+>>>>>>> refs/remotes/origin/cm-10.0
 	ATH_DBG_ANY		= 0xffffffff
 };
 
@@ -245,10 +276,17 @@ enum ATH_DEBUG {
 
 #ifdef CONFIG_ATH_DEBUG
 
+<<<<<<< HEAD
 #define ath_dbg(common, dbg_mask, fmt, ...)			\
 ({								\
 	int rtn;						\
 	if ((common)->debug_mask & dbg_mask)			\
+=======
+#define ath_dbg(common, dbg_mask, fmt, ...)				\
+({								\
+	int rtn;						\
+	if ((common)->debug_mask & dbg_mask)				\
+>>>>>>> refs/remotes/origin/cm-10.0
 		rtn = ath_printk(KERN_DEBUG, common, fmt,	\
 				 ##__VA_ARGS__);		\
 	else							\
@@ -263,7 +301,11 @@ enum ATH_DEBUG {
 
 static inline  __attribute__ ((format (printf, 3, 4))) int
 ath_dbg(struct ath_common *common, enum ATH_DEBUG dbg_mask,
+<<<<<<< HEAD
 	const char *fmt, ...)
+=======
+	     const char *fmt, ...)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return 0;
 }

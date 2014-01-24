@@ -75,7 +75,10 @@ struct vb2_mem_ops {
 
 struct vb2_plane {
 	void			*mem_priv;
+<<<<<<< HEAD
 	int			mapped:1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -106,6 +109,10 @@ enum vb2_fileio_flags {
 /**
  * enum vb2_buffer_state - current video buffer state
  * @VB2_BUF_STATE_DEQUEUED:	buffer under userspace control
+<<<<<<< HEAD
+=======
+ * @VB2_BUF_STATE_PREPARED:	buffer prepared in videobuf and by the driver
+>>>>>>> refs/remotes/origin/cm-10.0
  * @VB2_BUF_STATE_QUEUED:	buffer queued in videobuf, but not in driver
  * @VB2_BUF_STATE_ACTIVE:	buffer queued in driver and possibly used
  *				in a hardware operation
@@ -117,6 +124,10 @@ enum vb2_fileio_flags {
  */
 enum vb2_buffer_state {
 	VB2_BUF_STATE_DEQUEUED,
+<<<<<<< HEAD
+=======
+	VB2_BUF_STATE_PREPARED,
+>>>>>>> refs/remotes/origin/cm-10.0
 	VB2_BUF_STATE_QUEUED,
 	VB2_BUF_STATE_ACTIVE,
 	VB2_BUF_STATE_DONE,
@@ -147,7 +158,10 @@ struct vb2_queue;
  * @done_entry:		entry on the list that stores all buffers ready to
  *			be dequeued to userspace
  * @planes:		private per-plane information; do not change
+<<<<<<< HEAD
  * @num_planes_mapped:	number of mapped planes; do not change
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct vb2_buffer {
 	struct v4l2_buffer	v4l2_buf;
@@ -164,12 +178,16 @@ struct vb2_buffer {
 	struct list_head	done_entry;
 
 	struct vb2_plane	planes[VIDEO_MAX_PLANES];
+<<<<<<< HEAD
 	unsigned int		num_planes_mapped;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
  * struct vb2_ops - driver-specific callbacks
  *
+<<<<<<< HEAD
  * @queue_setup:	called from a VIDIOC_REQBUFS handler, before
  *			memory allocation; driver should return the required
  *			number of buffers in num_buffers, the required number
@@ -177,6 +195,23 @@ struct vb2_buffer {
  *			plane should be set in the sizes[] array and optional
  *			per-plane allocator specific context in alloc_ctxs[]
  *			array
+=======
+ * @queue_setup:	called from VIDIOC_REQBUFS and VIDIOC_CREATE_BUFS
+ *			handlers before memory allocation, or, if
+ *			*num_planes != 0, after the allocation to verify a
+ *			smaller number of buffers. Driver should return
+ *			the required number of buffers in *num_buffers, the
+ *			required number of planes per buffer in *num_planes; the
+ *			size of each plane should be set in the sizes[] array
+ *			and optional per-plane allocator specific context in the
+ *			alloc_ctxs[] array. When called from VIDIOC_REQBUFS,
+ *			fmt == NULL, the driver has to use the currently
+ *			configured format and *num_buffers is the total number
+ *			of buffers, that are being allocated. When called from
+ *			VIDIOC_CREATE_BUFS, fmt != NULL and it describes the
+ *			target frame format. In this case *num_buffers are being
+ *			allocated additionally to q->num_buffers.
+>>>>>>> refs/remotes/origin/cm-10.0
  * @wait_prepare:	release any locks taken while calling vb2 functions;
  *			it is called before an ioctl needs to wait for a new
  *			buffer to arrive; required to avoid a deadlock in
@@ -189,30 +224,61 @@ struct vb2_buffer {
  *			perform additional buffer-related initialization;
  *			initialization failure (return != 0) will prevent
  *			queue setup from completing successfully; optional
+<<<<<<< HEAD
  * @buf_prepare:	called every time the buffer is queued from userspace;
  *			drivers may perform any initialization required before
  *			each hardware operation in this callback;
  *			if an error is returned, the buffer will not be queued
  *			in driver; optional
+=======
+ * @buf_prepare:	called every time the buffer is queued from userspace
+ *			and from the VIDIOC_PREPARE_BUF ioctl; drivers may
+ *			perform any initialization required before each hardware
+ *			operation in this callback; if an error is returned, the
+ *			buffer will not be queued in driver; optional
+>>>>>>> refs/remotes/origin/cm-10.0
  * @buf_finish:		called before every dequeue of the buffer back to
  *			userspace; drivers may perform any operations required
  *			before userspace accesses the buffer; optional
  * @buf_cleanup:	called once before the buffer is freed; drivers may
  *			perform any additional cleanup; optional
+<<<<<<< HEAD
  * @start_streaming:	called once before entering 'streaming' state; enables
  *			driver to receive buffers over buf_queue() callback
+=======
+ * @start_streaming:	called once to enter 'streaming' state; the driver may
+ *			receive buffers with @buf_queue callback before
+ *			@start_streaming is called; the driver gets the number
+ *			of already queued buffers in count parameter; driver
+ *			can return an error if hardware fails or not enough
+ *			buffers has been queued, in such case all buffers that
+ *			have been already given by the @buf_queue callback are
+ *			invalidated.
+>>>>>>> refs/remotes/origin/cm-10.0
  * @stop_streaming:	called when 'streaming' state must be disabled; driver
  *			should stop any DMA transactions or wait until they
  *			finish and give back all buffers it got from buf_queue()
  *			callback; may use vb2_wait_for_all_buffers() function
  * @buf_queue:		passes buffer vb to the driver; driver may start
  *			hardware operation on this buffer; driver should give
+<<<<<<< HEAD
  *			the buffer back by calling vb2_buffer_done() function
  */
 struct vb2_ops {
 	int (*queue_setup)(struct vb2_queue *q, unsigned int *num_buffers,
 			   unsigned int *num_planes, unsigned long sizes[],
 			   void *alloc_ctxs[]);
+=======
+ *			the buffer back by calling vb2_buffer_done() function;
+ *			it is allways called after calling STREAMON ioctl;
+ *			might be called before start_streaming callback if user
+ *			pre-queued buffers before calling STREAMON
+ */
+struct vb2_ops {
+	int (*queue_setup)(struct vb2_queue *q, const struct v4l2_format *fmt,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], void *alloc_ctxs[]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	void (*wait_prepare)(struct vb2_queue *q);
 	void (*wait_finish)(struct vb2_queue *q);
@@ -222,7 +288,11 @@ struct vb2_ops {
 	int (*buf_finish)(struct vb2_buffer *vb);
 	void (*buf_cleanup)(struct vb2_buffer *vb);
 
+<<<<<<< HEAD
 	int (*start_streaming)(struct vb2_queue *q);
+=======
+	int (*start_streaming)(struct vb2_queue *q, unsigned int count);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*stop_streaming)(struct vb2_queue *q);
 
 	void (*buf_queue)(struct vb2_buffer *vb);
@@ -276,6 +346,10 @@ struct vb2_queue {
 	wait_queue_head_t		done_wq;
 
 	void				*alloc_ctx[VIDEO_MAX_PLANES];
+<<<<<<< HEAD
+=======
+	unsigned int			plane_sizes[VIDEO_MAX_PLANES];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	unsigned int			streaming:1;
 
@@ -291,6 +365,12 @@ int vb2_wait_for_all_buffers(struct vb2_queue *q);
 int vb2_querybuf(struct vb2_queue *q, struct v4l2_buffer *b);
 int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req);
 
+<<<<<<< HEAD
+=======
+int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create);
+int vb2_prepare_buf(struct vb2_queue *q, struct v4l2_buffer *b);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int vb2_queue_init(struct vb2_queue *q);
 
 void vb2_queue_release(struct vb2_queue *q);
@@ -302,6 +382,16 @@ int vb2_streamon(struct vb2_queue *q, enum v4l2_buf_type type);
 int vb2_streamoff(struct vb2_queue *q, enum v4l2_buf_type type);
 
 int vb2_mmap(struct vb2_queue *q, struct vm_area_struct *vma);
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_MMU
+unsigned long vb2_get_unmapped_area(struct vb2_queue *q,
+				    unsigned long addr,
+				    unsigned long len,
+				    unsigned long pgoff,
+				    unsigned long flags);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned int vb2_poll(struct vb2_queue *q, struct file *file, poll_table *wait);
 size_t vb2_read(struct vb2_queue *q, char __user *data, size_t count,
 		loff_t *ppos, int nonblock);

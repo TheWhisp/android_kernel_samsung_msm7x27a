@@ -27,6 +27,10 @@
 #include <linux/syscore_ops.h>
 #include <linux/delay.h>
 #include <linux/timex.h>
+<<<<<<< HEAD
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/dmar.h>
 #include <linux/init.h>
 #include <linux/cpu.h>
@@ -37,9 +41,14 @@
 #include <asm/perf_event.h>
 #include <asm/x86_init.h>
 #include <asm/pgalloc.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/mpspec.h>
 #include <asm/i8253.h>
+=======
+#include <linux/atomic.h>
+#include <asm/mpspec.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/i8259.h>
 #include <asm/proto.h>
 #include <asm/apic.h>
@@ -48,6 +57,10 @@
 #include <asm/hpet.h>
 #include <asm/idle.h>
 #include <asm/mtrr.h>
+<<<<<<< HEAD
+=======
+#include <asm/time.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/smp.h>
 #include <asm/mce.h>
 #include <asm/tsc.h>
@@ -145,6 +158,7 @@ __setup("apicpmtimer", setup_apicpmtimer);
 int x2apic_mode;
 #ifdef CONFIG_X86_X2APIC
 /* x2apic enabled before OS handover */
+<<<<<<< HEAD
 static int x2apic_preenabled;
 static __init int setup_nox2apic(char *str)
 {
@@ -155,6 +169,28 @@ static __init int setup_nox2apic(char *str)
 	}
 
 	setup_clear_cpu_cap(X86_FEATURE_X2APIC);
+=======
+int x2apic_preenabled;
+static int x2apic_disabled;
+static int nox2apic;
+static __init int setup_nox2apic(char *str)
+{
+	if (x2apic_enabled()) {
+		int apicid = native_apic_msr_read(APIC_ID);
+
+		if (apicid >= 255) {
+			pr_warning("Apicid: %08x, cannot enforce nox2apic\n",
+				   apicid);
+			return 0;
+		}
+
+		pr_warning("x2apic already enabled. will disable it\n");
+	} else
+		setup_clear_cpu_cap(X86_FEATURE_X2APIC);
+
+	nox2apic = 1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 early_param("nox2apic", setup_nox2apic);
@@ -185,7 +221,11 @@ static struct resource lapic_resource = {
 	.flags = IORESOURCE_MEM | IORESOURCE_BUSY,
 };
 
+<<<<<<< HEAD
 static unsigned int calibration_result;
+=======
+unsigned int lapic_timer_frequency = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void apic_pm_activate(void);
 
@@ -249,6 +289,10 @@ u32 native_safe_apic_wait_icr_idle(void)
 		send_status = apic_read(APIC_ICR) & APIC_ICR_BUSY;
 		if (!send_status)
 			break;
+<<<<<<< HEAD
+=======
+		inc_irq_stat(icr_read_retry_count);
+>>>>>>> refs/remotes/origin/cm-10.0
 		udelay(100);
 	} while (timeout++ < 1000);
 
@@ -371,20 +415,39 @@ static inline int eilvt_entry_is_changeable(unsigned int old, unsigned int new)
 
 static unsigned int reserve_eilvt_offset(int offset, unsigned int new)
 {
+<<<<<<< HEAD
 	unsigned int rsvd;			/* 0: uninitialized */
+=======
+	unsigned int rsvd, vector;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (offset >= APIC_EILVT_NR_MAX)
 		return ~0;
 
+<<<<<<< HEAD
 	rsvd = atomic_read(&eilvt_offsets[offset]) & ~APIC_EILVT_MASKED;
 	do {
 		if (rsvd &&
 		    !eilvt_entry_is_changeable(rsvd, new))
+=======
+	rsvd = atomic_read(&eilvt_offsets[offset]);
+	do {
+		vector = rsvd & ~APIC_EILVT_MASKED;	/* 0: unassigned */
+		if (vector && !eilvt_entry_is_changeable(vector, new))
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* may not change if vectors are different */
 			return rsvd;
 		rsvd = atomic_cmpxchg(&eilvt_offsets[offset], rsvd, new);
 	} while (rsvd != new);
 
+<<<<<<< HEAD
+=======
+	rsvd &= ~APIC_EILVT_MASKED;
+	if (rsvd && rsvd != vector)
+		pr_info("LVT offset %d assigned for vector 0x%02x\n",
+			offset, rsvd);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return new;
 }
 
@@ -453,7 +516,11 @@ static void lapic_timer_setup(enum clock_event_mode mode,
 	switch (mode) {
 	case CLOCK_EVT_MODE_PERIODIC:
 	case CLOCK_EVT_MODE_ONESHOT:
+<<<<<<< HEAD
 		__setup_APIC_LVTT(calibration_result,
+=======
+		__setup_APIC_LVTT(lapic_timer_frequency,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  mode != CLOCK_EVT_MODE_PERIODIC, 1);
 		break;
 	case CLOCK_EVT_MODE_UNUSED:
@@ -637,6 +704,28 @@ static int __init calibrate_APIC_clock(void)
 	long delta, deltatsc;
 	int pm_referenced = 0;
 
+<<<<<<< HEAD
+=======
+	/**
+	 * check if lapic timer has already been calibrated by platform
+	 * specific routine, such as tsc calibration code. if so, we just fill
+	 * in the clockevent structure and return.
+	 */
+
+	if (lapic_timer_frequency) {
+		apic_printk(APIC_VERBOSE, "lapic timer already calibrated %d\n",
+				lapic_timer_frequency);
+		lapic_clockevent.mult = div_sc(lapic_timer_frequency/APIC_DIVISOR,
+					TICK_NSEC, lapic_clockevent.shift);
+		lapic_clockevent.max_delta_ns =
+			clockevent_delta2ns(0x7FFFFF, &lapic_clockevent);
+		lapic_clockevent.min_delta_ns =
+			clockevent_delta2ns(0xF, &lapic_clockevent);
+		lapic_clockevent.features &= ~CLOCK_EVT_FEAT_DUMMY;
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_disable();
 
 	/* Replace the global interrupt handler */
@@ -678,12 +767,20 @@ static int __init calibrate_APIC_clock(void)
 	lapic_clockevent.min_delta_ns =
 		clockevent_delta2ns(0xF, &lapic_clockevent);
 
+<<<<<<< HEAD
 	calibration_result = (delta * APIC_DIVISOR) / LAPIC_CAL_LOOPS;
+=======
+	lapic_timer_frequency = (delta * APIC_DIVISOR) / LAPIC_CAL_LOOPS;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	apic_printk(APIC_VERBOSE, "..... delta %ld\n", delta);
 	apic_printk(APIC_VERBOSE, "..... mult: %u\n", lapic_clockevent.mult);
 	apic_printk(APIC_VERBOSE, "..... calibration result: %u\n",
+<<<<<<< HEAD
 		    calibration_result);
+=======
+		    lapic_timer_frequency);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (cpu_has_tsc) {
 		apic_printk(APIC_VERBOSE, "..... CPU clock speed is "
@@ -694,13 +791,22 @@ static int __init calibrate_APIC_clock(void)
 
 	apic_printk(APIC_VERBOSE, "..... host bus clock speed is "
 		    "%u.%04u MHz.\n",
+<<<<<<< HEAD
 		    calibration_result / (1000000 / HZ),
 		    calibration_result % (1000000 / HZ));
+=======
+		    lapic_timer_frequency / (1000000 / HZ),
+		    lapic_timer_frequency % (1000000 / HZ));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Do a sanity check on the APIC calibration result
 	 */
+<<<<<<< HEAD
 	if (calibration_result < (1000000 / HZ)) {
+=======
+	if (lapic_timer_frequency < (1000000 / HZ)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		local_irq_enable();
 		pr_warning("APIC frequency too slow, disabling apic timer\n");
 		return -1;
@@ -856,8 +962,13 @@ void __irq_entry smp_apic_timer_interrupt(struct pt_regs *regs)
 	 * Besides, if we don't timer interrupts ignore the global
 	 * interrupt lock, which is the WrongThing (tm) to do.
 	 */
+<<<<<<< HEAD
 	exit_idle();
 	irq_enter();
+=======
+	irq_enter();
+	exit_idle();
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_apic_timer_interrupt();
 	irq_exit();
 
@@ -1411,6 +1522,48 @@ void __init bsp_end_local_APIC_setup(void)
 }
 
 #ifdef CONFIG_X86_X2APIC
+<<<<<<< HEAD
+=======
+/*
+ * Need to disable xapic and x2apic at the same time and then enable xapic mode
+ */
+static inline void __disable_x2apic(u64 msr)
+{
+	wrmsrl(MSR_IA32_APICBASE,
+	       msr & ~(X2APIC_ENABLE | XAPIC_ENABLE));
+	wrmsrl(MSR_IA32_APICBASE, msr & ~X2APIC_ENABLE);
+}
+
+static __init void disable_x2apic(void)
+{
+	u64 msr;
+
+	if (!cpu_has_x2apic)
+		return;
+
+	rdmsrl(MSR_IA32_APICBASE, msr);
+	if (msr & X2APIC_ENABLE) {
+		u32 x2apic_id = read_apic_id();
+
+		if (x2apic_id >= 255)
+			panic("Cannot disable x2apic, id: %08x\n", x2apic_id);
+
+		pr_info("Disabling x2apic\n");
+		__disable_x2apic(msr);
+
+		if (nox2apic) {
+			clear_cpu_cap(&cpu_data(0), X86_FEATURE_X2APIC);
+			setup_clear_cpu_cap(X86_FEATURE_X2APIC);
+		}
+
+		x2apic_disabled = 1;
+		x2apic_mode = 0;
+
+		register_lapic_address(mp_lapic_addr);
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void check_x2apic(void)
 {
 	if (x2apic_enabled()) {
@@ -1421,30 +1574,54 @@ void check_x2apic(void)
 
 void enable_x2apic(void)
 {
+<<<<<<< HEAD
 	int msr, msr2;
+=======
+	u64 msr;
+
+	rdmsrl(MSR_IA32_APICBASE, msr);
+	if (x2apic_disabled) {
+		__disable_x2apic(msr);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!x2apic_mode)
 		return;
 
+<<<<<<< HEAD
 	rdmsr(MSR_IA32_APICBASE, msr, msr2);
 	if (!(msr & X2APIC_ENABLE)) {
 		printk_once(KERN_INFO "Enabling x2apic\n");
 		wrmsr(MSR_IA32_APICBASE, msr | X2APIC_ENABLE, 0);
+=======
+	if (!(msr & X2APIC_ENABLE)) {
+		printk_once(KERN_INFO "Enabling x2apic\n");
+		wrmsrl(MSR_IA32_APICBASE, msr | X2APIC_ENABLE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 #endif /* CONFIG_X86_X2APIC */
 
 int __init enable_IR(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_INTR_REMAP
 	if (!intr_remapping_supported()) {
 		pr_debug("intr-remapping not supported\n");
 		return 0;
+=======
+#ifdef CONFIG_IRQ_REMAP
+	if (!intr_remapping_supported()) {
+		pr_debug("intr-remapping not supported\n");
+		return -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (!x2apic_preenabled && skip_ioapic_setup) {
 		pr_info("Skipped enabling intr-remap because of skipping "
 			"io-apic setup\n");
+<<<<<<< HEAD
 		return 0;
 	}
 
@@ -1457,6 +1634,14 @@ int __init enable_IR(void)
 
 #endif
 	return 0;
+=======
+		return -1;
+	}
+
+	return enable_intr_remapping();
+#endif
+	return -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void __init enable_IR_x2apic(void)
@@ -1472,25 +1657,52 @@ void __init enable_IR_x2apic(void)
 	ret = save_ioapic_entries();
 	if (ret) {
 		pr_info("Saving IO-APIC state failed: %d\n", ret);
+<<<<<<< HEAD
 		goto out;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	local_irq_save(flags);
 	legacy_pic->mask_all();
 	mask_ioapic_entries();
 
+<<<<<<< HEAD
 	if (dmar_table_init_ret)
 		ret = 0;
 	else
 		ret = enable_IR();
 
 	if (!ret) {
+=======
+	if (x2apic_preenabled && nox2apic)
+		disable_x2apic();
+
+	if (dmar_table_init_ret)
+		ret = -1;
+	else
+		ret = enable_IR();
+
+	if (!x2apic_supported())
+		goto skip_x2apic;
+
+	if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* IR is required if there is APIC ID > 255 even when running
 		 * under KVM
 		 */
 		if (max_physical_apicid > 255 ||
+<<<<<<< HEAD
 		    !hypervisor_x2apic_available())
 			goto nox2apic;
+=======
+		    !hypervisor_x2apic_available()) {
+			if (x2apic_preenabled)
+				disable_x2apic();
+			goto skip_x2apic;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * without IR all CPUs can be addressed by IOAPIC/MSI
 		 * only in physical mode
@@ -1498,6 +1710,14 @@ void __init enable_IR_x2apic(void)
 		x2apic_force_phys();
 	}
 
+<<<<<<< HEAD
+=======
+	if (ret == IRQ_REMAP_XAPIC_MODE) {
+		pr_info("x2apic not enabled, IRQ remapping is in xapic mode\n");
+		goto skip_x2apic;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	x2apic_enabled = 1;
 
 	if (x2apic_supported() && !x2apic_mode) {
@@ -1506,6 +1726,7 @@ void __init enable_IR_x2apic(void)
 		pr_info("Enabled x2apic\n");
 	}
 
+<<<<<<< HEAD
 nox2apic:
 	if (!ret) /* IR enabling failed */
 		restore_ioapic_entries();
@@ -1520,6 +1741,13 @@ out:
 		panic("x2apic: enabled by BIOS but kernel init failed.");
 	else if (cpu_has_x2apic)
 		pr_info("Not enabling x2apic, Intr-remapping init failed.\n");
+=======
+skip_x2apic:
+	if (ret < 0) /* IR enabling failed */
+		restore_ioapic_entries();
+	legacy_pic->restore_mask();
+	local_irq_restore(flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_X86_64
@@ -1794,8 +2022,13 @@ void smp_spurious_interrupt(struct pt_regs *regs)
 {
 	u32 v;
 
+<<<<<<< HEAD
 	exit_idle();
 	irq_enter();
+=======
+	irq_enter();
+	exit_idle();
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Check if this really is a spurious interrupt and ACK it
 	 * if it is a vectored one.  Just in case...
@@ -1831,8 +2064,13 @@ void smp_error_interrupt(struct pt_regs *regs)
 		"Illegal register address",	/* APIC Error Bit 7 */
 	};
 
+<<<<<<< HEAD
 	exit_idle();
 	irq_enter();
+=======
+	irq_enter();
+	exit_idle();
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* First tickle the hardware, only then report what went on. -- REW */
 	v0 = apic_read(APIC_ESR);
 	apic_write(APIC_ESR, 0);
@@ -1947,10 +2185,35 @@ void disconnect_bsp_APIC(int virt_wire_setup)
 
 void __cpuinit generic_processor_info(int apicid, int version)
 {
+<<<<<<< HEAD
 	int cpu;
 
 	if (num_processors >= nr_cpu_ids) {
 		int max = nr_cpu_ids;
+=======
+	int cpu, max = nr_cpu_ids;
+	bool boot_cpu_detected = physid_isset(boot_cpu_physical_apicid,
+				phys_cpu_present_map);
+
+	/*
+	 * If boot cpu has not been detected yet, then only allow upto
+	 * nr_cpu_ids - 1 processors and keep one slot free for boot cpu
+	 */
+	if (!boot_cpu_detected && num_processors >= nr_cpu_ids - 1 &&
+	    apicid != boot_cpu_physical_apicid) {
+		int thiscpu = max + disabled_cpus - 1;
+
+		pr_warning(
+			"ACPI: NR_CPUS/possible_cpus limit of %i almost"
+			" reached. Keeping one slot for boot cpu."
+			"  Processor %d/0x%x ignored.\n", max, thiscpu, apicid);
+
+		disabled_cpus++;
+		return;
+	}
+
+	if (num_processors >= nr_cpu_ids) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		int thiscpu = max + disabled_cpus;
 
 		pr_warning(

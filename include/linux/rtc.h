@@ -202,7 +202,12 @@ struct rtc_device
 	struct hrtimer pie_timer; /* sub second exp, so needs hrtimer */
 	int pie_enabled;
 	struct work_struct irqwork;
+<<<<<<< HEAD
 
+=======
+	/* Some hardware can't support UIE mode */
+	int uie_unsupported;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_RTC_INTF_DEV_UIE_EMUL
 	struct work_struct uie_task;

@@ -68,6 +68,7 @@ static ssize_t setup_data_read(struct file *file, char __user *user_buf,
 	return count;
 }
 
+<<<<<<< HEAD
 static int setup_data_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
@@ -78,6 +79,11 @@ static int setup_data_open(struct inode *inode, struct file *file)
 static const struct file_operations fops_setup_data = {
 	.read		= setup_data_read,
 	.open		= setup_data_open,
+=======
+static const struct file_operations fops_setup_data = {
+	.read		= setup_data_read,
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.llseek		= default_llseek,
 };
 

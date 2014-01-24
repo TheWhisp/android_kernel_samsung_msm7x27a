@@ -59,7 +59,10 @@
 #include <net/ip.h>
 #include <net/dsa.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 __setup("ether=", netdev_boot_setup);
 
@@ -231,11 +234,19 @@ EXPORT_SYMBOL(eth_header_parse);
  * eth_header_cache - fill cache entry from neighbour
  * @neigh: source neighbour
  * @hh: destination cache entry
+<<<<<<< HEAD
  * Create an Ethernet header template from the neighbour.
  */
 int eth_header_cache(const struct neighbour *neigh, struct hh_cache *hh)
 {
 	__be16 type = hh->hh_type;
+=======
+ * @type: Ethernet type field
+ * Create an Ethernet header template from the neighbour.
+ */
+int eth_header_cache(const struct neighbour *neigh, struct hh_cache *hh, __be16 type)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ethhdr *eth;
 	const struct net_device *dev = neigh->dev;
 
@@ -288,6 +299,11 @@ int eth_mac_addr(struct net_device *dev, void *p)
 	if (!is_valid_ether_addr(addr->sa_data))
 		return -EADDRNOTAVAIL;
 	memcpy(dev->dev_addr, addr->sa_data, ETH_ALEN);
+<<<<<<< HEAD
+=======
+	/* if device marked as NET_ADDR_RANDOM, reset it */
+	dev->addr_assign_type &= ~NET_ADDR_RANDOM;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 EXPORT_SYMBOL(eth_mac_addr);
@@ -340,7 +356,11 @@ void ether_setup(struct net_device *dev)
 	dev->addr_len		= ETH_ALEN;
 	dev->tx_queue_len	= 1000;	/* Ethernet wants good queues */
 	dev->flags		= IFF_BROADCAST|IFF_MULTICAST;
+<<<<<<< HEAD
 	dev->priv_flags		= IFF_TX_SKB_SHARING;
+=======
+	dev->priv_flags		|= IFF_TX_SKB_SHARING;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memset(dev->broadcast, 0xFF, ETH_ALEN);
 

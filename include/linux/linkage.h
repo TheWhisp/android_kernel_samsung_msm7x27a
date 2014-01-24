@@ -88,8 +88,11 @@
 
 #endif
 
+<<<<<<< HEAD
 #define NORET_TYPE    /**/
 #define ATTRIB_NORET  __attribute__((noreturn))
 #define NORET_AND     noreturn,
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

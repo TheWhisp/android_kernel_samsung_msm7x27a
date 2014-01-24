@@ -14,7 +14,11 @@
 
 #include <linux/kobject.h>
 #include <linux/string.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/stat.h>
 #include <linux/slab.h>
 
@@ -192,6 +196,7 @@ static int kobject_add_internal(struct kobject *kobj)
 
 		/* be noisy on error issues */
 		if (error == -EEXIST)
+<<<<<<< HEAD
 			printk(KERN_ERR "%s failed for %s with "
 			       "-EEXIST, don't try to register things with "
 			       "the same name in the same directory.\n",
@@ -200,6 +205,16 @@ static int kobject_add_internal(struct kobject *kobj)
 			printk(KERN_ERR "%s failed for %s (%d)\n",
 			       __func__, kobject_name(kobj), error);
 		dump_stack();
+=======
+			WARN(1, "%s failed for %s with "
+			     "-EEXIST, don't try to register things with "
+			     "the same name in the same directory.\n",
+			     __func__, kobject_name(kobj));
+		else
+			WARN(1, "%s failed for %s (error: %d parent: %s)\n",
+			     __func__, kobject_name(kobj), error,
+			     parent ? kobject_name(parent) : "'none'");
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		kobj->state_in_sysfs = 1;
 
@@ -531,6 +546,16 @@ struct kobject *kobject_get(struct kobject *kobj)
 	return kobj;
 }
 
+<<<<<<< HEAD
+=======
+static struct kobject *kobject_get_unless_zero(struct kobject *kobj)
+{
+	if (!kref_get_unless_zero(&kobj->kref))
+		kobj = NULL;
+	return kobj;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * kobject_cleanup - free kobject resources.
  * @kobj: object to cleanup
@@ -746,6 +771,7 @@ void kset_unregister(struct kset *k)
  */
 struct kobject *kset_find_obj(struct kset *kset, const char *name)
 {
+<<<<<<< HEAD
 	return kset_find_obj_hinted(kset, name, NULL);
 }
 
@@ -763,11 +789,14 @@ struct kobject *kset_find_obj(struct kset *kset, const char *name)
 struct kobject *kset_find_obj_hinted(struct kset *kset, const char *name,
 				     struct kobject *hint)
 {
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct kobject *k;
 	struct kobject *ret = NULL;
 
 	spin_lock(&kset->list_lock);
 
+<<<<<<< HEAD
 	if (!hint)
 		goto slow_search;
 
@@ -786,16 +815,25 @@ slow_search:
 	list_for_each_entry(k, &kset->list, entry) {
 		if (kobject_name(k) && !strcmp(kobject_name(k), name)) {
 			ret = kobject_get(k);
+=======
+	list_for_each_entry(k, &kset->list, entry) {
+		if (kobject_name(k) && !strcmp(kobject_name(k), name)) {
+			ret = kobject_get_unless_zero(k);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 	}
 
+<<<<<<< HEAD
 unlock_exit:
 	spin_unlock(&kset->list_lock);
 
 	if (hint)
 		kobject_put(hint);
 
+=======
+	spin_unlock(&kset->list_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 

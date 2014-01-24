@@ -26,6 +26,7 @@
 
 static void __init msm_dt_timer_init(void)
 {
+<<<<<<< HEAD
 	struct device_node *node;
 	struct resource res;
 	struct of_irq oirq;
@@ -44,12 +45,16 @@ static void __init msm_dt_timer_init(void)
 		arch_timer_register(&res, 1);
 	}
 	of_node_put(node);
+=======
+	arch_timer_of_register();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct sys_timer msm_dt_timer = {
 	.init = msm_dt_timer_init
 };
 
+<<<<<<< HEAD
 int __cpuinit local_timer_setup(struct clock_event_device *evt)
 {
 	return 0;
@@ -64,12 +69,23 @@ static void __init msm_dt_init_irq(void)
 {
 	if (machine_is_copper())
 		msm_copper_init_irq();
+=======
+static void __init msm_dt_init_irq(void)
+{
+	if (machine_is_msm8974())
+		msm_8974_init_irq();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __init msm_dt_map_io(void)
 {
+<<<<<<< HEAD
 	if (early_machine_is_copper())
 		msm_map_copper_io();
+=======
+	if (early_machine_is_msm8974())
+		msm_map_8974_io();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (socinfo_init() < 0)
 		pr_err("%s: socinfo_init() failed\n", __func__);
 }
@@ -78,6 +94,7 @@ static void __init msm_dt_init(void)
 {
 	struct of_dev_auxdata *adata = NULL;
 
+<<<<<<< HEAD
 	if (machine_is_copper())
 		msm_copper_init(&adata);
 
@@ -88,19 +105,43 @@ static void __init msm_dt_init(void)
 
 static const char *msm_dt_match[] __initdata = {
 	"qcom,msmcopper",
+=======
+	if (machine_is_msm8974())
+		msm_8974_init(&adata);
+
+	of_platform_populate(NULL, of_default_bus_match_table, adata, NULL);
+	if (machine_is_msm8974()) {
+		msm_8974_add_devices();
+		msm_8974_add_drivers();
+	}
+}
+
+static const char *msm_dt_match[] __initconst = {
+	"qcom,msm8974",
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL
 };
 
 static void __init msm_dt_reserve(void)
 {
+<<<<<<< HEAD
 	if (early_machine_is_copper())
 		msm_copper_reserve();
+=======
+	if (early_machine_is_msm8974())
+		msm_8974_reserve();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __init msm_dt_init_very_early(void)
 {
+<<<<<<< HEAD
 	if (early_machine_is_copper())
 		msm_copper_very_early();
+=======
+	if (early_machine_is_msm8974())
+		msm_8974_very_early();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 DT_MACHINE_START(MSM_DT, "Qualcomm MSM (Flattened Device Tree)")

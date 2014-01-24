@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -56,7 +60,11 @@ void rtl92ce_phy_rf6052_set_bandwidth(struct ieee80211_hw *hw, u8 bandwidth)
 		break;
 	default:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
+<<<<<<< HEAD
 			 ("unknown bandwidth: %#X\n", bandwidth));
+=======
+			 "unknown bandwidth: %#X\n", bandwidth);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 }
@@ -76,7 +84,11 @@ void rtl92ce_phy_rf6052_set_cck_txpower(struct ieee80211_hw *hw,
 	if (rtlefuse->eeprom_regulatory != 0)
 		turbo_scanoff = true;
 
+<<<<<<< HEAD
 	if (mac->act_scanning == true) {
+=======
+	if (mac->act_scanning) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		tx_agc[RF90_PATH_A] = 0x3f3f3f3f;
 		tx_agc[RF90_PATH_B] = 0x3f3f3f3f;
 
@@ -123,8 +135,13 @@ void rtl92ce_phy_rf6052_set_cck_txpower(struct ieee80211_hw *hw,
 	rtl_set_bbreg(hw, RTXAGC_A_CCK1_MCS32, MASKBYTE1, tmpval);
 
 	RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 		("CCK PWR 1M (rf-A) = 0x%x (reg 0x%x)\n", tmpval,
 		 RTXAGC_A_CCK1_MCS32));
+=======
+		"CCK PWR 1M (rf-A) = 0x%x (reg 0x%x)\n",
+		tmpval, RTXAGC_A_CCK1_MCS32);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	tmpval = tx_agc[RF90_PATH_A] >> 8;
 
@@ -133,22 +150,37 @@ void rtl92ce_phy_rf6052_set_cck_txpower(struct ieee80211_hw *hw,
 	rtl_set_bbreg(hw, RTXAGC_B_CCK11_A_CCK2_11, 0xffffff00, tmpval);
 
 	RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 		("CCK PWR 2~11M (rf-A) = 0x%x (reg 0x%x)\n", tmpval,
 		 RTXAGC_B_CCK11_A_CCK2_11));
+=======
+		"CCK PWR 2~11M (rf-A) = 0x%x (reg 0x%x)\n",
+		tmpval, RTXAGC_B_CCK11_A_CCK2_11);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	tmpval = tx_agc[RF90_PATH_B] >> 24;
 	rtl_set_bbreg(hw, RTXAGC_B_CCK11_A_CCK2_11, MASKBYTE0, tmpval);
 
 	RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 		("CCK PWR 11M (rf-B) = 0x%x (reg 0x%x)\n", tmpval,
 		 RTXAGC_B_CCK11_A_CCK2_11));
+=======
+		"CCK PWR 11M (rf-B) = 0x%x (reg 0x%x)\n",
+		tmpval, RTXAGC_B_CCK11_A_CCK2_11);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	tmpval = tx_agc[RF90_PATH_B] & 0x00ffffff;
 	rtl_set_bbreg(hw, RTXAGC_B_CCK1_55_MCS32, 0xffffff00, tmpval);
 
 	RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 		("CCK PWR 1~5.5M (rf-B) = 0x%x (reg 0x%x)\n", tmpval,
 		 RTXAGC_B_CCK1_55_MCS32));
+=======
+		"CCK PWR 1~5.5M (rf-B) = 0x%x (reg 0x%x)\n",
+		tmpval, RTXAGC_B_CCK1_55_MCS32);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rtl92c_phy_get_power_base(struct ieee80211_hw *hw,
@@ -171,8 +203,13 @@ static void rtl92c_phy_get_power_base(struct ieee80211_hw *hw,
 		    (powerBase0 << 8) | powerBase0;
 		*(ofdmbase + i) = powerBase0;
 		RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 			(" [OFDM power base index rf(%c) = 0x%x]\n",
 			 ((i == 0) ? 'A' : 'B'), *(ofdmbase + i)));
+=======
+			" [OFDM power base index rf(%c) = 0x%x]\n",
+			i == 0 ? 'A' : 'B', *(ofdmbase + i));
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	for (i = 0; i < 2; i++) {
@@ -187,8 +224,13 @@ static void rtl92c_phy_get_power_base(struct ieee80211_hw *hw,
 		*(mcsbase + i) = powerBase1;
 
 		RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 			(" [MCS power base index rf(%c) = 0x%x]\n",
 			 ((i == 0) ? 'A' : 'B'), *(mcsbase + i)));
+=======
+			" [MCS power base index rf(%c) = 0x%x]\n",
+			i == 0 ? 'A' : 'B', *(mcsbase + i));
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -215,9 +257,14 @@ static void _rtl92c_get_txpower_writeval_by_regulatory(struct ieee80211_hw *hw,
 			    + ((index < 2) ? powerBase0[rf] : powerBase1[rf]);
 
 			RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 				("RTK better performance, "
 				 "writeVal(%c) = 0x%x\n",
 				 ((rf == 0) ? 'A' : 'B'), writeVal));
+=======
+				"RTK better performance, writeVal(%c) = 0x%x\n",
+				rf == 0 ? 'A' : 'B', writeVal);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case 1:
 			if (rtlphy->current_chan_bw == HT_CHANNEL_WIDTH_20_40) {
@@ -225,9 +272,14 @@ static void _rtl92c_get_txpower_writeval_by_regulatory(struct ieee80211_hw *hw,
 					    powerBase1[rf]);
 
 				RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 					("Realtek regulatory, 40MHz, "
 					 "writeVal(%c) = 0x%x\n",
 					 ((rf == 0) ? 'A' : 'B'), writeVal));
+=======
+					"Realtek regulatory, 40MHz, writeVal(%c) = 0x%x\n",
+					rf == 0 ? 'A' : 'B', writeVal);
+>>>>>>> refs/remotes/origin/cm-10.0
 			} else {
 				if (rtlphy->pwrgroup_cnt == 1)
 					chnlgroup = 0;
@@ -249,9 +301,14 @@ static void _rtl92c_get_txpower_writeval_by_regulatory(struct ieee80211_hw *hw,
 							      powerBase1[rf]);
 
 				RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 					("Realtek regulatory, 20MHz, "
 					 "writeVal(%c) = 0x%x\n",
 					 ((rf == 0) ? 'A' : 'B'), writeVal));
+=======
+					"Realtek regulatory, 20MHz, writeVal(%c) = 0x%x\n",
+					rf == 0 ? 'A' : 'B', writeVal);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			break;
 		case 2:
@@ -259,15 +316,21 @@ static void _rtl92c_get_txpower_writeval_by_regulatory(struct ieee80211_hw *hw,
 			    ((index < 2) ? powerBase0[rf] : powerBase1[rf]);
 
 			RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 				("Better regulatory, "
 				 "writeVal(%c) = 0x%x\n",
 				 ((rf == 0) ? 'A' : 'B'), writeVal));
+=======
+				"Better regulatory, writeVal(%c) = 0x%x\n",
+				rf == 0 ? 'A' : 'B', writeVal);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case 3:
 			chnlgroup = 0;
 
 			if (rtlphy->current_chan_bw == HT_CHANNEL_WIDTH_20_40) {
 				RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 					("customer's limit, 40MHz "
 					 "rf(%c) = 0x%x\n",
 					 ((rf == 0) ? 'A' : 'B'),
@@ -280,6 +343,18 @@ static void _rtl92c_get_txpower_writeval_by_regulatory(struct ieee80211_hw *hw,
 					 ((rf == 0) ? 'A' : 'B'),
 					 rtlefuse->pwrgroup_ht20[rf][channel -
 								     1]));
+=======
+					"customer's limit, 40MHz rf(%c) = 0x%x\n",
+					rf == 0 ? 'A' : 'B',
+					rtlefuse->pwrgroup_ht40[rf][channel -
+								    1]);
+			} else {
+				RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+					"customer's limit, 20MHz rf(%c) = 0x%x\n",
+					rf == 0 ? 'A' : 'B',
+					rtlefuse->pwrgroup_ht20[rf][channel -
+								    1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			for (i = 0; i < 4; i++) {
 				pwr_diff_limit[i] =
@@ -311,15 +386,25 @@ static void _rtl92c_get_txpower_writeval_by_regulatory(struct ieee80211_hw *hw,
 			    (pwr_diff_limit[1] << 8) | (pwr_diff_limit[0]);
 
 			RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 				("Customer's limit rf(%c) = 0x%x\n",
 				 ((rf == 0) ? 'A' : 'B'), customer_limit));
+=======
+				"Customer's limit rf(%c) = 0x%x\n",
+				rf == 0 ? 'A' : 'B', customer_limit);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			writeVal = customer_limit +
 			    ((index < 2) ? powerBase0[rf] : powerBase1[rf]);
 
 			RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 				("Customer, writeVal rf(%c)= 0x%x\n",
 				 ((rf == 0) ? 'A' : 'B'), writeVal));
+=======
+				"Customer, writeVal rf(%c)= 0x%x\n",
+				rf == 0 ? 'A' : 'B', writeVal);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		default:
 			chnlgroup = 0;
@@ -329,9 +414,14 @@ static void _rtl92c_get_txpower_writeval_by_regulatory(struct ieee80211_hw *hw,
 			    + ((index < 2) ? powerBase0[rf] : powerBase1[rf]);
 
 			RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 				("RTK better performance, writeVal "
 				 "rf(%c) = 0x%x\n",
 				 ((rf == 0) ? 'A' : 'B'), writeVal));
+=======
+				"RTK better performance, writeVal rf(%c) = 0x%x\n",
+				rf == 0 ? 'A' : 'B', writeVal);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 
@@ -383,7 +473,11 @@ static void _rtl92c_write_ofdm_power_reg(struct ieee80211_hw *hw,
 		rtl_set_bbreg(hw, regoffset, MASKDWORD, writeVal);
 
 		RTPRINT(rtlpriv, FPHY, PHY_TXPWR,
+<<<<<<< HEAD
 			("Set 0x%x = %08x\n", regoffset, writeVal));
+=======
+			"Set 0x%x = %08x\n", regoffset, writeVal);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (((get_rf_type(rtlphy) == RF_2T2R) &&
 		     (regoffset == RTXAGC_A_MCS15_MCS12 ||
@@ -510,14 +604,24 @@ static bool _rtl92ce_phy_rf6052_config_parafile(struct ieee80211_hw *hw)
 			break;
 		}
 
+<<<<<<< HEAD
 		if (rtstatus != true) {
 			RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
 				 ("Radio[%d] Fail!!", rfpath));
+=======
+		if (!rtstatus) {
+			RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
+				 "Radio[%d] Fail!!\n", rfpath);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return false;
 		}
 
 	}
 
+<<<<<<< HEAD
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE, ("<---\n"));
+=======
+	RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE, "<---\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rtstatus;
 }

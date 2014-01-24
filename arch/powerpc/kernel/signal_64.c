@@ -23,7 +23,10 @@
 #include <linux/stddef.h>
 #include <linux/elf.h>
 #include <linux/ptrace.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ratelimit.h>
 
 #include <asm/sigcontext.h>
@@ -34,6 +37,10 @@
 #include <asm/cacheflush.h>
 #include <asm/syscalls.h>
 #include <asm/vdso.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "signal.h"
 

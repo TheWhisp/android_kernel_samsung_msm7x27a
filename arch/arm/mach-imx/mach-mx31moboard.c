@@ -18,6 +18,10 @@
 #include <linux/gpio.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/leds.h>
 #include <linux/memory.h>
 #include <linux/mtd/physmap.h>
@@ -28,6 +32,13 @@
 #include <linux/spi/spi.h>
 #include <linux/types.h>
 #include <linux/memblock.h>
+<<<<<<< HEAD
+=======
+#include <linux/clk.h>
+#include <linux/io.h>
+#include <linux/err.h>
+#include <linux/input.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/usb/otg.h>
 #include <linux/usb/ulpi.h>
@@ -36,6 +47,10 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
+=======
+#include <asm/memblock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/board-mx31moboard.h>
 #include <mach/common.h>
 #include <mach/hardware.h>
@@ -222,7 +237,11 @@ static struct mc13xxx_regulator_init_data moboard_regulators[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mc13783_led_platform_data moboard_led[] = {
+=======
+static struct mc13xxx_led_platform_data moboard_led[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.id = MC13783_LED_R1,
 		.name = "coreboard-led-4:red",
@@ -255,7 +274,11 @@ static struct mc13783_led_platform_data moboard_led[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mc13783_leds_platform_data moboard_leds = {
+=======
+static struct mc13xxx_leds_platform_data moboard_leds = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_leds = ARRAY_SIZE(moboard_led),
 	.led = moboard_led,
 	.flags = MC13783_LED_SLEWLIMTC,
@@ -264,14 +287,28 @@ static struct mc13783_leds_platform_data moboard_leds = {
 	.tc2_period = MC13783_LED_PERIOD_10MS,
 };
 
+<<<<<<< HEAD
+=======
+static struct mc13xxx_buttons_platform_data moboard_buttons = {
+	.b1on_flags = MC13783_BUTTON_DBNC_750MS | MC13783_BUTTON_ENABLE |
+			MC13783_BUTTON_POL_INVERT,
+	.b1on_key = KEY_POWER,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct mc13xxx_platform_data moboard_pmic = {
 	.regulators = {
 		.regulators = moboard_regulators,
 		.num_regulators = ARRAY_SIZE(moboard_regulators),
 	},
 	.leds = &moboard_leds,
+<<<<<<< HEAD
 	.flags = MC13XXX_USE_REGULATOR | MC13XXX_USE_RTC |
 		MC13XXX_USE_ADC | MC13XXX_USE_LED,
+=======
+	.buttons = &moboard_buttons,
+	.flags = MC13XXX_USE_RTC | MC13XXX_USE_ADC,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct spi_board_info moboard_spi_board_info[] __initdata = {
@@ -425,7 +462,11 @@ static int __init moboard_usbh2_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct gpio_led mx31moboard_leds[] = {
+=======
+static const struct gpio_led mx31moboard_leds[] __initconst = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.name	= "coreboard-led-0:red:running",
 		.default_trigger = "heartbeat",
@@ -442,11 +483,16 @@ static struct gpio_led mx31moboard_leds[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct gpio_led_platform_data mx31moboard_led_pdata = {
+=======
+static const struct gpio_led_platform_data mx31moboard_led_pdata __initconst = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_leds	= ARRAY_SIZE(mx31moboard_leds),
 	.leds		= mx31moboard_leds,
 };
 
+<<<<<<< HEAD
 static struct platform_device mx31moboard_leds_device = {
 	.name	= "leds-gpio",
 	.id	= -1,
@@ -455,13 +501,18 @@ static struct platform_device mx31moboard_leds_device = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct ipu_platform_data mx3_ipu_data __initconst = {
 	.irq_base = MXC_IPU_IRQ_START,
 };
 
 static struct platform_device *devices[] __initdata = {
 	&mx31moboard_flash,
+<<<<<<< HEAD
 	&mx31moboard_leds_device,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct mx3_camera_pdata camera_pdata __initdata = {
@@ -499,6 +550,21 @@ err:
 
 }
 
+<<<<<<< HEAD
+=======
+static void mx31moboard_poweroff(void)
+{
+	struct clk *clk = clk_get_sys("imx2-wdt.0", NULL);
+
+	if (!IS_ERR(clk))
+		clk_prepare_enable(clk);
+
+	mxc_iomux_mode(MX31_PIN_WATCHDOG_RST__WATCHDOG_RST);
+
+	__raw_writew(1 << 6 | 1 << 2, MX31_IO_ADDRESS(MX31_WDOG_BASE_ADDR));
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int mx31moboard_baseboard;
 core_param(mx31moboard_baseboard, mx31moboard_baseboard, int, 0444);
 
@@ -507,10 +573,21 @@ core_param(mx31moboard_baseboard, mx31moboard_baseboard, int, 0444);
  */
 static void __init mx31moboard_init(void)
 {
+<<<<<<< HEAD
+=======
+	imx31_soc_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mxc_iomux_setup_multiple_pins(moboard_pins, ARRAY_SIZE(moboard_pins),
 		"moboard");
 
 	platform_add_devices(devices, ARRAY_SIZE(devices));
+<<<<<<< HEAD
+=======
+	gpio_led_register_device(-1, &mx31moboard_led_pdata);
+
+	imx31_add_imx2_wdt(NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	imx31_add_imx_uart0(&uart0_pdata);
 	imx31_add_imx_uart4(&uart4_pdata);
@@ -534,6 +611,11 @@ static void __init mx31moboard_init(void)
 
 	moboard_usbh2_init();
 
+<<<<<<< HEAD
+=======
+	pm_power_off = mx31moboard_poweroff;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (mx31moboard_baseboard) {
 	case MX31NOBOARD:
 		break;
@@ -565,6 +647,7 @@ struct sys_timer mx31moboard_timer = {
 static void __init mx31moboard_reserve(void)
 {
 	/* reserve 4 MiB for mx3-camera */
+<<<<<<< HEAD
 	mx3_camera_base = memblock_alloc(MX3_CAMERA_BUF_SIZE,
 			MX3_CAMERA_BUF_SIZE);
 	memblock_free(mx3_camera_base, MX3_CAMERA_BUF_SIZE);
@@ -574,10 +657,26 @@ static void __init mx31moboard_reserve(void)
 MACHINE_START(MX31MOBOARD, "EPFL Mobots mx31moboard")
 	/* Maintainer: Valentin Longchamp, EPFL Mobots group */
 	.boot_params = MX3x_PHYS_OFFSET + 0x100,
+=======
+	mx3_camera_base = arm_memblock_steal(MX3_CAMERA_BUF_SIZE,
+			MX3_CAMERA_BUF_SIZE);
+}
+
+MACHINE_START(MX31MOBOARD, "EPFL Mobots mx31moboard")
+	/* Maintainer: Philippe Retornaz, EPFL Mobots group */
+	.atag_offset = 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.reserve = mx31moboard_reserve,
 	.map_io = mx31_map_io,
 	.init_early = imx31_init_early,
 	.init_irq = mx31_init_irq,
+<<<<<<< HEAD
 	.timer = &mx31moboard_timer,
 	.init_machine = mx31moboard_init,
+=======
+	.handle_irq = imx31_handle_irq,
+	.timer = &mx31moboard_timer,
+	.init_machine = mx31moboard_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

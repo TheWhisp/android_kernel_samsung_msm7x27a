@@ -34,6 +34,10 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/input.h>
 #include <linux/usb.h>
@@ -46,7 +50,11 @@
 #define MOD_AUTHOR	"Jarod Wilson <jarod@wilsonet.com>"
 #define MOD_DESC	"Driver for SoundGraph iMON MultiMedia IR/Display"
 #define MOD_NAME	"imon"
+<<<<<<< HEAD
 #define MOD_VERSION	"0.9.3"
+=======
+#define MOD_VERSION	"0.9.4"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DISPLAY_MINOR_BASE	144
 #define DEVICE_NAME	"lcd%d"
@@ -516,19 +524,31 @@ static int send_packet(struct imon_context *ictx)
 	if (retval) {
 		ictx->tx.busy = false;
 		smp_rmb(); /* ensure later readers know we're not busy */
+<<<<<<< HEAD
 		pr_err("error submitting urb(%d)\n", retval);
+=======
+		pr_err_ratelimited("error submitting urb(%d)\n", retval);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		/* Wait for transmission to complete (or abort) */
 		mutex_unlock(&ictx->lock);
 		retval = wait_for_completion_interruptible(
 				&ictx->tx.finished);
 		if (retval)
+<<<<<<< HEAD
 			pr_err("task interrupted\n");
+=======
+			pr_err_ratelimited("task interrupted\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		mutex_lock(&ictx->lock);
 
 		retval = ictx->tx.status;
 		if (retval)
+<<<<<<< HEAD
 			pr_err("packet tx failed (%d)\n", retval);
+=======
+			pr_err_ratelimited("packet tx failed (%d)\n", retval);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	kfree(control_req);
@@ -830,20 +850,32 @@ static ssize_t vfd_write(struct file *file, const char *buf,
 
 	ictx = file->private_data;
 	if (!ictx) {
+<<<<<<< HEAD
 		pr_err("no context for device\n");
+=======
+		pr_err_ratelimited("no context for device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
 	mutex_lock(&ictx->lock);
 
 	if (!ictx->dev_present_intf0) {
+<<<<<<< HEAD
 		pr_err("no iMON device present\n");
+=======
+		pr_err_ratelimited("no iMON device present\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = -ENODEV;
 		goto exit;
 	}
 
 	if (n_bytes <= 0 || n_bytes > 32) {
+<<<<<<< HEAD
 		pr_err("invalid payload size\n");
+=======
+		pr_err_ratelimited("invalid payload size\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = -EINVAL;
 		goto exit;
 	}
@@ -869,7 +901,11 @@ static ssize_t vfd_write(struct file *file, const char *buf,
 
 		retval = send_packet(ictx);
 		if (retval) {
+<<<<<<< HEAD
 			pr_err("send packet failed for packet #%d\n", seq / 2);
+=======
+			pr_err_ratelimited("send packet #%d failed\n", seq / 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto exit;
 		} else {
 			seq += 2;
@@ -883,7 +919,11 @@ static ssize_t vfd_write(struct file *file, const char *buf,
 	ictx->usb_tx_buf[7] = (unsigned char) seq;
 	retval = send_packet(ictx);
 	if (retval)
+<<<<<<< HEAD
 		pr_err("send packet failed for packet #%d\n", seq / 2);
+=======
+		pr_err_ratelimited("send packet #%d failed\n", seq / 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 exit:
 	mutex_unlock(&ictx->lock);
@@ -912,20 +952,33 @@ static ssize_t lcd_write(struct file *file, const char *buf,
 
 	ictx = file->private_data;
 	if (!ictx) {
+<<<<<<< HEAD
 		pr_err("no context for device\n");
+=======
+		pr_err_ratelimited("no context for device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
 	mutex_lock(&ictx->lock);
 
 	if (!ictx->display_supported) {
+<<<<<<< HEAD
 		pr_err("no iMON display present\n");
+=======
+		pr_err_ratelimited("no iMON display present\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = -ENODEV;
 		goto exit;
 	}
 
 	if (n_bytes != 8) {
+<<<<<<< HEAD
 		pr_err("invalid payload size: %d (expected 8)\n", (int)n_bytes);
+=======
+		pr_err_ratelimited("invalid payload size: %d (expected 8)\n",
+				   (int)n_bytes);
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = -EINVAL;
 		goto exit;
 	}
@@ -937,7 +990,11 @@ static ssize_t lcd_write(struct file *file, const char *buf,
 
 	retval = send_packet(ictx);
 	if (retval) {
+<<<<<<< HEAD
 		pr_err("send packet failed!\n");
+=======
+		pr_err_ratelimited("send packet failed!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto exit;
 	} else {
 		dev_dbg(ictx->dev, "%s: write %d bytes to LCD\n",
@@ -1659,6 +1716,17 @@ static void usb_rx_callback_intf0(struct urb *urb)
 	if (!ictx)
 		return;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * if we get a callback before we're done configuring the hardware, we
+	 * can't yet process the data, as there's nowhere to send it, but we
+	 * still need to submit a new rx URB to avoid wedging the hardware
+	 */
+	if (!ictx->dev_present_intf0)
+		goto out;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (urb->status) {
 	case -ENOENT:		/* usbcore unlink successful! */
 		return;
@@ -1676,6 +1744,10 @@ static void usb_rx_callback_intf0(struct urb *urb)
 		break;
 	}
 
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_submit_urb(ictx->rx_urb_intf0, GFP_ATOMIC);
 }
 
@@ -1691,6 +1763,17 @@ static void usb_rx_callback_intf1(struct urb *urb)
 	if (!ictx)
 		return;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * if we get a callback before we're done configuring the hardware, we
+	 * can't yet process the data, as there's nowhere to send it, but we
+	 * still need to submit a new rx URB to avoid wedging the hardware
+	 */
+	if (!ictx->dev_present_intf1)
+		goto out;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (urb->status) {
 	case -ENOENT:		/* usbcore unlink successful! */
 		return;
@@ -1708,6 +1791,10 @@ static void usb_rx_callback_intf1(struct urb *urb)
 		break;
 	}
 
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_submit_urb(ictx->rx_urb_intf1, GFP_ATOMIC);
 }
 
@@ -2116,7 +2203,10 @@ static struct imon_context *imon_init_intf0(struct usb_interface *intf)
 
 	ictx->dev = dev;
 	ictx->usbdev_intf0 = usb_get_dev(interface_to_usbdev(intf));
+<<<<<<< HEAD
 	ictx->dev_present_intf0 = true;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ictx->rx_urb_intf0 = rx_urb;
 	ictx->tx_urb = tx_urb;
 	ictx->rf_device = false;
@@ -2155,6 +2245,11 @@ static struct imon_context *imon_init_intf0(struct usb_interface *intf)
 		goto rdev_setup_failed;
 	}
 
+<<<<<<< HEAD
+=======
+	ictx->dev_present_intf0 = true;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&ictx->lock);
 	return ictx;
 
@@ -2198,7 +2293,10 @@ static struct imon_context *imon_init_intf1(struct usb_interface *intf,
 	}
 
 	ictx->usbdev_intf1 = usb_get_dev(interface_to_usbdev(intf));
+<<<<<<< HEAD
 	ictx->dev_present_intf1 = true;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ictx->rx_urb_intf1 = rx_urb;
 
 	ret = -ENODEV;
@@ -2227,6 +2325,11 @@ static struct imon_context *imon_init_intf1(struct usb_interface *intf,
 		goto urb_submit_failed;
 	}
 
+<<<<<<< HEAD
+=======
+	ictx->dev_present_intf1 = true;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&ictx->lock);
 	return ictx;
 
@@ -2238,7 +2341,11 @@ find_endpoint_failed:
 	mutex_unlock(&ictx->lock);
 	usb_free_urb(rx_urb);
 rx_urb_alloc_failed:
+<<<<<<< HEAD
 	dev_err(ictx->dev, "unable to initialize intf0, err %d\n", ret);
+=======
+	dev_err(ictx->dev, "unable to initialize intf1, err %d\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return NULL;
 }
@@ -2454,6 +2561,7 @@ static int imon_resume(struct usb_interface *intf)
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __init imon_init(void)
 {
 	int rc;
@@ -2474,3 +2582,6 @@ static void __exit imon_exit(void)
 
 module_init(imon_init);
 module_exit(imon_exit);
+=======
+module_usb_driver(imon_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -182,7 +182,11 @@ int da903x_set_bits(struct device *dev, int reg, uint8_t bit_mask)
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 	if ((reg_val & bit_mask) == 0) {
+=======
+	if ((reg_val & bit_mask) != bit_mask) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		reg_val |= bit_mask;
 		ret = __da903x_write(chip->client, reg, reg_val);
 	}
@@ -523,7 +527,11 @@ static int __devinit da903x_probe(struct i2c_client *client,
 	chip->ops->read_events(chip, &tmp);
 
 	ret = request_irq(client->irq, da903x_irq_handler,
+<<<<<<< HEAD
 			IRQF_DISABLED | IRQF_TRIGGER_FALLING,
+=======
+			IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"da903x", chip);
 	if (ret) {
 		dev_err(&client->dev, "failed to request irq %d\n",
@@ -549,6 +557,10 @@ static int __devexit da903x_remove(struct i2c_client *client)
 	struct da903x_chip *chip = i2c_get_clientdata(client);
 
 	da903x_remove_subdevs(chip);
+<<<<<<< HEAD
+=======
+	free_irq(client->irq, chip);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(chip);
 	return 0;
 }

@@ -3,6 +3,7 @@
 #
 
 obj-$(CONFIG_ET131X) += et131x.o
+<<<<<<< HEAD
 
 et131x-y :=	et1310_eeprom.o \
 		et1310_mac.o \
@@ -13,3 +14,5 @@ et131x-y :=	et1310_eeprom.o \
 		et131x_initpci.o \
 		et131x_isr.o \
 		et131x_netdev.o
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

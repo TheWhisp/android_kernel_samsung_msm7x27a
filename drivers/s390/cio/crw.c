@@ -13,6 +13,10 @@
 #include <linux/init.h>
 #include <linux/wait.h>
 #include <asm/crw.h>
+<<<<<<< HEAD
+=======
+#include <asm/ctl_reg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static DEFINE_MUTEX(crw_handler_mutex);
 static crw_handler_t crw_handlers[NR_RSCS];

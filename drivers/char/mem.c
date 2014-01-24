@@ -26,6 +26,10 @@
 #include <linux/bootmem.h>
 #include <linux/splice.h>
 #include <linux/pfn.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/uaccess.h>
 #include <asm/io.h>
@@ -861,7 +865,11 @@ static const struct file_operations kmsg_fops = {
 
 static const struct memdev {
 	const char *name;
+<<<<<<< HEAD
 	mode_t mode;
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct file_operations *fops;
 	struct backing_dev_info *dev_info;
 } devlist[] = {
@@ -917,7 +925,11 @@ static const struct file_operations memory_fops = {
 	.llseek = noop_llseek,
 };
 
+<<<<<<< HEAD
 static char *mem_devnode(struct device *dev, mode_t *mode)
+=======
+static char *mem_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (mode && devlist[MINOR(dev->devt)].mode)
 		*mode = devlist[MINOR(dev->devt)].mode;

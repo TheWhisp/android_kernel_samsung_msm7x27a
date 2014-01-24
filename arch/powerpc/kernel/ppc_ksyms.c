@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/threads.h>
 #include <linux/smp.h>
 #include <linux/sched.h>
@@ -18,7 +22,11 @@
 #include <asm/cacheflush.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/checksum.h>
 #include <asm/pgtable.h>
 #include <asm/tlbflush.h>
@@ -26,7 +34,10 @@
 #include <linux/cuda.h>
 #include <linux/pmu.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pci-bridge.h>
 #include <asm/irq.h>
 #include <asm/pmac_feature.h>
@@ -43,6 +54,10 @@
 #include <asm/signal.h>
 #include <asm/dcr.h>
 #include <asm/ftrace.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_PPC32
 extern void transfer_to_handler(void);

@@ -16,6 +16,10 @@
 #include <linux/mm.h>
 #include <linux/delay.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel_stat.h>
 #include <linux/mc146818rtc.h>
 #include <linux/cache.h>
@@ -28,6 +32,10 @@
 #include <asm/mmu_context.h>
 #include <asm/proto.h>
 #include <asm/apic.h>
+<<<<<<< HEAD
+=======
+#include <asm/nmi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *	Some notes on x86 processor bugs affecting SMP operation:
  *
@@ -147,6 +155,63 @@ void native_send_call_func_ipi(const struct cpumask *mask)
 	free_cpumask_var(allbutself);
 }
 
+<<<<<<< HEAD
+=======
+static atomic_t stopping_cpu = ATOMIC_INIT(-1);
+
+static int smp_stop_nmi_callback(unsigned int val, struct pt_regs *regs)
+{
+	/* We are registered on stopping cpu too, avoid spurious NMI */
+	if (raw_smp_processor_id() == atomic_read(&stopping_cpu))
+		return NMI_HANDLED;
+
+	stop_this_cpu(NULL);
+
+	return NMI_HANDLED;
+}
+
+static void native_nmi_stop_other_cpus(int wait)
+{
+	unsigned long flags;
+	unsigned long timeout;
+
+	if (reboot_force)
+		return;
+
+	/*
+	 * Use an own vector here because smp_call_function
+	 * does lots of things not suitable in a panic situation.
+	 */
+	if (num_online_cpus() > 1) {
+		/* did someone beat us here? */
+		if (atomic_cmpxchg(&stopping_cpu, -1, safe_smp_processor_id()) != -1)
+			return;
+
+		if (register_nmi_handler(NMI_LOCAL, smp_stop_nmi_callback,
+					 NMI_FLAG_FIRST, "smp_stop"))
+			/* Note: we ignore failures here */
+			return;
+
+		/* sync above data before sending NMI */
+		wmb();
+
+		apic->send_IPI_allbutself(NMI_VECTOR);
+
+		/*
+		 * Don't wait longer than a second if the caller
+		 * didn't ask us to wait.
+		 */
+		timeout = USEC_PER_SEC;
+		while (num_online_cpus() > 1 && (wait || timeout--))
+			udelay(1);
+	}
+
+	local_irq_save(flags);
+	disable_local_APIC();
+	local_irq_restore(flags);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * this function calls the 'stop' function on all other CPUs in the system.
  */
@@ -159,7 +224,11 @@ asmlinkage void smp_reboot_interrupt(void)
 	irq_exit();
 }
 
+<<<<<<< HEAD
 static void native_stop_other_cpus(int wait)
+=======
+static void native_irq_stop_other_cpus(int wait)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long flags;
 	unsigned long timeout;
@@ -193,6 +262,14 @@ static void native_stop_other_cpus(int wait)
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
+=======
+static void native_smp_disable_nmi_ipi(void)
+{
+	smp_ops.stop_other_cpus = native_irq_stop_other_cpus;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Reschedule call back.
  */
@@ -224,12 +301,27 @@ void smp_call_function_single_interrupt(struct pt_regs *regs)
 	irq_exit();
 }
 
+<<<<<<< HEAD
+=======
+static int __init nonmi_ipi_setup(char *str)
+{
+        native_smp_disable_nmi_ipi();
+        return 1;
+}
+
+__setup("nonmi_ipi", nonmi_ipi_setup);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct smp_ops smp_ops = {
 	.smp_prepare_boot_cpu	= native_smp_prepare_boot_cpu,
 	.smp_prepare_cpus	= native_smp_prepare_cpus,
 	.smp_cpus_done		= native_smp_cpus_done,
 
+<<<<<<< HEAD
 	.stop_other_cpus	= native_stop_other_cpus,
+=======
+	.stop_other_cpus	= native_nmi_stop_other_cpus,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.smp_send_reschedule	= native_smp_send_reschedule,
 
 	.cpu_up			= native_cpu_up,

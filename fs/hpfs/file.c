@@ -18,9 +18,20 @@ static int hpfs_file_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
 int hpfs_file_fsync(struct file *file, int datasync)
 {
 	struct inode *inode = file->f_mapping->host;
+=======
+int hpfs_file_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	struct inode *inode = file->f_mapping->host;
+	int ret;
+
+	ret = filemap_write_and_wait_range(file->f_mapping, start, end);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return sync_blockdev(inode->i_sb->s_bdev);
 }
 
@@ -111,12 +122,18 @@ static int hpfs_write_begin(struct file *file, struct address_space *mapping,
 				hpfs_get_block,
 				&hpfs_i(mapping->host)->mmu_private);
 	if (unlikely(ret)) {
+<<<<<<< HEAD
 		loff_t isize;
 		hpfs_lock(mapping->host->i_sb);
 		isize = mapping->host->i_size;
 		if (pos + len > isize)
 			vmtruncate(mapping->host, isize);
 		hpfs_unlock(mapping->host->i_sb);
+=======
+		loff_t isize = mapping->host->i_size;
+		if (pos + len > isize)
+			vmtruncate(mapping->host, isize);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return ret;

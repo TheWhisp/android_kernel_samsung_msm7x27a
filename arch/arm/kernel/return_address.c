@@ -8,7 +8,11 @@
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ftrace.h>
 
 #if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)

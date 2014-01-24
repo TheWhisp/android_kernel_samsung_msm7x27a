@@ -198,7 +198,11 @@ struct cpu_vfs_cap_data {
 /* Allow modification of routing tables */
 /* Allow setting arbitrary process / process group ownership on
    sockets */
+<<<<<<< HEAD
 /* Allow binding to any address for transparent proxying */
+=======
+/* Allow binding to any address for transparent proxying (also via NET_RAW) */
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Allow setting TOS (type of service) */
 /* Allow setting promiscuous mode */
 /* Allow clearing driver statistics */
@@ -210,6 +214,10 @@ struct cpu_vfs_cap_data {
 
 /* Allow use of RAW sockets */
 /* Allow use of PACKET sockets */
+<<<<<<< HEAD
+=======
+/* Allow binding to any address for transparent proxying (also via NET_ADMIN) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CAP_NET_RAW          13
 
@@ -379,7 +387,10 @@ struct user_namespace;
 struct user_namespace *current_user_ns(void);
 
 extern const kernel_cap_t __cap_empty_set;
+<<<<<<< HEAD
 extern const kernel_cap_t __cap_full_set;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern const kernel_cap_t __cap_init_eff_set;
 
 /*
@@ -543,9 +554,16 @@ extern bool has_capability(struct task_struct *t, int cap);
 extern bool has_ns_capability(struct task_struct *t,
 			      struct user_namespace *ns, int cap);
 extern bool has_capability_noaudit(struct task_struct *t, int cap);
+<<<<<<< HEAD
 extern bool capable(int cap);
 extern bool ns_capable(struct user_namespace *ns, int cap);
 extern bool task_ns_capable(struct task_struct *t, int cap);
+=======
+extern bool has_ns_capability_noaudit(struct task_struct *t,
+				      struct user_namespace *ns, int cap);
+extern bool capable(int cap);
+extern bool ns_capable(struct user_namespace *ns, int cap);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern bool nsown_capable(int cap);
 
 /* audit system wants to get cap info from files as well */

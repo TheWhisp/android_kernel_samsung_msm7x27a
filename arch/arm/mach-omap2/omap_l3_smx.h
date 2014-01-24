@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  /*
   * OMAP3XXX L3 Interconnect Driver header
   *
@@ -21,6 +22,31 @@
   * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
   * USA
   */
+=======
+/*
+ * OMAP3XXX L3 Interconnect Driver header
+ *
+ * Copyright (C) 2011 Texas Corporation
+ *	Felipe Balbi <balbi@ti.com>
+ *	Santosh Shilimkar <santosh.shilimkar@ti.com>
+ *	sricharan <r.sricharan@ti.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef __ARCH_ARM_MACH_OMAP2_L3_INTERCONNECT_3XXX_H
 #define __ARCH_ARM_MACH_OMAP2_L3_INTERCONNECT_3XXX_H
 
@@ -40,7 +66,11 @@
 #define L3_SI_CONTROL			0x020
 #define L3_SI_FLAG_STATUS_0		0x510
 
+<<<<<<< HEAD
 const u64 shift = 1;
+=======
+static const u64 shift = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define L3_STATUS_0_MPUIA_BRST		(shift << 0)
 #define L3_STATUS_0_MPUIA_RSP		(shift << 1)
@@ -78,6 +108,7 @@ const u64 shift = 1;
 #define L3_STATUS_0_L4EMUTA_REQ		(shift << 60)
 #define L3_STATUS_0_MAD2DTA_REQ		(shift << 61)
 
+<<<<<<< HEAD
 #define L3_STATUS_0_TIMEOUT_MASK	(L3_STATUS_0_MPUIA_BRST         \
 					| L3_STATUS_0_MPUIA_RSP         \
 					| L3_STATUS_0_IVAIA_BRST        \
@@ -104,6 +135,34 @@ const u64 shift = 1;
 					| L3_STATUS_0_L4CORETA_REQ      \
 					| L3_STATUS_0_L4PERTA_REQ       \
 					| L3_STATUS_0_L4EMUTA_REQ       \
+=======
+#define L3_STATUS_0_TIMEOUT_MASK	(L3_STATUS_0_MPUIA_BRST		\
+					| L3_STATUS_0_MPUIA_RSP		\
+					| L3_STATUS_0_IVAIA_BRST	\
+					| L3_STATUS_0_IVAIA_RSP		\
+					| L3_STATUS_0_SGXIA_BRST	\
+					| L3_STATUS_0_SGXIA_RSP		\
+					| L3_STATUS_0_CAMIA_BRST	\
+					| L3_STATUS_0_CAMIA_RSP		\
+					| L3_STATUS_0_DISPIA_BRST	\
+					| L3_STATUS_0_DISPIA_RSP	\
+					| L3_STATUS_0_DMARDIA_BRST	\
+					| L3_STATUS_0_DMARDIA_RSP	\
+					| L3_STATUS_0_DMAWRIA_BRST	\
+					| L3_STATUS_0_DMAWRIA_RSP	\
+					| L3_STATUS_0_USBOTGIA_BRST	\
+					| L3_STATUS_0_USBOTGIA_RSP	\
+					| L3_STATUS_0_USBHOSTIA_BRST	\
+					| L3_STATUS_0_SMSTA_REQ		\
+					| L3_STATUS_0_GPMCTA_REQ	\
+					| L3_STATUS_0_OCMRAMTA_REQ	\
+					| L3_STATUS_0_OCMROMTA_REQ	\
+					| L3_STATUS_0_IVATA_REQ		\
+					| L3_STATUS_0_SGXTA_REQ		\
+					| L3_STATUS_0_L4CORETA_REQ	\
+					| L3_STATUS_0_L4PERTA_REQ	\
+					| L3_STATUS_0_L4EMUTA_REQ	\
+>>>>>>> refs/remotes/origin/cm-10.0
 					| L3_STATUS_0_MAD2DTA_REQ)
 
 #define L3_SI_FLAG_STATUS_1		0x530
@@ -137,6 +196,7 @@ const u64 shift = 1;
 
 enum omap3_l3_initiator_id {
 	/* LCD has 1 ID */
+<<<<<<< HEAD
 	OMAP_L3_LCD	        = 29,
 	/* SAD2D has 1 ID */
 	OMAP_L3_SAD2D		= 28,
@@ -150,6 +210,21 @@ enum omap3_l3_initiator_id {
 	OMAP_L3_IA_IVA_SS_1     = 22,
 	OMAP_L3_IA_IVA_SS_2     = 21,
 	OMAP_L3_IA_IVA_SS_3     = 20,
+=======
+	OMAP_L3_LCD = 29,
+	/* SAD2D has 1 ID */
+	OMAP_L3_SAD2D = 28,
+	/* MPU has 5 IDs */
+	OMAP_L3_IA_MPU_SS_1 = 27,
+	OMAP_L3_IA_MPU_SS_2 = 26,
+	OMAP_L3_IA_MPU_SS_3 = 25,
+	OMAP_L3_IA_MPU_SS_4 = 24,
+	OMAP_L3_IA_MPU_SS_5 = 23,
+	/* IVA2.2 SS has 3 IDs*/
+	OMAP_L3_IA_IVA_SS_1 = 22,
+	OMAP_L3_IA_IVA_SS_2 = 21,
+	OMAP_L3_IA_IVA_SS_3 = 20,
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* IVA 2.2 SS DMA has 6 IDS */
 	OMAP_L3_IA_IVA_SS_DMA_1 = 19,
 	OMAP_L3_IA_IVA_SS_DMA_2 = 18,
@@ -158,6 +233,7 @@ enum omap3_l3_initiator_id {
 	OMAP_L3_IA_IVA_SS_DMA_5 = 15,
 	OMAP_L3_IA_IVA_SS_DMA_6 = 14,
 	/* SGX has 1 ID */
+<<<<<<< HEAD
 	OMAP_L3_IA_SGX		= 13,
 	/* CAM has 3 ID */
 	OMAP_L3_IA_CAM_1	= 12,
@@ -177,6 +253,27 @@ enum omap3_l3_initiator_id {
 	OMAP_L3_USBOTG		= 2,
 	/* HSUSB HOST has 1 ID */
 	OMAP_L3_USBHOST		= 1,
+=======
+	OMAP_L3_IA_SGX = 13,
+	/* CAM has 3 ID */
+	OMAP_L3_IA_CAM_1 = 12,
+	OMAP_L3_IA_CAM_2 = 11,
+	OMAP_L3_IA_CAM_3 = 10,
+	/* DAP has 1 ID */
+	OMAP_L3_IA_DAP = 9,
+	/* SDMA WR has 2 IDs */
+	OMAP_L3_SDMA_WR_1 = 8,
+	OMAP_L3_SDMA_WR_2 = 7,
+	/* SDMA RD has 4 IDs */
+	OMAP_L3_SDMA_RD_1 = 6,
+	OMAP_L3_SDMA_RD_2 = 5,
+	OMAP_L3_SDMA_RD_3 = 4,
+	OMAP_L3_SDMA_RD_4 = 3,
+	/* HSUSB OTG has 1 ID */
+	OMAP_L3_USBOTG = 2,
+	/* HSUSB HOST has 1 ID */
+	OMAP_L3_USBHOST = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum omap3_l3_code {
@@ -192,6 +289,7 @@ enum omap3_l3_code {
 };
 
 struct omap3_l3 {
+<<<<<<< HEAD
 	struct device   *dev;
 	struct clk      *ick;
 
@@ -207,6 +305,23 @@ struct omap3_l3 {
 
 /* offsets for l3 agents in order with the Flag status register */
 unsigned int __iomem omap3_l3_app_bases[] = {
+=======
+	struct device *dev;
+	struct clk *ick;
+
+	/* memory base*/
+	void __iomem *rt;
+
+	int debug_irq;
+	int app_irq;
+
+	/* true when and inband functional error occurs */
+	unsigned inband:1;
+};
+
+/* offsets for l3 agents in order with the Flag status register */
+static unsigned int omap3_l3_app_bases[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* MPU IA */
 	0x1400,
 	0x1400,
@@ -305,7 +420,11 @@ unsigned int __iomem omap3_l3_app_bases[] = {
 	0,
 };
 
+<<<<<<< HEAD
 unsigned int __iomem omap3_l3_debug_bases[] = {
+=======
+static unsigned int omap3_l3_debug_bases[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* MPU DATA IA */
 	0x1400,
 	/* RESERVED */
@@ -321,7 +440,11 @@ unsigned int __iomem omap3_l3_debug_bases[] = {
 	/* REST RESERVED */
 };
 
+<<<<<<< HEAD
 u32 *omap3_l3_bases[] = {
+=======
+static u32 *omap3_l3_bases[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap3_l3_app_bases,
 	omap3_l3_debug_bases,
 };

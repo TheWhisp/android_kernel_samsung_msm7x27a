@@ -375,11 +375,17 @@ static bool direct_trap(unsigned int num)
 	/*
 	 * The Host needs to see page faults (for shadow paging and to save the
 	 * fault address), general protection faults (in/out emulation) and
+<<<<<<< HEAD
 	 * device not available (TS handling), invalid opcode fault (kvm hcall),
 	 * and of course, the hypercall trap.
 	 */
 	return num != 14 && num != 13 && num != 7 &&
 			num != 6 && num != LGUEST_TRAP_ENTRY;
+=======
+	 * device not available (TS handling) and of course, the hypercall trap.
+	 */
+	return num != 14 && num != 13 && num != 7 && num != LGUEST_TRAP_ENTRY;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 /*:*/
 
@@ -429,8 +435,13 @@ void pin_stack_pages(struct lg_cpu *cpu)
 
 /*
  * Direct traps also mean that we need to know whenever the Guest wants to use
+<<<<<<< HEAD
  * a different kernel stack, so we can change the IDT entries to use that
  * stack.  The IDT entries expect a virtual address, so unlike most addresses
+=======
+ * a different kernel stack, so we can change the guest TSS to use that
+ * stack.  The TSS entries expect a virtual address, so unlike most addresses
+>>>>>>> refs/remotes/origin/cm-10.0
  * the Guest gives us, the "esp" (stack pointer) value here is virtual, not
  * physical.
  *

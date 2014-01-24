@@ -387,12 +387,18 @@ EXPORT_SYMBOL(tegra_clk_init_from_table);
 
 void tegra_periph_reset_deassert(struct clk *c)
 {
+<<<<<<< HEAD
 	tegra2_periph_reset_deassert(c);
+=======
+	BUG_ON(!c->ops->reset);
+	c->ops->reset(c, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(tegra_periph_reset_deassert);
 
 void tegra_periph_reset_assert(struct clk *c)
 {
+<<<<<<< HEAD
 	tegra2_periph_reset_assert(c);
 }
 EXPORT_SYMBOL(tegra_periph_reset_assert);
@@ -414,6 +420,33 @@ void tegra_sdmmc_tap_delay(struct clk *c, int delay)
 	spin_lock_irqsave(&c->spinlock, flags);
 	tegra2_sdmmc_tap_delay(c, delay);
 	spin_unlock_irqrestore(&c->spinlock, flags);
+=======
+	BUG_ON(!c->ops->reset);
+	c->ops->reset(c, true);
+}
+EXPORT_SYMBOL(tegra_periph_reset_assert);
+
+/* Several extended clock configuration bits (e.g., clock routing, clock
+ * phase control) are included in PLL and peripheral clock source
+ * registers. */
+int tegra_clk_cfg_ex(struct clk *c, enum tegra_clk_ex_param p, u32 setting)
+{
+	int ret = 0;
+	unsigned long flags;
+
+	spin_lock_irqsave(&c->spinlock, flags);
+
+	if (!c->ops || !c->ops->clk_cfg_ex) {
+		ret = -ENOSYS;
+		goto out;
+	}
+	ret = c->ops->clk_cfg_ex(c, p, setting);
+
+out:
+	spin_unlock_irqrestore(&c->spinlock, flags);
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_DEBUG_FS
@@ -585,7 +618,11 @@ static const struct file_operations possible_parents_fops = {
 
 static int clk_debugfs_register_one(struct clk *c)
 {
+<<<<<<< HEAD
 	struct dentry *d, *child, *child_tmp;
+=======
+	struct dentry *d;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	d = debugfs_create_dir(c->name, clk_debugfs_root);
 	if (!d)
@@ -614,10 +651,14 @@ static int clk_debugfs_register_one(struct clk *c)
 	return 0;
 
 err_out:
+<<<<<<< HEAD
 	d = c->dent;
 	list_for_each_entry_safe(child, child_tmp, &d->d_subdirs, d_u.d_child)
 		debugfs_remove(child);
 	debugfs_remove(c->dent);
+=======
+	debugfs_remove_recursive(c->dent);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ENOMEM;
 }
 

@@ -172,7 +172,11 @@ libipw_rx_frame_mgmt(struct libipw_device *ieee, struct sk_buff *skb,
 			u16 stype)
 {
 	if (ieee->iw_mode == IW_MODE_MASTER) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: Master mode not yet suppported.\n",
+=======
+		printk(KERN_DEBUG "%s: Master mode not yet supported.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       ieee->dev->name);
 		return 0;
 /*
@@ -442,7 +446,11 @@ int libipw_rx(struct libipw_device *ieee, struct sk_buff *skb,
 		 * 802.11, but makes it easier to use different keys with
 		 * stations that do not support WEP key mapping). */
 
+<<<<<<< HEAD
 		if (!(hdr->addr1[0] & 0x01) || local->bcrx_sta_key)
+=======
+		if (is_unicast_ether_addr(hdr->addr1) || local->bcrx_sta_key)
+>>>>>>> refs/remotes/origin/cm-10.0
 			(void)hostap_handle_sta_crypto(local, hdr, &crypt,
 						       &sta);
 #endif
@@ -772,7 +780,11 @@ int libipw_rx(struct libipw_device *ieee, struct sk_buff *skb,
 
 #ifdef NOT_YET
 	if (ieee->iw_mode == IW_MODE_MASTER && !wds && ieee->ap->bridge_packets) {
+<<<<<<< HEAD
 		if (dst[0] & 0x01) {
+=======
+		if (is_multicast_ether_addr(dst)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* copy multicast frame both to the higher layers and
 			 * to the wireless media */
 			ieee->ap->bridged_multicast++;

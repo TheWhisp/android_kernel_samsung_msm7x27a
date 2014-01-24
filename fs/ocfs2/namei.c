@@ -185,7 +185,11 @@ bail:
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct inode *ocfs2_get_init_inode(struct inode *dir, int mode)
+=======
+static struct inode *ocfs2_get_init_inode(struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inode *inode;
 
@@ -199,9 +203,13 @@ static struct inode *ocfs2_get_init_inode(struct inode *dir, int mode)
 	 * these are used by the support functions here and in
 	 * callers. */
 	if (S_ISDIR(mode))
+<<<<<<< HEAD
 		inode->i_nlink = 2;
 	else
 		inode->i_nlink = 1;
+=======
+		set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode_init_owner(inode, dir, mode);
 	dquot_initialize(inode);
 	return inode;
@@ -209,7 +217,11 @@ static struct inode *ocfs2_get_init_inode(struct inode *dir, int mode)
 
 static int ocfs2_mknod(struct inode *dir,
 		       struct dentry *dentry,
+<<<<<<< HEAD
 		       int mode,
+=======
+		       umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       dev_t dev)
 {
 	int status = 0;
@@ -604,7 +616,11 @@ static int ocfs2_mknod_locked(struct ocfs2_super *osb,
 
 static int ocfs2_mkdir(struct inode *dir,
 		       struct dentry *dentry,
+<<<<<<< HEAD
 		       int mode)
+=======
+		       umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 
@@ -619,7 +635,11 @@ static int ocfs2_mkdir(struct inode *dir,
 
 static int ocfs2_create(struct inode *dir,
 			struct dentry *dentry,
+<<<<<<< HEAD
 			int mode,
+=======
+			umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 			struct nameidata *nd)
 {
 	int ret;
@@ -1055,7 +1075,11 @@ static int ocfs2_rename(struct inode *old_dir,
 	handle_t *handle = NULL;
 	struct buffer_head *old_dir_bh = NULL;
 	struct buffer_head *new_dir_bh = NULL;
+<<<<<<< HEAD
 	nlink_t old_dir_nlink = old_dir->i_nlink;
+=======
+	u32 old_dir_nlink = old_dir->i_nlink;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ocfs2_dinode *old_di;
 	struct ocfs2_dir_lookup_result old_inode_dot_dot_res = { NULL, };
 	struct ocfs2_dir_lookup_result target_lookup_res = { NULL, };
@@ -1379,7 +1403,11 @@ static int ocfs2_rename(struct inode *old_dir,
 	}
 
 	if (new_inode) {
+<<<<<<< HEAD
 		new_inode->i_nlink--;
+=======
+		drop_nlink(new_inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		new_inode->i_ctime = CURRENT_TIME;
 	}
 	old_dir->i_ctime = old_dir->i_mtime = CURRENT_TIME;
@@ -1387,9 +1415,15 @@ static int ocfs2_rename(struct inode *old_dir,
 	if (update_dot_dot) {
 		status = ocfs2_update_entry(old_inode, handle,
 					    &old_inode_dot_dot_res, new_dir);
+<<<<<<< HEAD
 		old_dir->i_nlink--;
 		if (new_inode) {
 			new_inode->i_nlink--;
+=======
+		drop_nlink(old_dir);
+		if (new_inode) {
+			drop_nlink(new_inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 			inc_nlink(new_dir);
 			mark_inode_dirty(new_dir);
@@ -2018,7 +2052,11 @@ static int ocfs2_orphan_add(struct ocfs2_super *osb,
 	orphan_fe = (struct ocfs2_dinode *) orphan_dir_bh->b_data;
 	if (S_ISDIR(inode->i_mode))
 		ocfs2_add_links_count(orphan_fe, 1);
+<<<<<<< HEAD
 	orphan_dir_inode->i_nlink = ocfs2_read_links_count(orphan_fe);
+=======
+	set_nlink(orphan_dir_inode, ocfs2_read_links_count(orphan_fe));
+>>>>>>> refs/remotes/origin/cm-10.0
 	ocfs2_journal_dirty(handle, orphan_dir_bh);
 
 	status = __ocfs2_add_entry(handle, orphan_dir_inode, name,
@@ -2116,7 +2154,11 @@ int ocfs2_orphan_del(struct ocfs2_super *osb,
 	orphan_fe = (struct ocfs2_dinode *) orphan_dir_bh->b_data;
 	if (S_ISDIR(inode->i_mode))
 		ocfs2_add_links_count(orphan_fe, -1);
+<<<<<<< HEAD
 	orphan_dir_inode->i_nlink = ocfs2_read_links_count(orphan_fe);
+=======
+	set_nlink(orphan_dir_inode, ocfs2_read_links_count(orphan_fe));
+>>>>>>> refs/remotes/origin/cm-10.0
 	ocfs2_journal_dirty(handle, orphan_dir_bh);
 
 leave:
@@ -2282,7 +2324,11 @@ int ocfs2_create_inode_in_orphan(struct inode *dir,
 		goto leave;
 	}
 
+<<<<<<< HEAD
 	inode->i_nlink = 0;
+=======
+	clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* do the real work now. */
 	status = __ocfs2_mknod_locked(dir, inode,
 				      0, &new_di_bh, parent_di_bh, handle,
@@ -2437,7 +2483,11 @@ int ocfs2_mv_orphaned_inode_to_new(struct inode *dir,
 	di = (struct ocfs2_dinode *)di_bh->b_data;
 	le32_add_cpu(&di->i_flags, -OCFS2_ORPHANED_FL);
 	di->i_orphaned_slot = 0;
+<<<<<<< HEAD
 	inode->i_nlink = 1;
+=======
+	set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ocfs2_set_links_count(di, inode->i_nlink);
 	ocfs2_journal_dirty(handle, di_bh);
 
@@ -2498,4 +2548,8 @@ const struct inode_operations ocfs2_dir_iops = {
 	.listxattr	= ocfs2_listxattr,
 	.removexattr	= generic_removexattr,
 	.fiemap         = ocfs2_fiemap,
+<<<<<<< HEAD
+=======
+	.get_acl	= ocfs2_iop_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
 };

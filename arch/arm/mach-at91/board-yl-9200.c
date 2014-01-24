@@ -22,6 +22,10 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -43,8 +47,13 @@
 
 #include <mach/hardware.h>
 #include <mach/board.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/at91rm9200_mc.h>
+=======
+#include <mach/at91rm9200_mc.h>
+#include <mach/at91_ramc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/cpu.h>
 
 #include "generic.h"
@@ -56,7 +65,11 @@ static void __init yl9200_init_early(void)
 	at91rm9200_set_type(ARCH_REVISON_9200_PQFP);
 
 	/* Initialize processor: 18.432 MHz crystal */
+<<<<<<< HEAD
 	at91rm9200_initialize(18432000);
+=======
+	at91_initialize(18432000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Setup the LEDs D2=PB17 (timer), D3=PB16 (cpu) */
 	at91_init_leds(AT91_PIN_PB16, AT91_PIN_PB17);
@@ -79,12 +92,15 @@ static void __init yl9200_init_early(void)
 	at91_set_serial_console(0);
 }
 
+<<<<<<< HEAD
 static void __init yl9200_init_irq(void)
 {
 	at91rm9200_init_interrupts(NULL);
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * LEDs
  */
@@ -116,7 +132,11 @@ static struct gpio_led yl9200_leds[] = {
 /*
  * Ethernet
  */
+<<<<<<< HEAD
 static struct at91_eth_data __initdata yl9200_eth_data = {
+=======
+static struct macb_platform_data __initdata yl9200_eth_data = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.phy_irq_pin		= AT91_PIN_PB28,
 	.is_rmii		= 1,
 };
@@ -126,6 +146,11 @@ static struct at91_eth_data __initdata yl9200_eth_data = {
  */
 static struct at91_usbh_data __initdata yl9200_usbh_data = {
 	.ports			= 1,	/* PQFP version of AT91RM9200 */
+<<<<<<< HEAD
+=======
+	.vbus_pin		= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -143,8 +168,14 @@ static struct at91_udc_data __initdata yl9200_udc_data = {
  */
 static struct at91_mmc_data __initdata yl9200_mmc_data = {
 	.det_pin	= AT91_PIN_PB9,
+<<<<<<< HEAD
 	// .wp_pin	= ... not connected
 	.wire4		= 1,
+=======
+	.wire4		= 1,
+	.wp_pin		= -EINVAL,
+	.vcc_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -178,6 +209,7 @@ static struct mtd_partition __initdata yl9200_nand_partition[] = {
 	}
 };
 
+<<<<<<< HEAD
 static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
 {
 	*num_partitions = ARRAY_SIZE(yl9200_nand_partition);
@@ -191,6 +223,17 @@ static struct atmel_nand_data __initdata yl9200_nand_data = {
 	.rdy_pin	= AT91_PIN_PC14,	/* R/!B (Sheet10) */
 	.enable_pin	= AT91_PIN_PC15,	/* !CE  (Sheet10) */
 	.partition_info	= nand_partitions,
+=======
+static struct atmel_nand_data __initdata yl9200_nand_data = {
+	.ale		= 6,
+	.cle		= 7,
+	.det_pin	= -EINVAL,
+	.rdy_pin	= AT91_PIN_PC14,	/* R/!B (Sheet10) */
+	.enable_pin	= AT91_PIN_PC15,	/* !CE  (Sheet10) */
+	.ecc_mode	= NAND_ECC_SOFT,
+	.parts		= yl9200_nand_partition,
+	.num_parts	= ARRAY_SIZE(yl9200_nand_partition),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -395,13 +438,21 @@ static struct spi_board_info yl9200_spi_devices[] = {
 #include <video/s1d13xxxfb.h>
 
 
+<<<<<<< HEAD
 static void __init yl9200_init_video(void)
+=======
+static void yl9200_init_video(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* NWAIT Signal */
 	at91_set_A_periph(AT91_PIN_PC6, 0);
 
 	/* Initialization of the Static Memory Controller for Chip Select 2 */
+<<<<<<< HEAD
 	at91_sys_write(AT91_SMC_CSR(2), AT91_SMC_DBW_16		/* 16 bit */
+=======
+	at91_ramc_write(0, AT91_SMC_CSR(2), AT91_SMC_DBW_16		/* 16 bit */
+>>>>>>> refs/remotes/origin/cm-10.0
 			| AT91_SMC_WSEN | AT91_SMC_NWS_(0x4)	/* wait states */
 			| AT91_SMC_TDF_(0x100)			/* float time */
 	);
@@ -599,8 +650,14 @@ static void __init yl9200_board_init(void)
 MACHINE_START(YL9200, "uCdragon YL-9200")
 	/* Maintainer: S.Birtles */
 	.timer		= &at91rm9200_timer,
+<<<<<<< HEAD
 	.map_io		= at91rm9200_map_io,
 	.init_early	= yl9200_init_early,
 	.init_irq	= yl9200_init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= yl9200_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= yl9200_board_init,
 MACHINE_END

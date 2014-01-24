@@ -1,6 +1,10 @@
 config ECRYPT_FS
 	tristate "eCrypt filesystem layer support (EXPERIMENTAL)"
+<<<<<<< HEAD
 	depends on EXPERIMENTAL && KEYS && CRYPTO
+=======
+	depends on EXPERIMENTAL && KEYS && CRYPTO && (ENCRYPTED_KEYS || ENCRYPTED_KEYS=n)
+>>>>>>> refs/remotes/origin/cm-10.0
 	select CRYPTO_ECB
 	select CRYPTO_CBC
 	select CRYPTO_MD5

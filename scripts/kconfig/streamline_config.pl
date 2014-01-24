@@ -43,6 +43,10 @@
 #    make oldconfig
 #
 use strict;
+<<<<<<< HEAD
+=======
+use Getopt::Long;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 my $config = ".config";
 
@@ -112,10 +116,24 @@ sub find_config {
 
 find_config;
 
+<<<<<<< HEAD
 # Get the build source and top level Kconfig file (passed in)
 my $ksource = $ARGV[0];
 my $kconfig = $ARGV[1];
 my $lsmod_file = $ARGV[2];
+=======
+# Parse options
+my $localmodconfig = 0;
+my $localyesconfig = 0;
+
+GetOptions("localmodconfig" => \$localmodconfig,
+	   "localyesconfig" => \$localyesconfig);
+
+# Get the build source and top level Kconfig file (passed in)
+my $ksource = $ARGV[0];
+my $kconfig = $ARGV[1];
+my $lsmod_file = $ENV{'LSMOD'};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 my @makefiles = `find $ksource -name Makefile 2>/dev/null`;
 chomp @makefiles;
@@ -324,7 +342,15 @@ my %modules;
 
 if (defined($lsmod_file)) {
     if ( ! -f $lsmod_file) {
+<<<<<<< HEAD
 	die "$lsmod_file not found";
+=======
+	if ( -f $ENV{'objtree'}."/".$lsmod_file) {
+	    $lsmod_file = $ENV{'objtree'}."/".$lsmod_file;
+	} else {
+		die "$lsmod_file not found";
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
     }
     if ( -x $lsmod_file) {
 	# the file is executable, run it
@@ -449,7 +475,17 @@ while(<CIN>) {
 
     if (/^(CONFIG.*)=(m|y)/) {
 	if (defined($configs{$1})) {
+<<<<<<< HEAD
 	    $setconfigs{$1} = $2;
+=======
+	    if ($localyesconfig) {
+	        $setconfigs{$1} = 'y';
+		print "$1=y\n";
+		next;
+	    } else {
+	        $setconfigs{$1} = $2;
+	    }
+>>>>>>> refs/remotes/origin/cm-10.0
 	} elsif ($2 eq "m") {
 	    print "# $1 is not set\n";
 	    next;

@@ -149,12 +149,20 @@ static int param_get_debug_level(char *buffer, const struct kernel_param *kp)
 	return result;
 }
 
+<<<<<<< HEAD
 static struct kernel_param_ops param_ops_debug_layer = {
+=======
+static const struct kernel_param_ops param_ops_debug_layer = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set = param_set_uint,
 	.get = param_get_debug_layer,
 };
 
+<<<<<<< HEAD
 static struct kernel_param_ops param_ops_debug_level = {
+=======
+static const struct kernel_param_ops param_ops_debug_level = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set = param_set_uint,
 	.get = param_get_debug_level,
 };
@@ -706,11 +714,30 @@ static void __exit interrupt_stats_exit(void)
 	return;
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t
+acpi_show_profile(struct device *dev, struct device_attribute *attr,
+		  char *buf)
+{
+	return sprintf(buf, "%d\n", acpi_gbl_FADT.preferred_profile);
+}
+
+static const struct device_attribute pm_profile_attr =
+	__ATTR(pm_profile, S_IRUGO, acpi_show_profile, NULL);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int __init acpi_sysfs_init(void)
 {
 	int result;
 
 	result = acpi_tables_sysfs_init();
+<<<<<<< HEAD
 
+=======
+	if (result)
+		return result;
+	result = sysfs_create_file(acpi_kobj, &pm_profile_attr.attr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 }

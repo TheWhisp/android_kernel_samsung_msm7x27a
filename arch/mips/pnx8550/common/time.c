@@ -59,7 +59,11 @@ static irqreturn_t pnx8xxx_timer_interrupt(int irq, void *dev_id)
 
 static struct irqaction pnx8xxx_timer_irq = {
 	.handler	= pnx8xxx_timer_interrupt,
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_PERCPU | IRQF_TIMER,
+=======
+	.flags		= IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name		= "pnx8xxx_timer",
 };
 
@@ -72,7 +76,11 @@ static irqreturn_t monotonic_interrupt(int irq, void *dev_id)
 
 static struct irqaction monotonic_irqaction = {
 	.handler = monotonic_interrupt,
+<<<<<<< HEAD
 	.flags = IRQF_DISABLED | IRQF_TIMER,
+=======
+	.flags = IRQF_TIMER,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name = "Monotonic timer",
 };
 

@@ -3,7 +3,11 @@
  * ALSA SoC Audio Layer - Samsung I2S Controller driver
  *
  * Copyright (c) 2010 Samsung Electronics Co. Ltd.
+<<<<<<< HEAD
  *	Jaswinder Singh <jassi.brar@samsung.com>
+=======
+ *	Jaswinder Singh <jassisinghbrar@gmail.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -14,6 +18,11 @@
 #include <linux/slab.h>
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/soc.h>
 #include <sound/pcm_params.h>
@@ -21,6 +30,7 @@
 #include <plat/audio.h>
 
 #include "dma.h"
+<<<<<<< HEAD
 #include "i2s.h"
 
 #define I2SCON		0x0
@@ -125,6 +135,11 @@
 #define FIC_TXCOUNT(x)		(((x) >>  8) & 0xf)
 #define FIC_RXCOUNT(x)		(((x) >>  0) & 0xf)
 #define FICS_TXCOUNT(x)		(((x) >>  8) & 0x7f)
+=======
+#include "idma.h"
+#include "i2s.h"
+#include "i2s-regs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define msecs_to_loops(t) (loops_per_jiffy / 1000 * HZ * t)
 
@@ -162,6 +177,10 @@ struct i2s_dai {
 	/* DMA parameters */
 	struct s3c_dma_params dma_playback;
 	struct s3c_dma_params dma_capture;
+<<<<<<< HEAD
+=======
+	struct s3c_dma_params idma_playback;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32	quirks;
 	u32	suspend_i2smod;
 	u32	suspend_i2scon;
@@ -657,6 +676,20 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
 		mod |= MOD_DC1_EN;
 		break;
 	case 2:
+<<<<<<< HEAD
+=======
+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+			i2s->dma_playback.dma_size = 4;
+		else
+			i2s->dma_capture.dma_size = 4;
+		break;
+	case 1:
+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+			i2s->dma_playback.dma_size = 2;
+		else
+			i2s->dma_capture.dma_size = 2;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		dev_err(&i2s->pdev->dev, "%d channels not supported\n",
@@ -859,6 +892,7 @@ static int i2s_trigger(struct snd_pcm_substream *substream,
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
 		local_irq_save(flags);
 
+<<<<<<< HEAD
 		if (capture)
 			i2s_rxctrl(i2s, 0);
 		else
@@ -868,6 +902,15 @@ static int i2s_trigger(struct snd_pcm_substream *substream,
 			i2s_fifo(i2s, FIC_RXFLUSH);
 		else
 			i2s_fifo(i2s, FIC_TXFLUSH);
+=======
+		if (capture) {
+			i2s_rxctrl(i2s, 0);
+			i2s_fifo(i2s, FIC_RXFLUSH);
+		} else {
+			i2s_txctrl(i2s, 0);
+			i2s_fifo(i2s, FIC_TXFLUSH);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		local_irq_restore(flags);
 		break;
@@ -979,6 +1022,13 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
 	if (i2s->quirks & QUIRK_NEED_RSTCLR)
 		writel(CON_RSTCLR, i2s->addr + I2SCON);
 
+<<<<<<< HEAD
+=======
+	if (i2s->quirks & QUIRK_SEC_DAI)
+		idma_reg_addr_init(i2s->addr,
+					i2s->sec_dai->idma_playback.dma_addr);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 probe_exit:
 	/* Reset any constraint on RFS and BFS */
 	i2s->rfs = 0;
@@ -1018,7 +1068,11 @@ static int samsung_i2s_dai_remove(struct snd_soc_dai *dai)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops samsung_i2s_dai_ops = {
+=======
+static const struct snd_soc_dai_ops samsung_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.trigger = i2s_trigger,
 	.hw_params = i2s_hw_params,
 	.set_fmt = i2s_set_fmt,
@@ -1040,7 +1094,11 @@ struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
 {
 	struct i2s_dai *i2s;
 
+<<<<<<< HEAD
 	i2s = kzalloc(sizeof(struct i2s_dai), GFP_KERNEL);
+=======
+	i2s = devm_kzalloc(&pdev->dev, sizeof(struct i2s_dai), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (i2s == NULL)
 		return NULL;
 
@@ -1059,7 +1117,11 @@ struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
 	i2s->i2s_dai_drv.playback.formats = SAMSUNG_I2S_FMTS;
 
 	if (!sec) {
+<<<<<<< HEAD
 		i2s->i2s_dai_drv.capture.channels_min = 2;
+=======
+		i2s->i2s_dai_drv.capture.channels_min = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 		i2s->i2s_dai_drv.capture.channels_max = 2;
 		i2s->i2s_dai_drv.capture.rates = SAMSUNG_I2S_RATES;
 		i2s->i2s_dai_drv.capture.formats = SAMSUNG_I2S_FMTS;
@@ -1067,10 +1129,15 @@ struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
 		i2s->pdev = platform_device_register_resndata(NULL,
 				pdev->name, pdev->id + SAMSUNG_I2S_SECOFF,
 				NULL, 0, NULL, 0);
+<<<<<<< HEAD
 		if (IS_ERR(i2s->pdev)) {
 			kfree(i2s);
 			return NULL;
 		}
+=======
+		if (IS_ERR(i2s->pdev))
+			return NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Pre-assign snd_soc_dai_set_drvdata */
@@ -1143,7 +1210,11 @@ static __devinit int samsung_i2s_probe(struct platform_device *pdev)
 	if (!pri_dai) {
 		dev_err(&pdev->dev, "Unable to alloc I2S_pri\n");
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto err1;
+=======
+		goto err;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	pri_dai->dma_playback.dma_addr = regs_base + I2STXD;
@@ -1168,7 +1239,11 @@ static __devinit int samsung_i2s_probe(struct platform_device *pdev)
 		if (!sec_dai) {
 			dev_err(&pdev->dev, "Unable to alloc I2S_sec\n");
 			ret = -ENOMEM;
+<<<<<<< HEAD
 			goto err2;
+=======
+			goto err;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		sec_dai->dma_playback.dma_addr = regs_base + I2STXDS;
 		sec_dai->dma_playback.client =
@@ -1179,6 +1254,10 @@ static __devinit int samsung_i2s_probe(struct platform_device *pdev)
 		sec_dai->dma_playback.dma_size = 4;
 		sec_dai->base = regs_base;
 		sec_dai->quirks = quirks;
+<<<<<<< HEAD
+=======
+		sec_dai->idma_playback.dma_addr = i2s_cfg->idma_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		sec_dai->pri_dai = pri_dai;
 		pri_dai->sec_dai = sec_dai;
 	}
@@ -1186,17 +1265,28 @@ static __devinit int samsung_i2s_probe(struct platform_device *pdev)
 	if (i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
 		dev_err(&pdev->dev, "Unable to configure gpio\n");
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto err3;
+=======
+		goto err;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	snd_soc_register_dai(&pri_dai->pdev->dev, &pri_dai->i2s_dai_drv);
 
+<<<<<<< HEAD
 	return 0;
 err3:
 	kfree(sec_dai);
 err2:
 	kfree(pri_dai);
 err1:
+=======
+	pm_runtime_enable(&pdev->dev);
+
+	return 0;
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	release_mem_region(regs_base, resource_size(res));
 
 	return ret;
@@ -1205,6 +1295,10 @@ err1:
 static __devexit int samsung_i2s_remove(struct platform_device *pdev)
 {
 	struct i2s_dai *i2s, *other;
+<<<<<<< HEAD
+=======
+	struct resource *res;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	i2s = dev_get_drvdata(&pdev->dev);
 	other = i2s->pri_dai ? : i2s->sec_dai;
@@ -1213,7 +1307,11 @@ static __devexit int samsung_i2s_remove(struct platform_device *pdev)
 		other->pri_dai = NULL;
 		other->sec_dai = NULL;
 	} else {
+<<<<<<< HEAD
 		struct resource *res;
+=======
+		pm_runtime_disable(&pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 		if (res)
 			release_mem_region(res->start, resource_size(res));
@@ -1222,8 +1320,11 @@ static __devexit int samsung_i2s_remove(struct platform_device *pdev)
 	i2s->pri_dai = NULL;
 	i2s->sec_dai = NULL;
 
+<<<<<<< HEAD
 	kfree(i2s);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	snd_soc_unregister_dai(&pdev->dev);
 
 	return 0;
@@ -1231,13 +1332,18 @@ static __devexit int samsung_i2s_remove(struct platform_device *pdev)
 
 static struct platform_driver samsung_i2s_driver = {
 	.probe  = samsung_i2s_probe,
+<<<<<<< HEAD
 	.remove = samsung_i2s_remove,
+=======
+	.remove = __devexit_p(samsung_i2s_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver = {
 		.name = "samsung-i2s",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init samsung_i2s_init(void)
 {
 	return platform_driver_register(&samsung_i2s_driver);
@@ -1252,6 +1358,12 @@ module_exit(samsung_i2s_exit);
 
 /* Module information */
 MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
+=======
+module_platform_driver(samsung_i2s_driver);
+
+/* Module information */
+MODULE_AUTHOR("Jaswinder Singh, <jassisinghbrar@gmail.com>");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("Samsung I2S Interface");
 MODULE_ALIAS("platform:samsung-i2s");
 MODULE_LICENSE("GPL");

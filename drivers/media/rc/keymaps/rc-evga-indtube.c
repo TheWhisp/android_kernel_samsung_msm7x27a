@@ -11,6 +11,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* EVGA inDtube
    Devin Heitmueller <devin.heitmueller@gmail.com>

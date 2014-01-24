@@ -37,17 +37,42 @@
 #include <linux/clk.h>
 #include <linux/serial_core.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_runtime.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/dma.h>
 #include <plat/dmtimer.h>
 #include <plat/omap-serial.h>
 
+<<<<<<< HEAD
+=======
+#define DEFAULT_CLK_SPEED 48000000 /* 48Mhz*/
+
+/* SCR register bitmasks */
+#define OMAP_UART_SCR_RX_TRIG_GRANU1_MASK		(1 << 7)
+
+/* FCR register bitmasks */
+#define OMAP_UART_FCR_RX_FIFO_TRIG_SHIFT		6
+#define OMAP_UART_FCR_RX_FIFO_TRIG_MASK			(0x3 << 6)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct uart_omap_port *ui[OMAP_MAX_HSUART_PORTS];
 
 /* Forward declaration of functions */
 static void uart_tx_dma_callback(int lch, u16 ch_status, void *data);
+<<<<<<< HEAD
 static void serial_omap_rx_timeout(unsigned long uart_no);
 static int serial_omap_start_rxdma(struct uart_omap_port *up);
+=======
+static void serial_omap_rxdma_poll(unsigned long uart_no);
+static int serial_omap_start_rxdma(struct uart_omap_port *up);
+static void serial_omap_mdr1_errataset(struct uart_omap_port *up, u8 mdr1);
+
+static struct workqueue_struct *serial_omap_uart_wq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline unsigned int serial_in(struct uart_omap_port *up, int offset)
 {
@@ -102,6 +127,11 @@ static void serial_omap_stop_rxdma(struct uart_omap_port *up)
 		omap_free_dma(up->uart_dma.rx_dma_channel);
 		up->uart_dma.rx_dma_channel = OMAP_UART_DMA_CH_FREE;
 		up->uart_dma.rx_dma_used = false;
+<<<<<<< HEAD
+=======
+		pm_runtime_mark_last_busy(&up->pdev->dev);
+		pm_runtime_put_autosuspend(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -109,14 +139,27 @@ static void serial_omap_enable_ms(struct uart_port *port)
 {
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
 
+<<<<<<< HEAD
 	dev_dbg(up->port.dev, "serial_omap_enable_ms+%d\n", up->pdev->id);
 	up->ier |= UART_IER_MSI;
 	serial_out(up, UART_IER, up->ier);
+=======
+	dev_dbg(up->port.dev, "serial_omap_enable_ms+%d\n", up->port.line);
+
+	pm_runtime_get_sync(&up->pdev->dev);
+	up->ier |= UART_IER_MSI;
+	serial_out(up, UART_IER, up->ier);
+	pm_runtime_put(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void serial_omap_stop_tx(struct uart_port *port)
 {
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
+<<<<<<< HEAD
+=======
+	struct omap_uart_port_info *pdata = up->pdev->dev.platform_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (up->use_dma &&
 		up->uart_dma.tx_dma_channel != OMAP_UART_DMA_CH_FREE) {
@@ -129,23 +172,45 @@ static void serial_omap_stop_tx(struct uart_port *port)
 		omap_stop_dma(up->uart_dma.tx_dma_channel);
 		omap_free_dma(up->uart_dma.tx_dma_channel);
 		up->uart_dma.tx_dma_channel = OMAP_UART_DMA_CH_FREE;
+<<<<<<< HEAD
 	}
 
+=======
+		pm_runtime_mark_last_busy(&up->pdev->dev);
+		pm_runtime_put_autosuspend(&up->pdev->dev);
+	}
+
+	pm_runtime_get_sync(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (up->ier & UART_IER_THRI) {
 		up->ier &= ~UART_IER_THRI;
 		serial_out(up, UART_IER, up->ier);
 	}
+<<<<<<< HEAD
+=======
+
+	if (!up->use_dma && pdata && pdata->set_forceidle)
+		pdata->set_forceidle(up->pdev);
+
+	pm_runtime_mark_last_busy(&up->pdev->dev);
+	pm_runtime_put_autosuspend(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void serial_omap_stop_rx(struct uart_port *port)
 {
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
 
+<<<<<<< HEAD
+=======
+	pm_runtime_get_sync(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (up->use_dma)
 		serial_omap_stop_rxdma(up);
 	up->ier &= ~UART_IER_RLSI;
 	up->port.read_status_mask &= ~UART_LSR_DR;
 	serial_out(up, UART_IER, up->ier);
+<<<<<<< HEAD
 }
 
 static inline void receive_chars(struct uart_omap_port *up, int *status)
@@ -153,6 +218,18 @@ static inline void receive_chars(struct uart_omap_port *up, int *status)
 	struct tty_struct *tty = up->port.state->port.tty;
 	unsigned int flag;
 	unsigned char ch, lsr = *status;
+=======
+	pm_runtime_mark_last_busy(&up->pdev->dev);
+	pm_runtime_put_autosuspend(&up->pdev->dev);
+}
+
+static inline void receive_chars(struct uart_omap_port *up,
+		unsigned int *status)
+{
+	struct tty_struct *tty = up->port.state->port.tty;
+	unsigned int flag, lsr = *status;
+	unsigned char ch = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int max_count = 256;
 
 	do {
@@ -257,12 +334,25 @@ static inline void serial_omap_enable_ier_thri(struct uart_omap_port *up)
 static void serial_omap_start_tx(struct uart_port *port)
 {
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
+<<<<<<< HEAD
+=======
+	struct omap_uart_port_info *pdata = up->pdev->dev.platform_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct circ_buf *xmit;
 	unsigned int start;
 	int ret = 0;
 
 	if (!up->use_dma) {
+<<<<<<< HEAD
 		serial_omap_enable_ier_thri(up);
+=======
+		pm_runtime_get_sync(&up->pdev->dev);
+		serial_omap_enable_ier_thri(up);
+		if (pdata && pdata->set_noidle)
+			pdata->set_noidle(up->pdev);
+		pm_runtime_mark_last_busy(&up->pdev->dev);
+		pm_runtime_put_autosuspend(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -272,6 +362,10 @@ static void serial_omap_start_tx(struct uart_port *port)
 	xmit = &up->port.state->xmit;
 
 	if (up->uart_dma.tx_dma_channel == OMAP_UART_DMA_CH_FREE) {
+<<<<<<< HEAD
+=======
+		pm_runtime_get_sync(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = omap_request_dma(up->uart_dma.uart_dma_tx,
 				"UART Tx DMA",
 				(void *)uart_tx_dma_callback, up,
@@ -354,9 +448,19 @@ static inline irqreturn_t serial_omap_irq(int irq, void *dev_id)
 	unsigned int iir, lsr;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	iir = serial_in(up, UART_IIR);
 	if (iir & UART_IIR_NO_INT)
 		return IRQ_NONE;
+=======
+	pm_runtime_get_sync(&up->pdev->dev);
+	iir = serial_in(up, UART_IIR);
+	if (iir & UART_IIR_NO_INT) {
+		pm_runtime_mark_last_busy(&up->pdev->dev);
+		pm_runtime_put_autosuspend(&up->pdev->dev);
+		return IRQ_NONE;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_irqsave(&up->port.lock, flags);
 	lsr = serial_in(up, UART_LSR);
@@ -378,6 +482,12 @@ static inline irqreturn_t serial_omap_irq(int irq, void *dev_id)
 		transmit_chars(up);
 
 	spin_unlock_irqrestore(&up->port.lock, flags);
+<<<<<<< HEAD
+=======
+	pm_runtime_mark_last_busy(&up->pdev->dev);
+	pm_runtime_put_autosuspend(&up->pdev->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	up->port_activity = jiffies;
 	return IRQ_HANDLED;
 }
@@ -388,22 +498,42 @@ static unsigned int serial_omap_tx_empty(struct uart_port *port)
 	unsigned long flags = 0;
 	unsigned int ret = 0;
 
+<<<<<<< HEAD
 	dev_dbg(up->port.dev, "serial_omap_tx_empty+%d\n", up->pdev->id);
 	spin_lock_irqsave(&up->port.lock, flags);
 	ret = serial_in(up, UART_LSR) & UART_LSR_TEMT ? TIOCSER_TEMT : 0;
 	spin_unlock_irqrestore(&up->port.lock, flags);
 
+=======
+	pm_runtime_get_sync(&up->pdev->dev);
+	dev_dbg(up->port.dev, "serial_omap_tx_empty+%d\n", up->port.line);
+	spin_lock_irqsave(&up->port.lock, flags);
+	ret = serial_in(up, UART_LSR) & UART_LSR_TEMT ? TIOCSER_TEMT : 0;
+	spin_unlock_irqrestore(&up->port.lock, flags);
+	pm_runtime_put(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static unsigned int serial_omap_get_mctrl(struct uart_port *port)
 {
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
+<<<<<<< HEAD
 	unsigned char status;
 	unsigned int ret = 0;
 
 	status = check_modem_status(up);
 	dev_dbg(up->port.dev, "serial_omap_get_mctrl+%d\n", up->pdev->id);
+=======
+	unsigned int status;
+	unsigned int ret = 0;
+
+	pm_runtime_get_sync(&up->pdev->dev);
+	status = check_modem_status(up);
+	pm_runtime_put(&up->pdev->dev);
+
+	dev_dbg(up->port.dev, "serial_omap_get_mctrl+%d\n", up->port.line);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (status & UART_MSR_DCD)
 		ret |= TIOCM_CAR;
@@ -421,7 +551,11 @@ static void serial_omap_set_mctrl(struct uart_port *port, unsigned int mctrl)
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
 	unsigned char mcr = 0;
 
+<<<<<<< HEAD
 	dev_dbg(up->port.dev, "serial_omap_set_mctrl+%d\n", up->pdev->id);
+=======
+	dev_dbg(up->port.dev, "serial_omap_set_mctrl+%d\n", up->port.line);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (mctrl & TIOCM_RTS)
 		mcr |= UART_MCR_RTS;
 	if (mctrl & TIOCM_DTR)
@@ -433,8 +567,16 @@ static void serial_omap_set_mctrl(struct uart_port *port, unsigned int mctrl)
 	if (mctrl & TIOCM_LOOP)
 		mcr |= UART_MCR_LOOP;
 
+<<<<<<< HEAD
 	mcr |= up->mcr;
 	serial_out(up, UART_MCR, mcr);
+=======
+	pm_runtime_get_sync(&up->pdev->dev);
+	up->mcr = serial_in(up, UART_MCR);
+	up->mcr |= mcr;
+	serial_out(up, UART_MCR, up->mcr);
+	pm_runtime_put(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void serial_omap_break_ctl(struct uart_port *port, int break_state)
@@ -442,7 +584,12 @@ static void serial_omap_break_ctl(struct uart_port *port, int break_state)
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
 	unsigned long flags = 0;
 
+<<<<<<< HEAD
 	dev_dbg(up->port.dev, "serial_omap_break_ctl+%d\n", up->pdev->id);
+=======
+	dev_dbg(up->port.dev, "serial_omap_break_ctl+%d\n", up->port.line);
+	pm_runtime_get_sync(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&up->port.lock, flags);
 	if (break_state == -1)
 		up->lcr |= UART_LCR_SBC;
@@ -450,6 +597,10 @@ static void serial_omap_break_ctl(struct uart_port *port, int break_state)
 		up->lcr &= ~UART_LCR_SBC;
 	serial_out(up, UART_LCR, up->lcr);
 	spin_unlock_irqrestore(&up->port.lock, flags);
+<<<<<<< HEAD
+=======
+	pm_runtime_put(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int serial_omap_startup(struct uart_port *port)
@@ -466,8 +617,14 @@ static int serial_omap_startup(struct uart_port *port)
 	if (retval)
 		return retval;
 
+<<<<<<< HEAD
 	dev_dbg(up->port.dev, "serial_omap_startup+%d\n", up->pdev->id);
 
+=======
+	dev_dbg(up->port.dev, "serial_omap_startup+%d\n", up->port.line);
+
+	pm_runtime_get_sync(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Clear the FIFO buffers and disable them.
 	 * (they will be reenabled in set_termios())
@@ -505,8 +662,13 @@ static int serial_omap_startup(struct uart_port *port)
 			(dma_addr_t *)&(up->uart_dma.tx_buf_dma_phys),
 			0);
 		init_timer(&(up->uart_dma.rx_timer));
+<<<<<<< HEAD
 		up->uart_dma.rx_timer.function = serial_omap_rx_timeout;
 		up->uart_dma.rx_timer.data = up->pdev->id;
+=======
+		up->uart_dma.rx_timer.function = serial_omap_rxdma_poll;
+		up->uart_dma.rx_timer.data = up->port.line;
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Currently the buffer size is 4KB. Can increase it */
 		up->uart_dma.rx_buf = dma_alloc_coherent(NULL,
 			up->uart_dma.rx_buf_size,
@@ -523,6 +685,11 @@ static int serial_omap_startup(struct uart_port *port)
 	/* Enable module level wake up */
 	serial_out(up, UART_OMAP_WER, OMAP_UART_WER_MOD_WKUP);
 
+<<<<<<< HEAD
+=======
+	pm_runtime_mark_last_busy(&up->pdev->dev);
+	pm_runtime_put_autosuspend(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	up->port_activity = jiffies;
 	return 0;
 }
@@ -532,7 +699,13 @@ static void serial_omap_shutdown(struct uart_port *port)
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
 	unsigned long flags = 0;
 
+<<<<<<< HEAD
 	dev_dbg(up->port.dev, "serial_omap_shutdown+%d\n", up->pdev->id);
+=======
+	dev_dbg(up->port.dev, "serial_omap_shutdown+%d\n", up->port.line);
+
+	pm_runtime_get_sync(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Disable interrupts from this port
 	 */
@@ -566,6 +739,11 @@ static void serial_omap_shutdown(struct uart_port *port)
 			up->uart_dma.rx_buf_dma_phys);
 		up->uart_dma.rx_buf = NULL;
 	}
+<<<<<<< HEAD
+=======
+
+	pm_runtime_put(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	free_irq(up->port.irq, up);
 }
 
@@ -573,8 +751,11 @@ static inline void
 serial_omap_configure_xonxoff
 		(struct uart_omap_port *up, struct ktermios *termios)
 {
+<<<<<<< HEAD
 	unsigned char efr = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	up->lcr = serial_in(up, UART_LCR);
 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
 	up->efr = serial_in(up, UART_EFR);
@@ -584,8 +765,12 @@ serial_omap_configure_xonxoff
 	serial_out(up, UART_XOFF1, termios->c_cc[VSTOP]);
 
 	/* clear SW control mode bits */
+<<<<<<< HEAD
 	efr = up->efr;
 	efr &= OMAP_UART_SW_CLR;
+=======
+	up->efr &= OMAP_UART_SW_CLR;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * IXON Flag:
@@ -593,7 +778,11 @@ serial_omap_configure_xonxoff
 	 * Transmit XON1, XOFF1
 	 */
 	if (termios->c_iflag & IXON)
+<<<<<<< HEAD
 		efr |= OMAP_UART_SW_TX;
+=======
+		up->efr |= OMAP_UART_SW_TX;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * IXOFF Flag:
@@ -601,7 +790,11 @@ serial_omap_configure_xonxoff
 	 * Receiver compares XON1, XOFF1.
 	 */
 	if (termios->c_iflag & IXOFF)
+<<<<<<< HEAD
 		efr |= OMAP_UART_SW_RX;
+=======
+		up->efr |= OMAP_UART_SW_RX;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	serial_out(up, UART_EFR, up->efr | UART_EFR_ECB);
 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_A);
@@ -624,13 +817,28 @@ serial_omap_configure_xonxoff
 	 * load the new software flow control mode IXON or IXOFF
 	 * and restore the UARTi.EFR_REG[4] ENHANCED_EN value.
 	 */
+<<<<<<< HEAD
 	serial_out(up, UART_EFR, efr | UART_EFR_SCD);
+=======
+	serial_out(up, UART_EFR, up->efr | UART_EFR_SCD);
+>>>>>>> refs/remotes/origin/cm-10.0
 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_A);
 
 	serial_out(up, UART_MCR, up->mcr & ~UART_MCR_TCRTLR);
 	serial_out(up, UART_LCR, up->lcr);
 }
 
+<<<<<<< HEAD
+=======
+static void serial_omap_uart_qos_work(struct work_struct *work)
+{
+	struct uart_omap_port *up = container_of(work, struct uart_omap_port,
+						qos_work);
+
+	pm_qos_update_request(&up->pm_qos_request, up->latency);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void
 serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
 			struct ktermios *old)
@@ -671,6 +879,18 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
 	baud = uart_get_baud_rate(port, termios, old, 0, port->uartclk/13);
 	quot = serial_omap_get_divisor(port, baud);
 
+<<<<<<< HEAD
+=======
+	/* calculate wakeup latency constraint */
+	up->calc_latency = (USEC_PER_SEC * up->port.fifosize) / (baud / 8);
+	up->latency = up->calc_latency;
+	schedule_work(&up->qos_work);
+
+	up->dll = quot & 0xff;
+	up->dlh = quot >> 8;
+	up->mdr1 = UART_OMAP_MDR1_DISABLE;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	up->fcr = UART_FCR_R_TRIG_01 | UART_FCR_T_TRIG_01 |
 			UART_FCR_ENABLE_FIFO;
 	if (up->use_dma)
@@ -680,6 +900,10 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
 	 * Ok, we're now changing the port state. Do it with
 	 * interrupts disabled.
 	 */
+<<<<<<< HEAD
+=======
+	pm_runtime_get_sync(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&up->port.lock, flags);
 
 	/*
@@ -723,6 +947,11 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
 		up->ier |= UART_IER_MSI;
 	serial_out(up, UART_IER, up->ier);
 	serial_out(up, UART_LCR, cval);		/* reset DLAB */
+<<<<<<< HEAD
+=======
+	up->lcr = cval;
+	up->scr = OMAP_UART_SCR_TX_EMPTY;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* FIFOs and DMA Settings */
 
@@ -744,6 +973,7 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
 	up->mcr = serial_in(up, UART_MCR);
 	serial_out(up, UART_MCR, up->mcr | UART_MCR_TCRTLR);
 	/* FIFO ENABLE, DMA MODE */
+<<<<<<< HEAD
 	serial_out(up, UART_FCR, up->fcr);
 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
 
@@ -753,13 +983,40 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
 			(UART_FCR_TRIGGER_4 | UART_FCR_TRIGGER_8));
 	}
 
+=======
+
+	up->scr |= OMAP_UART_SCR_RX_TRIG_GRANU1_MASK;
+
+	if (up->use_dma) {
+		serial_out(up, UART_TI752_TLR, 0);
+		up->scr |= UART_FCR_TRIGGER_4;
+	} else {
+		/* Set receive FIFO threshold to 1 byte */
+		up->fcr &= ~OMAP_UART_FCR_RX_FIFO_TRIG_MASK;
+		up->fcr |= (0x1 << OMAP_UART_FCR_RX_FIFO_TRIG_SHIFT);
+	}
+
+	serial_out(up, UART_FCR, up->fcr);
+	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
+
+	serial_out(up, UART_OMAP_SCR, up->scr);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	serial_out(up, UART_EFR, up->efr);
 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_A);
 	serial_out(up, UART_MCR, up->mcr);
 
 	/* Protocol, Baud Rate, and Interrupt Settings */
 
+<<<<<<< HEAD
 	serial_out(up, UART_OMAP_MDR1, UART_OMAP_MDR1_DISABLE);
+=======
+	if (up->errata & UART_ERRATA_i202_MDR1_ACCESS)
+		serial_omap_mdr1_errataset(up, up->mdr1);
+	else
+		serial_out(up, UART_OMAP_MDR1, up->mdr1);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
 
 	up->efr = serial_in(up, UART_EFR);
@@ -769,8 +1026,13 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
 	serial_out(up, UART_IER, 0);
 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
 
+<<<<<<< HEAD
 	serial_out(up, UART_DLL, quot & 0xff);          /* LS of divisor */
 	serial_out(up, UART_DLM, quot >> 8);            /* MS of divisor */
+=======
+	serial_out(up, UART_DLL, up->dll);	/* LS of divisor */
+	serial_out(up, UART_DLM, up->dlh);	/* MS of divisor */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	serial_out(up, UART_LCR, 0);
 	serial_out(up, UART_IER, up->ier);
@@ -780,9 +1042,20 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
 	serial_out(up, UART_LCR, cval);
 
 	if (baud > 230400 && baud != 3000000)
+<<<<<<< HEAD
 		serial_out(up, UART_OMAP_MDR1, UART_OMAP_MDR1_13X_MODE);
 	else
 		serial_out(up, UART_OMAP_MDR1, UART_OMAP_MDR1_16X_MODE);
+=======
+		up->mdr1 = UART_OMAP_MDR1_13X_MODE;
+	else
+		up->mdr1 = UART_OMAP_MDR1_16X_MODE;
+
+	if (up->errata & UART_ERRATA_i202_MDR1_ACCESS)
+		serial_omap_mdr1_errataset(up, up->mdr1);
+	else
+		serial_out(up, UART_OMAP_MDR1, up->mdr1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Hardware Flow Control Configuration */
 
@@ -809,7 +1082,12 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
 	serial_omap_configure_xonxoff(up, termios);
 
 	spin_unlock_irqrestore(&up->port.lock, flags);
+<<<<<<< HEAD
 	dev_dbg(up->port.dev, "serial_omap_set_termios+%d\n", up->pdev->id);
+=======
+	pm_runtime_put(&up->pdev->dev);
+	dev_dbg(up->port.dev, "serial_omap_set_termios+%d\n", up->port.line);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void
@@ -819,7 +1097,13 @@ serial_omap_pm(struct uart_port *port, unsigned int state,
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
 	unsigned char efr;
 
+<<<<<<< HEAD
 	dev_dbg(up->port.dev, "serial_omap_pm+%d\n", up->pdev->id);
+=======
+	dev_dbg(up->port.dev, "serial_omap_pm+%d\n", up->port.line);
+
+	pm_runtime_get_sync(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
 	efr = serial_in(up, UART_EFR);
 	serial_out(up, UART_EFR, efr | UART_EFR_ECB);
@@ -829,6 +1113,18 @@ serial_omap_pm(struct uart_port *port, unsigned int state,
 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
 	serial_out(up, UART_EFR, efr);
 	serial_out(up, UART_LCR, 0);
+<<<<<<< HEAD
+=======
+
+	if (!device_may_wakeup(&up->pdev->dev)) {
+		if (!state)
+			pm_runtime_forbid(&up->pdev->dev);
+		else
+			pm_runtime_allow(&up->pdev->dev);
+	}
+
+	pm_runtime_put(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void serial_omap_release_port(struct uart_port *port)
@@ -847,7 +1143,11 @@ static void serial_omap_config_port(struct uart_port *port, int flags)
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
 
 	dev_dbg(up->port.dev, "serial_omap_config_port+%d\n",
+<<<<<<< HEAD
 							up->pdev->id);
+=======
+							up->port.line);
+>>>>>>> refs/remotes/origin/cm-10.0
 	up->port.type = PORT_OMAP;
 }
 
@@ -864,7 +1164,11 @@ serial_omap_type(struct uart_port *port)
 {
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
 
+<<<<<<< HEAD
 	dev_dbg(up->port.dev, "serial_omap_type+%d\n", up->pdev->id);
+=======
+	dev_dbg(up->port.dev, "serial_omap_type+%d\n", up->port.line);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return up->name;
 }
 
@@ -906,19 +1210,40 @@ static inline void wait_for_xmitr(struct uart_omap_port *up)
 static void serial_omap_poll_put_char(struct uart_port *port, unsigned char ch)
 {
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
+<<<<<<< HEAD
 	wait_for_xmitr(up);
 	serial_out(up, UART_TX, ch);
+=======
+
+	pm_runtime_get_sync(&up->pdev->dev);
+	wait_for_xmitr(up);
+	serial_out(up, UART_TX, ch);
+	pm_runtime_put(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int serial_omap_poll_get_char(struct uart_port *port)
 {
 	struct uart_omap_port *up = (struct uart_omap_port *)port;
+<<<<<<< HEAD
 	unsigned int status = serial_in(up, UART_LSR);
 
 	if (!(status & UART_LSR_DR))
 		return NO_POLL_CHAR;
 
 	return serial_in(up, UART_RX);
+=======
+	unsigned int status;
+
+	pm_runtime_get_sync(&up->pdev->dev);
+	status = serial_in(up, UART_LSR);
+	if (!(status & UART_LSR_DR))
+		return NO_POLL_CHAR;
+
+	status = serial_in(up, UART_RX);
+	pm_runtime_put(&up->pdev->dev);
+	return status;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #endif /* CONFIG_CONSOLE_POLL */
@@ -946,6 +1271,11 @@ serial_omap_console_write(struct console *co, const char *s,
 	unsigned int ier;
 	int locked = 1;
 
+<<<<<<< HEAD
+=======
+	pm_runtime_get_sync(&up->pdev->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_save(flags);
 	if (up->port.sysrq)
 		locked = 0;
@@ -978,6 +1308,11 @@ serial_omap_console_write(struct console *co, const char *s,
 	if (up->msr_saved_flags)
 		check_modem_status(up);
 
+<<<<<<< HEAD
+=======
+	pm_runtime_mark_last_busy(&up->pdev->dev);
+	pm_runtime_put_autosuspend(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (locked)
 		spin_unlock(&up->port.lock);
 	local_irq_restore(flags);
@@ -1014,7 +1349,11 @@ static struct console serial_omap_console = {
 
 static void serial_omap_add_console_port(struct uart_omap_port *up)
 {
+<<<<<<< HEAD
 	serial_omap_console_ports[up->pdev->id] = up;
+=======
+	serial_omap_console_ports[up->port.line] = up;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #define OMAP_CONSOLE	(&serial_omap_console)
@@ -1060,6 +1399,7 @@ static struct uart_driver serial_omap_reg = {
 	.cons		= OMAP_CONSOLE,
 };
 
+<<<<<<< HEAD
 static int
 serial_omap_suspend(struct platform_device *pdev, pm_message_t state)
 {
@@ -1073,13 +1413,37 @@ serial_omap_suspend(struct platform_device *pdev, pm_message_t state)
 static int serial_omap_resume(struct platform_device *dev)
 {
 	struct uart_omap_port *up = platform_get_drvdata(dev);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int serial_omap_suspend(struct device *dev)
+{
+	struct uart_omap_port *up = dev_get_drvdata(dev);
+
+	if (up) {
+		uart_suspend_port(&serial_omap_reg, &up->port);
+		flush_work_sync(&up->qos_work);
+	}
+
+	return 0;
+}
+
+static int serial_omap_resume(struct device *dev)
+{
+	struct uart_omap_port *up = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (up)
 		uart_resume_port(&serial_omap_reg, &up->port);
 	return 0;
 }
+<<<<<<< HEAD
 
 static void serial_omap_rx_timeout(unsigned long uart_no)
+=======
+#endif
+
+static void serial_omap_rxdma_poll(unsigned long uart_no)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct uart_omap_port *up = ui[uart_no];
 	unsigned int curr_dma_pos, curr_transmitted_size;
@@ -1089,9 +1453,15 @@ static void serial_omap_rx_timeout(unsigned long uart_no)
 	if ((curr_dma_pos == up->uart_dma.prev_rx_dma_pos) ||
 			     (curr_dma_pos == 0)) {
 		if (jiffies_to_msecs(jiffies - up->port_activity) <
+<<<<<<< HEAD
 							RX_TIMEOUT) {
 			mod_timer(&up->uart_dma.rx_timer, jiffies +
 				usecs_to_jiffies(up->uart_dma.rx_timeout));
+=======
+						up->uart_dma.rx_timeout) {
+			mod_timer(&up->uart_dma.rx_timer, jiffies +
+				usecs_to_jiffies(up->uart_dma.rx_poll_rate));
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 			serial_omap_stop_rxdma(up);
 			up->ier |= (UART_IER_RDI | UART_IER_RLSI);
@@ -1120,7 +1490,11 @@ static void serial_omap_rx_timeout(unsigned long uart_no)
 		}
 	} else  {
 		mod_timer(&up->uart_dma.rx_timer, jiffies +
+<<<<<<< HEAD
 			usecs_to_jiffies(up->uart_dma.rx_timeout));
+=======
+			usecs_to_jiffies(up->uart_dma.rx_poll_rate));
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	up->port_activity = jiffies;
 }
@@ -1135,6 +1509,10 @@ static int serial_omap_start_rxdma(struct uart_omap_port *up)
 	int ret = 0;
 
 	if (up->uart_dma.rx_dma_channel == -1) {
+<<<<<<< HEAD
+=======
+		pm_runtime_get_sync(&up->pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = omap_request_dma(up->uart_dma.uart_dma_rx,
 				"UART Rx DMA",
 				(void *)uart_rx_dma_callback, up,
@@ -1158,7 +1536,11 @@ static int serial_omap_start_rxdma(struct uart_omap_port *up)
 	/* FIXME: Cache maintenance needed here? */
 	omap_start_dma(up->uart_dma.rx_dma_channel);
 	mod_timer(&up->uart_dma.rx_timer, jiffies +
+<<<<<<< HEAD
 				usecs_to_jiffies(up->uart_dma.rx_timeout));
+=======
+				usecs_to_jiffies(up->uart_dma.rx_poll_rate));
+>>>>>>> refs/remotes/origin/cm-10.0
 	up->uart_dma.rx_dma_used = true;
 	return ret;
 }
@@ -1221,6 +1603,22 @@ static void uart_tx_dma_callback(int lch, u16 ch_status, void *data)
 	return;
 }
 
+<<<<<<< HEAD
+=======
+static struct omap_uart_port_info *of_get_uart_port_info(struct device *dev)
+{
+	struct omap_uart_port_info *omap_up_info;
+
+	omap_up_info = devm_kzalloc(dev, sizeof(*omap_up_info), GFP_KERNEL);
+	if (!omap_up_info)
+		return NULL; /* out of memory */
+
+	of_property_read_u32(dev->of_node, "clock-frequency",
+					 &omap_up_info->uartclk);
+	return omap_up_info;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int serial_omap_probe(struct platform_device *pdev)
 {
 	struct uart_omap_port	*up;
@@ -1228,6 +1626,12 @@ static int serial_omap_probe(struct platform_device *pdev)
 	struct omap_uart_port_info *omap_up_info = pdev->dev.platform_data;
 	int ret = -ENOSPC;
 
+<<<<<<< HEAD
+=======
+	if (pdev->dev.of_node)
+		omap_up_info = of_get_uart_port_info(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!mem) {
 		dev_err(&pdev->dev, "no mem resource?\n");
@@ -1240,13 +1644,19 @@ static int serial_omap_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	if (!request_mem_region(mem->start, (mem->end - mem->start) + 1,
 				     pdev->dev.driver->name)) {
+=======
+	if (!devm_request_mem_region(&pdev->dev, mem->start, resource_size(mem),
+				pdev->dev.driver->name)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_err(&pdev->dev, "memory region already claimed\n");
 		return -EBUSY;
 	}
 
 	dma_rx = platform_get_resource_byname(pdev, IORESOURCE_DMA, "rx");
+<<<<<<< HEAD
 	if (!dma_rx) {
 		ret = -EINVAL;
 		goto err;
@@ -1264,6 +1674,19 @@ static int serial_omap_probe(struct platform_device *pdev)
 		goto do_release_region;
 	}
 	sprintf(up->name, "OMAP UART%d", pdev->id);
+=======
+	if (!dma_rx)
+		return -ENXIO;
+
+	dma_tx = platform_get_resource_byname(pdev, IORESOURCE_DMA, "tx");
+	if (!dma_tx)
+		return -ENXIO;
+
+	up = devm_kzalloc(&pdev->dev, sizeof(*up), GFP_KERNEL);
+	if (!up)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	up->pdev = pdev;
 	up->port.dev = &pdev->dev;
 	up->port.type = PORT_OMAP;
@@ -1273,6 +1696,7 @@ static int serial_omap_probe(struct platform_device *pdev)
 	up->port.regshift = 2;
 	up->port.fifosize = 64;
 	up->port.ops = &serial_omap_pops;
+<<<<<<< HEAD
 	up->port.line = pdev->id;
 
 	up->port.membase = omap_up_info->membase;
@@ -1281,24 +1705,84 @@ static int serial_omap_probe(struct platform_device *pdev)
 	up->port.irqflags = omap_up_info->irqflags;
 	up->port.uartclk = omap_up_info->uartclk;
 	up->uart_dma.uart_base = mem->start;
+=======
+
+	if (pdev->dev.of_node)
+		up->port.line = of_alias_get_id(pdev->dev.of_node, "serial");
+	else
+		up->port.line = pdev->id;
+
+	if (up->port.line < 0) {
+		dev_err(&pdev->dev, "failed to get alias/pdev id, errno %d\n",
+								up->port.line);
+		ret = -ENODEV;
+		goto err_port_line;
+	}
+
+	sprintf(up->name, "OMAP UART%d", up->port.line);
+	up->port.mapbase = mem->start;
+	up->port.membase = devm_ioremap(&pdev->dev, mem->start,
+						resource_size(mem));
+	if (!up->port.membase) {
+		dev_err(&pdev->dev, "can't ioremap UART\n");
+		ret = -ENOMEM;
+		goto err_ioremap;
+	}
+
+	up->port.flags = omap_up_info->flags;
+	up->port.uartclk = omap_up_info->uartclk;
+	if (!up->port.uartclk) {
+		up->port.uartclk = DEFAULT_CLK_SPEED;
+		dev_warn(&pdev->dev, "No clock speed specified: using default:"
+						"%d\n", DEFAULT_CLK_SPEED);
+	}
+	up->uart_dma.uart_base = mem->start;
+	up->errata = omap_up_info->errata;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (omap_up_info->dma_enabled) {
 		up->uart_dma.uart_dma_tx = dma_tx->start;
 		up->uart_dma.uart_dma_rx = dma_rx->start;
 		up->use_dma = 1;
+<<<<<<< HEAD
 		up->uart_dma.rx_buf_size = 4096;
 		up->uart_dma.rx_timeout = 2;
+=======
+		up->uart_dma.rx_buf_size = omap_up_info->dma_rx_buf_size;
+		up->uart_dma.rx_timeout = omap_up_info->dma_rx_timeout;
+		up->uart_dma.rx_poll_rate = omap_up_info->dma_rx_poll_rate;
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_lock_init(&(up->uart_dma.tx_lock));
 		spin_lock_init(&(up->uart_dma.rx_lock));
 		up->uart_dma.tx_dma_channel = OMAP_UART_DMA_CH_FREE;
 		up->uart_dma.rx_dma_channel = OMAP_UART_DMA_CH_FREE;
 	}
 
+<<<<<<< HEAD
 	ui[pdev->id] = up;
+=======
+	up->latency = PM_QOS_CPU_DMA_LAT_DEFAULT_VALUE;
+	up->calc_latency = PM_QOS_CPU_DMA_LAT_DEFAULT_VALUE;
+	pm_qos_add_request(&up->pm_qos_request,
+		PM_QOS_CPU_DMA_LATENCY, up->latency);
+	serial_omap_uart_wq = create_singlethread_workqueue(up->name);
+	INIT_WORK(&up->qos_work, serial_omap_uart_qos_work);
+
+	pm_runtime_use_autosuspend(&pdev->dev);
+	pm_runtime_set_autosuspend_delay(&pdev->dev,
+			omap_up_info->autosuspend_timeout);
+
+	pm_runtime_irq_safe(&pdev->dev);
+	pm_runtime_enable(&pdev->dev);
+	pm_runtime_get_sync(&pdev->dev);
+
+	ui[up->port.line] = up;
+>>>>>>> refs/remotes/origin/cm-10.0
 	serial_omap_add_console_port(up);
 
 	ret = uart_add_one_port(&serial_omap_reg, &up->port);
 	if (ret != 0)
+<<<<<<< HEAD
 		goto do_release_region;
 
 	platform_set_drvdata(pdev, up);
@@ -1308,6 +1792,21 @@ err:
 				pdev->id, __func__, ret);
 do_release_region:
 	release_mem_region(mem->start, (mem->end - mem->start) + 1);
+=======
+		goto err_add_port;
+
+	pm_runtime_put(&pdev->dev);
+	platform_set_drvdata(pdev, up);
+	return 0;
+
+err_add_port:
+	pm_runtime_put(&pdev->dev);
+	pm_runtime_disable(&pdev->dev);
+err_ioremap:
+err_port_line:
+	dev_err(&pdev->dev, "[UART%d]: failure [%s]: %d\n",
+				pdev->id, __func__, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -1315,6 +1814,7 @@ static int serial_omap_remove(struct platform_device *dev)
 {
 	struct uart_omap_port *up = platform_get_drvdata(dev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
 	if (up) {
 		uart_remove_one_port(&serial_omap_reg, &up->port);
@@ -1331,6 +1831,168 @@ static struct platform_driver serial_omap_driver = {
 	.resume		= serial_omap_resume,
 	.driver		= {
 		.name	= DRIVER_NAME,
+=======
+	if (up) {
+		pm_runtime_disable(&up->pdev->dev);
+		uart_remove_one_port(&serial_omap_reg, &up->port);
+		pm_qos_remove_request(&up->pm_qos_request);
+	}
+
+	platform_set_drvdata(dev, NULL);
+	return 0;
+}
+
+/*
+ * Work Around for Errata i202 (2430, 3430, 3630, 4430 and 4460)
+ * The access to uart register after MDR1 Access
+ * causes UART to corrupt data.
+ *
+ * Need a delay =
+ * 5 L4 clock cycles + 5 UART functional clock cycle (@48MHz = ~0.2uS)
+ * give 10 times as much
+ */
+static void serial_omap_mdr1_errataset(struct uart_omap_port *up, u8 mdr1)
+{
+	u8 timeout = 255;
+
+	serial_out(up, UART_OMAP_MDR1, mdr1);
+	udelay(2);
+	serial_out(up, UART_FCR, up->fcr | UART_FCR_CLEAR_XMIT |
+			UART_FCR_CLEAR_RCVR);
+	/*
+	 * Wait for FIFO to empty: when empty, RX_FIFO_E bit is 0 and
+	 * TX_FIFO_E bit is 1.
+	 */
+	while (UART_LSR_THRE != (serial_in(up, UART_LSR) &
+				(UART_LSR_THRE | UART_LSR_DR))) {
+		timeout--;
+		if (!timeout) {
+			/* Should *never* happen. we warn and carry on */
+			dev_crit(&up->pdev->dev, "Errata i202: timedout %x\n",
+						serial_in(up, UART_LSR));
+			break;
+		}
+		udelay(1);
+	}
+}
+
+#ifdef CONFIG_PM_RUNTIME
+static void serial_omap_restore_context(struct uart_omap_port *up)
+{
+	if (up->errata & UART_ERRATA_i202_MDR1_ACCESS)
+		serial_omap_mdr1_errataset(up, UART_OMAP_MDR1_DISABLE);
+	else
+		serial_out(up, UART_OMAP_MDR1, UART_OMAP_MDR1_DISABLE);
+
+	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B); /* Config B mode */
+	serial_out(up, UART_EFR, UART_EFR_ECB);
+	serial_out(up, UART_LCR, 0x0); /* Operational mode */
+	serial_out(up, UART_IER, 0x0);
+	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B); /* Config B mode */
+	serial_out(up, UART_DLL, up->dll);
+	serial_out(up, UART_DLM, up->dlh);
+	serial_out(up, UART_LCR, 0x0); /* Operational mode */
+	serial_out(up, UART_IER, up->ier);
+	serial_out(up, UART_FCR, up->fcr);
+	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_A);
+	serial_out(up, UART_MCR, up->mcr);
+	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B); /* Config B mode */
+	serial_out(up, UART_OMAP_SCR, up->scr);
+	serial_out(up, UART_EFR, up->efr);
+	serial_out(up, UART_LCR, up->lcr);
+	if (up->errata & UART_ERRATA_i202_MDR1_ACCESS)
+		serial_omap_mdr1_errataset(up, up->mdr1);
+	else
+		serial_out(up, UART_OMAP_MDR1, up->mdr1);
+}
+
+static int serial_omap_runtime_suspend(struct device *dev)
+{
+	struct uart_omap_port *up = dev_get_drvdata(dev);
+	struct omap_uart_port_info *pdata = dev->platform_data;
+
+	if (!up)
+		return -EINVAL;
+
+	if (!pdata || !pdata->enable_wakeup)
+		return 0;
+
+	if (pdata->get_context_loss_count)
+		up->context_loss_cnt = pdata->get_context_loss_count(dev);
+
+	if (device_may_wakeup(dev)) {
+		if (!up->wakeups_enabled) {
+			pdata->enable_wakeup(up->pdev, true);
+			up->wakeups_enabled = true;
+		}
+	} else {
+		if (up->wakeups_enabled) {
+			pdata->enable_wakeup(up->pdev, false);
+			up->wakeups_enabled = false;
+		}
+	}
+
+	/* Errata i291 */
+	if (up->use_dma && pdata->set_forceidle &&
+			(up->errata & UART_ERRATA_i291_DMA_FORCEIDLE))
+		pdata->set_forceidle(up->pdev);
+
+	up->latency = PM_QOS_CPU_DMA_LAT_DEFAULT_VALUE;
+	schedule_work(&up->qos_work);
+
+	return 0;
+}
+
+static int serial_omap_runtime_resume(struct device *dev)
+{
+	struct uart_omap_port *up = dev_get_drvdata(dev);
+	struct omap_uart_port_info *pdata = dev->platform_data;
+
+	if (up && pdata) {
+		if (pdata->get_context_loss_count) {
+			u32 loss_cnt = pdata->get_context_loss_count(dev);
+
+			if (up->context_loss_cnt != loss_cnt)
+				serial_omap_restore_context(up);
+		}
+
+		/* Errata i291 */
+		if (up->use_dma && pdata->set_noidle &&
+				(up->errata & UART_ERRATA_i291_DMA_FORCEIDLE))
+			pdata->set_noidle(up->pdev);
+
+		up->latency = up->calc_latency;
+		schedule_work(&up->qos_work);
+	}
+
+	return 0;
+}
+#endif
+
+static const struct dev_pm_ops serial_omap_dev_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(serial_omap_suspend, serial_omap_resume)
+	SET_RUNTIME_PM_OPS(serial_omap_runtime_suspend,
+				serial_omap_runtime_resume, NULL)
+};
+
+#if defined(CONFIG_OF)
+static const struct of_device_id omap_serial_of_match[] = {
+	{ .compatible = "ti,omap2-uart" },
+	{ .compatible = "ti,omap3-uart" },
+	{ .compatible = "ti,omap4-uart" },
+	{},
+};
+MODULE_DEVICE_TABLE(of, omap_serial_of_match);
+#endif
+
+static struct platform_driver serial_omap_driver = {
+	.probe          = serial_omap_probe,
+	.remove         = serial_omap_remove,
+	.driver		= {
+		.name	= DRIVER_NAME,
+		.pm	= &serial_omap_dev_pm_ops,
+		.of_match_table = of_match_ptr(omap_serial_of_match),
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 

@@ -51,7 +51,11 @@ static const struct snd_soc_dapm_widget saarb_dapm_widgets[] = {
 };
 
 /* saarb machine audio map */
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route saarb_audio_map[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{"Headset Stereophone", NULL, "HS1"},
 	{"Headset Stereophone", NULL, "HS2"},
 
@@ -92,6 +96,7 @@ static int saarb_i2s_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
 			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
 	if (ret < 0)
@@ -101,6 +106,8 @@ static int saarb_i2s_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 3, 3, 2, width);
 
 	return ret;
@@ -119,25 +126,44 @@ static struct snd_soc_dai_link saarb_dai[] = {
 		.platform_name	= "pxa-pcm-audio",
 		.codec_name	= "88pm860x-codec",
 		.init		= saarb_pm860x_init,
+<<<<<<< HEAD
+=======
+		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+				  SND_SOC_DAIFMT_CBM_CFM,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.ops		= &saarb_i2s_ops,
 	},
 };
 
 static struct snd_soc_card snd_soc_card_saarb = {
 	.name = "Saarb",
+<<<<<<< HEAD
 	.dai_link = saarb_dai,
 	.num_links = ARRAY_SIZE(saarb_dai),
+=======
+	.owner = THIS_MODULE,
+	.dai_link = saarb_dai,
+	.num_links = ARRAY_SIZE(saarb_dai),
+
+	.dapm_widgets = saarb_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(saarb_dapm_widgets),
+	.dapm_routes = saarb_audio_map,
+	.num_dapm_routes = ARRAY_SIZE(saarb_audio_map),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int saarb_pm860x_init(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_soc_codec *codec = rtd->codec;
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+<<<<<<< HEAD
 	int ret;
 
 	snd_soc_dapm_new_controls(dapm, saarb_dapm_widgets,
 				  ARRAY_SIZE(saarb_dapm_widgets));
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* connected pins */
 	snd_soc_dapm_enable_pin(dapm, "Ext Speaker");
@@ -146,10 +172,13 @@ static int saarb_pm860x_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_disable_pin(dapm, "Headset Mic 2");
 	snd_soc_dapm_disable_pin(dapm, "Headset Stereophone");
 
+<<<<<<< HEAD
 	ret = snd_soc_dapm_sync(dapm);
 	if (ret)
 		return ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Headset jack detection */
 	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE
 			| SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2,

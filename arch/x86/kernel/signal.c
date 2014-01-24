@@ -10,10 +10,15 @@
 #include <linux/mm.h>
 #include <linux/smp.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/signal.h>
 #include <linux/errno.h>
 #include <linux/wait.h>
 #include <linux/ptrace.h>
+=======
+#include <linux/errno.h>
+#include <linux/wait.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/tracehook.h>
 #include <linux/unistd.h>
 #include <linux/stddef.h>
@@ -24,12 +29,23 @@
 #include <asm/processor.h>
 #include <asm/ucontext.h>
 #include <asm/i387.h>
+<<<<<<< HEAD
 #include <asm/vdso.h>
 #include <asm/mce.h>
+=======
+#include <asm/fpu-internal.h>
+#include <asm/vdso.h>
+#include <asm/mce.h>
+#include <asm/sighandling.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_X86_64
 #include <asm/proto.h>
 #include <asm/ia32_unistd.h>
+<<<<<<< HEAD
+=======
+#include <asm/sys_ia32.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_X86_64 */
 
 #include <asm/syscall.h>
@@ -37,6 +53,7 @@
 
 #include <asm/sigframe.h>
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
 #define __FIX_EFLAGS	(X86_EFLAGS_AC | X86_EFLAGS_OF | \
@@ -44,6 +61,8 @@
 			 X86_EFLAGS_ZF | X86_EFLAGS_AF | X86_EFLAGS_PF | \
 			 X86_EFLAGS_CF)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_X86_32
 # define FIX_EFLAGS	(__FIX_EFLAGS | X86_EFLAGS_RF)
 #else
@@ -68,9 +87,14 @@
 	regs->seg = GET_SEG(seg) | 3;			\
 } while (0)
 
+<<<<<<< HEAD
 static int
 restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc,
 		   unsigned long *pax)
+=======
+int restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc,
+		       unsigned long *pax)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void __user *buf;
 	unsigned int tmpflags;
@@ -125,9 +149,14 @@ restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc,
 	return err;
 }
 
+<<<<<<< HEAD
 static int
 setup_sigcontext(struct sigcontext __user *sc, void __user *fpstate,
 		 struct pt_regs *regs, unsigned long mask)
+=======
+int setup_sigcontext(struct sigcontext __user *sc, void __user *fpstate,
+		     struct pt_regs *regs, unsigned long mask)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int err = 0;
 
@@ -159,7 +188,11 @@ setup_sigcontext(struct sigcontext __user *sc, void __user *fpstate,
 		put_user_ex(regs->r15, &sc->r15);
 #endif /* CONFIG_X86_64 */
 
+<<<<<<< HEAD
 		put_user_ex(current->thread.trap_no, &sc->trapno);
+=======
+		put_user_ex(current->thread.trap_nr, &sc->trapno);
+>>>>>>> refs/remotes/origin/cm-10.0
 		put_user_ex(current->thread.error_code, &sc->err);
 		put_user_ex(regs->ip, &sc->ip);
 #ifdef CONFIG_X86_32
@@ -485,6 +518,7 @@ static int __setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 asmlinkage int
 sys_sigsuspend(int history0, int history1, old_sigset_t mask)
 {
+<<<<<<< HEAD
 	mask &= _BLOCKABLE;
 	spin_lock_irq(&current->sighand->siglock);
 	current->saved_sigmask = current->blocked;
@@ -496,6 +530,20 @@ sys_sigsuspend(int history0, int history1, old_sigset_t mask)
 	schedule();
 	set_restore_sigmask();
 
+=======
+	sigset_t blocked;
+
+	current->saved_sigmask = current->blocked;
+
+	mask &= _BLOCKABLE;
+	siginitset(&blocked, mask);
+	set_current_blocked(&blocked);
+
+	current->state = TASK_INTERRUPTIBLE;
+	schedule();
+
+	set_restore_sigmask();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ERESTARTNOHAND;
 }
 
@@ -572,10 +620,14 @@ unsigned long sys_sigreturn(struct pt_regs *regs)
 		goto badframe;
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (restore_sigcontext(regs, &frame->sc, &ax))
 		goto badframe;
@@ -644,6 +696,19 @@ static int signr_convert(int sig)
 #define is_ia32	0
 #endif /* CONFIG_IA32_EMULATION */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_X86_X32_ABI
+#define is_x32	test_thread_flag(TIF_X32)
+
+static int x32_setup_rt_frame(int sig, struct k_sigaction *ka,
+			      siginfo_t *info, compat_sigset_t *set,
+			      struct pt_regs *regs);
+#else /* !CONFIG_X86_X32_ABI */
+#define is_x32	0
+#endif /* CONFIG_X86_X32_ABI */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int ia32_setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 		sigset_t *set, struct pt_regs *regs);
 int ia32_setup_frame(int sig, struct k_sigaction *ka,
@@ -653,33 +718,65 @@ int ia32_setup_frame(int sig, struct k_sigaction *ka,
 
 static int
 setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
+<<<<<<< HEAD
 	       sigset_t *set, struct pt_regs *regs)
 {
 	int usig = signr_convert(sig);
 	int ret;
 
+=======
+		struct pt_regs *regs)
+{
+	int usig = signr_convert(sig);
+	sigset_t *set = &current->blocked;
+	int ret;
+
+	if (current_thread_info()->status & TS_RESTORE_SIGMASK)
+		set = &current->saved_sigmask;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Set up the stack frame */
 	if (is_ia32) {
 		if (ka->sa.sa_flags & SA_SIGINFO)
 			ret = ia32_setup_rt_frame(usig, ka, info, set, regs);
 		else
 			ret = ia32_setup_frame(usig, ka, set, regs);
+<<<<<<< HEAD
 	} else
 		ret = __setup_rt_frame(sig, ka, info, set, regs);
+=======
+#ifdef CONFIG_X86_X32_ABI
+	} else if (is_x32) {
+		ret = x32_setup_rt_frame(usig, ka, info,
+					 (compat_sigset_t *)set, regs);
+#endif
+	} else {
+		ret = __setup_rt_frame(sig, ka, info, set, regs);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ret) {
 		force_sigsegv(sig, current);
 		return -EFAULT;
 	}
 
+<<<<<<< HEAD
+=======
+	current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int
 handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
+<<<<<<< HEAD
 	      sigset_t *oldset, struct pt_regs *regs)
 {
 	sigset_t blocked;
+=======
+		struct pt_regs *regs)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	/* Are we from a system call? */
@@ -712,11 +809,16 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 	    likely(test_and_clear_thread_flag(TIF_FORCED_TF)))
 		regs->flags &= ~X86_EFLAGS_TF;
 
+<<<<<<< HEAD
 	ret = setup_rt_frame(sig, ka, info, oldset, regs);
+=======
+	ret = setup_rt_frame(sig, ka, info, regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
 	/*
 	 * This has nothing to do with segment registers,
@@ -726,6 +828,8 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 	set_fs(USER_DS);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Clear the direction flag as per the ABI for function entry.
 	 */
@@ -739,10 +843,14 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 	 */
 	regs->flags &= ~X86_EFLAGS_TF;
 
+<<<<<<< HEAD
 	sigorsets(&blocked, &current->blocked, &ka->sa.sa_mask);
 	if (!(ka->sa.sa_flags & SA_NODEFER))
 		sigaddset(&blocked, sig);
 	set_current_blocked(&blocked);
+=======
+	block_sigmask(ka, sig);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	tracehook_signal_handler(sig, info, ka, regs,
 				 test_thread_flag(TIF_SINGLESTEP));
@@ -767,7 +875,10 @@ static void do_signal(struct pt_regs *regs)
 	struct k_sigaction ka;
 	siginfo_t info;
 	int signr;
+<<<<<<< HEAD
 	sigset_t *oldset;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * We want the common case to go fast, which is why we may in certain
@@ -779,6 +890,7 @@ static void do_signal(struct pt_regs *regs)
 	if (!user_mode(regs))
 		return;
 
+<<<<<<< HEAD
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK)
 		oldset = &current->saved_sigmask;
 	else
@@ -796,6 +908,12 @@ static void do_signal(struct pt_regs *regs)
 			 */
 			current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
 		}
+=======
+	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+	if (signr > 0) {
+		/* Whee! Actually deliver the signal.  */
+		handle_signal(signr, &info, &ka, regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -823,7 +941,11 @@ static void do_signal(struct pt_regs *regs)
 	 */
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK) {
 		current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
+<<<<<<< HEAD
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
+=======
+		set_current_blocked(&current->saved_sigmask);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -874,3 +996,105 @@ void signal_fault(struct pt_regs *regs, void __user *frame, char *where)
 
 	force_sig(SIGSEGV, me);
 }
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_X86_X32_ABI
+static int x32_setup_rt_frame(int sig, struct k_sigaction *ka,
+			      siginfo_t *info, compat_sigset_t *set,
+			      struct pt_regs *regs)
+{
+	struct rt_sigframe_x32 __user *frame;
+	void __user *restorer;
+	int err = 0;
+	void __user *fpstate = NULL;
+
+	frame = get_sigframe(ka, regs, sizeof(*frame), &fpstate);
+
+	if (!access_ok(VERIFY_WRITE, frame, sizeof(*frame)))
+		return -EFAULT;
+
+	if (ka->sa.sa_flags & SA_SIGINFO) {
+		if (copy_siginfo_to_user32(&frame->info, info))
+			return -EFAULT;
+	}
+
+	put_user_try {
+		/* Create the ucontext.  */
+		if (cpu_has_xsave)
+			put_user_ex(UC_FP_XSTATE, &frame->uc.uc_flags);
+		else
+			put_user_ex(0, &frame->uc.uc_flags);
+		put_user_ex(0, &frame->uc.uc_link);
+		put_user_ex(current->sas_ss_sp, &frame->uc.uc_stack.ss_sp);
+		put_user_ex(sas_ss_flags(regs->sp),
+			    &frame->uc.uc_stack.ss_flags);
+		put_user_ex(current->sas_ss_size, &frame->uc.uc_stack.ss_size);
+		put_user_ex(0, &frame->uc.uc__pad0);
+		err |= setup_sigcontext(&frame->uc.uc_mcontext, fpstate,
+					regs, set->sig[0]);
+		err |= __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set));
+
+		if (ka->sa.sa_flags & SA_RESTORER) {
+			restorer = ka->sa.sa_restorer;
+		} else {
+			/* could use a vstub here */
+			restorer = NULL;
+			err |= -EFAULT;
+		}
+		put_user_ex(restorer, &frame->pretcode);
+	} put_user_catch(err);
+
+	if (err)
+		return -EFAULT;
+
+	/* Set up registers for signal handler */
+	regs->sp = (unsigned long) frame;
+	regs->ip = (unsigned long) ka->sa.sa_handler;
+
+	/* We use the x32 calling convention here... */
+	regs->di = sig;
+	regs->si = (unsigned long) &frame->info;
+	regs->dx = (unsigned long) &frame->uc;
+
+	loadsegment(ds, __USER_DS);
+	loadsegment(es, __USER_DS);
+
+	regs->cs = __USER_CS;
+	regs->ss = __USER_DS;
+
+	return 0;
+}
+
+asmlinkage long sys32_x32_rt_sigreturn(struct pt_regs *regs)
+{
+	struct rt_sigframe_x32 __user *frame;
+	sigset_t set;
+	unsigned long ax;
+	struct pt_regs tregs;
+
+	frame = (struct rt_sigframe_x32 __user *)(regs->sp - 8);
+
+	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
+		goto badframe;
+	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
+		goto badframe;
+
+	sigdelsetmask(&set, ~_BLOCKABLE);
+	set_current_blocked(&set);
+
+	if (restore_sigcontext(regs, &frame->uc.uc_mcontext, &ax))
+		goto badframe;
+
+	tregs = *regs;
+	if (sys32_sigaltstack(&frame->uc.uc_stack, NULL, &tregs) == -EFAULT)
+		goto badframe;
+
+	return ax;
+
+badframe:
+	signal_fault(regs, frame, "x32 rt_sigreturn");
+	return 0;
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0

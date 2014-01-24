@@ -481,7 +481,11 @@ static int __hwahc_op_set_ptk(struct wusbhc *wusbhc, u8 port_idx, u32 tkid,
 		encryption_value = 0;
 	}
 
+<<<<<<< HEAD
 	/* Set the encryption type for commmunicating with the device */
+=======
+	/* Set the encryption type for communicating with the device */
+>>>>>>> refs/remotes/origin/cm-10.0
 	result = usb_control_msg(wa->usb_dev, usb_sndctrlpipe(wa->usb_dev, 0),
 			USB_REQ_SET_ENCRYPTION,
 			USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
@@ -776,7 +780,10 @@ static int hwahc_probe(struct usb_interface *usb_iface,
 		goto error_alloc;
 	}
 	usb_hcd->wireless = 1;
+<<<<<<< HEAD
 	set_bit(HCD_FLAG_SAW_IRQ, &usb_hcd->flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	wusbhc = usb_hcd_to_wusbhc(usb_hcd);
 	hwahc = container_of(wusbhc, struct hwahc, wusbhc);
 	hwahc_init(hwahc);
@@ -837,6 +844,7 @@ static struct usb_driver hwahc_driver = {
 	.id_table =	hwahc_id_table,
 };
 
+<<<<<<< HEAD
 static int __init hwahc_driver_init(void)
 {
 	return usb_register(&hwahc_driver);
@@ -849,6 +857,9 @@ static void __exit hwahc_driver_exit(void)
 }
 module_exit(hwahc_driver_exit);
 
+=======
+module_usb_driver(hwahc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>");
 MODULE_DESCRIPTION("Host Wired Adapter USB Host Control Driver");

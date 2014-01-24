@@ -76,6 +76,7 @@ static inline unsigned long get_clock_tick_rate(void)
 #include "SA-1101.h"
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_SA1100) && defined(CONFIG_PCI)
 #define PCIBIOS_MIN_IO		0
 #define PCIBIOS_MIN_MEM		0
@@ -84,4 +85,6 @@ static inline unsigned long get_clock_tick_rate(void)
 #endif
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif  /* _ASM_ARCH_HARDWARE_H */

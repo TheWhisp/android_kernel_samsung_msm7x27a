@@ -13,8 +13,12 @@
 #include <linux/vmalloc.h>
 #include <linux/string.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 #include <linux/reiserfs_fs_sb.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/buffer_head.h>
 
 int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
@@ -111,15 +115,22 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 		/* allocate additional bitmap blocks, reallocate array of bitmap
 		 * block pointers */
 		bitmap =
+<<<<<<< HEAD
 		    vmalloc(sizeof(struct reiserfs_bitmap_info) * bmap_nr_new);
+=======
+		    vzalloc(sizeof(struct reiserfs_bitmap_info) * bmap_nr_new);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!bitmap) {
 			/* Journal bitmaps are still supersized, but the memory isn't
 			 * leaked, so I guess it's ok */
 			printk("reiserfs_resize: unable to allocate memory.\n");
 			return -ENOMEM;
 		}
+<<<<<<< HEAD
 		memset(bitmap, 0,
 		       sizeof(struct reiserfs_bitmap_info) * bmap_nr_new);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (i = 0; i < bmap_nr; i++)
 			bitmap[i] = old_bitmap[i];
 
@@ -136,7 +147,11 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 				return -EIO;
 			}
 			memset(bh->b_data, 0, sb_blocksize(sb));
+<<<<<<< HEAD
 			reiserfs_test_and_set_le_bit(0, bh->b_data);
+=======
+			reiserfs_set_le_bit(0, bh->b_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 			reiserfs_cache_bitmap_metadata(s, bh, bitmap + i);
 
 			set_buffer_uptodate(bh);
@@ -172,7 +187,11 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 
 	reiserfs_prepare_for_journal(s, bh, 1);
 	for (i = block_r; i < s->s_blocksize * 8; i++)
+<<<<<<< HEAD
 		reiserfs_test_and_clear_le_bit(i, bh->b_data);
+=======
+		reiserfs_clear_le_bit(i, bh->b_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	info->free_count += s->s_blocksize * 8 - block_r;
 
 	journal_mark_dirty(&th, s, bh);
@@ -190,7 +209,11 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 
 	reiserfs_prepare_for_journal(s, bh, 1);
 	for (i = block_r_new; i < s->s_blocksize * 8; i++)
+<<<<<<< HEAD
 		reiserfs_test_and_set_le_bit(i, bh->b_data);
+=======
+		reiserfs_set_le_bit(i, bh->b_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	journal_mark_dirty(&th, s, bh);
 	brelse(bh);
 

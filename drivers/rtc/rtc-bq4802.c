@@ -218,6 +218,7 @@ static struct platform_driver bq4802_driver = {
 	.remove		= __devexit_p(bq4802_remove),
 };
 
+<<<<<<< HEAD
 static int __init bq4802_init(void)
 {
 	return platform_driver_register(&bq4802_driver);
@@ -230,3 +231,6 @@ static void __exit bq4802_exit(void)
 
 module_init(bq4802_init);
 module_exit(bq4802_exit);
+=======
+module_platform_driver(bq4802_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

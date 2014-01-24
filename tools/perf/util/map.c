@@ -20,6 +20,16 @@ static inline int is_anon_memory(const char *filename)
 	       !strcmp(filename, "/anon_hugepage (deleted)");
 }
 
+<<<<<<< HEAD
+=======
+static inline int is_no_dso_memory(const char *filename)
+{
+	return !strcmp(filename, "[stack]") ||
+	       !strcmp(filename, "[vdso]")  ||
+	       !strcmp(filename, "[heap]");
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void map__init(struct map *self, enum map_type type,
 	       u64 start, u64 end, u64 pgoff, struct dso *dso)
 {
@@ -33,6 +43,10 @@ void map__init(struct map *self, enum map_type type,
 	RB_CLEAR_NODE(&self->rb_node);
 	self->groups   = NULL;
 	self->referenced = false;
+<<<<<<< HEAD
+=======
+	self->erange_warned = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct map *map__new(struct list_head *dsos__list, u64 start, u64 len,
@@ -44,9 +58,16 @@ struct map *map__new(struct list_head *dsos__list, u64 start, u64 len,
 	if (self != NULL) {
 		char newfilename[PATH_MAX];
 		struct dso *dso;
+<<<<<<< HEAD
 		int anon;
 
 		anon = is_anon_memory(filename);
+=======
+		int anon, no_dso;
+
+		anon = is_anon_memory(filename);
+		no_dso = is_no_dso_memory(filename);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (anon) {
 			snprintf(newfilename, sizeof(newfilename), "/tmp/perf-%d.map", pid);
@@ -59,12 +80,25 @@ struct map *map__new(struct list_head *dsos__list, u64 start, u64 len,
 
 		map__init(self, type, start, start + len, pgoff, dso);
 
+<<<<<<< HEAD
 		if (anon) {
 set_identity:
 			self->map_ip = self->unmap_ip = identity__map_ip;
 		} else if (strcmp(filename, "[vdso]") == 0) {
 			dso__set_loaded(dso, self->type);
 			goto set_identity;
+=======
+		if (anon || no_dso) {
+			self->map_ip = self->unmap_ip = identity__map_ip;
+
+			/*
+			 * Set memory without DSO as loaded. All map__find_*
+			 * functions still return NULL, and we avoid the
+			 * unnecessary map__load warning.
+			 */
+			if (no_dso)
+				dso__set_loaded(dso, self->type);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	return self;
@@ -129,8 +163,13 @@ int map__load(struct map *self, symbol_filter_t filter)
 
 		if (len > sizeof(DSO__DELETED) &&
 		    strcmp(name + real_len + 1, DSO__DELETED) == 0) {
+<<<<<<< HEAD
 			pr_warning("%.*s was updated, restart the long "
 				   "running apps that use it!\n",
+=======
+			pr_warning("%.*s was updated (is prelink enabled?). "
+				"Restart the long running apps that use it!\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				   (int)real_len, name);
 		} else {
 			pr_warning("no symbols found in %s, maybe install "
@@ -202,6 +241,24 @@ size_t map__fprintf(struct map *self, FILE *fp)
 		       self->start, self->end, self->pgoff, self->dso->name);
 }
 
+<<<<<<< HEAD
+=======
+size_t map__fprintf_dsoname(struct map *map, FILE *fp)
+{
+	const char *dsoname;
+
+	if (map && map->dso && (map->dso->name || map->dso->long_name)) {
+		if (symbol_conf.show_kernel_path && map->dso->long_name)
+			dsoname = map->dso->long_name;
+		else if (map->dso->name)
+			dsoname = map->dso->name;
+	} else
+		dsoname = "[unknown]";
+
+	return fprintf(fp, "%s", dsoname);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * objdump wants/reports absolute IPs for ET_EXEC, and RIPs for ET_DYN.
  * map->dso->adjust_symbols==1 for ET_EXEC-like cases.
@@ -222,6 +279,7 @@ u64 map__objdump_2ip(struct map *map, u64 addr)
 	return ip;
 }
 
+<<<<<<< HEAD
 void map_groups__init(struct map_groups *self)
 {
 	int i;
@@ -235,42 +293,86 @@ void map_groups__init(struct map_groups *self)
 static void maps__delete(struct rb_root *self)
 {
 	struct rb_node *next = rb_first(self);
+=======
+void map_groups__init(struct map_groups *mg)
+{
+	int i;
+	for (i = 0; i < MAP__NR_TYPES; ++i) {
+		mg->maps[i] = RB_ROOT;
+		INIT_LIST_HEAD(&mg->removed_maps[i]);
+	}
+	mg->machine = NULL;
+}
+
+static void maps__delete(struct rb_root *maps)
+{
+	struct rb_node *next = rb_first(maps);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	while (next) {
 		struct map *pos = rb_entry(next, struct map, rb_node);
 
 		next = rb_next(&pos->rb_node);
+<<<<<<< HEAD
 		rb_erase(&pos->rb_node, self);
+=======
+		rb_erase(&pos->rb_node, maps);
+>>>>>>> refs/remotes/origin/cm-10.0
 		map__delete(pos);
 	}
 }
 
+<<<<<<< HEAD
 static void maps__delete_removed(struct list_head *self)
 {
 	struct map *pos, *n;
 
 	list_for_each_entry_safe(pos, n, self, node) {
+=======
+static void maps__delete_removed(struct list_head *maps)
+{
+	struct map *pos, *n;
+
+	list_for_each_entry_safe(pos, n, maps, node) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		list_del(&pos->node);
 		map__delete(pos);
 	}
 }
 
+<<<<<<< HEAD
 void map_groups__exit(struct map_groups *self)
+=======
+void map_groups__exit(struct map_groups *mg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
 	for (i = 0; i < MAP__NR_TYPES; ++i) {
+<<<<<<< HEAD
 		maps__delete(&self->maps[i]);
 		maps__delete_removed(&self->removed_maps[i]);
 	}
 }
 
 void map_groups__flush(struct map_groups *self)
+=======
+		maps__delete(&mg->maps[i]);
+		maps__delete_removed(&mg->removed_maps[i]);
+	}
+}
+
+void map_groups__flush(struct map_groups *mg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int type;
 
 	for (type = 0; type < MAP__NR_TYPES; type++) {
+<<<<<<< HEAD
 		struct rb_root *root = &self->maps[type];
+=======
+		struct rb_root *root = &mg->maps[type];
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct rb_node *next = rb_first(root);
 
 		while (next) {
@@ -282,17 +384,29 @@ void map_groups__flush(struct map_groups *self)
 			 * instance in some hist_entry instances, so
 			 * just move them to a separate list.
 			 */
+<<<<<<< HEAD
 			list_add_tail(&pos->node, &self->removed_maps[pos->type]);
+=======
+			list_add_tail(&pos->node, &mg->removed_maps[pos->type]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }
 
+<<<<<<< HEAD
 struct symbol *map_groups__find_symbol(struct map_groups *self,
+=======
+struct symbol *map_groups__find_symbol(struct map_groups *mg,
+>>>>>>> refs/remotes/origin/cm-10.0
 				       enum map_type type, u64 addr,
 				       struct map **mapp,
 				       symbol_filter_t filter)
 {
+<<<<<<< HEAD
 	struct map *map = map_groups__find(self, type, addr);
+=======
+	struct map *map = map_groups__find(mg, type, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (map != NULL) {
 		if (mapp != NULL)
@@ -303,7 +417,11 @@ struct symbol *map_groups__find_symbol(struct map_groups *self,
 	return NULL;
 }
 
+<<<<<<< HEAD
 struct symbol *map_groups__find_symbol_by_name(struct map_groups *self,
+=======
+struct symbol *map_groups__find_symbol_by_name(struct map_groups *mg,
+>>>>>>> refs/remotes/origin/cm-10.0
 					       enum map_type type,
 					       const char *name,
 					       struct map **mapp,
@@ -311,7 +429,11 @@ struct symbol *map_groups__find_symbol_by_name(struct map_groups *self,
 {
 	struct rb_node *nd;
 
+<<<<<<< HEAD
 	for (nd = rb_first(&self->maps[type]); nd; nd = rb_next(nd)) {
+=======
+	for (nd = rb_first(&mg->maps[type]); nd; nd = rb_next(nd)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct map *pos = rb_entry(nd, struct map, rb_node);
 		struct symbol *sym = map__find_symbol_by_name(pos, name, filter);
 
@@ -325,13 +447,21 @@ struct symbol *map_groups__find_symbol_by_name(struct map_groups *self,
 	return NULL;
 }
 
+<<<<<<< HEAD
 size_t __map_groups__fprintf_maps(struct map_groups *self,
+=======
+size_t __map_groups__fprintf_maps(struct map_groups *mg,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  enum map_type type, int verbose, FILE *fp)
 {
 	size_t printed = fprintf(fp, "%s:\n", map_type__name[type]);
 	struct rb_node *nd;
 
+<<<<<<< HEAD
 	for (nd = rb_first(&self->maps[type]); nd; nd = rb_next(nd)) {
+=======
+	for (nd = rb_first(&mg->maps[type]); nd; nd = rb_next(nd)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct map *pos = rb_entry(nd, struct map, rb_node);
 		printed += fprintf(fp, "Map:");
 		printed += map__fprintf(pos, fp);
@@ -344,6 +474,7 @@ size_t __map_groups__fprintf_maps(struct map_groups *self,
 	return printed;
 }
 
+<<<<<<< HEAD
 size_t map_groups__fprintf_maps(struct map_groups *self, int verbose, FILE *fp)
 {
 	size_t printed = 0, i;
@@ -353,13 +484,28 @@ size_t map_groups__fprintf_maps(struct map_groups *self, int verbose, FILE *fp)
 }
 
 static size_t __map_groups__fprintf_removed_maps(struct map_groups *self,
+=======
+size_t map_groups__fprintf_maps(struct map_groups *mg, int verbose, FILE *fp)
+{
+	size_t printed = 0, i;
+	for (i = 0; i < MAP__NR_TYPES; ++i)
+		printed += __map_groups__fprintf_maps(mg, i, verbose, fp);
+	return printed;
+}
+
+static size_t __map_groups__fprintf_removed_maps(struct map_groups *mg,
+>>>>>>> refs/remotes/origin/cm-10.0
 						 enum map_type type,
 						 int verbose, FILE *fp)
 {
 	struct map *pos;
 	size_t printed = 0;
 
+<<<<<<< HEAD
 	list_for_each_entry(pos, &self->removed_maps[type], node) {
+=======
+	list_for_each_entry(pos, &mg->removed_maps[type], node) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printed += fprintf(fp, "Map:");
 		printed += map__fprintf(pos, fp);
 		if (verbose > 1) {
@@ -370,11 +516,16 @@ static size_t __map_groups__fprintf_removed_maps(struct map_groups *self,
 	return printed;
 }
 
+<<<<<<< HEAD
 static size_t map_groups__fprintf_removed_maps(struct map_groups *self,
+=======
+static size_t map_groups__fprintf_removed_maps(struct map_groups *mg,
+>>>>>>> refs/remotes/origin/cm-10.0
 					       int verbose, FILE *fp)
 {
 	size_t printed = 0, i;
 	for (i = 0; i < MAP__NR_TYPES; ++i)
+<<<<<<< HEAD
 		printed += __map_groups__fprintf_removed_maps(self, i, verbose, fp);
 	return printed;
 }
@@ -390,6 +541,23 @@ int map_groups__fixup_overlappings(struct map_groups *self, struct map *map,
 				   int verbose, FILE *fp)
 {
 	struct rb_root *root = &self->maps[map->type];
+=======
+		printed += __map_groups__fprintf_removed_maps(mg, i, verbose, fp);
+	return printed;
+}
+
+size_t map_groups__fprintf(struct map_groups *mg, int verbose, FILE *fp)
+{
+	size_t printed = map_groups__fprintf_maps(mg, verbose, fp);
+	printed += fprintf(fp, "Removed maps:\n");
+	return printed + map_groups__fprintf_removed_maps(mg, verbose, fp);
+}
+
+int map_groups__fixup_overlappings(struct map_groups *mg, struct map *map,
+				   int verbose, FILE *fp)
+{
+	struct rb_root *root = &mg->maps[map->type];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct rb_node *next = rb_first(root);
 	int err = 0;
 
@@ -420,7 +588,11 @@ int map_groups__fixup_overlappings(struct map_groups *self, struct map *map,
 			}
 
 			before->end = map->start - 1;
+<<<<<<< HEAD
 			map_groups__insert(self, before);
+=======
+			map_groups__insert(mg, before);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (verbose >= 2)
 				map__fprintf(before, fp);
 		}
@@ -434,7 +606,11 @@ int map_groups__fixup_overlappings(struct map_groups *self, struct map *map,
 			}
 
 			after->start = map->end + 1;
+<<<<<<< HEAD
 			map_groups__insert(self, after);
+=======
+			map_groups__insert(mg, after);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (verbose >= 2)
 				map__fprintf(after, fp);
 		}
@@ -443,7 +619,11 @@ move_map:
 		 * If we have references, just move them to a separate list.
 		 */
 		if (pos->referenced)
+<<<<<<< HEAD
 			list_add_tail(&pos->node, &self->removed_maps[map->type]);
+=======
+			list_add_tail(&pos->node, &mg->removed_maps[map->type]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			map__delete(pos);
 
@@ -457,7 +637,11 @@ move_map:
 /*
  * XXX This should not really _copy_ te maps, but refcount them.
  */
+<<<<<<< HEAD
 int map_groups__clone(struct map_groups *self,
+=======
+int map_groups__clone(struct map_groups *mg,
+>>>>>>> refs/remotes/origin/cm-10.0
 		      struct map_groups *parent, enum map_type type)
 {
 	struct rb_node *nd;
@@ -466,7 +650,11 @@ int map_groups__clone(struct map_groups *self,
 		struct map *new = map__clone(map);
 		if (new == NULL)
 			return -ENOMEM;
+<<<<<<< HEAD
 		map_groups__insert(self, new);
+=======
+		map_groups__insert(mg, new);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }
@@ -552,6 +740,13 @@ int machine__init(struct machine *self, const char *root_dir, pid_t pid)
 	INIT_LIST_HEAD(&self->user_dsos);
 	INIT_LIST_HEAD(&self->kernel_dsos);
 
+<<<<<<< HEAD
+=======
+	self->threads = RB_ROOT;
+	INIT_LIST_HEAD(&self->dead_threads);
+	self->last_match = NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	self->kmaps.machine = self;
 	self->pid	    = pid;
 	self->root_dir      = strdup(root_dir);

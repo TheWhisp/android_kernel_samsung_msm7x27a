@@ -121,9 +121,13 @@ enum caif_direction {
  * @transmit:	Packet transmit funciton.
  * @ctrlcmd:	Used for control signalling upwards in the stack.
  * @modemcmd:	Used for control signaling downwards in the stack.
+<<<<<<< HEAD
  * @prio:	Priority of this layer.
  * @id:		The identity of this layer
  * @type:	The type of this layer
+=======
+ * @id:		The identity of this layer
+>>>>>>> refs/remotes/origin/cm-10.0
  * @name:	Name of the layer.
  *
  *  This structure defines the layered structure in CAIF.
@@ -230,9 +234,13 @@ struct cflayer {
 	 */
 	int (*modemcmd) (struct cflayer *layr, enum caif_modemcmd ctrl);
 
+<<<<<<< HEAD
 	unsigned short prio;
 	unsigned int id;
 	unsigned int type;
+=======
+	unsigned int id;
+>>>>>>> refs/remotes/origin/cm-10.0
 	char name[CAIF_LAYER_NAME_SZ];
 };
 

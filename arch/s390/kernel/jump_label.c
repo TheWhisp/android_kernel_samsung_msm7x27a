@@ -18,6 +18,7 @@ struct insn {
 } __packed;
 
 struct insn_args {
+<<<<<<< HEAD
 	unsigned long *target;
 	struct insn *insn;
 	ssize_t size;
@@ -38,6 +39,17 @@ void arch_jump_label_transform(struct jump_entry *entry,
 {
 	struct insn_args args;
 	struct insn insn;
+=======
+	struct jump_entry *entry;
+	enum jump_label_type type;
+};
+
+static void __jump_label_transform(struct jump_entry *entry,
+				   enum jump_label_type type)
+{
+	struct insn insn;
+	int rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (type == JUMP_LABEL_ENABLE) {
 		/* brcl 15,offset */
@@ -49,11 +61,41 @@ void arch_jump_label_transform(struct jump_entry *entry,
 		insn.offset = 0;
 	}
 
+<<<<<<< HEAD
 	args.target = (void *) entry->code;
 	args.insn = &insn;
 	args.size = JUMP_LABEL_NOP_SIZE;
 
 	stop_machine(__arch_jump_label_transform, &args, NULL);
+=======
+	rc = probe_kernel_write((void *)entry->code, &insn, JUMP_LABEL_NOP_SIZE);
+	WARN_ON_ONCE(rc < 0);
+}
+
+static int __sm_arch_jump_label_transform(void *data)
+{
+	struct insn_args *args = data;
+
+	__jump_label_transform(args->entry, args->type);
+	return 0;
+}
+
+void arch_jump_label_transform(struct jump_entry *entry,
+			       enum jump_label_type type)
+{
+	struct insn_args args;
+
+	args.entry = entry;
+	args.type = type;
+
+	stop_machine(__sm_arch_jump_label_transform, &args, NULL);
+}
+
+void arch_jump_label_transform_static(struct jump_entry *entry,
+				      enum jump_label_type type)
+{
+	__jump_label_transform(entry, type);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #endif

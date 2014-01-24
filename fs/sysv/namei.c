@@ -61,7 +61,11 @@ static struct dentry *sysv_lookup(struct inode * dir, struct dentry * dentry, st
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int sysv_mknod(struct inode * dir, struct dentry * dentry, int mode, dev_t rdev)
+=======
+static int sysv_mknod(struct inode * dir, struct dentry * dentry, umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inode * inode;
 	int err;
@@ -80,7 +84,11 @@ static int sysv_mknod(struct inode * dir, struct dentry * dentry, int mode, dev_
 	return err;
 }
 
+<<<<<<< HEAD
 static int sysv_create(struct inode * dir, struct dentry * dentry, int mode, struct nameidata *nd)
+=======
+static int sysv_create(struct inode * dir, struct dentry * dentry, umode_t mode, struct nameidata *nd)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return sysv_mknod(dir, dentry, mode, 0);
 }
@@ -121,9 +129,12 @@ static int sysv_link(struct dentry * old_dentry, struct inode * dir,
 {
 	struct inode *inode = old_dentry->d_inode;
 
+<<<<<<< HEAD
 	if (inode->i_nlink >= SYSV_SB(inode->i_sb)->s_link_max)
 		return -EMLINK;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_ctime = CURRENT_TIME_SEC;
 	inode_inc_link_count(inode);
 	ihold(inode);
@@ -131,6 +142,7 @@ static int sysv_link(struct dentry * old_dentry, struct inode * dir,
 	return add_nondir(dentry, inode);
 }
 
+<<<<<<< HEAD
 static int sysv_mkdir(struct inode * dir, struct dentry *dentry, int mode)
 {
 	struct inode * inode;
@@ -138,6 +150,13 @@ static int sysv_mkdir(struct inode * dir, struct dentry *dentry, int mode)
 
 	if (dir->i_nlink >= SYSV_SB(dir->i_sb)->s_link_max) 
 		goto out;
+=======
+static int sysv_mkdir(struct inode * dir, struct dentry *dentry, umode_t mode)
+{
+	struct inode * inode;
+	int err;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode_inc_link_count(dir);
 
 	inode = sysv_new_inode(dir, S_IFDIR|mode);
@@ -251,11 +270,14 @@ static int sysv_rename(struct inode * old_dir, struct dentry * old_dentry,
 			drop_nlink(new_inode);
 		inode_dec_link_count(new_inode);
 	} else {
+<<<<<<< HEAD
 		if (dir_de) {
 			err = -EMLINK;
 			if (new_dir->i_nlink >= SYSV_SB(new_dir->i_sb)->s_link_max)
 				goto out_dir;
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = sysv_add_link(new_dentry, old_inode);
 		if (err)
 			goto out_dir;

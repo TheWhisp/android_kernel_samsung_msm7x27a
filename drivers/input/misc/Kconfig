@@ -62,6 +62,20 @@ config INPUT_AD714X_SPI
 	  To compile this driver as a module, choose M here: the
 	  module will be called ad714x-spi.
 
+<<<<<<< HEAD
+=======
+config INPUT_BMA150
+	tristate "BMA150/SMB380 acceleration sensor support"
+	depends on I2C
+	select INPUT_POLLDEV
+	help
+	  Say Y here if you have Bosch Sensortec's BMA150 or SMB380
+	  acceleration sensor hooked to an I2C bus.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called bma150.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config INPUT_PCSPKR
 	tristate "PC Speaker support"
 	depends on PCSPKR_PLATFORM
@@ -74,6 +88,32 @@ config INPUT_PCSPKR
 	  To compile this driver as a module, choose M here: the
 	  module will be called pcspkr.
 
+<<<<<<< HEAD
+=======
+config INPUT_PM8XXX_VIBRATOR
+	tristate "Qualcomm PM8XXX vibrator support"
+	depends on MFD_PM8XXX
+	select INPUT_FF_MEMLESS
+	help
+	  This option enables device driver support for the vibrator
+	  on Qualcomm PM8xxx chip. This driver supports ff-memless interface
+	  from input framework.
+
+	  To compile this driver as module, choose M here: the
+	  module will be called pm8xxx-vibrator.
+
+config INPUT_PMIC8XXX_PWRKEY
+	tristate "PMIC8XXX power key support"
+	depends on MFD_PM8XXX
+	help
+	  Say Y here if you want support for the PMIC8XXX power key.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called pmic8xxx-pwrkey.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config INPUT_SPARCSPKR
 	tristate "SPARC Speaker support"
 	depends on PCI && SPARC64
@@ -100,6 +140,52 @@ config INPUT_MAX8925_ONKEY
 	  To compile this driver as a module, choose M here: the module
 	  will be called max8925_onkey.
 
+<<<<<<< HEAD
+=======
+config INPUT_MAX8997_HAPTIC
+	tristate "MAXIM MAX8997 haptic controller support"
+	depends on HAVE_PWM && MFD_MAX8997
+	select INPUT_FF_MEMLESS
+	help
+	  This option enables device driver support for the haptic controller
+	  on MAXIM MAX8997 chip. This driver supports ff-memless interface
+	  from input framework.
+
+	  To compile this driver as module, choose M here: the
+	  module will be called max8997-haptic.
+
+config INPUT_MC13783_PWRBUTTON
+	tristate "MC13783 ON buttons"
+	depends on MFD_MC13783
+	help
+	  Support the ON buttons of MC13783 PMIC as an input device
+	  reporting power button status.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called mc13783-pwrbutton.
+
+config INPUT_MMA8450
+	tristate "MMA8450 - Freescale's 3-Axis, 8/12-bit Digital Accelerometer"
+	depends on I2C
+	select INPUT_POLLDEV
+	help
+	  Say Y here if you want to support Freescale's MMA8450 Accelerometer
+	  through I2C interface.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called mma8450.
+
+config INPUT_MPU3050
+	tristate "MPU3050 Triaxial gyroscope sensor"
+	depends on I2C
+	help
+	  Say Y here if you want to support InvenSense MPU3050
+	  connected via an I2C bus.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called mpu3050.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config INPUT_APANEL
 	tristate "Fujitsu Lifebook Application Panel buttons"
 	depends on X86 && I2C && LEDS_CLASS
@@ -114,6 +200,34 @@ config INPUT_APANEL
 	 To compile this driver as a module, choose M here: the module will
 	 be called apanel.
 
+<<<<<<< HEAD
+=======
+config INPUT_GP2A
+	tristate "Sharp GP2AP002A00F I2C Proximity/Opto sensor driver"
+	depends on I2C
+	depends on GENERIC_GPIO
+	help
+	  Say Y here if you have a Sharp GP2AP002A00F proximity/als combo-chip
+	  hooked to an I2C bus.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called gp2ap002a00f.
+
+config INPUT_GPIO_TILT_POLLED
+	tristate "Polled GPIO tilt switch"
+	depends on GENERIC_GPIO
+	select INPUT_POLLDEV
+	help
+	  This driver implements support for tilt switches connected
+	  to GPIO pins that are not capable of generating interrupts.
+
+	  The list of gpios to use and the mapping of their states
+	  to specific angles is done via platform data.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called gpio_tilt_polled.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config INPUT_IXP4XX_BEEPER
 	tristate "IXP4XX Beeper support"
 	depends on ARCH_IXP4XX
@@ -162,6 +276,7 @@ config INPUT_ATLAS_BTNS
 	  To compile this driver as a module, choose M here: the module will
 	  be called atlas_btns.
 
+<<<<<<< HEAD
 config INPUT_ATI_REMOTE
 	tristate "ATI / X10 USB RF remote control"
 	depends on USB_ARCH_HAS_HCD
@@ -178,6 +293,8 @@ config INPUT_ATI_REMOTE
 	  To compile this driver as a module, choose M here: the module will be
 	  called ati_remote.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config INPUT_ATI_REMOTE2
 	tristate "ATI / Philips USB RF remote control"
 	depends on USB_ARCH_HAS_HCD
@@ -220,6 +337,26 @@ config INPUT_KEYSPAN_REMOTE
 	  To compile this driver as a module, choose M here: the module will
 	  be called keyspan_remote.
 
+<<<<<<< HEAD
+=======
+config INPUT_KXTJ9
+	tristate "Kionix KXTJ9 tri-axis digital accelerometer"
+	depends on I2C
+	help
+	  Say Y here to enable support for the Kionix KXTJ9 digital tri-axis
+	  accelerometer.
+
+	  To compile this driver as a module, choose M here: the module will
+	  be called kxtj9.
+
+config INPUT_KXTJ9_POLLED_MODE
+	bool "Enable polling mode support"
+	depends on INPUT_KXTJ9
+	select INPUT_POLLDEV
+	help
+	  Say Y here if you need accelerometer to work in polling mode.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config INPUT_POWERMATE
 	tristate "Griffin PowerMate and Contour Jog support"
 	depends on USB_ARCH_HAS_HCD
@@ -288,8 +425,12 @@ config INPUT_TWL4030_VIBRA
 
 config INPUT_TWL6040_VIBRA
 	tristate "Support for TWL6040 Vibrator"
+<<<<<<< HEAD
 	depends on TWL4030_CORE
 	select TWL6040_CORE
+=======
+	depends on TWL6040_CORE
+>>>>>>> refs/remotes/origin/cm-10.0
 	select INPUT_FF_MEMLESS
 	help
 	  This option enables support for TWL6040 Vibrator Driver.
@@ -352,7 +493,11 @@ config INPUT_PCF8574
 	tristate "PCF8574 Keypad input device"
 	depends on I2C && EXPERIMENTAL
 	help
+<<<<<<< HEAD
 	  Say Y here if you want to support a keypad connetced via I2C
+=======
+	  Say Y here if you want to support a keypad connected via I2C
+>>>>>>> refs/remotes/origin/cm-10.0
 	  with a PCF8574.
 
 	  To compile this driver as a module, choose M here: the
@@ -369,6 +514,7 @@ config INPUT_PWM_BEEPER
 	  To compile this driver as a module, choose M here: the module will be
 	  called pwm-beeper.
 
+<<<<<<< HEAD
 config INPUT_PMIC8XXX_PWRKEY
 	tristate "PMIC8XXX power key support"
 	depends on MFD_PM8XXX
@@ -380,6 +526,8 @@ config INPUT_PMIC8XXX_PWRKEY
 	  To compile this driver as a module, choose M here: the
 	  module will be called pmic8xxx-pwrkey.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config INPUT_GPIO_ROTARY_ENCODER
 	tristate "Rotary encoders connected to GPIO pins"
 	depends on GPIOLIB && GENERIC_GPIO
@@ -403,6 +551,19 @@ config INPUT_RB532_BUTTON
 	  To compile this driver as a module, choose M here: the
 	  module will be called rb532_button.
 
+<<<<<<< HEAD
+=======
+config INPUT_DA9052_ONKEY
+	tristate "Dialog DA9052/DA9053 Onkey"
+	depends on PMIC_DA9052
+	help
+	  Support the ONKEY of Dialog DA9052 PMICs as an input device
+	  reporting power button status.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called da9052_onkey.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config INPUT_DM355EVM
 	tristate "TI DaVinci DM355 EVM Keypad and IR Remote"
 	depends on MFD_DM355EVM_MSP
@@ -506,7 +667,11 @@ config INPUT_CMA3000_I2C
 
 config INPUT_XEN_KBDDEV_FRONTEND
 	tristate "Xen virtual keyboard and mouse support"
+<<<<<<< HEAD
 	depends on XEN_FBDEV_FRONTEND
+=======
+	depends on XEN
+>>>>>>> refs/remotes/origin/cm-10.0
 	default y
 	select XEN_XENBUS_FRONTEND
 	help

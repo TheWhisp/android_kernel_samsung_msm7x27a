@@ -49,7 +49,11 @@
 #include <linux/usb/serial.h>
 #include "kl5kusb105.h"
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Version Information
@@ -91,7 +95,10 @@ static struct usb_driver kl5kusb105d_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id =	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver kl5kusb105d_device = {
@@ -100,7 +107,10 @@ static struct usb_serial_driver kl5kusb105d_device = {
 		.name =		"kl5kusb105d",
 	},
 	.description =		"KL5KUSB105D / PalmConnect",
+<<<<<<< HEAD
 	.usb_driver =		&kl5kusb105d_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		id_table,
 	.num_ports =		1,
 	.bulk_out_size =	64,
@@ -118,6 +128,13 @@ static struct usb_serial_driver kl5kusb105d_device = {
 	.prepare_write_buffer =	klsi_105_prepare_write_buffer,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&kl5kusb105d_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct klsi_105_port_settings {
 	__u8	pktlen;		/* always 5, it seems */
 	__u8	baudrate;
@@ -690,6 +707,7 @@ static int klsi_105_tiocmset(struct tty_struct *tty,
 	return retval;
 }
 
+<<<<<<< HEAD
 
 static int __init klsi_105_init(void)
 {
@@ -719,11 +737,17 @@ static void __exit klsi_105_exit(void)
 
 module_init(klsi_105_init);
 module_exit(klsi_105_exit);
+=======
+module_usb_serial_driver(kl5kusb105d_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "enable extensive debugging messages");

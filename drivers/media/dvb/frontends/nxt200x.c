@@ -528,9 +528,15 @@ static int nxt2004_load_firmware (struct dvb_frontend* fe, const struct firmware
 	return 0;
 };
 
+<<<<<<< HEAD
 static int nxt200x_setup_frontend_parameters (struct dvb_frontend* fe,
 					     struct dvb_frontend_parameters *p)
 {
+=======
+static int nxt200x_setup_frontend_parameters(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct nxt200x_state* state = fe->demodulator_priv;
 	u8 buf[5];
 
@@ -546,7 +552,11 @@ static int nxt200x_setup_frontend_parameters (struct dvb_frontend* fe,
 	}
 
 	/* set additional params */
+<<<<<<< HEAD
 	switch (p->u.vsb.modulation) {
+=======
+	switch (p->modulation) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case QAM_64:
 		case QAM_256:
 			/* Set punctured clock for QAM */
@@ -566,7 +576,11 @@ static int nxt200x_setup_frontend_parameters (struct dvb_frontend* fe,
 
 	if (fe->ops.tuner_ops.calc_regs) {
 		/* get tuning information */
+<<<<<<< HEAD
 		fe->ops.tuner_ops.calc_regs(fe, p, buf, 5);
+=======
+		fe->ops.tuner_ops.calc_regs(fe, buf, 5);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* write frequency information */
 		nxt200x_writetuner(state, buf);
@@ -576,7 +590,11 @@ static int nxt200x_setup_frontend_parameters (struct dvb_frontend* fe,
 	nxt200x_agc_reset(state);
 
 	/* set target power level */
+<<<<<<< HEAD
 	switch (p->u.vsb.modulation) {
+=======
+	switch (p->modulation) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case QAM_64:
 		case QAM_256:
 			buf[0] = 0x74;
@@ -620,7 +638,11 @@ static int nxt200x_setup_frontend_parameters (struct dvb_frontend* fe,
 	}
 
 	/* write sdmx input */
+<<<<<<< HEAD
 	switch (p->u.vsb.modulation) {
+=======
+	switch (p->modulation) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case QAM_64:
 				buf[0] = 0x68;
 				break;
@@ -714,7 +736,11 @@ static int nxt200x_setup_frontend_parameters (struct dvb_frontend* fe,
 	}
 
 	/* write agc ucgp0 */
+<<<<<<< HEAD
 	switch (p->u.vsb.modulation) {
+=======
+	switch (p->modulation) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case QAM_64:
 				buf[0] = 0x02;
 				break;
@@ -1203,10 +1229,16 @@ error:
 }
 
 static struct dvb_frontend_ops nxt200x_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		.name = "Nextwave NXT200X VSB/QAM frontend",
 		.type = FE_ATSC,
+=======
+	.delsys = { SYS_ATSC, SYS_DVBC_ANNEX_B },
+	.info = {
+		.name = "Nextwave NXT200X VSB/QAM frontend",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min =  54000000,
 		.frequency_max = 860000000,
 		.frequency_stepsize = 166666,	/* stepsize is just a guess */

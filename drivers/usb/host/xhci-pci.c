@@ -22,6 +22,10 @@
 
 #include <linux/pci.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "xhci.h"
 
@@ -52,6 +56,7 @@ static int xhci_pci_reinit(struct xhci_hcd *xhci, struct pci_dev *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* called during probe() after chip reset completes */
 static int xhci_pci_setup(struct usb_hcd *hcd)
 {
@@ -107,6 +112,11 @@ static int xhci_pci_setup(struct usb_hcd *hcd)
 	xhci->hci_version = HC_VERSION(xhci->hcc_params);
 	xhci->hcc_params = xhci_readl(xhci, &xhci->cap_regs->hcc_params);
 	xhci_print_registers(xhci);
+=======
+static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
+{
+	struct pci_dev		*pdev = to_pci_dev(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Look for vendor-specific quirks */
 	if (pdev->vendor == PCI_VENDOR_ID_FRESCO_LOGIC &&
@@ -126,7 +136,10 @@ static int xhci_pci_setup(struct usb_hcd *hcd)
 		xhci_dbg(xhci, "QUIRK: Fresco Logic revision %u "
 				"has broken MSI implementation\n",
 				pdev->revision);
+<<<<<<< HEAD
 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (pdev->vendor == PCI_VENDOR_ID_NEC)
@@ -140,9 +153,15 @@ static int xhci_pci_setup(struct usb_hcd *hcd)
 		xhci->quirks |= XHCI_AMD_PLL_FIX;
 	if (pdev->vendor == PCI_VENDOR_ID_INTEL &&
 			pdev->device == PCI_DEVICE_ID_INTEL_PANTHERPOINT_XHCI) {
+<<<<<<< HEAD
 		xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
 		xhci->quirks |= XHCI_EP_LIMIT_QUIRK;
 		xhci->limit_active_eps = 64;
+=======
+		xhci->quirks |= XHCI_EP_LIMIT_QUIRK;
+		xhci->limit_active_eps = 64;
+		xhci->quirks |= XHCI_SW_BW_CHECKING;
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * PPT desktop boards DH77EB and DH77DF will power back on after
 		 * a few seconds of being shutdown.  The fix for this is to
@@ -162,6 +181,7 @@ static int xhci_pci_setup(struct usb_hcd *hcd)
 	}
 	if (pdev->vendor == PCI_VENDOR_ID_VIA)
 		xhci->quirks |= XHCI_RESET_ON_RESUME;
+<<<<<<< HEAD
 
 	/* Make sure the HC is halted. */
 	retval = xhci_halt(xhci);
@@ -189,6 +209,24 @@ static int xhci_pci_setup(struct usb_hcd *hcd)
 	if (retval)
 		goto error;
 	xhci_dbg(xhci, "Called HCD init\n");
+=======
+}
+
+/* called during probe() after chip reset completes */
+static int xhci_pci_setup(struct usb_hcd *hcd)
+{
+	struct xhci_hcd		*xhci;
+	struct pci_dev		*pdev = to_pci_dev(hcd->self.controller);
+	int			retval;
+
+	retval = xhci_gen_setup(hcd, xhci_pci_quirks);
+	if (retval)
+		return retval;
+
+	xhci = hcd_to_xhci(hcd);
+	if (!usb_hcd_is_primary_hcd(hcd))
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pci_read_config_byte(pdev, XHCI_SBRN_OFFSET, &xhci->sbrn);
 	xhci_dbg(xhci, "Got SBRN %u\n", (unsigned int) xhci->sbrn);
@@ -198,7 +236,10 @@ static int xhci_pci_setup(struct usb_hcd *hcd)
 	if (!retval)
 		return retval;
 
+<<<<<<< HEAD
 error:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(xhci);
 	return retval;
 }
@@ -242,7 +283,11 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	*((struct xhci_hcd **) xhci->shared_hcd->hcd_priv) = xhci;
 
 	retval = usb_add_hcd(xhci->shared_hcd, dev->irq,
+<<<<<<< HEAD
 			IRQF_DISABLED | IRQF_SHARED);
+=======
+			IRQF_SHARED);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval)
 		goto put_usb3_hcd;
 	/* Roothub already marked as USB 3.0 speed */
@@ -364,6 +409,14 @@ static const struct hc_driver xhci_pci_hc_driver = {
 	.hub_status_data =	xhci_hub_status_data,
 	.bus_suspend =		xhci_bus_suspend,
 	.bus_resume =		xhci_bus_resume,
+<<<<<<< HEAD
+=======
+	/*
+	 * call back when device connected and addressed
+	 */
+	.update_device =        xhci_update_device,
+	.set_usb2_hw_lpm =	xhci_set_usb2_hardware_lpm,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*-------------------------------------------------------------------------*/
@@ -395,7 +448,11 @@ static struct pci_driver xhci_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 int xhci_register_pci(void)
+=======
+int __init xhci_register_pci(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return pci_register_driver(&xhci_pci_driver);
 }

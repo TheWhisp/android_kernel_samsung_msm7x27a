@@ -20,9 +20,16 @@
 #define __VLYNQ_H__
 
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/types.h>
 
+=======
+#include <linux/types.h>
+
+struct module;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define VLYNQ_NUM_IRQS 32
 
 struct vlynq_mapping {

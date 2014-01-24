@@ -17,8 +17,16 @@
 #define RESTART_NORMAL 0x0
 #define RESTART_DLOAD  0x1
 
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_NATIVE_RESTART
 void msm_set_restart_mode(int mode);
+=======
+#if defined(CONFIG_MSM_NATIVE_RESTART)
+void msm_set_restart_mode(int mode);
+void msm_restart(char mode, const char *cmd);
+#elif defined(CONFIG_ARCH_FSM9XXX)
+void fsm_restart(char mode, const char *cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define msm_set_restart_mode(mode)
 #endif

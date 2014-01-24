@@ -12,7 +12,11 @@
  *
  */
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <crypto/internal/rng.h>
 #include <linux/err.h>
 #include <linux/module.h>
@@ -21,6 +25,11 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static DEFINE_MUTEX(crypto_default_rng_lock);
 struct crypto_rng *crypto_default_rng;
@@ -58,6 +67,33 @@ static int crypto_init_rng_ops(struct crypto_tfm *tfm, u32 type, u32 mask)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NET
+static int crypto_rng_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	struct crypto_report_rng rrng;
+
+	strncpy(rrng.type, "rng", sizeof(rrng.type));
+
+	rrng.seedsize = alg->cra_rng.seedsize;
+
+	NLA_PUT(skb, CRYPTOCFGA_REPORT_RNG,
+		sizeof(struct crypto_report_rng), &rrng);
+
+	return 0;
+
+nla_put_failure:
+	return -EMSGSIZE;
+}
+#else
+static int crypto_rng_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	return -ENOSYS;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void crypto_rng_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_rng_show(struct seq_file *m, struct crypto_alg *alg)
@@ -78,6 +114,10 @@ const struct crypto_type crypto_rng_type = {
 #ifdef CONFIG_PROC_FS
 	.show = crypto_rng_show,
 #endif
+<<<<<<< HEAD
+=======
+	.report = crypto_rng_report,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 EXPORT_SYMBOL_GPL(crypto_rng_type);
 

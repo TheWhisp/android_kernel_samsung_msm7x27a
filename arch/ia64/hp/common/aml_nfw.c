@@ -31,7 +31,11 @@ MODULE_AUTHOR("Bjorn Helgaas <bjorn.helgaas@hp.com>");
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("ACPI opregion handler for native firmware calls");
 
+<<<<<<< HEAD
 static int force_register;
+=======
+static bool force_register;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(force, force_register, bool, 0);
 MODULE_PARM_DESC(force, "Install opregion handler even without HPQ5001 device");
 

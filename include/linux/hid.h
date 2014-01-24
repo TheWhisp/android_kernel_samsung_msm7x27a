@@ -71,6 +71,11 @@
 #include <linux/timer.h>
 #include <linux/workqueue.h>
 #include <linux/input.h>
+<<<<<<< HEAD
+=======
+#include <linux/semaphore.h>
+#include <linux/power_supply.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * We parse each description item into this structure. Short items data
@@ -189,6 +194,10 @@ struct hid_item {
 #define HID_UP_UNDEFINED	0x00000000
 #define HID_UP_GENDESK		0x00010000
 #define HID_UP_SIMULATION	0x00020000
+<<<<<<< HEAD
+=======
+#define HID_UP_GENDEVCTRLS	0x00060000
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HID_UP_KEYBOARD		0x00070000
 #define HID_UP_LED		0x00080000
 #define HID_UP_BUTTON		0x00090000
@@ -238,6 +247,11 @@ struct hid_item {
 #define HID_GD_RIGHT		0x00010092
 #define HID_GD_LEFT		0x00010093
 
+<<<<<<< HEAD
+=======
+#define HID_DC_BATTERYSTRENGTH	0x00060020
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HID_DG_DIGITIZER	0x000d0001
 #define HID_DG_PEN		0x000d0002
 #define HID_DG_LIGHTPEN		0x000d0003
@@ -312,6 +326,10 @@ struct hid_item {
 #define HID_QUIRK_BADPAD			0x00000020
 #define HID_QUIRK_MULTI_INPUT			0x00000040
 #define HID_QUIRK_HIDINPUT_FORCE		0x00000080
+<<<<<<< HEAD
+=======
+#define HID_QUIRK_MULTITOUCH			0x00000100
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HID_QUIRK_SKIP_OUTPUT_REPORTS		0x00010000
 #define HID_QUIRK_FULLSPEED_INTERVAL		0x10000000
 #define HID_QUIRK_NO_INIT_REPORTS		0x20000000
@@ -455,7 +473,12 @@ struct hid_input {
 
 enum hid_type {
 	HID_TYPE_OTHER = 0,
+<<<<<<< HEAD
 	HID_TYPE_USBMOUSE
+=======
+	HID_TYPE_USBMOUSE,
+	HID_TYPE_USBNONE
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct hid_driver;
@@ -476,10 +499,30 @@ struct hid_device {							/* device report descriptor */
 	unsigned country;						/* HID country */
 	struct hid_report_enum report_enum[HID_REPORT_TYPES];
 
+<<<<<<< HEAD
+=======
+	struct semaphore driver_lock;					/* protects the current driver */
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct device dev;						/* device */
 	struct hid_driver *driver;
 	struct hid_ll_driver *ll_driver;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HID_BATTERY_STRENGTH
+	/*
+	 * Power supply information for HID devices which report
+	 * battery strength. power_supply is registered iff
+	 * battery.name is non-NULL.
+	 */
+	struct power_supply battery;
+	__s32 battery_min;
+	__s32 battery_max;
+	__s32 battery_report_type;
+	__s32 battery_report_id;
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int status;						/* see STAT flags above */
 	unsigned claimed;						/* Claimed by hidinput, hiddev? */
 	unsigned quirks;						/* Various quirks the device can pull on us */
@@ -699,10 +742,18 @@ extern void hid_destroy_device(struct hid_device *);
 
 extern int __must_check __hid_register_driver(struct hid_driver *,
 		struct module *, const char *mod_name);
+<<<<<<< HEAD
 static inline int __must_check hid_register_driver(struct hid_driver *driver)
 {
 	return __hid_register_driver(driver, THIS_MODULE, KBUILD_MODNAME);
 }
+=======
+
+/* use a define to avoid include chaining to get THIS_MODULE & friends */
+#define hid_register_driver(driver) \
+	__hid_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void hid_unregister_driver(struct hid_driver *);
 
 extern void hidinput_hid_event(struct hid_device *, struct hid_field *, struct hid_usage *, __s32);
@@ -713,6 +764,11 @@ extern void hidinput_disconnect(struct hid_device *);
 int hid_set_field(struct hid_field *, unsigned, __s32);
 int hid_input_report(struct hid_device *, int type, u8 *, int, int);
 int hidinput_find_field(struct hid_device *hid, unsigned int type, unsigned int code, struct hid_field **field);
+<<<<<<< HEAD
+=======
+struct hid_field *hidinput_get_led_field(struct hid_device *hid);
+unsigned int hidinput_count_leds(struct hid_device *hid);
+>>>>>>> refs/remotes/origin/cm-10.0
 void hid_output_report(struct hid_report *report, __u8 *data);
 struct hid_device *hid_allocate_device(void);
 struct hid_report *hid_register_report(struct hid_device *device, unsigned type, unsigned id);
@@ -724,6 +780,11 @@ struct hid_report *hid_validate_values(struct hid_device *hid,
 int hid_check_keys_pressed(struct hid_device *hid);
 int hid_connect(struct hid_device *hid, unsigned int connect_mask);
 void hid_disconnect(struct hid_device *hid);
+<<<<<<< HEAD
+=======
+const struct hid_device_id *hid_match_id(struct hid_device *hdev,
+					 const struct hid_device_id *id);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * hid_map_usage - map usage input bits

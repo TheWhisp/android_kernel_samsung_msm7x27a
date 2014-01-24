@@ -18,7 +18,11 @@
 
 #define CLOCK_TICK_RATE		1000000
 
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_SMP
+=======
+#ifdef CONFIG_HAVE_ARCH_HAS_CURRENT_TIMER
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ARCH_HAS_READ_CURRENT_TIMER
 #endif
 

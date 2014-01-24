@@ -137,6 +137,7 @@ static struct usb_driver tv_driver = {
 	.id_table =	id_table,
 };
 
+<<<<<<< HEAD
 static int __init tv_init(void)
 {
 	int retval = usb_register(&tv_driver);
@@ -157,6 +158,9 @@ static void __exit tv_exit(void)
 
 module_init (tv_init);
 module_exit (tv_exit);
+=======
+module_usb_driver(tv_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

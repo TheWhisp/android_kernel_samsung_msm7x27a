@@ -13,6 +13,10 @@
  */
 
 #include <linux/bitrev.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "rc-core-priv.h"
 
 #define SONY_UNIT		600000 /* ns */
@@ -129,7 +133,11 @@ static int ir_sony_decode(struct rc_dev *dev, struct ir_raw_event ev)
 		case 15:
 			device    = bitrev8((data->bits >>  0) & 0xFF);
 			subdevice = 0;
+<<<<<<< HEAD
 			function  = bitrev8((data->bits >>  7) & 0xFD);
+=======
+			function  = bitrev8((data->bits >>  7) & 0xFE);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case 20:
 			device    = bitrev8((data->bits >>  5) & 0xF8);

@@ -46,6 +46,10 @@
 #include <linux/pci.h>
 #include <linux/poll.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 #include <linux/uaccess.h>
 

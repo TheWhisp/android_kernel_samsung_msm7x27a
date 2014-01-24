@@ -34,9 +34,15 @@ static char *serial_version = "$Revision: 1.25 $";
 
 #include <asm/irq.h>
 #include <asm/dma.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #include <arch/svinto.h>
+=======
+
+#include <arch/svinto.h>
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* non-arch dependent serial structures are in linux/serial.h */
 #include <linux/serial.h>
@@ -258,7 +264,11 @@ static struct e100_serial rs_table[] = {
 	  .dma_out_enabled = 1,
 	  .dma_out_nbr = SER0_TX_DMA_NBR,
 	  .dma_out_irq_nbr = SER0_DMA_TX_IRQ_NBR,
+<<<<<<< HEAD
 	  .dma_out_irq_flags = IRQF_DISABLED,
+=======
+	  .dma_out_irq_flags = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	  .dma_out_irq_description = "serial 0 dma tr",
 #else
 	  .dma_out_enabled = 0,
@@ -271,7 +281,11 @@ static struct e100_serial rs_table[] = {
 	  .dma_in_enabled = 1,
 	  .dma_in_nbr = SER0_RX_DMA_NBR,
 	  .dma_in_irq_nbr = SER0_DMA_RX_IRQ_NBR,
+<<<<<<< HEAD
 	  .dma_in_irq_flags = IRQF_DISABLED,
+=======
+	  .dma_in_irq_flags = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	  .dma_in_irq_description = "serial 0 dma rec",
 #else
 	  .dma_in_enabled = 0,
@@ -313,7 +327,11 @@ static struct e100_serial rs_table[] = {
 	  .dma_out_enabled = 1,
 	  .dma_out_nbr = SER1_TX_DMA_NBR,
 	  .dma_out_irq_nbr = SER1_DMA_TX_IRQ_NBR,
+<<<<<<< HEAD
 	  .dma_out_irq_flags = IRQF_DISABLED,
+=======
+	  .dma_out_irq_flags = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	  .dma_out_irq_description = "serial 1 dma tr",
 #else
 	  .dma_out_enabled = 0,
@@ -326,7 +344,11 @@ static struct e100_serial rs_table[] = {
 	  .dma_in_enabled = 1,
 	  .dma_in_nbr = SER1_RX_DMA_NBR,
 	  .dma_in_irq_nbr = SER1_DMA_RX_IRQ_NBR,
+<<<<<<< HEAD
 	  .dma_in_irq_flags = IRQF_DISABLED,
+=======
+	  .dma_in_irq_flags = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	  .dma_in_irq_description = "serial 1 dma rec",
 #else
 	  .dma_in_enabled = 0,
@@ -369,7 +391,11 @@ static struct e100_serial rs_table[] = {
 	  .dma_out_enabled = 1,
 	  .dma_out_nbr = SER2_TX_DMA_NBR,
 	  .dma_out_irq_nbr = SER2_DMA_TX_IRQ_NBR,
+<<<<<<< HEAD
 	  .dma_out_irq_flags = IRQF_DISABLED,
+=======
+	  .dma_out_irq_flags = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	  .dma_out_irq_description = "serial 2 dma tr",
 #else
 	  .dma_out_enabled = 0,
@@ -382,7 +408,11 @@ static struct e100_serial rs_table[] = {
 	  .dma_in_enabled = 1,
 	  .dma_in_nbr = SER2_RX_DMA_NBR,
 	  .dma_in_irq_nbr = SER2_DMA_RX_IRQ_NBR,
+<<<<<<< HEAD
 	  .dma_in_irq_flags = IRQF_DISABLED,
+=======
+	  .dma_in_irq_flags = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	  .dma_in_irq_description = "serial 2 dma rec",
 #else
 	  .dma_in_enabled = 0,
@@ -423,7 +453,11 @@ static struct e100_serial rs_table[] = {
 	  .dma_out_enabled = 1,
 	  .dma_out_nbr = SER3_TX_DMA_NBR,
 	  .dma_out_irq_nbr = SER3_DMA_TX_IRQ_NBR,
+<<<<<<< HEAD
 	  .dma_out_irq_flags = IRQF_DISABLED,
+=======
+	  .dma_out_irq_flags = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	  .dma_out_irq_description = "serial 3 dma tr",
 #else
 	  .dma_out_enabled = 0,
@@ -436,7 +470,11 @@ static struct e100_serial rs_table[] = {
 	  .dma_in_enabled = 1,
 	  .dma_in_nbr = SER3_RX_DMA_NBR,
 	  .dma_in_irq_nbr = SER3_DMA_RX_IRQ_NBR,
+<<<<<<< HEAD
 	  .dma_in_irq_flags = IRQF_DISABLED,
+=======
+	  .dma_in_irq_flags = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	  .dma_in_irq_description = "serial 3 dma rec",
 #else
 	  .dma_in_enabled = 0,
@@ -1788,7 +1826,11 @@ static unsigned int handle_descr_data(struct e100_serial *info,
 	struct etrax_recv_buffer *buffer = phys_to_virt(descr->buf) - sizeof *buffer;
 
 	if (info->recv_cnt + recvl > 65536) {
+<<<<<<< HEAD
 		printk(KERN_CRIT
+=======
+		printk(KERN_WARNING
+>>>>>>> refs/remotes/origin/cm-10.0
 		       "%s: Too much pending incoming serial data! Dropping %u bytes.\n", __func__, recvl);
 		return 0;
 	}
@@ -3234,9 +3276,14 @@ rs_write(struct tty_struct *tty,
 		e100_disable_rx(info);
 		e100_enable_rx_irq(info);
 #endif
+<<<<<<< HEAD
 		if ((info->rs485.flags & SER_RS485_RTS_BEFORE_SEND) &&
 			(info->rs485.delay_rts_before_send > 0))
 				msleep(info->rs485.delay_rts_before_send);
+=======
+		if (info->rs485.delay_rts_before_send > 0)
+			msleep(info->rs485.delay_rts_before_send);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 #endif /* CONFIG_ETRAX_RS485 */
 
@@ -3693,10 +3740,13 @@ rs_ioctl(struct tty_struct *tty,
 
 		rs485data.delay_rts_before_send = rs485ctrl.delay_rts_before_send;
 		rs485data.flags = 0;
+<<<<<<< HEAD
 		if (rs485data.delay_rts_before_send != 0)
 			rs485data.flags |= SER_RS485_RTS_BEFORE_SEND;
 		else
 			rs485data.flags &= ~(SER_RS485_RTS_BEFORE_SEND);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (rs485ctrl.enabled)
 			rs485data.flags |= SER_RS485_ENABLED;
@@ -3813,13 +3863,21 @@ rs_close(struct tty_struct *tty, struct file * filp)
 		 * one, we've got real problems, since it means the
 		 * serial port won't be shutdown.
 		 */
+<<<<<<< HEAD
 		printk(KERN_CRIT
+=======
+		printk(KERN_ERR
+>>>>>>> refs/remotes/origin/cm-10.0
 		       "rs_close: bad serial port count; tty->count is 1, "
 		       "info->count is %d\n", info->count);
 		info->count = 1;
 	}
 	if (--info->count < 0) {
+<<<<<<< HEAD
 		printk(KERN_CRIT "rs_close: bad serial port count for ttyS%d: %d\n",
+=======
+		printk(KERN_ERR "rs_close: bad serial port count for ttyS%d: %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       info->line, info->count);
 		info->count = 0;
 	}
@@ -4110,6 +4168,7 @@ static int
 rs_open(struct tty_struct *tty, struct file * filp)
 {
 	struct e100_serial	*info;
+<<<<<<< HEAD
 	int 			retval, line;
 	unsigned long           page;
 	int                     allocated_resources = 0;
@@ -4124,6 +4183,13 @@ rs_open(struct tty_struct *tty, struct file * filp)
 	info = rs_table + line;
 
 	/* don't allow the opening of ports that are not enabled in the HW config */
+=======
+	int 			retval;
+	unsigned long           page;
+	int                     allocated_resources = 0;
+
+	info = rs_table + tty->index;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!info->enabled)
 		return -ENODEV;
 
@@ -4136,7 +4202,11 @@ rs_open(struct tty_struct *tty, struct file * filp)
 	tty->driver_data = info;
 	info->port.tty = tty;
 
+<<<<<<< HEAD
 	info->port.tty->low_latency = (info->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+=======
+	tty->low_latency = !!(info->flags & ASYNC_LOW_LATENCY);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!tmp_buf) {
 		page = get_zeroed_page(GFP_KERNEL);
@@ -4452,7 +4522,11 @@ static int __init rs_init(void)
 #if defined(CONFIG_ETRAX_RS485_ON_PA)
 	if (cris_io_interface_allocate_pins(if_serial_0, 'a', rs485_pa_bit,
 			rs485_pa_bit)) {
+<<<<<<< HEAD
 		printk(KERN_CRIT "ETRAX100LX serial: Could not allocate "
+=======
+		printk(KERN_ERR "ETRAX100LX serial: Could not allocate "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"RS485 pin\n");
 		put_tty_driver(driver);
 		return -EBUSY;
@@ -4461,7 +4535,11 @@ static int __init rs_init(void)
 #if defined(CONFIG_ETRAX_RS485_ON_PORT_G)
 	if (cris_io_interface_allocate_pins(if_serial_0, 'g', rs485_pa_bit,
 			rs485_port_g_bit)) {
+<<<<<<< HEAD
 		printk(KERN_CRIT "ETRAX100LX serial: Could not allocate "
+=======
+		printk(KERN_ERR "ETRAX100LX serial: Could not allocate "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"RS485 pin\n");
 		put_tty_driver(driver);
 		return -EBUSY;
@@ -4494,7 +4572,11 @@ static int __init rs_init(void)
 		if (info->enabled) {
 			if (cris_request_io_interface(info->io_if,
 					info->io_if_description)) {
+<<<<<<< HEAD
 				printk(KERN_CRIT "ETRAX100LX async serial: "
+=======
+				printk(KERN_ERR "ETRAX100LX async serial: "
+>>>>>>> refs/remotes/origin/cm-10.0
 					"Could not allocate IO pins for "
 					"%s, port %d\n",
 					info->io_if_description, i);
@@ -4531,7 +4613,10 @@ static int __init rs_init(void)
 		/* Set sane defaults */
 		info->rs485.flags &= ~(SER_RS485_RTS_ON_SEND);
 		info->rs485.flags |= SER_RS485_RTS_AFTER_SEND;
+<<<<<<< HEAD
 		info->rs485.flags &= ~(SER_RS485_RTS_BEFORE_SEND);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		info->rs485.delay_rts_before_send = 0;
 		info->rs485.flags &= ~(SER_RS485_ENABLED);
 #endif
@@ -4558,7 +4643,11 @@ static int __init rs_init(void)
 	/* hook the irq's for DMA channel 6 and 7, serial output and input, and some more... */
 
 	if (request_irq(SERIAL_IRQ_NBR, ser_interrupt,
+<<<<<<< HEAD
 			IRQF_SHARED | IRQF_DISABLED, "serial ", driver))
+=======
+			IRQF_SHARED, "serial ", driver))
+>>>>>>> refs/remotes/origin/cm-10.0
 		panic("%s: Failed to request irq8", __func__);
 
 #endif

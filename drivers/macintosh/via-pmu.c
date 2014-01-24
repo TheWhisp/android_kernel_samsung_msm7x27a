@@ -50,7 +50,10 @@
 #include <asm/machdep.h>
 #include <asm/io.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sections.h>
 #include <asm/irq.h>
 #include <asm/pmac_feature.h>

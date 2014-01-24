@@ -375,6 +375,7 @@ static struct platform_driver asoc_bfin_ac97_driver = {
 	.remove = __devexit_p(asoc_bfin_ac97_remove),
 };
 
+<<<<<<< HEAD
 static int __init bfin_ac97_init(void)
 {
 	return platform_driver_register(&asoc_bfin_ac97_driver);
@@ -387,6 +388,9 @@ static void __exit bfin_ac97_exit(void)
 }
 module_exit(bfin_ac97_exit);
 
+=======
+module_platform_driver(asoc_bfin_ac97_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Roy Huang");
 MODULE_DESCRIPTION("AC97 driver for ADI Blackfin");

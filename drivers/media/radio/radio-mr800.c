@@ -63,18 +63,29 @@
 #include <media/v4l2-device.h>
 #include <media/v4l2-ioctl.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
 #include <linux/version.h>	/* for KERNEL_VERSION MACRO */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 
 /* driver and module definitions */
 #define DRIVER_AUTHOR "Alexey Klimov <klimov.linux@gmail.com>"
 #define DRIVER_DESC "AverMedia MR 800 USB FM radio driver"
+<<<<<<< HEAD
 #define DRIVER_VERSION "0.11"
 #define RADIO_VERSION KERNEL_VERSION(0, 1, 1)
+=======
+#define DRIVER_VERSION "0.1.2"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION(DRIVER_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define USB_AMRADIO_VENDOR 0x07ca
 #define USB_AMRADIO_PRODUCT 0xb800
@@ -301,7 +312,10 @@ static int vidioc_querycap(struct file *file, void *priv,
 	strlcpy(v->driver, "radio-mr800", sizeof(v->driver));
 	strlcpy(v->card, "AverMedia MR 800 USB FM Radio", sizeof(v->card));
 	usb_make_path(radio->usbdev, v->bus_info, sizeof(v->bus_info));
+<<<<<<< HEAD
 	v->version = RADIO_VERSION;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	v->capabilities = V4L2_CAP_TUNER;
 	return 0;
 }
@@ -661,6 +675,7 @@ err:
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __init amradio_init(void)
 {
 	int retval = usb_register(&usb_amradio_driver);
@@ -683,3 +698,6 @@ static void __exit amradio_exit(void)
 module_init(amradio_init);
 module_exit(amradio_exit);
 
+=======
+module_usb_driver(usb_amradio_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

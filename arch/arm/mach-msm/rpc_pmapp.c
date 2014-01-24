@@ -13,6 +13,10 @@
 
 #include <linux/slab.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <mach/board.h>
 #include <mach/rpc_pmapp.h>
@@ -423,7 +427,10 @@ static int pmapp_rpc_req_reply(struct pmapp_buf *tbuf, struct pmapp_buf *rbuf,
 
 	if (len <= 0) {
 		printk(KERN_ERR "%s: rpc failed! len = %d\n", __func__, len);
+<<<<<<< HEAD
 		pm->endpoint = NULL;	/* re-connect later ? */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		return len;
 	}
 
@@ -548,7 +555,11 @@ EXPORT_SYMBOL(pmapp_vreg_pincntrl_vote);
 
 int pmapp_disp_backlight_set_brightness(int value)
 {
+<<<<<<< HEAD
 	if (value < 0 || value > 100)
+=======
+	if (value < 0 || value > 255)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	return pmapp_rpc_set_only(value, 0, 0, 0, 1,

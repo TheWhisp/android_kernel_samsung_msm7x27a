@@ -26,7 +26,11 @@
 #include <sound/mpu401.h>
 #include <sound/hwdep.h>
 #include <sound/ac97_codec.h>
+<<<<<<< HEAD
 
+=======
+#include <sound/tlv.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifndef CHIP_AU8820
@@ -105,6 +109,18 @@
 #define MIX_SPDIF(x) (vortex->mixspdif[x])
 
 #define NR_WTPB 0x20		/* WT channels per each bank. */
+<<<<<<< HEAD
+=======
+#define NR_PCM	0x10
+
+struct pcm_vol {
+	struct snd_kcontrol *kctl;
+	int active;
+	int dma;
+	int mixin[4];
+	int vol[4];
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Structs */
 typedef struct {
@@ -167,6 +183,10 @@ struct snd_vortex {
 	/* Xtalk canceler */
 	int xt_mode;		/* 1: speakers, 0:headphones. */
 #endif
+<<<<<<< HEAD
+=======
+	struct pcm_vol pcm_vol[NR_PCM];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int isquad;		/* cache of extended ID codec flag. */
 
@@ -238,7 +258,11 @@ static int vortex_alsafmt_aspfmt(int alsafmt);
 /* Connection  stuff. */
 static void vortex_connect_default(vortex_t * vortex, int en);
 static int vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch,
+<<<<<<< HEAD
 				 int dir, int type);
+=======
+				 int dir, int type, int subdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 static char vortex_adb_checkinout(vortex_t * vortex, int resmap[], int out,
 				  int restype);
 #ifndef CHIP_AU8810

@@ -38,6 +38,14 @@
 #define HPAGE_SIZE	(_AC(1,UL) << HPAGE_SHIFT)
 #define HPAGE_MASK	(~(HPAGE_SIZE - 1))
 #define HUGETLB_PAGE_ORDER	(HPAGE_SHIFT - PAGE_SHIFT)
+<<<<<<< HEAD
+=======
+#else /* !CONFIG_HUGETLB_PAGE */
+#define HPAGE_SHIFT	({BUILD_BUG(); 0; })
+#define HPAGE_SIZE	({BUILD_BUG(); 0; })
+#define HPAGE_MASK	({BUILD_BUG(); 0; })
+#define HUGETLB_PAGE_ORDER	({BUILD_BUG(); 0; })
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_HUGETLB_PAGE */
 
 #ifndef __ASSEMBLY__
@@ -170,6 +178,7 @@ typedef struct { unsigned long pgprot; } pgprot_t;
 
 #ifdef CONFIG_FLATMEM
 
+<<<<<<< HEAD
 #define pfn_valid(pfn)							\
 ({									\
 	unsigned long __pfn = (pfn);					\
@@ -178,6 +187,17 @@ typedef struct { unsigned long pgprot; } pgprot_t;
 									\
 	__pfn >= min_low_pfn && __pfn < max_mapnr;			\
 })
+=======
+#ifndef __ASSEMBLY__
+static inline int pfn_valid(unsigned long pfn)
+{
+	/* avoid <linux/mm.h> include hell */
+	extern unsigned long max_mapnr;
+
+	return pfn >= ARCH_PFN_OFFSET && pfn < max_mapnr;
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #elif defined(CONFIG_SPARSEMEM)
 

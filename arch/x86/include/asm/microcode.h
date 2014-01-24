@@ -48,6 +48,10 @@ static inline struct microcode_ops * __init init_intel_microcode(void)
 
 #ifdef CONFIG_MICROCODE_AMD
 extern struct microcode_ops * __init init_amd_microcode(void);
+<<<<<<< HEAD
+=======
+extern void __exit exit_amd_microcode(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void get_ucode_data(void *to, const u8 *from, size_t n)
 {
@@ -59,6 +63,10 @@ static inline struct microcode_ops * __init init_amd_microcode(void)
 {
 	return NULL;
 }
+<<<<<<< HEAD
+=======
+static inline void __exit exit_amd_microcode(void) {}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #endif /* _ASM_X86_MICROCODE_H */

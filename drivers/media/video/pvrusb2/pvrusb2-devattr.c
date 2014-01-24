@@ -28,6 +28,10 @@ pvr2_device_desc structures.
 
 #include "pvrusb2-devattr.h"
 #include <linux/usb.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 /* This is needed in order to pull in tuner type ids... */
 #include <linux/i2c.h>
 #include <media/tuner.h>

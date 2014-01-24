@@ -99,7 +99,11 @@ static struct comedi_driver driver_das16cs = {
 	.detach = das16cs_detach,
 };
 
+<<<<<<< HEAD
 static struct pcmcia_device *cur_dev = NULL;
+=======
+static struct pcmcia_device *cur_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct comedi_lrange das16cs_ai_range = { 4, {
 							   RANGE(-10, 10),
@@ -150,7 +154,11 @@ static const struct das16cs_board *das16cs_probe(struct comedi_device *dev,
 			return das16cs_boards + i;
 	}
 
+<<<<<<< HEAD
 	printk("unknown board!\n");
+=======
+	dev_dbg(dev->hw_dev, "unknown board!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return NULL;
 }
@@ -163,13 +171,18 @@ static int das16cs_attach(struct comedi_device *dev,
 	int ret;
 	int i;
 
+<<<<<<< HEAD
 	printk("comedi%d: cb_das16_cs: ", dev->minor);
+=======
+	dev_dbg(dev->hw_dev, "comedi%d: cb_das16_cs: attached\n", dev->minor);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	link = cur_dev;		/* XXX hack */
 	if (!link)
 		return -EIO;
 
 	dev->iobase = link->resource[0]->start;
+<<<<<<< HEAD
 	printk("I/O base=0x%04lx ", dev->iobase);
 
 	printk("fingerprint:\n");
@@ -177,6 +190,14 @@ static int das16cs_attach(struct comedi_device *dev,
 		printk("%04x ", inw(dev->iobase + i));
 
 	printk("\n");
+=======
+	dev_dbg(dev->hw_dev, "I/O base=0x%04lx\n", dev->iobase);
+
+	dev_dbg(dev->hw_dev, "fingerprint:\n");
+	for (i = 0; i < 48; i += 2)
+		dev_dbg(dev->hw_dev, "%04x\n", inw(dev->iobase + i));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = request_irq(link->irq, das16cs_interrupt,
 			  IRQF_SHARED, "cb_das16_cs", dev);
@@ -185,7 +206,11 @@ static int das16cs_attach(struct comedi_device *dev,
 
 	dev->irq = link->irq;
 
+<<<<<<< HEAD
 	printk("irq=%u ", dev->irq);
+=======
+	dev_dbg(dev->hw_dev, "irq=%u\n", dev->irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev->board_ptr = das16cs_probe(dev, link);
 	if (!dev->board_ptr)
@@ -252,14 +277,21 @@ static int das16cs_attach(struct comedi_device *dev,
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	printk("attached\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 1;
 }
 
 static int das16cs_detach(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 	printk("comedi%d: das16cs: remove\n", dev->minor);
+=======
+	dev_dbg(dev->hw_dev, "comedi%d: das16cs: remove\n", dev->minor);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (dev->irq)
 		free_irq(dev->irq, dev);
@@ -312,7 +344,11 @@ static int das16cs_ai_rinsn(struct comedi_device *dev,
 				break;
 		}
 		if (to == TIMEOUT) {
+<<<<<<< HEAD
 			printk("cb_das16_cs: ai timeout\n");
+=======
+			dev_dbg(dev->hw_dev, "cb_das16_cs: ai timeout\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -ETIME;
 		}
 		data[i] = (unsigned short)inw(dev->iobase + 0);
@@ -370,7 +406,12 @@ static int das16cs_ai_cmdtest(struct comedi_device *dev,
 	if (err)
 		return 1;
 
+<<<<<<< HEAD
 	/* step 2: make sure trigger sources are unique and mutually compatible */
+=======
+	/* step 2: make sure trigger sources are unique and
+	 * mutually compatible */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* note that mutual compatibility is not an issue here */
 	if (cmd->scan_begin_src != TRIG_TIMER &&
@@ -508,7 +549,11 @@ static int das16cs_ao_winsn(struct comedi_device *dev,
 		else
 			status1 |= 0x0008;
 
+<<<<<<< HEAD
 /* 		printk("0x%04x\n",status1);*/
+=======
+/*		printk("0x%04x\n",status1);*/
+>>>>>>> refs/remotes/origin/cm-10.0
 		outw(status1, dev->iobase + 4);
 		udelay(1);
 

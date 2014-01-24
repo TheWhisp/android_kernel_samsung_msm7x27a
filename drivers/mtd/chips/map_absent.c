@@ -55,10 +55,17 @@ static struct mtd_info *map_absent_probe(struct map_info *map)
 	mtd->name 	= map->name;
 	mtd->type 	= MTD_ABSENT;
 	mtd->size 	= map->size;
+<<<<<<< HEAD
 	mtd->erase 	= map_absent_erase;
 	mtd->read 	= map_absent_read;
 	mtd->write 	= map_absent_write;
 	mtd->sync 	= map_absent_sync;
+=======
+	mtd->_erase 	= map_absent_erase;
+	mtd->_read 	= map_absent_read;
+	mtd->_write 	= map_absent_write;
+	mtd->_sync 	= map_absent_sync;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mtd->flags 	= 0;
 	mtd->erasesize  = PAGE_SIZE;
 	mtd->writesize  = 1;
@@ -70,13 +77,19 @@ static struct mtd_info *map_absent_probe(struct map_info *map)
 
 static int map_absent_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
 {
+<<<<<<< HEAD
 	*retlen = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ENODEV;
 }
 
 static int map_absent_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf)
 {
+<<<<<<< HEAD
 	*retlen = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ENODEV;
 }
 

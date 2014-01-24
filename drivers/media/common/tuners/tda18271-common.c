@@ -676,6 +676,7 @@ fail:
 	return ret;
 }
 
+<<<<<<< HEAD
 /*
  * Overrides for Emacs so that we follow Linus's tabbing style.
  * ---------------------------------------------------------------------------
@@ -683,3 +684,30 @@ fail:
  * c-basic-offset: 8
  * End:
  */
+=======
+int _tda_printk(struct tda18271_priv *state, const char *level,
+		const char *func, const char *fmt, ...)
+{
+	struct va_format vaf;
+	va_list args;
+	int rtn;
+
+	va_start(args, fmt);
+
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	if (state)
+		rtn = printk("%s%s: [%d-%04x|%c] %pV",
+			     level, func, i2c_adapter_id(state->i2c_props.adap),
+			     state->i2c_props.addr,
+			     (state->role == TDA18271_MASTER) ? 'M' : 'S',
+			     &vaf);
+	else
+		rtn = printk("%s%s: %pV", level, func, &vaf);
+
+	va_end(args);
+
+	return rtn;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

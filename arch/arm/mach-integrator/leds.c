@@ -29,7 +29,10 @@
 #include <mach/hardware.h>
 #include <mach/platform.h>
 #include <asm/leds.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <mach/cm.h>
 

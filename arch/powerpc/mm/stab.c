@@ -21,8 +21,11 @@
 #include <asm/cputable.h>
 #include <asm/prom.h>
 #include <asm/abs_addr.h>
+<<<<<<< HEAD
 #include <asm/firmware.h>
 #include <asm/iseries/hv_call.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct stab_entry {
 	unsigned long esid_data;
@@ -285,6 +288,7 @@ void stab_initialize(unsigned long stab)
 	/* Set ASR */
 	stabreal = get_paca()->stab_real | 0x1ul;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 	if (firmware_has_feature(FW_FEATURE_ISERIES)) {
 		HvCall1(HvCallBaseSetASR, stabreal);
@@ -292,5 +296,7 @@ void stab_initialize(unsigned long stab)
 	}
 #endif /* CONFIG_PPC_ISERIES */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mtspr(SPRN_ASR, stabreal);
 }

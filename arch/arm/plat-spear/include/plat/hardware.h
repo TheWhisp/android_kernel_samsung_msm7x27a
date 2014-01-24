@@ -14,10 +14,13 @@
 #ifndef __PLAT_HARDWARE_H
 #define __PLAT_HARDWARE_H
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 #define IOMEM(x)	((void __iomem __force *)(x))
 #else
 #define IOMEM(x)	(x)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __PLAT_HARDWARE_H */

@@ -649,10 +649,13 @@ static int slb_base_page_shift[4] = {
 	20,	/* 1M, unsupported */
 };
 
+<<<<<<< HEAD
 /* When called from virtmode, this func should be protected by
  * preempt_disable(), otherwise, the holding of HPTE_V_HVLOCK
  * can trigger deadlock issue.
  */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 long kvmppc_hv_find_lock_hpte(struct kvm *kvm, gva_t eaddr, unsigned long slb_v,
 			      unsigned long valid)
 {

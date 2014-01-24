@@ -67,6 +67,17 @@ struct renesas_usbhs_platform_callback {
 	/*
 	 * option:
 	 *
+<<<<<<< HEAD
+=======
+	 * for board specific clock control
+	 */
+	void (*power_ctrl)(struct platform_device *pdev,
+			   void __iomem *base, int enable);
+
+	/*
+	 * option:
+	 *
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * Phy reset for platform
 	 */
 	void (*phy_reset)(struct platform_device *pdev);
@@ -82,6 +93,16 @@ struct renesas_usbhs_platform_callback {
 	 * get VBUS status function.
 	 */
 	int (*get_vbus)(struct platform_device *pdev);
+<<<<<<< HEAD
+=======
+
+	/*
+	 * option:
+	 *
+	 * VBUS control is needed for Host
+	 */
+	int (*set_vbus)(struct platform_device *pdev, int enable);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -101,6 +122,11 @@ struct renesas_usbhs_driver_param {
 	 * option:
 	 *
 	 * for BUSWAIT :: BWAIT
+<<<<<<< HEAD
+=======
+	 * see
+	 *	renesas_usbhs/common.c :: usbhsc_set_buswait()
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * */
 	int buswait_bwait;
 
@@ -109,7 +135,34 @@ struct renesas_usbhs_driver_param {
 	 *
 	 * delay time from notify_hotplug callback
 	 */
+<<<<<<< HEAD
 	int detection_delay;
+=======
+	int detection_delay; /* msec */
+
+	/*
+	 * option:
+	 *
+	 * dma id for dmaengine
+	 */
+	int d0_tx_id;
+	int d0_rx_id;
+	int d1_tx_id;
+	int d1_rx_id;
+
+	/*
+	 * option:
+	 *
+	 * pio <--> dma border.
+	 */
+	int pio_dma_border; /* default is 64byte */
+
+	/*
+	 * option:
+	 */
+	u32 has_otg:1; /* for controlling PWEN/EXTLP */
+	u32 has_sudmac:1; /* for SUDMAC */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*

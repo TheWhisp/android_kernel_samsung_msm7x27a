@@ -32,7 +32,10 @@
 #include <asm/machdep.h>
 #include <asm/page.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/mpc8xx.h>
 #include <asm/8xx_immap.h>

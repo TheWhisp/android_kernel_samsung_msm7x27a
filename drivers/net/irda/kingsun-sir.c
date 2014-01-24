@@ -621,6 +621,7 @@ static struct usb_driver irda_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 /*
  * Module insertion
  */
@@ -639,6 +640,9 @@ static void __exit kingsun_cleanup(void)
 	usb_deregister(&irda_driver);
 }
 module_exit(kingsun_cleanup);
+=======
+module_usb_driver(irda_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alex Villacís Lasso <a_villacis@palosanto.com>");
 MODULE_DESCRIPTION("IrDA-USB Dongle Driver for KingSun/DonShine");

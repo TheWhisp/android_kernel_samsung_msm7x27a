@@ -31,7 +31,11 @@
  * Acknowledge interrupt with AIC after interrupt has been handled.
  *   (by kernel/irq.c)
  */
+<<<<<<< HEAD
 #define irq_finish(irq) do { at91_sys_write(AT91_AIC_EOICR, 0); } while (0)
+=======
+#define irq_finish(irq) do { at91_aic_write(AT91_AIC_EOICR, 0); } while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /*

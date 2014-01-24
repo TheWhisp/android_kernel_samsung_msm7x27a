@@ -20,8 +20,13 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/clocksource.h>
+<<<<<<< HEAD
 #include <asm/setup.h>
 #include <asm/system.h>
+=======
+#include <linux/rtc.h>
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable.h>
 #include <asm/machdep.h>
 #include <asm/MC68VZ328.h>
@@ -93,7 +98,10 @@ static struct clocksource m68328_clk = {
 	.name	= "timer",
 	.rating	= 250,
 	.read	= m68328_read_clk,
+<<<<<<< HEAD
 	.shift	= 20,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.mask	= CLOCKSOURCE_MASK(32),
 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
 };
@@ -115,12 +123,17 @@ void hw_timer_init(void)
 
 	/* Enable timer 1 */
 	TCTL |= TCTL_TEN;
+<<<<<<< HEAD
 	m68328_clk.mult = clocksource_hz2mult(TICKS_PER_JIFFY*HZ, m68328_clk.shift);
 	clocksource_register(&m68328_clk);
+=======
+	clocksource_register_hz(&m68328_clk, TICKS_PER_JIFFY*HZ);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /***************************************************************************/
 
+<<<<<<< HEAD
 void m68328_timer_gettod(int *year, int *mon, int *day, int *hour, int *min, int *sec)
 {
 	long now = RTCTIME;
@@ -129,6 +142,19 @@ void m68328_timer_gettod(int *year, int *mon, int *day, int *hour, int *min, int
 	*hour = (now >> 24) % 24;
 	*min = (now >> 16) % 60;
 	*sec = now % 60;
+=======
+int m68328_hwclk(int set, struct rtc_time *t)
+{
+	if (!set) {
+		long now = RTCTIME;
+		t->tm_year = t->tm_mon = t->tm_mday = 1;
+		t->tm_hour = (now >> 24) % 24;
+		t->tm_min = (now >> 16) % 60;
+		t->tm_sec = now % 60;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /***************************************************************************/

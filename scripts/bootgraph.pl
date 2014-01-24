@@ -44,7 +44,11 @@ my %end;
 my %type;
 my $done = 0;
 my $maxtime = 0;
+<<<<<<< HEAD
 my $firsttime = 100;
+=======
+my $firsttime = 99999;
+>>>>>>> refs/remotes/origin/cm-10.0
 my $count = 0;
 my %pids;
 my %pidctr;

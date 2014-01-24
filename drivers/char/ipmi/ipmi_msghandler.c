@@ -33,7 +33,10 @@
 
 #include <linux/module.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/poll.h>
 #include <linux/sched.h>
 #include <linux/seq_file.h>
@@ -46,6 +49,10 @@
 #include <linux/init.h>
 #include <linux/proc_fs.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PFX "IPMI message handler: "
 
@@ -53,6 +60,11 @@
 
 static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void);
 static int ipmi_init_msghandler(void);
+<<<<<<< HEAD
+=======
+static void smi_recv_tasklet(unsigned long);
+static void handle_new_recv_msgs(ipmi_smi_t intf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int initialized;
 
@@ -355,12 +367,24 @@ struct ipmi_smi {
 	int curr_seq;
 
 	/*
+<<<<<<< HEAD
 	 * Messages that were delayed for some reason (out of memory,
 	 * for instance), will go in here to be processed later in a
 	 * periodic timer interrupt.
 	 */
 	spinlock_t       waiting_msgs_lock;
 	struct list_head waiting_msgs;
+=======
+	 * Messages queued for delivery.  If delivery fails (out of memory
+	 * for instance), They will stay in here to be processed later in a
+	 * periodic timer interrupt.  The tasklet is for handling received
+	 * messages directly from the handler.
+	 */
+	spinlock_t       waiting_msgs_lock;
+	struct list_head waiting_msgs;
+	atomic_t	 watchdog_pretimeouts_to_deliver;
+	struct tasklet_struct recv_tasklet;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * The list of command receivers that are registered for commands
@@ -493,6 +517,11 @@ static void clean_up_interface_data(ipmi_smi_t intf)
 	struct cmd_rcvr  *rcvr, *rcvr2;
 	struct list_head list;
 
+<<<<<<< HEAD
+=======
+	tasklet_kill(&intf->recv_tasklet);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	free_smi_msg_list(&intf->waiting_msgs);
 	free_recv_msg_list(&intf->waiting_events);
 
@@ -2786,12 +2815,26 @@ channel_handler(ipmi_smi_t intf, struct ipmi_recv_msg *msg)
 	return;
 }
 
+<<<<<<< HEAD
 void ipmi_poll_interface(ipmi_user_t user)
 {
 	ipmi_smi_t intf = user->intf;
 
 	if (intf->handlers->poll)
 		intf->handlers->poll(intf->send_info);
+=======
+static void ipmi_poll(ipmi_smi_t intf)
+{
+	if (intf->handlers->poll)
+		intf->handlers->poll(intf->send_info);
+	/* In case something came in */
+	handle_new_recv_msgs(intf);
+}
+
+void ipmi_poll_interface(ipmi_user_t user)
+{
+	ipmi_poll(user->intf);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(ipmi_poll_interface);
 
@@ -2860,6 +2903,13 @@ int ipmi_register_smi(struct ipmi_smi_handlers *handlers,
 #endif
 	spin_lock_init(&intf->waiting_msgs_lock);
 	INIT_LIST_HEAD(&intf->waiting_msgs);
+<<<<<<< HEAD
+=======
+	tasklet_init(&intf->recv_tasklet,
+		     smi_recv_tasklet,
+		     (unsigned long) intf);
+	atomic_set(&intf->watchdog_pretimeouts_to_deliver, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_init(&intf->events_lock);
 	INIT_LIST_HEAD(&intf->waiting_events);
 	intf->waiting_events_count = 0;
@@ -3622,11 +3672,19 @@ static int handle_bmc_rsp(ipmi_smi_t          intf,
 }
 
 /*
+<<<<<<< HEAD
  * Handle a new message.  Return 1 if the message should be requeued,
  * 0 if the message should be freed, or -1 if the message should not
  * be freed or requeued.
  */
 static int handle_new_recv_msg(ipmi_smi_t          intf,
+=======
+ * Handle a received message.  Return 1 if the message should be requeued,
+ * 0 if the message should be freed, or -1 if the message should not
+ * be freed or requeued.
+ */
+static int handle_one_recv_msg(ipmi_smi_t          intf,
+>>>>>>> refs/remotes/origin/cm-10.0
 			       struct ipmi_smi_msg *msg)
 {
 	int requeue;
@@ -3784,12 +3842,79 @@ static int handle_new_recv_msg(ipmi_smi_t          intf,
 	return requeue;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * If there are messages in the queue or pretimeouts, handle them.
+ */
+static void handle_new_recv_msgs(ipmi_smi_t intf)
+{
+	struct ipmi_smi_msg  *smi_msg;
+	unsigned long        flags = 0;
+	int                  rv;
+	int                  run_to_completion = intf->run_to_completion;
+
+	/* See if any waiting messages need to be processed. */
+	if (!run_to_completion)
+		spin_lock_irqsave(&intf->waiting_msgs_lock, flags);
+	while (!list_empty(&intf->waiting_msgs)) {
+		smi_msg = list_entry(intf->waiting_msgs.next,
+				     struct ipmi_smi_msg, link);
+		list_del(&smi_msg->link);
+		if (!run_to_completion)
+			spin_unlock_irqrestore(&intf->waiting_msgs_lock, flags);
+		rv = handle_one_recv_msg(intf, smi_msg);
+		if (!run_to_completion)
+			spin_lock_irqsave(&intf->waiting_msgs_lock, flags);
+		if (rv == 0) {
+			/* Message handled */
+			ipmi_free_smi_msg(smi_msg);
+		} else if (rv < 0) {
+			/* Fatal error on the message, del but don't free. */
+		} else {
+			/*
+			 * To preserve message order, quit if we
+			 * can't handle a message.
+			 */
+			list_add(&smi_msg->link, &intf->waiting_msgs);
+			break;
+		}
+	}
+	if (!run_to_completion)
+		spin_unlock_irqrestore(&intf->waiting_msgs_lock, flags);
+
+	/*
+	 * If the pretimout count is non-zero, decrement one from it and
+	 * deliver pretimeouts to all the users.
+	 */
+	if (atomic_add_unless(&intf->watchdog_pretimeouts_to_deliver, -1, 0)) {
+		ipmi_user_t user;
+
+		rcu_read_lock();
+		list_for_each_entry_rcu(user, &intf->users, link) {
+			if (user->handler->ipmi_watchdog_pretimeout)
+				user->handler->ipmi_watchdog_pretimeout(
+					user->handler_data);
+		}
+		rcu_read_unlock();
+	}
+}
+
+static void smi_recv_tasklet(unsigned long val)
+{
+	handle_new_recv_msgs((ipmi_smi_t) val);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Handle a new message from the lower layer. */
 void ipmi_smi_msg_received(ipmi_smi_t          intf,
 			   struct ipmi_smi_msg *msg)
 {
 	unsigned long flags = 0; /* keep us warning-free. */
+<<<<<<< HEAD
 	int           rv;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int           run_to_completion;
 
 
@@ -3843,6 +3968,7 @@ void ipmi_smi_msg_received(ipmi_smi_t          intf,
 	run_to_completion = intf->run_to_completion;
 	if (!run_to_completion)
 		spin_lock_irqsave(&intf->waiting_msgs_lock, flags);
+<<<<<<< HEAD
 	if (!list_empty(&intf->waiting_msgs)) {
 		list_add_tail(&msg->link, &intf->waiting_msgs);
 		if (!run_to_completion)
@@ -3868,6 +3994,13 @@ void ipmi_smi_msg_received(ipmi_smi_t          intf,
 		ipmi_free_smi_msg(msg);
 	}
 
+=======
+	list_add_tail(&msg->link, &intf->waiting_msgs);
+	if (!run_to_completion)
+		spin_unlock_irqrestore(&intf->waiting_msgs_lock, flags);
+
+	tasklet_schedule(&intf->recv_tasklet);
+>>>>>>> refs/remotes/origin/cm-10.0
  out:
 	return;
 }
@@ -3875,6 +4008,7 @@ EXPORT_SYMBOL(ipmi_smi_msg_received);
 
 void ipmi_smi_watchdog_pretimeout(ipmi_smi_t intf)
 {
+<<<<<<< HEAD
 	ipmi_user_t user;
 
 	rcu_read_lock();
@@ -3885,6 +4019,10 @@ void ipmi_smi_watchdog_pretimeout(ipmi_smi_t intf)
 		user->handler->ipmi_watchdog_pretimeout(user->handler_data);
 	}
 	rcu_read_unlock();
+=======
+	atomic_set(&intf->watchdog_pretimeouts_to_deliver, 1);
+	tasklet_schedule(&intf->recv_tasklet);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(ipmi_smi_watchdog_pretimeout);
 
@@ -3998,12 +4136,16 @@ static void ipmi_timeout_handler(long timeout_period)
 	ipmi_smi_t           intf;
 	struct list_head     timeouts;
 	struct ipmi_recv_msg *msg, *msg2;
+<<<<<<< HEAD
 	struct ipmi_smi_msg  *smi_msg, *smi_msg2;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long        flags;
 	int                  i;
 
 	rcu_read_lock();
 	list_for_each_entry_rcu(intf, &ipmi_interfaces, link) {
+<<<<<<< HEAD
 		/* See if any waiting messages need to be processed. */
 		spin_lock_irqsave(&intf->waiting_msgs_lock, flags);
 		list_for_each_entry_safe(smi_msg, smi_msg2,
@@ -4020,6 +4162,9 @@ static void ipmi_timeout_handler(long timeout_period)
 			}
 		}
 		spin_unlock_irqrestore(&intf->waiting_msgs_lock, flags);
+=======
+		tasklet_schedule(&intf->recv_tasklet);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
 		 * Go through the seq table and find any messages that
@@ -4173,12 +4318,56 @@ EXPORT_SYMBOL(ipmi_free_recv_msg);
 
 #ifdef CONFIG_IPMI_PANIC_EVENT
 
+<<<<<<< HEAD
 static void dummy_smi_done_handler(struct ipmi_smi_msg *msg)
 {
+=======
+static atomic_t panic_done_count = ATOMIC_INIT(0);
+
+static void dummy_smi_done_handler(struct ipmi_smi_msg *msg)
+{
+	atomic_dec(&panic_done_count);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void dummy_recv_done_handler(struct ipmi_recv_msg *msg)
 {
+<<<<<<< HEAD
+=======
+	atomic_dec(&panic_done_count);
+}
+
+/*
+ * Inside a panic, send a message and wait for a response.
+ */
+static void ipmi_panic_request_and_wait(ipmi_smi_t           intf,
+					struct ipmi_addr     *addr,
+					struct kernel_ipmi_msg *msg)
+{
+	struct ipmi_smi_msg  smi_msg;
+	struct ipmi_recv_msg recv_msg;
+	int rv;
+
+	smi_msg.done = dummy_smi_done_handler;
+	recv_msg.done = dummy_recv_done_handler;
+	atomic_add(2, &panic_done_count);
+	rv = i_ipmi_request(NULL,
+			    intf,
+			    addr,
+			    0,
+			    msg,
+			    intf,
+			    &smi_msg,
+			    &recv_msg,
+			    0,
+			    intf->channels[0].address,
+			    intf->channels[0].lun,
+			    0, 1); /* Don't retry, and don't wait. */
+	if (rv)
+		atomic_sub(2, &panic_done_count);
+	while (atomic_read(&panic_done_count) != 0)
+		ipmi_poll(intf);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_IPMI_PANIC_STRING
@@ -4217,8 +4406,11 @@ static void send_panic_events(char *str)
 	unsigned char                     data[16];
 	struct ipmi_system_interface_addr *si;
 	struct ipmi_addr                  addr;
+<<<<<<< HEAD
 	struct ipmi_smi_msg               smi_msg;
 	struct ipmi_recv_msg              recv_msg;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	si = (struct ipmi_system_interface_addr *) &addr;
 	si->addr_type = IPMI_SYSTEM_INTERFACE_ADDR_TYPE;
@@ -4246,9 +4438,12 @@ static void send_panic_events(char *str)
 		data[7] = str[2];
 	}
 
+<<<<<<< HEAD
 	smi_msg.done = dummy_smi_done_handler;
 	recv_msg.done = dummy_recv_done_handler;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* For every registered interface, send the event. */
 	list_for_each_entry_rcu(intf, &ipmi_interfaces, link) {
 		if (!intf->handlers)
@@ -4258,6 +4453,7 @@ static void send_panic_events(char *str)
 		intf->run_to_completion = 1;
 		/* Send the event announcing the panic. */
 		intf->handlers->set_run_to_completion(intf->send_info, 1);
+<<<<<<< HEAD
 		i_ipmi_request(NULL,
 			       intf,
 			       &addr,
@@ -4270,6 +4466,9 @@ static void send_panic_events(char *str)
 			       intf->channels[0].address,
 			       intf->channels[0].lun,
 			       0, 1); /* Don't retry, and don't wait. */
+=======
+		ipmi_panic_request_and_wait(intf, &addr, &msg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 #ifdef CONFIG_IPMI_PANIC_STRING
@@ -4317,6 +4516,7 @@ static void send_panic_events(char *str)
 		msg.data = NULL;
 		msg.data_len = 0;
 		intf->null_user_handler = device_id_fetcher;
+<<<<<<< HEAD
 		i_ipmi_request(NULL,
 			       intf,
 			       &addr,
@@ -4329,6 +4529,9 @@ static void send_panic_events(char *str)
 			       intf->channels[0].address,
 			       intf->channels[0].lun,
 			       0, 1); /* Don't retry, and don't wait. */
+=======
+		ipmi_panic_request_and_wait(intf, &addr, &msg);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (intf->local_event_generator) {
 			/* Request the event receiver from the local MC. */
@@ -4337,6 +4540,7 @@ static void send_panic_events(char *str)
 			msg.data = NULL;
 			msg.data_len = 0;
 			intf->null_user_handler = event_receiver_fetcher;
+<<<<<<< HEAD
 			i_ipmi_request(NULL,
 				       intf,
 				       &addr,
@@ -4349,6 +4553,9 @@ static void send_panic_events(char *str)
 				       intf->channels[0].address,
 				       intf->channels[0].lun,
 				       0, 1); /* no retry, and no wait. */
+=======
+			ipmi_panic_request_and_wait(intf, &addr, &msg);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		intf->null_user_handler = NULL;
 
@@ -4405,6 +4612,7 @@ static void send_panic_events(char *str)
 			strncpy(data+5, p, 11);
 			p += size;
 
+<<<<<<< HEAD
 			i_ipmi_request(NULL,
 				       intf,
 				       &addr,
@@ -4417,6 +4625,9 @@ static void send_panic_events(char *str)
 				       intf->channels[0].address,
 				       intf->channels[0].lun,
 				       0, 1); /* no retry, and no wait. */
+=======
+			ipmi_panic_request_and_wait(intf, &addr, &msg);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 #endif /* CONFIG_IPMI_PANIC_STRING */

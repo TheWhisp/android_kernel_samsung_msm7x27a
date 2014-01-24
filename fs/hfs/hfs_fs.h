@@ -184,7 +184,11 @@ extern int hfs_get_block(struct inode *, sector_t, struct buffer_head *, int);
 extern const struct address_space_operations hfs_aops;
 extern const struct address_space_operations hfs_btree_aops;
 
+<<<<<<< HEAD
 extern struct inode *hfs_new_inode(struct inode *, struct qstr *, int);
+=======
+extern struct inode *hfs_new_inode(struct inode *, struct qstr *, umode_t);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void hfs_inode_write_fork(struct inode *, struct hfs_extent *, __be32 *, __be32 *);
 extern int hfs_write_inode(struct inode *, struct writeback_control *);
 extern int hfs_inode_setattr(struct dentry *, struct iattr *);

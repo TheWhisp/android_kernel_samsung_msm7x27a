@@ -25,6 +25,10 @@
 #include <linux/init.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include "hda_codec.h"
 #include "hda_local.h"

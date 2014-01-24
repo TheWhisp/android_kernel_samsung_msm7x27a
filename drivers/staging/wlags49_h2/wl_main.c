@@ -23,7 +23,11 @@
  * software indicates your acceptance of these terms and conditions.  If you do
  * not agree with these terms and conditions, do not use the software.
  *
+<<<<<<< HEAD
  * Copyright © 2003 Agere Systems Inc.
+=======
+ * Copyright Â© 2003 Agere Systems Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source or binary forms, with or without
@@ -44,7 +48,11 @@
  *
  * Disclaimer
  *
+<<<<<<< HEAD
  * THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+=======
+ * THIS SOFTWARE IS PROVIDED Â“AS ISÂ” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/cm-10.0
  * INCLUDING, BUT NOT LIMITED TO, INFRINGEMENT AND THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  ANY
  * USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE IS SOLELY AT THE USERS OWN
@@ -86,8 +94,12 @@
 // #include <linux/in.h>
 // #include <linux/delay.h>
 // #include <asm/io.h>
+<<<<<<< HEAD
 // #include <asm/system.h>
 // #include <asm/bitops.h>
+=======
+// // #include <asm/bitops.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/unistd.h>
 #include <asm/uaccess.h>
 
@@ -1993,8 +2005,15 @@ int wl_put_ltv( struct wl_private *lp )
 	lp->ltvRecord.typ       = CFG_SET_WPA_AUTH_KEY_MGMT_SUITE;
 	lp->ltvRecord.u.u16[0]  = CNV_INT_TO_LITTLE( lp->AuthKeyMgmtSuite );
 	hcf_status = hcf_put_info( &lp->hcfCtx, (LTVP)&( lp->ltvRecord ));
+<<<<<<< HEAD
 	/* WEP Keys */
 	wl_set_wep_keys( lp );
+=======
+
+	/* If WEP (or no) keys are being used, write (or clear) them */
+	if (lp->wext_enc != IW_ENCODE_ALG_TKIP)
+		wl_set_wep_keys(lp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Country Code */
 	/* countryInfo, ltvCountryInfo, CFG_CNF_COUNTRY_INFO */

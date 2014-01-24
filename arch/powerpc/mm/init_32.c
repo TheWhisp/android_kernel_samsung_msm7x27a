@@ -32,6 +32,11 @@
 #include <linux/pagemap.h>
 #include <linux/memblock.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+#include <linux/hugetlb.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/pgalloc.h>
 #include <asm/prom.h>
@@ -43,7 +48,11 @@
 #include <asm/btext.h>
 #include <asm/tlb.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/hugetlb.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "mmu_decl.h"
 
@@ -62,6 +71,16 @@ phys_addr_t memstart_addr = (phys_addr_t)~0ull;
 EXPORT_SYMBOL(memstart_addr);
 phys_addr_t kernstart_addr;
 EXPORT_SYMBOL(kernstart_addr);
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_RELOCATABLE_PPC32
+/* Used in __va()/__pa() */
+long long virt_phys_offset;
+EXPORT_SYMBOL(virt_phys_offset);
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 phys_addr_t lowmem_end_addr;
 
 int boot_mapsize;
@@ -123,10 +142,22 @@ void __init MMU_init(void)
 	/* parse args from command line */
 	MMU_setup();
 
+<<<<<<< HEAD
 	if (memblock.memory.cnt > 1) {
 #ifndef CONFIG_WII
 		memblock.memory.cnt = 1;
 		memblock_analyze();
+=======
+	/*
+	 * Reserve gigantic pages for hugetlb.  This MUST occur before
+	 * lowmem_end_addr is initialized below.
+	 */
+	reserve_hugetlb_gpages();
+
+	if (memblock.memory.cnt > 1) {
+#ifndef CONFIG_WII
+		memblock_enforce_memory_limit(memblock.memory.regions[0].size);
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_WARNING "Only using first contiguous memory region");
 #else
 		wii_memory_fixups();
@@ -149,7 +180,10 @@ void __init MMU_init(void)
 #ifndef CONFIG_HIGHMEM
 		total_memory = total_lowmem;
 		memblock_enforce_memory_limit(total_lowmem);
+<<<<<<< HEAD
 		memblock_analyze();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_HIGHMEM */
 	}
 
@@ -191,6 +225,7 @@ void __init *early_get_page(void)
 		return __va(memblock_alloc(PAGE_SIZE, PAGE_SIZE));
 }
 
+<<<<<<< HEAD
 /* Free up now-unused memory */
 static void free_sec(unsigned long start, unsigned long end, const char *name)
 {
@@ -223,6 +258,8 @@ void free_initmem(void)
 #undef FREESEC
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_8xx /* No 8xx specific .c file to put that in ... */
 void setup_initial_memory_limit(phys_addr_t first_memblock_base,
 				phys_addr_t first_memblock_size)

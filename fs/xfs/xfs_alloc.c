@@ -35,6 +35,10 @@
 #include "xfs_error.h"
 #include "xfs_trace.h"
 
+<<<<<<< HEAD
+=======
+struct workqueue_struct *xfs_alloc_wq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define XFS_ABSDIFF(a,b)	(((a) <= (b)) ? ((b) - (a)) : ((a) - (b)))
 
@@ -68,7 +72,11 @@ xfs_alloc_lookup_eq(
  * Lookup the first record greater than or equal to [bno, len]
  * in the btree given by cur.
  */
+<<<<<<< HEAD
 STATIC int				/* error */
+=======
+int				/* error */
+>>>>>>> refs/remotes/origin/cm-10.0
 xfs_alloc_lookup_ge(
 	struct xfs_btree_cur	*cur,	/* btree cursor */
 	xfs_agblock_t		bno,	/* starting block of extent */
@@ -451,9 +459,14 @@ xfs_alloc_read_agfl(
 			XFS_FSS_TO_BB(mp, 1), 0, &bp);
 	if (error)
 		return error;
+<<<<<<< HEAD
 	ASSERT(bp);
 	ASSERT(!XFS_BUF_GETERROR(bp));
 	XFS_BUF_SET_VTYPE_REF(bp, B_FS_AGFL, XFS_AGFL_REF);
+=======
+	ASSERT(!xfs_buf_geterror(bp));
+	xfs_buf_set_ref(bp, XFS_AGFL_REF);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*bpp = bp;
 	return 0;
 }
@@ -570,9 +583,13 @@ xfs_alloc_ag_vextent_exact(
 	xfs_agblock_t	tbno;	/* start block of trimmed extent */
 	xfs_extlen_t	tlen;	/* length of trimmed extent */
 	xfs_agblock_t	tend;	/* end block of trimmed extent */
+<<<<<<< HEAD
 	xfs_agblock_t	end;	/* end of allocated extent */
 	int		i;	/* success/failure of operation */
 	xfs_extlen_t	rlen;	/* length of returned extent */
+=======
+	int		i;	/* success/failure of operation */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ASSERT(args->alignment == 1);
 
@@ -625,18 +642,30 @@ xfs_alloc_ag_vextent_exact(
 	 *
 	 * Fix the length according to mod and prod if given.
 	 */
+<<<<<<< HEAD
 	end = XFS_AGBLOCK_MIN(tend, args->agbno + args->maxlen);
 	args->len = end - args->agbno;
+=======
+	args->len = XFS_AGBLOCK_MIN(tend, args->agbno + args->maxlen)
+						- args->agbno;
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_alloc_fix_len(args);
 	if (!xfs_alloc_fix_minleft(args))
 		goto not_found;
 
+<<<<<<< HEAD
 	rlen = args->len;
 	ASSERT(args->agbno + rlen <= tend);
 	end = args->agbno + rlen;
 
 	/*
 	 * We are allocating agbno for rlen [agbno .. end]
+=======
+	ASSERT(args->agbno + args->len <= tend);
+
+	/*
+	 * We are allocating agbno for args->len
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * Allocate/initialize a cursor for the by-size btree.
 	 */
 	cnt_cur = xfs_allocbt_init_cursor(args->mp, args->tp, args->agbp,
@@ -2120,14 +2149,22 @@ xfs_read_agf(
 	if (!*bpp)
 		return 0;
 
+<<<<<<< HEAD
 	ASSERT(!XFS_BUF_GETERROR(*bpp));
+=======
+	ASSERT(!(*bpp)->b_error);
+>>>>>>> refs/remotes/origin/cm-10.0
 	agf = XFS_BUF_TO_AGF(*bpp);
 
 	/*
 	 * Validate the magic number of the agf block.
 	 */
 	agf_ok =
+<<<<<<< HEAD
 		be32_to_cpu(agf->agf_magicnum) == XFS_AGF_MAGIC &&
+=======
+		agf->agf_magicnum == cpu_to_be32(XFS_AGF_MAGIC) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 		XFS_AGF_GOOD_VERSION(be32_to_cpu(agf->agf_versionnum)) &&
 		be32_to_cpu(agf->agf_freeblks) <= be32_to_cpu(agf->agf_length) &&
 		be32_to_cpu(agf->agf_flfirst) < XFS_AGFL_SIZE(mp) &&
@@ -2144,7 +2181,11 @@ xfs_read_agf(
 		xfs_trans_brelse(tp, *bpp);
 		return XFS_ERROR(EFSCORRUPTED);
 	}
+<<<<<<< HEAD
 	XFS_BUF_SET_VTYPE_REF(*bpp, B_FS_AGF, XFS_AGF_REF);
+=======
+	xfs_buf_set_ref(*bpp, XFS_AGF_REF);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -2172,7 +2213,11 @@ xfs_alloc_read_agf(
 		return error;
 	if (!*bpp)
 		return 0;
+<<<<<<< HEAD
 	ASSERT(!XFS_BUF_GETERROR(*bpp));
+=======
+	ASSERT(!(*bpp)->b_error);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	agf = XFS_BUF_TO_AGF(*bpp);
 	pag = xfs_perag_get(mp, agno);
@@ -2212,7 +2257,11 @@ xfs_alloc_read_agf(
  * group or loop over the allocation groups to find the result.
  */
 int				/* error */
+<<<<<<< HEAD
 xfs_alloc_vextent(
+=======
+__xfs_alloc_vextent(
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_alloc_arg_t	*args)	/* allocation argument structure */
 {
 	xfs_agblock_t	agsize;	/* allocation group size */
@@ -2422,6 +2471,40 @@ error0:
 	return error;
 }
 
+<<<<<<< HEAD
+=======
+static void
+xfs_alloc_vextent_worker(
+	struct work_struct	*work)
+{
+	struct xfs_alloc_arg	*args = container_of(work,
+						struct xfs_alloc_arg, work);
+	unsigned long		pflags;
+
+	/* we are in a transaction context here */
+	current_set_flags_nested(&pflags, PF_FSTRANS);
+
+	args->result = __xfs_alloc_vextent(args);
+	complete(args->done);
+
+	current_restore_flags_nested(&pflags, PF_FSTRANS);
+}
+
+
+int				/* error */
+xfs_alloc_vextent(
+	xfs_alloc_arg_t	*args)	/* allocation argument structure */
+{
+	DECLARE_COMPLETION_ONSTACK(done);
+
+	args->done = &done;
+	INIT_WORK(&args->work, xfs_alloc_vextent_worker);
+	queue_work(xfs_alloc_wq, &args->work);
+	wait_for_completion(&done);
+	return args->result;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Free an extent.
  * Just break up the extent address and hand off to xfs_free_ag_extent

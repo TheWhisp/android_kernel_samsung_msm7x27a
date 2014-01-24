@@ -3,13 +3,22 @@
 config IMA
 	bool "Integrity Measurement Architecture(IMA)"
 	depends on SECURITY
+<<<<<<< HEAD
+=======
+	select INTEGRITY
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SECURITYFS
 	select CRYPTO
 	select CRYPTO_HMAC
 	select CRYPTO_MD5
 	select CRYPTO_SHA1
+<<<<<<< HEAD
 	select TCG_TPM if !S390
 	select TCG_TIS if TCG_TPM
+=======
+	select TCG_TPM if HAS_IOMEM && !UML
+	select TCG_TIS if TCG_TPM && X86
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  The Trusted Computing Group(TCG) runtime Integrity
 	  Measurement Architecture(IMA) maintains a list of hash

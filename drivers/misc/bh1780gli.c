@@ -22,6 +22,10 @@
 #include <linux/mutex.h>
 #include <linux/platform_device.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define BH1780_REG_CONTROL	0x80
 #define BH1780_REG_PARTID	0x8A
@@ -252,6 +256,7 @@ static struct i2c_driver bh1780_driver = {
 	.driver = {
 		.name = "bh1780",
 		.pm	= BH1780_PMOPS,
+<<<<<<< HEAD
 },
 };
 
@@ -267,6 +272,12 @@ static void __exit bh1780_exit(void)
 
 module_init(bh1780_init)
 module_exit(bh1780_exit)
+=======
+	},
+};
+
+module_i2c_driver(bh1780_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("BH1780GLI Ambient Light Sensor Driver");
 MODULE_LICENSE("GPL");

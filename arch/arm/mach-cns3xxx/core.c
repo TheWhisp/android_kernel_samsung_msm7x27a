@@ -16,11 +16,16 @@
 #include <asm/mach/time.h>
 #include <asm/mach/irq.h>
 #include <asm/hardware/gic.h>
+<<<<<<< HEAD
+=======
+#include <asm/hardware/cache-l2x0.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/cns3xxx.h>
 #include "core.h"
 
 static struct map_desc cns3xxx_io_desc[] __initdata = {
 	{
+<<<<<<< HEAD
 		.virtual	= CNS3XXX_TC11MP_TWD_BASE_VIRT,
 		.pfn		= __phys_to_pfn(CNS3XXX_TC11MP_TWD_BASE),
 		.length		= SZ_4K,
@@ -34,6 +39,11 @@ static struct map_desc cns3xxx_io_desc[] __initdata = {
 		.virtual	= CNS3XXX_TC11MP_GIC_DIST_BASE_VIRT,
 		.pfn		= __phys_to_pfn(CNS3XXX_TC11MP_GIC_DIST_BASE),
 		.length		= SZ_4K,
+=======
+		.virtual	= CNS3XXX_TC11MP_SCU_BASE_VIRT,
+		.pfn		= __phys_to_pfn(CNS3XXX_TC11MP_SCU_BASE),
+		.length		= SZ_8K,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.type		= MT_DEVICE,
 	}, {
 		.virtual	= CNS3XXX_TIMER1_2_3_BASE_VIRT,
@@ -71,13 +81,22 @@ void __init cns3xxx_map_io(void)
 /* used by entry-macro.S */
 void __init cns3xxx_init_irq(void)
 {
+<<<<<<< HEAD
 	gic_init(0, 29, __io(CNS3XXX_TC11MP_GIC_DIST_BASE_VIRT),
 		 __io(CNS3XXX_TC11MP_GIC_CPU_BASE_VIRT));
+=======
+	gic_init(0, 29, IOMEM(CNS3XXX_TC11MP_GIC_DIST_BASE_VIRT),
+		 IOMEM(CNS3XXX_TC11MP_GIC_CPU_BASE_VIRT));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void cns3xxx_power_off(void)
 {
+<<<<<<< HEAD
 	u32 __iomem *pm_base = __io(CNS3XXX_PM_BASE_VIRT);
+=======
+	u32 __iomem *pm_base = IOMEM(CNS3XXX_PM_BASE_VIRT);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 clkctrl;
 
 	printk(KERN_INFO "powering system down...\n");
@@ -236,7 +255,11 @@ static void __init __cns3xxx_timer_init(unsigned int timer_irq)
 
 static void __init cns3xxx_timer_init(void)
 {
+<<<<<<< HEAD
 	cns3xxx_tmr1 = __io(CNS3XXX_TIMER1_2_3_BASE_VIRT);
+=======
+	cns3xxx_tmr1 = IOMEM(CNS3XXX_TIMER1_2_3_BASE_VIRT);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__cns3xxx_timer_init(IRQ_CNS3XXX_TIMER0);
 }
@@ -244,3 +267,48 @@ static void __init cns3xxx_timer_init(void)
 struct sys_timer cns3xxx_timer = {
 	.init = cns3xxx_timer_init,
 };
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_CACHE_L2X0
+
+void __init cns3xxx_l2x0_init(void)
+{
+	void __iomem *base = ioremap(CNS3XXX_L2C_BASE, SZ_4K);
+	u32 val;
+
+	if (WARN_ON(!base))
+		return;
+
+	/*
+	 * Tag RAM Control register
+	 *
+	 * bit[10:8]	- 1 cycle of write accesses latency
+	 * bit[6:4]	- 1 cycle of read accesses latency
+	 * bit[3:0]	- 1 cycle of setup latency
+	 *
+	 * 1 cycle of latency for setup, read and write accesses
+	 */
+	val = readl(base + L2X0_TAG_LATENCY_CTRL);
+	val &= 0xfffff888;
+	writel(val, base + L2X0_TAG_LATENCY_CTRL);
+
+	/*
+	 * Data RAM Control register
+	 *
+	 * bit[10:8]	- 1 cycles of write accesses latency
+	 * bit[6:4]	- 1 cycles of read accesses latency
+	 * bit[3:0]	- 1 cycle of setup latency
+	 *
+	 * 1 cycle of latency for setup, read and write accesses
+	 */
+	val = readl(base + L2X0_DATA_LATENCY_CTRL);
+	val &= 0xfffff888;
+	writel(val, base + L2X0_DATA_LATENCY_CTRL);
+
+	/* 32 KiB, 8-way, parity disable */
+	l2x0_init(base, 0x00540000, 0xfe000fff);
+}
+
+#endif /* CONFIG_CACHE_L2X0 */
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -417,7 +417,11 @@ static void __devexit ali1563_remove(struct pci_dev * dev)
 	ali1563_shutdown(dev);
 }
 
+<<<<<<< HEAD
 static const struct pci_device_id ali1563_id_table[] __devinitconst = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(ali1563_id_table) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ PCI_DEVICE(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M1563) },
 	{},
 };

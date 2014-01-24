@@ -481,7 +481,11 @@ static struct msm_sensor_output_info_t s5k3l1yx_dimensions[] = {
 		.line_length_pclk = 5336,
 		.frame_length_lines = 3052,
 		.vt_pixel_clk = 330000000,
+<<<<<<< HEAD
 		.op_pixel_clk = 320000000,
+=======
+		.op_pixel_clk = 264000000,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.binning_factor = 1,
 	},
 	/* 30 fps preview */
@@ -491,7 +495,11 @@ static struct msm_sensor_output_info_t s5k3l1yx_dimensions[] = {
 		.line_length_pclk = 4480,
 		.frame_length_lines = 2456,
 		.vt_pixel_clk = 330000000,
+<<<<<<< HEAD
 		.op_pixel_clk = 320000000,
+=======
+		.op_pixel_clk = 264000000,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.binning_factor = 1,
 	},
 	/* 60 fps video */
@@ -501,7 +509,11 @@ static struct msm_sensor_output_info_t s5k3l1yx_dimensions[] = {
 		.line_length_pclk = 5336,
 		.frame_length_lines = 992,
 		.vt_pixel_clk = 330000000,
+<<<<<<< HEAD
 		.op_pixel_clk = 320000000,
+=======
+		.op_pixel_clk = 264000000,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.binning_factor = 1,
 	},
 	/* 90 fps video */
@@ -511,7 +523,11 @@ static struct msm_sensor_output_info_t s5k3l1yx_dimensions[] = {
 		.line_length_pclk = 5336,
 		.frame_length_lines = 664,
 		.vt_pixel_clk = 330000000,
+<<<<<<< HEAD
 		.op_pixel_clk = 320000000,
+=======
+		.op_pixel_clk = 264000000,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.binning_factor = 1,
 	},
 	/* 120 fps video */
@@ -521,7 +537,11 @@ static struct msm_sensor_output_info_t s5k3l1yx_dimensions[] = {
 		.line_length_pclk = 5336,
 		.frame_length_lines = 514,
 		.vt_pixel_clk = 330000000,
+<<<<<<< HEAD
 		.op_pixel_clk = 320000000,
+=======
+		.op_pixel_clk = 264000000,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.binning_factor = 1,
 	},
 	/* 24 fps snapshot */
@@ -538,11 +558,18 @@ static struct msm_sensor_output_info_t s5k3l1yx_dimensions[] = {
 
 static struct msm_camera_csid_vc_cfg s5k3l1yx_cid_cfg[] = {
 	{0, CSI_RAW10, CSI_DECODE_10BIT},
+<<<<<<< HEAD
+=======
+	{1, CSI_EMBED_DATA, CSI_DECODE_8BIT},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct msm_camera_csi2_params s5k3l1yx_csi_params = {
 	.csid_params = {
+<<<<<<< HEAD
 		.lane_assign = 0xe4,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.lane_cnt = 4,
 		.lut_params = {
 			.num_cid = ARRAY_SIZE(s5k3l1yx_cid_cfg),
@@ -653,6 +680,10 @@ static struct msm_sensor_fn_t s5k3l1yx_func_tbl = {
 	.sensor_power_up = msm_sensor_power_up,
 	.sensor_power_down = msm_sensor_power_down,
 	.sensor_adjust_frame_lines = msm_sensor_adjust_frame_lines,
+<<<<<<< HEAD
+=======
+	.sensor_get_csi_params = msm_sensor_get_csi_params,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct msm_sensor_reg_t s5k3l1yx_regs = {

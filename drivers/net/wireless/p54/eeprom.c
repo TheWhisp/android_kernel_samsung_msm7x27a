@@ -24,6 +24,10 @@
 
 #include <net/mac80211.h>
 #include <linux/crc-ccitt.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "p54.h"
 #include "eeprom.h"
@@ -145,6 +149,10 @@ static int p54_fill_band_bitrates(struct ieee80211_hw *dev,
 
 static int p54_generate_band(struct ieee80211_hw *dev,
 			     struct p54_channel_list *list,
+<<<<<<< HEAD
+=======
+			     unsigned int *chan_num,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     enum ieee80211_band band)
 {
 	struct p54_common *priv = dev->priv;
@@ -190,7 +198,18 @@ static int p54_generate_band(struct ieee80211_hw *dev,
 
 		tmp->channels[j].band = chan->band;
 		tmp->channels[j].center_freq = chan->freq;
+<<<<<<< HEAD
 		j++;
+=======
+		priv->survey[*chan_num].channel = &tmp->channels[j];
+		priv->survey[*chan_num].filled = SURVEY_INFO_NOISE_DBM |
+			SURVEY_INFO_CHANNEL_TIME |
+			SURVEY_INFO_CHANNEL_TIME_BUSY |
+			SURVEY_INFO_CHANNEL_TIME_TX;
+		tmp->channels[j].hw_value = (*chan_num);
+		j++;
+		(*chan_num)++;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (j == 0) {
@@ -263,7 +282,11 @@ static int p54_generate_channel_lists(struct ieee80211_hw *dev)
 {
 	struct p54_common *priv = dev->priv;
 	struct p54_channel_list *list;
+<<<<<<< HEAD
 	unsigned int i, j, max_channel_num;
+=======
+	unsigned int i, j, k, max_channel_num;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0;
 	u16 freq;
 
@@ -283,6 +306,16 @@ static int p54_generate_channel_lists(struct ieee80211_hw *dev)
 		ret = -ENOMEM;
 		goto free;
 	}
+<<<<<<< HEAD
+=======
+	priv->chan_num = max_channel_num;
+	priv->survey = kzalloc(sizeof(struct survey_info) * max_channel_num,
+			       GFP_KERNEL);
+	if (!priv->survey) {
+		ret = -ENOMEM;
+		goto free;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	list->max_entries = max_channel_num;
 	list->channels = kzalloc(sizeof(struct p54_channel_entry) *
@@ -321,8 +354,14 @@ static int p54_generate_channel_lists(struct ieee80211_hw *dev)
 	sort(list->channels, list->entries, sizeof(struct p54_channel_entry),
 	     p54_compare_channels, NULL);
 
+<<<<<<< HEAD
 	for (i = 0, j = 0; i < IEEE80211_NUM_BANDS; i++) {
 		if (p54_generate_band(dev, list, i) == 0)
+=======
+	k = 0;
+	for (i = 0, j = 0; i < IEEE80211_NUM_BANDS; i++) {
+		if (p54_generate_band(dev, list, &k, i) == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 			j++;
 	}
 	if (j == 0) {
@@ -335,6 +374,13 @@ free:
 		kfree(list->channels);
 		kfree(list);
 	}
+<<<<<<< HEAD
+=======
+	if (ret) {
+		kfree(priv->survey);
+		priv->survey = NULL;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -853,10 +899,18 @@ err:
 	kfree(priv->output_limit);
 	kfree(priv->curve_data);
 	kfree(priv->rssi_db);
+<<<<<<< HEAD
+=======
+	kfree(priv->survey);
+>>>>>>> refs/remotes/origin/cm-10.0
 	priv->iq_autocal = NULL;
 	priv->output_limit = NULL;
 	priv->curve_data = NULL;
 	priv->rssi_db = NULL;
+<<<<<<< HEAD
+=======
+	priv->survey = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	wiphy_err(dev->wiphy, "eeprom parse failed!\n");
 	return err;

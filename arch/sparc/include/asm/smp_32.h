@@ -22,7 +22,11 @@
 
 #include <asm/ptrace.h>
 #include <asm/asi.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	Private routines/data

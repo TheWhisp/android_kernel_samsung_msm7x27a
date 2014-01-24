@@ -17,6 +17,10 @@
  * the CPU clock speed on the fly.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/cpufreq.h>
 #include <linux/clk.h>
 #include <linux/err.h>
@@ -97,7 +101,11 @@ static int mxc_set_target(struct cpufreq_policy *policy,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __init mxc_cpufreq_init(struct cpufreq_policy *policy)
+=======
+static int mxc_cpufreq_init(struct cpufreq_policy *policy)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 	int i;

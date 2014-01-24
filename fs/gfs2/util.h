@@ -10,6 +10,11 @@
 #ifndef __UTIL_DOT_H__
 #define __UTIL_DOT_H__
 
+<<<<<<< HEAD
+=======
+#include <linux/mempool.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "incore.h"
 
 #define fs_printk(level, fs, fmt, arg...) \
@@ -150,6 +155,10 @@ extern struct kmem_cache *gfs2_inode_cachep;
 extern struct kmem_cache *gfs2_bufdata_cachep;
 extern struct kmem_cache *gfs2_rgrpd_cachep;
 extern struct kmem_cache *gfs2_quotad_cachep;
+<<<<<<< HEAD
+=======
+extern mempool_t *gfs2_bh_pool;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline unsigned int gfs2_tune_get_i(struct gfs2_tune *gt,
 					   unsigned int *p)

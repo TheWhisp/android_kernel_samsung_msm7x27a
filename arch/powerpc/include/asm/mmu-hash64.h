@@ -90,6 +90,7 @@ extern char initial_stab[];
 
 #define HPTE_R_PP0		ASM_CONST(0x8000000000000000)
 #define HPTE_R_TS		ASM_CONST(0x4000000000000000)
+<<<<<<< HEAD
 #define HPTE_R_RPN_SHIFT	12
 #define HPTE_R_RPN		ASM_CONST(0x3ffffffffffff000)
 #define HPTE_R_FLAGS		ASM_CONST(0x00000000000003ff)
@@ -97,16 +98,38 @@ extern char initial_stab[];
 #define HPTE_R_N		ASM_CONST(0x0000000000000004)
 #define HPTE_R_C		ASM_CONST(0x0000000000000080)
 #define HPTE_R_R		ASM_CONST(0x0000000000000100)
+=======
+#define HPTE_R_KEY_HI		ASM_CONST(0x3000000000000000)
+#define HPTE_R_RPN_SHIFT	12
+#define HPTE_R_RPN		ASM_CONST(0x0ffffffffffff000)
+#define HPTE_R_PP		ASM_CONST(0x0000000000000003)
+#define HPTE_R_N		ASM_CONST(0x0000000000000004)
+#define HPTE_R_G		ASM_CONST(0x0000000000000008)
+#define HPTE_R_M		ASM_CONST(0x0000000000000010)
+#define HPTE_R_I		ASM_CONST(0x0000000000000020)
+#define HPTE_R_W		ASM_CONST(0x0000000000000040)
+#define HPTE_R_WIMG		ASM_CONST(0x0000000000000078)
+#define HPTE_R_C		ASM_CONST(0x0000000000000080)
+#define HPTE_R_R		ASM_CONST(0x0000000000000100)
+#define HPTE_R_KEY_LO		ASM_CONST(0x0000000000000e00)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define HPTE_V_1TB_SEG		ASM_CONST(0x4000000000000000)
 #define HPTE_V_VRMA_MASK	ASM_CONST(0x4001ffffff000000)
 
 /* Values for PP (assumes Ks=0, Kp=1) */
+<<<<<<< HEAD
 /* pp0 will always be 0 for linux     */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PP_RWXX	0	/* Supervisor read/write, User none */
 #define PP_RWRX 1	/* Supervisor read/write, User read */
 #define PP_RWRW 2	/* Supervisor read/write, User read/write */
 #define PP_RXRX 3	/* Supervisor read,       User read */
+<<<<<<< HEAD
+=======
+#define PP_RXXX	(HPTE_R_PP0 | 2)	/* Supervisor read, user none */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef __ASSEMBLY__
 
@@ -256,13 +279,20 @@ extern void hash_failure_debug(unsigned long ea, unsigned long access,
 extern int htab_bolt_mapping(unsigned long vstart, unsigned long vend,
 			     unsigned long pstart, unsigned long prot,
 			     int psize, int ssize);
+<<<<<<< HEAD
 extern void add_gpage(unsigned long addr, unsigned long page_size,
 			  unsigned long number_of_pages);
+=======
+extern void add_gpage(u64 addr, u64 page_size, unsigned long number_of_pages);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void demote_segment_4k(struct mm_struct *mm, unsigned long addr);
 
 extern void hpte_init_native(void);
 extern void hpte_init_lpar(void);
+<<<<<<< HEAD
 extern void hpte_init_iSeries(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void hpte_init_beat(void);
 extern void hpte_init_beat_v3(void);
 
@@ -307,10 +337,16 @@ extern void slb_set_size(u16 size);
  * (i.e. everything above 0xC000000000000000), except the very top
  * segment, which simplifies several things.
  *
+<<<<<<< HEAD
  * 	- We allow for 15 significant bits of ESID and 20 bits of
  * context for user addresses.  i.e. 8T (43 bits) of address space for
  * up to 1M contexts (although the page table structure and context
  * allocation will need changes to take advantage of this).
+=======
+ *	- We allow for 16 significant bits of ESID and 19 bits of
+ * context for user addresses.  i.e. 16T (44 bits) of address space for
+ * up to half a million contexts.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * 	- The scramble function gives robust scattering in the hash
  * table (at least based on some initial results).  The previous
@@ -321,9 +357,12 @@ extern void slb_set_size(u16 size);
  * WARNING - If you change these you must make sure the asm
  * implementations in slb_allocate (slb_low.S), do_stab_bolted
  * (head.S) and ASM_VSID_SCRAMBLE (below) are changed accordingly.
+<<<<<<< HEAD
  *
  * You'll also need to change the precomputed VSID values in head.S
  * which are used by the iSeries firmware.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #define VSID_MULTIPLIER_256M	ASM_CONST(200730139)	/* 28-bit prime */
@@ -480,6 +519,7 @@ static inline unsigned long get_vsid(unsigned long context, unsigned long ea,
 			     | (ea >> SID_SHIFT_1T), 1T);
 }
 
+<<<<<<< HEAD
 /*
  * This is only used on legacy iSeries in lparmap.c,
  * hence the 256MB segment assumption.
@@ -488,6 +528,8 @@ static inline unsigned long get_vsid(unsigned long context, unsigned long ea,
 				 VSID_MODULUS_256M)
 #define KERNEL_VSID(ea)		VSID_SCRAMBLE(GET_ESID(ea))
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASSEMBLY__ */
 
 #endif /* _ASM_POWERPC_MMU_HASH64_H_ */

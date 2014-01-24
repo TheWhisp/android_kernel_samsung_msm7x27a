@@ -11,6 +11,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct rc_map_table pinnacle_grey[] = {
 	{ 0x3a, KEY_0 },

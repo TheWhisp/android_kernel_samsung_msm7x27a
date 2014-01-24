@@ -46,6 +46,7 @@ struct hgpk_data {
 	int xsaw_secondary, ysaw_secondary; /* jumpiness detection */
 };
 
+<<<<<<< HEAD
 #define hgpk_dbg(psmouse, format, arg...)		\
 	dev_dbg(&(psmouse)->ps2dev.serio->dev, format, ## arg)
 #define hgpk_err(psmouse, format, arg...)		\
@@ -57,6 +58,8 @@ struct hgpk_data {
 #define hgpk_notice(psmouse, format, arg...)		\
 	dev_notice(&(psmouse)->ps2dev.serio->dev, format, ## arg)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_MOUSE_PS2_OLPC
 void hgpk_module_init(void);
 int hgpk_detect(struct psmouse *psmouse, bool set_properties);

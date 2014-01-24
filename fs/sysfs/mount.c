@@ -36,7 +36,11 @@ struct sysfs_dirent sysfs_root = {
 	.s_name		= "",
 	.s_count	= ATOMIC_INIT(1),
 	.s_flags	= SYSFS_DIR | (KOBJ_NS_TYPE_NONE << SYSFS_NS_TYPE_SHIFT),
+<<<<<<< HEAD
 	.s_mode		= S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO,
+=======
+	.s_mode		= S_IFDIR | S_IRUGO | S_IXUGO,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.s_ino		= 1,
 };
 
@@ -61,10 +65,16 @@ static int sysfs_fill_super(struct super_block *sb, void *data, int silent)
 	}
 
 	/* instantiate and link root dentry */
+<<<<<<< HEAD
 	root = d_alloc_root(inode);
 	if (!root) {
 		pr_debug("%s: could not get root dentry!\n",__func__);
 		iput(inode);
+=======
+	root = d_make_root(inode);
+	if (!root) {
+		pr_debug("%s: could not get root dentry!\n",__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 	root->d_fsdata = &sysfs_root;

@@ -224,6 +224,7 @@ static int a2xx_snapshot_miudebug(struct kgsl_device *device, void *snapshot,
 	return DEBUG_SECTION_SZ(MIUDEBUG_COUNT);
 }
 
+<<<<<<< HEAD
 /* Helper function to snapshot a section of indexed registers */
 
 static void *a2xx_snapshot_indexed_registers(struct kgsl_device *device,
@@ -242,6 +243,8 @@ static void *a2xx_snapshot_indexed_registers(struct kgsl_device *device,
 		 remain, kgsl_snapshot_dump_indexed_regs, &iregs);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* A2XX GPU snapshot function - this is where all of the A2XX specific
  * bits and pieces are grabbed into the snapshot memory
  */
@@ -258,9 +261,18 @@ void *a2xx_snapshot(struct adreno_device *adreno_dev, void *snapshot,
 	if (adreno_is_a20x(adreno_dev)) {
 		regs.regs = (unsigned int *) a200_registers;
 		regs.count = a200_registers_count;
+<<<<<<< HEAD
 	} else {
 		regs.regs = (unsigned int *) a220_registers;
 		regs.count = a220_registers_count;
+=======
+	} else if (adreno_is_a220(adreno_dev)) {
+		regs.regs = (unsigned int *) a220_registers;
+		regs.count = a220_registers_count;
+	} else if (adreno_is_a225(adreno_dev)) {
+		regs.regs = (unsigned int *) a225_registers;
+		regs.count = a225_registers_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Master set of (non debug) registers */
@@ -269,12 +281,20 @@ void *a2xx_snapshot(struct adreno_device *adreno_dev, void *snapshot,
 		kgsl_snapshot_dump_regs, &regs);
 
 	/* CP_STATE_DEBUG indexed registers */
+<<<<<<< HEAD
 	snapshot = a2xx_snapshot_indexed_registers(device, snapshot,
+=======
+	snapshot = kgsl_snapshot_indexed_registers(device, snapshot,
+>>>>>>> refs/remotes/origin/cm-10.0
 			remain, REG_CP_STATE_DEBUG_INDEX,
 			REG_CP_STATE_DEBUG_DATA, 0x0, 0x14);
 
 	/* CP_ME indexed registers */
+<<<<<<< HEAD
 	snapshot = a2xx_snapshot_indexed_registers(device, snapshot,
+=======
+	snapshot = kgsl_snapshot_indexed_registers(device, snapshot,
+>>>>>>> refs/remotes/origin/cm-10.0
 			remain, REG_CP_ME_CNTL, REG_CP_ME_STATUS,
 			64, 44);
 
@@ -293,7 +313,11 @@ void *a2xx_snapshot(struct adreno_device *adreno_dev, void *snapshot,
 
 	/* SU debug indexed registers (only for < 470) */
 	if (!adreno_is_a22x(adreno_dev))
+<<<<<<< HEAD
 		snapshot = a2xx_snapshot_indexed_registers(device, snapshot,
+=======
+		snapshot = kgsl_snapshot_indexed_registers(device, snapshot,
+>>>>>>> refs/remotes/origin/cm-10.0
 				remain, REG_PA_SU_DEBUG_CNTL,
 				REG_PA_SU_DEBUG_DATA,
 				0, 0x1B);
@@ -304,26 +328,46 @@ void *a2xx_snapshot(struct adreno_device *adreno_dev, void *snapshot,
 			a2xx_snapshot_cpdebug, NULL);
 
 	/* MH debug indexed registers */
+<<<<<<< HEAD
 	snapshot = a2xx_snapshot_indexed_registers(device, snapshot,
+=======
+	snapshot = kgsl_snapshot_indexed_registers(device, snapshot,
+>>>>>>> refs/remotes/origin/cm-10.0
 			remain, MH_DEBUG_CTRL, MH_DEBUG_DATA, 0x0, 0x40);
 
 	/* Leia only register sets */
 	if (adreno_is_a22x(adreno_dev)) {
 		/* RB DEBUG indexed regisers */
+<<<<<<< HEAD
 		snapshot = a2xx_snapshot_indexed_registers(device, snapshot,
 			remain, REG_RB_DEBUG_CNTL, REG_RB_DEBUG_DATA, 0, 8);
 
 		/* RB DEBUG indexed registers bank 2 */
 		snapshot = a2xx_snapshot_indexed_registers(device, snapshot,
+=======
+		snapshot = kgsl_snapshot_indexed_registers(device, snapshot,
+			remain, REG_RB_DEBUG_CNTL, REG_RB_DEBUG_DATA, 0, 8);
+
+		/* RB DEBUG indexed registers bank 2 */
+		snapshot = kgsl_snapshot_indexed_registers(device, snapshot,
+>>>>>>> refs/remotes/origin/cm-10.0
 			remain, REG_RB_DEBUG_CNTL, REG_RB_DEBUG_DATA + 0x1000,
 			0, 8);
 
 		/* PC_DEBUG indexed registers */
+<<<<<<< HEAD
 		snapshot = a2xx_snapshot_indexed_registers(device, snapshot,
 			remain, REG_PC_DEBUG_CNTL, REG_PC_DEBUG_DATA, 0, 8);
 
 		/* GRAS_DEBUG indexed registers */
 		snapshot = a2xx_snapshot_indexed_registers(device, snapshot,
+=======
+		snapshot = kgsl_snapshot_indexed_registers(device, snapshot,
+			remain, REG_PC_DEBUG_CNTL, REG_PC_DEBUG_DATA, 0, 8);
+
+		/* GRAS_DEBUG indexed registers */
+		snapshot = kgsl_snapshot_indexed_registers(device, snapshot,
+>>>>>>> refs/remotes/origin/cm-10.0
 			remain, REG_GRAS_DEBUG_CNTL, REG_GRAS_DEBUG_DATA, 0, 4);
 
 		/* MIU debug registers */

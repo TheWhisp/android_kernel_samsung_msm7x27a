@@ -15,7 +15,11 @@ obj-$(CONFIG_X86_VISWS)		+= visws.o
 
 obj-$(CONFIG_X86_NUMAQ)		+= numaq_32.o
 
+<<<<<<< HEAD
 obj-$(CONFIG_X86_MRST)		+= mrst.o
+=======
+obj-$(CONFIG_X86_INTEL_MID)	+= mrst.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-y				+= common.o early.o
 obj-y				+= bus_numa.o

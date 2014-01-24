@@ -23,10 +23,13 @@
 
 #include "mm.h"
 
+<<<<<<< HEAD
 /*
  * 0xffff8000 to 0xffffffff is reserved for any ARM architecture
  * specific hacks for copying pages efficiently.
  */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define minicache_pgprot __pgprot(L_PTE_PRESENT | L_PTE_YOUNG | \
 				  L_PTE_MT_MINICACHE)
 
@@ -71,13 +74,18 @@ mc_copy_user_page(void *from, void *to)
 void v4_mc_copy_user_highpage(struct page *to, struct page *from,
 	unsigned long vaddr, struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	void *kto = kmap_atomic(to, KM_USER1);
+=======
+	void *kto = kmap_atomic(to);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!test_and_set_bit(PG_dcache_clean, &from->flags))
 		__flush_dcache_page(page_mapping(from), from);
 
 	raw_spin_lock(&minicache_lock);
 
+<<<<<<< HEAD
 	set_pte_ext(TOP_PTE(0xffff8000), pfn_pte(page_to_pfn(from), minicache_pgprot), 0);
 	flush_tlb_kernel_page(0xffff8000);
 
@@ -86,6 +94,15 @@ void v4_mc_copy_user_highpage(struct page *to, struct page *from,
 	raw_spin_unlock(&minicache_lock);
 
 	kunmap_atomic(kto, KM_USER1);
+=======
+	set_top_pte(COPYPAGE_MINICACHE, mk_pte(from, minicache_pgprot));
+
+	mc_copy_user_page((void *)COPYPAGE_MINICACHE, kto);
+
+	raw_spin_unlock(&minicache_lock);
+
+	kunmap_atomic(kto);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -93,7 +110,11 @@ void v4_mc_copy_user_highpage(struct page *to, struct page *from,
  */
 void v4_mc_clear_user_highpage(struct page *page, unsigned long vaddr)
 {
+<<<<<<< HEAD
 	void *ptr, *kaddr = kmap_atomic(page, KM_USER0);
+=======
+	void *ptr, *kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
 	asm volatile("\
 	mov	r1, %2				@ 1\n\
 	mov	r2, #0				@ 1\n\
@@ -111,7 +132,11 @@ void v4_mc_clear_user_highpage(struct page *page, unsigned long vaddr)
 	: "=r" (ptr)
 	: "0" (kaddr), "I" (PAGE_SIZE / 64)
 	: "r1", "r2", "r3", "ip", "lr");
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct cpu_user_fns v4_mc_user_fns __initdata = {

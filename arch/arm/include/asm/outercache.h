@@ -34,6 +34,10 @@ struct outer_cache_fns {
 	void (*sync)(void);
 #endif
 	void (*set_debug)(unsigned long);
+<<<<<<< HEAD
+=======
+	void (*resume)(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #ifdef CONFIG_OUTER_CACHE
@@ -74,6 +78,15 @@ static inline void outer_disable(void)
 		outer_cache.disable();
 }
 
+<<<<<<< HEAD
+=======
+static inline void outer_resume(void)
+{
+	if (outer_cache.resume)
+		outer_cache.resume();
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 
 static inline void outer_inv_range(phys_addr_t start, phys_addr_t end)

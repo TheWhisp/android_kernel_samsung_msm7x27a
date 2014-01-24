@@ -2,6 +2,10 @@
  * debugfs.c - ACPI debugfs interface to userspace.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/debugfs.h>
 #include <acpi/acpi_drivers.h>

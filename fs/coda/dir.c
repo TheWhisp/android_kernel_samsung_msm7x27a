@@ -30,14 +30,22 @@
 #include "coda_int.h"
 
 /* dir inode-ops */
+<<<<<<< HEAD
 static int coda_create(struct inode *dir, struct dentry *new, int mode, struct nameidata *nd);
+=======
+static int coda_create(struct inode *dir, struct dentry *new, umode_t mode, struct nameidata *nd);
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct dentry *coda_lookup(struct inode *dir, struct dentry *target, struct nameidata *nd);
 static int coda_link(struct dentry *old_dentry, struct inode *dir_inode, 
 		     struct dentry *entry);
 static int coda_unlink(struct inode *dir_inode, struct dentry *entry);
 static int coda_symlink(struct inode *dir_inode, struct dentry *entry,
 			const char *symname);
+<<<<<<< HEAD
 static int coda_mkdir(struct inode *dir_inode, struct dentry *entry, int mode);
+=======
+static int coda_mkdir(struct inode *dir_inode, struct dentry *entry, umode_t mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 static int coda_rmdir(struct inode *dir_inode, struct dentry *entry);
 static int coda_rename(struct inode *old_inode, struct dentry *old_dentry, 
                        struct inode *new_inode, struct dentry *new_dentry);
@@ -96,12 +104,20 @@ const struct file_operations coda_dir_operations = {
 /* access routines: lookup, readlink, permission */
 static struct dentry *coda_lookup(struct inode *dir, struct dentry *entry, struct nameidata *nd)
 {
+<<<<<<< HEAD
 	struct inode *inode = NULL;
 	struct CodaFid resfid = { { 0, } };
 	int type = 0;
 	int error = 0;
 	const char *name = entry->d_name.name;
 	size_t length = entry->d_name.len;
+=======
+	struct super_block *sb = dir->i_sb;
+	const char *name = entry->d_name.name;
+	size_t length = entry->d_name.len;
+	struct inode *inode;
+	int type = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (length > CODA_MAXNAMLEN) {
 		printk(KERN_ERR "name too long: lookup, %s (%*s)\n",
@@ -111,6 +127,7 @@ static struct dentry *coda_lookup(struct inode *dir, struct dentry *entry, struc
 
 	/* control object, create inode on the fly */
 	if (coda_isroot(dir) && coda_iscontrol(name, length)) {
+<<<<<<< HEAD
 		error = coda_cnode_makectl(&inode, dir->i_sb);
 		type = CODA_NOCACHE;
 		goto exit;
@@ -128,15 +145,40 @@ exit:
 	if (inode && (type & CODA_NOCACHE))
 		coda_flag_inode(inode, C_VATTR | C_PURGE);
 
+=======
+		inode = coda_cnode_makectl(sb);
+		type = CODA_NOCACHE;
+	} else {
+		struct CodaFid fid = { { 0, } };
+		int error = venus_lookup(sb, coda_i2f(dir), name, length,
+				     &type, &fid);
+		inode = !error ? coda_cnode_make(&fid, sb) : ERR_PTR(error);
+	}
+
+	if (!IS_ERR(inode) && (type & CODA_NOCACHE))
+		coda_flag_inode(inode, C_VATTR | C_PURGE);
+
+	if (inode == ERR_PTR(-ENOENT))
+		inode = NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return d_splice_alias(inode, entry);
 }
 
 
+<<<<<<< HEAD
 int coda_permission(struct inode *inode, int mask, unsigned int flags)
 {
 	int error;
 
 	if (flags & IPERM_FLAG_RCU)
+=======
+int coda_permission(struct inode *inode, int mask)
+{
+	int error;
+
+	if (mask & MAY_NOT_BLOCK)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ECHILD;
 
 	mask &= MAY_READ | MAY_WRITE | MAY_EXEC;
@@ -191,7 +233,11 @@ static inline void coda_dir_drop_nlink(struct inode *dir)
 }
 
 /* creation routines: create, mknod, mkdir, link, symlink */
+<<<<<<< HEAD
 static int coda_create(struct inode *dir, struct dentry *de, int mode, struct nameidata *nd)
+=======
+static int coda_create(struct inode *dir, struct dentry *de, umode_t mode, struct nameidata *nd)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int error;
 	const char *name=de->d_name.name;
@@ -223,7 +269,11 @@ err_out:
 	return error;
 }
 
+<<<<<<< HEAD
 static int coda_mkdir(struct inode *dir, struct dentry *de, int mode)
+=======
+static int coda_mkdir(struct inode *dir, struct dentry *de, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inode *inode;
 	struct coda_vattr attrs;
@@ -340,7 +390,11 @@ static int coda_rmdir(struct inode *dir, struct dentry *de)
 	if (!error) {
 		/* VFS may delete the child */
 		if (de->d_inode)
+<<<<<<< HEAD
 		    de->d_inode->i_nlink = 0;
+=======
+			clear_nlink(de->d_inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* fix the link count of the parent */
 		coda_dir_drop_nlink(dir);
@@ -449,8 +503,12 @@ static int coda_venus_readdir(struct file *coda_file, void *buf,
 	struct file *host_file;
 	struct dentry *de;
 	struct venus_dirent *vdir;
+<<<<<<< HEAD
 	unsigned long vdir_size =
 	    (unsigned long)(&((struct venus_dirent *)0)->d_name);
+=======
+	unsigned long vdir_size = offsetof(struct venus_dirent, d_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int type;
 	struct qstr name;
 	ino_t ino;
@@ -474,7 +532,11 @@ static int coda_venus_readdir(struct file *coda_file, void *buf,
 		coda_file->f_pos++;
 	}
 	if (coda_file->f_pos == 1) {
+<<<<<<< HEAD
 		ret = filldir(buf, "..", 2, 1, de->d_parent->d_inode->i_ino, DT_DIR);
+=======
+		ret = filldir(buf, "..", 2, 1, parent_ino(de), DT_DIR);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret < 0)
 			goto out;
 		result++;

@@ -9,6 +9,10 @@
 #include <asm/kdebug.h>
 #include <asm/ptrace.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern unsigned long trapbase;
 

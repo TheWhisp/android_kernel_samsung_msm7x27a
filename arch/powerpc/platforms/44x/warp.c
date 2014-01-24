@@ -18,6 +18,10 @@
 #include <linux/of_gpio.h>
 #include <linux/of_i2c.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/machdep.h>
 #include <asm/prom.h>

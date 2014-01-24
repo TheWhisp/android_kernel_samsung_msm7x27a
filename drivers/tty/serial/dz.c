@@ -47,11 +47,19 @@
 #include <linux/serial_core.h>
 #include <linux/sysrq.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
 
 #include <asm/atomic.h>
 #include <asm/bootinfo.h>
 #include <asm/io.h>
 #include <asm/system.h>
+=======
+#include <linux/tty_flip.h>
+
+#include <linux/atomic.h>
+#include <asm/bootinfo.h>
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/dec/interrupts.h>
 #include <asm/dec/kn01.h>

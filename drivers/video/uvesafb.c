@@ -44,11 +44,19 @@ static struct fb_fix_screeninfo uvesafb_fix __devinitdata = {
 };
 
 static int mtrr		__devinitdata = 3; /* enable mtrr by default */
+<<<<<<< HEAD
 static int blank	= 1;		   /* enable blanking by default */
 static int ypan		= 1; 		 /* 0: scroll, 1: ypan, 2: ywrap */
 static bool pmi_setpal	__devinitdata = true; /* use PMI for palette changes */
 static int nocrtc	__devinitdata; /* ignore CRTC settings */
 static int noedid	__devinitdata; /* don't try DDC transfers */
+=======
+static bool blank	= 1;		   /* enable blanking by default */
+static int ypan		= 1; 		 /* 0: scroll, 1: ypan, 2: ywrap */
+static bool pmi_setpal	__devinitdata = true; /* use PMI for palette changes */
+static bool nocrtc	__devinitdata; /* ignore CRTC settings */
+static bool noedid	__devinitdata; /* don't try DDC transfers */
+>>>>>>> refs/remotes/origin/cm-10.0
 static int vram_remap	__devinitdata; /* set amt. of memory to be used */
 static int vram_total	__devinitdata; /* set total amount of memory */
 static u16 maxclk	__devinitdata; /* maximum pixel clock */
@@ -73,7 +81,11 @@ static void uvesafb_cn_callback(struct cn_msg *msg, struct netlink_skb_parms *ns
 	struct uvesafb_task *utask;
 	struct uvesafb_ktask *task;
 
+<<<<<<< HEAD
 	if (!cap_raised(current_cap(), CAP_SYS_ADMIN))
+=======
+	if (!capable(CAP_SYS_ADMIN))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	if (msg->seq >= UVESAFB_TASKS_MAX)
@@ -121,7 +133,11 @@ static int uvesafb_helper_start(void)
 		NULL,
 	};
 
+<<<<<<< HEAD
 	return call_usermodehelper(v86d_path, argv, envp, 1);
+=======
+	return call_usermodehelper(v86d_path, argv, envp, UMH_WAIT_PROC);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -362,7 +378,11 @@ static u8 *uvesafb_vbe_state_save(struct uvesafb_par *par)
 
 	state = kmalloc(par->vbe_state_size, GFP_KERNEL);
 	if (!state)
+<<<<<<< HEAD
 		return NULL;
+=======
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	task = uvesafb_prep();
 	if (!task) {
@@ -1179,9 +1199,23 @@ static int uvesafb_open(struct fb_info *info, int user)
 {
 	struct uvesafb_par *par = info->par;
 	int cnt = atomic_read(&par->ref_count);
+<<<<<<< HEAD
 
 	if (!cnt && par->vbe_state_size)
 		par->vbe_state_orig = uvesafb_vbe_state_save(par);
+=======
+	u8 *buf = NULL;
+
+	if (!cnt && par->vbe_state_size) {
+		buf =  uvesafb_vbe_state_save(par);
+		if (IS_ERR(buf)) {
+			printk(KERN_WARNING "uvesafb: save hardware state"
+				"failed, error code is %ld!\n", PTR_ERR(buf));
+		} else {
+			par->vbe_state_orig = buf;
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	atomic_inc(&par->ref_count);
 	return 0;

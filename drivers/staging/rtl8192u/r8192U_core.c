@@ -105,7 +105,10 @@ u32 rt_global_debug_component = \
 
 static const struct usb_device_id rtl8192_usb_id_tbl[] = {
 	/* Realtek */
+<<<<<<< HEAD
 	{USB_DEVICE(0x0bda, 0x8192)},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	{USB_DEVICE(0x0bda, 0x8709)},
 	/* Corega */
 	{USB_DEVICE(0x07aa, 0x0043)},
@@ -671,7 +674,11 @@ static int proc_get_stats_rx(char *page, char **start,
 void rtl8192_proc_module_init(void)
 {
 	RT_TRACE(COMP_INIT, "Initializing proc filesystem");
+<<<<<<< HEAD
 	rtl8192_proc=create_proc_entry(RTL819xU_MODULE_NAME, S_IFDIR, init_net.proc_net);
+=======
+	rtl8192_proc = proc_mkdir(RTL819xU_MODULE_NAME, init_net.proc_net);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -706,9 +713,13 @@ void rtl8192_proc_init_one(struct net_device *dev)
 {
 	struct proc_dir_entry *e;
 	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+<<<<<<< HEAD
 	priv->dir_dev = create_proc_entry(dev->name,
 					  S_IFDIR | S_IRUGO | S_IXUGO,
 					  rtl8192_proc);
+=======
+	priv->dir_dev = proc_mkdir(dev->name, rtl8192_proc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!priv->dir_dev) {
 		RT_TRACE(COMP_ERR, "Unable to initialize /proc/net/rtl8192/%s\n",
 		      dev->name);
@@ -2852,11 +2863,15 @@ static void rtl8192_init_priv_task(struct net_device* dev)
 {
 	struct r8192_priv *priv = ieee80211_priv(dev);
 
+<<<<<<< HEAD
 #ifdef PF_SYNCTHREAD
 	priv->priv_wq = create_workqueue(DRV_NAME,0);
 #else
 	priv->priv_wq = create_workqueue(DRV_NAME);
 #endif
+=======
+	priv->priv_wq = create_workqueue(DRV_NAME);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	INIT_WORK(&priv->reset_wq, rtl8192_restart);
 
@@ -5745,7 +5760,11 @@ static const struct net_device_ops rtl8192_netdev_ops = {
 	.ndo_get_stats          = rtl8192_stats,
 	.ndo_tx_timeout         = tx_timeout,
 	.ndo_do_ioctl           = rtl8192_ioctl,
+<<<<<<< HEAD
 	.ndo_set_multicast_list = r8192_set_multicast,
+=======
+	.ndo_set_rx_mode	= r8192_set_multicast,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_set_mac_address    = r8192_set_mac_adr,
 	.ndo_validate_addr      = eth_validate_addr,
 	.ndo_change_mtu         = eth_change_mtu,

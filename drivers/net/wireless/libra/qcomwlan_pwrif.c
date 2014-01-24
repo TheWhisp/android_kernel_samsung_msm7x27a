@@ -12,6 +12,10 @@
  */
 
 #include <linux/qcomwlan_pwrif.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define GPIO_WLAN_DEEP_SLEEP_N  230
 #define GPIO_WLAN_DEEP_SLEEP_N_DRAGON  82

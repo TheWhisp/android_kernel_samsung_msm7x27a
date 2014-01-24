@@ -346,6 +346,10 @@ static int tbf_dump(struct Qdisc *sch, struct sk_buff *skb)
 	struct nlattr *nest;
 	struct tc_tbf_qopt opt;
 
+<<<<<<< HEAD
+=======
+	sch->qstats.backlog = q->qdisc->qstats.backlog;
+>>>>>>> refs/remotes/origin/cm-10.0
 	nest = nla_nest_start(skb, TCA_OPTIONS);
 	if (nest == NULL)
 		goto nla_put_failure;

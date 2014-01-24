@@ -2,6 +2,10 @@
 
 #include <linux/types.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/lib80211.h>
 
 #include "hostap_wlan.h"

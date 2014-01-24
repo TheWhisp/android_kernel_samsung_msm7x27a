@@ -12,7 +12,11 @@
 #include <stdarg.h>
 
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
@@ -32,7 +36,10 @@
 #include <linux/nmi.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/page.h>
 #include <asm/pgalloc.h>
 #include <asm/pgtable.h>
@@ -95,11 +102,17 @@ void cpu_idle(void)
 	set_thread_flag(TIF_POLLING_NRFLAG);
 
 	while(1) {
+<<<<<<< HEAD
 		tick_nohz_stop_sched_tick(1);
+=======
+		tick_nohz_idle_enter();
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		while (!need_resched() && !cpu_is_offline(cpu))
 			sparc64_yield(cpu);
 
+<<<<<<< HEAD
 		tick_nohz_restart_sched_tick();
 
 		preempt_enable_no_resched();
@@ -111,6 +124,18 @@ void cpu_idle(void)
 
 		schedule();
 		preempt_disable();
+=======
+		rcu_idle_exit();
+		tick_nohz_idle_exit();
+
+#ifdef CONFIG_HOTPLUG_CPU
+		if (cpu_is_offline(cpu)) {
+			sched_preempt_enable_no_resched();
+			cpu_play_dead();
+		}
+#endif
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -368,9 +393,12 @@ void flush_thread(void)
 
 	/* Clear FPU register state. */
 	t->fpsaved[0] = 0;
+<<<<<<< HEAD
 	
 	if (get_thread_current_ds() != ASI_AIUS)
 		set_fs(USER_DS);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* It's a bit more tricky when 64-bit tasks are involved... */

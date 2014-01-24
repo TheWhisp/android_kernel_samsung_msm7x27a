@@ -21,7 +21,11 @@
 #include <linux/platform_device.h>
 #include <linux/regulator/driver.h>
 #include <linux/regulator/machine.h>
+<<<<<<< HEAD
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "proccomm-regulator.h"
 
 #define MV_TO_UV(mv) ((mv)*1000)
@@ -196,7 +200,11 @@ static struct regulator_ops proccomm_regulator_ops = {
 static struct regulator_dev *__devinit create_proccomm_rdev(
 	struct proccomm_regulator_info *info, struct device *parent)
 {
+<<<<<<< HEAD
 	char *name;
+=======
+	const char *name;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct proccomm_regulator_drvdata *d;
 	struct regulator_dev *rdev;
 	int rc = 0;
@@ -247,7 +255,11 @@ static struct regulator_dev *__devinit create_proccomm_rdev(
 	d->negative	= info->negative;
 	d->rdesc.n_voltages = info->n_voltages;
 
+<<<<<<< HEAD
 	rdev = regulator_register(&d->rdesc, parent, &info->init_data, d);
+=======
+	rdev = regulator_register(&d->rdesc, parent, &info->init_data, d, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (IS_ERR(rdev)) {
 		rc = PTR_ERR(rdev);

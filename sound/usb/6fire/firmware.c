@@ -5,7 +5,10 @@
  *
  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
  * Created:	Jan 01, 2011
+<<<<<<< HEAD
  * Version:	0.3.0
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright:	(C) Torsten Schenk
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +18,13 @@
  */
 
 #include <linux/firmware.h>
+<<<<<<< HEAD
 #include <linux/bitrev.h>
+=======
+#include <linux/module.h>
+#include <linux/bitrev.h>
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "firmware.h"
 #include "chip.h"
@@ -59,6 +68,7 @@ struct ihex_record {
 	unsigned int txt_offset; /* current position in txt_data */
 };
 
+<<<<<<< HEAD
 static u8 usb6fire_fw_ihex_nibble(const u8 n)
 {
 	if (n >= '0' && n <= '9')
@@ -74,6 +84,21 @@ static u8 usb6fire_fw_ihex_hex(const u8 *data, u8 *crc)
 {
 	u8 val = (usb6fire_fw_ihex_nibble(data[0]) << 4) |
 			usb6fire_fw_ihex_nibble(data[1]);
+=======
+static u8 usb6fire_fw_ihex_hex(const u8 *data, u8 *crc)
+{
+	u8 val = 0;
+	int hval;
+
+	hval = hex_to_bin(data[0]);
+	if (hval >= 0)
+		val |= (hval << 4);
+
+	hval = hex_to_bin(data[1]);
+	if (hval >= 0)
+		val |= hval;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	*crc += val;
 	return val;
 }

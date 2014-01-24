@@ -10,6 +10,10 @@
 #include <linux/wireless.h>
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/iw_handler.h>
 #include <net/arp.h>
 #include <net/wext.h>

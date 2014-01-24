@@ -49,7 +49,11 @@ you can put:
 
  options floppy omnibook messages
 
+<<<<<<< HEAD
 in /etc/modprobe.conf.
+=======
+in a configuration file in /etc/modprobe.d/.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
  The floppy driver related options are:

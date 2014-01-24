@@ -22,6 +22,10 @@
  */
 
 #include <scsi/libfc.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * fc_vport_create() - Create a new NPIV vport instance

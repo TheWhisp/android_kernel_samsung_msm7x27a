@@ -75,8 +75,14 @@ static int get_stripe(struct dm_target *ti, struct stripe_c *sc,
 		      unsigned int stripe, char **argv)
 {
 	unsigned long long start;
+<<<<<<< HEAD
 
 	if (sscanf(argv[1], "%llu", &start) != 1)
+=======
+	char dummy;
+
+	if (sscanf(argv[1], "%llu%c", &start, &dummy) != 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	if (dm_get_device(ti, argv[0], dm_table_get_mode(ti->table),

@@ -5,7 +5,13 @@
 #define __always_inline	inline
 #endif
 #define __user
+<<<<<<< HEAD
 #define __attribute_const__
+=======
+#ifndef __attribute_const__
+#define __attribute_const__
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define __used		__attribute__((__unused__))
 

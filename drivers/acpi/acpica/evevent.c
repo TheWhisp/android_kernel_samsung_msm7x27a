@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,7 +51,11 @@
 
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evevent")
+<<<<<<< HEAD
 
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Local prototypes */
 static acpi_status acpi_ev_fixed_event_initialize(void);
 
@@ -71,6 +79,15 @@ acpi_status acpi_ev_initialize_events(void)
 
 	ACPI_FUNCTION_TRACE(ev_initialize_events);
 
+<<<<<<< HEAD
+=======
+	/* If Hardware Reduced flag is set, there are no fixed events */
+
+	if (acpi_gbl_reduced_hardware) {
+		return_ACPI_STATUS(AE_OK);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Initialize the Fixed and General Purpose Events. This is done prior to
 	 * enabling SCIs to prevent interrupts from occurring before the handlers
@@ -111,6 +128,15 @@ acpi_status acpi_ev_install_xrupt_handlers(void)
 
 	ACPI_FUNCTION_TRACE(ev_install_xrupt_handlers);
 
+<<<<<<< HEAD
+=======
+	/* If Hardware Reduced flag is set, there is no ACPI h/w */
+
+	if (acpi_gbl_reduced_hardware) {
+		return_ACPI_STATUS(AE_OK);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Install the SCI handler */
 
 	status = acpi_ev_install_sci_handler();
@@ -279,3 +305,8 @@ static u32 acpi_ev_fixed_event_dispatch(u32 event)
 	return ((acpi_gbl_fixed_event_handlers[event].
 		 handler) (acpi_gbl_fixed_event_handlers[event].context));
 }
+<<<<<<< HEAD
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0

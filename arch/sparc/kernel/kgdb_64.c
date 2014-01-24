@@ -7,6 +7,10 @@
 #include <linux/kdebug.h>
 #include <linux/ftrace.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/kdebug.h>
 #include <asm/ptrace.h>
 #include <asm/irq.h>

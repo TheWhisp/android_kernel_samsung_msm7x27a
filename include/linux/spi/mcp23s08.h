@@ -22,6 +22,7 @@ struct mcp23s08_platform_data {
 	 * base to base+15 (or base+31 for s17 variant).
 	 */
 	unsigned	base;
+<<<<<<< HEAD
 
 	void		*context;	/* param to setup/teardown */
 
@@ -31,4 +32,6 @@ struct mcp23s08_platform_data {
 	int		(*teardown)(struct spi_device *spi,
 					int gpio, unsigned ngpio,
 					void *context);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };

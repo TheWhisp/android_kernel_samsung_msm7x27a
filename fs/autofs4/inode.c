@@ -70,10 +70,17 @@ out_kill_sb:
 	kill_litter_super(sb);
 }
 
+<<<<<<< HEAD
 static int autofs4_show_options(struct seq_file *m, struct vfsmount *mnt)
 {
 	struct autofs_sb_info *sbi = autofs4_sbi(mnt->mnt_sb);
 	struct inode *root_inode = mnt->mnt_sb->s_root->d_inode;
+=======
+static int autofs4_show_options(struct seq_file *m, struct dentry *root)
+{
+	struct autofs_sb_info *sbi = autofs4_sbi(root->d_sb);
+	struct inode *root_inode = root->d_sb->s_root->d_inode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!sbi)
 		return 0;
@@ -225,6 +232,10 @@ int autofs4_fill_super(struct super_block *s, void *data, int silent)
 	sbi->min_proto = 0;
 	sbi->max_proto = 0;
 	mutex_init(&sbi->wq_mutex);
+<<<<<<< HEAD
+=======
+	mutex_init(&sbi->pipe_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_init(&sbi->fs_lock);
 	sbi->queues = NULL;
 	spin_lock_init(&sbi->lookup_lock);
@@ -244,12 +255,18 @@ int autofs4_fill_super(struct super_block *s, void *data, int silent)
 	if (!ino)
 		goto fail_free;
 	root_inode = autofs4_get_inode(s, S_IFDIR | 0755);
+<<<<<<< HEAD
 	if (!root_inode)
 		goto fail_ino;
 
 	root = d_alloc_root(root_inode);
 	if (!root)
 		goto fail_iput;
+=======
+	root = d_make_root(root_inode);
+	if (!root)
+		goto fail_ino;
+>>>>>>> refs/remotes/origin/cm-10.0
 	pipe = NULL;
 
 	root->d_fsdata = ino;
@@ -314,9 +331,12 @@ fail_fput:
 fail_dput:
 	dput(root);
 	goto fail_free;
+<<<<<<< HEAD
 fail_iput:
 	printk("autofs: get root dentry failed\n");
 	iput(root_inode);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 fail_ino:
 	kfree(ino);
 fail_free:
@@ -326,7 +346,11 @@ fail_unlock:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 struct inode *autofs4_get_inode(struct super_block *sb, mode_t mode)
+=======
+struct inode *autofs4_get_inode(struct super_block *sb, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inode *inode = new_inode(sb);
 
@@ -342,7 +366,11 @@ struct inode *autofs4_get_inode(struct super_block *sb, mode_t mode)
 	inode->i_ino = get_next_ino();
 
 	if (S_ISDIR(mode)) {
+<<<<<<< HEAD
 		inode->i_nlink = 2;
+=======
+		set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 		inode->i_op = &autofs4_dir_inode_operations;
 		inode->i_fop = &autofs4_dir_operations;
 	} else if (S_ISLNK(mode)) {

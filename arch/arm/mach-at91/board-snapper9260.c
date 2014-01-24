@@ -4,7 +4,11 @@
  *  Copyright (C) 2010 Bluewater System Ltd
  *
  * Author: Andre Renaud <andre@bluewatersys.com>
+<<<<<<< HEAD
  * Author: Ryan Mallon  <ryan@bluewatersys.com>
+=======
+ * Author: Ryan Mallon
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +46,11 @@
 
 static void __init snapper9260_init_early(void)
 {
+<<<<<<< HEAD
 	at91sam9260_initialize(18432000);
+=======
+	at91_initialize(18432000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Debug on ttyS0 */
 	at91_register_uart(0, 0, 0);
@@ -55,6 +63,7 @@ static void __init snapper9260_init_early(void)
 	at91_register_uart(AT91SAM9260_ID_US2, 3, 0);
 }
 
+<<<<<<< HEAD
 static void __init snapper9260_init_irq(void)
 {
 	at91sam9260_init_interrupts(NULL);
@@ -62,15 +71,29 @@ static void __init snapper9260_init_irq(void)
 
 static struct at91_usbh_data __initdata snapper9260_usbh_data = {
 	.ports		= 2,
+=======
+static struct at91_usbh_data __initdata snapper9260_usbh_data = {
+	.ports		= 2,
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct at91_udc_data __initdata snapper9260_udc_data = {
 	.vbus_pin		= SNAPPER9260_IO_EXP_GPIO(5),
 	.vbus_active_low	= 1,
 	.vbus_polled		= 1,
+<<<<<<< HEAD
 };
 
 static struct at91_eth_data snapper9260_macb_data = {
+=======
+	.pullup_pin		= -EINVAL,
+};
+
+static struct macb_platform_data snapper9260_macb_data = {
+	.phy_irq_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.is_rmii	= 1,
 };
 
@@ -102,6 +125,7 @@ static struct mtd_partition __initdata snapper9260_nand_partitions[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mtd_partition * __init
 snapper9260_nand_partition_info(int size, int *num_partitions)
 {
@@ -109,12 +133,23 @@ snapper9260_nand_partition_info(int size, int *num_partitions)
 	return snapper9260_nand_partitions;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct atmel_nand_data __initdata snapper9260_nand_data = {
 	.ale		= 21,
 	.cle		= 22,
 	.rdy_pin	= AT91_PIN_PC13,
+<<<<<<< HEAD
 	.partition_info	= snapper9260_nand_partition_info,
 	.bus_width_16	= 0,
+=======
+	.parts		= snapper9260_nand_partitions,
+	.num_parts	= ARRAY_SIZE(snapper9260_nand_partitions),
+	.bus_width_16	= 0,
+	.enable_pin	= -EINVAL,
+	.det_pin	= -EINVAL,
+	.ecc_mode	= NAND_ECC_SOFT,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct sam9_smc_config __initdata snapper9260_nand_smc_config = {
@@ -150,17 +185,29 @@ static struct i2c_board_info __initdata snapper9260_i2c_devices[] = {
 		/* Audio codec */
 		I2C_BOARD_INFO("tlv320aic23", 0x1a),
 	},
+<<<<<<< HEAD
 	{
 		/* RTC */
 		I2C_BOARD_INFO("isl1208", 0x6f),
 		.irq = gpio_to_irq(AT91_PIN_PA31),
 	},
+=======
+};
+
+static struct i2c_board_info __initdata snapper9260_i2c_isl1208 = {
+		/* RTC */
+		I2C_BOARD_INFO("isl1208", 0x6f),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void __init snapper9260_add_device_nand(void)
 {
 	at91_set_A_periph(AT91_PIN_PC14, 0);
+<<<<<<< HEAD
 	sam9_smc_configure(3, &snapper9260_nand_smc_config);
+=======
+	sam9_smc_configure(0, 3, &snapper9260_nand_smc_config);
+>>>>>>> refs/remotes/origin/cm-10.0
 	at91_add_device_nand(&snapper9260_nand_data);
 }
 
@@ -168,6 +215,13 @@ static void __init snapper9260_board_init(void)
 {
 	at91_add_device_i2c(snapper9260_i2c_devices,
 			    ARRAY_SIZE(snapper9260_i2c_devices));
+<<<<<<< HEAD
+=======
+
+	snapper9260_i2c_isl1208.irq = gpio_to_irq(AT91_PIN_PA31);
+	i2c_register_board_info(0, &snapper9260_i2c_isl1208, 1);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	at91_add_device_serial();
 	at91_add_device_usbh(&snapper9260_usbh_data);
 	at91_add_device_udc(&snapper9260_udc_data);
@@ -179,9 +233,15 @@ static void __init snapper9260_board_init(void)
 
 MACHINE_START(SNAPPER_9260, "Bluewater Systems Snapper 9260/9G20 module")
 	.timer		= &at91sam926x_timer,
+<<<<<<< HEAD
 	.map_io		= at91sam9260_map_io,
 	.init_early	= snapper9260_init_early,
 	.init_irq	= snapper9260_init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= snapper9260_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= snapper9260_board_init,
 MACHINE_END
 

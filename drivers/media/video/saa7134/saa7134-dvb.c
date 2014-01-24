@@ -56,10 +56,18 @@
 #include "lgs8gxx.h"
 
 #include "zl10353.h"
+<<<<<<< HEAD
+=======
+#include "qt1010.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "zl10036.h"
 #include "zl10039.h"
 #include "mt312.h"
+<<<<<<< HEAD
+=======
+#include "s5h1411.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Gerd Knorr <kraxel@bytesex.org> [SuSE Labs]");
 MODULE_LICENSE("GPL");
@@ -182,9 +190,15 @@ static int mt352_avermedia_xc3028_init(struct dvb_frontend *fe)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int mt352_pinnacle_tuner_set_params(struct dvb_frontend* fe,
 					   struct dvb_frontend_parameters* params)
 {
+=======
+static int mt352_pinnacle_tuner_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 off[] = { 0x00, 0xf1};
 	u8 on[]  = { 0x00, 0x71};
 	struct i2c_msg msg = {.addr=0x43, .flags=0, .buf=off, .len = sizeof(off)};
@@ -195,7 +209,11 @@ static int mt352_pinnacle_tuner_set_params(struct dvb_frontend* fe,
 	/* set frequency (mt2050) */
 	f.tuner     = 0;
 	f.type      = V4L2_TUNER_DIGITAL_TV;
+<<<<<<< HEAD
 	f.frequency = params->frequency / 1000 * 16 / 1000;
+=======
+	f.frequency = c->frequency / 1000 * 16 / 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (fe->ops.i2c_gate_ctrl)
 		fe->ops.i2c_gate_ctrl(fe, 1);
 	i2c_transfer(&dev->i2c_adap, &msg, 1);
@@ -286,8 +304,14 @@ static int philips_tda1004x_request_firmware(struct dvb_frontend *fe,
  * these tuners are tu1216, td1316(a)
  */
 
+<<<<<<< HEAD
 static int philips_tda6651_pll_set(struct dvb_frontend *fe, struct dvb_frontend_parameters *params)
 {
+=======
+static int philips_tda6651_pll_set(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct saa7134_dev *dev = fe->dvb->priv;
 	struct tda1004x_state *state = fe->demodulator_priv;
 	u8 addr = state->config->tuner_address;
@@ -298,7 +322,11 @@ static int philips_tda6651_pll_set(struct dvb_frontend *fe, struct dvb_frontend_
 	u8 band, cp, filter;
 
 	/* determine charge pump */
+<<<<<<< HEAD
 	tuner_frequency = params->frequency + 36166000;
+=======
+	tuner_frequency = c->frequency + 36166000;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (tuner_frequency < 87000000)
 		return -EINVAL;
 	else if (tuner_frequency < 130000000)
@@ -323,6 +351,7 @@ static int philips_tda6651_pll_set(struct dvb_frontend *fe, struct dvb_frontend_
 		return -EINVAL;
 
 	/* determine band */
+<<<<<<< HEAD
 	if (params->frequency < 49000000)
 		return -EINVAL;
 	else if (params->frequency < 161000000)
@@ -330,11 +359,21 @@ static int philips_tda6651_pll_set(struct dvb_frontend *fe, struct dvb_frontend_
 	else if (params->frequency < 444000000)
 		band = 2;
 	else if (params->frequency < 861000000)
+=======
+	if (c->frequency < 49000000)
+		return -EINVAL;
+	else if (c->frequency < 161000000)
+		band = 1;
+	else if (c->frequency < 444000000)
+		band = 2;
+	else if (c->frequency < 861000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		band = 4;
 	else
 		return -EINVAL;
 
 	/* setup PLL filter */
+<<<<<<< HEAD
 	switch (params->u.ofdm.bandwidth) {
 	case BANDWIDTH_6_MHZ:
 		filter = 0;
@@ -345,6 +384,18 @@ static int philips_tda6651_pll_set(struct dvb_frontend *fe, struct dvb_frontend_
 		break;
 
 	case BANDWIDTH_8_MHZ:
+=======
+	switch (c->bandwidth_hz) {
+	case 6000000:
+		filter = 0;
+		break;
+
+	case 7000000:
+		filter = 0;
+		break;
+
+	case 8000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 		filter = 1;
 		break;
 
@@ -355,7 +406,11 @@ static int philips_tda6651_pll_set(struct dvb_frontend *fe, struct dvb_frontend_
 	/* calculate divisor
 	 * ((36166000+((1000000/6)/2)) + Finput)/(1000000/6)
 	 */
+<<<<<<< HEAD
 	tuner_frequency = (((params->frequency / 1000) * 6) + 217496) / 1000;
+=======
+	tuner_frequency = (((c->frequency / 1000) * 6) + 217496) / 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* setup tuner buffer */
 	tuner_buf[0] = (tuner_frequency >> 8) & 0x7f;
@@ -435,9 +490,15 @@ static int philips_td1316_tuner_init(struct dvb_frontend *fe)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int philips_td1316_tuner_set_params(struct dvb_frontend *fe, struct dvb_frontend_parameters *params)
 {
 	return philips_tda6651_pll_set(fe, params);
+=======
+static int philips_td1316_tuner_set_params(struct dvb_frontend *fe)
+{
+	return philips_tda6651_pll_set(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int philips_td1316_tuner_sleep(struct dvb_frontend *fe)
@@ -939,6 +1000,21 @@ static struct zl10353_config behold_x7_config = {
 	.disable_i2c_gate_ctrl = 1,
 };
 
+<<<<<<< HEAD
+=======
+static struct zl10353_config videomate_t750_zl10353_config = {
+	.demod_address         = 0x0f,
+	.no_tuner              = 1,
+	.parallel_ts           = 1,
+	.disable_i2c_gate_ctrl = 1,
+};
+
+static struct qt1010_config videomate_t750_qt1010_config = {
+	.i2c_address = 0x62
+};
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ==================================================================
  * tda10086 based DVB-S cards, helper functions
  */
@@ -1144,6 +1220,36 @@ static struct tda18271_config prohdtv_pro2_tda18271_config = {
 	.output_opt = TDA18271_OUTPUT_LT_OFF,
 };
 
+<<<<<<< HEAD
+=======
+static struct tda18271_std_map kworld_tda18271_std_map = {
+	.atsc_6   = { .if_freq = 3250, .agc_mode = 3, .std = 3,
+		      .if_lvl = 6, .rfagc_top = 0x37 },
+	.qam_6    = { .if_freq = 4000, .agc_mode = 3, .std = 0,
+		      .if_lvl = 6, .rfagc_top = 0x37 },
+};
+
+static struct tda18271_config kworld_pc150u_tda18271_config = {
+	.std_map = &kworld_tda18271_std_map,
+	.gate    = TDA18271_GATE_ANALOG,
+	.output_opt = TDA18271_OUTPUT_LT_OFF,
+	.config  = 3,	/* Use tuner callback for AGC */
+	.rf_cal_on_startup = 1
+};
+
+static struct s5h1411_config kworld_s5h1411_config = {
+	.output_mode   = S5H1411_PARALLEL_OUTPUT,
+	.gpio          = S5H1411_GPIO_OFF,
+	.qam_if        = S5H1411_IF_4000,
+	.vsb_if        = S5H1411_IF_3250,
+	.inversion     = S5H1411_INVERSION_ON,
+	.status_mode   = S5H1411_DEMODLOCKING,
+	.mpeg_timing   =
+		S5H1411_MPEGTIMING_CONTINOUS_NONINVERTING_CLOCK,
+};
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ==================================================================
  * Core code
  */
@@ -1424,6 +1530,25 @@ static int dvb_init(struct saa7134_dev *dev)
 				   &dev->i2c_adap, 0x61,
 				   TUNER_PHILIPS_TUV1236D);
 		break;
+<<<<<<< HEAD
+=======
+	case SAA7134_BOARD_KWORLD_PC150U:
+		saa7134_set_gpio(dev, 18, 1); /* Switch to digital mode */
+		saa7134_tuner_callback(dev, 0,
+				       TDA18271_CALLBACK_CMD_AGC_ENABLE, 1);
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+					       &kworld_s5h1411_config,
+					       &dev->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(tda829x_attach, fe0->dvb.frontend,
+				   &dev->i2c_adap, 0x4b,
+				   &tda829x_no_probe);
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				   0x60, &dev->i2c_adap,
+				   &kworld_pc150u_tda18271_config);
+		}
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SAA7134_BOARD_FLYDVBS_LR300:
 		fe0->dvb.frontend = dvb_attach(tda10086_attach, &flydvbs,
 					       &dev->i2c_adap);
@@ -1650,6 +1775,21 @@ static int dvb_init(struct saa7134_dev *dev)
 					__func__);
 
 		break;
+<<<<<<< HEAD
+=======
+	case SAA7134_BOARD_VIDEOMATE_T750:
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+						&videomate_t750_zl10353_config,
+						&dev->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			if (dvb_attach(qt1010_attach,
+					fe0->dvb.frontend,
+					&dev->i2c_adap,
+					&videomate_t750_qt1010_config) == NULL)
+				wprintk("error attaching QT1010\n");
+		}
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SAA7134_BOARD_ZOLID_HYBRID_PCI:
 		fe0->dvb.frontend = dvb_attach(tda10048_attach,
 					       &zolid_tda10048_config,

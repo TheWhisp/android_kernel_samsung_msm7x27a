@@ -1,7 +1,13 @@
 #ifndef _ASM_MICROBLAZE_ATOMIC_H
 #define _ASM_MICROBLAZE_ATOMIC_H
 
+<<<<<<< HEAD
 #include <asm-generic/atomic.h>
+=======
+#include <asm/cmpxchg.h>
+#include <asm-generic/atomic.h>
+#include <asm-generic/atomic64.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Atomically test *v and decrement if it is greater than 0.

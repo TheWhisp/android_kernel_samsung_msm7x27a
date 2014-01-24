@@ -27,7 +27,10 @@
 #include <asm/io.h>
 #include <arch/svinto.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sync_serial.h>
 #include <arch/io_interface_mux.h>
 

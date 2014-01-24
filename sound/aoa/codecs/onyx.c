@@ -1067,7 +1067,10 @@ static int onyx_i2c_probe(struct i2c_client *client,
 	printk(KERN_DEBUG PFX "created and attached onyx instance\n");
 	return 0;
  fail:
+<<<<<<< HEAD
 	i2c_set_clientdata(client, NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(onyx);
 	return -ENODEV;
 }
@@ -1112,8 +1115,12 @@ static int onyx_i2c_remove(struct i2c_client *client)
 
 	aoa_codec_unregister(&onyx->codec);
 	of_node_put(onyx->codec.node);
+<<<<<<< HEAD
 	if (onyx->codec_info)
 		kfree(onyx->codec_info);
+=======
+	kfree(onyx->codec_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(onyx);
 	return 0;
 }
@@ -1134,6 +1141,7 @@ static struct i2c_driver onyx_driver = {
 	.id_table = onyx_i2c_id,
 };
 
+<<<<<<< HEAD
 static int __init onyx_init(void)
 {
 	return i2c_add_driver(&onyx_driver);
@@ -1146,3 +1154,6 @@ static void __exit onyx_exit(void)
 
 module_init(onyx_init);
 module_exit(onyx_exit);
+=======
+module_i2c_driver(onyx_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

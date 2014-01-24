@@ -87,7 +87,11 @@ static int cfi_intelext_partition_fixup(struct mtd_info *, struct cfi_private **
 
 static int cfi_intelext_point (struct mtd_info *mtd, loff_t from, size_t len,
 		     size_t *retlen, void **virt, resource_size_t *phys);
+<<<<<<< HEAD
 static void cfi_intelext_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
+=======
+static int cfi_intelext_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long adr, int mode);
 static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode);
@@ -262,9 +266,15 @@ static void fixup_st_m28w320cb(struct mtd_info *mtd)
 static void fixup_use_point(struct mtd_info *mtd)
 {
 	struct map_info *map = mtd->priv;
+<<<<<<< HEAD
 	if (!mtd->point && map_is_linear(map)) {
 		mtd->point   = cfi_intelext_point;
 		mtd->unpoint = cfi_intelext_unpoint;
+=======
+	if (!mtd->_point && map_is_linear(map)) {
+		mtd->_point   = cfi_intelext_point;
+		mtd->_unpoint = cfi_intelext_unpoint;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -274,8 +284,13 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
 	struct cfi_private *cfi = map->fldrv_priv;
 	if (cfi->cfiq->BufWriteTimeoutTyp) {
 		printk(KERN_INFO "Using buffer write method\n" );
+<<<<<<< HEAD
 		mtd->write = cfi_intelext_write_buffers;
 		mtd->writev = cfi_intelext_writev;
+=======
+		mtd->_write = cfi_intelext_write_buffers;
+		mtd->_writev = cfi_intelext_writev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -443,6 +458,7 @@ struct mtd_info *cfi_cmdset_0001(struct map_info *map, int primary)
 	mtd->type = MTD_NORFLASH;
 
 	/* Fill in the default mtd operations */
+<<<<<<< HEAD
 	mtd->erase   = cfi_intelext_erase_varsize;
 	mtd->read    = cfi_intelext_read;
 	mtd->write   = cfi_intelext_write_words;
@@ -452,6 +468,17 @@ struct mtd_info *cfi_cmdset_0001(struct map_info *map, int primary)
 	mtd->is_locked = cfi_intelext_is_locked;
 	mtd->suspend = cfi_intelext_suspend;
 	mtd->resume  = cfi_intelext_resume;
+=======
+	mtd->_erase   = cfi_intelext_erase_varsize;
+	mtd->_read    = cfi_intelext_read;
+	mtd->_write   = cfi_intelext_write_words;
+	mtd->_sync    = cfi_intelext_sync;
+	mtd->_lock    = cfi_intelext_lock;
+	mtd->_unlock  = cfi_intelext_unlock;
+	mtd->_is_locked = cfi_intelext_is_locked;
+	mtd->_suspend = cfi_intelext_suspend;
+	mtd->_resume  = cfi_intelext_resume;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mtd->flags   = MTD_CAP_NORFLASH;
 	mtd->name    = map->name;
 	mtd->writesize = 1;
@@ -600,12 +627,21 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
 	}
 
 #ifdef CONFIG_MTD_OTP
+<<<<<<< HEAD
 	mtd->read_fact_prot_reg = cfi_intelext_read_fact_prot_reg;
 	mtd->read_user_prot_reg = cfi_intelext_read_user_prot_reg;
 	mtd->write_user_prot_reg = cfi_intelext_write_user_prot_reg;
 	mtd->lock_user_prot_reg = cfi_intelext_lock_user_prot_reg;
 	mtd->get_fact_prot_info = cfi_intelext_get_fact_prot_info;
 	mtd->get_user_prot_info = cfi_intelext_get_user_prot_info;
+=======
+	mtd->_read_fact_prot_reg = cfi_intelext_read_fact_prot_reg;
+	mtd->_read_user_prot_reg = cfi_intelext_read_user_prot_reg;
+	mtd->_write_user_prot_reg = cfi_intelext_write_user_prot_reg;
+	mtd->_lock_user_prot_reg = cfi_intelext_lock_user_prot_reg;
+	mtd->_get_fact_prot_info = cfi_intelext_get_fact_prot_info;
+	mtd->_get_user_prot_info = cfi_intelext_get_user_prot_info;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	/* This function has the potential to distort the reality
@@ -1017,8 +1053,11 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
 	case FL_READY:
 	case FL_STATUS:
 	case FL_JEDEC_QUERY:
+<<<<<<< HEAD
 		/* We should really make set_vpp() count, rather than doing this */
 		DISABLE_VPP(map);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		printk(KERN_ERR "%s: put_chip() called with oldstate %d!!\n", map->name, chip->oldstate);
@@ -1324,7 +1363,11 @@ static int cfi_intelext_point(struct mtd_info *mtd, loff_t from, size_t len,
 	int chipnum;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (!map->virt || (from + len > mtd->size))
+=======
+	if (!map->virt)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	/* Now lock the chip(s) to POINT state */
@@ -1334,7 +1377,10 @@ static int cfi_intelext_point(struct mtd_info *mtd, loff_t from, size_t len,
 	ofs = from - (chipnum << cfi->chipshift);
 
 	*virt = map->virt + cfi->chips[chipnum].start + ofs;
+<<<<<<< HEAD
 	*retlen = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (phys)
 		*phys = map->phys + cfi->chips[chipnum].start + ofs;
 
@@ -1369,12 +1415,20 @@ static int cfi_intelext_point(struct mtd_info *mtd, loff_t from, size_t len,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void cfi_intelext_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+=======
+static int cfi_intelext_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct map_info *map = mtd->priv;
 	struct cfi_private *cfi = map->fldrv_priv;
 	unsigned long ofs;
+<<<<<<< HEAD
 	int chipnum;
+=======
+	int chipnum, err = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Now unlock the chip(s) POINT state */
 
@@ -1382,7 +1436,11 @@ static void cfi_intelext_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 	chipnum = (from >> cfi->chipshift);
 	ofs = from - (chipnum <<  cfi->chipshift);
 
+<<<<<<< HEAD
 	while (len) {
+=======
+	while (len && !err) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned long thislen;
 		struct flchip *chip;
 
@@ -1400,8 +1458,15 @@ static void cfi_intelext_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 			chip->ref_point_counter--;
 			if(chip->ref_point_counter == 0)
 				chip->state = FL_READY;
+<<<<<<< HEAD
 		} else
 			printk(KERN_ERR "%s: Warning: unpoint called on non pointed region\n", map->name); /* Should this give an error? */
+=======
+		} else {
+			printk(KERN_ERR "%s: Error: unpoint called on non pointed region\n", map->name);
+			err = -EINVAL;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		put_chip(map, chip, chip->start);
 		mutex_unlock(&chip->mutex);
@@ -1410,6 +1475,11 @@ static void cfi_intelext_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 		ofs = 0;
 		chipnum++;
 	}
+<<<<<<< HEAD
+=======
+
+	return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline int do_read_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
@@ -1456,8 +1526,11 @@ static int cfi_intelext_read (struct mtd_info *mtd, loff_t from, size_t len, siz
 	chipnum = (from >> cfi->chipshift);
 	ofs = from - (chipnum <<  cfi->chipshift);
 
+<<<<<<< HEAD
 	*retlen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (len) {
 		unsigned long thislen;
 
@@ -1551,7 +1624,12 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
 	}
 
 	xip_enable(map, chip, adr);
+<<<<<<< HEAD
  out:	put_chip(map, chip, adr);
+=======
+ out:	DISABLE_VPP(map);
+	put_chip(map, chip, adr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&chip->mutex);
 	return ret;
 }
@@ -1565,10 +1643,13 @@ static int cfi_intelext_write_words (struct mtd_info *mtd, loff_t to , size_t le
 	int chipnum;
 	unsigned long ofs;
 
+<<<<<<< HEAD
 	*retlen = 0;
 	if (!len)
 		return 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	chipnum = to >> cfi->chipshift;
 	ofs = to  - (chipnum << cfi->chipshift);
 
@@ -1794,7 +1875,12 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
 	}
 
 	xip_enable(map, chip, cmd_adr);
+<<<<<<< HEAD
  out:	put_chip(map, chip, cmd_adr);
+=======
+ out:	DISABLE_VPP(map);
+	put_chip(map, chip, cmd_adr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&chip->mutex);
 	return ret;
 }
@@ -1813,7 +1899,10 @@ static int cfi_intelext_writev (struct mtd_info *mtd, const struct kvec *vecs,
 	for (i = 0; i < count; i++)
 		len += vecs[i].iov_len;
 
+<<<<<<< HEAD
 	*retlen = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!len)
 		return 0;
 
@@ -1932,6 +2021,10 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
 			ret = -EIO;
 		} else if (chipstatus & 0x20 && retries--) {
 			printk(KERN_DEBUG "block erase failed at 0x%08lx: status 0x%lx. Retrying...\n", adr, chipstatus);
+<<<<<<< HEAD
+=======
+			DISABLE_VPP(map);
+>>>>>>> refs/remotes/origin/cm-10.0
 			put_chip(map, chip, adr);
 			mutex_unlock(&chip->mutex);
 			goto retry;
@@ -1944,7 +2037,12 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
 	}
 
 	xip_enable(map, chip, adr);
+<<<<<<< HEAD
  out:	put_chip(map, chip, adr);
+=======
+ out:	DISABLE_VPP(map);
+	put_chip(map, chip, adr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&chip->mutex);
 	return ret;
 }
@@ -2086,7 +2184,12 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
 	}
 
 	xip_enable(map, chip, adr);
+<<<<<<< HEAD
 out:	put_chip(map, chip, adr);
+=======
+ out:	DISABLE_VPP(map);
+	put_chip(map, chip, adr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&chip->mutex);
 	return ret;
 }
@@ -2483,7 +2586,11 @@ static int cfi_intelext_suspend(struct mtd_info *mtd)
 			   allowed to. Or should we return -EAGAIN, because the upper layers
 			   ought to have already shut down anything which was using the device
 			   anyway? The latter for now. */
+<<<<<<< HEAD
 			printk(KERN_NOTICE "Flash device refused suspend due to active operation (state %d)\n", chip->oldstate);
+=======
+			printk(KERN_NOTICE "Flash device refused suspend due to active operation (state %d)\n", chip->state);
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = -EAGAIN;
 		case FL_PM_SUSPENDED:
 			break;
@@ -2526,12 +2633,19 @@ static void cfi_intelext_restore_locks(struct mtd_info *mtd)
 		if (!region->lockmap)
 			continue;
 
+<<<<<<< HEAD
 		for (block = 0; block < region->numblocks; block++) {
 			len = region->erasesize;
 			adr = region->offset + block * len;
 
 			if (!test_bit(block, region->lockmap))
 				cfi_intelext_unlock(mtd, adr, len);
+=======
+		for_each_clear_bit(block, region->lockmap, region->numblocks) {
+			len = region->erasesize;
+			adr = region->offset + block * len;
+			cfi_intelext_unlock(mtd, adr, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }

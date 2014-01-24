@@ -57,7 +57,11 @@ static ssize_t lm70_sense_temp(struct device *dev,
 	struct spi_device *spi = to_spi_device(dev);
 	int status, val = 0;
 	u8 rxbuf[2];
+<<<<<<< HEAD
 	s16 raw=0;
+=======
+	s16 raw = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct lm70 *p_lm70 = spi_get_drvdata(spi);
 
 	if (mutex_lock_interruptible(&p_lm70->lock))
@@ -156,6 +160,18 @@ static int __devinit lm70_probe(struct spi_device *spi)
 	mutex_init(&p_lm70->lock);
 	p_lm70->chip = chip;
 
+<<<<<<< HEAD
+=======
+	spi_set_drvdata(spi, p_lm70);
+
+	status = device_create_file(&spi->dev, &dev_attr_temp1_input);
+	if (status)
+		goto out_dev_create_temp_file_failed;
+	status = device_create_file(&spi->dev, &dev_attr_name);
+	if (status)
+		goto out_dev_create_file_failed;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* sysfs hook */
 	p_lm70->hwmon_dev = hwmon_device_register(&spi->dev);
 	if (IS_ERR(p_lm70->hwmon_dev)) {
@@ -163,6 +179,7 @@ static int __devinit lm70_probe(struct spi_device *spi)
 		status = PTR_ERR(p_lm70->hwmon_dev);
 		goto out_dev_reg_failed;
 	}
+<<<<<<< HEAD
 	spi_set_drvdata(spi, p_lm70);
 
 	if ((status = device_create_file(&spi->dev, &dev_attr_temp1_input))
@@ -177,6 +194,16 @@ out_dev_create_file_failed:
 	device_remove_file(&spi->dev, &dev_attr_temp1_input);
 	hwmon_device_unregister(p_lm70->hwmon_dev);
 out_dev_reg_failed:
+=======
+
+	return 0;
+
+out_dev_reg_failed:
+	device_remove_file(&spi->dev, &dev_attr_name);
+out_dev_create_file_failed:
+	device_remove_file(&spi->dev, &dev_attr_temp1_input);
+out_dev_create_temp_file_failed:
+>>>>>>> refs/remotes/origin/cm-10.0
 	spi_set_drvdata(spi, NULL);
 	kfree(p_lm70);
 	return status;
@@ -186,9 +213,15 @@ static int __devexit lm70_remove(struct spi_device *spi)
 {
 	struct lm70 *p_lm70 = spi_get_drvdata(spi);
 
+<<<<<<< HEAD
 	device_remove_file(&spi->dev, &dev_attr_temp1_input);
 	device_remove_file(&spi->dev, &dev_attr_name);
 	hwmon_device_unregister(p_lm70->hwmon_dev);
+=======
+	hwmon_device_unregister(p_lm70->hwmon_dev);
+	device_remove_file(&spi->dev, &dev_attr_temp1_input);
+	device_remove_file(&spi->dev, &dev_attr_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spi_set_drvdata(spi, NULL);
 	kfree(p_lm70);
 
@@ -213,6 +246,7 @@ static struct spi_driver lm70_driver = {
 	.remove	= __devexit_p(lm70_remove),
 };
 
+<<<<<<< HEAD
 static int __init init_lm70(void)
 {
 	return spi_register_driver(&lm70_driver);
@@ -225,6 +259,9 @@ static void __exit cleanup_lm70(void)
 
 module_init(init_lm70);
 module_exit(cleanup_lm70);
+=======
+module_spi_driver(lm70_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Kaiwan N Billimoria");
 MODULE_DESCRIPTION("NS LM70 / TI TMP121/TMP123 Linux driver");

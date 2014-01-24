@@ -18,9 +18,17 @@ enum map_type {
 extern const char *map_type__name[MAP__NR_TYPES];
 
 struct dso;
+<<<<<<< HEAD
 struct ref_reloc_sym;
 struct map_groups;
 struct machine;
+=======
+struct ip_callchain;
+struct ref_reloc_sym;
+struct map_groups;
+struct machine;
+struct perf_evsel;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct map {
 	union {
@@ -31,6 +39,10 @@ struct map {
 	u64			end;
 	u8 /* enum map_type */	type;
 	bool			referenced;
+<<<<<<< HEAD
+=======
+	bool			erange_warned;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32			priv;
 	u64			pgoff;
 
@@ -61,7 +73,15 @@ struct map_groups {
 struct machine {
 	struct rb_node	  rb_node;
 	pid_t		  pid;
+<<<<<<< HEAD
 	char		  *root_dir;
+=======
+	u16		  id_hdr_size;
+	char		  *root_dir;
+	struct rb_root	  threads;
+	struct list_head  dead_threads;
+	struct thread	  *last_match;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head  user_dsos;
 	struct list_head  kernel_dsos;
 	struct map_groups kmaps;
@@ -112,6 +132,10 @@ void map__delete(struct map *self);
 struct map *map__clone(struct map *self);
 int map__overlap(struct map *l, struct map *r);
 size_t map__fprintf(struct map *self, FILE *fp);
+<<<<<<< HEAD
+=======
+size_t map__fprintf_dsoname(struct map *map, FILE *fp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int map__load(struct map *self, symbol_filter_t filter);
 struct symbol *map__find_symbol(struct map *self,
@@ -123,6 +147,7 @@ void map__fixup_end(struct map *self);
 
 void map__reloc_vmlinux(struct map *self);
 
+<<<<<<< HEAD
 size_t __map_groups__fprintf_maps(struct map_groups *self,
 				  enum map_type type, int verbose, FILE *fp);
 void maps__insert(struct rb_root *maps, struct map *map);
@@ -134,6 +159,19 @@ int map_groups__clone(struct map_groups *self,
 		      struct map_groups *parent, enum map_type type);
 size_t map_groups__fprintf(struct map_groups *self, int verbose, FILE *fp);
 size_t map_groups__fprintf_maps(struct map_groups *self, int verbose, FILE *fp);
+=======
+size_t __map_groups__fprintf_maps(struct map_groups *mg,
+				  enum map_type type, int verbose, FILE *fp);
+void maps__insert(struct rb_root *maps, struct map *map);
+void maps__remove(struct rb_root *maps, struct map *map);
+struct map *maps__find(struct rb_root *maps, u64 addr);
+void map_groups__init(struct map_groups *mg);
+void map_groups__exit(struct map_groups *mg);
+int map_groups__clone(struct map_groups *mg,
+		      struct map_groups *parent, enum map_type type);
+size_t map_groups__fprintf(struct map_groups *mg, int verbose, FILE *fp);
+size_t map_groups__fprintf_maps(struct map_groups *mg, int verbose, FILE *fp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 typedef void (*machine__process_t)(struct machine *self, void *data);
 
@@ -148,6 +186,16 @@ int machine__init(struct machine *self, const char *root_dir, pid_t pid);
 void machine__exit(struct machine *self);
 void machine__delete(struct machine *self);
 
+<<<<<<< HEAD
+=======
+int machine__resolve_callchain(struct machine *machine,
+			       struct perf_evsel *evsel, struct thread *thread,
+			       struct ip_callchain *chain,
+			       struct symbol **parent);
+int maps__set_kallsyms_ref_reloc_sym(struct map **maps, const char *symbol_name,
+				     u64 addr);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Default guest kernel is defined by parameter --guestkallsyms
  * and --guestmodules
@@ -162,6 +210,7 @@ static inline bool machine__is_host(struct machine *self)
 	return self ? self->pid == HOST_KERNEL_ID : false;
 }
 
+<<<<<<< HEAD
 static inline void map_groups__insert(struct map_groups *self, struct map *map)
 {
 	maps__insert(&self->maps[map->type], map);
@@ -180,16 +229,49 @@ static inline struct map *map_groups__find(struct map_groups *self,
 }
 
 struct symbol *map_groups__find_symbol(struct map_groups *self,
+=======
+static inline void map_groups__insert(struct map_groups *mg, struct map *map)
+{
+	maps__insert(&mg->maps[map->type], map);
+	map->groups = mg;
+}
+
+static inline void map_groups__remove(struct map_groups *mg, struct map *map)
+{
+	maps__remove(&mg->maps[map->type], map);
+}
+
+static inline struct map *map_groups__find(struct map_groups *mg,
+					   enum map_type type, u64 addr)
+{
+	return maps__find(&mg->maps[type], addr);
+}
+
+struct symbol *map_groups__find_symbol(struct map_groups *mg,
+>>>>>>> refs/remotes/origin/cm-10.0
 				       enum map_type type, u64 addr,
 				       struct map **mapp,
 				       symbol_filter_t filter);
 
+<<<<<<< HEAD
 struct symbol *map_groups__find_symbol_by_name(struct map_groups *self,
+=======
+struct symbol *map_groups__find_symbol_by_name(struct map_groups *mg,
+>>>>>>> refs/remotes/origin/cm-10.0
 					       enum map_type type,
 					       const char *name,
 					       struct map **mapp,
 					       symbol_filter_t filter);
 
+<<<<<<< HEAD
+=======
+
+struct thread *machine__findnew_thread(struct machine *machine, pid_t pid);
+void machine__remove_thread(struct machine *machine, struct thread *th);
+
+size_t machine__fprintf(struct machine *machine, FILE *fp);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline
 struct symbol *machine__find_kernel_symbol(struct machine *self,
 					   enum map_type type, u64 addr,
@@ -208,11 +290,19 @@ struct symbol *machine__find_kernel_function(struct machine *self, u64 addr,
 }
 
 static inline
+<<<<<<< HEAD
 struct symbol *map_groups__find_function_by_name(struct map_groups *self,
 						 const char *name, struct map **mapp,
 						 symbol_filter_t filter)
 {
 	return map_groups__find_symbol_by_name(self, MAP__FUNCTION, name, mapp, filter);
+=======
+struct symbol *map_groups__find_function_by_name(struct map_groups *mg,
+						 const char *name, struct map **mapp,
+						 symbol_filter_t filter)
+{
+	return map_groups__find_symbol_by_name(mg, MAP__FUNCTION, name, mapp, filter);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline
@@ -225,6 +315,7 @@ struct symbol *machine__find_kernel_function_by_name(struct machine *self,
 						 filter);
 }
 
+<<<<<<< HEAD
 int map_groups__fixup_overlappings(struct map_groups *self, struct map *map,
 				   int verbose, FILE *fp);
 
@@ -233,5 +324,15 @@ struct map *map_groups__find_by_name(struct map_groups *self,
 struct map *machine__new_module(struct machine *self, u64 start, const char *filename);
 
 void map_groups__flush(struct map_groups *self);
+=======
+int map_groups__fixup_overlappings(struct map_groups *mg, struct map *map,
+				   int verbose, FILE *fp);
+
+struct map *map_groups__find_by_name(struct map_groups *mg,
+				     enum map_type type, const char *name);
+struct map *machine__new_module(struct machine *self, u64 start, const char *filename);
+
+void map_groups__flush(struct map_groups *mg);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __PERF_MAP_H */

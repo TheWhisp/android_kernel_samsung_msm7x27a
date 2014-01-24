@@ -422,7 +422,11 @@ static int __init vpif_probe(struct platform_device *pdev)
 	if (!res)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	res_len = res->end - res->start + 1;
+=======
+	res_len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	res = request_mem_region(res->start, res_len, res->name);
 	if (!res)

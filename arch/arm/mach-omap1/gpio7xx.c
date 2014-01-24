@@ -39,11 +39,31 @@ static struct __initdata resource omap7xx_mpu_gpio_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct __initdata omap_gpio_platform_data omap7xx_mpu_gpio_config = {
 	.virtual_irq_start	= IH_MPUIO_BASE,
 	.bank_type		= METHOD_MPUIO,
 	.bank_width		= 32,
 	.bank_stride		= 2,
+=======
+static struct omap_gpio_reg_offs omap7xx_mpuio_regs = {
+	.revision	= USHRT_MAX,
+	.direction	= OMAP_MPUIO_IO_CNTL / 2,
+	.datain		= OMAP_MPUIO_INPUT_LATCH / 2,
+	.dataout	= OMAP_MPUIO_OUTPUT / 2,
+	.irqstatus	= OMAP_MPUIO_GPIO_INT / 2,
+	.irqenable	= OMAP_MPUIO_GPIO_MASKIT / 2,
+	.irqenable_inv	= true,
+	.irqctrl	= OMAP_MPUIO_GPIO_INT_EDGE >> 1,
+};
+
+static struct __initdata omap_gpio_platform_data omap7xx_mpu_gpio_config = {
+	.virtual_irq_start	= IH_MPUIO_BASE,
+	.is_mpuio		= true,
+	.bank_width		= 16,
+	.bank_stride		= 2,
+	.regs                   = &omap7xx_mpuio_regs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device omap7xx_mpu_gpio = {
@@ -69,10 +89,28 @@ static struct __initdata resource omap7xx_gpio1_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct __initdata omap_gpio_platform_data omap7xx_gpio1_config = {
 	.virtual_irq_start	= IH_GPIO_BASE,
 	.bank_type		= METHOD_GPIO_7XX,
 	.bank_width		= 32,
+=======
+static struct omap_gpio_reg_offs omap7xx_gpio_regs = {
+	.revision	= USHRT_MAX,
+	.direction	= OMAP7XX_GPIO_DIR_CONTROL,
+	.datain		= OMAP7XX_GPIO_DATA_INPUT,
+	.dataout	= OMAP7XX_GPIO_DATA_OUTPUT,
+	.irqstatus	= OMAP7XX_GPIO_INT_STATUS,
+	.irqenable	= OMAP7XX_GPIO_INT_MASK,
+	.irqenable_inv	= true,
+	.irqctrl	= OMAP7XX_GPIO_INT_CONTROL,
+};
+
+static struct __initdata omap_gpio_platform_data omap7xx_gpio1_config = {
+	.virtual_irq_start	= IH_GPIO_BASE,
+	.bank_width		= 32,
+	.regs			= &omap7xx_gpio_regs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device omap7xx_gpio1 = {
@@ -100,8 +138,13 @@ static struct __initdata resource omap7xx_gpio2_resources[] = {
 
 static struct __initdata omap_gpio_platform_data omap7xx_gpio2_config = {
 	.virtual_irq_start	= IH_GPIO_BASE + 32,
+<<<<<<< HEAD
 	.bank_type		= METHOD_GPIO_7XX,
 	.bank_width		= 32,
+=======
+	.bank_width		= 32,
+	.regs			= &omap7xx_gpio_regs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device omap7xx_gpio2 = {
@@ -129,8 +172,13 @@ static struct __initdata resource omap7xx_gpio3_resources[] = {
 
 static struct __initdata omap_gpio_platform_data omap7xx_gpio3_config = {
 	.virtual_irq_start	= IH_GPIO_BASE + 64,
+<<<<<<< HEAD
 	.bank_type		= METHOD_GPIO_7XX,
 	.bank_width		= 32,
+=======
+	.bank_width		= 32,
+	.regs			= &omap7xx_gpio_regs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device omap7xx_gpio3 = {
@@ -158,8 +206,13 @@ static struct __initdata resource omap7xx_gpio4_resources[] = {
 
 static struct __initdata omap_gpio_platform_data omap7xx_gpio4_config = {
 	.virtual_irq_start	= IH_GPIO_BASE + 96,
+<<<<<<< HEAD
 	.bank_type		= METHOD_GPIO_7XX,
 	.bank_width		= 32,
+=======
+	.bank_width		= 32,
+	.regs			= &omap7xx_gpio_regs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device omap7xx_gpio4 = {
@@ -187,8 +240,13 @@ static struct __initdata resource omap7xx_gpio5_resources[] = {
 
 static struct __initdata omap_gpio_platform_data omap7xx_gpio5_config = {
 	.virtual_irq_start	= IH_GPIO_BASE + 128,
+<<<<<<< HEAD
 	.bank_type		= METHOD_GPIO_7XX,
 	.bank_width		= 32,
+=======
+	.bank_width		= 32,
+	.regs			= &omap7xx_gpio_regs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device omap7xx_gpio5 = {
@@ -216,8 +274,13 @@ static struct __initdata resource omap7xx_gpio6_resources[] = {
 
 static struct __initdata omap_gpio_platform_data omap7xx_gpio6_config = {
 	.virtual_irq_start	= IH_GPIO_BASE + 160,
+<<<<<<< HEAD
 	.bank_type		= METHOD_GPIO_7XX,
 	.bank_width		= 32,
+=======
+	.bank_width		= 32,
+	.regs			= &omap7xx_gpio_regs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device omap7xx_gpio6 = {
@@ -255,8 +318,11 @@ static int __init omap7xx_gpio_init(void)
 	for (i = 0; i < ARRAY_SIZE(omap7xx_gpio_dev); i++)
 		platform_device_register(omap7xx_gpio_dev[i]);
 
+<<<<<<< HEAD
 	gpio_bank_count = ARRAY_SIZE(omap7xx_gpio_dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 postcore_initcall(omap7xx_gpio_init);

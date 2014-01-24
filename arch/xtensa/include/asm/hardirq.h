@@ -11,9 +11,12 @@
 #ifndef _XTENSA_HARDIRQ_H
 #define _XTENSA_HARDIRQ_H
 
+<<<<<<< HEAD
 void ack_bad_irq(unsigned int irq);
 #define ack_bad_irq ack_bad_irq
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm-generic/hardirq.h>
 
 #endif	/* _XTENSA_HARDIRQ_H */

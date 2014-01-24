@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 
 menu "Character Devices"
+=======
+menu "UML Character Devices"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config STDERR_CONSOLE
 	bool "stderr console"
@@ -105,6 +109,7 @@ config SSL_CHAN
           this if you expect the UML that you build to be run in environments
           which don't have a set of /dev/pty* devices.
 
+<<<<<<< HEAD
 config UNIX98_PTYS
 	bool "Unix98 PTY support"
 	help
@@ -191,6 +196,8 @@ config UML_WATCHDOG
 	tristate "UML watchdog"
 	depends on WATCHDOG
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config UML_SOUND
 	tristate "Sound support"
 	help
@@ -211,6 +218,7 @@ config HOSTAUDIO
 	tristate
 	default UML_SOUND
 
+<<<<<<< HEAD
 #It is selected elsewhere, so kconfig would warn without this.
 config HW_RANDOM
 	tristate
@@ -236,4 +244,6 @@ config MMAPPER
 	  This driver allows a host file to be used as emulated IO memory inside
 	  UML.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 endmenu

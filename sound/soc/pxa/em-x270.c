@@ -54,6 +54,10 @@ static struct snd_soc_dai_link em_x270_dai[] = {
 
 static struct snd_soc_card em_x270 = {
 	.name = "EM-X270",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = em_x270_dai,
 	.num_links = ARRAY_SIZE(em_x270_dai),
 };

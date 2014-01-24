@@ -29,7 +29,10 @@
 #include <linux/blkdev.h>
 #include <linux/ide.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 #define DRV_NAME "qd65xx"
@@ -417,7 +420,11 @@ static int __init qd_probe(int base)
 	return rc;
 }
 
+<<<<<<< HEAD
 static int probe_qd65xx;
+=======
+static bool probe_qd65xx;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param_named(probe, probe_qd65xx, bool, 0);
 MODULE_PARM_DESC(probe, "probe for QD65xx chipsets");

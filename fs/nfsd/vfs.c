@@ -168,6 +168,11 @@ int nfsd_mountpoint(struct dentry *dentry, struct svc_export *exp)
 {
 	if (d_mountpoint(dentry))
 		return 1;
+<<<<<<< HEAD
+=======
+	if (nfsd4_is_junction(dentry))
+		return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!(exp->ex_flags & NFSEXP_V4ROOT))
 		return 0;
 	return dentry->d_inode != NULL;
@@ -305,7 +310,11 @@ nfsd_setattr(struct svc_rqst *rqstp, struct svc_fh *fhp, struct iattr *iap,
 	struct dentry	*dentry;
 	struct inode	*inode;
 	int		accmode = NFSD_MAY_SATTR;
+<<<<<<< HEAD
 	int		ftype = 0;
+=======
+	umode_t		ftype = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	__be32		err;
 	int		host_err;
 	int		size_change = 0;
@@ -502,7 +511,11 @@ nfsd4_set_nfs4_acl(struct svc_rqst *rqstp, struct svc_fh *fhp,
 	unsigned int flags = 0;
 
 	/* Get inode */
+<<<<<<< HEAD
 	error = fh_verify(rqstp, fhp, 0 /* S_IFREG */, NFSD_MAY_SATTR);
+=======
+	error = fh_verify(rqstp, fhp, 0, NFSD_MAY_SATTR);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		return error;
 
@@ -592,6 +605,36 @@ nfsd4_get_nfs4_acl(struct svc_rqst *rqstp, struct dentry *dentry, struct nfs4_ac
 	return error;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * NFS junction information is stored in an extended attribute.
+ */
+#define NFSD_JUNCTION_XATTR_NAME	XATTR_TRUSTED_PREFIX "junction.nfs"
+
+/**
+ * nfsd4_is_junction - Test if an object could be an NFS junction
+ *
+ * @dentry: object to test
+ *
+ * Returns 1 if "dentry" appears to contain NFS junction information.
+ * Otherwise 0 is returned.
+ */
+int nfsd4_is_junction(struct dentry *dentry)
+{
+	struct inode *inode = dentry->d_inode;
+
+	if (inode == NULL)
+		return 0;
+	if (inode->i_mode & S_IXUGO)
+		return 0;
+	if (!(inode->i_mode & S_ISVTX))
+		return 0;
+	if (vfs_getxattr(dentry, NFSD_JUNCTION_XATTR_NAME, NULL, 0) <= 0)
+		return 0;
+	return 1;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* defined(CONFIG_NFSD_V4) */
 
 #ifdef CONFIG_NFSD_V3
@@ -708,12 +751,22 @@ static int nfsd_open_break_lease(struct inode *inode, int access)
 
 /*
  * Open an existing file or directory.
+<<<<<<< HEAD
  * The access argument indicates the type of open (read/write/lock)
  * N.B. After this call fhp needs an fh_put
  */
 __be32
 nfsd_open(struct svc_rqst *rqstp, struct svc_fh *fhp, int type,
 			int access, struct file **filp)
+=======
+ * The may_flags argument indicates the type of open (read/write/lock)
+ * and additional flags.
+ * N.B. After this call fhp needs an fh_put
+ */
+__be32
+nfsd_open(struct svc_rqst *rqstp, struct svc_fh *fhp, umode_t type,
+			int may_flags, struct file **filp)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct dentry	*dentry;
 	struct inode	*inode;
@@ -728,7 +781,11 @@ nfsd_open(struct svc_rqst *rqstp, struct svc_fh *fhp, int type,
 	 * and (hopefully) checked permission - so allow OWNER_OVERRIDE
 	 * in case a chmod has now revoked permission.
 	 */
+<<<<<<< HEAD
 	err = fh_verify(rqstp, fhp, type, access | NFSD_MAY_OWNER_OVERRIDE);
+=======
+	err = fh_verify(rqstp, fhp, type, may_flags | NFSD_MAY_OWNER_OVERRIDE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto out;
 
@@ -739,7 +796,11 @@ nfsd_open(struct svc_rqst *rqstp, struct svc_fh *fhp, int type,
 	 * or any access when mandatory locking enabled
 	 */
 	err = nfserr_perm;
+<<<<<<< HEAD
 	if (IS_APPEND(inode) && (access & NFSD_MAY_WRITE))
+=======
+	if (IS_APPEND(inode) && (may_flags & NFSD_MAY_WRITE))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	/*
 	 * We must ignore files (but only files) which might have mandatory
@@ -752,12 +813,21 @@ nfsd_open(struct svc_rqst *rqstp, struct svc_fh *fhp, int type,
 	if (!inode->i_fop)
 		goto out;
 
+<<<<<<< HEAD
 	host_err = nfsd_open_break_lease(inode, access);
 	if (host_err) /* NOMEM or WOULDBLOCK */
 		goto out_nfserr;
 
 	if (access & NFSD_MAY_WRITE) {
 		if (access & NFSD_MAY_READ)
+=======
+	host_err = nfsd_open_break_lease(inode, may_flags);
+	if (host_err) /* NOMEM or WOULDBLOCK */
+		goto out_nfserr;
+
+	if (may_flags & NFSD_MAY_WRITE) {
+		if (may_flags & NFSD_MAY_READ)
+>>>>>>> refs/remotes/origin/cm-10.0
 			flags = O_RDWR|O_LARGEFILE;
 		else
 			flags = O_WRONLY|O_LARGEFILE;
@@ -766,8 +836,20 @@ nfsd_open(struct svc_rqst *rqstp, struct svc_fh *fhp, int type,
 			    flags, current_cred());
 	if (IS_ERR(*filp))
 		host_err = PTR_ERR(*filp);
+<<<<<<< HEAD
 	else
 		host_err = ima_file_check(*filp, access);
+=======
+	else {
+		host_err = ima_file_check(*filp, may_flags);
+
+		if (may_flags & NFSD_MAY_64BIT_COOKIE)
+			(*filp)->f_mode |= FMODE_64BITHASH;
+		else
+			(*filp)->f_mode |= FMODE_32BITHASH;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 out_nfserr:
 	err = nfserrno(host_err);
 out:
@@ -1282,7 +1364,11 @@ nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	host_err = mnt_want_write(fhp->fh_export->ex_path.mnt);
+=======
+	host_err = fh_want_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (host_err)
 		goto out_nfserr;
 
@@ -1307,7 +1393,11 @@ nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 		break;
 	}
 	if (host_err < 0) {
+<<<<<<< HEAD
 		mnt_drop_write(fhp->fh_export->ex_path.mnt);
+=======
+		fh_drop_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_nfserr;
 	}
 
@@ -1321,7 +1411,11 @@ nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 	err2 = nfserrno(commit_metadata(fhp));
 	if (err2)
 		err = err2;
+<<<<<<< HEAD
 	mnt_drop_write(fhp->fh_export->ex_path.mnt);
+=======
+	fh_drop_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Update the file handle to get the new inode info.
 	 */
@@ -1352,7 +1446,11 @@ __be32
 do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 		char *fname, int flen, struct iattr *iap,
 		struct svc_fh *resfhp, int createmode, u32 *verifier,
+<<<<<<< HEAD
 	        int *truncp, int *created)
+=======
+	        bool *truncp, bool *created)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct dentry	*dentry, *dchild = NULL;
 	struct inode	*dirp;
@@ -1412,7 +1510,11 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 		v_atime = verifier[1]&0x7fffffff;
 	}
 	
+<<<<<<< HEAD
 	host_err = mnt_want_write(fhp->fh_export->ex_path.mnt);
+=======
+	host_err = fh_want_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (host_err)
 		goto out_nfserr;
 	if (dchild->d_inode) {
@@ -1421,7 +1523,11 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 		switch (createmode) {
 		case NFS3_CREATE_UNCHECKED:
 			if (! S_ISREG(dchild->d_inode->i_mode))
+<<<<<<< HEAD
 				err = nfserr_exist;
+=======
+				goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 			else if (truncp) {
 				/* in nfsv4, we need to treat this case a little
 				 * differently.  we don't want to truncate the
@@ -1440,6 +1546,7 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 		case NFS3_CREATE_EXCLUSIVE:
 			if (   dchild->d_inode->i_mtime.tv_sec == v_mtime
 			    && dchild->d_inode->i_atime.tv_sec == v_atime
+<<<<<<< HEAD
 			    && dchild->d_inode->i_size  == 0 )
 				break;
 		case NFS4_CREATE_EXCLUSIVE4_1:
@@ -1447,17 +1554,40 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 			    && dchild->d_inode->i_atime.tv_sec == v_atime
 			    && dchild->d_inode->i_size  == 0 )
 				goto set_attr;
+=======
+			    && dchild->d_inode->i_size  == 0 ) {
+				if (created)
+					*created = 1;
+				break;
+			}
+		case NFS4_CREATE_EXCLUSIVE4_1:
+			if (   dchild->d_inode->i_mtime.tv_sec == v_mtime
+			    && dchild->d_inode->i_atime.tv_sec == v_atime
+			    && dchild->d_inode->i_size  == 0 ) {
+				if (created)
+					*created = 1;
+				goto set_attr;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 			 /* fallthru */
 		case NFS3_CREATE_GUARDED:
 			err = nfserr_exist;
 		}
+<<<<<<< HEAD
 		mnt_drop_write(fhp->fh_export->ex_path.mnt);
+=======
+		fh_drop_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 
 	host_err = vfs_create(dirp, dchild, iap->ia_mode, NULL);
 	if (host_err < 0) {
+<<<<<<< HEAD
 		mnt_drop_write(fhp->fh_export->ex_path.mnt);
+=======
+		fh_drop_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_nfserr;
 	}
 	if (created)
@@ -1485,7 +1615,11 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 	if (!err)
 		err = nfserrno(commit_metadata(fhp));
 
+<<<<<<< HEAD
 	mnt_drop_write(fhp->fh_export->ex_path.mnt);
+=======
+	fh_drop_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Update the filehandle to get the new inode info.
 	 */
@@ -1512,30 +1646,51 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 __be32
 nfsd_readlink(struct svc_rqst *rqstp, struct svc_fh *fhp, char *buf, int *lenp)
 {
+<<<<<<< HEAD
 	struct dentry	*dentry;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct inode	*inode;
 	mm_segment_t	oldfs;
 	__be32		err;
 	int		host_err;
+<<<<<<< HEAD
+=======
+	struct path path;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = fh_verify(rqstp, fhp, S_IFLNK, NFSD_MAY_NOP);
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
 	dentry = fhp->fh_dentry;
 	inode = dentry->d_inode;
+=======
+	path.mnt = fhp->fh_export->ex_path.mnt;
+	path.dentry = fhp->fh_dentry;
+	inode = path.dentry->d_inode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = nfserr_inval;
 	if (!inode->i_op->readlink)
 		goto out;
 
+<<<<<<< HEAD
 	touch_atime(fhp->fh_export->ex_path.mnt, dentry);
+=======
+	touch_atime(&path);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* N.B. Why does this call need a get_fs()??
 	 * Remove the set_fs and watch the fireworks:-) --okir
 	 */
 
 	oldfs = get_fs(); set_fs(KERNEL_DS);
+<<<<<<< HEAD
 	host_err = inode->i_op->readlink(dentry, buf, *lenp);
+=======
+	host_err = inode->i_op->readlink(path.dentry, buf, *lenp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	set_fs(oldfs);
 
 	if (host_err < 0)
@@ -1582,7 +1737,11 @@ nfsd_symlink(struct svc_rqst *rqstp, struct svc_fh *fhp,
 	if (IS_ERR(dnew))
 		goto out_nfserr;
 
+<<<<<<< HEAD
 	host_err = mnt_want_write(fhp->fh_export->ex_path.mnt);
+=======
+	host_err = fh_want_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (host_err)
 		goto out_nfserr;
 
@@ -1603,7 +1762,11 @@ nfsd_symlink(struct svc_rqst *rqstp, struct svc_fh *fhp,
 		err = nfserrno(commit_metadata(fhp));
 	fh_unlock(fhp);
 
+<<<<<<< HEAD
 	mnt_drop_write(fhp->fh_export->ex_path.mnt);
+=======
+	fh_drop_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cerr = fh_compose(resfhp, fhp->fh_export, dnew, fhp);
 	dput(dnew);
@@ -1632,10 +1795,19 @@ nfsd_link(struct svc_rqst *rqstp, struct svc_fh *ffhp,
 	err = fh_verify(rqstp, ffhp, S_IFDIR, NFSD_MAY_CREATE);
 	if (err)
 		goto out;
+<<<<<<< HEAD
 	err = fh_verify(rqstp, tfhp, -S_IFDIR, NFSD_MAY_NOP);
 	if (err)
 		goto out;
 
+=======
+	err = fh_verify(rqstp, tfhp, 0, NFSD_MAY_NOP);
+	if (err)
+		goto out;
+	err = nfserr_isdir;
+	if (S_ISDIR(tfhp->fh_dentry->d_inode->i_mode))
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = nfserr_perm;
 	if (!len)
 		goto out;
@@ -1654,7 +1826,11 @@ nfsd_link(struct svc_rqst *rqstp, struct svc_fh *ffhp,
 
 	dold = tfhp->fh_dentry;
 
+<<<<<<< HEAD
 	host_err = mnt_want_write(tfhp->fh_export->ex_path.mnt);
+=======
+	host_err = fh_want_write(tfhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (host_err) {
 		err = nfserrno(host_err);
 		goto out_dput;
@@ -1679,7 +1855,11 @@ nfsd_link(struct svc_rqst *rqstp, struct svc_fh *ffhp,
 			err = nfserrno(host_err);
 	}
 out_drop_write:
+<<<<<<< HEAD
 	mnt_drop_write(tfhp->fh_export->ex_path.mnt);
+=======
+	fh_drop_write(tfhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 out_dput:
 	dput(dnew);
 out_unlock:
@@ -1756,7 +1936,11 @@ nfsd_rename(struct svc_rqst *rqstp, struct svc_fh *ffhp, char *fname, int flen,
 	host_err = -EXDEV;
 	if (ffhp->fh_export->ex_path.mnt != tfhp->fh_export->ex_path.mnt)
 		goto out_dput_new;
+<<<<<<< HEAD
 	host_err = mnt_want_write(ffhp->fh_export->ex_path.mnt);
+=======
+	host_err = fh_want_write(ffhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (host_err)
 		goto out_dput_new;
 
@@ -1775,7 +1959,11 @@ nfsd_rename(struct svc_rqst *rqstp, struct svc_fh *ffhp, char *fname, int flen,
 			host_err = commit_metadata(ffhp);
 	}
 out_drop_write:
+<<<<<<< HEAD
 	mnt_drop_write(ffhp->fh_export->ex_path.mnt);
+=======
+	fh_drop_write(ffhp);
+>>>>>>> refs/remotes/origin/cm-10.0
  out_dput_new:
 	dput(ndentry);
  out_dput_old:
@@ -1834,7 +2022,11 @@ nfsd_unlink(struct svc_rqst *rqstp, struct svc_fh *fhp, int type,
 	if (!type)
 		type = rdentry->d_inode->i_mode & S_IFMT;
 
+<<<<<<< HEAD
 	host_err = mnt_want_write(fhp->fh_export->ex_path.mnt);
+=======
+	host_err = fh_want_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (host_err)
 		goto out_put;
 
@@ -1848,7 +2040,11 @@ nfsd_unlink(struct svc_rqst *rqstp, struct svc_fh *fhp, int type,
 	if (!host_err)
 		host_err = commit_metadata(fhp);
 out_drop_write:
+<<<<<<< HEAD
 	mnt_drop_write(fhp->fh_export->ex_path.mnt);
+=======
+	fh_drop_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 out_put:
 	dput(rdentry);
 
@@ -1989,8 +2185,18 @@ nfsd_readdir(struct svc_rqst *rqstp, struct svc_fh *fhp, loff_t *offsetp,
 	__be32		err;
 	struct file	*file;
 	loff_t		offset = *offsetp;
+<<<<<<< HEAD
 
 	err = nfsd_open(rqstp, fhp, S_IFDIR, NFSD_MAY_READ, &file);
+=======
+	int             may_flags = NFSD_MAY_READ;
+
+	/* NFSv2 only supports 32 bit cookies */
+	if (rqstp->rq_vers > 2)
+		may_flags |= NFSD_MAY_64BIT_COOKIE;
+
+	err = nfsd_open(rqstp, fhp, S_IFDIR, may_flags, &file);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto out;
 
@@ -2250,7 +2456,11 @@ nfsd_set_posix_acl(struct svc_fh *fhp, int type, struct posix_acl *acl)
 	} else
 		size = 0;
 
+<<<<<<< HEAD
 	error = mnt_want_write(fhp->fh_export->ex_path.mnt);
+=======
+	error = fh_want_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		goto getout;
 	if (size)
@@ -2264,7 +2474,11 @@ nfsd_set_posix_acl(struct svc_fh *fhp, int type, struct posix_acl *acl)
 				error = 0;
 		}
 	}
+<<<<<<< HEAD
 	mnt_drop_write(fhp->fh_export->ex_path.mnt);
+=======
+	fh_drop_write(fhp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 getout:
 	kfree(value);

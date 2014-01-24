@@ -22,6 +22,10 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/minors.h>
 #include <sound/info.h>

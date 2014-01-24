@@ -36,9 +36,15 @@
 #include <linux/reboot.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #include <asm/uaccess.h>
 #include <asm/system.h>
+=======
+#include <linux/rcupdate.h>
+
+#include <asm/uaccess.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 #include <asm/setup.h>
 #include <asm/pgtable.h>
@@ -79,11 +85,19 @@ void (*idle)(void) = default_idle;
 void cpu_idle(void)
 {
 	while (1) {
+<<<<<<< HEAD
 		while (!need_resched())
 			idle();
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+		rcu_idle_enter();
+		while (!need_resched())
+			idle();
+		rcu_idle_exit();
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 

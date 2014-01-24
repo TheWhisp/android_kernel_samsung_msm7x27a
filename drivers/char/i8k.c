@@ -69,6 +69,7 @@ MODULE_AUTHOR("Massimo Dal Zotto (dz@debian.org)");
 MODULE_DESCRIPTION("Driver for accessing SMM BIOS on Dell laptops");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static int force;
 module_param(force, bool, 0);
 MODULE_PARM_DESC(force, "Force loading without checking for supported models");
@@ -82,6 +83,21 @@ module_param(restricted, bool, 0);
 MODULE_PARM_DESC(restricted, "Allow fan control if SYS_ADMIN capability set");
 
 static int power_status;
+=======
+static bool force;
+module_param(force, bool, 0);
+MODULE_PARM_DESC(force, "Force loading without checking for supported models");
+
+static bool ignore_dmi;
+module_param(ignore_dmi, bool, 0);
+MODULE_PARM_DESC(ignore_dmi, "Continue probing hardware even if DMI data does not match");
+
+static bool restricted;
+module_param(restricted, bool, 0);
+MODULE_PARM_DESC(restricted, "Allow fan control if SYS_ADMIN capability set");
+
+static bool power_status;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(power_status, bool, 0600);
 MODULE_PARM_DESC(power_status, "Report power status in /proc/i8k");
 
@@ -664,6 +680,7 @@ static struct dmi_system_id __initdata i8k_dmi_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro"),
 		},
 	},
+<<<<<<< HEAD
         {
         	.ident = "Dell XPS421",
 		.matches = {
@@ -671,6 +688,9 @@ static struct dmi_system_id __initdata i8k_dmi_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "XPS L421X"), 
 		}
 		 { }
+=======
+        { }
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*

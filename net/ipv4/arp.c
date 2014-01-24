@@ -97,7 +97,10 @@
 #include <linux/init.h>
 #include <linux/net.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
 #include <linux/jhash.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #ifdef CONFIG_SYSCTL
 #include <linux/sysctl.h>
@@ -113,6 +116,7 @@
 #include <net/arp.h>
 #include <net/ax25.h>
 #include <net/netrom.h>
+<<<<<<< HEAD
 #if defined(CONFIG_ATM_CLIP) || defined(CONFIG_ATM_CLIP_MODULE)
 #include <net/atmclip.h>
 struct neigh_table *clip_tbl_hook;
@@ -120,6 +124,9 @@ EXPORT_SYMBOL(clip_tbl_hook);
 #endif
 
 #include <asm/system.h>
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/uaccess.h>
 
 #include <linux/netfilter_arp.h>
@@ -127,7 +134,11 @@ EXPORT_SYMBOL(clip_tbl_hook);
 /*
  *	Interface to generic neighbour cache.
  */
+<<<<<<< HEAD
 static u32 arp_hash(const void *pkey, const struct net_device *dev, __u32 rnd);
+=======
+static u32 arp_hash(const void *pkey, const struct net_device *dev, __u32 *hash_rnd);
+>>>>>>> refs/remotes/origin/cm-10.0
 static int arp_constructor(struct neighbour *neigh);
 static void arp_solicit(struct neighbour *neigh, struct sk_buff *skb);
 static void arp_error_report(struct neighbour *neigh, struct sk_buff *skb);
@@ -139,8 +150,11 @@ static const struct neigh_ops arp_generic_ops = {
 	.error_report =		arp_error_report,
 	.output =		neigh_resolve_output,
 	.connected_output =	neigh_connected_output,
+<<<<<<< HEAD
 	.hh_output =		dev_queue_xmit,
 	.queue_xmit =		dev_queue_xmit,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct neigh_ops arp_hh_ops = {
@@ -149,16 +163,24 @@ static const struct neigh_ops arp_hh_ops = {
 	.error_report =		arp_error_report,
 	.output =		neigh_resolve_output,
 	.connected_output =	neigh_resolve_output,
+<<<<<<< HEAD
 	.hh_output =		dev_queue_xmit,
 	.queue_xmit =		dev_queue_xmit,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct neigh_ops arp_direct_ops = {
 	.family =		AF_INET,
+<<<<<<< HEAD
 	.output =		dev_queue_xmit,
 	.connected_output =	dev_queue_xmit,
 	.hh_output =		dev_queue_xmit,
 	.queue_xmit =		dev_queue_xmit,
+=======
+	.output =		neigh_direct_output,
+	.connected_output =	neigh_direct_output,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct neigh_ops arp_broken_ops = {
@@ -167,13 +189,19 @@ static const struct neigh_ops arp_broken_ops = {
 	.error_report =		arp_error_report,
 	.output =		neigh_compat_output,
 	.connected_output =	neigh_compat_output,
+<<<<<<< HEAD
 	.hh_output =		dev_queue_xmit,
 	.queue_xmit =		dev_queue_xmit,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct neigh_table arp_tbl = {
 	.family		= AF_INET,
+<<<<<<< HEAD
 	.entry_size	= sizeof(struct neighbour) + 4,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.key_len	= 4,
 	.hash		= arp_hash,
 	.constructor	= arp_constructor,
@@ -186,7 +214,11 @@ struct neigh_table arp_tbl = {
 		.gc_staletime		= 60 * HZ,
 		.reachable_time		= 30 * HZ,
 		.delay_probe_time	= 5 * HZ,
+<<<<<<< HEAD
 		.queue_len		= 3,
+=======
+		.queue_len_bytes	= 64*1024,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.ucast_probes		= 3,
 		.mcast_probes		= 3,
 		.anycast_delay		= 1 * HZ,
@@ -230,9 +262,15 @@ int arp_mc_map(__be32 addr, u8 *haddr, struct net_device *dev, int dir)
 
 static u32 arp_hash(const void *pkey,
 		    const struct net_device *dev,
+<<<<<<< HEAD
 		    __u32 hash_rnd)
 {
 	return jhash_2words(*(u32 *)pkey, dev->ifindex, hash_rnd);
+=======
+		    __u32 *hash_rnd)
+{
+	return arp_hashfn(*(u32 *)pkey, dev, *hash_rnd);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int arp_constructor(struct neighbour *neigh)
@@ -259,7 +297,11 @@ static int arp_constructor(struct neighbour *neigh)
 	if (!dev->header_ops) {
 		neigh->nud_state = NUD_NOARP;
 		neigh->ops = &arp_direct_ops;
+<<<<<<< HEAD
 		neigh->output = neigh->ops->queue_xmit;
+=======
+		neigh->output = neigh_direct_output;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		/* Good devices (checked by reading texts, but only Ethernet is
 		   tested)
@@ -292,9 +334,15 @@ static int arp_constructor(struct neighbour *neigh)
 		default:
 			break;
 		case ARPHRD_ROSE:
+<<<<<<< HEAD
 #if defined(CONFIG_AX25) || defined(CONFIG_AX25_MODULE)
 		case ARPHRD_AX25:
 #if defined(CONFIG_NETROM) || defined(CONFIG_NETROM_MODULE)
+=======
+#if IS_ENABLED(CONFIG_AX25)
+		case ARPHRD_AX25:
+#if IS_ENABLED(CONFIG_NETROM)
+>>>>>>> refs/remotes/origin/cm-10.0
 		case ARPHRD_NETROM:
 #endif
 			neigh->ops = &arp_broken_ops;
@@ -518,6 +566,7 @@ EXPORT_SYMBOL(arp_find);
 
 /* END OF OBSOLETE FUNCTIONS */
 
+<<<<<<< HEAD
 struct neighbour *__arp_bind_neighbour(struct dst_entry *dst, __be32 nexthop)
 {
 	struct net_device *dev = dst->dev;
@@ -548,6 +597,8 @@ int arp_bind_neighbour(struct dst_entry *dst)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Check if we can use proxy ARP for this path
  */
@@ -631,16 +682,29 @@ struct sk_buff *arp_create(int type, int ptype, __be32 dest_ip,
 	struct sk_buff *skb;
 	struct arphdr *arp;
 	unsigned char *arp_ptr;
+<<<<<<< HEAD
+=======
+	int hlen = LL_RESERVED_SPACE(dev);
+	int tlen = dev->needed_tailroom;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 *	Allocate a buffer
 	 */
 
+<<<<<<< HEAD
 	skb = alloc_skb(arp_hdr_len(dev) + LL_ALLOCATED_SPACE(dev), GFP_ATOMIC);
 	if (skb == NULL)
 		return NULL;
 
 	skb_reserve(skb, LL_RESERVED_SPACE(dev));
+=======
+	skb = alloc_skb(arp_hdr_len(dev) + hlen + tlen, GFP_ATOMIC);
+	if (skb == NULL)
+		return NULL;
+
+	skb_reserve(skb, hlen);
+>>>>>>> refs/remotes/origin/cm-10.0
 	skb_reset_network_header(skb);
 	arp = (struct arphdr *) skb_put(skb, arp_hdr_len(dev));
 	skb->dev = dev;
@@ -672,13 +736,21 @@ struct sk_buff *arp_create(int type, int ptype, __be32 dest_ip,
 		arp->ar_pro = htons(ETH_P_IP);
 		break;
 
+<<<<<<< HEAD
 #if defined(CONFIG_AX25) || defined(CONFIG_AX25_MODULE)
+=======
+#if IS_ENABLED(CONFIG_AX25)
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ARPHRD_AX25:
 		arp->ar_hrd = htons(ARPHRD_AX25);
 		arp->ar_pro = htons(AX25_P_IP);
 		break;
 
+<<<<<<< HEAD
 #if defined(CONFIG_NETROM) || defined(CONFIG_NETROM_MODULE)
+=======
+#if IS_ENABLED(CONFIG_NETROM)
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ARPHRD_NETROM:
 		arp->ar_hrd = htons(ARPHRD_NETROM);
 		arp->ar_pro = htons(AX25_P_IP);
@@ -686,13 +758,21 @@ struct sk_buff *arp_create(int type, int ptype, __be32 dest_ip,
 #endif
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_FDDI) || defined(CONFIG_FDDI_MODULE)
+=======
+#if IS_ENABLED(CONFIG_FDDI)
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ARPHRD_FDDI:
 		arp->ar_hrd = htons(ARPHRD_ETHER);
 		arp->ar_pro = htons(ETH_P_IP);
 		break;
 #endif
+<<<<<<< HEAD
 #if defined(CONFIG_TR) || defined(CONFIG_TR_MODULE)
+=======
+#if IS_ENABLED(CONFIG_TR)
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ARPHRD_IEEE802_TR:
 		arp->ar_hrd = htons(ARPHRD_IEEE802);
 		arp->ar_pro = htons(ETH_P_IP);
@@ -932,7 +1012,11 @@ static int arp_process(struct sk_buff *skb)
 
 	n = __neigh_lookup(&arp_tbl, &sip, dev, 0);
 
+<<<<<<< HEAD
 	if (IPV4_DEVCONF_ALL(dev_net(dev), ARP_ACCEPT)) {
+=======
+	if (IN_DEV_ARP_ACCEPT(in_dev)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Unsolicited ARP is not accepted by default.
 		   It is possible, that this option should be enabled for some
 		   devices (strip is candidate)
@@ -1080,7 +1164,11 @@ static int arp_req_set(struct net *net, struct arpreq *r,
 			return -EINVAL;
 	}
 	switch (dev->type) {
+<<<<<<< HEAD
 #if defined(CONFIG_FDDI) || defined(CONFIG_FDDI_MODULE)
+=======
+#if IS_ENABLED(CONFIG_FDDI)
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ARPHRD_FDDI:
 		/*
 		 * According to RFC 1390, FDDI devices should accept ARP
@@ -1326,7 +1414,11 @@ void __init arp_init(void)
 }
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 #if defined(CONFIG_AX25) || defined(CONFIG_AX25_MODULE)
+=======
+#if IS_ENABLED(CONFIG_AX25)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ------------------------------------------------------------------------ */
 /*
@@ -1374,7 +1466,11 @@ static void arp_format_neigh_entry(struct seq_file *seq,
 
 	read_lock(&n->lock);
 	/* Convert hardware address to XX:XX:XX:XX ... form. */
+<<<<<<< HEAD
 #if defined(CONFIG_AX25) || defined(CONFIG_AX25_MODULE)
+=======
+#if IS_ENABLED(CONFIG_AX25)
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (hatype == ARPHRD_AX25 || hatype == ARPHRD_NETROM)
 		ax2asc2((ax25_address *)n->ha, hbuffer);
 	else {
@@ -1387,7 +1483,11 @@ static void arp_format_neigh_entry(struct seq_file *seq,
 	if (k != 0)
 		--k;
 	hbuffer[k] = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_AX25) || defined(CONFIG_AX25_MODULE)
+=======
+#if IS_ENABLED(CONFIG_AX25)
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 #endif
 	sprintf(tbuf, "%pI4", n->primary_key);

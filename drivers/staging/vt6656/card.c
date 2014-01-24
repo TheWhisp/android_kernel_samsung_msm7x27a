@@ -91,6 +91,7 @@ const WORD cwRXBCNTSFOff[MAX_RATE] =
  *      uConnectionChannel  - Channel to be set
  *  Out:
  *      none
+<<<<<<< HEAD
  *
  * Return Value: TRUE if succeeded; FALSE if failed.
  *
@@ -100,6 +101,12 @@ BOOL CARDbSetMediaChannel(void *pDeviceHandler, unsigned int uConnectionChannel)
 PSDevice            pDevice = (PSDevice) pDeviceHandler;
 BOOL                bResult = TRUE;
 
+=======
+ */
+void CARDbSetMediaChannel(void *pDeviceHandler, unsigned int uConnectionChannel)
+{
+PSDevice            pDevice = (PSDevice) pDeviceHandler;
+>>>>>>> refs/remotes/origin/cm-10.0
 
     if (pDevice->byBBType == BB_TYPE_11A) { // 15 ~ 38
         if ((uConnectionChannel < (CB_MAX_CHANNEL_24G+1)) || (uConnectionChannel > CB_MAX_CHANNEL))
@@ -140,7 +147,10 @@ BOOL                bResult = TRUE;
         RFbRawSetPower(pDevice, pDevice->abyCCKPwrTbl[uConnectionChannel-1], RATE_1M);
     }
     ControlvWriteByte(pDevice,MESSAGE_REQUEST_MACREG,MAC_REG_CHANNEL,(BYTE)(uConnectionChannel|0x80));
+<<<<<<< HEAD
     return(bResult);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -607,7 +617,11 @@ BYTE ii;
  * Return Value: TRUE if succeeded; FALSE if failed.
  *
  */
+<<<<<<< HEAD
 BOOL CARDbAddBasicRate(void *pDeviceHandler, WORD wRateIdx)
+=======
+void CARDbAddBasicRate(void *pDeviceHandler, WORD wRateIdx)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 PSDevice    pDevice = (PSDevice) pDeviceHandler;
 WORD wRate = (WORD)(1<<wRateIdx);
@@ -616,8 +630,11 @@ WORD wRate = (WORD)(1<<wRateIdx);
 
     //Determines the highest basic rate.
     CARDvUpdateBasicTopRate(pDevice);
+<<<<<<< HEAD
 
     return(TRUE);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 BOOL CARDbIsOFDMinBasicRate(void *pDeviceHandler)
@@ -1090,7 +1107,11 @@ CARDbChannelSwitch (
 
     if (byCount == 0) {
         pDevice->sMgmtObj.uCurrChannel = byNewChannel;
+<<<<<<< HEAD
         bResult = CARDbSetMediaChannel(pDevice, byNewChannel);
+=======
+	CARDbSetMediaChannel(pDevice, byNewChannel);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return bResult;
     }

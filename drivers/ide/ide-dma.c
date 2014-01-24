@@ -31,6 +31,10 @@
 #include <linux/types.h>
 #include <linux/gfp.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ide.h>
 #include <linux/scatterlist.h>
 #include <linux/dma-mapping.h>

@@ -70,11 +70,14 @@ config VIDEO_CX88_DVB
 	  To compile this driver as a module, choose M here: the
 	  module will be called cx88-dvb.
 
+<<<<<<< HEAD
 config VIDEO_CX88_MPEG
 	tristate
 	depends on VIDEO_CX88_DVB || VIDEO_CX88_BLACKBIRD
 	default y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config VIDEO_CX88_VP3054
 	tristate "VP-3054 Secondary I2C Bus Support"
 	default m
@@ -84,3 +87,11 @@ config VIDEO_CX88_VP3054
 	  Conexant 2388x chip and the MT352 demodulator,
 	  which also require support for the VP-3054
 	  Secondary I2C bus, such at DNTV Live! DVB-T Pro.
+<<<<<<< HEAD
+=======
+
+config VIDEO_CX88_MPEG
+	tristate
+	depends on VIDEO_CX88_DVB || VIDEO_CX88_BLACKBIRD
+	default y
+>>>>>>> refs/remotes/origin/cm-10.0

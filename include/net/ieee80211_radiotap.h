@@ -251,6 +251,10 @@ enum ieee80211_radiotap_type {
 						 * retries */
 #define IEEE80211_RADIOTAP_F_TX_CTS	0x0002	/* used cts 'protection' */
 #define IEEE80211_RADIOTAP_F_TX_RTS	0x0004	/* used rts/cts handshake */
+<<<<<<< HEAD
+=======
+#define IEEE80211_RADIOTAP_F_TX_NOACK	0x0008	/* don't expect an ack */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /* For IEEE80211_RADIOTAP_MCS */
@@ -270,6 +274,7 @@ enum ieee80211_radiotap_type {
 #define IEEE80211_RADIOTAP_MCS_FEC_LDPC		0x10
 
 
+<<<<<<< HEAD
 /* Ugly macro to convert literal channel numbers into their mhz equivalents
  * There are certianly some conditions that will break this (like feeding it '30')
  * but they shouldn't arise since nothing talks on channel 30. */
@@ -278,6 +283,8 @@ enum ieee80211_radiotap_type {
 	(((x) == 14) ? 2484 : ((x) * 5) + 2407) : \
 	((x) + 1000) * 5)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* helpers */
 static inline int ieee80211_get_radiotap_len(unsigned char *data)
 {

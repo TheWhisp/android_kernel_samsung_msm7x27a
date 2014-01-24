@@ -59,7 +59,11 @@ config SOUND_OSS_CORE_PRECLAIM
 
 source "sound/oss/dmasound/Kconfig"
 
+<<<<<<< HEAD
 if !M68K
+=======
+if !M68K && !UML
+>>>>>>> refs/remotes/origin/cm-10.0
 
 menuconfig SND
 	tristate "Advanced Linux Sound Architecture"

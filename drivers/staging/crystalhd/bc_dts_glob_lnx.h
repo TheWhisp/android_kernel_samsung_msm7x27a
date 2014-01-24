@@ -48,8 +48,12 @@
 
 #endif
 
+<<<<<<< HEAD
 #include "bc_dts_defs.h"
 #include "bcm_70012_regs.h"	/* Link Register defs */
+=======
+#include "crystalhd.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CRYSTALHD_API_NAME	"crystalhd"
 #define CRYSTALHD_API_DEV_NAME	"/dev/crystalhd"
@@ -175,7 +179,11 @@ struct BC_DEC_YUV_BUFFS {
 	uint32_t		RefCnt;
 };
 
+<<<<<<< HEAD
 enum DECOUT_COMPLETION_FLAGS{
+=======
+enum DECOUT_COMPLETION_FLAGS {
+>>>>>>> refs/remotes/origin/cm-10.0
 	COMP_FLAG_NO_INFO	= 0x00,
 	COMP_FLAG_FMT_CHANGE	= 0x01,
 	COMP_FLAG_PIB_VALID	= 0x02,
@@ -184,7 +192,11 @@ enum DECOUT_COMPLETION_FLAGS{
 	COMP_FLAG_DATA_BOT	= 0x10,
 };
 
+<<<<<<< HEAD
 struct BC_DEC_OUT_BUFF{
+=======
+struct BC_DEC_OUT_BUFF {
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct BC_DEC_YUV_BUFFS	OutPutBuffs;
 	struct BC_PIC_INFO_BLOCK PibInfo;
 	uint32_t		Flags;
@@ -289,7 +301,11 @@ struct crystalhd_ioctl_data {
 	struct crystalhd_ioctl_data *next;	/* List/Fifo management */
 };
 
+<<<<<<< HEAD
 enum crystalhd_kmod_ver{
+=======
+enum crystalhd_kmod_ver {
+>>>>>>> refs/remotes/origin/cm-10.0
 	crystalhd_kmod_major	= 0,
 	crystalhd_kmod_minor	= 9,
 	crystalhd_kmod_rev	= 27,

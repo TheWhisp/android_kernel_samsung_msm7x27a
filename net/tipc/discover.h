@@ -37,6 +37,7 @@
 #ifndef _TIPC_DISCOVER_H
 #define _TIPC_DISCOVER_H
 
+<<<<<<< HEAD
 struct link_req;
 
 int tipc_disc_create(struct tipc_bearer *b_ptr, struct tipc_media_addr *dest,
@@ -44,6 +45,15 @@ int tipc_disc_create(struct tipc_bearer *b_ptr, struct tipc_media_addr *dest,
 void tipc_disc_delete(struct link_req *req);
 void tipc_disc_add_dest(struct link_req *req);
 void tipc_disc_remove_dest(struct link_req *req);
+=======
+struct tipc_link_req;
+
+int tipc_disc_create(struct tipc_bearer *b_ptr, struct tipc_media_addr *dest,
+		     u32 dest_domain);
+void tipc_disc_delete(struct tipc_link_req *req);
+void tipc_disc_add_dest(struct tipc_link_req *req);
+void tipc_disc_remove_dest(struct tipc_link_req *req);
+>>>>>>> refs/remotes/origin/cm-10.0
 void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr);
 
 #endif

@@ -227,7 +227,13 @@ static void wakeup_trace_close(struct trace_iterator *iter)
 		graph_trace_close(iter);
 }
 
+<<<<<<< HEAD
 #define GRAPH_TRACER_FLAGS (TRACE_GRAPH_PRINT_PROC)
+=======
+#define GRAPH_TRACER_FLAGS (TRACE_GRAPH_PRINT_PROC | \
+			    TRACE_GRAPH_PRINT_ABS_TIME | \
+			    TRACE_GRAPH_PRINT_DURATION)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static enum print_line_t wakeup_print_line(struct trace_iterator *iter)
 {
@@ -278,9 +284,26 @@ static enum print_line_t wakeup_print_line(struct trace_iterator *iter)
 }
 
 static void wakeup_graph_return(struct ftrace_graph_ret *trace) { }
+<<<<<<< HEAD
 static void wakeup_print_header(struct seq_file *s) { }
 static void wakeup_trace_open(struct trace_iterator *iter) { }
 static void wakeup_trace_close(struct trace_iterator *iter) { }
+=======
+static void wakeup_trace_open(struct trace_iterator *iter) { }
+static void wakeup_trace_close(struct trace_iterator *iter) { }
+
+#ifdef CONFIG_FUNCTION_TRACER
+static void wakeup_print_header(struct seq_file *s)
+{
+	trace_default_header(s);
+}
+#else
+static void wakeup_print_header(struct seq_file *s)
+{
+	trace_latency_header(s);
+}
+#endif /* CONFIG_FUNCTION_TRACER */
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
 
 /*

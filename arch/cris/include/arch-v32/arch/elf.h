@@ -1,6 +1,11 @@
 #ifndef _ASM_CRIS_ELF_H
 #define _ASM_CRIS_ELF_H
 
+<<<<<<< HEAD
+=======
+#include <arch/system.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ELF_CORE_EFLAGS EF_CRIS_VARIANT_V32
 
 /*

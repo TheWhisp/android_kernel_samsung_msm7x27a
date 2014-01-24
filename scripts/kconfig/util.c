@@ -5,6 +5,11 @@
  * Released under the terms of the GNU GPL v2.0.
  */
 
+<<<<<<< HEAD
+=======
+#include <stdarg.h>
+#include <stdlib.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <string.h>
 #include "lkc.h"
 

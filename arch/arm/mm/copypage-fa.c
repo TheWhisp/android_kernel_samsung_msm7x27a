@@ -44,11 +44,19 @@ void fa_copy_user_highpage(struct page *to, struct page *from,
 {
 	void *kto, *kfrom;
 
+<<<<<<< HEAD
 	kto = kmap_atomic(to, KM_USER0);
 	kfrom = kmap_atomic(from, KM_USER1);
 	fa_copy_user_page(kto, kfrom);
 	kunmap_atomic(kfrom, KM_USER1);
 	kunmap_atomic(kto, KM_USER0);
+=======
+	kto = kmap_atomic(to);
+	kfrom = kmap_atomic(from);
+	fa_copy_user_page(kto, kfrom);
+	kunmap_atomic(kfrom);
+	kunmap_atomic(kto);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -58,7 +66,11 @@ void fa_copy_user_highpage(struct page *to, struct page *from,
  */
 void fa_clear_user_highpage(struct page *page, unsigned long vaddr)
 {
+<<<<<<< HEAD
 	void *ptr, *kaddr = kmap_atomic(page, KM_USER0);
+=======
+	void *ptr, *kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
 	asm volatile("\
 	mov	r1, %2				@ 1\n\
 	mov	r2, #0				@ 1\n\
@@ -77,7 +89,11 @@ void fa_clear_user_highpage(struct page *page, unsigned long vaddr)
 	: "=r" (ptr)
 	: "0" (kaddr), "I" (PAGE_SIZE / 32)
 	: "r1", "r2", "r3", "ip", "lr");
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct cpu_user_fns fa_user_fns __initdata = {

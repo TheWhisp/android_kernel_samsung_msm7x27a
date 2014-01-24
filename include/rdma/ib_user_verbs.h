@@ -81,7 +81,15 @@ enum {
 	IB_USER_VERBS_CMD_MODIFY_SRQ,
 	IB_USER_VERBS_CMD_QUERY_SRQ,
 	IB_USER_VERBS_CMD_DESTROY_SRQ,
+<<<<<<< HEAD
 	IB_USER_VERBS_CMD_POST_SRQ_RECV
+=======
+	IB_USER_VERBS_CMD_POST_SRQ_RECV,
+	IB_USER_VERBS_CMD_OPEN_XRCD,
+	IB_USER_VERBS_CMD_CLOSE_XRCD,
+	IB_USER_VERBS_CMD_CREATE_XSRQ,
+	IB_USER_VERBS_CMD_OPEN_QP
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -222,6 +230,24 @@ struct ib_uverbs_dealloc_pd {
 	__u32 pd_handle;
 };
 
+<<<<<<< HEAD
+=======
+struct ib_uverbs_open_xrcd {
+	__u64 response;
+	__u32 fd;
+	__u32 oflags;
+	__u64 driver_data[0];
+};
+
+struct ib_uverbs_open_xrcd_resp {
+	__u32 xrcd_handle;
+};
+
+struct ib_uverbs_close_xrcd {
+	__u32 xrcd_handle;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ib_uverbs_reg_mr {
 	__u64 response;
 	__u64 start;
@@ -404,6 +430,20 @@ struct ib_uverbs_create_qp {
 	__u64 driver_data[0];
 };
 
+<<<<<<< HEAD
+=======
+struct ib_uverbs_open_qp {
+	__u64 response;
+	__u64 user_handle;
+	__u32 pd_handle;
+	__u32 qpn;
+	__u8  qp_type;
+	__u8  reserved[7];
+	__u64 driver_data[0];
+};
+
+/* also used for open response */
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ib_uverbs_create_qp_resp {
 	__u32 qp_handle;
 	__u32 qpn;
@@ -648,11 +688,32 @@ struct ib_uverbs_create_srq {
 	__u64 driver_data[0];
 };
 
+<<<<<<< HEAD
+=======
+struct ib_uverbs_create_xsrq {
+	__u64 response;
+	__u64 user_handle;
+	__u32 srq_type;
+	__u32 pd_handle;
+	__u32 max_wr;
+	__u32 max_sge;
+	__u32 srq_limit;
+	__u32 reserved;
+	__u32 xrcd_handle;
+	__u32 cq_handle;
+	__u64 driver_data[0];
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ib_uverbs_create_srq_resp {
 	__u32 srq_handle;
 	__u32 max_wr;
 	__u32 max_sge;
+<<<<<<< HEAD
 	__u32 reserved;
+=======
+	__u32 srqn;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct ib_uverbs_modify_srq {

@@ -1,6 +1,11 @@
 #ifndef __ASMCRIS_ARCH_ELF_H
 #define __ASMCRIS_ARCH_ELF_H
 
+<<<<<<< HEAD
+=======
+#include <arch/system.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ELF_MACH EF_CRIS_VARIANT_ANY_V0_V10
 
 /*

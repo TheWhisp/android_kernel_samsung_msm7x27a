@@ -21,12 +21,17 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/dmaengine.h>
+<<<<<<< HEAD
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
+<<<<<<< HEAD
 
 #include <mach/dma.h>
 
@@ -79,10 +84,36 @@ static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream,
 	struct dma_slave_config slave_config;
 	dma_cap_mask_t mask;
 	enum dma_slave_buswidth buswidth;
+=======
+#include <sound/dmaengine_pcm.h>
+
+#include <mach/dma.h>
+
+#include "imx-pcm.h"
+
+static bool filter(struct dma_chan *chan, void *param)
+{
+	if (!imx_dma_is_general_purpose(chan))
+		return false;
+
+	chan->private = param;
+
+	return true;
+}
+
+static int snd_imx_pcm_hw_params(struct snd_pcm_substream *substream,
+				struct snd_pcm_hw_params *params)
+{
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
+	struct imx_pcm_dma_params *dma_params;
+	struct dma_slave_config slave_config;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
 
+<<<<<<< HEAD
 	iprtd->dma_data.peripheral_type = IMX_DMATYPE_SSI;
 	iprtd->dma_data.priority = DMA_PRIO_HIGH;
 	iprtd->dma_data.dma_request = dma_params->dma;
@@ -231,6 +262,31 @@ static snd_pcm_uframes_t snd_imx_pcm_pointer(struct snd_pcm_substream *substream
 	return bytes_to_frames(substream->runtime, iprtd->offset);
 }
 
+=======
+	ret = snd_hwparams_to_dma_slave_config(substream, params, &slave_config);
+	if (ret)
+		return ret;
+
+	slave_config.device_fc = false;
+
+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+		slave_config.dst_addr = dma_params->dma_addr;
+		slave_config.dst_maxburst = dma_params->burstsize;
+	} else {
+		slave_config.src_addr = dma_params->dma_addr;
+		slave_config.src_maxburst = dma_params->burstsize;
+	}
+
+	ret = dmaengine_slave_config(chan, &slave_config);
+	if (ret)
+		return ret;
+
+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct snd_pcm_hardware snd_imx_hardware = {
 	.info = SNDRV_PCM_INFO_INTERLEAVED |
 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
@@ -252,6 +308,7 @@ static struct snd_pcm_hardware snd_imx_hardware = {
 
 static int snd_imx_open(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct imx_pcm_runtime_data *iprtd;
 	int ret;
@@ -269,16 +326,46 @@ static int snd_imx_open(struct snd_pcm_substream *substream)
 	}
 
 	snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
+=======
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct imx_pcm_dma_params *dma_params;
+	struct imx_dma_data *dma_data;
+	int ret;
+
+	snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
+
+	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+
+	dma_data = kzalloc(sizeof(*dma_data), GFP_KERNEL);
+	dma_data->peripheral_type = IMX_DMATYPE_SSI;
+	dma_data->priority = DMA_PRIO_HIGH;
+	dma_data->dma_request = dma_params->dma;
+
+	ret = snd_dmaengine_pcm_open(substream, filter, dma_data);
+	if (ret) {
+		kfree(dma_data);
+		return 0;
+	}
+
+	snd_dmaengine_pcm_set_data(substream, dma_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
 static int snd_imx_close(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
 
 	kfree(iprtd);
+=======
+	struct imx_dma_data *dma_data = snd_dmaengine_pcm_get_data(substream);
+
+	snd_dmaengine_pcm_close(substream);
+	kfree(dma_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -288,10 +375,15 @@ static struct snd_pcm_ops imx_pcm_ops = {
 	.close		= snd_imx_close,
 	.ioctl		= snd_pcm_lib_ioctl,
 	.hw_params	= snd_imx_pcm_hw_params,
+<<<<<<< HEAD
 	.hw_free	= snd_imx_pcm_hw_free,
 	.prepare	= snd_imx_pcm_prepare,
 	.trigger	= snd_imx_pcm_trigger,
 	.pointer	= snd_imx_pcm_pointer,
+=======
+	.trigger	= snd_dmaengine_pcm_trigger,
+	.pointer	= snd_dmaengine_pcm_pointer,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.mmap		= snd_imx_pcm_mmap,
 };
 
@@ -303,11 +395,14 @@ static struct snd_soc_platform_driver imx_soc_platform_mx2 = {
 
 static int __devinit imx_soc_platform_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct imx_ssi *ssi = platform_get_drvdata(pdev);
 
 	ssi->dma_params_tx.burstsize = 6;
 	ssi->dma_params_rx.burstsize = 4;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return snd_soc_register_platform(&pdev->dev, &imx_soc_platform_mx2);
 }
 
@@ -326,6 +421,7 @@ static struct platform_driver imx_pcm_driver = {
 	.remove = __devexit_p(imx_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init snd_imx_pcm_init(void)
 {
 	return platform_driver_register(&imx_pcm_driver);
@@ -337,5 +433,8 @@ static void __exit snd_imx_pcm_exit(void)
 	platform_driver_unregister(&imx_pcm_driver);
 }
 module_exit(snd_imx_pcm_exit);
+=======
+module_platform_driver(imx_pcm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:imx-pcm-audio");

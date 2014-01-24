@@ -28,6 +28,10 @@
 #include <linux/slab.h>
 #include <linux/completion.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/workqueue.h>
 #include <linux/of_device.h>
 #include <linux/of_platform.h>

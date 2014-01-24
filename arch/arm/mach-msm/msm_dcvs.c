@@ -81,8 +81,14 @@ struct dcvs_core {
 	uint32_t group_id;
 	uint32_t freq_pending;
 	struct hrtimer timer;
+<<<<<<< HEAD
 	int32_t core_slack_time_us;
 	int32_t timer_disabled;
+=======
+	int32_t timer_disabled;
+	/* track if kthread for change_freq is active */
+	int32_t change_freq_activated;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int msm_dcvs_debug;
@@ -153,6 +159,7 @@ repeat:
 	if (ret <= 0) {
 		__err("Core %s failed to set freq %u\n",
 				core->core_name, requested_freq);
+<<<<<<< HEAD
 		/* Restart the timers at the current slack time */
 		core->timer_disabled = 0;
 		ret = hrtimer_start(&core->timer,
@@ -166,6 +173,14 @@ repeat:
 
 	prev_freq = core->actual_freq;
 	core->actual_freq = ret;
+=======
+		/* continue to call TZ to get updated slack timer */
+	} else {
+		prev_freq = core->actual_freq;
+		core->actual_freq = ret;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	time_end = ktime_to_ns(ktime_get());
 	if (msm_dcvs_debug & MSM_DCVS_DEBUG_FREQ_CHANGE)
 		__info("Core %s Time end %llu Time start: %llu\n",
@@ -201,7 +216,10 @@ repeat:
 		core->actual_freq, (uint32_t)time_end, &slack_us, &ret1);
 	if (!ret) {
 		/* Reset the slack timer */
+<<<<<<< HEAD
 		core->core_slack_time_us = slack_us;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (slack_us) {
 			core->timer_disabled = 0;
 			ret = hrtimer_start(&core->timer,
@@ -221,7 +239,11 @@ repeat:
 			"change time %u us slack time %u us\n",
 			requested_freq, core->core_name,
 			core->actual_freq, prev_freq,
+<<<<<<< HEAD
 			core->freq_change_us, core->core_slack_time_us);
+=======
+			core->freq_change_us, slack_us);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/**
 	 * By the time we are done with freq changes, we could be asked to
@@ -230,6 +252,10 @@ repeat:
 	if (core->freq_pending)
 		goto repeat;
 
+<<<<<<< HEAD
+=======
+	core->change_freq_activated = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -260,17 +286,29 @@ static int msm_dcvs_do_freq(void *data)
 }
 
 static int msm_dcvs_update_freq(struct dcvs_core *core,
+<<<<<<< HEAD
 		enum msm_dcvs_scm_event event, uint32_t param0)
+=======
+		enum msm_dcvs_scm_event event, uint32_t param0,
+		uint32_t *ret1, int *freq_changed)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = 0;
 	unsigned long flags = 0;
 	uint32_t new_freq = 0;
+<<<<<<< HEAD
 	uint32_t ret1 = 0;
 
 	spin_lock_irqsave(&core->cpu_lock, flags);
 	ret = msm_dcvs_scm_event(core->handle, event, param0,
 				core->actual_freq, &new_freq, &ret1);
 
+=======
+
+	spin_lock_irqsave(&core->cpu_lock, flags);
+	ret = msm_dcvs_scm_event(core->handle, event, param0,
+				core->actual_freq, &new_freq, ret1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		__err("Error (%d) sending SCM event %d for core %s\n",
 				ret, event, core->core_name);
@@ -288,8 +326,20 @@ static int msm_dcvs_update_freq(struct dcvs_core *core,
 		if (!core->task)
 			__err("Uninitialized task for core %s\n",
 					core->core_name);
+<<<<<<< HEAD
 		else
 			wake_up_process(core->task);
+=======
+		else {
+			if (freq_changed)
+				*freq_changed = 1;
+			core->change_freq_activated = 1;
+			wake_up_process(core->task);
+		}
+	} else {
+		if (freq_changed)
+			*freq_changed = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 freq_done:
 	spin_unlock_irqrestore(&core->cpu_lock, flags);
@@ -301,6 +351,11 @@ static enum hrtimer_restart msm_dcvs_core_slack_timer(struct hrtimer *timer)
 {
 	int ret = 0;
 	struct dcvs_core *core = container_of(timer, struct dcvs_core, timer);
+<<<<<<< HEAD
+=======
+	uint32_t ret1;
+	uint32_t ret2;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (msm_dcvs_debug & MSM_DCVS_DEBUG_FREQ_CHANGE)
 		__info("Slack timer fired for core %s\n", core->core_name);
@@ -309,7 +364,12 @@ static enum hrtimer_restart msm_dcvs_core_slack_timer(struct hrtimer *timer)
 	 * Timer expired, notify TZ
 	 * Dont care about the third arg.
 	 */
+<<<<<<< HEAD
 	ret = msm_dcvs_update_freq(core, MSM_DCVS_SCM_QOS_TIMER_EXPIRED, 0);
+=======
+	ret = msm_dcvs_update_freq(core, MSM_DCVS_SCM_QOS_TIMER_EXPIRED, 0,
+				   &ret1, &ret2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		__err("Timer expired for core %s but failed to notify.\n",
 				core->core_name);
@@ -551,6 +611,11 @@ int msm_dcvs_freq_sink_register(struct msm_dcvs_freq *drv)
 {
 	int ret = -EINVAL;
 	struct dcvs_core *core = NULL;
+<<<<<<< HEAD
+=======
+	uint32_t ret1;
+	uint32_t ret2;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!drv || !drv->core_name)
 		return ret;
@@ -577,7 +642,12 @@ int msm_dcvs_freq_sink_register(struct msm_dcvs_freq *drv)
 	if (core->idle_driver) {
 		core->actual_freq = core->freq_driver->get_frequency(drv);
 		/* Notify TZ to start receiving idle info for the core */
+<<<<<<< HEAD
 		ret = msm_dcvs_update_freq(core, MSM_DCVS_SCM_ENABLE_CORE, 1);
+=======
+		ret = msm_dcvs_update_freq(core, MSM_DCVS_SCM_ENABLE_CORE, 1,
+					   &ret1, &ret2);
+>>>>>>> refs/remotes/origin/cm-10.0
 		core->idle_driver->enable(core->idle_driver,
 				MSM_DCVS_ENABLE_IDLE_PULSE);
 	}
@@ -592,6 +662,11 @@ int msm_dcvs_freq_sink_unregister(struct msm_dcvs_freq *drv)
 {
 	int ret = -EINVAL;
 	struct dcvs_core *core = NULL;
+<<<<<<< HEAD
+=======
+	uint32_t ret1;
+	uint32_t ret2;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!drv || !drv->core_name)
 		return ret;
@@ -607,7 +682,12 @@ int msm_dcvs_freq_sink_unregister(struct msm_dcvs_freq *drv)
 		core->idle_driver->enable(core->idle_driver,
 				MSM_DCVS_DISABLE_IDLE_PULSE);
 		/* Notify TZ to stop receiving idle info for the core */
+<<<<<<< HEAD
 		ret = msm_dcvs_update_freq(core, MSM_DCVS_SCM_ENABLE_CORE, 0);
+=======
+		ret = msm_dcvs_update_freq(core, MSM_DCVS_SCM_ENABLE_CORE, 0,
+					   &ret1, &ret2);
+>>>>>>> refs/remotes/origin/cm-10.0
 		hrtimer_cancel(&core->timer);
 		core->idle_driver->enable(core->idle_driver,
 				MSM_DCVS_ENABLE_HIGH_LATENCY_MODES);
@@ -670,8 +750,14 @@ int msm_dcvs_idle(int handle, enum msm_core_idle_state state, uint32_t iowaited)
 {
 	int ret = 0;
 	struct dcvs_core *core = NULL;
+<<<<<<< HEAD
 	int64_t timer_interval_us = 0;
 	uint32_t r0, r1;
+=======
+	uint32_t timer_interval_us = 0;
+	uint32_t r0, r1;
+	uint32_t freq_changed = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (handle >= CORE_HANDLE_OFFSET &&
 			(handle - CORE_HANDLE_OFFSET) < CORES_MAX)
@@ -695,18 +781,35 @@ int msm_dcvs_idle(int handle, enum msm_core_idle_state state, uint32_t iowaited)
 	case MSM_DCVS_IDLE_EXIT:
 		hrtimer_cancel(&core->timer);
 		ret = msm_dcvs_update_freq(core, MSM_DCVS_SCM_IDLE_EXIT,
+<<<<<<< HEAD
 				iowaited);
 		if (ret)
 			__err("Error (%d) sending idle exit for %s\n",
 					ret, core->core_name);
 		timer_interval_us = core->core_slack_time_us;
+=======
+				iowaited, &timer_interval_us, &freq_changed);
+		if (ret)
+			__err("Error (%d) sending idle exit for %s\n",
+					ret, core->core_name);
+		/* only start slack timer if change_freq won't */
+		if (freq_changed || core->change_freq_activated)
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (timer_interval_us && !core->timer_disabled) {
 			ret = hrtimer_start(&core->timer,
 				ktime_set(0, timer_interval_us * 1000),
 				HRTIMER_MODE_REL_PINNED);
+<<<<<<< HEAD
 			if (ret)
 				__err("Failed to register timer for core %s\n",
 						core->core_name);
+=======
+
+			if (ret)
+				__err("Failed to register timer for core %s\n",
+				      core->core_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		break;
 	}

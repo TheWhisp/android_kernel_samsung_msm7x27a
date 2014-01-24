@@ -151,7 +151,11 @@ static int max2165_set_bandwidth(struct max2165_priv *priv, u32 bw)
 {
 	u8 val;
 
+<<<<<<< HEAD
 	if (bw == BANDWIDTH_8_MHZ)
+=======
+	if (bw == 8000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		val = priv->bb_filter_8mhz_cfg;
 	else
 		val = priv->bb_filter_7mhz_cfg;
@@ -168,7 +172,11 @@ int fixpt_div32(u32 dividend, u32 divisor, u32 *quotient, u32 *fraction)
 	int i;
 
 	if (0 == divisor)
+<<<<<<< HEAD
 		return -1;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	q = dividend / divisor;
 	remainder = dividend - q * divisor;
@@ -194,10 +202,20 @@ static int max2165_set_rf(struct max2165_priv *priv, u32 freq)
 	u8 tf_ntch;
 	u32 t;
 	u32 quotient, fraction;
+<<<<<<< HEAD
 
 	/* Set PLL divider according to RF frequency */
 	fixpt_div32(freq / 1000, priv->config->osc_clk * 1000,
 		&quotient, &fraction);
+=======
+	int ret;
+
+	/* Set PLL divider according to RF frequency */
+	ret = fixpt_div32(freq / 1000, priv->config->osc_clk * 1000,
+			 &quotient, &fraction);
+	if (ret != 0)
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* 20-bit fraction */
 	fraction >>= 12;
@@ -257,6 +275,7 @@ static void max2165_debug_status(struct max2165_priv *priv)
 	dprintk("VCO: %d, VCO Sub-band: %d, ADC: %d\n", vco, vco_sub_band, adc);
 }
 
+<<<<<<< HEAD
 static int max2165_set_params(struct dvb_frontend *fe,
 	struct dvb_frontend_parameters *params)
 {
@@ -290,6 +309,30 @@ static int max2165_set_params(struct dvb_frontend *fe,
 	if (fe->ops.i2c_gate_ctrl)
 		fe->ops.i2c_gate_ctrl(fe, 1);
 	max2165_set_bandwidth(priv, priv->bandwidth);
+=======
+static int max2165_set_params(struct dvb_frontend *fe)
+{
+	struct max2165_priv *priv = fe->tuner_priv;
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+	int ret;
+
+	switch (c->bandwidth_hz) {
+	case 7000000:
+	case 8000000:
+		priv->frequency = c->frequency;
+		break;
+	default:
+		printk(KERN_INFO "MAX2165: bandwidth %d Hz not supported.\n",
+		       c->bandwidth_hz);
+		return -EINVAL;
+	}
+
+	dprintk("%s() frequency=%d\n", __func__, c->frequency);
+
+	if (fe->ops.i2c_gate_ctrl)
+		fe->ops.i2c_gate_ctrl(fe, 1);
+	max2165_set_bandwidth(priv, c->bandwidth_hz);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = max2165_set_rf(priv, priv->frequency);
 	mdelay(50);
 	max2165_debug_status(priv);
@@ -370,7 +413,11 @@ static int max2165_init(struct dvb_frontend *fe)
 
 	max2165_read_rom_table(priv);
 
+<<<<<<< HEAD
 	max2165_set_bandwidth(priv, BANDWIDTH_8_MHZ);
+=======
+	max2165_set_bandwidth(priv, 8000000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (fe->ops.i2c_gate_ctrl)
 			fe->ops.i2c_gate_ctrl(fe, 0);

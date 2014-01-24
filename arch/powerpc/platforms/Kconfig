@@ -1,7 +1,12 @@
 menu "Platform support"
 
+<<<<<<< HEAD
 source "arch/powerpc/platforms/pseries/Kconfig"
 source "arch/powerpc/platforms/iseries/Kconfig"
+=======
+source "arch/powerpc/platforms/powernv/Kconfig"
+source "arch/powerpc/platforms/pseries/Kconfig"
+>>>>>>> refs/remotes/origin/cm-10.0
 source "arch/powerpc/platforms/chrp/Kconfig"
 source "arch/powerpc/platforms/512x/Kconfig"
 source "arch/powerpc/platforms/52xx/Kconfig"
@@ -24,7 +29,11 @@ source "arch/powerpc/platforms/wsp/Kconfig"
 
 config KVM_GUEST
 	bool "KVM Guest support"
+<<<<<<< HEAD
 	default y
+=======
+	default n
+>>>>>>> refs/remotes/origin/cm-10.0
 	---help---
 	  This option enables various optimizations for running under the KVM
 	  hypervisor. Overhead for the kernel when not running inside KVM should
@@ -78,10 +87,28 @@ config MPIC
 	bool
 	default n
 
+<<<<<<< HEAD
+=======
+config PPC_EPAPR_HV_PIC
+	bool
+	default n
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config MPIC_WEIRD
 	bool
 	default n
 
+<<<<<<< HEAD
+=======
+config MPIC_MSGR
+	bool "MPIC message register support"
+	depends on MPIC
+	default n
+	help
+	  Enables support for the MPIC message registers.  These
+	  registers are used for inter-processor communication.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config PPC_I8259
 	bool
 	default n
@@ -133,7 +160,11 @@ config MPIC_BROKEN_REGREAD
 	  of the register contents in software.
 
 config IBMVIO
+<<<<<<< HEAD
 	depends on PPC_PSERIES || PPC_ISERIES
+=======
+	depends on PPC_PSERIES
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool
 	default y
 
@@ -170,9 +201,12 @@ config PPC_INDIRECT_MMIO
 config PPC_IO_WORKAROUNDS
 	bool
 
+<<<<<<< HEAD
 config GENERIC_IOMAP
 	bool
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/cpufreq/Kconfig"
 
 menu "CPU Frequency drivers"
@@ -206,6 +240,15 @@ config PPC_PASEMI_CPUFREQ
 
 endmenu
 
+<<<<<<< HEAD
+=======
+menu "CPUIdle driver"
+
+source "drivers/cpuidle/Kconfig"
+
+endmenu
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config PPC601_SYNC_FIX
 	bool "Workarounds for PPC601 bugs"
 	depends on 6xx && (PPC_PREP || PPC_PMAC)
@@ -266,7 +309,11 @@ config TAU_AVERAGE
 
 config QUICC_ENGINE
 	bool "Freescale QUICC Engine (QE) Support"
+<<<<<<< HEAD
 	depends on FSL_SOC
+=======
+	depends on FSL_SOC && PPC32
+>>>>>>> refs/remotes/origin/cm-10.0
 	select PPC_LIB_RHEAP
 	select CRC32
 	help
@@ -329,6 +376,7 @@ config OF_RTC
 
 source "arch/powerpc/sysdev/bestcomm/Kconfig"
 
+<<<<<<< HEAD
 config MPC8xxx_GPIO
 	bool "MPC512x/MPC8xxx GPIO support"
 	depends on PPC_MPC512x || PPC_MPC831x || PPC_MPC834x || PPC_MPC837x || \
@@ -339,6 +387,8 @@ config MPC8xxx_GPIO
 	  Say Y here if you're going to use hardware that connects to the
 	  MPC512x/831x/834x/837x/8572/8610 GPIOs.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config SIMPLE_GPIO
 	bool "Support for simple, memory-mapped GPIO controllers"
 	depends on PPC
@@ -351,8 +401,13 @@ config SIMPLE_GPIO
 	  on-board peripherals.
 
 config MCU_MPC8349EMITX
+<<<<<<< HEAD
 	tristate "MPC8349E-mITX MCU driver"
 	depends on I2C && PPC_83xx
+=======
+	bool "MPC8349E-mITX MCU driver"
+	depends on I2C=y && PPC_83xx
+>>>>>>> refs/remotes/origin/cm-10.0
 	select GENERIC_GPIO
 	select ARCH_REQUIRE_GPIOLIB
 	help

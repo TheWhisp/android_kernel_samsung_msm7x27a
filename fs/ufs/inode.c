@@ -26,7 +26,10 @@
  */
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/errno.h>
 #include <linux/fs.h>
@@ -583,13 +586,21 @@ static int ufs1_read_inode(struct inode *inode, struct ufs_inode *ufs_inode)
 {
 	struct ufs_inode_info *ufsi = UFS_I(inode);
 	struct super_block *sb = inode->i_sb;
+<<<<<<< HEAD
 	mode_t mode;
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Copy data to the in-core inode.
 	 */
 	inode->i_mode = mode = fs16_to_cpu(sb, ufs_inode->ui_mode);
+<<<<<<< HEAD
 	inode->i_nlink = fs16_to_cpu(sb, ufs_inode->ui_nlink);
+=======
+	set_nlink(inode, fs16_to_cpu(sb, ufs_inode->ui_nlink));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (inode->i_nlink == 0) {
 		ufs_error (sb, "ufs_read_inode", "inode %lu has zero nlink\n", inode->i_ino);
 		return -1;
@@ -630,14 +641,22 @@ static int ufs2_read_inode(struct inode *inode, struct ufs2_inode *ufs2_inode)
 {
 	struct ufs_inode_info *ufsi = UFS_I(inode);
 	struct super_block *sb = inode->i_sb;
+<<<<<<< HEAD
 	mode_t mode;
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	UFSD("Reading ufs2 inode, ino %lu\n", inode->i_ino);
 	/*
 	 * Copy data to the in-core inode.
 	 */
 	inode->i_mode = mode = fs16_to_cpu(sb, ufs2_inode->ui_mode);
+<<<<<<< HEAD
 	inode->i_nlink = fs16_to_cpu(sb, ufs2_inode->ui_nlink);
+=======
+	set_nlink(inode, fs16_to_cpu(sb, ufs2_inode->ui_nlink));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (inode->i_nlink == 0) {
 		ufs_error (sb, "ufs_read_inode", "inode %lu has zero nlink\n", inode->i_ino);
 		return -1;

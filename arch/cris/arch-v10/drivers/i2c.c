@@ -22,7 +22,10 @@
 
 #include <asm/etraxi2c.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <arch/svinto.h>
 #include <asm/io.h>
 #include <asm/delay.h>

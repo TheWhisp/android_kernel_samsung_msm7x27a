@@ -9,6 +9,10 @@
 #include <linux/mm.h>
 #include <linux/spinlock.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/of.h>

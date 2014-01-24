@@ -389,10 +389,18 @@ static struct mtd_partition mxm_8x10_nand_partitions[] = {
 };
 
 static struct pxa3xx_nand_platform_data mxm_8x10_nand_info = {
+<<<<<<< HEAD
 	.enable_arbiter = 1,
 	.keep_config = 1,
 	.parts = mxm_8x10_nand_partitions,
 	.nr_parts = ARRAY_SIZE(mxm_8x10_nand_partitions)
+=======
+	.enable_arbiter	= 1,
+	.keep_config	= 1,
+	.num_cs		= 1,
+	.parts[0]	= mxm_8x10_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(mxm_8x10_nand_partitions)
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void __init mxm_8x10_nand_init(void)
@@ -416,8 +424,13 @@ static struct resource dm9k_resources[] = {
 	       .flags = IORESOURCE_MEM
 	},
 	[2] = {
+<<<<<<< HEAD
 	       .start = gpio_to_irq(mfp_to_gpio(MFP_PIN_GPIO9)),
 	       .end = gpio_to_irq(mfp_to_gpio(MFP_PIN_GPIO9)),
+=======
+	       .start = PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO9)),
+	       .end = PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO9)),
+>>>>>>> refs/remotes/origin/cm-10.0
 	       .flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE
 	}
 };

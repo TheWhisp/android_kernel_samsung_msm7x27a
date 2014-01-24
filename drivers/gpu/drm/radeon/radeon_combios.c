@@ -2513,11 +2513,16 @@ void radeon_combios_get_power_modes(struct radeon_device *rdev)
 	u16 offset, misc, misc2 = 0;
 	u8 rev, blocks, tmp;
 	int state_index = 0;
+<<<<<<< HEAD
+=======
+	struct radeon_i2c_bus_rec i2c_bus;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rdev->pm.default_power_state_index = -1;
 
 	/* allocate 2 power states */
 	rdev->pm.power_state = kzalloc(sizeof(struct radeon_power_state) * 2, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!rdev->pm.power_state) {
 		rdev->pm.default_power_state_index = state_index;
 		rdev->pm.num_power_states = 0;
@@ -2526,12 +2531,28 @@ void radeon_combios_get_power_modes(struct radeon_device *rdev)
 		rdev->pm.current_clock_mode_index = 0;
 		return;
 	}
+=======
+	if (rdev->pm.power_state) {
+		/* allocate 1 clock mode per state */
+		rdev->pm.power_state[0].clock_info =
+			kzalloc(sizeof(struct radeon_pm_clock_info) * 1, GFP_KERNEL);
+		rdev->pm.power_state[1].clock_info =
+			kzalloc(sizeof(struct radeon_pm_clock_info) * 1, GFP_KERNEL);
+		if (!rdev->pm.power_state[0].clock_info ||
+		    !rdev->pm.power_state[1].clock_info)
+			goto pm_failed;
+	} else
+		goto pm_failed;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* check for a thermal chip */
 	offset = combios_get_table_offset(dev, COMBIOS_OVERDRIVE_INFO_TABLE);
 	if (offset) {
 		u8 thermal_controller = 0, gpio = 0, i2c_addr = 0, clk_bit = 0, data_bit = 0;
+<<<<<<< HEAD
 		struct radeon_i2c_bus_rec i2c_bus;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		rev = RBIOS8(offset);
 
@@ -2573,6 +2594,28 @@ void radeon_combios_get_power_modes(struct radeon_device *rdev)
 				i2c_new_device(&rdev->pm.i2c_bus->adapter, &info);
 			}
 		}
+<<<<<<< HEAD
+=======
+	} else {
+		/* boards with a thermal chip, but no overdrive table */
+
+		/* Asus 9600xt has an f75375 on the monid bus */
+		if ((dev->pdev->device == 0x4152) &&
+		    (dev->pdev->subsystem_vendor == 0x1043) &&
+		    (dev->pdev->subsystem_device == 0xc002)) {
+			i2c_bus = combios_setup_i2c_bus(rdev, DDC_MONID, 0, 0);
+			rdev->pm.i2c_bus = radeon_i2c_lookup(rdev, &i2c_bus);
+			if (rdev->pm.i2c_bus) {
+				struct i2c_board_info info = { };
+				const char *name = "f75375";
+				info.addr = 0x28;
+				strlcpy(info.type, name, sizeof(info.type));
+				i2c_new_device(&rdev->pm.i2c_bus->adapter, &info);
+				DRM_INFO("Possible %s thermal controller at 0x%02x\n",
+					 name, info.addr);
+			}
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (rdev->flags & RADEON_IS_MOBILITY) {
@@ -2672,6 +2715,17 @@ default_mode:
 
 	rdev->pm.current_power_state_index = rdev->pm.default_power_state_index;
 	rdev->pm.current_clock_mode_index = 0;
+<<<<<<< HEAD
+=======
+	return;
+
+pm_failed:
+	rdev->pm.default_power_state_index = state_index;
+	rdev->pm.num_power_states = 0;
+
+	rdev->pm.current_power_state_index = rdev->pm.default_power_state_index;
+	rdev->pm.current_clock_mode_index = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void radeon_external_tmds_setup(struct drm_encoder *encoder)
@@ -2771,7 +2825,11 @@ bool radeon_combios_external_tmds_setup(struct drm_encoder *encoder)
 					case 4:
 						val = RBIOS16(index);
 						index += 2;
+<<<<<<< HEAD
 						udelay(val * 1000);
+=======
+						mdelay(val);
+>>>>>>> refs/remotes/origin/cm-10.0
 						break;
 					case 6:
 						slave_addr = id & 0xff;
@@ -2970,7 +3028,11 @@ static void combios_parse_pll_table(struct drm_device *dev, uint16_t offset)
 					udelay(150);
 					break;
 				case 2:
+<<<<<<< HEAD
 					udelay(1000);
+=======
+					mdelay(1);
+>>>>>>> refs/remotes/origin/cm-10.0
 					break;
 				case 3:
 					while (tmp--) {
@@ -3001,13 +3063,21 @@ static void combios_parse_pll_table(struct drm_device *dev, uint16_t offset)
 						/*mclk_cntl |= 0x00001111;*//* ??? */
 						WREG32_PLL(RADEON_MCLK_CNTL,
 							   mclk_cntl);
+<<<<<<< HEAD
 						udelay(10000);
+=======
+						mdelay(10);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 						WREG32_PLL
 						    (RADEON_CLK_PWRMGT_CNTL,
 						     tmp &
 						     ~RADEON_CG_NO1_DEBUG_0);
+<<<<<<< HEAD
 						udelay(10000);
+=======
+						mdelay(10);
+>>>>>>> refs/remotes/origin/cm-10.0
 					}
 					break;
 				default:

@@ -28,11 +28,16 @@
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 #include <plat/usb.h>
+<<<<<<< HEAD
+=======
+#include <plat/omap_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "mux.h"
 
 #ifdef CONFIG_MFD_OMAP_USB_HOST
 
+<<<<<<< HEAD
 #define OMAP_USBHS_DEVICE	"usbhs-omap"
 
 static struct resource usbhs_resources[] = {
@@ -68,16 +73,36 @@ static struct platform_device usbhs_device = {
 	.num_resources	= ARRAY_SIZE(usbhs_resources),
 	.resource	= usbhs_resources,
 };
+=======
+#define OMAP_USBHS_DEVICE	"usbhs_omap"
+#define	USBHS_UHH_HWMODNAME	"usb_host_hs"
+#define USBHS_TLL_HWMODNAME	"usb_tll_hs"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct usbhs_omap_platform_data		usbhs_data;
 static struct ehci_hcd_omap_platform_data	ehci_data;
 static struct ohci_hcd_omap_platform_data	ohci_data;
 
+<<<<<<< HEAD
+=======
+static struct omap_device_pm_latency omap_uhhtll_latency[] = {
+	  {
+		.deactivate_func = omap_device_idle_hwmods,
+		.activate_func	 = omap_device_enable_hwmods,
+		.flags = OMAP_DEVICE_LATENCY_AUTO_ADJUST,
+	  },
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* MUX settings for EHCI pins */
 /*
  * setup_ehci_io_mux - initialize IO pad mux for USBHOST
  */
+<<<<<<< HEAD
 static void setup_ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+=======
+static void __init setup_ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (port_mode[0]) {
 	case OMAP_EHCI_PORT_MODE_PHY:
@@ -220,7 +245,12 @@ static void setup_ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
 	return;
 }
 
+<<<<<<< HEAD
 static void setup_4430ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+=======
+static
+void __init setup_4430ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (port_mode[0]) {
 	case OMAP_EHCI_PORT_MODE_PHY:
@@ -338,7 +368,11 @@ static void setup_4430ehci_io_mux(const enum usbhs_omap_port_mode *port_mode)
 	}
 }
 
+<<<<<<< HEAD
 static void setup_ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+=======
+static void __init setup_ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (port_mode[0]) {
 	case OMAP_OHCI_PORT_MODE_PHY_6PIN_DATSE0:
@@ -435,7 +469,12 @@ static void setup_ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
 	}
 }
 
+<<<<<<< HEAD
 static void setup_4430ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+=======
+static
+void __init setup_4430ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	switch (port_mode[0]) {
 	case OMAP_OHCI_PORT_MODE_PHY_6PIN_DATSE0:
@@ -508,7 +547,14 @@ static void setup_4430ohci_io_mux(const enum usbhs_omap_port_mode *port_mode)
 
 void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
 {
+<<<<<<< HEAD
 	int	i;
+=======
+	struct omap_hwmod	*oh[2];
+	struct platform_device	*pdev;
+	int			bus_id = -1;
+	int			i;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < OMAP3_HS_USB_PORTS; i++) {
 		usbhs_data.port_mode[i] = pdata->port_mode[i];
@@ -523,6 +569,7 @@ void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
 	usbhs_data.ohci_data = &ohci_data;
 
 	if (cpu_is_omap34xx()) {
+<<<<<<< HEAD
 		usbhs_resources[0].start = OMAP34XX_UHH_CONFIG_BASE;
 		usbhs_resources[0].end = OMAP34XX_UHH_CONFIG_BASE + SZ_1K - 1;
 		usbhs_resources[1].start = OMAP34XX_USBTLL_BASE;
@@ -546,10 +593,16 @@ void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
 		usbhs_resources[4].start = OMAP44XX_HSUSB_OHCI_BASE;
 		usbhs_resources[4].end = OMAP44XX_HSUSB_OHCI_BASE + SZ_1K - 1;
 		usbhs_resources[5].start = OMAP44XX_IRQ_OHCI;
+=======
+		setup_ehci_io_mux(pdata->port_mode);
+		setup_ohci_io_mux(pdata->port_mode);
+	} else if (cpu_is_omap44xx()) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		setup_4430ehci_io_mux(pdata->port_mode);
 		setup_4430ohci_io_mux(pdata->port_mode);
 	}
 
+<<<<<<< HEAD
 	if (platform_device_add_data(&usbhs_device,
 				&usbhs_data, sizeof(usbhs_data)) < 0) {
 		printk(KERN_ERR "USBHS platform_device_add_data failed\n");
@@ -561,6 +614,29 @@ void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
 
 init_end:
 	return;
+=======
+	oh[0] = omap_hwmod_lookup(USBHS_UHH_HWMODNAME);
+	if (!oh[0]) {
+		pr_err("Could not look up %s\n", USBHS_UHH_HWMODNAME);
+		return;
+	}
+
+	oh[1] = omap_hwmod_lookup(USBHS_TLL_HWMODNAME);
+	if (!oh[1]) {
+		pr_err("Could not look up %s\n", USBHS_TLL_HWMODNAME);
+		return;
+	}
+
+	pdev = omap_device_build_ss(OMAP_USBHS_DEVICE, bus_id, oh, 2,
+				(void *)&usbhs_data, sizeof(usbhs_data),
+				omap_uhhtll_latency,
+				ARRAY_SIZE(omap_uhhtll_latency), false);
+	if (IS_ERR(pdev)) {
+		pr_err("Could not build hwmod devices %s,%s\n",
+			USBHS_UHH_HWMODNAME, USBHS_TLL_HWMODNAME);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #else
@@ -570,5 +646,8 @@ void __init usbhs_init(const struct usbhs_omap_board_data *pdata)
 }
 
 #endif
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

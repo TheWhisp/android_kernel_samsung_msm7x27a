@@ -12,6 +12,10 @@
 
 #include "util/debug.h"
 #include "util/session.h"
+<<<<<<< HEAD
+=======
+#include "util/tool.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sys/types.h>
 #include <sys/prctl.h>
@@ -325,7 +329,11 @@ alloc_failed:
 	die("memory allocation failed\n");
 }
 
+<<<<<<< HEAD
 static char			const *input_name = "perf.data";
+=======
+static const char *input_name;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct raw_event_sample {
 	u32			size;
@@ -845,12 +853,22 @@ static void dump_info(void)
 		die("Unknown type of information\n");
 }
 
+<<<<<<< HEAD
 static int process_sample_event(union perf_event *event,
 				struct perf_sample *sample,
 				struct perf_evsel *evsel __used,
 				struct perf_session *s)
 {
 	struct thread *thread = perf_session__findnew(s, sample->tid);
+=======
+static int process_sample_event(struct perf_tool *tool __used,
+				union perf_event *event,
+				struct perf_sample *sample,
+				struct perf_evsel *evsel __used,
+				struct machine *machine)
+{
+	struct thread *thread = machine__findnew_thread(machine, sample->tid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (thread == NULL) {
 		pr_debug("problem processing %d event, skipping it.\n",
@@ -863,7 +881,11 @@ static int process_sample_event(union perf_event *event,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct perf_event_ops eops = {
+=======
+static struct perf_tool eops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.sample			= process_sample_event,
 	.comm			= perf_event__process_comm,
 	.ordered_samples	= true,
@@ -920,12 +942,20 @@ static const struct option info_options[] = {
 	OPT_BOOLEAN('t', "threads", &info_threads,
 		    "dump thread list in perf.data"),
 	OPT_BOOLEAN('m', "map", &info_map,
+<<<<<<< HEAD
 		    "map of lock instances (name:address table)"),
+=======
+		    "map of lock instances (address:name table)"),
+>>>>>>> refs/remotes/origin/cm-10.0
 	OPT_END()
 };
 
 static const char * const lock_usage[] = {
+<<<<<<< HEAD
 	"perf lock [<options>] {record|trace|report}",
+=======
+	"perf lock [<options>] {record|report|script|info}",
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL
 };
 
@@ -942,10 +972,17 @@ static const char *record_args[] = {
 	"-f",
 	"-m", "1024",
 	"-c", "1",
+<<<<<<< HEAD
 	"-e", "lock:lock_acquire:r",
 	"-e", "lock:lock_acquired:r",
 	"-e", "lock:lock_contended:r",
 	"-e", "lock:lock_release:r",
+=======
+	"-e", "lock:lock_acquire",
+	"-e", "lock:lock_acquired",
+	"-e", "lock:lock_contended",
+	"-e", "lock:lock_release",
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __cmd_record(int argc, const char **argv)

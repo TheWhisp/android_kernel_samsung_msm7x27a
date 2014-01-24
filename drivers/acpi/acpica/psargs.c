@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -484,6 +488,7 @@ acpi_ps_get_next_simple_arg(struct acpi_parse_state *parser_state,
 static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 						       *parser_state)
 {
+<<<<<<< HEAD
 	u32 aml_offset = (u32)
 	    ACPI_PTR_DIFF(parser_state->aml,
 			  parser_state->aml_start);
@@ -512,6 +517,56 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 		opcode = AML_INT_ACCESSFIELD_OP;
 		parser_state->aml++;
 		break;
+=======
+	u32 aml_offset;
+	union acpi_parse_object *field;
+	union acpi_parse_object *arg = NULL;
+	u16 opcode;
+	u32 name;
+	u8 access_type;
+	u8 access_attribute;
+	u8 access_length;
+	u32 pkg_length;
+	u8 *pkg_end;
+	u32 buffer_length;
+
+	ACPI_FUNCTION_TRACE(ps_get_next_field);
+
+	aml_offset =
+	    (u32)ACPI_PTR_DIFF(parser_state->aml, parser_state->aml_start);
+
+	/* Determine field type */
+
+	switch (ACPI_GET8(parser_state->aml)) {
+	case AML_FIELD_OFFSET_OP:
+
+		opcode = AML_INT_RESERVEDFIELD_OP;
+		parser_state->aml++;
+		break;
+
+	case AML_FIELD_ACCESS_OP:
+
+		opcode = AML_INT_ACCESSFIELD_OP;
+		parser_state->aml++;
+		break;
+
+	case AML_FIELD_CONNECTION_OP:
+
+		opcode = AML_INT_CONNECTION_OP;
+		parser_state->aml++;
+		break;
+
+	case AML_FIELD_EXT_ACCESS_OP:
+
+		opcode = AML_INT_EXTACCESSFIELD_OP;
+		parser_state->aml++;
+		break;
+
+	default:
+
+		opcode = AML_INT_NAMEDFIELD_OP;
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Allocate a new field op */
@@ -549,6 +604,7 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 		break;
 
 	case AML_INT_ACCESSFIELD_OP:
+<<<<<<< HEAD
 
 		/*
 		 * Get access_type and access_attrib and merge into the field Op
@@ -559,6 +615,113 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 		parser_state->aml++;
 		field->common.value.integer |= ACPI_GET8(parser_state->aml);
 		parser_state->aml++;
+=======
+	case AML_INT_EXTACCESSFIELD_OP:
+
+		/*
+		 * Get access_type and access_attrib and merge into the field Op
+		 * access_type is first operand, access_attribute is second. stuff
+		 * these bytes into the node integer value for convenience.
+		 */
+
+		/* Get the two bytes (Type/Attribute) */
+
+		access_type = ACPI_GET8(parser_state->aml);
+		parser_state->aml++;
+		access_attribute = ACPI_GET8(parser_state->aml);
+		parser_state->aml++;
+
+		field->common.value.integer = (u8)access_type;
+		field->common.value.integer |= (u16)(access_attribute << 8);
+
+		/* This opcode has a third byte, access_length */
+
+		if (opcode == AML_INT_EXTACCESSFIELD_OP) {
+			access_length = ACPI_GET8(parser_state->aml);
+			parser_state->aml++;
+
+			field->common.value.integer |=
+			    (u32)(access_length << 16);
+		}
+		break;
+
+	case AML_INT_CONNECTION_OP:
+
+		/*
+		 * Argument for Connection operator can be either a Buffer
+		 * (resource descriptor), or a name_string.
+		 */
+		if (ACPI_GET8(parser_state->aml) == AML_BUFFER_OP) {
+			parser_state->aml++;
+
+			pkg_end = parser_state->aml;
+			pkg_length =
+			    acpi_ps_get_next_package_length(parser_state);
+			pkg_end += pkg_length;
+
+			if (parser_state->aml < pkg_end) {
+
+				/* Non-empty list */
+
+				arg = acpi_ps_alloc_op(AML_INT_BYTELIST_OP);
+				if (!arg) {
+					return_PTR(NULL);
+				}
+
+				/* Get the actual buffer length argument */
+
+				opcode = ACPI_GET8(parser_state->aml);
+				parser_state->aml++;
+
+				switch (opcode) {
+				case AML_BYTE_OP:	/* AML_BYTEDATA_ARG */
+					buffer_length =
+					    ACPI_GET8(parser_state->aml);
+					parser_state->aml += 1;
+					break;
+
+				case AML_WORD_OP:	/* AML_WORDDATA_ARG */
+					buffer_length =
+					    ACPI_GET16(parser_state->aml);
+					parser_state->aml += 2;
+					break;
+
+				case AML_DWORD_OP:	/* AML_DWORDATA_ARG */
+					buffer_length =
+					    ACPI_GET32(parser_state->aml);
+					parser_state->aml += 4;
+					break;
+
+				default:
+					buffer_length = 0;
+					break;
+				}
+
+				/* Fill in bytelist data */
+
+				arg->named.value.size = buffer_length;
+				arg->named.data = parser_state->aml;
+			}
+
+			/* Skip to End of byte data */
+
+			parser_state->aml = pkg_end;
+		} else {
+			arg = acpi_ps_alloc_op(AML_INT_NAMEPATH_OP);
+			if (!arg) {
+				return_PTR(NULL);
+			}
+
+			/* Get the Namestring argument */
+
+			arg->common.value.name =
+			    acpi_ps_get_next_namestring(parser_state);
+		}
+
+		/* Link the buffer/namestring to parent (CONNECTION_OP) */
+
+		acpi_ps_append_arg(field, arg);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	default:

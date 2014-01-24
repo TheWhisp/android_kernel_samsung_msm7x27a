@@ -2,7 +2,11 @@
  * Sonics Silicon Backplane
  * Broadcom USB-core OHCI driver
  *
+<<<<<<< HEAD
  * Copyright 2007 Michael Buesch <mb@bu3sch.de>
+=======
+ * Copyright 2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Derived from the OHCI-PCI driver
  * Copyright 1999 Roman Weissgaerber
@@ -169,7 +173,11 @@ static int ssb_ohci_attach(struct ssb_device *dev)
 	hcd->regs = ioremap_nocache(hcd->rsrc_start, hcd->rsrc_len);
 	if (!hcd->regs)
 		goto err_put_hcd;
+<<<<<<< HEAD
 	err = usb_add_hcd(hcd, dev->irq, IRQF_DISABLED | IRQF_SHARED);
+=======
+	err = usb_add_hcd(hcd, dev->irq, IRQF_SHARED);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto err_iounmap;
 

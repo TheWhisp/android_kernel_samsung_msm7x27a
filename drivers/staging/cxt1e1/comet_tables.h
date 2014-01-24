@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /*
  * $Id: comet_tables.h,v 1.5 2006/01/02 22:37:31 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _INC_COMET_TBLS_H_
 #define _INC_COMET_TBLS_H_
 
@@ -23,6 +26,7 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.5 $
  * Last changed on $Date: 2006/01/02 22:37:31 $
@@ -43,6 +47,8 @@
  * Add RCS tracking heading.
  *
  *-----------------------------------------------------------------------------
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 

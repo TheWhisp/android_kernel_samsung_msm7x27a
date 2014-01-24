@@ -101,6 +101,12 @@ static const dma_addr_t dma40_tx_map[DB8500_DMA_NR_DEV] = {
 	[DB8500_DMA_DEV41_SD_MM3_TX] = -1,
 	[DB8500_DMA_DEV42_SD_MM4_TX] = -1,
 	[DB8500_DMA_DEV43_SD_MM5_TX] = -1,
+<<<<<<< HEAD
+=======
+	[DB8500_DMA_DEV14_MSP2_TX] = U8500_MSP2_BASE + MSP_TX_RX_REG_OFFSET,
+	[DB8500_DMA_DEV30_MSP1_TX] = U8500_MSP1_BASE + MSP_TX_RX_REG_OFFSET,
+	[DB8500_DMA_DEV31_MSP0_TX_SLIM0_CH0_TX] = U8500_MSP0_BASE + MSP_TX_RX_REG_OFFSET,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Mapping between source event lines and physical device address */
@@ -133,6 +139,12 @@ static const dma_addr_t dma40_rx_map[DB8500_DMA_NR_DEV] = {
 	[DB8500_DMA_DEV41_SD_MM3_RX] = -1,
 	[DB8500_DMA_DEV42_SD_MM4_RX] = -1,
 	[DB8500_DMA_DEV43_SD_MM5_RX] = -1,
+<<<<<<< HEAD
+=======
+	[DB8500_DMA_DEV14_MSP2_RX] = U8500_MSP2_BASE + MSP_TX_RX_REG_OFFSET,
+	[DB8500_DMA_DEV30_MSP3_RX] = U8500_MSP3_BASE + MSP_TX_RX_REG_OFFSET,
+	[DB8500_DMA_DEV31_MSP0_RX_SLIM0_CH0_RX] = U8500_MSP0_BASE + MSP_TX_RX_REG_OFFSET,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Reserved event lines for memcpy only */
@@ -166,6 +178,7 @@ struct platform_device u8500_dma40_device = {
 	.resource = dma40_resources
 };
 
+<<<<<<< HEAD
 void dma40_u8500ed_fixup(void)
 {
 	dma40_plat_data.memcpy = NULL;
@@ -176,6 +189,8 @@ void dma40_u8500ed_fixup(void)
 	dma40_resources[1].end = U8500_DMA_LCPA_BASE_ED + 2 * SZ_1K - 1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct resource keypad_resources[] = {
 	[0] = {
 		.start = U8500_SKE_BASE,

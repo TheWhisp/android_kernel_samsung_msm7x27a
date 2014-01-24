@@ -12,7 +12,11 @@
 #include <asm/pgalloc.h>
 #include <asm/uaccess.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
 #include <asm-generic/mm_hooks.h>
+=======
+#include <asm/ctl_reg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int init_new_context(struct task_struct *tsk,
 				   struct mm_struct *mm)
@@ -92,4 +96,20 @@ static inline void activate_mm(struct mm_struct *prev,
         switch_mm(prev, next, current);
 }
 
+<<<<<<< HEAD
+=======
+static inline void arch_dup_mmap(struct mm_struct *oldmm,
+				 struct mm_struct *mm)
+{
+#ifdef CONFIG_64BIT
+	if (oldmm->context.asce_limit < mm->context.asce_limit)
+		crst_table_downgrade(mm, oldmm->context.asce_limit);
+#endif
+}
+
+static inline void arch_exit_mmap(struct mm_struct *mm)
+{
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __S390_MMU_CONTEXT_H */

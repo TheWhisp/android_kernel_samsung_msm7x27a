@@ -14,6 +14,10 @@
 #include <linux/init.h>
 #include <linux/types.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/suspend.h>
 #include <linux/delay.h>
 #include <linux/device.h>

@@ -85,7 +85,11 @@ static int __init uclinux_mtd_init(void)
 	}
 
 	mtd->owner = THIS_MODULE;
+<<<<<<< HEAD
 	mtd->point = uclinux_point;
+=======
+	mtd->_point = uclinux_point;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mtd->priv = mapp;
 
 	uclinux_ram_mtdinfo = mtd;

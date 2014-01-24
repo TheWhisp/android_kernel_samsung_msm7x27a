@@ -26,6 +26,7 @@
 #include <linux/jiffies.h>
 #include <asm/processor.h>
 
+<<<<<<< HEAD
 typedef u64 cputime_t;
 typedef u64 cputime64_t;
 
@@ -46,32 +47,66 @@ typedef u64 cputime64_t;
 #define cputime64_add(__a, __b)		((__a) + (__b))
 #define cputime64_sub(__a, __b)		((__a) - (__b))
 #define cputime_to_cputime64(__ct)	(__ct)
+=======
+typedef u64 __nocast cputime_t;
+typedef u64 __nocast cputime64_t;
+
+#define cputime_one_jiffy		jiffies_to_cputime(1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Convert cputime <-> jiffies (HZ)
  */
+<<<<<<< HEAD
 #define cputime_to_jiffies(__ct)	((__ct) / (NSEC_PER_SEC / HZ))
 #define jiffies_to_cputime(__jif)	((__jif) * (NSEC_PER_SEC / HZ))
 #define cputime64_to_jiffies64(__ct)	((__ct) / (NSEC_PER_SEC / HZ))
 #define jiffies64_to_cputime64(__jif)	((__jif) * (NSEC_PER_SEC / HZ))
+=======
+#define cputime_to_jiffies(__ct)	\
+	((__force u64)(__ct) / (NSEC_PER_SEC / HZ))
+#define jiffies_to_cputime(__jif)	\
+	(__force cputime_t)((__jif) * (NSEC_PER_SEC / HZ))
+#define cputime64_to_jiffies64(__ct)	\
+	((__force u64)(__ct) / (NSEC_PER_SEC / HZ))
+#define jiffies64_to_cputime64(__jif)	\
+	(__force cputime64_t)((__jif) * (NSEC_PER_SEC / HZ))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Convert cputime <-> microseconds
  */
+<<<<<<< HEAD
 #define cputime_to_usecs(__ct)		((__ct) / NSEC_PER_USEC)
 #define usecs_to_cputime(__usecs)	((__usecs) * NSEC_PER_USEC)
+=======
+#define cputime_to_usecs(__ct)		\
+	((__force u64)(__ct) / NSEC_PER_USEC)
+#define usecs_to_cputime(__usecs)	\
+	(__force cputime_t)((__usecs) * NSEC_PER_USEC)
+#define usecs_to_cputime64(__usecs)	\
+	(__force cputime64_t)((__usecs) * NSEC_PER_USEC)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Convert cputime <-> seconds
  */
+<<<<<<< HEAD
 #define cputime_to_secs(__ct)		((__ct) / NSEC_PER_SEC)
 #define secs_to_cputime(__secs)		((__secs) * NSEC_PER_SEC)
+=======
+#define cputime_to_secs(__ct)		\
+	((__force u64)(__ct) / NSEC_PER_SEC)
+#define secs_to_cputime(__secs)		\
+	(__force cputime_t)((__secs) * NSEC_PER_SEC)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Convert cputime <-> timespec (nsec)
  */
 static inline cputime_t timespec_to_cputime(const struct timespec *val)
 {
+<<<<<<< HEAD
 	cputime_t ret = val->tv_sec * NSEC_PER_SEC;
 	return (ret + val->tv_nsec);
 }
@@ -79,6 +114,15 @@ static inline void cputime_to_timespec(const cputime_t ct, struct timespec *val)
 {
 	val->tv_sec  = ct / NSEC_PER_SEC;
 	val->tv_nsec = ct % NSEC_PER_SEC;
+=======
+	u64 ret = val->tv_sec * NSEC_PER_SEC + val->tv_nsec;
+	return (__force cputime_t) ret;
+}
+static inline void cputime_to_timespec(const cputime_t ct, struct timespec *val)
+{
+	val->tv_sec  = (__force u64) ct / NSEC_PER_SEC;
+	val->tv_nsec = (__force u64) ct % NSEC_PER_SEC;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -86,6 +130,7 @@ static inline void cputime_to_timespec(const cputime_t ct, struct timespec *val)
  */
 static inline cputime_t timeval_to_cputime(struct timeval *val)
 {
+<<<<<<< HEAD
 	cputime_t ret = val->tv_sec * NSEC_PER_SEC;
 	return (ret + val->tv_usec * NSEC_PER_USEC);
 }
@@ -93,18 +138,39 @@ static inline void cputime_to_timeval(const cputime_t ct, struct timeval *val)
 {
 	val->tv_sec = ct / NSEC_PER_SEC;
 	val->tv_usec = (ct % NSEC_PER_SEC) / NSEC_PER_USEC;
+=======
+	u64 ret = val->tv_sec * NSEC_PER_SEC + val->tv_usec * NSEC_PER_USEC;
+	return (__force cputime_t) ret;
+}
+static inline void cputime_to_timeval(const cputime_t ct, struct timeval *val)
+{
+	val->tv_sec = (__force u64) ct / NSEC_PER_SEC;
+	val->tv_usec = ((__force u64) ct % NSEC_PER_SEC) / NSEC_PER_USEC;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
  * Convert cputime <-> clock (USER_HZ)
  */
+<<<<<<< HEAD
 #define cputime_to_clock_t(__ct)	((__ct) / (NSEC_PER_SEC / USER_HZ))
 #define clock_t_to_cputime(__x)		((__x) * (NSEC_PER_SEC / USER_HZ))
+=======
+#define cputime_to_clock_t(__ct)	\
+	((__force u64)(__ct) / (NSEC_PER_SEC / USER_HZ))
+#define clock_t_to_cputime(__x)		\
+	(__force cputime_t)((__x) * (NSEC_PER_SEC / USER_HZ))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Convert cputime64 to clock.
  */
+<<<<<<< HEAD
 #define cputime64_to_clock_t(__ct)      cputime_to_clock_t((cputime_t)__ct)
+=======
+#define cputime64_to_clock_t(__ct)	\
+	cputime_to_clock_t((__force cputime_t)__ct)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* CONFIG_VIRT_CPU_ACCOUNTING */
 #endif /* __IA64_CPUTIME_H */

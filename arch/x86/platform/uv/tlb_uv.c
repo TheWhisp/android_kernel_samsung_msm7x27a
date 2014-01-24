@@ -157,13 +157,22 @@ static int __init uvhub_to_first_apicid(int uvhub)
  * clear of the Timeout bit (as well) will free the resource. No reply will
  * be sent (the hardware will only do one reply per message).
  */
+<<<<<<< HEAD
 static void reply_to_message(struct msg_desc *mdp, struct bau_control *bcp)
+=======
+static void reply_to_message(struct msg_desc *mdp, struct bau_control *bcp,
+						int do_acknowledge)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long dw;
 	struct bau_pq_entry *msg;
 
 	msg = mdp->msg;
+<<<<<<< HEAD
 	if (!msg->canceled) {
+=======
+	if (!msg->canceled && do_acknowledge) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dw = (msg->swack_vec << UV_SW_ACK_NPENDING) | msg->swack_vec;
 		write_mmr_sw_ack(dw);
 	}
@@ -212,8 +221,13 @@ static void bau_process_retry_msg(struct msg_desc *mdp,
 			if (mmr & (msg_res << UV_SW_ACK_NPENDING)) {
 				unsigned long mr;
 				/*
+<<<<<<< HEAD
 				 * is the resource timed out?
 				 * make everyone ignore the cancelled message.
+=======
+				 * Is the resource timed out?
+				 * Make everyone ignore the cancelled message.
+>>>>>>> refs/remotes/origin/cm-10.0
 				 */
 				msg2->canceled = 1;
 				stat->d_canceled++;
@@ -231,8 +245,13 @@ static void bau_process_retry_msg(struct msg_desc *mdp,
  * Do all the things a cpu should do for a TLB shootdown message.
  * Other cpu's may come here at the same time for this message.
  */
+<<<<<<< HEAD
 static void bau_process_message(struct msg_desc *mdp,
 					struct bau_control *bcp)
+=======
+static void bau_process_message(struct msg_desc *mdp, struct bau_control *bcp,
+						int do_acknowledge)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	short socket_ack_count = 0;
 	short *sp;
@@ -284,8 +303,14 @@ static void bau_process_message(struct msg_desc *mdp,
 		if (msg_ack_count == bcp->cpus_in_uvhub) {
 			/*
 			 * All cpus in uvhub saw it; reply
+<<<<<<< HEAD
 			 */
 			reply_to_message(mdp, bcp);
+=======
+			 * (unless we are in the UV2 workaround)
+			 */
+			reply_to_message(mdp, bcp, do_acknowledge);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -293,6 +318,7 @@ static void bau_process_message(struct msg_desc *mdp,
 }
 
 /*
+<<<<<<< HEAD
  * Determine the first cpu on a uvhub.
  */
 static int uvhub_to_first_cpu(int uvhub)
@@ -301,6 +327,20 @@ static int uvhub_to_first_cpu(int uvhub)
 	for_each_present_cpu(cpu)
 		if (uvhub == uv_cpu_to_blade_id(cpu))
 			return cpu;
+=======
+ * Determine the first cpu on a pnode.
+ */
+static int pnode_to_first_cpu(int pnode, struct bau_control *smaster)
+{
+	int cpu;
+	struct hub_and_pnode *hpp;
+
+	for_each_present_cpu(cpu) {
+		hpp = &smaster->thp[cpu];
+		if (pnode == hpp->pnode)
+			return cpu;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -1;
 }
 
@@ -363,6 +403,7 @@ static void do_reset(void *ptr)
  * Use IPI to get all target uvhubs to release resources held by
  * a given sending cpu number.
  */
+<<<<<<< HEAD
 static void reset_with_ipi(struct bau_targ_hubmask *distribution, int sender)
 {
 	int uvhub;
@@ -385,6 +426,34 @@ static void reset_with_ipi(struct bau_targ_hubmask *distribution, int sender)
 
 	/* IPI all cpus; preemption is already disabled */
 	smp_call_function_many(&mask, do_reset, (void *)&reset_args, 1);
+=======
+static void reset_with_ipi(struct pnmask *distribution, struct bau_control *bcp)
+{
+	int pnode;
+	int apnode;
+	int maskbits;
+	int sender = bcp->cpu;
+	cpumask_t *mask = bcp->uvhub_master->cpumask;
+	struct bau_control *smaster = bcp->socket_master;
+	struct reset_args reset_args;
+
+	reset_args.sender = sender;
+	cpus_clear(*mask);
+	/* find a single cpu for each uvhub in this distribution mask */
+	maskbits = sizeof(struct pnmask) * BITSPERBYTE;
+	/* each bit is a pnode relative to the partition base pnode */
+	for (pnode = 0; pnode < maskbits; pnode++) {
+		int cpu;
+		if (!bau_uvhub_isset(pnode, distribution))
+			continue;
+		apnode = pnode + bcp->partition_base_pnode;
+		cpu = pnode_to_first_cpu(apnode, smaster);
+		cpu_set(cpu, *mask);
+	}
+
+	/* IPI all cpus; preemption is already disabled */
+	smp_call_function_many(mask, do_reset, (void *)&reset_args, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return;
 }
 
@@ -483,27 +552,156 @@ static int uv1_wait_completion(struct bau_desc *bau_desc,
 /*
  * UV2 has an extra bit of status in the ACTIVATION_STATUS_2 register.
  */
+<<<<<<< HEAD
 static unsigned long uv2_read_status(unsigned long offset, int rshft, int cpu)
+=======
+static unsigned long uv2_read_status(unsigned long offset, int rshft, int desc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long descriptor_status;
 	unsigned long descriptor_status2;
 
 	descriptor_status = ((read_lmmr(offset) >> rshft) & UV_ACT_STATUS_MASK);
+<<<<<<< HEAD
 	descriptor_status2 = (read_mmr_uv2_status() >> cpu) & 0x1UL;
+=======
+	descriptor_status2 = (read_mmr_uv2_status() >> desc) & 0x1UL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	descriptor_status = (descriptor_status << 1) | descriptor_status2;
 	return descriptor_status;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * Return whether the status of the descriptor that is normally used for this
+ * cpu (the one indexed by its hub-relative cpu number) is busy.
+ * The status of the original 32 descriptors is always reflected in the 64
+ * bits of UVH_LB_BAU_SB_ACTIVATION_STATUS_0.
+ * The bit provided by the activation_status_2 register is irrelevant to
+ * the status if it is only being tested for busy or not busy.
+ */
+int normal_busy(struct bau_control *bcp)
+{
+	int cpu = bcp->uvhub_cpu;
+	int mmr_offset;
+	int right_shift;
+
+	mmr_offset = UVH_LB_BAU_SB_ACTIVATION_STATUS_0;
+	right_shift = cpu * UV_ACT_STATUS_SIZE;
+	return (((((read_lmmr(mmr_offset) >> right_shift) &
+				UV_ACT_STATUS_MASK)) << 1) == UV2H_DESC_BUSY);
+}
+
+/*
+ * Entered when a bau descriptor has gone into a permanent busy wait because
+ * of a hardware bug.
+ * Workaround the bug.
+ */
+int handle_uv2_busy(struct bau_control *bcp)
+{
+	int busy_one = bcp->using_desc;
+	int normal = bcp->uvhub_cpu;
+	int selected = -1;
+	int i;
+	unsigned long descriptor_status;
+	unsigned long status;
+	int mmr_offset;
+	struct bau_desc *bau_desc_old;
+	struct bau_desc *bau_desc_new;
+	struct bau_control *hmaster = bcp->uvhub_master;
+	struct ptc_stats *stat = bcp->statp;
+	cycles_t ttm;
+
+	stat->s_uv2_wars++;
+	spin_lock(&hmaster->uvhub_lock);
+	/* try for the original first */
+	if (busy_one != normal) {
+		if (!normal_busy(bcp))
+			selected = normal;
+	}
+	if (selected < 0) {
+		/* can't use the normal, select an alternate */
+		mmr_offset = UVH_LB_BAU_SB_ACTIVATION_STATUS_1;
+		descriptor_status = read_lmmr(mmr_offset);
+
+		/* scan available descriptors 32-63 */
+		for (i = 0; i < UV_CPUS_PER_AS; i++) {
+			if ((hmaster->inuse_map & (1 << i)) == 0) {
+				status = ((descriptor_status >>
+						(i * UV_ACT_STATUS_SIZE)) &
+						UV_ACT_STATUS_MASK) << 1;
+				if (status != UV2H_DESC_BUSY) {
+					selected = i + UV_CPUS_PER_AS;
+					break;
+				}
+			}
+		}
+	}
+
+	if (busy_one != normal)
+		/* mark the busy alternate as not in-use */
+		hmaster->inuse_map &= ~(1 << (busy_one - UV_CPUS_PER_AS));
+
+	if (selected >= 0) {
+		/* switch to the selected descriptor */
+		if (selected != normal) {
+			/* set the selected alternate as in-use */
+			hmaster->inuse_map |=
+					(1 << (selected - UV_CPUS_PER_AS));
+			if (selected > stat->s_uv2_wars_hw)
+				stat->s_uv2_wars_hw = selected;
+		}
+		bau_desc_old = bcp->descriptor_base;
+		bau_desc_old += (ITEMS_PER_DESC * busy_one);
+		bcp->using_desc = selected;
+		bau_desc_new = bcp->descriptor_base;
+		bau_desc_new += (ITEMS_PER_DESC * selected);
+		*bau_desc_new = *bau_desc_old;
+	} else {
+		/*
+		 * All are busy. Wait for the normal one for this cpu to
+		 * free up.
+		 */
+		stat->s_uv2_war_waits++;
+		spin_unlock(&hmaster->uvhub_lock);
+		ttm = get_cycles();
+		do {
+			cpu_relax();
+		} while (normal_busy(bcp));
+		spin_lock(&hmaster->uvhub_lock);
+		/* switch to the original descriptor */
+		bcp->using_desc = normal;
+		bau_desc_old = bcp->descriptor_base;
+		bau_desc_old += (ITEMS_PER_DESC * bcp->using_desc);
+		bcp->using_desc = (ITEMS_PER_DESC * normal);
+		bau_desc_new = bcp->descriptor_base;
+		bau_desc_new += (ITEMS_PER_DESC * normal);
+		*bau_desc_new = *bau_desc_old; /* copy the entire descriptor */
+	}
+	spin_unlock(&hmaster->uvhub_lock);
+	return FLUSH_RETRY_BUSYBUG;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int uv2_wait_completion(struct bau_desc *bau_desc,
 				unsigned long mmr_offset, int right_shift,
 				struct bau_control *bcp, long try)
 {
 	unsigned long descriptor_stat;
 	cycles_t ttm;
+<<<<<<< HEAD
 	int cpu = bcp->uvhub_cpu;
 	struct ptc_stats *stat = bcp->statp;
 
 	descriptor_stat = uv2_read_status(mmr_offset, right_shift, cpu);
+=======
+	int desc = bcp->using_desc;
+	long busy_reps = 0;
+	struct ptc_stats *stat = bcp->statp;
+
+	descriptor_stat = uv2_read_status(mmr_offset, right_shift, desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* spin on the status MMR, waiting for it to go idle */
 	while (descriptor_stat != UV2H_DESC_IDLE) {
@@ -514,6 +712,7 @@ static int uv2_wait_completion(struct bau_desc *bau_desc,
 		 * our message and its state will stay IDLE.
 		 */
 		if ((descriptor_stat == UV2H_DESC_SOURCE_TIMEOUT) ||
+<<<<<<< HEAD
 		    (descriptor_stat == UV2H_DESC_DEST_STRONG_NACK) ||
 		    (descriptor_stat == UV2H_DESC_DEST_PUT_ERR)) {
 			stat->s_stimeout++;
@@ -534,12 +733,41 @@ static int uv2_wait_completion(struct bau_desc *bau_desc,
 			bcp->conseccompletes = 0;
 			return FLUSH_RETRY_TIMEOUT;
 		} else {
+=======
+		    (descriptor_stat == UV2H_DESC_DEST_PUT_ERR)) {
+			stat->s_stimeout++;
+			return FLUSH_GIVEUP;
+		} else if (descriptor_stat == UV2H_DESC_DEST_STRONG_NACK) {
+			stat->s_strongnacks++;
+			bcp->conseccompletes = 0;
+			return FLUSH_GIVEUP;
+		} else if (descriptor_stat == UV2H_DESC_DEST_TIMEOUT) {
+			stat->s_dtimeout++;
+			bcp->conseccompletes = 0;
+			return FLUSH_RETRY_TIMEOUT;
+		} else {
+			busy_reps++;
+			if (busy_reps > 1000000) {
+				/* not to hammer on the clock */
+				busy_reps = 0;
+				ttm = get_cycles();
+				if ((ttm - bcp->send_message) >
+					(bcp->clocks_per_100_usec)) {
+					return handle_uv2_busy(bcp);
+				}
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * descriptor_stat is still BUSY
 			 */
 			cpu_relax();
 		}
+<<<<<<< HEAD
 		descriptor_stat = uv2_read_status(mmr_offset, right_shift, cpu);
+=======
+		descriptor_stat = uv2_read_status(mmr_offset, right_shift,
+									desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	bcp->conseccompletes++;
 	return FLUSH_COMPLETE;
@@ -555,6 +783,7 @@ static int wait_completion(struct bau_desc *bau_desc,
 {
 	int right_shift;
 	unsigned long mmr_offset;
+<<<<<<< HEAD
 	int cpu = bcp->uvhub_cpu;
 
 	if (cpu < UV_CPUS_PER_AS) {
@@ -566,6 +795,19 @@ static int wait_completion(struct bau_desc *bau_desc,
 	}
 
 	if (is_uv1_hub())
+=======
+	int desc = bcp->using_desc;
+
+	if (desc < UV_CPUS_PER_AS) {
+		mmr_offset = UVH_LB_BAU_SB_ACTIVATION_STATUS_0;
+		right_shift = desc * UV_ACT_STATUS_SIZE;
+	} else {
+		mmr_offset = UVH_LB_BAU_SB_ACTIVATION_STATUS_1;
+		right_shift = ((desc - UV_CPUS_PER_AS) * UV_ACT_STATUS_SIZE);
+	}
+
+	if (bcp->uvhub_version == 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return uv1_wait_completion(bau_desc, mmr_offset, right_shift,
 								bcp, try);
 	else
@@ -601,7 +843,11 @@ static void destination_plugged(struct bau_desc *bau_desc,
 		quiesce_local_uvhub(hmaster);
 
 		spin_lock(&hmaster->queue_lock);
+<<<<<<< HEAD
 		reset_with_ipi(&bau_desc->distribution, bcp->cpu);
+=======
+		reset_with_ipi(&bau_desc->distribution, bcp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock(&hmaster->queue_lock);
 
 		end_uvhub_quiesce(hmaster);
@@ -623,7 +869,11 @@ static void destination_timeout(struct bau_desc *bau_desc,
 		quiesce_local_uvhub(hmaster);
 
 		spin_lock(&hmaster->queue_lock);
+<<<<<<< HEAD
 		reset_with_ipi(&bau_desc->distribution, bcp->cpu);
+=======
+		reset_with_ipi(&bau_desc->distribution, bcp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock(&hmaster->queue_lock);
 
 		end_uvhub_quiesce(hmaster);
@@ -744,19 +994,35 @@ static void handle_cmplt(int completion_status, struct bau_desc *bau_desc,
  * Returns 1 if it gives up entirely and the original cpu mask is to be
  * returned to the kernel.
  */
+<<<<<<< HEAD
 int uv_flush_send_and_wait(struct bau_desc *bau_desc,
 			struct cpumask *flush_mask, struct bau_control *bcp)
 {
 	int seq_number = 0;
 	int completion_stat = 0;
+=======
+int uv_flush_send_and_wait(struct cpumask *flush_mask, struct bau_control *bcp)
+{
+	int seq_number = 0;
+	int completion_stat = 0;
+	int uv1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	long try = 0;
 	unsigned long index;
 	cycles_t time1;
 	cycles_t time2;
 	struct ptc_stats *stat = bcp->statp;
 	struct bau_control *hmaster = bcp->uvhub_master;
+<<<<<<< HEAD
 
 	if (is_uv1_hub())
+=======
+	struct uv1_bau_msg_header *uv1_hdr = NULL;
+	struct uv2_bau_msg_header *uv2_hdr = NULL;
+	struct bau_desc *bau_desc;
+
+	if (bcp->uvhub_version == 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 		uv1_throttle(hmaster, stat);
 
 	while (hmaster->uvhub_quiesce)
@@ -764,6 +1030,7 @@ int uv_flush_send_and_wait(struct bau_desc *bau_desc,
 
 	time1 = get_cycles();
 	do {
+<<<<<<< HEAD
 		if (try == 0) {
 			bau_desc->header.msg_type = MSG_REGULAR;
 			seq_number = bcp->message_number++;
@@ -774,12 +1041,44 @@ int uv_flush_send_and_wait(struct bau_desc *bau_desc,
 
 		bau_desc->header.sequence = seq_number;
 		index = (1UL << AS_PUSH_SHIFT) | bcp->uvhub_cpu;
+=======
+		bau_desc = bcp->descriptor_base;
+		bau_desc += (ITEMS_PER_DESC * bcp->using_desc);
+		if (bcp->uvhub_version == 1) {
+			uv1 = 1;
+			uv1_hdr = &bau_desc->header.uv1_hdr;
+		} else
+			uv2_hdr = &bau_desc->header.uv2_hdr;
+		if ((try == 0) || (completion_stat == FLUSH_RETRY_BUSYBUG)) {
+			if (uv1)
+				uv1_hdr->msg_type = MSG_REGULAR;
+			else
+				uv2_hdr->msg_type = MSG_REGULAR;
+			seq_number = bcp->message_number++;
+		} else {
+			if (uv1)
+				uv1_hdr->msg_type = MSG_RETRY;
+			else
+				uv2_hdr->msg_type = MSG_RETRY;
+			stat->s_retry_messages++;
+		}
+
+		if (uv1)
+			uv1_hdr->sequence = seq_number;
+		else
+			uv2_hdr->sequence = seq_number;
+		index = (1UL << AS_PUSH_SHIFT) | bcp->using_desc;
+>>>>>>> refs/remotes/origin/cm-10.0
 		bcp->send_message = get_cycles();
 
 		write_mmr_activation(index);
 
 		try++;
 		completion_stat = wait_completion(bau_desc, bcp, try);
+<<<<<<< HEAD
+=======
+		/* UV2: wait_completion() may change the bcp->using_desc */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		handle_cmplt(completion_stat, bau_desc, bcp, hmaster, stat);
 
@@ -790,6 +1089,10 @@ int uv_flush_send_and_wait(struct bau_desc *bau_desc,
 		}
 		cpu_relax();
 	} while ((completion_stat == FLUSH_RETRY_PLUGGED) ||
+<<<<<<< HEAD
+=======
+		 (completion_stat == FLUSH_RETRY_BUSYBUG) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 		 (completion_stat == FLUSH_RETRY_TIMEOUT));
 
 	time2 = get_cycles();
@@ -804,6 +1107,10 @@ int uv_flush_send_and_wait(struct bau_desc *bau_desc,
 	record_send_stats(time1, time2, bcp, stat, completion_stat, try);
 
 	if (completion_stat == FLUSH_GIVEUP)
+<<<<<<< HEAD
+=======
+		/* FLUSH_GIVEUP will fall back to using IPI's for tlb flush */
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 	return 0;
 }
@@ -959,7 +1266,11 @@ const struct cpumask *uv_flush_tlb_others(const struct cpumask *cpumask,
 		stat->s_ntargself++;
 
 	bau_desc = bcp->descriptor_base;
+<<<<<<< HEAD
 	bau_desc += ITEMS_PER_DESC * bcp->uvhub_cpu;
+=======
+	bau_desc += (ITEMS_PER_DESC * bcp->using_desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	bau_uvhubs_clear(&bau_desc->distribution, UV_DISTRIBUTION_SIZE);
 	if (set_distrib_bits(flush_mask, bcp, bau_desc, &locals, &remotes))
 		return NULL;
@@ -972,13 +1283,93 @@ const struct cpumask *uv_flush_tlb_others(const struct cpumask *cpumask,
 	 * uv_flush_send_and_wait returns 0 if all cpu's were messaged,
 	 * or 1 if it gave up and the original cpumask should be returned.
 	 */
+<<<<<<< HEAD
 	if (!uv_flush_send_and_wait(bau_desc, flush_mask, bcp))
+=======
+	if (!uv_flush_send_and_wait(flush_mask, bcp))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return NULL;
 	else
 		return cpumask;
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Search the message queue for any 'other' message with the same software
+ * acknowledge resource bit vector.
+ */
+struct bau_pq_entry *find_another_by_swack(struct bau_pq_entry *msg,
+			struct bau_control *bcp, unsigned char swack_vec)
+{
+	struct bau_pq_entry *msg_next = msg + 1;
+
+	if (msg_next > bcp->queue_last)
+		msg_next = bcp->queue_first;
+	while ((msg_next->swack_vec != 0) && (msg_next != msg)) {
+		if (msg_next->swack_vec == swack_vec)
+			return msg_next;
+		msg_next++;
+		if (msg_next > bcp->queue_last)
+			msg_next = bcp->queue_first;
+	}
+	return NULL;
+}
+
+/*
+ * UV2 needs to work around a bug in which an arriving message has not
+ * set a bit in the UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE register.
+ * Such a message must be ignored.
+ */
+void process_uv2_message(struct msg_desc *mdp, struct bau_control *bcp)
+{
+	unsigned long mmr_image;
+	unsigned char swack_vec;
+	struct bau_pq_entry *msg = mdp->msg;
+	struct bau_pq_entry *other_msg;
+
+	mmr_image = read_mmr_sw_ack();
+	swack_vec = msg->swack_vec;
+
+	if ((swack_vec & mmr_image) == 0) {
+		/*
+		 * This message was assigned a swack resource, but no
+		 * reserved acknowlegment is pending.
+		 * The bug has prevented this message from setting the MMR.
+		 * And no other message has used the same sw_ack resource.
+		 * Do the requested shootdown but do not reply to the msg.
+		 * (the 0 means make no acknowledge)
+		 */
+		bau_process_message(mdp, bcp, 0);
+		return;
+	}
+
+	/*
+	 * Some message has set the MMR 'pending' bit; it might have been
+	 * another message.  Look for that message.
+	 */
+	other_msg = find_another_by_swack(msg, bcp, msg->swack_vec);
+	if (other_msg) {
+		/* There is another.  Do not ack the current one. */
+		bau_process_message(mdp, bcp, 0);
+		/*
+		 * Let the natural processing of that message acknowledge
+		 * it. Don't get the processing of sw_ack's out of order.
+		 */
+		return;
+	}
+
+	/*
+	 * There is no other message using this sw_ack, so it is safe to
+	 * acknowledge it.
+	 */
+	bau_process_message(mdp, bcp, 1);
+
+	return;
+}
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * The BAU message interrupt comes here. (registered by set_intr_gate)
  * See entry_64.S
  *
@@ -1001,6 +1392,10 @@ void uv_bau_message_interrupt(struct pt_regs *regs)
 	struct ptc_stats *stat;
 	struct msg_desc msgdesc;
 
+<<<<<<< HEAD
+=======
+	ack_APIC_irq();
+>>>>>>> refs/remotes/origin/cm-10.0
 	time_start = get_cycles();
 
 	bcp = &per_cpu(bau_control, smp_processor_id());
@@ -1014,9 +1409,17 @@ void uv_bau_message_interrupt(struct pt_regs *regs)
 		count++;
 
 		msgdesc.msg_slot = msg - msgdesc.queue_first;
+<<<<<<< HEAD
 		msgdesc.swack_slot = ffs(msg->swack_vec) - 1;
 		msgdesc.msg = msg;
 		bau_process_message(&msgdesc, bcp);
+=======
+		msgdesc.msg = msg;
+		if (bcp->uvhub_version == 2)
+			process_uv2_message(&msgdesc, bcp);
+		else
+			bau_process_message(&msgdesc, bcp, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		msg++;
 		if (msg > msgdesc.queue_last)
@@ -1028,8 +1431,11 @@ void uv_bau_message_interrupt(struct pt_regs *regs)
 		stat->d_nomsg++;
 	else if (count > 1)
 		stat->d_multmsg++;
+<<<<<<< HEAD
 
 	ack_APIC_irq();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1075,7 +1481,10 @@ static void __init enable_timeouts(void)
 		 */
 		mmr_image |= (1L << SOFTACK_MSHIFT);
 		if (is_uv2_hub()) {
+<<<<<<< HEAD
 			mmr_image |= (1L << UV2_LEG_SHFT);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			mmr_image |= (1L << UV2_EXT_SHFT);
 		}
 		write_mmr_misc_control(pnode, mmr_image);
@@ -1128,13 +1537,21 @@ static int ptc_seq_show(struct seq_file *file, void *data)
 		seq_printf(file,
 			"remotehub numuvhubs numuvhubs16 numuvhubs8 ");
 		seq_printf(file,
+<<<<<<< HEAD
 			"numuvhubs4 numuvhubs2 numuvhubs1 dto retries rok ");
+=======
+		    "numuvhubs4 numuvhubs2 numuvhubs1 dto snacks retries rok ");
+>>>>>>> refs/remotes/origin/cm-10.0
 		seq_printf(file,
 			"resetp resett giveup sto bz throt swack recv rtime ");
 		seq_printf(file,
 			"all one mult none retry canc nocan reset rcan ");
 		seq_printf(file,
+<<<<<<< HEAD
 			"disable enable\n");
+=======
+			"disable enable wars warshw warwaits\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (cpu < num_possible_cpus() && cpu_online(cpu)) {
 		stat = &per_cpu(ptcstats, cpu);
@@ -1146,10 +1563,17 @@ static int ptc_seq_show(struct seq_file *file, void *data)
 			   stat->s_ntargremotes, stat->s_ntargcpu,
 			   stat->s_ntarglocaluvhub, stat->s_ntargremoteuvhub,
 			   stat->s_ntarguvhub, stat->s_ntarguvhub16);
+<<<<<<< HEAD
 		seq_printf(file, "%ld %ld %ld %ld %ld ",
 			   stat->s_ntarguvhub8, stat->s_ntarguvhub4,
 			   stat->s_ntarguvhub2, stat->s_ntarguvhub1,
 			   stat->s_dtimeout);
+=======
+		seq_printf(file, "%ld %ld %ld %ld %ld %ld ",
+			   stat->s_ntarguvhub8, stat->s_ntarguvhub4,
+			   stat->s_ntarguvhub2, stat->s_ntarguvhub1,
+			   stat->s_dtimeout, stat->s_strongnacks);
+>>>>>>> refs/remotes/origin/cm-10.0
 		seq_printf(file, "%ld %ld %ld %ld %ld %ld %ld %ld ",
 			   stat->s_retry_messages, stat->s_retriesok,
 			   stat->s_resets_plug, stat->s_resets_timeout,
@@ -1165,8 +1589,15 @@ static int ptc_seq_show(struct seq_file *file, void *data)
 			   stat->d_nomsg, stat->d_retries, stat->d_canceled,
 			   stat->d_nocanceled, stat->d_resets,
 			   stat->d_rcanceled);
+<<<<<<< HEAD
 		seq_printf(file, "%ld %ld\n",
 			stat->s_bau_disabled, stat->s_bau_reenabled);
+=======
+		seq_printf(file, "%ld %ld %ld %ld %ld\n",
+			stat->s_bau_disabled, stat->s_bau_reenabled,
+			stat->s_uv2_wars, stat->s_uv2_wars_hw,
+			stat->s_uv2_war_waits);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }
@@ -1331,9 +1762,16 @@ static ssize_t tunables_write(struct file *file, const char __user *user,
 
 	instr[count] = '\0';
 
+<<<<<<< HEAD
 	bcp = &per_cpu(bau_control, smp_processor_id());
 
 	ret = parse_tunables_write(bcp, instr, count);
+=======
+	cpu = get_cpu();
+	bcp = &per_cpu(bau_control, cpu);
+	ret = parse_tunables_write(bcp, instr, count);
+	put_cpu();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		return ret;
 
@@ -1423,12 +1861,21 @@ static void activation_descriptor_init(int node, int pnode, int base_pnode)
 {
 	int i;
 	int cpu;
+<<<<<<< HEAD
+=======
+	int uv1 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long gpa;
 	unsigned long m;
 	unsigned long n;
 	size_t dsize;
 	struct bau_desc *bau_desc;
 	struct bau_desc *bd2;
+<<<<<<< HEAD
+=======
+	struct uv1_bau_msg_header *uv1_hdr;
+	struct uv2_bau_msg_header *uv2_hdr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct bau_control *bcp;
 
 	/*
@@ -1442,6 +1889,11 @@ static void activation_descriptor_init(int node, int pnode, int base_pnode)
 	gpa = uv_gpa(bau_desc);
 	n = uv_gpa_to_gnode(gpa);
 	m = uv_gpa_to_offset(gpa);
+<<<<<<< HEAD
+=======
+	if (is_uv1_hub())
+		uv1 = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* the 14-bit pnode */
 	write_mmr_descriptor_base(pnode, (n << UV_DESC_PSHIFT | m));
@@ -1452,6 +1904,7 @@ static void activation_descriptor_init(int node, int pnode, int base_pnode)
 	 */
 	for (i = 0, bd2 = bau_desc; i < (ADP_SZ * ITEMS_PER_DESC); i++, bd2++) {
 		memset(bd2, 0, sizeof(struct bau_desc));
+<<<<<<< HEAD
 		bd2->header.swack_flag =	1;
 		/*
 		 * The base_dest_nasid set in the message header is the nasid
@@ -1467,6 +1920,35 @@ static void activation_descriptor_init(int node, int pnode, int base_pnode)
 		 * all others need to be set to zero:
 		 *   fairness chaining multilevel count replied_to
 		 */
+=======
+		if (uv1) {
+			uv1_hdr = &bd2->header.uv1_hdr;
+			uv1_hdr->swack_flag =	1;
+			/*
+			 * The base_dest_nasid set in the message header
+			 * is the nasid of the first uvhub in the partition.
+			 * The bit map will indicate destination pnode numbers
+			 * relative to that base. They may not be consecutive
+			 * if nasid striding is being used.
+			 */
+			uv1_hdr->base_dest_nasid =
+						UV_PNODE_TO_NASID(base_pnode);
+			uv1_hdr->dest_subnodeid =	UV_LB_SUBNODEID;
+			uv1_hdr->command =		UV_NET_ENDPOINT_INTD;
+			uv1_hdr->int_both =		1;
+			/*
+			 * all others need to be set to zero:
+			 *   fairness chaining multilevel count replied_to
+			 */
+		} else {
+			uv2_hdr = &bd2->header.uv2_hdr;
+			uv2_hdr->swack_flag =	1;
+			uv2_hdr->base_dest_nasid =
+						UV_PNODE_TO_NASID(base_pnode);
+			uv2_hdr->dest_subnodeid =	UV_LB_SUBNODEID;
+			uv2_hdr->command =		UV_NET_ENDPOINT_INTD;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	for_each_present_cpu(cpu) {
 		if (pnode != uv_blade_to_pnode(uv_cpu_to_blade_id(cpu)))
@@ -1522,6 +2004,10 @@ static void pq_init(int node, int pnode)
 	write_mmr_payload_first(pnode, pn_first);
 	write_mmr_payload_tail(pnode, first);
 	write_mmr_payload_last(pnode, last);
+<<<<<<< HEAD
+=======
+	write_gmmr_sw_ack(pnode, 0xffffUL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* in effect, all msg_type's are set to MSG_NOOP */
 	memset(pqp, 0, sizeof(struct bau_pq_entry) * DEST_Q_SIZE);
@@ -1609,6 +2095,12 @@ static void __init init_per_cpu_tunables(void)
 		bcp->cong_response_us		= congested_respns_us;
 		bcp->cong_reps			= congested_reps;
 		bcp->cong_period		= congested_period;
+<<<<<<< HEAD
+=======
+		bcp->clocks_per_100_usec =	usec_2_cycles(100);
+		spin_lock_init(&bcp->queue_lock);
+		spin_lock_init(&bcp->uvhub_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -1684,6 +2176,19 @@ static void make_per_cpu_thp(struct bau_control *smaster)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Each uvhub is to get a local cpumask.
+ */
+static void make_per_hub_cpumask(struct bau_control *hmaster)
+{
+	int sz = sizeof(cpumask_t);
+
+	hmaster->cpumask = kzalloc_node(sz, GFP_KERNEL, hmaster->osnode);
+}
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Initialize all the per_cpu information for the cpu's on a given socket,
  * given what has been gathered into the socket_desc struct.
  * And reports the chosen hub and socket masters back to the caller.
@@ -1709,8 +2214,22 @@ static int scan_sock(struct socket_desc *sdp, struct uvhub_desc *bdp,
 		bcp->cpus_in_socket = sdp->num_cpus;
 		bcp->socket_master = *smasterp;
 		bcp->uvhub = bdp->uvhub;
+<<<<<<< HEAD
 		bcp->uvhub_master = *hmasterp;
 		bcp->uvhub_cpu = uv_cpu_hub_info(cpu)->blade_processor_id;
+=======
+		if (is_uv1_hub())
+			bcp->uvhub_version = 1;
+		else if (is_uv2_hub())
+			bcp->uvhub_version = 2;
+		else {
+			printk(KERN_EMERG "uvhub version not 1 or 2\n");
+			return 1;
+		}
+		bcp->uvhub_master = *hmasterp;
+		bcp->uvhub_cpu = uv_cpu_hub_info(cpu)->blade_processor_id;
+		bcp->using_desc = bcp->uvhub_cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (bcp->uvhub_cpu >= MAX_CPUS_PER_UVHUB) {
 			printk(KERN_EMERG "%d cpus per uvhub invalid\n",
 				bcp->uvhub_cpu);
@@ -1748,11 +2267,20 @@ static int __init summarize_uvhub_sockets(int nuvhubs,
 				sdp = &bdp->socket[socket];
 				if (scan_sock(sdp, bdp, &smaster, &hmaster))
 					return 1;
+<<<<<<< HEAD
 			}
 			socket++;
 			socket_mask = (socket_mask >> 1);
 			make_per_cpu_thp(smaster);
 		}
+=======
+				make_per_cpu_thp(smaster);
+			}
+			socket++;
+			socket_mask = (socket_mask >> 1);
+		}
+		make_per_hub_cpumask(hmaster);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }
@@ -1774,15 +2302,30 @@ static int __init init_per_cpu(int nuvhubs, int base_part_pnode)
 	uvhub_mask = kzalloc((nuvhubs+7)/8, GFP_KERNEL);
 
 	if (get_cpu_topology(base_part_pnode, uvhub_descs, uvhub_mask))
+<<<<<<< HEAD
 		return 1;
 
 	if (summarize_uvhub_sockets(nuvhubs, uvhub_descs, uvhub_mask))
 		return 1;
+=======
+		goto fail;
+
+	if (summarize_uvhub_sockets(nuvhubs, uvhub_descs, uvhub_mask))
+		goto fail;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree(uvhub_descs);
 	kfree(uvhub_mask);
 	init_per_cpu_tunables();
 	return 0;
+<<<<<<< HEAD
+=======
+
+fail:
+	kfree(uvhub_descs);
+	kfree(uvhub_mask);
+	return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1843,7 +2386,12 @@ static int __init uv_bau_init(void)
 			val = 1L << 63;
 			write_gmmr_activation(pnode, val);
 			mmr = 1; /* should be 1 to broadcast to both sockets */
+<<<<<<< HEAD
 			write_mmr_data_broadcast(pnode, mmr);
+=======
+			if (!is_uv1_hub())
+				write_mmr_data_broadcast(pnode, mmr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 

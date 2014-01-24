@@ -26,6 +26,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
@@ -49,7 +54,11 @@ MODULE_LICENSE("GPL");
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
 MODULE_ALIAS_MISCDEV(TEMP_MINOR);
 
+<<<<<<< HEAD
 static int wdrtas_nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool wdrtas_nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
 static atomic_t wdrtas_miscdev_open = ATOMIC_INIT(0);
 static char wdrtas_expect_close;
 
@@ -93,8 +102,13 @@ static int wdrtas_set_interval(int interval)
 	result = rtas_call(wdrtas_token_set_indicator, 3, 1, NULL,
 			   WDRTAS_SURVEILLANCE_IND, 0, interval);
 	if (result < 0 && print_msg) {
+<<<<<<< HEAD
 		printk(KERN_ERR "wdrtas: setting the watchdog to %i "
 		       "timeout failed: %li\n", interval, result);
+=======
+		pr_err("setting the watchdog to %i timeout failed: %li\n",
+		       interval, result);
+>>>>>>> refs/remotes/origin/cm-10.0
 		print_msg--;
 	}
 
@@ -128,8 +142,13 @@ static int wdrtas_get_interval(int fallback_value)
 	spin_unlock(&rtas_data_buf_lock);
 
 	if (value[0] != 0 || value[1] != 2 || value[3] != 0 || result < 0) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "wdrtas: could not get sp_spi watchdog "
 		       "timeout (%li). Continuing\n", result);
+=======
+		pr_warn("could not get sp_spi watchdog timeout (%li). Continuing\n",
+			result);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return fallback_value;
 	}
 
@@ -170,6 +189,7 @@ static void wdrtas_log_scanned_event(void)
 	int i;
 
 	for (i = 0; i < WDRTAS_LOGBUFFER_LEN; i += 16)
+<<<<<<< HEAD
 		printk(KERN_INFO "wdrtas: dumping event (line %i/%i), data = "
 		       "%02x %02x %02x %02x  %02x %02x %02x %02x   "
 		       "%02x %02x %02x %02x  %02x %02x %02x %02x\n",
@@ -182,6 +202,20 @@ static void wdrtas_log_scanned_event(void)
 		       wdrtas_logbuffer[i + 10], wdrtas_logbuffer[i + 11],
 		       wdrtas_logbuffer[i + 12], wdrtas_logbuffer[i + 13],
 		       wdrtas_logbuffer[i + 14], wdrtas_logbuffer[i + 15]);
+=======
+		pr_info("dumping event (line %i/%i), data = "
+			"%02x %02x %02x %02x  %02x %02x %02x %02x   "
+			"%02x %02x %02x %02x  %02x %02x %02x %02x\n",
+			(i / 16) + 1, (WDRTAS_LOGBUFFER_LEN / 16),
+			wdrtas_logbuffer[i + 0], wdrtas_logbuffer[i + 1],
+			wdrtas_logbuffer[i + 2], wdrtas_logbuffer[i + 3],
+			wdrtas_logbuffer[i + 4], wdrtas_logbuffer[i + 5],
+			wdrtas_logbuffer[i + 6], wdrtas_logbuffer[i + 7],
+			wdrtas_logbuffer[i + 8], wdrtas_logbuffer[i + 9],
+			wdrtas_logbuffer[i + 10], wdrtas_logbuffer[i + 11],
+			wdrtas_logbuffer[i + 12], wdrtas_logbuffer[i + 13],
+			wdrtas_logbuffer[i + 14], wdrtas_logbuffer[i + 15]);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -201,8 +235,12 @@ static void wdrtas_timer_keepalive(void)
 				   (void *)__pa(wdrtas_logbuffer),
 				   WDRTAS_LOGBUFFER_LEN);
 		if (result < 0)
+<<<<<<< HEAD
 			printk(KERN_ERR "wdrtas: event-scan failed: %li\n",
 			       result);
+=======
+			pr_err("event-scan failed: %li\n", result);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (result == 0)
 			wdrtas_log_scanned_event();
 	} while (result == 0);
@@ -224,8 +262,12 @@ static int wdrtas_get_temperature(void)
 	result = rtas_get_sensor(WDRTAS_THERMAL_SENSOR, 0, &temperature);
 
 	if (result < 0)
+<<<<<<< HEAD
 		printk(KERN_WARNING "wdrtas: reading the thermal sensor "
 		       "failed: %i\n", result);
+=======
+		pr_warn("reading the thermal sensor failed: %i\n", result);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		temperature = ((temperature * 9) / 5) + 32; /* fahrenheit */
 
@@ -419,8 +461,12 @@ static int wdrtas_close(struct inode *inode, struct file *file)
 	if (wdrtas_expect_close == WDRTAS_MAGIC_CHAR)
 		wdrtas_timer_stop();
 	else {
+<<<<<<< HEAD
 		printk(KERN_WARNING "wdrtas: got unexpected close. Watchdog "
 		       "not stopped.\n");
+=======
+		pr_warn("got unexpected close. Watchdog not stopped.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		wdrtas_timer_keepalive();
 	}
 
@@ -552,30 +598,47 @@ static int wdrtas_get_tokens(void)
 {
 	wdrtas_token_get_sensor_state = rtas_token("get-sensor-state");
 	if (wdrtas_token_get_sensor_state == RTAS_UNKNOWN_SERVICE) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "wdrtas: couldn't get token for "
 		       "get-sensor-state. Trying to continue without "
 		       "temperature support.\n");
+=======
+		pr_warn("couldn't get token for get-sensor-state. Trying to continue without temperature support.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	wdrtas_token_get_sp = rtas_token("ibm,get-system-parameter");
 	if (wdrtas_token_get_sp == RTAS_UNKNOWN_SERVICE) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "wdrtas: couldn't get token for "
 		       "ibm,get-system-parameter. Trying to continue with "
 		       "a default timeout value of %i seconds.\n",
 		       WDRTAS_DEFAULT_INTERVAL);
+=======
+		pr_warn("couldn't get token for ibm,get-system-parameter. Trying to continue with a default timeout value of %i seconds.\n",
+			WDRTAS_DEFAULT_INTERVAL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	wdrtas_token_set_indicator = rtas_token("set-indicator");
 	if (wdrtas_token_set_indicator == RTAS_UNKNOWN_SERVICE) {
+<<<<<<< HEAD
 		printk(KERN_ERR "wdrtas: couldn't get token for "
 		       "set-indicator. Terminating watchdog code.\n");
+=======
+		pr_err("couldn't get token for set-indicator. Terminating watchdog code.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 
 	wdrtas_token_event_scan = rtas_token("event-scan");
 	if (wdrtas_token_event_scan == RTAS_UNKNOWN_SERVICE) {
+<<<<<<< HEAD
 		printk(KERN_ERR "wdrtas: couldn't get token for event-scan. "
 		       "Terminating watchdog code.\n");
+=======
+		pr_err("couldn't get token for event-scan. Terminating watchdog code.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 
@@ -609,17 +672,25 @@ static int wdrtas_register_devs(void)
 
 	result = misc_register(&wdrtas_miscdev);
 	if (result) {
+<<<<<<< HEAD
 		printk(KERN_ERR "wdrtas: couldn't register watchdog misc "
 		       "device. Terminating watchdog code.\n");
+=======
+		pr_err("couldn't register watchdog misc device. Terminating watchdog code.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return result;
 	}
 
 	if (wdrtas_token_get_sensor_state != RTAS_UNKNOWN_SERVICE) {
 		result = misc_register(&wdrtas_tempdev);
 		if (result) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "wdrtas: couldn't register "
 			       "watchdog temperature misc device. Continuing "
 			       "without temperature support.\n");
+=======
+			pr_warn("couldn't register watchdog temperature misc device. Continuing without temperature support.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			wdrtas_token_get_sensor_state = RTAS_UNKNOWN_SERVICE;
 		}
 	}
@@ -643,8 +714,12 @@ static int __init wdrtas_init(void)
 		return -ENODEV;
 
 	if (register_reboot_notifier(&wdrtas_notifier)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "wdrtas: could not register reboot notifier. "
 		       "Terminating watchdog code.\n");
+=======
+		pr_err("could not register reboot notifier. Terminating watchdog code.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		wdrtas_unregister_devs();
 		return -ENODEV;
 	}

@@ -27,7 +27,11 @@ static bool unknown_in_range(const struct nf_conntrack_tuple *tuple,
 }
 
 static void unknown_unique_tuple(struct nf_conntrack_tuple *tuple,
+<<<<<<< HEAD
 				 const struct nf_nat_range *range,
+=======
+				 const struct nf_nat_ipv4_range *range,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 enum nf_nat_manip_type maniptype,
 				 const struct nf_conn *ct)
 {
@@ -46,7 +50,10 @@ unknown_manip_pkt(struct sk_buff *skb,
 }
 
 const struct nf_nat_protocol nf_nat_unknown_protocol = {
+<<<<<<< HEAD
 	/* .me isn't set: getting a ref to this cannot fail. */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.manip_pkt		= unknown_manip_pkt,
 	.in_range		= unknown_in_range,
 	.unique_tuple		= unknown_unique_tuple,

@@ -271,6 +271,7 @@ static struct usb_driver cypress_driver = {
 	.id_table = cypress_table,
 };
 
+<<<<<<< HEAD
 static int __init cypress_init(void)
 {
 	int result;
@@ -292,6 +293,9 @@ static void __exit cypress_exit(void)
 
 module_init(cypress_init);
 module_exit(cypress_exit);
+=======
+module_usb_driver(cypress_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

@@ -542,7 +542,11 @@ static int __init davinci_rtc_probe(struct platform_device *pdev)
 	rtcss_write(davinci_rtc, 0, PRTCSS_RTC_CCTRL);
 
 	ret = request_irq(davinci_rtc->irq, davinci_rtc_interrupt,
+<<<<<<< HEAD
 			  IRQF_DISABLED, "davinci_rtc", davinci_rtc);
+=======
+			  0, "davinci_rtc", davinci_rtc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0) {
 		dev_err(dev, "unable to register davinci RTC interrupt\n");
 		goto fail4;

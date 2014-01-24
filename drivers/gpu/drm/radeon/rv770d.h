@@ -208,6 +208,10 @@
 #define	SCRATCH_UMSK					0x8540
 #define	SCRATCH_ADDR					0x8544
 
+<<<<<<< HEAD
+=======
+#define	SMX_SAR_CTL0					0xA008
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	SMX_DC_CTL0					0xA020
 #define		USE_HASH_FUNCTION				(1 << 0)
 #define		CACHE_DEPTH(x)					((x) << 1)
@@ -307,6 +311,11 @@
 #define	TCP_CNTL					0x9610
 #define	TCP_CHAN_STEER					0x9614
 
+<<<<<<< HEAD
+=======
+#define	VC_ENHANCE					0x9714
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	VGT_CACHE_INVALIDATION				0x88C4
 #define		CACHE_INVALIDATION(x)				((x)<<0)
 #define			VC_ONLY						0

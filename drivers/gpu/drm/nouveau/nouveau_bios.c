@@ -27,6 +27,10 @@
 #include "nouveau_drv.h"
 #include "nouveau_hw.h"
 #include "nouveau_encoder.h"
+<<<<<<< HEAD
+=======
+#include "nouveau_gpio.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/io-mapping.h>
 
@@ -34,9 +38,12 @@
 #define NV_CIO_CRE_44_HEADA 0x0
 #define NV_CIO_CRE_44_HEADB 0x3
 #define FEATURE_MOBILE 0x10	/* also FEATURE_QUADRO for BMP */
+<<<<<<< HEAD
 #define LEGACY_I2C_CRT 0x80
 #define LEGACY_I2C_PANEL 0x81
 #define LEGACY_I2C_TV 0x82
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define EDID1_LEN 128
 
@@ -67,6 +74,7 @@ static bool nv_cksum(const uint8_t *data, unsigned int length)
 }
 
 static int
+<<<<<<< HEAD
 score_vbios(struct drm_device *dev, const uint8_t *data, const bool writeable)
 {
 	if (!(data[0] == 0x55 && data[1] == 0xAA)) {
@@ -194,10 +202,173 @@ static void load_vbios_acpi(struct drm_device *dev, uint8_t *data)
 			break;
 	}
 	return;
+=======
+score_vbios(struct nvbios *bios, const bool writeable)
+{
+	if (!bios->data || bios->data[0] != 0x55 || bios->data[1] != 0xAA) {
+		NV_TRACEWARN(bios->dev, "... BIOS signature not found\n");
+		return 0;
+	}
+
+	if (nv_cksum(bios->data, bios->data[2] * 512)) {
+		NV_TRACEWARN(bios->dev, "... BIOS checksum invalid\n");
+		/* if a ro image is somewhat bad, it's probably all rubbish */
+		return writeable ? 2 : 1;
+	}
+
+	NV_TRACE(bios->dev, "... appears to be valid\n");
+	return 3;
+}
+
+static void
+bios_shadow_prom(struct nvbios *bios)
+{
+	struct drm_device *dev = bios->dev;
+	struct drm_nouveau_private *dev_priv = dev->dev_private;
+	u32 pcireg, access;
+	u16 pcir;
+	int i;
+
+	/* enable access to rom */
+	if (dev_priv->card_type >= NV_50)
+		pcireg = 0x088050;
+	else
+		pcireg = NV_PBUS_PCI_NV_20;
+	access = nv_mask(dev, pcireg, 0x00000001, 0x00000000);
+
+	/* bail if no rom signature, with a workaround for a PROM reading
+	 * issue on some chipsets.  the first read after a period of
+	 * inactivity returns the wrong result, so retry the first header
+	 * byte a few times before giving up as a workaround
+	 */
+	i = 16;
+	do {
+		if (nv_rd08(dev, NV_PROM_OFFSET + 0) == 0x55)
+			break;
+	} while (i--);
+
+	if (!i || nv_rd08(dev, NV_PROM_OFFSET + 1) != 0xaa)
+		goto out;
+
+	/* additional check (see note below) - read PCI record header */
+	pcir = nv_rd08(dev, NV_PROM_OFFSET + 0x18) |
+	       nv_rd08(dev, NV_PROM_OFFSET + 0x19) << 8;
+	if (nv_rd08(dev, NV_PROM_OFFSET + pcir + 0) != 'P' ||
+	    nv_rd08(dev, NV_PROM_OFFSET + pcir + 1) != 'C' ||
+	    nv_rd08(dev, NV_PROM_OFFSET + pcir + 2) != 'I' ||
+	    nv_rd08(dev, NV_PROM_OFFSET + pcir + 3) != 'R')
+		goto out;
+
+	/* read entire bios image to system memory */
+	bios->length = nv_rd08(dev, NV_PROM_OFFSET + 2) * 512;
+	bios->data = kmalloc(bios->length, GFP_KERNEL);
+	if (bios->data) {
+		for (i = 0; i < bios->length; i++)
+			bios->data[i] = nv_rd08(dev, NV_PROM_OFFSET + i);
+	}
+
+out:
+	/* disable access to rom */
+	nv_wr32(dev, pcireg, access);
+}
+
+static void
+bios_shadow_pramin(struct nvbios *bios)
+{
+	struct drm_device *dev = bios->dev;
+	struct drm_nouveau_private *dev_priv = dev->dev_private;
+	u32 bar0 = 0;
+	int i;
+
+	if (dev_priv->card_type >= NV_50) {
+		u64 addr = (u64)(nv_rd32(dev, 0x619f04) & 0xffffff00) << 8;
+		if (!addr) {
+			addr  = (u64)nv_rd32(dev, 0x001700) << 16;
+			addr += 0xf0000;
+		}
+
+		bar0 = nv_mask(dev, 0x001700, 0xffffffff, addr >> 16);
+	}
+
+	/* bail if no rom signature */
+	if (nv_rd08(dev, NV_PRAMIN_OFFSET + 0) != 0x55 ||
+	    nv_rd08(dev, NV_PRAMIN_OFFSET + 1) != 0xaa)
+		goto out;
+
+	bios->length = nv_rd08(dev, NV_PRAMIN_OFFSET + 2) * 512;
+	bios->data = kmalloc(bios->length, GFP_KERNEL);
+	if (bios->data) {
+		for (i = 0; i < bios->length; i++)
+			bios->data[i] = nv_rd08(dev, NV_PRAMIN_OFFSET + i);
+	}
+
+out:
+	if (dev_priv->card_type >= NV_50)
+		nv_wr32(dev, 0x001700, bar0);
+}
+
+static void
+bios_shadow_pci(struct nvbios *bios)
+{
+	struct pci_dev *pdev = bios->dev->pdev;
+	size_t length;
+
+	if (!pci_enable_rom(pdev)) {
+		void __iomem *rom = pci_map_rom(pdev, &length);
+		if (rom && length) {
+			bios->data = kmalloc(length, GFP_KERNEL);
+			if (bios->data) {
+				memcpy_fromio(bios->data, rom, length);
+				bios->length = length;
+			}
+		}
+		if (rom)
+			pci_unmap_rom(pdev, rom);
+
+		pci_disable_rom(pdev);
+	}
+}
+
+static void
+bios_shadow_acpi(struct nvbios *bios)
+{
+	struct pci_dev *pdev = bios->dev->pdev;
+	int ptr, len, ret;
+	u8 data[3];
+
+	if (!nouveau_acpi_rom_supported(pdev))
+		return;
+
+	ret = nouveau_acpi_get_bios_chunk(data, 0, sizeof(data));
+	if (ret != sizeof(data))
+		return;
+
+	bios->length = min(data[2] * 512, 65536);
+	bios->data = kmalloc(bios->length, GFP_KERNEL);
+	if (!bios->data)
+		return;
+
+	len = bios->length;
+	ptr = 0;
+	while (len) {
+		int size = (len > ROM_BIOS_PAGE) ? ROM_BIOS_PAGE : len;
+
+		ret = nouveau_acpi_get_bios_chunk(bios->data, ptr, size);
+		if (ret != size) {
+			kfree(bios->data);
+			bios->data = NULL;
+			return;
+		}
+
+		len -= size;
+		ptr += size;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct methods {
 	const char desc[8];
+<<<<<<< HEAD
 	void (*loadbios)(struct drm_device *, uint8_t *);
 	const bool rw;
 };
@@ -229,10 +400,46 @@ static bool NVShadowVBIOS(struct drm_device *dev, uint8_t *data)
 			if (score_vbios(dev, data, methods[i].rw))
 				return true;
 		}
+=======
+	void (*shadow)(struct nvbios *);
+	const bool rw;
+	int score;
+	u32 size;
+	u8 *data;
+};
+
+static bool
+bios_shadow(struct drm_device *dev)
+{
+	struct methods shadow_methods[] = {
+		{ "PRAMIN", bios_shadow_pramin, true, 0, 0, NULL },
+		{ "PROM", bios_shadow_prom, false, 0, 0, NULL },
+		{ "ACPI", bios_shadow_acpi, true, 0, 0, NULL },
+		{ "PCIROM", bios_shadow_pci, true, 0, 0, NULL },
+		{}
+	};
+	struct drm_nouveau_private *dev_priv = dev->dev_private;
+	struct nvbios *bios = &dev_priv->vbios;
+	struct methods *mthd, *best;
+
+	if (nouveau_vbios) {
+		mthd = shadow_methods;
+		do {
+			if (strcasecmp(nouveau_vbios, mthd->desc))
+				continue;
+			NV_INFO(dev, "VBIOS source: %s\n", mthd->desc);
+
+			mthd->shadow(bios);
+			mthd->score = score_vbios(bios, mthd->rw);
+			if (mthd->score)
+				return true;
+		} while ((++mthd)->shadow);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		NV_ERROR(dev, "VBIOS source \'%s\' invalid\n", nouveau_vbios);
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i < NUM_SHADOW_METHODS; i++) {
 		NV_TRACE(dev, "Attempting to load BIOS image from %s\n",
 			 methods[i].desc);
@@ -255,6 +462,34 @@ static bool NVShadowVBIOS(struct drm_device *dev, uint8_t *data)
 	}
 
 	NV_ERROR(dev, "No valid BIOS image found\n");
+=======
+	mthd = shadow_methods;
+	do {
+		NV_TRACE(dev, "Checking %s for VBIOS\n", mthd->desc);
+		mthd->shadow(bios);
+		mthd->score = score_vbios(bios, mthd->rw);
+		mthd->size = bios->length;
+		mthd->data = bios->data;
+	} while (mthd->score != 3 && (++mthd)->shadow);
+
+	mthd = shadow_methods;
+	best = mthd;
+	do {
+		if (mthd->score > best->score) {
+			kfree(best->data);
+			best = mthd;
+		}
+	} while ((++mthd)->shadow);
+
+	if (best->score) {
+		NV_TRACE(dev, "Using VBIOS from %s\n", best->desc);
+		bios->length = best->size;
+		bios->data = best->data;
+		return true;
+	}
+
+	NV_ERROR(dev, "No valid VBIOS image found\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return false;
 }
 
@@ -295,6 +530,14 @@ munge_reg(struct nvbios *bios, uint32_t reg)
 	if (dev_priv->card_type < NV_50)
 		return reg;
 
+<<<<<<< HEAD
+=======
+	if (reg & 0x80000000) {
+		BUG_ON(bios->display.crtc < 0);
+		reg += bios->display.crtc * 0x800;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (reg & 0x40000000) {
 		BUG_ON(!dcbent);
 
@@ -303,7 +546,11 @@ munge_reg(struct nvbios *bios, uint32_t reg)
 			reg += 0x00000080;
 	}
 
+<<<<<<< HEAD
 	reg &= ~0x60000000;
+=======
+	reg &= ~0xe0000000;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return reg;
 }
 
@@ -634,10 +881,16 @@ static int
 nv50_pll_set(struct drm_device *dev, uint32_t reg, uint32_t clk)
 {
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 	uint32_t reg0 = nv_rd32(dev, reg + 0);
 	uint32_t reg1 = nv_rd32(dev, reg + 4);
 	struct nouveau_pll_vals pll;
 	struct pll_lims pll_limits;
+=======
+	struct nouveau_pll_vals pll;
+	struct pll_lims pll_limits;
+	u32 ctrl, mask, coef;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	ret = get_pll_limits(dev, reg, &pll_limits);
@@ -648,6 +901,7 @@ nv50_pll_set(struct drm_device *dev, uint32_t reg, uint32_t clk)
 	if (!clk)
 		return -ERANGE;
 
+<<<<<<< HEAD
 	reg0 = (reg0 & 0xfff8ffff) | (pll.log2P << 16);
 	reg1 = (reg1 & 0xffff0000) | (pll.N1 << 8) | pll.M1;
 
@@ -657,6 +911,22 @@ nv50_pll_set(struct drm_device *dev, uint32_t reg, uint32_t clk)
 		nv_wr32(dev, reg + 0, reg0);
 	}
 
+=======
+	coef = pll.N1 << 8 | pll.M1;
+	ctrl = pll.log2P << 16;
+	mask = 0x00070000;
+	if (reg == 0x004008) {
+		mask |= 0x01f80000;
+		ctrl |= (pll_limits.log2p_bias << 19);
+		ctrl |= (pll.log2P << 22);
+	}
+
+	if (!dev_priv->vbios.execute)
+		return 0;
+
+	nv_mask(dev, reg + 0, mask, ctrl);
+	nv_wr32(dev, reg + 4, coef);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -713,6 +983,7 @@ static int dcb_entry_idx_from_crtchead(struct drm_device *dev)
 	return dcb_entry;
 }
 
+<<<<<<< HEAD
 static int
 read_dcb_i2c_entry(struct drm_device *dev, int dcb_version, uint8_t *i2ctable, int index, struct dcb_i2c_entry *i2c)
 {
@@ -822,6 +1093,21 @@ init_i2c_device_find(struct drm_device *dev, int i2c_index)
 	 */
 	read_dcb_i2c_entry(dev, dcb->version, dcb->i2c_table,
 			   i2c_index, &dcb->i2c[i2c_index]);
+=======
+static struct nouveau_i2c_chan *
+init_i2c_device_find(struct drm_device *dev, int i2c_index)
+{
+	if (i2c_index == 0xff) {
+		struct drm_nouveau_private *dev_priv = dev->dev_private;
+		struct dcb_table *dcb = &dev_priv->vbios.dcb;
+		/* note: dcb_entry_idx_from_crtchead needs pre-script set-up */
+		int idx = dcb_entry_idx_from_crtchead(dev);
+
+		i2c_index = NV_I2C_DEFAULT(0);
+		if (idx != 0x7f && dcb->entry[idx].i2c_upper_default)
+			i2c_index = NV_I2C_DEFAULT(1);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return nouveau_i2c_find(dev, i2c_index);
 }
@@ -1173,17 +1459,25 @@ init_dp_condition(struct nvbios *bios, uint16_t offset, struct init_exec *iexec)
 	 *
 	 */
 
+<<<<<<< HEAD
 	struct bit_displayport_encoder_table *dpe = NULL;
 	struct dcb_entry *dcb = bios->display.output;
 	struct drm_device *dev = bios->dev;
 	uint8_t cond = bios->data[offset + 1];
 	int dummy;
+=======
+	struct dcb_entry *dcb = bios->display.output;
+	struct drm_device *dev = bios->dev;
+	uint8_t cond = bios->data[offset + 1];
+	uint8_t *table, *entry;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	BIOSLOG(bios, "0x%04X: subop 0x%02X\n", offset, cond);
 
 	if (!iexec->execute)
 		return 3;
 
+<<<<<<< HEAD
 	dpe = nouveau_bios_dp_table(dev, dcb, &dummy);
 	if (!dpe) {
 		NV_ERROR(dev, "0x%04X: INIT_3A: no encoder table!!\n", offset);
@@ -1203,6 +1497,22 @@ init_dp_condition(struct nvbios *bios, uint16_t offset, struct init_exec *iexec)
 	case 1:
 	case 2:
 		if (!(dpe->unknown & cond))
+=======
+	table = nouveau_dp_bios_data(dev, dcb, &entry);
+	if (!table)
+		return 3;
+
+	switch (cond) {
+	case 0:
+		entry = dcb_conn(dev, dcb->connector);
+		if (!entry || entry[0] != DCB_CONNECTOR_eDP)
+			iexec->execute = false;
+		break;
+	case 1:
+	case 2:
+		if ((table[0]  < 0x40 && !(entry[5] & cond)) ||
+		    (table[0] == 0x40 && !(entry[4] & cond)))
+>>>>>>> refs/remotes/origin/cm-10.0
 			iexec->execute = false;
 		break;
 	case 5:
@@ -3232,6 +3542,7 @@ init_gpio(struct nvbios *bios, uint16_t offset, struct init_exec *iexec)
 	 * each GPIO according to various values listed in each entry
 	 */
 
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv = bios->dev->dev_private;
 	struct nouveau_gpio_engine *pgpio = &dev_priv->engine.gpio;
 	const uint32_t nv50_gpio_ctl[2] = { 0xe100, 0xe28c };
@@ -3275,6 +3586,10 @@ init_gpio(struct nvbios *bios, uint16_t offset, struct init_exec *iexec)
 		}
 		bios_wr32(bios, r, v);
 	}
+=======
+	if (iexec->execute && bios->execute)
+		nouveau_gpio_reset(bios->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 1;
 }
@@ -3736,6 +4051,13 @@ parse_init_table(struct nvbios *bios, uint16_t offset, struct init_exec *iexec)
 	int count = 0, i, ret;
 	uint8_t id;
 
+<<<<<<< HEAD
+=======
+	/* catch NULL script pointers */
+	if (offset == 0)
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Loop until INIT_DONE causes us to break out of the loop
 	 * (or until offset > bios length just in case... )
@@ -4367,6 +4689,7 @@ int nouveau_bios_parse_lvds_table(struct drm_device *dev, int pxclk, bool *dl, b
 		break;
 	}
 
+<<<<<<< HEAD
 	/* Dell Latitude D620 reports a too-high value for the dual-link
 	 * transition freq, causing us to program the panel incorrectly.
 	 *
@@ -4379,6 +4702,8 @@ int nouveau_bios_parse_lvds_table(struct drm_device *dev, int pxclk, bool *dl, b
 	if (nv_match_device(dev, 0x01d7, 0x1028, 0x01c2))
 		bios->fp.duallink_transition_clk = 80000;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* set dual_link flag for EDID case */
 	if (pxclk && (chip_version < 0x25 || chip_version > 0x28))
 		bios->fp.dual_link = (pxclk >= bios->fp.duallink_transition_clk);
@@ -4388,6 +4713,7 @@ int nouveau_bios_parse_lvds_table(struct drm_device *dev, int pxclk, bool *dl, b
 	return 0;
 }
 
+<<<<<<< HEAD
 static uint8_t *
 bios_output_config_match(struct drm_device *dev, struct dcb_entry *dcbent,
 			 uint16_t record, int record_len, int record_nr,
@@ -4468,6 +4794,39 @@ nouveau_bios_dp_table(struct drm_device *dev, struct dcb_entry *dcbent,
 int
 nouveau_bios_run_display_table(struct drm_device *dev, struct dcb_entry *dcbent,
 			       uint32_t sub, int pxclk)
+=======
+/* BIT 'U'/'d' table encoder subtables have hashes matching them to
+ * a particular set of encoders.
+ *
+ * This function returns true if a particular DCB entry matches.
+ */
+bool
+bios_encoder_match(struct dcb_entry *dcb, u32 hash)
+{
+	if ((hash & 0x000000f0) != (dcb->location << 4))
+		return false;
+	if ((hash & 0x0000000f) != dcb->type)
+		return false;
+	if (!(hash & (dcb->or << 16)))
+		return false;
+
+	switch (dcb->type) {
+	case OUTPUT_TMDS:
+	case OUTPUT_LVDS:
+	case OUTPUT_DP:
+		if (hash & 0x00c00000) {
+			if (!(hash & (dcb->sorconf.link << 22)))
+				return false;
+		}
+	default:
+		return true;
+	}
+}
+
+int
+nouveau_bios_run_display_table(struct drm_device *dev, u16 type, int pclk,
+			       struct dcb_entry *dcbent, int crtc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/*
 	 * The display script table is located by the BIT 'U' table.
@@ -4497,7 +4856,11 @@ nouveau_bios_run_display_table(struct drm_device *dev, struct dcb_entry *dcbent,
 	uint8_t *table = &bios->data[bios->display.script_table_ptr];
 	uint8_t *otable = NULL;
 	uint16_t script;
+<<<<<<< HEAD
 	int i = 0;
+=======
+	int i;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!bios->display.script_table_ptr) {
 		NV_ERROR(dev, "No pointer to output script table\n");
@@ -4549,30 +4912,54 @@ nouveau_bios_run_display_table(struct drm_device *dev, struct dcb_entry *dcbent,
 
 	NV_DEBUG_KMS(dev, "Searching for output entry for %d %d %d\n",
 			dcbent->type, dcbent->location, dcbent->or);
+<<<<<<< HEAD
 	otable = bios_output_config_match(dev, dcbent, table[1] +
 					  bios->display.script_table_ptr,
 					  table[2], table[3], table[0] >= 0x21);
+=======
+	for (i = 0; i < table[3]; i++) {
+		otable = ROMPTR(dev, table[table[1] + (i * table[2])]);
+		if (otable && bios_encoder_match(dcbent, ROM32(otable[0])))
+			break;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!otable) {
 		NV_DEBUG_KMS(dev, "failed to match any output table\n");
 		return 1;
 	}
 
+<<<<<<< HEAD
 	if (pxclk < -2 || pxclk > 0) {
 		/* Try to find matching script table entry */
 		for (i = 0; i < otable[5]; i++) {
 			if (ROM16(otable[table[4] + i*6]) == sub)
+=======
+	if (pclk < -2 || pclk > 0) {
+		/* Try to find matching script table entry */
+		for (i = 0; i < otable[5]; i++) {
+			if (ROM16(otable[table[4] + i*6]) == type)
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 		}
 
 		if (i == otable[5]) {
 			NV_ERROR(dev, "Table 0x%04x not found for %d/%d, "
 				      "using first\n",
+<<<<<<< HEAD
 				 sub, dcbent->type, dcbent->or);
+=======
+				 type, dcbent->type, dcbent->or);
+>>>>>>> refs/remotes/origin/cm-10.0
 			i = 0;
 		}
 	}
 
+<<<<<<< HEAD
 	if (pxclk == 0) {
+=======
+	if (pclk == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		script = ROM16(otable[6]);
 		if (!script) {
 			NV_DEBUG_KMS(dev, "output script 0 not found\n");
@@ -4580,9 +4967,15 @@ nouveau_bios_run_display_table(struct drm_device *dev, struct dcb_entry *dcbent,
 		}
 
 		NV_DEBUG_KMS(dev, "0x%04X: parsing output script 0\n", script);
+<<<<<<< HEAD
 		nouveau_bios_run_init_table(dev, script, dcbent);
 	} else
 	if (pxclk == -1) {
+=======
+		nouveau_bios_run_init_table(dev, script, dcbent, crtc);
+	} else
+	if (pclk == -1) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		script = ROM16(otable[8]);
 		if (!script) {
 			NV_DEBUG_KMS(dev, "output script 1 not found\n");
@@ -4590,9 +4983,15 @@ nouveau_bios_run_display_table(struct drm_device *dev, struct dcb_entry *dcbent,
 		}
 
 		NV_DEBUG_KMS(dev, "0x%04X: parsing output script 1\n", script);
+<<<<<<< HEAD
 		nouveau_bios_run_init_table(dev, script, dcbent);
 	} else
 	if (pxclk == -2) {
+=======
+		nouveau_bios_run_init_table(dev, script, dcbent, crtc);
+	} else
+	if (pclk == -2) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (table[4] >= 12)
 			script = ROM16(otable[10]);
 		else
@@ -4603,31 +5002,53 @@ nouveau_bios_run_display_table(struct drm_device *dev, struct dcb_entry *dcbent,
 		}
 
 		NV_DEBUG_KMS(dev, "0x%04X: parsing output script 2\n", script);
+<<<<<<< HEAD
 		nouveau_bios_run_init_table(dev, script, dcbent);
 	} else
 	if (pxclk > 0) {
 		script = ROM16(otable[table[4] + i*6 + 2]);
 		if (script)
 			script = clkcmptable(bios, script, pxclk);
+=======
+		nouveau_bios_run_init_table(dev, script, dcbent, crtc);
+	} else
+	if (pclk > 0) {
+		script = ROM16(otable[table[4] + i*6 + 2]);
+		if (script)
+			script = clkcmptable(bios, script, pclk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!script) {
 			NV_DEBUG_KMS(dev, "clock script 0 not found\n");
 			return 1;
 		}
 
 		NV_DEBUG_KMS(dev, "0x%04X: parsing clock script 0\n", script);
+<<<<<<< HEAD
 		nouveau_bios_run_init_table(dev, script, dcbent);
 	} else
 	if (pxclk < 0) {
 		script = ROM16(otable[table[4] + i*6 + 4]);
 		if (script)
 			script = clkcmptable(bios, script, -pxclk);
+=======
+		nouveau_bios_run_init_table(dev, script, dcbent, crtc);
+	} else
+	if (pclk < 0) {
+		script = ROM16(otable[table[4] + i*6 + 4]);
+		if (script)
+			script = clkcmptable(bios, script, -pclk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!script) {
 			NV_DEBUG_KMS(dev, "clock script 1 not found\n");
 			return 1;
 		}
 
 		NV_DEBUG_KMS(dev, "0x%04X: parsing clock script 1\n", script);
+<<<<<<< HEAD
 		nouveau_bios_run_init_table(dev, script, dcbent);
+=======
+		nouveau_bios_run_init_table(dev, script, dcbent, crtc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
@@ -4725,7 +5146,11 @@ static struct pll_mapping nv84_pll_mapping[] = {
 	{ PLL_CORE  , 0x004028 },
 	{ PLL_SHADER, 0x004020 },
 	{ PLL_MEMORY, 0x004008 },
+<<<<<<< HEAD
 	{ PLL_UNK05 , 0x004030 },
+=======
+	{ PLL_VDEC  , 0x004030 },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ PLL_UNK41 , 0x00e818 },
 	{ PLL_VPLL0 , 0x614100 },
 	{ PLL_VPLL1 , 0x614900 },
@@ -5186,7 +5611,11 @@ static int parse_bit_A_tbl_entry(struct drm_device *dev, struct nvbios *bios, st
 	load_table_ptr = ROM16(bios->data[bitentry->offset]);
 
 	if (load_table_ptr == 0x0) {
+<<<<<<< HEAD
 		NV_ERROR(dev, "Pointer to BIT loadval table invalid\n");
+=======
+		NV_DEBUG(dev, "Pointer to BIT loadval table invalid\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -5477,6 +5906,7 @@ parse_bit_U_tbl_entry(struct drm_device *dev, struct nvbios *bios,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int
 parse_bit_displayport_tbl_entry(struct drm_device *dev, struct nvbios *bios,
 				struct bit_entry *bitentry)
@@ -5485,6 +5915,8 @@ parse_bit_displayport_tbl_entry(struct drm_device *dev, struct nvbios *bios,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct bit_table {
 	const char id;
 	int (* const parse_fn)(struct drm_device *, struct nvbios *, struct bit_entry *);
@@ -5499,6 +5931,12 @@ bit_table(struct drm_device *dev, u8 id, struct bit_entry *bit)
 	struct nvbios *bios = &dev_priv->vbios;
 	u8 entries, *entry;
 
+<<<<<<< HEAD
+=======
+	if (bios->type != NVBIOS_BIT)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	entries = bios->data[bios->offset + 10];
 	entry   = &bios->data[bios->offset + 12];
 	while (entries--) {
@@ -5507,7 +5945,11 @@ bit_table(struct drm_device *dev, u8 id, struct bit_entry *bit)
 			bit->version = entry[1];
 			bit->length = ROM16(entry[2]);
 			bit->offset = ROM16(entry[4]);
+<<<<<<< HEAD
 			bit->data = ROMPTR(bios, entry[4]);
+=======
+			bit->data = ROMPTR(dev, entry[4]);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return 0;
 		}
 
@@ -5558,7 +6000,10 @@ parse_bit_structure(struct nvbios *bios, const uint16_t bitoffset)
 	parse_bit_table(bios, bitoffset, &BIT_TABLE('L', lvds));
 	parse_bit_table(bios, bitoffset, &BIT_TABLE('T', tmds));
 	parse_bit_table(bios, bitoffset, &BIT_TABLE('U', U));
+<<<<<<< HEAD
 	parse_bit_table(bios, bitoffset, &BIT_TABLE('d', displayport));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -5613,10 +6058,13 @@ static int parse_bmp_structure(struct drm_device *dev, struct nvbios *bios, unsi
 	uint16_t legacy_scripts_offset, legacy_i2c_offset;
 
 	/* load needed defaults in case we can't parse this info */
+<<<<<<< HEAD
 	bios->dcb.i2c[0].write = NV_CIO_CRE_DDC_WR__INDEX;
 	bios->dcb.i2c[0].read = NV_CIO_CRE_DDC_STATUS__INDEX;
 	bios->dcb.i2c[1].write = NV_CIO_CRE_DDC0_WR__INDEX;
 	bios->dcb.i2c[1].read = NV_CIO_CRE_DDC0_STATUS__INDEX;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	bios->digital_min_front_porch = 0x4b;
 	bios->fmaxvco = 256000;
 	bios->fminvco = 128000;
@@ -5724,6 +6172,7 @@ static int parse_bmp_structure(struct drm_device *dev, struct nvbios *bios, unsi
 	bios->legacy.i2c_indices.crt = bios->data[legacy_i2c_offset];
 	bios->legacy.i2c_indices.tv = bios->data[legacy_i2c_offset + 1];
 	bios->legacy.i2c_indices.panel = bios->data[legacy_i2c_offset + 2];
+<<<<<<< HEAD
 	if (bios->data[legacy_i2c_offset + 4])
 		bios->dcb.i2c[0].write = bios->data[legacy_i2c_offset + 4];
 	if (bios->data[legacy_i2c_offset + 5])
@@ -5732,6 +6181,8 @@ static int parse_bmp_structure(struct drm_device *dev, struct nvbios *bios, unsi
 		bios->dcb.i2c[1].write = bios->data[legacy_i2c_offset + 6];
 	if (bios->data[legacy_i2c_offset + 7])
 		bios->dcb.i2c[1].read = bios->data[legacy_i2c_offset + 7];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (bmplength > 74) {
 		bios->fmaxvco = ROM32(bmp[67]);
@@ -5782,6 +6233,7 @@ static uint16_t findstr(uint8_t *data, int n, const uint8_t *str, int len)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct dcb_gpio_entry *
 new_gpio_entry(struct nvbios *bios)
 {
@@ -6050,6 +6502,130 @@ parse_dcb_connector_table(struct nvbios *bios)
 		}
 
 	}
+=======
+void *
+dcb_table(struct drm_device *dev)
+{
+	struct drm_nouveau_private *dev_priv = dev->dev_private;
+	u8 *dcb = NULL;
+
+	if (dev_priv->card_type > NV_04)
+		dcb = ROMPTR(dev, dev_priv->vbios.data[0x36]);
+	if (!dcb) {
+		NV_WARNONCE(dev, "No DCB data found in VBIOS\n");
+		return NULL;
+	}
+
+	if (dcb[0] >= 0x41) {
+		NV_WARNONCE(dev, "DCB version 0x%02x unknown\n", dcb[0]);
+		return NULL;
+	} else
+	if (dcb[0] >= 0x30) {
+		if (ROM32(dcb[6]) == 0x4edcbdcb)
+			return dcb;
+	} else
+	if (dcb[0] >= 0x20) {
+		if (ROM32(dcb[4]) == 0x4edcbdcb)
+			return dcb;
+	} else
+	if (dcb[0] >= 0x15) {
+		if (!memcmp(&dcb[-7], "DEV_REC", 7))
+			return dcb;
+	} else {
+		/*
+		 * v1.4 (some NV15/16, NV11+) seems the same as v1.5, but
+		 * always has the same single (crt) entry, even when tv-out
+		 * present, so the conclusion is this version cannot really
+		 * be used.
+		 *
+		 * v1.2 tables (some NV6/10, and NV15+) normally have the
+		 * same 5 entries, which are not specific to the card and so
+		 * no use.
+		 *
+		 * v1.2 does have an I2C table that read_dcb_i2c_table can
+		 * handle, but cards exist (nv11 in #14821) with a bad i2c
+		 * table pointer, so use the indices parsed in
+		 * parse_bmp_structure.
+		 *
+		 * v1.1 (NV5+, maybe some NV4) is entirely unhelpful
+		 */
+		NV_WARNONCE(dev, "No useful DCB data in VBIOS\n");
+		return NULL;
+	}
+
+	NV_WARNONCE(dev, "DCB header validation failed\n");
+	return NULL;
+}
+
+void *
+dcb_outp(struct drm_device *dev, u8 idx)
+{
+	u8 *dcb = dcb_table(dev);
+	if (dcb && dcb[0] >= 0x30) {
+		if (idx < dcb[2])
+			return dcb + dcb[1] + (idx * dcb[3]);
+	} else
+	if (dcb && dcb[0] >= 0x20) {
+		u8 *i2c = ROMPTR(dev, dcb[2]);
+		u8 *ent = dcb + 8 + (idx * 8);
+		if (i2c && ent < i2c)
+			return ent;
+	} else
+	if (dcb && dcb[0] >= 0x15) {
+		u8 *i2c = ROMPTR(dev, dcb[2]);
+		u8 *ent = dcb + 4 + (idx * 10);
+		if (i2c && ent < i2c)
+			return ent;
+	}
+
+	return NULL;
+}
+
+int
+dcb_outp_foreach(struct drm_device *dev, void *data,
+		 int (*exec)(struct drm_device *, void *, int idx, u8 *outp))
+{
+	int ret, idx = -1;
+	u8 *outp = NULL;
+	while ((outp = dcb_outp(dev, ++idx))) {
+		if (ROM32(outp[0]) == 0x00000000)
+			break; /* seen on an NV11 with DCB v1.5 */
+		if (ROM32(outp[0]) == 0xffffffff)
+			break; /* seen on an NV17 with DCB v2.0 */
+
+		if ((outp[0] & 0x0f) == OUTPUT_UNUSED)
+			continue;
+		if ((outp[0] & 0x0f) == OUTPUT_EOL)
+			break;
+
+		ret = exec(dev, data, idx, outp);
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+}
+
+u8 *
+dcb_conntab(struct drm_device *dev)
+{
+	u8 *dcb = dcb_table(dev);
+	if (dcb && dcb[0] >= 0x30 && dcb[1] >= 0x16) {
+		u8 *conntab = ROMPTR(dev, dcb[0x14]);
+		if (conntab && conntab[0] >= 0x30 && conntab[0] <= 0x40)
+			return conntab;
+	}
+	return NULL;
+}
+
+u8 *
+dcb_conn(struct drm_device *dev, u8 idx)
+{
+	u8 *conntab = dcb_conntab(dev);
+	if (conntab && idx < conntab[2])
+		return conntab + conntab[1] + (idx * conntab[3]);
+	return NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct dcb_entry *new_dcb_entry(struct dcb_table *dcb)
@@ -6082,8 +6658,12 @@ parse_dcb20_entry(struct drm_device *dev, struct dcb_table *dcb,
 	entry->type = conn & 0xf;
 	entry->i2c_index = (conn >> 4) & 0xf;
 	entry->heads = (conn >> 8) & 0xf;
+<<<<<<< HEAD
 	if (dcb->version >= 0x40)
 		entry->connector = (conn >> 12) & 0xf;
+=======
+	entry->connector = (conn >> 12) & 0xf;
+>>>>>>> refs/remotes/origin/cm-10.0
 	entry->bus = (conn >> 16) & 0xf;
 	entry->location = (conn >> 20) & 0x3;
 	entry->or = (conn >> 24) & 0xf;
@@ -6149,7 +6729,18 @@ parse_dcb20_entry(struct drm_device *dev, struct dcb_table *dcb,
 	}
 	case OUTPUT_DP:
 		entry->dpconf.sor.link = (conf & 0x00000030) >> 4;
+<<<<<<< HEAD
 		entry->dpconf.link_bw = (conf & 0x00e00000) >> 21;
+=======
+		switch ((conf & 0x00e00000) >> 21) {
+		case 0:
+			entry->dpconf.link_bw = 162000;
+			break;
+		default:
+			entry->dpconf.link_bw = 270000;
+			break;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch ((conf & 0x0f000000) >> 24) {
 		case 0xf:
 			entry->dpconf.link_nr = 4;
@@ -6248,6 +6839,7 @@ parse_dcb15_entry(struct drm_device *dev, struct dcb_table *dcb,
 	return true;
 }
 
+<<<<<<< HEAD
 static bool parse_dcb_entry(struct drm_device *dev, struct dcb_table *dcb,
 			    uint32_t conn, uint32_t conf)
 {
@@ -6267,6 +6859,8 @@ static bool parse_dcb_entry(struct drm_device *dev, struct dcb_table *dcb,
 	return true;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static
 void merge_like_dcb_entries(struct drm_device *dev, struct dcb_table *dcb)
 {
@@ -6377,6 +6971,40 @@ apply_dcb_encoder_quirks(struct drm_device *dev, int idx, u32 *conn, u32 *conf)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* Some other twisted XFX board (rhbz#694914)
+	 *
+	 * The DVI/VGA encoder combo that's supposed to represent the
+	 * DVI-I connector actually point at two different ones, and
+	 * the HDMI connector ends up paired with the VGA instead.
+	 *
+	 * Connector table is missing anything for VGA at all, pointing it
+	 * an invalid conntab entry 2 so we figure it out ourself.
+	 */
+	if (nv_match_device(dev, 0x0615, 0x1682, 0x2605)) {
+		if (idx == 0) {
+			*conn = 0x02002300; /* VGA, connector 2 */
+			*conf = 0x00000028;
+		} else
+		if (idx == 1) {
+			*conn = 0x01010312; /* DVI, connector 0 */
+			*conf = 0x00020030;
+		} else
+		if (idx == 2) {
+			*conn = 0x04020310; /* VGA, connector 0 */
+			*conf = 0x00000028;
+		} else
+		if (idx == 3) {
+			*conn = 0x02021322; /* HDMI, connector 1 */
+			*conf = 0x00020010;
+		} else {
+			*conn = 0x0000000e; /* EOL */
+			*conf = 0x00000000;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return true;
 }
 
@@ -6396,19 +7024,34 @@ fabricate_dcb_encoder_table(struct drm_device *dev, struct nvbios *bios)
 #endif
 
 	/* Make up some sane defaults */
+<<<<<<< HEAD
 	fabricate_dcb_output(dcb, OUTPUT_ANALOG, LEGACY_I2C_CRT, 1, 1);
 
 	if (nv04_tv_identify(dev, bios->legacy.i2c_indices.tv) >= 0)
 		fabricate_dcb_output(dcb, OUTPUT_TV, LEGACY_I2C_TV,
+=======
+	fabricate_dcb_output(dcb, OUTPUT_ANALOG,
+			     bios->legacy.i2c_indices.crt, 1, 1);
+
+	if (nv04_tv_identify(dev, bios->legacy.i2c_indices.tv) >= 0)
+		fabricate_dcb_output(dcb, OUTPUT_TV,
+				     bios->legacy.i2c_indices.tv,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     all_heads, 0);
 
 	else if (bios->tmds.output0_script_ptr ||
 		 bios->tmds.output1_script_ptr)
+<<<<<<< HEAD
 		fabricate_dcb_output(dcb, OUTPUT_TMDS, LEGACY_I2C_PANEL,
+=======
+		fabricate_dcb_output(dcb, OUTPUT_TMDS,
+				     bios->legacy.i2c_indices.panel,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     all_heads, 1);
 }
 
 static int
+<<<<<<< HEAD
 parse_dcb_table(struct drm_device *dev, struct nvbios *bios)
 {
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
@@ -6544,6 +7187,108 @@ parse_dcb_table(struct drm_device *dev, struct nvbios *bios)
 		if (!parse_dcb_entry(dev, dcb, connection, config))
 			break;
 	}
+=======
+parse_dcb_entry(struct drm_device *dev, void *data, int idx, u8 *outp)
+{
+	struct drm_nouveau_private *dev_priv = dev->dev_private;
+	struct dcb_table *dcb = &dev_priv->vbios.dcb;
+	u32 conf = (dcb->version >= 0x20) ? ROM32(outp[4]) : ROM32(outp[6]);
+	u32 conn = ROM32(outp[0]);
+	bool ret;
+
+	if (apply_dcb_encoder_quirks(dev, idx, &conn, &conf)) {
+		struct dcb_entry *entry = new_dcb_entry(dcb);
+
+		NV_TRACEWARN(dev, "DCB outp %02d: %08x %08x\n", idx, conn, conf);
+
+		if (dcb->version >= 0x20)
+			ret = parse_dcb20_entry(dev, dcb, conn, conf, entry);
+		else
+			ret = parse_dcb15_entry(dev, dcb, conn, conf, entry);
+		if (!ret)
+			return 1; /* stop parsing */
+
+		/* Ignore the I2C index for on-chip TV-out, as there
+		 * are cards with bogus values (nv31m in bug 23212),
+		 * and it's otherwise useless.
+		 */
+		if (entry->type == OUTPUT_TV &&
+		    entry->location == DCB_LOC_ON_CHIP)
+			entry->i2c_index = 0x0f;
+	}
+
+	return 0;
+}
+
+static void
+dcb_fake_connectors(struct nvbios *bios)
+{
+	struct dcb_table *dcbt = &bios->dcb;
+	u8 map[16] = { };
+	int i, idx = 0;
+
+	/* heuristic: if we ever get a non-zero connector field, assume
+	 * that all the indices are valid and we don't need fake them.
+	 *
+	 * and, as usual, a blacklist of boards with bad bios data..
+	 */
+	if (!nv_match_device(bios->dev, 0x0392, 0x107d, 0x20a2)) {
+		for (i = 0; i < dcbt->entries; i++) {
+			if (dcbt->entry[i].connector)
+				return;
+		}
+	}
+
+	/* no useful connector info available, we need to make it up
+	 * ourselves.  the rule here is: anything on the same i2c bus
+	 * is considered to be on the same connector.  any output
+	 * without an associated i2c bus is assigned its own unique
+	 * connector index.
+	 */
+	for (i = 0; i < dcbt->entries; i++) {
+		u8 i2c = dcbt->entry[i].i2c_index;
+		if (i2c == 0x0f) {
+			dcbt->entry[i].connector = idx++;
+		} else {
+			if (!map[i2c])
+				map[i2c] = ++idx;
+			dcbt->entry[i].connector = map[i2c] - 1;
+		}
+	}
+
+	/* if we created more than one connector, destroy the connector
+	 * table - just in case it has random, rather than stub, entries.
+	 */
+	if (i > 1) {
+		u8 *conntab = dcb_conntab(bios->dev);
+		if (conntab)
+			conntab[0] = 0x00;
+	}
+}
+
+static int
+parse_dcb_table(struct drm_device *dev, struct nvbios *bios)
+{
+	struct dcb_table *dcb = &bios->dcb;
+	u8 *dcbt, *conn;
+	int idx;
+
+	dcbt = dcb_table(dev);
+	if (!dcbt) {
+		/* handle pre-DCB boards */
+		if (bios->type == NVBIOS_BMP) {
+			fabricate_dcb_encoder_table(dev, bios);
+			return 0;
+		}
+
+		return -EINVAL;
+	}
+
+	NV_TRACE(dev, "DCB version %d.%d\n", dcbt[0] >> 4, dcbt[0] & 0xf);
+
+	dcb->version = dcbt[0];
+	dcb_outp_foreach(dev, NULL, parse_dcb_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * apart for v2.1+ not being known for requiring merging, this
@@ -6555,6 +7300,7 @@ parse_dcb_table(struct drm_device *dev, struct nvbios *bios)
 	if (!dcb->entries)
 		return -ENXIO;
 
+<<<<<<< HEAD
 	parse_dcb_gpio_table(bios);
 	parse_dcb_connector_table(bios);
 	return 0;
@@ -6626,6 +7372,21 @@ fixup_legacy_i2c(struct nvbios *bios)
 		if (dcb->entry[i].i2c_index == LEGACY_I2C_TV)
 			dcb->entry[i].i2c_index = bios->legacy.i2c_indices.tv;
 	}
+=======
+	/* dump connector table entries to log, if any exist */
+	idx = -1;
+	while ((conn = dcb_conn(dev, ++idx))) {
+		if (conn[0] != 0xff) {
+			NV_TRACE(dev, "DCB conn %02d: ", idx);
+			if (dcb_conntab(dev)[3] < 4)
+				printk("%04x\n", ROM16(conn[0]));
+			else
+				printk("%08x\n", ROM32(conn[0]));
+		}
+	}
+	dcb_fake_connectors(bios);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int load_nv17_hwsq_ucode_entry(struct drm_device *dev, struct nvbios *bios, uint16_t hwsq_offset, int entry)
@@ -6731,7 +7492,11 @@ uint8_t *nouveau_bios_embedded_edid(struct drm_device *dev)
 
 void
 nouveau_bios_run_init_table(struct drm_device *dev, uint16_t table,
+<<<<<<< HEAD
 			    struct dcb_entry *dcbent)
+=======
+			    struct dcb_entry *dcbent, int crtc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nvbios *bios = &dev_priv->vbios;
@@ -6739,11 +7504,28 @@ nouveau_bios_run_init_table(struct drm_device *dev, uint16_t table,
 
 	spin_lock_bh(&bios->lock);
 	bios->display.output = dcbent;
+<<<<<<< HEAD
+=======
+	bios->display.crtc = crtc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	parse_init_table(bios, table, &iexec);
 	bios->display.output = NULL;
 	spin_unlock_bh(&bios->lock);
 }
 
+<<<<<<< HEAD
+=======
+void
+nouveau_bios_init_exec(struct drm_device *dev, uint16_t table)
+{
+	struct drm_nouveau_private *dev_priv = dev->dev_private;
+	struct nvbios *bios = &dev_priv->vbios;
+	struct init_exec iexec = { true, false };
+
+	parse_init_table(bios, table, &iexec);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static bool NVInitVBIOS(struct drm_device *dev)
 {
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
@@ -6753,11 +7535,15 @@ static bool NVInitVBIOS(struct drm_device *dev)
 	spin_lock_init(&bios->lock);
 	bios->dev = dev;
 
+<<<<<<< HEAD
 	if (!NVShadowVBIOS(dev, bios->data))
 		return false;
 
 	bios->length = NV_PROM_SIZE;
 	return true;
+=======
+	return bios_shadow(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int nouveau_parse_vbios_struct(struct drm_device *dev)
@@ -6825,15 +7611,21 @@ nouveau_run_vbios_init(struct drm_device *dev)
 
 	if (dev_priv->card_type >= NV_50) {
 		for (i = 0; i < bios->dcb.entries; i++) {
+<<<<<<< HEAD
 			nouveau_bios_run_display_table(dev,
 						       &bios->dcb.entry[i],
 						       0, 0);
+=======
+			nouveau_bios_run_display_table(dev, 0, 0,
+						       &bios->dcb.entry[i], -1);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static void
 nouveau_bios_i2c_devices_takedown(struct drm_device *dev)
 {
@@ -6847,6 +7639,8 @@ nouveau_bios_i2c_devices_takedown(struct drm_device *dev)
 		nouveau_i2c_fini(dev, entry);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static bool
 nouveau_bios_posted(struct drm_device *dev)
 {
@@ -6883,12 +7677,26 @@ nouveau_bios_init(struct drm_device *dev)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	ret = parse_dcb_table(dev, bios);
 	if (ret)
 		return ret;
 
 	fixup_legacy_i2c(bios);
 	fixup_legacy_connector(bios);
+=======
+	ret = nouveau_i2c_init(dev);
+	if (ret)
+		return ret;
+
+	ret = nouveau_mxm_init(dev);
+	if (ret)
+		return ret;
+
+	ret = parse_dcb_table(dev, bios);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!bios->major_version)	/* we don't run version 0 bios */
 		return 0;
@@ -6926,5 +7734,14 @@ nouveau_bios_init(struct drm_device *dev)
 void
 nouveau_bios_takedown(struct drm_device *dev)
 {
+<<<<<<< HEAD
 	nouveau_bios_i2c_devices_takedown(dev);
+=======
+	struct drm_nouveau_private *dev_priv = dev->dev_private;
+
+	nouveau_mxm_fini(dev);
+	nouveau_i2c_fini(dev);
+
+	kfree(dev_priv->vbios.data);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

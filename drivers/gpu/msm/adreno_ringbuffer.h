@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2002,2007-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2002,2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -13,10 +17,13 @@
 #ifndef __ADRENO_RINGBUFFER_H
 #define __ADRENO_RINGBUFFER_H
 
+<<<<<<< HEAD
 #define GSL_RB_USE_MEM_RPTR
 #define GSL_RB_USE_MEM_TIMESTAMP
 #define GSL_DEVICE_SHADOW_MEMSTORE_TO_USER
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Adreno ringbuffer sizes in bytes - these are converted to
  * the appropriate log2 values in the code
@@ -59,7 +66,12 @@ struct adreno_ringbuffer {
 
 	unsigned int wptr; /* write pointer offset in dwords from baseaddr */
 	unsigned int rptr; /* read pointer offset in dwords from baseaddr */
+<<<<<<< HEAD
 	uint32_t timestamp;
+=======
+
+	unsigned int timestamp[KGSL_MEMSTORE_MAX];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -72,6 +84,7 @@ struct adreno_ringbuffer {
 		gpuaddr += sizeof(uint); \
 	} while (0)
 
+<<<<<<< HEAD
 /* timestamp */
 #ifdef GSL_DEVICE_SHADOW_MEMSTORE_TO_USER
 #define GSL_RB_USE_MEM_TIMESTAMP
@@ -91,11 +104,18 @@ struct adreno_ringbuffer {
 
 /* mem rptr */
 #ifdef GSL_RB_USE_MEM_RPTR
+=======
+/* enable timestamp (...scratch0) memory shadowing */
+#define GSL_RB_MEMPTRS_SCRATCH_MASK 0x1
+
+/* mem rptr */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define GSL_RB_CNTL_NO_UPDATE 0x0 /* enable */
 #define GSL_RB_GET_READPTR(rb, data) \
 	do { \
 		*(data) = rb->memptrs->rptr; \
 	} while (0)
+<<<<<<< HEAD
 #else
 #define GSL_RB_CNTL_NO_UPDATE 0x1 /* disable */
 #define GSL_RB_GET_READPTR(rb, data) \
@@ -106,6 +126,18 @@ struct adreno_ringbuffer {
 
 #define GSL_RB_CNTL_POLL_EN 0x0 /* disable */
 
+=======
+
+#define GSL_RB_CNTL_POLL_EN 0x0 /* disable */
+
+/*
+ * protected mode error checking below register address 0x800
+ * note: if CP_INTERRUPT packet is used then checking needs
+ * to change to below register address 0x7C8
+ */
+#define GSL_RB_PROTECTED_MODE_CONTROL		0x200001F2
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int adreno_ringbuffer_issueibcmds(struct kgsl_device_private *dev_priv,
 				struct kgsl_context *context,
 				struct kgsl_ibdesc *ibdesc,
@@ -122,12 +154,26 @@ void adreno_ringbuffer_stop(struct adreno_ringbuffer *rb);
 
 void adreno_ringbuffer_close(struct adreno_ringbuffer *rb);
 
+<<<<<<< HEAD
 void adreno_ringbuffer_issuecmds(struct kgsl_device *device,
+=======
+unsigned int adreno_ringbuffer_issuecmds(struct kgsl_device *device,
+>>>>>>> refs/remotes/origin/cm-10.0
 					struct adreno_context *drawctxt,
 					unsigned int flags,
 					unsigned int *cmdaddr,
 					int sizedwords);
 
+<<<<<<< HEAD
+=======
+void adreno_ringbuffer_issuecmds_intr(struct kgsl_device *device,
+					struct kgsl_context *k_ctxt,
+					unsigned int *cmdaddr,
+					int sizedwords);
+
+void adreno_ringbuffer_submit(struct adreno_ringbuffer *rb);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void kgsl_cp_intrcallback(struct kgsl_device *device);
 
 int adreno_ringbuffer_extract(struct adreno_ringbuffer *rb,
@@ -137,9 +183,14 @@ void
 adreno_ringbuffer_restore(struct adreno_ringbuffer *rb, unsigned int *rb_buff,
 			int num_rb_contents);
 
+<<<<<<< HEAD
 void adreno_print_fault_ib_work(struct work_struct *work);
 
 void adreno_print_fault_ib(struct kgsl_device *device);
+=======
+unsigned int *adreno_ringbuffer_allocspace(struct adreno_ringbuffer *rb,
+					     unsigned int numcmds);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int adreno_ringbuffer_count(struct adreno_ringbuffer *rb,
 	unsigned int rptr)

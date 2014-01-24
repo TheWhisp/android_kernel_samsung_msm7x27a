@@ -13,9 +13,13 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include "init.h"
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "user.h"
+=======
+#include "os.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define UML_DIR "~/.uml/"
 

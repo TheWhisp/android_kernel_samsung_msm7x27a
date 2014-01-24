@@ -24,6 +24,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ch7006_priv.h"
 
 /* DRM encoder functions */
@@ -250,10 +255,14 @@ static int ch7006_encoder_create_resources(struct drm_encoder *encoder,
 
 	drm_mode_create_tv_properties(dev, NUM_TV_NORMS, ch7006_tv_norm_names);
 
+<<<<<<< HEAD
 	priv->scale_property = drm_property_create(dev, DRM_MODE_PROP_RANGE,
 						   "scale", 2);
 	priv->scale_property->values[0] = 0;
 	priv->scale_property->values[1] = 2;
+=======
+	priv->scale_property = drm_property_create_range(dev, 0, "scale", 0, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	drm_connector_attach_property(connector, conf->tv_select_subconnector_property,
 				      priv->select_subconnector);

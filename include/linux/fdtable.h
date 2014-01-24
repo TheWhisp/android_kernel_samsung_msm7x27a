@@ -13,7 +13,11 @@
 #include <linux/init.h>
 #include <linux/fs.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The default fd array needs to be at least BITS_PER_LONG,
@@ -21,6 +25,7 @@
  */
 #define NR_OPEN_DEFAULT BITS_PER_LONG
 
+<<<<<<< HEAD
 /*
  * The embedded_fd_set is a small fd_set,
  * suitable for most tasks (which open <= BITS_PER_LONG files)
@@ -34,10 +39,50 @@ struct fdtable {
 	struct file __rcu **fd;      /* current fd array */
 	fd_set *close_on_exec;
 	fd_set *open_fds;
+=======
+struct fdtable {
+	unsigned int max_fds;
+	struct file __rcu **fd;      /* current fd array */
+	unsigned long *close_on_exec;
+	unsigned long *open_fds;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct rcu_head rcu;
 	struct fdtable *next;
 };
 
+<<<<<<< HEAD
+=======
+static inline void __set_close_on_exec(int fd, struct fdtable *fdt)
+{
+	__set_bit(fd, fdt->close_on_exec);
+}
+
+static inline void __clear_close_on_exec(int fd, struct fdtable *fdt)
+{
+	__clear_bit(fd, fdt->close_on_exec);
+}
+
+static inline bool close_on_exec(int fd, const struct fdtable *fdt)
+{
+	return test_bit(fd, fdt->close_on_exec);
+}
+
+static inline void __set_open_fd(int fd, struct fdtable *fdt)
+{
+	__set_bit(fd, fdt->open_fds);
+}
+
+static inline void __clear_open_fd(int fd, struct fdtable *fdt)
+{
+	__clear_bit(fd, fdt->open_fds);
+}
+
+static inline bool fd_is_open(int fd, const struct fdtable *fdt)
+{
+	return test_bit(fd, fdt->open_fds);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Open file table structure
  */
@@ -53,14 +98,22 @@ struct files_struct {
    */
 	spinlock_t file_lock ____cacheline_aligned_in_smp;
 	int next_fd;
+<<<<<<< HEAD
 	struct embedded_fd_set close_on_exec_init;
 	struct embedded_fd_set open_fds_init;
+=======
+	unsigned long close_on_exec_init[1];
+	unsigned long open_fds_init[1];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct file __rcu * fd_array[NR_OPEN_DEFAULT];
 };
 
 #define rcu_dereference_check_fdtable(files, fdtfd) \
 	(rcu_dereference_check((fdtfd), \
+<<<<<<< HEAD
 			       rcu_read_lock_held() || \
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			       lockdep_is_held(&(files)->file_lock) || \
 			       atomic_read(&(files)->count) == 1 || \
 			       rcu_my_thread_group_empty()))

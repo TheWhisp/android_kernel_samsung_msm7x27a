@@ -15,5 +15,9 @@
 extern u64 notrace trace_clock_local(void);
 extern u64 notrace trace_clock(void);
 extern u64 notrace trace_clock_global(void);
+<<<<<<< HEAD
+=======
+extern u64 notrace trace_clock_counter(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _LINUX_TRACE_CLOCK_H */

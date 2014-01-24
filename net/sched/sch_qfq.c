@@ -211,6 +211,10 @@ static int qfq_change_class(struct Qdisc *sch, u32 classid, u32 parentid,
 	struct nlattr *tb[TCA_QFQ_MAX + 1];
 	u32 weight, lmax, inv_w;
 	int i, err;
+<<<<<<< HEAD
+=======
+	int delta_w;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (tca[TCA_OPTIONS] == NULL) {
 		pr_notice("qfq: no options\n");
@@ -232,9 +236,16 @@ static int qfq_change_class(struct Qdisc *sch, u32 classid, u32 parentid,
 
 	inv_w = ONE_FP / weight;
 	weight = ONE_FP / inv_w;
+<<<<<<< HEAD
 	if (q->wsum + weight > QFQ_MAX_WSUM) {
 		pr_notice("qfq: total weight out of range (%u + %u)\n",
 			  weight, q->wsum);
+=======
+	delta_w = weight - (cl ? ONE_FP / cl->inv_w : 0);
+	if (q->wsum + delta_w > QFQ_MAX_WSUM) {
+		pr_notice("qfq: total weight out of range (%u + %u)\n",
+			  delta_w, q->wsum);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -256,6 +267,7 @@ static int qfq_change_class(struct Qdisc *sch, u32 classid, u32 parentid,
 				return err;
 		}
 
+<<<<<<< HEAD
 		sch_tree_lock(sch);
 		if (tb[TCA_QFQ_WEIGHT]) {
 			q->wsum = weight - ONE_FP / cl->inv_w;
@@ -263,6 +275,14 @@ static int qfq_change_class(struct Qdisc *sch, u32 classid, u32 parentid,
 		}
 		sch_tree_unlock(sch);
 
+=======
+		if (inv_w != cl->inv_w) {
+			sch_tree_lock(sch);
+			q->wsum += delta_w;
+			cl->inv_w = inv_w;
+			sch_tree_unlock(sch);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 
@@ -277,7 +297,10 @@ static int qfq_change_class(struct Qdisc *sch, u32 classid, u32 parentid,
 	i = qfq_calc_index(cl->inv_w, cl->lmax);
 
 	cl->grp = &q->groups[i];
+<<<<<<< HEAD
 	q->wsum += weight;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cl->qdisc = qdisc_create_dflt(sch->dev_queue,
 				      &pfifo_qdisc_ops, classid);
@@ -294,6 +317,10 @@ static int qfq_change_class(struct Qdisc *sch, u32 classid, u32 parentid,
 			return err;
 		}
 	}
+<<<<<<< HEAD
+=======
+	q->wsum += weight;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sch_tree_lock(sch);
 	qdisc_class_hash_insert(&q->clhash, &cl->common);
@@ -817,11 +844,19 @@ skip_unblock:
 static void qfq_update_start(struct qfq_sched *q, struct qfq_class *cl)
 {
 	unsigned long mask;
+<<<<<<< HEAD
 	uint32_t limit, roundedF;
 	int slot_shift = cl->grp->slot_shift;
 
 	roundedF = qfq_round_down(cl->F, slot_shift);
 	limit = qfq_round_down(q->V, slot_shift) + (1UL << slot_shift);
+=======
+	u64 limit, roundedF;
+	int slot_shift = cl->grp->slot_shift;
+
+	roundedF = qfq_round_down(cl->F, slot_shift);
+	limit = qfq_round_down(q->V, slot_shift) + (1ULL << slot_shift);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!qfq_gt(cl->F, q->V) || qfq_gt(roundedF, limit)) {
 		/* timestamp was stale */

@@ -33,7 +33,11 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <scsi/scsi_cmnd.h>
 #include <scsi/scsi_device.h>
@@ -1713,5 +1717,9 @@ static int  cciss_eh_abort_handler(struct scsi_cmnd *scsicmd)
 /* If no tape support, then these become defined out of existence */
 
 #define cciss_scsi_setup(cntl_num)
+<<<<<<< HEAD
+=======
+#define cciss_engage_scsi(h)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* CONFIG_CISS_SCSI_TAPE */

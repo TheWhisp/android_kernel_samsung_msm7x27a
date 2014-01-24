@@ -456,7 +456,11 @@ struct mfp_addr_map {
 
 #define MFP_ADDR_END	{ MFP_PIN_INVALID, 0 }
 
+<<<<<<< HEAD
 void __init mfp_init_base(unsigned long mfpr_base);
+=======
+void __init mfp_init_base(void __iomem *mfpr_base);
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init mfp_init_addr(struct mfp_addr_map *map);
 
 /*

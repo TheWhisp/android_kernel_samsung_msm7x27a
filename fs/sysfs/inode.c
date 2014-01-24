@@ -188,7 +188,11 @@ out:
 	return error;
 }
 
+<<<<<<< HEAD
 static inline void set_default_inode_attr(struct inode * inode, mode_t mode)
+=======
+static inline void set_default_inode_attr(struct inode * inode, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	inode->i_mode = mode;
 	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
@@ -203,6 +207,7 @@ static inline void set_inode_attr(struct inode * inode, struct iattr * iattr)
 	inode->i_ctime = iattr->ia_ctime;
 }
 
+<<<<<<< HEAD
 static int sysfs_count_nlink(struct sysfs_dirent *sd)
 {
 	struct sysfs_dirent *child;
@@ -215,6 +220,8 @@ static int sysfs_count_nlink(struct sysfs_dirent *sd)
 	return nr + 2;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void sysfs_refresh_inode(struct sysfs_dirent *sd, struct inode *inode)
 {
 	struct sysfs_inode_attrs *iattrs = sd->s_iattr;
@@ -231,7 +238,11 @@ static void sysfs_refresh_inode(struct sysfs_dirent *sd, struct inode *inode)
 	}
 
 	if (sysfs_type(sd) == SYSFS_DIR)
+<<<<<<< HEAD
 		inode->i_nlink = sysfs_count_nlink(sd);
+=======
+		set_nlink(inode, sd->s_dir.subdirs + 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int sysfs_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat)
@@ -331,14 +342,25 @@ int sysfs_hash_and_remove(struct sysfs_dirent *dir_sd, const void *ns, const cha
 	struct sysfs_addrm_cxt acxt;
 	struct sysfs_dirent *sd;
 
+<<<<<<< HEAD
 	if (!dir_sd)
 		return -ENOENT;
+=======
+	if (!dir_sd) {
+		WARN(1, KERN_WARNING "sysfs: can not remove '%s', no directory\n",
+			name);
+		return -ENOENT;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sysfs_addrm_start(&acxt, dir_sd);
 
 	sd = sysfs_find_dirent(dir_sd, ns, name);
+<<<<<<< HEAD
 	if (sd && (sd->s_ns != ns))
 		sd = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (sd)
 		sysfs_remove_one(&acxt, sd);
 
@@ -350,11 +372,19 @@ int sysfs_hash_and_remove(struct sysfs_dirent *dir_sd, const void *ns, const cha
 		return -ENOENT;
 }
 
+<<<<<<< HEAD
 int sysfs_permission(struct inode *inode, int mask, unsigned int flags)
 {
 	struct sysfs_dirent *sd;
 
 	if (flags & IPERM_FLAG_RCU)
+=======
+int sysfs_permission(struct inode *inode, int mask)
+{
+	struct sysfs_dirent *sd;
+
+	if (mask & MAY_NOT_BLOCK)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ECHILD;
 
 	sd = inode->i_private;
@@ -363,5 +393,9 @@ int sysfs_permission(struct inode *inode, int mask, unsigned int flags)
 	sysfs_refresh_inode(sd, inode);
 	mutex_unlock(&sysfs_mutex);
 
+<<<<<<< HEAD
 	return generic_permission(inode, mask, flags, NULL);
+=======
+	return generic_permission(inode, mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

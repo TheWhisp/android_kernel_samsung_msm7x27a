@@ -44,8 +44,13 @@
 #include <linux/init.h>
 #include <linux/bitops.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #include <asm/system.h>
+=======
+#include <linux/ratelimit.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/uaccess.h>
 
@@ -242,8 +247,13 @@ static void moxa_wait_finish(void __iomem *ofsAddr)
 	while (readw(ofsAddr + FuncCode) != 0)
 		if (time_after(jiffies, end))
 			return;
+<<<<<<< HEAD
 	if (readw(ofsAddr + FuncCode) != 0 && printk_ratelimit())
 		printk(KERN_WARNING "moxa function expired\n");
+=======
+	if (readw(ofsAddr + FuncCode) != 0)
+		printk_ratelimited(KERN_WARNING "moxa function expired\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void moxafunc(void __iomem *ofsAddr, u16 cmd, u16 arg)
@@ -1035,7 +1045,10 @@ static int __init moxa_init(void)
 	if (!moxaDriver)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	moxaDriver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	moxaDriver->name = "ttyMX";
 	moxaDriver->major = ttymajor;
 	moxaDriver->minor_start = 0;

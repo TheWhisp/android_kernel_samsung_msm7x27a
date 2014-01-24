@@ -21,6 +21,11 @@
 #include <linux/spinlock.h>
 #include <linux/device.h>
 
+<<<<<<< HEAD
+=======
+struct hwspinlock_device;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct hwspinlock_ops - platform-specific hwspinlock handlers
  *
@@ -39,6 +44,7 @@ struct hwspinlock_ops {
 
 /**
  * struct hwspinlock - this struct represents a single hwspinlock instance
+<<<<<<< HEAD
  *
  * @dev: underlying device, will be used to invoke runtime PM api
  * @ops: platform-specific hwspinlock handlers
@@ -58,4 +64,39 @@ struct hwspinlock {
 	struct module *owner;
 };
 
+=======
+ * @bank: the hwspinlock_device structure which owns this lock
+ * @lock: initialized and used by hwspinlock core
+ * @priv: private data, owned by the underlying platform-specific hwspinlock drv
+ */
+struct hwspinlock {
+	struct hwspinlock_device *bank;
+	spinlock_t lock;
+	void *priv;
+};
+
+/**
+ * struct hwspinlock_device - a device which usually spans numerous hwspinlocks
+ * @dev: underlying device, will be used to invoke runtime PM api
+ * @ops: platform-specific hwspinlock handlers
+ * @base_id: id index of the first lock in this device
+ * @num_locks: number of locks in this device
+ * @lock: dynamically allocated array of 'struct hwspinlock'
+ */
+struct hwspinlock_device {
+	struct device *dev;
+	const struct hwspinlock_ops *ops;
+	int base_id;
+	int num_locks;
+	struct hwspinlock lock[0];
+};
+
+static inline int hwlock_to_id(struct hwspinlock *hwlock)
+{
+	int local_id = hwlock - &hwlock->bank->lock[0];
+
+	return hwlock->bank->base_id + local_id;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __HWSPINLOCK_HWSPINLOCK_H */

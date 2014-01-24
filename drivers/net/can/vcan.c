@@ -37,8 +37,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  *
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/module.h>
@@ -65,7 +68,11 @@ MODULE_AUTHOR("Urs Thuermann <urs.thuermann@volkswagen.de>");
  * See Documentation/networking/can.txt for details.
  */
 
+<<<<<<< HEAD
 static int echo; /* echo testing. Default: 0 (Off) */
+=======
+static bool echo; /* echo testing. Default: 0 (Off) */
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(echo, bool, S_IRUGO);
 MODULE_PARM_DESC(echo, "Echo sent frames (for testing). Default: 0 (Off)");
 

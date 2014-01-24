@@ -25,7 +25,10 @@
 #ifndef V4L2_INT_DEVICE_H
 #define V4L2_INT_DEVICE_H
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-common.h>
 
 #define V4L2NAMESIZE 32
@@ -41,6 +44,11 @@ enum v4l2_int_type {
 	v4l2_int_type_slave
 };
 
+<<<<<<< HEAD
+=======
+struct module;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct v4l2_int_device;
 
 struct v4l2_int_master {

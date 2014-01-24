@@ -14,8 +14,12 @@
 #include <linux/io.h>
 #include <linux/delay.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/timer.h>
 #include <asm/hw_irq.h>
 #include <asm/pgtable.h>

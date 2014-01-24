@@ -2,6 +2,13 @@
 config ALCHEMY_GPIOINT_AU1000
 	bool
 
+<<<<<<< HEAD
+=======
+# au1300-style GPIO/INT controller
+config ALCHEMY_GPIOINT_AU1300
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 # select this in your board config if you don't want to use the gpio
 # namespace as documented in the manuals.  In this case however you need
 # to create the necessary gpio_* functions in your board code/headers!
@@ -18,6 +25,7 @@ config MIPS_MTX1
 	bool "4G Systems MTX-1 board"
 	select DMA_NONCOHERENT
 	select HW_HAS_PCI
+<<<<<<< HEAD
 	select SOC_AU1500
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
@@ -26,10 +34,14 @@ config MIPS_BOSPORUS
 	bool "Alchemy Bosporus board"
 	select SOC_AU1500
 	select DMA_NONCOHERENT
+=======
+	select ALCHEMY_GPIOINT_AU1000
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
 
 config MIPS_DB1000
+<<<<<<< HEAD
 	bool "Alchemy DB1000 board"
 	select SOC_AU1000
 	select DMA_NONCOHERENT
@@ -41,17 +53,31 @@ config MIPS_DB1100
 	bool "Alchemy DB1100 board"
 	select SOC_AU1100
 	select DMA_NONCOHERENT
+=======
+	bool "Alchemy DB1000/DB1500/DB1100 boards"
+	select ALCHEMY_GPIOINT_AU1000
+	select DMA_NONCOHERENT
+	select HW_HAS_PCI
+	select MIPS_DISABLE_OBSOLETE_IDE
+	select SYS_SUPPORTS_BIG_ENDIAN
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
 
 config MIPS_DB1200
+<<<<<<< HEAD
 	bool "Alchemy DB1200 board"
 	select SOC_AU1200
+=======
+	bool "Alchemy DB1200/PB1200 board"
+	select ALCHEMY_GPIOINT_AU1000
+>>>>>>> refs/remotes/origin/cm-10.0
 	select DMA_COHERENT
 	select MIPS_DISABLE_OBSOLETE_IDE
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
 
+<<<<<<< HEAD
 config MIPS_DB1500
 	bool "Alchemy DB1500 board"
 	select SOC_AU1500
@@ -59,18 +85,32 @@ config MIPS_DB1500
 	select HW_HAS_PCI
 	select MIPS_DISABLE_OBSOLETE_IDE
 	select SYS_SUPPORTS_BIG_ENDIAN
+=======
+config MIPS_DB1300
+	bool "NetLogic DB1300 board"
+	select ALCHEMY_GPIOINT_AU1300
+	select DMA_COHERENT
+	select MIPS_DISABLE_OBSOLETE_IDE
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
 
 config MIPS_DB1550
 	bool "Alchemy DB1550 board"
+<<<<<<< HEAD
 	select SOC_AU1550
 	select HW_HAS_PCI
 	select DMA_NONCOHERENT
+=======
+	select ALCHEMY_GPIOINT_AU1000
+	select HW_HAS_PCI
+	select DMA_COHERENT
+>>>>>>> refs/remotes/origin/cm-10.0
 	select MIPS_DISABLE_OBSOLETE_IDE
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
 
+<<<<<<< HEAD
 config MIPS_MIRAGE
 	bool "Alchemy Mirage board"
 	select DMA_NONCOHERENT
@@ -90,12 +130,18 @@ config MIPS_PB1000
 config MIPS_PB1100
 	bool "Alchemy PB1100 board"
 	select SOC_AU1100
+=======
+config MIPS_PB1100
+	bool "Alchemy PB1100 board"
+	select ALCHEMY_GPIOINT_AU1000
+>>>>>>> refs/remotes/origin/cm-10.0
 	select DMA_NONCOHERENT
 	select HW_HAS_PCI
 	select SWAP_IO_SPACE
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
 
+<<<<<<< HEAD
 config MIPS_PB1200
 	bool "Alchemy PB1200 board"
 	select SOC_AU1200
@@ -107,6 +153,11 @@ config MIPS_PB1200
 config MIPS_PB1500
 	bool "Alchemy PB1500 board"
 	select SOC_AU1500
+=======
+config MIPS_PB1500
+	bool "Alchemy PB1500 board"
+	select ALCHEMY_GPIOINT_AU1000
+>>>>>>> refs/remotes/origin/cm-10.0
 	select DMA_NONCOHERENT
 	select HW_HAS_PCI
 	select SYS_SUPPORTS_LITTLE_ENDIAN
@@ -114,7 +165,11 @@ config MIPS_PB1500
 
 config MIPS_PB1550
 	bool "Alchemy PB1550 board"
+<<<<<<< HEAD
 	select SOC_AU1550
+=======
+	select ALCHEMY_GPIOINT_AU1000
+>>>>>>> refs/remotes/origin/cm-10.0
 	select DMA_NONCOHERENT
 	select HW_HAS_PCI
 	select MIPS_DISABLE_OBSOLETE_IDE
@@ -124,13 +179,21 @@ config MIPS_PB1550
 config MIPS_XXS1500
 	bool "MyCable XXS1500 board"
 	select DMA_NONCOHERENT
+<<<<<<< HEAD
 	select SOC_AU1500
+=======
+	select ALCHEMY_GPIOINT_AU1000
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
 
 config MIPS_GPR
 	bool "Trapeze ITS GPR board"
+<<<<<<< HEAD
 	select SOC_AU1550
+=======
+	select ALCHEMY_GPIOINT_AU1000
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HW_HAS_PCI
 	select DMA_NONCOHERENT
 	select MIPS_DISABLE_OBSOLETE_IDE
@@ -138,6 +201,7 @@ config MIPS_GPR
 	select SYS_HAS_EARLY_PRINTK
 
 endchoice
+<<<<<<< HEAD
 
 config SOC_AU1000
 	bool
@@ -158,3 +222,5 @@ config SOC_AU1550
 config SOC_AU1200
 	bool
 	select ALCHEMY_GPIOINT_AU1000
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

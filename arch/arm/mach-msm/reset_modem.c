@@ -17,9 +17,15 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
+<<<<<<< HEAD
 
 #include "smd_private.h"
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+
+#include "smd_private.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DEBUG
 /* #undef DEBUG */

@@ -11,6 +11,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* for the Technotrend 1500 bundled remotes (grey and black): */
 

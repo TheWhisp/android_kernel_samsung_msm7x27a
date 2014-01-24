@@ -101,14 +101,21 @@ static const struct backlight_ops pcf50633_bl_ops = {
 
 static int __devinit pcf50633_bl_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pcf50633_bl *pcf_bl;
 	struct device *parent = pdev->dev.parent;
 	struct pcf50633_platform_data *pcf50633_data = parent->platform_data;
 	struct pcf50633_bl_platform_data *pdata = pcf50633_data->backlight_data;
 	struct backlight_properties bl_props;
 
+<<<<<<< HEAD
 	pcf_bl = kzalloc(sizeof(*pcf_bl), GFP_KERNEL);
+=======
+	pcf_bl = devm_kzalloc(&pdev->dev, sizeof(*pcf_bl), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!pcf_bl)
 		return -ENOMEM;
 
@@ -129,10 +136,15 @@ static int __devinit pcf50633_bl_probe(struct platform_device *pdev)
 	pcf_bl->bl = backlight_device_register(pdev->name, &pdev->dev, pcf_bl,
 						&pcf50633_bl_ops, &bl_props);
 
+<<<<<<< HEAD
 	if (IS_ERR(pcf_bl->bl)) {
 		ret = PTR_ERR(pcf_bl->bl);
 		goto err_free;
 	}
+=======
+	if (IS_ERR(pcf_bl->bl))
+		return PTR_ERR(pcf_bl->bl);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	platform_set_drvdata(pdev, pcf_bl);
 
@@ -145,11 +157,14 @@ static int __devinit pcf50633_bl_probe(struct platform_device *pdev)
 	backlight_update_status(pcf_bl->bl);
 
 	return 0;
+<<<<<<< HEAD
 
 err_free:
 	kfree(pcf_bl);
 
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devexit pcf50633_bl_remove(struct platform_device *pdev)
@@ -160,8 +175,11 @@ static int __devexit pcf50633_bl_remove(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, NULL);
 
+<<<<<<< HEAD
 	kfree(pcf_bl);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -173,6 +191,7 @@ static struct platform_driver pcf50633_bl_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init pcf50633_bl_init(void)
 {
 	return platform_driver_register(&pcf50633_bl_driver);
@@ -184,6 +203,9 @@ static void __exit pcf50633_bl_exit(void)
 	platform_driver_unregister(&pcf50633_bl_driver);
 }
 module_exit(pcf50633_bl_exit);
+=======
+module_platform_driver(pcf50633_bl_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
 MODULE_DESCRIPTION("PCF50633 backlight driver");

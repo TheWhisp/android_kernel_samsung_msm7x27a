@@ -31,7 +31,10 @@
 #include <linux/mtd/partitions.h>
 
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/reg_nand.h>
 #include <mach/reg_umi.h>
@@ -52,8 +55,11 @@
 static const __devinitconst char gBanner[] = KERN_INFO \
 	"BCM UMI MTD NAND Driver: 1.00\n";
 
+<<<<<<< HEAD
 const char *part_probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if NAND_ECC_BCH
 static uint8_t scan_ff_pattern[] = { 0xff };
 
@@ -376,6 +382,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
 
 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
+<<<<<<< HEAD
 	if (!r)
 		return -ENXIO;
 
@@ -386,6 +393,20 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
 		printk(KERN_ERR "ioremap to access BCM UMI NAND chip failed\n");
 		kfree(board_mtd);
 		return -EIO;
+=======
+	if (!r) {
+		err = -ENXIO;
+		goto out_free;
+	}
+
+	/* map physical address */
+	bcm_umi_io_base = ioremap(r->start, resource_size(r));
+
+	if (!bcm_umi_io_base) {
+		printk(KERN_ERR "ioremap to access BCM UMI NAND chip failed\n");
+		err = -EIO;
+		goto out_free;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Get pointer to private data */
@@ -401,9 +422,14 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
 	/* Initialize the NAND hardware.  */
 	if (bcm_umi_nand_inithw() < 0) {
 		printk(KERN_ERR "BCM UMI NAND chip could not be initialized\n");
+<<<<<<< HEAD
 		iounmap(bcm_umi_io_base);
 		kfree(board_mtd);
 		return -EIO;
+=======
+		err = -EIO;
+		goto out_unmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Set address of NAND IO lines */
@@ -436,7 +462,11 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
 #if USE_DMA
 	err = nand_dma_init();
 	if (err != 0)
+<<<<<<< HEAD
 		return err;
+=======
+		goto out_unmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	/* Figure out the size of the device that we have.
@@ -447,9 +477,13 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
 	err = nand_scan_ident(board_mtd, 1, NULL);
 	if (err) {
 		printk(KERN_ERR "nand_scan failed: %d\n", err);
+<<<<<<< HEAD
 		iounmap(bcm_umi_io_base);
 		kfree(board_mtd);
 		return err;
+=======
+		goto out_unmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Now that we know the nand size, we can setup the ECC layout */
@@ -468,16 +502,36 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
 		{
 			printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n",
 					 board_mtd->writesize);
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			err = -EINVAL;
+			goto out_unmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
 #if NAND_ECC_BCH
 	if (board_mtd->writesize > 512) {
+<<<<<<< HEAD
 		if (this->options & NAND_USE_FLASH_BBT)
 			largepage_bbt.options = NAND_BBT_SCAN2NDPAGE;
 		this->badblock_pattern = &largepage_bbt;
 	}
+=======
+		if (this->bbt_options & NAND_BBT_USE_FLASH)
+			largepage_bbt.options = NAND_BBT_SCAN2NDPAGE;
+		this->badblock_pattern = &largepage_bbt;
+	}
+
+	/*
+	 * FIXME: ecc strength value of 6 bits per 512 bytes of data is a
+	 * conservative guess, given 13 ecc bytes and using bch alg.
+	 * (Assume Galois field order m=15 to allow a margin of error.)
+	 */
+	this->ecc.strength = 6;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	/* Now finish off the scan, now that ecc.layout has been initialized. */
@@ -485,6 +539,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
 	err = nand_scan_tail(board_mtd);
 	if (err) {
 		printk(KERN_ERR "nand_scan failed: %d\n", err);
+<<<<<<< HEAD
 		iounmap(bcm_umi_io_base);
 		kfree(board_mtd);
 		return err;
@@ -512,6 +567,22 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
 
 	/* Return happy */
 	return 0;
+=======
+		goto out_unmap;
+	}
+
+	/* Register the partitions */
+	board_mtd->name = "bcm_umi-nand";
+	mtd_device_parse_register(board_mtd, NULL, NULL, NULL, 0);
+
+	/* Return happy */
+	return 0;
+out_unmap:
+	iounmap(bcm_umi_io_base);
+out_free:
+	kfree(board_mtd);
+	return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int bcm_umi_nand_remove(struct platform_device *pdev)
@@ -561,6 +632,7 @@ static struct platform_driver nand_driver = {
 	.resume = bcm_umi_nand_resume,
 };
 
+<<<<<<< HEAD
 static int __init nand_init(void)
 {
 	return platform_driver_register(&nand_driver);
@@ -573,6 +645,9 @@ static void __exit nand_exit(void)
 
 module_init(nand_init);
 module_exit(nand_exit);
+=======
+module_platform_driver(nand_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Broadcom");

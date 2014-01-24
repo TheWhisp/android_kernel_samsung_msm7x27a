@@ -35,9 +35,30 @@
 
 #define	MCFINT_VECBASE		64		/* Vector base number */
 #define	MCFINT_UART0		13		/* Interrupt number for UART0 */
+<<<<<<< HEAD
 #define	MCFINT_QSPI		18		/* Interrupt number for QSPI */
 #define	MCFINT_PIT1		55		/* Interrupt number for PIT1 */
 
+=======
+#define	MCFINT_UART1		14		/* Interrupt number for UART1 */
+#define	MCFINT_UART2		15		/* Interrupt number for UART2 */
+#define	MCFINT_QSPI		18		/* Interrupt number for QSPI */
+#define	MCFINT_FECRX0		23		/* Interrupt number for FEC */
+#define	MCFINT_FECTX0		27		/* Interrupt number for FEC */
+#define	MCFINT_FECENTC0		29		/* Interrupt number for FEC */
+#define	MCFINT_PIT1		55		/* Interrupt number for PIT1 */
+
+#define	MCF_IRQ_UART0	        (MCFINT_VECBASE + MCFINT_UART0)
+#define	MCF_IRQ_UART1	        (MCFINT_VECBASE + MCFINT_UART1)
+#define	MCF_IRQ_UART2	        (MCFINT_VECBASE + MCFINT_UART2)
+
+#define	MCF_IRQ_FECRX0		(MCFINT_VECBASE + MCFINT_FECRX0)
+#define	MCF_IRQ_FECTX0		(MCFINT_VECBASE + MCFINT_FECTX0)
+#define	MCF_IRQ_FECENTC0	(MCFINT_VECBASE + MCFINT_FECENTC0)
+
+#define	MCF_IRQ_QSPI		(MCFINT_VECBASE + MCFINT_QSPI)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *	SDRAM configuration registers.
  */
@@ -58,15 +79,37 @@
 /*
  *	UART module.
  */
+<<<<<<< HEAD
 #define	MCFUART_BASE1		(MCF_IPSBAR + 0x00000200)
 #define	MCFUART_BASE2		(MCF_IPSBAR + 0x00000240)
 #define	MCFUART_BASE3		(MCF_IPSBAR + 0x00000280)
+=======
+#define	MCFUART_BASE0		(MCF_IPSBAR + 0x00000200)
+#define	MCFUART_BASE1		(MCF_IPSBAR + 0x00000240)
+#define	MCFUART_BASE2		(MCF_IPSBAR + 0x00000280)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	FEC ethernet module.
  */
+<<<<<<< HEAD
 #define	MCFFEC_BASE		(MCF_IPSBAR + 0x00001000)
 #define	MCFFEC_SIZE		0x800
+=======
+#define	MCFFEC_BASE0		(MCF_IPSBAR + 0x00001000)
+#define	MCFFEC_SIZE0		0x800
+
+/*
+ *	QSPI module.
+ */
+#define	MCFQSPI_IOBASE		(MCF_IPSBAR + 0x340)
+#define	MCFQSPI_SIZE		0x40
+
+#define	MCFQSPI_CS0		147
+#define	MCFQSPI_CS1		148
+#define	MCFQSPI_CS2		149
+#define	MCFQSPI_CS3		150
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * 	GPIO registers
@@ -246,8 +289,13 @@
 /*
  *  Reset Control Unit (relative to IPSBAR).
  */
+<<<<<<< HEAD
 #define	MCF_RCR			0x110000
 #define	MCF_RSR			0x110001
+=======
+#define	MCF_RCR			(MCF_IPSBAR + 0x110000)
+#define	MCF_RSR			(MCF_IPSBAR + 0x110001)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define	MCF_RCR_SWRESET		0x80		/* Software reset bit */
 #define	MCF_RCR_FRCSTOUT	0x40		/* Force external reset */

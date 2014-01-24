@@ -10,6 +10,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* mce-mode imon mce remote key table */
 static struct rc_map_table imon_mce[] = {

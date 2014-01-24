@@ -1073,10 +1073,17 @@ static int aoa_fabric_layout_probe(struct soundbus_dev *sdev)
 	sdev->pcmid = -1;
 	list_del(&ldev->list);
 	layouts_list_items--;
+<<<<<<< HEAD
  outnodev:
  	of_node_put(sound);
  	layout_device = NULL;
  	kfree(ldev);
+=======
+	kfree(ldev);
+ outnodev:
+ 	of_node_put(sound);
+ 	layout_device = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ENODEV;
 }
 

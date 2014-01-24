@@ -5,7 +5,11 @@
 
 #include <linux/compiler.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <arch/atomic.h>
 
 /*
@@ -138,7 +142,11 @@ static inline int atomic_cmpxchg(atomic_t *v, int old, int new)
 
 #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
 
+<<<<<<< HEAD
 static inline int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 	unsigned long flags;
@@ -148,9 +156,14 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
 	if (ret != u)
 		v->counter += a;
 	cris_atomic_restore(v, flags);
+<<<<<<< HEAD
 	return ret != u;
 }
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+=======
+	return ret;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Atomic operations are already serializing */
 #define smp_mb__before_atomic_dec()    barrier()
@@ -158,5 +171,8 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
 #define smp_mb__before_atomic_inc()    barrier()
 #define smp_mb__after_atomic_inc()     barrier()
 
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

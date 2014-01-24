@@ -5699,7 +5699,11 @@ int ocfs2_remove_btree_range(struct inode *inode,
 					   OCFS2_JOURNAL_ACCESS_WRITE);
 	if (ret) {
 		mlog_errno(ret);
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out_commit;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dquot_free_space_nodirty(inode,

@@ -10,6 +10,10 @@
 #include <linux/in6.h>
 #include <linux/ipv6.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/ndisc.h>
 #include <net/ipv6.h>
 #include <net/addrconf.h>

@@ -28,6 +28,11 @@
 #ifndef _CRYSTALHD_MISC_H_
 #define _CRYSTALHD_MISC_H_
 
+<<<<<<< HEAD
+=======
+#include "crystalhd.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/errno.h>
@@ -35,7 +40,10 @@
 #include <linux/ioctl.h>
 #include <linux/dma-mapping.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "bc_dts_glob_lnx.h"
 
 /* Global log level variable defined in crystal_misc.c file */
@@ -200,6 +208,7 @@ enum _chd_log_levels {
 	BCMLOG_INFO		= 0x00000001,	/* Generic informational */
 	BCMLOG_DBG		= 0x00000002,	/* First level Debug info */
 	BCMLOG_SSTEP		= 0x00000004,	/* Stepping information */
+<<<<<<< HEAD
 	BCMLOG_ENTER_LEAVE	= 0x00000008,	/* stack tracking */
 };
 
@@ -224,5 +233,23 @@ do {									\
 		printk("*ERR*:%s:%d: "fmt, __FILE__, __LINE__, ##args);	\
 	}								\
 } while (0);
+=======
+};
+
+
+#define BCMLOG(trace, fmt, args...)	\
+do {					\
+	if (g_linklog_level & trace)	\
+		printk(fmt, ##args);	\
+} while (0)
+
+
+#define BCMLOG_ERR(fmt, args...)				\
+do {								\
+	if (g_linklog_level & BCMLOG_ERROR)			\
+		printk(KERN_ERR "*ERR*:%s:%d: "fmt,		\
+				__FILE__, __LINE__, ##args);	\
+} while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

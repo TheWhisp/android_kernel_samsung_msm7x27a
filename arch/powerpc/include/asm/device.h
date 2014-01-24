@@ -31,10 +31,21 @@ struct dev_archdata {
 #ifdef CONFIG_SWIOTLB
 	dma_addr_t		max_direct_dma_addr;
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_EEH
+	struct eeh_dev		*edev;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct pdev_archdata {
 	u64 dma_mask;
 };
 
+<<<<<<< HEAD
+=======
+#define ARCH_HAS_DMA_GET_REQUIRED_MASK
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_POWERPC_DEVICE_H */

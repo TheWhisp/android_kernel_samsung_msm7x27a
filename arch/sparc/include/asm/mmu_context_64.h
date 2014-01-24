@@ -6,7 +6,10 @@
 #ifndef __ASSEMBLY__
 
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/spitfire.h>
 #include <asm-generic/mm_hooks.h>
 

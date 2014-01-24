@@ -39,6 +39,11 @@ static struct mfd_cell max8998_devs[] = {
 		.name = "max8998-pmic",
 	}, {
 		.name = "max8998-rtc",
+<<<<<<< HEAD
+=======
+	}, {
+		.name = "max8998-battery",
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -174,6 +179,11 @@ static int max8998_i2c_probe(struct i2c_client *i2c,
 	if (ret < 0)
 		goto err;
 
+<<<<<<< HEAD
+=======
+	device_init_wakeup(max8998->dev, max8998->wakeup);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 
 err:
@@ -208,7 +218,11 @@ static int max8998_suspend(struct device *dev)
 	struct i2c_client *i2c = container_of(dev, struct i2c_client, dev);
 	struct max8998_dev *max8998 = i2c_get_clientdata(i2c);
 
+<<<<<<< HEAD
 	if (max8998->wakeup)
+=======
+	if (device_may_wakeup(dev))
+>>>>>>> refs/remotes/origin/cm-10.0
 		irq_set_irq_wake(max8998->irq, 1);
 	return 0;
 }
@@ -218,7 +232,11 @@ static int max8998_resume(struct device *dev)
 	struct i2c_client *i2c = container_of(dev, struct i2c_client, dev);
 	struct max8998_dev *max8998 = i2c_get_clientdata(i2c);
 
+<<<<<<< HEAD
 	if (max8998->wakeup)
+=======
+	if (device_may_wakeup(dev))
+>>>>>>> refs/remotes/origin/cm-10.0
 		irq_set_irq_wake(max8998->irq, 0);
 	/*
 	 * In LP3974, if IRQ registers are not "read & clear"

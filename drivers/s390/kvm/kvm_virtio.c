@@ -20,6 +20,10 @@
 #include <linux/virtio_console.h>
 #include <linux/interrupt.h>
 #include <linux/virtio_ring.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pfn.h>
 #include <asm/io.h>
 #include <asm/kvm_para.h>
@@ -33,7 +37,11 @@
  * The pointer to our (page) of device descriptions.
  */
 static void *kvm_devices;
+<<<<<<< HEAD
 struct work_struct hotplug_work;
+=======
+static struct work_struct hotplug_work;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct kvm_device {
 	struct virtio_device vdev;
@@ -197,7 +205,11 @@ static struct virtqueue *kvm_find_vq(struct virtio_device *vdev,
 		goto out;
 
 	vq = vring_new_virtqueue(config->num, KVM_S390_VIRTIO_RING_ALIGN,
+<<<<<<< HEAD
 				 vdev, (void *) config->address,
+=======
+				 vdev, true, (void *) config->address,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 kvm_notify, callback, name);
 	if (!vq) {
 		err = -ENOMEM;
@@ -262,6 +274,14 @@ error:
 	return PTR_ERR(vqs[i]);
 }
 
+<<<<<<< HEAD
+=======
+static const char *kvm_bus_name(struct virtio_device *vdev)
+{
+	return "";
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * The config ops structure as defined by virtio config
  */
@@ -275,6 +295,10 @@ static struct virtio_config_ops kvm_vq_configspace_ops = {
 	.reset = kvm_reset,
 	.find_vqs = kvm_find_vqs,
 	.del_vqs = kvm_del_vqs,
+<<<<<<< HEAD
+=======
+	.bus_name = kvm_bus_name,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -334,10 +358,17 @@ static void scan_devices(void)
  */
 static int match_desc(struct device *dev, void *data)
 {
+<<<<<<< HEAD
 	if ((ulong)to_kvmdev(dev_to_virtio(dev))->desc == (ulong)data)
 		return 1;
 
 	return 0;
+=======
+	struct virtio_device *vdev = dev_to_virtio(dev);
+	struct kvm_device *kdev = to_kvmdev(vdev);
+
+	return kdev->desc == data;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -373,6 +404,7 @@ static void hotplug_devices(struct work_struct *dummy)
 /*
  * we emulate the request_irq behaviour on top of s390 extints
  */
+<<<<<<< HEAD
 static void kvm_extint_handler(unsigned int ext_int_code,
 			       unsigned int param32, unsigned long param64)
 {
@@ -382,6 +414,15 @@ static void kvm_extint_handler(unsigned int ext_int_code,
 
 	subcode = ext_int_code >> 16;
 	if ((subcode & 0xff00) != VIRTIO_SUBCODE_64)
+=======
+static void kvm_extint_handler(struct ext_code ext_code,
+			       unsigned int param32, unsigned long param64)
+{
+	struct virtqueue *vq;
+	u32 param;
+
+	if ((ext_code.subcode & 0xff00) != VIRTIO_SUBCODE_64)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	kstat_cpu(smp_processor_id()).irqs[EXTINT_VRT]++;
 

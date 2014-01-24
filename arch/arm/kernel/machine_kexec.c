@@ -7,17 +7,28 @@
 #include <linux/delay.h>
 #include <linux/reboot.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/irq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
 #include <asm/mmu_context.h>
 #include <asm/cacheflush.h>
 #include <asm/mach-types.h>
+<<<<<<< HEAD
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern const unsigned char relocate_new_kernel[];
 extern const unsigned int relocate_new_kernel_size;
 
+<<<<<<< HEAD
 extern void setup_mm_for_reboot(char mode);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern unsigned long kexec_start_address;
 extern unsigned long kexec_indirection_page;
 extern unsigned long kexec_mach_type;
@@ -54,6 +65,32 @@ void machine_crash_nonpanic_core(void *unused)
 		cpu_relax();
 }
 
+<<<<<<< HEAD
+=======
+static void machine_kexec_mask_interrupts(void)
+{
+	unsigned int i;
+	struct irq_desc *desc;
+
+	for_each_irq_desc(i, desc) {
+		struct irq_chip *chip;
+
+		chip = irq_desc_get_chip(desc);
+		if (!chip)
+			continue;
+
+		if (chip->irq_eoi && irqd_irq_inprogress(&desc->irq_data))
+			chip->irq_eoi(&desc->irq_data);
+
+		if (chip->irq_mask)
+			chip->irq_mask(&desc->irq_data);
+
+		if (chip->irq_disable && !irqd_irq_disabled(&desc->irq_data))
+			chip->irq_disable(&desc->irq_data);
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void machine_crash_shutdown(struct pt_regs *regs)
 {
 	unsigned long msecs;
@@ -71,6 +108,10 @@ void machine_crash_shutdown(struct pt_regs *regs)
 		printk(KERN_WARNING "Non-crashing CPUs did not react to IPI\n");
 
 	crash_save_cpu(regs, smp_processor_id());
+<<<<<<< HEAD
+=======
+	machine_kexec_mask_interrupts();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "Loading crashdump kernel...\n");
 }
@@ -86,7 +127,10 @@ void machine_kexec(struct kimage *image)
 	unsigned long reboot_code_buffer_phys;
 	void *reboot_code_buffer;
 
+<<<<<<< HEAD
 	arch_kexec();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	page_list = image->head & PAGE_MASK;
 
@@ -112,6 +156,7 @@ void machine_kexec(struct kimage *image)
 
 	if (kexec_reinit)
 		kexec_reinit();
+<<<<<<< HEAD
 	local_irq_disable();
 	local_fiq_disable();
 	setup_mm_for_reboot(0); /* mode is not used, so just pass 0*/
@@ -122,4 +167,8 @@ void machine_kexec(struct kimage *image)
 	outer_inv_all();
 	flush_cache_all();
 	__virt_to_phys(cpu_reset)(reboot_code_buffer_phys);
+=======
+
+	soft_restart(reboot_code_buffer_phys);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

@@ -29,10 +29,17 @@
 #include <asm/mach/mmc.h>
 
 #include <mach/vreg.h>
+<<<<<<< HEAD
 
 #include "board-mahimahi.h"
 #include "devices.h"
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+
+#include "board-mahimahi.h"
+#include "devices.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef MAHIMAHI_DEBUG_MMC
 

@@ -42,6 +42,7 @@
 #include <linux/blkdev.h>
 
 /*
+<<<<<<< HEAD
  * Bulk only data structures
  */
 
@@ -81,6 +82,8 @@ struct bulk_cs_wrap {
 #define US_BULK_GET_MAX_LUN	0xfe
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * usb_stor_bulk_transfer_xxx() return codes, in order of severity
  */
 

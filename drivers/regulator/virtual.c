@@ -16,6 +16,10 @@
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct virtual_consumer_data {
 	struct mutex lock;
@@ -351,6 +355,7 @@ static struct platform_driver regulator_virtual_consumer_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init regulator_virtual_consumer_init(void)
 {
 	return platform_driver_register(&regulator_virtual_consumer_driver);
@@ -362,6 +367,9 @@ static void __exit regulator_virtual_consumer_exit(void)
 	platform_driver_unregister(&regulator_virtual_consumer_driver);
 }
 module_exit(regulator_virtual_consumer_exit);
+=======
+module_platform_driver(regulator_virtual_consumer_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_DESCRIPTION("Virtual regulator consumer");

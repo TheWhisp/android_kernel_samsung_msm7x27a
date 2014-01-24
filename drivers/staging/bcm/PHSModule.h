@@ -9,7 +9,11 @@ int PHSTransmit(PMINI_ADAPTER Adapter,
 					 PUINT PacketLen,
 					 UCHAR bEthCSSupport);
 
+<<<<<<< HEAD
 int PHSRecieve(PMINI_ADAPTER Adapter,
+=======
+int PHSReceive(PMINI_ADAPTER Adapter,
+>>>>>>> refs/remotes/origin/cm-10.0
 					USHORT usVcid,
 					struct sk_buff *packet,
 					UINT *punPacketLen,

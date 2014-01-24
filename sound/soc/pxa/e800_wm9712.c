@@ -80,7 +80,10 @@ static int e800_ac97_init(struct snd_soc_pcm_runtime *rtd)
 					ARRAY_SIZE(e800_dapm_widgets));
 
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -107,10 +110,15 @@ static struct snd_soc_dai_link e800_dai[] = {
 
 static struct snd_soc_card e800 = {
 	.name = "Toshiba e800",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = e800_dai,
 	.num_links = ARRAY_SIZE(e800_dai),
 };
 
+<<<<<<< HEAD
 static struct platform_device *e800_snd_device;
 
 static int __init e800_init(void)
@@ -165,8 +173,59 @@ static void __exit e800_exit(void)
 
 module_init(e800_init);
 module_exit(e800_exit);
+=======
+static struct gpio e800_audio_gpios[] = {
+	{ GPIO_E800_SPK_AMP_ON, GPIOF_OUT_INIT_HIGH, "Headphone amp" },
+	{ GPIO_E800_HP_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Speaker amp" },
+};
+
+static int __devinit e800_probe(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = &e800;
+	int ret;
+
+	ret = gpio_request_array(e800_audio_gpios,
+				 ARRAY_SIZE(e800_audio_gpios));
+	if (ret)
+		return ret;
+
+	card->dev = &pdev->dev;
+
+	ret = snd_soc_register_card(card);
+	if (ret) {
+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+			ret);
+		gpio_free_array(e800_audio_gpios, ARRAY_SIZE(e800_audio_gpios));
+	}
+	return ret;
+}
+
+static int __devexit e800_remove(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = platform_get_drvdata(pdev);
+
+	gpio_free_array(e800_audio_gpios, ARRAY_SIZE(e800_audio_gpios));
+	snd_soc_unregister_card(card);
+	return 0;
+}
+
+static struct platform_driver e800_driver = {
+	.driver		= {
+		.name	= "e800-audio",
+		.owner	= THIS_MODULE,
+	},
+	.probe		= e800_probe,
+	.remove		= __devexit_p(e800_remove),
+};
+
+module_platform_driver(e800_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR("Ian Molton <spyro@f2s.com>");
 MODULE_DESCRIPTION("ALSA SoC driver for e800");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:e800-audio");
+>>>>>>> refs/remotes/origin/cm-10.0

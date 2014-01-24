@@ -27,8 +27,12 @@
 #include <linux/of_platform.h>
 #include <linux/of_device.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/io.h>
 #include <asm/machdep.h>
@@ -51,15 +55,25 @@
  */
 static void __init mpc83xx_km_setup_arch(void)
 {
+<<<<<<< HEAD
 	struct device_node *np;
+=======
+#ifdef CONFIG_QUICC_ENGINE
+	struct device_node *np;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ppc_md.progress)
 		ppc_md.progress("kmpbec83xx_setup_arch()", 0);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	for_each_compatible_node(np, "pci", "fsl,mpc8349-pci")
 		mpc83xx_add_bridge(np);
 #endif
+=======
+	mpc83xx_setup_pci();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_QUICC_ENGINE
 	qe_reset();
@@ -101,7 +115,11 @@ static void __init mpc83xx_km_setup_arch(void)
 					__func__);
 				return;
 			}
+<<<<<<< HEAD
 			base = ioremap(res.start, res.end - res.start + 1);
+=======
+			base = ioremap(res.start, resource_size(&res));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			/*
 			 * IMMR + 0x14A8[4:5] = 11 (clk delay for UCC 2)
@@ -122,6 +140,7 @@ static void __init mpc83xx_km_setup_arch(void)
 #endif				/* CONFIG_QUICC_ENGINE */
 }
 
+<<<<<<< HEAD
 static struct of_device_id kmpbec83xx_ids[] = {
 	{ .type = "soc", },
 	{ .compatible = "soc", },
@@ -170,6 +189,9 @@ static void __init mpc83xx_km_init_IRQ(void)
 	of_node_put(np);
 #endif				/* CONFIG_QUICC_ENGINE */
 }
+=======
+machine_device_initcall(mpc83xx_km, mpc83xx_declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* list of the supported boards */
 static char *board[] __initdata = {
@@ -198,7 +220,11 @@ define_machine(mpc83xx_km) {
 	.name		= "mpc83xx-km-platform",
 	.probe		= mpc83xx_km_probe,
 	.setup_arch	= mpc83xx_km_setup_arch,
+<<<<<<< HEAD
 	.init_IRQ	= mpc83xx_km_init_IRQ,
+=======
+	.init_IRQ	= mpc83xx_ipic_and_qe_init_IRQ,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_irq	= ipic_get_irq,
 	.restart	= mpc83xx_restart,
 	.time_init	= mpc83xx_time_init,

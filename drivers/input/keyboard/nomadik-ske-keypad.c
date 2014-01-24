@@ -18,6 +18,10 @@
 #include <linux/input.h>
 #include <linux/slab.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/ske.h>
 
@@ -87,7 +91,11 @@ static void ske_keypad_set_bits(struct ske_keypad *keypad, u16 addr,
  *
  * Enable Multi key press detection, auto scan mode
  */
+<<<<<<< HEAD
 static int __devinit ske_keypad_chip_init(struct ske_keypad *keypad)
+=======
+static int __init ske_keypad_chip_init(struct ske_keypad *keypad)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u32 value;
 	int timeout = 50;
@@ -197,7 +205,11 @@ static irqreturn_t ske_keypad_irq(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit ske_keypad_probe(struct platform_device *pdev)
+=======
+static int __init ske_keypad_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct ske_keypad_platform_data *plat = pdev->dev.platform_data;
 	struct ske_keypad *keypad;
@@ -343,7 +355,11 @@ static int __devexit ske_keypad_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/cm-10.0
 static int ske_keypad_suspend(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
@@ -371,6 +387,7 @@ static int ske_keypad_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static const struct dev_pm_ops ske_keypad_dev_pm_ops = {
 	.suspend = ske_keypad_suspend,
@@ -387,6 +404,19 @@ struct platform_driver ske_keypad_driver = {
 #endif
 	},
 	.probe = ske_keypad_probe,
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(ske_keypad_dev_pm_ops,
+			 ske_keypad_suspend, ske_keypad_resume);
+
+static struct platform_driver ske_keypad_driver = {
+	.driver = {
+		.name = "nmk-ske-keypad",
+		.owner  = THIS_MODULE,
+		.pm = &ske_keypad_dev_pm_ops,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 	.remove = __devexit_p(ske_keypad_remove),
 };
 

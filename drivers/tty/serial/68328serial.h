@@ -158,7 +158,10 @@ struct m68k_serial {
 	int			xmit_head;
 	int			xmit_tail;
 	int			xmit_cnt;
+<<<<<<< HEAD
 	struct work_struct	tqueue;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	wait_queue_head_t	open_wait;
 	wait_queue_head_t	close_wait;
 };

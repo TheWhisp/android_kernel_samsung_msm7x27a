@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright (C) 2009 Texas Instruments Incorporated
  *
@@ -50,3 +51,6 @@ void dm365_init_spi0(unsigned chipselect_mask,
 
 void dm365_set_vpfe_config(struct vpfe_config *cfg);
 #endif /* __ASM_ARCH_DM365_H */
+=======
+/* empty, remove once unused */
+>>>>>>> refs/remotes/origin/cm-10.0

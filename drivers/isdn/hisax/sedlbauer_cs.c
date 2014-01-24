@@ -1,5 +1,6 @@
 /*======================================================================
 
+<<<<<<< HEAD
     A Sedlbauer PCMCIA client driver
 
     This driver is for the Sedlbauer Speed Star and Speed Star II, 
@@ -34,6 +35,42 @@
     file under either the MPL or the GPL.
     
 ======================================================================*/
+=======
+  A Sedlbauer PCMCIA client driver
+
+  This driver is for the Sedlbauer Speed Star and Speed Star II,
+  which are ISDN PCMCIA Cards.
+
+  The contents of this file are subject to the Mozilla Public
+  License Version 1.1 (the "License"); you may not use this file
+  except in compliance with the License. You may obtain a copy of
+  the License at http://www.mozilla.org/MPL/
+
+  Software distributed under the License is distributed on an "AS
+  IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+  implied. See the License for the specific language governing
+  rights and limitations under the License.
+
+  The initial developer of the original code is David A. Hinds
+  <dahinds@users.sourceforge.net>.  Portions created by David A. Hinds
+  are Copyright (C) 1999 David A. Hinds.  All Rights Reserved.
+
+  Modifications from dummy_cs.c are Copyright (C) 1999-2001 Marcus Niemann
+  <maniemann@users.sourceforge.net>. All Rights Reserved.
+
+  Alternatively, the contents of this file may be used under the
+  terms of the GNU General Public License version 2 (the "GPL"), in
+  which case the provisions of the GPL are applicable instead of the
+  above.  If you wish to allow the use of your version of this file
+  only under the terms of the GPL and not to allow others to use
+  your version of this file under the MPL, indicate your decision
+  by deleting the provisions above and replace them with the notice
+  and other provisions required by the GPL.  If you do not delete
+  the provisions above, a recipient may use your version of this
+  file under either the MPL or the GPL.
+
+  ======================================================================*/
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -44,7 +81,10 @@
 #include <linux/timer.h>
 #include <linux/ioport.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/cisreg.h>
@@ -63,19 +103,29 @@ MODULE_LICENSE("Dual MPL/GPL");
 static int protocol = 2;        /* EURO-ISDN Default */
 module_param(protocol, int, 0);
 
+<<<<<<< HEAD
 static int sedlbauer_config(struct pcmcia_device *link) __devinit ;
+=======
+static int sedlbauer_config(struct pcmcia_device *link) __devinit;
+>>>>>>> refs/remotes/origin/cm-10.0
 static void sedlbauer_release(struct pcmcia_device *link);
 
 static void sedlbauer_detach(struct pcmcia_device *p_dev) __devexit;
 
 typedef struct local_info_t {
 	struct pcmcia_device	*p_dev;
+<<<<<<< HEAD
     int			stop;
     int			cardnr;
+=======
+	int			stop;
+	int			cardnr;
+>>>>>>> refs/remotes/origin/cm-10.0
 } local_info_t;
 
 static int __devinit sedlbauer_probe(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
     local_info_t *local;
 
     dev_dbg(&link->dev, "sedlbauer_attach()\n");
@@ -89,6 +139,21 @@ static int __devinit sedlbauer_probe(struct pcmcia_device *link)
     link->priv = local;
 
     return sedlbauer_config(link);
+=======
+	local_info_t *local;
+
+	dev_dbg(&link->dev, "sedlbauer_attach()\n");
+
+	/* Allocate space for private device-specific data */
+	local = kzalloc(sizeof(local_info_t), GFP_KERNEL);
+	if (!local) return -ENOMEM;
+	local->cardnr = -1;
+
+	local->p_dev = link;
+	link->priv = local;
+
+	return sedlbauer_config(link);
+>>>>>>> refs/remotes/origin/cm-10.0
 } /* sedlbauer_attach */
 
 static void __devexit sedlbauer_detach(struct pcmcia_device *link)
@@ -113,6 +178,7 @@ static int sedlbauer_config_check(struct pcmcia_device *p_dev, void *priv_data)
 
 static int __devinit sedlbauer_config(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
     int ret;
     IsdnCard_t  icard;
 
@@ -149,11 +215,50 @@ static int __devinit sedlbauer_config(struct pcmcia_device *link)
 failed:
     sedlbauer_release(link);
     return -ENODEV;
+=======
+	int ret;
+	IsdnCard_t  icard;
+
+	dev_dbg(&link->dev, "sedlbauer_config(0x%p)\n", link);
+
+	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_CHECK_VCC |
+		CONF_AUTO_SET_VPP | CONF_AUTO_AUDIO | CONF_AUTO_SET_IO;
+
+	ret = pcmcia_loop_config(link, sedlbauer_config_check, NULL);
+	if (ret)
+		goto failed;
+
+	ret = pcmcia_enable_device(link);
+	if (ret)
+		goto failed;
+
+	icard.para[0] = link->irq;
+	icard.para[1] = link->resource[0]->start;
+	icard.protocol = protocol;
+	icard.typ = ISDN_CTYPE_SEDLBAUER_PCMCIA;
+
+	ret = hisax_init_pcmcia(link,
+				&(((local_info_t *)link->priv)->stop), &icard);
+	if (ret < 0) {
+		printk(KERN_ERR "sedlbauer_cs: failed to initialize SEDLBAUER PCMCIA %d with %pR\n",
+		       ret, link->resource[0]);
+		sedlbauer_release(link);
+		return -ENODEV;
+	} else
+		((local_info_t *)link->priv)->cardnr = ret;
+
+	return 0;
+
+failed:
+	sedlbauer_release(link);
+	return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 } /* sedlbauer_config */
 
 static void sedlbauer_release(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
     local_info_t *local = link->priv;
     dev_dbg(&link->dev, "sedlbauer_release(0x%p)\n", link);
 
@@ -165,6 +270,19 @@ static void sedlbauer_release(struct pcmcia_device *link)
     }
 
     pcmcia_disable_device(link);
+=======
+	local_info_t *local = link->priv;
+	dev_dbg(&link->dev, "sedlbauer_release(0x%p)\n", link);
+
+	if (local) {
+		if (local->cardnr >= 0) {
+			/* no unregister function with hisax */
+			HiSax_closecard(local->cardnr);
+		}
+	}
+
+	pcmcia_disable_device(link);
+>>>>>>> refs/remotes/origin/cm-10.0
 } /* sedlbauer_release */
 
 static int sedlbauer_suspend(struct pcmcia_device *link)

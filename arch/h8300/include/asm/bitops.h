@@ -7,7 +7,10 @@
  */
 
 #include <linux/compiler.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
 

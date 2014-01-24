@@ -23,6 +23,11 @@
 #ifndef ASM_ARM_HARDWARE_SERIAL_AMBA_H
 #define ASM_ARM_HARDWARE_SERIAL_AMBA_H
 
+<<<<<<< HEAD
+=======
+#include <linux/types.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* -------------------------------------------------------------------------------
  *  From AMBA UART (PL010) Block Specification
  * -------------------------------------------------------------------------------

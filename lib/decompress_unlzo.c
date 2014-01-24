@@ -279,7 +279,11 @@ STATIC inline int INIT unlzo(u8 *input, int in_len,
 	ret = 0;
 exit_2:
 	if (!input)
+<<<<<<< HEAD
 		free(in_buf);
+=======
+		free(in_buf_save);
+>>>>>>> refs/remotes/origin/cm-10.0
 exit_1:
 	if (!output)
 		free(out_buf);

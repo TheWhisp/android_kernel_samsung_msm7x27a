@@ -23,7 +23,10 @@
 #include <linux/device.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/errno.h>
 #include <linux/string.h>
 #include <linux/mm.h>
@@ -512,6 +515,7 @@ static struct platform_driver xilinxfb_of_driver = {
 	},
 };
 
+<<<<<<< HEAD
 
 /* ---------------------------------------------------------------------
  * Module setup and teardown
@@ -531,6 +535,9 @@ xilinxfb_cleanup(void)
 
 module_init(xilinxfb_init);
 module_exit(xilinxfb_cleanup);
+=======
+module_platform_driver(xilinxfb_of_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("MontaVista Software, Inc. <source@mvista.com>");
 MODULE_DESCRIPTION("Xilinx TFT frame buffer driver");

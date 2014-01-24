@@ -30,6 +30,14 @@
  * server is dead or overloaded, the load balancer can bypass the cache
  * server and send requests to the original server directly.
  *
+<<<<<<< HEAD
+=======
+ * The weight destination attribute can be used to control the
+ * distribution of connections to the destinations in servernode. The
+ * greater the weight, the more connections the destination
+ * will receive.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #define KMSG_COMPONENT "IPVS"
@@ -99,9 +107,17 @@ ip_vs_sh_assign(struct ip_vs_sh_bucket *tbl, struct ip_vs_service *svc)
 	struct ip_vs_sh_bucket *b;
 	struct list_head *p;
 	struct ip_vs_dest *dest;
+<<<<<<< HEAD
 
 	b = tbl;
 	p = &svc->destinations;
+=======
+	int d_count;
+
+	b = tbl;
+	p = &svc->destinations;
+	d_count = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i=0; i<IP_VS_SH_TAB_SIZE; i++) {
 		if (list_empty(p)) {
 			b->dest = NULL;
@@ -113,7 +129,20 @@ ip_vs_sh_assign(struct ip_vs_sh_bucket *tbl, struct ip_vs_service *svc)
 			atomic_inc(&dest->refcnt);
 			b->dest = dest;
 
+<<<<<<< HEAD
 			p = p->next;
+=======
+			IP_VS_DBG_BUF(6, "assigned i: %d dest: %s weight: %d\n",
+				      i, IP_VS_DBG_ADDR(svc->af, &dest->addr),
+				      atomic_read(&dest->weight));
+
+			/* Don't move to next dest until filling weight */
+			if (++d_count >= atomic_read(&dest->weight)) {
+				p = p->next;
+				d_count = 0;
+			}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		b++;
 	}
@@ -147,10 +176,16 @@ static int ip_vs_sh_init_svc(struct ip_vs_service *svc)
 	/* allocate the SH table for this service */
 	tbl = kmalloc(sizeof(struct ip_vs_sh_bucket)*IP_VS_SH_TAB_SIZE,
 		      GFP_ATOMIC);
+<<<<<<< HEAD
 	if (tbl == NULL) {
 		pr_err("%s(): no memory\n", __func__);
 		return -ENOMEM;
 	}
+=======
+	if (tbl == NULL)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	svc->sched_data = tbl;
 	IP_VS_DBG(6, "SH hash table (memory=%Zdbytes) allocated for "
 		  "current service\n",

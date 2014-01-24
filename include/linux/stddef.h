@@ -3,6 +3,7 @@
 
 #include <linux/compiler.h>
 
+<<<<<<< HEAD
 #undef NULL
 #if defined(__cplusplus)
 #define NULL 0
@@ -11,6 +12,12 @@
 #endif
 
 #ifdef __KERNEL__
+=======
+#ifdef __KERNEL__
+
+#undef NULL
+#define NULL ((void *)0)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum {
 	false	= 0,

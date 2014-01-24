@@ -23,6 +23,10 @@
 #include <linux/signal.h>
 #include <linux/platform_device.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+=======
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/ohci.h>
 #include <mach/pxa3xx-u2d.h>
 
@@ -218,7 +222,11 @@ static int pxa27x_start_hc(struct pxa27x_ohci *ohci, struct device *dev)
 
 	inf = dev->platform_data;
 
+<<<<<<< HEAD
 	clk_enable(ohci->clk);
+=======
+	clk_prepare_enable(ohci->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pxa27x_reset_hc(ohci);
 
@@ -268,7 +276,11 @@ static void pxa27x_stop_hc(struct pxa27x_ohci *ohci, struct device *dev)
 	__raw_writel(uhccoms, ohci->mmio_base + UHCCOMS);
 	udelay(10);
 
+<<<<<<< HEAD
 	clk_disable(ohci->clk);
+=======
+	clk_disable_unprepare(ohci->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -359,7 +371,11 @@ int usb_hcd_pxa27x_probe (const struct hc_driver *driver, struct platform_device
 
 	ohci_hcd_init(hcd_to_ohci(hcd));
 
+<<<<<<< HEAD
 	retval = usb_add_hcd(hcd, irq, IRQF_DISABLED);
+=======
+	retval = usb_add_hcd(hcd, irq, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval == 0)
 		return retval;
 
@@ -502,8 +518,11 @@ static int ohci_hcd_pxa27x_drv_suspend(struct device *dev)
 	ohci->ohci.next_statechange = jiffies;
 
 	pxa27x_stop_hc(ohci, dev);
+<<<<<<< HEAD
 	hcd->state = HC_STATE_SUSPENDED;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

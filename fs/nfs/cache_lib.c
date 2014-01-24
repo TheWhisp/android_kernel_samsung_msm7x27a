@@ -13,6 +13,10 @@
 #include <linux/slab.h>
 #include <linux/sunrpc/cache.h>
 #include <linux/sunrpc/rpc_pipe_fs.h>
+<<<<<<< HEAD
+=======
+#include <net/net_namespace.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "cache_lib.h"
 
@@ -111,6 +115,7 @@ int nfs_cache_wait_for_upcall(struct nfs_cache_defer_req *dreq)
 	return 0;
 }
 
+<<<<<<< HEAD
 int nfs_cache_register(struct cache_detail *cd)
 {
 	struct nameidata nd;
@@ -139,3 +144,56 @@ void nfs_cache_unregister(struct cache_detail *cd)
 	rpc_put_mount();
 }
 
+=======
+int nfs_cache_register_sb(struct super_block *sb, struct cache_detail *cd)
+{
+	int ret;
+	struct dentry *dir;
+
+	dir = rpc_d_lookup_sb(sb, "cache");
+	BUG_ON(dir == NULL);
+	ret = sunrpc_cache_register_pipefs(dir, cd->name, 0600, cd);
+	dput(dir);
+	return ret;
+}
+
+int nfs_cache_register_net(struct net *net, struct cache_detail *cd)
+{
+	struct super_block *pipefs_sb;
+	int ret = 0;
+
+	pipefs_sb = rpc_get_sb_net(net);
+	if (pipefs_sb) {
+		ret = nfs_cache_register_sb(pipefs_sb, cd);
+		rpc_put_sb_net(net);
+	}
+	return ret;
+}
+
+void nfs_cache_unregister_sb(struct super_block *sb, struct cache_detail *cd)
+{
+	if (cd->u.pipefs.dir)
+		sunrpc_cache_unregister_pipefs(cd);
+}
+
+void nfs_cache_unregister_net(struct net *net, struct cache_detail *cd)
+{
+	struct super_block *pipefs_sb;
+
+	pipefs_sb = rpc_get_sb_net(net);
+	if (pipefs_sb) {
+		nfs_cache_unregister_sb(pipefs_sb, cd);
+		rpc_put_sb_net(net);
+	}
+}
+
+void nfs_cache_init(struct cache_detail *cd)
+{
+	sunrpc_init_cache_detail(cd);
+}
+
+void nfs_cache_destroy(struct cache_detail *cd)
+{
+	sunrpc_destroy_cache_detail(cd);
+}
+>>>>>>> refs/remotes/origin/cm-10.0

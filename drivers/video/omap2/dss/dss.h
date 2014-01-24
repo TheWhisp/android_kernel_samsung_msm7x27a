@@ -28,7 +28,11 @@
 #endif
 
 #ifdef DEBUG
+<<<<<<< HEAD
 extern unsigned int dss_debug;
+=======
+extern bool dss_debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef DSS_SUBSYS_NAME
 #define DSSDBG(format, ...) \
 	if (dss_debug) \
@@ -97,6 +101,7 @@ extern unsigned int dss_debug;
 #define FLD_MOD(orig, val, start, end) \
 	(((orig) & ~FLD_MASK(start, end)) | FLD_VAL(val, start, end))
 
+<<<<<<< HEAD
 enum omap_burst_size {
 	OMAP_DSS_BURST_4x32 = 0,
 	OMAP_DSS_BURST_8x32 = 1,
@@ -115,6 +120,12 @@ enum dss_clock {
 	DSS_CLK_SYSCK	= 1 << 2,	/* DSS2_ALWON_FCLK */
 	DSS_CLK_TVFCK	= 1 << 3,	/* DSS_TV_FCLK */
 	DSS_CLK_VIDFCK	= 1 << 4,	/* DSS_96M_FCLK*/
+=======
+enum dss_io_pad_mode {
+	DSS_IO_PAD_MODE_RESET,
+	DSS_IO_PAD_MODE_RFBI,
+	DSS_IO_PAD_MODE_BYPASS,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum dss_hdmi_venc_clk_source_select {
@@ -122,6 +133,14 @@ enum dss_hdmi_venc_clk_source_select {
 	DSS_HDMI_M_PCLK = 1,
 };
 
+<<<<<<< HEAD
+=======
+enum dss_dsi_content_type {
+	DSS_DSI_CONTENT_DCS,
+	DSS_DSI_CONTENT_GENERIC,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct dss_clock_info {
 	/* rates that we get with dividers below */
 	unsigned long fck;
@@ -164,6 +183,7 @@ struct dsi_clock_info {
 	bool use_sys_clk;
 };
 
+<<<<<<< HEAD
 /* HDMI PLL structure */
 struct hdmi_pll_info {
 	u16 regn;
@@ -174,6 +194,8 @@ struct hdmi_pll_info {
 	u16 dcofreq;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct seq_file;
 struct platform_device;
 
@@ -182,6 +204,37 @@ struct bus_type *dss_get_bus(void);
 struct regulator *dss_get_vdds_dsi(void);
 struct regulator *dss_get_vdds_sdi(void);
 
+<<<<<<< HEAD
+=======
+/* apply */
+void dss_apply_init(void);
+int dss_mgr_wait_for_go(struct omap_overlay_manager *mgr);
+int dss_mgr_wait_for_go_ovl(struct omap_overlay *ovl);
+void dss_mgr_start_update(struct omap_overlay_manager *mgr);
+int omap_dss_mgr_apply(struct omap_overlay_manager *mgr);
+
+int dss_mgr_enable(struct omap_overlay_manager *mgr);
+void dss_mgr_disable(struct omap_overlay_manager *mgr);
+int dss_mgr_set_info(struct omap_overlay_manager *mgr,
+		struct omap_overlay_manager_info *info);
+void dss_mgr_get_info(struct omap_overlay_manager *mgr,
+		struct omap_overlay_manager_info *info);
+int dss_mgr_set_device(struct omap_overlay_manager *mgr,
+		struct omap_dss_device *dssdev);
+int dss_mgr_unset_device(struct omap_overlay_manager *mgr);
+
+bool dss_ovl_is_enabled(struct omap_overlay *ovl);
+int dss_ovl_enable(struct omap_overlay *ovl);
+int dss_ovl_disable(struct omap_overlay *ovl);
+int dss_ovl_set_info(struct omap_overlay *ovl,
+		struct omap_overlay_info *info);
+void dss_ovl_get_info(struct omap_overlay *ovl,
+		struct omap_overlay_info *info);
+int dss_ovl_set_manager(struct omap_overlay *ovl,
+		struct omap_overlay_manager *mgr);
+int dss_ovl_unset_manager(struct omap_overlay *ovl);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* display */
 int dss_suspend_all_devices(void);
 int dss_resume_all_devices(void);
@@ -193,33 +246,55 @@ void dss_uninit_device(struct platform_device *pdev,
 		struct omap_dss_device *dssdev);
 bool dss_use_replication(struct omap_dss_device *dssdev,
 		enum omap_color_mode mode);
+<<<<<<< HEAD
 void default_get_overlay_fifo_thresholds(enum omap_plane plane,
 		u32 fifo_size, enum omap_burst_size *burst_size,
 		u32 *fifo_low, u32 *fifo_high);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* manager */
 int dss_init_overlay_managers(struct platform_device *pdev);
 void dss_uninit_overlay_managers(struct platform_device *pdev);
+<<<<<<< HEAD
 int dss_mgr_wait_for_go_ovl(struct omap_overlay *ovl);
 void dss_setup_partial_planes(struct omap_dss_device *dssdev,
 				u16 *x, u16 *y, u16 *w, u16 *h,
 				bool enlarge_update_area);
 void dss_start_update(struct omap_dss_device *dssdev);
+=======
+int dss_mgr_simple_check(struct omap_overlay_manager *mgr,
+		const struct omap_overlay_manager_info *info);
+int dss_mgr_check(struct omap_overlay_manager *mgr,
+		struct omap_dss_device *dssdev,
+		struct omap_overlay_manager_info *info,
+		struct omap_overlay_info **overlay_infos);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* overlay */
 void dss_init_overlays(struct platform_device *pdev);
 void dss_uninit_overlays(struct platform_device *pdev);
+<<<<<<< HEAD
 int dss_check_overlay(struct omap_overlay *ovl, struct omap_dss_device *dssdev);
 void dss_overlay_setup_dispc_manager(struct omap_overlay_manager *mgr);
 #ifdef L4_EXAMPLE
 void dss_overlay_setup_l4_manager(struct omap_overlay_manager *mgr);
 #endif
 void dss_recheck_connections(struct omap_dss_device *dssdev, bool force);
+=======
+void dss_overlay_setup_dispc_manager(struct omap_overlay_manager *mgr);
+void dss_recheck_connections(struct omap_dss_device *dssdev, bool force);
+int dss_ovl_simple_check(struct omap_overlay *ovl,
+		const struct omap_overlay_info *info);
+int dss_ovl_check(struct omap_overlay *ovl,
+		struct omap_overlay_info *info, struct omap_dss_device *dssdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* DSS */
 int dss_init_platform_driver(void);
 void dss_uninit_platform_driver(void);
 
+<<<<<<< HEAD
 void dss_select_hdmi_venc_clk_source(enum dss_hdmi_venc_clk_source_select);
 void dss_save_context(void);
 void dss_restore_context(void);
@@ -227,6 +302,13 @@ void dss_clk_enable(enum dss_clock clks);
 void dss_clk_disable(enum dss_clock clks);
 unsigned long dss_clk_get_rate(enum dss_clock clk);
 int dss_need_ctx_restore(void);
+=======
+int dss_runtime_get(void);
+void dss_runtime_put(void);
+
+void dss_select_hdmi_venc_clk_source(enum dss_hdmi_venc_clk_source_select);
+enum dss_hdmi_venc_clk_source_select dss_get_hdmi_venc_clk_source(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 const char *dss_get_generic_clk_source_name(enum omap_dss_clk_source clk_src);
 void dss_dump_clocks(struct seq_file *s);
 
@@ -283,17 +365,30 @@ struct file_operations;
 int dsi_init_platform_driver(void);
 void dsi_uninit_platform_driver(void);
 
+<<<<<<< HEAD
+=======
+int dsi_runtime_get(struct platform_device *dsidev);
+void dsi_runtime_put(struct platform_device *dsidev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void dsi_dump_clocks(struct seq_file *s);
 void dsi_create_debugfs_files_irq(struct dentry *debugfs_dir,
 		const struct file_operations *debug_fops);
 void dsi_create_debugfs_files_reg(struct dentry *debugfs_dir,
 		const struct file_operations *debug_fops);
 
+<<<<<<< HEAD
 void dsi_save_context(void);
 void dsi_restore_context(void);
 
 int dsi_init_display(struct omap_dss_device *display);
 void dsi_irq_handler(void);
+=======
+int dsi_init_display(struct omap_dss_device *display);
+void dsi_irq_handler(void);
+u8 dsi_get_pixel_size(enum omap_dss_dsi_pixel_format fmt);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned long dsi_get_pll_hsdiv_dispc_rate(struct platform_device *dsidev);
 int dsi_pll_set_clock_div(struct platform_device *dsidev,
 		struct dsi_clock_info *cinfo);
@@ -303,9 +398,12 @@ int dsi_pll_calc_clock_div_pck(struct platform_device *dsidev, bool is_tft,
 int dsi_pll_init(struct platform_device *dsidev, bool enable_hsclk,
 		bool enable_hsdiv);
 void dsi_pll_uninit(struct platform_device *dsidev, bool disconnect_lanes);
+<<<<<<< HEAD
 void dsi_get_overlay_fifo_thresholds(enum omap_plane plane,
 		u32 fifo_size, enum omap_burst_size *burst_size,
 		u32 *fifo_low, u32 *fifo_high);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void dsi_wait_pll_hsdiv_dispc_active(struct platform_device *dsidev);
 void dsi_wait_pll_hsdiv_dsi_active(struct platform_device *dsidev);
 struct platform_device *dsi_get_dsidev_from_id(int module);
@@ -317,6 +415,21 @@ static inline int dsi_init_platform_driver(void)
 static inline void dsi_uninit_platform_driver(void)
 {
 }
+<<<<<<< HEAD
+=======
+static inline int dsi_runtime_get(struct platform_device *dsidev)
+{
+	return 0;
+}
+static inline void dsi_runtime_put(struct platform_device *dsidev)
+{
+}
+static inline u8 dsi_get_pixel_size(enum omap_dss_dsi_pixel_format fmt)
+{
+	WARN("%s: DSI not compiled in, returning pixel_size as 0\n", __func__);
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline unsigned long dsi_get_pll_hsdiv_dispc_rate(struct platform_device *dsidev)
 {
 	WARN("%s: DSI not compiled in, returning rate as 0\n", __func__);
@@ -384,8 +497,13 @@ void dispc_dump_regs(struct seq_file *s);
 void dispc_irq_handler(void);
 void dispc_fake_vsync_irq(void);
 
+<<<<<<< HEAD
 void dispc_save_context(void);
 void dispc_restore_context(void);
+=======
+int dispc_runtime_get(void);
+void dispc_runtime_put(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void dispc_enable_sidle(void);
 void dispc_disable_sidle(void);
@@ -393,6 +511,7 @@ void dispc_disable_sidle(void);
 void dispc_lcd_enable_signal_polarity(bool act_high);
 void dispc_lcd_enable_signal(bool enable);
 void dispc_pck_free_enable(bool enable);
+<<<<<<< HEAD
 void dispc_enable_fifohandcheck(enum omap_channel channel, bool enable);
 
 void dispc_set_lcd_size(enum omap_channel channel, u16 width, u16 height);
@@ -459,15 +578,65 @@ unsigned long dispc_lclk_rate(enum omap_channel channel);
 unsigned long dispc_pclk_rate(enum omap_channel channel);
 void dispc_set_pol_freq(enum omap_channel channel,
 		enum omap_panel_config config, u8 acbi, u8 acb);
+=======
+void dispc_set_digit_size(u16 width, u16 height);
+void dispc_enable_fifomerge(bool enable);
+void dispc_enable_gamma_table(bool enable);
+void dispc_set_loadmode(enum omap_dss_load_mode mode);
+
+bool dispc_lcd_timings_ok(struct omap_video_timings *timings);
+unsigned long dispc_fclk_rate(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 void dispc_find_clk_divs(bool is_tft, unsigned long req_pck, unsigned long fck,
 		struct dispc_clock_info *cinfo);
 int dispc_calc_clock_rates(unsigned long dispc_fclk_rate,
 		struct dispc_clock_info *cinfo);
+<<<<<<< HEAD
 int dispc_set_clock_div(enum omap_channel channel,
 		struct dispc_clock_info *cinfo);
 int dispc_get_clock_div(enum omap_channel channel,
 		struct dispc_clock_info *cinfo);
 
+=======
+
+
+void dispc_ovl_set_fifo_threshold(enum omap_plane plane, u32 low, u32 high);
+void dispc_ovl_compute_fifo_thresholds(enum omap_plane plane,
+		u32 *fifo_low, u32 *fifo_high, bool use_fifomerge,
+		bool manual_update);
+int dispc_ovl_setup(enum omap_plane plane, struct omap_overlay_info *oi,
+		bool ilace, bool replication);
+int dispc_ovl_enable(enum omap_plane plane, bool enable);
+void dispc_ovl_set_channel_out(enum omap_plane plane,
+		enum omap_channel channel);
+
+void dispc_mgr_enable_fifohandcheck(enum omap_channel channel, bool enable);
+void dispc_mgr_set_lcd_size(enum omap_channel channel, u16 width, u16 height);
+u32 dispc_mgr_get_vsync_irq(enum omap_channel channel);
+u32 dispc_mgr_get_framedone_irq(enum omap_channel channel);
+bool dispc_mgr_go_busy(enum omap_channel channel);
+void dispc_mgr_go(enum omap_channel channel);
+bool dispc_mgr_is_enabled(enum omap_channel channel);
+void dispc_mgr_enable(enum omap_channel channel, bool enable);
+bool dispc_mgr_is_channel_enabled(enum omap_channel channel);
+void dispc_mgr_set_io_pad_mode(enum dss_io_pad_mode mode);
+void dispc_mgr_enable_stallmode(enum omap_channel channel, bool enable);
+void dispc_mgr_set_tft_data_lines(enum omap_channel channel, u8 data_lines);
+void dispc_mgr_set_lcd_display_type(enum omap_channel channel,
+		enum omap_lcd_display_type type);
+void dispc_mgr_set_lcd_timings(enum omap_channel channel,
+		struct omap_video_timings *timings);
+void dispc_mgr_set_pol_freq(enum omap_channel channel,
+		enum omap_panel_config config, u8 acbi, u8 acb);
+unsigned long dispc_mgr_lclk_rate(enum omap_channel channel);
+unsigned long dispc_mgr_pclk_rate(enum omap_channel channel);
+int dispc_mgr_set_clock_div(enum omap_channel channel,
+		struct dispc_clock_info *cinfo);
+int dispc_mgr_get_clock_div(enum omap_channel channel,
+		struct dispc_clock_info *cinfo);
+void dispc_mgr_setup(enum omap_channel channel,
+		struct omap_overlay_manager_info *info);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* VENC */
 #ifdef CONFIG_OMAP2_DSS_VENC
@@ -475,6 +644,10 @@ int venc_init_platform_driver(void);
 void venc_uninit_platform_driver(void);
 void venc_dump_regs(struct seq_file *s);
 int venc_init_display(struct omap_dss_device *display);
+<<<<<<< HEAD
+=======
+unsigned long venc_get_pixel_clock(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 static inline int venc_init_platform_driver(void)
 {
@@ -483,6 +656,14 @@ static inline int venc_init_platform_driver(void)
 static inline void venc_uninit_platform_driver(void)
 {
 }
+<<<<<<< HEAD
+=======
+static inline unsigned long venc_get_pixel_clock(void)
+{
+	WARN("%s: VENC not compiled in, returning pclk as 0\n", __func__);
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /* HDMI */
@@ -490,6 +671,11 @@ static inline void venc_uninit_platform_driver(void)
 int hdmi_init_platform_driver(void);
 void hdmi_uninit_platform_driver(void);
 int hdmi_init_display(struct omap_dss_device *dssdev);
+<<<<<<< HEAD
+=======
+unsigned long hdmi_get_pixel_clock(void);
+void hdmi_dump_regs(struct seq_file *s);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 static inline int hdmi_init_display(struct omap_dss_device *dssdev)
 {
@@ -502,12 +688,25 @@ static inline int hdmi_init_platform_driver(void)
 static inline void hdmi_uninit_platform_driver(void)
 {
 }
+<<<<<<< HEAD
+=======
+static inline unsigned long hdmi_get_pixel_clock(void)
+{
+	WARN("%s: HDMI not compiled in, returning pclk as 0\n", __func__);
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 int omapdss_hdmi_display_enable(struct omap_dss_device *dssdev);
 void omapdss_hdmi_display_disable(struct omap_dss_device *dssdev);
 void omapdss_hdmi_display_set_timing(struct omap_dss_device *dssdev);
 int omapdss_hdmi_display_check_timing(struct omap_dss_device *dssdev,
 					struct omap_video_timings *timings);
+<<<<<<< HEAD
+=======
+int omapdss_hdmi_read_edid(u8 *buf, int len);
+bool omapdss_hdmi_detect(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 int hdmi_panel_init(void);
 void hdmi_panel_exit(void);
 

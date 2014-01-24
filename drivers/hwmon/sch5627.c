@@ -1,5 +1,9 @@
 /***************************************************************************
+<<<<<<< HEAD
  *   Copyright (C) 2010-2011 Hans de Goede <hdegoede@redhat.com>           *
+=======
+ *   Copyright (C) 2010-2012 Hans de Goede <hdegoede@redhat.com>           *
+>>>>>>> refs/remotes/origin/cm-10.0
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -28,13 +32,18 @@
 #include <linux/hwmon-sysfs.h>
 #include <linux/err.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/io.h>
 #include <linux/acpi.h>
 #include <linux/delay.h>
+=======
+#include "sch56xx-common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRVNAME "sch5627"
 #define DEVNAME DRVNAME /* We only support one model */
 
+<<<<<<< HEAD
 #define SIO_SCH5627_EM_LD	0x0C	/* Embedded Microcontroller LD */
 #define SIO_UNLOCK_KEY		0x55	/* Key to enable Super-I/O */
 #define SIO_LOCK_KEY		0xAA	/* Key to disable Super-I/O */
@@ -48,13 +57,18 @@
 
 #define REGION_LENGTH		9
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SCH5627_HWMON_ID		0xa5
 #define SCH5627_COMPANY_ID		0x5c
 #define SCH5627_PRIMARY_ID		0xa0
 
+<<<<<<< HEAD
 #define SCH5627_CMD_READ		0x02
 #define SCH5627_CMD_WRITE		0x03
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SCH5627_REG_BUILD_CODE		0x39
 #define SCH5627_REG_BUILD_ID		0x3a
 #define SCH5627_REG_HWMON_ID		0x3c
@@ -97,6 +111,10 @@ static const char * const SCH5627_IN_LABELS[SCH5627_NO_IN] = {
 struct sch5627_data {
 	unsigned short addr;
 	struct device *hwmon_dev;
+<<<<<<< HEAD
+=======
+	struct sch56xx_watchdog_data *watchdog;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 control;
 	u8 temp_max[SCH5627_NO_TEMPS];
 	u8 temp_crit[SCH5627_NO_TEMPS];
@@ -111,6 +129,7 @@ struct sch5627_data {
 	u16 in[SCH5627_NO_IN];
 };
 
+<<<<<<< HEAD
 static struct platform_device *sch5627_pdev;
 
 /* Super I/O functions */
@@ -287,6 +306,8 @@ static int sch5627_read_virtual_reg12(struct sch5627_data *data, u16 msb_reg,
 		return (msb << 4) | (lsn & 0x0f);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct sch5627_data *sch5627_update_device(struct device *dev)
 {
 	struct sch5627_data *data = dev_get_drvdata(dev);
@@ -297,7 +318,11 @@ static struct sch5627_data *sch5627_update_device(struct device *dev)
 
 	/* Trigger a Vbat voltage measurement every 5 minutes */
 	if (time_after(jiffies, data->last_battery + 300 * HZ)) {
+<<<<<<< HEAD
 		sch5627_write_virtual_reg(data, SCH5627_REG_CTRL,
+=======
+		sch56xx_write_virtual_reg(data->addr, SCH5627_REG_CTRL,
+>>>>>>> refs/remotes/origin/cm-10.0
 					  data->control | 0x10);
 		data->last_battery = jiffies;
 	}
@@ -305,7 +330,11 @@ static struct sch5627_data *sch5627_update_device(struct device *dev)
 	/* Cache the values for 1 second */
 	if (time_after(jiffies, data->last_updated + HZ) || !data->valid) {
 		for (i = 0; i < SCH5627_NO_TEMPS; i++) {
+<<<<<<< HEAD
 			val = sch5627_read_virtual_reg12(data,
+=======
+			val = sch56xx_read_virtual_reg12(data->addr,
+>>>>>>> refs/remotes/origin/cm-10.0
 				SCH5627_REG_TEMP_MSB[i],
 				SCH5627_REG_TEMP_LSN[i],
 				SCH5627_REG_TEMP_HIGH_NIBBLE[i]);
@@ -317,7 +346,11 @@ static struct sch5627_data *sch5627_update_device(struct device *dev)
 		}
 
 		for (i = 0; i < SCH5627_NO_FANS; i++) {
+<<<<<<< HEAD
 			val = sch5627_read_virtual_reg16(data,
+=======
+			val = sch56xx_read_virtual_reg16(data->addr,
+>>>>>>> refs/remotes/origin/cm-10.0
 							 SCH5627_REG_FAN[i]);
 			if (unlikely(val < 0)) {
 				ret = ERR_PTR(val);
@@ -327,7 +360,11 @@ static struct sch5627_data *sch5627_update_device(struct device *dev)
 		}
 
 		for (i = 0; i < SCH5627_NO_IN; i++) {
+<<<<<<< HEAD
 			val = sch5627_read_virtual_reg12(data,
+=======
+			val = sch56xx_read_virtual_reg12(data->addr,
+>>>>>>> refs/remotes/origin/cm-10.0
 				SCH5627_REG_IN_MSB[i],
 				SCH5627_REG_IN_LSN[i],
 				SCH5627_REG_IN_HIGH_NIBBLE[i]);
@@ -355,18 +392,33 @@ static int __devinit sch5627_read_limits(struct sch5627_data *data)
 		 * Note what SMSC calls ABS, is what lm_sensors calls max
 		 * (aka high), and HIGH is what lm_sensors calls crit.
 		 */
+<<<<<<< HEAD
 		val = sch5627_read_virtual_reg(data, SCH5627_REG_TEMP_ABS[i]);
+=======
+		val = sch56xx_read_virtual_reg(data->addr,
+					       SCH5627_REG_TEMP_ABS[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (val < 0)
 			return val;
 		data->temp_max[i] = val;
 
+<<<<<<< HEAD
 		val = sch5627_read_virtual_reg(data, SCH5627_REG_TEMP_HIGH[i]);
+=======
+		val = sch56xx_read_virtual_reg(data->addr,
+					       SCH5627_REG_TEMP_HIGH[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (val < 0)
 			return val;
 		data->temp_crit[i] = val;
 	}
 	for (i = 0; i < SCH5627_NO_FANS; i++) {
+<<<<<<< HEAD
 		val = sch5627_read_virtual_reg16(data, SCH5627_REG_FAN_MIN[i]);
+=======
+		val = sch56xx_read_virtual_reg16(data->addr,
+						 SCH5627_REG_FAN_MIN[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (val < 0)
 			return val;
 		data->fan_min[i] = val;
@@ -644,6 +696,12 @@ static int sch5627_remove(struct platform_device *pdev)
 {
 	struct sch5627_data *data = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
+=======
+	if (data->watchdog)
+		sch56xx_watchdog_unregister(data->watchdog);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (data->hwmon_dev)
 		hwmon_device_unregister(data->hwmon_dev);
 
@@ -667,7 +725,11 @@ static int __devinit sch5627_probe(struct platform_device *pdev)
 	mutex_init(&data->update_lock);
 	platform_set_drvdata(pdev, data);
 
+<<<<<<< HEAD
 	val = sch5627_read_virtual_reg(data, SCH5627_REG_HWMON_ID);
+=======
+	val = sch56xx_read_virtual_reg(data->addr, SCH5627_REG_HWMON_ID);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (val < 0) {
 		err = val;
 		goto error;
@@ -679,7 +741,11 @@ static int __devinit sch5627_probe(struct platform_device *pdev)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	val = sch5627_read_virtual_reg(data, SCH5627_REG_COMPANY_ID);
+=======
+	val = sch56xx_read_virtual_reg(data->addr, SCH5627_REG_COMPANY_ID);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (val < 0) {
 		err = val;
 		goto error;
@@ -691,7 +757,11 @@ static int __devinit sch5627_probe(struct platform_device *pdev)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	val = sch5627_read_virtual_reg(data, SCH5627_REG_PRIMARY_ID);
+=======
+	val = sch56xx_read_virtual_reg(data->addr, SCH5627_REG_PRIMARY_ID);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (val < 0) {
 		err = val;
 		goto error;
@@ -703,25 +773,44 @@ static int __devinit sch5627_probe(struct platform_device *pdev)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	build_code = sch5627_read_virtual_reg(data, SCH5627_REG_BUILD_CODE);
+=======
+	build_code = sch56xx_read_virtual_reg(data->addr,
+					      SCH5627_REG_BUILD_CODE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (build_code < 0) {
 		err = build_code;
 		goto error;
 	}
 
+<<<<<<< HEAD
 	build_id = sch5627_read_virtual_reg16(data, SCH5627_REG_BUILD_ID);
+=======
+	build_id = sch56xx_read_virtual_reg16(data->addr,
+					      SCH5627_REG_BUILD_ID);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (build_id < 0) {
 		err = build_id;
 		goto error;
 	}
 
+<<<<<<< HEAD
 	hwmon_rev = sch5627_read_virtual_reg(data, SCH5627_REG_HWMON_REV);
+=======
+	hwmon_rev = sch56xx_read_virtual_reg(data->addr,
+					     SCH5627_REG_HWMON_REV);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (hwmon_rev < 0) {
 		err = hwmon_rev;
 		goto error;
 	}
 
+<<<<<<< HEAD
 	val = sch5627_read_virtual_reg(data, SCH5627_REG_CTRL);
+=======
+	val = sch56xx_read_virtual_reg(data->addr, SCH5627_REG_CTRL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (val < 0) {
 		err = val;
 		goto error;
@@ -734,7 +823,11 @@ static int __devinit sch5627_probe(struct platform_device *pdev)
 	}
 	/* Trigger a Vbat voltage measurement, so that we get a valid reading
 	   the first time we read Vbat */
+<<<<<<< HEAD
 	sch5627_write_virtual_reg(data, SCH5627_REG_CTRL,
+=======
+	sch56xx_write_virtual_reg(data->addr, SCH5627_REG_CTRL,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  data->control | 0x10);
 	data->last_battery = jiffies;
 
@@ -746,6 +839,10 @@ static int __devinit sch5627_probe(struct platform_device *pdev)
 	if (err)
 		goto error;
 
+<<<<<<< HEAD
+=======
+	pr_info("found %s chip at %#hx\n", DEVNAME, data->addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pr_info("firmware build: code 0x%02X, id 0x%04X, hwmon: rev 0x%02X\n",
 		build_code, build_id, hwmon_rev);
 
@@ -761,6 +858,14 @@ static int __devinit sch5627_probe(struct platform_device *pdev)
 		goto error;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Note failing to register the watchdog is not a fatal error */
+	data->watchdog = sch56xx_watchdog_register(data->addr,
+			(build_code << 24) | (build_id << 8) | hwmon_rev,
+			&data->update_lock, 1);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 error:
@@ -768,6 +873,7 @@ error:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __init sch5627_find(int sioaddr, unsigned short *address)
 {
 	u8 devid;
@@ -847,6 +953,8 @@ exit_device_put:
 	return err;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver sch5627_driver = {
 	.driver = {
 		.owner	= THIS_MODULE,
@@ -856,6 +964,7 @@ static struct platform_driver sch5627_driver = {
 	.remove		= sch5627_remove,
 };
 
+<<<<<<< HEAD
 static int __init sch5627_init(void)
 {
 	int err = -ENODEV;
@@ -885,10 +994,16 @@ static void __exit sch5627_exit(void)
 	platform_device_unregister(sch5627_pdev);
 	platform_driver_unregister(&sch5627_driver);
 }
+=======
+module_platform_driver(sch5627_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("SMSC SCH5627 Hardware Monitoring Driver");
 MODULE_AUTHOR("Hans de Goede <hdegoede@redhat.com>");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(sch5627_init);
 module_exit(sch5627_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

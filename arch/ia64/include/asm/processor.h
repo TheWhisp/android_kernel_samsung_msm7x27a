@@ -19,6 +19,12 @@
 #include <asm/ptrace.h>
 #include <asm/ustack.h>
 
+<<<<<<< HEAD
+=======
+#define __ARCH_WANT_UNLOCKED_CTXSW
+#define ARCH_HAS_PREFETCH_SWITCH_STACK
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IA64_NUM_PHYS_STACK_REG	96
 #define IA64_NUM_DBG_REGS	8
 
@@ -75,7 +81,11 @@
 #include <asm/percpu.h>
 #include <asm/rse.h>
 #include <asm/unwind.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_NUMA
 #include <asm/nodedata.h>
 #endif
@@ -309,7 +319,10 @@ struct thread_struct {
 }
 
 #define start_thread(regs,new_ip,new_sp) do {							\
+<<<<<<< HEAD
 	set_fs(USER_DS);									\
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	regs->cr_ipsr = ((regs->cr_ipsr | (IA64_PSR_BITS_TO_SET | IA64_PSR_CPL))		\
 			 & ~(IA64_PSR_BITS_TO_CLEAR | IA64_PSR_RI | IA64_PSR_IS));		\
 	regs->cr_iip = new_ip;									\
@@ -721,6 +734,14 @@ extern unsigned long boot_option_idle_override;
 enum idle_boot_override {IDLE_NO_OVERRIDE=0, IDLE_HALT, IDLE_FORCE_MWAIT,
 			 IDLE_NOMWAIT, IDLE_POLL};
 
+<<<<<<< HEAD
+=======
+void cpu_idle_wait(void);
+void default_idle(void);
+
+#define ia64_platform_is(x) (strcmp(x, platform_name) == 0)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !__ASSEMBLY__ */
 
 #endif /* _ASM_IA64_PROCESSOR_H */

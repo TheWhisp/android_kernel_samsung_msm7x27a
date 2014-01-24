@@ -444,7 +444,11 @@ static unsigned long __init
 find_bootmap_pfn(const struct resource *mem)
 {
 	unsigned long bootmap_pages, bootmap_len;
+<<<<<<< HEAD
 	unsigned long node_pages = PFN_UP(mem->end - mem->start + 1);
+=======
+	unsigned long node_pages = PFN_UP(resource_size(mem));
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long bootmap_start;
 
 	bootmap_pages = bootmem_bootmap_pages(node_pages);
@@ -541,10 +545,17 @@ static void __init setup_bootmem(void)
 			 */
 			if (res->start >= PFN_PHYS(first_pfn)
 			    && res->end < PFN_PHYS(max_pfn))
+<<<<<<< HEAD
 				reserve_bootmem_node(
 					NODE_DATA(node), res->start,
 					res->end - res->start + 1,
 					BOOTMEM_DEFAULT);
+=======
+				reserve_bootmem_node(NODE_DATA(node),
+						     res->start,
+						     resource_size(res),
+						     BOOTMEM_DEFAULT);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		node_set_online(node);

@@ -40,7 +40,11 @@ unsigned int xics_interrupt_server_size		= 8;
 
 DEFINE_PER_CPU(struct xics_cppr, xics_cppr);
 
+<<<<<<< HEAD
 struct irq_host *xics_host;
+=======
+struct irq_domain *xics_host;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static LIST_HEAD(ics_list);
 
@@ -134,11 +138,18 @@ static void xics_request_ipi(void)
 	BUG_ON(ipi == NO_IRQ);
 
 	/*
+<<<<<<< HEAD
 	 * IPIs are marked IRQF_DISABLED as they must run with irqs
 	 * disabled, and PERCPU.  The handler was set in map.
 	 */
 	BUG_ON(request_irq(ipi, icp_ops->ipi_action,
 			   IRQF_DISABLED|IRQF_PERCPU, "IPI", NULL));
+=======
+	 * IPIs are marked IRQF_PERCPU. The handler was set in map.
+	 */
+	BUG_ON(request_irq(ipi, icp_ops->ipi_action,
+			   IRQF_PERCPU | IRQF_NO_THREAD, "IPI", NULL));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int __init xics_smp_probe(void)
@@ -189,6 +200,10 @@ void xics_migrate_irqs_away(void)
 {
 	int cpu = smp_processor_id(), hw_cpu = hard_smp_processor_id();
 	unsigned int irq, virq;
+<<<<<<< HEAD
+=======
+	struct irq_desc *desc;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* If we used to be the default server, move to the new "boot_cpuid" */
 	if (hw_cpu == xics_default_server)
@@ -203,8 +218,12 @@ void xics_migrate_irqs_away(void)
 	/* Allow IPIs again... */
 	icp_ops->set_priority(DEFAULT_PRIORITY);
 
+<<<<<<< HEAD
 	for_each_irq(virq) {
 		struct irq_desc *desc;
+=======
+	for_each_irq_desc(virq, desc) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct irq_chip *chip;
 		long server;
 		unsigned long flags;
@@ -213,6 +232,7 @@ void xics_migrate_irqs_away(void)
 		/* We can't set affinity on ISA interrupts */
 		if (virq < NUM_ISA_INTERRUPTS)
 			continue;
+<<<<<<< HEAD
 		if (!virq_is_host(virq, xics_host))
 			continue;
 		irq = (unsigned int)virq_to_hw(virq);
@@ -223,6 +243,17 @@ void xics_migrate_irqs_away(void)
 		/* We only need to migrate enabled IRQS */
 		if (!desc || !desc->action)
 			continue;
+=======
+		/* We only need to migrate enabled IRQS */
+		if (!desc->action)
+			continue;
+		if (desc->irq_data.domain != xics_host)
+			continue;
+		irq = desc->irq_data.hwirq;
+		/* We need to get IPIs still. */
+		if (irq == XICS_IPI || irq == XICS_IRQ_SPURIOUS)
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		chip = irq_desc_get_chip(desc);
 		if (!chip || !chip->irq_set_affinity)
 			continue;
@@ -302,7 +333,11 @@ int xics_get_irq_server(unsigned int virq, const struct cpumask *cpumask,
 }
 #endif /* CONFIG_SMP */
 
+<<<<<<< HEAD
 static int xics_host_match(struct irq_host *h, struct device_node *node)
+=======
+static int xics_host_match(struct irq_domain *h, struct device_node *node)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ics *ics;
 
@@ -324,7 +359,11 @@ static struct irq_chip xics_ipi_chip = {
 	.irq_unmask = xics_ipi_unmask,
 };
 
+<<<<<<< HEAD
 static int xics_host_map(struct irq_host *h, unsigned int virq,
+=======
+static int xics_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 irq_hw_number_t hw)
 {
 	struct ics *ics;
@@ -352,7 +391,11 @@ static int xics_host_map(struct irq_host *h, unsigned int virq,
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int xics_host_xlate(struct irq_host *h, struct device_node *ct,
+=======
+static int xics_host_xlate(struct irq_domain *h, struct device_node *ct,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   const u32 *intspec, unsigned int intsize,
 			   irq_hw_number_t *out_hwirq, unsigned int *out_flags)
 
@@ -367,7 +410,11 @@ static int xics_host_xlate(struct irq_host *h, struct device_node *ct,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct irq_host_ops xics_host_ops = {
+=======
+static struct irq_domain_ops xics_host_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.match = xics_host_match,
 	.map = xics_host_map,
 	.xlate = xics_host_xlate,
@@ -375,8 +422,12 @@ static struct irq_host_ops xics_host_ops = {
 
 static void __init xics_init_host(void)
 {
+<<<<<<< HEAD
 	xics_host = irq_alloc_host(NULL, IRQ_HOST_MAP_TREE, 0, &xics_host_ops,
 				   XICS_IRQ_SPURIOUS);
+=======
+	xics_host = irq_domain_add_tree(NULL, &xics_host_ops, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(xics_host == NULL);
 	irq_set_default_host(xics_host);
 }
@@ -409,6 +460,7 @@ void __init xics_init(void)
 	int rc = -1;
 
 	/* Fist locate ICP */
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ICP_HV
 	if (firmware_has_feature(FW_FEATURE_LPAR))
 		rc = icp_hv_init();
@@ -417,6 +469,12 @@ void __init xics_init(void)
 	if (rc < 0)
 		rc = icp_native_init();
 #endif
+=======
+	if (firmware_has_feature(FW_FEATURE_LPAR))
+		rc = icp_hv_init();
+	if (rc < 0)
+		rc = icp_native_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc < 0) {
 		pr_warning("XICS: Cannot find a Presentation Controller !\n");
 		return;
@@ -429,9 +487,15 @@ void __init xics_init(void)
 	xics_ipi_chip.irq_eoi = icp_ops->eoi;
 
 	/* Now locate ICS */
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ICS_RTAS
 	rc = ics_rtas_init();
 #endif
+=======
+	rc = ics_rtas_init();
+	if (rc < 0)
+		rc = ics_opal_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc < 0)
 		pr_warning("XICS: Cannot find a Source Controller !\n");
 

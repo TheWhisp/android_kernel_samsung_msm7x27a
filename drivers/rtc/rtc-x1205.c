@@ -21,6 +21,10 @@
 #include <linux/bcd.h>
 #include <linux/rtc.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRV_VERSION "1.0.8"
 
@@ -622,6 +626,7 @@ static struct i2c_driver x1205_driver = {
 	.id_table	= x1205_id,
 };
 
+<<<<<<< HEAD
 static int __init x1205_init(void)
 {
 	return i2c_add_driver(&x1205_driver);
@@ -631,6 +636,9 @@ static void __exit x1205_exit(void)
 {
 	i2c_del_driver(&x1205_driver);
 }
+=======
+module_i2c_driver(x1205_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(
 	"Karen Spearel <kas111 at gmail dot com>, "
@@ -638,6 +646,9 @@ MODULE_AUTHOR(
 MODULE_DESCRIPTION("Xicor/Intersil X1205 RTC driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(x1205_init);
 module_exit(x1205_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

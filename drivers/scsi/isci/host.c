@@ -58,7 +58,10 @@
 #include "host.h"
 #include "isci.h"
 #include "port.h"
+<<<<<<< HEAD
 #include "host.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "probe_roms.h"
 #include "remote_device.h"
 #include "request.h"
@@ -650,15 +653,24 @@ static void isci_host_start_complete(struct isci_host *ihost, enum sci_status co
 
 int isci_host_scan_finished(struct Scsi_Host *shost, unsigned long time)
 {
+<<<<<<< HEAD
 	struct isci_host *ihost = SHOST_TO_SAS_HA(shost)->lldd_ha;
+=======
+	struct sas_ha_struct *ha = SHOST_TO_SAS_HA(shost);
+	struct isci_host *ihost = ha->lldd_ha;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (test_bit(IHOST_START_PENDING, &ihost->flags))
 		return 0;
 
+<<<<<<< HEAD
 	/* todo: use sas_flush_discovery once it is upstream */
 	scsi_flush_work(shost);
 
 	scsi_flush_work(shost);
+=======
+	sas_drain_work(ha);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_dbg(&ihost->pdev->dev,
 		"%s: ihost->status = %d, time = %ld\n",
@@ -899,7 +911,12 @@ static enum sci_status sci_controller_start_next_phy(struct isci_host *ihost)
 			 */
 			if ((iphy->is_in_link_training == false && state == SCI_PHY_INITIAL) ||
 			    (iphy->is_in_link_training == false && state == SCI_PHY_STOPPED) ||
+<<<<<<< HEAD
 			    (iphy->is_in_link_training == true && is_phy_starting(iphy))) {
+=======
+			    (iphy->is_in_link_training == true && is_phy_starting(iphy)) ||
+			    (ihost->port_agent.phy_ready_mask != ihost->port_agent.phy_configured_mask)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				is_controller_start_complete = false;
 				break;
 			}
@@ -1094,6 +1111,10 @@ static void isci_host_completion_routine(unsigned long data)
 	struct isci_request *request;
 	struct isci_request *next_request;
 	struct sas_task     *task;
+<<<<<<< HEAD
+=======
+	u16 active;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	INIT_LIST_HEAD(&completed_request_list);
 	INIT_LIST_HEAD(&errored_request_list);
@@ -1184,6 +1205,16 @@ static void isci_host_completion_routine(unsigned long data)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* the coalesence timeout doubles at each encoding step, so
+	 * update it based on the ilog2 value of the outstanding requests
+	 */
+	active = isci_tci_active(ihost);
+	writel(SMU_ICC_GEN_VAL(NUMBER, active) |
+	       SMU_ICC_GEN_VAL(TIMER, ISCI_COALESCE_BASE + ilog2(active)),
+	       &ihost->smu_registers->interrupt_coalesce_control);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -1255,6 +1286,13 @@ void isci_host_deinit(struct isci_host *ihost)
 {
 	int i;
 
+<<<<<<< HEAD
+=======
+	/* disable output data selects */
+	for (i = 0; i < isci_gpio_count(ihost); i++)
+		writel(SGPIO_HW_CONTROL, &ihost->scu_registers->peg0.sgpio.output_data_select[i]);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	isci_host_change_state(ihost, isci_stopping);
 	for (i = 0; i < SCI_MAX_PORTS; i++) {
 		struct isci_port *iport = &ihost->ports[i];
@@ -1273,6 +1311,15 @@ void isci_host_deinit(struct isci_host *ihost)
 	spin_unlock_irq(&ihost->scic_lock);
 
 	wait_for_stop(ihost);
+<<<<<<< HEAD
+=======
+
+	/* disable sgpio: where the above wait should give time for the
+	 * enclosure to sample the gpios going inactive
+	 */
+	writel(0, &ihost->scu_registers->peg0.sgpio.interface_control);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	sci_controller_reset(ihost);
 
 	/* Cancel any/all outstanding port timers */
@@ -1332,7 +1379,11 @@ static void isci_user_parameters_get(struct sci_user_parameters *u)
 	u->stp_max_occupancy_timeout = stp_max_occ_to;
 	u->ssp_max_occupancy_timeout = ssp_max_occ_to;
 	u->no_outbound_task_timeout = no_outbound_task_to;
+<<<<<<< HEAD
 	u->max_number_concurrent_device_spin_up = max_concurr_spinup;
+=======
+	u->max_concurr_spinup = max_concurr_spinup;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void sci_controller_initial_state_enter(struct sci_base_state_machine *sm)
@@ -1472,9 +1523,24 @@ sci_controller_set_interrupt_coalescence(struct isci_host *ihost,
 static void sci_controller_ready_state_enter(struct sci_base_state_machine *sm)
 {
 	struct isci_host *ihost = container_of(sm, typeof(*ihost), sm);
+<<<<<<< HEAD
 
 	/* set the default interrupt coalescence number and timeout value. */
 	sci_controller_set_interrupt_coalescence(ihost, 0x10, 250);
+=======
+	u32 val;
+
+	/* enable clock gating for power control of the scu unit */
+	val = readl(&ihost->smu_registers->clock_gating_control);
+	val &= ~(SMU_CGUCR_GEN_BIT(REGCLK_ENABLE) |
+		 SMU_CGUCR_GEN_BIT(TXCLK_ENABLE) |
+		 SMU_CGUCR_GEN_BIT(XCLK_ENABLE));
+	val |= SMU_CGUCR_GEN_BIT(IDLE_ENABLE);
+	writel(val, &ihost->smu_registers->clock_gating_control);
+
+	/* set the default interrupt coalescence number and timeout value. */
+	sci_controller_set_interrupt_coalescence(ihost, 0, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void sci_controller_ready_state_exit(struct sci_base_state_machine *sm)
@@ -1643,11 +1709,21 @@ static void sci_controller_set_default_config_parameters(struct isci_host *ihost
 	ihost->oem_parameters.controller.mode_type = SCIC_PORT_AUTOMATIC_CONFIGURATION_MODE;
 
 	/* Default to APC mode. */
+<<<<<<< HEAD
 	ihost->oem_parameters.controller.max_concurrent_dev_spin_up = 1;
+=======
+	ihost->oem_parameters.controller.max_concurr_spin_up = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Default to no SSC operation. */
 	ihost->oem_parameters.controller.do_enable_ssc = false;
 
+<<<<<<< HEAD
+=======
+	/* Default to short cables on all phys. */
+	ihost->oem_parameters.controller.cable_selection_mask = 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Initialize all of the port parameter information to narrow ports. */
 	for (index = 0; index < SCI_MAX_PORTS; index++) {
 		ihost->oem_parameters.ports[index].phy_mask = 0;
@@ -1655,8 +1731,14 @@ static void sci_controller_set_default_config_parameters(struct isci_host *ihost
 
 	/* Initialize all of the phy parameter information. */
 	for (index = 0; index < SCI_MAX_PHYS; index++) {
+<<<<<<< HEAD
 		/* Default to 6G (i.e. Gen 3) for now. */
 		ihost->user_parameters.phys[index].max_speed_generation = 3;
+=======
+		/* Default to 3G (i.e. Gen 2). */
+		ihost->user_parameters.phys[index].max_speed_generation =
+			SCIC_SDS_PARM_GEN2_SPEED;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* the frequencies cannot be 0 */
 		ihost->user_parameters.phys[index].align_insertion_frequency = 0x7f;
@@ -1676,7 +1758,11 @@ static void sci_controller_set_default_config_parameters(struct isci_host *ihost
 	ihost->user_parameters.ssp_inactivity_timeout = 5;
 	ihost->user_parameters.stp_max_occupancy_timeout = 5;
 	ihost->user_parameters.ssp_max_occupancy_timeout = 20;
+<<<<<<< HEAD
 	ihost->user_parameters.no_outbound_task_timeout = 20;
+=======
+	ihost->user_parameters.no_outbound_task_timeout = 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void controller_timeout(unsigned long data)
@@ -1741,7 +1827,11 @@ static enum sci_status sci_controller_construct(struct isci_host *ihost,
 	return sci_controller_reset(ihost);
 }
 
+<<<<<<< HEAD
 int sci_oem_parameters_validate(struct sci_oem_params *oem)
+=======
+int sci_oem_parameters_validate(struct sci_oem_params *oem, u8 version)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
@@ -1769,21 +1859,81 @@ int sci_oem_parameters_validate(struct sci_oem_params *oem)
 	} else
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (oem->controller.max_concurrent_dev_spin_up > MAX_CONCURRENT_DEVICE_SPIN_UP_COUNT)
 		return -EINVAL;
 
+=======
+	if (oem->controller.max_concurr_spin_up > MAX_CONCURRENT_DEVICE_SPIN_UP_COUNT ||
+	    oem->controller.max_concurr_spin_up < 1)
+		return -EINVAL;
+
+	if (oem->controller.do_enable_ssc) {
+		if (version < ISCI_ROM_VER_1_1 && oem->controller.do_enable_ssc != 1)
+			return -EINVAL;
+
+		if (version >= ISCI_ROM_VER_1_1) {
+			u8 test = oem->controller.ssc_sata_tx_spread_level;
+
+			switch (test) {
+			case 0:
+			case 2:
+			case 3:
+			case 6:
+			case 7:
+				break;
+			default:
+				return -EINVAL;
+			}
+
+			test = oem->controller.ssc_sas_tx_spread_level;
+			if (oem->controller.ssc_sas_tx_type == 0) {
+				switch (test) {
+				case 0:
+				case 2:
+				case 3:
+					break;
+				default:
+					return -EINVAL;
+				}
+			} else if (oem->controller.ssc_sas_tx_type == 1) {
+				switch (test) {
+				case 0:
+				case 3:
+				case 6:
+					break;
+				default:
+					return -EINVAL;
+				}
+			}
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static enum sci_status sci_oem_parameters_set(struct isci_host *ihost)
 {
 	u32 state = ihost->sm.current_state_id;
+<<<<<<< HEAD
+=======
+	struct isci_pci_info *pci_info = to_pci_info(ihost->pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (state == SCIC_RESET ||
 	    state == SCIC_INITIALIZING ||
 	    state == SCIC_INITIALIZED) {
+<<<<<<< HEAD
 
 		if (sci_oem_parameters_validate(&ihost->oem_parameters))
+=======
+		u8 oem_version = pci_info->orom ? pci_info->orom->hdr.version :
+			ISCI_ROM_VER_1_0;
+
+		if (sci_oem_parameters_validate(&ihost->oem_parameters,
+						oem_version))
+>>>>>>> refs/remotes/origin/cm-10.0
 			return SCI_FAILURE_INVALID_PARAMETER_VALUE;
 
 		return SCI_SUCCESS;
@@ -1792,6 +1942,19 @@ static enum sci_status sci_oem_parameters_set(struct isci_host *ihost)
 	return SCI_FAILURE_INVALID_STATE;
 }
 
+<<<<<<< HEAD
+=======
+static u8 max_spin_up(struct isci_host *ihost)
+{
+	if (ihost->user_parameters.max_concurr_spinup)
+		return min_t(u8, ihost->user_parameters.max_concurr_spinup,
+			     MAX_CONCURRENT_DEVICE_SPIN_UP_COUNT);
+	else
+		return min_t(u8, ihost->oem_parameters.controller.max_concurr_spin_up,
+			     MAX_CONCURRENT_DEVICE_SPIN_UP_COUNT);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void power_control_timeout(unsigned long data)
 {
 	struct sci_timer *tmr = (struct sci_timer *)data;
@@ -1821,14 +1984,46 @@ static void power_control_timeout(unsigned long data)
 		if (iphy == NULL)
 			continue;
 
+<<<<<<< HEAD
 		if (ihost->power_control.phys_granted_power >=
 		    ihost->oem_parameters.controller.max_concurrent_dev_spin_up)
+=======
+		if (ihost->power_control.phys_granted_power >= max_spin_up(ihost))
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 
 		ihost->power_control.requesters[i] = NULL;
 		ihost->power_control.phys_waiting--;
 		ihost->power_control.phys_granted_power++;
 		sci_phy_consume_power_handler(iphy);
+<<<<<<< HEAD
+=======
+
+		if (iphy->protocol == SCIC_SDS_PHY_PROTOCOL_SAS) {
+			u8 j;
+
+			for (j = 0; j < SCI_MAX_PHYS; j++) {
+				struct isci_phy *requester = ihost->power_control.requesters[j];
+
+				/*
+				 * Search the power_control queue to see if there are other phys
+				 * attached to the same remote device. If found, take all of
+				 * them out of await_sas_power state.
+				 */
+				if (requester != NULL && requester != iphy) {
+					u8 other = memcmp(requester->frame_rcvd.iaf.sas_addr,
+							  iphy->frame_rcvd.iaf.sas_addr,
+							  sizeof(requester->frame_rcvd.iaf.sas_addr));
+
+					if (other == 0) {
+						ihost->power_control.requesters[j] = NULL;
+						ihost->power_control.phys_waiting--;
+						sci_phy_consume_power_handler(requester);
+					}
+				}
+			}
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -1847,8 +2042,12 @@ void sci_controller_power_control_queue_insert(struct isci_host *ihost,
 {
 	BUG_ON(iphy == NULL);
 
+<<<<<<< HEAD
 	if (ihost->power_control.phys_granted_power <
 	    ihost->oem_parameters.controller.max_concurrent_dev_spin_up) {
+=======
+	if (ihost->power_control.phys_granted_power < max_spin_up(ihost)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ihost->power_control.phys_granted_power++;
 		sci_phy_consume_power_handler(iphy);
 
@@ -1864,9 +2063,40 @@ void sci_controller_power_control_queue_insert(struct isci_host *ihost,
 		ihost->power_control.timer_started = true;
 
 	} else {
+<<<<<<< HEAD
 		/* Add the phy in the waiting list */
 		ihost->power_control.requesters[iphy->phy_index] = iphy;
 		ihost->power_control.phys_waiting++;
+=======
+		/*
+		 * There are phys, attached to the same sas address as this phy, are
+		 * already in READY state, this phy don't need wait.
+		 */
+		u8 i;
+		struct isci_phy *current_phy;
+
+		for (i = 0; i < SCI_MAX_PHYS; i++) {
+			u8 other;
+			current_phy = &ihost->phys[i];
+
+			other = memcmp(current_phy->frame_rcvd.iaf.sas_addr,
+				       iphy->frame_rcvd.iaf.sas_addr,
+				       sizeof(current_phy->frame_rcvd.iaf.sas_addr));
+
+			if (current_phy->sm.current_state_id == SCI_PHY_READY &&
+			    current_phy->protocol == SCIC_SDS_PHY_PROTOCOL_SAS &&
+			    other == 0) {
+				sci_phy_consume_power_handler(iphy);
+				break;
+			}
+		}
+
+		if (i == SCI_MAX_PHYS) {
+			/* Add the phy in the waiting list */
+			ihost->power_control.requesters[iphy->phy_index] = iphy;
+			ihost->power_control.phys_waiting++;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -1881,6 +2111,7 @@ void sci_controller_power_control_queue_remove(struct isci_host *ihost,
 	ihost->power_control.requesters[iphy->phy_index] = NULL;
 }
 
+<<<<<<< HEAD
 #define AFE_REGISTER_WRITE_DELAY 10
 
 /* Initialize the AFE for this phy index. We need to read the AFE setup from
@@ -1888,10 +2119,62 @@ void sci_controller_power_control_queue_remove(struct isci_host *ihost,
  */
 static void sci_controller_afe_initialization(struct isci_host *ihost)
 {
+=======
+static int is_long_cable(int phy, unsigned char selection_byte)
+{
+	return !!(selection_byte & (1 << phy));
+}
+
+static int is_medium_cable(int phy, unsigned char selection_byte)
+{
+	return !!(selection_byte & (1 << (phy + 4)));
+}
+
+static enum cable_selections decode_selection_byte(
+	int phy,
+	unsigned char selection_byte)
+{
+	return ((selection_byte & (1 << phy)) ? 1 : 0)
+		+ (selection_byte & (1 << (phy + 4)) ? 2 : 0);
+}
+
+static unsigned char *to_cable_select(struct isci_host *ihost)
+{
+	if (is_cable_select_overridden())
+		return ((unsigned char *)&cable_selection_override)
+			+ ihost->id;
+	else
+		return &ihost->oem_parameters.controller.cable_selection_mask;
+}
+
+enum cable_selections decode_cable_selection(struct isci_host *ihost, int phy)
+{
+	return decode_selection_byte(phy, *to_cable_select(ihost));
+}
+
+char *lookup_cable_names(enum cable_selections selection)
+{
+	static char *cable_names[] = {
+		[short_cable]     = "short",
+		[long_cable]      = "long",
+		[medium_cable]    = "medium",
+		[undefined_cable] = "<undefined, assumed long>" /* bit 0==1 */
+	};
+	return (selection <= undefined_cable) ? cable_names[selection]
+					      : cable_names[undefined_cable];
+}
+
+#define AFE_REGISTER_WRITE_DELAY 10
+
+static void sci_controller_afe_initialization(struct isci_host *ihost)
+{
+	struct scu_afe_registers __iomem *afe = &ihost->scu_registers->afe;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct sci_oem_params *oem = &ihost->oem_parameters;
 	struct pci_dev *pdev = ihost->pdev;
 	u32 afe_status;
 	u32 phy_id;
+<<<<<<< HEAD
 
 	/* Clear DFX Status registers */
 	writel(0x0081000f, &ihost->scu_registers->afe.afe_dfx_master_control0);
@@ -1901,38 +2184,85 @@ static void sci_controller_afe_initialization(struct isci_host *ihost)
 		/* PM Rx Equalization Save, PM SPhy Rx Acknowledgement
 		 * Timer, PM Stagger Timer */
 		writel(0x0007BFFF, &ihost->scu_registers->afe.afe_pmsn_master_control2);
+=======
+	unsigned char cable_selection_mask = *to_cable_select(ihost);
+
+	/* Clear DFX Status registers */
+	writel(0x0081000f, &afe->afe_dfx_master_control0);
+	udelay(AFE_REGISTER_WRITE_DELAY);
+
+	if (is_b0(pdev) || is_c0(pdev) || is_c1(pdev)) {
+		/* PM Rx Equalization Save, PM SPhy Rx Acknowledgement
+		 * Timer, PM Stagger Timer
+		 */
+		writel(0x0007FFFF, &afe->afe_pmsn_master_control2);
+>>>>>>> refs/remotes/origin/cm-10.0
 		udelay(AFE_REGISTER_WRITE_DELAY);
 	}
 
 	/* Configure bias currents to normal */
 	if (is_a2(pdev))
+<<<<<<< HEAD
 		writel(0x00005A00, &ihost->scu_registers->afe.afe_bias_control);
 	else if (is_b0(pdev) || is_c0(pdev))
 		writel(0x00005F00, &ihost->scu_registers->afe.afe_bias_control);
+=======
+		writel(0x00005A00, &afe->afe_bias_control);
+	else if (is_b0(pdev) || is_c0(pdev))
+		writel(0x00005F00, &afe->afe_bias_control);
+	else if (is_c1(pdev))
+		writel(0x00005500, &afe->afe_bias_control);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	udelay(AFE_REGISTER_WRITE_DELAY);
 
 	/* Enable PLL */
+<<<<<<< HEAD
 	if (is_b0(pdev) || is_c0(pdev))
 		writel(0x80040A08, &ihost->scu_registers->afe.afe_pll_control0);
 	else
 		writel(0x80040908, &ihost->scu_registers->afe.afe_pll_control0);
+=======
+	if (is_a2(pdev))
+		writel(0x80040908, &afe->afe_pll_control0);
+	else if (is_b0(pdev) || is_c0(pdev))
+		writel(0x80040A08, &afe->afe_pll_control0);
+	else if (is_c1(pdev)) {
+		writel(0x80000B08, &afe->afe_pll_control0);
+		udelay(AFE_REGISTER_WRITE_DELAY);
+		writel(0x00000B08, &afe->afe_pll_control0);
+		udelay(AFE_REGISTER_WRITE_DELAY);
+		writel(0x80000B08, &afe->afe_pll_control0);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	udelay(AFE_REGISTER_WRITE_DELAY);
 
 	/* Wait for the PLL to lock */
 	do {
+<<<<<<< HEAD
 		afe_status = readl(&ihost->scu_registers->afe.afe_common_block_status);
+=======
+		afe_status = readl(&afe->afe_common_block_status);
+>>>>>>> refs/remotes/origin/cm-10.0
 		udelay(AFE_REGISTER_WRITE_DELAY);
 	} while ((afe_status & 0x00001000) == 0);
 
 	if (is_a2(pdev)) {
+<<<<<<< HEAD
 		/* Shorten SAS SNW lock time (RxLock timer value from 76 us to 50 us) */
 		writel(0x7bcc96ad, &ihost->scu_registers->afe.afe_pmsn_master_control0);
+=======
+		/* Shorten SAS SNW lock time (RxLock timer value from 76
+		 * us to 50 us)
+		 */
+		writel(0x7bcc96ad, &afe->afe_pmsn_master_control0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		udelay(AFE_REGISTER_WRITE_DELAY);
 	}
 
 	for (phy_id = 0; phy_id < SCI_MAX_PHYS; phy_id++) {
+<<<<<<< HEAD
 		const struct sci_phy_oem_params *oem_phy = &oem->phys[phy_id];
 
 		if (is_b0(pdev)) {
@@ -1982,11 +2312,78 @@ static void sci_controller_afe_initialization(struct isci_host *ihost)
 			 * Power up TX and RX out from power down (PWRDNTX and PWRDNRX)
 			 * & increase TX int & ext bias 20%....(0xe85c) */
 			writel(0x000001E4, &ihost->scu_registers->afe.scu_afe_xcvr[phy_id].afe_channel_control);
+=======
+		struct scu_afe_transceiver *xcvr = &afe->scu_afe_xcvr[phy_id];
+		const struct sci_phy_oem_params *oem_phy = &oem->phys[phy_id];
+		int cable_length_long =
+			is_long_cable(phy_id, cable_selection_mask);
+		int cable_length_medium =
+			is_medium_cable(phy_id, cable_selection_mask);
+
+		if (is_a2(pdev)) {
+			/* All defaults, except the Receive Word
+			 * Alignament/Comma Detect Enable....(0xe800)
+			 */
+			writel(0x00004512, &xcvr->afe_xcvr_control0);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			writel(0x0050100F, &xcvr->afe_xcvr_control1);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+		} else if (is_b0(pdev)) {
+			/* Configure transmitter SSC parameters */
+			writel(0x00030000, &xcvr->afe_tx_ssc_control);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+		} else if (is_c0(pdev)) {
+			/* Configure transmitter SSC parameters */
+			writel(0x00010202, &xcvr->afe_tx_ssc_control);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			/* All defaults, except the Receive Word
+			 * Alignament/Comma Detect Enable....(0xe800)
+			 */
+			writel(0x00014500, &xcvr->afe_xcvr_control0);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+		} else if (is_c1(pdev)) {
+			/* Configure transmitter SSC parameters */
+			writel(0x00010202, &xcvr->afe_tx_ssc_control);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			/* All defaults, except the Receive Word
+			 * Alignament/Comma Detect Enable....(0xe800)
+			 */
+			writel(0x0001C500, &xcvr->afe_xcvr_control0);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+		}
+
+		/* Power up TX and RX out from power down (PWRDNTX and
+		 * PWRDNRX) & increase TX int & ext bias 20%....(0xe85c)
+		 */
+		if (is_a2(pdev))
+			writel(0x000003F0, &xcvr->afe_channel_control);
+		else if (is_b0(pdev)) {
+			writel(0x000003D7, &xcvr->afe_channel_control);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			writel(0x000003D4, &xcvr->afe_channel_control);
+		} else if (is_c0(pdev)) {
+			writel(0x000001E7, &xcvr->afe_channel_control);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			writel(0x000001E4, &xcvr->afe_channel_control);
+		} else if (is_c1(pdev)) {
+			writel(cable_length_long ? 0x000002F7 : 0x000001F7,
+			       &xcvr->afe_channel_control);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			writel(cable_length_long ? 0x000002F4 : 0x000001F4,
+			       &xcvr->afe_channel_control);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		udelay(AFE_REGISTER_WRITE_DELAY);
 
 		if (is_a2(pdev)) {
 			/* Enable TX equalization (0xe824) */
+<<<<<<< HEAD
 			writel(0x00040000, &ihost->scu_registers->afe.scu_afe_xcvr[phy_id].afe_tx_control);
 			udelay(AFE_REGISTER_WRITE_DELAY);
 		}
@@ -1995,10 +2392,27 @@ static void sci_controller_afe_initialization(struct isci_host *ihost)
 		 * RDPI=0x0(RX Power On), RXOOBDETPDNC=0x0, TPD=0x0(TX Power On),
 		 * RDD=0x0(RX Detect Enabled) ....(0xe800) */
 		writel(0x00004100, &ihost->scu_registers->afe.scu_afe_xcvr[phy_id].afe_xcvr_control0);
+=======
+			writel(0x00040000, &xcvr->afe_tx_control);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+		}
+
+		if (is_a2(pdev) || is_b0(pdev))
+			/* RDPI=0x0(RX Power On), RXOOBDETPDNC=0x0,
+			 * TPD=0x0(TX Power On), RDD=0x0(RX Detect
+			 * Enabled) ....(0xe800)
+			 */
+			writel(0x00004100, &xcvr->afe_xcvr_control0);
+		else if (is_c0(pdev))
+			writel(0x00014100, &xcvr->afe_xcvr_control0);
+		else if (is_c1(pdev))
+			writel(0x0001C100, &xcvr->afe_xcvr_control0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		udelay(AFE_REGISTER_WRITE_DELAY);
 
 		/* Leave DFE/FFE on */
 		if (is_a2(pdev))
+<<<<<<< HEAD
 			writel(0x3F11103F, &ihost->scu_registers->afe.scu_afe_xcvr[phy_id].afe_rx_ssc_control0);
 		else if (is_b0(pdev)) {
 			writel(0x3F11103F, &ihost->scu_registers->afe.scu_afe_xcvr[phy_id].afe_rx_ssc_control0);
@@ -2014,10 +2428,44 @@ static void sci_controller_afe_initialization(struct isci_host *ihost)
 
 			/* Enable TX equalization (0xe824) */
 			writel(0x00040000, &ihost->scu_registers->afe.scu_afe_xcvr[phy_id].afe_tx_control);
+=======
+			writel(0x3F11103F, &xcvr->afe_rx_ssc_control0);
+		else if (is_b0(pdev)) {
+			writel(0x3F11103F, &xcvr->afe_rx_ssc_control0);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+			/* Enable TX equalization (0xe824) */
+			writel(0x00040000, &xcvr->afe_tx_control);
+		} else if (is_c0(pdev)) {
+			writel(0x01400C0F, &xcvr->afe_rx_ssc_control1);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			writel(0x3F6F103F, &xcvr->afe_rx_ssc_control0);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			/* Enable TX equalization (0xe824) */
+			writel(0x00040000, &xcvr->afe_tx_control);
+		} else if (is_c1(pdev)) {
+			writel(cable_length_long ? 0x01500C0C :
+			       cable_length_medium ? 0x01400C0D : 0x02400C0D,
+			       &xcvr->afe_xcvr_control1);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			writel(0x000003E0, &xcvr->afe_dfx_rx_control1);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			writel(cable_length_long ? 0x33091C1F :
+			       cable_length_medium ? 0x3315181F : 0x2B17161F,
+			       &xcvr->afe_rx_ssc_control0);
+			udelay(AFE_REGISTER_WRITE_DELAY);
+
+			/* Enable TX equalization (0xe824) */
+			writel(0x00040000, &xcvr->afe_tx_control);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		udelay(AFE_REGISTER_WRITE_DELAY);
 
+<<<<<<< HEAD
 		writel(oem_phy->afe_tx_amp_control0,
 			&ihost->scu_registers->afe.scu_afe_xcvr[phy_id].afe_tx_amp_control0);
 		udelay(AFE_REGISTER_WRITE_DELAY);
@@ -2032,11 +2480,27 @@ static void sci_controller_afe_initialization(struct isci_host *ihost)
 
 		writel(oem_phy->afe_tx_amp_control3,
 			&ihost->scu_registers->afe.scu_afe_xcvr[phy_id].afe_tx_amp_control3);
+=======
+		writel(oem_phy->afe_tx_amp_control0, &xcvr->afe_tx_amp_control0);
+		udelay(AFE_REGISTER_WRITE_DELAY);
+
+		writel(oem_phy->afe_tx_amp_control1, &xcvr->afe_tx_amp_control1);
+		udelay(AFE_REGISTER_WRITE_DELAY);
+
+		writel(oem_phy->afe_tx_amp_control2, &xcvr->afe_tx_amp_control2);
+		udelay(AFE_REGISTER_WRITE_DELAY);
+
+		writel(oem_phy->afe_tx_amp_control3, &xcvr->afe_tx_amp_control3);
+>>>>>>> refs/remotes/origin/cm-10.0
 		udelay(AFE_REGISTER_WRITE_DELAY);
 	}
 
 	/* Transfer control to the PEs */
+<<<<<<< HEAD
 	writel(0x00010f00, &ihost->scu_registers->afe.afe_dfx_master_control0);
+=======
+	writel(0x00010f00, &afe->afe_dfx_master_control0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	udelay(AFE_REGISTER_WRITE_DELAY);
 }
 
@@ -2357,6 +2821,15 @@ int isci_host_init(struct isci_host *ihost)
 	for (i = 0; i < SCI_MAX_PHYS; i++)
 		isci_phy_init(&ihost->phys[i], ihost, i);
 
+<<<<<<< HEAD
+=======
+	/* enable sgpio */
+	writel(1, &ihost->scu_registers->peg0.sgpio.interface_control);
+	for (i = 0; i < isci_gpio_count(ihost); i++)
+		writel(SGPIO_HW_CONTROL, &ihost->scu_registers->peg0.sgpio.output_data_select[i]);
+	writel(0, &ihost->scu_registers->peg0.sgpio.vendor_specific_code);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < SCI_MAX_REMOTE_DEVICES; i++) {
 		struct isci_remote_device *idev = &ihost->devices[i];
 
@@ -2752,3 +3225,59 @@ enum sci_task_status sci_controller_start_task(struct isci_host *ihost,
 
 	return status;
 }
+<<<<<<< HEAD
+=======
+
+static int sci_write_gpio_tx_gp(struct isci_host *ihost, u8 reg_index, u8 reg_count, u8 *write_data)
+{
+	int d;
+
+	/* no support for TX_GP_CFG */
+	if (reg_index == 0)
+		return -EINVAL;
+
+	for (d = 0; d < isci_gpio_count(ihost); d++) {
+		u32 val = 0x444; /* all ODx.n clear */
+		int i;
+
+		for (i = 0; i < 3; i++) {
+			int bit = (i << 2) + 2;
+
+			bit = try_test_sas_gpio_gp_bit(to_sas_gpio_od(d, i),
+						       write_data, reg_index,
+						       reg_count);
+			if (bit < 0)
+				break;
+
+			/* if od is set, clear the 'invert' bit */
+			val &= ~(bit << ((i << 2) + 2));
+		}
+
+		if (i < 3)
+			break;
+		writel(val, &ihost->scu_registers->peg0.sgpio.output_data_select[d]);
+	}
+
+	/* unless reg_index is > 1, we should always be able to write at
+	 * least one register
+	 */
+	return d > 0;
+}
+
+int isci_gpio_write(struct sas_ha_struct *sas_ha, u8 reg_type, u8 reg_index,
+		    u8 reg_count, u8 *write_data)
+{
+	struct isci_host *ihost = sas_ha->lldd_ha;
+	int written;
+
+	switch (reg_type) {
+	case SAS_GPIO_REG_TX_GP:
+		written = sci_write_gpio_tx_gp(ihost, reg_index, reg_count, write_data);
+		break;
+	default:
+		written = -EINVAL;
+	}
+
+	return written;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

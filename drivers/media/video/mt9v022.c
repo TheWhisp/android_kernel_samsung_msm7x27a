@@ -13,10 +13,20 @@
 #include <linux/i2c.h>
 #include <linux/delay.h>
 #include <linux/log2.h>
+<<<<<<< HEAD
 
 #include <media/v4l2-subdev.h>
 #include <media/v4l2-chip-ident.h>
 #include <media/soc_camera.h>
+=======
+#include <linux/module.h>
+
+#include <media/soc_camera.h>
+#include <media/soc_mediabus.h>
+#include <media/v4l2-subdev.h>
+#include <media/v4l2-chip-ident.h>
+#include <media/v4l2-ctrls.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * mt9v022 i2c address 0x48, 0x4c, 0x58, 0x5c
@@ -100,6 +110,20 @@ static const struct mt9v022_datafmt mt9v022_monochrome_fmts[] = {
 
 struct mt9v022 {
 	struct v4l2_subdev subdev;
+<<<<<<< HEAD
+=======
+	struct v4l2_ctrl_handler hdl;
+	struct {
+		/* exposure/auto-exposure cluster */
+		struct v4l2_ctrl *autoexposure;
+		struct v4l2_ctrl *exposure;
+	};
+	struct {
+		/* gain/auto-gain cluster */
+		struct v4l2_ctrl *autogain;
+		struct v4l2_ctrl *gain;
+	};
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct v4l2_rect rect;	/* Sensor window */
 	const struct mt9v022_datafmt *fmt;
 	const struct mt9v022_datafmt *fmts;
@@ -116,14 +140,22 @@ static struct mt9v022 *to_mt9v022(const struct i2c_client *client)
 
 static int reg_read(struct i2c_client *client, const u8 reg)
 {
+<<<<<<< HEAD
 	s32 data = i2c_smbus_read_word_data(client, reg);
 	return data < 0 ? data : swab16(data);
+=======
+	return i2c_smbus_read_word_swapped(client, reg);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int reg_write(struct i2c_client *client, const u8 reg,
 		     const u16 data)
 {
+<<<<<<< HEAD
 	return i2c_smbus_write_word_data(client, reg, swab16(data));
+=======
+	return i2c_smbus_write_word_swapped(client, reg, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int reg_set(struct i2c_client *client, const u8 reg,
@@ -178,6 +210,11 @@ static int mt9v022_init(struct i2c_client *client)
 		ret = reg_clear(client, MT9V022_BLACK_LEVEL_CALIB_CTRL, 1);
 	if (!ret)
 		ret = reg_write(client, MT9V022_DIGITAL_TEST_PATTERN, 0);
+<<<<<<< HEAD
+=======
+	if (!ret)
+		return v4l2_ctrl_handler_setup(&mt9v022->hdl);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -199,6 +236,7 @@ static int mt9v022_s_stream(struct v4l2_subdev *sd, int enable)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int mt9v022_set_bus_param(struct soc_camera_device *icd,
 				 unsigned long flags)
 {
@@ -271,6 +309,8 @@ static unsigned long mt9v022_query_bus_param(struct soc_camera_device *icd)
 	return soc_camera_apply_sensor_flags(icl, flags);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int mt9v022_s_crop(struct v4l2_subdev *sd, struct v4l2_crop *a)
 {
 	struct i2c_client *client = v4l2_get_subdevdata(sd);
@@ -389,7 +429,11 @@ static int mt9v022_s_fmt(struct v4l2_subdev *sd,
 
 	/*
 	 * The caller provides a supported format, as verified per call to
+<<<<<<< HEAD
 	 * icd->try_fmt(), datawidth is from our supported format list
+=======
+	 * .try_mbus_fmt(), datawidth is from our supported format list
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	switch (mf->code) {
 	case V4L2_MBUS_FMT_Y8_1X8:
@@ -502,6 +546,7 @@ static int mt9v022_s_register(struct v4l2_subdev *sd,
 }
 #endif
 
+<<<<<<< HEAD
 static const struct v4l2_queryctrl mt9v022_controls[] = {
 	{
 		.id		= V4L2_CID_VFLIP,
@@ -598,19 +643,42 @@ static int mt9v022_g_ctrl(struct v4l2_subdev *sd, struct v4l2_control *ctrl)
 		ctrl->value = !!(data & 0x2);
 		break;
 	case V4L2_CID_GAIN:
+=======
+static int mt9v022_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+{
+	struct mt9v022 *mt9v022 = container_of(ctrl->handler,
+					       struct mt9v022, hdl);
+	struct v4l2_subdev *sd = &mt9v022->subdev;
+	struct i2c_client *client = v4l2_get_subdevdata(sd);
+	struct v4l2_ctrl *gain = mt9v022->gain;
+	struct v4l2_ctrl *exp = mt9v022->exposure;
+	unsigned long range;
+	int data;
+
+	switch (ctrl->id) {
+	case V4L2_CID_AUTOGAIN:
+>>>>>>> refs/remotes/origin/cm-10.0
 		data = reg_read(client, MT9V022_ANALOG_GAIN);
 		if (data < 0)
 			return -EIO;
 
+<<<<<<< HEAD
 		range = qctrl->maximum - qctrl->minimum;
 		ctrl->value = ((data - 16) * range + 24) / 48 + qctrl->minimum;
 
 		break;
 	case V4L2_CID_EXPOSURE:
+=======
+		range = gain->maximum - gain->minimum;
+		gain->val = ((data - 16) * range + 24) / 48 + gain->minimum;
+		return 0;
+	case V4L2_CID_EXPOSURE_AUTO:
+>>>>>>> refs/remotes/origin/cm-10.0
 		data = reg_read(client, MT9V022_TOTAL_SHUTTER_WIDTH);
 		if (data < 0)
 			return -EIO;
 
+<<<<<<< HEAD
 		range = qctrl->maximum - qctrl->minimum;
 		ctrl->value = ((data - 1) * range + 239) / 479 + qctrl->minimum;
 
@@ -632,19 +700,46 @@ static int mt9v022_s_ctrl(struct v4l2_subdev *sd, struct v4l2_control *ctrl)
 	switch (ctrl->id) {
 	case V4L2_CID_VFLIP:
 		if (ctrl->value)
+=======
+		range = exp->maximum - exp->minimum;
+		exp->val = ((data - 1) * range + 239) / 479 + exp->minimum;
+		return 0;
+	}
+	return -EINVAL;
+}
+
+static int mt9v022_s_ctrl(struct v4l2_ctrl *ctrl)
+{
+	struct mt9v022 *mt9v022 = container_of(ctrl->handler,
+					       struct mt9v022, hdl);
+	struct v4l2_subdev *sd = &mt9v022->subdev;
+	struct i2c_client *client = v4l2_get_subdevdata(sd);
+	int data;
+
+	switch (ctrl->id) {
+	case V4L2_CID_VFLIP:
+		if (ctrl->val)
+>>>>>>> refs/remotes/origin/cm-10.0
 			data = reg_set(client, MT9V022_READ_MODE, 0x10);
 		else
 			data = reg_clear(client, MT9V022_READ_MODE, 0x10);
 		if (data < 0)
 			return -EIO;
+<<<<<<< HEAD
 		break;
 	case V4L2_CID_HFLIP:
 		if (ctrl->value)
+=======
+		return 0;
+	case V4L2_CID_HFLIP:
+		if (ctrl->val)
+>>>>>>> refs/remotes/origin/cm-10.0
 			data = reg_set(client, MT9V022_READ_MODE, 0x20);
 		else
 			data = reg_clear(client, MT9V022_READ_MODE, 0x20);
 		if (data < 0)
 			return -EIO;
+<<<<<<< HEAD
 		break;
 	case V4L2_CID_GAIN:
 		/* mt9v022 has minimum == default */
@@ -657,15 +752,37 @@ static int mt9v022_s_ctrl(struct v4l2_subdev *sd, struct v4l2_control *ctrl)
 					      48 + range / 2) / range + 16;
 			if (gain >= 32)
 				gain &= ~1;
+=======
+		return 0;
+	case V4L2_CID_AUTOGAIN:
+		if (ctrl->val) {
+			if (reg_set(client, MT9V022_AEC_AGC_ENABLE, 0x2) < 0)
+				return -EIO;
+		} else {
+			struct v4l2_ctrl *gain = mt9v022->gain;
+			/* mt9v022 has minimum == default */
+			unsigned long range = gain->maximum - gain->minimum;
+			/* Valid values 16 to 64, 32 to 64 must be even. */
+			unsigned long gain_val = ((gain->val - gain->minimum) *
+					      48 + range / 2) / range + 16;
+
+			if (gain_val >= 32)
+				gain_val &= ~1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * The user wants to set gain manually, hope, she
 			 * knows, what she's doing... Switch AGC off.
 			 */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (reg_clear(client, MT9V022_AEC_AGC_ENABLE, 0x2) < 0)
 				return -EIO;
 
 			dev_dbg(&client->dev, "Setting gain from %d to %lu\n",
+<<<<<<< HEAD
 				reg_read(client, MT9V022_ANALOG_GAIN), gain);
 			if (reg_write(client, MT9V022_ANALOG_GAIN, gain) < 0)
 				return -EIO;
@@ -679,10 +796,27 @@ static int mt9v022_s_ctrl(struct v4l2_subdev *sd, struct v4l2_control *ctrl)
 			unsigned long range = qctrl->maximum - qctrl->minimum;
 			unsigned long shutter = ((ctrl->value - qctrl->minimum) *
 						 479 + range / 2) / range + 1;
+=======
+				reg_read(client, MT9V022_ANALOG_GAIN), gain_val);
+			if (reg_write(client, MT9V022_ANALOG_GAIN, gain_val) < 0)
+				return -EIO;
+		}
+		return 0;
+	case V4L2_CID_EXPOSURE_AUTO:
+		if (ctrl->val == V4L2_EXPOSURE_AUTO) {
+			data = reg_set(client, MT9V022_AEC_AGC_ENABLE, 0x1);
+		} else {
+			struct v4l2_ctrl *exp = mt9v022->exposure;
+			unsigned long range = exp->maximum - exp->minimum;
+			unsigned long shutter = ((exp->val - exp->minimum) *
+					479 + range / 2) / range + 1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * The user wants to set shutter width manually, hope,
 			 * she knows, what she's doing... Switch AEC off.
 			 */
+<<<<<<< HEAD
 
 			if (reg_clear(client, MT9V022_AEC_AGC_ENABLE, 0x1) < 0)
 				return -EIO;
@@ -713,25 +847,50 @@ static int mt9v022_s_ctrl(struct v4l2_subdev *sd, struct v4l2_control *ctrl)
 		break;
 	}
 	return 0;
+=======
+			data = reg_clear(client, MT9V022_AEC_AGC_ENABLE, 0x1);
+			if (data < 0)
+				return -EIO;
+			dev_dbg(&client->dev, "Shutter width from %d to %lu\n",
+					reg_read(client, MT9V022_TOTAL_SHUTTER_WIDTH),
+					shutter);
+			if (reg_write(client, MT9V022_TOTAL_SHUTTER_WIDTH,
+						shutter) < 0)
+				return -EIO;
+		}
+		return 0;
+	}
+	return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
  * Interface active, can use i2c. If it fails, it can indeed mean, that
  * this wasn't our capture interface, so, we wait for the right one
  */
+<<<<<<< HEAD
 static int mt9v022_video_probe(struct soc_camera_device *icd,
 			       struct i2c_client *client)
 {
 	struct mt9v022 *mt9v022 = to_mt9v022(client);
 	struct soc_camera_link *icl = to_soc_camera_link(icd);
+=======
+static int mt9v022_video_probe(struct i2c_client *client)
+{
+	struct mt9v022 *mt9v022 = to_mt9v022(client);
+	struct soc_camera_link *icl = soc_camera_i2c_to_link(client);
+>>>>>>> refs/remotes/origin/cm-10.0
 	s32 data;
 	int ret;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (!icd->dev.parent ||
 	    to_soc_camera_host(icd->dev.parent)->nr != icd->iface)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Read out the chip version register */
 	data = reg_read(client, MT9V022_CHIP_VERSION);
 
@@ -805,6 +964,7 @@ ei2c:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void mt9v022_video_remove(struct soc_camera_device *icd)
 {
 	struct soc_camera_link *icl = to_soc_camera_link(icd);
@@ -815,6 +975,8 @@ static void mt9v022_video_remove(struct soc_camera_device *icd)
 		icl->free_bus(icl);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int mt9v022_g_skip_top_lines(struct v4l2_subdev *sd, u32 *lines)
 {
 	struct i2c_client *client = v4l2_get_subdevdata(sd);
@@ -825,9 +987,18 @@ static int mt9v022_g_skip_top_lines(struct v4l2_subdev *sd, u32 *lines)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct v4l2_subdev_core_ops mt9v022_subdev_core_ops = {
 	.g_ctrl		= mt9v022_g_ctrl,
 	.s_ctrl		= mt9v022_s_ctrl,
+=======
+static const struct v4l2_ctrl_ops mt9v022_ctrl_ops = {
+	.g_volatile_ctrl = mt9v022_g_volatile_ctrl,
+	.s_ctrl = mt9v022_s_ctrl,
+};
+
+static struct v4l2_subdev_core_ops mt9v022_subdev_core_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.g_chip_ident	= mt9v022_g_chip_ident,
 #ifdef CONFIG_VIDEO_ADV_DEBUG
 	.g_register	= mt9v022_g_register,
@@ -848,6 +1019,75 @@ static int mt9v022_enum_fmt(struct v4l2_subdev *sd, unsigned int index,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int mt9v022_g_mbus_config(struct v4l2_subdev *sd,
+				struct v4l2_mbus_config *cfg)
+{
+	struct i2c_client *client = v4l2_get_subdevdata(sd);
+	struct soc_camera_link *icl = soc_camera_i2c_to_link(client);
+
+	cfg->flags = V4L2_MBUS_MASTER | V4L2_MBUS_SLAVE |
+		V4L2_MBUS_PCLK_SAMPLE_RISING | V4L2_MBUS_PCLK_SAMPLE_FALLING |
+		V4L2_MBUS_HSYNC_ACTIVE_HIGH | V4L2_MBUS_HSYNC_ACTIVE_LOW |
+		V4L2_MBUS_VSYNC_ACTIVE_HIGH | V4L2_MBUS_VSYNC_ACTIVE_LOW |
+		V4L2_MBUS_DATA_ACTIVE_HIGH;
+	cfg->type = V4L2_MBUS_PARALLEL;
+	cfg->flags = soc_camera_apply_board_flags(icl, cfg);
+
+	return 0;
+}
+
+static int mt9v022_s_mbus_config(struct v4l2_subdev *sd,
+				 const struct v4l2_mbus_config *cfg)
+{
+	struct i2c_client *client = v4l2_get_subdevdata(sd);
+	struct soc_camera_link *icl = soc_camera_i2c_to_link(client);
+	struct mt9v022 *mt9v022 = to_mt9v022(client);
+	unsigned long flags = soc_camera_apply_board_flags(icl, cfg);
+	unsigned int bps = soc_mbus_get_fmtdesc(mt9v022->fmt->code)->bits_per_sample;
+	int ret;
+	u16 pixclk = 0;
+
+	if (icl->set_bus_param) {
+		ret = icl->set_bus_param(icl, 1 << (bps - 1));
+		if (ret)
+			return ret;
+	} else if (bps != 10) {
+		/*
+		 * Without board specific bus width settings we only support the
+		 * sensors native bus width
+		 */
+		return -EINVAL;
+	}
+
+	if (flags & V4L2_MBUS_PCLK_SAMPLE_FALLING)
+		pixclk |= 0x10;
+
+	if (!(flags & V4L2_MBUS_HSYNC_ACTIVE_HIGH))
+		pixclk |= 0x1;
+
+	if (!(flags & V4L2_MBUS_VSYNC_ACTIVE_HIGH))
+		pixclk |= 0x2;
+
+	ret = reg_write(client, MT9V022_PIXCLK_FV_LV, pixclk);
+	if (ret < 0)
+		return ret;
+
+	if (!(flags & V4L2_MBUS_MASTER))
+		mt9v022->chip_control &= ~0x8;
+
+	ret = reg_write(client, MT9V022_CHIP_CONTROL, mt9v022->chip_control);
+	if (ret < 0)
+		return ret;
+
+	dev_dbg(&client->dev, "Calculated pixclk 0x%x, chip control 0x%x\n",
+		pixclk, mt9v022->chip_control);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct v4l2_subdev_video_ops mt9v022_subdev_video_ops = {
 	.s_stream	= mt9v022_s_stream,
 	.s_mbus_fmt	= mt9v022_s_fmt,
@@ -857,6 +1097,11 @@ static struct v4l2_subdev_video_ops mt9v022_subdev_video_ops = {
 	.g_crop		= mt9v022_g_crop,
 	.cropcap	= mt9v022_cropcap,
 	.enum_mbus_fmt	= mt9v022_enum_fmt,
+<<<<<<< HEAD
+=======
+	.g_mbus_config	= mt9v022_g_mbus_config,
+	.s_mbus_config	= mt9v022_s_mbus_config,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct v4l2_subdev_sensor_ops mt9v022_subdev_sensor_ops = {
@@ -873,6 +1118,7 @@ static int mt9v022_probe(struct i2c_client *client,
 			 const struct i2c_device_id *did)
 {
 	struct mt9v022 *mt9v022;
+<<<<<<< HEAD
 	struct soc_camera_device *icd = client->dev.platform_data;
 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
 	struct soc_camera_link *icl;
@@ -884,6 +1130,12 @@ static int mt9v022_probe(struct i2c_client *client,
 	}
 
 	icl = to_soc_camera_link(icd);
+=======
+	struct soc_camera_link *icl = soc_camera_i2c_to_link(client);
+	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
+	int ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!icl) {
 		dev_err(&client->dev, "MT9V022 driver needs platform data\n");
 		return -EINVAL;
@@ -900,10 +1152,46 @@ static int mt9v022_probe(struct i2c_client *client,
 		return -ENOMEM;
 
 	v4l2_i2c_subdev_init(&mt9v022->subdev, client, &mt9v022_subdev_ops);
+<<<<<<< HEAD
 
 	mt9v022->chip_control = MT9V022_CHIP_CONTROL_DEFAULT;
 
 	icd->ops		= &mt9v022_ops;
+=======
+	v4l2_ctrl_handler_init(&mt9v022->hdl, 6);
+	v4l2_ctrl_new_std(&mt9v022->hdl, &mt9v022_ctrl_ops,
+			V4L2_CID_VFLIP, 0, 1, 1, 0);
+	v4l2_ctrl_new_std(&mt9v022->hdl, &mt9v022_ctrl_ops,
+			V4L2_CID_HFLIP, 0, 1, 1, 0);
+	mt9v022->autogain = v4l2_ctrl_new_std(&mt9v022->hdl, &mt9v022_ctrl_ops,
+			V4L2_CID_AUTOGAIN, 0, 1, 1, 1);
+	mt9v022->gain = v4l2_ctrl_new_std(&mt9v022->hdl, &mt9v022_ctrl_ops,
+			V4L2_CID_GAIN, 0, 127, 1, 64);
+
+	/*
+	 * Simulated autoexposure. If enabled, we calculate shutter width
+	 * ourselves in the driver based on vertical blanking and frame width
+	 */
+	mt9v022->autoexposure = v4l2_ctrl_new_std_menu(&mt9v022->hdl,
+			&mt9v022_ctrl_ops, V4L2_CID_EXPOSURE_AUTO, 1, 0,
+			V4L2_EXPOSURE_AUTO);
+	mt9v022->exposure = v4l2_ctrl_new_std(&mt9v022->hdl, &mt9v022_ctrl_ops,
+			V4L2_CID_EXPOSURE, 1, 255, 1, 255);
+
+	mt9v022->subdev.ctrl_handler = &mt9v022->hdl;
+	if (mt9v022->hdl.error) {
+		int err = mt9v022->hdl.error;
+
+		kfree(mt9v022);
+		return err;
+	}
+	v4l2_ctrl_auto_cluster(2, &mt9v022->autoexposure,
+				V4L2_EXPOSURE_MANUAL, true);
+	v4l2_ctrl_auto_cluster(2, &mt9v022->autogain, 0, true);
+
+	mt9v022->chip_control = MT9V022_CHIP_CONTROL_DEFAULT;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * MT9V022 _really_ corrupts the first read out line.
 	 * TODO: verify on i.MX31
@@ -914,9 +1202,15 @@ static int mt9v022_probe(struct i2c_client *client,
 	mt9v022->rect.width	= MT9V022_MAX_WIDTH;
 	mt9v022->rect.height	= MT9V022_MAX_HEIGHT;
 
+<<<<<<< HEAD
 	ret = mt9v022_video_probe(icd, client);
 	if (ret) {
 		icd->ops = NULL;
+=======
+	ret = mt9v022_video_probe(client);
+	if (ret) {
+		v4l2_ctrl_handler_free(&mt9v022->hdl);
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(mt9v022);
 	}
 
@@ -926,10 +1220,19 @@ static int mt9v022_probe(struct i2c_client *client,
 static int mt9v022_remove(struct i2c_client *client)
 {
 	struct mt9v022 *mt9v022 = to_mt9v022(client);
+<<<<<<< HEAD
 	struct soc_camera_device *icd = client->dev.platform_data;
 
 	icd->ops = NULL;
 	mt9v022_video_remove(icd);
+=======
+	struct soc_camera_link *icl = soc_camera_i2c_to_link(client);
+
+	v4l2_device_unregister_subdev(&mt9v022->subdev);
+	if (icl->free_bus)
+		icl->free_bus(icl);
+	v4l2_ctrl_handler_free(&mt9v022->hdl);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(mt9v022);
 
 	return 0;
@@ -949,6 +1252,7 @@ static struct i2c_driver mt9v022_i2c_driver = {
 	.id_table	= mt9v022_id,
 };
 
+<<<<<<< HEAD
 static int __init mt9v022_mod_init(void)
 {
 	return i2c_add_driver(&mt9v022_i2c_driver);
@@ -961,6 +1265,9 @@ static void __exit mt9v022_mod_exit(void)
 
 module_init(mt9v022_mod_init);
 module_exit(mt9v022_mod_exit);
+=======
+module_i2c_driver(mt9v022_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Micron MT9V022 Camera driver");
 MODULE_AUTHOR("Guennadi Liakhovetski <kernel@pengutronix.de>");

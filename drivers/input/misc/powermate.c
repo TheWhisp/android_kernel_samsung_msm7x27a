@@ -441,6 +441,7 @@ static struct usb_driver powermate_driver = {
         .id_table =     powermate_devices,
 };
 
+<<<<<<< HEAD
 static int __init powermate_init(void)
 {
 	return usb_register(&powermate_driver);
@@ -453,6 +454,9 @@ static void __exit powermate_cleanup(void)
 
 module_init(powermate_init);
 module_exit(powermate_cleanup);
+=======
+module_usb_driver(powermate_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR( "William R Sowerbutts" );
 MODULE_DESCRIPTION( "Griffin Technology, Inc PowerMate driver" );

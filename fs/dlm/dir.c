@@ -290,7 +290,10 @@ int dlm_recover_directory(struct dlm_ls *ls)
 
  out_status:
 	error = 0;
+<<<<<<< HEAD
 	dlm_set_recover_status(ls, DLM_RS_DIR);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	log_debug(ls, "dlm_recover_directory %d entries", count);
  out_free:
 	kfree(last_name);
@@ -352,11 +355,34 @@ int dlm_dir_lookup(struct dlm_ls *ls, int nodeid, char *name, int namelen,
 static struct dlm_rsb *find_rsb_root(struct dlm_ls *ls, char *name, int len)
 {
 	struct dlm_rsb *r;
+<<<<<<< HEAD
+=======
+	uint32_t hash, bucket;
+	int rv;
+
+	hash = jhash(name, len, 0);
+	bucket = hash & (ls->ls_rsbtbl_size - 1);
+
+	spin_lock(&ls->ls_rsbtbl[bucket].lock);
+	rv = dlm_search_rsb_tree(&ls->ls_rsbtbl[bucket].keep, name, len, 0, &r);
+	if (rv)
+		rv = dlm_search_rsb_tree(&ls->ls_rsbtbl[bucket].toss,
+					 name, len, 0, &r);
+	spin_unlock(&ls->ls_rsbtbl[bucket].lock);
+
+	if (!rv)
+		return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	down_read(&ls->ls_root_sem);
 	list_for_each_entry(r, &ls->ls_root_list, res_root_list) {
 		if (len == r->res_length && !memcmp(name, r->res_name, len)) {
 			up_read(&ls->ls_root_sem);
+<<<<<<< HEAD
+=======
+			log_error(ls, "find_rsb_root revert to root_list %s",
+				  r->res_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return r;
 		}
 	}

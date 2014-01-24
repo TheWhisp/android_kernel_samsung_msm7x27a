@@ -34,7 +34,11 @@ MODULE_DESCRIPTION("uPD64083 driver");
 MODULE_AUTHOR("T. Adachi, Takeru KOMORIYA, Hans Verkuil");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(debug, bool, 0644);
 
 MODULE_PARM_DESC(debug, "Debug level (0-1)");
@@ -243,6 +247,7 @@ static struct i2c_driver upd64083_driver = {
 	.id_table	= upd64083_id,
 };
 
+<<<<<<< HEAD
 static __init int init_upd64083(void)
 {
 	return i2c_add_driver(&upd64083_driver);
@@ -255,3 +260,6 @@ static __exit void exit_upd64083(void)
 
 module_init(init_upd64083);
 module_exit(exit_upd64083);
+=======
+module_i2c_driver(upd64083_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

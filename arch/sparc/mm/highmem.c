@@ -24,12 +24,20 @@
  */
 #include <linux/mm.h>
 #include <linux/highmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgalloc.h>
 #include <asm/cacheflush.h>
 #include <asm/tlbflush.h>
 #include <asm/fixmap.h>
 
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
+=======
+void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long vaddr;
 	long idx, type;
@@ -63,7 +71,11 @@ void *__kmap_atomic(struct page *page)
 
 	return (void*) vaddr;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kmap_atomic);
+=======
+EXPORT_SYMBOL(kmap_atomic);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __kunmap_atomic(void *kvaddr)
 {

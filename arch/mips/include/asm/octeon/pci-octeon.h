@@ -56,7 +56,12 @@ enum octeon_dma_bar_type {
 	OCTEON_DMA_BAR_TYPE_INVALID,
 	OCTEON_DMA_BAR_TYPE_SMALL,
 	OCTEON_DMA_BAR_TYPE_BIG,
+<<<<<<< HEAD
 	OCTEON_DMA_BAR_TYPE_PCIE
+=======
+	OCTEON_DMA_BAR_TYPE_PCIE,
+	OCTEON_DMA_BAR_TYPE_PCIE2
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*

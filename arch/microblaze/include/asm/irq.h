@@ -9,6 +9,7 @@
 #ifndef _ASM_MICROBLAZE_IRQ_H
 #define _ASM_MICROBLAZE_IRQ_H
 
+<<<<<<< HEAD
 #define NR_IRQS 32
 #include <asm-generic/irq.h>
 
@@ -48,5 +49,15 @@ struct irq_host;
  */
 extern unsigned int irq_create_mapping(struct irq_host *host,
 					irq_hw_number_t hwirq);
+=======
+#define NR_IRQS		(32 + 1)
+#include <asm-generic/irq.h>
+
+struct pt_regs;
+extern void do_IRQ(struct pt_regs *regs);
+
+/* should be defined in each interrupt controller driver */
+extern unsigned int get_irq(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _ASM_MICROBLAZE_IRQ_H */

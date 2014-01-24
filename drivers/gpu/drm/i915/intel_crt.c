@@ -24,6 +24,10 @@
  *	Eric Anholt <eric@anholt.net>
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/dmi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/i2c.h>
 #include <linux/slab.h>
 #include "drmP.h"
@@ -69,7 +73,11 @@ static void intel_crt_dpms(struct drm_encoder *encoder, int mode)
 	temp &= ~(ADPA_HSYNC_CNTL_DISABLE | ADPA_VSYNC_CNTL_DISABLE);
 	temp &= ~ADPA_DAC_ENABLE;
 
+<<<<<<< HEAD
 	switch(mode) {
+=======
+	switch (mode) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case DRM_MODE_DPMS_ON:
 		temp |= ADPA_DAC_ENABLE;
 		break;
@@ -152,6 +160,7 @@ static void intel_crt_mode_set(struct drm_encoder *encoder,
 	if (adjusted_mode->flags & DRM_MODE_FLAG_PVSYNC)
 		adpa |= ADPA_VSYNC_ACTIVE_HIGH;
 
+<<<<<<< HEAD
 	if (intel_crtc->pipe == 0) {
 		if (HAS_PCH_CPT(dev))
 			adpa |= PORT_TRANS_A_SEL_CPT;
@@ -163,6 +172,15 @@ static void intel_crt_mode_set(struct drm_encoder *encoder,
 		else
 			adpa |= ADPA_PIPE_B_SELECT;
 	}
+=======
+	/* For CPT allow 3 pipe config, for others just use A or B */
+	if (HAS_PCH_CPT(dev))
+		adpa |= PORT_TRANS_SEL_CPT(intel_crtc->pipe);
+	else if (intel_crtc->pipe == 0)
+		adpa |= ADPA_PIPE_A_SELECT;
+	else
+		adpa |= ADPA_PIPE_B_SELECT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!HAS_PCH_SPLIT(dev))
 		I915_WRITE(BCLRPAT(intel_crtc->pipe), 0);
@@ -269,6 +287,39 @@ static bool intel_crt_detect_hotplug(struct drm_connector *connector)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static struct edid *intel_crt_get_edid(struct drm_connector *connector,
+				struct i2c_adapter *i2c)
+{
+	struct edid *edid;
+
+	edid = drm_get_edid(connector, i2c);
+
+	if (!edid && !intel_gmbus_is_forced_bit(i2c)) {
+		DRM_DEBUG_KMS("CRT GMBUS EDID read failed, retry using GPIO bit-banging\n");
+		intel_gmbus_force_bit(i2c, true);
+		edid = drm_get_edid(connector, i2c);
+		intel_gmbus_force_bit(i2c, false);
+	}
+
+	return edid;
+}
+
+/* local version of intel_ddc_get_modes() to use intel_crt_get_edid() */
+static int intel_crt_ddc_get_modes(struct drm_connector *connector,
+				struct i2c_adapter *adapter)
+{
+	struct edid *edid;
+
+	edid = intel_crt_get_edid(connector, adapter);
+	if (!edid)
+		return 0;
+
+	return intel_connector_update_modes(connector, edid);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static bool intel_crt_detect_ddc(struct drm_connector *connector)
 {
 	struct intel_crt *crt = intel_attached_crt(connector);
@@ -282,7 +333,11 @@ static bool intel_crt_detect_ddc(struct drm_connector *connector)
 		struct edid *edid;
 		bool is_digital = false;
 
+<<<<<<< HEAD
 		edid = drm_get_edid(connector,
+=======
+		edid = intel_crt_get_edid(connector,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&dev_priv->gmbus[dev_priv->crt_ddc_pin].adapter);
 		/*
 		 * This may be a DVI-I connector with a shared DDC
@@ -433,8 +488,13 @@ intel_crt_detect(struct drm_connector *connector, bool force)
 {
 	struct drm_device *dev = connector->dev;
 	struct intel_crt *crt = intel_attached_crt(connector);
+<<<<<<< HEAD
 	struct drm_crtc *crtc;
 	enum drm_connector_status status;
+=======
+	enum drm_connector_status status;
+	struct intel_load_detect_pipe tmp;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (I915_HAS_HOTPLUG(dev)) {
 		if (intel_crt_detect_hotplug(connector)) {
@@ -453,6 +513,7 @@ intel_crt_detect(struct drm_connector *connector, bool force)
 		return connector->status;
 
 	/* for pre-945g platforms use load detect */
+<<<<<<< HEAD
 	crtc = crt->base.base.crtc;
 	if (crtc && crtc->enabled) {
 		status = intel_crt_load_detect(crt);
@@ -470,6 +531,18 @@ intel_crt_detect(struct drm_connector *connector, bool force)
 		} else
 			status = connector_status_unknown;
 	}
+=======
+	if (intel_get_load_detect_pipe(&crt->base, connector, NULL,
+				       &tmp)) {
+		if (intel_crt_detect_ddc(connector))
+			status = connector_status_connected;
+		else
+			status = intel_crt_load_detect(crt);
+		intel_release_load_detect_pipe(&crt->base, connector,
+					       &tmp);
+	} else
+		status = connector_status_unknown;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return status;
 }
@@ -487,13 +560,21 @@ static int intel_crt_get_modes(struct drm_connector *connector)
 	struct drm_i915_private *dev_priv = dev->dev_private;
 	int ret;
 
+<<<<<<< HEAD
 	ret = intel_ddc_get_modes(connector,
+=======
+	ret = intel_crt_ddc_get_modes(connector,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 &dev_priv->gmbus[dev_priv->crt_ddc_pin].adapter);
 	if (ret || !IS_G4X(dev))
 		return ret;
 
 	/* Try to probe digital port for output in DVI-I -> VGA mode. */
+<<<<<<< HEAD
 	return intel_ddc_get_modes(connector,
+=======
+	return intel_crt_ddc_get_modes(connector,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   &dev_priv->gmbus[GMBUS_PORT_DPB].adapter);
 }
 
@@ -544,6 +625,27 @@ static const struct drm_encoder_funcs intel_crt_enc_funcs = {
 	.destroy = intel_encoder_destroy,
 };
 
+<<<<<<< HEAD
+=======
+static int __init intel_no_crt_dmi_callback(const struct dmi_system_id *id)
+{
+	DRM_DEBUG_KMS("Skipping CRT initialization for %s\n", id->ident);
+	return 1;
+}
+
+static const struct dmi_system_id intel_no_crt[] = {
+	{
+		.callback = intel_no_crt_dmi_callback,
+		.ident = "ACER ZGB",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "ACER"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "ZGB"),
+		},
+	},
+	{ }
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void intel_crt_init(struct drm_device *dev)
 {
 	struct drm_connector *connector;
@@ -551,6 +653,13 @@ void intel_crt_init(struct drm_device *dev)
 	struct intel_connector *intel_connector;
 	struct drm_i915_private *dev_priv = dev->dev_private;
 
+<<<<<<< HEAD
+=======
+	/* Skip machines without VGA that falsely report hotplug events */
+	if (dmi_check_system(intel_no_crt))
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	crt = kzalloc(sizeof(struct intel_crt), GFP_KERNEL);
 	if (!crt)
 		return;
@@ -575,7 +684,14 @@ void intel_crt_init(struct drm_device *dev)
 				1 << INTEL_ANALOG_CLONE_BIT |
 				1 << INTEL_SDVO_LVDS_CLONE_BIT);
 	crt->base.crtc_mask = (1 << 0) | (1 << 1);
+<<<<<<< HEAD
 	connector->interlace_allowed = 1;
+=======
+	if (IS_GEN2(dev))
+		connector->interlace_allowed = 0;
+	else
+		connector->interlace_allowed = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	connector->doublescan_allowed = 0;
 
 	drm_encoder_helper_add(&crt->base.base, &intel_crt_helper_funcs);

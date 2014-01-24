@@ -12,6 +12,10 @@
 #include <linux/netdevice.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/dsa.h>
 #include "dsa_priv.h"
 
@@ -28,6 +32,10 @@ void register_switch_driver(struct dsa_switch_driver *drv)
 	list_add_tail(&drv->list, &dsa_switch_drivers);
 	mutex_unlock(&dsa_switch_drivers_mutex);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(register_switch_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void unregister_switch_driver(struct dsa_switch_driver *drv)
 {
@@ -35,6 +43,10 @@ void unregister_switch_driver(struct dsa_switch_driver *drv)
 	list_del_init(&drv->list);
 	mutex_unlock(&dsa_switch_drivers_mutex);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(unregister_switch_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct dsa_switch_driver *
 dsa_switch_probe(struct mii_bus *bus, int sw_addr, char **_name)
@@ -198,6 +210,7 @@ static void dsa_switch_destroy(struct dsa_switch *ds)
 }
 
 
+<<<<<<< HEAD
 /* hooks for ethertype-less tagging formats *********************************/
 /*
  * The original DSA tag format and some other tag formats have no
@@ -221,6 +234,8 @@ bool dsa_uses_trailer_tags(void *dsa_ptr)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* link polling *************************************************************/
 static void dsa_link_poll_work(struct work_struct *ugly)
 {
@@ -418,12 +433,43 @@ static struct platform_driver dsa_driver = {
 
 static int __init dsa_init_module(void)
 {
+<<<<<<< HEAD
 	return platform_driver_register(&dsa_driver);
+=======
+	int rc;
+
+	rc = platform_driver_register(&dsa_driver);
+	if (rc)
+		return rc;
+
+#ifdef CONFIG_NET_DSA_TAG_DSA
+	dev_add_pack(&dsa_packet_type);
+#endif
+#ifdef CONFIG_NET_DSA_TAG_EDSA
+	dev_add_pack(&edsa_packet_type);
+#endif
+#ifdef CONFIG_NET_DSA_TAG_TRAILER
+	dev_add_pack(&trailer_packet_type);
+#endif
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 module_init(dsa_init_module);
 
 static void __exit dsa_cleanup_module(void)
 {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NET_DSA_TAG_TRAILER
+	dev_remove_pack(&trailer_packet_type);
+#endif
+#ifdef CONFIG_NET_DSA_TAG_EDSA
+	dev_remove_pack(&edsa_packet_type);
+#endif
+#ifdef CONFIG_NET_DSA_TAG_DSA
+	dev_remove_pack(&dsa_packet_type);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_driver_unregister(&dsa_driver);
 }
 module_exit(dsa_cleanup_module);

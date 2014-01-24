@@ -203,7 +203,11 @@ static int __init epit_clockevent_init(struct clk *timer_clk)
 
 void __init epit_timer_init(struct clk *timer_clk, void __iomem *base, int irq)
 {
+<<<<<<< HEAD
 	clk_enable(timer_clk);
+=======
+	clk_prepare_enable(timer_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	timer_base = base;
 

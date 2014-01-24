@@ -47,6 +47,11 @@ struct power_pmu {
  */
 #define PPMU_LIMITED_PMC5_6	1	/* PMC5/6 have limited function */
 #define PPMU_ALT_SIPR		2	/* uses alternate posn for SIPR/HV */
+<<<<<<< HEAD
+=======
+#define PPMU_NO_SIPR		4	/* no SIPR/HV in MMCRA at all */
+#define PPMU_NO_CONT_SAMPLING	8	/* no continuous sampling */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Values for flags to get_alternatives()
@@ -61,8 +66,11 @@ struct pt_regs;
 extern unsigned long perf_misc_flags(struct pt_regs *regs);
 extern unsigned long perf_instruction_pointer(struct pt_regs *regs);
 
+<<<<<<< HEAD
 #define PERF_EVENT_INDEX_OFFSET	1
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Only override the default definitions in include/linux/perf_event.h
  * if we have hardware PMU support.

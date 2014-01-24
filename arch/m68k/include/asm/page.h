@@ -6,10 +6,17 @@
 #include <asm/page_offset.h>
 
 /* PAGE_SHIFT determines the page size */
+<<<<<<< HEAD
 #ifndef CONFIG_SUN3
 #define PAGE_SHIFT	(12)
 #else
 #define PAGE_SHIFT	(13)
+=======
+#if defined(CONFIG_SUN3) || defined(CONFIG_COLDFIRE)
+#define PAGE_SHIFT	13
+#else
+#define PAGE_SHIFT	12
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 #define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
 #define PAGE_MASK	(~(PAGE_SIZE-1))
@@ -36,6 +43,13 @@ typedef struct page *pgtable_t;
 #define __pgd(x)	((pgd_t) { (x) } )
 #define __pgprot(x)	((pgprot_t) { (x) } )
 
+<<<<<<< HEAD
+=======
+extern unsigned long _rambase;
+extern unsigned long _ramstart;
+extern unsigned long _ramend;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !__ASSEMBLY__ */
 
 #ifdef CONFIG_MMU

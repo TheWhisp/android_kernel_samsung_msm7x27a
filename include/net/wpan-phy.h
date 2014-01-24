@@ -23,6 +23,10 @@
 
 #include <linux/netdevice.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct wpan_phy {
 	struct mutex pib_lock;

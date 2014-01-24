@@ -16,6 +16,36 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+/*
+ * The MMCIF driver is now processing MMC requests asynchronously, according
+ * to the Linux MMC API requirement.
+ *
+ * The MMCIF driver processes MMC requests in up to 3 stages: command, optional
+ * data, and optional stop. To achieve asynchronous processing each of these
+ * stages is split into two halves: a top and a bottom half. The top half
+ * initialises the hardware, installs a timeout handler to handle completion
+ * timeouts, and returns. In case of the command stage this immediately returns
+ * control to the caller, leaving all further processing to run asynchronously.
+ * All further request processing is performed by the bottom halves.
+ *
+ * The bottom half further consists of a "hard" IRQ handler, an IRQ handler
+ * thread, a DMA completion callback, if DMA is used, a timeout work, and
+ * request- and stage-specific handler methods.
+ *
+ * Each bottom half run begins with either a hardware interrupt, a DMA callback
+ * invocation, or a timeout work run. In case of an error or a successful
+ * processing completion, the MMC core is informed and the request processing is
+ * finished. In case processing has to continue, i.e., if data has to be read
+ * from or written to the card, or if a stop command has to be sent, the next
+ * top half is called, which performs the necessary hardware handling and
+ * reschedules the timeout work. This returns the driver state machine into the
+ * bottom half waiting state.
+ */
+
+#include <linux/bitops.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/clk.h>
 #include <linux/completion.h>
 #include <linux/delay.h>
@@ -29,8 +59,15 @@
 #include <linux/mmc/sh_mmcif.h>
 #include <linux/pagemap.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/pm_runtime.h>
 #include <linux/spinlock.h>
+=======
+#include <linux/pm_qos.h>
+#include <linux/pm_runtime.h>
+#include <linux/spinlock.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVER_NAME	"sh_mmcif"
 #define DRIVER_VERSION	"2010-04-28"
@@ -122,6 +159,14 @@
 #define MASK_MRBSYTO		(1 << 1)
 #define MASK_MRSPTO		(1 << 0)
 
+<<<<<<< HEAD
+=======
+#define MASK_START_CMD		(MASK_MCMDVIO | MASK_MBUFVIO | MASK_MWDATERR | \
+				 MASK_MRDATERR | MASK_MRIDXERR | MASK_MRSPERR | \
+				 MASK_MCCSTO | MASK_MCRCSTO | MASK_MWDATTO | \
+				 MASK_MRDATTO | MASK_MRBSYTO | MASK_MRSPTO)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* CE_HOST_STS1 */
 #define STS1_CMDSEQ		(1 << 31)
 
@@ -161,20 +206,57 @@ enum mmcif_state {
 	STATE_IOS,
 };
 
+<<<<<<< HEAD
 struct sh_mmcif_host {
 	struct mmc_host *mmc;
 	struct mmc_data *data;
 	struct platform_device *pd;
+=======
+enum mmcif_wait_for {
+	MMCIF_WAIT_FOR_REQUEST,
+	MMCIF_WAIT_FOR_CMD,
+	MMCIF_WAIT_FOR_MREAD,
+	MMCIF_WAIT_FOR_MWRITE,
+	MMCIF_WAIT_FOR_READ,
+	MMCIF_WAIT_FOR_WRITE,
+	MMCIF_WAIT_FOR_READ_END,
+	MMCIF_WAIT_FOR_WRITE_END,
+	MMCIF_WAIT_FOR_STOP,
+};
+
+struct sh_mmcif_host {
+	struct mmc_host *mmc;
+	struct mmc_request *mrq;
+	struct platform_device *pd;
+	struct sh_dmae_slave dma_slave_tx;
+	struct sh_dmae_slave dma_slave_rx;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct clk *hclk;
 	unsigned int clk;
 	int bus_width;
 	bool sd_error;
+<<<<<<< HEAD
 	long timeout;
 	void __iomem *addr;
 	struct completion intr_wait;
 	enum mmcif_state state;
 	spinlock_t lock;
 	bool power;
+=======
+	bool dying;
+	long timeout;
+	void __iomem *addr;
+	u32 *pio_ptr;
+	spinlock_t lock;		/* protect sh_mmcif_host::state */
+	enum mmcif_state state;
+	enum mmcif_wait_for wait_for;
+	struct delayed_work timeout_work;
+	size_t blocksize;
+	int sg_idx;
+	int sg_blkidx;
+	bool power;
+	bool card_present;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* DMA support */
 	struct dma_chan		*chan_rx;
@@ -198,6 +280,7 @@ static inline void sh_mmcif_bitclr(struct sh_mmcif_host *host,
 static void mmcif_dma_complete(void *arg)
 {
 	struct sh_mmcif_host *host = arg;
+<<<<<<< HEAD
 	dev_dbg(&host->pd->dev, "Command completed\n");
 
 	if (WARN(!host->data, "%s: NULL data in DMA completion!\n",
@@ -211,6 +294,23 @@ static void mmcif_dma_complete(void *arg)
 	else
 		dma_unmap_sg(host->chan_tx->device->dev,
 			     host->data->sg, host->data->sg_len,
+=======
+	struct mmc_data *data = host->mrq->data;
+
+	dev_dbg(&host->pd->dev, "Command completed\n");
+
+	if (WARN(!data, "%s: NULL data in DMA completion!\n",
+		 dev_name(&host->pd->dev)))
+		return;
+
+	if (data->flags & MMC_DATA_READ)
+		dma_unmap_sg(host->chan_rx->device->dev,
+			     data->sg, data->sg_len,
+			     DMA_FROM_DEVICE);
+	else
+		dma_unmap_sg(host->chan_tx->device->dev,
+			     data->sg, data->sg_len,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     DMA_TO_DEVICE);
 
 	complete(&host->dma_complete);
@@ -218,18 +318,32 @@ static void mmcif_dma_complete(void *arg)
 
 static void sh_mmcif_start_dma_rx(struct sh_mmcif_host *host)
 {
+<<<<<<< HEAD
 	struct scatterlist *sg = host->data->sg;
+=======
+	struct mmc_data *data = host->mrq->data;
+	struct scatterlist *sg = data->sg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dma_async_tx_descriptor *desc = NULL;
 	struct dma_chan *chan = host->chan_rx;
 	dma_cookie_t cookie = -EINVAL;
 	int ret;
 
+<<<<<<< HEAD
 	ret = dma_map_sg(chan->device->dev, sg, host->data->sg_len,
 			 DMA_FROM_DEVICE);
 	if (ret > 0) {
 		host->dma_active = true;
 		desc = chan->device->device_prep_slave_sg(chan, sg, ret,
 			DMA_FROM_DEVICE, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+=======
+	ret = dma_map_sg(chan->device->dev, sg, data->sg_len,
+			 DMA_FROM_DEVICE);
+	if (ret > 0) {
+		host->dma_active = true;
+		desc = dmaengine_prep_slave_sg(chan, sg, ret,
+			DMA_DEV_TO_MEM, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (desc) {
@@ -240,7 +354,11 @@ static void sh_mmcif_start_dma_rx(struct sh_mmcif_host *host)
 		dma_async_issue_pending(chan);
 	}
 	dev_dbg(&host->pd->dev, "%s(): mapped %d -> %d, cookie %d\n",
+<<<<<<< HEAD
 		__func__, host->data->sg_len, ret, cookie);
+=======
+		__func__, data->sg_len, ret, cookie);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!desc) {
 		/* DMA failed, fall back to PIO */
@@ -261,23 +379,41 @@ static void sh_mmcif_start_dma_rx(struct sh_mmcif_host *host)
 	}
 
 	dev_dbg(&host->pd->dev, "%s(): desc %p, cookie %d, sg[%d]\n", __func__,
+<<<<<<< HEAD
 		desc, cookie, host->data->sg_len);
+=======
+		desc, cookie, data->sg_len);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void sh_mmcif_start_dma_tx(struct sh_mmcif_host *host)
 {
+<<<<<<< HEAD
 	struct scatterlist *sg = host->data->sg;
+=======
+	struct mmc_data *data = host->mrq->data;
+	struct scatterlist *sg = data->sg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dma_async_tx_descriptor *desc = NULL;
 	struct dma_chan *chan = host->chan_tx;
 	dma_cookie_t cookie = -EINVAL;
 	int ret;
 
+<<<<<<< HEAD
 	ret = dma_map_sg(chan->device->dev, sg, host->data->sg_len,
 			 DMA_TO_DEVICE);
 	if (ret > 0) {
 		host->dma_active = true;
 		desc = chan->device->device_prep_slave_sg(chan, sg, ret,
 			DMA_TO_DEVICE, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+=======
+	ret = dma_map_sg(chan->device->dev, sg, data->sg_len,
+			 DMA_TO_DEVICE);
+	if (ret > 0) {
+		host->dma_active = true;
+		desc = dmaengine_prep_slave_sg(chan, sg, ret,
+			DMA_MEM_TO_DEV, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (desc) {
@@ -288,7 +424,11 @@ static void sh_mmcif_start_dma_tx(struct sh_mmcif_host *host)
 		dma_async_issue_pending(chan);
 	}
 	dev_dbg(&host->pd->dev, "%s(): mapped %d -> %d, cookie %d\n",
+<<<<<<< HEAD
 		__func__, host->data->sg_len, ret, cookie);
+=======
+		__func__, data->sg_len, ret, cookie);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!desc) {
 		/* DMA failed, fall back to PIO */
@@ -322,25 +462,51 @@ static bool sh_mmcif_filter(struct dma_chan *chan, void *arg)
 static void sh_mmcif_request_dma(struct sh_mmcif_host *host,
 				 struct sh_mmcif_plat_data *pdata)
 {
+<<<<<<< HEAD
+=======
+	struct sh_dmae_slave *tx, *rx;
+>>>>>>> refs/remotes/origin/cm-10.0
 	host->dma_active = false;
 
 	/* We can only either use DMA for both Tx and Rx or not use it at all */
 	if (pdata->dma) {
+<<<<<<< HEAD
+=======
+		dev_warn(&host->pd->dev,
+			 "Update your platform to use embedded DMA slave IDs\n");
+		tx = &pdata->dma->chan_priv_tx;
+		rx = &pdata->dma->chan_priv_rx;
+	} else {
+		tx = &host->dma_slave_tx;
+		tx->slave_id = pdata->slave_id_tx;
+		rx = &host->dma_slave_rx;
+		rx->slave_id = pdata->slave_id_rx;
+	}
+	if (tx->slave_id > 0 && rx->slave_id > 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dma_cap_mask_t mask;
 
 		dma_cap_zero(mask);
 		dma_cap_set(DMA_SLAVE, mask);
 
+<<<<<<< HEAD
 		host->chan_tx = dma_request_channel(mask, sh_mmcif_filter,
 						    &pdata->dma->chan_priv_tx);
+=======
+		host->chan_tx = dma_request_channel(mask, sh_mmcif_filter, tx);
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_dbg(&host->pd->dev, "%s: TX: got channel %p\n", __func__,
 			host->chan_tx);
 
 		if (!host->chan_tx)
 			return;
 
+<<<<<<< HEAD
 		host->chan_rx = dma_request_channel(mask, sh_mmcif_filter,
 						    &pdata->dma->chan_priv_rx);
+=======
+		host->chan_rx = dma_request_channel(mask, sh_mmcif_filter, rx);
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_dbg(&host->pd->dev, "%s: RX: got channel %p\n", __func__,
 			host->chan_rx);
 
@@ -385,7 +551,12 @@ static void sh_mmcif_clock_control(struct sh_mmcif_host *host, unsigned int clk)
 		sh_mmcif_bitset(host, MMCIF_CE_CLK_CTRL, CLK_SUP_PCLK);
 	else
 		sh_mmcif_bitset(host, MMCIF_CE_CLK_CTRL, CLK_CLEAR &
+<<<<<<< HEAD
 			(ilog2(__rounddown_pow_of_two(host->clk / clk)) << 16));
+=======
+				((fls(DIV_ROUND_UP(host->clk,
+						   clk) - 1) - 1) << 16));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sh_mmcif_bitset(host, MMCIF_CE_CLK_CTRL, CLK_ENABLE);
 }
@@ -407,7 +578,11 @@ static void sh_mmcif_sync_reset(struct sh_mmcif_host *host)
 static int sh_mmcif_error_manage(struct sh_mmcif_host *host)
 {
 	u32 state1, state2;
+<<<<<<< HEAD
 	int ret, timeout = 10000000;
+=======
+	int ret, timeout;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	host->sd_error = false;
 
@@ -419,6 +594,7 @@ static int sh_mmcif_error_manage(struct sh_mmcif_host *host)
 	if (state1 & STS1_CMDSEQ) {
 		sh_mmcif_bitset(host, MMCIF_CE_CMD_CTRL, CMD_CTRL_BREAK);
 		sh_mmcif_bitset(host, MMCIF_CE_CMD_CTRL, ~CMD_CTRL_BREAK);
+<<<<<<< HEAD
 		while (1) {
 			timeout--;
 			if (timeout < 0) {
@@ -431,12 +607,26 @@ static int sh_mmcif_error_manage(struct sh_mmcif_host *host)
 				break;
 			mdelay(1);
 		}
+=======
+		for (timeout = 10000000; timeout; timeout--) {
+			if (!(sh_mmcif_readl(host->addr, MMCIF_CE_HOST_STS1)
+			      & STS1_CMDSEQ))
+				break;
+			mdelay(1);
+		}
+		if (!timeout) {
+			dev_err(&host->pd->dev,
+				"Forced end of command sequence timeout err\n");
+			return -EIO;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		sh_mmcif_sync_reset(host);
 		dev_dbg(&host->pd->dev, "Forced end of command sequence\n");
 		return -EIO;
 	}
 
 	if (state2 & STS2_CRC_ERR) {
+<<<<<<< HEAD
 		dev_dbg(&host->pd->dev, ": Happened CRC error\n");
 		ret = -EIO;
 	} else if (state2 & STS2_TIMEOUT_ERR) {
@@ -444,11 +634,21 @@ static int sh_mmcif_error_manage(struct sh_mmcif_host *host)
 		ret = -ETIMEDOUT;
 	} else {
 		dev_dbg(&host->pd->dev, ": Happened End/Index error\n");
+=======
+		dev_dbg(&host->pd->dev, ": CRC error\n");
+		ret = -EIO;
+	} else if (state2 & STS2_TIMEOUT_ERR) {
+		dev_dbg(&host->pd->dev, ": Timeout\n");
+		ret = -ETIMEDOUT;
+	} else {
+		dev_dbg(&host->pd->dev, ": End/Index error\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -EIO;
 	}
 	return ret;
 }
 
+<<<<<<< HEAD
 static int sh_mmcif_single_read(struct sh_mmcif_host *host,
 					struct mmc_request *mrq)
 {
@@ -466,10 +666,61 @@ static int sh_mmcif_single_read(struct sh_mmcif_host *host,
 	blocksize = (BLOCK_SIZE_MASK &
 			sh_mmcif_readl(host->addr, MMCIF_CE_BLOCK_SET)) + 3;
 	for (i = 0; i < blocksize / 4; i++)
+=======
+static bool sh_mmcif_next_block(struct sh_mmcif_host *host, u32 *p)
+{
+	struct mmc_data *data = host->mrq->data;
+
+	host->sg_blkidx += host->blocksize;
+
+	/* data->sg->length must be a multiple of host->blocksize? */
+	BUG_ON(host->sg_blkidx > data->sg->length);
+
+	if (host->sg_blkidx == data->sg->length) {
+		host->sg_blkidx = 0;
+		if (++host->sg_idx < data->sg_len)
+			host->pio_ptr = sg_virt(++data->sg);
+	} else {
+		host->pio_ptr = p;
+	}
+
+	if (host->sg_idx == data->sg_len)
+		return false;
+
+	return true;
+}
+
+static void sh_mmcif_single_read(struct sh_mmcif_host *host,
+				 struct mmc_request *mrq)
+{
+	host->blocksize = (sh_mmcif_readl(host->addr, MMCIF_CE_BLOCK_SET) &
+			   BLOCK_SIZE_MASK) + 3;
+
+	host->wait_for = MMCIF_WAIT_FOR_READ;
+	schedule_delayed_work(&host->timeout_work, host->timeout);
+
+	/* buf read enable */
+	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFREN);
+}
+
+static bool sh_mmcif_read_block(struct sh_mmcif_host *host)
+{
+	struct mmc_data *data = host->mrq->data;
+	u32 *p = sg_virt(data->sg);
+	int i;
+
+	if (host->sd_error) {
+		data->error = sh_mmcif_error_manage(host);
+		return false;
+	}
+
+	for (i = 0; i < host->blocksize / 4; i++)
+>>>>>>> refs/remotes/origin/cm-10.0
 		*p++ = sh_mmcif_readl(host->addr, MMCIF_CE_DATA);
 
 	/* buffer read end */
 	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFRE);
+<<<<<<< HEAD
 	time = wait_for_completion_interruptible_timeout(&host->intr_wait,
 			host->timeout);
 	if (time <= 0 || host->sd_error)
@@ -526,10 +777,87 @@ static int sh_mmcif_single_write(struct sh_mmcif_host *host,
 	blocksize = (BLOCK_SIZE_MASK &
 			sh_mmcif_readl(host->addr, MMCIF_CE_BLOCK_SET)) + 3;
 	for (i = 0; i < blocksize / 4; i++)
+=======
+	host->wait_for = MMCIF_WAIT_FOR_READ_END;
+
+	return true;
+}
+
+static void sh_mmcif_multi_read(struct sh_mmcif_host *host,
+				struct mmc_request *mrq)
+{
+	struct mmc_data *data = mrq->data;
+
+	if (!data->sg_len || !data->sg->length)
+		return;
+
+	host->blocksize = sh_mmcif_readl(host->addr, MMCIF_CE_BLOCK_SET) &
+		BLOCK_SIZE_MASK;
+
+	host->wait_for = MMCIF_WAIT_FOR_MREAD;
+	host->sg_idx = 0;
+	host->sg_blkidx = 0;
+	host->pio_ptr = sg_virt(data->sg);
+	schedule_delayed_work(&host->timeout_work, host->timeout);
+	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFREN);
+}
+
+static bool sh_mmcif_mread_block(struct sh_mmcif_host *host)
+{
+	struct mmc_data *data = host->mrq->data;
+	u32 *p = host->pio_ptr;
+	int i;
+
+	if (host->sd_error) {
+		data->error = sh_mmcif_error_manage(host);
+		return false;
+	}
+
+	BUG_ON(!data->sg->length);
+
+	for (i = 0; i < host->blocksize / 4; i++)
+		*p++ = sh_mmcif_readl(host->addr, MMCIF_CE_DATA);
+
+	if (!sh_mmcif_next_block(host, p))
+		return false;
+
+	schedule_delayed_work(&host->timeout_work, host->timeout);
+	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFREN);
+
+	return true;
+}
+
+static void sh_mmcif_single_write(struct sh_mmcif_host *host,
+					struct mmc_request *mrq)
+{
+	host->blocksize = (sh_mmcif_readl(host->addr, MMCIF_CE_BLOCK_SET) &
+			   BLOCK_SIZE_MASK) + 3;
+
+	host->wait_for = MMCIF_WAIT_FOR_WRITE;
+	schedule_delayed_work(&host->timeout_work, host->timeout);
+
+	/* buf write enable */
+	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFWEN);
+}
+
+static bool sh_mmcif_write_block(struct sh_mmcif_host *host)
+{
+	struct mmc_data *data = host->mrq->data;
+	u32 *p = sg_virt(data->sg);
+	int i;
+
+	if (host->sd_error) {
+		data->error = sh_mmcif_error_manage(host);
+		return false;
+	}
+
+	for (i = 0; i < host->blocksize / 4; i++)
+>>>>>>> refs/remotes/origin/cm-10.0
 		sh_mmcif_writel(host->addr, MMCIF_CE_DATA, *p++);
 
 	/* buffer write end */
 	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MDTRANE);
+<<<<<<< HEAD
 
 	time = wait_for_completion_interruptible_timeout(&host->intr_wait,
 			host->timeout);
@@ -568,6 +896,55 @@ static int sh_mmcif_multi_write(struct sh_mmcif_host *host,
 			data->sg++;
 	}
 	return 0;
+=======
+	host->wait_for = MMCIF_WAIT_FOR_WRITE_END;
+
+	return true;
+}
+
+static void sh_mmcif_multi_write(struct sh_mmcif_host *host,
+				struct mmc_request *mrq)
+{
+	struct mmc_data *data = mrq->data;
+
+	if (!data->sg_len || !data->sg->length)
+		return;
+
+	host->blocksize = sh_mmcif_readl(host->addr, MMCIF_CE_BLOCK_SET) &
+		BLOCK_SIZE_MASK;
+
+	host->wait_for = MMCIF_WAIT_FOR_MWRITE;
+	host->sg_idx = 0;
+	host->sg_blkidx = 0;
+	host->pio_ptr = sg_virt(data->sg);
+	schedule_delayed_work(&host->timeout_work, host->timeout);
+	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFWEN);
+}
+
+static bool sh_mmcif_mwrite_block(struct sh_mmcif_host *host)
+{
+	struct mmc_data *data = host->mrq->data;
+	u32 *p = host->pio_ptr;
+	int i;
+
+	if (host->sd_error) {
+		data->error = sh_mmcif_error_manage(host);
+		return false;
+	}
+
+	BUG_ON(!data->sg->length);
+
+	for (i = 0; i < host->blocksize / 4; i++)
+		sh_mmcif_writel(host->addr, MMCIF_CE_DATA, *p++);
+
+	if (!sh_mmcif_next_block(host, p))
+		return false;
+
+	schedule_delayed_work(&host->timeout_work, host->timeout);
+	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFWEN);
+
+	return true;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void sh_mmcif_get_response(struct sh_mmcif_host *host,
@@ -589,8 +966,16 @@ static void sh_mmcif_get_cmd12response(struct sh_mmcif_host *host,
 }
 
 static u32 sh_mmcif_set_cmd(struct sh_mmcif_host *host,
+<<<<<<< HEAD
 		struct mmc_request *mrq, struct mmc_command *cmd, u32 opc)
 {
+=======
+			    struct mmc_request *mrq)
+{
+	struct mmc_data *data = mrq->data;
+	struct mmc_command *cmd = mrq->cmd;
+	u32 opc = cmd->opcode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 tmp = 0;
 
 	/* Response Type check */
@@ -617,12 +1002,19 @@ static u32 sh_mmcif_set_cmd(struct sh_mmcif_host *host,
 	case MMC_SET_WRITE_PROT:
 	case MMC_CLR_WRITE_PROT:
 	case MMC_ERASE:
+<<<<<<< HEAD
 	case MMC_GEN_CMD:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		tmp |= CMD_SET_RBSY;
 		break;
 	}
 	/* WDAT / DATW */
+<<<<<<< HEAD
 	if (host->data) {
+=======
+	if (data) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		tmp |= CMD_SET_WDAT;
 		switch (host->bus_width) {
 		case MMC_BUS_WIDTH_1:
@@ -646,7 +1038,11 @@ static u32 sh_mmcif_set_cmd(struct sh_mmcif_host *host,
 	if (opc == MMC_READ_MULTIPLE_BLOCK || opc == MMC_WRITE_MULTIPLE_BLOCK) {
 		tmp |= CMD_SET_CMLTE | CMD_SET_CMD12EN;
 		sh_mmcif_bitset(host, MMCIF_CE_BLOCK_SET,
+<<<<<<< HEAD
 					mrq->data->blocks << 16);
+=======
+				data->blocks << 16);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	/* RIDXC[1:0] check bits */
 	if (opc == MMC_SEND_OP_COND || opc == MMC_ALL_SEND_CID ||
@@ -660,6 +1056,7 @@ static u32 sh_mmcif_set_cmd(struct sh_mmcif_host *host,
 		opc == MMC_SEND_CSD || opc == MMC_SEND_CID)
 		tmp |= CMD_SET_CRC7C_INTERNAL;
 
+<<<<<<< HEAD
 	return opc = ((opc << 24) | tmp);
 }
 
@@ -699,11 +1096,49 @@ static void sh_mmcif_start_cmd(struct sh_mmcif_host *host,
 
 	switch (opc) {
 	/* respons busy check */
+=======
+	return (opc << 24) | tmp;
+}
+
+static int sh_mmcif_data_trans(struct sh_mmcif_host *host,
+			       struct mmc_request *mrq, u32 opc)
+{
+	switch (opc) {
+	case MMC_READ_MULTIPLE_BLOCK:
+		sh_mmcif_multi_read(host, mrq);
+		return 0;
+	case MMC_WRITE_MULTIPLE_BLOCK:
+		sh_mmcif_multi_write(host, mrq);
+		return 0;
+	case MMC_WRITE_BLOCK:
+		sh_mmcif_single_write(host, mrq);
+		return 0;
+	case MMC_READ_SINGLE_BLOCK:
+	case MMC_SEND_EXT_CSD:
+		sh_mmcif_single_read(host, mrq);
+		return 0;
+	default:
+		dev_err(&host->pd->dev, "UNSUPPORTED CMD = d'%08d\n", opc);
+		return -EINVAL;
+	}
+}
+
+static void sh_mmcif_start_cmd(struct sh_mmcif_host *host,
+			       struct mmc_request *mrq)
+{
+	struct mmc_command *cmd = mrq->cmd;
+	u32 opc = cmd->opcode;
+	u32 mask;
+
+	switch (opc) {
+	/* response busy check */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MMC_SWITCH:
 	case MMC_STOP_TRANSMISSION:
 	case MMC_SET_WRITE_PROT:
 	case MMC_CLR_WRITE_PROT:
 	case MMC_ERASE:
+<<<<<<< HEAD
 	case MMC_GEN_CMD:
 		mask = MASK_MRBSYE;
 		break;
@@ -717,11 +1152,25 @@ static void sh_mmcif_start_cmd(struct sh_mmcif_host *host,
 		MASK_MRDATTO | MASK_MRBSYTO | MASK_MRSPTO;
 
 	if (host->data) {
+=======
+		mask = MASK_START_CMD | MASK_MRBSYE;
+		break;
+	default:
+		mask = MASK_START_CMD | MASK_MCRSPE;
+		break;
+	}
+
+	if (mrq->data) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		sh_mmcif_writel(host->addr, MMCIF_CE_BLOCK_SET, 0);
 		sh_mmcif_writel(host->addr, MMCIF_CE_BLOCK_SET,
 				mrq->data->blksz);
 	}
+<<<<<<< HEAD
 	opc = sh_mmcif_set_cmd(host, mrq, cmd, opc);
+=======
+	opc = sh_mmcif_set_cmd(host, mrq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sh_mmcif_writel(host->addr, MMCIF_CE_INT, 0xD80430C0);
 	sh_mmcif_writel(host->addr, MMCIF_CE_INT_MASK, mask);
@@ -730,6 +1179,7 @@ static void sh_mmcif_start_cmd(struct sh_mmcif_host *host,
 	/* set cmd */
 	sh_mmcif_writel(host->addr, MMCIF_CE_CMD_SET, opc);
 
+<<<<<<< HEAD
 	time = wait_for_completion_interruptible_timeout(&host->intr_wait,
 		host->timeout);
 	if (time <= 0) {
@@ -804,6 +1254,30 @@ static void sh_mmcif_stop_cmd(struct sh_mmcif_host *host,
 	}
 	sh_mmcif_get_cmd12response(host, cmd);
 	cmd->error = 0;
+=======
+	host->wait_for = MMCIF_WAIT_FOR_CMD;
+	schedule_delayed_work(&host->timeout_work, host->timeout);
+}
+
+static void sh_mmcif_stop_cmd(struct sh_mmcif_host *host,
+			      struct mmc_request *mrq)
+{
+	switch (mrq->cmd->opcode) {
+	case MMC_READ_MULTIPLE_BLOCK:
+		sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MCMD12DRE);
+		break;
+	case MMC_WRITE_MULTIPLE_BLOCK:
+		sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MCMD12RBE);
+		break;
+	default:
+		dev_err(&host->pd->dev, "unsupported stop cmd\n");
+		mrq->stop->error = sh_mmcif_error_manage(host);
+		return;
+	}
+
+	host->wait_for = MMCIF_WAIT_FOR_STOP;
+	schedule_delayed_work(&host->timeout_work, host->timeout);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void sh_mmcif_request(struct mmc_host *mmc, struct mmc_request *mrq)
@@ -842,6 +1316,7 @@ static void sh_mmcif_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	default:
 		break;
 	}
+<<<<<<< HEAD
 	host->data = mrq->data;
 	if (mrq->data) {
 		if (mrq->data->flags & MMC_DATA_READ) {
@@ -859,6 +1334,12 @@ static void sh_mmcif_request(struct mmc_host *mmc, struct mmc_request *mrq)
 		sh_mmcif_stop_cmd(host, mrq, mrq->stop);
 	host->state = STATE_IDLE;
 	mmc_request_done(mmc, mrq);
+=======
+
+	host->mrq = mrq;
+
+	sh_mmcif_start_cmd(host, mrq);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void sh_mmcif_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
@@ -877,6 +1358,7 @@ static void sh_mmcif_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	spin_unlock_irqrestore(&host->lock, flags);
 
 	if (ios->power_mode == MMC_POWER_UP) {
+<<<<<<< HEAD
 		if (p->set_pwr)
 			p->set_pwr(host->pd, ios->power_mode);
 		if (!host->power) {
@@ -884,25 +1366,56 @@ static void sh_mmcif_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			sh_mmcif_request_dma(host, host->pd->dev.platform_data);
 			pm_runtime_get_sync(&host->pd->dev);
 			host->power = true;
+=======
+		if (!host->card_present) {
+			/* See if we also get DMA */
+			sh_mmcif_request_dma(host, host->pd->dev.platform_data);
+			host->card_present = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	} else if (ios->power_mode == MMC_POWER_OFF || !ios->clock) {
 		/* clock stop */
 		sh_mmcif_clock_control(host, 0);
 		if (ios->power_mode == MMC_POWER_OFF) {
+<<<<<<< HEAD
 			if (host->power) {
 				pm_runtime_put(&host->pd->dev);
 				sh_mmcif_release_dma(host);
 				host->power = false;
 			}
 			if (p->down_pwr)
+=======
+			if (host->card_present) {
+				sh_mmcif_release_dma(host);
+				host->card_present = false;
+			}
+		}
+		if (host->power) {
+			pm_runtime_put(&host->pd->dev);
+			host->power = false;
+			if (p->down_pwr && ios->power_mode == MMC_POWER_OFF)
+>>>>>>> refs/remotes/origin/cm-10.0
 				p->down_pwr(host->pd);
 		}
 		host->state = STATE_IDLE;
 		return;
 	}
 
+<<<<<<< HEAD
 	if (ios->clock)
 		sh_mmcif_clock_control(host, ios->clock);
+=======
+	if (ios->clock) {
+		if (!host->power) {
+			if (p->set_pwr)
+				p->set_pwr(host->pd, ios->power_mode);
+			pm_runtime_get_sync(&host->pd->dev);
+			host->power = true;
+			sh_mmcif_sync_reset(host);
+		}
+		sh_mmcif_clock_control(host, ios->clock);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	host->bus_width = ios->bus_width;
 	host->state = STATE_IDLE;
@@ -925,9 +1438,162 @@ static struct mmc_host_ops sh_mmcif_ops = {
 	.get_cd		= sh_mmcif_get_cd,
 };
 
+<<<<<<< HEAD
 static void sh_mmcif_detect(struct mmc_host *mmc)
 {
 	mmc_detect_change(mmc, 0);
+=======
+static bool sh_mmcif_end_cmd(struct sh_mmcif_host *host)
+{
+	struct mmc_command *cmd = host->mrq->cmd;
+	struct mmc_data *data = host->mrq->data;
+	long time;
+
+	if (host->sd_error) {
+		switch (cmd->opcode) {
+		case MMC_ALL_SEND_CID:
+		case MMC_SELECT_CARD:
+		case MMC_APP_CMD:
+			cmd->error = -ETIMEDOUT;
+			host->sd_error = false;
+			break;
+		default:
+			cmd->error = sh_mmcif_error_manage(host);
+			dev_dbg(&host->pd->dev, "Cmd(d'%d) error %d\n",
+				cmd->opcode, cmd->error);
+			break;
+		}
+		return false;
+	}
+	if (!(cmd->flags & MMC_RSP_PRESENT)) {
+		cmd->error = 0;
+		return false;
+	}
+
+	sh_mmcif_get_response(host, cmd);
+
+	if (!data)
+		return false;
+
+	if (data->flags & MMC_DATA_READ) {
+		if (host->chan_rx)
+			sh_mmcif_start_dma_rx(host);
+	} else {
+		if (host->chan_tx)
+			sh_mmcif_start_dma_tx(host);
+	}
+
+	if (!host->dma_active) {
+		data->error = sh_mmcif_data_trans(host, host->mrq, cmd->opcode);
+		if (!data->error)
+			return true;
+		return false;
+	}
+
+	/* Running in the IRQ thread, can sleep */
+	time = wait_for_completion_interruptible_timeout(&host->dma_complete,
+							 host->timeout);
+	if (host->sd_error) {
+		dev_err(host->mmc->parent,
+			"Error IRQ while waiting for DMA completion!\n");
+		/* Woken up by an error IRQ: abort DMA */
+		if (data->flags & MMC_DATA_READ)
+			dmaengine_terminate_all(host->chan_rx);
+		else
+			dmaengine_terminate_all(host->chan_tx);
+		data->error = sh_mmcif_error_manage(host);
+	} else if (!time) {
+		data->error = -ETIMEDOUT;
+	} else if (time < 0) {
+		data->error = time;
+	}
+	sh_mmcif_bitclr(host, MMCIF_CE_BUF_ACC,
+			BUF_ACC_DMAREN | BUF_ACC_DMAWEN);
+	host->dma_active = false;
+
+	if (data->error)
+		data->bytes_xfered = 0;
+
+	return false;
+}
+
+static irqreturn_t sh_mmcif_irqt(int irq, void *dev_id)
+{
+	struct sh_mmcif_host *host = dev_id;
+	struct mmc_request *mrq = host->mrq;
+
+	cancel_delayed_work_sync(&host->timeout_work);
+
+	/*
+	 * All handlers return true, if processing continues, and false, if the
+	 * request has to be completed - successfully or not
+	 */
+	switch (host->wait_for) {
+	case MMCIF_WAIT_FOR_REQUEST:
+		/* We're too late, the timeout has already kicked in */
+		return IRQ_HANDLED;
+	case MMCIF_WAIT_FOR_CMD:
+		if (sh_mmcif_end_cmd(host))
+			/* Wait for data */
+			return IRQ_HANDLED;
+		break;
+	case MMCIF_WAIT_FOR_MREAD:
+		if (sh_mmcif_mread_block(host))
+			/* Wait for more data */
+			return IRQ_HANDLED;
+		break;
+	case MMCIF_WAIT_FOR_READ:
+		if (sh_mmcif_read_block(host))
+			/* Wait for data end */
+			return IRQ_HANDLED;
+		break;
+	case MMCIF_WAIT_FOR_MWRITE:
+		if (sh_mmcif_mwrite_block(host))
+			/* Wait data to write */
+			return IRQ_HANDLED;
+		break;
+	case MMCIF_WAIT_FOR_WRITE:
+		if (sh_mmcif_write_block(host))
+			/* Wait for data end */
+			return IRQ_HANDLED;
+		break;
+	case MMCIF_WAIT_FOR_STOP:
+		if (host->sd_error) {
+			mrq->stop->error = sh_mmcif_error_manage(host);
+			break;
+		}
+		sh_mmcif_get_cmd12response(host, mrq->stop);
+		mrq->stop->error = 0;
+		break;
+	case MMCIF_WAIT_FOR_READ_END:
+	case MMCIF_WAIT_FOR_WRITE_END:
+		if (host->sd_error)
+			mrq->data->error = sh_mmcif_error_manage(host);
+		break;
+	default:
+		BUG();
+	}
+
+	if (host->wait_for != MMCIF_WAIT_FOR_STOP) {
+		struct mmc_data *data = mrq->data;
+		if (!mrq->cmd->error && data && !data->error)
+			data->bytes_xfered =
+				data->blocks * data->blksz;
+
+		if (mrq->stop && !mrq->cmd->error && (!data || !data->error)) {
+			sh_mmcif_stop_cmd(host, mrq);
+			if (!mrq->stop->error)
+				return IRQ_HANDLED;
+		}
+	}
+
+	host->wait_for = MMCIF_WAIT_FOR_REQUEST;
+	host->state = STATE_IDLE;
+	host->mrq = NULL;
+	mmc_request_done(host->mmc, mrq);
+
+	return IRQ_HANDLED;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static irqreturn_t sh_mmcif_intr(int irq, void *dev_id)
@@ -938,7 +1604,16 @@ static irqreturn_t sh_mmcif_intr(int irq, void *dev_id)
 
 	state = sh_mmcif_readl(host->addr, MMCIF_CE_INT);
 
+<<<<<<< HEAD
 	if (state & INT_RBSYE) {
+=======
+	if (state & INT_ERR_STS) {
+		/* error interrupts - process first */
+		sh_mmcif_writel(host->addr, MMCIF_CE_INT, ~state);
+		sh_mmcif_bitclr(host, MMCIF_CE_INT_MASK, state);
+		err = 1;
+	} else if (state & INT_RBSYE) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		sh_mmcif_writel(host->addr, MMCIF_CE_INT,
 				~(INT_RBSYE | INT_CRSPE));
 		sh_mmcif_bitclr(host, MMCIF_CE_INT_MASK, MASK_MRBSYE);
@@ -966,11 +1641,14 @@ static irqreturn_t sh_mmcif_intr(int irq, void *dev_id)
 		sh_mmcif_writel(host->addr, MMCIF_CE_INT,
 				~(INT_CMD12RBE | INT_CMD12CRE));
 		sh_mmcif_bitclr(host, MMCIF_CE_INT_MASK, MASK_MCMD12RBE);
+<<<<<<< HEAD
 	} else if (state & INT_ERR_STS) {
 		/* err interrupts */
 		sh_mmcif_writel(host->addr, MMCIF_CE_INT, ~state);
 		sh_mmcif_bitclr(host, MMCIF_CE_INT_MASK, state);
 		err = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		dev_dbg(&host->pd->dev, "Unsupported interrupt: 0x%x\n", state);
 		sh_mmcif_writel(host->addr, MMCIF_CE_INT, ~state);
@@ -981,14 +1659,67 @@ static irqreturn_t sh_mmcif_intr(int irq, void *dev_id)
 		host->sd_error = true;
 		dev_dbg(&host->pd->dev, "int err state = %08x\n", state);
 	}
+<<<<<<< HEAD
 	if (state & ~(INT_CMD12RBE | INT_CMD12CRE))
 		complete(&host->intr_wait);
 	else
 		dev_dbg(&host->pd->dev, "Unexpected IRQ 0x%x\n", state);
+=======
+	if (state & ~(INT_CMD12RBE | INT_CMD12CRE)) {
+		if (!host->dma_active)
+			return IRQ_WAKE_THREAD;
+		else if (host->sd_error)
+			mmcif_dma_complete(host);
+	} else {
+		dev_dbg(&host->pd->dev, "Unexpected IRQ 0x%x\n", state);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+=======
+static void mmcif_timeout_work(struct work_struct *work)
+{
+	struct delayed_work *d = container_of(work, struct delayed_work, work);
+	struct sh_mmcif_host *host = container_of(d, struct sh_mmcif_host, timeout_work);
+	struct mmc_request *mrq = host->mrq;
+
+	if (host->dying)
+		/* Don't run after mmc_remove_host() */
+		return;
+
+	/*
+	 * Handle races with cancel_delayed_work(), unless
+	 * cancel_delayed_work_sync() is used
+	 */
+	switch (host->wait_for) {
+	case MMCIF_WAIT_FOR_CMD:
+		mrq->cmd->error = sh_mmcif_error_manage(host);
+		break;
+	case MMCIF_WAIT_FOR_STOP:
+		mrq->stop->error = sh_mmcif_error_manage(host);
+		break;
+	case MMCIF_WAIT_FOR_MREAD:
+	case MMCIF_WAIT_FOR_MWRITE:
+	case MMCIF_WAIT_FOR_READ:
+	case MMCIF_WAIT_FOR_WRITE:
+	case MMCIF_WAIT_FOR_READ_END:
+	case MMCIF_WAIT_FOR_WRITE_END:
+		mrq->data->error = sh_mmcif_error_manage(host);
+		break;
+	default:
+		BUG();
+	}
+
+	host->state = STATE_IDLE;
+	host->wait_for = MMCIF_WAIT_FOR_REQUEST;
+	host->mrq = NULL;
+	mmc_request_done(host->mmc, mrq);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit sh_mmcif_probe(struct platform_device *pdev)
 {
 	int ret = 0, irq[2];
@@ -1042,6 +1773,7 @@ static int __devinit sh_mmcif_probe(struct platform_device *pdev)
 	host->clk = clk_get_rate(host->hclk);
 	host->pd = pdev;
 
+<<<<<<< HEAD
 	init_completion(&host->intr_wait);
 	spin_lock_init(&host->lock);
 
@@ -1054,6 +1786,13 @@ static int __devinit sh_mmcif_probe(struct platform_device *pdev)
 		mmc->f_min = mmc->f_max / 256;
 	else
 		mmc->f_min = mmc->f_max / 512;
+=======
+	spin_lock_init(&host->lock);
+
+	mmc->ops = &sh_mmcif_ops;
+	mmc->f_max = host->clk / 2;
+	mmc->f_min = host->clk / 512;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pd->ocr)
 		mmc->ocr_avail = pd->ocr;
 	mmc->caps = MMC_CAP_MMC_HIGHSPEED;
@@ -1075,15 +1814,24 @@ static int __devinit sh_mmcif_probe(struct platform_device *pdev)
 	if (ret < 0)
 		goto clean_up2;
 
+<<<<<<< HEAD
 	mmc_add_host(mmc);
 
 	sh_mmcif_writel(host->addr, MMCIF_CE_INT_MASK, MASK_ALL);
 
 	ret = request_irq(irq[0], sh_mmcif_intr, 0, "sh_mmc:error", host);
+=======
+	INIT_DELAYED_WORK(&host->timeout_work, mmcif_timeout_work);
+
+	sh_mmcif_writel(host->addr, MMCIF_CE_INT_MASK, MASK_ALL);
+
+	ret = request_threaded_irq(irq[0], sh_mmcif_intr, sh_mmcif_irqt, 0, "sh_mmc:error", host);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(&pdev->dev, "request_irq error (sh_mmc:error)\n");
 		goto clean_up3;
 	}
+<<<<<<< HEAD
 	ret = request_irq(irq[1], sh_mmcif_intr, 0, "sh_mmc:int", host);
 	if (ret) {
 		free_irq(irq[0], host);
@@ -1092,14 +1840,35 @@ static int __devinit sh_mmcif_probe(struct platform_device *pdev)
 	}
 
 	sh_mmcif_detect(host->mmc);
+=======
+	ret = request_threaded_irq(irq[1], sh_mmcif_intr, sh_mmcif_irqt, 0, "sh_mmc:int", host);
+	if (ret) {
+		dev_err(&pdev->dev, "request_irq error (sh_mmc:int)\n");
+		goto clean_up4;
+	}
+
+	ret = mmc_add_host(mmc);
+	if (ret < 0)
+		goto clean_up5;
+
+	dev_pm_qos_expose_latency_limit(&pdev->dev, 100);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_info(&pdev->dev, "driver version %s\n", DRIVER_VERSION);
 	dev_dbg(&pdev->dev, "chip ver H'%04x\n",
 		sh_mmcif_readl(host->addr, MMCIF_CE_VERSION) & 0x0000ffff);
 	return ret;
 
+<<<<<<< HEAD
 clean_up3:
 	mmc_remove_host(mmc);
+=======
+clean_up5:
+	free_irq(irq[1], host);
+clean_up4:
+	free_irq(irq[0], host);
+clean_up3:
+>>>>>>> refs/remotes/origin/cm-10.0
 	pm_runtime_suspend(&pdev->dev);
 clean_up2:
 	pm_runtime_disable(&pdev->dev);
@@ -1117,11 +1886,29 @@ static int __devexit sh_mmcif_remove(struct platform_device *pdev)
 	struct sh_mmcif_host *host = platform_get_drvdata(pdev);
 	int irq[2];
 
+<<<<<<< HEAD
 	pm_runtime_get_sync(&pdev->dev);
 
 	mmc_remove_host(host->mmc);
 	sh_mmcif_writel(host->addr, MMCIF_CE_INT_MASK, MASK_ALL);
 
+=======
+	host->dying = true;
+	pm_runtime_get_sync(&pdev->dev);
+
+	dev_pm_qos_hide_latency_limit(&pdev->dev);
+
+	mmc_remove_host(host->mmc);
+	sh_mmcif_writel(host->addr, MMCIF_CE_INT_MASK, MASK_ALL);
+
+	/*
+	 * FIXME: cancel_delayed_work(_sync)() and free_irq() race with the
+	 * mmc_remove_host() call above. But swapping order doesn't help either
+	 * (a query on the linux-mmc mailing list didn't bring any replies).
+	 */
+	cancel_delayed_work_sync(&host->timeout_work);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (host->addr)
 		iounmap(host->addr);
 
@@ -1184,6 +1971,7 @@ static struct platform_driver sh_mmcif_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init sh_mmcif_init(void)
 {
 	return platform_driver_register(&sh_mmcif_driver);
@@ -1197,6 +1985,9 @@ static void __exit sh_mmcif_exit(void)
 module_init(sh_mmcif_init);
 module_exit(sh_mmcif_exit);
 
+=======
+module_platform_driver(sh_mmcif_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("SuperH on-chip MMC/eMMC interface driver");
 MODULE_LICENSE("GPL");

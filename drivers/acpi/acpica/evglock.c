@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +52,11 @@
 
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evglock")
+<<<<<<< HEAD
 
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Local prototypes */
 static u32 acpi_ev_global_lock_handler(void *context);
 
@@ -70,6 +78,15 @@ acpi_status acpi_ev_init_global_lock_handler(void)
 
 	ACPI_FUNCTION_TRACE(ev_init_global_lock_handler);
 
+<<<<<<< HEAD
+=======
+	/* If Hardware Reduced flag is set, there is no global lock */
+
+	if (acpi_gbl_reduced_hardware) {
+		return_ACPI_STATUS(AE_OK);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Attempt installation of the global lock handler */
 
 	status = acpi_install_fixed_event_handler(ACPI_EVENT_GLOBAL,
@@ -333,3 +350,8 @@ acpi_status acpi_ev_release_global_lock(void)
 	acpi_os_release_mutex(acpi_gbl_global_lock_mutex->mutex.os_mutex);
 	return_ACPI_STATUS(status);
 }
+<<<<<<< HEAD
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0

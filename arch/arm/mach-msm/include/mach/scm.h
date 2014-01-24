@@ -38,6 +38,10 @@ extern s32 scm_call_atomic4_3(u32 svc, u32 cmd, u32 arg1, u32 arg2, u32 arg3,
 
 extern u32 scm_get_version(void);
 extern int scm_is_call_available(u32 svc_id, u32 cmd_id);
+<<<<<<< HEAD
+=======
+extern int scm_get_feat_version(u32 feat);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else
 
@@ -73,5 +77,13 @@ static inline int scm_is_call_available(u32 svc_id, u32 cmd_id)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static inline int scm_get_feat_version(u32 feat)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 #endif

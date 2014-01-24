@@ -3,9 +3,15 @@
  */
 
 #include <linux/time.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 #include <linux/reiserfs_acl.h>
 #include <linux/reiserfs_xattr.h>
+=======
+#include "reiserfs.h"
+#include "acl.h"
+#include "xattr.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <linux/pagemap.h>
 #include <linux/swap.h>
@@ -140,12 +146,25 @@ static void reiserfs_vfs_truncate_file(struct inode *inode)
  * be removed...
  */
 
+<<<<<<< HEAD
 static int reiserfs_sync_file(struct file *filp, int datasync)
+=======
+static int reiserfs_sync_file(struct file *filp, loff_t start, loff_t end,
+			      int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inode *inode = filp->f_mapping->host;
 	int err;
 	int barrier_done;
 
+<<<<<<< HEAD
+=======
+	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (err)
+		return err;
+
+	mutex_lock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(!S_ISREG(inode->i_mode));
 	err = sync_mapping_buffers(inode->i_mapping);
 	reiserfs_write_lock(inode->i_sb);
@@ -153,6 +172,10 @@ static int reiserfs_sync_file(struct file *filp, int datasync)
 	reiserfs_write_unlock(inode->i_sb);
 	if (barrier_done != 1 && reiserfs_barrier_flush(inode->i_sb))
 		blkdev_issue_flush(inode->i_sb->s_bdev, GFP_KERNEL, NULL);
+<<<<<<< HEAD
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (barrier_done < 0)
 		return barrier_done;
 	return (err < 0) ? -EIO : 0;
@@ -312,4 +335,8 @@ const struct inode_operations reiserfs_file_inode_operations = {
 	.listxattr = reiserfs_listxattr,
 	.removexattr = reiserfs_removexattr,
 	.permission = reiserfs_permission,
+<<<<<<< HEAD
+=======
+	.get_acl = reiserfs_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
 };

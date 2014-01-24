@@ -26,11 +26,19 @@
 #include <linux/list.h>
 #include <linux/string.h>
 #include <linux/bug.h>
+<<<<<<< HEAD
 
 
 #include <asm/unaligned.h>
 #include <asm/system.h>
 #include <asm/io.h>
+=======
+#include <linux/kernel.h>
+
+#include <asm/unaligned.h>
+#include <asm/io.h>
+#include <asm/barrier.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_MTD_MAP_BANK_WIDTH_1
 #define map_bankwidth(map) 1
@@ -214,6 +222,10 @@ struct map_info {
 	void __iomem *virt;
 	void *cached;
 
+<<<<<<< HEAD
+=======
+	int swap; /* this mapping's byte-swapping requirement */
+>>>>>>> refs/remotes/origin/cm-10.0
 	int bankwidth; /* in octets. This isn't necessarily the width
 		       of actual bus cycles -- it's the repeat interval
 		      in bytes, before you are talking to the first chip again.

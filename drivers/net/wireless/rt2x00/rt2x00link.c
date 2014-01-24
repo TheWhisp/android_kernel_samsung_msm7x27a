@@ -447,11 +447,33 @@ void rt2x00link_start_agc(struct rt2x00_dev *rt2x00dev)
 					     AGC_INTERVAL);
 }
 
+<<<<<<< HEAD
+=======
+void rt2x00link_start_vcocal(struct rt2x00_dev *rt2x00dev)
+{
+	struct link *link = &rt2x00dev->link;
+
+	if (test_bit(DEVICE_STATE_PRESENT, &rt2x00dev->flags) &&
+	    rt2x00dev->ops->lib->vco_calibration)
+		ieee80211_queue_delayed_work(rt2x00dev->hw,
+					     &link->vco_work,
+					     VCO_INTERVAL);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void rt2x00link_stop_agc(struct rt2x00_dev *rt2x00dev)
 {
 	cancel_delayed_work_sync(&rt2x00dev->link.agc_work);
 }
 
+<<<<<<< HEAD
+=======
+void rt2x00link_stop_vcocal(struct rt2x00_dev *rt2x00dev)
+{
+	cancel_delayed_work_sync(&rt2x00dev->link.vco_work);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void rt2x00link_agc(struct work_struct *work)
 {
 	struct rt2x00_dev *rt2x00dev =
@@ -473,9 +495,38 @@ static void rt2x00link_agc(struct work_struct *work)
 					     AGC_INTERVAL);
 }
 
+<<<<<<< HEAD
 void rt2x00link_register(struct rt2x00_dev *rt2x00dev)
 {
 	INIT_DELAYED_WORK(&rt2x00dev->link.agc_work, rt2x00link_agc);
+=======
+static void rt2x00link_vcocal(struct work_struct *work)
+{
+	struct rt2x00_dev *rt2x00dev =
+	    container_of(work, struct rt2x00_dev, link.vco_work.work);
+	struct link *link = &rt2x00dev->link;
+
+	/*
+	 * When the radio is shutting down we should
+	 * immediately cease the VCO calibration.
+	 */
+	if (!test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
+		return;
+
+	rt2x00dev->ops->lib->vco_calibration(rt2x00dev);
+
+	if (test_bit(DEVICE_STATE_PRESENT, &rt2x00dev->flags))
+		ieee80211_queue_delayed_work(rt2x00dev->hw,
+					     &link->vco_work,
+					     VCO_INTERVAL);
+}
+
+void rt2x00link_register(struct rt2x00_dev *rt2x00dev)
+{
+	INIT_DELAYED_WORK(&rt2x00dev->link.agc_work, rt2x00link_agc);
+	if (test_bit(CAPABILITY_VCO_RECALIBRATION, &rt2x00dev->cap_flags))
+		INIT_DELAYED_WORK(&rt2x00dev->link.vco_work, rt2x00link_vcocal);
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_DELAYED_WORK(&rt2x00dev->link.watchdog_work, rt2x00link_watchdog);
 	INIT_DELAYED_WORK(&rt2x00dev->link.work, rt2x00link_tuner);
 }

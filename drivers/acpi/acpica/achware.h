@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,6 +85,29 @@ acpi_status acpi_hw_register_write(u32 register_id, u32 value);
 acpi_status acpi_hw_clear_acpi_status(void);
 
 /*
+<<<<<<< HEAD
+=======
+ * hwsleep - sleep/wake support (Legacy sleep registers)
+ */
+acpi_status acpi_hw_legacy_sleep(u8 sleep_state, u8 flags);
+
+acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state, u8 flags);
+
+acpi_status acpi_hw_legacy_wake(u8 sleep_state, u8 flags);
+
+/*
+ * hwesleep - sleep/wake support (Extended FADT-V5 sleep registers)
+ */
+void acpi_hw_execute_sleep_method(char *method_name, u32 integer_argument);
+
+acpi_status acpi_hw_extended_sleep(u8 sleep_state, u8 flags);
+
+acpi_status acpi_hw_extended_wake_prep(u8 sleep_state, u8 flags);
+
+acpi_status acpi_hw_extended_wake(u8 sleep_state, u8 flags);
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * hwvalid - Port I/O with validation
  */
 acpi_status acpi_hw_read_port(acpi_io_address address, u32 *value, u32 width);
@@ -128,6 +155,7 @@ acpi_status
 acpi_hw_derive_pci_id(struct acpi_pci_id *pci_id,
 		      acpi_handle root_pci_device, acpi_handle pci_region);
 
+<<<<<<< HEAD
 #ifdef	ACPI_FUTURE_USAGE
 /*
  * hwtimer - ACPI Timer prototypes
@@ -140,4 +168,6 @@ acpi_status
 acpi_get_timer_duration(u32 start_ticks, u32 end_ticks, u32 * time_elapsed);
 #endif				/* ACPI_FUTURE_USAGE */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif				/* __ACHWARE_H__ */

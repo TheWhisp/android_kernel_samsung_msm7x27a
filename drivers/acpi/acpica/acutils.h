@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,6 +49,10 @@
 #define _ACUTILS_H
 
 extern const u8 acpi_gbl_resource_aml_sizes[];
+<<<<<<< HEAD
+=======
+extern const u8 acpi_gbl_resource_aml_serial_bus_sizes[];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Strings used by the disassembler and debugger resource dump routines */
 
@@ -579,6 +587,27 @@ acpi_ut_create_list(char *list_name,
 #endif				/* ACPI_DBG_TRACK_ALLOCATIONS */
 
 /*
+<<<<<<< HEAD
+=======
+ * utaddress - address range check
+ */
+acpi_status
+acpi_ut_add_address_range(acpi_adr_space_type space_id,
+			  acpi_physical_address address,
+			  u32 length, struct acpi_namespace_node *region_node);
+
+void
+acpi_ut_remove_address_range(acpi_adr_space_type space_id,
+			     struct acpi_namespace_node *region_node);
+
+u32
+acpi_ut_check_address_range(acpi_adr_space_type space_id,
+			    acpi_physical_address address, u32 length, u8 warn);
+
+void acpi_ut_delete_address_lists(void);
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * utxferror - various error/warning output functions
  */
 void ACPI_INTERNAL_VAR_XFACE

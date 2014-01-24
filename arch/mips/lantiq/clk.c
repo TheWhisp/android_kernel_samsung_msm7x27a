@@ -7,7 +7,11 @@
  * Copyright (C) 2010 John Crispin <blogic@openwrt.org>
  */
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/types.h>
@@ -100,6 +104,22 @@ void clk_put(struct clk *clk)
 }
 EXPORT_SYMBOL(clk_put);
 
+<<<<<<< HEAD
+=======
+int clk_enable(struct clk *clk)
+{
+	/* not used */
+	return 0;
+}
+EXPORT_SYMBOL(clk_enable);
+
+void clk_disable(struct clk *clk)
+{
+	/* not used */
+}
+EXPORT_SYMBOL(clk_disable);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline u32 ltq_get_counter_resolution(void)
 {
 	u32 res;
@@ -121,11 +141,19 @@ void __init plat_time_init(void)
 	struct clk *clk;
 
 	if (insert_resource(&iomem_resource, &ltq_cgu_resource) < 0)
+<<<<<<< HEAD
 		panic("Failed to insert cgu memory\n");
 
 	if (request_mem_region(ltq_cgu_resource.start,
 			resource_size(&ltq_cgu_resource), "cgu") < 0)
 		panic("Failed to request cgu memory\n");
+=======
+		panic("Failed to insert cgu memory");
+
+	if (request_mem_region(ltq_cgu_resource.start,
+			resource_size(&ltq_cgu_resource), "cgu") < 0)
+		panic("Failed to request cgu memory");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ltq_cgu_membase = ioremap_nocache(ltq_cgu_resource.start,
 				resource_size(&ltq_cgu_resource));

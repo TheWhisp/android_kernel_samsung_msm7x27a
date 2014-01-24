@@ -8,7 +8,11 @@
  * have chosen to adopt the protocol and over the years it has become a
  * de-facto standard for labeled networking.
  *
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 
@@ -41,7 +45,11 @@
 #include <linux/skbuff.h>
 #include <net/netlabel.h>
 #include <net/request_sock.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 
 /* known doi values */
@@ -290,6 +298,10 @@ static inline int cipso_v4_validate(const struct sk_buff *skb,
 	unsigned char err_offset = 0;
 	u8 opt_len = opt[1];
 	u8 opt_iter;
+<<<<<<< HEAD
+=======
+	u8 tag_len;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (opt_len < 8) {
 		err_offset = 1;
@@ -302,11 +314,20 @@ static inline int cipso_v4_validate(const struct sk_buff *skb,
 	}
 
 	for (opt_iter = 6; opt_iter < opt_len;) {
+<<<<<<< HEAD
 		if (opt[opt_iter + 1] > (opt_len - opt_iter)) {
 			err_offset = opt_iter + 1;
 			goto out;
 		}
 		opt_iter += opt[opt_iter + 1];
+=======
+		tag_len = opt[opt_iter + 1];
+		if ((tag_len == 0) || (opt[opt_iter + 1] > (opt_len - opt_iter))) {
+			err_offset = opt_iter + 1;
+			goto out;
+		}
+		opt_iter += tag_len;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 out:

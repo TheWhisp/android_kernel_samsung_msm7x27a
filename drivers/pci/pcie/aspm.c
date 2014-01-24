@@ -76,7 +76,19 @@ static LIST_HEAD(link_list);
 #define POLICY_DEFAULT 0	/* BIOS default setting */
 #define POLICY_PERFORMANCE 1	/* high performance */
 #define POLICY_POWERSAVE 2	/* high power saving */
+<<<<<<< HEAD
 static int aspm_policy;
+=======
+
+#ifdef CONFIG_PCIEASPM_PERFORMANCE
+static int aspm_policy = POLICY_PERFORMANCE;
+#elif defined CONFIG_PCIEASPM_POWERSAVE
+static int aspm_policy = POLICY_POWERSAVE;
+#else
+static int aspm_policy;
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const char *policy_str[] = {
 	[POLICY_DEFAULT] = "default",
 	[POLICY_PERFORMANCE] = "performance",
@@ -967,7 +979,11 @@ static int __init pcie_aspm_disable(char *str)
 		printk(KERN_INFO "PCIe ASPM is disabled\n");
 	} else if (!strcmp(str, "force")) {
 		aspm_force = 1;
+<<<<<<< HEAD
 		printk(KERN_INFO "PCIe ASPM is forcedly enabled\n");
+=======
+		printk(KERN_INFO "PCIe ASPM is forcibly enabled\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 1;
 }

@@ -22,6 +22,10 @@
 #include <asm/intrinsics.h>
 #include <asm/processor.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 fpswa_interface_t *fpswa_interface;
 EXPORT_SYMBOL(fpswa_interface);

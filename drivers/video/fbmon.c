@@ -493,7 +493,12 @@ static int get_est_timing(unsigned char *block, struct fb_videomode *mode)
 	return num;
 }
 
+<<<<<<< HEAD
 static int get_std_timing(unsigned char *block, struct fb_videomode *mode)
+=======
+static int get_std_timing(unsigned char *block, struct fb_videomode *mode,
+		int ver, int rev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int xres, yres = 0, refresh, ratio, i;
 
@@ -504,7 +509,15 @@ static int get_std_timing(unsigned char *block, struct fb_videomode *mode)
 	ratio = (block[1] & 0xc0) >> 6;
 	switch (ratio) {
 	case 0:
+<<<<<<< HEAD
 		yres = xres;
+=======
+		/* in EDID 1.3 the meaning of 0 changed to 16:10 (prior 1:1) */
+		if (ver < 1 || (ver == 1 && rev < 3))
+			yres = xres;
+		else
+			yres = (xres * 10)/16;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case 1:
 		yres = (xres * 3)/4;
@@ -533,12 +546,20 @@ static int get_std_timing(unsigned char *block, struct fb_videomode *mode)
 }
 
 static int get_dst_timing(unsigned char *block,
+<<<<<<< HEAD
 			  struct fb_videomode *mode)
+=======
+			  struct fb_videomode *mode, int ver, int rev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int j, num = 0;
 
 	for (j = 0; j < 6; j++, block += STD_TIMING_DESCRIPTION_SIZE)
+<<<<<<< HEAD
 		num += get_std_timing(block, &mode[num]);
+=======
+		num += get_std_timing(block, &mode[num], ver, rev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return num;
 }
@@ -599,6 +620,13 @@ static struct fb_videomode *fb_create_modedb(unsigned char *edid, int *dbsize)
 	struct fb_videomode *mode, *m;
 	unsigned char *block;
 	int num = 0, i, first = 1;
+<<<<<<< HEAD
+=======
+	int ver, rev;
+
+	ver = edid[EDID_STRUCT_VERSION];
+	rev = edid[EDID_STRUCT_REVISION];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mode = kzalloc(50 * sizeof(struct fb_videomode), GFP_KERNEL);
 	if (mode == NULL)
@@ -632,12 +660,20 @@ static struct fb_videomode *fb_create_modedb(unsigned char *edid, int *dbsize)
 	DPRINTK("   Standard Timings\n");
 	block = edid + STD_TIMING_DESCRIPTIONS_START;
 	for (i = 0; i < STD_TIMING; i++, block += STD_TIMING_DESCRIPTION_SIZE)
+<<<<<<< HEAD
 		num += get_std_timing(block, &mode[num]);
+=======
+		num += get_std_timing(block, &mode[num], ver, rev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	block = edid + DETAILED_TIMING_DESCRIPTIONS_START;
 	for (i = 0; i < 4; i++, block+= DETAILED_TIMING_DESCRIPTION_SIZE) {
 		if (block[0] == 0x00 && block[1] == 0x00 && block[3] == 0xfa)
+<<<<<<< HEAD
 			num += get_dst_timing(block + 5, &mode[num]);
+=======
+			num += get_dst_timing(block + 5, &mode[num], ver, rev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Yikes, EDID data is totally useless */

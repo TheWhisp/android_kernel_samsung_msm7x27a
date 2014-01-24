@@ -6,6 +6,10 @@
  * This file is released under the GNU GPL v2.
  */
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/uwb/umc.h>
 

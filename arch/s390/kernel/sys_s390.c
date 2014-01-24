@@ -60,13 +60,18 @@ out:
 }
 
 /*
+<<<<<<< HEAD
  * sys_ipc() is the de-multiplexer for the SysV IPC calls..
  *
  * This is really horribly ugly.
+=======
+ * sys_ipc() is the de-multiplexer for the SysV IPC calls.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 SYSCALL_DEFINE5(s390_ipc, uint, call, int, first, unsigned long, second,
 		unsigned long, third, void __user *, ptr)
 {
+<<<<<<< HEAD
         struct ipc_kludge tmp;
 	int ret;
 
@@ -128,6 +133,19 @@ SYSCALL_DEFINE5(s390_ipc, uint, call, int, first, unsigned long, second,
 	}
 
 	return -EINVAL;
+=======
+	if (call >> 16)
+		return -EINVAL;
+	/* The s390 sys_ipc variant has only five parameters instead of six
+	 * like the generic variant. The only difference is the handling of
+	 * the SEMTIMEDOP subcall where on s390 the third parameter is used
+	 * as a pointer to a struct timespec where the generic variant uses
+	 * the fifth parameter.
+	 * Therefore we can call the generic variant by simply passing the
+	 * third parameter also as fifth parameter.
+	 */
+	return sys_ipc(call, first, second, third, ptr, third);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_64BIT

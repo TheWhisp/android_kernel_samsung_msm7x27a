@@ -26,6 +26,10 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/sched_clock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardware/arm_timer.h>
 
 static long __init sp804_get_clock_rate(const char *name)
@@ -41,9 +45,23 @@ static long __init sp804_get_clock_rate(const char *name)
 		return PTR_ERR(clk);
 	}
 
+<<<<<<< HEAD
 	err = clk_enable(clk);
 	if (err) {
 		pr_err("sp804: %s clock failed to enable: %d\n", name, err);
+=======
+	err = clk_prepare(clk);
+	if (err) {
+		pr_err("sp804: %s clock failed to prepare: %d\n", name, err);
+		clk_put(clk);
+		return err;
+	}
+
+	err = clk_enable(clk);
+	if (err) {
+		pr_err("sp804: %s clock failed to enable: %d\n", name, err);
+		clk_unprepare(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		clk_put(clk);
 		return err;
 	}
@@ -52,13 +70,30 @@ static long __init sp804_get_clock_rate(const char *name)
 	if (rate < 0) {
 		pr_err("sp804: %s clock failed to get rate: %ld\n", name, rate);
 		clk_disable(clk);
+<<<<<<< HEAD
+=======
+		clk_unprepare(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		clk_put(clk);
 	}
 
 	return rate;
 }
 
+<<<<<<< HEAD
 void __init sp804_clocksource_init(void __iomem *base, const char *name)
+=======
+static void __iomem *sched_clock_base;
+
+static u32 sp804_read(void)
+{
+	return ~readl_relaxed(sched_clock_base + TIMER_VALUE);
+}
+
+void __init __sp804_clocksource_and_sched_clock_init(void __iomem *base,
+						     const char *name,
+						     int use_sched_clock)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	long rate = sp804_get_clock_rate(name);
 
@@ -74,6 +109,14 @@ void __init sp804_clocksource_init(void __iomem *base, const char *name)
 
 	clocksource_mmio_init(base + TIMER_VALUE, name,
 		rate, 200, 32, clocksource_mmio_readl_down);
+<<<<<<< HEAD
+=======
+
+	if (use_sched_clock) {
+		sched_clock_base = base;
+		setup_sched_clock(sp804_read, 32, rate);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -134,7 +177,10 @@ static int sp804_set_next_event(unsigned long next,
 }
 
 static struct clock_event_device sp804_clockevent = {
+<<<<<<< HEAD
 	.shift		= 32,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.features       = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
 	.set_mode	= sp804_set_mode,
 	.set_next_event	= sp804_set_next_event,
@@ -160,6 +206,7 @@ void __init sp804_clockevents_init(void __iomem *base, unsigned int irq,
 
 	clkevt_base = base;
 	clkevt_reload = DIV_ROUND_CLOSEST(rate, HZ);
+<<<<<<< HEAD
 
 	evt->name = name;
 	evt->irq = irq;
@@ -169,4 +216,11 @@ void __init sp804_clockevents_init(void __iomem *base, unsigned int irq,
 
 	setup_irq(irq, &sp804_timer_irq);
 	clockevents_register_device(evt);
+=======
+	evt->name = name;
+	evt->irq = irq;
+
+	setup_irq(irq, &sp804_timer_irq);
+	clockevents_config_and_register(evt, rate, 0xf, 0xffffffff);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

@@ -28,6 +28,10 @@
 struct squashfs_cache {
 	char			*name;
 	int			entries;
+<<<<<<< HEAD
+=======
+	int			curr_blk;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int			next_blk;
 	int			num_waiters;
 	int			unused;

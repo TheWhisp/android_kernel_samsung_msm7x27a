@@ -13,6 +13,11 @@
 #include <linux/smp.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/smp_plat.h>
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern volatile int pen_release;
 
@@ -62,6 +67,7 @@ static inline void platform_do_lowpower(unsigned int cpu, int *spurious)
 	 * code will have already disabled interrupts
 	 */
 	for (;;) {
+<<<<<<< HEAD
 		/*
 		 * here's the WFI
 		 */
@@ -71,6 +77,11 @@ static inline void platform_do_lowpower(unsigned int cpu, int *spurious)
 		    : "memory", "cc");
 
 		if (pen_release == cpu) {
+=======
+		wfi();
+
+		if (pen_release == cpu_logical_map(cpu)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * OK, proper wakeup, we're done
 			 */

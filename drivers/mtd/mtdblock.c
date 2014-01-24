@@ -44,7 +44,11 @@ struct mtdblk_dev {
 	enum { STATE_EMPTY, STATE_CLEAN, STATE_DIRTY } cache_state;
 };
 
+<<<<<<< HEAD
 static struct mutex mtdblks_lock;
+=======
+static DEFINE_MUTEX(mtdblks_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Cache stuff...
@@ -85,7 +89,11 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
 	set_current_state(TASK_INTERRUPTIBLE);
 	add_wait_queue(&wait_q, &wait);
 
+<<<<<<< HEAD
 	ret = mtd->erase(mtd, &erase);
+=======
+	ret = mtd_erase(mtd, &erase);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		set_current_state(TASK_RUNNING);
 		remove_wait_queue(&wait_q, &wait);
@@ -102,7 +110,11 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
 	 * Next, write the data to flash.
 	 */
 
+<<<<<<< HEAD
 	ret = mtd->write(mtd, pos, len, &retlen, buf);
+=======
+	ret = mtd_write(mtd, pos, len, &retlen, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		return ret;
 	if (retlen != len)
@@ -119,7 +131,11 @@ static int write_cached_data (struct mtdblk_dev *mtdblk)
 	if (mtdblk->cache_state != STATE_DIRTY)
 		return 0;
 
+<<<<<<< HEAD
 	DEBUG(MTD_DEBUG_LEVEL2, "mtdblock: writing cached data for \"%s\" "
+=======
+	pr_debug("mtdblock: writing cached data for \"%s\" "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"at 0x%lx, size 0x%x\n", mtd->name,
 			mtdblk->cache_offset, mtdblk->cache_size);
 
@@ -148,11 +164,19 @@ static int do_cached_write (struct mtdblk_dev *mtdblk, unsigned long pos,
 	size_t retlen;
 	int ret;
 
+<<<<<<< HEAD
 	DEBUG(MTD_DEBUG_LEVEL2, "mtdblock: write on \"%s\" at 0x%lx, size 0x%x\n",
 		mtd->name, pos, len);
 
 	if (!sect_size)
 		return mtd->write(mtd, pos, len, &retlen, buf);
+=======
+	pr_debug("mtdblock: write on \"%s\" at 0x%lx, size 0x%x\n",
+		mtd->name, pos, len);
+
+	if (!sect_size)
+		return mtd_write(mtd, pos, len, &retlen, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	while (len > 0) {
 		unsigned long sect_start = (pos/sect_size)*sect_size;
@@ -184,8 +208,13 @@ static int do_cached_write (struct mtdblk_dev *mtdblk, unsigned long pos,
 			    mtdblk->cache_offset != sect_start) {
 				/* fill the cache with the current sector */
 				mtdblk->cache_state = STATE_EMPTY;
+<<<<<<< HEAD
 				ret = mtd->read(mtd, sect_start, sect_size,
 						&retlen, mtdblk->cache_data);
+=======
+				ret = mtd_read(mtd, sect_start, sect_size,
+					       &retlen, mtdblk->cache_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (ret)
 					return ret;
 				if (retlen != sect_size)
@@ -218,11 +247,19 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
 	size_t retlen;
 	int ret;
 
+<<<<<<< HEAD
 	DEBUG(MTD_DEBUG_LEVEL2, "mtdblock: read on \"%s\" at 0x%lx, size 0x%x\n",
 			mtd->name, pos, len);
 
 	if (!sect_size)
 		return mtd->read(mtd, pos, len, &retlen, buf);
+=======
+	pr_debug("mtdblock: read on \"%s\" at 0x%lx, size 0x%x\n",
+			mtd->name, pos, len);
+
+	if (!sect_size)
+		return mtd_read(mtd, pos, len, &retlen, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	while (len > 0) {
 		unsigned long sect_start = (pos/sect_size)*sect_size;
@@ -241,7 +278,11 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
 		    mtdblk->cache_offset == sect_start) {
 			memcpy (buf, mtdblk->cache_data + offset, size);
 		} else {
+<<<<<<< HEAD
 			ret = mtd->read(mtd, pos, size, &retlen, buf);
+=======
+			ret = mtd_read(mtd, pos, size, &retlen, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (ret)
 				return ret;
 			if (retlen != size)
@@ -283,7 +324,11 @@ static int mtdblock_open(struct mtd_blktrans_dev *mbd)
 {
 	struct mtdblk_dev *mtdblk = container_of(mbd, struct mtdblk_dev, mbd);
 
+<<<<<<< HEAD
 	DEBUG(MTD_DEBUG_LEVEL1,"mtdblock_open\n");
+=======
+	pr_debug("mtdblock_open\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&mtdblks_lock);
 	if (mtdblk->count) {
@@ -303,7 +348,11 @@ static int mtdblock_open(struct mtd_blktrans_dev *mbd)
 
 	mutex_unlock(&mtdblks_lock);
 
+<<<<<<< HEAD
 	DEBUG(MTD_DEBUG_LEVEL1, "ok\n");
+=======
+	pr_debug("ok\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -312,7 +361,11 @@ static int mtdblock_release(struct mtd_blktrans_dev *mbd)
 {
 	struct mtdblk_dev *mtdblk = container_of(mbd, struct mtdblk_dev, mbd);
 
+<<<<<<< HEAD
    	DEBUG(MTD_DEBUG_LEVEL1, "mtdblock_release\n");
+=======
+	pr_debug("mtdblock_release\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&mtdblks_lock);
 
@@ -321,15 +374,28 @@ static int mtdblock_release(struct mtd_blktrans_dev *mbd)
 	mutex_unlock(&mtdblk->cache_mutex);
 
 	if (!--mtdblk->count) {
+<<<<<<< HEAD
 		/* It was the last usage. Free the cache */
 		if (mbd->mtd->sync)
 			mbd->mtd->sync(mbd->mtd);
+=======
+		/*
+		 * It was the last usage. Free the cache, but only sync if
+		 * opened for writing.
+		 */
+		if (mbd->file_mode & FMODE_WRITE)
+			mtd_sync(mbd->mtd);
+>>>>>>> refs/remotes/origin/cm-10.0
 		vfree(mtdblk->cache_data);
 	}
 
 	mutex_unlock(&mtdblks_lock);
 
+<<<<<<< HEAD
 	DEBUG(MTD_DEBUG_LEVEL1, "ok\n");
+=======
+	pr_debug("ok\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -341,9 +407,13 @@ static int mtdblock_flush(struct mtd_blktrans_dev *dev)
 	mutex_lock(&mtdblk->cache_mutex);
 	write_cached_data(mtdblk);
 	mutex_unlock(&mtdblk->cache_mutex);
+<<<<<<< HEAD
 
 	if (dev->mtd->sync)
 		dev->mtd->sync(dev->mtd);
+=======
+	mtd_sync(dev->mtd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -389,8 +459,11 @@ static struct mtd_blktrans_ops mtdblock_tr = {
 
 static int __init init_mtdblock(void)
 {
+<<<<<<< HEAD
 	mutex_init(&mtdblks_lock);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return register_mtd_blktrans(&mtdblock_tr);
 }
 

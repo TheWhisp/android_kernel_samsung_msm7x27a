@@ -45,18 +45,30 @@ struct device_attribute {
 			 const char *buf, size_t count);
 };
 
+<<<<<<< HEAD
 Attributes of devices can be exported via drivers using a simple
 procfs-like interface. 
+=======
+Attributes of devices can be exported by a device driver through sysfs.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 Please see Documentation/filesystems/sysfs.txt for more information
 on how sysfs works.
 
+<<<<<<< HEAD
+=======
+As explained in Documentation/kobject.txt, device attributes must be be
+created before the KOBJ_ADD uevent is generated. The only way to realize
+that is by defining an attribute group.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 Attributes are declared using a macro called DEVICE_ATTR:
 
 #define DEVICE_ATTR(name,mode,show,store)
 
 Example:
 
+<<<<<<< HEAD
 DEVICE_ATTR(power,0644,show_power,store_power);
 
 This declares a structure of type struct device_attribute named
@@ -72,6 +84,39 @@ device_create_file(dev,&dev_attr_power);
 device_remove_file(dev,&dev_attr_power);
 
 The file name will be 'power' with a mode of 0644 (-rw-r--r--).
+=======
+static DEVICE_ATTR(type, 0444, show_type, NULL);
+static DEVICE_ATTR(power, 0644, show_power, store_power);
+
+This declares two structures of type struct device_attribute with respective
+names 'dev_attr_type' and 'dev_attr_power'. These two attributes can be
+organized as follows into a group:
+
+static struct attribute *dev_attrs[] = {
+	&dev_attr_type.attr,
+	&dev_attr_power.attr,
+	NULL,
+};
+
+static struct attribute_group dev_attr_group = {
+	.attrs = dev_attrs,
+};
+
+static const struct attribute_group *dev_attr_groups[] = {
+	&dev_attr_group,
+	NULL,
+};
+
+This array of groups can then be associated with a device by setting the
+group pointer in struct device before device_register() is invoked:
+
+      dev->groups = dev_attr_groups;
+      device_register(dev);
+
+The device_register() function will use the 'groups' pointer to create the
+device attributes and the device_unregister() function will use this pointer
+to remove the device attributes.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 Word of warning:  While the kernel allows device_create_file() and
 device_remove_file() to be called on a device at any time, userspace has
@@ -84,6 +129,7 @@ not know about the new attributes.
 This is important for device driver that need to publish additional
 attributes for a device at driver probe time.  If the device driver simply
 calls device_create_file() on the device structure passed to it, then
+<<<<<<< HEAD
 userspace will never be notified of the new attributes.  Instead, it should
 probably use class_create() and class->dev_attrs to set up a list of
 desired attributes in the modules_init function, and then in the .probe()
@@ -105,3 +151,6 @@ Then in the module init function is would do:
 And assuming 'dev' is the struct device passed into the probe hook, the driver
 probe function would do something like:
 	create_device(&mydriver_class, dev, chrdev, &private_data, "my_name");
+=======
+userspace will never be notified of the new attributes.
+>>>>>>> refs/remotes/origin/cm-10.0

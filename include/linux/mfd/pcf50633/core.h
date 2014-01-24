@@ -21,6 +21,10 @@
 #include <linux/mfd/pcf50633/backlight.h>
 
 struct pcf50633;
+<<<<<<< HEAD
+=======
+struct regmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PCF50633_NUM_REGULATORS	11
 
@@ -134,7 +138,11 @@ enum {
 
 struct pcf50633 {
 	struct device *dev;
+<<<<<<< HEAD
 	struct i2c_client *i2c_client;
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct pcf50633_platform_data *pdata;
 	int irq;

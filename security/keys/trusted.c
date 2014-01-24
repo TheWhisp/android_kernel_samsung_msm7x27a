@@ -779,7 +779,14 @@ static int getoptions(char *c, struct trusted_key_payload *pay,
 			opt->pcrinfo_len = strlen(args[0].from) / 2;
 			if (opt->pcrinfo_len > MAX_PCRINFO_SIZE)
 				return -EINVAL;
+<<<<<<< HEAD
 			hex2bin(opt->pcrinfo, args[0].from, opt->pcrinfo_len);
+=======
+			res = hex2bin(opt->pcrinfo, args[0].from,
+				      opt->pcrinfo_len);
+			if (res < 0)
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case Opt_keyhandle:
 			res = strict_strtoul(args[0].from, 16, &handle);
@@ -791,12 +798,26 @@ static int getoptions(char *c, struct trusted_key_payload *pay,
 		case Opt_keyauth:
 			if (strlen(args[0].from) != 2 * SHA1_DIGEST_SIZE)
 				return -EINVAL;
+<<<<<<< HEAD
 			hex2bin(opt->keyauth, args[0].from, SHA1_DIGEST_SIZE);
+=======
+			res = hex2bin(opt->keyauth, args[0].from,
+				      SHA1_DIGEST_SIZE);
+			if (res < 0)
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case Opt_blobauth:
 			if (strlen(args[0].from) != 2 * SHA1_DIGEST_SIZE)
 				return -EINVAL;
+<<<<<<< HEAD
 			hex2bin(opt->blobauth, args[0].from, SHA1_DIGEST_SIZE);
+=======
+			res = hex2bin(opt->blobauth, args[0].from,
+				      SHA1_DIGEST_SIZE);
+			if (res < 0)
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case Opt_migratable:
 			if (*args[0].from == '0')
@@ -860,7 +881,13 @@ static int datablob_parse(char *datablob, struct trusted_key_payload *p,
 		p->blob_len = strlen(c) / 2;
 		if (p->blob_len > MAX_BLOB_SIZE)
 			return -EINVAL;
+<<<<<<< HEAD
 		hex2bin(p->blob, c, p->blob_len);
+=======
+		ret = hex2bin(p->blob, c, p->blob_len);
+		if (ret < 0)
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = getoptions(datablob, p, o);
 		if (ret < 0)
 			return ret;
@@ -982,7 +1009,11 @@ out:
 	kfree(datablob);
 	kfree(options);
 	if (!ret)
+<<<<<<< HEAD
 		rcu_assign_pointer(key->payload.data, payload);
+=======
+		rcu_assign_keypointer(key, payload);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		kfree(payload);
 	return ret;
@@ -1056,7 +1087,11 @@ static int trusted_update(struct key *key, const void *data, size_t datalen)
 			goto out;
 		}
 	}
+<<<<<<< HEAD
 	rcu_assign_pointer(key->payload.data, new_p);
+=======
+	rcu_assign_keypointer(key, new_p);
+>>>>>>> refs/remotes/origin/cm-10.0
 	call_rcu(&p->rcu, trusted_rcu_free);
 out:
 	kfree(datablob);
@@ -1087,7 +1122,11 @@ static long trusted_read(const struct key *key, char __user *buffer,
 
 	bufp = ascii_buf;
 	for (i = 0; i < p->blob_len; i++)
+<<<<<<< HEAD
 		bufp = pack_hex_byte(bufp, p->blob[i]);
+=======
+		bufp = hex_byte_pack(bufp, p->blob[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((copy_to_user(buffer, ascii_buf, 2 * p->blob_len)) != 0) {
 		kfree(ascii_buf);
 		return -EFAULT;

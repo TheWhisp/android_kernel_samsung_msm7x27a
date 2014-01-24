@@ -29,7 +29,10 @@
 #include <asm/pgtable.h>
 #include <asm/r4kcache.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mmu_context.h>
 #include <asm/war.h>
 #include <asm/cacheflush.h> /* for run_uncached() */
@@ -498,7 +501,11 @@ static inline void local_r4k_flush_cache_page(void *args)
 		if (map_coherent)
 			vaddr = kmap_coherent(page, addr);
 		else
+<<<<<<< HEAD
 			vaddr = kmap_atomic(page, KM_USER0);
+=======
+			vaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
 		addr = (unsigned long)vaddr;
 	}
 
@@ -521,7 +528,11 @@ static inline void local_r4k_flush_cache_page(void *args)
 		if (map_coherent)
 			kunmap_coherent();
 		else
+<<<<<<< HEAD
 			kunmap_atomic(vaddr, KM_USER0);
+=======
+			kunmap_atomic(vaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -604,6 +615,10 @@ static void r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
 			r4k_blast_scache();
 		else
 			blast_scache_range(addr, addr + size);
+<<<<<<< HEAD
+=======
+		__sync();
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -620,6 +635,10 @@ static void r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
 	}
 
 	bc_wback_inv(addr, size);
+<<<<<<< HEAD
+=======
+	__sync();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
@@ -647,6 +666,10 @@ static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
 				 (addr + size - 1) & almask);
 			blast_inv_scache_range(addr, addr + size);
 		}
+<<<<<<< HEAD
+=======
+		__sync();
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -663,6 +686,10 @@ static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
 	}
 
 	bc_inv(addr, size);
+<<<<<<< HEAD
+=======
+	__sync();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif /* CONFIG_DMA_NONCOHERENT */
 
@@ -718,6 +745,42 @@ static void r4k_flush_icache_all(void)
 		r4k_blast_icache();
 }
 
+<<<<<<< HEAD
+=======
+struct flush_kernel_vmap_range_args {
+	unsigned long	vaddr;
+	int		size;
+};
+
+static inline void local_r4k_flush_kernel_vmap_range(void *args)
+{
+	struct flush_kernel_vmap_range_args *vmra = args;
+	unsigned long vaddr = vmra->vaddr;
+	int size = vmra->size;
+
+	/*
+	 * Aliases only affect the primary caches so don't bother with
+	 * S-caches or T-caches.
+	 */
+	if (cpu_has_safe_index_cacheops && size >= dcache_size)
+		r4k_blast_dcache();
+	else {
+		R4600_HIT_CACHEOP_WAR_IMPL;
+		blast_dcache_range(vaddr, vaddr + size);
+	}
+}
+
+static void r4k_flush_kernel_vmap_range(unsigned long vaddr, int size)
+{
+	struct flush_kernel_vmap_range_args args;
+
+	args.vaddr = (unsigned long) vaddr;
+	args.size = size;
+
+	r4k_on_each_cpu(local_r4k_flush_kernel_vmap_range, &args);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void rm7k_erratum31(void)
 {
 	const unsigned long ic_lsize = 32;
@@ -1198,6 +1261,12 @@ static void __cpuinit setup_scache(void)
 		loongson2_sc_init();
 		return;
 #endif
+<<<<<<< HEAD
+=======
+	case CPU_XLP:
+		/* don't need to worry about L2, fully coherent */
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	default:
 		if (c->isa_level == MIPS_CPU_ISA_M32R1 ||
@@ -1399,6 +1468,11 @@ void __cpuinit r4k_cache_init(void)
 	flush_cache_page	= r4k_flush_cache_page;
 	flush_cache_range	= r4k_flush_cache_range;
 
+<<<<<<< HEAD
+=======
+	__flush_kernel_vmap_range = r4k_flush_kernel_vmap_range;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	flush_cache_sigtramp	= r4k_flush_cache_sigtramp;
 	flush_icache_all	= r4k_flush_icache_all;
 	local_flush_data_cache_page	= local_r4k_flush_data_cache_page;

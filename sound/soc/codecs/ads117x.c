@@ -14,6 +14,10 @@
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/initval.h>
@@ -57,6 +61,7 @@ static struct platform_driver ads117x_codec_driver = {
 	.remove = __devexit_p(ads117x_remove),
 };
 
+<<<<<<< HEAD
 static int __init ads117x_init(void)
 {
 	return platform_driver_register(&ads117x_codec_driver);
@@ -68,6 +73,9 @@ static void __exit ads117x_exit(void)
 	platform_driver_unregister(&ads117x_codec_driver);
 }
 module_exit(ads117x_exit);
+=======
+module_platform_driver(ads117x_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("ASoC ads117x driver");
 MODULE_AUTHOR("Graeme Gregory");

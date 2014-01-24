@@ -11,6 +11,13 @@
 #include "cache.h"
 #include "header.h"
 #include "debugfs.h"
+<<<<<<< HEAD
+=======
+#include "parse-events-flex.h"
+#include "pmu.h"
+
+#define MAX_NAME_LEN 100
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct event_symbol {
 	u8		type;
@@ -19,6 +26,7 @@ struct event_symbol {
 	const char	*alias;
 };
 
+<<<<<<< HEAD
 enum event_result {
 	EVT_FAILED,
 	EVT_HANDLED,
@@ -26,6 +34,10 @@ enum event_result {
 };
 
 char debugfs_path[MAXPATHLEN];
+=======
+int parse_events_parse(struct list_head *list, struct list_head *list_tmp,
+		       int *idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CHW(x) .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_##x
 #define CSW(x) .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_##x
@@ -40,6 +52,10 @@ static struct event_symbol event_symbols[] = {
   { CHW(BRANCH_INSTRUCTIONS),		"branch-instructions",		"branches"		},
   { CHW(BRANCH_MISSES),			"branch-misses",		""			},
   { CHW(BUS_CYCLES),			"bus-cycles",			""			},
+<<<<<<< HEAD
+=======
+  { CHW(REF_CPU_CYCLES),		"ref-cycles",			""			},
+>>>>>>> refs/remotes/origin/cm-10.0
 
   { CSW(CPU_CLOCK),			"cpu-clock",			""			},
   { CSW(TASK_CLOCK),			"task-clock",			""			},
@@ -70,6 +86,10 @@ static const char *hw_event_names[PERF_COUNT_HW_MAX] = {
 	"bus-cycles",
 	"stalled-cycles-frontend",
 	"stalled-cycles-backend",
+<<<<<<< HEAD
+=======
+	"ref-cycles",
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const char *sw_event_names[PERF_COUNT_SW_MAX] = {
@@ -86,6 +106,7 @@ static const char *sw_event_names[PERF_COUNT_SW_MAX] = {
 
 #define MAX_ALIASES 8
 
+<<<<<<< HEAD
 static const char *hw_cache[][MAX_ALIASES] = {
  { "L1-dcache",	"l1-d",		"l1d",		"L1-data",		},
  { "L1-icache",	"l1-i",		"l1i",		"L1-instruction",	},
@@ -96,12 +117,30 @@ static const char *hw_cache[][MAX_ALIASES] = {
 };
 
 static const char *hw_cache_op[][MAX_ALIASES] = {
+=======
+static const char *hw_cache[PERF_COUNT_HW_CACHE_MAX][MAX_ALIASES] = {
+ { "L1-dcache",	"l1-d",		"l1d",		"L1-data",		},
+ { "L1-icache",	"l1-i",		"l1i",		"L1-instruction",	},
+ { "LLC",	"L2",							},
+ { "dTLB",	"d-tlb",	"Data-TLB",				},
+ { "iTLB",	"i-tlb",	"Instruction-TLB",			},
+ { "branch",	"branches",	"bpu",		"btb",		"bpc",	},
+ { "node",								},
+};
+
+static const char *hw_cache_op[PERF_COUNT_HW_CACHE_OP_MAX][MAX_ALIASES] = {
+>>>>>>> refs/remotes/origin/cm-10.0
  { "load",	"loads",	"read",					},
  { "store",	"stores",	"write",				},
  { "prefetch",	"prefetches",	"speculative-read", "speculative-load",	},
 };
 
+<<<<<<< HEAD
 static const char *hw_cache_result[][MAX_ALIASES] = {
+=======
+static const char *hw_cache_result[PERF_COUNT_HW_CACHE_RESULT_MAX]
+				  [MAX_ALIASES] = {
+>>>>>>> refs/remotes/origin/cm-10.0
  { "refs",	"Reference",	"ops",		"access",		},
  { "misses",	"miss",							},
 };
@@ -124,6 +163,10 @@ static unsigned long hw_cache_stat[C(MAX)] = {
  [C(DTLB)]	= (CACHE_READ | CACHE_WRITE | CACHE_PREFETCH),
  [C(ITLB)]	= (CACHE_READ),
  [C(BPU)]	= (CACHE_READ),
+<<<<<<< HEAD
+=======
+ [C(NODE)]	= (CACHE_READ | CACHE_WRITE | CACHE_PREFETCH),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define for_each_subsystem(sys_dir, sys_dirent, sys_next)	       \
@@ -137,7 +180,11 @@ static int tp_event_has_id(struct dirent *sys_dir, struct dirent *evt_dir)
 	char evt_path[MAXPATHLEN];
 	int fd;
 
+<<<<<<< HEAD
 	snprintf(evt_path, MAXPATHLEN, "%s/%s/%s/id", debugfs_path,
+=======
+	snprintf(evt_path, MAXPATHLEN, "%s/%s/%s/id", tracing_events_path,
+>>>>>>> refs/remotes/origin/cm-10.0
 			sys_dir->d_name, evt_dir->d_name);
 	fd = open(evt_path, O_RDONLY);
 	if (fd < 0)
@@ -162,22 +209,37 @@ struct tracepoint_path *tracepoint_id_to_path(u64 config)
 	struct tracepoint_path *path = NULL;
 	DIR *sys_dir, *evt_dir;
 	struct dirent *sys_next, *evt_next, sys_dirent, evt_dirent;
+<<<<<<< HEAD
 	char id_buf[4];
+=======
+	char id_buf[24];
+>>>>>>> refs/remotes/origin/cm-10.0
 	int fd;
 	u64 id;
 	char evt_path[MAXPATHLEN];
 	char dir_path[MAXPATHLEN];
 
+<<<<<<< HEAD
 	if (debugfs_valid_mountpoint(debugfs_path))
 		return NULL;
 
 	sys_dir = opendir(debugfs_path);
+=======
+	if (debugfs_valid_mountpoint(tracing_events_path))
+		return NULL;
+
+	sys_dir = opendir(tracing_events_path);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!sys_dir)
 		return NULL;
 
 	for_each_subsystem(sys_dir, sys_dirent, sys_next) {
 
+<<<<<<< HEAD
 		snprintf(dir_path, MAXPATHLEN, "%s/%s", debugfs_path,
+=======
+		snprintf(dir_path, MAXPATHLEN, "%s/%s", tracing_events_path,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 sys_dirent.d_name);
 		evt_dir = opendir(dir_path);
 		if (!evt_dir)
@@ -351,7 +413,28 @@ const char *__event_name(int type, u64 config)
 	return "unknown";
 }
 
+<<<<<<< HEAD
 static int parse_aliases(const char **str, const char *names[][MAX_ALIASES], int size)
+=======
+static int add_event(struct list_head *list, int *idx,
+		     struct perf_event_attr *attr, char *name)
+{
+	struct perf_evsel *evsel;
+
+	event_attr_init(attr);
+
+	evsel = perf_evsel__new(attr, (*idx)++);
+	if (!evsel)
+		return -ENOMEM;
+
+	list_add_tail(&evsel->node, list);
+
+	evsel->name = strdup(name);
+	return 0;
+}
+
+static int parse_aliases(char *str, const char *names[][MAX_ALIASES], int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i, j;
 	int n, longest = -1;
@@ -359,6 +442,7 @@ static int parse_aliases(const char **str, const char *names[][MAX_ALIASES], int
 	for (i = 0; i < size; i++) {
 		for (j = 0; j < MAX_ALIASES && names[i][j]; j++) {
 			n = strlen(names[i][j]);
+<<<<<<< HEAD
 			if (n > longest && !strncasecmp(*str, names[i][j], n))
 				longest = n;
 		}
@@ -366,11 +450,19 @@ static int parse_aliases(const char **str, const char *names[][MAX_ALIASES], int
 			*str += longest;
 			return i;
 		}
+=======
+			if (n > longest && !strncasecmp(str, names[i][j], n))
+				longest = n;
+		}
+		if (longest > 0)
+			return i;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return -1;
 }
 
+<<<<<<< HEAD
 static enum event_result
 parse_generic_hw_event(const char **str, struct perf_event_attr *attr)
 {
@@ -378,10 +470,22 @@ parse_generic_hw_event(const char **str, struct perf_event_attr *attr)
 	int cache_type = -1, cache_op = -1, cache_result = -1;
 
 	cache_type = parse_aliases(&s, hw_cache, PERF_COUNT_HW_CACHE_MAX);
+=======
+int parse_events_add_cache(struct list_head *list, int *idx,
+			   char *type, char *op_result1, char *op_result2)
+{
+	struct perf_event_attr attr;
+	char name[MAX_NAME_LEN];
+	int cache_type = -1, cache_op = -1, cache_result = -1;
+	char *op_result[2] = { op_result1, op_result2 };
+	int i, n;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * No fallback - if we cannot get a clear cache type
 	 * then bail out:
 	 */
+<<<<<<< HEAD
 	if (cache_type == -1)
 		return EVT_FAILED;
 
@@ -394,16 +498,41 @@ parse_generic_hw_event(const char **str, struct perf_event_attr *attr)
 			if (cache_op >= 0) {
 				if (!is_cache_op_valid(cache_type, cache_op))
 					return 0;
+=======
+	cache_type = parse_aliases(type, hw_cache,
+				   PERF_COUNT_HW_CACHE_MAX);
+	if (cache_type == -1)
+		return -EINVAL;
+
+	n = snprintf(name, MAX_NAME_LEN, "%s", type);
+
+	for (i = 0; (i < 2) && (op_result[i]); i++) {
+		char *str = op_result[i];
+
+		snprintf(name + n, MAX_NAME_LEN - n, "-%s\n", str);
+
+		if (cache_op == -1) {
+			cache_op = parse_aliases(str, hw_cache_op,
+						 PERF_COUNT_HW_CACHE_OP_MAX);
+			if (cache_op >= 0) {
+				if (!is_cache_op_valid(cache_type, cache_op))
+					return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 				continue;
 			}
 		}
 
 		if (cache_result == -1) {
+<<<<<<< HEAD
 			cache_result = parse_aliases(&s, hw_cache_result,
+=======
+			cache_result = parse_aliases(str, hw_cache_result,
+>>>>>>> refs/remotes/origin/cm-10.0
 						PERF_COUNT_HW_CACHE_RESULT_MAX);
 			if (cache_result >= 0)
 				continue;
 		}
+<<<<<<< HEAD
 
 		/*
 		 * Can't parse this as a cache op or result, so back up
@@ -411,6 +540,8 @@ parse_generic_hw_event(const char **str, struct perf_event_attr *attr)
 		 */
 		--s;
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -425,6 +556,7 @@ parse_generic_hw_event(const char **str, struct perf_event_attr *attr)
 	if (cache_result == -1)
 		cache_result = PERF_COUNT_HW_CACHE_RESULT_ACCESS;
 
+<<<<<<< HEAD
 	attr->config = cache_type | (cache_op << 8) | (cache_result << 16);
 	attr->type = PERF_TYPE_HW_CACHE;
 
@@ -439,25 +571,51 @@ parse_single_tracepoint_event(char *sys_name,
 			      struct perf_event_attr *attr,
 			      const char **strp)
 {
+=======
+	memset(&attr, 0, sizeof(attr));
+	attr.config = cache_type | (cache_op << 8) | (cache_result << 16);
+	attr.type = PERF_TYPE_HW_CACHE;
+	return add_event(list, idx, &attr, name);
+}
+
+static int add_tracepoint(struct list_head *list, int *idx,
+			  char *sys_name, char *evt_name)
+{
+	struct perf_event_attr attr;
+	char name[MAX_NAME_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
 	char evt_path[MAXPATHLEN];
 	char id_buf[4];
 	u64 id;
 	int fd;
 
+<<<<<<< HEAD
 	snprintf(evt_path, MAXPATHLEN, "%s/%s/%s/id", debugfs_path,
+=======
+	snprintf(evt_path, MAXPATHLEN, "%s/%s/%s/id", tracing_events_path,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 sys_name, evt_name);
 
 	fd = open(evt_path, O_RDONLY);
 	if (fd < 0)
+<<<<<<< HEAD
 		return EVT_FAILED;
 
 	if (read(fd, id_buf, sizeof(id_buf)) < 0) {
 		close(fd);
 		return EVT_FAILED;
+=======
+		return -1;
+
+	if (read(fd, id_buf, sizeof(id_buf)) < 0) {
+		close(fd);
+		return -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	close(fd);
 	id = atoll(id_buf);
+<<<<<<< HEAD
 	attr->config = id;
 	attr->type = PERF_TYPE_TRACEPOINT;
 	*strp += strlen(sys_name) + evt_length + 1; /* + 1 for the ':' */
@@ -477,10 +635,28 @@ parse_single_tracepoint_event(char *sys_name,
 static enum event_result
 parse_multiple_tracepoint_event(const struct option *opt, char *sys_name,
 				const char *evt_exp, char *flags)
+=======
+
+	memset(&attr, 0, sizeof(attr));
+	attr.config = id;
+	attr.type = PERF_TYPE_TRACEPOINT;
+	attr.sample_type |= PERF_SAMPLE_RAW;
+	attr.sample_type |= PERF_SAMPLE_TIME;
+	attr.sample_type |= PERF_SAMPLE_CPU;
+	attr.sample_period = 1;
+
+	snprintf(name, MAX_NAME_LEN, "%s:%s", sys_name, evt_name);
+	return add_event(list, idx, &attr, name);
+}
+
+static int add_tracepoint_multi(struct list_head *list, int *idx,
+				char *sys_name, char *evt_name)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	char evt_path[MAXPATHLEN];
 	struct dirent *evt_ent;
 	DIR *evt_dir;
+<<<<<<< HEAD
 
 	snprintf(evt_path, MAXPATHLEN, "%s/%s", debugfs_path, sys_name);
 	evt_dir = opendir(evt_path);
@@ -494,12 +670,25 @@ parse_multiple_tracepoint_event(const struct option *opt, char *sys_name,
 		char event_opt[MAX_EVOPT_LEN + 1];
 		int len;
 
+=======
+	int ret = 0;
+
+	snprintf(evt_path, MAXPATHLEN, "%s/%s", tracing_events_path, sys_name);
+	evt_dir = opendir(evt_path);
+	if (!evt_dir) {
+		perror("Can't open event dir");
+		return -1;
+	}
+
+	while (!ret && (evt_ent = readdir(evt_dir))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!strcmp(evt_ent->d_name, ".")
 		    || !strcmp(evt_ent->d_name, "..")
 		    || !strcmp(evt_ent->d_name, "enable")
 		    || !strcmp(evt_ent->d_name, "filter"))
 			continue;
 
+<<<<<<< HEAD
 		if (!strglobmatch(evt_ent->d_name, evt_exp))
 			continue;
 
@@ -568,11 +757,42 @@ parse_tracepoint_event(const struct option *opt, const char **strp,
 static enum event_result
 parse_breakpoint_type(const char *type, const char **strp,
 		      struct perf_event_attr *attr)
+=======
+		if (!strglobmatch(evt_ent->d_name, evt_name))
+			continue;
+
+		ret = add_tracepoint(list, idx, sys_name, evt_ent->d_name);
+	}
+
+	return ret;
+}
+
+int parse_events_add_tracepoint(struct list_head *list, int *idx,
+				char *sys, char *event)
+{
+	int ret;
+
+	ret = debugfs_valid_mountpoint(tracing_events_path);
+	if (ret)
+		return ret;
+
+	return strpbrk(event, "*?") ?
+	       add_tracepoint_multi(list, idx, sys, event) :
+	       add_tracepoint(list, idx, sys, event);
+}
+
+static int
+parse_breakpoint_type(const char *type, struct perf_event_attr *attr)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
 	for (i = 0; i < 3; i++) {
+<<<<<<< HEAD
 		if (!type[i])
+=======
+		if (!type || !type[i])
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 
 		switch (type[i]) {
@@ -586,6 +806,7 @@ parse_breakpoint_type(const char *type, const char **strp,
 			attr->bp_type |= HW_BREAKPOINT_X;
 			break;
 		default:
+<<<<<<< HEAD
 			return EVT_FAILED;
 		}
 	}
@@ -632,11 +853,35 @@ parse_breakpoint_event(const char **strp, struct perf_event_attr *attr)
 		if (err == EVT_FAILED)
 			return EVT_FAILED;
 	}
+=======
+			return -EINVAL;
+		}
+	}
+
+	if (!attr->bp_type) /* Default */
+		attr->bp_type = HW_BREAKPOINT_R | HW_BREAKPOINT_W;
+
+	return 0;
+}
+
+int parse_events_add_breakpoint(struct list_head *list, int *idx,
+				void *ptr, char *type)
+{
+	struct perf_event_attr attr;
+	char name[MAX_NAME_LEN];
+
+	memset(&attr, 0, sizeof(attr));
+	attr.bp_addr = (unsigned long) ptr;
+
+	if (parse_breakpoint_type(type, &attr))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * We should find a nice way to override the access length
 	 * Provide some defaults for now
 	 */
+<<<<<<< HEAD
 	if (attr->bp_type == HW_BREAKPOINT_X)
 		attr->bp_len = sizeof(long);
 	else
@@ -660,10 +905,60 @@ static int check_events(const char *str, unsigned int i)
 		if (!strncasecmp(str, event_symbols[i].alias, n))
 			return n;
 	}
+=======
+	if (attr.bp_type == HW_BREAKPOINT_X)
+		attr.bp_len = sizeof(long);
+	else
+		attr.bp_len = HW_BREAKPOINT_LEN_4;
+
+	attr.type = PERF_TYPE_BREAKPOINT;
+
+	snprintf(name, MAX_NAME_LEN, "mem:%p:%s", ptr, type ? type : "rw");
+	return add_event(list, idx, &attr, name);
+}
+
+static int config_term(struct perf_event_attr *attr,
+		       struct parse_events__term *term)
+{
+	switch (term->type) {
+	case PARSE_EVENTS__TERM_TYPE_CONFIG:
+		attr->config = term->val.num;
+		break;
+	case PARSE_EVENTS__TERM_TYPE_CONFIG1:
+		attr->config1 = term->val.num;
+		break;
+	case PARSE_EVENTS__TERM_TYPE_CONFIG2:
+		attr->config2 = term->val.num;
+		break;
+	case PARSE_EVENTS__TERM_TYPE_SAMPLE_PERIOD:
+		attr->sample_period = term->val.num;
+		break;
+	case PARSE_EVENTS__TERM_TYPE_BRANCH_SAMPLE_TYPE:
+		/*
+		 * TODO uncomment when the field is available
+		 * attr->branch_sample_type = term->val.num;
+		 */
+		break;
+	default:
+		return -EINVAL;
+	}
+	return 0;
+}
+
+static int config_attr(struct perf_event_attr *attr,
+		       struct list_head *head, int fail)
+{
+	struct parse_events__term *term;
+
+	list_for_each_entry(term, head, list)
+		if (config_term(attr, term) && fail)
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static enum event_result
 parse_symbolic_event(const char **strp, struct perf_event_attr *attr)
 {
@@ -740,6 +1035,71 @@ parse_event_modifier(const char **strp, struct perf_event_attr *attr)
 	if (*str++ != ':')
 		return -1;
 
+=======
+int parse_events_add_numeric(struct list_head *list, int *idx,
+			     unsigned long type, unsigned long config,
+			     struct list_head *head_config)
+{
+	struct perf_event_attr attr;
+
+	memset(&attr, 0, sizeof(attr));
+	attr.type = type;
+	attr.config = config;
+
+	if (head_config &&
+	    config_attr(&attr, head_config, 1))
+		return -EINVAL;
+
+	return add_event(list, idx, &attr,
+			 (char *) __event_name(type, config));
+}
+
+int parse_events_add_pmu(struct list_head *list, int *idx,
+			 char *name, struct list_head *head_config)
+{
+	struct perf_event_attr attr;
+	struct perf_pmu *pmu;
+
+	pmu = perf_pmu__find(name);
+	if (!pmu)
+		return -EINVAL;
+
+	memset(&attr, 0, sizeof(attr));
+
+	/*
+	 * Configure hardcoded terms first, no need to check
+	 * return value when called with fail == 0 ;)
+	 */
+	config_attr(&attr, head_config, 0);
+
+	if (perf_pmu__config(pmu, &attr, head_config))
+		return -EINVAL;
+
+	return add_event(list, idx, &attr, (char *) "pmu");
+}
+
+void parse_events_update_lists(struct list_head *list_event,
+			       struct list_head *list_all)
+{
+	/*
+	 * Called for single event definition. Update the
+	 * 'all event' list, and reinit the 'signle event'
+	 * list, for next event definition.
+	 */
+	list_splice_tail(list_event, list_all);
+	INIT_LIST_HEAD(list_event);
+}
+
+int parse_events_modifier(struct list_head *list, char *str)
+{
+	struct perf_evsel *evsel;
+	int exclude = 0, exclude_GH = 0;
+	int eu = 0, ek = 0, eh = 0, eH = 0, eG = 0, precise = 0;
+
+	if (str == NULL)
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (*str) {
 		if (*str == 'u') {
 			if (!exclude)
@@ -753,6 +1113,17 @@ parse_event_modifier(const char **strp, struct perf_event_attr *attr)
 			if (!exclude)
 				exclude = eu = ek = eh = 1;
 			eh = 0;
+<<<<<<< HEAD
+=======
+		} else if (*str == 'G') {
+			if (!exclude_GH)
+				exclude_GH = eG = eH = 1;
+			eG = 0;
+		} else if (*str == 'H') {
+			if (!exclude_GH)
+				exclude_GH = eG = eH = 1;
+			eH = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else if (*str == 'p') {
 			precise++;
 		} else
@@ -760,6 +1131,7 @@ parse_event_modifier(const char **strp, struct perf_event_attr *attr)
 
 		++str;
 	}
+<<<<<<< HEAD
 	if (str < *strp + 2)
 		return -1;
 
@@ -769,10 +1141,35 @@ parse_event_modifier(const char **strp, struct perf_event_attr *attr)
 	attr->exclude_kernel = ek;
 	attr->exclude_hv     = eh;
 	attr->precise_ip     = precise;
+=======
+
+	/*
+	 * precise ip:
+	 *
+	 *  0 - SAMPLE_IP can have arbitrary skid
+	 *  1 - SAMPLE_IP must have constant skid
+	 *  2 - SAMPLE_IP requested to have 0 skid
+	 *  3 - SAMPLE_IP must have 0 skid
+	 *
+	 *  See also PERF_RECORD_MISC_EXACT_IP
+	 */
+	if (precise > 3)
+		return -EINVAL;
+
+	list_for_each_entry(evsel, list, node) {
+		evsel->attr.exclude_user   = eu;
+		evsel->attr.exclude_kernel = ek;
+		evsel->attr.exclude_hv     = eh;
+		evsel->attr.precise_ip     = precise;
+		evsel->attr.exclude_host   = eH;
+		evsel->attr.exclude_guest  = eG;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Each event can have multiple symbolic names.
  * Symbolic names are (almost) exactly matched.
@@ -861,6 +1258,43 @@ int parse_events(const struct option *opt, const char *str, int unset __used)
 	}
 
 	return 0;
+=======
+int parse_events(struct perf_evlist *evlist, const char *str, int unset __used)
+{
+	LIST_HEAD(list);
+	LIST_HEAD(list_tmp);
+	YY_BUFFER_STATE buffer;
+	int ret, idx = evlist->nr_entries;
+
+	buffer = parse_events__scan_string(str);
+
+	ret = parse_events_parse(&list, &list_tmp, &idx);
+
+	parse_events__flush_buffer(buffer);
+	parse_events__delete_buffer(buffer);
+
+	if (!ret) {
+		int entries = idx - evlist->nr_entries;
+		perf_evlist__splice_list_tail(evlist, &list, entries);
+		return 0;
+	}
+
+	/*
+	 * There are 2 users - builtin-record and builtin-test objects.
+	 * Both call perf_evlist__delete in case of error, so we dont
+	 * need to bother.
+	 */
+	fprintf(stderr, "invalid or unsupported event: '%s'\n", str);
+	fprintf(stderr, "Run 'perf list' for a list of valid events\n");
+	return ret;
+}
+
+int parse_events_option(const struct option *opt, const char *str,
+			int unset __used)
+{
+	struct perf_evlist *evlist = *(struct perf_evlist **)opt->value;
+	return parse_events(evlist, str, unset);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int parse_filter(const struct option *opt, const char *str,
@@ -907,10 +1341,17 @@ void print_tracepoint_events(const char *subsys_glob, const char *event_glob)
 	char evt_path[MAXPATHLEN];
 	char dir_path[MAXPATHLEN];
 
+<<<<<<< HEAD
 	if (debugfs_valid_mountpoint(debugfs_path))
 		return;
 
 	sys_dir = opendir(debugfs_path);
+=======
+	if (debugfs_valid_mountpoint(tracing_events_path))
+		return;
+
+	sys_dir = opendir(tracing_events_path);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!sys_dir)
 		return;
 
@@ -919,7 +1360,11 @@ void print_tracepoint_events(const char *subsys_glob, const char *event_glob)
 		    !strglobmatch(sys_dirent.d_name, subsys_glob))
 			continue;
 
+<<<<<<< HEAD
 		snprintf(dir_path, MAXPATHLEN, "%s/%s", debugfs_path,
+=======
+		snprintf(dir_path, MAXPATHLEN, "%s/%s", tracing_events_path,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 sys_dirent.d_name);
 		evt_dir = opendir(dir_path);
 		if (!evt_dir)
@@ -951,16 +1396,27 @@ int is_valid_tracepoint(const char *event_string)
 	char evt_path[MAXPATHLEN];
 	char dir_path[MAXPATHLEN];
 
+<<<<<<< HEAD
 	if (debugfs_valid_mountpoint(debugfs_path))
 		return 0;
 
 	sys_dir = opendir(debugfs_path);
+=======
+	if (debugfs_valid_mountpoint(tracing_events_path))
+		return 0;
+
+	sys_dir = opendir(tracing_events_path);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!sys_dir)
 		return 0;
 
 	for_each_subsystem(sys_dir, sys_dirent, sys_next) {
 
+<<<<<<< HEAD
 		snprintf(dir_path, MAXPATHLEN, "%s/%s", debugfs_path,
+=======
+		snprintf(dir_path, MAXPATHLEN, "%s/%s", tracing_events_path,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 sys_dirent.d_name);
 		evt_dir = opendir(dir_path);
 		if (!evt_dir)
@@ -1028,8 +1484,11 @@ int print_hwcache_events(const char *event_glob)
 	return printed;
 }
 
+<<<<<<< HEAD
 #define MAX_NAME_LEN 100
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Print the help text for the event symbols:
  */
@@ -1078,8 +1537,17 @@ void print_events(const char *event_glob)
 
 	printf("\n");
 	printf("  %-50s [%s]\n",
+<<<<<<< HEAD
 		"rNNN (see 'perf list --help' on how to encode it)",
 	       event_type_descriptors[PERF_TYPE_RAW]);
+=======
+	       "rNNN",
+	       event_type_descriptors[PERF_TYPE_RAW]);
+	printf("  %-50s [%s]\n",
+	       "cpu/t1=v1[,t2=v2,t3 ...]/modifier",
+	       event_type_descriptors[PERF_TYPE_RAW]);
+	printf("   (see 'perf list --help' on how to encode it)\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	printf("\n");
 
 	printf("  %-50s [%s]\n",
@@ -1088,6 +1556,57 @@ void print_events(const char *event_glob)
 	printf("\n");
 
 	print_tracepoint_events(NULL, NULL);
+<<<<<<< HEAD
 
 	exit(129);
+=======
+}
+
+int parse_events__is_hardcoded_term(struct parse_events__term *term)
+{
+	return term->type <= PARSE_EVENTS__TERM_TYPE_HARDCODED_MAX;
+}
+
+int parse_events__new_term(struct parse_events__term **_term, int type,
+			   char *config, char *str, long num)
+{
+	struct parse_events__term *term;
+
+	term = zalloc(sizeof(*term));
+	if (!term)
+		return -ENOMEM;
+
+	INIT_LIST_HEAD(&term->list);
+	term->type = type;
+	term->config = config;
+
+	switch (type) {
+	case PARSE_EVENTS__TERM_TYPE_CONFIG:
+	case PARSE_EVENTS__TERM_TYPE_CONFIG1:
+	case PARSE_EVENTS__TERM_TYPE_CONFIG2:
+	case PARSE_EVENTS__TERM_TYPE_SAMPLE_PERIOD:
+	case PARSE_EVENTS__TERM_TYPE_BRANCH_SAMPLE_TYPE:
+	case PARSE_EVENTS__TERM_TYPE_NUM:
+		term->val.num = num;
+		break;
+	case PARSE_EVENTS__TERM_TYPE_STR:
+		term->val.str = str;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	*_term = term;
+	return 0;
+}
+
+void parse_events__free_terms(struct list_head *terms)
+{
+	struct parse_events__term *term, *h;
+
+	list_for_each_entry_safe(term, h, terms, list)
+		free(term);
+
+	free(terms);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

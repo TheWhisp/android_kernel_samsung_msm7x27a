@@ -1,8 +1,15 @@
 /*
+<<<<<<< HEAD
 * Copyright (c) 2011 Bryan Schumaker <bjschuma@netapp.com>
 *
 * Function definitions for fault injection
 */
+=======
+ * Copyright (c) 2011 Bryan Schumaker <bjschuma@netapp.com>
+ *
+ * Function definitions for fault injection
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef LINUX_NFSD_FAULT_INJECT_H
 #define LINUX_NFSD_FAULT_INJECT_H
@@ -25,4 +32,8 @@ static inline void nfsd_forget_delegations(u64 num) {}
 static inline void nfsd_recall_delegations(u64 num) {}
 #endif /* CONFIG_NFSD_FAULT_INJECTION */
 
+<<<<<<< HEAD
 #endif /* LINUX_NFSD_FAULT_INJECT_H *
+=======
+#endif /* LINUX_NFSD_FAULT_INJECT_H */
+>>>>>>> refs/remotes/origin/cm-10.0

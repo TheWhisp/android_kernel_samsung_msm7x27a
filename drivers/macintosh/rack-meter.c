@@ -81,6 +81,7 @@ static int rackmeter_ignore_nice;
  */
 static inline cputime64_t get_cpu_idle_time(unsigned int cpu)
 {
+<<<<<<< HEAD
 	cputime64_t retval;
 
 	retval = cputime64_add(kstat_cpu(cpu).cpustat.idle,
@@ -88,6 +89,15 @@ static inline cputime64_t get_cpu_idle_time(unsigned int cpu)
 
 	if (rackmeter_ignore_nice)
 		retval = cputime64_add(retval, kstat_cpu(cpu).cpustat.nice);
+=======
+	u64 retval;
+
+	retval = kcpustat_cpu(cpu).cpustat[CPUTIME_IDLE] +
+		 kcpustat_cpu(cpu).cpustat[CPUTIME_IOWAIT];
+
+	if (rackmeter_ignore_nice)
+		retval += kcpustat_cpu(cpu).cpustat[CPUTIME_NICE];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return retval;
 }
@@ -220,6 +230,7 @@ static void rackmeter_do_timer(struct work_struct *work)
 	int i, offset, load, cumm, pause;
 
 	cur_jiffies = jiffies64_to_cputime64(get_jiffies_64());
+<<<<<<< HEAD
 	total_ticks = (unsigned int)cputime64_sub(cur_jiffies,
 						  rcpu->prev_wall);
 	rcpu->prev_wall = cur_jiffies;
@@ -227,6 +238,13 @@ static void rackmeter_do_timer(struct work_struct *work)
 	total_idle_ticks = get_cpu_idle_time(cpu);
 	idle_ticks = (unsigned int) cputime64_sub(total_idle_ticks,
 				rcpu->prev_idle);
+=======
+	total_ticks = (unsigned int) (cur_jiffies - rcpu->prev_wall);
+	rcpu->prev_wall = cur_jiffies;
+
+	total_idle_ticks = get_cpu_idle_time(cpu);
+	idle_ticks = (unsigned int) (total_idle_ticks - rcpu->prev_idle);
+>>>>>>> refs/remotes/origin/cm-10.0
 	rcpu->prev_idle = total_idle_ticks;
 
 	/* We do a very dumb calculation to update the LEDs for now,

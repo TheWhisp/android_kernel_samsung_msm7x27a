@@ -156,7 +156,11 @@ struct isp_csi2_device {
 	atomic_t stopping;
 };
 
+<<<<<<< HEAD
 int omap3isp_csi2_isr(struct isp_csi2_device *csi2);
+=======
+void omap3isp_csi2_isr(struct isp_csi2_device *csi2);
+>>>>>>> refs/remotes/origin/cm-10.0
 int omap3isp_csi2_reset(struct isp_csi2_device *csi2);
 int omap3isp_csi2_init(struct isp_device *isp);
 void omap3isp_csi2_cleanup(struct isp_device *isp);

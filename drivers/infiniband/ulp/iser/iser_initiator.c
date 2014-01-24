@@ -220,12 +220,15 @@ void iser_free_rx_descriptors(struct iser_conn *ib_conn)
 	struct iser_rx_desc *rx_desc;
 	struct iser_device *device = ib_conn->device;
 
+<<<<<<< HEAD
 	if (ib_conn->login_buf) {
 		ib_dma_unmap_single(device->ib_device, ib_conn->login_dma,
 			ISER_RX_LOGIN_SIZE, DMA_FROM_DEVICE);
 		kfree(ib_conn->login_buf);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ib_conn->rx_descs)
 		return;
 
@@ -272,7 +275,11 @@ int iser_send_command(struct iscsi_conn *conn,
 	unsigned long edtl;
 	int err;
 	struct iser_data_buf *data_buf;
+<<<<<<< HEAD
 	struct iscsi_cmd *hdr =  (struct iscsi_cmd *)task->hdr;
+=======
+	struct iscsi_scsi_req *hdr = (struct iscsi_scsi_req *)task->hdr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct scsi_cmnd *sc  =  task->sc;
 	struct iser_tx_desc *tx_desc = &iser_task->desc;
 
@@ -395,6 +402,10 @@ int iser_send_control(struct iscsi_conn *conn,
 	unsigned long data_seg_len;
 	int err = 0;
 	struct iser_device *device;
+<<<<<<< HEAD
+=======
+	struct iser_conn *ib_conn = iser_conn->ib_conn;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* build the tx desc regd header and add it to the tx desc dto */
 	mdesc->type = ISCSI_TX_CONTROL;
@@ -410,10 +421,27 @@ int iser_send_control(struct iscsi_conn *conn,
 			iser_err("data present on non login task!!!\n");
 			goto send_control_error;
 		}
+<<<<<<< HEAD
 		memcpy(iser_conn->ib_conn->login_buf, task->data,
 							task->data_count);
 		tx_dsg->addr    = iser_conn->ib_conn->login_dma;
 		tx_dsg->length  = data_seg_len;
+=======
+
+		ib_dma_sync_single_for_cpu(device->ib_device,
+			ib_conn->login_req_dma, task->data_count,
+			DMA_TO_DEVICE);
+
+		memcpy(iser_conn->ib_conn->login_req_buf, task->data,
+							task->data_count);
+
+		ib_dma_sync_single_for_device(device->ib_device,
+			ib_conn->login_req_dma, task->data_count,
+			DMA_TO_DEVICE);
+
+		tx_dsg->addr    = iser_conn->ib_conn->login_req_dma;
+		tx_dsg->length  = task->data_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 		tx_dsg->lkey    = device->mr->lkey;
 		mdesc->num_sge = 2;
 	}
@@ -449,8 +477,13 @@ void iser_rcv_completion(struct iser_rx_desc *rx_desc,
 	int rx_buflen, outstanding, count, err;
 
 	/* differentiate between login to all other PDUs */
+<<<<<<< HEAD
 	if ((char *)rx_desc == ib_conn->login_buf) {
 		rx_dma = ib_conn->login_dma;
+=======
+	if ((char *)rx_desc == ib_conn->login_resp_buf) {
+		rx_dma = ib_conn->login_resp_dma;
+>>>>>>> refs/remotes/origin/cm-10.0
 		rx_buflen = ISER_RX_LOGIN_SIZE;
 	} else {
 		rx_dma = rx_desc->dma_addr;
@@ -477,7 +510,11 @@ void iser_rcv_completion(struct iser_rx_desc *rx_desc,
 	 * for the posted rx bufs refcount to become zero handles everything   */
 	conn->ib_conn->post_recv_buf_count--;
 
+<<<<<<< HEAD
 	if (rx_dma == ib_conn->login_dma)
+=======
+	if (rx_dma == ib_conn->login_resp_dma)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	outstanding = ib_conn->post_recv_buf_count;

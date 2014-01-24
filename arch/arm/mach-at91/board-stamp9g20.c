@@ -35,7 +35,11 @@
 void __init stamp9g20_init_early(void)
 {
 	/* Initialize processor: 18.432 MHz crystal */
+<<<<<<< HEAD
 	at91sam9260_initialize(18432000);
+=======
+	at91_initialize(18432000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* DGBU on ttyS0. (Rx & Tx only) */
 	at91_register_uart(0, 0, 0);
@@ -76,12 +80,15 @@ static void __init portuxg20_init_early(void)
 	at91_register_uart(AT91SAM9260_ID_US5, 6, 0);
 }
 
+<<<<<<< HEAD
 static void __init init_irq(void)
 {
 	at91sam9260_init_interrupts(NULL);
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * NAND flash
  */
@@ -91,6 +98,11 @@ static struct atmel_nand_data __initdata nand_data = {
 	.rdy_pin	= AT91_PIN_PC13,
 	.enable_pin	= AT91_PIN_PC14,
 	.bus_width_16	= 0,
+<<<<<<< HEAD
+=======
+	.det_pin	= -EINVAL,
+	.ecc_mode	= NAND_ECC_SOFT,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct sam9_smc_config __initdata nand_smc_config = {
@@ -114,7 +126,11 @@ static struct sam9_smc_config __initdata nand_smc_config = {
 static void __init add_device_nand(void)
 {
 	/* configure chip-select 3 (NAND) */
+<<<<<<< HEAD
 	sam9_smc_configure(3, &nand_smc_config);
+=======
+	sam9_smc_configure(0, 3, &nand_smc_config);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	at91_add_device_nand(&nand_data);
 }
@@ -128,12 +144,23 @@ static void __init add_device_nand(void)
 static struct mci_platform_data __initdata mmc_data = {
 	.slot[0] = {
 		.bus_width	= 4,
+<<<<<<< HEAD
+=======
+		.detect_pin	= -1,
+		.wp_pin		= -1,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 #else
 static struct at91_mmc_data __initdata mmc_data = {
 	.slot_b		= 0,
 	.wire4		= 1,
+<<<<<<< HEAD
+=======
+	.det_pin	= -EINVAL,
+	.wp_pin		= -EINVAL,
+	.vcc_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -143,6 +170,11 @@ static struct at91_mmc_data __initdata mmc_data = {
  */
 static struct at91_usbh_data __initdata usbh_data = {
 	.ports		= 2,
+<<<<<<< HEAD
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -151,19 +183,31 @@ static struct at91_usbh_data __initdata usbh_data = {
  */
 static struct at91_udc_data __initdata portuxg20_udc_data = {
 	.vbus_pin	= AT91_PIN_PC7,
+<<<<<<< HEAD
 	.pullup_pin	= 0,		/* pull-up driven by UDC */
+=======
+	.pullup_pin	= -EINVAL,		/* pull-up driven by UDC */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct at91_udc_data __initdata stamp9g20evb_udc_data = {
 	.vbus_pin	= AT91_PIN_PA22,
+<<<<<<< HEAD
 	.pullup_pin	= 0,		/* pull-up driven by UDC */
+=======
+	.pullup_pin	= -EINVAL,		/* pull-up driven by UDC */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
 /*
  * MACB Ethernet device
  */
+<<<<<<< HEAD
 static struct at91_eth_data __initdata macb_data = {
+=======
+static struct macb_platform_data __initdata macb_data = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.phy_irq_pin	= AT91_PIN_PA28,
 	.is_rmii	= 1,
 };
@@ -299,17 +343,29 @@ static void __init stamp9g20evb_board_init(void)
 MACHINE_START(PORTUXG20, "taskit PortuxG20")
 	/* Maintainer: taskit GmbH */
 	.timer		= &at91sam926x_timer,
+<<<<<<< HEAD
 	.map_io		= at91sam9260_map_io,
 	.init_early	= portuxg20_init_early,
 	.init_irq	= init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= portuxg20_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= portuxg20_board_init,
 MACHINE_END
 
 MACHINE_START(STAMP9G20, "taskit Stamp9G20")
 	/* Maintainer: taskit GmbH */
 	.timer		= &at91sam926x_timer,
+<<<<<<< HEAD
 	.map_io		= at91sam9260_map_io,
 	.init_early	= stamp9g20evb_init_early,
 	.init_irq	= init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= stamp9g20evb_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= stamp9g20evb_board_init,
 MACHINE_END

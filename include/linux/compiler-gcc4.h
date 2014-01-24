@@ -29,6 +29,10 @@
    the kernel context */
 #define __cold			__attribute__((__cold__))
 
+<<<<<<< HEAD
+=======
+#define __linktime_error(message) __attribute__((__error__(message)))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if __GNUC_MINOR__ >= 5
 /*

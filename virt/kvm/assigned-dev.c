@@ -17,6 +17,11 @@
 #include <linux/pci.h>
 #include <linux/interrupt.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/namei.h>
+#include <linux/fs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "irq.h"
 
 static struct kvm_assigned_dev_kernel *kvm_find_assigned_dev(struct list_head *head,
@@ -47,14 +52,20 @@ static int find_index_from_host_irq(struct kvm_assigned_dev_kernel
 			index = i;
 			break;
 		}
+<<<<<<< HEAD
 	if (index < 0) {
 		printk(KERN_WARNING "Fail to find correlated MSI-X entry!\n");
 		return 0;
 	}
+=======
+	if (index < 0)
+		printk(KERN_WARNING "Fail to find correlated MSI-X entry!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return index;
 }
 
+<<<<<<< HEAD
 static irqreturn_t kvm_assigned_dev_thread(int irq, void *dev_id)
 {
 	struct kvm_assigned_dev_kernel *assigned_dev = dev_id;
@@ -79,10 +90,58 @@ static irqreturn_t kvm_assigned_dev_thread(int irq, void *dev_id)
 	} else
 		kvm_set_irq(assigned_dev->kvm, assigned_dev->irq_source_id,
 			    assigned_dev->guest_irq, 1);
+=======
+static irqreturn_t kvm_assigned_dev_intx(int irq, void *dev_id)
+{
+	struct kvm_assigned_dev_kernel *assigned_dev = dev_id;
+	int ret;
+
+	spin_lock(&assigned_dev->intx_lock);
+	if (pci_check_and_mask_intx(assigned_dev->dev)) {
+		assigned_dev->host_irq_disabled = true;
+		ret = IRQ_WAKE_THREAD;
+	} else
+		ret = IRQ_NONE;
+	spin_unlock(&assigned_dev->intx_lock);
+
+	return ret;
+}
+
+static void
+kvm_assigned_dev_raise_guest_irq(struct kvm_assigned_dev_kernel *assigned_dev,
+				 int vector)
+{
+	if (unlikely(assigned_dev->irq_requested_type &
+		     KVM_DEV_IRQ_GUEST_INTX)) {
+		spin_lock(&assigned_dev->intx_mask_lock);
+		if (!(assigned_dev->flags & KVM_DEV_ASSIGN_MASK_INTX))
+			kvm_set_irq(assigned_dev->kvm,
+				    assigned_dev->irq_source_id, vector, 1);
+		spin_unlock(&assigned_dev->intx_mask_lock);
+	} else
+		kvm_set_irq(assigned_dev->kvm, assigned_dev->irq_source_id,
+			    vector, 1);
+}
+
+static irqreturn_t kvm_assigned_dev_thread_intx(int irq, void *dev_id)
+{
+	struct kvm_assigned_dev_kernel *assigned_dev = dev_id;
+
+	if (!(assigned_dev->flags & KVM_DEV_ASSIGN_PCI_2_3)) {
+		spin_lock_irq(&assigned_dev->intx_lock);
+		disable_irq_nosync(irq);
+		assigned_dev->host_irq_disabled = true;
+		spin_unlock_irq(&assigned_dev->intx_lock);
+	}
+
+	kvm_assigned_dev_raise_guest_irq(assigned_dev,
+					 assigned_dev->guest_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 /* Ack the irq line for an assigned device */
 static void kvm_assigned_dev_ack_irq(struct kvm_irq_ack_notifier *kian)
 {
@@ -105,13 +164,83 @@ static void kvm_assigned_dev_ack_irq(struct kvm_irq_ack_notifier *kian)
 		dev->host_irq_disabled = false;
 	}
 	spin_unlock(&dev->intx_lock);
+=======
+#ifdef __KVM_HAVE_MSI
+static irqreturn_t kvm_assigned_dev_thread_msi(int irq, void *dev_id)
+{
+	struct kvm_assigned_dev_kernel *assigned_dev = dev_id;
+
+	kvm_assigned_dev_raise_guest_irq(assigned_dev,
+					 assigned_dev->guest_irq);
+
+	return IRQ_HANDLED;
+}
+#endif
+
+#ifdef __KVM_HAVE_MSIX
+static irqreturn_t kvm_assigned_dev_thread_msix(int irq, void *dev_id)
+{
+	struct kvm_assigned_dev_kernel *assigned_dev = dev_id;
+	int index = find_index_from_host_irq(assigned_dev, irq);
+	u32 vector;
+
+	if (index >= 0) {
+		vector = assigned_dev->guest_msix_entries[index].vector;
+		kvm_assigned_dev_raise_guest_irq(assigned_dev, vector);
+	}
+
+	return IRQ_HANDLED;
+}
+#endif
+
+/* Ack the irq line for an assigned device */
+static void kvm_assigned_dev_ack_irq(struct kvm_irq_ack_notifier *kian)
+{
+	struct kvm_assigned_dev_kernel *dev =
+		container_of(kian, struct kvm_assigned_dev_kernel,
+			     ack_notifier);
+
+	kvm_set_irq(dev->kvm, dev->irq_source_id, dev->guest_irq, 0);
+
+	spin_lock(&dev->intx_mask_lock);
+
+	if (!(dev->flags & KVM_DEV_ASSIGN_MASK_INTX)) {
+		bool reassert = false;
+
+		spin_lock_irq(&dev->intx_lock);
+		/*
+		 * The guest IRQ may be shared so this ack can come from an
+		 * IRQ for another guest device.
+		 */
+		if (dev->host_irq_disabled) {
+			if (!(dev->flags & KVM_DEV_ASSIGN_PCI_2_3))
+				enable_irq(dev->host_irq);
+			else if (!pci_check_and_unmask_intx(dev->dev))
+				reassert = true;
+			dev->host_irq_disabled = reassert;
+		}
+		spin_unlock_irq(&dev->intx_lock);
+
+		if (reassert)
+			kvm_set_irq(dev->kvm, dev->irq_source_id,
+				    dev->guest_irq, 1);
+	}
+
+	spin_unlock(&dev->intx_mask_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void deassign_guest_irq(struct kvm *kvm,
 			       struct kvm_assigned_dev_kernel *assigned_dev)
 {
+<<<<<<< HEAD
 	kvm_unregister_irq_ack_notifier(kvm, &assigned_dev->ack_notifier);
 	assigned_dev->ack_notifier.gsi = -1;
+=======
+	if (assigned_dev->ack_notifier.gsi != -1)
+		kvm_unregister_irq_ack_notifier(kvm,
+						&assigned_dev->ack_notifier);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kvm_set_irq(assigned_dev->kvm, assigned_dev->irq_source_id,
 		    assigned_dev->guest_irq, 0);
@@ -143,7 +272,11 @@ static void deassign_host_irq(struct kvm *kvm,
 
 		for (i = 0; i < assigned_dev->entries_nr; i++)
 			free_irq(assigned_dev->host_msix_entries[i].vector,
+<<<<<<< HEAD
 				 (void *)assigned_dev);
+=======
+				 assigned_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		assigned_dev->entries_nr = 0;
 		kfree(assigned_dev->host_msix_entries);
@@ -151,9 +284,23 @@ static void deassign_host_irq(struct kvm *kvm,
 		pci_disable_msix(assigned_dev->dev);
 	} else {
 		/* Deal with MSI and INTx */
+<<<<<<< HEAD
 		disable_irq(assigned_dev->host_irq);
 
 		free_irq(assigned_dev->host_irq, (void *)assigned_dev);
+=======
+		if ((assigned_dev->irq_requested_type &
+		     KVM_DEV_IRQ_HOST_INTX) &&
+		    (assigned_dev->flags & KVM_DEV_ASSIGN_PCI_2_3)) {
+			spin_lock_irq(&assigned_dev->intx_lock);
+			pci_intx(assigned_dev->dev, false);
+			spin_unlock_irq(&assigned_dev->intx_lock);
+			synchronize_irq(assigned_dev->host_irq);
+		} else
+			disable_irq(assigned_dev->host_irq);
+
+		free_irq(assigned_dev->host_irq, assigned_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (assigned_dev->irq_requested_type & KVM_DEV_IRQ_HOST_MSI)
 			pci_disable_msi(assigned_dev->dev);
@@ -205,6 +352,11 @@ static void kvm_free_assigned_device(struct kvm *kvm,
 	else
 		pci_restore_state(assigned_dev->dev);
 
+<<<<<<< HEAD
+=======
+	assigned_dev->dev->dev_flags &= ~PCI_DEV_FLAGS_ASSIGNED;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	pci_release_regions(assigned_dev->dev);
 	pci_disable_device(assigned_dev->dev);
 	pci_dev_put(assigned_dev->dev);
@@ -230,6 +382,7 @@ void kvm_free_all_assigned_devices(struct kvm *kvm)
 static int assigned_device_enable_host_intx(struct kvm *kvm,
 					    struct kvm_assigned_dev_kernel *dev)
 {
+<<<<<<< HEAD
 	dev->host_irq = dev->dev->irq;
 	/* Even though this is PCI, we don't want to use shared
 	 * interrupts. Sharing host devices with guest-assigned devices
@@ -239,6 +392,36 @@ static int assigned_device_enable_host_intx(struct kvm *kvm,
 	if (request_threaded_irq(dev->host_irq, NULL, kvm_assigned_dev_thread,
 				 IRQF_ONESHOT, dev->irq_name, (void *)dev))
 		return -EIO;
+=======
+	irq_handler_t irq_handler;
+	unsigned long flags;
+
+	dev->host_irq = dev->dev->irq;
+
+	/*
+	 * We can only share the IRQ line with other host devices if we are
+	 * able to disable the IRQ source at device-level - independently of
+	 * the guest driver. Otherwise host devices may suffer from unbounded
+	 * IRQ latencies when the guest keeps the line asserted.
+	 */
+	if (dev->flags & KVM_DEV_ASSIGN_PCI_2_3) {
+		irq_handler = kvm_assigned_dev_intx;
+		flags = IRQF_SHARED;
+	} else {
+		irq_handler = NULL;
+		flags = IRQF_ONESHOT;
+	}
+	if (request_threaded_irq(dev->host_irq, irq_handler,
+				 kvm_assigned_dev_thread_intx, flags,
+				 dev->irq_name, dev))
+		return -EIO;
+
+	if (dev->flags & KVM_DEV_ASSIGN_PCI_2_3) {
+		spin_lock_irq(&dev->intx_lock);
+		pci_intx(dev->dev, true);
+		spin_unlock_irq(&dev->intx_lock);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -255,8 +438,14 @@ static int assigned_device_enable_host_msi(struct kvm *kvm,
 	}
 
 	dev->host_irq = dev->dev->irq;
+<<<<<<< HEAD
 	if (request_threaded_irq(dev->host_irq, NULL, kvm_assigned_dev_thread,
 				 0, dev->irq_name, (void *)dev)) {
+=======
+	if (request_threaded_irq(dev->host_irq, NULL,
+				 kvm_assigned_dev_thread_msi, 0,
+				 dev->irq_name, dev)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pci_disable_msi(dev->dev);
 		return -EIO;
 	}
@@ -282,8 +471,13 @@ static int assigned_device_enable_host_msix(struct kvm *kvm,
 
 	for (i = 0; i < dev->entries_nr; i++) {
 		r = request_threaded_irq(dev->host_msix_entries[i].vector,
+<<<<<<< HEAD
 					 NULL, kvm_assigned_dev_thread,
 					 0, dev->irq_name, (void *)dev);
+=======
+					 NULL, kvm_assigned_dev_thread_msix,
+					 0, dev->irq_name, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (r)
 			goto err;
 	}
@@ -291,7 +485,11 @@ static int assigned_device_enable_host_msix(struct kvm *kvm,
 	return 0;
 err:
 	for (i -= 1; i >= 0; i--)
+<<<<<<< HEAD
 		free_irq(dev->host_msix_entries[i].vector, (void *)dev);
+=======
+		free_irq(dev->host_msix_entries[i].vector, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pci_disable_msix(dev->dev);
 	return r;
 }
@@ -314,7 +512,10 @@ static int assigned_device_enable_guest_msi(struct kvm *kvm,
 {
 	dev->guest_irq = irq->guest_irq;
 	dev->ack_notifier.gsi = -1;
+<<<<<<< HEAD
 	dev->host_irq_disabled = false;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 #endif
@@ -326,7 +527,10 @@ static int assigned_device_enable_guest_msix(struct kvm *kvm,
 {
 	dev->guest_irq = irq->guest_irq;
 	dev->ack_notifier.gsi = -1;
+<<<<<<< HEAD
 	dev->host_irq_disabled = false;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 #endif
@@ -360,6 +564,10 @@ static int assign_host_irq(struct kvm *kvm,
 	default:
 		r = -EINVAL;
 	}
+<<<<<<< HEAD
+=======
+	dev->host_irq_disabled = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!r)
 		dev->irq_requested_type |= host_irq_type;
@@ -404,7 +612,12 @@ static int assign_guest_irq(struct kvm *kvm,
 
 	if (!r) {
 		dev->irq_requested_type |= guest_irq_type;
+<<<<<<< HEAD
 		kvm_register_irq_ack_notifier(kvm, &dev->ack_notifier);
+=======
+		if (dev->ack_notifier.gsi != -1)
+			kvm_register_irq_ack_notifier(kvm, &dev->ack_notifier);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		kvm_free_irq_source_id(kvm, dev->irq_source_id);
 
@@ -460,6 +673,10 @@ static int kvm_vm_ioctl_deassign_dev_irq(struct kvm *kvm,
 {
 	int r = -ENODEV;
 	struct kvm_assigned_dev_kernel *match;
+<<<<<<< HEAD
+=======
+	unsigned long irq_type;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&kvm->lock);
 
@@ -468,18 +685,94 @@ static int kvm_vm_ioctl_deassign_dev_irq(struct kvm *kvm,
 	if (!match)
 		goto out;
 
+<<<<<<< HEAD
 	r = kvm_deassign_irq(kvm, match, assigned_irq->flags);
+=======
+	irq_type = assigned_irq->flags & (KVM_DEV_IRQ_HOST_MASK |
+					  KVM_DEV_IRQ_GUEST_MASK);
+	r = kvm_deassign_irq(kvm, match, irq_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	mutex_unlock(&kvm->lock);
 	return r;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * We want to test whether the caller has been granted permissions to
+ * use this device.  To be able to configure and control the device,
+ * the user needs access to PCI configuration space and BAR resources.
+ * These are accessed through PCI sysfs.  PCI config space is often
+ * passed to the process calling this ioctl via file descriptor, so we
+ * can't rely on access to that file.  We can check for permissions
+ * on each of the BAR resource files, which is a pretty clear
+ * indicator that the user has been granted access to the device.
+ */
+static int probe_sysfs_permissions(struct pci_dev *dev)
+{
+#ifdef CONFIG_SYSFS
+	int i;
+	bool bar_found = false;
+
+	for (i = PCI_STD_RESOURCES; i <= PCI_STD_RESOURCE_END; i++) {
+		char *kpath, *syspath;
+		struct path path;
+		struct inode *inode;
+		int r;
+
+		if (!pci_resource_len(dev, i))
+			continue;
+
+		kpath = kobject_get_path(&dev->dev.kobj, GFP_KERNEL);
+		if (!kpath)
+			return -ENOMEM;
+
+		/* Per sysfs-rules, sysfs is always at /sys */
+		syspath = kasprintf(GFP_KERNEL, "/sys%s/resource%d", kpath, i);
+		kfree(kpath);
+		if (!syspath)
+			return -ENOMEM;
+
+		r = kern_path(syspath, LOOKUP_FOLLOW, &path);
+		kfree(syspath);
+		if (r)
+			return r;
+
+		inode = path.dentry->d_inode;
+
+		r = inode_permission(inode, MAY_READ | MAY_WRITE | MAY_ACCESS);
+		path_put(&path);
+		if (r)
+			return r;
+
+		bar_found = true;
+	}
+
+	/* If no resources, probably something special */
+	if (!bar_found)
+		return -EPERM;
+
+	return 0;
+#else
+	return -EINVAL; /* No way to control the device without sysfs */
+#endif
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int kvm_vm_ioctl_assign_device(struct kvm *kvm,
 				      struct kvm_assigned_pci_dev *assigned_dev)
 {
 	int r = 0, idx;
 	struct kvm_assigned_dev_kernel *match;
 	struct pci_dev *dev;
+<<<<<<< HEAD
+=======
+	u8 header_type;
+
+	if (!(assigned_dev->flags & KVM_DEV_ASSIGN_ENABLE_IOMMU))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&kvm->lock);
 	idx = srcu_read_lock(&kvm->srcu);
@@ -507,6 +800,21 @@ static int kvm_vm_ioctl_assign_device(struct kvm *kvm,
 		r = -EINVAL;
 		goto out_free;
 	}
+<<<<<<< HEAD
+=======
+
+	/* Don't allow bridges to be assigned */
+	pci_read_config_byte(dev, PCI_HEADER_TYPE, &header_type);
+	if ((header_type & PCI_HEADER_TYPE) != PCI_HEADER_TYPE_NORMAL) {
+		r = -EPERM;
+		goto out_put;
+	}
+
+	r = probe_sysfs_permissions(dev);
+	if (r)
+		goto out_put;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pci_enable_device(dev)) {
 		printk(KERN_INFO "%s: Could not enable PCI device\n", __func__);
 		r = -EBUSY;
@@ -525,6 +833,13 @@ static int kvm_vm_ioctl_assign_device(struct kvm *kvm,
 	if (!match->pci_saved_state)
 		printk(KERN_DEBUG "%s: Couldn't store %s saved state\n",
 		       __func__, dev_name(&dev->dev));
+<<<<<<< HEAD
+=======
+
+	if (!pci_intx_mask_supported(dev))
+		assigned_dev->flags &= ~KVM_DEV_ASSIGN_PCI_2_3;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	match->assigned_dev_id = assigned_dev->assigned_dev_id;
 	match->host_segnr = assigned_dev->segnr;
 	match->host_busnr = assigned_dev->busnr;
@@ -532,12 +847,17 @@ static int kvm_vm_ioctl_assign_device(struct kvm *kvm,
 	match->flags = assigned_dev->flags;
 	match->dev = dev;
 	spin_lock_init(&match->intx_lock);
+<<<<<<< HEAD
+=======
+	spin_lock_init(&match->intx_mask_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	match->irq_source_id = -1;
 	match->kvm = kvm;
 	match->ack_notifier.irq_acked = kvm_assigned_dev_ack_irq;
 
 	list_add(&match->list, &kvm->arch.assigned_dev_head);
 
+<<<<<<< HEAD
 	if (assigned_dev->flags & KVM_DEV_ASSIGN_ENABLE_IOMMU) {
 		if (!kvm->arch.iommu_domain) {
 			r = kvm_iommu_map_guest(kvm);
@@ -548,6 +868,16 @@ static int kvm_vm_ioctl_assign_device(struct kvm *kvm,
 		if (r)
 			goto out_list_del;
 	}
+=======
+	if (!kvm->arch.iommu_domain) {
+		r = kvm_iommu_map_guest(kvm);
+		if (r)
+			goto out_list_del;
+	}
+	r = kvm_assign_device(kvm, match);
+	if (r)
+		goto out_list_del;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	srcu_read_unlock(&kvm->srcu, idx);
@@ -587,8 +917,12 @@ static int kvm_vm_ioctl_deassign_device(struct kvm *kvm,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (match->flags & KVM_DEV_ASSIGN_ENABLE_IOMMU)
 		kvm_deassign_device(kvm, match);
+=======
+	kvm_deassign_device(kvm, match);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kvm_free_assigned_device(kvm, match);
 
@@ -617,7 +951,11 @@ static int kvm_vm_ioctl_set_msix_nr(struct kvm *kvm,
 	if (adev->entries_nr == 0) {
 		adev->entries_nr = entry_nr->entry_nr;
 		if (adev->entries_nr == 0 ||
+<<<<<<< HEAD
 		    adev->entries_nr >= KVM_MAX_MSIX_PER_DEV) {
+=======
+		    adev->entries_nr > KVM_MAX_MSIX_PER_DEV) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			r = -EINVAL;
 			goto msix_nr_out;
 		}
@@ -680,6 +1018,58 @@ msix_entry_out:
 }
 #endif
 
+<<<<<<< HEAD
+=======
+static int kvm_vm_ioctl_set_pci_irq_mask(struct kvm *kvm,
+		struct kvm_assigned_pci_dev *assigned_dev)
+{
+	int r = 0;
+	struct kvm_assigned_dev_kernel *match;
+
+	mutex_lock(&kvm->lock);
+
+	match = kvm_find_assigned_dev(&kvm->arch.assigned_dev_head,
+				      assigned_dev->assigned_dev_id);
+	if (!match) {
+		r = -ENODEV;
+		goto out;
+	}
+
+	spin_lock(&match->intx_mask_lock);
+
+	match->flags &= ~KVM_DEV_ASSIGN_MASK_INTX;
+	match->flags |= assigned_dev->flags & KVM_DEV_ASSIGN_MASK_INTX;
+
+	if (match->irq_requested_type & KVM_DEV_IRQ_GUEST_INTX) {
+		if (assigned_dev->flags & KVM_DEV_ASSIGN_MASK_INTX) {
+			kvm_set_irq(match->kvm, match->irq_source_id,
+				    match->guest_irq, 0);
+			/*
+			 * Masking at hardware-level is performed on demand,
+			 * i.e. when an IRQ actually arrives at the host.
+			 */
+		} else if (!(assigned_dev->flags & KVM_DEV_ASSIGN_PCI_2_3)) {
+			/*
+			 * Unmask the IRQ line if required. Unmasking at
+			 * device level will be performed by user space.
+			 */
+			spin_lock_irq(&match->intx_lock);
+			if (match->host_irq_disabled) {
+				enable_irq(match->host_irq);
+				match->host_irq_disabled = false;
+			}
+			spin_unlock_irq(&match->intx_lock);
+		}
+	}
+
+	spin_unlock(&match->intx_mask_lock);
+
+out:
+	mutex_unlock(&kvm->lock);
+	return r;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 long kvm_vm_ioctl_assigned_device(struct kvm *kvm, unsigned ioctl,
 				  unsigned long arg)
 {
@@ -787,6 +1177,18 @@ long kvm_vm_ioctl_assigned_device(struct kvm *kvm, unsigned ioctl,
 		break;
 	}
 #endif
+<<<<<<< HEAD
+=======
+	case KVM_ASSIGN_SET_INTX_MASK: {
+		struct kvm_assigned_pci_dev assigned_dev;
+
+		r = -EFAULT;
+		if (copy_from_user(&assigned_dev, argp, sizeof assigned_dev))
+			goto out;
+		r = kvm_vm_ioctl_set_pci_irq_mask(kvm, &assigned_dev);
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		r = -ENOTTY;
 		break;
@@ -794,4 +1196,7 @@ long kvm_vm_ioctl_assigned_device(struct kvm *kvm, unsigned ioctl,
 out:
 	return r;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

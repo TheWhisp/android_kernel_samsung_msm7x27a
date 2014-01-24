@@ -30,7 +30,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+<<<<<<< HEAD
 #include <ctype.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <dwarf-regs.h>
 
 #include <linux/bitops.h>
@@ -43,6 +46,7 @@
 /* Kprobe tracer basic type is up to u64 */
 #define MAX_BASIC_TYPE_BITS	64
 
+<<<<<<< HEAD
 /*
  * Compare the tail of two strings.
  * Return 0 if whole of either string is same as another's tail part.
@@ -58,6 +62,8 @@ static int strtailcmp(const char *s1, const char *s2)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Line number list operations */
 
 /* Add a line to line number list */
@@ -131,6 +137,7 @@ static const Dwfl_Callbacks offline_callbacks = {
 };
 
 /* Get a Dwarf from offline image */
+<<<<<<< HEAD
 static Dwarf *dwfl_init_offline_dwarf(int fd, Dwfl **dwflp, Dwarf_Addr *bias)
 {
 	Dwfl_Module *mod;
@@ -154,6 +161,39 @@ error:
 		*dwflp = NULL;
 	}
 	return dbg;
+=======
+static int debuginfo__init_offline_dwarf(struct debuginfo *self,
+					 const char *path)
+{
+	Dwfl_Module *mod;
+	int fd;
+
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+		return fd;
+
+	self->dwfl = dwfl_begin(&offline_callbacks);
+	if (!self->dwfl)
+		goto error;
+
+	mod = dwfl_report_offline(self->dwfl, "", "", fd);
+	if (!mod)
+		goto error;
+
+	self->dbg = dwfl_module_getdwarf(mod, &self->bias);
+	if (!self->dbg)
+		goto error;
+
+	return 0;
+error:
+	if (self->dwfl)
+		dwfl_end(self->dwfl);
+	else
+		close(fd);
+	memset(self, 0, sizeof(*self));
+
+	return -ENOENT;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #if _ELFUTILS_PREREQ(0, 148)
@@ -189,6 +229,7 @@ static const Dwfl_Callbacks kernel_callbacks = {
 };
 
 /* Get a Dwarf from live kernel image */
+<<<<<<< HEAD
 static Dwarf *dwfl_init_live_kernel_dwarf(Dwarf_Addr addr, Dwfl **dwflp,
 					  Dwarf_Addr *bias)
 {
@@ -221,10 +262,41 @@ static Dwarf *dwfl_init_live_kernel_dwarf(Dwarf_Addr addr __used, Dwfl **dwflp,
 					  Dwarf_Addr *bias)
 {
 	int fd;
+=======
+static int debuginfo__init_online_kernel_dwarf(struct debuginfo *self,
+					       Dwarf_Addr addr)
+{
+	self->dwfl = dwfl_begin(&kernel_callbacks);
+	if (!self->dwfl)
+		return -EINVAL;
+
+	/* Load the kernel dwarves: Don't care the result here */
+	dwfl_linux_kernel_report_kernel(self->dwfl);
+	dwfl_linux_kernel_report_modules(self->dwfl);
+
+	self->dbg = dwfl_addrdwarf(self->dwfl, addr, &self->bias);
+	/* Here, check whether we could get a real dwarf */
+	if (!self->dbg) {
+		pr_debug("Failed to find kernel dwarf at %lx\n",
+			 (unsigned long)addr);
+		dwfl_end(self->dwfl);
+		memset(self, 0, sizeof(*self));
+		return -ENOENT;
+	}
+
+	return 0;
+}
+#else
+/* With older elfutils, this just support kernel module... */
+static int debuginfo__init_online_kernel_dwarf(struct debuginfo *self,
+					       Dwarf_Addr addr __used)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	const char *path = kernel_get_module_path("kernel");
 
 	if (!path) {
 		pr_err("Failed to find vmlinux path\n");
+<<<<<<< HEAD
 		return NULL;
 	}
 
@@ -780,6 +852,51 @@ static int die_get_varname(Dwarf_Die *vr_die, char *buf, int len)
 		ret = (ret2 >= len - ret) ? -E2BIG : ret2 + ret;
 	}
 	return ret;
+=======
+		return -ENOENT;
+	}
+
+	pr_debug2("Use file %s for debuginfo\n", path);
+	return debuginfo__init_offline_dwarf(self, path);
+}
+#endif
+
+struct debuginfo *debuginfo__new(const char *path)
+{
+	struct debuginfo *self = zalloc(sizeof(struct debuginfo));
+	if (!self)
+		return NULL;
+
+	if (debuginfo__init_offline_dwarf(self, path) < 0) {
+		free(self);
+		self = NULL;
+	}
+
+	return self;
+}
+
+struct debuginfo *debuginfo__new_online_kernel(unsigned long addr)
+{
+	struct debuginfo *self = zalloc(sizeof(struct debuginfo));
+	if (!self)
+		return NULL;
+
+	if (debuginfo__init_online_kernel_dwarf(self, (Dwarf_Addr)addr) < 0) {
+		free(self);
+		self = NULL;
+	}
+
+	return self;
+}
+
+void debuginfo__delete(struct debuginfo *self)
+{
+	if (self) {
+		if (self->dwfl)
+			dwfl_end(self->dwfl);
+		free(self);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -897,6 +1014,10 @@ static int convert_variable_type(Dwarf_Die *vr_die,
 	struct probe_trace_arg_ref **ref_ptr = &tvar->ref;
 	Dwarf_Die type;
 	char buf[16];
+<<<<<<< HEAD
+=======
+	int bsize, boffs, total;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	/* TODO: check all types */
@@ -906,11 +1027,23 @@ static int convert_variable_type(Dwarf_Die *vr_die,
 		return (tvar->type == NULL) ? -ENOMEM : 0;
 	}
 
+<<<<<<< HEAD
 	if (die_get_bit_size(vr_die) != 0) {
 		/* This is a bitfield */
 		ret = snprintf(buf, 16, "b%d@%d/%zd", die_get_bit_size(vr_die),
 				die_get_bit_offset(vr_die),
 				BYTES_TO_BITS(die_get_byte_size(vr_die)));
+=======
+	bsize = dwarf_bitsize(vr_die);
+	if (bsize > 0) {
+		/* This is a bitfield */
+		boffs = dwarf_bitoffset(vr_die);
+		total = dwarf_bytesize(vr_die);
+		if (boffs < 0 || total < 0)
+			return -ENOENT;
+		ret = snprintf(buf, 16, "b%d@%d/%zd", bsize, boffs,
+				BYTES_TO_BITS(total));
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto formatted;
 	}
 
@@ -958,10 +1091,18 @@ static int convert_variable_type(Dwarf_Die *vr_die,
 		return (tvar->type == NULL) ? -ENOMEM : 0;
 	}
 
+<<<<<<< HEAD
 	ret = BYTES_TO_BITS(die_get_byte_size(&type));
 	if (!ret)
 		/* No size ... try to use default type */
 		return 0;
+=======
+	ret = dwarf_bytesize(&type);
+	if (ret <= 0)
+		/* No size ... try to use default type */
+		return 0;
+	ret = BYTES_TO_BITS(ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Check the bitwidth */
 	if (ret > MAX_BASIC_TYPE_BITS) {
@@ -1025,7 +1166,11 @@ static int convert_variable_fields(Dwarf_Die *vr_die, const char *varname,
 			else
 				*ref_ptr = ref;
 		}
+<<<<<<< HEAD
 		ref->offset += die_get_byte_size(&type) * field->index;
+=======
+		ref->offset += dwarf_bytesize(&type) * field->index;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!field->next)
 			/* Save vr_die for converting types */
 			memcpy(die_mem, vr_die, sizeof(*die_mem));
@@ -1129,12 +1274,21 @@ static int convert_variable(Dwarf_Die *vr_die, struct probe_finder *pf)
 	return ret;
 }
 
+<<<<<<< HEAD
 /* Find a variable in a subprogram die */
 static int find_variable(Dwarf_Die *sp_die, struct probe_finder *pf)
 {
 	Dwarf_Die vr_die, *scopes;
 	char buf[32], *ptr;
 	int ret, nscopes;
+=======
+/* Find a variable in a scope DIE */
+static int find_variable(Dwarf_Die *sc_die, struct probe_finder *pf)
+{
+	Dwarf_Die vr_die;
+	char buf[32], *ptr;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!is_c_varname(pf->pvar->var)) {
 		/* Copy raw parameters */
@@ -1169,6 +1323,7 @@ static int find_variable(Dwarf_Die *sp_die, struct probe_finder *pf)
 	if (pf->tvar->name == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	pr_debug("Searching '%s' variable in context.\n",
 		 pf->pvar->var);
 	/* Search child die for local variables and parameters. */
@@ -1193,6 +1348,18 @@ static int find_variable(Dwarf_Die *sp_die, struct probe_finder *pf)
 		ret = -ENOENT;
 	}
 found:
+=======
+	pr_debug("Searching '%s' variable in context.\n", pf->pvar->var);
+	/* Search child die for local variables and parameters. */
+	if (!die_find_variable_at(sc_die, pf->pvar->var, pf->addr, &vr_die)) {
+		/* Search again in global variables */
+		if (!die_find_variable_at(&pf->cu_die, pf->pvar->var, 0, &vr_die))
+			ret = -ENOENT;
+	}
+	if (ret >= 0)
+		ret = convert_variable(&vr_die, pf);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		pr_warning("Failed to find '%s' in this function.\n",
 			   pf->pvar->var);
@@ -1203,7 +1370,11 @@ found:
 static int convert_to_trace_point(Dwarf_Die *sp_die, Dwarf_Addr paddr,
 				  bool retprobe, struct probe_trace_point *tp)
 {
+<<<<<<< HEAD
 	Dwarf_Addr eaddr;
+=======
+	Dwarf_Addr eaddr, highaddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const char *name;
 
 	/* Copy the name of probe point */
@@ -1214,6 +1385,19 @@ static int convert_to_trace_point(Dwarf_Die *sp_die, Dwarf_Addr paddr,
 				   dwarf_diename(sp_die));
 			return -ENOENT;
 		}
+<<<<<<< HEAD
+=======
+		if (dwarf_highpc(sp_die, &highaddr) != 0) {
+			pr_warning("Failed to get end address of %s\n",
+				   dwarf_diename(sp_die));
+			return -ENOENT;
+		}
+		if (paddr > highaddr) {
+			pr_warning("Offset specified is greater than size of %s\n",
+				   dwarf_diename(sp_die));
+			return -EINVAL;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		tp->symbol = strdup(name);
 		if (tp->symbol == NULL)
 			return -ENOMEM;
@@ -1235,27 +1419,52 @@ static int convert_to_trace_point(Dwarf_Die *sp_die, Dwarf_Addr paddr,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Call probe_finder callback with real subprogram DIE */
 static int call_probe_finder(Dwarf_Die *sp_die, struct probe_finder *pf)
 {
 	Dwarf_Die die_mem;
+=======
+/* Call probe_finder callback with scope DIE */
+static int call_probe_finder(Dwarf_Die *sc_die, struct probe_finder *pf)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	Dwarf_Attribute fb_attr;
 	size_t nops;
 	int ret;
 
+<<<<<<< HEAD
 	/* If no real subprogram, find a real one */
 	if (!sp_die || dwarf_tag(sp_die) != DW_TAG_subprogram) {
 		sp_die = die_find_real_subprogram(&pf->cu_die,
 						  pf->addr, &die_mem);
 		if (!sp_die) {
+=======
+	if (!sc_die) {
+		pr_err("Caller must pass a scope DIE. Program error.\n");
+		return -EINVAL;
+	}
+
+	/* If not a real subprogram, find a real one */
+	if (dwarf_tag(sc_die) != DW_TAG_subprogram) {
+		if (!die_find_realfunc(&pf->cu_die, pf->addr, &pf->sp_die)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			pr_warning("Failed to find probe point in any "
 				   "functions.\n");
 			return -ENOENT;
 		}
+<<<<<<< HEAD
 	}
 
 	/* Get the frame base attribute/ops */
 	dwarf_attr(sp_die, DW_AT_frame_base, &fb_attr);
+=======
+	} else
+		memcpy(&pf->sp_die, sc_die, sizeof(Dwarf_Die));
+
+	/* Get the frame base attribute/ops from subprogram */
+	dwarf_attr(&pf->sp_die, DW_AT_frame_base, &fb_attr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = dwarf_getlocation_addr(&fb_attr, pf->addr, &pf->fb_ops, &nops, 1);
 	if (ret <= 0 || nops == 0) {
 		pf->fb_ops = NULL;
@@ -1273,7 +1482,11 @@ static int call_probe_finder(Dwarf_Die *sp_die, struct probe_finder *pf)
 	}
 
 	/* Call finder's callback handler */
+<<<<<<< HEAD
 	ret = pf->callback(sp_die, pf);
+=======
+	ret = pf->callback(sc_die, pf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* *pf->fb_ops will be cached in libdw. Don't free it. */
 	pf->fb_ops = NULL;
@@ -1281,17 +1494,92 @@ static int call_probe_finder(Dwarf_Die *sp_die, struct probe_finder *pf)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+struct find_scope_param {
+	const char *function;
+	const char *file;
+	int line;
+	int diff;
+	Dwarf_Die *die_mem;
+	bool found;
+};
+
+static int find_best_scope_cb(Dwarf_Die *fn_die, void *data)
+{
+	struct find_scope_param *fsp = data;
+	const char *file;
+	int lno;
+
+	/* Skip if declared file name does not match */
+	if (fsp->file) {
+		file = dwarf_decl_file(fn_die);
+		if (!file || strcmp(fsp->file, file) != 0)
+			return 0;
+	}
+	/* If the function name is given, that's what user expects */
+	if (fsp->function) {
+		if (die_compare_name(fn_die, fsp->function)) {
+			memcpy(fsp->die_mem, fn_die, sizeof(Dwarf_Die));
+			fsp->found = true;
+			return 1;
+		}
+	} else {
+		/* With the line number, find the nearest declared DIE */
+		dwarf_decl_line(fn_die, &lno);
+		if (lno < fsp->line && fsp->diff > fsp->line - lno) {
+			/* Keep a candidate and continue */
+			fsp->diff = fsp->line - lno;
+			memcpy(fsp->die_mem, fn_die, sizeof(Dwarf_Die));
+			fsp->found = true;
+		}
+	}
+	return 0;
+}
+
+/* Find an appropriate scope fits to given conditions */
+static Dwarf_Die *find_best_scope(struct probe_finder *pf, Dwarf_Die *die_mem)
+{
+	struct find_scope_param fsp = {
+		.function = pf->pev->point.function,
+		.file = pf->fname,
+		.line = pf->lno,
+		.diff = INT_MAX,
+		.die_mem = die_mem,
+		.found = false,
+	};
+
+	cu_walk_functions_at(&pf->cu_die, pf->addr, find_best_scope_cb, &fsp);
+
+	return fsp.found ? die_mem : NULL;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int probe_point_line_walker(const char *fname, int lineno,
 				   Dwarf_Addr addr, void *data)
 {
 	struct probe_finder *pf = data;
+<<<<<<< HEAD
+=======
+	Dwarf_Die *sc_die, die_mem;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	if (lineno != pf->lno || strtailcmp(fname, pf->fname) != 0)
 		return 0;
 
 	pf->addr = addr;
+<<<<<<< HEAD
 	ret = call_probe_finder(NULL, pf);
+=======
+	sc_die = find_best_scope(pf, &die_mem);
+	if (!sc_die) {
+		pr_warning("Failed to find scope of probe point.\n");
+		return -ENOENT;
+	}
+
+	ret = call_probe_finder(sc_die, pf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Continue if no error, because the line will be in inline function */
 	return ret < 0 ? ret : 0;
@@ -1345,6 +1633,10 @@ static int probe_point_lazy_walker(const char *fname, int lineno,
 				   Dwarf_Addr addr, void *data)
 {
 	struct probe_finder *pf = data;
+<<<<<<< HEAD
+=======
+	Dwarf_Die *sc_die, die_mem;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	if (!line_list__has_line(&pf->lcache, lineno) ||
@@ -1354,7 +1646,18 @@ static int probe_point_lazy_walker(const char *fname, int lineno,
 	pr_debug("Probe line found: line:%d addr:0x%llx\n",
 		 lineno, (unsigned long long)addr);
 	pf->addr = addr;
+<<<<<<< HEAD
 	ret = call_probe_finder(NULL, pf);
+=======
+	pf->lno = lineno;
+	sc_die = find_best_scope(pf, &die_mem);
+	if (!sc_die) {
+		pr_warning("Failed to find scope of probe point.\n");
+		return -ENOENT;
+	}
+
+	ret = call_probe_finder(sc_die, pf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Continue if no error, because the lazy pattern will match
@@ -1379,6 +1682,7 @@ static int find_probe_point_lazy(Dwarf_Die *sp_die, struct probe_finder *pf)
 	return die_walk_lines(sp_die, probe_point_lazy_walker, pf);
 }
 
+<<<<<<< HEAD
 /* Callback parameter with return value */
 struct dwarf_callback_param {
 	void *data;
@@ -1394,19 +1698,35 @@ static int probe_point_inline_cb(Dwarf_Die *in_die, void *data)
 
 	if (pp->lazy_line)
 		param->retval = find_probe_point_lazy(in_die, pf);
+=======
+static int probe_point_inline_cb(Dwarf_Die *in_die, void *data)
+{
+	struct probe_finder *pf = data;
+	struct perf_probe_point *pp = &pf->pev->point;
+	Dwarf_Addr addr;
+	int ret;
+
+	if (pp->lazy_line)
+		ret = find_probe_point_lazy(in_die, pf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else {
 		/* Get probe address */
 		if (dwarf_entrypc(in_die, &addr) != 0) {
 			pr_warning("Failed to get entry address of %s.\n",
 				   dwarf_diename(in_die));
+<<<<<<< HEAD
 			param->retval = -ENOENT;
 			return DWARF_CB_ABORT;
+=======
+			return -ENOENT;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		pf->addr = addr;
 		pf->addr += pp->offset;
 		pr_debug("found inline addr: 0x%jx\n",
 			 (uintmax_t)pf->addr);
 
+<<<<<<< HEAD
 		param->retval = call_probe_finder(in_die, pf);
 		if (param->retval < 0)
 			return DWARF_CB_ABORT;
@@ -1415,16 +1735,39 @@ static int probe_point_inline_cb(Dwarf_Die *in_die, void *data)
 	return DWARF_CB_OK;
 }
 
+=======
+		ret = call_probe_finder(in_die, pf);
+	}
+
+	return ret;
+}
+
+/* Callback parameter with return value for libdw */
+struct dwarf_callback_param {
+	void *data;
+	int retval;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Search function from function name */
 static int probe_point_search_cb(Dwarf_Die *sp_die, void *data)
 {
 	struct dwarf_callback_param *param = data;
 	struct probe_finder *pf = param->data;
 	struct perf_probe_point *pp = &pf->pev->point;
+<<<<<<< HEAD
 
 	/* Check tag and diename */
 	if (dwarf_tag(sp_die) != DW_TAG_subprogram ||
 	    !die_compare_name(sp_die, pp->function))
+=======
+	Dwarf_Attribute attr;
+
+	/* Check tag and diename */
+	if (dwarf_tag(sp_die) != DW_TAG_subprogram ||
+	    !die_compare_name(sp_die, pp->function) ||
+	    dwarf_attr(sp_die, DW_AT_declaration, &attr))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return DWARF_CB_OK;
 
 	/* Check declared file */
@@ -1451,6 +1794,7 @@ static int probe_point_search_cb(Dwarf_Die *sp_die, void *data)
 			/* TODO: Check the address in this function */
 			param->retval = call_probe_finder(sp_die, pf);
 		}
+<<<<<<< HEAD
 	} else {
 		struct dwarf_callback_param _param = {.data = (void *)pf,
 						      .retval = 0};
@@ -1459,6 +1803,12 @@ static int probe_point_search_cb(Dwarf_Die *sp_die, void *data)
 					    &_param);
 		param->retval = _param.retval;
 	}
+=======
+	} else
+		/* Inlined function: search instances */
+		param->retval = die_walk_instances(sp_die,
+					probe_point_inline_cb, (void *)pf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return DWARF_CB_ABORT; /* Exit; no same symbol in this CU. */
 }
@@ -1504,12 +1854,18 @@ static int pubname_search_cb(Dwarf *dbg, Dwarf_Global *gl, void *data)
 }
 
 /* Find probe points from debuginfo */
+<<<<<<< HEAD
 static int find_probes(int fd, struct probe_finder *pf)
+=======
+static int debuginfo__find_probes(struct debuginfo *self,
+				  struct probe_finder *pf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct perf_probe_point *pp = &pf->pev->point;
 	Dwarf_Off off, noff;
 	size_t cuhl;
 	Dwarf_Die *diep;
+<<<<<<< HEAD
 	Dwarf *dbg = NULL;
 	Dwfl *dwfl;
 	Dwarf_Addr bias;	/* Currently ignored */
@@ -1526,6 +1882,13 @@ static int find_probes(int fd, struct probe_finder *pf)
 #if _ELFUTILS_PREREQ(0, 142)
 	/* Get the call frame information from this dwarf */
 	pf->cfi = dwarf_getcfi(dbg);
+=======
+	int ret = 0;
+
+#if _ELFUTILS_PREREQ(0, 142)
+	/* Get the call frame information from this dwarf */
+	pf->cfi = dwarf_getcfi(self->dbg);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	off = 0;
@@ -1544,7 +1907,12 @@ static int find_probes(int fd, struct probe_finder *pf)
 			.data = pf,
 		};
 
+<<<<<<< HEAD
 		dwarf_getpubnames(dbg, pubname_search_cb, &pubname_param, 0);
+=======
+		dwarf_getpubnames(self->dbg, pubname_search_cb,
+				  &pubname_param, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (pubname_param.found) {
 			ret = probe_point_search_cb(&pf->sp_die, &probe_param);
 			if (ret)
@@ -1553,9 +1921,15 @@ static int find_probes(int fd, struct probe_finder *pf)
 	}
 
 	/* Loop on CUs (Compilation Unit) */
+<<<<<<< HEAD
 	while (!dwarf_nextcu(dbg, off, &noff, &cuhl, NULL, NULL, NULL)) {
 		/* Get the DIE(Debugging Information Entry) of this CU */
 		diep = dwarf_offdie(dbg, off + cuhl, &pf->cu_die);
+=======
+	while (!dwarf_nextcu(self->dbg, off, &noff, &cuhl, NULL, NULL, NULL)) {
+		/* Get the DIE(Debugging Information Entry) of this CU */
+		diep = dwarf_offdie(self->dbg, off + cuhl, &pf->cu_die);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!diep)
 			continue;
 
@@ -1582,14 +1956,21 @@ static int find_probes(int fd, struct probe_finder *pf)
 
 found:
 	line_list__free(&pf->lcache);
+<<<<<<< HEAD
 	if (dwfl)
 		dwfl_end(dwfl);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
 
 /* Add a found probe point into trace event list */
+<<<<<<< HEAD
 static int add_probe_trace_event(Dwarf_Die *sp_die, struct probe_finder *pf)
+=======
+static int add_probe_trace_event(Dwarf_Die *sc_die, struct probe_finder *pf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct trace_event_finder *tf =
 			container_of(pf, struct trace_event_finder, pf);
@@ -1604,8 +1985,14 @@ static int add_probe_trace_event(Dwarf_Die *sp_die, struct probe_finder *pf)
 	}
 	tev = &tf->tevs[tf->ntevs++];
 
+<<<<<<< HEAD
 	ret = convert_to_trace_point(sp_die, pf->addr, pf->pev->point.retprobe,
 				     &tev->point);
+=======
+	/* Trace point should be converted from subprogram DIE */
+	ret = convert_to_trace_point(&pf->sp_die, pf->addr,
+				     pf->pev->point.retprobe, &tev->point);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		return ret;
 
@@ -1620,7 +2007,12 @@ static int add_probe_trace_event(Dwarf_Die *sp_die, struct probe_finder *pf)
 	for (i = 0; i < pf->pev->nargs; i++) {
 		pf->pvar = &pf->pev->args[i];
 		pf->tvar = &tev->args[i];
+<<<<<<< HEAD
 		ret = find_variable(sp_die, pf);
+=======
+		/* Variable should be found from scope DIE */
+		ret = find_variable(sc_die, pf);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret != 0)
 			return ret;
 	}
@@ -1629,8 +2021,14 @@ static int add_probe_trace_event(Dwarf_Die *sp_die, struct probe_finder *pf)
 }
 
 /* Find probe_trace_events specified by perf_probe_event from debuginfo */
+<<<<<<< HEAD
 int find_probe_trace_events(int fd, struct perf_probe_event *pev,
 			    struct probe_trace_event **tevs, int max_tevs)
+=======
+int debuginfo__find_trace_events(struct debuginfo *self,
+				 struct perf_probe_event *pev,
+				 struct probe_trace_event **tevs, int max_tevs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct trace_event_finder tf = {
 			.pf = {.pev = pev, .callback = add_probe_trace_event},
@@ -1645,7 +2043,11 @@ int find_probe_trace_events(int fd, struct perf_probe_event *pev,
 	tf.tevs = *tevs;
 	tf.ntevs = 0;
 
+<<<<<<< HEAD
 	ret = find_probes(fd, &tf.pf);
+=======
+	ret = debuginfo__find_probes(self, &tf.pf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0) {
 		free(*tevs);
 		*tevs = NULL;
@@ -1687,13 +2089,22 @@ static int collect_variables_cb(Dwarf_Die *die_mem, void *data)
 }
 
 /* Add a found vars into available variables list */
+<<<<<<< HEAD
 static int add_available_vars(Dwarf_Die *sp_die, struct probe_finder *pf)
+=======
+static int add_available_vars(Dwarf_Die *sc_die, struct probe_finder *pf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct available_var_finder *af =
 			container_of(pf, struct available_var_finder, pf);
 	struct variable_list *vl;
+<<<<<<< HEAD
 	Dwarf_Die die_mem, *scopes = NULL;
 	int ret, nscopes;
+=======
+	Dwarf_Die die_mem;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Check number of tevs */
 	if (af->nvls == af->max_vls) {
@@ -1702,8 +2113,14 @@ static int add_available_vars(Dwarf_Die *sp_die, struct probe_finder *pf)
 	}
 	vl = &af->vls[af->nvls++];
 
+<<<<<<< HEAD
 	ret = convert_to_trace_point(sp_die, pf->addr, pf->pev->point.retprobe,
 				     &vl->point);
+=======
+	/* Trace point should be converted from subprogram DIE */
+	ret = convert_to_trace_point(&pf->sp_die, pf->addr,
+				     pf->pev->point.retprobe, &vl->point);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		return ret;
 
@@ -1715,19 +2132,27 @@ static int add_available_vars(Dwarf_Die *sp_die, struct probe_finder *pf)
 	if (vl->vars == NULL)
 		return -ENOMEM;
 	af->child = true;
+<<<<<<< HEAD
 	die_find_child(sp_die, collect_variables_cb, (void *)af, &die_mem);
+=======
+	die_find_child(sc_die, collect_variables_cb, (void *)af, &die_mem);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Find external variables */
 	if (!af->externs)
 		goto out;
 	/* Don't need to search child DIE for externs. */
 	af->child = false;
+<<<<<<< HEAD
 	nscopes = dwarf_getscopes_die(sp_die, &scopes);
 	while (nscopes-- > 1)
 		die_find_child(&scopes[nscopes], collect_variables_cb,
 			       (void *)af, &die_mem);
 	if (scopes)
 		free(scopes);
+=======
+	die_find_child(&pf->cu_die, collect_variables_cb, (void *)af, &die_mem);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	if (strlist__empty(vl->vars)) {
@@ -1739,9 +2164,16 @@ out:
 }
 
 /* Find available variables at given probe point */
+<<<<<<< HEAD
 int find_available_vars_at(int fd, struct perf_probe_event *pev,
 			   struct variable_list **vls, int max_vls,
 			   bool externs)
+=======
+int debuginfo__find_available_vars_at(struct debuginfo *self,
+				      struct perf_probe_event *pev,
+				      struct variable_list **vls,
+				      int max_vls, bool externs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct available_var_finder af = {
 			.pf = {.pev = pev, .callback = add_available_vars},
@@ -1756,7 +2188,11 @@ int find_available_vars_at(int fd, struct perf_probe_event *pev,
 	af.vls = *vls;
 	af.nvls = 0;
 
+<<<<<<< HEAD
 	ret = find_probes(fd, &af.pf);
+=======
+	ret = debuginfo__find_probes(self, &af.pf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0) {
 		/* Free vlist for error */
 		while (af.nvls--) {
@@ -1774,6 +2210,7 @@ int find_available_vars_at(int fd, struct perf_probe_event *pev,
 }
 
 /* Reverse search */
+<<<<<<< HEAD
 int find_perf_probe_point(unsigned long addr, struct perf_probe_point *ppt)
 {
 	Dwarf_Die cudie, spdie, indie;
@@ -1796,6 +2233,21 @@ int find_perf_probe_point(unsigned long addr, struct perf_probe_point *ppt)
 	addr += bias;
 	/* Find cu die */
 	if (!dwarf_addrdie(dbg, (Dwarf_Addr)addr - bias, &cudie)) {
+=======
+int debuginfo__find_probe_point(struct debuginfo *self, unsigned long addr,
+				struct perf_probe_point *ppt)
+{
+	Dwarf_Die cudie, spdie, indie;
+	Dwarf_Addr _addr, baseaddr;
+	const char *fname = NULL, *func = NULL, *tmp;
+	int baseline = 0, lineno = 0, ret = 0;
+
+	/* Adjust address with bias */
+	addr += self->bias;
+
+	/* Find cu die */
+	if (!dwarf_addrdie(self->dbg, (Dwarf_Addr)addr - self->bias, &cudie)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_warning("Failed to find debug information for address %lx\n",
 			   addr);
 		ret = -EINVAL;
@@ -1807,7 +2259,11 @@ int find_perf_probe_point(unsigned long addr, struct perf_probe_point *ppt)
 	/* Don't care whether it failed or not */
 
 	/* Find a corresponding function (name, baseline and baseaddr) */
+<<<<<<< HEAD
 	if (die_find_real_subprogram(&cudie, (Dwarf_Addr)addr, &spdie)) {
+=======
+	if (die_find_realfunc(&cudie, (Dwarf_Addr)addr, &spdie)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Get function entry information */
 		tmp = dwarf_diename(&spdie);
 		if (!tmp ||
@@ -1871,8 +2327,11 @@ post:
 		}
 	}
 end:
+<<<<<<< HEAD
 	if (dwfl)
 		dwfl_end(dwfl);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret == 0 && (fname || func))
 		ret = 1;	/* Found a point */
 	return ret;
@@ -1929,10 +2388,21 @@ static int find_line_range_by_line(Dwarf_Die *sp_die, struct line_finder *lf)
 
 static int line_range_inline_cb(Dwarf_Die *in_die, void *data)
 {
+<<<<<<< HEAD
 	struct dwarf_callback_param *param = data;
 
 	param->retval = find_line_range_by_line(in_die, param->data);
 	return DWARF_CB_ABORT;	/* No need to find other instances */
+=======
+	find_line_range_by_line(in_die, data);
+
+	/*
+	 * We have to check all instances of inlined function, because
+	 * some execution paths can be optimized out depends on the
+	 * function argument of instances
+	 */
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Search function from function name */
@@ -1960,6 +2430,7 @@ static int line_range_search_cb(Dwarf_Die *sp_die, void *data)
 		pr_debug("New line range: %d to %d\n", lf->lno_s, lf->lno_e);
 		lr->start = lf->lno_s;
 		lr->end = lf->lno_e;
+<<<<<<< HEAD
 		if (dwarf_func_inline(sp_die)) {
 			struct dwarf_callback_param _param;
 			_param.data = (void *)lf;
@@ -1969,6 +2440,12 @@ static int line_range_search_cb(Dwarf_Die *sp_die, void *data)
 						    &_param);
 			param->retval = _param.retval;
 		} else
+=======
+		if (dwarf_func_inline(sp_die))
+			param->retval = die_walk_instances(sp_die,
+						line_range_inline_cb, lf);
+		else
+>>>>>>> refs/remotes/origin/cm-10.0
 			param->retval = find_line_range_by_line(sp_die, lf);
 		return DWARF_CB_ABORT;
 	}
@@ -1982,13 +2459,18 @@ static int find_line_range_by_func(struct line_finder *lf)
 	return param.retval;
 }
 
+<<<<<<< HEAD
 int find_line_range(int fd, struct line_range *lr)
+=======
+int debuginfo__find_line_range(struct debuginfo *self, struct line_range *lr)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct line_finder lf = {.lr = lr, .found = 0};
 	int ret = 0;
 	Dwarf_Off off = 0, noff;
 	size_t cuhl;
 	Dwarf_Die *diep;
+<<<<<<< HEAD
 	Dwarf *dbg = NULL;
 	Dwfl *dwfl;
 	Dwarf_Addr bias;	/* Currently ignored */
@@ -2002,6 +2484,10 @@ int find_line_range(int fd, struct line_range *lr)
 		return -EBADF;
 	}
 
+=======
+	const char *comp_dir;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Fastpath: lookup by function name from .debug_pubnames section */
 	if (lr->function) {
 		struct pubname_callback_param pubname_param = {
@@ -2010,7 +2496,12 @@ int find_line_range(int fd, struct line_range *lr)
 		struct dwarf_callback_param line_range_param = {
 			.data = (void *)&lf, .retval = 0};
 
+<<<<<<< HEAD
 		dwarf_getpubnames(dbg, pubname_search_cb, &pubname_param, 0);
+=======
+		dwarf_getpubnames(self->dbg, pubname_search_cb,
+				  &pubname_param, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (pubname_param.found) {
 			line_range_search_cb(&lf.sp_die, &line_range_param);
 			if (lf.found)
@@ -2020,11 +2511,20 @@ int find_line_range(int fd, struct line_range *lr)
 
 	/* Loop on CUs (Compilation Unit) */
 	while (!lf.found && ret >= 0) {
+<<<<<<< HEAD
 		if (dwarf_nextcu(dbg, off, &noff, &cuhl, NULL, NULL, NULL) != 0)
 			break;
 
 		/* Get the DIE(Debugging Information Entry) of this CU */
 		diep = dwarf_offdie(dbg, off + cuhl, &lf.cu_die);
+=======
+		if (dwarf_nextcu(self->dbg, off, &noff, &cuhl,
+				 NULL, NULL, NULL) != 0)
+			break;
+
+		/* Get the DIE(Debugging Information Entry) of this CU */
+		diep = dwarf_offdie(self->dbg, off + cuhl, &lf.cu_die);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!diep)
 			continue;
 
@@ -2058,7 +2558,10 @@ found:
 	}
 
 	pr_debug("path: %s\n", lr->path);
+<<<<<<< HEAD
 	dwfl_end(dwfl);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return (ret < 0) ? ret : lf.found;
 }
 

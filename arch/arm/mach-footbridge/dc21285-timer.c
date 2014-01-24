@@ -14,6 +14,10 @@
 
 #include <asm/hardware/dec21285.h>
 #include <asm/mach/time.h>
+<<<<<<< HEAD
+=======
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "common.h"
 

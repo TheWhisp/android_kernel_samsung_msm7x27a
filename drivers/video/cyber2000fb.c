@@ -51,7 +51,10 @@
 #include <linux/i2c-algo-bit.h>
 
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __arm__
 #include <asm/mach-types.h>

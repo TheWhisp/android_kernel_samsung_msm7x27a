@@ -21,6 +21,11 @@
 #ifndef _ZD_CHIP_H
 #define _ZD_CHIP_H
 
+<<<<<<< HEAD
+=======
+#include <net/mac80211.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "zd_rf.h"
 #include "zd_usb.h"
 

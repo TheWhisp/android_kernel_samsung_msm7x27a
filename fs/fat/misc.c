@@ -56,7 +56,15 @@ void fat_msg(struct super_block *sb, const char *level, const char *fmt, ...)
 	va_start(args, fmt);
 	vaf.fmt = fmt;
 	vaf.va = &args;
+<<<<<<< HEAD
 	printk("%sFAT-fs (%s): %pV\n", level, sb->s_id, &vaf);
+=======
+	if (!strncmp(level, KERN_ERR, sizeof(KERN_ERR)))
+		printk_ratelimited("%sFAT-fs (%s): %pV\n", level,
+				   sb->s_id, &vaf);
+	else
+		printk("%sFAT-fs (%s): %pV\n", level, sb->s_id, &vaf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	va_end(args);
 }
 

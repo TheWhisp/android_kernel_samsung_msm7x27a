@@ -50,6 +50,10 @@
 #include <asm/mmu_context.h>
 #include <asm/ppc-pci.h>
 #include <asm/syscalls.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 asmlinkage long ppc32_select(u32 n, compat_ulong_t __user *inp,

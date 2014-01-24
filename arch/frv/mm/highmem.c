@@ -37,7 +37,11 @@ struct page *kmap_atomic_to_page(void *ptr)
 	return virt_to_page(ptr);
 }
 
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
+=======
+void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long paddr;
 	int type;
@@ -64,7 +68,11 @@ void *__kmap_atomic(struct page *page)
 		return NULL;
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kmap_atomic);
+=======
+EXPORT_SYMBOL(kmap_atomic);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __kunmap_atomic(void *kvaddr)
 {

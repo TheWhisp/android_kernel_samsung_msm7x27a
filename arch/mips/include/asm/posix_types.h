@@ -17,6 +17,7 @@
  * assume GCC is being used.
  */
 
+<<<<<<< HEAD
 typedef unsigned long	__kernel_ino_t;
 typedef unsigned int	__kernel_mode_t;
 #if (_MIPS_SZLONG == 32)
@@ -140,5 +141,23 @@ static __inline__ void __FD_ZERO(__kernel_fd_set *__p)
 }
 
 #endif /* defined(__KERNEL__) */
+=======
+#if (_MIPS_SZLONG == 64)
+typedef unsigned int	__kernel_nlink_t;
+#define __kernel_nlink_t __kernel_nlink_t
+#endif
+
+typedef long		__kernel_daddr_t;
+#define __kernel_daddr_t __kernel_daddr_t
+
+#if (_MIPS_SZLONG == 32)
+typedef struct {
+	long	val[2];
+} __kernel_fsid_t;
+#define __kernel_fsid_t __kernel_fsid_t
+#endif
+
+#include <asm-generic/posix_types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _ASM_POSIX_TYPES_H */

@@ -131,7 +131,11 @@ DriverEntry.c, bcmfwup.c, ChipDetectTask.c, HaltnReset.c, InterfaceDDR.c */
 
 // TODO - put PHS_SEND in Tx PHS_RECEIVE in Rx path ?
 #define PHS_SEND    	(OTHERS<<16)
+<<<<<<< HEAD
 #define PHS_RECIEVE 	(OTHERS<<17)
+=======
+#define PHS_RECEIVE 	(OTHERS<<17)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PHS_MODULE 	    (OTHERS<<18)
 
 #define INTF_INIT    	(OTHERS<<19)

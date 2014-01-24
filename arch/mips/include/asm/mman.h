@@ -80,6 +80,13 @@
 #define MADV_HUGEPAGE	14		/* Worth backing with hugepages */
 #define MADV_NOHUGEPAGE	15		/* Not worth backing with hugepages */
 
+<<<<<<< HEAD
+=======
+#define MADV_DONTDUMP   16		/* Explicity exclude from the core dump,
+					   overrides the coredump filter bits */
+#define MADV_DODUMP	17		/* Clear the MADV_NODUMP flag */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* compatibility flags */
 #define MAP_FILE	0
 

@@ -7,6 +7,10 @@
 #ifndef _LINUX_ASM_VGA_H_
 #define _LINUX_ASM_VGA_H_
 
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/types.h>
 
 #define VT_BUF_HAVE_RW

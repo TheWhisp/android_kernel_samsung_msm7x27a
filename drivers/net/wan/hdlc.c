@@ -22,6 +22,11 @@
  * - proto->start() and stop() are called with spin_lock_irq held.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/errno.h>
 #include <linux/hdlc.h>
 #include <linux/if_arp.h>
@@ -130,10 +135,17 @@ static int hdlc_device_event(struct notifier_block *this, unsigned long event,
 		goto carrier_exit;
 
 	if (hdlc->carrier) {
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Carrier detected\n", dev->name);
 		hdlc_proto_start(dev);
 	} else {
 		printk(KERN_INFO "%s: Carrier lost\n", dev->name);
+=======
+		netdev_info(dev, "Carrier detected\n");
+		hdlc_proto_start(dev);
+	} else {
+		netdev_info(dev, "Carrier lost\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		hdlc_proto_stop(dev);
 	}
 
@@ -165,10 +177,17 @@ int hdlc_open(struct net_device *dev)
 	spin_lock_irq(&hdlc->state_lock);
 
 	if (hdlc->carrier) {
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Carrier detected\n", dev->name);
 		hdlc_proto_start(dev);
 	} else
 		printk(KERN_INFO "%s: No carrier\n", dev->name);
+=======
+		netdev_info(dev, "Carrier detected\n");
+		hdlc_proto_start(dev);
+	} else
+		netdev_info(dev, "No carrier\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	hdlc->open = 1;
 
@@ -281,8 +300,13 @@ int attach_hdlc_protocol(struct net_device *dev, struct hdlc_proto *proto,
 	if (size)
 		if ((dev_to_hdlc(dev)->state = kmalloc(size,
 						       GFP_KERNEL)) == NULL) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "Memory squeeze on"
 			       " hdlc_proto_attach()\n");
+=======
+			netdev_warn(dev,
+				    "Memory squeeze on hdlc_proto_attach()\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			module_put(proto->module);
 			return -ENOBUFS;
 		}
@@ -363,7 +387,11 @@ static int __init hdlc_module_init(void)
 {
 	int result;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "%s\n", version);
+=======
+	pr_info("%s\n", version);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((result = register_netdevice_notifier(&hdlc_notifier)) != 0)
 		return result;
 	dev_add_pack(&hdlc_packet_type);

@@ -15,7 +15,11 @@
 #include <linux/errno.h>
 #include <linux/init.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/cpu.h>
 #include <linux/of.h>
 #include <asm/cputhreads.h>
@@ -184,7 +188,11 @@ static ssize_t get_best_energy_list(char *page, int activate)
 	return s-page;
 }
 
+<<<<<<< HEAD
 static ssize_t get_best_energy_data(struct sys_device *dev,
+=======
+static ssize_t get_best_energy_data(struct device *dev,
+>>>>>>> refs/remotes/origin/cm-10.0
 					char *page, int activate)
 {
 	int rc;
@@ -207,26 +215,46 @@ static ssize_t get_best_energy_data(struct sys_device *dev,
 
 /* Wrapper functions */
 
+<<<<<<< HEAD
 static ssize_t cpu_activate_hint_list_show(struct sysdev_class *class,
 			struct sysdev_class_attribute *attr, char *page)
+=======
+static ssize_t cpu_activate_hint_list_show(struct device *dev,
+			struct device_attribute *attr, char *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return get_best_energy_list(page, 1);
 }
 
+<<<<<<< HEAD
 static ssize_t cpu_deactivate_hint_list_show(struct sysdev_class *class,
 			struct sysdev_class_attribute *attr, char *page)
+=======
+static ssize_t cpu_deactivate_hint_list_show(struct device *dev,
+			struct device_attribute *attr, char *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return get_best_energy_list(page, 0);
 }
 
+<<<<<<< HEAD
 static ssize_t percpu_activate_hint_show(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *page)
+=======
+static ssize_t percpu_activate_hint_show(struct device *dev,
+			struct device_attribute *attr, char *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return get_best_energy_data(dev, page, 1);
 }
 
+<<<<<<< HEAD
 static ssize_t percpu_deactivate_hint_show(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *page)
+=======
+static ssize_t percpu_deactivate_hint_show(struct device *dev,
+			struct device_attribute *attr, char *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return get_best_energy_data(dev, page, 0);
 }
@@ -241,6 +269,7 @@ static ssize_t percpu_deactivate_hint_show(struct sys_device *dev,
  *	Per-cpu value of the hint
  */
 
+<<<<<<< HEAD
 struct sysdev_class_attribute attr_cpu_activate_hint_list =
 		_SYSDEV_CLASS_ATTR(pseries_activate_hint_list, 0444,
 		cpu_activate_hint_list_show, NULL);
@@ -255,27 +284,56 @@ struct sysdev_attribute attr_percpu_activate_hint =
 
 struct sysdev_attribute attr_percpu_deactivate_hint =
 		_SYSDEV_ATTR(pseries_deactivate_hint, 0444,
+=======
+struct device_attribute attr_cpu_activate_hint_list =
+		__ATTR(pseries_activate_hint_list, 0444,
+		cpu_activate_hint_list_show, NULL);
+
+struct device_attribute attr_cpu_deactivate_hint_list =
+		__ATTR(pseries_deactivate_hint_list, 0444,
+		cpu_deactivate_hint_list_show, NULL);
+
+struct device_attribute attr_percpu_activate_hint =
+		__ATTR(pseries_activate_hint, 0444,
+		percpu_activate_hint_show, NULL);
+
+struct device_attribute attr_percpu_deactivate_hint =
+		__ATTR(pseries_deactivate_hint, 0444,
+>>>>>>> refs/remotes/origin/cm-10.0
 		percpu_deactivate_hint_show, NULL);
 
 static int __init pseries_energy_init(void)
 {
 	int cpu, err;
+<<<<<<< HEAD
 	struct sys_device *cpu_sys_dev;
+=======
+	struct device *cpu_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!check_for_h_best_energy()) {
 		printk(KERN_INFO "Hypercall H_BEST_ENERGY not supported\n");
 		return 0;
 	}
 	/* Create the sysfs files */
+<<<<<<< HEAD
 	err = sysfs_create_file(&cpu_sysdev_class.kset.kobj,
 				&attr_cpu_activate_hint_list.attr);
 	if (!err)
 		err = sysfs_create_file(&cpu_sysdev_class.kset.kobj,
 				&attr_cpu_deactivate_hint_list.attr);
+=======
+	err = device_create_file(cpu_subsys.dev_root,
+				&attr_cpu_activate_hint_list);
+	if (!err)
+		err = device_create_file(cpu_subsys.dev_root,
+				&attr_cpu_deactivate_hint_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (err)
 		return err;
 	for_each_possible_cpu(cpu) {
+<<<<<<< HEAD
 		cpu_sys_dev = get_cpu_sysdev(cpu);
 		err = sysfs_create_file(&cpu_sys_dev->kobj,
 				&attr_percpu_activate_hint.attr);
@@ -283,6 +341,15 @@ static int __init pseries_energy_init(void)
 			break;
 		err = sysfs_create_file(&cpu_sys_dev->kobj,
 				&attr_percpu_deactivate_hint.attr);
+=======
+		cpu_dev = get_cpu_device(cpu);
+		err = device_create_file(cpu_dev,
+				&attr_percpu_activate_hint);
+		if (err)
+			break;
+		err = device_create_file(cpu_dev,
+				&attr_percpu_deactivate_hint);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			break;
 	}
@@ -298,12 +365,17 @@ static int __init pseries_energy_init(void)
 static void __exit pseries_energy_cleanup(void)
 {
 	int cpu;
+<<<<<<< HEAD
 	struct sys_device *cpu_sys_dev;
+=======
+	struct device *cpu_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!sysfs_entries)
 		return;
 
 	/* Remove the sysfs files */
+<<<<<<< HEAD
 	sysfs_remove_file(&cpu_sysdev_class.kset.kobj,
 				&attr_cpu_activate_hint_list.attr);
 
@@ -315,6 +387,16 @@ static void __exit pseries_energy_cleanup(void)
 		sysfs_remove_file(&cpu_sys_dev->kobj,
 				&attr_percpu_activate_hint.attr);
 		sysfs_remove_file(&cpu_sys_dev->kobj,
+=======
+	device_remove_file(cpu_subsys.dev_root, &attr_cpu_activate_hint_list);
+	device_remove_file(cpu_subsys.dev_root, &attr_cpu_deactivate_hint_list);
+
+	for_each_possible_cpu(cpu) {
+		cpu_dev = get_cpu_device(cpu);
+		sysfs_remove_file(&cpu_dev->kobj,
+				&attr_percpu_activate_hint.attr);
+		sysfs_remove_file(&cpu_dev->kobj,
+>>>>>>> refs/remotes/origin/cm-10.0
 				&attr_percpu_deactivate_hint.attr);
 	}
 }

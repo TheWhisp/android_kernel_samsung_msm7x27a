@@ -227,6 +227,7 @@ static struct platform_driver pruss_driver = {
 		   },
 };
 
+<<<<<<< HEAD
 static int __init pruss_init_module(void)
 {
 	return platform_driver_register(&pruss_driver);
@@ -240,6 +241,9 @@ static void __exit pruss_exit_module(void)
 }
 
 module_exit(pruss_exit_module);
+=======
+module_platform_driver(pruss_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL v2");
 MODULE_VERSION(DRV_VERSION);

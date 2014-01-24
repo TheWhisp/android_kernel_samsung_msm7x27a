@@ -77,10 +77,15 @@ static void
 deadline_add_rq_rb(struct deadline_data *dd, struct request *rq)
 {
 	struct rb_root *root = deadline_rb_root(dd, rq);
+<<<<<<< HEAD
 	struct request *__alias;
 
 	while (unlikely(__alias = elv_rb_add(root, rq)))
 		deadline_move_request(dd, __alias);
+=======
+
+	elv_rb_add(root, rq);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void
@@ -450,9 +455,13 @@ static struct elevator_type iosched_deadline = {
 
 static int __init deadline_init(void)
 {
+<<<<<<< HEAD
 	elv_register(&iosched_deadline);
 
 	return 0;
+=======
+	return elv_register(&iosched_deadline);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __exit deadline_exit(void)

@@ -23,8 +23,13 @@
  *   o Allow clocksource drivers to be unregistered
  */
 
+<<<<<<< HEAD
 #include <linux/clocksource.h>
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+#include <linux/clocksource.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
@@ -186,6 +191,10 @@ static struct timer_list watchdog_timer;
 static DECLARE_WORK(watchdog_work, clocksource_watchdog_work);
 static DEFINE_SPINLOCK(watchdog_lock);
 static int watchdog_running;
+<<<<<<< HEAD
+=======
+static atomic_t watchdog_reset_pending;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int clocksource_watchdog_kthread(void *data);
 static void __clocksource_change_rating(struct clocksource *cs, int rating);
@@ -247,12 +256,21 @@ static void clocksource_watchdog(unsigned long data)
 	struct clocksource *cs;
 	cycle_t csnow, wdnow;
 	int64_t wd_nsec, cs_nsec;
+<<<<<<< HEAD
 	int next_cpu;
+=======
+	int next_cpu, reset_pending;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock(&watchdog_lock);
 	if (!watchdog_running)
 		goto out;
 
+<<<<<<< HEAD
+=======
+	reset_pending = atomic_read(&watchdog_reset_pending);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each_entry(cs, &watchdog_list, wd_list) {
 
 		/* Clocksource already marked unstable? */
@@ -268,7 +286,12 @@ static void clocksource_watchdog(unsigned long data)
 		local_irq_enable();
 
 		/* Clocksource initialized ? */
+<<<<<<< HEAD
 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG)) {
+=======
+		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
+		    atomic_read(&watchdog_reset_pending)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			cs->flags |= CLOCK_SOURCE_WATCHDOG;
 			cs->wd_last = wdnow;
 			cs->cs_last = csnow;
@@ -283,8 +306,16 @@ static void clocksource_watchdog(unsigned long data)
 		cs->cs_last = csnow;
 		cs->wd_last = wdnow;
 
+<<<<<<< HEAD
 		/* Check the deviation from the watchdog clocksource. */
 		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
+=======
+		if (atomic_read(&watchdog_reset_pending))
+			continue;
+
+		/* Check the deviation from the watchdog clocksource. */
+		if ((abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			clocksource_unstable(cs, cs_nsec - wd_nsec);
 			continue;
 		}
@@ -303,6 +334,16 @@ static void clocksource_watchdog(unsigned long data)
 	}
 
 	/*
+<<<<<<< HEAD
+=======
+	 * We only clear the watchdog_reset_pending, when we did a
+	 * full cycle through all clocksources.
+	 */
+	if (reset_pending)
+		atomic_dec(&watchdog_reset_pending);
+
+	/*
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * Cycle through CPUs to check if the CPUs stay synchronized
 	 * to each other.
 	 */
@@ -344,6 +385,7 @@ static inline void clocksource_reset_watchdog(void)
 
 static void clocksource_resume_watchdog(void)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 
 	/*
@@ -361,6 +403,9 @@ static void clocksource_resume_watchdog(void)
 		return;
 	clocksource_reset_watchdog();
 	spin_unlock_irqrestore(&watchdog_lock, flags);
+=======
+	atomic_inc(&watchdog_reset_pending);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void clocksource_enqueue_watchdog(struct clocksource *cs)
@@ -494,6 +539,25 @@ void clocksource_touch_watchdog(void)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * clocksource_max_adjustment- Returns max adjustment amount
+ * @cs:         Pointer to clocksource
+ *
+ */
+static u32 clocksource_max_adjustment(struct clocksource *cs)
+{
+	u64 ret;
+	/*
+	 * We won't try to correct for more than 11% adjustments (110,000 ppm),
+	 */
+	ret = (u64)cs->mult * 11;
+	do_div(ret,100);
+	return (u32)ret;
+}
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * clocksource_max_deferment - Returns max time the clocksource can be deferred
  * @cs:         Pointer to clocksource
  *
@@ -505,6 +569,7 @@ static u64 clocksource_max_deferment(struct clocksource *cs)
 	/*
 	 * Calculate the maximum number of cycles that we can pass to the
 	 * cyc2ns function without overflowing a 64-bit signed result. The
+<<<<<<< HEAD
 	 * maximum number of cycles is equal to ULLONG_MAX/cs->mult which
 	 * is equivalent to the below.
 	 * max_cycles < (2^63)/cs->mult
@@ -512,18 +577,40 @@ static u64 clocksource_max_deferment(struct clocksource *cs)
 	 * max_cycles < 2^(log2(2^63) - log2(cs->mult))
 	 * max_cycles < 2^(63 - log2(cs->mult))
 	 * max_cycles < 1 << (63 - log2(cs->mult))
+=======
+	 * maximum number of cycles is equal to ULLONG_MAX/(cs->mult+cs->maxadj)
+	 * which is equivalent to the below.
+	 * max_cycles < (2^63)/(cs->mult + cs->maxadj)
+	 * max_cycles < 2^(log2((2^63)/(cs->mult + cs->maxadj)))
+	 * max_cycles < 2^(log2(2^63) - log2(cs->mult + cs->maxadj))
+	 * max_cycles < 2^(63 - log2(cs->mult + cs->maxadj))
+	 * max_cycles < 1 << (63 - log2(cs->mult + cs->maxadj))
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * Please note that we add 1 to the result of the log2 to account for
 	 * any rounding errors, ensure the above inequality is satisfied and
 	 * no overflow will occur.
 	 */
+<<<<<<< HEAD
 	max_cycles = 1ULL << (63 - (ilog2(cs->mult) + 1));
+=======
+	max_cycles = 1ULL << (63 - (ilog2(cs->mult + cs->maxadj) + 1));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * The actual maximum number of cycles we can defer the clocksource is
 	 * determined by the minimum of max_cycles and cs->mask.
+<<<<<<< HEAD
 	 */
 	max_cycles = min_t(u64, max_cycles, (u64) cs->mask);
 	max_nsecs = clocksource_cyc2ns(max_cycles, cs->mult, cs->shift);
+=======
+	 * Note: Here we subtract the maxadj to make sure we don't sleep for
+	 * too long if there's a large negative adjustment.
+	 */
+	max_cycles = min_t(u64, max_cycles, (u64) cs->mask);
+	max_nsecs = clocksource_cyc2ns(max_cycles, cs->mult - cs->maxadj,
+					cs->shift);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * To ensure that the clocksource does not wrap whilst we are idle,
@@ -630,7 +717,11 @@ static void clocksource_enqueue(struct clocksource *cs)
 
 /**
  * __clocksource_updatefreq_scale - Used update clocksource with new freq
+<<<<<<< HEAD
  * @t:		clocksource to be registered
+=======
+ * @cs:		clocksource to be registered
+>>>>>>> refs/remotes/origin/cm-10.0
  * @scale:	Scale factor multiplied against freq to get clocksource hz
  * @freq:	clocksource frequency (cycles per second) divided by scale
  *
@@ -642,7 +733,10 @@ static void clocksource_enqueue(struct clocksource *cs)
 void __clocksource_updatefreq_scale(struct clocksource *cs, u32 scale, u32 freq)
 {
 	u64 sec;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Calc the maximum number of seconds which we can run before
 	 * wrapping around. For clocksources which have a mask > 32bit
@@ -663,13 +757,34 @@ void __clocksource_updatefreq_scale(struct clocksource *cs, u32 scale, u32 freq)
 
 	clocks_calc_mult_shift(&cs->mult, &cs->shift, freq,
 			       NSEC_PER_SEC / scale, sec * scale);
+<<<<<<< HEAD
+=======
+
+	/*
+	 * for clocksources that have large mults, to avoid overflow.
+	 * Since mult may be adjusted by ntp, add an safety extra margin
+	 *
+	 */
+	cs->maxadj = clocksource_max_adjustment(cs);
+	while ((cs->mult + cs->maxadj < cs->mult)
+		|| (cs->mult - cs->maxadj > cs->mult)) {
+		cs->mult >>= 1;
+		cs->shift--;
+		cs->maxadj = clocksource_max_adjustment(cs);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	cs->max_idle_ns = clocksource_max_deferment(cs);
 }
 EXPORT_SYMBOL_GPL(__clocksource_updatefreq_scale);
 
 /**
  * __clocksource_register_scale - Used to install new clocksources
+<<<<<<< HEAD
  * @t:		clocksource to be registered
+=======
+ * @cs:		clocksource to be registered
+>>>>>>> refs/remotes/origin/cm-10.0
  * @scale:	Scale factor multiplied against freq to get clocksource hz
  * @freq:	clocksource frequency (cycles per second) divided by scale
  *
@@ -697,12 +812,25 @@ EXPORT_SYMBOL_GPL(__clocksource_register_scale);
 
 /**
  * clocksource_register - Used to install new clocksources
+<<<<<<< HEAD
  * @t:		clocksource to be registered
+=======
+ * @cs:		clocksource to be registered
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Returns -EBUSY if registration fails, zero otherwise.
  */
 int clocksource_register(struct clocksource *cs)
 {
+<<<<<<< HEAD
+=======
+	/* calculate max adjustment for given mult/shift */
+	cs->maxadj = clocksource_max_adjustment(cs);
+	WARN_ONCE(cs->mult + cs->maxadj < cs->mult,
+		"Clocksource %s might overflow on 11%% adjustment\n",
+		cs->name);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* calculate max idle time permitted for this clocksource */
 	cs->max_idle_ns = clocksource_max_deferment(cs);
 
@@ -725,6 +853,11 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating)
 
 /**
  * clocksource_change_rating - Change the rating of a registered clocksource
+<<<<<<< HEAD
+=======
+ * @cs:		clocksource to be changed
+ * @rating:	new rating
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 void clocksource_change_rating(struct clocksource *cs, int rating)
 {
@@ -736,6 +869,10 @@ EXPORT_SYMBOL(clocksource_change_rating);
 
 /**
  * clocksource_unregister - remove a registered clocksource
+<<<<<<< HEAD
+=======
+ * @cs:	clocksource to be unregistered
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 void clocksource_unregister(struct clocksource *cs)
 {
@@ -751,13 +888,22 @@ EXPORT_SYMBOL(clocksource_unregister);
 /**
  * sysfs_show_current_clocksources - sysfs interface for current clocksource
  * @dev:	unused
+<<<<<<< HEAD
+=======
+ * @attr:	unused
+>>>>>>> refs/remotes/origin/cm-10.0
  * @buf:	char buffer to be filled with clocksource list
  *
  * Provides sysfs interface for listing current clocksource.
  */
 static ssize_t
+<<<<<<< HEAD
 sysfs_show_current_clocksources(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
+=======
+sysfs_show_current_clocksources(struct device *dev,
+				struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	ssize_t count = 0;
 
@@ -771,14 +917,23 @@ sysfs_show_current_clocksources(struct sys_device *dev,
 /**
  * sysfs_override_clocksource - interface for manually overriding clocksource
  * @dev:	unused
+<<<<<<< HEAD
+=======
+ * @attr:	unused
+>>>>>>> refs/remotes/origin/cm-10.0
  * @buf:	name of override clocksource
  * @count:	length of buffer
  *
  * Takes input from sysfs interface for manually overriding the default
  * clocksource selection.
  */
+<<<<<<< HEAD
 static ssize_t sysfs_override_clocksource(struct sys_device *dev,
 					  struct sysdev_attribute *attr,
+=======
+static ssize_t sysfs_override_clocksource(struct device *dev,
+					  struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 					  const char *buf, size_t count)
 {
 	size_t ret = count;
@@ -806,13 +961,22 @@ static ssize_t sysfs_override_clocksource(struct sys_device *dev,
 /**
  * sysfs_show_available_clocksources - sysfs interface for listing clocksource
  * @dev:	unused
+<<<<<<< HEAD
+=======
+ * @attr:	unused
+>>>>>>> refs/remotes/origin/cm-10.0
  * @buf:	char buffer to be filled with clocksource list
  *
  * Provides sysfs interface for listing registered clocksources
  */
 static ssize_t
+<<<<<<< HEAD
 sysfs_show_available_clocksources(struct sys_device *dev,
 				  struct sysdev_attribute *attr,
+=======
+sysfs_show_available_clocksources(struct device *dev,
+				  struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  char *buf)
 {
 	struct clocksource *src;
@@ -841,6 +1005,7 @@ sysfs_show_available_clocksources(struct sys_device *dev,
 /*
  * Sysfs setup bits:
  */
+<<<<<<< HEAD
 static SYSDEV_ATTR(current_clocksource, 0644, sysfs_show_current_clocksources,
 		   sysfs_override_clocksource);
 
@@ -854,10 +1019,27 @@ static struct sysdev_class clocksource_sysclass = {
 static struct sys_device device_clocksource = {
 	.id	= 0,
 	.cls	= &clocksource_sysclass,
+=======
+static DEVICE_ATTR(current_clocksource, 0644, sysfs_show_current_clocksources,
+		   sysfs_override_clocksource);
+
+static DEVICE_ATTR(available_clocksource, 0444,
+		   sysfs_show_available_clocksources, NULL);
+
+static struct bus_type clocksource_subsys = {
+	.name = "clocksource",
+	.dev_name = "clocksource",
+};
+
+static struct device device_clocksource = {
+	.id	= 0,
+	.bus	= &clocksource_subsys,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init init_clocksource_sysfs(void)
 {
+<<<<<<< HEAD
 	int error = sysdev_class_register(&clocksource_sysclass);
 
 	if (!error)
@@ -870,6 +1052,20 @@ static int __init init_clocksource_sysfs(void)
 		error = sysdev_create_file(
 				&device_clocksource,
 				&attr_available_clocksource);
+=======
+	int error = subsys_system_register(&clocksource_subsys, NULL);
+
+	if (!error)
+		error = device_register(&device_clocksource);
+	if (!error)
+		error = device_create_file(
+				&device_clocksource,
+				&dev_attr_current_clocksource);
+	if (!error)
+		error = device_create_file(
+				&device_clocksource,
+				&dev_attr_available_clocksource);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return error;
 }
 

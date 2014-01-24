@@ -31,7 +31,11 @@ static int ixp4xx_set_mode(struct ata_link *link, struct ata_device **error)
 	struct ata_device *dev;
 
 	ata_for_each_dev(dev, link, ENABLED) {
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO, "configured for PIO0\n");
+=======
+		ata_dev_info(dev, "configured for PIO0\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev->pio_mode = XFER_PIO_0;
 		dev->xfer_mode = XFER_PIO_0;
 		dev->xfer_shift = ATA_SHIFT_PIO;
@@ -181,7 +185,11 @@ static __devinit int ixp4xx_pata_probe(struct platform_device *pdev)
 
 	ixp4xx_setup_port(ap, data, cs0->start, cs1->start);
 
+<<<<<<< HEAD
 	dev_printk(KERN_INFO, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* activate host */
 	return ata_host_activate(host, irq, ata_sff_interrupt, 0, &ixp4xx_sht);
@@ -205,6 +213,7 @@ static struct platform_driver ixp4xx_pata_platform_driver = {
 	.remove		= __devexit_p(ixp4xx_pata_remove),
 };
 
+<<<<<<< HEAD
 static int __init ixp4xx_pata_init(void)
 {
 	return platform_driver_register(&ixp4xx_pata_platform_driver);
@@ -214,12 +223,18 @@ static void __exit ixp4xx_pata_exit(void)
 {
 	platform_driver_unregister(&ixp4xx_pata_platform_driver);
 }
+=======
+module_platform_driver(ixp4xx_pata_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
 MODULE_DESCRIPTION("low-level driver for ixp4xx Compact Flash PATA");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 MODULE_ALIAS("platform:" DRV_NAME);
+<<<<<<< HEAD
 
 module_init(ixp4xx_pata_init);
 module_exit(ixp4xx_pata_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

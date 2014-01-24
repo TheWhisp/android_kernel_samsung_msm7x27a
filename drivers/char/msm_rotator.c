@@ -97,6 +97,10 @@
 #define ROTATOR_REVISION_NONE	0xffffffff
 
 uint32_t rotator_hw_revision;
+<<<<<<< HEAD
+=======
+static char rot_iommu_split_domain;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * rotator_hw_revision:
@@ -121,12 +125,26 @@ struct msm_rotator_mem_planes {
 #define checkoffset(offset, size, max_size) \
 	((size) > (max_size) || (offset) > ((max_size) - (size)))
 
+<<<<<<< HEAD
+=======
+struct msm_rotator_fd_info {
+	int pid;
+	int ref_cnt;
+	struct list_head list;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct msm_rotator_dev {
 	void __iomem *io_base;
 	int irq;
 	struct msm_rotator_img_info *img_info[MAX_SESSIONS];
 	struct clk *core_clk;
+<<<<<<< HEAD
 	int pid_list[MAX_SESSIONS];
+=======
+	struct msm_rotator_fd_info *fd_info[MAX_SESSIONS];
+	struct list_head fd_list;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct clk *pclk;
 	int rot_clk_state;
 	struct regulator *regulator;
@@ -163,13 +181,20 @@ enum {
 	CLK_SUSPEND,
 };
 
+<<<<<<< HEAD
 int msm_rotator_iommu_map_buf(int mem_id, unsigned char src,
 	unsigned long *start, unsigned long *len,
 	struct ion_handle **pihdl)
+=======
+int msm_rotator_iommu_map_buf(int mem_id, int domain,
+	unsigned long *start, unsigned long *len,
+	struct ion_handle **pihdl, unsigned int secure)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (!msm_rotator_dev->client)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	*pihdl = ion_import_fd(msm_rotator_dev->client, mem_id);
 	if (IS_ERR_OR_NULL(*pihdl)) {
 		pr_err("ion_import_fd() failed\n");
@@ -183,6 +208,40 @@ int msm_rotator_iommu_map_buf(int mem_id, unsigned char src,
 		SZ_4K, 0, start, len, 0, ION_IOMMU_UNMAP_DELAYED)) {
 		pr_err("ion_map_iommu() failed\n");
 		return -EINVAL;
+=======
+	*pihdl = ion_import_dma_buf(msm_rotator_dev->client, mem_id);
+	if (IS_ERR_OR_NULL(*pihdl)) {
+		pr_err("ion_import_dma_buf() failed\n");
+		return PTR_ERR(*pihdl);
+	}
+	pr_debug("%s(): ion_hdl %p, ion_fd %d\n", __func__, *pihdl,
+		ion_share_dma_buf(msm_rotator_dev->client, *pihdl));
+
+	if (rot_iommu_split_domain) {
+		if (secure) {
+			if (ion_phys(msm_rotator_dev->client,
+				*pihdl, start, (unsigned *)len)) {
+				pr_err("%s:%d: ion_phys map failed\n",
+					 __func__, __LINE__);
+				return -ENOMEM;
+			}
+		} else {
+			if (ion_map_iommu(msm_rotator_dev->client,
+				*pihdl,	domain, GEN_POOL,
+				SZ_4K, 0, start, len, 0,
+				ION_IOMMU_UNMAP_DELAYED)) {
+				pr_err("ion_map_iommu() failed\n");
+				return -EINVAL;
+			}
+		}
+	} else {
+		if (ion_map_iommu(msm_rotator_dev->client,
+			*pihdl,	ROTATOR_SRC_DOMAIN, GEN_POOL,
+			SZ_4K, 0, start, len, 0, ION_IOMMU_UNMAP_DELAYED)) {
+			pr_err("ion_map_iommu() failed\n");
+			return -EINVAL;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	pr_debug("%s(): mem_id %d, start 0x%lx, len 0x%lx\n",
@@ -339,6 +398,11 @@ static int get_bpp(int format)
 		return 1;
 
 	case MDP_RGB_888:
+<<<<<<< HEAD
+=======
+	case MDP_YCBCR_H1V1:
+	case MDP_YCRCB_H1V1:
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 3;
 
 	case MDP_YCRYCB_H2V1:
@@ -385,6 +449,11 @@ static int msm_rotator_get_plane_sizes(uint32_t format,	uint32_t w, uint32_t h,
 	case MDP_RGB_565:
 	case MDP_BGR_565:
 	case MDP_YCRYCB_H2V1:
+<<<<<<< HEAD
+=======
+	case MDP_YCBCR_H1V1:
+	case MDP_YCRCB_H1V1:
+>>>>>>> refs/remotes/origin/cm-10.0
 		p->num_planes = 1;
 		p->plane_size[0] = w * h * get_bpp(format);
 		break;
@@ -733,6 +802,11 @@ static int msm_rotator_rgb_types(struct msm_rotator_img_info *info,
 			break;
 
 		case MDP_RGB_888:
+<<<<<<< HEAD
+=======
+		case MDP_YCBCR_H1V1:
+		case MDP_YCRCB_H1V1:
+>>>>>>> refs/remotes/origin/cm-10.0
 			iowrite32(GET_PACK_PATTERN(0, CLR_R, CLR_G, CLR_B, 8),
 				  MSM_ROTATOR_SRC_UNPACK_PATTERN1);
 			iowrite32(GET_PACK_PATTERN(0, CLR_R, CLR_G, CLR_B, 8),
@@ -793,9 +867,15 @@ static int msm_rotator_rgb_types(struct msm_rotator_img_info *info,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_img(struct msmfb_data *fbd, unsigned char src,
 	unsigned long *start, unsigned long *len, struct file **p_file,
 	int *p_need, struct ion_handle **p_ihdl)
+=======
+static int get_img(struct msmfb_data *fbd, int domain,
+	unsigned long *start, unsigned long *len, struct file **p_file,
+	int *p_need, struct ion_handle **p_ihdl, unsigned int secure)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = 0;
 #ifdef CONFIG_FB
@@ -837,8 +917,13 @@ static int get_img(struct msmfb_data *fbd, unsigned char src,
 #endif
 
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
+<<<<<<< HEAD
 	return msm_rotator_iommu_map_buf(fbd->memory_id, src, start,
 		len, p_ihdl);
+=======
+	return msm_rotator_iommu_map_buf(fbd->memory_id, domain, start,
+		len, p_ihdl, secure);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 #ifdef CONFIG_ANDROID_PMEM
 	if (!get_pmem_file(fbd->memory_id, start, &vstart, len, p_file))
@@ -849,17 +934,37 @@ static int get_img(struct msmfb_data *fbd, unsigned char src,
 
 }
 
+<<<<<<< HEAD
 static void put_img(struct file *p_file, struct ion_handle *p_ihdl)
+=======
+static void put_img(struct file *p_file, struct ion_handle *p_ihdl,
+	int domain, unsigned int secure)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 #ifdef CONFIG_ANDROID_PMEM
 	if (p_file != NULL)
 		put_pmem_file(p_file);
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
 	if (!IS_ERR_OR_NULL(p_ihdl)) {
 		pr_debug("%s(): p_ihdl %p\n", __func__, p_ihdl);
 		ion_unmap_iommu(msm_rotator_dev->client,
 			p_ihdl, ROTATOR_DOMAIN, GEN_POOL);
+=======
+
+#ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
+	if (!IS_ERR_OR_NULL(p_ihdl)) {
+		pr_debug("%s(): p_ihdl %p\n", __func__, p_ihdl);
+		if (rot_iommu_split_domain) {
+			if (!secure)
+				ion_unmap_iommu(msm_rotator_dev->client,
+					p_ihdl, domain, GEN_POOL);
+		} else {
+			ion_unmap_iommu(msm_rotator_dev->client,
+				p_ihdl, ROTATOR_SRC_DOMAIN, GEN_POOL);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ion_free(msm_rotator_dev->client, p_ihdl);
 	}
@@ -926,18 +1031,30 @@ static int msm_rotator_do_rotate(unsigned long arg)
 		goto do_rotate_unlock_mutex;
 	}
 
+<<<<<<< HEAD
 	rc = get_img(&info.src, 1, (unsigned long *)&in_paddr,
 			(unsigned long *)&src_len, &srcp0_file, &ps0_need,
 			&srcp0_ihdl);
+=======
+	rc = get_img(&info.src, ROTATOR_SRC_DOMAIN, (unsigned long *)&in_paddr,
+			(unsigned long *)&src_len, &srcp0_file, &ps0_need,
+			&srcp0_ihdl, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc) {
 		pr_err("%s: in get_img() failed id=0x%08x\n",
 			DRIVER_NAME, info.src.memory_id);
 		goto do_rotate_unlock_mutex;
 	}
 
+<<<<<<< HEAD
 	rc = get_img(&info.dst, 0, (unsigned long *)&out_paddr,
 			(unsigned long *)&dst_len, &dstp0_file, &p_need,
 			&dstp0_ihdl);
+=======
+	rc = get_img(&info.dst, ROTATOR_DST_DOMAIN, (unsigned long *)&out_paddr,
+			(unsigned long *)&dst_len, &dstp0_file, &p_need,
+			&dstp0_ihdl, img_info->secure);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc) {
 		pr_err("%s: out get_img() failed id=0x%08x\n",
 		       DRIVER_NAME, info.dst.memory_id);
@@ -965,20 +1082,34 @@ static int msm_rotator_do_rotate(unsigned long arg)
 			goto do_rotate_unlock_mutex;
 		}
 
+<<<<<<< HEAD
 		rc = get_img(&info.src_chroma, 1,
 				(unsigned long *)&in_chroma_paddr,
 				(unsigned long *)&src_len, &srcp1_file, &p_need,
 				&srcp1_ihdl);
+=======
+		rc = get_img(&info.src_chroma, ROTATOR_SRC_DOMAIN,
+				(unsigned long *)&in_chroma_paddr,
+				(unsigned long *)&src_len, &srcp1_file, &p_need,
+				&srcp1_ihdl, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (rc) {
 			pr_err("%s: in chroma get_img() failed id=0x%08x\n",
 				DRIVER_NAME, info.src_chroma.memory_id);
 			goto do_rotate_unlock_mutex;
 		}
 
+<<<<<<< HEAD
 		rc = get_img(&info.dst_chroma, 0,
 				(unsigned long *)&out_chroma_paddr,
 				(unsigned long *)&dst_len, &dstp1_file, &p_need,
 				&dstp1_ihdl);
+=======
+		rc = get_img(&info.dst_chroma, ROTATOR_DST_DOMAIN,
+				(unsigned long *)&out_chroma_paddr,
+				(unsigned long *)&dst_len, &dstp1_file, &p_need,
+				&dstp1_ihdl, img_info->secure);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (rc) {
 			pr_err("%s: out chroma get_img() failed id=0x%08x\n",
 				DRIVER_NAME, info.dst_chroma.memory_id);
@@ -1076,6 +1207,11 @@ static int msm_rotator_do_rotate(unsigned long arg)
 	case MDP_XRGB_8888:
 	case MDP_BGRA_8888:
 	case MDP_RGBX_8888:
+<<<<<<< HEAD
+=======
+	case MDP_YCBCR_H1V1:
+	case MDP_YCRCB_H1V1:
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = msm_rotator_rgb_types(msm_rotator_dev->img_info[s],
 					   in_paddr, out_paddr,
 					   use_imem,
@@ -1147,15 +1283,27 @@ do_rotate_exit:
 #endif
 	schedule_delayed_work(&msm_rotator_dev->rot_clk_work, HZ);
 do_rotate_unlock_mutex:
+<<<<<<< HEAD
 	put_img(dstp1_file, dstp1_ihdl);
 	put_img(srcp1_file, srcp1_ihdl);
 	put_img(dstp0_file, dstp0_ihdl);
+=======
+	put_img(dstp1_file, dstp1_ihdl, ROTATOR_DST_DOMAIN,
+		msm_rotator_dev->img_info[s]->secure);
+	put_img(srcp1_file, srcp1_ihdl, ROTATOR_SRC_DOMAIN, 0);
+	put_img(dstp0_file, dstp0_ihdl, ROTATOR_DST_DOMAIN,
+		msm_rotator_dev->img_info[s]->secure);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* only source may use frame buffer */
 	if (info.src.flags & MDP_MEMORY_ID_TYPE_FB)
 		fput_light(srcp0_file, ps0_need);
 	else
+<<<<<<< HEAD
 		put_img(srcp0_file, srcp0_ihdl);
+=======
+		put_img(srcp0_file, srcp0_ihdl, ROTATOR_SRC_DOMAIN, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&msm_rotator_dev->rotator_lock);
 	dev_dbg(msm_rotator_dev->device, "%s() returning rc = %d\n",
 		__func__, rc);
@@ -1182,7 +1330,12 @@ static void msm_rotator_set_perf_level(u32 wh, u32 is_rgb)
 
 }
 
+<<<<<<< HEAD
 static int msm_rotator_start(unsigned long arg, int pid)
+=======
+static int msm_rotator_start(unsigned long arg,
+			     struct msm_rotator_fd_info *fd_info)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct msm_rotator_img_info info;
 	int rc = 0;
@@ -1235,6 +1388,11 @@ static int msm_rotator_start(unsigned long arg, int pid)
 	case MDP_Y_CRCB_H2V2:
 	case MDP_Y_CBCR_H2V1:
 	case MDP_Y_CRCB_H2V1:
+<<<<<<< HEAD
+=======
+	case MDP_YCBCR_H1V1:
+	case MDP_YCRCB_H1V1:
+>>>>>>> refs/remotes/origin/cm-10.0
 		info.dst.format = info.src.format;
 		break;
 	case MDP_YCRYCB_H2V1:
@@ -1263,7 +1421,11 @@ static int msm_rotator_start(unsigned long arg, int pid)
 			(unsigned int)msm_rotator_dev->img_info[s]
 			)) {
 			*(msm_rotator_dev->img_info[s]) = info;
+<<<<<<< HEAD
 			msm_rotator_dev->pid_list[s] = pid;
+=======
+			msm_rotator_dev->fd_info[s] = fd_info;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (msm_rotator_dev->last_session_idx == s)
 				msm_rotator_dev->last_session_idx =
@@ -1291,16 +1453,26 @@ static int msm_rotator_start(unsigned long arg, int pid)
 		info.session_id = (unsigned int)
 			msm_rotator_dev->img_info[first_free_index];
 		*(msm_rotator_dev->img_info[first_free_index]) = info;
+<<<<<<< HEAD
 		msm_rotator_dev->pid_list[first_free_index] = pid;
 
 		if (copy_to_user((void __user *)arg, &info, sizeof(info)))
 			rc = -EFAULT;
+=======
+		msm_rotator_dev->fd_info[first_free_index] = fd_info;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else if (s == MAX_SESSIONS) {
 		dev_dbg(msm_rotator_dev->device, "%s: all sessions in use\n",
 			__func__);
 		rc = -EBUSY;
 	}
 
+<<<<<<< HEAD
+=======
+	if (rc == 0 && copy_to_user((void __user *)arg, &info, sizeof(info)))
+		rc = -EFAULT;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 rotator_start_exit:
 	mutex_unlock(&msm_rotator_dev->rotator_lock);
 
@@ -1326,7 +1498,11 @@ static int msm_rotator_finish(unsigned long arg)
 					INVALID_SESSION;
 			kfree(msm_rotator_dev->img_info[s]);
 			msm_rotator_dev->img_info[s] = NULL;
+<<<<<<< HEAD
 			msm_rotator_dev->pid_list[s] = 0;
+=======
+			msm_rotator_dev->fd_info[s] = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 	}
@@ -1344,13 +1520,18 @@ static int msm_rotator_finish(unsigned long arg)
 static int
 msm_rotator_open(struct inode *inode, struct file *filp)
 {
+<<<<<<< HEAD
 	int *id;
+=======
+	struct msm_rotator_fd_info *tmp, *fd_info = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 
 	if (filp->private_data)
 		return -EBUSY;
 
 	mutex_lock(&msm_rotator_dev->rotator_lock);
+<<<<<<< HEAD
 	id = &msm_rotator_dev->pid_list[0];
 	for (i = 0; i < MAX_SESSIONS; i++, id++) {
 		if (*id == 0)
@@ -1362,6 +1543,40 @@ msm_rotator_open(struct inode *inode, struct file *filp)
 		return -EBUSY;
 
 	filp->private_data = (void *)current->pid;
+=======
+	for (i = 0; i < MAX_SESSIONS; i++) {
+		if (msm_rotator_dev->fd_info[i] == NULL)
+			break;
+	}
+
+	if (i == MAX_SESSIONS) {
+		mutex_unlock(&msm_rotator_dev->rotator_lock);
+		return -EBUSY;
+	}
+
+	list_for_each_entry(tmp, &msm_rotator_dev->fd_list, list) {
+		if (tmp->pid == current->pid) {
+			fd_info = tmp;
+			break;
+		}
+	}
+
+	if (!fd_info) {
+		fd_info = kzalloc(sizeof(*fd_info), GFP_KERNEL);
+		if (!fd_info) {
+			mutex_unlock(&msm_rotator_dev->rotator_lock);
+			pr_err("%s: insufficient memory to alloc resources\n",
+			       __func__);
+			return -ENOMEM;
+		}
+		list_add(&fd_info->list, &msm_rotator_dev->fd_list);
+		fd_info->pid = current->pid;
+	}
+	fd_info->ref_cnt++;
+	mutex_unlock(&msm_rotator_dev->rotator_lock);
+
+	filp->private_data = fd_info;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -1369,6 +1584,7 @@ msm_rotator_open(struct inode *inode, struct file *filp)
 static int
 msm_rotator_close(struct inode *inode, struct file *filp)
 {
+<<<<<<< HEAD
 	int s;
 	int pid;
 
@@ -1379,11 +1595,38 @@ msm_rotator_close(struct inode *inode, struct file *filp)
 			msm_rotator_dev->pid_list[s] == pid) {
 			kfree(msm_rotator_dev->img_info[s]);
 			msm_rotator_dev->img_info[s] = NULL;
+=======
+	struct msm_rotator_fd_info *fd_info;
+	int s;
+
+	fd_info = (struct msm_rotator_fd_info *)filp->private_data;
+
+	mutex_lock(&msm_rotator_dev->rotator_lock);
+	if (--fd_info->ref_cnt > 0) {
+		mutex_unlock(&msm_rotator_dev->rotator_lock);
+		return 0;
+	}
+
+	for (s = 0; s < MAX_SESSIONS; s++) {
+		if (msm_rotator_dev->img_info[s] != NULL &&
+			msm_rotator_dev->fd_info[s] == fd_info) {
+			pr_debug("%s: freeing rotator session %p (pid %d)\n",
+				 __func__, msm_rotator_dev->img_info[s],
+				 fd_info->pid);
+			kfree(msm_rotator_dev->img_info[s]);
+			msm_rotator_dev->img_info[s] = NULL;
+			msm_rotator_dev->fd_info[s] = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (msm_rotator_dev->last_session_idx == s)
 				msm_rotator_dev->last_session_idx =
 					INVALID_SESSION;
 		}
 	}
+<<<<<<< HEAD
+=======
+	list_del(&fd_info->list);
+	kfree(fd_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&msm_rotator_dev->rotator_lock);
 
 	return 0;
@@ -1392,16 +1635,28 @@ msm_rotator_close(struct inode *inode, struct file *filp)
 static long msm_rotator_ioctl(struct file *file, unsigned cmd,
 						 unsigned long arg)
 {
+<<<<<<< HEAD
 	int pid;
+=======
+	struct msm_rotator_fd_info *fd_info;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (_IOC_TYPE(cmd) != MSM_ROTATOR_IOCTL_MAGIC)
 		return -ENOTTY;
 
+<<<<<<< HEAD
 	pid = (int)file->private_data;
 
 	switch (cmd) {
 	case MSM_ROTATOR_IOCTL_START:
 		return msm_rotator_start(arg, pid);
+=======
+	fd_info = (struct msm_rotator_fd_info *)file->private_data;
+
+	switch (cmd) {
+	case MSM_ROTATOR_IOCTL_START:
+		return msm_rotator_start(arg, fd_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MSM_ROTATOR_IOCTL_ROTATE:
 		return msm_rotator_do_rotate(arg);
 	case MSM_ROTATOR_IOCTL_FINISH:
@@ -1441,9 +1696,17 @@ static int __devinit msm_rotator_probe(struct platform_device *pdev)
 
 	pdata = pdev->dev.platform_data;
 	number_of_clks = pdata->number_of_clocks;
+<<<<<<< HEAD
 
 	msm_rotator_dev->imem_owner = IMEM_NO_OWNER;
 	mutex_init(&msm_rotator_dev->imem_lock);
+=======
+	rot_iommu_split_domain = pdata->rot_iommu_split_domain;
+
+	msm_rotator_dev->imem_owner = IMEM_NO_OWNER;
+	mutex_init(&msm_rotator_dev->imem_lock);
+	INIT_LIST_HEAD(&msm_rotator_dev->fd_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 	msm_rotator_dev->imem_clk_state = CLK_DIS;
 	INIT_DELAYED_WORK(&msm_rotator_dev->imem_clk_work,
 			  msm_rotator_imem_clk_work_f);
@@ -1517,7 +1780,12 @@ static int __devinit msm_rotator_probe(struct platform_device *pdev)
 		}
 	}
 
+<<<<<<< HEAD
 	msm_rotator_dev->regulator = regulator_get(NULL, pdata->regulator_name);
+=======
+	msm_rotator_dev->regulator = regulator_get(&msm_rotator_dev->pdev->dev,
+						   "vdd");
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(msm_rotator_dev->regulator))
 		msm_rotator_dev->regulator = NULL;
 

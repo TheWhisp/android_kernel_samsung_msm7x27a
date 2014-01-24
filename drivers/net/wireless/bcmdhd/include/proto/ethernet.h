@@ -1,9 +1,15 @@
 /*
  * From FreeBSD 2.2.7: Fundamental constants relating to ethernet.
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,10 +27,16 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: ethernet.h 285437 2011-09-21 22:16:56Z $
  */
 
 
+=======
+ * $Id: ethernet.h 309193 2012-01-19 00:03:57Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _NET_ETHERNET_H_	      
 #define _NET_ETHERNET_H_
 
@@ -65,16 +77,27 @@
 #define	ETHER_TYPE_IP		0x0800		
 #define ETHER_TYPE_ARP		0x0806		
 #define ETHER_TYPE_8021Q	0x8100		
+<<<<<<< HEAD
+=======
+#define	ETHER_TYPE_IPV6		0x86dd		
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	ETHER_TYPE_BRCM		0x886c		
 #define	ETHER_TYPE_802_1X	0x888e		
 #define	ETHER_TYPE_802_1X_PREAUTH 0x88c7	
 #define ETHER_TYPE_WAI		0x88b4		
 #define ETHER_TYPE_89_0D	0x890d		
 
+<<<<<<< HEAD
 
 
 #define	ETHER_BRCM_SUBTYPE_LEN	4	
 #define	ETHER_BRCM_CRAM		1	
+=======
+#define ETHER_TYPE_IPV6		0x86dd		
+
+
+#define	ETHER_BRCM_SUBTYPE_LEN	4	
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #define ETHER_DEST_OFFSET	(0 * ETHER_ADDR_LEN)	
@@ -111,7 +134,11 @@ BWL_PRE_PACKED_STRUCT struct	ether_addr {
 
 #define ETHER_SET_LOCALADDR(ea)	(((uint8 *)(ea))[0] = (((uint8 *)(ea))[0] | 2))
 #define ETHER_IS_LOCALADDR(ea) 	(((uint8 *)(ea))[0] & 2)
+<<<<<<< HEAD
 #define ETHER_CLR_LOCALADDR(ea)	(((uint8 *)(ea))[0] = (((uint8 *)(ea))[0] & 0xd))
+=======
+#define ETHER_CLR_LOCALADDR(ea)	(((uint8 *)(ea))[0] = (((uint8 *)(ea))[0] & 0xfd))
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ETHER_TOGGLE_LOCALADDR(ea)	(((uint8 *)(ea))[0] = (((uint8 *)(ea))[0] ^ 2))
 
 
@@ -122,6 +149,7 @@ BWL_PRE_PACKED_STRUCT struct	ether_addr {
 
 
 
+<<<<<<< HEAD
 #define	ether_cmp(a, b)	(!(((short*)a)[0] == ((short*)b)[0]) | \
 			 !(((short*)a)[1] == ((short*)b)[1]) | \
 			 !(((short*)a)[2] == ((short*)b)[2]))
@@ -131,6 +159,17 @@ BWL_PRE_PACKED_STRUCT struct	ether_addr {
 		((short*)d)[0] = ((short*)s)[0]; \
 		((short*)d)[1] = ((short*)s)[1]; \
 		((short*)d)[2] = ((short*)s)[2]; }
+=======
+#define	ether_cmp(a, b)	(!(((short*)(a))[0] == ((short*)(b))[0]) | \
+			 !(((short*)(a))[1] == ((short*)(b))[1]) | \
+			 !(((short*)(a))[2] == ((short*)(b))[2]))
+
+
+#define	ether_copy(s, d) { \
+		((short*)(d))[0] = ((const short*)(s))[0]; \
+		((short*)(d))[1] = ((const short*)(s))[1]; \
+		((short*)(d))[2] = ((const short*)(s))[2]; }
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 static const struct ether_addr ether_bcast = {{255, 255, 255, 255, 255, 255}};
@@ -149,7 +188,10 @@ static const struct ether_addr ether_null = {{0, 0, 0, 0, 0, 0}};
 				  ((uint8 *)(ea))[4] |		\
 				  ((uint8 *)(ea))[5]) == 0)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ETHER_MOVE_HDR(d, s) \
 do { \
 	struct ether_header t; \

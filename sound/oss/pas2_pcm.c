@@ -63,6 +63,7 @@ static int pcm_set_speed(int arg)
 
 	if (pcm_channels & 2)
 	{
+<<<<<<< HEAD
 		foo = ((CLOCK_TICK_RATE / 2) + (arg / 2)) / arg;
 		arg = ((CLOCK_TICK_RATE / 2) + (foo / 2)) / foo;
 	}
@@ -70,6 +71,15 @@ static int pcm_set_speed(int arg)
 	{
 		foo = (CLOCK_TICK_RATE + (arg / 2)) / arg;
 		arg = (CLOCK_TICK_RATE + (foo / 2)) / foo;
+=======
+		foo = ((PIT_TICK_RATE / 2) + (arg / 2)) / arg;
+		arg = ((PIT_TICK_RATE / 2) + (foo / 2)) / foo;
+	}
+	else
+	{
+		foo = (PIT_TICK_RATE + (arg / 2)) / arg;
+		arg = (PIT_TICK_RATE + (foo / 2)) / foo;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	pcm_speed = arg;

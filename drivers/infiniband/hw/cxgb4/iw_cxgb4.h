@@ -309,6 +309,10 @@ struct c4iw_cq {
 	struct c4iw_dev *rhp;
 	struct t4_cq cq;
 	spinlock_t lock;
+<<<<<<< HEAD
+=======
+	spinlock_t comp_handler_lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	atomic_t refcnt;
 	wait_queue_head_t wait;
 };
@@ -323,6 +327,10 @@ struct c4iw_mpa_attributes {
 	u8 recv_marker_enabled;
 	u8 xmit_marker_enabled;
 	u8 crc_enabled;
+<<<<<<< HEAD
+=======
+	u8 enhanced_rdma_conn;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 version;
 	u8 p2p_type;
 };
@@ -349,6 +357,11 @@ struct c4iw_qp_attributes {
 	u8 is_terminate_local;
 	struct c4iw_mpa_attributes mpa_attr;
 	struct c4iw_ep *llp_stream_handle;
+<<<<<<< HEAD
+=======
+	u8 layer_etype;
+	u8 ecode;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct c4iw_qp {
@@ -501,11 +514,24 @@ enum c4iw_mmid_state {
 #define MPA_KEY_REP "MPA ID Rep Frame"
 
 #define MPA_MAX_PRIVATE_DATA	256
+<<<<<<< HEAD
+=======
+#define MPA_ENHANCED_RDMA_CONN	0x10
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MPA_REJECT		0x20
 #define MPA_CRC			0x40
 #define MPA_MARKERS		0x80
 #define MPA_FLAGS_MASK		0xE0
 
+<<<<<<< HEAD
+=======
+#define MPA_V2_PEER2PEER_MODEL          0x8000
+#define MPA_V2_ZERO_LEN_FPDU_RTR        0x4000
+#define MPA_V2_RDMA_WRITE_RTR           0x8000
+#define MPA_V2_RDMA_READ_RTR            0x4000
+#define MPA_V2_IRD_ORD_MASK             0x3FFF
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define c4iw_put_ep(ep) { \
 	PDBG("put_ep (via %s:%u) ep %p refcnt %d\n", __func__, __LINE__,  \
 	     ep, atomic_read(&((ep)->kref.refcount))); \
@@ -528,6 +554,14 @@ struct mpa_message {
 	u8 private_data[0];
 };
 
+<<<<<<< HEAD
+=======
+struct mpa_v2_conn_params {
+	__be16 ird;
+	__be16 ord;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct terminate_message {
 	u8 layer_etype;
 	u8 ecode;
@@ -580,7 +614,14 @@ enum c4iw_ddp_ecodes {
 
 enum c4iw_mpa_ecodes {
 	MPA_CRC_ERR		= 0x02,
+<<<<<<< HEAD
 	MPA_MARKER_ERR		= 0x03
+=======
+	MPA_MARKER_ERR          = 0x03,
+	MPA_LOCAL_CATA          = 0x05,
+	MPA_INSUFF_IRD          = 0x06,
+	MPA_NOMATCH_RTR         = 0x07,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum c4iw_ep_state {
@@ -651,6 +692,11 @@ struct c4iw_ep {
 	u16 txq_idx;
 	u16 ctrlq_idx;
 	u8 tos;
+<<<<<<< HEAD
+=======
+	u8 retry_with_mpa_v1;
+	u8 tried_with_mpa_v1;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static inline struct c4iw_ep *to_ep(struct iw_cm_id *cm_id)

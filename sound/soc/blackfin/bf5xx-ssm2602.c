@@ -49,7 +49,10 @@ static int bf5xx_ssm2602_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+<<<<<<< HEAD
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int clk = 0;
 	int ret = 0;
 
@@ -75,6 +78,7 @@ static int bf5xx_ssm2602_hw_params(struct snd_pcm_substream *substream,
 		break;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * CODEC is master for BCLK and LRC in this configuration.
 	 */
@@ -90,6 +94,8 @@ static int bf5xx_ssm2602_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = snd_soc_dai_set_sysclk(codec_dai, SSM2602_SYSCLK, clk,
 		SND_SOC_CLOCK_IN);
 	if (ret < 0)
@@ -102,6 +108,13 @@ static struct snd_soc_ops bf5xx_ssm2602_ops = {
 	.hw_params = bf5xx_ssm2602_hw_params,
 };
 
+<<<<<<< HEAD
+=======
+/* CODEC is master for BCLK and LRC in this configuration. */
+#define BF5XX_SSM2602_DAIFMT (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | \
+				SND_SOC_DAIFMT_CBM_CFM)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct snd_soc_dai_link bf5xx_ssm2602_dai[] = {
 	{
 		.name = "ssm2602",
@@ -111,6 +124,10 @@ static struct snd_soc_dai_link bf5xx_ssm2602_dai[] = {
 		.platform_name = "bfin-i2s-pcm-audio",
 		.codec_name = "ssm2602.0-001b",
 		.ops = &bf5xx_ssm2602_ops,
+<<<<<<< HEAD
+=======
+		.dai_fmt = BF5XX_SSM2602_DAIFMT,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	{
 		.name = "ssm2602",
@@ -120,11 +137,19 @@ static struct snd_soc_dai_link bf5xx_ssm2602_dai[] = {
 		.platform_name = "bfin-i2s-pcm-audio",
 		.codec_name = "ssm2602.0-001b",
 		.ops = &bf5xx_ssm2602_ops,
+<<<<<<< HEAD
+=======
+		.dai_fmt = BF5XX_SSM2602_DAIFMT,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
 static struct snd_soc_card bf5xx_ssm2602 = {
 	.name = "bfin-ssm2602",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = &bf5xx_ssm2602_dai[CONFIG_SND_BF5XX_SPORT_NUM],
 	.num_links = 1,
 };

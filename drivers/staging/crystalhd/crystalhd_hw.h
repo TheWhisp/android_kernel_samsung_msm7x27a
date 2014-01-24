@@ -27,8 +27,12 @@
 #ifndef _CRYSTALHD_HW_H_
 #define _CRYSTALHD_HW_H_
 
+<<<<<<< HEAD
 #include "crystalhd_misc.h"
 #include "crystalhd_fw_if.h"
+=======
+#include "crystalhd.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* HW constants..*/
 #define DMA_ENGINE_CNT		2

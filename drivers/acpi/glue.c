@@ -6,6 +6,10 @@
  *
  * This file is released under the GPLv2.
  */
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/device.h>

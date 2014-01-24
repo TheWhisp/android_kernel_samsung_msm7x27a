@@ -17,6 +17,10 @@
 #include <linux/err.h>
 #include <asm/io.h>
 #include <linux/scx200_gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRVNAME "wrap-led"
 #define WRAP_POWER_LED_GPIO	2

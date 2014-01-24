@@ -58,6 +58,10 @@ typedef struct {
 #endif
 	int			irq;
 	u32			regbase;
+<<<<<<< HEAD
+=======
+	int			ddma_id;
+>>>>>>> refs/remotes/origin/cm-10.0
 } _auide_hwif;
 
 /******************************************************************************/

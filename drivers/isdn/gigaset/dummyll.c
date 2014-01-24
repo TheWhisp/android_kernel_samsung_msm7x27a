@@ -11,6 +11,10 @@
  * =====================================================================
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "gigaset.h"
 
 void gigaset_skb_sent(struct bc_state *bcs, struct sk_buff *skb)

@@ -276,7 +276,11 @@ static void phonet_route_autodel(struct net_device *dev)
 	mutex_lock(&pnn->routes.lock);
 	for (i = 0; i < 64; i++)
 		if (dev == pnn->routes.table[i]) {
+<<<<<<< HEAD
 			rcu_assign_pointer(pnn->routes.table[i], NULL);
+=======
+			RCU_INIT_POINTER(pnn->routes.table[i], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 			set_bit(i, deleted);
 		}
 	mutex_unlock(&pnn->routes.lock);
@@ -331,6 +335,7 @@ static int __net_init phonet_init_net(struct net *net)
 
 static void __net_exit phonet_exit_net(struct net *net)
 {
+<<<<<<< HEAD
 	struct phonet_net *pnn = phonet_pernet(net);
 	struct net_device *dev;
 	unsigned i;
@@ -348,6 +353,8 @@ static void __net_exit phonet_exit_net(struct net *net)
 	}
 	rtnl_unlock();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	proc_net_remove(net, "phonet");
 }
 
@@ -361,7 +368,11 @@ static struct pernet_operations phonet_net_ops = {
 /* Initialize Phonet devices list */
 int __init phonet_device_init(void)
 {
+<<<<<<< HEAD
 	int err = register_pernet_device(&phonet_net_ops);
+=======
+	int err = register_pernet_subsys(&phonet_net_ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -377,7 +388,11 @@ void phonet_device_exit(void)
 {
 	rtnl_unregister_all(PF_PHONET);
 	unregister_netdevice_notifier(&phonet_device_notifier);
+<<<<<<< HEAD
 	unregister_pernet_device(&phonet_net_ops);
+=======
+	unregister_pernet_subsys(&phonet_net_ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 	proc_net_remove(&init_net, "pnresource");
 }
 
@@ -406,7 +421,11 @@ int phonet_route_del(struct net_device *dev, u8 daddr)
 	daddr = daddr >> 2;
 	mutex_lock(&routes->lock);
 	if (dev == routes->table[daddr])
+<<<<<<< HEAD
 		rcu_assign_pointer(routes->table[daddr], NULL);
+=======
+		RCU_INIT_POINTER(routes->table[daddr], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		dev = NULL;
 	mutex_unlock(&routes->lock);

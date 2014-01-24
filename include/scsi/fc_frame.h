@@ -78,7 +78,10 @@ struct fc_frame {
 };
 
 struct fcoe_rcv_info {
+<<<<<<< HEAD
 	struct packet_type  *ptype;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct fc_lport	*fr_dev;	/* transport layer private pointer */
 	struct fc_seq	*fr_seq;	/* for use with exchange manager */
 	struct fc_fcp_pkt *fr_fsp;	/* for the corresponding fcp I/O */

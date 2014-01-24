@@ -279,6 +279,10 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
 	unsigned int insn = 0;
 	int si_code, fault_code, fault;
 	unsigned long address, mm_rss;
+<<<<<<< HEAD
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fault_code = get_thread_fault_code();
 
@@ -325,7 +329,11 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
 	if (in_atomic() || !mm)
 		goto intr_or_no_mm;
 
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, 0, regs, address);
+=======
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!down_read_trylock(&mm->mmap_sem)) {
 		if ((regs->tstate & TSTATE_PRIV) &&
@@ -333,6 +341,11 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
 			insn = get_fault_insn(regs, insn);
 			goto handle_kernel_fault;
 		}
+<<<<<<< HEAD
+=======
+
+retry:
+>>>>>>> refs/remotes/origin/cm-10.0
 		down_read(&mm->mmap_sem);
 	}
 
@@ -423,7 +436,16 @@ good_area:
 			goto bad_area;
 	}
 
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, (fault_code & FAULT_CODE_WRITE) ? FAULT_FLAG_WRITE : 0);
+=======
+	flags |= ((fault_code & FAULT_CODE_WRITE) ? FAULT_FLAG_WRITE : 0);
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -431,6 +453,7 @@ good_area:
 			goto do_sigbus;
 		BUG();
 	}
+<<<<<<< HEAD
 	if (fault & VM_FAULT_MAJOR) {
 		current->maj_flt++;
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1, 0,
@@ -439,6 +462,29 @@ good_area:
 		current->min_flt++;
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, 0,
 			      regs, address);
+=======
+
+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+		if (fault & VM_FAULT_MAJOR) {
+			current->maj_flt++;
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ,
+				      1, regs, address);
+		} else {
+			current->min_flt++;
+			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN,
+				      1, regs, address);
+		}
+		if (fault & VM_FAULT_RETRY) {
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+
+			/* No need to up_read(&mm->mmap_sem) as we would
+			 * have already released it in __lock_page_or_retry
+			 * in mm/filemap.c.
+			 */
+
+			goto retry;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	up_read(&mm->mmap_sem);
 

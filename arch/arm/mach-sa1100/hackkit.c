@@ -22,12 +22,18 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/setup.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/irq.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
@@ -35,6 +41,12 @@
 #include <asm/mach/irq.h>
 #include <asm/mach/serial_sa1100.h>
 
+<<<<<<< HEAD
+=======
+#include <mach/hardware.h>
+#include <mach/irqs.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "generic.h"
 
 /**********************************************************************
@@ -179,11 +191,16 @@ static struct flash_platform_data hackkit_flash_data = {
 	.nr_parts	= ARRAY_SIZE(hackkit_partitions),
 };
 
+<<<<<<< HEAD
 static struct resource hackkit_flash_resource = {
 	.start		= SA1100_CS0_PHYS,
 	.end		= SA1100_CS0_PHYS + SZ_32M,
 	.flags		= IORESOURCE_MEM,
 };
+=======
+static struct resource hackkit_flash_resource =
+	DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_32M);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __init hackkit_init(void)
 {
@@ -195,9 +212,19 @@ static void __init hackkit_init(void)
  */
 
 MACHINE_START(HACKKIT, "HackKit Cpu Board")
+<<<<<<< HEAD
 	.boot_params	= 0xc0000100,
 	.map_io		= hackkit_map_io,
 	.init_irq	= sa1100_init_irq,
 	.timer		= &sa1100_timer,
 	.init_machine	= hackkit_init,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= hackkit_map_io,
+	.nr_irqs	= SA1100_NR_IRQS,
+	.init_irq	= sa1100_init_irq,
+	.timer		= &sa1100_timer,
+	.init_machine	= hackkit_init,
+	.restart	= sa11x0_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -31,7 +31,11 @@ MODULE_DESCRIPTION("i2c device driver for cs5345 Audio ADC");
 MODULE_AUTHOR("Hans Verkuil");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param(debug, bool, 0644);
 
@@ -249,6 +253,7 @@ static struct i2c_driver cs5345_driver = {
 	.id_table	= cs5345_id,
 };
 
+<<<<<<< HEAD
 static __init int init_cs5345(void)
 {
 	return i2c_add_driver(&cs5345_driver);
@@ -261,3 +266,6 @@ static __exit void exit_cs5345(void)
 
 module_init(init_cs5345);
 module_exit(exit_cs5345);
+=======
+module_i2c_driver(cs5345_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

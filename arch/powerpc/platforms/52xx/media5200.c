@@ -45,7 +45,11 @@ static struct of_device_id mpc5200_gpio_ids[] __initdata = {
 struct media5200_irq {
 	void __iomem *regs;
 	spinlock_t lock;
+<<<<<<< HEAD
 	struct irq_host *irqhost;
+=======
+	struct irq_domain *irqhost;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 struct media5200_irq media5200_irq;
 
@@ -112,7 +116,11 @@ void media5200_irq_cascade(unsigned int virq, struct irq_desc *desc)
 	raw_spin_unlock(&desc->lock);
 }
 
+<<<<<<< HEAD
 static int media5200_irq_map(struct irq_host *h, unsigned int virq,
+=======
+static int media5200_irq_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     irq_hw_number_t hw)
 {
 	pr_debug("%s: h=%p, virq=%i, hwirq=%i\n", __func__, h, virq, (int)hw);
@@ -122,7 +130,11 @@ static int media5200_irq_map(struct irq_host *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int media5200_irq_xlate(struct irq_host *h, struct device_node *ct,
+=======
+static int media5200_irq_xlate(struct irq_domain *h, struct device_node *ct,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 const u32 *intspec, unsigned int intsize,
 				 irq_hw_number_t *out_hwirq,
 				 unsigned int *out_flags)
@@ -136,7 +148,11 @@ static int media5200_irq_xlate(struct irq_host *h, struct device_node *ct,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct irq_host_ops media5200_irq_ops = {
+=======
+static const struct irq_domain_ops media5200_irq_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map = media5200_irq_map,
 	.xlate = media5200_irq_xlate,
 };
@@ -173,15 +189,23 @@ static void __init media5200_init_irq(void)
 
 	spin_lock_init(&media5200_irq.lock);
 
+<<<<<<< HEAD
 	media5200_irq.irqhost = irq_alloc_host(fpga_np, IRQ_HOST_MAP_LINEAR,
 					       MEDIA5200_NUM_IRQS,
 					       &media5200_irq_ops, -1);
+=======
+	media5200_irq.irqhost = irq_domain_add_linear(fpga_np,
+			MEDIA5200_NUM_IRQS, &media5200_irq_ops, &media5200_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!media5200_irq.irqhost)
 		goto out;
 	pr_debug("%s: allocated irqhost\n", __func__);
 
+<<<<<<< HEAD
 	media5200_irq.irqhost->host_data = &media5200_irq;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	irq_set_handler_data(cascade_virq, &media5200_irq);
 	irq_set_chained_handler(cascade_virq, media5200_irq_cascade);
 

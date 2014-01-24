@@ -10,13 +10,30 @@
 #include <linux/mm.h>
 #include <linux/gfp.h>
 #include <linux/highmem.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/slab.h>
+
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgalloc.h>
 #include <asm/page.h>
 #include <asm/tlbflush.h>
 
 #include "mm.h"
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARM_LPAE
+#define __pgd_alloc()	kmalloc(PTRS_PER_PGD * sizeof(pgd_t), GFP_KERNEL)
+#define __pgd_free(pgd)	kfree(pgd)
+#else
+#define __pgd_alloc()	(pgd_t *)__get_free_pages(GFP_KERNEL, 2)
+#define __pgd_free(pgd)	free_pages((unsigned long)pgd, 2)
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * need to get a 16k page for level 1
  */
@@ -27,7 +44,11 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
 	pmd_t *new_pmd, *init_pmd;
 	pte_t *new_pte, *init_pte;
 
+<<<<<<< HEAD
 	new_pgd = (pgd_t *)__get_free_pages(GFP_KERNEL, 2);
+=======
+	new_pgd = __pgd_alloc();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!new_pgd)
 		goto no_pgd;
 
@@ -42,10 +63,32 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
 
 	clean_dcache_area(new_pgd, PTRS_PER_PGD * sizeof(pgd_t));
 
+<<<<<<< HEAD
 	if (!vectors_high()) {
 		/*
 		 * On ARM, first page must always be allocated since it
 		 * contains the machine vectors.
+=======
+#ifdef CONFIG_ARM_LPAE
+	/*
+	 * Allocate PMD table for modules and pkmap mappings.
+	 */
+	new_pud = pud_alloc(mm, new_pgd + pgd_index(MODULES_VADDR),
+			    MODULES_VADDR);
+	if (!new_pud)
+		goto no_pud;
+
+	new_pmd = pmd_alloc(mm, new_pud, 0);
+	if (!new_pmd)
+		goto no_pmd;
+#endif
+
+	if (!vectors_high()) {
+		/*
+		 * On ARM, first page must always be allocated since it
+		 * contains the machine vectors. The vectors are always high
+		 * with LPAE.
+>>>>>>> refs/remotes/origin/cm-10.0
 		 */
 		new_pud = pud_alloc(mm, new_pgd, 0);
 		if (!new_pud)
@@ -74,7 +117,11 @@ no_pte:
 no_pmd:
 	pud_free(mm, new_pud);
 no_pud:
+<<<<<<< HEAD
 	free_pages((unsigned long)new_pgd, 2);
+=======
+	__pgd_free(new_pgd);
+>>>>>>> refs/remotes/origin/cm-10.0
 no_pgd:
 	return NULL;
 }
@@ -111,5 +158,28 @@ no_pud:
 	pgd_clear(pgd);
 	pud_free(mm, pud);
 no_pgd:
+<<<<<<< HEAD
 	free_pages((unsigned long) pgd_base, 2);
+=======
+#ifdef CONFIG_ARM_LPAE
+	/*
+	 * Free modules/pkmap or identity pmd tables.
+	 */
+	for (pgd = pgd_base; pgd < pgd_base + PTRS_PER_PGD; pgd++) {
+		if (pgd_none_or_clear_bad(pgd))
+			continue;
+		if (pgd_val(*pgd) & L_PGD_SWAPPER)
+			continue;
+		pud = pud_offset(pgd, 0);
+		if (pud_none_or_clear_bad(pud))
+			continue;
+		pmd = pmd_offset(pud, 0);
+		pud_clear(pud);
+		pmd_free(mm, pmd);
+		pgd_clear(pgd);
+		pud_free(mm, pud);
+	}
+#endif
+	__pgd_free(pgd_base);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

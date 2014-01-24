@@ -140,7 +140,11 @@ static inline void *kmap(struct page *page)
 
 #define kunmap(page)			kunmap_parisc(page_address(page))
 
+<<<<<<< HEAD
 static inline void *__kmap_atomic(struct page *page)
+=======
+static inline void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	pagefault_disable();
 	return page_address(page);

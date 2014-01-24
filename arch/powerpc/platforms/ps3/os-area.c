@@ -23,6 +23,10 @@
 #include <linux/workqueue.h>
 #include <linux/fs.h>
 #include <linux/syscalls.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ctype.h>
 #include <linux/memblock.h>
 #include <linux/of.h>

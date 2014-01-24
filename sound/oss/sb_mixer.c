@@ -232,7 +232,11 @@ static int detect_mixer(sb_devc * devc)
 	return 1;
 }
 
+<<<<<<< HEAD
 static void change_bits(sb_devc * devc, unsigned char *regval, int dev, int chn, int newval)
+=======
+static void oss_change_bits(sb_devc *devc, unsigned char *regval, int dev, int chn, int newval)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned char mask;
 	int shift;
@@ -284,7 +288,11 @@ int sb_common_mixer_set(sb_devc * devc, int dev, int left, int right)
 		return -EINVAL;
 
 	val = sb_getmixer(devc, regoffs);
+<<<<<<< HEAD
 	change_bits(devc, &val, dev, LEFT_CHN, left);
+=======
+	oss_change_bits(devc, &val, dev, LEFT_CHN, left);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((*devc->iomap)[dev][RIGHT_CHN].regno != regoffs)	/*
 								 * Change register
@@ -304,7 +312,11 @@ int sb_common_mixer_set(sb_devc * devc, int dev, int left, int right)
 							 * Read the new one
 							 */
 	}
+<<<<<<< HEAD
 	change_bits(devc, &val, dev, RIGHT_CHN, right);
+=======
+	oss_change_bits(devc, &val, dev, RIGHT_CHN, right);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sb_setmixer(devc, regoffs, val);
 

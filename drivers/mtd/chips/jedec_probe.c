@@ -1914,11 +1914,18 @@ static void jedec_reset(u32 base, struct map_info *map, struct cfi_private *cfi)
 	 * (oh and incidentaly the jedec spec - 3.5.3.3) the reset
 	 * sequence is *supposed* to be 0xaa at 0x5555, 0x55 at
 	 * 0x2aaa, 0xF0 at 0x5555 this will not affect the AMD chips
+<<<<<<< HEAD
 	 * as they will ignore the writes and dont care what address
 	 * the F0 is written to */
 	if (cfi->addr_unlock1) {
 		DEBUG( MTD_DEBUG_LEVEL3,
 		       "reset unlock called %x %x \n",
+=======
+	 * as they will ignore the writes and don't care what address
+	 * the F0 is written to */
+	if (cfi->addr_unlock1) {
+		pr_debug( "reset unlock called %x %x \n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       cfi->addr_unlock1,cfi->addr_unlock2);
 		cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi, cfi->device_type, NULL);
 		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi, cfi->device_type, NULL);
@@ -1941,7 +1948,11 @@ static int cfi_jedec_setup(struct map_info *map, struct cfi_private *cfi, int in
 	uint8_t uaddr;
 
 	if (!(jedec_table[index].devtypes & cfi->device_type)) {
+<<<<<<< HEAD
 		DEBUG(MTD_DEBUG_LEVEL1, "Rejecting potential %s with incompatible %d-bit device type\n",
+=======
+		pr_debug("Rejecting potential %s with incompatible %d-bit device type\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		      jedec_table[index].name, 4 * (1<<cfi->device_type));
 		return 0;
 	}
@@ -2021,7 +2032,11 @@ static inline int jedec_match( uint32_t base,
 		 * there aren't.
 		 */
 		if (finfo->dev_id > 0xff) {
+<<<<<<< HEAD
 			DEBUG( MTD_DEBUG_LEVEL3, "%s(): ID is not 8bit\n",
+=======
+			pr_debug("%s(): ID is not 8bit\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			       __func__);
 			goto match_done;
 		}
@@ -2045,12 +2060,19 @@ static inline int jedec_match( uint32_t base,
 	}
 
 	/* the part size must fit in the memory window */
+<<<<<<< HEAD
 	DEBUG( MTD_DEBUG_LEVEL3,
 	       "MTD %s(): Check fit 0x%.8x + 0x%.8x = 0x%.8x\n",
 	       __func__, base, 1 << finfo->dev_size, base + (1 << finfo->dev_size) );
 	if ( base + cfi_interleave(cfi) * ( 1 << finfo->dev_size ) > map->size ) {
 		DEBUG( MTD_DEBUG_LEVEL3,
 		       "MTD %s(): 0x%.4x 0x%.4x %dKiB doesn't fit\n",
+=======
+	pr_debug("MTD %s(): Check fit 0x%.8x + 0x%.8x = 0x%.8x\n",
+	       __func__, base, 1 << finfo->dev_size, base + (1 << finfo->dev_size) );
+	if ( base + cfi_interleave(cfi) * ( 1 << finfo->dev_size ) > map->size ) {
+		pr_debug("MTD %s(): 0x%.4x 0x%.4x %dKiB doesn't fit\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       __func__, finfo->mfr_id, finfo->dev_id,
 		       1 << finfo->dev_size );
 		goto match_done;
@@ -2061,13 +2083,21 @@ static inline int jedec_match( uint32_t base,
 
 	uaddr = finfo->uaddr;
 
+<<<<<<< HEAD
 	DEBUG( MTD_DEBUG_LEVEL3, "MTD %s(): check unlock addrs 0x%.4x 0x%.4x\n",
+=======
+	pr_debug("MTD %s(): check unlock addrs 0x%.4x 0x%.4x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 	       __func__, cfi->addr_unlock1, cfi->addr_unlock2 );
 	if ( MTD_UADDR_UNNECESSARY != uaddr && MTD_UADDR_DONT_CARE != uaddr
 	     && ( unlock_addrs[uaddr].addr1 / cfi->device_type != cfi->addr_unlock1 ||
 		  unlock_addrs[uaddr].addr2 / cfi->device_type != cfi->addr_unlock2 ) ) {
+<<<<<<< HEAD
 		DEBUG( MTD_DEBUG_LEVEL3,
 			"MTD %s(): 0x%.4x 0x%.4x did not match\n",
+=======
+		pr_debug("MTD %s(): 0x%.4x 0x%.4x did not match\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			__func__,
 			unlock_addrs[uaddr].addr1,
 			unlock_addrs[uaddr].addr2);
@@ -2083,15 +2113,23 @@ static inline int jedec_match( uint32_t base,
 	 * FIXME - write a driver that takes all of the chip info as
 	 * module parameters, doesn't probe but forces a load.
 	 */
+<<<<<<< HEAD
 	DEBUG( MTD_DEBUG_LEVEL3,
 	       "MTD %s(): check ID's disappear when not in ID mode\n",
+=======
+	pr_debug("MTD %s(): check ID's disappear when not in ID mode\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 	       __func__ );
 	jedec_reset( base, map, cfi );
 	mfr = jedec_read_mfr( map, base, cfi );
 	id = jedec_read_id( map, base, cfi );
 	if ( mfr == cfi->mfr && id == cfi->id ) {
+<<<<<<< HEAD
 		DEBUG( MTD_DEBUG_LEVEL3,
 		       "MTD %s(): ID 0x%.2x:0x%.2x did not change after reset:\n"
+=======
+		pr_debug("MTD %s(): ID 0x%.2x:0x%.2x did not change after reset:\n"
+>>>>>>> refs/remotes/origin/cm-10.0
 		       "You might need to manually specify JEDEC parameters.\n",
 			__func__, cfi->mfr, cfi->id );
 		goto match_done;
@@ -2104,7 +2142,11 @@ static inline int jedec_match( uint32_t base,
 	 * Put the device back in ID mode - only need to do this if we
 	 * were truly frobbing a real device.
 	 */
+<<<<<<< HEAD
 	DEBUG( MTD_DEBUG_LEVEL3, "MTD %s(): return to ID mode\n", __func__ );
+=======
+	pr_debug("MTD %s(): return to ID mode\n", __func__ );
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (cfi->addr_unlock1) {
 		cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi, cfi->device_type, NULL);
 		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi, cfi->device_type, NULL);
@@ -2167,6 +2209,7 @@ static int jedec_probe_chip(struct map_info *map, __u32 base,
 
 		cfi->mfr = jedec_read_mfr(map, base, cfi);
 		cfi->id = jedec_read_id(map, base, cfi);
+<<<<<<< HEAD
 		DEBUG(MTD_DEBUG_LEVEL3,
 		      "Search for id:(%02x %02x) interleave(%d) type(%d)\n",
 			cfi->mfr, cfi->id, cfi_interleave(cfi), cfi->device_type);
@@ -2174,6 +2217,13 @@ static int jedec_probe_chip(struct map_info *map, __u32 base,
 			if ( jedec_match( base, map, cfi, &jedec_table[i] ) ) {
 				DEBUG( MTD_DEBUG_LEVEL3,
 				       "MTD %s(): matched device 0x%x,0x%x unlock_addrs: 0x%.4x 0x%.4x\n",
+=======
+		pr_debug("Search for id:(%02x %02x) interleave(%d) type(%d)\n",
+			cfi->mfr, cfi->id, cfi_interleave(cfi), cfi->device_type);
+		for (i = 0; i < ARRAY_SIZE(jedec_table); i++) {
+			if ( jedec_match( base, map, cfi, &jedec_table[i] ) ) {
+				pr_debug("MTD %s(): matched device 0x%x,0x%x unlock_addrs: 0x%.4x 0x%.4x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				       __func__, cfi->mfr, cfi->id,
 				       cfi->addr_unlock1, cfi->addr_unlock2 );
 				if (!cfi_jedec_setup(map, cfi, i))

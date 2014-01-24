@@ -27,7 +27,14 @@
 
 #include "../../perf.h"
 #include "../util.h"
+<<<<<<< HEAD
 #include "../trace-event.h"
+=======
+#include "../thread.h"
+#include "../event.h"
+#include "../trace-event.h"
+#include "../evsel.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <EXTERN.h>
 #include <perl.h>
@@ -245,11 +252,19 @@ static inline struct event *find_cache_event(int type)
 	return event;
 }
 
+<<<<<<< HEAD
 static void perl_process_event(union perf_event *pevent __unused,
 			       struct perf_sample *sample,
 			       struct perf_evsel *evsel,
 			       struct perf_session *session __unused,
 			       struct thread *thread)
+=======
+static void perl_process_tracepoint(union perf_event *pevent __unused,
+				    struct perf_sample *sample,
+				    struct perf_evsel *evsel,
+				    struct machine *machine __unused,
+				    struct thread *thread)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct format_field *field;
 	static char handler[256];
@@ -265,6 +280,12 @@ static void perl_process_event(union perf_event *pevent __unused,
 
 	dSP;
 
+<<<<<<< HEAD
+=======
+	if (evsel->attr.type != PERF_TYPE_TRACEPOINT)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	type = trace_parse_common_type(data);
 
 	event = find_cache_event(type);
@@ -332,6 +353,45 @@ static void perl_process_event(union perf_event *pevent __unused,
 	LEAVE;
 }
 
+<<<<<<< HEAD
+=======
+static void perl_process_event_generic(union perf_event *pevent __unused,
+				       struct perf_sample *sample,
+				       struct perf_evsel *evsel __unused,
+				       struct machine *machine __unused,
+				       struct thread *thread __unused)
+{
+	dSP;
+
+	if (!get_cv("process_event", 0))
+		return;
+
+	ENTER;
+	SAVETMPS;
+	PUSHMARK(SP);
+	XPUSHs(sv_2mortal(newSVpvn((const char *)pevent, pevent->header.size)));
+	XPUSHs(sv_2mortal(newSVpvn((const char *)&evsel->attr, sizeof(evsel->attr))));
+	XPUSHs(sv_2mortal(newSVpvn((const char *)sample, sizeof(*sample))));
+	XPUSHs(sv_2mortal(newSVpvn((const char *)sample->raw_data, sample->raw_size)));
+	PUTBACK;
+	call_pv("process_event", G_SCALAR);
+	SPAGAIN;
+	PUTBACK;
+	FREETMPS;
+	LEAVE;
+}
+
+static void perl_process_event(union perf_event *pevent,
+			       struct perf_sample *sample,
+			       struct perf_evsel *evsel,
+			       struct machine *machine,
+			       struct thread *thread)
+{
+	perl_process_tracepoint(pevent, sample, evsel, machine, thread);
+	perl_process_event_generic(pevent, sample, evsel, machine, thread);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void run_start_sub(void)
 {
 	dSP; /* access to Perl stack */
@@ -553,7 +613,32 @@ static int perl_generate_script(const char *outfile)
 	fprintf(ofp, "sub print_header\n{\n"
 		"\tmy ($event_name, $cpu, $secs, $nsecs, $pid, $comm) = @_;\n\n"
 		"\tprintf(\"%%-20s %%5u %%05u.%%09u %%8u %%-20s \",\n\t       "
+<<<<<<< HEAD
 		"$event_name, $cpu, $secs, $nsecs, $pid, $comm);\n}");
+=======
+		"$event_name, $cpu, $secs, $nsecs, $pid, $comm);\n}\n");
+
+	fprintf(ofp,
+		"\n# Packed byte string args of process_event():\n"
+		"#\n"
+		"# $event:\tunion perf_event\tutil/event.h\n"
+		"# $attr:\tstruct perf_event_attr\tlinux/perf_event.h\n"
+		"# $sample:\tstruct perf_sample\tutil/event.h\n"
+		"# $raw_data:\tperf_sample->raw_data\tutil/event.h\n"
+		"\n"
+		"sub process_event\n"
+		"{\n"
+		"\tmy ($event, $attr, $sample, $raw_data) = @_;\n"
+		"\n"
+		"\tmy @event\t= unpack(\"LSS\", $event);\n"
+		"\tmy @attr\t= unpack(\"LLQQQQQLLQQ\", $attr);\n"
+		"\tmy @sample\t= unpack(\"QLLQQQQQLL\", $sample);\n"
+		"\tmy @raw_data\t= unpack(\"C*\", $raw_data);\n"
+		"\n"
+		"\tuse Data::Dumper;\n"
+		"\tprint Dumper \\@event, \\@attr, \\@sample, \\@raw_data;\n"
+		"}\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fclose(ofp);
 

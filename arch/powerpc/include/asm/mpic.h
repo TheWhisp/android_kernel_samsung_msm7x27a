@@ -251,8 +251,16 @@ struct mpic_irq_save {
 /* The instance data of a given MPIC */
 struct mpic
 {
+<<<<<<< HEAD
 	/* The remapper for this MPIC */
 	struct irq_host		*irqhost;
+=======
+	/* The OpenFirmware dt node for this MPIC */
+	struct device_node *node;
+
+	/* The remapper for this MPIC */
+	struct irq_domain	*irqhost;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* The "linux" controller struct */
 	struct irq_chip		hc_irq;
@@ -270,6 +278,7 @@ struct mpic
 	unsigned int		isu_size;
 	unsigned int		isu_shift;
 	unsigned int		isu_mask;
+<<<<<<< HEAD
 	unsigned int		irq_count;
 	/* Number of sources */
 	unsigned int		num_sources;
@@ -278,6 +287,10 @@ struct mpic
 	/* default senses array */
 	unsigned char		*senses;
 	unsigned int		senses_count;
+=======
+	/* Number of sources */
+	unsigned int		num_sources;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* vector numbers used for internal sources (ipi/timers) */
 	unsigned int		ipi_vecs[4];
@@ -295,6 +308,12 @@ struct mpic
 	/* Register access method */
 	enum mpic_reg_type	reg_type;
 
+<<<<<<< HEAD
+=======
+	/* The physical base address of the MPIC */
+	phys_addr_t paddr;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* The various ioremap'ed bases */
 	struct mpic_reg_bank	gregs;
 	struct mpic_reg_bank	tmregs;
@@ -333,11 +352,19 @@ struct mpic
  * Note setting any ID (leaving those bits to 0) means standard MPIC
  */
 
+<<<<<<< HEAD
 /* This is the primary controller, only that one has IPIs and
  * has afinity control. A non-primary MPIC always uses CPU0
  * registers only
  */
 #define MPIC_PRIMARY			0x00000001
+=======
+/*
+ * This is a secondary ("chained") controller; it only uses the CPU0
+ * registers.  Primary controllers have IPIs and affinity control.
+ */
+#define MPIC_SECONDARY			0x00000001
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Set this for a big-endian MPIC */
 #define MPIC_BIG_ENDIAN			0x00000002
@@ -345,8 +372,11 @@ struct mpic
 #define MPIC_U3_HT_IRQS			0x00000004
 /* Broken IPI registers (autodetected) */
 #define MPIC_BROKEN_IPI			0x00000008
+<<<<<<< HEAD
 /* MPIC wants a reset */
 #define MPIC_WANTS_RESET		0x00000010
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Spurious vector requires EOI */
 #define MPIC_SPV_EOI			0x00000020
 /* No passthrough disable */
@@ -359,15 +389,22 @@ struct mpic
 #define MPIC_ENABLE_MCK			0x00000200
 /* Disable bias among target selection, spread interrupts evenly */
 #define MPIC_NO_BIAS			0x00000400
+<<<<<<< HEAD
 /* Ignore NIRQS as reported by FRR */
 #define MPIC_BROKEN_FRR_NIRQS		0x00000800
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Destination only supports a single CPU at a time */
 #define MPIC_SINGLE_DEST_CPU		0x00001000
 /* Enable CoreInt delivery of interrupts */
 #define MPIC_ENABLE_COREINT		0x00002000
+<<<<<<< HEAD
 /* Disable resetting of the MPIC.
  * NOTE: This flag trumps MPIC_WANTS_RESET.
  */
+=======
+/* Do not reset the MPIC during initialization */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MPIC_NO_RESET			0x00004000
 /* Freescale MPIC (compatible includes "fsl,mpic") */
 #define MPIC_FSL			0x00008000
@@ -418,6 +455,7 @@ extern struct mpic *mpic_alloc(struct device_node *node,
 extern void mpic_assign_isu(struct mpic *mpic, unsigned int isu_num,
 			    phys_addr_t phys_addr);
 
+<<<<<<< HEAD
 /* Set default sense codes
  *
  * @mpic:	controller
@@ -433,6 +471,8 @@ extern void mpic_assign_isu(struct mpic *mpic, unsigned int isu_num,
  */
 extern void mpic_set_default_senses(struct mpic *mpic, u8 *senses, int count);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Initialize the controller. After this has been called, none of the above
  * should be called again for this mpic

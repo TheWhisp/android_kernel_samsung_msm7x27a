@@ -6,6 +6,11 @@
 
 #include <linux/bcma/bcma_driver_chipcommon.h>
 #include <linux/bcma/bcma_driver_pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/bcma/bcma_driver_mips.h>
+#include <linux/ssb/ssb.h> /* SPROM sharing */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "bcma_regs.h"
 
@@ -13,9 +18,15 @@ struct bcma_device;
 struct bcma_bus;
 
 enum bcma_hosttype {
+<<<<<<< HEAD
 	BCMA_HOSTTYPE_NONE,
 	BCMA_HOSTTYPE_PCI,
 	BCMA_HOSTTYPE_SDIO,
+=======
+	BCMA_HOSTTYPE_PCI,
+	BCMA_HOSTTYPE_SDIO,
+	BCMA_HOSTTYPE_SOC,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct bcma_chipinfo {
@@ -24,6 +35,14 @@ struct bcma_chipinfo {
 	u8 pkg;
 };
 
+<<<<<<< HEAD
+=======
+enum bcma_clkmode {
+	BCMA_CLKMODE_FAST,
+	BCMA_CLKMODE_DYNAMIC,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct bcma_host_ops {
 	u8 (*read8)(struct bcma_device *core, u16 offset);
 	u16 (*read16)(struct bcma_device *core, u16 offset);
@@ -31,6 +50,15 @@ struct bcma_host_ops {
 	void (*write8)(struct bcma_device *core, u16 offset, u8 value);
 	void (*write16)(struct bcma_device *core, u16 offset, u16 value);
 	void (*write32)(struct bcma_device *core, u16 offset, u32 value);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BCMA_BLOCKIO
+	void (*block_read)(struct bcma_device *core, void *buffer,
+			   size_t count, u16 offset, u8 reg_width);
+	void (*block_write)(struct bcma_device *core, const void *buffer,
+			    size_t count, u16 offset, u8 reg_width);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Agent ops */
 	u32 (*aread32)(struct bcma_device *core, u16 offset);
 	void (*awrite32)(struct bcma_device *core, u16 offset, u32 value);
@@ -117,13 +145,29 @@ struct bcma_device {
 	struct bcma_device_id id;
 
 	struct device dev;
+<<<<<<< HEAD
 	bool dev_registered;
 
 	u8 core_index;
+=======
+	struct device *dma_dev;
+
+	unsigned int irq;
+	bool dev_registered;
+
+	u8 core_index;
+	u8 core_unit;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	u32 addr;
 	u32 wrap;
 
+<<<<<<< HEAD
+=======
+	void __iomem *io_addr;
+	void __iomem *io_wrap;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *drvdata;
 	struct list_head list;
 };
@@ -143,7 +187,11 @@ struct bcma_driver {
 
 	int (*probe)(struct bcma_device *dev);
 	void (*remove)(struct bcma_device *dev);
+<<<<<<< HEAD
 	int (*suspend)(struct bcma_device *dev, pm_message_t state);
+=======
+	int (*suspend)(struct bcma_device *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*resume)(struct bcma_device *dev);
 	void (*shutdown)(struct bcma_device *dev);
 
@@ -151,12 +199,26 @@ struct bcma_driver {
 };
 extern
 int __bcma_driver_register(struct bcma_driver *drv, struct module *owner);
+<<<<<<< HEAD
 static inline int bcma_driver_register(struct bcma_driver *drv)
 {
 	return __bcma_driver_register(drv, THIS_MODULE);
 }
 extern void bcma_driver_unregister(struct bcma_driver *drv);
 
+=======
+#define bcma_driver_register(drv) \
+	__bcma_driver_register(drv, THIS_MODULE)
+
+extern void bcma_driver_unregister(struct bcma_driver *drv);
+
+/* Set a fallback SPROM.
+ * See kdoc at the function definition for complete documentation. */
+extern int bcma_arch_register_fallback_sprom(
+		int (*sprom_callback)(struct bcma_bus *bus,
+		struct ssb_sprom *out));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct bcma_bus {
 	/* The MMIO area. */
 	void __iomem *mmio;
@@ -176,6 +238,7 @@ struct bcma_bus {
 	struct bcma_device *mapped_core;
 	struct list_head cores;
 	u8 nr_cores;
+<<<<<<< HEAD
 
 	struct bcma_drv_cc drv_cc;
 	struct bcma_drv_pci drv_pci;
@@ -194,31 +257,130 @@ extern inline u32 bcma_read32(struct bcma_device *core, u16 offset)
 	return core->bus->ops->read32(core, offset);
 }
 extern inline
+=======
+	u8 init_done:1;
+	u8 num;
+
+	struct bcma_drv_cc drv_cc;
+	struct bcma_drv_pci drv_pci;
+	struct bcma_drv_mips drv_mips;
+
+	/* We decided to share SPROM struct with SSB as long as we do not need
+	 * any hacks for BCMA. This simplifies drivers code. */
+	struct ssb_sprom sprom;
+};
+
+static inline u32 bcma_read8(struct bcma_device *core, u16 offset)
+{
+	return core->bus->ops->read8(core, offset);
+}
+static inline u32 bcma_read16(struct bcma_device *core, u16 offset)
+{
+	return core->bus->ops->read16(core, offset);
+}
+static inline u32 bcma_read32(struct bcma_device *core, u16 offset)
+{
+	return core->bus->ops->read32(core, offset);
+}
+static inline
+>>>>>>> refs/remotes/origin/cm-10.0
 void bcma_write8(struct bcma_device *core, u16 offset, u32 value)
 {
 	core->bus->ops->write8(core, offset, value);
 }
+<<<<<<< HEAD
 extern inline
+=======
+static inline
+>>>>>>> refs/remotes/origin/cm-10.0
 void bcma_write16(struct bcma_device *core, u16 offset, u32 value)
 {
 	core->bus->ops->write16(core, offset, value);
 }
+<<<<<<< HEAD
 extern inline
+=======
+static inline
+>>>>>>> refs/remotes/origin/cm-10.0
 void bcma_write32(struct bcma_device *core, u16 offset, u32 value)
 {
 	core->bus->ops->write32(core, offset, value);
 }
+<<<<<<< HEAD
 extern inline u32 bcma_aread32(struct bcma_device *core, u16 offset)
 {
 	return core->bus->ops->aread32(core, offset);
 }
 extern inline
+=======
+#ifdef CONFIG_BCMA_BLOCKIO
+static inline void bcma_block_read(struct bcma_device *core, void *buffer,
+				   size_t count, u16 offset, u8 reg_width)
+{
+	core->bus->ops->block_read(core, buffer, count, offset, reg_width);
+}
+static inline void bcma_block_write(struct bcma_device *core,
+				    const void *buffer, size_t count,
+				    u16 offset, u8 reg_width)
+{
+	core->bus->ops->block_write(core, buffer, count, offset, reg_width);
+}
+#endif
+static inline u32 bcma_aread32(struct bcma_device *core, u16 offset)
+{
+	return core->bus->ops->aread32(core, offset);
+}
+static inline
+>>>>>>> refs/remotes/origin/cm-10.0
 void bcma_awrite32(struct bcma_device *core, u16 offset, u32 value)
 {
 	core->bus->ops->awrite32(core, offset, value);
 }
 
+<<<<<<< HEAD
 extern bool bcma_core_is_enabled(struct bcma_device *core);
 extern int bcma_core_enable(struct bcma_device *core, u32 flags);
+=======
+static inline void bcma_mask32(struct bcma_device *cc, u16 offset, u32 mask)
+{
+	bcma_write32(cc, offset, bcma_read32(cc, offset) & mask);
+}
+static inline void bcma_set32(struct bcma_device *cc, u16 offset, u32 set)
+{
+	bcma_write32(cc, offset, bcma_read32(cc, offset) | set);
+}
+static inline void bcma_maskset32(struct bcma_device *cc,
+				  u16 offset, u32 mask, u32 set)
+{
+	bcma_write32(cc, offset, (bcma_read32(cc, offset) & mask) | set);
+}
+static inline void bcma_mask16(struct bcma_device *cc, u16 offset, u16 mask)
+{
+	bcma_write16(cc, offset, bcma_read16(cc, offset) & mask);
+}
+static inline void bcma_set16(struct bcma_device *cc, u16 offset, u16 set)
+{
+	bcma_write16(cc, offset, bcma_read16(cc, offset) | set);
+}
+static inline void bcma_maskset16(struct bcma_device *cc,
+				  u16 offset, u16 mask, u16 set)
+{
+	bcma_write16(cc, offset, (bcma_read16(cc, offset) & mask) | set);
+}
+
+extern struct bcma_device *bcma_find_core(struct bcma_bus *bus, u16 coreid);
+extern bool bcma_core_is_enabled(struct bcma_device *core);
+extern void bcma_core_disable(struct bcma_device *core, u32 flags);
+extern int bcma_core_enable(struct bcma_device *core, u32 flags);
+extern void bcma_core_set_clockmode(struct bcma_device *core,
+				    enum bcma_clkmode clkmode);
+extern void bcma_core_pll_ctl(struct bcma_device *core, u32 req, u32 status,
+			      bool on);
+#define BCMA_DMA_TRANSLATION_MASK	0xC0000000
+#define  BCMA_DMA_TRANSLATION_NONE	0x00000000
+#define  BCMA_DMA_TRANSLATION_DMA32_CMT	0x40000000 /* Client Mode Translation for 32-bit DMA */
+#define  BCMA_DMA_TRANSLATION_DMA64_CMT	0x80000000 /* Client Mode Translation for 64-bit DMA */
+extern u32 bcma_core_dma_translation(struct bcma_device *core);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* LINUX_BCMA_H_ */

@@ -24,7 +24,12 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/device.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string.h>
 #include <sound/core.h>
 #include <sound/timer.h>
@@ -328,6 +333,11 @@ int snd_timer_close(struct snd_timer_instance *timeri)
 		mutex_unlock(&register_mutex);
 	} else {
 		timer = timeri->timer;
+<<<<<<< HEAD
+=======
+		if (snd_BUG_ON(!timer))
+			goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* wait, until the active callback is finished */
 		spin_lock_irq(&timer->lock);
 		while (timeri->flags & SNDRV_TIMER_IFLG_CALLBACK) {
@@ -353,6 +363,10 @@ int snd_timer_close(struct snd_timer_instance *timeri)
 		}
 		mutex_unlock(&register_mutex);
 	}
+<<<<<<< HEAD
+=======
+ out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (timeri->private_free)
 		timeri->private_free(timeri);
 	kfree(timeri->owner);

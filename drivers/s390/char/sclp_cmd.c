@@ -21,6 +21,10 @@
 #include <asm/chpid.h>
 #include <asm/sclp.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
+=======
+#include <asm/ctl_reg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "sclp.h"
 
@@ -61,8 +65,13 @@ static int __init sclp_cmd_sync_early(sclp_cmdw_t cmd, void *sccb)
 	rc = sclp_service_call(cmd, sccb);
 	if (rc)
 		goto out;
+<<<<<<< HEAD
 	__load_psw_mask(PSW_BASE_BITS | PSW_MASK_EXT |
 			PSW_MASK_WAIT | PSW_DEFAULT_KEY);
+=======
+	__load_psw_mask(PSW_DEFAULT_KEY | PSW_MASK_BASE | PSW_MASK_EA |
+			PSW_MASK_BA | PSW_MASK_EXT | PSW_MASK_WAIT);
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_disable();
 out:
 	/* Contents of the sccb might have changed. */
@@ -383,8 +392,15 @@ static int sclp_attach_storage(u8 id)
 	switch (sccb->header.response_code) {
 	case 0x0020:
 		set_bit(id, sclp_storage_ids);
+<<<<<<< HEAD
 		for (i = 0; i < sccb->assigned; i++)
 			sclp_unassign_storage(sccb->entries[i] >> 16);
+=======
+		for (i = 0; i < sccb->assigned; i++) {
+			if (sccb->entries[i])
+				sclp_unassign_storage(sccb->entries[i] >> 16);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		rc = -EIO;
@@ -439,9 +455,14 @@ static int sclp_mem_notifier(struct notifier_block *nb,
 	start = arg->start_pfn << PAGE_SHIFT;
 	size = arg->nr_pages << PAGE_SHIFT;
 	mutex_lock(&sclp_mem_mutex);
+<<<<<<< HEAD
 	for (id = 0; id <= sclp_max_storage_id; id++)
 		if (!test_bit(id, sclp_storage_ids))
 			sclp_attach_storage(id);
+=======
+	for_each_clear_bit(id, sclp_storage_ids, sclp_max_storage_id + 1)
+		sclp_attach_storage(id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (action) {
 	case MEM_ONLINE:
 	case MEM_GOING_OFFLINE:

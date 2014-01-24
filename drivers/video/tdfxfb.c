@@ -169,7 +169,11 @@ static int nowrap = 1;      /* not implemented (yet) */
 static int hwcursor = 1;
 static char *mode_option __devinitdata;
 /* mtrr option */
+<<<<<<< HEAD
 static int nomtrr __devinitdata;
+=======
+static bool nomtrr __devinitdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* -------------------------------------------------------------------------
  *			Hardware-specific funcions

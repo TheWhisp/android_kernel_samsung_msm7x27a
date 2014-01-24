@@ -18,6 +18,11 @@
 #include <linux/resource.h>
 #include <linux/sched.h>
 
+<<<<<<< HEAD
+=======
+#include "apparmorfs.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct aa_profile;
 
 /* struct aa_rlimit - rlimit settings for the profile
@@ -32,6 +37,11 @@ struct aa_rlimit {
 	struct rlimit limits[RLIM_NLIMITS];
 };
 
+<<<<<<< HEAD
+=======
+extern struct aa_fs_entry aa_fs_entry_rlimit[];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int aa_map_resource(int resource);
 int aa_task_setrlimit(struct aa_profile *profile, struct task_struct *,
 		      unsigned int resource, struct rlimit *new_rlim);

@@ -492,7 +492,10 @@ static struct usb_driver keyspan_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	keyspan_ids_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* usb_device_id table for the pre-firmware download keyspan devices */
@@ -545,7 +548,10 @@ static struct usb_serial_driver keyspan_pre_device = {
 		.name		= "keyspan_no_firm",
 	},
 	.description		= "Keyspan - (without firmware)",
+<<<<<<< HEAD
 	.usb_driver		= &keyspan_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table		= keyspan_pre_ids,
 	.num_ports		= 1,
 	.attach			= keyspan_fake_startup,
@@ -557,7 +563,10 @@ static struct usb_serial_driver keyspan_1port_device = {
 		.name		= "keyspan_1",
 	},
 	.description		= "Keyspan 1 port adapter",
+<<<<<<< HEAD
 	.usb_driver		= &keyspan_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table		= keyspan_1port_ids,
 	.num_ports		= 1,
 	.open			= keyspan_open,
@@ -580,7 +589,10 @@ static struct usb_serial_driver keyspan_2port_device = {
 		.name		= "keyspan_2",
 	},
 	.description		= "Keyspan 2 port adapter",
+<<<<<<< HEAD
 	.usb_driver		= &keyspan_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table		= keyspan_2port_ids,
 	.num_ports		= 2,
 	.open			= keyspan_open,
@@ -603,7 +615,10 @@ static struct usb_serial_driver keyspan_4port_device = {
 		.name		= "keyspan_4",
 	},
 	.description		= "Keyspan 4 port adapter",
+<<<<<<< HEAD
 	.usb_driver		= &keyspan_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table		= keyspan_4port_ids,
 	.num_ports		= 4,
 	.open			= keyspan_open,
@@ -620,4 +635,12 @@ static struct usb_serial_driver keyspan_4port_device = {
 	.release		= keyspan_release,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&keyspan_pre_device, &keyspan_1port_device,
+	&keyspan_2port_device, &keyspan_4port_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

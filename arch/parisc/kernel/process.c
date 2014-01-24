@@ -48,6 +48,10 @@
 #include <linux/unistd.h>
 #include <linux/kallsyms.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/io.h>
 #include <asm/asm-offsets.h>
@@ -69,11 +73,19 @@ void cpu_idle(void)
 
 	/* endless idle loop with no priority at all */
 	while (1) {
+<<<<<<< HEAD
 		while (!need_resched())
 			barrier();
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+		rcu_idle_enter();
+		while (!need_resched())
+			barrier();
+		rcu_idle_exit();
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 		check_pgt_cache();
 	}
 }
@@ -192,7 +204,10 @@ void flush_thread(void)
 	/* Only needs to handle fpu stuff or perf monitors.
 	** REVISIT: several arches implement a "lazy fpu state".
 	*/
+<<<<<<< HEAD
 	set_fs(USER_DS);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void release_thread(struct task_struct *dead_task)

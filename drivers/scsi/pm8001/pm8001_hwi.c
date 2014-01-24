@@ -338,6 +338,7 @@ update_outbnd_queue_table(struct pm8001_hba_info *pm8001_ha, int number)
 }
 
 /**
+<<<<<<< HEAD
  * bar4_shift - function is called to shift BAR base address
  * @pm8001_ha : our hba card information
  * @shiftValue : shifting value in memory bar.
@@ -346,11 +347,22 @@ static int bar4_shift(struct pm8001_hba_info *pm8001_ha, u32 shiftValue)
 {
 	u32 regVal;
 	u32 max_wait_count;
+=======
+ * pm8001_bar4_shift - function is called to shift BAR base address
+ * @pm8001_ha : our hba card infomation
+ * @shiftValue : shifting value in memory bar.
+ */
+int pm8001_bar4_shift(struct pm8001_hba_info *pm8001_ha, u32 shiftValue)
+{
+	u32 regVal;
+	unsigned long start;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* program the inbound AXI translation Lower Address */
 	pm8001_cw32(pm8001_ha, 1, SPC_IBW_AXI_TRANSLATION_LOW, shiftValue);
 
 	/* confirm the setting is written */
+<<<<<<< HEAD
 	max_wait_count = 1 * 1000 * 1000;  /* 1 sec */
 	do {
 		udelay(1);
@@ -358,6 +370,14 @@ static int bar4_shift(struct pm8001_hba_info *pm8001_ha, u32 shiftValue)
 	} while ((regVal != shiftValue) && (--max_wait_count));
 
 	if (!max_wait_count) {
+=======
+	start = jiffies + HZ; /* 1 sec */
+	do {
+		regVal = pm8001_cr32(pm8001_ha, 1, SPC_IBW_AXI_TRANSLATION_LOW);
+	} while ((regVal != shiftValue) && time_before(jiffies, start));
+
+	if (regVal != shiftValue) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		PM8001_INIT_DBG(pm8001_ha,
 			pm8001_printk("TIMEOUT:SPC_IBW_AXI_TRANSLATION_LOW"
 			" = 0x%x\n", regVal));
@@ -375,6 +395,10 @@ static void __devinit
 mpi_set_phys_g3_with_ssc(struct pm8001_hba_info *pm8001_ha, u32 SSCbit)
 {
 	u32 value, offset, i;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SAS2_SETTINGS_LOCAL_PHY_0_3_SHIFT_ADDR 0x00030000
 #define SAS2_SETTINGS_LOCAL_PHY_4_7_SHIFT_ADDR 0x00040000
@@ -388,16 +412,33 @@ mpi_set_phys_g3_with_ssc(struct pm8001_hba_info *pm8001_ha, u32 SSCbit)
     * Using shifted destination address 0x3_0000:0x1074 + 0x4000*N (N=0:3)
     * Using shifted destination address 0x4_0000:0x1074 + 0x4000*(N-4) (N=4:7)
     */
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha, SAS2_SETTINGS_LOCAL_PHY_0_3_SHIFT_ADDR))
 		return;
+=======
+	spin_lock_irqsave(&pm8001_ha->lock, flags);
+	if (-1 == pm8001_bar4_shift(pm8001_ha,
+				SAS2_SETTINGS_LOCAL_PHY_0_3_SHIFT_ADDR)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < 4; i++) {
 		offset = SAS2_SETTINGS_LOCAL_PHY_0_3_OFFSET + 0x4000 * i;
 		pm8001_cw32(pm8001_ha, 2, offset, 0x80001501);
 	}
 	/* shift membase 3 for SAS2_SETTINGS_LOCAL_PHY 4 - 7 */
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha, SAS2_SETTINGS_LOCAL_PHY_4_7_SHIFT_ADDR))
 		return;
+=======
+	if (-1 == pm8001_bar4_shift(pm8001_ha,
+				SAS2_SETTINGS_LOCAL_PHY_4_7_SHIFT_ADDR)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 4; i < 8; i++) {
 		offset = SAS2_SETTINGS_LOCAL_PHY_4_7_OFFSET + 0x4000 * (i-4);
 		pm8001_cw32(pm8001_ha, 2, offset, 0x80001501);
@@ -421,7 +462,12 @@ mpi_set_phys_g3_with_ssc(struct pm8001_hba_info *pm8001_ha, u32 SSCbit)
 	pm8001_cw32(pm8001_ha, 2, 0xd8, 0x8000C016);
 
 	/*set the shifted destination address to 0x0 to avoid error operation */
+<<<<<<< HEAD
 	bar4_shift(pm8001_ha, 0x0);
+=======
+	pm8001_bar4_shift(pm8001_ha, 0x0);
+	spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return;
 }
 
@@ -437,6 +483,10 @@ mpi_set_open_retry_interval_reg(struct pm8001_hba_info *pm8001_ha,
 	u32 offset;
 	u32 value;
 	u32 i;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define OPEN_RETRY_INTERVAL_PHY_0_3_SHIFT_ADDR 0x00030000
 #define OPEN_RETRY_INTERVAL_PHY_4_7_SHIFT_ADDR 0x00040000
@@ -445,24 +495,47 @@ mpi_set_open_retry_interval_reg(struct pm8001_hba_info *pm8001_ha,
 #define OPEN_RETRY_INTERVAL_REG_MASK 0x0000FFFF
 
 	value = interval & OPEN_RETRY_INTERVAL_REG_MASK;
+<<<<<<< HEAD
 	/* shift bar and set the OPEN_REJECT(RETRY) interval time of PHY 0 -3.*/
 	if (-1 == bar4_shift(pm8001_ha,
 			     OPEN_RETRY_INTERVAL_PHY_0_3_SHIFT_ADDR))
 		return;
+=======
+	spin_lock_irqsave(&pm8001_ha->lock, flags);
+	/* shift bar and set the OPEN_REJECT(RETRY) interval time of PHY 0 -3.*/
+	if (-1 == pm8001_bar4_shift(pm8001_ha,
+			     OPEN_RETRY_INTERVAL_PHY_0_3_SHIFT_ADDR)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < 4; i++) {
 		offset = OPEN_RETRY_INTERVAL_PHY_0_3_OFFSET + 0x4000 * i;
 		pm8001_cw32(pm8001_ha, 2, offset, value);
 	}
 
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha,
 			     OPEN_RETRY_INTERVAL_PHY_4_7_SHIFT_ADDR))
 		return;
+=======
+	if (-1 == pm8001_bar4_shift(pm8001_ha,
+			     OPEN_RETRY_INTERVAL_PHY_4_7_SHIFT_ADDR)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 4; i < 8; i++) {
 		offset = OPEN_RETRY_INTERVAL_PHY_4_7_OFFSET + 0x4000 * (i-4);
 		pm8001_cw32(pm8001_ha, 2, offset, value);
 	}
 	/*set the shifted destination address to 0x0 to avoid error operation */
+<<<<<<< HEAD
 	bar4_shift(pm8001_ha, 0x0);
+=======
+	pm8001_bar4_shift(pm8001_ha, 0x0);
+	spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return;
 }
 
@@ -567,11 +640,19 @@ static void init_pci_device_addresses(struct pm8001_hba_info *pm8001_ha)
 	value = pm8001_cr32(pm8001_ha, 0, 0x44);
 	offset = value & 0x03FFFFFF;
 	PM8001_INIT_DBG(pm8001_ha,
+<<<<<<< HEAD
 		pm8001_printk("Scratchpad 0 Offset: %x \n", offset));
 	pcilogic = (value & 0xFC000000) >> 26;
 	pcibar = get_pci_bar_index(pcilogic);
 	PM8001_INIT_DBG(pm8001_ha,
 		pm8001_printk("Scratchpad 0 PCI BAR: %d \n", pcibar));
+=======
+		pm8001_printk("Scratchpad 0 Offset: %x\n", offset));
+	pcilogic = (value & 0xFC000000) >> 26;
+	pcibar = get_pci_bar_index(pcilogic);
+	PM8001_INIT_DBG(pm8001_ha,
+		pm8001_printk("Scratchpad 0 PCI BAR: %d\n", pcibar));
+>>>>>>> refs/remotes/origin/cm-10.0
 	pm8001_ha->main_cfg_tbl_addr = base_addr =
 		pm8001_ha->io_mem[pcibar].memvirtaddr + offset;
 	pm8001_ha->general_stat_tbl_addr =
@@ -607,7 +688,12 @@ static int __devinit pm8001_chip_init(struct pm8001_hba_info *pm8001_ha)
 	update_inbnd_queue_table(pm8001_ha, 0);
 	update_outbnd_queue_table(pm8001_ha, 0);
 	mpi_set_phys_g3_with_ssc(pm8001_ha, 0);
+<<<<<<< HEAD
 	mpi_set_open_retry_interval_reg(pm8001_ha, 7);
+=======
+	/* 7->130ms, 34->500ms, 119->1.5s */
+	mpi_set_open_retry_interval_reg(pm8001_ha, 119);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* notify firmware update finished and check initialization status */
 	if (0 == mpi_init_check(pm8001_ha)) {
 		PM8001_INIT_DBG(pm8001_ha,
@@ -688,8 +774,16 @@ static u32 soft_reset_ready_check(struct pm8001_hba_info *pm8001_ha)
 		PM8001_INIT_DBG(pm8001_ha,
 			pm8001_printk("Firmware is ready for reset .\n"));
 	} else {
+<<<<<<< HEAD
 	/* Trigger NMI twice via RB6 */
 		if (-1 == bar4_shift(pm8001_ha, RB6_ACCESS_REG)) {
+=======
+		unsigned long flags;
+		/* Trigger NMI twice via RB6 */
+		spin_lock_irqsave(&pm8001_ha->lock, flags);
+		if (-1 == pm8001_bar4_shift(pm8001_ha, RB6_ACCESS_REG)) {
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 			PM8001_FAIL_DBG(pm8001_ha,
 				pm8001_printk("Shift Bar4 to 0x%x failed\n",
 					RB6_ACCESS_REG));
@@ -715,8 +809,15 @@ static u32 soft_reset_ready_check(struct pm8001_hba_info *pm8001_ha)
 			PM8001_FAIL_DBG(pm8001_ha,
 				pm8001_printk("SCRATCH_PAD3 value = 0x%x\n",
 				pm8001_cr32(pm8001_ha, 0, MSGU_SCRATCH_PAD_3)));
+<<<<<<< HEAD
 			return -1;
 		}
+=======
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			return -1;
+		}
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }
@@ -733,6 +834,10 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 	u32	regVal, toggleVal;
 	u32	max_wait_count;
 	u32	regVal1, regVal2, regVal3;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* step1: Check FW is ready for soft reset */
 	if (soft_reset_ready_check(pm8001_ha) != 0) {
@@ -743,7 +848,13 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 	/* step 2: clear NMI status register on AAP1 and IOP, write the same
 	value to clear */
 	/* map 0x60000 to BAR4(0x20), BAR2(win) */
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha, MBIC_AAP1_ADDR_BASE)) {
+=======
+	spin_lock_irqsave(&pm8001_ha->lock, flags);
+	if (-1 == pm8001_bar4_shift(pm8001_ha, MBIC_AAP1_ADDR_BASE)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		PM8001_FAIL_DBG(pm8001_ha,
 			pm8001_printk("Shift Bar4 to 0x%x failed\n",
 			MBIC_AAP1_ADDR_BASE));
@@ -754,7 +865,12 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 		pm8001_printk("MBIC - NMI Enable VPE0 (IOP)= 0x%x\n", regVal));
 	pm8001_cw32(pm8001_ha, 2, MBIC_NMI_ENABLE_VPE0_IOP, 0x0);
 	/* map 0x70000 to BAR4(0x20), BAR2(win) */
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha, MBIC_IOP_ADDR_BASE)) {
+=======
+	if (-1 == pm8001_bar4_shift(pm8001_ha, MBIC_IOP_ADDR_BASE)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		PM8001_FAIL_DBG(pm8001_ha,
 			pm8001_printk("Shift Bar4 to 0x%x failed\n",
 			MBIC_IOP_ADDR_BASE));
@@ -796,7 +912,12 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 
 	/* read required registers for confirmming */
 	/* map 0x0700000 to BAR4(0x20), BAR2(win) */
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha, GSM_ADDR_BASE)) {
+=======
+	if (-1 == pm8001_bar4_shift(pm8001_ha, GSM_ADDR_BASE)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		PM8001_FAIL_DBG(pm8001_ha,
 			pm8001_printk("Shift Bar4 to 0x%x failed\n",
 			GSM_ADDR_BASE));
@@ -862,7 +983,12 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 	/* step 5: delay 10 usec */
 	udelay(10);
 	/* step 5-b: set GPIO-0 output control to tristate anyway */
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha, GPIO_ADDR_BASE)) {
+=======
+	if (-1 == pm8001_bar4_shift(pm8001_ha, GPIO_ADDR_BASE)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		PM8001_INIT_DBG(pm8001_ha,
 				pm8001_printk("Shift Bar4 to 0x%x failed\n",
 				GPIO_ADDR_BASE));
@@ -878,7 +1004,12 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 
 	/* Step 6: Reset the IOP and AAP1 */
 	/* map 0x00000 to BAR4(0x20), BAR2(win) */
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha, SPC_TOP_LEVEL_ADDR_BASE)) {
+=======
+	if (-1 == pm8001_bar4_shift(pm8001_ha, SPC_TOP_LEVEL_ADDR_BASE)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		PM8001_FAIL_DBG(pm8001_ha,
 			pm8001_printk("SPC Shift Bar4 to 0x%x failed\n",
 			SPC_TOP_LEVEL_ADDR_BASE));
@@ -915,7 +1046,12 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 
 	/* step 11: reads and sets the GSM Configuration and Reset Register */
 	/* map 0x0700000 to BAR4(0x20), BAR2(win) */
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha, GSM_ADDR_BASE)) {
+=======
+	if (-1 == pm8001_bar4_shift(pm8001_ha, GSM_ADDR_BASE)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		PM8001_FAIL_DBG(pm8001_ha,
 			pm8001_printk("SPC Shift Bar4 to 0x%x failed\n",
 			GSM_ADDR_BASE));
@@ -968,7 +1104,12 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 
 	/* step 13: bring the IOP and AAP1 out of reset */
 	/* map 0x00000 to BAR4(0x20), BAR2(win) */
+<<<<<<< HEAD
 	if (-1 == bar4_shift(pm8001_ha, SPC_TOP_LEVEL_ADDR_BASE)) {
+=======
+	if (-1 == pm8001_bar4_shift(pm8001_ha, SPC_TOP_LEVEL_ADDR_BASE)) {
+		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		PM8001_FAIL_DBG(pm8001_ha,
 			pm8001_printk("Shift Bar4 to 0x%x failed\n",
 			SPC_TOP_LEVEL_ADDR_BASE));
@@ -1010,6 +1151,10 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 				pm8001_printk("SCRATCH_PAD3 value = 0x%x\n",
 				pm8001_cr32(pm8001_ha, 0,
 				MSGU_SCRATCH_PAD_3)));
+<<<<<<< HEAD
+=======
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -1;
 		}
 
@@ -1039,9 +1184,18 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha, u32 signature)
 				pm8001_printk("SCRATCH_PAD3 value = 0x%x\n",
 				pm8001_cr32(pm8001_ha, 0,
 				MSGU_SCRATCH_PAD_3)));
+<<<<<<< HEAD
 			return -1;
 		}
 	}
+=======
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			return -1;
+		}
+	}
+	pm8001_bar4_shift(pm8001_ha, 0);
+	spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	PM8001_INIT_DBG(pm8001_ha,
 		pm8001_printk("SPC soft reset Complete\n"));
@@ -1157,8 +1311,13 @@ pm8001_chip_msix_interrupt_disable(struct pm8001_hba_info *pm8001_ha,
 	msi_index = int_vec_idx * MSIX_TABLE_ELEMENT_SIZE;
 	msi_index += MSIX_TABLE_BASE;
 	pm8001_cw32(pm8001_ha, 0,  msi_index, MSIX_INTERRUPT_DISABLE);
+<<<<<<< HEAD
 
 }
+=======
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * pm8001_chip_interrupt_enable - enable PM8001 chip interrupt
  * @pm8001_ha: our hba card information
@@ -1212,7 +1371,11 @@ static int mpi_msg_free_get(struct inbound_queue_table *circularQ,
 	consumer_index = pm8001_read_32(circularQ->ci_virt);
 	circularQ->consumer_index = cpu_to_le32(consumer_index);
 	if (((circularQ->producer_idx + bcCount) % 256) ==
+<<<<<<< HEAD
 		circularQ->consumer_index) {
+=======
+		le32_to_cpu(circularQ->consumer_index)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		*messagePtr = NULL;
 		return -1;
 	}
@@ -1245,7 +1408,11 @@ static int mpi_build_cmd(struct pm8001_hba_info *pm8001_ha,
 
 	if (mpi_msg_free_get(circularQ, 64, &pMessage) < 0) {
 		PM8001_IO_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("No free mpi buffer \n"));
+=======
+			pm8001_printk("No free mpi buffer\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
 	}
 	BUG_ON(!payload);
@@ -1262,7 +1429,11 @@ static int mpi_build_cmd(struct pm8001_hba_info *pm8001_ha,
 	pm8001_cw32(pm8001_ha, circularQ->pi_pci_bar,
 		circularQ->pi_offset, circularQ->producer_idx);
 	PM8001_IO_DBG(pm8001_ha,
+<<<<<<< HEAD
 		pm8001_printk("after PI= %d CI= %d \n", circularQ->producer_idx,
+=======
+		pm8001_printk("after PI= %d CI= %d\n", circularQ->producer_idx,
+>>>>>>> refs/remotes/origin/cm-10.0
 		circularQ->consumer_index));
 	return 0;
 }
@@ -1321,7 +1492,12 @@ static u32 mpi_msg_consume(struct pm8001_hba_info *pm8001_ha,
 	u32 header_tmp;
 	do {
 		/* If there are not-yet-delivered messages ... */
+<<<<<<< HEAD
 		if (circularQ->producer_index != circularQ->consumer_idx) {
+=======
+		if (le32_to_cpu(circularQ->producer_index)
+			!= circularQ->consumer_idx) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*Get the pointer to the circular queue buffer element*/
 			msgHeader = (struct mpi_msg_hdr *)
 				(circularQ->base_virt +
@@ -1329,6 +1505,7 @@ static u32 mpi_msg_consume(struct pm8001_hba_info *pm8001_ha,
 			/* read header */
 			header_tmp = pm8001_read_32(msgHeader);
 			msgHeader_tmp = cpu_to_le32(header_tmp);
+<<<<<<< HEAD
 			if (0 != (msgHeader_tmp & 0x80000000)) {
 				if (OPC_OUB_SKIP_ENTRY !=
 					(msgHeader_tmp & 0xfff)) {
@@ -1337,6 +1514,16 @@ static u32 mpi_msg_consume(struct pm8001_hba_info *pm8001_ha,
 						sizeof(struct mpi_msg_hdr);
 					*pBC = (u8)((msgHeader_tmp >> 24) &
 						0x1f);
+=======
+			if (0 != (le32_to_cpu(msgHeader_tmp) & 0x80000000)) {
+				if (OPC_OUB_SKIP_ENTRY !=
+					(le32_to_cpu(msgHeader_tmp) & 0xfff)) {
+					*messagePtr1 =
+						((u8 *)msgHeader) +
+						sizeof(struct mpi_msg_hdr);
+					*pBC = (u8)((le32_to_cpu(msgHeader_tmp)
+						>> 24) & 0x1f);
+>>>>>>> refs/remotes/origin/cm-10.0
 					PM8001_IO_DBG(pm8001_ha,
 						pm8001_printk(": CI=%d PI=%d "
 						"msgHeader=%x\n",
@@ -1347,8 +1534,13 @@ static u32 mpi_msg_consume(struct pm8001_hba_info *pm8001_ha,
 				} else {
 					circularQ->consumer_idx =
 						(circularQ->consumer_idx +
+<<<<<<< HEAD
 						((msgHeader_tmp >> 24) & 0x1f))
 						% 256;
+=======
+						((le32_to_cpu(msgHeader_tmp)
+						>> 24) & 0x1f)) % 256;
+>>>>>>> refs/remotes/origin/cm-10.0
 					msgHeader_tmp = 0;
 					pm8001_write_32(msgHeader, 0, 0);
 					/* update the CI of outbound queue */
@@ -1360,7 +1552,12 @@ static u32 mpi_msg_consume(struct pm8001_hba_info *pm8001_ha,
 			} else {
 				circularQ->consumer_idx =
 					(circularQ->consumer_idx +
+<<<<<<< HEAD
 					((msgHeader_tmp >> 24) & 0x1f)) % 256;
+=======
+					((le32_to_cpu(msgHeader_tmp) >> 24) &
+					0x1f)) % 256;
+>>>>>>> refs/remotes/origin/cm-10.0
 				msgHeader_tmp = 0;
 				pm8001_write_32(msgHeader, 0, 0);
 				/* update the CI of outbound queue */
@@ -1376,7 +1573,12 @@ static u32 mpi_msg_consume(struct pm8001_hba_info *pm8001_ha,
 			producer_index = pm8001_read_32(pi_virt);
 			circularQ->producer_index = cpu_to_le32(producer_index);
 		}
+<<<<<<< HEAD
 	} while (circularQ->producer_index != circularQ->consumer_idx);
+=======
+	} while (le32_to_cpu(circularQ->producer_index) !=
+		circularQ->consumer_idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* while we don't have any more not-yet-delivered message */
 	/* report empty */
 	return MPI_IO_STATUS_BUSY;
@@ -1388,24 +1590,209 @@ static void pm8001_work_fn(struct work_struct *work)
 	struct pm8001_device *pm8001_dev;
 	struct domain_device *dev;
 
+<<<<<<< HEAD
 	switch (pw->handler) {
 	case IO_OPEN_CNX_ERROR_IT_NEXUS_LOSS:
 		pm8001_dev = pw->data;
+=======
+	/*
+	 * So far, all users of this stash an associated structure here.
+	 * If we get here, and this pointer is null, then the action
+	 * was cancelled. This nullification happens when the device
+	 * goes away.
+	 */
+	pm8001_dev = pw->data; /* Most stash device structure */
+	if ((pm8001_dev == NULL)
+	 || ((pw->handler != IO_XFER_ERROR_BREAK)
+	  && (pm8001_dev->dev_type == NO_DEVICE))) {
+		kfree(pw);
+		return;
+	}
+
+	switch (pw->handler) {
+	case IO_XFER_ERROR_BREAK:
+	{	/* This one stashes the sas_task instead */
+		struct sas_task *t = (struct sas_task *)pm8001_dev;
+		u32 tag;
+		struct pm8001_ccb_info *ccb;
+		struct pm8001_hba_info *pm8001_ha = pw->pm8001_ha;
+		unsigned long flags, flags1;
+		struct task_status_struct *ts;
+		int i;
+
+		if (pm8001_query_task(t) == TMF_RESP_FUNC_SUCC)
+			break; /* Task still on lu */
+		spin_lock_irqsave(&pm8001_ha->lock, flags);
+
+		spin_lock_irqsave(&t->task_state_lock, flags1);
+		if (unlikely((t->task_state_flags & SAS_TASK_STATE_DONE))) {
+			spin_unlock_irqrestore(&t->task_state_lock, flags1);
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			break; /* Task got completed by another */
+		}
+		spin_unlock_irqrestore(&t->task_state_lock, flags1);
+
+		/* Search for a possible ccb that matches the task */
+		for (i = 0; ccb = NULL, i < PM8001_MAX_CCB; i++) {
+			ccb = &pm8001_ha->ccb_info[i];
+			tag = ccb->ccb_tag;
+			if ((tag != 0xFFFFFFFF) && (ccb->task == t))
+				break;
+		}
+		if (!ccb) {
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			break; /* Task got freed by another */
+		}
+		ts = &t->task_status;
+		ts->resp = SAS_TASK_COMPLETE;
+		/* Force the midlayer to retry */
+		ts->stat = SAS_QUEUE_FULL;
+		pm8001_dev = ccb->device;
+		if (pm8001_dev)
+			pm8001_dev->running_req--;
+		spin_lock_irqsave(&t->task_state_lock, flags1);
+		t->task_state_flags &= ~SAS_TASK_STATE_PENDING;
+		t->task_state_flags &= ~SAS_TASK_AT_INITIATOR;
+		t->task_state_flags |= SAS_TASK_STATE_DONE;
+		if (unlikely((t->task_state_flags & SAS_TASK_STATE_ABORTED))) {
+			spin_unlock_irqrestore(&t->task_state_lock, flags1);
+			PM8001_FAIL_DBG(pm8001_ha, pm8001_printk("task 0x%p"
+				" done with event 0x%x resp 0x%x stat 0x%x but"
+				" aborted by upper layer!\n",
+				t, pw->handler, ts->resp, ts->stat));
+			pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+		} else {
+			spin_unlock_irqrestore(&t->task_state_lock, flags1);
+			pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
+			mb();/* in order to force CPU ordering */
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			t->task_done(t);
+		}
+	}	break;
+	case IO_XFER_OPEN_RETRY_TIMEOUT:
+	{	/* This one stashes the sas_task instead */
+		struct sas_task *t = (struct sas_task *)pm8001_dev;
+		u32 tag;
+		struct pm8001_ccb_info *ccb;
+		struct pm8001_hba_info *pm8001_ha = pw->pm8001_ha;
+		unsigned long flags, flags1;
+		int i, ret = 0;
+
+		PM8001_IO_DBG(pm8001_ha,
+			pm8001_printk("IO_XFER_OPEN_RETRY_TIMEOUT\n"));
+
+		ret = pm8001_query_task(t);
+
+		PM8001_IO_DBG(pm8001_ha,
+			switch (ret) {
+			case TMF_RESP_FUNC_SUCC:
+				pm8001_printk("...Task on lu\n");
+				break;
+
+			case TMF_RESP_FUNC_COMPLETE:
+				pm8001_printk("...Task NOT on lu\n");
+				break;
+
+			default:
+				pm8001_printk("...query task failed!!!\n");
+				break;
+			});
+
+		spin_lock_irqsave(&pm8001_ha->lock, flags);
+
+		spin_lock_irqsave(&t->task_state_lock, flags1);
+
+		if (unlikely((t->task_state_flags & SAS_TASK_STATE_DONE))) {
+			spin_unlock_irqrestore(&t->task_state_lock, flags1);
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			if (ret == TMF_RESP_FUNC_SUCC) /* task on lu */
+				(void)pm8001_abort_task(t);
+			break; /* Task got completed by another */
+		}
+
+		spin_unlock_irqrestore(&t->task_state_lock, flags1);
+
+		/* Search for a possible ccb that matches the task */
+		for (i = 0; ccb = NULL, i < PM8001_MAX_CCB; i++) {
+			ccb = &pm8001_ha->ccb_info[i];
+			tag = ccb->ccb_tag;
+			if ((tag != 0xFFFFFFFF) && (ccb->task == t))
+				break;
+		}
+		if (!ccb) {
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			if (ret == TMF_RESP_FUNC_SUCC) /* task on lu */
+				(void)pm8001_abort_task(t);
+			break; /* Task got freed by another */
+		}
+
+		pm8001_dev = ccb->device;
+		dev = pm8001_dev->sas_device;
+
+		switch (ret) {
+		case TMF_RESP_FUNC_SUCC: /* task on lu */
+			ccb->open_retry = 1; /* Snub completion */
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			ret = pm8001_abort_task(t);
+			ccb->open_retry = 0;
+			switch (ret) {
+			case TMF_RESP_FUNC_SUCC:
+			case TMF_RESP_FUNC_COMPLETE:
+				break;
+			default: /* device misbehavior */
+				ret = TMF_RESP_FUNC_FAILED;
+				PM8001_IO_DBG(pm8001_ha,
+					pm8001_printk("...Reset phy\n"));
+				pm8001_I_T_nexus_reset(dev);
+				break;
+			}
+			break;
+
+		case TMF_RESP_FUNC_COMPLETE: /* task not on lu */
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			/* Do we need to abort the task locally? */
+			break;
+
+		default: /* device misbehavior */
+			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+			ret = TMF_RESP_FUNC_FAILED;
+			PM8001_IO_DBG(pm8001_ha,
+				pm8001_printk("...Reset phy\n"));
+			pm8001_I_T_nexus_reset(dev);
+		}
+
+		if (ret == TMF_RESP_FUNC_FAILED)
+			t = NULL;
+		pm8001_open_reject_retry(pm8001_ha, t, pm8001_dev);
+		PM8001_IO_DBG(pm8001_ha, pm8001_printk("...Complete\n"));
+	}	break;
+	case IO_OPEN_CNX_ERROR_IT_NEXUS_LOSS:
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev = pm8001_dev->sas_device;
 		pm8001_I_T_nexus_reset(dev);
 		break;
 	case IO_OPEN_CNX_ERROR_STP_RESOURCES_BUSY:
+<<<<<<< HEAD
 		pm8001_dev = pw->data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev = pm8001_dev->sas_device;
 		pm8001_I_T_nexus_reset(dev);
 		break;
 	case IO_DS_IN_ERROR:
+<<<<<<< HEAD
 		pm8001_dev = pw->data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev = pm8001_dev->sas_device;
 		pm8001_I_T_nexus_reset(dev);
 		break;
 	case IO_DS_NON_OPERATIONAL:
+<<<<<<< HEAD
 		pm8001_dev = pw->data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev = pm8001_dev->sas_device;
 		pm8001_I_T_nexus_reset(dev);
 		break;
@@ -1460,6 +1847,14 @@ mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha , void *piomb)
 	status = le32_to_cpu(psspPayload->status);
 	tag = le32_to_cpu(psspPayload->tag);
 	ccb = &pm8001_ha->ccb_info[tag];
+<<<<<<< HEAD
+=======
+	if ((status == IO_ABORTED) && ccb->open_retry) {
+		/* Being completed by another */
+		ccb->open_retry = 0;
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	pm8001_dev = ccb->device;
 	param = le32_to_cpu(psspPayload->param);
 
@@ -1474,7 +1869,11 @@ mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha , void *piomb)
 	switch (status) {
 	case IO_SUCCESS:
 		PM8001_IO_DBG(pm8001_ha, pm8001_printk("IO_SUCCESS"
+<<<<<<< HEAD
 			",param = %d \n", param));
+=======
+			",param = %d\n", param));
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (param == 0) {
 			ts->resp = SAS_TASK_COMPLETE;
 			ts->stat = SAM_STAT_GOOD;
@@ -1490,14 +1889,22 @@ mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha , void *piomb)
 		break;
 	case IO_ABORTED:
 		PM8001_IO_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("IO_ABORTED IOMB Tag \n"));
+=======
+			pm8001_printk("IO_ABORTED IOMB Tag\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		ts->resp = SAS_TASK_COMPLETE;
 		ts->stat = SAS_ABORTED_TASK;
 		break;
 	case IO_UNDERFLOW:
 		/* SSP Completion with error */
 		PM8001_IO_DBG(pm8001_ha, pm8001_printk("IO_UNDERFLOW"
+<<<<<<< HEAD
 			",param = %d \n", param));
+=======
+			",param = %d\n", param));
+>>>>>>> refs/remotes/origin/cm-10.0
 		ts->resp = SAS_TASK_COMPLETE;
 		ts->stat = SAS_DATA_UNDERRUN;
 		ts->residual = param;
@@ -1515,6 +1922,11 @@ mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha , void *piomb)
 			pm8001_printk("IO_XFER_ERROR_BREAK\n"));
 		ts->resp = SAS_TASK_COMPLETE;
 		ts->stat = SAS_OPEN_REJECT;
+<<<<<<< HEAD
+=======
+		/* Force the midlayer to retry */
+		ts->open_rej_reason = SAS_OREJ_RSVD_RETRY;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case IO_XFER_ERROR_PHY_NOT_READY:
 		PM8001_IO_DBG(pm8001_ha,
@@ -1649,6 +2061,10 @@ mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha , void *piomb)
 		ts->resp = SAS_TASK_COMPLETE;
 		ts->stat = SAS_OPEN_REJECT;
 		ts->open_rej_reason = SAS_OREJ_RSVD_RETRY;
+<<<<<<< HEAD
+=======
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		PM8001_IO_DBG(pm8001_ha,
 			pm8001_printk("Unknown status 0x%x\n", status));
@@ -1718,9 +2134,14 @@ static void mpi_ssp_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
 	case IO_XFER_ERROR_BREAK:
 		PM8001_IO_DBG(pm8001_ha,
 			pm8001_printk("IO_XFER_ERROR_BREAK\n"));
+<<<<<<< HEAD
 		ts->resp = SAS_TASK_COMPLETE;
 		ts->stat = SAS_INTERRUPTED;
 		break;
+=======
+		pm8001_handle_event(pm8001_ha, t, IO_XFER_ERROR_BREAK);
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case IO_XFER_ERROR_PHY_NOT_READY:
 		PM8001_IO_DBG(pm8001_ha,
 			pm8001_printk("IO_XFER_ERROR_PHY_NOT_READY\n"));
@@ -1799,10 +2220,15 @@ static void mpi_ssp_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
 	case IO_XFER_OPEN_RETRY_TIMEOUT:
 		PM8001_IO_DBG(pm8001_ha,
 			pm8001_printk("IO_XFER_OPEN_RETRY_TIMEOUT\n"));
+<<<<<<< HEAD
 		ts->resp = SAS_TASK_COMPLETE;
 		ts->stat = SAS_OPEN_REJECT;
 		ts->open_rej_reason = SAS_OREJ_RSVD_RETRY;
 		break;
+=======
+		pm8001_handle_event(pm8001_ha, t, IO_XFER_OPEN_RETRY_TIMEOUT);
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case IO_XFER_ERROR_UNEXPECTED_PHASE:
 		PM8001_IO_DBG(pm8001_ha,
 			pm8001_printk("IO_XFER_ERROR_UNEXPECTED_PHASE\n"));
@@ -1876,7 +2302,10 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 {
 	struct sas_task *t;
 	struct pm8001_ccb_info *ccb;
+<<<<<<< HEAD
 	unsigned long flags = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 param;
 	u32 status;
 	u32 tag;
@@ -1885,6 +2314,10 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 	struct ata_task_resp *resp ;
 	u32 *sata_resp;
 	struct pm8001_device *pm8001_dev;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	psataPayload = (struct sata_completion_resp *)(piomb + 4);
 	status = le32_to_cpu(psataPayload->status);
@@ -1937,14 +2370,22 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 				ts->buf_valid_size = sizeof(*resp);
 			} else
 				PM8001_IO_DBG(pm8001_ha,
+<<<<<<< HEAD
 					pm8001_printk("response to large \n"));
+=======
+					pm8001_printk("response to large\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		if (pm8001_dev)
 			pm8001_dev->running_req--;
 		break;
 	case IO_ABORTED:
 		PM8001_IO_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("IO_ABORTED IOMB Tag \n"));
+=======
+			pm8001_printk("IO_ABORTED IOMB Tag\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		ts->resp = SAS_TASK_COMPLETE;
 		ts->stat = SAS_ABORTED_TASK;
 		if (pm8001_dev)
@@ -2015,9 +2456,15 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 			ts->stat = SAS_QUEUE_FULL;
 			pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 			mb();/*in order to force CPU ordering*/
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 			t->task_done(t);
 			spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+			spin_unlock_irq(&pm8001_ha->lock);
+			t->task_done(t);
+			spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 		break;
@@ -2035,9 +2482,15 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 			ts->stat = SAS_QUEUE_FULL;
 			pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 			mb();/*ditto*/
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 			t->task_done(t);
 			spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+			spin_unlock_irq(&pm8001_ha->lock);
+			t->task_done(t);
+			spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 		break;
@@ -2063,9 +2516,15 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 			ts->stat = SAS_QUEUE_FULL;
 			pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 			mb();/* ditto*/
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 			t->task_done(t);
 			spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+			spin_unlock_irq(&pm8001_ha->lock);
+			t->task_done(t);
+			spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 		break;
@@ -2130,9 +2589,15 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 			ts->stat = SAS_QUEUE_FULL;
 			pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 			mb();/*ditto*/
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 			t->task_done(t);
 			spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+			spin_unlock_irq(&pm8001_ha->lock);
+			t->task_done(t);
+			spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 		break;
@@ -2154,9 +2619,15 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 			ts->stat = SAS_QUEUE_FULL;
 			pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 			mb();/*ditto*/
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 			t->task_done(t);
 			spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+			spin_unlock_irq(&pm8001_ha->lock);
+			t->task_done(t);
+			spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 		break;
@@ -2189,16 +2660,28 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 		spin_unlock_irqrestore(&t->task_state_lock, flags);
 		pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 		mb();/* ditto */
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 		t->task_done(t);
 		spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+		spin_unlock_irq(&pm8001_ha->lock);
+		t->task_done(t);
+		spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else if (!t->uldd_task) {
 		spin_unlock_irqrestore(&t->task_state_lock, flags);
 		pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 		mb();/*ditto*/
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 		t->task_done(t);
 		spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+		spin_unlock_irq(&pm8001_ha->lock);
+		t->task_done(t);
+		spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -2206,7 +2689,10 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
 static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
 {
 	struct sas_task *t;
+<<<<<<< HEAD
 	unsigned long flags = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct task_status_struct *ts;
 	struct pm8001_ccb_info *ccb;
 	struct pm8001_device *pm8001_dev;
@@ -2216,6 +2702,10 @@ static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
 	u32 tag = le32_to_cpu(psataPayload->tag);
 	u32 port_id = le32_to_cpu(psataPayload->port_id);
 	u32 dev_id = le32_to_cpu(psataPayload->device_id);
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ccb = &pm8001_ha->ccb_info[tag];
 	t = ccb->task;
@@ -2286,9 +2776,15 @@ static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
 			ts->stat = SAS_QUEUE_FULL;
 			pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 			mb();/*ditto*/
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 			t->task_done(t);
 			spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+			spin_unlock_irq(&pm8001_ha->lock);
+			t->task_done(t);
+			spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 		break;
@@ -2401,16 +2897,28 @@ static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
 		spin_unlock_irqrestore(&t->task_state_lock, flags);
 		pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 		mb();/* ditto */
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 		t->task_done(t);
 		spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+		spin_unlock_irq(&pm8001_ha->lock);
+		t->task_done(t);
+		spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else if (!t->uldd_task) {
 		spin_unlock_irqrestore(&t->task_state_lock, flags);
 		pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
 		mb();/*ditto*/
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&pm8001_ha->lock, flags);
 		t->task_done(t);
 		spin_lock_irqsave(&pm8001_ha->lock, flags);
+=======
+		spin_unlock_irq(&pm8001_ha->lock);
+		t->task_done(t);
+		spin_lock_irq(&pm8001_ha->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -2728,11 +3236,19 @@ static int mpi_local_phy_ctl(struct pm8001_hba_info *pm8001_ha, void *piomb)
 	u32 phy_op = le32_to_cpu(pPayload->phyop_phyid) & OP_BITS;
 	if (status != 0) {
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("%x phy execute %x phy op failed! \n",
 			phy_id, phy_op));
 	} else
 		PM8001_MSG_DBG(pm8001_ha,
 			pm8001_printk("%x phy execute %x phy op success! \n",
+=======
+			pm8001_printk("%x phy execute %x phy op failed!\n",
+			phy_id, phy_op));
+	} else
+		PM8001_MSG_DBG(pm8001_ha,
+			pm8001_printk("%x phy execute %x phy op success!\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			phy_id, phy_op));
 	return 0;
 }
@@ -2856,7 +3372,11 @@ static void pm8001_hw_event_ack_req(struct pm8001_hba_info *pm8001_ha,
 
 	memset((u8 *)&payload, 0, sizeof(payload));
 	circularQ = &pm8001_ha->inbnd_q_tbl[Qnum];
+<<<<<<< HEAD
 	payload.tag = 1;
+=======
+	payload.tag = cpu_to_le32(1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	payload.sea_phyid_portid = cpu_to_le32(((SEA & 0xFFFF) << 8) |
 		((phyId & 0x0F) << 4) | (port_id & 0x0F));
 	payload.param0 = cpu_to_le32(param0);
@@ -2928,9 +3448,15 @@ hw_event_sas_phy_up(struct pm8001_hba_info *pm8001_ha, void *piomb)
 	phy->phy_type |= PORT_TYPE_SAS;
 	phy->identify.device_type = deviceType;
 	phy->phy_attached = 1;
+<<<<<<< HEAD
 	if (phy->identify.device_type == SAS_END_DEV)
 		phy->identify.target_port_protocols = SAS_PROTOCOL_SSP;
 	else if (phy->identify.device_type != NO_DEVICE)
+=======
+	if (phy->identify.device_type == SAS_END_DEVICE)
+		phy->identify.target_port_protocols = SAS_PROTOCOL_SSP;
+	else if (phy->identify.device_type != SAS_PHY_UNUSED)
+>>>>>>> refs/remotes/origin/cm-10.0
 		phy->identify.target_port_protocols = SAS_PROTOCOL_SMP;
 	phy->sas_phy.oob_mode = SAS_OOB_MODE;
 	sas_ha->notify_phy_event(&phy->sas_phy, PHYE_OOB_DONE);
@@ -3018,7 +3544,11 @@ hw_event_phy_down(struct pm8001_hba_info *pm8001_ha, void *piomb)
 		break;
 	case PORT_INVALID:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk(" PortInvalid portID %d \n", port_id));
+=======
+			pm8001_printk(" PortInvalid portID %d\n", port_id));
+>>>>>>> refs/remotes/origin/cm-10.0
 		PM8001_MSG_DBG(pm8001_ha,
 			pm8001_printk(" Last phy Down and port invalid\n"));
 		port->port_attached = 0;
@@ -3027,7 +3557,11 @@ hw_event_phy_down(struct pm8001_hba_info *pm8001_ha, void *piomb)
 		break;
 	case PORT_IN_RESET:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk(" Port In Reset portID %d \n", port_id));
+=======
+			pm8001_printk(" Port In Reset portID %d\n", port_id));
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case PORT_NOT_ESTABLISHED:
 		PM8001_MSG_DBG(pm8001_ha,
@@ -3074,7 +3608,11 @@ static int mpi_reg_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
 		(struct dev_reg_resp *)(piomb + 4);
 
 	htag = le32_to_cpu(registerRespPayload->tag);
+<<<<<<< HEAD
 	ccb = &pm8001_ha->ccb_info[registerRespPayload->tag];
+=======
+	ccb = &pm8001_ha->ccb_info[htag];
+>>>>>>> refs/remotes/origin/cm-10.0
 	pm8001_dev = ccb->device;
 	status = le32_to_cpu(registerRespPayload->status);
 	device_id = le32_to_cpu(registerRespPayload->device_id);
@@ -3148,7 +3686,11 @@ mpi_fw_flash_update_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
 	struct fw_control_ex	fw_control_context;
 	struct fw_flash_Update_resp *ppayload =
 		(struct fw_flash_Update_resp *)(piomb + 4);
+<<<<<<< HEAD
 	u32 tag = le32_to_cpu(ppayload->tag);
+=======
+	u32 tag = ppayload->tag;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pm8001_ccb_info *ccb = &pm8001_ha->ccb_info[tag];
 	status = le32_to_cpu(ppayload->status);
 	memcpy(&fw_control_context,
@@ -3220,7 +3762,11 @@ mpi_general_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
 		pm8001_printk(" status = 0x%x\n", status));
 	for (i = 0; i < GENERAL_EVENT_PAYLOAD; i++)
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("inb_IOMB_payload[0x%x] 0x%x, \n", i,
+=======
+			pm8001_printk("inb_IOMB_payload[0x%x] 0x%x,\n", i,
+>>>>>>> refs/remotes/origin/cm-10.0
 			pPayload->inb_IOMB_payload[i]));
 	return 0;
 }
@@ -3237,13 +3783,21 @@ mpi_task_abort_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
 
 	struct task_abort_resp *pPayload =
 		(struct task_abort_resp *)(piomb + 4);
+<<<<<<< HEAD
 	ccb = &pm8001_ha->ccb_info[pPayload->tag];
 	t = ccb->task;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	status = le32_to_cpu(pPayload->status);
 	tag = le32_to_cpu(pPayload->tag);
 	scp = le32_to_cpu(pPayload->scp);
+<<<<<<< HEAD
+=======
+	ccb = &pm8001_ha->ccb_info[tag];
+	t = ccb->task;
+>>>>>>> refs/remotes/origin/cm-10.0
 	PM8001_IO_DBG(pm8001_ha,
 		pm8001_printk(" status = 0x%x\n", status));
 	if (t == NULL)
@@ -3269,7 +3823,11 @@ mpi_task_abort_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
 	t->task_state_flags &= ~SAS_TASK_AT_INITIATOR;
 	t->task_state_flags |= SAS_TASK_STATE_DONE;
 	spin_unlock_irqrestore(&t->task_state_lock, flags);
+<<<<<<< HEAD
 	pm8001_ccb_task_free(pm8001_ha, t, ccb, pPayload->tag);
+=======
+	pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mb();
 	t->task_done(t);
 	return 0;
@@ -3312,12 +3870,20 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
 		break;
 	case HW_EVENT_SAS_PHY_UP:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("HW_EVENT_PHY_START_STATUS \n"));
+=======
+			pm8001_printk("HW_EVENT_PHY_START_STATUS\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		hw_event_sas_phy_up(pm8001_ha, piomb);
 		break;
 	case HW_EVENT_SATA_PHY_UP:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("HW_EVENT_SATA_PHY_UP \n"));
+=======
+			pm8001_printk("HW_EVENT_SATA_PHY_UP\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		hw_event_sata_phy_up(pm8001_ha, piomb);
 		break;
 	case HW_EVENT_PHY_STOP_STATUS:
@@ -3329,12 +3895,20 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
 		break;
 	case HW_EVENT_SATA_SPINUP_HOLD:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("HW_EVENT_SATA_SPINUP_HOLD \n"));
+=======
+			pm8001_printk("HW_EVENT_SATA_SPINUP_HOLD\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		sas_ha->notify_phy_event(&phy->sas_phy, PHYE_SPINUP_HOLD);
 		break;
 	case HW_EVENT_PHY_DOWN:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("HW_EVENT_PHY_DOWN \n"));
+=======
+			pm8001_printk("HW_EVENT_PHY_DOWN\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		sas_ha->notify_phy_event(&phy->sas_phy, PHYE_LOSS_OF_SIGNAL);
 		phy->phy_attached = 0;
 		phy->phy_state = 0;
@@ -3446,7 +4020,11 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
 		break;
 	case HW_EVENT_LINK_ERR_PHY_RESET_FAILED:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("HW_EVENT_LINK_ERR_PHY_RESET_FAILED \n"));
+=======
+			pm8001_printk("HW_EVENT_LINK_ERR_PHY_RESET_FAILED\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		pm8001_hw_event_ack_req(pm8001_ha, 0,
 			HW_EVENT_LINK_ERR_PHY_RESET_FAILED,
 			port_id, phy_id, 0, 0);
@@ -3456,25 +4034,41 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
 		break;
 	case HW_EVENT_PORT_RESET_TIMER_TMO:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("HW_EVENT_PORT_RESET_TIMER_TMO \n"));
+=======
+			pm8001_printk("HW_EVENT_PORT_RESET_TIMER_TMO\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		sas_phy_disconnected(sas_phy);
 		phy->phy_attached = 0;
 		sas_ha->notify_port_event(sas_phy, PORTE_LINK_RESET_ERR);
 		break;
 	case HW_EVENT_PORT_RECOVERY_TIMER_TMO:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("HW_EVENT_PORT_RECOVERY_TIMER_TMO \n"));
+=======
+			pm8001_printk("HW_EVENT_PORT_RECOVERY_TIMER_TMO\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		sas_phy_disconnected(sas_phy);
 		phy->phy_attached = 0;
 		sas_ha->notify_port_event(sas_phy, PORTE_LINK_RESET_ERR);
 		break;
 	case HW_EVENT_PORT_RECOVER:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("HW_EVENT_PORT_RECOVER \n"));
 		break;
 	case HW_EVENT_PORT_RESET_COMPLETE:
 		PM8001_MSG_DBG(pm8001_ha,
 			pm8001_printk("HW_EVENT_PORT_RESET_COMPLETE \n"));
+=======
+			pm8001_printk("HW_EVENT_PORT_RECOVER\n"));
+		break;
+	case HW_EVENT_PORT_RESET_COMPLETE:
+		PM8001_MSG_DBG(pm8001_ha,
+			pm8001_printk("HW_EVENT_PORT_RESET_COMPLETE\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case EVENT_BROADCAST_ASYNCH_EVENT:
 		PM8001_MSG_DBG(pm8001_ha,
@@ -3496,27 +4090,47 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
 static void process_one_iomb(struct pm8001_hba_info *pm8001_ha, void *piomb)
 {
 	u32 pHeader = (u32)*(u32 *)piomb;
+<<<<<<< HEAD
 	u8 opc = (u8)((le32_to_cpu(pHeader)) & 0xFFF);
+=======
+	u8 opc = (u8)(pHeader & 0xFFF);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	PM8001_MSG_DBG(pm8001_ha, pm8001_printk("process_one_iomb:"));
 
 	switch (opc) {
 	case OPC_OUB_ECHO:
+<<<<<<< HEAD
 		PM8001_MSG_DBG(pm8001_ha, pm8001_printk("OPC_OUB_ECHO \n"));
 		break;
 	case OPC_OUB_HW_EVENT:
 		PM8001_MSG_DBG(pm8001_ha,
 			pm8001_printk("OPC_OUB_HW_EVENT \n"));
+=======
+		PM8001_MSG_DBG(pm8001_ha, pm8001_printk("OPC_OUB_ECHO\n"));
+		break;
+	case OPC_OUB_HW_EVENT:
+		PM8001_MSG_DBG(pm8001_ha,
+			pm8001_printk("OPC_OUB_HW_EVENT\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		mpi_hw_event(pm8001_ha, piomb);
 		break;
 	case OPC_OUB_SSP_COMP:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("OPC_OUB_SSP_COMP \n"));
+=======
+			pm8001_printk("OPC_OUB_SSP_COMP\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		mpi_ssp_completion(pm8001_ha, piomb);
 		break;
 	case OPC_OUB_SMP_COMP:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("OPC_OUB_SMP_COMP \n"));
+=======
+			pm8001_printk("OPC_OUB_SMP_COMP\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		mpi_smp_completion(pm8001_ha, piomb);
 		break;
 	case OPC_OUB_LOCAL_PHY_CNTRL:
@@ -3526,26 +4140,46 @@ static void process_one_iomb(struct pm8001_hba_info *pm8001_ha, void *piomb)
 		break;
 	case OPC_OUB_DEV_REGIST:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("OPC_OUB_DEV_REGIST \n"));
+=======
+			pm8001_printk("OPC_OUB_DEV_REGIST\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		mpi_reg_resp(pm8001_ha, piomb);
 		break;
 	case OPC_OUB_DEREG_DEV:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("unresgister the deviece \n"));
+=======
+			pm8001_printk("unregister the device\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		mpi_dereg_resp(pm8001_ha, piomb);
 		break;
 	case OPC_OUB_GET_DEV_HANDLE:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("OPC_OUB_GET_DEV_HANDLE \n"));
 		break;
 	case OPC_OUB_SATA_COMP:
 		PM8001_MSG_DBG(pm8001_ha,
 			pm8001_printk("OPC_OUB_SATA_COMP \n"));
+=======
+			pm8001_printk("OPC_OUB_GET_DEV_HANDLE\n"));
+		break;
+	case OPC_OUB_SATA_COMP:
+		PM8001_MSG_DBG(pm8001_ha,
+			pm8001_printk("OPC_OUB_SATA_COMP\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		mpi_sata_completion(pm8001_ha, piomb);
 		break;
 	case OPC_OUB_SATA_EVENT:
 		PM8001_MSG_DBG(pm8001_ha,
+<<<<<<< HEAD
 			pm8001_printk("OPC_OUB_SATA_EVENT \n"));
+=======
+			pm8001_printk("OPC_OUB_SATA_EVENT\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		mpi_sata_event(pm8001_ha, piomb);
 		break;
 	case OPC_OUB_SSP_EVENT:
@@ -3663,9 +4297,17 @@ static int process_oq(struct pm8001_hba_info *pm8001_ha)
 {
 	struct outbound_queue_table *circularQ;
 	void *pMsg1 = NULL;
+<<<<<<< HEAD
 	u8 bc = 0;
 	u32 ret = MPI_IO_STATUS_FAIL;
 
+=======
+	u8 uninitialized_var(bc);
+	u32 ret = MPI_IO_STATUS_FAIL;
+	unsigned long flags;
+
+	spin_lock_irqsave(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	circularQ = &pm8001_ha->outbnd_q_tbl[0];
 	do {
 		ret = mpi_msg_consume(pm8001_ha, circularQ, &pMsg1, &bc);
@@ -3676,16 +4318,27 @@ static int process_oq(struct pm8001_hba_info *pm8001_ha)
 			mpi_msg_free_set(pm8001_ha, pMsg1, circularQ, bc);
 		}
 		if (MPI_IO_STATUS_BUSY == ret) {
+<<<<<<< HEAD
 			u32 producer_idx;
 			/* Update the producer index from SPC */
 			producer_idx = pm8001_read_32(circularQ->pi_virt);
 			circularQ->producer_index = cpu_to_le32(producer_idx);
 			if (circularQ->producer_index ==
+=======
+			/* Update the producer index from SPC */
+			circularQ->producer_index =
+				cpu_to_le32(pm8001_read_32(circularQ->pi_virt));
+			if (le32_to_cpu(circularQ->producer_index) ==
+>>>>>>> refs/remotes/origin/cm-10.0
 				circularQ->consumer_idx)
 				/* OQ is empty */
 				break;
 		}
 	} while (1);
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -3711,9 +4364,15 @@ pm8001_chip_make_sg(struct scatterlist *scatter, int nr, void *prd)
 	}
 }
 
+<<<<<<< HEAD
 static void build_smp_cmd(u32 deviceID, u32 hTag, struct smp_req *psmp_cmd)
 {
 	psmp_cmd->tag = cpu_to_le32(hTag);
+=======
+static void build_smp_cmd(u32 deviceID, __le32 hTag, struct smp_req *psmp_cmd)
+{
+	psmp_cmd->tag = hTag;
+>>>>>>> refs/remotes/origin/cm-10.0
 	psmp_cmd->device_id = cpu_to_le32(deviceID);
 	psmp_cmd->len_ip_ir = cpu_to_le32(1|(1 << 1));
 }
@@ -3797,7 +4456,11 @@ static int pm8001_chip_ssp_io_req(struct pm8001_hba_info *pm8001_ha,
 	struct ssp_ini_io_start_req ssp_cmd;
 	u32 tag = ccb->ccb_tag;
 	int ret;
+<<<<<<< HEAD
 	__le64 phys_addr;
+=======
+	u64 phys_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct inbound_queue_table *circularQ;
 	u32 opc = OPC_INB_SSPINIIOSTART;
 	memset(&ssp_cmd, 0, sizeof(ssp_cmd));
@@ -3818,6 +4481,7 @@ static int pm8001_chip_ssp_io_req(struct pm8001_hba_info *pm8001_ha,
 	/* fill in PRD (scatter/gather) table, if any */
 	if (task->num_scatter > 1) {
 		pm8001_chip_make_sg(task->scatter, ccb->n_elem, ccb->buf_prd);
+<<<<<<< HEAD
 		phys_addr = cpu_to_le64(ccb->ccb_dma_handle +
 				offsetof(struct pm8001_ccb_info, buf_prd[0]));
 		ssp_cmd.addr_low = lower_32_bits(phys_addr);
@@ -3827,6 +4491,17 @@ static int pm8001_chip_ssp_io_req(struct pm8001_hba_info *pm8001_ha,
 		__le64 dma_addr = cpu_to_le64(sg_dma_address(task->scatter));
 		ssp_cmd.addr_low = lower_32_bits(dma_addr);
 		ssp_cmd.addr_high = upper_32_bits(dma_addr);
+=======
+		phys_addr = ccb->ccb_dma_handle +
+				offsetof(struct pm8001_ccb_info, buf_prd[0]);
+		ssp_cmd.addr_low = cpu_to_le32(lower_32_bits(phys_addr));
+		ssp_cmd.addr_high = cpu_to_le32(upper_32_bits(phys_addr));
+		ssp_cmd.esgl = cpu_to_le32(1<<31);
+	} else if (task->num_scatter == 1) {
+		u64 dma_addr = sg_dma_address(task->scatter);
+		ssp_cmd.addr_low = cpu_to_le32(lower_32_bits(dma_addr));
+		ssp_cmd.addr_high = cpu_to_le32(upper_32_bits(dma_addr));
+>>>>>>> refs/remotes/origin/cm-10.0
 		ssp_cmd.len = cpu_to_le32(task->total_xfer_len);
 		ssp_cmd.esgl = 0;
 	} else if (task->num_scatter == 0) {
@@ -3849,7 +4524,11 @@ static int pm8001_chip_sata_req(struct pm8001_hba_info *pm8001_ha,
 	int ret;
 	struct sata_start_req sata_cmd;
 	u32 hdr_tag, ncg_tag = 0;
+<<<<<<< HEAD
 	__le64 phys_addr;
+=======
+	u64 phys_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 ATAP = 0x0;
 	u32 dir;
 	struct inbound_queue_table *circularQ;
@@ -3858,6 +4537,7 @@ static int pm8001_chip_sata_req(struct pm8001_hba_info *pm8001_ha,
 	circularQ = &pm8001_ha->inbnd_q_tbl[0];
 	if (task->data_dir == PCI_DMA_NONE) {
 		ATAP = 0x04;  /* no data*/
+<<<<<<< HEAD
 		PM8001_IO_DBG(pm8001_ha, pm8001_printk("no data \n"));
 	} else if (likely(!task->ata_task.device_control_reg_update)) {
 		if (task->ata_task.dma_xfer) {
@@ -3866,11 +4546,25 @@ static int pm8001_chip_sata_req(struct pm8001_hba_info *pm8001_ha,
 		} else {
 			ATAP = 0x05; /* PIO*/
 			PM8001_IO_DBG(pm8001_ha, pm8001_printk("PIO \n"));
+=======
+		PM8001_IO_DBG(pm8001_ha, pm8001_printk("no data\n"));
+	} else if (likely(!task->ata_task.device_control_reg_update)) {
+		if (task->ata_task.dma_xfer) {
+			ATAP = 0x06; /* DMA */
+			PM8001_IO_DBG(pm8001_ha, pm8001_printk("DMA\n"));
+		} else {
+			ATAP = 0x05; /* PIO*/
+			PM8001_IO_DBG(pm8001_ha, pm8001_printk("PIO\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		if (task->ata_task.use_ncq &&
 			dev->sata_dev.command_set != ATAPI_COMMAND_SET) {
 			ATAP = 0x07; /* FPDMA */
+<<<<<<< HEAD
 			PM8001_IO_DBG(pm8001_ha, pm8001_printk("FPDMA \n"));
+=======
+			PM8001_IO_DBG(pm8001_ha, pm8001_printk("FPDMA\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	if (task->ata_task.use_ncq && pm8001_get_ncq_tag(task, &hdr_tag))
@@ -3888,13 +4582,22 @@ static int pm8001_chip_sata_req(struct pm8001_hba_info *pm8001_ha,
 	/* fill in PRD (scatter/gather) table, if any */
 	if (task->num_scatter > 1) {
 		pm8001_chip_make_sg(task->scatter, ccb->n_elem, ccb->buf_prd);
+<<<<<<< HEAD
 		phys_addr = cpu_to_le64(ccb->ccb_dma_handle +
 				offsetof(struct pm8001_ccb_info, buf_prd[0]));
+=======
+		phys_addr = ccb->ccb_dma_handle +
+				offsetof(struct pm8001_ccb_info, buf_prd[0]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		sata_cmd.addr_low = lower_32_bits(phys_addr);
 		sata_cmd.addr_high = upper_32_bits(phys_addr);
 		sata_cmd.esgl = cpu_to_le32(1 << 31);
 	} else if (task->num_scatter == 1) {
+<<<<<<< HEAD
 		__le64 dma_addr = cpu_to_le64(sg_dma_address(task->scatter));
+=======
+		u64 dma_addr = sg_dma_address(task->scatter);
+>>>>>>> refs/remotes/origin/cm-10.0
 		sata_cmd.addr_low = lower_32_bits(dma_addr);
 		sata_cmd.addr_high = upper_32_bits(dma_addr);
 		sata_cmd.len = cpu_to_le32(task->total_xfer_len);
@@ -4038,7 +4741,11 @@ static int pm8001_chip_dereg_dev_req(struct pm8001_hba_info *pm8001_ha,
 
 	circularQ = &pm8001_ha->inbnd_q_tbl[0];
 	memset(&payload, 0, sizeof(payload));
+<<<<<<< HEAD
 	payload.tag = 1;
+=======
+	payload.tag = cpu_to_le32(1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	payload.device_id = cpu_to_le32(device_id);
 	PM8001_MSG_DBG(pm8001_ha,
 		pm8001_printk("unregister device device_id = %d\n", device_id));
@@ -4062,7 +4769,11 @@ static int pm8001_chip_phy_ctl_req(struct pm8001_hba_info *pm8001_ha,
 	u32 opc = OPC_INB_LOCAL_PHY_CONTROL;
 	memset(&payload, 0, sizeof(payload));
 	circularQ = &pm8001_ha->inbnd_q_tbl[0];
+<<<<<<< HEAD
 	payload.tag = 1;
+=======
+	payload.tag = cpu_to_le32(1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	payload.phyop_phyid =
 		cpu_to_le32(((phy_op & 0xff) << 8) | (phyId & 0x0F));
 	ret = mpi_build_cmd(pm8001_ha, circularQ, opc, &payload);
@@ -4091,12 +4802,18 @@ static u32 pm8001_chip_is_our_interupt(struct pm8001_hba_info *pm8001_ha)
 static irqreturn_t
 pm8001_chip_isr(struct pm8001_hba_info *pm8001_ha)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 	spin_lock_irqsave(&pm8001_ha->lock, flags);
 	pm8001_chip_interrupt_disable(pm8001_ha);
 	process_oq(pm8001_ha);
 	pm8001_chip_interrupt_enable(pm8001_ha);
 	spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+=======
+	pm8001_chip_interrupt_disable(pm8001_ha);
+	process_oq(pm8001_ha);
+	pm8001_chip_interrupt_enable(pm8001_ha);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return IRQ_HANDLED;
 }
 
@@ -4359,8 +5076,15 @@ pm8001_chip_fw_flash_update_build(struct pm8001_hba_info *pm8001_ha,
 	payload.cur_image_offset = cpu_to_le32(info->cur_image_offset);
 	payload.total_image_len = cpu_to_le32(info->total_image_len);
 	payload.len = info->sgl.im_len.len ;
+<<<<<<< HEAD
 	payload.sgl_addr_lo = lower_32_bits(info->sgl.addr);
 	payload.sgl_addr_hi = upper_32_bits(info->sgl.addr);
+=======
+	payload.sgl_addr_lo =
+		cpu_to_le32(lower_32_bits(le64_to_cpu(info->sgl.addr)));
+	payload.sgl_addr_hi =
+		cpu_to_le32(upper_32_bits(le64_to_cpu(info->sgl.addr)));
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = mpi_build_cmd(pm8001_ha, circularQ, opc, &payload);
 	return ret;
 }

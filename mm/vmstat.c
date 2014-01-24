@@ -295,7 +295,11 @@ void __dec_zone_page_state(struct page *page, enum zone_stat_item item)
 }
 EXPORT_SYMBOL(__dec_zone_page_state);
 
+<<<<<<< HEAD
 #ifdef CONFIG_CMPXCHG_LOCAL
+=======
+#ifdef CONFIG_HAVE_CMPXCHG_LOCAL
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * If we have cmpxchg_local support then we do not need to incur the overhead
  * that comes with local_irq_save/restore if we use this_cpu_cmpxchg.
@@ -613,6 +617,12 @@ static char * const migratetype_names[MIGRATE_TYPES] = {
 	"Reclaimable",
 	"Movable",
 	"Reserve",
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+	"CMA",
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	"Isolate",
 };
 
@@ -659,7 +669,11 @@ static void walk_zones_in_node(struct seq_file *m, pg_data_t *pgdat,
 }
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_PROC_FS) || defined(CONFIG_SYSFS)
+=======
+#if defined(CONFIG_PROC_FS) || defined(CONFIG_SYSFS) || defined(CONFIG_NUMA)
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_ZONE_DMA
 #define TEXT_FOR_DMA(xx) xx "_dma",
 #else
@@ -702,6 +716,10 @@ const char * const vmstat_text[] = {
 	"nr_unstable",
 	"nr_bounce",
 	"nr_vmscan_write",
+<<<<<<< HEAD
+=======
+	"nr_vmscan_immediate_reclaim",
+>>>>>>> refs/remotes/origin/cm-10.0
 	"nr_writeback_temp",
 	"nr_isolated_anon",
 	"nr_isolated_file",
@@ -737,7 +755,12 @@ const char * const vmstat_text[] = {
 	"pgmajfault",
 
 	TEXTS_FOR_ZONES("pgrefill")
+<<<<<<< HEAD
 	TEXTS_FOR_ZONES("pgsteal")
+=======
+	TEXTS_FOR_ZONES("pgsteal_kswapd")
+	TEXTS_FOR_ZONES("pgsteal_direct")
+>>>>>>> refs/remotes/origin/cm-10.0
 	TEXTS_FOR_ZONES("pgscan_kswapd")
 	TEXTS_FOR_ZONES("pgscan_direct")
 
@@ -746,7 +769,10 @@ const char * const vmstat_text[] = {
 #endif
 	"pginodesteal",
 	"slabs_scanned",
+<<<<<<< HEAD
 	"kswapd_steal",
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	"kswapd_inodesteal",
 	"kswapd_low_wmark_hit_quickly",
 	"kswapd_high_wmark_hit_quickly",
@@ -788,7 +814,11 @@ const char * const vmstat_text[] = {
 
 #endif /* CONFIG_VM_EVENTS_COUNTERS */
 };
+<<<<<<< HEAD
 #endif /* CONFIG_PROC_FS || CONFIG_SYSFS */
+=======
+#endif /* CONFIG_PROC_FS || CONFIG_SYSFS || CONFIG_NUMA */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #ifdef CONFIG_PROC_FS

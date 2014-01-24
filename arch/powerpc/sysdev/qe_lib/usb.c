@@ -15,6 +15,10 @@
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/io.h>
 #include <asm/immap_qe.h>
 #include <asm/qe.h>

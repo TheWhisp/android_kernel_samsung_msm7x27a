@@ -15,7 +15,11 @@
 
 static int sr_class3_enable(struct voltagedomain *voltdm)
 {
+<<<<<<< HEAD
 	unsigned long volt = omap_voltage_get_nom_volt(voltdm);
+=======
+	unsigned long volt = voltdm_get_voltage(voltdm);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!volt) {
 		pr_warning("%s: Curr voltage unknown. Cannot enable sr_%s\n",
@@ -29,10 +33,18 @@ static int sr_class3_enable(struct voltagedomain *voltdm)
 
 static int sr_class3_disable(struct voltagedomain *voltdm, int is_volt_reset)
 {
+<<<<<<< HEAD
 	omap_vp_disable(voltdm);
 	sr_disable(voltdm);
 	if (is_volt_reset)
 		omap_voltage_reset(voltdm);
+=======
+	sr_disable_errgen(voltdm);
+	omap_vp_disable(voltdm);
+	sr_disable(voltdm);
+	if (is_volt_reset)
+		voltdm_reset(voltdm);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

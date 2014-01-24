@@ -1028,7 +1028,11 @@ void mipi_dsi_mdp_busy_wait(struct msm_fb_data_type *mfd)
 	int need_wait = 0;
 
 	pr_debug("%s: start pid=%d\n",
+<<<<<<< HEAD
 			__func__, current->pid);
+=======
+				__func__, current->pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&dsi_mdp_lock, flag);
 	if (dsi_mdp_busy == TRUE) {
 		INIT_COMPLETION(dsi_mdp_comp);
@@ -1043,9 +1047,16 @@ void mipi_dsi_mdp_busy_wait(struct msm_fb_data_type *mfd)
 		wait_for_completion(&dsi_mdp_comp);
 	}
 	pr_debug("%s: done pid=%d\n",
+<<<<<<< HEAD
 			__func__, current->pid);
 }
 
+=======
+				__func__, current->pid);
+}
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void mipi_dsi_cmd_mdp_start(void)
 {
 	unsigned long flag;
@@ -1525,7 +1536,11 @@ void mipi_dsi_cmd_mdp_busy(void)
 	if (status & 0x04) {	/* MDP BUSY */
 		INIT_COMPLETION(dsi_mdp_comp);
 		need_wait = 1;
+<<<<<<< HEAD
 printk("%s: status=%x need_wait\n",__func__, (int)status);
+=======
+		pr_debug("%s: status=%x need_wait\n", __func__, (int)status);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mipi_dsi_enable_irq(DSI_MDP_TERM);
 	}
 	spin_unlock_irqrestore(&dsi_mdp_lock, flags);
@@ -1596,7 +1611,11 @@ void mipi_dsi_cmdlist_commit(int from_mdp)
 		return;
 	}
 
+<<<<<<< HEAD
 	pr_debug("%s:  from_mdp=%d pid=%d\n",__func__, from_mdp, current->pid);
+=======
+	pr_debug("%s:  from_mdp=%d pid=%d\n", __func__, from_mdp, current->pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!from_mdp) { /* from put */
 		/* make sure dsi_cmd_mdp is idle */

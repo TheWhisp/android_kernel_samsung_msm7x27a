@@ -25,7 +25,10 @@
 #include <linux/freezer.h>
 #include <linux/io.h>
 #include <linux/tracehook.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ucontext.h>
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
@@ -58,12 +61,22 @@ sys_sigsuspend(old_sigset_t mask,
 	       unsigned long r5, unsigned long r6, unsigned long r7,
 	       struct pt_regs __regs)
 {
+<<<<<<< HEAD
 	mask &= _BLOCKABLE;
 	spin_lock_irq(&current->sighand->siglock);
 	current->saved_sigmask = current->blocked;
 	siginitset(&current->blocked, mask);
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	sigset_t blocked;
+
+	current->saved_sigmask = current->blocked;
+
+	mask &= _BLOCKABLE;
+	siginitset(&blocked, mask);
+	set_current_blocked(&blocked);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	current->state = TASK_INTERRUPTIBLE;
 	schedule();
@@ -240,11 +253,15 @@ asmlinkage int sys_sigreturn(unsigned long r4, unsigned long r5,
 		goto badframe;
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (restore_sigcontext(regs, &frame->sc, &r0))
 		goto badframe;
@@ -274,10 +291,14 @@ asmlinkage int sys_rt_sigreturn(unsigned long r4, unsigned long r5,
 		goto badframe;
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (restore_sigcontext(regs, &frame->uc.uc_mcontext, &r0))
 		goto badframe;
@@ -548,6 +569,7 @@ handle_signal(unsigned long sig, struct k_sigaction *ka, siginfo_t *info,
 	else
 		ret = setup_frame(sig, ka, oldset, regs);
 
+<<<<<<< HEAD
 	if (ka->sa.sa_flags & SA_ONESHOT)
 		ka->sa.sa_handler = SIG_DFL;
 
@@ -559,6 +581,10 @@ handle_signal(unsigned long sig, struct k_sigaction *ka, siginfo_t *info,
 		recalc_sigpending();
 		spin_unlock_irq(&current->sighand->siglock);
 	}
+=======
+	if (ret == 0)
+		block_sigmask(ka, sig);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -588,9 +614,12 @@ static void do_signal(struct pt_regs *regs, unsigned int save_r0)
 	if (!user_mode(regs))
 		return;
 
+<<<<<<< HEAD
 	if (try_to_freeze())
 		goto no_signal;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK)
 		oldset = &current->saved_sigmask;
 	else
@@ -618,7 +647,10 @@ static void do_signal(struct pt_regs *regs, unsigned int save_r0)
 		return;
 	}
 
+<<<<<<< HEAD
 no_signal:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Did we come from a system call? */
 	if (regs->tra >= 0) {
 		/* Restart the system call - no handlers present */

@@ -2,6 +2,10 @@
  * IPv6 library code, needed by static components when full IPv6 support is
  * not configured or static.
  */
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/ipv6.h>
 
 /*
@@ -56,6 +60,12 @@ int ipv6_ext_hdr(u8 nexthdr)
  *	    it returns NULL.
  *	  - First fragment header is skipped, not-first ones
  *	    are considered as unparsable.
+<<<<<<< HEAD
+=======
+ *	  - Reports the offset field of the final fragment header so it is
+ *	    possible to tell whether this is a first fragment, later fragment,
+ *	    or not fragmented.
+>>>>>>> refs/remotes/origin/cm-10.0
  *	  - ESP is unparsable for now and considered like
  *	    normal payload protocol.
  *	  - Note also special handling of AUTH header. Thanks to IPsec wizards.
@@ -63,10 +73,20 @@ int ipv6_ext_hdr(u8 nexthdr)
  * --ANK (980726)
  */
 
+<<<<<<< HEAD
 int ipv6_skip_exthdr(const struct sk_buff *skb, int start, u8 *nexthdrp)
 {
 	u8 nexthdr = *nexthdrp;
 
+=======
+int ipv6_skip_exthdr(const struct sk_buff *skb, int start, u8 *nexthdrp,
+		     __be16 *frag_offp)
+{
+	u8 nexthdr = *nexthdrp;
+
+	*frag_offp = 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (ipv6_ext_hdr(nexthdr)) {
 		struct ipv6_opt_hdr _hdr, *hp;
 		int hdrlen;
@@ -86,7 +106,12 @@ int ipv6_skip_exthdr(const struct sk_buff *skb, int start, u8 *nexthdrp)
 			if (fp == NULL)
 				return -1;
 
+<<<<<<< HEAD
 			if (ntohs(*fp) & ~0x7)
+=======
+			*frag_offp = *fp;
+			if (ntohs(*frag_offp) & ~0x7)
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			hdrlen = 8;
 		} else if (nexthdr == NEXTHDR_AUTH)

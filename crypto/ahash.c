@@ -21,6 +21,11 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "internal.h"
 
@@ -44,7 +49,11 @@ static int hash_walk_next(struct crypto_hash_walk *walk)
 	unsigned int nbytes = min(walk->entrylen,
 				  ((unsigned int)(PAGE_SIZE)) - offset);
 
+<<<<<<< HEAD
 	walk->data = crypto_kmap(walk->pg, 0);
+=======
+	walk->data = kmap_atomic(walk->pg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	walk->data += offset;
 
 	if (offset & alignmask) {
@@ -91,7 +100,11 @@ int crypto_hash_walk_done(struct crypto_hash_walk *walk, int err)
 		return nbytes;
 	}
 
+<<<<<<< HEAD
 	crypto_kunmap(walk->data, 0);
+=======
+	kunmap_atomic(walk->data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	crypto_yield(walk->flags);
 
 	if (err)
@@ -397,6 +410,34 @@ static unsigned int crypto_ahash_extsize(struct crypto_alg *alg)
 	return sizeof(struct crypto_shash *);
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NET
+static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	struct crypto_report_hash rhash;
+
+	strncpy(rhash.type, "ahash", sizeof(rhash.type));
+
+	rhash.blocksize = alg->cra_blocksize;
+	rhash.digestsize = __crypto_hash_alg_common(alg)->digestsize;
+
+	NLA_PUT(skb, CRYPTOCFGA_REPORT_HASH,
+		sizeof(struct crypto_report_hash), &rhash);
+
+	return 0;
+
+nla_put_failure:
+	return -EMSGSIZE;
+}
+#else
+static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	return -ENOSYS;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void crypto_ahash_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_ahash_show(struct seq_file *m, struct crypto_alg *alg)
@@ -415,6 +456,10 @@ const struct crypto_type crypto_ahash_type = {
 #ifdef CONFIG_PROC_FS
 	.show = crypto_ahash_show,
 #endif
+<<<<<<< HEAD
+=======
+	.report = crypto_ahash_report,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.maskclear = ~CRYPTO_ALG_TYPE_MASK,
 	.maskset = CRYPTO_ALG_TYPE_AHASH_MASK,
 	.type = CRYPTO_ALG_TYPE_AHASH,

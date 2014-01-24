@@ -43,6 +43,7 @@
 #include <linux/regulator/consumer.h>
 #include <linux/delay.h>
 
+<<<<<<< HEAD
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
@@ -50,6 +51,14 @@
 #include <mach/pxa3xx-regs.h>
 #include <mach/mfp-pxa3xx.h>
 #include <mach/mfp-pxa300.h>
+=======
+#include <asm/system_info.h>
+
+#include <asm/mach-types.h>
+#include <asm/mach/arch.h>
+
+#include <mach/pxa300.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/ohci.h>
 #include <mach/pxafb.h>
 #include <mach/mmc.h>
@@ -295,8 +304,13 @@ static struct resource smc91x_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start	= gpio_to_irq(GPIO_ETH_IRQ),
 		.end	= gpio_to_irq(GPIO_ETH_IRQ),
+=======
+		.start	= PXA_GPIO_TO_IRQ(GPIO_ETH_IRQ),
+		.end	= PXA_GPIO_TO_IRQ(GPIO_ETH_IRQ),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ | IRQF_TRIGGER_FALLING,
 	}
 };
@@ -349,8 +363,14 @@ static struct mtd_partition raumfeld_nand_partitions[] = {
 static struct pxa3xx_nand_platform_data raumfeld_nand_info = {
 	.enable_arbiter	= 1,
 	.keep_config	= 1,
+<<<<<<< HEAD
 	.parts		= raumfeld_nand_partitions,
 	.nr_parts	= ARRAY_SIZE(raumfeld_nand_partitions),
+=======
+	.num_cs		= 1,
+	.parts[0]	= raumfeld_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(raumfeld_nand_partitions),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -674,7 +694,11 @@ static struct lis3lv02d_platform_data lis3_pdata = {
 	.chip_select	= 1,			\
 	.controller_data = (void *) GPIO_ACCEL_CS,	\
 	.platform_data	= &lis3_pdata,		\
+<<<<<<< HEAD
 	.irq		= gpio_to_irq(GPIO_ACCEL_IRQ),	\
+=======
+	.irq		= PXA_GPIO_TO_IRQ(GPIO_ACCEL_IRQ),	\
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #define SPI_DAC7512	\
@@ -953,12 +977,19 @@ static struct i2c_board_info raumfeld_connector_i2c_board_info __initdata = {
 
 static struct eeti_ts_platform_data eeti_ts_pdata = {
 	.irq_active_high = 1,
+<<<<<<< HEAD
+=======
+	.irq_gpio = GPIO_TOUCH_IRQ,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct i2c_board_info raumfeld_controller_i2c_board_info __initdata = {
 	.type	= "eeti_ts",
 	.addr	= 0x0a,
+<<<<<<< HEAD
 	.irq	= gpio_to_irq(GPIO_TOUCH_IRQ),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.platform_data = &eeti_ts_pdata,
 };
 
@@ -1089,30 +1120,63 @@ static void __init raumfeld_speaker_init(void)
 
 #ifdef CONFIG_MACH_RAUMFELD_RC
 MACHINE_START(RAUMFELD_RC, "Raumfeld Controller")
+<<<<<<< HEAD
 	.boot_params	= RAUMFELD_SDRAM_BASE + 0x100,
 	.init_machine	= raumfeld_controller_init,
 	.map_io		= pxa3xx_map_io,
 	.init_irq	= pxa3xx_init_irq,
 	.timer		= &pxa_timer,
+=======
+	.atag_offset	= 0x100,
+	.init_machine	= raumfeld_controller_init,
+	.map_io		= pxa3xx_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa3xx_init_irq,
+	.handle_irq	= pxa3xx_handle_irq,
+	.timer		= &pxa_timer,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_RAUMFELD_CONNECTOR
 MACHINE_START(RAUMFELD_CONNECTOR, "Raumfeld Connector")
+<<<<<<< HEAD
 	.boot_params	= RAUMFELD_SDRAM_BASE + 0x100,
 	.init_machine	= raumfeld_connector_init,
 	.map_io		= pxa3xx_map_io,
 	.init_irq	= pxa3xx_init_irq,
 	.timer		= &pxa_timer,
+=======
+	.atag_offset	= 0x100,
+	.init_machine	= raumfeld_connector_init,
+	.map_io		= pxa3xx_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa3xx_init_irq,
+	.handle_irq	= pxa3xx_handle_irq,
+	.timer		= &pxa_timer,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_RAUMFELD_SPEAKER
 MACHINE_START(RAUMFELD_SPEAKER, "Raumfeld Speaker")
+<<<<<<< HEAD
 	.boot_params	= RAUMFELD_SDRAM_BASE + 0x100,
 	.init_machine	= raumfeld_speaker_init,
 	.map_io		= pxa3xx_map_io,
 	.init_irq	= pxa3xx_init_irq,
 	.timer		= &pxa_timer,
+=======
+	.atag_offset	= 0x100,
+	.init_machine	= raumfeld_speaker_init,
+	.map_io		= pxa3xx_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa3xx_init_irq,
+	.handle_irq	= pxa3xx_handle_irq,
+	.timer		= &pxa_timer,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 #endif

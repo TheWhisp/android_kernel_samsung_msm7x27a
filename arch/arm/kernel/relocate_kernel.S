@@ -57,7 +57,12 @@ relocate_new_kernel:
 	mov r0,#0
 	ldr r1,kexec_mach_type
 	ldr r2,kexec_boot_atags
+<<<<<<< HEAD
 	mov pc,lr
+=======
+ ARM(	mov pc, lr	)
+ THUMB(	bx lr		)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.align
 

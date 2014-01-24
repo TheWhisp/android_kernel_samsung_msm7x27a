@@ -27,9 +27,12 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/drv.h>
 #include <dspbridge/sync.h>
@@ -82,10 +85,13 @@
 #define OMAP343X_CONTROL_IVA2_BOOTADDR (OMAP2_CONTROL_GENERAL + 0x0190)
 #define OMAP343X_CONTROL_IVA2_BOOTMOD (OMAP2_CONTROL_GENERAL + 0x0194)
 
+<<<<<<< HEAD
 #define OMAP343X_CTRL_REGADDR(reg) \
 	OMAP2_L4_IO_ADDRESS(OMAP343X_CTRL_BASE + (reg))
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Forward Declarations: */
 static int bridge_brd_monitor(struct bridge_dev_context *dev_ctxt);
 static int bridge_brd_read(struct bridge_dev_context *dev_ctxt,
@@ -256,9 +262,12 @@ static void bad_page_dump(u32 pa, struct page *pg)
 void bridge_drv_entry(struct bridge_drv_interface **drv_intf,
 		   const char *driver_file_name)
 {
+<<<<<<< HEAD
 
 	DBC_REQUIRE(driver_file_name != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (strcmp(driver_file_name, "UMA") == 0)
 		*drv_intf = &drv_interface_fxns;
 	else
@@ -389,6 +398,10 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 	u32 clk_cmd;
 	struct io_mgr *hio_mgr;
 	u32 ul_load_monitor_timer;
+<<<<<<< HEAD
+=======
+	u32 wdt_en = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct omap_dsp_platform_data *pdata =
 		omap_dspbridge_dev->dev.platform_data;
 
@@ -399,16 +412,24 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 	(void)dev_get_symbol(dev_context->dev_obj, SHMBASENAME,
 			     &ul_shm_base_virt);
 	ul_shm_base_virt *= DSPWORDSIZE;
+<<<<<<< HEAD
 	DBC_ASSERT(ul_shm_base_virt != 0);
 	/* DSP Virtual address */
 	ul_tlb_base_virt = dev_context->atlb_entry[0].dsp_va;
 	DBC_ASSERT(ul_tlb_base_virt <= ul_shm_base_virt);
+=======
+	/* DSP Virtual address */
+	ul_tlb_base_virt = dev_context->atlb_entry[0].dsp_va;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ul_shm_offset_virt =
 	    ul_shm_base_virt - (ul_tlb_base_virt * DSPWORDSIZE);
 	/* Kernel logical address */
 	ul_shm_base = dev_context->atlb_entry[0].gpp_va + ul_shm_offset_virt;
 
+<<<<<<< HEAD
 	DBC_ASSERT(ul_shm_base != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* 2nd wd is used as sync field */
 	dw_sync_addr = ul_shm_base + SHMSYNCOFFSET;
 	/* Write a signature into the shm base + offset; this will
@@ -426,19 +447,40 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 
 		/* Assert RST1 i.e only the RST only for DSP megacell */
 		if (!status) {
+<<<<<<< HEAD
+=======
+			/*
+			 * XXX: ioremapping  MUST be removed once ctrl
+			 * function is made available.
+			 */
+			void __iomem *ctrl = ioremap(OMAP343X_CTRL_BASE, SZ_4K);
+			if (!ctrl)
+				return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			(*pdata->dsp_prm_rmw_bits)(OMAP3430_RST1_IVA2_MASK,
 					OMAP3430_RST1_IVA2_MASK, OMAP3430_IVA2_MOD,
 					OMAP2_RM_RSTCTRL);
 			/* Mask address with 1K for compatibility */
 			__raw_writel(dsp_addr & OMAP3_IVA2_BOOTADDR_MASK,
+<<<<<<< HEAD
 					OMAP343X_CTRL_REGADDR(
 					OMAP343X_CONTROL_IVA2_BOOTADDR));
+=======
+					ctrl + OMAP343X_CONTROL_IVA2_BOOTADDR);
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * Set bootmode to self loop if dsp_debug flag is true
 			 */
 			__raw_writel((dsp_debug) ? OMAP3_IVA2_BOOTMOD_IDLE : 0,
+<<<<<<< HEAD
 					OMAP343X_CTRL_REGADDR(
 					OMAP343X_CONTROL_IVA2_BOOTMOD));
+=======
+					ctrl + OMAP343X_CONTROL_IVA2_BOOTMOD);
+
+			iounmap(ctrl);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	if (!status) {
@@ -603,9 +645,18 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 		if (!wait_for_start(dev_context, dw_sync_addr))
 			status = -ETIMEDOUT;
 
+<<<<<<< HEAD
 		/* Start wdt */
 		dsp_wdt_sm_set((void *)ul_shm_base);
 		dsp_wdt_enable(true);
+=======
+		dev_get_symbol(dev_context->dev_obj, "_WDT_enable", &wdt_en);
+		if (wdt_en) {
+			/* Start wdt */
+			dsp_wdt_sm_set((void *)ul_shm_base);
+			dsp_wdt_enable(true);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		status = dev_get_io_mgr(dev_context->dev_obj, &hio_mgr);
 		if (hio_mgr) {
@@ -1046,8 +1097,11 @@ static int bridge_dev_destroy(struct bridge_dev_context *dev_ctxt)
 
 	/* Free the driver's device context: */
 	kfree(drv_datap->base_img);
+<<<<<<< HEAD
 	kfree(drv_datap);
 	dev_set_drvdata(bridge, NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree((void *)dev_ctxt);
 	return status;
 }

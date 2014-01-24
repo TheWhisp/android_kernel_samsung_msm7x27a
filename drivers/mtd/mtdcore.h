@@ -15,6 +15,12 @@ extern int del_mtd_device(struct mtd_info *mtd);
 extern int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *,
 			      int);
 extern int del_mtd_partitions(struct mtd_info *);
+<<<<<<< HEAD
+=======
+extern int parse_mtd_partitions(struct mtd_info *master, const char **types,
+				struct mtd_partition **pparts,
+				struct mtd_part_parser_data *data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define mtd_for_each_device(mtd)			\
 	for ((mtd) = __mtd_next_device(0);		\

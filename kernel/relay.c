@@ -15,7 +15,11 @@
 #include <linux/errno.h>
 #include <linux/stddef.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string.h>
 #include <linux/relay.h>
 #include <linux/vmalloc.h>
@@ -306,7 +310,11 @@ static void buf_unmapped_default_callback(struct rchan_buf *buf,
  */
 static struct dentry *create_buf_file_default_callback(const char *filename,
 						       struct dentry *parent,
+<<<<<<< HEAD
 						       int mode,
+=======
+						       umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 						       struct rchan_buf *buf,
 						       int *is_global)
 {

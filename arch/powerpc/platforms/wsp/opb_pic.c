@@ -30,7 +30,11 @@
 static int opb_index = 0;
 
 struct opb_pic {
+<<<<<<< HEAD
 	struct irq_host *host;
+=======
+	struct irq_domain *host;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *regs;
 	int index;
 	spinlock_t lock;
@@ -179,7 +183,11 @@ static struct irq_chip opb_irq_chip = {
 	.irq_set_type	= opb_set_irq_type
 };
 
+<<<<<<< HEAD
 static int opb_host_map(struct irq_host *host, unsigned int virq,
+=======
+static int opb_host_map(struct irq_domain *host, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
 		irq_hw_number_t hwirq)
 {
 	struct opb_pic *opb;
@@ -196,6 +204,7 @@ static int opb_host_map(struct irq_host *host, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int opb_host_xlate(struct irq_host *host, struct device_node *dn,
 		const u32 *intspec, unsigned int intsize,
 		irq_hw_number_t *out_hwirq, unsigned int *out_type)
@@ -210,6 +219,11 @@ static int opb_host_xlate(struct irq_host *host, struct device_node *dn,
 static struct irq_host_ops opb_host_ops = {
 	.map = opb_host_map,
 	.xlate = opb_host_xlate,
+=======
+static const struct irq_domain_ops opb_host_ops = {
+	.map = opb_host_map,
+	.xlate = irq_domain_xlate_twocell,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 irqreturn_t opb_irq_handler(int irq, void *private)
@@ -263,6 +277,7 @@ struct opb_pic *opb_pic_init_one(struct device_node *dn)
 		goto free_opb;
 	}
 
+<<<<<<< HEAD
 	/* Allocate an irq host so that Linux knows that despite only
 	 * having one interrupt to issue, we're the controller for multiple
 	 * hardware IRQs, so later we can lookup their virtual IRQs. */
@@ -270,6 +285,13 @@ struct opb_pic *opb_pic_init_one(struct device_node *dn)
 	opb->host = irq_alloc_host(dn, IRQ_HOST_MAP_LINEAR,
 			OPB_NR_IRQS, &opb_host_ops, -1);
 
+=======
+	/* Allocate an irq domain so that Linux knows that despite only
+	 * having one interrupt to issue, we're the controller for multiple
+	 * hardware IRQs, so later we can lookup their virtual IRQs. */
+
+	opb->host = irq_domain_add_linear(dn, OPB_NR_IRQS, &opb_host_ops, opb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!opb->host) {
 		printk(KERN_ERR "opb: Failed to allocate IRQ host!\n");
 		goto free_regs;
@@ -277,7 +299,10 @@ struct opb_pic *opb_pic_init_one(struct device_node *dn)
 
 	opb->index = opb_index++;
 	spin_lock_init(&opb->lock);
+<<<<<<< HEAD
 	opb->host->host_data = opb;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Disable all interrupts by default */
 	opb_out(opb, OPB_MLSASIER, 0);
@@ -320,7 +345,12 @@ void __init opb_pic_init(void)
 		}
 
 		/* Attach opb interrupt handler to new virtual IRQ */
+<<<<<<< HEAD
 		rc = request_irq(virq, opb_irq_handler, 0, "OPB LS Cascade", opb);
+=======
+		rc = request_irq(virq, opb_irq_handler, IRQF_NO_THREAD,
+				 "OPB LS Cascade", opb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (rc) {
 			printk("opb: request_irq failed: %d\n", rc);
 			continue;

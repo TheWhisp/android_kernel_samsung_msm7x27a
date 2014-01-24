@@ -33,4 +33,9 @@
 #define AT_L1D_CACHESHAPE	35
 #define AT_L2_CACHESHAPE	36
 
+<<<<<<< HEAD
+=======
+#define AT_VECTOR_SIZE_ARCH 5 /* entries in ARCH_DLINFO */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASM_SH_AUXVEC_H */

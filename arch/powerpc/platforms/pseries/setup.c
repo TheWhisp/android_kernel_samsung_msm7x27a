@@ -34,11 +34,19 @@
 #include <linux/pci.h>
 #include <linux/utsname.h>
 #include <linux/adb.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/irq.h>
 #include <linux/seq_file.h>
 #include <linux/root_dev.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpuidle.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mmu.h>
 #include <asm/processor.h>
@@ -74,9 +82,12 @@ EXPORT_SYMBOL(CMO_PageSize);
 
 int fwnmi_active;  /* TRUE if an FWNMI handler is present */
 
+<<<<<<< HEAD
 static void pseries_shared_idle_sleep(void);
 static void pseries_dedicated_idle_sleep(void);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct device_node *pSeries_mpic_node;
 
 static void pSeries_show_cpuinfo(struct seq_file *m)
@@ -193,9 +204,13 @@ static void __init pseries_mpic_init_IRQ(void)
 
 	/* Setup the openpic driver */
 	mpic = mpic_alloc(pSeries_mpic_node, openpic_addr,
+<<<<<<< HEAD
 			  MPIC_PRIMARY,
 			  16, 250, /* isu size, irq count */
 			  " MPIC     ");
+=======
+			MPIC_NO_RESET, 16, 0, " MPIC     ");
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(mpic == NULL);
 
 	/* Add ISUs */
@@ -264,8 +279,17 @@ static int pci_dn_reconfig_notifier(struct notifier_block *nb, unsigned long act
 	switch (action) {
 	case PSERIES_RECONFIG_ADD:
 		pci = np->parent->data;
+<<<<<<< HEAD
 		if (pci)
 			update_dn_pci_info(np, pci->phb);
+=======
+		if (pci) {
+			update_dn_pci_info(np, pci->phb);
+
+			/* Create EEH device for the OF node */
+			eeh_dev_init(np, pci->phb);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		err = NOTIFY_DONE;
@@ -324,8 +348,14 @@ static int alloc_dispatch_logs(void)
 	dtl->enqueue_to_dispatch_time = DISPATCH_LOG_BYTES;
 	ret = register_dtl(hard_smp_processor_id(), __pa(dtl));
 	if (ret)
+<<<<<<< HEAD
 		pr_warn("DTL registration failed for boot cpu %d (%d)\n",
 			smp_processor_id(), ret);
+=======
+		pr_err("WARNING: DTL registration of cpu %d (hw %d) failed "
+		       "with %d\n", smp_processor_id(),
+		       hard_smp_processor_id(), ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 	get_paca()->lppaca_ptr->dtl_enable_mask = 2;
 
 	return 0;
@@ -351,8 +381,30 @@ static int alloc_dispatch_log_kmem_cache(void)
 }
 early_initcall(alloc_dispatch_log_kmem_cache);
 
+<<<<<<< HEAD
 static void __init pSeries_setup_arch(void)
 {
+=======
+static void pSeries_idle(void)
+{
+	/* This would call on the cpuidle framework, and the back-end pseries
+	 * driver to  go to idle states
+	 */
+	if (cpuidle_idle_call()) {
+		/* On error, execute default handler
+		 * to go into low thread priority and possibly
+		 * low power mode.
+		 */
+		HMT_low();
+		HMT_very_low();
+	}
+}
+
+static void __init pSeries_setup_arch(void)
+{
+	panic_timeout = 10;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Discover PIC type and setup ppc_md accordingly */
 	pseries_discover_pic();
 
@@ -365,14 +417,24 @@ static void __init pSeries_setup_arch(void)
 
 	fwnmi_init();
 
+<<<<<<< HEAD
 	/* Find and initialize PCI host bridges */
 	init_pci_config_tokens();
+=======
+	/* By default, only probe PCI (can be overriden by rtas_pci) */
+	pci_add_flags(PCI_PROBE_ONLY);
+
+	/* Find and initialize PCI host bridges */
+	init_pci_config_tokens();
+	eeh_pseries_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 	find_and_init_phbs();
 	pSeries_reconfig_notifier_register(&pci_dn_reconfig_nb);
 	eeh_init();
 
 	pSeries_nvram_init();
 
+<<<<<<< HEAD
 	/* Choose an idle loop */
 	if (firmware_has_feature(FW_FEATURE_SPLPAR)) {
 		vpa_init(boot_cpuid);
@@ -385,6 +447,11 @@ static void __init pSeries_setup_arch(void)
 		}
 	} else {
 		printk(KERN_DEBUG "Using default idle loop\n");
+=======
+	if (firmware_has_feature(FW_FEATURE_SPLPAR)) {
+		vpa_init(boot_cpuid);
+		ppc_md.power_save = pSeries_idle;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (firmware_has_feature(FW_FEATURE_LPAR))
@@ -512,9 +579,16 @@ static void __init pSeries_init_early(void)
 {
 	pr_debug(" -> pSeries_init_early()\n");
 
+<<<<<<< HEAD
 	if (firmware_has_feature(FW_FEATURE_LPAR))
 		find_udbg_vterm();
 
+=======
+#ifdef CONFIG_HVC_CONSOLE
+	if (firmware_has_feature(FW_FEATURE_LPAR))
+		hvc_vio_init_early();
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (firmware_has_feature(FW_FEATURE_DABR))
 		ppc_md.set_dabr = pseries_set_dabr;
 	else if (firmware_has_feature(FW_FEATURE_XDABR))
@@ -584,6 +658,7 @@ static int __init pSeries_probe(void)
 	return 1;
 }
 
+<<<<<<< HEAD
 
 DECLARE_PER_CPU(long, smt_snooze_delay);
 
@@ -658,6 +733,8 @@ static void pseries_shared_idle_sleep(void)
 	get_lppaca()->idle = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int pSeries_pci_probe_mode(struct pci_bus *bus)
 {
 	if (firmware_has_feature(FW_FEATURE_LPAR))

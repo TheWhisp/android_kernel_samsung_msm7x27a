@@ -38,7 +38,13 @@ config TRUSTED_KEYS
 
 config ENCRYPTED_KEYS
 	tristate "ENCRYPTED KEYS"
+<<<<<<< HEAD
 	depends on KEYS && TRUSTED_KEYS
+=======
+	depends on KEYS
+	select CRYPTO
+	select CRYPTO_HMAC
+>>>>>>> refs/remotes/origin/cm-10.0
 	select CRYPTO_AES
 	select CRYPTO_CBC
 	select CRYPTO_SHA256
@@ -185,8 +191,14 @@ source security/selinux/Kconfig
 source security/smack/Kconfig
 source security/tomoyo/Kconfig
 source security/apparmor/Kconfig
+<<<<<<< HEAD
 
 source security/integrity/ima/Kconfig
+=======
+source security/yama/Kconfig
+
+source security/integrity/Kconfig
+>>>>>>> refs/remotes/origin/cm-10.0
 
 choice
 	prompt "Default security module"
@@ -194,6 +206,10 @@ choice
 	default DEFAULT_SECURITY_SMACK if SECURITY_SMACK
 	default DEFAULT_SECURITY_TOMOYO if SECURITY_TOMOYO
 	default DEFAULT_SECURITY_APPARMOR if SECURITY_APPARMOR
+<<<<<<< HEAD
+=======
+	default DEFAULT_SECURITY_YAMA if SECURITY_YAMA
+>>>>>>> refs/remotes/origin/cm-10.0
 	default DEFAULT_SECURITY_DAC
 
 	help
@@ -212,6 +228,12 @@ choice
 	config DEFAULT_SECURITY_APPARMOR
 		bool "AppArmor" if SECURITY_APPARMOR=y
 
+<<<<<<< HEAD
+=======
+	config DEFAULT_SECURITY_YAMA
+		bool "Yama" if SECURITY_YAMA=y
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	config DEFAULT_SECURITY_DAC
 		bool "Unix Discretionary Access Controls"
 
@@ -223,6 +245,10 @@ config DEFAULT_SECURITY
 	default "smack" if DEFAULT_SECURITY_SMACK
 	default "tomoyo" if DEFAULT_SECURITY_TOMOYO
 	default "apparmor" if DEFAULT_SECURITY_APPARMOR
+<<<<<<< HEAD
+=======
+	default "yama" if DEFAULT_SECURITY_YAMA
+>>>>>>> refs/remotes/origin/cm-10.0
 	default "" if DEFAULT_SECURITY_DAC
 
 endmenu

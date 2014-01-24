@@ -315,7 +315,11 @@ static int altera_uart_startup(struct uart_port *port)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	ret = request_irq(port->irq, altera_uart_interrupt, IRQF_DISABLED,
+=======
+	ret = request_irq(port->irq, altera_uart_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			DRV_NAME, port);
 	if (ret) {
 		pr_err(DRV_NAME ": unable to attach Altera UART %d "
@@ -377,6 +381,29 @@ static int altera_uart_verify_port(struct uart_port *port,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CONSOLE_POLL
+static int altera_uart_poll_get_char(struct uart_port *port)
+{
+	while (!(altera_uart_readl(port, ALTERA_UART_STATUS_REG) &
+		 ALTERA_UART_STATUS_RRDY_MSK))
+		cpu_relax();
+
+	return altera_uart_readl(port, ALTERA_UART_RXDATA_REG);
+}
+
+static void altera_uart_poll_put_char(struct uart_port *port, unsigned char c)
+{
+	while (!(altera_uart_readl(port, ALTERA_UART_STATUS_REG) &
+		 ALTERA_UART_STATUS_TRDY_MSK))
+		cpu_relax();
+
+	altera_uart_writel(port, c, ALTERA_UART_TXDATA_REG);
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *	Define the basic serial functions we support.
  */
@@ -397,12 +424,20 @@ static struct uart_ops altera_uart_ops = {
 	.release_port	= altera_uart_release_port,
 	.config_port	= altera_uart_config_port,
 	.verify_port	= altera_uart_verify_port,
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CONSOLE_POLL
+	.poll_get_char	= altera_uart_poll_get_char,
+	.poll_put_char	= altera_uart_poll_put_char,
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct altera_uart altera_uart_ports[CONFIG_SERIAL_ALTERA_UART_MAXPORTS];
 
 #if defined(CONFIG_SERIAL_ALTERA_UART_CONSOLE)
 
+<<<<<<< HEAD
 int __init early_altera_uart_setup(struct altera_uart_platform_uart *platp)
 {
 	struct uart_port *port;
@@ -426,6 +461,8 @@ int __init early_altera_uart_setup(struct altera_uart_platform_uart *platp)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void altera_uart_console_putc(struct uart_port *port, const char c)
 {
 	while (!(altera_uart_readl(port, ALTERA_UART_STATUS_REG) &
@@ -616,8 +653,11 @@ static struct of_device_id altera_uart_match[] = {
 	{},
 };
 MODULE_DEVICE_TABLE(of, altera_uart_match);
+<<<<<<< HEAD
 #else
 #define altera_uart_match NULL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_OF */
 
 static struct platform_driver altera_uart_platform_driver = {
@@ -626,7 +666,11 @@ static struct platform_driver altera_uart_platform_driver = {
 	.driver	= {
 		.name		= DRV_NAME,
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
 		.of_match_table	= altera_uart_match,
+=======
+		.of_match_table	= of_match_ptr(altera_uart_match),
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 

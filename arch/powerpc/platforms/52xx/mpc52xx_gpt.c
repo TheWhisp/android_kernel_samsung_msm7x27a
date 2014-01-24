@@ -67,6 +67,10 @@
 #include <linux/watchdog.h>
 #include <linux/miscdevice.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/div64.h>
 #include <asm/mpc52xx.h>
 
@@ -80,7 +84,11 @@ MODULE_LICENSE("GPL");
  * @regs: virtual address of GPT registers
  * @lock: spinlock to coordinate between different functions.
  * @gc: gpio_chip instance structure; used when GPIO is enabled
+<<<<<<< HEAD
  * @irqhost: Pointer to irq_host instance; used when IRQ mode is supported
+=======
+ * @irqhost: Pointer to irq_domain instance; used when IRQ mode is supported
+>>>>>>> refs/remotes/origin/cm-10.0
  * @wdt_mode: only relevant for gpt0: bit 0 (MPC52xx_GPT_CAN_WDT) indicates
  *   if the gpt may be used as wdt, bit 1 (MPC52xx_GPT_IS_WDT) indicates
  *   if the timer is actively used as wdt which blocks gpt functions
@@ -90,7 +98,11 @@ struct mpc52xx_gpt_priv {
 	struct device *dev;
 	struct mpc52xx_gpt __iomem *regs;
 	spinlock_t lock;
+<<<<<<< HEAD
 	struct irq_host *irqhost;
+=======
+	struct irq_domain *irqhost;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 ipb_freq;
 	u8 wdt_mode;
 
@@ -203,7 +215,11 @@ void mpc52xx_gpt_irq_cascade(unsigned int virq, struct irq_desc *desc)
 	}
 }
 
+<<<<<<< HEAD
 static int mpc52xx_gpt_irq_map(struct irq_host *h, unsigned int virq,
+=======
+static int mpc52xx_gpt_irq_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			       irq_hw_number_t hw)
 {
 	struct mpc52xx_gpt_priv *gpt = h->host_data;
@@ -215,7 +231,11 @@ static int mpc52xx_gpt_irq_map(struct irq_host *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int mpc52xx_gpt_irq_xlate(struct irq_host *h, struct device_node *ct,
+=======
+static int mpc52xx_gpt_irq_xlate(struct irq_domain *h, struct device_node *ct,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 const u32 *intspec, unsigned int intsize,
 				 irq_hw_number_t *out_hwirq,
 				 unsigned int *out_flags)
@@ -235,7 +255,11 @@ static int mpc52xx_gpt_irq_xlate(struct irq_host *h, struct device_node *ct,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct irq_host_ops mpc52xx_gpt_irq_ops = {
+=======
+static const struct irq_domain_ops mpc52xx_gpt_irq_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map = mpc52xx_gpt_irq_map,
 	.xlate = mpc52xx_gpt_irq_xlate,
 };
@@ -251,6 +275,7 @@ mpc52xx_gpt_irq_setup(struct mpc52xx_gpt_priv *gpt, struct device_node *node)
 	if (!cascade_virq)
 		return;
 
+<<<<<<< HEAD
 	gpt->irqhost = irq_alloc_host(node, IRQ_HOST_MAP_LINEAR, 1,
 				      &mpc52xx_gpt_irq_ops, -1);
 	if (!gpt->irqhost) {
@@ -259,6 +284,14 @@ mpc52xx_gpt_irq_setup(struct mpc52xx_gpt_priv *gpt, struct device_node *node)
 	}
 
 	gpt->irqhost->host_data = gpt;
+=======
+	gpt->irqhost = irq_domain_add_linear(node, 1, &mpc52xx_gpt_irq_ops, gpt);
+	if (!gpt->irqhost) {
+		dev_err(gpt->dev, "irq_domain_add_linear() failed\n");
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	irq_set_handler_data(cascade_virq, gpt);
 	irq_set_chained_handler(cascade_virq, mpc52xx_gpt_irq_cascade);
 

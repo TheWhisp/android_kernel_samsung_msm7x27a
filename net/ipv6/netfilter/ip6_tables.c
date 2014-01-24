@@ -78,6 +78,7 @@ EXPORT_SYMBOL_GPL(ip6t_alloc_initial_table);
 
    Hence the start of any table is given by get_table() below.  */
 
+<<<<<<< HEAD
 /* Check for an extension */
 int
 ip6t_ext_hdr(u8 nexthdr)
@@ -91,6 +92,8 @@ ip6t_ext_hdr(u8 nexthdr)
 		(nexthdr == IPPROTO_DSTOPTS);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Returns whether matches rule or not. */
 /* Performance critical - called for every packet */
 static inline bool
@@ -2368,7 +2371,10 @@ int ipv6_find_hdr(const struct sk_buff *skb, unsigned int *offset,
 EXPORT_SYMBOL(ip6t_register_table);
 EXPORT_SYMBOL(ip6t_unregister_table);
 EXPORT_SYMBOL(ip6t_do_table);
+<<<<<<< HEAD
 EXPORT_SYMBOL(ip6t_ext_hdr);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(ipv6_find_hdr);
 
 module_init(ip6_tables_init);

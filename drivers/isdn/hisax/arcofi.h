@@ -9,7 +9,11 @@
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ARCOFI_USE	1
 
 /* states */

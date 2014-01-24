@@ -154,9 +154,15 @@
 #define __debug__h__
 
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/slab.h>
 
+=======
+#include <linux/slab.h>
+
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Backend stuff */
 

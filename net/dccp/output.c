@@ -27,11 +27,20 @@ static inline void dccp_event_ack_sent(struct sock *sk)
 	inet_csk_clear_xmit_timer(sk, ICSK_TIME_DACK);
 }
 
+<<<<<<< HEAD
 static void dccp_skb_entail(struct sock *sk, struct sk_buff *skb)
+=======
+/* enqueue @skb on sk_send_head for retransmission, return clone to send now */
+static struct sk_buff *dccp_skb_entail(struct sock *sk, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	skb_set_owner_w(skb, sk);
 	WARN_ON(sk->sk_send_head);
 	sk->sk_send_head = skb;
+<<<<<<< HEAD
+=======
+	return skb_clone(sk->sk_send_head, gfp_any());
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -406,10 +415,17 @@ struct sk_buff *dccp_make_response(struct sock *sk, struct dst_entry *dst,
 	skb_dst_set(skb, dst_clone(dst));
 
 	dreq = dccp_rsk(req);
+<<<<<<< HEAD
 	if (inet_rsk(req)->acked)	/* increase ISS upon retransmission */
 		dccp_inc_seqno(&dreq->dreq_iss);
 	DCCP_SKB_CB(skb)->dccpd_type = DCCP_PKT_RESPONSE;
 	DCCP_SKB_CB(skb)->dccpd_seq  = dreq->dreq_iss;
+=======
+	if (inet_rsk(req)->acked)	/* increase GSS upon retransmission */
+		dccp_inc_seqno(&dreq->dreq_gss);
+	DCCP_SKB_CB(skb)->dccpd_type = DCCP_PKT_RESPONSE;
+	DCCP_SKB_CB(skb)->dccpd_seq  = dreq->dreq_gss;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Resolve feature dependencies resulting from choice of CCID */
 	if (dccp_feat_server_ccid_dependencies(dreq))
@@ -427,8 +443,13 @@ struct sk_buff *dccp_make_response(struct sock *sk, struct dst_entry *dst,
 			   DCCP_SKB_CB(skb)->dccpd_opt_len) / 4;
 	dh->dccph_type	= DCCP_PKT_RESPONSE;
 	dh->dccph_x	= 1;
+<<<<<<< HEAD
 	dccp_hdr_set_seq(dh, dreq->dreq_iss);
 	dccp_hdr_set_ack(dccp_hdr_ack_bits(skb), dreq->dreq_isr);
+=======
+	dccp_hdr_set_seq(dh, dreq->dreq_gss);
+	dccp_hdr_set_ack(dccp_hdr_ack_bits(skb), dreq->dreq_gsr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dccp_hdr_response(skb)->dccph_resp_service = dreq->dreq_service;
 
 	dccp_csum_outgoing(skb);
@@ -552,8 +573,12 @@ int dccp_connect(struct sock *sk)
 
 	DCCP_SKB_CB(skb)->dccpd_type = DCCP_PKT_REQUEST;
 
+<<<<<<< HEAD
 	dccp_skb_entail(sk, skb);
 	dccp_transmit_skb(sk, skb_clone(skb, GFP_KERNEL));
+=======
+	dccp_transmit_skb(sk, dccp_skb_entail(sk, skb));
+>>>>>>> refs/remotes/origin/cm-10.0
 	DCCP_INC_STATS(DCCP_MIB_ACTIVEOPENS);
 
 	/* Timer for repeating the REQUEST until an answer. */
@@ -678,8 +703,12 @@ void dccp_send_close(struct sock *sk, const int active)
 		DCCP_SKB_CB(skb)->dccpd_type = DCCP_PKT_CLOSE;
 
 	if (active) {
+<<<<<<< HEAD
 		dccp_skb_entail(sk, skb);
 		dccp_transmit_skb(sk, skb_clone(skb, prio));
+=======
+		skb = dccp_skb_entail(sk, skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * Retransmission timer for active-close: RFC 4340, 8.3 requires
 		 * to retransmit the Close/CloseReq until the CLOSING/CLOSEREQ
@@ -692,6 +721,11 @@ void dccp_send_close(struct sock *sk, const int active)
 		 */
 		inet_csk_reset_xmit_timer(sk, ICSK_TIME_RETRANS,
 					  DCCP_TIMEOUT_INIT, DCCP_RTO_MAX);
+<<<<<<< HEAD
 	} else
 		dccp_transmit_skb(sk, skb);
+=======
+	}
+	dccp_transmit_skb(sk, skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

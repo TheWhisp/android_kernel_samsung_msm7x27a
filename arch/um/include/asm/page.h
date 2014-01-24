@@ -19,7 +19,11 @@
 struct page;
 
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <sysdep/vm-flags.h>
+=======
+#include <asm/vm-flags.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * These are used to make use of C type-checking..

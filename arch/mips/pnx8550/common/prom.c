@@ -30,7 +30,11 @@ typedef struct
 }t_env_var;
 
 
+<<<<<<< HEAD
 char * prom_getcmdline(void)
+=======
+char * __init prom_getcmdline(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return &(arcs_cmdline[0]);
 }

@@ -260,10 +260,14 @@ asmlinkage long xtensa_rt_sigreturn(long a0, long a1, long a2, long a3,
 		goto badframe;
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (restore_sigcontext(regs, frame))
 		goto badframe;
@@ -336,8 +340,13 @@ gen_return_code(unsigned char *codemem)
 }
 
 
+<<<<<<< HEAD
 static void setup_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 			sigset_t *set, struct pt_regs *regs)
+=======
+static int setup_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
+		       sigset_t *set, struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct rt_sigframe *frame;
 	int err = 0;
@@ -346,7 +355,11 @@ static void setup_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 
 	sp = regs->areg[1];
 
+<<<<<<< HEAD
 	if ((ka->sa.sa_flags & SA_ONSTACK) != 0 && ! on_sig_stack(sp)) {
+=======
+	if ((ka->sa.sa_flags & SA_ONSTACK) != 0 && sas_ss_flags(sp) == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		sp = current->sas_ss_sp + current->sas_ss_size;
 	}
 
@@ -422,12 +435,20 @@ static void setup_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 		current->comm, current->pid, signal, frame, regs->pc);
 #endif
 
+<<<<<<< HEAD
 	return;
 
 give_sigsegv:
 	if (sig == SIGSEGV)
 		ka->sa.sa_handler = SIG_DFL;
 	force_sig(SIGSEGV, current);
+=======
+	return 0;
+
+give_sigsegv:
+	force_sigsegv(sig, current);
+	return -EFAULT;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -449,11 +470,16 @@ asmlinkage long xtensa_rt_sigsuspend(sigset_t __user *unewset,
 		return -EFAULT;
 
 	sigdelsetmask(&newset, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	saveset = current->blocked;
 	current->blocked = newset;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	saveset = current->blocked;
+	set_current_blocked(&newset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	regs->areg[2] = -EINTR;
 	while (1) {
@@ -503,6 +529,10 @@ int do_signal(struct pt_regs *regs, sigset_t *oldset)
 	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
 
 	if (signr > 0) {
+<<<<<<< HEAD
+=======
+		int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Are we from a system call? */
 
@@ -536,6 +566,7 @@ int do_signal(struct pt_regs *regs, sigset_t *oldset)
 
 		/* Whee!  Actually deliver the signal.  */
 		/* Set up the stack frame */
+<<<<<<< HEAD
 		setup_frame(signr, &ka, &info, oldset, regs);
 
 		if (ka.sa.sa_flags & SA_ONESHOT)
@@ -547,6 +578,13 @@ int do_signal(struct pt_regs *regs, sigset_t *oldset)
 			sigaddset(&current->blocked, signr);
 		recalc_sigpending();
 		spin_unlock_irq(&current->sighand->siglock);
+=======
+		ret = setup_frame(signr, &ka, &info, oldset, regs);
+		if (ret)
+			return ret;
+
+		block_sigmask(&ka, signr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (current->ptrace & PT_SINGLESTEP)
 			task_pt_regs(current)->icountlevel = 1;
 

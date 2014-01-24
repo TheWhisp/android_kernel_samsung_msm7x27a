@@ -17,6 +17,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/pci.h>
 #include <linux/delay.h>

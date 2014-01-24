@@ -42,7 +42,11 @@
 #ifndef PWC_TIMON_H
 #define PWC_TIMON_H
 
+<<<<<<< HEAD
 #include <media/pwc-ioctl.h>
+=======
+#include "pwc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PWC_FPS_MAX_TIMON 6
 

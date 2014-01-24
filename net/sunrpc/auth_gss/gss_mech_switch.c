@@ -141,7 +141,11 @@ gss_mech_get(struct gss_api_mech *gm)
 EXPORT_SYMBOL_GPL(gss_mech_get);
 
 struct gss_api_mech *
+<<<<<<< HEAD
 gss_mech_get_by_name(const char *name)
+=======
+_gss_mech_get_by_name(const char *name)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct gss_api_mech	*pos, *gm = NULL;
 
@@ -158,6 +162,20 @@ gss_mech_get_by_name(const char *name)
 
 }
 
+<<<<<<< HEAD
+=======
+struct gss_api_mech * gss_mech_get_by_name(const char *name)
+{
+	struct gss_api_mech *gm = NULL;
+
+	gm = _gss_mech_get_by_name(name);
+	if (!gm) {
+		request_module("rpc-auth-gss-%s", name);
+		gm = _gss_mech_get_by_name(name);
+	}
+	return gm;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL_GPL(gss_mech_get_by_name);
 
 struct gss_api_mech *
@@ -194,10 +212,16 @@ mech_supports_pseudoflavor(struct gss_api_mech *gm, u32 pseudoflavor)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct gss_api_mech *
 gss_mech_get_by_pseudoflavor(u32 pseudoflavor)
 {
 	struct gss_api_mech *pos, *gm = NULL;
+=======
+struct gss_api_mech *_gss_mech_get_by_pseudoflavor(u32 pseudoflavor)
+{
+	struct gss_api_mech *gm = NULL, *pos;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock(&registered_mechs_lock);
 	list_for_each_entry(pos, &registered_mechs, gm_list) {
@@ -213,17 +237,44 @@ gss_mech_get_by_pseudoflavor(u32 pseudoflavor)
 	return gm;
 }
 
+<<<<<<< HEAD
+=======
+struct gss_api_mech *
+gss_mech_get_by_pseudoflavor(u32 pseudoflavor)
+{
+	struct gss_api_mech *gm;
+
+	gm = _gss_mech_get_by_pseudoflavor(pseudoflavor);
+
+	if (!gm) {
+		request_module("rpc-auth-gss-%u", pseudoflavor);
+		gm = _gss_mech_get_by_pseudoflavor(pseudoflavor);
+	}
+	return gm;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL_GPL(gss_mech_get_by_pseudoflavor);
 
 int gss_mech_list_pseudoflavors(rpc_authflavor_t *array_ptr)
 {
 	struct gss_api_mech *pos = NULL;
+<<<<<<< HEAD
 	int i = 0;
 
 	spin_lock(&registered_mechs_lock);
 	list_for_each_entry(pos, &registered_mechs, gm_list) {
 		array_ptr[i] = pos->gm_pfs->pseudoflavor;
 		i++;
+=======
+	int j, i = 0;
+
+	spin_lock(&registered_mechs_lock);
+	list_for_each_entry(pos, &registered_mechs, gm_list) {
+		for (j=0; j < pos->gm_pf_num; j++) {
+			array_ptr[i++] = pos->gm_pfs[j].pseudoflavor;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	spin_unlock(&registered_mechs_lock);
 	return i;

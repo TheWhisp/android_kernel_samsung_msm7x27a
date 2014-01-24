@@ -86,7 +86,10 @@ struct thread_info {
 #define TIF_RESTORE_SIGMASK	9	/* restore signal mask in do_signal() */
 #define TIF_POLLING_NRFLAG	16	/* true if poll_idle() is polling TIF_NEED_RESCHED */
 #define TIF_MEMDIE		17	/* is terminating due to OOM killer */
+<<<<<<< HEAD
 #define TIF_FREEZE		18	/* is freezing for suspend */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
 #define _TIF_NOTIFY_RESUME	(1<<TIF_NOTIFY_RESUME)
@@ -94,7 +97,10 @@ struct thread_info {
 #define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
 #define _TIF_RESTORE_SIGMASK	(1<<TIF_RESTORE_SIGMASK)
 #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
+<<<<<<< HEAD
 #define _TIF_FREEZE		(1<<TIF_FREEZE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define _TIF_WORK_MASK		0x0000FFFE	/* work to do on interrupt/exception return */
 #define _TIF_ALLWORK_MASK	0x0000FFFF	/* work to do on any return to u-space */

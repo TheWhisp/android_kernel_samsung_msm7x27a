@@ -11,7 +11,10 @@
  *  it under the terms of the GNU General Public License version 2 as
  *  published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/interrupt.h>
@@ -23,11 +26,18 @@
 
 #include <mach/hardware.h>
 #include <mach/irqs.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
 
 #include "generic.h"
 
 #define IRQ_BASE		(void __iomem *)io_p2v(0x40d00000)
+=======
+
+#include "generic.h"
+
+#define IRQ_BASE		io_p2v(0x40d00000)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define ICIP			(0x000)
 #define ICMR			(0x004)
@@ -39,6 +49,11 @@
 #define IPR(i)			(((i) < 32) ? (0x01c + ((i) << 2)) :		\
 				((i) < 64) ? (0x0b0 + (((i) - 32) << 2)) :	\
 				      (0x144 + (((i) - 64) << 2)))
+<<<<<<< HEAD
+=======
+#define ICHP_VAL_IRQ		(1 << 31)
+#define ICHP_IRQ(i)		(((i) >> 16) & 0x7fff)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IPR_VALID		(1 << 31)
 #define IRQ_BIT(n)		(((n) - PXA_IRQ(0)) & 0x1f)
 
@@ -63,10 +78,17 @@ static inline void __iomem *irq_base(int i)
 		0x40d00130,
 	};
 
+<<<<<<< HEAD
 	return (void __iomem *)io_p2v(phys_base[i]);
 }
 
 static void pxa_mask_irq(struct irq_data *d)
+=======
+	return io_p2v(phys_base[i]);
+}
+
+void pxa_mask_irq(struct irq_data *d)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void __iomem *base = irq_data_get_irq_chip_data(d);
 	uint32_t icmr = __raw_readl(base + ICMR);
@@ -75,7 +97,11 @@ static void pxa_mask_irq(struct irq_data *d)
 	__raw_writel(icmr, base + ICMR);
 }
 
+<<<<<<< HEAD
 static void pxa_unmask_irq(struct irq_data *d)
+=======
+void pxa_unmask_irq(struct irq_data *d)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void __iomem *base = irq_data_get_irq_chip_data(d);
 	uint32_t icmr = __raw_readl(base + ICMR);
@@ -91,6 +117,7 @@ static struct irq_chip pxa_internal_irq_chip = {
 	.irq_unmask	= pxa_unmask_irq,
 };
 
+<<<<<<< HEAD
 /*
  * GPIO IRQs for GPIO 0 and 1
  */
@@ -149,6 +176,39 @@ static void __init pxa_init_low_gpio_irq(set_wake_t fn)
 }
 
 void __init pxa_init_irq(int irq_nr, set_wake_t fn)
+=======
+asmlinkage void __exception_irq_entry icip_handle_irq(struct pt_regs *regs)
+{
+	uint32_t icip, icmr, mask;
+
+	do {
+		icip = __raw_readl(IRQ_BASE + ICIP);
+		icmr = __raw_readl(IRQ_BASE + ICMR);
+		mask = icip & icmr;
+
+		if (mask == 0)
+			break;
+
+		handle_IRQ(PXA_IRQ(fls(mask) - 1), regs);
+	} while (1);
+}
+
+asmlinkage void __exception_irq_entry ichp_handle_irq(struct pt_regs *regs)
+{
+	uint32_t ichp;
+
+	do {
+		__asm__ __volatile__("mrc p6, 0, %0, c5, c0, 0\n": "=r"(ichp));
+
+		if ((ichp & ICHP_VAL_IRQ) == 0)
+			break;
+
+		handle_IRQ(PXA_IRQ(ICHP_IRQ(ichp)), regs);
+	} while (1);
+}
+
+void __init pxa_init_irq(int irq_nr, int (*fn)(struct irq_data *, unsigned int))
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int irq, i, n;
 
@@ -178,7 +238,10 @@ void __init pxa_init_irq(int irq_nr, set_wake_t fn)
 	__raw_writel(1, irq_base(0) + ICCR);
 
 	pxa_internal_irq_chip.irq_set_wake = fn;
+<<<<<<< HEAD
 	pxa_init_low_gpio_irq(fn);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_PM

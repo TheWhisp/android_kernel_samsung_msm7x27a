@@ -17,7 +17,10 @@
 
 #include <pcmcia/ss.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 #include "i82092aa.h"
@@ -26,6 +29,7 @@
 MODULE_LICENSE("GPL");
 
 /* PCI core routines */
+<<<<<<< HEAD
 static struct pci_device_id i82092aa_pci_ids[] = {
 	{
 	      .vendor = PCI_VENDOR_ID_INTEL,
@@ -34,6 +38,11 @@ static struct pci_device_id i82092aa_pci_ids[] = {
 	      .subdevice = PCI_ANY_ID,
 	 },
 	 {} 
+=======
+static DEFINE_PCI_DEVICE_TABLE(i82092aa_pci_ids) = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82092AA_0) },
+	{ }
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 MODULE_DEVICE_TABLE(pci, i82092aa_pci_ids);
 

@@ -11,6 +11,7 @@
 #include <sched.h>
 #include <signal.h>
 #include <string.h>
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "kern_util.h"
 #include "init.h"
@@ -19,6 +20,13 @@
 #include "sigio.h"
 #include "um_malloc.h"
 #include "user.h"
+=======
+#include "kern_util.h"
+#include "init.h"
+#include "os.h"
+#include "sigio.h"
+#include "um_malloc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Protected by sigio_lock(), also used by sigio_cleanup, which is an

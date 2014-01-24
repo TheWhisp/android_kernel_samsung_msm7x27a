@@ -19,7 +19,11 @@
 #ifndef __BTRFS_COMPRESSION_
 #define __BTRFS_COMPRESSION_
 
+<<<<<<< HEAD
 int btrfs_init_compress(void);
+=======
+void btrfs_init_compress(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 void btrfs_exit_compress(void);
 
 int btrfs_compress_pages(int type, struct address_space *mapping,

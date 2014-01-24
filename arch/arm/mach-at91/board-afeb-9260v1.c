@@ -25,6 +25,10 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -43,7 +47,10 @@
 #include <asm/mach/irq.h>
 
 #include <mach/board.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "generic.h"
 
@@ -51,7 +58,11 @@
 static void __init afeb9260_init_early(void)
 {
 	/* Initialize processor: 18.432 MHz crystal */
+<<<<<<< HEAD
 	at91sam9260_initialize(18432000);
+=======
+	at91_initialize(18432000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* DBGU on ttyS0. (Rx & Tx only) */
 	at91_register_uart(0, 0, 0);
@@ -70,17 +81,25 @@ static void __init afeb9260_init_early(void)
 	at91_set_serial_console(0);
 }
 
+<<<<<<< HEAD
 static void __init afeb9260_init_irq(void)
 {
 	at91sam9260_init_interrupts(NULL);
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * USB Host port
  */
 static struct at91_usbh_data __initdata afeb9260_usbh_data = {
 	.ports		= 1,
+<<<<<<< HEAD
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -88,7 +107,11 @@ static struct at91_usbh_data __initdata afeb9260_usbh_data = {
  */
 static struct at91_udc_data __initdata afeb9260_udc_data = {
 	.vbus_pin	= AT91_PIN_PC5,
+<<<<<<< HEAD
 	.pullup_pin	= 0,		/* pull-up driven by UDC */
+=======
+	.pullup_pin	= -EINVAL,		/* pull-up driven by UDC */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -109,7 +132,11 @@ static struct spi_board_info afeb9260_spi_devices[] = {
 /*
  * MACB Ethernet device
  */
+<<<<<<< HEAD
 static struct at91_eth_data __initdata afeb9260_macb_data = {
+=======
+static struct macb_platform_data __initdata afeb9260_macb_data = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.phy_irq_pin	= AT91_PIN_PA9,
 	.is_rmii	= 0,
 };
@@ -136,19 +163,30 @@ static struct mtd_partition __initdata afeb9260_nand_partition[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
 {
 	*num_partitions = ARRAY_SIZE(afeb9260_nand_partition);
 	return afeb9260_nand_partition;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct atmel_nand_data __initdata afeb9260_nand_data = {
 	.ale		= 21,
 	.cle		= 22,
 	.rdy_pin	= AT91_PIN_PC13,
 	.enable_pin	= AT91_PIN_PC14,
+<<<<<<< HEAD
 	.partition_info	= nand_partitions,
 	.bus_width_16	= 0,
+=======
+	.bus_width_16	= 0,
+	.ecc_mode	= NAND_ECC_SOFT,
+	.parts		= afeb9260_nand_partition,
+	.num_parts	= ARRAY_SIZE(afeb9260_nand_partition),
+	.det_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -160,6 +198,10 @@ static struct at91_mmc_data __initdata afeb9260_mmc_data = {
 	.wp_pin 	= AT91_PIN_PC4,
 	.slot_b		= 1,
 	.wire4		= 1,
+<<<<<<< HEAD
+=======
+	.vcc_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -180,6 +222,11 @@ static struct i2c_board_info __initdata afeb9260_i2c_devices[] = {
 static struct at91_cf_data afeb9260_cf_data = {
 	.chipselect = 4,
 	.irq_pin    = AT91_PIN_PA6,
+<<<<<<< HEAD
+=======
+	.det_pin	= -EINVAL,
+	.vcc_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rst_pin    = AT91_PIN_PA7,
 	.flags      = AT91_CF_TRUE_IDE,
 };
@@ -219,9 +266,15 @@ static void __init afeb9260_board_init(void)
 MACHINE_START(AFEB9260, "Custom afeb9260 board")
 	/* Maintainer: Sergey Lapin <slapin@ossfans.org> */
 	.timer		= &at91sam926x_timer,
+<<<<<<< HEAD
 	.map_io		= at91sam9260_map_io,
 	.init_early	= afeb9260_init_early,
 	.init_irq	= afeb9260_init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= afeb9260_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= afeb9260_board_init,
 MACHINE_END
 

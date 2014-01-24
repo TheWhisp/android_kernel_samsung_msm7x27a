@@ -9,6 +9,10 @@
 
 #ifdef CONFIG_OF_NET
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+extern const int of_get_phy_mode(struct device_node *np);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern const void *of_get_mac_address(struct device_node *np);
 #endif
 

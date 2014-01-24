@@ -83,10 +83,14 @@ int ceph_check_fsid(struct ceph_client *client, struct ceph_fsid *fsid)
 			return -1;
 		}
 	} else {
+<<<<<<< HEAD
 		pr_info("client%lld fsid %pU\n", ceph_client_id(client), fsid);
 		memcpy(&client->fsid, fsid, sizeof(*fsid));
 		ceph_debugfs_client_init(client);
 		client->have_fsid = true;
+=======
+		memcpy(&client->fsid, fsid, sizeof(*fsid));
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }
@@ -203,7 +207,13 @@ enum {
 	Opt_ip,
 	Opt_last_string,
 	/* string args above */
+<<<<<<< HEAD
 	Opt_noshare,
+=======
+	Opt_share,
+	Opt_noshare,
+	Opt_crc,
+>>>>>>> refs/remotes/origin/cm-10.0
 	Opt_nocrc,
 };
 
@@ -219,7 +229,13 @@ static match_table_t opt_tokens = {
 	{Opt_key, "key=%s"},
 	{Opt_ip, "ip=%s"},
 	/* string args above */
+<<<<<<< HEAD
 	{Opt_noshare, "noshare"},
+=======
+	{Opt_share, "share"},
+	{Opt_noshare, "noshare"},
+	{Opt_crc, "crc"},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{Opt_nocrc, "nocrc"},
 	{-1, NULL}
 };
@@ -232,6 +248,10 @@ void ceph_destroy_options(struct ceph_options *opt)
 		ceph_crypto_key_destroy(opt->key);
 		kfree(opt->key);
 	}
+<<<<<<< HEAD
+=======
+	kfree(opt->mon_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(opt);
 }
 EXPORT_SYMBOL(ceph_destroy_options);
@@ -278,10 +298,18 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 int ceph_parse_options(struct ceph_options **popt, char *options,
 		       const char *dev_name, const char *dev_name_end,
 		       int (*parse_extra_token)(char *c, void *private),
 		       void *private)
+=======
+struct ceph_options *
+ceph_parse_options(char *options, const char *dev_name,
+			const char *dev_name_end,
+			int (*parse_extra_token)(char *c, void *private),
+			void *private)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ceph_options *opt;
 	const char *c;
@@ -290,7 +318,11 @@ int ceph_parse_options(struct ceph_options **popt, char *options,
 
 	opt = kzalloc(sizeof(*opt), GFP_KERNEL);
 	if (!opt)
+<<<<<<< HEAD
 		return err;
+=======
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/cm-10.0
 	opt->mon_addr = kcalloc(CEPH_MAX_MON, sizeof(*opt->mon_addr),
 				GFP_KERNEL);
 	if (!opt->mon_addr)
@@ -301,7 +333,10 @@ int ceph_parse_options(struct ceph_options **popt, char *options,
 
 	/* start with defaults */
 	opt->flags = CEPH_OPT_DEFAULT;
+<<<<<<< HEAD
 	opt->osd_timeout = CEPH_OSD_TIMEOUT_DEFAULT;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	opt->osd_keepalive_timeout = CEPH_OSD_KEEPALIVE_DEFAULT;
 	opt->mount_timeout = CEPH_MOUNT_TIMEOUT_DEFAULT; /* seconds */
 	opt->osd_idle_ttl = CEPH_OSD_IDLE_TTL_DEFAULT;   /* seconds */
@@ -387,7 +422,11 @@ int ceph_parse_options(struct ceph_options **popt, char *options,
 
 			/* misc */
 		case Opt_osdtimeout:
+<<<<<<< HEAD
 			opt->osd_timeout = intval;
+=======
+			pr_warning("ignoring deprecated osdtimeout option\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case Opt_osdkeepalivetimeout:
 			opt->osd_keepalive_timeout = intval;
@@ -399,10 +438,22 @@ int ceph_parse_options(struct ceph_options **popt, char *options,
 			opt->mount_timeout = intval;
 			break;
 
+<<<<<<< HEAD
+=======
+		case Opt_share:
+			opt->flags &= ~CEPH_OPT_NOSHARE;
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		case Opt_noshare:
 			opt->flags |= CEPH_OPT_NOSHARE;
 			break;
 
+<<<<<<< HEAD
+=======
+		case Opt_crc:
+			opt->flags &= ~CEPH_OPT_NOCRC;
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		case Opt_nocrc:
 			opt->flags |= CEPH_OPT_NOCRC;
 			break;
@@ -413,12 +464,20 @@ int ceph_parse_options(struct ceph_options **popt, char *options,
 	}
 
 	/* success */
+<<<<<<< HEAD
 	*popt = opt;
 	return 0;
 
 out:
 	ceph_destroy_options(opt);
 	return err;
+=======
+	return opt;
+
+out:
+	ceph_destroy_options(opt);
+	return ERR_PTR(err);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(ceph_parse_options);
 
@@ -431,9 +490,18 @@ EXPORT_SYMBOL(ceph_client_id);
 /*
  * create a fresh client instance
  */
+<<<<<<< HEAD
 struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private)
 {
 	struct ceph_client *client;
+=======
+struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private,
+				       unsigned supported_features,
+				       unsigned required_features)
+{
+	struct ceph_client *client;
+	struct ceph_entity_addr *myaddr = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err = -ENOMEM;
 
 	client = kzalloc(sizeof(*client), GFP_KERNEL);
@@ -448,10 +516,25 @@ struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private)
 	client->auth_err = 0;
 
 	client->extra_mon_dispatch = NULL;
+<<<<<<< HEAD
 	client->supported_features = CEPH_FEATURE_SUPPORTED_DEFAULT;
 	client->required_features = CEPH_FEATURE_REQUIRED_DEFAULT;
 
 	client->msgr = NULL;
+=======
+	client->supported_features = CEPH_FEATURE_SUPPORTED_DEFAULT |
+		supported_features;
+	client->required_features = CEPH_FEATURE_REQUIRED_DEFAULT |
+		required_features;
+
+	/* msgr */
+	if (ceph_test_opt(client, MYIP))
+		myaddr = &client->options->my_addr;
+	ceph_messenger_init(&client->msgr, myaddr,
+		client->supported_features,
+		client->required_features,
+		ceph_test_opt(client, NOCRC));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* subsystems */
 	err = ceph_monc_init(&client->monc, client);
@@ -475,6 +558,7 @@ void ceph_destroy_client(struct ceph_client *client)
 {
 	dout("destroy_client %p\n", client);
 
+<<<<<<< HEAD
 	/* unmount */
 	ceph_osdc_stop(&client->osdc);
 
@@ -485,13 +569,23 @@ void ceph_destroy_client(struct ceph_client *client)
 	 */
 	ceph_msgr_flush();
 
+=======
+	atomic_set(&client->msgr.stopping, 1);
+
+	/* unmount */
+	ceph_osdc_stop(&client->osdc);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ceph_monc_stop(&client->monc);
 
 	ceph_debugfs_client_cleanup(client);
 
+<<<<<<< HEAD
 	if (client->msgr)
 		ceph_messenger_destroy(client->msgr);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ceph_destroy_options(client->options);
 
 	kfree(client);
@@ -513,6 +607,7 @@ static int have_mon_and_osd_map(struct ceph_client *client)
  */
 int __ceph_open_session(struct ceph_client *client, unsigned long started)
 {
+<<<<<<< HEAD
 	struct ceph_entity_addr *myaddr = NULL;
 	int err;
 	unsigned long timeout = client->options->mount_timeout * HZ;
@@ -531,6 +626,11 @@ int __ceph_open_session(struct ceph_client *client, unsigned long started)
 		client->msgr->nocrc = ceph_test_opt(client, NOCRC);
 	}
 
+=======
+	int err;
+	unsigned long timeout = client->options->mount_timeout * HZ;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* open session, and wait for mon and osd maps */
 	err = ceph_monc_open_session(&client->monc);
 	if (err < 0)

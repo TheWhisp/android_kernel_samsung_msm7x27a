@@ -21,6 +21,10 @@
 #include <linux/ata.h>
 #include <linux/blkdev.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/lv1call.h>
 #include <asm/ps3stor.h>

@@ -35,7 +35,11 @@ int arch_prepare_hugepage(struct page *page)
 	if (MACHINE_HAS_HPAGE)
 		return 0;
 
+<<<<<<< HEAD
 	ptep = (pte_t *) pte_alloc_one(&init_mm, address);
+=======
+	ptep = (pte_t *) pte_alloc_one(&init_mm, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ptep)
 		return -ENOMEM;
 

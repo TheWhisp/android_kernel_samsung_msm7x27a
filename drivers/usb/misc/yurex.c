@@ -535,6 +535,7 @@ static const struct file_operations yurex_fops = {
 	.llseek =	default_llseek,
 };
 
+<<<<<<< HEAD
 
 static int __init usb_yurex_init(void)
 {
@@ -556,5 +557,8 @@ static void __exit usb_yurex_exit(void)
 
 module_init(usb_yurex_init);
 module_exit(usb_yurex_exit);
+=======
+module_usb_driver(yurex_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");

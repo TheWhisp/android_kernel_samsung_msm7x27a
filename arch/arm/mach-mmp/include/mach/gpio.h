@@ -1,6 +1,7 @@
 #ifndef __ASM_MACH_GPIO_H
 #define __ASM_MACH_GPIO_H
 
+<<<<<<< HEAD
 #include <mach/addr-map.h>
 #include <mach/irqs.h>
 #include <asm-generic/gpio.h>
@@ -33,4 +34,10 @@
 #define GPCR(x)		GPIO_REG(BANK_OFF(gpio_to_bank(x)) + 0x24)
 
 #include <plat/gpio.h>
+=======
+#include <asm-generic/gpio.h>
+
+#include <mach/cputype.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASM_MACH_GPIO_H */

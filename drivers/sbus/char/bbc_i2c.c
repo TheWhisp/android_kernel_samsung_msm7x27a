@@ -233,6 +233,7 @@ int bbc_i2c_write_buf(struct bbc_i2c_client *client,
 	int ret = 0;
 
 	while (len > 0) {
+<<<<<<< HEAD
 		int err = bbc_i2c_writeb(client, *buf, off);
 
 		if (err < 0) {
@@ -240,6 +241,11 @@ int bbc_i2c_write_buf(struct bbc_i2c_client *client,
 			break;
 		}
 
+=======
+		ret = bbc_i2c_writeb(client, *buf, off);
+		if (ret < 0)
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		len--;
 		buf++;
 		off++;
@@ -253,11 +259,17 @@ int bbc_i2c_read_buf(struct bbc_i2c_client *client,
 	int ret = 0;
 
 	while (len > 0) {
+<<<<<<< HEAD
 		int err = bbc_i2c_readb(client, buf, off);
 		if (err < 0) {
 			ret = err;
 			break;
 		}
+=======
+		ret = bbc_i2c_readb(client, buf, off);
+		if (ret < 0)
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		len--;
 		buf++;
 		off++;
@@ -422,6 +434,7 @@ static struct platform_driver bbc_i2c_driver = {
 	.remove		= __devexit_p(bbc_i2c_remove),
 };
 
+<<<<<<< HEAD
 static int __init bbc_i2c_init(void)
 {
 	return platform_driver_register(&bbc_i2c_driver);
@@ -434,5 +447,8 @@ static void __exit bbc_i2c_exit(void)
 
 module_init(bbc_i2c_init);
 module_exit(bbc_i2c_exit);
+=======
+module_platform_driver(bbc_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");

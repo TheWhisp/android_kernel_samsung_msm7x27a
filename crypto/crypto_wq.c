@@ -12,6 +12,10 @@
  */
 
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <crypto/algapi.h>
 #include <crypto/crypto_wq.h>
 

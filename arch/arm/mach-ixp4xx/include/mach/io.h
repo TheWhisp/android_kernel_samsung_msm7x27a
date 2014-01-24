@@ -17,8 +17,11 @@
 
 #include <mach/hardware.h>
 
+<<<<<<< HEAD
 #define IO_SPACE_LIMIT 0x0000ffff
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int (*ixp4xx_pci_read)(u32 addr, u32 cmd, u32* data);
 extern int ixp4xx_pci_write(u32 addr, u32 cmd, u32 data);
 
@@ -41,11 +44,15 @@ extern int ixp4xx_pci_write(u32 addr, u32 cmd, u32 data);
  *    but in some cases the performance hit is acceptable. In addition, you
  *    cannot mmap() PCI devices in this case.
  */
+<<<<<<< HEAD
 #ifndef	CONFIG_IXP4XX_INDIRECT_PCI
 
 #define __mem_pci(a)		(a)
 
 #else
+=======
+#ifdef	CONFIG_IXP4XX_INDIRECT_PCI
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * In the case of using indirect PCI, we simply return the actual PCI
@@ -59,6 +66,7 @@ static inline int is_pci_memory(u32 addr)
 	return (addr >= PCIBIOS_MIN_MEM) && (addr <= 0x4FFFFFFF);
 }
 
+<<<<<<< HEAD
 static inline void __iomem * __indirect_ioremap(unsigned long addr, size_t size,
 						unsigned int mtype)
 {
@@ -77,6 +85,8 @@ static inline void __indirect_iounmap(void __iomem *addr)
 #define __arch_ioremap			__indirect_ioremap
 #define __arch_iounmap			__indirect_iounmap
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define writeb(v, p)			__indirect_writeb(v, p)
 #define writew(v, p)			__indirect_writew(v, p)
 #define writel(v, p)			__indirect_writel(v, p)

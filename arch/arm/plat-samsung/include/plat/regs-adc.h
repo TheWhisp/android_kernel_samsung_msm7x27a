@@ -20,7 +20,13 @@
 #define S3C2410_ADCDAT0	   S3C2410_ADCREG(0x0C)
 #define S3C2410_ADCDAT1	   S3C2410_ADCREG(0x10)
 #define S3C64XX_ADCUPDN		S3C2410_ADCREG(0x14)
+<<<<<<< HEAD
 #define S3C64XX_ADCCLRINT	S3C2410_ADCREG(0x18)
+=======
+#define S3C2443_ADCMUX		S3C2410_ADCREG(0x18)
+#define S3C64XX_ADCCLRINT	S3C2410_ADCREG(0x18)
+#define S5P_ADCMUX		S3C2410_ADCREG(0x1C)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define S3C64XX_ADCCLRINTPNDNUP	S3C2410_ADCREG(0x20)
 
 
@@ -32,6 +38,10 @@
 #define S3C2410_ADCCON_PRSCVLMASK	(0xFF<<6)
 #define S3C2410_ADCCON_SELMUX(x)	(((x)&0x7)<<3)
 #define S3C2410_ADCCON_MUXMASK		(0x7<<3)
+<<<<<<< HEAD
+=======
+#define S3C2416_ADCCON_RESSEL		(1 << 3)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define S3C2410_ADCCON_STDBM		(1<<2)
 #define S3C2410_ADCCON_READ_START	(1<<1)
 #define S3C2410_ADCCON_ENABLE_START	(1<<0)
@@ -39,6 +49,10 @@
 
 
 /* ADCTSC Register Bits */
+<<<<<<< HEAD
+=======
+#define S3C2443_ADCTSC_UD_SEN		(1 << 8)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define S3C2410_ADCTSC_YM_SEN		(1<<7)
 #define S3C2410_ADCTSC_YP_SEN		(1<<6)
 #define S3C2410_ADCTSC_XM_SEN		(1<<5)

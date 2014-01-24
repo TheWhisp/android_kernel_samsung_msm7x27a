@@ -9,6 +9,10 @@
  */
 #include <linux/init.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/smp.h>
 #include <asm/sn/arch.h>
@@ -49,7 +53,11 @@ int __cpuinit bridge_probe(nasid_t nasid, int widget_id, int masterwid)
 	bridge_t *bridge;
 	int slot;
 
+<<<<<<< HEAD
 	pci_probe_only = 1;
+=======
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk("a bridge\n");
 

@@ -22,6 +22,10 @@
 
 #include <linux/stddef.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "nonstdio.h"
 #include "ppc.h"
 

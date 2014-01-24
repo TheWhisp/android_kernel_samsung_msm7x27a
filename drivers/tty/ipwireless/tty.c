@@ -21,7 +21,11 @@
 #include <linux/mutex.h>
 #include <linux/ppp_defs.h>
 #include <linux/if.h>
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/serial.h>
 #include <linux/slab.h>
@@ -90,6 +94,7 @@ static void report_deregistering(struct ipw_tty *tty)
 	       tty->index);
 }
 
+<<<<<<< HEAD
 static struct ipw_tty *get_tty(int minor)
 {
 	if (minor < ipw_tty_driver->minor_start
@@ -111,12 +116,30 @@ static struct ipw_tty *get_tty(int minor)
 
 		return ttys[minor_offset];
 	}
+=======
+static struct ipw_tty *get_tty(int index)
+{
+	/*
+	 * The 'ras_raw' channel is only available when 'loopback' mode
+	 * is enabled.
+	 * Number of minor starts with 16 (_RANGE * _RAS_RAW).
+	 */
+	if (!ipwireless_loopback && index >=
+			 IPWIRELESS_PCMCIA_MINOR_RANGE * TTYTYPE_RAS_RAW)
+		return NULL;
+
+	return ttys[index];
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int ipw_open(struct tty_struct *linux_tty, struct file *filp)
 {
+<<<<<<< HEAD
 	int minor = linux_tty->index;
 	struct ipw_tty *tty = get_tty(minor);
+=======
+	struct ipw_tty *tty = get_tty(linux_tty->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!tty)
 		return -ENODEV;
@@ -510,7 +533,11 @@ static int add_tty(int j,
 		ipwireless_associate_network_tty(network,
 						 secondary_channel_idx,
 						 ttys[j]);
+<<<<<<< HEAD
 	if (get_tty(j + ipw_tty_driver->minor_start) == ttys[j])
+=======
+	if (get_tty(j) == ttys[j])
+>>>>>>> refs/remotes/origin/cm-10.0
 		report_registering(ttys[j]);
 	return 0;
 }
@@ -570,7 +597,11 @@ void ipwireless_tty_free(struct ipw_tty *tty)
 
 		if (ttyj) {
 			mutex_lock(&ttyj->ipw_tty_mutex);
+<<<<<<< HEAD
 			if (get_tty(j + ipw_tty_driver->minor_start) == ttyj)
+=======
+			if (get_tty(j) == ttyj)
+>>>>>>> refs/remotes/origin/cm-10.0
 				report_deregistering(ttyj);
 			ttyj->closing = 1;
 			if (ttyj->linux_tty != NULL) {
@@ -614,7 +645,10 @@ int ipwireless_tty_init(void)
 	if (!ipw_tty_driver)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	ipw_tty_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ipw_tty_driver->driver_name = IPWIRELESS_PCCARD_NAME;
 	ipw_tty_driver->name = "ttyIPWp";
 	ipw_tty_driver->major = 0;

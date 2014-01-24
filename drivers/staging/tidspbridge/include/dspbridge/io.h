@@ -55,7 +55,10 @@ struct io_attrs {
  *      -EINVAL: Invalid DSP word size (must be > 0).
  *               Invalid base address for DSP communications.
  *  Requires:
+<<<<<<< HEAD
  *      io_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      io_man != NULL.
  *      mgr_attrts != NULL.
  *  Ensures:
@@ -74,11 +77,15 @@ extern int io_create(struct io_mgr **io_man,
  *      0:        Success.
  *      -EFAULT:    hio_mgr was invalid.
  *  Requires:
+<<<<<<< HEAD
  *      io_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *  Ensures:
  */
 extern int io_destroy(struct io_mgr *hio_mgr);
 
+<<<<<<< HEAD
 /*
  *  ======== io_exit ========
  *  Purpose:
@@ -106,4 +113,6 @@ extern void io_exit(void);
  */
 extern bool io_init(void);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CHNL_ */

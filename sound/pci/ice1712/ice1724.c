@@ -28,7 +28,11 @@
 #include <linux/init.h>
 #include <linux/pci.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <sound/core.h>
 #include <sound/info.h>
@@ -80,7 +84,11 @@ MODULE_SUPPORTED_DEVICE("{"
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;		/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;		/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
 static char *model[SNDRV_CARDS];
 
 module_param_array(index, int, NULL, 0444);
@@ -1013,6 +1021,28 @@ static int set_rate_constraints(struct snd_ice1712 *ice,
 					  ice->hw_rates);
 }
 
+<<<<<<< HEAD
+=======
+/* if the card has the internal rate locked (is_pro_locked), limit runtime
+   hw rates to the current internal rate only.
+*/
+static void constrain_rate_if_locked(struct snd_pcm_substream *substream)
+{
+	struct snd_ice1712 *ice = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	unsigned int rate;
+	if (is_pro_rate_locked(ice)) {
+		rate = ice->get_rate(ice);
+		if (rate >= runtime->hw.rate_min
+		    && rate <= runtime->hw.rate_max) {
+			runtime->hw.rate_min = rate;
+			runtime->hw.rate_max = rate;
+		}
+	}
+}
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* multi-channel playback needs alignment 8x32bit regardless of the channels
  * actually used
  */
@@ -1046,6 +1076,10 @@ static int snd_vt1724_playback_pro_open(struct snd_pcm_substream *substream)
 				   VT1724_BUFFER_ALIGN);
 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
 				   VT1724_BUFFER_ALIGN);
+<<<<<<< HEAD
+=======
+	constrain_rate_if_locked(substream);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ice->pro_open)
 		ice->pro_open(ice, substream);
 	return 0;
@@ -1066,6 +1100,10 @@ static int snd_vt1724_capture_pro_open(struct snd_pcm_substream *substream)
 				   VT1724_BUFFER_ALIGN);
 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
 				   VT1724_BUFFER_ALIGN);
+<<<<<<< HEAD
+=======
+	constrain_rate_if_locked(substream);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ice->pro_open)
 		ice->pro_open(ice, substream);
 	return 0;
@@ -1117,14 +1155,31 @@ static struct snd_pcm_ops snd_vt1724_capture_pro_ops = {
 static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
 {
 	struct snd_pcm *pcm;
+<<<<<<< HEAD
 	int err;
 
 	err = snd_pcm_new(ice->card, "ICE1724", device, 1, 1, &pcm);
+=======
+	int capt, err;
+
+	if ((ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ==
+	    VT1724_CFG_ADC_NONE)
+		capt = 0;
+	else
+		capt = 1;
+	err = snd_pcm_new(ice->card, "ICE1724", device, 1, capt, &pcm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err < 0)
 		return err;
 
 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_vt1724_playback_pro_ops);
+<<<<<<< HEAD
 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_vt1724_capture_pro_ops);
+=======
+	if (capt)
+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
+			&snd_vt1724_capture_pro_ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pcm->private_data = ice;
 	pcm->info_flags = 0;
@@ -1208,6 +1263,10 @@ static int snd_vt1724_playback_spdif_open(struct snd_pcm_substream *substream)
 				   VT1724_BUFFER_ALIGN);
 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
 				   VT1724_BUFFER_ALIGN);
+<<<<<<< HEAD
+=======
+	constrain_rate_if_locked(substream);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ice->spdif.ops.open)
 		ice->spdif.ops.open(ice, substream);
 	return 0;
@@ -1244,6 +1303,10 @@ static int snd_vt1724_capture_spdif_open(struct snd_pcm_substream *substream)
 				   VT1724_BUFFER_ALIGN);
 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
 				   VT1724_BUFFER_ALIGN);
+<<<<<<< HEAD
+=======
+	constrain_rate_if_locked(substream);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ice->spdif.ops.open)
 		ice->spdif.ops.open(ice, substream);
 	return 0;
@@ -1825,7 +1888,16 @@ static int snd_vt1724_pro_internal_clock_info(struct snd_kcontrol *kcontrol,
 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
 	uinfo->count = 1;
 
+<<<<<<< HEAD
 	uinfo->value.enumerated.items = hw_rates_count + ice->ext_clock_count;
+=======
+	/* internal clocks */
+	uinfo->value.enumerated.items = hw_rates_count;
+	/* external clocks */
+	if (ice->force_rdma1 ||
+	    (ice->eeprom.data[ICE_EEP2_SPDIF] & VT1724_CFG_SPDIF_IN))
+		uinfo->value.enumerated.items += ice->ext_clock_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* upper limit - keep at top */
 	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
 		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
@@ -2173,6 +2245,43 @@ static struct snd_kcontrol_new snd_vt1724_mixer_pro_peak __devinitdata = {
 
 static struct snd_ice1712_card_info no_matched __devinitdata;
 
+<<<<<<< HEAD
+=======
+
+/*
+  ooAoo cards with no controls
+*/
+static unsigned char ooaoo_sq210_eeprom[] __devinitdata = {
+	[ICE_EEP2_SYSCONF]     = 0x4c,	/* 49MHz crystal, no mpu401, no ADC,
+					   1xDACs */
+	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
+	[ICE_EEP2_I2S]         = 0x78,	/* no volume, 96k, 24bit, 192k */
+	[ICE_EEP2_SPDIF]       = 0xc1,	/* out-en, out-int, out-ext */
+	[ICE_EEP2_GPIO_DIR]    = 0x00,	/* no GPIOs are used */
+	[ICE_EEP2_GPIO_DIR1]   = 0x00,
+	[ICE_EEP2_GPIO_DIR2]   = 0x00,
+	[ICE_EEP2_GPIO_MASK]   = 0xff,
+	[ICE_EEP2_GPIO_MASK1]  = 0xff,
+	[ICE_EEP2_GPIO_MASK2]  = 0xff,
+
+	[ICE_EEP2_GPIO_STATE]  = 0x00, /* inputs */
+	[ICE_EEP2_GPIO_STATE1] = 0x00, /* all 1, but GPIO_CPLD_RW
+					  and GPIO15 always zero */
+	[ICE_EEP2_GPIO_STATE2] = 0x00, /* inputs */
+};
+
+
+struct snd_ice1712_card_info snd_vt1724_ooaoo_cards[] __devinitdata = {
+	{
+		.name = "ooAoo SQ210a",
+		.model = "sq210a",
+		.eeprom_size = sizeof(ooaoo_sq210_eeprom),
+		.eeprom_data = ooaoo_sq210_eeprom,
+	},
+	{ } /* terminator */
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
 	snd_vt1724_revo_cards,
 	snd_vt1724_amp_cards,
@@ -2187,6 +2296,10 @@ static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
 	snd_vt1724_wtm_cards,
 	snd_vt1724_se_cards,
 	snd_vt1724_qtet_cards,
+<<<<<<< HEAD
+=======
+	snd_vt1724_ooaoo_cards,
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL,
 };
 
@@ -2270,7 +2383,11 @@ static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
 		}
 	}
 	for (tbl = card_tables; *tbl; tbl++) {
+<<<<<<< HEAD
 		for (c = *tbl; c->subvendor; c++) {
+=======
+		for (c = *tbl; c->name; c++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (modelname && c->model &&
 			    !strcmp(modelname, c->model)) {
 				printk(KERN_INFO "ice1724: Using board model %s\n",
@@ -2509,7 +2626,11 @@ static int __devinit snd_vt1724_create(struct snd_card *card,
 	ice->profi_port = pci_resource_start(pci, 1);
 
 	if (request_irq(pci->irq, snd_vt1724_interrupt,
+<<<<<<< HEAD
 			IRQF_SHARED, "ICE1724", ice)) {
+=======
+			IRQF_SHARED, KBUILD_MODNAME, ice)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		snd_vt1724_free(ice);
 		return -EIO;
@@ -2579,8 +2700,15 @@ static int __devinit snd_vt1724_probe(struct pci_dev *pci,
 	ice->ext_clock_count = 0;
 
 	for (tbl = card_tables; *tbl; tbl++) {
+<<<<<<< HEAD
 		for (c = *tbl; c->subvendor; c++) {
 			if (c->subvendor == ice->eeprom.subvendor) {
+=======
+		for (c = *tbl; c->name; c++) {
+			if ((model[dev] && c->model &&
+			     !strcmp(model[dev], c->model)) ||
+			    (c->subvendor == ice->eeprom.subvendor)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				strcpy(card->shortname, c->name);
 				if (c->driver) /* specific driver? */
 					strcpy(card->driver, c->driver);
@@ -2802,7 +2930,11 @@ static int snd_vt1724_resume(struct pci_dev *pci)
 #endif
 
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name = "ICE1724",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_vt1724_ids,
 	.probe = snd_vt1724_probe,
 	.remove = __devexit_p(snd_vt1724_remove),

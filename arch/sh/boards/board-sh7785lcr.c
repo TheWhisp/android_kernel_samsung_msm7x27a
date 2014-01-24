@@ -28,6 +28,10 @@
 #include <cpu/sh7785.h>
 #include <asm/heartbeat.h>
 #include <asm/clock.h>
+<<<<<<< HEAD
+=======
+#include <asm/bl_bit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * NOTE: This board has 2 physical memory maps.
@@ -299,7 +303,11 @@ static int sh7785lcr_clk_init(void)
 	int ret;
 
 	clk = clk_get(NULL, "extal");
+<<<<<<< HEAD
 	if (!clk || IS_ERR(clk))
+=======
+	if (IS_ERR(clk))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return PTR_ERR(clk);
 	ret = clk_set_rate(clk, 33333333);
 	clk_put(clk);

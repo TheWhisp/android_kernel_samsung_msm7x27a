@@ -98,9 +98,12 @@ static int do_signal(struct pt_regs *regs, sigset_t *oldset)
 	if (!user_mode(regs))
 		return 1;
 
+<<<<<<< HEAD
 	if (try_to_freeze())
 		goto no_signal;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK)
 		oldset = &current->saved_sigmask;
 	else if (!oldset)
@@ -125,7 +128,10 @@ static int do_signal(struct pt_regs *regs, sigset_t *oldset)
 		}
 	}
 
+<<<<<<< HEAD
 no_signal:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Did we come from a system call? */
 	if (regs->syscall_nr >= 0) {
 		/* Restart the system call - no handlers present */
@@ -163,6 +169,7 @@ sys_sigsuspend(old_sigset_t mask,
 	       unsigned long r6, unsigned long r7,
 	       struct pt_regs * regs)
 {
+<<<<<<< HEAD
 	sigset_t saveset;
 
 	mask &= _BLOCKABLE;
@@ -171,6 +178,15 @@ sys_sigsuspend(old_sigset_t mask,
 	siginitset(&current->blocked, mask);
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	sigset_t saveset, blocked;
+
+	saveset = current->blocked;
+
+	mask &= _BLOCKABLE;
+	siginitset(&blocked, mask);
+	set_current_blocked(&blocked);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	REF_REG_RET = -EINTR;
 	while (1) {
@@ -202,11 +218,16 @@ sys_rt_sigsuspend(sigset_t *unewset, size_t sigsetsize,
 	if (copy_from_user(&newset, unewset, sizeof(newset)))
 		return -EFAULT;
 	sigdelsetmask(&newset, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	saveset = current->blocked;
 	current->blocked = newset;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	saveset = current->blocked;
+	set_current_blocked(&newset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	REF_REG_RET = -EINTR;
 	while (1) {
@@ -412,11 +433,15 @@ asmlinkage int sys_sigreturn(unsigned long r2, unsigned long r3,
 		goto badframe;
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (restore_sigcontext(regs, &frame->sc, &ret))
 		goto badframe;
@@ -449,10 +474,14 @@ asmlinkage int sys_rt_sigreturn(unsigned long r2, unsigned long r3,
 		goto badframe;
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (restore_sigcontext(regs, &frame->uc.uc_mcontext, &ret))
 		goto badframe;
@@ -738,6 +767,7 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 	else
 		ret = setup_frame(sig, ka, oldset, regs);
 
+<<<<<<< HEAD
 	if (ka->sa.sa_flags & SA_ONESHOT)
 		ka->sa.sa_handler = SIG_DFL;
 
@@ -749,6 +779,10 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
 		recalc_sigpending();
 		spin_unlock_irq(&current->sighand->siglock);
 	}
+=======
+	if (ret == 0)
+		block_sigmask(ka, sig);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }

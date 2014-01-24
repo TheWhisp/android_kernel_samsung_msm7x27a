@@ -3,3 +3,7 @@ zImage
 xipImage
 bootpImage
 uImage
+<<<<<<< HEAD
+=======
+*.dtb
+>>>>>>> refs/remotes/origin/cm-10.0

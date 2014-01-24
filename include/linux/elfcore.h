@@ -6,6 +6,10 @@
 #include <linux/time.h>
 #ifdef __KERNEL__
 #include <linux/user.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 #include <linux/ptrace.h>
 #include <linux/elf.h>

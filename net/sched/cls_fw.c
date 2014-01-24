@@ -77,7 +77,11 @@ static inline int fw_hash(u32 handle)
 		return handle & (HTSIZE - 1);
 }
 
+<<<<<<< HEAD
 static int fw_classify(struct sk_buff *skb, struct tcf_proto *tp,
+=======
+static int fw_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  struct tcf_result *res)
 {
 	struct fw_head *head = (struct fw_head *)tp->root;

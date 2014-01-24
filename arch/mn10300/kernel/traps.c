@@ -27,10 +27,16 @@
 #include <linux/bug.h>
 #include <linux/irq.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <linux/uaccess.h>
 #include <asm/io.h>
 #include <asm/atomic.h>
+=======
+#include <linux/uaccess.h>
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/smp.h>
 #include <asm/pgalloc.h>
 #include <asm/cacheflush.h>

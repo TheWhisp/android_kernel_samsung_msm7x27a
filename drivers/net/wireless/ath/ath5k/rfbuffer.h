@@ -18,7 +18,13 @@
  */
 
 
+<<<<<<< HEAD
 /*
+=======
+/**
+ * DOC: RF Buffer registers
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * There are some special registers on the RF chip
  * that control various operation settings related mostly to
  * the analog parts (channel, gain adjustment etc).
@@ -44,6 +50,7 @@
  */
 
 
+<<<<<<< HEAD
 /*
  * Struct to hold default mode specific RF
  * register values (RF Banks)
@@ -55,11 +62,35 @@ struct ath5k_ini_rfbuffer {
 };
 
 /*
+=======
+/**
+ * struct ath5k_ini_rfbuffer - Initial RF Buffer settings
+ * @rfb_bank: RF Bank number
+ * @rfb_ctrl_register: RF Buffer control register
+ * @rfb_mode_data: RF Buffer data for each mode
+ *
+ * Struct to hold default mode specific RF
+ * register values (RF Banks) for each chip.
+ */
+struct ath5k_ini_rfbuffer {
+	u8	rfb_bank;
+	u16	rfb_ctrl_register;
+	u32	rfb_mode_data[3];
+};
+
+/**
+ * struct ath5k_rfb_field - An RF Buffer field (register/value)
+ * @len: Field length
+ * @pos: Offset on the raw packet
+ * @col: Used for shifting
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * Struct to hold RF Buffer field
  * infos used to access certain RF
  * analog registers
  */
 struct ath5k_rfb_field {
+<<<<<<< HEAD
 	u8	len;	/* Field length */
 	u16	pos;	/* Offset on the raw packet */
 	u8	col;	/* Column -used for shifting */
@@ -78,6 +109,39 @@ struct ath5k_rf_reg {
  * We do this to handle common bits and make our
  * life easier by using an index for each register
  * instead of a full rfb_field */
+=======
+	u8	len;
+	u16	pos;
+	u8	col;
+};
+
+/**
+ * struct ath5k_rf_reg - RF analog register definition
+ * @bank: RF Buffer Bank number
+ * @index: Register's index on ath5k_rf_regx_idx
+ * @field: The &struct ath5k_rfb_field
+ *
+ * We use this struct to define the set of RF registers
+ * on each chip that we want to tweak. Some RF registers
+ * are common between different chip versions so this saves
+ * us space and complexity because we can refer to an rf
+ * register by it's index no matter what chip we work with
+ * as long as it has that register.
+ */
+struct ath5k_rf_reg {
+	u8			bank;
+	u8			index;
+	struct ath5k_rfb_field	field;
+};
+
+/**
+ * enum ath5k_rf_regs_idx - Map RF registers to indexes
+ *
+ * We do this to handle common bits and make our
+ * life easier by using an index for each register
+ * instead of a full rfb_field
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 enum ath5k_rf_regs_idx {
 	/* BANK 2 */
 	AR5K_RF_TURBO = 0,
@@ -254,7 +318,11 @@ static const struct ath5k_ini_rfbuffer rfb_5111[] = {
 
 /* RFX112 (Derby 1) */
 
+<<<<<<< HEAD
 /* BANK 6 				len  pos col */
+=======
+/* BANK 6				len  pos col */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	AR5K_RF5112_OB_2GHZ		{ 3, 269, 0 }
 #define	AR5K_RF5112_DB_2GHZ		{ 3, 272, 0 }
 
@@ -495,7 +563,11 @@ static const struct ath5k_ini_rfbuffer rfb_5112a[] = {
 /* BANK 2				len  pos col */
 #define AR5K_RF2413_RF_TURBO		{ 1, 1,   2 }
 
+<<<<<<< HEAD
 /* BANK 6 				len  pos col */
+=======
+/* BANK 6				len  pos col */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	AR5K_RF2413_OB_2GHZ		{ 3, 168, 0 }
 #define	AR5K_RF2413_DB_2GHZ		{ 3, 165, 0 }
 

@@ -10,7 +10,11 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -25,21 +29,37 @@
 #include <linux/err.h>
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/input/matrix_keypad.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <plat/usb.h>
 #include <plat/board.h>
 #include <plat/common.h>
 #include <plat/keypad.h>
+=======
+#include <plat/usb.h>
+#include <plat/board.h>
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/menelaus.h>
 #include <plat/dma.h>
 #include <plat/gpmc.h>
 
+<<<<<<< HEAD
+=======
+#include <video/omapdss.h>
+#include <video/omap-panel-generic-dpi.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "mux.h"
 #include "control.h"
 
@@ -48,10 +68,15 @@
 
 #define H4_ETHR_GPIO_IRQ		92
 
+<<<<<<< HEAD
 static unsigned int row_gpios[6] = { 88, 89, 124, 11, 6, 96 };
 static unsigned int col_gpios[7] = { 90, 91, 100, 36, 12, 97, 98 };
 
 static const unsigned int h4_keymap[] = {
+=======
+#if defined(CONFIG_KEYBOARD_MATRIX) || defined(CONFIG_KEYBOARD_MATRIX_MODULE)
+static const uint32_t board_matrix_keys[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	KEY(0, 0, KEY_LEFT),
 	KEY(1, 0, KEY_RIGHT),
 	KEY(2, 0, KEY_A),
@@ -84,6 +109,74 @@ static const unsigned int h4_keymap[] = {
 	KEY(4, 5, KEY_ENTER),
 };
 
+<<<<<<< HEAD
+=======
+static const struct matrix_keymap_data board_keymap_data = {
+	.keymap			= board_matrix_keys,
+	.keymap_size		= ARRAY_SIZE(board_matrix_keys),
+};
+
+static unsigned int board_keypad_row_gpios[] = {
+	88, 89, 124, 11, 6, 96
+};
+
+static unsigned int board_keypad_col_gpios[] = {
+	90, 91, 100, 36, 12, 97, 98
+};
+
+static struct matrix_keypad_platform_data board_keypad_platform_data = {
+	.keymap_data	= &board_keymap_data,
+	.row_gpios	= board_keypad_row_gpios,
+	.num_row_gpios	= ARRAY_SIZE(board_keypad_row_gpios),
+	.col_gpios	= board_keypad_col_gpios,
+	.num_col_gpios	= ARRAY_SIZE(board_keypad_col_gpios),
+	.active_low	= 1,
+
+	.debounce_ms		= 20,
+	.col_scan_delay_us	= 5,
+};
+
+static struct platform_device board_keyboard = {
+	.name	= "matrix-keypad",
+	.id	= -1,
+	.dev	= {
+		.platform_data = &board_keypad_platform_data,
+	},
+};
+static void __init board_mkp_init(void)
+{
+	omap_mux_init_gpio(88, OMAP_PULL_ENA | OMAP_PULL_UP);
+	omap_mux_init_gpio(89, OMAP_PULL_ENA | OMAP_PULL_UP);
+	omap_mux_init_gpio(124, OMAP_PULL_ENA | OMAP_PULL_UP);
+	omap_mux_init_signal("mcbsp2_dr.gpio_11", OMAP_PULL_ENA | OMAP_PULL_UP);
+	if (omap_has_menelaus()) {
+		omap_mux_init_signal("sdrc_a14.gpio0",
+			OMAP_PULL_ENA | OMAP_PULL_UP);
+		omap_mux_init_signal("vlynq_rx0.gpio_15", 0);
+		omap_mux_init_signal("gpio_98", 0);
+		board_keypad_row_gpios[5] = 0;
+		board_keypad_col_gpios[2] = 15;
+		board_keypad_col_gpios[6] = 18;
+	} else {
+		omap_mux_init_signal("gpio_96", OMAP_PULL_ENA | OMAP_PULL_UP);
+		omap_mux_init_signal("gpio_100", 0);
+		omap_mux_init_signal("gpio_98", 0);
+	}
+	omap_mux_init_signal("gpio_90", 0);
+	omap_mux_init_signal("gpio_91", 0);
+	omap_mux_init_signal("gpio_36", 0);
+	omap_mux_init_signal("mcbsp2_clkx.gpio_12", 0);
+	omap_mux_init_signal("gpio_97", 0);
+
+	platform_device_register(&board_keyboard);
+}
+#else
+static inline void board_mkp_init(void)
+{
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct mtd_partition h4_partitions[] = {
 	/* bootloader (U-Boot, etc) in first sector */
 	{
@@ -135,6 +228,7 @@ static struct platform_device h4_flash_device = {
 	.resource	= &h4_flash_resource,
 };
 
+<<<<<<< HEAD
 static const struct matrix_keymap_data h4_keymap_data = {
 	.keymap		= h4_keymap,
 	.keymap_size	= ARRAY_SIZE(h4_keymap),
@@ -166,6 +260,32 @@ static struct platform_device *h4_devices[] __initdata = {
 	&h4_flash_device,
 	&h4_kp_device,
 	&h4_lcd_device,
+=======
+static struct platform_device *h4_devices[] __initdata = {
+	&h4_flash_device,
+};
+
+static struct panel_generic_dpi_data h4_panel_data = {
+	.name			= "h4",
+};
+
+static struct omap_dss_device h4_lcd_device = {
+	.name			= "lcd",
+	.driver_name		= "generic_dpi_panel",
+	.type			= OMAP_DISPLAY_TYPE_DPI,
+	.phy.dpi.data_lines	= 16,
+	.data			= &h4_panel_data,
+};
+
+static struct omap_dss_device *h4_dss_devices[] = {
+	&h4_lcd_device,
+};
+
+static struct omap_dss_board_info h4_dss_data = {
+	.num_devices	= ARRAY_SIZE(h4_dss_devices),
+	.devices	= h4_dss_devices,
+	.default_device	= &h4_lcd_device,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* 2420 Sysboot setup (2430 is different) */
@@ -271,10 +391,13 @@ static void __init h4_init_flash(void)
 	h4_flash_resource.end	= base + SZ_64M - 1;
 }
 
+<<<<<<< HEAD
 static struct omap_lcd_config h4_lcd_config __initdata = {
 	.ctrl_name	= "internal",
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct omap_usb_config h4_usb_config __initdata = {
 	/* S1.10 OFF -- usb "download port"
 	 * usb0 switched to Mini-B port and isp1105 transceiver;
@@ -286,6 +409,7 @@ static struct omap_usb_config h4_usb_config __initdata = {
 	.hmc_mode	= 0x00,		/* 0:dev|otg 1:disable 2:disable */
 };
 
+<<<<<<< HEAD
 static struct omap_board_config_kernel h4_config[] __initdata = {
 	{ OMAP_TAG_LCD,		&h4_lcd_config },
 };
@@ -301,6 +425,8 @@ static void __init omap_h4_init_irq(void)
 	omap_init_irq();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct at24_platform_data m24c01 = {
 	.byte_len	= SZ_1K / 8,
 	.page_size	= 16,
@@ -309,7 +435,10 @@ static struct at24_platform_data m24c01 = {
 static struct i2c_board_info __initdata h4_i2c_board_info[] = {
 	{
 		I2C_BOARD_INFO("isp1301_omap", 0x2d),
+<<<<<<< HEAD
 		.irq		= OMAP_GPIO_IRQ(125),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	{	/* EEPROM on mainboard */
 		I2C_BOARD_INFO("24c01", 0x52),
@@ -331,15 +460,19 @@ static void __init omap_h4_init(void)
 {
 	omap2420_mux_init(board_mux, OMAP_PACKAGE_ZAF);
 
+<<<<<<< HEAD
 	omap_board_config = h4_config;
 	omap_board_config_size = ARRAY_SIZE(h4_config);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Make sure the serial ports are muxed on at this point.
 	 * You have to mux them off in device drivers later on
 	 * if not needed.
 	 */
 
+<<<<<<< HEAD
 #if defined(CONFIG_KEYBOARD_OMAP) || defined(CONFIG_KEYBOARD_OMAP_MODULE)
 	omap_mux_init_gpio(88, OMAP_PULL_ENA | OMAP_PULL_UP);
 	omap_mux_init_gpio(89, OMAP_PULL_ENA | OMAP_PULL_UP);
@@ -365,12 +498,17 @@ static void __init omap_h4_init(void)
 	omap_mux_init_signal("gpio_97", 0);
 #endif
 
+=======
+	board_mkp_init();
+	h4_i2c_board_info[0].irq = gpio_to_irq(125);
+>>>>>>> refs/remotes/origin/cm-10.0
 	i2c_register_board_info(1, h4_i2c_board_info,
 			ARRAY_SIZE(h4_i2c_board_info));
 
 	platform_add_devices(h4_devices, ARRAY_SIZE(h4_devices));
 	omap2_usbfs_init(&h4_usb_config);
 	omap_serial_init();
+<<<<<<< HEAD
 	h4_init_flash();
 }
 
@@ -378,10 +516,17 @@ static void __init omap_h4_map_io(void)
 {
 	omap2_set_globals_242x();
 	omap242x_map_common_io();
+=======
+	omap_sdrc_init(NULL, NULL);
+	h4_init_flash();
+
+	omap_display_init(&h4_dss_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 MACHINE_START(OMAP_H4, "OMAP2420 H4 board")
 	/* Maintainer: Paul Mundt <paul.mundt@nokia.com> */
+<<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.reserve	= omap_reserve,
 	.map_io		= omap_h4_map_io,
@@ -389,4 +534,15 @@ MACHINE_START(OMAP_H4, "OMAP2420 H4 board")
 	.init_irq	= omap_h4_init_irq,
 	.init_machine	= omap_h4_init,
 	.timer		= &omap_timer,
+=======
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap242x_map_io,
+	.init_early	= omap2420_init_early,
+	.init_irq	= omap2_init_irq,
+	.handle_irq	= omap2_intc_handle_irq,
+	.init_machine	= omap_h4_init,
+	.timer		= &omap2_timer,
+	.restart	= omap_prcm_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

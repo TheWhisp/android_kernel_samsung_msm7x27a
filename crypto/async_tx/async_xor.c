@@ -25,6 +25,10 @@
  */
 #include <linux/kernel.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mm.h>
 #include <linux/dma-mapping.h>
 #include <linux/raid/xor.h>

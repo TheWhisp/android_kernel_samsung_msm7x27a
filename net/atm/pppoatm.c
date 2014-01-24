@@ -37,13 +37,21 @@
 
 #include <linux/module.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/skbuff.h>
 #include <linux/slab.h>
 #include <linux/atm.h>
 #include <linux/atmdev.h>
 #include <linux/capability.h>
 #include <linux/ppp_defs.h>
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ppp_channel.h>
 #include <linux/atmppp.h>
 
@@ -302,6 +310,13 @@ static int pppoatm_assign_vcc(struct atm_vcc *atmvcc, void __user *arg)
 	atmvcc->push = pppoatm_push;
 	atmvcc->pop = pppoatm_pop;
 	__module_get(THIS_MODULE);
+<<<<<<< HEAD
+=======
+
+	/* re-process everything received between connection setup and
+	   backend setup */
+	vcc_process_recv_queue(atmvcc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

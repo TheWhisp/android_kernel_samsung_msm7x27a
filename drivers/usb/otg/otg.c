@@ -10,10 +10,15 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/device.h>
 
 #include <linux/usb/otg.h>
 
+<<<<<<< HEAD
 static struct otg_transceiver *xceiv;
 
 /**
@@ -42,20 +47,59 @@ EXPORT_SYMBOL(otg_get_transceiver);
  * For use by USB host and peripheral drivers.
  */
 void otg_put_transceiver(struct otg_transceiver *x)
+=======
+static struct usb_phy *phy;
+
+/**
+ * usb_get_transceiver - find the (single) USB transceiver
+ *
+ * Returns the transceiver driver, after getting a refcount to it; or
+ * null if there is no such transceiver.  The caller is responsible for
+ * calling usb_put_transceiver() to release that count.
+ *
+ * For use by USB host and peripheral drivers.
+ */
+struct usb_phy *usb_get_transceiver(void)
+{
+	if (phy)
+		get_device(phy->dev);
+	return phy;
+}
+EXPORT_SYMBOL(usb_get_transceiver);
+
+/**
+ * usb_put_transceiver - release the (single) USB transceiver
+ * @x: the transceiver returned by usb_get_transceiver()
+ *
+ * Releases a refcount the caller received from usb_get_transceiver().
+ *
+ * For use by USB host and peripheral drivers.
+ */
+void usb_put_transceiver(struct usb_phy *x)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (x)
 		put_device(x->dev);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(otg_put_transceiver);
 
 /**
  * otg_set_transceiver - declare the (single) OTG transceiver
  * @x: the USB OTG transceiver to be used; or NULL
+=======
+EXPORT_SYMBOL(usb_put_transceiver);
+
+/**
+ * usb_set_transceiver - declare the (single) USB transceiver
+ * @x: the USB transceiver to be used; or NULL
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This call is exclusively for use by transceiver drivers, which
  * coordinate the activities of drivers for host and peripheral
  * controllers, and in some cases for VBUS current regulation.
  */
+<<<<<<< HEAD
 int otg_set_transceiver(struct otg_transceiver *x)
 {
 	if (xceiv && x)
@@ -64,6 +108,16 @@ int otg_set_transceiver(struct otg_transceiver *x)
 	return 0;
 }
 EXPORT_SYMBOL(otg_set_transceiver);
+=======
+int usb_set_transceiver(struct usb_phy *x)
+{
+	if (phy && x)
+		return -EBUSY;
+	phy = x;
+	return 0;
+}
+EXPORT_SYMBOL(usb_set_transceiver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 const char *otg_state_string(enum usb_otg_state state)
 {
@@ -102,6 +156,7 @@ EXPORT_SYMBOL(otg_state_string);
 
 int otg_send_event(enum usb_otg_event event)
 {
+<<<<<<< HEAD
 	struct otg_transceiver *otg = otg_get_transceiver();
 	int ret = -ENOTSUPP;
 
@@ -114,3 +169,17 @@ int otg_send_event(enum usb_otg_event event)
 	return ret;
 }
 EXPORT_SYMBOL(otg_send_event);
+=======
+	struct usb_phy *phy = usb_get_transceiver();
+	int ret = -ENOTSUPP;
+
+	if (phy && phy->otg && phy->otg->send_event)
+		ret = phy->otg->send_event(phy->otg, event);
+
+	if (phy)
+		usb_put_transceiver(phy);
+
+	return ret;
+}
+EXPORT_SYMBOL(otg_send_event);
+>>>>>>> refs/remotes/origin/cm-10.0

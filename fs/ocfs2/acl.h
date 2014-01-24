@@ -26,7 +26,11 @@ struct ocfs2_acl_entry {
 	__le32 e_id;
 };
 
+<<<<<<< HEAD
 extern int ocfs2_check_acl(struct inode *, int, unsigned int);
+=======
+struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int ocfs2_acl_chmod(struct inode *);
 extern int ocfs2_init_acl(handle_t *, struct inode *, struct inode *,
 			  struct buffer_head *, struct buffer_head *,

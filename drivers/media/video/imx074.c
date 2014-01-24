@@ -12,11 +12,20 @@
 
 #include <linux/delay.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/videodev2.h>
 
 #include <media/soc_camera.h>
 #include <media/soc_mediabus.h>
+=======
+#include <linux/v4l2-mediabus.h>
+#include <linux/slab.h>
+#include <linux/videodev2.h>
+#include <linux/module.h>
+
+#include <media/soc_camera.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-subdev.h>
 #include <media/v4l2-chip-ident.h>
 
@@ -267,6 +276,20 @@ static int imx074_g_chip_ident(struct v4l2_subdev *sd,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int imx074_g_mbus_config(struct v4l2_subdev *sd,
+				struct v4l2_mbus_config *cfg)
+{
+	cfg->type = V4L2_MBUS_CSI2;
+	cfg->flags = V4L2_MBUS_CSI2_2_LANE |
+		V4L2_MBUS_CSI2_CHANNEL_0 |
+		V4L2_MBUS_CSI2_CONTINUOUS_CLOCK;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct v4l2_subdev_video_ops imx074_subdev_video_ops = {
 	.s_stream	= imx074_s_stream,
 	.s_mbus_fmt	= imx074_s_fmt,
@@ -275,6 +298,10 @@ static struct v4l2_subdev_video_ops imx074_subdev_video_ops = {
 	.enum_mbus_fmt	= imx074_enum_fmt,
 	.g_crop		= imx074_g_crop,
 	.cropcap	= imx074_cropcap,
+<<<<<<< HEAD
+=======
+	.g_mbus_config	= imx074_g_mbus_config,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct v4l2_subdev_core_ops imx074_subdev_core_ops = {
@@ -286,6 +313,7 @@ static struct v4l2_subdev_ops imx074_subdev_ops = {
 	.video	= &imx074_subdev_video_ops,
 };
 
+<<<<<<< HEAD
 /*
  * We have to provide soc-camera operations, but we don't have anything to say
  * there. The MIPI CSI2 driver will provide .query_bus_param and .set_bus_param
@@ -308,6 +336,9 @@ static struct soc_camera_ops imx074_ops = {
 
 static int imx074_video_probe(struct soc_camera_device *icd,
 			      struct i2c_client *client)
+=======
+static int imx074_video_probe(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 	u16 id;
@@ -417,6 +448,7 @@ static int imx074_probe(struct i2c_client *client,
 			const struct i2c_device_id *did)
 {
 	struct imx074 *priv;
+<<<<<<< HEAD
 	struct soc_camera_device *icd = client->dev.platform_data;
 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
 	struct soc_camera_link *icl;
@@ -428,6 +460,12 @@ static int imx074_probe(struct i2c_client *client,
 	}
 
 	icl = to_soc_camera_link(icd);
+=======
+	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
+	struct soc_camera_link *icl = soc_camera_i2c_to_link(client);
+	int ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!icl) {
 		dev_err(&client->dev, "IMX074: missing platform data!\n");
 		return -EINVAL;
@@ -445,12 +483,19 @@ static int imx074_probe(struct i2c_client *client,
 
 	v4l2_i2c_subdev_init(&priv->subdev, client, &imx074_subdev_ops);
 
+<<<<<<< HEAD
 	icd->ops	= &imx074_ops;
 	priv->fmt	= &imx074_colour_fmts[0];
 
 	ret = imx074_video_probe(icd, client);
 	if (ret < 0) {
 		icd->ops = NULL;
+=======
+	priv->fmt	= &imx074_colour_fmts[0];
+
+	ret = imx074_video_probe(client);
+	if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(priv);
 		return ret;
 	}
@@ -461,10 +506,15 @@ static int imx074_probe(struct i2c_client *client,
 static int imx074_remove(struct i2c_client *client)
 {
 	struct imx074 *priv = to_imx074(client);
+<<<<<<< HEAD
 	struct soc_camera_device *icd = client->dev.platform_data;
 	struct soc_camera_link *icl = to_soc_camera_link(icd);
 
 	icd->ops = NULL;
+=======
+	struct soc_camera_link *icl = soc_camera_i2c_to_link(client);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (icl->free_bus)
 		icl->free_bus(icl);
 	kfree(priv);
@@ -487,6 +537,7 @@ static struct i2c_driver imx074_i2c_driver = {
 	.id_table	= imx074_id,
 };
 
+<<<<<<< HEAD
 static int __init imx074_mod_init(void)
 {
 	return i2c_add_driver(&imx074_i2c_driver);
@@ -499,6 +550,9 @@ static void __exit imx074_mod_exit(void)
 
 module_init(imx074_mod_init);
 module_exit(imx074_mod_exit);
+=======
+module_i2c_driver(imx074_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Sony IMX074 Camera driver");
 MODULE_AUTHOR("Guennadi Liakhovetski <g.liakhovetski@gmx.de>");

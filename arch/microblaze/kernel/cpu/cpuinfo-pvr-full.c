@@ -72,6 +72,10 @@ void set_cpuinfo_pvr_full(struct cpuinfo *ci, struct device_node *cpu)
 	CI(pvr_user2, USER2);
 
 	CI(mmu, USE_MMU);
+<<<<<<< HEAD
+=======
+	CI(mmu_privins, MMU_PRIVINS);
+>>>>>>> refs/remotes/origin/cm-10.0
 	CI(endian, ENDIAN);
 
 	CI(use_icache, USE_ICACHE);

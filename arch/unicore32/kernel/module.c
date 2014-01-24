@@ -37,6 +37,7 @@ void *module_alloc(unsigned long size)
 	return __vmalloc_area(area, GFP_KERNEL, PAGE_KERNEL_EXEC);
 }
 
+<<<<<<< HEAD
 void module_free(struct module *module, void *region)
 {
 	vfree(region);
@@ -50,6 +51,8 @@ int module_frob_arch_sections(Elf_Ehdr *hdr,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int
 apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 	       unsigned int relindex, struct module *module)
@@ -128,6 +131,7 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 
 int
 apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
@@ -150,3 +154,5 @@ void
 module_arch_cleanup(struct module *mod)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

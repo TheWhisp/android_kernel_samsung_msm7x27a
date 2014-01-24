@@ -16,19 +16,30 @@
 
 #define DMAOR_INIT	DMAOR_DME
 
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_SUBTYPE_SH7343) || \
 	defined(CONFIG_CPU_SUBTYPE_SH7730)
+=======
+#if defined(CONFIG_CPU_SUBTYPE_SH7343)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define CHCR_TS_LOW_MASK	0x00000018
 #define CHCR_TS_LOW_SHIFT	3
 #define CHCR_TS_HIGH_MASK	0
 #define CHCR_TS_HIGH_SHIFT	0
 #elif defined(CONFIG_CPU_SUBTYPE_SH7722) || \
+<<<<<<< HEAD
 	defined(CONFIG_CPU_SUBTYPE_SH7724) || \
+=======
+	defined(CONFIG_CPU_SUBTYPE_SH7723) || \
+	defined(CONFIG_CPU_SUBTYPE_SH7724) || \
+	defined(CONFIG_CPU_SUBTYPE_SH7730) || \
+>>>>>>> refs/remotes/origin/cm-10.0
 	defined(CONFIG_CPU_SUBTYPE_SH7786)
 #define CHCR_TS_LOW_MASK	0x00000018
 #define CHCR_TS_LOW_SHIFT	3
 #define CHCR_TS_HIGH_MASK	0x00300000
 #define CHCR_TS_HIGH_SHIFT	(20 - 2)	/* 2 bits for shifted low TS */
+<<<<<<< HEAD
 #elif defined(CONFIG_CPU_SUBTYPE_SH7763) || \
 	defined(CONFIG_CPU_SUBTYPE_SH7764)
 #define CHCR_TS_LOW_MASK	0x00000018
@@ -41,10 +52,18 @@
 #define CHCR_TS_HIGH_MASK	0
 #define CHCR_TS_HIGH_SHIFT	0
 #elif defined(CONFIG_CPU_SUBTYPE_SH7757)
+=======
+#elif defined(CONFIG_CPU_SUBTYPE_SH7757) || \
+	defined(CONFIG_CPU_SUBTYPE_SH7763) || \
+	defined(CONFIG_CPU_SUBTYPE_SH7764) || \
+	defined(CONFIG_CPU_SUBTYPE_SH7780) || \
+	defined(CONFIG_CPU_SUBTYPE_SH7785)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define CHCR_TS_LOW_MASK	0x00000018
 #define CHCR_TS_LOW_SHIFT	3
 #define CHCR_TS_HIGH_MASK	0x00100000
 #define CHCR_TS_HIGH_SHIFT	(20 - 2)	/* 2 bits for shifted low TS */
+<<<<<<< HEAD
 #elif defined(CONFIG_CPU_SUBTYPE_SH7780)
 #define CHCR_TS_LOW_MASK	0x00000018
 #define CHCR_TS_LOW_SHIFT	3
@@ -55,6 +74,8 @@
 #define CHCR_TS_LOW_SHIFT	3
 #define CHCR_TS_HIGH_MASK	0
 #define CHCR_TS_HIGH_SHIFT	0
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /* Transmit sizes and respective CHCR register values */

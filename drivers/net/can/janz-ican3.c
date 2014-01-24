@@ -22,6 +22,10 @@
 #include <linux/can/error.h>
 
 #include <linux/mfd/janz.h>
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* the DPM has 64k of memory, organized into 256x 256 byte pages */
 #define DPM_NUM_PAGES		256
@@ -1800,6 +1804,7 @@ static struct platform_driver ican3_driver = {
 	.remove		= __devexit_p(ican3_remove),
 };
 
+<<<<<<< HEAD
 static int __init ican3_init(void)
 {
 	return platform_driver_register(&ican3_driver);
@@ -1809,11 +1814,17 @@ static void __exit ican3_exit(void)
 {
 	platform_driver_unregister(&ican3_driver);
 }
+=======
+module_platform_driver(ican3_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Ira W. Snyder <iws@ovro.caltech.edu>");
 MODULE_DESCRIPTION("Janz MODULbus VMOD-ICAN3 Driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:janz-ican3");
+<<<<<<< HEAD
 
 module_init(ican3_init);
 module_exit(ican3_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

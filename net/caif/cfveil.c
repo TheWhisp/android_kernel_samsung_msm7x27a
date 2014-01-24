@@ -25,6 +25,7 @@ static int cfvei_transmit(struct cflayer *layr, struct cfpkt *pkt);
 
 struct cflayer *cfvei_create(u8 channel_id, struct dev_info *dev_info)
 {
+<<<<<<< HEAD
 	struct cfsrvl *vei = kmalloc(sizeof(struct cfsrvl), GFP_ATOMIC);
 	if (!vei) {
 		pr_warn("Out of memory\n");
@@ -32,6 +33,12 @@ struct cflayer *cfvei_create(u8 channel_id, struct dev_info *dev_info)
 	}
 	caif_assert(offsetof(struct cfsrvl, layer) == 0);
 	memset(vei, 0, sizeof(struct cfsrvl));
+=======
+	struct cfsrvl *vei = kzalloc(sizeof(struct cfsrvl), GFP_ATOMIC);
+	if (!vei)
+		return NULL;
+	caif_assert(offsetof(struct cfsrvl, layer) == 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cfsrvl_init(vei, channel_id, dev_info, true);
 	vei->layer.receive = cfvei_receive;
 	vei->layer.transmit = cfvei_transmit;

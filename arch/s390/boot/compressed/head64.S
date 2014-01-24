@@ -7,14 +7,22 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/asm-offsets.h>
 #include <asm/thread_info.h>
 #include <asm/page.h>
 #include "sizes.h"
 
 __HEAD
+<<<<<<< HEAD
 	.globl	startup_continue
 startup_continue:
+=======
+ENTRY(startup_continue)
+>>>>>>> refs/remotes/origin/cm-10.0
 	basr	%r13,0			# get base
 .LPG1:
 	# setup stack

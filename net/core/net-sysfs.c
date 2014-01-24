@@ -20,6 +20,11 @@
 #include <linux/rtnetlink.h>
 #include <linux/wireless.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/wext.h>
 
 #include "net-sysfs.h"
@@ -100,7 +105,10 @@ NETDEVICE_SHOW(addr_assign_type, fmt_dec);
 NETDEVICE_SHOW(addr_len, fmt_dec);
 NETDEVICE_SHOW(iflink, fmt_dec);
 NETDEVICE_SHOW(ifindex, fmt_dec);
+<<<<<<< HEAD
 NETDEVICE_SHOW(features, fmt_hex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 NETDEVICE_SHOW(type, fmt_dec);
 NETDEVICE_SHOW(link_mode, fmt_dec);
 
@@ -148,7 +156,11 @@ static ssize_t show_speed(struct device *dev,
 
 	if (netif_running(netdev)) {
 		struct ethtool_cmd cmd;
+<<<<<<< HEAD
 		if (!dev_ethtool_get_settings(netdev, &cmd))
+=======
+		if (!__ethtool_get_settings(netdev, &cmd))
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = sprintf(buf, fmt_udec, ethtool_cmd_speed(&cmd));
 	}
 	rtnl_unlock();
@@ -166,7 +178,11 @@ static ssize_t show_duplex(struct device *dev,
 
 	if (netif_running(netdev)) {
 		struct ethtool_cmd cmd;
+<<<<<<< HEAD
 		if (!dev_ethtool_get_settings(netdev, &cmd))
+=======
+		if (!__ethtool_get_settings(netdev, &cmd))
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = sprintf(buf, "%s\n",
 				      cmd.duplex ? "full" : "half");
 	}
@@ -312,7 +328,10 @@ static struct device_attribute net_class_attributes[] = {
 	__ATTR(ifalias, S_IRUGO | S_IWUSR, show_ifalias, store_ifalias),
 	__ATTR(iflink, S_IRUGO, show_iflink, NULL),
 	__ATTR(ifindex, S_IRUGO, show_ifindex, NULL),
+<<<<<<< HEAD
 	__ATTR(features, S_IRUGO, show_features, NULL),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	__ATTR(type, S_IRUGO, show_type, NULL),
 	__ATTR(link_mode, S_IRUGO, show_link_mode, NULL),
 	__ATTR(address, S_IRUGO, show_address, NULL),
@@ -607,9 +626,18 @@ static ssize_t store_rps_map(struct netdev_rx_queue *queue,
 	rcu_assign_pointer(queue->rps_map, map);
 	spin_unlock(&rps_map_lock);
 
+<<<<<<< HEAD
 	if (old_map)
 		kfree_rcu(old_map, rcu);
 
+=======
+	if (map)
+		static_key_slow_inc(&rps_needed);
+	if (old_map) {
+		kfree_rcu(old_map, rcu);
+		static_key_slow_dec(&rps_needed);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	free_cpumask_var(mask);
 	return len;
 }
@@ -619,15 +647,26 @@ static ssize_t show_rps_dev_flow_table_cnt(struct netdev_rx_queue *queue,
 					   char *buf)
 {
 	struct rps_dev_flow_table *flow_table;
+<<<<<<< HEAD
 	unsigned int val = 0;
+=======
+	unsigned long val = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rcu_read_lock();
 	flow_table = rcu_dereference(queue->rps_flow_table);
 	if (flow_table)
+<<<<<<< HEAD
 		val = flow_table->mask + 1;
 	rcu_read_unlock();
 
 	return sprintf(buf, "%u\n", val);
+=======
+		val = (unsigned long)flow_table->mask + 1;
+	rcu_read_unlock();
+
+	return sprintf(buf, "%lu\n", val);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void rps_dev_flow_table_release_work(struct work_struct *work)
@@ -651,14 +690,22 @@ static ssize_t store_rps_dev_flow_table_cnt(struct netdev_rx_queue *queue,
 				     struct rx_queue_attribute *attr,
 				     const char *buf, size_t len)
 {
+<<<<<<< HEAD
 	unsigned int count;
 	char *endp;
 	struct rps_dev_flow_table *table, *old_table;
 	static DEFINE_SPINLOCK(rps_dev_flow_lock);
+=======
+	unsigned long mask, count;
+	struct rps_dev_flow_table *table, *old_table;
+	static DEFINE_SPINLOCK(rps_dev_flow_lock);
+	int rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!capable(CAP_NET_ADMIN))
 		return -EPERM;
 
+<<<<<<< HEAD
 	count = simple_strtoul(buf, &endp, 0);
 	if (endp == buf)
 		return -EINVAL;
@@ -678,6 +725,40 @@ static ssize_t store_rps_dev_flow_table_cnt(struct netdev_rx_queue *queue,
 		table->mask = count - 1;
 		for (i = 0; i < count; i++)
 			table->flows[i].cpu = RPS_NO_CPU;
+=======
+	rc = kstrtoul(buf, 0, &count);
+	if (rc < 0)
+		return rc;
+
+	if (count) {
+		mask = count - 1;
+		/* mask = roundup_pow_of_two(count) - 1;
+		 * without overflows...
+		 */
+		while ((mask | (mask >> 1)) != mask)
+			mask |= (mask >> 1);
+		/* On 64 bit arches, must check mask fits in table->mask (u32),
+		 * and on 32bit arches, must check RPS_DEV_FLOW_TABLE_SIZE(mask + 1)
+		 * doesnt overflow.
+		 */
+#if BITS_PER_LONG > 32
+		if (mask > (unsigned long)(u32)mask)
+			return -EINVAL;
+#else
+		if (mask > (ULONG_MAX - RPS_DEV_FLOW_TABLE_SIZE(1))
+				/ sizeof(struct rps_dev_flow)) {
+			/* Enforce a limit to prevent overflow */
+			return -EINVAL;
+		}
+#endif
+		table = vmalloc(RPS_DEV_FLOW_TABLE_SIZE(mask + 1));
+		if (!table)
+			return -ENOMEM;
+
+		table->mask = mask;
+		for (count = 0; count <= mask; count++)
+			table->flows[count].cpu = RPS_NO_CPU;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		table = NULL;
 
@@ -714,13 +795,21 @@ static void rx_queue_release(struct kobject *kobj)
 	struct rps_dev_flow_table *flow_table;
 
 
+<<<<<<< HEAD
 	map = rcu_dereference_raw(queue->rps_map);
+=======
+	map = rcu_dereference_protected(queue->rps_map, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (map) {
 		RCU_INIT_POINTER(queue->rps_map, NULL);
 		kfree_rcu(map, rcu);
 	}
 
+<<<<<<< HEAD
 	flow_table = rcu_dereference_raw(queue->rps_flow_table);
+=======
+	flow_table = rcu_dereference_protected(queue->rps_flow_table, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (flow_table) {
 		RCU_INIT_POINTER(queue->rps_flow_table, NULL);
 		call_rcu(&flow_table->rcu, rps_dev_flow_table_release);
@@ -781,7 +870,11 @@ net_rx_queue_update_kobjects(struct net_device *net, int old_num, int new_num)
 #endif
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_XPS
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * netdev_queue sysfs structures and functions.
  */
@@ -827,6 +920,136 @@ static const struct sysfs_ops netdev_queue_sysfs_ops = {
 	.store = netdev_queue_attr_store,
 };
 
+<<<<<<< HEAD
+=======
+static ssize_t show_trans_timeout(struct netdev_queue *queue,
+				  struct netdev_queue_attribute *attribute,
+				  char *buf)
+{
+	unsigned long trans_timeout;
+
+	spin_lock_irq(&queue->_xmit_lock);
+	trans_timeout = queue->trans_timeout;
+	spin_unlock_irq(&queue->_xmit_lock);
+
+	return sprintf(buf, "%lu", trans_timeout);
+}
+
+static struct netdev_queue_attribute queue_trans_timeout =
+	__ATTR(tx_timeout, S_IRUGO, show_trans_timeout, NULL);
+
+#ifdef CONFIG_BQL
+/*
+ * Byte queue limits sysfs structures and functions.
+ */
+static ssize_t bql_show(char *buf, unsigned int value)
+{
+	return sprintf(buf, "%u\n", value);
+}
+
+static ssize_t bql_set(const char *buf, const size_t count,
+		       unsigned int *pvalue)
+{
+	unsigned int value;
+	int err;
+
+	if (!strcmp(buf, "max") || !strcmp(buf, "max\n"))
+		value = DQL_MAX_LIMIT;
+	else {
+		err = kstrtouint(buf, 10, &value);
+		if (err < 0)
+			return err;
+		if (value > DQL_MAX_LIMIT)
+			return -EINVAL;
+	}
+
+	*pvalue = value;
+
+	return count;
+}
+
+static ssize_t bql_show_hold_time(struct netdev_queue *queue,
+				  struct netdev_queue_attribute *attr,
+				  char *buf)
+{
+	struct dql *dql = &queue->dql;
+
+	return sprintf(buf, "%u\n", jiffies_to_msecs(dql->slack_hold_time));
+}
+
+static ssize_t bql_set_hold_time(struct netdev_queue *queue,
+				 struct netdev_queue_attribute *attribute,
+				 const char *buf, size_t len)
+{
+	struct dql *dql = &queue->dql;
+	unsigned value;
+	int err;
+
+	err = kstrtouint(buf, 10, &value);
+	if (err < 0)
+		return err;
+
+	dql->slack_hold_time = msecs_to_jiffies(value);
+
+	return len;
+}
+
+static struct netdev_queue_attribute bql_hold_time_attribute =
+	__ATTR(hold_time, S_IRUGO | S_IWUSR, bql_show_hold_time,
+	    bql_set_hold_time);
+
+static ssize_t bql_show_inflight(struct netdev_queue *queue,
+				 struct netdev_queue_attribute *attr,
+				 char *buf)
+{
+	struct dql *dql = &queue->dql;
+
+	return sprintf(buf, "%u\n", dql->num_queued - dql->num_completed);
+}
+
+static struct netdev_queue_attribute bql_inflight_attribute =
+	__ATTR(inflight, S_IRUGO, bql_show_inflight, NULL);
+
+#define BQL_ATTR(NAME, FIELD)						\
+static ssize_t bql_show_ ## NAME(struct netdev_queue *queue,		\
+				 struct netdev_queue_attribute *attr,	\
+				 char *buf)				\
+{									\
+	return bql_show(buf, queue->dql.FIELD);				\
+}									\
+									\
+static ssize_t bql_set_ ## NAME(struct netdev_queue *queue,		\
+				struct netdev_queue_attribute *attr,	\
+				const char *buf, size_t len)		\
+{									\
+	return bql_set(buf, len, &queue->dql.FIELD);			\
+}									\
+									\
+static struct netdev_queue_attribute bql_ ## NAME ## _attribute =	\
+	__ATTR(NAME, S_IRUGO | S_IWUSR, bql_show_ ## NAME,		\
+	    bql_set_ ## NAME);
+
+BQL_ATTR(limit, limit)
+BQL_ATTR(limit_max, max_limit)
+BQL_ATTR(limit_min, min_limit)
+
+static struct attribute *dql_attrs[] = {
+	&bql_limit_attribute.attr,
+	&bql_limit_max_attribute.attr,
+	&bql_limit_min_attribute.attr,
+	&bql_hold_time_attribute.attr,
+	&bql_inflight_attribute.attr,
+	NULL
+};
+
+static struct attribute_group dql_group = {
+	.name  = "byte_queue_limits",
+	.attrs  = dql_attrs,
+};
+#endif /* CONFIG_BQL */
+
+#ifdef CONFIG_XPS
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline unsigned int get_netdev_queue_index(struct netdev_queue *queue)
 {
 	struct net_device *dev = queue->dev;
@@ -891,6 +1114,55 @@ static DEFINE_MUTEX(xps_map_mutex);
 #define xmap_dereference(P)		\
 	rcu_dereference_protected((P), lockdep_is_held(&xps_map_mutex))
 
+<<<<<<< HEAD
+=======
+static void xps_queue_release(struct netdev_queue *queue)
+{
+	struct net_device *dev = queue->dev;
+	struct xps_dev_maps *dev_maps;
+	struct xps_map *map;
+	unsigned long index;
+	int i, pos, nonempty = 0;
+
+	index = get_netdev_queue_index(queue);
+
+	mutex_lock(&xps_map_mutex);
+	dev_maps = xmap_dereference(dev->xps_maps);
+
+	if (dev_maps) {
+		for_each_possible_cpu(i) {
+			map = xmap_dereference(dev_maps->cpu_map[i]);
+			if (!map)
+				continue;
+
+			for (pos = 0; pos < map->len; pos++)
+				if (map->queues[pos] == index)
+					break;
+
+			if (pos < map->len) {
+				if (map->len > 1)
+					map->queues[pos] =
+					    map->queues[--map->len];
+				else {
+					RCU_INIT_POINTER(dev_maps->cpu_map[i],
+					    NULL);
+					kfree_rcu(map, rcu);
+					map = NULL;
+				}
+			}
+			if (map)
+				nonempty = 1;
+		}
+
+		if (!nonempty) {
+			RCU_INIT_POINTER(dev->xps_maps, NULL);
+			kfree_rcu(dev_maps, rcu);
+		}
+	}
+	mutex_unlock(&xps_map_mutex);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t store_xps_map(struct netdev_queue *queue,
 		      struct netdev_queue_attribute *attribute,
 		      const char *buf, size_t len)
@@ -902,7 +1174,11 @@ static ssize_t store_xps_map(struct netdev_queue *queue,
 	struct xps_map *map, *new_map;
 	struct xps_dev_maps *dev_maps, *new_dev_maps;
 	int nonempty = 0;
+<<<<<<< HEAD
 	int numa_node = -2;
+=======
+	int numa_node_id = -2;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!capable(CAP_NET_ADMIN))
 		return -EPERM;
@@ -945,10 +1221,17 @@ static ssize_t store_xps_map(struct netdev_queue *queue,
 		need_set = cpumask_test_cpu(cpu, mask) && cpu_online(cpu);
 #ifdef CONFIG_NUMA
 		if (need_set) {
+<<<<<<< HEAD
 			if (numa_node == -2)
 				numa_node = cpu_to_node(cpu);
 			else if (numa_node != cpu_to_node(cpu))
 				numa_node = -1;
+=======
+			if (numa_node_id == -2)
+				numa_node_id = cpu_to_node(cpu);
+			else if (numa_node_id != cpu_to_node(cpu))
+				numa_node_id = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 #endif
 		if (need_set && pos >= map_len) {
@@ -988,17 +1271,29 @@ static ssize_t store_xps_map(struct netdev_queue *queue,
 			nonempty = 1;
 	}
 
+<<<<<<< HEAD
 	if (nonempty)
 		rcu_assign_pointer(dev->xps_maps, new_dev_maps);
 	else {
 		kfree(new_dev_maps);
 		rcu_assign_pointer(dev->xps_maps, NULL);
+=======
+	if (nonempty) {
+		rcu_assign_pointer(dev->xps_maps, new_dev_maps);
+	} else {
+		kfree(new_dev_maps);
+		RCU_INIT_POINTER(dev->xps_maps, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (dev_maps)
 		kfree_rcu(dev_maps, rcu);
 
+<<<<<<< HEAD
 	netdev_queue_numa_node_write(queue, (numa_node >= 0) ? numa_node :
+=======
+	netdev_queue_numa_node_write(queue, (numa_node_id >= 0) ? numa_node_id :
+>>>>>>> refs/remotes/origin/cm-10.0
 					    NUMA_NO_NODE);
 
 	mutex_unlock(&xps_map_mutex);
@@ -1021,15 +1316,26 @@ error:
 
 static struct netdev_queue_attribute xps_cpus_attribute =
     __ATTR(xps_cpus, S_IRUGO | S_IWUSR, show_xps_map, store_xps_map);
+<<<<<<< HEAD
 
 static struct attribute *netdev_queue_default_attrs[] = {
 	&xps_cpus_attribute.attr,
+=======
+#endif /* CONFIG_XPS */
+
+static struct attribute *netdev_queue_default_attrs[] = {
+	&queue_trans_timeout.attr,
+#ifdef CONFIG_XPS
+	&xps_cpus_attribute.attr,
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL
 };
 
 static void netdev_queue_release(struct kobject *kobj)
 {
 	struct netdev_queue *queue = to_netdev_queue(kobj);
+<<<<<<< HEAD
 	struct net_device *dev = queue->dev;
 	struct xps_dev_maps *dev_maps;
 	struct xps_map *map;
@@ -1073,6 +1379,12 @@ static void netdev_queue_release(struct kobject *kobj)
 	}
 
 	mutex_unlock(&xps_map_mutex);
+=======
+
+#ifdef CONFIG_XPS
+	xps_queue_release(queue);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memset(kobj, 0, sizeof(*kobj));
 	dev_put(queue->dev);
@@ -1093,22 +1405,46 @@ static int netdev_queue_add_kobject(struct net_device *net, int index)
 	kobj->kset = net->queues_kset;
 	error = kobject_init_and_add(kobj, &netdev_queue_ktype, NULL,
 	    "tx-%u", index);
+<<<<<<< HEAD
 	if (error) {
 		kobject_put(kobj);
 		return error;
 	}
+=======
+	if (error)
+		goto exit;
+
+#ifdef CONFIG_BQL
+	error = sysfs_create_group(kobj, &dql_group);
+	if (error)
+		goto exit;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kobject_uevent(kobj, KOBJ_ADD);
 	dev_hold(queue->dev);
 
+<<<<<<< HEAD
 	return error;
 }
 #endif /* CONFIG_XPS */
+=======
+	return 0;
+exit:
+	kobject_put(kobj);
+	return error;
+}
+#endif /* CONFIG_SYSFS */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int
 netdev_queue_update_kobjects(struct net_device *net, int old_num, int new_num)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_XPS
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 	int error = 0;
 
@@ -1120,20 +1456,39 @@ netdev_queue_update_kobjects(struct net_device *net, int old_num, int new_num)
 		}
 	}
 
+<<<<<<< HEAD
 	while (--i >= new_num)
 		kobject_put(&net->_tx[i].kobj);
+=======
+	while (--i >= new_num) {
+		struct netdev_queue *queue = net->_tx + i;
+
+#ifdef CONFIG_BQL
+		sysfs_remove_group(&queue->kobj, &dql_group);
+#endif
+		kobject_put(&queue->kobj);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return error;
 #else
 	return 0;
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_SYSFS */
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int register_queue_kobjects(struct net_device *net)
 {
 	int error = 0, txq = 0, rxq = 0, real_rx = 0, real_tx = 0;
 
+<<<<<<< HEAD
 #if defined(CONFIG_RPS) || defined(CONFIG_XPS)
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/cm-10.0
 	net->queues_kset = kset_create_and_add("queues",
 	    NULL, &net->dev.kobj);
 	if (!net->queues_kset)
@@ -1174,7 +1529,11 @@ static void remove_queue_kobjects(struct net_device *net)
 
 	net_rx_queue_update_kobjects(net, real_rx, 0);
 	netdev_queue_update_kobjects(net, real_tx, 0);
+<<<<<<< HEAD
 #if defined(CONFIG_RPS) || defined(CONFIG_XPS)
+=======
+#ifdef CONFIG_SYSFS
+>>>>>>> refs/remotes/origin/cm-10.0
 	kset_unregister(net->queues_kset);
 #endif
 }

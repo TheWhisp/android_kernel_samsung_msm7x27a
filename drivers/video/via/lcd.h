@@ -76,16 +76,25 @@ void __devinit viafb_init_lvds_output_interface(struct lvds_chip_information
 				*plvds_chip_info,
 				struct lvds_setting_information
 				*plvds_setting_info);
+<<<<<<< HEAD
 void viafb_lcd_set_mode(struct crt_mode_table *mode_crt_table,
 		  struct lvds_setting_information *plvds_setting_info,
 		  struct lvds_chip_information *plvds_chip_info);
+=======
+void viafb_lcd_set_mode(const struct fb_var_screeninfo *var, u16 cxres,
+	u16 cyres, struct lvds_setting_information *plvds_setting_info,
+	struct lvds_chip_information *plvds_chip_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 bool __devinit viafb_lvds_trasmitter_identify(void);
 void viafb_init_lvds_output_interface(struct lvds_chip_information
 				*plvds_chip_info,
 				struct lvds_setting_information
 				*plvds_setting_info);
 bool viafb_lcd_get_mobile_state(bool *mobile);
+<<<<<<< HEAD
 void viafb_load_crtc_timing(struct display_timing device_timing,
 	int set_iga);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __LCD_H__ */

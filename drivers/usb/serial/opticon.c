@@ -32,7 +32,11 @@
  * an examples of 1D barcode types are EAN, UPC, Code39, IATA etc.. */
 #define DRIVER_DESC	"Opticon USB barcode to serial driver (1D)"
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct usb_device_id id_table[] = {
 	{ USB_DEVICE(0x065a, 0x0009) },
@@ -391,7 +395,10 @@ static void opticon_unthrottle(struct tty_struct *tty)
 	priv->actually_throttled = false;
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
 	priv->bulk_read_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (was_throttled) {
 		result = usb_submit_urb(priv->bulk_read_urb, GFP_ATOMIC);
 		if (result)
@@ -530,7 +537,11 @@ static int opticon_startup(struct usb_serial *serial)
 			goto error;
 		}
 
+<<<<<<< HEAD
 		priv->buffer_size = le16_to_cpu(endpoint->wMaxPacketSize) * 2;
+=======
+		priv->buffer_size = usb_endpoint_maxp(endpoint) * 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->bulk_in_buffer = kmalloc(priv->buffer_size, GFP_KERNEL);
 		if (!priv->bulk_in_buffer) {
 			dev_err(&priv->udev->dev, "out of memory\n");
@@ -612,7 +623,10 @@ static struct usb_driver opticon_driver = {
 	.suspend =	opticon_suspend,
 	.resume =	opticon_resume,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver opticon_device = {
@@ -621,7 +635,10 @@ static struct usb_serial_driver opticon_device = {
 		.name =		"opticon",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver = 		&opticon_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports =		1,
 	.attach =		opticon_startup,
 	.open =			opticon_open,
@@ -637,6 +654,7 @@ static struct usb_serial_driver opticon_device = {
 	.tiocmset =		opticon_tiocmset,
 };
 
+<<<<<<< HEAD
 static int __init opticon_init(void)
 {
 	int retval;
@@ -658,6 +676,14 @@ static void __exit opticon_exit(void)
 
 module_init(opticon_init);
 module_exit(opticon_exit);
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&opticon_device, NULL
+};
+
+module_usb_serial_driver(opticon_driver, serial_drivers);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 

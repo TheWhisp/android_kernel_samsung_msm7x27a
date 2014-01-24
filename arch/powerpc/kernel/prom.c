@@ -27,7 +27,11 @@
 #include <linux/delay.h>
 #include <linux/initrd.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kexec.h>
 #include <linux/debugfs.h>
 #include <linux/irq.h>
@@ -41,7 +45,10 @@
 #include <asm/io.h>
 #include <asm/kdump.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mmu.h>
 #include <asm/paca.h>
 #include <asm/pgtable.h>
@@ -52,8 +59,15 @@
 #include <asm/machdep.h>
 #include <asm/pSeries_reconfig.h>
 #include <asm/pci-bridge.h>
+<<<<<<< HEAD
 #include <asm/phyp_dump.h>
 #include <asm/kexec.h>
+=======
+#include <asm/kexec.h>
+#include <asm/opal.h>
+#include <asm/fadump.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mm/mmu_decl.h>
 
 #ifdef DEBUG
@@ -69,6 +83,10 @@ unsigned long tce_alloc_start, tce_alloc_end;
 u64 ppc64_rma_size;
 #endif
 static phys_addr_t first_memblock_size;
+<<<<<<< HEAD
+=======
+static int __initdata boot_cpu_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init early_parse_mem(char *p)
 {
@@ -612,6 +630,7 @@ static void __init early_reserve_mem(void)
 	}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PHYP_DUMP
 /**
  * phyp_dump_calculate_reserve_size() - reserve variable boot area 5% or arg
@@ -692,6 +711,8 @@ static void __init phyp_dump_reserve_mem(void)
 static inline void __init phyp_dump_reserve_mem(void) {}
 #endif /* CONFIG_PHYP_DUMP  && CONFIG_PPC_RTAS */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init early_init_devtree(void *params)
 {
 	phys_addr_t limit;
@@ -706,11 +727,31 @@ void __init early_init_devtree(void *params)
 	of_scan_flat_dt(early_init_dt_scan_rtas, NULL);
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_PHYP_DUMP
 	/* scan tree to see if dump occurred during last boot */
 	of_scan_flat_dt(early_init_dt_scan_phyp_dump, NULL);
 #endif
 
+=======
+#ifdef CONFIG_PPC_POWERNV
+	/* Some machines might need OPAL info for debugging, grab it now. */
+	of_scan_flat_dt(early_init_dt_scan_opal, NULL);
+#endif
+
+#ifdef CONFIG_FA_DUMP
+	/* scan tree to see if dump is active during last boot */
+	of_scan_flat_dt(early_init_dt_scan_fw_dump, NULL);
+#endif
+
+	/* Pre-initialize the cmd_line with the content of boot_commmand_line,
+	 * which will be empty except when the content of the variable has
+	 * been overriden by a bootloading mechanism. This happens typically
+	 * with HAL takeover
+	 */
+	strlcpy(cmd_line, boot_command_line, COMMAND_LINE_SIZE);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Retrieve various informations from the /chosen node of the
 	 * device-tree, including the platform type, initrd location and
 	 * size, TCE reserve, and more ...
@@ -718,22 +759,35 @@ void __init early_init_devtree(void *params)
 	of_scan_flat_dt(early_init_dt_scan_chosen_ppc, cmd_line);
 
 	/* Scan memory nodes and rebuild MEMBLOCKs */
+<<<<<<< HEAD
 	memblock_init();
 
 	of_scan_flat_dt(early_init_dt_scan_root, NULL);
 	of_scan_flat_dt(early_init_dt_scan_memory_ppc, NULL);
 	setup_initial_memory_limit(memstart_addr, first_memblock_size);
+=======
+	of_scan_flat_dt(early_init_dt_scan_root, NULL);
+	of_scan_flat_dt(early_init_dt_scan_memory_ppc, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Save command line for /proc/cmdline and then parse parameters */
 	strlcpy(boot_command_line, cmd_line, COMMAND_LINE_SIZE);
 	parse_early_param();
 
+<<<<<<< HEAD
+=======
+	/* make sure we've parsed cmdline for mem= before this */
+	if (memory_limit)
+		first_memblock_size = min(first_memblock_size, memory_limit);
+	setup_initial_memory_limit(memstart_addr, first_memblock_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Reserve MEMBLOCK regions used by kernel, initrd, dt, etc... */
 	memblock_reserve(PHYSICAL_START, __pa(klimit) - PHYSICAL_START);
 	/* If relocatable, reserve first 32k for interrupt vectors etc. */
 	if (PHYSICAL_START > MEMORY_START)
 		memblock_reserve(MEMORY_START, 0x8000);
 	reserve_kdump_trampoline();
+<<<<<<< HEAD
 	reserve_crashkernel();
 	early_reserve_mem();
 	phyp_dump_reserve_mem();
@@ -752,6 +806,26 @@ void __init early_init_devtree(void *params)
 	memblock_enforce_memory_limit(limit);
 
 	memblock_analyze();
+=======
+#ifdef CONFIG_FA_DUMP
+	/*
+	 * If we fail to reserve memory for firmware-assisted dump then
+	 * fallback to kexec based kdump.
+	 */
+	if (fadump_reserve_mem() == 0)
+#endif
+		reserve_crashkernel();
+	early_reserve_mem();
+
+	/*
+	 * Ensure that total memory size is page-aligned, because otherwise
+	 * mark_bootmem() gets upset.
+	 */
+	limit = ALIGN(memory_limit ?: memblock_phys_mem_size(), PAGE_SIZE);
+	memblock_enforce_memory_limit(limit);
+
+	memblock_allow_resize();
+>>>>>>> refs/remotes/origin/cm-10.0
 	memblock_dump_all();
 
 	DBG("Phys. mem: %llx\n", memblock_phys_mem_size());
@@ -769,6 +843,16 @@ void __init early_init_devtree(void *params)
 	 */
 	of_scan_flat_dt(early_init_dt_scan_cpus, NULL);
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SMP) && defined(CONFIG_PPC64)
+	/* We'll later wait for secondaries to check in; there are
+	 * NCPUS-1 non-boot CPUs  :-)
+	 */
+	spinning_secondaries = boot_cpu_count - 1;
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	DBG(" <- early_init_devtree()\n");
 }
 
@@ -862,6 +946,7 @@ static int prom_reconfig_notifier(struct notifier_block *nb,
 	switch (action) {
 	case PSERIES_RECONFIG_ADD:
 		err = of_finish_dynamic_node(node);
+<<<<<<< HEAD
 		if (err < 0) {
 			printk(KERN_ERR "finish_node returned %d\n", err);
 			err = NOTIFY_BAD;
@@ -872,6 +957,16 @@ static int prom_reconfig_notifier(struct notifier_block *nb,
 		break;
 	}
 	return err;
+=======
+		if (err < 0)
+			printk(KERN_ERR "finish_node returned %d\n", err);
+		break;
+	default:
+		err = 0;
+		break;
+	}
+	return notifier_from_errno(err);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct notifier_block prom_reconfig_nb = {

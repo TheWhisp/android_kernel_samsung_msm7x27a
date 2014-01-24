@@ -7,6 +7,7 @@
  */
 
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/irq.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
@@ -17,6 +18,13 @@
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+#include <linux/kernel.h>
+#include <linux/spi/spi.h>
+#include <linux/export.h>
+
+#include "../iio.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "../trigger.h"
 #include "ade7758.h"
 
@@ -57,6 +65,15 @@ static int ade7758_trig_try_reen(struct iio_trigger *trig)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static const struct iio_trigger_ops ade7758_trigger_ops = {
+	.owner = THIS_MODULE,
+	.set_trigger_state = &ade7758_data_rdy_trigger_set_state,
+	.try_reenable = &ade7758_trig_try_reen,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int ade7758_probe_trigger(struct iio_dev *indio_dev)
 {
 	struct ade7758_state *st = iio_priv(indio_dev);
@@ -79,10 +96,15 @@ int ade7758_probe_trigger(struct iio_dev *indio_dev)
 		goto error_free_trig;
 
 	st->trig->dev.parent = &st->us->dev;
+<<<<<<< HEAD
 	st->trig->owner = THIS_MODULE;
 	st->trig->private_data = indio_dev;
 	st->trig->set_trigger_state = &ade7758_data_rdy_trigger_set_state;
 	st->trig->try_reenable = &ade7758_trig_try_reen;
+=======
+	st->trig->ops = &ade7758_trigger_ops;
+	st->trig->private_data = indio_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = iio_trigger_register(st->trig);
 
 	/* select default trigger */

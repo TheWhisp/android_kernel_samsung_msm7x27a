@@ -213,6 +213,7 @@ static struct platform_driver adp5520_led_driver = {
 	.remove		= __devexit_p(adp5520_led_remove),
 };
 
+<<<<<<< HEAD
 static int __init adp5520_led_init(void)
 {
 	return platform_driver_register(&adp5520_led_driver);
@@ -224,6 +225,9 @@ static void __exit adp5520_led_exit(void)
 	platform_driver_unregister(&adp5520_led_driver);
 }
 module_exit(adp5520_led_exit);
+=======
+module_platform_driver(adp5520_led_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("LEDS ADP5520(01) Driver");

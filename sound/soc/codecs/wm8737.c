@@ -16,10 +16,17 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
+=======
+#include <linux/regulator/consumer.h>
+#include <linux/spi/spi.h>
+#include <linux/slab.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -520,7 +527,11 @@ static int wm8737_set_bias_level(struct snd_soc_codec *codec,
 #define WM8737_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8737_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8737_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.hw_params	= wm8737_hw_params,
 	.set_sysclk	= wm8737_set_dai_sysclk,
 	.set_fmt	= wm8737_set_dai_fmt,
@@ -539,7 +550,11 @@ static struct snd_soc_dai_driver wm8737_dai = {
 };
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 static int wm8737_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8737_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	wm8737_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -599,7 +614,11 @@ static int wm8737_probe(struct snd_soc_codec *codec)
 	/* Bias level configuration will have done an extra enable */
 	regulator_bulk_disable(ARRAY_SIZE(wm8737->supplies), wm8737->supplies);
 
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8737_snd_controls,
+=======
+	snd_soc_add_codec_controls(codec, wm8737_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     ARRAY_SIZE(wm8737_snd_controls));
 	wm8737_add_widgets(codec);
 
@@ -634,6 +653,16 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8737 = {
 	.reg_cache_default = wm8737_reg,
 };
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id wm8737_of_match[] = {
+	{ .compatible = "wlf,wm8737", },
+	{ }
+};
+
+MODULE_DEVICE_TABLE(of, wm8737_of_match);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm8737_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
@@ -673,6 +702,10 @@ static struct i2c_driver wm8737_i2c_driver = {
 	.driver = {
 		.name = "wm8737",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = wm8737_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe =    wm8737_i2c_probe,
 	.remove =   __devexit_p(wm8737_i2c_remove),
@@ -711,6 +744,10 @@ static struct spi_driver wm8737_spi_driver = {
 	.driver = {
 		.name	= "wm8737",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = wm8737_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe		= wm8737_spi_probe,
 	.remove		= __devexit_p(wm8737_spi_remove),

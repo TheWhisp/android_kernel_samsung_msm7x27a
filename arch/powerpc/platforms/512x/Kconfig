@@ -6,12 +6,19 @@ config PPC_MPC512x
 	select PPC_CLOCK
 	select PPC_PCI_CHOICE
 	select FSL_PCI if PCI
+<<<<<<< HEAD
+=======
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config MPC5121_ADS
 	bool "Freescale MPC5121E ADS"
 	depends on PPC_MPC512x
 	select DEFAULT_UIMAGE
+<<<<<<< HEAD
 	select MPC5121_ADS_CPLD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the MPC5121E ADS board.
 

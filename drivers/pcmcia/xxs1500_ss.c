@@ -21,7 +21,10 @@
 #include <pcmcia/cistpl.h>
 
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-au1x00/au1000.h>
 
 #define MEM_MAP_SIZE	0x400000
@@ -321,6 +324,7 @@ static struct platform_driver xxs1500_pcmcia_socket_driver = {
 	.remove		= __devexit_p(xxs1500_pcmcia_remove),
 };
 
+<<<<<<< HEAD
 int __init xxs1500_pcmcia_socket_load(void)
 {
 	return platform_driver_register(&xxs1500_pcmcia_socket_driver);
@@ -333,6 +337,9 @@ void  __exit xxs1500_pcmcia_socket_unload(void)
 
 module_init(xxs1500_pcmcia_socket_load);
 module_exit(xxs1500_pcmcia_socket_unload);
+=======
+module_platform_driver(xxs1500_pcmcia_socket_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("PCMCIA Socket Services for MyCable XXS1500 systems");

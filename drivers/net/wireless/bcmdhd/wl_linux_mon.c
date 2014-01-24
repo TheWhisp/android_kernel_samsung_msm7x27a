@@ -1,9 +1,15 @@
 /*
  * Broadcom Dongle Host Driver (DHD), Linux monitor network interface
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,9 +27,16 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: wl_linux_mon.c 303266 2011-12-16 00:15:23Z $
  */
 
+=======
+ * $Id: dhd_linux_mon.c 280623 2011-08-30 14:49:39Z $
+ */
+
+#include <osl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string.h>
 #include <linux/module.h>
 #include <linux/netdevice.h>
@@ -35,7 +48,10 @@
 
 #include <wlioctl.h>
 #include <bcmutils.h>
+<<<<<<< HEAD
 #include <linux_osl.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <dhd_dbg.h>
 #include <dngl_stats.h>
 #include <dhd.h>
@@ -47,11 +63,25 @@ typedef enum monitor_states
 	MONITOR_STATE_INTERFACE_ADDED = 0x2,
 	MONITOR_STATE_INTERFACE_DELETED = 0x4
 } monitor_states_t;
+<<<<<<< HEAD
 extern int dhd_start_xmit(struct sk_buff *skb, struct net_device *net);
+=======
+int dhd_add_monitor(char *name, struct net_device **new_ndev);
+extern int dhd_start_xmit(struct sk_buff *skb, struct net_device *net);
+int dhd_del_monitor(struct net_device *ndev);
+int dhd_monitor_init(void *dhd_pub);
+int dhd_monitor_uninit(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * Local declarations and defintions (not exposed)
  */
+<<<<<<< HEAD
+=======
+#ifndef DHD_MAX_IFS
+#define DHD_MAX_IFS 16
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MON_PRINT(format, ...) printk("DHD-MON: %s " format, __func__, ##__VA_ARGS__)
 #define MON_TRACE MON_PRINT
 
@@ -82,7 +112,15 @@ static const struct net_device_ops dhd_mon_if_ops = {
 	.ndo_open		= dhd_mon_if_open,
 	.ndo_stop		= dhd_mon_if_stop,
 	.ndo_start_xmit		= dhd_mon_if_subif_start_xmit,
+<<<<<<< HEAD
 	.ndo_set_multicast_list = dhd_mon_if_set_multicast_list,
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 2, 0))
+	.ndo_set_rx_mode = dhd_mon_if_set_multicast_list,
+#else
+	.ndo_set_multicast_list = dhd_mon_if_set_multicast_list,
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_set_mac_address 	= dhd_mon_if_change_mac,
 };
 
@@ -95,11 +133,19 @@ static const struct net_device_ops dhd_mon_if_ops = {
  */
 static struct net_device* lookup_real_netdev(char *name)
 {
+<<<<<<< HEAD
+=======
+	struct net_device *ndev_found = NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 	int len = 0;
 	int last_name_len = 0;
 	struct net_device *ndev;
+<<<<<<< HEAD
 	struct net_device *ndev_found = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* We need to find interface "p2p-p2p-0" corresponding to monitor interface "mon-p2p-0",
 	 * Once mon iface name reaches IFNAMSIZ, it is reset to p2p0-0 and corresponding mon
@@ -219,6 +265,10 @@ static int dhd_mon_if_subif_start_xmit(struct sk_buff *skb, struct net_device *n
 		pdata = (unsigned char*)skb->data;
 		memcpy(pdata, dst_mac_addr, sizeof(dst_mac_addr));
 		memcpy(pdata + sizeof(dst_mac_addr), src_mac_addr, sizeof(src_mac_addr));
+<<<<<<< HEAD
+=======
+		PKTSETPRIO(skb, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		MON_PRINT("if name: %s, matched if name %s\n", ndev->name, mon_if->real_ndev->name);
 

@@ -442,7 +442,11 @@ static unsigned sysv_nblocks(struct super_block *s, loff_t size)
 
 int sysv_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat)
 {
+<<<<<<< HEAD
 	struct super_block *s = mnt->mnt_sb;
+=======
+	struct super_block *s = dentry->d_sb;
+>>>>>>> refs/remotes/origin/cm-10.0
 	generic_fillattr(dentry->d_inode, stat);
 	stat->blocks = (s->s_blocksize / 512) * sysv_nblocks(s, stat->size);
 	stat->blksize = s->s_blocksize;

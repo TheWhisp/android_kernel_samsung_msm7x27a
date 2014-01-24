@@ -7,7 +7,11 @@
 
 #define JUMP_LABEL_NOP_SIZE 4
 
+<<<<<<< HEAD
 static __always_inline bool arch_static_branch(struct jump_label_key *key)
+=======
+static __always_inline bool arch_static_branch(struct static_key *key)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 		asm goto("1:\n\t"
 			 "nop\n\t"

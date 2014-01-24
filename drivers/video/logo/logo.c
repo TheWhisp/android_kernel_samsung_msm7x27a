@@ -21,7 +21,11 @@
 #include <asm/bootinfo.h>
 #endif
 
+<<<<<<< HEAD
 static int nologo;
+=======
+static bool nologo;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(nologo, bool, 0);
 MODULE_PARM_DESC(nologo, "Disables startup logo");
 

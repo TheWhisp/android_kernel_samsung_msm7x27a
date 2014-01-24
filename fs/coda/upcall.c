@@ -14,7 +14,10 @@
  * improvements to the Coda project. Contact Peter Braam <coda@cs.cmu.edu>.
  */
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/signal.h>
 #include <linux/sched.h>
 #include <linux/types.h>

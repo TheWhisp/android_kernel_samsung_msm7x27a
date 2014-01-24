@@ -8,6 +8,7 @@
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation; either version 2 of the License, or
  *	(at your option) any later version.
+<<<<<<< HEAD
  *
  * (12/12/2002) ganesh
  * 	Added support for practically all devices supported by ActiveSync
@@ -42,6 +43,8 @@
  * (25/2/2002) ganesh
  * 	Added support for the HP Jornada 548 and 568. Completely untested.
  * 	Thanks to info from Heath Robinson and Arieh Davidoff.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/kernel.h>
@@ -68,7 +71,11 @@
 #define DRIVER_DESC "USB PocketPC PDA driver"
 
 static __u16 product, vendor;
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 static int connect_retries = KP_RETRIES;
 static int initial_wait;
 
@@ -544,7 +551,10 @@ static struct usb_driver ipaq_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	ipaq_id_table,
+<<<<<<< HEAD
 	.no_dynamic_id =	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -555,7 +565,10 @@ static struct usb_serial_driver ipaq_device = {
 		.name =		"ipaq",
 	},
 	.description =		"PocketPC PDA",
+<<<<<<< HEAD
 	.usb_driver =		&ipaq_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		ipaq_id_table,
 	.bulk_in_size =		256,
 	.bulk_out_size =	256,
@@ -564,6 +577,13 @@ static struct usb_serial_driver ipaq_device = {
 	.calc_num_ports =	ipaq_calc_num_ports,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ipaq_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int ipaq_open(struct tty_struct *tty,
 			struct usb_serial_port *port)
 {
@@ -658,13 +678,18 @@ static int ipaq_startup(struct usb_serial *serial)
 static int __init ipaq_init(void)
 {
 	int retval;
+<<<<<<< HEAD
 	retval = usb_serial_register(&ipaq_device);
 	if (retval)
 		goto failed_usb_serial_register;
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (vendor) {
 		ipaq_id_table[0].idVendor = vendor;
 		ipaq_id_table[0].idProduct = product;
 	}
+<<<<<<< HEAD
 	retval = usb_register(&ipaq_driver);
 	if (retval)
 		goto failed_usb_register;
@@ -675,13 +700,24 @@ static int __init ipaq_init(void)
 failed_usb_register:
 	usb_serial_deregister(&ipaq_device);
 failed_usb_serial_register:
+=======
+
+	retval = usb_serial_register_drivers(&ipaq_driver, serial_drivers);
+	if (retval == 0)
+		printk(KERN_INFO KBUILD_MODNAME ": " DRIVER_VERSION ":"
+			       DRIVER_DESC "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
 static void __exit ipaq_exit(void)
 {
+<<<<<<< HEAD
 	usb_deregister(&ipaq_driver);
 	usb_serial_deregister(&ipaq_device);
+=======
+	usb_serial_deregister_drivers(&ipaq_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 

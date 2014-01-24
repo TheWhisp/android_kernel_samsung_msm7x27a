@@ -40,6 +40,10 @@
 ******************************************************************************/
 
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/kernel.h>
 #include <linux/ptrace.h>
@@ -49,7 +53,10 @@
 #include <linux/timer.h>
 #include <asm/byteorder.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <linux/module.h>
 #include <linux/netdevice.h>
@@ -1532,10 +1539,16 @@ struct net_device *init_atmel_card(unsigned short irq, unsigned long port,
 
 	/* Create the network device object. */
 	dev = alloc_etherdev(sizeof(*priv));
+<<<<<<< HEAD
 	if (!dev) {
 		printk(KERN_ERR "atmel: Couldn't alloc_etherdev\n");
 		return NULL;
 	}
+=======
+	if (!dev)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dev_alloc_name(dev, dev->name) < 0) {
 		printk(KERN_ERR "atmel: Couldn't get name!\n");
 		goto err_out_free;

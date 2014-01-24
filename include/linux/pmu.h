@@ -6,6 +6,11 @@
  * Copyright (C) 1998 Paul Mackerras.
  */
 
+<<<<<<< HEAD
+=======
+#ifndef _LINUX_PMU_H
+#define _LINUX_PMU_H
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PMU_DRIVER_VERSION	2
 
@@ -207,3 +212,8 @@ extern int pmu_sys_suspended;
 #endif
 
 #endif	/* __KERNEL__ */
+<<<<<<< HEAD
+=======
+
+#endif /* _LINUX_PMU_H */
+>>>>>>> refs/remotes/origin/cm-10.0

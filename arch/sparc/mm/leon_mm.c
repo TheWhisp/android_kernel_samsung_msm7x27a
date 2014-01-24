@@ -162,7 +162,11 @@ ready:
 		printk(KERN_INFO "swprobe: padde %x\n", paddr_calc);
 	if (paddr)
 		*paddr = paddr_calc;
+<<<<<<< HEAD
 	return paddrbase;
+=======
+	return pte;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void leon_flush_icache_all(void)

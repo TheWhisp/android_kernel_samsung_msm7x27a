@@ -4,7 +4,11 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mm.h>
 #include <linux/errno.h>
 #include <linux/file.h>
@@ -27,12 +31,21 @@ void generic_fillattr(struct inode *inode, struct kstat *stat)
 	stat->uid = inode->i_uid;
 	stat->gid = inode->i_gid;
 	stat->rdev = inode->i_rdev;
+<<<<<<< HEAD
 	stat->atime = inode->i_atime;
 	stat->mtime = inode->i_mtime;
 	stat->ctime = inode->i_ctime;
 	stat->size = i_size_read(inode);
 	stat->blocks = inode->i_blocks;
 	stat->blksize = (1 << inode->i_blkbits);
+=======
+	stat->size = i_size_read(inode);
+	stat->atime = inode->i_atime;
+	stat->mtime = inode->i_mtime;
+	stat->ctime = inode->i_ctime;
+	stat->blksize = (1 << inode->i_blkbits);
+	stat->blocks = inode->i_blocks;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 EXPORT_SYMBOL(generic_fillattr);
@@ -81,8 +94,11 @@ int vfs_fstatat(int dfd, const char __user *filename, struct kstat *stat,
 
 	if (!(flag & AT_SYMLINK_NOFOLLOW))
 		lookup_flags |= LOOKUP_FOLLOW;
+<<<<<<< HEAD
 	if (flag & AT_NO_AUTOMOUNT)
 		lookup_flags |= LOOKUP_NO_AUTOMOUNT;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (flag & AT_EMPTY_PATH)
 		lookup_flags |= LOOKUP_EMPTY;
 
@@ -309,7 +325,11 @@ SYSCALL_DEFINE4(readlinkat, int, dfd, const char __user *, pathname,
 		if (inode->i_op->readlink) {
 			error = security_inode_readlink(path.dentry);
 			if (!error) {
+<<<<<<< HEAD
 				touch_atime(path.mnt, path.dentry);
+=======
+				touch_atime(&path);
+>>>>>>> refs/remotes/origin/cm-10.0
 				error = inode->i_op->readlink(path.dentry,
 							      buf, bufsiz);
 			}

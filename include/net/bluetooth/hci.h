@@ -1,6 +1,10 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2013 The Linux Foundation. All rights reserved.
+=======
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -412,11 +416,14 @@ struct hci_cp_read_remote_version {
 	__le16   handle;
 } __packed;
 
+<<<<<<< HEAD
 #define HCI_OP_READ_CLOCK_OFFSET	0x041f
 struct hci_cp_read_clock_offset {
 	__le16   handle;
 } __packed;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HCI_OP_SETUP_SYNC_CONN		0x0428
 struct hci_cp_setup_sync_conn {
 	__le16   handle;
@@ -972,6 +979,7 @@ struct hci_cp_le_create_conn {
 
 #define HCI_OP_LE_CREATE_CONN_CANCEL	0x200e
 
+<<<<<<< HEAD
 #define HCI_OP_LE_READ_WHITE_LIST_SIZE	0x200F
 struct hci_rp_le_read_white_list_size {
 	__u8     status;
@@ -992,6 +1000,8 @@ struct hci_cp_le_remove_dev_white_list {
 	bdaddr_t addr;
 } __packed;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HCI_OP_LE_CONN_UPDATE		0x2013
 struct hci_cp_le_conn_update {
 	__le16   handle;
@@ -1145,11 +1155,14 @@ struct hci_ev_cmd_status {
 	__le16   opcode;
 } __packed;
 
+<<<<<<< HEAD
 #define HCI_EV_HARDWARE_ERROR		0x10
 struct hci_ev_hardware_error {
 	__u8   hw_err_code;
 } __packed;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HCI_EV_ROLE_CHANGE		0x12
 struct hci_ev_role_change {
 	__u8     status;

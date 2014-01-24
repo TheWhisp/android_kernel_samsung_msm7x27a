@@ -22,6 +22,10 @@
 #include <linux/kernel.h>
 #include <linux/pci.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/gfp.h>
 
@@ -49,6 +53,12 @@ void * __devinit update_dn_pci_info(struct device_node *dn, void *data)
 	dn->data = pdn;
 	pdn->node = dn;
 	pdn->phb = phb;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_POWERNV
+	pdn->pe_number = IODA_INVALID_PE;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	regs = of_get_property(dn, "reg", NULL);
 	if (regs) {
 		/* First register entry is addr (00BBSS00)  */
@@ -142,6 +152,7 @@ void __devinit pci_devs_phb_init_dynamic(struct pci_controller *phb)
 	traverse_pci_devices(dn, update_dn_pci_info, phb);
 }
 
+<<<<<<< HEAD
 /*
  * Traversal func that looks for a <busno,devfcn> value.
  * If found, the pci_dn is returned (thus terminating the traversal).
@@ -189,6 +200,8 @@ struct device_node *fetch_dev_dn(struct pci_dev *dev)
 }
 EXPORT_SYMBOL(fetch_dev_dn);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /** 
  * pci_devs_phb_init - Initialize phbs and pci devs under them.
  * 

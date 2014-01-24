@@ -15,6 +15,10 @@
 #include <linux/io.h>
 #include <linux/errno.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "powerdomain.h"
 #include <plat/prcm.h>

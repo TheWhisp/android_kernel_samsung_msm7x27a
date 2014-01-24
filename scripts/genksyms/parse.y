@@ -51,6 +51,28 @@ remove_list(struct string_list **pb, struct string_list **pe)
   free_list(b, e);
 }
 
+<<<<<<< HEAD
+=======
+/* Record definition of a struct/union/enum */
+static void record_compound(struct string_list **keyw,
+		       struct string_list **ident,
+		       struct string_list **body,
+		       enum symbol_type type)
+{
+	struct string_list *b = *body, *i = *ident, *r;
+
+	if (i->in_source_file) {
+		remove_node(keyw);
+		(*ident)->tag = type;
+		remove_list(body, ident);
+		return;
+	}
+	r = copy_node(i); r->tag = type;
+	r->next = (*keyw)->next; *body = r; (*keyw)->next = NULL;
+	add_symbol(i->string, type, b, is_extern);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 %}
 
 %token ASM_KEYW
@@ -215,6 +237,7 @@ type_specifier:
 
 	/* Full definitions of an s/u/e.  Record it.  */
 	| STRUCT_KEYW IDENT class_body
+<<<<<<< HEAD
 		{ struct string_list *s = *$3, *i = *$2, *r;
 		  r = copy_node(i); r->tag = SYM_STRUCT;
 		  r->next = (*$1)->next; *$3 = r; (*$1)->next = NULL;
@@ -235,6 +258,13 @@ type_specifier:
 		  add_symbol(i->string, SYM_ENUM, s, is_extern);
 		  $$ = $3;
 		}
+=======
+		{ record_compound($1, $2, $3, SYM_STRUCT); $$ = $3; }
+	| UNION_KEYW IDENT class_body
+		{ record_compound($1, $2, $3, SYM_UNION); $$ = $3; }
+	| ENUM_KEYW IDENT enum_body
+		{ record_compound($1, $2, $3, SYM_ENUM); $$ = $3; }
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Anonymous enum definition. Tell add_symbol() to restart its counter.
 	 */

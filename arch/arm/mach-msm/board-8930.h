@@ -13,13 +13,23 @@
 #ifndef __ARCH_ARM_MACH_MSM_BOARD_MSM8930_H
 #define __ARCH_ARM_MACH_MSM_BOARD_MSM8930_H
 
+<<<<<<< HEAD
 #include <linux/regulator/gpio-regulator.h>
+=======
+#define MSM8930_PHASE_2
+
+#include <linux/regulator/msm-gpio-regulator.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mfd/pm8xxx/pm8038.h>
 #include <linux/i2c.h>
 #include <linux/i2c/sx150x.h>
 #include <mach/irqs.h>
 #include <mach/rpm-regulator.h>
 #include <mach/msm_memtypes.h>
+<<<<<<< HEAD
+=======
+#include <mach/msm_rtb.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * TODO: When physical 8930/PM8038 hardware becomes
@@ -75,6 +85,12 @@ extern int msm8930_pm8038_regulator_pdata_len __devinitdata;
 extern struct gpio_regulator_platform_data
 	msm8930_gpio_regulator_pdata[] __devinitdata;
 
+<<<<<<< HEAD
+=======
+extern struct rpm_regulator_platform_data
+	msm8930_rpm_regulator_pdata __devinitdata;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_GPIO_SX150X) || defined(CONFIG_GPIO_SX150X_MODULE)
 enum {
 	GPIO_EXPANDER_IRQ_BASE = (PM8038_IRQ_BASE + PM8038_NR_IRQS),
@@ -104,6 +120,10 @@ extern struct msm_camera_board_info msm8930_camera_board_info;
 void msm8930_init_cam(void);
 void msm8930_init_fb(void);
 void msm8930_init_pmic(void);
+<<<<<<< HEAD
+=======
+extern void msm8930_add_vidc_device(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * TODO: When physical 8930/PM8038 hardware becomes
@@ -120,12 +140,27 @@ int msm8930_init_gpiomux(void);
 void msm8930_allocate_fb_region(void);
 void msm8930_pm8038_gpio_mpp_init(void);
 void msm8930_mdp_writeback(struct memtype_reserve *reserve_table);
+<<<<<<< HEAD
+=======
+void __init msm8930_init_gpu(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PLATFORM_IS_CHARM25() \
 	(machine_is_msm8930_cdp() && \
 		(socinfo_get_platform_subtype() == 1) \
 	)
 
+<<<<<<< HEAD
 #define MSM_8930_GSBI4_QUP_I2C_BUS_ID 4
 #define MSM_8930_GSBI3_QUP_I2C_BUS_ID 3
 #define MSM_8930_GSBI10_QUP_I2C_BUS_ID 10
+=======
+#define MSM_8930_GSBI3_QUP_I2C_BUS_ID 3
+#define MSM_8930_GSBI4_QUP_I2C_BUS_ID 4
+#define MSM_8930_GSBI9_QUP_I2C_BUS_ID 0
+#define MSM_8930_GSBI10_QUP_I2C_BUS_ID 10
+#define MSM_8930_GSBI12_QUP_I2C_BUS_ID 12
+
+extern struct msm_rtb_platform_data msm8930_rtb_pdata;
+extern struct msm_cache_dump_platform_data msm8930_cache_dump_pdata;
+>>>>>>> refs/remotes/origin/cm-10.0

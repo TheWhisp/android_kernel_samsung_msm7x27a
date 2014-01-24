@@ -25,6 +25,10 @@
 #include <linux/syscalls.h>
 #include <linux/perf_event.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/opcodes.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 #include <asm/uaccess.h>
 
@@ -236,7 +240,26 @@ static int swp_handler(struct pt_regs *regs, unsigned int instr)
 	unsigned int address, destreg, data, type;
 	unsigned int res = 0;
 
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, 0, regs, regs->ARM_pc);
+=======
+	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, regs->ARM_pc);
+
+	res = arm_check_condition(instr, regs->ARM_cpsr);
+	switch (res) {
+	case ARM_OPCODE_CONDTEST_PASS:
+		break;
+	case ARM_OPCODE_CONDTEST_FAIL:
+		/* Condition failed - return to next instruction */
+		regs->ARM_pc += 4;
+		return 0;
+	case ARM_OPCODE_CONDTEST_UNCOND:
+		/* If unconditional encoding - not a SWP, undef */
+		return -EFAULT;
+	default:
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (current->pid != previous_pid) {
 		pr_debug("\"%s\" (%ld) uses deprecated SWP{B} instruction\n",

@@ -28,9 +28,15 @@ MODULE_DESCRIPTION("Xtables: Connection redirection to localhost");
 /* FIXME: Take multiple ranges --RR */
 static int redirect_tg_check(const struct xt_tgchk_param *par)
 {
+<<<<<<< HEAD
 	const struct nf_nat_multi_range_compat *mr = par->targinfo;
 
 	if (mr->range[0].flags & IP_NAT_RANGE_MAP_IPS) {
+=======
+	const struct nf_nat_ipv4_multi_range_compat *mr = par->targinfo;
+
+	if (mr->range[0].flags & NF_NAT_RANGE_MAP_IPS) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_debug("bad MAP_IPS.\n");
 		return -EINVAL;
 	}
@@ -47,8 +53,13 @@ redirect_tg(struct sk_buff *skb, const struct xt_action_param *par)
 	struct nf_conn *ct;
 	enum ip_conntrack_info ctinfo;
 	__be32 newdst;
+<<<<<<< HEAD
 	const struct nf_nat_multi_range_compat *mr = par->targinfo;
 	struct nf_nat_range newrange;
+=======
+	const struct nf_nat_ipv4_multi_range_compat *mr = par->targinfo;
+	struct nf_nat_ipv4_range newrange;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	NF_CT_ASSERT(par->hooknum == NF_INET_PRE_ROUTING ||
 		     par->hooknum == NF_INET_LOCAL_OUT);
@@ -76,20 +87,33 @@ redirect_tg(struct sk_buff *skb, const struct xt_action_param *par)
 	}
 
 	/* Transfer from original range. */
+<<<<<<< HEAD
 	newrange = ((struct nf_nat_range)
 		{ mr->range[0].flags | IP_NAT_RANGE_MAP_IPS,
+=======
+	newrange = ((struct nf_nat_ipv4_range)
+		{ mr->range[0].flags | NF_NAT_RANGE_MAP_IPS,
+>>>>>>> refs/remotes/origin/cm-10.0
 		  newdst, newdst,
 		  mr->range[0].min, mr->range[0].max });
 
 	/* Hand modified range to generic setup. */
+<<<<<<< HEAD
 	return nf_nat_setup_info(ct, &newrange, IP_NAT_MANIP_DST);
+=======
+	return nf_nat_setup_info(ct, &newrange, NF_NAT_MANIP_DST);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct xt_target redirect_tg_reg __read_mostly = {
 	.name		= "REDIRECT",
 	.family		= NFPROTO_IPV4,
 	.target		= redirect_tg,
+<<<<<<< HEAD
 	.targetsize	= sizeof(struct nf_nat_multi_range_compat),
+=======
+	.targetsize	= sizeof(struct nf_nat_ipv4_multi_range_compat),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.table		= "nat",
 	.hooks		= (1 << NF_INET_PRE_ROUTING) | (1 << NF_INET_LOCAL_OUT),
 	.checkentry	= redirect_tg_check,

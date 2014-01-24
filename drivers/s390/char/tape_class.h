@@ -14,7 +14,10 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/major.h>
+<<<<<<< HEAD
 #include <linux/kobj_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/cdev.h>
 
 #include <linux/device.h>

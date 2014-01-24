@@ -59,7 +59,11 @@ static irqreturn_t xen_reschedule_interrupt(int irq, void *dev_id)
 
 static void __cpuinit cpu_bringup(void)
 {
+<<<<<<< HEAD
 	int cpu = smp_processor_id();
+=======
+	int cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cpu_init();
 	touch_softlockup_watchdog();
@@ -75,8 +79,19 @@ static void __cpuinit cpu_bringup(void)
 
 	xen_setup_cpu_clockevents();
 
+<<<<<<< HEAD
 	set_cpu_online(cpu, true);
 	percpu_write(cpu_state, CPU_ONLINE);
+=======
+	notify_cpu_starting(cpu);
+
+	ipi_call_lock();
+	set_cpu_online(cpu, true);
+	ipi_call_unlock();
+
+	this_cpu_write(cpu_state, CPU_ONLINE);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	wmb();
 
 	/* We can take interrupts now: we're officially "up". */
@@ -424,6 +439,16 @@ static void __cpuinit xen_play_dead(void) /* used only with HOTPLUG_CPU */
 	play_dead_common();
 	HYPERVISOR_vcpu_op(VCPUOP_down, smp_processor_id(), NULL);
 	cpu_bringup();
+<<<<<<< HEAD
+=======
+	/*
+	 * Balance out the preempt calls - as we are running in cpu_idle
+	 * loop which has been called at bootup from cpu_bringup_and_idle.
+	 * The cpucpu_bringup_and_idle called cpu_bringup which made a
+	 * preempt_disable() So this preempt_enable will balance it out.
+	 */
+	preempt_enable();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #else /* !CONFIG_HOTPLUG_CPU */
@@ -547,7 +572,10 @@ static void __init xen_hvm_smp_prepare_cpus(unsigned int max_cpus)
 	WARN_ON(xen_smp_intr_init(0));
 
 	xen_init_lock_cpu(0);
+<<<<<<< HEAD
 	xen_init_spinlocks();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __cpuinit xen_hvm_cpu_up(unsigned int cpu)

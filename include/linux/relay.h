@@ -15,6 +15,10 @@
 #include <linux/timer.h>
 #include <linux/wait.h>
 #include <linux/list.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 #include <linux/poll.h>
 #include <linux/kref.h>
@@ -144,7 +148,11 @@ struct rchan_callbacks
 	 */
 	struct dentry *(*create_buf_file)(const char *filename,
 					  struct dentry *parent,
+<<<<<<< HEAD
 					  int mode,
+=======
+					  umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 					  struct rchan_buf *buf,
 					  int *is_global);
 

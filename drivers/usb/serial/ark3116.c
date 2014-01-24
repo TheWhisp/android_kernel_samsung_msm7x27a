@@ -37,7 +37,11 @@
 #include <linux/mutex.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Version information
  */
@@ -719,7 +723,10 @@ static struct usb_driver ark3116_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id =	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver ark3116_device = {
@@ -728,7 +735,10 @@ static struct usb_serial_driver ark3116_device = {
 		.name =		"ark3116",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver =		&ark3116_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports =		1,
 	.attach =		ark3116_attach,
 	.release =		ark3116_release,
@@ -745,6 +755,7 @@ static struct usb_serial_driver ark3116_device = {
 	.process_read_urb =	ark3116_process_read_urb,
 };
 
+<<<<<<< HEAD
 static int __init ark3116_init(void)
 {
 	int retval;
@@ -771,6 +782,14 @@ static void __exit ark3116_exit(void)
 
 module_init(ark3116_init);
 module_exit(ark3116_exit);
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ark3116_device, NULL
+};
+
+module_usb_serial_driver(ark3116_driver, serial_drivers);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");
 
 MODULE_AUTHOR(DRIVER_AUTHOR);

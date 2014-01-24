@@ -30,10 +30,46 @@
 #include <linux/sh_dma.h>
 #include <linux/sh_intc.h>
 #include <linux/sh_timer.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/sh7372.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
+=======
+#include <linux/pm_domain.h>
+#include <linux/dma-mapping.h>
+#include <mach/hardware.h>
+#include <mach/irqs.h>
+#include <mach/sh7372.h>
+#include <mach/common.h>
+#include <asm/mach/map.h>
+#include <asm/mach-types.h>
+#include <asm/mach/arch.h>
+#include <asm/mach/time.h>
+
+static struct map_desc sh7372_io_desc[] __initdata = {
+	/* create a 1:1 entity map for 0xe6xxxxxx
+	 * used by CPGA, INTC and PFC.
+	 */
+	{
+		.virtual	= 0xe6000000,
+		.pfn		= __phys_to_pfn(0xe6000000),
+		.length		= 256 << 20,
+		.type		= MT_DEVICE_NONSHARED
+	},
+};
+
+void __init sh7372_map_io(void)
+{
+	iotable_init(sh7372_io_desc, ARRAY_SIZE(sh7372_io_desc));
+
+	/*
+	 * DMA memory at 0xff200000 - 0xffdfffff. The default 2MB size isn't
+	 * enough to allocate the frame buffer memory.
+	 */
+	init_consistent_dma_size(12 << 20);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* SCIFA0 */
 static struct plat_sci_port scif0_platform_data = {
@@ -169,14 +205,22 @@ static struct platform_device scif6_device = {
 };
 
 /* CMT */
+<<<<<<< HEAD
 static struct sh_timer_config cmt10_platform_data = {
 	.name = "CMT10",
 	.channel_offset = 0x10,
 	.timer_bit = 0,
+=======
+static struct sh_timer_config cmt2_platform_data = {
+	.name = "CMT2",
+	.channel_offset = 0x40,
+	.timer_bit = 5,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.clockevent_rating = 125,
 	.clocksource_rating = 125,
 };
 
+<<<<<<< HEAD
 static struct resource cmt10_resources[] = {
 	[0] = {
 		.name	= "CMT10",
@@ -186,10 +230,22 @@ static struct resource cmt10_resources[] = {
 	},
 	[1] = {
 		.start	= evt2irq(0x0b00), /* CMT1_CMT10 */
+=======
+static struct resource cmt2_resources[] = {
+	[0] = {
+		.name	= "CMT2",
+		.start	= 0xe6130040,
+		.end	= 0xe613004b,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= evt2irq(0x0b80), /* CMT2 */
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
+<<<<<<< HEAD
 static struct platform_device cmt10_device = {
 	.name		= "sh_cmt",
 	.id		= 10,
@@ -198,6 +254,16 @@ static struct platform_device cmt10_device = {
 	},
 	.resource	= cmt10_resources,
 	.num_resources	= ARRAY_SIZE(cmt10_resources),
+=======
+static struct platform_device cmt2_device = {
+	.name		= "sh_cmt",
+	.id		= 2,
+	.dev = {
+		.platform_data	= &cmt2_platform_data,
+	},
+	.resource	= cmt2_resources,
+	.num_resources	= ARRAY_SIZE(cmt2_resources),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* TMU */
@@ -444,31 +510,60 @@ static const struct sh_dmae_slave_config sh7372_dmae_slaves[] = {
 	},
 };
 
+<<<<<<< HEAD
+=======
+#define SH7372_CHCLR 0x220
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct sh_dmae_channel sh7372_dmae_channels[] = {
 	{
 		.offset = 0,
 		.dmars = 0,
 		.dmars_bit = 0,
+<<<<<<< HEAD
+=======
+		.chclr_offset = SH7372_CHCLR + 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	}, {
 		.offset = 0x10,
 		.dmars = 0,
 		.dmars_bit = 8,
+<<<<<<< HEAD
+=======
+		.chclr_offset = SH7372_CHCLR + 0x10,
+>>>>>>> refs/remotes/origin/cm-10.0
 	}, {
 		.offset = 0x20,
 		.dmars = 4,
 		.dmars_bit = 0,
+<<<<<<< HEAD
+=======
+		.chclr_offset = SH7372_CHCLR + 0x20,
+>>>>>>> refs/remotes/origin/cm-10.0
 	}, {
 		.offset = 0x30,
 		.dmars = 4,
 		.dmars_bit = 8,
+<<<<<<< HEAD
+=======
+		.chclr_offset = SH7372_CHCLR + 0x30,
+>>>>>>> refs/remotes/origin/cm-10.0
 	}, {
 		.offset = 0x50,
 		.dmars = 8,
 		.dmars_bit = 0,
+<<<<<<< HEAD
+=======
+		.chclr_offset = SH7372_CHCLR + 0x50,
+>>>>>>> refs/remotes/origin/cm-10.0
 	}, {
 		.offset = 0x60,
 		.dmars = 8,
 		.dmars_bit = 8,
+<<<<<<< HEAD
+=======
+		.chclr_offset = SH7372_CHCLR + 0x60,
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 };
 
@@ -486,6 +581,10 @@ static struct sh_dmae_pdata dma_platform_data = {
 	.ts_shift	= ts_shift,
 	.ts_shift_num	= ARRAY_SIZE(ts_shift),
 	.dmaor_init	= DMAOR_DME,
+<<<<<<< HEAD
+=======
+	.chclr_present	= 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Resource order important! */
@@ -493,7 +592,11 @@ static struct resource sh7372_dmae0_resources[] = {
 	{
 		/* Channel registers and DMAOR */
 		.start	= 0xfe008020,
+<<<<<<< HEAD
 		.end	= 0xfe00808f,
+=======
+		.end	= 0xfe00828f,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_MEM,
 	},
 	{
@@ -503,7 +606,11 @@ static struct resource sh7372_dmae0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		/* DMA error IRQ */
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= evt2irq(0x20c0),
 		.end	= evt2irq(0x20c0),
 		.flags	= IORESOURCE_IRQ,
@@ -521,7 +628,11 @@ static struct resource sh7372_dmae1_resources[] = {
 	{
 		/* Channel registers and DMAOR */
 		.start	= 0xfe018020,
+<<<<<<< HEAD
 		.end	= 0xfe01808f,
+=======
+		.end	= 0xfe01828f,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_MEM,
 	},
 	{
@@ -531,7 +642,11 @@ static struct resource sh7372_dmae1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		/* DMA error IRQ */
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= evt2irq(0x21c0),
 		.end	= evt2irq(0x21c0),
 		.flags	= IORESOURCE_IRQ,
@@ -549,7 +664,11 @@ static struct resource sh7372_dmae2_resources[] = {
 	{
 		/* Channel registers and DMAOR */
 		.start	= 0xfe028020,
+<<<<<<< HEAD
 		.end	= 0xfe02808f,
+=======
+		.end	= 0xfe02828f,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_MEM,
 	},
 	{
@@ -559,7 +678,11 @@ static struct resource sh7372_dmae2_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		/* DMA error IRQ */
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= evt2irq(0x22c0),
 		.end	= evt2irq(0x22c0),
 		.flags	= IORESOURCE_IRQ,
@@ -602,6 +725,155 @@ static struct platform_device dma2_device = {
 	},
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * USB-DMAC
+ */
+
+unsigned int usbts_shift[] = {3, 4, 5};
+
+enum {
+	XMIT_SZ_8BYTE		= 0,
+	XMIT_SZ_16BYTE		= 1,
+	XMIT_SZ_32BYTE		= 2,
+};
+
+#define USBTS_INDEX2VAL(i) (((i) & 3) << 6)
+
+static const struct sh_dmae_channel sh7372_usb_dmae_channels[] = {
+	{
+		.offset = 0,
+	}, {
+		.offset = 0x20,
+	},
+};
+
+/* USB DMAC0 */
+static const struct sh_dmae_slave_config sh7372_usb_dmae0_slaves[] = {
+	{
+		.slave_id	= SHDMA_SLAVE_USB0_TX,
+		.chcr		= USBTS_INDEX2VAL(XMIT_SZ_8BYTE),
+	}, {
+		.slave_id	= SHDMA_SLAVE_USB0_RX,
+		.chcr		= USBTS_INDEX2VAL(XMIT_SZ_8BYTE),
+	},
+};
+
+static struct sh_dmae_pdata usb_dma0_platform_data = {
+	.slave		= sh7372_usb_dmae0_slaves,
+	.slave_num	= ARRAY_SIZE(sh7372_usb_dmae0_slaves),
+	.channel	= sh7372_usb_dmae_channels,
+	.channel_num	= ARRAY_SIZE(sh7372_usb_dmae_channels),
+	.ts_low_shift	= 6,
+	.ts_low_mask	= 0xc0,
+	.ts_high_shift	= 0,
+	.ts_high_mask	= 0,
+	.ts_shift	= usbts_shift,
+	.ts_shift_num	= ARRAY_SIZE(usbts_shift),
+	.dmaor_init	= DMAOR_DME,
+	.chcr_offset	= 0x14,
+	.chcr_ie_bit	= 1 << 5,
+	.dmaor_is_32bit	= 1,
+	.needs_tend_set	= 1,
+	.no_dmars	= 1,
+	.slave_only	= 1,
+};
+
+static struct resource sh7372_usb_dmae0_resources[] = {
+	{
+		/* Channel registers and DMAOR */
+		.start	= 0xe68a0020,
+		.end	= 0xe68a0064 - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	{
+		/* VCR/SWR/DMICR */
+		.start	= 0xe68a0000,
+		.end	= 0xe68a0014 - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	{
+		/* IRQ for channels */
+		.start	= evt2irq(0x0a00),
+		.end	= evt2irq(0x0a00),
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct platform_device usb_dma0_device = {
+	.name		= "sh-dma-engine",
+	.id		= 3,
+	.resource	= sh7372_usb_dmae0_resources,
+	.num_resources	= ARRAY_SIZE(sh7372_usb_dmae0_resources),
+	.dev		= {
+		.platform_data	= &usb_dma0_platform_data,
+	},
+};
+
+/* USB DMAC1 */
+static const struct sh_dmae_slave_config sh7372_usb_dmae1_slaves[] = {
+	{
+		.slave_id	= SHDMA_SLAVE_USB1_TX,
+		.chcr		= USBTS_INDEX2VAL(XMIT_SZ_8BYTE),
+	}, {
+		.slave_id	= SHDMA_SLAVE_USB1_RX,
+		.chcr		= USBTS_INDEX2VAL(XMIT_SZ_8BYTE),
+	},
+};
+
+static struct sh_dmae_pdata usb_dma1_platform_data = {
+	.slave		= sh7372_usb_dmae1_slaves,
+	.slave_num	= ARRAY_SIZE(sh7372_usb_dmae1_slaves),
+	.channel	= sh7372_usb_dmae_channels,
+	.channel_num	= ARRAY_SIZE(sh7372_usb_dmae_channels),
+	.ts_low_shift	= 6,
+	.ts_low_mask	= 0xc0,
+	.ts_high_shift	= 0,
+	.ts_high_mask	= 0,
+	.ts_shift	= usbts_shift,
+	.ts_shift_num	= ARRAY_SIZE(usbts_shift),
+	.dmaor_init	= DMAOR_DME,
+	.chcr_offset	= 0x14,
+	.chcr_ie_bit	= 1 << 5,
+	.dmaor_is_32bit	= 1,
+	.needs_tend_set	= 1,
+	.no_dmars	= 1,
+	.slave_only	= 1,
+};
+
+static struct resource sh7372_usb_dmae1_resources[] = {
+	{
+		/* Channel registers and DMAOR */
+		.start	= 0xe68c0020,
+		.end	= 0xe68c0064 - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	{
+		/* VCR/SWR/DMICR */
+		.start	= 0xe68c0000,
+		.end	= 0xe68c0014 - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	{
+		/* IRQ for channels */
+		.start	= evt2irq(0x1d00),
+		.end	= evt2irq(0x1d00),
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct platform_device usb_dma1_device = {
+	.name		= "sh-dma-engine",
+	.id		= 4,
+	.resource	= sh7372_usb_dmae1_resources,
+	.num_resources	= ARRAY_SIZE(sh7372_usb_dmae1_resources),
+	.dev		= {
+		.platform_data	= &usb_dma1_platform_data,
+	},
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* VPU */
 static struct uio_info vpu_platform_data = {
 	.name = "VPU5HG",
@@ -818,7 +1090,11 @@ static struct platform_device *sh7372_early_devices[] __initdata = {
 	&scif4_device,
 	&scif5_device,
 	&scif6_device,
+<<<<<<< HEAD
 	&cmt10_device,
+=======
+	&cmt2_device,
+>>>>>>> refs/remotes/origin/cm-10.0
 	&tmu00_device,
 	&tmu01_device,
 };
@@ -829,6 +1105,11 @@ static struct platform_device *sh7372_late_devices[] __initdata = {
 	&dma0_device,
 	&dma1_device,
 	&dma2_device,
+<<<<<<< HEAD
+=======
+	&usb_dma0_device,
+	&usb_dma1_device,
+>>>>>>> refs/remotes/origin/cm-10.0
 	&vpu_device,
 	&veu0_device,
 	&veu1_device,
@@ -841,15 +1122,77 @@ static struct platform_device *sh7372_late_devices[] __initdata = {
 
 void __init sh7372_add_standard_devices(void)
 {
+<<<<<<< HEAD
+=======
+	sh7372_init_pm_domain(&sh7372_a4lc);
+	sh7372_init_pm_domain(&sh7372_a4mp);
+	sh7372_init_pm_domain(&sh7372_d4);
+	sh7372_init_pm_domain(&sh7372_a4r);
+	sh7372_init_pm_domain(&sh7372_a3rv);
+	sh7372_init_pm_domain(&sh7372_a3ri);
+	sh7372_init_pm_domain(&sh7372_a4s);
+	sh7372_init_pm_domain(&sh7372_a3sp);
+	sh7372_init_pm_domain(&sh7372_a3sg);
+
+	sh7372_pm_add_subdomain(&sh7372_a4lc, &sh7372_a3rv);
+	sh7372_pm_add_subdomain(&sh7372_a4r, &sh7372_a4lc);
+
+	sh7372_pm_add_subdomain(&sh7372_a4s, &sh7372_a3sg);
+	sh7372_pm_add_subdomain(&sh7372_a4s, &sh7372_a3sp);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(sh7372_early_devices,
 			    ARRAY_SIZE(sh7372_early_devices));
 
 	platform_add_devices(sh7372_late_devices,
 			    ARRAY_SIZE(sh7372_late_devices));
+<<<<<<< HEAD
+=======
+
+	sh7372_add_device_to_domain(&sh7372_a3rv, &vpu_device);
+	sh7372_add_device_to_domain(&sh7372_a4mp, &spu0_device);
+	sh7372_add_device_to_domain(&sh7372_a4mp, &spu1_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &scif0_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &scif1_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &scif2_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &scif3_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &scif4_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &scif5_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &scif6_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &iic1_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &dma0_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &dma1_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &dma2_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &usb_dma0_device);
+	sh7372_add_device_to_domain(&sh7372_a3sp, &usb_dma1_device);
+	sh7372_add_device_to_domain(&sh7372_a4r, &iic0_device);
+	sh7372_add_device_to_domain(&sh7372_a4r, &veu0_device);
+	sh7372_add_device_to_domain(&sh7372_a4r, &veu1_device);
+	sh7372_add_device_to_domain(&sh7372_a4r, &veu2_device);
+	sh7372_add_device_to_domain(&sh7372_a4r, &veu3_device);
+	sh7372_add_device_to_domain(&sh7372_a4r, &jpu_device);
+	sh7372_add_device_to_domain(&sh7372_a4r, &tmu00_device);
+	sh7372_add_device_to_domain(&sh7372_a4r, &tmu01_device);
+}
+
+static void __init sh7372_earlytimer_init(void)
+{
+	sh7372_clock_init();
+	shmobile_earlytimer_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void __init sh7372_add_early_devices(void)
 {
 	early_platform_add_devices(sh7372_early_devices,
 				   ARRAY_SIZE(sh7372_early_devices));
+<<<<<<< HEAD
+=======
+
+	/* setup early console here as well */
+	shmobile_setup_console();
+
+	/* override timer setup with soc-specific code */
+	shmobile_timer.init = sh7372_earlytimer_init;
+>>>>>>> refs/remotes/origin/cm-10.0
 }

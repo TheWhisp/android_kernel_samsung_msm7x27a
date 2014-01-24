@@ -4,7 +4,11 @@
  * Author:       Michael Hennerich <hennerich@blackfin.uclinux.org>
  *
  * Created:
+<<<<<<< HEAD
  * Description:  ADSP-BF54x Framebufer driver
+=======
+ * Description:  ADSP-BF54x Framebuffer driver
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *
  * Modified:
@@ -240,7 +244,11 @@ static int request_ports(struct bfin_bf54xfb_info *fbi)
 	u16 eppi_req_18[] = EPPI0_18;
 	u16 disp = fbi->mach_info->disp;
 
+<<<<<<< HEAD
 	if (gpio_request(disp, DRIVER_NAME)) {
+=======
+	if (gpio_request_one(disp, GPIOF_OUT_INIT_HIGH, DRIVER_NAME)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "Requesting GPIO %d failed\n", disp);
 		return -EFAULT;
 	}
@@ -263,8 +271,11 @@ static int request_ports(struct bfin_bf54xfb_info *fbi)
 		}
 	}
 
+<<<<<<< HEAD
 	gpio_direction_output(disp, 1);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -633,7 +644,11 @@ static int __devinit bfin_bf54x_probe(struct platform_device *pdev)
 		goto out7;
 	}
 
+<<<<<<< HEAD
 	if (request_irq(info->irq, bfin_bf54x_irq_error, IRQF_DISABLED,
+=======
+	if (request_irq(info->irq, bfin_bf54x_irq_error, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"PPI ERROR", info) < 0) {
 		printk(KERN_ERR DRIVER_NAME
 		       ": unable to request PPI ERROR IRQ\n");

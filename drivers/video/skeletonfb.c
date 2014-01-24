@@ -989,7 +989,11 @@ static struct platform_device *xxxfb_device;
  */
 int __init xxxfb_setup(char *options)
 {
+<<<<<<< HEAD
     /* Parse user speficied options (`video=xxxfb:') */
+=======
+    /* Parse user specified options (`video=xxxfb:') */
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif /* MODULE */
 

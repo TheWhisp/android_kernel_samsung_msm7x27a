@@ -14,6 +14,7 @@
 #include <linux/platform_device.h>
 #include <asm/mach-au1x00/au1000.h>
 
+<<<<<<< HEAD
 #define USB_HOST_CONFIG   (USB_MSR_BASE + USB_MSR_MCFG)
 #define USB_MCFG_PFEN     (1<<31)
 #define USB_MCFG_RDCOMB   (1<<30)
@@ -69,12 +70,21 @@ static void au1xxx_stop_ehc(void)
 	au_sync();
 }
 
+=======
+
+extern int usb_disabled(void);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int au1xxx_ehci_setup(struct usb_hcd *hcd)
 {
 	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
 	int ret = ehci_init(hcd);
 
 	ehci->need_io_watchdog = 0;
+<<<<<<< HEAD
+=======
+	ehci_reset(ehci);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -136,6 +146,7 @@ static int ehci_hcd_au1xxx_drv_probe(struct platform_device *pdev)
 	if (usb_disabled())
 		return -ENODEV;
 
+<<<<<<< HEAD
 #if defined(CONFIG_SOC_AU1200) && defined(CONFIG_DMA_COHERENT)
 	/* Au1200 AB USB does not support coherent memory */
 	if (!(read_c0_prid() & 0xff)) {
@@ -146,6 +157,8 @@ static int ehci_hcd_au1xxx_drv_probe(struct platform_device *pdev)
 	}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pdev->resource[1].flags != IORESOURCE_IRQ) {
 		pr_debug("resource[1] is not IORESOURCE_IRQ");
 		return -ENOMEM;
@@ -171,7 +184,15 @@ static int ehci_hcd_au1xxx_drv_probe(struct platform_device *pdev)
 		goto err2;
 	}
 
+<<<<<<< HEAD
 	au1xxx_start_ehc();
+=======
+	if (alchemy_usb_control(ALCHEMY_USB_EHCI0, 1)) {
+		printk(KERN_INFO "%s: controller init failed!\n", pdev->name);
+		ret = -ENODEV;
+		goto err3;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ehci = hcd_to_ehci(hcd);
 	ehci->caps = hcd->regs;
@@ -181,13 +202,22 @@ static int ehci_hcd_au1xxx_drv_probe(struct platform_device *pdev)
 	ehci->hcs_params = readl(&ehci->caps->hcs_params);
 
 	ret = usb_add_hcd(hcd, pdev->resource[1].start,
+<<<<<<< HEAD
 			  IRQF_DISABLED | IRQF_SHARED);
+=======
+			  IRQF_SHARED);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret == 0) {
 		platform_set_drvdata(pdev, hcd);
 		return ret;
 	}
 
+<<<<<<< HEAD
 	au1xxx_stop_ehc();
+=======
+	alchemy_usb_control(ALCHEMY_USB_EHCI0, 0);
+err3:
+>>>>>>> refs/remotes/origin/cm-10.0
 	iounmap(hcd->regs);
 err2:
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
@@ -201,10 +231,17 @@ static int ehci_hcd_au1xxx_drv_remove(struct platform_device *pdev)
 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
 
 	usb_remove_hcd(hcd);
+<<<<<<< HEAD
 	iounmap(hcd->regs);
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 	usb_put_hcd(hcd);
 	au1xxx_stop_ehc();
+=======
+	alchemy_usb_control(ALCHEMY_USB_EHCI0, 0);
+	iounmap(hcd->regs);
+	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
+	usb_put_hcd(hcd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_set_drvdata(pdev, NULL);
 
 	return 0;
@@ -236,7 +273,11 @@ static int ehci_hcd_au1xxx_drv_suspend(struct device *dev)
 	// could save FLADJ in case of Vaux power loss
 	// ... we'd only use it to handle clock skew
 
+<<<<<<< HEAD
 	au1xxx_stop_ehc();
+=======
+	alchemy_usb_control(ALCHEMY_USB_EHCI0, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return rc;
 }
@@ -246,7 +287,11 @@ static int ehci_hcd_au1xxx_drv_resume(struct device *dev)
 	struct usb_hcd *hcd = dev_get_drvdata(dev);
 	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
 
+<<<<<<< HEAD
 	au1xxx_start_ehc();
+=======
+	alchemy_usb_control(ALCHEMY_USB_EHCI0, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	// maybe restore FLADJ
 
@@ -293,7 +338,11 @@ static int ehci_hcd_au1xxx_drv_resume(struct device *dev)
 	/* here we "know" root ports should always stay powered */
 	ehci_port_power(ehci, 1);
 
+<<<<<<< HEAD
 	hcd->state = HC_STATE_SUSPENDED;
+=======
+	ehci->rh_state = EHCI_RH_SUSPENDED;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

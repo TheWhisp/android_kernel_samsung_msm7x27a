@@ -102,7 +102,11 @@ static int mdsc_show(struct seq_file *s, void *p)
 				path = NULL;
 			spin_lock(&req->r_old_dentry->d_lock);
 			seq_printf(s, " #%llx/%.*s (%s)",
+<<<<<<< HEAD
 			   ceph_ino(req->r_old_dentry->d_parent->d_inode),
+=======
+			   ceph_ino(req->r_old_dentry_dir),
+>>>>>>> refs/remotes/origin/cm-10.0
 				   req->r_old_dentry->d_name.len,
 				   req->r_old_dentry->d_name.name,
 				   path ? path : "");
@@ -201,6 +205,10 @@ int ceph_fs_debugfs_init(struct ceph_fs_client *fsc)
 	int err = -ENOMEM;
 
 	dout("ceph_fs_debugfs_init\n");
+<<<<<<< HEAD
+=======
+	BUG_ON(!fsc->client->debugfs_dir);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fsc->debugfs_congestion_kb =
 		debugfs_create_file("writeback_congestion_kb",
 				    0600,

@@ -593,7 +593,11 @@ static int __devinit nuc900_i2c_probe(struct platform_device *pdev)
 	i2c->adap.algo_data = i2c;
 	i2c->adap.dev.parent = &pdev->dev;
 
+<<<<<<< HEAD
 	mfp_set_groupg(&pdev->dev);
+=======
+	mfp_set_groupg(&pdev->dev, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	clk_get_rate(i2c->clk);
 
@@ -610,7 +614,11 @@ static int __devinit nuc900_i2c_probe(struct platform_device *pdev)
 		goto err_iomap;
 	}
 
+<<<<<<< HEAD
 	ret = request_irq(i2c->irq, nuc900_i2c_irq, IRQF_DISABLED | IRQF_SHARED,
+=======
+	ret = request_irq(i2c->irq, nuc900_i2c_irq, IRQF_SHARED,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  dev_name(&pdev->dev), i2c);
 
 	if (ret != 0) {

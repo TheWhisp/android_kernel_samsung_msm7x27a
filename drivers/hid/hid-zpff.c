@@ -25,6 +25,10 @@
 #include <linux/input.h>
 #include <linux/slab.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "hid-ids.h"
 

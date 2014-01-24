@@ -14,7 +14,11 @@
 #ifndef __MHL_API_H__
 #define __MHL_API_H__
 
+<<<<<<< HEAD
 #ifdef CONFIG_FB_MSM_HDMI_MHL
+=======
+#ifdef CONFIG_FB_MSM_HDMI_MHL_8334
+>>>>>>> refs/remotes/origin/cm-10.0
 bool mhl_is_connected(void);
 #else
 static bool mhl_is_connected(void)

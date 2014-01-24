@@ -369,6 +369,7 @@ static struct platform_driver sh7760_pcm_driver = {
 	.remove = __devexit_p(sh7760_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init snd_sh7760_pcm_init(void)
 {
 	return platform_driver_register(&sh7760_pcm_driver);
@@ -380,6 +381,9 @@ static void __exit snd_sh7760_pcm_exit(void)
 	platform_driver_unregister(&sh7760_pcm_driver);
 }
 module_exit(snd_sh7760_pcm_exit);
+=======
+module_platform_driver(sh7760_pcm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("SH7760 Audio DMA (DMABRG) driver");

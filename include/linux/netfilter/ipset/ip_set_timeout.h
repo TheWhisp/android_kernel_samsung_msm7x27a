@@ -22,11 +22,24 @@
 
 #define with_timeout(timeout)	((timeout) != IPSET_NO_TIMEOUT)
 
+<<<<<<< HEAD
+=======
+#define opt_timeout(opt, map)	\
+	(with_timeout((opt)->timeout) ? (opt)->timeout : (map)->timeout)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline unsigned int
 ip_set_timeout_uget(struct nlattr *tb)
 {
 	unsigned int timeout = ip_set_get_h32(tb);
 
+<<<<<<< HEAD
+=======
+	/* Normalize to fit into jiffies */
+	if (timeout > UINT_MAX/MSEC_PER_SEC)
+		timeout = UINT_MAX/MSEC_PER_SEC;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Userspace supplied TIMEOUT parameter: adjust crazy size */
 	return timeout == IPSET_NO_TIMEOUT ? IPSET_NO_TIMEOUT - 1 : timeout;
 }
@@ -75,7 +88,11 @@ ip_set_timeout_set(u32 timeout)
 static inline u32
 ip_set_timeout_get(unsigned long timeout)
 {
+<<<<<<< HEAD
 	return timeout == IPSET_ELEM_PERMANENT ? 0 : 
+=======
+	return timeout == IPSET_ELEM_PERMANENT ? 0 :
+>>>>>>> refs/remotes/origin/cm-10.0
 		jiffies_to_msecs(timeout - jiffies)/1000;
 }
 

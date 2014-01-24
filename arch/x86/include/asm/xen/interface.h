@@ -55,6 +55,11 @@ DEFINE_GUEST_HANDLE(char);
 DEFINE_GUEST_HANDLE(int);
 DEFINE_GUEST_HANDLE(long);
 DEFINE_GUEST_HANDLE(void);
+<<<<<<< HEAD
+=======
+DEFINE_GUEST_HANDLE(uint64_t);
+DEFINE_GUEST_HANDLE(uint32_t);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifndef HYPERVISOR_VIRT_START

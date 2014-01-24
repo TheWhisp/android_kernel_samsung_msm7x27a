@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 
 #include "opcode.h"

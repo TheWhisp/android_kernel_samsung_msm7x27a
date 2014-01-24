@@ -12,4 +12,9 @@ line6usb-y := 		\
 		playback.o	\
 		pod.o		\
 		toneport.o	\
+<<<<<<< HEAD
 		variax.o
+=======
+		variax.o	\
+		podhd.o
+>>>>>>> refs/remotes/origin/cm-10.0

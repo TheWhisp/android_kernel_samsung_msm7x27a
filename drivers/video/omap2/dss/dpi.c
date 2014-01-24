@@ -23,8 +23,13 @@
 #define DSS_SUBSYS_NAME "DPI"
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/clk.h>
 #include <linux/delay.h>
+=======
+#include <linux/delay.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/err.h>
 #include <linux/errno.h>
 #include <linux/platform_device.h>
@@ -83,9 +88,17 @@ static int dpi_set_dsi_clk(struct omap_dss_device *dssdev, bool is_tft,
 
 	dss_select_dispc_clk_source(dssdev->clocks.dispc.dispc_fclk_src);
 
+<<<<<<< HEAD
 	r = dispc_set_clock_div(dssdev->manager->id, &dispc_cinfo);
 	if (r)
 		return r;
+=======
+	r = dispc_mgr_set_clock_div(dssdev->manager->id, &dispc_cinfo);
+	if (r) {
+		dss_select_dispc_clk_source(OMAP_DSS_CLK_SRC_FCK);
+		return r;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*fck = dsi_cinfo.dsi_pll_hsdiv_dispc_clk;
 	*lck_div = dispc_cinfo.lck_div;
@@ -110,7 +123,11 @@ static int dpi_set_dispc_clk(struct omap_dss_device *dssdev, bool is_tft,
 	if (r)
 		return r;
 
+<<<<<<< HEAD
 	r = dispc_set_clock_div(dssdev->manager->id, &dispc_cinfo);
+=======
+	r = dispc_mgr_set_clock_div(dssdev->manager->id, &dispc_cinfo);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (r)
 		return r;
 
@@ -130,9 +147,13 @@ static int dpi_set_mode(struct omap_dss_device *dssdev)
 	bool is_tft;
 	int r = 0;
 
+<<<<<<< HEAD
 	dss_clk_enable(DSS_CLK_ICK | DSS_CLK_FCK);
 
 	dispc_set_pol_freq(dssdev->manager->id, dssdev->panel.config,
+=======
+	dispc_mgr_set_pol_freq(dssdev->manager->id, dssdev->panel.config,
+>>>>>>> refs/remotes/origin/cm-10.0
 			dssdev->panel.acbi, dssdev->panel.acb);
 
 	is_tft = (dssdev->panel.config & OMAP_DSS_LCD_TFT) != 0;
@@ -144,7 +165,11 @@ static int dpi_set_mode(struct omap_dss_device *dssdev)
 		r = dpi_set_dispc_clk(dssdev, is_tft, t->pixel_clock * 1000,
 				&fck, &lck_div, &pck_div);
 	if (r)
+<<<<<<< HEAD
 		goto err0;
+=======
+		return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pck = fck / lck_div / pck_div / 1000;
 
@@ -156,6 +181,7 @@ static int dpi_set_mode(struct omap_dss_device *dssdev)
 		t->pixel_clock = pck;
 	}
 
+<<<<<<< HEAD
 	dispc_set_lcd_timings(dssdev->manager->id, t);
 
 err0:
@@ -164,11 +190,20 @@ err0:
 }
 
 static int dpi_basic_init(struct omap_dss_device *dssdev)
+=======
+	dispc_mgr_set_lcd_timings(dssdev->manager->id, t);
+
+	return 0;
+}
+
+static void dpi_basic_init(struct omap_dss_device *dssdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	bool is_tft;
 
 	is_tft = (dssdev->panel.config & OMAP_DSS_LCD_TFT) != 0;
 
+<<<<<<< HEAD
 	dispc_set_parallel_interface_mode(dssdev->manager->id,
 			OMAP_DSS_PARALLELMODE_BYPASS);
 	dispc_set_lcd_display_type(dssdev->manager->id, is_tft ?
@@ -177,21 +212,48 @@ static int dpi_basic_init(struct omap_dss_device *dssdev)
 			dssdev->phy.dpi.data_lines);
 
 	return 0;
+=======
+	dispc_mgr_set_io_pad_mode(DSS_IO_PAD_MODE_BYPASS);
+	dispc_mgr_enable_stallmode(dssdev->manager->id, false);
+
+	dispc_mgr_set_lcd_display_type(dssdev->manager->id, is_tft ?
+			OMAP_DSS_LCD_DISPLAY_TFT : OMAP_DSS_LCD_DISPLAY_STN);
+	dispc_mgr_set_tft_data_lines(dssdev->manager->id,
+			dssdev->phy.dpi.data_lines);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int omapdss_dpi_display_enable(struct omap_dss_device *dssdev)
 {
 	int r;
 
+<<<<<<< HEAD
 	r = omap_dss_start_device(dssdev);
 	if (r) {
 		DSSERR("failed to start device\n");
 		goto err0;
+=======
+	if (cpu_is_omap34xx() && !dpi.vdds_dsi_reg) {
+		DSSERR("no VDSS_DSI regulator\n");
+		return -ENODEV;
+	}
+
+	if (dssdev->manager == NULL) {
+		DSSERR("failed to enable display: no manager\n");
+		return -ENODEV;
+	}
+
+	r = omap_dss_start_device(dssdev);
+	if (r) {
+		DSSERR("failed to start device\n");
+		goto err_start_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (cpu_is_omap34xx()) {
 		r = regulator_enable(dpi.vdds_dsi_reg);
 		if (r)
+<<<<<<< HEAD
 			goto err1;
 	}
 
@@ -206,10 +268,34 @@ int omapdss_dpi_display_enable(struct omap_dss_device *dssdev)
 		r = dsi_pll_init(dpi.dsidev, 0, 1);
 		if (r)
 			goto err3;
+=======
+			goto err_reg_enable;
+	}
+
+	r = dss_runtime_get();
+	if (r)
+		goto err_get_dss;
+
+	r = dispc_runtime_get();
+	if (r)
+		goto err_get_dispc;
+
+	dpi_basic_init(dssdev);
+
+	if (dpi_use_dsi_pll(dssdev)) {
+		r = dsi_runtime_get(dpi.dsidev);
+		if (r)
+			goto err_get_dsi;
+
+		r = dsi_pll_init(dpi.dsidev, 0, 1);
+		if (r)
+			goto err_dsi_pll_init;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	r = dpi_set_mode(dssdev);
 	if (r)
+<<<<<<< HEAD
 		goto err4;
 
 	mdelay(2);
@@ -231,21 +317,62 @@ err2:
 err1:
 	omap_dss_stop_device(dssdev);
 err0:
+=======
+		goto err_set_mode;
+
+	mdelay(2);
+
+	r = dss_mgr_enable(dssdev->manager);
+	if (r)
+		goto err_mgr_enable;
+
+	return 0;
+
+err_mgr_enable:
+err_set_mode:
+	if (dpi_use_dsi_pll(dssdev))
+		dsi_pll_uninit(dpi.dsidev, true);
+err_dsi_pll_init:
+	if (dpi_use_dsi_pll(dssdev))
+		dsi_runtime_put(dpi.dsidev);
+err_get_dsi:
+	dispc_runtime_put();
+err_get_dispc:
+	dss_runtime_put();
+err_get_dss:
+	if (cpu_is_omap34xx())
+		regulator_disable(dpi.vdds_dsi_reg);
+err_reg_enable:
+	omap_dss_stop_device(dssdev);
+err_start_dev:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return r;
 }
 EXPORT_SYMBOL(omapdss_dpi_display_enable);
 
 void omapdss_dpi_display_disable(struct omap_dss_device *dssdev)
 {
+<<<<<<< HEAD
 	dssdev->manager->disable(dssdev->manager);
+=======
+	dss_mgr_disable(dssdev->manager);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (dpi_use_dsi_pll(dssdev)) {
 		dss_select_dispc_clk_source(OMAP_DSS_CLK_SRC_FCK);
 		dsi_pll_uninit(dpi.dsidev, true);
+<<<<<<< HEAD
 		dss_clk_disable(DSS_CLK_SYSCK);
 	}
 
 	dss_clk_disable(DSS_CLK_ICK | DSS_CLK_FCK);
+=======
+		dsi_runtime_put(dpi.dsidev);
+	}
+
+	dispc_runtime_put();
+	dss_runtime_put();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (cpu_is_omap34xx())
 		regulator_disable(dpi.vdds_dsi_reg);
@@ -257,11 +384,34 @@ EXPORT_SYMBOL(omapdss_dpi_display_disable);
 void dpi_set_timings(struct omap_dss_device *dssdev,
 			struct omap_video_timings *timings)
 {
+<<<<<<< HEAD
 	DSSDBG("dpi_set_timings\n");
 	dssdev->panel.timings = *timings;
 	if (dssdev->state == OMAP_DSS_DISPLAY_ACTIVE) {
 		dpi_set_mode(dssdev);
 		dispc_go(dssdev->manager->id);
+=======
+	int r;
+
+	DSSDBG("dpi_set_timings\n");
+	dssdev->panel.timings = *timings;
+	if (dssdev->state == OMAP_DSS_DISPLAY_ACTIVE) {
+		r = dss_runtime_get();
+		if (r)
+			return;
+
+		r = dispc_runtime_get();
+		if (r) {
+			dss_runtime_put();
+			return;
+		}
+
+		dpi_set_mode(dssdev);
+		dispc_mgr_go(dssdev->manager->id);
+
+		dispc_runtime_put();
+		dss_runtime_put();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 EXPORT_SYMBOL(dpi_set_timings);

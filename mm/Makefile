@@ -5,14 +5,23 @@
 mmu-y			:= nommu.o
 mmu-$(CONFIG_MMU)	:= fremap.o highmem.o madvise.o memory.o mincore.o \
 			   mlock.o mmap.o mprotect.o mremap.o msync.o rmap.o \
+<<<<<<< HEAD
 			   vmalloc.o pagewalk.o pgtable-generic.o
+=======
+			   vmalloc.o pagewalk.o pgtable-generic.o \
+			   process_vm_access.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-y			:= filemap.o mempool.o oom_kill.o fadvise.o \
 			   maccess.o page_alloc.o page-writeback.o \
 			   readahead.o swap.o truncate.o vmscan.o shmem.o \
 			   prio_tree.o util.o mmzone.o vmstat.o backing-dev.o \
 			   page_isolation.o mm_init.o mmu_context.o percpu.o \
+<<<<<<< HEAD
 			   $(mmu-y)
+=======
+			   compaction.o $(mmu-y)
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-y += init-mm.o
 
 ifdef CONFIG_NO_BOOTMEM
@@ -30,9 +39,13 @@ obj-$(CONFIG_HUGETLBFS)	+= hugetlb.o
 obj-$(CONFIG_NUMA) 	+= mempolicy.o
 obj-$(CONFIG_SPARSEMEM)	+= sparse.o
 obj-$(CONFIG_SPARSEMEM_VMEMMAP) += sparse-vmemmap.o
+<<<<<<< HEAD
 obj-$(CONFIG_ASHMEM) += ashmem.o
 obj-$(CONFIG_SLOB) += slob.o
 obj-$(CONFIG_COMPACTION) += compaction.o
+=======
+obj-$(CONFIG_SLOB) += slob.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_MMU_NOTIFIER) += mmu_notifier.o
 obj-$(CONFIG_KSM) += ksm.o
 obj-$(CONFIG_PAGE_POISONING) += debug-pagealloc.o

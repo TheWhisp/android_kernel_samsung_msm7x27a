@@ -21,6 +21,7 @@
 #define NO_IRQ_IGNORE		((unsigned int)-1)
 
 /*
+<<<<<<< HEAD
  * Convert back and forth between INTEVT and IRQ values.
  */
 #ifdef CONFIG_CPU_HAS_INTEVT
@@ -32,6 +33,8 @@
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Simple Mask Register Support
  */
 extern void make_maskreg_irq(unsigned int irq);

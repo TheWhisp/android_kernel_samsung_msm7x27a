@@ -265,6 +265,10 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
 	unsigned int pcr;
 	unsigned int srgr;
+<<<<<<< HEAD
+=======
+	bool inv_fs = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Attention srgr is updated by hw_params! */
 	srgr = DAVINCI_MCBSP_SRGR_FSGM |
 		DAVINCI_MCBSP_SRGR_FPER(DEFAULT_BITPERSAMPLE * 2 - 1) |
@@ -330,7 +334,11 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 		 * more empty bit clock slots between channels as the sample
 		 * rate is lowered.
 		 */
+<<<<<<< HEAD
 		fmt ^= SND_SOC_DAIFMT_NB_IF;
+=======
+		inv_fs = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SND_SOC_DAIFMT_DSP_A:
 		dev->mode = MOD_DSP_A;
 		break;
@@ -394,6 +402,11 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 	default:
 		return -EINVAL;
 	}
+<<<<<<< HEAD
+=======
+	if (inv_fs == true)
+		pcr ^= (DAVINCI_MCBSP_PCR_FSXP | DAVINCI_MCBSP_PCR_FSRP);
+>>>>>>> refs/remotes/origin/cm-10.0
 	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG, srgr);
 	dev->pcr = pcr;
 	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, pcr);
@@ -617,7 +630,11 @@ static void davinci_i2s_shutdown(struct snd_pcm_substream *substream,
 
 #define DAVINCI_I2S_RATES	SNDRV_PCM_RATE_8000_96000
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops davinci_i2s_dai_ops = {
+=======
+static const struct snd_soc_dai_ops davinci_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.startup	= davinci_i2s_startup,
 	.shutdown	= davinci_i2s_shutdown,
 	.prepare	= davinci_i2s_prepare,
@@ -658,18 +675,31 @@ static int davinci_i2s_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	ioarea = request_mem_region(mem->start, resource_size(mem),
 				    pdev->name);
+=======
+	ioarea = devm_request_mem_region(&pdev->dev, mem->start,
+					 resource_size(mem),
+					 pdev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ioarea) {
 		dev_err(&pdev->dev, "McBSP region already claimed\n");
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	dev = kzalloc(sizeof(struct davinci_mcbsp_dev), GFP_KERNEL);
 	if (!dev) {
 		ret = -ENOMEM;
 		goto err_release_region;
 	}
+=======
+	dev = devm_kzalloc(&pdev->dev, sizeof(struct davinci_mcbsp_dev),
+			   GFP_KERNEL);
+	if (!dev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pdata) {
 		dev->enable_channel_combine = pdata->enable_channel_combine;
 		dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].sram_size =
@@ -688,6 +718,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].ram_chan_q	= ram_chan_q;
 
 	dev->clk = clk_get(&pdev->dev, NULL);
+<<<<<<< HEAD
 	if (IS_ERR(dev->clk)) {
 		ret = -ENODEV;
 		goto err_free_mem;
@@ -695,6 +726,13 @@ static int davinci_i2s_probe(struct platform_device *pdev)
 	clk_enable(dev->clk);
 
 	dev->base = ioremap(mem->start, resource_size(mem));
+=======
+	if (IS_ERR(dev->clk))
+		return -ENODEV;
+	clk_enable(dev->clk);
+
+	dev->base = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!dev->base) {
 		dev_err(&pdev->dev, "ioremap failed\n");
 		ret = -ENOMEM;
@@ -712,7 +750,11 @@ static int davinci_i2s_probe(struct platform_device *pdev)
 	if (!res) {
 		dev_err(&pdev->dev, "no DMA resource\n");
 		ret = -ENXIO;
+<<<<<<< HEAD
 		goto err_iounmap;
+=======
+		goto err_release_clk;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].channel = res->start;
 
@@ -720,7 +762,11 @@ static int davinci_i2s_probe(struct platform_device *pdev)
 	if (!res) {
 		dev_err(&pdev->dev, "no DMA resource\n");
 		ret = -ENXIO;
+<<<<<<< HEAD
 		goto err_iounmap;
+=======
+		goto err_release_clk;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].channel = res->start;
 	dev->dev = &pdev->dev;
@@ -729,6 +775,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
 
 	ret = snd_soc_register_dai(&pdev->dev, &davinci_i2s_dai);
 	if (ret != 0)
+<<<<<<< HEAD
 		goto err_iounmap;
 
 	return 0;
@@ -743,21 +790,36 @@ err_free_mem:
 err_release_region:
 	release_mem_region(mem->start, resource_size(mem));
 
+=======
+		goto err_release_clk;
+
+	return 0;
+
+err_release_clk:
+	clk_disable(dev->clk);
+	clk_put(dev->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int davinci_i2s_remove(struct platform_device *pdev)
 {
 	struct davinci_mcbsp_dev *dev = dev_get_drvdata(&pdev->dev);
+<<<<<<< HEAD
 	struct resource *mem;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	snd_soc_unregister_dai(&pdev->dev);
 	clk_disable(dev->clk);
 	clk_put(dev->clk);
 	dev->clk = NULL;
+<<<<<<< HEAD
 	kfree(dev);
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	release_mem_region(mem->start, resource_size(mem));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -771,6 +833,7 @@ static struct platform_driver davinci_mcbsp_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init davinci_i2s_init(void)
 {
 	return platform_driver_register(&davinci_mcbsp_driver);
@@ -782,6 +845,9 @@ static void __exit davinci_i2s_exit(void)
 	platform_driver_unregister(&davinci_mcbsp_driver);
 }
 module_exit(davinci_i2s_exit);
+=======
+module_platform_driver(davinci_mcbsp_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Vladimir Barinov");
 MODULE_DESCRIPTION("TI DAVINCI I2S (McBSP) SoC Interface");

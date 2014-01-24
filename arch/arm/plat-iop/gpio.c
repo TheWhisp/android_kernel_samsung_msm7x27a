@@ -15,6 +15,10 @@
 #include <linux/types.h>
 #include <linux/errno.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardware/iop3xx.h>
 
 void gpio_line_config(int line, int direction)

@@ -31,9 +31,13 @@ int ENE_InitMedia(struct us_data *us)
 		if (!us->SM_Status.Ready && !us->MS_Status.Ready) {
 			result = ENE_SMInit(us);
 			if (result != USB_STOR_XFER_GOOD) {
+<<<<<<< HEAD
 				result = ENE_MSInit(us);
 				if (result != USB_STOR_XFER_GOOD)
 					return USB_STOR_TRANSPORT_ERROR;
+=======
+				return USB_STOR_TRANSPORT_ERROR;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 
@@ -62,6 +66,7 @@ int ENE_Read_BYTE(struct us_data *us, WORD index, void *buf)
 }
 
 /*
+<<<<<<< HEAD
  * ENE_MSInit():
  */
 int ENE_MSInit(struct us_data *us)
@@ -116,6 +121,8 @@ int ENE_MSInit(struct us_data *us)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *ENE_SMInit()
  */
 int ENE_SMInit(struct us_data *us)
@@ -185,6 +192,7 @@ int ENE_LoadBinCode(struct us_data *us, BYTE flag)
 	if (buf == NULL)
 		return USB_STOR_TRANSPORT_ERROR;
 	switch (flag) {
+<<<<<<< HEAD
 	/* For MS */
 	case MS_INIT_PATTERN:
 		printk(KERN_INFO "MS_INIT_PATTERN\n");
@@ -198,6 +206,8 @@ int ENE_LoadBinCode(struct us_data *us, BYTE flag)
 		printk(KERN_INFO "MS_RW_PATTERN\n");
 		memcpy(buf, MS_Rdwr, 0x800);
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* For SS */
 	case SM_INIT_PATTERN:
 		printk(KERN_INFO "SM_INIT_PATTERN\n");

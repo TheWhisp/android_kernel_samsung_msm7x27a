@@ -117,7 +117,11 @@ static inline u16 dfa_map_xindex(u16 mask)
 		index |= AA_X_NAME;
 	} else if (old_index == 3) {
 		index |= AA_X_NAME | AA_X_CHILD;
+<<<<<<< HEAD
 	} else {
+=======
+	} else if (old_index) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		index |= AA_X_TABLE;
 		index |= old_index - 4;
 	}

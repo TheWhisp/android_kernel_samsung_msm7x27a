@@ -17,7 +17,11 @@
  *  Amaury Demol (ademol@dibcom.fr) from DiBcom for providing specs and driver
  *  sources, on which this driver (and the dvb-dibusb) are based.
  *
+<<<<<<< HEAD
  * see Documentation/dvb/README.dibusb for more information
+=======
+ * see Documentation/dvb/README.dvb-usb for more information
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 
@@ -112,6 +116,7 @@ static u16 dib3000_seq[2][2][2] =     /* fft,gua,   inv   */
 		}
 	};
 
+<<<<<<< HEAD
 static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 				  struct dvb_frontend_parameters *fep);
 
@@ -120,31 +125,60 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 {
 	struct dib3000_state* state = fe->demodulator_priv;
 	struct dvb_ofdm_parameters *ofdm = &fep->u.ofdm;
+=======
+static int dib3000mb_get_frontend(struct dvb_frontend* fe);
+
+static int dib3000mb_set_frontend(struct dvb_frontend *fe, int tuner)
+{
+	struct dib3000_state* state = fe->demodulator_priv;
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	fe_code_rate_t fe_cr = FEC_NONE;
 	int search_state, seq;
 
 	if (tuner && fe->ops.tuner_ops.set_params) {
+<<<<<<< HEAD
 		fe->ops.tuner_ops.set_params(fe, fep);
 		if (fe->ops.i2c_gate_ctrl) fe->ops.i2c_gate_ctrl(fe, 0);
 
 		deb_setf("bandwidth: ");
 		switch (ofdm->bandwidth) {
 			case BANDWIDTH_8_MHZ:
+=======
+		fe->ops.tuner_ops.set_params(fe);
+		if (fe->ops.i2c_gate_ctrl) fe->ops.i2c_gate_ctrl(fe, 0);
+
+		deb_setf("bandwidth: ");
+		switch (c->bandwidth_hz) {
+			case 8000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 				deb_setf("8 MHz\n");
 				wr_foreach(dib3000mb_reg_timing_freq, dib3000mb_timing_freq[2]);
 				wr_foreach(dib3000mb_reg_bandwidth, dib3000mb_bandwidth_8mhz);
 				break;
+<<<<<<< HEAD
 			case BANDWIDTH_7_MHZ:
+=======
+			case 7000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 				deb_setf("7 MHz\n");
 				wr_foreach(dib3000mb_reg_timing_freq, dib3000mb_timing_freq[1]);
 				wr_foreach(dib3000mb_reg_bandwidth, dib3000mb_bandwidth_7mhz);
 				break;
+<<<<<<< HEAD
 			case BANDWIDTH_6_MHZ:
+=======
+			case 6000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 				deb_setf("6 MHz\n");
 				wr_foreach(dib3000mb_reg_timing_freq, dib3000mb_timing_freq[0]);
 				wr_foreach(dib3000mb_reg_bandwidth, dib3000mb_bandwidth_6mhz);
 				break;
+<<<<<<< HEAD
 			case BANDWIDTH_AUTO:
+=======
+			case 0:
+>>>>>>> refs/remotes/origin/cm-10.0
 				return -EOPNOTSUPP;
 			default:
 				err("unknown bandwidth value.");
@@ -154,7 +188,11 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 	wr(DIB3000MB_REG_LOCK1_MASK, DIB3000MB_LOCK1_SEARCH_4);
 
 	deb_setf("transmission mode: ");
+<<<<<<< HEAD
 	switch (ofdm->transmission_mode) {
+=======
+	switch (c->transmission_mode) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case TRANSMISSION_MODE_2K:
 			deb_setf("2k\n");
 			wr(DIB3000MB_REG_FFT, DIB3000_TRANSMISSION_MODE_2K);
@@ -171,7 +209,11 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 	}
 
 	deb_setf("guard: ");
+<<<<<<< HEAD
 	switch (ofdm->guard_interval) {
+=======
+	switch (c->guard_interval) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case GUARD_INTERVAL_1_32:
 			deb_setf("1_32\n");
 			wr(DIB3000MB_REG_GUARD_TIME, DIB3000_GUARD_TIME_1_32);
@@ -196,7 +238,11 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 	}
 
 	deb_setf("inversion: ");
+<<<<<<< HEAD
 	switch (fep->inversion) {
+=======
+	switch (c->inversion) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case INVERSION_OFF:
 			deb_setf("off\n");
 			wr(DIB3000MB_REG_DDS_INV, DIB3000_DDS_INVERSION_OFF);
@@ -212,8 +258,13 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	deb_setf("constellation: ");
 	switch (ofdm->constellation) {
+=======
+	deb_setf("modulation: ");
+	switch (c->modulation) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case QPSK:
 			deb_setf("qpsk\n");
 			wr(DIB3000MB_REG_QAM, DIB3000_CONSTELLATION_QPSK);
@@ -232,7 +283,11 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 			return -EINVAL;
 	}
 	deb_setf("hierarchy: ");
+<<<<<<< HEAD
 	switch (ofdm->hierarchy_information) {
+=======
+	switch (c->hierarchy) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case HIERARCHY_NONE:
 			deb_setf("none ");
 			/* fall through */
@@ -256,6 +311,7 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 	}
 
 	deb_setf("hierarchy: ");
+<<<<<<< HEAD
 	if (ofdm->hierarchy_information == HIERARCHY_NONE) {
 		deb_setf("none\n");
 		wr(DIB3000MB_REG_VIT_HRCH, DIB3000_HRCH_OFF);
@@ -266,6 +322,18 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 		wr(DIB3000MB_REG_VIT_HRCH, DIB3000_HRCH_ON);
 		wr(DIB3000MB_REG_VIT_HP, DIB3000_SELECT_LP);
 		fe_cr = ofdm->code_rate_LP;
+=======
+	if (c->hierarchy == HIERARCHY_NONE) {
+		deb_setf("none\n");
+		wr(DIB3000MB_REG_VIT_HRCH, DIB3000_HRCH_OFF);
+		wr(DIB3000MB_REG_VIT_HP, DIB3000_SELECT_HP);
+		fe_cr = c->code_rate_HP;
+	} else if (c->hierarchy != HIERARCHY_AUTO) {
+		deb_setf("on\n");
+		wr(DIB3000MB_REG_VIT_HRCH, DIB3000_HRCH_ON);
+		wr(DIB3000MB_REG_VIT_HP, DIB3000_SELECT_LP);
+		fe_cr = c->code_rate_LP;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	deb_setf("fec: ");
 	switch (fe_cr) {
@@ -300,9 +368,15 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 	}
 
 	seq = dib3000_seq
+<<<<<<< HEAD
 		[ofdm->transmission_mode == TRANSMISSION_MODE_AUTO]
 		[ofdm->guard_interval == GUARD_INTERVAL_AUTO]
 		[fep->inversion == INVERSION_AUTO];
+=======
+		[c->transmission_mode == TRANSMISSION_MODE_AUTO]
+		[c->guard_interval == GUARD_INTERVAL_AUTO]
+		[c->inversion == INVERSION_AUTO];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	deb_setf("seq? %d\n", seq);
 
@@ -310,8 +384,13 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 
 	wr(DIB3000MB_REG_ISI, seq ? DIB3000MB_ISI_INHIBIT : DIB3000MB_ISI_ACTIVATE);
 
+<<<<<<< HEAD
 	if (ofdm->transmission_mode == TRANSMISSION_MODE_2K) {
 		if (ofdm->guard_interval == GUARD_INTERVAL_1_8) {
+=======
+	if (c->transmission_mode == TRANSMISSION_MODE_2K) {
+		if (c->guard_interval == GUARD_INTERVAL_1_8) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			wr(DIB3000MB_REG_SYNC_IMPROVEMENT, DIB3000MB_SYNC_IMPROVE_2K_1_8);
 		} else {
 			wr(DIB3000MB_REG_SYNC_IMPROVEMENT, DIB3000MB_SYNC_IMPROVE_DEFAULT);
@@ -339,10 +418,17 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 	wr_foreach(dib3000mb_reg_agc_bandwidth, dib3000mb_agc_bandwidth_low);
 
 	/* something has to be auto searched */
+<<<<<<< HEAD
 	if (ofdm->constellation == QAM_AUTO ||
 		ofdm->hierarchy_information == HIERARCHY_AUTO ||
 		fe_cr == FEC_AUTO ||
 		fep->inversion == INVERSION_AUTO) {
+=======
+	if (c->modulation == QAM_AUTO ||
+		c->hierarchy == HIERARCHY_AUTO ||
+		fe_cr == FEC_AUTO ||
+		c->inversion == INVERSION_AUTO) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		int as_count=0;
 
 		deb_setf("autosearch enabled.\n");
@@ -361,10 +447,16 @@ static int dib3000mb_set_frontend(struct dvb_frontend* fe,
 		deb_setf("search_state after autosearch %d after %d checks\n",search_state,as_count);
 
 		if (search_state == 1) {
+<<<<<<< HEAD
 			struct dvb_frontend_parameters feps;
 			if (dib3000mb_get_frontend(fe, &feps) == 0) {
 				deb_setf("reading tuning data from frontend succeeded.\n");
 				return dib3000mb_set_frontend(fe, &feps, 0);
+=======
+			if (dib3000mb_get_frontend(fe) == 0) {
+				deb_setf("reading tuning data from frontend succeeded.\n");
+				return dib3000mb_set_frontend(fe, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 
@@ -453,11 +545,18 @@ static int dib3000mb_fe_init(struct dvb_frontend* fe, int mobile_mode)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 				  struct dvb_frontend_parameters *fep)
 {
 	struct dib3000_state* state = fe->demodulator_priv;
 	struct dvb_ofdm_parameters *ofdm = &fep->u.ofdm;
+=======
+static int dib3000mb_get_frontend(struct dvb_frontend* fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+	struct dib3000_state* state = fe->demodulator_priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	fe_code_rate_t *cr;
 	u16 tps_val;
 	int inv_test1,inv_test2;
@@ -484,16 +583,25 @@ static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 	else
 		inv_test2 = 2;
 
+<<<<<<< HEAD
 	fep->inversion =
+=======
+	c->inversion =
+>>>>>>> refs/remotes/origin/cm-10.0
 		((inv_test2 == 2) && (inv_test1==1 || inv_test1==0)) ||
 		((inv_test2 == 0) && (inv_test1==1 || inv_test1==2)) ?
 		INVERSION_ON : INVERSION_OFF;
 
+<<<<<<< HEAD
 	deb_getf("inversion %d %d, %d\n", inv_test2, inv_test1, fep->inversion);
+=======
+	deb_getf("inversion %d %d, %d\n", inv_test2, inv_test1, c->inversion);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch ((tps_val = rd(DIB3000MB_REG_TPS_QAM))) {
 		case DIB3000_CONSTELLATION_QPSK:
 			deb_getf("QPSK ");
+<<<<<<< HEAD
 			ofdm->constellation = QPSK;
 			break;
 		case DIB3000_CONSTELLATION_16QAM:
@@ -503,6 +611,17 @@ static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 		case DIB3000_CONSTELLATION_64QAM:
 			deb_getf("QAM64 ");
 			ofdm->constellation = QAM_64;
+=======
+			c->modulation = QPSK;
+			break;
+		case DIB3000_CONSTELLATION_16QAM:
+			deb_getf("QAM16 ");
+			c->modulation = QAM_16;
+			break;
+		case DIB3000_CONSTELLATION_64QAM:
+			deb_getf("QAM64 ");
+			c->modulation = QAM_64;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		default:
 			err("Unexpected constellation returned by TPS (%d)", tps_val);
@@ -512,6 +631,7 @@ static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 
 	if (rd(DIB3000MB_REG_TPS_HRCH)) {
 		deb_getf("HRCH ON\n");
+<<<<<<< HEAD
 		cr = &ofdm->code_rate_LP;
 		ofdm->code_rate_HP = FEC_NONE;
 		switch ((tps_val = rd(DIB3000MB_REG_TPS_VIT_ALPHA))) {
@@ -530,6 +650,26 @@ static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 			case DIB3000_ALPHA_4:
 				deb_getf("HIERARCHY_4 ");
 				ofdm->hierarchy_information = HIERARCHY_4;
+=======
+		cr = &c->code_rate_LP;
+		c->code_rate_HP = FEC_NONE;
+		switch ((tps_val = rd(DIB3000MB_REG_TPS_VIT_ALPHA))) {
+			case DIB3000_ALPHA_0:
+				deb_getf("HIERARCHY_NONE ");
+				c->hierarchy = HIERARCHY_NONE;
+				break;
+			case DIB3000_ALPHA_1:
+				deb_getf("HIERARCHY_1 ");
+				c->hierarchy = HIERARCHY_1;
+				break;
+			case DIB3000_ALPHA_2:
+				deb_getf("HIERARCHY_2 ");
+				c->hierarchy = HIERARCHY_2;
+				break;
+			case DIB3000_ALPHA_4:
+				deb_getf("HIERARCHY_4 ");
+				c->hierarchy = HIERARCHY_4;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			default:
 				err("Unexpected ALPHA value returned by TPS (%d)", tps_val);
@@ -540,9 +680,15 @@ static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 		tps_val = rd(DIB3000MB_REG_TPS_CODE_RATE_LP);
 	} else {
 		deb_getf("HRCH OFF\n");
+<<<<<<< HEAD
 		cr = &ofdm->code_rate_HP;
 		ofdm->code_rate_LP = FEC_NONE;
 		ofdm->hierarchy_information = HIERARCHY_NONE;
+=======
+		cr = &c->code_rate_HP;
+		c->code_rate_LP = FEC_NONE;
+		c->hierarchy = HIERARCHY_NONE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		tps_val = rd(DIB3000MB_REG_TPS_CODE_RATE_HP);
 	}
@@ -577,6 +723,7 @@ static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 	switch ((tps_val = rd(DIB3000MB_REG_TPS_GUARD_TIME))) {
 		case DIB3000_GUARD_TIME_1_32:
 			deb_getf("GUARD_INTERVAL_1_32 ");
+<<<<<<< HEAD
 			ofdm->guard_interval = GUARD_INTERVAL_1_32;
 			break;
 		case DIB3000_GUARD_TIME_1_16:
@@ -590,6 +737,21 @@ static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 		case DIB3000_GUARD_TIME_1_4:
 			deb_getf("GUARD_INTERVAL_1_4 ");
 			ofdm->guard_interval = GUARD_INTERVAL_1_4;
+=======
+			c->guard_interval = GUARD_INTERVAL_1_32;
+			break;
+		case DIB3000_GUARD_TIME_1_16:
+			deb_getf("GUARD_INTERVAL_1_16 ");
+			c->guard_interval = GUARD_INTERVAL_1_16;
+			break;
+		case DIB3000_GUARD_TIME_1_8:
+			deb_getf("GUARD_INTERVAL_1_8 ");
+			c->guard_interval = GUARD_INTERVAL_1_8;
+			break;
+		case DIB3000_GUARD_TIME_1_4:
+			deb_getf("GUARD_INTERVAL_1_4 ");
+			c->guard_interval = GUARD_INTERVAL_1_4;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		default:
 			err("Unexpected Guard Time returned by TPS (%d)", tps_val);
@@ -600,11 +762,19 @@ static int dib3000mb_get_frontend(struct dvb_frontend* fe,
 	switch ((tps_val = rd(DIB3000MB_REG_TPS_FFT))) {
 		case DIB3000_TRANSMISSION_MODE_2K:
 			deb_getf("TRANSMISSION_MODE_2K ");
+<<<<<<< HEAD
 			ofdm->transmission_mode = TRANSMISSION_MODE_2K;
 			break;
 		case DIB3000_TRANSMISSION_MODE_8K:
 			deb_getf("TRANSMISSION_MODE_8K ");
 			ofdm->transmission_mode = TRANSMISSION_MODE_8K;
+=======
+			c->transmission_mode = TRANSMISSION_MODE_2K;
+			break;
+		case DIB3000_TRANSMISSION_MODE_8K:
+			deb_getf("TRANSMISSION_MODE_8K ");
+			c->transmission_mode = TRANSMISSION_MODE_8K;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		default:
 			err("unexpected transmission mode return by TPS (%d)", tps_val);
@@ -701,9 +871,15 @@ static int dib3000mb_fe_init_nonmobile(struct dvb_frontend* fe)
 	return dib3000mb_fe_init(fe, 0);
 }
 
+<<<<<<< HEAD
 static int dib3000mb_set_frontend_and_tuner(struct dvb_frontend* fe, struct dvb_frontend_parameters *fep)
 {
 	return dib3000mb_set_frontend(fe, fep, 1);
+=======
+static int dib3000mb_set_frontend_and_tuner(struct dvb_frontend *fe)
+{
+	return dib3000mb_set_frontend(fe, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void dib3000mb_release(struct dvb_frontend* fe)
@@ -794,10 +970,16 @@ error:
 }
 
 static struct dvb_frontend_ops dib3000mb_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		.name			= "DiBcom 3000M-B DVB-T",
 		.type			= FE_OFDM,
+=======
+	.delsys = { SYS_DVBT },
+	.info = {
+		.name			= "DiBcom 3000M-B DVB-T",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min		= 44250000,
 		.frequency_max		= 867250000,
 		.frequency_stepsize	= 62500,

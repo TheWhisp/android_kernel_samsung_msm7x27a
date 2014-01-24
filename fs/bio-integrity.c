@@ -22,6 +22,10 @@
 
 #include <linux/blkdev.h>
 #include <linux/mempool.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bio.h>
 #include <linux/workqueue.h>
 #include <linux/slab.h>
@@ -356,7 +360,11 @@ static void bio_integrity_generate(struct bio *bio)
 	bix.sector_size = bi->sector_size;
 
 	bio_for_each_segment(bv, bio, i) {
+<<<<<<< HEAD
 		void *kaddr = kmap_atomic(bv->bv_page, KM_USER0);
+=======
+		void *kaddr = kmap_atomic(bv->bv_page);
+>>>>>>> refs/remotes/origin/cm-10.0
 		bix.data_buf = kaddr + bv->bv_offset;
 		bix.data_size = bv->bv_len;
 		bix.prot_buf = prot_buf;
@@ -370,7 +378,11 @@ static void bio_integrity_generate(struct bio *bio)
 		total += sectors * bi->tuple_size;
 		BUG_ON(total > bio->bi_integrity->bip_size);
 
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -497,7 +509,11 @@ static int bio_integrity_verify(struct bio *bio)
 	bix.sector_size = bi->sector_size;
 
 	bio_for_each_segment(bv, bio, i) {
+<<<<<<< HEAD
 		void *kaddr = kmap_atomic(bv->bv_page, KM_USER0);
+=======
+		void *kaddr = kmap_atomic(bv->bv_page);
+>>>>>>> refs/remotes/origin/cm-10.0
 		bix.data_buf = kaddr + bv->bv_offset;
 		bix.data_size = bv->bv_len;
 		bix.prot_buf = prot_buf;
@@ -506,7 +522,11 @@ static int bio_integrity_verify(struct bio *bio)
 		ret = bi->verify_fn(&bix);
 
 		if (ret) {
+<<<<<<< HEAD
 			kunmap_atomic(kaddr, KM_USER0);
+=======
+			kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return ret;
 		}
 
@@ -516,7 +536,11 @@ static int bio_integrity_verify(struct bio *bio)
 		total += sectors * bi->tuple_size;
 		BUG_ON(total > bio->bi_integrity->bip_size);
 
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return ret;

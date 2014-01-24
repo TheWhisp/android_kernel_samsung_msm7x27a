@@ -14,7 +14,10 @@
 #include <linux/mutex.h>
 #include <linux/notifier.h>
 #include <linux/threads.h>
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kobject.h>
 #include <linux/sysfs.h>
 #include <linux/completion.h>
@@ -35,6 +38,10 @@
 #ifdef CONFIG_CPU_FREQ
 int cpufreq_register_notifier(struct notifier_block *nb, unsigned int list);
 int cpufreq_unregister_notifier(struct notifier_block *nb, unsigned int list);
+<<<<<<< HEAD
+=======
+extern void disable_cpufreq(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else		/* CONFIG_CPU_FREQ */
 static inline int cpufreq_register_notifier(struct notifier_block *nb,
 						unsigned int list)
@@ -46,6 +53,10 @@ static inline int cpufreq_unregister_notifier(struct notifier_block *nb,
 {
 	return 0;
 }
+<<<<<<< HEAD
+=======
+static inline void disable_cpufreq(void) { }
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif		/* CONFIG_CPU_FREQ */
 
 /* if (cpufreq_driver->target) exists, the ->governor decides what frequency
@@ -332,11 +343,22 @@ static inline unsigned int cpufreq_get(unsigned int cpu)
 /* query the last known CPU freq (in kHz). If zero, cpufreq couldn't detect it */
 #ifdef CONFIG_CPU_FREQ
 unsigned int cpufreq_quick_get(unsigned int cpu);
+<<<<<<< HEAD
+=======
+unsigned int cpufreq_quick_get_max(unsigned int cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 static inline unsigned int cpufreq_quick_get(unsigned int cpu)
 {
 	return 0;
 }
+<<<<<<< HEAD
+=======
+static inline unsigned int cpufreq_quick_get_max(unsigned int cpu)
+{
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 

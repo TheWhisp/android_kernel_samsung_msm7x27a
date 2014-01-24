@@ -10,6 +10,13 @@
  *  You may use this code as per GPL version 2
  */
 
+<<<<<<< HEAD
+=======
+struct device;
+struct device_type;
+struct power_supply;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SYSFS
 
 extern void power_supply_init_attrs(struct device_type *dev_type);

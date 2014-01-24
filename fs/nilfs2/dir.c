@@ -251,7 +251,11 @@ nilfs_type_by_mode[S_IFMT >> S_SHIFT] = {
 
 static void nilfs_set_de_type(struct nilfs_dir_entry *de, struct inode *inode)
 {
+<<<<<<< HEAD
 	mode_t mode = inode->i_mode;
+=======
+	umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	de->file_type = nilfs_type_by_mode[(mode & S_IFMT)>>S_SHIFT];
 }
@@ -602,7 +606,11 @@ int nilfs_make_empty(struct inode *inode, struct inode *parent)
 		unlock_page(page);
 		goto fail;
 	}
+<<<<<<< HEAD
 	kaddr = kmap_atomic(page, KM_USER0);
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memset(kaddr, 0, chunk_size);
 	de = (struct nilfs_dir_entry *)kaddr;
 	de->name_len = 1;
@@ -617,7 +625,11 @@ int nilfs_make_empty(struct inode *inode, struct inode *parent)
 	de->inode = cpu_to_le64(parent->i_ino);
 	memcpy(de->name, "..\0", 4);
 	nilfs_set_de_type(de, inode);
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	nilfs_commit_chunk(page, mapping, 0, chunk_size);
 fail:
 	page_cache_release(page);

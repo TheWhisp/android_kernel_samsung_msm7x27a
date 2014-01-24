@@ -70,7 +70,10 @@ SECTIONS
 	RODATA
 
 	/* writeable */
+<<<<<<< HEAD
 	_sdata = .;				/* Start of data section */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.data : {	/* Data */
 		. = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
 

@@ -10,6 +10,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string.h>
 #include <linux/types.h>
 #include <linux/jffs2.h>

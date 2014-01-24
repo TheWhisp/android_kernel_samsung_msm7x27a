@@ -169,10 +169,15 @@ static struct netconsole_target *alloc_param_target(char *target_config)
 	 * Note that these targets get their config_item fields zeroed-out.
 	 */
 	nt = kzalloc(sizeof(*nt), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!nt) {
 		printk(KERN_ERR "netconsole: failed to allocate memory\n");
 		goto fail;
 	}
+=======
+	if (!nt)
+		goto fail;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	nt->np.name = "netconsole";
 	strlcpy(nt->np.dev_name, "eth0", IFNAMSIZ);
@@ -551,10 +556,15 @@ static struct config_item *make_netconsole_target(struct config_group *group,
 	 * Target is disabled at creation (enabled == 0).
 	 */
 	nt = kzalloc(sizeof(*nt), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!nt) {
 		printk(KERN_ERR "netconsole: failed to allocate memory\n");
 		return ERR_PTR(-ENOMEM);
 	}
+=======
+	if (!nt)
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	nt->np.name = "netconsole";
 	strlcpy(nt->np.dev_name, "eth0", IFNAMSIZ);
@@ -642,8 +652,13 @@ restart:
 			case NETDEV_JOIN:
 			case NETDEV_UNREGISTER:
 				/*
+<<<<<<< HEAD
 				 * rtnl_lock already held
 				 * we might sleep in __netpoll_cleanup()
+=======
+				 * we might sleep in __netpoll_cleanup()
+				 * rtnl_lock already held
+>>>>>>> refs/remotes/origin/cm-10.0
 				 */
 				spin_unlock_irqrestore(&target_list_lock, flags);
 				__netpoll_cleanup(&nt->np);
@@ -801,5 +816,15 @@ static void __exit cleanup_netconsole(void)
 	}
 }
 
+<<<<<<< HEAD
 module_init(init_netconsole);
+=======
+/*
+ * Use late_initcall to ensure netconsole is
+ * initialized after network device driver if built-in.
+ *
+ * late_initcall() and module_init() are identical if built as module.
+ */
+late_initcall(init_netconsole);
+>>>>>>> refs/remotes/origin/cm-10.0
 module_exit(cleanup_netconsole);

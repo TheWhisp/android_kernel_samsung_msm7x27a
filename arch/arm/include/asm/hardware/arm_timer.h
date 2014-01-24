@@ -9,7 +9,16 @@
  *
  * Integrator AP has 16-bit timers, Integrator CP, Versatile and Realview
  * can have 16-bit or 32-bit selectable via a bit in the control register.
+<<<<<<< HEAD
  */
+=======
+ *
+ * Every SP804 contains two identical timers.
+ */
+#define TIMER_1_BASE	0x00
+#define TIMER_2_BASE	0x20
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TIMER_LOAD	0x00			/* ACVR rw */
 #define TIMER_VALUE	0x04			/* ACVR ro */
 #define TIMER_CTRL	0x08			/* ACVR rw */

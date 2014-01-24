@@ -25,7 +25,10 @@
 #include <linux/jiffies.h>
 #include <linux/spinlock.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ctype.h>
 #include <linux/edac.h>
 #include <asm/uaccess.h>
@@ -40,7 +43,11 @@ static LIST_HEAD(mc_devices);
 
 #ifdef CONFIG_EDAC_DEBUG
 
+<<<<<<< HEAD
 static void edac_mc_dump_channel(struct channel_info *chan)
+=======
+static void edac_mc_dump_channel(struct rank_info *chan)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	debugf4("\tchannel = %p\n", chan);
 	debugf4("\tchannel->chan_idx = %d\n", chan->chan_idx);
@@ -157,7 +164,11 @@ struct mem_ctl_info *edac_mc_alloc(unsigned sz_pvt, unsigned nr_csrows,
 {
 	struct mem_ctl_info *mci;
 	struct csrow_info *csi, *csrow;
+<<<<<<< HEAD
 	struct channel_info *chi, *chp, *chan;
+=======
+	struct rank_info *chi, *chp, *chan;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *pvt;
 	unsigned size;
 	int row, chn;
@@ -182,7 +193,11 @@ struct mem_ctl_info *edac_mc_alloc(unsigned sz_pvt, unsigned nr_csrows,
 	 * rather than an imaginary chunk of memory located at address 0.
 	 */
 	csi = (struct csrow_info *)(((char *)mci) + ((unsigned long)csi));
+<<<<<<< HEAD
 	chi = (struct channel_info *)(((char *)mci) + ((unsigned long)chi));
+=======
+	chi = (struct rank_info *)(((char *)mci) + ((unsigned long)chi));
+>>>>>>> refs/remotes/origin/cm-10.0
 	pvt = sz_pvt ? (((char *)mci) + ((unsigned long)pvt)) : NULL;
 
 	/* setup index and various internal pointers */
@@ -621,13 +636,21 @@ static void edac_mc_scrub_block(unsigned long page, unsigned long offset,
 	if (PageHighMem(pg))
 		local_irq_save(flags);
 
+<<<<<<< HEAD
 	virt_addr = kmap_atomic(pg, KM_BOUNCE_READ);
+=======
+	virt_addr = kmap_atomic(pg);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Perform architecture specific atomic scrub operation */
 	atomic_scrub(virt_addr + offset, size);
 
 	/* Unmap and complete */
+<<<<<<< HEAD
 	kunmap_atomic(virt_addr, KM_BOUNCE_READ);
+=======
+	kunmap_atomic(virt_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (PageHighMem(pg))
 		local_irq_restore(flags);

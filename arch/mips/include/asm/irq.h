@@ -11,16 +11,23 @@
 
 #include <linux/linkage.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mipsmtregs.h>
 
 #include <irq.h>
 
+<<<<<<< HEAD
 static inline void irq_dispose_mapping(unsigned int virq)
 {
 	return;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_I8259
 static inline int irq_canonicalize(int irq)
 {

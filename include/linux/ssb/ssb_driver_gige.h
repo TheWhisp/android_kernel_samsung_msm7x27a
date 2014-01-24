@@ -2,6 +2,10 @@
 #define LINUX_SSB_DRIVER_GIGE_H_
 
 #include <linux/ssb/ssb.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/spinlock.h>
 

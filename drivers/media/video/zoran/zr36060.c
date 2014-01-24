@@ -50,7 +50,11 @@
 /* amount of chips attached via this driver */
 static int zr36060_codecs;
 
+<<<<<<< HEAD
 static int low_bitrate;
+=======
+static bool low_bitrate;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(low_bitrate, bool, 0);
 MODULE_PARM_DESC(low_bitrate, "Buz compatibility option, halves bitrate");
 

@@ -9,14 +9,22 @@
 #include <linux/kprobes.h>
 #include <linux/init.h>
 #include <linux/kernel_stat.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bitops.h>
 #include <linux/acpi.h>
 #include <linux/io.h>
 #include <linux/delay.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/timer.h>
 #include <asm/hw_irq.h>
 #include <asm/pgtable.h>
@@ -61,7 +69,11 @@ static irqreturn_t math_error_irq(int cpl, void *dev_id)
 	outb(0, 0xF0);
 	if (ignore_fpu_irq || !boot_cpu_data.hard_math)
 		return IRQ_NONE;
+<<<<<<< HEAD
 	math_error(get_irq_regs(), 0, 16);
+=======
+	math_error(get_irq_regs(), 0, X86_TRAP_MF);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return IRQ_HANDLED;
 }
 
@@ -272,9 +284,12 @@ static void __init apic_intr_init(void)
 #ifdef CONFIG_X86_MCE_THRESHOLD
 	alloc_intr_gate(THRESHOLD_APIC_VECTOR, threshold_interrupt);
 #endif
+<<<<<<< HEAD
 #if defined(CONFIG_X86_MCE) && defined(CONFIG_X86_LOCAL_APIC)
 	alloc_intr_gate(MCE_SELF_VECTOR, mce_self_interrupt);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_X86_64) || defined(CONFIG_X86_LOCAL_APIC)
 	/* self generated IPI for local APIC timer */
@@ -309,10 +324,17 @@ void __init native_init_IRQ(void)
 	 * us. (some of these will be overridden and become
 	 * 'special' SMP interrupts)
 	 */
+<<<<<<< HEAD
 	for (i = FIRST_EXTERNAL_VECTOR; i < NR_VECTORS; i++) {
 		/* IA32_SYSCALL_VECTOR could be used in trap_init already. */
 		if (!test_bit(i, used_vectors))
 			set_intr_gate(i, interrupt[i-FIRST_EXTERNAL_VECTOR]);
+=======
+	i = FIRST_EXTERNAL_VECTOR;
+	for_each_clear_bit_from(i, used_vectors, NR_VECTORS) {
+		/* IA32_SYSCALL_VECTOR could be used in trap_init already. */
+		set_intr_gate(i, interrupt[i - FIRST_EXTERNAL_VECTOR]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (!acpi_ioapic && !of_ioapic)

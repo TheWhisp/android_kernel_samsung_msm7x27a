@@ -197,15 +197,31 @@ EXPORT_SYMBOL(dm_dirty_log_destroy);
 #define MIRROR_DISK_VERSION 2
 #define LOG_OFFSET 2
 
+<<<<<<< HEAD
 struct log_header {
 	uint32_t magic;
+=======
+struct log_header_disk {
+	__le32 magic;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Simple, incrementing version. no backward
 	 * compatibility.
 	 */
+<<<<<<< HEAD
 	uint32_t version;
 	sector_t nr_regions;
+=======
+	__le32 version;
+	__le64 nr_regions;
+} __packed;
+
+struct log_header_core {
+	uint32_t magic;
+	uint32_t version;
+	uint64_t nr_regions;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct log_c {
@@ -239,10 +255,17 @@ struct log_c {
 	int log_dev_failed;
 	int log_dev_flush_failed;
 	struct dm_dev *log_dev;
+<<<<<<< HEAD
 	struct log_header header;
 
 	struct dm_io_region header_location;
 	struct log_header *disk_header;
+=======
+	struct log_header_core header;
+
+	struct dm_io_region header_location;
+	struct log_header_disk *disk_header;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -251,34 +274,54 @@ struct log_c {
  */
 static inline int log_test_bit(uint32_t *bs, unsigned bit)
 {
+<<<<<<< HEAD
 	return test_bit_le(bit, (unsigned long *) bs) ? 1 : 0;
+=======
+	return test_bit_le(bit, bs) ? 1 : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void log_set_bit(struct log_c *l,
 			       uint32_t *bs, unsigned bit)
 {
+<<<<<<< HEAD
 	__test_and_set_bit_le(bit, (unsigned long *) bs);
+=======
+	__set_bit_le(bit, bs);
+>>>>>>> refs/remotes/origin/cm-10.0
 	l->touched_cleaned = 1;
 }
 
 static inline void log_clear_bit(struct log_c *l,
 				 uint32_t *bs, unsigned bit)
 {
+<<<<<<< HEAD
 	__test_and_clear_bit_le(bit, (unsigned long *) bs);
+=======
+	__clear_bit_le(bit, bs);
+>>>>>>> refs/remotes/origin/cm-10.0
 	l->touched_dirtied = 1;
 }
 
 /*----------------------------------------------------------------
  * Header IO
  *--------------------------------------------------------------*/
+<<<<<<< HEAD
 static void header_to_disk(struct log_header *core, struct log_header *disk)
+=======
+static void header_to_disk(struct log_header_core *core, struct log_header_disk *disk)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	disk->magic = cpu_to_le32(core->magic);
 	disk->version = cpu_to_le32(core->version);
 	disk->nr_regions = cpu_to_le64(core->nr_regions);
 }
 
+<<<<<<< HEAD
 static void header_from_disk(struct log_header *core, struct log_header *disk)
+=======
+static void header_from_disk(struct log_header_core *core, struct log_header_disk *disk)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	core->magic = le32_to_cpu(disk->magic);
 	core->version = le32_to_cpu(disk->version);
@@ -363,6 +406,10 @@ static int create_log_context(struct dm_dirty_log *log, struct dm_target *ti,
 	unsigned int region_count;
 	size_t bitset_size, buf_size;
 	int r;
+<<<<<<< HEAD
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (argc < 1 || argc > 2) {
 		DMWARN("wrong number of arguments to dirty region log");
@@ -381,7 +428,11 @@ static int create_log_context(struct dm_dirty_log *log, struct dm_target *ti,
 		}
 	}
 
+<<<<<<< HEAD
 	if (sscanf(argv[0], "%u", &region_size) != 1 ||
+=======
+	if (sscanf(argv[0], "%u%c", &region_size, &dummy) != 1 ||
+>>>>>>> refs/remotes/origin/cm-10.0
 	    !_check_region_size(ti, region_size)) {
 		DMWARN("invalid region size %s", argv[0]);
 		return -EINVAL;
@@ -486,7 +537,11 @@ static int create_log_context(struct dm_dirty_log *log, struct dm_target *ti,
 	memset(lc->sync_bits, (sync == NOSYNC) ? -1 : 0, bitset_size);
 	lc->sync_count = (sync == NOSYNC) ? region_count : 0;
 
+<<<<<<< HEAD
 	lc->recovering_bits = vmalloc(bitset_size);
+=======
+	lc->recovering_bits = vzalloc(bitset_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!lc->recovering_bits) {
 		DMWARN("couldn't allocate sync bitset");
 		vfree(lc->sync_bits);
@@ -498,7 +553,10 @@ static int create_log_context(struct dm_dirty_log *log, struct dm_target *ti,
 		kfree(lc);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	memset(lc->recovering_bits, 0, bitset_size);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	lc->sync_search = 0;
 	log->context = lc;
 
@@ -739,8 +797,12 @@ static int core_get_resync_work(struct dm_dirty_log *log, region_t *region)
 		return 0;
 
 	do {
+<<<<<<< HEAD
 		*region = find_next_zero_bit_le(
 					     (unsigned long *) lc->sync_bits,
+=======
+		*region = find_next_zero_bit_le(lc->sync_bits,
+>>>>>>> refs/remotes/origin/cm-10.0
 					     lc->region_count,
 					     lc->sync_search);
 		lc->sync_search = *region + 1;

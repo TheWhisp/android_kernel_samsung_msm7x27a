@@ -25,6 +25,7 @@
 
 	.text
 
+<<<<<<< HEAD
 	/* s3c_cpu_save
 	 *
 	 * Save enough processor state to allow the restart of the pm.c
@@ -48,6 +49,8 @@ ENTRY(s3c_cpu_save)
 resume_with_mmu:
 	ldmfd	sp!, { r4 - r12, pc }	@ return, from sp from s3c_cpu_save
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Sleep magic, the word before the resume entry point so that the
 	 * bootloader can check for a resumeable image. */
 

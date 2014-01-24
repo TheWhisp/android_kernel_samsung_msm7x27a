@@ -30,8 +30,12 @@
 
 #include <asm/cpu.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardirq.h>
 #include <asm/hazards.h>
 #include <asm/irq.h>
@@ -292,7 +296,11 @@ static void smtc_configure_tlb(void)
  * possibly leave some TCs/VPEs as "slave" processors.
  *
  * Use c0_MVPConf0 to find out how many TCs are available, setting up
+<<<<<<< HEAD
  * cpu_possible_map and the logical/physical mappings.
+=======
+ * cpu_possible_mask and the logical/physical mappings.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 int __init smtc_build_cpu_map(int start_cpu_slot)
@@ -559,7 +567,11 @@ void smtc_prepare_cpus(int cpus)
 
 	pipi = kmalloc(nipi *sizeof(struct smtc_ipi), GFP_KERNEL);
 	if (pipi == NULL)
+<<<<<<< HEAD
 		panic("kmalloc of IPI message buffers failed\n");
+=======
+		panic("kmalloc of IPI message buffers failed");
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		printk("IPI buffer pool of %d buffers\n", nipi);
 	for (i = 0; i < nipi; i++) {
@@ -813,7 +825,11 @@ void smtc_send_ipi(int cpu, int type, unsigned int action)
 	if (pipi == NULL) {
 		bust_spinlocks(1);
 		mips_mt_regdump(dvpe());
+<<<<<<< HEAD
 		panic("IPI Msg. Buffers Depleted\n");
+=======
+		panic("IPI Msg. Buffers Depleted");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	pipi->type = type;
 	pipi->arg = (void *)action;
@@ -1130,7 +1146,11 @@ static void ipi_irq_dispatch(void)
 
 static struct irqaction irq_ipi = {
 	.handler	= ipi_interrupt,
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_PERCPU,
+=======
+	.flags		= IRQF_PERCPU,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name		= "SMTC_IPI"
 };
 

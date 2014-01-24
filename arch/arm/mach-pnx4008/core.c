@@ -32,7 +32,11 @@
 #include <asm/mach-types.h>
 #include <asm/pgtable.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
@@ -260,13 +264,29 @@ void __init pnx4008_map_io(void)
 	iotable_init(pnx4008_io_desc, ARRAY_SIZE(pnx4008_io_desc));
 }
 
+<<<<<<< HEAD
+=======
+static void pnx4008_restart(char mode, const char *cmd)
+{
+	soft_restart(0);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct sys_timer pnx4008_timer;
 
 MACHINE_START(PNX4008, "Philips PNX4008")
 	/* Maintainer: MontaVista Software Inc. */
+<<<<<<< HEAD
 	.boot_params		= 0x80000100,
+=======
+	.atag_offset		= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io 		= pnx4008_map_io,
 	.init_irq 		= pnx4008_init_irq,
 	.init_machine 		= pnx4008_init,
 	.timer 			= &pnx4008_timer,
+<<<<<<< HEAD
+=======
+	.restart		= pnx4008_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -501,12 +501,18 @@ static const struct pci230_board pci230_boards[] = {
 };
 
 static DEFINE_PCI_DEVICE_TABLE(pci230_pci_table) = {
+<<<<<<< HEAD
 	{
 	PCI_VENDOR_ID_AMPLICON, PCI_DEVICE_ID_PCI230, PCI_ANY_ID,
 		    PCI_ANY_ID, 0, 0, 0}, {
 	PCI_VENDOR_ID_AMPLICON, PCI_DEVICE_ID_PCI260, PCI_ANY_ID,
 		    PCI_ANY_ID, 0, 0, 0}, {
 	0}
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_AMPLICON, PCI_DEVICE_ID_PCI230) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_AMPLICON, PCI_DEVICE_ID_PCI260) },
+	{0}
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 MODULE_DEVICE_TABLE(pci, pci230_pci_table);

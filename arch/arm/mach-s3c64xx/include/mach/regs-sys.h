@@ -21,8 +21,17 @@
 #define S3C64XX_AHB_CON1	S3C_SYSREG(0x104)
 #define S3C64XX_AHB_CON2	S3C_SYSREG(0x108)
 
+<<<<<<< HEAD
 #define S3C64XX_OTHERS		S3C_SYSREG(0x900)
 
 #define S3C64XX_OTHERS_USBMASK	(1 << 16)
+=======
+#define S3C64XX_SDMA_SEL	S3C_SYSREG(0x110)
+
+#define S3C64XX_OTHERS		S3C_SYSREG(0x900)
+
+#define S3C64XX_OTHERS_USBMASK	(1 << 16)
+#define S3C64XX_OTHERS_SYNCMUXSEL	(1 << 6)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _PLAT_REGS_SYS_H */

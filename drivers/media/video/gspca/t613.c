@@ -26,8 +26,16 @@
  *			Costantino Leandro
  */
 
+<<<<<<< HEAD
 #define MODULE_NAME "t613"
 
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#define MODULE_NAME "t613"
+
+#include <linux/input.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include "gspca.h"
 
@@ -55,6 +63,10 @@ struct sd {
 	u8 effect;
 
 	u8 sensor;
+<<<<<<< HEAD
+=======
+	u8 button_pressed;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 enum sensors {
 	SENSOR_OM6802,
@@ -572,7 +584,11 @@ static void reg_w_buf(struct gspca_dev *gspca_dev,
 
 		tmpbuf = kmemdup(buffer, len, GFP_KERNEL);
 		if (!tmpbuf) {
+<<<<<<< HEAD
 			err("Out of memory");
+=======
+			pr_err("Out of memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 		usb_control_msg(gspca_dev->dev,
@@ -598,7 +614,11 @@ static void reg_w_ixbuf(struct gspca_dev *gspca_dev,
 	} else {
 		p = tmpbuf = kmalloc(len * 2, GFP_KERNEL);
 		if (!tmpbuf) {
+<<<<<<< HEAD
 			err("Out of memory");
+=======
+			pr_err("Out of memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 	}
@@ -652,7 +672,11 @@ static void om6802_sensor_init(struct gspca_dev *gspca_dev)
 	}
 	byte = reg_r(gspca_dev, 0x0063);
 	if (byte != 0x17) {
+<<<<<<< HEAD
 		err("Bad sensor reset %02x", byte);
+=======
+		pr_err("Bad sensor reset %02x\n", byte);
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* continue? */
 	}
 
@@ -890,7 +914,11 @@ static int sd_init(struct gspca_dev *gspca_dev)
 		sd->sensor = SENSOR_OM6802;
 		break;
 	default:
+<<<<<<< HEAD
 		err("unknown sensor %04x", sensor_id);
+=======
+		pr_err("unknown sensor %04x\n", sensor_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -905,7 +933,11 @@ static int sd_init(struct gspca_dev *gspca_dev)
 				break;		/* OK */
 		}
 		if (i < 0) {
+<<<<<<< HEAD
 			err("Bad sensor reset %02x", test_byte);
+=======
+			pr_err("Bad sensor reset %02x\n", test_byte);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EIO;
 		}
 		reg_w_buf(gspca_dev, n2, sizeof n2);
@@ -1093,15 +1125,44 @@ static void sd_stopN(struct gspca_dev *gspca_dev)
 		msleep(20);
 		reg_w(gspca_dev, 0x0309);
 	}
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_INPUT) || defined(CONFIG_INPUT_MODULE)
+	/* If the last button state is pressed, release it now! */
+	if (sd->button_pressed) {
+		input_report_key(gspca_dev->input_dev, KEY_CAMERA, 0);
+		input_sync(gspca_dev->input_dev);
+		sd->button_pressed = 0;
+	}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void sd_pkt_scan(struct gspca_dev *gspca_dev,
 			u8 *data,			/* isoc packet */
 			int len)			/* iso packet length */
 {
+<<<<<<< HEAD
 	int pkt_type;
 
 	if (data[0] == 0x5a) {
+=======
+	struct sd *sd = (struct sd *) gspca_dev;
+	int pkt_type;
+
+	if (data[0] == 0x5a) {
+#if defined(CONFIG_INPUT) || defined(CONFIG_INPUT_MODULE)
+		if (len > 20) {
+			u8 state = (data[20] & 0x80) ? 1 : 0;
+			if (sd->button_pressed != state) {
+				input_report_key(gspca_dev->input_dev,
+						 KEY_CAMERA, state);
+				input_sync(gspca_dev->input_dev);
+				sd->button_pressed = state;
+			}
+		}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Control Packet, after this came the header again,
 		 * but extra bytes came in the packet before this,
 		 * sometimes an EOF arrives, sometimes not... */
@@ -1387,7 +1448,11 @@ static int sd_querymenu(struct gspca_dev *gspca_dev,
 		return 0;
 	case V4L2_CID_EFFECTS:
 		if ((unsigned) menu->index < ARRAY_SIZE(effects_control)) {
+<<<<<<< HEAD
 			strncpy((char *) menu->name,
+=======
+			strlcpy((char *) menu->name,
+>>>>>>> refs/remotes/origin/cm-10.0
 				effects_control[menu->index],
 				sizeof menu->name);
 			return 0;
@@ -1408,6 +1473,12 @@ static const struct sd_desc sd_desc = {
 	.stopN = sd_stopN,
 	.pkt_scan = sd_pkt_scan,
 	.querymenu = sd_querymenu,
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_INPUT) || defined(CONFIG_INPUT_MODULE)
+	.other_input = 1,
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* -- module initialisation -- */
@@ -1436,6 +1507,7 @@ static struct usb_driver sd_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 /* -- module insert / remove -- */
 static int __init sd_mod_init(void)
 {
@@ -1448,3 +1520,6 @@ static void __exit sd_mod_exit(void)
 
 module_init(sd_mod_init);
 module_exit(sd_mod_exit);
+=======
+module_usb_driver(sd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

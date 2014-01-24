@@ -99,7 +99,11 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 	 */
 	pci_write_config_byte(dev, PCI_CACHE_LINE_SIZE, 64 / 4);
 	/* Set latency timers for all devices */
+<<<<<<< HEAD
 	pci_write_config_byte(dev, PCI_LATENCY_TIMER, 48);
+=======
+	pci_write_config_byte(dev, PCI_LATENCY_TIMER, 64);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Enable reporting System errors and parity errors on all devices */
 	/* Enable parity checking and error reporting */
@@ -109,7 +113,11 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 
 	if (dev->subordinate) {
 		/* Set latency timers on sub bridges */
+<<<<<<< HEAD
 		pci_write_config_byte(dev, PCI_SEC_LATENCY_TIMER, 48);
+=======
+		pci_write_config_byte(dev, PCI_SEC_LATENCY_TIMER, 64);
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* More bridge error detection */
 		pci_read_config_word(dev, PCI_BRIDGE_CONTROL, &config);
 		config |= PCI_BRIDGE_CTL_PARITY | PCI_BRIDGE_CTL_SERR;
@@ -121,6 +129,7 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 	if (pos) {
 		/* Update Device Control */
 		pci_read_config_word(dev, pos + PCI_EXP_DEVCTL, &config);
+<<<<<<< HEAD
 		/* Correctable Error Reporting */
 		config |= PCI_EXP_DEVCTL_CERE;
 		/* Non-Fatal Error Reporting */
@@ -129,6 +138,12 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 		config |= PCI_EXP_DEVCTL_FERE;
 		/* Unsupported Request */
 		config |= PCI_EXP_DEVCTL_URRE;
+=======
+		config |= PCI_EXP_DEVCTL_CERE; /* Correctable Error Reporting */
+		config |= PCI_EXP_DEVCTL_NFERE; /* Non-Fatal Error Reporting */
+		config |= PCI_EXP_DEVCTL_FERE;  /* Fatal Error Reporting */
+		config |= PCI_EXP_DEVCTL_URRE;  /* Unsupported Request */
+>>>>>>> refs/remotes/origin/cm-10.0
 		pci_write_config_word(dev, pos + PCI_EXP_DEVCTL, config);
 	}
 

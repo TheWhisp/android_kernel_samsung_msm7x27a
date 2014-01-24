@@ -24,7 +24,10 @@
 #include <linux/seq_file.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -37,9 +40,15 @@
 
 #include <sysdev/fsl_pci.h>
 #include <sysdev/fsl_soc.h>
+<<<<<<< HEAD
 
 #include "mpc86xx.h"
 #include "gef_pic.h"
+=======
+#include <sysdev/ge/ge_pic.h>
+
+#include "mpc86xx.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef DEBUG
 

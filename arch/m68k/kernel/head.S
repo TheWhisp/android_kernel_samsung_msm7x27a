@@ -250,9 +250,14 @@
  * USE_MFP:	Use the ST-MFP port (Modem1) for serial debug.
  *
  * Macintosh constants:
+<<<<<<< HEAD
  * MAC_SERIAL_DEBUG:	Turns on serial debug output for the Macintosh.
  * MAC_USE_SCC_A:	Use the SCC port A (modem) for serial debug.
  * MAC_USE_SCC_B:	Use the SCC port B (printer) for serial debug (default).
+=======
+ * MAC_USE_SCC_A: Use SCC port A (modem) for serial debug and early console.
+ * MAC_USE_SCC_B: Use SCC port B (printer) for serial debug and early console.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/linkage.h>
@@ -268,15 +273,19 @@
 
 #include <asm/machw.h>
 
+<<<<<<< HEAD
 /*
  * Macintosh console support
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_FRAMEBUFFER_CONSOLE
 #define CONSOLE
 #define CONSOLE_PENGUIN
 #endif
 
+<<<<<<< HEAD
 /*
  * Macintosh serial debug support; outputs boot info to the printer
  *   and/or modem serial ports
@@ -295,6 +304,22 @@
 #undef MMU_PRINT
 #undef MMU_NOCACHE_KERNEL
 #define SERIAL_DEBUG
+=======
+#ifdef CONFIG_EARLY_PRINTK
+#define SERIAL_DEBUG
+#else
+#undef SERIAL_DEBUG
+#endif
+
+#else /* !CONFIG_MAC */
+
+#define SERIAL_DEBUG
+
+#endif /* !CONFIG_MAC */
+
+#undef MMU_PRINT
+#undef MMU_NOCACHE_KERNEL
+>>>>>>> refs/remotes/origin/cm-10.0
 #undef DEBUG
 
 /*
@@ -655,11 +680,19 @@ ENTRY(__start)
 	lea	%pc@(L(mac_rowbytes)),%a1
 	movel	%a0@,%a1@
 
+<<<<<<< HEAD
 #ifdef MAC_SERIAL_DEBUG
 	get_bi_record	BI_MAC_SCCBASE
 	lea	%pc@(L(mac_sccbase)),%a1
 	movel	%a0@,%a1@
 #endif /* MAC_SERIAL_DEBUG */
+=======
+#ifdef SERIAL_DEBUG
+	get_bi_record	BI_MAC_SCCBASE
+	lea	%pc@(L(mac_sccbase)),%a1
+	movel	%a0@,%a1@
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if 0
 	/*
@@ -1427,7 +1460,11 @@ L(mmu_fixup_done):
 	subl	%d0,L(console_font)
 	subl	%d0,L(console_font_data)
 #endif
+<<<<<<< HEAD
 #ifdef MAC_SERIAL_DEBUG
+=======
+#ifdef SERIAL_DEBUG
+>>>>>>> refs/remotes/origin/cm-10.0
 	orl	#0x50000000,L(mac_sccbase)
 #endif
 1:
@@ -1917,7 +1954,11 @@ mmu_030_print:
 	jbne	30b
 
 mmu_print_done:
+<<<<<<< HEAD
 	puts	"\n\n"
+=======
+	puts	"\n"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 func_return	mmu_print
 
@@ -2761,6 +2802,7 @@ func_return	get_new_page
 #ifdef CONFIG_MAC
 
 L(scc_initable_mac):
+<<<<<<< HEAD
 	.byte	9,12		/* Reset */
 	.byte	4,0x44		/* x16, 1 stopbit, no parity */
 	.byte	3,0xc0		/* receiver: 8 bpc */
@@ -2769,6 +2811,14 @@ L(scc_initable_mac):
 	.byte	10,0		/* NRZ */
 	.byte	11,0x50		/* use baud rate generator */
 	.byte	12,10,13,0	/* 9600 baud */
+=======
+	.byte	4,0x44		/* x16, 1 stopbit, no parity */
+	.byte	3,0xc0		/* receiver: 8 bpc */
+	.byte	5,0xe2		/* transmitter: 8 bpc, assert dtr/rts */
+	.byte	10,0		/* NRZ */
+	.byte	11,0x50		/* use baud rate generator */
+	.byte	12,1,13,0	/* 38400 baud */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.byte	14,1		/* Baud rate generator enable */
 	.byte	3,0xc1		/* enable receiver */
 	.byte	5,0xea		/* enable transmitter */
@@ -2906,18 +2956,46 @@ func_start	serial_init,%d0/%d1/%a0/%a1
 #endif
 #ifdef CONFIG_MAC
 	is_not_mac(L(serial_init_not_mac))
+<<<<<<< HEAD
 #ifdef MAC_SERIAL_DEBUG
 #if !defined(MAC_USE_SCC_A) && !defined(MAC_USE_SCC_B)
 #define MAC_USE_SCC_B
 #endif
+=======
+
+#ifdef SERIAL_DEBUG
+
+/* You may define either or both of these. */
+#define MAC_USE_SCC_A /* Modem port */
+#define MAC_USE_SCC_B /* Printer port */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define mac_scc_cha_b_ctrl_offset	0x0
 #define mac_scc_cha_a_ctrl_offset	0x2
 #define mac_scc_cha_b_data_offset	0x4
 #define mac_scc_cha_a_data_offset	0x6
 
+<<<<<<< HEAD
 #ifdef MAC_USE_SCC_A
 	/* Initialize channel A */
 	movel	%pc@(L(mac_sccbase)),%a0
+=======
+#if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
+	movel	%pc@(L(mac_sccbase)),%a0
+	/* Reset SCC device */
+	moveb	#9,%a0@(mac_scc_cha_a_ctrl_offset)
+	moveb	#0xc0,%a0@(mac_scc_cha_a_ctrl_offset)
+	/* Wait for 5 PCLK cycles, which is about 68 CPU cycles */
+	/* 5 / 3.6864 MHz = approx. 1.36 us = 68 / 50 MHz */
+	movel	#35,%d0
+5:
+	subq	#1,%d0
+	jne	5b
+#endif
+
+#ifdef MAC_USE_SCC_A
+	/* Initialize channel A */
+>>>>>>> refs/remotes/origin/cm-10.0
 	lea	%pc@(L(scc_initable_mac)),%a1
 5:	moveb	%a1@+,%d0
 	jmi	6f
@@ -2929,9 +3007,12 @@ func_start	serial_init,%d0/%d1/%a0/%a1
 
 #ifdef MAC_USE_SCC_B
 	/* Initialize channel B */
+<<<<<<< HEAD
 #ifndef MAC_USE_SCC_A	/* Load mac_sccbase only if needed */
 	movel	%pc@(L(mac_sccbase)),%a0
 #endif	/* MAC_USE_SCC_A */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	lea	%pc@(L(scc_initable_mac)),%a1
 7:	moveb	%a1@+,%d0
 	jmi	8f
@@ -2940,7 +3021,12 @@ func_start	serial_init,%d0/%d1/%a0/%a1
 	jra	7b
 8:
 #endif	/* MAC_USE_SCC_B */
+<<<<<<< HEAD
 #endif	/* MAC_SERIAL_DEBUG */
+=======
+
+#endif	/* SERIAL_DEBUG */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	jra	L(serial_init_done)
 L(serial_init_not_mac):
@@ -3011,25 +3097,42 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
 #ifdef CONFIG_MAC
 	is_not_mac(5f)
 
+<<<<<<< HEAD
 #ifdef MAC_SERIAL_DEBUG
 
 #ifdef MAC_USE_SCC_A
 	movel	%pc@(L(mac_sccbase)),%a1
+=======
+#ifdef SERIAL_DEBUG
+
+#if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
+	movel	%pc@(L(mac_sccbase)),%a1
+#endif
+
+#ifdef MAC_USE_SCC_A
+>>>>>>> refs/remotes/origin/cm-10.0
 3:	btst	#2,%a1@(mac_scc_cha_a_ctrl_offset)
 	jeq	3b
 	moveb	%d0,%a1@(mac_scc_cha_a_data_offset)
 #endif	/* MAC_USE_SCC_A */
 
 #ifdef MAC_USE_SCC_B
+<<<<<<< HEAD
 #ifndef MAC_USE_SCC_A	/* Load mac_sccbase only if needed */
 	movel	%pc@(L(mac_sccbase)),%a1
 #endif	/* MAC_USE_SCC_A */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 4:	btst	#2,%a1@(mac_scc_cha_b_ctrl_offset)
 	jeq	4b
 	moveb	%d0,%a1@(mac_scc_cha_b_data_offset)
 #endif	/* MAC_USE_SCC_B */
 
+<<<<<<< HEAD
 #endif	/* MAC_SERIAL_DEBUG */
+=======
+#endif	/* SERIAL_DEBUG */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	jra	L(serial_putc_done)
 5:
@@ -3248,6 +3351,7 @@ func_return	putn
 
 #ifdef CONFIG_MAC
 /*
+<<<<<<< HEAD
  *	mac_serial_print
  *
  *	This routine takes its parameters on the stack.  It then
@@ -3256,10 +3360,21 @@ func_return	putn
  *
  *	The calling parameters are:
  *		void mac_serial_print(const char *str);
+=======
+ *	mac_early_print
+ *
+ *	This routine takes its parameters on the stack.  It then
+ *	turns around and calls the internal routines.  This routine
+ *	is used by the boot console.
+ *
+ *	The calling parameters are:
+ *		void mac_early_print(const char *str, unsigned length);
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *	This routine does NOT understand variable arguments only
  *	simple strings!
  */
+<<<<<<< HEAD
 ENTRY(mac_serial_print)
 	moveml	%d0/%a0,%sp@-
 #if 1
@@ -3275,6 +3390,29 @@ ENTRY(mac_serial_print)
 	move	%sp@+,%sr
 #endif
 	moveml	%sp@+,%d0/%a0
+=======
+ENTRY(mac_early_print)
+	moveml	%d0/%d1/%a0,%sp@-
+	movew	%sr,%sp@-
+	ori	#0x0700,%sr
+	movel	%sp@(18),%a0		/* fetch parameter */
+	movel	%sp@(22),%d1		/* fetch parameter */
+	jra	2f
+1:
+#ifdef CONSOLE
+	console_putc	%d0
+#endif
+#ifdef SERIAL_DEBUG
+	serial_putc	%d0
+#endif
+	subq	#1,%d1
+2:	jeq	3f
+	moveb	%a0@+,%d0
+	jne	1b
+3:
+	movew	%sp@+,%sr
+	moveml	%sp@+,%d0/%d1/%a0
+>>>>>>> refs/remotes/origin/cm-10.0
 	rts
 #endif /* CONFIG_MAC */
 
@@ -3409,10 +3547,17 @@ func_start	console_put_stats,%a0/%d7
 	 *		a0 = pointer to boot_info
 	 *		d7 = value of boot_info fields
 	 */
+<<<<<<< HEAD
 	puts	"\nMacLinux\n\n"
 
 #ifdef SERIAL_DEBUG
 	puts	" vidaddr:"
+=======
+	puts	"\nMacLinux\n"
+
+#ifdef SERIAL_DEBUG
+	puts	"\n vidaddr:"
+>>>>>>> refs/remotes/origin/cm-10.0
 	putn	%pc@(L(mac_videobase))		/* video addr. */
 
 	puts	"\n  _stext:"
@@ -3423,6 +3568,7 @@ func_start	console_put_stats,%a0/%d7
 	lea	%pc@(_end),%a0
 	putn	%a0
 
+<<<<<<< HEAD
 	puts	"\ncpuid:"
 	putn	%pc@(L(cputype))
 	putc	'\n'
@@ -3436,6 +3582,23 @@ func_start	console_put_stats,%a0/%d7
 #  endif /* MMU_PRINT */
 #endif /* SERIAL_DEBUG */
 
+=======
+	puts	"\n   cpuid:"
+	putn	%pc@(L(cputype))
+
+#  ifdef CONFIG_MAC
+	puts	"\n sccbase:"
+	putn	%pc@(L(mac_sccbase))
+#  endif
+#  ifdef MMU_PRINT
+	putc	'\n'
+	jbsr	mmu_print_machine_cpu_types
+#  endif
+#endif /* SERIAL_DEBUG */
+
+	putc	'\n'
+
+>>>>>>> refs/remotes/origin/cm-10.0
 func_return	console_put_stats
 
 #ifdef CONSOLE_PENGUIN
@@ -3896,11 +4059,19 @@ L(mac_dimensions):
 	.long	0
 L(mac_rowbytes):
 	.long	0
+<<<<<<< HEAD
 #ifdef MAC_SERIAL_DEBUG
 L(mac_sccbase):
 	.long	0
 #endif /* MAC_SERIAL_DEBUG */
 #endif
+=======
+#ifdef SERIAL_DEBUG
+L(mac_sccbase):
+	.long	0
+#endif
+#endif /* CONFIG_MAC */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined (CONFIG_APOLLO)
 LSRB0        = 0x10412

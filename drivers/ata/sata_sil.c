@@ -438,7 +438,11 @@ static void sil_host_intr(struct ata_port *ap, u32 bmdma2)
 	u8 status;
 
 	if (unlikely(bmdma2 & SIL_DMA_SATA_IRQ)) {
+<<<<<<< HEAD
 		u32 serror;
+=======
+		u32 serror = 0xffffffff;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* SIEN doesn't mask SATA IRQs on some 3112s.  Those
 		 * controllers continue to assert IRQ as long as
@@ -643,8 +647,13 @@ static void sil_dev_config(struct ata_device *dev)
 	    ((ap->flags & SIL_FLAG_MOD15WRITE) &&
 	     (quirks & SIL_QUIRK_MOD15WRITE))) {
 		if (print_info)
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_INFO, "applying Seagate "
 				       "errata fix (mod15write workaround)\n");
+=======
+			ata_dev_info(dev,
+		"applying Seagate errata fix (mod15write workaround)\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev->max_sectors = 15;
 		return;
 	}
@@ -652,8 +661,13 @@ static void sil_dev_config(struct ata_device *dev)
 	/* limit to udma5 */
 	if (quirks & SIL_QUIRK_UDMA5MAX) {
 		if (print_info)
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_INFO, "applying Maxtor "
 				       "errata fix %s\n", model_num);
+=======
+			ata_dev_info(dev, "applying Maxtor errata fix %s\n",
+				     model_num);
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev->udma_mask &= ATA_UDMA5;
 		return;
 	}
@@ -676,8 +690,13 @@ static void sil_init_controller(struct ata_host *host)
 			writew(cls << 8 | cls,
 			       mmio_base + sil_port[i].fifo_cfg);
 	} else
+<<<<<<< HEAD
 		dev_printk(KERN_WARNING, &pdev->dev,
 			   "cache line size not set.  Driver may not function\n");
+=======
+		dev_warn(&pdev->dev,
+			 "cache line size not set.  Driver may not function\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Apply R_ERR on DMA activate FIS errata workaround */
 	if (host->ports[0]->flags & SIL_FLAG_RERR_ON_DMA_ACT) {
@@ -688,9 +707,14 @@ static void sil_init_controller(struct ata_host *host)
 			if ((tmp & 0x3) != 0x01)
 				continue;
 			if (!cnt)
+<<<<<<< HEAD
 				dev_printk(KERN_INFO, &pdev->dev,
 					   "Applying R_ERR on DMA activate "
 					   "FIS errata fix\n");
+=======
+				dev_info(&pdev->dev,
+					 "Applying R_ERR on DMA activate FIS errata fix\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			writel(tmp & ~0x3, mmio_base + sil_port[i].sfis_cfg);
 			cnt++;
 		}
@@ -733,7 +757,10 @@ static bool sil_broken_system_poweroff(struct pci_dev *pdev)
 
 static int sil_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
+<<<<<<< HEAD
 	static int printed_version;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int board_id = ent->driver_data;
 	struct ata_port_info pi = sil_port_info[board_id];
 	const struct ata_port_info *ppi[] = { &pi, NULL };
@@ -742,8 +769,12 @@ static int sil_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	int n_ports, rc;
 	unsigned int i;
 
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* allocate host */
 	n_ports = 2;

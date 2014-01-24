@@ -228,7 +228,11 @@ static int __init sa1100_cpu_init(struct cpufreq_policy *policy)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct cpufreq_driver sa1100_driver = {
+=======
+static struct cpufreq_driver sa1100_driver __refdata = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.flags		= CPUFREQ_STICKY,
 	.verify		= sa11x0_verify_speed,
 	.target		= sa1100_target,

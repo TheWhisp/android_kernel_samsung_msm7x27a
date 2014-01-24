@@ -41,7 +41,10 @@
 #include <linux/major.h>
 #include <linux/delay.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/ds.h>

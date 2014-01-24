@@ -119,7 +119,10 @@ enum nldr_phase {
  *      0:        Success.
  *      -ENOMEM:    Insufficient memory on GPP.
  *  Requires:
+<<<<<<< HEAD
  *      nldr_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      Valid nldr_obj.
  *      node_props != NULL.
  *      nldr_nodeobj != NULL.
@@ -148,7 +151,10 @@ typedef int(*nldr_allocatefxn) (struct nldr_object *nldr_obj,
  *      0:        Success;
  *      -ENOMEM:    Insufficient memory for requested resources.
  *  Requires:
+<<<<<<< HEAD
  *      nldr_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      nldr != NULL.
  *      hdev_obj != NULL.
  *	pattrs != NULL.
@@ -168,7 +174,10 @@ typedef int(*nldr_createfxn) (struct nldr_object **nldr,
  *      nldr_obj:          Node manager object.
  *  Returns:
  *  Requires:
+<<<<<<< HEAD
  *      nldr_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      Valid nldr_obj.
  *  Ensures:
  *	nldr_obj invalid
@@ -176,6 +185,7 @@ typedef int(*nldr_createfxn) (struct nldr_object **nldr,
 typedef void (*nldr_deletefxn) (struct nldr_object *nldr_obj);
 
 /*
+<<<<<<< HEAD
  *  ======== nldr_exit ========
  *  Discontinue usage of NLDR module.
  *
@@ -190,6 +200,8 @@ typedef void (*nldr_deletefxn) (struct nldr_object *nldr_obj);
 typedef void (*nldr_exitfxn) (void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *  ======== NLDR_Free ========
  *  Free resources allocated in nldr_allocate.
  *
@@ -197,7 +209,10 @@ typedef void (*nldr_exitfxn) (void);
  *      nldr_node_obj:      Handle returned from nldr_allocate().
  *  Returns:
  *  Requires:
+<<<<<<< HEAD
  *      nldr_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      Valid nldr_node_obj.
  *  Ensures:
  */
@@ -216,7 +231,10 @@ typedef void (*nldr_freefxn) (struct nldr_nodeobject *nldr_node_obj);
  *      0:        Success.
  *      -ESPIPE:    Address of function not found.
  *  Requires:
+<<<<<<< HEAD
  *      nldr_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      Valid nldr_node_obj.
  *      addr != NULL;
  *      str_fxn != NULL;
@@ -227,6 +245,7 @@ typedef int(*nldr_getfxnaddrfxn) (struct nldr_nodeobject
 					 char *str_fxn, u32 * addr);
 
 /*
+<<<<<<< HEAD
  *  ======== nldr_init ========
  *  Initialize the NLDR module.
  *
@@ -238,6 +257,8 @@ typedef int(*nldr_getfxnaddrfxn) (struct nldr_nodeobject
 typedef bool(*nldr_initfxn) (void);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *  ======== nldr_load ========
  *  Load create, delete, or execute phase function of a node on the DSP.
  *
@@ -251,7 +272,10 @@ typedef bool(*nldr_initfxn) (void);
  *                              is already in use.
  *      -EILSEQ:           Failure in dynamic loader library.
  *  Requires:
+<<<<<<< HEAD
  *      nldr_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      Valid nldr_node_obj.
  *  Ensures:
  */
@@ -269,7 +293,10 @@ typedef int(*nldr_loadfxn) (struct nldr_nodeobject *nldr_node_obj,
  *      0:        Success.
  *      -ENOMEM:    Insufficient memory on GPP.
  *  Requires:
+<<<<<<< HEAD
  *      nldr_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      Valid nldr_node_obj.
  *  Ensures:
  */
@@ -283,9 +310,13 @@ struct node_ldr_fxns {
 	nldr_allocatefxn allocate;
 	nldr_createfxn create;
 	nldr_deletefxn delete;
+<<<<<<< HEAD
 	nldr_exitfxn exit;
 	nldr_getfxnaddrfxn get_fxn_addr;
 	nldr_initfxn init;
+=======
+	nldr_getfxnaddrfxn get_fxn_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	nldr_loadfxn load;
 	nldr_unloadfxn unload;
 };

@@ -12,7 +12,10 @@
  */
 
 #ifdef CONFIG_OF_DEVICE
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/device.h>
 #include <linux/mod_devicetable.h>
 #include <linux/pm.h>
@@ -82,7 +85,11 @@ extern struct platform_device *of_device_alloc(struct device_node *np,
 					 struct device *parent);
 extern struct platform_device *of_find_device_by_node(struct device_node *np);
 
+<<<<<<< HEAD
 #if !defined(CONFIG_SPARC) /* SPARC has its own device registration method */
+=======
+#ifdef CONFIG_OF_ADDRESS /* device reg helpers depend on OF_ADDRESS */
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Platform devices and busses creation */
 extern struct platform_device *of_platform_device_create(struct device_node *np,
 						   const char *bus_id,
@@ -95,8 +102,26 @@ extern int of_platform_populate(struct device_node *root,
 				const struct of_device_id *matches,
 				const struct of_dev_auxdata *lookup,
 				struct device *parent);
+<<<<<<< HEAD
 #endif /* !CONFIG_SPARC */
 
 #endif /* CONFIG_OF_DEVICE */
 
+=======
+#endif /* CONFIG_OF_ADDRESS */
+
+#endif /* CONFIG_OF_DEVICE */
+
+#if !defined(CONFIG_OF_ADDRESS)
+struct of_dev_auxdata;
+static inline int of_platform_populate(struct device_node *root,
+					const struct of_device_id *matches,
+					const struct of_dev_auxdata *lookup,
+					struct device *parent)
+{
+	return -ENODEV;
+}
+#endif /* !CONFIG_OF_ADDRESS */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* _LINUX_OF_PLATFORM_H */

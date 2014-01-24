@@ -108,5 +108,9 @@ void cb_free(struct pcmcia_socket *s)
 	struct pci_dev *bridge = s->cb_dev;
 
 	if (bridge)
+<<<<<<< HEAD
 		pci_remove_behind_bridge(bridge);
+=======
+		pci_stop_and_remove_behind_bridge(bridge);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

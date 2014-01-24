@@ -49,7 +49,11 @@ void __init gtwx5715_pci_preinit(void)
 }
 
 
+<<<<<<< HEAD
 static int __init gtwx5715_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init gtwx5715_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int rc = -1;
 

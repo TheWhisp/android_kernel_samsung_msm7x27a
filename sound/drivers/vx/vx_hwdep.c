@@ -24,6 +24,10 @@
 #include <linux/firmware.h>
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/hwdep.h>
 #include <sound/vx_core.h>

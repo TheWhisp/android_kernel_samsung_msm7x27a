@@ -9,7 +9,10 @@
 #include <hwregs/config_defs.h>
 #include <hwregs/strmux_defs.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/arbiter.h>
 
 static char used_dma_channels[MAX_DMA_CHANNELS];

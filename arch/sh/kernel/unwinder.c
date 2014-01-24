@@ -13,7 +13,11 @@
 #include <linux/spinlock.h>
 #include <linux/module.h>
 #include <asm/unwinder.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * This is the most basic stack unwinder an architecture can

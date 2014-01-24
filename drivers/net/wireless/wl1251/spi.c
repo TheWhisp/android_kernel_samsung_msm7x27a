@@ -19,6 +19,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/irq.h>
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -317,7 +321,10 @@ static int __devexit wl1251_spi_remove(struct spi_device *spi)
 static struct spi_driver wl1251_spi_driver = {
 	.driver = {
 		.name		= DRIVER_NAME,
+<<<<<<< HEAD
 		.bus		= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner		= THIS_MODULE,
 	},
 

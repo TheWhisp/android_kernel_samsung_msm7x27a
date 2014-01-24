@@ -1,6 +1,13 @@
 header-y += drm.h
+<<<<<<< HEAD
 header-y += drm_mode.h
 header-y += drm_sarea.h
+=======
+header-y += drm_fourcc.h
+header-y += drm_mode.h
+header-y += drm_sarea.h
+header-y += exynos_drm.h
+>>>>>>> refs/remotes/origin/cm-10.0
 header-y += i810_drm.h
 header-y += i915_drm.h
 header-y += mga_drm.h

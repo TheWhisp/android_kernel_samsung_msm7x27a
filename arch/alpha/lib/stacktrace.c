@@ -1,5 +1,8 @@
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 typedef unsigned int instr;
 

@@ -10,6 +10,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/jffs2.h>
 #include <linux/mtd/mtd.h>
@@ -42,12 +47,21 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
 
 	tsk = kthread_run(jffs2_garbage_collect_thread, c, "jffs2_gcd_mtd%d", c->mtd->index);
 	if (IS_ERR(tsk)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "fork failed for JFFS2 garbage collect thread: %ld\n", -PTR_ERR(tsk));
+=======
+		pr_warn("fork failed for JFFS2 garbage collect thread: %ld\n",
+			-PTR_ERR(tsk));
+>>>>>>> refs/remotes/origin/cm-10.0
 		complete(&c->gc_thread_exit);
 		ret = PTR_ERR(tsk);
 	} else {
 		/* Wait for it... */
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "JFFS2: Garbage collect thread is pid %d\n", tsk->pid));
+=======
+		jffs2_dbg(1, "Garbage collect thread is pid %d\n", tsk->pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 		wait_for_completion(&c->gc_thread_start);
 		ret = tsk->pid;
 	}
@@ -60,7 +74,11 @@ void jffs2_stop_garbage_collect_thread(struct jffs2_sb_info *c)
 	int wait = 0;
 	spin_lock(&c->erase_completion_lock);
 	if (c->gc_task) {
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "jffs2: Killing GC task %d\n", c->gc_task->pid));
+=======
+		jffs2_dbg(1, "Killing GC task %d\n", c->gc_task->pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 		send_sig(SIGKILL, c->gc_task, 1);
 		wait = 1;
 	}
@@ -90,7 +108,11 @@ static int jffs2_garbage_collect_thread(void *_c)
 		if (!jffs2_thread_should_wake(c)) {
 			set_current_state (TASK_INTERRUPTIBLE);
 			spin_unlock(&c->erase_completion_lock);
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread sleeping...\n"));
+=======
+			jffs2_dbg(1, "%s(): sleeping...\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 			schedule();
 		} else
 			spin_unlock(&c->erase_completion_lock);
@@ -109,7 +131,11 @@ static int jffs2_garbage_collect_thread(void *_c)
 		schedule_timeout_interruptible(msecs_to_jiffies(50));
 
 		if (kthread_should_stop()) {
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread():  kthread_stop() called.\n"));
+=======
+			jffs2_dbg(1, "%s(): kthread_stop() called\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto die;
 		}
 
@@ -126,12 +152,18 @@ static int jffs2_garbage_collect_thread(void *_c)
 
 			switch(signr) {
 			case SIGSTOP:
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): SIGSTOP received.\n"));
+=======
+				jffs2_dbg(1, "%s(): SIGSTOP received\n",
+					  __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 				set_current_state(TASK_STOPPED);
 				schedule();
 				break;
 
 			case SIGKILL:
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): SIGKILL received.\n"));
 				goto die;
 
@@ -140,14 +172,33 @@ static int jffs2_garbage_collect_thread(void *_c)
 				break;
 			default:
 				D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): signal %ld received\n", signr));
+=======
+				jffs2_dbg(1, "%s(): SIGKILL received\n",
+					  __func__);
+				goto die;
+
+			case SIGHUP:
+				jffs2_dbg(1, "%s(): SIGHUP received\n",
+					  __func__);
+				break;
+			default:
+				jffs2_dbg(1, "%s(): signal %ld received\n",
+					  __func__, signr);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 		/* We don't want SIGHUP to interrupt us. STOP and KILL are OK though. */
 		disallow_signal(SIGHUP);
 
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): pass\n"));
 		if (jffs2_garbage_collect_pass(c) == -ENOSPC) {
 			printk(KERN_NOTICE "No space for garbage collection. Aborting GC thread\n");
+=======
+		jffs2_dbg(1, "%s(): pass\n", __func__);
+		if (jffs2_garbage_collect_pass(c) == -ENOSPC) {
+			pr_notice("No space for garbage collection. Aborting GC thread\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto die;
 		}
 	}

@@ -25,6 +25,10 @@
 #include <linux/efi.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
+=======
+#include <asm/desc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/tlbflush.h>
@@ -38,16 +42,23 @@
  */
 
 static unsigned long efi_rt_eflags;
+<<<<<<< HEAD
 static pgd_t efi_bak_pg_dir_pointer[2];
 
 void efi_call_phys_prelog(void)
 {
 	unsigned long cr4;
 	unsigned long temp;
+=======
+
+void efi_call_phys_prelog(void)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct desc_ptr gdt_descr;
 
 	local_irq_save(efi_rt_eflags);
 
+<<<<<<< HEAD
 	/*
 	 * If I don't have PAE, I should just duplicate two entries in page
 	 * directory. If I have PAE, I just need to duplicate one entry in
@@ -75,6 +86,9 @@ void efi_call_phys_prelog(void)
 	/*
 	 * After the lock is released, the original page table is restored.
 	 */
+=======
+	load_cr3(initial_page_table);
+>>>>>>> refs/remotes/origin/cm-10.0
 	__flush_tlb_all();
 
 	gdt_descr.address = __pa(get_cpu_gdt_table(0));
@@ -84,13 +98,17 @@ void efi_call_phys_prelog(void)
 
 void efi_call_phys_epilog(void)
 {
+<<<<<<< HEAD
 	unsigned long cr4;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct desc_ptr gdt_descr;
 
 	gdt_descr.address = (unsigned long)get_cpu_gdt_table(0);
 	gdt_descr.size = GDT_SIZE - 1;
 	load_gdt(&gdt_descr);
 
+<<<<<<< HEAD
 	cr4 = read_cr4_safe();
 
 	if (cr4 & X86_CR4_PAE) {
@@ -106,6 +124,9 @@ void efi_call_phys_epilog(void)
 	/*
 	 * After the lock is released, the original page table is restored.
 	 */
+=======
+	load_cr3(swapper_pg_dir);
+>>>>>>> refs/remotes/origin/cm-10.0
 	__flush_tlb_all();
 
 	local_irq_restore(efi_rt_eflags);

@@ -14,7 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/cgroup.h>
 #include <linux/fs.h>
@@ -48,6 +52,7 @@ static inline struct freezer *task_freezer(struct task_struct *task)
 			    struct freezer, css);
 }
 
+<<<<<<< HEAD
 static inline int __cgroup_freezing_or_frozen(struct task_struct *task)
 {
 	enum freezer_state state = task_freezer(task)->state;
@@ -61,6 +66,19 @@ int cgroup_freezing_or_frozen(struct task_struct *task)
 	result = __cgroup_freezing_or_frozen(task);
 	task_unlock(task);
 	return result;
+=======
+bool cgroup_freezing(struct task_struct *task)
+{
+	enum freezer_state state;
+	bool ret;
+
+	rcu_read_lock();
+	state = task_freezer(task)->state;
+	ret = state == CGROUP_FREEZING || state == CGROUP_FROZEN;
+	rcu_read_unlock();
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -102,9 +120,12 @@ struct cgroup_subsys freezer_subsys;
  * freezer_can_attach():
  * cgroup_mutex (held by caller of can_attach)
  *
+<<<<<<< HEAD
  * cgroup_freezing_or_frozen():
  * task->alloc_lock (to get task's cgroup)
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * freezer_fork() (preserving fork() performance means can't take cgroup_mutex):
  * freezer->lock
  *  sighand->siglock (if the cgroup is freezing)
@@ -130,11 +151,18 @@ struct cgroup_subsys freezer_subsys;
  *   write_lock css_set_lock (cgroup iterator start)
  *    task->alloc_lock
  *   read_lock css_set_lock (cgroup iterator start)
+<<<<<<< HEAD
  *    task->alloc_lock (inside thaw_process(), prevents race with refrigerator())
  *     sighand->siglock
  */
 static struct cgroup_subsys_state *freezer_create(struct cgroup_subsys *ss,
 						  struct cgroup *cgroup)
+=======
+ *    task->alloc_lock (inside __thaw_task(), prevents race with refrigerator())
+ *     sighand->siglock
+ */
+static struct cgroup_subsys_state *freezer_create(struct cgroup *cgroup)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct freezer *freezer;
 
@@ -147,10 +175,20 @@ static struct cgroup_subsys_state *freezer_create(struct cgroup_subsys *ss,
 	return &freezer->css;
 }
 
+<<<<<<< HEAD
 static void freezer_destroy(struct cgroup_subsys *ss,
 			    struct cgroup *cgroup)
 {
 	kfree(cgroup_freezer(cgroup));
+=======
+static void freezer_destroy(struct cgroup *cgroup)
+{
+	struct freezer *freezer = cgroup_freezer(cgroup);
+
+	if (freezer->state != CGROUP_THAWED)
+		atomic_dec(&system_freezing_cnt);
+	kfree(freezer);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* task is frozen or will freeze immediately when next it gets woken */
@@ -165,11 +203,19 @@ static bool is_task_frozen_enough(struct task_struct *task)
  * a write to that file racing against an attach, and hence the
  * can_attach() result will remain valid until the attach completes.
  */
+<<<<<<< HEAD
 static int freezer_can_attach(struct cgroup_subsys *ss,
 			      struct cgroup *new_cgroup,
 			      struct task_struct *task)
 {
 	struct freezer *freezer;
+=======
+static int freezer_can_attach(struct cgroup *new_cgroup,
+			      struct cgroup_taskset *tset)
+{
+	struct freezer *freezer;
+	struct task_struct *task;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((current != task) && (!capable(CAP_SYS_ADMIN))) {
 		const struct cred *cred = current_cred(), *tcred;
@@ -182,6 +228,12 @@ static int freezer_can_attach(struct cgroup_subsys *ss,
 	/*
 	 * Anything frozen can't move or be moved to/from.
 	 */
+<<<<<<< HEAD
+=======
+	cgroup_taskset_for_each(task, new_cgroup, tset)
+		if (cgroup_freezing(task))
+			return -EBUSY;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	freezer = cgroup_freezer(new_cgroup);
 	if (freezer->state != CGROUP_THAWED)
@@ -190,6 +242,7 @@ static int freezer_can_attach(struct cgroup_subsys *ss,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int freezer_can_attach_task(struct cgroup *cgrp, struct task_struct *tsk)
 {
 	rcu_read_lock();
@@ -202,6 +255,9 @@ static int freezer_can_attach_task(struct cgroup *cgrp, struct task_struct *tsk)
 }
 
 static void freezer_fork(struct cgroup_subsys *ss, struct task_struct *task)
+=======
+static void freezer_fork(struct task_struct *task)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct freezer *freezer;
 
@@ -228,7 +284,11 @@ static void freezer_fork(struct cgroup_subsys *ss, struct task_struct *task)
 
 	/* Locking avoids race with FREEZING -> THAWED transitions. */
 	if (freezer->state == CGROUP_FREEZING)
+<<<<<<< HEAD
 		freeze_task(task, true);
+=======
+		freeze_task(task);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irq(&freezer->lock);
 }
 
@@ -246,7 +306,11 @@ static void update_if_frozen(struct cgroup *cgroup,
 	cgroup_iter_start(cgroup, &it);
 	while ((task = cgroup_iter_next(cgroup, &it))) {
 		ntotal++;
+<<<<<<< HEAD
 		if (is_task_frozen_enough(task))
+=======
+		if (freezing(task) && is_task_frozen_enough(task))
+>>>>>>> refs/remotes/origin/cm-10.0
 			nfrozen++;
 	}
 
@@ -294,10 +358,16 @@ static int try_to_freeze_cgroup(struct cgroup *cgroup, struct freezer *freezer)
 	struct task_struct *task;
 	unsigned int num_cant_freeze_now = 0;
 
+<<<<<<< HEAD
 	freezer->state = CGROUP_FREEZING;
 	cgroup_iter_start(cgroup, &it);
 	while ((task = cgroup_iter_next(cgroup, &it))) {
 		if (!freeze_task(task, true))
+=======
+	cgroup_iter_start(cgroup, &it);
+	while ((task = cgroup_iter_next(cgroup, &it))) {
+		if (!freeze_task(task))
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 		if (is_task_frozen_enough(task))
 			continue;
@@ -315,12 +385,18 @@ static void unfreeze_cgroup(struct cgroup *cgroup, struct freezer *freezer)
 	struct task_struct *task;
 
 	cgroup_iter_start(cgroup, &it);
+<<<<<<< HEAD
 	while ((task = cgroup_iter_next(cgroup, &it))) {
 		thaw_process(task);
 	}
 	cgroup_iter_end(cgroup, &it);
 
 	freezer->state = CGROUP_THAWED;
+=======
+	while ((task = cgroup_iter_next(cgroup, &it)))
+		__thaw_task(task);
+	cgroup_iter_end(cgroup, &it);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int freezer_change_state(struct cgroup *cgroup,
@@ -334,6 +410,7 @@ static int freezer_change_state(struct cgroup *cgroup,
 	spin_lock_irq(&freezer->lock);
 
 	update_if_frozen(cgroup, freezer);
+<<<<<<< HEAD
 	if (goal_state == freezer->state)
 		goto out;
 
@@ -342,12 +419,30 @@ static int freezer_change_state(struct cgroup *cgroup,
 		unfreeze_cgroup(cgroup, freezer);
 		break;
 	case CGROUP_FROZEN:
+=======
+
+	switch (goal_state) {
+	case CGROUP_THAWED:
+		if (freezer->state != CGROUP_THAWED)
+			atomic_dec(&system_freezing_cnt);
+		freezer->state = CGROUP_THAWED;
+		unfreeze_cgroup(cgroup, freezer);
+		break;
+	case CGROUP_FROZEN:
+		if (freezer->state == CGROUP_THAWED)
+			atomic_inc(&system_freezing_cnt);
+		freezer->state = CGROUP_FREEZING;
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = try_to_freeze_cgroup(cgroup, freezer);
 		break;
 	default:
 		BUG();
 	}
+<<<<<<< HEAD
 out:
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irq(&freezer->lock);
 
 	return retval;
@@ -396,10 +491,14 @@ struct cgroup_subsys freezer_subsys = {
 	.populate	= freezer_populate,
 	.subsys_id	= freezer_subsys_id,
 	.can_attach	= freezer_can_attach,
+<<<<<<< HEAD
 	.can_attach_task = freezer_can_attach_task,
 	.pre_attach	= NULL,
 	.attach_task	= NULL,
 	.attach		= NULL,
 	.fork		= freezer_fork,
 	.exit		= NULL,
+=======
+	.fork		= freezer_fork,
+>>>>>>> refs/remotes/origin/cm-10.0
 };

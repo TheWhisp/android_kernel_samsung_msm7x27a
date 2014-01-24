@@ -5,7 +5,11 @@
 #include <linux/capability.h>
 #include <linux/fs.h>
 #include <linux/mount.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/time.h>
 #include <asm/uaccess.h>
 #include <linux/pagemap.h>
@@ -55,7 +59,11 @@ long reiserfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 				break;
 			}
 
+<<<<<<< HEAD
 			err = mnt_want_write(filp->f_path.mnt);
+=======
+			err = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (err)
 				break;
 
@@ -96,7 +104,11 @@ long reiserfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			inode->i_ctime = CURRENT_TIME_SEC;
 			mark_inode_dirty(inode);
 setflags_out:
+<<<<<<< HEAD
 			mnt_drop_write(filp->f_path.mnt);
+=======
+			mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 	case REISERFS_IOC_GETVERSION:
@@ -107,7 +119,11 @@ setflags_out:
 			err = -EPERM;
 			break;
 		}
+<<<<<<< HEAD
 		err = mnt_want_write(filp->f_path.mnt);
+=======
+		err = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			break;
 		if (get_user(inode->i_generation, (int __user *)arg)) {
@@ -117,7 +133,11 @@ setflags_out:
 		inode->i_ctime = CURRENT_TIME_SEC;
 		mark_inode_dirty(inode);
 setversion_out:
+<<<<<<< HEAD
 		mnt_drop_write(filp->f_path.mnt);
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		err = -ENOTTY;

@@ -9,7 +9,11 @@
  * published by the Free Software Foundation; version 2.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bsearch.h>
 
 /*

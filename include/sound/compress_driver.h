@@ -25,6 +25,11 @@
 #ifndef __COMPRESS_DRIVER_H
 #define __COMPRESS_DRIVER_H
 
+<<<<<<< HEAD
+=======
+#include <linux/types.h>
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/compress_offload.h>
 #include <sound/asound.h>
 #include <sound/pcm.h>
@@ -42,17 +47,33 @@ struct snd_compr_ops;
  * @fragments: number of such fragments
  * @hw_pointer: offset of last location in buffer where DSP copied data
  * @app_pointer: offset of last location in buffer where app wrote data
+<<<<<<< HEAD
+=======
+ * @total_bytes_available: cumulative number of bytes made available in
+ *	the ring buffer
+ * @total_bytes_transferred: cumulative bytes transferred by offload DSP
+>>>>>>> refs/remotes/origin/cm-10.0
  * @sleep: poll sleep
  */
 struct snd_compr_runtime {
 	snd_pcm_state_t state;
 	struct snd_compr_ops *ops;
 	void *buffer;
+<<<<<<< HEAD
 	size_t buffer_size;
 	size_t fragment_size;
 	unsigned int fragments;
 	size_t hw_pointer;
 	size_t app_pointer;
+=======
+	u64 buffer_size;
+	u32 fragment_size;
+	u32 fragments;
+	u64 hw_pointer;
+	u64 app_pointer;
+	u64 total_bytes_available;
+	u64 total_bytes_transferred;
+>>>>>>> refs/remotes/origin/cm-10.0
 	wait_queue_head_t sleep;
 };
 
@@ -70,7 +91,11 @@ struct snd_compr_stream {
 	struct snd_compr_ops *ops;
 	struct snd_compr_runtime *runtime;
 	struct snd_compr *device;
+<<<<<<< HEAD
 	unsigned int direction;
+=======
+	enum snd_compr_direction direction;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *private_data;
 };
 
@@ -101,7 +126,11 @@ struct snd_compr_ops {
 	int (*set_params)(struct snd_compr_stream *stream,
 			struct snd_compr_params *params);
 	int (*get_params)(struct snd_compr_stream *stream,
+<<<<<<< HEAD
 			struct snd_compr_params *params);
+=======
+			struct snd_codec *params);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*trigger)(struct snd_compr_stream *stream, int cmd);
 	int (*pointer)(struct snd_compr_stream *stream,
 			struct snd_compr_tstamp *tstamp);
@@ -109,7 +138,11 @@ struct snd_compr_ops {
 		       size_t count);
 	int (*mmap)(struct snd_compr_stream *stream,
 			struct vm_area_struct *vma);
+<<<<<<< HEAD
 	int (*ack)(struct snd_compr_stream *stream);
+=======
+	int (*ack)(struct snd_compr_stream *stream, size_t bytes);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*get_caps) (struct snd_compr_stream *stream,
 			struct snd_compr_caps *caps);
 	int (*get_codec_caps) (struct snd_compr_stream *stream,
@@ -120,31 +153,66 @@ struct snd_compr_ops {
  * struct snd_compr: Compressed device
  * @name: DSP device name
  * @dev: Device pointer
+<<<<<<< HEAD
  * @lock: device lock
  * @ops: pointer to DSP callbacks
  * @private_data: pointer to DSP pvt data
+=======
+ * @ops: pointer to DSP callbacks
+ * @private_data: pointer to DSP pvt data
+ * @card: sound card pointer
+ * @direction: Playback or capture direction
+ * @lock: device lock
+ * @device: device id
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct snd_compr {
 	const char *name;
 	struct device *dev;
+<<<<<<< HEAD
 	struct mutex lock;
 	struct snd_compr_ops *ops;
 	struct list_head list;
 	void *private_data;
+=======
+	struct snd_compr_ops *ops;
+	void *private_data;
+	struct snd_card *card;
+	unsigned int direction;
+	struct mutex lock;
+	int device;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* compress device register APIs */
 int snd_compress_register(struct snd_compr *device);
 int snd_compress_deregister(struct snd_compr *device);
+<<<<<<< HEAD
+=======
+int snd_compress_new(struct snd_card *card, int device,
+			int type, struct snd_compr *compr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* dsp driver callback apis
  * For playback: driver should call snd_compress_fragment_elapsed() to let the
  * framework know that a fragment has been consumed from the ring buffer
+<<<<<<< HEAD
  * For recording: we may want to know when a frame is available or when
  * at least one frame is available for userspace, a different
  * snd_compress_frame_elapsed() callback should be used
  */
 void snd_compr_fragment_elapsed(struct snd_compr_stream *stream);
 void snd_compr_frame_elapsed(struct snd_compr_stream *stream);
+=======
+ *
+ * For recording: we want to know when a frame is available or when
+ * at least one frame is available so snd_compress_frame_elapsed()
+ * callback should be called when a encodeded frame is available
+ */
+static inline void snd_compr_fragment_elapsed(struct snd_compr_stream *stream)
+{
+	wake_up(&stream->runtime->sleep);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

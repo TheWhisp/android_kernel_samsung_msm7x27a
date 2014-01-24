@@ -80,6 +80,11 @@ void asd_invalidate_edb(struct asd_ascb *ascb, int edb_id);
 
 int  asd_execute_task(struct sas_task *, int num, gfp_t gfp_flags);
 
+<<<<<<< HEAD
+=======
+void asd_set_dmamode(struct domain_device *dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ---------- TMFs ---------- */
 int  asd_abort_task(struct sas_task *);
 int  asd_abort_task_set(struct domain_device *, u8 *lun);

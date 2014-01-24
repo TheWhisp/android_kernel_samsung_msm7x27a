@@ -23,14 +23,22 @@
 #include <asm/spitfire.h>
 #include <asm/prom.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_MAGIC_SYSRQ)
 #define SUPPORT_SYSRQ
 #endif
 
 #include <linux/serial_core.h>
+<<<<<<< HEAD
 
 #include "suncore.h"
+=======
+#include <linux/sunserialcore.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CON_BREAK	((long)-1)
 #define CON_HUP		((long)-2)

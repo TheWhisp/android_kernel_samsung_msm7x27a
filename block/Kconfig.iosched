@@ -12,6 +12,20 @@ config IOSCHED_NOOP
 	  that do their own scheduling and require only minimal assistance from
 	  the kernel.
 
+<<<<<<< HEAD
+=======
+config IOSCHED_TEST
+	tristate "Test I/O scheduler"
+	depends on DEBUG_FS
+	default m
+	---help---
+	  The test I/O scheduler is a duplicate of the noop scheduler with
+	  addition of test utlity.
+	  It allows testing a block device by dispatching specific requests
+	  according to the test case and declare PASS/FAIL according to the
+	  requests completion error code.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config IOSCHED_DEADLINE
 	tristate "Deadline I/O scheduler"
 	default y
@@ -21,6 +35,7 @@ config IOSCHED_DEADLINE
 	  a new point in the service tree and doing a batch of IO from there
 	  in case of expiry.
 
+<<<<<<< HEAD
 config IOSCHED_ROW
 	tristate "ROW I/O scheduler"
 	default y
@@ -32,6 +47,8 @@ config IOSCHED_ROW
 	  according to queue priority.
 	  Most suitable for mobile devices.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config IOSCHED_CFQ
 	tristate "CFQ I/O scheduler"
 	# If BLK_CGROUP is a module, CFQ has to be built as module.
@@ -55,6 +72,7 @@ config CFQ_GROUP_IOSCHED
 	  Enable group IO scheduling in CFQ.
 
 config IOSCHED_BFQ
+<<<<<<< HEAD
 	tristate "BFQ I/O scheduler"
 	depends on EXPERIMENTAL
 	default n
@@ -139,6 +157,29 @@ config CGROUP_BFQIO
 	  Enable hierarchical scheduling in BFQ, using the cgroups
 	  filesystem interface.  The name of the subsystem will be
 	  bfqio.
+=======
+        tristate "BFQ I/O scheduler"
+        depends on EXPERIMENTAL
+        default n
+        ---help---
+          The BFQ I/O scheduler tries to distribute bandwidth among
+          all processes according to their weights.
+          It aims at distributing the bandwidth as desired, independently of
+          the disk parameters and with any workload. It also tries to
+          guarantee low latency to interactive and soft real-time
+          applications.  If compiled built-in (saying Y here), BFQ can
+          be configured to support hierarchical scheduling.
+
+config CGROUP_BFQIO
+        bool "BFQ hierarchical scheduling support"
+        depends on CGROUPS && IOSCHED_BFQ=y
+        default n
+        ---help---
+          Enable hierarchical scheduling in BFQ, using the cgroups
+          filesystem interface.  The name of the subsystem will be
+          bfqio.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 choice
 	prompt "Default I/O scheduler"
@@ -150,6 +191,7 @@ choice
 	config DEFAULT_DEADLINE
 		bool "Deadline" if IOSCHED_DEADLINE=y
 
+<<<<<<< HEAD
 	config DEFAULT_ROW
 		bool "ROW" if IOSCHED_ROW=y
 		help
@@ -160,12 +202,15 @@ choice
 		  for each queue is defined according to queue priority.
 		  Most suitable for mobile devices.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	config DEFAULT_CFQ
 		bool "CFQ" if IOSCHED_CFQ=y
 
 	config DEFAULT_BFQ
 		bool "BFQ" if IOSCHED_BFQ=y
 
+<<<<<<< HEAD
 	config DEFAULT_BFQ
 		bool "BFQ" if IOSCHED_BFQ=y
 
@@ -175,6 +220,8 @@ choice
 	config DEFAULT_BFQ
 		bool "BFQ" if IOSCHED_BFQ=y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	config DEFAULT_NOOP
 		bool "No-op"
 
@@ -183,7 +230,10 @@ endchoice
 config DEFAULT_IOSCHED
 	string
 	default "deadline" if DEFAULT_DEADLINE
+<<<<<<< HEAD
 	default "row" if DEFAULT_ROW
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	default "cfq" if DEFAULT_CFQ
 	default "bfq" if DEFAULT_BFQ
 	default "noop" if DEFAULT_NOOP

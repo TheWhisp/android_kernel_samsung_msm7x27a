@@ -23,6 +23,10 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/minors.h>
 #include <sound/control.h>
@@ -506,7 +510,11 @@ static struct snd_kcontrol *snd_mixer_oss_test_id(struct snd_mixer_oss *mixer, c
 	
 	memset(&id, 0, sizeof(id));
 	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+<<<<<<< HEAD
 	strcpy(id.name, name);
+=======
+	strlcpy(id.name, name, sizeof(id.name));
+>>>>>>> refs/remotes/origin/cm-10.0
 	id.index = index;
 	return snd_ctl_find_id(card, &id);
 }

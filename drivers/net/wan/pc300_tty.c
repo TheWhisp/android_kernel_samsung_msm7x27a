@@ -139,7 +139,10 @@ void cpc_tty_init(pc300dev_t *dev);
 void cpc_tty_unregister_service(pc300dev_t *pc300dev);
 void cpc_tty_receive(pc300dev_t *pc300dev);
 void cpc_tty_trigger_poll(pc300dev_t *pc300dev);
+<<<<<<< HEAD
 void cpc_tty_reset_var(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * PC300 TTY clear "signal"
@@ -755,7 +758,11 @@ void cpc_tty_receive(pc300dev_t *pc300dev)
 
 	dsr_rx = cpc_readb(card->hw.scabase + DSR_RX(ch));
 
+<<<<<<< HEAD
 	cpc_tty = (st_cpc_tty_area *)pc300dev->cpc_tty; 
+=======
+	cpc_tty = pc300dev->cpc_tty;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	while (1) { 
 		rx_len = 0;
@@ -1078,6 +1085,7 @@ void cpc_tty_trigger_poll(pc300dev_t *pc300dev)
 	}
 	schedule_work(&(cpc_tty->tty_tx_work)); 
 } 
+<<<<<<< HEAD
 
 /*
  * PC300 TTY reset var routine
@@ -1095,3 +1103,5 @@ void cpc_tty_reset_var(void)
 		memset(&cpc_tty_area[i],0, sizeof(st_cpc_tty_area)); 
 	}
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

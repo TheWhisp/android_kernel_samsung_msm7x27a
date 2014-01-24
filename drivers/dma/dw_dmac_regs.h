@@ -13,6 +13,21 @@
 
 #define DW_DMA_MAX_NR_CHANNELS	8
 
+<<<<<<< HEAD
+=======
+/* flow controller */
+enum dw_dma_fc {
+	DW_DMA_FC_D_M2M,
+	DW_DMA_FC_D_M2P,
+	DW_DMA_FC_D_P2M,
+	DW_DMA_FC_D_P2P,
+	DW_DMA_FC_P_P2M,
+	DW_DMA_FC_SP_P2P,
+	DW_DMA_FC_P_M2P,
+	DW_DMA_FC_DP_P2P,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Redefine this macro to handle differences between 32- and 64-bit
  * addressing, big vs. little endian, etc.
@@ -140,18 +155,31 @@ struct dw_dma_chan {
 	u8			mask;
 	u8			priority;
 	bool			paused;
+<<<<<<< HEAD
+=======
+	bool			initialized;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spinlock_t		lock;
 
 	/* these other elements are all protected by lock */
 	unsigned long		flags;
+<<<<<<< HEAD
 	dma_cookie_t		completed;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head	active_list;
 	struct list_head	queue;
 	struct list_head	free_list;
 	struct dw_cyclic_desc	*cdesc;
 
 	unsigned int		descs_allocated;
+<<<<<<< HEAD
+=======
+
+	/* configuration passed via DMA_SLAVE_CONFIG */
+	struct dma_slave_config dma_sconfig;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static inline struct dw_dma_chan_regs __iomem *

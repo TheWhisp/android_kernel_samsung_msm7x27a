@@ -26,6 +26,10 @@
 **********************************************************************/
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/dst.h>
 
 #include <asm/octeon/octeon.h>
@@ -34,11 +38,19 @@
 #include "octeon-ethernet.h"
 #include "ethernet-util.h"
 
+<<<<<<< HEAD
 #include "cvmx-spi.h"
 
 #include <asm/octeon/cvmx-npi-defs.h>
 #include "cvmx-spxx-defs.h"
 #include "cvmx-stxx-defs.h"
+=======
+#include <asm/octeon/cvmx-spi.h>
+
+#include <asm/octeon/cvmx-npi-defs.h>
+#include <asm/octeon/cvmx-spxx-defs.h>
+#include <asm/octeon/cvmx-stxx-defs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int number_spi_ports;
 static int need_retrain[2] = { 0, 0 };

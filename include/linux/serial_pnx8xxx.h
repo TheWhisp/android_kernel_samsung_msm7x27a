@@ -20,7 +20,10 @@
 #define _LINUX_SERIAL_PNX8XXX_H
 
 #include <linux/serial_core.h>
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PNX8XXX_NR_PORTS	2
 

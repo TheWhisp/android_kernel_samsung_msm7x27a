@@ -106,12 +106,20 @@ static struct ep93xx_ac97_info *ep93xx_ac97_info;
 
 static struct ep93xx_pcm_dma_params ep93xx_ac97_pcm_out = {
 	.name		= "ac97-pcm-out",
+<<<<<<< HEAD
 	.dma_port	= EP93XX_DMA_M2P_PORT_AAC1,
+=======
+	.dma_port	= EP93XX_DMA_AAC1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct ep93xx_pcm_dma_params ep93xx_ac97_pcm_in = {
 	.name		= "ac97-pcm-in",
+<<<<<<< HEAD
 	.dma_port	= EP93XX_DMA_M2P_PORT_AAC1,
+=======
+	.dma_port	= EP93XX_DMA_AAC1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static inline unsigned ep93xx_ac97_read_reg(struct ep93xx_ac97_info *info,
@@ -330,12 +338,20 @@ static int ep93xx_ac97_startup(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops ep93xx_ac97_dai_ops = {
+=======
+static const struct snd_soc_dai_ops ep93xx_ac97_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.startup	= ep93xx_ac97_startup,
 	.trigger	= ep93xx_ac97_trigger,
 };
 
+<<<<<<< HEAD
 struct snd_soc_dai_driver ep93xx_ac97_dai = {
+=======
+static struct snd_soc_dai_driver ep93xx_ac97_dai = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name		= "ep93xx-ac97",
 	.id		= 0,
 	.ac97_control	= 1,
@@ -449,6 +465,7 @@ static struct platform_driver ep93xx_ac97_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init ep93xx_ac97_init(void)
 {
 	return platform_driver_register(&ep93xx_ac97_driver);
@@ -460,6 +477,9 @@ static void __exit ep93xx_ac97_exit(void)
 	platform_driver_unregister(&ep93xx_ac97_driver);
 }
 module_exit(ep93xx_ac97_exit);
+=======
+module_platform_driver(ep93xx_ac97_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("EP93xx AC97 ASoC Driver");
 MODULE_AUTHOR("Mika Westerberg <mika.westerberg@iki.fi>");

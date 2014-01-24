@@ -24,6 +24,11 @@
 #include <linux/module.h>
 #include <linux/seq_file.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <crypto/compress.h>
 #include <crypto/internal/compress.h>
@@ -46,6 +51,30 @@ static int crypto_pcomp_init_tfm(struct crypto_tfm *tfm)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NET
+static int crypto_pcomp_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	struct crypto_report_comp rpcomp;
+
+	strncpy(rpcomp.type, "pcomp", sizeof(rpcomp.type));
+	NLA_PUT(skb, CRYPTOCFGA_REPORT_COMPRESS,
+		sizeof(struct crypto_report_comp), &rpcomp);
+
+	return 0;
+
+nla_put_failure:
+	return -EMSGSIZE;
+}
+#else
+static int crypto_pcomp_report(struct sk_buff *skb, struct crypto_alg *alg)
+{
+	return -ENOSYS;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void crypto_pcomp_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_pcomp_show(struct seq_file *m, struct crypto_alg *alg)
@@ -60,6 +89,10 @@ static const struct crypto_type crypto_pcomp_type = {
 #ifdef CONFIG_PROC_FS
 	.show		= crypto_pcomp_show,
 #endif
+<<<<<<< HEAD
+=======
+	.report		= crypto_pcomp_report,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.maskclear	= ~CRYPTO_ALG_TYPE_MASK,
 	.maskset	= CRYPTO_ALG_TYPE_MASK,
 	.type		= CRYPTO_ALG_TYPE_PCOMPRESS,

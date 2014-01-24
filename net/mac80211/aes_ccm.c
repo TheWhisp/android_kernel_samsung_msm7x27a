@@ -11,6 +11,10 @@
 #include <linux/types.h>
 #include <linux/crypto.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <crypto/aes.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <net/mac80211.h>
 #include "key.h"
@@ -21,14 +25,22 @@ static void aes_ccm_prepare(struct crypto_cipher *tfm, u8 *scratch, u8 *a)
 	int i;
 	u8 *b_0, *aad, *b, *s_0;
 
+<<<<<<< HEAD
 	b_0 = scratch + 3 * AES_BLOCK_LEN;
 	aad = scratch + 4 * AES_BLOCK_LEN;
 	b = scratch;
 	s_0 = scratch + AES_BLOCK_LEN;
+=======
+	b_0 = scratch + 3 * AES_BLOCK_SIZE;
+	aad = scratch + 4 * AES_BLOCK_SIZE;
+	b = scratch;
+	s_0 = scratch + AES_BLOCK_SIZE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	crypto_cipher_encrypt_one(tfm, b, b_0);
 
 	/* Extra Authenticate-only data (always two AES blocks) */
+<<<<<<< HEAD
 	for (i = 0; i < AES_BLOCK_LEN; i++)
 		aad[i] ^= b[i];
 	crypto_cipher_encrypt_one(tfm, b, aad);
@@ -36,6 +48,15 @@ static void aes_ccm_prepare(struct crypto_cipher *tfm, u8 *scratch, u8 *a)
 	aad += AES_BLOCK_LEN;
 
 	for (i = 0; i < AES_BLOCK_LEN; i++)
+=======
+	for (i = 0; i < AES_BLOCK_SIZE; i++)
+		aad[i] ^= b[i];
+	crypto_cipher_encrypt_one(tfm, b, aad);
+
+	aad += AES_BLOCK_SIZE;
+
+	for (i = 0; i < AES_BLOCK_SIZE; i++)
+>>>>>>> refs/remotes/origin/cm-10.0
 		aad[i] ^= b[i];
 	crypto_cipher_encrypt_one(tfm, a, aad);
 
@@ -57,12 +78,21 @@ void ieee80211_aes_ccm_encrypt(struct crypto_cipher *tfm, u8 *scratch,
 	u8 *pos, *cpos, *b, *s_0, *e, *b_0;
 
 	b = scratch;
+<<<<<<< HEAD
 	s_0 = scratch + AES_BLOCK_LEN;
 	e = scratch + 2 * AES_BLOCK_LEN;
 	b_0 = scratch + 3 * AES_BLOCK_LEN;
 
 	num_blocks = DIV_ROUND_UP(data_len, AES_BLOCK_LEN);
 	last_len = data_len % AES_BLOCK_LEN;
+=======
+	s_0 = scratch + AES_BLOCK_SIZE;
+	e = scratch + 2 * AES_BLOCK_SIZE;
+	b_0 = scratch + 3 * AES_BLOCK_SIZE;
+
+	num_blocks = DIV_ROUND_UP(data_len, AES_BLOCK_SIZE);
+	last_len = data_len % AES_BLOCK_SIZE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	aes_ccm_prepare(tfm, scratch, b);
 
 	/* Process payload blocks */
@@ -70,7 +100,11 @@ void ieee80211_aes_ccm_encrypt(struct crypto_cipher *tfm, u8 *scratch,
 	cpos = cdata;
 	for (j = 1; j <= num_blocks; j++) {
 		int blen = (j == num_blocks && last_len) ?
+<<<<<<< HEAD
 			last_len : AES_BLOCK_LEN;
+=======
+			last_len : AES_BLOCK_SIZE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Authentication followed by encryption */
 		for (i = 0; i < blen; i++)
@@ -96,12 +130,21 @@ int ieee80211_aes_ccm_decrypt(struct crypto_cipher *tfm, u8 *scratch,
 	u8 *pos, *cpos, *b, *s_0, *a, *b_0;
 
 	b = scratch;
+<<<<<<< HEAD
 	s_0 = scratch + AES_BLOCK_LEN;
 	a = scratch + 2 * AES_BLOCK_LEN;
 	b_0 = scratch + 3 * AES_BLOCK_LEN;
 
 	num_blocks = DIV_ROUND_UP(data_len, AES_BLOCK_LEN);
 	last_len = data_len % AES_BLOCK_LEN;
+=======
+	s_0 = scratch + AES_BLOCK_SIZE;
+	a = scratch + 2 * AES_BLOCK_SIZE;
+	b_0 = scratch + 3 * AES_BLOCK_SIZE;
+
+	num_blocks = DIV_ROUND_UP(data_len, AES_BLOCK_SIZE);
+	last_len = data_len % AES_BLOCK_SIZE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	aes_ccm_prepare(tfm, scratch, a);
 
 	/* Process payload blocks */
@@ -109,7 +152,11 @@ int ieee80211_aes_ccm_decrypt(struct crypto_cipher *tfm, u8 *scratch,
 	pos = data;
 	for (j = 1; j <= num_blocks; j++) {
 		int blen = (j == num_blocks && last_len) ?
+<<<<<<< HEAD
 			last_len : AES_BLOCK_LEN;
+=======
+			last_len : AES_BLOCK_SIZE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Decryption followed by authentication */
 		b_0[14] = (j >> 8) & 0xff;

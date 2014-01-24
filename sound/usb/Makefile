@@ -3,6 +3,7 @@
 #
 
 snd-usb-audio-objs := 	card.o \
+<<<<<<< HEAD
 			mixer.o \
 			mixer_quirks.o \
 			proc.o \
@@ -13,6 +14,18 @@ snd-usb-audio-objs := 	card.o \
 			pcm.o \
 			helper.o \
 			clock.o
+=======
+			clock.o \
+			endpoint.o \
+			format.o \
+			helper.o \
+			mixer.o \
+			mixer_quirks.o \
+			pcm.o \
+			proc.o \
+			quirks.o \
+			stream.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 snd-usbmidi-lib-objs := midi.o
 

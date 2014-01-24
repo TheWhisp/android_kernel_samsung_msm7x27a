@@ -21,6 +21,10 @@ struct clkops {
 	void (*enable) (struct clk *);
 	void (*disable) (struct clk *);
 	unsigned long (*get_rate) (struct clk *);
+<<<<<<< HEAD
+=======
+	int (*set_parent)(struct clk *, struct clk *);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**

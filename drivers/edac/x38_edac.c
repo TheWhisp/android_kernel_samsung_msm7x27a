@@ -440,7 +440,11 @@ static void __devexit x38_remove_one(struct pci_dev *pdev)
 	edac_mc_free(mci);
 }
 
+<<<<<<< HEAD
 static const struct pci_device_id x38_pci_tbl[] __devinitdata = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(x38_pci_tbl) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 	 PCI_VEND_DEV(INTEL, X38_HB), PCI_ANY_ID, PCI_ANY_ID, 0, 0,
 	 X38},

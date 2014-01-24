@@ -29,6 +29,10 @@
  */
 
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/emu10k1.h>
 

@@ -12,7 +12,11 @@
 #include <linux/proc_fs.h>
 
 struct rpc_stat {
+<<<<<<< HEAD
 	struct rpc_program *	program;
+=======
+	const struct rpc_program *program;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	unsigned int		netcnt,
 				netudpcnt,
@@ -58,17 +62,27 @@ void			rpc_modcount(struct inode *, int);
 #endif
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 struct proc_dir_entry *	rpc_proc_register(struct rpc_stat *);
 void			rpc_proc_unregister(const char *);
 void			rpc_proc_zero(struct rpc_program *);
 struct proc_dir_entry *	svc_proc_register(struct svc_stat *,
 					  const struct file_operations *);
 void			svc_proc_unregister(const char *);
+=======
+struct proc_dir_entry *	rpc_proc_register(struct net *,struct rpc_stat *);
+void			rpc_proc_unregister(struct net *,const char *);
+void			rpc_proc_zero(const struct rpc_program *);
+struct proc_dir_entry *	svc_proc_register(struct net *, struct svc_stat *,
+					  const struct file_operations *);
+void			svc_proc_unregister(struct net *, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void			svc_seq_show(struct seq_file *,
 				     const struct svc_stat *);
 #else
 
+<<<<<<< HEAD
 static inline struct proc_dir_entry *rpc_proc_register(struct rpc_stat *s) { return NULL; }
 static inline void rpc_proc_unregister(const char *p) {}
 static inline void rpc_proc_zero(struct rpc_program *p) {}
@@ -76,6 +90,15 @@ static inline void rpc_proc_zero(struct rpc_program *p) {}
 static inline struct proc_dir_entry *svc_proc_register(struct svc_stat *s,
 						       const struct file_operations *f) { return NULL; }
 static inline void svc_proc_unregister(const char *p) {}
+=======
+static inline struct proc_dir_entry *rpc_proc_register(struct net *net, struct rpc_stat *s) { return NULL; }
+static inline void rpc_proc_unregister(struct net *net, const char *p) {}
+static inline void rpc_proc_zero(const struct rpc_program *p) {}
+
+static inline struct proc_dir_entry *svc_proc_register(struct net *net, struct svc_stat *s,
+						       const struct file_operations *f) { return NULL; }
+static inline void svc_proc_unregister(struct net *net, const char *p) {}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void svc_seq_show(struct seq_file *seq,
 				const struct svc_stat *st) {}

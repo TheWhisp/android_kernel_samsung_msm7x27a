@@ -34,7 +34,11 @@
 
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 #ifdef CONFIG_PROC_FS
+=======
+#ifdef CONFIG_NF_CONNTRACK_PROCFS
+>>>>>>> refs/remotes/origin/cm-10.0
 int
 print_tuple(struct seq_file *s, const struct nf_conntrack_tuple *tuple,
             const struct nf_conntrack_l3proto *l3proto,
@@ -396,7 +400,11 @@ static int nf_conntrack_standalone_init_proc(struct net *net)
 static void nf_conntrack_standalone_fini_proc(struct net *net)
 {
 }
+<<<<<<< HEAD
 #endif /* CONFIG_PROC_FS */
+=======
+#endif /* CONFIG_NF_CONNTRACK_PROCFS */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Sysctl support */
 

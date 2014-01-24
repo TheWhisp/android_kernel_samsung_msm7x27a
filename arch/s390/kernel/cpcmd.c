@@ -18,7 +18,10 @@
 #include <linux/string.h>
 #include <asm/ebcdic.h>
 #include <asm/cpcmd.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 static DEFINE_SPINLOCK(cpcmd_lock);

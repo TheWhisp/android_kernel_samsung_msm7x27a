@@ -14,6 +14,10 @@
 #include <linux/sched.h>
 #include <linux/interrupt.h>
 #include <linux/cache.h>
+<<<<<<< HEAD
+=======
+#include <linux/clockchips.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/profile.h>
 #include <linux/errno.h>
 #include <linux/mm.h>
@@ -23,7 +27,11 @@
 #include <linux/seq_file.h>
 #include <linux/irq.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 #include <asm/irq_handler.h>
 #include <asm/mmu_context.h>
@@ -45,6 +53,7 @@ struct corelock_slot corelock __attribute__ ((__section__(".l2.bss")));
 unsigned long blackfin_iflush_l1_entry[NR_CPUS];
 #endif
 
+<<<<<<< HEAD
 void __cpuinitdata *init_retx_coreb, *init_saved_retx_coreb,
 	*init_saved_seqstat_coreb, *init_saved_icplb_fault_addr_coreb,
 	*init_saved_dcplb_fault_addr_coreb;
@@ -52,6 +61,14 @@ void __cpuinitdata *init_retx_coreb, *init_saved_retx_coreb,
 #define BFIN_IPI_RESCHEDULE   0
 #define BFIN_IPI_CALL_FUNC    1
 #define BFIN_IPI_CPU_STOP     2
+=======
+struct blackfin_initial_pda __cpuinitdata initial_pda_coreb;
+
+#define BFIN_IPI_TIMER	      0
+#define BFIN_IPI_RESCHEDULE   1
+#define BFIN_IPI_CALL_FUNC    2
+#define BFIN_IPI_CPU_STOP     3
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct blackfin_flush_data {
 	unsigned long start;
@@ -162,6 +179,17 @@ static irqreturn_t ipi_handler_int0(int irq, void *dev_instance)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+=======
+DECLARE_PER_CPU(struct clock_event_device, coretmr_events);
+void ipi_timer(void)
+{
+	int cpu = smp_processor_id();
+	struct clock_event_device *evt = &per_cpu(coretmr_events, cpu);
+	evt->event_handler(evt);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static irqreturn_t ipi_handler_int1(int irq, void *dev_instance)
 {
 	struct ipi_message *msg;
@@ -178,10 +206,17 @@ static irqreturn_t ipi_handler_int1(int irq, void *dev_instance)
 	while (msg_queue->count) {
 		msg = &msg_queue->ipi_message[msg_queue->head];
 		switch (msg->type) {
+<<<<<<< HEAD
+=======
+		case BFIN_IPI_TIMER:
+			ipi_timer();
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		case BFIN_IPI_RESCHEDULE:
 			scheduler_ipi();
 			break;
 		case BFIN_IPI_CALL_FUNC:
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&msg_queue->lock, flags);
 			ipi_call_function(cpu, msg);
 			spin_lock_irqsave(&msg_queue->lock, flags);
@@ -190,6 +225,12 @@ static irqreturn_t ipi_handler_int1(int irq, void *dev_instance)
 			spin_unlock_irqrestore(&msg_queue->lock, flags);
 			ipi_cpu_stop(cpu);
 			spin_lock_irqsave(&msg_queue->lock, flags);
+=======
+			ipi_call_function(cpu, msg);
+			break;
+		case BFIN_IPI_CPU_STOP:
+			ipi_cpu_stop(cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		default:
 			printk(KERN_CRIT "CPU%u: Unknown IPI message 0x%lx\n",
@@ -297,14 +338,37 @@ EXPORT_SYMBOL_GPL(smp_call_function_single);
 
 void smp_send_reschedule(int cpu)
 {
+<<<<<<< HEAD
 	/* simply trigger an ipi */
 	if (cpu_is_offline(cpu))
 		return;
 	platform_send_ipi_cpu(cpu, IRQ_SUPPLE_0);
+=======
+	cpumask_t callmap;
+	/* simply trigger an ipi */
+
+	cpumask_clear(&callmap);
+	cpumask_set_cpu(cpu, &callmap);
+
+	smp_send_message(callmap, BFIN_IPI_RESCHEDULE, NULL, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return;
 }
 
+<<<<<<< HEAD
+=======
+void smp_send_msg(const struct cpumask *mask, unsigned long type)
+{
+	smp_send_message(*mask, type, NULL, NULL, 0);
+}
+
+void smp_timer_broadcast(const struct cpumask *mask)
+{
+	smp_send_msg(mask, BFIN_IPI_TIMER);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void smp_send_stop(void)
 {
 	cpumask_t callmap;
@@ -323,6 +387,7 @@ void smp_send_stop(void)
 int __cpuinit __cpu_up(unsigned int cpu)
 {
 	int ret;
+<<<<<<< HEAD
 	static struct task_struct *idle;
 
 	if (idle)
@@ -334,6 +399,26 @@ int __cpuinit __cpu_up(unsigned int cpu)
 		return PTR_ERR(idle);
 	}
 
+=======
+	struct blackfin_cpudata *ci = &per_cpu(cpu_data, cpu);
+	struct task_struct *idle = ci->idle;
+
+	if (idle) {
+		free_task(idle);
+		idle = NULL;
+	}
+
+	if (!idle) {
+		idle = fork_idle(cpu);
+		if (IS_ERR(idle)) {
+			printk(KERN_ERR "CPU%u: fork() failed\n", cpu);
+			return PTR_ERR(idle);
+		}
+		ci->idle = idle;
+	} else {
+		init_idle(idle, cpu);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	secondary_stack = task_stack_page(idle) + THREAD_SIZE;
 
 	ret = platform_boot_secondary(cpu, idle);
@@ -369,6 +454,7 @@ void __cpuinit secondary_start_kernel(void)
 	if (_bfin_swrst & SWRST_DBL_FAULT_B) {
 		printk(KERN_EMERG "CoreB Recovering from DOUBLE FAULT event\n");
 #ifdef CONFIG_DEBUG_DOUBLEFAULT
+<<<<<<< HEAD
 		printk(KERN_EMERG " While handling exception (EXCAUSE = 0x%x) at %pF\n",
 			(int)init_saved_seqstat_coreb & SEQSTAT_EXCAUSE, init_saved_retx_coreb);
 		printk(KERN_NOTICE "   DCPLB_FAULT_ADDR: %pF\n", init_saved_dcplb_fault_addr_coreb);
@@ -376,6 +462,18 @@ void __cpuinit secondary_start_kernel(void)
 #endif
 		printk(KERN_NOTICE " The instruction at %pF caused a double exception\n",
 			init_retx_coreb);
+=======
+		printk(KERN_EMERG " While handling exception (EXCAUSE = %#x) at %pF\n",
+			initial_pda_coreb.seqstat_doublefault & SEQSTAT_EXCAUSE,
+			initial_pda_coreb.retx_doublefault);
+		printk(KERN_NOTICE "   DCPLB_FAULT_ADDR: %pF\n",
+			initial_pda_coreb.dcplb_doublefault_addr);
+		printk(KERN_NOTICE "   ICPLB_FAULT_ADDR: %pF\n",
+			initial_pda_coreb.icplb_doublefault_addr);
+#endif
+		printk(KERN_NOTICE " The instruction at %pF caused a double exception\n",
+			initial_pda_coreb.retx);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -405,6 +503,10 @@ void __cpuinit secondary_start_kernel(void)
 
 	bfin_setup_caches(cpu);
 
+<<<<<<< HEAD
+=======
+	notify_cpu_starting(cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Calibrate loops per jiffy value.
 	 * IRQs need to be enabled here - D-cache can be invalidated
@@ -447,8 +549,15 @@ void smp_icache_flush_range_others(unsigned long start, unsigned long end)
 	smp_flush_data.start = start;
 	smp_flush_data.end = end;
 
+<<<<<<< HEAD
 	if (smp_call_function(&ipi_flush_icache, &smp_flush_data, 0))
 		printk(KERN_WARNING "SMP: failed to run I-cache flush request on other CPUs\n");
+=======
+	preempt_disable();
+	if (smp_call_function(&ipi_flush_icache, &smp_flush_data, 1))
+		printk(KERN_WARNING "SMP: failed to run I-cache flush request on other CPUs\n");
+	preempt_enable();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(smp_icache_flush_range_others);
 

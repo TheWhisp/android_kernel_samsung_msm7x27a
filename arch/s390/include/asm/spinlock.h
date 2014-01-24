@@ -13,6 +13,11 @@
 
 #include <linux/smp.h>
 
+<<<<<<< HEAD
+=======
+extern int spin_retry;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int
 _raw_compare_and_swap(volatile unsigned int *lock,
 		      unsigned int old, unsigned int new)

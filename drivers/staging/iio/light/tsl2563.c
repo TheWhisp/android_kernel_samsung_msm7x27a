@@ -31,13 +31,22 @@
 #include <linux/sched.h>
 #include <linux/mutex.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/pm.h>
 #include <linux/hwmon.h>
+=======
+#include <linux/pm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/err.h>
 #include <linux/slab.h>
 
 #include "../iio.h"
+<<<<<<< HEAD
+=======
+#include "../sysfs.h"
+#include "../events.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "tsl2563.h"
 
 /* Use this many bits for fraction part. */
@@ -118,7 +127,11 @@ struct tsl2563_chip {
 	struct delayed_work	poweroff_work;
 
 	/* Remember state for suspend and resume functions */
+<<<<<<< HEAD
 	pm_message_t		state;
+=======
+	bool suspended;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct tsl2563_gainlevel_coeff const *gainlevel;
 
@@ -137,6 +150,7 @@ struct tsl2563_chip {
 	u32			data1;
 };
 
+<<<<<<< HEAD
 static int tsl2563_write(struct i2c_client *client, u8 reg, u8 value)
 {
 	int ret;
@@ -161,13 +175,20 @@ static int tsl2563_read(struct i2c_client *client, u8 reg, void *buf, int len)
 	return i2c_master_recv(client, buf, len);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int tsl2563_set_power(struct tsl2563_chip *chip, int on)
 {
 	struct i2c_client *client = chip->client;
 	u8 cmd;
 
 	cmd = on ? TSL2563_CMD_POWER_ON : TSL2563_CMD_POWER_OFF;
+<<<<<<< HEAD
 	return tsl2563_write(client, TSL2563_REG_CTRL, cmd);
+=======
+	return i2c_smbus_write_byte_data(client,
+					 TSL2563_CMD | TSL2563_REG_CTRL, cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -178,6 +199,7 @@ static int tsl2563_get_power(struct tsl2563_chip *chip)
 {
 	struct i2c_client *client = chip->client;
 	int ret;
+<<<<<<< HEAD
 	u8 val;
 
 	ret = tsl2563_read(client, TSL2563_REG_CTRL, &val, sizeof(val));
@@ -185,12 +207,21 @@ static int tsl2563_get_power(struct tsl2563_chip *chip)
 		return ret;
 
 	return (val & TSL2563_CTRL_POWER_MASK) == TSL2563_CMD_POWER_ON;
+=======
+
+	ret = i2c_smbus_read_byte_data(client, TSL2563_CMD | TSL2563_REG_CTRL);
+	if (ret < 0)
+		return ret;
+
+	return (ret & TSL2563_CTRL_POWER_MASK) == TSL2563_CMD_POWER_ON;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int tsl2563_configure(struct tsl2563_chip *chip)
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = tsl2563_write(chip->client, TSL2563_REG_TIMING,
 			chip->gainlevel->gaintime);
 	if (ret)
@@ -208,6 +239,30 @@ static int tsl2563_configure(struct tsl2563_chip *chip)
 	if (ret)
 		goto error_ret;
 	ret = tsl2563_write(chip->client, TSL2563_REG_LOWHIGH,
+=======
+	ret = i2c_smbus_write_byte_data(chip->client,
+			TSL2563_CMD | TSL2563_REG_TIMING,
+			chip->gainlevel->gaintime);
+	if (ret)
+		goto error_ret;
+	ret = i2c_smbus_write_byte_data(chip->client,
+			TSL2563_CMD | TSL2563_REG_HIGHLOW,
+			chip->high_thres & 0xFF);
+	if (ret)
+		goto error_ret;
+	ret = i2c_smbus_write_byte_data(chip->client,
+			TSL2563_CMD | TSL2563_REG_HIGHHIGH,
+			(chip->high_thres >> 8) & 0xFF);
+	if (ret)
+		goto error_ret;
+	ret = i2c_smbus_write_byte_data(chip->client,
+			TSL2563_CMD | TSL2563_REG_LOWLOW,
+			chip->low_thres & 0xFF);
+	if (ret)
+		goto error_ret;
+	ret = i2c_smbus_write_byte_data(chip->client,
+			TSL2563_CMD | TSL2563_REG_LOWHIGH,
+>>>>>>> refs/remotes/origin/cm-10.0
 			(chip->low_thres >> 8) & 0xFF);
 /* Interrupt register is automatically written anyway if it is relevant
    so is not here */
@@ -242,10 +297,19 @@ static int tsl2563_read_id(struct tsl2563_chip *chip, u8 *id)
 	struct i2c_client *client = chip->client;
 	int ret;
 
+<<<<<<< HEAD
 	ret = tsl2563_read(client, TSL2563_REG_ID, id, sizeof(*id));
 	if (ret != sizeof(*id))
 		return ret;
 
+=======
+	ret = i2c_smbus_read_byte_data(client, TSL2563_CMD | TSL2563_REG_ID);
+	if (ret < 0)
+		return ret;
+
+	*id = ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -313,8 +377,14 @@ static int tsl2563_adjust_gainlevel(struct tsl2563_chip *chip, u16 adc)
 		(adc > chip->gainlevel->max) ?
 			chip->gainlevel++ : chip->gainlevel--;
 
+<<<<<<< HEAD
 		tsl2563_write(client, TSL2563_REG_TIMING,
 			      chip->gainlevel->gaintime);
+=======
+		i2c_smbus_write_byte_data(client,
+					  TSL2563_CMD | TSL2563_REG_TIMING,
+					  chip->gainlevel->gaintime);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		tsl2563_wait_adc(chip);
 		tsl2563_wait_adc(chip);
@@ -327,12 +397,19 @@ static int tsl2563_adjust_gainlevel(struct tsl2563_chip *chip, u16 adc)
 static int tsl2563_get_adc(struct tsl2563_chip *chip)
 {
 	struct i2c_client *client = chip->client;
+<<<<<<< HEAD
 	u8 buf0[2], buf1[2];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 adc0, adc1;
 	int retry = 1;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (chip->state.event != PM_EVENT_ON)
+=======
+	if (chip->suspended)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 
 	if (!chip->int_enabled) {
@@ -350,6 +427,7 @@ static int tsl2563_get_adc(struct tsl2563_chip *chip)
 	}
 
 	while (retry) {
+<<<<<<< HEAD
 		ret = tsl2563_read(client,
 				   TSL2563_REG_DATA0LOW,
 				   buf0, sizeof(buf0));
@@ -363,6 +441,19 @@ static int tsl2563_get_adc(struct tsl2563_chip *chip)
 
 		adc0 = (buf0[1] << 8) + buf0[0];
 		adc1 = (buf1[1] << 8) + buf1[0];
+=======
+		ret = i2c_smbus_read_word_data(client,
+				TSL2563_CMD | TSL2563_REG_DATA0LOW);
+		if (ret < 0)
+			goto out;
+		adc0 = ret;
+
+		ret = i2c_smbus_read_word_data(client,
+				TSL2563_CMD | TSL2563_REG_DATA1LOW);
+		if (ret < 0)
+			goto out;
+		adc1 = ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		retry = tsl2563_adjust_gainlevel(chip, adc0);
 	}
@@ -532,7 +623,11 @@ static int tsl2563_read_raw(struct iio_dev *indio_dev,
 		}
 		break;
 
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_CALIBSCALE_SEPARATE):
+=======
+	case IIO_CHAN_INFO_CALIBSCALE:
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (chan->channel == 0)
 			*val = calib_to_sysfs(chip->calib0);
 		else
@@ -540,7 +635,12 @@ static int tsl2563_read_raw(struct iio_dev *indio_dev,
 		ret = IIO_VAL_INT;
 		break;
 	default:
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		ret = -EINVAL;
+		goto error_ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 error_ret:
@@ -549,6 +649,7 @@ error_ret:
 }
 
 static const struct iio_chan_spec tsl2563_channels[] = {
+<<<<<<< HEAD
 	IIO_CHAN(IIO_LIGHT, 0, 1, 1, NULL, 0, 0, 0, 0, 0, {}, 0),
 	IIO_CHAN(IIO_INTENSITY, 1, 1, 0, "both", 0,
 		 (1 << IIO_CHAN_INFO_CALIBSCALE_SEPARATE), 0, 0, 0, {},
@@ -562,6 +663,32 @@ static const struct iio_chan_spec tsl2563_channels[] = {
 static int tsl2563_read_thresh(struct iio_dev *indio_dev,
 				int event_code,
 				int *val)
+=======
+	{
+		.type = IIO_LIGHT,
+		.indexed = 1,
+		.channel = 0,
+	}, {
+		.type = IIO_INTENSITY,
+		.modified = 1,
+		.channel2 = IIO_MOD_LIGHT_BOTH,
+		.info_mask = IIO_CHAN_INFO_CALIBSCALE_SEPARATE_BIT,
+		.event_mask = (IIO_EV_BIT(IIO_EV_TYPE_THRESH,
+					  IIO_EV_DIR_RISING) |
+			       IIO_EV_BIT(IIO_EV_TYPE_THRESH,
+					  IIO_EV_DIR_FALLING)),
+	}, {
+		.type = IIO_INTENSITY,
+		.modified = 1,
+		.channel2 = IIO_MOD_LIGHT_IR,
+		.info_mask = IIO_CHAN_INFO_CALIBSCALE_SEPARATE_BIT,
+	}
+};
+
+static int tsl2563_read_thresh(struct iio_dev *indio_dev,
+			       u64 event_code,
+			       int *val)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tsl2563_chip *chip = iio_priv(indio_dev);
 
@@ -579,8 +706,13 @@ static int tsl2563_read_thresh(struct iio_dev *indio_dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t tsl2563_write_thresh(struct iio_dev *indio_dev,
 				  int event_code,
+=======
+static int tsl2563_write_thresh(struct iio_dev *indio_dev,
+				  u64 event_code,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  int val)
 {
 	struct tsl2563_chip *chip = iio_priv(indio_dev);
@@ -592,11 +724,21 @@ static ssize_t tsl2563_write_thresh(struct iio_dev *indio_dev,
 	else
 		address = TSL2563_REG_LOWLOW;
 	mutex_lock(&chip->lock);
+<<<<<<< HEAD
 	ret = tsl2563_write(chip->client, address, val & 0xFF);
 	if (ret)
 		goto error_ret;
 	ret = tsl2563_write(chip->client, address + 1,
 			(val >> 8) & 0xFF);
+=======
+	ret = i2c_smbus_write_byte_data(chip->client, TSL2563_CMD | address,
+					val & 0xFF);
+	if (ret)
+		goto error_ret;
+	ret = i2c_smbus_write_byte_data(chip->client,
+					TSL2563_CMD | (address + 1),
+					(val >> 8) & 0xFF);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IIO_EVENT_CODE_EXTRACT_DIR(event_code) == IIO_EV_DIR_RISING)
 		chip->high_thres = val;
 	else
@@ -612,23 +754,38 @@ static irqreturn_t tsl2563_event_handler(int irq, void *private)
 {
 	struct iio_dev *dev_info = private;
 	struct tsl2563_chip *chip = iio_priv(dev_info);
+<<<<<<< HEAD
 	u8 cmd = TSL2563_CMD | TSL2563_CLEARINT;
 
 	iio_push_event(dev_info, 0,
 		       IIO_UNMOD_EVENT_CODE(IIO_EV_CLASS_LIGHT,
+=======
+
+	iio_push_event(dev_info,
+		       IIO_UNMOD_EVENT_CODE(IIO_LIGHT,
+>>>>>>> refs/remotes/origin/cm-10.0
 					    0,
 					    IIO_EV_TYPE_THRESH,
 					    IIO_EV_DIR_EITHER),
 		       iio_get_time_ns());
 
 	/* clear the interrupt and push the event */
+<<<<<<< HEAD
 	i2c_master_send(chip->client, &cmd, sizeof(cmd));
+=======
+	i2c_smbus_write_byte(chip->client, TSL2563_CMD | TSL2563_CLEARINT);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return IRQ_HANDLED;
 }
 
 static int tsl2563_write_interrupt_config(struct iio_dev *indio_dev,
+<<<<<<< HEAD
 					int event_code,
 					int state)
+=======
+					  u64 event_code,
+					  int state)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tsl2563_chip *chip = iio_priv(indio_dev);
 	int ret = 0;
@@ -647,13 +804,25 @@ static int tsl2563_write_interrupt_config(struct iio_dev *indio_dev,
 			if (ret)
 				goto out;
 		}
+<<<<<<< HEAD
 		ret = tsl2563_write(chip->client, TSL2563_REG_INT, chip->intr);
+=======
+		ret = i2c_smbus_write_byte_data(chip->client,
+						TSL2563_CMD | TSL2563_REG_INT,
+						chip->intr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		chip->int_enabled = true;
 	}
 
 	if (!state && (chip->intr & 0x30)) {
 		chip->intr |= ~0x30;
+<<<<<<< HEAD
 		ret = tsl2563_write(chip->client, TSL2563_REG_INT, chip->intr);
+=======
+		ret = i2c_smbus_write_byte_data(chip->client,
+						TSL2563_CMD | TSL2563_REG_INT,
+						chip->intr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		chip->int_enabled = false;
 		/* now the interrupt is not enabled, we can go to sleep */
 		schedule_delayed_work(&chip->poweroff_work, 5 * HZ);
@@ -665,6 +834,7 @@ out:
 }
 
 static int tsl2563_read_interrupt_config(struct iio_dev *indio_dev,
+<<<<<<< HEAD
 					   int event_code)
 {
 	struct tsl2563_chip *chip = iio_priv(indio_dev);
@@ -678,6 +848,20 @@ static int tsl2563_read_interrupt_config(struct iio_dev *indio_dev,
 	if (ret < 0)
 		goto error_ret;
 	ret = !!(rxbuf & 0x30);
+=======
+					 u64 event_code)
+{
+	struct tsl2563_chip *chip = iio_priv(indio_dev);
+	int ret;
+
+	mutex_lock(&chip->lock);
+	ret = i2c_smbus_read_byte_data(chip->client,
+				       TSL2563_CMD | TSL2563_REG_INT);
+	mutex_unlock(&chip->lock);
+	if (ret < 0)
+		goto error_ret;
+	ret = !!(ret & 0x30);
+>>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
 
 	return ret;
@@ -690,11 +874,19 @@ static struct i2c_driver tsl2563_i2c_driver;
 
 static const struct iio_info tsl2563_info_no_irq = {
 	.driver_module = THIS_MODULE,
+<<<<<<< HEAD
+=======
+	.read_raw = &tsl2563_read_raw,
+	.write_raw = &tsl2563_write_raw,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct iio_info tsl2563_info = {
 	.driver_module = THIS_MODULE,
+<<<<<<< HEAD
 	.num_interrupt_lines = 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read_raw = &tsl2563_read_raw,
 	.write_raw = &tsl2563_write_raw,
 	.read_event_value = &tsl2563_read_thresh,
@@ -710,8 +902,12 @@ static int __devinit tsl2563_probe(struct i2c_client *client,
 	struct tsl2563_chip *chip;
 	struct tsl2563_platform_data *pdata = client->dev.platform_data;
 	int err = 0;
+<<<<<<< HEAD
 	int ret;
 	u8 id;
+=======
+	u8 id = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	indio_dev = iio_allocate_device(sizeof(*chip));
 	if (!indio_dev)
@@ -724,13 +920,24 @@ static int __devinit tsl2563_probe(struct i2c_client *client,
 
 	err = tsl2563_detect(chip);
 	if (err) {
+<<<<<<< HEAD
 		dev_err(&client->dev, "device not found, error %d\n", -err);
+=======
+		dev_err(&client->dev, "detect error %d\n", -err);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto fail1;
 	}
 
 	err = tsl2563_read_id(chip, &id);
+<<<<<<< HEAD
 	if (err)
 		goto fail1;
+=======
+	if (err) {
+		dev_err(&client->dev, "read id error %d\n", -err);
+		goto fail1;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_init(&chip->lock);
 
@@ -753,20 +960,31 @@ static int __devinit tsl2563_probe(struct i2c_client *client,
 	indio_dev->num_channels = ARRAY_SIZE(tsl2563_channels);
 	indio_dev->dev.parent = &client->dev;
 	indio_dev->modes = INDIO_DIRECT_MODE;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (client->irq)
 		indio_dev->info = &tsl2563_info;
 	else
 		indio_dev->info = &tsl2563_info_no_irq;
+<<<<<<< HEAD
 	ret = iio_device_register(indio_dev);
 	if (ret)
 		goto fail1;
 	if (client->irq) {
 		ret = request_threaded_irq(client->irq,
+=======
+
+	if (client->irq) {
+		err = request_threaded_irq(client->irq,
+>>>>>>> refs/remotes/origin/cm-10.0
 					   NULL,
 					   &tsl2563_event_handler,
 					   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
 					   "tsl2563_event",
 					   indio_dev);
+<<<<<<< HEAD
 		if (ret)
 			goto fail2;
 	}
@@ -786,6 +1004,41 @@ fail2:
 	iio_device_unregister(indio_dev);
 fail1:
 	kfree(chip);
+=======
+		if (err) {
+			dev_err(&client->dev, "irq request error %d\n", -err);
+			goto fail1;
+		}
+	}
+
+	err = tsl2563_configure(chip);
+	if (err) {
+		dev_err(&client->dev, "configure error %d\n", -err);
+		goto fail2;
+	}
+
+	INIT_DELAYED_WORK(&chip->poweroff_work, tsl2563_poweroff_work);
+
+	/* The interrupt cannot yet be enabled so this is fine without lock */
+	schedule_delayed_work(&chip->poweroff_work, 5 * HZ);
+
+	err = iio_device_register(indio_dev);
+	if (err) {
+		dev_err(&client->dev, "iio registration error %d\n", -err);
+		goto fail3;
+	}
+
+	return 0;
+
+fail3:
+	cancel_delayed_work(&chip->poweroff_work);
+	flush_scheduled_work();
+fail2:
+	if (client->irq)
+		free_irq(client->irq, indio_dev);
+fail1:
+	iio_free_device(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 
@@ -793,23 +1046,45 @@ static int tsl2563_remove(struct i2c_client *client)
 {
 	struct tsl2563_chip *chip = i2c_get_clientdata(client);
 	struct iio_dev *indio_dev = iio_priv_to_dev(chip);
+<<<<<<< HEAD
+=======
+
+	iio_device_unregister(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!chip->int_enabled)
 		cancel_delayed_work(&chip->poweroff_work);
 	/* Ensure that interrupts are disabled - then flush any bottom halves */
 	chip->intr |= ~0x30;
+<<<<<<< HEAD
 	tsl2563_write(chip->client, TSL2563_REG_INT, chip->intr);
+=======
+	i2c_smbus_write_byte_data(chip->client, TSL2563_CMD | TSL2563_REG_INT,
+				  chip->intr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	flush_scheduled_work();
 	tsl2563_set_power(chip, 0);
 	if (client->irq)
 		free_irq(client->irq, indio_dev);
+<<<<<<< HEAD
 	iio_device_unregister(indio_dev);
+=======
+
+	iio_free_device(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tsl2563_suspend(struct i2c_client *client, pm_message_t state)
 {
 	struct tsl2563_chip *chip = i2c_get_clientdata(client);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int tsl2563_suspend(struct device *dev)
+{
+	struct tsl2563_chip *chip = i2c_get_clientdata(to_i2c_client(dev));
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	mutex_lock(&chip->lock);
@@ -818,16 +1093,26 @@ static int tsl2563_suspend(struct i2c_client *client, pm_message_t state)
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 	chip->state = state;
+=======
+	chip->suspended = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	mutex_unlock(&chip->lock);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int tsl2563_resume(struct i2c_client *client)
 {
 	struct tsl2563_chip *chip = i2c_get_clientdata(client);
+=======
+static int tsl2563_resume(struct device *dev)
+{
+	struct tsl2563_chip *chip = i2c_get_clientdata(to_i2c_client(dev));
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	mutex_lock(&chip->lock);
@@ -840,13 +1125,26 @@ static int tsl2563_resume(struct i2c_client *client)
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 	chip->state.event = PM_EVENT_ON;
+=======
+	chip->suspended = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	mutex_unlock(&chip->lock);
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static SIMPLE_DEV_PM_OPS(tsl2563_pm_ops, tsl2563_suspend, tsl2563_resume);
+#define TSL2563_PM_OPS (&tsl2563_pm_ops)
+#else
+#define TSL2563_PM_OPS NULL
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct i2c_device_id tsl2563_id[] = {
 	{ "tsl2560", 0 },
 	{ "tsl2561", 1 },
@@ -859,13 +1157,19 @@ MODULE_DEVICE_TABLE(i2c, tsl2563_id);
 static struct i2c_driver tsl2563_i2c_driver = {
 	.driver = {
 		.name	 = "tsl2563",
+<<<<<<< HEAD
 	},
 	.suspend	= tsl2563_suspend,
 	.resume		= tsl2563_resume,
+=======
+		.pm	= TSL2563_PM_OPS,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 	.probe		= tsl2563_probe,
 	.remove		= __devexit_p(tsl2563_remove),
 	.id_table	= tsl2563_id,
 };
+<<<<<<< HEAD
 
 static int __init tsl2563_init(void)
 {
@@ -876,10 +1180,16 @@ static void __exit tsl2563_exit(void)
 {
 	i2c_del_driver(&tsl2563_i2c_driver);
 }
+=======
+module_i2c_driver(tsl2563_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Nokia Corporation");
 MODULE_DESCRIPTION("tsl2563 light sensor driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(tsl2563_init);
 module_exit(tsl2563_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

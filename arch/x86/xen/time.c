@@ -155,9 +155,16 @@ cycle_t xen_clocksource_read(void)
         struct pvclock_vcpu_time_info *src;
 	cycle_t ret;
 
+<<<<<<< HEAD
 	src = &get_cpu_var(xen_vcpu)->time;
 	ret = pvclock_clocksource_read(src);
 	put_cpu_var(xen_vcpu);
+=======
+	preempt_disable_notrace();
+	src = &__get_cpu_var(xen_vcpu)->time;
+	ret = pvclock_clocksource_read(src);
+	preempt_enable_notrace();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -187,8 +194,27 @@ static unsigned long xen_get_wallclock(void)
 
 static int xen_set_wallclock(unsigned long now)
 {
+<<<<<<< HEAD
 	/* do nothing for domU */
 	return -1;
+=======
+	struct xen_platform_op op;
+	int rc;
+
+	/* do nothing for domU */
+	if (!xen_initial_domain())
+		return -1;
+
+	op.cmd = XENPF_settime;
+	op.u.settime.secs = now;
+	op.u.settime.nsecs = 0;
+	op.u.settime.system_time = xen_clocksource_read();
+
+	rc = HYPERVISOR_dom0_op(&op);
+	WARN(rc != 0, "XENPF_settime failed: now=%ld\n", now);
+
+	return rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct clocksource xen_clocksource __read_mostly = {

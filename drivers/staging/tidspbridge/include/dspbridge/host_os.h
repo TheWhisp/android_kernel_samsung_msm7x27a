@@ -17,14 +17,21 @@
 #ifndef _HOST_OS_H_
 #define _HOST_OS_H_
 
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/semaphore.h>
 #include <linux/uaccess.h>
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <linux/syscalls.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/stddef.h>

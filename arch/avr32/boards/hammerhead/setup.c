@@ -102,7 +102,11 @@ struct eth_addr {
 };
 
 static struct eth_addr __initdata hw_addr[1];
+<<<<<<< HEAD
 static struct eth_platform_data __initdata eth_data[1];
+=======
+static struct macb_platform_data __initdata eth_data[1];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The next two functions should go away as the boot loader is

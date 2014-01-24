@@ -19,7 +19,10 @@
 #include <linux/random.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include "dot11d.h"
 
@@ -32,6 +35,7 @@ u8 rsn_authen_cipher_suite[16][4] = {
 	{0x00,0x0F,0xAC,0x05}, //WEP-104
 };
 
+<<<<<<< HEAD
 short ieee80211_is_54g(struct ieee80211_network net)
 {
 	return ((net.rates_ex_len > 0) || (net.rates_len > 4));
@@ -40,6 +44,16 @@ short ieee80211_is_54g(struct ieee80211_network net)
 short ieee80211_is_shortslot(struct ieee80211_network net)
 {
 	return (net.capability & WLAN_CAPABILITY_SHORT_SLOT);
+=======
+short ieee80211_is_54g(const struct ieee80211_network *net)
+{
+	return (net->rates_ex_len > 0) || (net->rates_len > 4);
+}
+
+short ieee80211_is_shortslot(const struct ieee80211_network *net)
+{
+	return net->capability & WLAN_CAPABILITY_SHORT_SLOT;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* returns the total length needed for pleacing the RATE MFIE
@@ -719,7 +733,11 @@ static struct sk_buff* ieee80211_probe_resp(struct ieee80211_device *ieee, u8 *d
 	else
 		atim_len = 0;
 
+<<<<<<< HEAD
 	if(ieee80211_is_54g(ieee->current_network))
+=======
+	if(ieee80211_is_54g(&ieee->current_network))
+>>>>>>> refs/remotes/origin/cm-10.0
 		erp_len = 3;
 	else
 		erp_len = 0;
@@ -777,7 +795,11 @@ static struct sk_buff* ieee80211_probe_resp(struct ieee80211_device *ieee, u8 *d
 		cpu_to_le16(ieee->current_network.capability & WLAN_CAPABILITY_SHORT_PREAMBLE); //add short preamble here
 
 	if(ieee->short_slot && (ieee->current_network.capability & WLAN_CAPABILITY_SHORT_SLOT))
+<<<<<<< HEAD
 		cpu_to_le16((beacon_buf->capability |= WLAN_CAPABILITY_SHORT_SLOT));
+=======
+		beacon_buf->capability |= cpu_to_le16(WLAN_CAPABILITY_SHORT_SLOT);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	crypt = ieee->crypt[ieee->tx_keyidx];
 	if (encrypt)
@@ -1334,7 +1356,11 @@ void ieee80211_associate_complete_wq(struct work_struct *work)
 {
 	struct ieee80211_device *ieee = container_of(work, struct ieee80211_device, associate_complete_wq);
 	printk(KERN_INFO "Associated successfully\n");
+<<<<<<< HEAD
 	if(ieee80211_is_54g(ieee->current_network) &&
+=======
+	if(ieee80211_is_54g(&ieee->current_network) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 		(ieee->modulation & IEEE80211_OFDM_MODULATION)){
 
 		ieee->rate = 108;
@@ -1490,7 +1516,11 @@ inline void ieee80211_softmac_new_net(struct ieee80211_device *ieee, struct ieee
 					ieee->state = IEEE80211_ASSOCIATING;
 					queue_work(ieee->wq, &ieee->associate_procedure_wq);
 				}else{
+<<<<<<< HEAD
 					if(ieee80211_is_54g(ieee->current_network) &&
+=======
+					if(ieee80211_is_54g(&ieee->current_network) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 						(ieee->modulation & IEEE80211_OFDM_MODULATION)){
 						ieee->rate = 108;
 						ieee->SetWirelessMode(ieee->dev, IEEE_G);
@@ -2726,11 +2756,15 @@ void ieee80211_softmac_init(struct ieee80211_device *ieee)
 	ieee->beacon_timer.data = (unsigned long) ieee;
 	ieee->beacon_timer.function = ieee80211_send_beacon_cb;
 
+<<<<<<< HEAD
 #ifdef PF_SYNCTHREAD
 	ieee->wq = create_workqueue(DRV_NAME,0);
 #else
 	ieee->wq = create_workqueue(DRV_NAME);
 #endif
+=======
+	ieee->wq = create_workqueue(DRV_NAME);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	INIT_DELAYED_WORK(&ieee->start_ibss_wq,ieee80211_start_ibss_wq);
 	INIT_WORK(&ieee->associate_complete_wq, ieee80211_associate_complete_wq);

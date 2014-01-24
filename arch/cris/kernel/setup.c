@@ -20,6 +20,10 @@
 #include <linux/pfn.h>
 #include <linux/cpu.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Setup options

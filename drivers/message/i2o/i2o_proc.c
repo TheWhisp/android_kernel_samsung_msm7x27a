@@ -56,7 +56,11 @@
 /* Structure used to define /proc entries */
 typedef struct _i2o_proc_entry_t {
 	char *name;		/* entry name */
+<<<<<<< HEAD
 	mode_t mode;		/* mode */
+=======
+	umode_t mode;		/* mode */
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct file_operations *fops;	/* open function */
 } i2o_proc_entry;
 

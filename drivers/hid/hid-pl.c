@@ -9,10 +9,17 @@
  *   - contains two reports, one for each port (HID_QUIRK_MULTI_INPUT)
  *
  *  0e8f:0003 "GreenAsia Inc.    USB Joystick     "
+<<<<<<< HEAD
  *   - tested with König Gaming gamepad
  *
  *  0e8f:0003 "GASIA USB Gamepad"
  *   - another version of the König gamepad
+=======
+ *   - tested with KÃ¶nig Gaming gamepad
+ *
+ *  0e8f:0003 "GASIA USB Gamepad"
+ *   - another version of the KÃ¶nig gamepad
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *  Copyright (c) 2007, 2009 Anssi Hannula <anssi.hannula@gmail.com>
  */
@@ -40,6 +47,10 @@
 
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/usb.h>
 #include <linux/hid.h>
 

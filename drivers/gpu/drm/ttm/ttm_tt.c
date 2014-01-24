@@ -28,6 +28,11 @@
  * Authors: Thomas Hellstrom <thellstrom-at-vmware-dot-com>
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "[TTM] " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/highmem.h>
 #include <linux/pagemap.h>
@@ -35,6 +40,10 @@
 #include <linux/file.h>
 #include <linux/swap.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drm_cache.h"
 #include "drm_mem_util.h"
 #include "ttm/ttm_module.h"
@@ -42,13 +51,17 @@
 #include "ttm/ttm_placement.h"
 #include "ttm/ttm_page_alloc.h"
 
+<<<<<<< HEAD
 static int ttm_tt_swapin(struct ttm_tt *ttm);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * Allocates storage for pointers to the pages that back the ttm.
  */
 static void ttm_tt_alloc_page_directory(struct ttm_tt *ttm)
 {
+<<<<<<< HEAD
 	ttm->pages = drm_calloc_large(ttm->num_pages, sizeof(*ttm->pages));
 	ttm->dma_address = drm_calloc_large(ttm->num_pages,
 					    sizeof(*ttm->dma_address));
@@ -175,6 +188,17 @@ int ttm_tt_populate(struct ttm_tt *ttm)
 	return 0;
 }
 EXPORT_SYMBOL(ttm_tt_populate);
+=======
+	ttm->pages = drm_calloc_large(ttm->num_pages, sizeof(void*));
+}
+
+static void ttm_dma_tt_alloc_page_directory(struct ttm_dma_tt *ttm)
+{
+	ttm->ttm.pages = drm_calloc_large(ttm->ttm.num_pages, sizeof(void*));
+	ttm->dma_address = drm_calloc_large(ttm->ttm.num_pages,
+					    sizeof(*ttm->dma_address));
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_X86
 static inline int ttm_tt_set_page_caching(struct page *p,
@@ -277,6 +301,7 @@ int ttm_tt_set_placement_caching(struct ttm_tt *ttm, uint32_t placement)
 }
 EXPORT_SYMBOL(ttm_tt_set_placement_caching);
 
+<<<<<<< HEAD
 static void ttm_tt_free_alloced_pages(struct ttm_tt *ttm)
 {
 	int i;
@@ -331,12 +356,26 @@ void ttm_tt_destroy(struct ttm_tt *ttm)
 			ttm_tt_free_alloced_pages(ttm);
 
 		ttm_tt_free_page_directory(ttm);
+=======
+void ttm_tt_destroy(struct ttm_tt *ttm)
+{
+	if (unlikely(ttm == NULL))
+		return;
+
+	if (ttm->state == tt_bound) {
+		ttm_tt_unbind(ttm);
+	}
+
+	if (ttm->state == tt_unbound) {
+		ttm->bdev->driver->ttm_tt_unpopulate(ttm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (!(ttm->page_flags & TTM_PAGE_FLAG_PERSISTENT_SWAP) &&
 	    ttm->swap_storage)
 		fput(ttm->swap_storage);
 
+<<<<<<< HEAD
 	kfree(ttm);
 }
 
@@ -416,14 +455,92 @@ struct ttm_tt *ttm_tt_create(struct ttm_bo_device *bdev, unsigned long size,
 	ttm->state = tt_unpopulated;
 	return ttm;
 }
+=======
+	ttm->swap_storage = NULL;
+	ttm->func->destroy(ttm);
+}
+
+int ttm_tt_init(struct ttm_tt *ttm, struct ttm_bo_device *bdev,
+		unsigned long size, uint32_t page_flags,
+		struct page *dummy_read_page)
+{
+	ttm->bdev = bdev;
+	ttm->glob = bdev->glob;
+	ttm->num_pages = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
+	ttm->caching_state = tt_cached;
+	ttm->page_flags = page_flags;
+	ttm->dummy_read_page = dummy_read_page;
+	ttm->state = tt_unpopulated;
+	ttm->swap_storage = NULL;
+
+	ttm_tt_alloc_page_directory(ttm);
+	if (!ttm->pages) {
+		ttm_tt_destroy(ttm);
+		pr_err("Failed allocating page table\n");
+		return -ENOMEM;
+	}
+	return 0;
+}
+EXPORT_SYMBOL(ttm_tt_init);
+
+void ttm_tt_fini(struct ttm_tt *ttm)
+{
+	drm_free_large(ttm->pages);
+	ttm->pages = NULL;
+}
+EXPORT_SYMBOL(ttm_tt_fini);
+
+int ttm_dma_tt_init(struct ttm_dma_tt *ttm_dma, struct ttm_bo_device *bdev,
+		unsigned long size, uint32_t page_flags,
+		struct page *dummy_read_page)
+{
+	struct ttm_tt *ttm = &ttm_dma->ttm;
+
+	ttm->bdev = bdev;
+	ttm->glob = bdev->glob;
+	ttm->num_pages = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
+	ttm->caching_state = tt_cached;
+	ttm->page_flags = page_flags;
+	ttm->dummy_read_page = dummy_read_page;
+	ttm->state = tt_unpopulated;
+	ttm->swap_storage = NULL;
+
+	INIT_LIST_HEAD(&ttm_dma->pages_list);
+	ttm_dma_tt_alloc_page_directory(ttm_dma);
+	if (!ttm->pages || !ttm_dma->dma_address) {
+		ttm_tt_destroy(ttm);
+		pr_err("Failed allocating page table\n");
+		return -ENOMEM;
+	}
+	return 0;
+}
+EXPORT_SYMBOL(ttm_dma_tt_init);
+
+void ttm_dma_tt_fini(struct ttm_dma_tt *ttm_dma)
+{
+	struct ttm_tt *ttm = &ttm_dma->ttm;
+
+	drm_free_large(ttm->pages);
+	ttm->pages = NULL;
+	drm_free_large(ttm_dma->dma_address);
+	ttm_dma->dma_address = NULL;
+}
+EXPORT_SYMBOL(ttm_dma_tt_fini);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void ttm_tt_unbind(struct ttm_tt *ttm)
 {
 	int ret;
+<<<<<<< HEAD
 	struct ttm_backend *be = ttm->be;
 
 	if (ttm->state == tt_bound) {
 		ret = be->func->unbind(be);
+=======
+
+	if (ttm->state == tt_bound) {
+		ret = ttm->func->unbind(ttm);
+>>>>>>> refs/remotes/origin/cm-10.0
 		BUG_ON(ret);
 		ttm->state = tt_unbound;
 	}
@@ -432,7 +549,10 @@ void ttm_tt_unbind(struct ttm_tt *ttm)
 int ttm_tt_bind(struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem)
 {
 	int ret = 0;
+<<<<<<< HEAD
 	struct ttm_backend *be;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!ttm)
 		return -EINVAL;
@@ -440,6 +560,7 @@ int ttm_tt_bind(struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem)
 	if (ttm->state == tt_bound)
 		return 0;
 
+<<<<<<< HEAD
 	be = ttm->be;
 
 	ret = ttm_tt_populate(ttm);
@@ -447,18 +568,32 @@ int ttm_tt_bind(struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem)
 		return ret;
 
 	ret = be->func->bind(be, bo_mem);
+=======
+	ret = ttm->bdev->driver->ttm_tt_populate(ttm);
+	if (ret)
+		return ret;
+
+	ret = ttm->func->bind(ttm, bo_mem);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(ret != 0))
 		return ret;
 
 	ttm->state = tt_bound;
 
+<<<<<<< HEAD
 	if (ttm->page_flags & TTM_PAGE_FLAG_USER)
 		ttm->page_flags |= TTM_PAGE_FLAG_USER_DIRTY;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 EXPORT_SYMBOL(ttm_tt_bind);
 
+<<<<<<< HEAD
 static int ttm_tt_swapin(struct ttm_tt *ttm)
+=======
+int ttm_tt_swapin(struct ttm_tt *ttm)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct address_space *swap_space;
 	struct file *swap_storage;
@@ -469,6 +604,7 @@ static int ttm_tt_swapin(struct ttm_tt *ttm)
 	int i;
 	int ret = -ENOMEM;
 
+<<<<<<< HEAD
 	if (ttm->page_flags & TTM_PAGE_FLAG_USER) {
 		ret = ttm_tt_set_user(ttm, ttm->tsk, ttm->start,
 				      ttm->num_pages);
@@ -479,6 +615,8 @@ static int ttm_tt_swapin(struct ttm_tt *ttm)
 		return 0;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	swap_storage = ttm->swap_storage;
 	BUG_ON(swap_storage == NULL);
 
@@ -490,16 +628,28 @@ static int ttm_tt_swapin(struct ttm_tt *ttm)
 			ret = PTR_ERR(from_page);
 			goto out_err;
 		}
+<<<<<<< HEAD
 		to_page = __ttm_tt_get_page(ttm, i);
+=======
+		to_page = ttm->pages[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (unlikely(to_page == NULL))
 			goto out_err;
 
 		preempt_disable();
+<<<<<<< HEAD
 		from_virtual = kmap_atomic(from_page, KM_USER0);
 		to_virtual = kmap_atomic(to_page, KM_USER1);
 		memcpy(to_virtual, from_virtual, PAGE_SIZE);
 		kunmap_atomic(to_virtual, KM_USER1);
 		kunmap_atomic(from_virtual, KM_USER0);
+=======
+		from_virtual = kmap_atomic(from_page);
+		to_virtual = kmap_atomic(to_page);
+		memcpy(to_virtual, from_virtual, PAGE_SIZE);
+		kunmap_atomic(to_virtual);
+		kunmap_atomic(from_virtual);
+>>>>>>> refs/remotes/origin/cm-10.0
 		preempt_enable();
 		page_cache_release(from_page);
 	}
@@ -511,7 +661,10 @@ static int ttm_tt_swapin(struct ttm_tt *ttm)
 
 	return 0;
 out_err:
+<<<<<<< HEAD
 	ttm_tt_free_alloced_pages(ttm);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -529,6 +682,7 @@ int ttm_tt_swapout(struct ttm_tt *ttm, struct file *persistent_swap_storage)
 	BUG_ON(ttm->state != tt_unbound && ttm->state != tt_unpopulated);
 	BUG_ON(ttm->caching_state != tt_cached);
 
+<<<<<<< HEAD
 	/*
 	 * For user buffers, just unpin the pages, as there should be
 	 * vma references.
@@ -541,12 +695,18 @@ int ttm_tt_swapout(struct ttm_tt *ttm, struct file *persistent_swap_storage)
 		return 0;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!persistent_swap_storage) {
 		swap_storage = shmem_file_setup("ttm swap",
 						ttm->num_pages << PAGE_SHIFT,
 						0);
 		if (unlikely(IS_ERR(swap_storage))) {
+<<<<<<< HEAD
 			printk(KERN_ERR "Failed allocating swap storage.\n");
+=======
+			pr_err("Failed allocating swap storage\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return PTR_ERR(swap_storage);
 		}
 	} else
@@ -564,18 +724,30 @@ int ttm_tt_swapout(struct ttm_tt *ttm, struct file *persistent_swap_storage)
 			goto out_err;
 		}
 		preempt_disable();
+<<<<<<< HEAD
 		from_virtual = kmap_atomic(from_page, KM_USER0);
 		to_virtual = kmap_atomic(to_page, KM_USER1);
 		memcpy(to_virtual, from_virtual, PAGE_SIZE);
 		kunmap_atomic(to_virtual, KM_USER1);
 		kunmap_atomic(from_virtual, KM_USER0);
+=======
+		from_virtual = kmap_atomic(from_page);
+		to_virtual = kmap_atomic(to_page);
+		memcpy(to_virtual, from_virtual, PAGE_SIZE);
+		kunmap_atomic(to_virtual);
+		kunmap_atomic(from_virtual);
+>>>>>>> refs/remotes/origin/cm-10.0
 		preempt_enable();
 		set_page_dirty(to_page);
 		mark_page_accessed(to_page);
 		page_cache_release(to_page);
 	}
 
+<<<<<<< HEAD
 	ttm_tt_free_alloced_pages(ttm);
+=======
+	ttm->bdev->driver->ttm_tt_unpopulate(ttm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ttm->swap_storage = swap_storage;
 	ttm->page_flags |= TTM_PAGE_FLAG_SWAPPED;
 	if (persistent_swap_storage)

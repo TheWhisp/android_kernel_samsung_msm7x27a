@@ -39,7 +39,10 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/hdreg.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <asm/irq.h>
@@ -4103,10 +4106,17 @@ static long pmcraid_chr_ioctl(
 	struct pmcraid_ioctl_header *hdr = NULL;
 	int retval = -ENOTTY;
 
+<<<<<<< HEAD
 	hdr = kmalloc(GFP_KERNEL, sizeof(struct pmcraid_ioctl_header));
 
 	if (!hdr) {
 		pmcraid_err("faile to allocate memory for ioctl header\n");
+=======
+	hdr = kmalloc(sizeof(struct pmcraid_ioctl_header), GFP_KERNEL);
+
+	if (!hdr) {
+		pmcraid_err("failed to allocate memory for ioctl header\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 

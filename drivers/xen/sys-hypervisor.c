@@ -97,7 +97,11 @@ static struct attribute *version_attrs[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 static struct attribute_group version_group = {
+=======
+static const struct attribute_group version_group = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name = "version",
 	.attrs = version_attrs,
 };
@@ -210,7 +214,11 @@ static struct attribute *xen_compile_attrs[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 static struct attribute_group xen_compilation_group = {
+=======
+static const struct attribute_group xen_compilation_group = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name = "compilation",
 	.attrs = xen_compile_attrs,
 };
@@ -340,7 +348,11 @@ static struct attribute *xen_properties_attrs[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 static struct attribute_group xen_properties_group = {
+=======
+static const struct attribute_group xen_properties_group = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name = "properties",
 	.attrs = xen_properties_attrs,
 };

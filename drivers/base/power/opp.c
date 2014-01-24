@@ -17,6 +17,10 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/cpufreq.h>
+<<<<<<< HEAD
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/list.h>
 #include <linux/rculist.h>
 #include <linux/rcupdate.h>
@@ -73,6 +77,10 @@ struct opp {
  *		RCU usage: nodes are not modified in the list of device_opp,
  *		however addition is possible and is secured by dev_opp_list_lock
  * @dev:	device pointer
+<<<<<<< HEAD
+=======
+ * @head:	notifier head to notify the OPP availability changes.
+>>>>>>> refs/remotes/origin/cm-10.0
  * @opp_list:	list of opps
  *
  * This is an internal data structure maintaining the link to opps attached to
@@ -83,6 +91,10 @@ struct device_opp {
 	struct list_head node;
 
 	struct device *dev;
+<<<<<<< HEAD
+=======
+	struct srcu_notifier_head head;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head opp_list;
 };
 
@@ -404,6 +416,10 @@ int opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
 		}
 
 		dev_opp->dev = dev;
+<<<<<<< HEAD
+=======
+		srcu_init_notifier_head(&dev_opp->head);
+>>>>>>> refs/remotes/origin/cm-10.0
 		INIT_LIST_HEAD(&dev_opp->opp_list);
 
 		/* Secure the device list modification */
@@ -428,6 +444,14 @@ int opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
 	list_add_rcu(&new_opp->node, head);
 	mutex_unlock(&dev_opp_list_lock);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Notify the changes in the availability of the operable
+	 * frequency/voltage list.
+	 */
+	srcu_notifier_call_chain(&dev_opp->head, OPP_EVENT_ADD, new_opp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -453,7 +477,11 @@ int opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
 static int opp_set_availability(struct device *dev, unsigned long freq,
 		bool availability_req)
 {
+<<<<<<< HEAD
 	struct device_opp *tmp_dev_opp, *dev_opp = NULL;
+=======
+	struct device_opp *tmp_dev_opp, *dev_opp = ERR_PTR(-ENODEV);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct opp *new_opp, *tmp_opp, *opp = ERR_PTR(-ENODEV);
 	int r = 0;
 
@@ -504,6 +532,17 @@ static int opp_set_availability(struct device *dev, unsigned long freq,
 	mutex_unlock(&dev_opp_list_lock);
 	synchronize_rcu();
 
+<<<<<<< HEAD
+=======
+	/* Notify the change of the OPP availability */
+	if (availability_req)
+		srcu_notifier_call_chain(&dev_opp->head, OPP_EVENT_ENABLE,
+					 new_opp);
+	else
+		srcu_notifier_call_chain(&dev_opp->head, OPP_EVENT_DISABLE,
+					 new_opp);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* clean up old opp */
 	new_opp = opp;
 	goto out;
@@ -625,4 +664,39 @@ int opp_init_cpufreq_table(struct device *dev,
 
 	return 0;
 }
+<<<<<<< HEAD
 #endif		/* CONFIG_CPU_FREQ */
+=======
+
+/**
+ * opp_free_cpufreq_table() - free the cpufreq table
+ * @dev:	device for which we do this operation
+ * @table:	table to free
+ *
+ * Free up the table allocated by opp_init_cpufreq_table
+ */
+void opp_free_cpufreq_table(struct device *dev,
+				struct cpufreq_frequency_table **table)
+{
+	if (!table)
+		return;
+
+	kfree(*table);
+	*table = NULL;
+}
+#endif		/* CONFIG_CPU_FREQ */
+
+/**
+ * opp_get_notifier() - find notifier_head of the device with opp
+ * @dev:	device pointer used to lookup device OPPs.
+ */
+struct srcu_notifier_head *opp_get_notifier(struct device *dev)
+{
+	struct device_opp *dev_opp = find_device_opp(dev);
+
+	if (IS_ERR(dev_opp))
+		return ERR_CAST(dev_opp); /* matching type */
+
+	return &dev_opp->head;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

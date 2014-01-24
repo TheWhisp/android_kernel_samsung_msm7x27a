@@ -25,11 +25,18 @@
 #include <linux/input.h>
 #include <linux/pwm_backlight.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/hardware/vic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
 #include <mach/map.h>
+<<<<<<< HEAD
 #include <mach/regs-fb.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/regs-gpio.h>
 
 #include <video/platform_lcd.h>
@@ -43,7 +50,10 @@
 #include <plat/clock.h>
 #include <plat/devs.h>
 #include <plat/cpu.h>
+<<<<<<< HEAD
 #include <plat/s5pc100.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/fb.h>
 #include <plat/iic.h>
 #include <plat/ata.h>
@@ -51,6 +61,13 @@
 #include <plat/keypad.h>
 #include <plat/ts.h>
 #include <plat/audio.h>
+<<<<<<< HEAD
+=======
+#include <plat/backlight.h>
+#include <plat/regs-fb-v4.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Following are default values for UCON, ULCON and UFCON UART registers */
 #define SMDKC100_UCON_DEFAULT	(S3C2410_UCON_TXILEVEL |	\
@@ -179,6 +196,7 @@ static struct samsung_keypad_platdata smdkc100_keypad_data __initdata = {
 	.cols		= 8,
 };
 
+<<<<<<< HEAD
 static int smdkc100_backlight_init(struct device *dev)
 {
 	int ret;
@@ -218,6 +236,8 @@ static struct platform_device smdkc100_backlight_device = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device *smdkc100_devices[] __initdata = {
 	&s3c_device_adc,
 	&s3c_device_cfcon,
@@ -239,6 +259,7 @@ static struct platform_device *smdkc100_devices[] __initdata = {
 	&s5p_device_fimc1,
 	&s5p_device_fimc2,
 	&s5pc100_device_spdif,
+<<<<<<< HEAD
 	&s3c_device_timer[0],
 	&smdkc100_backlight_device,
 };
@@ -247,18 +268,38 @@ static struct s3c2410_ts_mach_info s3c_ts_platform __initdata = {
 	.delay			= 10000,
 	.presc			= 49,
 	.oversampling_shift	= 2,
+=======
+};
+
+/* LCD Backlight data */
+static struct samsung_bl_gpio_info smdkc100_bl_gpio_info = {
+	.no = S5PC100_GPD(0),
+	.func = S3C_GPIO_SFN(2),
+};
+
+static struct platform_pwm_backlight_data smdkc100_bl_data = {
+	.pwm_id = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void __init smdkc100_map_io(void)
 {
+<<<<<<< HEAD
 	s5p_init_io(NULL, 0, S5P_VA_CHIPID);
+=======
+	s5pc100_init_io(NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(smdkc100_uartcfgs, ARRAY_SIZE(smdkc100_uartcfgs));
 }
 
 static void __init smdkc100_machine_init(void)
 {
+<<<<<<< HEAD
 	s3c24xx_ts_set_platdata(&s3c_ts_platform);
+=======
+	s3c24xx_ts_set_platdata(NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* I2C */
 	s3c_i2c0_set_platdata(NULL);
@@ -276,14 +317,30 @@ static void __init smdkc100_machine_init(void)
 	/* LCD init */
 	gpio_request(S5PC100_GPH0(6), "GPH0");
 	smdkc100_lcd_power_set(&smdkc100_lcd_power_data, 0);
+<<<<<<< HEAD
+=======
+
+	samsung_bl_set(&smdkc100_bl_gpio_info, &smdkc100_bl_data);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(smdkc100_devices, ARRAY_SIZE(smdkc100_devices));
 }
 
 MACHINE_START(SMDKC100, "SMDKC100")
 	/* Maintainer: Byungho Min <bhmin@samsung.com> */
+<<<<<<< HEAD
 	.boot_params	= S5P_PA_SDRAM + 0x100,
 	.init_irq	= s5pc100_init_irq,
 	.map_io		= smdkc100_map_io,
 	.init_machine	= smdkc100_machine_init,
 	.timer		= &s3c24xx_timer,
+=======
+	.atag_offset	= 0x100,
+	.init_irq	= s5pc100_init_irq,
+	.handle_irq	= vic_handle_irq,
+	.map_io		= smdkc100_map_io,
+	.init_machine	= smdkc100_machine_init,
+	.timer		= &s3c24xx_timer,
+	.restart	= s5pc100_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

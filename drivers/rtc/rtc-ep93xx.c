@@ -36,6 +36,10 @@
  */
 struct ep93xx_rtc {
 	void __iomem	*mmio_base;
+<<<<<<< HEAD
+=======
+	struct rtc_device *rtc;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int ep93xx_rtc_get_swcomp(struct device *dev, unsigned short *preload,
@@ -130,7 +134,10 @@ static int __init ep93xx_rtc_probe(struct platform_device *pdev)
 {
 	struct ep93xx_rtc *ep93xx_rtc;
 	struct resource *res;
+<<<<<<< HEAD
 	struct rtc_device *rtc;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err;
 
 	ep93xx_rtc = devm_kzalloc(&pdev->dev, sizeof(*ep93xx_rtc), GFP_KERNEL);
@@ -151,12 +158,21 @@ static int __init ep93xx_rtc_probe(struct platform_device *pdev)
 		return -ENXIO;
 
 	pdev->dev.platform_data = ep93xx_rtc;
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, rtc);
 
 	rtc = rtc_device_register(pdev->name,
 				&pdev->dev, &ep93xx_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc)) {
 		err = PTR_ERR(rtc);
+=======
+	platform_set_drvdata(pdev, ep93xx_rtc);
+
+	ep93xx_rtc->rtc = rtc_device_register(pdev->name,
+				&pdev->dev, &ep93xx_rtc_ops, THIS_MODULE);
+	if (IS_ERR(ep93xx_rtc->rtc)) {
+		err = PTR_ERR(ep93xx_rtc->rtc);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto exit;
 	}
 
@@ -167,7 +183,11 @@ static int __init ep93xx_rtc_probe(struct platform_device *pdev)
 	return 0;
 
 fail:
+<<<<<<< HEAD
 	rtc_device_unregister(rtc);
+=======
+	rtc_device_unregister(ep93xx_rtc->rtc);
+>>>>>>> refs/remotes/origin/cm-10.0
 exit:
 	platform_set_drvdata(pdev, NULL);
 	pdev->dev.platform_data = NULL;
@@ -176,11 +196,19 @@ exit:
 
 static int __exit ep93xx_rtc_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct rtc_device *rtc = platform_get_drvdata(pdev);
 
 	sysfs_remove_group(&pdev->dev.kobj, &ep93xx_rtc_sysfs_files);
 	platform_set_drvdata(pdev, NULL);
 	rtc_device_unregister(rtc);
+=======
+	struct ep93xx_rtc *ep93xx_rtc = platform_get_drvdata(pdev);
+
+	sysfs_remove_group(&pdev->dev.kobj, &ep93xx_rtc_sysfs_files);
+	platform_set_drvdata(pdev, NULL);
+	rtc_device_unregister(ep93xx_rtc->rtc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pdev->dev.platform_data = NULL;
 
 	return 0;

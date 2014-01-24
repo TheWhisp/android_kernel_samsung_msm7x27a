@@ -190,8 +190,15 @@ static struct devprobe2 isa_probes[] __initdata = {
 	{seeq8005_probe, 0},
 #endif
 #ifdef CONFIG_CS89x0
+<<<<<<< HEAD
  	{cs89x0_probe, 0},
 #endif
+=======
+#ifndef CONFIG_CS89x0_PLATFORM
+ 	{cs89x0_probe, 0},
+#endif
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_AT1700
 	{at1700_probe, 0},
 #endif

@@ -158,6 +158,10 @@ struct v4l2_subdev_core_ops {
 	int (*s_ext_ctrls)(struct v4l2_subdev *sd, struct v4l2_ext_controls *ctrls);
 	int (*try_ext_ctrls)(struct v4l2_subdev *sd, struct v4l2_ext_controls *ctrls);
 	int (*querymenu)(struct v4l2_subdev *sd, struct v4l2_querymenu *qm);
+<<<<<<< HEAD
+=======
+	int (*g_std)(struct v4l2_subdev *sd, v4l2_std_id *norm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*s_std)(struct v4l2_subdev *sd, v4l2_std_id norm);
 	long (*ioctl)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
 #ifdef CONFIG_VIDEO_ADV_DEBUG
@@ -229,6 +233,15 @@ struct v4l2_subdev_audio_ops {
    s_std_output: set v4l2_std_id for video OUTPUT devices. This is ignored by
 	video input devices.
 
+<<<<<<< HEAD
+=======
+   g_std_output: get current standard for video OUTPUT devices. This is ignored
+	by video input devices.
+
+   g_tvnorms_output: get v4l2_std_id with all standards supported by video
+	OUTPUT device. This is ignored by video input devices.
+
+>>>>>>> refs/remotes/origin/cm-10.0
    s_crystal_freq: sets the frequency of the crystal used to generate the
 	clocks in Hz. An extra flags field allows device specific configuration
 	regarding clock frequency dividers, etc. If not used, then set flags
@@ -243,6 +256,11 @@ struct v4l2_subdev_audio_ops {
    s_dv_preset: set dv (Digital Video) preset in the sub device. Similar to
 	s_std()
 
+<<<<<<< HEAD
+=======
+   g_dv_preset: get current dv (Digital Video) preset in the sub device.
+
+>>>>>>> refs/remotes/origin/cm-10.0
    query_dv_preset: query dv preset in the sub device. This is similar to
 	querystd()
 
@@ -259,12 +277,27 @@ struct v4l2_subdev_audio_ops {
    try_mbus_fmt: try to set a pixel format on a video data source
 
    s_mbus_fmt: set a pixel format on a video data source
+<<<<<<< HEAD
+=======
+
+   g_mbus_config: get supported mediabus configurations
+
+   s_mbus_config: set a certain mediabus configuration. This operation is added
+	for compatibility with soc-camera drivers and should not be used by new
+	software.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct v4l2_subdev_video_ops {
 	int (*s_routing)(struct v4l2_subdev *sd, u32 input, u32 output, u32 config);
 	int (*s_crystal_freq)(struct v4l2_subdev *sd, u32 freq, u32 flags);
 	int (*s_std_output)(struct v4l2_subdev *sd, v4l2_std_id std);
+<<<<<<< HEAD
 	int (*querystd)(struct v4l2_subdev *sd, v4l2_std_id *std);
+=======
+	int (*g_std_output)(struct v4l2_subdev *sd, v4l2_std_id *std);
+	int (*querystd)(struct v4l2_subdev *sd, v4l2_std_id *std);
+	int (*g_tvnorms_output)(struct v4l2_subdev *sd, v4l2_std_id *std);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*g_input_status)(struct v4l2_subdev *sd, u32 *status);
 	int (*s_stream)(struct v4l2_subdev *sd, int enable);
 	int (*cropcap)(struct v4l2_subdev *sd, struct v4l2_cropcap *cc);
@@ -282,6 +315,11 @@ struct v4l2_subdev_video_ops {
 			struct v4l2_dv_enum_preset *preset);
 	int (*s_dv_preset)(struct v4l2_subdev *sd,
 			struct v4l2_dv_preset *preset);
+<<<<<<< HEAD
+=======
+	int (*g_dv_preset)(struct v4l2_subdev *sd,
+			struct v4l2_dv_preset *preset);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*query_dv_preset)(struct v4l2_subdev *sd,
 			struct v4l2_dv_preset *preset);
 	int (*s_dv_timings)(struct v4l2_subdev *sd,
@@ -298,6 +336,13 @@ struct v4l2_subdev_video_ops {
 			    struct v4l2_mbus_framefmt *fmt);
 	int (*s_mbus_fmt)(struct v4l2_subdev *sd,
 			  struct v4l2_mbus_framefmt *fmt);
+<<<<<<< HEAD
+=======
+	int (*g_mbus_config)(struct v4l2_subdev *sd,
+			     struct v4l2_mbus_config *cfg);
+	int (*s_mbus_config)(struct v4l2_subdev *sd,
+			     const struct v4l2_mbus_config *cfg);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -512,15 +557,23 @@ struct v4l2_subdev {
 	void *dev_priv;
 	void *host_priv;
 	/* subdev device node */
+<<<<<<< HEAD
 	struct video_device devnode;
 	/* number of events to be allocated on open */
 	unsigned int nevents;
+=======
+	struct video_device *devnode;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define media_entity_to_v4l2_subdev(ent) \
 	container_of(ent, struct v4l2_subdev, entity)
 #define vdev_to_v4l2_subdev(vdev) \
+<<<<<<< HEAD
 	container_of(vdev, struct v4l2_subdev, devnode)
+=======
+	video_get_drvdata(vdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Used for storing subdev information per file handle

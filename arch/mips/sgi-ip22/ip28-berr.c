@@ -11,7 +11,10 @@
 #include <linux/seq_file.h>
 
 #include <asm/addrspace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 #include <asm/branch.h>
 #include <asm/irq_regs.h>

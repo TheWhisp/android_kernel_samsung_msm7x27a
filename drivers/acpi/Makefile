@@ -19,12 +19,20 @@ obj-y				+= acpi.o \
 
 # All the builtin files are in the "acpi." module_param namespace.
 acpi-y				+= osl.o utils.o reboot.o
+<<<<<<< HEAD
 acpi-y				+= atomicio.o
+=======
+acpi-y				+= nvs.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # sleep related files
 acpi-y				+= wakeup.o
 acpi-y				+= sleep.o
+<<<<<<< HEAD
 acpi-$(CONFIG_ACPI_SLEEP)	+= proc.o nvs.o
+=======
+acpi-$(CONFIG_ACPI_SLEEP)	+= proc.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #
@@ -62,6 +70,10 @@ obj-$(CONFIG_ACPI_SBS)		+= sbs.o
 obj-$(CONFIG_ACPI_HED)		+= hed.o
 obj-$(CONFIG_ACPI_EC_DEBUGFS)	+= ec_sys.o
 obj-$(CONFIG_ACPI_CUSTOM_METHOD)+= custom_method.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_ACPI_BGRT)		+= bgrt.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # processor has its own "processor." module_param namespace
 processor-y			:= processor_driver.o processor_throttling.o

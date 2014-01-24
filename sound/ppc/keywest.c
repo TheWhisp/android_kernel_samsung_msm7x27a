@@ -82,7 +82,10 @@ static int keywest_attach_adapter(struct i2c_adapter *adapter)
 
 static int keywest_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	i2c_set_clientdata(client, NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (! keywest_ctx)
 		return 0;
 	if (client == keywest_ctx->client)

@@ -3,7 +3,11 @@
  *
  * DEBUG_PREEMPT variant of smp_processor_id().
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kallsyms.h>
 #include <linux/sched.h>
 
@@ -22,7 +26,11 @@ notrace unsigned int debug_smp_processor_id(void)
 	 * Kernel threads bound to a single CPU can safely use
 	 * smp_processor_id():
 	 */
+<<<<<<< HEAD
 	if (cpumask_equal(&current->cpus_allowed, cpumask_of(this_cpu)))
+=======
+	if (cpumask_equal(tsk_cpus_allowed(current), cpumask_of(this_cpu)))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 
 	/*

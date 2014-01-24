@@ -12,6 +12,10 @@
  *	version 2 of the License, as published by the Free Software Foundation.
  */
 #include <linux/list.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/proc_fs.h>
 #include <linux/skbuff.h>
 #include <linux/spinlock.h>

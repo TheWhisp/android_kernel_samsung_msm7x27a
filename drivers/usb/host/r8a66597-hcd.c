@@ -6,7 +6,11 @@
  * Portions Copyright (C) 2004-2005 David Brownell
  * Portions Copyright (C) 1999 Roman Weissgaerber
  *
+<<<<<<< HEAD
  * Author : Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+=======
+ * Author : Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -959,7 +963,11 @@ static void init_pipe_info(struct r8a66597 *r8a66597, struct urb *urb,
 	info.pipenum = get_empty_pipenum(r8a66597, ep);
 	info.address = get_urb_to_r8a66597_addr(r8a66597, urb);
 	info.epnum = usb_endpoint_num(ep);
+<<<<<<< HEAD
 	info.maxpacket = le16_to_cpu(ep->wMaxPacketSize);
+=======
+	info.maxpacket = usb_endpoint_maxp(ep);
+>>>>>>> refs/remotes/origin/cm-10.0
 	info.type = get_r8a66597_type(usb_endpoint_type(ep));
 	info.bufnum = get_bufnum(info.pipenum);
 	info.buf_bsize = get_buf_bsize(info.pipenum);
@@ -1438,7 +1446,11 @@ static void packet_write(struct r8a66597 *r8a66597, u16 pipenum)
 	if (pipenum > 0)
 		r8a66597_write(r8a66597, ~(1 << pipenum), BEMPSTS);
 	if (urb->transfer_buffer) {
+<<<<<<< HEAD
 		r8a66597_write_fifo(r8a66597, td->pipe->fifoaddr, buf, size);
+=======
+		r8a66597_write_fifo(r8a66597, td->pipe, buf, size);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!usb_pipebulk(urb->pipe) || td->maxpacket != size)
 			r8a66597_write(r8a66597, BVAL, td->pipe->fifoctr);
 	}
@@ -2306,7 +2318,11 @@ static int r8a66597_bus_resume(struct usb_hcd *hcd)
 
 		dbg("resume port = %d", port);
 		rh->port &= ~USB_PORT_STAT_SUSPEND;
+<<<<<<< HEAD
 		rh->port |= USB_PORT_STAT_C_SUSPEND < 16;
+=======
+		rh->port |= USB_PORT_STAT_C_SUSPEND << 16;
+>>>>>>> refs/remotes/origin/cm-10.0
 		r8a66597_mdfy(r8a66597, RESUME, RESUME | UACT, dvstctr_reg);
 		msleep(50);
 		r8a66597_mdfy(r8a66597, UACT, RESUME | UACT, dvstctr_reg);
@@ -2428,6 +2444,12 @@ static int __devinit r8a66597_probe(struct platform_device *pdev)
 	int i;
 	unsigned long irq_trigger;
 
+<<<<<<< HEAD
+=======
+	if (usb_disabled())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pdev->dev.dma_mask) {
 		ret = -EINVAL;
 		dev_err(&pdev->dev, "dma not supported\n");
@@ -2519,7 +2541,11 @@ static int __devinit r8a66597_probe(struct platform_device *pdev)
 	hcd->rsrc_start = res->start;
 	hcd->has_tt = 1;
 
+<<<<<<< HEAD
 	ret = usb_add_hcd(hcd, irq, IRQF_DISABLED | irq_trigger);
+=======
+	ret = usb_add_hcd(hcd, irq, irq_trigger);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret != 0) {
 		dev_err(&pdev->dev, "Failed to add hcd\n");
 		goto clean_up3;
@@ -2552,6 +2578,7 @@ static struct platform_driver r8a66597_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init r8a66597_init(void)
 {
 	if (usb_disabled())
@@ -2569,3 +2596,6 @@ static void __exit r8a66597_cleanup(void)
 }
 module_exit(r8a66597_cleanup);
 
+=======
+module_platform_driver(r8a66597_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

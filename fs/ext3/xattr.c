@@ -50,6 +50,7 @@
  * by the buffer lock.
  */
 
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
@@ -58,6 +59,11 @@
 #include <linux/mbcache.h>
 #include <linux/quotaops.h>
 #include <linux/rwsem.h>
+=======
+#include "ext3.h"
+#include <linux/mbcache.h>
+#include <linux/quotaops.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xattr.h"
 #include "acl.h"
 

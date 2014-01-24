@@ -17,7 +17,12 @@
 
 #include <plat/clock.h>
 
+<<<<<<< HEAD
 extern int __init omap1_clk_init(void);
+=======
+int omap1_clk_init(void);
+void omap1_clk_late_init(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int omap1_clk_enable(struct clk *clk);
 extern void omap1_clk_disable(struct clk *clk);
 extern long omap1_clk_round_rate(struct clk *clk, unsigned long rate);
@@ -110,4 +115,10 @@ extern const struct clkops clkops_dummy;
 extern const struct clkops clkops_uart_16xx;
 extern const struct clkops clkops_generic;
 
+<<<<<<< HEAD
+=======
+/* used for passing SoC type to omap1_{select,round_to}_table_rate() */
+extern u32 cpu_mask;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

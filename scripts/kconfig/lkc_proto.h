@@ -31,6 +31,10 @@ P(symbol_hash,struct symbol *,[SYMBOL_HASHSIZE]);
 P(sym_lookup,struct symbol *,(const char *name, int flags));
 P(sym_find,struct symbol *,(const char *name));
 P(sym_expand_string_value,const char *,(const char *in));
+<<<<<<< HEAD
+=======
+P(sym_escape_string_value, const char *,(const char *in));
+>>>>>>> refs/remotes/origin/cm-10.0
 P(sym_re_search,struct symbol **,(const char *pattern));
 P(sym_type_name,const char *,(enum symbol_type type));
 P(sym_calc_value,void,(struct symbol *sym));

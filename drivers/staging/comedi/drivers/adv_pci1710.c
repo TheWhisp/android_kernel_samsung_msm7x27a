@@ -1382,16 +1382,25 @@ static int pci1710_attach(struct comedi_device *dev,
 	int i;
 	int board_index;
 
+<<<<<<< HEAD
 	printk("comedi%d: adv_pci1710: ", dev->minor);
+=======
+	dev_info(dev->hw_dev, "comedi%d: adv_pci1710:\n", dev->minor);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	opt_bus = it->options[0];
 	opt_slot = it->options[1];
 
 	ret = alloc_private(dev, sizeof(struct pci1710_private));
+<<<<<<< HEAD
 	if (ret < 0) {
 		printk(" - Allocation failed!\n");
 		return -ENOMEM;
 	}
+=======
+	if (ret < 0)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Look for matching PCI device */
 	errstr = "not found!";
@@ -1436,10 +1445,17 @@ static int pci1710_attach(struct comedi_device *dev,
 
 	if (!pcidev) {
 		if (opt_bus || opt_slot) {
+<<<<<<< HEAD
 			printk(" - Card at b:s %d:%d %s\n",
 			       opt_bus, opt_slot, errstr);
 		} else {
 			printk(" - Card %s\n", errstr);
+=======
+			dev_err(dev->hw_dev, "- Card at b:s %d:%d %s\n",
+				opt_bus, opt_slot, errstr);
+		} else {
+			dev_err(dev->hw_dev, "- Card %s\n", errstr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		return -EIO;
 	}
@@ -1450,8 +1466,13 @@ static int pci1710_attach(struct comedi_device *dev,
 	irq = pcidev->irq;
 	iobase = pci_resource_start(pcidev, 2);
 
+<<<<<<< HEAD
 	printk(", b:s:f=%d:%d:%d, io=0x%4lx", pci_bus, pci_slot, pci_func,
 	       iobase);
+=======
+	dev_dbg(dev->hw_dev, "b:s:f=%d:%d:%d, io=0x%4lx\n", pci_bus, pci_slot,
+		pci_func, iobase);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev->iobase = iobase;
 
@@ -1471,10 +1492,15 @@ static int pci1710_attach(struct comedi_device *dev,
 		n_subdevices++;
 
 	ret = alloc_subdevices(dev, n_subdevices);
+<<<<<<< HEAD
 	if (ret < 0) {
 		printk(" - Allocation failed!\n");
 		return ret;
 	}
+=======
+	if (ret < 0)
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pci1710_reset(dev);
 
@@ -1483,6 +1509,7 @@ static int pci1710_attach(struct comedi_device *dev,
 			if (request_irq(irq, interrupt_service_pci1710,
 					IRQF_SHARED, "Advantech PCI-1710",
 					dev)) {
+<<<<<<< HEAD
 				printk
 				    (", unable to allocate IRQ %d, DISABLING IT",
 				     irq);
@@ -1492,15 +1519,28 @@ static int pci1710_attach(struct comedi_device *dev,
 			}
 		} else {
 			printk(", IRQ disabled");
+=======
+				dev_dbg(dev->hw_dev, "unable to allocate IRQ %d, DISABLING IT",
+					irq);
+				irq = 0;	/* Can't use IRQ */
+			} else {
+				dev_dbg(dev->hw_dev, "irq=%u", irq);
+			}
+		} else {
+			dev_dbg(dev->hw_dev, "IRQ disabled");
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	} else {
 		irq = 0;
 	}
 
 	dev->irq = irq;
+<<<<<<< HEAD
 
 	printk(".\n");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	subdev = 0;
 
 	if (this_board->n_aichan) {

@@ -9,7 +9,10 @@
 
 #include <asm/setup.h>
 #include <asm/bootinfo.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable.h>
 #include <asm/apollohw.h>
 #include <asm/irq.h>

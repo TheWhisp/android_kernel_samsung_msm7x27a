@@ -64,7 +64,18 @@ void do_breakpoint(struct pt_regs *, int fault_num);
 
 
 #ifdef __tilegx__
+<<<<<<< HEAD
 void gx_singlestep_handle(struct pt_regs *, int fault_num);
 #endif
 
 #endif /* _ASM_TILE_SYSCALLS_H */
+=======
+/* kernel/single_step.c */
+void gx_singlestep_handle(struct pt_regs *, int fault_num);
+
+/* kernel/intvec_64.S */
+void fill_ra_stack(void);
+#endif
+
+#endif /* _ASM_TILE_TRAPS_H */
+>>>>>>> refs/remotes/origin/cm-10.0

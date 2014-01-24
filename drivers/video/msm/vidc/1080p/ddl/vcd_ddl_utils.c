@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -11,9 +15,15 @@
  *
  */
 #include <linux/memory_alloc.h>
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
 #include <mach/peripheral-loader.h>
 #include <linux/delay.h>
+=======
+#include <linux/delay.h>
+#include <mach/msm_subsystem_map.h>
+#include <mach/peripheral-loader.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "vcd_ddl_utils.h"
 #include "vcd_ddl.h"
 #include "vcd_res_tracker_api.h"
@@ -112,17 +122,28 @@ void *ddl_pmem_alloc(struct ddl_buf_addr *addr, size_t sz, u32 alignment)
 					&iova,
 					&buffer_size,
 					UNCACHED, 0);
+<<<<<<< HEAD
 			if (ret) {
 				DDL_MSG_ERROR(
 				"%s():DDL ION ion map iommu failed\n",
 				 __func__);
+=======
+			if (ret || !iova) {
+				DDL_MSG_ERROR(
+				"%s():DDL ION ion map iommu failed, ret = %d iova = 0x%lx\n",
+					__func__, ret, iova);
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto unmap_ion_alloc;
 			}
 			addr->alloced_phys_addr = (phys_addr_t) iova;
 		}
 		if (!addr->alloced_phys_addr) {
 			DDL_MSG_ERROR("%s():DDL ION client physical failed\n",
+<<<<<<< HEAD
 						 __func__);
+=======
+						__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto unmap_ion_alloc;
 		}
 		addr->mapped_buffer = NULL;
@@ -362,15 +383,26 @@ u32 ddl_fw_init(struct ddl_buf_addr *dram_base)
 			pr_err("Failed to enable footswitch");
 			return false;
 		}
+<<<<<<< HEAD
 		if(res_trk_enable_iommu_clocks()) {
+=======
+		if (res_trk_enable_iommu_clocks()) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			res_trk_disable_footswitch();
 			pr_err("Failed to enable iommu clocks\n");
 			return false;
 		}
 		dram_base->pil_cookie = pil_get("vidc");
+<<<<<<< HEAD
 		if(res_trk_disable_iommu_clocks())
 			pr_err("Failed to disable iommu clocks\n");
 		if (IS_ERR_OR_NULL(dram_base->pil_cookie)) {
+=======
+		if (res_trk_disable_iommu_clocks())
+			pr_err("Failed to disable iommu clocks\n");
+		if (IS_ERR_OR_NULL(dram_base->pil_cookie)) {
+			res_trk_disable_footswitch();
+>>>>>>> refs/remotes/origin/cm-10.0
 			pr_err("pil_get failed\n");
 			return false;
 		}
@@ -387,6 +419,7 @@ u32 ddl_fw_init(struct ddl_buf_addr *dram_base)
 void ddl_fw_release(struct ddl_buf_addr *dram_base)
 {
 	void *cookie = dram_base->pil_cookie;
+<<<<<<< HEAD
    if (res_trk_is_cp_enabled() &&
          res_trk_check_for_sec_session()) {
       res_trk_close_secure_session();
@@ -413,6 +446,34 @@ void ddl_fw_release(struct ddl_buf_addr *dram_base)
             res_trk_close_secure_session();
 		res_trk_release_fw_addr();
    }
+=======
+	if (res_trk_is_cp_enabled() &&
+		res_trk_check_for_sec_session()) {
+		res_trk_close_secure_session();
+		if (IS_ERR_OR_NULL(cookie)) {
+			pr_err("Invalid params");
+		return;
+	}
+	if (res_trk_enable_footswitch()) {
+		pr_err("Failed to enable footswitch");
+		return;
+	}
+	if (res_trk_enable_iommu_clocks()) {
+		res_trk_disable_footswitch();
+		pr_err("Failed to enable iommu clocks\n");
+		return;
+	}
+	pil_put(cookie);
+	if (res_trk_disable_iommu_clocks())
+		pr_err("Failed to disable iommu clocks\n");
+	if (res_trk_disable_footswitch())
+		pr_err("Failed to disable footswitch\n");
+	} else {
+	if (res_trk_check_for_sec_session())
+		res_trk_close_secure_session();
+		res_trk_release_fw_addr();
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void ddl_set_core_start_time(const char *func_name, u32 index)
@@ -425,15 +486,27 @@ void ddl_set_core_start_time(const char *func_name, u32 index)
 	if (!time_data->ddl_t1) {
 		time_data->ddl_t1 = act_time;
 		DDL_MSG_LOW("\n%s(): Start Time (%u)", func_name, act_time);
+<<<<<<< HEAD
 	} else {
+=======
+	} else if (vidc_msg_timing) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		DDL_MSG_TIME("\n%s(): Timer already started! St(%u) Act(%u)",
 			func_name, time_data->ddl_t1, act_time);
 	}
 }
 
+<<<<<<< HEAD
 void ddl_calc_core_proc_time(const char *func_name, u32 index)
 {
 	struct time_data *time_data = &proc_time[index];
+=======
+void ddl_calc_core_proc_time(const char *func_name, u32 index,
+			struct ddl_client_context *ddl)
+{
+	struct time_data *time_data = &proc_time[index];
+	struct ddl_decoder_data *decoder = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (time_data->ddl_t1) {
 		int ddl_t2;
 		struct timeval ddl_tv;
@@ -441,10 +514,29 @@ void ddl_calc_core_proc_time(const char *func_name, u32 index)
 		ddl_t2 = (ddl_tv.tv_sec * 1000) + (ddl_tv.tv_usec / 1000);
 		time_data->ddl_ttotal += (ddl_t2 - time_data->ddl_t1);
 		time_data->ddl_count++;
+<<<<<<< HEAD
 		DDL_MSG_TIME("\n%s(): cnt(%u) End Time (%u) Diff(%u) Avg(%u)",
 			func_name, time_data->ddl_count, ddl_t2,
 			ddl_t2 - time_data->ddl_t1,
 			time_data->ddl_ttotal/time_data->ddl_count);
+=======
+		if (vidc_msg_timing) {
+			DDL_MSG_TIME("\n%s(): cnt(%u) End Time (%u)"
+				"Diff(%u) Avg(%u)",
+				func_name, time_data->ddl_count, ddl_t2,
+				ddl_t2 - time_data->ddl_t1,
+				time_data->ddl_ttotal/time_data->ddl_count);
+		}
+		if ((index == DEC_OP_TIME) && (time_data->ddl_count > 2) &&
+					(time_data->ddl_count < 6)) {
+			decoder = &(ddl->codec_data.decoder);
+			decoder->dec_time_sum = decoder->dec_time_sum +
+				ddl_t2 - time_data->ddl_t1;
+			if (time_data->ddl_count == 5)
+				decoder->avg_dec_time =
+					decoder->dec_time_sum / 3;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		time_data->ddl_t1 = 0;
 	}
 }
@@ -485,3 +577,22 @@ void ddl_reset_core_time_variables(u32 index)
 	proc_time[index].ddl_ttotal = 0;
 	proc_time[index].ddl_count = 0;
 }
+<<<<<<< HEAD
+=======
+
+int ddl_get_core_decode_proc_time(u32 *ddl_handle)
+{
+	int avg_time = 0;
+	struct ddl_client_context *ddl =
+		(struct ddl_client_context *) ddl_handle;
+	avg_time = ddl_vidc_decode_get_avg_time(ddl);
+	return avg_time;
+}
+
+void ddl_reset_avg_dec_time(u32 *ddl_handle)
+{
+	struct ddl_client_context *ddl =
+		(struct ddl_client_context *) ddl_handle;
+	ddl_vidc_decode_reset_avg_time(ddl);
+}
+>>>>>>> refs/remotes/origin/cm-10.0

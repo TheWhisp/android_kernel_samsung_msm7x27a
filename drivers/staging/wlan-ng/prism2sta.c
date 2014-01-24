@@ -50,7 +50,10 @@
 * --------------------------------------------------------------------
 */
 
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/kernel.h>

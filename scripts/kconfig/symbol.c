@@ -9,7 +9,10 @@
 #include <regex.h>
 #include <sys/utsname.h>
 
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "lkc.h"
 
 struct symbol symbol_yes = {
@@ -263,11 +266,26 @@ static struct symbol *sym_calc_choice(struct symbol *sym)
 	struct symbol *def_sym;
 	struct property *prop;
 	struct expr *e;
+<<<<<<< HEAD
 
 	/* first calculate all choice values' visibilities */
 	prop = sym_get_choice_prop(sym);
 	expr_list_for_each_sym(prop->expr, e, def_sym)
 		sym_calc_visibility(def_sym);
+=======
+	int flags;
+
+	/* first calculate all choice values' visibilities */
+	flags = sym->flags;
+	prop = sym_get_choice_prop(sym);
+	expr_list_for_each_sym(prop->expr, e, def_sym) {
+		sym_calc_visibility(def_sym);
+		if (def_sym->visible != no)
+			flags &= def_sym->flags;
+	}
+
+	sym->flags &= flags | ~SYMBOL_DEF_USER;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* is the user choice visible? */
 	def_sym = sym->def[S_DEF_USER].val;
@@ -751,7 +769,12 @@ const char *sym_get_string_value(struct symbol *sym)
 		case no:
 			return "n";
 		case mod:
+<<<<<<< HEAD
 			return "m";
+=======
+			sym_calc_value(modules_sym);
+			return (modules_sym->curr.tri == no) ? "n" : "m";
+>>>>>>> refs/remotes/origin/cm-10.0
 		case yes:
 			return "y";
 		}
@@ -893,6 +916,52 @@ const char *sym_expand_string_value(const char *in)
 	return res;
 }
 
+<<<<<<< HEAD
+=======
+const char *sym_escape_string_value(const char *in)
+{
+	const char *p;
+	size_t reslen;
+	char *res;
+	size_t l;
+
+	reslen = strlen(in) + strlen("\"\"") + 1;
+
+	p = in;
+	for (;;) {
+		l = strcspn(p, "\"\\");
+		p += l;
+
+		if (p[0] == '\0')
+			break;
+
+		reslen++;
+		p++;
+	}
+
+	res = malloc(reslen);
+	res[0] = '\0';
+
+	strcat(res, "\"");
+
+	p = in;
+	for (;;) {
+		l = strcspn(p, "\"\\");
+		strncat(res, p, l);
+		p += l;
+
+		if (p[0] == '\0')
+			break;
+
+		strcat(res, "\\");
+		strncat(res, p++, 1);
+	}
+
+	strcat(res, "\"");
+	return res;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct symbol **sym_re_search(const char *pattern)
 {
 	struct symbol *sym, **sym_arr = NULL;

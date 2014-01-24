@@ -98,7 +98,11 @@ enum cmb_format {
  * enum cmb_format.
  */
 static int format = CMF_AUTODETECT;
+<<<<<<< HEAD
 module_param(format, bool, 0444);
+=======
+module_param(format, bint, 0444);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * struct cmb_operations - functions to use depending on cmb_format

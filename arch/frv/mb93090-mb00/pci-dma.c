@@ -13,6 +13,10 @@
 #include <linux/dma-mapping.h>
 #include <linux/list.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/highmem.h>
 #include <linux/scatterlist.h>
 #include <asm/io.h>

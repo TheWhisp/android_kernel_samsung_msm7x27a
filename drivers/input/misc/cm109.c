@@ -475,7 +475,11 @@ static void cm109_toggle_buzzer_sync(struct cm109_dev *dev, int on)
 				le16_to_cpu(dev->ctl_req->wIndex),
 				dev->ctl_data,
 				USB_PKT_LEN, USB_CTRL_SET_TIMEOUT);
+<<<<<<< HEAD
 	if (error && error != EINTR)
+=======
+	if (error < 0 && error != -EINTR)
+>>>>>>> refs/remotes/origin/cm-10.0
 		err("%s: usb_control_msg() failed %d", __func__, error);
 }
 

@@ -3,7 +3,11 @@
   * global variable declaration.
   */
 #ifndef _LBS_DEB_DEFS_H_
+<<<<<<< HEAD
 #define _LBS_DEB_EFS_H_
+=======
+#define _LBS_DEB_DEFS_H_
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef DRV_NAME
 #define DRV_NAME "libertas_tf"

@@ -24,7 +24,11 @@
 #include <linux/init.h>
 #include <linux/pci.h>
 #include <linux/time.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/trident.h>
 #include <sound/initval.h>
@@ -47,7 +51,11 @@ MODULE_SUPPORTED_DEVICE("{{Trident,4DWave DX},"
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
 static int pcm_channels[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 32};
 static int wavetable_size[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 8192};
 
@@ -148,8 +156,14 @@ static int __devinit snd_trident_probe(struct pci_dev *pci,
 	if (trident->device != TRIDENT_DEVICE_ID_SI7018 &&
 	    (err = snd_mpu401_uart_new(card, 0, MPU401_HW_TRID4DWAVE,
 				       trident->midi_port,
+<<<<<<< HEAD
 				       MPU401_INFO_INTEGRATED,
 				       trident->irq, 0, &trident->rmidi)) < 0) {
+=======
+				       MPU401_INFO_INTEGRATED |
+				       MPU401_INFO_IRQ_HOOK,
+				       -1, &trident->rmidi)) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_card_free(card);
 		return err;
 	}
@@ -172,7 +186,11 @@ static void __devexit snd_trident_remove(struct pci_dev *pci)
 }
 
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name = "Trident4DWaveAudio",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_trident_ids,
 	.probe = snd_trident_probe,
 	.remove = __devexit_p(snd_trident_remove),

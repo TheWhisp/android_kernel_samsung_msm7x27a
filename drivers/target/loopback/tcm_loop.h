@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #define TCM_LOOP_VERSION		"v2.1-rc1"
 #define TL_WWN_ADDR_LEN			256
 #define TL_TPGS_PER_HBA			32
@@ -11,25 +12,40 @@
 #define TL_SCSI_CMD_PER_LUN		1024
 #define TL_SCSI_MAX_SECTORS		1024
 #define TL_SCSI_SG_TABLESIZE		256
+=======
+#define TCM_LOOP_VERSION		"v2.1-rc2"
+#define TL_WWN_ADDR_LEN			256
+#define TL_TPGS_PER_HBA			32
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Used in tcm_loop_driver_probe() for struct Scsi_Host->max_cmd_len
  */
 #define TL_SCSI_MAX_CMD_LEN		32
 
+<<<<<<< HEAD
 #ifdef CONFIG_LOOPBACK_TARGET_CDB_DEBUG
 # define TL_CDB_DEBUG(x...)		printk(KERN_INFO x)
 #else
 # define TL_CDB_DEBUG(x...)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct tcm_loop_cmd {
 	/* State of Linux/SCSI CDB+Data descriptor */
 	u32 sc_cmd_state;
 	/* Pointer to the CDB+Data descriptor from Linux/SCSI subsystem */
 	struct scsi_cmnd *sc;
+<<<<<<< HEAD
 	struct list_head *tl_cmd_list;
 	/* The TCM I/O descriptor that is accessed via container_of() */
 	struct se_cmd tl_se_cmd;
+=======
+	/* The TCM I/O descriptor that is accessed via container_of() */
+	struct se_cmd tl_se_cmd;
+	struct work_struct work;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Sense buffer that will be mapped into outgoing status */
 	unsigned char tl_sense_buf[TRANSPORT_SENSE_BUFFER];
 };

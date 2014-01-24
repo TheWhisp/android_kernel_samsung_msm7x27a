@@ -27,7 +27,10 @@
 #include <linux/delay.h>
 
 #include <asm/irq_cpu.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mipsregs.h>
 #include <asm/addrspace.h>
 #include <asm/bootinfo.h>
@@ -169,7 +172,11 @@ void emma2rh_gpio_irq_init(void)
 
 static struct irqaction irq_cascade = {
 	   .handler = no_action,
+<<<<<<< HEAD
 	   .flags = 0,
+=======
+	   .flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/cm-10.0
 	   .name = "cascade",
 	   .dev_id = NULL,
 	   .next = NULL,

@@ -10,6 +10,10 @@
 #define STE_DMA40_H
 
 #include <linux/dmaengine.h>
+<<<<<<< HEAD
+=======
+#include <linux/scatterlist.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/workqueue.h>
 #include <linux/interrupt.h>
 
@@ -112,7 +116,12 @@ struct stedma40_half_channel_info {
  * @dst_dev_type: Dst device type
  * @src_info: Parameters for dst half channel
  * @dst_info: Parameters for dst half channel
+<<<<<<< HEAD
  *
+=======
+ * @use_fixed_channel: if true, use physical channel specified by phy_channel
+ * @phy_channel: physical channel to use, only if use_fixed_channel is true
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This structure has to be filled by the client drivers.
  * It is recommended to do all dma configurations for clients in the machine.
@@ -128,6 +137,12 @@ struct stedma40_chan_cfg {
 	int					 dst_dev_type;
 	struct stedma40_half_channel_info	 src_info;
 	struct stedma40_half_channel_info	 dst_info;
+<<<<<<< HEAD
+=======
+
+	bool					 use_fixed_channel;
+	int					 phy_channel;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -152,6 +167,10 @@ struct stedma40_platform_data {
 	struct stedma40_chan_cfg	*memcpy_conf_phy;
 	struct stedma40_chan_cfg	*memcpy_conf_log;
 	int				 disabled_channels[STEDMA40_MAX_PHYS];
+<<<<<<< HEAD
+=======
+	bool				 use_esram_lcla;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #ifdef CONFIG_STE_DMA40
@@ -186,7 +205,11 @@ static inline struct
 dma_async_tx_descriptor *stedma40_slave_mem(struct dma_chan *chan,
 					    dma_addr_t addr,
 					    unsigned int size,
+<<<<<<< HEAD
 					    enum dma_data_direction direction,
+=======
+					    enum dma_transfer_direction direction,
+>>>>>>> refs/remotes/origin/cm-10.0
 					    unsigned long flags)
 {
 	struct scatterlist sg;
@@ -194,8 +217,12 @@ dma_async_tx_descriptor *stedma40_slave_mem(struct dma_chan *chan,
 	sg.dma_address = addr;
 	sg.length = size;
 
+<<<<<<< HEAD
 	return chan->device->device_prep_slave_sg(chan, &sg, 1,
 						  direction, flags);
+=======
+	return dmaengine_prep_slave_sg(chan, &sg, 1, direction, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #else
@@ -208,7 +235,11 @@ static inline struct
 dma_async_tx_descriptor *stedma40_slave_mem(struct dma_chan *chan,
 					    dma_addr_t addr,
 					    unsigned int size,
+<<<<<<< HEAD
 					    enum dma_data_direction direction,
+=======
+					    enum dma_transfer_direction direction,
+>>>>>>> refs/remotes/origin/cm-10.0
 					    unsigned long flags)
 {
 	return NULL;

@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -267,7 +271,11 @@ acpi_status acpi_ex_create_mutex(struct acpi_walk_state *walk_state)
  *
  * PARAMETERS:  aml_start           - Pointer to the region declaration AML
  *              aml_length          - Max length of the declaration AML
+<<<<<<< HEAD
  *              region_space        - space_iD for the region
+=======
+ *              space_id            - Address space ID for the region
+>>>>>>> refs/remotes/origin/cm-10.0
  *              walk_state          - Current state
  *
  * RETURN:      Status
@@ -279,7 +287,11 @@ acpi_status acpi_ex_create_mutex(struct acpi_walk_state *walk_state)
 acpi_status
 acpi_ex_create_region(u8 * aml_start,
 		      u32 aml_length,
+<<<<<<< HEAD
 		      u8 region_space, struct acpi_walk_state *walk_state)
+=======
+		      u8 space_id, struct acpi_walk_state *walk_state)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	acpi_status status;
 	union acpi_operand_object *obj_desc;
@@ -304,6 +316,7 @@ acpi_ex_create_region(u8 * aml_start,
 	 * Space ID must be one of the predefined IDs, or in the user-defined
 	 * range
 	 */
+<<<<<<< HEAD
 	if ((region_space >= ACPI_NUM_PREDEFINED_REGIONS) &&
 	    (region_space < ACPI_USER_REGION_BEGIN) &&
 	    (region_space != ACPI_ADR_SPACE_DATA_TABLE)) {
@@ -314,6 +327,21 @@ acpi_ex_create_region(u8 * aml_start,
 
 	ACPI_DEBUG_PRINT((ACPI_DB_LOAD, "Region Type - %s (0x%X)\n",
 			  acpi_ut_get_region_name(region_space), region_space));
+=======
+	if (!acpi_is_valid_space_id(space_id)) {
+		/*
+		 * Print an error message, but continue. We don't want to abort
+		 * a table load for this exception. Instead, if the region is
+		 * actually used at runtime, abort the executing method.
+		 */
+		ACPI_ERROR((AE_INFO,
+			    "Invalid/unknown Address Space ID: 0x%2.2X",
+			    space_id));
+	}
+
+	ACPI_DEBUG_PRINT((ACPI_DB_LOAD, "Region Type - %s (0x%X)\n",
+			  acpi_ut_get_region_name(space_id), space_id));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Create the region descriptor */
 
@@ -339,7 +367,11 @@ acpi_ex_create_region(u8 * aml_start,
 
 	/* Init the region from the operands */
 
+<<<<<<< HEAD
 	obj_desc->region.space_id = region_space;
+=======
+	obj_desc->region.space_id = space_id;
+>>>>>>> refs/remotes/origin/cm-10.0
 	obj_desc->region.address = 0;
 	obj_desc->region.length = 0;
 	obj_desc->region.node = node;

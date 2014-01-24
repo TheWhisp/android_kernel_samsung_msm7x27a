@@ -25,6 +25,7 @@
  * specific code.
 */
 
+<<<<<<< HEAD
 struct s3c_gpio_chip;
 
 /**
@@ -41,6 +42,24 @@ struct s3c_gpio_cfg;
 
 /**
  * struct s3c_gpio_chip - wrapper for specific implementation of gpio
+=======
+struct samsung_gpio_chip;
+
+/**
+ * struct samsung_gpio_pm - power management (suspend/resume) information
+ * @save: Routine to save the state of the GPIO block
+ * @resume: Routine to resume the GPIO block.
+ */
+struct samsung_gpio_pm {
+	void (*save)(struct samsung_gpio_chip *chip);
+	void (*resume)(struct samsung_gpio_chip *chip);
+};
+
+struct samsung_gpio_cfg;
+
+/**
+ * struct samsung_gpio_chip - wrapper for specific implementation of gpio
+>>>>>>> refs/remotes/origin/cm-10.0
  * @chip: The chip structure to be exported via gpiolib.
  * @base: The base pointer to the gpio configuration registers.
  * @group: The group register number for gpio interrupt support.
@@ -60,10 +79,17 @@ struct s3c_gpio_cfg;
  * CPU cores trying to get one lock for different GPIO banks, where each
  * bank of GPIO has its own register space and configuration registers.
  */
+<<<<<<< HEAD
 struct s3c_gpio_chip {
 	struct gpio_chip	chip;
 	struct s3c_gpio_cfg	*config;
 	struct s3c_gpio_pm	*pm;
+=======
+struct samsung_gpio_chip {
+	struct gpio_chip	chip;
+	struct samsung_gpio_cfg	*config;
+	struct samsung_gpio_pm	*pm;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void __iomem		*base;
 	int			irq_base;
 	int			group;
@@ -73,6 +99,7 @@ struct s3c_gpio_chip {
 #endif
 };
 
+<<<<<<< HEAD
 static inline struct s3c_gpio_chip *to_s3c_gpio(struct gpio_chip *gpc)
 {
 	return container_of(gpc, struct s3c_gpio_chip, chip);
@@ -125,6 +152,13 @@ extern void samsung_gpiolib_add_4bit(struct s3c_gpio_chip *chip);
 extern void samsung_gpiolib_add_4bit2(struct s3c_gpio_chip *chip);
 
 
+=======
+static inline struct samsung_gpio_chip *to_samsung_gpio(struct gpio_chip *gpc)
+{
+	return container_of(gpc, struct samsung_gpio_chip, chip);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * samsung_gpiolib_to_irq - convert gpio pin to irq number
  * @chip: The gpio chip that the pin belongs to.
@@ -136,16 +170,26 @@ extern void samsung_gpiolib_add_4bit2(struct s3c_gpio_chip *chip);
 extern int samsung_gpiolib_to_irq(struct gpio_chip *chip, unsigned int offset);
 
 /* exported for core SoC support to change */
+<<<<<<< HEAD
 extern struct s3c_gpio_cfg s3c24xx_gpiocfg_default;
 
 #ifdef CONFIG_S3C_GPIO_TRACK
 extern struct s3c_gpio_chip *s3c_gpios[S3C_GPIO_END];
 
 static inline struct s3c_gpio_chip *s3c_gpiolib_getchip(unsigned int chip)
+=======
+extern struct samsung_gpio_cfg s3c24xx_gpiocfg_default;
+
+#ifdef CONFIG_S3C_GPIO_TRACK
+extern struct samsung_gpio_chip *s3c_gpios[S3C_GPIO_END];
+
+static inline struct samsung_gpio_chip *samsung_gpiolib_getchip(unsigned int chip)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return (chip < S3C_GPIO_END) ? s3c_gpios[chip] : NULL;
 }
 #else
+<<<<<<< HEAD
 /* machine specific code should provide s3c_gpiolib_getchip */
 
 #include <mach/gpio-track.h>
@@ -162,10 +206,33 @@ extern struct s3c_gpio_pm s3c_gpio_pm_4bit;
 #define s3c_gpio_pm_1bit NULL
 #define s3c_gpio_pm_2bit NULL
 #define s3c_gpio_pm_4bit NULL
+=======
+/* machine specific code should provide samsung_gpiolib_getchip */
+
+#include <mach/gpio-track.h>
+
+static inline void s3c_gpiolib_track(struct samsung_gpio_chip *chip) { }
+#endif
+
+#ifdef CONFIG_PM
+extern struct samsung_gpio_pm samsung_gpio_pm_1bit;
+extern struct samsung_gpio_pm samsung_gpio_pm_2bit;
+extern struct samsung_gpio_pm samsung_gpio_pm_4bit;
+#define __gpio_pm(x) x
+#else
+#define samsung_gpio_pm_1bit NULL
+#define samsung_gpio_pm_2bit NULL
+#define samsung_gpio_pm_4bit NULL
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __gpio_pm(x) NULL
 
 #endif /* CONFIG_PM */
 
 /* locking wrappers to deal with multiple access to the same gpio bank */
+<<<<<<< HEAD
 #define s3c_gpio_lock(_oc, _fl) spin_lock_irqsave(&(_oc)->lock, _fl)
 #define s3c_gpio_unlock(_oc, _fl) spin_unlock_irqrestore(&(_oc)->lock, _fl)
+=======
+#define samsung_gpio_lock(_oc, _fl) spin_lock_irqsave(&(_oc)->lock, _fl)
+#define samsung_gpio_unlock(_oc, _fl) spin_unlock_irqrestore(&(_oc)->lock, _fl)
+>>>>>>> refs/remotes/origin/cm-10.0

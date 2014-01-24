@@ -21,7 +21,11 @@
 
 #include <linux/init.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/amba/bus.h>
 #include <linux/amba/pl061.h>
 #include <linux/amba/mmci.h>
@@ -102,17 +106,26 @@ static void __init realview_pba8_map_io(void)
 
 static struct pl061_platform_data gpio0_plat_data = {
 	.gpio_base	= 0,
+<<<<<<< HEAD
 	.irq_base	= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct pl061_platform_data gpio1_plat_data = {
 	.gpio_base	= 8,
+<<<<<<< HEAD
 	.irq_base	= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct pl061_platform_data gpio2_plat_data = {
 	.gpio_base	= 16,
+<<<<<<< HEAD
 	.irq_base	= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct pl022_ssp_controller ssp0_plat_data = {
@@ -125,6 +138,7 @@ static struct pl022_ssp_controller ssp0_plat_data = {
  * RealView PBA8Core AMBA devices
  */
 
+<<<<<<< HEAD
 #define GPIO2_IRQ		{ IRQ_PBA8_GPIO2, NO_IRQ }
 #define GPIO3_IRQ		{ IRQ_PBA8_GPIO3, NO_IRQ }
 #define AACI_IRQ		{ IRQ_PBA8_AACI, NO_IRQ }
@@ -171,6 +185,54 @@ AMBA_DEVICE(ssp0,	"dev:ssp0",	PBA8_SSP,	&ssp0_plat_data);
 /* Primecells on the NEC ISSP chip */
 AMBA_DEVICE(clcd,	"issp:clcd",	PBA8_CLCD,	&clcd_plat_data);
 AMBA_DEVICE(dmac,	"issp:dmac",	DMAC,		NULL);
+=======
+#define GPIO2_IRQ		{ IRQ_PBA8_GPIO2 }
+#define GPIO3_IRQ		{ IRQ_PBA8_GPIO3 }
+#define AACI_IRQ		{ IRQ_PBA8_AACI }
+#define MMCI0_IRQ		{ IRQ_PBA8_MMCI0A, IRQ_PBA8_MMCI0B }
+#define KMI0_IRQ		{ IRQ_PBA8_KMI0 }
+#define KMI1_IRQ		{ IRQ_PBA8_KMI1 }
+#define PBA8_SMC_IRQ		{ }
+#define MPMC_IRQ		{ }
+#define PBA8_CLCD_IRQ		{ IRQ_PBA8_CLCD }
+#define DMAC_IRQ		{ IRQ_PBA8_DMAC }
+#define SCTL_IRQ		{ }
+#define PBA8_WATCHDOG_IRQ	{ IRQ_PBA8_WATCHDOG }
+#define PBA8_GPIO0_IRQ		{ IRQ_PBA8_GPIO0 }
+#define GPIO1_IRQ		{ IRQ_PBA8_GPIO1 }
+#define PBA8_RTC_IRQ		{ IRQ_PBA8_RTC }
+#define SCI_IRQ			{ IRQ_PBA8_SCI }
+#define PBA8_UART0_IRQ		{ IRQ_PBA8_UART0 }
+#define PBA8_UART1_IRQ		{ IRQ_PBA8_UART1 }
+#define PBA8_UART2_IRQ		{ IRQ_PBA8_UART2 }
+#define PBA8_UART3_IRQ		{ IRQ_PBA8_UART3 }
+#define PBA8_SSP_IRQ		{ IRQ_PBA8_SSP }
+
+/* FPGA Primecells */
+APB_DEVICE(aaci,	"fpga:aaci",	AACI,		NULL);
+APB_DEVICE(mmc0,	"fpga:mmc0",	MMCI0,		&realview_mmc0_plat_data);
+APB_DEVICE(kmi0,	"fpga:kmi0",	KMI0,		NULL);
+APB_DEVICE(kmi1,	"fpga:kmi1",	KMI1,		NULL);
+APB_DEVICE(uart3,	"fpga:uart3",	PBA8_UART3,	NULL);
+
+/* DevChip Primecells */
+AHB_DEVICE(smc,		"dev:smc",	PBA8_SMC,	NULL);
+AHB_DEVICE(sctl,	"dev:sctl",	SCTL,		NULL);
+APB_DEVICE(wdog,	"dev:wdog",	PBA8_WATCHDOG, NULL);
+APB_DEVICE(gpio0,	"dev:gpio0",	PBA8_GPIO0,	&gpio0_plat_data);
+APB_DEVICE(gpio1,	"dev:gpio1",	GPIO1,		&gpio1_plat_data);
+APB_DEVICE(gpio2,	"dev:gpio2",	GPIO2,		&gpio2_plat_data);
+APB_DEVICE(rtc,		"dev:rtc",	PBA8_RTC,	NULL);
+APB_DEVICE(sci0,	"dev:sci0",	SCI,		NULL);
+APB_DEVICE(uart0,	"dev:uart0",	PBA8_UART0,	NULL);
+APB_DEVICE(uart1,	"dev:uart1",	PBA8_UART1,	NULL);
+APB_DEVICE(uart2,	"dev:uart2",	PBA8_UART2,	NULL);
+APB_DEVICE(ssp0,	"dev:ssp0",	PBA8_SSP,	&ssp0_plat_data);
+
+/* Primecells on the NEC ISSP chip */
+AHB_DEVICE(clcd,	"issp:clcd",	PBA8_CLCD,	&clcd_plat_data);
+AHB_DEVICE(dmac,	"issp:dmac",	DMAC,		NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct amba_device *amba_devs[] __initdata = {
 	&dmac_device,
@@ -271,7 +333,11 @@ static struct sys_timer realview_pba8_timer = {
 	.init		= realview_pba8_timer_init,
 };
 
+<<<<<<< HEAD
 static void realview_pba8_reset(char mode)
+=======
+static void realview_pba8_restart(char mode, const char *cmd)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void __iomem *reset_ctrl = __io_address(REALVIEW_SYS_RESETCTL);
 	void __iomem *lock_ctrl = __io_address(REALVIEW_SYS_LOCK);
@@ -283,6 +349,10 @@ static void realview_pba8_reset(char mode)
 	__raw_writel(REALVIEW_SYS_LOCK_VAL, lock_ctrl);
 	__raw_writel(0x0000, reset_ctrl);
 	__raw_writel(0x0004, reset_ctrl);
+<<<<<<< HEAD
+=======
+	dsb();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __init realview_pba8_init(void)
@@ -305,16 +375,32 @@ static void __init realview_pba8_init(void)
 #ifdef CONFIG_LEDS
 	leds_event = realview_leds_event;
 #endif
+<<<<<<< HEAD
 	realview_reset = realview_pba8_reset;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 MACHINE_START(REALVIEW_PBA8, "ARM-RealView PB-A8")
 	/* Maintainer: ARM Ltd/Deep Blue Solutions Ltd */
+<<<<<<< HEAD
 	.boot_params	= PLAT_PHYS_OFFSET + 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.fixup		= realview_fixup,
 	.map_io		= realview_pba8_map_io,
 	.init_early	= realview_init_early,
 	.init_irq	= gic_init_irq,
 	.timer		= &realview_pba8_timer,
+<<<<<<< HEAD
 	.init_machine	= realview_pba8_init,
+=======
+	.handle_irq	= gic_handle_irq,
+	.init_machine	= realview_pba8_init,
+#ifdef CONFIG_ZONE_DMA
+	.dma_zone_size	= SZ_256M,
+#endif
+	.restart	= realview_pba8_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -188,9 +188,12 @@ static __devexit int rb532_pata_driver_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* work with hotplug and coldplug */
 MODULE_ALIAS("platform:" DRV_NAME);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver rb532_pata_platform_driver = {
 	.probe		= rb532_pata_driver_probe,
 	.remove		= __devexit_p(rb532_pata_driver_remove),
@@ -200,6 +203,7 @@ static struct platform_driver rb532_pata_platform_driver = {
 	},
 };
 
+<<<<<<< HEAD
 /* ------------------------------------------------------------------------ */
 
 #define DRV_INFO DRV_DESC " version " DRV_VERSION
@@ -215,12 +219,21 @@ static void __exit rb532_pata_module_exit(void)
 {
 	platform_driver_unregister(&rb532_pata_platform_driver);
 }
+=======
+#define DRV_INFO DRV_DESC " version " DRV_VERSION
+
+module_platform_driver(rb532_pata_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Gabor Juhos <juhosg at openwrt.org>");
 MODULE_AUTHOR("Florian Fainelli <florian@openwrt.org>");
 MODULE_DESCRIPTION(DRV_DESC);
 MODULE_VERSION(DRV_VERSION);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(rb532_pata_module_init);
 module_exit(rb532_pata_module_exit);
+=======
+MODULE_ALIAS("platform:" DRV_NAME);
+>>>>>>> refs/remotes/origin/cm-10.0

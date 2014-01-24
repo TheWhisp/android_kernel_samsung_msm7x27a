@@ -167,6 +167,7 @@ static struct platform_driver wmt_ge_rops_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init wmt_ge_rops_init(void)
 {
 	return platform_driver_register(&wmt_ge_rops_driver);
@@ -179,6 +180,9 @@ static void __exit wmt_ge_rops_exit(void)
 
 module_init(wmt_ge_rops_init);
 module_exit(wmt_ge_rops_exit);
+=======
+module_platform_driver(wmt_ge_rops_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alexey Charkov <alchark@gmail.com");
 MODULE_DESCRIPTION("Accelerators for raster operations using "

@@ -23,6 +23,10 @@
 #include <linux/delay.h>
 #include <linux/cpufreq.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/msr.h>
 #include <linux/timex.h>
 #include <linux/io.h>
@@ -277,6 +281,7 @@ static struct cpufreq_driver elanfreq_driver = {
 	.attr		= elanfreq_attr,
 };
 
+<<<<<<< HEAD
 
 static int __init elanfreq_init(void)
 {
@@ -288,6 +293,18 @@ static int __init elanfreq_init(void)
 		printk(KERN_INFO "elanfreq: error: no Elan processor found!\n");
 		return -ENODEV;
 	}
+=======
+static const struct x86_cpu_id elan_id[] = {
+	{ X86_VENDOR_AMD, 4, 10, },
+	{}
+};
+MODULE_DEVICE_TABLE(x86cpu, elan_id);
+
+static int __init elanfreq_init(void)
+{
+	if (!x86_match_cpu(elan_id))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return cpufreq_register_driver(&elanfreq_driver);
 }
 

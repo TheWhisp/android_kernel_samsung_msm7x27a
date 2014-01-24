@@ -21,7 +21,11 @@
 
 #include "emux_voice.h"
 #include <linux/slab.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Prototypes for static functions */
 static void free_port(void *private);

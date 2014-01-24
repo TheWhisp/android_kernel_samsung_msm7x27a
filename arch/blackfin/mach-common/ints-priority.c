@@ -444,7 +444,11 @@ static inline void bfin_set_irq_handler(unsigned irq, irq_flow_handler_t handle)
 static DECLARE_BITMAP(gpio_enabled, MAX_BLACKFIN_GPIOS);
 extern void bfin_gpio_irq_prepare(unsigned gpio);
 
+<<<<<<< HEAD
 #if !defined(CONFIG_BF54x)
+=======
+#if !BFIN_GPIO_PINT
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void bfin_gpio_ack_irq(struct irq_data *d)
 {
@@ -633,7 +637,11 @@ void bfin_demux_gpio_irq(unsigned int inta_irq,
 	bfin_demux_gpio_block(irq);
 }
 
+<<<<<<< HEAD
 #else				/* CONFIG_BF54x */
+=======
+#else
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define NR_PINT_SYS_IRQS	4
 #define NR_PINT_BITS		32
@@ -647,6 +655,7 @@ void bfin_demux_gpio_irq(unsigned int inta_irq,
 static unsigned char irq2pint_lut[NR_PINTS];
 static unsigned char pint2irq_lut[NR_PINT_SYS_IRQS * NR_PINT_BITS];
 
+<<<<<<< HEAD
 struct pin_int_t {
 	unsigned int mask_set;
 	unsigned int mask_clear;
@@ -665,6 +674,13 @@ static struct pin_int_t *pint[NR_PINT_SYS_IRQS] = {
 	(struct pin_int_t *)PINT1_MASK_SET,
 	(struct pin_int_t *)PINT2_MASK_SET,
 	(struct pin_int_t *)PINT3_MASK_SET,
+=======
+static struct bfin_pint_regs * const pint[NR_PINT_SYS_IRQS] = {
+	(struct bfin_pint_regs *)PINT0_MASK_SET,
+	(struct bfin_pint_regs *)PINT1_MASK_SET,
+	(struct bfin_pint_regs *)PINT2_MASK_SET,
+	(struct bfin_pint_regs *)PINT3_MASK_SET,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 inline unsigned int get_irq_base(u32 bank, u8 bmap)
@@ -981,7 +997,11 @@ int __init init_arch_irq(void)
 
 	local_irq_disable();
 
+<<<<<<< HEAD
 #ifdef CONFIG_BF54x
+=======
+#if BFIN_GPIO_PINT
+>>>>>>> refs/remotes/origin/cm-10.0
 # ifdef CONFIG_PINTx_REASSIGN
 	pint[0]->assign = CONFIG_PINT0_ASSIGN;
 	pint[1]->assign = CONFIG_PINT1_ASSIGN;
@@ -999,16 +1019,28 @@ int __init init_arch_irq(void)
 			irq_set_chip(irq, &bfin_internal_irqchip);
 
 		switch (irq) {
+<<<<<<< HEAD
 #if defined(BF537_FAMILY)
 		case IRQ_PH_INTA_MAC_RX:
 		case IRQ_PF_INTA_PG_INTA:
 #elif defined(BF533_FAMILY)
 		case IRQ_PROG_INTA:
 #elif defined(CONFIG_BF54x)
+=======
+#if BFIN_GPIO_PINT
+>>>>>>> refs/remotes/origin/cm-10.0
 		case IRQ_PINT0:
 		case IRQ_PINT1:
 		case IRQ_PINT2:
 		case IRQ_PINT3:
+<<<<<<< HEAD
+=======
+#elif defined(BF537_FAMILY)
+		case IRQ_PH_INTA_MAC_RX:
+		case IRQ_PF_INTA_PG_INTA:
+#elif defined(BF533_FAMILY)
+		case IRQ_PROG_INTA:
+>>>>>>> refs/remotes/origin/cm-10.0
 #elif defined(CONFIG_BF52x) || defined(CONFIG_BF51x)
 		case IRQ_PORTF_INTA:
 		case IRQ_PORTG_INTA:

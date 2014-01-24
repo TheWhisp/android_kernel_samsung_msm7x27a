@@ -2,6 +2,10 @@
 #define _LINUX_INIT_H
 
 #include <linux/compiler.h>
+<<<<<<< HEAD
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* These macros are used to mark some functions or 
  * initialized data (doesn't apply to uninitialized data)
@@ -156,7 +160,11 @@ void prepare_namespace(void);
 
 extern void (*late_time_init)(void);
 
+<<<<<<< HEAD
 extern int initcall_debug;
+=======
+extern bool initcall_debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif
   

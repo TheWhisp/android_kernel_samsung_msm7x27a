@@ -17,9 +17,15 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
+=======
+#include <linux/spi/spi.h>
+#include <linux/slab.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -181,7 +187,11 @@ SND_SOC_DAPM_OUTPUT("SPKOUTP"),
 SND_SOC_DAPM_OUTPUT("SPKOUTN"),
 };
 
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route wm8510_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Mono output mixer */
 	{"Mono Mixer", "PCM Playback Switch", "DAC"},
 	{"Mono Mixer", "Aux Playback Switch", "Aux Input"},
@@ -213,6 +223,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"ADC", NULL, "Boost Mixer"},
 };
 
+<<<<<<< HEAD
 static int wm8510_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -224,6 +235,8 @@ static int wm8510_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct pll_ {
 	unsigned int pre_div:4; /* prescale - 1 */
 	unsigned int n:4;
@@ -479,6 +492,11 @@ static int wm8510_set_bias_level(struct snd_soc_codec *codec,
 		power1 |= WM8510_POWER1_BIASEN | WM8510_POWER1_BUFIOEN;
 
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+<<<<<<< HEAD
+=======
+			snd_soc_cache_sync(codec);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* Initial cap charge at VMID 5k */
 			snd_soc_write(codec, WM8510_POWER1, power1 | 0x3);
 			mdelay(100);
@@ -506,7 +524,11 @@ static int wm8510_set_bias_level(struct snd_soc_codec *codec,
 #define WM8510_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8510_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8510_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.hw_params	= wm8510_pcm_hw_params,
 	.digital_mute	= wm8510_mute,
 	.set_fmt	= wm8510_set_dai_fmt,
@@ -532,7 +554,11 @@ static struct snd_soc_dai_driver wm8510_dai = {
 	.symmetric_rates = 1,
 };
 
+<<<<<<< HEAD
 static int wm8510_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8510_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	wm8510_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -540,6 +566,7 @@ static int wm8510_suspend(struct snd_soc_codec *codec, pm_message_t state)
 
 static int wm8510_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	int i;
 	u8 data[2];
 	u16 *cache = codec->reg_cache;
@@ -552,6 +579,9 @@ static int wm8510_resume(struct snd_soc_codec *codec)
 	}
 	wm8510_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+=======
+	wm8510_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -570,9 +600,12 @@ static int wm8510_probe(struct snd_soc_codec *codec)
 
 	/* power on device */
 	wm8510_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8510_snd_controls,
 				ARRAY_SIZE(wm8510_snd_controls));
 	wm8510_add_widgets(codec);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -596,6 +629,21 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8510 = {
 	.reg_cache_size = ARRAY_SIZE(wm8510_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default =wm8510_reg,
+<<<<<<< HEAD
+=======
+
+	.controls = wm8510_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8510_snd_controls),
+	.dapm_widgets = wm8510_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8510_dapm_widgets),
+	.dapm_routes = wm8510_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8510_dapm_routes),
+};
+
+static const struct of_device_id wm8510_of_match[] = {
+	{ .compatible = "wlf,wm8510" },
+	{ },
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_SPI_MASTER)
@@ -628,6 +676,10 @@ static struct spi_driver wm8510_spi_driver = {
 	.driver = {
 		.name	= "wm8510",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = wm8510_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe		= wm8510_spi_probe,
 	.remove		= __devexit_p(wm8510_spi_remove),
@@ -669,8 +721,14 @@ MODULE_DEVICE_TABLE(i2c, wm8510_i2c_id);
 
 static struct i2c_driver wm8510_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name = "wm8510-codec",
 		.owner = THIS_MODULE,
+=======
+		.name = "wm8510",
+		.owner = THIS_MODULE,
+		.of_match_table = wm8510_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe =    wm8510_i2c_probe,
 	.remove =   __devexit_p(wm8510_i2c_remove),

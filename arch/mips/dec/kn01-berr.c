@@ -22,7 +22,10 @@
 #include <asm/mipsregs.h>
 #include <asm/page.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 #include <asm/uaccess.h>
 

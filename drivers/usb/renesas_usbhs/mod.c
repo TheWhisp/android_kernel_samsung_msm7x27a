@@ -50,7 +50,13 @@ static int usbhsm_autonomy_irq_vbus(struct usbhs_priv *priv,
 {
 	struct platform_device *pdev = usbhs_priv_to_pdev(priv);
 
+<<<<<<< HEAD
 	return usbhsc_drvcllbck_notify_hotplug(pdev);
+=======
+	renesas_usbhs_call_notify_hotplug(pdev);
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void usbhs_mod_autonomy_mode(struct usbhs_priv *priv)
@@ -58,7 +64,11 @@ void usbhs_mod_autonomy_mode(struct usbhs_priv *priv)
 	struct usbhs_mod_info *info = usbhs_priv_to_modinfo(priv);
 
 	info->irq_vbus		= usbhsm_autonomy_irq_vbus;
+<<<<<<< HEAD
 	priv->pfunc->get_vbus	= usbhsm_autonomy_get_vbus;
+=======
+	priv->pfunc.get_vbus	= usbhsm_autonomy_get_vbus;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	usbhs_irq_callback_update(priv, NULL);
 }
@@ -93,8 +103,14 @@ struct usbhs_mod *usbhs_mod_get(struct usbhs_priv *priv, int id)
 	return ret;
 }
 
+<<<<<<< HEAD
 int usbhs_mod_is_host(struct usbhs_priv *priv, struct usbhs_mod *mod)
 {
+=======
+int usbhs_mod_is_host(struct usbhs_priv *priv)
+{
+	struct usbhs_mod *mod = usbhs_mod_get_current(priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct usbhs_mod_info *info = usbhs_priv_to_modinfo(priv);
 
 	if (!mod)
@@ -139,6 +155,7 @@ int usbhs_mod_probe(struct usbhs_priv *priv)
 	/*
 	 * install host/gadget driver
 	 */
+<<<<<<< HEAD
 	ret = usbhs_mod_gadget_probe(priv);
 	if (ret < 0)
 		return ret;
@@ -146,6 +163,19 @@ int usbhs_mod_probe(struct usbhs_priv *priv)
 	/* irq settings */
 	ret = request_irq(priv->irq, usbhs_interrupt,
 			  IRQF_DISABLED, dev_name(dev), priv);
+=======
+	ret = usbhs_mod_host_probe(priv);
+	if (ret < 0)
+		return ret;
+
+	ret = usbhs_mod_gadget_probe(priv);
+	if (ret < 0)
+		goto mod_init_host_err;
+
+	/* irq settings */
+	ret = request_irq(priv->irq, usbhs_interrupt,
+			  priv->irqflags, dev_name(dev), priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(dev, "irq request err\n");
 		goto mod_init_gadget_err;
@@ -155,12 +185,21 @@ int usbhs_mod_probe(struct usbhs_priv *priv)
 
 mod_init_gadget_err:
 	usbhs_mod_gadget_remove(priv);
+<<<<<<< HEAD
+=======
+mod_init_host_err:
+	usbhs_mod_host_remove(priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
 
 void usbhs_mod_remove(struct usbhs_priv *priv)
 {
+<<<<<<< HEAD
+=======
+	usbhs_mod_host_remove(priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 	usbhs_mod_gadget_remove(priv);
 	free_irq(priv->irq, priv);
 }
@@ -168,6 +207,7 @@ void usbhs_mod_remove(struct usbhs_priv *priv)
 /*
  *		status functions
  */
+<<<<<<< HEAD
 int usbhs_status_get_usb_speed(struct usbhs_irq_state *irq_state)
 {
 	switch (irq_state->dvstctr & RHST) {
@@ -182,6 +222,8 @@ int usbhs_status_get_usb_speed(struct usbhs_irq_state *irq_state)
 	return USB_SPEED_UNKNOWN;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int usbhs_status_get_device_state(struct usbhs_irq_state *irq_state)
 {
 	int state = irq_state->intsts0 & DVSQ_MASK;
@@ -221,8 +263,11 @@ static void usbhs_status_get_each_irq(struct usbhs_priv *priv,
 	state->intsts0 = usbhs_read(priv, INTSTS0);
 	state->intsts1 = usbhs_read(priv, INTSTS1);
 
+<<<<<<< HEAD
 	state->dvstctr = usbhs_read(priv, DVSTCTR);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* mask */
 	if (mod) {
 		state->brdysts = usbhs_read(priv, BRDYSTS);
@@ -269,6 +314,11 @@ static irqreturn_t usbhs_interrupt(int irq, void *data)
 	 * see also
 	 *	usbhs_irq_setting_update
 	 */
+<<<<<<< HEAD
+=======
+
+	/* INTSTS0 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (irq_state.intsts0 & VBINT)
 		usbhs_mod_info_call(priv, irq_vbus, priv, &irq_state);
 
@@ -284,15 +334,47 @@ static irqreturn_t usbhs_interrupt(int irq, void *data)
 	if (irq_state.intsts0 & BRDY)
 		usbhs_mod_call(priv, irq_ready, priv, &irq_state);
 
+<<<<<<< HEAD
+=======
+	/* INTSTS1 */
+	if (irq_state.intsts1 & ATTCH)
+		usbhs_mod_call(priv, irq_attch, priv, &irq_state);
+
+	if (irq_state.intsts1 & DTCH)
+		usbhs_mod_call(priv, irq_dtch, priv, &irq_state);
+
+	if (irq_state.intsts1 & SIGN)
+		usbhs_mod_call(priv, irq_sign, priv, &irq_state);
+
+	if (irq_state.intsts1 & SACK)
+		usbhs_mod_call(priv, irq_sack, priv, &irq_state);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return IRQ_HANDLED;
 }
 
 void usbhs_irq_callback_update(struct usbhs_priv *priv, struct usbhs_mod *mod)
 {
 	u16 intenb0 = 0;
+<<<<<<< HEAD
 	struct usbhs_mod_info *info = usbhs_priv_to_modinfo(priv);
 
 	usbhs_write(priv, INTENB0, 0);
+=======
+	u16 intenb1 = 0;
+	struct usbhs_mod_info *info = usbhs_priv_to_modinfo(priv);
+
+	/*
+	 * BEMPENB/BRDYENB are picky.
+	 * below method is required
+	 *
+	 *  - clear  INTSTS0
+	 *  - update BEMPENB/BRDYENB
+	 *  - update INTSTS0
+	 */
+	usbhs_write(priv, INTENB0, 0);
+	usbhs_write(priv, INTENB1, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	usbhs_write(priv, BEMPENB, 0);
 	usbhs_write(priv, BRDYENB, 0);
@@ -310,6 +392,12 @@ void usbhs_irq_callback_update(struct usbhs_priv *priv, struct usbhs_mod *mod)
 		intenb0 |= VBSE;
 
 	if (mod) {
+<<<<<<< HEAD
+=======
+		/*
+		 * INTSTS0
+		 */
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (mod->irq_ctrl_stage)
 			intenb0 |= CTRE;
 
@@ -322,7 +410,32 @@ void usbhs_irq_callback_update(struct usbhs_priv *priv, struct usbhs_mod *mod)
 			usbhs_write(priv, BRDYENB, mod->irq_brdysts);
 			intenb0 |= BRDYE;
 		}
+<<<<<<< HEAD
 	}
 
 	usbhs_write(priv, INTENB0, intenb0);
+=======
+
+		/*
+		 * INTSTS1
+		 */
+		if (mod->irq_attch)
+			intenb1 |= ATTCHE;
+
+		if (mod->irq_dtch)
+			intenb1 |= DTCHE;
+
+		if (mod->irq_sign)
+			intenb1 |= SIGNE;
+
+		if (mod->irq_sack)
+			intenb1 |= SACKE;
+	}
+
+	if (intenb0)
+		usbhs_write(priv, INTENB0, intenb0);
+
+	if (intenb1)
+		usbhs_write(priv, INTENB1, intenb1);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

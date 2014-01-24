@@ -1,6 +1,10 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2013 The Linux Foundation. All rights reserved.
+=======
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
    Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
    Copyright (C) 2010 Google Inc.
 
@@ -93,6 +97,7 @@ static void l2cap_chan_ready(struct sock *sk);
 static void l2cap_conn_del(struct hci_conn *hcon, int err, u8 is_process);
 static u16 l2cap_get_smallest_flushto(struct l2cap_chan_list *l);
 static void l2cap_set_acl_flushto(struct hci_conn *hcon, u16 flush_to);
+<<<<<<< HEAD
 static void l2cap_queue_acl_data(struct work_struct *worker);
 static struct att_channel_parameters{
 	struct sk_buff *skb;
@@ -100,6 +105,8 @@ static struct att_channel_parameters{
 	__le16 cid;
 	int dir;
 } att_chn_params;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ---- L2CAP channels ---- */
 static struct sock *__l2cap_get_chan_by_dcid(struct l2cap_chan_list *l, u16 cid)
@@ -610,7 +617,10 @@ static inline u8 l2cap_get_auth_type(struct sock *sk)
 {
 	if (sk->sk_type == SOCK_RAW) {
 		switch (l2cap_pi(sk)->sec_level) {
+<<<<<<< HEAD
 		case BT_SECURITY_VERY_HIGH:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		case BT_SECURITY_HIGH:
 			return HCI_AT_DEDICATED_BONDING_MITM;
 		case BT_SECURITY_MEDIUM:
@@ -622,14 +632,21 @@ static inline u8 l2cap_get_auth_type(struct sock *sk)
 		if (l2cap_pi(sk)->sec_level == BT_SECURITY_LOW)
 			l2cap_pi(sk)->sec_level = BT_SECURITY_SDP;
 
+<<<<<<< HEAD
 		if (l2cap_pi(sk)->sec_level == BT_SECURITY_HIGH ||
 			l2cap_pi(sk)->sec_level == BT_SECURITY_VERY_HIGH)
+=======
+		if (l2cap_pi(sk)->sec_level == BT_SECURITY_HIGH)
+>>>>>>> refs/remotes/origin/cm-10.0
 			return HCI_AT_NO_BONDING_MITM;
 		else
 			return HCI_AT_NO_BONDING;
 	} else {
 		switch (l2cap_pi(sk)->sec_level) {
+<<<<<<< HEAD
 		case BT_SECURITY_VERY_HIGH:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		case BT_SECURITY_HIGH:
 			return HCI_AT_GENERAL_BONDING_MITM;
 		case BT_SECURITY_MEDIUM:
@@ -711,9 +728,12 @@ void l2cap_send_cmd(struct l2cap_conn *conn, u8 ident, u8 code, u16 len, void *d
 	if (!skb)
 		return;
 
+<<<<<<< HEAD
 	if (conn->hcon == NULL || conn->hcon->hdev == NULL)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (lmp_no_flush_capable(conn->hcon->hdev))
 		flags = ACL_START_NO_FLUSH;
 	else
@@ -1219,8 +1239,11 @@ static void l2cap_conn_del(struct hci_conn *hcon, int err, u8 is_process)
 
 		kfree(conn);
 	}
+<<<<<<< HEAD
 	att_chn_params.conn = NULL;
 	BT_DBG("att_chn_params.conn set to NULL");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void l2cap_chan_add(struct l2cap_conn *conn, struct sock *sk)
@@ -2830,9 +2853,12 @@ static struct sk_buff *l2cap_build_cmd(struct l2cap_conn *conn,
 	BT_DBG("conn %p, code 0x%2.2x, ident 0x%2.2x, len %d",
 			conn, code, ident, dlen);
 
+<<<<<<< HEAD
 	if (conn->mtu < L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE)
 		return NULL;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	len = L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE + dlen;
 	count = min_t(unsigned int, mtu, len);
 
@@ -3615,7 +3641,12 @@ done:
 		if (mtu < L2CAP_DEFAULT_MIN_MTU) {
 			result = L2CAP_CONF_UNACCEPT;
 			pi->omtu = L2CAP_DEFAULT_MIN_MTU;
+<<<<<<< HEAD
 		} else {
+=======
+		}
+		else {
+>>>>>>> refs/remotes/origin/cm-10.0
 			pi->omtu = mtu;
 			pi->conf_state |= L2CAP_CONF_MTU_DONE;
 		}
@@ -7289,7 +7320,10 @@ static inline int l2cap_att_channel(struct l2cap_conn *conn, __le16 cid,
 	struct sk_buff *skb_rsp;
 	struct l2cap_hdr *lh;
 	int dir;
+<<<<<<< HEAD
 	struct work_struct *open_worker;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 err_rsp[] = {L2CAP_ATT_ERROR, 0x00, 0x00, 0x00,
 						L2CAP_ATT_NOT_SUPPORTED};
 
@@ -7325,6 +7359,7 @@ static inline int l2cap_att_channel(struct l2cap_conn *conn, __le16 cid,
 
 	BT_DBG("sk %p, len %d", sk, skb->len);
 
+<<<<<<< HEAD
 	if (sk->sk_state != BT_BOUND && sk->sk_state != BT_CONNECTED) {
 		att_chn_params.cid = cid;
 		att_chn_params.conn = conn;
@@ -7337,6 +7372,10 @@ static inline int l2cap_att_channel(struct l2cap_conn *conn, __le16 cid,
 		schedule_work(open_worker);
 		goto done;
 	}
+=======
+	if (sk->sk_state != BT_BOUND && sk->sk_state != BT_CONNECTED)
+		goto drop;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (l2cap_pi(sk)->imtu < skb->len)
 		goto drop;
@@ -7539,8 +7578,12 @@ static inline void l2cap_check_encryption(struct sock *sk, u8 encrypt)
 		if (l2cap_pi(sk)->sec_level == BT_SECURITY_MEDIUM) {
 			l2cap_sock_clear_timer(sk);
 			l2cap_sock_set_timer(sk, HZ * 5);
+<<<<<<< HEAD
 		} else if (l2cap_pi(sk)->sec_level == BT_SECURITY_HIGH ||
 			l2cap_pi(sk)->sec_level == BT_SECURITY_VERY_HIGH)
+=======
+		} else if (l2cap_pi(sk)->sec_level == BT_SECURITY_HIGH)
+>>>>>>> refs/remotes/origin/cm-10.0
 			__l2cap_sock_close(sk, ECONNREFUSED);
 	} else {
 		if (l2cap_pi(sk)->sec_level == BT_SECURITY_MEDIUM)
@@ -7813,6 +7856,7 @@ static int l2cap_debugfs_show(struct seq_file *f, void *p)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void l2cap_queue_acl_data(struct work_struct *worker)
 {
 	struct sock *sk = NULL;
@@ -7887,6 +7931,8 @@ free_skb:
 
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int l2cap_debugfs_open(struct inode *inode, struct file *file)
 {
 	return single_open(file, l2cap_debugfs_show, inode->i_private);

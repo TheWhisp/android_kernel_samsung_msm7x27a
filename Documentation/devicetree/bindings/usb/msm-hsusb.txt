@@ -35,16 +35,26 @@ Optional properties :
 - qcom,hsusb-otg-pmic-id-irq: ID, routed to PMIC IRQ number
 
 Example HSUSB OTG controller device node :
+<<<<<<< HEAD
 	usb@F9690000 {
 		compatible = "qcom,hsusb-otg";
 		reg = <0xF9690000 0x400>;
+=======
+	usb@f9690000 {
+		compatible = "qcom,hsusb-otg";
+		reg = <0xf9690000 0x400>;
+>>>>>>> refs/remotes/origin/cm-10.0
 		interrupts = <134>;
 
 		qcom,hsusb-otg-phy-type = <2>;
 		qcom,hsusb-otg-mode = <1>;
 		qcom,hsusb-otg-otg-control = <1>;
 		qcom,hsusb-otg-default-mode = <2>;
+<<<<<<< HEAD
 		qcom,hsusb-otg-phy-init-seq = <0x01 0x90 0xFFFFFFFF>;
+=======
+		qcom,hsusb-otg-phy-init-seq = <0x01 0x90 0xffffffff>;
+>>>>>>> refs/remotes/origin/cm-10.0
 		qcom,hsusb-otg-power-budget = <500>;
 		qcom,hsusb-otg-pclk-src-name = "dfab_usb_clk";
 		qcom,hsusb-otg-pmic-id-irq = <47>

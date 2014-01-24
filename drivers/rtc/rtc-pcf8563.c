@@ -18,6 +18,10 @@
 #include <linux/bcd.h>
 #include <linux/rtc.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRV_VERSION "0.4.3"
 
@@ -251,6 +255,7 @@ static struct i2c_driver pcf8563_driver = {
 	.id_table	= pcf8563_id,
 };
 
+<<<<<<< HEAD
 static int __init pcf8563_init(void)
 {
 	return i2c_add_driver(&pcf8563_driver);
@@ -260,11 +265,17 @@ static void __exit pcf8563_exit(void)
 {
 	i2c_del_driver(&pcf8563_driver);
 }
+=======
+module_i2c_driver(pcf8563_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
 MODULE_DESCRIPTION("Philips PCF8563/Epson RTC8564 RTC driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(pcf8563_init);
 module_exit(pcf8563_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

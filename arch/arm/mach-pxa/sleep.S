@@ -24,6 +24,7 @@
 
 #ifdef CONFIG_PXA3xx
 /*
+<<<<<<< HEAD
  * pxa3xx_cpu_suspend() - forces CPU into sleep state (S2D3C4)
  *
  * r0 = v:p offset
@@ -38,6 +39,11 @@ ENTRY(pxa3xx_cpu_suspend)
 	ldr	r3, =pxa_cpu_resume	@ resume function
 	bl	cpu_suspend
 
+=======
+ * pxa3xx_finish_suspend() - forces CPU into sleep state (S2D3C4)
+ */
+ENTRY(pxa3xx_finish_suspend)
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov	r0, #0x06		@ S2D3C4 mode
 	mcr	p14, 0, r0, c7, c0, 0	@ enter sleep
 
@@ -46,11 +52,16 @@ ENTRY(pxa3xx_cpu_suspend)
 
 #ifdef CONFIG_PXA27x
 /*
+<<<<<<< HEAD
  * pxa27x_cpu_suspend()
+=======
+ * pxa27x_finish_suspend()
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Forces CPU into sleep state.
  *
  * r0 = value for PWRMODE M field for desired sleep state
+<<<<<<< HEAD
  * r1 = v:p offset
  */
 ENTRY(pxa27x_cpu_suspend)
@@ -63,11 +74,19 @@ ENTRY(pxa27x_cpu_suspend)
 	ldr	r3, =pxa_cpu_resume		@ resume function
 	bl	cpu_suspend
 
+=======
+ */
+ENTRY(pxa27x_finish_suspend)
+>>>>>>> refs/remotes/origin/cm-10.0
 	@ Put the processor to sleep
 	@ (also workaround for sighting 28071)
 
 	@ prepare value for sleep mode
+<<<<<<< HEAD
 	mov	r1, r4				@ sleep mode
+=======
+	mov	r1, r0				@ sleep mode
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	@ prepare pointer to physical address 0 (virtual mapping in generic.c)
 	mov	r2, #UNCACHED_PHYS_0
@@ -99,11 +118,16 @@ ENTRY(pxa27x_cpu_suspend)
 
 #ifdef CONFIG_PXA25x
 /*
+<<<<<<< HEAD
  * pxa25x_cpu_suspend()
+=======
+ * pxa25x_finish_suspend()
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Forces CPU into sleep state.
  *
  * r0 = value for PWRMODE M field for desired sleep state
+<<<<<<< HEAD
  * r1 = v:p offset
  */
 
@@ -114,6 +138,13 @@ ENTRY(pxa25x_cpu_suspend)
 	bl	cpu_suspend
 	@ prepare value for sleep mode
 	mov	r1, r4				@ sleep mode
+=======
+ */
+
+ENTRY(pxa25x_finish_suspend)
+	@ prepare value for sleep mode
+	mov	r1, r0				@ sleep mode
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	@ prepare pointer to physical address 0 (virtual mapping in generic.c)
 	mov	r2, #UNCACHED_PHYS_0
@@ -195,6 +226,7 @@ pxa_cpu_do_suspend:
 	mcr	p14, 0, r1, c7, c0, 0		@ PWRMODE
 
 20:	b	20b				@ loop waiting for sleep
+<<<<<<< HEAD
 
 /*
  * pxa_cpu_resume()
@@ -208,3 +240,5 @@ pxa_cpu_resume:
 	mar	acc0, r2, r3
 #endif
 	ldmfd	sp!, {r4 - r12, pc}		@ return to caller
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

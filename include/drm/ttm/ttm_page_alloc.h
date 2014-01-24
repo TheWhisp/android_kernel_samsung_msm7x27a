@@ -30,6 +30,7 @@
 #include "ttm_memory.h"
 
 /**
+<<<<<<< HEAD
  * Get count number of pages from pool to pages list.
  *
  * @pages: heado of empty linked list where pages are filled.
@@ -66,9 +67,76 @@ int ttm_page_alloc_init(struct ttm_mem_global *glob, unsigned max_pages);
  * Free pool allocator.
  */
 void ttm_page_alloc_fini(void);
+=======
+ * Initialize pool allocator.
+ */
+int ttm_page_alloc_init(struct ttm_mem_global *glob, unsigned max_pages);
+/**
+ * Free pool allocator.
+ */
+void ttm_page_alloc_fini(void);
+
+/**
+ * ttm_pool_populate:
+ *
+ * @ttm: The struct ttm_tt to contain the backing pages.
+ *
+ * Add backing pages to all of @ttm
+ */
+extern int ttm_pool_populate(struct ttm_tt *ttm);
+
+/**
+ * ttm_pool_unpopulate:
+ *
+ * @ttm: The struct ttm_tt which to free backing pages.
+ *
+ * Free all pages of @ttm
+ */
+extern void ttm_pool_unpopulate(struct ttm_tt *ttm);
 
 /**
  * Output the state of pools to debugfs file
  */
 extern int ttm_page_alloc_debugfs(struct seq_file *m, void *data);
+
+
+#ifdef CONFIG_SWIOTLB
+/**
+ * Initialize pool allocator.
+ */
+int ttm_dma_page_alloc_init(struct ttm_mem_global *glob, unsigned max_pages);
+
+/**
+ * Free pool allocator.
+ */
+void ttm_dma_page_alloc_fini(void);
+>>>>>>> refs/remotes/origin/cm-10.0
+
+/**
+ * Output the state of pools to debugfs file
+ */
+<<<<<<< HEAD
+extern int ttm_page_alloc_debugfs(struct seq_file *m, void *data);
+=======
+extern int ttm_dma_page_alloc_debugfs(struct seq_file *m, void *data);
+
+extern int ttm_dma_populate(struct ttm_dma_tt *ttm_dma, struct device *dev);
+extern void ttm_dma_unpopulate(struct ttm_dma_tt *ttm_dma, struct device *dev);
+
+#else
+static inline int ttm_dma_page_alloc_init(struct ttm_mem_global *glob,
+					  unsigned max_pages)
+{
+	return -ENODEV;
+}
+
+static inline void ttm_dma_page_alloc_fini(void) { return; }
+
+static inline int ttm_dma_page_alloc_debugfs(struct seq_file *m, void *data)
+{
+	return 0;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

@@ -5,7 +5,11 @@
  * Copyright (C) 2006 Applied Data Systems
  *
  * Rewritten for the SoC audio subsystem (Based on PXA2xx code):
+<<<<<<< HEAD
  *   Copyright (c) 2008 Ryan Mallon <ryan@bluewatersys.com>
+=======
+ *   Copyright (c) 2008 Ryan Mallon
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -16,12 +20,20 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/dmaengine.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/dma-mapping.h>
 
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
+<<<<<<< HEAD
+=======
+#include <sound/dmaengine_pcm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/dma.h>
 #include <mach/hardware.h>
@@ -51,6 +63,7 @@ static const struct snd_pcm_hardware ep93xx_pcm_hardware = {
 	.fifo_size		= 32,
 };
 
+<<<<<<< HEAD
 struct ep93xx_runtime_data
 {
 	struct ep93xx_dma_m2p_client	cl;
@@ -90,10 +103,23 @@ static void ep93xx_pcm_buffer_finished(void *cookie,
 	} else {
 		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
 	}
+=======
+static bool ep93xx_pcm_dma_filter(struct dma_chan *chan, void *filter_param)
+{
+	struct ep93xx_dma_data *data = filter_param;
+
+	if (data->direction == ep93xx_dma_chan_direction(chan)) {
+		chan->private = data;
+		return true;
+	}
+
+	return false;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int ep93xx_pcm_open(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *soc_rtd = substream->private_data;
 	struct snd_soc_dai *cpu_dai = soc_rtd->cpu_dai;
 	struct ep93xx_pcm_dma_params *dma_params;
@@ -125,21 +151,56 @@ static int ep93xx_pcm_open(struct snd_pcm_substream *substream)
 	}
 	
 	substream->runtime->private_data = rtd;
+=======
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+	struct ep93xx_pcm_dma_params *dma_params;
+	struct ep93xx_dma_data *dma_data;
+	int ret;
+
+	snd_soc_set_runtime_hwparams(substream, &ep93xx_pcm_hardware);
+
+	dma_data = kmalloc(sizeof(*dma_data), GFP_KERNEL);
+	if (!dma_data)
+		return -ENOMEM;
+
+	dma_params = snd_soc_dai_get_dma_data(cpu_dai, substream);
+	dma_data->port = dma_params->dma_port;
+	dma_data->name = dma_params->name;
+	dma_data->direction = snd_pcm_substream_to_dma_direction(substream);
+
+	ret = snd_dmaengine_pcm_open(substream, ep93xx_pcm_dma_filter, dma_data);
+	if (ret) {
+		kfree(dma_data);
+		return ret;
+	}
+
+	snd_dmaengine_pcm_set_data(substream, dma_data);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int ep93xx_pcm_close(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	struct ep93xx_runtime_data *rtd = substream->runtime->private_data;
 
 	ep93xx_dma_m2p_client_unregister(&rtd->cl);
 	kfree(rtd);
+=======
+	struct dma_data *dma_data = snd_dmaengine_pcm_get_data(substream);
+
+	snd_dmaengine_pcm_close(substream);
+	kfree(dma_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int ep93xx_pcm_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params)
 {
+<<<<<<< HEAD
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct ep93xx_runtime_data *rtd = runtime->private_data;
 	size_t totsize = params_buffer_bytes(params);
@@ -156,6 +217,9 @@ static int ep93xx_pcm_hw_params(struct snd_pcm_substream *substream,
 		if ((i + 1) * period > totsize)
 			rtd->buf[i].size = totsize - (i * period);
 	}
+=======
+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -166,6 +230,7 @@ static int ep93xx_pcm_hw_free(struct snd_pcm_substream *substream)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ep93xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 {
 	struct ep93xx_runtime_data *rtd = substream->runtime->private_data;
@@ -205,6 +270,8 @@ static snd_pcm_uframes_t ep93xx_pcm_pointer(struct snd_pcm_substream *substream)
 	return bytes_to_frames(runtime, rtd->pointer_bytes);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int ep93xx_pcm_mmap(struct snd_pcm_substream *substream,
 			   struct vm_area_struct *vma)
 {
@@ -222,8 +289,13 @@ static struct snd_pcm_ops ep93xx_pcm_ops = {
 	.ioctl		= snd_pcm_lib_ioctl,
 	.hw_params	= ep93xx_pcm_hw_params,
 	.hw_free	= ep93xx_pcm_hw_free,
+<<<<<<< HEAD
 	.trigger	= ep93xx_pcm_trigger,
 	.pointer	= ep93xx_pcm_pointer,
+=======
+	.trigger	= snd_dmaengine_pcm_trigger,
+	.pointer	= snd_dmaengine_pcm_pointer,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.mmap		= ep93xx_pcm_mmap,
 };
 
@@ -264,28 +336,45 @@ static void ep93xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
 	}
 }
 
+<<<<<<< HEAD
 static u64 ep93xx_pcm_dmamask = 0xffffffff;
+=======
+static u64 ep93xx_pcm_dmamask = DMA_BIT_MASK(32);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int ep93xx_pcm_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
+<<<<<<< HEAD
 	struct snd_soc_dai *dai = rtd->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_pcm *pcm = rtd->pcm;
 	int ret = 0;
 
 	if (!card->dev->dma_mask)
 		card->dev->dma_mask = &ep93xx_pcm_dmamask;
 	if (!card->dev->coherent_dma_mask)
+<<<<<<< HEAD
 		card->dev->coherent_dma_mask = 0xffffffff;
 
 	if (dai->driver->playback.channels_min) {
+=======
+		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = ep93xx_pcm_preallocate_dma_buffer(pcm,
 					SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
 			return ret;
 	}
 
+<<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = ep93xx_pcm_preallocate_dma_buffer(pcm,
 					SNDRV_PCM_STREAM_CAPTURE);
 		if (ret)
@@ -322,6 +411,7 @@ static struct platform_driver ep93xx_pcm_driver = {
 	.remove = __devexit_p(ep93xx_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init ep93xx_soc_platform_init(void)
 {
 	return platform_driver_register(&ep93xx_pcm_driver);
@@ -338,3 +428,11 @@ module_exit(ep93xx_soc_platform_exit);
 MODULE_AUTHOR("Ryan Mallon <ryan@bluewatersys.com>");
 MODULE_DESCRIPTION("EP93xx ALSA PCM interface");
 MODULE_LICENSE("GPL");
+=======
+module_platform_driver(ep93xx_pcm_driver);
+
+MODULE_AUTHOR("Ryan Mallon");
+MODULE_DESCRIPTION("EP93xx ALSA PCM interface");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:ep93xx-pcm-audio");
+>>>>>>> refs/remotes/origin/cm-10.0

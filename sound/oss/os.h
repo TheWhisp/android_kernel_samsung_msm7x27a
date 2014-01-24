@@ -16,7 +16,10 @@
 #include <linux/slab.h>
 #include <linux/ioport.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/vmalloc.h>
 #include <asm/uaccess.h>
 #include <linux/poll.h>

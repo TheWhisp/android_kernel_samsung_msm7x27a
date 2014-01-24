@@ -17,7 +17,11 @@
  *
  * Author: Anton Blanchard <anton@au.ibm.com>
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/compiler.h>
 #include <linux/types.h>
 #include <asm/checksum.h>

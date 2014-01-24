@@ -57,6 +57,32 @@ struct sk_buff *ath_rxbuf_alloc(struct ath_common *common,
 }
 EXPORT_SYMBOL(ath_rxbuf_alloc);
 
+<<<<<<< HEAD
+=======
+#if 0 // by bbelief
+void ath_printk(const char *level, const char *fmt, ...)
+{
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
+	struct va_format vaf;
+#endif
+	va_list args;
+
+	va_start(args, fmt);
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	printk("%sath: %pV", level, &vaf);
+#else
+	printk("%sath: ", level);
+	vprintk(fmt, args);
+#endif
+
+	va_end(args);
+}
+#else
+>>>>>>> refs/remotes/origin/cm-10.0
 int ath_printk(const char *level, struct ath_common *common,
 	       const char *fmt, ...)
 {
@@ -75,4 +101,9 @@ int ath_printk(const char *level, struct ath_common *common,
 
 	return rtn;
 }
+<<<<<<< HEAD
+=======
+
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(ath_printk);

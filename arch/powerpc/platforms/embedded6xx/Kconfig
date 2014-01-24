@@ -87,10 +87,13 @@ config MV64X60
 config MPC10X_OPENPIC
 	bool
 
+<<<<<<< HEAD
 config MPC10X_STORE_GATHERING
 	bool "Enable MPC10x store gathering"
 	depends on MPC10X_BRIDGE
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config GAMECUBE_COMMON
 	bool
 

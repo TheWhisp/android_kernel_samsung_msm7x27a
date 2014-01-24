@@ -15,7 +15,10 @@
 #include <linux/interrupt.h>
 #include <linux/mc146818rtc.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pci-bridge.h>
 
 #define ULI_PIRQA	0x08

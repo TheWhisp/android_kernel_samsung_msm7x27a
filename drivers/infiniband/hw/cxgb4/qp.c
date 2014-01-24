@@ -29,6 +29,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+<<<<<<< HEAD
+=======
+
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "iw_cxgb4.h"
 
 static int ocqp_support = 1;
@@ -917,7 +923,15 @@ static void post_terminate(struct c4iw_qp *qhp, struct t4_cqe *err_cqe,
 	wqe->u.terminate.type = FW_RI_TYPE_TERMINATE;
 	wqe->u.terminate.immdlen = cpu_to_be32(sizeof *term);
 	term = (struct terminate_message *)wqe->u.terminate.termmsg;
+<<<<<<< HEAD
 	build_term_codes(err_cqe, &term->layer_etype, &term->ecode);
+=======
+	if (qhp->attr.layer_etype == (LAYER_MPA|DDP_LLP)) {
+		term->layer_etype = qhp->attr.layer_etype;
+		term->ecode = qhp->attr.ecode;
+	} else
+		build_term_codes(err_cqe, &term->layer_etype, &term->ecode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	c4iw_ofld_send(&qhp->rhp->rdev, skb);
 }
 
@@ -941,8 +955,16 @@ static void __flush_qp(struct c4iw_qp *qhp, struct c4iw_cq *rchp,
 	flushed = c4iw_flush_rq(&qhp->wq, &rchp->cq, count);
 	spin_unlock(&qhp->lock);
 	spin_unlock_irqrestore(&rchp->lock, flag);
+<<<<<<< HEAD
 	if (flushed)
 		(*rchp->ibcq.comp_handler)(&rchp->ibcq, rchp->ibcq.cq_context);
+=======
+	if (flushed) {
+		spin_lock_irqsave(&rchp->comp_handler_lock, flag);
+		(*rchp->ibcq.comp_handler)(&rchp->ibcq, rchp->ibcq.cq_context);
+		spin_unlock_irqrestore(&rchp->comp_handler_lock, flag);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* locking hierarchy: cq lock first, then qp lock. */
 	spin_lock_irqsave(&schp->lock, flag);
@@ -952,13 +974,25 @@ static void __flush_qp(struct c4iw_qp *qhp, struct c4iw_cq *rchp,
 	flushed = c4iw_flush_sq(&qhp->wq, &schp->cq, count);
 	spin_unlock(&qhp->lock);
 	spin_unlock_irqrestore(&schp->lock, flag);
+<<<<<<< HEAD
 	if (flushed)
 		(*schp->ibcq.comp_handler)(&schp->ibcq, schp->ibcq.cq_context);
+=======
+	if (flushed) {
+		spin_lock_irqsave(&schp->comp_handler_lock, flag);
+		(*schp->ibcq.comp_handler)(&schp->ibcq, schp->ibcq.cq_context);
+		spin_unlock_irqrestore(&schp->comp_handler_lock, flag);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void flush_qp(struct c4iw_qp *qhp)
 {
 	struct c4iw_cq *rchp, *schp;
+<<<<<<< HEAD
+=======
+	unsigned long flag;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rchp = get_chp(qhp->rhp, qhp->attr.rcq);
 	schp = get_chp(qhp->rhp, qhp->attr.scq);
@@ -966,8 +1000,21 @@ static void flush_qp(struct c4iw_qp *qhp)
 	if (qhp->ibqp.uobject) {
 		t4_set_wq_in_error(&qhp->wq);
 		t4_set_cq_in_error(&rchp->cq);
+<<<<<<< HEAD
 		if (schp != rchp)
 			t4_set_cq_in_error(&schp->cq);
+=======
+		spin_lock_irqsave(&rchp->comp_handler_lock, flag);
+		(*rchp->ibcq.comp_handler)(&rchp->ibcq, rchp->ibcq.cq_context);
+		spin_unlock_irqrestore(&rchp->comp_handler_lock, flag);
+		if (schp != rchp) {
+			t4_set_cq_in_error(&schp->cq);
+			spin_lock_irqsave(&schp->comp_handler_lock, flag);
+			(*schp->ibcq.comp_handler)(&schp->ibcq,
+					schp->ibcq.cq_context);
+			spin_unlock_irqrestore(&schp->comp_handler_lock, flag);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	__flush_qp(qhp, rchp, schp);
@@ -1012,6 +1059,10 @@ out:
 
 static void build_rtr_msg(u8 p2p_type, struct fw_ri_init *init)
 {
+<<<<<<< HEAD
+=======
+	PDBG("%s p2p_type = %d\n", __func__, p2p_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memset(&init->u, 0, sizeof init->u);
 	switch (p2p_type) {
 	case FW_RI_INIT_P2PTYPE_RDMA_WRITE:
@@ -1206,12 +1257,22 @@ int c4iw_modify_qp(struct c4iw_dev *rhp, struct c4iw_qp *qhp,
 				disconnect = 1;
 				c4iw_get_ep(&qhp->ep->com);
 			}
+<<<<<<< HEAD
+=======
+			if (qhp->ibqp.uobject)
+				t4_set_wq_in_error(&qhp->wq);
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = rdma_fini(rhp, qhp, ep);
 			if (ret)
 				goto err;
 			break;
 		case C4IW_QP_STATE_TERMINATE:
 			set_state(qhp, C4IW_QP_STATE_TERMINATE);
+<<<<<<< HEAD
+=======
+			qhp->attr.layer_etype = attrs->layer_etype;
+			qhp->attr.ecode = attrs->ecode;
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (qhp->ibqp.uobject)
 				t4_set_wq_in_error(&qhp->wq);
 			ep = qhp->ep;
@@ -1222,6 +1283,11 @@ int c4iw_modify_qp(struct c4iw_dev *rhp, struct c4iw_qp *qhp,
 			break;
 		case C4IW_QP_STATE_ERROR:
 			set_state(qhp, C4IW_QP_STATE_ERROR);
+<<<<<<< HEAD
+=======
+			if (qhp->ibqp.uobject)
+				t4_set_wq_in_error(&qhp->wq);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!internal) {
 				abort = 1;
 				disconnect = 1;
@@ -1334,7 +1400,14 @@ int c4iw_destroy_qp(struct ib_qp *ib_qp)
 	rhp = qhp->rhp;
 
 	attrs.next_state = C4IW_QP_STATE_ERROR;
+<<<<<<< HEAD
 	c4iw_modify_qp(rhp, qhp, C4IW_QP_ATTR_NEXT_STATE, &attrs, 0);
+=======
+	if (qhp->attr.state == C4IW_QP_STATE_TERMINATE)
+		c4iw_modify_qp(rhp, qhp, C4IW_QP_ATTR_NEXT_STATE, &attrs, 1);
+	else
+		c4iw_modify_qp(rhp, qhp, C4IW_QP_ATTR_NEXT_STATE, &attrs, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	wait_event(qhp->wait, !qhp->ep);
 
 	remove_handle(rhp, &rhp->qpidr, qhp->wq.sq.qid);

@@ -34,7 +34,10 @@
 
 #include <asm/io.h>
 #include <asm/byteorder.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 
 

@@ -10,6 +10,10 @@
  */
 
 #include <linux/device-mapper.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "dm-path-selector.h"
 

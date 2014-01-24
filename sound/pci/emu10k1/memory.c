@@ -25,6 +25,10 @@
 #include <linux/gfp.h>
 #include <linux/time.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/core.h>
 #include <sound/emu10k1.h>

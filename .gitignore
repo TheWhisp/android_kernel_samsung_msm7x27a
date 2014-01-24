@@ -46,6 +46,14 @@ modules.builtin
 /Module.symvers
 
 #
+<<<<<<< HEAD
+=======
+# Debian directory (make deb-pkg)
+#
+/debian/
+
+#
+>>>>>>> refs/remotes/origin/cm-10.0
 # git files that we don't want to ignore even it they are dot-files
 #
 !.gitignore

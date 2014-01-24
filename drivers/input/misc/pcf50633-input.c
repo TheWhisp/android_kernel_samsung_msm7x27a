@@ -113,6 +113,7 @@ static struct platform_driver pcf50633_input_driver = {
 	.probe = pcf50633_input_probe,
 	.remove = __devexit_p(pcf50633_input_remove),
 };
+<<<<<<< HEAD
 
 static int __init pcf50633_input_init(void)
 {
@@ -125,6 +126,9 @@ static void __exit pcf50633_input_exit(void)
 	platform_driver_unregister(&pcf50633_input_driver);
 }
 module_exit(pcf50633_input_exit);
+=======
+module_platform_driver(pcf50633_input_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Balaji Rao <balajirrao@openmoko.org>");
 MODULE_DESCRIPTION("PCF50633 input driver");

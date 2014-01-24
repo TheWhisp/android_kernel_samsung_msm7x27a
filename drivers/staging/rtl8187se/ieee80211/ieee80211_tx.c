@@ -445,7 +445,11 @@ int ieee80211_rtl_xmit(struct sk_buff *skb,
 		(CFG_IEEE80211_COMPUTE_FCS | CFG_IEEE80211_RESERVE_FCS))
 			bytes_per_frag -= IEEE80211_FCS_LEN;
 
+<<<<<<< HEAD
 		/* Each fragment may need to have room for encryptiong pre/postfix */
+=======
+		/* Each fragment may need to have room for encryption pre/postfix */
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (encrypt)
 			bytes_per_frag -= crypt->ops->extra_prefix_len +
 				crypt->ops->extra_postfix_len;

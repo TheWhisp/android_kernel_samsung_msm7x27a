@@ -220,7 +220,11 @@ static int __init fixed_mdio_bus_init(void)
 		goto err_mdiobus_reg;
 	}
 
+<<<<<<< HEAD
 	snprintf(fmb->mii_bus->id, MII_BUS_ID_SIZE, "0");
+=======
+	snprintf(fmb->mii_bus->id, MII_BUS_ID_SIZE, "fixed-0");
+>>>>>>> refs/remotes/origin/cm-10.0
 	fmb->mii_bus->name = "Fixed MDIO Bus";
 	fmb->mii_bus->priv = fmb;
 	fmb->mii_bus->parent = &pdev->dev;

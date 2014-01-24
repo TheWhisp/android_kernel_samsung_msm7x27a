@@ -88,13 +88,21 @@ struct inode * coda_iget(struct super_block * sb, struct CodaFid * fid,
    - link the two up if this is needed
    - fill in the attributes
 */
+<<<<<<< HEAD
 int coda_cnode_make(struct inode **inode, struct CodaFid *fid, struct super_block *sb)
 {
         struct coda_vattr attr;
+=======
+struct inode *coda_cnode_make(struct CodaFid *fid, struct super_block *sb)
+{
+        struct coda_vattr attr;
+	struct inode *inode;
+>>>>>>> refs/remotes/origin/cm-10.0
         int error;
         
 	/* We get inode numbers from Venus -- see venus source */
 	error = venus_getattr(sb, fid, &attr);
+<<<<<<< HEAD
 	if ( error ) {
 	    *inode = NULL;
 	    return error;
@@ -106,6 +114,15 @@ int coda_cnode_make(struct inode **inode, struct CodaFid *fid, struct super_bloc
                 return PTR_ERR(*inode);
         }
 	return 0;
+=======
+	if (error)
+		return ERR_PTR(error);
+
+	inode = coda_iget(sb, fid, &attr);
+	if (IS_ERR(inode))
+		printk("coda_cnode_make: coda_iget failed\n");
+	return inode;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -156,6 +173,7 @@ struct inode *coda_fid_to_inode(struct CodaFid *fid, struct super_block *sb)
 }
 
 /* the CONTROL inode is made without asking attributes from Venus */
+<<<<<<< HEAD
 int coda_cnode_makectl(struct inode **inode, struct super_block *sb)
 {
 	int error = -ENOMEM;
@@ -170,5 +188,18 @@ int coda_cnode_makectl(struct inode **inode, struct super_block *sb)
 	}
 
 	return error;
+=======
+struct inode *coda_cnode_makectl(struct super_block *sb)
+{
+	struct inode *inode = new_inode(sb);
+	if (inode) {
+		inode->i_ino = CTL_INO;
+		inode->i_op = &coda_ioctl_inode_operations;
+		inode->i_fop = &coda_ioctl_operations;
+		inode->i_mode = 0444;
+		return inode;
+	}
+	return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 

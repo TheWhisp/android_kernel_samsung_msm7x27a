@@ -14,7 +14,10 @@
 #define __ASM_ARCH_MEMORY_H
 
 #define PLAT_PHYS_OFFSET		UL(0x20000000)
+<<<<<<< HEAD
 #define CONSISTENT_DMA_SIZE	(SZ_8M + SZ_4M + SZ_2M)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Sparsemem support

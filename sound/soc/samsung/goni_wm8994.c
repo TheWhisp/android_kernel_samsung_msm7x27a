@@ -11,6 +11,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/soc.h>
 #include <sound/jack.h>
 
@@ -99,6 +103,7 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 	int ret;
 
+<<<<<<< HEAD
 	/* add goni specific widgets */
 	snd_soc_dapm_new_controls(dapm, goni_dapm_widgets,
 			ARRAY_SIZE(goni_dapm_widgets));
@@ -107,6 +112,8 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_add_routes(dapm, goni_dapm_routes,
 			ARRAY_SIZE(goni_dapm_routes));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* set endpoints to not connected */
 	snd_soc_dapm_nc_pin(dapm, "IN2LP:VXRN");
 	snd_soc_dapm_nc_pin(dapm, "IN2RP:VXRP");
@@ -120,8 +127,11 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
 		snd_soc_dapm_nc_pin(dapm, "SPKOUTRP");
 	}
 
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Headset jack detection */
 	ret = snd_soc_jack_new(codec, "Headset Jack",
 			SND_JACK_HEADSET | SND_JACK_MECHANICAL | SND_JACK_AVOUT,
@@ -253,8 +263,19 @@ static struct snd_soc_dai_link goni_dai[] = {
 
 static struct snd_soc_card goni = {
 	.name = "goni",
+<<<<<<< HEAD
 	.dai_link = goni_dai,
 	.num_links = ARRAY_SIZE(goni_dai),
+=======
+	.owner = THIS_MODULE,
+	.dai_link = goni_dai,
+	.num_links = ARRAY_SIZE(goni_dai),
+
+	.dapm_widgets = goni_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(goni_dapm_widgets),
+	.dapm_routes = goni_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(goni_dapm_routes),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init goni_init(void)

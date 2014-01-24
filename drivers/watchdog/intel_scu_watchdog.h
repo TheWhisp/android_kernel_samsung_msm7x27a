@@ -25,7 +25,10 @@
 #ifndef __INTEL_SCU_WATCHDOG_H
 #define __INTEL_SCU_WATCHDOG_H
 
+<<<<<<< HEAD
 #define PFX "Intel_SCU: "
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define WDT_VER "0.3"
 
 /* minimum time between interrupts */

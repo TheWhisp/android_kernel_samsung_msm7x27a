@@ -30,6 +30,10 @@
 #include <linux/input/matrix_keypad.h>
 #include <linux/regulator/machine.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/setup.h>
 #include <asm/mach-types.h>
@@ -551,7 +555,11 @@ static struct spi_board_info spitz_spi_devices[] = {
 		.chip_select		= 0,
 		.platform_data		= &spitz_ads7846_info,
 		.controller_data	= &spitz_ads7846_chip,
+<<<<<<< HEAD
 		.irq			= gpio_to_irq(SPITZ_GPIO_TP_INT),
+=======
+		.irq			= PXA_GPIO_TO_IRQ(SPITZ_GPIO_TP_INT),
+>>>>>>> refs/remotes/origin/cm-10.0
 	}, {
 		.modalias		= "corgi-lcd",
 		.max_speed_hz		= 50000,
@@ -925,7 +933,11 @@ static inline void spitz_i2c_init(void) {}
  ******************************************************************************/
 static void spitz_poweroff(void)
 {
+<<<<<<< HEAD
 	arm_machine_restart('g', NULL);
+=======
+	pxa_restart('g', NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void spitz_restart(char mode, const char *cmd)
@@ -942,7 +954,10 @@ static void __init spitz_init(void)
 {
 	init_gpio_reset(SPITZ_GPIO_ON_RESET, 1, 0);
 	pm_power_off = spitz_poweroff;
+<<<<<<< HEAD
 	arm_pm_restart = spitz_restart;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	PMCR = 0x00;
 
@@ -970,8 +985,13 @@ static void __init spitz_init(void)
 	spitz_i2c_init();
 }
 
+<<<<<<< HEAD
 static void __init spitz_fixup(struct machine_desc *desc,
 		struct tag *tags, char **cmdline, struct meminfo *mi)
+=======
+static void __init spitz_fixup(struct tag *tags, char **cmdline,
+			       struct meminfo *mi)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	sharpsl_save_param();
 	mi->nr_banks = 1;
@@ -981,30 +1001,66 @@ static void __init spitz_fixup(struct machine_desc *desc,
 
 #ifdef CONFIG_MACH_SPITZ
 MACHINE_START(SPITZ, "SHARP Spitz")
+<<<<<<< HEAD
 	.fixup		= spitz_fixup,
 	.map_io		= pxa27x_map_io,
 	.init_irq	= pxa27x_init_irq,
 	.init_machine	= spitz_init,
 	.timer		= &pxa_timer,
+=======
+	.restart_mode	= 'g',
+	.fixup		= spitz_fixup,
+	.map_io		= pxa27x_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa27x_init_irq,
+	.handle_irq	= pxa27x_handle_irq,
+	.init_machine	= spitz_init,
+	.timer		= &pxa_timer,
+	.restart	= spitz_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_BORZOI
 MACHINE_START(BORZOI, "SHARP Borzoi")
+<<<<<<< HEAD
 	.fixup		= spitz_fixup,
 	.map_io		= pxa27x_map_io,
 	.init_irq	= pxa27x_init_irq,
 	.init_machine	= spitz_init,
 	.timer		= &pxa_timer,
+=======
+	.restart_mode	= 'g',
+	.fixup		= spitz_fixup,
+	.map_io		= pxa27x_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa27x_init_irq,
+	.handle_irq	= pxa27x_handle_irq,
+	.init_machine	= spitz_init,
+	.timer		= &pxa_timer,
+	.restart	= spitz_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_AKITA
 MACHINE_START(AKITA, "SHARP Akita")
+<<<<<<< HEAD
 	.fixup		= spitz_fixup,
 	.map_io		= pxa27x_map_io,
 	.init_irq	= pxa27x_init_irq,
 	.init_machine	= spitz_init,
 	.timer		= &pxa_timer,
+=======
+	.restart_mode	= 'g',
+	.fixup		= spitz_fixup,
+	.map_io		= pxa27x_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa27x_init_irq,
+	.handle_irq	= pxa27x_handle_irq,
+	.init_machine	= spitz_init,
+	.timer		= &pxa_timer,
+	.restart	= spitz_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 #endif

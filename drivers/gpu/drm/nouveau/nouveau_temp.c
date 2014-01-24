@@ -22,6 +22,11 @@
  * Authors: Martin Peres
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 
 #include "nouveau_drv.h"
@@ -43,7 +48,11 @@ nouveau_temp_vbios_parse(struct drm_device *dev, u8 *temp)
 
 	/* Set the default sensor's contants */
 	sensor->offset_constant = 0;
+<<<<<<< HEAD
 	sensor->offset_mult = 1;
+=======
+	sensor->offset_mult = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	sensor->offset_div = 1;
 	sensor->slope_mult = 1;
 	sensor->slope_div = 1;
@@ -53,6 +62,13 @@ nouveau_temp_vbios_parse(struct drm_device *dev, u8 *temp)
 	temps->down_clock = 100;
 	temps->fan_boost = 90;
 
+<<<<<<< HEAD
+=======
+	/* Set the default range for the pwm fan */
+	pm->fan.min_duty = 30;
+	pm->fan.max_duty = 100;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Set the known default values to setup the temperature sensor */
 	if (dev_priv->card_type >= NV_40) {
 		switch (dev_priv->chipset) {
@@ -99,6 +115,16 @@ nouveau_temp_vbios_parse(struct drm_device *dev, u8 *temp)
 			sensor->slope_mult = 431;
 			sensor->slope_div = 10000;
 			break;
+<<<<<<< HEAD
+=======
+
+		case 0x67:
+			sensor->offset_mult = -26149;
+			sensor->offset_div = 100;
+			sensor->slope_mult = 484;
+			sensor->slope_div = 10000;
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -109,7 +135,11 @@ nouveau_temp_vbios_parse(struct drm_device *dev, u8 *temp)
 
 	/* Read the entries from the table */
 	for (i = 0; i < entries; i++) {
+<<<<<<< HEAD
 		u16 value = ROM16(temp[1]);
+=======
+		s16 value = ROM16(temp[1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		switch (temp[0]) {
 		case 0x01:
@@ -147,11 +177,32 @@ nouveau_temp_vbios_parse(struct drm_device *dev, u8 *temp)
 		case 0x13:
 			sensor->slope_div = value;
 			break;
+<<<<<<< HEAD
+=======
+		case 0x22:
+			pm->fan.min_duty = value & 0xff;
+			pm->fan.max_duty = (value & 0xff00) >> 8;
+			break;
+		case 0x26:
+			pm->fan.pwm_freq = value;
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		temp += recordlen;
 	}
 
 	nouveau_temp_safety_checks(dev);
+<<<<<<< HEAD
+=======
+
+	/* check the fan min/max settings */
+	if (pm->fan.min_duty < 10)
+		pm->fan.min_duty = 10;
+	if (pm->fan.max_duty > 100)
+		pm->fan.max_duty = 100;
+	if (pm->fan.max_duty < pm->fan.min_duty)
+		pm->fan.max_duty = pm->fan.min_duty;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int
@@ -160,8 +211,13 @@ nv40_sensor_setup(struct drm_device *dev)
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nouveau_pm_engine *pm = &dev_priv->engine.pm;
 	struct nouveau_pm_temp_sensor_constants *sensor = &pm->sensor_constants;
+<<<<<<< HEAD
 	u32 offset = sensor->offset_mult / sensor->offset_div;
 	u32 sensor_calibration;
+=======
+	s32 offset = sensor->offset_mult / sensor->offset_div;
+	s32 sensor_calibration;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* set up the sensors */
 	sensor_calibration = 120 - offset - sensor->offset_constant;
@@ -258,8 +314,11 @@ probe_monitoring_device(struct nouveau_i2c_chan *i2c,
 static void
 nouveau_temp_probe_i2c(struct drm_device *dev)
 {
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct dcb_table *dcb = &dev_priv->vbios.dcb;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct i2c_board_info info[] = {
 		{ I2C_BOARD_INFO("w83l785ts", 0x2d) },
 		{ I2C_BOARD_INFO("w83781d", 0x2d) },
@@ -268,11 +327,17 @@ nouveau_temp_probe_i2c(struct drm_device *dev)
 		{ I2C_BOARD_INFO("lm99", 0x4c) },
 		{ }
 	};
+<<<<<<< HEAD
 	int idx = (dcb->version >= 0x40 ?
 		   dcb->i2c_default_indices & 0xf : 2);
 
 	nouveau_i2c_identify(dev, "monitoring device", info,
 			     probe_monitoring_device, idx);
+=======
+
+	nouveau_i2c_identify(dev, "monitoring device", info,
+			     probe_monitoring_device, NV_I2C_DEFAULT(0));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void
@@ -288,9 +353,15 @@ nouveau_temp_init(struct drm_device *dev)
 			return;
 
 		if (P.version == 1)
+<<<<<<< HEAD
 			temp = ROMPTR(bios, P.data[12]);
 		else if (P.version == 2)
 			temp = ROMPTR(bios, P.data[16]);
+=======
+			temp = ROMPTR(dev, P.data[12]);
+		else if (P.version == 2)
+			temp = ROMPTR(dev, P.data[16]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			NV_WARN(dev, "unknown temp for BIT P %d\n", P.version);
 

@@ -21,7 +21,11 @@
 #include <linux/timex.h>
 #include <linux/smp.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/cpu-features.h>
 #include <asm/div64.h>

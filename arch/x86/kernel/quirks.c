@@ -10,7 +10,11 @@
 
 static void __devinit quirk_intel_irqbalance(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	u8 config, rev;
+=======
+	u8 config;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 word;
 
 	/* BIOS may enable hardware IRQ balancing for
@@ -18,8 +22,12 @@ static void __devinit quirk_intel_irqbalance(struct pci_dev *dev)
 	 * based platforms.
 	 * Disable SW irqbalance/affinity on those platforms.
 	 */
+<<<<<<< HEAD
 	pci_read_config_byte(dev, PCI_CLASS_REVISION, &rev);
 	if (rev > 0x9)
+=======
+	if (dev->revision > 0x9)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	/* enable access to config space*/
@@ -554,4 +562,20 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_10H_NB_MISC,
 			quirk_amd_nb_node);
 DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_10H_NB_LINK,
 			quirk_amd_nb_node);
+<<<<<<< HEAD
+=======
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F0,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F1,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F2,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F3,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F4,
+			quirk_amd_nb_node);
+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_15H_NB_F5,
+			quirk_amd_nb_node);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

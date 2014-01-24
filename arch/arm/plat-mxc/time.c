@@ -108,6 +108,7 @@ static void gpt_irq_acknowledge(void)
 
 static void __iomem *sched_clock_reg;
 
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 unsigned long long notrace sched_clock(void)
 {
@@ -120,6 +121,11 @@ static void notrace mxc_update_sched_clock(void)
 {
 	cycle_t cyc = sched_clock_reg ? __raw_readl(sched_clock_reg) : 0;
 	update_sched_clock(&cd, cyc, (u32)~0);
+=======
+static u32 notrace mxc_read_sched_clock(void)
+{
+	return sched_clock_reg ? __raw_readl(sched_clock_reg) : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __init mxc_clocksource_init(struct clk *timer_clk)
@@ -129,7 +135,11 @@ static int __init mxc_clocksource_init(struct clk *timer_clk)
 
 	sched_clock_reg = reg;
 
+<<<<<<< HEAD
 	init_sched_clock(&cd, mxc_update_sched_clock, 32, c);
+=======
+	setup_sched_clock(mxc_read_sched_clock, 32, c);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return clocksource_mmio_init(reg, "mxc_timer1", c, 200, 32,
 			clocksource_mmio_readl_up);
 }
@@ -292,7 +302,11 @@ void __init mxc_timer_init(struct clk *timer_clk, void __iomem *base, int irq)
 {
 	uint32_t tctl_val;
 
+<<<<<<< HEAD
 	clk_enable(timer_clk);
+=======
+	clk_prepare_enable(timer_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	timer_base = base;
 

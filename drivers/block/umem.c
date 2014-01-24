@@ -551,7 +551,11 @@ static int mm_check_plugged(struct cardinfo *card)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int mm_make_request(struct request_queue *q, struct bio *bio)
+=======
+static void mm_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct cardinfo *card = q->queuedata;
 	pr_debug("mm_make_request %llu %u\n",
@@ -565,7 +569,11 @@ static int mm_make_request(struct request_queue *q, struct bio *bio)
 		activate(card);
 	spin_unlock_irq(&card->lock);
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static irqreturn_t mm_interrupt(int irq, void *__card)

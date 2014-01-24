@@ -20,7 +20,11 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/input.h>
+=======
+#include <linux/input/mt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/major.h>
 #include <linux/device.h>
 #include <linux/wakelock.h>
@@ -50,6 +54,10 @@ struct evdev_client {
 	struct fasync_struct *fasync;
 	struct evdev *evdev;
 	struct list_head node;
+<<<<<<< HEAD
+=======
+	int clkid;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int bufsize;
 	struct input_event buffer[];
 };
@@ -58,8 +66,17 @@ static struct evdev *evdev_table[EVDEV_MINORS];
 static DEFINE_MUTEX(evdev_table_mutex);
 
 static void evdev_pass_event(struct evdev_client *client,
+<<<<<<< HEAD
 			     struct input_event *event)
 {
+=======
+			     struct input_event *event,
+			     ktime_t mono, ktime_t real)
+{
+	event->time = ktime_to_timeval(client->clkid == CLOCK_MONOTONIC ?
+					mono : real);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Interrupts are disabled, just acquire the lock. */
 	spin_lock(&client->buffer_lock);
 
@@ -102,11 +119,19 @@ static void evdev_event(struct input_handle *handle,
 	struct evdev *evdev = handle->private;
 	struct evdev_client *client;
 	struct input_event event;
+<<<<<<< HEAD
 	struct timespec ts;
 
 	ktime_get_ts(&ts);
 	event.time.tv_sec = ts.tv_sec;
 	event.time.tv_usec = ts.tv_nsec / NSEC_PER_USEC;
+=======
+	ktime_t time_mono, time_real;
+
+	time_mono = ktime_get();
+	time_real = ktime_sub(time_mono, ktime_get_monotonic_offset());
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	event.type = type;
 	event.code = code;
 	event.value = value;
@@ -114,11 +139,20 @@ static void evdev_event(struct input_handle *handle,
 	rcu_read_lock();
 
 	client = rcu_dereference(evdev->grab);
+<<<<<<< HEAD
 	if (client)
 		evdev_pass_event(client, &event);
 	else
 		list_for_each_entry_rcu(client, &evdev->client_list, node)
 			evdev_pass_event(client, &event);
+=======
+
+	if (client)
+		evdev_pass_event(client, &event, time_mono, time_real);
+	else
+		list_for_each_entry_rcu(client, &evdev->client_list, node)
+			evdev_pass_event(client, &event, time_mono, time_real);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rcu_read_unlock();
 
@@ -317,6 +351,10 @@ static int evdev_open(struct inode *inode, struct file *file)
 		goto err_put_evdev;
 	}
 
+<<<<<<< HEAD
+=======
+	client->clkid = CLOCK_MONOTONIC;
+>>>>>>> refs/remotes/origin/cm-10.0
 	client->bufsize = bufsize;
 	spin_lock_init(&client->buffer_lock);
 	snprintf(client->name, sizeof(client->name), "%s-%d",
@@ -347,7 +385,11 @@ static ssize_t evdev_write(struct file *file, const char __user *buffer,
 	struct evdev_client *client = file->private_data;
 	struct evdev *evdev = client->evdev;
 	struct input_event event;
+<<<<<<< HEAD
 	int retval;
+=======
+	int retval = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (count < input_event_size())
 		return -EINVAL;
@@ -411,7 +453,12 @@ static ssize_t evdev_read(struct file *file, char __user *buffer,
 
 	if (!(file->f_flags & O_NONBLOCK)) {
 		retval = wait_event_interruptible(evdev->wait,
+<<<<<<< HEAD
 			 client->packet_head != client->tail || !evdev->exist);
+=======
+				client->packet_head != client->tail ||
+				!evdev->exist);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (retval)
 			return retval;
 	}
@@ -428,8 +475,14 @@ static ssize_t evdev_read(struct file *file, char __user *buffer,
 		retval += input_event_size();
 	}
 
+<<<<<<< HEAD
 	if (retval == 0 && file->f_flags & O_NONBLOCK)
 		retval = -EAGAIN;
+=======
+	if (retval == 0 && (file->f_flags & O_NONBLOCK))
+		return -EAGAIN;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
@@ -639,6 +692,31 @@ static int evdev_handle_set_keycode_v2(struct input_dev *dev, void __user *p)
 	return input_set_keycode(dev, &ke);
 }
 
+<<<<<<< HEAD
+=======
+static int evdev_handle_mt_request(struct input_dev *dev,
+				   unsigned int size,
+				   int __user *ip)
+{
+	const struct input_mt_slot *mt = dev->mt;
+	unsigned int code;
+	int max_slots;
+	int i;
+
+	if (get_user(code, &ip[0]))
+		return -EFAULT;
+	if (!input_is_mt_value(code))
+		return -EINVAL;
+
+	max_slots = (size - sizeof(__u32)) / sizeof(__s32);
+	for (i = 0; i < dev->mtsize && i < max_slots; i++)
+		if (put_user(input_mt_get_value(&mt[i], code), &ip[1 + i]))
+			return -EFAULT;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int evdev_enable_suspend_block(struct evdev *evdev,
 				      struct evdev_client *client)
 {
@@ -730,6 +808,17 @@ static long evdev_do_ioctl(struct file *file, unsigned int cmd,
 		else
 			return evdev_ungrab(evdev, client);
 
+<<<<<<< HEAD
+=======
+	case EVIOCSCLOCKID:
+		if (copy_from_user(&i, p, sizeof(unsigned int)))
+			return -EFAULT;
+		if (i != CLOCK_MONOTONIC && i != CLOCK_REALTIME)
+			return -EINVAL;
+		client->clkid = i;
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	case EVIOCGKEYCODE:
 		return evdev_handle_get_keycode(dev, p);
 
@@ -762,6 +851,12 @@ static long evdev_do_ioctl(struct file *file, unsigned int cmd,
 		return bits_to_user(dev->propbit, INPUT_PROP_MAX,
 				    size, p, compat_mode);
 
+<<<<<<< HEAD
+=======
+	case EVIOCGMTSLOTS(0):
+		return evdev_handle_mt_request(dev, size, ip);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	case EVIOCGKEY(0):
 		return bits_to_user(dev->key, KEY_MAX, size, p, compat_mode);
 

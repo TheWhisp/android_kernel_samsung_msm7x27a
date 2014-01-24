@@ -1,7 +1,11 @@
 /*
  * Platform data for Texas Instruments TLV320AIC3x codec
  *
+<<<<<<< HEAD
  * Author: Jarkko Nikula <jhnikula@gmail.com>
+=======
+ * Author: Jarkko Nikula <jarkko.nikula@bitmer.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as

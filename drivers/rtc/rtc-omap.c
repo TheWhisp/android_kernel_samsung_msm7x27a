@@ -348,14 +348,22 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 		rtc_write(OMAP_RTC_STATUS_ALARM, OMAP_RTC_STATUS_REG);
 
 	/* handle periodic and alarm irqs */
+<<<<<<< HEAD
 	if (request_irq(omap_rtc_timer, rtc_irq, IRQF_DISABLED,
+=======
+	if (request_irq(omap_rtc_timer, rtc_irq, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			dev_name(&rtc->dev), rtc)) {
 		pr_debug("%s: RTC timer interrupt IRQ%d already claimed\n",
 			pdev->name, omap_rtc_timer);
 		goto fail1;
 	}
 	if ((omap_rtc_timer != omap_rtc_alarm) &&
+<<<<<<< HEAD
 		(request_irq(omap_rtc_alarm, rtc_irq, IRQF_DISABLED,
+=======
+		(request_irq(omap_rtc_alarm, rtc_irq, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			dev_name(&rtc->dev), rtc))) {
 		pr_debug("%s: RTC alarm interrupt IRQ%d already claimed\n",
 			pdev->name, omap_rtc_alarm);
@@ -368,7 +376,11 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 		pr_info("%s: already running\n", pdev->name);
 
 	/* force to 24 hour mode */
+<<<<<<< HEAD
 	new_ctrl = reg & ~(OMAP_RTC_CTRL_SPLIT|OMAP_RTC_CTRL_AUTO_COMP);
+=======
+	new_ctrl = reg & (OMAP_RTC_CTRL_SPLIT|OMAP_RTC_CTRL_AUTO_COMP);
+>>>>>>> refs/remotes/origin/cm-10.0
 	new_ctrl |= OMAP_RTC_CTRL_STOP;
 
 	/* BOARD-SPECIFIC CUSTOMIZATION CAN GO HERE:

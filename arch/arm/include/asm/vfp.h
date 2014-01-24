@@ -84,6 +84,11 @@
 #define VFPOPDESC_OPDESC_MASK	(~(VFPOPDESC_LENGTH_MASK | VFPOPDESC_UNUSED_MASK))
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 int vfp_flush_context(void);
 void vfp_reinit(void);
+=======
+int vfp_pm_suspend(void);
+void vfp_pm_resume(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

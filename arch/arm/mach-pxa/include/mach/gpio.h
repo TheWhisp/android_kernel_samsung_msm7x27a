@@ -24,6 +24,7 @@
 #ifndef __ASM_ARCH_PXA_GPIO_H
 #define __ASM_ARCH_PXA_GPIO_H
 
+<<<<<<< HEAD
 #include <mach/irqs.h>
 #include <mach/hardware.h>
 #include <asm-generic/gpio.h>
@@ -151,4 +152,11 @@ static inline int __gpio_is_occupied(unsigned gpio)
 }
 
 #include <plat/gpio.h>
+=======
+#include <asm-generic/gpio.h>
+
+#include <mach/irqs.h>
+#include <mach/hardware.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

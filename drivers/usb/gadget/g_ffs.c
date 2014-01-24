@@ -2,12 +2,17 @@
  * g_ffs.c -- user mode file system API for USB composite function controllers
  *
  * Copyright (C) 2010 Samsung Electronics
+<<<<<<< HEAD
  * Author: Michal Nazarewicz <m.nazarewicz@samsung.com>
+=======
+ * Author: Michal Nazarewicz <mina86@mina86.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,6 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #define pr_fmt(fmt) "g_ffs: " fmt
@@ -162,6 +169,10 @@ static struct usb_composite_driver gfs_driver = {
 	.name		= DRIVER_NAME,
 	.dev		= &gfs_dev_desc,
 	.strings	= gfs_dev_strings,
+<<<<<<< HEAD
+=======
+	.max_speed	= USB_SPEED_HIGH,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.unbind		= gfs_unbind,
 	.iProduct	= DRIVER_DESC,
 };
@@ -169,7 +180,11 @@ static struct usb_composite_driver gfs_driver = {
 static struct ffs_data *gfs_ffs_data;
 static unsigned long gfs_registered;
 
+<<<<<<< HEAD
 static int  gfs_init(void)
+=======
+static int __init gfs_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	ENTER();
 
@@ -177,7 +192,11 @@ static int  gfs_init(void)
 }
 module_init(gfs_init);
 
+<<<<<<< HEAD
 static void  gfs_exit(void)
+=======
+static void __exit gfs_exit(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	ENTER();
 

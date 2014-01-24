@@ -26,12 +26,23 @@
 #define __COMPRESS_OFFLOAD_H
 
 #include <linux/types.h>
+<<<<<<< HEAD
 /**
  * struct snd_compressed_buffer:compressed buffer
+=======
+#include <sound/asound.h>
+#include "compress_params.h"
+
+
+#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 0)
+/**
+ * struct snd_compressed_buffer: compressed buffer
+>>>>>>> refs/remotes/origin/cm-10.0
  * @fragment_size: size of buffer fragment in bytes
  * @fragments: number of such fragments
  */
 struct snd_compressed_buffer {
+<<<<<<< HEAD
 	size_t fragment_size;
 	int fragments;
 };
@@ -40,10 +51,27 @@ struct snd_compressed_buffer {
 struct snd_compr_params {
 	struct snd_compressed_buffer buffer;
 	struct snd_codec codec;
+=======
+	__u32 fragment_size;
+	__u32 fragments;
+};
+
+/**
+ * struct snd_compr_params: compressed stream params
+ * @buffer: buffer description
+ * @codec: codec parameters
+ * @no_wake_mode: dont wake on fragment elapsed
+ */
+struct snd_compr_params {
+	struct snd_compressed_buffer buffer;
+	struct snd_codec codec;
+	__u8 no_wake_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
  * struct snd_compr_tstamp: timestamp descriptor
+<<<<<<< HEAD
  * @copied_bytes: Number of bytes offset in ring buffer to DSP
  * @copied_total: Total number of bytes copied from ring buffer to DSP
  * @decoded: Frames decoded by DSP
@@ -55,6 +83,22 @@ struct snd_compr_tstamp {
 	size_t copied_total;
 	size_t decoded;
 	size_t rendered;
+=======
+ * @byte_offset: Byte offset in ring buffer to DSP
+ * @copied_total: Total number of bytes copied from/to ring buffer to/by DSP
+ * @pcm_frames: Frames decoded or encoded by DSP. This field will evolve by
+ *	large steps and should only be used to monitor encoding/decoding
+ *	progress. It shall not be used for timing estimates.
+ * @pcm_io_frames: Frames rendered or received by DSP into a mixer or an audio
+ * output/input. This field should be used for A/V sync or time estimates.
+ * @sampling_rate: sampling rate of audio
+ */
+struct snd_compr_tstamp {
+	__u32 byte_offset;
+	__u32 copied_total;
+	snd_pcm_uframes_t pcm_frames;
+	snd_pcm_uframes_t pcm_io_frames;
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u32 sampling_rate;
 	uint64_t timestamp;
 };
@@ -65,6 +109,7 @@ struct snd_compr_tstamp {
  * @tstamp: timestamp infomation
  */
 struct snd_compr_avail {
+<<<<<<< HEAD
 	size_t avail;
 	struct snd_compr_tstamp tstamp;
 };
@@ -72,6 +117,21 @@ struct snd_compr_avail {
 /**
  * struct snd_compr_caps: caps descriptor
  * @codecs: pointer to array of codecs
+=======
+	__u64 avail;
+	struct snd_compr_tstamp tstamp;
+};
+
+enum snd_compr_direction {
+	SND_COMPRESS_PLAYBACK = 0,
+	SND_COMPRESS_CAPTURE
+};
+
+/**
+ * struct snd_compr_caps: caps descriptor
+ * @codecs: pointer to array of codecs
+ * @direction: direction supported. Of type snd_compr_direction
+>>>>>>> refs/remotes/origin/cm-10.0
  * @min_fragment_size: minimum fragment supported by DSP
  * @max_fragment_size: maximum fragment supported by DSP
  * @min_fragments: min fragments supported by DSP
@@ -81,6 +141,10 @@ struct snd_compr_avail {
  */
 struct snd_compr_caps {
 	__u32 num_codecs;
+<<<<<<< HEAD
+=======
+	__u32 direction;
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u32 min_fragment_size;
 	__u32 max_fragment_size;
 	__u32 min_fragments;
@@ -102,12 +166,29 @@ struct snd_compr_codec_caps {
 };
 
 /**
+<<<<<<< HEAD
+=======
+ * struct snd_compr_audio_info: compressed input audio information
+ * @frame_size: legth of the encoded frame with valid data
+ * @reserved: reserved for furture use
+ */
+struct snd_compr_audio_info {
+	uint32_t frame_size;
+	uint32_t reserved[15];
+};
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * compress path ioctl definitions
  * SNDRV_COMPRESS_GET_CAPS: Query capability of DSP
  * SNDRV_COMPRESS_GET_CODEC_CAPS: Query capability of a codec
  * SNDRV_COMPRESS_SET_PARAMS: Set codec and stream parameters
  * Note: only codec params can be changed runtime and stream params cant be
+<<<<<<< HEAD
  * SNDRV_COMPRESS_GET_PARAMS: Query codec and stream params
+=======
+ * SNDRV_COMPRESS_GET_PARAMS: Query codec params
+>>>>>>> refs/remotes/origin/cm-10.0
  * SNDRV_COMPRESS_TSTAMP: get the current timestamp value
  * SNDRV_COMPRESS_AVAIL: get the current buffer avail value.
  * This also queries the tstamp properties
@@ -117,6 +198,7 @@ struct snd_compr_codec_caps {
  * SNDRV_COMPRESS_STOP: stop a running stream, discarding ring buffer content
  * and the buffers currently with DSP
  * SNDRV_COMPRESS_DRAIN: Play till end of buffers and stop after that
+<<<<<<< HEAD
  */
 #define SNDRV_COMPRESS_GET_CAPS		_IOWR('C', 0x00, struct snd_compr_caps *)
 #define SNDRV_COMPRESS_GET_CODEC_CAPS	_IOWR('C', 0x01, struct snd_compr_codec_caps *)
@@ -129,6 +211,23 @@ struct snd_compr_codec_caps {
 #define SNDRV_COMPRESS_START		_IO('C', 0x22)
 #define SNDRV_COMPRESS_STOP		_IO('C', 0x23)
 #define SNDRV_COMPRESS_DRAIN		_IO('C', 0x24)
+=======
+ * SNDRV_COMPRESS_IOCTL_VERSION: Query the API version
+ */
+#define SNDRV_COMPRESS_IOCTL_VERSION	_IOR('C', 0x00, int)
+#define SNDRV_COMPRESS_GET_CAPS		_IOWR('C', 0x10, struct snd_compr_caps)
+#define SNDRV_COMPRESS_GET_CODEC_CAPS	_IOWR('C', 0x11,\
+						struct snd_compr_codec_caps)
+#define SNDRV_COMPRESS_SET_PARAMS	_IOW('C', 0x12, struct snd_compr_params)
+#define SNDRV_COMPRESS_GET_PARAMS	_IOR('C', 0x13, struct snd_codec)
+#define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
+#define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
+#define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
+#define SNDRV_COMPRESS_RESUME		_IO('C', 0x31)
+#define SNDRV_COMPRESS_START		_IO('C', 0x32)
+#define SNDRV_COMPRESS_STOP		_IO('C', 0x33)
+#define SNDRV_COMPRESS_DRAIN		_IO('C', 0x34)
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * TODO
  * 1. add mmap support

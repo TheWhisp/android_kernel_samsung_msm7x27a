@@ -7,7 +7,11 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/mutex.h>
@@ -21,22 +25,32 @@
 #include <linux/workqueue.h>
 #include <linux/delay.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/mux.h>
 #include <plat/usb.h>
 #include <plat/board.h>
 #include <plat/keypad.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/hwa742.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/lcd_mipid.h>
 #include <plat/mmc.h>
 #include <plat/clock.h>
 
+<<<<<<< HEAD
 #define ADS7846_PENDOWN_GPIO	15
 
 static void __init omap_nokia770_init_irq(void)
@@ -53,6 +67,13 @@ static void __init omap_nokia770_init_irq(void)
 	omap1_init_common_hw();
 	omap_init_irq();
 }
+=======
+#include <mach/hardware.h>
+
+#include "common.h"
+
+#define ADS7846_PENDOWN_GPIO	15
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const unsigned int nokia770_keymap[] = {
 	KEY(1, 0, GROUP_0 | KEY_UP),
@@ -115,6 +136,7 @@ static struct mipid_platform_data nokia770_mipid_platform_data = {
 	.shutdown = mipid_shutdown,
 };
 
+<<<<<<< HEAD
 static void __init mipid_dev_init(void)
 {
 	const struct omap_lcd_config *conf;
@@ -124,6 +146,18 @@ static void __init mipid_dev_init(void)
 		nokia770_mipid_platform_data.nreset_gpio = conf->nreset_gpio;
 		nokia770_mipid_platform_data.data_lines = conf->data_lines;
 	}
+=======
+static struct omap_lcd_config nokia770_lcd_config __initdata = {
+	.ctrl_name	= "hwa742",
+};
+
+static void __init mipid_dev_init(void)
+{
+	nokia770_mipid_platform_data.nreset_gpio = 13;
+	nokia770_mipid_platform_data.data_lines = 16;
+
+	omapfb_set_lcd_config(&nokia770_lcd_config);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __init ads7846_dev_init(void)
@@ -161,11 +195,15 @@ static struct spi_board_info nokia770_spi_board_info[] __initdata = {
 		.bus_num        = 2,
 		.chip_select    = 0,
 		.max_speed_hz   = 2500000,
+<<<<<<< HEAD
 		.irq		= OMAP_GPIO_IRQ(15),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.platform_data	= &nokia770_ads7846_platform_data,
 	},
 };
 
+<<<<<<< HEAD
 static struct hwa742_platform_data nokia770_hwa742_platform_data = {
 	.te_connected		= 1,
 };
@@ -174,6 +212,11 @@ static void __init hwa742_dev_init(void)
 {
 	clk_add_alias("hwa_sys_ck", NULL, "bclk", NULL);
 	omapfb_set_ctrl_platform_data(&nokia770_hwa742_platform_data);
+=======
+static void __init hwa742_dev_init(void)
+{
+	clk_add_alias("hwa_sys_ck", NULL, "bclk", NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* assume no Mini-AB port */
@@ -246,7 +289,21 @@ static inline void nokia770_mmc_init(void)
 
 static void __init omap_nokia770_init(void)
 {
+<<<<<<< HEAD
 	platform_add_devices(nokia770_devices, ARRAY_SIZE(nokia770_devices));
+=======
+	/* On Nokia 770, the SleepX signal is masked with an
+	 * MPUIO line by default.  It has to be unmasked for it
+	 * to become functional */
+
+	/* SleepX mask direction */
+	omap_writew((omap_readw(0xfffb5008) & ~2), 0xfffb5008);
+	/* Unmask SleepX signal */
+	omap_writew((omap_readw(0xfffb5004) & ~2), 0xfffb5004);
+
+	platform_add_devices(nokia770_devices, ARRAY_SIZE(nokia770_devices));
+	nokia770_spi_board_info[1].irq = gpio_to_irq(15);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spi_register_board_info(nokia770_spi_board_info,
 				ARRAY_SIZE(nokia770_spi_board_info));
 	omap_serial_init();
@@ -258,6 +315,7 @@ static void __init omap_nokia770_init(void)
 	nokia770_mmc_init();
 }
 
+<<<<<<< HEAD
 static void __init omap_nokia770_map_io(void)
 {
 	omap1_map_common_io();
@@ -270,4 +328,15 @@ MACHINE_START(NOKIA770, "Nokia 770")
 	.init_irq	= omap_nokia770_init_irq,
 	.init_machine	= omap_nokia770_init,
 	.timer		= &omap_timer,
+=======
+MACHINE_START(NOKIA770, "Nokia 770")
+	.atag_offset	= 0x100,
+	.map_io		= omap16xx_map_io,
+	.init_early     = omap1_init_early,
+	.reserve	= omap_reserve,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= omap_nokia770_init,
+	.timer		= &omap1_timer,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

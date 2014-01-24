@@ -31,8 +31,13 @@
 #include <linux/root_dev.h>
 #include <linux/cpu.h>
 #include <linux/kdebug.h>
+<<<<<<< HEAD
 
 #include <asm/system.h>
+=======
+#include <linux/export.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/processor.h>
 #include <asm/oplib.h>
@@ -45,6 +50,10 @@
 #include <asm/machines.h>
 #include <asm/cpudata.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "kernel.h"
 
@@ -83,7 +92,11 @@ static void prom_sync_me(void)
 
 	prom_printf("PROM SYNC COMMAND...\n");
 	show_free_areas(0);
+<<<<<<< HEAD
 	if(current->pid != 0) {
+=======
+	if (!is_idle_task(current)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		local_irq_enable();
 		sys_sync();
 		local_irq_disable();
@@ -137,7 +150,11 @@ static void __init process_switch(char c)
 		prom_halt();
 		break;
 	case 'p':
+<<<<<<< HEAD
 		/* Just ignore, this behavior is now the default.  */
+=======
+		prom_early_console.flags &= ~CON_BOOT;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		printk("Unknown boot switch (-%c)\n", c);

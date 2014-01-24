@@ -25,6 +25,10 @@
 #include <linux/miscdevice.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/types.h>
@@ -55,6 +59,7 @@
 
 /**
  * struct sp805_wdt: sp805 wdt device structure
+<<<<<<< HEAD
  *
  * lock: spin lock protecting dev structure and io access
  * base: base address of wdt
@@ -63,6 +68,15 @@
  * status: current status of wdt
  * load_val: load value to be set for current timeout
  * timeout: current programmed timeout
+=======
+ * @lock: spin lock protecting dev structure and io access
+ * @base: base address of wdt
+ * @clk: clock structure of wdt
+ * @adev: amba device structure of wdt
+ * @status: current status of wdt
+ * @load_val: load value to be set for current timeout
+ * @timeout: current programmed timeout
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct sp805_wdt {
 	spinlock_t			lock;
@@ -78,7 +92,11 @@ struct sp805_wdt {
 
 /* local variables */
 static struct sp805_wdt *wdt;
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* This routine finds load value that will reset system in required timout */
 static void wdt_setload(unsigned int timeout)
@@ -113,10 +131,17 @@ static u32 wdt_timeleft(void)
 	rate = clk_get_rate(wdt->clk);
 
 	spin_lock(&wdt->lock);
+<<<<<<< HEAD
 	load = readl(wdt->base + WDTVALUE);
 
 	/*If the interrupt is inactive then time left is WDTValue + WDTLoad. */
 	if (!(readl(wdt->base + WDTRIS) & INT_MASK))
+=======
+	load = readl_relaxed(wdt->base + WDTVALUE);
+
+	/*If the interrupt is inactive then time left is WDTValue + WDTLoad. */
+	if (!(readl_relaxed(wdt->base + WDTRIS) & INT_MASK))
+>>>>>>> refs/remotes/origin/cm-10.0
 		load += wdt->load_val + 1;
 	spin_unlock(&wdt->lock);
 
@@ -128,12 +153,23 @@ static void wdt_enable(void)
 {
 	spin_lock(&wdt->lock);
 
+<<<<<<< HEAD
 	writel(UNLOCK, wdt->base + WDTLOCK);
 	writel(wdt->load_val, wdt->base + WDTLOAD);
 	writel(INT_MASK, wdt->base + WDTINTCLR);
 	writel(INT_ENABLE | RESET_ENABLE, wdt->base + WDTCONTROL);
 	writel(LOCK, wdt->base + WDTLOCK);
 
+=======
+	writel_relaxed(UNLOCK, wdt->base + WDTLOCK);
+	writel_relaxed(wdt->load_val, wdt->base + WDTLOAD);
+	writel_relaxed(INT_MASK, wdt->base + WDTINTCLR);
+	writel_relaxed(INT_ENABLE | RESET_ENABLE, wdt->base + WDTCONTROL);
+	writel_relaxed(LOCK, wdt->base + WDTLOCK);
+
+	/* Flush posted writes. */
+	readl_relaxed(wdt->base + WDTLOCK);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&wdt->lock);
 }
 
@@ -142,11 +178,20 @@ static void wdt_disable(void)
 {
 	spin_lock(&wdt->lock);
 
+<<<<<<< HEAD
 	writel(UNLOCK, wdt->base + WDTLOCK);
 	writel(0, wdt->base + WDTCONTROL);
 	writel(0, wdt->base + WDTLOAD);
 	writel(LOCK, wdt->base + WDTLOCK);
 
+=======
+	writel_relaxed(UNLOCK, wdt->base + WDTLOCK);
+	writel_relaxed(0, wdt->base + WDTCONTROL);
+	writel_relaxed(LOCK, wdt->base + WDTLOCK);
+
+	/* Flush posted writes. */
+	readl_relaxed(wdt->base + WDTLOCK);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&wdt->lock);
 }
 
@@ -282,24 +327,46 @@ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (!request_mem_region(adev->res.start, resource_size(&adev->res),
 				"sp805_wdt")) {
+=======
+	if (!devm_request_mem_region(&adev->dev, adev->res.start,
+				resource_size(&adev->res), "sp805_wdt")) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_warn(&adev->dev, "Failed to get memory region resource\n");
 		ret = -ENOENT;
 		goto err;
 	}
 
+<<<<<<< HEAD
 	wdt = kzalloc(sizeof(*wdt), GFP_KERNEL);
 	if (!wdt) {
 		dev_warn(&adev->dev, "Kzalloc failed\n");
 		ret = -ENOMEM;
 		goto err_kzalloc;
+=======
+	wdt = devm_kzalloc(&adev->dev, sizeof(*wdt), GFP_KERNEL);
+	if (!wdt) {
+		dev_warn(&adev->dev, "Kzalloc failed\n");
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	wdt->base = devm_ioremap(&adev->dev, adev->res.start,
+			resource_size(&adev->res));
+	if (!wdt->base) {
+		ret = -ENOMEM;
+		dev_warn(&adev->dev, "ioremap fail\n");
+		goto err;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	wdt->clk = clk_get(&adev->dev, NULL);
 	if (IS_ERR(wdt->clk)) {
 		dev_warn(&adev->dev, "Clock not found\n");
 		ret = PTR_ERR(wdt->clk);
+<<<<<<< HEAD
 		goto err_clk_get;
 	}
 
@@ -308,6 +375,9 @@ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
 		ret = -ENOMEM;
 		dev_warn(&adev->dev, "ioremap fail\n");
 		goto err_ioremap;
+=======
+		goto err;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	wdt->adev = adev;
@@ -324,6 +394,7 @@ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
 	return 0;
 
 err_misc_register:
+<<<<<<< HEAD
 	iounmap(wdt->base);
 err_ioremap:
 	clk_put(wdt->clk);
@@ -332,6 +403,9 @@ err_clk_get:
 	wdt = NULL;
 err_kzalloc:
 	release_mem_region(adev->res.start, resource_size(&adev->res));
+=======
+	clk_put(wdt->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 err:
 	dev_err(&adev->dev, "Probe Failed!!!\n");
 	return ret;
@@ -340,15 +414,54 @@ err:
 static int __devexit sp805_wdt_remove(struct amba_device *adev)
 {
 	misc_deregister(&sp805_wdt_miscdev);
+<<<<<<< HEAD
 	iounmap(wdt->base);
 	clk_put(wdt->clk);
 	kfree(wdt);
 	release_mem_region(adev->res.start, resource_size(&adev->res));
+=======
+	clk_put(wdt->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct amba_id sp805_wdt_ids[] __initdata = {
+=======
+#ifdef CONFIG_PM
+static int sp805_wdt_suspend(struct device *dev)
+{
+	if (test_bit(WDT_BUSY, &wdt->status)) {
+		wdt_disable();
+		clk_disable(wdt->clk);
+	}
+
+	return 0;
+}
+
+static int sp805_wdt_resume(struct device *dev)
+{
+	int ret = 0;
+
+	if (test_bit(WDT_BUSY, &wdt->status)) {
+		ret = clk_enable(wdt->clk);
+		if (ret) {
+			dev_err(dev, "clock enable fail");
+			return ret;
+		}
+		wdt_enable();
+	}
+
+	return ret;
+}
+#endif /* CONFIG_PM */
+
+static SIMPLE_DEV_PM_OPS(sp805_wdt_dev_pm_ops, sp805_wdt_suspend,
+		sp805_wdt_resume);
+
+static struct amba_id sp805_wdt_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.id	= 0x00141805,
 		.mask	= 0x00ffffff,
@@ -356,15 +469,25 @@ static struct amba_id sp805_wdt_ids[] __initdata = {
 	{ 0, 0 },
 };
 
+<<<<<<< HEAD
 static struct amba_driver sp805_wdt_driver = {
 	.drv = {
 		.name	= MODULE_NAME,
+=======
+MODULE_DEVICE_TABLE(amba, sp805_wdt_ids);
+
+static struct amba_driver sp805_wdt_driver = {
+	.drv = {
+		.name	= MODULE_NAME,
+		.pm	= &sp805_wdt_dev_pm_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.id_table	= sp805_wdt_ids,
 	.probe		= sp805_wdt_probe,
 	.remove = __devexit_p(sp805_wdt_remove),
 };
 
+<<<<<<< HEAD
 static int __init sp805_wdt_init(void)
 {
 	return amba_driver_register(&sp805_wdt_driver);
@@ -378,6 +501,11 @@ static void __exit sp805_wdt_exit(void)
 module_exit(sp805_wdt_exit);
 
 module_param(nowayout, int, 0);
+=======
+module_amba_driver(sp805_wdt_driver);
+
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 		"Set to 1 to keep watchdog running after device release");
 

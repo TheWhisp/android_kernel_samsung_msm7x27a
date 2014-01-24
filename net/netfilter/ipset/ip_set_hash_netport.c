@@ -40,12 +40,26 @@ hash_netport_same_set(const struct ip_set *a, const struct ip_set *b);
 
 /* The type variant functions: IPv4 */
 
+<<<<<<< HEAD
+=======
+/* We squeeze the "nomatch" flag into cidr: we don't support cidr == 0
+ * However this way we have to store internally cidr - 1,
+ * dancing back and forth.
+ */
+#define IP_SET_HASH_WITH_NETS_PACKED
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Member elements without timeout */
 struct hash_netport4_elem {
 	__be32 ip;
 	__be16 port;
 	u8 proto;
+<<<<<<< HEAD
 	u8 cidr;
+=======
+	u8 cidr:7;
+	u8 nomatch:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Member elements with timeout support */
@@ -53,13 +67,23 @@ struct hash_netport4_telem {
 	__be32 ip;
 	__be16 port;
 	u8 proto;
+<<<<<<< HEAD
 	u8 cidr;
+=======
+	u8 cidr:7;
+	u8 nomatch:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long timeout;
 };
 
 static inline bool
 hash_netport4_data_equal(const struct hash_netport4_elem *ip1,
+<<<<<<< HEAD
 			 const struct hash_netport4_elem *ip2)
+=======
+			 const struct hash_netport4_elem *ip2,
+			 u32 *multi)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return ip1->ip == ip2->ip &&
 	       ip1->port == ip2->port &&
@@ -81,13 +105,33 @@ hash_netport4_data_copy(struct hash_netport4_elem *dst,
 	dst->port = src->port;
 	dst->proto = src->proto;
 	dst->cidr = src->cidr;
+<<<<<<< HEAD
+=======
+	dst->nomatch = src->nomatch;
+}
+
+static inline void
+hash_netport4_data_flags(struct hash_netport4_elem *dst, u32 flags)
+{
+	dst->nomatch = !!(flags & IPSET_FLAG_NOMATCH);
+}
+
+static inline bool
+hash_netport4_data_match(const struct hash_netport4_elem *elem)
+{
+	return !elem->nomatch;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void
 hash_netport4_data_netmask(struct hash_netport4_elem *elem, u8 cidr)
 {
 	elem->ip &= ip_set_netmask(cidr);
+<<<<<<< HEAD
 	elem->cidr = cidr;
+=======
+	elem->cidr = cidr - 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void
@@ -100,10 +144,21 @@ static bool
 hash_netport4_data_list(struct sk_buff *skb,
 			const struct hash_netport4_elem *data)
 {
+<<<<<<< HEAD
 	NLA_PUT_IPADDR4(skb, IPSET_ATTR_IP, data->ip);
 	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, data->port);
 	NLA_PUT_U8(skb, IPSET_ATTR_CIDR, data->cidr);
 	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
+=======
+	u32 flags = data->nomatch ? IPSET_FLAG_NOMATCH : 0;
+
+	NLA_PUT_IPADDR4(skb, IPSET_ATTR_IP, data->ip);
+	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, data->port);
+	NLA_PUT_U8(skb, IPSET_ATTR_CIDR, data->cidr + 1);
+	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
+	if (flags)
+		NLA_PUT_NET32(skb, IPSET_ATTR_CADT_FLAGS, htonl(flags));
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 nla_put_failure:
@@ -116,6 +171,7 @@ hash_netport4_data_tlist(struct sk_buff *skb,
 {
 	const struct hash_netport4_telem *tdata =
 		(const struct hash_netport4_telem *)data;
+<<<<<<< HEAD
 
 	NLA_PUT_IPADDR4(skb, IPSET_ATTR_IP, tdata->ip);
 	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, tdata->port);
@@ -123,6 +179,18 @@ hash_netport4_data_tlist(struct sk_buff *skb,
 	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
 	NLA_PUT_NET32(skb, IPSET_ATTR_TIMEOUT,
 		      htonl(ip_set_timeout_get(tdata->timeout)));
+=======
+	u32 flags = data->nomatch ? IPSET_FLAG_NOMATCH : 0;
+
+	NLA_PUT_IPADDR4(skb, IPSET_ATTR_IP, tdata->ip);
+	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, tdata->port);
+	NLA_PUT_U8(skb, IPSET_ATTR_CIDR, data->cidr + 1);
+	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
+	NLA_PUT_NET32(skb, IPSET_ATTR_TIMEOUT,
+		      htonl(ip_set_timeout_get(tdata->timeout)));
+	if (flags)
+		NLA_PUT_NET32(skb, IPSET_ATTR_CADT_FLAGS, htonl(flags));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 
@@ -137,13 +205,29 @@ nla_put_failure:
 #define HOST_MASK	32
 #include <linux/netfilter/ipset/ip_set_ahash.h>
 
+<<<<<<< HEAD
 static int
 hash_netport4_kadt(struct ip_set *set, const struct sk_buff *skb,
 		   enum ipset_adt adt, u8 pf, u8 dim, u8 flags)
+=======
+static inline void
+hash_netport4_data_next(struct ip_set_hash *h,
+			const struct hash_netport4_elem *d)
+{
+	h->next.ip = ntohl(d->ip);
+	h->next.port = ntohs(d->port);
+}
+
+static int
+hash_netport4_kadt(struct ip_set *set, const struct sk_buff *skb,
+		   const struct xt_action_param *par,
+		   enum ipset_adt adt, const struct ip_set_adt_opt *opt)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct ip_set_hash *h = set->data;
 	ipset_adtfn adtfn = set->variant->adt[adt];
 	struct hash_netport4_elem data = {
+<<<<<<< HEAD
 		.cidr = h->nets[0].cidr ? h->nets[0].cidr : HOST_MASK
 	};
 
@@ -160,10 +244,27 @@ hash_netport4_kadt(struct ip_set *set, const struct sk_buff *skb,
 	data.ip &= ip_set_netmask(data.cidr);
 
 	return adtfn(set, &data, h->timeout);
+=======
+		.cidr = h->nets[0].cidr ? h->nets[0].cidr - 1 : HOST_MASK - 1
+	};
+
+	if (adt == IPSET_TEST)
+		data.cidr = HOST_MASK - 1;
+
+	if (!ip_set_get_ip4_port(skb, opt->flags & IPSET_DIM_TWO_SRC,
+				 &data.port, &data.proto))
+		return -EINVAL;
+
+	ip4addrptr(skb, opt->flags & IPSET_DIM_ONE_SRC, &data.ip);
+	data.ip &= ip_set_netmask(data.cidr + 1);
+
+	return adtfn(set, &data, opt_timeout(opt, h), opt->cmdflags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int
 hash_netport4_uadt(struct ip_set *set, struct nlattr *tb[],
+<<<<<<< HEAD
 		   enum ipset_adt adt, u32 *lineno, u32 flags)
 {
 	const struct ip_set_hash *h = set->data;
@@ -172,17 +273,34 @@ hash_netport4_uadt(struct ip_set *set, struct nlattr *tb[],
 	u32 port, port_to;
 	u32 timeout = h->timeout;
 	bool with_ports = false;
+=======
+		   enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
+{
+	const struct ip_set_hash *h = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_netport4_elem data = { .cidr = HOST_MASK - 1 };
+	u32 port, port_to, p = 0, ip = 0, ip_to, last;
+	u32 timeout = h->timeout;
+	bool with_ports = false;
+	u8 cidr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	if (unlikely(!tb[IPSET_ATTR_IP] ||
 		     !ip_set_attr_netorder(tb, IPSET_ATTR_PORT) ||
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_PORT_TO) ||
+<<<<<<< HEAD
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT)))
+=======
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_CADT_FLAGS)))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -IPSET_ERR_PROTOCOL;
 
 	if (tb[IPSET_ATTR_LINENO])
 		*lineno = nla_get_u32(tb[IPSET_ATTR_LINENO]);
 
+<<<<<<< HEAD
 	ret = ip_set_get_ipaddr4(tb[IPSET_ATTR_IP], &data.ip);
 	if (ret)
 		return ret;
@@ -192,6 +310,18 @@ hash_netport4_uadt(struct ip_set *set, struct nlattr *tb[],
 	if (!data.cidr)
 		return -IPSET_ERR_INVALID_CIDR;
 	data.ip &= ip_set_netmask(data.cidr);
+=======
+	ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP], &ip);
+	if (ret)
+		return ret;
+
+	if (tb[IPSET_ATTR_CIDR]) {
+		cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
+		if (!cidr || cidr > HOST_MASK)
+			return -IPSET_ERR_INVALID_CIDR;
+		data.cidr = cidr - 1;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (tb[IPSET_ATTR_PORT])
 		data.port = nla_get_be16(tb[IPSET_ATTR_PORT]);
@@ -216,6 +346,7 @@ hash_netport4_uadt(struct ip_set *set, struct nlattr *tb[],
 		timeout = ip_set_timeout_uget(tb[IPSET_ATTR_TIMEOUT]);
 	}
 
+<<<<<<< HEAD
 	if (adt == IPSET_TEST || !with_ports || !tb[IPSET_ATTR_PORT_TO]) {
 		ret = adtfn(set, &data, timeout);
 		return ip_set_eexist(ret, flags) ? 0 : ret;
@@ -234,6 +365,57 @@ hash_netport4_uadt(struct ip_set *set, struct nlattr *tb[],
 			return ret;
 		else
 			ret = 0;
+=======
+	with_ports = with_ports && tb[IPSET_ATTR_PORT_TO];
+
+	if (tb[IPSET_ATTR_CADT_FLAGS] && adt == IPSET_ADD) {
+		u32 cadt_flags = ip_set_get_h32(tb[IPSET_ATTR_CADT_FLAGS]);
+		if (cadt_flags & IPSET_FLAG_NOMATCH)
+			flags |= (cadt_flags << 16);
+	}
+
+	if (adt == IPSET_TEST || !(with_ports || tb[IPSET_ATTR_IP_TO])) {
+		data.ip = htonl(ip & ip_set_hostmask(data.cidr + 1));
+		ret = adtfn(set, &data, timeout, flags);
+		return ip_set_eexist(ret, flags) ? 0 : ret;
+	}
+
+	port = port_to = ntohs(data.port);
+	if (tb[IPSET_ATTR_PORT_TO]) {
+		port_to = ip_set_get_h16(tb[IPSET_ATTR_PORT_TO]);
+		if (port_to < port)
+			swap(port, port_to);
+	}
+	if (tb[IPSET_ATTR_IP_TO]) {
+		ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP_TO], &ip_to);
+		if (ret)
+			return ret;
+		if (ip_to < ip)
+			swap(ip, ip_to);
+		if (ip + UINT_MAX == ip_to)
+			return -IPSET_ERR_HASH_RANGE;
+	} else {
+		ip_set_mask_from_to(ip, ip_to, data.cidr + 1);
+	}
+
+	if (retried)
+		ip = h->next.ip;
+	while (!after(ip, ip_to)) {
+		data.ip = htonl(ip);
+		last = ip_set_range_to_cidr(ip, ip_to, &cidr);
+		data.cidr = cidr - 1;
+		p = retried && ip == h->next.ip ? h->next.port : port;
+		for (; p <= port_to; p++) {
+			data.port = htons(p);
+			ret = adtfn(set, &data, timeout, flags);
+
+			if (ret && !ip_set_eexist(ret, flags))
+				return ret;
+			else
+				ret = 0;
+		}
+		ip = last + 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return ret;
 }
@@ -255,20 +437,35 @@ struct hash_netport6_elem {
 	union nf_inet_addr ip;
 	__be16 port;
 	u8 proto;
+<<<<<<< HEAD
 	u8 cidr;
+=======
+	u8 cidr:7;
+	u8 nomatch:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct hash_netport6_telem {
 	union nf_inet_addr ip;
 	__be16 port;
 	u8 proto;
+<<<<<<< HEAD
 	u8 cidr;
+=======
+	u8 cidr:7;
+	u8 nomatch:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long timeout;
 };
 
 static inline bool
 hash_netport6_data_equal(const struct hash_netport6_elem *ip1,
+<<<<<<< HEAD
 			 const struct hash_netport6_elem *ip2)
+=======
+			 const struct hash_netport6_elem *ip2,
+			 u32 *multi)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return ipv6_addr_cmp(&ip1->ip.in6, &ip2->ip.in6) == 0 &&
 	       ip1->port == ip2->port &&
@@ -290,6 +487,21 @@ hash_netport6_data_copy(struct hash_netport6_elem *dst,
 }
 
 static inline void
+<<<<<<< HEAD
+=======
+hash_netport6_data_flags(struct hash_netport6_elem *dst, u32 flags)
+{
+	dst->nomatch = !!(flags & IPSET_FLAG_NOMATCH);
+}
+
+static inline bool
+hash_netport6_data_match(const struct hash_netport6_elem *elem)
+{
+	return !elem->nomatch;
+}
+
+static inline void
+>>>>>>> refs/remotes/origin/cm-10.0
 hash_netport6_data_zero_out(struct hash_netport6_elem *elem)
 {
 	elem->proto = 0;
@@ -308,17 +520,32 @@ static inline void
 hash_netport6_data_netmask(struct hash_netport6_elem *elem, u8 cidr)
 {
 	ip6_netmask(&elem->ip, cidr);
+<<<<<<< HEAD
 	elem->cidr = cidr;
+=======
+	elem->cidr = cidr - 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static bool
 hash_netport6_data_list(struct sk_buff *skb,
 			const struct hash_netport6_elem *data)
 {
+<<<<<<< HEAD
 	NLA_PUT_IPADDR6(skb, IPSET_ATTR_IP, &data->ip);
 	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, data->port);
 	NLA_PUT_U8(skb, IPSET_ATTR_CIDR, data->cidr);
 	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
+=======
+	u32 flags = data->nomatch ? IPSET_FLAG_NOMATCH : 0;
+
+	NLA_PUT_IPADDR6(skb, IPSET_ATTR_IP, &data->ip);
+	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, data->port);
+	NLA_PUT_U8(skb, IPSET_ATTR_CIDR, data->cidr + 1);
+	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
+	if (flags)
+		NLA_PUT_NET32(skb, IPSET_ATTR_CADT_FLAGS, htonl(flags));
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 nla_put_failure:
@@ -331,6 +558,7 @@ hash_netport6_data_tlist(struct sk_buff *skb,
 {
 	const struct hash_netport6_telem *e =
 		(const struct hash_netport6_telem *)data;
+<<<<<<< HEAD
 
 	NLA_PUT_IPADDR6(skb, IPSET_ATTR_IP, &e->ip);
 	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, data->port);
@@ -338,6 +566,18 @@ hash_netport6_data_tlist(struct sk_buff *skb,
 	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
 	NLA_PUT_NET32(skb, IPSET_ATTR_TIMEOUT,
 		      htonl(ip_set_timeout_get(e->timeout)));
+=======
+	u32 flags = data->nomatch ? IPSET_FLAG_NOMATCH : 0;
+
+	NLA_PUT_IPADDR6(skb, IPSET_ATTR_IP, &e->ip);
+	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, data->port);
+	NLA_PUT_U8(skb, IPSET_ATTR_CIDR, data->cidr + 1);
+	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
+	NLA_PUT_NET32(skb, IPSET_ATTR_TIMEOUT,
+		      htonl(ip_set_timeout_get(e->timeout)));
+	if (flags)
+		NLA_PUT_NET32(skb, IPSET_ATTR_CADT_FLAGS, htonl(flags));
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 nla_put_failure:
@@ -351,13 +591,28 @@ nla_put_failure:
 #define HOST_MASK	128
 #include <linux/netfilter/ipset/ip_set_ahash.h>
 
+<<<<<<< HEAD
 static int
 hash_netport6_kadt(struct ip_set *set, const struct sk_buff *skb,
 		   enum ipset_adt adt, u8 pf, u8 dim, u8 flags)
+=======
+static inline void
+hash_netport6_data_next(struct ip_set_hash *h,
+			const struct hash_netport6_elem *d)
+{
+	h->next.port = ntohs(d->port);
+}
+
+static int
+hash_netport6_kadt(struct ip_set *set, const struct sk_buff *skb,
+		   const struct xt_action_param *par,
+		   enum ipset_adt adt, const struct ip_set_adt_opt *opt)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct ip_set_hash *h = set->data;
 	ipset_adtfn adtfn = set->variant->adt[adt];
 	struct hash_netport6_elem data = {
+<<<<<<< HEAD
 		.cidr = h->nets[0].cidr ? h->nets[0].cidr : HOST_MASK
 	};
 
@@ -374,10 +629,27 @@ hash_netport6_kadt(struct ip_set *set, const struct sk_buff *skb,
 	ip6_netmask(&data.ip, data.cidr);
 
 	return adtfn(set, &data, h->timeout);
+=======
+		.cidr = h->nets[0].cidr ? h->nets[0].cidr - 1 : HOST_MASK - 1,
+	};
+
+	if (adt == IPSET_TEST)
+		data.cidr = HOST_MASK - 1;
+
+	if (!ip_set_get_ip6_port(skb, opt->flags & IPSET_DIM_TWO_SRC,
+				 &data.port, &data.proto))
+		return -EINVAL;
+
+	ip6addrptr(skb, opt->flags & IPSET_DIM_ONE_SRC, &data.ip.in6);
+	ip6_netmask(&data.ip, data.cidr + 1);
+
+	return adtfn(set, &data, opt_timeout(opt, h), opt->cmdflags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int
 hash_netport6_uadt(struct ip_set *set, struct nlattr *tb[],
+<<<<<<< HEAD
 		   enum ipset_adt adt, u32 *lineno, u32 flags)
 {
 	const struct ip_set_hash *h = set->data;
@@ -386,13 +658,32 @@ hash_netport6_uadt(struct ip_set *set, struct nlattr *tb[],
 	u32 port, port_to;
 	u32 timeout = h->timeout;
 	bool with_ports = false;
+=======
+		   enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
+{
+	const struct ip_set_hash *h = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_netport6_elem data = { .cidr = HOST_MASK  - 1 };
+	u32 port, port_to;
+	u32 timeout = h->timeout;
+	bool with_ports = false;
+	u8 cidr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	if (unlikely(!tb[IPSET_ATTR_IP] ||
 		     !ip_set_attr_netorder(tb, IPSET_ATTR_PORT) ||
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_PORT_TO) ||
+<<<<<<< HEAD
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT)))
 		return -IPSET_ERR_PROTOCOL;
+=======
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_CADT_FLAGS)))
+		return -IPSET_ERR_PROTOCOL;
+	if (unlikely(tb[IPSET_ATTR_IP_TO]))
+		return -IPSET_ERR_HASH_RANGE_UNSUPPORTED;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (tb[IPSET_ATTR_LINENO])
 		*lineno = nla_get_u32(tb[IPSET_ATTR_LINENO]);
@@ -401,11 +692,21 @@ hash_netport6_uadt(struct ip_set *set, struct nlattr *tb[],
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	if (tb[IPSET_ATTR_CIDR])
 		data.cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
 	if (!data.cidr)
 		return -IPSET_ERR_INVALID_CIDR;
 	ip6_netmask(&data.ip, data.cidr);
+=======
+	if (tb[IPSET_ATTR_CIDR]) {
+		cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
+		if (!cidr || cidr > HOST_MASK)
+			return -IPSET_ERR_INVALID_CIDR;
+		data.cidr = cidr - 1;
+	}
+	ip6_netmask(&data.ip, data.cidr + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (tb[IPSET_ATTR_PORT])
 		data.port = nla_get_be16(tb[IPSET_ATTR_PORT]);
@@ -430,8 +731,19 @@ hash_netport6_uadt(struct ip_set *set, struct nlattr *tb[],
 		timeout = ip_set_timeout_uget(tb[IPSET_ATTR_TIMEOUT]);
 	}
 
+<<<<<<< HEAD
 	if (adt == IPSET_TEST || !with_ports || !tb[IPSET_ATTR_PORT_TO]) {
 		ret = adtfn(set, &data, timeout);
+=======
+	if (tb[IPSET_ATTR_CADT_FLAGS] && adt == IPSET_ADD) {
+		u32 cadt_flags = ip_set_get_h32(tb[IPSET_ATTR_CADT_FLAGS]);
+		if (cadt_flags & IPSET_FLAG_NOMATCH)
+			flags |= (cadt_flags << 16);
+	}
+
+	if (adt == IPSET_TEST || !with_ports || !tb[IPSET_ATTR_PORT_TO]) {
+		ret = adtfn(set, &data, timeout, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ip_set_eexist(ret, flags) ? 0 : ret;
 	}
 
@@ -440,9 +752,17 @@ hash_netport6_uadt(struct ip_set *set, struct nlattr *tb[],
 	if (port > port_to)
 		swap(port, port_to);
 
+<<<<<<< HEAD
 	for (; port <= port_to; port++) {
 		data.port = htons(port);
 		ret = adtfn(set, &data, timeout);
+=======
+	if (retried)
+		port = h->next.port;
+	for (; port <= port_to; port++) {
+		data.port = htons(port);
+		ret = adtfn(set, &data, timeout, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (ret && !ip_set_eexist(ret, flags))
 			return ret;
@@ -460,8 +780,14 @@ hash_netport_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 	struct ip_set_hash *h;
 	u32 hashsize = IPSET_DEFAULT_HASHSIZE, maxelem = IPSET_DEFAULT_MAXELEM;
 	u8 hbits;
+<<<<<<< HEAD
 
 	if (!(set->family == AF_INET || set->family == AF_INET6))
+=======
+	size_t hsize;
+
+	if (!(set->family == NFPROTO_IPV4 || set->family == NFPROTO_IPV6))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -IPSET_ERR_INVALID_FAMILY;
 
 	if (unlikely(!ip_set_optattr_netorder(tb, IPSET_ATTR_HASHSIZE) ||
@@ -480,7 +806,11 @@ hash_netport_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 
 	h = kzalloc(sizeof(*h)
 		    + sizeof(struct ip_set_hash_nets)
+<<<<<<< HEAD
 		      * (set->family == AF_INET ? 32 : 128), GFP_KERNEL);
+=======
+		      * (set->family == NFPROTO_IPV4 ? 32 : 128), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!h)
 		return -ENOMEM;
 
@@ -489,9 +819,18 @@ hash_netport_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 	h->timeout = IPSET_NO_TIMEOUT;
 
 	hbits = htable_bits(hashsize);
+<<<<<<< HEAD
 	h->table = ip_set_alloc(
 			sizeof(struct htable)
 			+ jhash_size(hbits) * sizeof(struct hbucket));
+=======
+	hsize = htable_size(hbits);
+	if (hsize == 0) {
+		kfree(h);
+		return -ENOMEM;
+	}
+	h->table = ip_set_alloc(hsize);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!h->table) {
 		kfree(h);
 		return -ENOMEM;
@@ -503,15 +842,26 @@ hash_netport_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 	if (tb[IPSET_ATTR_TIMEOUT]) {
 		h->timeout = ip_set_timeout_uget(tb[IPSET_ATTR_TIMEOUT]);
 
+<<<<<<< HEAD
 		set->variant = set->family == AF_INET
 			? &hash_netport4_tvariant : &hash_netport6_tvariant;
 
 		if (set->family == AF_INET)
+=======
+		set->variant = set->family == NFPROTO_IPV4
+			? &hash_netport4_tvariant : &hash_netport6_tvariant;
+
+		if (set->family == NFPROTO_IPV4)
+>>>>>>> refs/remotes/origin/cm-10.0
 			hash_netport4_gc_init(set);
 		else
 			hash_netport6_gc_init(set);
 	} else {
+<<<<<<< HEAD
 		set->variant = set->family == AF_INET
+=======
+		set->variant = set->family == NFPROTO_IPV4
+>>>>>>> refs/remotes/origin/cm-10.0
 			? &hash_netport4_variant : &hash_netport6_variant;
 	}
 
@@ -527,8 +877,16 @@ static struct ip_set_type hash_netport_type __read_mostly = {
 	.protocol	= IPSET_PROTOCOL,
 	.features	= IPSET_TYPE_IP | IPSET_TYPE_PORT,
 	.dimension	= IPSET_DIM_TWO,
+<<<<<<< HEAD
 	.family		= AF_UNSPEC,
 	.revision	= 1,
+=======
+	.family		= NFPROTO_UNSPEC,
+	.revision_min	= 0,
+	/*		  1	   SCTP and UDPLITE support added */
+	/*		  2,	   Range as input support for IPv4 added */
+	.revision_max	= 3,	/* nomatch flag support added */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.create		= hash_netport_create,
 	.create_policy	= {
 		[IPSET_ATTR_HASHSIZE]	= { .type = NLA_U32 },
@@ -540,12 +898,20 @@ static struct ip_set_type hash_netport_type __read_mostly = {
 	},
 	.adt_policy	= {
 		[IPSET_ATTR_IP]		= { .type = NLA_NESTED },
+<<<<<<< HEAD
+=======
+		[IPSET_ATTR_IP_TO]	= { .type = NLA_NESTED },
+>>>>>>> refs/remotes/origin/cm-10.0
 		[IPSET_ATTR_PORT]	= { .type = NLA_U16 },
 		[IPSET_ATTR_PORT_TO]	= { .type = NLA_U16 },
 		[IPSET_ATTR_PROTO]	= { .type = NLA_U8 },
 		[IPSET_ATTR_CIDR]	= { .type = NLA_U8 },
 		[IPSET_ATTR_TIMEOUT]	= { .type = NLA_U32 },
 		[IPSET_ATTR_LINENO]	= { .type = NLA_U32 },
+<<<<<<< HEAD
+=======
+		[IPSET_ATTR_CADT_FLAGS]	= { .type = NLA_U32 },
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.me		= THIS_MODULE,
 };

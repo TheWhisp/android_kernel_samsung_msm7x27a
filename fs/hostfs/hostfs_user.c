@@ -16,7 +16,10 @@
 #include <sys/vfs.h>
 #include "hostfs.h"
 #include "os.h"
+<<<<<<< HEAD
 #include "user.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <utime.h>
 
 static void stat64_to_hostfs(const struct stat64 *buf, struct hostfs_stat *p)
@@ -99,7 +102,12 @@ void *open_dir(char *path, int *err_out)
 }
 
 char *read_dir(void *stream, unsigned long long *pos,
+<<<<<<< HEAD
 	       unsigned long long *ino_out, int *len_out)
+=======
+	       unsigned long long *ino_out, int *len_out,
+	       unsigned int *type_out)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	DIR *dir = stream;
 	struct dirent *ent;
@@ -110,6 +118,10 @@ char *read_dir(void *stream, unsigned long long *pos,
 		return NULL;
 	*len_out = strlen(ent->d_name);
 	*ino_out = ent->d_ino;
+<<<<<<< HEAD
+=======
+	*type_out = ent->d_type;
+>>>>>>> refs/remotes/origin/cm-10.0
 	*pos = telldir(dir);
 	return ent->d_name;
 }

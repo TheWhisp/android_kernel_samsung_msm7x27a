@@ -409,7 +409,11 @@ cond_resched(); /* Will sleep */
 
   <para>
    You should always compile your kernel
+<<<<<<< HEAD
    <symbol>CONFIG_DEBUG_SPINLOCK_SLEEP</symbol> on, and it will warn
+=======
+   <symbol>CONFIG_DEBUG_ATOMIC_SLEEP</symbol> on, and it will warn
+>>>>>>> refs/remotes/origin/cm-10.0
    you if you break these rules.  If you <emphasis>do</emphasis> break
    the rules, you will eventually lock up your box.
   </para>

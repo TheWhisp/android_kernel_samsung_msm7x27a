@@ -13,6 +13,10 @@
 #include <linux/smp.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/smp_plat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern volatile int pen_release;
 
@@ -24,7 +28,11 @@ static inline void platform_do_lowpower(unsigned int cpu)
 	for (;;) {
 		__asm__ __volatile__("dsb\n\t" "wfi\n\t"
 				: : : "memory");
+<<<<<<< HEAD
 		if (pen_release == cpu) {
+=======
+		if (pen_release == cpu_logical_map(cpu)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * OK, proper wakeup, we're done
 			 */

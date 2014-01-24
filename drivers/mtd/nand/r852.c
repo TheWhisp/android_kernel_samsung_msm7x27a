@@ -22,7 +22,11 @@
 #include "r852.h"
 
 
+<<<<<<< HEAD
 static int r852_enable_dma = 1;
+=======
+static bool r852_enable_dma = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(r852_enable_dma, bool, S_IRUGO);
 MODULE_PARM_DESC(r852_enable_dma, "Enable usage of the DMA (default)");
 
@@ -891,6 +895,10 @@ int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
 	chip->ecc.size = R852_DMA_LEN;
 	chip->ecc.bytes = SM_OOB_SIZE;
+<<<<<<< HEAD
+=======
+	chip->ecc.strength = 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 	chip->ecc.hwctl = r852_ecc_hwctl;
 	chip->ecc.calculate = r852_ecc_calculate;
 	chip->ecc.correct = r852_ecc_correct;
@@ -1027,7 +1035,11 @@ void r852_shutdown(struct pci_dev *pci_dev)
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 int r852_suspend(struct device *device)
+=======
+static int r852_suspend(struct device *device)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
 
@@ -1048,7 +1060,11 @@ int r852_suspend(struct device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
 int r852_resume(struct device *device)
+=======
+static int r852_resume(struct device *device)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
 
@@ -1092,7 +1108,11 @@ static const struct pci_device_id r852_pci_id_tbl[] = {
 
 MODULE_DEVICE_TABLE(pci, r852_pci_id_tbl);
 
+<<<<<<< HEAD
 SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
+=======
+static SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct pci_driver r852_pci_driver = {
 	.name		= DRV_NAME,

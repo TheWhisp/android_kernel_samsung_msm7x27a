@@ -10,6 +10,10 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/types.h>
 #include <linux/i2c.h>
@@ -522,6 +526,11 @@ int ov7692_sensor_config(void __user *argp)
 	case CFG_PWR_DOWN:
 		rc = ov7692_power_down();
 		break;
+<<<<<<< HEAD
+=======
+	case CFG_SET_EFFECT:
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		rc = -EFAULT;
 		break;

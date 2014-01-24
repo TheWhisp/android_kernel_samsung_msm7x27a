@@ -29,10 +29,19 @@
  * These crashes may be intermittent.
  */
 #include <linux/linkage.h>
+<<<<<<< HEAD
 #include <asm/assembler.h>
 #include <mach/io.h>
 #include <mach/hardware.h>
 
+=======
+
+#include <asm/assembler.h>
+
+#include <mach/hardware.h>
+
+#include "iomap.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "prm2xxx_3xxx.h"
 #include "cm2xxx_3xxx.h"
 #include "sdrc.h"

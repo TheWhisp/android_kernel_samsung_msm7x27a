@@ -24,9 +24,12 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/sync.h>
 
@@ -72,8 +75,11 @@ struct disp_object {
 	u32 data_mau_size;	/* Size of DSP Data MAU */
 };
 
+<<<<<<< HEAD
 static u32 refs;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void delete_disp(struct disp_object *disp_obj);
 static int fill_stream_def(rms_word *pdw_buf, u32 *ptotal, u32 offset,
 				  struct node_strmdef strm_def, u32 max,
@@ -96,11 +102,14 @@ int disp_create(struct disp_object **dispatch_obj,
 	int status = 0;
 	u8 dev_type;
 
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(dispatch_obj != NULL);
 	DBC_REQUIRE(disp_attrs != NULL);
 	DBC_REQUIRE(hdev_obj != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	*dispatch_obj = NULL;
 
 	/* Allocate Node Dispatcher object */
@@ -168,8 +177,11 @@ func_cont:
 	else
 		delete_disp(disp_obj);
 
+<<<<<<< HEAD
 	DBC_ENSURE((status && *dispatch_obj == NULL) ||
 				(!status && *dispatch_obj));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return status;
 }
 
@@ -179,13 +191,17 @@ func_cont:
  */
 void disp_delete(struct disp_object *disp_obj)
 {
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(disp_obj);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	delete_disp(disp_obj);
 }
 
 /*
+<<<<<<< HEAD
  *  ======== disp_exit ========
  *  Discontinue usage of DISP module.
  */
@@ -216,6 +232,8 @@ bool disp_init(void)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *  ======== disp_node_change_priority ========
  *  Change the priority of a node currently running on the target.
  */
@@ -227,10 +245,13 @@ int disp_node_change_priority(struct disp_object *disp_obj,
 	struct rms_command *rms_cmd;
 	int status = 0;
 
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(disp_obj);
 	DBC_REQUIRE(hnode != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Send message to RMS to change priority */
 	rms_cmd = (struct rms_command *)(disp_obj->buf);
 	rms_cmd->fxn = (rms_word) (rms_fxn);
@@ -276,12 +297,15 @@ int disp_node_create(struct disp_object *disp_obj,
 	struct dsp_nodeinfo node_info;
 	u8 dev_type;
 
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(disp_obj);
 	DBC_REQUIRE(hnode != NULL);
 	DBC_REQUIRE(node_get_type(hnode) != NODE_DEVICE);
 	DBC_REQUIRE(node_env != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	status = dev_get_dev_type(disp_obj->dev_obj, &dev_type);
 
 	if (status)
@@ -292,11 +316,17 @@ int disp_node_create(struct disp_object *disp_obj,
 			__func__, dev_type);
 		goto func_end;
 	}
+<<<<<<< HEAD
 	DBC_REQUIRE(pargs != NULL);
 	node_type = node_get_type(hnode);
 	node_msg_args = pargs->asa.node_msg_args;
 	max = disp_obj->bufsize_rms;	/*Max # of RMS words that can be sent */
 	DBC_ASSERT(max == RMS_COMMANDBUFSIZE);
+=======
+	node_type = node_get_type(hnode);
+	node_msg_args = pargs->asa.node_msg_args;
+	max = disp_obj->bufsize_rms;	/*Max # of RMS words that can be sent */
+>>>>>>> refs/remotes/origin/cm-10.0
 	chars_in_rms_word = sizeof(rms_word) / disp_obj->char_size;
 	/* Number of RMS words needed to hold arg data */
 	dw_length =
@@ -457,7 +487,10 @@ int disp_node_create(struct disp_object *disp_obj,
 	}
 	if (!status) {
 		ul_bytes = total * sizeof(rms_word);
+<<<<<<< HEAD
 		DBC_ASSERT(ul_bytes < (RMS_COMMANDBUFSIZE * sizeof(rms_word)));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		status = send_message(disp_obj, node_get_timeout(hnode),
 				      ul_bytes, node_env);
 	}
@@ -480,10 +513,13 @@ int disp_node_delete(struct disp_object *disp_obj,
 	int status = 0;
 	u8 dev_type;
 
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(disp_obj);
 	DBC_REQUIRE(hnode != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	status = dev_get_dev_type(disp_obj->dev_obj, &dev_type);
 
 	if (!status) {
@@ -521,9 +557,12 @@ int disp_node_run(struct disp_object *disp_obj,
 	struct rms_command *rms_cmd;
 	int status = 0;
 	u8 dev_type;
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(disp_obj);
 	DBC_REQUIRE(hnode != NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	status = dev_get_dev_type(disp_obj->dev_obj, &dev_type);
 
@@ -620,7 +659,10 @@ static int fill_stream_def(rms_word *pdw_buf, u32 *ptotal, u32 offset,
 		 *  1 from total.
 		 */
 		total += sizeof(struct rms_strm_def) / sizeof(rms_word) - 1;
+<<<<<<< HEAD
 		DBC_REQUIRE(strm_def.sz_device);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		dw_length = strlen(strm_def.sz_device) + 1;
 
 		/* Number of RMS_WORDS needed to hold device name */
@@ -659,8 +701,11 @@ static int send_message(struct disp_object *disp_obj, u32 timeout,
 	struct chnl_ioc chnl_ioc_obj;
 	int status = 0;
 
+<<<<<<< HEAD
 	DBC_REQUIRE(pdw_arg != NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	*pdw_arg = (u32) NULL;
 	intf_fxns = disp_obj->intf_fxns;
 	chnl_obj = disp_obj->chnl_to_dsp;
@@ -703,7 +748,10 @@ static int send_message(struct disp_object *disp_obj, u32 timeout,
 			status = -EPERM;
 		} else {
 			if (CHNL_IS_IO_COMPLETE(chnl_ioc_obj)) {
+<<<<<<< HEAD
 				DBC_ASSERT(chnl_ioc_obj.buf == pbuf);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (*((int *)chnl_ioc_obj.buf) < 0) {
 					/* Translate DSP's to kernel error */
 					status = -EREMOTEIO;

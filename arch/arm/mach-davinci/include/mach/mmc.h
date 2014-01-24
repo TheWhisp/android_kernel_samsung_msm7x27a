@@ -12,6 +12,12 @@ struct davinci_mmc_config {
 	/* get_cd()/get_wp() may sleep */
 	int	(*get_cd)(int module);
 	int	(*get_ro)(int module);
+<<<<<<< HEAD
+=======
+
+	void	(*set_power)(int module, bool on);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* wires == 0 is equivalent to wires == 4 (4-bit parallel) */
 	u8	wires;
 

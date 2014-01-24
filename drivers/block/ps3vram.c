@@ -10,6 +10,10 @@
 
 #include <linux/blkdev.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <linux/slab.h>
@@ -596,7 +600,11 @@ out:
 	return next;
 }
 
+<<<<<<< HEAD
 static int ps3vram_make_request(struct request_queue *q, struct bio *bio)
+=======
+static void ps3vram_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ps3_system_bus_device *dev = q->queuedata;
 	struct ps3vram_priv *priv = ps3_system_bus_get_drvdata(dev);
@@ -610,13 +618,20 @@ static int ps3vram_make_request(struct request_queue *q, struct bio *bio)
 	spin_unlock_irq(&priv->lock);
 
 	if (busy)
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	do {
 		bio = ps3vram_do_bio(dev, bio);
 	} while (bio);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit ps3vram_probe(struct ps3_system_bus_device *dev)

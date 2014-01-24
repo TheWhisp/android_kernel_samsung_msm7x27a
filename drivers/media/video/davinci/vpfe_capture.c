@@ -2076,6 +2076,7 @@ static struct platform_driver vpfe_driver = {
 	.remove = __devexit_p(vpfe_remove),
 };
 
+<<<<<<< HEAD
 static __init int vpfe_init(void)
 {
 	printk(KERN_NOTICE "vpfe_init\n");
@@ -2093,3 +2094,6 @@ static void vpfe_cleanup(void)
 
 module_init(vpfe_init);
 module_exit(vpfe_cleanup);
+=======
+module_platform_driver(vpfe_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

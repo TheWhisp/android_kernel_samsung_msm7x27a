@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -650,6 +654,7 @@ static const struct dev_pm_ops pm8058_xoadc_dev_pm_ops = {
 #define PM8058_XOADC_DEV_PM_OPS NULL
 #endif
 
+<<<<<<< HEAD
 static int __devexit pm8058_xoadc_teardown(struct platform_device *pdev)
 {
 	struct pmic8058_adc *adc_pmic = platform_get_drvdata(pdev);
@@ -667,6 +672,8 @@ static int __devexit pm8058_xoadc_teardown(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit pm8058_xoadc_probe(struct platform_device *pdev)
 {
 	struct xoadc_platform_data *pdata = pdev->dev.platform_data;
@@ -678,7 +685,11 @@ static int __devinit pm8058_xoadc_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	adc_pmic = kzalloc(sizeof(struct pmic8058_adc), GFP_KERNEL);
+=======
+	adc_pmic = devm_kzalloc(&pdev->dev, sizeof(*adc_pmic), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!adc_pmic) {
 		dev_err(&pdev->dev, "Unable to allocate memory\n");
 		return -ENOMEM;
@@ -693,6 +704,7 @@ static int __devinit pm8058_xoadc_probe(struct platform_device *pdev)
 
 	if (adc_pmic->xoadc_num > XOADC_PMIC_0) {
 		dev_err(&pdev->dev, "ADC device not supported\n");
+<<<<<<< HEAD
 		rc = -EINVAL;
 		goto err_cleanup;
 	}
@@ -704,6 +716,18 @@ static int __devinit pm8058_xoadc_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Unable to allocate memory\n");
 		rc = -ENOMEM;
 		goto err_cleanup;
+=======
+		return -EINVAL;
+	}
+
+	adc_pmic->pdata = pdata;
+	adc_pmic->adc_graph = devm_kzalloc(&pdev->dev,
+		sizeof(struct linear_graph) * MAX_CHANNEL_PROPERTIES_QUEUE,
+		GFP_KERNEL);
+	if (!adc_pmic->adc_graph) {
+		dev_err(&pdev->dev, "Unable to allocate memory\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Will be replaced by individual channel calibration */
@@ -739,32 +763,52 @@ static int __devinit pm8058_xoadc_probe(struct platform_device *pdev)
 	INIT_LIST_HEAD(&adc_pmic->conv_queue_list->slots);
 
 	adc_pmic->adc_irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
 	if (adc_pmic->adc_irq < 0) {
 		rc = -ENXIO;
 		goto err_cleanup;
 	}
+=======
+	if (adc_pmic->adc_irq < 0)
+		return -ENXIO;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rc = request_threaded_irq(adc_pmic->adc_irq,
 				NULL, pm8058_xoadc,
 		IRQF_TRIGGER_RISING, "pm8058_adc_interrupt", adc_pmic);
 	if (rc) {
 		dev_err(&pdev->dev, "failed to request adc irq\n");
+<<<<<<< HEAD
 		goto err_cleanup;
+=======
+		return rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	disable_irq(adc_pmic->adc_irq);
 
+<<<<<<< HEAD
 	device_init_wakeup(&pdev->dev, pdata->xoadc_wakeup);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (adc_pmic->adc_voter == NULL) {
 		adc_pmic->adc_voter = msm_xo_get(MSM_XO_TCXO_D1,
 							"pmic8058_xoadc");
 		if (IS_ERR(adc_pmic->adc_voter)) {
 			dev_err(&pdev->dev, "Failed to get XO vote\n");
+<<<<<<< HEAD
 			goto err_cleanup;
 		}
 	}
 
+=======
+			return PTR_ERR(adc_pmic->adc_voter);
+		}
+	}
+
+	device_init_wakeup(&pdev->dev, pdata->xoadc_wakeup);
+>>>>>>> refs/remotes/origin/cm-10.0
 	wake_lock_init(&adc_pmic->adc_wakelock, WAKE_LOCK_SUSPEND,
 					"pmic8058_xoadc_wakelock");
 
@@ -777,11 +821,29 @@ static int __devinit pm8058_xoadc_probe(struct platform_device *pdev)
 	xoadc_calib_first_adc = false;
 
 	return 0;
+<<<<<<< HEAD
 
 err_cleanup:
 	pm8058_xoadc_teardown(pdev);
 
 	return rc;
+=======
+}
+
+static int __devexit pm8058_xoadc_teardown(struct platform_device *pdev)
+{
+	struct pmic8058_adc *adc_pmic = platform_get_drvdata(pdev);
+
+	if (adc_pmic->pdata->xoadc_vreg_shutdown != NULL)
+		adc_pmic->pdata->xoadc_vreg_shutdown();
+
+	wake_lock_destroy(&adc_pmic->adc_wakelock);
+	msm_xo_put(adc_pmic->adc_voter);
+	device_init_wakeup(&pdev->dev, 0);
+	xoadc_initialized = false;
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct platform_driver pm8058_xoadc_driver = {

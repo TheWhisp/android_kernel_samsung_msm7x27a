@@ -17,7 +17,11 @@
 
 #include <linux/kernel.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/isa.h>
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/netdevice.h>
 #include <linux/delay.h>
@@ -44,9 +48,15 @@ static unsigned long port[MAXDEV];
 static unsigned long mem[MAXDEV];
 static int __devinitdata irq[MAXDEV];
 static int __devinitdata clk[MAXDEV];
+<<<<<<< HEAD
 static char __devinitdata cdr[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
 static char __devinitdata ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
 static char __devinitdata indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+=======
+static unsigned char __devinitdata cdr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+static unsigned char __devinitdata ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+static int __devinitdata indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param_array(port, ulong, NULL, S_IRUGO);
 MODULE_PARM_DESC(port, "I/O port number");
@@ -54,7 +64,11 @@ MODULE_PARM_DESC(port, "I/O port number");
 module_param_array(mem, ulong, NULL, S_IRUGO);
 MODULE_PARM_DESC(mem, "I/O memory address");
 
+<<<<<<< HEAD
 module_param_array(indirect, byte, NULL, S_IRUGO);
+=======
+module_param_array(indirect, int, NULL, S_IRUGO);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(indirect, "Indirect access via address and data port");
 
 module_param_array(irq, int, NULL, S_IRUGO);
@@ -75,6 +89,11 @@ MODULE_PARM_DESC(ocr, "Output control register "
 #define SJA1000_IOSIZE          0x20
 #define SJA1000_IOSIZE_INDIRECT 0x02
 
+<<<<<<< HEAD
+=======
+static struct platform_device *sja1000_isa_devs[MAXDEV];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static u8 sja1000_isa_mem_read_reg(const struct sja1000_priv *priv, int reg)
 {
 	return readb(priv->reg_base + reg);
@@ -115,6 +134,7 @@ static void sja1000_isa_port_write_reg_indirect(const struct sja1000_priv *priv,
 	outb(val, base + 1);
 }
 
+<<<<<<< HEAD
 static int __devinit sja1000_isa_match(struct device *pdev, unsigned int idx)
 {
 	if (port[idx] || mem[idx]) {
@@ -128,13 +148,25 @@ static int __devinit sja1000_isa_match(struct device *pdev, unsigned int idx)
 }
 
 static int __devinit sja1000_isa_probe(struct device *pdev, unsigned int idx)
+=======
+static int __devinit sja1000_isa_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct net_device *dev;
 	struct sja1000_priv *priv;
 	void __iomem *base = NULL;
 	int iosize = SJA1000_IOSIZE;
+<<<<<<< HEAD
 	int err;
 
+=======
+	int idx = pdev->id;
+	int err;
+
+	dev_dbg(&pdev->dev, "probing idx=%d: port=%#lx, mem=%#lx, irq=%d\n",
+		idx, port[idx], mem[idx], irq[idx]);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (mem[idx]) {
 		if (!request_mem_region(mem[idx], iosize, DRV_NAME)) {
 			err = -EBUSY;
@@ -189,6 +221,7 @@ static int __devinit sja1000_isa_probe(struct device *pdev, unsigned int idx)
 	else
 		priv->can.clock.freq = CLK_DEFAULT / 2;
 
+<<<<<<< HEAD
 	if (ocr[idx] != -1)
 		priv->ocr = ocr[idx] & 0xff;
 	else if (ocr[0] != -1)
@@ -209,11 +242,37 @@ static int __devinit sja1000_isa_probe(struct device *pdev, unsigned int idx)
 	err = register_sja1000dev(dev);
 	if (err) {
 		dev_err(pdev, "registering %s failed (err=%d)\n",
+=======
+	if (ocr[idx] != 0xff)
+		priv->ocr = ocr[idx];
+	else if (ocr[0] != 0xff)
+		priv->ocr = ocr[0];
+	else
+		priv->ocr = OCR_DEFAULT;
+
+	if (cdr[idx] != 0xff)
+		priv->cdr = cdr[idx];
+	else if (cdr[0] != 0xff)
+		priv->cdr = cdr[0];
+	else
+		priv->cdr = CDR_DEFAULT;
+
+	dev_set_drvdata(&pdev->dev, dev);
+	SET_NETDEV_DEV(dev, &pdev->dev);
+
+	err = register_sja1000dev(dev);
+	if (err) {
+		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			DRV_NAME, err);
 		goto exit_unmap;
 	}
 
+<<<<<<< HEAD
 	dev_info(pdev, "%s device registered (reg_base=0x%p, irq=%d)\n",
+=======
+	dev_info(&pdev->dev, "%s device registered (reg_base=0x%p, irq=%d)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		 DRV_NAME, priv->reg_base, dev->irq);
 	return 0;
 
@@ -229,6 +288,7 @@ static int __devinit sja1000_isa_probe(struct device *pdev, unsigned int idx)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit sja1000_isa_remove(struct device *pdev, unsigned int idx)
 {
 	struct net_device *dev = dev_get_drvdata(pdev);
@@ -236,6 +296,16 @@ static int __devexit sja1000_isa_remove(struct device *pdev, unsigned int idx)
 
 	unregister_sja1000dev(dev);
 	dev_set_drvdata(pdev, NULL);
+=======
+static int __devexit sja1000_isa_remove(struct platform_device *pdev)
+{
+	struct net_device *dev = dev_get_drvdata(&pdev->dev);
+	struct sja1000_priv *priv = netdev_priv(dev);
+	int idx = pdev->id;
+
+	unregister_sja1000dev(dev);
+	dev_set_drvdata(&pdev->dev, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (mem[idx]) {
 		iounmap(priv->reg_base);
@@ -251,29 +321,91 @@ static int __devexit sja1000_isa_remove(struct device *pdev, unsigned int idx)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct isa_driver sja1000_isa_driver = {
 	.match = sja1000_isa_match,
+=======
+static struct platform_driver sja1000_isa_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.probe = sja1000_isa_probe,
 	.remove = __devexit_p(sja1000_isa_remove),
 	.driver = {
 		.name = DRV_NAME,
+<<<<<<< HEAD
+=======
+		.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
 static int __init sja1000_isa_init(void)
 {
+<<<<<<< HEAD
 	int err = isa_register_driver(&sja1000_isa_driver, MAXDEV);
 
 	if (!err)
 		printk(KERN_INFO
 		       "Legacy %s driver for max. %d devices registered\n",
 		       DRV_NAME, MAXDEV);
+=======
+	int idx, err;
+
+	for (idx = 0; idx < MAXDEV; idx++) {
+		if ((port[idx] || mem[idx]) && irq[idx]) {
+			sja1000_isa_devs[idx] =
+				platform_device_alloc(DRV_NAME, idx);
+			if (!sja1000_isa_devs[idx]) {
+				err = -ENOMEM;
+				goto exit_free_devices;
+			}
+			err = platform_device_add(sja1000_isa_devs[idx]);
+			if (err) {
+				platform_device_put(sja1000_isa_devs[idx]);
+				goto exit_free_devices;
+			}
+			pr_debug("%s: platform device %d: port=%#lx, mem=%#lx, "
+				 "irq=%d\n",
+				 DRV_NAME, idx, port[idx], mem[idx], irq[idx]);
+		} else if (idx == 0 || port[idx] || mem[idx]) {
+				pr_err("%s: insufficient parameters supplied\n",
+				       DRV_NAME);
+				err = -EINVAL;
+				goto exit_free_devices;
+		}
+	}
+
+	err = platform_driver_register(&sja1000_isa_driver);
+	if (err)
+		goto exit_free_devices;
+
+	pr_info("Legacy %s driver for max. %d devices registered\n",
+		DRV_NAME, MAXDEV);
+
+	return 0;
+
+exit_free_devices:
+	while (--idx >= 0) {
+		if (sja1000_isa_devs[idx])
+			platform_device_unregister(sja1000_isa_devs[idx]);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 
 static void __exit sja1000_isa_exit(void)
 {
+<<<<<<< HEAD
 	isa_unregister_driver(&sja1000_isa_driver);
+=======
+	int idx;
+
+	platform_driver_unregister(&sja1000_isa_driver);
+	for (idx = 0; idx < MAXDEV; idx++) {
+		if (sja1000_isa_devs[idx])
+			platform_device_unregister(sja1000_isa_devs[idx]);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 module_init(sja1000_isa_init);

@@ -187,16 +187,128 @@ static PyTypeObject pyrf_throttle_event__type = {
 	.tp_repr	= (reprfunc)pyrf_throttle_event__repr,
 };
 
+<<<<<<< HEAD
+=======
+static char pyrf_lost_event__doc[] = PyDoc_STR("perf lost event object.");
+
+static PyMemberDef pyrf_lost_event__members[] = {
+	sample_members
+	member_def(lost_event, id, T_ULONGLONG, "event id"),
+	member_def(lost_event, lost, T_ULONGLONG, "number of lost events"),
+	{ .name = NULL, },
+};
+
+static PyObject *pyrf_lost_event__repr(struct pyrf_event *pevent)
+{
+	PyObject *ret;
+	char *s;
+
+	if (asprintf(&s, "{ type: lost, id: %#" PRIx64 ", "
+			 "lost: %#" PRIx64 " }",
+		     pevent->event.lost.id, pevent->event.lost.lost) < 0) {
+		ret = PyErr_NoMemory();
+	} else {
+		ret = PyString_FromString(s);
+		free(s);
+	}
+	return ret;
+}
+
+static PyTypeObject pyrf_lost_event__type = {
+	PyVarObject_HEAD_INIT(NULL, 0)
+	.tp_name	= "perf.lost_event",
+	.tp_basicsize	= sizeof(struct pyrf_event),
+	.tp_flags	= Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
+	.tp_doc		= pyrf_lost_event__doc,
+	.tp_members	= pyrf_lost_event__members,
+	.tp_repr	= (reprfunc)pyrf_lost_event__repr,
+};
+
+static char pyrf_read_event__doc[] = PyDoc_STR("perf read event object.");
+
+static PyMemberDef pyrf_read_event__members[] = {
+	sample_members
+	member_def(read_event, pid, T_UINT, "event pid"),
+	member_def(read_event, tid, T_UINT, "event tid"),
+	{ .name = NULL, },
+};
+
+static PyObject *pyrf_read_event__repr(struct pyrf_event *pevent)
+{
+	return PyString_FromFormat("{ type: read, pid: %u, tid: %u }",
+				   pevent->event.read.pid,
+				   pevent->event.read.tid);
+	/*
+ 	 * FIXME: return the array of read values,
+ 	 * making this method useful ;-)
+ 	 */
+}
+
+static PyTypeObject pyrf_read_event__type = {
+	PyVarObject_HEAD_INIT(NULL, 0)
+	.tp_name	= "perf.read_event",
+	.tp_basicsize	= sizeof(struct pyrf_event),
+	.tp_flags	= Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
+	.tp_doc		= pyrf_read_event__doc,
+	.tp_members	= pyrf_read_event__members,
+	.tp_repr	= (reprfunc)pyrf_read_event__repr,
+};
+
+static char pyrf_sample_event__doc[] = PyDoc_STR("perf sample event object.");
+
+static PyMemberDef pyrf_sample_event__members[] = {
+	sample_members
+	member_def(perf_event_header, type, T_UINT, "event type"),
+	{ .name = NULL, },
+};
+
+static PyObject *pyrf_sample_event__repr(struct pyrf_event *pevent)
+{
+	PyObject *ret;
+	char *s;
+
+	if (asprintf(&s, "{ type: sample }") < 0) {
+		ret = PyErr_NoMemory();
+	} else {
+		ret = PyString_FromString(s);
+		free(s);
+	}
+	return ret;
+}
+
+static PyTypeObject pyrf_sample_event__type = {
+	PyVarObject_HEAD_INIT(NULL, 0)
+	.tp_name	= "perf.sample_event",
+	.tp_basicsize	= sizeof(struct pyrf_event),
+	.tp_flags	= Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
+	.tp_doc		= pyrf_sample_event__doc,
+	.tp_members	= pyrf_sample_event__members,
+	.tp_repr	= (reprfunc)pyrf_sample_event__repr,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int pyrf_event__setup_types(void)
 {
 	int err;
 	pyrf_mmap_event__type.tp_new =
 	pyrf_task_event__type.tp_new =
 	pyrf_comm_event__type.tp_new =
+<<<<<<< HEAD
+=======
+	pyrf_lost_event__type.tp_new =
+	pyrf_read_event__type.tp_new =
+	pyrf_sample_event__type.tp_new =
+>>>>>>> refs/remotes/origin/cm-10.0
 	pyrf_throttle_event__type.tp_new = PyType_GenericNew;
 	err = PyType_Ready(&pyrf_mmap_event__type);
 	if (err < 0)
 		goto out;
+<<<<<<< HEAD
+=======
+	err = PyType_Ready(&pyrf_lost_event__type);
+	if (err < 0)
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = PyType_Ready(&pyrf_task_event__type);
 	if (err < 0)
 		goto out;
@@ -206,20 +318,38 @@ static int pyrf_event__setup_types(void)
 	err = PyType_Ready(&pyrf_throttle_event__type);
 	if (err < 0)
 		goto out;
+<<<<<<< HEAD
+=======
+	err = PyType_Ready(&pyrf_read_event__type);
+	if (err < 0)
+		goto out;
+	err = PyType_Ready(&pyrf_sample_event__type);
+	if (err < 0)
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	return err;
 }
 
 static PyTypeObject *pyrf_event__type[] = {
 	[PERF_RECORD_MMAP]	 = &pyrf_mmap_event__type,
+<<<<<<< HEAD
 	[PERF_RECORD_LOST]	 = &pyrf_mmap_event__type,
+=======
+	[PERF_RECORD_LOST]	 = &pyrf_lost_event__type,
+>>>>>>> refs/remotes/origin/cm-10.0
 	[PERF_RECORD_COMM]	 = &pyrf_comm_event__type,
 	[PERF_RECORD_EXIT]	 = &pyrf_task_event__type,
 	[PERF_RECORD_THROTTLE]	 = &pyrf_throttle_event__type,
 	[PERF_RECORD_UNTHROTTLE] = &pyrf_throttle_event__type,
 	[PERF_RECORD_FORK]	 = &pyrf_task_event__type,
+<<<<<<< HEAD
 	[PERF_RECORD_READ]	 = &pyrf_mmap_event__type,
 	[PERF_RECORD_SAMPLE]	 = &pyrf_mmap_event__type,
+=======
+	[PERF_RECORD_READ]	 = &pyrf_read_event__type,
+	[PERF_RECORD_SAMPLE]	 = &pyrf_sample_event__type,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static PyObject *pyrf_event__new(union perf_event *event)
@@ -247,7 +377,11 @@ struct pyrf_cpu_map {
 static int pyrf_cpu_map__init(struct pyrf_cpu_map *pcpus,
 			      PyObject *args, PyObject *kwargs)
 {
+<<<<<<< HEAD
 	static char *kwlist[] = { "cpustr", NULL, NULL, };
+=======
+	static char *kwlist[] = { "cpustr", NULL };
+>>>>>>> refs/remotes/origin/cm-10.0
 	char *cpustr = NULL;
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|s",
@@ -316,6 +450,7 @@ struct pyrf_thread_map {
 static int pyrf_thread_map__init(struct pyrf_thread_map *pthreads,
 				 PyObject *args, PyObject *kwargs)
 {
+<<<<<<< HEAD
 	static char *kwlist[] = { "pid", "tid", NULL, NULL, };
 	int pid = -1, tid = -1;
 
@@ -324,6 +459,16 @@ static int pyrf_thread_map__init(struct pyrf_thread_map *pthreads,
 		return -1;
 
 	pthreads->threads = thread_map__new(pid, tid);
+=======
+	static char *kwlist[] = { "pid", "tid", "uid", NULL };
+	int pid = -1, tid = -1, uid = UINT_MAX;
+
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iii",
+					 kwlist, &pid, &tid, &uid))
+		return -1;
+
+	pthreads->threads = thread_map__new(pid, tid, uid);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pthreads->threads == NULL)
 		return -1;
 	return 0;
@@ -418,7 +563,13 @@ static int pyrf_evsel__init(struct pyrf_evsel *pevsel,
 		"wakeup_events",
 		"bp_type",
 		"bp_addr",
+<<<<<<< HEAD
 		"bp_len", NULL, NULL, };
+=======
+		"bp_len",
+		 NULL
+	};
+>>>>>>> refs/remotes/origin/cm-10.0
 	u64 sample_period = 0;
 	u32 disabled = 0,
 	    inherit = 0,
@@ -499,7 +650,11 @@ static PyObject *pyrf_evsel__open(struct pyrf_evsel *pevsel,
 	struct thread_map *threads = NULL;
 	PyObject *pcpus = NULL, *pthreads = NULL;
 	int group = 0, inherit = 0;
+<<<<<<< HEAD
 	static char *kwlist[] = {"cpus", "threads", "group", "inherit", NULL, NULL};
+=======
+	static char *kwlist[] = { "cpus", "threads", "group", "inherit", NULL };
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOii", kwlist,
 					 &pcpus, &pthreads, &group, &inherit))
@@ -512,7 +667,15 @@ static PyObject *pyrf_evsel__open(struct pyrf_evsel *pevsel,
 		cpus = ((struct pyrf_cpu_map *)pcpus)->cpus;
 
 	evsel->attr.inherit = inherit;
+<<<<<<< HEAD
 	if (perf_evsel__open(evsel, cpus, threads, group) < 0) {
+=======
+	/*
+	 * This will group just the fds for this single evsel, to group
+	 * multiple events, use evlist.open().
+	 */
+	if (perf_evsel__open(evsel, cpus, threads, group, NULL) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		PyErr_SetFromErrno(PyExc_OSError);
 		return NULL;
 	}
@@ -582,8 +745,12 @@ static PyObject *pyrf_evlist__mmap(struct pyrf_evlist *pevlist,
 				   PyObject *args, PyObject *kwargs)
 {
 	struct perf_evlist *evlist = &pevlist->evlist;
+<<<<<<< HEAD
 	static char *kwlist[] = {"pages", "overwrite",
 				  NULL, NULL};
+=======
+	static char *kwlist[] = { "pages", "overwrite", NULL };
+>>>>>>> refs/remotes/origin/cm-10.0
 	int pages = 128, overwrite = false;
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|ii", kwlist,
@@ -603,7 +770,11 @@ static PyObject *pyrf_evlist__poll(struct pyrf_evlist *pevlist,
 				   PyObject *args, PyObject *kwargs)
 {
 	struct perf_evlist *evlist = &pevlist->evlist;
+<<<<<<< HEAD
 	static char *kwlist[] = {"timeout", NULL, NULL};
+=======
+	static char *kwlist[] = { "timeout", NULL };
+>>>>>>> refs/remotes/origin/cm-10.0
 	int timeout = -1, n;
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i", kwlist, &timeout))
@@ -674,7 +845,11 @@ static PyObject *pyrf_evlist__read_on_cpu(struct pyrf_evlist *pevlist,
 	struct perf_evlist *evlist = &pevlist->evlist;
 	union perf_event *event;
 	int sample_id_all = 1, cpu;
+<<<<<<< HEAD
 	static char *kwlist[] = {"cpu", "sample_id_all", NULL, NULL};
+=======
+	static char *kwlist[] = { "cpu", "sample_id_all", NULL };
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err;
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|i", kwlist,
@@ -693,7 +868,11 @@ static PyObject *pyrf_evlist__read_on_cpu(struct pyrf_evlist *pevlist,
 		first = list_entry(evlist->entries.next, struct perf_evsel, node);
 		err = perf_event__parse_sample(event, first->attr.sample_type,
 					       perf_evsel__sample_size(first),
+<<<<<<< HEAD
 					       sample_id_all, &pevent->sample);
+=======
+					       sample_id_all, &pevent->sample, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			return PyErr_Format(PyExc_OSError,
 					    "perf: can't parse sample, err=%d", err);
@@ -704,6 +883,28 @@ static PyObject *pyrf_evlist__read_on_cpu(struct pyrf_evlist *pevlist,
 	return Py_None;
 }
 
+<<<<<<< HEAD
+=======
+static PyObject *pyrf_evlist__open(struct pyrf_evlist *pevlist,
+				   PyObject *args, PyObject *kwargs)
+{
+	struct perf_evlist *evlist = &pevlist->evlist;
+	int group = 0;
+	static char *kwlist[] = { "group", NULL };
+
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOii", kwlist, &group))
+		return NULL;
+
+	if (perf_evlist__open(evlist, group) < 0) {
+		PyErr_SetFromErrno(PyExc_OSError);
+		return NULL;
+	}
+
+	Py_INCREF(Py_None);
+	return Py_None;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static PyMethodDef pyrf_evlist__methods[] = {
 	{
 		.ml_name  = "mmap",
@@ -712,6 +913,15 @@ static PyMethodDef pyrf_evlist__methods[] = {
 		.ml_doc	  = PyDoc_STR("mmap the file descriptor table.")
 	},
 	{
+<<<<<<< HEAD
+=======
+		.ml_name  = "open",
+		.ml_meth  = (PyCFunction)pyrf_evlist__open,
+		.ml_flags = METH_VARARGS | METH_KEYWORDS,
+		.ml_doc	  = PyDoc_STR("open the file descriptors.")
+	},
+	{
+>>>>>>> refs/remotes/origin/cm-10.0
 		.ml_name  = "poll",
 		.ml_meth  = (PyCFunction)pyrf_evlist__poll,
 		.ml_flags = METH_VARARGS | METH_KEYWORDS,

@@ -46,7 +46,11 @@ static int pgcnt;
 module_param(pgcnt, int, S_IRUGO);
 MODULE_PARM_DESC(pgcnt, "number of pages per eraseblock to torture (0 => all)");
 
+<<<<<<< HEAD
 static int dev;
+=======
+static int dev = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(dev, int, S_IRUGO);
 MODULE_PARM_DESC(dev, "MTD device number to use");
 
@@ -105,7 +109,11 @@ static inline int erase_eraseblock(int ebnum)
 	ei.addr = addr;
 	ei.len  = mtd->erasesize;
 
+<<<<<<< HEAD
 	err = mtd->erase(mtd, &ei);
+=======
+	err = mtd_erase(mtd, &ei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
 		return err;
@@ -127,7 +135,11 @@ static inline int erase_eraseblock(int ebnum)
 static inline int check_eraseblock(int ebnum, unsigned char *buf)
 {
 	int err, retries = 0;
+<<<<<<< HEAD
 	size_t read = 0;
+=======
+	size_t read;
+>>>>>>> refs/remotes/origin/cm-10.0
 	loff_t addr = ebnum * mtd->erasesize;
 	size_t len = mtd->erasesize;
 
@@ -137,8 +149,13 @@ static inline int check_eraseblock(int ebnum, unsigned char *buf)
 	}
 
 retry:
+<<<<<<< HEAD
 	err = mtd->read(mtd, addr, len, &read, check_buf);
 	if (err == -EUCLEAN)
+=======
+	err = mtd_read(mtd, addr, len, &read, check_buf);
+	if (mtd_is_bitflip(err))
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(PRINT_PREF "single bit flip occurred at EB %d "
 		       "MTD reported that it was fixed.\n", ebnum);
 	else if (err) {
@@ -181,7 +198,11 @@ retry:
 static inline int write_pattern(int ebnum, void *buf)
 {
 	int err;
+<<<<<<< HEAD
 	size_t written = 0;
+=======
+	size_t written;
+>>>>>>> refs/remotes/origin/cm-10.0
 	loff_t addr = ebnum * mtd->erasesize;
 	size_t len = mtd->erasesize;
 
@@ -189,7 +210,11 @@ static inline int write_pattern(int ebnum, void *buf)
 		addr = (ebnum + 1) * mtd->erasesize - pgcnt * pgsize;
 		len = pgcnt * pgsize;
 	}
+<<<<<<< HEAD
 	err = mtd->write(mtd, addr, len, &written, buf);
+=======
+	err = mtd_write(mtd, addr, len, &written, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		printk(PRINT_PREF "error %d while writing EB %d, written %zd"
 		      " bytes\n", err, ebnum, written);
@@ -213,6 +238,16 @@ static int __init tort_init(void)
 	printk(KERN_INFO "=================================================\n");
 	printk(PRINT_PREF "Warning: this program is trying to wear out your "
 	       "flash, stop it if this is not wanted.\n");
+<<<<<<< HEAD
+=======
+
+	if (dev < 0) {
+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
+		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(PRINT_PREF "MTD device: %d\n", dev);
 	printk(PRINT_PREF "torture %d eraseblocks (%d-%d) of mtd%d\n",
 	       ebcnt, eb, eb + ebcnt - 1, dev);
@@ -283,10 +318,16 @@ static int __init tort_init(void)
 	 * Check if there is a bad eraseblock among those we are going to test.
 	 */
 	memset(&bad_ebs[0], 0, sizeof(int) * ebcnt);
+<<<<<<< HEAD
 	if (mtd->block_isbad) {
 		for (i = eb; i < eb + ebcnt; i++) {
 			err = mtd->block_isbad(mtd,
 					       (loff_t)i * mtd->erasesize);
+=======
+	if (mtd_can_have_bb(mtd)) {
+		for (i = eb; i < eb + ebcnt; i++) {
+			err = mtd_block_isbad(mtd, (loff_t)i * mtd->erasesize);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (err < 0) {
 				printk(PRINT_PREF "block_isbad() returned %d "

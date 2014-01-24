@@ -64,7 +64,11 @@
  * Author: Chris Verges <chrisv@cyberswitching.com>
  *
  * derived from ad5252.c
+<<<<<<< HEAD
  * Copyright (c) 2006 Michael Hennerich <hennerich@blackfin.uclinux.org>
+=======
+ * Copyright (c) 2006-2011 Michael Hennerich <hennerich@blackfin.uclinux.org>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Licensed under the GPL-2 or later.
  */
@@ -76,8 +80,11 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 #define DRIVER_VERSION			"0.2"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ad525x_dpot.h"
 
 /*
@@ -687,8 +694,14 @@ inline void ad_dpot_remove_files(struct device *dev,
 	}
 }
 
+<<<<<<< HEAD
 __devinit int ad_dpot_probe(struct device *dev,
 		struct ad_dpot_bus_data *bdata, const struct ad_dpot_id *id)
+=======
+int __devinit ad_dpot_probe(struct device *dev,
+		struct ad_dpot_bus_data *bdata, unsigned long devid,
+			    const char *name)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 
 	struct dpot_data *data;
@@ -704,6 +717,7 @@ __devinit int ad_dpot_probe(struct device *dev,
 	mutex_init(&data->update_lock);
 
 	data->bdata = *bdata;
+<<<<<<< HEAD
 	data->devid = id->devid;
 
 	data->max_pos = 1 << DPOT_MAX_POS(data->devid);
@@ -711,6 +725,15 @@ __devinit int ad_dpot_probe(struct device *dev,
 	data->feat = DPOT_FEAT(data->devid);
 	data->uid = DPOT_UID(data->devid);
 	data->wipers = DPOT_WIPERS(data->devid);
+=======
+	data->devid = devid;
+
+	data->max_pos = 1 << DPOT_MAX_POS(devid);
+	data->rdac_mask = data->max_pos - 1;
+	data->feat = DPOT_FEAT(devid);
+	data->uid = DPOT_UID(devid);
+	data->wipers = DPOT_WIPERS(devid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = DPOT_RDAC0; i < MAX_RDACS; i++)
 		if (data->wipers & (1 << i)) {
@@ -731,7 +754,11 @@ __devinit int ad_dpot_probe(struct device *dev,
 	}
 
 	dev_info(dev, "%s %d-Position Digital Potentiometer registered\n",
+<<<<<<< HEAD
 		 id->name, data->max_pos);
+=======
+		 name, data->max_pos);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 
@@ -745,7 +772,11 @@ exit_free:
 	dev_set_drvdata(dev, NULL);
 exit:
 	dev_err(dev, "failed to create client for %s ID 0x%lX\n",
+<<<<<<< HEAD
 			id->name, id->devid);
+=======
+		name, devid);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 EXPORT_SYMBOL(ad_dpot_probe);
@@ -770,4 +801,7 @@ MODULE_AUTHOR("Chris Verges <chrisv@cyberswitching.com>, "
 	      "Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("Digital potentiometer driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_VERSION(DRIVER_VERSION);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

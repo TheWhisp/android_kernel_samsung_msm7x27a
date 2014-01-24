@@ -1,6 +1,10 @@
 /* linux/arch/arm/mach-msm/rpc_hsusb.c
  *
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * All source code in this file is licensed under the following license except
  * where indicated.
@@ -20,6 +24,10 @@
 
 #include <linux/err.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/rpc_hsusb.h>
 #include <asm/mach-types.h>
 
@@ -621,7 +629,11 @@ int usb_diag_update_pid_and_serial_num(uint32_t pid, const char *snum)
 }
 
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_MSM_72K
+=======
+#ifdef CONFIG_USB_MSM_72K
+>>>>>>> refs/remotes/origin/cm-10.0
 /* charger api wrappers */
 int hsusb_chg_init(int connect)
 {

@@ -81,6 +81,7 @@ config TTY_PRINTK
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config BRIQ_PANEL
 	tristate 'Total Impact briQ front panel driver'
 	depends on PPC_CHRP
@@ -96,6 +97,8 @@ config BRIQ_PANEL
 
 	  It's safe to say N here.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config BFIN_OTP
 	tristate "Blackfin On-Chip OTP Memory Support"
 	depends on BLACKFIN && (BF51x || BF52x || BF54x)
@@ -313,7 +316,11 @@ if RTC_LIB=n
 config RTC
 	tristate "Enhanced Real Time Clock Support (legacy PC RTC driver)"
 	depends on !PPC && !PARISC && !IA64 && !M68K && !SPARC && !FRV \
+<<<<<<< HEAD
 			&& !ARM && !SUPERH && !S390 && !AVR32 && !BLACKFIN
+=======
+			&& !ARM && !SUPERH && !S390 && !AVR32 && !BLACKFIN && !UML
+>>>>>>> refs/remotes/origin/cm-10.0
 	---help---
 	  If you say Y here and create a character special file /dev/rtc with
 	  major number 10 and minor number 135 using mknod ("man mknod"), you
@@ -361,7 +368,11 @@ config JS_RTC
 
 config GEN_RTC
 	tristate "Generic /dev/rtc emulation"
+<<<<<<< HEAD
 	depends on RTC!=y && !IA64 && !ARM && !M32R && !MIPS && !SPARC && !FRV && !S390 && !SUPERH && !AVR32 && !BLACKFIN
+=======
+	depends on RTC!=y && !IA64 && !ARM && !M32R && !MIPS && !SPARC && !FRV && !S390 && !SUPERH && !AVR32 && !BLACKFIN && !UML
+>>>>>>> refs/remotes/origin/cm-10.0
 	---help---
 	  If you say Y here and create a character special file /dev/rtc with
 	  major number 10 and minor number 135 using mknod ("man mknod"), you
@@ -505,7 +516,11 @@ config SCx200_GPIO
 
 config PC8736x_GPIO
 	tristate "NatSemi PC8736x GPIO Support"
+<<<<<<< HEAD
 	depends on X86_32
+=======
+	depends on X86_32 && !UML
+>>>>>>> refs/remotes/origin/cm-10.0
 	default SCx200_GPIO	# mostly N
 	select NSC_GPIO		# needed for support routines
 	help
@@ -635,6 +650,20 @@ config MSM_SMD_PKT
 	  Enables userspace clients to read and write to some packet SMD
 	  ports via device interface for MSM chipset.
 
+<<<<<<< HEAD
+=======
+config TILE_SROM
+	bool "Character-device access via hypervisor to the Tilera SPI ROM"
+	depends on TILE
+	default y
+	---help---
+	  This device provides character-level read-write access
+	  to the SROM, typically via the "0", "1", and "2" devices
+	  in /dev/srom/.  The Tilera hypervisor makes the flash
+	  device appear much like a simple EEPROM, and knows
+	  how to partition a single ROM for multiple purposes.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config MSM_ROTATOR
         tristate "MSM Offline Image Rotator Driver"
         depends on (ARCH_MSM7X30 || ARCH_MSM8X60 || ARCH_MSM8960) && ANDROID_PMEM

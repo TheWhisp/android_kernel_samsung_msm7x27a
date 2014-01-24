@@ -2,7 +2,10 @@
 #define _LINUX_NFS_XDR_H
 
 #include <linux/nfsacl.h>
+<<<<<<< HEAD
 #include <linux/nfs3.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sunrpc/gss_api.h>
 
 /*
@@ -18,6 +21,14 @@
 /* Forward declaration for NFS v3 */
 struct nfs4_secinfo_flavors;
 
+<<<<<<< HEAD
+=======
+struct nfs4_string {
+	unsigned int len;
+	char *data;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct nfs_fsid {
 	uint64_t		major;
 	uint64_t		minor;
@@ -61,6 +72,11 @@ struct nfs_fattr {
 	struct timespec		pre_ctime;	/* pre_op_attr.ctime	  */
 	unsigned long		time_start;
 	unsigned long		gencount;
+<<<<<<< HEAD
+=======
+	struct nfs4_string	*owner_name;
+	struct nfs4_string	*group_name;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define NFS_ATTR_FATTR_TYPE		(1U << 0)
@@ -82,9 +98,18 @@ struct nfs_fattr {
 #define NFS_ATTR_FATTR_PRECTIME		(1U << 16)
 #define NFS_ATTR_FATTR_CHANGE		(1U << 17)
 #define NFS_ATTR_FATTR_PRECHANGE	(1U << 18)
+<<<<<<< HEAD
 #define NFS_ATTR_FATTR_V4_REFERRAL	(1U << 19)	/* NFSv4 referral */
 #define NFS_ATTR_FATTR_MOUNTPOINT	(1U << 20)	/* Treat as mountpoint */
 #define NFS_ATTR_FATTR_MOUNTED_ON_FILEID		(1U << 21)
+=======
+#define NFS_ATTR_FATTR_V4_LOCATIONS	(1U << 19)
+#define NFS_ATTR_FATTR_V4_REFERRAL	(1U << 20)
+#define NFS_ATTR_FATTR_MOUNTPOINT	(1U << 21)
+#define NFS_ATTR_FATTR_MOUNTED_ON_FILEID (1U << 22)
+#define NFS_ATTR_FATTR_OWNER_NAME	(1U << 23)
+#define NFS_ATTR_FATTR_GROUP_NAME	(1U << 24)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define NFS_ATTR_FATTR (NFS_ATTR_FATTR_TYPE \
 		| NFS_ATTR_FATTR_MODE \
@@ -122,6 +147,10 @@ struct nfs_fsinfo {
 	struct timespec		time_delta; /* server time granularity */
 	__u32			lease_time; /* in seconds */
 	__u32			layouttype; /* supported pnfs layout driver */
+<<<<<<< HEAD
+=======
+	__u32			blksize; /* preferred pnfs io block size */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct nfs_fsstat {
@@ -172,7 +201,11 @@ struct nfs4_slot {
 
 struct nfs4_sequence_args {
 	struct nfs4_session	*sa_session;
+<<<<<<< HEAD
 	u8			sa_slotid;
+=======
+	u32			sa_slotid;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8			sa_cache_this;
 };
 
@@ -235,6 +268,20 @@ struct nfs4_layoutget {
 	gfp_t gfp_flags;
 };
 
+<<<<<<< HEAD
+=======
+struct nfs4_getdevicelist_args {
+	const struct nfs_fh *fh;
+	u32 layoutclass;
+	struct nfs4_sequence_args seq_args;
+};
+
+struct nfs4_getdevicelist_res {
+	struct pnfs_devicelist *devlist;
+	struct nfs4_sequence_res seq_res;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct nfs4_getdeviceinfo_args {
 	struct pnfs_device *pdev;
 	struct nfs4_sequence_args seq_args;
@@ -257,6 +304,10 @@ struct nfs4_layoutcommit_res {
 	struct nfs_fattr *fattr;
 	const struct nfs_server *server;
 	struct nfs4_sequence_res seq_res;
+<<<<<<< HEAD
+=======
+	int status;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct nfs4_layoutcommit_data {
@@ -269,9 +320,16 @@ struct nfs4_layoutcommit_data {
 };
 
 struct nfs4_layoutreturn_args {
+<<<<<<< HEAD
 	__u32   layout_type;
 	struct inode *inode;
 	nfs4_stateid stateid;
+=======
+	struct pnfs_layout_hdr *layout;
+	struct inode *inode;
+	nfs4_stateid stateid;
+	__u32   layout_type;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct nfs4_sequence_args seq_args;
 };
 
@@ -289,6 +347,14 @@ struct nfs4_layoutreturn {
 	int rpc_status;
 };
 
+<<<<<<< HEAD
+=======
+struct stateowner_id {
+	__u64	create_time;
+	__u32	uniquifier;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Arguments to the open call.
  */
@@ -298,7 +364,11 @@ struct nfs_openargs {
 	int			open_flags;
 	fmode_t			fmode;
 	__u64                   clientid;
+<<<<<<< HEAD
 	__u64                   id;
+=======
+	struct stateowner_id	id;
+>>>>>>> refs/remotes/origin/cm-10.0
 	union {
 		struct {
 			struct iattr *  attrs;    /* UNCHECKED, GUARDED */
@@ -310,6 +380,10 @@ struct nfs_openargs {
 	const struct qstr *	name;
 	const struct nfs_server *server;	 /* Needed for ID mapping */
 	const u32 *		bitmask;
+<<<<<<< HEAD
+=======
+	const u32 *		dir_bitmask;
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u32			claim;
 	struct nfs4_sequence_args	seq_args;
 };
@@ -328,6 +402,11 @@ struct nfs_openres {
 	__u32			do_recall;
 	__u64			maxsize;
 	__u32			attrset[NFS4_BITMAP_SIZE];
+<<<<<<< HEAD
+=======
+	struct nfs4_string	*owner;
+	struct nfs4_string	*group_owner;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct nfs4_sequence_res	seq_res;
 };
 
@@ -947,6 +1026,7 @@ struct nfs4_server_caps_arg {
 };
 
 struct nfs4_server_caps_res {
+<<<<<<< HEAD
 	u32				attr_bitmask[2];
 	u32				acl_bitmask;
 	u32				has_links;
@@ -959,6 +1039,16 @@ struct nfs4_string {
 	char *data;
 };
 
+=======
+	u32				attr_bitmask[3];
+	u32				acl_bitmask;
+	u32				has_links;
+	u32				has_symlinks;
+	u32				fh_expire_type;
+	struct nfs4_sequence_res	seq_res;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NFS4_PATHNAME_MAXCOMPONENTS 512
 struct nfs4_pathname {
 	unsigned int ncomponents;
@@ -1034,6 +1124,7 @@ struct nfstime4 {
 };
 
 #ifdef CONFIG_NFS_V4_1
+<<<<<<< HEAD
 struct nfs_impl_id4 {
 	u32		domain_len;
 	char		*domain;
@@ -1042,6 +1133,8 @@ struct nfs_impl_id4 {
 	struct nfstime4	date;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NFS4_EXCHANGE_ID_LEN	(48)
 struct nfs41_exchange_id_args {
 	struct nfs_client		*client;
@@ -1062,9 +1155,23 @@ struct server_scope {
 	char 				server_scope[NFS4_OPAQUE_LIMIT];
 };
 
+<<<<<<< HEAD
 struct nfs41_exchange_id_res {
 	struct nfs_client		*client;
 	u32				flags;
+=======
+struct nfs41_impl_id {
+	char				domain[NFS4_OPAQUE_LIMIT + 1];
+	char				name[NFS4_OPAQUE_LIMIT + 1];
+	struct nfstime4			date;
+};
+
+struct nfs41_exchange_id_res {
+	struct nfs_client		*client;
+	u32				flags;
+	struct server_scope		*server_scope;
+	struct nfs41_impl_id		*impl_id;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct nfs41_create_session_args {
@@ -1088,6 +1195,37 @@ struct nfs41_reclaim_complete_args {
 struct nfs41_reclaim_complete_res {
 	struct nfs4_sequence_res	seq_res;
 };
+<<<<<<< HEAD
+=======
+
+#define SECINFO_STYLE_CURRENT_FH 0
+#define SECINFO_STYLE_PARENT 1
+struct nfs41_secinfo_no_name_args {
+	int				style;
+	struct nfs4_sequence_args	seq_args;
+};
+
+struct nfs41_test_stateid_args {
+	nfs4_stateid			*stateid;
+	struct nfs4_sequence_args	seq_args;
+};
+
+struct nfs41_test_stateid_res {
+	unsigned int			status;
+	struct nfs4_sequence_res	seq_res;
+};
+
+struct nfs41_free_stateid_args {
+	nfs4_stateid			*stateid;
+	struct nfs4_sequence_args	seq_args;
+};
+
+struct nfs41_free_stateid_res {
+	unsigned int			status;
+	struct nfs4_sequence_res	seq_res;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_NFS_V4_1 */
 
 struct nfs_page;
@@ -1095,12 +1233,19 @@ struct nfs_page;
 #define NFS_PAGEVEC_SIZE	(8U)
 
 struct nfs_read_data {
+<<<<<<< HEAD
 	int			flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct rpc_task		task;
 	struct inode		*inode;
 	struct rpc_cred		*cred;
 	struct nfs_fattr	fattr;	/* fattr storage */
 	struct list_head	pages;	/* Coalesced read requests */
+<<<<<<< HEAD
+=======
+	struct list_head	list;	/* lists of struct nfs_read_data */
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct nfs_page		*req;	/* multi ops per nfs_page */
 	struct page		**pagevec;
 	unsigned int		npages;	/* Max length of pagevec */
@@ -1117,13 +1262,20 @@ struct nfs_read_data {
 };
 
 struct nfs_write_data {
+<<<<<<< HEAD
 	int			flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct rpc_task		task;
 	struct inode		*inode;
 	struct rpc_cred		*cred;
 	struct nfs_fattr	fattr;
 	struct nfs_writeverf	verf;
 	struct list_head	pages;		/* Coalesced requests we wish to flush */
+<<<<<<< HEAD
+=======
+	struct list_head	list;		/* lists of struct nfs_write_data */
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct nfs_page		*req;		/* multi ops per nfs_page */
 	struct page		**pagevec;
 	unsigned int		npages;		/* Max length of pagevec */
@@ -1142,6 +1294,30 @@ struct nfs_write_data {
 	struct page		*page_array[NFS_PAGEVEC_SIZE];
 };
 
+<<<<<<< HEAD
+=======
+struct nfs_unlinkdata {
+	struct hlist_node list;
+	struct nfs_removeargs args;
+	struct nfs_removeres res;
+	struct inode *dir;
+	struct rpc_cred	*cred;
+	struct nfs_fattr dir_attr;
+};
+
+struct nfs_renamedata {
+	struct nfs_renameargs	args;
+	struct nfs_renameres	res;
+	struct rpc_cred		*cred;
+	struct inode		*old_dir;
+	struct dentry		*old_dentry;
+	struct nfs_fattr	old_fattr;
+	struct inode		*new_dir;
+	struct dentry		*new_dentry;
+	struct nfs_fattr	new_fattr;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct nfs_access_entry;
 struct nfs_client;
 struct rpc_timeout;
@@ -1158,9 +1334,12 @@ struct nfs_rpc_ops {
 
 	int	(*getroot) (struct nfs_server *, struct nfs_fh *,
 			    struct nfs_fsinfo *);
+<<<<<<< HEAD
 	int	(*lookupfh)(struct nfs_server *, struct nfs_fh *,
 			    struct qstr *, struct nfs_fh *,
 			    struct nfs_fattr *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int	(*getattr) (struct nfs_server *, struct nfs_fh *,
 			    struct nfs_fattr *);
 	int	(*setattr) (struct dentry *, struct nfs_fattr *,
@@ -1174,10 +1353,18 @@ struct nfs_rpc_ops {
 			    struct iattr *, int, struct nfs_open_context *);
 	int	(*remove)  (struct inode *, struct qstr *);
 	void	(*unlink_setup)  (struct rpc_message *, struct inode *dir);
+<<<<<<< HEAD
+=======
+	void	(*unlink_rpc_prepare) (struct rpc_task *, struct nfs_unlinkdata *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int	(*unlink_done) (struct rpc_task *, struct inode *);
 	int	(*rename)  (struct inode *, struct qstr *,
 			    struct inode *, struct qstr *);
 	void	(*rename_setup)  (struct rpc_message *msg, struct inode *dir);
+<<<<<<< HEAD
+=======
+	void	(*rename_rpc_prepare)(struct rpc_task *task, struct nfs_renamedata *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int	(*rename_done) (struct rpc_task *task, struct inode *old_dir, struct inode *new_dir);
 	int	(*link)    (struct inode *, struct inode *, struct qstr *);
 	int	(*symlink) (struct inode *, struct dentry *, struct page *,
@@ -1197,8 +1384,15 @@ struct nfs_rpc_ops {
 	int	(*set_capabilities)(struct nfs_server *, struct nfs_fh *);
 	int	(*decode_dirent)(struct xdr_stream *, struct nfs_entry *, int);
 	void	(*read_setup)   (struct nfs_read_data *, struct rpc_message *);
+<<<<<<< HEAD
 	int	(*read_done)  (struct rpc_task *, struct nfs_read_data *);
 	void	(*write_setup)  (struct nfs_write_data *, struct rpc_message *);
+=======
+	void	(*read_rpc_prepare)(struct rpc_task *, struct nfs_read_data *);
+	int	(*read_done)  (struct rpc_task *, struct nfs_read_data *);
+	void	(*write_setup)  (struct nfs_write_data *, struct rpc_message *);
+	void	(*write_rpc_prepare)(struct rpc_task *, struct nfs_write_data *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int	(*write_done)  (struct rpc_task *, struct nfs_write_data *);
 	void	(*commit_setup) (struct nfs_write_data *, struct rpc_message *);
 	int	(*commit_done) (struct rpc_task *, struct nfs_write_data *);
@@ -1228,11 +1422,20 @@ struct nfs_rpc_ops {
 extern const struct nfs_rpc_ops	nfs_v2_clientops;
 extern const struct nfs_rpc_ops	nfs_v3_clientops;
 extern const struct nfs_rpc_ops	nfs_v4_clientops;
+<<<<<<< HEAD
 extern struct rpc_version	nfs_version2;
 extern struct rpc_version	nfs_version3;
 extern struct rpc_version	nfs_version4;
 
 extern struct rpc_version	nfsacl_version3;
 extern struct rpc_program	nfsacl_program;
+=======
+extern const struct rpc_version nfs_version2;
+extern const struct rpc_version nfs_version3;
+extern const struct rpc_version nfs_version4;
+
+extern const struct rpc_version nfsacl_version3;
+extern const struct rpc_program nfsacl_program;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

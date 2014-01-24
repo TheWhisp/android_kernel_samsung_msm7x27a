@@ -1,6 +1,9 @@
 #ifndef _SPEAKUP_H
 #define _SPEAKUP_H
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "spk_types.h"
 #include "i18n.h"
@@ -117,7 +120,11 @@ extern int bleep_time, bell_pos;
 extern int spell_delay, key_echo;
 extern short punc_mask;
 extern short pitch_shift, synth_flags;
+<<<<<<< HEAD
 extern int quiet_boot;
+=======
+extern bool quiet_boot;
+>>>>>>> refs/remotes/origin/cm-10.0
 extern char *synth_name;
 extern struct bleep unprocessed_sound;
 

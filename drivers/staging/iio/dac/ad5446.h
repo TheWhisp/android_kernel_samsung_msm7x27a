@@ -25,15 +25,21 @@
 #define AD5660_PWRDWN_100k	(0x2 << 16) /* Power-down: 100kOhm to GND */
 #define AD5660_PWRDWN_TRISTATE	(0x3 << 16) /* Power-down: Three-state */
 
+<<<<<<< HEAD
 #define RES_MASK(bits)	((1 << (bits)) - 1)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MODE_PWRDWN_1k		0x1
 #define MODE_PWRDWN_100k	0x2
 #define MODE_PWRDWN_TRISTATE	0x3
 
 /**
  * struct ad5446_state - driver instance specific data
+<<<<<<< HEAD
  * @indio_dev:		the industrial I/O device
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @spi:		spi_device
  * @chip_info:		chip model specific constants, available modes etc
  * @reg:		supply regulator
@@ -45,7 +51,10 @@
  */
 
 struct ad5446_state {
+<<<<<<< HEAD
 	struct iio_dev			*indio_dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct spi_device		*spi;
 	const struct ad5446_chip_info	*chip_info;
 	struct regulator		*reg;
@@ -64,18 +73,26 @@ struct ad5446_state {
 
 /**
  * struct ad5446_chip_info - chip specific information
+<<<<<<< HEAD
  * @bits:		accuracy of the DAC in bits
  * @storagebits:	number of bits written to the DAC
  * @left_shift:		number of bits the datum must be shifted
+=======
+ * @channel:		channel spec for the DAC
+>>>>>>> refs/remotes/origin/cm-10.0
  * @int_vref_mv:	AD5620/40/60: the internal reference voltage
  * @store_sample:	chip specific helper function to store the datum
  * @store_sample:	chip specific helper function to store the powerpown cmd
  */
 
 struct ad5446_chip_info {
+<<<<<<< HEAD
 	u8			bits;
 	u8			storagebits;
 	u8			left_shift;
+=======
+	struct iio_chan_spec	channel;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16			int_vref_mv;
 	void (*store_sample)	(struct ad5446_state *st, unsigned val);
 	void (*store_pwr_down)	(struct ad5446_state *st, unsigned mode);

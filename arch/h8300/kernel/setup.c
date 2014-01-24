@@ -46,7 +46,11 @@
 #include <asm/regs267x.h>
 #endif
 
+<<<<<<< HEAD
 #define STUBSIZE 0xc000;
+=======
+#define STUBSIZE 0xc000
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned long rom_length;
 unsigned long memory_start;

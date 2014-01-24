@@ -169,7 +169,11 @@ it with special cases.
 
         b) Entry with a flattened device-tree block.  Firmware loads the
         physical address of the flattened device tree block (dtb) into r2,
+<<<<<<< HEAD
         r1 is not used, but it is considered good practise to use a valid
+=======
+        r1 is not used, but it is considered good practice to use a valid
+>>>>>>> refs/remotes/origin/cm-10.0
         machine number as described in Documentation/arm/Booting.
 
                 r0 : 0

@@ -42,7 +42,10 @@ int pxa_pm_enter(suspend_state_t state)
 
 	/* *** go zzz *** */
 	pxa_cpu_pm_fns->enter(state);
+<<<<<<< HEAD
 	cpu_init();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (state != PM_SUSPEND_STANDBY && pxa_cpu_pm_fns->restore) {
 		/* after sleeping, validate the checksum */

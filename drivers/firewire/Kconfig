@@ -28,11 +28,14 @@ config FIREWIRE_OHCI
 	  To compile this driver as a module, say M here:  The module will be
 	  called firewire-ohci.
 
+<<<<<<< HEAD
 config FIREWIRE_OHCI_DEBUG
 	bool
 	depends on FIREWIRE_OHCI
 	default y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config FIREWIRE_SBP2
 	tristate "Storage devices (SBP-2 protocol)"
 	depends on FIREWIRE && SCSI

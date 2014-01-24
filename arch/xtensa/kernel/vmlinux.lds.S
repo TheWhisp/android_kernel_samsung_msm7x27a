@@ -83,7 +83,10 @@ SECTIONS
 
   _text = .;
   _stext = .;
+<<<<<<< HEAD
   _ftext = .;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
   .text :
   {
@@ -112,7 +115,11 @@ SECTIONS
   EXCEPTION_TABLE(16)
   /* Data section */
 
+<<<<<<< HEAD
   _fdata = .;
+=======
+  _sdata = .;
+>>>>>>> refs/remotes/origin/cm-10.0
   RW_DATA_SECTION(XCHAL_ICACHE_LINESIZE, PAGE_SIZE, THREAD_SIZE)
   _edata = .;
 

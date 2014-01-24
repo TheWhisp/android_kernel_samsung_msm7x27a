@@ -1,7 +1,11 @@
 /* drivers/input/touchscreen/msm_ts.c
  *
  * Copyright (C) 2008 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -207,7 +211,11 @@ static void dump_tssc_regs(struct msm_ts *ts)
 #undef __dump_tssc_reg
 }
 
+<<<<<<< HEAD
 static int __devinit msm_ts_hw_init(struct msm_ts *ts)
+=======
+static int msm_ts_hw_init(struct msm_ts *ts)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	uint32_t tmp;
 

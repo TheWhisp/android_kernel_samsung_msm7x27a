@@ -22,13 +22,21 @@
 
 #include <linux/gpio.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/power_supply.h>
 #include <linux/platform_device.h>
 #include <linux/power/max8903_charger.h>
 
 struct max8903_data {
+<<<<<<< HEAD
 	struct max8903_pdata *pdata;
+=======
+	struct max8903_pdata pdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct device *dev;
 	struct power_supply psy;
 	bool fault;
@@ -52,8 +60,13 @@ static int max8903_get_property(struct power_supply *psy,
 	switch (psp) {
 	case POWER_SUPPLY_PROP_STATUS:
 		val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
+<<<<<<< HEAD
 		if (data->pdata->chg) {
 			if (gpio_get_value(data->pdata->chg) == 0)
+=======
+		if (data->pdata.chg) {
+			if (gpio_get_value(data->pdata.chg) == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 				val->intval = POWER_SUPPLY_STATUS_CHARGING;
 			else if (data->usb_in || data->ta_in)
 				val->intval = POWER_SUPPLY_STATUS_NOT_CHARGING;
@@ -80,7 +93,11 @@ static int max8903_get_property(struct power_supply *psy,
 static irqreturn_t max8903_dcin(int irq, void *_data)
 {
 	struct max8903_data *data = _data;
+<<<<<<< HEAD
 	struct max8903_pdata *pdata = data->pdata;
+=======
+	struct max8903_pdata *pdata = &data->pdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool ta_in;
 	enum power_supply_type old_type;
 
@@ -121,7 +138,11 @@ static irqreturn_t max8903_dcin(int irq, void *_data)
 static irqreturn_t max8903_usbin(int irq, void *_data)
 {
 	struct max8903_data *data = _data;
+<<<<<<< HEAD
 	struct max8903_pdata *pdata = data->pdata;
+=======
+	struct max8903_pdata *pdata = &data->pdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool usb_in;
 	enum power_supply_type old_type;
 
@@ -160,7 +181,11 @@ static irqreturn_t max8903_usbin(int irq, void *_data)
 static irqreturn_t max8903_fault(int irq, void *_data)
 {
 	struct max8903_data *data = _data;
+<<<<<<< HEAD
 	struct max8903_pdata *pdata = data->pdata;
+=======
+	struct max8903_pdata *pdata = &data->pdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool fault;
 
 	fault = gpio_get_value(pdata->flt) ? false : true;
@@ -193,7 +218,11 @@ static __devinit int max8903_probe(struct platform_device *pdev)
 		dev_err(dev, "Cannot allocate memory.\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	data->pdata = pdata;
+=======
+	memcpy(&data->pdata, pdata, sizeof(struct max8903_pdata));
+>>>>>>> refs/remotes/origin/cm-10.0
 	data->dev = dev;
 	platform_set_drvdata(pdev, data);
 
@@ -349,7 +378,11 @@ static __devexit int max8903_remove(struct platform_device *pdev)
 	struct max8903_data *data = platform_get_drvdata(pdev);
 
 	if (data) {
+<<<<<<< HEAD
 		struct max8903_pdata *pdata = data->pdata;
+=======
+		struct max8903_pdata *pdata = &data->pdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (pdata->flt)
 			free_irq(gpio_to_irq(pdata->flt), data);
@@ -373,6 +406,7 @@ static struct platform_driver max8903_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init max8903_init(void)
 {
 	return platform_driver_register(&max8903_driver);
@@ -384,8 +418,15 @@ static void __exit max8903_exit(void)
 	platform_driver_unregister(&max8903_driver);
 }
 module_exit(max8903_exit);
+=======
+module_platform_driver(max8903_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("MAX8903 Charger Driver");
 MODULE_AUTHOR("MyungJoo Ham <myungjoo.ham@samsung.com>");
+<<<<<<< HEAD
 MODULE_ALIAS("max8903-charger");
+=======
+MODULE_ALIAS("platform:max8903-charger");
+>>>>>>> refs/remotes/origin/cm-10.0

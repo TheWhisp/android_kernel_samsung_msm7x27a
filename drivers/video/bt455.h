@@ -8,7 +8,10 @@
  *	archive for more details.
  */
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Bt455 byte-wide registers, 32-bit aligned.

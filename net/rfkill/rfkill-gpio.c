@@ -101,6 +101,17 @@ static int rfkill_gpio_probe(struct platform_device *pdev)
 	if (!rfkill)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	if (pdata->gpio_runtime_setup) {
+		ret = pdata->gpio_runtime_setup(pdev);
+		if (ret) {
+			pr_warn("%s: can't set up gpio\n", __func__);
+			goto fail_alloc;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rfkill->pdata = pdata;
 
 	len = strlen(pdata->name);
@@ -182,7 +193,14 @@ fail_alloc:
 static int rfkill_gpio_remove(struct platform_device *pdev)
 {
 	struct rfkill_gpio_data *rfkill = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 
+=======
+	struct rfkill_gpio_platform_data *pdata = pdev->dev.platform_data;
+
+	if (pdata->gpio_runtime_close)
+		pdata->gpio_runtime_close(pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	rfkill_unregister(rfkill->rfkill_dev);
 	rfkill_destroy(rfkill->rfkill_dev);
 	if (gpio_is_valid(rfkill->pdata->shutdown_gpio))
@@ -209,6 +227,7 @@ static struct platform_driver rfkill_gpio_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init rfkill_gpio_init(void)
 {
 	return platform_driver_register(&rfkill_gpio_driver);
@@ -221,6 +240,9 @@ static void __exit rfkill_gpio_exit(void)
 
 module_init(rfkill_gpio_init);
 module_exit(rfkill_gpio_exit);
+=======
+module_platform_driver(rfkill_gpio_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("gpio rfkill");
 MODULE_AUTHOR("NVIDIA");

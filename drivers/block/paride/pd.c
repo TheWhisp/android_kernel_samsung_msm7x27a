@@ -124,8 +124,14 @@
    by default.
 
 */
+<<<<<<< HEAD
 
 static int verbose = 0;
+=======
+#include <linux/types.h>
+
+static bool verbose = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 static int major = PD_MAJOR;
 static char *name = PD_NAME;
 static int cluster = 64;

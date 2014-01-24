@@ -34,6 +34,10 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/info.h>
 #include <sound/pcm.h>
@@ -79,7 +83,11 @@ static int usX2Y_urb_capt_retire(struct snd_usX2Y_substream *subs)
 		cp = (unsigned char*)urb->transfer_buffer + urb->iso_frame_desc[i].offset;
 		if (urb->iso_frame_desc[i].status) { /* active? hmm, skip this */
 			snd_printk(KERN_ERR "active frame status %i. "
+<<<<<<< HEAD
 				   "Most propably some hardware problem.\n",
+=======
+				   "Most probably some hardware problem.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				   urb->iso_frame_desc[i].status);
 			return urb->iso_frame_desc[i].status;
 		}
@@ -294,6 +302,7 @@ static void usX2Y_error_urb_status(struct usX2Ydev *usX2Y,
 	usX2Y_clients_stop(usX2Y);
 }
 
+<<<<<<< HEAD
 static void usX2Y_error_sequence(struct usX2Ydev *usX2Y,
 				 struct snd_usX2Y_substream *subs, struct urb *urb)
 {
@@ -307,6 +316,8 @@ static void usX2Y_error_sequence(struct usX2Ydev *usX2Y,
 	usX2Y_clients_stop(usX2Y);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void i_usX2Y_urb_complete(struct urb *urb)
 {
 	struct snd_usX2Y_substream *subs = urb->context;
@@ -323,12 +334,18 @@ static void i_usX2Y_urb_complete(struct urb *urb)
 		usX2Y_error_urb_status(usX2Y, subs, urb);
 		return;
 	}
+<<<<<<< HEAD
 	if (likely((urb->start_frame & 0xFFFF) == (usX2Y->wait_iso_frame & 0xFFFF)))
 		subs->completed_urb = urb;
 	else {
 		usX2Y_error_sequence(usX2Y, subs, urb);
 		return;
 	}
+=======
+
+	subs->completed_urb = urb;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		struct snd_usX2Y_substream *capsubs = usX2Y->subs[SNDRV_PCM_STREAM_CAPTURE],
 			*playbacksubs = usX2Y->subs[SNDRV_PCM_STREAM_PLAYBACK];

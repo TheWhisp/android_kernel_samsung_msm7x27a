@@ -312,10 +312,13 @@ static int __devinit i2c_powermac_probe(struct platform_device *dev)
 	return rc;
 }
 
+<<<<<<< HEAD
 
 /* work with hotplug and coldplug */
 MODULE_ALIAS("platform:i2c-powermac");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver i2c_powermac_driver = {
 	.probe = i2c_powermac_probe,
 	.remove = __devexit_p(i2c_powermac_remove),
@@ -325,6 +328,7 @@ static struct platform_driver i2c_powermac_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init i2c_powermac_init(void)
 {
 	platform_driver_register(&i2c_powermac_driver);
@@ -339,3 +343,8 @@ static void __exit i2c_powermac_cleanup(void)
 
 module_init(i2c_powermac_init);
 module_exit(i2c_powermac_cleanup);
+=======
+module_platform_driver(i2c_powermac_driver);
+
+MODULE_ALIAS("platform:i2c-powermac");
+>>>>>>> refs/remotes/origin/cm-10.0

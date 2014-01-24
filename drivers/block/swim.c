@@ -26,7 +26,10 @@
 #include <linux/delay.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
 #include <asm/macintosh.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mac_via.h>
 
 #define CARDNAME "swim"

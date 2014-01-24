@@ -27,6 +27,10 @@
 
 #include <mach/jornada720.h>
 #include <mach/hardware.h>
+<<<<<<< HEAD
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Kristoffer Ericson <Kristoffer.Ericson@gmail.com>");
 MODULE_DESCRIPTION("HP Jornada 710/720/728 keyboard driver");
@@ -129,7 +133,11 @@ static int __devinit jornada720_kbd_probe(struct platform_device *pdev)
 
 	err = request_irq(IRQ_GPIO0,
 			  jornada720_kbd_interrupt,
+<<<<<<< HEAD
 			  IRQF_DISABLED | IRQF_TRIGGER_FALLING,
+=======
+			  IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  "jornadakbd", pdev);
 	if (err) {
 		printk(KERN_INFO "jornadakbd720_kbd: Unable to grab IRQ\n");
@@ -174,6 +182,7 @@ static struct platform_driver jornada720_kbd_driver = {
 	.probe   = jornada720_kbd_probe,
 	.remove  = __devexit_p(jornada720_kbd_remove),
 };
+<<<<<<< HEAD
 
 static int __init jornada720_kbd_init(void)
 {
@@ -187,3 +196,6 @@ static void __exit jornada720_kbd_exit(void)
 
 module_init(jornada720_kbd_init);
 module_exit(jornada720_kbd_exit);
+=======
+module_platform_driver(jornada720_kbd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

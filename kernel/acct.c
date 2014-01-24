@@ -84,11 +84,18 @@ static void do_acct_process(struct bsd_acct_struct *acct,
  * the cache line to have the data after getting the lock.
  */
 struct bsd_acct_struct {
+<<<<<<< HEAD
 	volatile int		active;
 	volatile int		needcheck;
 	struct file		*file;
 	struct pid_namespace	*ns;
 	struct timer_list	timer;
+=======
+	int			active;
+	unsigned long		needcheck;
+	struct file		*file;
+	struct pid_namespace	*ns;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head	list;
 };
 
@@ -96,6 +103,7 @@ static DEFINE_SPINLOCK(acct_lock);
 static LIST_HEAD(acct_list);
 
 /*
+<<<<<<< HEAD
  * Called whenever the timer says to check the free space.
  */
 static void acct_timeout(unsigned long x)
@@ -105,6 +113,8 @@ static void acct_timeout(unsigned long x)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Check the amount of free space and suspend/resume accordingly.
  */
 static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
@@ -112,12 +122,21 @@ static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
 	struct kstatfs sbuf;
 	int res;
 	int act;
+<<<<<<< HEAD
 	sector_t resume;
 	sector_t suspend;
 
 	spin_lock(&acct_lock);
 	res = acct->active;
 	if (!file || !acct->needcheck)
+=======
+	u64 resume;
+	u64 suspend;
+
+	spin_lock(&acct_lock);
+	res = acct->active;
+	if (!file || time_is_before_jiffies(acct->needcheck))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	spin_unlock(&acct_lock);
 
@@ -127,8 +146,13 @@ static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
 	suspend = sbuf.f_blocks * SUSPEND;
 	resume = sbuf.f_blocks * RESUME;
 
+<<<<<<< HEAD
 	sector_div(suspend, 100);
 	sector_div(resume, 100);
+=======
+	do_div(suspend, 100);
+	do_div(resume, 100);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (sbuf.f_bavail <= suspend)
 		act = -1;
@@ -160,10 +184,14 @@ static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
 		}
 	}
 
+<<<<<<< HEAD
 	del_timer(&acct->timer);
 	acct->needcheck = 0;
 	acct->timer.expires = jiffies + ACCT_TIMEOUT*HZ;
 	add_timer(&acct->timer);
+=======
+	acct->needcheck = jiffies + ACCT_TIMEOUT*HZ;
+>>>>>>> refs/remotes/origin/cm-10.0
 	res = acct->active;
 out:
 	spin_unlock(&acct_lock);
@@ -185,9 +213,13 @@ static void acct_file_reopen(struct bsd_acct_struct *acct, struct file *file,
 	if (acct->file) {
 		old_acct = acct->file;
 		old_ns = acct->ns;
+<<<<<<< HEAD
 		del_timer(&acct->timer);
 		acct->active = 0;
 		acct->needcheck = 0;
+=======
+		acct->active = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		acct->file = NULL;
 		acct->ns = NULL;
 		list_del(&acct->list);
@@ -195,6 +227,7 @@ static void acct_file_reopen(struct bsd_acct_struct *acct, struct file *file,
 	if (file) {
 		acct->file = file;
 		acct->ns = ns;
+<<<<<<< HEAD
 		acct->needcheck = 0;
 		acct->active = 1;
 		list_add(&acct->list, &acct_list);
@@ -202,6 +235,11 @@ static void acct_file_reopen(struct bsd_acct_struct *acct, struct file *file,
 		setup_timer(&acct->timer, acct_timeout, (unsigned long)acct);
 		acct->timer.expires = jiffies + ACCT_TIMEOUT*HZ;
 		add_timer(&acct->timer);
+=======
+		acct->needcheck = jiffies + ACCT_TIMEOUT*HZ;
+		acct->active = 1;
+		list_add(&acct->list, &acct_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (old_acct) {
 		mnt_unpin(old_acct->f_path.mnt);
@@ -334,7 +372,11 @@ void acct_auto_close(struct super_block *sb)
 	spin_lock(&acct_lock);
 restart:
 	list_for_each_entry(acct, &acct_list, list)
+<<<<<<< HEAD
 		if (acct->file && acct->file->f_path.mnt->mnt_sb == sb) {
+=======
+		if (acct->file && acct->file->f_path.dentry->d_sb == sb) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			acct_file_reopen(acct, NULL, NULL);
 			goto restart;
 		}
@@ -348,7 +390,10 @@ void acct_exit_ns(struct pid_namespace *ns)
 	if (acct == NULL)
 		return;
 
+<<<<<<< HEAD
 	del_timer_sync(&acct->timer);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock(&acct_lock);
 	if (acct->file != NULL)
 		acct_file_reopen(acct, NULL, NULL);
@@ -498,7 +543,11 @@ static void do_acct_process(struct bsd_acct_struct *acct,
 	 * Fill the accounting struct with the needed info as recorded
 	 * by the different kernel functions.
 	 */
+<<<<<<< HEAD
 	memset((caddr_t)&ac, 0, sizeof(acct_t));
+=======
+	memset(&ac, 0, sizeof(acct_t));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ac.ac_version = ACCT_VERSION | ACCT_BYTEORDER;
 	strlcpy(ac.ac_comm, current->comm, sizeof(ac.ac_comm));
@@ -613,8 +662,13 @@ void acct_collect(long exitcode, int group_dead)
 		pacct->ac_flag |= ACORE;
 	if (current->flags & PF_SIGNALED)
 		pacct->ac_flag |= AXSIG;
+<<<<<<< HEAD
 	pacct->ac_utime = cputime_add(pacct->ac_utime, current->utime);
 	pacct->ac_stime = cputime_add(pacct->ac_stime, current->stime);
+=======
+	pacct->ac_utime += current->utime;
+	pacct->ac_stime += current->stime;
+>>>>>>> refs/remotes/origin/cm-10.0
 	pacct->ac_minflt += current->min_flt;
 	pacct->ac_majflt += current->maj_flt;
 	spin_unlock_irq(&current->sighand->siglock);

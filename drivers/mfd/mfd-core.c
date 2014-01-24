@@ -17,6 +17,10 @@
 #include <linux/mfd/core.h>
 #include <linux/pm_runtime.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct device_type mfd_dev_type = {
 	.name	= "mfd_device",
@@ -166,7 +170,11 @@ int mfd_add_devices(struct device *parent, int id,
 	atomic_t *cnts;
 
 	/* initialize reference counting for all cells */
+<<<<<<< HEAD
 	cnts = kcalloc(sizeof(*cnts), n_devs, GFP_KERNEL);
+=======
+	cnts = kcalloc(n_devs, sizeof(*cnts), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!cnts)
 		return -ENOMEM;
 

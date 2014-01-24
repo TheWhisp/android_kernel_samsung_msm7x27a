@@ -14,7 +14,10 @@
 
 int mmc_register_host_class(void);
 void mmc_unregister_host_class(void);
+<<<<<<< HEAD
 void mmc_host_deeper_disable(struct work_struct *work);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif
 

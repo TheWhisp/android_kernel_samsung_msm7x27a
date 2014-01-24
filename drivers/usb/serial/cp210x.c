@@ -52,7 +52,11 @@ static int cp210x_startup(struct usb_serial *);
 static void cp210x_release(struct usb_serial *);
 static void cp210x_dtr_rts(struct usb_serial_port *p, int on);
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct usb_device_id id_table[] = {
 	{ USB_DEVICE(0x045B, 0x0053) }, /* Renesas RX610 RX-Stick */
@@ -198,7 +202,10 @@ static struct usb_driver cp210x_driver = {
 	.probe		= usb_serial_probe,
 	.disconnect	= usb_serial_disconnect,
 	.id_table	= id_table,
+<<<<<<< HEAD
 	.no_dynamic_id	= 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver cp210x_device = {
@@ -206,7 +213,10 @@ static struct usb_serial_driver cp210x_device = {
 		.owner =	THIS_MODULE,
 		.name = 	"cp210x",
 	},
+<<<<<<< HEAD
 	.usb_driver		= &cp210x_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table		= id_table,
 	.num_ports		= 1,
 	.bulk_in_size		= 256,
@@ -222,6 +232,13 @@ static struct usb_serial_driver cp210x_device = {
 	.dtr_rts		= cp210x_dtr_rts
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&cp210x_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Config request types */
 #define REQTYPE_HOST_TO_DEVICE	0x41
 #define REQTYPE_DEVICE_TO_HOST	0xc1
@@ -333,9 +350,18 @@ static int cp210x_get_config(struct usb_serial_port *port, u8 request,
 
 	if (result != size) {
 		dbg("%s - Unable to send config request, "
+<<<<<<< HEAD
 				"request=0x%x size=%d result=%d\n",
 				__func__, request, size, result);
 		return -EPROTO;
+=======
+				"request=0x%x size=%d result=%d",
+				__func__, request, size, result);
+		if (result > 0)
+			result = -EPROTO;
+
+		return result;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
@@ -387,9 +413,18 @@ static int cp210x_set_config(struct usb_serial_port *port, u8 request,
 
 	if ((size > 2 && result != size) || result < 0) {
 		dbg("%s - Unable to send request, "
+<<<<<<< HEAD
 				"request=0x%x size=%d result=%d\n",
 				__func__, request, size, result);
 		return -EPROTO;
+=======
+				"request=0x%x size=%d result=%d",
+				__func__, request, size, result);
+		if (result > 0)
+			result = -EPROTO;
+
+		return result;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
@@ -449,12 +484,24 @@ static unsigned int cp210x_quantise_baudrate(unsigned int baud) {
 
 static int cp210x_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
+<<<<<<< HEAD
 	dbg("%s - port %d", __func__, port->number);
 
 	if (cp210x_set_config_single(port, CP210X_IFC_ENABLE, UART_ENABLE)) {
 		dev_err(&port->dev, "%s - Unable to enable UART\n",
 				__func__);
 		return -EPROTO;
+=======
+	int result;
+
+	dbg("%s - port %d", __func__, port->number);
+
+	result = cp210x_set_config_single(port, CP210X_IFC_ENABLE,
+								UART_ENABLE);
+	if (result) {
+		dev_err(&port->dev, "%s - Unable to enable UART\n", __func__);
+		return result;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Configure the termios structure */
@@ -574,6 +621,7 @@ static void cp210x_get_termios_port(struct usb_serial_port *port,
 		cflag |= PARENB;
 		break;
 	case BITS_PARITY_MARK:
+<<<<<<< HEAD
 		dbg("%s - parity = MARK (not supported, disabling parity)",
 				__func__);
 		cflag &= ~PARENB;
@@ -586,6 +634,15 @@ static void cp210x_get_termios_port(struct usb_serial_port *port,
 		cflag &= ~PARENB;
 		bits &= ~BITS_PARITY_MASK;
 		cp210x_set_config(port, CP210X_SET_LINE_CTL, &bits, 2);
+=======
+		dbg("%s - parity = MARK", __func__);
+		cflag |= (PARENB|PARODD|CMSPAR);
+		break;
+	case BITS_PARITY_SPACE:
+		dbg("%s - parity = SPACE", __func__);
+		cflag &= ~PARODD;
+		cflag |= (PARENB|CMSPAR);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		dbg("%s - Unknown parity mode, disabling parity", __func__);
@@ -695,7 +752,10 @@ static void cp210x_set_termios(struct tty_struct *tty,
 	if (!tty)
 		return;
 
+<<<<<<< HEAD
 	tty->termios->c_cflag &= ~CMSPAR;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	cflag = tty->termios->c_cflag;
 	old_cflag = old_termios->c_cflag;
 
@@ -730,12 +790,17 @@ static void cp210x_set_termios(struct tty_struct *tty,
 		default:
 			dbg("cp210x driver does not "
 					"support the number of bits requested,"
+<<<<<<< HEAD
 					" using 8 bit mode\n");
+=======
+					" using 8 bit mode");
+>>>>>>> refs/remotes/origin/cm-10.0
 				bits |= BITS_DATA_8;
 				break;
 		}
 		if (cp210x_set_config(port, CP210X_SET_LINE_CTL, &bits, 2))
 			dbg("Number of data bits requested "
+<<<<<<< HEAD
 					"not supported by device\n");
 	}
 
@@ -754,6 +819,36 @@ static void cp210x_set_termios(struct tty_struct *tty,
 		if (cp210x_set_config(port, CP210X_SET_LINE_CTL, &bits, 2))
 			dbg("Parity mode not supported "
 					"by device\n");
+=======
+					"not supported by device");
+	}
+
+	if ((cflag     & (PARENB|PARODD|CMSPAR)) !=
+	    (old_cflag & (PARENB|PARODD|CMSPAR))) {
+		cp210x_get_config(port, CP210X_GET_LINE_CTL, &bits, 2);
+		bits &= ~BITS_PARITY_MASK;
+		if (cflag & PARENB) {
+			if (cflag & CMSPAR) {
+			    if (cflag & PARODD) {
+				    bits |= BITS_PARITY_MARK;
+				    dbg("%s - parity = MARK", __func__);
+			    } else {
+				    bits |= BITS_PARITY_SPACE;
+				    dbg("%s - parity = SPACE", __func__);
+			    }
+			} else {
+			    if (cflag & PARODD) {
+				    bits |= BITS_PARITY_ODD;
+				    dbg("%s - parity = ODD", __func__);
+			    } else {
+				    bits |= BITS_PARITY_EVEN;
+				    dbg("%s - parity = EVEN", __func__);
+			    }
+			}
+		}
+		if (cp210x_set_config(port, CP210X_SET_LINE_CTL, &bits, 2))
+			dbg("Parity mode not supported by device");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if ((cflag & CSTOPB) != (old_cflag & CSTOPB)) {
@@ -768,7 +863,11 @@ static void cp210x_set_termios(struct tty_struct *tty,
 		}
 		if (cp210x_set_config(port, CP210X_SET_LINE_CTL, &bits, 2))
 			dbg("Number of stop bits requested "
+<<<<<<< HEAD
 					"not supported by device\n");
+=======
+					"not supported by device");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if ((cflag & CRTSCTS) != (old_cflag & CRTSCTS)) {
@@ -913,6 +1012,7 @@ static void cp210x_release(struct usb_serial *serial)
 	}
 }
 
+<<<<<<< HEAD
 static int __init cp210x_init(void)
 {
 	int retval;
@@ -942,6 +1042,9 @@ static void __exit cp210x_exit(void)
 
 module_init(cp210x_init);
 module_exit(cp210x_exit);
+=======
+module_usb_serial_driver(cp210x_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_VERSION(DRIVER_VERSION);

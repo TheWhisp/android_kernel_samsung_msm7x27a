@@ -22,5 +22,10 @@
 #define IVTV_CONTROLS_H
 
 extern struct cx2341x_handler_ops ivtv_cxhdl_ops;
+<<<<<<< HEAD
+=======
+extern const struct v4l2_ctrl_ops ivtv_hdl_out_ops;
+int ivtv_g_pts_frame(struct ivtv *itv, s64 *pts, s64 *frame);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

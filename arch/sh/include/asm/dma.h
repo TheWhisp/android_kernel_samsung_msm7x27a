@@ -14,7 +14,11 @@
 #include <linux/spinlock.h>
 #include <linux/wait.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <cpu/dma.h>
 #include <asm-generic/dma.h>
 
@@ -91,7 +95,11 @@ struct dma_channel {
 
 	wait_queue_head_t wait_queue;
 
+<<<<<<< HEAD
 	struct sys_device dev;
+=======
+	struct device dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *priv_data;
 };
 

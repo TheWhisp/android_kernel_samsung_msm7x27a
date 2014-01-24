@@ -55,8 +55,13 @@
 #include <linux/kernel.h>
 #include <linux/stringify.h>
 #include <linux/bottom_half.h>
+<<<<<<< HEAD
 
 #include <asm/system.h>
+=======
+#include <asm/barrier.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Must define these before including other files, inline functions need them
@@ -375,16 +380,24 @@ static inline int spin_can_lock(spinlock_t *lock)
 	return raw_spin_can_lock(&lock->rlock);
 }
 
+<<<<<<< HEAD
 static inline void assert_spin_locked(spinlock_t *lock)
 {
 	assert_raw_spin_locked(&lock->rlock);
 }
+=======
+#define assert_spin_locked(lock)	assert_raw_spin_locked(&(lock)->rlock)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Pull the atomic_t declaration:
  * (asm-mips/atomic.h needs above definitions)
  */
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * atomic_dec_and_lock - lock on reaching reference count zero
  * @atomic: the atomic counter

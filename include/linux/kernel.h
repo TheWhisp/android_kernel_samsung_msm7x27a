@@ -1,6 +1,11 @@
 #ifndef _LINUX_KERNEL_H
 #define _LINUX_KERNEL_H
 
+<<<<<<< HEAD
+=======
+#include <linux/sysinfo.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * 'kernel.h' contains some often-used function prototypes etc
  */
@@ -20,7 +25,10 @@
 #include <linux/printk.h>
 #include <linux/dynamic_debug.h>
 #include <asm/byteorder.h>
+<<<<<<< HEAD
 #include <asm/bug.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define USHRT_MAX	((u16)(~0U))
 #define SHRT_MAX	((s16)(USHRT_MAX>>1))
@@ -56,6 +64,17 @@
 
 #define FIELD_SIZEOF(t, f) (sizeof(((t*)0)->f))
 #define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
+<<<<<<< HEAD
+=======
+#define DIV_ROUND_UP_ULL(ll,d) \
+	({ unsigned long long _tmp = (ll)+(d)-1; do_div(_tmp, d); _tmp; })
+
+#if BITS_PER_LONG == 32
+# define DIV_ROUND_UP_SECTOR_T(ll,d) DIV_ROUND_UP_ULL(ll, d)
+#else
+# define DIV_ROUND_UP_SECTOR_T(ll,d) DIV_ROUND_UP(ll,d)
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* The `const' in roundup() prevents gcc-3.3 from calling __divdi3 */
 #define roundup(x, y) (					\
@@ -134,7 +153,11 @@ extern int _cond_resched(void);
 # define might_resched() do { } while (0)
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_SPINLOCK_SLEEP
+=======
+#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+>>>>>>> refs/remotes/origin/cm-10.0
   void __might_sleep(const char *file, int line, int preempt_offset);
 /**
  * might_sleep - annotation for functions that can sleep
@@ -190,16 +213,29 @@ static inline void might_fault(void)
 
 extern struct atomic_notifier_head panic_notifier_list;
 extern long (*panic_blink)(int state);
+<<<<<<< HEAD
 NORET_TYPE void panic(const char * fmt, ...)
 	__attribute__ ((NORET_AND format (printf, 1, 2))) __cold;
+=======
+__printf(1, 2)
+void panic(const char *fmt, ...)
+	__noreturn __cold;
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void oops_enter(void);
 extern void oops_exit(void);
 void print_oops_end_marker(void);
 extern int oops_may_print(void);
+<<<<<<< HEAD
 NORET_TYPE void do_exit(long error_code)
 	ATTRIB_NORET;
 NORET_TYPE void complete_and_exit(struct completion *, long)
 	ATTRIB_NORET;
+=======
+void do_exit(long error_code)
+	__noreturn;
+void complete_and_exit(struct completion *, long)
+	__noreturn;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Internal, do not use. */
 int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
@@ -292,6 +328,11 @@ static inline int __must_check kstrtos32_from_user(const char __user *s, size_t 
 	return kstrtoint_from_user(s, count, base, res);
 }
 
+<<<<<<< HEAD
+=======
+/* Obsolete, do not use.  Use kstrto<foo> instead */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern unsigned long simple_strtoul(const char *,char **,unsigned int);
 extern long simple_strtol(const char *,char **,unsigned int);
 extern unsigned long long simple_strtoull(const char *,char **,unsigned int);
@@ -301,6 +342,7 @@ extern long long simple_strtoll(const char *,char **,unsigned int);
 #define strict_strtoull	kstrtoull
 #define strict_strtoll	kstrtoll
 
+<<<<<<< HEAD
 extern int sprintf(char * buf, const char * fmt, ...)
 	__attribute__ ((format (printf, 2, 3)));
 extern int vsprintf(char *buf, const char *, va_list)
@@ -321,6 +363,30 @@ extern int sscanf(const char *, const char *, ...)
 	__attribute__ ((format (scanf, 2, 3)));
 extern int vsscanf(const char *, const char *, va_list)
 	__attribute__ ((format (scanf, 2, 0)));
+=======
+extern int num_to_str(char *buf, int size, unsigned long long num);
+
+/* lib/printf utilities */
+
+extern __printf(2, 3) int sprintf(char *buf, const char * fmt, ...);
+extern __printf(2, 0) int vsprintf(char *buf, const char *, va_list);
+extern __printf(3, 4)
+int snprintf(char *buf, size_t size, const char *fmt, ...);
+extern __printf(3, 0)
+int vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
+extern __printf(3, 4)
+int scnprintf(char *buf, size_t size, const char *fmt, ...);
+extern __printf(3, 0)
+int vscnprintf(char *buf, size_t size, const char *fmt, va_list args);
+extern __printf(2, 3)
+char *kasprintf(gfp_t gfp, const char *fmt, ...);
+extern char *kvasprintf(gfp_t gfp, const char *fmt, va_list args);
+
+extern __scanf(2, 3)
+int sscanf(const char *, const char *, ...);
+extern __scanf(2, 0)
+int vsscanf(const char *, const char *, va_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int get_option(char **str, int *pint);
 extern char *get_options(const char *str, int nints, int *ints);
@@ -344,6 +410,10 @@ extern int panic_timeout;
 extern int panic_on_oops;
 extern int panic_on_unrecovered_nmi;
 extern int panic_on_io_nmi;
+<<<<<<< HEAD
+=======
+extern int sysctl_panic_on_stackoverflow;
+>>>>>>> refs/remotes/origin/cm-10.0
 extern const char *print_tainted(void);
 extern void add_taint(unsigned flag);
 extern int test_taint(unsigned flag);
@@ -374,20 +444,38 @@ extern enum system_states {
 #define TAINT_WARN			9
 #define TAINT_CRAP			10
 #define TAINT_FIRMWARE_WORKAROUND	11
+<<<<<<< HEAD
+=======
+#define TAINT_OOT_MODULE		12
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern const char hex_asc[];
 #define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
 #define hex_asc_hi(x)	hex_asc[((x) & 0xf0) >> 4]
 
+<<<<<<< HEAD
 static inline char *pack_hex_byte(char *buf, u8 byte)
+=======
+static inline char *hex_byte_pack(char *buf, u8 byte)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	*buf++ = hex_asc_hi(byte);
 	*buf++ = hex_asc_lo(byte);
 	return buf;
 }
 
+<<<<<<< HEAD
 extern int hex_to_bin(char ch);
 extern void hex2bin(u8 *dst, const char *src, size_t count);
+=======
+static inline char * __deprecated pack_hex_byte(char *buf, u8 byte)
+{
+	return hex_byte_pack(buf, byte);
+}
+
+extern int hex_to_bin(char ch);
+extern int __must_check hex2bin(u8 *dst, const char *src, size_t count);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * General tracing related utility functions - trace_printk(),
@@ -409,6 +497,7 @@ extern void hex2bin(u8 *dst, const char *src, size_t count);
  * Most likely, you want to use tracing_on/tracing_off.
  */
 #ifdef CONFIG_RING_BUFFER
+<<<<<<< HEAD
 void tracing_on(void);
 void tracing_off(void);
 /* trace_off_permanent stops recording with no way to bring it back */
@@ -419,6 +508,12 @@ static inline void tracing_on(void) { }
 static inline void tracing_off(void) { }
 static inline void tracing_off_permanent(void) { }
 static inline int tracing_is_on(void) { return 0; }
+=======
+/* trace_off_permanent stops recording with no way to bring it back */
+void tracing_off_permanent(void);
+#else
+static inline void tracing_off_permanent(void) { }
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 enum ftrace_dump_mode {
@@ -428,12 +523,24 @@ enum ftrace_dump_mode {
 };
 
 #ifdef CONFIG_TRACING
+<<<<<<< HEAD
+=======
+void tracing_on(void);
+void tracing_off(void);
+int tracing_is_on(void);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void tracing_start(void);
 extern void tracing_stop(void);
 extern void ftrace_off_permanent(void);
 
+<<<<<<< HEAD
 static inline void __attribute__ ((format (printf, 1, 2)))
 ____trace_printk_check_format(const char *fmt, ...)
+=======
+static inline __printf(1, 2)
+void ____trace_printk_check_format(const char *fmt, ...)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 }
 #define __trace_printk_check_format(fmt, args...)			\
@@ -472,6 +579,7 @@ do {									\
 		__trace_printk(_THIS_IP_, fmt, ##args);		\
 } while (0)
 
+<<<<<<< HEAD
 extern int
 __trace_bprintk(unsigned long ip, const char *fmt, ...)
 	__attribute__ ((format (printf, 2, 3)));
@@ -479,6 +587,13 @@ __trace_bprintk(unsigned long ip, const char *fmt, ...)
 extern int
 __trace_printk(unsigned long ip, const char *fmt, ...)
 	__attribute__ ((format (printf, 2, 3)));
+=======
+extern __printf(2, 3)
+int __trace_bprintk(unsigned long ip, const char *fmt, ...);
+
+extern __printf(2, 3)
+int __trace_printk(unsigned long ip, const char *fmt, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern void trace_dump_stack(void);
 
@@ -507,13 +622,26 @@ __ftrace_vprintk(unsigned long ip, const char *fmt, va_list ap);
 
 extern void ftrace_dump(enum ftrace_dump_mode oops_dump_mode);
 #else
+<<<<<<< HEAD
 static inline int
 trace_printk(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+=======
+static inline __printf(1, 2)
+int trace_printk(const char *fmt, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void tracing_start(void) { }
 static inline void tracing_stop(void) { }
 static inline void ftrace_off_permanent(void) { }
 static inline void trace_dump_stack(void) { }
+<<<<<<< HEAD
+=======
+
+static inline void tracing_on(void) { }
+static inline void tracing_off(void) { }
+static inline int tracing_is_on(void) { return 0; }
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int
 trace_printk(const char *fmt, ...)
 {
@@ -659,6 +787,7 @@ static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
 	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
 	(type *)( (char *)__mptr - offsetof(type,member) );})
 
+<<<<<<< HEAD
 struct sysinfo;
 extern int do_sysinfo(struct sysinfo *info);
 
@@ -727,6 +856,8 @@ extern int __build_bug_on_failed;
 #endif
 #endif	/* __CHECKER__ */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Trap pasters of __FUNCTION__ at compile-time */
 #define __FUNCTION__ (__func__)
 
@@ -749,6 +880,16 @@ extern int __build_bug_on_failed;
 # define REBUILD_DUE_TO_FTRACE_MCOUNT_RECORD
 #endif
 
+<<<<<<< HEAD
+=======
+extern int do_sysinfo(struct sysinfo *info);
+
+/* To identify board information in panic logs, set this */
+extern char *mach_panic_string;
+
+#endif /* __KERNEL__ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* To identify board information in panic logs, set this */
 extern char *mach_panic_string;
 

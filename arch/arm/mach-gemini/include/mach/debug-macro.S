@@ -11,7 +11,11 @@
  */
 #include <mach/hardware.h>
 
+<<<<<<< HEAD
 	.macro	addruart, rp, rv
+=======
+	.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldr	\rp, =GEMINI_UART_BASE			@ physical
 	ldr	\rv, =IO_ADDRESS(GEMINI_UART_BASE)	@ virtual
 	.endm

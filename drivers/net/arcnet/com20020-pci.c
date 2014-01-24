@@ -34,6 +34,10 @@
 #include <linux/errno.h>
 #include <linux/netdevice.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/arcdevice.h>
 #include <linux/com20020.h>

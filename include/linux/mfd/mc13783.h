@@ -12,6 +12,7 @@
 
 #include <linux/mfd/mc13xxx.h>
 
+<<<<<<< HEAD
 struct mc13783;
 
 struct mc13xxx *mc13783_to_mc13xxx(struct mc13783 *mc13783);
@@ -123,6 +124,8 @@ int mc13783_adc_do_conversion(struct mc13783 *mc13783, unsigned int mode,
 		unsigned int channel, unsigned int *sample);
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	MC13783_REG_SW1A		0
 #define	MC13783_REG_SW1B		1
 #define	MC13783_REG_SW2A		2

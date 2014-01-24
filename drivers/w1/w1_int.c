@@ -1,7 +1,11 @@
 /*
  *	w1_int.c
  *
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,6 +28,11 @@
 #include <linux/delay.h>
 #include <linux/kthread.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "w1.h"
 #include "w1_log.h"
@@ -78,6 +87,10 @@ static struct w1_master * w1_alloc_dev(u32 id, int slave_count, int slave_ttl,
 	memcpy(&dev->dev, device, sizeof(struct device));
 	dev_set_name(&dev->dev, "w1_bus_master%u", dev->id);
 	snprintf(dev->name, sizeof(dev->name), "w1_bus_master%u", dev->id);
+<<<<<<< HEAD
+=======
+	dev->dev.init_name = dev->name;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev->driver = driver;
 

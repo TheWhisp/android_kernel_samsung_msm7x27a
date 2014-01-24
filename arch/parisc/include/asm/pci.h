@@ -82,6 +82,7 @@ struct pci_hba_data {
 
 #ifdef CONFIG_64BIT
 #define PCI_F_EXTEND		0xffffffff00000000UL
+<<<<<<< HEAD
 #define PCI_IS_LMMIO(hba,a)	pci_is_lmmio(hba,a)
 
 /* We need to know if an address is LMMMIO or GMMIO.
@@ -114,6 +115,10 @@ static __inline__  int pci_is_lmmio(struct pci_hba_data *hba, unsigned long a)
 #define PCI_F_EXTEND		0UL
 #define PCI_IS_LMMIO(hba,a)	(1)	/* 32-bit doesn't support GMMIO */
 
+=======
+#else	/* !CONFIG_64BIT */
+#define PCI_F_EXTEND		0UL
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !CONFIG_64BIT */
 
 /*
@@ -245,6 +250,7 @@ static inline void pci_dma_burst_advice(struct pci_dev *pdev,
 }
 #endif
 
+<<<<<<< HEAD
 extern void
 pcibios_resource_to_bus(struct pci_dev *dev, struct pci_bus_region *region,
 			 struct resource *res);
@@ -253,6 +259,8 @@ extern void
 pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 			struct pci_bus_region *region);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void pcibios_penalize_isa_irq(int irq, int active)
 {
 	/* We don't need to penalize isa irq's */

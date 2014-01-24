@@ -3,7 +3,11 @@
  */
 
 #include <linux/time.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 // this contains item handlers for old item types: sd, direct,
 // indirect, directory

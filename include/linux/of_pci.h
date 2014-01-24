@@ -6,4 +6,12 @@
 struct pci_dev;
 struct of_irq;
 int of_irq_map_pci(struct pci_dev *pdev, struct of_irq *out_irq);
+<<<<<<< HEAD
+=======
+
+struct device_node;
+struct device_node *of_pci_find_child_device(struct device_node *parent,
+					     unsigned int devfn);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

@@ -1,9 +1,15 @@
 /*
  * Linux OS Independent Layer
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,10 +27,16 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: linux_osl.h 301794 2011-12-08 20:41:35Z $
  */
 
 
+=======
+ * $Id: linux_osl.h 326751 2012-04-10 20:13:19Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _linux_osl_h_
 #define _linux_osl_h_
 
@@ -34,6 +46,10 @@
 extern void * osl_os_open_image(char * filename);
 extern int osl_os_get_image_block(char * buf, int len, void * image);
 extern void osl_os_close_image(void * image);
+<<<<<<< HEAD
+=======
+extern int osl_os_image_size(void *image);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #ifdef BCMDRIVER
@@ -49,7 +65,11 @@ extern uint32 g_assert_type;
 #if defined(BCMASSERT_LOG)
 	#define ASSERT(exp) \
 	  do { if (!(exp)) osl_assert(#exp, __FILE__, __LINE__); } while (0)
+<<<<<<< HEAD
 extern void osl_assert(char *exp, char *file, int line);
+=======
+extern void osl_assert(const char *exp, const char *file, int line);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 	#ifdef __GNUC__
 		#define GCC_VERSION \
@@ -87,6 +107,10 @@ extern void osl_pci_write_config(osl_t *osh, uint offset, uint size, uint val);
 #define OSL_PCI_SLOT(osh)	osl_pci_slot(osh)
 extern uint osl_pci_bus(osl_t *osh);
 extern uint osl_pci_slot(osl_t *osh);
+<<<<<<< HEAD
+=======
+extern struct pci_dev *osl_pci_device(osl_t *osh);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 typedef struct {
@@ -95,6 +119,10 @@ typedef struct {
 	bool mmbus;		
 	pktfree_cb_fn_t tx_fn;  
 	void *tx_ctx;		
+<<<<<<< HEAD
+=======
+	void	*unused[3];
+>>>>>>> refs/remotes/origin/cm-10.0
 } osl_pubinfo_t;
 
 #define PKTFREESETCB(osh, _tx_fn, _tx_ctx)		\
@@ -135,8 +163,11 @@ extern void osl_dma_free_consistent(osl_t *osh, void *va, uint size, ulong pa);
 #define	DMA_RX	2	
 
 
+<<<<<<< HEAD
 #define	DMA_MAP(osh, va, size, direction, p, dmah) \
 	osl_dma_map((osh), (va), (size), (direction))
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	DMA_UNMAP(osh, pa, size, direction, p, dmah) \
 	osl_dma_unmap((osh), (pa), (size), (direction))
 extern uint osl_dma_map(osl_t *osh, void *va, uint size, int direction);
@@ -162,8 +193,16 @@ extern int osl_error(int bcmerror);
 #define	PKTBUFSZ	2048   
 
 
+<<<<<<< HEAD
 
 #define OSL_SYSUPTIME()		((uint32)jiffies_to_msecs(jiffies))
+=======
+#include <linuxver.h>           
+#include <linux/kernel.h>       
+#include <linux/string.h>       
+
+#define OSL_SYSUPTIME()		((uint32)jiffies * (1000 / HZ))
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	printf(fmt, args...)	printk(fmt , ## args)
 #include <linux/kernel.h>	
 #include <linux/string.h>	
@@ -174,6 +213,7 @@ extern int osl_error(int bcmerror);
 
 
 
+<<<<<<< HEAD
 #ifndef __mips__
 #define R_REG(osh, r) (\
 	SELECT_BUS_READ(osh, sizeof(*(r)) == sizeof(uint8) ? readb((volatile uint8*)(r)) : \
@@ -181,11 +221,17 @@ extern int osl_error(int bcmerror);
 	readl((volatile uint32*)(r)), OSL_READ_REG(osh, r)) \
 )
 #else 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define R_REG(osh, r) (\
 	SELECT_BUS_READ(osh, \
 		({ \
 			__typeof(*(r)) __osl_v; \
+<<<<<<< HEAD
 			__asm__ __volatile__("sync"); \
+=======
+			BCM_REFERENCE(osh);	\
+>>>>>>> refs/remotes/origin/cm-10.0
 			switch (sizeof(*(r))) { \
 				case sizeof(uint8):	__osl_v = \
 					readb((volatile uint8*)(r)); break; \
@@ -194,6 +240,7 @@ extern int osl_error(int bcmerror);
 				case sizeof(uint32):	__osl_v = \
 					readl((volatile uint32*)(r)); break; \
 			} \
+<<<<<<< HEAD
 			__asm__ __volatile__("sync"); \
 			__osl_v; \
 		}), \
@@ -209,6 +256,16 @@ extern int osl_error(int bcmerror);
 
 #define W_REG(osh, r, v) do { \
 	SELECT_BUS_WRITE(osh,  \
+=======
+			__osl_v; \
+		}), \
+		OSL_READ_REG(osh, r)) \
+)
+
+#define W_REG(osh, r, v) do { \
+	BCM_REFERENCE(osh);   \
+	SELECT_BUS_WRITE(osh, \
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch (sizeof(*(r))) { \
 			case sizeof(uint8):	writeb((uint8)(v), (volatile uint8*)(r)); break; \
 			case sizeof(uint16):	writew((uint16)(v), (volatile uint16*)(r)); break; \
@@ -217,7 +274,10 @@ extern int osl_error(int bcmerror);
 		(OSL_WRITE_REG(osh, r, v))); \
 	} while (0)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	AND_REG(osh, r, v)		W_REG(osh, (r), R_REG(osh, r) & (v))
 #define	OR_REG(osh, r, v)		W_REG(osh, (r), R_REG(osh, r) | (v))
 
@@ -227,6 +287,7 @@ extern int osl_error(int bcmerror);
 #define	bzero(b, len)		memset((b), '\0', (len))
 
 
+<<<<<<< HEAD
 #ifdef __mips__
 #include <asm/addrspace.h>
 #define OSL_UNCACHED(va)	((void *)KSEG1ADDR((va)))
@@ -235,6 +296,13 @@ extern int osl_error(int bcmerror);
 #define OSL_UNCACHED(va)	((void *)va)
 #define OSL_CACHED(va)		((void *)va)
 #endif 
+=======
+#define OSL_UNCACHED(va)	((void *)va)
+#define OSL_CACHED(va)		((void *)va)
+
+#define OSL_PREF_RANGE_LD(va, sz)
+#define OSL_PREF_RANGE_ST(va, sz)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #if defined(__i386__)
@@ -271,7 +339,11 @@ extern int osl_error(int bcmerror);
 #ifdef CONFIG_DHD_USE_STATIC_BUF
 #define	PKTGET_STATIC(osh, len, send)		osl_pktget_static((osh), (len))
 #define	PKTFREE_STATIC(osh, skb, send)		osl_pktfree_static((osh), (skb), (send))
+<<<<<<< HEAD
 #endif
+=======
+#endif 
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	PKTDATA(osh, skb)		(((struct sk_buff*)(skb))->data)
 #define	PKTLEN(osh, skb)		(((struct sk_buff*)(skb))->len)
 #define PKTHEADROOM(osh, skb)		(PKTDATA(osh, skb)-(((struct sk_buff*)(skb))->head))
@@ -301,8 +373,13 @@ typedef struct ctfpool {
 	uint 		slow_allocs;
 } ctfpool_t;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 22)
+<<<<<<< HEAD
 #define	FASTBUF	(1 << 4)
 #define	CTFBUF	(1 << 5)
+=======
+#define	FASTBUF	(1 << 16)
+#define	CTFBUF	(1 << 17)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	PKTSETFAST(osh, skb)	((((struct sk_buff*)(skb))->mac_len) |= FASTBUF)
 #define	PKTCLRFAST(osh, skb)	((((struct sk_buff*)(skb))->mac_len) &= (~FASTBUF))
 #define	PKTSETCTF(osh, skb)	((((struct sk_buff*)(skb))->mac_len) |= CTFBUF)
@@ -332,9 +409,16 @@ extern void osl_ctfpool_cleanup(osl_t *osh);
 extern void osl_ctfpool_stats(osl_t *osh, void *b);
 #endif 
 
+<<<<<<< HEAD
 #ifdef HNDCTF
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 22)
 #define	SKIPCT	(1 << 6)
+=======
+
+#ifdef HNDCTF
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 22)
+#define	SKIPCT	(1 << 18)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	PKTSETSKIPCT(osh, skb)	(((struct sk_buff*)(skb))->mac_len |= SKIPCT)
 #define	PKTCLRSKIPCT(osh, skb)	(((struct sk_buff*)(skb))->mac_len &= (~SKIPCT))
 #define	PKTSKIPCT(osh, skb)	(((struct sk_buff*)(skb))->mac_len & SKIPCT)
@@ -354,6 +438,7 @@ extern void osl_pktfree(osl_t *osh, void *skb, bool send);
 extern void *osl_pktget_static(osl_t *osh, uint len);
 extern void osl_pktfree_static(osl_t *osh, void *skb, bool send);
 
+<<<<<<< HEAD
 extern void *osl_pktget(osl_t *osh, uint len);
 extern void *osl_pktdup(osl_t *osh, void *skb);
 
@@ -392,6 +477,14 @@ osl_pkt_tonative(osl_pubinfo_t *osh, void *pkt)
 	return (struct sk_buff *)pkt;
 }
 #define PKTTONATIVE(osh, pkt)		osl_pkt_tonative((osl_pubinfo_t *)(osh), (pkt))
+=======
+extern void *osl_pkt_frmnative(osl_t *osh, void *skb);
+extern void *osl_pktget(osl_t *osh, uint len);
+extern void *osl_pktdup(osl_t *osh, void *skb);
+extern struct sk_buff *osl_pkt_tonative(osl_t *osh, void *pkt);
+#define PKTFRMNATIVE(osh, skb)	osl_pkt_frmnative(((osl_t *)osh), (struct sk_buff*)(skb))
+#define PKTTONATIVE(osh, pkt)		osl_pkt_tonative((osl_t *)(osh), (pkt))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define	PKTLINK(skb)			(((struct sk_buff*)(skb))->prev)
 #define	PKTSETLINK(skb, x)		(((struct sk_buff*)(skb))->prev = (struct sk_buff*)(x))
@@ -403,7 +496,48 @@ osl_pkt_tonative(osl_pubinfo_t *osh, void *pkt)
 
 #define PKTSHARED(skb)                  (((struct sk_buff*)(skb))->cloned)
 
+<<<<<<< HEAD
 
+=======
+#define	DMA_MAP(osh, va, size, direction, p, dmah) \
+	osl_dma_map((osh), (va), (size), (direction))
+
+#ifdef PKTC
+
+struct chain_node {
+	struct sk_buff	*link;
+	unsigned int	flags:3, pkts:9, bytes:20;
+};
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 14)
+#define CHAIN_NODE(skb)		((struct chain_node*)&(((struct sk_buff*)skb)->tstamp))
+#else
+#define CHAIN_NODE(skb)		((struct chain_node*)&(((struct sk_buff*)skb)->stamp))
+#endif
+
+#define	PKTCCNT(skb)		(CHAIN_NODE(skb)->pkts)
+#define	PKTCLEN(skb)		(CHAIN_NODE(skb)->bytes)
+#define	PKTCFLAGS(skb)		(CHAIN_NODE(skb)->flags)
+#define	PKTCSETCNT(skb, c)	(CHAIN_NODE(skb)->pkts = (c) & ((1 << 9) - 1))
+#define	PKTCSETLEN(skb, l)	(CHAIN_NODE(skb)->bytes = (l) & ((1 << 20) - 1))
+#define	PKTCSETFLAG(skb, fb)	(CHAIN_NODE(skb)->flags |= (fb))
+#define	PKTCCLRFLAG(skb, fb)	(CHAIN_NODE(skb)->flags &= ~(fb))
+#define	PKTCLINK(skb)		(CHAIN_NODE(skb)->link)
+#define	PKTSETCLINK(skb, x)	(CHAIN_NODE(skb)->link = (struct sk_buff*)(x))
+#define	PKTISCHAINED(skb)	(PKTCLINK(skb) != NULL)
+#define FOREACH_CHAINED_PKT(skb, nskb) \
+	for (; (skb) != NULL; (skb) = (nskb)) \
+		if ((nskb) = PKTCLINK(skb), PKTSETCLINK((skb), NULL), 1)
+#define	PKTCFREE(osh, skb, send) \
+do { \
+	void *nskb; \
+	ASSERT((skb) != NULL); \
+	FOREACH_CHAINED_PKT((skb), nskb) { \
+		PKTFREE((osh), (skb), (send)); \
+	} \
+} while (0)
+#endif 
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else 
 

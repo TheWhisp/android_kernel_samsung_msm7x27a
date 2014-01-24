@@ -19,7 +19,10 @@
 #include <linux/module.h>
 #include <linux/netfilter/x_tables.h>
 #include <linux/netfilter/xt_qtaguid.h>
+<<<<<<< HEAD
 #include <linux/ratelimit.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/skbuff.h>
 #include <linux/workqueue.h>
 #include <net/addrconf.h>
@@ -54,6 +57,7 @@ static unsigned int proc_stats_perms = S_IRUGO;
 module_param_named(stats_perms, proc_stats_perms, uint, S_IRUGO | S_IWUSR);
 
 static struct proc_dir_entry *xt_qtaguid_ctrl_file;
+<<<<<<< HEAD
 
 /* Everybody can write. But proc_ctrl_write_limited is true by default which
  * limits what can be controlled. See the can_*() functions.
@@ -70,6 +74,27 @@ static bool proc_ctrl_write_limited = true;
 module_param_named(stats_readall_limited, proc_stats_readall_limited, bool,
 		   S_IRUGO | S_IWUSR);
 module_param_named(ctrl_write_limited, proc_ctrl_write_limited, bool,
+=======
+#ifdef CONFIG_ANDROID_PARANOID_NETWORK
+static unsigned int proc_ctrl_perms = S_IRUGO | S_IWUGO;
+#else
+static unsigned int proc_ctrl_perms = S_IRUGO | S_IWUSR;
+#endif
+module_param_named(ctrl_perms, proc_ctrl_perms, uint, S_IRUGO | S_IWUSR);
+
+#ifdef CONFIG_ANDROID_PARANOID_NETWORK
+#include <linux/android_aid.h>
+static gid_t proc_stats_readall_gid = AID_NET_BW_STATS;
+static gid_t proc_ctrl_write_gid = AID_NET_BW_ACCT;
+#else
+/* 0 means, don't limit anybody */
+static gid_t proc_stats_readall_gid;
+static gid_t proc_ctrl_write_gid;
+#endif
+module_param_named(stats_readall_gid, proc_stats_readall_gid, uint,
+		   S_IRUGO | S_IWUSR);
+module_param_named(ctrl_write_gid, proc_ctrl_write_gid, uint,
+>>>>>>> refs/remotes/origin/cm-10.0
 		   S_IRUGO | S_IWUSR);
 
 /*
@@ -240,9 +265,14 @@ static struct qtaguid_event_counts qtu_events;
 static bool can_manipulate_uids(void)
 {
 	/* root pwnd */
+<<<<<<< HEAD
 	return in_egroup_p(xt_qtaguid_ctrl_file->gid)
 		|| unlikely(!current_fsuid()) || unlikely(!proc_ctrl_write_limited)
 		|| unlikely(current_fsuid() == xt_qtaguid_ctrl_file->uid);
+=======
+	return unlikely(!current_fsuid()) || unlikely(!proc_ctrl_write_gid)
+		|| in_egroup_p(proc_ctrl_write_gid);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static bool can_impersonate_uid(uid_t uid)
@@ -253,10 +283,16 @@ static bool can_impersonate_uid(uid_t uid)
 static bool can_read_other_uid_stats(uid_t uid)
 {
 	/* root pwnd */
+<<<<<<< HEAD
 	return in_egroup_p(xt_qtaguid_stats_file->gid)
 		|| unlikely(!current_fsuid()) || uid == current_fsuid()
 		|| unlikely(!proc_stats_readall_limited)
 		|| unlikely(current_fsuid() == xt_qtaguid_ctrl_file->uid);
+=======
+	return unlikely(!current_fsuid()) || uid == current_fsuid()
+		|| unlikely(!proc_stats_readall_gid)
+		|| in_egroup_p(proc_stats_readall_gid);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void dc_add_byte_packets(struct data_counters *counters, int set,
@@ -269,6 +305,27 @@ static inline void dc_add_byte_packets(struct data_counters *counters, int set,
 	counters->bpc[set][direction][ifs_proto].packets += packets;
 }
 
+<<<<<<< HEAD
+=======
+static inline uint64_t dc_sum_bytes(struct data_counters *counters,
+				    int set,
+				    enum ifs_tx_rx direction)
+{
+	return counters->bpc[set][direction][IFS_TCP].bytes
+		+ counters->bpc[set][direction][IFS_UDP].bytes
+		+ counters->bpc[set][direction][IFS_PROTO_OTHER].bytes;
+}
+
+static inline uint64_t dc_sum_packets(struct data_counters *counters,
+				      int set,
+				      enum ifs_tx_rx direction)
+{
+	return counters->bpc[set][direction][IFS_TCP].packets
+		+ counters->bpc[set][direction][IFS_UDP].packets
+		+ counters->bpc[set][direction][IFS_PROTO_OTHER].packets;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct tag_node *tag_node_tree_search(struct rb_root *root, tag_t tag)
 {
 	struct rb_node *node = root->rb_node;
@@ -770,6 +827,7 @@ done:
 	return iface_entry;
 }
 
+<<<<<<< HEAD
 /* This is for fmt2 only */
 static int pp_iface_stat_line(bool header, char *outp,
 			      int char_count, struct iface_stat *iface_entry)
@@ -817,6 +875,8 @@ static int pp_iface_stat_line(bool header, char *outp,
 	return len;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int iface_stat_fmt_proc_read(char *page, char **num_items_returned,
 				    off_t items_to_skip, int char_count,
 				    int *eof, void *data)
@@ -846,7 +906,15 @@ static int iface_stat_fmt_proc_read(char *page, char **num_items_returned,
 		return 0;
 
 	if (fmt == 2 && item_index++ >= items_to_skip) {
+<<<<<<< HEAD
 		len = pp_iface_stat_line(true, outp, char_count, NULL);
+=======
+		len = snprintf(outp, char_count,
+			       "ifname "
+			       "total_skb_rx_bytes total_skb_rx_packets "
+			       "total_skb_tx_bytes total_skb_tx_packets\n"
+			);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (len >= char_count) {
 			*outp = '\0';
 			return outp - page;
@@ -891,8 +959,21 @@ static int iface_stat_fmt_proc_read(char *page, char **num_items_returned,
 				stats->tx_bytes, stats->tx_packets
 				);
 		} else {
+<<<<<<< HEAD
 			len = pp_iface_stat_line(false, outp, char_count,
 						 iface_entry);
+=======
+			len = snprintf(
+				outp, char_count,
+				"%s "
+				"%llu %llu %llu %llu\n",
+				iface_entry->ifname,
+				iface_entry->totals_via_skb[IFS_RX].bytes,
+				iface_entry->totals_via_skb[IFS_RX].packets,
+				iface_entry->totals_via_skb[IFS_TX].bytes,
+				iface_entry->totals_via_skb[IFS_TX].packets
+				);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		if (len >= char_count) {
 			spin_unlock_bh(&iface_stat_list_lock);
@@ -1207,7 +1288,11 @@ static struct sock_tag *get_sock_stat(const struct sock *sk)
 static int ipx_proto(const struct sk_buff *skb,
 		     struct xt_action_param *par)
 {
+<<<<<<< HEAD
 	int thoff = 0, tproto;
+=======
+	int thoff, tproto;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (par->family) {
 	case NFPROTO_IPV6:
@@ -1311,7 +1396,10 @@ static void iface_stat_update_from_skb(const struct sk_buff *skb,
 	const struct net_device *el_dev;
 	enum ifs_tx_rx direction = par->in ? IFS_RX : IFS_TX;
 	int bytes = skb->len;
+<<<<<<< HEAD
 	int proto;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!skb->dev) {
 		MT_DEBUG("qtaguid[%d]: no skb->dev\n", par->hooknum);
@@ -1329,6 +1417,7 @@ static void iface_stat_update_from_skb(const struct sk_buff *skb,
 	}
 
 	if (unlikely(!el_dev)) {
+<<<<<<< HEAD
 		pr_err_ratelimited("qtaguid[%d]: %s(): no par->in/out?!!\n",
 				   par->hooknum, __func__);
 		BUG();
@@ -1338,6 +1427,17 @@ static void iface_stat_update_from_skb(const struct sk_buff *skb,
 		BUG();
 	} else {
 		proto = ipx_proto(skb, par);
+=======
+		pr_err("qtaguid[%d]: %s(): no par->in/out?!!\n",
+		       par->hooknum, __func__);
+		BUG();
+	} else if (unlikely(!el_dev->name)) {
+		pr_err("qtaguid[%d]: %s(): no dev->name?!!\n",
+		       par->hooknum, __func__);
+		BUG();
+	} else {
+		int proto = ipx_proto(skb, par);
+>>>>>>> refs/remotes/origin/cm-10.0
 		MT_DEBUG("qtaguid[%d]: dev name=%s type=%d fam=%d proto=%d\n",
 			 par->hooknum, el_dev->name, el_dev->type,
 			 par->family, proto);
@@ -1355,8 +1455,13 @@ static void iface_stat_update_from_skb(const struct sk_buff *skb,
 	IF_DEBUG("qtaguid: %s(%s): entry=%p\n", __func__,
 		 el_dev->name, entry);
 
+<<<<<<< HEAD
 	data_counters_update(&entry->totals_via_skb, 0, direction, proto,
 			     bytes);
+=======
+	entry->totals_via_skb[direction].bytes += bytes;
+	entry->totals_via_skb[direction].packets++;
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_bh(&iface_stat_list_lock);
 }
 
@@ -1415,6 +1520,7 @@ static void if_tag_stat_update(const char *ifname, uid_t uid,
 		 ifname, uid, sk, direction, proto, bytes);
 
 
+<<<<<<< HEAD
 	spin_lock_bh(&iface_stat_list_lock);
 	iface_entry = get_iface_entry(ifname);
 	if (!iface_entry) {
@@ -1424,6 +1530,14 @@ static void if_tag_stat_update(const char *ifname, uid_t uid,
 		return;
 	}
 	spin_unlock_bh(&iface_stat_list_lock);
+=======
+	iface_entry = get_iface_entry(ifname);
+	if (!iface_entry) {
+		pr_err("qtaguid: iface_stat: stat_update() %s not found\n",
+		       ifname);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* It is ok to process data when an iface_entry is inactive */
 
 	MT_DEBUG("qtaguid: iface_stat: stat_update() dev=%s entry=%p\n",
@@ -1471,8 +1585,11 @@ static void if_tag_stat_update(const char *ifname, uid_t uid,
 		 *  - No {0, uid_tag} stats and no {acc_tag, uid_tag} stats.
 		 */
 		new_tag_stat = create_if_tag_stat(iface_entry, uid_tag);
+<<<<<<< HEAD
 		if (!new_tag_stat)
 			goto unlock;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		uid_tag_counters = &new_tag_stat->counters;
 	} else {
 		uid_tag_counters = &tag_stat_entry->counters;
@@ -1481,8 +1598,11 @@ static void if_tag_stat_update(const char *ifname, uid_t uid,
 	if (acct_tag) {
 		/* Create the child {acct_tag, uid_tag} and hook up parent. */
 		new_tag_stat = create_if_tag_stat(iface_entry, tag);
+<<<<<<< HEAD
 		if (!new_tag_stat)
 			goto unlock;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		new_tag_stat->parent_counters = uid_tag_counters;
 	} else {
 		/*
@@ -1496,7 +1616,10 @@ static void if_tag_stat_update(const char *ifname, uid_t uid,
 		BUG_ON(!new_tag_stat);
 	}
 	tag_stat_update(new_tag_stat, direction, proto, bytes);
+<<<<<<< HEAD
 unlock:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_bh(&iface_entry->tag_stat_list_lock);
 }
 
@@ -1788,8 +1911,11 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 	}
 
 	sk = skb->sk;
+<<<<<<< HEAD
 	if (sk && sk->sk_state == TCP_TIME_WAIT)
 		sk = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (sk == NULL) {
 		/*
 		 * A missing sk->sk_socket happens when packets are in-flight
@@ -2314,12 +2440,20 @@ static int ctrl_cmd_tag(const char *input)
 	}
 	CT_DEBUG("qtaguid: ctrl_tag(%s): "
 		 "pid=%u tgid=%u uid=%u euid=%u fsuid=%u "
+<<<<<<< HEAD
 		 "ctrl.gid=%u in_group()=%d in_egroup()=%d\n",
 		 input, current->pid, current->tgid, current_uid(),
 		 current_euid(), current_fsuid(),
 		 xt_qtaguid_ctrl_file->gid,
 		 in_group_p(xt_qtaguid_ctrl_file->gid),
 		 in_egroup_p(xt_qtaguid_ctrl_file->gid));
+=======
+		 "in_group=%d in_egroup=%d\n",
+		 input, current->pid, current->tgid, current_uid(),
+		 current_euid(), current_fsuid(),
+		 in_group_p(proc_ctrl_write_gid),
+		 in_egroup_p(proc_ctrl_write_gid));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (argc < 4) {
 		uid = current_fsuid();
 	} else if (!can_impersonate_uid(uid)) {
@@ -2606,6 +2740,7 @@ static int pp_stats_line(struct proc_print_info *ppi, int cnt_set)
 	} else {
 		tag_t tag = ppi->ts_entry->tn.tag;
 		uid_t stat_uid = get_uid_from_tag(tag);
+<<<<<<< HEAD
 		/* Detailed tags are not available to everybody */
 		if (get_atag_from_tag(tag)
 		    && !can_read_other_uid_stats(stat_uid)) {
@@ -2616,6 +2751,16 @@ static int pp_stats_line(struct proc_print_info *ppi, int cnt_set)
 				 get_atag_from_tag(tag), stat_uid,
 				 current->pid, current->tgid, current_fsuid(),
 				 xt_qtaguid_stats_file->gid);
+=======
+
+		if (!can_read_other_uid_stats(stat_uid)) {
+			CT_DEBUG("qtaguid: stats line: "
+				 "%s 0x%llx %u: insufficient priv "
+				 "from pid=%u tgid=%u uid=%u\n",
+				 ppi->iface_entry->ifname,
+				 get_atag_from_tag(tag), stat_uid,
+				 current->pid, current->tgid, current_fsuid());
+>>>>>>> refs/remotes/origin/cm-10.0
 			return 0;
 		}
 		if (ppi->item_index++ < ppi->items_to_skip)
@@ -2771,7 +2916,11 @@ static int qtudev_open(struct inode *inode, struct file *file)
 	utd_entry = get_uid_data(current_fsuid(), &utd_entry_found);
 	if (IS_ERR_OR_NULL(utd_entry)) {
 		res = PTR_ERR(utd_entry);
+<<<<<<< HEAD
 		goto err_unlock;
+=======
+		goto err;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Look for existing PID based proc_data */
@@ -2813,8 +2962,13 @@ err_unlock_free_utd:
 		rb_erase(&utd_entry->node, &uid_tag_data_tree);
 		kfree(utd_entry);
 	}
+<<<<<<< HEAD
 err_unlock:
 	spin_unlock_bh(&uid_tag_data_tree_lock);
+=======
+	spin_unlock_bh(&uid_tag_data_tree_lock);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return res;
 }
 

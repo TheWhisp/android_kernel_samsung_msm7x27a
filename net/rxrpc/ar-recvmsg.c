@@ -11,6 +11,10 @@
 
 #include <linux/net.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/sock.h>
 #include <net/af_rxrpc.h>
 #include "ar-internal.h"

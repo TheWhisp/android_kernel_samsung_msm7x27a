@@ -74,11 +74,19 @@
 
 /**
  * struct tc_keypad - data structure used by keypad driver
+<<<<<<< HEAD
+=======
+ * @tc3589x:    pointer to tc35893
+>>>>>>> refs/remotes/origin/cm-10.0
  * @input:      pointer to input device object
  * @board:      keypad platform device
  * @krow:	number of rows
  * @kcol:	number of coloumns
  * @keymap:     matrix scan code table for keycodes
+<<<<<<< HEAD
+=======
+ * @keypad_stopped: holds keypad status
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct tc_keypad {
 	struct tc3589x *tc3589x;
@@ -90,7 +98,11 @@ struct tc_keypad {
 	bool keypad_stopped;
 };
 
+<<<<<<< HEAD
 static int __devinit tc3589x_keypad_init_key_hardware(struct tc_keypad *keypad)
+=======
+static int tc3589x_keypad_init_key_hardware(struct tc_keypad *keypad)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 	struct tc3589x *tc3589x = keypad->tc3589x;
@@ -453,6 +465,7 @@ static struct platform_driver tc3589x_keypad_driver = {
 	.probe	= tc3589x_keypad_probe,
 	.remove	= __devexit_p(tc3589x_keypad_remove),
 };
+<<<<<<< HEAD
 
 static int __init tc3589x_keypad_init(void)
 {
@@ -465,6 +478,9 @@ static void __exit tc3589x_keypad_exit(void)
 	return platform_driver_unregister(&tc3589x_keypad_driver);
 }
 module_exit(tc3589x_keypad_exit);
+=======
+module_platform_driver(tc3589x_keypad_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Jayeeta Banerjee/Sundar Iyer");

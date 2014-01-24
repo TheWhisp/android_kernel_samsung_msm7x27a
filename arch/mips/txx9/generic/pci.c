@@ -262,7 +262,11 @@ txx9_i8259_irq_setup(int irq)
 	int err;
 
 	init_i8259_irqs();
+<<<<<<< HEAD
 	err = request_irq(irq, &i8259_interrupt, IRQF_DISABLED|IRQF_SHARED,
+=======
+	err = request_irq(irq, &i8259_interrupt, IRQF_SHARED,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  "cascade(i8259)", (void *)(long)irq);
 	if (!err)
 		printk(KERN_INFO "PCI-ISA bridge PIC (irq %d)\n", irq);

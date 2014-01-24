@@ -4,6 +4,10 @@
 extern int bench_sched_messaging(int argc, const char **argv, const char *prefix);
 extern int bench_sched_pipe(int argc, const char **argv, const char *prefix);
 extern int bench_mem_memcpy(int argc, const char **argv, const char *prefix __used);
+<<<<<<< HEAD
+=======
+extern int bench_mem_memset(int argc, const char **argv, const char *prefix);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define BENCH_FORMAT_DEFAULT_STR	"default"
 #define BENCH_FORMAT_DEFAULT		0

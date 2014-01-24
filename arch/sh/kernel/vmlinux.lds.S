@@ -23,7 +23,11 @@ OUTPUT_ARCH(sh)
 ENTRY(_start)
 SECTIONS
 {
+<<<<<<< HEAD
 	. = PAGE_OFFSET + MEMORY_OFFSET + CONFIG_ZERO_PAGE_OFFSET;
+=======
+	. = PAGE_OFFSET + MEMORY_OFFSET + PHYSICAL_OFFSET + CONFIG_ZERO_PAGE_OFFSET;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	_text = .;		/* Text and read-only data */
 

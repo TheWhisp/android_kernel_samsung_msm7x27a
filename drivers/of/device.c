@@ -128,12 +128,17 @@ ssize_t of_device_get_modalias(struct device *dev, char *str, ssize_t len)
 /**
  * of_device_uevent - Display OF related uevent information
  */
+<<<<<<< HEAD
 int of_device_uevent(struct device *dev, struct kobj_uevent_env *env)
+=======
+void of_device_uevent(struct device *dev, struct kobj_uevent_env *env)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const char *compat;
 	int seen = 0, cplen, sl;
 
 	if ((!dev) || (!dev->of_node))
+<<<<<<< HEAD
 		return -ENODEV;
 
 	if (add_uevent_var(env, "OF_NAME=%s", dev->of_node->name))
@@ -141,26 +146,54 @@ int of_device_uevent(struct device *dev, struct kobj_uevent_env *env)
 
 	if (add_uevent_var(env, "OF_TYPE=%s", dev->of_node->type))
 		return -ENOMEM;
+=======
+		return;
+
+	add_uevent_var(env, "OF_NAME=%s", dev->of_node->name);
+	add_uevent_var(env, "OF_FULLNAME=%s", dev->of_node->full_name);
+	if (dev->of_node->type && strcmp("<NULL>", dev->of_node->type) != 0)
+		add_uevent_var(env, "OF_TYPE=%s", dev->of_node->type);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Since the compatible field can contain pretty much anything
 	 * it's not really legal to split it out with commas. We split it
 	 * up using a number of environment variables instead. */
+<<<<<<< HEAD
 
 	compat = of_get_property(dev->of_node, "compatible", &cplen);
 	while (compat && *compat && cplen > 0) {
 		if (add_uevent_var(env, "OF_COMPATIBLE_%d=%s", seen, compat))
 			return -ENOMEM;
 
+=======
+	compat = of_get_property(dev->of_node, "compatible", &cplen);
+	while (compat && *compat && cplen > 0) {
+		add_uevent_var(env, "OF_COMPATIBLE_%d=%s", seen, compat);
+>>>>>>> refs/remotes/origin/cm-10.0
 		sl = strlen(compat) + 1;
 		compat += sl;
 		cplen -= sl;
 		seen++;
 	}
+<<<<<<< HEAD
 
 	if (add_uevent_var(env, "OF_COMPATIBLE_N=%d", seen))
 		return -ENOMEM;
 
 	/* modalias is trickier, we add it in 2 steps */
+=======
+	add_uevent_var(env, "OF_COMPATIBLE_N=%d", seen);
+}
+
+int of_device_uevent_modalias(struct device *dev, struct kobj_uevent_env *env)
+{
+	int sl;
+
+	if ((!dev) || (!dev->of_node))
+		return -ENODEV;
+
+	/* Devicetree modalias is tricky, we add it in 2 steps */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (add_uevent_var(env, "MODALIAS="))
 		return -ENOMEM;
 

@@ -171,7 +171,11 @@ SYSCALL_SPU(setresuid)
 SYSCALL_SPU(getresuid)
 SYSCALL(ni_syscall)
 SYSCALL_SPU(poll)
+<<<<<<< HEAD
 COMPAT_SYS(nfsservctl)
+=======
+SYSCALL(ni_syscall)
+>>>>>>> refs/remotes/origin/cm-10.0
 SYSCALL_SPU(setresgid)
 SYSCALL_SPU(getresgid)
 COMPAT_SYS_SPU(prctl)
@@ -354,3 +358,8 @@ COMPAT_SYS_SPU(clock_adjtime)
 SYSCALL_SPU(syncfs)
 COMPAT_SYS_SPU(sendmmsg)
 SYSCALL_SPU(setns)
+<<<<<<< HEAD
+=======
+COMPAT_SYS(process_vm_readv)
+COMPAT_SYS(process_vm_writev)
+>>>>>>> refs/remotes/origin/cm-10.0

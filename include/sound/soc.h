@@ -19,6 +19,10 @@
 #include <linux/workqueue.h>
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/control.h>
@@ -27,6 +31,7 @@
 /*
  * Convenience kcontrol builders
  */
+<<<<<<< HEAD
 #define SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert) \
 	((unsigned long)&(struct soc_mixer_control) \
 	{.reg = xreg, .shift = xshift, .rshift = xshift, .max = xmax, \
@@ -34,6 +39,22 @@
 #define SOC_SINGLE_VALUE_EXT(xreg, xmax, xinvert) \
 	((unsigned long)&(struct soc_mixer_control) \
 	{.reg = xreg, .max = xmax, .platform_max = xmax, .invert = xinvert})
+=======
+#define SOC_DOUBLE_VALUE(xreg, shift_left, shift_right, xmax, xinvert) \
+	((unsigned long)&(struct soc_mixer_control) \
+	{.reg = xreg, .rreg = xreg, .shift = shift_left, \
+	.rshift = shift_right, .max = xmax, .platform_max = xmax, \
+	.invert = xinvert})
+#define SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert) \
+	SOC_DOUBLE_VALUE(xreg, xshift, xshift, xmax, xinvert)
+#define SOC_SINGLE_VALUE_EXT(xreg, xmax, xinvert) \
+	((unsigned long)&(struct soc_mixer_control) \
+	{.reg = xreg, .max = xmax, .platform_max = xmax, .invert = xinvert})
+#define SOC_DOUBLE_R_VALUE(xlreg, xrreg, xshift, xmax, xinvert) \
+	((unsigned long)&(struct soc_mixer_control) \
+	{.reg = xlreg, .rreg = xrreg, .shift = xshift, .rshift = xshift, \
+	.max = xmax, .platform_max = xmax, .invert = xinvert})
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SOC_SINGLE(xname, reg, shift, max, invert) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,\
@@ -57,6 +78,7 @@
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
 		{.reg = xreg, .min = xmin, .max = xmax, \
 		 .platform_max = xmax} }
+<<<<<<< HEAD
 #define SOC_DOUBLE(xname, xreg, shift_left, shift_right, xmax, xinvert) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
@@ -72,25 +94,52 @@
 		{.reg = reg_left, .rreg = reg_right, .shift = xshift, \
 		.max = xmax, .platform_max = xmax, .invert = xinvert} }
 #define SOC_DOUBLE_TLV(xname, xreg, shift_left, shift_right, xmax, xinvert, tlv_array) \
+=======
+#define SOC_DOUBLE(xname, reg, shift_left, shift_right, max, invert) \
+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
+	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
+	.put = snd_soc_put_volsw, \
+	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right, \
+					  max, invert) }
+#define SOC_DOUBLE_R(xname, reg_left, reg_right, xshift, xmax, xinvert) \
+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
+	.info = snd_soc_info_volsw, \
+	.get = snd_soc_get_volsw, .put = snd_soc_put_volsw, \
+	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
+					    xmax, xinvert) }
+#define SOC_DOUBLE_TLV(xname, reg, shift_left, shift_right, max, invert, tlv_array) \
+>>>>>>> refs/remotes/origin/cm-10.0
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
 		 SNDRV_CTL_ELEM_ACCESS_READWRITE,\
 	.tlv.p = (tlv_array), \
 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
 	.put = snd_soc_put_volsw, \
+<<<<<<< HEAD
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
 		{.reg = xreg, .shift = shift_left, .rshift = shift_right,\
 		 .max = xmax, .platform_max = xmax, .invert = xinvert} }
+=======
+	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right, \
+					  max, invert) }
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax, xinvert, tlv_array) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
 		 SNDRV_CTL_ELEM_ACCESS_READWRITE,\
 	.tlv.p = (tlv_array), \
+<<<<<<< HEAD
 	.info = snd_soc_info_volsw_2r, \
 	.get = snd_soc_get_volsw_2r, .put = snd_soc_put_volsw_2r, \
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
 		{.reg = reg_left, .rreg = reg_right, .shift = xshift, \
 		.max = xmax, .platform_max = xmax, .invert = xinvert} }
+=======
+	.info = snd_soc_info_volsw, \
+	.get = snd_soc_get_volsw, .put = snd_soc_put_volsw, \
+	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
+					    xmax, xinvert) }
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SOC_DOUBLE_S8_TLV(xname, xreg, xmin, xmax, tlv_array) \
 {	.iface  = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
@@ -99,7 +148,11 @@
 	.info   = snd_soc_info_volsw_s8, .get = snd_soc_get_volsw_s8, \
 	.put    = snd_soc_put_volsw_s8, \
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
+<<<<<<< HEAD
 		{.reg = xreg, .rshift = 8, .min = xmin, .max = xmax, \
+=======
+		{.reg = xreg, .min = xmin, .max = xmax, \
+>>>>>>> refs/remotes/origin/cm-10.0
 		 .platform_max = xmax} }
 #define SOC_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmax, xtexts) \
 {	.reg = xreg, .shift_l = xshift_l, .shift_r = xshift_r, \
@@ -130,17 +183,29 @@
 	.info = snd_soc_info_volsw, \
 	.get = xhandler_get, .put = xhandler_put, \
 	.private_value = SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert) }
+<<<<<<< HEAD
 #define SOC_DOUBLE_EXT(xname, xreg, shift_left, shift_right, xmax, xinvert,\
+=======
+#define SOC_DOUBLE_EXT(xname, reg, shift_left, shift_right, max, invert,\
+>>>>>>> refs/remotes/origin/cm-10.0
 	 xhandler_get, xhandler_put) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
 	.info = snd_soc_info_volsw, \
 	.get = xhandler_get, .put = xhandler_put, \
+<<<<<<< HEAD
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
 		{.reg = xreg, .shift = shift_left, .rshift = shift_right, \
 		 .max = xmax, .platform_max = xmax, .invert = xinvert} }
 #define SOC_SINGLE_MULTI_EXT(xname, xreg, xshift, xmax, xinvert, xcount,\
 	 xhandler_get, xhandler_put) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+=======
+	.private_value = \
+		SOC_DOUBLE_VALUE(reg, shift_left, shift_right, max, invert) }
+ #define SOC_SINGLE_MULTI_EXT(xname, xreg, xshift, xmax, xinvert, xcount,\
+	xhandler_get, xhandler_put) \
+{      .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+>>>>>>> refs/remotes/origin/cm-10.0
 	.info = snd_soc_info_multi_ext, \
 	.get = xhandler_get, .put = xhandler_put, \
 	.private_value = (unsigned long)&(struct soc_multi_mixer_control) \
@@ -163,20 +228,32 @@
 	.tlv.p = (tlv_array), \
 	.info = snd_soc_info_volsw, \
 	.get = xhandler_get, .put = xhandler_put, \
+<<<<<<< HEAD
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
 		{.reg = xreg, .shift = shift_left, .rshift = shift_right, \
 		.max = xmax, .platform_max = xmax, .invert = xinvert} }
+=======
+	.private_value = SOC_DOUBLE_VALUE(xreg, shift_left, shift_right, \
+					  xmax, xinvert) }
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SOC_DOUBLE_R_EXT_TLV(xname, reg_left, reg_right, xshift, xmax, xinvert,\
 	 xhandler_get, xhandler_put, tlv_array) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
 		 SNDRV_CTL_ELEM_ACCESS_READWRITE, \
 	.tlv.p = (tlv_array), \
+<<<<<<< HEAD
 	.info = snd_soc_info_volsw_2r, \
 	.get = xhandler_get, .put = xhandler_put, \
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
 		{.reg = reg_left, .rreg = reg_right, .shift = xshift, \
 		.max = xmax, .platform_max = xmax, .invert = xinvert} }
+=======
+	.info = snd_soc_info_volsw, \
+	.get = xhandler_get, .put = xhandler_put, \
+	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
+					    xmax, xinvert) }
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SOC_SINGLE_BOOL_EXT(xname, xdata, xhandler_get, xhandler_put) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.info = snd_soc_info_bool_ext, \
@@ -225,6 +302,13 @@
 #define SND_SOC_DAI_LINK_NO_HOST		0x1
 #define SND_SOC_DAI_LINK_OPT_HOST		0x2
 
+<<<<<<< HEAD
+=======
+#define snd_soc_get_enum_text(soc_enum, idx) \
+	(soc_enum->texts ? soc_enum->texts[idx] : soc_enum->dtexts[idx])
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Component probe and remove ordering levels for components with runtime
  * dependencies.
@@ -235,6 +319,7 @@
 #define SND_SOC_COMP_ORDER_LATE		1
 #define SND_SOC_COMP_ORDER_LAST		2
 
+<<<<<<< HEAD
 /* DAI Link Host Mode Support */
 #define SND_SOC_DAI_LINK_NO_HOST		0x1
 #define SND_SOC_DAI_LINK_OPT_HOST		0x2
@@ -243,6 +328,8 @@
 	(soc_enum->texts ? soc_enum->texts[idx] : soc_enum->dtexts[idx])
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Bias levels
  *
@@ -255,12 +342,22 @@
  * @OFF:     Power Off. No restrictions on transition times.
  */
 enum snd_soc_bias_level {
+<<<<<<< HEAD
 	SND_SOC_BIAS_OFF,
 	SND_SOC_BIAS_STANDBY,
 	SND_SOC_BIAS_PREPARE,
 	SND_SOC_BIAS_ON,
 };
 
+=======
+	SND_SOC_BIAS_OFF = 0,
+	SND_SOC_BIAS_STANDBY = 1,
+	SND_SOC_BIAS_PREPARE = 2,
+	SND_SOC_BIAS_ON = 3,
+};
+
+struct device_node;
+>>>>>>> refs/remotes/origin/cm-10.0
 struct snd_jack;
 struct snd_soc_card;
 struct snd_soc_pcm_stream;
@@ -278,7 +375,11 @@ struct snd_soc_jack;
 struct snd_soc_jack_zone;
 struct snd_soc_jack_pin;
 struct snd_soc_cache_ops;
+<<<<<<< HEAD
 struct snd_soc_dsp_link;
+=======
+struct snd_soc_dpcm_link;
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/soc-dapm.h>
 
 #ifdef CONFIG_GPIOLIB
@@ -292,10 +393,15 @@ extern struct snd_ac97_bus_ops soc_ac97_ops;
 enum snd_soc_control_type {
 	SND_SOC_I2C = 1,
 	SND_SOC_SPI,
+<<<<<<< HEAD
+=======
+	SND_SOC_REGMAP,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum snd_soc_compress_type {
 	SND_SOC_FLAT_COMPRESSION = 1,
+<<<<<<< HEAD
 	SND_SOC_LZO_COMPRESSION,
 	SND_SOC_RBTREE_COMPRESSION
 };
@@ -307,6 +413,46 @@ enum snd_soc_pcm_subclass {
 
 int snd_soc_codec_set_sysclk(struct snd_soc_codec *codec, int clk_id,
 			     unsigned int freq, int dir);
+=======
+};
+
+enum snd_soc_pcm_subclass {
+	SND_SOC_PCM_CLASS_PCM	= 0,
+	SND_SOC_PCM_CLASS_BE	= 1,
+};
+
+/*
+ * Dynamic PCM DAI link states.
+ */
+enum snd_soc_dpcm_state {
+	SND_SOC_DPCM_STATE_NEW	= 0,
+	SND_SOC_DPCM_STATE_OPEN,
+	SND_SOC_DPCM_STATE_HW_PARAMS,
+	SND_SOC_DPCM_STATE_PREPARE,
+	SND_SOC_DPCM_STATE_START,
+	SND_SOC_DPCM_STATE_STOP,
+	SND_SOC_DPCM_STATE_PAUSED,
+	SND_SOC_DPCM_STATE_SUSPEND,
+	SND_SOC_DPCM_STATE_HW_FREE,
+	SND_SOC_DPCM_STATE_CLOSE,
+};
+
+/*
+ * Dynamic PCM trigger ordering. Triggering flexibility is required as some
+ * DSPs require triggering before/after their clients/hosts.
+ *
+ * i.e. some clients may want to manually order this call in their PCM
+ * trigger() whilst others will just use the regular core ordering.
+ */
+enum snd_soc_dpcm_trigger {
+	SND_SOC_DPCM_TRIGGER_PRE		= 0,
+	SND_SOC_DPCM_TRIGGER_POST,
+	SND_SOC_DPCM_TRIGGER_BESPOKE,
+};
+
+int snd_soc_codec_set_sysclk(struct snd_soc_codec *codec, int clk_id,
+			     int source, unsigned int freq, int dir);
+>>>>>>> refs/remotes/origin/cm-10.0
 int snd_soc_codec_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
 			  unsigned int freq_in, unsigned int freq_out);
 
@@ -344,10 +490,18 @@ int snd_soc_default_readable_register(struct snd_soc_codec *codec,
 				      unsigned int reg);
 int snd_soc_default_writable_register(struct snd_soc_codec *codec,
 				      unsigned int reg);
+<<<<<<< HEAD
 unsigned int snd_soc_platform_read(struct snd_soc_platform *platform,
 					unsigned int reg);
 unsigned int snd_soc_platform_write(struct snd_soc_platform *platform,
 					unsigned int reg, unsigned int val);
+=======
+int snd_soc_platform_read(struct snd_soc_platform *platform,
+					unsigned int reg);
+int snd_soc_platform_write(struct snd_soc_platform *platform,
+					unsigned int reg, unsigned int val);
+int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
 		const char *dai_link, int stream);
@@ -405,10 +559,21 @@ void snd_soc_free_ac97_codec(struct snd_soc_codec *codec);
 struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
 				  void *data, char *long_name,
 				  const char *prefix);
+<<<<<<< HEAD
 int snd_soc_add_controls(struct snd_soc_codec *codec,
 	const struct snd_kcontrol_new *controls, int num_controls);
 int snd_soc_add_platform_controls(struct snd_soc_platform *platform,
 	const struct snd_kcontrol_new *controls, int num_controls);
+=======
+int snd_soc_add_codec_controls(struct snd_soc_codec *codec,
+	const struct snd_kcontrol_new *controls, int num_controls);
+int snd_soc_add_platform_controls(struct snd_soc_platform *platform,
+	const struct snd_kcontrol_new *controls, int num_controls);
+int snd_soc_add_card_controls(struct snd_soc_card *soc_card,
+	const struct snd_kcontrol_new *controls, int num_controls);
+int snd_soc_add_dai_controls(struct snd_soc_dai *dai,
+	const struct snd_kcontrol_new *controls, int num_controls);
+>>>>>>> refs/remotes/origin/cm-10.0
 int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
 int snd_soc_info_enum_ext(struct snd_kcontrol *kcontrol,
@@ -423,6 +588,11 @@ int snd_soc_put_value_enum_double(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
 int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
+<<<<<<< HEAD
+=======
+int snd_soc_info_multi_ext(struct snd_kcontrol *kcontrol,
+	struct snd_ctl_elem_info *uinfo);
+>>>>>>> refs/remotes/origin/cm-10.0
 int snd_soc_info_volsw_ext(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
 #define snd_soc_info_bool_ext		snd_ctl_boolean_mono_info
@@ -430,20 +600,28 @@ int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
 int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
+<<<<<<< HEAD
 int snd_soc_info_volsw_2r(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
 int snd_soc_get_volsw_2r(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
 int snd_soc_put_volsw_2r(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
+=======
+#define snd_soc_get_volsw_2r snd_soc_get_volsw
+#define snd_soc_put_volsw_2r snd_soc_put_volsw
+>>>>>>> refs/remotes/origin/cm-10.0
 int snd_soc_info_volsw_s8(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
 int snd_soc_get_volsw_s8(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
 int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
+<<<<<<< HEAD
 int snd_soc_info_multi_ext(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int snd_soc_limit_volume(struct snd_soc_codec *codec,
 	const char *name, int max);
 int snd_soc_info_volsw_2r_sx(struct snd_kcontrol *kcontrol,
@@ -542,12 +720,20 @@ struct snd_soc_jack {
 /* SoC PCM stream information */
 struct snd_soc_pcm_stream {
 	const char *stream_name;
+<<<<<<< HEAD
+=======
+	const char *aif_name;	/* DAPM AIF widget name */
+>>>>>>> refs/remotes/origin/cm-10.0
 	u64 formats;			/* SNDRV_PCM_FMTBIT_* */
 	unsigned int rates;		/* SNDRV_PCM_RATE_* */
 	unsigned int rate_min;		/* min rate */
 	unsigned int rate_max;		/* max rate */
 	unsigned int channels_min;	/* min channels */
 	unsigned int channels_max;	/* max channels */
+<<<<<<< HEAD
+=======
+	unsigned int sig_bits;		/* number of bits of content */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* SoC audio ops */
@@ -602,6 +788,10 @@ struct snd_soc_codec {
 	unsigned int ac97_created:1; /* Codec has been created by SoC */
 	unsigned int sysfs_registered:1; /* codec has been sysfs registered */
 	unsigned int cache_init:1; /* codec cache has been initialized */
+<<<<<<< HEAD
+=======
+	unsigned int using_regmap:1; /* using regmap access */
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 cache_only;  /* Suppress writes to hardware */
 	u32 cache_sync; /* Cache needs to be synced to hardware */
 
@@ -617,9 +807,17 @@ struct snd_soc_codec {
 	const void *reg_def_copy;
 	const struct snd_soc_cache_ops *cache_ops;
 	struct mutex cache_rw_mutex;
+<<<<<<< HEAD
 
 	/* dapm */
 	struct snd_soc_dapm_context dapm;
+=======
+	int val_bytes;
+
+	/* dapm */
+	struct snd_soc_dapm_context dapm;
+	unsigned int ignore_pmdown_time:1; /* pmdown_time is ignored at stop */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_DEBUG_FS
 	struct dentry *debugfs_codec_root;
@@ -634,8 +832,12 @@ struct snd_soc_codec_driver {
 	/* driver ops */
 	int (*probe)(struct snd_soc_codec *);
 	int (*remove)(struct snd_soc_codec *);
+<<<<<<< HEAD
 	int (*suspend)(struct snd_soc_codec *,
 			pm_message_t state);
+=======
+	int (*suspend)(struct snd_soc_codec *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*resume)(struct snd_soc_codec *);
 
 	/* Default control and setup, added after probe() is run */
@@ -648,7 +850,11 @@ struct snd_soc_codec_driver {
 
 	/* codec wide operations */
 	int (*set_sysclk)(struct snd_soc_codec *codec,
+<<<<<<< HEAD
 			  int clk_id, unsigned int freq, int dir);
+=======
+			  int clk_id, int source, unsigned int freq, int dir);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*set_pll)(struct snd_soc_codec *codec, int pll_id, int source,
 		unsigned int freq_in, unsigned int freq_out);
 
@@ -660,7 +866,11 @@ struct snd_soc_codec_driver {
 	int (*volatile_register)(struct snd_soc_codec *, unsigned int);
 	int (*readable_register)(struct snd_soc_codec *, unsigned int);
 	int (*writable_register)(struct snd_soc_codec *, unsigned int);
+<<<<<<< HEAD
 	short reg_cache_size;
+=======
+	unsigned int reg_cache_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 	short reg_cache_step;
 	short reg_word_size;
 	const void *reg_cache_default;
@@ -671,16 +881,29 @@ struct snd_soc_codec_driver {
 	/* codec bias level */
 	int (*set_bias_level)(struct snd_soc_codec *,
 			      enum snd_soc_bias_level level);
+<<<<<<< HEAD
+=======
+	bool idle_bias_off;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	void (*seq_notifier)(struct snd_soc_dapm_context *,
 			     enum snd_soc_dapm_type, int);
 
+<<<<<<< HEAD
 	/* probe ordering - for components with runtime dependencies */
 	int probe_order;
 	int remove_order;
 
 	/* codec stream completion event */
 	int (*stream_event)(struct snd_soc_dapm_context *dapm);
+=======
+	/* codec stream completion event */
+	int (*stream_event)(struct snd_soc_dapm_context *dapm, int event);
+
+	/* probe ordering - for components with runtime dependencies */
+	int probe_order;
+	int remove_order;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* SoC platform interface */
@@ -695,6 +918,17 @@ struct snd_soc_platform_driver {
 	int (*pcm_new)(struct snd_soc_pcm_runtime *);
 	void (*pcm_free)(struct snd_pcm *);
 
+<<<<<<< HEAD
+=======
+	/* Default control and setup, added after probe() is run */
+	const struct snd_kcontrol_new *controls;
+	int num_controls;
+	const struct snd_soc_dapm_widget *dapm_widgets;
+	int num_dapm_widgets;
+	const struct snd_soc_dapm_route *dapm_routes;
+	int num_dapm_routes;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * For platform caused delay reporting.
 	 * Optional.
@@ -705,16 +939,30 @@ struct snd_soc_platform_driver {
 	/* platform stream ops */
 	struct snd_pcm_ops *ops;
 
+<<<<<<< HEAD
+=======
+	/* platform stream completion event */
+	int (*stream_event)(struct snd_soc_dapm_context *dapm, int event);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* probe ordering - for components with runtime dependencies */
 	int probe_order;
 	int remove_order;
 
+<<<<<<< HEAD
 	int (*stream_event)(struct snd_soc_dapm_context *dapm);
 	int (*bespoke_trigger)(struct snd_pcm_substream *, int);
 
 	/* platform DAPM IO TODO: refactor this */
 	unsigned int (*read)(struct snd_soc_platform *, unsigned int);
 	int (*write)(struct snd_soc_platform *, unsigned int, unsigned int);
+=======
+	/* platform IO - used for platform DAPM */
+	unsigned int (*read)(struct snd_soc_platform *, unsigned int);
+	int (*write)(struct snd_soc_platform *, unsigned int, unsigned int);
+
+	int (*bespoke_trigger)(struct snd_pcm_substream *, int);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct snd_soc_platform {
@@ -726,6 +974,7 @@ struct snd_soc_platform {
 	unsigned int suspended:1; /* platform is suspended */
 	unsigned int probed:1;
 
+<<<<<<< HEAD
 	struct snd_card *snd_card;
 	struct snd_soc_card *card;
 	struct list_head list;
@@ -733,6 +982,12 @@ struct snd_soc_platform {
 	int num_dai;
 
 	/* dapm */
+=======
+	struct snd_soc_card *card;
+	struct list_head list;
+	struct list_head card_list;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_soc_dapm_context dapm;
 
 #ifdef CONFIG_DEBUG_FS
@@ -746,11 +1001,25 @@ struct snd_soc_dai_link {
 	const char *name;			/* Codec name */
 	const char *stream_name;		/* Stream name */
 	const char *codec_name;		/* for multi-codec */
+<<<<<<< HEAD
 	const char *platform_name;	/* for multi-platform */
 	const char *cpu_dai_name;
 	const char *codec_dai_name;
 
 	struct snd_soc_dsp_link *dsp_link;
+=======
+	const struct device_node *codec_of_node;
+	const char *platform_name;	/* for multi-platform */
+	const struct device_node *platform_of_node;
+	const char *cpu_dai_name;
+	const struct device_node *cpu_dai_of_node;
+	const char *codec_dai_name;
+
+	unsigned int dai_fmt;           /* format to set on init */
+
+	enum snd_soc_dpcm_trigger trigger[2]; /* trigger type for DPCM */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Keep DAI active over suspend */
 	unsigned int ignore_suspend:1;
 
@@ -760,13 +1029,22 @@ struct snd_soc_dai_link {
 	unsigned int no_pcm:1;
 	/* This DAI link can change CODEC and platform at runtime*/
 	unsigned int dynamic:1;
+<<<<<<< HEAD
 	/* This DAI link has no codec side driver*/
 	unsigned int no_codec:1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* This DAI has a Backend ID */
 	unsigned int be_id;
 	/* This DAI can support no host IO (no pcm data is copied to from host) */
 	unsigned int no_host_mode:2;
 
+<<<<<<< HEAD
+=======
+	/* pmdown_time is ignored at stop */
+	unsigned int ignore_pmdown_time:1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* codec/machine specific init - e.g. add machine controls */
 	int (*init)(struct snd_soc_pcm_runtime *rtd);
 
@@ -813,7 +1091,14 @@ struct snd_soc_card {
 
 	struct list_head list;
 	struct mutex mutex;
+<<<<<<< HEAD
 	struct mutex dapm_mutex;
+=======
+	struct mutex dpcm_mutex;
+
+	struct mutex dapm_mutex;
+	struct mutex dapm_power_mutex;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mutex dsp_mutex;
 	spinlock_t dsp_spinlock;
 
@@ -832,8 +1117,15 @@ struct snd_soc_card {
 
 	/* callbacks */
 	int (*set_bias_level)(struct snd_soc_card *,
+<<<<<<< HEAD
 			      enum snd_soc_bias_level level);
 	int (*set_bias_level_post)(struct snd_soc_card *,
+=======
+			      struct snd_soc_dapm_context *dapm,
+			      enum snd_soc_bias_level level);
+	int (*set_bias_level_post)(struct snd_soc_card *,
+				   struct snd_soc_dapm_context *dapm,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   enum snd_soc_bias_level level);
 
 	long pmdown_time;
@@ -843,6 +1135,11 @@ struct snd_soc_card {
 	int num_links;
 	struct snd_soc_pcm_runtime *rtd;
 	int num_rtd;
+<<<<<<< HEAD
+=======
+	int num_playback_channels;
+	int num_capture_channels;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* optional codec specific configuration */
 	struct snd_soc_codec_conf *codec_conf;
@@ -867,6 +1164,10 @@ struct snd_soc_card {
 	int num_dapm_widgets;
 	const struct snd_soc_dapm_route *dapm_routes;
 	int num_dapm_routes;
+<<<<<<< HEAD
+=======
+	bool fully_routed;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct work_struct deferred_resume_work;
 
@@ -878,9 +1179,17 @@ struct snd_soc_card {
 	struct list_head widgets;
 	struct list_head paths;
 	struct list_head dapm_list;
+<<<<<<< HEAD
 
 	/* Generic DAPM context for the card */
 	struct snd_soc_dapm_context dapm;
+=======
+	struct list_head dapm_dirty;
+
+	/* Generic DAPM context for the card */
+	struct snd_soc_dapm_context dapm;
+	struct snd_soc_dapm_stats dapm_stats;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_DEBUG_FS
 	struct dentry *debugfs_card_root;
@@ -892,11 +1201,16 @@ struct snd_soc_card {
 };
 
 /* DSP runtime data */
+<<<<<<< HEAD
 struct snd_soc_dsp_runtime {
+=======
+struct snd_soc_dpcm_runtime {
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head be_clients;
 	struct list_head fe_clients;
 	int users;
 	struct snd_pcm_runtime *runtime;
+<<<<<<< HEAD
 	struct snd_pcm_hw_params params;
 	int runtime_update;
 	bool hwparam_set;
@@ -905,6 +1219,16 @@ struct snd_soc_dsp_runtime {
 /* SoC machine DAI configuration, glues a codec and cpu DAI together */
 struct snd_soc_pcm_runtime  {
 	struct device dev;
+=======
+	struct snd_pcm_hw_params hw_params;
+	int runtime_update;
+	enum snd_soc_dpcm_state state;
+};
+
+/* SoC machine DAI configuration, glues a codec and cpu DAI together */
+struct snd_soc_pcm_runtime {
+	struct device *dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_soc_card *card;
 	struct snd_soc_dai_link *dai_link;
 	struct mutex pcm_mutex;
@@ -914,11 +1238,17 @@ struct snd_soc_pcm_runtime  {
 	unsigned int complete:1;
 	unsigned int dev_registered:1;
 
+<<<<<<< HEAD
 	/* DSP runtime data */
 	struct snd_soc_dsp_runtime dsp[2];
 
 	/* Symmetry data - only valid if symmetry is being enforced */
 	unsigned int rate;
+=======
+	/* Dynamic PCM BE runtime data */
+	struct snd_soc_dpcm_runtime dpcm[2];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	long pmdown_time;
 
 	/* runtime devices */
@@ -931,7 +1261,12 @@ struct snd_soc_pcm_runtime  {
 	struct delayed_work delayed_work;
 
 #ifdef CONFIG_DEBUG_FS
+<<<<<<< HEAD
 	struct dentry *debugfs_dsp_root;
+=======
+	struct dentry *debugfs_dpcm_root;
+	struct dentry *debugfs_dpcm_state;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 };
 
@@ -940,13 +1275,20 @@ struct soc_mixer_control {
 	int min, max, platform_max;
 	unsigned int reg, rreg, shift, rshift, invert;
 };
+<<<<<<< HEAD
 
 /* mixer multiple input control */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct soc_multi_mixer_control {
 	int min, max, platform_max, count;
 	unsigned int reg, rreg, shift, rshift, invert;
 };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* enumerated kcontrol */
 struct soc_enum {
 	unsigned short reg;
@@ -1006,12 +1348,20 @@ static inline void *snd_soc_platform_get_drvdata(struct snd_soc_platform *platfo
 static inline void snd_soc_pcm_set_drvdata(struct snd_soc_pcm_runtime *rtd,
 		void *data)
 {
+<<<<<<< HEAD
 	dev_set_drvdata(&rtd->dev, data);
+=======
+	dev_set_drvdata(rtd->dev, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void *snd_soc_pcm_get_drvdata(struct snd_soc_pcm_runtime *rtd)
 {
+<<<<<<< HEAD
 	return dev_get_drvdata(&rtd->dev);
+=======
+	return dev_get_drvdata(rtd->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
@@ -1024,9 +1374,32 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
 	INIT_LIST_HEAD(&card->dapm_list);
 }
 
+<<<<<<< HEAD
 int snd_soc_util_init(void);
 void snd_soc_util_exit(void);
 
+=======
+static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
+{
+	if (mc->reg == mc->rreg && mc->shift == mc->rshift)
+		return 0;
+	/*
+	 * mc->reg == mc->rreg && mc->shift != mc->rshift, or
+	 * mc->reg != mc->rreg means that the control is
+	 * stereo (bits in one register or in two registers)
+	 */
+	return 1;
+}
+
+int snd_soc_util_init(void);
+void snd_soc_util_exit(void);
+
+int snd_soc_of_parse_card_name(struct snd_soc_card *card,
+			       const char *propname);
+int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+				   const char *propname);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/soc-dai.h>
 
 #ifdef CONFIG_DEBUG_FS

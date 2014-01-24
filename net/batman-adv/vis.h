@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2008-2011 B.A.T.M.A.N. contributors:
+=======
+ * Copyright (C) 2008-2012 B.A.T.M.A.N. contributors:
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Simon Wunderlich, Marek Lindner
  *
@@ -22,7 +26,12 @@
 #ifndef _NET_BATMAN_ADV_VIS_H_
 #define _NET_BATMAN_ADV_VIS_H_
 
+<<<<<<< HEAD
 #define VIS_TIMEOUT		200	/* timeout of vis packets in seconds */
+=======
+#define VIS_TIMEOUT		200000	/* timeout of vis packets
+					 * in miliseconds */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int vis_seq_print_text(struct seq_file *seq, void *offset);
 void receive_server_sync_packet(struct bat_priv *bat_priv,

@@ -12,7 +12,11 @@
  *  it under the terms of the GNU General Public License version 2 as
  *  published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/syscore_ops.h>
@@ -43,7 +47,10 @@
 #include <asm/mach/flash.h>
 
 #include <mach/pxa27x.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/mainstone.h>
 #include <mach/audio.h>
 #include <mach/pxafb.h>
@@ -179,8 +186,13 @@ static void __init mainstone_init_irq(void)
 	MST_INTMSKENA = 0;
 	MST_INTSETCLR = 0;
 
+<<<<<<< HEAD
 	irq_set_chained_handler(IRQ_GPIO(0), mainstone_irq_handler);
 	irq_set_irq_type(IRQ_GPIO(0), IRQ_TYPE_EDGE_FALLING);
+=======
+	irq_set_chained_handler(PXA_GPIO_TO_IRQ(0), mainstone_irq_handler);
+	irq_set_irq_type(PXA_GPIO_TO_IRQ(0), IRQ_TYPE_EDGE_FALLING);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_PM
@@ -616,10 +628,21 @@ static void __init mainstone_map_io(void)
 
 MACHINE_START(MAINSTONE, "Intel HCDDBBVA0 Development Platform (aka Mainstone)")
 	/* Maintainer: MontaVista Software Inc. */
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,	/* BLOB boot parameter setting */
 	.map_io		= mainstone_map_io,
 	.nr_irqs	= MAINSTONE_NR_IRQS,
 	.init_irq	= mainstone_init_irq,
 	.timer		= &pxa_timer,
 	.init_machine	= mainstone_init,
+=======
+	.atag_offset	= 0x100,	/* BLOB boot parameter setting */
+	.map_io		= mainstone_map_io,
+	.nr_irqs	= MAINSTONE_NR_IRQS,
+	.init_irq	= mainstone_init_irq,
+	.handle_irq	= pxa27x_handle_irq,
+	.timer		= &pxa_timer,
+	.init_machine	= mainstone_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

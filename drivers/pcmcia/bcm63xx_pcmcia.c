@@ -475,7 +475,11 @@ static void __devexit bcm63xx_cb_exit(struct pci_dev *dev)
 	bcm63xx_cb_dev = NULL;
 }
 
+<<<<<<< HEAD
 static struct pci_device_id bcm63xx_cb_table[] = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(bcm63xx_cb_table) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.vendor		= PCI_VENDOR_ID_BROADCOM,
 		.device		= BCM6348_CPU_ID,

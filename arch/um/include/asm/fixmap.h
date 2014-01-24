@@ -2,7 +2,10 @@
 #define __UM_FIXMAP_H
 
 #include <asm/processor.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/kmap_types.h>
 #include <asm/archparam.h>
 #include <asm/page.h>

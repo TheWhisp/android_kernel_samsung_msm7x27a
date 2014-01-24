@@ -31,6 +31,10 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "cpia2.h"
 

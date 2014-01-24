@@ -790,6 +790,7 @@ static struct platform_driver pmic8xxx_kp_driver = {
 		.pm = &pm8xxx_kp_pm_ops,
 	},
 };
+<<<<<<< HEAD
 
 static int __init pmic8xxx_kp_init(void)
 {
@@ -802,6 +803,9 @@ static void __exit pmic8xxx_kp_exit(void)
 	platform_driver_unregister(&pmic8xxx_kp_driver);
 }
 module_exit(pmic8xxx_kp_exit);
+=======
+module_platform_driver(pmic8xxx_kp_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("PMIC8XXX keypad driver");

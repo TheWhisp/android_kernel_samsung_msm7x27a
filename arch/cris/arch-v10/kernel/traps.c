@@ -11,6 +11,10 @@
 #include <linux/ptrace.h>
 #include <asm/uaccess.h>
 #include <arch/sv_addr_ag.h>
+<<<<<<< HEAD
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void
 show_registers(struct pt_regs *regs)

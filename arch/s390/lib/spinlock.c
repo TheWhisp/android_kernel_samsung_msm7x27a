@@ -10,6 +10,10 @@
 #include <linux/module.h>
 #include <linux/spinlock.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/smp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 int spin_retry = 1000;
@@ -24,6 +28,7 @@ static int __init spin_retry_setup(char *str)
 }
 __setup("spin_retry=", spin_retry_setup);
 
+<<<<<<< HEAD
 static inline void _raw_yield(void)
 {
 	if (MACHINE_HAS_DIAG44)
@@ -39,6 +44,8 @@ static inline void _raw_yield_cpu(int cpu)
 		_raw_yield();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void arch_spin_lock_wait(arch_spinlock_t *lp)
 {
 	int count = spin_retry;
@@ -60,7 +67,11 @@ void arch_spin_lock_wait(arch_spinlock_t *lp)
 		}
 		owner = lp->owner_cpu;
 		if (owner)
+<<<<<<< HEAD
 			_raw_yield_cpu(~owner);
+=======
+			smp_yield_cpu(~owner);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (_raw_compare_and_swap(&lp->owner_cpu, 0, cpu) == 0)
 			return;
 	}
@@ -91,7 +102,11 @@ void arch_spin_lock_wait_flags(arch_spinlock_t *lp, unsigned long flags)
 		}
 		owner = lp->owner_cpu;
 		if (owner)
+<<<<<<< HEAD
 			_raw_yield_cpu(~owner);
+=======
+			smp_yield_cpu(~owner);
+>>>>>>> refs/remotes/origin/cm-10.0
 		local_irq_disable();
 		if (_raw_compare_and_swap(&lp->owner_cpu, 0, cpu) == 0)
 			return;
@@ -121,7 +136,11 @@ void arch_spin_relax(arch_spinlock_t *lock)
 	if (cpu != 0) {
 		if (MACHINE_IS_VM || MACHINE_IS_KVM ||
 		    !smp_vcpu_scheduled(~cpu))
+<<<<<<< HEAD
 			_raw_yield_cpu(~cpu);
+=======
+			smp_yield_cpu(~cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 EXPORT_SYMBOL(arch_spin_relax);
@@ -133,7 +152,11 @@ void _raw_read_lock_wait(arch_rwlock_t *rw)
 
 	while (1) {
 		if (count-- <= 0) {
+<<<<<<< HEAD
 			_raw_yield();
+=======
+			smp_yield();
+>>>>>>> refs/remotes/origin/cm-10.0
 			count = spin_retry;
 		}
 		if (!arch_read_can_lock(rw))
@@ -153,7 +176,11 @@ void _raw_read_lock_wait_flags(arch_rwlock_t *rw, unsigned long flags)
 	local_irq_restore(flags);
 	while (1) {
 		if (count-- <= 0) {
+<<<<<<< HEAD
 			_raw_yield();
+=======
+			smp_yield();
+>>>>>>> refs/remotes/origin/cm-10.0
 			count = spin_retry;
 		}
 		if (!arch_read_can_lock(rw))
@@ -188,7 +215,11 @@ void _raw_write_lock_wait(arch_rwlock_t *rw)
 
 	while (1) {
 		if (count-- <= 0) {
+<<<<<<< HEAD
 			_raw_yield();
+=======
+			smp_yield();
+>>>>>>> refs/remotes/origin/cm-10.0
 			count = spin_retry;
 		}
 		if (!arch_write_can_lock(rw))
@@ -206,7 +237,11 @@ void _raw_write_lock_wait_flags(arch_rwlock_t *rw, unsigned long flags)
 	local_irq_restore(flags);
 	while (1) {
 		if (count-- <= 0) {
+<<<<<<< HEAD
 			_raw_yield();
+=======
+			smp_yield();
+>>>>>>> refs/remotes/origin/cm-10.0
 			count = spin_retry;
 		}
 		if (!arch_write_can_lock(rw))

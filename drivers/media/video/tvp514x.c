@@ -32,6 +32,10 @@
 #include <linux/slab.h>
 #include <linux/delay.h>
 #include <linux/videodev2.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <media/v4l2-device.h>
 #include <media/v4l2-common.h>
@@ -51,7 +55,11 @@
 #define LOCK_RETRY_DELAY                (200)
 
 /* Debug functions */
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(debug, bool, 0644);
 MODULE_PARM_DESC(debug, "Debug level (0-1)");
 
@@ -1162,6 +1170,7 @@ static struct i2c_driver tvp514x_driver = {
 	.id_table = tvp514x_id,
 };
 
+<<<<<<< HEAD
 static int __init tvp514x_init(void)
 {
 	return i2c_add_driver(&tvp514x_driver);
@@ -1174,3 +1183,6 @@ static void __exit tvp514x_exit(void)
 
 module_init(tvp514x_init);
 module_exit(tvp514x_exit);
+=======
+module_i2c_driver(tvp514x_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

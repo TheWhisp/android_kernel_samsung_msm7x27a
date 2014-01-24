@@ -13,6 +13,10 @@
 
 #include <linux/kernel_stat.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/cacheflush.h>
 #include <asm/cpudata.h>

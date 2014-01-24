@@ -216,10 +216,15 @@ struct ar9300_modal_eep_header {
 	u8 spurChans[AR_EEPROM_MODAL_SPURS];
 	/* 3  Check if the register is per chain */
 	int8_t noiseFloorThreshCh[AR9300_MAX_CHAINS];
+<<<<<<< HEAD
 	u8 ob[AR9300_MAX_CHAINS];
 	u8 db_stage2[AR9300_MAX_CHAINS];
 	u8 db_stage3[AR9300_MAX_CHAINS];
 	u8 db_stage4[AR9300_MAX_CHAINS];
+=======
+	u8 reserved[11];
+	int8_t quick_drop;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 xpaBiasLvl;
 	u8 txFrameToDataStart;
 	u8 txFrameToPaOn;
@@ -233,7 +238,12 @@ struct ar9300_modal_eep_header {
 	u8 thresh62;
 	__le32 papdRateMaskHt20;
 	__le32 papdRateMaskHt40;
+<<<<<<< HEAD
 	u8 futureModal[10];
+=======
+	__le16 switchcomspdt;
+	u8 futureModal[8];
+>>>>>>> refs/remotes/origin/cm-10.0
 } __packed;
 
 struct ar9300_cal_data_per_freq_op_loop {
@@ -268,7 +278,13 @@ struct cal_ctl_data_5g {
 
 struct ar9300_BaseExtension_1 {
 	u8 ant_div_control;
+<<<<<<< HEAD
 	u8 future[13];
+=======
+	u8 future[11];
+	int8_t quick_drop_low;
+	int8_t quick_drop_high;
+>>>>>>> refs/remotes/origin/cm-10.0
 } __packed;
 
 struct ar9300_BaseExtension_2 {

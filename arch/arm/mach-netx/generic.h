@@ -19,6 +19,10 @@
 
 extern void __init netx_map_io(void);
 extern void __init netx_init_irq(void);
+<<<<<<< HEAD
+=======
+extern void netx_restart(char, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct sys_timer;
 extern struct sys_timer netx_timer;

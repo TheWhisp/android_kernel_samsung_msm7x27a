@@ -11,6 +11,15 @@
 
 	.align	7
 _GLOBAL(__copy_tofrom_user)
+<<<<<<< HEAD
+=======
+BEGIN_FTR_SECTION
+	nop
+FTR_SECTION_ELSE
+	b	__copy_tofrom_user_power7
+ALT_FTR_SECTION_END_IFCLR(CPU_FTR_VMX_COPY)
+_GLOBAL(__copy_tofrom_user_base)
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* first check for a whole page copy on a page boundary */
 	cmpldi	cr1,r5,16
 	cmpdi	cr6,r5,4096

@@ -16,6 +16,10 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/ac97_codec.h>
@@ -38,7 +42,11 @@ static int ac97_prepare(struct snd_pcm_substream *substream,
 		SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 |\
 		SNDRV_PCM_RATE_48000)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops ac97_dai_ops = {
+=======
+static const struct snd_soc_dai_ops ac97_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.prepare	= ac97_prepare,
 };
 
@@ -98,7 +106,11 @@ static int ac97_soc_remove(struct snd_soc_codec *codec)
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 static int ac97_soc_suspend(struct snd_soc_codec *codec, pm_message_t msg)
+=======
+static int ac97_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	snd_ac97_suspend(codec->ac97);
 
@@ -147,6 +159,7 @@ static struct platform_driver ac97_codec_driver = {
 	.remove = __devexit_p(ac97_remove),
 };
 
+<<<<<<< HEAD
 static int __init ac97_init(void)
 {
 	return platform_driver_register(&ac97_codec_driver);
@@ -158,6 +171,9 @@ static void __exit ac97_exit(void)
 	platform_driver_unregister(&ac97_codec_driver);
 }
 module_exit(ac97_exit);
+=======
+module_platform_driver(ac97_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Soc Generic AC97 driver");
 MODULE_AUTHOR("Liam Girdwood");

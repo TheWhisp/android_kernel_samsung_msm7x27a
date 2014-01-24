@@ -23,7 +23,12 @@ config BLUESTONE
 	default n
 	select PPC44x_SIMPLE
 	select APM821xx
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_RGMII
+=======
+	select PPC4xx_PCI_EXPRESS
+	select IBM_EMAC_RGMII
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the APM APM821xx Evaluation board.
 
@@ -75,7 +80,11 @@ config KATMAI
 	select PCI
 	select PPC4xx_PCI_EXPRESS
 	select PCI_MSI
+<<<<<<< HEAD
 	select PCC4xx_MSI
+=======
+	select PPC4xx_MSI
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the AMCC PPC440SPe evaluation board.
 
@@ -122,8 +131,13 @@ config CANYONLANDS
 	select PPC4xx_PCI_EXPRESS
 	select PCI_MSI
 	select PPC4xx_MSI
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_RGMII
 	select IBM_NEW_EMAC_ZMII
+=======
+	select IBM_EMAC_RGMII
+	select IBM_EMAC_ZMII
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the AMCC PPC460EX evaluation board.
 
@@ -135,8 +149,13 @@ config GLACIER
 	select 460EX # Odd since it uses 460GT but the effects are the same
 	select PCI
 	select PPC4xx_PCI_EXPRESS
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_RGMII
 	select IBM_NEW_EMAC_ZMII
+=======
+	select IBM_EMAC_RGMII
+	select IBM_EMAC_ZMII
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the AMCC PPC460GT evaluation board.
 
@@ -161,7 +180,11 @@ config EIGER
 	select 460SX
 	select PCI
 	select PPC4xx_PCI_EXPRESS
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_RGMII
+=======
+	select IBM_EMAC_RGMII
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables support for the AMCC PPC460SX evaluation board.
 
@@ -186,6 +209,19 @@ config ISS4xx
 	help
 	  This option enables support for the IBM ISS simulation environment
 
+<<<<<<< HEAD
+=======
+config CURRITUCK
+	bool "IBM Currituck (476fpe) Support"
+	depends on PPC_47x
+	default n
+	select SWIOTLB
+	select 476FPE
+	select PPC4xx_PCI_EXPRESS
+	help
+	  This option enables support for the IBM Currituck (476fpe) evaluation board
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config ICON
 	bool "Icon"
 	depends on 44x
@@ -197,6 +233,7 @@ config ICON
 	help
 	  This option enables support for the AMCC PPC440SPe evaluation board.
 
+<<<<<<< HEAD
 #config LUAN
 #	bool "Luan"
 #	depends on 44x
@@ -213,6 +250,8 @@ config ICON
 #	help
 #	  This option enables support for the IBM PPC440GX evaluation board.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config XILINX_VIRTEX440_GENERIC_BOARD
 	bool "Generic Xilinx Virtex 5 FXT board support"
 	depends on 44x
@@ -260,12 +299,17 @@ config 440EP
 	bool
 	select PPC_FPU
 	select IBM440EP_ERR42
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_ZMII
+=======
+	select IBM_EMAC_ZMII
+>>>>>>> refs/remotes/origin/cm-10.0
 	select USB_ARCH_HAS_OHCI
 
 config 440EPX
 	bool
 	select PPC_FPU
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_EMAC4
 	select IBM_NEW_EMAC_RGMII
 	select IBM_NEW_EMAC_ZMII
@@ -286,33 +330,80 @@ config 440GX
 	select IBM_NEW_EMAC_RGMII
 	select IBM_NEW_EMAC_ZMII #test only
 	select IBM_NEW_EMAC_TAH  #test only
+=======
+	select IBM_EMAC_EMAC4
+	select IBM_EMAC_RGMII
+	select IBM_EMAC_ZMII
+
+config 440GRX
+	bool
+	select IBM_EMAC_EMAC4
+	select IBM_EMAC_RGMII
+	select IBM_EMAC_ZMII
+
+config 440GP
+	bool
+	select IBM_EMAC_ZMII
+
+config 440GX
+	bool
+	select IBM_EMAC_EMAC4
+	select IBM_EMAC_RGMII
+	select IBM_EMAC_ZMII #test only
+	select IBM_EMAC_TAH  #test only
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config 440SP
 	bool
 
 config 440SPe
 	bool
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_EMAC4
+=======
+	select IBM_EMAC_EMAC4
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config 460EX
 	bool
 	select PPC_FPU
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_EMAC4
 	select IBM_NEW_EMAC_TAH
+=======
+	select IBM_EMAC_EMAC4
+	select IBM_EMAC_TAH
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config 460SX
 	bool
 	select PPC_FPU
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_EMAC4
 	select IBM_NEW_EMAC_RGMII
 	select IBM_NEW_EMAC_ZMII
 	select IBM_NEW_EMAC_TAH
+=======
+	select IBM_EMAC_EMAC4
+	select IBM_EMAC_RGMII
+	select IBM_EMAC_ZMII
+	select IBM_EMAC_TAH
+
+config 476FPE
+	bool
+	select PPC_FPU
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config APM821xx
 	bool
 	select PPC_FPU
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_EMAC4
 	select IBM_NEW_EMAC_TAH
+=======
+	select IBM_EMAC_EMAC4
+	select IBM_EMAC_TAH
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # 44x errata/workaround config symbols, selected by the CPU models above
 config IBM440EP_ERR42

@@ -3,7 +3,11 @@ menu "GCOV-based kernel profiling"
 config GCOV_KERNEL
 	bool "Enable gcov-based kernel profiling"
 	depends on DEBUG_FS
+<<<<<<< HEAD
 	select CONSTRUCTORS
+=======
+	select CONSTRUCTORS if !UML
+>>>>>>> refs/remotes/origin/cm-10.0
 	default n
 	---help---
 	This option enables gcov-based code profiling (e.g. for code coverage

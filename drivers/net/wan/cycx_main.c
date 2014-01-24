@@ -40,6 +40,11 @@
 * 1998/08/08	acme		Initial version.
 */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/stddef.h>	/* offsetof(), etc. */
 #include <linux/errno.h>	/* return codes */
 #include <linux/string.h>	/* inline memset(), etc. */
@@ -50,6 +55,10 @@
 #include <linux/wanrouter.h>	/* WAN router definitions */
 #include <linux/cyclomx.h>	/* cyclomx common user API definitions */
 #include <linux/init.h>         /* __init (when not using as a module) */
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned int cycx_debug;
 
@@ -106,7 +115,11 @@ static int __init cycx_init(void)
 {
 	int cnt, err = -ENOMEM;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "%s v%u.%u %s\n",
+=======
+	pr_info("%s v%u.%u %s\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		cycx_fullname, CYCX_DRV_VERSION, CYCX_DRV_RELEASE,
 		cycx_copyright);
 
@@ -132,9 +145,14 @@ static int __init cycx_init(void)
 		err = register_wan_device(wandev);
 
 		if (err) {
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: %s registration failed with "
 					"error %d!\n",
 					cycx_drvname, card->devname, err);
+=======
+			pr_err("%s registration failed with error %d!\n",
+			       card->devname, err);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 	}
@@ -197,14 +215,23 @@ static int cycx_wan_setup(struct wan_device *wandev, wandev_conf_t *conf)
 
 	rc = -EINVAL;
 	if (!conf->data_size || !conf->data) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: firmware not found in configuration "
 				"data!\n", wandev->name);
+=======
+		pr_err("%s: firmware not found in configuration data!\n",
+		       wandev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 
 	if (conf->irq <= 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: can't configure without IRQ!\n",
 				wandev->name);
+=======
+		pr_err("%s: can't configure without IRQ!\n", wandev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 
@@ -212,8 +239,12 @@ static int cycx_wan_setup(struct wan_device *wandev, wandev_conf_t *conf)
 	irq = conf->irq == 2 ? 9 : conf->irq;	/* IRQ2 -> IRQ9 */
 
 	if (request_irq(irq, cycx_isr, 0, wandev->name, card)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: can't reserve IRQ %d!\n",
 				wandev->name, irq);
+=======
+		pr_err("%s: can't reserve IRQ %d!\n", wandev->name, irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 
@@ -245,8 +276,12 @@ static int cycx_wan_setup(struct wan_device *wandev, wandev_conf_t *conf)
 		break;
 #endif
 	default:
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: this firmware is not supported!\n",
 				wandev->name);
+=======
+		pr_err("%s: this firmware is not supported!\n", wandev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = -EINVAL;
 	}
 
@@ -287,8 +322,12 @@ static int cycx_wan_shutdown(struct wan_device *wandev)
 	card = wandev->private;
 	wandev->state = WAN_UNCONFIGURED;
 	cycx_down(&card->hw);
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: irq %d being freed!\n", wandev->name,
 			wandev->irq);
+=======
+	pr_info("%s: irq %d being freed!\n", wandev->name, wandev->irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	free_irq(wandev->irq, card);
 out:	return ret;
 }
@@ -307,8 +346,13 @@ static irqreturn_t cycx_isr(int irq, void *dev_id)
 		goto out;
 
 	if (card->in_isr) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: interrupt re-entrancy on IRQ %d!\n",
 				    card->devname, card->wandev.irq);
+=======
+		pr_warn("%s: interrupt re-entrancy on IRQ %d!\n",
+			card->devname, card->wandev.irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 
@@ -336,7 +380,11 @@ void cycx_set_state(struct cycx_device *card, int state)
 			string_state = "disconnected!";
 			break;
 		}
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: link %s\n", card->devname, string_state);
+=======
+		pr_info("%s: link %s\n", card->devname, string_state);
+>>>>>>> refs/remotes/origin/cm-10.0
 		card->wandev.state = state;
 	}
 

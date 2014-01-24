@@ -99,6 +99,10 @@ static int gfs2_get_name(struct dentry *parent, char *name,
 	struct gfs2_holder gh;
 	u64 offset = 0;
 	int error;
+<<<<<<< HEAD
+=======
+	struct file_ra_state f_ra = { .start = 0 };
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!dir)
 		return -EINVAL;
@@ -118,7 +122,11 @@ static int gfs2_get_name(struct dentry *parent, char *name,
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 	error = gfs2_dir_read(dir, &offset, &gnfd, get_name_filldir);
+=======
+	error = gfs2_dir_read(dir, &offset, &gnfd, get_name_filldir, &f_ra);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	gfs2_glock_dq_uninit(&gh);
 

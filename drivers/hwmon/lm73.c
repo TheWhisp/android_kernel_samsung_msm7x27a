@@ -34,7 +34,11 @@ static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4c,
 #define LM73_REG_CTRL		0x04
 #define LM73_REG_ID		0x07
 
+<<<<<<< HEAD
 #define LM73_ID			0x9001 /* or 0x190 after a swab16() */
+=======
+#define LM73_ID			0x9001	/* 0x0190, byte-swapped */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DRVNAME			"lm73"
 #define LM73_TEMP_MIN		(-40)
 #define LM73_TEMP_MAX		150
@@ -49,16 +53,27 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *da,
 	struct i2c_client *client = to_i2c_client(dev);
 	long temp;
 	short value;
+<<<<<<< HEAD
 
 	int status = strict_strtol(buf, 10, &temp);
+=======
+	s32 err;
+
+	int status = kstrtol(buf, 10, &temp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (status < 0)
 		return status;
 
 	/* Write value */
 	value = (short) SENSORS_LIMIT(temp/250, (LM73_TEMP_MIN*4),
 		(LM73_TEMP_MAX*4)) << 5;
+<<<<<<< HEAD
 	i2c_smbus_write_word_data(client, attr->index, swab16(value));
 	return count;
+=======
+	err = i2c_smbus_write_word_swapped(client, attr->index, value);
+	return (err < 0) ? err : count;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t show_temp(struct device *dev, struct device_attribute *da,
@@ -66,11 +81,24 @@ static ssize_t show_temp(struct device *dev, struct device_attribute *da,
 {
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	struct i2c_client *client = to_i2c_client(dev);
+<<<<<<< HEAD
 	/* use integer division instead of equivalent right shift to
 	   guarantee arithmetic shift and preserve the sign */
 	int temp = ((s16) (swab16(i2c_smbus_read_word_data(client,
 		attr->index)))*250) / 32;
 	return sprintf(buf, "%d\n", temp);
+=======
+	int temp;
+
+	s32 err = i2c_smbus_read_word_swapped(client, attr->index);
+	if (err < 0)
+		return err;
+
+	/* use integer division instead of equivalent right shift to
+	   guarantee arithmetic shift and preserve the sign */
+	temp = (((s16) err) * 250) / 32;
+	return scnprintf(buf, PAGE_SIZE, "%d\n", temp);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -150,17 +178,43 @@ static int lm73_detect(struct i2c_client *new_client,
 			struct i2c_board_info *info)
 {
 	struct i2c_adapter *adapter = new_client->adapter;
+<<<<<<< HEAD
 	u16 id;
 	u8 ctrl;
+=======
+	int id, ctrl, conf;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
 					I2C_FUNC_SMBUS_WORD_DATA))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	/* Check device ID */
 	id = i2c_smbus_read_word_data(new_client, LM73_REG_ID);
 	ctrl = i2c_smbus_read_byte_data(new_client, LM73_REG_CTRL);
 	if ((id != LM73_ID) || (ctrl & 0x10))
+=======
+	/*
+	 * Do as much detection as possible with byte reads first, as word
+	 * reads can confuse other devices.
+	 */
+	ctrl = i2c_smbus_read_byte_data(new_client, LM73_REG_CTRL);
+	if (ctrl < 0 || (ctrl & 0x10))
+		return -ENODEV;
+
+	conf = i2c_smbus_read_byte_data(new_client, LM73_REG_CONF);
+	if (conf < 0 || (conf & 0x0c))
+		return -ENODEV;
+
+	id = i2c_smbus_read_byte_data(new_client, LM73_REG_ID);
+	if (id < 0 || id != (LM73_ID & 0xff))
+		return -ENODEV;
+
+	/* Check device ID */
+	id = i2c_smbus_read_word_data(new_client, LM73_REG_ID);
+	if (id < 0 || id != LM73_ID)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 
 	strlcpy(info->type, "lm73", I2C_NAME_SIZE);
@@ -180,6 +234,7 @@ static struct i2c_driver lm73_driver = {
 	.address_list	= normal_i2c,
 };
 
+<<<<<<< HEAD
 /* module glue */
 
 static int __init sensors_lm73_init(void)
@@ -191,10 +246,16 @@ static void __exit sensors_lm73_exit(void)
 {
 	i2c_del_driver(&lm73_driver);
 }
+=======
+module_i2c_driver(lm73_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Guillaume Ligneul <guillaume.ligneul@gmail.com>");
 MODULE_DESCRIPTION("LM73 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(sensors_lm73_init);
 module_exit(sensors_lm73_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

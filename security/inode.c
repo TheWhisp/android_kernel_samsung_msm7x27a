@@ -25,6 +25,7 @@
 static struct vfsmount *mount;
 static int mount_count;
 
+<<<<<<< HEAD
 /*
  * TODO:
  *   I think I can get rid of these default_file_ops, but not quite sure...
@@ -119,6 +120,8 @@ static int create(struct inode *dir, struct dentry *dentry, int mode)
 	return mknod(dir, dentry, mode, 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int positive(struct dentry *dentry)
 {
 	return dentry->d_inode && !d_unhashed(dentry);
@@ -145,6 +148,7 @@ static struct file_system_type fs_type = {
 	.kill_sb =	kill_litter_super,
 };
 
+<<<<<<< HEAD
 static int create_by_name(const char *name, mode_t mode,
 			  struct dentry *parent,
 			  struct dentry **dentry)
@@ -177,6 +181,8 @@ static int create_by_name(const char *name, mode_t mode,
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * securityfs_create_file - create a file in the securityfs filesystem
  *
@@ -205,6 +211,7 @@ static int create_by_name(const char *name, mode_t mode,
  * If securityfs is not enabled in the kernel, the value %-ENODEV is
  * returned.
  */
+<<<<<<< HEAD
 struct dentry *securityfs_create_file(const char *name, mode_t mode,
 				   struct dentry *parent, void *data,
 				   const struct file_operations *fops)
@@ -234,6 +241,72 @@ struct dentry *securityfs_create_file(const char *name, mode_t mode,
 			dentry->d_inode->i_private = data;
 	}
 exit:
+=======
+struct dentry *securityfs_create_file(const char *name, umode_t mode,
+				   struct dentry *parent, void *data,
+				   const struct file_operations *fops)
+{
+	struct dentry *dentry;
+	int is_dir = S_ISDIR(mode);
+	struct inode *dir, *inode;
+	int error;
+
+	if (!is_dir) {
+		BUG_ON(!fops);
+		mode = (mode & S_IALLUGO) | S_IFREG;
+	}
+
+	pr_debug("securityfs: creating file '%s'\n",name);
+
+	error = simple_pin_fs(&fs_type, &mount, &mount_count);
+	if (error)
+		return ERR_PTR(error);
+
+	if (!parent)
+		parent = mount->mnt_root;
+
+	dir = parent->d_inode;
+
+	mutex_lock(&dir->i_mutex);
+	dentry = lookup_one_len(name, parent, strlen(name));
+	if (IS_ERR(dentry))
+		goto out;
+
+	if (dentry->d_inode) {
+		error = -EEXIST;
+		goto out1;
+	}
+
+	inode = new_inode(dir->i_sb);
+	if (!inode) {
+		error = -ENOMEM;
+		goto out1;
+	}
+
+	inode->i_ino = get_next_ino();
+	inode->i_mode = mode;
+	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+	inode->i_private = data;
+	if (is_dir) {
+		inode->i_op = &simple_dir_inode_operations;
+		inode->i_fop = &simple_dir_operations;
+		inc_nlink(inode);
+		inc_nlink(dir);
+	} else {
+		inode->i_fop = fops;
+	}
+	d_instantiate(dentry, inode);
+	dget(dentry);
+	mutex_unlock(&dir->i_mutex);
+	return dentry;
+
+out1:
+	dput(dentry);
+	dentry = ERR_PTR(error);
+out:
+	mutex_unlock(&dir->i_mutex);
+	simple_release_fs(&mount, &mount_count);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return dentry;
 }
 EXPORT_SYMBOL_GPL(securityfs_create_file);

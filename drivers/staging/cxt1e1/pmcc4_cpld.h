@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /*
  * $Id: pmcc4_cpld.h,v 1.0 2005/09/28 00:10:08 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _INC_PMCC4_CPLD_H_
 #define _INC_PMCC4_CPLD_H_
 
@@ -23,6 +26,7 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.0 $
  * Last changed on $Date: 2005/09/28 00:10:08 $
@@ -51,6 +55,11 @@ extern      "C"
 {
 #endif
 
+=======
+ */
+
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /********************************/
 /* iSPLD control chip registers */
@@ -117,8 +126,11 @@ extern      "C"
 #define PMCC4_CPLD_INTR_CMT_3   0x04
 #define PMCC4_CPLD_INTR_CMT_4   0x08
 
+<<<<<<< HEAD
 #ifdef __cplusplus
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif                          /* _INC_PMCC4_CPLD_H_ */

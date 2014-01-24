@@ -30,6 +30,13 @@ config OPROFILE_EVENT_MULTIPLEX
 config HAVE_OPROFILE
 	bool
 
+<<<<<<< HEAD
+=======
+config OPROFILE_NMI_TIMER
+	def_bool y
+	depends on PERF_EVENTS && HAVE_PERF_EVENTS_NMI
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config KPROBES
 	bool "Kprobes"
 	depends on MODULES
@@ -43,6 +50,7 @@ config KPROBES
 	  If in doubt, say "N".
 
 config JUMP_LABEL
+<<<<<<< HEAD
        bool "Optimize trace point call sites"
        depends on HAVE_ARCH_JUMP_LABEL
        help
@@ -55,6 +63,31 @@ config JUMP_LABEL
 
 	 On i386, options added to the compiler flags may increase
 	 the size of the kernel slightly.
+=======
+       bool "Optimize very unlikely/likely branches"
+       depends on HAVE_ARCH_JUMP_LABEL
+       help
+         This option enables a transparent branch optimization that
+	 makes certain almost-always-true or almost-always-false branch
+	 conditions even cheaper to execute within the kernel.
+
+	 Certain performance-sensitive kernel code, such as trace points,
+	 scheduler functionality, networking code and KVM have such
+	 branches and include support for this optimization technique.
+
+         If it is detected that the compiler has support for "asm goto",
+	 the kernel will compile such branches with just a nop
+	 instruction. When the condition flag is toggled to true, the
+	 nop will be converted to a jump instruction to execute the
+	 conditional block of instructions.
+
+	 This technique lowers overhead and stress on the branch prediction
+	 of the processor and generally makes the kernel faster. The update
+	 of the condition is slower, but those are always very rare.
+
+	 ( On 32-bit x86, the necessary options added to the compiler
+	   flags may increase the size of the kernel slightly. )
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config OPTPROBES
 	def_bool y
@@ -105,6 +138,12 @@ config HAVE_KRETPROBES
 
 config HAVE_OPTPROBES
 	bool
+<<<<<<< HEAD
+=======
+
+config HAVE_NMI_WATCHDOG
+	bool
+>>>>>>> refs/remotes/origin/cm-10.0
 #
 # An arch should select this if it provides all these things:
 #
@@ -124,6 +163,12 @@ config HAVE_ARCH_TRACEHOOK
 config HAVE_DMA_ATTRS
 	bool
 
+<<<<<<< HEAD
+=======
+config HAVE_DMA_CONTIGUOUS
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config USE_GENERIC_SMP_HELPERS
 	bool
 
@@ -185,4 +230,27 @@ config HAVE_ARCH_MUTEX_CPU_RELAX
 config HAVE_RCU_TABLE_FREE
 	bool
 
+<<<<<<< HEAD
+=======
+config ARCH_HAVE_NMI_SAFE_CMPXCHG
+	bool
+
+config HAVE_ALIGNED_STRUCT_PAGE
+	bool
+	help
+	  This makes sure that struct pages are double word aligned and that
+	  e.g. the SLUB allocator can perform double word atomic operations
+	  on a struct page for better performance. However selecting this
+	  might increase the size of a struct page by a word.
+
+config HAVE_CMPXCHG_LOCAL
+	bool
+
+config HAVE_CMPXCHG_DOUBLE
+	bool
+
+config ARCH_WANT_OLD_COMPAT_IPC
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 source "kernel/gcov/Kconfig"

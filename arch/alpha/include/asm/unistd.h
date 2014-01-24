@@ -457,10 +457,19 @@
 #define __NR_clock_adjtime		499
 #define __NR_syncfs			500
 #define __NR_setns			501
+<<<<<<< HEAD
 
 #ifdef __KERNEL__
 
 #define NR_SYSCALLS			502
+=======
+#define __NR_accept4			502
+#define __NR_sendmmsg			503
+
+#ifdef __KERNEL__
+
+#define NR_SYSCALLS			504
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define __ARCH_WANT_IPC_PARSE_VERSION
 #define __ARCH_WANT_OLD_READDIR

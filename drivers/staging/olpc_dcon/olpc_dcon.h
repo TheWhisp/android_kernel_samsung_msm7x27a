@@ -84,7 +84,11 @@ struct dcon_platform_data {
 	int (*init)(struct dcon_priv *);
 	void (*bus_stabilize_wiggle)(void);
 	void (*set_dconload)(int);
+<<<<<<< HEAD
 	u8 (*read_status)(void);
+=======
+	int (*read_status)(u8 *);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #include <linux/interrupt.h>

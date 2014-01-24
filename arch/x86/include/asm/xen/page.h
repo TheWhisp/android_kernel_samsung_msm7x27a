@@ -12,6 +12,10 @@
 #include <asm/pgtable.h>
 
 #include <xen/interface/xen.h>
+<<<<<<< HEAD
+=======
+#include <xen/grant_table.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <xen/features.h>
 
 /* Xen machine address */
@@ -48,6 +52,7 @@ extern unsigned long set_phys_range_identity(unsigned long pfn_s,
 					     unsigned long pfn_e);
 
 extern int m2p_add_override(unsigned long mfn, struct page *page,
+<<<<<<< HEAD
 			    bool clear_pte);
 extern int m2p_remove_override(struct page *page, bool clear_pte);
 extern struct page *m2p_find_override(unsigned long mfn);
@@ -56,6 +61,14 @@ extern unsigned long m2p_find_override_pfn(unsigned long mfn, unsigned long pfn)
 #ifdef CONFIG_XEN_DEBUG_FS
 extern int p2m_dump_show(struct seq_file *m, void *v);
 #endif
+=======
+			    struct gnttab_map_grant_ref *kmap_op);
+extern int m2p_remove_override(struct page *page,
+				struct gnttab_map_grant_ref *kmap_op);
+extern struct page *m2p_find_override(unsigned long mfn);
+extern unsigned long m2p_find_override_pfn(unsigned long mfn, unsigned long pfn);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline unsigned long pfn_to_mfn(unsigned long pfn)
 {
 	unsigned long mfn;

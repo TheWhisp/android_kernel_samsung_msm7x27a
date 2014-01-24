@@ -8,7 +8,11 @@
  * as published by the Free Software Foundation; either version
  * 2 of the Licence, or (at your option) any later version.
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/cred.h>
 #include <linux/slab.h>
 #include <linux/sched.h>
@@ -16,6 +20,10 @@
 #include <linux/keyctl.h>
 #include <linux/init_task.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+=======
+#include <linux/binfmts.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/cn_proc.h>
 
 #if 0
@@ -510,10 +518,15 @@ int commit_creds(struct cred *new)
 		key_fsgid_changed(task);
 
 	/* do it
+<<<<<<< HEAD
 	 * - What if a process setreuid()'s and this brings the
 	 *   new uid over his NPROC rlimit?  We can check this now
 	 *   cheaply with the new uid cache, so if it matters
 	 *   we should be checking for it.  -DaveM
+=======
+	 * RLIMIT_NPROC limits on user->processes have already been checked
+	 * in set_user().
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	alter_cred_subscribers(new, 2);
 	if (new->user != old->user)
@@ -648,6 +661,12 @@ void __init cred_init(void)
  */
 struct cred *prepare_kernel_cred(struct task_struct *daemon)
 {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KEYS
+	struct thread_group_cred *tgcred;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct cred *old;
 	struct cred *new;
 
@@ -655,6 +674,17 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
 	if (!new)
 		return NULL;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KEYS
+	tgcred = kmalloc(sizeof(*tgcred), GFP_KERNEL);
+	if (!tgcred) {
+		kmem_cache_free(cred_jar, new);
+		return NULL;
+	}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	kdebug("prepare_kernel_cred() alloc %p", new);
 
 	if (daemon)
@@ -671,8 +701,16 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
 	get_group_info(new->group_info);
 
 #ifdef CONFIG_KEYS
+<<<<<<< HEAD
 	atomic_inc(&init_tgcred.usage);
 	new->tgcred = &init_tgcred;
+=======
+	atomic_set(&tgcred->usage, 1);
+	spin_lock_init(&tgcred->lock);
+	tgcred->process_keyring = NULL;
+	tgcred->session_keyring = NULL;
+	new->tgcred = tgcred;
+>>>>>>> refs/remotes/origin/cm-10.0
 	new->request_key_auth = NULL;
 	new->thread_keyring = NULL;
 	new->jit_keyring = KEY_REQKEY_DEFL_THREAD_KEYRING;

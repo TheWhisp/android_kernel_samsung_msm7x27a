@@ -6,6 +6,10 @@
 #include <linux/init.h>
 #include <linux/pci.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/pci-bridge.h>
 
@@ -117,6 +121,7 @@ void ioport_unmap(void __iomem *addr)
 EXPORT_SYMBOL(ioport_map);
 EXPORT_SYMBOL(ioport_unmap);
 
+<<<<<<< HEAD
 void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
 {
 	resource_size_t start = pci_resource_start(dev, bar);
@@ -135,6 +140,9 @@ void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
 	return NULL;
 }
 
+=======
+#ifdef CONFIG_PCI
+>>>>>>> refs/remotes/origin/cm-10.0
 void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
 {
 	if (isa_vaddr_is_ioport(addr))
@@ -144,5 +152,10 @@ void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
 	iounmap(addr);
 }
 
+<<<<<<< HEAD
 EXPORT_SYMBOL(pci_iomap);
 EXPORT_SYMBOL(pci_iounmap);
+=======
+EXPORT_SYMBOL(pci_iounmap);
+#endif /* CONFIG_PCI */
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -32,7 +32,11 @@ static void master_clk_init(struct clk *clk)
 	clk->rate *= pll1rate[(__raw_readw(FREQCR) >> 8) & 0x0003] * pll2_mult;
 }
 
+<<<<<<< HEAD
 static struct clk_ops sh7203_master_clk_ops = {
+=======
+static struct sh_clk_ops sh7203_master_clk_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init		= master_clk_init,
 };
 
@@ -42,7 +46,11 @@ static unsigned long module_clk_recalc(struct clk *clk)
 	return clk->parent->rate / pfc_divisors[idx];
 }
 
+<<<<<<< HEAD
 static struct clk_ops sh7203_module_clk_ops = {
+=======
+static struct sh_clk_ops sh7203_module_clk_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.recalc		= module_clk_recalc,
 };
 
@@ -52,6 +60,7 @@ static unsigned long bus_clk_recalc(struct clk *clk)
 	return clk->parent->rate / pfc_divisors[idx-2];
 }
 
+<<<<<<< HEAD
 static struct clk_ops sh7203_bus_clk_ops = {
 	.recalc		= bus_clk_recalc,
 };
@@ -61,13 +70,28 @@ static struct clk_ops sh7203_cpu_clk_ops = {
 };
 
 static struct clk_ops *sh7203_clk_ops[] = {
+=======
+static struct sh_clk_ops sh7203_bus_clk_ops = {
+	.recalc		= bus_clk_recalc,
+};
+
+static struct sh_clk_ops sh7203_cpu_clk_ops = {
+	.recalc		= followparent_recalc,
+};
+
+static struct sh_clk_ops *sh7203_clk_ops[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	&sh7203_master_clk_ops,
 	&sh7203_module_clk_ops,
 	&sh7203_bus_clk_ops,
 	&sh7203_cpu_clk_ops,
 };
 
+<<<<<<< HEAD
 void __init arch_init_clk_ops(struct clk_ops **ops, int idx)
+=======
+void __init arch_init_clk_ops(struct sh_clk_ops **ops, int idx)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (test_mode_pin(MODE_PIN1))
 		pll2_mult = 4;

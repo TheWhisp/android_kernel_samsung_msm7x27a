@@ -251,11 +251,19 @@ static int dnp_dio_insn_bits(struct comedi_device *dev,
 
 	/* on return, data[1] contains the value of the digital input lines. */
 	outb(PADR, CSCIR);
+<<<<<<< HEAD
 	data[1] = inb(CSCDR);
 	outb(PBDR, CSCIR);
 	data[1] += inb(CSCDR) << 8;
 	outb(PCDR, CSCIR);
 	data[1] += ((inb(CSCDR) & 0xF0) << 12);
+=======
+	data[0] = inb(CSCDR);
+	outb(PBDR, CSCIR);
+	data[0] += inb(CSCDR) << 8;
+	outb(PCDR, CSCIR);
+	data[0] += ((inb(CSCDR) & 0xF0) << 12);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 2;
 

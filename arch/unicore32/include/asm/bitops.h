@@ -13,12 +13,15 @@
 #ifndef __UNICORE_BITOPS_H__
 #define __UNICORE_BITOPS_H__
 
+<<<<<<< HEAD
 #define find_next_bit		__uc32_find_next_bit
 #define find_next_zero_bit	__uc32_find_next_zero_bit
 
 #define find_first_bit		__uc32_find_first_bit
 #define find_first_zero_bit	__uc32_find_first_zero_bit
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define _ASM_GENERIC_BITOPS_FLS_H_
 #define _ASM_GENERIC_BITOPS___FLS_H_
 #define _ASM_GENERIC_BITOPS_FFS_H_
@@ -44,4 +47,13 @@ static inline int fls(int x)
 
 #include <asm-generic/bitops.h>
 
+<<<<<<< HEAD
+=======
+/* following definitions: to avoid using codes in lib/find_*.c */
+#define find_next_bit		find_next_bit
+#define find_next_zero_bit	find_next_zero_bit
+#define find_first_bit		find_first_bit
+#define find_first_zero_bit	find_first_zero_bit
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __UNICORE_BITOPS_H__ */

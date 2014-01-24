@@ -58,6 +58,7 @@
 
 #define OSS_POWEROFF	0x80
 
+<<<<<<< HEAD
 /*
  * OSS Interrupt levels for various sub-systems
  *
@@ -77,6 +78,8 @@
 #define OSS_IRQLEV_VIA1		IRQ_AUTO_6	/* matches VIA alternate mapping */
 #define OSS_IRQLEV_PARITY	7	/* matches VIA alternate mapping */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef __ASSEMBLY__
 
 struct mac_oss {
@@ -91,4 +94,11 @@ struct mac_oss {
 extern volatile struct mac_oss *oss;
 extern int oss_present;
 
+<<<<<<< HEAD
+=======
+extern void oss_register_interrupts(void);
+extern void oss_irq_enable(int);
+extern void oss_irq_disable(int);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASSEMBLY__ */

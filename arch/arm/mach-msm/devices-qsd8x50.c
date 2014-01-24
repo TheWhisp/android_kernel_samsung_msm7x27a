@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2008 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -25,7 +29,10 @@
 #include <mach/board.h>
 
 #include "devices.h"
+<<<<<<< HEAD
 #include "gpio_hw.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/flash.h>
 
@@ -33,6 +40,15 @@
 #include <mach/msm_hsusb.h>
 #include <mach/usbdiag.h>
 #include <mach/rpc_hsusb.h>
+<<<<<<< HEAD
+=======
+#include "pm.h"
+
+struct platform_device msm8x50_device_acpuclk = {
+	.name		= "acpuclk-8x50",
+	.id		= -1,
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct resource resources_uart1[] = {
 	{
@@ -432,6 +448,24 @@ struct platform_device msm_device_nand = {
 	},
 };
 
+<<<<<<< HEAD
+=======
+static struct msm_pm_irq_calls qsd8x50_pm_irq_calls = {
+	.irq_pending = msm_irq_pending,
+	.idle_sleep_allowed = msm_irq_idle_sleep_allowed,
+	.enter_sleep1 = msm_irq_enter_sleep1,
+	.enter_sleep2 = msm_irq_enter_sleep2,
+	.exit_sleep1 = msm_irq_exit_sleep1,
+	.exit_sleep2 = msm_irq_exit_sleep2,
+	.exit_sleep3 = msm_irq_exit_sleep3,
+};
+
+void __init msm_pm_register_irqs(void)
+{
+	msm_pm_set_irq_extns(&qsd8x50_pm_irq_calls);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct platform_device msm_device_smd = {
 	.name	= "msm_smd",
 	.id	= -1,

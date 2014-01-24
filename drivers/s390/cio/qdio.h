@@ -14,6 +14,7 @@
 #include "chsc.h"
 
 #define QDIO_BUSY_BIT_PATIENCE		(100 << 12)	/* 100 microseconds */
+<<<<<<< HEAD
 #define QDIO_INPUT_THRESHOLD		(500 << 12)	/* 500 microseconds */
 
 /*
@@ -24,6 +25,12 @@
  */
 #define QDIO_IQDIO_POLL_LVL		65	/* HS multicast queue */
 
+=======
+#define QDIO_BUSY_BIT_RETRY_DELAY	10		/* 10 milliseconds */
+#define QDIO_BUSY_BIT_RETRIES		1000		/* = 10s retry time */
+#define QDIO_INPUT_THRESHOLD		(500 << 12)	/* 500 microseconds */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum qdio_irq_states {
 	QDIO_IRQ_STATE_INACTIVE,
 	QDIO_IRQ_STATE_ESTABLISHED,
@@ -42,6 +49,10 @@ enum qdio_irq_states {
 #define SLSB_STATE_NOT_INIT	0x0
 #define SLSB_STATE_EMPTY	0x1
 #define SLSB_STATE_PRIMED	0x2
+<<<<<<< HEAD
+=======
+#define SLSB_STATE_PENDING	0x3
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SLSB_STATE_HALTED	0xe
 #define SLSB_STATE_ERROR	0xf
 #define SLSB_TYPE_INPUT		0x0
@@ -65,6 +76,11 @@ enum qdio_irq_states {
 	(SLSB_OWNER_PROG | SLSB_TYPE_OUTPUT | SLSB_STATE_NOT_INIT) /* 0xa0 */
 #define SLSB_P_OUTPUT_EMPTY	\
 	(SLSB_OWNER_PROG | SLSB_TYPE_OUTPUT | SLSB_STATE_EMPTY)	   /* 0xa1 */
+<<<<<<< HEAD
+=======
+#define SLSB_P_OUTPUT_PENDING \
+	(SLSB_OWNER_PROG | SLSB_TYPE_OUTPUT | SLSB_STATE_PENDING)  /* 0xa3 */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SLSB_CU_OUTPUT_PRIMED	\
 	(SLSB_OWNER_CU | SLSB_TYPE_OUTPUT | SLSB_STATE_PRIMED)	   /* 0x62 */
 #define SLSB_P_OUTPUT_HALTED	\
@@ -82,6 +98,7 @@ enum qdio_irq_states {
 #define CHSC_FLAG_QDIO_CAPABILITY	0x80
 #define CHSC_FLAG_VALIDITY		0x40
 
+<<<<<<< HEAD
 /* qdio adapter-characteristics-1 flag */
 #define AC1_SIGA_INPUT_NEEDED		0x40	/* process input queues */
 #define AC1_SIGA_OUTPUT_NEEDED		0x20	/* process output queues */
@@ -91,10 +108,16 @@ enum qdio_irq_states {
 #define AC1_SC_QEBSM_AVAILABLE		0x02	/* available for subchannel */
 #define AC1_SC_QEBSM_ENABLED		0x01	/* enabled for subchannel */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* SIGA flags */
 #define QDIO_SIGA_WRITE		0x00
 #define QDIO_SIGA_READ		0x01
 #define QDIO_SIGA_SYNC		0x02
+<<<<<<< HEAD
+=======
+#define QDIO_SIGA_WRITEQ	0x04
+>>>>>>> refs/remotes/origin/cm-10.0
 #define QDIO_SIGA_QEBSM_FLAG	0x80
 
 #ifdef CONFIG_64BIT
@@ -251,6 +274,15 @@ struct qdio_input_q {
 struct qdio_output_q {
 	/* PCIs are enabled for the queue */
 	int pci_out_enabled;
+<<<<<<< HEAD
+=======
+	/* cq: use asynchronous output buffers */
+	int use_cq;
+	/* cq: aobs used for particual SBAL */
+	struct qaob **aobs;
+	/* cq: sbal state related to asynchronous operation */
+	struct qdio_outbuf_state *sbal_state;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* timer to check for more outbound work */
 	struct timer_list timer;
 	/* used SBALs before tasklet schedule */
@@ -287,6 +319,12 @@ struct qdio_q {
 	/* error condition during a data transfer */
 	unsigned int qdio_error;
 
+<<<<<<< HEAD
+=======
+	/* last scan of the queue */
+	u64 timestamp;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct tasklet_struct tasklet;
 	struct qdio_queue_perf_stat q_stats;
 
@@ -420,6 +458,7 @@ static inline int multicast_outbound(struct qdio_q *q)
 #define queue_irqs_disabled(q)			\
 	(test_bit(QDIO_QUEUE_IRQS_DISABLED, &q->u.in.queue_irq_state) != 0)
 
+<<<<<<< HEAD
 #define TIQDIO_SHARED_IND		63
 
 /* device state change indicators */
@@ -434,6 +473,9 @@ static inline int shared_ind(u32 *dsci)
 {
 	return dsci == &q_indicators[TIQDIO_SHARED_IND].ind;
 }
+=======
+extern u64 last_ai_time;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* prototypes for thin interrupt */
 void qdio_setup_thinint(struct qdio_irq *irq_ptr);
@@ -446,6 +488,11 @@ int tiqdio_allocate_memory(void);
 void tiqdio_free_memory(void);
 int tiqdio_register_thinints(void);
 void tiqdio_unregister_thinints(void);
+<<<<<<< HEAD
+=======
+void clear_nonshared_ind(struct qdio_irq *);
+int test_nonshared_ind(struct qdio_irq *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* prototypes for setup */
 void qdio_inbound_processing(unsigned long data);
@@ -467,6 +514,12 @@ int qdio_setup_create_sysfs(struct ccw_device *cdev);
 void qdio_setup_destroy_sysfs(struct ccw_device *cdev);
 int qdio_setup_init(void);
 void qdio_setup_exit(void);
+<<<<<<< HEAD
+=======
+int qdio_enable_async_operation(struct qdio_output_q *q);
+void qdio_disable_async_operation(struct qdio_output_q *q);
+struct qaob *qdio_allocate_aob(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int debug_get_buf_state(struct qdio_q *q, unsigned int bufnr,
 			unsigned char *state);

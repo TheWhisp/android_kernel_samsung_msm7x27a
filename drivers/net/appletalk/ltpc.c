@@ -229,7 +229,10 @@ static int dma;
 #include <linux/bitops.h>
 #include <linux/gfp.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 #include <asm/io.h>
 
@@ -652,9 +655,15 @@ static int do_write(struct net_device *dev, void *cbuf, int cbuflen,
 	int ret;
 
 	if(i) {
+<<<<<<< HEAD
 		qels[i].cbuf = (unsigned char *) cbuf;
 		qels[i].cbuflen = cbuflen;
 		qels[i].dbuf = (unsigned char *) dbuf;
+=======
+		qels[i].cbuf = cbuf;
+		qels[i].cbuflen = cbuflen;
+		qels[i].dbuf = dbuf;
+>>>>>>> refs/remotes/origin/cm-10.0
 		qels[i].dbuflen = dbuflen;
 		qels[i].QWrite = 1;
 		qels[i].mailbox = i;  /* this should be initted rather */
@@ -676,9 +685,15 @@ static int do_read(struct net_device *dev, void *cbuf, int cbuflen,
 	int ret;
 
 	if(i) {
+<<<<<<< HEAD
 		qels[i].cbuf = (unsigned char *) cbuf;
 		qels[i].cbuflen = cbuflen;
 		qels[i].dbuf = (unsigned char *) dbuf;
+=======
+		qels[i].cbuf = cbuf;
+		qels[i].cbuflen = cbuflen;
+		qels[i].dbuf = dbuf;
+>>>>>>> refs/remotes/origin/cm-10.0
 		qels[i].dbuflen = dbuflen;
 		qels[i].QWrite = 0;
 		qels[i].mailbox = i;  /* this should be initted rather */
@@ -1014,7 +1029,11 @@ static int __init ltpc_probe_dma(int base, int dma)
 static const struct net_device_ops ltpc_netdev = {
 	.ndo_start_xmit		= ltpc_xmit,
 	.ndo_do_ioctl		= ltpc_ioctl,
+<<<<<<< HEAD
 	.ndo_set_multicast_list = set_multicast_list,
+=======
+	.ndo_set_rx_mode	= set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct net_device * __init ltpc_probe(void)

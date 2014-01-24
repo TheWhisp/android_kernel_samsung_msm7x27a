@@ -8,6 +8,7 @@
 
 static void start_serial_interrupt(int irq);
 
+<<<<<<< HEAD
 static struct serial_state rs_table[] = {
 	SERIAL_PORT_DFNS
 };
@@ -15,14 +16,29 @@ static struct serial_state *serstate;
 static int timeouts;
 
 struct serial_state *spk_serial_init(int index)
+=======
+static const struct old_serial_port rs_table[] = {
+	SERIAL_PORT_DFNS
+};
+static const struct old_serial_port *serstate;
+static int timeouts;
+
+const struct old_serial_port *spk_serial_init(int index)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int baud = 9600, quot = 0;
 	unsigned int cval = 0;
 	int cflag = CREAD | HUPCL | CLOCAL | B9600 | CS8;
+<<<<<<< HEAD
 	struct serial_state *ser = NULL;
 	int err;
 
 	ser = rs_table + index;
+=======
+	const struct old_serial_port *ser = rs_table + index;
+	int err;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*	Divisor, bytesize and parity */
 	quot = ser->baud_base / baud;
 	cval = cflag & (CSIZE | CSTOPB);
@@ -41,7 +57,11 @@ struct serial_state *spk_serial_init(int index)
 		__release_region(&ioport_resource, ser->port, 8);
 		err = synth_request_region(ser->port, 8);
 		if (err) {
+<<<<<<< HEAD
 			pr_warn("Unable to allocate port at %lx, errno %i",
+=======
+			pr_warn("Unable to allocate port at %x, errno %i",
+>>>>>>> refs/remotes/origin/cm-10.0
 				ser->port, err);
 			return NULL;
 		}

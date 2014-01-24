@@ -55,8 +55,11 @@ ENDPROC(atomic64_set_cx8)
 ENTRY(atomic64_xchg_cx8)
 	CFI_STARTPROC
 
+<<<<<<< HEAD
 	movl %ebx, %eax
 	movl %ecx, %edx
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 1:
 	LOCK_PREFIX
 	cmpxchg8b (%esi)
@@ -78,7 +81,11 @@ ENTRY(atomic64_\func\()_return_cx8)
 	movl %edx, %edi
 	movl %ecx, %ebp
 
+<<<<<<< HEAD
 	read64 %ebp
+=======
+	read64 %ecx
+>>>>>>> refs/remotes/origin/cm-10.0
 1:
 	movl %eax, %ebx
 	movl %edx, %ecx
@@ -159,6 +166,7 @@ ENTRY(atomic64_add_unless_cx8)
 	SAVE ebx
 /* these just push these two parameters on the stack */
 	SAVE edi
+<<<<<<< HEAD
 	SAVE esi
 
 	movl %ecx, %ebp
@@ -166,16 +174,31 @@ ENTRY(atomic64_add_unless_cx8)
 	movl %edx, %edi
 
 	read64 %ebp
+=======
+	SAVE ecx
+
+	movl %eax, %ebp
+	movl %edx, %edi
+
+	read64 %esi
+>>>>>>> refs/remotes/origin/cm-10.0
 1:
 	cmpl %eax, 0(%esp)
 	je 4f
 2:
 	movl %eax, %ebx
 	movl %edx, %ecx
+<<<<<<< HEAD
 	addl %esi, %ebx
 	adcl %edi, %ecx
 	LOCK_PREFIX
 	cmpxchg8b (%ebp)
+=======
+	addl %ebp, %ebx
+	adcl %edi, %ecx
+	LOCK_PREFIX
+	cmpxchg8b (%esi)
+>>>>>>> refs/remotes/origin/cm-10.0
 	jne 1b
 
 	movl $1, %eax
@@ -199,6 +222,7 @@ ENTRY(atomic64_inc_not_zero_cx8)
 
 	read64 %esi
 1:
+<<<<<<< HEAD
 	testl %eax, %eax
 	je 4f
 2:
@@ -206,6 +230,15 @@ ENTRY(atomic64_inc_not_zero_cx8)
 	movl %edx, %ecx
 	addl $1, %ebx
 	adcl $0, %ecx
+=======
+	movl %eax, %ecx
+	orl %edx, %ecx
+	jz 3f
+	movl %eax, %ebx
+	xorl %ecx, %ecx
+	addl $1, %ebx
+	adcl %edx, %ecx
+>>>>>>> refs/remotes/origin/cm-10.0
 	LOCK_PREFIX
 	cmpxchg8b (%esi)
 	jne 1b
@@ -214,9 +247,12 @@ ENTRY(atomic64_inc_not_zero_cx8)
 3:
 	RESTORE ebx
 	ret
+<<<<<<< HEAD
 4:
 	testl %edx, %edx
 	jne 2b
 	jmp 3b
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	CFI_ENDPROC
 ENDPROC(atomic64_inc_not_zero_cx8)

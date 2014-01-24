@@ -78,5 +78,10 @@
 #define IRQ_SIC_CP_LMINT7		46
 #define IRQ_SIC_END			46
 
+<<<<<<< HEAD
 #define NR_IRQS                         47
+=======
+#define NR_IRQS_INTEGRATOR_AP		34
+#define NR_IRQS_INTEGRATOR_CP		47
+>>>>>>> refs/remotes/origin/cm-10.0
 

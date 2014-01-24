@@ -31,9 +31,15 @@
 #include <linux/delay.h>
 #include <linux/bitops.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
 
 #include <asm/system.h>
 #include <asm/atomic.h>
+=======
+#include <linux/cpu.h>
+
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/current.h>
 #include <asm/delay.h>
 #include <asm/tlbflush.h>
@@ -291,14 +297,28 @@ smp_cpu_init(int cpunum)
 	mb();
 
 	/* Well, support 2.4 linux scheme as well. */
+<<<<<<< HEAD
 	if (cpu_isset(cpunum, cpu_online_map))
 	{
+=======
+	if (cpu_online(cpunum))	{
+>>>>>>> refs/remotes/origin/cm-10.0
 		extern void machine_halt(void); /* arch/parisc.../process.c */
 
 		printk(KERN_CRIT "CPU#%d already initialized!\n", cpunum);
 		machine_halt();
+<<<<<<< HEAD
 	}  
 	set_cpu_online(cpunum, true);
+=======
+	}
+
+	notify_cpu_starting(cpunum);
+
+	ipi_call_lock();
+	set_cpu_online(cpunum, true);
+	ipi_call_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Initialise the idle task for this CPU */
 	atomic_inc(&init_mm.mm_count);

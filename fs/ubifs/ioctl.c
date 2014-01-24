@@ -173,12 +173,20 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		 * Make sure the file-system is read-write and make sure it
 		 * will not become read-only while we are changing the flags.
 		 */
+<<<<<<< HEAD
 		err = mnt_want_write(file->f_path.mnt);
+=======
+		err = mnt_want_write_file(file);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			return err;
 		dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
 		err = setflags(inode, flags);
+<<<<<<< HEAD
 		mnt_drop_write(file->f_path.mnt);
+=======
+		mnt_drop_write_file(file);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return err;
 	}
 

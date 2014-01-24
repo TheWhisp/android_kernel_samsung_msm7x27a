@@ -7,6 +7,12 @@
 #ifndef	ROSE_KERNEL_H
 #define	ROSE_KERNEL_H
 
+<<<<<<< HEAD
+=======
+#include <linux/socket.h>
+#include <linux/ax25.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ROSE_MTU	251
 
 #define ROSE_MAX_DIGIS 6
@@ -44,7 +50,11 @@ typedef struct {
 } rose_address;
 
 struct sockaddr_rose {
+<<<<<<< HEAD
 	sa_family_t	srose_family;
+=======
+	__kernel_sa_family_t srose_family;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rose_address	srose_addr;
 	ax25_address	srose_call;
 	int		srose_ndigis;
@@ -52,7 +62,11 @@ struct sockaddr_rose {
 };
 
 struct full_sockaddr_rose {
+<<<<<<< HEAD
 	sa_family_t	srose_family;
+=======
+	__kernel_sa_family_t srose_family;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rose_address	srose_addr;
 	ax25_address	srose_call;
 	unsigned int	srose_ndigis;

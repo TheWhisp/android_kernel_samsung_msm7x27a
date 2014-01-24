@@ -44,7 +44,11 @@
 #include <asm/dma.h>
 #include <asm/byteorder.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_SBUS
 #include <linux/of.h>

@@ -84,6 +84,10 @@ ENTRY(cpu_arm1026_proc_fin)
  * loc: location to jump to for soft reset
  */
 	.align	5
+<<<<<<< HEAD
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
 ENTRY(cpu_arm1026_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -96,6 +100,11 @@ ENTRY(cpu_arm1026_reset)
 	bic	ip, ip, #0x1100 		@ ...i...s........
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_arm1026_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * cpu_arm1026_do_idle()
@@ -251,7 +260,11 @@ ENTRY(arm1026_flush_kern_dcache_area)
  *
  * (same as v4wb)
  */
+<<<<<<< HEAD
 ENTRY(arm1026_dma_inv_range)
+=======
+arm1026_dma_inv_range:
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov	ip, #0
 #ifndef CONFIG_CPU_DCACHE_DISABLE
 	tst	r0, #CACHE_DLINESIZE - 1
@@ -277,7 +290,11 @@ ENTRY(arm1026_dma_inv_range)
  *
  * (same as v4wb)
  */
+<<<<<<< HEAD
 ENTRY(arm1026_dma_clean_range)
+=======
+arm1026_dma_clean_range:
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov	ip, #0
 #ifndef CONFIG_CPU_DCACHE_DISABLE
 	bic	r0, r0, #CACHE_DLINESIZE - 1
@@ -333,6 +350,7 @@ ENTRY(arm1026_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(arm1026_dma_unmap_area)
 
+<<<<<<< HEAD
 ENTRY(arm1026_cache_fns)
 	.long	arm1026_flush_icache_all
 	.long	arm1026_flush_kern_cache_all
@@ -346,6 +364,10 @@ ENTRY(arm1026_cache_fns)
 	.long	arm1026_dma_inv_range
 	.long	arm1026_dma_clean_range
 	.long	arm1026_dma_flush_range
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm1026
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.align	5
 ENTRY(cpu_arm1026_dcache_clean_area)
@@ -438,6 +460,7 @@ arm1026_crval:
 	crval	clear=0x00007f3f, mmuset=0x00003935, ucset=0x00001934
 
 	__INITDATA
+<<<<<<< HEAD
 
 /*
  * Purpose : Function pointers used to access above functions - all calls
@@ -477,6 +500,17 @@ cpu_arm1026_name:
 	.asciz	"ARM1026EJ-S"
 	.size	cpu_arm1026_name, . - cpu_arm1026_name
 
+=======
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions arm1026, dabort=v5t_early_abort, pabort=legacy_pabort
+
+	.section .rodata
+
+	string	cpu_arch_name, "armv5tej"
+	string	cpu_elf_name, "v5"
+	.align
+	string	cpu_arm1026_name, "ARM1026EJ-S"
+>>>>>>> refs/remotes/origin/cm-10.0
 	.align
 
 	.section ".proc.info.init", #alloc, #execinstr

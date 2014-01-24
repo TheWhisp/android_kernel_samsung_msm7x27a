@@ -11,6 +11,10 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "board-msm7x27a-regulator.h"
 
 #define VOLTAGE_RANGE(min_uV, max_uV, step_uV)	((max_uV - min_uV) / step_uV)
@@ -21,7 +25,11 @@
 #define n_ranges VOLTAGE_RANGE(750000, 1525000, 12500)
 
 #define s_ranges (VOLTAGE_RANGE(700000, 1500000, 12500) + \
+<<<<<<< HEAD
 		VOLTAGE_RANGE(1500000, 3050000, 25000))
+=======
+			VOLTAGE_RANGE(1500000, 3050000, 25000))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PCOM_VREG_CONSUMERS(name) \
 	static struct regulator_consumer_supply __pcom_vreg_supply_##name[]
@@ -38,7 +46,11 @@
 		.max_uV = _max_uV, \
 		.valid_modes_mask = REGULATOR_MODE_NORMAL, \
 		.valid_ops_mask = REGULATOR_CHANGE_VOLTAGE | \
+<<<<<<< HEAD
 		 REGULATOR_CHANGE_STATUS, \
+=======
+				  REGULATOR_CHANGE_STATUS, \
+>>>>>>> refs/remotes/origin/cm-10.0
 		.input_uV = _supply_uV, \
 		.apply_uV = _apply_uV, \
 		.boot_on = _boot_on, \
@@ -87,6 +99,11 @@ PCOM_VREG_CONSUMERS(smps3) = {
 	REGULATOR_SUPPLY("smps3",	NULL),
 	REGULATOR_SUPPLY("msme1",	NULL),
 	REGULATOR_SUPPLY("vreg_msme",	NULL),
+<<<<<<< HEAD
+=======
+	REGULATOR_SUPPLY("vcc_i2c",	"1-004a"),
+	REGULATOR_SUPPLY("vcc_i2c",	"1-0038"),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 PCOM_VREG_CONSUMERS(smps4) = {
@@ -173,6 +190,11 @@ PCOM_VREG_CONSUMERS(ldo12) = {
 	REGULATOR_SUPPLY("ldo12",	NULL),
 	REGULATOR_SUPPLY("gp2",		NULL),
 	REGULATOR_SUPPLY("vreg_msmp",		NULL),
+<<<<<<< HEAD
+=======
+	REGULATOR_SUPPLY("vdd_ana",	"1-004a"),
+	REGULATOR_SUPPLY("vdd",		"1-0038"),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 PCOM_VREG_CONSUMERS(ldo13) = {
@@ -231,7 +253,11 @@ static struct proccomm_regulator_info msm7x27a_pcom_vreg_info[] = {
 	 * S = supply voltage (uV)
 	 * T = type of regulator (smps, pldo, nldo)
 	 *            name   id  supp  min uV    max uV  R   P  A  B  V  S  T*/
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_JENA) || (CONFIG_MACH_TREBON)
+=======
+#ifdef CONFIG_MACH_JENA
+>>>>>>> refs/remotes/origin/cm-10.0
 	PCOM_VREG_SMP(smps1, 3, NULL, 1100000, 1100000, 0, -1, 0, 1, 0, 0, s),
 	PCOM_VREG_SMP(smps2, 4, NULL, 1100000, 1100000, 0, -1, 0, 0, 0, 0, s),
 	PCOM_VREG_SMP(smps3, 2, NULL, 1800000, 1800000, 0, -1, 1, 1, 0, 0, s),
@@ -260,7 +286,11 @@ static struct proccomm_regulator_info msm7x27a_pcom_vreg_info[] = {
 	PCOM_VREG_SMP(smps2,  4, NULL, 1100000, 1100000, 0, -1, 0, 0, 0, 0, s),
 	PCOM_VREG_SMP(smps3,  2, NULL, 1800000, 1800000, 0, -1, 0, 0, 0, 0, s),
 	PCOM_VREG_SMP(smps4, 24, NULL, 2100000, 2100000, 0, -1, 0, 0, 0, 0, s),
+<<<<<<< HEAD
 	PCOM_VREG_LDO(ldo01, 12, NULL, 2100000, 2100000, 0, -1, 0, 0, 0, 0, p),
+=======
+	PCOM_VREG_LDO(ldo01, 12, NULL, 1800000, 2100000, 0, -1, 0, 0, 0, 0, p),
+>>>>>>> refs/remotes/origin/cm-10.0
 	PCOM_VREG_LDO(ldo02, 13, NULL, 2850000, 2850000, 0, -1, 0, 0, 0, 0, p),
 	PCOM_VREG_LDO(ldo03, 49, NULL, 1200000, 1200000, 0, -1, 0, 0, 0, 0, n),
 	PCOM_VREG_LDO(ldo04, 50, NULL, 1100000, 1100000, 0, -1, 0, 0, 0, 0, n),

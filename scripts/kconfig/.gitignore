@@ -2,7 +2,11 @@
 # Generated files
 #
 config*
+<<<<<<< HEAD
 lex.*.c
+=======
+*.lex.c
+>>>>>>> refs/remotes/origin/cm-10.0
 *.tab.c
 *.tab.h
 zconf.hash.c

@@ -15,9 +15,13 @@
 #include <linux/mm.h>
 #include <linux/sh_dma.h>
 #include <linux/sh_timer.h>
+<<<<<<< HEAD
 
 #include <asm/mmzone.h>
 
+=======
+#include <asm/mmzone.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <cpu/dma-register.h>
 
 static struct plat_sci_port scif0_platform_data = {
@@ -27,6 +31,10 @@ static struct plat_sci_port scif0_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_1,
 	.type		= PORT_SCIF,
 	.irqs		= { 40, 40, 40, 40 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif0_device = {
@@ -44,6 +52,10 @@ static struct plat_sci_port scif1_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_1,
 	.type		= PORT_SCIF,
 	.irqs		= { 44, 44, 44, 44 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif1_device = {
@@ -61,6 +73,10 @@ static struct plat_sci_port scif2_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_1,
 	.type		= PORT_SCIF,
 	.irqs		= { 60, 60, 60, 60 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif2_device = {
@@ -78,6 +94,10 @@ static struct plat_sci_port scif3_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_1,
 	.type		= PORT_SCIF,
 	.irqs		= { 61, 61, 61, 61 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif3_device = {
@@ -95,6 +115,10 @@ static struct plat_sci_port scif4_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_1,
 	.type		= PORT_SCIF,
 	.irqs		= { 62, 62, 62, 62 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif4_device = {
@@ -112,6 +136,10 @@ static struct plat_sci_port scif5_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_1,
 	.type		= PORT_SCIF,
 	.irqs		= { 63, 63, 63, 63 },
+<<<<<<< HEAD
+=======
+	.regtype	= SCIx_SH4_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif5_device = {
@@ -372,6 +400,10 @@ static struct resource sh7785_dmae0_resources[] = {
 	},
 	{
 		/* Real DMA error IRQ is 39, and channel IRQs are 33-38 */
+<<<<<<< HEAD
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= 33,
 		.end	= 33,
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
@@ -388,6 +420,10 @@ static struct resource sh7785_dmae1_resources[] = {
 	/* DMAC1 has no DMARS */
 	{
 		/* Real DMA error IRQ is 58, and channel IRQs are 52-57 */
+<<<<<<< HEAD
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= 52,
 		.end	= 52,
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,

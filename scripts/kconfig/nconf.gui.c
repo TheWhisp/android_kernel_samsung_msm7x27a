@@ -356,7 +356,11 @@ int btn_dialog(WINDOW *main_window, const char *msg, int btn_num, ...)
 
 int dialog_inputbox(WINDOW *main_window,
 		const char *title, const char *prompt,
+<<<<<<< HEAD
 		const char *init, char *result, int result_len)
+=======
+		const char *init, char **resultp, int *result_len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int prompt_lines = 0;
 	int prompt_width = 0;
@@ -367,7 +371,17 @@ int dialog_inputbox(WINDOW *main_window,
 	int i, x, y;
 	int res = -1;
 	int cursor_position = strlen(init);
+<<<<<<< HEAD
 
+=======
+	int cursor_form_win;
+	char *result = *resultp;
+
+	if (strlen(init)+1 > *result_len) {
+		*result_len = strlen(init)+1;
+		*resultp = result = realloc(result, *result_len);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* find the widest line of msg: */
 	prompt_lines = get_line_no(prompt);
@@ -384,7 +398,11 @@ int dialog_inputbox(WINDOW *main_window,
 	y = (LINES-(prompt_lines+4))/2;
 	x = (COLS-(prompt_width+4))/2;
 
+<<<<<<< HEAD
 	strncpy(result, init, result_len);
+=======
+	strncpy(result, init, *result_len);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* create the windows */
 	win = newwin(prompt_lines+6, prompt_width+7, y, x);
@@ -405,7 +423,13 @@ int dialog_inputbox(WINDOW *main_window,
 	fill_window(prompt_win, prompt);
 
 	mvwprintw(form_win, 0, 0, "%*s", prompt_width, " ");
+<<<<<<< HEAD
 	mvwprintw(form_win, 0, 0, "%s", result);
+=======
+	cursor_form_win = min(cursor_position, prompt_width-1);
+	mvwprintw(form_win, 0, 0, "%s",
+		  result + cursor_position-cursor_form_win);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* create panels */
 	panel = new_panel(win);
@@ -431,6 +455,11 @@ int dialog_inputbox(WINDOW *main_window,
 						&result[cursor_position],
 						len-cursor_position+1);
 				cursor_position--;
+<<<<<<< HEAD
+=======
+				cursor_form_win--;
+				len--;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			break;
 		case KEY_DC:
@@ -438,10 +467,15 @@ int dialog_inputbox(WINDOW *main_window,
 				memmove(&result[cursor_position],
 						&result[cursor_position+1],
 						len-cursor_position+1);
+<<<<<<< HEAD
+=======
+				len--;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			break;
 		case KEY_UP:
 		case KEY_RIGHT:
+<<<<<<< HEAD
 			if (cursor_position < len &&
 			    cursor_position < min(result_len, prompt_width))
 				cursor_position++;
@@ -470,6 +504,60 @@ int dialog_inputbox(WINDOW *main_window,
 		mvwprintw(form_win, 0, 0, "%*s", prompt_width, " ");
 		mvwprintw(form_win, 0, 0, "%s", result);
 		wmove(form_win, 0, cursor_position);
+=======
+			if (cursor_position < len) {
+				cursor_position++;
+				cursor_form_win++;
+			}
+			break;
+		case KEY_DOWN:
+		case KEY_LEFT:
+			if (cursor_position > 0) {
+				cursor_position--;
+				cursor_form_win--;
+			}
+			break;
+		case KEY_HOME:
+			cursor_position = 0;
+			cursor_form_win = 0;
+			break;
+		case KEY_END:
+			cursor_position = len;
+			cursor_form_win = min(cursor_position, prompt_width-1);
+			break;
+		default:
+			if ((isgraph(res) || isspace(res))) {
+				/* one for new char, one for '\0' */
+				if (len+2 > *result_len) {
+					*result_len = len+2;
+					*resultp = result = realloc(result,
+								*result_len);
+				}
+				/* insert the char at the proper position */
+				memmove(&result[cursor_position+1],
+						&result[cursor_position],
+						len-cursor_position+1);
+				result[cursor_position] = res;
+				cursor_position++;
+				cursor_form_win++;
+				len++;
+			} else {
+				mvprintw(0, 0, "unknown key: %d\n", res);
+			}
+			break;
+		}
+		if (cursor_form_win < 0)
+			cursor_form_win = 0;
+		else if (cursor_form_win > prompt_width-1)
+			cursor_form_win = prompt_width-1;
+
+		wmove(form_win, 0, 0);
+		wclrtoeol(form_win);
+		mvwprintw(form_win, 0, 0, "%*s", prompt_width, " ");
+		mvwprintw(form_win, 0, 0, "%s",
+			result + cursor_position-cursor_form_win);
+		wmove(form_win, 0, cursor_form_win);
+>>>>>>> refs/remotes/origin/cm-10.0
 		touchwin(win);
 		refresh_all_windows(main_window);
 

@@ -5,7 +5,11 @@
 
   Copyright (c) 2005 Martin Langer <martin-langer@gmx.de>,
   Copyright (c) 2005-2007 Stefano Brivio <stefano.brivio@polimi.it>
+<<<<<<< HEAD
   Copyright (c) 2005-2008 Michael Buesch <mb@bu3sch.de>
+=======
+  Copyright (c) 2005-2008 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
   Copyright (c) 2005, 2006 Danny van Dyk <kugelfang@gentoo.org>
   Copyright (c) 2005, 2006 Andreas Jaggi <andreas.jaggi@waterwave.ch>
 
@@ -265,7 +269,10 @@ static void hardware_pctl_init_aphy(struct b43_wldev *dev)
 
 void b43_phy_inita(struct b43_wldev *dev)
 {
+<<<<<<< HEAD
 	struct ssb_bus *bus = dev->sdev->bus;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct b43_phy *phy = &dev->phy;
 
 	/* This lowlevel A-PHY init is also called from G-PHY init.
@@ -296,9 +303,15 @@ void b43_phy_inita(struct b43_wldev *dev)
 
 		b43_radio_init2060(dev);
 
+<<<<<<< HEAD
 		if ((bus->boardinfo.vendor == SSB_BOARDVENDOR_BCM) &&
 		    ((bus->boardinfo.type == SSB_BOARD_BU4306) ||
 		     (bus->boardinfo.type == SSB_BOARD_BU4309))) {
+=======
+		if ((dev->dev->board_vendor == SSB_BOARDVENDOR_BCM) &&
+		    ((dev->dev->board_type == SSB_BOARD_BU4306) ||
+		     (dev->dev->board_type == SSB_BOARD_BU4309))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			; //TODO: A PHY LO
 		}
 
@@ -311,7 +324,11 @@ void b43_phy_inita(struct b43_wldev *dev)
 	}
 
 	if ((phy->type == B43_PHYTYPE_G) &&
+<<<<<<< HEAD
 	    (dev->sdev->bus->sprom.boardflags_lo & B43_BFL_PACTRL)) {
+=======
+	    (dev->dev->bus_sprom->boardflags_lo & B43_BFL_PACTRL)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		b43_phy_maskset(dev, B43_PHY_OFDM(0x6E), 0xE000, 0x3CF);
 	}
 }
@@ -323,17 +340,30 @@ static int b43_aphy_init_tssi2dbm_table(struct b43_wldev *dev)
 	struct b43_phy_a *aphy = phy->a;
 	s16 pab0, pab1, pab2;
 
+<<<<<<< HEAD
 	pab0 = (s16) (dev->sdev->bus->sprom.pa1b0);
 	pab1 = (s16) (dev->sdev->bus->sprom.pa1b1);
 	pab2 = (s16) (dev->sdev->bus->sprom.pa1b2);
+=======
+	pab0 = (s16) (dev->dev->bus_sprom->pa1b0);
+	pab1 = (s16) (dev->dev->bus_sprom->pa1b1);
+	pab2 = (s16) (dev->dev->bus_sprom->pa1b2);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (pab0 != 0 && pab1 != 0 && pab2 != 0 &&
 	    pab0 != -1 && pab1 != -1 && pab2 != -1) {
 		/* The pabX values are set in SPROM. Use them. */
+<<<<<<< HEAD
 		if ((s8) dev->sdev->bus->sprom.itssi_a != 0 &&
 		    (s8) dev->sdev->bus->sprom.itssi_a != -1)
 			aphy->tgt_idle_tssi =
 			    (s8) (dev->sdev->bus->sprom.itssi_a);
+=======
+		if ((s8) dev->dev->bus_sprom->itssi_a != 0 &&
+		    (s8) dev->dev->bus_sprom->itssi_a != -1)
+			aphy->tgt_idle_tssi =
+			    (s8) (dev->dev->bus_sprom->itssi_a);
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			aphy->tgt_idle_tssi = 62;
 		aphy->tssi2dbm = b43_generate_dyn_tssi2dbm_tab(dev, pab0,

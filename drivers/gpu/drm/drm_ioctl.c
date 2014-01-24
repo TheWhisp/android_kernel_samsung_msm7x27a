@@ -37,6 +37,10 @@
 #include "drm_core.h"
 
 #include "linux/pci.h"
+<<<<<<< HEAD
+=======
+#include "linux/export.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * Get the bus id.
@@ -158,6 +162,7 @@ int drm_getmap(struct drm_device *dev, void *data,
 	int i;
 
 	idx = map->offset;
+<<<<<<< HEAD
 
 	mutex_lock(&dev->struct_mutex);
 	if (idx < 0) {
@@ -166,6 +171,13 @@ int drm_getmap(struct drm_device *dev, void *data,
 	}
 
 	i = 0;
+=======
+	if (idx < 0)
+		return -EINVAL;
+
+	i = 0;
+	mutex_lock(&dev->struct_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each(list, &dev->maplist) {
 		if (i == idx) {
 			r_list = list_entry(list, struct drm_map_list, head);
@@ -211,9 +223,15 @@ int drm_getclient(struct drm_device *dev, void *data,
 	int i;
 
 	idx = client->idx;
+<<<<<<< HEAD
 	mutex_lock(&dev->struct_mutex);
 
 	i = 0;
+=======
+	i = 0;
+
+	mutex_lock(&dev->struct_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each_entry(pt, &dev->filelist, lhead) {
 		if (i++ >= idx) {
 			client->auth = pt->authenticated;
@@ -249,8 +267,11 @@ int drm_getstats(struct drm_device *dev, void *data,
 
 	memset(stats, 0, sizeof(*stats));
 
+<<<<<<< HEAD
 	mutex_lock(&dev->struct_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < dev->counters; i++) {
 		if (dev->types[i] == _DRM_STAT_LOCK)
 			stats->data[i].value =
@@ -262,8 +283,11 @@ int drm_getstats(struct drm_device *dev, void *data,
 
 	stats->count = dev->counters;
 
+<<<<<<< HEAD
 	mutex_unlock(&dev->struct_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -283,6 +307,15 @@ int drm_getcap(struct drm_device *dev, void *data, struct drm_file *file_priv)
 	case DRM_CAP_VBLANK_HIGH_CRTC:
 		req->value = 1;
 		break;
+<<<<<<< HEAD
+=======
+	case DRM_CAP_DUMB_PREFERRED_DEPTH:
+		req->value = dev->mode_config.preferred_depth;
+		break;
+	case DRM_CAP_DUMB_PREFER_SHADOW:
+		req->value = dev->mode_config.prefer_shadow;
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		return -EINVAL;
 	}
@@ -353,3 +386,7 @@ int drm_noop(struct drm_device *dev, void *data,
 	DRM_DEBUG("\n");
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(drm_noop);
+>>>>>>> refs/remotes/origin/cm-10.0

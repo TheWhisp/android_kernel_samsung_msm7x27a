@@ -52,7 +52,10 @@
 #include <linux/firmware.h>
 #include <linux/bitops.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/uaccess.h>
@@ -1554,7 +1557,11 @@ static int __devinit icom_probe(struct pci_dev *dev,
 
 	 /* save off irq and request irq line */
 	 if ( (retval = request_irq(dev->irq, icom_interrupt,
+<<<<<<< HEAD
 				   IRQF_DISABLED | IRQF_SHARED, ICOM_DRIVER_NAME,
+=======
+				   IRQF_SHARED, ICOM_DRIVER_NAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   (void *) icom_adapter))) {
 		  goto probe_exit2;
 	 }

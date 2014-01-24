@@ -99,9 +99,15 @@ static inline void qdisc_run(struct Qdisc *q)
 		__qdisc_run(q);
 }
 
+<<<<<<< HEAD
 extern int tc_classify_compat(struct sk_buff *skb, struct tcf_proto *tp,
 			      struct tcf_result *res);
 extern int tc_classify(struct sk_buff *skb, struct tcf_proto *tp,
+=======
+extern int tc_classify_compat(struct sk_buff *skb, const struct tcf_proto *tp,
+			      struct tcf_result *res);
+extern int tc_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       struct tcf_result *res);
 
 /* Calculate maximal size of packet seen by hard_start_xmit

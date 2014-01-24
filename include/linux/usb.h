@@ -292,6 +292,19 @@ struct usb_host_config {
 	int extralen;
 };
 
+<<<<<<< HEAD
+=======
+/* USB2.0 and USB3.0 device BOS descriptor set */
+struct usb_host_bos {
+	struct usb_bos_descriptor	*desc;
+
+	/* wireless cap descriptor is handled by wusb */
+	struct usb_ext_cap_descriptor	*ext_cap;
+	struct usb_ss_cap_descriptor	*ss_cap;
+	struct usb_ss_container_id_descriptor	*ss_id;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int __usb_get_extra_descriptor(char *buffer, unsigned size,
 	unsigned char type, void **ptr);
 #define usb_get_extra_descriptor(ifpoint, type, ptr) \
@@ -322,6 +335,16 @@ struct usb_bus {
 	unsigned is_b_host:1;		/* true during some HNP roleswitches */
 	unsigned b_hnp_enable:1;	/* OTG: did A-Host enable HNP? */
 	unsigned hnp_support:1;		/* OTG: HNP is supported on OTG port */
+<<<<<<< HEAD
+=======
+	unsigned quick_hnp:1;		/* OTG: Indiacates if hnp is required
+					   irrespective of host_request flag
+					 */
+	unsigned otg_vbus_off:1;	/* OTG: OTG test device feature bit that
+					 * tells A-device to turn off VBUS after
+					 * B-device is disconnected.
+					 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct delayed_work hnp_polling;/* OTG: HNP polling work */
 	unsigned sg_tablesize;		/* 0 or largest number of sg list entries */
 
@@ -378,6 +401,15 @@ struct usb_bus {
 
 struct usb_tt;
 
+<<<<<<< HEAD
+=======
+enum usb_device_removable {
+	USB_DEVICE_REMOVABLE_UNKNOWN = 0,
+	USB_DEVICE_REMOVABLE,
+	USB_DEVICE_FIXED,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct usb_device - kernel's representation of a USB device
  * @devnum: device number; address on a USB bus
@@ -393,6 +425,10 @@ struct usb_tt;
  * @ep0: endpoint 0 data (default control pipe)
  * @dev: generic device interface
  * @descriptor: USB device descriptor
+<<<<<<< HEAD
+=======
+ * @bos: USB device BOS descriptor set
+>>>>>>> refs/remotes/origin/cm-10.0
  * @config: all of the device's configs
  * @actconfig: the active configuration
  * @ep_in: array of IN endpoints
@@ -411,6 +447,12 @@ struct usb_tt;
  *	FIXME -- complete doc
  * @authenticated: Crypto authentication passed
  * @wusb: device is Wireless USB
+<<<<<<< HEAD
+=======
+ * @lpm_capable: device supports LPM
+ * @usb2_hw_lpm_capable: device can perform USB2 hardware LPM
+ * @usb2_hw_lpm_enabled: USB2 hardware LPM enabled
+>>>>>>> refs/remotes/origin/cm-10.0
  * @string_langid: language ID for strings
  * @product: iProduct string, if present (static)
  * @manufacturer: iManufacturer string, if present (static)
@@ -430,6 +472,10 @@ struct usb_tt;
  * @wusb_dev: if this is a Wireless USB device, link to the WUSB
  *	specific data for the device.
  * @slot_id: Slot ID assigned by xHCI
+<<<<<<< HEAD
+=======
+ * @removable: Device can be physically removed from this port
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Notes:
  * Usbcore drivers should not set usbdev->state directly.  Instead use
@@ -454,6 +500,10 @@ struct usb_device {
 	struct device dev;
 
 	struct usb_device_descriptor descriptor;
+<<<<<<< HEAD
+=======
+	struct usb_host_bos *bos;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct usb_host_config *config;
 
 	struct usb_host_config *actconfig;
@@ -472,6 +522,12 @@ struct usb_device {
 	unsigned authorized:1;
 	unsigned authenticated:1;
 	unsigned wusb:1;
+<<<<<<< HEAD
+=======
+	unsigned lpm_capable:1;
+	unsigned usb2_hw_lpm_capable:1;
+	unsigned usb2_hw_lpm_enabled:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int string_langid;
 
 	/* static strings from the device */
@@ -500,7 +556,11 @@ struct usb_device {
 	void (*hcd_suspend) (void *hcd_priv);
 #endif
 	int maxchild;
+<<<<<<< HEAD
 	struct usb_device *children[USB_MAXCHILDREN];
+=======
+	struct usb_device **children;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	u32 quirks;
 	atomic_t urbnum;
@@ -515,6 +575,10 @@ struct usb_device {
 #endif
 	struct wusb_dev *wusb_dev;
 	int slot_id;
+<<<<<<< HEAD
+=======
+	enum usb_device_removable removable;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #define	to_usb_device(d) container_of(d, struct usb_device, dev)
 
@@ -802,6 +866,7 @@ static inline int usb_make_path(struct usb_device *dev, char *buf, size_t size)
 	.bInterfaceSubClass = (sc), \
 	.bInterfaceProtocol = (pr)
 
+<<<<<<< HEAD
 /**
  * USB_VENDOR_AND_INTERFACE_INFO - describe a specific usb vendor with a class of usb interfaces
  * @vend: the 16 bit USB Vendor ID
@@ -823,6 +888,8 @@ static inline int usb_make_path(struct usb_device *dev, char *buf, size_t size)
 	.bInterfaceSubClass = (sc), \
 	.bInterfaceProtocol = (pr)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ----------------------------------------------------------------------- */
 
 /* Stuff for dynamic usb ids */
@@ -983,7 +1050,11 @@ extern struct bus_type usb_bus_type;
  */
 struct usb_class_driver {
 	char *name;
+<<<<<<< HEAD
 	char *(*devnode)(struct device *dev, mode_t *mode);
+=======
+	char *(*devnode)(struct device *dev, umode_t *mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct file_operations *fops;
 	int minor_base;
 };
@@ -994,12 +1065,34 @@ struct usb_class_driver {
  */
 extern int usb_register_driver(struct usb_driver *, struct module *,
 			       const char *);
+<<<<<<< HEAD
 static inline int usb_register(struct usb_driver *driver)
 {
 	return usb_register_driver(driver, THIS_MODULE, KBUILD_MODNAME);
 }
 extern void usb_deregister(struct usb_driver *);
 
+=======
+
+/* use a define to avoid include chaining to get THIS_MODULE & friends */
+#define usb_register(driver) \
+	usb_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
+
+extern void usb_deregister(struct usb_driver *);
+
+/**
+ * module_usb_driver() - Helper macro for registering a USB driver
+ * @__usb_driver: usb_driver struct
+ *
+ * Helper macro for USB drivers which do not do anything special in module
+ * init/exit. This eliminates a lot of boilerplate. Each module may only
+ * use this macro once, and calling it replaces module_init() and module_exit()
+ */
+#define module_usb_driver(__usb_driver) \
+	module_driver(__usb_driver, usb_register, \
+		       usb_deregister)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int usb_register_device_driver(struct usb_device_driver *,
 			struct module *);
 extern void usb_deregister_device_driver(struct usb_device_driver *);
@@ -1108,6 +1201,10 @@ typedef void (*usb_complete_t)(struct urb *);
  *	which the host controller driver should use in preference to the
  *	transfer_buffer.
  * @sg: scatter gather buffer list
+<<<<<<< HEAD
+=======
+ * @num_mapped_sgs: (internal) number of mapped sg entries
+>>>>>>> refs/remotes/origin/cm-10.0
  * @num_sgs: number of entries in the sg list
  * @transfer_buffer_length: How big is transfer_buffer.  The transfer may
  *	be broken up into chunks according to the current maximum packet
@@ -1641,11 +1738,31 @@ usb_maxpacket(struct usb_device *udev, int pipe, int is_out)
 		return 0;
 
 	/* NOTE:  only 0x07ff bits are for packet size... */
+<<<<<<< HEAD
 	return le16_to_cpu(ep->desc.wMaxPacketSize);
+=======
+	return usb_endpoint_maxp(&ep->desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* ----------------------------------------------------------------------- */
 
+<<<<<<< HEAD
+=======
+/* translate USB error codes to codes user space understands */
+static inline int usb_translate_errors(int error_code)
+{
+	switch (error_code) {
+	case 0:
+	case -ENOMEM:
+	case -ENODEV:
+		return error_code;
+	default:
+		return -EIO;
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Events from the usb core */
 #define USB_DEVICE_ADD		0x0001
 #define USB_DEVICE_REMOVE	0x0002

@@ -176,7 +176,11 @@ static void am300_cleanup(struct broadsheetfb_par *par)
 {
 	int i;
 
+<<<<<<< HEAD
 	free_irq(IRQ_GPIO(RDY_GPIO_PIN), par);
+=======
+	free_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), par);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < ARRAY_SIZE(gpios); i++)
 		gpio_free(gpios[i]);
@@ -240,7 +244,11 @@ static int am300_setup_irq(struct fb_info *info)
 	int ret;
 	struct broadsheetfb_par *par = info->par;
 
+<<<<<<< HEAD
 	ret = request_irq(IRQ_GPIO(RDY_GPIO_PIN), am300_handle_irq,
+=======
+	ret = request_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), am300_handle_irq,
+>>>>>>> refs/remotes/origin/cm-10.0
 				IRQF_DISABLED|IRQF_TRIGGER_RISING,
 				"AM300", par);
 	if (ret)

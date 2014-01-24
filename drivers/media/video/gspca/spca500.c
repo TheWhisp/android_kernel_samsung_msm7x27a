@@ -19,6 +19,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MODULE_NAME "spca500"
 
 #include "gspca.h"
@@ -396,7 +401,11 @@ static int reg_w(struct gspca_dev *gspca_dev,
 			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
 			value, index, NULL, 0, 500);
 	if (ret < 0)
+<<<<<<< HEAD
 		err("reg write: error %d", ret);
+=======
+		pr_err("reg write: error %d\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -418,7 +427,11 @@ static int reg_r_12(struct gspca_dev *gspca_dev,
 			gspca_dev->usb_buf, length,
 			500);		/* timeout */
 	if (ret < 0) {
+<<<<<<< HEAD
 		err("reg_r_12 err %d", ret);
+=======
+		pr_err("reg_r_12 err %d\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 	}
 	return (gspca_dev->usb_buf[1] << 8) + gspca_dev->usb_buf[0];
@@ -1090,6 +1103,7 @@ static struct usb_driver sd_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 /* -- module insert / remove -- */
 static int __init sd_mod_init(void)
 {
@@ -1102,3 +1116,6 @@ static void __exit sd_mod_exit(void)
 
 module_init(sd_mod_init);
 module_exit(sd_mod_exit);
+=======
+module_usb_driver(sd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

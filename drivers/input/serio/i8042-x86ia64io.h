@@ -451,6 +451,16 @@ static const struct dmi_system_id __initconst i8042_dmi_nomux_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V13"),
 		},
 	},
+<<<<<<< HEAD
+=======
+	{
+		/* Newer HP Pavilion dv4 models */
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion dv4 Notebook PC"),
+		},
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ }
 };
 
@@ -525,6 +535,16 @@ static const struct dmi_system_id __initconst i8042_dmi_reset_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 1720"),
 		},
 	},
+<<<<<<< HEAD
+=======
+	{
+		/* Lenovo Ideapad U455 */
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "20046"),
+		},
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ }
 };
 
@@ -580,6 +600,16 @@ static const struct dmi_system_id __initconst i8042_dmi_notimeout_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V13"),
 		},
 	},
+<<<<<<< HEAD
+=======
+	{
+		/* Newer HP Pavilion dv4 models */
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion dv4 Notebook PC"),
+		},
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ }
 };
 

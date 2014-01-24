@@ -22,7 +22,11 @@
 #include <linux/linkage.h>
 #include <asm/assembler.h>
 #include <mach/psc.h>
+<<<<<<< HEAD
 #include <mach/memory.h>
+=======
+#include <mach/ddr2.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "clock.h"
 

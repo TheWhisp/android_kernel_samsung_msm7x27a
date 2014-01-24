@@ -34,10 +34,16 @@
 #include <linux/mutex.h>
 #include <linux/anon_inodes.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/io.h>
 #include <asm/mman.h>
 #include <asm/atomic.h>
+=======
+#include <asm/io.h>
+#include <asm/mman.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * LOCKING:
@@ -427,6 +433,34 @@ out_unlock:
 	return error;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * As described in commit 0ccf831cb lockdep: annotate epoll
+ * the use of wait queues used by epoll is done in a very controlled
+ * manner. Wake ups can nest inside each other, but are never done
+ * with the same locking. For example:
+ *
+ *   dfd = socket(...);
+ *   efd1 = epoll_create();
+ *   efd2 = epoll_create();
+ *   epoll_ctl(efd1, EPOLL_CTL_ADD, dfd, ...);
+ *   epoll_ctl(efd2, EPOLL_CTL_ADD, efd1, ...);
+ *
+ * When a packet arrives to the device underneath "dfd", the net code will
+ * issue a wake_up() on its poll wake list. Epoll (efd1) has installed a
+ * callback wakeup entry on that queue, and the wake_up() performed by the
+ * "dfd" net code will end up in ep_poll_callback(). At this point epoll
+ * (efd1) notices that it may have some event ready, so it needs to wake up
+ * the waiters on its poll wait list (efd2). So it calls ep_poll_safewake()
+ * that ends up in another wake_up(), after having checked about the
+ * recursion constraints. That are, no more than EP_MAX_POLLWAKE_NESTS, to
+ * avoid stack blasting.
+ *
+ * When CONFIG_DEBUG_LOCK_ALLOC is enabled, make sure lockdep can handle
+ * this special case of epoll.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 static inline void ep_wake_up_nested(wait_queue_head_t *wqueue,
 				     unsigned long events, int subclass)
@@ -699,9 +733,18 @@ static int ep_read_events_proc(struct eventpoll *ep, struct list_head *head,
 			       void *priv)
 {
 	struct epitem *epi, *tmp;
+<<<<<<< HEAD
 
 	list_for_each_entry_safe(epi, tmp, head, rdllink) {
 		if (epi->ffd.file->f_op->poll(epi->ffd.file, NULL) &
+=======
+	poll_table pt;
+
+	init_poll_funcptr(&pt, NULL);
+	list_for_each_entry_safe(epi, tmp, head, rdllink) {
+		pt._key = epi->event.events;
+		if (epi->ffd.file->f_op->poll(epi->ffd.file, &pt) &
+>>>>>>> refs/remotes/origin/cm-10.0
 		    epi->event.events)
 			return POLLIN | POLLRDNORM;
 		else {
@@ -1049,13 +1092,19 @@ static int reverse_path_check_proc(void *priv, void *cookie, int call_nests)
  */
 static int reverse_path_check(void)
 {
+<<<<<<< HEAD
 	int length = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int error = 0;
 	struct file *current_file;
 
 	/* let's call this for all tfiles */
 	list_for_each_entry(current_file, &tfile_check_list, f_tfile_llink) {
+<<<<<<< HEAD
 		length++;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		path_count_init();
 		error = ep_call_nested(&poll_loop_ncalls, EP_MAX_NESTS,
 					reverse_path_check_proc, current_file,
@@ -1097,6 +1146,10 @@ static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
 	/* Initialize the poll table using the queue callback */
 	epq.epi = epi;
 	init_poll_funcptr(&epq.pt, ep_ptable_queue_proc);
+<<<<<<< HEAD
+=======
+	epq.pt._key = event->events;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Attach the item to the poll hooks and get current event bits.
@@ -1191,6 +1244,12 @@ static int ep_modify(struct eventpoll *ep, struct epitem *epi, struct epoll_even
 {
 	int pwake = 0;
 	unsigned int revents;
+<<<<<<< HEAD
+=======
+	poll_table pt;
+
+	init_poll_funcptr(&pt, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Set the new event interest mask before calling f_op->poll();
@@ -1198,6 +1257,10 @@ static int ep_modify(struct eventpoll *ep, struct epitem *epi, struct epoll_even
 	 * f_op->poll() call and the new event set registering.
 	 */
 	epi->event.events = event->events; /* need barrier below */
+<<<<<<< HEAD
+=======
+	pt._key = event->events;
+>>>>>>> refs/remotes/origin/cm-10.0
 	epi->event.data = event->data; /* protected by mtx */
 
 	/*
@@ -1224,7 +1287,11 @@ static int ep_modify(struct eventpoll *ep, struct epitem *epi, struct epoll_even
 	 * Get current event bits. We can safely use the file* here because
 	 * its usage count has been increased by the caller of this function.
 	 */
+<<<<<<< HEAD
 	revents = epi->ffd.file->f_op->poll(epi->ffd.file, NULL);
+=======
+	revents = epi->ffd.file->f_op->poll(epi->ffd.file, &pt);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * If the item is "hot" and it is not registered inside the ready
@@ -1259,6 +1326,12 @@ static int ep_send_events_proc(struct eventpoll *ep, struct list_head *head,
 	unsigned int revents;
 	struct epitem *epi;
 	struct epoll_event __user *uevent;
+<<<<<<< HEAD
+=======
+	poll_table pt;
+
+	init_poll_funcptr(&pt, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * We can loop without lock because we are passed a task private list.
@@ -1271,7 +1344,12 @@ static int ep_send_events_proc(struct eventpoll *ep, struct list_head *head,
 
 		list_del_init(&epi->rdllink);
 
+<<<<<<< HEAD
 		revents = epi->ffd.file->f_op->poll(epi->ffd.file, NULL) &
+=======
+		pt._key = epi->event.events;
+		revents = epi->ffd.file->f_op->poll(epi->ffd.file, &pt) &
+>>>>>>> refs/remotes/origin/cm-10.0
 			epi->event.events;
 
 		/*
@@ -1649,8 +1727,15 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, int, op, int, fd,
 	if (op == EPOLL_CTL_ADD) {
 		if (is_file_epoll(tfile)) {
 			error = -ELOOP;
+<<<<<<< HEAD
 			if (ep_loop_check(ep, tfile) != 0)
 				goto error_tgt_fput;
+=======
+			if (ep_loop_check(ep, tfile) != 0) {
+				clear_tfile_check_list();
+				goto error_tgt_fput;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else
 			list_add(&tfile->f_tfile_llink, &tfile_check_list);
 	}

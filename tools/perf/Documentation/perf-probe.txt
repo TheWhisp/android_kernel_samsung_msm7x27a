@@ -34,9 +34,17 @@ OPTIONS
 	Specify vmlinux path which has debuginfo (Dwarf binary).
 
 -m::
+<<<<<<< HEAD
 --module=MODNAME::
 	Specify module name in which perf-probe searches probe points
 	or lines.
+=======
+--module=MODNAME|PATH::
+	Specify module name in which perf-probe searches probe points
+	or lines. If a path of module file is passed, perf-probe
+	treat it as an offline module (this means you can add a probe on
+        a module which has not been loaded yet).
+>>>>>>> refs/remotes/origin/cm-10.0
 
 -s::
 --source=PATH::

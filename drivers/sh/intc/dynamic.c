@@ -14,6 +14,10 @@
 #include <linux/irq.h>
 #include <linux/bitmap.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "internals.h" /* only for activate_irq() damage.. */
 
 /*

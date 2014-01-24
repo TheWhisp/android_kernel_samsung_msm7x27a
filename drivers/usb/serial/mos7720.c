@@ -71,7 +71,11 @@ struct moschip_port {
 	struct urb		*write_urb_pool[NUM_URBS];
 };
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct usb_serial_driver moschip7720_2port_driver;
 
@@ -957,6 +961,7 @@ static void mos7720_bulk_in_callback(struct urb *urb)
 	}
 	tty_kref_put(tty);
 
+<<<<<<< HEAD
 	if (!port->read_urb) {
 		dbg("URB KILLED !!!");
 		return;
@@ -965,6 +970,9 @@ static void mos7720_bulk_in_callback(struct urb *urb)
 	if (port->read_urb->status != -EINPROGRESS) {
 		port->read_urb->dev = port->serial->dev;
 
+=======
+	if (port->read_urb->status != -EINPROGRESS) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = usb_submit_urb(port->read_urb, GFP_ATOMIC);
 		if (retval)
 			dbg("usb_submit_urb(read bulk) failed, retval = %d",
@@ -1032,7 +1040,10 @@ static int mos77xx_calc_num_ports(struct usb_serial *serial)
 static int mos7720_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
 	struct usb_serial *serial;
+<<<<<<< HEAD
 	struct usb_serial_port *port0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct urb *urb;
 	struct moschip_port *mos7720_port;
 	int response;
@@ -1047,8 +1058,11 @@ static int mos7720_open(struct tty_struct *tty, struct usb_serial_port *port)
 	if (mos7720_port == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	port0 = serial->port[0];
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_clear_halt(serial->dev, port->write_urb->pipe);
 	usb_clear_halt(serial->dev, port->read_urb->pipe);
 
@@ -1322,7 +1336,11 @@ static int mos7720_write(struct tty_struct *tty, struct usb_serial_port *port,
 		urb->transfer_buffer = kmalloc(URB_TRANSFER_BUFFER_SIZE,
 					       GFP_KERNEL);
 		if (urb->transfer_buffer == NULL) {
+<<<<<<< HEAD
 			dev_err(&port->dev, "%s no more kernel memory...\n",
+=======
+			dev_err_console(port, "%s no more kernel memory...\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__);
 			goto exit;
 		}
@@ -1343,7 +1361,11 @@ static int mos7720_write(struct tty_struct *tty, struct usb_serial_port *port,
 	/* send it down the pipe */
 	status = usb_submit_urb(urb, GFP_ATOMIC);
 	if (status) {
+<<<<<<< HEAD
 		dev_err(&port->dev, "%s - usb_submit_urb(write bulk) failed "
+=======
+		dev_err_console(port, "%s - usb_submit_urb(write bulk) failed "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"with status = %d\n", __func__, status);
 		bytes_sent = status;
 		goto exit;
@@ -1753,8 +1775,11 @@ static void change_port_settings(struct tty_struct *tty,
 	write_mos_reg(serial, port_number, IER, 0x0c);
 
 	if (port->read_urb->status != -EINPROGRESS) {
+<<<<<<< HEAD
 		port->read_urb->dev = serial->dev;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		status = usb_submit_urb(port->read_urb, GFP_ATOMIC);
 		if (status)
 			dbg("usb_submit_urb(read bulk) failed, status = %d",
@@ -1804,6 +1829,7 @@ static void mos7720_set_termios(struct tty_struct *tty,
 	/* change the port settings to the new ones specified */
 	change_port_settings(tty, mos7720_port, old_termios);
 
+<<<<<<< HEAD
 	if (!port->read_urb) {
 		dbg("%s", "URB KILLED !!!!!");
 		return;
@@ -1811,6 +1837,9 @@ static void mos7720_set_termios(struct tty_struct *tty,
 
 	if (port->read_urb->status != -EINPROGRESS) {
 		port->read_urb->dev = serial->dev;
+=======
+	if (port->read_urb->status != -EINPROGRESS) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		status = usb_submit_urb(port->read_urb, GFP_ATOMIC);
 		if (status)
 			dbg("usb_submit_urb(read bulk) failed, status = %d",
@@ -2024,7 +2053,10 @@ static int mos7720_ioctl(struct tty_struct *tty,
 		dbg("%s (%d) TIOCSERGETLSR", __func__,  port->number);
 		return get_lsr_info(tty, mos7720_port,
 					(unsigned int __user *)arg);
+<<<<<<< HEAD
 		return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* FIXME: These should be using the mode methods */
 	case TIOCMBIS:
@@ -2206,7 +2238,10 @@ static struct usb_driver usb_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	moschip_port_id_table,
+<<<<<<< HEAD
 	.no_dynamic_id =	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver moschip7720_2port_driver = {
@@ -2215,7 +2250,10 @@ static struct usb_serial_driver moschip7720_2port_driver = {
 		.name =		"moschip7720",
 	},
 	.description		= "Moschip 2 port adapter",
+<<<<<<< HEAD
 	.usb_driver		= &usb_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table		= moschip_port_id_table,
 	.calc_num_ports		= mos77xx_calc_num_ports,
 	.open			= mos7720_open,
@@ -2238,6 +2276,7 @@ static struct usb_serial_driver moschip7720_2port_driver = {
 	.read_int_callback	= NULL  /* dynamically assigned in probe() */
 };
 
+<<<<<<< HEAD
 static int __init moschip7720_init(void)
 {
 	int retval;
@@ -2276,6 +2315,14 @@ module_init(moschip7720_init);
 module_exit(moschip7720_exit);
 
 /* Module information */
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&moschip7720_2port_driver, NULL
+};
+
+module_usb_serial_driver(usb_driver, serial_drivers);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");

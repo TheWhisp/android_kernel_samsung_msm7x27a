@@ -4,6 +4,10 @@
  */
 
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <asm/pgtable.h>
 #include <asm/tlbflush.h>
@@ -11,7 +15,10 @@
 #include "mem_user.h"
 #include "os.h"
 #include "skas.h"
+<<<<<<< HEAD
 #include "tlb.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct host_vm_change {
 	struct host_vm_op {
@@ -287,7 +294,11 @@ void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
 	}
 }
 
+<<<<<<< HEAD
 int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+=======
+static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct mm_struct *mm;
 	pgd_t *pgd;
@@ -499,6 +510,10 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 		flush_tlb_kernel_range_common(start, end);
 	else fix_range(vma->vm_mm, start, end, 0);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(flush_tlb_range);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
 			unsigned long end)

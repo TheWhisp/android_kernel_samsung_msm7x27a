@@ -86,7 +86,11 @@ static void __init rut1xx_init(void)
 }
 
 MACHINE_START(RUT100, "Teltonika RUT100")
+<<<<<<< HEAD
 	.boot_params	= 0x100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= gemini_map_io,
 	.init_irq	= gemini_init_irq,
 	.timer		= &rut1xx_timer,

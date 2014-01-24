@@ -132,6 +132,7 @@ extern int pci_hp_deregister(struct hotplug_slot *slot);
 extern int __must_check pci_hp_change_slot_info	(struct hotplug_slot *slot,
 						 struct hotplug_slot_info *info);
 
+<<<<<<< HEAD
 static inline int pci_hp_register(struct hotplug_slot *slot,
 				  struct pci_bus *pbus,
 				  int devnr, const char *name)
@@ -139,6 +140,11 @@ static inline int pci_hp_register(struct hotplug_slot *slot,
 	return __pci_hp_register(slot, pbus, devnr, name,
 				 THIS_MODULE, KBUILD_MODNAME);
 }
+=======
+/* use a define to avoid include chaining to get THIS_MODULE & friends */
+#define pci_hp_register(slot, pbus, devnr, name) \
+	__pci_hp_register(slot, pbus, devnr, name, THIS_MODULE, KBUILD_MODNAME)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* PCI Setting Record (Type 0) */
 struct hpp_type0 {

@@ -126,6 +126,7 @@ nv04_display_create(struct drm_device *dev)
 
 	nouveau_hw_save_vga_fonts(dev, 1);
 
+<<<<<<< HEAD
 	drm_mode_config_init(dev);
 	drm_mode_create_scaling_mode_property(dev);
 	drm_mode_create_dithering_property(dev);
@@ -147,6 +148,8 @@ nv04_display_create(struct drm_device *dev)
 
 	dev->mode_config.fb_base = dev_priv->fb_phys;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	nv04_crtc_create(dev, 0);
 	if (nv_two_heads(dev))
 		nv04_crtc_create(dev, 1);
@@ -235,8 +238,11 @@ nv04_display_destroy(struct drm_device *dev)
 	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head)
 		crtc->funcs->restore(crtc);
 
+<<<<<<< HEAD
 	drm_mode_config_cleanup(dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	nouveau_hw_save_vga_fonts(dev, 0);
 }
 
@@ -266,6 +272,14 @@ nv04_display_init(struct drm_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+void
+nv04_display_fini(struct drm_device *dev)
+{
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void
 nv04_vblank_crtc0_isr(struct drm_device *dev)
 {

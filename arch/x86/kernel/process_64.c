@@ -14,7 +14,10 @@
  * This file handles the architecture-dependent parts of process handling..
  */
 
+<<<<<<< HEAD
 #include <linux/stackprotector.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/cpu.h>
 #include <linux/errno.h>
 #include <linux/sched.h>
@@ -32,16 +35,25 @@
 #include <linux/notifier.h>
 #include <linux/kprobes.h>
 #include <linux/kdebug.h>
+<<<<<<< HEAD
 #include <linux/tick.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/prctl.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
 #include <linux/ftrace.h>
 
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/processor.h>
 #include <asm/i387.h>
+=======
+#include <asm/processor.h>
+#include <asm/i387.h>
+#include <asm/fpu-internal.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mmu_context.h>
 #include <asm/prctl.h>
 #include <asm/desc.h>
@@ -50,10 +62,15 @@
 #include <asm/idle.h>
 #include <asm/syscalls.h>
 #include <asm/debugreg.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 asmlinkage extern void ret_from_fork(void);
 
 DEFINE_PER_CPU(unsigned long, old_rsp);
+<<<<<<< HEAD
 static DEFINE_PER_CPU(unsigned char, is_idle);
 
 void enter_idle(void)
@@ -137,6 +154,8 @@ void cpu_idle(void)
 		preempt_disable();
 	}
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Prints also some state that isn't saved in the pt_regs */
 void __show_regs(struct pt_regs *regs, int all)
@@ -262,6 +281,10 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 
 	set_tsk_thread_flag(p, TIF_FORK);
 
+<<<<<<< HEAD
+=======
+	p->fpu_counter = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	p->thread.io_bitmap_ptr = NULL;
 
 	savesegment(gs, p->thread.gsindex);
@@ -275,13 +298,21 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
 
 	if (unlikely(test_tsk_thread_flag(me, TIF_IO_BITMAP))) {
+<<<<<<< HEAD
 		p->thread.io_bitmap_ptr = kmalloc(IO_BITMAP_BYTES, GFP_KERNEL);
+=======
+		p->thread.io_bitmap_ptr = kmemdup(me->thread.io_bitmap_ptr,
+						  IO_BITMAP_BYTES, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!p->thread.io_bitmap_ptr) {
 			p->thread.io_bitmap_max = 0;
 			return -ENOMEM;
 		}
+<<<<<<< HEAD
 		memcpy(p->thread.io_bitmap_ptr, me->thread.io_bitmap_ptr,
 				IO_BITMAP_BYTES);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		set_tsk_thread_flag(p, TIF_IO_BITMAP);
 	}
 
@@ -318,6 +349,10 @@ start_thread_common(struct pt_regs *regs, unsigned long new_ip,
 	loadsegment(es, _ds);
 	loadsegment(ds, _ds);
 	load_gs_index(0);
+<<<<<<< HEAD
+=======
+	current->thread.usersp	= new_sp;
+>>>>>>> refs/remotes/origin/cm-10.0
 	regs->ip		= new_ip;
 	regs->sp		= new_sp;
 	percpu_write(old_rsp, new_sp);
@@ -341,7 +376,13 @@ start_thread(struct pt_regs *regs, unsigned long new_ip, unsigned long new_sp)
 void start_thread_ia32(struct pt_regs *regs, u32 new_ip, u32 new_sp)
 {
 	start_thread_common(regs, new_ip, new_sp,
+<<<<<<< HEAD
 			    __USER32_CS, __USER32_DS, __USER32_DS);
+=======
+			    test_thread_flag(TIF_X32)
+			    ? __USER_CS : __USER32_CS,
+			    __USER_DS, __USER_DS);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 
@@ -365,7 +406,11 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
 	unsigned fsindex, gsindex;
 	fpu_switch_t fpu;
 
+<<<<<<< HEAD
 	fpu = switch_fpu_prepare(prev_p, next_p);
+=======
+	fpu = switch_fpu_prepare(prev_p, next_p, cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Reload esp0, LDT and the page table pointer:
@@ -464,6 +509,11 @@ void set_personality_64bit(void)
 
 	/* Make sure to be in 64bit mode */
 	clear_thread_flag(TIF_IA32);
+<<<<<<< HEAD
+=======
+	clear_thread_flag(TIF_ADDR32);
+	clear_thread_flag(TIF_X32);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Ensure the corresponding mm is not marked. */
 	if (current->mm)
@@ -476,21 +526,48 @@ void set_personality_64bit(void)
 	current->personality &= ~READ_IMPLIES_EXEC;
 }
 
+<<<<<<< HEAD
 void set_personality_ia32(void)
+=======
+void set_personality_ia32(bool x32)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* inherit personality from parent */
 
 	/* Make sure to be in 32bit mode */
+<<<<<<< HEAD
 	set_thread_flag(TIF_IA32);
 	current->personality |= force_personality32;
+=======
+	set_thread_flag(TIF_ADDR32);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Mark the associated mm as containing 32-bit tasks. */
 	if (current->mm)
 		current->mm->context.ia32_compat = 1;
 
+<<<<<<< HEAD
 	/* Prepare the first "return" to user space */
 	current_thread_info()->status |= TS_COMPAT;
 }
+=======
+	if (x32) {
+		clear_thread_flag(TIF_IA32);
+		set_thread_flag(TIF_X32);
+		current->personality &= ~READ_IMPLIES_EXEC;
+		/* is_compat_task() uses the presence of the x32
+		   syscall bit flag to determine compat status */
+		current_thread_info()->status &= ~TS_COMPAT;
+	} else {
+		set_thread_flag(TIF_IA32);
+		clear_thread_flag(TIF_X32);
+		current->personality |= force_personality32;
+		/* Prepare the first "return" to user space */
+		current_thread_info()->status |= TS_COMPAT;
+	}
+}
+EXPORT_SYMBOL_GPL(set_personality_ia32);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned long get_wchan(struct task_struct *p)
 {

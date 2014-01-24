@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 source "arch/mips/powertv/asic/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config BOOTLOADER_DRIVER
 	bool "PowerTV Bootloader Driver Support"
 	default n

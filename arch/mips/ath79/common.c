@@ -30,6 +30,10 @@ u32 ath79_ddr_freq;
 EXPORT_SYMBOL_GPL(ath79_ddr_freq);
 
 enum ath79_soc_type ath79_soc;
+<<<<<<< HEAD
+=======
+unsigned int ath79_soc_rev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __iomem *ath79_pll_base;
 void __iomem *ath79_reset_base;
@@ -64,6 +68,11 @@ void ath79_device_reset_set(u32 mask)
 		reg = AR724X_RESET_REG_RESET_MODULE;
 	else if (soc_is_ar913x())
 		reg = AR913X_RESET_REG_RESET_MODULE;
+<<<<<<< HEAD
+=======
+	else if (soc_is_ar933x())
+		reg = AR933X_RESET_REG_RESET_MODULE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		BUG();
 
@@ -86,6 +95,11 @@ void ath79_device_reset_clear(u32 mask)
 		reg = AR724X_RESET_REG_RESET_MODULE;
 	else if (soc_is_ar913x())
 		reg = AR913X_RESET_REG_RESET_MODULE;
+<<<<<<< HEAD
+=======
+	else if (soc_is_ar933x())
+		reg = AR933X_RESET_REG_RESET_MODULE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		BUG();
 

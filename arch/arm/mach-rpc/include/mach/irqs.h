@@ -42,6 +42,9 @@
  */
 #define FIQ_START		64
 
+<<<<<<< HEAD
 #define IRQ_TIMER		IRQ_TIMER0
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NR_IRQS			128

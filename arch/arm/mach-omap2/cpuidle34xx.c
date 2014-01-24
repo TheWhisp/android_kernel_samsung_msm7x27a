@@ -24,15 +24,27 @@
 
 #include <linux/sched.h>
 #include <linux/cpuidle.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/cpu_pm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/prcm.h>
 #include <plat/irqs.h>
 #include "powerdomain.h"
 #include "clockdomain.h"
+<<<<<<< HEAD
 #include <plat/serial.h>
 
 #include "pm.h"
 #include "control.h"
+=======
+
+#include "pm.h"
+#include "control.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_CPU_IDLE
 
@@ -85,6 +97,7 @@ static int _cpuidle_deny_idle(struct powerdomain *pwrdm,
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  * omap3_enter_idle - Programs OMAP3 to enter the specified state
  * @dev: cpuidle device
@@ -104,6 +117,16 @@ static int omap3_enter_idle(struct cpuidle_device *dev,
 	getnstimeofday(&ts_preidle);
 
 	local_irq_disable();
+=======
+static int __omap3_enter_idle(struct cpuidle_device *dev,
+				struct cpuidle_driver *drv,
+				int index)
+{
+	struct omap3_idle_statedata *cx =
+			cpuidle_get_statedata(&dev->states_usage[index]);
+	u32 mpu_state = cx->mpu_state, core_state = cx->core_state;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_fiq_disable();
 
 	pwrdm_set_next_pwrst(mpu_pd, mpu_state);
@@ -113,21 +136,48 @@ static int omap3_enter_idle(struct cpuidle_device *dev,
 		goto return_sleep_time;
 
 	/* Deny idle for C1 */
+<<<<<<< HEAD
 	if (state == &dev->states[0]) {
+=======
+	if (index == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pwrdm_for_each_clkdm(mpu_pd, _cpuidle_deny_idle);
 		pwrdm_for_each_clkdm(core_pd, _cpuidle_deny_idle);
 	}
 
+<<<<<<< HEAD
 	/* Execute ARM wfi */
 	omap_sram_idle();
 
 	/* Re-allow idle for C1 */
 	if (state == &dev->states[0]) {
+=======
+	/*
+	 * Call idle CPU PM enter notifier chain so that
+	 * VFP context is saved.
+	 */
+	if (mpu_state == PWRDM_POWER_OFF)
+		cpu_pm_enter();
+
+	/* Execute ARM wfi */
+	omap_sram_idle();
+
+	/*
+	 * Call idle CPU PM enter notifier chain to restore
+	 * VFP context.
+	 */
+	if (pwrdm_read_prev_pwrst(mpu_pd) == PWRDM_POWER_OFF)
+		cpu_pm_exit();
+
+	/* Re-allow idle for C1 */
+	if (index == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pwrdm_for_each_clkdm(mpu_pd, _cpuidle_allow_idle);
 		pwrdm_for_each_clkdm(core_pd, _cpuidle_allow_idle);
 	}
 
 return_sleep_time:
+<<<<<<< HEAD
 	getnstimeofday(&ts_postidle);
 	ts_idle = timespec_sub(ts_postidle, ts_preidle);
 
@@ -135,20 +185,52 @@ return_sleep_time:
 	local_fiq_enable();
 
 	return ts_idle.tv_nsec / NSEC_PER_USEC + ts_idle.tv_sec * USEC_PER_SEC;
+=======
+
+	local_fiq_enable();
+
+	return index;
+}
+
+/**
+ * omap3_enter_idle - Programs OMAP3 to enter the specified state
+ * @dev: cpuidle device
+ * @drv: cpuidle driver
+ * @index: the index of state to be entered
+ *
+ * Called from the CPUidle framework to program the device to the
+ * specified target state selected by the governor.
+ */
+static inline int omap3_enter_idle(struct cpuidle_device *dev,
+				struct cpuidle_driver *drv,
+				int index)
+{
+	return cpuidle_wrap_enter(dev, drv, index, __omap3_enter_idle);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
  * next_valid_state - Find next valid C-state
  * @dev: cpuidle device
+<<<<<<< HEAD
  * @state: Currently selected C-state
  *
  * If the current state is valid, it is returned back to the caller.
  * Else, this function searches for a lower c-state which is still
  * valid.
+=======
+ * @drv: cpuidle driver
+ * @index: Index of currently selected c-state
+ *
+ * If the state corresponding to index is valid, index is returned back
+ * to the caller. Else, this function searches for a lower c-state which is
+ * still valid (as defined in omap3_power_states[]) and returns its index.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * A state is valid if the 'valid' field is enabled and
  * if it satisfies the enable_off_mode condition.
  */
+<<<<<<< HEAD
 static struct cpuidle_state *next_valid_state(struct cpuidle_device *dev,
 					      struct cpuidle_state *curr)
 {
@@ -156,6 +238,18 @@ static struct cpuidle_state *next_valid_state(struct cpuidle_device *dev,
 	struct omap3_idle_statedata *cx = cpuidle_get_statedata(curr);
 	u32 mpu_deepest_state = PWRDM_POWER_RET;
 	u32 core_deepest_state = PWRDM_POWER_RET;
+=======
+static int next_valid_state(struct cpuidle_device *dev,
+			struct cpuidle_driver *drv,
+				int index)
+{
+	struct cpuidle_state_usage *curr_usage = &dev->states_usage[index];
+	struct cpuidle_state *curr = &drv->states[index];
+	struct omap3_idle_statedata *cx = cpuidle_get_statedata(curr_usage);
+	u32 mpu_deepest_state = PWRDM_POWER_RET;
+	u32 core_deepest_state = PWRDM_POWER_RET;
+	int next_index = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (enable_off_mode) {
 		mpu_deepest_state = PWRDM_POWER_OFF;
@@ -172,20 +266,33 @@ static struct cpuidle_state *next_valid_state(struct cpuidle_device *dev,
 	if ((cx->valid) &&
 	    (cx->mpu_state >= mpu_deepest_state) &&
 	    (cx->core_state >= core_deepest_state)) {
+<<<<<<< HEAD
 		return curr;
+=======
+		return index;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		int idx = OMAP3_NUM_STATES - 1;
 
 		/* Reach the current state starting at highest C-state */
 		for (; idx >= 0; idx--) {
+<<<<<<< HEAD
 			if (&dev->states[idx] == curr) {
 				next = &dev->states[idx];
+=======
+			if (&drv->states[idx] == curr) {
+				next_index = idx;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 		}
 
 		/* Should never hit this condition */
+<<<<<<< HEAD
 		WARN_ON(next == NULL);
+=======
+		WARN_ON(next_index == -1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
 		 * Drop to next valid state.
@@ -193,51 +300,87 @@ static struct cpuidle_state *next_valid_state(struct cpuidle_device *dev,
 		 */
 		idx--;
 		for (; idx >= 0; idx--) {
+<<<<<<< HEAD
 			cx = cpuidle_get_statedata(&dev->states[idx]);
 			if ((cx->valid) &&
 			    (cx->mpu_state >= mpu_deepest_state) &&
 			    (cx->core_state >= core_deepest_state)) {
 				next = &dev->states[idx];
+=======
+			cx = cpuidle_get_statedata(&dev->states_usage[idx]);
+			if ((cx->valid) &&
+			    (cx->mpu_state >= mpu_deepest_state) &&
+			    (cx->core_state >= core_deepest_state)) {
+				next_index = idx;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 		}
 		/*
 		 * C1 is always valid.
+<<<<<<< HEAD
 		 * So, no need to check for 'next==NULL' outside this loop.
 		 */
 	}
 
 	return next;
+=======
+		 * So, no need to check for 'next_index == -1' outside
+		 * this loop.
+		 */
+	}
+
+	return next_index;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
  * omap3_enter_idle_bm - Checks for any bus activity
  * @dev: cpuidle device
+<<<<<<< HEAD
  * @state: The target state to be programmed
+=======
+ * @drv: cpuidle driver
+ * @index: array index of target state to be programmed
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This function checks for any pending activity and then programs
  * the device to the specified or a safer state.
  */
 static int omap3_enter_idle_bm(struct cpuidle_device *dev,
+<<<<<<< HEAD
 			       struct cpuidle_state *state)
 {
 	struct cpuidle_state *new_state;
+=======
+				struct cpuidle_driver *drv,
+			       int index)
+{
+	int new_state_idx;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 core_next_state, per_next_state = 0, per_saved_state = 0, cam_state;
 	struct omap3_idle_statedata *cx;
 	int ret;
 
+<<<<<<< HEAD
 	if (!omap3_can_sleep()) {
 		new_state = dev->safe_state;
 		goto select_state;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Prevent idle completely if CAM is active.
 	 * CAM does not have wakeup capability in OMAP3.
 	 */
 	cam_state = pwrdm_read_pwrst(cam_pd);
 	if (cam_state == PWRDM_POWER_ON) {
+<<<<<<< HEAD
 		new_state = dev->safe_state;
+=======
+		new_state_idx = drv->safe_state_index;
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto select_state;
 	}
 
@@ -253,7 +396,11 @@ static int omap3_enter_idle_bm(struct cpuidle_device *dev,
 	 * Prevent PER off if CORE is not in retention or off as this
 	 * would disable PER wakeups completely.
 	 */
+<<<<<<< HEAD
 	cx = cpuidle_get_statedata(state);
+=======
+	cx = cpuidle_get_statedata(&dev->states_usage[index]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	core_next_state = cx->core_state;
 	per_next_state = per_saved_state = pwrdm_read_next_pwrst(per_pd);
 	if ((per_next_state == PWRDM_POWER_OFF) &&
@@ -264,11 +411,18 @@ static int omap3_enter_idle_bm(struct cpuidle_device *dev,
 	if (per_next_state != per_saved_state)
 		pwrdm_set_next_pwrst(per_pd, per_next_state);
 
+<<<<<<< HEAD
 	new_state = next_valid_state(dev, state);
 
 select_state:
 	dev->last_state = new_state;
 	ret = omap3_enter_idle(dev, new_state);
+=======
+	new_state_idx = next_valid_state(dev, drv, index);
+
+select_state:
+	ret = omap3_enter_idle(dev, drv, new_state_idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Restore original PER state if it was modified */
 	if (per_next_state != per_saved_state)
@@ -301,6 +455,7 @@ struct cpuidle_driver omap3_idle_driver = {
 	.owner = 	THIS_MODULE,
 };
 
+<<<<<<< HEAD
 /* Helper to fill the C-state common data and register the driver_data */
 static inline struct omap3_idle_statedata *_fill_cstate(
 					struct cpuidle_device *dev,
@@ -308,15 +463,40 @@ static inline struct omap3_idle_statedata *_fill_cstate(
 {
 	struct omap3_idle_statedata *cx = &omap3_idle_data[idx];
 	struct cpuidle_state *state = &dev->states[idx];
+=======
+/* Helper to fill the C-state common data*/
+static inline void _fill_cstate(struct cpuidle_driver *drv,
+					int idx, const char *descr)
+{
+	struct cpuidle_state *state = &drv->states[idx];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	state->exit_latency	= cpuidle_params_table[idx].exit_latency;
 	state->target_residency	= cpuidle_params_table[idx].target_residency;
 	state->flags		= CPUIDLE_FLAG_TIME_VALID;
 	state->enter		= omap3_enter_idle_bm;
+<<<<<<< HEAD
 	cx->valid		= cpuidle_params_table[idx].valid;
 	sprintf(state->name, "C%d", idx + 1);
 	strncpy(state->desc, descr, CPUIDLE_DESC_LEN);
 	cpuidle_set_statedata(state, cx);
+=======
+	sprintf(state->name, "C%d", idx + 1);
+	strncpy(state->desc, descr, CPUIDLE_DESC_LEN);
+
+}
+
+/* Helper to register the driver_data */
+static inline struct omap3_idle_statedata *_fill_cstate_usage(
+					struct cpuidle_device *dev,
+					int idx)
+{
+	struct omap3_idle_statedata *cx = &omap3_idle_data[idx];
+	struct cpuidle_state_usage *state_usage = &dev->states_usage[idx];
+
+	cx->valid		= cpuidle_params_table[idx].valid;
+	cpuidle_set_statedata(state_usage, cx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return cx;
 }
@@ -330,6 +510,10 @@ static inline struct omap3_idle_statedata *_fill_cstate(
 int __init omap3_idle_init(void)
 {
 	struct cpuidle_device *dev;
+<<<<<<< HEAD
+=======
+	struct cpuidle_driver *drv = &omap3_idle_driver;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct omap3_idle_statedata *cx;
 
 	mpu_pd = pwrdm_lookup("mpu_pwrdm");
@@ -337,6 +521,7 @@ int __init omap3_idle_init(void)
 	per_pd = pwrdm_lookup("per_pwrdm");
 	cam_pd = pwrdm_lookup("cam_pwrdm");
 
+<<<<<<< HEAD
 	cpuidle_register_driver(&omap3_idle_driver);
 	dev = &per_cpu(omap3_idle_dev, smp_processor_id());
 
@@ -344,37 +529,78 @@ int __init omap3_idle_init(void)
 	cx = _fill_cstate(dev, 0, "MPU ON + CORE ON");
 	(&dev->states[0])->enter = omap3_enter_idle;
 	dev->safe_state = &dev->states[0];
+=======
+
+	drv->safe_state_index = -1;
+	dev = &per_cpu(omap3_idle_dev, smp_processor_id());
+
+	/* C1 . MPU WFI + Core active */
+	_fill_cstate(drv, 0, "MPU ON + CORE ON");
+	(&drv->states[0])->enter = omap3_enter_idle;
+	drv->safe_state_index = 0;
+	cx = _fill_cstate_usage(dev, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cx->valid = 1;	/* C1 is always valid */
 	cx->mpu_state = PWRDM_POWER_ON;
 	cx->core_state = PWRDM_POWER_ON;
 
 	/* C2 . MPU WFI + Core inactive */
+<<<<<<< HEAD
 	cx = _fill_cstate(dev, 1, "MPU ON + CORE ON");
+=======
+	_fill_cstate(drv, 1, "MPU ON + CORE ON");
+	cx = _fill_cstate_usage(dev, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cx->mpu_state = PWRDM_POWER_ON;
 	cx->core_state = PWRDM_POWER_ON;
 
 	/* C3 . MPU CSWR + Core inactive */
+<<<<<<< HEAD
 	cx = _fill_cstate(dev, 2, "MPU RET + CORE ON");
+=======
+	_fill_cstate(drv, 2, "MPU RET + CORE ON");
+	cx = _fill_cstate_usage(dev, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cx->mpu_state = PWRDM_POWER_RET;
 	cx->core_state = PWRDM_POWER_ON;
 
 	/* C4 . MPU OFF + Core inactive */
+<<<<<<< HEAD
 	cx = _fill_cstate(dev, 3, "MPU OFF + CORE ON");
+=======
+	_fill_cstate(drv, 3, "MPU OFF + CORE ON");
+	cx = _fill_cstate_usage(dev, 3);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cx->mpu_state = PWRDM_POWER_OFF;
 	cx->core_state = PWRDM_POWER_ON;
 
 	/* C5 . MPU RET + Core RET */
+<<<<<<< HEAD
 	cx = _fill_cstate(dev, 4, "MPU RET + CORE RET");
+=======
+	_fill_cstate(drv, 4, "MPU RET + CORE RET");
+	cx = _fill_cstate_usage(dev, 4);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cx->mpu_state = PWRDM_POWER_RET;
 	cx->core_state = PWRDM_POWER_RET;
 
 	/* C6 . MPU OFF + Core RET */
+<<<<<<< HEAD
 	cx = _fill_cstate(dev, 5, "MPU OFF + CORE RET");
+=======
+	_fill_cstate(drv, 5, "MPU OFF + CORE RET");
+	cx = _fill_cstate_usage(dev, 5);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cx->mpu_state = PWRDM_POWER_OFF;
 	cx->core_state = PWRDM_POWER_RET;
 
 	/* C7 . MPU OFF + Core OFF */
+<<<<<<< HEAD
 	cx = _fill_cstate(dev, 6, "MPU OFF + CORE OFF");
+=======
+	_fill_cstate(drv, 6, "MPU OFF + CORE OFF");
+	cx = _fill_cstate_usage(dev, 6);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Erratum i583: implementation for ES rev < Es1.2 on 3630. We cannot
 	 * enable OFF mode in a stable form for previous revisions.
@@ -388,6 +614,12 @@ int __init omap3_idle_init(void)
 	cx->mpu_state = PWRDM_POWER_OFF;
 	cx->core_state = PWRDM_POWER_OFF;
 
+<<<<<<< HEAD
+=======
+	drv->state_count = OMAP3_NUM_STATES;
+	cpuidle_register_driver(&omap3_idle_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->state_count = OMAP3_NUM_STATES;
 	if (cpuidle_register_device(dev)) {
 		printk(KERN_ERR "%s: CPUidle register device failed\n",

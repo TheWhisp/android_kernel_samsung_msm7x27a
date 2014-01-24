@@ -3,7 +3,12 @@
   Broadcom B43 wireless driver
   IEEE 802.11n PHY and radio device data tables
 
+<<<<<<< HEAD
   Copyright (c) 2008 Michael Buesch <mb@bu3sch.de>
+=======
+  Copyright (c) 2008 Michael Buesch <m@bues.ch>
+  Copyright (c) 2010 Rafał Miłecki <zajec5@gmail.com>
+>>>>>>> refs/remotes/origin/cm-10.0
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

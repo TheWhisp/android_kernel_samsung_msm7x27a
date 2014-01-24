@@ -19,6 +19,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MODULE_NAME "mars"
 
 #include "gspca.h"
@@ -178,8 +183,13 @@ static void reg_w(struct gspca_dev *gspca_dev,
 			&alen,
 			500);	/* timeout in milliseconds */
 	if (ret < 0) {
+<<<<<<< HEAD
 		err("reg write [%02x] error %d",
 			gspca_dev->usb_buf[0], ret);
+=======
+		pr_err("reg write [%02x] error %d\n",
+		       gspca_dev->usb_buf[0], ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		gspca_dev->usb_err = ret;
 	}
 }
@@ -261,7 +271,10 @@ static int sd_config(struct gspca_dev *gspca_dev,
 	cam->nmodes = ARRAY_SIZE(vga_mode);
 	cam->ctrls = sd->ctrls;
 	sd->quality = QUALITY_DEF;
+<<<<<<< HEAD
 	gspca_dev->nbalt = 9;		/* use the altsetting 08 */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -515,6 +528,7 @@ static struct usb_driver sd_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 /* -- module insert / remove -- */
 static int __init sd_mod_init(void)
 {
@@ -527,3 +541,6 @@ static void __exit sd_mod_exit(void)
 
 module_init(sd_mod_init);
 module_exit(sd_mod_exit);
+=======
+module_usb_driver(sd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

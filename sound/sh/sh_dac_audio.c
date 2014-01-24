@@ -27,6 +27,10 @@
 #include <linux/io.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/pcm.h>
@@ -440,6 +444,7 @@ static struct platform_driver driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init sh_dac_init(void)
 {
 	return platform_driver_register(&driver);
@@ -452,3 +457,6 @@ static void __exit sh_dac_exit(void)
 
 module_init(sh_dac_init);
 module_exit(sh_dac_exit);
+=======
+module_platform_driver(driver);
+>>>>>>> refs/remotes/origin/cm-10.0

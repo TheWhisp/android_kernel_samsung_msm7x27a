@@ -8,6 +8,10 @@
  * Copyright (C) 1999, 2000 Silicon Graphics, Inc.
  */
 #include <linux/cache.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqflags.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/mm.h>
 #include <linux/personality.h>
@@ -33,6 +37,10 @@
 #include <asm/cpu-features.h>
 #include <asm/war.h>
 #include <asm/vdso.h>
+<<<<<<< HEAD
+=======
+#include <asm/dsp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "signal-common.h"
 
@@ -255,11 +263,16 @@ asmlinkage int sys_sigsuspend(nabi_no_regargs struct pt_regs regs)
 		return -EFAULT;
 	sigdelsetmask(&newset, ~_BLOCKABLE);
 
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->saved_sigmask = current->blocked;
 	current->blocked = newset;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	current->saved_sigmask = current->blocked;
+	set_current_blocked(&newset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	current->state = TASK_INTERRUPTIBLE;
 	schedule();
@@ -284,11 +297,16 @@ asmlinkage int sys_rt_sigsuspend(nabi_no_regargs struct pt_regs regs)
 		return -EFAULT;
 	sigdelsetmask(&newset, ~_BLOCKABLE);
 
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->saved_sigmask = current->blocked;
 	current->blocked = newset;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	current->saved_sigmask = current->blocked;
+	set_current_blocked(&newset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	current->state = TASK_INTERRUPTIBLE;
 	schedule();
@@ -360,10 +378,14 @@ asmlinkage void sys_sigreturn(nabi_no_regargs struct pt_regs regs)
 		goto badframe;
 
 	sigdelsetmask(&blocked, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = blocked;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&blocked);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sig = restore_sigcontext(&regs, &frame->sf_sc);
 	if (sig < 0)
@@ -399,10 +421,14 @@ asmlinkage void sys_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 		goto badframe;
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sig = restore_sigcontext(&regs, &frame->rs_uc.uc_mcontext);
 	if (sig < 0)
@@ -578,12 +604,16 @@ static int handle_signal(unsigned long sig, siginfo_t *info,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
 	sigorsets(&current->blocked, &current->blocked, &ka->sa.sa_mask);
 	if (!(ka->sa.sa_flags & SA_NODEFER))
 		sigaddset(&current->blocked, sig);
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	block_sigmask(ka, sig);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -658,6 +688,11 @@ static void do_signal(struct pt_regs *regs)
 asmlinkage void do_notify_resume(struct pt_regs *regs, void *unused,
 	__u32 thread_info_flags)
 {
+<<<<<<< HEAD
+=======
+	local_irq_enable();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* deal with pending signal delivery */
 	if (thread_info_flags & (_TIF_SIGPENDING | _TIF_RESTORE_SIGMASK))
 		do_signal(regs);

@@ -12,6 +12,7 @@
  *
  * See Documentation/usb/usb-serial.txt for more information on using this
  * driver
+<<<<<<< HEAD
  *
  * (09/07/2001) gkh
  *	cleaned up the Xircom support.  Added ids for Entregra device which is
@@ -65,6 +66,8 @@
  * (03/26/2000) gkh
  *	Split driver up into device specific pieces.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 
@@ -84,7 +87,11 @@
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* make a simple define to handle if we are compiling keyspan_pda or xircom support */
 #if defined(CONFIG_USB_SERIAL_KEYSPAN_PDA) || defined(CONFIG_USB_SERIAL_KEYSPAN_PDA_MODULE)
@@ -144,7 +151,10 @@ static struct usb_driver keyspan_pda_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct usb_device_id id_table_std[] = {
@@ -290,7 +300,10 @@ static void keyspan_pda_rx_unthrottle(struct tty_struct *tty)
 	struct usb_serial_port *port = tty->driver_data;
 	/* just restart the receive interrupt URB */
 	dbg("keyspan_pda_rx_unthrottle port %d", port->number);
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL))
 		dbg(" usb_submit_urb(read urb) failed");
 }
@@ -532,11 +545,19 @@ static int keyspan_pda_write(struct tty_struct *tty,
 	   the device is full (wait until it says there is room)
 	*/
 	spin_lock_bh(&port->lock);
+<<<<<<< HEAD
 	if (port->write_urb_busy || priv->tx_throttled) {
 		spin_unlock_bh(&port->lock);
 		return 0;
 	}
 	port->write_urb_busy = 1;
+=======
+	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled) {
+		spin_unlock_bh(&port->lock);
+		return 0;
+	}
+	clear_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_bh(&port->lock);
 
 	/* At this point the URB is in our control, nobody else can submit it
@@ -598,7 +619,10 @@ static int keyspan_pda_write(struct tty_struct *tty,
 
 		priv->tx_room -= count;
 
+<<<<<<< HEAD
 		port->write_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = usb_submit_urb(port->write_urb, GFP_ATOMIC);
 		if (rc) {
 			dbg(" usb_submit_urb(write bulk) failed");
@@ -618,7 +642,11 @@ static int keyspan_pda_write(struct tty_struct *tty,
 	rc = count;
 exit:
 	if (rc < 0)
+<<<<<<< HEAD
 		port->write_urb_busy = 0;
+=======
+		set_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 }
 
@@ -628,7 +656,11 @@ static void keyspan_pda_write_bulk_callback(struct urb *urb)
 	struct usb_serial_port *port = urb->context;
 	struct keyspan_pda_private *priv;
 
+<<<<<<< HEAD
 	port->write_urb_busy = 0;
+=======
+	set_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/cm-10.0
 	priv = usb_get_serial_port_data(port);
 
 	/* queue up a wakeup at scheduler time */
@@ -661,7 +693,11 @@ static int keyspan_pda_chars_in_buffer(struct tty_struct *tty)
 	   n_tty.c:normal_poll() ) that we're not writeable. */
 
 	spin_lock_irqsave(&port->lock, flags);
+<<<<<<< HEAD
 	if (port->write_urb_busy || priv->tx_throttled)
+=======
+	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled)
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = 256;
 	spin_unlock_irqrestore(&port->lock, flags);
 	return ret;
@@ -717,7 +753,10 @@ static int keyspan_pda_open(struct tty_struct *tty,
 	priv->tx_throttled = *room ? 0 : 1;
 
 	/*Start reading from the device*/
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	rc = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
 	if (rc) {
 		dbg("%s - usb_submit_urb(read int) failed", __func__);
@@ -835,7 +874,10 @@ static struct usb_serial_driver keyspan_pda_fake_device = {
 		.name =		"keyspan_pda_pre",
 	},
 	.description =		"Keyspan PDA - (prerenumeration)",
+<<<<<<< HEAD
 	.usb_driver = 		&keyspan_pda_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		id_table_fake,
 	.num_ports =		1,
 	.attach =		keyspan_pda_fake_startup,
@@ -849,7 +891,10 @@ static struct usb_serial_driver xircom_pgs_fake_device = {
 		.name =		"xircom_no_firm",
 	},
 	.description =		"Xircom / Entregra PGS - (prerenumeration)",
+<<<<<<< HEAD
 	.usb_driver = 		&keyspan_pda_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		id_table_fake_xircom,
 	.num_ports =		1,
 	.attach =		keyspan_pda_fake_startup,
@@ -862,7 +907,10 @@ static struct usb_serial_driver keyspan_pda_device = {
 		.name =		"keyspan_pda",
 	},
 	.description =		"Keyspan PDA",
+<<<<<<< HEAD
 	.usb_driver = 		&keyspan_pda_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		id_table_std,
 	.num_ports =		1,
 	.dtr_rts =		keyspan_pda_dtr_rts,
@@ -883,6 +931,7 @@ static struct usb_serial_driver keyspan_pda_device = {
 	.release =		keyspan_pda_release,
 };
 
+<<<<<<< HEAD
 
 static int __init keyspan_pda_init(void)
 {
@@ -938,6 +987,20 @@ static void __exit keyspan_pda_exit(void)
 
 module_init(keyspan_pda_init);
 module_exit(keyspan_pda_exit);
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&keyspan_pda_device,
+#ifdef KEYSPAN
+	&keyspan_pda_fake_device,
+#endif
+#ifdef XIRCOM
+	&xircom_pgs_fake_device,
+#endif
+	NULL
+};
+
+module_usb_serial_driver(keyspan_pda_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
@@ -945,4 +1008,7 @@ MODULE_LICENSE("GPL");
 
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

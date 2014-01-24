@@ -41,6 +41,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <asm/unaligned.h>
 
 #include "base.h"
@@ -48,6 +49,15 @@
 
 extern int ath5k_modparam_nohwcrypt;
 
+=======
+#include <net/mac80211.h>
+#include <asm/unaligned.h>
+
+#include "ath5k.h"
+#include "base.h"
+#include "reg.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /********************\
 * Mac80211 functions *
 \********************/
@@ -55,6 +65,7 @@ extern int ath5k_modparam_nohwcrypt;
 static void
 ath5k_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	u16 qnum = skb_get_queue_mapping(skb);
 
@@ -78,12 +89,24 @@ static void
 ath5k_stop(struct ieee80211_hw *hw)
 {
 	ath5k_stop_hw(hw->priv);
+=======
+	struct ath5k_hw *ah = hw->priv;
+	u16 qnum = skb_get_queue_mapping(skb);
+
+	if (WARN_ON(qnum >= ah->ah_capabilities.cap_queues.q_tx_num)) {
+		ieee80211_free_txskb(hw, skb);
+		return;
+	}
+
+	ath5k_tx_queue(hw, skb, &ah->txqs[qnum]);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
 static int
 ath5k_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	int ret;
 	struct ath5k_vif *avf = (void *)vif->drv_priv;
@@ -93,6 +116,17 @@ ath5k_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 	if ((vif->type == NL80211_IFTYPE_AP ||
 	     vif->type == NL80211_IFTYPE_ADHOC)
 	    && (sc->num_ap_vifs + sc->num_adhoc_vifs) >= ATH_BCBUF) {
+=======
+	struct ath5k_hw *ah = hw->priv;
+	int ret;
+	struct ath5k_vif *avf = (void *)vif->drv_priv;
+
+	mutex_lock(&ah->lock);
+
+	if ((vif->type == NL80211_IFTYPE_AP ||
+	     vif->type == NL80211_IFTYPE_ADHOC)
+	    && (ah->num_ap_vifs + ah->num_adhoc_vifs) >= ATH_BCBUF) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ELNRNG;
 		goto end;
 	}
@@ -102,9 +136,15 @@ ath5k_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 	 * We would need to operate the HW in ad-hoc mode to allow TSF updates
 	 * for the IBSS, but this breaks with additional AP or STA interfaces
 	 * at the moment. */
+<<<<<<< HEAD
 	if (sc->num_adhoc_vifs ||
 	    (sc->nvifs && vif->type == NL80211_IFTYPE_ADHOC)) {
 		ATH5K_ERR(sc, "Only one single ad-hoc interface is allowed.\n");
+=======
+	if (ah->num_adhoc_vifs ||
+	    (ah->nvifs && vif->type == NL80211_IFTYPE_ADHOC)) {
+		ATH5K_ERR(ah, "Only one single ad-hoc interface is allowed.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ELNRNG;
 		goto end;
 	}
@@ -121,8 +161,13 @@ ath5k_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 		goto end;
 	}
 
+<<<<<<< HEAD
 	sc->nvifs++;
 	ATH5K_DBG(sc, ATH5K_DEBUG_MODE, "add interface mode %d\n", avf->opmode);
+=======
+	ah->nvifs++;
+	ATH5K_DBG(ah, ATH5K_DEBUG_MODE, "add interface mode %d\n", avf->opmode);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Assign the vap/adhoc to a beacon xmit slot. */
 	if ((avf->opmode == NL80211_IFTYPE_AP) ||
@@ -130,29 +175,50 @@ ath5k_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 	    (avf->opmode == NL80211_IFTYPE_MESH_POINT)) {
 		int slot;
 
+<<<<<<< HEAD
 		WARN_ON(list_empty(&sc->bcbuf));
 		avf->bbuf = list_first_entry(&sc->bcbuf, struct ath5k_buf,
+=======
+		WARN_ON(list_empty(&ah->bcbuf));
+		avf->bbuf = list_first_entry(&ah->bcbuf, struct ath5k_buf,
+>>>>>>> refs/remotes/origin/cm-10.0
 					     list);
 		list_del(&avf->bbuf->list);
 
 		avf->bslot = 0;
 		for (slot = 0; slot < ATH_BCBUF; slot++) {
+<<<<<<< HEAD
 			if (!sc->bslot[slot]) {
+=======
+			if (!ah->bslot[slot]) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				avf->bslot = slot;
 				break;
 			}
 		}
+<<<<<<< HEAD
 		BUG_ON(sc->bslot[avf->bslot] != NULL);
 		sc->bslot[avf->bslot] = vif;
 		if (avf->opmode == NL80211_IFTYPE_AP)
 			sc->num_ap_vifs++;
 		else if (avf->opmode == NL80211_IFTYPE_ADHOC)
 			sc->num_adhoc_vifs++;
+=======
+		BUG_ON(ah->bslot[avf->bslot] != NULL);
+		ah->bslot[avf->bslot] = vif;
+		if (avf->opmode == NL80211_IFTYPE_AP)
+			ah->num_ap_vifs++;
+		else if (avf->opmode == NL80211_IFTYPE_ADHOC)
+			ah->num_adhoc_vifs++;
+		else if (avf->opmode == NL80211_IFTYPE_MESH_POINT)
+			ah->num_mesh_vifs++;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Any MAC address is fine, all others are included through the
 	 * filter.
 	 */
+<<<<<<< HEAD
 	memcpy(&sc->lladdr, vif->addr, ETH_ALEN);
 	ath5k_hw_set_lladdr(sc->ah, vif->addr);
 
@@ -162,6 +228,14 @@ ath5k_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 	ret = 0;
 end:
 	mutex_unlock(&sc->lock);
+=======
+	ath5k_hw_set_lladdr(ah, vif->addr);
+
+	ath5k_update_bssid_mask_and_opmode(ah, vif);
+	ret = 0;
+end:
+	mutex_unlock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -170,6 +244,7 @@ static void
 ath5k_remove_interface(struct ieee80211_hw *hw,
 		       struct ieee80211_vif *vif)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	struct ath5k_vif *avf = (void *)vif->drv_priv;
 	unsigned int i;
@@ -183,18 +258,44 @@ ath5k_remove_interface(struct ieee80211_hw *hw,
 		for (i = 0; i < ATH_BCBUF; i++) {
 			if (sc->bslot[i] == vif) {
 				sc->bslot[i] = NULL;
+=======
+	struct ath5k_hw *ah = hw->priv;
+	struct ath5k_vif *avf = (void *)vif->drv_priv;
+	unsigned int i;
+
+	mutex_lock(&ah->lock);
+	ah->nvifs--;
+
+	if (avf->bbuf) {
+		ath5k_txbuf_free_skb(ah, avf->bbuf);
+		list_add_tail(&avf->bbuf->list, &ah->bcbuf);
+		for (i = 0; i < ATH_BCBUF; i++) {
+			if (ah->bslot[i] == vif) {
+				ah->bslot[i] = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 		}
 		avf->bbuf = NULL;
 	}
 	if (avf->opmode == NL80211_IFTYPE_AP)
+<<<<<<< HEAD
 		sc->num_ap_vifs--;
 	else if (avf->opmode == NL80211_IFTYPE_ADHOC)
 		sc->num_adhoc_vifs--;
 
 	ath5k_update_bssid_mask_and_opmode(sc, NULL);
 	mutex_unlock(&sc->lock);
+=======
+		ah->num_ap_vifs--;
+	else if (avf->opmode == NL80211_IFTYPE_ADHOC)
+		ah->num_adhoc_vifs--;
+	else if (avf->opmode == NL80211_IFTYPE_MESH_POINT)
+		ah->num_mesh_vifs--;
+
+	ath5k_update_bssid_mask_and_opmode(ah, NULL);
+	mutex_unlock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -204,23 +305,39 @@ ath5k_remove_interface(struct ieee80211_hw *hw,
 static int
 ath5k_config(struct ieee80211_hw *hw, u32 changed)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	struct ath5k_hw *ah = sc->ah;
+=======
+	struct ath5k_hw *ah = hw->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ieee80211_conf *conf = &hw->conf;
 	int ret = 0;
 	int i;
 
+<<<<<<< HEAD
 	mutex_lock(&sc->lock);
 
 	if (changed & IEEE80211_CONF_CHANGE_CHANNEL) {
 		ret = ath5k_chan_set(sc, conf->channel);
+=======
+	mutex_lock(&ah->lock);
+
+	if (changed & IEEE80211_CONF_CHANGE_CHANNEL) {
+		ret = ath5k_chan_set(ah, conf->channel);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret < 0)
 			goto unlock;
 	}
 
 	if ((changed & IEEE80211_CONF_CHANGE_POWER) &&
+<<<<<<< HEAD
 	(sc->power_level != conf->power_level)) {
 		sc->power_level = conf->power_level;
+=======
+	(ah->power_level != conf->power_level)) {
+		ah->power_level = conf->power_level;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Half dB steps */
 		ath5k_hw_set_txpower_limit(ah, (conf->power_level * 2));
@@ -254,7 +371,11 @@ ath5k_config(struct ieee80211_hw *hw, u32 changed)
 	ath5k_hw_set_antenna_mode(ah, ah->ah_ant_mode);
 
 unlock:
+<<<<<<< HEAD
 	mutex_unlock(&sc->lock);
+=======
+	mutex_unlock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -264,12 +385,20 @@ ath5k_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		       struct ieee80211_bss_conf *bss_conf, u32 changes)
 {
 	struct ath5k_vif *avf = (void *)vif->drv_priv;
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	struct ath5k_hw *ah = sc->ah;
 	struct ath_common *common = ath5k_hw_common(ah);
 	unsigned long flags;
 
 	mutex_lock(&sc->lock);
+=======
+	struct ath5k_hw *ah = hw->priv;
+	struct ath_common *common = ath5k_hw_common(ah);
+	unsigned long flags;
+
+	mutex_lock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (changes & BSS_CHANGED_BSSID) {
 		/* Cache for later use during resets */
@@ -280,7 +409,11 @@ ath5k_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	}
 
 	if (changes & BSS_CHANGED_BEACON_INT)
+<<<<<<< HEAD
 		sc->bintval = bss_conf->beacon_int;
+=======
+		ah->bintval = bss_conf->beacon_int;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (changes & BSS_CHANGED_ERP_SLOT) {
 		int slot_time;
@@ -294,6 +427,7 @@ ath5k_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	if (changes & BSS_CHANGED_ASSOC) {
 		avf->assoc = bss_conf->assoc;
 		if (bss_conf->assoc)
+<<<<<<< HEAD
 			sc->assoc = bss_conf->assoc;
 		else
 			sc->assoc = ath_any_vif_assoc(sc);
@@ -304,6 +438,18 @@ ath5k_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			AR5K_LED_ASSOC : AR5K_LED_INIT);
 		if (bss_conf->assoc) {
 			ATH5K_DBG(sc, ATH5K_DEBUG_ANY,
+=======
+			ah->assoc = bss_conf->assoc;
+		else
+			ah->assoc = ath5k_any_vif_assoc(ah);
+
+		if (ah->opmode == NL80211_IFTYPE_STATION)
+			ath5k_set_beacon_filter(hw, ah->assoc);
+		ath5k_hw_set_ledstate(ah, ah->assoc ?
+			AR5K_LED_ASSOC : AR5K_LED_INIT);
+		if (bss_conf->assoc) {
+			ATH5K_DBG(ah, ATH5K_DEBUG_ANY,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  "Bss Info ASSOC %d, bssid: %pM\n",
 				  bss_conf->aid, common->curbssid);
 			common->curaid = bss_conf->aid;
@@ -313,6 +459,7 @@ ath5k_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	}
 
 	if (changes & BSS_CHANGED_BEACON) {
+<<<<<<< HEAD
 		spin_lock_irqsave(&sc->block, flags);
 		ath5k_beacon_update(hw, vif);
 		spin_unlock_irqrestore(&sc->block, flags);
@@ -326,6 +473,21 @@ ath5k_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		ath5k_beacon_config(sc);
 
 	mutex_unlock(&sc->lock);
+=======
+		spin_lock_irqsave(&ah->block, flags);
+		ath5k_beacon_update(hw, vif);
+		spin_unlock_irqrestore(&ah->block, flags);
+	}
+
+	if (changes & BSS_CHANGED_BEACON_ENABLED)
+		ah->enable_beacon = bss_conf->enable_beacon;
+
+	if (changes & (BSS_CHANGED_BEACON | BSS_CHANGED_BEACON_ENABLED |
+		       BSS_CHANGED_BEACON_INT))
+		ath5k_beacon_config(ah);
+
+	mutex_unlock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -350,7 +512,11 @@ ath5k_prepare_multicast(struct ieee80211_hw *hw,
 		mfilt[pos / 32] |= (1 << (pos % 32));
 		/* XXX: we might be able to just do this instead,
 		* but not sure, needs testing, if we do use this we'd
+<<<<<<< HEAD
 		* neet to inform below to not reset the mcast */
+=======
+		* need to inform below not to reset the mcast */
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* ath5k_hw_set_mcast_filterindex(ah,
 		 *      ha->addr[5]); */
 	}
@@ -386,12 +552,20 @@ ath5k_configure_filter(struct ieee80211_hw *hw, unsigned int changed_flags,
 	FIF_PLCPFAIL | FIF_CONTROL | FIF_OTHER_BSS | \
 	FIF_BCN_PRBRESP_PROMISC)
 
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	struct ath5k_hw *ah = sc->ah;
 	u32 mfilt[2], rfilt;
 	struct ath5k_vif_iter_data iter_data; /* to count STA interfaces */
 
 	mutex_lock(&sc->lock);
+=======
+	struct ath5k_hw *ah = hw->priv;
+	u32 mfilt[2], rfilt;
+	struct ath5k_vif_iter_data iter_data; /* to count STA interfaces */
+
+	mutex_lock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mfilt[0] = multicast;
 	mfilt[1] = multicast >> 32;
@@ -409,12 +583,21 @@ ath5k_configure_filter(struct ieee80211_hw *hw, unsigned int changed_flags,
 
 	if (changed_flags & (FIF_PROMISC_IN_BSS | FIF_OTHER_BSS)) {
 		if (*new_flags & FIF_PROMISC_IN_BSS)
+<<<<<<< HEAD
 			__set_bit(ATH_STAT_PROMISC, sc->status);
 		else
 			__clear_bit(ATH_STAT_PROMISC, sc->status);
 	}
 
 	if (test_bit(ATH_STAT_PROMISC, sc->status))
+=======
+			__set_bit(ATH_STAT_PROMISC, ah->status);
+		else
+			__clear_bit(ATH_STAT_PROMISC, ah->status);
+	}
+
+	if (test_bit(ATH_STAT_PROMISC, ah->status))
+>>>>>>> refs/remotes/origin/cm-10.0
 		rfilt |= AR5K_RX_FILTER_PROM;
 
 	/* Note, AR5K_RX_FILTER_MCAST is already enabled */
@@ -429,7 +612,11 @@ ath5k_configure_filter(struct ieee80211_hw *hw, unsigned int changed_flags,
 
 	/* FIF_BCN_PRBRESP_PROMISC really means to enable beacons
 	* and probes for any BSSID */
+<<<<<<< HEAD
 	if ((*new_flags & FIF_BCN_PRBRESP_PROMISC) || (sc->nvifs > 1))
+=======
+	if ((*new_flags & FIF_BCN_PRBRESP_PROMISC) || (ah->nvifs > 1))
+>>>>>>> refs/remotes/origin/cm-10.0
 		rfilt |= AR5K_RX_FILTER_BEACON;
 
 	/* FIF_CONTROL doc says that if FIF_PROMISC_IN_BSS is not
@@ -444,7 +631,11 @@ ath5k_configure_filter(struct ieee80211_hw *hw, unsigned int changed_flags,
 
 	/* XXX move these to mac80211, and add a beacon IFF flag to mac80211 */
 
+<<<<<<< HEAD
 	switch (sc->opmode) {
+=======
+	switch (ah->opmode) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case NL80211_IFTYPE_MESH_POINT:
 		rfilt |= AR5K_RX_FILTER_CONTROL |
 			 AR5K_RX_FILTER_BEACON |
@@ -457,7 +648,11 @@ ath5k_configure_filter(struct ieee80211_hw *hw, unsigned int changed_flags,
 			 AR5K_RX_FILTER_BEACON;
 		break;
 	case NL80211_IFTYPE_STATION:
+<<<<<<< HEAD
 		if (sc->assoc)
+=======
+		if (ah->assoc)
+>>>>>>> refs/remotes/origin/cm-10.0
 			rfilt |= AR5K_RX_FILTER_BEACON;
 	default:
 		break;
@@ -466,14 +661,22 @@ ath5k_configure_filter(struct ieee80211_hw *hw, unsigned int changed_flags,
 	iter_data.hw_macaddr = NULL;
 	iter_data.n_stas = 0;
 	iter_data.need_set_hw_addr = false;
+<<<<<<< HEAD
 	ieee80211_iterate_active_interfaces_atomic(sc->hw, ath5k_vif_iter,
+=======
+	ieee80211_iterate_active_interfaces_atomic(ah->hw, ath5k_vif_iter,
+>>>>>>> refs/remotes/origin/cm-10.0
 						   &iter_data);
 
 	/* Set up RX Filter */
 	if (iter_data.n_stas > 1) {
 		/* If you have multiple STA interfaces connected to
 		 * different APs, ARPs are not received (most of the time?)
+<<<<<<< HEAD
 		 * Enabling PROMISC appears to fix that probem.
+=======
+		 * Enabling PROMISC appears to fix that problem.
+>>>>>>> refs/remotes/origin/cm-10.0
 		 */
 		rfilt |= AR5K_RX_FILTER_PROM;
 	}
@@ -485,9 +688,15 @@ ath5k_configure_filter(struct ieee80211_hw *hw, unsigned int changed_flags,
 	ath5k_hw_set_mcast_filter(ah, mfilt[0], mfilt[1]);
 	/* Set the cached hw filter flags, this will later actually
 	 * be set in HW */
+<<<<<<< HEAD
 	sc->filter_flags = rfilt;
 
 	mutex_unlock(&sc->lock);
+=======
+	ah->filter_flags = rfilt;
+
+	mutex_unlock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -496,14 +705,29 @@ ath5k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 	      struct ieee80211_vif *vif, struct ieee80211_sta *sta,
 	      struct ieee80211_key_conf *key)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	struct ath5k_hw *ah = sc->ah;
+=======
+	struct ath5k_hw *ah = hw->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ath_common *common = ath5k_hw_common(ah);
 	int ret = 0;
 
 	if (ath5k_modparam_nohwcrypt)
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
+=======
+	if (vif->type == NL80211_IFTYPE_ADHOC &&
+	    (key->cipher == WLAN_CIPHER_SUITE_TKIP ||
+	     key->cipher == WLAN_CIPHER_SUITE_CCMP) &&
+	    !(key->flags & IEEE80211_KEY_FLAG_PAIRWISE)) {
+		/* don't program group keys when using IBSS_RSN */
+		return -EOPNOTSUPP;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (key->cipher) {
 	case WLAN_CIPHER_SUITE_WEP40:
 	case WLAN_CIPHER_SUITE_WEP104:
@@ -518,7 +742,11 @@ ath5k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	mutex_lock(&sc->lock);
+=======
+	mutex_lock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (cmd) {
 	case SET_KEY:
@@ -542,7 +770,11 @@ ath5k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 	}
 
 	mmiowb();
+<<<<<<< HEAD
 	mutex_unlock(&sc->lock);
+=======
+	mutex_unlock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -550,17 +782,28 @@ ath5k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 static void
 ath5k_sw_scan_start(struct ieee80211_hw *hw)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	if (!sc->assoc)
 		ath5k_hw_set_ledstate(sc->ah, AR5K_LED_SCAN);
+=======
+	struct ath5k_hw *ah = hw->priv;
+	if (!ah->assoc)
+		ath5k_hw_set_ledstate(ah, AR5K_LED_SCAN);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
 static void
 ath5k_sw_scan_complete(struct ieee80211_hw *hw)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	ath5k_hw_set_ledstate(sc->ah, sc->assoc ?
+=======
+	struct ath5k_hw *ah = hw->priv;
+	ath5k_hw_set_ledstate(ah, ah->assoc ?
+>>>>>>> refs/remotes/origin/cm-10.0
 		AR5K_LED_ASSOC : AR5K_LED_INIT);
 }
 
@@ -569,6 +812,7 @@ static int
 ath5k_get_stats(struct ieee80211_hw *hw,
 		struct ieee80211_low_level_stats *stats)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 
 	/* Force update */
@@ -578,24 +822,46 @@ ath5k_get_stats(struct ieee80211_hw *hw,
 	stats->dot11RTSFailureCount = sc->stats.rts_fail;
 	stats->dot11RTSSuccessCount = sc->stats.rts_ok;
 	stats->dot11FCSErrorCount = sc->stats.fcs_error;
+=======
+	struct ath5k_hw *ah = hw->priv;
+
+	/* Force update */
+	ath5k_hw_update_mib_counters(ah);
+
+	stats->dot11ACKFailureCount = ah->stats.ack_fail;
+	stats->dot11RTSFailureCount = ah->stats.rts_fail;
+	stats->dot11RTSSuccessCount = ah->stats.rts_ok;
+	stats->dot11FCSErrorCount = ah->stats.fcs_error;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
 
 static int
+<<<<<<< HEAD
 ath5k_conf_tx(struct ieee80211_hw *hw, u16 queue,
 	      const struct ieee80211_tx_queue_params *params)
 {
 	struct ath5k_softc *sc = hw->priv;
 	struct ath5k_hw *ah = sc->ah;
+=======
+ath5k_conf_tx(struct ieee80211_hw *hw, struct ieee80211_vif *vif, u16 queue,
+	      const struct ieee80211_tx_queue_params *params)
+{
+	struct ath5k_hw *ah = hw->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ath5k_txq_info qi;
 	int ret = 0;
 
 	if (queue >= ah->ah_capabilities.cap_queues.q_tx_num)
 		return 0;
 
+<<<<<<< HEAD
 	mutex_lock(&sc->lock);
+=======
+	mutex_lock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ath5k_hw_get_tx_queueprops(ah, queue, &qi);
 
@@ -604,65 +870,112 @@ ath5k_conf_tx(struct ieee80211_hw *hw, u16 queue,
 	qi.tqi_cw_max = params->cw_max;
 	qi.tqi_burst_time = params->txop;
 
+<<<<<<< HEAD
 	ATH5K_DBG(sc, ATH5K_DEBUG_ANY,
+=======
+	ATH5K_DBG(ah, ATH5K_DEBUG_ANY,
+>>>>>>> refs/remotes/origin/cm-10.0
 		  "Configure tx [queue %d],  "
 		  "aifs: %d, cw_min: %d, cw_max: %d, txop: %d\n",
 		  queue, params->aifs, params->cw_min,
 		  params->cw_max, params->txop);
 
 	if (ath5k_hw_set_tx_queueprops(ah, queue, &qi)) {
+<<<<<<< HEAD
 		ATH5K_ERR(sc,
+=======
+		ATH5K_ERR(ah,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  "Unable to update hardware queue %u!\n", queue);
 		ret = -EIO;
 	} else
 		ath5k_hw_reset_tx_queue(ah, queue);
 
+<<<<<<< HEAD
 	mutex_unlock(&sc->lock);
+=======
+	mutex_unlock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
 
 
 static u64
+<<<<<<< HEAD
 ath5k_get_tsf(struct ieee80211_hw *hw)
 {
 	struct ath5k_softc *sc = hw->priv;
 
 	return ath5k_hw_get_tsf64(sc->ah);
+=======
+ath5k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+{
+	struct ath5k_hw *ah = hw->priv;
+
+	return ath5k_hw_get_tsf64(ah);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
 static void
+<<<<<<< HEAD
 ath5k_set_tsf(struct ieee80211_hw *hw, u64 tsf)
 {
 	struct ath5k_softc *sc = hw->priv;
 
 	ath5k_hw_set_tsf64(sc->ah, tsf);
+=======
+ath5k_set_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif, u64 tsf)
+{
+	struct ath5k_hw *ah = hw->priv;
+
+	ath5k_hw_set_tsf64(ah, tsf);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
 static void
+<<<<<<< HEAD
 ath5k_reset_tsf(struct ieee80211_hw *hw)
 {
 	struct ath5k_softc *sc = hw->priv;
+=======
+ath5k_reset_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+{
+	struct ath5k_hw *ah = hw->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * in IBSS mode we need to update the beacon timers too.
 	 * this will also reset the TSF if we call it with 0
 	 */
+<<<<<<< HEAD
 	if (sc->opmode == NL80211_IFTYPE_ADHOC)
 		ath5k_beacon_update_timers(sc, 0);
 	else
 		ath5k_hw_reset_tsf(sc->ah);
+=======
+	if (ah->opmode == NL80211_IFTYPE_ADHOC)
+		ath5k_beacon_update_timers(ah, 0);
+	else
+		ath5k_hw_reset_tsf(ah);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
 static int
 ath5k_get_survey(struct ieee80211_hw *hw, int idx, struct survey_info *survey)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 	struct ieee80211_conf *conf = &hw->conf;
 	struct ath_common *common = ath5k_hw_common(sc->ah);
+=======
+	struct ath5k_hw *ah = hw->priv;
+	struct ieee80211_conf *conf = &hw->conf;
+	struct ath_common *common = ath5k_hw_common(ah);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ath_cycle_counters *cc = &common->cc_survey;
 	unsigned int div = common->clockrate * 1000;
 
@@ -672,18 +985,32 @@ ath5k_get_survey(struct ieee80211_hw *hw, int idx, struct survey_info *survey)
 	spin_lock_bh(&common->cc_lock);
 	ath_hw_cycle_counters_update(common);
 	if (cc->cycles > 0) {
+<<<<<<< HEAD
 		sc->survey.channel_time += cc->cycles / div;
 		sc->survey.channel_time_busy += cc->rx_busy / div;
 		sc->survey.channel_time_rx += cc->rx_frame / div;
 		sc->survey.channel_time_tx += cc->tx_frame / div;
+=======
+		ah->survey.channel_time += cc->cycles / div;
+		ah->survey.channel_time_busy += cc->rx_busy / div;
+		ah->survey.channel_time_rx += cc->rx_frame / div;
+		ah->survey.channel_time_tx += cc->tx_frame / div;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	memset(cc, 0, sizeof(*cc));
 	spin_unlock_bh(&common->cc_lock);
 
+<<<<<<< HEAD
 	memcpy(survey, &sc->survey, sizeof(*survey));
 
 	survey->channel = conf->channel;
 	survey->noise = sc->ah->ah_noise_floor;
+=======
+	memcpy(survey, &ah->survey, sizeof(*survey));
+
+	survey->channel = conf->channel;
+	survey->noise = ah->ah_noise_floor;
+>>>>>>> refs/remotes/origin/cm-10.0
 	survey->filled = SURVEY_INFO_NOISE_DBM |
 			SURVEY_INFO_CHANNEL_TIME |
 			SURVEY_INFO_CHANNEL_TIME_BUSY |
@@ -707,17 +1034,26 @@ ath5k_get_survey(struct ieee80211_hw *hw, int idx, struct survey_info *survey)
 static void
 ath5k_set_coverage_class(struct ieee80211_hw *hw, u8 coverage_class)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 
 	mutex_lock(&sc->lock);
 	ath5k_hw_set_coverage_class(sc->ah, coverage_class);
 	mutex_unlock(&sc->lock);
+=======
+	struct ath5k_hw *ah = hw->priv;
+
+	mutex_lock(&ah->lock);
+	ath5k_hw_set_coverage_class(ah, coverage_class);
+	mutex_unlock(&ah->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
 static int
 ath5k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 
 	if (tx_ant == 1 && rx_ant == 1)
@@ -726,6 +1062,16 @@ ath5k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
 		ath5k_hw_set_antenna_mode(sc->ah, AR5K_ANTMODE_FIXED_B);
 	else if ((tx_ant & 3) == 3 && (rx_ant & 3) == 3)
 		ath5k_hw_set_antenna_mode(sc->ah, AR5K_ANTMODE_DEFAULT);
+=======
+	struct ath5k_hw *ah = hw->priv;
+
+	if (tx_ant == 1 && rx_ant == 1)
+		ath5k_hw_set_antenna_mode(ah, AR5K_ANTMODE_FIXED_A);
+	else if (tx_ant == 2 && rx_ant == 2)
+		ath5k_hw_set_antenna_mode(ah, AR5K_ANTMODE_FIXED_B);
+	else if ((tx_ant & 3) == 3 && (rx_ant & 3) == 3)
+		ath5k_hw_set_antenna_mode(ah, AR5K_ANTMODE_DEFAULT);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		return -EINVAL;
 	return 0;
@@ -735,9 +1081,15 @@ ath5k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
 static int
 ath5k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 
 	switch (sc->ah->ah_ant_mode) {
+=======
+	struct ath5k_hw *ah = hw->priv;
+
+	switch (ah->ah_ant_mode) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case AR5K_ANTMODE_FIXED_A:
 		*tx_ant = 1; *rx_ant = 1; break;
 	case AR5K_ANTMODE_FIXED_B:
@@ -752,9 +1104,15 @@ ath5k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
 static void ath5k_get_ringparam(struct ieee80211_hw *hw,
 				u32 *tx, u32 *tx_max, u32 *rx, u32 *rx_max)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 
 	*tx = sc->txqs[AR5K_TX_QUEUE_ID_DATA_MIN].txq_max;
+=======
+	struct ath5k_hw *ah = hw->priv;
+
+	*tx = ah->txqs[AR5K_TX_QUEUE_ID_DATA_MIN].txq_max;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*tx_max = ATH5K_TXQ_LEN_MAX;
 	*rx = *rx_max = ATH_RXBUF;
@@ -763,7 +1121,11 @@ static void ath5k_get_ringparam(struct ieee80211_hw *hw,
 
 static int ath5k_set_ringparam(struct ieee80211_hw *hw, u32 tx, u32 rx)
 {
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
+=======
+	struct ath5k_hw *ah = hw->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 qnum;
 
 	/* only support setting tx ring size for now */
@@ -774,6 +1136,7 @@ static int ath5k_set_ringparam(struct ieee80211_hw *hw, u32 tx, u32 rx)
 	if (!tx || tx > ATH5K_TXQ_LEN_MAX)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	for (qnum = 0; qnum < ARRAY_SIZE(sc->txqs); qnum++) {
 		if (!sc->txqs[qnum].setup)
 			continue;
@@ -784,6 +1147,18 @@ static int ath5k_set_ringparam(struct ieee80211_hw *hw, u32 tx, u32 rx)
 		sc->txqs[qnum].txq_max = tx;
 		if (sc->txqs[qnum].txq_len >= sc->txqs[qnum].txq_max)
 			ieee80211_stop_queue(hw, sc->txqs[qnum].qnum);
+=======
+	for (qnum = 0; qnum < ARRAY_SIZE(ah->txqs); qnum++) {
+		if (!ah->txqs[qnum].setup)
+			continue;
+		if (ah->txqs[qnum].qnum < AR5K_TX_QUEUE_ID_DATA_MIN ||
+		    ah->txqs[qnum].qnum > AR5K_TX_QUEUE_ID_DATA_MAX)
+			continue;
+
+		ah->txqs[qnum].txq_max = tx;
+		if (ah->txqs[qnum].txq_len >= ah->txqs[qnum].txq_max)
+			ieee80211_stop_queue(hw, ah->txqs[qnum].qnum);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;

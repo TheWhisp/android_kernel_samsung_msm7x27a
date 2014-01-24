@@ -10,6 +10,7 @@
  * for more details.
  */
 
+<<<<<<< HEAD
 /*
  * These are the bitfields for each
  * display depth that we support.
@@ -48,6 +49,17 @@ struct sa1100fb_mach_info {
 	u_int		lccr0;
 	u_int		lccr3;
 };
+=======
+#define LCCR0           0x0000          /* LCD Control Reg. 0 */
+#define LCSR            0x0004          /* LCD Status Reg. */
+#define DBAR1           0x0010          /* LCD DMA Base Address Reg. channel 1 */
+#define DCAR1           0x0014          /* LCD DMA Current Address Reg. channel 1 */
+#define DBAR2           0x0018          /* LCD DMA Base Address Reg.  channel 2 */
+#define DCAR2           0x001C          /* LCD DMA Current Address Reg. channel 2 */
+#define LCCR1           0x0020          /* LCD Control Reg. 1 */
+#define LCCR2           0x0024          /* LCD Control Reg. 2 */
+#define LCCR3           0x0028          /* LCD Control Reg. 3 */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Shadows for LCD controller registers */
 struct sa1100fb_lcd_reg {
@@ -57,6 +69,7 @@ struct sa1100fb_lcd_reg {
 	unsigned long lccr3;
 };
 
+<<<<<<< HEAD
 #define RGB_4	(0)
 #define RGB_8	(1)
 #define RGB_16	(2)
@@ -70,6 +83,13 @@ struct sa1100fb_info {
 	u_int			max_bpp;
 	u_int			max_xres;
 	u_int			max_yres;
+=======
+struct sa1100fb_info {
+	struct fb_info		fb;
+	struct device		*dev;
+	const struct sa1100fb_rgb *rgb[NR_RGB];
+	void __iomem		*base;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * These are the addresses we mapped
@@ -88,12 +108,15 @@ struct sa1100fb_info {
 	dma_addr_t		dbar1;
 	dma_addr_t		dbar2;
 
+<<<<<<< HEAD
 	u_int			lccr0;
 	u_int			lccr3;
 	u_int			cmap_inverse:1,
 				cmap_static:1,
 				unused:30;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u_int			reg_lccr0;
 	u_int			reg_lccr1;
 	u_int			reg_lccr2;
@@ -109,6 +132,11 @@ struct sa1100fb_info {
 	struct notifier_block	freq_transition;
 	struct notifier_block	freq_policy;
 #endif
+<<<<<<< HEAD
+=======
+
+	const struct sa1100fb_mach_info *inf;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define TO_INF(ptr,member)	container_of(ptr,struct sa1100fb_info,member)
@@ -130,6 +158,7 @@ struct sa1100fb_info {
 #define SA1100_NAME	"SA1100"
 
 /*
+<<<<<<< HEAD
  *  Debug macros 
  */
 #if DEBUG
@@ -139,6 +168,8 @@ struct sa1100fb_info {
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Minimum X and Y resolutions
  */
 #define MIN_XRES	64

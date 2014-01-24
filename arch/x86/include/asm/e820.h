@@ -117,7 +117,11 @@ static inline void early_memtest(unsigned long start, unsigned long end)
 
 extern unsigned long e820_end_of_ram_pfn(void);
 extern unsigned long e820_end_of_low_ram_pfn(void);
+<<<<<<< HEAD
 extern u64 early_reserve_e820(u64 startt, u64 sizet, u64 align);
+=======
+extern u64 early_reserve_e820(u64 sizet, u64 align);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void memblock_x86_fill(void);
 void memblock_find_dma_reserve(void);

@@ -18,11 +18,14 @@
 #include <linux/percpu.h>
 
 #include <asm/processor.h>
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 #include <asm/paca.h>
 #include <asm/firmware.h>
 #include <asm/iseries/hv_call.h>
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* time.c */
 extern unsigned long tb_ticks_per_jiffy;
@@ -167,6 +170,7 @@ static inline void set_dec(int val)
 #ifndef CONFIG_BOOKE
 	--val;
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 	if (firmware_has_feature(FW_FEATURE_ISERIES) &&
 			get_lppaca()->shared_proc) {
@@ -176,6 +180,8 @@ static inline void set_dec(int val)
 		return;
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mtspr(SPRN_DEC, val);
 #endif /* not 40x or 8xx_CPU6 */
 }
@@ -217,7 +223,12 @@ DECLARE_PER_CPU(struct cpu_usage, cpu_usage_array);
 #endif
 
 extern void secondary_cpu_time_init(void);
+<<<<<<< HEAD
 extern void iSeries_time_init_early(void);
+=======
+
+DECLARE_PER_CPU(u64, decrementers_next_tb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern void decrementer_check_overflow(void);
 

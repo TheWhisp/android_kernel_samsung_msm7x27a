@@ -14,6 +14,10 @@
  */
 
 #include <crypto/internal/hash.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "sha.h"
 #include "crypt_s390.h"
 

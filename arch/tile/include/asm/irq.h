@@ -21,7 +21,11 @@
 #define NR_IRQS 32
 
 /* IRQ numbers used for linux IPIs. */
+<<<<<<< HEAD
 #define IRQ_RESCHEDULE 1
+=======
+#define IRQ_RESCHEDULE 0
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define irq_canonicalize(irq)   (irq)
 
@@ -74,6 +78,7 @@ enum {
  */
 void tile_irq_activate(unsigned int irq, int tile_irq_type);
 
+<<<<<<< HEAD
 /*
  * For onboard, non-PCI (e.g. TILE_IRQ_PERCPU) devices, drivers know
  * how to use enable/disable_percpu_irq() to manage interrupts on each
@@ -84,6 +89,8 @@ void enable_percpu_irq(unsigned int irq);
 void disable_percpu_irq(unsigned int irq);
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void setup_irq_regs(void);
 
 #endif /* _ASM_TILE_IRQ_H */

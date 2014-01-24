@@ -114,12 +114,18 @@ static struct xen_blkif *xen_blkif_alloc(domid_t domid)
 	spin_lock_init(&blkif->blk_ring_lock);
 	atomic_set(&blkif->refcnt, 1);
 	init_waitqueue_head(&blkif->wq);
+<<<<<<< HEAD
+=======
+	init_completion(&blkif->drain_complete);
+	atomic_set(&blkif->drain, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	blkif->st_print = jiffies;
 	init_waitqueue_head(&blkif->waiting_to_free);
 
 	return blkif;
 }
 
+<<<<<<< HEAD
 static int map_frontend_page(struct xen_blkif *blkif, unsigned long shared_page)
 {
 	struct gnttab_map_grant_ref op;
@@ -152,6 +158,8 @@ static void unmap_frontend_page(struct xen_blkif *blkif)
 		BUG();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int xen_blkif_map(struct xen_blkif *blkif, unsigned long shared_page,
 			 unsigned int evtchn)
 {
@@ -161,6 +169,7 @@ static int xen_blkif_map(struct xen_blkif *blkif, unsigned long shared_page,
 	if (blkif->irq)
 		return 0;
 
+<<<<<<< HEAD
 	blkif->blk_ring_area = alloc_vm_area(PAGE_SIZE);
 	if (!blkif->blk_ring_area)
 		return -ENOMEM;
@@ -170,26 +179,43 @@ static int xen_blkif_map(struct xen_blkif *blkif, unsigned long shared_page,
 		free_vm_area(blkif->blk_ring_area);
 		return err;
 	}
+=======
+	err = xenbus_map_ring_valloc(blkif->be->dev, shared_page, &blkif->blk_ring);
+	if (err < 0)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (blkif->blk_protocol) {
 	case BLKIF_PROTOCOL_NATIVE:
 	{
 		struct blkif_sring *sring;
+<<<<<<< HEAD
 		sring = (struct blkif_sring *)blkif->blk_ring_area->addr;
+=======
+		sring = (struct blkif_sring *)blkif->blk_ring;
+>>>>>>> refs/remotes/origin/cm-10.0
 		BACK_RING_INIT(&blkif->blk_rings.native, sring, PAGE_SIZE);
 		break;
 	}
 	case BLKIF_PROTOCOL_X86_32:
 	{
 		struct blkif_x86_32_sring *sring_x86_32;
+<<<<<<< HEAD
 		sring_x86_32 = (struct blkif_x86_32_sring *)blkif->blk_ring_area->addr;
+=======
+		sring_x86_32 = (struct blkif_x86_32_sring *)blkif->blk_ring;
+>>>>>>> refs/remotes/origin/cm-10.0
 		BACK_RING_INIT(&blkif->blk_rings.x86_32, sring_x86_32, PAGE_SIZE);
 		break;
 	}
 	case BLKIF_PROTOCOL_X86_64:
 	{
 		struct blkif_x86_64_sring *sring_x86_64;
+<<<<<<< HEAD
 		sring_x86_64 = (struct blkif_x86_64_sring *)blkif->blk_ring_area->addr;
+=======
+		sring_x86_64 = (struct blkif_x86_64_sring *)blkif->blk_ring;
+>>>>>>> refs/remotes/origin/cm-10.0
 		BACK_RING_INIT(&blkif->blk_rings.x86_64, sring_x86_64, PAGE_SIZE);
 		break;
 	}
@@ -201,8 +227,12 @@ static int xen_blkif_map(struct xen_blkif *blkif, unsigned long shared_page,
 						    xen_blkif_be_int, 0,
 						    "blkif-backend", blkif);
 	if (err < 0) {
+<<<<<<< HEAD
 		unmap_frontend_page(blkif);
 		free_vm_area(blkif->blk_ring_area);
+=======
+		xenbus_unmap_ring_vfree(blkif->be->dev, blkif->blk_ring);
+>>>>>>> refs/remotes/origin/cm-10.0
 		blkif->blk_rings.common.sring = NULL;
 		return err;
 	}
@@ -228,8 +258,12 @@ static void xen_blkif_disconnect(struct xen_blkif *blkif)
 	}
 
 	if (blkif->blk_rings.common.sring) {
+<<<<<<< HEAD
 		unmap_frontend_page(blkif);
 		free_vm_area(blkif->blk_ring_area);
+=======
+		xenbus_unmap_ring_vfree(blkif->be->dev, blkif->blk_ring);
+>>>>>>> refs/remotes/origin/cm-10.0
 		blkif->blk_rings.common.sring = NULL;
 	}
 }
@@ -272,6 +306,10 @@ VBD_SHOW(oo_req,  "%d\n", be->blkif->st_oo_req);
 VBD_SHOW(rd_req,  "%d\n", be->blkif->st_rd_req);
 VBD_SHOW(wr_req,  "%d\n", be->blkif->st_wr_req);
 VBD_SHOW(f_req,  "%d\n", be->blkif->st_f_req);
+<<<<<<< HEAD
+=======
+VBD_SHOW(ds_req,  "%d\n", be->blkif->st_ds_req);
+>>>>>>> refs/remotes/origin/cm-10.0
 VBD_SHOW(rd_sect, "%d\n", be->blkif->st_rd_sect);
 VBD_SHOW(wr_sect, "%d\n", be->blkif->st_wr_sect);
 
@@ -280,6 +318,10 @@ static struct attribute *xen_vbdstat_attrs[] = {
 	&dev_attr_rd_req.attr,
 	&dev_attr_wr_req.attr,
 	&dev_attr_f_req.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_ds_req.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 	&dev_attr_rd_sect.attr,
 	&dev_attr_wr_sect.attr,
 	NULL
@@ -374,6 +416,12 @@ static int xen_vbd_create(struct xen_blkif *blkif, blkif_vdev_t handle,
 	if (q && q->flush_flags)
 		vbd->flush_support = true;
 
+<<<<<<< HEAD
+=======
+	if (q && blk_queue_secdiscard(q))
+		vbd->discard_secure = true;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	DPRINTK("Successful creation of handle=%04x (dom=%u)\n",
 		handle, blkif->domid);
 	return 0;
@@ -415,7 +463,64 @@ int xen_blkbk_flush_diskcache(struct xenbus_transaction xbt,
 	err = xenbus_printf(xbt, dev->nodename, "feature-flush-cache",
 			    "%d", state);
 	if (err)
+<<<<<<< HEAD
 		xenbus_dev_fatal(dev, err, "writing feature-flush-cache");
+=======
+		dev_warn(&dev->dev, "writing feature-flush-cache (%d)", err);
+
+	return err;
+}
+
+static void xen_blkbk_discard(struct xenbus_transaction xbt, struct backend_info *be)
+{
+	struct xenbus_device *dev = be->dev;
+	struct xen_blkif *blkif = be->blkif;
+	int err;
+	int state = 0;
+	struct block_device *bdev = be->blkif->vbd.bdev;
+	struct request_queue *q = bdev_get_queue(bdev);
+
+	if (blk_queue_discard(q)) {
+		err = xenbus_printf(xbt, dev->nodename,
+			"discard-granularity", "%u",
+			q->limits.discard_granularity);
+		if (err) {
+			dev_warn(&dev->dev, "writing discard-granularity (%d)", err);
+			return;
+		}
+		err = xenbus_printf(xbt, dev->nodename,
+			"discard-alignment", "%u",
+			q->limits.discard_alignment);
+		if (err) {
+			dev_warn(&dev->dev, "writing discard-alignment (%d)", err);
+			return;
+		}
+		state = 1;
+		/* Optional. */
+		err = xenbus_printf(xbt, dev->nodename,
+				    "discard-secure", "%d",
+				    blkif->vbd.discard_secure);
+		if (err) {
+			dev_warn(&dev->dev, "writing discard-secure (%d)", err);
+			return;
+		}
+	}
+	err = xenbus_printf(xbt, dev->nodename, "feature-discard",
+			    "%d", state);
+	if (err)
+		dev_warn(&dev->dev, "writing feature-discard (%d)", err);
+}
+int xen_blkbk_barrier(struct xenbus_transaction xbt,
+		      struct backend_info *be, int state)
+{
+	struct xenbus_device *dev = be->dev;
+	int err;
+
+	err = xenbus_printf(xbt, dev->nodename, "feature-barrier",
+			    "%d", state);
+	if (err)
+		dev_warn(&dev->dev, "writing feature-barrier (%d)", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return err;
 }
@@ -581,7 +686,11 @@ static void frontend_changed(struct xenbus_device *dev,
 	case XenbusStateConnected:
 		/*
 		 * Ensure we connect even when two watches fire in
+<<<<<<< HEAD
 		 * close successsion and we miss the intermediate value
+=======
+		 * close succession and we miss the intermediate value
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * of frontend_state.
 		 */
 		if (dev->state == XenbusStateConnected)
@@ -589,7 +698,11 @@ static void frontend_changed(struct xenbus_device *dev,
 
 		/*
 		 * Enforce precondition before potential leak point.
+<<<<<<< HEAD
 		 * blkif_disconnect() is idempotent.
+=======
+		 * xen_blkif_disconnect() is idempotent.
+>>>>>>> refs/remotes/origin/cm-10.0
 		 */
 		xen_blkif_disconnect(be->blkif);
 
@@ -600,17 +713,28 @@ static void frontend_changed(struct xenbus_device *dev,
 		break;
 
 	case XenbusStateClosing:
+<<<<<<< HEAD
 		xen_blkif_disconnect(be->blkif);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		xenbus_switch_state(dev, XenbusStateClosing);
 		break;
 
 	case XenbusStateClosed:
+<<<<<<< HEAD
+=======
+		xen_blkif_disconnect(be->blkif);
+>>>>>>> refs/remotes/origin/cm-10.0
 		xenbus_switch_state(dev, XenbusStateClosed);
 		if (xenbus_dev_is_online(dev))
 			break;
 		/* fall through if not online */
 	case XenbusStateUnknown:
+<<<<<<< HEAD
 		/* implies blkif_disconnect() via blkback_remove() */
+=======
+		/* implies xen_blkif_disconnect() via xen_blkbk_remove() */
+>>>>>>> refs/remotes/origin/cm-10.0
 		device_unregister(&dev->dev);
 		break;
 
@@ -645,9 +769,18 @@ again:
 		return;
 	}
 
+<<<<<<< HEAD
 	err = xen_blkbk_flush_diskcache(xbt, be, be->blkif->vbd.flush_support);
 	if (err)
 		goto abort;
+=======
+	/* If we can't advertise it is OK. */
+	xen_blkbk_flush_diskcache(xbt, be, be->blkif->vbd.flush_support);
+
+	xen_blkbk_discard(xbt, be);
+
+	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = xenbus_printf(xbt, dev->nodename, "sectors", "%llu",
 			    (unsigned long long)vbd_sz(&be->blkif->vbd));
@@ -683,7 +816,11 @@ again:
 
 	err = xenbus_switch_state(dev, XenbusStateConnected);
 	if (err)
+<<<<<<< HEAD
 		xenbus_dev_fatal(dev, err, "switching to Connected state",
+=======
+		xenbus_dev_fatal(dev, err, "%s: switching to Connected state",
+>>>>>>> refs/remotes/origin/cm-10.0
 				 dev->nodename);
 
 	return;
@@ -750,6 +887,7 @@ static const struct xenbus_device_id xen_blkbk_ids[] = {
 };
 
 
+<<<<<<< HEAD
 static struct xenbus_driver xen_blkbk = {
 	.name = "vbd",
 	.owner = THIS_MODULE,
@@ -758,9 +896,20 @@ static struct xenbus_driver xen_blkbk = {
 	.remove = xen_blkbk_remove,
 	.otherend_changed = frontend_changed
 };
+=======
+static DEFINE_XENBUS_DRIVER(xen_blkbk, ,
+	.probe = xen_blkbk_probe,
+	.remove = xen_blkbk_remove,
+	.otherend_changed = frontend_changed
+);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 int xen_blkif_xenbus_init(void)
 {
+<<<<<<< HEAD
 	return xenbus_register_backend(&xen_blkbk);
+=======
+	return xenbus_register_backend(&xen_blkbk_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

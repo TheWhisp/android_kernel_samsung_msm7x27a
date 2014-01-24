@@ -37,6 +37,10 @@
 
 #include <linux/init.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/rawmidi.h>

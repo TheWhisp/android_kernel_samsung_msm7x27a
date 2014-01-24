@@ -148,7 +148,11 @@ struct pcpu_tstats {
 	unsigned long	rx_bytes;
 	unsigned long	tx_packets;
 	unsigned long	tx_bytes;
+<<<<<<< HEAD
 };
+=======
+} __attribute__((aligned(4*sizeof(unsigned long))));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct net_device_stats *ipip_get_stats(struct net_device *dev)
 {
@@ -303,7 +307,11 @@ static void ipip_tunnel_uninit(struct net_device *dev)
 	struct ipip_net *ipn = net_generic(net, ipip_net_id);
 
 	if (dev == ipn->fb_tunnel_dev)
+<<<<<<< HEAD
 		rcu_assign_pointer(ipn->tunnels_wc[0], NULL);
+=======
+		RCU_INIT_POINTER(ipn->tunnels_wc[0], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		ipip_tunnel_unlink(ipn, netdev_priv(dev));
 	dev_put(dev);
@@ -455,8 +463,12 @@ static netdev_tx_t ipip_tunnel_xmit(struct sk_buff *skb, struct net_device *dev)
 			dev->stats.tx_fifo_errors++;
 			goto tx_error;
 		}
+<<<<<<< HEAD
 		if ((dst = rt->rt_gateway) == 0)
 			goto tx_error_icmp;
+=======
+		dst = rt->rt_gateway;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	rt = ip_route_output_ports(dev_net(dev), &fl4, NULL,
@@ -893,7 +905,11 @@ static int __init ipip_init(void)
 	err = xfrm4_tunnel_register(&ipip_handler, AF_INET);
 	if (err < 0) {
 		unregister_pernet_device(&ipip_net_ops);
+<<<<<<< HEAD
 		printk(KERN_INFO "ipip init: can't register tunnel\n");
+=======
+		pr_info("%s: can't register tunnel\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return err;
 }
@@ -901,7 +917,11 @@ static int __init ipip_init(void)
 static void __exit ipip_fini(void)
 {
 	if (xfrm4_tunnel_deregister(&ipip_handler, AF_INET))
+<<<<<<< HEAD
 		printk(KERN_INFO "ipip close: can't deregister tunnel\n");
+=======
+		pr_info("%s: can't deregister tunnel\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	unregister_pernet_device(&ipip_net_ops);
 }

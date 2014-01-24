@@ -21,7 +21,10 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -366,7 +369,11 @@ clipper_init_irq(void)
  */
 
 static int __init
+<<<<<<< HEAD
 isa_irq_fixup(struct pci_dev *dev, int irq)
+=======
+isa_irq_fixup(const struct pci_dev *dev, int irq)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u8 irq8;
 
@@ -382,7 +389,11 @@ isa_irq_fixup(struct pci_dev *dev, int irq)
 }
 
 static int __init
+<<<<<<< HEAD
 dp264_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+dp264_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static char irq_tab[6][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */
@@ -404,7 +415,11 @@ dp264_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 }
 
 static int __init
+<<<<<<< HEAD
 monet_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+monet_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static char irq_tab[13][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */
@@ -466,7 +481,11 @@ monet_swizzle(struct pci_dev *dev, u8 *pinp)
 }
 
 static int __init
+<<<<<<< HEAD
 webbrick_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+webbrick_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static char irq_tab[13][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */
@@ -488,7 +507,11 @@ webbrick_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 }
 
 static int __init
+<<<<<<< HEAD
 clipper_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+clipper_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static char irq_tab[7][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */

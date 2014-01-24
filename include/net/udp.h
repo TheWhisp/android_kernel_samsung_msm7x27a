@@ -23,6 +23,10 @@
 #define _UDP_H
 
 #include <linux/list.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/inet_sock.h>
 #include <net/sock.h>
 #include <net/snmp.h>
@@ -41,7 +45,11 @@
 struct udp_skb_cb {
 	union {
 		struct inet_skb_parm	h4;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined (CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct inet6_skb_parm	h6;
 #endif
 	} header;
@@ -195,9 +203,21 @@ extern int udp_lib_setsockopt(struct sock *sk, int level, int optname,
 extern struct sock *udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
 				    __be32 daddr, __be16 dport,
 				    int dif);
+<<<<<<< HEAD
 extern struct sock *udp6_lib_lookup(struct net *net, const struct in6_addr *saddr, __be16 sport,
 				    const struct in6_addr *daddr, __be16 dport,
 				    int dif);
+=======
+extern struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
+				    __be32 daddr, __be16 dport,
+				    int dif, struct udp_table *tbl);
+extern struct sock *udp6_lib_lookup(struct net *net, const struct in6_addr *saddr, __be16 sport,
+				    const struct in6_addr *daddr, __be16 dport,
+				    int dif);
+extern struct sock *__udp6_lib_lookup(struct net *net, const struct in6_addr *saddr, __be16 sport,
+				    const struct in6_addr *daddr, __be16 dport,
+				    int dif, struct udp_table *tbl);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * 	SNMP statistics for UDP and UDP-Lite
@@ -218,7 +238,11 @@ extern struct sock *udp6_lib_lookup(struct net *net, const struct in6_addr *sadd
 	else	    SNMP_INC_STATS_USER((net)->mib.udp_stats_in6, field);      \
 } while(0)
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define UDPX_INC_STATS_BH(sk, field) \
 	do { \
 		if ((sk)->sk_family == AF_INET) \
@@ -231,12 +255,23 @@ extern struct sock *udp6_lib_lookup(struct net *net, const struct in6_addr *sadd
 #endif
 
 /* /proc */
+<<<<<<< HEAD
 struct udp_seq_afinfo {
 	char			*name;
 	sa_family_t		family;
 	struct udp_table	*udp_table;
 	struct file_operations	seq_fops;
 	struct seq_operations	seq_ops;
+=======
+int udp_seq_open(struct inode *inode, struct file *file);
+
+struct udp_seq_afinfo {
+	char				*name;
+	sa_family_t			family;
+	struct udp_table		*udp_table;
+	const struct file_operations	*seq_fops;
+	struct seq_operations		seq_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct udp_iter_state {
@@ -257,5 +292,10 @@ extern void udp4_proc_exit(void);
 extern void udp_init(void);
 
 extern int udp4_ufo_send_check(struct sk_buff *skb);
+<<<<<<< HEAD
 extern struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb, u32 features);
+=======
+extern struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+	netdev_features_t features);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* _UDP_H */

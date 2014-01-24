@@ -21,7 +21,10 @@
 #include <asm/addrspace.h>
 #include <asm/irq_regs.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 
 #include <asm/dec/kn02ca.h>

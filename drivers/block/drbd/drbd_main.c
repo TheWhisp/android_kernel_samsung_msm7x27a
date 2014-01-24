@@ -117,8 +117,13 @@ module_param(fault_devs, int, 0644);
 
 /* module parameter, defined */
 unsigned int minor_count = DRBD_MINOR_COUNT_DEF;
+<<<<<<< HEAD
 int disable_sendpage;
 int allow_oos;
+=======
+bool disable_sendpage;
+bool allow_oos;
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned int cn_idx = CN_IDX_DRBD;
 int proc_details;       /* Detail level in proc drbd*/
 

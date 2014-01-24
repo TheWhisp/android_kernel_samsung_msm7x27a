@@ -430,6 +430,7 @@ static struct pl061_platform_data gpio1_plat_data = {
 	.irq_base	= SPEAR300_GPIO1_INT_BASE,
 };
 
+<<<<<<< HEAD
 struct amba_device spear300_gpio1_device = {
 	.dev = {
 		.init_name = "gpio1",
@@ -442,6 +443,10 @@ struct amba_device spear300_gpio1_device = {
 	},
 	.irq = {SPEAR300_VIRQ_GPIO1, NO_IRQ},
 };
+=======
+AMBA_APB_DEVICE(spear300_gpio1, "gpio1", 0, SPEAR300_GPIO_BASE,
+	{SPEAR300_VIRQ_GPIO1}, &gpio1_plat_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* spear300 routines */
 void __init spear300_init(struct pmx_mode *pmx_mode, struct pmx_dev **pmx_devs,
@@ -469,7 +474,11 @@ void __init spear300_init(struct pmx_mode *pmx_mode, struct pmx_dev **pmx_devs,
 	if (pmx_driver.base) {
 		ret = pmx_register(&pmx_driver);
 		if (ret)
+<<<<<<< HEAD
 			printk(KERN_ERR "padmux: registeration failed. err no"
+=======
+			printk(KERN_ERR "padmux: registration failed. err no"
+>>>>>>> refs/remotes/origin/cm-10.0
 					": %d\n", ret);
 		/* Free Mapping, device selection already done */
 		iounmap(pmx_driver.base);

@@ -40,6 +40,7 @@ struct uart_port;
 unsigned int nlm_xlr_uart_in(struct uart_port *, int);
 void nlm_xlr_uart_out(struct uart_port *, int, int);
 
+<<<<<<< HEAD
 /* SMP support functions */
 struct irq_desc;
 void nlm_smp_function_ipi_handler(unsigned int irq, struct irq_desc *desc);
@@ -51,6 +52,10 @@ void prom_pre_boot_secondary_cpus(void);
 
 extern struct plat_smp_ops nlm_smp_ops;
 extern unsigned long nlm_common_ebase;
+=======
+/* SMP helpers */
+void xlr_wakeup_secondary_cpus(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* XLS B silicon "Rook" */
 static inline unsigned int nlm_chip_is_xls_b(void)

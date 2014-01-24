@@ -419,7 +419,13 @@ int radeon_crtc_do_set_base(struct drm_crtc *crtc,
 	r = radeon_bo_reserve(rbo, false);
 	if (unlikely(r != 0))
 		return r;
+<<<<<<< HEAD
 	r = radeon_bo_pin(rbo, RADEON_GEM_DOMAIN_VRAM, &base);
+=======
+	/* Only 27 bit offset for legacy CRTC */
+	r = radeon_bo_pin_restricted(rbo, RADEON_GEM_DOMAIN_VRAM, 1 << 27,
+				     &base);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(r != 0)) {
 		radeon_bo_unreserve(rbo);
 		return -EINVAL;
@@ -437,7 +443,11 @@ int radeon_crtc_do_set_base(struct drm_crtc *crtc,
 
 	crtc_offset_cntl = 0;
 
+<<<<<<< HEAD
 	pitch_pixels = target_fb->pitch / (target_fb->bits_per_pixel / 8);
+=======
+	pitch_pixels = target_fb->pitches[0] / (target_fb->bits_per_pixel / 8);
+>>>>>>> refs/remotes/origin/cm-10.0
 	crtc_pitch  = (((pitch_pixels * target_fb->bits_per_pixel) +
 			((target_fb->bits_per_pixel * 8) - 1)) /
 		       (target_fb->bits_per_pixel * 8));
@@ -991,12 +1001,15 @@ static bool radeon_crtc_mode_fixup(struct drm_crtc *crtc,
 				   struct drm_display_mode *mode,
 				   struct drm_display_mode *adjusted_mode)
 {
+<<<<<<< HEAD
 	struct drm_device *dev = crtc->dev;
 	struct radeon_device *rdev = dev->dev_private;
 
 	/* adjust pm to upcoming mode change */
 	radeon_pm_compute_clocks(rdev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!radeon_crtc_scaling_mode_fixup(crtc, mode, adjusted_mode))
 		return false;
 	return true;

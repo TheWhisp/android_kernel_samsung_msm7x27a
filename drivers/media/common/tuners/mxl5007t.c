@@ -165,6 +165,11 @@ struct mxl5007t_state {
 	struct reg_pair_t tab_init_cable[ARRAY_SIZE(init_tab_cable)];
 	struct reg_pair_t tab_rftune[ARRAY_SIZE(reg_pair_rftune)];
 
+<<<<<<< HEAD
+=======
+	enum mxl5007t_if_freq if_freq;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 frequency;
 	u32 bandwidth;
 };
@@ -286,6 +291,11 @@ static void mxl5007t_set_if_freq_bits(struct mxl5007t_state *state,
 	/* set inverted IF or normal IF */
 	set_reg_bits(state->tab_init, 0x02, 0x10, invert_if ? 0x10 : 0x00);
 
+<<<<<<< HEAD
+=======
+	state->if_freq = if_freq;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return;
 }
 
@@ -488,9 +498,16 @@ static int mxl5007t_write_regs(struct mxl5007t_state *state,
 
 static int mxl5007t_read_reg(struct mxl5007t_state *state, u8 reg, u8 *val)
 {
+<<<<<<< HEAD
 	struct i2c_msg msg[] = {
 		{ .addr = state->i2c_props.addr, .flags = 0,
 		  .buf = &reg, .len = 1 },
+=======
+	u8 buf[2] = { 0xfb, reg };
+	struct i2c_msg msg[] = {
+		{ .addr = state->i2c_props.addr, .flags = 0,
+		  .buf = buf, .len = 2 },
+>>>>>>> refs/remotes/origin/cm-10.0
 		{ .addr = state->i2c_props.addr, .flags = I2C_M_RD,
 		  .buf = val, .len = 1 },
 	};
@@ -611,13 +628,21 @@ fail:
 
 /* ------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int mxl5007t_set_params(struct dvb_frontend *fe,
 			       struct dvb_frontend_parameters *params)
 {
+=======
+static int mxl5007t_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+	u32 delsys = c->delivery_system;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mxl5007t_state *state = fe->tuner_priv;
 	enum mxl5007t_bw_mhz bw;
 	enum mxl5007t_mode mode;
 	int ret;
+<<<<<<< HEAD
 	u32 freq = params->frequency;
 
 	if (fe->ops.info.type == FE_ATSC) {
@@ -652,6 +677,37 @@ static int mxl5007t_set_params(struct dvb_frontend *fe,
 		}
 		mode = MxL_MODE_DVBT;
 	} else {
+=======
+	u32 freq = c->frequency;
+
+	switch (delsys) {
+	case SYS_ATSC:
+		mode = MxL_MODE_ATSC;
+		bw = MxL_BW_6MHz;
+		break;
+	case SYS_DVBC_ANNEX_B:
+		mode = MxL_MODE_CABLE;
+		bw = MxL_BW_6MHz;
+		break;
+	case SYS_DVBT:
+	case SYS_DVBT2:
+		mode = MxL_MODE_DVBT;
+		switch (c->bandwidth_hz) {
+		case 6000000:
+			bw = MxL_BW_6MHz;
+			break;
+		case 7000000:
+			bw = MxL_BW_7MHz;
+			break;
+		case 8000000:
+			bw = MxL_BW_8MHz;
+			break;
+		default:
+			return -EINVAL;
+		}
+		break;
+	default:
+>>>>>>> refs/remotes/origin/cm-10.0
 		mxl_err("modulation type not supported!");
 		return -EINVAL;
 	}
@@ -670,8 +726,12 @@ static int mxl5007t_set_params(struct dvb_frontend *fe,
 		goto fail;
 
 	state->frequency = freq;
+<<<<<<< HEAD
 	state->bandwidth = (fe->ops.info.type == FE_OFDM) ?
 		params->u.ofdm.bandwidth : 0;
+=======
+	state->bandwidth = c->bandwidth_hz;
+>>>>>>> refs/remotes/origin/cm-10.0
 fail:
 	mutex_unlock(&state->lock);
 
@@ -737,6 +797,53 @@ static int mxl5007t_get_bandwidth(struct dvb_frontend *fe, u32 *bandwidth)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int mxl5007t_get_if_frequency(struct dvb_frontend *fe, u32 *frequency)
+{
+	struct mxl5007t_state *state = fe->tuner_priv;
+
+	*frequency = 0;
+
+	switch (state->if_freq) {
+	case MxL_IF_4_MHZ:
+		*frequency = 4000000;
+		break;
+	case MxL_IF_4_5_MHZ:
+		*frequency = 4500000;
+		break;
+	case MxL_IF_4_57_MHZ:
+		*frequency = 4570000;
+		break;
+	case MxL_IF_5_MHZ:
+		*frequency = 5000000;
+		break;
+	case MxL_IF_5_38_MHZ:
+		*frequency = 5380000;
+		break;
+	case MxL_IF_6_MHZ:
+		*frequency = 6000000;
+		break;
+	case MxL_IF_6_28_MHZ:
+		*frequency = 6280000;
+		break;
+	case MxL_IF_9_1915_MHZ:
+		*frequency = 9191500;
+		break;
+	case MxL_IF_35_25_MHZ:
+		*frequency = 35250000;
+		break;
+	case MxL_IF_36_15_MHZ:
+		*frequency = 36150000;
+		break;
+	case MxL_IF_44_MHZ:
+		*frequency = 44000000;
+		break;
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int mxl5007t_release(struct dvb_frontend *fe)
 {
 	struct mxl5007t_state *state = fe->tuner_priv;
@@ -766,6 +873,10 @@ static struct dvb_tuner_ops mxl5007t_tuner_ops = {
 	.get_frequency     = mxl5007t_get_frequency,
 	.get_bandwidth     = mxl5007t_get_bandwidth,
 	.release           = mxl5007t_release,
+<<<<<<< HEAD
+=======
+	.get_if_frequency  = mxl5007t_get_if_frequency,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int mxl5007t_get_chip_id(struct mxl5007t_state *state)

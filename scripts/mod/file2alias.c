@@ -28,6 +28,10 @@ typedef Elf64_Addr	kernel_ulong_t;
 #endif
 
 #include <ctype.h>
+<<<<<<< HEAD
+=======
+#include <stdbool.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 typedef uint32_t	__u32;
 typedef uint16_t	__u16;
@@ -38,6 +42,64 @@ typedef unsigned char	__u8;
  * we handle those differences explicitly below */
 #include "../../include/linux/mod_devicetable.h"
 
+<<<<<<< HEAD
+=======
+/* This array collects all instances that use the generic do_table */
+struct devtable {
+	const char *device_id; /* name of table, __mod_<name>_device_table. */
+	unsigned long id_size;
+	void *function;
+};
+
+#define ___cat(a,b) a ## b
+#define __cat(a,b) ___cat(a,b)
+
+/* we need some special handling for this host tool running eventually on
+ * Darwin. The Mach-O section handling is a bit different than ELF section
+ * handling. The differnces in detail are:
+ *  a) we have segments which have sections
+ *  b) we need a API call to get the respective section symbols */
+#if defined(__MACH__)
+#include <mach-o/getsect.h>
+
+#define INIT_SECTION(name)  do {					\
+		unsigned long name ## _len;				\
+		char *__cat(pstart_,name) = getsectdata("__TEXT",	\
+			#name, &__cat(name,_len));			\
+		char *__cat(pstop_,name) = __cat(pstart_,name) +	\
+			__cat(name, _len);				\
+		__cat(__start_,name) = (void *)__cat(pstart_,name);	\
+		__cat(__stop_,name) = (void *)__cat(pstop_,name);	\
+	} while (0)
+#define SECTION(name)   __attribute__((section("__TEXT, " #name)))
+
+struct devtable **__start___devtable, **__stop___devtable;
+#else
+#define INIT_SECTION(name) /* no-op for ELF */
+#define SECTION(name)   __attribute__((section(#name)))
+
+/* We construct a table of pointers in an ELF section (pointers generally
+ * go unpadded by gcc).  ld creates boundary syms for us. */
+extern struct devtable *__start___devtable[], *__stop___devtable[];
+#endif /* __MACH__ */
+
+#if __GNUC__ == 3 && __GNUC_MINOR__ < 3
+# define __used			__attribute__((__unused__))
+#else
+# define __used			__attribute__((__used__))
+#endif
+
+/* Add a table entry.  We test function type matches while we're here. */
+#define ADD_TO_DEVTABLE(device_id, type, function) \
+	static struct devtable __cat(devtable,__LINE__) = {	\
+		device_id + 0*sizeof((function)((const char *)NULL,	\
+						(type *)NULL,		\
+						(char *)NULL)),		\
+		sizeof(type), (function) };				\
+	static struct devtable *SECTION(__devtable) __used \
+		__cat(devtable_ptr,__LINE__) = &__cat(devtable,__LINE__)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ADD(str, sep, cond, field)                              \
 do {                                                            \
         strcat(str, sep);                                       \
@@ -289,6 +351,10 @@ static int do_hid_entry(const char *filename,
 
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("hid", struct hid_device_id, do_hid_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: ieee1394:venNmoNspNverN */
 static int do_ieee1394_entry(const char *filename,
@@ -313,6 +379,10 @@ static int do_ieee1394_entry(const char *filename,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("ieee1394", struct ieee1394_device_id, do_ieee1394_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: pci:vNdNsvNsdNbcNscNiN. */
 static int do_pci_entry(const char *filename,
@@ -356,6 +426,10 @@ static int do_pci_entry(const char *filename,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("pci", struct pci_device_id, do_pci_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* looks like: "ccw:tNmNdtNdmN" */
 static int do_ccw_entry(const char *filename,
@@ -379,6 +453,10 @@ static int do_ccw_entry(const char *filename,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("ccw", struct ccw_device_id, do_ccw_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* looks like: "ap:tN" */
 static int do_ap_entry(const char *filename,
@@ -387,6 +465,10 @@ static int do_ap_entry(const char *filename,
 	sprintf(alias, "ap:t%02X*", id->dev_type);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("ap", struct ap_device_id, do_ap_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* looks like: "css:tN" */
 static int do_css_entry(const char *filename,
@@ -395,6 +477,10 @@ static int do_css_entry(const char *filename,
 	sprintf(alias, "css:t%01X", id->type);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("css", struct css_device_id, do_css_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: "serio:tyNprNidNexN" */
 static int do_serio_entry(const char *filename,
@@ -414,6 +500,10 @@ static int do_serio_entry(const char *filename,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("serio", struct serio_device_id, do_serio_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* looks like: "acpi:ACPI0003 or acpi:PNP0C0B" or "acpi:LNXVIDEO" */
 static int do_acpi_entry(const char *filename,
@@ -422,6 +512,10 @@ static int do_acpi_entry(const char *filename,
 	sprintf(alias, "acpi*:%s:*", id->id);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("acpi", struct acpi_device_id, do_acpi_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* looks like: "pnp:dD" */
 static void do_pnp_device_entry(void *symval, unsigned long size,
@@ -544,8 +638,12 @@ static int do_pcmcia_entry(const char *filename,
 	add_wildcard(alias);
        return 1;
 }
+<<<<<<< HEAD
 
 
+=======
+ADD_TO_DEVTABLE("pcmcia", struct pcmcia_device_id, do_pcmcia_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int do_of_entry (const char *filename, struct of_device_id *of, char *alias)
 {
@@ -568,6 +666,10 @@ static int do_of_entry (const char *filename, struct of_device_id *of, char *ali
     add_wildcard(alias);
     return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("of", struct of_device_id, do_of_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int do_vio_entry(const char *filename, struct vio_device_id *vio,
 		char *alias)
@@ -585,6 +687,10 @@ static int do_vio_entry(const char *filename, struct vio_device_id *vio,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("vio", struct vio_device_id, do_vio_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -640,6 +746,10 @@ static int do_input_entry(const char *filename, struct input_device_id *id,
 		do_input(alias, id->swbit, 0, INPUT_DEVICE_ID_SW_MAX);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("input", struct input_device_id, do_input_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int do_eisa_entry(const char *filename, struct eisa_device_id *eisa,
 		char *alias)
@@ -650,6 +760,10 @@ static int do_eisa_entry(const char *filename, struct eisa_device_id *eisa,
 		strcat(alias, "*");
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("eisa", struct eisa_device_id, do_eisa_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: parisc:tNhvNrevNsvN */
 static int do_parisc_entry(const char *filename, struct parisc_device_id *id,
@@ -669,6 +783,10 @@ static int do_parisc_entry(const char *filename, struct parisc_device_id *id,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("parisc", struct parisc_device_id, do_parisc_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: sdio:cNvNdN. */
 static int do_sdio_entry(const char *filename,
@@ -685,6 +803,10 @@ static int do_sdio_entry(const char *filename,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("sdio", struct sdio_device_id, do_sdio_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: ssb:vNidNrevN. */
 static int do_ssb_entry(const char *filename,
@@ -701,6 +823,10 @@ static int do_ssb_entry(const char *filename,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("ssb", struct ssb_device_id, do_ssb_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: bcma:mNidNrevNclN. */
 static int do_bcma_entry(const char *filename,
@@ -719,6 +845,10 @@ static int do_bcma_entry(const char *filename,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("bcma", struct bcma_device_id, do_bcma_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: virtio:dNvN */
 static int do_virtio_entry(const char *filename, struct virtio_device_id *id,
@@ -734,6 +864,32 @@ static int do_virtio_entry(const char *filename, struct virtio_device_id *id,
 	add_wildcard(alias);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("virtio", struct virtio_device_id, do_virtio_entry);
+
+/*
+ * Looks like: vmbus:guid
+ * Each byte of the guid will be represented by two hex characters
+ * in the name.
+ */
+
+static int do_vmbus_entry(const char *filename, struct hv_vmbus_device_id *id,
+			  char *alias)
+{
+	int i;
+	char guid_name[((sizeof(id->guid) + 1)) * 2];
+
+	for (i = 0; i < (sizeof(id->guid) * 2); i += 2)
+		sprintf(&guid_name[i], "%02x", id->guid[i/2]);
+
+	strcpy(alias, "vmbus:");
+	strcat(alias, guid_name);
+
+	return 1;
+}
+ADD_TO_DEVTABLE("vmbus", struct hv_vmbus_device_id, do_vmbus_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: i2c:S */
 static int do_i2c_entry(const char *filename, struct i2c_device_id *id,
@@ -743,6 +899,10 @@ static int do_i2c_entry(const char *filename, struct i2c_device_id *id,
 
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("i2c", struct i2c_device_id, do_i2c_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: spi:S */
 static int do_spi_entry(const char *filename, struct spi_device_id *id,
@@ -752,6 +912,10 @@ static int do_spi_entry(const char *filename, struct spi_device_id *id,
 
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("spi", struct spi_device_id, do_spi_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct dmifield {
 	const char *prefix;
@@ -806,6 +970,10 @@ static int do_dmi_entry(const char *filename, struct dmi_system_id *id,
 	strcat(alias, ":");
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("dmi", struct dmi_system_id, do_dmi_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int do_platform_entry(const char *filename,
 			     struct platform_device_id *id, char *alias)
@@ -813,6 +981,10 @@ static int do_platform_entry(const char *filename,
 	sprintf(alias, PLATFORM_MODULE_PREFIX "%s", id->name);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("platform", struct platform_device_id, do_platform_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int do_mdio_entry(const char *filename,
 			 struct mdio_device_id *id, char *alias)
@@ -835,6 +1007,10 @@ static int do_mdio_entry(const char *filename,
 
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("mdio", struct mdio_device_id, do_mdio_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Looks like: zorro:iN. */
 static int do_zorro_entry(const char *filename, struct zorro_device_id *id,
@@ -845,6 +1021,10 @@ static int do_zorro_entry(const char *filename, struct zorro_device_id *id,
 	ADD(alias, "i", id->id != ZORRO_WILDCARD, id->id);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+ADD_TO_DEVTABLE("zorro", struct zorro_device_id, do_zorro_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* looks like: "pnp:dD" */
 static int do_isapnp_entry(const char *filename,
@@ -858,6 +1038,7 @@ static int do_isapnp_entry(const char *filename,
 		(id->function >> 12) & 0x0f, (id->function >> 8) & 0x0f);
 	return 1;
 }
+<<<<<<< HEAD
 
 /* Ignore any prefix, eg. some architectures prepend _ */
 static inline int sym_is(const char *symbol, const char *name)
@@ -868,6 +1049,111 @@ static inline int sym_is(const char *symbol, const char *name)
 	if (!match)
 		return 0;
 	return match[strlen(name)] == '\0';
+=======
+ADD_TO_DEVTABLE("isapnp", struct isapnp_device_id, do_isapnp_entry);
+
+/*
+ * Append a match expression for a single masked hex digit.
+ * outp points to a pointer to the character at which to append.
+ *	*outp is updated on return to point just after the appended text,
+ *	to facilitate further appending.
+ */
+static void append_nibble_mask(char **outp,
+			       unsigned int nibble, unsigned int mask)
+{
+	char *p = *outp;
+	unsigned int i;
+
+	switch (mask) {
+	case 0:
+		*p++ = '?';
+		break;
+
+	case 0xf:
+		p += sprintf(p, "%X",  nibble);
+		break;
+
+	default:
+		/*
+		 * Dumbly emit a match pattern for all possible matching
+		 * digits.  This could be improved in some cases using ranges,
+		 * but it has the advantage of being trivially correct, and is
+		 * often optimal.
+		 */
+		*p++ = '[';
+		for (i = 0; i < 0x10; i++)
+			if ((i & mask) == nibble)
+				p += sprintf(p, "%X", i);
+		*p++ = ']';
+	}
+
+	/* Ensure that the string remains NUL-terminated: */
+	*p = '\0';
+
+	/* Advance the caller's end-of-string pointer: */
+	*outp = p;
+}
+
+/*
+ * looks like: "amba:dN"
+ *
+ * N is exactly 8 digits, where each is an upper-case hex digit, or
+ *	a ? or [] pattern matching exactly one digit.
+ */
+static int do_amba_entry(const char *filename,
+			 struct amba_id *id, char *alias)
+{
+	unsigned int digit;
+	char *p = alias;
+
+	if ((id->id & id->mask) != id->id)
+		fatal("%s: Masked-off bit(s) of AMBA device ID are non-zero: "
+		      "id=0x%08X, mask=0x%08X.  Please fix this driver.\n",
+		      filename, id->id, id->mask);
+
+	p += sprintf(alias, "amba:d");
+	for (digit = 0; digit < 8; digit++)
+		append_nibble_mask(&p,
+				   (id->id >> (4 * (7 - digit))) & 0xf,
+				   (id->mask >> (4 * (7 - digit))) & 0xf);
+
+	return 1;
+}
+ADD_TO_DEVTABLE("amba", struct amba_id, do_amba_entry);
+
+/* LOOKS like x86cpu:vendor:VVVV:family:FFFF:model:MMMM:feature:*,FEAT,*
+ * All fields are numbers. It would be nicer to use strings for vendor
+ * and feature, but getting those out of the build system here is too
+ * complicated.
+ */
+
+static int do_x86cpu_entry(const char *filename, struct x86_cpu_id *id,
+			   char *alias)
+{
+	id->feature = TO_NATIVE(id->feature);
+	id->family = TO_NATIVE(id->family);
+	id->model = TO_NATIVE(id->model);
+	id->vendor = TO_NATIVE(id->vendor);
+
+	strcpy(alias, "x86cpu:");
+	ADD(alias, "vendor:",  id->vendor != X86_VENDOR_ANY, id->vendor);
+	ADD(alias, ":family:", id->family != X86_FAMILY_ANY, id->family);
+	ADD(alias, ":model:",  id->model  != X86_MODEL_ANY,  id->model);
+	strcat(alias, ":feature:*");
+	if (id->feature != X86_FEATURE_ANY)
+		sprintf(alias + strlen(alias), "%04X*", id->feature);
+	return 1;
+}
+ADD_TO_DEVTABLE("x86cpu", struct x86_cpu_id, do_x86cpu_entry);
+
+/* Does namelen bytes of name exactly match the symbol? */
+static bool sym_is(const char *name, unsigned namelen, const char *symbol)
+{
+	if (namelen != strlen(symbol))
+		return false;
+
+	return memcmp(name, symbol, namelen) == 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void do_table(void *symval, unsigned long size,
@@ -900,6 +1186,11 @@ void handle_moddevtable(struct module *mod, struct elf_info *info,
 {
 	void *symval;
 	char *zeros = NULL;
+<<<<<<< HEAD
+=======
+	const char *name;
+	unsigned int namelen;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* We're looking for a section relative symbol */
 	if (!sym->st_shndx || get_secindex(info, sym) >= info->num_sections)
@@ -909,6 +1200,21 @@ void handle_moddevtable(struct module *mod, struct elf_info *info,
 	if (ELF_ST_TYPE(sym->st_info) != STT_OBJECT)
 		return;
 
+<<<<<<< HEAD
+=======
+	/* All our symbols are of form <prefix>__mod_XXX_device_table. */
+	name = strstr(symname, "__mod_");
+	if (!name)
+		return;
+	name += strlen("__mod_");
+	namelen = strlen(name);
+	if (namelen < strlen("_device_table"))
+		return;
+	if (strcmp(name + namelen - strlen("_device_table"), "_device_table"))
+		return;
+	namelen -= strlen("_device_table");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Handle all-NULL symbols allocated into .bss */
 	if (info->sechdrs[get_secindex(info, sym)].sh_type & SHT_NOBITS) {
 		zeros = calloc(1, sym->st_size);
@@ -919,6 +1225,7 @@ void handle_moddevtable(struct module *mod, struct elf_info *info,
 			+ sym->st_value;
 	}
 
+<<<<<<< HEAD
 	if (sym_is(symname, "__mod_pci_device_table"))
 		do_table(symval, sym->st_size,
 			 sizeof(struct pci_device_id), "pci",
@@ -1026,6 +1333,27 @@ void handle_moddevtable(struct module *mod, struct elf_info *info,
 		do_table(symval, sym->st_size,
 			sizeof(struct isapnp_device_id), "isa",
 			do_isapnp_entry, mod);
+=======
+	/* First handle the "special" cases */
+	if (sym_is(name, namelen, "usb"))
+		do_usb_table(symval, sym->st_size, mod);
+	else if (sym_is(name, namelen, "pnp"))
+		do_pnp_device_entry(symval, sym->st_size, mod);
+	else if (sym_is(name, namelen, "pnp_card"))
+		do_pnp_card_entries(symval, sym->st_size, mod);
+	else {
+		struct devtable **p;
+		INIT_SECTION(__devtable);
+
+		for (p = __start___devtable; p < __stop___devtable; p++) {
+			if (sym_is(name, namelen, (*p)->device_id)) {
+				do_table(symval, sym->st_size, (*p)->id_size,
+					 (*p)->device_id, (*p)->function, mod);
+				break;
+			}
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	free(zeros);
 }
 

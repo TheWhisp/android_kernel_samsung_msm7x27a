@@ -199,7 +199,11 @@ static void usb_tranzport_abort_transfers(struct usb_tranzport *dev)
 		struct usb_interface *intf = to_usb_interface(dev);	\
 		struct usb_tranzport *t = usb_get_intfdata(intf);	\
 		unsigned long temp;	\
+<<<<<<< HEAD
 		if (strict_strtoul(buf, 10, &temp))	\
+=======
+		if (kstrtoul(buf, 10, &temp))	\
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EINVAL;	\
 		t->value = temp;	\
 		return count;	\
@@ -471,7 +475,11 @@ exit:
 /**
  *	usb_tranzport_poll
  */
+<<<<<<< HEAD
 static unsigned int usb_tranzport_poll(struct file *file, poll_table * wait)
+=======
+static unsigned int usb_tranzport_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct usb_tranzport *dev;
 	unsigned int mask = 0;
@@ -971,6 +979,7 @@ static struct usb_driver usb_tranzport_driver = {
 	.id_table = usb_tranzport_table,
 };
 
+<<<<<<< HEAD
 /**
  *	usb_tranzport_init
  */
@@ -997,3 +1006,6 @@ static void __exit usb_tranzport_exit(void)
 
 module_init(usb_tranzport_init);
 module_exit(usb_tranzport_exit);
+=======
+module_usb_driver(usb_tranzport_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

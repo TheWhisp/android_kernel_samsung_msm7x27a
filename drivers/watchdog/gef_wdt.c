@@ -24,6 +24,11 @@
  * capabilities) a kernel-based watchdog.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/compiler.h>
 #include <linux/init.h>
@@ -68,8 +73,13 @@ static unsigned int bus_clk;
 static char expect_close;
 static DEFINE_SPINLOCK(gef_wdt_spinlock);
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 	__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -110,7 +120,11 @@ static void gef_wdt_handler_enable(void)
 	if (gef_wdt_toggle_wdc(GEF_WDC_ENABLED_FALSE,
 				   GEF_WDC_ENABLE_SHIFT)) {
 		gef_wdt_service();
+<<<<<<< HEAD
 		printk(KERN_NOTICE "gef_wdt: watchdog activated\n");
+=======
+		pr_notice("watchdog activated\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -118,7 +132,11 @@ static void gef_wdt_handler_disable(void)
 {
 	if (gef_wdt_toggle_wdc(GEF_WDC_ENABLED_TRUE,
 				   GEF_WDC_ENABLE_SHIFT))
+<<<<<<< HEAD
 		printk(KERN_NOTICE "gef_wdt: watchdog deactivated\n");
+=======
+		pr_notice("watchdog deactivated\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void gef_wdt_set_timeout(unsigned int timeout)
@@ -234,8 +252,12 @@ static int gef_wdt_release(struct inode *inode, struct file *file)
 	if (expect_close == 42)
 		gef_wdt_handler_disable();
 	else {
+<<<<<<< HEAD
 		printk(KERN_CRIT
 		       "gef_wdt: unexpected close, not stopping timer!\n");
+=======
+		pr_crit("unexpected close, not stopping timer!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		gef_wdt_service();
 	}
 	expect_close = 0;
@@ -313,7 +335,11 @@ static struct platform_driver gef_wdt_driver = {
 
 static int __init gef_wdt_init(void)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO "GE watchdog driver\n");
+=======
+	pr_info("GE watchdog driver\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return platform_driver_register(&gef_wdt_driver);
 }
 

@@ -8,6 +8,10 @@
 
 #include <linux/types.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sn/addrs.h>
 #include <asm/sn/geo.h>
 #include <asm/sn/pcibr_provider.h>

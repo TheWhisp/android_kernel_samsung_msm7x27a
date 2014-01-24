@@ -25,8 +25,12 @@
 
 #include <linux/types.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/if.h>
 #include <linux/skbuff.h>
 #include <linux/ieee80211.h>
@@ -42,6 +46,11 @@ enum {
 	IEEE80211_CRYPTO_TKIP_COUNTERMEASURES = (1 << 0),
 };
 
+<<<<<<< HEAD
+=======
+struct module;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct lib80211_crypto_ops {
 	const char *name;
 	struct list_head list;
@@ -117,10 +126,15 @@ void lib80211_crypt_info_free(struct lib80211_crypt_info *info);
 int lib80211_register_crypto_ops(struct lib80211_crypto_ops *ops);
 int lib80211_unregister_crypto_ops(struct lib80211_crypto_ops *ops);
 struct lib80211_crypto_ops *lib80211_get_crypto_ops(const char *name);
+<<<<<<< HEAD
 void lib80211_crypt_deinit_entries(struct lib80211_crypt_info *, int);
 void lib80211_crypt_deinit_handler(unsigned long);
 void lib80211_crypt_delayed_deinit(struct lib80211_crypt_info *info,
 				    struct lib80211_crypt_data **crypt);
 void lib80211_crypt_quiescing(struct lib80211_crypt_info *info);
+=======
+void lib80211_crypt_delayed_deinit(struct lib80211_crypt_info *info,
+				    struct lib80211_crypt_data **crypt);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* LIB80211_H */

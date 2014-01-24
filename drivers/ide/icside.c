@@ -521,8 +521,13 @@ icside_register_v6(struct icside_state *state, struct expansion_card *ec)
 	if (ec->dma != NO_DMA && !request_dma(ec->dma, DRV_NAME)) {
 		d.init_dma = icside_dma_init;
 		d.port_ops = &icside_v6_port_ops;
+<<<<<<< HEAD
 		d.dma_ops = NULL;
 	}
+=======
+	} else
+		d.dma_ops = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = ide_host_register(host, &d, hws);
 	if (ret)

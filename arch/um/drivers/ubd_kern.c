@@ -19,6 +19,7 @@
 
 #define UBD_SHIFT 4
 
+<<<<<<< HEAD
 #include "linux/kernel.h"
 #include "linux/module.h"
 #include "linux/blkdev.h"
@@ -55,6 +56,28 @@
 #include "os.h"
 #include "mem.h"
 #include "mem_kern.h"
+=======
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/blkdev.h>
+#include <linux/ata.h>
+#include <linux/hdreg.h>
+#include <linux/cdrom.h>
+#include <linux/proc_fs.h>
+#include <linux/seq_file.h>
+#include <linux/ctype.h>
+#include <linux/slab.h>
+#include <linux/vmalloc.h>
+#include <linux/platform_device.h>
+#include <linux/scatterlist.h>
+#include <asm/tlbflush.h>
+#include "kern_util.h"
+#include "mconsole_kern.h"
+#include "init.h"
+#include "irq_kern.h"
+#include "ubd.h"
+#include "os.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "cow.h"
 
 enum ubd_req { UBD_READ, UBD_WRITE };
@@ -1117,7 +1140,11 @@ static int __init ubd_driver_init(void){
 		return 0;
 	}
 	err = um_request_irq(UBD_IRQ, thread_fd, IRQ_READ, ubd_intr,
+<<<<<<< HEAD
 			     IRQF_DISABLED, "ubd", ubd_devs);
+=======
+			     0, "ubd", ubd_devs);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if(err != 0)
 		printk(KERN_ERR "um_request_irq failed - errno = %d\n", -err);
 	return 0;

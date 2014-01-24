@@ -685,6 +685,11 @@ void show_mem(unsigned int filter)
 
 	printk(KERN_INFO "Mem-info:\n");
 	show_free_areas(filter);
+<<<<<<< HEAD
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef CONFIG_DISCONTIGMEM
 	i = max_mapnr;
 	while (i-- > 0) {

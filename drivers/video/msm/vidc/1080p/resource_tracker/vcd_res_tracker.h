@@ -76,4 +76,11 @@ struct res_trk_context {
 #define VCDRES_MSG_ERROR(xx_fmt...)	printk(KERN_ERR "\n err: " xx_fmt)
 #define VCDRES_MSG_FATAL(xx_fmt...)	printk(KERN_ERR "\n<FATAL> " xx_fmt)
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MSM_BUS_SCALING
+int res_trk_update_bus_perf_level(struct vcd_dev_ctxt *dev_ctxt,
+				u32 perf_level);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

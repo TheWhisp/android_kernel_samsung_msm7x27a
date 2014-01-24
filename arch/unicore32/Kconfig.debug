@@ -44,6 +44,7 @@ config DEBUG_OCD
 	  Say Y here if you want the debug print routines to direct their
 	  output to the UniCore On-Chip-Debugger channel using CP #1.
 
+<<<<<<< HEAD
 config DEBUG_OCD_BREAKPOINT
 	bool "Breakpoint support via On-Chip-Debugger"
 	depends on DEBUG_OCD
@@ -58,4 +59,6 @@ config DEBUG_UART
 	  should be between zero and one. The port must have been
 	  initialised by the boot-loader before use.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 endmenu

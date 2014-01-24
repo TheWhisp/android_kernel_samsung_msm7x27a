@@ -186,11 +186,14 @@ static struct pci_driver platform_driver = {
 
 static int __init platform_pci_module_init(void)
 {
+<<<<<<< HEAD
 	/* no unplug has been done, IGNORE hasn't been specified: just
 	 * return now */
 	if (!xen_platform_pci_unplug)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return pci_register_driver(&platform_driver);
 }
 

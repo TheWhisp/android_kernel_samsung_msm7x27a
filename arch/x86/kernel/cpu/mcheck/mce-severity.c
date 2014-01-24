@@ -43,6 +43,7 @@ static struct severity {
 	unsigned char covered;
 	char *msg;
 } severities[] = {
+<<<<<<< HEAD
 #define KERNEL .context = IN_KERNEL
 #define USER .context = IN_USER
 #define SER .ser = SER_REQUIRED
@@ -125,6 +126,150 @@ int mce_severity(struct mce *a, int tolerant, char **msg)
 		if ((a->status & s->mask) != s->result)
 			continue;
 		if ((a->mcgstatus & s->mcgmask) != s->mcgres)
+=======
+#define MCESEV(s, m, c...) { .sev = MCE_ ## s ## _SEVERITY, .msg = m, ## c }
+#define  KERNEL		.context = IN_KERNEL
+#define  USER		.context = IN_USER
+#define  SER		.ser = SER_REQUIRED
+#define  NOSER		.ser = NO_SER
+#define  BITCLR(x)	.mask = x, .result = 0
+#define  BITSET(x)	.mask = x, .result = x
+#define  MCGMASK(x, y)	.mcgmask = x, .mcgres = y
+#define  MASK(x, y)	.mask = x, .result = y
+#define MCI_UC_S (MCI_STATUS_UC|MCI_STATUS_S)
+#define MCI_UC_SAR (MCI_STATUS_UC|MCI_STATUS_S|MCI_STATUS_AR)
+#define	MCI_ADDR (MCI_STATUS_ADDRV|MCI_STATUS_MISCV)
+#define MCACOD 0xffff
+/* Architecturally defined codes from SDM Vol. 3B Chapter 15 */
+#define MCACOD_SCRUB	0x00C0	/* 0xC0-0xCF Memory Scrubbing */
+#define MCACOD_SCRUBMSK	0xfff0
+#define MCACOD_L3WB	0x017A	/* L3 Explicit Writeback */
+#define MCACOD_DATA	0x0134	/* Data Load */
+#define MCACOD_INSTR	0x0150	/* Instruction Fetch */
+
+	MCESEV(
+		NO, "Invalid",
+		BITCLR(MCI_STATUS_VAL)
+		),
+	MCESEV(
+		NO, "Not enabled",
+		BITCLR(MCI_STATUS_EN)
+		),
+	MCESEV(
+		PANIC, "Processor context corrupt",
+		BITSET(MCI_STATUS_PCC)
+		),
+	/* When MCIP is not set something is very confused */
+	MCESEV(
+		PANIC, "MCIP not set in MCA handler",
+		MCGMASK(MCG_STATUS_MCIP, 0)
+		),
+	/* Neither return not error IP -- no chance to recover -> PANIC */
+	MCESEV(
+		PANIC, "Neither restart nor error IP",
+		MCGMASK(MCG_STATUS_RIPV|MCG_STATUS_EIPV, 0)
+		),
+	MCESEV(
+		PANIC, "In kernel and no restart IP",
+		KERNEL, MCGMASK(MCG_STATUS_RIPV, 0)
+		),
+	MCESEV(
+		KEEP, "Corrected error",
+		NOSER, BITCLR(MCI_STATUS_UC)
+		),
+
+	/* ignore OVER for UCNA */
+	MCESEV(
+		KEEP, "Uncorrected no action required",
+		SER, MASK(MCI_UC_SAR, MCI_STATUS_UC)
+		),
+	MCESEV(
+		PANIC, "Illegal combination (UCNA with AR=1)",
+		SER,
+		MASK(MCI_STATUS_OVER|MCI_UC_SAR, MCI_STATUS_UC|MCI_STATUS_AR)
+		),
+	MCESEV(
+		KEEP, "Non signalled machine check",
+		SER, BITCLR(MCI_STATUS_S)
+		),
+
+	MCESEV(
+		PANIC, "Action required with lost events",
+		SER, BITSET(MCI_STATUS_OVER|MCI_UC_SAR)
+		),
+
+	/* known AR MCACODs: */
+#ifdef	CONFIG_MEMORY_FAILURE
+	MCESEV(
+		KEEP, "HT thread notices Action required: data load error",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR|MCACOD, MCI_UC_SAR|MCI_ADDR|MCACOD_DATA),
+		MCGMASK(MCG_STATUS_EIPV, 0)
+		),
+	MCESEV(
+		AR, "Action required: data load error",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR|MCACOD, MCI_UC_SAR|MCI_ADDR|MCACOD_DATA),
+		USER
+		),
+#endif
+	MCESEV(
+		PANIC, "Action required: unknown MCACOD",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR, MCI_UC_SAR)
+		),
+
+	/* known AO MCACODs: */
+	MCESEV(
+		AO, "Action optional: memory scrubbing error",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCACOD_SCRUBMSK, MCI_UC_S|MCACOD_SCRUB)
+		),
+	MCESEV(
+		AO, "Action optional: last level cache writeback error",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCACOD, MCI_UC_S|MCACOD_L3WB)
+		),
+	MCESEV(
+		SOME, "Action optional: unknown MCACOD",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR, MCI_UC_S)
+		),
+	MCESEV(
+		SOME, "Action optional with lost events",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR, MCI_STATUS_OVER|MCI_UC_S)
+		),
+
+	MCESEV(
+		PANIC, "Overflowed uncorrected",
+		BITSET(MCI_STATUS_OVER|MCI_STATUS_UC)
+		),
+	MCESEV(
+		UC, "Uncorrected",
+		BITSET(MCI_STATUS_UC)
+		),
+	MCESEV(
+		SOME, "No match",
+		BITSET(0)
+		)	/* always matches. keep at end */
+};
+
+/*
+ * If the EIPV bit is set, it means the saved IP is the
+ * instruction which caused the MCE.
+ */
+static int error_context(struct mce *m)
+{
+	if (m->mcgstatus & MCG_STATUS_EIPV)
+		return (m->ip && (m->cs & 3) == 3) ? IN_USER : IN_KERNEL;
+	/* Unknown, assume kernel */
+	return IN_KERNEL;
+}
+
+int mce_severity(struct mce *m, int tolerant, char **msg)
+{
+	enum context ctx = error_context(m);
+	struct severity *s;
+
+	for (s = severities;; s++) {
+		if ((m->status & s->mask) != s->result)
+			continue;
+		if ((m->mcgstatus & s->mcgmask) != s->mcgres)
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 		if (s->ser == SER_REQUIRED && !mce_ser)
 			continue;
@@ -201,6 +346,7 @@ static const struct file_operations severities_coverage_fops = {
 
 static int __init severities_debugfs_init(void)
 {
+<<<<<<< HEAD
 	struct dentry *dmce = NULL, *fseverities_coverage = NULL;
 
 	dmce = mce_get_debugfs_dir();
@@ -210,6 +356,17 @@ static int __init severities_debugfs_init(void)
 						   0444, dmce, NULL,
 						   &severities_coverage_fops);
 	if (fseverities_coverage == NULL)
+=======
+	struct dentry *dmce, *fsev;
+
+	dmce = mce_get_debugfs_dir();
+	if (!dmce)
+		goto err_out;
+
+	fsev = debugfs_create_file("severities-coverage", 0444, dmce, NULL,
+				   &severities_coverage_fops);
+	if (!fsev)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto err_out;
 
 	return 0;
@@ -218,4 +375,8 @@ err_out:
 	return -ENOMEM;
 }
 late_initcall(severities_debugfs_init);
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_DEBUG_FS */
+>>>>>>> refs/remotes/origin/cm-10.0

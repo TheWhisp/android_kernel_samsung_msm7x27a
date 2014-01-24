@@ -38,7 +38,11 @@ long compat_keyctl_instantiate_key_iov(
 
 	ret = compat_rw_copy_check_uvector(WRITE, _payload_iov, ioc,
 					   ARRAY_SIZE(iovstack),
+<<<<<<< HEAD
 					   iovstack, &iov);
+=======
+					   iovstack, &iov, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		goto err;
 	if (ret == 0)

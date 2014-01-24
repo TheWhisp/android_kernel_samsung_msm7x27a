@@ -30,6 +30,10 @@
 
 ******************************************************************************/
 
+<<<<<<< HEAD
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kmod.h>
 #include <linux/slab.h>
 #include <linux/module.h>
@@ -473,6 +477,7 @@ int libipw_wx_set_encode(struct libipw_device *ieee,
 	if (ieee->set_security)
 		ieee->set_security(dev, &sec);
 
+<<<<<<< HEAD
 	/* Do not reset port if card is in Managed mode since resetting will
 	 * generate new IEEE 802.11 authentication which may end up in looping
 	 * with IEEE 802.1X.  If your hardware requires a reset after WEP
@@ -484,6 +489,8 @@ int libipw_wx_set_encode(struct libipw_device *ieee,
 		printk(KERN_DEBUG "%s: reset_port failed\n", dev->name);
 		return -EINVAL;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -687,6 +694,7 @@ int libipw_wx_set_encodeext(struct libipw_device *ieee,
 	if (ieee->set_security)
 		ieee->set_security(ieee->dev, &sec);
 
+<<<<<<< HEAD
 	/*
 	 * Do not reset port if card is in Managed mode since resetting will
 	 * generate new IEEE 802.11 authentication which may end up in looping
@@ -701,6 +709,8 @@ int libipw_wx_set_encodeext(struct libipw_device *ieee,
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 

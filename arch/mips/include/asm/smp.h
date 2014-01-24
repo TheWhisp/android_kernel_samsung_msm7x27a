@@ -17,7 +17,11 @@
 #include <linux/threads.h>
 #include <linux/cpumask.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/smp-ops.h>
 
 extern int smp_num_siblings;

@@ -66,7 +66,10 @@ GRTAGS
 GSYMS
 GTAGS
 Image
+<<<<<<< HEAD
 Kerntypes
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 Module.markers
 Module.symvers
 PENDING
@@ -159,7 +162,10 @@ logo_*.c
 logo_*_clut224.c
 logo_*_mono.c
 lxdialog
+<<<<<<< HEAD
 mach
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 mach-types
 mach-types.h
 machtypes.h

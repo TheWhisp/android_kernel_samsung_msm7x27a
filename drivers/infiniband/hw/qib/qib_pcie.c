@@ -35,6 +35,10 @@
 #include <linux/delay.h>
 #include <linux/vmalloc.h>
 #include <linux/aer.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "qib.h"
 
@@ -193,11 +197,31 @@ void qib_pcie_ddcleanup(struct qib_devdata *dd)
 }
 
 static void qib_msix_setup(struct qib_devdata *dd, int pos, u32 *msixcnt,
+<<<<<<< HEAD
 			   struct msix_entry *msix_entry)
+=======
+			   struct qib_msix_entry *qib_msix_entry)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 	u32 tabsize = 0;
 	u16 msix_flags;
+<<<<<<< HEAD
+=======
+	struct msix_entry *msix_entry;
+	int i;
+
+	/* We can't pass qib_msix_entry array to qib_msix_setup
+	 * so use a dummy msix_entry array and copy the allocated
+	 * irq back to the qib_msix_entry array. */
+	msix_entry = kmalloc(*msixcnt * sizeof(*msix_entry), GFP_KERNEL);
+	if (!msix_entry) {
+		ret = -ENOMEM;
+		goto do_intx;
+	}
+	for (i = 0; i < *msixcnt; i++)
+		msix_entry[i] = qib_msix_entry[i].msix;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pci_read_config_word(dd->pcidev, pos + PCI_MSIX_FLAGS, &msix_flags);
 	tabsize = 1 + (msix_flags & PCI_MSIX_FLAGS_QSIZE);
@@ -208,11 +232,21 @@ static void qib_msix_setup(struct qib_devdata *dd, int pos, u32 *msixcnt,
 		tabsize = ret;
 		ret = pci_enable_msix(dd->pcidev, msix_entry, tabsize);
 	}
+<<<<<<< HEAD
+=======
+do_intx:
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		qib_dev_err(dd, "pci_enable_msix %d vectors failed: %d, "
 			    "falling back to INTx\n", tabsize, ret);
 		tabsize = 0;
 	}
+<<<<<<< HEAD
+=======
+	for (i = 0; i < tabsize; i++)
+		qib_msix_entry[i].msix = msix_entry[i];
+	kfree(msix_entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*msixcnt = tabsize;
 
 	if (ret)
@@ -250,12 +284,20 @@ static int qib_msi_setup(struct qib_devdata *dd, int pos)
 }
 
 int qib_pcie_params(struct qib_devdata *dd, u32 minw, u32 *nent,
+<<<<<<< HEAD
 		    struct msix_entry *entry)
+=======
+		    struct qib_msix_entry *entry)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u16 linkstat, speed;
 	int pos = 0, pose, ret = 1;
 
+<<<<<<< HEAD
 	pose = pci_find_capability(dd->pcidev, PCI_CAP_ID_EXP);
+=======
+	pose = pci_pcie_cap(dd->pcidev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!pose) {
 		qib_dev_err(dd, "Can't find PCI Express capability!\n");
 		/* set up something... */
@@ -509,7 +551,11 @@ static int qib_tune_pcie_coalesce(struct qib_devdata *dd)
 		qib_devinfo(dd->pcidev, "Parent not root\n");
 		return 1;
 	}
+<<<<<<< HEAD
 	ppos = pci_find_capability(parent, PCI_CAP_ID_EXP);
+=======
+	ppos = pci_pcie_cap(parent);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ppos)
 		return 1;
 	if (parent->vendor != 0x8086)
@@ -561,7 +607,11 @@ static int qib_tune_pcie_coalesce(struct qib_devdata *dd)
  */
 static int qib_pcie_caps;
 module_param_named(pcie_caps, qib_pcie_caps, int, S_IRUGO);
+<<<<<<< HEAD
 MODULE_PARM_DESC(pcie_caps, "Max PCIe tuning: Payload (4lsb), ReadReq (D4..7)");
+=======
+MODULE_PARM_DESC(pcie_caps, "Max PCIe tuning: Payload (0..3), ReadReq (4..7)");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int qib_tune_pcie_caps(struct qib_devdata *dd)
 {
@@ -578,14 +628,22 @@ static int qib_tune_pcie_caps(struct qib_devdata *dd)
 		qib_devinfo(dd->pcidev, "Parent not root\n");
 		goto bail;
 	}
+<<<<<<< HEAD
 	ppos = pci_find_capability(parent, PCI_CAP_ID_EXP);
+=======
+	ppos = pci_pcie_cap(parent);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ppos) {
 		pci_read_config_word(parent, ppos + PCI_EXP_DEVCAP, &pcaps);
 		pci_read_config_word(parent, ppos + PCI_EXP_DEVCTL, &pctl);
 	} else
 		goto bail;
 	/* Find out supported and configured values for endpoint (us) */
+<<<<<<< HEAD
 	epos = pci_find_capability(dd->pcidev, PCI_CAP_ID_EXP);
+=======
+	epos = pci_pcie_cap(dd->pcidev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (epos) {
 		pci_read_config_word(dd->pcidev, epos + PCI_EXP_DEVCAP, &ecaps);
 		pci_read_config_word(dd->pcidev, epos + PCI_EXP_DEVCTL, &ectl);

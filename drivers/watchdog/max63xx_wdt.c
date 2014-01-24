@@ -18,23 +18,35 @@
 #include <linux/moduleparam.h>
 #include <linux/types.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/fs.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/miscdevice.h>
 #include <linux/watchdog.h>
 #include <linux/init.h>
 #include <linux/bitops.h>
 #include <linux/platform_device.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/uaccess.h>
 #include <linux/io.h>
 #include <linux/device.h>
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 
 #define DEFAULT_HEARTBEAT 60
 #define MAX_HEARTBEAT     60
 
+<<<<<<< HEAD
 static int heartbeat = DEFAULT_HEARTBEAT;
 static int nowayout  = WATCHDOG_NOWAYOUT;
+=======
+static unsigned int heartbeat = DEFAULT_HEARTBEAT;
+static bool nowayout  = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Memory mapping: a single byte, 3 first lower bits to select bit 3
@@ -45,6 +57,7 @@ static int nowayout  = WATCHDOG_NOWAYOUT;
 
 static DEFINE_SPINLOCK(io_lock);
 
+<<<<<<< HEAD
 static unsigned long wdt_status;
 #define WDT_IN_USE	0
 #define WDT_RUNNING	1
@@ -54,6 +67,10 @@ static int nodelay;
 static struct resource	*wdt_mem;
 static void __iomem	*wdt_base;
 static struct platform_device *max63xx_pdev;
+=======
+static int nodelay;
+static void __iomem	*wdt_base;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The timeout values used are actually the absolute minimum the chip
@@ -117,7 +134,11 @@ max63xx_select_timeout(struct max63xx_timeout *table, int value)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static void max63xx_wdt_ping(void)
+=======
+static int max63xx_wdt_ping(struct watchdog_device *wdd)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u8 val;
 
@@ -129,6 +150,7 @@ static void max63xx_wdt_ping(void)
 	__raw_writeb(val & ~MAX6369_WDI, wdt_base);
 
 	spin_unlock(&io_lock);
+<<<<<<< HEAD
 }
 
 static void max63xx_wdt_enable(struct max63xx_timeout *entry)
@@ -138,6 +160,16 @@ static void max63xx_wdt_enable(struct max63xx_timeout *entry)
 	if (test_and_set_bit(WDT_RUNNING, &wdt_status))
 		return;
 
+=======
+	return 0;
+}
+
+static int max63xx_wdt_start(struct watchdog_device *wdd)
+{
+	struct max63xx_timeout *entry = watchdog_get_drvdata(wdd);
+	u8 val;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock(&io_lock);
 
 	val = __raw_readb(wdt_base);
@@ -149,10 +181,18 @@ static void max63xx_wdt_enable(struct max63xx_timeout *entry)
 
 	/* check for a edge triggered startup */
 	if (entry->tdelay == 0)
+<<<<<<< HEAD
 		max63xx_wdt_ping();
 }
 
 static void max63xx_wdt_disable(void)
+=======
+		max63xx_wdt_ping(wdd);
+	return 0;
+}
+
+static int max63xx_wdt_stop(struct watchdog_device *wdd)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u8 val;
 
@@ -164,6 +204,7 @@ static void max63xx_wdt_disable(void)
 	__raw_writeb(val, wdt_base);
 
 	spin_unlock(&io_lock);
+<<<<<<< HEAD
 
 	clear_bit(WDT_RUNNING, &wdt_status);
 }
@@ -264,13 +305,37 @@ static struct miscdevice max63xx_wdt_miscdev = {
 	.minor	= WATCHDOG_MINOR,
 	.name	= "watchdog",
 	.fops	= &max63xx_wdt_fops,
+=======
+	return 0;
+}
+
+static const struct watchdog_info max63xx_wdt_info = {
+	.options = WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
+	.identity = "max63xx Watchdog",
+};
+
+static const struct watchdog_ops max63xx_wdt_ops = {
+	.owner = THIS_MODULE,
+	.start = max63xx_wdt_start,
+	.stop = max63xx_wdt_stop,
+	.ping = max63xx_wdt_ping,
+};
+
+static struct watchdog_device max63xx_wdt_dev = {
+	.info = &max63xx_wdt_info,
+	.ops = &max63xx_wdt_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __devinit max63xx_wdt_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	int ret = 0;
 	int size;
 	struct device *dev = &pdev->dev;
+=======
+	struct resource	*wdt_mem;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct max63xx_timeout *table;
 
 	table = (struct max63xx_timeout *)pdev->id_entry->driver_data;
@@ -278,6 +343,7 @@ static int __devinit max63xx_wdt_probe(struct platform_device *pdev)
 	if (heartbeat < 1 || heartbeat > MAX_HEARTBEAT)
 		heartbeat = DEFAULT_HEARTBEAT;
 
+<<<<<<< HEAD
 	dev_info(dev, "requesting %ds heartbeat\n", heartbeat);
 	current_timeout = max63xx_select_timeout(table, heartbeat);
 
@@ -287,10 +353,22 @@ static int __devinit max63xx_wdt_probe(struct platform_device *pdev)
 	}
 
 	dev_info(dev, "using %ds heartbeat with %ds initial delay\n",
+=======
+	dev_info(&pdev->dev, "requesting %ds heartbeat\n", heartbeat);
+	current_timeout = max63xx_select_timeout(table, heartbeat);
+
+	if (!current_timeout) {
+		dev_err(&pdev->dev, "unable to satisfy heartbeat request\n");
+		return -EINVAL;
+	}
+
+	dev_info(&pdev->dev, "using %ds heartbeat with %ds initial delay\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		 current_timeout->twd, current_timeout->tdelay);
 
 	heartbeat = current_timeout->twd;
 
+<<<<<<< HEAD
 	max63xx_pdev = pdev;
 
 	wdt_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -327,10 +405,23 @@ out_request:
 	wdt_mem = NULL;
 
 	return ret;
+=======
+	wdt_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	wdt_base = devm_request_and_ioremap(&pdev->dev, wdt_mem);
+	if (!wdt_base)
+		return -ENOMEM;
+
+	max63xx_wdt_dev.timeout = heartbeat;
+	watchdog_set_nowayout(&max63xx_wdt_dev, nowayout);
+	watchdog_set_drvdata(&max63xx_wdt_dev, current_timeout);
+
+	return watchdog_register_device(&max63xx_wdt_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devexit max63xx_wdt_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	misc_deregister(&max63xx_wdt_miscdev);
 	if (wdt_mem) {
 		release_mem_region(wdt_mem->start, resource_size(wdt_mem));
@@ -340,6 +431,9 @@ static int __devexit max63xx_wdt_remove(struct platform_device *pdev)
 	if (wdt_base)
 		iounmap(wdt_base);
 
+=======
+	watchdog_unregister_device(&max63xx_wdt_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -364,6 +458,7 @@ static struct platform_driver max63xx_wdt_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init max63xx_wdt_init(void)
 {
 	return platform_driver_register(&max63xx_wdt_driver);
@@ -376,6 +471,9 @@ static void __exit max63xx_wdt_exit(void)
 
 module_init(max63xx_wdt_init);
 module_exit(max63xx_wdt_exit);
+=======
+module_platform_driver(max63xx_wdt_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Marc Zyngier <maz@misterjones.org>");
 MODULE_DESCRIPTION("max63xx Watchdog Driver");
@@ -386,7 +484,11 @@ MODULE_PARM_DESC(heartbeat,
 		 __MODULE_STRING(MAX_HEARTBEAT) ", default "
 		 __MODULE_STRING(DEFAULT_HEARTBEAT));
 
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 

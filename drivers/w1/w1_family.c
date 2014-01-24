@@ -1,7 +1,11 @@
 /*
  *	w1_family.c
  *
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,6 +27,10 @@
 #include <linux/list.h>
 #include <linux/sched.h>	/* schedule_timeout() */
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "w1_family.h"
 #include "w1.h"

@@ -25,6 +25,10 @@
 #include <linux/io.h>
 #include <linux/irq.h>
 #include <linux/perf_event.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/processor.h>
 
 struct cpu_hw_events {
@@ -309,6 +313,13 @@ static int sh_pmu_event_init(struct perf_event *event)
 {
 	int err;
 
+<<<<<<< HEAD
+=======
+	/* does not support taken branch sampling */
+	if (has_branch_stack(event))
+		return -EOPNOTSUPP;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (event->attr.type) {
 	case PERF_TYPE_RAW:
 	case PERF_TYPE_HW_CACHE:

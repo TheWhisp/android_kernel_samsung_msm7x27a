@@ -3,6 +3,13 @@
 
 #include <linux/in6.h>
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_GENERIC_CSUM
+#include <asm-generic/checksum.h>
+#else
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * computes the checksum of a memory block at buff, length len,
  * and adds in "sum" (32-bit)
@@ -34,6 +41,7 @@ extern __wsum csum_partial_copy_nocheck(const void *src,
 					      void *dst, int len,
 					      __wsum sum);
 
+<<<<<<< HEAD
 
 #ifdef CONFIG_COLDFIRE
 
@@ -58,6 +66,8 @@ static inline __sum16 csum_fold(__wsum sum)
 
 #else
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *	This is a version of ip_fast_csum() optimized for IP headers,
  *	which always checksum on 4 octet boundaries.
@@ -97,8 +107,11 @@ static inline __sum16 csum_fold(__wsum sum)
 	return (__force __sum16)~sum;
 }
 
+<<<<<<< HEAD
 #endif /* CONFIG_COLDFIRE */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline __wsum
 csum_tcpudp_nofold(__be32 saddr, __be32 daddr, unsigned short len,
 		  unsigned short proto, __wsum sum)
@@ -167,4 +180,8 @@ csum_ipv6_magic(const struct in6_addr *saddr, const struct in6_addr *daddr,
 	return csum_fold(sum);
 }
 
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_GENERIC_CSUM */
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _M68K_CHECKSUM_H */

@@ -27,7 +27,10 @@
 
 #include <asm/sections.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/pgtable.h>
 #include <asm/machdep.h>

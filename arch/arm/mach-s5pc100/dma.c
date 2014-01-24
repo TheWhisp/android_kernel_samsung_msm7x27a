@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 /*
+=======
+/* linux/arch/arm/mach-s5pc100/dma.c
+ *
+ * Copyright (c) 2011 Samsung Electronics Co., Ltd.
+ *		http://www.samsung.com
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright (C) 2010 Samsung Electronics Co. Ltd.
  *	Jaswinder Singh <jassi.brar@samsung.com>
  *
@@ -17,6 +25,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 
@@ -161,6 +170,113 @@ static struct platform_device *s5pc100_dmacs[] __initdata = {
 static int __init s5pc100_dma_init(void)
 {
 	platform_add_devices(s5pc100_dmacs, ARRAY_SIZE(s5pc100_dmacs));
+=======
+#include <linux/dma-mapping.h>
+#include <linux/amba/bus.h>
+#include <linux/amba/pl330.h>
+
+#include <asm/irq.h>
+#include <plat/devs.h>
+#include <plat/irqs.h>
+
+#include <mach/map.h>
+#include <mach/irqs.h>
+#include <mach/dma.h>
+
+static u64 dma_dmamask = DMA_BIT_MASK(32);
+
+static u8 pdma0_peri[] = {
+	DMACH_UART0_RX,
+	DMACH_UART0_TX,
+	DMACH_UART1_RX,
+	DMACH_UART1_TX,
+	DMACH_UART2_RX,
+	DMACH_UART2_TX,
+	DMACH_UART3_RX,
+	DMACH_UART3_TX,
+	DMACH_IRDA,
+	DMACH_I2S0_RX,
+	DMACH_I2S0_TX,
+	DMACH_I2S0S_TX,
+	DMACH_I2S1_RX,
+	DMACH_I2S1_TX,
+	DMACH_I2S2_RX,
+	DMACH_I2S2_TX,
+	DMACH_SPI0_RX,
+	DMACH_SPI0_TX,
+	DMACH_SPI1_RX,
+	DMACH_SPI1_TX,
+	DMACH_SPI2_RX,
+	DMACH_SPI2_TX,
+	DMACH_AC97_MICIN,
+	DMACH_AC97_PCMIN,
+	DMACH_AC97_PCMOUT,
+	DMACH_EXTERNAL,
+	DMACH_PWM,
+	DMACH_SPDIF,
+	DMACH_HSI_RX,
+	DMACH_HSI_TX,
+};
+
+static struct dma_pl330_platdata s5pc100_pdma0_pdata = {
+	.nr_valid_peri = ARRAY_SIZE(pdma0_peri),
+	.peri_id = pdma0_peri,
+};
+
+static AMBA_AHB_DEVICE(s5pc100_pdma0,  "dma-pl330.0", 0x00041330,
+	S5PC100_PA_PDMA0, {IRQ_PDMA0}, &s5pc100_pdma0_pdata);
+
+static u8 pdma1_peri[] = {
+	DMACH_UART0_RX,
+	DMACH_UART0_TX,
+	DMACH_UART1_RX,
+	DMACH_UART1_TX,
+	DMACH_UART2_RX,
+	DMACH_UART2_TX,
+	DMACH_UART3_RX,
+	DMACH_UART3_TX,
+	DMACH_IRDA,
+	DMACH_I2S0_RX,
+	DMACH_I2S0_TX,
+	DMACH_I2S0S_TX,
+	DMACH_I2S1_RX,
+	DMACH_I2S1_TX,
+	DMACH_I2S2_RX,
+	DMACH_I2S2_TX,
+	DMACH_SPI0_RX,
+	DMACH_SPI0_TX,
+	DMACH_SPI1_RX,
+	DMACH_SPI1_TX,
+	DMACH_SPI2_RX,
+	DMACH_SPI2_TX,
+	DMACH_PCM0_RX,
+	DMACH_PCM0_TX,
+	DMACH_PCM1_RX,
+	DMACH_PCM1_TX,
+	DMACH_MSM_REQ0,
+	DMACH_MSM_REQ1,
+	DMACH_MSM_REQ2,
+	DMACH_MSM_REQ3,
+};
+
+static struct dma_pl330_platdata s5pc100_pdma1_pdata = {
+	.nr_valid_peri = ARRAY_SIZE(pdma1_peri),
+	.peri_id = pdma1_peri,
+};
+
+static AMBA_AHB_DEVICE(s5pc100_pdma1, "dma-pl330.1", 0x00041330,
+	S5PC100_PA_PDMA1, {IRQ_PDMA1}, &s5pc100_pdma1_pdata);
+
+static int __init s5pc100_dma_init(void)
+{
+	dma_cap_set(DMA_SLAVE, s5pc100_pdma0_pdata.cap_mask);
+	dma_cap_set(DMA_CYCLIC, s5pc100_pdma0_pdata.cap_mask);
+	amba_device_register(&s5pc100_pdma0_device, &iomem_resource);
+
+	dma_cap_set(DMA_SLAVE, s5pc100_pdma1_pdata.cap_mask);
+	dma_cap_set(DMA_CYCLIC, s5pc100_pdma1_pdata.cap_mask);
+	amba_device_register(&s5pc100_pdma1_device, &iomem_resource);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

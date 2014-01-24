@@ -23,13 +23,25 @@
  */
 #include "rlim_names.h"
 
+<<<<<<< HEAD
+=======
+struct aa_fs_entry aa_fs_entry_rlimit[] = {
+	AA_FS_FILE_STRING("mask", AA_FS_RLIMIT_MASK),
+	{ }
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* audit callback for resource specific fields */
 static void audit_cb(struct audit_buffer *ab, void *va)
 {
 	struct common_audit_data *sa = va;
 
 	audit_log_format(ab, " rlimit=%s value=%lu",
+<<<<<<< HEAD
 			 rlim_names[sa->aad.rlim.rlim], sa->aad.rlim.max);
+=======
+			 rlim_names[sa->aad->rlim.rlim], sa->aad->rlim.max);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -45,12 +57,23 @@ static int audit_resource(struct aa_profile *profile, unsigned int resource,
 			  unsigned long value, int error)
 {
 	struct common_audit_data sa;
+<<<<<<< HEAD
 
 	COMMON_AUDIT_DATA_INIT(&sa, NONE);
 	sa.aad.op = OP_SETRLIMIT,
 	sa.aad.rlim.rlim = resource;
 	sa.aad.rlim.max = value;
 	sa.aad.error = error;
+=======
+	struct apparmor_audit_data aad = {0,};
+
+	COMMON_AUDIT_DATA_INIT(&sa, NONE);
+	sa.aad = &aad;
+	aad.op = OP_SETRLIMIT,
+	aad.rlim.rlim = resource;
+	aad.rlim.max = value;
+	aad.error = error;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return aa_audit(AUDIT_APPARMOR_AUTO, profile, GFP_KERNEL, &sa,
 			audit_cb);
 }

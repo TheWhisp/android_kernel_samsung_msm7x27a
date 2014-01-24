@@ -33,6 +33,10 @@
 #include "tea5767.h"
 #include "tda18271.h"
 #include "xc5000.h"
+<<<<<<< HEAD
+=======
+#include "s5h1411.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* commly used strings */
 static char name_mute[]    = "mute";
@@ -4951,8 +4955,14 @@ struct saa7134_board saa7134_boards[] = {
 		.audio_clock    = 0x00187de7,
 		.tuner_type     = TUNER_XC2028,
 		.radio_type     = UNSET,
+<<<<<<< HEAD
 		.tuner_addr	= ADDR_UNSET,
 		.radio_addr	= ADDR_UNSET,
+=======
+		.tuner_addr	= 0x61,
+		.radio_addr	= ADDR_UNSET,
+		.mpeg           = SAA7134_MPEG_DVB,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.inputs = {{
 			.name   = name_tv,
 			.vmux   = 3,
@@ -5690,6 +5700,60 @@ struct saa7134_board saa7134_boards[] = {
 			.amux = LINE1,
 		},
 	},
+<<<<<<< HEAD
+=======
+	[SAA7134_BOARD_SENSORAY811_911] = {
+		.name		= "Sensoray 811/911",
+		.audio_clock	= 0x00200000,
+		.tuner_type	= TUNER_ABSENT,
+		.radio_type	= UNSET,
+		.tuner_addr	= ADDR_UNSET,
+		.radio_addr	= ADDR_UNSET,
+		.inputs		= {{
+			.name   = name_comp1,
+			.vmux   = 0,
+			.amux   = LINE1,
+		}, {
+			.name   = name_comp3,
+			.vmux   = 2,
+			.amux   = LINE1,
+		}, {
+			.name   = name_svideo,
+			.vmux   = 8,
+			.amux   = LINE1,
+		} },
+	},
+	[SAA7134_BOARD_KWORLD_PC150U] = {
+		.name           = "Kworld PC150-U",
+		.audio_clock    = 0x00187de7,
+		.tuner_type     = TUNER_PHILIPS_TDA8290,
+		.radio_type     = UNSET,
+		.tuner_addr	= ADDR_UNSET,
+		.radio_addr	= ADDR_UNSET,
+		.mpeg           = SAA7134_MPEG_DVB,
+		.gpiomask       = 1 << 21,
+		.ts_type	= SAA7134_MPEG_TS_PARALLEL,
+		.inputs = { {
+			.name   = name_tv,
+			.vmux   = 1,
+			.amux   = TV,
+			.tv     = 1,
+		}, {
+			.name   = name_comp,
+			.vmux   = 3,
+			.amux   = LINE1,
+		}, {
+			.name   = name_svideo,
+			.vmux   = 8,
+			.amux   = LINE2,
+		} },
+		.radio = {
+			.name   = name_radio,
+			.amux   = TV,
+			.gpio	= 0x0000000,
+		},
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 
 };
 
@@ -6284,6 +6348,15 @@ struct pci_device_id saa7134_pci_tbl[] = {
 		.driver_data  = SAA7134_BOARD_KWORLD_ATSC110, /* ATSC 115 */
 	},{
 		.vendor       = PCI_VENDOR_ID_PHILIPS,
+<<<<<<< HEAD
+=======
+		.device       = PCI_DEVICE_ID_PHILIPS_SAA7133, /* SAA7135HL */
+		.subvendor    = 0x17de,
+		.subdevice    = 0xa134,
+		.driver_data  = SAA7134_BOARD_KWORLD_PC150U,
+	}, {
+		.vendor       = PCI_VENDOR_ID_PHILIPS,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.device       = PCI_DEVICE_ID_PHILIPS_SAA7134,
 		.subvendor    = 0x1461,
 		.subdevice    = 0x7360,
@@ -6913,6 +6986,21 @@ struct pci_device_id saa7134_pci_tbl[] = {
 		.subdevice    = 0xd136,
 		.driver_data  = SAA7134_BOARD_MAGICPRO_PROHDTV_PRO2,
 	}, {
+<<<<<<< HEAD
+=======
+		.vendor       = PCI_VENDOR_ID_PHILIPS,
+		.device       = PCI_DEVICE_ID_PHILIPS_SAA7133,
+		.subvendor    = 0x6000,
+		.subdevice    = 0x0811,
+		.driver_data  = SAA7134_BOARD_SENSORAY811_911,
+	}, {
+		.vendor       = PCI_VENDOR_ID_PHILIPS,
+		.device       = PCI_DEVICE_ID_PHILIPS_SAA7133,
+		.subvendor    = 0x6000,
+		.subdevice    = 0x0911,
+		.driver_data  = SAA7134_BOARD_SENSORAY811_911,
+	}, {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* --- boards without eeprom + subsystem ID --- */
 		.vendor       = PCI_VENDOR_ID_PHILIPS,
 		.device       = PCI_DEVICE_ID_PHILIPS_SAA7134,
@@ -6992,6 +7080,14 @@ static int saa7134_xc2028_callback(struct saa7134_dev *dev,
 			msleep(10);
 			saa7134_set_gpio(dev, 18, 1);
 		break;
+<<<<<<< HEAD
+=======
+		case SAA7134_BOARD_VIDEOMATE_T750:
+			saa7134_set_gpio(dev, 20, 0);
+			msleep(10);
+			saa7134_set_gpio(dev, 20, 1);
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	return 0;
 	}
@@ -7095,6 +7191,26 @@ static inline int saa7134_kworld_sbtvd_toggle_agc(struct saa7134_dev *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int saa7134_kworld_pc150u_toggle_agc(struct saa7134_dev *dev,
+					    enum tda18271_mode mode)
+{
+	switch (mode) {
+	case TDA18271_ANALOG:
+		saa7134_set_gpio(dev, 18, 0);
+		break;
+	case TDA18271_DIGITAL:
+		saa7134_set_gpio(dev, 18, 1);
+		msleep(30);
+		break;
+	default:
+		return -EINVAL;
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int saa7134_tda8290_18271_callback(struct saa7134_dev *dev,
 					  int command, int arg)
 {
@@ -7111,6 +7227,12 @@ static int saa7134_tda8290_18271_callback(struct saa7134_dev *dev,
 		case SAA7134_BOARD_KWORLD_PCI_SBTVD_FULLSEG:
 			ret = saa7134_kworld_sbtvd_toggle_agc(dev, arg);
 			break;
+<<<<<<< HEAD
+=======
+		case SAA7134_BOARD_KWORLD_PC150U:
+			ret = saa7134_kworld_pc150u_toggle_agc(dev, arg);
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		default:
 			break;
 		}
@@ -7132,6 +7254,10 @@ static int saa7134_tda8290_callback(struct saa7134_dev *dev,
 	case SAA7134_BOARD_HAUPPAUGE_HVR1120:
 	case SAA7134_BOARD_AVERMEDIA_M733A:
 	case SAA7134_BOARD_KWORLD_PCI_SBTVD_FULLSEG:
+<<<<<<< HEAD
+=======
+	case SAA7134_BOARD_KWORLD_PC150U:
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SAA7134_BOARD_MAGICPRO_PROHDTV_PRO2:
 		/* tda8290 + tda18271 */
 		ret = saa7134_tda8290_18271_callback(dev, command, arg);
@@ -7413,6 +7539,10 @@ int saa7134_board_init1(struct saa7134_dev *dev)
 	case SAA7134_BOARD_BEHOLD_X7:
 	case SAA7134_BOARD_BEHOLD_H7:
 	case SAA7134_BOARD_BEHOLD_A7:
+<<<<<<< HEAD
+=======
+	case SAA7134_BOARD_KWORLD_PC150U:
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev->has_remote = SAA7134_REMOTE_I2C;
 		break;
 	case SAA7134_BOARD_AVERMEDIA_A169_B:
@@ -7451,6 +7581,14 @@ int saa7134_board_init1(struct saa7134_dev *dev)
 		saa_andorl(SAA7134_GPIO_GPMODE0 >> 2,   0x0e050000, 0x0c050000);
 		saa_andorl(SAA7134_GPIO_GPSTATUS0 >> 2, 0x0e050000, 0x0c050000);
 		break;
+<<<<<<< HEAD
+=======
+	case SAA7134_BOARD_VIDEOMATE_T750:
+		/* enable the analog tuner */
+		saa_andorl(SAA7134_GPIO_GPMODE0 >> 2,   0x00008000, 0x00008000);
+		saa_andorl(SAA7134_GPIO_GPSTATUS0 >> 2, 0x00008000, 0x00008000);
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }

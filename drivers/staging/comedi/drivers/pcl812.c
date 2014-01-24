@@ -114,6 +114,10 @@
 
 #include <linux/delay.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 
 #include "8253.h"

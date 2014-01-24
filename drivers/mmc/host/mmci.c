@@ -29,6 +29,11 @@
 #include <linux/dmaengine.h>
 #include <linux/dma-mapping.h>
 #include <linux/amba/mmci.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_runtime.h>
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/div64.h>
 #include <asm/io.h>
@@ -52,6 +57,11 @@ static unsigned int fmax = 515633;
  * @sdio: variant supports SDIO
  * @st_clkdiv: true if using a ST-specific clock divider algorithm
  * @blksz_datactrl16: true if Block size is at b16..b30 position in datactrl register
+<<<<<<< HEAD
+=======
+ * @pwrreg_powerup: power up value for MMCIPOWER register
+ * @signal_direction: input/out direction of bus signals can be indicated
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct variant_data {
 	unsigned int		clkreg;
@@ -62,18 +72,31 @@ struct variant_data {
 	bool			sdio;
 	bool			st_clkdiv;
 	bool			blksz_datactrl16;
+<<<<<<< HEAD
+=======
+	u32			pwrreg_powerup;
+	bool			signal_direction;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct variant_data variant_arm = {
 	.fifosize		= 16 * 4,
 	.fifohalfsize		= 8 * 4,
 	.datalength_bits	= 16,
+<<<<<<< HEAD
+=======
+	.pwrreg_powerup		= MCI_PWR_UP,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct variant_data variant_arm_extended_fifo = {
 	.fifosize		= 128 * 4,
 	.fifohalfsize		= 64 * 4,
 	.datalength_bits	= 16,
+<<<<<<< HEAD
+=======
+	.pwrreg_powerup		= MCI_PWR_UP,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct variant_data variant_u300 = {
@@ -82,6 +105,11 @@ static struct variant_data variant_u300 = {
 	.clkreg_enable		= MCI_ST_U300_HWFCEN,
 	.datalength_bits	= 16,
 	.sdio			= true,
+<<<<<<< HEAD
+=======
+	.pwrreg_powerup		= MCI_PWR_ON,
+	.signal_direction	= true,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct variant_data variant_ux500 = {
@@ -92,6 +120,11 @@ static struct variant_data variant_ux500 = {
 	.datalength_bits	= 24,
 	.sdio			= true,
 	.st_clkdiv		= true,
+<<<<<<< HEAD
+=======
+	.pwrreg_powerup		= MCI_PWR_ON,
+	.signal_direction	= true,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct variant_data variant_ux500v2 = {
@@ -103,11 +136,41 @@ static struct variant_data variant_ux500v2 = {
 	.sdio			= true,
 	.st_clkdiv		= true,
 	.blksz_datactrl16	= true,
+<<<<<<< HEAD
+=======
+	.pwrreg_powerup		= MCI_PWR_ON,
+	.signal_direction	= true,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
  * This must be called with host->lock held
  */
+<<<<<<< HEAD
+=======
+static void mmci_write_clkreg(struct mmci_host *host, u32 clk)
+{
+	if (host->clk_reg != clk) {
+		host->clk_reg = clk;
+		writel(clk, host->base + MMCICLOCK);
+	}
+}
+
+/*
+ * This must be called with host->lock held
+ */
+static void mmci_write_pwrreg(struct mmci_host *host, u32 pwr)
+{
+	if (host->pwr_reg != pwr) {
+		host->pwr_reg = pwr;
+		writel(pwr, host->base + MMCIPOWER);
+	}
+}
+
+/*
+ * This must be called with host->lock held
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 static void mmci_set_clkreg(struct mmci_host *host, unsigned int desired)
 {
 	struct variant_data *variant = host->variant;
@@ -152,7 +215,11 @@ static void mmci_set_clkreg(struct mmci_host *host, unsigned int desired)
 	if (host->mmc->ios.bus_width == MMC_BUS_WIDTH_8)
 		clk |= MCI_ST_8BIT_BUS;
 
+<<<<<<< HEAD
 	writel(clk, host->base + MMCICLOCK);
+=======
+	mmci_write_clkreg(host, clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void
@@ -165,6 +232,7 @@ mmci_request_end(struct mmci_host *host, struct mmc_request *mrq)
 	host->mrq = NULL;
 	host->cmd = NULL;
 
+<<<<<<< HEAD
 	/*
 	 * Need to drop the host lock here; mmc_request_done may call
 	 * back into the driver...
@@ -172,6 +240,12 @@ mmci_request_end(struct mmci_host *host, struct mmc_request *mrq)
 	spin_unlock(&host->lock);
 	mmc_request_done(host->mmc, mrq);
 	spin_lock(&host->lock);
+=======
+	mmc_request_done(host->mmc, mrq);
+
+	pm_runtime_mark_last_busy(mmc_dev(host->mmc));
+	pm_runtime_put_autosuspend(mmc_dev(host->mmc));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void mmci_set_mask1(struct mmci_host *host, unsigned int mask)
@@ -226,6 +300,12 @@ static void __devinit mmci_dma_setup(struct mmci_host *host)
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	/* initialize pre request cookie */
+	host->next_data.cookie = 1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Try to acquire a generic DMA engine slave channel */
 	dma_cap_zero(mask);
 	dma_cap_set(DMA_SLAVE, mask);
@@ -335,7 +415,12 @@ static void mmci_dma_unmap(struct mmci_host *host, struct mmc_data *data)
 		dir = DMA_FROM_DEVICE;
 	}
 
+<<<<<<< HEAD
 	dma_unmap_sg(chan->device->dev, data->sg, data->sg_len, dir);
+=======
+	if (!data->host_cookie)
+		dma_unmap_sg(chan->device->dev, data->sg, data->sg_len, dir);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Use of DMA with scatter-gather is impossible.
@@ -353,7 +438,12 @@ static void mmci_dma_data_error(struct mmci_host *host)
 	dmaengine_terminate_all(host->dma_current);
 }
 
+<<<<<<< HEAD
 static int mmci_dma_start_data(struct mmci_host *host, unsigned int datactrl)
+=======
+static int mmci_dma_prep_data(struct mmci_host *host, struct mmc_data *data,
+			      struct mmci_host_next *next)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct variant_data *variant = host->variant;
 	struct dma_slave_config conf = {
@@ -363,6 +453,7 @@ static int mmci_dma_start_data(struct mmci_host *host, unsigned int datactrl)
 		.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES,
 		.src_maxburst = variant->fifohalfsize >> 2, /* # of words */
 		.dst_maxburst = variant->fifohalfsize >> 2, /* # of words */
+<<<<<<< HEAD
 	};
 	struct mmc_data *data = host->data;
 	struct dma_chan *chan;
@@ -377,6 +468,33 @@ static int mmci_dma_start_data(struct mmci_host *host, unsigned int datactrl)
 		chan = host->dma_rx_channel;
 	} else {
 		conf.direction = DMA_TO_DEVICE;
+=======
+		.device_fc = false,
+	};
+	struct dma_chan *chan;
+	struct dma_device *device;
+	struct dma_async_tx_descriptor *desc;
+	enum dma_data_direction buffer_dirn;
+	int nr_sg;
+
+	/* Check if next job is already prepared */
+	if (data->host_cookie && !next &&
+	    host->dma_current && host->dma_desc_current)
+		return 0;
+
+	if (!next) {
+		host->dma_current = NULL;
+		host->dma_desc_current = NULL;
+	}
+
+	if (data->flags & MMC_DATA_READ) {
+		conf.direction = DMA_DEV_TO_MEM;
+		buffer_dirn = DMA_FROM_DEVICE;
+		chan = host->dma_rx_channel;
+	} else {
+		conf.direction = DMA_MEM_TO_DEV;
+		buffer_dirn = DMA_TO_DEVICE;
+>>>>>>> refs/remotes/origin/cm-10.0
 		chan = host->dma_tx_channel;
 	}
 
@@ -385,20 +503,33 @@ static int mmci_dma_start_data(struct mmci_host *host, unsigned int datactrl)
 		return -EINVAL;
 
 	/* If less than or equal to the fifo size, don't bother with DMA */
+<<<<<<< HEAD
 	if (host->size <= variant->fifosize)
 		return -EINVAL;
 
 	device = chan->device;
 	nr_sg = dma_map_sg(device->dev, data->sg, data->sg_len, conf.direction);
+=======
+	if (data->blksz * data->blocks <= variant->fifosize)
+		return -EINVAL;
+
+	device = chan->device;
+	nr_sg = dma_map_sg(device->dev, data->sg, data->sg_len, buffer_dirn);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (nr_sg == 0)
 		return -EINVAL;
 
 	dmaengine_slave_config(chan, &conf);
+<<<<<<< HEAD
 	desc = device->device_prep_slave_sg(chan, data->sg, nr_sg,
+=======
+	desc = dmaengine_prep_slave_sg(chan, data->sg, nr_sg,
+>>>>>>> refs/remotes/origin/cm-10.0
 					    conf.direction, DMA_CTRL_ACK);
 	if (!desc)
 		goto unmap_exit;
 
+<<<<<<< HEAD
 	/* Okay, go for it. */
 	host->dma_current = chan;
 
@@ -407,6 +538,40 @@ static int mmci_dma_start_data(struct mmci_host *host, unsigned int datactrl)
 		 data->sg_len, data->blksz, data->blocks, data->flags);
 	dmaengine_submit(desc);
 	dma_async_issue_pending(chan);
+=======
+	if (next) {
+		next->dma_chan = chan;
+		next->dma_desc = desc;
+	} else {
+		host->dma_current = chan;
+		host->dma_desc_current = desc;
+	}
+
+	return 0;
+
+ unmap_exit:
+	if (!next)
+		dmaengine_terminate_all(chan);
+	dma_unmap_sg(device->dev, data->sg, data->sg_len, buffer_dirn);
+	return -ENOMEM;
+}
+
+static int mmci_dma_start_data(struct mmci_host *host, unsigned int datactrl)
+{
+	int ret;
+	struct mmc_data *data = host->data;
+
+	ret = mmci_dma_prep_data(host, host->data, NULL);
+	if (ret)
+		return ret;
+
+	/* Okay, go for it. */
+	dev_vdbg(mmc_dev(host->mmc),
+		 "Submit MMCI DMA job, sglen %d blksz %04x blks %04x flags %08x\n",
+		 data->sg_len, data->blksz, data->blocks, data->flags);
+	dmaengine_submit(host->dma_desc_current);
+	dma_async_issue_pending(host->dma_current);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	datactrl |= MCI_DPSM_DMAENABLE;
 
@@ -421,6 +586,7 @@ static int mmci_dma_start_data(struct mmci_host *host, unsigned int datactrl)
 	writel(readl(host->base + MMCIMASK0) | MCI_DATAENDMASK,
 	       host->base + MMCIMASK0);
 	return 0;
+<<<<<<< HEAD
 
 unmap_exit:
 	dmaengine_terminate_all(chan);
@@ -429,6 +595,92 @@ unmap_exit:
 }
 #else
 /* Blank functions if the DMA engine is not available */
+=======
+}
+
+static void mmci_get_next_data(struct mmci_host *host, struct mmc_data *data)
+{
+	struct mmci_host_next *next = &host->next_data;
+
+	if (data->host_cookie && data->host_cookie != next->cookie) {
+		pr_warning("[%s] invalid cookie: data->host_cookie %d"
+		       " host->next_data.cookie %d\n",
+		       __func__, data->host_cookie, host->next_data.cookie);
+		data->host_cookie = 0;
+	}
+
+	if (!data->host_cookie)
+		return;
+
+	host->dma_desc_current = next->dma_desc;
+	host->dma_current = next->dma_chan;
+
+	next->dma_desc = NULL;
+	next->dma_chan = NULL;
+}
+
+static void mmci_pre_request(struct mmc_host *mmc, struct mmc_request *mrq,
+			     bool is_first_req)
+{
+	struct mmci_host *host = mmc_priv(mmc);
+	struct mmc_data *data = mrq->data;
+	struct mmci_host_next *nd = &host->next_data;
+
+	if (!data)
+		return;
+
+	if (data->host_cookie) {
+		data->host_cookie = 0;
+		return;
+	}
+
+	/* if config for dma */
+	if (((data->flags & MMC_DATA_WRITE) && host->dma_tx_channel) ||
+	    ((data->flags & MMC_DATA_READ) && host->dma_rx_channel)) {
+		if (mmci_dma_prep_data(host, data, nd))
+			data->host_cookie = 0;
+		else
+			data->host_cookie = ++nd->cookie < 0 ? 1 : nd->cookie;
+	}
+}
+
+static void mmci_post_request(struct mmc_host *mmc, struct mmc_request *mrq,
+			      int err)
+{
+	struct mmci_host *host = mmc_priv(mmc);
+	struct mmc_data *data = mrq->data;
+	struct dma_chan *chan;
+	enum dma_data_direction dir;
+
+	if (!data)
+		return;
+
+	if (data->flags & MMC_DATA_READ) {
+		dir = DMA_FROM_DEVICE;
+		chan = host->dma_rx_channel;
+	} else {
+		dir = DMA_TO_DEVICE;
+		chan = host->dma_tx_channel;
+	}
+
+
+	/* if config for dma */
+	if (chan) {
+		if (err)
+			dmaengine_terminate_all(chan);
+		if (data->host_cookie)
+			dma_unmap_sg(mmc_dev(host->mmc), data->sg,
+				     data->sg_len, dir);
+		mrq->data->host_cookie = 0;
+	}
+}
+
+#else
+/* Blank functions if the DMA engine is not available */
+static void mmci_get_next_data(struct mmci_host *host, struct mmc_data *data)
+{
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void mmci_dma_setup(struct mmci_host *host)
 {
 }
@@ -449,6 +701,13 @@ static inline int mmci_dma_start_data(struct mmci_host *host, unsigned int datac
 {
 	return -ENOSYS;
 }
+<<<<<<< HEAD
+=======
+
+#define mmci_pre_request NULL
+#define mmci_post_request NULL
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static void mmci_start_data(struct mmci_host *host, struct mmc_data *data)
@@ -486,6 +745,14 @@ static void mmci_start_data(struct mmci_host *host, struct mmc_data *data)
 	if (data->flags & MMC_DATA_READ)
 		datactrl |= MCI_DPSM_DIRECTION;
 
+<<<<<<< HEAD
+=======
+	/* The ST Micro variants has a special bit to enable SDIO */
+	if (variant->sdio && host->mmc->card)
+		if (mmc_card_sdio(host->mmc->card))
+			datactrl |= MCI_ST_DPSM_SDIOEN;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Attempt to use DMA operation mode, if this
 	 * should fail, fall back to PIO mode
@@ -514,11 +781,14 @@ static void mmci_start_data(struct mmci_host *host, struct mmc_data *data)
 		irqmask = MCI_TXFIFOHALFEMPTYMASK;
 	}
 
+<<<<<<< HEAD
 	/* The ST Micro variants has a special bit to enable SDIO */
 	if (variant->sdio && host->mmc->card)
 		if (mmc_card_sdio(host->mmc->card))
 			datactrl |= MCI_ST_DPSM_SDIOEN;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	writel(datactrl, base + MMCIDATACTRL);
 	writel(readl(base + MMCIMASK0) & ~MCI_DATAENDMASK, base + MMCIMASK0);
 	mmci_set_mask1(host, irqmask);
@@ -665,7 +935,28 @@ static int mmci_pio_read(struct mmci_host *host, char *buffer, unsigned int rema
 		if (count <= 0)
 			break;
 
+<<<<<<< HEAD
 		readsl(base + MMCIFIFO, ptr, count >> 2);
+=======
+		/*
+		 * SDIO especially may want to send something that is
+		 * not divisible by 4 (as opposed to card sectors
+		 * etc). Therefore make sure to always read the last bytes
+		 * while only doing full 32-bit reads towards the FIFO.
+		 */
+		if (unlikely(count & 0x3)) {
+			if (count < 4) {
+				unsigned char buf[4];
+				readsl(base + MMCIFIFO, buf, 1);
+				memcpy(ptr, buf, count);
+			} else {
+				readsl(base + MMCIFIFO, ptr, count >> 2);
+				count &= ~0x3;
+			}
+		} else {
+			readsl(base + MMCIFIFO, ptr, count >> 2);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ptr += count;
 		remain -= count;
@@ -700,6 +991,7 @@ static int mmci_pio_write(struct mmci_host *host, char *buffer, unsigned int rem
 		 */
 		if (variant->sdio &&
 		    mmc_card_sdio(host->mmc->card)) {
+<<<<<<< HEAD
 			if (count < 8)
 				writel(readl(host->base + MMCICLOCK) &
 					~variant->clkreg_enable,
@@ -708,6 +1000,15 @@ static int mmci_pio_write(struct mmci_host *host, char *buffer, unsigned int rem
 				writel(readl(host->base + MMCICLOCK) |
 					variant->clkreg_enable,
 					host->base + MMCICLOCK);
+=======
+			u32 clk;
+			if (count < 8)
+				clk = host->clk_reg & ~variant->clkreg_enable;
+			else
+				clk = host->clk_reg | variant->clkreg_enable;
+
+			mmci_write_clkreg(host, clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/*
@@ -874,10 +1175,21 @@ static void mmci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	pm_runtime_get_sync(mmc_dev(mmc));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&host->lock, flags);
 
 	host->mrq = mrq;
 
+<<<<<<< HEAD
+=======
+	if (mrq->data)
+		mmci_get_next_data(host, mrq->data);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (mrq->data && mrq->data->flags & MMC_DATA_READ)
 		mmci_start_data(host, mrq->data);
 
@@ -889,10 +1201,23 @@ static void mmci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 static void mmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 {
 	struct mmci_host *host = mmc_priv(mmc);
+<<<<<<< HEAD
+=======
+	struct variant_data *variant = host->variant;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 pwr = 0;
 	unsigned long flags;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	pm_runtime_get_sync(mmc_dev(mmc));
+
+	if (host->plat->ios_handler &&
+		host->plat->ios_handler(mmc_dev(mmc), ios))
+			dev_err(mmc_dev(mmc), "platform ios_handler failed\n");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (ios->power_mode) {
 	case MMC_POWER_OFF:
 		if (host->vcc)
@@ -909,6 +1234,7 @@ static void mmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 				 * power should be rare so we print an error
 				 * and return here.
 				 */
+<<<<<<< HEAD
 				return;
 			}
 		}
@@ -920,11 +1246,43 @@ static void mmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			pwr |= MCI_PWR_UP;
 			break;
 		}
+=======
+				goto out;
+			}
+		}
+		/*
+		 * The ST Micro variant doesn't have the PL180s MCI_PWR_UP
+		 * and instead uses MCI_PWR_ON so apply whatever value is
+		 * configured in the variant data.
+		 */
+		pwr |= variant->pwrreg_powerup;
+
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MMC_POWER_ON:
 		pwr |= MCI_PWR_ON;
 		break;
 	}
 
+<<<<<<< HEAD
+=======
+	if (variant->signal_direction && ios->power_mode != MMC_POWER_OFF) {
+		/*
+		 * The ST Micro variant has some additional bits
+		 * indicating signal direction for the signals in
+		 * the SD/MMC bus and feedback-clock usage.
+		 */
+		pwr |= host->plat->sigdir;
+
+		if (ios->bus_width == MMC_BUS_WIDTH_4)
+			pwr &= ~MCI_ST_DATA74DIREN;
+		else if (ios->bus_width == MMC_BUS_WIDTH_1)
+			pwr &= (~MCI_ST_DATA74DIREN &
+				~MCI_ST_DATA31DIREN &
+				~MCI_ST_DATA2DIREN);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ios->bus_mode == MMC_BUSMODE_OPENDRAIN) {
 		if (host->hw_designer != AMBA_VENDOR_ST)
 			pwr |= MCI_ROD;
@@ -940,6 +1298,7 @@ static void mmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	spin_lock_irqsave(&host->lock, flags);
 
 	mmci_set_clkreg(host, ios->clock);
+<<<<<<< HEAD
 
 	if (host->pwr != pwr) {
 		host->pwr = pwr;
@@ -947,6 +1306,15 @@ static void mmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	}
 
 	spin_unlock_irqrestore(&host->lock, flags);
+=======
+	mmci_write_pwrreg(host, pwr);
+
+	spin_unlock_irqrestore(&host->lock, flags);
+
+ out:
+	pm_runtime_mark_last_busy(mmc_dev(mmc));
+	pm_runtime_put_autosuspend(mmc_dev(mmc));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int mmci_get_ro(struct mmc_host *mmc)
@@ -992,6 +1360,11 @@ static irqreturn_t mmci_cd_irq(int irq, void *dev_id)
 
 static const struct mmc_host_ops mmci_ops = {
 	.request	= mmci_request,
+<<<<<<< HEAD
+=======
+	.pre_req	= mmci_pre_request,
+	.post_req	= mmci_post_request,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_ios	= mmci_set_ios,
 	.get_ro		= mmci_get_ro,
 	.get_cd		= mmci_get_cd,
@@ -1041,10 +1414,21 @@ static int __devinit mmci_probe(struct amba_device *dev,
 		goto host_free;
 	}
 
+<<<<<<< HEAD
 	ret = clk_enable(host->clk);
 	if (ret)
 		goto clk_free;
 
+=======
+	ret = clk_prepare(host->clk);
+	if (ret)
+		goto clk_free;
+
+	ret = clk_enable(host->clk);
+	if (ret)
+		goto clk_unprep;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	host->plat = plat;
 	host->variant = variant;
 	host->mclk = clk_get_rate(host->clk);
@@ -1069,7 +1453,19 @@ static int __devinit mmci_probe(struct amba_device *dev,
 	}
 
 	mmc->ops = &mmci_ops;
+<<<<<<< HEAD
 	mmc->f_min = (host->mclk + 511) / 512;
+=======
+	/*
+	 * The ARM and ST versions of the block have slightly different
+	 * clock divider equations which means that the minimum divider
+	 * differs too.
+	 */
+	if (variant->st_clkdiv)
+		mmc->f_min = DIV_ROUND_UP(host->mclk, 257);
+	else
+		mmc->f_min = DIV_ROUND_UP(host->mclk, 512);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * If the platform data supplies a maximum operating
 	 * frequency, this takes precedence. Else, we fall back
@@ -1108,6 +1504,10 @@ static int __devinit mmci_probe(struct amba_device *dev,
 	if (host->vcc == NULL)
 		mmc->ocr_avail = plat->ocr_mask;
 	mmc->caps = plat->capabilities;
+<<<<<<< HEAD
+=======
+	mmc->caps2 = plat->capabilities2;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * We can do SGIO
@@ -1130,12 +1530,22 @@ static int __devinit mmci_probe(struct amba_device *dev,
 	/*
 	 * Block size can be up to 2048 bytes, but must be a power of two.
 	 */
+<<<<<<< HEAD
 	mmc->max_blk_size = 2048;
 
 	/*
 	 * No limit on the number of blocks transferred.
 	 */
 	mmc->max_blk_count = mmc->max_req_size;
+=======
+	mmc->max_blk_size = 1 << 11;
+
+	/*
+	 * Limit the number of blocks transferred so that we don't overflow
+	 * the maximum request size.
+	 */
+	mmc->max_blk_count = mmc->max_req_size >> 11;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_init(&host->lock);
 
@@ -1184,7 +1594,11 @@ static int __devinit mmci_probe(struct amba_device *dev,
 	if (ret)
 		goto unmap;
 
+<<<<<<< HEAD
 	if (dev->irq[1] == NO_IRQ)
+=======
+	if (dev->irq[1] == NO_IRQ || !dev->irq[1])
+>>>>>>> refs/remotes/origin/cm-10.0
 		host->singleirq = true;
 	else {
 		ret = request_irq(dev->irq[1], mmci_pio_irq, IRQF_SHARED,
@@ -1204,6 +1618,13 @@ static int __devinit mmci_probe(struct amba_device *dev,
 
 	mmci_dma_setup(host);
 
+<<<<<<< HEAD
+=======
+	pm_runtime_set_autosuspend_delay(&dev->dev, 50);
+	pm_runtime_use_autosuspend(&dev->dev);
+	pm_runtime_put(&dev->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mmc_add_host(mmc);
 
 	return 0;
@@ -1222,6 +1643,11 @@ static int __devinit mmci_probe(struct amba_device *dev,
 	iounmap(host->base);
  clk_disable:
 	clk_disable(host->clk);
+<<<<<<< HEAD
+=======
+ clk_unprep:
+	clk_unprepare(host->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
  clk_free:
 	clk_put(host->clk);
  host_free:
@@ -1241,6 +1667,15 @@ static int __devexit mmci_remove(struct amba_device *dev)
 	if (mmc) {
 		struct mmci_host *host = mmc_priv(mmc);
 
+<<<<<<< HEAD
+=======
+		/*
+		 * Undo pm_runtime_put() in probe.  We use the _sync
+		 * version here so that we can access the primecell.
+		 */
+		pm_runtime_get_sync(&dev->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		mmc_remove_host(mmc);
 
 		writel(0, host->base + MMCIMASK0);
@@ -1263,6 +1698,10 @@ static int __devexit mmci_remove(struct amba_device *dev)
 
 		iounmap(host->base);
 		clk_disable(host->clk);
+<<<<<<< HEAD
+=======
+		clk_unprepare(host->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		clk_put(host->clk);
 
 		if (host->vcc)
@@ -1277,43 +1716,78 @@ static int __devexit mmci_remove(struct amba_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int mmci_suspend(struct amba_device *dev, pm_message_t state)
 {
 	struct mmc_host *mmc = amba_get_drvdata(dev);
+=======
+#ifdef CONFIG_SUSPEND
+static int mmci_suspend(struct device *dev)
+{
+	struct amba_device *adev = to_amba_device(dev);
+	struct mmc_host *mmc = amba_get_drvdata(adev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0;
 
 	if (mmc) {
 		struct mmci_host *host = mmc_priv(mmc);
 
 		ret = mmc_suspend_host(mmc);
+<<<<<<< HEAD
 		if (ret == 0)
 			writel(0, host->base + MMCIMASK0);
+=======
+		if (ret == 0) {
+			pm_runtime_get_sync(dev);
+			writel(0, host->base + MMCIMASK0);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int mmci_resume(struct amba_device *dev)
 {
 	struct mmc_host *mmc = amba_get_drvdata(dev);
+=======
+static int mmci_resume(struct device *dev)
+{
+	struct amba_device *adev = to_amba_device(dev);
+	struct mmc_host *mmc = amba_get_drvdata(adev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0;
 
 	if (mmc) {
 		struct mmci_host *host = mmc_priv(mmc);
 
 		writel(MCI_IRQENABLE, host->base + MMCIMASK0);
+<<<<<<< HEAD
+=======
+		pm_runtime_put(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ret = mmc_resume_host(mmc);
 	}
 
 	return ret;
 }
+<<<<<<< HEAD
 #else
 #define mmci_suspend	NULL
 #define mmci_resume	NULL
 #endif
 
+=======
+#endif
+
+static const struct dev_pm_ops mmci_dev_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(mmci_suspend, mmci_resume)
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct amba_id mmci_ids[] = {
 	{
 		.id	= 0x00041180,
@@ -1354,6 +1828,7 @@ static struct amba_id mmci_ids[] = {
 	{ 0, 0 },
 };
 
+<<<<<<< HEAD
 static struct amba_driver mmci_driver = {
 	.drv		= {
 		.name	= DRIVER_NAME,
@@ -1377,6 +1852,22 @@ static void __exit mmci_exit(void)
 
 module_init(mmci_init);
 module_exit(mmci_exit);
+=======
+MODULE_DEVICE_TABLE(amba, mmci_ids);
+
+static struct amba_driver mmci_driver = {
+	.drv		= {
+		.name	= DRIVER_NAME,
+		.pm	= &mmci_dev_pm_ops,
+	},
+	.probe		= mmci_probe,
+	.remove		= __devexit_p(mmci_remove),
+	.id_table	= mmci_ids,
+};
+
+module_amba_driver(mmci_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(fmax, uint, 0444);
 
 MODULE_DESCRIPTION("ARM PrimeCell PL180/181 Multimedia Card Interface driver");

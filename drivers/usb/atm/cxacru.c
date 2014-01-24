@@ -1373,6 +1373,7 @@ static struct usb_driver cxacru_usb_driver = {
 	.id_table	= cxacru_usb_ids
 };
 
+<<<<<<< HEAD
 static int __init cxacru_init(void)
 {
 	return usb_register(&cxacru_usb_driver);
@@ -1385,6 +1386,9 @@ static void __exit cxacru_cleanup(void)
 
 module_init(cxacru_init);
 module_exit(cxacru_cleanup);
+=======
+module_usb_driver(cxacru_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

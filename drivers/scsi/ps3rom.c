@@ -20,6 +20,10 @@
 
 #include <linux/cdrom.h>
 #include <linux/highmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 
 #include <scsi/scsi.h>

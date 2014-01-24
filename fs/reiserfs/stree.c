@@ -51,7 +51,11 @@
 #include <linux/time.h>
 #include <linux/string.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/buffer_head.h>
 #include <linux/quotaops.h>
 
@@ -1284,12 +1288,20 @@ int reiserfs_delete_item(struct reiserfs_transaction_handle *th,
 		 ** -clm
 		 */
 
+<<<<<<< HEAD
 		data = kmap_atomic(un_bh->b_page, KM_USER0);
+=======
+		data = kmap_atomic(un_bh->b_page);
+>>>>>>> refs/remotes/origin/cm-10.0
 		off = ((le_ih_k_offset(&s_ih) - 1) & (PAGE_CACHE_SIZE - 1));
 		memcpy(data + off,
 		       B_I_PITEM(PATH_PLAST_BUFFER(path), &s_ih),
 		       ret_value);
+<<<<<<< HEAD
 		kunmap_atomic(data, KM_USER0);
+=======
+		kunmap_atomic(data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	/* Perform balancing after all resources have been collected at once. */
 	do_balance(&s_del_balance, NULL, NULL, M_DELETE);

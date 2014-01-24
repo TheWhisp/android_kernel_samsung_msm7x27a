@@ -9,7 +9,11 @@
 
 #include <linux/socket.h>
 #include <linux/in6.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct flowi_common {
 	int	flowic_oif;
@@ -59,8 +63,16 @@ struct flowi4 {
 #define flowi4_proto		__fl_common.flowic_proto
 #define flowi4_flags		__fl_common.flowic_flags
 #define flowi4_secid		__fl_common.flowic_secid
+<<<<<<< HEAD
 	__be32			daddr;
 	__be32			saddr;
+=======
+
+	/* (saddr,daddr) must be grouped, same order as in IP header */
+	__be32			saddr;
+	__be32			daddr;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	union flowi_uli		uli;
 #define fl4_sport		uli.ports.sport
 #define fl4_dport		uli.ports.dport
@@ -75,7 +87,11 @@ static inline void flowi4_init_output(struct flowi4 *fl4, int oif,
 				      __u32 mark, __u8 tos, __u8 scope,
 				      __u8 proto, __u8 flags,
 				      __be32 daddr, __be32 saddr,
+<<<<<<< HEAD
 				      __be16 dport, __be32 sport)
+=======
+				      __be16 dport, __be16 sport)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	fl4->flowi4_oif = oif;
 	fl4->flowi4_iif = 0;
@@ -217,6 +233,10 @@ extern struct flow_cache_object *flow_cache_lookup(
 		u8 dir, flow_resolve_t resolver, void *ctx);
 
 extern void flow_cache_flush(void);
+<<<<<<< HEAD
+=======
+extern void flow_cache_flush_deferred(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern atomic_t flow_cache_genid;
 
 #endif

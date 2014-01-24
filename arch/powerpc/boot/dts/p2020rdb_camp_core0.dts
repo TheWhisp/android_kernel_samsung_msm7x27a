@@ -14,12 +14,17 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
 /include/ "p2020si.dtsi"
+=======
+/include/ "p2020rdb.dts"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 / {
 	model = "fsl,P2020RDB";
 	compatible = "fsl,P2020RDB", "fsl,MPC85XXRDB-CAMP";
 
+<<<<<<< HEAD
 	aliases {
 		ethernet1 = &enet1;
 		ethernet2 = &enet2;
@@ -36,6 +41,12 @@
 
 	memory {
 		device_type = "memory";
+=======
+	cpus {
+		PowerPC,P2020@1 {
+			status = "disabled";
+		};
+>>>>>>> refs/remotes/origin/cm-10.0
 	};
 
 	localbus@ffe05000 {
@@ -43,6 +54,7 @@
 	};
 
 	soc@ffe00000 {
+<<<<<<< HEAD
 		i2c@3000 {
 			rtc@68 {
 				compatible = "dallas,ds1339";
@@ -50,10 +62,13 @@
 			};
 		};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		serial1: serial@4600 {
 			status = "disabled";
 		};
 
+<<<<<<< HEAD
 		spi@7000 {
 
 			fsl_m25p80@0 {
@@ -102,10 +117,13 @@
 			};
 		};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		dma@c300 {
 			status = "disabled";
 		};
 
+<<<<<<< HEAD
 		usb@22000 {
 			phy_type = "ulpi";
 		};
@@ -135,10 +153,13 @@
 			status = "disabled";
 		};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		enet0: ethernet@24000 {
 			status = "disabled";
 		};
 
+<<<<<<< HEAD
 		enet1: ethernet@25000 {
 			tbi-handle = <&tbi0>;
 			phy-handle = <&phy0>;
@@ -152,6 +173,8 @@
 		};
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		mpic: pic@40000 {
 			protected-sources = <
 			42 76 77 78 79 /* serial1 , dma2 */
@@ -164,14 +187,18 @@
 		msi@41600 {
 			status = "disabled";
 		};
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	};
 
 	pci0: pcie@ffe08000 {
 		status = "disabled";
 	};
 
+<<<<<<< HEAD
 	pci1: pcie@ffe09000 {
 		ranges = <0x2000000 0x0 0xa0000000 0 0xa0000000 0x0 0x20000000
 			  0x1000000 0x0 0x00000000 0 0xffc10000 0x0 0x10000>;
@@ -198,6 +225,8 @@
 		};
 	};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pci2: pcie@ffe0a000 {
 		status = "disabled";
 	};

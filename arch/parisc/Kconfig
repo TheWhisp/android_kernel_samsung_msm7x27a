@@ -14,7 +14,13 @@ config PARISC
 	select GENERIC_ATOMIC64 if !64BIT
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_PROBE
+<<<<<<< HEAD
 	select IRQ_PER_CPU
+=======
+	select GENERIC_PCI_IOMAP
+	select IRQ_PER_CPU
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	help
 	  The PA-RISC microprocessor is designed by Hewlett-Packard and used
@@ -168,9 +174,13 @@ config 64BIT
 
 choice
 	prompt "Kernel page size"
+<<<<<<< HEAD
 	default PARISC_PAGE_SIZE_4KB  if !64BIT
 	default PARISC_PAGE_SIZE_4KB  if 64BIT
 #	default PARISC_PAGE_SIZE_16KB if 64BIT
+=======
+	default PARISC_PAGE_SIZE_4KB
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config PARISC_PAGE_SIZE_4KB
 	bool "4KB"

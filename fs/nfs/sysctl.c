@@ -32,7 +32,10 @@ static ctl_table nfs_cb_sysctls[] = {
 		.extra1 = (int *)&nfs_set_port_min,
 		.extra2 = (int *)&nfs_set_port_max,
 	},
+<<<<<<< HEAD
 #ifndef CONFIG_NFS_USE_NEW_IDMAPPER
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.procname = "idmap_cache_timeout",
 		.data = &nfs_idmap_cache_timeout,
@@ -40,7 +43,10 @@ static ctl_table nfs_cb_sysctls[] = {
 		.mode = 0644,
 		.proc_handler = proc_dointvec_jiffies,
 	},
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_USE_NEW_IDMAPPER */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	{
 		.procname	= "nfs_mountpoint_timeout",

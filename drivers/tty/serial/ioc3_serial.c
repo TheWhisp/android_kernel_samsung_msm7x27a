@@ -13,6 +13,10 @@
  */
 #include <linux/errno.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/serial.h>
 #include <linux/circ_buf.h>
 #include <linux/serial_reg.h>

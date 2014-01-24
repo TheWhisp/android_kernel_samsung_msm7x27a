@@ -28,12 +28,43 @@
 #include "card.h"
 #include "quirks.h"
 #include "debug.h"
+<<<<<<< HEAD
 #include "urb.h"
+=======
+#include "endpoint.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "helper.h"
 #include "pcm.h"
 #include "clock.h"
 #include "power.h"
 
+<<<<<<< HEAD
+=======
+/* return the estimated delay based on USB frame counters */
+snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
+				    unsigned int rate)
+{
+	int current_frame_number;
+	int frame_diff;
+	int est_delay;
+
+	current_frame_number = usb_get_current_frame_number(subs->dev);
+	/*
+	 * HCD implementations use different widths, use lower 8 bits.
+	 * The delay will be managed up to 256ms, which is more than
+	 * enough
+	 */
+	frame_diff = (current_frame_number - subs->last_frame_number) & 0xff;
+
+	/* Approximation based on number of samples per USB frame (ms),
+	   some truncation for 44.1 but the estimate is good enough */
+	est_delay =  subs->last_delay - (frame_diff * rate / 1000);
+	if (est_delay < 0)
+		est_delay = 0;
+	return est_delay;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * return the current pcm pointer.  just based on the hwptr_done value.
  */
@@ -47,6 +78,11 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
 		return SNDRV_PCM_POS_XRUN;
 	spin_lock(&subs->lock);
 	hwptr_done = subs->hwptr_done;
+<<<<<<< HEAD
+=======
+	substream->runtime->delay = snd_usb_pcm_delay(subs,
+						substream->runtime->rate);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&subs->lock);
 	return hwptr_done / (substream->runtime->frame_bits >> 3);
 }
@@ -128,7 +164,11 @@ static int init_pitch_v1(struct snd_usb_audio *chip, int iface,
 	if ((err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC_SET_CUR,
 				   USB_TYPE_CLASS|USB_RECIP_ENDPOINT|USB_DIR_OUT,
 				   UAC_EP_CS_ATTR_PITCH_CONTROL << 8, ep,
+<<<<<<< HEAD
 				   data, sizeof(data), 1000)) < 0) {
+=======
+				   data, sizeof(data))) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_printk(KERN_ERR "%d:%d:%d: cannot set enable PITCH\n",
 			   dev->devnum, iface, ep);
 		return err;
@@ -152,7 +192,11 @@ static int init_pitch_v2(struct snd_usb_audio *chip, int iface,
 	if ((err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC2_CS_CUR,
 				   USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_OUT,
 				   UAC2_EP_CS_PITCH << 8, 0,
+<<<<<<< HEAD
 				   data, sizeof(data), 1000)) < 0) {
+=======
+				   data, sizeof(data))) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_printk(KERN_ERR "%d:%d:%d: cannot set enable PITCH (v2)\n",
 			   dev->devnum, iface, fmt->altsetting);
 		return err;
@@ -431,6 +475,11 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
 	subs->hwptr_done = 0;
 	subs->transfer_done = 0;
 	subs->phase = 0;
+<<<<<<< HEAD
+=======
+	subs->last_delay = 0;
+	subs->last_frame_number = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	runtime->delay = 0;
 
 	ret = snd_usb_substream_prepare(subs, runtime);
@@ -684,6 +733,10 @@ static int snd_usb_pcm_check_knot(struct snd_pcm_runtime *runtime,
 				  struct snd_usb_substream *subs)
 {
 	struct audioformat *fp;
+<<<<<<< HEAD
+=======
+	int *rate_list;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int count = 0, needs_knot = 0;
 	int err;
 
@@ -700,7 +753,12 @@ static int snd_usb_pcm_check_knot(struct snd_pcm_runtime *runtime,
 	if (!needs_knot)
 		return 0;
 
+<<<<<<< HEAD
 	subs->rate_list.list = kmalloc(sizeof(int) * count, GFP_KERNEL);
+=======
+	subs->rate_list.list = rate_list =
+		kmalloc(sizeof(int) * count, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!subs->rate_list.list)
 		return -ENOMEM;
 	subs->rate_list.count = count;
@@ -709,7 +767,11 @@ static int snd_usb_pcm_check_knot(struct snd_pcm_runtime *runtime,
 	list_for_each_entry(fp, &subs->fmt_list, list) {
 		int i;
 		for (i = 0; i < fp->nr_rates; i++)
+<<<<<<< HEAD
 			subs->rate_list.list[count++] = fp->rate_table[i];
+=======
+			rate_list[count++] = fp->rate_table[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	err = snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
 					 &subs->rate_list);

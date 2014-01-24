@@ -139,7 +139,11 @@ static int init_heap(struct mem_block **heap, int start, int size)
 	if (!blocks)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	*heap = kmalloc(sizeof(**heap), GFP_KERNEL);
+=======
+	*heap = kzalloc(sizeof(**heap), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!*heap) {
 		kfree(blocks);
 		return -ENOMEM;
@@ -150,7 +154,10 @@ static int init_heap(struct mem_block **heap, int start, int size)
 	blocks->file_priv = NULL;
 	blocks->next = blocks->prev = *heap;
 
+<<<<<<< HEAD
 	memset(*heap, 0, sizeof(**heap));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	(*heap)->file_priv = (struct drm_file *) - 1;
 	(*heap)->next = (*heap)->prev = blocks;
 	return 0;

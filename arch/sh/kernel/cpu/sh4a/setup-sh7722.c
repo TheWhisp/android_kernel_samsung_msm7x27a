@@ -22,6 +22,10 @@
 
 #include <cpu/dma-register.h>
 #include <cpu/sh7722.h>
+<<<<<<< HEAD
+=======
+#include <cpu/serial.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct sh_dmae_slave_config sh7722_dmae_slaves[] = {
 	{
@@ -145,7 +149,11 @@ static struct resource sh7722_dmae_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		/* DMA error IRQ */
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start	= 78,
 		.end	= 78,
 		.flags	= IORESOURCE_IRQ,
@@ -172,9 +180,12 @@ struct platform_device dma_device = {
 	.dev		= {
 		.platform_data	= &dma_platform_data,
 	},
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_DMAC,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Serial */
@@ -185,6 +196,11 @@ static struct plat_sci_port scif0_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type           = PORT_SCIF,
 	.irqs           = { 80, 80, 80, 80 },
+<<<<<<< HEAD
+=======
+	.ops		= &sh7722_sci_port_ops,
+	.regtype	= SCIx_SH4_SCIF_NO_SCSPTR_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif0_device = {
@@ -202,6 +218,11 @@ static struct plat_sci_port scif1_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type           = PORT_SCIF,
 	.irqs           = { 81, 81, 81, 81 },
+<<<<<<< HEAD
+=======
+	.ops		= &sh7722_sci_port_ops,
+	.regtype	= SCIx_SH4_SCIF_NO_SCSPTR_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif1_device = {
@@ -219,6 +240,11 @@ static struct plat_sci_port scif2_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type           = PORT_SCIF,
 	.irqs           = { 82, 82, 82, 82 },
+<<<<<<< HEAD
+=======
+	.ops		= &sh7722_sci_port_ops,
+	.regtype	= SCIx_SH4_SCIF_NO_SCSPTR_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif2_device = {
@@ -257,9 +283,12 @@ static struct platform_device rtc_device = {
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(rtc_resources),
 	.resource	= rtc_resources,
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_RTC,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct m66592_platdata usbf_platdata = {
@@ -290,9 +319,12 @@ static struct platform_device usbf_device = {
 	},
 	.num_resources	= ARRAY_SIZE(usbf_resources),
 	.resource	= usbf_resources,
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_USBF,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct resource iic_resources[] = {
@@ -314,9 +346,12 @@ static struct platform_device iic_device = {
 	.id             = 0, /* "i2c0" clock */
 	.num_resources  = ARRAY_SIZE(iic_resources),
 	.resource       = iic_resources,
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_IIC,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct uio_info vpu_platform_data = {
@@ -345,9 +380,12 @@ static struct platform_device vpu_device = {
 	},
 	.resource	= vpu_resources,
 	.num_resources	= ARRAY_SIZE(vpu_resources),
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_VPU,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct uio_info veu_platform_data = {
@@ -376,9 +414,12 @@ static struct platform_device veu_device = {
 	},
 	.resource	= veu_resources,
 	.num_resources	= ARRAY_SIZE(veu_resources),
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_VEU,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct uio_info jpu_platform_data = {
@@ -407,9 +448,12 @@ static struct platform_device jpu_device = {
 	},
 	.resource	= jpu_resources,
 	.num_resources	= ARRAY_SIZE(jpu_resources),
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_JPU,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct sh_timer_config cmt_platform_data = {
@@ -439,9 +483,12 @@ static struct platform_device cmt_device = {
 	},
 	.resource	= cmt_resources,
 	.num_resources	= ARRAY_SIZE(cmt_resources),
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_CMT,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct sh_timer_config tmu0_platform_data = {
@@ -470,9 +517,12 @@ static struct platform_device tmu0_device = {
 	},
 	.resource	= tmu0_resources,
 	.num_resources	= ARRAY_SIZE(tmu0_resources),
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_TMU,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct sh_timer_config tmu1_platform_data = {
@@ -501,9 +551,12 @@ static struct platform_device tmu1_device = {
 	},
 	.resource	= tmu1_resources,
 	.num_resources	= ARRAY_SIZE(tmu1_resources),
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_TMU,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct sh_timer_config tmu2_platform_data = {
@@ -531,9 +584,12 @@ static struct platform_device tmu2_device = {
 	},
 	.resource	= tmu2_resources,
 	.num_resources	= ARRAY_SIZE(tmu2_resources),
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_TMU,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct siu_platform siu_platform_data = {
@@ -564,9 +620,12 @@ static struct platform_device siu_device = {
 	},
 	.resource	= siu_resources,
 	.num_resources	= ARRAY_SIZE(siu_resources),
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_SIU,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device *sh7722_devices[] __initdata = {

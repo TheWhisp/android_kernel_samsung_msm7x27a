@@ -141,7 +141,10 @@ static inline bool timespec_valid_strict(const struct timespec *ts)
 extern void read_persistent_clock(struct timespec *ts);
 extern void read_boot_clock(struct timespec *ts);
 extern int update_persistent_clock(struct timespec now);
+<<<<<<< HEAD
 extern int no_sync_cmos_clock __read_mostly;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void timekeeping_init(void);
 extern int timekeeping_suspended;
 
@@ -281,6 +284,7 @@ static __always_inline void timespec_add_ns(struct timespec *a, u64 ns)
 	a->tv_sec += __iter_div_u64_rem(a->tv_nsec + ns, NSEC_PER_SEC, &ns);
 	a->tv_nsec = ns;
 }
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #define NFDBITS			__NFDBITS
@@ -290,6 +294,10 @@ static __always_inline void timespec_add_ns(struct timespec *a, u64 ns)
 #define FD_CLR(fd,fdsetp)	__FD_CLR(fd,fdsetp)
 #define FD_ISSET(fd,fdsetp)	__FD_ISSET(fd,fdsetp)
 #define FD_ZERO(fdsetp)		__FD_ZERO(fdsetp)
+=======
+
+#endif /* __KERNEL__ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Names of the interval timers, and structure

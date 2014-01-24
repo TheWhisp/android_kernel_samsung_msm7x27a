@@ -35,7 +35,10 @@
 #include <asm/io.h>         /* CRIS_LED_* I/O functions */
 #include <asm/irq.h>
 #include <asm/dma.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ethernet.h>
 #include <asm/cache.h>
 #include <arch/io_interface_mux.h>
@@ -261,7 +264,11 @@ static const struct net_device_ops e100_netdev_ops = {
 	.ndo_start_xmit		= e100_send_packet,
 	.ndo_tx_timeout		= e100_tx_timeout,
 	.ndo_get_stats		= e100_get_stats,
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= set_multicast_list,
+=======
+	.ndo_set_rx_mode	= set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_do_ioctl		= e100_ioctl,
 	.ndo_set_mac_address	= e100_set_mac_address,
 	.ndo_validate_addr	= eth_validate_addr,

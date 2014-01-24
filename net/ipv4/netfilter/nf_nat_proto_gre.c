@@ -39,7 +39,11 @@ MODULE_DESCRIPTION("Netfilter NAT protocol helper module for GRE");
 /* generate unique tuple ... */
 static void
 gre_unique_tuple(struct nf_conntrack_tuple *tuple,
+<<<<<<< HEAD
 		 const struct nf_nat_range *range,
+=======
+		 const struct nf_nat_ipv4_range *range,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 enum nf_nat_manip_type maniptype,
 		 const struct nf_conn *ct)
 {
@@ -52,12 +56,20 @@ gre_unique_tuple(struct nf_conntrack_tuple *tuple,
 	if (!ct->master)
 		return;
 
+<<<<<<< HEAD
 	if (maniptype == IP_NAT_MANIP_SRC)
+=======
+	if (maniptype == NF_NAT_MANIP_SRC)
+>>>>>>> refs/remotes/origin/cm-10.0
 		keyptr = &tuple->src.u.gre.key;
 	else
 		keyptr = &tuple->dst.u.gre.key;
 
+<<<<<<< HEAD
 	if (!(range->flags & IP_NAT_RANGE_PROTO_SPECIFIED)) {
+=======
+	if (!(range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_debug("%p: NATing GRE PPTP\n", ct);
 		min = 1;
 		range_size = 0xffff;
@@ -99,7 +111,11 @@ gre_manip_pkt(struct sk_buff *skb, unsigned int iphdroff,
 
 	/* we only have destination manip of a packet, since 'source key'
 	 * is not present in the packet itself */
+<<<<<<< HEAD
 	if (maniptype != IP_NAT_MANIP_DST)
+=======
+	if (maniptype != NF_NAT_MANIP_DST)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return true;
 	switch (greh->version) {
 	case GRE_VERSION_1701:
@@ -119,12 +135,18 @@ gre_manip_pkt(struct sk_buff *skb, unsigned int iphdroff,
 
 static const struct nf_nat_protocol gre = {
 	.protonum		= IPPROTO_GRE,
+<<<<<<< HEAD
 	.me			= THIS_MODULE,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.manip_pkt		= gre_manip_pkt,
 	.in_range		= nf_nat_proto_in_range,
 	.unique_tuple		= gre_unique_tuple,
 #if defined(CONFIG_NF_CT_NETLINK) || defined(CONFIG_NF_CT_NETLINK_MODULE)
+<<<<<<< HEAD
 	.range_to_nlattr	= nf_nat_proto_range_to_nlattr,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.nlattr_to_range	= nf_nat_proto_nlattr_to_range,
 #endif
 };

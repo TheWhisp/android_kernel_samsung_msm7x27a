@@ -477,7 +477,11 @@ static struct i2c_adapter ali15x3_adapter = {
 	.algo		= &smbus_algorithm,
 };
 
+<<<<<<< HEAD
 static const struct pci_device_id ali15x3_ids[] = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(ali15x3_ids) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ PCI_DEVICE(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M7101) },
 	{ 0, }
 };

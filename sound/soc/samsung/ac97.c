@@ -4,7 +4,11 @@
  * 	Evolved from s3c2443-ac97.c
  *
  * Copyright (c) 2010 Samsung Electronics Co. Ltd
+<<<<<<< HEAD
  * 	Author: Jaswinder Singh <jassi.brar@samsung.com>
+=======
+ *	Author: Jaswinder Singh <jassisinghbrar@gmail.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  * 	Credits: Graeme Gregory, Sean Choi
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,6 +19,10 @@
 #include <linux/io.h>
 #include <linux/delay.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/soc.h>
 
@@ -271,7 +279,14 @@ static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
 
 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
 
+<<<<<<< HEAD
 	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
+=======
+	if (!dma_data->ops)
+		dma_data->ops = samsung_dma_get_ops();
+
+	dma_data->ops->started(dma_data->channel);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -317,17 +332,32 @@ static int s3c_ac97_mic_trigger(struct snd_pcm_substream *substream,
 
 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
 
+<<<<<<< HEAD
 	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
+=======
+	if (!dma_data->ops)
+		dma_data->ops = samsung_dma_get_ops();
+
+	dma_data->ops->started(dma_data->channel);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops s3c_ac97_dai_ops = {
+=======
+static const struct snd_soc_dai_ops s3c_ac97_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.hw_params	= s3c_ac97_hw_params,
 	.trigger	= s3c_ac97_trigger,
 };
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
+=======
+static const struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.hw_params	= s3c_ac97_hw_mic_params,
 	.trigger	= s3c_ac97_mic_trigger,
 };
@@ -444,7 +474,11 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
 	}
 
 	ret = request_irq(irq_res->start, s3c_ac97_irq,
+<<<<<<< HEAD
 					IRQF_DISABLED, "AC97", NULL);
+=======
+					0, "AC97", NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0) {
 		dev_err(&pdev->dev, "ac97: interrupt request failed.\n");
 		goto err4;
@@ -495,13 +529,18 @@ static __devexit int s3c_ac97_remove(struct platform_device *pdev)
 
 static struct platform_driver s3c_ac97_driver = {
 	.probe  = s3c_ac97_probe,
+<<<<<<< HEAD
 	.remove = s3c_ac97_remove,
+=======
+	.remove = __devexit_p(s3c_ac97_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver = {
 		.name = "samsung-ac97",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init s3c_ac97_init(void)
 {
 	return platform_driver_register(&s3c_ac97_driver);
@@ -515,6 +554,11 @@ static void __exit s3c_ac97_exit(void)
 module_exit(s3c_ac97_exit);
 
 MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
+=======
+module_platform_driver(s3c_ac97_driver);
+
+MODULE_AUTHOR("Jaswinder Singh, <jassisinghbrar@gmail.com>");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("AC97 driver for the Samsung SoC");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:samsung-ac97");

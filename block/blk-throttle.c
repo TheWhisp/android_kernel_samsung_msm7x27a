@@ -10,6 +10,10 @@
 #include <linux/bio.h>
 #include <linux/blktrace_api.h>
 #include "blk-cgroup.h"
+<<<<<<< HEAD
+=======
+#include "blk.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Max dispatch from a group in 1 round */
 static int throtl_grp_quantum = 8;
@@ -142,9 +146,15 @@ static inline struct throtl_grp *tg_of_blkg(struct blkio_group *blkg)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static inline int total_nr_queued(struct throtl_data *td)
 {
 	return (td->nr_queued[0] + td->nr_queued[1]);
+=======
+static inline unsigned int total_nr_queued(struct throtl_data *td)
+{
+	return td->nr_queued[0] + td->nr_queued[1];
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline struct throtl_grp *throtl_ref_get_tg(struct throtl_grp *tg)
@@ -302,16 +312,26 @@ throtl_grp *throtl_find_tg(struct throtl_data *td, struct blkio_cgroup *blkcg)
 	return tg;
 }
 
+<<<<<<< HEAD
 /*
  * This function returns with queue lock unlocked in case of error, like
  * request queue is no more
  */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct throtl_grp * throtl_get_tg(struct throtl_data *td)
 {
 	struct throtl_grp *tg = NULL, *__tg = NULL;
 	struct blkio_cgroup *blkcg;
 	struct request_queue *q = td->queue;
 
+<<<<<<< HEAD
+=======
+	/* no throttling for dead queue */
+	if (unlikely(blk_queue_dead(q)))
+		return NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rcu_read_lock();
 	blkcg = task_blkio_cgroup(current);
 	tg = throtl_find_tg(td, blkcg);
@@ -323,16 +343,22 @@ static struct throtl_grp * throtl_get_tg(struct throtl_data *td)
 	/*
 	 * Need to allocate a group. Allocation of group also needs allocation
 	 * of per cpu stats which in-turn takes a mutex() and can block. Hence
+<<<<<<< HEAD
 	 * we need to drop rcu lock and queue_lock before we call alloc
 	 *
 	 * Take the request queue reference to make sure queue does not
 	 * go away once we return from allocation.
 	 */
 	blk_get_queue(q);
+=======
+	 * we need to drop rcu lock and queue_lock before we call alloc.
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	rcu_read_unlock();
 	spin_unlock_irq(q->queue_lock);
 
 	tg = throtl_alloc_tg(td);
+<<<<<<< HEAD
 	/*
 	 * We might have slept in group allocation. Make sure queue is not
 	 * dead
@@ -345,10 +371,21 @@ static struct throtl_grp * throtl_get_tg(struct throtl_data *td)
 		return ERR_PTR(-ENODEV);
 	}
 	blk_put_queue(q);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Group allocated and queue is still alive. take the lock */
 	spin_lock_irq(q->queue_lock);
 
+<<<<<<< HEAD
+=======
+	/* Make sure @q is still alive */
+	if (unlikely(blk_queue_dead(q))) {
+		kfree(tg);
+		return NULL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Initialize the new group. After sleeping, read the blkcg again.
 	 */
@@ -746,7 +783,11 @@ static bool tg_may_dispatch(struct throtl_data *td, struct throtl_grp *tg,
 static void throtl_charge_bio(struct throtl_grp *tg, struct bio *bio)
 {
 	bool rw = bio_data_dir(bio);
+<<<<<<< HEAD
 	bool sync = bio->bi_rw & REQ_SYNC;
+=======
+	bool sync = rw_is_sync(bio->bi_rw);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Charge the bio to the group */
 	tg->bytes_disp[rw] += bio->bi_size;
@@ -927,7 +968,11 @@ static int throtl_dispatch(struct request_queue *q)
 
 	bio_list_init(&bio_list_on_stack);
 
+<<<<<<< HEAD
 	throtl_log(td, "dispatch nr_queued=%d read=%u write=%u",
+=======
+	throtl_log(td, "dispatch nr_queued=%u read=%u write=%u",
+>>>>>>> refs/remotes/origin/cm-10.0
 			total_nr_queued(td), td->nr_queued[READ],
 			td->nr_queued[WRITE]);
 
@@ -970,7 +1015,11 @@ throtl_schedule_delayed_work(struct throtl_data *td, unsigned long delay)
 	struct delayed_work *dwork = &td->throtl_work;
 
 	/* schedule work if limits changed even if no bio is queued */
+<<<<<<< HEAD
 	if (total_nr_queued(td) > 0 || td->limits_changed) {
+=======
+	if (total_nr_queued(td) || td->limits_changed) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * We might have a work scheduled to be executed in future.
 		 * Cancel that and schedule a new one.
@@ -1014,11 +1063,14 @@ static void throtl_release_tgs(struct throtl_data *td)
 	}
 }
 
+<<<<<<< HEAD
 static void throtl_td_free(struct throtl_data *td)
 {
 	kfree(td);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Blk cgroup controller notification saying that blkio_group object is being
  * delinked as associated cgroup object is going away. That also means that
@@ -1123,6 +1175,7 @@ static struct blkio_policy_type blkio_policy_throtl = {
 	.plid = BLKIO_POLICY_THROTL,
 };
 
+<<<<<<< HEAD
 int blk_throtl_bio(struct request_queue *q, struct bio **biop)
 {
 	struct throtl_data *td = q->td;
@@ -1134,6 +1187,19 @@ int blk_throtl_bio(struct request_queue *q, struct bio **biop)
 	if (bio->bi_rw & REQ_THROTTLED) {
 		bio->bi_rw &= ~REQ_THROTTLED;
 		return 0;
+=======
+bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
+{
+	struct throtl_data *td = q->td;
+	struct throtl_grp *tg;
+	bool rw = bio_data_dir(bio), update_disptime = true;
+	struct blkio_cgroup *blkcg;
+	bool throttled = false;
+
+	if (bio->bi_rw & REQ_THROTTLED) {
+		bio->bi_rw &= ~REQ_THROTTLED;
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -1150,9 +1216,15 @@ int blk_throtl_bio(struct request_queue *q, struct bio **biop)
 
 		if (tg_no_rule_group(tg, rw)) {
 			blkiocg_update_dispatch_stats(&tg->blkg, bio->bi_size,
+<<<<<<< HEAD
 					rw, bio->bi_rw & REQ_SYNC);
 			rcu_read_unlock();
 			return 0;
+=======
+					rw, rw_is_sync(bio->bi_rw));
+			rcu_read_unlock();
+			goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	rcu_read_unlock();
@@ -1161,6 +1233,7 @@ int blk_throtl_bio(struct request_queue *q, struct bio **biop)
 	 * Either group has not been allocated yet or it is not an unlimited
 	 * IO group
 	 */
+<<<<<<< HEAD
 
 	spin_lock_irq(q->queue_lock);
 	tg = throtl_get_tg(td);
@@ -1173,6 +1246,12 @@ int blk_throtl_bio(struct request_queue *q, struct bio **biop)
 			return -ENODEV;
 		}
 	}
+=======
+	spin_lock_irq(q->queue_lock);
+	tg = throtl_get_tg(td);
+	if (unlikely(!tg))
+		goto out_unlock;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (tg->nr_queued[rw]) {
 		/*
@@ -1200,7 +1279,11 @@ int blk_throtl_bio(struct request_queue *q, struct bio **biop)
 		 * So keep on trimming slice even if bio is not queued.
 		 */
 		throtl_trim_slice(td, tg, rw);
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out_unlock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 queue_bio:
@@ -1212,16 +1295,62 @@ queue_bio:
 			tg->nr_queued[READ], tg->nr_queued[WRITE]);
 
 	throtl_add_bio_tg(q->td, tg, bio);
+<<<<<<< HEAD
 	*biop = NULL;
+=======
+	throttled = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (update_disptime) {
 		tg_update_disptime(td, tg);
 		throtl_schedule_next_dispatch(td);
 	}
 
+<<<<<<< HEAD
 out:
 	spin_unlock_irq(q->queue_lock);
 	return 0;
+=======
+out_unlock:
+	spin_unlock_irq(q->queue_lock);
+out:
+	return throttled;
+}
+
+/**
+ * blk_throtl_drain - drain throttled bios
+ * @q: request_queue to drain throttled bios for
+ *
+ * Dispatch all currently throttled bios on @q through ->make_request_fn().
+ */
+void blk_throtl_drain(struct request_queue *q)
+	__releases(q->queue_lock) __acquires(q->queue_lock)
+{
+	struct throtl_data *td = q->td;
+	struct throtl_rb_root *st = &td->tg_service_tree;
+	struct throtl_grp *tg;
+	struct bio_list bl;
+	struct bio *bio;
+
+	queue_lockdep_assert_held(q);
+
+	bio_list_init(&bl);
+
+	while ((tg = throtl_rb_first(st))) {
+		throtl_dequeue_tg(td, tg);
+
+		while ((bio = bio_list_peek(&tg->bio_lists[READ])))
+			tg_dispatch_one_bio(td, tg, bio_data_dir(bio), &bl);
+		while ((bio = bio_list_peek(&tg->bio_lists[WRITE])))
+			tg_dispatch_one_bio(td, tg, bio_data_dir(bio), &bl);
+	}
+	spin_unlock_irq(q->queue_lock);
+
+	while ((bio = bio_list_pop(&bl)))
+		generic_make_request(bio);
+
+	spin_lock_irq(q->queue_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int blk_throtl_init(struct request_queue *q)
@@ -1296,7 +1425,15 @@ void blk_throtl_exit(struct request_queue *q)
 	 * it.
 	 */
 	throtl_shutdown_wq(q);
+<<<<<<< HEAD
 	throtl_td_free(td);
+=======
+}
+
+void blk_throtl_release(struct request_queue *q)
+{
+	kfree(q->td);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __init throtl_init(void)

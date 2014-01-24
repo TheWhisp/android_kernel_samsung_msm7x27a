@@ -17,6 +17,10 @@
 #include <linux/interrupt.h>
 #include <linux/workqueue.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <trace/events/asoc.h>
 
 /**
@@ -205,6 +209,11 @@ int snd_soc_jack_add_pins(struct snd_soc_jack *jack, int count,
 		list_add(&(pins[i].list), &jack->pins);
 	}
 
+<<<<<<< HEAD
+=======
+	snd_soc_dapm_new_widgets(&jack->codec->card->dapm);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Update to reflect the last reported status; canned jack
 	 * implementations are likely to set their state before the
 	 * card has an opportunity to associate pins.
@@ -355,10 +364,15 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
 					gpios[i].gpio, ret);
 		}
 
+<<<<<<< HEAD
 #ifdef CONFIG_GPIO_SYSFS
 		/* Expose GPIO value over sysfs for diagnostic purposes */
 		gpio_export(gpios[i].gpio, false);
 #endif
+=======
+		/* Expose GPIO value over sysfs for diagnostic purposes */
+		gpio_export(gpios[i].gpio, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Update initial jack status */
 		snd_soc_jack_gpio_detect(&gpios[i]);
@@ -390,9 +404,13 @@ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
 	int i;
 
 	for (i = 0; i < count; i++) {
+<<<<<<< HEAD
 #ifdef CONFIG_GPIO_SYSFS
 		gpio_unexport(gpios[i].gpio);
 #endif
+=======
+		gpio_unexport(gpios[i].gpio);
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_irq(gpio_to_irq(gpios[i].gpio), &gpios[i]);
 		cancel_delayed_work_sync(&gpios[i].work);
 		gpio_free(gpios[i].gpio);

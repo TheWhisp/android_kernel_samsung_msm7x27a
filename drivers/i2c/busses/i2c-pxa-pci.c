@@ -3,6 +3,10 @@
  * It does not support slave mode, the register slightly moved. This PCI
  * device provides three bars, every contains a single I2C controller.
  */
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/platform_device.h>
 #include <linux/i2c/pxa-i2c.h>
@@ -109,12 +113,23 @@ static int __devinit ce4100_i2c_probe(struct pci_dev *dev,
 		return -EINVAL;
 	}
 	sds = kzalloc(sizeof(*sds), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!sds)
 		goto err_mem;
+=======
+	if (!sds) {
+		ret = -ENOMEM;
+		goto err_mem;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < ARRAY_SIZE(sds->pdev); i++) {
 		sds->pdev[i] = add_i2c_device(dev, i);
 		if (IS_ERR(sds->pdev[i])) {
+<<<<<<< HEAD
+=======
+			ret = PTR_ERR(sds->pdev[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 			while (--i >= 0)
 				platform_device_unregister(sds->pdev[i]);
 			goto err_dev_add;
@@ -146,7 +161,11 @@ static void __devexit ce4100_i2c_remove(struct pci_dev *dev)
 	kfree(sds);
 }
 
+<<<<<<< HEAD
 static struct pci_device_id ce4100_i2c_devices[] __devinitdata = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(ce4100_i2c_devices) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x2e68)},
 	{ },
 };

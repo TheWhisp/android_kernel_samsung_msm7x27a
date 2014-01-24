@@ -4,6 +4,10 @@
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_GPIOLIB
 
@@ -41,6 +45,10 @@ static inline bool gpio_is_valid(int number)
 }
 
 struct device;
+<<<<<<< HEAD
+=======
+struct gpio;
+>>>>>>> refs/remotes/origin/cm-10.0
 struct seq_file;
 struct module;
 struct device_node;
@@ -127,21 +135,36 @@ struct gpio_chip {
 	 */
 	struct device_node *of_node;
 	int of_gpio_n_cells;
+<<<<<<< HEAD
 	int (*of_xlate)(struct gpio_chip *gc, struct device_node *np,
 		        const void *gpio_spec, u32 *flags);
+=======
+	int (*of_xlate)(struct gpio_chip *gc,
+		        const struct of_phandle_args *gpiospec, u32 *flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 };
 
 extern const char *gpiochip_is_requested(struct gpio_chip *chip,
 			unsigned offset);
+<<<<<<< HEAD
+=======
+extern struct gpio_chip *gpio_to_chip(unsigned gpio);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int __must_check gpiochip_reserve(int start, int ngpio);
 
 /* add/remove chips */
 extern int gpiochip_add(struct gpio_chip *chip);
 extern int __must_check gpiochip_remove(struct gpio_chip *chip);
+<<<<<<< HEAD
 extern struct gpio_chip *gpiochip_find(void *data,
 					int (*match)(struct gpio_chip *chip,
 						     void *data));
+=======
+extern struct gpio_chip *gpiochip_find(const void *data,
+					int (*match)(struct gpio_chip *chip,
+						     const void *data));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /* Always use the library code for GPIO management calls,
@@ -170,6 +193,7 @@ extern int __gpio_cansleep(unsigned gpio);
 
 extern int __gpio_to_irq(unsigned gpio);
 
+<<<<<<< HEAD
 /**
  * struct gpio - a structure describing a GPIO with configuration
  * @gpio:	the GPIO number
@@ -182,10 +206,19 @@ struct gpio {
 	const char	*label;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int gpio_request_one(unsigned gpio, unsigned long flags, const char *label);
 extern int gpio_request_array(const struct gpio *array, size_t num);
 extern void gpio_free_array(const struct gpio *array, size_t num);
 
+<<<<<<< HEAD
+=======
+/* bindings for managed devices that want to request gpios */
+int devm_gpio_request(struct device *dev, unsigned gpio, const char *label);
+void devm_gpio_free(struct device *dev, unsigned int gpio);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_GPIO_SYSFS
 
 /*
@@ -220,13 +253,21 @@ static inline int gpio_cansleep(unsigned gpio)
 static inline int gpio_get_value_cansleep(unsigned gpio)
 {
 	might_sleep();
+<<<<<<< HEAD
 	return gpio_get_value(gpio);
+=======
+	return __gpio_get_value(gpio);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void gpio_set_value_cansleep(unsigned gpio, int value)
 {
 	might_sleep();
+<<<<<<< HEAD
 	gpio_set_value(gpio, value);
+=======
+	__gpio_set_value(gpio, value);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #endif /* !CONFIG_GPIOLIB */

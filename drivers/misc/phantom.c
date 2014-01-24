@@ -26,7 +26,11 @@
 #include <linux/sched.h>
 #include <linux/mutex.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 #define PHANTOM_VERSION		"n0.9.8"

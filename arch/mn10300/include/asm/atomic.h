@@ -12,6 +12,7 @@
 #define _ASM_ATOMIC_H
 
 #include <asm/irqflags.h>
+<<<<<<< HEAD
 
 #ifndef __ASSEMBLY__
 
@@ -118,6 +119,9 @@ static inline unsigned long __cmpxchg(volatile unsigned long *m,
 #define atomic_cmpxchg(v, old, new)	(cmpxchg(&((v)->counter), (old), (new)))
 
 #endif /* !__ASSEMBLY__ */
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef CONFIG_SMP
 #include <asm-generic/atomic.h>
@@ -260,16 +264,28 @@ static inline void atomic_dec(atomic_t *v)
 #define atomic_dec_and_test(v)		(atomic_sub_return(1, (v)) == 0)
 #define atomic_inc_and_test(v)		(atomic_add_return(1, (v)) == 0)
 
+<<<<<<< HEAD
 #define atomic_add_unless(v, a, u)				\
+=======
+#define __atomic_add_unless(v, a, u)				\
+>>>>>>> refs/remotes/origin/cm-10.0
 ({								\
 	int c, old;						\
 	c = atomic_read(v);					\
 	while (c != (u) && (old = atomic_cmpxchg((v), c, c + (a))) != c) \
 		c = old;					\
+<<<<<<< HEAD
 	c != (u);						\
 })
 
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+=======
+	c;							\
+})
+
+#define atomic_xchg(ptr, v)		(xchg(&(ptr)->counter, (v)))
+#define atomic_cmpxchg(v, old, new)	(cmpxchg(&((v)->counter), (old), (new)))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * atomic_clear_mask - Atomically clear bits in memory
@@ -344,8 +360,11 @@ static inline void atomic_set_mask(unsigned long mask, unsigned long *addr)
 #define smp_mb__before_atomic_inc()	barrier()
 #define smp_mb__after_atomic_inc()	barrier()
 
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KERNEL__ */
 #endif /* CONFIG_SMP */
 #endif /* _ASM_ATOMIC_H */

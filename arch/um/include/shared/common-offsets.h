@@ -2,9 +2,12 @@
 
 DEFINE(KERNEL_MADV_REMOVE, MADV_REMOVE);
 
+<<<<<<< HEAD
 OFFSET(HOST_TASK_REGS, task_struct, thread.regs);
 OFFSET(HOST_TASK_PID, task_struct, pid);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 DEFINE(UM_KERN_PAGE_SIZE, PAGE_SIZE);
 DEFINE(UM_KERN_PAGE_MASK, PAGE_MASK);
 DEFINE(UM_KERN_PAGE_SHIFT, PAGE_SHIFT);

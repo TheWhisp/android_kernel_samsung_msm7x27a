@@ -324,7 +324,11 @@ void note_interrupt(unsigned int irq, struct irq_desc *desc,
 	desc->irqs_unhandled = 0;
 }
 
+<<<<<<< HEAD
 int noirqdebug __read_mostly;
+=======
+bool noirqdebug __read_mostly;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int noirqdebug_setup(char *str)
 {

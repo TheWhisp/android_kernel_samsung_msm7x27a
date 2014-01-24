@@ -25,11 +25,18 @@
 #include <linux/interrupt.h>
 #include <linux/compiler.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/cacheflush.h>
 #include <asm/cpu.h>
 #include <asm/processor.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <asm/cacheflush.h>
+#include <asm/cpu.h>
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardirq.h>
 #include <asm/mmu_context.h>
 #include <asm/smp.h>

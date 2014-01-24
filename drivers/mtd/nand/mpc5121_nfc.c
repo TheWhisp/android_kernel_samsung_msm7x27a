@@ -131,8 +131,11 @@ struct mpc5121_nfc_prv {
 
 static void mpc5121_nfc_done(struct mtd_info *mtd);
 
+<<<<<<< HEAD
 static const char *mpc5121_nfc_pprobes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Read NFC register */
 static inline u16 nfc_read(struct mtd_info *mtd, uint reg)
 {
@@ -656,13 +659,20 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
 	struct mpc5121_nfc_prv *prv;
 	struct resource res;
 	struct mtd_info *mtd;
+<<<<<<< HEAD
 	struct mtd_partition *parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct nand_chip *chip;
 	unsigned long regs_paddr, regs_size;
 	const __be32 *chips_no;
 	int resettime = 0;
 	int retval = 0;
 	int rev, len;
+<<<<<<< HEAD
+=======
+	struct mtd_part_parser_data ppdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Check SoC revision. This driver supports only NFC
@@ -713,7 +723,11 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
 	}
 
 	regs_paddr = res.start;
+<<<<<<< HEAD
 	regs_size = res.end - res.start + 1;
+=======
+	regs_size = resource_size(&res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!devm_request_mem_region(dev, regs_paddr, regs_size, DRV_NAME)) {
 		dev_err(dev, "Error requesting memory region!\n");
@@ -727,6 +741,10 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
 	}
 
 	mtd->name = "MPC5121 NAND";
+<<<<<<< HEAD
+=======
+	ppdata.of_node = dn;
+>>>>>>> refs/remotes/origin/cm-10.0
 	chip->dev_ready = mpc5121_nfc_dev_ready;
 	chip->cmdfunc = mpc5121_nfc_command;
 	chip->read_byte = mpc5121_nfc_read_byte;
@@ -735,7 +753,12 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
 	chip->write_buf = mpc5121_nfc_write_buf;
 	chip->verify_buf = mpc5121_nfc_verify_buf;
 	chip->select_chip = mpc5121_nfc_select_chip;
+<<<<<<< HEAD
 	chip->options = NAND_NO_AUTOINCR | NAND_USE_FLASH_BBT;
+=======
+	chip->options = NAND_NO_AUTOINCR;
+	chip->bbt_options = NAND_BBT_USE_FLASH;
+>>>>>>> refs/remotes/origin/cm-10.0
 	chip->ecc.mode = NAND_ECC_SOFT;
 
 	/* Support external chip-select logic on ADS5121 board */
@@ -837,6 +860,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
 	dev_set_drvdata(dev, mtd);
 
 	/* Register device in MTD */
+<<<<<<< HEAD
 	retval = parse_mtd_partitions(mtd, mpc5121_nfc_pprobes, &parts, 0);
 #ifdef CONFIG_MTD_OF_PARTS
 	if (retval == 0)
@@ -850,6 +874,9 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
 	}
 
 	retval = mtd_device_register(mtd, parts, retval);
+=======
+	retval = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval) {
 		dev_err(dev, "Error adding MTD device!\n");
 		devm_free_irq(dev, prv->irq, mtd);
@@ -891,6 +918,7 @@ static struct platform_driver mpc5121_nfc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init mpc5121_nfc_init(void)
 {
 	return platform_driver_register(&mpc5121_nfc_driver);
@@ -904,6 +932,9 @@ static void __exit mpc5121_nfc_cleanup(void)
 }
 
 module_exit(mpc5121_nfc_cleanup);
+=======
+module_platform_driver(mpc5121_nfc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Freescale Semiconductor, Inc.");
 MODULE_DESCRIPTION("MPC5121 NAND MTD driver");

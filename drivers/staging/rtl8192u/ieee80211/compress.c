@@ -12,10 +12,17 @@
  *
  */
 #include <linux/types.h>
+<<<<<<< HEAD
 //#include <linux/crypto.h>
 #include "rtl_crypto.h"
 #include <linux/errno.h>
 #include <asm/scatterlist.h>
+=======
+/*#include <linux/crypto.h>*/
+#include "rtl_crypto.h"
+#include <linux/errno.h>
+#include <linux/scatterlist.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string.h>
 #include "internal.h"
 

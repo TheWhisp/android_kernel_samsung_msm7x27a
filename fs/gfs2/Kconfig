@@ -1,10 +1,13 @@
 config GFS2_FS
 	tristate "GFS2 file system support"
 	depends on (64BIT || LBDAF)
+<<<<<<< HEAD
 	select DLM if GFS2_FS_LOCKING_DLM
 	select CONFIGFS_FS if GFS2_FS_LOCKING_DLM
 	select SYSFS if GFS2_FS_LOCKING_DLM
 	select IP_SCTP if DLM_SCTP
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	select FS_POSIX_ACL
 	select CRC32
 	select QUOTACTL
@@ -29,7 +32,12 @@ config GFS2_FS
 
 config GFS2_FS_LOCKING_DLM
 	bool "GFS2 DLM locking"
+<<<<<<< HEAD
 	depends on (GFS2_FS!=n) && NET && INET && (IPV6 || IPV6=n) && HOTPLUG
+=======
+	depends on (GFS2_FS!=n) && NET && INET && (IPV6 || IPV6=n) && \
+		HOTPLUG && DLM && CONFIGFS_FS && SYSFS
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Multiple node locking module for GFS2
 

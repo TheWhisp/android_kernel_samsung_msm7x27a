@@ -21,6 +21,10 @@
 #include <linux/err.h>
 #include <linux/slab.h>
 #include <linux/completion.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ebcdic.h>
 #include <asm/sclp.h>
 

@@ -21,6 +21,16 @@
 #include <asm/mmu.h>
 #include <asm/sizes.h>
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_CPU_BIG_ENDIAN)
+# define PCICR_ENDIANNESS SH4_PCICR_BSWP
+#else
+# define PCICR_ENDIANNESS 0
+#endif
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct resource sh7785_pci_resources[] = {
 	{
 		.name	= "PCI IO",
@@ -74,7 +84,11 @@ struct pci_errors {
 	{ SH4_PCIINT_MLCK,	"master lock error" },
 	{ SH4_PCIINT_TABT,	"target-target abort" },
 	{ SH4_PCIINT_TRET,	"target retry time out" },
+<<<<<<< HEAD
 	{ SH4_PCIINT_MFDE,	"master function disable erorr" },
+=======
+	{ SH4_PCIINT_MFDE,	"master function disable error" },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ SH4_PCIINT_PRTY,	"address parity error" },
 	{ SH4_PCIINT_SERR,	"SERR" },
 	{ SH4_PCIINT_TWDP,	"data parity error for target write" },
@@ -172,7 +186,11 @@ static int __init sh7780_pci_setup_irqs(struct pci_channel *hose)
 		     PCI_STATUS_SIG_TARGET_ABORT | \
 		     PCI_STATUS_PARITY, hose->reg_base + PCI_STATUS);
 
+<<<<<<< HEAD
 	ret = request_irq(hose->serr_irq, sh7780_pci_serr_irq, IRQF_DISABLED,
+=======
+	ret = request_irq(hose->serr_irq, sh7780_pci_serr_irq, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  "PCI SERR interrupt", hose);
 	if (unlikely(ret)) {
 		printk(KERN_ERR "PCI: Failed hooking SERR IRQ\n");
@@ -254,7 +272,11 @@ static int __init sh7780_pci_init(void)
 	__raw_writel(PCIECR_ENBL, PCIECR);
 
 	/* Reset */
+<<<<<<< HEAD
 	__raw_writel(SH4_PCICR_PREFIX | SH4_PCICR_PRST,
+=======
+	__raw_writel(SH4_PCICR_PREFIX | SH4_PCICR_PRST | PCICR_ENDIANNESS,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     chan->reg_base + SH4_PCICR);
 
 	/*
@@ -290,7 +312,12 @@ static int __init sh7780_pci_init(void)
 	 * Now throw it in to register initialization mode and
 	 * start the real work.
 	 */
+<<<<<<< HEAD
 	__raw_writel(SH4_PCICR_PREFIX, chan->reg_base + SH4_PCICR);
+=======
+	__raw_writel(SH4_PCICR_PREFIX | PCICR_ENDIANNESS,
+		     chan->reg_base + SH4_PCICR);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memphys = __pa(memory_start);
 	memsize = roundup_pow_of_two(memory_end - memory_start);
@@ -380,7 +407,12 @@ static int __init sh7780_pci_init(void)
 	 * Initialization mode complete, release the control register and
 	 * enable round robin mode to stop device overruns/starvation.
 	 */
+<<<<<<< HEAD
 	__raw_writel(SH4_PCICR_PREFIX | SH4_PCICR_CFIN | SH4_PCICR_FTO,
+=======
+	__raw_writel(SH4_PCICR_PREFIX | SH4_PCICR_CFIN | SH4_PCICR_FTO |
+		     PCICR_ENDIANNESS,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     chan->reg_base + SH4_PCICR);
 
 	ret = register_pci_controller(chan);

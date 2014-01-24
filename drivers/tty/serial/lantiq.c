@@ -338,21 +338,33 @@ lqasc_startup(struct uart_port *port)
 		ASCCON_ROEN, port->membase + LTQ_ASC_CON);
 
 	retval = request_irq(ltq_port->tx_irq, lqasc_tx_int,
+<<<<<<< HEAD
 		IRQF_DISABLED, "asc_tx", port);
+=======
+		0, "asc_tx", port);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval) {
 		pr_err("failed to request lqasc_tx_int\n");
 		return retval;
 	}
 
 	retval = request_irq(ltq_port->rx_irq, lqasc_rx_int,
+<<<<<<< HEAD
 		IRQF_DISABLED, "asc_rx", port);
+=======
+		0, "asc_rx", port);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval) {
 		pr_err("failed to request lqasc_rx_int\n");
 		goto err1;
 	}
 
 	retval = request_irq(ltq_port->err_irq, lqasc_err_int,
+<<<<<<< HEAD
 		IRQF_DISABLED, "asc_err", port);
+=======
+		0, "asc_err", port);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval) {
 		pr_err("failed to request lqasc_err_int\n");
 		goto err2;
@@ -478,8 +490,15 @@ lqasc_set_termios(struct uart_port *port,
 	spin_unlock_irqrestore(&ltq_asc_lock, flags);
 
 	/* Don't rewrite B0 */
+<<<<<<< HEAD
         if (tty_termios_baud_rate(new))
 		tty_termios_encode_baud_rate(new, baud, baud);
+=======
+	if (tty_termios_baud_rate(new))
+		tty_termios_encode_baud_rate(new, baud, baud);
+
+	uart_update_timeout(port, cflag, baud);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static const char*

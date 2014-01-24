@@ -450,13 +450,21 @@ static struct attribute *tsc2005_attrs[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 static mode_t tsc2005_attr_is_visible(struct kobject *kobj,
+=======
+static umode_t tsc2005_attr_is_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/cm-10.0
 				      struct attribute *attr, int n)
 {
 	struct device *dev = container_of(kobj, struct device, kobj);
 	struct spi_device *spi = to_spi_device(dev);
 	struct tsc2005 *ts = spi_get_drvdata(spi);
+<<<<<<< HEAD
 	mode_t mode = attr->mode;
+=======
+	umode_t mode = attr->mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (attr == &dev_attr_selftest.attr) {
 		if (!ts->set_reset)
@@ -747,6 +755,7 @@ static struct spi_driver tsc2005_driver = {
 	.remove	= __devexit_p(tsc2005_remove),
 };
 
+<<<<<<< HEAD
 static int __init tsc2005_init(void)
 {
 	return spi_register_driver(&tsc2005_driver);
@@ -758,6 +767,9 @@ static void __exit tsc2005_exit(void)
 	spi_unregister_driver(&tsc2005_driver);
 }
 module_exit(tsc2005_exit);
+=======
+module_spi_driver(tsc2005_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Lauri Leukkunen <lauri.leukkunen@nokia.com>");
 MODULE_DESCRIPTION("TSC2005 Touchscreen Driver");

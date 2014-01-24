@@ -1,6 +1,10 @@
 #include <linux/kernel.h>
 #include <linux/ide.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/seq_file.h>
 
 #include "ide-disk.h"

@@ -721,7 +721,11 @@ static int ld_usb_probe(struct usb_interface *intf, const struct usb_device_id *
 	if (dev->interrupt_out_endpoint == NULL)
 		dev_warn(&intf->dev, "Interrupt out endpoint not found (using control endpoint instead)\n");
 
+<<<<<<< HEAD
 	dev->interrupt_in_endpoint_size = le16_to_cpu(dev->interrupt_in_endpoint->wMaxPacketSize);
+=======
+	dev->interrupt_in_endpoint_size = usb_endpoint_maxp(dev->interrupt_in_endpoint);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->ring_buffer = kmalloc(ring_buffer_size*(sizeof(size_t)+dev->interrupt_in_endpoint_size), GFP_KERNEL);
 	if (!dev->ring_buffer) {
 		dev_err(&intf->dev, "Couldn't allocate ring_buffer\n");
@@ -737,7 +741,11 @@ static int ld_usb_probe(struct usb_interface *intf, const struct usb_device_id *
 		dev_err(&intf->dev, "Couldn't allocate interrupt_in_urb\n");
 		goto error;
 	}
+<<<<<<< HEAD
 	dev->interrupt_out_endpoint_size = dev->interrupt_out_endpoint ? le16_to_cpu(dev->interrupt_out_endpoint->wMaxPacketSize) :
+=======
+	dev->interrupt_out_endpoint_size = dev->interrupt_out_endpoint ? usb_endpoint_maxp(dev->interrupt_out_endpoint) :
+>>>>>>> refs/remotes/origin/cm-10.0
 									 udev->descriptor.bMaxPacketSize0;
 	dev->interrupt_out_buffer = kmalloc(write_buffer_size*dev->interrupt_out_endpoint_size, GFP_KERNEL);
 	if (!dev->interrupt_out_buffer) {
@@ -821,6 +829,7 @@ static struct usb_driver ld_usb_driver = {
 	.id_table =	ld_usb_table,
 };
 
+<<<<<<< HEAD
 /**
  *	ld_usb_init
  */
@@ -847,4 +856,7 @@ static void __exit ld_usb_exit(void)
 
 module_init(ld_usb_init);
 module_exit(ld_usb_exit);
+=======
+module_usb_driver(ld_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 

@@ -30,14 +30,24 @@
 #include <linux/init.h>
 #include <linux/etherdevice.h>
 #include <linux/ip.h>
+<<<<<<< HEAD
 #include <linux/string.h>
+=======
+#include <linux/ratelimit.h>
+#include <linux/string.h>
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/dst.h>
 #ifdef CONFIG_XFRM
 #include <linux/xfrm.h>
 #include <net/xfrm.h>
 #endif /* CONFIG_XFRM */
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/octeon/octeon.h>
 
@@ -46,6 +56,7 @@
 #include "ethernet-tx.h"
 #include "ethernet-util.h"
 
+<<<<<<< HEAD
 #include "cvmx-wqe.h"
 #include "cvmx-fau.h"
 #include "cvmx-pip.h"
@@ -53,6 +64,15 @@
 #include "cvmx-helper.h"
 
 #include "cvmx-gmxx-defs.h"
+=======
+#include <asm/octeon/cvmx-wqe.h>
+#include <asm/octeon/cvmx-fau.h>
+#include <asm/octeon/cvmx-pip.h>
+#include <asm/octeon/cvmx-pko.h>
+#include <asm/octeon/cvmx-helper.h>
+
+#include <asm/octeon/cvmx-gmxx-defs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CVM_OCT_SKB_CB(skb)	((u64 *)((skb)->cb))
 
@@ -274,7 +294,11 @@ int cvm_oct_xmit(struct sk_buff *skb, struct net_device *dev)
 		CVM_OCT_SKB_CB(skb)[0] = hw_buffer.u64;
 		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
 			struct skb_frag_struct *fs = skb_shinfo(skb)->frags + i;
+<<<<<<< HEAD
 			hw_buffer.s.addr = XKPHYS_TO_PHYS((u64)(page_address(fs->page) + fs->page_offset));
+=======
+			hw_buffer.s.addr = XKPHYS_TO_PHYS((u64)(page_address(fs->page.p) + fs->page_offset));
+>>>>>>> refs/remotes/origin/cm-10.0
 			hw_buffer.s.size = fs->size;
 			CVM_OCT_SKB_CB(skb)[i + 1] = hw_buffer.u64;
 		}
@@ -446,7 +470,11 @@ dont_put_skbuff_in_hw:
 						 priv->queue + qos,
 						 pko_command, hw_buffer,
 						 CVMX_PKO_LOCK_NONE))) {
+<<<<<<< HEAD
 		DEBUGPRINT("%s: Failed to send the packet\n", dev->name);
+=======
+		printk_ratelimited("%s: Failed to send the packet\n", dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		queue_type = QUEUE_DROP;
 	}
 skip_xmit:
@@ -525,8 +553,13 @@ int cvm_oct_xmit_pow(struct sk_buff *skb, struct net_device *dev)
 	/* Get a work queue entry */
 	cvmx_wqe_t *work = cvmx_fpa_alloc(CVMX_FPA_WQE_POOL);
 	if (unlikely(work == NULL)) {
+<<<<<<< HEAD
 		DEBUGPRINT("%s: Failed to allocate a work queue entry\n",
 			   dev->name);
+=======
+		printk_ratelimited("%s: Failed to allocate a work "
+				   "queue entry\n", dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->stats.tx_dropped++;
 		dev_kfree_skb(skb);
 		return 0;
@@ -535,8 +568,13 @@ int cvm_oct_xmit_pow(struct sk_buff *skb, struct net_device *dev)
 	/* Get a packet buffer */
 	packet_buffer = cvmx_fpa_alloc(CVMX_FPA_PACKET_POOL);
 	if (unlikely(packet_buffer == NULL)) {
+<<<<<<< HEAD
 		DEBUGPRINT("%s: Failed to allocate a packet buffer\n",
 			   dev->name);
+=======
+		printk_ratelimited("%s: Failed to allocate a packet buffer\n",
+				   dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		cvmx_fpa_free(work, CVMX_FPA_WQE_POOL, DONT_WRITEBACK(1));
 		priv->stats.tx_dropped++;
 		dev_kfree_skb(skb);

@@ -23,10 +23,19 @@
 #include <linux/pci.h>
 #include <linux/interrupt.h>
 #include <linux/serial_core.h>
+<<<<<<< HEAD
+=======
+#include <linux/tty.h>
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/ioport.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "timbuart.h"
 
@@ -510,6 +519,7 @@ static struct platform_driver timbuart_platform_driver = {
 	.remove		= __devexit_p(timbuart_remove),
 };
 
+<<<<<<< HEAD
 /*--------------------------------------------------------------------------*/
 
 static int __init timbuart_init(void)
@@ -524,6 +534,9 @@ static void __exit timbuart_exit(void)
 
 module_init(timbuart_init);
 module_exit(timbuart_exit);
+=======
+module_platform_driver(timbuart_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Timberdale UART driver");
 MODULE_LICENSE("GPL v2");

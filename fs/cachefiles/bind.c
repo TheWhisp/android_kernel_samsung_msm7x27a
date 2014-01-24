@@ -129,8 +129,11 @@ static int cachefiles_daemon_add_cache(struct cachefiles_cache *cache)
 	    !root->d_inode->i_op->mkdir ||
 	    !root->d_inode->i_op->setxattr ||
 	    !root->d_inode->i_op->getxattr ||
+<<<<<<< HEAD
 	    !root->d_sb ||
 	    !root->d_sb->s_op ||
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	    !root->d_sb->s_op->statfs ||
 	    !root->d_sb->s_op->sync_fs)
 		goto error_unsupported;

@@ -163,6 +163,7 @@ static struct platform_driver cobalt_buttons_driver = {
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 
 static int __init cobalt_buttons_init(void)
 {
@@ -176,3 +177,6 @@ static void __exit cobalt_buttons_exit(void)
 
 module_init(cobalt_buttons_init);
 module_exit(cobalt_buttons_exit);
+=======
+module_platform_driver(cobalt_buttons_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

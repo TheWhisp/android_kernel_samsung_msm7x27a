@@ -80,16 +80,27 @@ tcpoptstrip_tg4(struct sk_buff *skb, const struct xt_action_param *par)
 	       sizeof(struct iphdr) + sizeof(struct tcphdr));
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IP6_NF_MANGLE) || defined(CONFIG_IP6_NF_MANGLE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_MANGLE)
+>>>>>>> refs/remotes/origin/cm-10.0
 static unsigned int
 tcpoptstrip_tg6(struct sk_buff *skb, const struct xt_action_param *par)
 {
 	struct ipv6hdr *ipv6h = ipv6_hdr(skb);
 	int tcphoff;
 	u_int8_t nexthdr;
+<<<<<<< HEAD
 
 	nexthdr = ipv6h->nexthdr;
 	tcphoff = ipv6_skip_exthdr(skb, sizeof(*ipv6h), &nexthdr);
+=======
+	__be16 frag_off;
+
+	nexthdr = ipv6h->nexthdr;
+	tcphoff = ipv6_skip_exthdr(skb, sizeof(*ipv6h), &nexthdr, &frag_off);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (tcphoff < 0)
 		return NF_DROP;
 
@@ -108,7 +119,11 @@ static struct xt_target tcpoptstrip_tg_reg[] __read_mostly = {
 		.targetsize = sizeof(struct xt_tcpoptstrip_target_info),
 		.me         = THIS_MODULE,
 	},
+<<<<<<< HEAD
 #if defined(CONFIG_IP6_NF_MANGLE) || defined(CONFIG_IP6_NF_MANGLE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_MANGLE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.name       = "TCPOPTSTRIP",
 		.family     = NFPROTO_IPV6,

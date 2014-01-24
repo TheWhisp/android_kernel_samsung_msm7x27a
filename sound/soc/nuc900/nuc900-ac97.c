@@ -291,7 +291,11 @@ static int nuc900_ac97_remove(struct snd_soc_dai *dai)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops nuc900_ac97_dai_ops = {
+=======
+static const struct snd_soc_dai_ops nuc900_ac97_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.trigger	= nuc900_ac97_trigger,
 };
 
@@ -356,7 +360,11 @@ static int __devinit nuc900_ac97_drvprobe(struct platform_device *pdev)
 	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
 	if (!nuc900_audio->irq_num) {
 		ret = -EBUSY;
+<<<<<<< HEAD
 		goto out2;
+=======
+		goto out3;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	nuc900_ac97_data = nuc900_audio;
@@ -365,7 +373,12 @@ static int __devinit nuc900_ac97_drvprobe(struct platform_device *pdev)
 	if (ret)
 		goto out3;
 
+<<<<<<< HEAD
 	mfp_set_groupg(nuc900_audio->dev); /* enbale ac97 multifunction pin*/
+=======
+	/* enbale ac97 multifunction pin */
+	mfp_set_groupg(nuc900_audio->dev, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 
@@ -405,6 +418,7 @@ static struct platform_driver nuc900_ac97_driver = {
 	.remove		= __devexit_p(nuc900_ac97_drvremove),
 };
 
+<<<<<<< HEAD
 static int __init nuc900_ac97_init(void)
 {
 	return platform_driver_register(&nuc900_ac97_driver);
@@ -417,6 +431,9 @@ static void __exit nuc900_ac97_exit(void)
 
 module_init(nuc900_ac97_init);
 module_exit(nuc900_ac97_exit);
+=======
+module_platform_driver(nuc900_ac97_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
 MODULE_DESCRIPTION("NUC900 AC97 SoC driver!");

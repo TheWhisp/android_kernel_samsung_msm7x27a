@@ -24,7 +24,10 @@
 #include <linux/init.h>
 #include <linux/vt_kern.h>		/* For unblank_screen() */
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/pgalloc.h>
 #include <asm/hardirq.h>

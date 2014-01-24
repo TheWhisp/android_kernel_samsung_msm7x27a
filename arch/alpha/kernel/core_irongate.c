@@ -303,6 +303,10 @@ irongate_init_arch(void)
 #include <linux/vmalloc.h>
 #include <linux/agp_backend.h>
 #include <linux/agpgart.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgalloc.h>
 
 #define GET_PAGE_DIR_OFF(addr) (addr >> 22)

@@ -36,6 +36,10 @@
 #include <linux/delay.h>
 #include <linux/netdevice.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "qib.h"
 

@@ -13,9 +13,13 @@
 #include <wait.h>
 #include <sys/mman.h>
 #include <sys/utsname.h>
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "user.h"
+=======
+#include "os.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void stack_protections(unsigned long address)
 {

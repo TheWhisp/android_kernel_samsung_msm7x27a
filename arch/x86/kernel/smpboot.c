@@ -50,6 +50,10 @@
 #include <linux/tboot.h>
 #include <linux/stackprotector.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpuidle.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/acpi.h>
 #include <asm/desc.h>
@@ -65,6 +69,11 @@
 #include <asm/mwait.h>
 #include <asm/apic.h>
 #include <asm/io_apic.h>
+<<<<<<< HEAD
+=======
+#include <asm/i387.h>
+#include <asm/fpu-internal.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/setup.h>
 #include <asm/uv/uv.h>
 #include <linux/mc146818rtc.h>
@@ -207,6 +216,7 @@ static void __cpuinit smp_callin(void)
 	 * Need to setup vector mappings before we enable interrupts.
 	 */
 	setup_vector_irq(smp_processor_id());
+<<<<<<< HEAD
 	/*
 	 * Get our bogomips.
 	 *
@@ -222,6 +232,24 @@ static void __cpuinit smp_callin(void)
 	 * Save our processor parameters
 	 */
 	smp_store_cpu_info(cpuid);
+=======
+
+	/*
+	 * Save our processor parameters. Note: this information
+	 * is needed for clock calibration.
+	 */
+	smp_store_cpu_info(cpuid);
+
+	/*
+	 * Get our bogomips.
+	 * Update loops_per_jiffy in cpu_data. Previous call to
+	 * smp_store_cpu_info() stored a value that is close but not as
+	 * accurate as the value just calculated.
+	 */
+	calibrate_delay();
+	cpu_data(cpuid).loops_per_jiffy = loops_per_jiffy;
+	pr_debug("Stack at about %p\n", &cpuid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * This must be done before setting cpu_online_mask
@@ -249,6 +277,10 @@ notrace static void __cpuinit start_secondary(void *unused)
 	 * most necessary things.
 	 */
 	cpu_init();
+<<<<<<< HEAD
+=======
+	x86_cpuinit.early_percpu_clock_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 	preempt_disable();
 	smp_callin();
 
@@ -285,6 +317,7 @@ notrace static void __cpuinit start_secondary(void *unused)
 	per_cpu(cpu_state, smp_processor_id()) = CPU_ONLINE;
 	x86_platform.nmi_init();
 
+<<<<<<< HEAD
 	/*
 	 * Wait until the cpu which brought this one up marked it
 	 * online before enabling interrupts. If we don't do that then
@@ -298,6 +331,8 @@ notrace static void __cpuinit start_secondary(void *unused)
 	while (!cpumask_test_cpu(smp_processor_id(), cpu_active_mask))
 		cpu_relax();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* enable local interrupts */
 	local_irq_enable();
 
@@ -438,7 +473,11 @@ static void impress_friends(void)
 void __inquire_remote_apic(int apicid)
 {
 	unsigned i, regs[] = { APIC_ID >> 4, APIC_LVR >> 4, APIC_SPIV >> 4 };
+<<<<<<< HEAD
 	char *names[] = { "ID", "VERSION", "SPIV" };
+=======
+	const char * const names[] = { "ID", "VERSION", "SPIV" };
+>>>>>>> refs/remotes/origin/cm-10.0
 	int timeout;
 	u32 status;
 
@@ -734,8 +773,11 @@ do_rest:
 	 * the targeted processor.
 	 */
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "smpboot cpu %d: start_ip = %lx\n", cpu, start_ip);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	atomic_set(&init_deasserted, 0);
 
 	if (get_uv_system_type() != UV_NON_UNIQUE_APIC) {
@@ -785,9 +827,16 @@ do_rest:
 			schedule();
 		}
 
+<<<<<<< HEAD
 		if (cpumask_test_cpu(cpu, cpu_callin_mask))
 			pr_debug("CPU%d: has booted.\n", cpu);
 		else {
+=======
+		if (cpumask_test_cpu(cpu, cpu_callin_mask)) {
+			print_cpu_msr(&cpu_data(cpu));
+			pr_debug("CPU%d: has booted.\n", cpu);
+		} else {
+>>>>>>> refs/remotes/origin/cm-10.0
 			boot_error = 1;
 			if (*(volatile u32 *)TRAMPOLINE_SYM(trampoline_status)
 			    == 0xA5A5A5A5)
@@ -840,7 +889,12 @@ int __cpuinit native_cpu_up(unsigned int cpu)
 	pr_debug("++++++++++++++++++++=_---CPU UP  %u\n", cpu);
 
 	if (apicid == BAD_APICID || apicid == boot_cpu_physical_apicid ||
+<<<<<<< HEAD
 	    !physid_isset(apicid, phys_cpu_present_map)) {
+=======
+	    !physid_isset(apicid, phys_cpu_present_map) ||
+	    !apic->apic_id_valid(apicid)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "%s: bad cpu %d\n", __func__, cpu);
 		return -EINVAL;
 	}
@@ -861,6 +915,12 @@ int __cpuinit native_cpu_up(unsigned int cpu)
 
 	per_cpu(cpu_state, cpu) = CPU_UP_PREPARE;
 
+<<<<<<< HEAD
+=======
+	/* the FPU context is blank, nobody can own it */
+	__cpu_disable_lazy_restore(cpu);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = do_boot_cpu(apicid, cpu);
 	if (err) {
 		pr_debug("do_boot_cpu failed %d\n", err);
@@ -1142,6 +1202,10 @@ void __init native_smp_cpus_done(unsigned int max_cpus)
 {
 	pr_debug("Boot done.\n");
 
+<<<<<<< HEAD
+=======
+	nmi_selftest();
+>>>>>>> refs/remotes/origin/cm-10.0
 	impress_friends();
 #ifdef CONFIG_X86_IO_APIC
 	setup_ioapic_dest();
@@ -1414,7 +1478,12 @@ void native_play_dead(void)
 	tboot_shutdown(TB_SHUTDOWN_WFS);
 
 	mwait_play_dead();	/* Only returns on failure */
+<<<<<<< HEAD
 	hlt_play_dead();
+=======
+	if (cpuidle_play_dead())
+		hlt_play_dead();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #else /* ... !CONFIG_HOTPLUG_CPU */

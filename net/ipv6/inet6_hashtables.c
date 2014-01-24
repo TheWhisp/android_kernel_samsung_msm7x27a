@@ -110,7 +110,11 @@ begintw:
 				goto out;
 			}
 			if (!INET6_TW_MATCH(sk, net, hash, saddr, daddr, ports, dif)) {
+<<<<<<< HEAD
 				sock_put(sk);
+=======
+				inet_twsk_put(inet_twsk(sk));
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto begintw;
 			}
 			goto out;

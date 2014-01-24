@@ -433,11 +433,16 @@ struct htc_target *ath9k_htc_hw_alloc(void *hif_handle,
 	struct htc_target *target;
 
 	target = kzalloc(sizeof(struct htc_target), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!target) {
 		printk(KERN_ERR "Unable to allocate memory for"
 			"target device\n");
 		return NULL;
 	}
+=======
+	if (!target)
+		return NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	init_completion(&target->target_wait);
 	init_completion(&target->cmd_wait);

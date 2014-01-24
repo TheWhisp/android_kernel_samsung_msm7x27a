@@ -21,7 +21,10 @@
 
 #include <asm/io.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ip32/mace.h>
 #include <asm/ip32/ip32_ints.h>
 

@@ -550,7 +550,11 @@ static int __devexit scx200_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver scx200_pci_drv = {
+=======
+static struct platform_driver scx200_pci_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver = {
 		.name = "cs5535-smb",
 		.owner = THIS_MODULE,
@@ -559,7 +563,11 @@ static struct platform_driver scx200_pci_drv = {
 	.remove = __devexit_p(scx200_remove),
 };
 
+<<<<<<< HEAD
 static const struct pci_device_id scx200_isa[] __initconst = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(scx200_isa) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_SCx200_BRIDGE) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_SC1100_BRIDGE) },
 	{ 0, }
@@ -593,14 +601,22 @@ static int __init scx200_acb_init(void)
 		return 0;
 
 	/* No ISA devices; register the platform driver for PCI-based devices */
+<<<<<<< HEAD
 	return platform_driver_register(&scx200_pci_drv);
+=======
+	return platform_driver_register(&scx200_pci_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __exit scx200_acb_cleanup(void)
 {
 	struct scx200_acb_iface *iface;
 
+<<<<<<< HEAD
 	platform_driver_unregister(&scx200_pci_drv);
+=======
+	platform_driver_unregister(&scx200_pci_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&scx200_acb_list_mutex);
 	while ((iface = scx200_acb_list) != NULL) {

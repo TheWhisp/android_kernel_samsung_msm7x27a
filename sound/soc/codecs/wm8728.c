@@ -19,6 +19,10 @@
 #include <linux/platform_device.h>
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -195,7 +199,11 @@ static int wm8728_set_bias_level(struct snd_soc_codec *codec,
 #define WM8728_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 	SNDRV_PCM_FMTBIT_S24_LE)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8728_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8728_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.hw_params	= wm8728_hw_params,
 	.digital_mute	= wm8728_mute,
 	.set_fmt	= wm8728_set_dai_fmt,
@@ -213,7 +221,11 @@ static struct snd_soc_dai_driver wm8728_dai = {
 	.ops = &wm8728_dai_ops,
 };
 
+<<<<<<< HEAD
 static int wm8728_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8728_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	wm8728_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -242,9 +254,12 @@ static int wm8728_probe(struct snd_soc_codec *codec)
 	/* power on device */
 	wm8728_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8728_snd_controls,
 				ARRAY_SIZE(wm8728_snd_controls));
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -263,12 +278,26 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8728 = {
 	.reg_cache_size = ARRAY_SIZE(wm8728_reg_defaults),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8728_reg_defaults,
+<<<<<<< HEAD
+=======
+	.controls = wm8728_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8728_snd_controls),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dapm_widgets = wm8728_dapm_widgets,
 	.num_dapm_widgets = ARRAY_SIZE(wm8728_dapm_widgets),
 	.dapm_routes = wm8728_intercon,
 	.num_dapm_routes = ARRAY_SIZE(wm8728_intercon),
 };
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id wm8728_of_match[] = {
+	{ .compatible = "wlf,wm8728", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, wm8728_of_match);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_SPI_MASTER)
 static int __devinit wm8728_spi_probe(struct spi_device *spi)
 {
@@ -298,8 +327,14 @@ static int __devexit wm8728_spi_remove(struct spi_device *spi)
 
 static struct spi_driver wm8728_spi_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name	= "wm8728-codec",
 		.owner	= THIS_MODULE,
+=======
+		.name	= "wm8728",
+		.owner	= THIS_MODULE,
+		.of_match_table = wm8728_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe		= wm8728_spi_probe,
 	.remove		= __devexit_p(wm8728_spi_remove),
@@ -342,8 +377,14 @@ MODULE_DEVICE_TABLE(i2c, wm8728_i2c_id);
 
 static struct i2c_driver wm8728_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name = "wm8728-codec",
 		.owner = THIS_MODULE,
+=======
+		.name = "wm8728",
+		.owner = THIS_MODULE,
+		.of_match_table = wm8728_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe =    wm8728_i2c_probe,
 	.remove =   __devexit_p(wm8728_i2c_remove),

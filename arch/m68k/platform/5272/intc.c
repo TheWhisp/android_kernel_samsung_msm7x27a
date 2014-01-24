@@ -162,8 +162,11 @@ void __init init_IRQ(void)
 {
 	int irq, edge;
 
+<<<<<<< HEAD
 	init_vectors();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Mask all interrupt sources */
 	writel(0x88888888, MCF_MBAR + MCFSIM_ICR1);
 	writel(0x88888888, MCF_MBAR + MCFSIM_ICR2);

@@ -23,10 +23,20 @@
  * MA 02111-1307 USA
  */
 #include <linux/linkage.h>
+<<<<<<< HEAD
 #include <asm/assembler.h>
 #include <plat/sram.h>
 #include <mach/io.h>
 
+=======
+
+#include <asm/assembler.h>
+
+#include <plat/hardware.h>
+#include <plat/sram.h>
+
+#include "iomap.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "cm2xxx_3xxx.h"
 #include "prm2xxx_3xxx.h"
 #include "sdrc.h"
@@ -74,6 +84,7 @@
  * API functions
  */
 
+<<<<<<< HEAD
 /*
  * The "get_*restore_pointer" functions are used to provide a
  * physical restore address where the ROM code jumps while waking
@@ -114,6 +125,8 @@ ENDPROC(get_es3_restore_pointer)
 ENTRY(get_es3_restore_pointer_sz)
 	.word	. - get_es3_restore_pointer
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.text
 /*
  * L2 cache needs to be toggled for stable OFF mode functionality on 3630.
@@ -133,7 +146,11 @@ ENDPROC(enable_omap3630_toggle_l2_on_restore)
 /* Function to call rom code to save secure ram context */
 	.align	3
 ENTRY(save_secure_ram_context)
+<<<<<<< HEAD
 	stmfd	sp!, {r1-r12, lr}	@ save registers on stack
+=======
+	stmfd	sp!, {r4 - r11, lr}	@ save registers on stack
+>>>>>>> refs/remotes/origin/cm-10.0
 	adr	r3, api_params		@ r3 points to parameters
 	str	r0, [r3,#0x4]		@ r0 has sdram address
 	ldr	r12, high_mask
@@ -152,7 +169,11 @@ ENTRY(save_secure_ram_context)
 	nop
 	nop
 	nop
+<<<<<<< HEAD
 	ldmfd	sp!, {r1-r12, pc}
+=======
+	ldmfd	sp!, {r4 - r11, pc}
+>>>>>>> refs/remotes/origin/cm-10.0
 	.align
 sram_phy_addr_mask:
 	.word	SRAM_BASE_P
@@ -179,25 +200,40 @@ ENTRY(save_secure_ram_context_sz)
  *
  *
  * Notes:
+<<<<<<< HEAD
  * - this code gets copied to internal SRAM at boot and after wake-up
  *   from OFF mode. The execution pointer in SRAM is _omap_sram_idle.
+=======
+ * - only the minimum set of functions gets copied to internal SRAM at boot
+ *   and after wake-up from OFF mode, cf. omap_push_sram_idle. The function
+ *   pointers in SDRAM or SRAM are called depending on the desired low power
+ *   target state.
+>>>>>>> refs/remotes/origin/cm-10.0
  * - when the OMAP wakes up it continues at different execution points
  *   depending on the low power mode (non-OFF vs OFF modes),
  *   cf. 'Resume path for xxx mode' comments.
  */
 	.align	3
 ENTRY(omap34xx_cpu_suspend)
+<<<<<<< HEAD
 	stmfd	sp!, {r0-r12, lr}	@ save registers on stack
 
 	/*
 	 * r0 contains CPU context save/restore pointer in sdram
 	 * r1 contains information about saving context:
+=======
+	stmfd	sp!, {r4 - r11, lr}	@ save registers on stack
+
+	/*
+	 * r0 contains information about saving context:
+>>>>>>> refs/remotes/origin/cm-10.0
 	 *   0 - No context lost
 	 *   1 - Only L1 and logic lost
 	 *   2 - Only L2 lost (Even L1 is retained we clean it along with L2)
 	 *   3 - Both L1 and L2 lost and logic lost
 	 */
 
+<<<<<<< HEAD
 	/* Directly jump to WFI is the context save is not required */
 	cmp	r1, #0x0
 	beq	omap3_do_wfi
@@ -242,6 +278,20 @@ l1_logic_lost:
 	stmia	r8!, {r4}
 
 clean_caches:
+=======
+	/*
+	 * For OFF mode: save context and jump to WFI in SDRAM (omap3_do_wfi)
+	 * For non-OFF modes: jump to the WFI code in SRAM (omap3_do_wfi_sram)
+	 */
+	ldr	r4, omap3_do_wfi_sram_addr
+	ldr	r5, [r4]
+	cmp	r0, #0x0		@ If no context save required,
+	bxeq	r5			@  jump to the WFI code in SRAM
+
+
+	/* Otherwise fall through to the save context code */
+save_context_wfi:
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * jump out to kernel flush routine
 	 *  - reuse that code is better
@@ -284,7 +334,36 @@ clean_caches:
  THUMB(	nop		)
 	.arm
 
+<<<<<<< HEAD
 omap3_do_wfi:
+=======
+	b	omap3_do_wfi
+
+/*
+ * Local variables
+ */
+omap3_do_wfi_sram_addr:
+	.word omap3_do_wfi_sram
+kernel_flush:
+	.word v7_flush_dcache_all
+
+/* ===================================
+ * == WFI instruction => Enter idle ==
+ * ===================================
+ */
+
+/*
+ * Do WFI instruction
+ * Includes the resume path for non-OFF modes
+ *
+ * This code gets copied to internal SRAM and is accessible
+ * from both SDRAM and SRAM:
+ * - executed from SRAM for non-off modes (omap3_do_wfi_sram),
+ * - executed from SDRAM for OFF mode (omap3_do_wfi).
+ */
+	.align	3
+ENTRY(omap3_do_wfi)
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldr	r4, sdrc_power		@ read the SDRC_POWER register
 	ldr	r5, [r4]		@ read the contents of SDRC_POWER
 	orr	r5, r5, #0x40		@ enable self refresh on idle req
@@ -316,8 +395,91 @@ omap3_do_wfi:
 	nop
 	nop
 	nop
+<<<<<<< HEAD
 	bl wait_sdrc_ok
 
+=======
+
+/*
+ * This function implements the erratum ID i581 WA:
+ *  SDRC state restore before accessing the SDRAM
+ *
+ * Only used at return from non-OFF mode. For OFF
+ * mode the ROM code configures the SDRC and
+ * the DPLL before calling the restore code directly
+ * from DDR.
+ */
+
+/* Make sure SDRC accesses are ok */
+wait_sdrc_ok:
+
+/* DPLL3 must be locked before accessing the SDRC. Maybe the HW ensures this */
+	ldr	r4, cm_idlest_ckgen
+wait_dpll3_lock:
+	ldr	r5, [r4]
+	tst	r5, #1
+	beq	wait_dpll3_lock
+
+	ldr	r4, cm_idlest1_core
+wait_sdrc_ready:
+	ldr	r5, [r4]
+	tst	r5, #0x2
+	bne	wait_sdrc_ready
+	/* allow DLL powerdown upon hw idle req */
+	ldr	r4, sdrc_power
+	ldr	r5, [r4]
+	bic	r5, r5, #0x40
+	str	r5, [r4]
+
+/*
+ * PC-relative stores lead to undefined behaviour in Thumb-2: use a r7 as a
+ * base instead.
+ * Be careful not to clobber r7 when maintaing this code.
+ */
+
+is_dll_in_lock_mode:
+	/* Is dll in lock mode? */
+	ldr	r4, sdrc_dlla_ctrl
+	ldr	r5, [r4]
+	tst	r5, #0x4
+	bne	exit_nonoff_modes	@ Return if locked
+	/* wait till dll locks */
+	adr	r7, kick_counter
+wait_dll_lock_timed:
+	ldr	r4, wait_dll_lock_counter
+	add	r4, r4, #1
+	str	r4, [r7, #wait_dll_lock_counter - kick_counter]
+	ldr	r4, sdrc_dlla_status
+	/* Wait 20uS for lock */
+	mov	r6, #8
+wait_dll_lock:
+	subs	r6, r6, #0x1
+	beq	kick_dll
+	ldr	r5, [r4]
+	and	r5, r5, #0x4
+	cmp	r5, #0x4
+	bne	wait_dll_lock
+	b	exit_nonoff_modes	@ Return when locked
+
+	/* disable/reenable DLL if not locked */
+kick_dll:
+	ldr	r4, sdrc_dlla_ctrl
+	ldr	r5, [r4]
+	mov	r6, r5
+	bic	r6, #(1<<3)		@ disable dll
+	str	r6, [r4]
+	dsb
+	orr	r6, r6, #(1<<3)		@ enable dll
+	str	r6, [r4]
+	dsb
+	ldr	r4, kick_counter
+	add	r4, r4, #1
+	str	r4, [r7]		@ kick_counter
+	b	wait_dll_lock_timed
+
+exit_nonoff_modes:
+	/* Re-enable C-bit if needed */
+>>>>>>> refs/remotes/origin/cm-10.0
 	mrc	p15, 0, r0, c1, c0, 0
 	tst	r0, #(1 << 2)		@ Check C bit enabled?
 	orreq	r0, r0, #(1 << 2)	@ Enable the C bit if cleared
@@ -329,7 +491,36 @@ omap3_do_wfi:
  * == Exit point from non-OFF modes ==
  * ===================================
  */
+<<<<<<< HEAD
 	ldmfd	sp!, {r0-r12, pc}	@ restore regs and return
+=======
+	ldmfd	sp!, {r4 - r11, pc}	@ restore regs and return
+
+/*
+ * Local variables
+ */
+sdrc_power:
+	.word	SDRC_POWER_V
+cm_idlest1_core:
+	.word	CM_IDLEST1_CORE_V
+cm_idlest_ckgen:
+	.word	CM_IDLEST_CKGEN_V
+sdrc_dlla_status:
+	.word	SDRC_DLLA_STATUS_V
+sdrc_dlla_ctrl:
+	.word	SDRC_DLLA_CTRL_V
+	/*
+	 * When exporting to userspace while the counters are in SRAM,
+	 * these 2 words need to be at the end to facilitate retrival!
+	 */
+kick_counter:
+	.word	0
+wait_dll_lock_counter:
+	.word	0
+
+ENTRY(omap3_do_wfi_sz)
+	.word	. - omap3_do_wfi
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /*
@@ -346,13 +537,26 @@ omap3_do_wfi:
  *  restore_es3: applies to 34xx >= ES3.0
  *  restore_3630: applies to 36xx
  *  restore: common code for 3xxx
+<<<<<<< HEAD
  */
 restore_es3:
+=======
+ *
+ * Note: when back from CORE and MPU OFF mode we are running
+ *  from SDRAM, without MMU, without the caches and prediction.
+ *  Also the SRAM content has been cleared.
+ */
+ENTRY(omap3_restore_es3)
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldr	r5, pm_prepwstst_core_p
 	ldr	r4, [r5]
 	and	r4, r4, #0x3
 	cmp	r4, #0x0	@ Check if previous power state of CORE is OFF
+<<<<<<< HEAD
 	bne	restore
+=======
+	bne	omap3_restore	@ Fall through to OMAP3 common code
+>>>>>>> refs/remotes/origin/cm-10.0
 	adr	r0, es3_sdrc_fix
 	ldr	r1, sram_base
 	ldr	r2, es3_sdrc_fix_sz
@@ -364,18 +568,30 @@ copy_to_sram:
 	bne	copy_to_sram
 	ldr	r1, sram_base
 	blx	r1
+<<<<<<< HEAD
 	b	restore
 
 restore_3630:
+=======
+	b	omap3_restore	@ Fall through to OMAP3 common code
+ENDPROC(omap3_restore_es3)
+
+ENTRY(omap3_restore_3630)
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldr	r1, pm_prepwstst_core_p
 	ldr	r2, [r1]
 	and	r2, r2, #0x3
 	cmp	r2, #0x0	@ Check if previous power state of CORE is OFF
+<<<<<<< HEAD
 	bne	restore
+=======
+	bne	omap3_restore	@ Fall through to OMAP3 common code
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Disable RTA before giving control */
 	ldr	r1, control_mem_rta
 	mov	r2, #OMAP36XX_RTA_DISABLE
 	str	r2, [r1]
+<<<<<<< HEAD
 
 	/* Fall through to common code for the remaining logic */
 
@@ -386,13 +602,26 @@ restore:
 	 *  1 - Only L1 and logic lost
 	 *  2 - Only L2 lost - In this case, we wont be here
 	 *  3 - Both L1 and L2 lost
+=======
+ENDPROC(omap3_restore_3630)
+
+	/* Fall through to common code for the remaining logic */
+
+ENTRY(omap3_restore)
+	/*
+	 * Read the pwstctrl register to check the reason for mpu reset.
+	 * This tells us what was lost.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	ldr	r1, pm_pwstctrl_mpu
 	ldr	r2, [r1]
 	and	r2, r2, #0x3
 	cmp	r2, #0x0	@ Check if target power state was OFF or RET
+<<<<<<< HEAD
 	moveq	r9, #0x3	@ MPU OFF => L1 and L2 lost
 	movne	r9, #0x1	@ Only L1 and L2 lost => avoid L2 invalidation
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	bne	logic_l1_restore
 
 	ldr	r0, l2dis_3630
@@ -471,6 +700,7 @@ logic_l1_restore:
 	orr	r1, r1, #2		@ re-enable L2 cache
 	mcr	p15, 0, r1, c1, c0, 1
 skipl2reen:
+<<<<<<< HEAD
 	mov	r1, #0
 	/*
 	 * Invalidate all instruction caches to PoU
@@ -574,12 +804,45 @@ usettbr0:
 restoremmu_on:
 	ldmfd	sp!, {r0-r12, pc}	@ restore regs and return
 
+=======
+
+	/* Now branch to the common CPU resume function */
+	b	cpu_resume
+ENDPROC(omap3_restore)
+
+	.ltorg
+
+/*
+ * Local variables
+ */
+pm_prepwstst_core_p:
+	.word	PM_PREPWSTST_CORE_P
+pm_pwstctrl_mpu:
+	.word	PM_PWSTCTRL_MPU_P
+scratchpad_base:
+	.word	SCRATCHPAD_BASE_P
+sram_base:
+	.word	SRAM_BASE_P + 0x8000
+control_stat:
+	.word	CONTROL_STAT
+control_mem_rta:
+	.word	CONTROL_MEM_RTA_CTRL
+l2dis_3630:
+	.word	0
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Internal functions
  */
 
+<<<<<<< HEAD
 /* This function implements the erratum ID i443 WA, applies to 34xx >= ES3.0 */
+=======
+/*
+ * This function implements the erratum ID i443 WA, applies to 34xx >= ES3.0
+ * Copied to and run from SRAM in order to reconfigure the SDRC parameters.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.text
 	.align	3
 ENTRY(es3_sdrc_fix)
@@ -609,6 +872,12 @@ ENTRY(es3_sdrc_fix)
 	str	r5, [r4]		@ kick off refreshes
 	bx	lr
 
+<<<<<<< HEAD
+=======
+/*
+ * Local variables
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.align
 sdrc_syscfg:
 	.word	SDRC_SYSCONFIG_P
@@ -627,6 +896,7 @@ sdrc_manual_1:
 ENDPROC(es3_sdrc_fix)
 ENTRY(es3_sdrc_fix_sz)
 	.word	. - es3_sdrc_fix
+<<<<<<< HEAD
 
 /*
  * This function implements the erratum ID i581 WA:
@@ -752,3 +1022,5 @@ ENDPROC(omap34xx_cpu_suspend)
 
 ENTRY(omap34xx_cpu_suspend_sz)
 	.word	. - omap34xx_cpu_suspend
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

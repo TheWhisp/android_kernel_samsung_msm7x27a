@@ -10,7 +10,10 @@
  */
 #include <linux/module.h>
 #include <asm/bitops.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * try flipping a bit using BSET and BCLR

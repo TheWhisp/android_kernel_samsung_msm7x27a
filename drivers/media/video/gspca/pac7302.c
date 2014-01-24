@@ -1,8 +1,15 @@
 /*
+<<<<<<< HEAD
  *		Pixart PAC7302 library
  *		Copyright (C) 2005 Thomas Kaiser thomas@kaiser-linux.li
  *
  * V4L2 by Jean-Francois Moine <http://moinejf.free.fr>
+=======
+ * Pixart PAC7302 driver
+ *
+ * Copyright (C) 2008-2012 Jean-Francois Moine <http://moinejf.free.fr>
+ * Copyright (C) 2005 Thomas Kaiser thomas@kaiser-linux.li
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Separated from Pixart PAC7311 library by Márton Németh
  * Camera button input handling by Márton Németh <nm127@freemail.hu>
@@ -61,20 +68,51 @@
     3   | 0x21       | sethvflip()
 */
 
+<<<<<<< HEAD
 #define MODULE_NAME "pac7302"
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/input.h>
 #include <media/v4l2-chip-ident.h>
 #include "gspca.h"
+<<<<<<< HEAD
 
 MODULE_AUTHOR("Thomas Kaiser thomas@kaiser-linux.li");
 MODULE_DESCRIPTION("Pixart PAC7302");
 MODULE_LICENSE("GPL");
 
+=======
+/* Include pac common sof detection functions */
+#include "pac_common.h"
+
+MODULE_AUTHOR("Jean-Francois Moine <http://moinejf.free.fr>, "
+		"Thomas Kaiser thomas@kaiser-linux.li");
+MODULE_DESCRIPTION("Pixart PAC7302");
+MODULE_LICENSE("GPL");
+
+enum e_ctrl {
+	BRIGHTNESS,
+	CONTRAST,
+	COLORS,
+	WHITE_BALANCE,
+	RED_BALANCE,
+	BLUE_BALANCE,
+	GAIN,
+	AUTOGAIN,
+	EXPOSURE,
+	VFLIP,
+	HFLIP,
+	NCTRLS		/* number of controls */
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* specific webcam descriptor for pac7302 */
 struct sd {
 	struct gspca_dev gspca_dev;		/* !! must be the first item */
 
+<<<<<<< HEAD
 	unsigned char brightness;
 	unsigned char contrast;
 	unsigned char colors;
@@ -86,17 +124,26 @@ struct sd {
 	unsigned short exposure;
 	__u8 hflip;
 	__u8 vflip;
+=======
+	struct gspca_ctrl ctrls[NCTRLS];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 flags;
 #define FL_HFLIP 0x01		/* mirrored by default */
 #define FL_VFLIP 0x02		/* vertical flipped by default */
 
 	u8 sof_read;
+<<<<<<< HEAD
 	u8 autogain_ignore_frames;
+=======
+	s8 autogain_ignore_frames;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	atomic_t avg_lum;
 };
 
 /* V4L2 controls supported by the driver */
+<<<<<<< HEAD
 static int sd_setbrightness(struct gspca_dev *gspca_dev, __s32 val);
 static int sd_getbrightness(struct gspca_dev *gspca_dev, __s32 *val);
 static int sd_setcontrast(struct gspca_dev *gspca_dev, __s32 val);
@@ -122,6 +169,20 @@ static int sd_getexposure(struct gspca_dev *gspca_dev, __s32 *val);
 
 static const struct ctrl sd_ctrls[] = {
 	{
+=======
+static void setbrightcont(struct gspca_dev *gspca_dev);
+static void setcolors(struct gspca_dev *gspca_dev);
+static void setwhitebalance(struct gspca_dev *gspca_dev);
+static void setredbalance(struct gspca_dev *gspca_dev);
+static void setbluebalance(struct gspca_dev *gspca_dev);
+static void setgain(struct gspca_dev *gspca_dev);
+static void setexposure(struct gspca_dev *gspca_dev);
+static void setautogain(struct gspca_dev *gspca_dev);
+static void sethvflip(struct gspca_dev *gspca_dev);
+
+static const struct ctrl sd_ctrls[] = {
+[BRIGHTNESS] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_BRIGHTNESS,
 		.type    = V4L2_CTRL_TYPE_INTEGER,
@@ -130,6 +191,7 @@ static const struct ctrl sd_ctrls[] = {
 #define BRIGHTNESS_MAX 0x20
 		.maximum = BRIGHTNESS_MAX,
 		.step    = 1,
+<<<<<<< HEAD
 #define BRIGHTNESS_DEF 0x10
 		.default_value = BRIGHTNESS_DEF,
 	    },
@@ -137,6 +199,13 @@ static const struct ctrl sd_ctrls[] = {
 	    .get = sd_getbrightness,
 	},
 	{
+=======
+		.default_value = 0x10,
+	    },
+	    .set_control = setbrightcont
+	},
+[CONTRAST] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_CONTRAST,
 		.type    = V4L2_CTRL_TYPE_INTEGER,
@@ -145,6 +214,7 @@ static const struct ctrl sd_ctrls[] = {
 #define CONTRAST_MAX 255
 		.maximum = CONTRAST_MAX,
 		.step    = 1,
+<<<<<<< HEAD
 #define CONTRAST_DEF 127
 		.default_value = CONTRAST_DEF,
 	    },
@@ -152,6 +222,13 @@ static const struct ctrl sd_ctrls[] = {
 	    .get = sd_getcontrast,
 	},
 	{
+=======
+		.default_value = 127,
+	    },
+	    .set_control = setbrightcont
+	},
+[COLORS] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_SATURATION,
 		.type    = V4L2_CTRL_TYPE_INTEGER,
@@ -160,6 +237,7 @@ static const struct ctrl sd_ctrls[] = {
 #define COLOR_MAX 255
 		.maximum = COLOR_MAX,
 		.step    = 1,
+<<<<<<< HEAD
 #define COLOR_DEF 127
 		.default_value = COLOR_DEF,
 	    },
@@ -167,6 +245,13 @@ static const struct ctrl sd_ctrls[] = {
 	    .get = sd_getcolors,
 	},
 	{
+=======
+		.default_value = 127
+	    },
+	    .set_control = setcolors
+	},
+[WHITE_BALANCE] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_WHITE_BALANCE_TEMPERATURE,
 		.type    = V4L2_CTRL_TYPE_INTEGER,
@@ -174,6 +259,7 @@ static const struct ctrl sd_ctrls[] = {
 		.minimum = 0,
 		.maximum = 255,
 		.step    = 1,
+<<<<<<< HEAD
 #define WHITEBALANCE_DEF 4
 		.default_value = WHITEBALANCE_DEF,
 	    },
@@ -181,6 +267,13 @@ static const struct ctrl sd_ctrls[] = {
 	    .get = sd_getwhitebalance,
 	},
 	{
+=======
+		.default_value = 4,
+	    },
+	    .set_control = setwhitebalance
+	},
+[RED_BALANCE] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_RED_BALANCE,
 		.type    = V4L2_CTRL_TYPE_INTEGER,
@@ -188,6 +281,7 @@ static const struct ctrl sd_ctrls[] = {
 		.minimum = 0,
 		.maximum = 3,
 		.step    = 1,
+<<<<<<< HEAD
 #define REDBALANCE_DEF 1
 		.default_value = REDBALANCE_DEF,
 	    },
@@ -195,6 +289,13 @@ static const struct ctrl sd_ctrls[] = {
 	    .get = sd_getredbalance,
 	},
 	{
+=======
+		.default_value = 1,
+	    },
+	    .set_control = setredbalance
+	},
+[BLUE_BALANCE] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_BLUE_BALANCE,
 		.type    = V4L2_CTRL_TYPE_INTEGER,
@@ -202,6 +303,7 @@ static const struct ctrl sd_ctrls[] = {
 		.minimum = 0,
 		.maximum = 3,
 		.step    = 1,
+<<<<<<< HEAD
 #define BLUEBALANCE_DEF 1
 		.default_value = BLUEBALANCE_DEF,
 	    },
@@ -209,22 +311,39 @@ static const struct ctrl sd_ctrls[] = {
 	    .get = sd_getbluebalance,
 	},
 	{
+=======
+		.default_value = 1,
+	    },
+	    .set_control = setbluebalance
+	},
+[GAIN] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_GAIN,
 		.type    = V4L2_CTRL_TYPE_INTEGER,
 		.name    = "Gain",
 		.minimum = 0,
+<<<<<<< HEAD
 #define GAIN_MAX 255
 		.maximum = GAIN_MAX,
+=======
+		.maximum = 255,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.step    = 1,
 #define GAIN_DEF 127
 #define GAIN_KNEE 255 /* Gain seems to cause little noise on the pac73xx */
 		.default_value = GAIN_DEF,
 	    },
+<<<<<<< HEAD
 	    .set = sd_setgain,
 	    .get = sd_getgain,
 	},
 	{
+=======
+	    .set_control = setgain
+	},
+[EXPOSURE] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_EXPOSURE,
 		.type    = V4L2_CTRL_TYPE_INTEGER,
@@ -236,10 +355,16 @@ static const struct ctrl sd_ctrls[] = {
 #define EXPOSURE_KNEE 133 /*  66 ms / 15 fps */
 		.default_value = EXPOSURE_DEF,
 	    },
+<<<<<<< HEAD
 	    .set = sd_setexposure,
 	    .get = sd_getexposure,
 	},
 	{
+=======
+	    .set_control = setexposure
+	},
+[AUTOGAIN] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_AUTOGAIN,
 		.type    = V4L2_CTRL_TYPE_BOOLEAN,
@@ -250,10 +375,16 @@ static const struct ctrl sd_ctrls[] = {
 #define AUTOGAIN_DEF 1
 		.default_value = AUTOGAIN_DEF,
 	    },
+<<<<<<< HEAD
 	    .set = sd_setautogain,
 	    .get = sd_getautogain,
 	},
 	{
+=======
+	    .set_control = setautogain,
+	},
+[HFLIP] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_HFLIP,
 		.type    = V4L2_CTRL_TYPE_BOOLEAN,
@@ -261,6 +392,7 @@ static const struct ctrl sd_ctrls[] = {
 		.minimum = 0,
 		.maximum = 1,
 		.step    = 1,
+<<<<<<< HEAD
 #define HFLIP_DEF 0
 		.default_value = HFLIP_DEF,
 	    },
@@ -268,6 +400,13 @@ static const struct ctrl sd_ctrls[] = {
 	    .get = sd_gethflip,
 	},
 	{
+=======
+		.default_value = 0,
+	    },
+	    .set_control = sethvflip,
+	},
+[VFLIP] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    {
 		.id      = V4L2_CID_VFLIP,
 		.type    = V4L2_CTRL_TYPE_BOOLEAN,
@@ -275,11 +414,17 @@ static const struct ctrl sd_ctrls[] = {
 		.minimum = 0,
 		.maximum = 1,
 		.step    = 1,
+<<<<<<< HEAD
 #define VFLIP_DEF 0
 		.default_value = VFLIP_DEF,
 	    },
 	    .set = sd_setvflip,
 	    .get = sd_getvflip,
+=======
+		.default_value = 0,
+	    },
+	    .set_control = sethvflip
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -288,21 +433,33 @@ static const struct v4l2_pix_format vga_mode[] = {
 		.bytesperline = 640,
 		.sizeimage = 640 * 480 * 3 / 8 + 590,
 		.colorspace = V4L2_COLORSPACE_JPEG,
+<<<<<<< HEAD
 		.priv = 0},
+=======
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define LOAD_PAGE3		255
 #define END_OF_SEQUENCE		0
 
 /* pac 7302 */
+<<<<<<< HEAD
 static const __u8 init_7302[] = {
+=======
+static const u8 init_7302[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 /*	index,value */
 	0xff, 0x01,		/* page 1 */
 	0x78, 0x00,		/* deactivate */
 	0xff, 0x01,
 	0x78, 0x40,		/* led off */
 };
+<<<<<<< HEAD
 static const __u8 start_7302[] = {
+=======
+static const u8 start_7302[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 /*	index, len, [value]* */
 	0xff, 1,	0x00,		/* page 0 */
 	0x00, 12,	0x01, 0x40, 0x40, 0x40, 0x01, 0xe0, 0x02, 0x80,
@@ -317,7 +474,11 @@ static const __u8 start_7302[] = {
 	0x43, 11,	0x00, 0x0a, 0x18, 0x11, 0x01, 0x2c, 0x88, 0x11,
 			0x00, 0x54, 0x11,
 	0x55, 1,	0x00,
+<<<<<<< HEAD
 	0x62, 4, 	0x10, 0x1e, 0x1e, 0x18,
+=======
+	0x62, 4,	0x10, 0x1e, 0x1e, 0x18,
+>>>>>>> refs/remotes/origin/cm-10.0
 	0x6b, 1,	0x00,
 	0x6e, 3,	0x08, 0x06, 0x00,
 	0x72, 3,	0x00, 0xff, 0x00,
@@ -368,7 +529,11 @@ static const __u8 start_7302[] = {
 
 #define SKIP		0xaa
 /* page 3 - the value SKIP says skip the index - see reg_w_page() */
+<<<<<<< HEAD
 static const __u8 page3_7302[] = {
+=======
+static const u8 page3_7302[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	0x90, 0x40, 0x03, 0x00, 0xc0, 0x01, 0x14, 0x16,
 	0x14, 0x12, 0x00, 0x00, 0x00, 0x02, 0x33, 0x00,
 	0x0f, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -392,7 +557,11 @@ static const __u8 page3_7302[] = {
 };
 
 static void reg_w_buf(struct gspca_dev *gspca_dev,
+<<<<<<< HEAD
 		  __u8 index,
+=======
+		u8 index,
+>>>>>>> refs/remotes/origin/cm-10.0
 		  const u8 *buffer, int len)
 {
 	int ret;
@@ -408,16 +577,26 @@ static void reg_w_buf(struct gspca_dev *gspca_dev,
 			index, gspca_dev->usb_buf, len,
 			500);
 	if (ret < 0) {
+<<<<<<< HEAD
 		err("reg_w_buf failed index 0x%02x, error %d",
 			index, ret);
+=======
+		pr_err("reg_w_buf failed i: %02x error %d\n",
+		       index, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		gspca_dev->usb_err = ret;
 	}
 }
 
 
 static void reg_w(struct gspca_dev *gspca_dev,
+<<<<<<< HEAD
 		  __u8 index,
 		  __u8 value)
+=======
+		u8 index,
+		u8 value)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 
@@ -431,14 +610,23 @@ static void reg_w(struct gspca_dev *gspca_dev,
 			0, index, gspca_dev->usb_buf, 1,
 			500);
 	if (ret < 0) {
+<<<<<<< HEAD
 		err("reg_w() failed index 0x%02x, value 0x%02x, error %d",
 			index, value, ret);
+=======
+		pr_err("reg_w() failed i: %02x v: %02x error %d\n",
+		       index, value, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		gspca_dev->usb_err = ret;
 	}
 }
 
 static void reg_w_seq(struct gspca_dev *gspca_dev,
+<<<<<<< HEAD
 		const __u8 *seq, int len)
+=======
+		const u8 *seq, int len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	while (--len >= 0) {
 		reg_w(gspca_dev, seq[0], seq[1]);
@@ -448,7 +636,11 @@ static void reg_w_seq(struct gspca_dev *gspca_dev,
 
 /* load the beginning of a page */
 static void reg_w_page(struct gspca_dev *gspca_dev,
+<<<<<<< HEAD
 			const __u8 *page, int len)
+=======
+			const u8 *page, int len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int index;
 	int ret = 0;
@@ -466,9 +658,14 @@ static void reg_w_page(struct gspca_dev *gspca_dev,
 				0, index, gspca_dev->usb_buf, 1,
 				500);
 		if (ret < 0) {
+<<<<<<< HEAD
 			err("reg_w_page() failed index 0x%02x, "
 			"value 0x%02x, error %d",
 				index, page[index], ret);
+=======
+			pr_err("reg_w_page() failed i: %02x v: %02x error %d\n",
+			       index, page[index], ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 			gspca_dev->usb_err = ret;
 			break;
 		}
@@ -477,8 +674,13 @@ static void reg_w_page(struct gspca_dev *gspca_dev,
 
 /* output a variable sequence */
 static void reg_w_var(struct gspca_dev *gspca_dev,
+<<<<<<< HEAD
 			const __u8 *seq,
 			const __u8 *page3, unsigned int page3_len)
+=======
+			const u8 *seq,
+			const u8 *page3, unsigned int page3_len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int index, len;
 
@@ -492,11 +694,19 @@ static void reg_w_var(struct gspca_dev *gspca_dev,
 			reg_w_page(gspca_dev, page3, page3_len);
 			break;
 		default:
+<<<<<<< HEAD
+=======
+#ifdef GSPCA_DEBUG
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (len > USB_BUF_SZ) {
 				PDEBUG(D_ERR|D_STREAM,
 					"Incorrect variable sequence");
 				return;
 			}
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 			while (len > 0) {
 				if (len < 8) {
 					reg_w_buf(gspca_dev,
@@ -523,6 +733,7 @@ static int sd_config(struct gspca_dev *gspca_dev,
 
 	cam = &gspca_dev->cam;
 
+<<<<<<< HEAD
 	PDEBUG(D_CONF, "Find Sensor PAC7302");
 	cam->cam_mode = vga_mode;	/* only 640x480 */
 	cam->nmodes = ARRAY_SIZE(vga_mode);
@@ -538,6 +749,13 @@ static int sd_config(struct gspca_dev *gspca_dev,
 	sd->autogain = AUTOGAIN_DEF;
 	sd->hflip = HFLIP_DEF;
 	sd->vflip = VFLIP_DEF;
+=======
+	cam->cam_mode = vga_mode;	/* only 640x480 */
+	cam->nmodes = ARRAY_SIZE(vga_mode);
+
+	gspca_dev->cam.ctrls = sd->ctrls;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	sd->flags = id->driver_info;
 	return 0;
 }
@@ -547,19 +765,32 @@ static void setbrightcont(struct gspca_dev *gspca_dev)
 {
 	struct sd *sd = (struct sd *) gspca_dev;
 	int i, v;
+<<<<<<< HEAD
 	static const __u8 max[10] =
 		{0x29, 0x33, 0x42, 0x5a, 0x6e, 0x80, 0x9f, 0xbb,
 		 0xd4, 0xec};
 	static const __u8 delta[10] =
+=======
+	static const u8 max[10] =
+		{0x29, 0x33, 0x42, 0x5a, 0x6e, 0x80, 0x9f, 0xbb,
+		 0xd4, 0xec};
+	static const u8 delta[10] =
+>>>>>>> refs/remotes/origin/cm-10.0
 		{0x35, 0x33, 0x33, 0x2f, 0x2a, 0x25, 0x1e, 0x17,
 		 0x11, 0x0b};
 
 	reg_w(gspca_dev, 0xff, 0x00);		/* page 0 */
 	for (i = 0; i < 10; i++) {
 		v = max[i];
+<<<<<<< HEAD
 		v += (sd->brightness - BRIGHTNESS_MAX)
 			* 150 / BRIGHTNESS_MAX;		/* 200 ? */
 		v -= delta[i] * sd->contrast / CONTRAST_MAX;
+=======
+		v += (sd->ctrls[BRIGHTNESS].val - BRIGHTNESS_MAX)
+			* 150 / BRIGHTNESS_MAX;		/* 200 ? */
+		v -= delta[i] * sd->ctrls[CONTRAST].val / CONTRAST_MAX;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (v < 0)
 			v = 0;
 		else if (v > 0xff)
@@ -583,12 +814,19 @@ static void setcolors(struct gspca_dev *gspca_dev)
 	reg_w(gspca_dev, 0x11, 0x01);
 	reg_w(gspca_dev, 0xff, 0x00);			/* page 0 */
 	for (i = 0; i < 9; i++) {
+<<<<<<< HEAD
 		v = a[i] * sd->colors / COLOR_MAX + b[i];
+=======
+		v = a[i] * sd->ctrls[COLORS].val / COLOR_MAX + b[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 		reg_w(gspca_dev, 0x0f + 2 * i, (v >> 8) & 0x07);
 		reg_w(gspca_dev, 0x0f + 2 * i + 1, v);
 	}
 	reg_w(gspca_dev, 0xdc, 0x01);
+<<<<<<< HEAD
 	PDEBUG(D_CONF|D_STREAM, "color: %i", sd->colors);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void setwhitebalance(struct gspca_dev *gspca_dev)
@@ -596,10 +834,16 @@ static void setwhitebalance(struct gspca_dev *gspca_dev)
 	struct sd *sd = (struct sd *) gspca_dev;
 
 	reg_w(gspca_dev, 0xff, 0x00);		/* page 0 */
+<<<<<<< HEAD
 	reg_w(gspca_dev, 0xc6, sd->white_balance);
 
 	reg_w(gspca_dev, 0xdc, 0x01);
 	PDEBUG(D_CONF|D_STREAM, "white_balance: %i", sd->white_balance);
+=======
+	reg_w(gspca_dev, 0xc6, sd->ctrls[WHITE_BALANCE].val);
+
+	reg_w(gspca_dev, 0xdc, 0x01);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void setredbalance(struct gspca_dev *gspca_dev)
@@ -607,10 +851,16 @@ static void setredbalance(struct gspca_dev *gspca_dev)
 	struct sd *sd = (struct sd *) gspca_dev;
 
 	reg_w(gspca_dev, 0xff, 0x00);		/* page 0 */
+<<<<<<< HEAD
 	reg_w(gspca_dev, 0xc5, sd->red_balance);
 
 	reg_w(gspca_dev, 0xdc, 0x01);
 	PDEBUG(D_CONF|D_STREAM, "red_balance: %i", sd->red_balance);
+=======
+	reg_w(gspca_dev, 0xc5, sd->ctrls[RED_BALANCE].val);
+
+	reg_w(gspca_dev, 0xdc, 0x01);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void setbluebalance(struct gspca_dev *gspca_dev)
@@ -618,10 +868,16 @@ static void setbluebalance(struct gspca_dev *gspca_dev)
 	struct sd *sd = (struct sd *) gspca_dev;
 
 	reg_w(gspca_dev, 0xff, 0x00);			/* page 0 */
+<<<<<<< HEAD
 	reg_w(gspca_dev, 0xc7, sd->blue_balance);
 
 	reg_w(gspca_dev, 0xdc, 0x01);
 	PDEBUG(D_CONF|D_STREAM, "blue_balance: %i", sd->blue_balance);
+=======
+	reg_w(gspca_dev, 0xc7, sd->ctrls[BLUE_BALANCE].val);
+
+	reg_w(gspca_dev, 0xdc, 0x01);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void setgain(struct gspca_dev *gspca_dev)
@@ -629,7 +885,11 @@ static void setgain(struct gspca_dev *gspca_dev)
 	struct sd *sd = (struct sd *) gspca_dev;
 
 	reg_w(gspca_dev, 0xff, 0x03);			/* page 3 */
+<<<<<<< HEAD
 	reg_w(gspca_dev, 0x10, sd->gain >> 3);
+=======
+	reg_w(gspca_dev, 0x10, sd->ctrls[GAIN].val >> 3);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* load registers to sensor (Bit 0, auto clear) */
 	reg_w(gspca_dev, 0x11, 0x01);
@@ -638,13 +898,22 @@ static void setgain(struct gspca_dev *gspca_dev)
 static void setexposure(struct gspca_dev *gspca_dev)
 {
 	struct sd *sd = (struct sd *) gspca_dev;
+<<<<<<< HEAD
 	__u8 clockdiv;
 	__u16 exposure;
+=======
+	u8 clockdiv;
+	u16 exposure;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* register 2 of frame 3 contains the clock divider configuring the
 	   no fps according to the formula: 90 / reg. sd->exposure is the
 	   desired exposure time in 0.5 ms. */
+<<<<<<< HEAD
 	clockdiv = (90 * sd->exposure + 1999) / 2000;
+=======
+	clockdiv = (90 * sd->ctrls[EXPOSURE].val + 1999) / 2000;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Note clockdiv = 3 also works, but when running at 30 fps, depending
 	   on the scene being recorded, the camera switches to another
@@ -663,7 +932,11 @@ static void setexposure(struct gspca_dev *gspca_dev)
 
 	/* frame exposure time in ms = 1000 * clockdiv / 90    ->
 	exposure = (sd->exposure / 2) * 448 / (1000 * clockdiv / 90) */
+<<<<<<< HEAD
 	exposure = (sd->exposure * 45 * 448) / (1000 * clockdiv);
+=======
+	exposure = (sd->ctrls[EXPOSURE].val * 45 * 448) / (1000 * clockdiv);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* 0 = use full frametime, 448 = no exposure, reverse it */
 	exposure = 448 - exposure;
 
@@ -676,15 +949,45 @@ static void setexposure(struct gspca_dev *gspca_dev)
 	reg_w(gspca_dev, 0x11, 0x01);
 }
 
+<<<<<<< HEAD
+=======
+static void setautogain(struct gspca_dev *gspca_dev)
+{
+	struct sd *sd = (struct sd *) gspca_dev;
+
+	/* when switching to autogain set defaults to make sure
+	   we are on a valid point of the autogain gain /
+	   exposure knee graph, and give this change time to
+	   take effect before doing autogain. */
+	if (sd->ctrls[AUTOGAIN].val) {
+		sd->ctrls[EXPOSURE].val = EXPOSURE_DEF;
+		sd->ctrls[GAIN].val = GAIN_DEF;
+		sd->autogain_ignore_frames =
+				PAC_AUTOGAIN_IGNORE_FRAMES;
+	} else {
+		sd->autogain_ignore_frames = -1;
+	}
+	setexposure(gspca_dev);
+	setgain(gspca_dev);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void sethvflip(struct gspca_dev *gspca_dev)
 {
 	struct sd *sd = (struct sd *) gspca_dev;
 	u8 data, hflip, vflip;
 
+<<<<<<< HEAD
 	hflip = sd->hflip;
 	if (sd->flags & FL_HFLIP)
 		hflip = !hflip;
 	vflip = sd->vflip;
+=======
+	hflip = sd->ctrls[HFLIP].val;
+	if (sd->flags & FL_HFLIP)
+		hflip = !hflip;
+	vflip = sd->ctrls[VFLIP].val;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (sd->flags & FL_VFLIP)
 		vflip = !vflip;
 
@@ -707,8 +1010,11 @@ static int sd_start(struct gspca_dev *gspca_dev)
 {
 	struct sd *sd = (struct sd *) gspca_dev;
 
+<<<<<<< HEAD
 	sd->sof_read = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	reg_w_var(gspca_dev, start_7302,
 		page3_7302, sizeof(page3_7302));
 	setbrightcont(gspca_dev);
@@ -716,15 +1022,23 @@ static int sd_start(struct gspca_dev *gspca_dev)
 	setwhitebalance(gspca_dev);
 	setredbalance(gspca_dev);
 	setbluebalance(gspca_dev);
+<<<<<<< HEAD
 	setgain(gspca_dev);
 	setexposure(gspca_dev);
+=======
+	setautogain(gspca_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	sethvflip(gspca_dev);
 
 	/* only resolution 640x480 is supported for pac7302 */
 
 	sd->sof_read = 0;
+<<<<<<< HEAD
 	sd->autogain_ignore_frames = 0;
 	atomic_set(&sd->avg_lum, -1);
+=======
+	atomic_set(&sd->avg_lum, 270 + sd->ctrls[BRIGHTNESS].val);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* start stream */
 	reg_w(gspca_dev, 0xff, 0x01);
@@ -750,8 +1064,15 @@ static void sd_stop0(struct gspca_dev *gspca_dev)
 	reg_w(gspca_dev, 0x78, 0x40);
 }
 
+<<<<<<< HEAD
 /* Include pac common sof detection functions */
 #include "pac_common.h"
+=======
+/* !! coarse_grained_expo_autogain is not used !! */
+#define exp_too_low_cnt flags
+#define exp_too_high_cnt sof_read
+#include "autogain_functions.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void do_autogain(struct gspca_dev *gspca_dev)
 {
@@ -760,6 +1081,7 @@ static void do_autogain(struct gspca_dev *gspca_dev)
 	int desired_lum;
 	const int deadzone = 30;
 
+<<<<<<< HEAD
 	if (avg_lum == -1)
 		return;
 
@@ -819,6 +1141,46 @@ static void pac_start_frame(struct gspca_dev *gspca_dev,
 		pac_jpeg_header2, sizeof(pac_jpeg_header2));
 }
 
+=======
+	if (sd->autogain_ignore_frames < 0)
+		return;
+
+	if (sd->autogain_ignore_frames > 0) {
+		sd->autogain_ignore_frames--;
+	} else {
+		desired_lum = 270 + sd->ctrls[BRIGHTNESS].val;
+
+		auto_gain_n_exposure(gspca_dev, avg_lum, desired_lum,
+				deadzone, GAIN_KNEE, EXPOSURE_KNEE);
+		sd->autogain_ignore_frames = PAC_AUTOGAIN_IGNORE_FRAMES;
+	}
+}
+
+/* JPEG header */
+static const u8 jpeg_header[] = {
+	0xff, 0xd8,	/* SOI: Start of Image */
+
+	0xff, 0xc0,	/* SOF0: Start of Frame (Baseline DCT) */
+	0x00, 0x11,	/* length = 17 bytes (including this length field) */
+	0x08,		/* Precision: 8 */
+	0x02, 0x80,	/* height = 640 (image rotated) */
+	0x01, 0xe0,	/* width = 480 */
+	0x03,		/* Number of image components: 3 */
+	0x01, 0x21, 0x00, /* ID=1, Subsampling 1x1, Quantization table: 0 */
+	0x02, 0x11, 0x01, /* ID=2, Subsampling 2x1, Quantization table: 1 */
+	0x03, 0x11, 0x01, /* ID=3, Subsampling 2x1, Quantization table: 1 */
+
+	0xff, 0xda,	/* SOS: Start Of Scan */
+	0x00, 0x0c,	/* length = 12 bytes (including this length field) */
+	0x03,		/* number of components: 3 */
+	0x01, 0x00,	/* selector 1, table 0x00 */
+	0x02, 0x11,	/* selector 2, table 0x11 */
+	0x03, 0x11,	/* selector 3, table 0x11 */
+	0x00, 0x3f,	/* Spectral selection: 0 .. 63 */
+	0x00		/* Successive approximation: 0 */
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* this function is run at interrupt level */
 static void sd_pkt_scan(struct gspca_dev *gspca_dev,
 			u8 *data,			/* isoc packet */
@@ -826,7 +1188,11 @@ static void sd_pkt_scan(struct gspca_dev *gspca_dev,
 {
 	struct sd *sd = (struct sd *) gspca_dev;
 	u8 *image;
+<<<<<<< HEAD
 	unsigned char *sof;
+=======
+	u8 *sof;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sof = pac_find_sof(&sd->sof_read, data, len);
 	if (sof) {
@@ -863,6 +1229,7 @@ static void sd_pkt_scan(struct gspca_dev *gspca_dev,
 				n >= lum_offset)
 			atomic_set(&sd->avg_lum, data[-lum_offset] +
 						data[-lum_offset + 1]);
+<<<<<<< HEAD
 		else
 			atomic_set(&sd->avg_lum, -1);
 
@@ -870,10 +1237,18 @@ static void sd_pkt_scan(struct gspca_dev *gspca_dev,
 		/* The PAC7302 has the image rotated 90 degrees */
 		pac_start_frame(gspca_dev,
 			gspca_dev->width, gspca_dev->height);
+=======
+
+		/* Start the new frame with the jpeg header */
+		/* The PAC7302 has the image rotated 90 degrees */
+		gspca_frame_add(gspca_dev, FIRST_PACKET,
+				jpeg_header, sizeof jpeg_header);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	gspca_frame_add(gspca_dev, INTER_PACKET, data, len);
 }
 
+<<<<<<< HEAD
 static int sd_setbrightness(struct gspca_dev *gspca_dev, __s32 val)
 {
 	struct sd *sd = (struct sd *) gspca_dev;
@@ -1085,12 +1460,19 @@ static int sd_getvflip(struct gspca_dev *gspca_dev, __s32 *val)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_VIDEO_ADV_DEBUG
 static int sd_dbg_s_register(struct gspca_dev *gspca_dev,
 			struct v4l2_dbg_register *reg)
 {
+<<<<<<< HEAD
 	__u8 index;
 	__u8 value;
+=======
+	u8 index;
+	u8 value;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* reg->reg: bit0..15: reserved for register index (wIndex is 16bit
 			       long on the USB bus)
@@ -1102,8 +1484,13 @@ static int sd_dbg_s_register(struct gspca_dev *gspca_dev,
 	) {
 		/* Currently writing to page 0 is only supported. */
 		/* reg_w() only supports 8bit index */
+<<<<<<< HEAD
 		index = reg->reg & 0x000000ff;
 		value = reg->val & 0x000000ff;
+=======
+		index = reg->reg;
+		value = reg->val;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Note that there shall be no access to other page
 		   by any other function between the page swith and
@@ -1164,7 +1551,11 @@ static int sd_int_pkt_scan(struct gspca_dev *gspca_dev,
 
 /* sub-driver description for pac7302 */
 static const struct sd_desc sd_desc = {
+<<<<<<< HEAD
 	.name = MODULE_NAME,
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ctrls = sd_ctrls,
 	.nctrls = ARRAY_SIZE(sd_ctrls),
 	.config = sd_config,
@@ -1186,6 +1577,10 @@ static const struct sd_desc sd_desc = {
 /* -- module initialisation -- */
 static const struct usb_device_id device_table[] = {
 	{USB_DEVICE(0x06f8, 0x3009)},
+<<<<<<< HEAD
+=======
+	{USB_DEVICE(0x06f8, 0x301b)},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{USB_DEVICE(0x093a, 0x2620)},
 	{USB_DEVICE(0x093a, 0x2621)},
 	{USB_DEVICE(0x093a, 0x2622), .driver_info = FL_VFLIP},
@@ -1196,6 +1591,11 @@ static const struct usb_device_id device_table[] = {
 	{USB_DEVICE(0x093a, 0x2629), .driver_info = FL_VFLIP},
 	{USB_DEVICE(0x093a, 0x262a)},
 	{USB_DEVICE(0x093a, 0x262c)},
+<<<<<<< HEAD
+=======
+	{USB_DEVICE(0x145f, 0x013c)},
+	{USB_DEVICE(0x1ae7, 0x2001)}, /* SpeedLink Snappy Mic SL-6825-SBK */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{}
 };
 MODULE_DEVICE_TABLE(usb, device_table);
@@ -1209,7 +1609,11 @@ static int sd_probe(struct usb_interface *intf,
 }
 
 static struct usb_driver sd_driver = {
+<<<<<<< HEAD
 	.name = MODULE_NAME,
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = device_table,
 	.probe = sd_probe,
 	.disconnect = gspca_disconnect,
@@ -1219,6 +1623,7 @@ static struct usb_driver sd_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 /* -- module insert / remove -- */
 static int __init sd_mod_init(void)
 {
@@ -1231,3 +1636,6 @@ static void __exit sd_mod_exit(void)
 
 module_init(sd_mod_init);
 module_exit(sd_mod_exit);
+=======
+module_usb_driver(sd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

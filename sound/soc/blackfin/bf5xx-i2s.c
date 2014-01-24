@@ -223,7 +223,11 @@ static int bf5xx_i2s_resume(struct snd_soc_dai *dai)
 	 SNDRV_PCM_FMTBIT_S24_LE | \
 	 SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops bf5xx_i2s_dai_ops = {
+=======
+static const struct snd_soc_dai_ops bf5xx_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.shutdown	= bf5xx_i2s_shutdown,
 	.hw_params	= bf5xx_i2s_hw_params,
 	.set_fmt	= bf5xx_i2s_set_dai_fmt,
@@ -288,6 +292,7 @@ static struct platform_driver bfin_i2s_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init bfin_i2s_init(void)
 {
 	return platform_driver_register(&bfin_i2s_driver);
@@ -300,6 +305,9 @@ static void __exit bfin_i2s_exit(void)
 
 module_init(bfin_i2s_init);
 module_exit(bfin_i2s_exit);
+=======
+module_platform_driver(bfin_i2s_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR("Cliff Cai");

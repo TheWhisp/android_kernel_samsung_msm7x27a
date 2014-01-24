@@ -18,7 +18,11 @@
  */
 #include <linux/init.h>
 #include <linux/highmem.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cputype.h>
 #include <asm/cacheflush.h>
 

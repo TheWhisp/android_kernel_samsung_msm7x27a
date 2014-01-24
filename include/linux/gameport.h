@@ -71,6 +71,7 @@ void gameport_close(struct gameport *gameport);
 #if defined(CONFIG_GAMEPORT) || (defined(MODULE) && defined(CONFIG_GAMEPORT_MODULE))
 
 void __gameport_register_port(struct gameport *gameport, struct module *owner);
+<<<<<<< HEAD
 static inline void gameport_register_port(struct gameport *gameport)
 {
 	__gameport_register_port(gameport, THIS_MODULE);
@@ -80,6 +81,16 @@ void gameport_unregister_port(struct gameport *gameport);
 
 void gameport_set_phys(struct gameport *gameport, const char *fmt, ...)
 	__attribute__ ((format (printf, 2, 3)));
+=======
+/* use a define to avoid include chaining to get THIS_MODULE */
+#define gameport_register_port(gameport) \
+	__gameport_register_port(gameport, THIS_MODULE)
+
+void gameport_unregister_port(struct gameport *gameport);
+
+__printf(2, 3)
+void gameport_set_phys(struct gameport *gameport, const char *fmt, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else
 
@@ -93,8 +104,13 @@ static inline void gameport_unregister_port(struct gameport *gameport)
 	return;
 }
 
+<<<<<<< HEAD
 static inline void gameport_set_phys(struct gameport *gameport,
 				     const char *fmt, ...)
+=======
+static inline __printf(2, 3)
+void gameport_set_phys(struct gameport *gameport, const char *fmt, ...)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return;
 }
@@ -145,12 +161,21 @@ static inline void gameport_unpin_driver(struct gameport *gameport)
 	mutex_unlock(&gameport->drv_mutex);
 }
 
+<<<<<<< HEAD
 int __gameport_register_driver(struct gameport_driver *drv,
 				struct module *owner, const char *mod_name);
 static inline int __must_check gameport_register_driver(struct gameport_driver *drv)
 {
 	return __gameport_register_driver(drv, THIS_MODULE, KBUILD_MODNAME);
 }
+=======
+int __must_check __gameport_register_driver(struct gameport_driver *drv,
+				struct module *owner, const char *mod_name);
+
+/* use a define to avoid include chaining to get THIS_MODULE & friends */
+#define gameport_register_driver(drv) \
+	__gameport_register_driver(drv, THIS_MODULE, KBUILD_MODNAME)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void gameport_unregister_driver(struct gameport_driver *drv);
 

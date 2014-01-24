@@ -26,6 +26,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/miscdevice.h>
@@ -65,8 +70,13 @@ MODULE_PARM_DESC(timeout,
 		"Watchdog timeout in seconds. 1 <= timeout <= 255, default="
 				__MODULE_STRING(WD_TIMO) ".");
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -152,12 +162,20 @@ static long wafwdt_ioctl(struct file *file, unsigned int cmd,
 			return -EFAULT;
 
 		if (options & WDIOS_DISABLECARD) {
+<<<<<<< HEAD
 			wafwdt_start();
+=======
+			wafwdt_stop();
+>>>>>>> refs/remotes/origin/cm-10.0
 			retval = 0;
 		}
 
 		if (options & WDIOS_ENABLECARD) {
+<<<<<<< HEAD
 			wafwdt_stop();
+=======
+			wafwdt_start();
+>>>>>>> refs/remotes/origin/cm-10.0
 			retval = 0;
 		}
 
@@ -203,8 +221,12 @@ static int wafwdt_close(struct inode *inode, struct file *file)
 	if (expect_close == 42)
 		wafwdt_stop();
 	else {
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 		    "WDT device closed unexpectedly.  WDT will not stop!\n");
+=======
+		pr_crit("WDT device closed unexpectedly.  WDT will not stop!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		wafwdt_ping();
 	}
 	clear_bit(0, &wafwdt_is_open);
@@ -256,6 +278,7 @@ static int __init wafwdt_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 	printk(KERN_INFO
 	  "WDT driver for Wafer 5823 single board computer initialising.\n");
 
@@ -264,34 +287,55 @@ static int __init wafwdt_init(void)
 		printk(KERN_INFO PFX
 			"timeout value must be 1 <= x <= 255, using %d\n",
 								timeout);
+=======
+	pr_info("WDT driver for Wafer 5823 single board computer initialising\n");
+
+	if (timeout < 1 || timeout > 255) {
+		timeout = WD_TIMO;
+		pr_info("timeout value must be 1 <= x <= 255, using %d\n",
+			timeout);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (wdt_stop != wdt_start) {
 		if (!request_region(wdt_stop, 1, "Wafer 5823 WDT")) {
+<<<<<<< HEAD
 			printk(KERN_ERR PFX
 				"I/O address 0x%04x already in use\n",
 								wdt_stop);
+=======
+			pr_err("I/O address 0x%04x already in use\n", wdt_stop);
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = -EIO;
 			goto error;
 		}
 	}
 
 	if (!request_region(wdt_start, 1, "Wafer 5823 WDT")) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "I/O address 0x%04x already in use\n",
 			wdt_start);
+=======
+		pr_err("I/O address 0x%04x already in use\n", wdt_start);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -EIO;
 		goto error2;
 	}
 
 	ret = register_reboot_notifier(&wafwdt_notifier);
 	if (ret != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", ret);
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto error3;
 	}
 
 	ret = misc_register(&wafwdt_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 						WATCHDOG_MINOR, ret);
@@ -299,6 +343,14 @@ static int __init wafwdt_init(void)
 	}
 
 	printk(KERN_INFO PFX "initialized. timeout=%d sec (nowayout=%d)\n",
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+		goto error4;
+	}
+
+	pr_info("initialized. timeout=%d sec (nowayout=%d)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		timeout, nowayout);
 
 	return ret;

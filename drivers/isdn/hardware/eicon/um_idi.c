@@ -14,17 +14,26 @@
 #define DIVAS_MAX_XDI_ADAPTERS	64
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 		IMPORTS
+=======
+   IMPORTS
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 extern void diva_os_wakeup_read(void *os_context);
 extern void diva_os_wakeup_close(void *os_context);
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 		LOCALS
+=======
+   LOCALS
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 static LIST_HEAD(adapter_q);
 static diva_os_spin_lock_t adapter_lock;
 
 static diva_um_idi_adapter_t *diva_um_idi_find_adapter(dword nr);
+<<<<<<< HEAD
 static void cleanup_adapter(diva_um_idi_adapter_t * a);
 static void cleanup_entity(divas_um_idi_entity_t * e);
 static int diva_user_mode_idi_adapter_features(diva_um_idi_adapter_t * a,
@@ -38,6 +47,21 @@ static int write_return_code(divas_um_idi_entity_t * e, byte rc);
 
 /* --------------------------------------------------------------------------
 		MAIN
+=======
+static void cleanup_adapter(diva_um_idi_adapter_t *a);
+static void cleanup_entity(divas_um_idi_entity_t *e);
+static int diva_user_mode_idi_adapter_features(diva_um_idi_adapter_t *a,
+					       diva_um_idi_adapter_features_t
+					       *features);
+static int process_idi_request(divas_um_idi_entity_t *e,
+			       const diva_um_idi_req_hdr_t *req);
+static int process_idi_rc(divas_um_idi_entity_t *e, byte rc);
+static int process_idi_ind(divas_um_idi_entity_t *e, byte ind);
+static int write_return_code(divas_um_idi_entity_t *e, byte rc);
+
+/* --------------------------------------------------------------------------
+   MAIN
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 int diva_user_mode_idi_init(void)
 {
@@ -46,10 +70,17 @@ int diva_user_mode_idi_init(void)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 		Copy adapter features to user supplied buffer
    -------------------------------------------------------------------------- */
 static int
 diva_user_mode_idi_adapter_features(diva_um_idi_adapter_t * a,
+=======
+   Copy adapter features to user supplied buffer
+   -------------------------------------------------------------------------- */
+static int
+diva_user_mode_idi_adapter_features(diva_um_idi_adapter_t *a,
+>>>>>>> refs/remotes/origin/cm-10.0
 				    diva_um_idi_adapter_features_t *
 				    features)
 {
@@ -63,14 +94,22 @@ diva_user_mode_idi_adapter_features(diva_um_idi_adapter_t * a,
 
 		sync_req.GetName.Req = 0;
 		sync_req.GetName.Rc = IDI_SYNC_REQ_GET_NAME;
+<<<<<<< HEAD
 		(*(a->d.request)) ((ENTITY *) & sync_req);
+=======
+		(*(a->d.request)) ((ENTITY *)&sync_req);
+>>>>>>> refs/remotes/origin/cm-10.0
 		strlcpy(features->name, sync_req.GetName.name,
 			sizeof(features->name));
 
 		sync_req.GetSerial.Req = 0;
 		sync_req.GetSerial.Rc = IDI_SYNC_REQ_GET_SERIAL;
 		sync_req.GetSerial.serial = 0;
+<<<<<<< HEAD
 		(*(a->d.request)) ((ENTITY *) & sync_req);
+=======
+		(*(a->d.request))((ENTITY *)&sync_req);
+>>>>>>> refs/remotes/origin/cm-10.0
 		features->serial_number = sync_req.GetSerial.serial;
 	}
 
@@ -78,7 +117,11 @@ diva_user_mode_idi_adapter_features(diva_um_idi_adapter_t * a,
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 		REMOVE ADAPTER
+=======
+   REMOVE ADAPTER
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 void diva_user_mode_idi_remove_adapter(int adapter_nr)
 {
@@ -98,7 +141,11 @@ void diva_user_mode_idi_remove_adapter(int adapter_nr)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 		CALLED ON DRIVER EXIT (UNLOAD)
+=======
+   CALLED ON DRIVER EXIT (UNLOAD)
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 void diva_user_mode_idi_finit(void)
 {
@@ -116,6 +163,7 @@ void diva_user_mode_idi_finit(void)
 }
 
 /* -------------------------------------------------------------------------
+<<<<<<< HEAD
 		CREATE AND INIT IDI ADAPTER
 	 ------------------------------------------------------------------------- */
 int diva_user_mode_idi_create_adapter(const DESCRIPTOR * d, int adapter_nr)
@@ -125,6 +173,17 @@ int diva_user_mode_idi_create_adapter(const DESCRIPTOR * d, int adapter_nr)
 	    (diva_um_idi_adapter_t *) diva_os_malloc(0,
 						     sizeof
 						     (diva_um_idi_adapter_t));
+=======
+   CREATE AND INIT IDI ADAPTER
+   ------------------------------------------------------------------------- */
+int diva_user_mode_idi_create_adapter(const DESCRIPTOR *d, int adapter_nr)
+{
+	diva_os_spin_lock_magic_t old_irql;
+	diva_um_idi_adapter_t *a =
+		(diva_um_idi_adapter_t *) diva_os_malloc(0,
+							 sizeof
+							 (diva_um_idi_adapter_t));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!a) {
 		return (-1);
@@ -145,7 +204,11 @@ int diva_user_mode_idi_create_adapter(const DESCRIPTOR * d, int adapter_nr)
 }
 
 /* ------------------------------------------------------------------------
+<<<<<<< HEAD
 			Find adapter by Adapter number
+=======
+   Find adapter by Adapter number
+>>>>>>> refs/remotes/origin/cm-10.0
    ------------------------------------------------------------------------ */
 static diva_um_idi_adapter_t *diva_um_idi_find_adapter(dword nr)
 {
@@ -159,6 +222,7 @@ static diva_um_idi_adapter_t *diva_um_idi_find_adapter(dword nr)
 			break;
 		a = NULL;
 	}
+<<<<<<< HEAD
 	return(a);
 }
 
@@ -167,6 +231,16 @@ static diva_um_idi_adapter_t *diva_um_idi_find_adapter(dword nr)
 		to this adapter
    ------------------------------------------------------------------------ */
 static void cleanup_adapter(diva_um_idi_adapter_t * a)
+=======
+	return (a);
+}
+
+/* ------------------------------------------------------------------------
+   Cleanup this adapter and cleanup/delete all entities assigned
+   to this adapter
+   ------------------------------------------------------------------------ */
+static void cleanup_adapter(diva_um_idi_adapter_t *a)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct list_head *tmp, *safe;
 	divas_um_idi_entity_t *e;
@@ -184,9 +258,15 @@ static void cleanup_adapter(diva_um_idi_adapter_t * a)
 }
 
 /* ------------------------------------------------------------------------
+<<<<<<< HEAD
 		Cleanup, but NOT delete this entity
    ------------------------------------------------------------------------ */
 static void cleanup_entity(divas_um_idi_entity_t * e)
+=======
+   Cleanup, but NOT delete this entity
+   ------------------------------------------------------------------------ */
+static void cleanup_entity(divas_um_idi_entity_t *e)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	e->os_ref = NULL;
 	e->status = 0;
@@ -203,7 +283,11 @@ static void cleanup_entity(divas_um_idi_entity_t * e)
 
 
 /* ------------------------------------------------------------------------
+<<<<<<< HEAD
 		Create ENTITY, link it to the adapter and remove pointer to entity
+=======
+   Create ENTITY, link it to the adapter and remove pointer to entity
+>>>>>>> refs/remotes/origin/cm-10.0
    ------------------------------------------------------------------------ */
 void *divas_um_idi_create_entity(dword adapter_nr, void *file)
 {
@@ -236,12 +320,21 @@ void *divas_um_idi_create_entity(dword adapter_nr, void *file)
 
 		diva_os_enter_spin_lock(&adapter_lock, &old_irql, "create_entity");
 		/*
+<<<<<<< HEAD
 		   Look for Adapter requested
 		 */
 		if (!(a = diva_um_idi_find_adapter(adapter_nr))) {
 			/*
 			   No adapter was found, or this adapter was removed
 			 */
+=======
+		  Look for Adapter requested
+		*/
+		if (!(a = diva_um_idi_find_adapter(adapter_nr))) {
+			/*
+			  No adapter was found, or this adapter was removed
+			*/
+>>>>>>> refs/remotes/origin/cm-10.0
 			diva_os_leave_spin_lock(&adapter_lock, &old_irql, "create_entity");
 
 			DBG_LOG(("A: no adapter(%ld)", adapter_nr));
@@ -267,7 +360,11 @@ void *divas_um_idi_create_entity(dword adapter_nr, void *file)
 }
 
 /* ------------------------------------------------------------------------
+<<<<<<< HEAD
 		Unlink entity and free memory 
+=======
+   Unlink entity and free memory
+>>>>>>> refs/remotes/origin/cm-10.0
    ------------------------------------------------------------------------ */
 int divas_um_idi_delete_entity(int adapter_nr, void *entity)
 {
@@ -296,8 +393,13 @@ int divas_um_idi_delete_entity(int adapter_nr, void *entity)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 		Called by application to read data from IDI
 	 -------------------------------------------------------------------------- */
+=======
+   Called by application to read data from IDI
+   -------------------------------------------------------------------------- */
+>>>>>>> refs/remotes/origin/cm-10.0
 int diva_um_idi_read(void *entity,
 		     void *os_handle,
 		     void *dst,
@@ -319,20 +421,34 @@ int diva_um_idi_read(void *entity,
 	    (a->status & DIVA_UM_IDI_ADAPTER_REMOVED)) {
 		diva_os_leave_spin_lock(&adapter_lock, &old_irql, "read");
 		DBG_ERR(("E(%08x) read failed - adapter removed", e))
+<<<<<<< HEAD
 		return (-1);
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	DBG_TRC(("A(%d) E(%08x) read(%d)", a->adapter_nr, e, max_length));
 
 	/*
+<<<<<<< HEAD
 	   Try to read return code first
 	 */
+=======
+	  Try to read return code first
+	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	data = diva_data_q_get_segment4read(&e->rc);
 	q = &e->rc;
 
 	/*
+<<<<<<< HEAD
 	   No return codes available, read indications now
 	 */
+=======
+	  No return codes available, read indications now
+	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!data) {
 		if (!(e->status & DIVA_UM_IDI_RC_PENDING)) {
 			DBG_TRC(("A(%d) E(%08x) read data", a->adapter_nr, e));
@@ -348,8 +464,13 @@ int diva_um_idi_read(void *entity,
 		if ((length = diva_data_q_get_segment_length(q)) >
 		    max_length) {
 			/*
+<<<<<<< HEAD
 			   Not enough space to read message
 			 */
+=======
+			  Not enough space to read message
+			*/
+>>>>>>> refs/remotes/origin/cm-10.0
 			DBG_ERR(("A: A(%d) E(%08x) read small buffer",
 				 a->adapter_nr, e, ret));
 			diva_os_leave_spin_lock(&adapter_lock, &old_irql,
@@ -357,6 +478,7 @@ int diva_um_idi_read(void *entity,
 			return (-2);
 		}
 		/*
+<<<<<<< HEAD
 		   Copy it to user, this function does access ONLY locked an verified
 		   memory, also we can access it witch spin lock held
 		 */
@@ -365,6 +487,16 @@ int diva_um_idi_read(void *entity,
 			/*
 			   Acknowledge only if read was successful
 			 */
+=======
+		  Copy it to user, this function does access ONLY locked an verified
+		  memory, also we can access it witch spin lock held
+		*/
+
+		if ((ret = (*cp_fn) (os_handle, dst, data, length)) >= 0) {
+			/*
+			  Acknowledge only if read was successful
+			*/
+>>>>>>> refs/remotes/origin/cm-10.0
 			diva_data_q_ack_segment4read(q);
 		}
 	}
@@ -399,7 +531,11 @@ int diva_um_idi_write(void *entity,
 	    (a->status & DIVA_UM_IDI_ADAPTER_REMOVED)) {
 		diva_os_leave_spin_lock(&adapter_lock, &old_irql, "write");
 		DBG_ERR(("E(%08x) write failed - adapter removed", e))
+<<<<<<< HEAD
 		return (-1);
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	DBG_TRC(("A(%d) E(%08x) write(%d)", a->adapter_nr, e, length));
@@ -416,9 +552,15 @@ int diva_um_idi_write(void *entity,
 	}
 
 	/*
+<<<<<<< HEAD
 	   Copy function does access only locked verified memory,
 	   also it can be called with spin lock held
 	 */
+=======
+	  Copy function does access only locked verified memory,
+	  also it can be called with spin lock held
+	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((ret = (*cp_fn) (os_handle, e->buffer, src, length)) < 0) {
 		DBG_TRC(("A: A(%d) E(%08x) write error=%d", a->adapter_nr,
 			 e, ret));
@@ -426,6 +568,7 @@ int diva_um_idi_write(void *entity,
 		return (ret);
 	}
 
+<<<<<<< HEAD
 	req = (diva_um_idi_req_hdr_t *) & e->buffer[0];
 
 	switch (req->type) {
@@ -452,6 +595,34 @@ int diva_um_idi_write(void *entity,
 
 			diva_os_wakeup_read(e->os_context);
 		}
+=======
+	req = (diva_um_idi_req_hdr_t *)&e->buffer[0];
+
+	switch (req->type) {
+	case DIVA_UM_IDI_GET_FEATURES:{
+		DBG_LOG(("A(%d) get_features", a->adapter_nr));
+		if (!(data =
+		      diva_data_q_get_segment4write(&e->data))) {
+			DBG_ERR(("A(%d) get_features, no free buffer",
+				 a->adapter_nr));
+			diva_os_leave_spin_lock(&adapter_lock,
+						&old_irql,
+						"write");
+			return (0);
+		}
+		diva_user_mode_idi_adapter_features(a, &(((diva_um_idi_ind_hdr_t
+							   *) data)->hdr.features));
+		((diva_um_idi_ind_hdr_t *) data)->type =
+			DIVA_UM_IDI_IND_FEATURES;
+		((diva_um_idi_ind_hdr_t *) data)->data_length = 0;
+		diva_data_q_ack_segment4write(&e->data,
+					      sizeof(diva_um_idi_ind_hdr_t));
+
+		diva_os_leave_spin_lock(&adapter_lock, &old_irql, "write");
+
+		diva_os_wakeup_read(e->os_context);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case DIVA_UM_IDI_REQ:
@@ -486,9 +657,15 @@ int diva_um_idi_write(void *entity,
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 			CALLBACK FROM XDI
 	 -------------------------------------------------------------------------- */
 static void diva_um_idi_xdi_callback(ENTITY * entity)
+=======
+   CALLBACK FROM XDI
+   -------------------------------------------------------------------------- */
+static void diva_um_idi_xdi_callback(ENTITY *entity)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	divas_um_idi_entity_t *e = DIVAS_CONTAINING_RECORD(entity,
 							   divas_um_idi_entity_t,
@@ -529,8 +706,13 @@ static void diva_um_idi_xdi_callback(ENTITY * entity)
 	}
 }
 
+<<<<<<< HEAD
 static int process_idi_request(divas_um_idi_entity_t * e,
 			       const diva_um_idi_req_hdr_t * req)
+=======
+static int process_idi_request(divas_um_idi_entity_t *e,
+			       const diva_um_idi_req_hdr_t *req)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int assign = 0;
 	byte Req = (byte) req->Req;
@@ -579,7 +761,11 @@ static int process_idi_request(divas_um_idi_entity_t * e,
 	e->e.Req = Req;
 	e->e.ReqCh = (byte) req->ReqCh;
 	e->e.X->PLength = (word) req->data_length;
+<<<<<<< HEAD
 	e->e.X->P = (byte *) & req[1];	/* Our buffer is safe */
+=======
+	e->e.X->P = (byte *)&req[1];	/* Our buffer is safe */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	DBG_TRC(("A(%d) E(%08x) request(%02x-%02x-%02x (%d))",
 		 e->adapter->adapter_nr, e, e->e.Id, e->e.Req,
@@ -595,9 +781,15 @@ static int process_idi_request(divas_um_idi_entity_t * e,
 	if (assign) {
 		if (e->e.Rc == OUT_OF_RESOURCES) {
 			/*
+<<<<<<< HEAD
 			   XDI has no entities more, call was not forwarded to the card,
 			   no callback will be scheduled
 			 */
+=======
+			  XDI has no entities more, call was not forwarded to the card,
+			  no callback will be scheduled
+			*/
+>>>>>>> refs/remotes/origin/cm-10.0
 			DBG_ERR(("A: A(%d) E(%08x) XDI out of entities",
 				 e->adapter->adapter_nr, e));
 
@@ -621,7 +813,11 @@ static int process_idi_request(divas_um_idi_entity_t * e,
 	return (0);
 }
 
+<<<<<<< HEAD
 static int process_idi_rc(divas_um_idi_entity_t * e, byte rc)
+=======
+static int process_idi_rc(divas_um_idi_entity_t *e, byte rc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	DBG_TRC(("A(%d) E(%08x) rc(%02x-%02x-%02x)",
 		 e->adapter->adapter_nr, e, e->e.Id, rc, e->e.RcCh));
@@ -674,12 +870,17 @@ static int process_idi_rc(divas_um_idi_entity_t * e, byte rc)
 	return (1);
 }
 
+<<<<<<< HEAD
 static int process_idi_ind(divas_um_idi_entity_t * e, byte ind)
+=======
+static int process_idi_ind(divas_um_idi_entity_t *e, byte ind)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int do_wakeup = 0;
 
 	if (e->e.complete != 0x02) {
 		diva_um_idi_ind_hdr_t *pind =
+<<<<<<< HEAD
 		    (diva_um_idi_ind_hdr_t *)
 		    diva_data_q_get_segment4write(&e->data);
 		if (pind) {
@@ -688,6 +889,16 @@ static int process_idi_ind(divas_um_idi_entity_t * e, byte ind)
 			e->e.R->PLength =
 			    (word) (diva_data_q_get_max_length(&e->data) -
 				    sizeof(*pind));
+=======
+			(diva_um_idi_ind_hdr_t *)
+			diva_data_q_get_segment4write(&e->data);
+		if (pind) {
+			e->e.RNum = 1;
+			e->e.R->P = (byte *)&pind[1];
+			e->e.R->PLength =
+				(word) (diva_data_q_get_max_length(&e->data) -
+					sizeof(*pind));
+>>>>>>> refs/remotes/origin/cm-10.0
 			DBG_TRC(("A(%d) E(%08x) ind_1(%02x-%02x-%02x)-[%d-%d]",
 				 e->adapter->adapter_nr, e, e->e.Id, ind,
 				 e->e.IndCh, e->e.RLength,
@@ -703,7 +914,11 @@ static int process_idi_ind(divas_um_idi_entity_t * e, byte ind)
 		}
 	} else {
 		diva_um_idi_ind_hdr_t *pind =
+<<<<<<< HEAD
 		    (diva_um_idi_ind_hdr_t *) (e->e.R->P);
+=======
+			(diva_um_idi_ind_hdr_t *) (e->e.R->P);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		DBG_TRC(("A(%d) E(%08x) ind(%02x-%02x-%02x)-[%d]",
 			 e->adapter->adapter_nr, e, e->e.Id, ind,
@@ -728,14 +943,24 @@ static int process_idi_ind(divas_um_idi_entity_t * e, byte ind)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 		Write return code to the return code queue of entity
 	 -------------------------------------------------------------------------- */
 static int write_return_code(divas_um_idi_entity_t * e, byte rc)
+=======
+   Write return code to the return code queue of entity
+   -------------------------------------------------------------------------- */
+static int write_return_code(divas_um_idi_entity_t *e, byte rc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	diva_um_idi_ind_hdr_t *prc;
 
 	if (!(prc =
+<<<<<<< HEAD
 	     (diva_um_idi_ind_hdr_t *) diva_data_q_get_segment4write(&e->rc)))
+=======
+	      (diva_um_idi_ind_hdr_t *) diva_data_q_get_segment4write(&e->rc)))
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		DBG_ERR(("A: A(%d) E(%08x) rc(%02x) lost",
 			 e->adapter->adapter_nr, e, rc));
@@ -753,9 +978,15 @@ static int write_return_code(divas_um_idi_entity_t * e, byte rc)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 		Return amount of entries that can be bead from this entity or
 		-1 if adapter was removed
 	 -------------------------------------------------------------------------- */
+=======
+   Return amount of entries that can be bead from this entity or
+   -1 if adapter was removed
+   -------------------------------------------------------------------------- */
+>>>>>>> refs/remotes/origin/cm-10.0
 int diva_user_mode_idi_ind_ready(void *entity, void *os_handle)
 {
 	divas_um_idi_entity_t *e;
@@ -771,16 +1002,27 @@ int diva_user_mode_idi_ind_ready(void *entity, void *os_handle)
 
 	if ((!a) || (a->status & DIVA_UM_IDI_ADAPTER_REMOVED)) {
 		/*
+<<<<<<< HEAD
 		   Adapter was unloaded
 		 */
+=======
+		  Adapter was unloaded
+		*/
+>>>>>>> refs/remotes/origin/cm-10.0
 		diva_os_leave_spin_lock(&adapter_lock, &old_irql, "ind_ready");
 		return (-1);	/* adapter was removed */
 	}
 	if (e->status & DIVA_UM_IDI_REMOVED) {
 		/*
+<<<<<<< HEAD
 		   entity was removed as result of adapter removal
 		   user should assign this entity again
 		 */
+=======
+		  entity was removed as result of adapter removal
+		  user should assign this entity again
+		*/
+>>>>>>> refs/remotes/origin/cm-10.0
 		diva_os_leave_spin_lock(&adapter_lock, &old_irql, "ind_ready");
 		return (-1);
 	}
@@ -827,7 +1069,11 @@ int divas_um_idi_entity_assigned(void *entity)
 	DBG_TRC(("Id:%02x, rc_count:%d, status:%08x", e->e.Id, e->rc_count,
 		 e->status))
 
+<<<<<<< HEAD
 	diva_os_leave_spin_lock(&adapter_lock, &old_irql, "assigned?");
+=======
+		diva_os_leave_spin_lock(&adapter_lock, &old_irql, "assigned?");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return (ret);
 }
@@ -850,23 +1096,38 @@ int divas_um_idi_entity_start_remove(void *entity)
 
 	if (e->rc_count) {
 		/*
+<<<<<<< HEAD
 		   Entity BUSY
 		 */
+=======
+		  Entity BUSY
+		*/
+>>>>>>> refs/remotes/origin/cm-10.0
 		diva_os_leave_spin_lock(&adapter_lock, &old_irql, "start_remove");
 		return (1);
 	}
 
 	if (!e->e.Id) {
 		/*
+<<<<<<< HEAD
 		   Remove request was already pending, and arrived now
 		 */
+=======
+		  Remove request was already pending, and arrived now
+		*/
+>>>>>>> refs/remotes/origin/cm-10.0
 		diva_os_leave_spin_lock(&adapter_lock, &old_irql, "start_remove");
 		return (0);	/* REMOVE was pending */
 	}
 
 	/*
+<<<<<<< HEAD
 	   Now send remove request
 	 */
+=======
+	  Now send remove request
+	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	e->e.Req = REMOVE;
 	e->e.ReqCh = 0;
 

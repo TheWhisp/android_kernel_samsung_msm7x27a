@@ -22,7 +22,11 @@
 #include <linux/ppp_channel.h>
 #include <linux/ppp_defs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/skbuff.h>
 
 #include "network.h"

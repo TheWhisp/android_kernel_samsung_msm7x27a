@@ -4,7 +4,11 @@
  */
 
 #include <linux/mm.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/swap.h>
 #include <linux/gfp.h>
 #include <linux/bio.h>
@@ -14,6 +18,10 @@
 #include <linux/init.h>
 #include <linux/hash.h>
 #include <linux/highmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/bootmem.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlbflush.h>
 
 #include <trace/events/block.h>
@@ -26,12 +34,19 @@ static mempool_t *page_pool, *isa_page_pool;
 #ifdef CONFIG_HIGHMEM
 static __init int init_emergency_pool(void)
 {
+<<<<<<< HEAD
 	struct sysinfo i;
 	si_meminfo(&i);
 	si_swapinfo(&i);
 
 	if (!i.totalhigh)
 		return 0;
+=======
+#ifndef CONFIG_MEMORY_HOTPLUG
+	if (max_pfn <= max_low_pfn)
+		return 0;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	page_pool = mempool_create_page_pool(POOL_SIZE, 0);
 	BUG_ON(!page_pool);
@@ -51,9 +66,15 @@ static void bounce_copy_vec(struct bio_vec *to, unsigned char *vfrom)
 	unsigned char *vto;
 
 	local_irq_save(flags);
+<<<<<<< HEAD
 	vto = kmap_atomic(to->bv_page, KM_BOUNCE_READ);
 	memcpy(vto + to->bv_offset, vfrom, to->bv_len);
 	kunmap_atomic(vto, KM_BOUNCE_READ);
+=======
+	vto = kmap_atomic(to->bv_page);
+	memcpy(vto + to->bv_offset, vfrom, to->bv_len);
+	kunmap_atomic(vto);
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_restore(flags);
 }
 

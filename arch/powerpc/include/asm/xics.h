@@ -15,8 +15,13 @@
 #define	DEFAULT_PRIORITY	5
 
 /*
+<<<<<<< HEAD
  * Mark IPIs as higher priority so we can take them inside interrupts that
  * arent marked IRQF_DISABLED
+=======
+ * Mark IPIs as higher priority so we can take them inside interrupts
+ * FIXME: still true now?
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 #define IPI_PRIORITY		4
 
@@ -27,10 +32,25 @@
 #define MAX_NUM_PRIORITIES	3
 
 /* Native ICP */
+<<<<<<< HEAD
 extern int icp_native_init(void);
 
 /* PAPR ICP */
 extern int icp_hv_init(void);
+=======
+#ifdef CONFIG_PPC_ICP_NATIVE
+extern int icp_native_init(void);
+#else
+static inline int icp_native_init(void) { return -ENODEV; }
+#endif
+
+/* PAPR ICP */
+#ifdef CONFIG_PPC_ICP_HV
+extern int icp_hv_init(void);
+#else
+static inline int icp_hv_init(void) { return -ENODEV; }
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ICP ops */
 struct icp_ops {
@@ -51,7 +71,22 @@ extern const struct icp_ops *icp_ops;
 extern int ics_native_init(void);
 
 /* RTAS ICS */
+<<<<<<< HEAD
 extern int ics_rtas_init(void);
+=======
+#ifdef CONFIG_PPC_ICS_RTAS
+extern int ics_rtas_init(void);
+#else
+static inline int ics_rtas_init(void) { return -ENODEV; }
+#endif
+
+/* HAL ICS */
+#ifdef CONFIG_PPC_POWERNV
+extern int ics_opal_init(void);
+#else
+static inline int ics_opal_init(void) { return -ENODEV; }
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ICS instance, hooked up to chip_data of an irq */
 struct ics {
@@ -67,7 +102,11 @@ struct ics {
 extern unsigned int xics_default_server;
 extern unsigned int xics_default_distrib_server;
 extern unsigned int xics_interrupt_server_size;
+<<<<<<< HEAD
 extern struct irq_host *xics_host;
+=======
+extern struct irq_domain *xics_host;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct xics_cppr {
 	unsigned char stack[MAX_NUM_PRIORITIES];

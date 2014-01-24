@@ -52,10 +52,15 @@ static int cnt_attach(struct comedi_device *dev, struct comedi_devconfig *it);
 static int cnt_detach(struct comedi_device *dev);
 
 static DEFINE_PCI_DEVICE_TABLE(cnt_pci_table) = {
+<<<<<<< HEAD
 	{
 	PCI_VENDOR_ID_KOLTER, CNT_CARD_DEVICE_ID, PCI_ANY_ID,
 		    PCI_ANY_ID, 0, 0, 0}, {
 	0}
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_KOLTER, CNT_CARD_DEVICE_ID) },
+	{0}
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 MODULE_DEVICE_TABLE(pci, cnt_pci_table);

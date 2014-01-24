@@ -28,7 +28,10 @@
 #include <asm/machvec.h>
 #include <asm/page.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sal.h>
 #include <asm/mca.h>
 

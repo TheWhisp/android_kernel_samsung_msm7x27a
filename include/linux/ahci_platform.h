@@ -23,6 +23,11 @@ struct ata_port_info;
 struct ahci_platform_data {
 	int (*init)(struct device *dev, void __iomem *addr);
 	void (*exit)(struct device *dev);
+<<<<<<< HEAD
+=======
+	int (*suspend)(struct device *dev);
+	int (*resume)(struct device *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct ata_port_info *ata_port_info;
 	unsigned int force_port_map;
 	unsigned int mask_port_map;

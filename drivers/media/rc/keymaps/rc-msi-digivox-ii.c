@@ -19,6 +19,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct rc_map_table msi_digivox_ii[] = {
 	{ 0x0002, KEY_2 },

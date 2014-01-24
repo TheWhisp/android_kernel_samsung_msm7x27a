@@ -29,9 +29,14 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/byteorder.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <asm/byteorder.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "core.h"
 
@@ -205,19 +210,32 @@ static struct fw_node *build_tree(struct fw_card *card,
 		next_sid = count_ports(sid, &port_count, &child_port_count);
 
 		if (next_sid == NULL) {
+<<<<<<< HEAD
 			fw_error("Inconsistent extended self IDs.\n");
+=======
+			fw_err(card, "inconsistent extended self IDs\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return NULL;
 		}
 
 		q = *sid;
 		if (phy_id != SELF_ID_PHY_ID(q)) {
+<<<<<<< HEAD
 			fw_error("PHY ID mismatch in self ID: %d != %d.\n",
 				 phy_id, SELF_ID_PHY_ID(q));
+=======
+			fw_err(card, "PHY ID mismatch in self ID: %d != %d\n",
+			       phy_id, SELF_ID_PHY_ID(q));
+>>>>>>> refs/remotes/origin/cm-10.0
 			return NULL;
 		}
 
 		if (child_port_count > stack_depth) {
+<<<<<<< HEAD
 			fw_error("Topology stack underflow\n");
+=======
+			fw_err(card, "topology stack underflow\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return NULL;
 		}
 
@@ -235,7 +253,11 @@ static struct fw_node *build_tree(struct fw_card *card,
 
 		node = fw_node_create(q, port_count, card->color);
 		if (node == NULL) {
+<<<<<<< HEAD
 			fw_error("Out of memory while building topology.\n");
+=======
+			fw_err(card, "out of memory while building topology\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return NULL;
 		}
 
@@ -284,8 +306,13 @@ static struct fw_node *build_tree(struct fw_card *card,
 		 */
 		if ((next_sid == end && parent_count != 0) ||
 		    (next_sid < end && parent_count != 1)) {
+<<<<<<< HEAD
 			fw_error("Parent port inconsistency for node %d: "
 				 "parent_count=%d\n", phy_id, parent_count);
+=======
+			fw_err(card, "parent port inconsistency for node %d: "
+			       "parent_count=%d\n", phy_id, parent_count);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return NULL;
 		}
 
@@ -530,7 +557,10 @@ void fw_core_handle_bus_reset(struct fw_card *card, int node_id, int generation,
 	 */
 	if (!is_next_generation(generation, card->generation) &&
 	    card->local_node != NULL) {
+<<<<<<< HEAD
 		fw_notify("skipped bus generations, destroying all nodes\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		fw_destroy_nodes(card);
 		card->bm_retries = 0;
 	}
@@ -557,7 +587,11 @@ void fw_core_handle_bus_reset(struct fw_card *card, int node_id, int generation,
 	card->color++;
 
 	if (local_node == NULL) {
+<<<<<<< HEAD
 		fw_error("topology build failed\n");
+=======
+		fw_err(card, "topology build failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* FIXME: We need to issue a bus reset in this case. */
 	} else if (card->local_node == NULL) {
 		card->local_node = local_node;

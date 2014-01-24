@@ -32,6 +32,10 @@ void perf_read_values_destroy(struct perf_read_values *values)
 
 	for (i = 0; i < values->threads; i++)
 		free(values->value[i]);
+<<<<<<< HEAD
+=======
+	free(values->value);
+>>>>>>> refs/remotes/origin/cm-10.0
 	free(values->pid);
 	free(values->tid);
 	free(values->counterrawid);

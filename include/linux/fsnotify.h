@@ -14,6 +14,10 @@
 #include <linux/fsnotify_backend.h>
 #include <linux/audit.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * fsnotify_d_instantiate - instantiate a dentry for inode

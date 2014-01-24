@@ -10,6 +10,10 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/debugfs.h>
 #include <linux/types.h>

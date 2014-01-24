@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
   * OMAP4XXX L3 Interconnect error handling driver
   *
   * Copyright (C) 2011 Texas Corporation
@@ -20,6 +21,30 @@
   * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
   * USA
   */
+=======
+ * OMAP4XXX L3 Interconnect error handling driver
+ *
+ * Copyright (C) 2011 Texas Corporation
+ *	Santosh Shilimkar <santosh.shilimkar@ti.com>
+ *	Sricharan <r.sricharan@ti.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
+ */
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/platform_device.h>
@@ -55,12 +80,21 @@
 static irqreturn_t l3_interrupt_handler(int irq, void *_l3)
 {
 
+<<<<<<< HEAD
 	struct omap4_l3		*l3 = _l3;
 	int inttype, i, j;
 	int err_src = 0;
 	u32 std_err_main_addr, std_err_main, err_reg;
 	u32 base, slave_addr, clear;
 	char *source_name;
+=======
+	struct omap4_l3 *l3 = _l3;
+	int inttype, i, k;
+	int err_src = 0;
+	u32 std_err_main, err_reg, clear, masterid;
+	void __iomem *base, *l3_targ_base;
+	char *target_name, *master_name = "UN IDENTIFIED";
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Get the Type of interrupt */
 	inttype = irq == l3->app_irq ? L3_APPLICATION_ERROR : L3_DEBUG_ERROR;
@@ -70,12 +104,19 @@ static irqreturn_t l3_interrupt_handler(int irq, void *_l3)
 		 * Read the regerr register of the clock domain
 		 * to determine the source
 		 */
+<<<<<<< HEAD
 		base = (u32)l3->l3_base[i];
 		err_reg =  readl(base + l3_flagmux[i] + (inttype << 3));
+=======
+		base = l3->l3_base[i];
+		err_reg = __raw_readl(base + l3_flagmux[i] +
+					+ L3_FLAGMUX_REGERR0 + (inttype << 3));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Get the corresponding error and analyse */
 		if (err_reg) {
 			/* Identify the source from control status register */
+<<<<<<< HEAD
 			for (j = 0; !(err_reg & (1 << j)); j++)
 									;
 
@@ -107,6 +148,45 @@ static irqreturn_t l3_interrupt_handler(int irq, void *_l3)
 				/* clear the std error log*/
 				clear = std_err_main | CLEAR_STDERR_LOG;
 				writel(clear, std_err_main_addr);
+=======
+			err_src = __ffs(err_reg);
+
+			/* Read the stderrlog_main_source from clk domain */
+			l3_targ_base = base + *(l3_targ[i] + err_src);
+			std_err_main =  __raw_readl(l3_targ_base +
+					L3_TARG_STDERRLOG_MAIN);
+			masterid = __raw_readl(l3_targ_base +
+					L3_TARG_STDERRLOG_MSTADDR);
+
+			switch (std_err_main & CUSTOM_ERROR) {
+			case STANDARD_ERROR:
+				target_name =
+					l3_targ_inst_name[i][err_src];
+				WARN(true, "L3 standard error: TARGET:%s at address 0x%x\n",
+					target_name,
+					__raw_readl(l3_targ_base +
+						L3_TARG_STDERRLOG_SLVOFSLSB));
+				/* clear the std error log*/
+				clear = std_err_main | CLEAR_STDERR_LOG;
+				writel(clear, l3_targ_base +
+					L3_TARG_STDERRLOG_MAIN);
+				break;
+
+			case CUSTOM_ERROR:
+				target_name =
+					l3_targ_inst_name[i][err_src];
+				for (k = 0; k < NUM_OF_L3_MASTERS; k++) {
+					if (masterid == l3_masters[k].id)
+						master_name =
+							l3_masters[k].name;
+				}
+				WARN(true, "L3 custom error: MASTER:%s TARGET:%s\n",
+					master_name, target_name);
+				/* clear the std error log*/
+				clear = std_err_main | CLEAR_STDERR_LOG;
+				writel(clear, l3_targ_base +
+					L3_TARG_STDERRLOG_MAIN);
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 
 			default:
@@ -120,12 +200,20 @@ static irqreturn_t l3_interrupt_handler(int irq, void *_l3)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __init omap4_l3_probe(struct platform_device *pdev)
 {
 	static struct omap4_l3		*l3;
 	struct resource		*res;
 	int			ret;
 	int			irq;
+=======
+static int __devinit omap4_l3_probe(struct platform_device *pdev)
+{
+	static struct omap4_l3 *l3;
+	struct resource	*res;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	l3 = kzalloc(sizeof(*l3), GFP_KERNEL);
 	if (!l3)
@@ -177,12 +265,18 @@ static int __init omap4_l3_probe(struct platform_device *pdev)
 	/*
 	 * Setup interrupt Handlers
 	 */
+<<<<<<< HEAD
 	irq = platform_get_irq(pdev, 0);
 	ret = request_irq(irq,
+=======
+	l3->debug_irq = platform_get_irq(pdev, 0);
+	ret = request_irq(l3->debug_irq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			l3_interrupt_handler,
 			IRQF_DISABLED, "l3-dbg-irq", l3);
 	if (ret) {
 		pr_crit("L3: request_irq failed to register for 0x%x\n",
+<<<<<<< HEAD
 					 OMAP44XX_IRQ_L3_DBG);
 		goto err3;
 	}
@@ -190,14 +284,28 @@ static int __init omap4_l3_probe(struct platform_device *pdev)
 
 	irq = platform_get_irq(pdev, 1);
 	ret = request_irq(irq,
+=======
+						OMAP44XX_IRQ_L3_DBG);
+		goto err3;
+	}
+
+	l3->app_irq = platform_get_irq(pdev, 1);
+	ret = request_irq(l3->app_irq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			l3_interrupt_handler,
 			IRQF_DISABLED, "l3-app-irq", l3);
 	if (ret) {
 		pr_crit("L3: request_irq failed to register for 0x%x\n",
+<<<<<<< HEAD
 					 OMAP44XX_IRQ_L3_APP);
 		goto err4;
 	}
 	l3->app_irq = irq;
+=======
+						OMAP44XX_IRQ_L3_APP);
+		goto err4;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 
@@ -214,9 +322,15 @@ err0:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __exit omap4_l3_remove(struct platform_device *pdev)
 {
 	struct omap4_l3         *l3 = platform_get_drvdata(pdev);
+=======
+static int __devexit omap4_l3_remove(struct platform_device *pdev)
+{
+	struct omap4_l3 *l3 = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	free_irq(l3->app_irq, l3);
 	free_irq(l3->debug_irq, l3);
@@ -228,16 +342,40 @@ static int __exit omap4_l3_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver omap4_l3_driver = {
 	.remove		= __exit_p(omap4_l3_remove),
 	.driver		= {
 	.name		= "omap_l3_noc",
+=======
+#if defined(CONFIG_OF)
+static const struct of_device_id l3_noc_match[] = {
+	{.compatible = "ti,omap4-l3-noc", },
+	{},
+};
+MODULE_DEVICE_TABLE(of, l3_noc_match);
+#else
+#define l3_noc_match NULL
+#endif
+
+static struct platform_driver omap4_l3_driver = {
+	.probe		= omap4_l3_probe,
+	.remove		= __devexit_p(omap4_l3_remove),
+	.driver		= {
+		.name		= "omap_l3_noc",
+		.owner		= THIS_MODULE,
+		.of_match_table = l3_noc_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
 static int __init omap4_l3_init(void)
 {
+<<<<<<< HEAD
 	return platform_driver_probe(&omap4_l3_driver, omap4_l3_probe);
+=======
+	return platform_driver_register(&omap4_l3_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 postcore_initcall_sync(omap4_l3_init);
 

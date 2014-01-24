@@ -20,6 +20,10 @@
 #include <linux/if_arcnet.h>
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
+=======
+#include  <linux/irqreturn.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef bool
 #define bool int

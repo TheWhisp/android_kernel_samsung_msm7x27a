@@ -40,9 +40,15 @@ static DEFINE_RWLOCK(cls_mod_lock);
 
 /* Find classifier type by string name */
 
+<<<<<<< HEAD
 static struct tcf_proto_ops *tcf_proto_lookup_ops(struct nlattr *kind)
 {
 	struct tcf_proto_ops *t = NULL;
+=======
+static const struct tcf_proto_ops *tcf_proto_lookup_ops(struct nlattr *kind)
+{
+	const struct tcf_proto_ops *t = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (kind) {
 		read_lock(&cls_mod_lock);
@@ -132,7 +138,11 @@ static int tc_ctl_tfilter(struct sk_buff *skb, struct nlmsghdr *n, void *arg)
 	struct Qdisc  *q;
 	struct tcf_proto **back, **chain;
 	struct tcf_proto *tp;
+<<<<<<< HEAD
 	struct tcf_proto_ops *tp_ops;
+=======
+	const struct tcf_proto_ops *tp_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct Qdisc_class_ops *cops;
 	unsigned long cl;
 	unsigned long fh;

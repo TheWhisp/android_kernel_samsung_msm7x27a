@@ -107,7 +107,11 @@ int usb_hcd_pnx8550_probe (const struct hc_driver *driver,
 
 	ohci_hcd_init(hcd_to_ohci(hcd));
 
+<<<<<<< HEAD
 	retval = usb_add_hcd(hcd, dev->resource[1].start, IRQF_DISABLED);
+=======
+	retval = usb_add_hcd(hcd, dev->resource[1].start, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval == 0)
 		return retval;
 

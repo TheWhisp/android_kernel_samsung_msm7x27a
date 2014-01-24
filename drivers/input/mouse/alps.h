@@ -12,20 +12,54 @@
 #ifndef _ALPS_H
 #define _ALPS_H
 
+<<<<<<< HEAD
 struct alps_model_info {
         unsigned char signature[3];
+=======
+#define ALPS_PROTO_V1	0
+#define ALPS_PROTO_V2	1
+#define ALPS_PROTO_V3	2
+#define ALPS_PROTO_V4	3
+
+struct alps_model_info {
+        unsigned char signature[3];
+	unsigned char command_mode_resp; /* v3/v4 only */
+	unsigned char proto_version;
+>>>>>>> refs/remotes/origin/cm-10.0
         unsigned char byte0, mask0;
         unsigned char flags;
 };
 
+<<<<<<< HEAD
+=======
+struct alps_nibble_commands {
+	int command;
+	unsigned char data;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct alps_data {
 	struct input_dev *dev2;		/* Relative device */
 	char phys[32];			/* Phys */
 	const struct alps_model_info *i;/* Info */
+<<<<<<< HEAD
 	int prev_fin;			/* Finger bit from previous packet */
 	struct timer_list timer;
 };
 
+=======
+	const struct alps_nibble_commands *nibble_commands;
+	int addr_command;		/* Command to set register address */
+	int prev_fin;			/* Finger bit from previous packet */
+	int multi_packet;		/* Multi-packet data in progress */
+	unsigned char multi_data[6];	/* Saved multi-packet data */
+	u8 quirks;
+	struct timer_list timer;
+};
+
+#define ALPS_QUIRK_TRACKSTICK_BUTTONS	1 /* trakcstick buttons in trackstick packet */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_MOUSE_PS2_ALPS
 int alps_detect(struct psmouse *psmouse, bool set_properties);
 int alps_init(struct psmouse *psmouse);

@@ -20,6 +20,7 @@
 
 struct timed_gpio {
 	const char *name;
+<<<<<<< HEAD
 	unsigned 	gpio;
 	int		max_timeout;
 	u8 		active_low;
@@ -27,6 +28,15 @@ struct timed_gpio {
 
 struct timed_gpio_platform_data {
 	int 		num_gpios;
+=======
+	unsigned	gpio;
+	int		max_timeout;
+	u8		active_low;
+};
+
+struct timed_gpio_platform_data {
+	int		num_gpios;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct timed_gpio *gpios;
 };
 

@@ -20,6 +20,10 @@
 #include <linux/spi/spi.h>
 #include <linux/spi/flash.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <mach/common.h>
@@ -395,7 +399,12 @@ static struct davinci_nand_pdata mityomapl138_nandflash_data = {
 	.parts		= mityomapl138_nandflash_partition,
 	.nr_parts	= ARRAY_SIZE(mityomapl138_nandflash_partition),
 	.ecc_mode	= NAND_ECC_HW,
+<<<<<<< HEAD
 	.options	= NAND_USE_FLASH_BBT | NAND_BUSWIDTH_16,
+=======
+	.bbt_options	= NAND_BBT_USE_FLASH,
+	.options	= NAND_BUSWIDTH_16,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ecc_bits	= 1, /* 4 bit mode is not supported with 16 bit NAND */
 };
 
@@ -565,9 +574,18 @@ static void __init mityomapl138_map_io(void)
 }
 
 MACHINE_START(MITYOMAPL138, "MityDSP-L138/MityARM-1808")
+<<<<<<< HEAD
 	.boot_params	= (DA8XX_DDR_BASE + 0x100),
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= mityomapl138_map_io,
 	.init_irq	= cp_intc_init,
 	.timer		= &davinci_timer,
 	.init_machine	= mityomapl138_init,
+<<<<<<< HEAD
+=======
+	.dma_zone_size	= SZ_128M,
+	.restart	= da8xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

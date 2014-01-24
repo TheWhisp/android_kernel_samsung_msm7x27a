@@ -10,7 +10,11 @@
 #include <linux/device.h>	/* devres_*(), devm_ioremap_release() */
 #include <linux/gfp.h>
 #include <linux/io.h>		/* ioremap_prot() */
+<<<<<<< HEAD
 #include <linux/module.h>	/* EXPORT_SYMBOL() */
+=======
+#include <linux/export.h>	/* EXPORT_SYMBOL() */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * devm_ioremap_prot - Managed ioremap_prot()

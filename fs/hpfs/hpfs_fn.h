@@ -258,7 +258,11 @@ void hpfs_set_ea(struct inode *, struct fnode *, const char *,
 
 /* file.c */
 
+<<<<<<< HEAD
 int hpfs_file_fsync(struct file *, int);
+=======
+int hpfs_file_fsync(struct file *, loff_t, loff_t, int);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern const struct file_operations hpfs_file_ops;
 extern const struct inode_operations hpfs_file_iops;
 extern const struct address_space_operations hpfs_aops;
@@ -311,8 +315,13 @@ static inline struct hpfs_sb_info *hpfs_sb(struct super_block *sb)
 
 /* super.c */
 
+<<<<<<< HEAD
 void hpfs_error(struct super_block *, const char *, ...)
 	__attribute__((format (printf, 2, 3)));
+=======
+__printf(2, 3)
+void hpfs_error(struct super_block *, const char *, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 int hpfs_stop_cycles(struct super_block *, int, int *, int *, char *);
 unsigned hpfs_count_one_bitmap(struct super_block *, secno);
 

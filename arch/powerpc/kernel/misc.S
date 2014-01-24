@@ -5,7 +5,10 @@
  * Largely rewritten by Cort Dougan (cort@cs.nmt.edu)
  * and Paul Mackerras.
  *
+<<<<<<< HEAD
  * Adapted for iSeries by Mike Corrigan (mikejc@us.ibm.com)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * PPC64 updates by Dave Engebretsen (engebret@us.ibm.com)
  *
  * setjmp/longjmp code by Paul Mackerras.

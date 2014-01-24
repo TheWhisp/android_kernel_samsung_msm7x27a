@@ -146,9 +146,12 @@ struct tmds_setting_information {
 
 struct lvds_setting_information {
 	int iga_path;
+<<<<<<< HEAD
 	int h_active;
 	int v_active;
 	int bpp;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int lcd_panel_hres;
 	int lcd_panel_vres;
 	int display_method;

@@ -3,6 +3,10 @@
  */
 
 #include <linux/nl80211.h>
+<<<<<<< HEAD
+=======
+#include <net/cfg80211.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ieee80211_i.h"
 
 static enum ieee80211_chan_mode
@@ -20,6 +24,7 @@ __ieee80211_get_channel_mode(struct ieee80211_local *local,
 		if (!ieee80211_sdata_running(sdata))
 			continue;
 
+<<<<<<< HEAD
 		if (sdata->vif.type == NL80211_IFTYPE_MONITOR)
 			continue;
 
@@ -28,15 +33,39 @@ __ieee80211_get_channel_mode(struct ieee80211_local *local,
 			continue;
 
 		if (sdata->vif.type == NL80211_IFTYPE_ADHOC) {
+=======
+		switch (sdata->vif.type) {
+		case NL80211_IFTYPE_MONITOR:
+			continue;
+		case NL80211_IFTYPE_STATION:
+			if (!sdata->u.mgd.associated)
+				continue;
+			break;
+		case NL80211_IFTYPE_ADHOC:
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!sdata->u.ibss.ssid_len)
 				continue;
 			if (!sdata->u.ibss.fixed_channel)
 				return CHAN_MODE_HOPPING;
+<<<<<<< HEAD
 		}
 
 		if (sdata->vif.type == NL80211_IFTYPE_AP &&
 		    !sdata->u.ap.beacon)
 			continue;
+=======
+			break;
+		case NL80211_IFTYPE_AP_VLAN:
+			/* will also have _AP interface */
+			continue;
+		case NL80211_IFTYPE_AP:
+			if (!sdata->u.ap.beacon)
+				continue;
+			break;
+		default:
+			break;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		return CHAN_MODE_FIXED;
 	}
@@ -128,3 +157,32 @@ bool ieee80211_set_channel_type(struct ieee80211_local *local,
 
 	return result;
 }
+<<<<<<< HEAD
+=======
+
+/*
+ * ieee80211_get_tx_channel_type returns the channel type we should
+ * use for packet transmission, given the channel capability and
+ * whatever regulatory flags we have been given.
+ */
+enum nl80211_channel_type ieee80211_get_tx_channel_type(
+				struct ieee80211_local *local,
+				enum nl80211_channel_type channel_type)
+{
+	switch (channel_type) {
+	case NL80211_CHAN_HT40PLUS:
+		if (local->hw.conf.channel->flags &
+				IEEE80211_CHAN_NO_HT40PLUS)
+			return NL80211_CHAN_HT20;
+		break;
+	case NL80211_CHAN_HT40MINUS:
+		if (local->hw.conf.channel->flags &
+				IEEE80211_CHAN_NO_HT40MINUS)
+			return NL80211_CHAN_HT20;
+		break;
+	default:
+		break;
+	}
+	return channel_type;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -83,7 +83,12 @@ static struct buffer_head *get_block_length(struct super_block *sb,
  * filesystem), otherwise the length is obtained from the first two bytes of
  * the metadata block.  A bit in the length field indicates if the block
  * is stored uncompressed in the filesystem (usually because compression
+<<<<<<< HEAD
  * generated a larger block - this does occasionally happen with zlib).
+=======
+ * generated a larger block - this does occasionally happen with compression
+ * algorithms).
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 int squashfs_read_data(struct super_block *sb, void **buffer, u64 index,
 			int length, u64 *next_index, int srclength, int pages)

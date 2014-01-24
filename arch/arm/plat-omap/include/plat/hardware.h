@@ -286,6 +286,11 @@
 #include <plat/omap24xx.h>
 #include <plat/omap34xx.h>
 #include <plat/omap44xx.h>
+<<<<<<< HEAD
 #include <plat/ti816x.h>
+=======
+#include <plat/ti81xx.h>
+#include <plat/am33xx.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif	/* __ASM_ARCH_OMAP_HARDWARE_H */

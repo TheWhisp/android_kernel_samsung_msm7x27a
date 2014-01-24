@@ -18,12 +18,15 @@
 #include <media/v4l2-device.h>
 #include <media/ir-kbd-i2c.h>
 
+<<<<<<< HEAD
 #define HDPVR_MAJOR_VERSION 0
 #define HDPVR_MINOR_VERSION 2
 #define HDPVR_RELEASE 0
 #define HDPVR_VERSION \
 	KERNEL_VERSION(HDPVR_MAJOR_VERSION, HDPVR_MINOR_VERSION, HDPVR_RELEASE)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HDPVR_MAX 8
 #define HDPVR_I2C_MAX_SIZE 128
 
@@ -119,6 +122,10 @@ struct hdpvr_device {
 	/* usb control transfer buffer and lock */
 	struct mutex		usbc_mutex;
 	u8			*usbc_buf;
+<<<<<<< HEAD
+=======
+	u8			fw_ver;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static inline struct hdpvr_device *to_hdpvr_dev(struct v4l2_device *v4l2_dev)

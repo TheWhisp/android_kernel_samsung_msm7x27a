@@ -13,9 +13,13 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/un.h>
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "user.h"
+=======
+#include "os.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void copy_stat(struct uml_stat *dst, const struct stat64 *src)
 {

@@ -26,6 +26,10 @@
 #include <linux/delay.h>
 #include <linux/log2.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 #include <net/tcp.h>
 #include <scsi/scsi_cmnd.h>
@@ -84,6 +88,7 @@ MODULE_PARM_DESC(debug_libiscsi_eh,
 					     __func__, ##arg);		\
 	} while (0);
 
+<<<<<<< HEAD
 /* Serial Number Arithmetic, 32 bits, less than, RFC1982 */
 #define SNA32_CHECK 2147483648UL
 
@@ -100,6 +105,8 @@ static int iscsi_sna_lte(u32 n1, u32 n2)
 			    (n1 > n2 && (n2 - n1 < SNA32_CHECK)));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 inline void iscsi_conn_queue_work(struct iscsi_conn *conn)
 {
 	struct Scsi_Host *shost = conn->session->host;
@@ -169,7 +176,11 @@ void iscsi_prep_data_out_pdu(struct iscsi_task *task, struct iscsi_r2t_info *r2t
 	hdr->datasn = cpu_to_be32(r2t->datasn);
 	r2t->datasn++;
 	hdr->opcode = ISCSI_OP_SCSI_DATA_OUT;
+<<<<<<< HEAD
 	memcpy(hdr->lun, task->lun, sizeof(hdr->lun));
+=======
+	hdr->lun = task->lun;
+>>>>>>> refs/remotes/origin/cm-10.0
 	hdr->itt = task->hdr_itt;
 	hdr->exp_statsn = r2t->exp_statsn;
 	hdr->offset = cpu_to_be32(r2t->data_offset + r2t->sent);
@@ -296,7 +307,11 @@ static int iscsi_check_tmf_restrictions(struct iscsi_task *task, int opcode)
 		/*
 		 * Allow PDUs for unrelated LUNs
 		 */
+<<<<<<< HEAD
 		hdr_lun = scsilun_to_int((struct scsi_lun *)tmf->lun);
+=======
+		hdr_lun = scsilun_to_int(&tmf->lun);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (hdr_lun != task->sc->device->lun)
 			return 0;
 		/* fall through */
@@ -360,7 +375,11 @@ static int iscsi_prep_scsi_cmd_pdu(struct iscsi_task *task)
 	struct iscsi_conn *conn = task->conn;
 	struct iscsi_session *session = conn->session;
 	struct scsi_cmnd *sc = task->sc;
+<<<<<<< HEAD
 	struct iscsi_cmd *hdr;
+=======
+	struct iscsi_scsi_req *hdr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned hdrlength, cmd_len;
 	itt_t itt;
 	int rc;
@@ -374,7 +393,11 @@ static int iscsi_prep_scsi_cmd_pdu(struct iscsi_task *task)
 		if (rc)
 			return rc;
 	}
+<<<<<<< HEAD
 	hdr = (struct iscsi_cmd *) task->hdr;
+=======
+	hdr = (struct iscsi_scsi_req *)task->hdr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	itt = hdr->itt;
 	memset(hdr, 0, sizeof(*hdr));
 
@@ -389,8 +412,13 @@ static int iscsi_prep_scsi_cmd_pdu(struct iscsi_task *task)
 		return rc;
 	hdr->opcode = ISCSI_OP_SCSI_CMD;
 	hdr->flags = ISCSI_ATTR_SIMPLE;
+<<<<<<< HEAD
 	int_to_scsilun(sc->device->lun, (struct scsi_lun *)hdr->lun);
 	memcpy(task->lun, hdr->lun, sizeof(task->lun));
+=======
+	int_to_scsilun(sc->device->lun, &hdr->lun);
+	task->lun = hdr->lun;
+>>>>>>> refs/remotes/origin/cm-10.0
 	hdr->exp_statsn = cpu_to_be32(conn->exp_statsn);
 	cmd_len = sc->cmd_len;
 	if (cmd_len < ISCSI_CDB_SIZE)
@@ -830,7 +858,11 @@ static void iscsi_scsi_cmd_rsp(struct iscsi_conn *conn, struct iscsi_hdr *hdr,
 			       struct iscsi_task *task, char *data,
 			       int datalen)
 {
+<<<<<<< HEAD
 	struct iscsi_cmd_rsp *rhdr = (struct iscsi_cmd_rsp *)hdr;
+=======
+	struct iscsi_scsi_rsp *rhdr = (struct iscsi_scsi_rsp *)hdr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iscsi_session *session = conn->session;
 	struct scsi_cmnd *sc = task->sc;
 
@@ -968,7 +1000,11 @@ static void iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
 	hdr.flags = ISCSI_FLAG_CMD_FINAL;
 
 	if (rhdr) {
+<<<<<<< HEAD
 		memcpy(hdr.lun, rhdr->lun, 8);
+=======
+		hdr.lun = rhdr->lun;
+>>>>>>> refs/remotes/origin/cm-10.0
 		hdr.ttt = rhdr->ttt;
 		hdr.itt = RESERVED_ITT;
 	} else
@@ -1924,6 +1960,19 @@ static enum blk_eh_timer_return iscsi_eh_cmd_timed_out(struct scsi_cmnd *sc)
 	ISCSI_DBG_EH(session, "scsi cmd %p timedout\n", sc);
 
 	spin_lock(&session->lock);
+<<<<<<< HEAD
+=======
+	task = (struct iscsi_task *)sc->SCp.ptr;
+	if (!task) {
+		/*
+		 * Raced with completion. Blk layer has taken ownership
+		 * so let timeout code complete it now.
+		 */
+		rc = BLK_EH_HANDLED;
+		goto done;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (session->state != ISCSI_STATE_LOGGED_IN) {
 		/*
 		 * We are probably in the middle of iscsi recovery so let
@@ -1940,6 +1989,7 @@ static enum blk_eh_timer_return iscsi_eh_cmd_timed_out(struct scsi_cmnd *sc)
 		goto done;
 	}
 
+<<<<<<< HEAD
 	task = (struct iscsi_task *)sc->SCp.ptr;
 	if (!task) {
 		/*
@@ -1950,6 +2000,8 @@ static enum blk_eh_timer_return iscsi_eh_cmd_timed_out(struct scsi_cmnd *sc)
 		goto done;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * If we have sent (at least queued to the network layer) a pdu or
 	 * recvd one for the task since the last timeout ask for
@@ -2092,7 +2144,11 @@ static void iscsi_prep_abort_task_pdu(struct iscsi_task *task,
 	hdr->opcode = ISCSI_OP_SCSI_TMFUNC | ISCSI_OP_IMMEDIATE;
 	hdr->flags = ISCSI_TM_FUNC_ABORT_TASK & ISCSI_FLAG_TM_FUNC_MASK;
 	hdr->flags |= ISCSI_FLAG_CMD_FINAL;
+<<<<<<< HEAD
 	memcpy(hdr->lun, task->lun, sizeof(hdr->lun));
+=======
+	hdr->lun = task->lun;
+>>>>>>> refs/remotes/origin/cm-10.0
 	hdr->rtt = task->hdr_itt;
 	hdr->refcmdsn = task->cmdsn;
 }
@@ -2233,7 +2289,11 @@ static void iscsi_prep_lun_reset_pdu(struct scsi_cmnd *sc, struct iscsi_tm *hdr)
 	hdr->opcode = ISCSI_OP_SCSI_TMFUNC | ISCSI_OP_IMMEDIATE;
 	hdr->flags = ISCSI_TM_FUNC_LOGICAL_UNIT_RESET & ISCSI_FLAG_TM_FUNC_MASK;
 	hdr->flags |= ISCSI_FLAG_CMD_FINAL;
+<<<<<<< HEAD
 	int_to_scsilun(sc->device->lun, (struct scsi_lun *)hdr->lun);
+=======
+	int_to_scsilun(sc->device->lun, &hdr->lun);
+>>>>>>> refs/remotes/origin/cm-10.0
 	hdr->rtt = RESERVED_ITT;
 }
 
@@ -2822,6 +2882,10 @@ void iscsi_session_teardown(struct iscsi_cls_session *cls_session)
 	kfree(session->username);
 	kfree(session->username_in);
 	kfree(session->targetname);
+<<<<<<< HEAD
+=======
+	kfree(session->targetalias);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(session->initiatorname);
 	kfree(session->ifacename);
 
@@ -3179,7 +3243,10 @@ int iscsi_set_param(struct iscsi_cls_conn *cls_conn,
 {
 	struct iscsi_conn *conn = cls_conn->dd_data;
 	struct iscsi_session *session = conn->session;
+<<<<<<< HEAD
 	uint32_t value;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch(param) {
 	case ISCSI_PARAM_FAST_ABORT:
@@ -3216,7 +3283,11 @@ int iscsi_set_param(struct iscsi_cls_conn *cls_conn,
 		sscanf(buf, "%d", &session->initial_r2t_en);
 		break;
 	case ISCSI_PARAM_MAX_R2T:
+<<<<<<< HEAD
 		sscanf(buf, "%d", &session->max_r2t);
+=======
+		sscanf(buf, "%hu", &session->max_r2t);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case ISCSI_PARAM_IMM_DATA_EN:
 		sscanf(buf, "%d", &session->imm_data_en);
@@ -3236,6 +3307,7 @@ int iscsi_set_param(struct iscsi_cls_conn *cls_conn,
 	case ISCSI_PARAM_ERL:
 		sscanf(buf, "%d", &session->erl);
 		break;
+<<<<<<< HEAD
 	case ISCSI_PARAM_IFMARKER_EN:
 		sscanf(buf, "%d", &value);
 		BUG_ON(value);
@@ -3244,6 +3316,8 @@ int iscsi_set_param(struct iscsi_cls_conn *cls_conn,
 		sscanf(buf, "%d", &value);
 		BUG_ON(value);
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ISCSI_PARAM_EXP_STATSN:
 		sscanf(buf, "%u", &conn->exp_statsn);
 		break;
@@ -3257,6 +3331,11 @@ int iscsi_set_param(struct iscsi_cls_conn *cls_conn,
 		return iscsi_switch_str_param(&session->password_in, buf);
 	case ISCSI_PARAM_TARGET_NAME:
 		return iscsi_switch_str_param(&session->targetname, buf);
+<<<<<<< HEAD
+=======
+	case ISCSI_PARAM_TARGET_ALIAS:
+		return iscsi_switch_str_param(&session->targetalias, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ISCSI_PARAM_TPGT:
 		sscanf(buf, "%d", &session->tpgt);
 		break;
@@ -3323,6 +3402,12 @@ int iscsi_session_get_param(struct iscsi_cls_session *cls_session,
 	case ISCSI_PARAM_TARGET_NAME:
 		len = sprintf(buf, "%s\n", session->targetname);
 		break;
+<<<<<<< HEAD
+=======
+	case ISCSI_PARAM_TARGET_ALIAS:
+		len = sprintf(buf, "%s\n", session->targetalias);
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case ISCSI_PARAM_TPGT:
 		len = sprintf(buf, "%d\n", session->tpgt);
 		break;

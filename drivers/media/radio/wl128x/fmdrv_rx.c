@@ -43,12 +43,21 @@ void fm_rx_reset_station_info(struct fmdev *fmdev)
 	fmdev->rx.stat_info.af_list_max = 0;
 }
 
+<<<<<<< HEAD
 u32 fm_rx_set_freq(struct fmdev *fmdev, u32 freq)
+=======
+int fm_rx_set_freq(struct fmdev *fmdev, u32 freq)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long timeleft;
 	u16 payload, curr_frq, intr_flag;
 	u32 curr_frq_in_khz;
+<<<<<<< HEAD
 	u32 ret, resp_len;
+=======
+	u32 resp_len;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (freq < fmdev->rx.region.bot_freq || freq > fmdev->rx.region.top_freq) {
 		fmerr("Invalid frequency %d\n", freq);
@@ -141,10 +150,17 @@ exit:
 	return ret;
 }
 
+<<<<<<< HEAD
 static u32 fm_rx_set_channel_spacing(struct fmdev *fmdev, u32 spacing)
 {
 	u16 payload;
 	u32 ret;
+=======
+static int fm_rx_set_channel_spacing(struct fmdev *fmdev, u32 spacing)
+{
+	u16 payload;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (spacing > 0 && spacing <= 50000)
 		spacing = FM_CHANNEL_SPACING_50KHZ;
@@ -165,7 +181,11 @@ static u32 fm_rx_set_channel_spacing(struct fmdev *fmdev, u32 spacing)
 	return ret;
 }
 
+<<<<<<< HEAD
 u32 fm_rx_seek(struct fmdev *fmdev, u32 seek_upward,
+=======
+int fm_rx_seek(struct fmdev *fmdev, u32 seek_upward,
+>>>>>>> refs/remotes/origin/cm-10.0
 		u32 wrap_around, u32 spacing)
 {
 	u32 resp_len;
@@ -173,7 +193,11 @@ u32 fm_rx_seek(struct fmdev *fmdev, u32 seek_upward,
 	u16 payload, int_reason, intr_flag;
 	u16 offset, space_idx;
 	unsigned long timeleft;
+<<<<<<< HEAD
 	u32 ret;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Set channel spacing */
 	ret = fm_rx_set_channel_spacing(fmdev, spacing);
@@ -296,10 +320,17 @@ again:
 	return ret;
 }
 
+<<<<<<< HEAD
 u32 fm_rx_set_volume(struct fmdev *fmdev, u16 vol_to_set)
 {
 	u16 payload;
 	u32 ret;
+=======
+int fm_rx_set_volume(struct fmdev *fmdev, u16 vol_to_set)
+{
+	u16 payload;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -322,7 +353,11 @@ u32 fm_rx_set_volume(struct fmdev *fmdev, u16 vol_to_set)
 }
 
 /* Get volume */
+<<<<<<< HEAD
 u32 fm_rx_get_volume(struct fmdev *fmdev, u16 *curr_vol)
+=======
+int fm_rx_get_volume(struct fmdev *fmdev, u16 *curr_vol)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -338,7 +373,11 @@ u32 fm_rx_get_volume(struct fmdev *fmdev, u16 *curr_vol)
 }
 
 /* To get current band's bottom and top frequency */
+<<<<<<< HEAD
 u32 fm_rx_get_band_freq_range(struct fmdev *fmdev, u32 *bot_freq, u32 *top_freq)
+=======
+int fm_rx_get_band_freq_range(struct fmdev *fmdev, u32 *bot_freq, u32 *top_freq)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (bot_freq != NULL)
 		*bot_freq = fmdev->rx.region.bot_freq;
@@ -356,11 +395,19 @@ void fm_rx_get_region(struct fmdev *fmdev, u8 *region)
 }
 
 /* Sets band (0-Europe/US; 1-Japan) */
+<<<<<<< HEAD
 u32 fm_rx_set_region(struct fmdev *fmdev, u8 region_to_set)
 {
 	u16 payload;
 	u32 new_frq = 0;
 	u32 ret;
+=======
+int fm_rx_set_region(struct fmdev *fmdev, u8 region_to_set)
+{
+	u16 payload;
+	u32 new_frq = 0;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (region_to_set != FM_BAND_EUROPE_US &&
 	    region_to_set != FM_BAND_JAPAN) {
@@ -399,7 +446,11 @@ u32 fm_rx_set_region(struct fmdev *fmdev, u8 region_to_set)
 }
 
 /* Reads current mute mode (Mute Off/On/Attenuate)*/
+<<<<<<< HEAD
 u32 fm_rx_get_mute_mode(struct fmdev *fmdev, u8 *curr_mute_mode)
+=======
+int fm_rx_get_mute_mode(struct fmdev *fmdev, u8 *curr_mute_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -414,10 +465,17 @@ u32 fm_rx_get_mute_mode(struct fmdev *fmdev, u8 *curr_mute_mode)
 	return 0;
 }
 
+<<<<<<< HEAD
 static u32 fm_config_rx_mute_reg(struct fmdev *fmdev)
 {
 	u16 payload, muteval;
 	u32 ret;
+=======
+static int fm_config_rx_mute_reg(struct fmdev *fmdev)
+{
+	u16 payload, muteval;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	muteval = 0;
 	switch (fmdev->rx.mute_mode) {
@@ -448,10 +506,17 @@ static u32 fm_config_rx_mute_reg(struct fmdev *fmdev)
 }
 
 /* Configures mute mode (Mute Off/On/Attenuate) */
+<<<<<<< HEAD
 u32 fm_rx_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
 {
 	u8 org_state;
 	u32 ret;
+=======
+int fm_rx_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
+{
+	u8 org_state;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (fmdev->rx.mute_mode == mute_mode_toset)
 		return 0;
@@ -469,7 +534,11 @@ u32 fm_rx_set_mute_mode(struct fmdev *fmdev, u8 mute_mode_toset)
 }
 
 /* Gets RF dependent soft mute mode enable/disable status */
+<<<<<<< HEAD
 u32 fm_rx_get_rfdepend_softmute(struct fmdev *fmdev, u8 *curr_mute_mode)
+=======
+int fm_rx_get_rfdepend_softmute(struct fmdev *fmdev, u8 *curr_mute_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -485,10 +554,17 @@ u32 fm_rx_get_rfdepend_softmute(struct fmdev *fmdev, u8 *curr_mute_mode)
 }
 
 /* Sets RF dependent soft mute mode */
+<<<<<<< HEAD
 u32 fm_rx_set_rfdepend_softmute(struct fmdev *fmdev, u8 rfdepend_mute)
 {
 	u8 org_state;
 	u32 ret;
+=======
+int fm_rx_set_rfdepend_softmute(struct fmdev *fmdev, u8 rfdepend_mute)
+{
+	u8 org_state;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -514,11 +590,19 @@ u32 fm_rx_set_rfdepend_softmute(struct fmdev *fmdev, u8 rfdepend_mute)
 }
 
 /* Returns the signal strength level of current channel */
+<<<<<<< HEAD
 u32 fm_rx_get_rssi_level(struct fmdev *fmdev, u16 *rssilvl)
 {
 	u16 curr_rssi_lel;
 	u32 resp_len;
 	u32 ret;
+=======
+int fm_rx_get_rssi_level(struct fmdev *fmdev, u16 *rssilvl)
+{
+	u16 curr_rssi_lel;
+	u32 resp_len;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (rssilvl == NULL) {
 		fmerr("Invalid memory\n");
@@ -539,10 +623,17 @@ u32 fm_rx_get_rssi_level(struct fmdev *fmdev, u16 *rssilvl)
  * Sets the signal strength level that once reached
  * will stop the auto search process
  */
+<<<<<<< HEAD
 u32 fm_rx_set_rssi_threshold(struct fmdev *fmdev, short rssi_lvl_toset)
 {
 	u16 payload;
 	u32 ret;
+=======
+int fm_rx_set_rssi_threshold(struct fmdev *fmdev, short rssi_lvl_toset)
+{
+	u16 payload;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (rssi_lvl_toset < FM_RX_RSSI_THRESHOLD_MIN ||
 			rssi_lvl_toset > FM_RX_RSSI_THRESHOLD_MAX) {
@@ -561,7 +652,11 @@ u32 fm_rx_set_rssi_threshold(struct fmdev *fmdev, short rssi_lvl_toset)
 }
 
 /* Returns current RX RSSI threshold value */
+<<<<<<< HEAD
 u32 fm_rx_get_rssi_threshold(struct fmdev *fmdev, short *curr_rssi_lvl)
+=======
+int fm_rx_get_rssi_threshold(struct fmdev *fmdev, short *curr_rssi_lvl)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -577,10 +672,17 @@ u32 fm_rx_get_rssi_threshold(struct fmdev *fmdev, short *curr_rssi_lvl)
 }
 
 /* Sets RX stereo/mono modes */
+<<<<<<< HEAD
 u32 fm_rx_set_stereo_mono(struct fmdev *fmdev, u16 mode)
 {
 	u16 payload;
 	u32 ret;
+=======
+int fm_rx_set_stereo_mono(struct fmdev *fmdev, u16 mode)
+{
+	u16 payload;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (mode != FM_STEREO_MODE && mode != FM_MONO_MODE) {
 		fmerr("Invalid mode\n");
@@ -605,10 +707,18 @@ u32 fm_rx_set_stereo_mono(struct fmdev *fmdev, u16 mode)
 }
 
 /* Gets current RX stereo/mono mode */
+<<<<<<< HEAD
 u32 fm_rx_get_stereo_mono(struct fmdev *fmdev, u16 *mode)
 {
 	u16 curr_mode;
 	u32 ret, resp_len;
+=======
+int fm_rx_get_stereo_mono(struct fmdev *fmdev, u16 *mode)
+{
+	u16 curr_mode;
+	u32 resp_len;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (mode == NULL) {
 		fmerr("Invalid memory\n");
@@ -626,10 +736,17 @@ u32 fm_rx_get_stereo_mono(struct fmdev *fmdev, u16 *mode)
 }
 
 /* Choose RX de-emphasis filter mode (50us/75us) */
+<<<<<<< HEAD
 u32 fm_rx_set_deemphasis_mode(struct fmdev *fmdev, u16 mode)
 {
 	u16 payload;
 	u32 ret;
+=======
+int fm_rx_set_deemphasis_mode(struct fmdev *fmdev, u16 mode)
+{
+	u16 payload;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -652,7 +769,11 @@ u32 fm_rx_set_deemphasis_mode(struct fmdev *fmdev, u16 mode)
 }
 
 /* Gets current RX de-emphasis filter mode */
+<<<<<<< HEAD
 u32 fm_rx_get_deemph_mode(struct fmdev *fmdev, u16 *curr_deemphasis_mode)
+=======
+int fm_rx_get_deemph_mode(struct fmdev *fmdev, u16 *curr_deemphasis_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -668,10 +789,17 @@ u32 fm_rx_get_deemph_mode(struct fmdev *fmdev, u16 *curr_deemphasis_mode)
 }
 
 /* Enable/Disable RX RDS */
+<<<<<<< HEAD
 u32 fm_rx_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
 {
 	u16 payload;
 	u32 ret;
+=======
+int fm_rx_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
+{
+	u16 payload;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (rds_en_dis != FM_RDS_ENABLE && rds_en_dis != FM_RDS_DISABLE) {
 		fmerr("Invalid rds option\n");
@@ -743,7 +871,11 @@ u32 fm_rx_set_rds_mode(struct fmdev *fmdev, u8 rds_en_dis)
 }
 
 /* Returns current RX RDS enable/disable status */
+<<<<<<< HEAD
 u32 fm_rx_get_rds_mode(struct fmdev *fmdev, u8 *curr_rds_en_dis)
+=======
+int fm_rx_get_rds_mode(struct fmdev *fmdev, u8 *curr_rds_en_dis)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -759,10 +891,17 @@ u32 fm_rx_get_rds_mode(struct fmdev *fmdev, u8 *curr_rds_en_dis)
 }
 
 /* Sets RDS operation mode (RDS/RDBS) */
+<<<<<<< HEAD
 u32 fm_rx_set_rds_system(struct fmdev *fmdev, u8 rds_mode)
 {
 	u16 payload;
 	u32 ret;
+=======
+int fm_rx_set_rds_system(struct fmdev *fmdev, u8 rds_mode)
+{
+	u16 payload;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -784,7 +923,11 @@ u32 fm_rx_set_rds_system(struct fmdev *fmdev, u8 rds_mode)
 }
 
 /* Returns current RDS operation mode */
+<<<<<<< HEAD
 u32 fm_rx_get_rds_system(struct fmdev *fmdev, u8 *rds_mode)
+=======
+int fm_rx_get_rds_system(struct fmdev *fmdev, u8 *rds_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -800,10 +943,17 @@ u32 fm_rx_get_rds_system(struct fmdev *fmdev, u8 *rds_mode)
 }
 
 /* Configures Alternate Frequency switch mode */
+<<<<<<< HEAD
 u32 fm_rx_set_af_switch(struct fmdev *fmdev, u8 af_mode)
 {
 	u16 payload;
 	u32 ret;
+=======
+int fm_rx_set_af_switch(struct fmdev *fmdev, u8 af_mode)
+{
+	u16 payload;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;
@@ -831,7 +981,11 @@ u32 fm_rx_set_af_switch(struct fmdev *fmdev, u8 af_mode)
 }
 
 /* Returns Alternate Frequency switch status */
+<<<<<<< HEAD
 u32 fm_rx_get_af_switch(struct fmdev *fmdev, u8 *af_mode)
+=======
+int fm_rx_get_af_switch(struct fmdev *fmdev, u8 *af_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (fmdev->curr_fmmode != FM_MODE_RX)
 		return -EPERM;

@@ -200,6 +200,7 @@ static struct platform_driver of_platform_serial_driver = {
 	.remove = of_platform_serial_remove,
 };
 
+<<<<<<< HEAD
 static int __init of_platform_serial_init(void)
 {
 	return platform_driver_register(&of_platform_serial_driver);
@@ -211,6 +212,9 @@ static void __exit of_platform_serial_exit(void)
 	return platform_driver_unregister(&of_platform_serial_driver);
 };
 module_exit(of_platform_serial_exit);
+=======
+module_platform_driver(of_platform_serial_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Arnd Bergmann <arnd@arndb.de>");
 MODULE_LICENSE("GPL");

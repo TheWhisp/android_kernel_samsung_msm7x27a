@@ -28,6 +28,13 @@
 
 #define _HCI_INTF_C_
 
+<<<<<<< HEAD
+=======
+#include <linux/usb.h>
+#include <linux/module.h>
+#include <linux/firmware.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "recv_osdep.h"
@@ -100,14 +107,26 @@ static struct usb_device_id rtl871x_usb_id_tbl[] = {
 	/* - */
 	{USB_DEVICE(0x20F4, 0x646B)},
 	{USB_DEVICE(0x083A, 0xC512)},
+<<<<<<< HEAD
+=======
+	{USB_DEVICE(0x25D4, 0x4CA1)},
+	{USB_DEVICE(0x25D4, 0x4CAB)},
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* RTL8191SU */
 	/* Realtek */
 	{USB_DEVICE(0x0BDA, 0x8172)},
+<<<<<<< HEAD
 	/* Amigo */
 	{USB_DEVICE(0x0EB0, 0x9061)},
 	/* ASUS/EKB */
 	{USB_DEVICE(0x0BDA, 0x8172)},
+=======
+	{USB_DEVICE(0x0BDA, 0x8192)},
+	/* Amigo */
+	{USB_DEVICE(0x0EB0, 0x9061)},
+	/* ASUS/EKB */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{USB_DEVICE(0x13D3, 0x3323)},
 	{USB_DEVICE(0x13D3, 0x3311)}, /* 11n mode disable */
 	{USB_DEVICE(0x13D3, 0x3342)},
@@ -159,7 +178,10 @@ static struct usb_device_id rtl871x_usb_id_tbl[] = {
 /* RTL8192SU */
 	/* Realtek */
 	{USB_DEVICE(0x0BDA, 0x8174)},
+<<<<<<< HEAD
 	{USB_DEVICE(0x0BDA, 0x8174)},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Belkin */
 	{USB_DEVICE(0x050D, 0x845A)},
 	/* Corega */
@@ -280,7 +302,10 @@ static uint r8712_usb_dvobj_init(struct _adapter *padapter)
 	}
 	if ((r8712_alloc_io_queue(padapter)) == _FAIL)
 		status = _FAIL;
+<<<<<<< HEAD
 	sema_init(&(padapter->dvobjpriv.usb_suspend_sema), 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return status;
 }
 
@@ -370,23 +395,41 @@ static int r871xu_drv_init(struct usb_interface *pusb_intf,
 	struct _adapter *padapter = NULL;
 	struct dvobj_priv *pdvobjpriv;
 	struct net_device *pnetdev;
+<<<<<<< HEAD
+=======
+	struct usb_device *udev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "r8712u: DriverVersion: %s\n", DRVER);
 	/* In this probe function, O.S. will provide the usb interface pointer
 	 * to driver. We have to increase the reference count of the usb device
 	 * structure by using the usb_get_dev function.
 	 */
+<<<<<<< HEAD
 	usb_get_dev(interface_to_usbdev(pusb_intf));
+=======
+	udev = interface_to_usbdev(pusb_intf);
+	usb_get_dev(udev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pintf = pusb_intf;
 	/* step 1. */
 	pnetdev = r8712_init_netdev();
 	if (!pnetdev)
 		goto error;
+<<<<<<< HEAD
 	padapter = (struct _adapter *)_netdev_priv(pnetdev);
 	disable_ht_for_spec_devid(pdid, padapter);
 	pdvobjpriv = &padapter->dvobjpriv;
 	pdvobjpriv->padapter = padapter;
 	padapter->dvobjpriv.pusbdev = interface_to_usbdev(pusb_intf);
+=======
+	padapter = netdev_priv(pnetdev);
+	disable_ht_for_spec_devid(pdid, padapter);
+	pdvobjpriv = &padapter->dvobjpriv;
+	pdvobjpriv->padapter = padapter;
+	padapter->dvobjpriv.pusbdev = udev;
+	padapter->pusb_intf = pusb_intf;
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_set_intfdata(pusb_intf, pnetdev);
 	SET_NETDEV_DEV(pnetdev, &pusb_intf->dev);
 	/* step 2. */
@@ -593,17 +636,32 @@ static int r871xu_drv_init(struct usb_interface *pusb_intf,
 			       "%pM\n", mac);
 		memcpy(pnetdev->dev_addr, mac, ETH_ALEN);
 	}
+<<<<<<< HEAD
 	/* step 6. Tell the network stack we exist */
 	if (register_netdev(pnetdev) != 0)
 		goto error;
 	return 0;
 error:
 	usb_put_dev(interface_to_usbdev(pusb_intf));
+=======
+	/* step 6. Load the firmware asynchronously */
+	if (rtl871x_load_fw(padapter))
+		goto error;
+	spin_lock_init(&padapter->lockRxFF0Filter);
+	mutex_init(&padapter->mutex_start);
+	return 0;
+error:
+	usb_put_dev(udev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_set_intfdata(pusb_intf, NULL);
 	if (padapter->dvobj_deinit != NULL)
 		padapter->dvobj_deinit(padapter);
 	if (pnetdev)
+<<<<<<< HEAD
 		os_free_netdev(pnetdev);
+=======
+		free_netdev(pnetdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ENODEV;
 }
 
@@ -615,7 +673,16 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
 	struct _adapter *padapter = netdev_priv(pnetdev);
 	struct usb_device *udev = interface_to_usbdev(pusb_intf);
 
+<<<<<<< HEAD
 	if (padapter) {
+=======
+	usb_set_intfdata(pusb_intf, NULL);
+	if (padapter) {
+		if (padapter->fw_found)
+			release_firmware(padapter->fw);
+		/* never exit with a firmware callback pending */
+		wait_for_completion(&padapter->rtl8712_fw_ready);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (drvpriv.drv_registered == true)
 			padapter->bSurpriseRemoved = true;
 		if (pnetdev != NULL) {
@@ -624,6 +691,12 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
 		}
 		flush_scheduled_work();
 		udelay(1);
+<<<<<<< HEAD
+=======
+		/*Stop driver mlme relation timer */
+		if (padapter->fw_found)
+			r8712_stop_drv_timers(padapter);
+>>>>>>> refs/remotes/origin/cm-10.0
 		r871x_dev_unload(padapter);
 		r8712_free_drv_sw(padapter);
 	}

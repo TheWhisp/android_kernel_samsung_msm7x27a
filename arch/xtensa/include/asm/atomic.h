@@ -18,7 +18,11 @@
 
 #ifdef __KERNEL__
 #include <asm/processor.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define ATOMIC_INIT(i)	{ (i) }
 
@@ -225,15 +229,25 @@ static inline int atomic_sub_return(int i, atomic_t * v)
 #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
 
 /**
+<<<<<<< HEAD
  * atomic_add_unless - add unless the number is a given value
+=======
+ * __atomic_add_unless - add unless the number is a given value
+>>>>>>> refs/remotes/origin/cm-10.0
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
 static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+ * Returns the old value of @v.
+ */
+static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int c, old;
 	c = atomic_read(v);
@@ -245,10 +259,16 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
 			break;
 		c = old;
 	}
+<<<<<<< HEAD
 	return c != (u);
 }
 
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+=======
+	return c;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void atomic_clear_mask(unsigned int mask, atomic_t *v)
 {
@@ -292,7 +312,10 @@ static inline void atomic_set_mask(unsigned int mask, atomic_t *v)
 #define smp_mb__before_atomic_inc()	barrier()
 #define smp_mb__after_atomic_inc()	barrier()
 
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KERNEL__ */
 
 #endif /* _XTENSA_ATOMIC_H */

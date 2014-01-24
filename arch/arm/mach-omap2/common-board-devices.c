@@ -33,7 +33,10 @@
 	defined(CONFIG_TOUCHSCREEN_ADS7846_MODULE)
 static struct omap2_mcspi_device_config ads7846_mcspi_config = {
 	.turbo_mode	= 0,
+<<<<<<< HEAD
 	.single_channel	= 1,	/* 0: slave, 1: master */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct ads7846_platform_data ads7846_config = {
@@ -76,6 +79,7 @@ void __init omap_ads7846_init(int bus_num, int gpio_pendown, int gpio_debounce,
 			gpio_set_debounce(gpio_pendown, gpio_debounce);
 	}
 
+<<<<<<< HEAD
 	ads7846_config.gpio_pendown = gpio_pendown;
 
 	spi_bi->bus_num	= bus_num;
@@ -83,6 +87,17 @@ void __init omap_ads7846_init(int bus_num, int gpio_pendown, int gpio_debounce,
 
 	if (board_pdata)
 		spi_bi->platform_data = board_pdata;
+=======
+	spi_bi->bus_num	= bus_num;
+	spi_bi->irq	= gpio_to_irq(gpio_pendown);
+
+	if (board_pdata) {
+		board_pdata->gpio_pendown = gpio_pendown;
+		spi_bi->platform_data = board_pdata;
+	} else {
+		ads7846_config.gpio_pendown = gpio_pendown;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spi_register_board_info(&ads7846_spi_board_info, 1);
 }
@@ -94,9 +109,13 @@ void __init omap_ads7846_init(int bus_num, int gpio_pendown, int gpio_debounce,
 #endif
 
 #if defined(CONFIG_MTD_NAND_OMAP2) || defined(CONFIG_MTD_NAND_OMAP2_MODULE)
+<<<<<<< HEAD
 static struct omap_nand_platform_data nand_data = {
 	.dma_channel	= -1,		/* disable DMA in OMAP NAND driver */
 };
+=======
+static struct omap_nand_platform_data nand_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __init omap_nand_flash_init(int options, struct mtd_partition *parts,
 				 int nr_parts)
@@ -127,7 +146,11 @@ void __init omap_nand_flash_init(int options, struct mtd_partition *parts,
 		nand_data.cs = nandcs;
 		nand_data.parts = parts;
 		nand_data.nr_parts = nr_parts;
+<<<<<<< HEAD
 		nand_data.options = options;
+=======
+		nand_data.devsize = options;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		printk(KERN_INFO "Registering NAND on CS%d\n", nandcs);
 		if (gpmc_nand_init(&nand_data) < 0)

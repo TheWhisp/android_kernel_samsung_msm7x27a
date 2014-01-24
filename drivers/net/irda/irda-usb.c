@@ -1914,6 +1914,7 @@ static struct usb_driver irda_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 /************************* MODULE CALLBACKS *************************/
 /*
  * Deal with module insertion/removal
@@ -1949,6 +1950,10 @@ static void __exit usb_irda_cleanup(void)
 module_exit(usb_irda_cleanup);
 
 /*------------------------------------------------------------------*/
+=======
+module_usb_driver(irda_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Module parameters
  */

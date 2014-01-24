@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
     adm1021.c - Part of lm_sensors, Linux kernel modules for hardware
 		monitoring
     Copyright (c) 1998, 1999  Frodo Looijaard <frodol@dds.nl> and
@@ -18,6 +19,27 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+=======
+ * adm1021.c - Part of lm_sensors, Linux kernel modules for hardware
+ *	       monitoring
+ * Copyright (c) 1998, 1999  Frodo Looijaard <frodol@dds.nl> and
+ *			     Philip Edelbrock <phil@netroedge.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -70,10 +92,19 @@ enum chips {
 
 /* Initial values */
 
+<<<<<<< HEAD
 /* Note: Even though I left the low and high limits named os and hyst,
 they don't quite work like a thermostat the way the LM75 does.  I.e.,
 a lower temp than THYST actually triggers an alarm instead of
 clearing it.  Weird, ey?   --Phil  */
+=======
+/*
+ * Note: Even though I left the low and high limits named os and hyst,
+ * they don't quite work like a thermostat the way the LM75 does.  I.e.,
+ * a lower temp than THYST actually triggers an alarm instead of
+ * clearing it.  Weird, ey?   --Phil
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Each client has this additional data */
 struct adm1021_data {
@@ -103,7 +134,11 @@ static int adm1021_remove(struct i2c_client *client);
 static struct adm1021_data *adm1021_update_device(struct device *dev);
 
 /* (amalysh) read only mode, otherwise any limit's writing confuse BIOS */
+<<<<<<< HEAD
 static int read_only;
+=======
+static bool read_only;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 static const struct i2c_device_id adm1021_id[] = {
@@ -182,7 +217,17 @@ static ssize_t set_temp_max(struct device *dev,
 	int index = to_sensor_dev_attr(devattr)->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1021_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 	long temp = simple_strtol(buf, NULL, 10) / 1000;
+=======
+	long temp;
+	int err;
+
+	err = kstrtol(buf, 10, &temp);
+	if (err)
+		return err;
+	temp /= 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_max[index] = SENSORS_LIMIT(temp, -128, 127);
@@ -201,7 +246,17 @@ static ssize_t set_temp_min(struct device *dev,
 	int index = to_sensor_dev_attr(devattr)->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1021_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 	long temp = simple_strtol(buf, NULL, 10) / 1000;
+=======
+	long temp;
+	int err;
+
+	err = kstrtol(buf, 10, &temp);
+	if (err)
+		return err;
+	temp /= 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_min[index] = SENSORS_LIMIT(temp, -128, 127);
@@ -226,7 +281,18 @@ static ssize_t set_low_power(struct device *dev,
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1021_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 	int low_power = simple_strtol(buf, NULL, 10) != 0;
+=======
+	char low_power;
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	low_power = val != 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	if (low_power != data->low_power) {
@@ -403,7 +469,12 @@ static int adm1021_probe(struct i2c_client *client,
 		adm1021_init_client(client);
 
 	/* Register sysfs hooks */
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&client->dev.kobj, &adm1021_group)))
+=======
+	err = sysfs_create_group(&client->dev.kobj, &adm1021_group);
+	if (err)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto error1;
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
@@ -469,8 +540,15 @@ static struct adm1021_data *adm1021_update_device(struct device *dev)
 		data->alarms = i2c_smbus_read_byte_data(client,
 						ADM1021_REG_STATUS) & 0x7c;
 		if (data->type == adm1023) {
+<<<<<<< HEAD
 			/* The ADM1023 provides 3 extra bits of precision for
 			 * the remote sensor in extra registers. */
+=======
+			/*
+			 * The ADM1023 provides 3 extra bits of precision for
+			 * the remote sensor in extra registers.
+			 */
+>>>>>>> refs/remotes/origin/cm-10.0
 			data->temp[1] += 125 * (i2c_smbus_read_byte_data(
 				client, ADM1023_REG_REM_TEMP_PREC) >> 5);
 			data->temp_max[1] += 125 * (i2c_smbus_read_byte_data(
@@ -493,6 +571,7 @@ static struct adm1021_data *adm1021_update_device(struct device *dev)
 	return data;
 }
 
+<<<<<<< HEAD
 static int __init sensors_adm1021_init(void)
 {
 	return i2c_add_driver(&adm1021_driver);
@@ -504,12 +583,20 @@ static void __exit sensors_adm1021_exit(void)
 }
 
 MODULE_AUTHOR ("Frodo Looijaard <frodol@dds.nl> and "
+=======
+module_i2c_driver(adm1021_driver);
+
+MODULE_AUTHOR("Frodo Looijaard <frodol@dds.nl> and "
+>>>>>>> refs/remotes/origin/cm-10.0
 		"Philip Edelbrock <phil@netroedge.com>");
 MODULE_DESCRIPTION("adm1021 driver");
 MODULE_LICENSE("GPL");
 
 module_param(read_only, bool, 0);
 MODULE_PARM_DESC(read_only, "Don't set any values, read only mode");
+<<<<<<< HEAD
 
 module_init(sensors_adm1021_init)
 module_exit(sensors_adm1021_exit)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

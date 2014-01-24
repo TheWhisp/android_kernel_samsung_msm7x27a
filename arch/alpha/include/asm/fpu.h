@@ -1,6 +1,13 @@
 #ifndef __ASM_ALPHA_FPU_H
 #define __ASM_ALPHA_FPU_H
 
+<<<<<<< HEAD
+=======
+#ifdef __KERNEL__
+#include <asm/special_insns.h>
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Alpha floating-point control register defines:
  */

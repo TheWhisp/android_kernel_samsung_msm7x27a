@@ -206,6 +206,11 @@ static int pci_olpc_read(unsigned int seg, unsigned int bus,
 {
 	uint32_t *addr;
 
+<<<<<<< HEAD
+=======
+	WARN_ON(seg);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Use the hardware mechanism for non-simulated devices */
 	if (!is_simulated(bus, devfn))
 		return pci_direct_conf1.read(seg, bus, devfn, reg, len, value);
@@ -264,6 +269,11 @@ static int pci_olpc_read(unsigned int seg, unsigned int bus,
 static int pci_olpc_write(unsigned int seg, unsigned int bus,
 		unsigned int devfn, int reg, int len, uint32_t value)
 {
+<<<<<<< HEAD
+=======
+	WARN_ON(seg);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Use the hardware mechanism for non-simulated devices */
 	if (!is_simulated(bus, devfn))
 		return pci_direct_conf1.write(seg, bus, devfn, reg, len, value);
@@ -297,7 +307,11 @@ static int pci_olpc_write(unsigned int seg, unsigned int bus,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct pci_raw_ops pci_olpc_conf = {
+=======
+static const struct pci_raw_ops pci_olpc_conf = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read =	pci_olpc_read,
 	.write = pci_olpc_write,
 };

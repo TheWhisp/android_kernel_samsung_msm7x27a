@@ -988,6 +988,7 @@ static struct usb_driver yealink_driver = {
 	.id_table	= usb_table,
 };
 
+<<<<<<< HEAD
 static int __init yealink_dev_init(void)
 {
 	int ret = usb_register(&yealink_driver);
@@ -1004,6 +1005,9 @@ static void __exit yealink_dev_exit(void)
 
 module_init(yealink_dev_init);
 module_exit(yealink_dev_exit);
+=======
+module_usb_driver(yealink_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DEVICE_TABLE (usb, usb_table);
 

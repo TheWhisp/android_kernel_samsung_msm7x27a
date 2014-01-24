@@ -16,7 +16,12 @@
  * assembly versions such as arch/ppc/lib/div64.S and arch/sh/lib/div64.S.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/math64.h>
 
 /* Not needed on 64bit architectures */

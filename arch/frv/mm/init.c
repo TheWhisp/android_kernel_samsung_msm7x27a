@@ -33,7 +33,10 @@
 #include <asm/segment.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mmu_context.h>
 #include <asm/virtconvert.h>
 #include <asm/sections.h>

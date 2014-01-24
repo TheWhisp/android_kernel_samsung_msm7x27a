@@ -23,6 +23,7 @@
 #include <linux/dcbnl.h>
 
 struct dcb_app_type {
+<<<<<<< HEAD
 	char		  name[IFNAMSIZ];
 	struct dcb_app	  app;
 	struct list_head  list;
@@ -30,6 +31,24 @@ struct dcb_app_type {
 
 u8 dcb_setapp(struct net_device *, struct dcb_app *);
 u8 dcb_getapp(struct net_device *, struct dcb_app *);
+=======
+	int	ifindex;
+	struct dcb_app	  app;
+	struct list_head  list;
+	u8	dcbx;
+};
+
+int dcb_setapp(struct net_device *, struct dcb_app *);
+u8 dcb_getapp(struct net_device *, struct dcb_app *);
+int dcb_ieee_setapp(struct net_device *, struct dcb_app *);
+int dcb_ieee_delapp(struct net_device *, struct dcb_app *);
+u8 dcb_ieee_getapp_mask(struct net_device *, struct dcb_app *);
+
+int dcbnl_ieee_notify(struct net_device *dev, int event, int cmd,
+		      u32 seq, u32 pid);
+int dcbnl_cee_notify(struct net_device *dev, int event, int cmd,
+		     u32 seq, u32 pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Ops struct for the netlink callbacks.  Used by DCB-enabled drivers through
@@ -43,6 +62,10 @@ struct dcbnl_rtnl_ops {
 	int (*ieee_setpfc) (struct net_device *, struct ieee_pfc *);
 	int (*ieee_getapp) (struct net_device *, struct dcb_app *);
 	int (*ieee_setapp) (struct net_device *, struct dcb_app *);
+<<<<<<< HEAD
+=======
+	int (*ieee_delapp) (struct net_device *, struct dcb_app *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*ieee_peer_getets) (struct net_device *, struct ieee_ets *);
 	int (*ieee_peer_getpfc) (struct net_device *, struct ieee_pfc *);
 
@@ -62,8 +85,13 @@ struct dcbnl_rtnl_ops {
 	void (*getpfccfg)(struct net_device *, int, u8 *);
 	u8   (*setall)(struct net_device *);
 	u8   (*getcap)(struct net_device *, int, u8 *);
+<<<<<<< HEAD
 	u8   (*getnumtcs)(struct net_device *, int, u8 *);
 	u8   (*setnumtcs)(struct net_device *, int, u8);
+=======
+	int  (*getnumtcs)(struct net_device *, int, u8 *);
+	int  (*setnumtcs)(struct net_device *, int, u8);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8   (*getpfcstate)(struct net_device *);
 	void (*setpfcstate)(struct net_device *, u8);
 	void (*getbcncfg)(struct net_device *, int, u32 *);

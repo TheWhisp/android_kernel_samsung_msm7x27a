@@ -357,6 +357,10 @@ miss:
 	}
 	return NULL;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(btree_get_prev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int getpos(struct btree_geo *geo, unsigned long *node,
 		unsigned long *key)

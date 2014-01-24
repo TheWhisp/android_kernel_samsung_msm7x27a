@@ -10,6 +10,7 @@
 #include <mach/hardware.h>
 #include <asm/hardware/clps7111.h>
 
+<<<<<<< HEAD
 		.macro	disable_fiq
 		.endm
 
@@ -19,6 +20,11 @@
 		.macro	arch_ret_to_user, tmp1, tmp2
 		.endm
 
+=======
+		.macro	get_irqnr_preamble, base, tmp
+		.endm
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if (INTSR2 - INTSR1) != (INTMR2 - INTMR1)
 #error INTSR stride != INTMR stride
 #endif

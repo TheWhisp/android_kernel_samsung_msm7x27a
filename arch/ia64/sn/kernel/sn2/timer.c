@@ -14,7 +14,10 @@
 #include <linux/clocksource.h>
 
 #include <asm/hw_irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/timex.h>
 
 #include <asm/sn/leds.h>
@@ -54,7 +57,11 @@ ia64_sn_udelay (unsigned long usecs)
 
 void __init sn_timer_init(void)
 {
+<<<<<<< HEAD
 	clocksource_sn2.fsys_mmio = RTC_COUNTER_ADDR;
+=======
+	clocksource_sn2.archdata.fsys_mmio = RTC_COUNTER_ADDR;
+>>>>>>> refs/remotes/origin/cm-10.0
 	clocksource_register_hz(&clocksource_sn2, sn_rtc_cycles_per_second);
 
 	ia64_udelay = &ia64_sn_udelay;

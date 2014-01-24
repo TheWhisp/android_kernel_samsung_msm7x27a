@@ -366,6 +366,11 @@ struct snd_ymfpci {
 #ifdef CONFIG_PM
 	u32 *saved_regs;
 	u32 saved_ydsxgr_mode;
+<<<<<<< HEAD
+=======
+	u16 saved_dsxg_legacy;
+	u16 saved_dsxg_elegacy;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 };
 

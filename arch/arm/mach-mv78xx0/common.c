@@ -12,7 +12,10 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/serial_8250.h>
+<<<<<<< HEAD
 #include <linux/mbus.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ata_platform.h>
 #include <linux/ethtool.h>
 #include <asm/mach/map.h>
@@ -24,6 +27,10 @@
 #include <plat/orion_nand.h>
 #include <plat/time.h>
 #include <plat/common.h>
+<<<<<<< HEAD
+=======
+#include <plat/addr-map.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "common.h"
 
 static int get_tclk(void);
@@ -170,8 +177,12 @@ void __init mv78xx0_map_io(void)
  ****************************************************************************/
 void __init mv78xx0_ehci0_init(void)
 {
+<<<<<<< HEAD
 	orion_ehci_init(&mv78xx0_mbus_dram_info,
 			USB0_PHYS_BASE, IRQ_MV78XX0_USB_0, EHCI_PHY_NA);
+=======
+	orion_ehci_init(USB0_PHYS_BASE, IRQ_MV78XX0_USB_0, EHCI_PHY_NA);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -180,8 +191,12 @@ void __init mv78xx0_ehci0_init(void)
  ****************************************************************************/
 void __init mv78xx0_ehci1_init(void)
 {
+<<<<<<< HEAD
 	orion_ehci_1_init(&mv78xx0_mbus_dram_info,
 			  USB1_PHYS_BASE, IRQ_MV78XX0_USB_1);
+=======
+	orion_ehci_1_init(USB1_PHYS_BASE, IRQ_MV78XX0_USB_1);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -190,8 +205,12 @@ void __init mv78xx0_ehci1_init(void)
  ****************************************************************************/
 void __init mv78xx0_ehci2_init(void)
 {
+<<<<<<< HEAD
 	orion_ehci_2_init(&mv78xx0_mbus_dram_info,
 			  USB2_PHYS_BASE, IRQ_MV78XX0_USB_2);
+=======
+	orion_ehci_2_init(USB2_PHYS_BASE, IRQ_MV78XX0_USB_2);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -200,7 +219,11 @@ void __init mv78xx0_ehci2_init(void)
  ****************************************************************************/
 void __init mv78xx0_ge00_init(struct mv643xx_eth_platform_data *eth_data)
 {
+<<<<<<< HEAD
 	orion_ge00_init(eth_data, &mv78xx0_mbus_dram_info,
+=======
+	orion_ge00_init(eth_data,
+>>>>>>> refs/remotes/origin/cm-10.0
 			GE00_PHYS_BASE, IRQ_MV78XX0_GE00_SUM,
 			IRQ_MV78XX0_GE_ERR, get_tclk());
 }
@@ -211,7 +234,11 @@ void __init mv78xx0_ge00_init(struct mv643xx_eth_platform_data *eth_data)
  ****************************************************************************/
 void __init mv78xx0_ge01_init(struct mv643xx_eth_platform_data *eth_data)
 {
+<<<<<<< HEAD
 	orion_ge01_init(eth_data, &mv78xx0_mbus_dram_info,
+=======
+	orion_ge01_init(eth_data,
+>>>>>>> refs/remotes/origin/cm-10.0
 			GE01_PHYS_BASE, IRQ_MV78XX0_GE01_SUM,
 			NO_IRQ, get_tclk());
 }
@@ -235,7 +262,11 @@ void __init mv78xx0_ge10_init(struct mv643xx_eth_platform_data *eth_data)
 		eth_data->duplex = DUPLEX_FULL;
 	}
 
+<<<<<<< HEAD
 	orion_ge10_init(eth_data, &mv78xx0_mbus_dram_info,
+=======
+	orion_ge10_init(eth_data,
+>>>>>>> refs/remotes/origin/cm-10.0
 			GE10_PHYS_BASE, IRQ_MV78XX0_GE10_SUM,
 			NO_IRQ, get_tclk());
 }
@@ -259,7 +290,11 @@ void __init mv78xx0_ge11_init(struct mv643xx_eth_platform_data *eth_data)
 		eth_data->duplex = DUPLEX_FULL;
 	}
 
+<<<<<<< HEAD
 	orion_ge11_init(eth_data, &mv78xx0_mbus_dram_info,
+=======
+	orion_ge11_init(eth_data,
+>>>>>>> refs/remotes/origin/cm-10.0
 			GE11_PHYS_BASE, IRQ_MV78XX0_GE11_SUM,
 			NO_IRQ, get_tclk());
 }
@@ -278,8 +313,12 @@ void __init mv78xx0_i2c_init(void)
  ****************************************************************************/
 void __init mv78xx0_sata_init(struct mv_sata_platform_data *sata_data)
 {
+<<<<<<< HEAD
 	orion_sata_init(sata_data, &mv78xx0_mbus_dram_info,
 			SATA_PHYS_BASE, IRQ_MV78XX0_SATA);
+=======
+	orion_sata_init(sata_data, SATA_PHYS_BASE, IRQ_MV78XX0_SATA);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -402,3 +441,22 @@ void __init mv78xx0_init(void)
 	feroceon_l2_init(is_l2_writethrough());
 #endif
 }
+<<<<<<< HEAD
+=======
+
+void mv78xx0_restart(char mode, const char *cmd)
+{
+	/*
+	 * Enable soft reset to assert RSTOUTn.
+	 */
+	writel(SOFT_RESET_OUT_EN, RSTOUTn_MASK);
+
+	/*
+	 * Assert soft reset.
+	 */
+	writel(SOFT_RESET, SYSTEM_SOFT_RESET);
+
+	while (1)
+		;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,12 +24,22 @@
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <asm/hardware/gic.h>
 #include <linux/spinlock.h>
 #include <mach/msm_iomap.h>
 #include <mach/gpio.h>
 
 #include "mpm.h"
+=======
+#include <linux/slab.h>
+#include <linux/spinlock.h>
+#include <asm/hardware/gic.h>
+#include <mach/msm_iomap.h>
+#include <mach/gpio.h>
+
+#include <mach/mpm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /******************************************************************************
  * Debug Definitions
@@ -68,6 +82,10 @@ enum {
 #define MSM_MPM_IRQ_INDEX(irq)  (irq / 32)
 #define MSM_MPM_IRQ_MASK(irq)  BIT(irq % 32)
 
+<<<<<<< HEAD
+=======
+static struct msm_mpm_device_data msm_mpm_dev_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 static uint8_t msm_mpm_irqs_a2m[MSM_MPM_NR_APPS_IRQS];
 
 static DEFINE_SPINLOCK(msm_mpm_lock);
@@ -326,7 +344,11 @@ static int msm_mpm_set_irq_type(struct irq_data *d, unsigned int flow_type)
 /******************************************************************************
  * Public functions
  *****************************************************************************/
+<<<<<<< HEAD
 int msm_mpm_enable_pin(enum msm_mpm_pin pin, unsigned int enable)
+=======
+int msm_mpm_enable_pin(unsigned int pin, unsigned int enable)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	uint32_t index = MSM_MPM_IRQ_INDEX(pin);
 	uint32_t mask = MSM_MPM_IRQ_MASK(pin);
@@ -343,7 +365,11 @@ int msm_mpm_enable_pin(enum msm_mpm_pin pin, unsigned int enable)
 	return 0;
 }
 
+<<<<<<< HEAD
 int msm_mpm_set_pin_wake(enum msm_mpm_pin pin, unsigned int on)
+=======
+int msm_mpm_set_pin_wake(unsigned int pin, unsigned int on)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	uint32_t index = MSM_MPM_IRQ_INDEX(pin);
 	uint32_t mask = MSM_MPM_IRQ_MASK(pin);
@@ -360,7 +386,11 @@ int msm_mpm_set_pin_wake(enum msm_mpm_pin pin, unsigned int on)
 	return 0;
 }
 
+<<<<<<< HEAD
 int msm_mpm_set_pin_type(enum msm_mpm_pin pin, unsigned int flow_type)
+=======
+int msm_mpm_set_pin_type(unsigned int pin, unsigned int flow_type)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	uint32_t index = MSM_MPM_IRQ_INDEX(pin);
 	uint32_t mask = MSM_MPM_IRQ_MASK(pin);
@@ -472,7 +502,11 @@ static int __init msm_mpm_early_init(void)
 }
 core_initcall(msm_mpm_early_init);
 
+<<<<<<< HEAD
 void msm_mpm_irq_extn_init(void)
+=======
+void __init msm_mpm_irq_extn_init(struct msm_mpm_device_data *mpm_data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	gic_arch_extn.irq_mask = msm_mpm_disable_irq;
 	gic_arch_extn.irq_unmask = msm_mpm_enable_irq;
@@ -487,6 +521,32 @@ void msm_mpm_irq_extn_init(void)
 	msm_gpio_irq_extn.irq_set_wake = msm_mpm_set_irq_wake;
 
 	bitmap_set(msm_mpm_gpio_irqs_mask, NR_MSM_IRQS, NR_GPIO_IRQS);
+<<<<<<< HEAD
+=======
+
+	if (!mpm_data) {
+#ifdef CONFIG_MSM_MPM
+		BUG();
+#endif
+		return;
+	}
+
+	memcpy(&msm_mpm_dev_data, mpm_data, sizeof(struct msm_mpm_device_data));
+
+	msm_mpm_dev_data.irqs_m2a =
+		kzalloc(msm_mpm_dev_data.irqs_m2a_size * sizeof(uint16_t),
+			GFP_KERNEL);
+	BUG_ON(!msm_mpm_dev_data.irqs_m2a);
+	memcpy(msm_mpm_dev_data.irqs_m2a, mpm_data->irqs_m2a,
+		msm_mpm_dev_data.irqs_m2a_size * sizeof(uint16_t));
+	msm_mpm_dev_data.bypassed_apps_irqs =
+		kzalloc(msm_mpm_dev_data.bypassed_apps_irqs_size *
+			sizeof(uint16_t), GFP_KERNEL);
+	BUG_ON(!msm_mpm_dev_data.bypassed_apps_irqs);
+	memcpy(msm_mpm_dev_data.bypassed_apps_irqs,
+		mpm_data->bypassed_apps_irqs,
+		msm_mpm_dev_data.bypassed_apps_irqs_size * sizeof(uint16_t));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __init msm_mpm_init(void)

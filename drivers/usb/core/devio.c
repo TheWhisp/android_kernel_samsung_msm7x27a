@@ -46,6 +46,10 @@
 #include <linux/cdev.h>
 #include <linux/notifier.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+=======
+#include <linux/user_namespace.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/byteorder.h>
 #include <linux/moduleparam.h>
@@ -68,7 +72,11 @@ struct dev_state {
 	wait_queue_head_t wait;     /* wake up if a request completed */
 	unsigned int discsignr;
 	struct pid *disc_pid;
+<<<<<<< HEAD
 	uid_t disc_uid, disc_euid;
+=======
+	const struct cred *cred;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void __user *disccontext;
 	unsigned long ifclaimed;
 	u32 secid;
@@ -79,19 +87,31 @@ struct async {
 	struct list_head asynclist;
 	struct dev_state *ps;
 	struct pid *pid;
+<<<<<<< HEAD
 	uid_t uid, euid;
+=======
+	const struct cred *cred;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int signr;
 	unsigned int ifnum;
 	void __user *userbuffer;
 	void __user *userurb;
 	struct urb *urb;
+<<<<<<< HEAD
+=======
+	unsigned int mem_usage;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int status;
 	u32 secid;
 	u8 bulk_addr;
 	u8 bulk_status;
 };
 
+<<<<<<< HEAD
 static int usbfs_snoop;
+=======
+static bool usbfs_snoop;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(usbfs_snoop, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(usbfs_snoop, "true to log all usbfs traffic");
 
@@ -107,8 +127,49 @@ enum snoop_when {
 
 #define USB_DEVICE_DEV		MKDEV(USB_DEVICE_MAJOR, 0)
 
+<<<<<<< HEAD
 #define	MAX_USBFS_BUFFER_SIZE	16384
 
+=======
+/* Limit on the total amount of memory we can allocate for transfers */
+static unsigned usbfs_memory_mb = 16;
+module_param(usbfs_memory_mb, uint, 0644);
+MODULE_PARM_DESC(usbfs_memory_mb,
+		"maximum MB allowed for usbfs buffers (0 = no limit)");
+
+/* Hard limit, necessary to avoid aithmetic overflow */
+#define USBFS_XFER_MAX		(UINT_MAX / 2 - 1000000)
+
+static atomic_t usbfs_memory_usage;	/* Total memory currently allocated */
+
+/* Check whether it's okay to allocate more memory for a transfer */
+static int usbfs_increase_memory_usage(unsigned amount)
+{
+	unsigned lim;
+
+	/*
+	 * Convert usbfs_memory_mb to bytes, avoiding overflows.
+	 * 0 means use the hard limit (effectively unlimited).
+	 */
+	lim = ACCESS_ONCE(usbfs_memory_mb);
+	if (lim == 0 || lim > (USBFS_XFER_MAX >> 20))
+		lim = USBFS_XFER_MAX;
+	else
+		lim <<= 20;
+
+	atomic_add(amount, &usbfs_memory_usage);
+	if (atomic_read(&usbfs_memory_usage) <= lim)
+		return 0;
+	atomic_sub(amount, &usbfs_memory_usage);
+	return -ENOMEM;
+}
+
+/* Memory for a transfer is being deallocated */
+static void usbfs_decrease_memory_usage(unsigned amount)
+{
+	atomic_sub(amount, &usbfs_memory_usage);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int connected(struct dev_state *ps)
 {
@@ -248,9 +309,18 @@ static struct async *alloc_async(unsigned int numisoframes)
 static void free_async(struct async *as)
 {
 	put_pid(as->pid);
+<<<<<<< HEAD
 	kfree(as->urb->transfer_buffer);
 	kfree(as->urb->setup_packet);
 	usb_free_urb(as->urb);
+=======
+	if (as->cred)
+		put_cred(as->cred);
+	kfree(as->urb->transfer_buffer);
+	kfree(as->urb->setup_packet);
+	usb_free_urb(as->urb);
+	usbfs_decrease_memory_usage(as->mem_usage);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(as);
 }
 
@@ -292,6 +362,7 @@ static struct async *async_getcompleted(struct dev_state *ps)
 static struct async *async_getpending(struct dev_state *ps,
 					     void __user *userurb)
 {
+<<<<<<< HEAD
 	struct async *as;
 
 	list_for_each_entry(as, &ps->async_pending, asynclist)
@@ -300,6 +371,19 @@ static struct async *async_getpending(struct dev_state *ps,
 			return as;
 		}
 
+=======
+	unsigned long flags;
+	struct async *as;
+
+	spin_lock_irqsave(&ps->lock, flags);
+	list_for_each_entry(as, &ps->async_pending, asynclist)
+		if (as->userurb == userurb) {
+			list_del_init(&as->asynclist);
+			spin_unlock_irqrestore(&ps->lock, flags);
+			return as;
+		}
+	spin_unlock_irqrestore(&ps->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return NULL;
 }
 
@@ -354,7 +438,10 @@ static void cancel_bulk_urbs(struct dev_state *ps, unsigned bulk_addr)
 __releases(ps->lock)
 __acquires(ps->lock)
 {
+<<<<<<< HEAD
 	struct urb *urb;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct async *as;
 
 	/* Mark all the pending URBs that match bulk_addr, up to but not
@@ -377,11 +464,16 @@ __acquires(ps->lock)
 	list_for_each_entry(as, &ps->async_pending, asynclist) {
 		if (as->bulk_status == AS_UNLINK) {
 			as->bulk_status = 0;		/* Only once */
+<<<<<<< HEAD
 			urb = as->urb;
 			usb_get_urb(urb);
 			spin_unlock(&ps->lock);		/* Allow completions */
 			usb_unlink_urb(urb);
 			usb_put_urb(urb);
+=======
+			spin_unlock(&ps->lock);		/* Allow completions */
+			usb_unlink_urb(as->urb);
+>>>>>>> refs/remotes/origin/cm-10.0
 			spin_lock(&ps->lock);
 			goto rescan;
 		}
@@ -394,9 +486,14 @@ static void async_completed(struct urb *urb)
 	struct dev_state *ps = as->ps;
 	struct siginfo sinfo;
 	struct pid *pid = NULL;
+<<<<<<< HEAD
 	uid_t uid = 0;
 	uid_t euid = 0;
 	u32 secid = 0;
+=======
+	u32 secid = 0;
+	const struct cred *cred = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int signr;
 
 	spin_lock(&ps->lock);
@@ -409,8 +506,12 @@ static void async_completed(struct urb *urb)
 		sinfo.si_code = SI_ASYNCIO;
 		sinfo.si_addr = as->userurb;
 		pid = get_pid(as->pid);
+<<<<<<< HEAD
 		uid = as->uid;
 		euid = as->euid;
+=======
+		cred = get_cred(as->cred);
+>>>>>>> refs/remotes/origin/cm-10.0
 		secid = as->secid;
 	}
 	snoop(&urb->dev->dev, "urb complete\n");
@@ -424,9 +525,15 @@ static void async_completed(struct urb *urb)
 	spin_unlock(&ps->lock);
 
 	if (signr) {
+<<<<<<< HEAD
 		kill_pid_info_as_uid(sinfo.si_signo, &sinfo, pid, uid,
 				      euid, secid);
 		put_pid(pid);
+=======
+		kill_pid_info_as_cred(sinfo.si_signo, &sinfo, pid, cred, secid);
+		put_pid(pid);
+		put_cred(cred);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	wake_up(&ps->wait);
@@ -434,7 +541,10 @@ static void async_completed(struct urb *urb)
 
 static void destroy_async(struct dev_state *ps, struct list_head *list)
 {
+<<<<<<< HEAD
 	struct urb *urb;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct async *as;
 	unsigned long flags;
 
@@ -442,6 +552,7 @@ static void destroy_async(struct dev_state *ps, struct list_head *list)
 	while (!list_empty(list)) {
 		as = list_entry(list->next, struct async, asynclist);
 		list_del_init(&as->asynclist);
+<<<<<<< HEAD
 		urb = as->urb;
 		usb_get_urb(urb);
 
@@ -449,6 +560,12 @@ static void destroy_async(struct dev_state *ps, struct list_head *list)
 		spin_unlock_irqrestore(&ps->lock, flags);
 		usb_kill_urb(urb);
 		usb_put_urb(urb);
+=======
+
+		/* drop the spinlock so the completion handler can run */
+		spin_unlock_irqrestore(&ps->lock, flags);
+		usb_kill_urb(as->urb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_lock_irqsave(&ps->lock, flags);
 	}
 	spin_unlock_irqrestore(&ps->lock, flags);
@@ -695,7 +812,10 @@ static int usbdev_open(struct inode *inode, struct file *file)
 {
 	struct usb_device *dev = NULL;
 	struct dev_state *ps;
+<<<<<<< HEAD
 	const struct cred *cred = current_cred();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	ret = -ENOMEM;
@@ -745,8 +865,12 @@ static int usbdev_open(struct inode *inode, struct file *file)
 	init_waitqueue_head(&ps->wait);
 	ps->discsignr = 0;
 	ps->disc_pid = get_pid(task_pid(current));
+<<<<<<< HEAD
 	ps->disc_uid = cred->uid;
 	ps->disc_euid = cred->euid;
+=======
+	ps->cred = get_current_cred();
+>>>>>>> refs/remotes/origin/cm-10.0
 	ps->disccontext = NULL;
 	ps->ifclaimed = 0;
 	security_task_getsecid(current, &ps->secid);
@@ -788,6 +912,10 @@ static int usbdev_release(struct inode *inode, struct file *file)
 	usb_unlock_device(dev);
 	usb_put_dev(dev);
 	put_pid(ps->disc_pid);
+<<<<<<< HEAD
+=======
+	put_cred(ps->cred);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	as = async_getcompleted(ps);
 	while (as) {
@@ -816,9 +944,21 @@ static int proc_control(struct dev_state *ps, void __user *arg)
 	wLength = ctrl.wLength;		/* To suppress 64k PAGE_SIZE warning */
 	if (wLength > PAGE_SIZE)
 		return -EINVAL;
+<<<<<<< HEAD
 	tbuf = (unsigned char *)__get_free_page(GFP_KERNEL);
 	if (!tbuf)
 		return -ENOMEM;
+=======
+	ret = usbfs_increase_memory_usage(PAGE_SIZE + sizeof(struct urb) +
+			sizeof(struct usb_ctrlrequest));
+	if (ret)
+		return ret;
+	tbuf = (unsigned char *)__get_free_page(GFP_KERNEL);
+	if (!tbuf) {
+		ret = -ENOMEM;
+		goto done;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	tmo = ctrl.timeout;
 	snoop(&dev->dev, "control urb: bRequestType=%02x "
 		"bRequest=%02x wValue=%04x "
@@ -830,8 +970,13 @@ static int proc_control(struct dev_state *ps, void __user *arg)
 	if (ctrl.bRequestType & 0x80) {
 		if (ctrl.wLength && !access_ok(VERIFY_WRITE, ctrl.data,
 					       ctrl.wLength)) {
+<<<<<<< HEAD
 			free_page((unsigned long)tbuf);
 			return -EINVAL;
+=======
+			ret = -EINVAL;
+			goto done;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		pipe = usb_rcvctrlpipe(dev, 0);
 		snoop_urb(dev, NULL, pipe, ctrl.wLength, tmo, SUBMIT, NULL, 0);
@@ -845,15 +990,25 @@ static int proc_control(struct dev_state *ps, void __user *arg)
 			  tbuf, max(i, 0));
 		if ((i > 0) && ctrl.wLength) {
 			if (copy_to_user(ctrl.data, tbuf, i)) {
+<<<<<<< HEAD
 				free_page((unsigned long)tbuf);
 				return -EFAULT;
+=======
+				ret = -EFAULT;
+				goto done;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 	} else {
 		if (ctrl.wLength) {
 			if (copy_from_user(tbuf, ctrl.data, ctrl.wLength)) {
+<<<<<<< HEAD
 				free_page((unsigned long)tbuf);
 				return -EFAULT;
+=======
+				ret = -EFAULT;
+				goto done;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 		pipe = usb_sndctrlpipe(dev, 0);
@@ -867,14 +1022,26 @@ static int proc_control(struct dev_state *ps, void __user *arg)
 		usb_lock_device(dev);
 		snoop_urb(dev, NULL, pipe, max(i, 0), min(i, 0), COMPLETE, NULL, 0);
 	}
+<<<<<<< HEAD
 	free_page((unsigned long)tbuf);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (i < 0 && i != -EPIPE) {
 		dev_printk(KERN_DEBUG, &dev->dev, "usbfs: USBDEVFS_CONTROL "
 			   "failed cmd %s rqt %u rq %u len %u ret %d\n",
 			   current->comm, ctrl.bRequestType, ctrl.bRequest,
 			   ctrl.wLength, i);
 	}
+<<<<<<< HEAD
 	return i;
+=======
+	ret = i;
+ done:
+	free_page((unsigned long) tbuf);
+	usbfs_decrease_memory_usage(PAGE_SIZE + sizeof(struct urb) +
+			sizeof(struct usb_ctrlrequest));
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int proc_bulk(struct dev_state *ps, void __user *arg)
@@ -901,6 +1068,7 @@ static int proc_bulk(struct dev_state *ps, void __user *arg)
 	if (!usb_maxpacket(dev, pipe, !(bulk.ep & USB_DIR_IN)))
 		return -EINVAL;
 	len1 = bulk.len;
+<<<<<<< HEAD
 	if (len1 > MAX_USBFS_BUFFER_SIZE)
 		return -EINVAL;
 	if (!(tbuf = kmalloc(len1, GFP_KERNEL)))
@@ -910,6 +1078,22 @@ static int proc_bulk(struct dev_state *ps, void __user *arg)
 		if (len1 && !access_ok(VERIFY_WRITE, bulk.data, len1)) {
 			kfree(tbuf);
 			return -EINVAL;
+=======
+	if (len1 >= USBFS_XFER_MAX)
+		return -EINVAL;
+	ret = usbfs_increase_memory_usage(len1 + sizeof(struct urb));
+	if (ret)
+		return ret;
+	if (!(tbuf = kmalloc(len1, GFP_KERNEL))) {
+		ret = -ENOMEM;
+		goto done;
+	}
+	tmo = bulk.timeout;
+	if (bulk.ep & 0x80) {
+		if (len1 && !access_ok(VERIFY_WRITE, bulk.data, len1)) {
+			ret = -EINVAL;
+			goto done;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		snoop_urb(dev, NULL, pipe, len1, tmo, SUBMIT, NULL, 0);
 
@@ -920,15 +1104,25 @@ static int proc_bulk(struct dev_state *ps, void __user *arg)
 
 		if (!i && len2) {
 			if (copy_to_user(bulk.data, tbuf, len2)) {
+<<<<<<< HEAD
 				kfree(tbuf);
 				return -EFAULT;
+=======
+				ret = -EFAULT;
+				goto done;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 	} else {
 		if (len1) {
 			if (copy_from_user(tbuf, bulk.data, len1)) {
+<<<<<<< HEAD
 				kfree(tbuf);
 				return -EFAULT;
+=======
+				ret = -EFAULT;
+				goto done;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 		snoop_urb(dev, NULL, pipe, len1, tmo, SUBMIT, tbuf, len1);
@@ -938,10 +1132,18 @@ static int proc_bulk(struct dev_state *ps, void __user *arg)
 		usb_lock_device(dev);
 		snoop_urb(dev, NULL, pipe, len2, i, COMPLETE, NULL, 0);
 	}
+<<<<<<< HEAD
 	kfree(tbuf);
 	if (i < 0)
 		return i;
 	return len2;
+=======
+	ret = (i < 0 ? i : len2);
+ done:
+	kfree(tbuf);
+	usbfs_decrease_memory_usage(len1 + sizeof(struct urb));
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int proc_resetep(struct dev_state *ps, void __user *arg)
@@ -1086,9 +1288,14 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 {
 	struct usbdevfs_iso_packet_desc *isopkt = NULL;
 	struct usb_host_endpoint *ep;
+<<<<<<< HEAD
 	struct async *as;
 	struct usb_ctrlrequest *dr = NULL;
 	const struct cred *cred = current_cred();
+=======
+	struct async *as = NULL;
+	struct usb_ctrlrequest *dr = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int u, totlen, isofrmlen;
 	int ret, ifnum = -1;
 	int is_in;
@@ -1120,19 +1327,30 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 	}
 	if (!ep)
 		return -ENOENT;
+<<<<<<< HEAD
+=======
+
+	u = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch(uurb->type) {
 	case USBDEVFS_URB_TYPE_CONTROL:
 		if (!usb_endpoint_xfer_control(&ep->desc))
 			return -EINVAL;
+<<<<<<< HEAD
 		/* min 8 byte setup packet,
 		 * max 8 byte setup plus an arbitrary data stage */
 		if (uurb->buffer_length < 8 ||
 		    uurb->buffer_length > (8 + MAX_USBFS_BUFFER_SIZE))
+=======
+		/* min 8 byte setup packet */
+		if (uurb->buffer_length < 8)
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EINVAL;
 		dr = kmalloc(sizeof(struct usb_ctrlrequest), GFP_KERNEL);
 		if (!dr)
 			return -ENOMEM;
 		if (copy_from_user(dr, uurb->buffer, 8)) {
+<<<<<<< HEAD
 			kfree(dr);
 			return -EFAULT;
 		}
@@ -1146,6 +1364,19 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 			kfree(dr);
 			return ret;
 		}
+=======
+			ret = -EFAULT;
+			goto error;
+		}
+		if (uurb->buffer_length < (le16_to_cpup(&dr->wLength) + 8)) {
+			ret = -EINVAL;
+			goto error;
+		}
+		ret = check_ctrlrecip(ps, dr->bRequestType, dr->bRequest,
+				      le16_to_cpup(&dr->wIndex));
+		if (ret)
+			goto error;
+>>>>>>> refs/remotes/origin/cm-10.0
 		uurb->number_of_packets = 0;
 		uurb->buffer_length = le16_to_cpup(&dr->wLength);
 		uurb->buffer += 8;
@@ -1163,6 +1394,10 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 			__le16_to_cpup(&dr->wValue),
 			__le16_to_cpup(&dr->wIndex),
 			__le16_to_cpup(&dr->wLength));
+<<<<<<< HEAD
+=======
+		u = sizeof(struct usb_ctrlrequest);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case USBDEVFS_URB_TYPE_BULK:
@@ -1176,8 +1411,11 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 			goto interrupt_urb;
 		}
 		uurb->number_of_packets = 0;
+<<<<<<< HEAD
 		if (uurb->buffer_length > MAX_USBFS_BUFFER_SIZE)
 			return -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case USBDEVFS_URB_TYPE_INTERRUPT:
@@ -1185,8 +1423,11 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 			return -EINVAL;
  interrupt_urb:
 		uurb->number_of_packets = 0;
+<<<<<<< HEAD
 		if (uurb->buffer_length > MAX_USBFS_BUFFER_SIZE)
 			return -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case USBDEVFS_URB_TYPE_ISO:
@@ -1201,13 +1442,19 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 		if (!(isopkt = kmalloc(isofrmlen, GFP_KERNEL)))
 			return -ENOMEM;
 		if (copy_from_user(isopkt, iso_frame_desc, isofrmlen)) {
+<<<<<<< HEAD
 			kfree(isopkt);
 			return -EFAULT;
+=======
+			ret = -EFAULT;
+			goto error;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		for (totlen = u = 0; u < uurb->number_of_packets; u++) {
 			/* arbitrary limit,
 			 * sufficient for USB 2.0 high-bandwidth iso */
 			if (isopkt[u].length > 8192) {
+<<<<<<< HEAD
 				kfree(isopkt);
 				return -EINVAL;
 			}
@@ -1218,12 +1465,21 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 			kfree(isopkt);
 			return -EINVAL;
 		}
+=======
+				ret = -EINVAL;
+				goto error;
+			}
+			totlen += isopkt[u].length;
+		}
+		u *= sizeof(struct usb_iso_packet_descriptor);
+>>>>>>> refs/remotes/origin/cm-10.0
 		uurb->buffer_length = totlen;
 		break;
 
 	default:
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (uurb->buffer_length > 0 &&
 			!access_ok(is_in ? VERIFY_WRITE : VERIFY_READ,
 				uurb->buffer, uurb->buffer_length)) {
@@ -1237,14 +1493,43 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 		kfree(dr);
 		return -ENOMEM;
 	}
+=======
+
+	if (uurb->buffer_length >= USBFS_XFER_MAX) {
+		ret = -EINVAL;
+		goto error;
+	}
+	if (uurb->buffer_length > 0 &&
+			!access_ok(is_in ? VERIFY_WRITE : VERIFY_READ,
+				uurb->buffer, uurb->buffer_length)) {
+		ret = -EFAULT;
+		goto error;
+	}
+	as = alloc_async(uurb->number_of_packets);
+	if (!as) {
+		ret = -ENOMEM;
+		goto error;
+	}
+	u += sizeof(struct async) + sizeof(struct urb) + uurb->buffer_length;
+	ret = usbfs_increase_memory_usage(u);
+	if (ret)
+		goto error;
+	as->mem_usage = u;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (uurb->buffer_length > 0) {
 		as->urb->transfer_buffer = kmalloc(uurb->buffer_length,
 				GFP_KERNEL);
 		if (!as->urb->transfer_buffer) {
+<<<<<<< HEAD
 			kfree(isopkt);
 			kfree(dr);
 			free_async(as);
 			return -ENOMEM;
+=======
+			ret = -ENOMEM;
+			goto error;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		/* Isochronous input data may end up being discontiguous
 		 * if some of the packets are short.  Clear the buffer so
@@ -1278,6 +1563,10 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 
 	as->urb->transfer_buffer_length = uurb->buffer_length;
 	as->urb->setup_packet = (unsigned char *)dr;
+<<<<<<< HEAD
+=======
+	dr = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	as->urb->start_frame = uurb->start_frame;
 	as->urb->number_of_packets = uurb->number_of_packets;
 	if (uurb->type == USBDEVFS_URB_TYPE_ISO ||
@@ -1293,6 +1582,10 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 		totlen += isopkt[u].length;
 	}
 	kfree(isopkt);
+<<<<<<< HEAD
+=======
+	isopkt = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	as->ps = ps;
 	as->userurb = arg;
 	if (is_in && uurb->buffer_length > 0)
@@ -1302,14 +1595,23 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 	as->signr = uurb->signr;
 	as->ifnum = ifnum;
 	as->pid = get_pid(task_pid(current));
+<<<<<<< HEAD
 	as->uid = cred->uid;
 	as->euid = cred->euid;
+=======
+	as->cred = get_current_cred();
+>>>>>>> refs/remotes/origin/cm-10.0
 	security_task_getsecid(current, &as->secid);
 	if (!is_in && uurb->buffer_length > 0) {
 		if (copy_from_user(as->urb->transfer_buffer, uurb->buffer,
 				uurb->buffer_length)) {
+<<<<<<< HEAD
 			free_async(as);
 			return -EFAULT;
+=======
+			ret = -EFAULT;
+			goto error;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	snoop_urb(ps->dev, as->userurb, as->urb->pipe,
@@ -1355,10 +1657,23 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 		snoop_urb(ps->dev, as->userurb, as->urb->pipe,
 				0, ret, COMPLETE, NULL, 0);
 		async_removepending(as);
+<<<<<<< HEAD
 		free_async(as);
 		return ret;
 	}
 	return 0;
+=======
+		goto error;
+	}
+	return 0;
+
+ error:
+	kfree(isopkt);
+	kfree(dr);
+	if (as)
+		free_async(as);
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int proc_submiturb(struct dev_state *ps, void __user *arg)
@@ -1375,6 +1690,7 @@ static int proc_submiturb(struct dev_state *ps, void __user *arg)
 
 static int proc_unlinkurb(struct dev_state *ps, void __user *arg)
 {
+<<<<<<< HEAD
 	struct urb *urb;
 	struct async *as;
 	unsigned long flags;
@@ -1393,6 +1709,14 @@ static int proc_unlinkurb(struct dev_state *ps, void __user *arg)
 	usb_kill_urb(urb);
 	usb_put_urb(urb);
 
+=======
+	struct async *as;
+
+	as = async_getpending(ps, arg);
+	if (!as)
+		return -EINVAL;
+	usb_kill_urb(as->urb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -2037,9 +2361,14 @@ static void usbdev_remove(struct usb_device *udev)
 			sinfo.si_errno = EPIPE;
 			sinfo.si_code = SI_ASYNCIO;
 			sinfo.si_addr = ps->disccontext;
+<<<<<<< HEAD
 			kill_pid_info_as_uid(ps->discsignr, &sinfo,
 					ps->disc_pid, ps->disc_uid,
 					ps->disc_euid, ps->secid);
+=======
+			kill_pid_info_as_cred(ps->discsignr, &sinfo,
+					ps->disc_pid, ps->cred, ps->secid);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }

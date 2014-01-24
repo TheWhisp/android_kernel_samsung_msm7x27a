@@ -37,7 +37,10 @@
 #include "xfs_buf_item.h"
 #include "xfs_inode_item.h"
 #include "xfs_btree.h"
+<<<<<<< HEAD
 #include "xfs_btree_trace.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xfs_alloc.h"
 #include "xfs_ialloc.h"
 #include "xfs_bmap.h"
@@ -52,7 +55,11 @@ kmem_zone_t *xfs_ifork_zone;
 kmem_zone_t *xfs_inode_zone;
 
 /*
+<<<<<<< HEAD
  * Used in xfs_itruncate().  This is the maximum number of extents
+=======
+ * Used in xfs_itruncate_extents().  This is the maximum number of extents
+>>>>>>> refs/remotes/origin/cm-10.0
  * freed from a file in a single transaction.
  */
 #define	XFS_ITRUNC_MAX_EXTENTS	2
@@ -167,7 +174,11 @@ xfs_imap_to_bp(
 
 		dip = (xfs_dinode_t *)xfs_buf_offset(bp,
 					(i << mp->m_sb.sb_inodelog));
+<<<<<<< HEAD
 		di_ok = be16_to_cpu(dip->di_magic) == XFS_DINODE_MAGIC &&
+=======
+		di_ok = dip->di_magic == cpu_to_be16(XFS_DINODE_MAGIC) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 			    XFS_DINODE_GOOD_VERSION(dip->di_version);
 		if (unlikely(XFS_TEST_ERROR(!di_ok, mp,
 						XFS_ERRTAG_ITOBP_INOTOBP,
@@ -191,12 +202,15 @@ xfs_imap_to_bp(
 	}
 
 	xfs_inobp_check(mp, bp);
+<<<<<<< HEAD
 
 	/*
 	 * Mark the buffer as an inode buffer now that it looks good
 	 */
 	XFS_BUF_SET_VTYPE(bp, B_FS_INO);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	*bpp = bp;
 	return 0;
 }
@@ -306,11 +320,16 @@ xfs_iformat(
 {
 	xfs_attr_shortform_t	*atp;
 	int			size;
+<<<<<<< HEAD
 	int			error;
 	xfs_fsize_t             di_size;
 	ip->i_df.if_ext_max =
 		XFS_IFORK_DSIZE(ip) / (uint)sizeof(xfs_bmbt_rec_t);
 	error = 0;
+=======
+	int			error = 0;
+	xfs_fsize_t             di_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (unlikely(be32_to_cpu(dip->di_nextents) +
 		     be16_to_cpu(dip->di_anextents) >
@@ -357,7 +376,10 @@ xfs_iformat(
 			return XFS_ERROR(EFSCORRUPTED);
 		}
 		ip->i_d.di_size = 0;
+<<<<<<< HEAD
 		ip->i_size = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ip->i_df.if_u2.if_rdev = xfs_dinode_get_rdev(dip);
 		break;
 
@@ -369,7 +391,11 @@ xfs_iformat(
 			/*
 			 * no local regular files yet
 			 */
+<<<<<<< HEAD
 			if (unlikely((be16_to_cpu(dip->di_mode) & S_IFMT) == S_IFREG)) {
+=======
+			if (unlikely(S_ISREG(be16_to_cpu(dip->di_mode)))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				xfs_warn(ip->i_mount,
 			"corrupt inode %Lu (local format for regular file).",
 					(unsigned long long) ip->i_ino);
@@ -416,10 +442,17 @@ xfs_iformat(
 	}
 	if (!XFS_DFORK_Q(dip))
 		return 0;
+<<<<<<< HEAD
 	ASSERT(ip->i_afp == NULL);
 	ip->i_afp = kmem_zone_zalloc(xfs_ifork_zone, KM_SLEEP | KM_NOFS);
 	ip->i_afp->if_ext_max =
 		XFS_IFORK_ASIZE(ip) / (uint)sizeof(xfs_bmbt_rec_t);
+=======
+
+	ASSERT(ip->i_afp == NULL);
+	ip->i_afp = kmem_zone_zalloc(xfs_ifork_zone, KM_SLEEP | KM_NOFS);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (dip->di_aformat) {
 	case XFS_DINODE_FMT_LOCAL:
 		atp = (xfs_attr_shortform_t *)XFS_DFORK_APTR(dip);
@@ -611,10 +644,18 @@ xfs_iformat_btree(
 	 * or the number of extents is greater than the number of
 	 * blocks.
 	 */
+<<<<<<< HEAD
 	if (unlikely(XFS_IFORK_NEXTENTS(ip, whichfork) <= ifp->if_ext_max
 	    || XFS_BMDR_SPACE_CALC(nrecs) >
 			XFS_DFORK_SIZE(dip, ip->i_mount, whichfork)
 	    || XFS_IFORK_NEXTENTS(ip, whichfork) > ip->i_d.di_nblocks)) {
+=======
+	if (unlikely(XFS_IFORK_NEXTENTS(ip, whichfork) <=
+			XFS_IFORK_MAXEXT(ip, whichfork) ||
+		     XFS_BMDR_SPACE_CALC(nrecs) >
+			XFS_DFORK_SIZE(dip, ip->i_mount, whichfork) ||
+		     XFS_IFORK_NEXTENTS(ip, whichfork) > ip->i_d.di_nblocks)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		xfs_warn(ip->i_mount, "corrupt inode %Lu (btree).",
 			(unsigned long long) ip->i_ino);
 		XFS_CORRUPTION_ERROR("xfs_iformat_btree", XFS_ERRLEVEL_LOW,
@@ -802,7 +843,11 @@ xfs_iread(
 	 * If we got something that isn't an inode it means someone
 	 * (nfs or dmi) has a stale handle.
 	 */
+<<<<<<< HEAD
 	if (be16_to_cpu(dip->di_magic) != XFS_DINODE_MAGIC) {
+=======
+	if (dip->di_magic != cpu_to_be16(XFS_DINODE_MAGIC)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef DEBUG
 		xfs_alert(mp,
 			"%s: dip->di_magic (0x%x) != XFS_DINODE_MAGIC (0x%x)",
@@ -842,12 +887,15 @@ xfs_iread(
 		 * with the uninitialized part of it.
 		 */
 		ip->i_d.di_mode = 0;
+<<<<<<< HEAD
 		/*
 		 * Initialize the per-fork minima and maxima for a new
 		 * inode here.  xfs_iformat will do it for old inodes.
 		 */
 		ip->i_df.if_ext_max =
 			XFS_IFORK_DSIZE(ip) / (uint)sizeof(xfs_bmbt_rec_t);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -868,7 +916,10 @@ xfs_iread(
 	}
 
 	ip->i_delayed_blks = 0;
+<<<<<<< HEAD
 	ip->i_size = ip->i_d.di_size;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Mark the buffer containing the inode as something to keep
@@ -968,7 +1019,11 @@ int
 xfs_ialloc(
 	xfs_trans_t	*tp,
 	xfs_inode_t	*pip,
+<<<<<<< HEAD
 	mode_t		mode,
+=======
+	umode_t		mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_nlink_t	nlink,
 	xfs_dev_t	rdev,
 	prid_t		prid,
@@ -1009,7 +1064,11 @@ xfs_ialloc(
 		return error;
 	ASSERT(ip != NULL);
 
+<<<<<<< HEAD
 	ip->i_d.di_mode = (__uint16_t)mode;
+=======
+	ip->i_d.di_mode = mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ip->i_d.di_onlink = 0;
 	ip->i_d.di_nlink = nlink;
 	ASSERT(ip->i_d.di_nlink == nlink);
@@ -1041,7 +1100,11 @@ xfs_ialloc(
 
 	if (pip && XFS_INHERIT_GID(pip)) {
 		ip->i_d.di_gid = pip->i_d.di_gid;
+<<<<<<< HEAD
 		if ((pip->i_d.di_mode & S_ISGID) && (mode & S_IFMT) == S_IFDIR) {
+=======
+		if ((pip->i_d.di_mode & S_ISGID) && S_ISDIR(mode)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ip->i_d.di_mode |= S_ISGID;
 		}
 	}
@@ -1058,7 +1121,10 @@ xfs_ialloc(
 	}
 
 	ip->i_d.di_size = 0;
+<<<<<<< HEAD
 	ip->i_size = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ip->i_d.di_nextents = 0;
 	ASSERT(ip->i_d.di_nblocks == 0);
 
@@ -1098,14 +1164,22 @@ xfs_ialloc(
 		if (pip && (pip->i_d.di_flags & XFS_DIFLAG_ANY)) {
 			uint	di_flags = 0;
 
+<<<<<<< HEAD
 			if ((mode & S_IFMT) == S_IFDIR) {
+=======
+			if (S_ISDIR(mode)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (pip->i_d.di_flags & XFS_DIFLAG_RTINHERIT)
 					di_flags |= XFS_DIFLAG_RTINHERIT;
 				if (pip->i_d.di_flags & XFS_DIFLAG_EXTSZINHERIT) {
 					di_flags |= XFS_DIFLAG_EXTSZINHERIT;
 					ip->i_d.di_extsize = pip->i_d.di_extsize;
 				}
+<<<<<<< HEAD
 			} else if ((mode & S_IFMT) == S_IFREG) {
+=======
+			} else if (S_ISREG(mode)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (pip->i_d.di_flags & XFS_DIFLAG_RTINHERIT)
 					di_flags |= XFS_DIFLAG_REALTIME;
 				if (pip->i_d.di_flags & XFS_DIFLAG_EXTSZINHERIT) {
@@ -1153,7 +1227,11 @@ xfs_ialloc(
 	/*
 	 * Log the new values stuffed into the inode.
 	 */
+<<<<<<< HEAD
 	xfs_trans_ijoin_ref(tp, ip, XFS_ILOCK_EXCL);
+=======
+	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_trans_log_inode(tp, ip, flags);
 
 	/* now that we have an i_mode we can setup inode ops and unlock */
@@ -1173,6 +1251,7 @@ xfs_ialloc(
 }
 
 /*
+<<<<<<< HEAD
  * Check to make sure that there are no blocks allocated to the
  * file beyond the size of the file.  We don't check this for
  * files with fixed size extents or real time extents, but we
@@ -1376,6 +1455,11 @@ xfs_itruncate_start(
  * Shrink the file to the given new_size.  The new size must be smaller than
  * the current size.  This will free up the underlying blocks in the removed
  * range after a call to xfs_itruncate_start() or xfs_atruncate_start().
+=======
+ * Free up the underlying blocks past new_size.  The new size must be smaller
+ * than the current size.  This routine can be used both for the attribute and
+ * data fork, and does not modify the inode size, which is left to the caller.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * The transaction passed to this routine must have made a permanent log
  * reservation of at least XFS_ITRUNCATE_LOG_RES.  This routine may commit the
@@ -1387,6 +1471,7 @@ xfs_itruncate_start(
  * will be "held" within the returned transaction.  This routine does NOT
  * require any disk space to be reserved for it within the transaction.
  *
+<<<<<<< HEAD
  * The fork parameter must be either xfs_attr_fork or xfs_data_fork, and it
  * indicates the fork which is to be truncated.  For the attribute fork we only
  * support truncation to size 0.
@@ -1412,6 +1497,8 @@ xfs_itruncate_start(
  * too hard for us to guess here which path we're being called out of just
  * based on inode state.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * If we get an error, we must return with the inode locked and linked into the
  * current transaction. This keeps things simple for the higher level code,
  * because it always knows that the inode is locked and held in the transaction
@@ -1419,6 +1506,7 @@ xfs_itruncate_start(
  * dirty on error so that transactions can be easily aborted if possible.
  */
 int
+<<<<<<< HEAD
 xfs_itruncate_finish(
 	xfs_trans_t	**tp,
 	xfs_inode_t	*ip,
@@ -1529,6 +1617,34 @@ xfs_itruncate_finish(
 			}
 		}
 	}
+=======
+xfs_itruncate_extents(
+	struct xfs_trans	**tpp,
+	struct xfs_inode	*ip,
+	int			whichfork,
+	xfs_fsize_t		new_size)
+{
+	struct xfs_mount	*mp = ip->i_mount;
+	struct xfs_trans	*tp = *tpp;
+	struct xfs_trans	*ntp;
+	xfs_bmap_free_t		free_list;
+	xfs_fsblock_t		first_block;
+	xfs_fileoff_t		first_unmap_block;
+	xfs_fileoff_t		last_block;
+	xfs_filblks_t		unmap_len;
+	int			committed;
+	int			error = 0;
+	int			done = 0;
+
+	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL|XFS_IOLOCK_EXCL));
+	ASSERT(new_size <= XFS_ISIZE(ip));
+	ASSERT(tp->t_flags & XFS_TRANS_PERM_LOG_RES);
+	ASSERT(ip->i_itemp != NULL);
+	ASSERT(ip->i_itemp->ili_lock_flags == 0);
+	ASSERT(!XFS_NOT_DQATTACHED(mp, ip));
+
+	trace_xfs_itruncate_extents_start(ip, new_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Since it is possible for space to become allocated beyond
@@ -1539,6 +1655,7 @@ xfs_itruncate_finish(
 	 * beyond the maximum file size (ie it is the same as last_block),
 	 * then there is nothing to do.
 	 */
+<<<<<<< HEAD
 	last_block = XFS_B_TO_FSB(mp, (xfs_ufsize_t)XFS_MAXIOFFSET(mp));
 	ASSERT(first_unmap_block <= last_block);
 	done = 0;
@@ -1579,11 +1696,31 @@ xfs_itruncate_finish(
 			xfs_bmap_cancel(&free_list);
 			return error;
 		}
+=======
+	first_unmap_block = XFS_B_TO_FSB(mp, (xfs_ufsize_t)new_size);
+	last_block = XFS_B_TO_FSB(mp, (xfs_ufsize_t)XFS_MAXIOFFSET(mp));
+	if (first_unmap_block == last_block)
+		return 0;
+
+	ASSERT(first_unmap_block < last_block);
+	unmap_len = last_block - first_unmap_block + 1;
+	while (!done) {
+		xfs_bmap_init(&free_list, &first_block);
+		error = xfs_bunmapi(tp, ip,
+				    first_unmap_block, unmap_len,
+				    xfs_bmapi_aflag(whichfork),
+				    XFS_ITRUNC_MAX_EXTENTS,
+				    &first_block, &free_list,
+				    &done);
+		if (error)
+			goto out_bmap_cancel;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
 		 * Duplicate the transaction that has the permanent
 		 * reservation and commit the old transaction.
 		 */
+<<<<<<< HEAD
 		error = xfs_bmap_finish(tp, &free_list, &committed);
 		ntp = *tp;
 		if (committed)
@@ -1603,12 +1740,20 @@ xfs_itruncate_finish(
 			xfs_bmap_cancel(&free_list);
 			return error;
 		}
+=======
+		error = xfs_bmap_finish(&tp, &free_list, &committed);
+		if (committed)
+			xfs_trans_ijoin(tp, ip, 0);
+		if (error)
+			goto out_bmap_cancel;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (committed) {
 			/*
 			 * Mark the inode dirty so it will be logged and
 			 * moved forward in the log as part of every commit.
 			 */
+<<<<<<< HEAD
 			xfs_trans_log_inode(ntp, ip, XFS_ILOG_CORE);
 		}
 
@@ -1626,10 +1771,31 @@ xfs_itruncate_finish(
 		 */
 		xfs_log_ticket_put(ntp->t_ticket);
 		error = xfs_trans_reserve(ntp, 0,
+=======
+			xfs_trans_log_inode(tp, ip, XFS_ILOG_CORE);
+		}
+
+		ntp = xfs_trans_dup(tp);
+		error = xfs_trans_commit(tp, 0);
+		tp = ntp;
+
+		xfs_trans_ijoin(tp, ip, 0);
+
+		if (error)
+			goto out;
+
+		/*
+		 * Transaction commit worked ok so we can drop the extra ticket
+		 * reference that we gained in xfs_trans_dup()
+		 */
+		xfs_log_ticket_put(tp->t_ticket);
+		error = xfs_trans_reserve(tp, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 					XFS_ITRUNCATE_LOG_RES(mp), 0,
 					XFS_TRANS_PERM_LOG_RES,
 					XFS_ITRUNCATE_LOG_COUNT);
 		if (error)
+<<<<<<< HEAD
 			return error;
 	}
 	/*
@@ -1662,6 +1828,30 @@ xfs_itruncate_finish(
 	       (ip->i_d.di_nextents == 0));
 	trace_xfs_itruncate_finish_end(ip, new_size);
 	return 0;
+=======
+			goto out;
+	}
+
+	/*
+	 * Always re-log the inode so that our permanent transaction can keep
+	 * on rolling it forward in the log.
+	 */
+	xfs_trans_log_inode(tp, ip, XFS_ILOG_CORE);
+
+	trace_xfs_itruncate_extents_end(ip, new_size);
+
+out:
+	*tpp = tp;
+	return error;
+out_bmap_cancel:
+	/*
+	 * If the bunmapi call encounters an error, return to the caller where
+	 * the transaction can be properly aborted.  We just need to make sure
+	 * we're not holding any resources that we were not when we came in.
+	 */
+	xfs_bmap_cancel(&free_list);
+	goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1686,7 +1876,10 @@ xfs_iunlink(
 
 	ASSERT(ip->i_d.di_nlink == 0);
 	ASSERT(ip->i_d.di_mode != 0);
+<<<<<<< HEAD
 	ASSERT(ip->i_transp == tp);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mp = tp->t_mountp;
 
@@ -1709,7 +1902,11 @@ xfs_iunlink(
 	ASSERT(agi->agi_unlinked[bucket_index]);
 	ASSERT(be32_to_cpu(agi->agi_unlinked[bucket_index]) != agino);
 
+<<<<<<< HEAD
 	if (be32_to_cpu(agi->agi_unlinked[bucket_index]) != NULLAGINO) {
+=======
+	if (agi->agi_unlinked[bucket_index] != cpu_to_be32(NULLAGINO)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * There is already another inode in the bucket we need
 		 * to add ourselves to.  Add us at the front of the list.
@@ -1720,8 +1917,12 @@ xfs_iunlink(
 		if (error)
 			return error;
 
+<<<<<<< HEAD
 		ASSERT(be32_to_cpu(dip->di_next_unlinked) == NULLAGINO);
 		/* both on-disk, don't endian flip twice */
+=======
+		ASSERT(dip->di_next_unlinked == cpu_to_be32(NULLAGINO));
+>>>>>>> refs/remotes/origin/cm-10.0
 		dip->di_next_unlinked = agi->agi_unlinked[bucket_index];
 		offset = ip->i_imap.im_boffset +
 			offsetof(xfs_dinode_t, di_next_unlinked);
@@ -1786,7 +1987,11 @@ xfs_iunlink_remove(
 	agino = XFS_INO_TO_AGINO(mp, ip->i_ino);
 	ASSERT(agino != 0);
 	bucket_index = agino % XFS_AGI_UNLINKED_BUCKETS;
+<<<<<<< HEAD
 	ASSERT(be32_to_cpu(agi->agi_unlinked[bucket_index]) != NULLAGINO);
+=======
+	ASSERT(agi->agi_unlinked[bucket_index] != cpu_to_be32(NULLAGINO));
+>>>>>>> refs/remotes/origin/cm-10.0
 	ASSERT(agi->agi_unlinked[bucket_index]);
 
 	if (be32_to_cpu(agi->agi_unlinked[bucket_index]) == agino) {
@@ -1898,7 +2103,11 @@ xfs_iunlink_remove(
  * inodes that are in memory - they all must be marked stale and attached to
  * the cluster buffer.
  */
+<<<<<<< HEAD
 STATIC void
+=======
+STATIC int
+>>>>>>> refs/remotes/origin/cm-10.0
 xfs_ifree_cluster(
 	xfs_inode_t	*free_ip,
 	xfs_trans_t	*tp,
@@ -1944,6 +2153,11 @@ xfs_ifree_cluster(
 					mp->m_bsize * blks_per_cluster,
 					XBF_LOCK);
 
+<<<<<<< HEAD
+=======
+		if (!bp)
+			return ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * Walk the inodes already attached to the buffer and mark them
 		 * stale. These will all have the flush locks held, so an
@@ -1951,7 +2165,11 @@ xfs_ifree_cluster(
 		 * stale first, we will not attempt to lock them in the loop
 		 * below as the XFS_ISTALE flag will be set.
 		 */
+<<<<<<< HEAD
 		lip = XFS_BUF_FSPRIVATE(bp, xfs_log_item_t *);
+=======
+		lip = bp->b_fspriv;
+>>>>>>> refs/remotes/origin/cm-10.0
 		while (lip) {
 			if (lip->li_type == XFS_LI_INODE) {
 				iip = (xfs_inode_log_item_t *)lip;
@@ -2029,14 +2247,22 @@ retry:
 			iip = ip->i_itemp;
 			if (!iip || xfs_inode_clean(ip)) {
 				ASSERT(ip != free_ip);
+<<<<<<< HEAD
 				ip->i_update_core = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				xfs_ifunlock(ip);
 				xfs_iunlock(ip, XFS_ILOCK_EXCL);
 				continue;
 			}
 
+<<<<<<< HEAD
 			iip->ili_last_fields = iip->ili_format.ilf_fields;
 			iip->ili_format.ilf_fields = 0;
+=======
+			iip->ili_last_fields = iip->ili_fields;
+			iip->ili_fields = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 			iip->ili_logged = 1;
 			xfs_trans_ail_copy_lsn(mp->m_ail, &iip->ili_flush_lsn,
 						&iip->ili_item.li_lsn);
@@ -2053,6 +2279,10 @@ retry:
 	}
 
 	xfs_perag_put(pag);
+<<<<<<< HEAD
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -2078,12 +2308,19 @@ xfs_ifree(
 	xfs_buf_t       	*ibp;
 
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
+<<<<<<< HEAD
 	ASSERT(ip->i_transp == tp);
 	ASSERT(ip->i_d.di_nlink == 0);
 	ASSERT(ip->i_d.di_nextents == 0);
 	ASSERT(ip->i_d.di_anextents == 0);
 	ASSERT((ip->i_d.di_size == 0 && ip->i_size == 0) ||
 	       ((ip->i_d.di_mode & S_IFMT) != S_IFREG));
+=======
+	ASSERT(ip->i_d.di_nlink == 0);
+	ASSERT(ip->i_d.di_nextents == 0);
+	ASSERT(ip->i_d.di_anextents == 0);
+	ASSERT(ip->i_d.di_size == 0 || !S_ISREG(ip->i_d.di_mode));
+>>>>>>> refs/remotes/origin/cm-10.0
 	ASSERT(ip->i_d.di_nblocks == 0);
 
 	/*
@@ -2102,8 +2339,11 @@ xfs_ifree(
 	ip->i_d.di_flags = 0;
 	ip->i_d.di_dmevmask = 0;
 	ip->i_d.di_forkoff = 0;		/* mark the attr fork not in use */
+<<<<<<< HEAD
 	ip->i_df.if_ext_max =
 		XFS_IFORK_DSIZE(ip) / (uint)sizeof(xfs_bmbt_rec_t);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ip->i_d.di_format = XFS_DINODE_FMT_EXTENTS;
 	ip->i_d.di_aformat = XFS_DINODE_FMT_EXTENTS;
 	/*
@@ -2133,10 +2373,17 @@ xfs_ifree(
 	dip->di_mode = 0;
 
 	if (delete) {
+<<<<<<< HEAD
 		xfs_ifree_cluster(ip, tp, first_ino);
 	}
 
 	return 0;
+=======
+		error = xfs_ifree_cluster(ip, tp, first_ino);
+	}
+
+	return error;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -2409,7 +2656,11 @@ xfs_idestroy_fork(
  * once someone is waiting for it to be unpinned.
  */
 static void
+<<<<<<< HEAD
 xfs_iunpin_nowait(
+=======
+xfs_iunpin(
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct xfs_inode	*ip)
 {
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL|XFS_ILOCK_SHARED));
@@ -2421,14 +2672,39 @@ xfs_iunpin_nowait(
 
 }
 
+<<<<<<< HEAD
+=======
+static void
+__xfs_iunpin_wait(
+	struct xfs_inode	*ip)
+{
+	wait_queue_head_t *wq = bit_waitqueue(&ip->i_flags, __XFS_IPINNED_BIT);
+	DEFINE_WAIT_BIT(wait, &ip->i_flags, __XFS_IPINNED_BIT);
+
+	xfs_iunpin(ip);
+
+	do {
+		prepare_to_wait(wq, &wait.wait, TASK_UNINTERRUPTIBLE);
+		if (xfs_ipincount(ip))
+			io_schedule();
+	} while (xfs_ipincount(ip));
+	finish_wait(wq, &wait.wait);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void
 xfs_iunpin_wait(
 	struct xfs_inode	*ip)
 {
+<<<<<<< HEAD
 	if (xfs_ipincount(ip)) {
 		xfs_iunpin_nowait(ip);
 		wait_event(ip->i_ipin_wait, (xfs_ipincount(ip) == 0));
 	}
+=======
+	if (xfs_ipincount(ip))
+		__xfs_iunpin_wait(ip);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -2538,7 +2814,11 @@ xfs_iflush_fork(
 	mp = ip->i_mount;
 	switch (XFS_IFORK_FORMAT(ip, whichfork)) {
 	case XFS_DINODE_FMT_LOCAL:
+<<<<<<< HEAD
 		if ((iip->ili_format.ilf_fields & dataflag[whichfork]) &&
+=======
+		if ((iip->ili_fields & dataflag[whichfork]) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 		    (ifp->if_bytes > 0)) {
 			ASSERT(ifp->if_u1.if_data != NULL);
 			ASSERT(ifp->if_bytes <= XFS_IFORK_SIZE(ip, whichfork));
@@ -2548,8 +2828,13 @@ xfs_iflush_fork(
 
 	case XFS_DINODE_FMT_EXTENTS:
 		ASSERT((ifp->if_flags & XFS_IFEXTENTS) ||
+<<<<<<< HEAD
 		       !(iip->ili_format.ilf_fields & extflag[whichfork]));
 		if ((iip->ili_format.ilf_fields & extflag[whichfork]) &&
+=======
+		       !(iip->ili_fields & extflag[whichfork]));
+		if ((iip->ili_fields & extflag[whichfork]) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 		    (ifp->if_bytes > 0)) {
 			ASSERT(xfs_iext_get_ext(ifp, 0));
 			ASSERT(XFS_IFORK_NEXTENTS(ip, whichfork) > 0);
@@ -2559,7 +2844,11 @@ xfs_iflush_fork(
 		break;
 
 	case XFS_DINODE_FMT_BTREE:
+<<<<<<< HEAD
 		if ((iip->ili_format.ilf_fields & brootflag[whichfork]) &&
+=======
+		if ((iip->ili_fields & brootflag[whichfork]) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 		    (ifp->if_broot_bytes > 0)) {
 			ASSERT(ifp->if_broot != NULL);
 			ASSERT(ifp->if_broot_bytes <=
@@ -2572,14 +2861,22 @@ xfs_iflush_fork(
 		break;
 
 	case XFS_DINODE_FMT_DEV:
+<<<<<<< HEAD
 		if (iip->ili_format.ilf_fields & XFS_ILOG_DEV) {
+=======
+		if (iip->ili_fields & XFS_ILOG_DEV) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ASSERT(whichfork == XFS_DATA_FORK);
 			xfs_dinode_put_rdev(dip, ip->i_df.if_u2.if_rdev);
 		}
 		break;
 
 	case XFS_DINODE_FMT_UUID:
+<<<<<<< HEAD
 		if (iip->ili_format.ilf_fields & XFS_ILOG_UUID) {
+=======
+		if (iip->ili_fields & XFS_ILOG_UUID) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ASSERT(whichfork == XFS_DATA_FORK);
 			memcpy(XFS_DFORK_DPTR(dip),
 			       &ip->i_df.if_u2.if_uuid,
@@ -2725,6 +3022,7 @@ cluster_corrupt_out:
 		 * mark the buffer as an error and call them.  Otherwise
 		 * mark it as stale and brelse.
 		 */
+<<<<<<< HEAD
 		if (XFS_BUF_IODONE_FUNC(bp)) {
 			XFS_BUF_UNDONE(bp);
 			XFS_BUF_STALE(bp);
@@ -2732,6 +3030,15 @@ cluster_corrupt_out:
 			xfs_buf_ioend(bp, 0);
 		} else {
 			XFS_BUF_STALE(bp);
+=======
+		if (bp->b_iodone) {
+			XFS_BUF_UNDONE(bp);
+			xfs_buf_stale(bp);
+			xfs_buf_ioerror(bp, EIO);
+			xfs_buf_ioend(bp, 0);
+		} else {
+			xfs_buf_stale(bp);
+>>>>>>> refs/remotes/origin/cm-10.0
 			xfs_buf_relse(bp);
 		}
 	}
@@ -2768,9 +3075,15 @@ xfs_iflush(
 	XFS_STATS_INC(xs_iflush_count);
 
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL|XFS_ILOCK_SHARED));
+<<<<<<< HEAD
 	ASSERT(!completion_done(&ip->i_flush));
 	ASSERT(ip->i_d.di_format != XFS_DINODE_FMT_BTREE ||
 	       ip->i_d.di_nextents > ip->i_df.if_ext_max);
+=======
+	ASSERT(xfs_isiflocked(ip));
+	ASSERT(ip->i_d.di_format != XFS_DINODE_FMT_BTREE ||
+	       ip->i_d.di_nextents > XFS_IFORK_MAXEXT(ip, XFS_DATA_FORK));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	iip = ip->i_itemp;
 	mp = ip->i_mount;
@@ -2787,7 +3100,11 @@ xfs_iflush(
 	 * out for us if they occur after the log force completes.
 	 */
 	if (!(flags & SYNC_WAIT) && xfs_ipincount(ip)) {
+<<<<<<< HEAD
 		xfs_iunpin_nowait(ip);
+=======
+		xfs_iunpin(ip);
+>>>>>>> refs/remotes/origin/cm-10.0
 		xfs_ifunlock(ip);
 		return EAGAIN;
 	}
@@ -2812,9 +3129,14 @@ xfs_iflush(
 	 * to disk, because the log record didn't make it to disk!
 	 */
 	if (XFS_FORCED_SHUTDOWN(mp)) {
+<<<<<<< HEAD
 		ip->i_update_core = 0;
 		if (iip)
 			iip->ili_format.ilf_fields = 0;
+=======
+		if (iip)
+			iip->ili_fields = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		xfs_ifunlock(ip);
 		return XFS_ERROR(EIO);
 	}
@@ -2840,7 +3162,11 @@ xfs_iflush(
 	 * If the buffer is pinned then push on the log now so we won't
 	 * get stuck waiting in the write for too long.
 	 */
+<<<<<<< HEAD
 	if (XFS_BUF_ISPINNED(bp))
+=======
+	if (xfs_buf_ispinned(bp))
+>>>>>>> refs/remotes/origin/cm-10.0
 		xfs_log_force(mp, 0);
 
 	/*
@@ -2852,9 +3178,17 @@ xfs_iflush(
 		goto cluster_corrupt_out;
 
 	if (flags & SYNC_WAIT)
+<<<<<<< HEAD
 		error = xfs_bwrite(mp, bp);
 	else
 		xfs_bdwrite(mp, bp);
+=======
+		error = xfs_bwrite(bp);
+	else
+		xfs_buf_delwri_queue(bp);
+
+	xfs_buf_relse(bp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return error;
 
 corrupt_out:
@@ -2882,9 +3216,15 @@ xfs_iflush_int(
 #endif
 
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL|XFS_ILOCK_SHARED));
+<<<<<<< HEAD
 	ASSERT(!completion_done(&ip->i_flush));
 	ASSERT(ip->i_d.di_format != XFS_DINODE_FMT_BTREE ||
 	       ip->i_d.di_nextents > ip->i_df.if_ext_max);
+=======
+	ASSERT(xfs_isiflocked(ip));
+	ASSERT(ip->i_d.di_format != XFS_DINODE_FMT_BTREE ||
+	       ip->i_d.di_nextents > XFS_IFORK_MAXEXT(ip, XFS_DATA_FORK));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	iip = ip->i_itemp;
 	mp = ip->i_mount;
@@ -2892,6 +3232,7 @@ xfs_iflush_int(
 	/* set *dip = inode's place in the buffer */
 	dip = (xfs_dinode_t *)xfs_buf_offset(bp, ip->i_imap.im_boffset);
 
+<<<<<<< HEAD
 	/*
 	 * Clear i_update_core before copying out the data.
 	 * This is for coordination with our timestamp updates
@@ -2913,6 +3254,9 @@ xfs_iflush_int(
 	xfs_synchronize_times(ip);
 
 	if (XFS_TEST_ERROR(be16_to_cpu(dip->di_magic) != XFS_DINODE_MAGIC,
+=======
+	if (XFS_TEST_ERROR(dip->di_magic != cpu_to_be16(XFS_DINODE_MAGIC),
+>>>>>>> refs/remotes/origin/cm-10.0
 			       mp, XFS_ERRTAG_IFLUSH_1, XFS_RANDOM_IFLUSH_1)) {
 		xfs_alert_tag(mp, XFS_PTAG_IFLUSH,
 			"%s: Bad inode %Lu magic number 0x%x, ptr 0x%p",
@@ -2926,7 +3270,11 @@ xfs_iflush_int(
 			__func__, ip->i_ino, ip, ip->i_d.di_magic);
 		goto corrupt_out;
 	}
+<<<<<<< HEAD
 	if ((ip->i_d.di_mode & S_IFMT) == S_IFREG) {
+=======
+	if (S_ISREG(ip->i_d.di_mode)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (XFS_TEST_ERROR(
 		    (ip->i_d.di_format != XFS_DINODE_FMT_EXTENTS) &&
 		    (ip->i_d.di_format != XFS_DINODE_FMT_BTREE),
@@ -2936,7 +3284,11 @@ xfs_iflush_int(
 				__func__, ip->i_ino, ip);
 			goto corrupt_out;
 		}
+<<<<<<< HEAD
 	} else if ((ip->i_d.di_mode & S_IFMT) == S_IFDIR) {
+=======
+	} else if (S_ISDIR(ip->i_d.di_mode)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (XFS_TEST_ERROR(
 		    (ip->i_d.di_format != XFS_DINODE_FMT_EXTENTS) &&
 		    (ip->i_d.di_format != XFS_DINODE_FMT_BTREE) &&
@@ -3022,6 +3374,7 @@ xfs_iflush_int(
 	xfs_inobp_check(mp, bp);
 
 	/*
+<<<<<<< HEAD
 	 * We've recorded everything logged in the inode, so we'd
 	 * like to clear the ilf_fields bits so we don't log and
 	 * flush things unnecessarily.  However, we can't stop
@@ -3052,6 +3405,35 @@ xfs_iflush_int(
 	if (iip != NULL && iip->ili_format.ilf_fields != 0) {
 		iip->ili_last_fields = iip->ili_format.ilf_fields;
 		iip->ili_format.ilf_fields = 0;
+=======
+	 * We've recorded everything logged in the inode, so we'd like to clear
+	 * the ili_fields bits so we don't log and flush things unnecessarily.
+	 * However, we can't stop logging all this information until the data
+	 * we've copied into the disk buffer is written to disk.  If we did we
+	 * might overwrite the copy of the inode in the log with all the data
+	 * after re-logging only part of it, and in the face of a crash we
+	 * wouldn't have all the data we need to recover.
+	 *
+	 * What we do is move the bits to the ili_last_fields field.  When
+	 * logging the inode, these bits are moved back to the ili_fields field.
+	 * In the xfs_iflush_done() routine we clear ili_last_fields, since we
+	 * know that the information those bits represent is permanently on
+	 * disk.  As long as the flush completes before the inode is logged
+	 * again, then both ili_fields and ili_last_fields will be cleared.
+	 *
+	 * We can play with the ili_fields bits here, because the inode lock
+	 * must be held exclusively in order to set bits there and the flush
+	 * lock protects the ili_last_fields bits.  Set ili_logged so the flush
+	 * done routine can tell whether or not to look in the AIL.  Also, store
+	 * the current LSN of the inode so that we can tell whether the item has
+	 * moved in the AIL from xfs_iflush_done().  In order to read the lsn we
+	 * need the AIL lock, because it is a 64 bit value that cannot be read
+	 * atomically.
+	 */
+	if (iip != NULL && iip->ili_fields != 0) {
+		iip->ili_last_fields = iip->ili_fields;
+		iip->ili_fields = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		iip->ili_logged = 1;
 
 		xfs_trans_ail_copy_lsn(mp->m_ail, &iip->ili_flush_lsn,
@@ -3065,6 +3447,7 @@ xfs_iflush_int(
 		 */
 		xfs_buf_attach_iodone(bp, xfs_iflush_done, &iip->ili_item);
 
+<<<<<<< HEAD
 		ASSERT(XFS_BUF_FSPRIVATE(bp, void *) != NULL);
 		ASSERT(XFS_BUF_IODONE_FUNC(bp) != NULL);
 	} else {
@@ -3072,6 +3455,14 @@ xfs_iflush_int(
 		 * We're flushing an inode which is not in the AIL and has
 		 * not been logged but has i_update_core set.  For this
 		 * case we can use a B_DELWRI flush and immediately drop
+=======
+		ASSERT(bp->b_fspriv != NULL);
+		ASSERT(bp->b_iodone != NULL);
+	} else {
+		/*
+		 * We're flushing an inode which is not in the AIL and has
+		 * not been logged.  For this case we can immediately drop
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * the inode flush lock because we can avoid the whole
 		 * AIL state thing.  It's OK to drop the flush lock now,
 		 * because we've already locked the buffer and to do anything

@@ -13,6 +13,10 @@
 #include <linux/smp.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void cpu_enter_lowpower(void)
 {

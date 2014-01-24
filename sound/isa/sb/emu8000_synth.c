@@ -22,6 +22,10 @@
 
 #include "emu8000_local.h"
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/initval.h>
 
 MODULE_AUTHOR("Takashi Iwai, Steve Ratcliffe");

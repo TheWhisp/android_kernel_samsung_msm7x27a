@@ -21,7 +21,10 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -305,7 +308,11 @@ titan_late_init(void)
 }
 
 static int __devinit
+<<<<<<< HEAD
 titan_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+titan_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u8 intline;
 	int irq;
@@ -331,7 +338,12 @@ titan_init_pci(void)
  	 */
  	titan_late_init();
  
+<<<<<<< HEAD
 	pci_probe_only = 1;
+=======
+	/* Indicate that we trust the console to configure things properly */
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/cm-10.0
 	common_init_pci();
 	SMC669_Init(0);
 	locate_and_init_vga(NULL);

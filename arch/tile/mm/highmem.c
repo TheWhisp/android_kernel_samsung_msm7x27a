@@ -224,12 +224,20 @@ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
 }
 EXPORT_SYMBOL(kmap_atomic_prot);
 
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
+=======
+void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* PAGE_NONE is a magic value that tells us to check immutability. */
 	return kmap_atomic_prot(page, PAGE_NONE);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kmap_atomic);
+=======
+EXPORT_SYMBOL(kmap_atomic);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __kunmap_atomic(void *kvaddr)
 {

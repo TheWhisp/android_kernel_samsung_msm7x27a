@@ -2,7 +2,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2008 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2008 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -64,6 +68,17 @@
 		goto err;						\
 } while (0)
 
+<<<<<<< HEAD
+=======
+#define DEBUGFS_ADD_U32(name, parent, ptr, mode) do {			\
+	struct dentry *__tmp;						\
+	__tmp = debugfs_create_u32(#name, mode,				\
+				   parent, ptr);			\
+	if (IS_ERR(__tmp) || !__tmp)					\
+		goto err;						\
+} while (0)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* file operation */
 #define DEBUGFS_READ_FUNC(name)                                         \
 static ssize_t iwl_dbgfs_##name##_read(struct file *file,               \
@@ -76,17 +91,24 @@ static ssize_t iwl_dbgfs_##name##_write(struct file *file,              \
 					size_t count, loff_t *ppos);
 
 
+<<<<<<< HEAD
 static int iwl_dbgfs_open_file_generic(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DEBUGFS_READ_FILE_OPS(name)                                     \
 	DEBUGFS_READ_FUNC(name);                                        \
 static const struct file_operations iwl_dbgfs_##name##_ops = {          \
 	.read = iwl_dbgfs_##name##_read,                       		\
+<<<<<<< HEAD
 	.open = iwl_dbgfs_open_file_generic,                    	\
+=======
+	.open = simple_open,						\
+>>>>>>> refs/remotes/origin/cm-10.0
 	.llseek = generic_file_llseek,					\
 };
 
@@ -94,7 +116,11 @@ static const struct file_operations iwl_dbgfs_##name##_ops = {          \
 	DEBUGFS_WRITE_FUNC(name);                                       \
 static const struct file_operations iwl_dbgfs_##name##_ops = {          \
 	.write = iwl_dbgfs_##name##_write,                              \
+<<<<<<< HEAD
 	.open = iwl_dbgfs_open_file_generic,                    	\
+=======
+	.open = simple_open,						\
+>>>>>>> refs/remotes/origin/cm-10.0
 	.llseek = generic_file_llseek,					\
 };
 
@@ -105,7 +131,11 @@ static const struct file_operations iwl_dbgfs_##name##_ops = {          \
 static const struct file_operations iwl_dbgfs_##name##_ops = {          \
 	.write = iwl_dbgfs_##name##_write,                              \
 	.read = iwl_dbgfs_##name##_read,                                \
+<<<<<<< HEAD
 	.open = iwl_dbgfs_open_file_generic,                            \
+=======
+	.open = simple_open,						\
+>>>>>>> refs/remotes/origin/cm-10.0
 	.llseek = generic_file_llseek,					\
 };
 
@@ -222,15 +252,28 @@ static ssize_t iwl_dbgfs_sram_read(struct file *file,
 	int pos = 0;
 	int sram;
 	struct iwl_priv *priv = file->private_data;
+<<<<<<< HEAD
+=======
+	const struct fw_img *img;
+>>>>>>> refs/remotes/origin/cm-10.0
 	size_t bufsz;
 
 	/* default is to dump the entire data segment */
 	if (!priv->dbgfs_sram_offset && !priv->dbgfs_sram_len) {
 		priv->dbgfs_sram_offset = 0x800000;
+<<<<<<< HEAD
 		if (priv->ucode_type == UCODE_SUBTYPE_INIT)
 			priv->dbgfs_sram_len = priv->ucode_init.data.len;
 		else
 			priv->dbgfs_sram_len = priv->ucode_rt.data.len;
+=======
+		if (!priv->ucode_loaded) {
+			IWL_ERR(priv, "No uCode has been loadded.\n");
+			return -EINVAL;
+		}
+		img = &priv->fw->img[priv->shrd->ucode_type];
+		priv->dbgfs_sram_len = img->sec[IWL_UCODE_SECTION_DATA].len;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	len = priv->dbgfs_sram_len;
 
@@ -254,7 +297,11 @@ static ssize_t iwl_dbgfs_sram_read(struct file *file,
 	sram = priv->dbgfs_sram_offset & ~0x3;
 
 	/* read the first u32 from sram */
+<<<<<<< HEAD
 	val = iwl_read_targ_mem(priv, sram);
+=======
+	val = iwl_read_targ_mem(trans(priv), sram);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (; len; len--) {
 		/* put the address at the start of every line */
@@ -273,7 +320,11 @@ static ssize_t iwl_dbgfs_sram_read(struct file *file,
 		if (++offset == 4) {
 			sram += 4;
 			offset = 0;
+<<<<<<< HEAD
 			val = iwl_read_targ_mem(priv, sram);
+=======
+			val = iwl_read_targ_mem(trans(priv), sram);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* put in extra spaces and split lines for human readability */
@@ -322,12 +373,33 @@ static ssize_t iwl_dbgfs_sram_write(struct file *file,
 	return count;
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t iwl_dbgfs_wowlan_sram_read(struct file *file,
+					  char __user *user_buf,
+					  size_t count, loff_t *ppos)
+{
+	struct iwl_priv *priv = file->private_data;
+	const struct fw_img *img = &priv->fw->img[IWL_UCODE_WOWLAN];
+
+	if (!priv->wowlan_sram)
+		return -ENODATA;
+
+	return simple_read_from_buffer(user_buf, count, ppos,
+				       priv->wowlan_sram,
+				       img->sec[IWL_UCODE_SECTION_DATA].len);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t iwl_dbgfs_stations_read(struct file *file, char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
 	struct iwl_priv *priv = file->private_data;
 	struct iwl_station_entry *station;
+<<<<<<< HEAD
 	int max_sta = priv->hw_params.max_stations;
+=======
+	struct iwl_tid_data *tid_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	char *buf;
 	int i, j, pos = 0;
 	ssize_t ret;
@@ -341,7 +413,11 @@ static ssize_t iwl_dbgfs_stations_read(struct file *file, char __user *user_buf,
 	pos += scnprintf(buf + pos, bufsz - pos, "num of stations: %d\n\n",
 			priv->num_stations);
 
+<<<<<<< HEAD
 	for (i = 0; i < max_sta; i++) {
+=======
+	for (i = 0; i < IWLAGN_STATION_COUNT; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		station = &priv->stations[i];
 		if (!station->used)
 			continue;
@@ -350,6 +426,7 @@ static ssize_t iwl_dbgfs_stations_read(struct file *file, char __user *user_buf,
 				 i, station->sta.sta.addr,
 				 station->sta.station_flags_msk);
 		pos += scnprintf(buf + pos, bufsz - pos,
+<<<<<<< HEAD
 				"TID\tseq_num\ttxq_id\tframes\ttfds\t");
 		pos += scnprintf(buf + pos, bufsz - pos,
 				"start_idx\tbitmap\t\t\trate_n_flags\n");
@@ -366,6 +443,18 @@ static ssize_t iwl_dbgfs_stations_read(struct file *file, char __user *user_buf,
 				station->tid[j].agg.rate_n_flags);
 
 			if (station->tid[j].agg.wait_for_ba)
+=======
+				"TID\tseq_num\trate_n_flags\n");
+
+		for (j = 0; j < IWL_MAX_TID_COUNT; j++) {
+			tid_data = &priv->tid_data[i][j];
+			pos += scnprintf(buf + pos, bufsz - pos,
+				"%d:\t%#x\t%#x",
+				j, tid_data->seq_number,
+				tid_data->agg.rate_n_flags);
+
+			if (tid_data->agg.wait_for_ba)
+>>>>>>> refs/remotes/origin/cm-10.0
 				pos += scnprintf(buf + pos, bufsz - pos,
 						 " - waitforba");
 			pos += scnprintf(buf + pos, bufsz - pos, "\n");
@@ -390,7 +479,11 @@ static ssize_t iwl_dbgfs_nvm_read(struct file *file,
 	const u8 *ptr;
 	char *buf;
 	u16 eeprom_ver;
+<<<<<<< HEAD
 	size_t eeprom_len = priv->cfg->base_params->eeprom_size;
+=======
+	size_t eeprom_len = cfg(priv)->base_params->eeprom_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 	buf_size = 4 * eeprom_len + 256;
 
 	if (eeprom_len % 16) {
@@ -398,7 +491,11 @@ static ssize_t iwl_dbgfs_nvm_read(struct file *file,
 		return -ENODATA;
 	}
 
+<<<<<<< HEAD
 	ptr = priv->eeprom;
+=======
+	ptr = priv->shrd->eeprom;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ptr) {
 		IWL_ERR(priv, "Invalid EEPROM/OTP memory\n");
 		return -ENOMEM;
@@ -410,10 +507,17 @@ static ssize_t iwl_dbgfs_nvm_read(struct file *file,
 		IWL_ERR(priv, "Can not allocate Buffer\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	eeprom_ver = iwl_eeprom_query16(priv, EEPROM_VERSION);
 	pos += scnprintf(buf + pos, buf_size - pos, "NVM Type: %s, "
 			"version: 0x%x\n",
 			(priv->nvm_device_type == NVM_DEVICE_TYPE_OTP)
+=======
+	eeprom_ver = iwl_eeprom_query16(priv->shrd, EEPROM_VERSION);
+	pos += scnprintf(buf + pos, buf_size - pos, "NVM Type: %s, "
+			"version: 0x%x\n",
+			(trans(priv)->nvm_device_type == NVM_DEVICE_TYPE_OTP)
+>>>>>>> refs/remotes/origin/cm-10.0
 			 ? "OTP" : "EEPROM", eeprom_ver);
 	for (ofs = 0 ; ofs < eeprom_len ; ofs += 16) {
 		pos += scnprintf(buf + pos, buf_size - pos, "0x%.4x ", ofs);
@@ -429,6 +533,7 @@ static ssize_t iwl_dbgfs_nvm_read(struct file *file,
 	return ret;
 }
 
+<<<<<<< HEAD
 static ssize_t iwl_dbgfs_log_event_read(struct file *file,
 					 char __user *user_buf,
 					 size_t count, loff_t *ppos)
@@ -469,6 +574,8 @@ static ssize_t iwl_dbgfs_log_event_write(struct file *file,
 
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t iwl_dbgfs_channels_read(struct file *file, char __user *user_buf,
 				       size_t count, loff_t *ppos)
 {
@@ -549,21 +656,31 @@ static ssize_t iwl_dbgfs_status_read(struct file *file,
 	const size_t bufsz = sizeof(buf);
 
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_HCMD_ACTIVE:\t %d\n",
+<<<<<<< HEAD
 		test_bit(STATUS_HCMD_ACTIVE, &priv->status));
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_INT_ENABLED:\t %d\n",
 		test_bit(STATUS_INT_ENABLED, &priv->status));
+=======
+		test_bit(STATUS_HCMD_ACTIVE, &priv->shrd->status));
+>>>>>>> refs/remotes/origin/cm-10.0
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_RF_KILL_HW:\t %d\n",
 		test_bit(STATUS_RF_KILL_HW, &priv->status));
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_CT_KILL:\t\t %d\n",
 		test_bit(STATUS_CT_KILL, &priv->status));
+<<<<<<< HEAD
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_INIT:\t\t %d\n",
 		test_bit(STATUS_INIT, &priv->status));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_ALIVE:\t\t %d\n",
 		test_bit(STATUS_ALIVE, &priv->status));
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_READY:\t\t %d\n",
 		test_bit(STATUS_READY, &priv->status));
+<<<<<<< HEAD
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_TEMPERATURE:\t %d\n",
 		test_bit(STATUS_TEMPERATURE, &priv->status));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_GEO_CONFIGURED:\t %d\n",
 		test_bit(STATUS_GEO_CONFIGURED, &priv->status));
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_EXIT_PENDING:\t %d\n",
@@ -577,6 +694,7 @@ static ssize_t iwl_dbgfs_status_read(struct file *file,
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_SCAN_HW:\t\t %d\n",
 		test_bit(STATUS_SCAN_HW, &priv->status));
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_POWER_PMI:\t %d\n",
+<<<<<<< HEAD
 		test_bit(STATUS_POWER_PMI, &priv->status));
 	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_FW_ERROR:\t %d\n",
 		test_bit(STATUS_FW_ERROR, &priv->status));
@@ -584,10 +702,23 @@ static ssize_t iwl_dbgfs_status_read(struct file *file,
 }
 
 static ssize_t iwl_dbgfs_interrupt_read(struct file *file,
+=======
+		test_bit(STATUS_POWER_PMI, &priv->shrd->status));
+	pos += scnprintf(buf + pos, bufsz - pos, "STATUS_FW_ERROR:\t %d\n",
+		test_bit(STATUS_FW_ERROR, &priv->shrd->status));
+	return simple_read_from_buffer(user_buf, count, ppos, buf, pos);
+}
+
+static ssize_t iwl_dbgfs_rx_handlers_read(struct file *file,
+>>>>>>> refs/remotes/origin/cm-10.0
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
 	struct iwl_priv *priv = file->private_data;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	int pos = 0;
 	int cnt = 0;
 	char *buf;
@@ -600,6 +731,7 @@ static ssize_t iwl_dbgfs_interrupt_read(struct file *file,
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	pos += scnprintf(buf + pos, bufsz - pos,
 			"Interrupt Statistics Report:\n");
 
@@ -645,16 +777,34 @@ static ssize_t iwl_dbgfs_interrupt_read(struct file *file,
 	pos += scnprintf(buf + pos, bufsz - pos, "Unexpected INTA:\t\t %u\n",
 		priv->isr_stats.unhandled);
 
+=======
+	for (cnt = 0; cnt < REPLY_MAX; cnt++) {
+		if (priv->rx_handlers_stats[cnt] > 0)
+			pos += scnprintf(buf + pos, bufsz - pos,
+				"\tRx handler[%36s]:\t\t %u\n",
+				get_cmd_string(cnt),
+				priv->rx_handlers_stats[cnt]);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 	kfree(buf);
 	return ret;
 }
 
+<<<<<<< HEAD
 static ssize_t iwl_dbgfs_interrupt_write(struct file *file,
+=======
+static ssize_t iwl_dbgfs_rx_handlers_write(struct file *file,
+>>>>>>> refs/remotes/origin/cm-10.0
 					 const char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
 	struct iwl_priv *priv = file->private_data;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	char buf[8];
 	int buf_size;
 	u32 reset_flag;
@@ -666,7 +816,12 @@ static ssize_t iwl_dbgfs_interrupt_write(struct file *file,
 	if (sscanf(buf, "%x", &reset_flag) != 1)
 		return -EFAULT;
 	if (reset_flag == 0)
+<<<<<<< HEAD
 		iwl_clear_isr_stats(priv);
+=======
+		memset(&priv->rx_handlers_stats[0], 0,
+			sizeof(priv->rx_handlers_stats));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return count;
 }
@@ -771,6 +926,23 @@ static ssize_t iwl_dbgfs_disable_ht40_read(struct file *file,
 	return simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t iwl_dbgfs_temperature_read(struct file *file,
+					 char __user *user_buf,
+					 size_t count, loff_t *ppos)
+{
+	struct iwl_priv *priv = file->private_data;
+	char buf[8];
+	int pos = 0;
+	const size_t bufsz = sizeof(buf);
+
+	pos += scnprintf(buf + pos, bufsz - pos, "%d\n", priv->temperature);
+	return simple_read_from_buffer(user_buf, count, ppos, buf, pos);
+}
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t iwl_dbgfs_sleep_level_override_write(struct file *file,
 						    const char __user *user_buf,
 						    size_t count, loff_t *ppos)
@@ -856,15 +1028,27 @@ static ssize_t iwl_dbgfs_current_sleep_command_read(struct file *file,
 }
 
 DEBUGFS_READ_WRITE_FILE_OPS(sram);
+<<<<<<< HEAD
 DEBUGFS_READ_WRITE_FILE_OPS(log_event);
+=======
+DEBUGFS_READ_FILE_OPS(wowlan_sram);
+>>>>>>> refs/remotes/origin/cm-10.0
 DEBUGFS_READ_FILE_OPS(nvm);
 DEBUGFS_READ_FILE_OPS(stations);
 DEBUGFS_READ_FILE_OPS(channels);
 DEBUGFS_READ_FILE_OPS(status);
+<<<<<<< HEAD
 DEBUGFS_READ_WRITE_FILE_OPS(interrupt);
 DEBUGFS_READ_FILE_OPS(qos);
 DEBUGFS_READ_FILE_OPS(thermal_throttling);
 DEBUGFS_READ_WRITE_FILE_OPS(disable_ht40);
+=======
+DEBUGFS_READ_WRITE_FILE_OPS(rx_handlers);
+DEBUGFS_READ_FILE_OPS(qos);
+DEBUGFS_READ_FILE_OPS(thermal_throttling);
+DEBUGFS_READ_WRITE_FILE_OPS(disable_ht40);
+DEBUGFS_READ_FILE_OPS(temperature);
+>>>>>>> refs/remotes/origin/cm-10.0
 DEBUGFS_READ_WRITE_FILE_OPS(sleep_level_override);
 DEBUGFS_READ_FILE_OPS(current_sleep_command);
 
@@ -875,6 +1059,7 @@ static ssize_t iwl_dbgfs_traffic_log_read(struct file *file,
 	struct iwl_priv *priv = file->private_data;
 	int pos = 0, ofs = 0;
 	int cnt = 0, entry;
+<<<<<<< HEAD
 	struct iwl_tx_queue *txq;
 	struct iwl_queue *q;
 	struct iwl_rx_queue *rxq = &priv->rxq;
@@ -888,11 +1073,21 @@ static ssize_t iwl_dbgfs_traffic_log_read(struct file *file,
 		IWL_ERR(priv, "txq not ready\n");
 		return -EAGAIN;
 	}
+=======
+
+	char *buf;
+	int bufsz = ((IWL_TRAFFIC_ENTRIES * IWL_TRAFFIC_ENTRY_SIZE * 64) * 2) +
+		(cfg(priv)->base_params->num_of_queues * 32 * 8) + 400;
+	const u8 *ptr;
+	ssize_t ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	buf = kzalloc(bufsz, GFP_KERNEL);
 	if (!buf) {
 		IWL_ERR(priv, "Can not allocate buffer\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	pos += scnprintf(buf + pos, bufsz - pos, "Tx Queue\n");
 	for (cnt = 0; cnt < priv->hw_params.max_txq_num; cnt++) {
 		txq = &priv->txq[cnt];
@@ -905,6 +1100,12 @@ static ssize_t iwl_dbgfs_traffic_log_read(struct file *file,
 		ptr = priv->tx_traffic;
 		pos += scnprintf(buf + pos, bufsz - pos,
 				"Tx Traffic idx: %u\n",	priv->tx_traffic_idx);
+=======
+	if (priv->tx_traffic && iwl_have_debug_level(IWL_DL_TX)) {
+		ptr = priv->tx_traffic;
+		pos += scnprintf(buf + pos, bufsz - pos,
+				"Tx Traffic idx: %u\n", priv->tx_traffic_idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (cnt = 0, ofs = 0; cnt < IWL_TRAFFIC_ENTRIES; cnt++) {
 			for (entry = 0; entry < IWL_TRAFFIC_ENTRY_SIZE / 16;
 			     entry++,  ofs += 16) {
@@ -919,6 +1120,7 @@ static ssize_t iwl_dbgfs_traffic_log_read(struct file *file,
 		}
 	}
 
+<<<<<<< HEAD
 	pos += scnprintf(buf + pos, bufsz - pos, "Rx Queue\n");
 	pos += scnprintf(buf + pos, bufsz - pos,
 			"read: %u, write: %u\n",
@@ -928,6 +1130,12 @@ static ssize_t iwl_dbgfs_traffic_log_read(struct file *file,
 		ptr = priv->rx_traffic;
 		pos += scnprintf(buf + pos, bufsz - pos,
 				"Rx Traffic idx: %u\n",	priv->rx_traffic_idx);
+=======
+	if (priv->rx_traffic && iwl_have_debug_level(IWL_DL_RX)) {
+		ptr = priv->rx_traffic;
+		pos += scnprintf(buf + pos, bufsz - pos,
+				"Rx Traffic idx: %u\n", priv->rx_traffic_idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (cnt = 0, ofs = 0; cnt < IWL_TRAFFIC_ENTRIES; cnt++) {
 			for (entry = 0; entry < IWL_TRAFFIC_ENTRY_SIZE / 16;
 			     entry++,  ofs += 16) {
@@ -968,6 +1176,7 @@ static ssize_t iwl_dbgfs_traffic_log_write(struct file *file,
 	return count;
 }
 
+<<<<<<< HEAD
 static ssize_t iwl_dbgfs_tx_queue_read(struct file *file,
 						char __user *user_buf,
 						size_t count, loff_t *ppos) {
@@ -1038,6 +1247,8 @@ static ssize_t iwl_dbgfs_rx_queue_read(struct file *file,
 	return simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const char *fmt_value = "  %-30s %10u\n";
 static const char *fmt_hex   = "  %-30s       0x%02X\n";
 static const char *fmt_table = "  %-30s %10u  %10u  %10u  %10u\n";
@@ -1049,6 +1260,11 @@ static int iwl_statistics_flag(struct iwl_priv *priv, char *buf, int bufsz)
 	int p = 0;
 	u32 flag;
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&priv->statistics.lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	flag = le32_to_cpu(priv->statistics.flag);
 
 	p += scnprintf(buf + p, bufsz - p, "Statistics Flag(0x%X):\n", flag);
@@ -1096,6 +1312,10 @@ static ssize_t iwl_dbgfs_ucode_rx_stats_read(struct file *file,
 	 * the last statistics notification from uCode
 	 * might not reflect the current uCode activity
 	 */
+<<<<<<< HEAD
+=======
+	spin_lock_bh(&priv->statistics.lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ofdm = &priv->statistics.rx_ofdm;
 	cck = &priv->statistics.rx_cck;
 	general = &priv->statistics.rx_non_phy;
@@ -1492,6 +1712,11 @@ static ssize_t iwl_dbgfs_ucode_rx_stats_read(struct file *file,
 			 accum_ht->unsupport_mcs,
 			 delta_ht->unsupport_mcs, max_ht->unsupport_mcs);
 
+<<<<<<< HEAD
+=======
+	spin_unlock_bh(&priv->statistics.lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 	kfree(buf);
 	return ret;
@@ -1521,6 +1746,11 @@ static ssize_t iwl_dbgfs_ucode_tx_stats_read(struct file *file,
 	 * the last statistics notification from uCode
 	 * might not reflect the current uCode activity
 	 */
+<<<<<<< HEAD
+=======
+	spin_lock_bh(&priv->statistics.lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	tx = &priv->statistics.tx;
 	accum_tx = &priv->accum_stats.tx;
 	delta_tx = &priv->delta_stats.tx;
@@ -1670,6 +1900,7 @@ static ssize_t iwl_dbgfs_ucode_tx_stats_read(struct file *file,
 	if (tx->tx_power.ant_a || tx->tx_power.ant_b || tx->tx_power.ant_c) {
 		pos += scnprintf(buf + pos, bufsz - pos,
 			"tx power: (1/2 dB step)\n");
+<<<<<<< HEAD
 		if ((priv->cfg->valid_tx_ant & ANT_A) && tx->tx_power.ant_a)
 			pos += scnprintf(buf + pos, bufsz - pos,
 					fmt_hex, "antenna A:",
@@ -1679,10 +1910,30 @@ static ssize_t iwl_dbgfs_ucode_tx_stats_read(struct file *file,
 					fmt_hex, "antenna B:",
 					tx->tx_power.ant_b);
 		if ((priv->cfg->valid_tx_ant & ANT_C) && tx->tx_power.ant_c)
+=======
+		if ((hw_params(priv).valid_tx_ant & ANT_A) &&
+		    tx->tx_power.ant_a)
+			pos += scnprintf(buf + pos, bufsz - pos,
+					fmt_hex, "antenna A:",
+					tx->tx_power.ant_a);
+		if ((hw_params(priv).valid_tx_ant & ANT_B) &&
+		    tx->tx_power.ant_b)
+			pos += scnprintf(buf + pos, bufsz - pos,
+					fmt_hex, "antenna B:",
+					tx->tx_power.ant_b);
+		if ((hw_params(priv).valid_tx_ant & ANT_C) &&
+		    tx->tx_power.ant_c)
+>>>>>>> refs/remotes/origin/cm-10.0
 			pos += scnprintf(buf + pos, bufsz - pos,
 					fmt_hex, "antenna C:",
 					tx->tx_power.ant_c);
 	}
+<<<<<<< HEAD
+=======
+
+	spin_unlock_bh(&priv->statistics.lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 	kfree(buf);
 	return ret;
@@ -1715,6 +1966,12 @@ static ssize_t iwl_dbgfs_ucode_general_stats_read(struct file *file,
 	 * the last statistics notification from uCode
 	 * might not reflect the current uCode activity
 	 */
+<<<<<<< HEAD
+=======
+
+	spin_lock_bh(&priv->statistics.lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	general = &priv->statistics.common;
 	dbg = &priv->statistics.common.dbg;
 	div = &priv->statistics.common.div;
@@ -1799,6 +2056,12 @@ static ssize_t iwl_dbgfs_ucode_general_stats_read(struct file *file,
 			 accum_general->num_of_sos_states,
 			 delta_general->num_of_sos_states,
 			 max_general->num_of_sos_states);
+<<<<<<< HEAD
+=======
+
+	spin_unlock_bh(&priv->statistics.lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 	kfree(buf);
 	return ret;
@@ -1842,6 +2105,12 @@ static ssize_t iwl_dbgfs_ucode_bt_stats_read(struct file *file,
 	 * the last statistics notification from uCode
 	 * might not reflect the current uCode activity
 	 */
+<<<<<<< HEAD
+=======
+
+	spin_lock_bh(&priv->statistics.lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	bt = &priv->statistics.bt_activity;
 	accum_bt = &priv->accum_stats.bt_activity;
 
@@ -1887,6 +2156,11 @@ static ssize_t iwl_dbgfs_ucode_bt_stats_read(struct file *file,
 			 le32_to_cpu(priv->statistics.num_bt_kills),
 			 priv->statistics.accum_num_bt_kills);
 
+<<<<<<< HEAD
+=======
+	spin_unlock_bh(&priv->statistics.lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 	kfree(buf);
 	return ret;
@@ -1915,6 +2189,7 @@ static ssize_t iwl_dbgfs_reply_tx_error_read(struct file *file,
 	pos += scnprintf(buf + pos, bufsz - pos, "Statistics_TX_Error:\n");
 	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t\t%u\n",
 			 iwl_get_tx_fail_reason(TX_STATUS_POSTPONE_DELAY),
+<<<<<<< HEAD
 			 priv->_agn.reply_tx_stats.pp_delay);
 	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
 			 iwl_get_tx_fail_reason(TX_STATUS_POSTPONE_FEW_BYTES),
@@ -1984,12 +2259,84 @@ static ssize_t iwl_dbgfs_reply_tx_error_read(struct file *file,
 			 priv->_agn.reply_tx_stats.sta_color_mismatch);
 	pos += scnprintf(buf + pos, bufsz - pos, "UNKNOWN:\t\t\t%u\n",
 			 priv->_agn.reply_tx_stats.unknown);
+=======
+			 priv->reply_tx_stats.pp_delay);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_POSTPONE_FEW_BYTES),
+			 priv->reply_tx_stats.pp_few_bytes);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_POSTPONE_BT_PRIO),
+			 priv->reply_tx_stats.pp_bt_prio);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_POSTPONE_QUIET_PERIOD),
+			 priv->reply_tx_stats.pp_quiet_period);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_POSTPONE_CALC_TTAK),
+			 priv->reply_tx_stats.pp_calc_ttak);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t%u\n",
+			 iwl_get_tx_fail_reason(
+				TX_STATUS_FAIL_INTERNAL_CROSSED_RETRY),
+			 priv->reply_tx_stats.int_crossed_retry);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_SHORT_LIMIT),
+			 priv->reply_tx_stats.short_limit);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_LONG_LIMIT),
+			 priv->reply_tx_stats.long_limit);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_FIFO_UNDERRUN),
+			 priv->reply_tx_stats.fifo_underrun);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_DRAIN_FLOW),
+			 priv->reply_tx_stats.drain_flow);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_RFKILL_FLUSH),
+			 priv->reply_tx_stats.rfkill_flush);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_LIFE_EXPIRE),
+			 priv->reply_tx_stats.life_expire);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_DEST_PS),
+			 priv->reply_tx_stats.dest_ps);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_HOST_ABORTED),
+			 priv->reply_tx_stats.host_abort);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_BT_RETRY),
+			 priv->reply_tx_stats.pp_delay);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_STA_INVALID),
+			 priv->reply_tx_stats.sta_invalid);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_FRAG_DROPPED),
+			 priv->reply_tx_stats.frag_drop);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_TID_DISABLE),
+			 priv->reply_tx_stats.tid_disable);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_FIFO_FLUSHED),
+			 priv->reply_tx_stats.fifo_flush);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t%u\n",
+			 iwl_get_tx_fail_reason(
+				TX_STATUS_FAIL_INSUFFICIENT_CF_POLL),
+			 priv->reply_tx_stats.insuff_cf_poll);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_tx_fail_reason(TX_STATUS_FAIL_PASSIVE_NO_RX),
+			 priv->reply_tx_stats.fail_hw_drop);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t%u\n",
+			 iwl_get_tx_fail_reason(
+				TX_STATUS_FAIL_NO_BEACON_ON_RADAR),
+			 priv->reply_tx_stats.sta_color_mismatch);
+	pos += scnprintf(buf + pos, bufsz - pos, "UNKNOWN:\t\t\t%u\n",
+			 priv->reply_tx_stats.unknown);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pos += scnprintf(buf + pos, bufsz - pos,
 			 "\nStatistics_Agg_TX_Error:\n");
 
 	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
 			 iwl_get_agg_tx_fail_reason(AGG_TX_STATE_UNDERRUN_MSK),
+<<<<<<< HEAD
 			 priv->_agn.reply_agg_tx_stats.underrun);
 	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
 			 iwl_get_agg_tx_fail_reason(AGG_TX_STATE_BT_PRIO_MSK),
@@ -2030,6 +2377,48 @@ static ssize_t iwl_dbgfs_reply_tx_error_read(struct file *file,
 			 priv->_agn.reply_agg_tx_stats.delay_tx);
 	pos += scnprintf(buf + pos, bufsz - pos, "UNKNOWN:\t\t\t%u\n",
 			 priv->_agn.reply_agg_tx_stats.unknown);
+=======
+			 priv->reply_agg_tx_stats.underrun);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(AGG_TX_STATE_BT_PRIO_MSK),
+			 priv->reply_agg_tx_stats.bt_prio);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(AGG_TX_STATE_FEW_BYTES_MSK),
+			 priv->reply_agg_tx_stats.few_bytes);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(AGG_TX_STATE_ABORT_MSK),
+			 priv->reply_agg_tx_stats.abort);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(
+				AGG_TX_STATE_LAST_SENT_TTL_MSK),
+			 priv->reply_agg_tx_stats.last_sent_ttl);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(
+				AGG_TX_STATE_LAST_SENT_TRY_CNT_MSK),
+			 priv->reply_agg_tx_stats.last_sent_try);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(
+				AGG_TX_STATE_LAST_SENT_BT_KILL_MSK),
+			 priv->reply_agg_tx_stats.last_sent_bt_kill);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(AGG_TX_STATE_SCD_QUERY_MSK),
+			 priv->reply_agg_tx_stats.scd_query);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(
+				AGG_TX_STATE_TEST_BAD_CRC32_MSK),
+			 priv->reply_agg_tx_stats.bad_crc32);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(AGG_TX_STATE_RESPONSE_MSK),
+			 priv->reply_agg_tx_stats.response);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(AGG_TX_STATE_DUMP_TX_MSK),
+			 priv->reply_agg_tx_stats.dump_tx);
+	pos += scnprintf(buf + pos, bufsz - pos, "%s:\t\t\t%u\n",
+			 iwl_get_agg_tx_fail_reason(AGG_TX_STATE_DELAY_TX_MSK),
+			 priv->reply_agg_tx_stats.delay_tx);
+	pos += scnprintf(buf + pos, bufsz - pos, "UNKNOWN:\t\t\t%u\n",
+			 priv->reply_agg_tx_stats.unknown);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 	kfree(buf);
@@ -2185,7 +2574,11 @@ static ssize_t iwl_dbgfs_power_save_status_read(struct file *file,
 	const size_t bufsz = sizeof(buf);
 	u32 pwrsave_status;
 
+<<<<<<< HEAD
 	pwrsave_status = iwl_read32(priv, CSR_GP_CNTRL) &
+=======
+	pwrsave_status = iwl_read32(trans(priv), CSR_GP_CNTRL) &
+>>>>>>> refs/remotes/origin/cm-10.0
 			CSR_GP_REG_POWER_SAVE_STATUS_MSK;
 
 	pos += scnprintf(buf + pos, bufsz - pos, "Power Save Status: ");
@@ -2222,6 +2615,7 @@ static ssize_t iwl_dbgfs_clear_ucode_statistics_write(struct file *file,
 	return count;
 }
 
+<<<<<<< HEAD
 static ssize_t iwl_dbgfs_csr_write(struct file *file,
 					 const char __user *user_buf,
 					 size_t count, loff_t *ppos)
@@ -2243,6 +2637,8 @@ static ssize_t iwl_dbgfs_csr_write(struct file *file,
 	return count;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t iwl_dbgfs_ucode_tracing_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
@@ -2282,9 +2678,16 @@ static ssize_t iwl_dbgfs_ucode_tracing_write(struct file *file,
 
 	if (trace) {
 		priv->event_log.ucode_trace = true;
+<<<<<<< HEAD
 		/* schedule the ucode timer to occur in UCODE_TRACE_PERIOD */
 		mod_timer(&priv->ucode_trace,
 			jiffies + msecs_to_jiffies(UCODE_TRACE_PERIOD));
+=======
+		if (iwl_is_alive(priv)) {
+			/* start collecting data now */
+			mod_timer(&priv->ucode_trace, jiffies);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		priv->event_log.ucode_trace = false;
 		del_timer_sync(&priv->ucode_trace);
@@ -2319,6 +2722,7 @@ static ssize_t iwl_dbgfs_rxon_filter_flags_read(struct file *file,
 	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
 }
 
+<<<<<<< HEAD
 static ssize_t iwl_dbgfs_fh_reg_read(struct file *file,
 					 char __user *user_buf,
 					 size_t count, loff_t *ppos)
@@ -2338,6 +2742,8 @@ static ssize_t iwl_dbgfs_fh_reg_read(struct file *file,
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t iwl_dbgfs_missed_beacon_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
@@ -2389,7 +2795,11 @@ static ssize_t iwl_dbgfs_plcp_delta_read(struct file *file,
 	const size_t bufsz = sizeof(buf);
 
 	pos += scnprintf(buf + pos, bufsz - pos, "%u\n",
+<<<<<<< HEAD
 			priv->cfg->base_params->plcp_delta_threshold);
+=======
+			priv->plcp_delta_threshold);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 }
@@ -2411,17 +2821,29 @@ static ssize_t iwl_dbgfs_plcp_delta_write(struct file *file,
 		return -EINVAL;
 	if ((plcp < IWL_MAX_PLCP_ERR_THRESHOLD_MIN) ||
 		(plcp > IWL_MAX_PLCP_ERR_THRESHOLD_MAX))
+<<<<<<< HEAD
 		priv->cfg->base_params->plcp_delta_threshold =
 			IWL_MAX_PLCP_ERR_THRESHOLD_DISABLE;
 	else
 		priv->cfg->base_params->plcp_delta_threshold = plcp;
+=======
+		priv->plcp_delta_threshold =
+			IWL_MAX_PLCP_ERR_THRESHOLD_DISABLE;
+	else
+		priv->plcp_delta_threshold = plcp;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return count;
 }
 
 static ssize_t iwl_dbgfs_force_reset_read(struct file *file,
 					char __user *user_buf,
+<<<<<<< HEAD
 					size_t count, loff_t *ppos) {
 
+=======
+					size_t count, loff_t *ppos)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iwl_priv *priv = file->private_data;
 	int i, pos = 0;
 	char buf[300];
@@ -2493,15 +2915,24 @@ static ssize_t iwl_dbgfs_txfifo_flush_write(struct file *file,
 	if (iwl_is_rfkill(priv))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	priv->cfg->ops->lib->dev_txfifo_flush(priv, IWL_DROP_ALL);
+=======
+	iwlagn_dev_txfifo_flush(priv, IWL_DROP_ALL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return count;
 }
 
 static ssize_t iwl_dbgfs_wd_timeout_write(struct file *file,
 					const char __user *user_buf,
+<<<<<<< HEAD
 					size_t count, loff_t *ppos) {
 
+=======
+					size_t count, loff_t *ppos)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iwl_priv *priv = file->private_data;
 	char buf[8];
 	int buf_size;
@@ -2516,7 +2947,11 @@ static ssize_t iwl_dbgfs_wd_timeout_write(struct file *file,
 	if (timeout < 0 || timeout > IWL_MAX_WD_TIMEOUT)
 		timeout = IWL_DEF_WD_TIMEOUT;
 
+<<<<<<< HEAD
 	priv->cfg->base_params->wd_timeout = timeout;
+=======
+	hw_params(priv).wd_timeout = timeout;
+>>>>>>> refs/remotes/origin/cm-10.0
 	iwl_setup_watchdog(priv);
 	return count;
 }
@@ -2576,10 +3011,17 @@ static ssize_t iwl_dbgfs_protection_mode_read(struct file *file,
 	char buf[40];
 	const size_t bufsz = sizeof(buf);
 
+<<<<<<< HEAD
 	if (priv->cfg->ht_params)
 		pos += scnprintf(buf + pos, bufsz - pos,
 			 "use %s for aggregation\n",
 			 (priv->cfg->ht_params->use_rts_for_aggregation) ?
+=======
+	if (cfg(priv)->ht_params)
+		pos += scnprintf(buf + pos, bufsz - pos,
+			 "use %s for aggregation\n",
+			 (hw_params(priv).use_rts_for_aggregation) ?
+>>>>>>> refs/remotes/origin/cm-10.0
 				"rts/cts" : "cts-to-self");
 	else
 		pos += scnprintf(buf + pos, bufsz - pos, "N/A");
@@ -2596,7 +3038,11 @@ static ssize_t iwl_dbgfs_protection_mode_write(struct file *file,
 	int buf_size;
 	int rts;
 
+<<<<<<< HEAD
 	if (!priv->cfg->ht_params)
+=======
+	if (!cfg(priv)->ht_params)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	memset(buf, 0, sizeof(buf));
@@ -2606,17 +3052,43 @@ static ssize_t iwl_dbgfs_protection_mode_write(struct file *file,
 	if (sscanf(buf, "%d", &rts) != 1)
 		return -EINVAL;
 	if (rts)
+<<<<<<< HEAD
 		priv->cfg->ht_params->use_rts_for_aggregation = true;
 	else
 		priv->cfg->ht_params->use_rts_for_aggregation = false;
+=======
+		hw_params(priv).use_rts_for_aggregation = true;
+	else
+		hw_params(priv).use_rts_for_aggregation = false;
+	return count;
+}
+
+static ssize_t iwl_dbgfs_echo_test_write(struct file *file,
+					const char __user *user_buf,
+					size_t count, loff_t *ppos)
+{
+	struct iwl_priv *priv = file->private_data;
+	char buf[8];
+	int buf_size;
+
+	memset(buf, 0, sizeof(buf));
+	buf_size = min(count, sizeof(buf) -  1);
+	if (copy_from_user(buf, user_buf, buf_size))
+		return -EFAULT;
+
+	iwl_cmd_echo_test(priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return count;
 }
 
 DEBUGFS_READ_FILE_OPS(rx_statistics);
 DEBUGFS_READ_FILE_OPS(tx_statistics);
 DEBUGFS_READ_WRITE_FILE_OPS(traffic_log);
+<<<<<<< HEAD
 DEBUGFS_READ_FILE_OPS(rx_queue);
 DEBUGFS_READ_FILE_OPS(tx_queue);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 DEBUGFS_READ_FILE_OPS(ucode_rx_stats);
 DEBUGFS_READ_FILE_OPS(ucode_tx_stats);
 DEBUGFS_READ_FILE_OPS(ucode_general_stats);
@@ -2625,9 +3097,13 @@ DEBUGFS_READ_FILE_OPS(chain_noise);
 DEBUGFS_READ_FILE_OPS(power_save_status);
 DEBUGFS_WRITE_FILE_OPS(clear_ucode_statistics);
 DEBUGFS_WRITE_FILE_OPS(clear_traffic_statistics);
+<<<<<<< HEAD
 DEBUGFS_WRITE_FILE_OPS(csr);
 DEBUGFS_READ_WRITE_FILE_OPS(ucode_tracing);
 DEBUGFS_READ_FILE_OPS(fh_reg);
+=======
+DEBUGFS_READ_WRITE_FILE_OPS(ucode_tracing);
+>>>>>>> refs/remotes/origin/cm-10.0
 DEBUGFS_READ_WRITE_FILE_OPS(missed_beacon);
 DEBUGFS_READ_WRITE_FILE_OPS(plcp_delta);
 DEBUGFS_READ_WRITE_FILE_OPS(force_reset);
@@ -2639,6 +3115,10 @@ DEBUGFS_WRITE_FILE_OPS(wd_timeout);
 DEBUGFS_READ_FILE_OPS(bt_traffic);
 DEBUGFS_READ_WRITE_FILE_OPS(protection_mode);
 DEBUGFS_READ_FILE_OPS(reply_tx_error);
+<<<<<<< HEAD
+=======
+DEBUGFS_WRITE_FILE_OPS(echo_test);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Create the debugfs files and directories
@@ -2667,16 +3147,25 @@ int iwl_dbgfs_register(struct iwl_priv *priv, const char *name)
 
 	DEBUGFS_ADD_FILE(nvm, dir_data, S_IRUSR);
 	DEBUGFS_ADD_FILE(sram, dir_data, S_IWUSR | S_IRUSR);
+<<<<<<< HEAD
 	DEBUGFS_ADD_FILE(log_event, dir_data, S_IWUSR | S_IRUSR);
 	DEBUGFS_ADD_FILE(stations, dir_data, S_IRUSR);
 	DEBUGFS_ADD_FILE(channels, dir_data, S_IRUSR);
 	DEBUGFS_ADD_FILE(status, dir_data, S_IRUSR);
 	DEBUGFS_ADD_FILE(interrupt, dir_data, S_IWUSR | S_IRUSR);
+=======
+	DEBUGFS_ADD_FILE(wowlan_sram, dir_data, S_IRUSR);
+	DEBUGFS_ADD_FILE(stations, dir_data, S_IRUSR);
+	DEBUGFS_ADD_FILE(channels, dir_data, S_IRUSR);
+	DEBUGFS_ADD_FILE(status, dir_data, S_IRUSR);
+	DEBUGFS_ADD_FILE(rx_handlers, dir_data, S_IWUSR | S_IRUSR);
+>>>>>>> refs/remotes/origin/cm-10.0
 	DEBUGFS_ADD_FILE(qos, dir_data, S_IRUSR);
 	DEBUGFS_ADD_FILE(sleep_level_override, dir_data, S_IWUSR | S_IRUSR);
 	DEBUGFS_ADD_FILE(current_sleep_command, dir_data, S_IRUSR);
 	DEBUGFS_ADD_FILE(thermal_throttling, dir_data, S_IRUSR);
 	DEBUGFS_ADD_FILE(disable_ht40, dir_data, S_IWUSR | S_IRUSR);
+<<<<<<< HEAD
 	DEBUGFS_ADD_FILE(rx_statistics, dir_debug, S_IRUSR);
 	DEBUGFS_ADD_FILE(tx_statistics, dir_debug, S_IRUSR);
 	DEBUGFS_ADD_FILE(traffic_log, dir_debug, S_IWUSR | S_IRUSR);
@@ -2687,16 +3176,31 @@ int iwl_dbgfs_register(struct iwl_priv *priv, const char *name)
 	DEBUGFS_ADD_FILE(clear_traffic_statistics, dir_debug, S_IWUSR);
 	DEBUGFS_ADD_FILE(csr, dir_debug, S_IWUSR);
 	DEBUGFS_ADD_FILE(fh_reg, dir_debug, S_IRUSR);
+=======
+	DEBUGFS_ADD_FILE(temperature, dir_data, S_IRUSR);
+
+	DEBUGFS_ADD_FILE(rx_statistics, dir_debug, S_IRUSR);
+	DEBUGFS_ADD_FILE(tx_statistics, dir_debug, S_IRUSR);
+	DEBUGFS_ADD_FILE(traffic_log, dir_debug, S_IWUSR | S_IRUSR);
+	DEBUGFS_ADD_FILE(power_save_status, dir_debug, S_IRUSR);
+	DEBUGFS_ADD_FILE(clear_ucode_statistics, dir_debug, S_IWUSR);
+	DEBUGFS_ADD_FILE(clear_traffic_statistics, dir_debug, S_IWUSR);
+>>>>>>> refs/remotes/origin/cm-10.0
 	DEBUGFS_ADD_FILE(missed_beacon, dir_debug, S_IWUSR);
 	DEBUGFS_ADD_FILE(plcp_delta, dir_debug, S_IWUSR | S_IRUSR);
 	DEBUGFS_ADD_FILE(force_reset, dir_debug, S_IWUSR | S_IRUSR);
 	DEBUGFS_ADD_FILE(ucode_rx_stats, dir_debug, S_IRUSR);
 	DEBUGFS_ADD_FILE(ucode_tx_stats, dir_debug, S_IRUSR);
 	DEBUGFS_ADD_FILE(ucode_general_stats, dir_debug, S_IRUSR);
+<<<<<<< HEAD
 	if (priv->cfg->ops->lib->dev_txfifo_flush)
 		DEBUGFS_ADD_FILE(txfifo_flush, dir_debug, S_IWUSR);
 	DEBUGFS_ADD_FILE(protection_mode, dir_debug, S_IWUSR | S_IRUSR);
 
+=======
+	DEBUGFS_ADD_FILE(txfifo_flush, dir_debug, S_IWUSR);
+	DEBUGFS_ADD_FILE(protection_mode, dir_debug, S_IWUSR | S_IRUSR);
+>>>>>>> refs/remotes/origin/cm-10.0
 	DEBUGFS_ADD_FILE(sensitivity, dir_debug, S_IRUSR);
 	DEBUGFS_ADD_FILE(chain_noise, dir_debug, S_IRUSR);
 	DEBUGFS_ADD_FILE(ucode_tracing, dir_debug, S_IWUSR | S_IRUSR);
@@ -2705,12 +3209,25 @@ int iwl_dbgfs_register(struct iwl_priv *priv, const char *name)
 	DEBUGFS_ADD_FILE(rxon_flags, dir_debug, S_IWUSR);
 	DEBUGFS_ADD_FILE(rxon_filter_flags, dir_debug, S_IWUSR);
 	DEBUGFS_ADD_FILE(wd_timeout, dir_debug, S_IWUSR);
+<<<<<<< HEAD
 	if (iwl_advanced_bt_coexist(priv))
 		DEBUGFS_ADD_FILE(bt_traffic, dir_debug, S_IRUSR);
+=======
+	DEBUGFS_ADD_FILE(echo_test, dir_debug, S_IWUSR);
+	if (iwl_advanced_bt_coexist(priv))
+		DEBUGFS_ADD_FILE(bt_traffic, dir_debug, S_IRUSR);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	DEBUGFS_ADD_BOOL(disable_sensitivity, dir_rf,
 			 &priv->disable_sens_cal);
 	DEBUGFS_ADD_BOOL(disable_chain_noise, dir_rf,
 			 &priv->disable_chain_noise_cal);
+<<<<<<< HEAD
+=======
+
+	if (iwl_trans_dbgfs_register(trans(priv), dir_debug))
+		goto err;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 err:
@@ -2731,6 +3248,9 @@ void iwl_dbgfs_unregister(struct iwl_priv *priv)
 	debugfs_remove_recursive(priv->debugfs_dir);
 	priv->debugfs_dir = NULL;
 }
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -5,7 +5,11 @@
 #include <asm/uaccess.h>
 #include <linux/string.h>
 #include <linux/time.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/buffer_head.h>
 
 /* this is one and only function that is used outside (do_balance.c) */

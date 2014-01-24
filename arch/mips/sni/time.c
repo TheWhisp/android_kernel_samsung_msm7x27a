@@ -1,11 +1,18 @@
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/smp.h>
 #include <linux/time.h>
 #include <linux/clockchips.h>
 
+<<<<<<< HEAD
 #include <asm/i8253.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sni.h>
 #include <asm/time.h>
 #include <asm-generic/rtc.h>
@@ -68,7 +75,11 @@ static irqreturn_t a20r_interrupt(int irq, void *dev_id)
 
 static struct irqaction a20r_irqaction = {
 	.handler	= a20r_interrupt,
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_PERCPU | IRQF_TIMER,
+=======
+	.flags		= IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name		= "a20r-timer",
 };
 

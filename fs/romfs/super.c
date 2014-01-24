@@ -337,7 +337,11 @@ static struct inode *romfs_iget(struct super_block *sb, unsigned long pos)
 	inode->i_metasize = (ROMFH_SIZE + nlen + 1 + ROMFH_PAD) & ROMFH_MASK;
 	inode->i_dataoffset = pos + inode->i_metasize;
 
+<<<<<<< HEAD
 	i->i_nlink = 1;		/* Hard to decide.. */
+=======
+	set_nlink(i, 1);		/* Hard to decide.. */
+>>>>>>> refs/remotes/origin/cm-10.0
 	i->i_size = be32_to_cpu(ri.size);
 	i->i_mtime.tv_sec = i->i_atime.tv_sec = i->i_ctime.tv_sec = 0;
 	i->i_mtime.tv_nsec = i->i_atime.tv_nsec = i->i_ctime.tv_nsec = 0;
@@ -403,7 +407,10 @@ static struct inode *romfs_alloc_inode(struct super_block *sb)
 static void romfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kmem_cache_free(romfs_inode_cachep, ROMFS_I(inode));
 }
 
@@ -539,6 +546,7 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
 	if (IS_ERR(root))
 		goto error;
 
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root);
 	if (!sb->s_root)
 		goto error_i;
@@ -547,6 +555,14 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
 
 error_i:
 	iput(root);
+=======
+	sb->s_root = d_make_root(root);
+	if (!sb->s_root)
+		goto error;
+
+	return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 error:
 	return -EINVAL;
 error_rsb_inval:

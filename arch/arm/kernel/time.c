@@ -11,7 +11,11 @@
  *  This file contains the ARM-specific time handling details:
  *  reading the RTC at bootup, etc...
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/interrupt.h>
 #include <linux/time.h>
@@ -25,8 +29,11 @@
 #include <linux/timer.h>
 #include <linux/irq.h>
 
+<<<<<<< HEAD
 #include <linux/mc146818rtc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/leds.h>
 #include <asm/thread_info.h>
 #include <asm/sched_clock.h>
@@ -39,6 +46,7 @@
  */
 static struct sys_timer *system_timer;
 
+<<<<<<< HEAD
 #if defined(CONFIG_RTC_DRV_CMOS) || defined(CONFIG_RTC_DRV_CMOS_MODULE)
 /* this needs a better home */
 DEFINE_SPINLOCK(rtc_lock);
@@ -46,6 +54,13 @@ DEFINE_SPINLOCK(rtc_lock);
 #ifdef CONFIG_RTC_DRV_CMOS_MODULE
 EXPORT_SYMBOL(rtc_lock);
 #endif
+=======
+#if defined(CONFIG_RTC_DRV_CMOS) || defined(CONFIG_RTC_DRV_CMOS_MODULE) || \
+    defined(CONFIG_NVRAM) || defined(CONFIG_NVRAM_MODULE)
+/* this needs a better home */
+DEFINE_SPINLOCK(rtc_lock);
+EXPORT_SYMBOL(rtc_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* pc-style 'CMOS' RTC support */
 
 /* change this if you have some constant time drift */
@@ -151,8 +166,12 @@ void __init time_init(void)
 {
 	system_timer = machine_desc->timer;
 	system_timer->init();
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_SCHED_CLOCK
 	sched_clock_postinit();
 #endif
+=======
+	sched_clock_postinit();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 

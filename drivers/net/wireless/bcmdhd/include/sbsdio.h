@@ -4,9 +4,15 @@
  *
  * SDIO core support 1bit, 4 bit SDIO mode as well as SPI mode.
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -24,7 +30,11 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: sbsdio.h 277737 2011-08-16 17:54:59Z $
+=======
+ * $Id: sbsdio.h 308945 2012-01-18 02:15:27Z $
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef	_SBSDIO_H
@@ -55,10 +65,30 @@
 #define SBSDIO_FUNC1_WFRAMEBCHI		0x1001A		/* Write Frame Byte Count High */
 #define SBSDIO_FUNC1_RFRAMEBCLO		0x1001B		/* Read Frame Byte Count Low */
 #define SBSDIO_FUNC1_RFRAMEBCHI		0x1001C		/* Read Frame Byte Count High */
+<<<<<<< HEAD
+=======
+#define SBSDIO_FUNC1_MESBUSYCTRL	0x1001D		/* MesBusyCtl at 0x1001D (rev 11) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SBSDIO_FUNC1_MISC_REG_START	0x10000 	/* f1 misc register start */
 #define SBSDIO_FUNC1_MISC_REG_LIMIT	0x1001C 	/* f1 misc register end */
 
+<<<<<<< HEAD
+=======
+/* Sdio Core Rev 12 */
+#define SBSDIO_FUNC1_WAKEUPCTRL			0x1001E
+#define SBSDIO_FUNC1_WCTRL_ALPWAIT_MASK		0x1
+#define SBSDIO_FUNC1_WCTRL_ALPWAIT_SHIFT	0
+#define SBSDIO_FUNC1_WCTRL_HTWAIT_MASK		0x2
+#define SBSDIO_FUNC1_WCTRL_HTWAIT_SHIFT		1
+#define SBSDIO_FUNC1_SLEEPCSR			0x1001F
+#define SBSDIO_FUNC1_SLEEPCSR_KSO_MASK		0x1
+#define SBSDIO_FUNC1_SLEEPCSR_KSO_SHIFT		0
+#define SBSDIO_FUNC1_SLEEPCSR_KSO_EN		1
+#define SBSDIO_FUNC1_SLEEPCSR_DEVON_MASK	0x2
+#define SBSDIO_FUNC1_SLEEPCSR_DEVON_SHIFT	1
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* SBSDIO_SPROM_CS */
 #define SBSDIO_SPROM_IDLE		0
 #define SBSDIO_SPROM_WRITE		1
@@ -82,6 +112,15 @@
 							 * to wait before sending data to host
 							 */
 
+<<<<<<< HEAD
+=======
+/* SBSDIO_MESBUSYCTRL */
+/* When RX FIFO has less entries than this & MBE is set
+ * => busy signal is asserted between data blocks.
+*/
+#define SBSDIO_MESBUSYCTRL_MASK		0x7f
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* SBSDIO_DEVICE_CTL */
 #define SBSDIO_DEVCTL_SETBUSY		0x01		/* 1: device will assert busy signal when
 							 * receiving CMD53
@@ -114,6 +153,10 @@
 /* In rev8, actual avail bits followed original docs */
 #define SBSDIO_Rev8_HT_AVAIL		0x40
 #define SBSDIO_Rev8_ALP_AVAIL		0x80
+<<<<<<< HEAD
+=======
+#define SBSDIO_CSR_MASK			0x1F
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SBSDIO_AVBITS			(SBSDIO_HT_AVAIL | SBSDIO_ALP_AVAIL)
 #define SBSDIO_ALPAV(regval)		((regval) & SBSDIO_AVBITS)

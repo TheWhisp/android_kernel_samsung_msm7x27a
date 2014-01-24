@@ -90,18 +90,27 @@ static struct mtd_partition nand_partitions[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mtd_partition *nand_part_info(int size, int *num_partitions)
 {
 	*num_partitions = ARRAY_SIZE(nand_partitions);
 	return nand_partitions;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct atmel_nand_data atstk1006_nand_data __initdata = {
 	.cle		= 21,
 	.ale		= 22,
 	.rdy_pin	= GPIO_PIN_PB(30),
 	.enable_pin	= GPIO_PIN_PB(29),
+<<<<<<< HEAD
 	.partition_info	= nand_part_info,
+=======
+	.ecc_mode	= NAND_ECC_SOFT,
+	.parts		= nand_partitions,
+	.num_parts	= ARRAY_SIZE(num_partitions),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -110,7 +119,11 @@ struct eth_addr {
 };
 
 static struct eth_addr __initdata hw_addr[2];
+<<<<<<< HEAD
 static struct eth_platform_data __initdata eth_data[2] = {
+=======
+static struct macb_platform_data __initdata eth_data[2] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		/*
 		 * The MDIO pullups on STK1000 are a bit too weak for

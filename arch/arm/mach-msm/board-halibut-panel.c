@@ -17,8 +17,13 @@
 
 #include <mach/msm_fb.h>
 #include <mach/vreg.h>
+<<<<<<< HEAD
 
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "devices.h"
 #include "board-halibut.h"
 

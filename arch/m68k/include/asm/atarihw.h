@@ -30,6 +30,11 @@ extern u_long atari_switches;
 extern int atari_rtc_year_offset;
 extern int atari_dont_touch_floppy_select;
 
+<<<<<<< HEAD
+=======
+extern int atari_SCC_reset_done;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* convenience macros for testing machine type */
 #define MACH_IS_ST	((atari_mch_cookie >> 16) == ATARI_MCH_ST)
 #define MACH_IS_STE	((atari_mch_cookie >> 16) == ATARI_MCH_STE && \
@@ -399,8 +404,13 @@ struct CODEC
 #define CODEC_OVERFLOW_LEFT     2
   u_char unused2, unused3, unused4, unused5;
   u_char gpio_directions;
+<<<<<<< HEAD
 #define GPIO_IN                 0
 #define GPIO_OUT                1
+=======
+#define CODEC_GPIO_IN           0
+#define CODEC_GPIO_OUT          1
+>>>>>>> refs/remotes/origin/cm-10.0
   u_char unused6;
   u_char gpio_data;
 };

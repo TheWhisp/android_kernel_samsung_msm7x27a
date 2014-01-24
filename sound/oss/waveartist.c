@@ -42,7 +42,10 @@
 #include <linux/spinlock.h>
 #include <linux/bitops.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "sound_config.h"
 #include "waveartist.h"

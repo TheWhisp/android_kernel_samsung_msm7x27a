@@ -292,7 +292,11 @@ struct pcmcia_device_id {
 #define INPUT_DEVICE_ID_LED_MAX		0x0f
 #define INPUT_DEVICE_ID_SND_MAX		0x07
 #define INPUT_DEVICE_ID_FF_MAX		0x7f
+<<<<<<< HEAD
 #define INPUT_DEVICE_ID_SW_MAX		0x0f
+=======
+#define INPUT_DEVICE_ID_SW_MAX		0x20
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define INPUT_DEVICE_ID_MATCH_BUS	1
 #define INPUT_DEVICE_ID_MATCH_VENDOR	2
@@ -405,6 +409,27 @@ struct virtio_device_id {
 };
 #define VIRTIO_DEV_ANY_ID	0xffffffff
 
+<<<<<<< HEAD
+=======
+/*
+ * For Hyper-V devices we use the device guid as the id.
+ */
+struct hv_vmbus_device_id {
+	__u8 guid[16];
+	kernel_ulong_t driver_data	/* Data private to the driver */
+			__attribute__((aligned(sizeof(kernel_ulong_t))));
+};
+
+/* rpmsg */
+
+#define RPMSG_NAME_SIZE			32
+#define RPMSG_DEVICE_MODALIAS_FMT	"rpmsg:%s"
+
+struct rpmsg_device_id {
+	char name[RPMSG_NAME_SIZE];
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* i2c */
 
 #define I2C_NAME_SIZE	20
@@ -436,6 +461,18 @@ struct slim_device_id {
 			__attribute__((aligned(sizeof(kernel_ulong_t))));
 };
 
+<<<<<<< HEAD
+=======
+#define SPMI_NAME_SIZE	32
+#define SPMI_MODULE_PREFIX "spmi:"
+
+struct spmi_device_id {
+	char name[SPMI_NAME_SIZE];
+	kernel_ulong_t driver_data	/* Data private to the driver */
+			__attribute__((aligned(sizeof(kernel_ulong_t))));
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* dmi */
 enum dmi_field {
 	DMI_NONE,
@@ -542,4 +579,46 @@ struct isapnp_device_id {
 	kernel_ulong_t driver_data;	/* data private to the driver */
 };
 
+<<<<<<< HEAD
+=======
+/**
+ * struct amba_id - identifies a device on an AMBA bus
+ * @id: The significant bits if the hardware device ID
+ * @mask: Bitmask specifying which bits of the id field are significant when
+ *	matching.  A driver binds to a device when ((hardware device ID) & mask)
+ *	== id.
+ * @data: Private data used by the driver.
+ */
+struct amba_id {
+	unsigned int		id;
+	unsigned int		mask;
+#ifndef __KERNEL__
+	kernel_ulong_t		data;
+#else
+	void			*data;
+#endif
+};
+
+/*
+ * Match x86 CPUs for CPU specific drivers.
+ * See documentation of "x86_match_cpu" for details.
+ */
+
+struct x86_cpu_id {
+	__u16 vendor;
+	__u16 family;
+	__u16 model;
+	__u16 feature;	/* bit index */
+	kernel_ulong_t driver_data;
+};
+
+#define X86_FEATURE_MATCH(x) \
+	{ X86_VENDOR_ANY, X86_FAMILY_ANY, X86_MODEL_ANY, x }
+
+#define X86_VENDOR_ANY 0xffff
+#define X86_FAMILY_ANY 0
+#define X86_MODEL_ANY  0
+#define X86_FEATURE_ANY 0	/* Same as FPU, you can't test for that */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* LINUX_MOD_DEVICETABLE_H */

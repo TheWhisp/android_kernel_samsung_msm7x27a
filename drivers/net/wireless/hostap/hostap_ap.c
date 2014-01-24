@@ -21,6 +21,11 @@
 #include <linux/random.h>
 #include <linux/if_arp.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "hostap_wlan.h"
 #include "hostap.h"

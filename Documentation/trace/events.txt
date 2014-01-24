@@ -191,8 +191,11 @@ And for string fields they are:
 
 Currently, only exact string matches are supported.
 
+<<<<<<< HEAD
 Currently, the maximum number of predicates in a filter is 16.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 5.2 Setting filters
 -------------------
 

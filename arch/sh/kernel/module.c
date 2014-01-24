@@ -34,6 +34,7 @@
 #include <asm/unaligned.h>
 #include <asm/dwarf.h>
 
+<<<<<<< HEAD
 void *module_alloc(unsigned long size)
 {
 	if (size == 0)
@@ -58,6 +59,8 @@ int module_frob_arch_sections(Elf_Ehdr *hdr,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int apply_relocate_add(Elf32_Shdr *sechdrs,
 		   const char *strtab,
 		   unsigned int symindex,
@@ -133,6 +136,7 @@ int apply_relocate_add(Elf32_Shdr *sechdrs,
 	return 0;
 }
 
+<<<<<<< HEAD
 int apply_relocate(Elf32_Shdr *sechdrs,
 		       const char *strtab,
 		       unsigned int symindex,
@@ -144,6 +148,8 @@ int apply_relocate(Elf32_Shdr *sechdrs,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int module_finalize(const Elf_Ehdr *hdr,
 		    const Elf_Shdr *sechdrs,
 		    struct module *me)

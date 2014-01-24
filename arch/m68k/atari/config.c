@@ -39,7 +39,10 @@
 #include <asm/atarihw.h>
 #include <asm/atariints.h>
 #include <asm/atari_stram.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/machdep.h>
 #include <asm/hwtest.h>
 #include <asm/io.h>
@@ -414,9 +417,15 @@ void __init config_atari(void)
 					 * FDC val = 4 -> Supervisor only */
 		asm volatile ("\n"
 			"	.chip	68030\n"
+<<<<<<< HEAD
 			"	pmove	%0@,%/tt1\n"
 			"	.chip	68k"
 			: : "a" (&tt1_val));
+=======
+			"	pmove	%0,%/tt1\n"
+			"	.chip	68k"
+			: : "m" (tt1_val));
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 	        asm volatile ("\n"
 			"	.chip	68040\n"
@@ -569,10 +578,17 @@ static void atari_reset(void)
 			: "d0");
 	} else
 		asm volatile ("\n"
+<<<<<<< HEAD
 			"	pmove	%0@,%%tc\n"
 			"	jmp	%1@"
 			: /* no outputs */
 			: "a" (&tc_val), "a" (reset_addr));
+=======
+			"	pmove	%0,%%tc\n"
+			"	jmp	%1@"
+			: /* no outputs */
+			: "m" (tc_val), "a" (reset_addr));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 

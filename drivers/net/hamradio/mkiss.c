@@ -17,7 +17,10 @@
  * Copyright (C) 2004, 05 Thomas Osterried DL9SAU <thomas@x-berg.in-berlin.de>
  */
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bitops.h>
 #include <asm/uaccess.h>
 #include <linux/crc16.h>

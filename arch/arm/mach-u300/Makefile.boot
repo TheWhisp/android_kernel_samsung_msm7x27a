@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Note: the following conditions must always be true:
 #   ZRELADDR == virt_to_phys(TEXTADDR)
 #   PARAMS_PHYS must be within 4MB of ZRELADDR
@@ -13,3 +14,9 @@ endif
 
 # This isn't used.
 #initrd_phys-y	:= 0x29800000
+=======
+   zreladdr-y	+= 0x48008000
+params_phys-y	:= 0x48000100
+# This isn't used.
+#initrd_phys-y	:= 0x48800000
+>>>>>>> refs/remotes/origin/cm-10.0

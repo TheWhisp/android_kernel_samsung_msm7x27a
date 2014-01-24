@@ -1005,7 +1005,11 @@ static int mpoa_event_listener(struct notifier_block *mpoa_notifier,
 	struct mpoa_client *mpc;
 	struct lec_priv *priv;
 
+<<<<<<< HEAD
 	dev = (struct net_device *)dev_ptr;
+=======
+	dev = dev_ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!net_eq(dev_net(dev), &init_net))
 		return NOTIFY_DONE;

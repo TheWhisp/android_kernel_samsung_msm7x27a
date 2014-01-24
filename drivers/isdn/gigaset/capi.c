@@ -14,10 +14,17 @@
 #include "gigaset.h"
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
 #include <linux/ratelimit.h>
 #include <linux/isdn/capilli.h>
 #include <linux/isdn/capicmd.h>
 #include <linux/isdn/capiutil.h>
+=======
+#include <linux/isdn/capilli.h>
+#include <linux/isdn/capicmd.h>
+#include <linux/isdn/capiutil.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* missing from kernelcapi.h */
 #define CapiNcpiNotSupportedByProtocol	0x0001
@@ -26,6 +33,7 @@
 #define CapiFacilitySpecificFunctionNotSupported	0x3011
 
 /* missing from capicmd.h */
+<<<<<<< HEAD
 #define CAPI_CONNECT_IND_BASELEN	(CAPI_MSG_BASELEN+4+2+8*1)
 #define CAPI_CONNECT_ACTIVE_IND_BASELEN	(CAPI_MSG_BASELEN+4+3*1)
 #define CAPI_CONNECT_B3_IND_BASELEN	(CAPI_MSG_BASELEN+4+1)
@@ -37,6 +45,19 @@
 #define CAPI_FACILITY_CONF_BASELEN	(CAPI_MSG_BASELEN+4+2+2+1)
 /* most _CONF messages contain only Controller/PLCI/NCCI and Info parameters */
 #define CAPI_STDCONF_LEN		(CAPI_MSG_BASELEN+4+2)
+=======
+#define CAPI_CONNECT_IND_BASELEN	(CAPI_MSG_BASELEN + 4 + 2 + 8 * 1)
+#define CAPI_CONNECT_ACTIVE_IND_BASELEN	(CAPI_MSG_BASELEN + 4 + 3 * 1)
+#define CAPI_CONNECT_B3_IND_BASELEN	(CAPI_MSG_BASELEN + 4 + 1)
+#define CAPI_CONNECT_B3_ACTIVE_IND_BASELEN	(CAPI_MSG_BASELEN + 4 + 1)
+#define CAPI_DATA_B3_REQ_LEN64		(CAPI_MSG_BASELEN + 4 + 4 + 2 + 2 + 2 + 8)
+#define CAPI_DATA_B3_CONF_LEN		(CAPI_MSG_BASELEN + 4 + 2 + 2)
+#define CAPI_DISCONNECT_IND_LEN		(CAPI_MSG_BASELEN + 4 + 2)
+#define CAPI_DISCONNECT_B3_IND_BASELEN	(CAPI_MSG_BASELEN + 4 + 2 + 1)
+#define CAPI_FACILITY_CONF_BASELEN	(CAPI_MSG_BASELEN + 4 + 2 + 2 + 1)
+/* most _CONF messages contain only Controller/PLCI/NCCI and Info parameters */
+#define CAPI_STDCONF_LEN		(CAPI_MSG_BASELEN + 4 + 2)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CAPI_FACILITY_HANDSET	0x0000
 #define CAPI_FACILITY_DTMF	0x0001
@@ -97,10 +118,17 @@ struct gigaset_capi_ctr {
 	/* two _cmsg structures possibly used concurrently: */
 	_cmsg hcmsg;	/* for message composition triggered from hardware */
 	_cmsg acmsg;	/* for dissection of messages sent from application */
+<<<<<<< HEAD
 	u8 bc_buf[MAX_BC_OCTETS+1];
 	u8 hlc_buf[MAX_HLC_OCTETS+1];
 	u8 cgpty_buf[MAX_NUMBER_DIGITS+3];
 	u8 cdpty_buf[MAX_NUMBER_DIGITS+2];
+=======
+	u8 bc_buf[MAX_BC_OCTETS + 1];
+	u8 hlc_buf[MAX_HLC_OCTETS + 1];
+	u8 cgpty_buf[MAX_NUMBER_DIGITS + 3];
+	u8 cdpty_buf[MAX_NUMBER_DIGITS + 2];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* CIP Value table (from CAPI 2.0 standard, ch. 6.1) */
@@ -109,6 +137,7 @@ static struct {
 	u8 *hlc;
 } cip2bchlc[] = {
 	[1] = { "8090A3", NULL },
+<<<<<<< HEAD
 		/* Speech (A-law) */
 	[2] = { "8890", NULL },
 		/* Unrestricted digital information */
@@ -153,6 +182,52 @@ static struct {
 		/* Video telephony, first connection */
 	[28] = { "8890", "916002" },
 		/* Video telephony, second connection */
+=======
+	/* Speech (A-law) */
+	[2] = { "8890", NULL },
+	/* Unrestricted digital information */
+	[3] = { "8990", NULL },
+	/* Restricted digital information */
+	[4] = { "9090A3", NULL },
+	/* 3,1 kHz audio (A-law) */
+	[5] = { "9190", NULL },
+	/* 7 kHz audio */
+	[6] = { "9890", NULL },
+	/* Video */
+	[7] = { "88C0C6E6", NULL },
+	/* Packet mode */
+	[8] = { "8890218F", NULL },
+	/* 56 kbit/s rate adaptation */
+	[9] = { "9190A5", NULL },
+	/* Unrestricted digital information with tones/announcements */
+	[16] = { "8090A3", "9181" },
+	/* Telephony */
+	[17] = { "9090A3", "9184" },
+	/* Group 2/3 facsimile */
+	[18] = { "8890", "91A1" },
+	/* Group 4 facsimile Class 1 */
+	[19] = { "8890", "91A4" },
+	/* Teletex service basic and mixed mode
+	   and Group 4 facsimile service Classes II and III */
+	[20] = { "8890", "91A8" },
+	/* Teletex service basic and processable mode */
+	[21] = { "8890", "91B1" },
+	/* Teletex service basic mode */
+	[22] = { "8890", "91B2" },
+	/* International interworking for Videotex */
+	[23] = { "8890", "91B5" },
+	/* Telex */
+	[24] = { "8890", "91B8" },
+	/* Message Handling Systems in accordance with X.400 */
+	[25] = { "8890", "91C1" },
+	/* OSI application in accordance with X.200 */
+	[26] = { "9190A5", "9181" },
+	/* 7 kHz telephony */
+	[27] = { "9190A5", "916001" },
+	/* Video telephony, first connection */
+	[28] = { "8890", "916002" },
+	/* Video telephony, second connection */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -164,7 +239,11 @@ static struct {
  * emit unsupported parameter warning
  */
 static inline void ignore_cstruct_param(struct cardstate *cs, _cstruct param,
+<<<<<<< HEAD
 				       char *msgname, char *paramname)
+=======
+					char *msgname, char *paramname)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (param && *param)
 		dev_warn(cs->dev, "%s: ignoring unsupported parameter: %s\n",
@@ -223,14 +302,20 @@ get_appl(struct gigaset_capi_ctr *iif, u16 appl)
 static inline void dump_cmsg(enum debuglevel level, const char *tag, _cmsg *p)
 {
 #ifdef CONFIG_GIGASET_DEBUG
+<<<<<<< HEAD
 	/* dump at most 20 messages in 20 secs */
 	static DEFINE_RATELIMIT_STATE(msg_dump_ratelimit, 20 * HZ, 20);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	_cdebbuf *cdb;
 
 	if (!(gigaset_debuglevel & level))
 		return;
+<<<<<<< HEAD
 	if (!___ratelimit(&msg_dump_ratelimit, tag))
 		return;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cdb = capi_cmsg2str(p);
 	if (cdb) {
@@ -265,6 +350,7 @@ static inline void dump_rawmsg(enum debuglevel level, const char *tag,
 	l -= 12;
 	if (l <= 0)
 		return;
+<<<<<<< HEAD
 	dbgline = kmalloc(3*l, GFP_ATOMIC);
 	if (!dbgline)
 		return;
@@ -274,6 +360,17 @@ static inline void dump_rawmsg(enum debuglevel level, const char *tag,
 		dbgline[3*i+2] = ' ';
 	}
 	dbgline[3*l-1] = '\0';
+=======
+	dbgline = kmalloc(3 * l, GFP_ATOMIC);
+	if (!dbgline)
+		return;
+	for (i = 0; i < l; i++) {
+		dbgline[3 * i] = hex_asc_hi(data[12 + i]);
+		dbgline[3 * i + 1] = hex_asc_lo(data[12 + i]);
+		dbgline[3 * i + 2] = ' ';
+	}
+	dbgline[3 * l - 1] = '\0';
+>>>>>>> refs/remotes/origin/cm-10.0
 	gig_dbg(level, "  %s", dbgline);
 	kfree(dbgline);
 	if (CAPIMSG_COMMAND(data) == CAPI_DATA_B3 &&
@@ -285,16 +382,28 @@ static inline void dump_rawmsg(enum debuglevel level, const char *tag,
 			return;
 		if (l > 64)
 			l = 64; /* arbitrary limit */
+<<<<<<< HEAD
 		dbgline = kmalloc(3*l, GFP_ATOMIC);
+=======
+		dbgline = kmalloc(3 * l, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!dbgline)
 			return;
 		data += CAPIMSG_LEN(data);
 		for (i = 0; i < l; i++) {
+<<<<<<< HEAD
 			dbgline[3*i] = hex_asc_hi(data[i]);
 			dbgline[3*i+1] = hex_asc_lo(data[i]);
 			dbgline[3*i+2] = ' ';
 		}
 		dbgline[3*l-1] = '\0';
+=======
+			dbgline[3 * i] = hex_asc_hi(data[i]);
+			dbgline[3 * i + 1] = hex_asc_lo(data[i]);
+			dbgline[3 * i + 2] = ' ';
+		}
+		dbgline[3 * l - 1] = '\0';
+>>>>>>> refs/remotes/origin/cm-10.0
 		gig_dbg(level, "  %s", dbgline);
 		kfree(dbgline);
 	}
@@ -307,7 +416,11 @@ static inline void dump_rawmsg(enum debuglevel level, const char *tag,
 
 static const char *format_ie(const char *ie)
 {
+<<<<<<< HEAD
 	static char result[3*MAX_FMT_IE_LEN];
+=======
+	static char result[3 * MAX_FMT_IE_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
 	int len, count;
 	char *pout = result;
 
@@ -316,7 +429,11 @@ static const char *format_ie(const char *ie)
 
 	count = len = ie[0];
 	if (count > MAX_FMT_IE_LEN)
+<<<<<<< HEAD
 		count = MAX_FMT_IE_LEN-1;
+=======
+		count = MAX_FMT_IE_LEN - 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (count--) {
 		*pout++ = hex_asc_hi(*++ie);
 		*pout++ = hex_asc_lo(*ie);
@@ -409,8 +526,13 @@ void gigaset_skb_sent(struct bc_state *bcs, struct sk_buff *dskb)
 		send_data_b3_conf(cs, &iif->ctr, ap->id, CAPIMSG_MSGID(req),
 				  bcs->channel + 1, CAPIMSG_HANDLE_REQ(req),
 				  (flags & ~CAPI_FLAGS_DELIVERY_CONFIRMATION) ?
+<<<<<<< HEAD
 					CapiFlagsNotSupportedByProtocol :
 					CAPI_NOERROR);
+=======
+				  CapiFlagsNotSupportedByProtocol :
+				  CAPI_NOERROR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(gigaset_skb_sent);
 
@@ -595,7 +717,11 @@ int gigaset_isdn_icall(struct at_state_t *at_state)
 		}
 		iif->cdpty_buf[0] = i + 1;
 		iif->cdpty_buf[1] = 0x80; /* type / numbering plan unknown */
+<<<<<<< HEAD
 		memcpy(iif->cdpty_buf+2, at_state->str_var[STR_ZCPN], i);
+=======
+		memcpy(iif->cdpty_buf + 2, at_state->str_var[STR_ZCPN], i);
+>>>>>>> refs/remotes/origin/cm-10.0
 		iif->hcmsg.CalledPartyNumber = iif->cdpty_buf;
 		msgsize += iif->hcmsg.CalledPartyNumber[0];
 	}
@@ -611,7 +737,11 @@ int gigaset_isdn_icall(struct at_state_t *at_state)
 		iif->cgpty_buf[0] = i + 2;
 		iif->cgpty_buf[1] = 0x00; /* type / numbering plan unknown */
 		iif->cgpty_buf[2] = 0x80; /* pres. allowed, not screened */
+<<<<<<< HEAD
 		memcpy(iif->cgpty_buf+3, at_state->str_var[STR_NMBR], i);
+=======
+		memcpy(iif->cgpty_buf + 3, at_state->str_var[STR_NMBR], i);
+>>>>>>> refs/remotes/origin/cm-10.0
 		iif->hcmsg.CallingPartyNumber = iif->cgpty_buf;
 		msgsize += iif->hcmsg.CallingPartyNumber[0];
 	}
@@ -983,7 +1113,11 @@ void gigaset_isdn_stop(struct cardstate *cs)
  * register CAPI application
  */
 static void gigaset_register_appl(struct capi_ctr *ctr, u16 appl,
+<<<<<<< HEAD
 			   capi_register_params *rp)
+=======
+				  capi_register_params *rp)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct gigaset_capi_ctr *iif
 		= container_of(ctr, struct gigaset_capi_ctr, ctr);
@@ -1187,21 +1321,37 @@ static void do_facility_req(struct gigaset_capi_ctr *iif,
 			}
 			if (CAPIMSG_U32(pparam, 4) != 0) {
 				dev_notice(cs->dev,
+<<<<<<< HEAD
 	"%s: unsupported supplementary service notification mask 0x%x\n",
 				   "FACILITY_REQ", CAPIMSG_U32(pparam, 4));
 				info = CapiFacilitySpecificFunctionNotSupported;
 				confparam[3] = 2;	/* length */
 				capimsg_setu16(confparam, 4,
 					CapiSupplementaryServiceNotSupported);
+=======
+					   "%s: unsupported supplementary service notification mask 0x%x\n",
+					   "FACILITY_REQ", CAPIMSG_U32(pparam, 4));
+				info = CapiFacilitySpecificFunctionNotSupported;
+				confparam[3] = 2;	/* length */
+				capimsg_setu16(confparam, 4,
+					       CapiSupplementaryServiceNotSupported);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			info = CapiSuccess;
 			confparam[3] = 2;	/* length */
 			capimsg_setu16(confparam, 4, CapiSuccess);
 			break;
+<<<<<<< HEAD
 		/* ToDo: add supported services */
 		default:
 			dev_notice(cs->dev,
 		"%s: unsupported supplementary service function 0x%04x\n",
+=======
+			/* ToDo: add supported services */
+		default:
+			dev_notice(cs->dev,
+				   "%s: unsupported supplementary service function 0x%04x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				   "FACILITY_REQ", function);
 			info = CapiFacilitySpecificFunctionNotSupported;
 			/* Supplementary Service specific parameter */
@@ -1324,7 +1474,11 @@ static void do_connect_req(struct gigaset_capi_ctr *iif,
 	cmsg->adr.adrPLCI |= (bcs->channel + 1) << 8;
 
 	/* build command table */
+<<<<<<< HEAD
 	commands = kzalloc(AT_NUM*(sizeof *commands), GFP_KERNEL);
+=======
+	commands = kzalloc(AT_NUM * (sizeof *commands), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!commands)
 		goto oom;
 
@@ -1359,10 +1513,17 @@ static void do_connect_req(struct gigaset_capi_ctr *iif,
 	commands[AT_TYPE] = kstrdup(s, GFP_KERNEL);
 	if (!commands[AT_TYPE])
 		goto oom;
+<<<<<<< HEAD
 	commands[AT_DIAL] = kmalloc(l+3, GFP_KERNEL);
 	if (!commands[AT_DIAL])
 		goto oom;
 	snprintf(commands[AT_DIAL], l+3, "D%.*s\r", l, pp);
+=======
+	commands[AT_DIAL] = kmalloc(l + 3, GFP_KERNEL);
+	if (!commands[AT_DIAL])
+		goto oom;
+	snprintf(commands[AT_DIAL], l + 3, "D%.*s\r", l, pp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* encode parameter: Calling party number */
 	pp = cmsg->CallingPartyNumber;
@@ -1412,10 +1573,17 @@ static void do_connect_req(struct gigaset_capi_ctr *iif,
 
 		if (l) {
 			/* number */
+<<<<<<< HEAD
 			commands[AT_MSN] = kmalloc(l+8, GFP_KERNEL);
 			if (!commands[AT_MSN])
 				goto oom;
 			snprintf(commands[AT_MSN], l+8, "^SMSN=%*s\r", l, pp);
+=======
+			commands[AT_MSN] = kmalloc(l + 8, GFP_KERNEL);
+			if (!commands[AT_MSN])
+				goto oom;
+			snprintf(commands[AT_MSN], l + 8, "^SMSN=%*s\r", l, pp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -1436,13 +1604,21 @@ static void do_connect_req(struct gigaset_capi_ctr *iif,
 
 	/* determine lengths */
 	if (cmsg->BC && cmsg->BC[0])		/* BC specified explicitly */
+<<<<<<< HEAD
 		lbc = 2*cmsg->BC[0];
+=======
+		lbc = 2 * cmsg->BC[0];
+>>>>>>> refs/remotes/origin/cm-10.0
 	else if (cip2bchlc[cmsg->CIPValue].bc)	/* BC derived from CIP */
 		lbc = strlen(cip2bchlc[cmsg->CIPValue].bc);
 	else					/* no BC */
 		lbc = 0;
 	if (cmsg->HLC && cmsg->HLC[0])		/* HLC specified explicitly */
+<<<<<<< HEAD
 		lhlc = 2*cmsg->HLC[0];
+=======
+		lhlc = 2 * cmsg->HLC[0];
+>>>>>>> refs/remotes/origin/cm-10.0
 	else if (cip2bchlc[cmsg->CIPValue].hlc)	/* HLC derived from CIP */
 		lhlc = strlen(cip2bchlc[cmsg->CIPValue].hlc);
 	else					/* no HLC */
@@ -1487,7 +1663,11 @@ static void do_connect_req(struct gigaset_capi_ctr *iif,
 	if (cmsg->BProtocol == CAPI_DEFAULT) {
 		bcs->proto2 = L2_HDLC;
 		dev_warn(cs->dev,
+<<<<<<< HEAD
 		    "B2 Protocol X.75 SLP unsupported, using Transparent\n");
+=======
+			 "B2 Protocol X.75 SLP unsupported, using Transparent\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		switch (cmsg->B1protocol) {
 		case 0:
@@ -1498,12 +1678,17 @@ static void do_connect_req(struct gigaset_capi_ctr *iif,
 			break;
 		default:
 			dev_warn(cs->dev,
+<<<<<<< HEAD
 			    "B1 Protocol %u unsupported, using Transparent\n",
+=======
+				 "B1 Protocol %u unsupported, using Transparent\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				 cmsg->B1protocol);
 			bcs->proto2 = L2_VOICE;
 		}
 		if (cmsg->B2protocol != 1)
 			dev_warn(cs->dev,
+<<<<<<< HEAD
 			    "B2 Protocol %u unsupported, using Transparent\n",
 				 cmsg->B2protocol);
 		if (cmsg->B3protocol != 0)
@@ -1516,6 +1701,20 @@ static void do_connect_req(struct gigaset_capi_ctr *iif,
 					"CONNECT_REQ", "B2 Configuration");
 		ignore_cstruct_param(cs, cmsg->B3configuration,
 					"CONNECT_REQ", "B3 Configuration");
+=======
+				 "B2 Protocol %u unsupported, using Transparent\n",
+				 cmsg->B2protocol);
+		if (cmsg->B3protocol != 0)
+			dev_warn(cs->dev,
+				 "B3 Protocol %u unsupported, using Transparent\n",
+				 cmsg->B3protocol);
+		ignore_cstruct_param(cs, cmsg->B1configuration,
+				     "CONNECT_REQ", "B1 Configuration");
+		ignore_cstruct_param(cs, cmsg->B2configuration,
+				     "CONNECT_REQ", "B2 Configuration");
+		ignore_cstruct_param(cs, cmsg->B3configuration,
+				     "CONNECT_REQ", "B3 Configuration");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	commands[AT_PROTO] = kmalloc(9, GFP_KERNEL);
 	if (!commands[AT_PROTO])
@@ -1524,6 +1723,7 @@ static void do_connect_req(struct gigaset_capi_ctr *iif,
 
 	/* ToDo: check/encode remaining parameters */
 	ignore_cstruct_param(cs, cmsg->CalledPartySubaddress,
+<<<<<<< HEAD
 					"CONNECT_REQ", "Called pty subaddr");
 	ignore_cstruct_param(cs, cmsg->CallingPartySubaddress,
 					"CONNECT_REQ", "Calling pty subaddr");
@@ -1538,6 +1738,22 @@ static void do_connect_req(struct gigaset_capi_ctr *iif,
 					"CONNECT_REQ", "User-User Data");
 		ignore_cstruct_param(cs, cmsg->Facilitydataarray,
 					"CONNECT_REQ", "Facility Data Array");
+=======
+			     "CONNECT_REQ", "Called pty subaddr");
+	ignore_cstruct_param(cs, cmsg->CallingPartySubaddress,
+			     "CONNECT_REQ", "Calling pty subaddr");
+	ignore_cstruct_param(cs, cmsg->LLC,
+			     "CONNECT_REQ", "LLC");
+	if (cmsg->AdditionalInfo != CAPI_DEFAULT) {
+		ignore_cstruct_param(cs, cmsg->BChannelinformation,
+				     "CONNECT_REQ", "B Channel Information");
+		ignore_cstruct_param(cs, cmsg->Keypadfacility,
+				     "CONNECT_REQ", "Keypad Facility");
+		ignore_cstruct_param(cs, cmsg->Useruserdata,
+				     "CONNECT_REQ", "User-User Data");
+		ignore_cstruct_param(cs, cmsg->Facilitydataarray,
+				     "CONNECT_REQ", "Facility Data Array");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* encode parameter: B channel to use */
@@ -1608,7 +1824,11 @@ static void do_connect_resp(struct gigaset_capi_ctr *iif,
 			if (oap != ap) {
 				spin_unlock_irqrestore(&bcs->aplock, flags);
 				send_disconnect_ind(bcs, oap,
+<<<<<<< HEAD
 					CapiCallGivenToOtherApplication);
+=======
+						    CapiCallGivenToOtherApplication);
+>>>>>>> refs/remotes/origin/cm-10.0
 				spin_lock_irqsave(&bcs->aplock, flags);
 			}
 		}
@@ -1625,7 +1845,11 @@ static void do_connect_resp(struct gigaset_capi_ctr *iif,
 		if (cmsg->BProtocol == CAPI_DEFAULT) {
 			bcs->proto2 = L2_HDLC;
 			dev_warn(cs->dev,
+<<<<<<< HEAD
 		"B2 Protocol X.75 SLP unsupported, using Transparent\n");
+=======
+				 "B2 Protocol X.75 SLP unsupported, using Transparent\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 			switch (cmsg->B1protocol) {
 			case 0:
@@ -1636,12 +1860,17 @@ static void do_connect_resp(struct gigaset_capi_ctr *iif,
 				break;
 			default:
 				dev_warn(cs->dev,
+<<<<<<< HEAD
 			"B1 Protocol %u unsupported, using Transparent\n",
+=======
+					 "B1 Protocol %u unsupported, using Transparent\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 					 cmsg->B1protocol);
 				bcs->proto2 = L2_VOICE;
 			}
 			if (cmsg->B2protocol != 1)
 				dev_warn(cs->dev,
+<<<<<<< HEAD
 			"B2 Protocol %u unsupported, using Transparent\n",
 					 cmsg->B2protocol);
 			if (cmsg->B3protocol != 0)
@@ -1654,10 +1883,25 @@ static void do_connect_resp(struct gigaset_capi_ctr *iif,
 					"CONNECT_RESP", "B2 Configuration");
 			ignore_cstruct_param(cs, cmsg->B3configuration,
 					"CONNECT_RESP", "B3 Configuration");
+=======
+					 "B2 Protocol %u unsupported, using Transparent\n",
+					 cmsg->B2protocol);
+			if (cmsg->B3protocol != 0)
+				dev_warn(cs->dev,
+					 "B3 Protocol %u unsupported, using Transparent\n",
+					 cmsg->B3protocol);
+			ignore_cstruct_param(cs, cmsg->B1configuration,
+					     "CONNECT_RESP", "B1 Configuration");
+			ignore_cstruct_param(cs, cmsg->B2configuration,
+					     "CONNECT_RESP", "B2 Configuration");
+			ignore_cstruct_param(cs, cmsg->B3configuration,
+					     "CONNECT_RESP", "B3 Configuration");
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* ToDo: check/encode remaining parameters */
 		ignore_cstruct_param(cs, cmsg->ConnectedNumber,
+<<<<<<< HEAD
 					"CONNECT_RESP", "Connected Number");
 		ignore_cstruct_param(cs, cmsg->ConnectedSubaddress,
 					"CONNECT_RESP", "Connected Subaddress");
@@ -1676,6 +1920,26 @@ static void do_connect_resp(struct gigaset_capi_ctr *iif,
 
 		/* Accept call */
 		if (!gigaset_add_event(cs, &cs->bcs[channel-1].at_state,
+=======
+				     "CONNECT_RESP", "Connected Number");
+		ignore_cstruct_param(cs, cmsg->ConnectedSubaddress,
+				     "CONNECT_RESP", "Connected Subaddress");
+		ignore_cstruct_param(cs, cmsg->LLC,
+				     "CONNECT_RESP", "LLC");
+		if (cmsg->AdditionalInfo != CAPI_DEFAULT) {
+			ignore_cstruct_param(cs, cmsg->BChannelinformation,
+					     "CONNECT_RESP", "BChannel Information");
+			ignore_cstruct_param(cs, cmsg->Keypadfacility,
+					     "CONNECT_RESP", "Keypad Facility");
+			ignore_cstruct_param(cs, cmsg->Useruserdata,
+					     "CONNECT_RESP", "User-User Data");
+			ignore_cstruct_param(cs, cmsg->Facilitydataarray,
+					     "CONNECT_RESP", "Facility Data Array");
+		}
+
+		/* Accept call */
+		if (!gigaset_add_event(cs, &cs->bcs[channel - 1].at_state,
+>>>>>>> refs/remotes/origin/cm-10.0
 				       EV_ACCEPT, NULL, 0, NULL))
 			return;
 		gigaset_schedule_event(cs);
@@ -1718,7 +1982,11 @@ static void do_connect_resp(struct gigaset_capi_ctr *iif,
 			if (oap != ap) {
 				spin_unlock_irqrestore(&bcs->aplock, flags);
 				send_disconnect_ind(bcs, oap,
+<<<<<<< HEAD
 					CapiCallGivenToOtherApplication);
+=======
+						    CapiCallGivenToOtherApplication);
+>>>>>>> refs/remotes/origin/cm-10.0
 				spin_lock_irqsave(&bcs->aplock, flags);
 			}
 		}
@@ -1729,7 +1997,11 @@ static void do_connect_resp(struct gigaset_capi_ctr *iif,
 		/* reject call - will trigger DISCONNECT_IND for this app */
 		dev_info(cs->dev, "%s: Reject=%x\n",
 			 "CONNECT_RESP", cmsg->Reject);
+<<<<<<< HEAD
 		if (!gigaset_add_event(cs, &cs->bcs[channel-1].at_state,
+=======
+		if (!gigaset_add_event(cs, &cs->bcs[channel - 1].at_state,
+>>>>>>> refs/remotes/origin/cm-10.0
 				       EV_HUP, NULL, 0, NULL))
 			return;
 		gigaset_schedule_event(cs);
@@ -1762,7 +2034,11 @@ static void do_connect_b3_req(struct gigaset_capi_ctr *iif,
 		send_conf(iif, ap, skb, CapiIllContrPlciNcci);
 		return;
 	}
+<<<<<<< HEAD
 	bcs = &cs->bcs[channel-1];
+=======
+	bcs = &cs->bcs[channel - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* mark logical connection active */
 	bcs->apconnstate = APCONN_ACTIVE;
@@ -1773,7 +2049,11 @@ static void do_connect_b3_req(struct gigaset_capi_ctr *iif,
 	/* NCPI parameter: not applicable for B3 Transparent */
 	ignore_cstruct_param(cs, cmsg->NCPI, "CONNECT_B3_REQ", "NCPI");
 	send_conf(iif, ap, skb, (cmsg->NCPI && cmsg->NCPI[0]) ?
+<<<<<<< HEAD
 				CapiNcpiNotSupportedByProtocol : CapiSuccess);
+=======
+		  CapiNcpiNotSupportedByProtocol : CapiSuccess);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1807,7 +2087,11 @@ static void do_connect_b3_resp(struct gigaset_capi_ctr *iif,
 		dev_kfree_skb_any(skb);
 		return;
 	}
+<<<<<<< HEAD
 	bcs = &cs->bcs[channel-1];
+=======
+	bcs = &cs->bcs[channel - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (cmsg->Reject) {
 		/* Reject: clear B3 connect received flag */
@@ -1911,7 +2195,11 @@ static void do_disconnect_req(struct gigaset_capi_ctr *iif,
 			return;
 		}
 		capi_cmsg2message(b3cmsg,
+<<<<<<< HEAD
 			__skb_put(b3skb, CAPI_DISCONNECT_B3_IND_BASELEN));
+=======
+				  __skb_put(b3skb, CAPI_DISCONNECT_B3_IND_BASELEN));
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(b3cmsg);
 		capi_ctr_handle_message(&iif->ctr, ap->id, b3skb);
 	}
@@ -1953,7 +2241,11 @@ static void do_disconnect_b3_req(struct gigaset_capi_ctr *iif,
 		send_conf(iif, ap, skb, CapiIllContrPlciNcci);
 		return;
 	}
+<<<<<<< HEAD
 	bcs = &cs->bcs[channel-1];
+=======
+	bcs = &cs->bcs[channel - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* reject if logical connection not active */
 	if (bcs->apconnstate < APCONN_ACTIVE) {
@@ -1971,9 +2263,15 @@ static void do_disconnect_b3_req(struct gigaset_capi_ctr *iif,
 
 	/* NCPI parameter: not applicable for B3 Transparent */
 	ignore_cstruct_param(cs, cmsg->NCPI,
+<<<<<<< HEAD
 				"DISCONNECT_B3_REQ", "NCPI");
 	send_conf(iif, ap, skb, (cmsg->NCPI && cmsg->NCPI[0]) ?
 				CapiNcpiNotSupportedByProtocol : CapiSuccess);
+=======
+			     "DISCONNECT_B3_REQ", "NCPI");
+	send_conf(iif, ap, skb, (cmsg->NCPI && cmsg->NCPI[0]) ?
+		  CapiNcpiNotSupportedByProtocol : CapiSuccess);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -2003,7 +2301,11 @@ static void do_data_b3_req(struct gigaset_capi_ctr *iif,
 		send_conf(iif, ap, skb, CapiIllContrPlciNcci);
 		return;
 	}
+<<<<<<< HEAD
 	bcs = &cs->bcs[channel-1];
+=======
+	bcs = &cs->bcs[channel - 1];
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (msglen != CAPI_DATA_B3_REQ_LEN && msglen != CAPI_DATA_B3_REQ_LEN64)
 		dev_notice(cs->dev, "%s: unexpected length %d\n",
 			   "DATA_B3_REQ", msglen);
@@ -2046,7 +2348,11 @@ static void do_data_b3_req(struct gigaset_capi_ctr *iif,
 	if (!(flags & CAPI_FLAGS_DELIVERY_CONFIRMATION))
 		send_data_b3_conf(cs, &iif->ctr, ap->id, msgid, channel, handle,
 				  flags ? CapiFlagsNotSupportedByProtocol
+<<<<<<< HEAD
 					: CAPI_NOERROR);
+=======
+				  : CAPI_NOERROR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -2065,6 +2371,15 @@ static void do_reset_b3_req(struct gigaset_capi_ctr *iif,
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * dump unsupported/ignored messages at most twice per minute,
+ * some apps send those very frequently
+ */
+static unsigned long ignored_msg_dump_time;
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * unsupported CAPI message handler
  */
 static void do_unsupported(struct gigaset_capi_ctr *iif,
@@ -2073,7 +2388,12 @@ static void do_unsupported(struct gigaset_capi_ctr *iif,
 {
 	/* decode message */
 	capi_message2cmsg(&iif->acmsg, skb->data);
+<<<<<<< HEAD
 	dump_cmsg(DEBUG_CMD, __func__, &iif->acmsg);
+=======
+	if (printk_timed_ratelimit(&ignored_msg_dump_time, 30 * 1000))
+		dump_cmsg(DEBUG_CMD, __func__, &iif->acmsg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	send_conf(iif, ap, skb, CapiMessageNotSupportedInCurrentState);
 }
 
@@ -2084,9 +2404,17 @@ static void do_nothing(struct gigaset_capi_ctr *iif,
 		       struct gigaset_capi_appl *ap,
 		       struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	/* decode message */
 	capi_message2cmsg(&iif->acmsg, skb->data);
 	dump_cmsg(DEBUG_CMD, __func__, &iif->acmsg);
+=======
+	if (printk_timed_ratelimit(&ignored_msg_dump_time, 30 * 1000)) {
+		/* decode message */
+		capi_message2cmsg(&iif->acmsg, skb->data);
+		dump_cmsg(DEBUG_CMD, __func__, &iif->acmsg);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_kfree_skb_any(skb);
 }
 
@@ -2255,11 +2583,19 @@ static int gigaset_proc_show(struct seq_file *m, void *v)
 
 	seq_printf(m, "%-16s %s\n", "name", ctr->name);
 	seq_printf(m, "%-16s %s %s\n", "dev",
+<<<<<<< HEAD
 			dev_driver_string(cs->dev), dev_name(cs->dev));
 	seq_printf(m, "%-16s %d\n", "id", cs->myid);
 	if (cs->gotfwver)
 		seq_printf(m, "%-16s %d.%d.%d.%d\n", "firmware",
 			cs->fwver[0], cs->fwver[1], cs->fwver[2], cs->fwver[3]);
+=======
+		   dev_driver_string(cs->dev), dev_name(cs->dev));
+	seq_printf(m, "%-16s %d\n", "id", cs->myid);
+	if (cs->gotfwver)
+		seq_printf(m, "%-16s %d.%d.%d.%d\n", "firmware",
+			   cs->fwver[0], cs->fwver[1], cs->fwver[2], cs->fwver[3]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	seq_printf(m, "%-16s %d\n", "channels", cs->channels);
 	seq_printf(m, "%-16s %s\n", "onechannel", cs->onechannel ? "yes" : "no");
 
@@ -2312,6 +2648,7 @@ static int gigaset_proc_show(struct seq_file *m, void *v)
 
 	for (i = 0; i < cs->channels; i++) {
 		seq_printf(m, "[%d]%-13s %d\n", i, "corrupted",
+<<<<<<< HEAD
 				cs->bcs[i].corrupted);
 		seq_printf(m, "[%d]%-13s %d\n", i, "trans_down",
 				cs->bcs[i].trans_down);
@@ -2319,6 +2656,15 @@ static int gigaset_proc_show(struct seq_file *m, void *v)
 				cs->bcs[i].trans_up);
 		seq_printf(m, "[%d]%-13s %d\n", i, "chstate",
 				cs->bcs[i].chstate);
+=======
+			   cs->bcs[i].corrupted);
+		seq_printf(m, "[%d]%-13s %d\n", i, "trans_down",
+			   cs->bcs[i].trans_down);
+		seq_printf(m, "[%d]%-13s %d\n", i, "trans_up",
+			   cs->bcs[i].trans_up);
+		seq_printf(m, "[%d]%-13s %d\n", i, "chstate",
+			   cs->bcs[i].chstate);
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch (cs->bcs[i].proto2) {
 		case L2_BITSYNC:
 			s = "bitsync";

@@ -1,6 +1,7 @@
 #ifndef __PLAT_MTU_H
 #define __PLAT_MTU_H
 
+<<<<<<< HEAD
 /*
  * Guaranteed runtime conversion range in seconds for
  * the clocksource and clockevent.
@@ -49,6 +50,11 @@ extern void __iomem *mtu_base;
 #define MTU_PCELL1	0xff4
 #define MTU_PCELL2	0xff8
 #define MTU_PCELL3	0xffC
+=======
+void nmdk_timer_init(void __iomem *base);
+void nmdk_clkevt_reset(void);
+void nmdk_clksrc_reset(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __PLAT_MTU_H */
 

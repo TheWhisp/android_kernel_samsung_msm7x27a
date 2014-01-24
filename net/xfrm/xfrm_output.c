@@ -21,7 +21,11 @@
 
 static int xfrm_output2(struct sk_buff *skb);
 
+<<<<<<< HEAD
 static int xfrm_state_check_space(struct xfrm_state *x, struct sk_buff *skb)
+=======
+static int xfrm_skb_check_space(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct dst_entry *dst = skb_dst(skb);
 	int nhead = dst->header_len + LL_RESERVED_SPACE(dst->dev)
@@ -48,7 +52,11 @@ static int xfrm_output_one(struct sk_buff *skb, int err)
 		goto resume;
 
 	do {
+<<<<<<< HEAD
 		err = xfrm_state_check_space(x, skb);
+=======
+		err = xfrm_skb_check_space(skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err) {
 			XFRM_INC_STATS(net, LINUX_MIB_XFRMOUTERROR);
 			goto error_nolock;

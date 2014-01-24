@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,6 +18,10 @@
 #define pr_fmt(fmt) "%s: " fmt, __func__
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/err.h>
@@ -26,10 +34,17 @@
 #define REG_HWREV_2		0x0E8  /* PMIC4 revision 2 */
 
 #define REG_MPP_BASE		0x050
+<<<<<<< HEAD
 #define REG_IRQ_BASE		0x1BB
 
 #define PM8821_VERSION_MASK	0xFFF0
 #define PM8821_VERSION_VALUE	0x07F0
+=======
+#define REG_IRQ_BASE		0x100
+
+#define PM8821_VERSION_MASK	0xFFF0
+#define PM8821_VERSION_VALUE	0x0BF0
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PM8821_REVISION_MASK	0x000F
 
 #define SINGLE_IRQ_RESOURCE(_name, _irq) \
@@ -85,7 +100,11 @@ static int pm8821_read_irq_stat(const struct device *dev, int irq)
 	const struct pm8xxx_drvdata *pm8821_drvdata = dev_get_drvdata(dev);
 	const struct pm8821 *pmic = pm8821_drvdata->pm_chip_data;
 
+<<<<<<< HEAD
 	return pm8xxx_get_irq_stat(pmic->irq_chip, irq);
+=======
+	return pm8821_get_irq_stat(pmic->irq_chip, irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static enum pm8xxx_version pm8821_get_version(const struct device *dev)
@@ -153,7 +172,11 @@ pm8821_add_subdevices(const struct pm8821_platform_data *pdata,
 		pdata->irq_pdata->irq_cdata.nirqs = PM8821_NR_IRQS;
 		pdata->irq_pdata->irq_cdata.base_addr = REG_IRQ_BASE;
 		irq_base = pdata->irq_pdata->irq_base;
+<<<<<<< HEAD
 		irq_chip = pm8xxx_irq_init(pmic->dev, pdata->irq_pdata);
+=======
+		irq_chip = pm8821_irq_init(pmic->dev, pdata->irq_pdata);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (IS_ERR(irq_chip)) {
 			pr_err("Failed to init interrupts ret=%ld\n",
@@ -185,7 +208,11 @@ pm8821_add_subdevices(const struct pm8821_platform_data *pdata,
 	return 0;
 bail:
 	if (pmic->irq_chip) {
+<<<<<<< HEAD
 		pm8xxx_irq_exit(pmic->irq_chip);
+=======
+		pm8821_irq_exit(pmic->irq_chip);
+>>>>>>> refs/remotes/origin/cm-10.0
 		pmic->irq_chip = NULL;
 	}
 	return ret;
@@ -280,7 +307,11 @@ static int __devexit pm8821_remove(struct platform_device *pdev)
 	if (pmic)
 		mfd_remove_devices(pmic->dev);
 	if (pmic->irq_chip) {
+<<<<<<< HEAD
 		pm8xxx_irq_exit(pmic->irq_chip);
+=======
+		pm8821_irq_exit(pmic->irq_chip);
+>>>>>>> refs/remotes/origin/cm-10.0
 		pmic->irq_chip = NULL;
 	}
 	platform_set_drvdata(pdev, NULL);

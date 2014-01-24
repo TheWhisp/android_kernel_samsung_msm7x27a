@@ -629,6 +629,7 @@ static struct spi_driver corgi_lcd_driver = {
 	.resume		= corgi_lcd_resume,
 };
 
+<<<<<<< HEAD
 static int __init corgi_lcd_init(void)
 {
 	return spi_register_driver(&corgi_lcd_driver);
@@ -640,6 +641,9 @@ static void __exit corgi_lcd_exit(void)
 	spi_unregister_driver(&corgi_lcd_driver);
 }
 module_exit(corgi_lcd_exit);
+=======
+module_spi_driver(corgi_lcd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("LCD and backlight driver for SHARP C7x0/Cxx00");
 MODULE_AUTHOR("Eric Miao <eric.miao@marvell.com>");

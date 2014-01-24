@@ -30,7 +30,11 @@
 #include <mach/msm_fb.h>
 #include <mach/msm_iomap.h>
 #include <mach/vreg.h>
+<<<<<<< HEAD
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "board-mahimahi.h"
 #include "devices.h"

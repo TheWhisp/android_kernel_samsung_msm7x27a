@@ -13,6 +13,10 @@
 
 #define pr_fmt(fmt)	"%s: " fmt, __func__
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/err.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -102,6 +106,10 @@ static int pm8xxx_read_config_irq(struct pm_irq_chip *chip, u8 bp, u8 cp, u8 *r)
 		goto bail;
 	}
 
+<<<<<<< HEAD
+=======
+	cp &= ~PM_IRQF_WRITE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	rc = pm8xxx_writeb(chip->dev,
 			SSBI_REG_ADDR_IRQ_CONFIG(chip->base_addr), cp);
 	if (rc)
@@ -127,7 +135,14 @@ static int pm8xxx_write_config_irq(struct pm_irq_chip *chip, u8 bp, u8 cp)
 		pr_err("Failed Selecting Block %d rc=%d\n", bp, rc);
 		goto bail;
 	}
+<<<<<<< HEAD
 
+=======
+	/*
+	 * Set the write bit here as this could be a unrequested irq
+	 * whose PM_IRQF_WRITE bit is not set
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	cp |= PM_IRQF_WRITE;
 	rc = pm8xxx_writeb(chip->dev,
 			SSBI_REG_ADDR_IRQ_CONFIG(chip->base_addr), cp);
@@ -222,7 +237,11 @@ static void pm8xxx_irq_mask(struct irq_data *d)
 	irq_bit = pmirq % 8;
 
 	if (chip->config[pmirq] == 0) {
+<<<<<<< HEAD
 		pr_warn("masking rouge irq=%d pmirq=%d\n", d->irq, pmirq);
+=======
+		pr_warn("masking rogue irq=%d pmirq=%d\n", d->irq, pmirq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		chip->config[pmirq] = irq_bit << PM_IRQF_BITS_SHIFT;
 	}
 
@@ -242,7 +261,11 @@ static void pm8xxx_irq_mask_ack(struct irq_data *d)
 	irq_bit = pmirq % 8;
 
 	if (chip->config[pmirq] == 0) {
+<<<<<<< HEAD
 		pr_warn("mask acking rouge irq=%d pmirq=%d\n", d->irq, pmirq);
+=======
+		pr_warn("mask acking rogue irq=%d pmirq=%d\n", d->irq, pmirq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		chip->config[pmirq] = irq_bit << PM_IRQF_BITS_SHIFT;
 	}
 
@@ -295,6 +318,15 @@ static int pm8xxx_irq_set_type(struct irq_data *d, unsigned int flow_type)
 			chip->config[pmirq] &= ~PM_IRQF_MASK_FE;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * The PM_IRQF_WRITE flag serves as an indication that this interrupt
+	 * been requested
+	 */
+	chip->config[pmirq] |= PM_IRQF_WRITE;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	config = chip->config[pmirq] | PM_IRQF_CLR;
 	return pm8xxx_write_config_irq(chip, block, config);
 }
@@ -439,7 +471,11 @@ struct pm_irq_chip *  __devinit pm8xxx_irq_init(struct device *dev,
 	return chip;
 }
 
+<<<<<<< HEAD
 int __devexit pm8xxx_irq_exit(struct pm_irq_chip *chip)
+=======
+int pm8xxx_irq_exit(struct pm_irq_chip *chip)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	irq_set_chained_handler(chip->devirq, NULL);
 	kfree(chip);

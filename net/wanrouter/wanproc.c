@@ -81,7 +81,10 @@ static struct proc_dir_entry *proc_router;
  *	Iterator
  */
 static void *r_start(struct seq_file *m, loff_t *pos)
+<<<<<<< HEAD
 	__acquires(kernel_lock)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct wan_device *wandev;
 	loff_t l = *pos;
@@ -103,7 +106,10 @@ static void *r_next(struct seq_file *m, void *v, loff_t *pos)
 }
 
 static void r_stop(struct seq_file *m, void *v)
+<<<<<<< HEAD
 	__releases(kernel_lock)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	mutex_unlock(&config_mutex);
 }

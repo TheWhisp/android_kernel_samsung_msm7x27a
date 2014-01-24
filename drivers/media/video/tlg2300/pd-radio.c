@@ -6,7 +6,10 @@
 #include <linux/usb.h>
 #include <linux/i2c.h>
 #include <media/v4l2-dev.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mm.h>
 #include <linux/mutex.h>
 #include <media/v4l2-ioctl.h>
@@ -149,7 +152,10 @@ static int vidioc_querycap(struct file *file, void *priv,
 	strlcpy(v->driver, "tele-radio", sizeof(v->driver));
 	strlcpy(v->card, "Telegent Poseidon", sizeof(v->card));
 	usb_make_path(p->udev, v->bus_info, sizeof(v->bus_info));
+<<<<<<< HEAD
 	v->version = KERNEL_VERSION(0, 0, 1);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	v->capabilities = V4L2_CAP_TUNER | V4L2_CAP_RADIO;
 	return 0;
 }

@@ -5,7 +5,11 @@
  */
 #include <linux/kernel.h>
 #include <linux/math64.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string_helpers.h>
 
 /**

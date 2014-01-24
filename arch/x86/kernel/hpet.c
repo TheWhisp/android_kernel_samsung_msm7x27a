@@ -1,9 +1,16 @@
 #include <linux/clocksource.h>
 #include <linux/clockchips.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/delay.h>
 #include <linux/errno.h>
+=======
+#include <linux/export.h>
+#include <linux/delay.h>
+#include <linux/errno.h>
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/hpet.h>
 #include <linux/init.h>
@@ -12,8 +19,13 @@
 #include <linux/io.h>
 
 #include <asm/fixmap.h>
+<<<<<<< HEAD
 #include <asm/i8253.h>
 #include <asm/hpet.h>
+=======
+#include <asm/hpet.h>
+#include <asm/time.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define HPET_MASK			CLOCKSOURCE_MASK(32)
 
@@ -30,8 +42,11 @@
 #define HPET_MIN_CYCLES			128
 #define HPET_MIN_PROG_DELTA		(HPET_MIN_CYCLES + (HPET_MIN_CYCLES >> 1))
 
+<<<<<<< HEAD
 #define EVT_TO_HPET_DEV(evt) container_of(evt, struct hpet_dev, evt)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * HPET address is set in acpi/boot.c, when an ACPI entry exists
  */
@@ -53,6 +68,14 @@ struct hpet_dev {
 	char				name[10];
 };
 
+<<<<<<< HEAD
+=======
+inline struct hpet_dev *EVT_TO_HPET_DEV(struct clock_event_device *evtdev)
+{
+	return container_of(evtdev, struct hpet_dev, evt);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 inline unsigned int hpet_readl(unsigned int a)
 {
 	return readl(hpet_virt_address + a);
@@ -71,7 +94,11 @@ static inline void hpet_set_mapping(void)
 {
 	hpet_virt_address = ioremap_nocache(hpet_address, HPET_MMAP_SIZE);
 #ifdef CONFIG_X86_64
+<<<<<<< HEAD
 	__set_fixmap(VSYSCALL_HPET, hpet_address, PAGE_KERNEL_VSYSCALL_NOCACHE);
+=======
+	__set_fixmap(VSYSCALL_HPET, hpet_address, PAGE_KERNEL_VVAR_NOCACHE);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 }
 
@@ -738,6 +765,7 @@ static cycle_t read_hpet(struct clocksource *cs)
 	return (cycle_t)hpet_readl(HPET_COUNTER);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
 static cycle_t __vsyscall_fn vread_hpet(void)
 {
@@ -745,6 +773,8 @@ static cycle_t __vsyscall_fn vread_hpet(void)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct clocksource clocksource_hpet = {
 	.name		= "hpet",
 	.rating		= 250,
@@ -753,7 +783,11 @@ static struct clocksource clocksource_hpet = {
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
 	.resume		= hpet_resume_counter,
 #ifdef CONFIG_X86_64
+<<<<<<< HEAD
 	.vread		= vread_hpet,
+=======
+	.archdata	= { .vclock_mode = VCLOCK_HPET },
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 };
 

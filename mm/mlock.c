@@ -14,7 +14,11 @@
 #include <linux/mempolicy.h>
 #include <linux/syscalls.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/rmap.h>
 #include <linux/mmzone.h>
 #include <linux/hugetlb.h>
@@ -110,7 +114,19 @@ void munlock_vma_page(struct page *page)
 	if (TestClearPageMlocked(page)) {
 		dec_zone_page_state(page, NR_MLOCK);
 		if (!isolate_lru_page(page)) {
+<<<<<<< HEAD
 			int ret = try_to_munlock(page);
+=======
+			int ret = SWAP_AGAIN;
+
+			/*
+			 * Optimization: if the page was mapped just once,
+			 * that's our mapping and we don't need to check all the
+			 * other vmas.
+			 */
+			if (page_mapcount(page) > 1)
+				ret = try_to_munlock(page);
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * did try_to_unlock() succeed or punt?
 			 */
@@ -377,10 +393,18 @@ static int do_mlock(unsigned long start, size_t len, int on)
 		return -EINVAL;
 	if (end == start)
 		return 0;
+<<<<<<< HEAD
 	vma = find_vma_prev(current->mm, start, &prev);
 	if (!vma || vma->vm_start > start)
 		return -ENOMEM;
 
+=======
+	vma = find_vma(current->mm, start);
+	if (!vma || vma->vm_start > start)
+		return -ENOMEM;
+
+	prev = vma->vm_prev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (start > vma->vm_start)
 		prev = vma;
 
@@ -549,7 +573,12 @@ SYSCALL_DEFINE1(mlockall, int, flags)
 	if (!can_do_mlock())
 		goto out;
 
+<<<<<<< HEAD
 	lru_add_drain_all();	/* flush pagevec */
+=======
+	if (flags & MCL_CURRENT)
+		lru_add_drain_all();	/* flush pagevec */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	down_write(&current->mm->mmap_sem);
 

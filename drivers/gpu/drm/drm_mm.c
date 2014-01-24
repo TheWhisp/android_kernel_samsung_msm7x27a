@@ -45,6 +45,10 @@
 #include "drm_mm.h"
 #include <linux/slab.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MM_UNUSED_TARGET 4
 

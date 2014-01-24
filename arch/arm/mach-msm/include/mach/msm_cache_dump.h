@@ -57,13 +57,23 @@ struct msm_cache_dump_platform_data {
 	unsigned int l2_size;
 };
 
+<<<<<<< HEAD
 #define L1_BUFFER_SIZE	SZ_1M
 #define L2_BUFFER_SIZE	(sizeof(struct l2_cache_dump))
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define CACHE_BUFFER_DUMP_SIZE (L1_BUFFER_SIZE + L2_BUFFER_SIZE)
 
 #define L1C_SERVICE_ID 3
 #define L1C_BUFFER_SET_COMMAND_ID 4
+<<<<<<< HEAD
 #define L1C_BUFFER_GET_SIZE_COMMAND_ID	6
+=======
+#define CACHE_BUFFER_DUMP_COMMAND_ID 5
+#define L1C_BUFFER_GET_SIZE_COMMAND_ID	6
+#define L2C_BUFFER_SET_COMMAND_ID 7
+#define L2C_BUFFER_GET_SIZE_COMMAND_ID 8
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

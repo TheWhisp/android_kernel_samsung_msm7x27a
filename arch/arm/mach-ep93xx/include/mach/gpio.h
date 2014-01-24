@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * arch/arm/mach-ep93xx/include/mach/gpio.h
  */
@@ -118,3 +119,6 @@
 #define irq_to_gpio(irq)	((irq) - gpio_to_irq(0))
 
 #endif
+=======
+/* empty */
+>>>>>>> refs/remotes/origin/cm-10.0

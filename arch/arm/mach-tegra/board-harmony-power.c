@@ -18,7 +18,10 @@
 #include <linux/i2c.h>
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/regulator/machine.h>
 #include <linux/mfd/tps6586x.h>
 
@@ -26,22 +29,33 @@
 
 #include "board-harmony.h"
 
+<<<<<<< HEAD
 #define PMC_CTRL		0x0
 #define PMC_CTRL_INTR_LOW	(1 << 17)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct regulator_consumer_supply tps658621_ldo0_supply[] = {
 	REGULATOR_SUPPLY("pex_clk", NULL),
 };
 
 static struct regulator_init_data ldo0_data = {
 	.constraints = {
+<<<<<<< HEAD
 		.min_uV = 1250 * 1000,
+=======
+		.min_uV = 3300 * 1000,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.max_uV = 3300 * 1000,
 		.valid_modes_mask = (REGULATOR_MODE_NORMAL |
 				     REGULATOR_MODE_STANDBY),
 		.valid_ops_mask = (REGULATOR_CHANGE_MODE |
 				   REGULATOR_CHANGE_STATUS |
 				   REGULATOR_CHANGE_VOLTAGE),
+<<<<<<< HEAD
+=======
+		.apply_uV = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.num_consumer_supplies = ARRAY_SIZE(tps658621_ldo0_supply),
 	.consumer_supplies = tps658621_ldo0_supply,

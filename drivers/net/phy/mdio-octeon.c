@@ -118,7 +118,12 @@ static int __devinit octeon_mdiobus_probe(struct platform_device *pdev)
 	bus->mii_bus->priv = bus;
 	bus->mii_bus->irq = bus->phy_irq;
 	bus->mii_bus->name = "mdio-octeon";
+<<<<<<< HEAD
 	snprintf(bus->mii_bus->id, MII_BUS_ID_SIZE, "%x", bus->unit);
+=======
+	snprintf(bus->mii_bus->id, MII_BUS_ID_SIZE, "%s-%x",
+		bus->mii_bus->name, bus->unit);
+>>>>>>> refs/remotes/origin/cm-10.0
 	bus->mii_bus->parent = &pdev->dev;
 
 	bus->mii_bus->read = octeon_mdiobus_read;

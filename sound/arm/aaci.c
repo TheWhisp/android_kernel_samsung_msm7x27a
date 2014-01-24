@@ -443,7 +443,11 @@ static int aaci_pcm_open(struct snd_pcm_substream *substream)
 	mutex_lock(&aaci->irq_lock);
 	if (!aaci->users++) {
 		ret = request_irq(aaci->dev->irq[0], aaci_irq,
+<<<<<<< HEAD
 			   IRQF_SHARED | IRQF_DISABLED, DRIVER_NAME, aaci);
+=======
+			   IRQF_SHARED, DRIVER_NAME, aaci);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret != 0)
 			aaci->users--;
 	}
@@ -1097,6 +1101,11 @@ static struct amba_id aaci_ids[] = {
 	{ 0, 0 },
 };
 
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(amba, aaci_ids);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct amba_driver aaci_driver = {
 	.drv		= {
 		.name	= DRIVER_NAME,
@@ -1108,6 +1117,7 @@ static struct amba_driver aaci_driver = {
 	.id_table	= aaci_ids,
 };
 
+<<<<<<< HEAD
 static int __init aaci_init(void)
 {
 	return amba_driver_register(&aaci_driver);
@@ -1120,6 +1130,9 @@ static void __exit aaci_exit(void)
 
 module_init(aaci_init);
 module_exit(aaci_exit);
+=======
+module_amba_driver(aaci_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("ARM PrimeCell PL041 Advanced Audio CODEC Interface driver");

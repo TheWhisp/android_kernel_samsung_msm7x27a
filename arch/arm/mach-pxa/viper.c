@@ -57,6 +57,10 @@
 #include <asm/mach-types.h>
 #include <asm/irq.h>
 #include <asm/sizes.h>
+<<<<<<< HEAD
+=======
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
@@ -422,8 +426,13 @@ static struct resource smc91x_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = gpio_to_irq(VIPER_ETH_GPIO),
 		.end    = gpio_to_irq(VIPER_ETH_GPIO),
+=======
+		.start  = PXA_GPIO_TO_IRQ(VIPER_ETH_GPIO),
+		.end    = PXA_GPIO_TO_IRQ(VIPER_ETH_GPIO),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags  = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	},
 	[2] = {
@@ -546,7 +555,11 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	/* External UARTs */
 	{
 		.mapbase	= VIPER_UARTA_PHYS,
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(VIPER_UARTA_GPIO),
+=======
+		.irq		= PXA_GPIO_TO_IRQ(VIPER_UARTA_GPIO),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.irqflags	= IRQF_TRIGGER_RISING,
 		.uartclk	= 1843200,
 		.regshift	= 1,
@@ -556,7 +569,11 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	},
 	{
 		.mapbase	= VIPER_UARTB_PHYS,
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(VIPER_UARTB_GPIO),
+=======
+		.irq		= PXA_GPIO_TO_IRQ(VIPER_UARTB_GPIO),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.irqflags	= IRQF_TRIGGER_RISING,
 		.uartclk	= 1843200,
 		.regshift	= 1,
@@ -596,8 +613,13 @@ static struct resource isp116x_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[2] = {
+<<<<<<< HEAD
 		.start  = gpio_to_irq(VIPER_USB_GPIO),
 		.end    = gpio_to_irq(VIPER_USB_GPIO),
+=======
+		.start  = PXA_GPIO_TO_IRQ(VIPER_USB_GPIO),
+		.end    = PXA_GPIO_TO_IRQ(VIPER_USB_GPIO),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags  = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	},
 };
@@ -992,9 +1014,20 @@ static void __init viper_map_io(void)
 
 MACHINE_START(VIPER, "Arcom/Eurotech VIPER SBC")
 	/* Maintainer: Marc Zyngier <maz@misterjones.org> */
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= viper_map_io,
 	.init_irq	= viper_init_irq,
 	.timer          = &pxa_timer,
 	.init_machine	= viper_init,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= viper_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= viper_init_irq,
+	.handle_irq	= pxa25x_handle_irq,
+	.timer          = &pxa_timer,
+	.init_machine	= viper_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

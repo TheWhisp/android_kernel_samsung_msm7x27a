@@ -2,6 +2,7 @@
 # Near Field Communication (NFC) devices
 #
 
+<<<<<<< HEAD
 menuconfig NFC_DEVICES
 	bool "Near Field Communication (NFC) devices"
 	default n
@@ -13,6 +14,10 @@ menuconfig NFC_DEVICES
 	  devices connected to your computer.
 
 if NFC_DEVICES
+=======
+menu "Near Field Communication (NFC) devices"
+	depends on NFC
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config PN544_NFC
 	tristate "PN544 NFC driver"
@@ -26,5 +31,30 @@ config PN544_NFC
 	  To compile this driver as a module, choose m here. The module will
 	  be called pn544.
 
+<<<<<<< HEAD
 
 endif # NFC_DEVICES
+=======
+config NFC_PN533
+	tristate "NXP PN533 USB driver"
+	depends on USB
+	help
+	  NXP PN533 USB driver.
+	  This driver provides support for NFC NXP PN533 devices.
+
+	  Say Y here to compile support for PN533 devices into the
+	  kernel or say M to compile it as module (pn533).
+
+config NFC_WILINK
+	tristate "Texas Instruments NFC WiLink driver"
+	depends on TI_ST && NFC_NCI
+	help
+	  This enables the NFC driver for Texas Instrument's BT/FM/GPS/NFC
+	  combo devices. This makes use of shared transport line discipline
+	  core driver to communicate with the NFC core of the combo chip.
+
+	  Say Y here to compile support for Texas Instrument's NFC WiLink driver
+	  into the kernel or say M to compile it as module.
+
+endmenu
+>>>>>>> refs/remotes/origin/cm-10.0

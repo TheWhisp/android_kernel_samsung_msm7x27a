@@ -81,7 +81,11 @@ void __init em7210_map_io(void)
 #define INTD	IRQ_IOP32X_XINT3
 
 static int __init
+<<<<<<< HEAD
 em7210_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+em7210_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static int pci_irq_table[][4] = {
 		/*
@@ -203,9 +207,17 @@ static void __init em7210_init_machine(void)
 }
 
 MACHINE_START(EM7210, "Lanner EM7210")
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= em7210_map_io,
 	.init_irq	= iop32x_init_irq,
 	.timer		= &em7210_timer,
 	.init_machine	= em7210_init_machine,
+<<<<<<< HEAD
+=======
+	.restart	= iop3xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

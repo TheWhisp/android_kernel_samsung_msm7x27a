@@ -43,7 +43,11 @@ void __init vulcan_pci_preinit(void)
 	ixp4xx_pci_preinit();
 }
 
+<<<<<<< HEAD
 static int __init vulcan_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init vulcan_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (slot == 1)
 		return IXP4XX_GPIO_IRQ(INTA);

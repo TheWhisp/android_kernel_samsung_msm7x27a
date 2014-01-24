@@ -333,7 +333,11 @@ static int __devinit rtc_probe(struct platform_device *pdev)
 		goto err_device_unregister;
 	}
 
+<<<<<<< HEAD
 	retval = request_irq(aie_irq, elapsedtime_interrupt, IRQF_DISABLED,
+=======
+	retval = request_irq(aie_irq, elapsedtime_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	                     "elapsed_time", pdev);
 	if (retval < 0)
 		goto err_device_unregister;
@@ -342,7 +346,11 @@ static int __devinit rtc_probe(struct platform_device *pdev)
 	if (pie_irq <= 0)
 		goto err_free_irq;
 
+<<<<<<< HEAD
 	retval = request_irq(pie_irq, rtclong1_interrupt, IRQF_DISABLED,
+=======
+	retval = request_irq(pie_irq, rtclong1_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 		             "rtclong1", pdev);
 	if (retval < 0)
 		goto err_free_irq;
@@ -405,6 +413,7 @@ static struct platform_driver rtc_platform_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init vr41xx_rtc_init(void)
 {
 	return platform_driver_register(&rtc_platform_driver);
@@ -417,3 +426,6 @@ static void __exit vr41xx_rtc_exit(void)
 
 module_init(vr41xx_rtc_init);
 module_exit(vr41xx_rtc_exit);
+=======
+module_platform_driver(rtc_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

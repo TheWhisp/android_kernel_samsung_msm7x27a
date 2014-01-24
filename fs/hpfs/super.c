@@ -181,7 +181,10 @@ static struct inode *hpfs_alloc_inode(struct super_block *sb)
 static void hpfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kmem_cache_free(hpfs_inode_cachep, hpfs_i(inode));
 }
 
@@ -632,11 +635,17 @@ static int hpfs_fill_super(struct super_block *s, void *options, int silent)
 	hpfs_init_inode(root);
 	hpfs_read_inode(root);
 	unlock_new_inode(root);
+<<<<<<< HEAD
 	s->s_root = d_alloc_root(root);
 	if (!s->s_root) {
 		iput(root);
 		goto bail0;
 	}
+=======
+	s->s_root = d_make_root(root);
+	if (!s->s_root)
+		goto bail0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * find the root directory's . pointer & finish filling in the inode

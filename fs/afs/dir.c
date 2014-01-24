@@ -28,9 +28,15 @@ static int afs_d_delete(const struct dentry *dentry);
 static void afs_d_release(struct dentry *dentry);
 static int afs_lookup_filldir(void *_cookie, const char *name, int nlen,
 				  loff_t fpos, u64 ino, unsigned dtype);
+<<<<<<< HEAD
 static int afs_create(struct inode *dir, struct dentry *dentry, int mode,
 		      struct nameidata *nd);
 static int afs_mkdir(struct inode *dir, struct dentry *dentry, int mode);
+=======
+static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		      struct nameidata *nd);
+static int afs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 static int afs_rmdir(struct inode *dir, struct dentry *dentry);
 static int afs_unlink(struct inode *dir, struct dentry *dentry);
 static int afs_link(struct dentry *from, struct inode *dir,
@@ -764,7 +770,11 @@ static void afs_d_release(struct dentry *dentry)
 /*
  * create a directory on an AFS filesystem
  */
+<<<<<<< HEAD
 static int afs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int afs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct afs_file_status status;
 	struct afs_callback cb;
@@ -777,7 +787,11 @@ static int afs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 
 	dvnode = AFS_FS_I(dir);
 
+<<<<<<< HEAD
 	_enter("{%x:%u},{%s},%o",
+=======
+	_enter("{%x:%u},{%s},%ho",
+>>>>>>> refs/remotes/origin/cm-10.0
 	       dvnode->fid.vid, dvnode->fid.vnode, dentry->d_name.name, mode);
 
 	ret = -ENAMETOOLONG;
@@ -948,7 +962,11 @@ error:
 /*
  * create a regular file on an AFS filesystem
  */
+<<<<<<< HEAD
 static int afs_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		      struct nameidata *nd)
 {
 	struct afs_file_status status;
@@ -962,7 +980,11 @@ static int afs_create(struct inode *dir, struct dentry *dentry, int mode,
 
 	dvnode = AFS_FS_I(dir);
 
+<<<<<<< HEAD
 	_enter("{%x:%u},{%s},%o,",
+=======
+	_enter("{%x:%u},{%s},%ho,",
+>>>>>>> refs/remotes/origin/cm-10.0
 	       dvnode->fid.vid, dvnode->fid.vnode, dentry->d_name.name, mode);
 
 	ret = -ENAMETOOLONG;

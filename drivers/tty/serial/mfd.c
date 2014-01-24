@@ -38,6 +38,10 @@
 #include <linux/pci.h>
 #include <linux/io.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define HSU_DMA_BUF_SIZE	2048
 
@@ -126,11 +130,14 @@ static inline void serial_out(struct uart_hsu_port *up, int offset, int value)
 
 #define HSU_REGS_BUFSIZE	1024
 
+<<<<<<< HEAD
 static int hsu_show_regs_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static ssize_t port_show_regs(struct file *file, char __user *user_buf,
 				size_t count, loff_t *ppos)
@@ -230,14 +237,22 @@ static ssize_t dma_show_regs(struct file *file, char __user *user_buf,
 
 static const struct file_operations port_regs_ops = {
 	.owner		= THIS_MODULE,
+<<<<<<< HEAD
 	.open		= hsu_show_regs_open,
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read		= port_show_regs,
 	.llseek		= default_llseek,
 };
 
 static const struct file_operations dma_regs_ops = {
 	.owner		= THIS_MODULE,
+<<<<<<< HEAD
 	.open		= hsu_show_regs_open,
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read		= dma_show_regs,
 	.llseek		= default_llseek,
 };
@@ -764,6 +779,11 @@ static int serial_hsu_startup(struct uart_port *port)
 		container_of(port, struct uart_hsu_port, port);
 	unsigned long flags;
 
+<<<<<<< HEAD
+=======
+	pm_runtime_get_sync(up->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Clear the FIFO buffers and disable them.
 	 * (they will be reenabled in set_termios())
@@ -871,6 +891,11 @@ static void serial_hsu_shutdown(struct uart_port *port)
 				  UART_FCR_CLEAR_RCVR |
 				  UART_FCR_CLEAR_XMIT);
 	serial_out(up, UART_FCR, 0);
+<<<<<<< HEAD
+=======
+
+	pm_runtime_put(up->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void
@@ -879,7 +904,10 @@ serial_hsu_set_termios(struct uart_port *port, struct ktermios *termios,
 {
 	struct uart_hsu_port *up =
 			container_of(port, struct uart_hsu_port, port);
+<<<<<<< HEAD
 	struct tty_struct *tty = port->state->port.tty;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned char cval, fcr = 0;
 	unsigned long flags;
 	unsigned int baud, quot;
@@ -902,8 +930,12 @@ serial_hsu_set_termios(struct uart_port *port, struct ktermios *termios,
 	}
 
 	/* CMSPAR isn't supported by this driver */
+<<<<<<< HEAD
 	if (tty)
 		tty->termios->c_cflag &= ~CMSPAR;
+=======
+	termios->c_cflag &= ~CMSPAR;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (termios->c_cflag & CSTOPB)
 		cval |= UART_LCR_STOP;
@@ -1151,7 +1183,10 @@ serial_hsu_console_setup(struct console *co, char *options)
 	int bits = 8;
 	int parity = 'n';
 	int flow = 'n';
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (co->index == -1 || co->index >= serial_hsu_reg.nr)
 		co->index = 0;
@@ -1162,9 +1197,13 @@ serial_hsu_console_setup(struct console *co, char *options)
 	if (options)
 		uart_parse_options(options, &baud, &parity, &bits, &flow);
 
+<<<<<<< HEAD
 	ret = uart_set_options(&up->port, co, baud, parity, bits, flow);
 
 	return ret;
+=======
+	return uart_set_options(&up->port, co, baud, parity, bits, flow);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct console serial_hsu_console = {
@@ -1173,9 +1212,19 @@ static struct console serial_hsu_console = {
 	.device		= uart_console_device,
 	.setup		= serial_hsu_console_setup,
 	.flags		= CON_PRINTBUFFER,
+<<<<<<< HEAD
 	.index		= 2,
 	.data		= &serial_hsu_reg,
 };
+=======
+	.index		= -1,
+	.data		= &serial_hsu_reg,
+};
+
+#define SERIAL_HSU_CONSOLE	(&serial_hsu_console)
+#else
+#define SERIAL_HSU_CONSOLE	NULL
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 struct uart_ops serial_hsu_pops = {
@@ -1205,6 +1254,10 @@ static struct uart_driver serial_hsu_reg = {
 	.major		= TTY_MAJOR,
 	.minor		= 128,
 	.nr		= 3,
+<<<<<<< HEAD
+=======
+	.cons		= SERIAL_HSU_CONSOLE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #ifdef CONFIG_PM
@@ -1249,6 +1302,42 @@ static int serial_hsu_resume(struct pci_dev *pdev)
 #define serial_hsu_resume	NULL
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_RUNTIME
+static int serial_hsu_runtime_idle(struct device *dev)
+{
+	int err;
+
+	err = pm_schedule_suspend(dev, 500);
+	if (err)
+		return -EBUSY;
+
+	return 0;
+}
+
+static int serial_hsu_runtime_suspend(struct device *dev)
+{
+	return 0;
+}
+
+static int serial_hsu_runtime_resume(struct device *dev)
+{
+	return 0;
+}
+#else
+#define serial_hsu_runtime_idle		NULL
+#define serial_hsu_runtime_suspend	NULL
+#define serial_hsu_runtime_resume	NULL
+#endif
+
+static const struct dev_pm_ops serial_hsu_pm_ops = {
+	.runtime_suspend = serial_hsu_runtime_suspend,
+	.runtime_resume = serial_hsu_runtime_resume,
+	.runtime_idle = serial_hsu_runtime_idle,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* temp global pointer before we settle down on using one or four PCI dev */
 static struct hsu_port *phsu;
 
@@ -1306,6 +1395,7 @@ static int serial_hsu_probe(struct pci_dev *pdev,
 		}
 		uart_add_one_port(&serial_hsu_reg, &uport->port);
 
+<<<<<<< HEAD
 #ifdef CONFIG_SERIAL_MFD_HSU_CONSOLE
 		if (index == 2) {
 			register_console(&serial_hsu_console);
@@ -1315,6 +1405,14 @@ static int serial_hsu_probe(struct pci_dev *pdev,
 		pci_set_drvdata(pdev, uport);
 	}
 
+=======
+		pci_set_drvdata(pdev, uport);
+	}
+
+	pm_runtime_put_noidle(&pdev->dev);
+	pm_runtime_allow(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 err_disable:
@@ -1411,6 +1509,12 @@ static void serial_hsu_remove(struct pci_dev *pdev)
 	if (!priv)
 		return;
 
+<<<<<<< HEAD
+=======
+	pm_runtime_forbid(&pdev->dev);
+	pm_runtime_get_noresume(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* For port 0/1/2, priv is the address of uart_hsu_port */
 	if (pdev->device != 0x081E) {
 		up = priv;
@@ -1423,7 +1527,11 @@ static void serial_hsu_remove(struct pci_dev *pdev)
 }
 
 /* First 3 are UART ports, and the 4th is the DMA */
+<<<<<<< HEAD
 static const struct pci_device_id pci_ids[] __devinitdata = {
+=======
+static const struct pci_device_id pci_ids[] __devinitconst = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x081B) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x081C) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x081D) },
@@ -1438,6 +1546,12 @@ static struct pci_driver hsu_pci_driver = {
 	.remove =	__devexit_p(serial_hsu_remove),
 	.suspend =	serial_hsu_suspend,
 	.resume	=	serial_hsu_resume,
+<<<<<<< HEAD
+=======
+	.driver = {
+		.pm = &serial_hsu_pm_ops,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init hsu_pci_init(void)

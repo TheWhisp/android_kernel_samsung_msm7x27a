@@ -2,7 +2,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2008 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2008 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -34,11 +38,15 @@
 #include <net/mac80211.h>
 
 #include "iwl-eeprom.h"
+<<<<<<< HEAD
 #include "iwl-dev.h" /* FIXME: remove */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "iwl-debug.h"
 #include "iwl-core.h"
 #include "iwl-io.h"
 #include "iwl-power.h"
+<<<<<<< HEAD
 #include "iwl-sta.h"
 #include "iwl-helpers.h"
 #include "iwl-agn.h"
@@ -65,30 +73,53 @@ module_param(bt_coex_active, bool, S_IRUGO);
 MODULE_PARM_DESC(bt_coex_active, "enable wifi/bluetooth co-exist");
 
 u32 iwl_debug_level;
+=======
+#include "iwl-shared.h"
+#include "iwl-agn.h"
+#include "iwl-trans.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 const u8 iwl_bcast_addr[ETH_ALEN] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 
 #define MAX_BIT_RATE_40_MHZ 150 /* Mbps */
 #define MAX_BIT_RATE_20_MHZ 72 /* Mbps */
+<<<<<<< HEAD
 static void iwlcore_init_ht_hw_capab(const struct iwl_priv *priv,
+=======
+static void iwl_init_ht_hw_capab(const struct iwl_priv *priv,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      struct ieee80211_sta_ht_cap *ht_info,
 			      enum ieee80211_band band)
 {
 	u16 max_bit_rate = 0;
+<<<<<<< HEAD
 	u8 rx_chains_num = priv->hw_params.rx_chains_num;
 	u8 tx_chains_num = priv->hw_params.tx_chains_num;
+=======
+	u8 rx_chains_num = hw_params(priv).rx_chains_num;
+	u8 tx_chains_num = hw_params(priv).tx_chains_num;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ht_info->cap = 0;
 	memset(&ht_info->mcs, 0, sizeof(ht_info->mcs));
 
 	ht_info->ht_supported = true;
 
+<<<<<<< HEAD
 	if (priv->cfg->ht_params &&
 	    priv->cfg->ht_params->ht_greenfield_support)
 		ht_info->cap |= IEEE80211_HT_CAP_GRN_FLD;
 	ht_info->cap |= IEEE80211_HT_CAP_SGI_20;
 	max_bit_rate = MAX_BIT_RATE_20_MHZ;
 	if (priv->hw_params.ht40_channel & BIT(band)) {
+=======
+	if (cfg(priv)->ht_params &&
+	    cfg(priv)->ht_params->ht_greenfield_support)
+		ht_info->cap |= IEEE80211_HT_CAP_GRN_FLD;
+	ht_info->cap |= IEEE80211_HT_CAP_SGI_20;
+	max_bit_rate = MAX_BIT_RATE_20_MHZ;
+	if (hw_params(priv).ht40_channel & BIT(band)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ht_info->cap |= IEEE80211_HT_CAP_SUP_WIDTH_20_40;
 		ht_info->cap |= IEEE80211_HT_CAP_SGI_40;
 		ht_info->mcs.rx_mask[4] = 0x01;
@@ -99,11 +130,15 @@ static void iwlcore_init_ht_hw_capab(const struct iwl_priv *priv,
 		ht_info->cap |= IEEE80211_HT_CAP_MAX_AMSDU;
 
 	ht_info->ampdu_factor = CFG_HT_RX_AMPDU_FACTOR_DEF;
+<<<<<<< HEAD
 	if (priv->cfg->bt_params && priv->cfg->bt_params->ampdu_factor)
 		ht_info->ampdu_factor = priv->cfg->bt_params->ampdu_factor;
 	ht_info->ampdu_density = CFG_HT_MPDU_DENSITY_DEF;
 	if (priv->cfg->bt_params && priv->cfg->bt_params->ampdu_density)
 		ht_info->ampdu_density = priv->cfg->bt_params->ampdu_density;
+=======
+	ht_info->ampdu_density = CFG_HT_MPDU_DENSITY_DEF;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ht_info->mcs.rx_mask[0] = 0xFF;
 	if (rx_chains_num >= 2)
@@ -126,9 +161,15 @@ static void iwlcore_init_ht_hw_capab(const struct iwl_priv *priv,
 }
 
 /**
+<<<<<<< HEAD
  * iwlcore_init_geos - Initialize mac80211's geo/channel info based from eeprom
  */
 int iwlcore_init_geos(struct iwl_priv *priv)
+=======
+ * iwl_init_geos - Initialize mac80211's geo/channel info based from eeprom
+ */
+int iwl_init_geos(struct iwl_priv *priv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct iwl_channel_info *ch;
 	struct ieee80211_supported_band *sband;
@@ -145,12 +186,21 @@ int iwlcore_init_geos(struct iwl_priv *priv)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	channels = kzalloc(sizeof(struct ieee80211_channel) *
 			   priv->channel_count, GFP_KERNEL);
 	if (!channels)
 		return -ENOMEM;
 
 	rates = kzalloc((sizeof(struct ieee80211_rate) * IWL_RATE_COUNT_LEGACY),
+=======
+	channels = kcalloc(priv->channel_count,
+			   sizeof(struct ieee80211_channel), GFP_KERNEL);
+	if (!channels)
+		return -ENOMEM;
+
+	rates = kcalloc(IWL_RATE_COUNT_LEGACY, sizeof(struct ieee80211_rate),
+>>>>>>> refs/remotes/origin/cm-10.0
 			GFP_KERNEL);
 	if (!rates) {
 		kfree(channels);
@@ -164,8 +214,13 @@ int iwlcore_init_geos(struct iwl_priv *priv)
 	sband->bitrates = &rates[IWL_FIRST_OFDM_RATE];
 	sband->n_bitrates = IWL_RATE_COUNT_LEGACY - IWL_FIRST_OFDM_RATE;
 
+<<<<<<< HEAD
 	if (priv->cfg->sku & IWL_SKU_N)
 		iwlcore_init_ht_hw_capab(priv, &sband->ht_cap,
+=======
+	if (hw_params(priv).sku & EEPROM_SKU_CAP_11N_ENABLE)
+		iwl_init_ht_hw_capab(priv, &sband->ht_cap,
+>>>>>>> refs/remotes/origin/cm-10.0
 					 IEEE80211_BAND_5GHZ);
 
 	sband = &priv->bands[IEEE80211_BAND_2GHZ];
@@ -174,8 +229,13 @@ int iwlcore_init_geos(struct iwl_priv *priv)
 	sband->bitrates = rates;
 	sband->n_bitrates = IWL_RATE_COUNT_LEGACY;
 
+<<<<<<< HEAD
 	if (priv->cfg->sku & IWL_SKU_N)
 		iwlcore_init_ht_hw_capab(priv, &sband->ht_cap,
+=======
+	if (hw_params(priv).sku & EEPROM_SKU_CAP_11N_ENABLE)
+		iwl_init_ht_hw_capab(priv, &sband->ht_cap,
+>>>>>>> refs/remotes/origin/cm-10.0
 					 IEEE80211_BAND_2GHZ);
 
 	priv->ieee_channels = channels;
@@ -229,12 +289,20 @@ int iwlcore_init_geos(struct iwl_priv *priv)
 	priv->tx_power_next = max_tx_power;
 
 	if ((priv->bands[IEEE80211_BAND_5GHZ].n_channels == 0) &&
+<<<<<<< HEAD
 	     priv->cfg->sku & IWL_SKU_A) {
 		IWL_INFO(priv, "Incorrectly detected BG card as ABG. "
 			"Please send your PCI ID 0x%04X:0x%04X to maintainer.\n",
 			   priv->pci_dev->device,
 			   priv->pci_dev->subsystem_device);
 		priv->cfg->sku &= ~IWL_SKU_A;
+=======
+	     hw_params(priv).sku & EEPROM_SKU_CAP_BAND_52GHZ) {
+		IWL_INFO(priv, "Incorrectly detected BG card as ABG. "
+			"Please send your %s to maintainer.\n",
+			trans(priv)->hw_id_str);
+		hw_params(priv).sku &= ~EEPROM_SKU_CAP_BAND_52GHZ;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	IWL_INFO(priv, "Tunable channels: %d 802.11bg, %d 802.11a channels\n",
@@ -247,9 +315,15 @@ int iwlcore_init_geos(struct iwl_priv *priv)
 }
 
 /*
+<<<<<<< HEAD
  * iwlcore_free_geos - undo allocations in iwlcore_init_geos
  */
 void iwlcore_free_geos(struct iwl_priv *priv)
+=======
+ * iwl_free_geos - undo allocations in iwl_init_geos
+ */
+void iwl_free_geos(struct iwl_priv *priv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	kfree(priv->ieee_channels);
 	kfree(priv->ieee_rates);
@@ -343,7 +417,11 @@ int iwl_send_rxon_timing(struct iwl_priv *priv, struct iwl_rxon_context *ctx)
 	u16 beacon_int;
 	struct ieee80211_vif *vif = ctx->vif;
 
+<<<<<<< HEAD
 	conf = ieee80211_get_hw_conf(priv->hw);
+=======
+	conf = &priv->hw->conf;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	lockdep_assert_held(&priv->mutex);
 
@@ -379,10 +457,19 @@ int iwl_send_rxon_timing(struct iwl_priv *priv, struct iwl_rxon_context *ctx)
 		beacon_int = le16_to_cpu(ctx->timing.beacon_interval);
 	} else {
 		beacon_int = iwl_adjust_beacon_interval(beacon_int,
+<<<<<<< HEAD
 				priv->hw_params.max_beacon_itrvl * TIME_UNIT);
 		ctx->timing.beacon_interval = cpu_to_le16(beacon_int);
 	}
 
+=======
+			IWL_MAX_UCODE_BEACON_INTERVAL * TIME_UNIT);
+		ctx->timing.beacon_interval = cpu_to_le16(beacon_int);
+	}
+
+	ctx->beacon_int = beacon_int;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	tsf = priv->timestamp; /* tsf is modifed by do_div: copy it */
 	interval_tm = beacon_int * TIME_UNIT;
 	rem = do_div(tsf, interval_tm);
@@ -396,8 +483,13 @@ int iwl_send_rxon_timing(struct iwl_priv *priv, struct iwl_rxon_context *ctx)
 			le32_to_cpu(ctx->timing.beacon_init_val),
 			le16_to_cpu(ctx->timing.atim_window));
 
+<<<<<<< HEAD
 	return iwl_send_cmd_pdu(priv, ctx->rxon_timing_cmd,
 				sizeof(ctx->timing), &ctx->timing);
+=======
+	return iwl_dvm_send_cmd_pdu(priv, ctx->rxon_timing_cmd,
+				CMD_SYNC, sizeof(ctx->timing), &ctx->timing);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void iwl_set_rxon_hwcrypto(struct iwl_priv *priv, struct iwl_rxon_context *ctx,
@@ -547,6 +639,7 @@ int iwl_full_rxon_required(struct iwl_priv *priv,
 	return 0;
 }
 
+<<<<<<< HEAD
 u8 iwl_rate_get_lowest_plcp(struct iwl_priv *priv,
 			    struct iwl_rxon_context *ctx)
 {
@@ -560,6 +653,8 @@ u8 iwl_rate_get_lowest_plcp(struct iwl_priv *priv,
 		return IWL_RATE_6M_PLCP;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void _iwl_set_rxon_ht(struct iwl_priv *priv,
 			     struct iwl_ht_config *ht_conf,
 			     struct iwl_rxon_context *ctx)
@@ -619,8 +714,12 @@ static void _iwl_set_rxon_ht(struct iwl_priv *priv,
 		rxon->flags |= RXON_FLG_CHANNEL_MODE_LEGACY;
 	}
 
+<<<<<<< HEAD
 	if (priv->cfg->ops->hcmd->set_rxon_chain)
 		priv->cfg->ops->hcmd->set_rxon_chain(priv, ctx);
+=======
+	iwlagn_set_rxon_chain(priv, ctx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IWL_DEBUG_ASSOC(priv, "rxon flags 0x%X operation mode :0x%X "
 			"extension channel offset 0x%x\n",
@@ -683,7 +782,11 @@ u8 iwl_get_single_channel_number(struct iwl_priv *priv,
  * NOTE:  Does not commit to the hardware; it sets appropriate bit fields
  * in the staging RXON flag structure based on the ch->band
  */
+<<<<<<< HEAD
 int iwl_set_rxon_channel(struct iwl_priv *priv, struct ieee80211_channel *ch,
+=======
+void iwl_set_rxon_channel(struct iwl_priv *priv, struct ieee80211_channel *ch,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 struct iwl_rxon_context *ctx)
 {
 	enum ieee80211_band band = ch->band;
@@ -691,7 +794,11 @@ int iwl_set_rxon_channel(struct iwl_priv *priv, struct ieee80211_channel *ch,
 
 	if ((le16_to_cpu(ctx->staging.channel) == channel) &&
 	    (priv->band == band))
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ctx->staging.channel = cpu_to_le16(channel);
 	if (band == IEEE80211_BAND_5GHZ)
@@ -703,7 +810,10 @@ int iwl_set_rxon_channel(struct iwl_priv *priv, struct ieee80211_channel *ch,
 
 	IWL_DEBUG_INFO(priv, "Staging channel set to %d [%d]\n", channel, band);
 
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void iwl_set_flags_for_band(struct iwl_priv *priv,
@@ -836,7 +946,11 @@ void iwl_chswitch_done(struct iwl_priv *priv, bool is_success)
 {
 	/*
 	 * MULTI-FIXME
+<<<<<<< HEAD
 	 * See iwl_mac_channel_switch.
+=======
+	 * See iwlagn_mac_channel_switch.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	struct iwl_rxon_context *ctx = &priv->contexts[IWL_RXON_CTX_BSS];
 
@@ -849,8 +963,14 @@ void iwl_chswitch_done(struct iwl_priv *priv, bool is_success)
 
 #ifdef CONFIG_IWLWIFI_DEBUG
 void iwl_print_rx_config_cmd(struct iwl_priv *priv,
+<<<<<<< HEAD
 			     struct iwl_rxon_context *ctx)
 {
+=======
+			     enum iwl_rxon_context_id ctxid)
+{
+	struct iwl_rxon_context *ctx = &priv->contexts[ctxid];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iwl_rxon_cmd *rxon = &ctx->staging;
 
 	IWL_DEBUG_RADIO(priv, "RX CONFIG:\n");
@@ -869,6 +989,7 @@ void iwl_print_rx_config_cmd(struct iwl_priv *priv,
 }
 #endif
 
+<<<<<<< HEAD
 static void iwlagn_abort_notification_waits(struct iwl_priv *priv)
 {
 	unsigned long flags;
@@ -883,10 +1004,14 @@ static void iwlagn_abort_notification_waits(struct iwl_priv *priv)
 }
 
 void iwlagn_fw_error(struct iwl_priv *priv, bool ondemand)
+=======
+static void iwlagn_fw_error(struct iwl_priv *priv, bool ondemand)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned int reload_msec;
 	unsigned long reload_jiffies;
 
+<<<<<<< HEAD
 	/* Set the FW error flag -- cleared on iwl_down */
 	set_bit(STATUS_FW_ERROR, &priv->status);
 
@@ -894,12 +1019,33 @@ void iwlagn_fw_error(struct iwl_priv *priv, bool ondemand)
 	clear_bit(STATUS_HCMD_ACTIVE, &priv->status);
 
 	iwlagn_abort_notification_waits(priv);
+=======
+#ifdef CONFIG_IWLWIFI_DEBUG
+	if (iwl_have_debug_level(IWL_DL_FW_ERRORS))
+		iwl_print_rx_config_cmd(priv, IWL_RXON_CTX_BSS);
+#endif
+
+	/* uCode is no longer loaded. */
+	priv->ucode_loaded = false;
+
+	/* Set the FW error flag -- cleared on iwl_down */
+	set_bit(STATUS_FW_ERROR, &priv->shrd->status);
+
+	/* Cancel currently queued command. */
+	clear_bit(STATUS_HCMD_ACTIVE, &priv->shrd->status);
+
+	iwl_abort_notification_waits(&priv->notif_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Keep the restart process from trying to send host
 	 * commands by clearing the ready bit */
 	clear_bit(STATUS_READY, &priv->status);
 
+<<<<<<< HEAD
 	wake_up(&priv->wait_command_queue);
+=======
+	wake_up(&trans(priv)->wait_command_queue);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!ondemand) {
 		/*
@@ -924,15 +1070,24 @@ void iwlagn_fw_error(struct iwl_priv *priv, bool ondemand)
 
 	if (!test_bit(STATUS_EXIT_PENDING, &priv->status)) {
 		if (iwlagn_mod_params.restart_fw) {
+<<<<<<< HEAD
 			IWL_DEBUG(priv, IWL_DL_FW_ERRORS,
 				  "Restarting adapter due to uCode error.\n");
 			queue_work(priv->workqueue, &priv->restart);
 		} else
 			IWL_DEBUG(priv, IWL_DL_FW_ERRORS,
+=======
+			IWL_DEBUG_FW_ERRORS(priv,
+				  "Restarting adapter due to uCode error.\n");
+			queue_work(priv->workqueue, &priv->restart);
+		} else
+			IWL_DEBUG_FW_ERRORS(priv,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  "Detected FW error, but not restarting\n");
 	}
 }
 
+<<<<<<< HEAD
 /**
  * iwl_irq_handle_error - called for HW or SW error interrupt from card
  */
@@ -1115,6 +1270,8 @@ out:
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int iwl_set_tx_power(struct iwl_priv *priv, s8 tx_power, bool force)
 {
 	int ret;
@@ -1127,9 +1284,12 @@ int iwl_set_tx_power(struct iwl_priv *priv, s8 tx_power, bool force)
 	if (priv->tx_power_user_lmt == tx_power && !force)
 		return 0;
 
+<<<<<<< HEAD
 	if (!priv->cfg->ops->lib->send_tx_power)
 		return -EOPNOTSUPP;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (tx_power < IWLAGN_TX_POWER_TARGET_POWER_MIN) {
 		IWL_WARN(priv,
 			 "Requested user TXPOWER %d below lower limit %d.\n",
@@ -1163,7 +1323,11 @@ int iwl_set_tx_power(struct iwl_priv *priv, s8 tx_power, bool force)
 	prev_tx_power = priv->tx_power_user_lmt;
 	priv->tx_power_user_lmt = tx_power;
 
+<<<<<<< HEAD
 	ret = priv->cfg->ops->lib->send_tx_power(priv);
+=======
+	ret = iwlagn_send_tx_power(priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* if fail to set tx_power, restore the orig. tx power */
 	if (ret) {
@@ -1182,7 +1346,11 @@ void iwl_send_bt_config(struct iwl_priv *priv)
 		.kill_cts_mask = 0,
 	};
 
+<<<<<<< HEAD
 	if (!bt_coex_active)
+=======
+	if (!iwlagn_mod_params.bt_coex_active)
+>>>>>>> refs/remotes/origin/cm-10.0
 		bt_cmd.flags = BT_COEX_DISABLE;
 	else
 		bt_cmd.flags = BT_COEX_ENABLE;
@@ -1191,8 +1359,13 @@ void iwl_send_bt_config(struct iwl_priv *priv)
 	IWL_DEBUG_INFO(priv, "BT coex %s\n",
 		(bt_cmd.flags == BT_COEX_DISABLE) ? "disable" : "active");
 
+<<<<<<< HEAD
 	if (iwl_send_cmd_pdu(priv, REPLY_BT_CONFIG,
 			     sizeof(struct iwl_bt_cmd), &bt_cmd))
+=======
+	if (iwl_dvm_send_cmd_pdu(priv, REPLY_BT_CONFIG,
+			     CMD_SYNC, sizeof(struct iwl_bt_cmd), &bt_cmd))
+>>>>>>> refs/remotes/origin/cm-10.0
 		IWL_ERR(priv, "failed to send BT Coex Config\n");
 }
 
@@ -1204,15 +1377,26 @@ int iwl_send_statistics_request(struct iwl_priv *priv, u8 flags, bool clear)
 	};
 
 	if (flags & CMD_ASYNC)
+<<<<<<< HEAD
 		return iwl_send_cmd_pdu_async(priv, REPLY_STATISTICS_CMD,
 					       sizeof(struct iwl_statistics_cmd),
 					       &statistics_cmd, NULL);
 	else
 		return iwl_send_cmd_pdu(priv, REPLY_STATISTICS_CMD,
+=======
+		return iwl_dvm_send_cmd_pdu(priv, REPLY_STATISTICS_CMD,
+					      CMD_ASYNC,
+					       sizeof(struct iwl_statistics_cmd),
+					       &statistics_cmd);
+	else
+		return iwl_dvm_send_cmd_pdu(priv, REPLY_STATISTICS_CMD,
+					CMD_SYNC,
+>>>>>>> refs/remotes/origin/cm-10.0
 					sizeof(struct iwl_statistics_cmd),
 					&statistics_cmd);
 }
 
+<<<<<<< HEAD
 void iwl_clear_isr_stats(struct iwl_priv *priv)
 {
 	memset(&priv->isr_stats, 0, sizeof(priv->isr_stats));
@@ -1450,6 +1634,10 @@ void iwl_free_txq_mem(struct iwl_priv *priv)
 	kfree(priv->txq);
 	priv->txq = NULL;
 }
+=======
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_IWLWIFI_DEBUGFS
 
@@ -1469,7 +1657,11 @@ int iwl_alloc_traffic_mem(struct iwl_priv *priv)
 {
 	u32 traffic_size = IWL_TRAFFIC_DUMP_SIZE;
 
+<<<<<<< HEAD
 	if (iwl_debug_level & IWL_DL_TX) {
+=======
+	if (iwl_have_debug_level(IWL_DL_TX)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!priv->tx_traffic) {
 			priv->tx_traffic =
 				kzalloc(traffic_size, GFP_KERNEL);
@@ -1477,7 +1669,11 @@ int iwl_alloc_traffic_mem(struct iwl_priv *priv)
 				return -ENOMEM;
 		}
 	}
+<<<<<<< HEAD
 	if (iwl_debug_level & IWL_DL_RX) {
+=======
+	if (iwl_have_debug_level(IWL_DL_RX)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!priv->rx_traffic) {
 			priv->rx_traffic =
 				kzalloc(traffic_size, GFP_KERNEL);
@@ -1504,7 +1700,11 @@ void iwl_dbg_log_tx_data_frame(struct iwl_priv *priv,
 	__le16 fc;
 	u16 len;
 
+<<<<<<< HEAD
 	if (likely(!(iwl_debug_level & IWL_DL_TX)))
+=======
+	if (likely(!iwl_have_debug_level(IWL_DL_TX)))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	if (!priv->tx_traffic)
@@ -1528,7 +1728,11 @@ void iwl_dbg_log_rx_data_frame(struct iwl_priv *priv,
 	__le16 fc;
 	u16 len;
 
+<<<<<<< HEAD
 	if (likely(!(iwl_debug_level & IWL_DL_RX)))
+=======
+	if (likely(!iwl_have_debug_level(IWL_DL_RX)))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	if (!priv->rx_traffic)
@@ -1756,6 +1960,7 @@ int iwl_force_reset(struct iwl_priv *priv, int mode, bool external)
 	return 0;
 }
 
+<<<<<<< HEAD
 int iwl_mac_change_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			     enum nl80211_iftype newtype, bool newp2p)
 {
@@ -1863,6 +2068,33 @@ static int iwl_check_stuck_queue(struct iwl_priv *priv, int cnt)
 		return (ret == -EAGAIN) ? 0 : 1;
 	}
 
+=======
+
+int iwl_cmd_echo_test(struct iwl_priv *priv)
+{
+	int ret;
+	struct iwl_host_cmd cmd = {
+		.id = REPLY_ECHO,
+		.len = { 0 },
+		.flags = CMD_SYNC,
+	};
+
+	ret = iwl_dvm_send_cmd(priv, &cmd);
+	if (ret)
+		IWL_ERR(priv, "echo testing fail: 0X%x\n", ret);
+	else
+		IWL_DEBUG_INFO(priv, "echo testing pass\n");
+	return ret;
+}
+
+static inline int iwl_check_stuck_queue(struct iwl_priv *priv, int txq)
+{
+	if (iwl_trans_check_stuck_queue(trans(priv), txq)) {
+		int ret;
+		ret = iwl_force_reset(priv, IWL_FW_RESET, false);
+		return (ret == -EAGAIN) ? 0 : 1;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1885,6 +2117,7 @@ void iwl_bg_watchdog(unsigned long data)
 	if (test_bit(STATUS_EXIT_PENDING, &priv->status))
 		return;
 
+<<<<<<< HEAD
 	timeout = priv->cfg->base_params->wd_timeout;
 	if (timeout == 0)
 		return;
@@ -1903,6 +2136,19 @@ void iwl_bg_watchdog(unsigned long data)
 				return;
 		}
 	}
+=======
+	if (iwl_is_rfkill(priv))
+		return;
+
+	timeout = hw_params(priv).wd_timeout;
+	if (timeout == 0)
+		return;
+
+	/* monitor and check for stuck queues */
+	for (cnt = 0; cnt < cfg(priv)->base_params->num_of_queues; cnt++)
+		if (iwl_check_stuck_queue(priv, cnt))
+			return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mod_timer(&priv->watchdog, jiffies +
 		  msecs_to_jiffies(IWL_WD_TICK(timeout)));
@@ -1910,6 +2156,7 @@ void iwl_bg_watchdog(unsigned long data)
 
 void iwl_setup_watchdog(struct iwl_priv *priv)
 {
+<<<<<<< HEAD
 	unsigned int timeout = priv->cfg->base_params->wd_timeout;
 
 	if (timeout)
@@ -1917,6 +2164,49 @@ void iwl_setup_watchdog(struct iwl_priv *priv)
 			  jiffies + msecs_to_jiffies(IWL_WD_TICK(timeout)));
 	else
 		del_timer(&priv->watchdog);
+=======
+	unsigned int timeout = hw_params(priv).wd_timeout;
+
+	if (!iwlagn_mod_params.wd_disable) {
+		/* use system default */
+		if (timeout && !cfg(priv)->base_params->wd_disable)
+			mod_timer(&priv->watchdog,
+				jiffies +
+				msecs_to_jiffies(IWL_WD_TICK(timeout)));
+		else
+			del_timer(&priv->watchdog);
+	} else {
+		/* module parameter overwrite default configuration */
+		if (timeout && iwlagn_mod_params.wd_disable == 2)
+			mod_timer(&priv->watchdog,
+				jiffies +
+				msecs_to_jiffies(IWL_WD_TICK(timeout)));
+		else
+			del_timer(&priv->watchdog);
+	}
+}
+
+/**
+ * iwl_beacon_time_mask_low - mask of lower 32 bit of beacon time
+ * @priv -- pointer to iwl_priv data structure
+ * @tsf_bits -- number of bits need to shift for masking)
+ */
+static inline u32 iwl_beacon_time_mask_low(struct iwl_priv *priv,
+					   u16 tsf_bits)
+{
+	return (1 << tsf_bits) - 1;
+}
+
+/**
+ * iwl_beacon_time_mask_high - mask of higher 32 bit of beacon time
+ * @priv -- pointer to iwl_priv data structure
+ * @tsf_bits -- number of bits need to shift for masking)
+ */
+static inline u32 iwl_beacon_time_mask_high(struct iwl_priv *priv,
+					    u16 tsf_bits)
+{
+	return ((1 << (32 - tsf_bits)) - 1) << tsf_bits;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1935,6 +2225,7 @@ u32 iwl_usecs_to_beacons(struct iwl_priv *priv, u32 usec, u32 beacon_interval)
 		return 0;
 
 	quot = (usec / interval) &
+<<<<<<< HEAD
 		(iwl_beacon_time_mask_high(priv,
 		priv->hw_params.beacon_time_tsf_bits) >>
 		priv->hw_params.beacon_time_tsf_bits);
@@ -1942,6 +2233,14 @@ u32 iwl_usecs_to_beacons(struct iwl_priv *priv, u32 usec, u32 beacon_interval)
 				   priv->hw_params.beacon_time_tsf_bits);
 
 	return (quot << priv->hw_params.beacon_time_tsf_bits) + rem;
+=======
+		(iwl_beacon_time_mask_high(priv, IWLAGN_EXT_BEACON_TIME_POS) >>
+		IWLAGN_EXT_BEACON_TIME_POS);
+	rem = (usec % interval) & iwl_beacon_time_mask_low(priv,
+				   IWLAGN_EXT_BEACON_TIME_POS);
+
+	return (quot << IWLAGN_EXT_BEACON_TIME_POS) + rem;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* base is usually what we get from ucode with each received frame,
@@ -1951,6 +2250,7 @@ __le32 iwl_add_beacon_time(struct iwl_priv *priv, u32 base,
 			   u32 addon, u32 beacon_interval)
 {
 	u32 base_low = base & iwl_beacon_time_mask_low(priv,
+<<<<<<< HEAD
 					priv->hw_params.beacon_time_tsf_bits);
 	u32 addon_low = addon & iwl_beacon_time_mask_low(priv,
 					priv->hw_params.beacon_time_tsf_bits);
@@ -1959,18 +2259,35 @@ __le32 iwl_add_beacon_time(struct iwl_priv *priv, u32 base,
 				priv->hw_params.beacon_time_tsf_bits)) +
 				(addon & iwl_beacon_time_mask_high(priv,
 				priv->hw_params.beacon_time_tsf_bits));
+=======
+				IWLAGN_EXT_BEACON_TIME_POS);
+	u32 addon_low = addon & iwl_beacon_time_mask_low(priv,
+				IWLAGN_EXT_BEACON_TIME_POS);
+	u32 interval = beacon_interval * TIME_UNIT;
+	u32 res = (base & iwl_beacon_time_mask_high(priv,
+				IWLAGN_EXT_BEACON_TIME_POS)) +
+				(addon & iwl_beacon_time_mask_high(priv,
+				IWLAGN_EXT_BEACON_TIME_POS));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (base_low > addon_low)
 		res += base_low - addon_low;
 	else if (base_low < addon_low) {
 		res += interval + base_low - addon_low;
+<<<<<<< HEAD
 		res += (1 << priv->hw_params.beacon_time_tsf_bits);
 	} else
 		res += (1 << priv->hw_params.beacon_time_tsf_bits);
+=======
+		res += (1 << IWLAGN_EXT_BEACON_TIME_POS);
+	} else
+		res += (1 << IWLAGN_EXT_BEACON_TIME_POS);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return cpu_to_le32(res);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 
 int iwl_pci_suspend(struct device *device)
@@ -2009,10 +2326,25 @@ int iwl_pci_resume(struct device *device)
 		hw_rfkill = true;
 
 	if (hw_rfkill)
+=======
+void iwl_nic_error(struct iwl_op_mode *op_mode)
+{
+	struct iwl_priv *priv = IWL_OP_MODE_GET_DVM(op_mode);
+
+	iwlagn_fw_error(priv, false);
+}
+
+void iwl_set_hw_rfkill_state(struct iwl_op_mode *op_mode, bool state)
+{
+	struct iwl_priv *priv = IWL_OP_MODE_GET_DVM(op_mode);
+
+	if (state)
+>>>>>>> refs/remotes/origin/cm-10.0
 		set_bit(STATUS_RF_KILL_HW, &priv->status);
 	else
 		clear_bit(STATUS_RF_KILL_HW, &priv->status);
 
+<<<<<<< HEAD
 	wiphy_rfkill_set_hw_state(priv->hw->wiphy, hw_rfkill);
 
 	return 0;
@@ -2028,3 +2360,16 @@ const struct dev_pm_ops iwl_pm_ops = {
 };
 
 #endif /* CONFIG_PM */
+=======
+	wiphy_rfkill_set_hw_state(priv->hw->wiphy, state);
+}
+
+void iwl_free_skb(struct iwl_op_mode *op_mode, struct sk_buff *skb)
+{
+	struct ieee80211_tx_info *info;
+
+	info = IEEE80211_SKB_CB(skb);
+	kmem_cache_free(iwl_tx_cmd_pool, (info->driver_data[1]));
+	dev_kfree_skb_any(skb);
+}
+>>>>>>> refs/remotes/origin/cm-10.0

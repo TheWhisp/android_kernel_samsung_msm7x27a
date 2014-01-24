@@ -58,8 +58,11 @@ static struct i2c_client *get_i2c(struct max8997_dev *max8997,
 	default:
 		return ERR_PTR(-EINVAL);
 	}
+<<<<<<< HEAD
 
 	return ERR_PTR(-EINVAL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct max8997_irq_data {

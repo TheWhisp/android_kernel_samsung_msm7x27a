@@ -34,7 +34,10 @@
 #include <asm/uaccess.h>
 #include <linux/vmalloc.h>
 
+<<<<<<< HEAD
 #include "ft1000_dev.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ft1000.h"
 #include "boot.h"
 
@@ -87,6 +90,7 @@
 #define  STATE_DONE_PROV         0x06
 #define  STATE_DONE_FILE         0x07
 
+<<<<<<< HEAD
 USHORT get_handshake(struct net_device *dev, USHORT expected_value);
 void put_handshake(struct net_device *dev, USHORT handshake_value);
 USHORT get_request_type(struct net_device *dev);
@@ -107,6 +111,16 @@ typedef struct _DSP_FILE_HDR {
 } __attribute__ ((packed)) DSP_FILE_HDR, *PDSP_FILE_HDR;
 
 typedef struct _DSP_FILE_HDR_5 {
+=======
+u16 get_handshake(struct net_device *dev, u16 expected_value);
+void put_handshake(struct net_device *dev, u16 handshake_value);
+u16 get_request_type(struct net_device *dev);
+long get_request_value(struct net_device *dev);
+void put_request_value(struct net_device *dev, long lvalue);
+u16 hdr_checksum(struct pseudo_hdr *pHdr);
+
+struct dsp_file_hdr {
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32  version_id;	// Version ID of this image format.
 	u32  package_id;	// Package ID of code release.
 	u32  build_date;	// Date/time stamp when file was built.
@@ -118,6 +132,7 @@ typedef struct _DSP_FILE_HDR_5 {
 	u32  version_data_offset;	// Offset were scrambled version data begins.
 	u32  version_data_size;	// Size, in words, of scrambled version data.
 	u32  nDspImages;	// Number of DSP images in file.
+<<<<<<< HEAD
 } __attribute__ ((packed)) DSP_FILE_HDR_5, *PDSP_FILE_HDR_5;
 
 typedef struct _DSP_IMAGE_INFO {
@@ -130,6 +145,11 @@ typedef struct _DSP_IMAGE_INFO {
 } __attribute__ ((packed)) DSP_IMAGE_INFO, *PDSP_IMAGE_INFO;
 
 typedef struct _DSP_IMAGE_INFO_V6 {
+=======
+} __attribute__ ((packed));
+
+struct dsp_image_info {
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32  coff_date;		// Date/time when DSP Coff image was built.
 	u32  begin_offset;	// Offset in file where image begins.
 	u32  end_offset;	// Offset in file where image begins.
@@ -138,6 +158,7 @@ typedef struct _DSP_IMAGE_INFO_V6 {
 	u32  version;		// Embedded version # of DSP code.
 	unsigned short checksum;	// Dsp File checksum
 	unsigned short pad1;
+<<<<<<< HEAD
 } __attribute__ ((packed)) DSP_IMAGE_INFO_V6, *PDSP_IMAGE_INFO_V6;
 
 void card_bootload(struct net_device *dev)
@@ -152,6 +173,22 @@ void card_bootload(struct net_device *dev)
 	DEBUG(0, "card_bootload is called\n");
 
 	pdata = (PULONG) bootimage;
+=======
+} __attribute__ ((packed));
+
+void card_bootload(struct net_device *dev)
+{
+	struct ft1000_info *info = (struct ft1000_info *) netdev_priv(dev);
+	unsigned long flags;
+	u32 *pdata;
+	u32 size;
+	u32 i;
+	u32 templong;
+
+	DEBUG(0, "card_bootload is called\n");
+
+	pdata = (u32 *) bootimage;
+>>>>>>> refs/remotes/origin/cm-10.0
 	size = sizeof(bootimage);
 
 	// check for odd word
@@ -172,11 +209,19 @@ void card_bootload(struct net_device *dev)
 	spin_unlock_irqrestore(&info->dpram_lock, flags);
 }
 
+<<<<<<< HEAD
 USHORT get_handshake(struct net_device *dev, USHORT expected_value)
 {
 	FT1000_INFO *info = (PFT1000_INFO) netdev_priv(dev);
 	USHORT handshake;
 	ULONG tempx;
+=======
+u16 get_handshake(struct net_device *dev, u16 expected_value)
+{
+	struct ft1000_info *info = (struct ft1000_info *) netdev_priv(dev);
+	u16 handshake;
+	u32 tempx;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int loopcnt;
 
 	loopcnt = 0;
@@ -190,7 +235,11 @@ USHORT get_handshake(struct net_device *dev, USHORT expected_value)
 			tempx =
 				ntohl(ft1000_read_dpram_mag_32
 				  (dev, DWNLD_MAG_HANDSHAKE_LOC));
+<<<<<<< HEAD
 			handshake = (USHORT) tempx;
+=======
+			handshake = (u16) tempx;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		if ((handshake == expected_value)
@@ -207,27 +256,46 @@ USHORT get_handshake(struct net_device *dev, USHORT expected_value)
 
 }
 
+<<<<<<< HEAD
 void put_handshake(struct net_device *dev, USHORT handshake_value)
 {
 	FT1000_INFO *info = (PFT1000_INFO) netdev_priv(dev);
 	ULONG tempx;
+=======
+void put_handshake(struct net_device *dev, u16 handshake_value)
+{
+	struct ft1000_info *info = (struct ft1000_info *) netdev_priv(dev);
+	u32 tempx;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (info->AsicID == ELECTRABUZZ_ID) {
 		ft1000_write_reg(dev, FT1000_REG_DPRAM_ADDR,
 				 DWNLD_HANDSHAKE_LOC);
 		ft1000_write_reg(dev, FT1000_REG_DPRAM_DATA, handshake_value);	/* Handshake */
 	} else {
+<<<<<<< HEAD
 		tempx = (ULONG) handshake_value;
+=======
+		tempx = (u32) handshake_value;
+>>>>>>> refs/remotes/origin/cm-10.0
 		tempx = ntohl(tempx);
 		ft1000_write_dpram_mag_32(dev, DWNLD_MAG_HANDSHAKE_LOC, tempx);	/* Handshake */
 	}
 }
 
+<<<<<<< HEAD
 USHORT get_request_type(struct net_device *dev)
 {
 	FT1000_INFO *info = (PFT1000_INFO) netdev_priv(dev);
 	USHORT request_type;
 	ULONG tempx;
+=======
+u16 get_request_type(struct net_device *dev)
+{
+	struct ft1000_info *info = (struct ft1000_info *) netdev_priv(dev);
+	u16 request_type;
+	u32 tempx;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (info->AsicID == ELECTRABUZZ_ID) {
 		ft1000_write_reg(dev, FT1000_REG_DPRAM_ADDR, DWNLD_TYPE_LOC);
@@ -235,7 +303,11 @@ USHORT get_request_type(struct net_device *dev)
 	} else {
 		tempx = ft1000_read_dpram_mag_32(dev, DWNLD_MAG_TYPE_LOC);
 		tempx = ntohl(tempx);
+<<<<<<< HEAD
 		request_type = (USHORT) tempx;
+=======
+		request_type = (u16) tempx;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return request_type;
@@ -244,9 +316,15 @@ USHORT get_request_type(struct net_device *dev)
 
 long get_request_value(struct net_device *dev)
 {
+<<<<<<< HEAD
 	FT1000_INFO *info = (PFT1000_INFO) netdev_priv(dev);
 	long value;
 	USHORT w_val;
+=======
+	struct ft1000_info *info = (struct ft1000_info *) netdev_priv(dev);
+	long value;
+	u16 w_val;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (info->AsicID == ELECTRABUZZ_ID) {
 		ft1000_write_reg(dev, FT1000_REG_DPRAM_ADDR,
@@ -273,19 +351,32 @@ long get_request_value(struct net_device *dev)
 
 void put_request_value(struct net_device *dev, long lvalue)
 {
+<<<<<<< HEAD
 	FT1000_INFO *info = (PFT1000_INFO) netdev_priv(dev);
 	USHORT size;
 	ULONG tempx;
 
 	if (info->AsicID == ELECTRABUZZ_ID) {
 		size = (USHORT) (lvalue >> 16);
+=======
+	struct ft1000_info *info = (struct ft1000_info *) netdev_priv(dev);
+	u16 size;
+	u32 tempx;
+
+	if (info->AsicID == ELECTRABUZZ_ID) {
+		size = (u16) (lvalue >> 16);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ft1000_write_reg(dev, FT1000_REG_DPRAM_ADDR,
 				 DWNLD_SIZE_MSW_LOC);
 
 		ft1000_write_reg(dev, FT1000_REG_DPRAM_DATA, size);
 
+<<<<<<< HEAD
 		size = (USHORT) (lvalue);
+=======
+		size = (u16) (lvalue);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ft1000_write_reg(dev, FT1000_REG_DPRAM_ADDR,
 				 DWNLD_SIZE_LSW_LOC);
@@ -298,10 +389,17 @@ void put_request_value(struct net_device *dev, long lvalue)
 
 }
 
+<<<<<<< HEAD
 USHORT hdr_checksum(PPSEUDO_HDR pHdr)
 {
 	USHORT *usPtr = (USHORT *) pHdr;
 	USHORT chksum;
+=======
+u16 hdr_checksum(struct pseudo_hdr *pHdr)
+{
+	u16 *usPtr = (u16 *) pHdr;
+	u16 chksum;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	chksum = ((((((usPtr[0] ^ usPtr[1]) ^ usPtr[2]) ^ usPtr[3]) ^
 			usPtr[4]) ^ usPtr[5]) ^ usPtr[6]);
@@ -309,6 +407,7 @@ USHORT hdr_checksum(PPSEUDO_HDR pHdr)
 	return chksum;
 }
 
+<<<<<<< HEAD
 int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 {
 	FT1000_INFO *info = (PFT1000_INFO) netdev_priv(dev);
@@ -335,6 +434,32 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 	UCHAR *pUcFile = NULL;
 	UCHAR *pBootEnd = NULL;
 	UCHAR *pCodeEnd = NULL;
+=======
+int card_download(struct net_device *dev, const u8 *pFileStart,
+		  size_t FileLength)
+{
+	struct ft1000_info *info = (struct ft1000_info *) netdev_priv(dev);
+	int Status = SUCCESS;
+	u32 uiState;
+	u16 handshake;
+	struct pseudo_hdr *pHdr;
+	u16 usHdrLength;
+	long word_length;
+	u16 request;
+	u16 temp;
+	struct prov_record *pprov_record;
+	u8 *pbuffer;
+	struct dsp_file_hdr *pFileHdr5;
+	struct dsp_image_info *pDspImageInfoV6 = NULL;
+	long requested_version;
+	bool bGoodVersion = 0;
+	struct drv_msg *pMailBoxData;
+	u16 *pUsData = NULL;
+	u16 *pUsFile = NULL;
+	u8 *pUcFile = NULL;
+	u8 *pBootEnd = NULL;
+	u8 *pCodeEnd = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int imageN;
 	long file_version;
 	long loader_code_address = 0;
@@ -345,6 +470,7 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 	unsigned long templong;
 	unsigned long image_chksum = 0;
 
+<<<<<<< HEAD
 	//
 	// Get version id of file, at first 4 bytes of file, for newer files.
 	//
@@ -375,6 +501,24 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 		Status = FAILURE;
 		break;
 	}
+=======
+	file_version = *(long *)pFileStart;
+	if (file_version != 6) {
+		printk(KERN_ERR "ft1000: unsupported firmware version %ld\n", file_version);
+		Status = FAILURE;
+	}
+
+	uiState = STATE_START_DWNLD;
+
+	pFileHdr5 = (struct dsp_file_hdr *) pFileStart;
+
+	pUsFile = (u16 *) ((long)pFileStart + pFileHdr5->loader_offset);
+	pUcFile = (u8 *) ((long)pFileStart + pFileHdr5->loader_offset);
+	pBootEnd = (u8 *) ((long)pFileStart + pFileHdr5->loader_code_end);
+	loader_code_address = pFileHdr5->loader_code_address;
+	loader_code_size = pFileHdr5->loader_code_size;
+	bGoodVersion = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	while ((Status == SUCCESS) && (uiState != STATE_DONE_FILE)) {
 
@@ -411,8 +555,13 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 					break;
 				case REQUEST_DONE_BL:
 					/* Reposition ptrs to beginning of code section */
+<<<<<<< HEAD
 					pUsFile = (USHORT *) ((long)pBootEnd);
 					pUcFile = (UCHAR *) ((long)pBootEnd);
+=======
+					pUsFile = (u16 *) ((long)pBootEnd);
+					pUcFile = (u8 *) ((long)pBootEnd);
+>>>>>>> refs/remotes/origin/cm-10.0
 					uiState = STATE_CODE_DWNLD;
 					break;
 				case REQUEST_CODE_SEGMENT:
@@ -432,6 +581,7 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 					// Provide mutual exclusive access while reading ASIC registers.
 					spin_lock_irqsave(&info->dpram_lock,
 							  flags);
+<<<<<<< HEAD
 					if (file_version == 5) {
 						/*
 						 * Position ASIC DPRAM auto-increment pointer.
@@ -471,6 +621,26 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 								 dev->base_addr +
 								 FT1000_REG_MAG_DPDATAL);
 						}
+=======
+					/*
+					 * Position ASIC DPRAM auto-increment pointer.
+					 */
+					outw(DWNLD_MAG_PS_HDR_LOC,
+						 dev->base_addr +
+						 FT1000_REG_DPRAM_ADDR);
+					if (word_length & 0x01)
+						word_length++;
+					word_length = word_length / 2;
+
+					for (; word_length > 0; word_length--) {	/* In words */
+						templong = *pUsFile++;
+						templong |=
+							(*pUsFile++ << 16);
+						pUcFile += 4;
+						outl(templong,
+							 dev->base_addr +
+							 FT1000_REG_MAG_DPDATAL);
+>>>>>>> refs/remotes/origin/cm-10.0
 					}
 					spin_unlock_irqrestore(&info->
 								   dpram_lock,
@@ -520,6 +690,7 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 					break;
 				case REQUEST_DONE_CL:
 					/* Reposition ptrs to beginning of provisioning section */
+<<<<<<< HEAD
 					switch (file_version) {
 					case 5:
 					case 6:
@@ -538,6 +709,10 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 						Status = FAILURE;
 						break;
 					}
+=======
+					pUsFile = (u16 *) ((long)pFileStart + pFileHdr5->commands_offset);
+					pUcFile = (u8 *) ((long)pFileStart + pFileHdr5->commands_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 					uiState = STATE_DONE_DWNLD;
 					break;
 				case REQUEST_CODE_SEGMENT:
@@ -558,6 +733,7 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 						Status = FAILURE;
 						break;
 					}
+<<<<<<< HEAD
 					if (file_version == 5) {
 						/*
 						 * Position ASIC DPRAM auto-increment pointer.
@@ -597,6 +773,26 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 								 dev->base_addr +
 								 FT1000_REG_MAG_DPDATAL);
 						}
+=======
+					/*
+					 * Position ASIC DPRAM auto-increment pointer.
+					 */
+					outw(DWNLD_MAG_PS_HDR_LOC,
+						 dev->base_addr +
+						 FT1000_REG_DPRAM_ADDR);
+					if (word_length & 0x01)
+						word_length++;
+					word_length = word_length / 2;
+
+					for (; word_length > 0; word_length--) {	/* In words */
+						templong = *pUsFile++;
+						templong |=
+							(*pUsFile++ << 16);
+						pUcFile += 4;
+						outl(templong,
+							 dev->base_addr +
+							 FT1000_REG_MAG_DPDATAL);
+>>>>>>> refs/remotes/origin/cm-10.0
 					}
 					break;
 
@@ -606,9 +802,15 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 						(long)(info->DSPInfoBlklen + 1) / 2;
 					put_request_value(dev, word_length);
 					pMailBoxData =
+<<<<<<< HEAD
 						(PDRVMSG) & info->DSPInfoBlk[0];
 					pUsData =
 						(USHORT *) & pMailBoxData->data[0];
+=======
+						(struct drv_msg *) & info->DSPInfoBlk[0];
+					pUsData =
+						(u16 *) & pMailBoxData->data[0];
+>>>>>>> refs/remotes/origin/cm-10.0
 					// Provide mutual exclusive access while reading ASIC registers.
 					spin_lock_irqsave(&info->dpram_lock,
 							  flags);
@@ -658,12 +860,17 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 						pFileHdr5->version_data_size;
 					put_request_value(dev, word_length);
 					pUsFile =
+<<<<<<< HEAD
 						(USHORT *) ((long)pFileStart +
+=======
+						(u16 *) ((long)pFileStart +
+>>>>>>> refs/remotes/origin/cm-10.0
 							pFileHdr5->
 							version_data_offset);
 					// Provide mutual exclusive access while reading ASIC registers.
 					spin_lock_irqsave(&info->dpram_lock,
 							  flags);
+<<<<<<< HEAD
 					if (file_version == 5) {
 						/*
 						 * Position ASIC DPRAM auto-increment pointer.
@@ -703,6 +910,28 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 								 dev->base_addr +
 								 FT1000_REG_MAG_DPDATAL);
 						}
+=======
+					/*
+					 * Position ASIC DPRAM auto-increment pointer.
+					 */
+					outw(DWNLD_MAG_PS_HDR_LOC,
+						 dev->base_addr +
+						 FT1000_REG_DPRAM_ADDR);
+					if (word_length & 0x01)
+						word_length++;
+					word_length = word_length / 2;
+
+					for (; word_length > 0; word_length--) {	/* In words */
+						templong =
+							ntohs(*pUsFile++);
+						temp =
+							ntohs(*pUsFile++);
+						templong |=
+							(temp << 16);
+						outl(templong,
+							 dev->base_addr +
+							 FT1000_REG_MAG_DPDATAL);
+>>>>>>> refs/remotes/origin/cm-10.0
 					}
 					spin_unlock_irqrestore(&info->
 								   dpram_lock,
@@ -710,6 +939,7 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 					break;
 
 				case REQUEST_CODE_BY_VERSION:
+<<<<<<< HEAD
 					bGoodVersion = FALSE;
 					requested_version =
 						get_request_value(dev);
@@ -824,6 +1054,73 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 							}
 							pDspImageInfoV6++;
 						}
+=======
+					bGoodVersion = false;
+					requested_version =
+						get_request_value(dev);
+					pDspImageInfoV6 =
+						(struct dsp_image_info *) ((long)
+								  pFileStart
+								  +
+								  sizeof
+								  (struct dsp_file_hdr));
+					for (imageN = 0;
+						 imageN <
+						 pFileHdr5->nDspImages;
+						 imageN++) {
+						temp = (u16)
+							(pDspImageInfoV6->
+							 version);
+						templong = temp;
+						temp = (u16)
+							(pDspImageInfoV6->
+							 version >> 16);
+						templong |=
+							(temp << 16);
+						if (templong ==
+							requested_version) {
+							bGoodVersion =
+								true;
+							pUsFile =
+								(u16
+								 *) ((long)
+								 pFileStart
+								 +
+								 pDspImageInfoV6->
+								 begin_offset);
+							pUcFile =
+								(u8
+								 *) ((long)
+								 pFileStart
+								 +
+								 pDspImageInfoV6->
+								 begin_offset);
+							pCodeEnd =
+								(u8
+								 *) ((long)
+								 pFileStart
+								 +
+								 pDspImageInfoV6->
+								 end_offset);
+							run_address =
+								pDspImageInfoV6->
+								run_address;
+							run_size =
+								pDspImageInfoV6->
+								image_size;
+							image_chksum =
+								(u32)
+								pDspImageInfoV6->
+								checksum;
+							DEBUG(0,
+								  "ft1000_dnld: image_chksum = 0x%8x\n",
+								  (unsigned
+								   int)
+								  image_chksum);
+							break;
+						}
+						pDspImageInfoV6++;
+>>>>>>> refs/remotes/origin/cm-10.0
 					}
 					if (!bGoodVersion) {
 						/*
@@ -852,7 +1149,11 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 				break;
 			}
 
+<<<<<<< HEAD
 			pHdr = (PPSEUDO_HDR) pUsFile;
+=======
+			pHdr = (struct pseudo_hdr *) pUsFile;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (pHdr->portdest == 0x80	/* DspOAM */
 				&& (pHdr->portsrc == 0x00	/* Driver */
@@ -872,7 +1173,11 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 
 		case STATE_SECTION_PROV:
 
+<<<<<<< HEAD
 			pHdr = (PPSEUDO_HDR) pUcFile;
+=======
+			pHdr = (struct pseudo_hdr *) pUcFile;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (pHdr->checksum == hdr_checksum(pHdr)) {
 				if (pHdr->portdest != 0x80 /* Dsp OAM */ ) {
@@ -883,6 +1188,7 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 
 				// Get buffer for provisioning data
 				pbuffer =
+<<<<<<< HEAD
 					kmalloc((usHdrLength + sizeof(PSEUDO_HDR)),
 						GFP_ATOMIC);
 				if (pbuffer) {
@@ -892,6 +1198,17 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 					// link provisioning data
 					pprov_record =
 						kmalloc(sizeof(PROV_RECORD),
+=======
+					kmalloc((usHdrLength + sizeof(struct pseudo_hdr)),
+						GFP_ATOMIC);
+				if (pbuffer) {
+					memcpy(pbuffer, (void *)pUcFile,
+						   (u32) (usHdrLength +
+							   sizeof(struct pseudo_hdr)));
+					// link provisioning data
+					pprov_record =
+						kmalloc(sizeof(struct prov_record),
+>>>>>>> refs/remotes/origin/cm-10.0
 							GFP_ATOMIC);
 					if (pprov_record) {
 						pprov_record->pprov_data =
@@ -901,8 +1218,13 @@ int card_download(struct net_device *dev, const u8 *pFileStart, UINT FileLength)
 								  &info->prov_list);
 						// Move to next entry if available
 						pUcFile =
+<<<<<<< HEAD
 							(UCHAR *) ((unsigned long) pUcFile +
 								   (unsigned long) ((usHdrLength + 1) & 0xFFFFFFFE) + sizeof(PSEUDO_HDR));
+=======
+							(u8 *) ((unsigned long) pUcFile +
+								   (unsigned long) ((usHdrLength + 1) & 0xFFFFFFFE) + sizeof(struct pseudo_hdr));
+>>>>>>> refs/remotes/origin/cm-10.0
 						if ((unsigned long) (pUcFile) -
 							(unsigned long) (pFileStart) >=
 							(unsigned long) FileLength) {

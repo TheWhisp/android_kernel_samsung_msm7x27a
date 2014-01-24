@@ -48,7 +48,12 @@ int mwifiex_handle_rx_packet(struct mwifiex_adapter *adapter,
 	if (!priv)
 		priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY);
 
+<<<<<<< HEAD
 	rx_info->bss_index = priv->bss_index;
+=======
+	rx_info->bss_num = priv->bss_num;
+	rx_info->bss_type = priv->bss_type;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return mwifiex_process_sta_rx_packet(adapter, skb);
 }
@@ -71,30 +76,49 @@ int mwifiex_process_tx(struct mwifiex_private *priv, struct sk_buff *skb,
 	u8 *head_ptr;
 	struct txpd *local_tx_pd = NULL;
 
+<<<<<<< HEAD
 	head_ptr = (u8 *) mwifiex_process_sta_txpd(priv, skb);
+=======
+	head_ptr = mwifiex_process_sta_txpd(priv, skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (head_ptr) {
 		if (GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA)
 			local_tx_pd =
 				(struct txpd *) (head_ptr + INTF_HEADER_LEN);
 
 		ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_TYPE_DATA,
+<<<<<<< HEAD
 					     skb->data, skb->len, tx_param);
+=======
+						   skb, tx_param);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	switch (ret) {
 	case -EBUSY:
 		if ((GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA) &&
+<<<<<<< HEAD
 			(adapter->pps_uapsd_mode) &&
 			(adapter->tx_lock_flag)) {
 				priv->adapter->tx_lock_flag = false;
 				local_tx_pd->flags = 0;
+=======
+		    (adapter->pps_uapsd_mode) && (adapter->tx_lock_flag)) {
+				priv->adapter->tx_lock_flag = false;
+				if (local_tx_pd)
+					local_tx_pd->flags = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		dev_dbg(adapter->dev, "data: -EBUSY is returned\n");
 		break;
 	case -1:
 		adapter->data_sent = false;
 		dev_err(adapter->dev, "mwifiex_write_data_async failed: 0x%X\n",
+<<<<<<< HEAD
 		       ret);
+=======
+			ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		adapter->dbg.num_tx_host_to_card_failure++;
 		mwifiex_write_data_complete(adapter, skb, ret);
 		break;
@@ -129,11 +153,20 @@ int mwifiex_write_data_complete(struct mwifiex_adapter *adapter,
 		return 0;
 
 	tx_info = MWIFIEX_SKB_TXCB(skb);
+<<<<<<< HEAD
 	priv = mwifiex_bss_index_to_priv(adapter, tx_info->bss_index);
 	if (!priv)
 		goto done;
 
 	priv->netdev->trans_start = jiffies;
+=======
+	priv = mwifiex_get_priv_by_id(adapter, tx_info->bss_num,
+				      tx_info->bss_type);
+	if (!priv)
+		goto done;
+
+	mwifiex_set_trans_start(priv->netdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!status) {
 		priv->stats.tx_packets++;
 		priv->stats.tx_bytes += skb->len;
@@ -148,10 +181,18 @@ int mwifiex_write_data_complete(struct mwifiex_adapter *adapter,
 
 		tpriv = adapter->priv[i];
 
+<<<<<<< HEAD
 		if ((GET_BSS_ROLE(tpriv) == MWIFIEX_BSS_ROLE_STA)
 				&& (tpriv->media_connected)) {
 			if (netif_queue_stopped(tpriv->netdev))
 				netif_wake_queue(tpriv->netdev);
+=======
+		if ((GET_BSS_ROLE(tpriv) == MWIFIEX_BSS_ROLE_STA) &&
+		    (tpriv->media_connected)) {
+			if (netif_queue_stopped(tpriv->netdev))
+				mwifiex_wake_up_net_dev_queue(tpriv->netdev,
+							      adapter);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 done:
@@ -160,6 +201,7 @@ done:
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Packet receive completion callback handler.
  *
@@ -200,3 +242,5 @@ int mwifiex_recv_packet_complete(struct mwifiex_adapter *adapter,
 
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

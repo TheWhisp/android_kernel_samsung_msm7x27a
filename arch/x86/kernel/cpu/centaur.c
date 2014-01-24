@@ -278,7 +278,11 @@ static void __cpuinit init_c3(struct cpuinfo_x86 *c)
 	}
 #ifdef CONFIG_X86_32
 	/* Cyrix III family needs CX8 & PGE explicitly enabled. */
+<<<<<<< HEAD
 	if (c->x86_model >= 6 && c->x86_model <= 9) {
+=======
+	if (c->x86_model >= 6 && c->x86_model <= 13) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		rdmsr(MSR_VIA_FCR, lo, hi);
 		lo |= (1<<1 | 1<<7);
 		wrmsr(MSR_VIA_FCR, lo, hi);

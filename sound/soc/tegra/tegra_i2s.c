@@ -36,13 +36,20 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/iomap.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
 
+<<<<<<< HEAD
 #include "tegra_das.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "tegra_i2s.h"
 
 #define DRV_NAME "tegra-i2s"
@@ -79,11 +86,21 @@ static int tegra_i2s_show(struct seq_file *s, void *unused)
 	struct tegra_i2s *i2s = s->private;
 	int i;
 
+<<<<<<< HEAD
+=======
+	clk_enable(i2s->clk_i2s);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < ARRAY_SIZE(regs); i++) {
 		u32 val = tegra_i2s_read(i2s, regs[i].offset);
 		seq_printf(s, "%s = %08x\n", regs[i].name, val);
 	}
 
+<<<<<<< HEAD
+=======
+	clk_disable(i2s->clk_i2s);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -99,6 +116,7 @@ static const struct file_operations tegra_i2s_debug_fops = {
 	.release = single_release,
 };
 
+<<<<<<< HEAD
 static void tegra_i2s_debug_add(struct tegra_i2s *i2s, int id)
 {
 	char name[] = DRV_NAME ".0";
@@ -106,6 +124,13 @@ static void tegra_i2s_debug_add(struct tegra_i2s *i2s, int id)
 	snprintf(name, sizeof(name), DRV_NAME".%1d", id);
 	i2s->debug = debugfs_create_file(name, S_IRUGO, snd_soc_debugfs_root,
 						i2s, &tegra_i2s_debug_fops);
+=======
+static void tegra_i2s_debug_add(struct tegra_i2s *i2s)
+{
+	i2s->debug = debugfs_create_file(i2s->dai.name, S_IRUGO,
+					 snd_soc_debugfs_root, i2s,
+					 &tegra_i2s_debug_fops);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void tegra_i2s_debug_remove(struct tegra_i2s *i2s)
@@ -114,7 +139,11 @@ static void tegra_i2s_debug_remove(struct tegra_i2s *i2s)
 		debugfs_remove(i2s->debug);
 }
 #else
+<<<<<<< HEAD
 static inline void tegra_i2s_debug_add(struct tegra_i2s *i2s, int id)
+=======
+static inline void tegra_i2s_debug_add(struct tegra_i2s *i2s)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 }
 
@@ -306,12 +335,17 @@ static int tegra_i2s_probe(struct snd_soc_dai *dai)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops tegra_i2s_dai_ops = {
+=======
+static const struct snd_soc_dai_ops tegra_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_fmt	= tegra_i2s_set_fmt,
 	.hw_params	= tegra_i2s_hw_params,
 	.trigger	= tegra_i2s_trigger,
 };
 
+<<<<<<< HEAD
 struct snd_soc_dai_driver tegra_i2s_dai[] = {
 	{
 		.name = DRV_NAME ".0",
@@ -349,11 +383,30 @@ struct snd_soc_dai_driver tegra_i2s_dai[] = {
 		.ops = &tegra_i2s_dai_ops,
 		.symmetric_rates = 1,
 	},
+=======
+static const struct snd_soc_dai_driver tegra_i2s_dai_template = {
+	.probe = tegra_i2s_probe,
+	.playback = {
+		.channels_min = 2,
+		.channels_max = 2,
+		.rates = SNDRV_PCM_RATE_8000_96000,
+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+	},
+	.capture = {
+		.channels_min = 2,
+		.channels_max = 2,
+		.rates = SNDRV_PCM_RATE_8000_96000,
+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+	},
+	.ops = &tegra_i2s_dai_ops,
+	.symmetric_rates = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static __devinit int tegra_i2s_platform_probe(struct platform_device *pdev)
 {
 	struct tegra_i2s * i2s;
+<<<<<<< HEAD
 	char clk_name[12]; /* tegra-i2s.0 */
 	struct resource *mem, *memregion, *dmareq;
 	int ret;
@@ -395,6 +448,29 @@ static __devinit int tegra_i2s_platform_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Can't retrieve i2s clock\n");
 		ret = PTR_ERR(i2s->clk_i2s);
 		goto err_free;
+=======
+	struct resource *mem, *memregion, *dmareq;
+	u32 of_dma[2];
+	u32 dma_ch;
+	int ret;
+
+	i2s = devm_kzalloc(&pdev->dev, sizeof(struct tegra_i2s), GFP_KERNEL);
+	if (!i2s) {
+		dev_err(&pdev->dev, "Can't allocate tegra_i2s\n");
+		ret = -ENOMEM;
+		goto err;
+	}
+	dev_set_drvdata(&pdev->dev, i2s);
+
+	i2s->dai = tegra_i2s_dai_template;
+	i2s->dai.name = dev_name(&pdev->dev);
+
+	i2s->clk_i2s = clk_get(&pdev->dev, NULL);
+	if (IS_ERR(i2s->clk_i2s)) {
+		dev_err(&pdev->dev, "Can't retrieve i2s clock\n");
+		ret = PTR_ERR(i2s->clk_i2s);
+		goto err;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -406,6 +482,7 @@ static __devinit int tegra_i2s_platform_probe(struct platform_device *pdev)
 
 	dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
 	if (!dmareq) {
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "No DMA resource\n");
 		ret = -ENODEV;
 		goto err_clk_put;
@@ -413,27 +490,56 @@ static __devinit int tegra_i2s_platform_probe(struct platform_device *pdev)
 
 	memregion = request_mem_region(mem->start, resource_size(mem),
 					DRV_NAME);
+=======
+		if (of_property_read_u32_array(pdev->dev.of_node,
+					"nvidia,dma-request-selector",
+					of_dma, 2) < 0) {
+			dev_err(&pdev->dev, "No DMA resource\n");
+			ret = -ENODEV;
+			goto err_clk_put;
+		}
+		dma_ch = of_dma[1];
+	} else {
+		dma_ch = dmareq->start;
+	}
+
+	memregion = devm_request_mem_region(&pdev->dev, mem->start,
+					    resource_size(mem), DRV_NAME);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!memregion) {
 		dev_err(&pdev->dev, "Memory region already claimed\n");
 		ret = -EBUSY;
 		goto err_clk_put;
 	}
 
+<<<<<<< HEAD
 	i2s->regs = ioremap(mem->start, resource_size(mem));
 	if (!i2s->regs) {
 		dev_err(&pdev->dev, "ioremap failed\n");
 		ret = -ENOMEM;
 		goto err_release;
+=======
+	i2s->regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
+	if (!i2s->regs) {
+		dev_err(&pdev->dev, "ioremap failed\n");
+		ret = -ENOMEM;
+		goto err_clk_put;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	i2s->capture_dma_data.addr = mem->start + TEGRA_I2S_FIFO2;
 	i2s->capture_dma_data.wrap = 4;
 	i2s->capture_dma_data.width = 32;
+<<<<<<< HEAD
 	i2s->capture_dma_data.req_sel = dmareq->start;
+=======
+	i2s->capture_dma_data.req_sel = dma_ch;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	i2s->playback_dma_data.addr = mem->start + TEGRA_I2S_FIFO1;
 	i2s->playback_dma_data.wrap = 4;
 	i2s->playback_dma_data.width = 32;
+<<<<<<< HEAD
 	i2s->playback_dma_data.req_sel = dmareq->start;
 
 	i2s->reg_ctrl = TEGRA_I2S_CTRL_FIFO_FORMAT_PACKED;
@@ -458,18 +564,42 @@ err_clk_put:
 err_free:
 	kfree(i2s);
 exit:
+=======
+	i2s->playback_dma_data.req_sel = dma_ch;
+
+	i2s->reg_ctrl = TEGRA_I2S_CTRL_FIFO_FORMAT_PACKED;
+
+	ret = snd_soc_register_dai(&pdev->dev, &i2s->dai);
+	if (ret) {
+		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+		ret = -ENOMEM;
+		goto err_clk_put;
+	}
+
+	tegra_i2s_debug_add(i2s);
+
+	return 0;
+
+err_clk_put:
+	clk_put(i2s->clk_i2s);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit tegra_i2s_platform_remove(struct platform_device *pdev)
 {
 	struct tegra_i2s *i2s = dev_get_drvdata(&pdev->dev);
+<<<<<<< HEAD
 	struct resource *res;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	snd_soc_unregister_dai(&pdev->dev);
 
 	tegra_i2s_debug_remove(i2s);
 
+<<<<<<< HEAD
 	iounmap(i2s->regs);
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -482,14 +612,31 @@ static int __devexit tegra_i2s_platform_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+	clk_put(i2s->clk_i2s);
+
+	return 0;
+}
+
+static const struct of_device_id tegra_i2s_of_match[] __devinitconst = {
+	{ .compatible = "nvidia,tegra20-i2s", },
+	{},
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver tegra_i2s_driver = {
 	.driver = {
 		.name = DRV_NAME,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = tegra_i2s_of_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe = tegra_i2s_platform_probe,
 	.remove = __devexit_p(tegra_i2s_platform_remove),
 };
+<<<<<<< HEAD
 
 static int __init snd_tegra_i2s_init(void)
 {
@@ -502,8 +649,15 @@ static void __exit snd_tegra_i2s_exit(void)
 	platform_driver_unregister(&tegra_i2s_driver);
 }
 module_exit(snd_tegra_i2s_exit);
+=======
+module_platform_driver(tegra_i2s_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
 MODULE_DESCRIPTION("Tegra I2S ASoC driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:" DRV_NAME);
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(of, tegra_i2s_of_match);
+>>>>>>> refs/remotes/origin/cm-10.0

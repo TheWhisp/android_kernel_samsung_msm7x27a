@@ -60,7 +60,11 @@ struct wm8350_jack_data {
 };
 
 struct wm8350_data {
+<<<<<<< HEAD
 	struct snd_soc_codec codec;
+=======
+	struct wm8350 *wm8350;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct wm8350_output out1;
 	struct wm8350_output out2;
 	struct wm8350_jack_data hpl;
@@ -355,7 +359,11 @@ static int wm8350_put_volsw_2r_vu(struct snd_kcontrol *kcontrol,
 			return 1;
 	}
 
+<<<<<<< HEAD
 	ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
+=======
+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		return ret;
 
@@ -392,6 +400,7 @@ static int wm8350_get_volsw_2r(struct snd_kcontrol *kcontrol,
 		break;
 	}
 
+<<<<<<< HEAD
 	return snd_soc_get_volsw_2r(kcontrol, ucontrol);
 }
 
@@ -409,6 +418,11 @@ static int wm8350_get_volsw_2r(struct snd_kcontrol *kcontrol,
 		{.reg = reg_left, .rreg = reg_right, .shift = xshift, \
 		 .rshift = xshift, .max = xmax, .invert = xinvert}, }
 
+=======
+	return snd_soc_get_volsw(kcontrol, ucontrol);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const char *wm8350_deemp[] = { "None", "32kHz", "44.1kHz", "48kHz" };
 static const char *wm8350_pol[] = { "Normal", "Inv R", "Inv L", "Inv L & R" };
 static const char *wm8350_dacmutem[] = { "Normal", "Soft" };
@@ -443,15 +457,24 @@ static const unsigned int capture_sd_tlv[] = {
 static const struct snd_kcontrol_new wm8350_snd_controls[] = {
 	SOC_ENUM("Playback Deemphasis", wm8350_enum[0]),
 	SOC_ENUM("Playback DAC Inversion", wm8350_enum[1]),
+<<<<<<< HEAD
 	SOC_WM8350_DOUBLE_R_TLV("Playback PCM Volume",
 				WM8350_DAC_DIGITAL_VOLUME_L,
 				WM8350_DAC_DIGITAL_VOLUME_R,
 				0, 255, 0, dac_pcm_tlv),
+=======
+	SOC_DOUBLE_R_EXT_TLV("Playback PCM Volume",
+				WM8350_DAC_DIGITAL_VOLUME_L,
+				WM8350_DAC_DIGITAL_VOLUME_R,
+				0, 255, 0, wm8350_get_volsw_2r,
+				wm8350_put_volsw_2r_vu, dac_pcm_tlv),
+>>>>>>> refs/remotes/origin/cm-10.0
 	SOC_ENUM("Playback PCM Mute Function", wm8350_enum[2]),
 	SOC_ENUM("Playback PCM Mute Speed", wm8350_enum[3]),
 	SOC_ENUM("Capture PCM Filter", wm8350_enum[4]),
 	SOC_ENUM("Capture PCM HP Filter", wm8350_enum[5]),
 	SOC_ENUM("Capture ADC Inversion", wm8350_enum[6]),
+<<<<<<< HEAD
 	SOC_WM8350_DOUBLE_R_TLV("Capture PCM Volume",
 				WM8350_ADC_DIGITAL_VOLUME_L,
 				WM8350_ADC_DIGITAL_VOLUME_R,
@@ -463,6 +486,21 @@ static const struct snd_kcontrol_new wm8350_snd_controls[] = {
 				WM8350_LEFT_INPUT_VOLUME,
 				WM8350_RIGHT_INPUT_VOLUME,
 				2, 63, 0, pre_amp_tlv),
+=======
+	SOC_DOUBLE_R_EXT_TLV("Capture PCM Volume",
+				WM8350_ADC_DIGITAL_VOLUME_L,
+				WM8350_ADC_DIGITAL_VOLUME_R,
+				0, 255, 0, wm8350_get_volsw_2r,
+				wm8350_put_volsw_2r_vu, adc_pcm_tlv),
+	SOC_DOUBLE_TLV("Capture Sidetone Volume",
+		       WM8350_ADC_DIVIDER,
+		       8, 4, 15, 1, capture_sd_tlv),
+	SOC_DOUBLE_R_EXT_TLV("Capture Volume",
+				WM8350_LEFT_INPUT_VOLUME,
+				WM8350_RIGHT_INPUT_VOLUME,
+				2, 63, 0, wm8350_get_volsw_2r,
+				wm8350_put_volsw_2r_vu, pre_amp_tlv),
+>>>>>>> refs/remotes/origin/cm-10.0
 	SOC_DOUBLE_R("Capture ZC Switch",
 		     WM8350_LEFT_INPUT_VOLUME,
 		     WM8350_RIGHT_INPUT_VOLUME, 13, 1, 0),
@@ -490,6 +528,7 @@ static const struct snd_kcontrol_new wm8350_snd_controls[] = {
 	SOC_SINGLE_TLV("Out4 Capture Volume",
 		       WM8350_INPUT_MIXER_VOLUME,
 		       1, 7, 0, out_mix_tlv),
+<<<<<<< HEAD
 	SOC_WM8350_DOUBLE_R_TLV("Out1 Playback Volume",
 				WM8350_LOUT1_VOLUME,
 				WM8350_ROUT1_VOLUME,
@@ -501,6 +540,21 @@ static const struct snd_kcontrol_new wm8350_snd_controls[] = {
 				WM8350_LOUT2_VOLUME,
 				WM8350_ROUT2_VOLUME,
 				2, 63, 0, out_pga_tlv),
+=======
+	SOC_DOUBLE_R_EXT_TLV("Out1 Playback Volume",
+				WM8350_LOUT1_VOLUME,
+				WM8350_ROUT1_VOLUME,
+				2, 63, 0, wm8350_get_volsw_2r,
+				wm8350_put_volsw_2r_vu, out_pga_tlv),
+	SOC_DOUBLE_R("Out1 Playback ZC Switch",
+		     WM8350_LOUT1_VOLUME,
+		     WM8350_ROUT1_VOLUME, 13, 1, 0),
+	SOC_DOUBLE_R_EXT_TLV("Out2 Playback Volume",
+				WM8350_LOUT2_VOLUME,
+				WM8350_ROUT2_VOLUME,
+				2, 63, 0, wm8350_get_volsw_2r,
+				wm8350_put_volsw_2r_vu, out_pga_tlv),
+>>>>>>> refs/remotes/origin/cm-10.0
 	SOC_DOUBLE_R("Out2 Playback ZC Switch", WM8350_LOUT2_VOLUME,
 		     WM8350_ROUT2_VOLUME, 13, 1, 0),
 	SOC_SINGLE("Out2 Right Invert Switch", WM8350_ROUT2_VOLUME, 10, 1, 0),
@@ -705,7 +759,11 @@ static const struct snd_soc_dapm_widget wm8350_dapm_widgets[] = {
 	SND_SOC_DAPM_INPUT("IN3L"),
 };
 
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route wm8350_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* left playback mixer */
 	{"Left Playback Mixer", "Playback Switch", "Left DAC"},
@@ -786,6 +844,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"Beep", NULL, "IN3R PGA"},
 };
 
+<<<<<<< HEAD
 static int wm8350_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -809,6 +868,8 @@ static int wm8350_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int wm8350_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 				 int clk_id, unsigned int freq, int dir)
 {
@@ -1324,7 +1385,11 @@ static int wm8350_set_bias_level(struct snd_soc_codec *codec,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int wm8350_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8350_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	wm8350_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -1341,7 +1406,11 @@ static void wm8350_hp_work(struct wm8350_data *priv,
 			   struct wm8350_jack_data *jack,
 			   u16 mask)
 {
+<<<<<<< HEAD
 	struct wm8350 *wm8350 = priv->codec.control_data;
+=======
+	struct wm8350 *wm8350 = priv->wm8350;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 reg;
 	int report;
 
@@ -1374,7 +1443,11 @@ static void wm8350_hpr_work(struct work_struct *work)
 static irqreturn_t wm8350_hp_jack_handler(int irq, void *data)
 {
 	struct wm8350_data *priv = data;
+<<<<<<< HEAD
 	struct wm8350 *wm8350 = priv->codec.control_data;
+=======
+	struct wm8350 *wm8350 = priv->wm8350;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct wm8350_jack_data *jack = NULL;
 
 	switch (irq - wm8350->irq_base) {
@@ -1459,7 +1532,11 @@ EXPORT_SYMBOL_GPL(wm8350_hp_jack_detect);
 static irqreturn_t wm8350_mic_handler(int irq, void *data)
 {
 	struct wm8350_data *priv = data;
+<<<<<<< HEAD
 	struct wm8350 *wm8350 = priv->codec.control_data;
+=======
+	struct wm8350 *wm8350 = priv->wm8350;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 reg;
 	int report = 0;
 
@@ -1520,7 +1597,11 @@ EXPORT_SYMBOL_GPL(wm8350_mic_jack_detect);
 			SNDRV_PCM_FMTBIT_S20_3LE |\
 			SNDRV_PCM_FMTBIT_S24_LE)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8350_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8350_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	 .hw_params	= wm8350_pcm_hw_params,
 	 .digital_mute	= wm8350_mute,
 	 .trigger	= wm8350_pcm_trigger,
@@ -1562,20 +1643,35 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	priv = kzalloc(sizeof(struct wm8350_data), GFP_KERNEL);
+=======
+	priv = devm_kzalloc(codec->dev, sizeof(struct wm8350_data),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (priv == NULL)
 		return -ENOMEM;
 	snd_soc_codec_set_drvdata(codec, priv);
 
+<<<<<<< HEAD
+=======
+	priv->wm8350 = wm8350;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
 		priv->supplies[i].supply = supply_names[i];
 
 	ret = regulator_bulk_get(wm8350->dev, ARRAY_SIZE(priv->supplies),
 				 priv->supplies);
 	if (ret != 0)
+<<<<<<< HEAD
 		goto err_priv;
 
 	wm8350->codec.codec = codec;
+=======
+		return ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	codec->control_data = wm8350;
 
 	/* Put the codec into reset if it wasn't already */
@@ -1642,6 +1738,7 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
 			    wm8350_mic_handler, 0, "Microphone detect", priv);
 
 
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8350_snd_controls,
 				ARRAY_SIZE(wm8350_snd_controls));
 	wm8350_add_widgets(codec);
@@ -1653,6 +1750,11 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
 err_priv:
 	kfree(priv);
 	return ret;
+=======
+	wm8350_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int  wm8350_codec_remove(struct snd_soc_codec *codec)
@@ -1685,7 +1787,11 @@ static int  wm8350_codec_remove(struct snd_soc_codec *codec)
 	wm8350_clear_bits(wm8350, WM8350_POWER_MGMT_5, WM8350_CODEC_ENA);
 
 	regulator_bulk_free(ARRAY_SIZE(priv->supplies), priv->supplies);
+<<<<<<< HEAD
 	kfree(priv);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1697,6 +1803,16 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8350 = {
 	.read = wm8350_codec_read,
 	.write = wm8350_codec_write,
 	.set_bias_level = wm8350_set_bias_level,
+<<<<<<< HEAD
+=======
+
+	.controls = wm8350_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8350_snd_controls),
+	.dapm_widgets = wm8350_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8350_dapm_widgets),
+	.dapm_routes = wm8350_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8350_dapm_routes),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __devinit wm8350_probe(struct platform_device *pdev)
@@ -1720,6 +1836,7 @@ static struct platform_driver wm8350_codec_driver = {
 	.remove = __devexit_p(wm8350_remove),
 };
 
+<<<<<<< HEAD
 static __init int wm8350_init(void)
 {
 	return platform_driver_register(&wm8350_codec_driver);
@@ -1731,6 +1848,9 @@ static __exit void wm8350_exit(void)
 	platform_driver_unregister(&wm8350_codec_driver);
 }
 module_exit(wm8350_exit);
+=======
+module_platform_driver(wm8350_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("ASoC WM8350 driver");
 MODULE_AUTHOR("Liam Girdwood");

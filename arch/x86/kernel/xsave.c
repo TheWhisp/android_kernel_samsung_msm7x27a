@@ -6,6 +6,10 @@
 #include <linux/bootmem.h>
 #include <linux/compat.h>
 #include <asm/i387.h>
+<<<<<<< HEAD
+=======
+#include <asm/fpu-internal.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_IA32_EMULATION
 #include <asm/sigcontext32.h>
 #endif

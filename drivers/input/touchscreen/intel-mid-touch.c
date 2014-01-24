@@ -448,6 +448,7 @@ static int __devinit mrstouch_read_pmic_id(uint *vendor, uint *rev)
  */
 static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 {
+<<<<<<< HEAD
 	int err, i, found;
 	u8 r8;
 
@@ -457,6 +458,13 @@ static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 		if (found >= 0)
 			break;
 
+=======
+	int found = 0;
+	int err, i;
+	u8 r8;
+
+	for (i = 0; i < MRSTOUCH_MAX_CHANNELS; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = intel_scu_ipc_ioread8(PMICADDR0 + i, &r8);
 		if (err)
 			return err;
@@ -466,6 +474,7 @@ static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 			break;
 		}
 	}
+<<<<<<< HEAD
 	if (found < 0)
 		return 0;
 
@@ -476,6 +485,17 @@ static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 		if (found && found > (MRSTOUCH_MAX_CHANNELS - 4))
 			return -ENOSPC;
 	}
+=======
+
+	if (tsdev->vendor == PMIC_VENDOR_FS) {
+		if (found > MRSTOUCH_MAX_CHANNELS - 18)
+			return -ENOSPC;
+	} else {
+		if (found > MRSTOUCH_MAX_CHANNELS - 4)
+			return -ENOSPC;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return found;
 }
 
@@ -669,6 +689,7 @@ static struct platform_driver mrstouch_driver = {
 	.probe		= mrstouch_probe,
 	.remove		= __devexit_p(mrstouch_remove),
 };
+<<<<<<< HEAD
 
 static int __init mrstouch_init(void)
 {
@@ -681,6 +702,9 @@ static void __exit mrstouch_exit(void)
 	platform_driver_unregister(&mrstouch_driver);
 }
 module_exit(mrstouch_exit);
+=======
+module_platform_driver(mrstouch_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Sreedhara Murthy. D.S, sreedhara.ds@intel.com");
 MODULE_DESCRIPTION("Intel Moorestown Resistive Touch Screen Driver");

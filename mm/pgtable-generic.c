@@ -70,10 +70,18 @@ int pmdp_clear_flush_young(struct vm_area_struct *vma,
 			   unsigned long address, pmd_t *pmdp)
 {
 	int young;
+<<<<<<< HEAD
 #ifndef CONFIG_TRANSPARENT_HUGEPAGE
 	BUG();
 #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
 	VM_BUG_ON(address & ~HPAGE_PMD_MASK);
+=======
+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+	VM_BUG_ON(address & ~HPAGE_PMD_MASK);
+#else
+	BUG();
+#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>>>>>>> refs/remotes/origin/cm-10.0
 	young = pmdp_test_and_clear_young(vma, address, pmdp);
 	if (young)
 		flush_tlb_range(vma, address, address + HPAGE_PMD_SIZE);

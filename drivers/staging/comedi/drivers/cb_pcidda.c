@@ -282,7 +282,10 @@ static int cb_pcidda_attach(struct comedi_device *dev,
 	struct pci_dev *pcidev = NULL;
 	int index;
 
+<<<<<<< HEAD
 	printk("comedi%d: cb_pcidda: ", dev->minor);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Allocate the private structure area.
@@ -293,7 +296,10 @@ static int cb_pcidda_attach(struct comedi_device *dev,
 /*
  * Probe the device to determine what device in the series it is.
  */
+<<<<<<< HEAD
 	printk("\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for_each_pci_dev(pcidev) {
 		if (pcidev->vendor == PCI_VENDOR_ID_CB) {
@@ -312,22 +318,35 @@ static int cb_pcidda_attach(struct comedi_device *dev,
 		}
 	}
 	if (!pcidev) {
+<<<<<<< HEAD
 		printk
 		    ("Not a ComputerBoards/MeasurementComputing card on requested position\n");
+=======
+		dev_err(dev->hw_dev, "Not a ComputerBoards/MeasurementComputing card on requested position\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 found:
 	devpriv->pci_dev = pcidev;
 	dev->board_ptr = cb_pcidda_boards + index;
 	/*  "thisboard" macro can be used from here. */
+<<<<<<< HEAD
 	printk("Found %s at requested position\n", thisboard->name);
+=======
+	dev_dbg(dev->hw_dev, "Found %s at requested position\n",
+		thisboard->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Enable PCI device and request regions.
 	 */
 	if (comedi_pci_enable(pcidev, thisboard->name)) {
+<<<<<<< HEAD
 		printk
 		    ("cb_pcidda: failed to enable PCI device and request regions\n");
+=======
+		dev_err(dev->hw_dev, "cb_pcidda: failed to enable PCI device and request regions\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 
@@ -377,12 +396,20 @@ found:
 	s = dev->subdevices + 2;
 	subdev_8255_init(dev, s, NULL, devpriv->digitalio + PORT2A);
 
+<<<<<<< HEAD
 	printk(" eeprom:");
 	for (index = 0; index < EEPROM_SIZE; index++) {
 		devpriv->eeprom_data[index] = cb_pcidda_read_eeprom(dev, index);
 		printk(" %i:0x%x ", index, devpriv->eeprom_data[index]);
 	}
 	printk("\n");
+=======
+	dev_dbg(dev->hw_dev, "eeprom:\n");
+	for (index = 0; index < EEPROM_SIZE; index++) {
+		devpriv->eeprom_data[index] = cb_pcidda_read_eeprom(dev, index);
+		dev_dbg(dev->hw_dev, "%i:0x%x\n", index, devpriv->eeprom_data[index]);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*  set calibrations dacs */
 	for (index = 0; index < thisboard->ao_chans; index++)
@@ -417,8 +444,11 @@ static int cb_pcidda_detach(struct comedi_device *dev)
 		subdev_8255_cleanup(dev, dev->subdevices + 2);
 	}
 
+<<<<<<< HEAD
 	printk("comedi%d: cb_pcidda: remove\n", dev->minor);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

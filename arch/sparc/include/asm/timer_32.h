@@ -8,12 +8,20 @@
 #ifndef _SPARC_TIMER_H
 #define _SPARC_TIMER_H
 
+<<<<<<< HEAD
 #include <asm/system.h>  /* For SUN4M_NCPUS */
+=======
+#include <asm/cpu_type.h>  /* For SUN4M_NCPUS */
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/btfixup.h>
 
 extern __volatile__ unsigned int *master_l10_counter;
 
 /* FIXME: Make do_[gs]ettimeofday btfixup calls */
+<<<<<<< HEAD
+=======
+struct timespec;
+>>>>>>> refs/remotes/origin/cm-10.0
 BTFIXUPDEF_CALL(int, bus_do_settimeofday, struct timespec *tv)
 #define bus_do_settimeofday(tv) BTFIXUP_CALL(bus_do_settimeofday)(tv)
 

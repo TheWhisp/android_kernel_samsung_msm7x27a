@@ -4,7 +4,11 @@
 
   Copyright (c) 2005 Martin Langer <martin-langer@gmx.de>,
                      Stefano Brivio <stefano.brivio@polimi.it>
+<<<<<<< HEAD
                      Michael Buesch <mb@bu3sch.de>
+=======
+                     Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
                      Danny van Dyk <kugelfang@gentoo.org>
                      Andreas Jaggi <andreas.jaggi@waterwave.ch>
 
@@ -121,7 +125,11 @@ void b43_hf_write(struct b43_wldev *dev, u64 value);
 
 void b43_dummy_transmission(struct b43_wldev *dev, bool ofdm, bool pa_on);
 
+<<<<<<< HEAD
 void b43_wireless_core_reset(struct b43_wldev *dev, u32 flags);
+=======
+void b43_wireless_core_reset(struct b43_wldev *dev, bool gmode);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void b43_controller_restart(struct b43_wldev *dev, const char *reason);
 
@@ -137,9 +145,14 @@ void b43_mac_phy_clock_set(struct b43_wldev *dev, bool on);
 
 
 struct b43_request_fw_context;
+<<<<<<< HEAD
 int b43_do_request_fw(struct b43_request_fw_context *ctx,
 		      const char *name,
 		      struct b43_firmware_file *fw);
+=======
+int b43_do_request_fw(struct b43_request_fw_context *ctx, const char *name,
+		      struct b43_firmware_file *fw, bool async);
+>>>>>>> refs/remotes/origin/cm-10.0
 void b43_do_release_fw(struct b43_firmware_file *fw);
 
 #endif /* B43_MAIN_H_ */

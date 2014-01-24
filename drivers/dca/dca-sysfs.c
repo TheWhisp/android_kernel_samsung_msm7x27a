@@ -27,6 +27,10 @@
 #include <linux/err.h>
 #include <linux/dca.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct class *dca_class;
 static struct idr dca_idr;

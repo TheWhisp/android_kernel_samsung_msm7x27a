@@ -61,7 +61,11 @@ static int ocfs2_fault(struct vm_area_struct *area, struct vm_fault *vmf)
 static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 				struct page *page)
 {
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret = VM_FAULT_NOPAGE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct inode *inode = file->f_path.dentry->d_inode;
 	struct address_space *mapping = inode->i_mapping;
 	loff_t pos = page_offset(page);
@@ -71,6 +75,7 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 	void *fsdata;
 	loff_t size = i_size_read(inode);
 
+<<<<<<< HEAD
 	/*
 	 * Another node might have truncated while we were waiting on
 	 * cluster locks.
@@ -97,6 +102,27 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 		ret = 0;
 		goto out;
 	}
+=======
+	last_index = (size - 1) >> PAGE_CACHE_SHIFT;
+
+	/*
+	 * There are cases that lead to the page no longer bebongs to the
+	 * mapping.
+	 * 1) pagecache truncates locally due to memory pressure.
+	 * 2) pagecache truncates when another is taking EX lock against 
+	 * inode lock. see ocfs2_data_convert_worker.
+	 * 
+	 * The i_size check doesn't catch the case where nodes truncated and
+	 * then re-extended the file. We'll re-check the page mapping after
+	 * taking the page lock inside of ocfs2_write_begin_nolock().
+	 *
+	 * Let VM retry with these cases.
+	 */
+	if ((page->mapping != inode->i_mapping) ||
+	    (!PageUptodate(page)) ||
+	    (page_offset(page) >= size))
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Call ocfs2_write_begin() and ocfs2_write_end() to take
@@ -116,6 +142,7 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 	if (ret) {
 		if (ret != -ENOSPC)
 			mlog_errno(ret);
+<<<<<<< HEAD
 		goto out;
 	}
 
@@ -127,6 +154,23 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 	}
 	BUG_ON(ret != len);
 	ret = 0;
+=======
+		if (ret == -ENOMEM)
+			ret = VM_FAULT_OOM;
+		else
+			ret = VM_FAULT_SIGBUS;
+		goto out;
+	}
+
+	if (!locked_page) {
+		ret = VM_FAULT_NOPAGE;
+		goto out;
+	}
+	ret = ocfs2_write_end_nolock(mapping, pos, len, len, locked_page,
+				     fsdata);
+	BUG_ON(ret != len);
+	ret = VM_FAULT_LOCKED;
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	return ret;
 }
@@ -168,8 +212,11 @@ static int ocfs2_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 
 out:
 	ocfs2_unblock_signals(&oldset);
+<<<<<<< HEAD
 	if (ret)
 		ret = VM_FAULT_SIGBUS;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 

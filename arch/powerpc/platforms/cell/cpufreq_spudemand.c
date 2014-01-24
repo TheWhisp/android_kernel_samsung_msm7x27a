@@ -22,9 +22,16 @@
 
 #include <linux/cpufreq.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/timer.h>
 #include <linux/workqueue.h>
 #include <asm/atomic.h>
+=======
+#include <linux/module.h>
+#include <linux/timer.h>
+#include <linux/workqueue.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/machdep.h>
 #include <asm/spu.h>
 

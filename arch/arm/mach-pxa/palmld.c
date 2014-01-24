@@ -342,9 +342,20 @@ static void __init palmld_init(void)
 }
 
 MACHINE_START(PALMLD, "Palm LifeDrive")
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= palmld_map_io,
 	.init_irq	= pxa27x_init_irq,
 	.timer		= &pxa_timer,
 	.init_machine	= palmld_init
+=======
+	.atag_offset	= 0x100,
+	.map_io		= palmld_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa27x_init_irq,
+	.handle_irq	= pxa27x_handle_irq,
+	.timer		= &pxa_timer,
+	.init_machine	= palmld_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

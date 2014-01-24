@@ -18,6 +18,10 @@
  */
 
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/acpi.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <xen/xen.h>
 #include <xen/interface/physdev.h>
 #include <xen/interface/xen.h>
@@ -26,26 +30,105 @@
 #include <asm/xen/hypercall.h>
 #include "../pci/pci.h"
 
+<<<<<<< HEAD
+=======
+static bool __read_mostly pci_seg_supported = true;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int xen_add_device(struct device *dev)
 {
 	int r;
 	struct pci_dev *pci_dev = to_pci_dev(dev);
+<<<<<<< HEAD
 
 #ifdef CONFIG_PCI_IOV
 	if (pci_dev->is_virtfn) {
+=======
+#ifdef CONFIG_PCI_IOV
+	struct pci_dev *physfn = pci_dev->physfn;
+#endif
+
+	if (pci_seg_supported) {
+		struct physdev_pci_device_add add = {
+			.seg = pci_domain_nr(pci_dev->bus),
+			.bus = pci_dev->bus->number,
+			.devfn = pci_dev->devfn
+		};
+#ifdef CONFIG_ACPI
+		acpi_handle handle;
+#endif
+
+#ifdef CONFIG_PCI_IOV
+		if (pci_dev->is_virtfn) {
+			add.flags = XEN_PCI_DEV_VIRTFN;
+			add.physfn.bus = physfn->bus->number;
+			add.physfn.devfn = physfn->devfn;
+		} else
+#endif
+		if (pci_ari_enabled(pci_dev->bus) && PCI_SLOT(pci_dev->devfn))
+			add.flags = XEN_PCI_DEV_EXTFN;
+
+#ifdef CONFIG_ACPI
+		handle = DEVICE_ACPI_HANDLE(&pci_dev->dev);
+		if (!handle)
+			handle = DEVICE_ACPI_HANDLE(pci_dev->bus->bridge);
+#ifdef CONFIG_PCI_IOV
+		if (!handle && pci_dev->is_virtfn)
+			handle = DEVICE_ACPI_HANDLE(physfn->bus->bridge);
+#endif
+		if (handle) {
+			acpi_status status;
+
+			do {
+				unsigned long long pxm;
+
+				status = acpi_evaluate_integer(handle, "_PXM",
+							       NULL, &pxm);
+				if (ACPI_SUCCESS(status)) {
+					add.optarr[0] = pxm;
+					add.flags |= XEN_PCI_DEV_PXM;
+					break;
+				}
+				status = acpi_get_parent(handle, &handle);
+			} while (ACPI_SUCCESS(status));
+		}
+#endif /* CONFIG_ACPI */
+
+		r = HYPERVISOR_physdev_op(PHYSDEVOP_pci_device_add, &add);
+		if (r != -ENOSYS)
+			return r;
+		pci_seg_supported = false;
+	}
+
+	if (pci_domain_nr(pci_dev->bus))
+		r = -ENOSYS;
+#ifdef CONFIG_PCI_IOV
+	else if (pci_dev->is_virtfn) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct physdev_manage_pci_ext manage_pci_ext = {
 			.bus		= pci_dev->bus->number,
 			.devfn		= pci_dev->devfn,
 			.is_virtfn 	= 1,
+<<<<<<< HEAD
 			.physfn.bus	= pci_dev->physfn->bus->number,
 			.physfn.devfn	= pci_dev->physfn->devfn,
+=======
+			.physfn.bus	= physfn->bus->number,
+			.physfn.devfn	= physfn->devfn,
+>>>>>>> refs/remotes/origin/cm-10.0
 		};
 
 		r = HYPERVISOR_physdev_op(PHYSDEVOP_manage_pci_add_ext,
 			&manage_pci_ext);
+<<<<<<< HEAD
 	} else
 #endif
 	if (pci_ari_enabled(pci_dev->bus) && PCI_SLOT(pci_dev->devfn)) {
+=======
+	}
+#endif
+	else if (pci_ari_enabled(pci_dev->bus) && PCI_SLOT(pci_dev->devfn)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct physdev_manage_pci_ext manage_pci_ext = {
 			.bus		= pci_dev->bus->number,
 			.devfn		= pci_dev->devfn,
@@ -56,7 +139,11 @@ static int xen_add_device(struct device *dev)
 			&manage_pci_ext);
 	} else {
 		struct physdev_manage_pci manage_pci = {
+<<<<<<< HEAD
 			.bus 	= pci_dev->bus->number,
+=======
+			.bus	= pci_dev->bus->number,
+>>>>>>> refs/remotes/origin/cm-10.0
 			.devfn	= pci_dev->devfn,
 		};
 
@@ -71,6 +158,7 @@ static int xen_remove_device(struct device *dev)
 {
 	int r;
 	struct pci_dev *pci_dev = to_pci_dev(dev);
+<<<<<<< HEAD
 	struct physdev_manage_pci manage_pci;
 
 	manage_pci.bus = pci_dev->bus->number;
@@ -78,6 +166,29 @@ static int xen_remove_device(struct device *dev)
 
 	r = HYPERVISOR_physdev_op(PHYSDEVOP_manage_pci_remove,
 		&manage_pci);
+=======
+
+	if (pci_seg_supported) {
+		struct physdev_pci_device device = {
+			.seg = pci_domain_nr(pci_dev->bus),
+			.bus = pci_dev->bus->number,
+			.devfn = pci_dev->devfn
+		};
+
+		r = HYPERVISOR_physdev_op(PHYSDEVOP_pci_device_remove,
+					  &device);
+	} else if (pci_domain_nr(pci_dev->bus))
+		r = -ENOSYS;
+	else {
+		struct physdev_manage_pci manage_pci = {
+			.bus = pci_dev->bus->number,
+			.devfn = pci_dev->devfn
+		};
+
+		r = HYPERVISOR_physdev_op(PHYSDEVOP_manage_pci_remove,
+					  &manage_pci);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return r;
 }
@@ -96,6 +207,7 @@ static int xen_pci_notifier(struct notifier_block *nb,
 		r = xen_remove_device(dev);
 		break;
 	default:
+<<<<<<< HEAD
 		break;
 	}
 
@@ -103,6 +215,18 @@ static int xen_pci_notifier(struct notifier_block *nb,
 }
 
 struct notifier_block device_nb = {
+=======
+		return NOTIFY_DONE;
+	}
+	if (r)
+		dev_err(dev, "Failed to %s - passthrough or MSI/MSI-X might fail!\n",
+			action == BUS_NOTIFY_ADD_DEVICE ? "add" :
+			(action == BUS_NOTIFY_DEL_DEVICE ? "delete" : "?"));
+	return NOTIFY_OK;
+}
+
+static struct notifier_block device_nb = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.notifier_call = xen_pci_notifier,
 };
 

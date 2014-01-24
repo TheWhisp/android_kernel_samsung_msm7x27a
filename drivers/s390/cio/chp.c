@@ -10,6 +10,11 @@
 #include <linux/bug.h>
 #include <linux/workqueue.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/jiffies.h>
 #include <linux/wait.h>

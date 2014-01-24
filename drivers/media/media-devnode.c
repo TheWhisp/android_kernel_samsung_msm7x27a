@@ -40,7 +40,10 @@
 #include <linux/string.h>
 #include <linux/types.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <media/media-devnode.h>
 
@@ -312,7 +315,11 @@ static void __exit media_devnode_exit(void)
 	unregister_chrdev_region(media_dev_t, MEDIA_NUM_DEVICES);
 }
 
+<<<<<<< HEAD
 module_init(media_devnode_init)
+=======
+subsys_initcall(media_devnode_init);
+>>>>>>> refs/remotes/origin/cm-10.0
 module_exit(media_devnode_exit)
 
 MODULE_AUTHOR("Laurent Pinchart <laurent.pinchart@ideasonboard.com>");

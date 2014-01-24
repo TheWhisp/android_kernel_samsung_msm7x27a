@@ -25,6 +25,10 @@
 #include <linux/kernel.h>
 #include <linux/dma-mapping.h>
 #include <linux/console.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/processor.h>
 #include <asm/mmu.h>
 #include <asm/page.h>
@@ -40,6 +44,10 @@
 #include <asm/udbg.h>
 #include <asm/smp.h>
 #include <asm/trace.h>
+<<<<<<< HEAD
+=======
+#include <asm/firmware.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "plpar_wrappers.h"
 #include "pseries.h"
@@ -52,6 +60,7 @@ EXPORT_SYMBOL(plpar_hcall_norets);
 
 extern void pSeries_find_serial_port(void);
 
+<<<<<<< HEAD
 
 static int vtermno;	/* virtual terminal# for udbg  */
 
@@ -243,6 +252,8 @@ out:
 	of_node_put(stdout_node);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void vpa_init(int cpu)
 {
 	int hwcpu = get_hard_smp_processor_id(cpu);
@@ -258,9 +269,14 @@ void vpa_init(int cpu)
 	ret = register_vpa(hwcpu, addr);
 
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR "WARNING: vpa_init: VPA registration for "
 				"cpu %d (hw %d) of area %lx returns %ld\n",
 				cpu, hwcpu, addr, ret);
+=======
+		pr_err("WARNING: VPA registration for cpu %d (hw %d) of area "
+		       "%lx failed with %ld\n", cpu, hwcpu, addr, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	/*
@@ -271,10 +287,16 @@ void vpa_init(int cpu)
 	if (firmware_has_feature(FW_FEATURE_SPLPAR)) {
 		ret = register_slb_shadow(hwcpu, addr);
 		if (ret)
+<<<<<<< HEAD
 			printk(KERN_ERR
 			       "WARNING: vpa_init: SLB shadow buffer "
 			       "registration for cpu %d (hw %d) of area %lx "
 			       "returns %ld\n", cpu, hwcpu, addr, ret);
+=======
+			pr_err("WARNING: SLB shadow buffer registration for "
+			       "cpu %d (hw %d) of area %lx failed with %ld\n",
+			       cpu, hwcpu, addr, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -291,8 +313,14 @@ void vpa_init(int cpu)
 		dtl->enqueue_to_dispatch_time = DISPATCH_LOG_BYTES;
 		ret = register_dtl(hwcpu, __pa(dtl));
 		if (ret)
+<<<<<<< HEAD
 			pr_warn("DTL registration failed for cpu %d (%ld)\n",
 				cpu, ret);
+=======
+			pr_err("WARNING: DTL registration of cpu %d (hw %d) "
+			       "failed with %ld\n", smp_processor_id(),
+			       hwcpu, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		lppaca_of(cpu).dtl_enable_mask = 2;
 	}
 }
@@ -743,6 +771,16 @@ void __trace_hcall_entry(unsigned long opcode, unsigned long *args)
 	unsigned long flags;
 	unsigned int *depth;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * We cannot call tracepoints inside RCU idle regions which
+	 * means we must not trace H_CEDE.
+	 */
+	if (opcode == H_CEDE)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_save(flags);
 
 	depth = &__get_cpu_var(hcall_trace_depth);
@@ -765,6 +803,12 @@ void __trace_hcall_exit(long opcode, unsigned long retval,
 	unsigned long flags;
 	unsigned int *depth;
 
+<<<<<<< HEAD
+=======
+	if (opcode == H_CEDE)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_save(flags);
 
 	depth = &__get_cpu_var(hcall_trace_depth);

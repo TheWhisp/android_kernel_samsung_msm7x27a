@@ -25,7 +25,11 @@ int write_sigio_irq(int fd)
 	int err;
 
 	err = um_request_irq(SIGIO_WRITE_IRQ, fd, IRQ_READ, sigio_interrupt,
+<<<<<<< HEAD
 			     IRQF_DISABLED|IRQF_SAMPLE_RANDOM, "write sigio",
+=======
+			     IRQF_SAMPLE_RANDOM, "write sigio",
+>>>>>>> refs/remotes/origin/cm-10.0
 			     NULL);
 	if (err) {
 		printk(KERN_ERR "write_sigio_irq : um_request_irq failed, "

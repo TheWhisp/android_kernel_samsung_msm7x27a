@@ -33,6 +33,10 @@
 #include <linux/dma-mapping.h>
 #include <linux/gpio.h>
 #include <linux/bug.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/portmux.h>
 #include <asm/dma.h>
 #include <asm/blackfin.h>

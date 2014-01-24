@@ -6,6 +6,10 @@
 #include <linux/mm.h>
 #include <linux/sched.h>
 #include <linux/hardirq.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/current.h>
 #include <asm/pgtable.h>
 #include <asm/tlbflush.h>
@@ -14,7 +18,10 @@
 #include "kern_util.h"
 #include "os.h"
 #include "skas.h"
+<<<<<<< HEAD
 #include "sysdep/sigcontext.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Note this is constrained to return 0, -EFAULT, -EACCESS, -ENOMEM by
@@ -112,6 +119,10 @@ out_of_memory:
 	pagefault_out_of_memory();
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(handle_page_fault);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void show_segv_info(struct uml_pt_regs *regs)
 {

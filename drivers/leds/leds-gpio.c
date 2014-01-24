@@ -13,13 +13,21 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/leds.h>
 #include <linux/of_platform.h>
 #include <linux/of_gpio.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 
 #include <asm/gpio.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct gpio_led_data {
 	struct led_classdev cdev;
@@ -121,7 +129,11 @@ static int __devinit create_gpio_led(const struct gpio_led *template,
 	}
 	led_dat->cdev.brightness_set = gpio_led_set;
 	if (template->default_state == LEDS_GPIO_DEFSTATE_KEEP)
+<<<<<<< HEAD
 		state = !!gpio_get_value(led_dat->gpio) ^ led_dat->active_low;
+=======
+		state = !!gpio_get_value_cansleep(led_dat->gpio) ^ led_dat->active_low;
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		state = (template->default_state == LEDS_GPIO_DEFSTATE_ON);
 	led_dat->cdev.brightness = state ? LED_FULL : LED_OFF;
@@ -165,7 +177,11 @@ static inline int sizeof_gpio_leds_priv(int num_leds)
 }
 
 /* Code to create from OpenFirmware platform devices */
+<<<<<<< HEAD
 #ifdef CONFIG_LEDS_GPIO_OF
+=======
+#ifdef CONFIG_OF_GPIO
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct gpio_leds_priv * __devinit gpio_leds_create_of(struct platform_device *pdev)
 {
 	struct device_node *np = pdev->dev.of_node, *child;
@@ -223,13 +239,21 @@ static const struct of_device_id of_gpio_leds_match[] = {
 	{ .compatible = "gpio-leds", },
 	{},
 };
+<<<<<<< HEAD
 #else
+=======
+#else /* CONFIG_OF_GPIO */
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct gpio_leds_priv * __devinit gpio_leds_create_of(struct platform_device *pdev)
 {
 	return NULL;
 }
 #define of_gpio_leds_match NULL
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_OF_GPIO */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 static int __devinit gpio_led_probe(struct platform_device *pdev)
@@ -292,6 +316,7 @@ static struct platform_driver gpio_led_driver = {
 	},
 };
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform:leds-gpio");
 
 static int __init gpio_led_init(void)
@@ -306,7 +331,14 @@ static void __exit gpio_led_exit(void)
 
 module_init(gpio_led_init);
 module_exit(gpio_led_exit);
+=======
+module_platform_driver(gpio_led_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Raphael Assenat <raph@8d.com>, Trent Piepho <tpiepho@freescale.com>");
 MODULE_DESCRIPTION("GPIO LED driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:leds-gpio");
+>>>>>>> refs/remotes/origin/cm-10.0

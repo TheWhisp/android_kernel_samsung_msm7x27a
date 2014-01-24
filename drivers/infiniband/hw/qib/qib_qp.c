@@ -34,6 +34,10 @@
 
 #include <linux/err.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/jhash.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "qib.h"
 
@@ -204,6 +208,16 @@ static void free_qpn(struct qib_qpn_table *qpt, u32 qpn)
 		clear_bit(qpn & BITS_PER_PAGE_MASK, map->page);
 }
 
+<<<<<<< HEAD
+=======
+static inline unsigned qpn_hash(struct qib_ibdev *dev, u32 qpn)
+{
+	return jhash_1word(qpn, dev->qp_rnd) &
+		(dev->qp_table_size - 1);
+}
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Put the QP into the hash table.
  * The hash table holds a reference to the QP.
@@ -211,6 +225,7 @@ static void free_qpn(struct qib_qpn_table *qpt, u32 qpn)
 static void insert_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 {
 	struct qib_ibport *ibp = to_iport(qp->ibqp.device, qp->port_num);
+<<<<<<< HEAD
 	unsigned n = qp->ibqp.qp_num % dev->qp_table_size;
 	unsigned long flags;
 
@@ -227,6 +242,25 @@ static void insert_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 	atomic_inc(&qp->refcount);
 
 	spin_unlock_irqrestore(&dev->qpt_lock, flags);
+=======
+	unsigned long flags;
+	unsigned n = qpn_hash(dev, qp->ibqp.qp_num);
+
+	spin_lock_irqsave(&dev->qpt_lock, flags);
+	atomic_inc(&qp->refcount);
+
+	if (qp->ibqp.qp_num == 0)
+		rcu_assign_pointer(ibp->qp0, qp);
+	else if (qp->ibqp.qp_num == 1)
+		rcu_assign_pointer(ibp->qp1, qp);
+	else {
+		qp->next = dev->qp_table[n];
+		rcu_assign_pointer(dev->qp_table[n], qp);
+	}
+
+	spin_unlock_irqrestore(&dev->qpt_lock, flags);
+	synchronize_rcu();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -236,6 +270,7 @@ static void insert_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 static void remove_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 {
 	struct qib_ibport *ibp = to_iport(qp->ibqp.device, qp->port_num);
+<<<<<<< HEAD
 	struct qib_qp *q, **qpp;
 	unsigned long flags;
 
@@ -259,6 +294,34 @@ static void remove_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 			}
 
 	spin_unlock_irqrestore(&dev->qpt_lock, flags);
+=======
+	unsigned n = qpn_hash(dev, qp->ibqp.qp_num);
+	unsigned long flags;
+
+	spin_lock_irqsave(&dev->qpt_lock, flags);
+
+	if (ibp->qp0 == qp) {
+		atomic_dec(&qp->refcount);
+		rcu_assign_pointer(ibp->qp0, NULL);
+	} else if (ibp->qp1 == qp) {
+		atomic_dec(&qp->refcount);
+		rcu_assign_pointer(ibp->qp1, NULL);
+	} else {
+		struct qib_qp *q, **qpp;
+
+		qpp = &dev->qp_table[n];
+		for (; (q = *qpp) != NULL; qpp = &q->next)
+			if (q == qp) {
+				atomic_dec(&qp->refcount);
+				rcu_assign_pointer(*qpp, qp->next);
+				qp->next = NULL;
+				break;
+			}
+	}
+
+	spin_unlock_irqrestore(&dev->qpt_lock, flags);
+	synchronize_rcu();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -280,21 +343,38 @@ unsigned qib_free_all_qps(struct qib_devdata *dd)
 
 		if (!qib_mcast_tree_empty(ibp))
 			qp_inuse++;
+<<<<<<< HEAD
 		if (ibp->qp0)
 			qp_inuse++;
 		if (ibp->qp1)
 			qp_inuse++;
+=======
+		rcu_read_lock();
+		if (rcu_dereference(ibp->qp0))
+			qp_inuse++;
+		if (rcu_dereference(ibp->qp1))
+			qp_inuse++;
+		rcu_read_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	spin_lock_irqsave(&dev->qpt_lock, flags);
 	for (n = 0; n < dev->qp_table_size; n++) {
 		qp = dev->qp_table[n];
+<<<<<<< HEAD
 		dev->qp_table[n] = NULL;
+=======
+		rcu_assign_pointer(dev->qp_table[n], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		for (; qp; qp = qp->next)
 			qp_inuse++;
 	}
 	spin_unlock_irqrestore(&dev->qpt_lock, flags);
+<<<<<<< HEAD
+=======
+	synchronize_rcu();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return qp_inuse;
 }
@@ -309,6 +389,7 @@ unsigned qib_free_all_qps(struct qib_devdata *dd)
  */
 struct qib_qp *qib_lookup_qpn(struct qib_ibport *ibp, u32 qpn)
 {
+<<<<<<< HEAD
 	struct qib_ibdev *dev = &ppd_from_ibp(ibp)->dd->verbs_dev;
 	unsigned long flags;
 	struct qib_qp *qp;
@@ -328,6 +409,30 @@ struct qib_qp *qib_lookup_qpn(struct qib_ibport *ibp, u32 qpn)
 		atomic_inc(&qp->refcount);
 
 	spin_unlock_irqrestore(&dev->qpt_lock, flags);
+=======
+	struct qib_qp *qp = NULL;
+
+	if (unlikely(qpn <= 1)) {
+		rcu_read_lock();
+		if (qpn == 0)
+			qp = rcu_dereference(ibp->qp0);
+		else
+			qp = rcu_dereference(ibp->qp1);
+	} else {
+		struct qib_ibdev *dev = &ppd_from_ibp(ibp)->dd->verbs_dev;
+		unsigned n = qpn_hash(dev, qpn);
+
+		rcu_read_lock();
+		for (qp = dev->qp_table[n]; rcu_dereference(qp); qp = qp->next)
+			if (qp->ibqp.qp_num == qpn)
+				break;
+	}
+	if (qp)
+		if (unlikely(!atomic_inc_not_zero(&qp->refcount)))
+			qp = NULL;
+
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return qp;
 }
 
@@ -765,8 +870,15 @@ int qib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 		}
 	}
 
+<<<<<<< HEAD
 	if (attr_mask & IB_QP_PATH_MTU)
 		qp->path_mtu = pmtu;
+=======
+	if (attr_mask & IB_QP_PATH_MTU) {
+		qp->path_mtu = pmtu;
+		qp->pmtu = ib_mtu_enum_to_int(pmtu);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (attr_mask & IB_QP_RETRY_CNT) {
 		qp->s_retry_cnt = attr->retry_cnt;
@@ -781,8 +893,17 @@ int qib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 	if (attr_mask & IB_QP_MIN_RNR_TIMER)
 		qp->r_min_rnr_timer = attr->min_rnr_timer;
 
+<<<<<<< HEAD
 	if (attr_mask & IB_QP_TIMEOUT)
 		qp->timeout = attr->timeout;
+=======
+	if (attr_mask & IB_QP_TIMEOUT) {
+		qp->timeout = attr->timeout;
+		qp->timeout_jiffies =
+			usecs_to_jiffies((4096UL * (1UL << qp->timeout)) /
+				1000UL);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (attr_mask & IB_QP_QKEY)
 		qp->qkey = attr->qkey;
@@ -1013,6 +1134,13 @@ struct ib_qp *qib_create_qp(struct ib_pd *ibpd,
 			ret = ERR_PTR(-ENOMEM);
 			goto bail_swq;
 		}
+<<<<<<< HEAD
+=======
+		RCU_INIT_POINTER(qp->next, NULL);
+		qp->timeout_jiffies =
+			usecs_to_jiffies((4096UL * (1UL << qp->timeout)) /
+				1000UL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (init_attr->srq)
 			sz = 0;
 		else {

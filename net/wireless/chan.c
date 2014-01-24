@@ -6,6 +6,10 @@
  * Copyright 2009	Johannes Berg <johannes@sipsolutions.net>
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/cfg80211.h>
 #include "core.h"
 
@@ -44,9 +48,15 @@ rdev_freq_to_chan(struct cfg80211_registered_device *rdev,
 	return chan;
 }
 
+<<<<<<< HEAD
 static bool can_beacon_sec_chan(struct wiphy *wiphy,
 				struct ieee80211_channel *chan,
 				enum nl80211_channel_type channel_type)
+=======
+int cfg80211_can_beacon_sec_chan(struct wiphy *wiphy,
+				  struct ieee80211_channel *chan,
+				  enum nl80211_channel_type channel_type)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ieee80211_channel *sec_chan;
 	int diff;
@@ -75,6 +85,10 @@ static bool can_beacon_sec_chan(struct wiphy *wiphy,
 
 	return true;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(cfg80211_can_beacon_sec_chan);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int cfg80211_set_freq(struct cfg80211_registered_device *rdev,
 		      struct wireless_dev *wdev, int freq,
@@ -109,8 +123,13 @@ int cfg80211_set_freq(struct cfg80211_registered_device *rdev,
 		switch (channel_type) {
 		case NL80211_CHAN_HT40PLUS:
 		case NL80211_CHAN_HT40MINUS:
+<<<<<<< HEAD
 			if (!can_beacon_sec_chan(&rdev->wiphy, chan,
 						 channel_type)) {
+=======
+			if (!cfg80211_can_beacon_sec_chan(&rdev->wiphy, chan,
+							  channel_type)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				printk(KERN_DEBUG
 				       "cfg80211: Secondary channel not "
 				       "allowed to initiate communication\n");

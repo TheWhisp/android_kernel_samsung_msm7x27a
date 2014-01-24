@@ -38,7 +38,12 @@ enum nfs4_callback_opnum {
 struct cb_process_state {
 	__be32			drc_status;
 	struct nfs_client	*clp;
+<<<<<<< HEAD
 	int			slotid;
+=======
+	u32			slotid;
+	struct net		*net;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct cb_compound_hdr_arg {
@@ -162,7 +167,11 @@ struct cb_layoutrecallargs {
 	};
 };
 
+<<<<<<< HEAD
 extern unsigned nfs4_callback_layoutrecall(
+=======
+extern __be32 nfs4_callback_layoutrecall(
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct cb_layoutrecallargs *args,
 	void *dummy, struct cb_process_state *cps);
 

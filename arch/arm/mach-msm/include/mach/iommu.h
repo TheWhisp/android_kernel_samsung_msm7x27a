@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,9 +19,17 @@
 
 #include <linux/interrupt.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <mach/socinfo.h>
 
 extern pgprot_t     pgprot_kernel;
+=======
+#include <linux/regulator/consumer.h>
+#include <mach/socinfo.h>
+
+extern pgprot_t     pgprot_kernel;
+extern struct platform_device *msm_iommu_root_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Domain attributes */
 #define MSM_IOMMU_DOMAIN_PT_CACHEABLE	0x1
@@ -41,6 +53,10 @@ extern pgprot_t     pgprot_kernel;
 struct msm_iommu_dev {
 	const char *name;
 	int ncb;
+<<<<<<< HEAD
+=======
+	int ttbr_split;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -72,11 +88,20 @@ struct msm_iommu_ctx_dev {
  */
 struct msm_iommu_drvdata {
 	void __iomem *base;
+<<<<<<< HEAD
 	int irq;
 	int ncb;
 	struct clk *clk;
 	struct clk *pclk;
 	const char *name;
+=======
+	int ncb;
+	int ttbr_split;
+	struct clk *clk;
+	struct clk *pclk;
+	const char *name;
+	struct regulator *gdsc;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -93,6 +118,11 @@ struct msm_iommu_ctx_drvdata {
 	int num;
 	struct platform_device *pdev;
 	struct list_head attached_elm;
+<<<<<<< HEAD
+=======
+	struct iommu_domain *attached_domain;
+	const char *name;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -101,6 +131,10 @@ struct msm_iommu_ctx_drvdata {
  * message and dump useful IOMMU registers.
  */
 irqreturn_t msm_iommu_fault_handler(int irq, void *dev_id);
+<<<<<<< HEAD
+=======
+irqreturn_t msm_iommu_fault_handler_v2(int irq, void *dev_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_MSM_IOMMU
 /*
@@ -118,8 +152,22 @@ static inline struct device *msm_iommu_get_ctx(const char *ctx_name)
 
 #endif
 
+<<<<<<< HEAD
 static inline int msm_soc_version_supports_iommu(void)
 {
+=======
+static inline int msm_soc_version_supports_iommu_v1(void)
+{
+#ifdef CONFIG_OF
+	struct device_node *node;
+
+	node = of_find_compatible_node(NULL, NULL, "qcom,msm-smmu-v2");
+	if (node) {
+		of_node_put(node);
+		return 0;
+	}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (cpu_is_msm8960() &&
 	    SOCINFO_VERSION_MAJOR(socinfo_get_version()) < 2)
 		return 0;

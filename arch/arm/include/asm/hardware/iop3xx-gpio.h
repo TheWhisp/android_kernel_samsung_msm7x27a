@@ -28,6 +28,11 @@
 #include <mach/hardware.h>
 #include <asm-generic/gpio.h>
 
+<<<<<<< HEAD
+=======
+#define __ARM_GPIOLIB_COMPLEX
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IOP3XX_N_GPIOS	8
 
 static inline int gpio_get_value(unsigned gpio)

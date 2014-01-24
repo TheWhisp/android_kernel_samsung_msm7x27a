@@ -711,6 +711,12 @@ __attribute__((section("_ftrace_events"))) *__event_##call = &event_##call
 #undef __perf_count
 #define __perf_count(c) __count = (c)
 
+<<<<<<< HEAD
+=======
+#undef TP_perf_assign
+#define TP_perf_assign(args...) args
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #undef DECLARE_EVENT_CLASS
 #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
 static notrace void							\

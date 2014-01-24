@@ -49,7 +49,11 @@ static struct map_info impa7_map[NUM_FLASHBANKS] = {
 /*
  * MTD partitioning stuff
  */
+<<<<<<< HEAD
 static struct mtd_partition static_partitions[] =
+=======
+static struct mtd_partition partitions[] =
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	{
 		.name = "FileSystem",
@@ -58,16 +62,22 @@ static struct mtd_partition static_partitions[] =
 	},
 };
 
+<<<<<<< HEAD
 static int mtd_parts_nb[NUM_FLASHBANKS];
 static struct mtd_partition *mtd_parts[NUM_FLASHBANKS];
 
 static const char *probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init init_impa7(void)
 {
 	static const char *rom_probe_types[] = PROBETYPES;
 	const char **type;
+<<<<<<< HEAD
 	const char *part_type = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 	static struct { u_long addr; u_long size; } pt[NUM_FLASHBANKS] = {
 	  { WINDOW_ADDR0, WINDOW_SIZE0 },
@@ -97,6 +107,7 @@ static int __init init_impa7(void)
 		if (impa7_mtd[i]) {
 			impa7_mtd[i]->owner = THIS_MODULE;
 			devicesfound++;
+<<<<<<< HEAD
 			mtd_parts_nb[i] = parse_mtd_partitions(impa7_mtd[i],
 							       probes,
 							       &mtd_parts[i],
@@ -114,6 +125,11 @@ static int __init init_impa7(void)
 			       part_type);
 			mtd_device_register(impa7_mtd[i],
 					    mtd_parts[i], mtd_parts_nb[i]);
+=======
+			mtd_device_parse_register(impa7_mtd[i], NULL, NULL,
+						  partitions,
+						  ARRAY_SIZE(partitions));
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		else
 			iounmap((void *)impa7_map[i].virt);

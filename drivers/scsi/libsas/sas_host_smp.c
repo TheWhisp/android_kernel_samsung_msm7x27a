@@ -11,6 +11,10 @@
 #include <linux/scatterlist.h>
 #include <linux/blkdev.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "sas_internal.h"
 
@@ -51,6 +55,94 @@ static void sas_host_smp_discover(struct sas_ha_struct *sas_ha, u8 *resp_data,
 	resp_data[15] = rphy->identify.target_port_protocols;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * to_sas_gpio_gp_bit - given the gpio frame data find the byte/bit position of 'od'
+ * @od: od bit to find
+ * @data: incoming bitstream (from frame)
+ * @index: requested data register index (from frame)
+ * @count: total number of registers in the bitstream (from frame)
+ * @bit: bit position of 'od' in the returned byte
+ *
+ * returns NULL if 'od' is not in 'data'
+ *
+ * From SFF-8485 v0.7:
+ * "In GPIO_TX[1], bit 0 of byte 3 contains the first bit (i.e., OD0.0)
+ *  and bit 7 of byte 0 contains the 32nd bit (i.e., OD10.1).
+ *
+ *  In GPIO_TX[2], bit 0 of byte 3 contains the 33rd bit (i.e., OD10.2)
+ *  and bit 7 of byte 0 contains the 64th bit (i.e., OD21.0)."
+ *
+ * The general-purpose (raw-bitstream) RX registers have the same layout
+ * although 'od' is renamed 'id' for 'input data'.
+ *
+ * SFF-8489 defines the behavior of the LEDs in response to the 'od' values.
+ */
+static u8 *to_sas_gpio_gp_bit(unsigned int od, u8 *data, u8 index, u8 count, u8 *bit)
+{
+	unsigned int reg;
+	u8 byte;
+
+	/* gp registers start at index 1 */
+	if (index == 0)
+		return NULL;
+
+	index--; /* make index 0-based */
+	if (od < index * 32)
+		return NULL;
+
+	od -= index * 32;
+	reg = od >> 5;
+
+	if (reg >= count)
+		return NULL;
+
+	od &= (1 << 5) - 1;
+	byte = 3 - (od >> 3);
+	*bit = od & ((1 << 3) - 1);
+
+	return &data[reg * 4 + byte];
+}
+
+int try_test_sas_gpio_gp_bit(unsigned int od, u8 *data, u8 index, u8 count)
+{
+	u8 *byte;
+	u8 bit;
+
+	byte = to_sas_gpio_gp_bit(od, data, index, count, &bit);
+	if (!byte)
+		return -1;
+
+	return (*byte >> bit) & 1;
+}
+EXPORT_SYMBOL(try_test_sas_gpio_gp_bit);
+
+static int sas_host_smp_write_gpio(struct sas_ha_struct *sas_ha, u8 *resp_data,
+				   u8 reg_type, u8 reg_index, u8 reg_count,
+				   u8 *req_data)
+{
+	struct sas_internal *i = to_sas_internal(sas_ha->core.shost->transportt);
+	int written;
+
+	if (i->dft->lldd_write_gpio == NULL) {
+		resp_data[2] = SMP_RESP_FUNC_UNK;
+		return 0;
+	}
+
+	written = i->dft->lldd_write_gpio(sas_ha, reg_type, reg_index,
+					  reg_count, req_data);
+
+	if (written < 0) {
+		resp_data[2] = SMP_RESP_FUNC_FAILED;
+		written = 0;
+	} else
+		resp_data[2] = SMP_RESP_FUNC_ACC;
+
+	return written;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void sas_report_phy_sata(struct sas_ha_struct *sas_ha, u8 *resp_data,
 				u8 phy_id)
 {
@@ -101,11 +193,20 @@ static void sas_phy_control(struct sas_ha_struct *sas_ha, u8 phy_id,
 	struct sas_internal *i =
 		to_sas_internal(sas_ha->core.shost->transportt);
 	struct sas_phy_linkrates rates;
+<<<<<<< HEAD
+=======
+	struct asd_sas_phy *asd_phy;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (phy_id >= sas_ha->num_phys) {
 		resp_data[2] = SMP_RESP_NO_PHY;
 		return;
 	}
+<<<<<<< HEAD
+=======
+
+	asd_phy = sas_ha->sas_phy[phy_id];
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (phy_op) {
 	case PHY_FUNC_NOP:
 	case PHY_FUNC_LINK_RESET:
@@ -124,7 +225,17 @@ static void sas_phy_control(struct sas_ha_struct *sas_ha, u8 phy_id,
 	rates.minimum_linkrate = min;
 	rates.maximum_linkrate = max;
 
+<<<<<<< HEAD
 	if (i->dft->lldd_control_phy(sas_ha->sas_phy[phy_id], phy_op, &rates))
+=======
+	/* filter reset requests through libata eh */
+	if (phy_op == PHY_FUNC_LINK_RESET && sas_try_ata_reset(asd_phy) == 0) {
+		resp_data[2] = SMP_RESP_FUNC_ACC;
+		return;
+	}
+
+	if (i->dft->lldd_control_phy(asd_phy, phy_op, &rates))
+>>>>>>> refs/remotes/origin/cm-10.0
 		resp_data[2] = SMP_RESP_FUNC_FAILED;
 	else
 		resp_data[2] = SMP_RESP_FUNC_ACC;
@@ -160,9 +271,15 @@ int sas_smp_host_handler(struct Scsi_Host *shost, struct request *req,
 	}
 
 	local_irq_disable();
+<<<<<<< HEAD
 	buf = kmap_atomic(bio_page(req->bio), KM_USER0) + bio_offset(req->bio);
 	memcpy(req_data, buf, blk_rq_bytes(req));
 	kunmap_atomic(buf - bio_offset(req->bio), KM_USER0);
+=======
+	buf = kmap_atomic(bio_page(req->bio));
+	memcpy(req_data, buf, blk_rq_bytes(req));
+	kunmap_atomic(buf - bio_offset(req->bio));
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_enable();
 
 	if (req_data[0] != SMP_REQUEST)
@@ -230,9 +347,29 @@ int sas_smp_host_handler(struct Scsi_Host *shost, struct request *req,
 		/* Can't implement; hosts have no routes */
 		break;
 
+<<<<<<< HEAD
 	case SMP_WRITE_GPIO_REG:
 		/* FIXME: need GPIO support in the transport class */
 		break;
+=======
+	case SMP_WRITE_GPIO_REG: {
+		/* SFF-8485 v0.7 */
+		const int base_frame_size = 11;
+		int to_write = req_data[4];
+
+		if (blk_rq_bytes(req) < base_frame_size + to_write * 4 ||
+		    req->resid_len < base_frame_size + to_write * 4) {
+			resp_data[2] = SMP_RESP_INV_FRM_LEN;
+			break;
+		}
+
+		to_write = sas_host_smp_write_gpio(sas_ha, resp_data, req_data[2],
+						   req_data[3], to_write, &req_data[8]);
+		req->resid_len -= base_frame_size + to_write * 4;
+		rsp->resid_len -= 8;
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	case SMP_CONF_ROUTE_INFO:
 		/* Can't implement; hosts have no routes */
@@ -261,10 +398,17 @@ int sas_smp_host_handler(struct Scsi_Host *shost, struct request *req,
 	}
 
 	local_irq_disable();
+<<<<<<< HEAD
 	buf = kmap_atomic(bio_page(rsp->bio), KM_USER0) + bio_offset(rsp->bio);
 	memcpy(buf, resp_data, blk_rq_bytes(rsp));
 	flush_kernel_dcache_page(bio_page(rsp->bio));
 	kunmap_atomic(buf - bio_offset(rsp->bio), KM_USER0);
+=======
+	buf = kmap_atomic(bio_page(rsp->bio));
+	memcpy(buf, resp_data, blk_rq_bytes(rsp));
+	flush_kernel_dcache_page(bio_page(rsp->bio));
+	kunmap_atomic(buf - bio_offset(rsp->bio));
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_enable();
 
  out:

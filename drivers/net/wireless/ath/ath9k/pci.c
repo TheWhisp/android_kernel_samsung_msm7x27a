@@ -18,6 +18,10 @@
 #include <linux/pci.h>
 #include <linux/pci-aspm.h>
 #include <linux/ath9k_platform.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ath9k.h"
 
 static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
@@ -32,9 +36,19 @@ static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
 	{ PCI_VDEVICE(ATHEROS, 0x002E) }, /* PCI-E */
 	{ PCI_VDEVICE(ATHEROS, 0x0030) }, /* PCI-E  AR9300 */
 	{ PCI_VDEVICE(ATHEROS, 0x0032) }, /* PCI-E  AR9485 */
+<<<<<<< HEAD
 	{ 0 }
 };
 
+=======
+	{ PCI_VDEVICE(ATHEROS, 0x0033) }, /* PCI-E  AR9580 */
+	{ PCI_VDEVICE(ATHEROS, 0x0034) }, /* PCI-E  AR9462 */
+	{ PCI_VDEVICE(ATHEROS, 0x0037) }, /* PCI-E  AR1111/AR9485 */
+	{ 0 }
+};
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* return bus cachesize in 4B word units */
 static void ath_pci_read_cachesize(struct ath_common *common, int *csz)
 {
@@ -88,6 +102,7 @@ static bool ath_pci_eeprom_read(struct ath_common *common, u32 off, u16 *data)
 	return true;
 }
 
+<<<<<<< HEAD
 /*
  * Bluetooth coexistance requires disabling ASPM.
  */
@@ -114,6 +129,63 @@ static void ath_pci_extn_synch_enable(struct ath_common *common)
 	pci_read_config_byte(pdev, sc->sc_ah->caps.pcie_lcr_offset, &lnkctl);
 	lnkctl |= PCI_EXP_LNKCTL_ES;
 	pci_write_config_byte(pdev, sc->sc_ah->caps.pcie_lcr_offset, lnkctl);
+=======
+static void ath_pci_extn_synch_enable(struct ath_common *common)
+{
+	struct ath_softc *sc = (struct ath_softc *) common->priv;
+	struct pci_dev *pdev = to_pci_dev(sc->dev);
+	u8 lnkctl;
+
+	pci_read_config_byte(pdev, sc->sc_ah->caps.pcie_lcr_offset, &lnkctl);
+	lnkctl |= PCI_EXP_LNKCTL_ES;
+	pci_write_config_byte(pdev, sc->sc_ah->caps.pcie_lcr_offset, lnkctl);
+}
+
+/* Need to be called after we discover btcoex capabilities */
+static void ath_pci_aspm_init(struct ath_common *common)
+{
+	struct ath_softc *sc = (struct ath_softc *) common->priv;
+	struct ath_hw *ah = sc->sc_ah;
+	struct pci_dev *pdev = to_pci_dev(sc->dev);
+	struct pci_dev *parent;
+	int pos;
+	u8 aspm;
+
+	pos = pci_pcie_cap(pdev);
+	if (!pos)
+		return;
+
+	parent = pdev->bus->self;
+	if (!parent)
+		return;
+
+	if ((ath9k_hw_get_btcoex_scheme(ah) != ATH_BTCOEX_CFG_NONE) &&
+	    (AR_SREV_9285(ah))) {
+		/* Bluetooth coexistance requires disabling ASPM for AR9285. */
+		pci_read_config_byte(pdev, pos + PCI_EXP_LNKCTL, &aspm);
+		aspm &= ~(PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
+		pci_write_config_byte(pdev, pos + PCI_EXP_LNKCTL, aspm);
+
+		/*
+		 * Both upstream and downstream PCIe components should
+		 * have the same ASPM settings.
+		 */
+		pos = pci_pcie_cap(parent);
+		pci_read_config_byte(parent, pos + PCI_EXP_LNKCTL, &aspm);
+		aspm &= ~(PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
+		pci_write_config_byte(parent, pos + PCI_EXP_LNKCTL, aspm);
+
+		return;
+	}
+
+	pos = pci_pcie_cap(parent);
+	pci_read_config_byte(parent, pos +  PCI_EXP_LNKCTL, &aspm);
+	if (aspm & (PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1)) {
+		ah->aspm_enabled = true;
+		/* Initialize PCIe PM and SERDES registers. */
+		ath9k_hw_configpcipowersave(ah, false);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void ath_pci_aspm_init(struct ath_common *common)
@@ -145,7 +217,10 @@ static const struct ath_bus_ops ath_pci_bus_ops = {
 	.ath_bus_type = ATH_PCI,
 	.read_cachesize = ath_pci_read_cachesize,
 	.eeprom_read = ath_pci_eeprom_read,
+<<<<<<< HEAD
 	.bt_coex_prep = ath_pci_bt_coex_prep,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.extn_synch_en = ath_pci_extn_synch_enable,
 	.aspm_init = ath_pci_aspm_init,
 };
@@ -156,7 +231,10 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	struct ath_softc *sc;
 	struct ieee80211_hw *hw;
 	u8 csz;
+<<<<<<< HEAD
 	u16 subsysid;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 val;
 	int ret = 0;
 	char hw_name[64];
@@ -250,8 +328,12 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 	sc->irq = pdev->irq;
 
+<<<<<<< HEAD
 	pci_read_config_word(pdev, PCI_SUBSYSTEM_ID, &subsysid);
 	ret = ath9k_init_device(id->device, sc, subsysid, &ath_pci_bus_ops);
+=======
+	ret = ath9k_init_device(id->device, sc, &ath_pci_bus_ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to initialize device\n");
 		goto err_init;
@@ -303,12 +385,19 @@ static int ath_pci_suspend(struct device *device)
 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
 	struct ath_softc *sc = hw->priv;
 
+<<<<<<< HEAD
 	ath9k_hw_set_gpio(sc->sc_ah, sc->sc_ah->led_pin, 1);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* The device has to be moved to FULLSLEEP forcibly.
 	 * Otherwise the chip never moved to full sleep,
 	 * when no interface is up.
 	 */
+<<<<<<< HEAD
+=======
+	ath9k_hw_disable(sc->sc_ah);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ath9k_hw_setpower(sc->sc_ah, ATH9K_PM_FULL_SLEEP);
 
 	return 0;
@@ -317,8 +406,11 @@ static int ath_pci_suspend(struct device *device)
 static int ath_pci_resume(struct device *device)
 {
 	struct pci_dev *pdev = to_pci_dev(device);
+<<<<<<< HEAD
 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
 	struct ath_softc *sc = hw->priv;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 val;
 
 	/*
@@ -330,6 +422,7 @@ static int ath_pci_resume(struct device *device)
 	if ((val & 0x0000ff00) != 0)
 		pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
 
+<<<<<<< HEAD
 	/* Enable LED */
 	ath9k_hw_cfg_output(sc->sc_ah, sc->sc_ah->led_pin,
 			    AR_GPIO_OUTPUT_MUX_AS_OUTPUT);
@@ -346,6 +439,8 @@ static int ath_pci_resume(struct device *device)
 	sc->ps_idle = true;
 	ath_radio_disable(sc, hw);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

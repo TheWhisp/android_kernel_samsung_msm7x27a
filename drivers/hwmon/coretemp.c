@@ -36,6 +36,7 @@
 #include <linux/cpu.h>
 #include <linux/pci.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
 #include <asm/msr.h>
 #include <asm/processor.h>
 
@@ -49,6 +50,32 @@
 
 #define TO_PHYS_ID(cpu)		cpu_data(cpu).phys_proc_id
 #define TO_CORE_ID(cpu)		cpu_data(cpu).cpu_core_id
+=======
+#include <linux/moduleparam.h>
+#include <asm/msr.h>
+#include <asm/processor.h>
+#include <asm/cpu_device_id.h>
+
+#define DRVNAME	"coretemp"
+
+/*
+ * force_tjmax only matters when TjMax can't be read from the CPU itself.
+ * When set, it replaces the driver's suboptimal heuristic.
+ */
+static int force_tjmax;
+module_param_named(tjmax, force_tjmax, int, 0444);
+MODULE_PARM_DESC(tjmax, "TjMax value in degrees Celsius");
+
+#define BASE_SYSFS_ATTR_NO	2	/* Sysfs Base attr no for coretemp */
+#define NUM_REAL_CORES		32	/* Number of Real cores per cpu */
+#define CORETEMP_NAME_LENGTH	17	/* String Length of attrs */
+#define MAX_CORE_ATTRS		4	/* Maximum no of basic attrs */
+#define TOTAL_ATTRS		(MAX_CORE_ATTRS + 1)
+#define MAX_CORE_DATA		(NUM_REAL_CORES + BASE_SYSFS_ATTR_NO)
+
+#define TO_PHYS_ID(cpu)		(cpu_data(cpu).phys_proc_id)
+#define TO_CORE_ID(cpu)		(cpu_data(cpu).cpu_core_id)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TO_ATTR_NO(cpu)		(TO_CORE_ID(cpu) + BASE_SYSFS_ATTR_NO)
 
 #ifdef CONFIG_SMP
@@ -65,6 +92,10 @@
  *		This value is passed as "id" field to rdmsr/wrmsr functions.
  * @status_reg: One of IA32_THERM_STATUS or IA32_PACKAGE_THERM_STATUS,
  *		from where the temperature values should be read.
+<<<<<<< HEAD
+=======
+ * @attr_size:  Total number of pre-core attrs displayed in the sysfs.
+>>>>>>> refs/remotes/origin/cm-10.0
  * @is_pkg_data: If this is 1, the temp_data holds pkgtemp data.
  *		Otherwise, temp_data holds coretemp data.
  * @valid: If this is 1, the current temperature is valid.
@@ -77,10 +108,18 @@ struct temp_data {
 	unsigned int cpu;
 	u32 cpu_core_id;
 	u32 status_reg;
+<<<<<<< HEAD
 	bool is_pkg_data;
 	bool valid;
 	struct sensor_device_attribute sd_attrs[MAX_ATTRS];
 	char attr_name[MAX_ATTRS][CORETEMP_NAME_LENGTH];
+=======
+	int attr_size;
+	bool is_pkg_data;
+	bool valid;
+	struct sensor_device_attribute sd_attrs[TOTAL_ATTRS];
+	char attr_name[TOTAL_ATTRS][CORETEMP_NAME_LENGTH];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mutex update_lock;
 };
 
@@ -178,7 +217,12 @@ static ssize_t show_temp(struct device *dev,
 	return tdata->valid ? sprintf(buf, "%d\n", tdata->temp) : -EAGAIN;
 }
 
+<<<<<<< HEAD
 static int adjust_tjmax(struct cpuinfo_x86 *c, u32 id, struct device *dev)
+=======
+static int __cpuinit adjust_tjmax(struct cpuinfo_x86 *c, u32 id,
+				  struct device *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* The 100C is default for both mobile and non mobile CPUs */
 
@@ -272,9 +316,15 @@ static int adjust_tjmax(struct cpuinfo_x86 *c, u32 id, struct device *dev)
 	return tjmax;
 }
 
+<<<<<<< HEAD
 static int get_tjmax(struct cpuinfo_x86 *c, u32 id, struct device *dev)
 {
 	/* The 100C is default for both mobile and non mobile CPUs */
+=======
+static int __cpuinit get_tjmax(struct cpuinfo_x86 *c, u32 id,
+			       struct device *dev)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err;
 	u32 eax, edx;
 	u32 val;
@@ -285,7 +335,12 @@ static int get_tjmax(struct cpuinfo_x86 *c, u32 id, struct device *dev)
 	 */
 	err = rdmsr_safe_on_cpu(id, MSR_IA32_TEMPERATURE_TARGET, &eax, &edx);
 	if (err) {
+<<<<<<< HEAD
 		dev_warn(dev, "Unable to read TjMax from CPU.\n");
+=======
+		if (c->x86_model > 0xe && c->x86_model != 0x1c)
+			dev_warn(dev, "Unable to read TjMax from CPU %u\n", id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		val = (eax >> 16) & 0xff;
 		/*
@@ -293,11 +348,24 @@ static int get_tjmax(struct cpuinfo_x86 *c, u32 id, struct device *dev)
 		 * will be used
 		 */
 		if (val) {
+<<<<<<< HEAD
 			dev_info(dev, "TjMax is %d C.\n", val);
+=======
+			dev_dbg(dev, "TjMax is %d degrees C\n", val);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return val * 1000;
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (force_tjmax) {
+		dev_notice(dev, "TjMax forced to %d degrees C by user\n",
+			   force_tjmax);
+		return force_tjmax * 1000;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * An assumption is made for early CPUs and unreadable MSR.
 	 * NOTE: the calculated value may not be correct.
@@ -305,6 +373,7 @@ static int get_tjmax(struct cpuinfo_x86 *c, u32 id, struct device *dev)
 	return adjust_tjmax(c, id, dev);
 }
 
+<<<<<<< HEAD
 static void __devinit get_ucode_rev_on_cpu(void *edx)
 {
 	u32 eax;
@@ -330,6 +399,10 @@ static int get_pkg_tjmax(unsigned int cpu, struct device *dev)
 }
 
 static int create_name_attr(struct platform_data *pdata, struct device *dev)
+=======
+static int __devinit create_name_attr(struct platform_data *pdata,
+				      struct device *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	sysfs_attr_init(&pdata->name_attr.attr);
 	pdata->name_attr.attr.name = "name";
@@ -338,6 +411,7 @@ static int create_name_attr(struct platform_data *pdata, struct device *dev)
 	return device_create_file(dev, &pdata->name_attr);
 }
 
+<<<<<<< HEAD
 static int create_core_attrs(struct temp_data *tdata, struct device *dev,
 				int attr_no)
 {
@@ -352,13 +426,32 @@ static int create_core_attrs(struct temp_data *tdata, struct device *dev,
 					"temp%d_crit" };
 
 	for (i = 0; i < MAX_ATTRS; i++) {
+=======
+static int __cpuinit create_core_attrs(struct temp_data *tdata,
+				       struct device *dev, int attr_no)
+{
+	int err, i;
+	static ssize_t (*const rd_ptr[TOTAL_ATTRS]) (struct device *dev,
+			struct device_attribute *devattr, char *buf) = {
+			show_label, show_crit_alarm, show_temp, show_tjmax,
+			show_ttarget };
+	static const char *const names[TOTAL_ATTRS] = {
+					"temp%d_label", "temp%d_crit_alarm",
+					"temp%d_input", "temp%d_crit",
+					"temp%d_max" };
+
+	for (i = 0; i < tdata->attr_size; i++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snprintf(tdata->attr_name[i], CORETEMP_NAME_LENGTH, names[i],
 			attr_no);
 		sysfs_attr_init(&tdata->sd_attrs[i].dev_attr.attr);
 		tdata->sd_attrs[i].dev_attr.attr.name = tdata->attr_name[i];
 		tdata->sd_attrs[i].dev_attr.attr.mode = S_IRUGO;
 		tdata->sd_attrs[i].dev_attr.show = rd_ptr[i];
+<<<<<<< HEAD
 		tdata->sd_attrs[i].dev_attr.store = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		tdata->sd_attrs[i].index = attr_no;
 		err = device_create_file(dev, &tdata->sd_attrs[i].dev_attr);
 		if (err)
@@ -372,6 +465,7 @@ exit_free:
 	return err;
 }
 
+<<<<<<< HEAD
 static void update_ttarget(__u8 cpu_model, struct temp_data *tdata,
 				struct device *dev)
 {
@@ -410,12 +504,19 @@ static int __devinit chk_ucode_version(struct platform_device *pdev)
 	struct cpuinfo_x86 *c = &cpu_data(pdev->id);
 	int err;
 	u32 edx;
+=======
+
+static int __cpuinit chk_ucode_version(unsigned int cpu)
+{
+	struct cpuinfo_x86 *c = &cpu_data(cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Check if we have problem with errata AE18 of Core processors:
 	 * Readings might stop update when processor visited too deep sleep,
 	 * fixed for stepping D0 (6EC).
 	 */
+<<<<<<< HEAD
 	if (c->x86_model == 0xe && c->x86_mask < 0xc) {
 		/* check for microcode update */
 		err = smp_call_function_single(pdev->id, get_ucode_rev_on_cpu,
@@ -431,11 +532,21 @@ static int __devinit chk_ucode_version(struct platform_device *pdev)
 				"microcode of the CPU!\n");
 			return -ENODEV;
 		}
+=======
+	if (c->x86_model == 0xe && c->x86_mask < 0xc && c->microcode < 0x39) {
+		pr_err("Errata AE18 not fixed, update BIOS or "
+		       "microcode of the CPU!\n");
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_device *coretemp_get_pdev(unsigned int cpu)
+=======
+static struct platform_device __cpuinit *coretemp_get_pdev(unsigned int cpu)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u16 phys_proc_id = TO_PHYS_ID(cpu);
 	struct pdev_entry *p;
@@ -452,7 +563,12 @@ static struct platform_device *coretemp_get_pdev(unsigned int cpu)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static struct temp_data *init_temp_data(unsigned int cpu, int pkg_flag)
+=======
+static struct temp_data __cpuinit *init_temp_data(unsigned int cpu,
+						  int pkg_flag)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct temp_data *tdata;
 
@@ -465,15 +581,27 @@ static struct temp_data *init_temp_data(unsigned int cpu, int pkg_flag)
 	tdata->is_pkg_data = pkg_flag;
 	tdata->cpu = cpu;
 	tdata->cpu_core_id = TO_CORE_ID(cpu);
+<<<<<<< HEAD
+=======
+	tdata->attr_size = MAX_CORE_ATTRS;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_init(&tdata->update_lock);
 	return tdata;
 }
 
+<<<<<<< HEAD
 static int create_core_data(struct platform_data *pdata,
 				struct platform_device *pdev,
 				unsigned int cpu, int pkg_flag)
 {
 	struct temp_data *tdata;
+=======
+static int __cpuinit create_core_data(struct platform_device *pdev,
+				unsigned int cpu, int pkg_flag)
+{
+	struct temp_data *tdata;
+	struct platform_data *pdata = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct cpuinfo_x86 *c = &cpu_data(cpu);
 	u32 eax, edx;
 	int err, attr_no;
@@ -509,12 +637,32 @@ static int create_core_data(struct platform_data *pdata,
 		goto exit_free;
 
 	/* We can access status register. Get Critical Temperature */
+<<<<<<< HEAD
 	if (pkg_flag)
 		tdata->tjmax = get_pkg_tjmax(pdev->id, &pdev->dev);
 	else
 		tdata->tjmax = get_tjmax(c, cpu, &pdev->dev);
 
 	update_ttarget(c->x86_model, tdata, &pdev->dev);
+=======
+	tdata->tjmax = get_tjmax(c, cpu, &pdev->dev);
+
+	/*
+	 * Read the still undocumented bits 8:15 of IA32_TEMPERATURE_TARGET.
+	 * The target temperature is available on older CPUs but not in this
+	 * register. Atoms don't have the register at all.
+	 */
+	if (c->x86_model > 0xe && c->x86_model != 0x1c) {
+		err = rdmsr_safe_on_cpu(cpu, MSR_IA32_TEMPERATURE_TARGET,
+					&eax, &edx);
+		if (!err) {
+			tdata->ttarget
+			  = tdata->tjmax - ((eax >> 8) & 0xff) * 1000;
+			tdata->attr_size++;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	pdata->core_data[attr_no] = tdata;
 
 	/* Create sysfs interfaces */
@@ -524,24 +672,37 @@ static int create_core_data(struct platform_data *pdata,
 
 	return 0;
 exit_free:
+<<<<<<< HEAD
+=======
+	pdata->core_data[attr_no] = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(tdata);
 	return err;
 }
 
+<<<<<<< HEAD
 static void coretemp_add_core(unsigned int cpu, int pkg_flag)
 {
 	struct platform_data *pdata;
+=======
+static void __cpuinit coretemp_add_core(unsigned int cpu, int pkg_flag)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct platform_device *pdev = coretemp_get_pdev(cpu);
 	int err;
 
 	if (!pdev)
 		return;
 
+<<<<<<< HEAD
 	pdata = platform_get_drvdata(pdev);
 	if (!pdata)
 		return;
 
 	err = create_core_data(pdata, pdev, cpu, pkg_flag);
+=======
+	err = create_core_data(pdev, cpu, pkg_flag);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		dev_err(&pdev->dev, "Adding Core %u failed\n", cpu);
 }
@@ -553,7 +714,11 @@ static void coretemp_remove_core(struct platform_data *pdata,
 	struct temp_data *tdata = pdata->core_data[indx];
 
 	/* Remove the sysfs attributes */
+<<<<<<< HEAD
 	for (i = 0; i < MAX_ATTRS; i++)
+=======
+	for (i = 0; i < tdata->attr_size; i++)
+>>>>>>> refs/remotes/origin/cm-10.0
 		device_remove_file(dev, &tdata->sd_attrs[i].dev_attr);
 
 	kfree(pdata->core_data[indx]);
@@ -565,11 +730,14 @@ static int __devinit coretemp_probe(struct platform_device *pdev)
 	struct platform_data *pdata;
 	int err;
 
+<<<<<<< HEAD
 	/* Check the microcode version of the CPU */
 	err = chk_ucode_version(pdev);
 	if (err)
 		return err;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Initialize the per-package data structures */
 	pdata = kzalloc(sizeof(struct platform_data), GFP_KERNEL);
 	if (!pdata)
@@ -579,7 +747,11 @@ static int __devinit coretemp_probe(struct platform_device *pdev)
 	if (err)
 		goto exit_free;
 
+<<<<<<< HEAD
 	pdata->phys_proc_id = TO_PHYS_ID(pdev->id);
+=======
+	pdata->phys_proc_id = pdev->id;
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_set_drvdata(pdev, pdata);
 
 	pdata->hwmon_dev = hwmon_device_register(&pdev->dev);
@@ -631,7 +803,11 @@ static int __cpuinit coretemp_device_add(unsigned int cpu)
 
 	mutex_lock(&pdev_list_mutex);
 
+<<<<<<< HEAD
 	pdev = platform_device_alloc(DRVNAME, cpu);
+=======
+	pdev = platform_device_alloc(DRVNAME, TO_PHYS_ID(cpu));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!pdev) {
 		err = -ENOMEM;
 		pr_err("Device allocation failed\n");
@@ -651,7 +827,11 @@ static int __cpuinit coretemp_device_add(unsigned int cpu)
 	}
 
 	pdev_entry->pdev = pdev;
+<<<<<<< HEAD
 	pdev_entry->phys_proc_id = TO_PHYS_ID(cpu);
+=======
+	pdev_entry->phys_proc_id = pdev->id;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	list_add_tail(&pdev_entry->list, &pdev_list);
 	mutex_unlock(&pdev_list_mutex);
@@ -667,7 +847,11 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static void coretemp_device_remove(unsigned int cpu)
+=======
+static void __cpuinit coretemp_device_remove(unsigned int cpu)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pdev_entry *p, *n;
 	u16 phys_proc_id = TO_PHYS_ID(cpu);
@@ -683,7 +867,11 @@ static void coretemp_device_remove(unsigned int cpu)
 	mutex_unlock(&pdev_list_mutex);
 }
 
+<<<<<<< HEAD
 static bool is_any_core_online(struct platform_data *pdata)
+=======
+static bool __cpuinit is_any_core_online(struct platform_data *pdata)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
@@ -712,6 +900,13 @@ static void __cpuinit get_core_online(unsigned int cpu)
 		return;
 
 	if (!pdev) {
+<<<<<<< HEAD
+=======
+		/* Check the microcode version of the CPU */
+		if (chk_ucode_version(cpu))
+			return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * Alright, we have DTS support.
 		 * We are bringing the _first_ core in this pkg
@@ -746,8 +941,11 @@ static void __cpuinit put_core_offline(unsigned int cpu)
 		return;
 
 	pdata = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	if (!pdata)
 		return;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	indx = TO_ATTR_NO(cpu);
 
@@ -806,13 +1004,32 @@ static struct notifier_block coretemp_cpu_notifier __refdata = {
 	.notifier_call = coretemp_cpu_callback,
 };
 
+<<<<<<< HEAD
+=======
+static const struct x86_cpu_id coretemp_ids[] = {
+	{ X86_VENDOR_INTEL, X86_FAMILY_ANY, X86_MODEL_ANY, X86_FEATURE_DTHERM },
+	{}
+};
+MODULE_DEVICE_TABLE(x86cpu, coretemp_ids);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init coretemp_init(void)
 {
 	int i, err = -ENODEV;
 
+<<<<<<< HEAD
 	/* quick check if we run Intel */
 	if (cpu_data(0).x86_vendor != X86_VENDOR_INTEL)
 		goto exit;
+=======
+	/*
+	 * CPUID.06H.EAX[0] indicates whether the CPU has thermal
+	 * sensors. We check this bit only, all the early CPUs
+	 * without thermal sensors will be filtered out.
+	 */
+	if (!x86_match_cpu(coretemp_ids))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = platform_driver_register(&coretemp_driver);
 	if (err)

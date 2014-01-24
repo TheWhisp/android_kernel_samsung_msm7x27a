@@ -359,7 +359,11 @@ static int idmouse_probe(struct usb_interface *interface,
 	endpoint = &iface_desc->endpoint[0].desc;
 	if (!dev->bulk_in_endpointAddr && usb_endpoint_is_bulk_in(endpoint)) {
 		/* we found a bulk in endpoint */
+<<<<<<< HEAD
 		dev->orig_bi_size = le16_to_cpu(endpoint->wMaxPacketSize);
+=======
+		dev->orig_bi_size = usb_endpoint_maxp(endpoint);
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev->bulk_in_size = 0x200; /* works _much_ faster */
 		dev->bulk_in_endpointAddr = endpoint->bEndpointAddress;
 		dev->bulk_in_buffer =
@@ -428,6 +432,7 @@ static void idmouse_disconnect(struct usb_interface *interface)
 	dev_info(&interface->dev, "disconnected\n");
 }
 
+<<<<<<< HEAD
 static int __init usb_idmouse_init(void)
 {
 	int result;
@@ -451,6 +456,9 @@ static void __exit usb_idmouse_exit(void)
 
 module_init(usb_idmouse_init);
 module_exit(usb_idmouse_exit);
+=======
+module_usb_driver(idmouse_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

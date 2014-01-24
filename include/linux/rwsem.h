@@ -14,8 +14,12 @@
 #include <linux/list.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct rw_semaphore;
 
@@ -25,7 +29,11 @@ struct rw_semaphore;
 /* All arch specific implementations share the same struct */
 struct rw_semaphore {
 	long			count;
+<<<<<<< HEAD
 	spinlock_t		wait_lock;
+=======
+	raw_spinlock_t		wait_lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head	wait_list;
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 	struct lockdep_map	dep_map;
@@ -56,9 +64,17 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
 # define __RWSEM_DEP_MAP_INIT(lockname)
 #endif
 
+<<<<<<< HEAD
 #define __RWSEM_INITIALIZER(name) \
 	{ RWSEM_UNLOCKED_VALUE, __SPIN_LOCK_UNLOCKED(name.wait_lock),	\
 	  LIST_HEAD_INIT((name).wait_list) __RWSEM_DEP_MAP_INIT(name) }
+=======
+#define __RWSEM_INITIALIZER(name)			\
+	{ RWSEM_UNLOCKED_VALUE,				\
+	  __RAW_SPIN_LOCK_UNLOCKED(name.wait_lock),	\
+	  LIST_HEAD_INIT((name).wait_list)		\
+	  __RWSEM_DEP_MAP_INIT(name) }
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DECLARE_RWSEM(name) \
 	struct rw_semaphore name = __RWSEM_INITIALIZER(name)
@@ -124,6 +140,7 @@ extern void downgrade_write(struct rw_semaphore *sem);
  */
 extern void down_read_nested(struct rw_semaphore *sem, int subclass);
 extern void down_write_nested(struct rw_semaphore *sem, int subclass);
+<<<<<<< HEAD
 /*
  * Take/release a lock when not the owner will release it.
  *
@@ -137,6 +154,11 @@ extern void up_read_non_owner(struct rw_semaphore *sem);
 # define down_write_nested(sem, subclass)	down_write(sem)
 # define down_read_non_owner(sem)		down_read(sem)
 # define up_read_non_owner(sem)			up_read(sem)
+=======
+#else
+# define down_read_nested(sem, subclass)		down_read(sem)
+# define down_write_nested(sem, subclass)	down_write(sem)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #endif /* _LINUX_RWSEM_H */

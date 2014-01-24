@@ -27,6 +27,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/list.h>
 #include <linux/jhash.h>
@@ -237,8 +242,13 @@ int p9_errstr2errno(char *errstr, int len)
 	if (errno == 0) {
 		/* TODO: if error isn't found, add it dynamically */
 		errstr[len] = 0;
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: server reported unknown error %s\n",
 			__func__, errstr);
+=======
+		pr_err("%s: server reported unknown error %s\n",
+		       __func__, errstr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		errno = ESERVERFAULT;
 	}
 

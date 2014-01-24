@@ -37,6 +37,7 @@
 #include <net/9p/client.h>
 #include "protocol.h"
 
+<<<<<<< HEAD
 static int
 p9pdu_writef(struct p9_fcall *pdu, int proto_version, const char *fmt, ...);
 
@@ -77,6 +78,13 @@ p9pdu_dump(int way, struct p9_fcall *pdu)
 #endif
 EXPORT_SYMBOL(p9pdu_dump);
 
+=======
+#include <trace/events/9p.h>
+
+static int
+p9pdu_writef(struct p9_fcall *pdu, int proto_version, const char *fmt, ...);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void p9stat_free(struct p9_wstat *stbuf)
 {
 	kfree(stbuf->name);
@@ -87,7 +95,11 @@ void p9stat_free(struct p9_wstat *stbuf)
 }
 EXPORT_SYMBOL(p9stat_free);
 
+<<<<<<< HEAD
 static size_t pdu_read(struct p9_fcall *pdu, void *data, size_t size)
+=======
+size_t pdu_read(struct p9_fcall *pdu, void *data, size_t size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	size_t len = min(pdu->size - pdu->offset, size);
 	memcpy(data, &pdu->sdata[pdu->offset], len);
@@ -114,6 +126,7 @@ pdu_write_u(struct p9_fcall *pdu, const char __user *udata, size_t size)
 	return size - len;
 }
 
+<<<<<<< HEAD
 static size_t
 pdu_write_urw(struct p9_fcall *pdu, const char *kdata, const char __user *udata,
 		size_t size)
@@ -134,6 +147,8 @@ pdu_write_readdir(struct p9_fcall *pdu, const char *kdata, size_t size)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
 	b - int8_t
 	w - int16_t
@@ -465,6 +480,7 @@ p9pdu_vwritef(struct p9_fcall *pdu, int proto_version, const char *fmt,
 					errcode = -EFAULT;
 			}
 			break;
+<<<<<<< HEAD
 		case 'E':{
 				 int32_t cnt = va_arg(ap, int32_t);
 				 const char *k = va_arg(ap, const void *);
@@ -485,6 +501,8 @@ p9pdu_vwritef(struct p9_fcall *pdu, int proto_version, const char *fmt,
 					errcode = -EFAULT;
 			 }
 			 break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		case 'U':{
 				int32_t count = va_arg(ap, int32_t);
 				const char __user *udata =
@@ -597,7 +615,11 @@ p9pdu_writef(struct p9_fcall *pdu, int proto_version, const char *fmt, ...)
 	return ret;
 }
 
+<<<<<<< HEAD
 int p9stat_read(char *buf, int len, struct p9_wstat *st, int proto_version)
+=======
+int p9stat_read(struct p9_client *clnt, char *buf, int len, struct p9_wstat *st)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct p9_fcall fake_pdu;
 	int ret;
@@ -607,10 +629,17 @@ int p9stat_read(char *buf, int len, struct p9_wstat *st, int proto_version)
 	fake_pdu.sdata = buf;
 	fake_pdu.offset = 0;
 
+<<<<<<< HEAD
 	ret = p9pdu_readf(&fake_pdu, proto_version, "S", st);
 	if (ret) {
 		P9_DPRINTK(P9_DEBUG_9P, "<<< p9stat_read failed: %d\n", ret);
 		p9pdu_dump(1, &fake_pdu);
+=======
+	ret = p9pdu_readf(&fake_pdu, clnt->proto_version, "S", st);
+	if (ret) {
+		p9_debug(P9_DEBUG_9P, "<<< p9stat_read failed: %d\n", ret);
+		trace_9p_protocol_dump(clnt, &fake_pdu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return ret;
@@ -623,7 +652,11 @@ int p9pdu_prepare(struct p9_fcall *pdu, int16_t tag, int8_t type)
 	return p9pdu_writef(pdu, 0, "dbw", 0, type, tag);
 }
 
+<<<<<<< HEAD
 int p9pdu_finalize(struct p9_fcall *pdu)
+=======
+int p9pdu_finalize(struct p9_client *clnt, struct p9_fcall *pdu)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int size = pdu->size;
 	int err;
@@ -632,6 +665,7 @@ int p9pdu_finalize(struct p9_fcall *pdu)
 	err = p9pdu_writef(pdu, 0, "d", size);
 	pdu->size = size;
 
+<<<<<<< HEAD
 #ifdef CONFIG_NET_9P_DEBUG
 	if ((p9_debug_level & P9_DEBUG_PKT) == P9_DEBUG_PKT)
 		p9pdu_dump(0, pdu);
@@ -639,6 +673,11 @@ int p9pdu_finalize(struct p9_fcall *pdu)
 
 	P9_DPRINTK(P9_DEBUG_9P, ">>> size=%d type: %d tag: %d\n", pdu->size,
 							pdu->id, pdu->tag);
+=======
+	trace_9p_protocol_dump(clnt, pdu);
+	p9_debug(P9_DEBUG_9P, ">>> size=%d type: %d tag: %d\n",
+		 pdu->size, pdu->id, pdu->tag);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return err;
 }
@@ -647,6 +686,7 @@ void p9pdu_reset(struct p9_fcall *pdu)
 {
 	pdu->offset = 0;
 	pdu->size = 0;
+<<<<<<< HEAD
 	pdu->private = NULL;
 	pdu->pubuf = NULL;
 	pdu->pkbuf = NULL;
@@ -655,6 +695,12 @@ void p9pdu_reset(struct p9_fcall *pdu)
 
 int p9dirent_read(char *buf, int len, struct p9_dirent *dirent,
 						int proto_version)
+=======
+}
+
+int p9dirent_read(struct p9_client *clnt, char *buf, int len,
+		  struct p9_dirent *dirent)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct p9_fcall fake_pdu;
 	int ret;
@@ -665,11 +711,19 @@ int p9dirent_read(char *buf, int len, struct p9_dirent *dirent,
 	fake_pdu.sdata = buf;
 	fake_pdu.offset = 0;
 
+<<<<<<< HEAD
 	ret = p9pdu_readf(&fake_pdu, proto_version, "Qqbs", &dirent->qid,
 			&dirent->d_off, &dirent->d_type, &nameptr);
 	if (ret) {
 		P9_DPRINTK(P9_DEBUG_9P, "<<< p9dirent_read failed: %d\n", ret);
 		p9pdu_dump(1, &fake_pdu);
+=======
+	ret = p9pdu_readf(&fake_pdu, clnt->proto_version, "Qqbs", &dirent->qid,
+			  &dirent->d_off, &dirent->d_type, &nameptr);
+	if (ret) {
+		p9_debug(P9_DEBUG_9P, "<<< p9dirent_read failed: %d\n", ret);
+		trace_9p_protocol_dump(clnt, &fake_pdu);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 

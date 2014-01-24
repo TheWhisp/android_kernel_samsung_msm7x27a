@@ -269,6 +269,7 @@ static struct usb_driver usb_acecad_driver = {
 	.id_table =	usb_acecad_id_table,
 };
 
+<<<<<<< HEAD
 static int __init usb_acecad_init(void)
 {
 	int result = usb_register(&usb_acecad_driver);
@@ -285,3 +286,6 @@ static void __exit usb_acecad_exit(void)
 
 module_init(usb_acecad_init);
 module_exit(usb_acecad_exit);
+=======
+module_usb_driver(usb_acecad_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

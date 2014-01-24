@@ -16,7 +16,11 @@
 #include <linux/cpumask.h>
 
 #include <asm/r4k-timer.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/barrier.h>
 #include <asm/mipsregs.h>
 

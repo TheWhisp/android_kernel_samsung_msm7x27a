@@ -84,6 +84,12 @@ static bool pcie_pme_walk_bus(struct pci_bus *bus)
 	list_for_each_entry(dev, &bus->devices, bus_list) {
 		/* Skip PCIe devices in case we started from a root port. */
 		if (!pci_is_pcie(dev) && pci_check_pme_status(dev)) {
+<<<<<<< HEAD
+=======
+			if (dev->pme_poll)
+				dev->pme_poll = false;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			pci_wakeup_event(dev);
 			pm_request_resume(&dev->dev);
 			ret = true;
@@ -142,6 +148,12 @@ static void pcie_pme_handle_request(struct pci_dev *port, u16 req_id)
 
 	/* First, check if the PME is from the root port itself. */
 	if (port->devfn == devfn && port->bus->number == busnr) {
+<<<<<<< HEAD
+=======
+		if (port->pme_poll)
+			port->pme_poll = false;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (pci_check_pme_status(port)) {
 			pm_request_resume(&port->dev);
 			found = true;
@@ -187,6 +199,12 @@ static void pcie_pme_handle_request(struct pci_dev *port, u16 req_id)
 		/* The device is there, but we have to check its PME status. */
 		found = pci_check_pme_status(dev);
 		if (found) {
+<<<<<<< HEAD
+=======
+			if (dev->pme_poll)
+				dev->pme_poll = false;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			pci_wakeup_event(dev);
 			pm_request_resume(&dev->dev);
 		}

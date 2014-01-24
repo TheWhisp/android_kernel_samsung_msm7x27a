@@ -28,7 +28,10 @@
 #include <linux/hw_breakpoint.h>
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/processor.h>
 #include <asm/mmu_context.h>
 #include <asm/syscalls.h>
@@ -63,7 +66,11 @@ static inline int put_stack_long(struct task_struct *task, int offset,
 	return 0;
 }
 
+<<<<<<< HEAD
 void ptrace_triggered(struct perf_event *bp, int nmi,
+=======
+void ptrace_triggered(struct perf_event *bp,
+>>>>>>> refs/remotes/origin/cm-10.0
 		      struct perf_sample_data *data, struct pt_regs *regs)
 {
 	struct perf_event_attr attr;
@@ -91,7 +98,12 @@ static int set_single_step(struct task_struct *tsk, unsigned long addr)
 		attr.bp_len = HW_BREAKPOINT_LEN_2;
 		attr.bp_type = HW_BREAKPOINT_R;
 
+<<<<<<< HEAD
 		bp = register_user_hw_breakpoint(&attr, ptrace_triggered, tsk);
+=======
+		bp = register_user_hw_breakpoint(&attr, ptrace_triggered,
+						 NULL, tsk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(bp))
 			return PTR_ERR(bp);
 
@@ -517,10 +529,16 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_enter(regs, regs->regs[0]);
 
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_entry(audit_arch(), regs->regs[3],
 				    regs->regs[4], regs->regs[5],
 				    regs->regs[6], regs->regs[7]);
+=======
+	audit_syscall_entry(audit_arch(), regs->regs[3],
+			    regs->regs[4], regs->regs[5],
+			    regs->regs[6], regs->regs[7]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret ?: regs->regs[0];
 }
@@ -529,9 +547,13 @@ asmlinkage void do_syscall_trace_leave(struct pt_regs *regs)
 {
 	int step;
 
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_exit(AUDITSC_RESULT(regs->regs[0]),
 				   regs->regs[0]);
+=======
+	audit_syscall_exit(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_exit(regs, regs->regs[0]);

@@ -14,6 +14,10 @@
 
 #include <linux/sched.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/lirc.h>
 #include <media/lirc_dev.h>
 #include <media/rc-core.h>
@@ -98,24 +102,41 @@ static int ir_lirc_decode(struct rc_dev *dev, struct ir_raw_event ev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t ir_lirc_transmit_ir(struct file *file, const char *buf,
+=======
+static ssize_t ir_lirc_transmit_ir(struct file *file, const char __user *buf,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   size_t n, loff_t *ppos)
 {
 	struct lirc_codec *lirc;
 	struct rc_dev *dev;
+<<<<<<< HEAD
 	int *txbuf; /* buffer with values to transmit */
 	int ret = 0;
+=======
+	unsigned int *txbuf; /* buffer with values to transmit */
+	ssize_t ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	size_t count;
 
 	lirc = lirc_get_pdata(file);
 	if (!lirc)
 		return -EFAULT;
 
+<<<<<<< HEAD
 	if (n % sizeof(int))
 		return -EINVAL;
 
 	count = n / sizeof(int);
 	if (count > LIRCBUF_SIZE || count % 2 == 0 || n % sizeof(int) != 0)
+=======
+	if (n < sizeof(unsigned) || n % sizeof(unsigned))
+		return -EINVAL;
+
+	count = n / sizeof(unsigned);
+	if (count > LIRCBUF_SIZE || count % 2 == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	txbuf = memdup_user(buf, n);
@@ -129,7 +150,14 @@ static ssize_t ir_lirc_transmit_ir(struct file *file, const char *buf,
 	}
 
 	if (dev->tx_ir)
+<<<<<<< HEAD
 		ret = dev->tx_ir(dev, txbuf, (u32)n);
+=======
+		ret = dev->tx_ir(dev, txbuf, count);
+
+	if (ret > 0)
+		ret *= sizeof(unsigned);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	kfree(txbuf);
@@ -137,10 +165,18 @@ out:
 }
 
 static long ir_lirc_ioctl(struct file *filep, unsigned int cmd,
+<<<<<<< HEAD
 			unsigned long __user arg)
 {
 	struct lirc_codec *lirc;
 	struct rc_dev *dev;
+=======
+			unsigned long arg)
+{
+	struct lirc_codec *lirc;
+	struct rc_dev *dev;
+	u32 __user *argp = (u32 __user *)(arg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0;
 	__u32 val = 0, tmp;
 
@@ -153,7 +189,11 @@ static long ir_lirc_ioctl(struct file *filep, unsigned int cmd,
 		return -EFAULT;
 
 	if (_IOC_DIR(cmd) & _IOC_WRITE) {
+<<<<<<< HEAD
 		ret = get_user(val, (__u32 *)arg);
+=======
+		ret = get_user(val, argp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret)
 			return ret;
 	}
@@ -262,7 +302,11 @@ static long ir_lirc_ioctl(struct file *filep, unsigned int cmd,
 	}
 
 	if (_IOC_DIR(cmd) & _IOC_READ)
+<<<<<<< HEAD
 		ret = put_user(val, (__u32 *)arg);
+=======
+		ret = put_user(val, argp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }

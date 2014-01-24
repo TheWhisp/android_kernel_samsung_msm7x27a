@@ -47,6 +47,10 @@
 #include <linux/sunrpc/clnt.h>
 #include <linux/sunrpc/sched.h>
 #include <linux/sunrpc/svc_rdma.h>
+<<<<<<< HEAD
+=======
+#include "xprt_rdma.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define RPCDBG_FACILITY	RPCDBG_SVCXPRT
 

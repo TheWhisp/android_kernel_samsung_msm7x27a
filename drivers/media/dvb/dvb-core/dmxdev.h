@@ -4,6 +4,11 @@
  * Copyright (C) 2000 Ralph Metzler & Marcus Metzler
  *                    for convergence integrated media GmbH
  *
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -32,7 +37,11 @@
 #include <linux/string.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/dvb/dmx.h>
 
 #include "dvbdev.h"
@@ -83,14 +92,26 @@ struct dmxdev_filter {
 
 	struct mutex mutex;
 
+<<<<<<< HEAD
+=======
+	/* relevent for decoder PES */
+	unsigned long pes_buffer_size;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* only for sections */
 	struct timer_list timer;
 	int todo;
 	u8 secheader[3];
 };
 
+<<<<<<< HEAD
 
 struct dmxdev {
+=======
+struct dmxdev {
+	struct work_struct dvr_input_work;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dvb_device *dvbdev;
 	struct dvb_device *dvr_dvbdev;
 
@@ -99,16 +120,41 @@ struct dmxdev {
 
 	int filternum;
 	int capabilities;
+<<<<<<< HEAD
 
 	unsigned int exit:1;
 #define DMXDEV_CAP_DUPLEX 1
 	struct dmx_frontend *dvr_orig_fe;
 
 	struct dvb_ringbuffer dvr_buffer;
+=======
+#define DMXDEV_CAP_DUPLEX			0x1
+#define DMXDEV_CAP_PULL_MODE		0x2
+#define DMXDEV_CAP_PCR_EXTRACTION	0x4
+#define DMXDEV_CAP_INDEXING		0x8
+
+	enum dmx_playback_mode_t playback_mode;
+	dmx_source_t source;
+
+	unsigned int exit:1;
+	unsigned int dvr_in_exit:1;
+	unsigned int dvr_processing_input:1;
+
+	struct dmx_frontend *dvr_orig_fe;
+
+	struct dvb_ringbuffer dvr_buffer;
+	struct dvb_ringbuffer dvr_input_buffer;
+	struct workqueue_struct *dvr_input_workqueue;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DVR_BUFFER_SIZE (10*188*1024)
 
 	struct mutex mutex;
 	spinlock_t lock;
+<<<<<<< HEAD
+=======
+	spinlock_t dvr_in_lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 

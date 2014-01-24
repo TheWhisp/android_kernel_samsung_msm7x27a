@@ -31,6 +31,13 @@
 #include <linux/sched.h>
 #include <asm/elf.h>
 
+<<<<<<< HEAD
+=======
+struct __read_mostly va_alignment va_align = {
+	.flags = -1,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static unsigned int stack_maxrandom_size(void)
 {
 	unsigned int max = 0;
@@ -42,7 +49,10 @@ static unsigned int stack_maxrandom_size(void)
 	return max;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Top of mmap area (just below the process stack).
  *
@@ -51,6 +61,7 @@ static unsigned int stack_maxrandom_size(void)
 #define MIN_GAP (128*1024*1024UL + stack_maxrandom_size())
 #define MAX_GAP (TASK_SIZE/6*5)
 
+<<<<<<< HEAD
 /*
  * True on X86_32 or when emulating IA32 on X86_64
  */
@@ -66,6 +77,8 @@ static int mmap_is_ia32(void)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int mmap_is_legacy(void)
 {
 	if (current->personality & ADDR_COMPAT_LAYOUT)

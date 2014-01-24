@@ -374,7 +374,11 @@ static inline void set_map_flags(struct poseidon *pd, struct usb_device *udev)
 }
 #endif
 
+<<<<<<< HEAD
 static bool check_firmware(struct usb_device *udev, int *down_firmware)
+=======
+static int check_firmware(struct usb_device *udev, int *down_firmware)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void *buf;
 	int ret;
@@ -398,7 +402,11 @@ static bool check_firmware(struct usb_device *udev, int *down_firmware)
 		*down_firmware = 1;
 		return firmware_download(udev);
 	}
+<<<<<<< HEAD
 	return ret;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int poseidon_probe(struct usb_interface *interface,
@@ -531,3 +539,7 @@ module_exit(poseidon_exit);
 MODULE_AUTHOR("Telegent Systems");
 MODULE_DESCRIPTION("For tlg2300-based USB device ");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION("0.0.2");
+>>>>>>> refs/remotes/origin/cm-10.0

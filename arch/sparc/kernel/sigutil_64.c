@@ -2,10 +2,18 @@
 #include <linux/types.h>
 #include <linux/thread_info.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/sigcontext.h>
 #include <asm/fpumacro.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "sigutil.h"
 
@@ -14,7 +22,11 @@ int save_fpu_state(struct pt_regs *regs, __siginfo_fpu_t __user *fpu)
 	unsigned long *fpregs = current_thread_info()->fpregs;
 	unsigned long fprs;
 	int err = 0;
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> refs/remotes/origin/cm-10.0
 	fprs = current_thread_info()->fpsaved[0];
 	if (fprs & FPRS_DL)
 		err |= copy_to_user(&fpu->si_float_regs[0], fpregs,

@@ -24,8 +24,11 @@
 
 #ifdef __KERNEL__
 struct notifier_block;
+<<<<<<< HEAD
 extern const int NR_TYPES;
 extern const int max_vals[];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern unsigned short *key_maps[MAX_NR_KEYMAPS];
 extern unsigned short plain_map[NR_KEYS];
 

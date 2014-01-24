@@ -57,25 +57,49 @@ dma_set_mask(struct device *dev, u64 mask)
 extern void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
 	       enum dma_data_direction direction);
 
+<<<<<<< HEAD
 static inline void *dma_alloc_coherent(struct device *dev, size_t size,
 				       dma_addr_t *dma_handle, gfp_t gfp)
+=======
+#define dma_alloc_coherent(d,s,h,f)	dma_alloc_attrs(d,s,h,f,NULL)
+
+static inline void *dma_alloc_attrs(struct device *dev, size_t size,
+				    dma_addr_t *dma_handle, gfp_t gfp,
+				    struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void *ret;
 	struct dma_map_ops *ops = get_dma_ops(dev);
 
+<<<<<<< HEAD
 	ret = ops->alloc_coherent(dev, size, dma_handle, gfp);
+=======
+	ret = ops->alloc(dev, size, dma_handle, gfp, attrs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	debug_dma_alloc_coherent(dev, size, *dma_handle, ret);
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline void dma_free_coherent(struct device *dev, size_t size,
 				     void *vaddr, dma_addr_t dma_handle)
 {
 	struct dma_map_ops *ops = get_dma_ops(dev);
 
 	ops->free_coherent(dev, size, vaddr, dma_handle);
+=======
+#define dma_free_coherent(d,s,c,h) dma_free_attrs(d,s,c,h,NULL)
+
+static inline void dma_free_attrs(struct device *dev, size_t size,
+				  void *vaddr, dma_addr_t dma_handle,
+				  struct dma_attrs *attrs)
+{
+	struct dma_map_ops *ops = get_dma_ops(dev);
+
+	ops->free(dev, size, vaddr, dma_handle, attrs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	debug_dma_free_coherent(dev, size, vaddr, dma_handle);
 }

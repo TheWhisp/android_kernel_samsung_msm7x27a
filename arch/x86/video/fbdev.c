@@ -8,6 +8,10 @@
  */
 #include <linux/fb.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int fb_is_primary_device(struct fb_info *info)
 {

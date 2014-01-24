@@ -2,6 +2,10 @@
 #define __PERF_HIST_H
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <pthread.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "callchain.h"
 
 extern struct callchain_param callchain_param;
@@ -27,9 +31,17 @@ struct events_stats {
 	u64 total_lost;
 	u64 total_invalid_chains;
 	u32 nr_events[PERF_RECORD_HEADER_MAX];
+<<<<<<< HEAD
 	u32 nr_unknown_events;
 	u32 nr_invalid_chains;
 	u32 nr_unknown_id;
+=======
+	u32 nr_lost_warned;
+	u32 nr_unknown_events;
+	u32 nr_invalid_chains;
+	u32 nr_unknown_id;
+	u32 nr_unprocessable_samples;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum hist_column {
@@ -39,12 +51,37 @@ enum hist_column {
 	HISTC_COMM,
 	HISTC_PARENT,
 	HISTC_CPU,
+<<<<<<< HEAD
 	HISTC_NR_COLS, /* Last entry */
 };
 
 struct hists {
 	struct rb_root		entries;
 	u64			nr_entries;
+=======
+	HISTC_MISPREDICT,
+	HISTC_SYMBOL_FROM,
+	HISTC_SYMBOL_TO,
+	HISTC_DSO_FROM,
+	HISTC_DSO_TO,
+	HISTC_NR_COLS, /* Last entry */
+};
+
+struct thread;
+struct dso;
+
+struct hists {
+	struct rb_root		entries_in_array[2];
+	struct rb_root		*entries_in;
+	struct rb_root		entries;
+	struct rb_root		entries_collapsed;
+	u64			nr_entries;
+	const struct thread	*thread_filter;
+	const struct dso	*dso_filter;
+	const char		*uid_filter_str;
+	const char		*symbol_filter_str;
+	pthread_mutex_t		lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct events_stats	stats;
 	u64			event_stream;
 	u16			col_len[HISTC_NR_COLS];
@@ -55,6 +92,7 @@ struct hists {
 struct hist_entry *__hists__add_entry(struct hists *self,
 				      struct addr_location *al,
 				      struct symbol *parent, u64 period);
+<<<<<<< HEAD
 extern int64_t hist_entry__cmp(struct hist_entry *, struct hist_entry *);
 extern int64_t hist_entry__collapse(struct hist_entry *, struct hist_entry *);
 int hist_entry__fprintf(struct hist_entry *self, struct hists *hists,
@@ -68,18 +106,52 @@ void hist_entry__free(struct hist_entry *);
 
 void hists__output_resort(struct hists *self);
 void hists__collapse_resort(struct hists *self);
+=======
+int64_t hist_entry__cmp(struct hist_entry *left, struct hist_entry *right);
+int64_t hist_entry__collapse(struct hist_entry *left, struct hist_entry *right);
+int hist_entry__snprintf(struct hist_entry *self, char *bf, size_t size,
+			 struct hists *hists);
+void hist_entry__free(struct hist_entry *);
+
+struct hist_entry *__hists__add_branch_entry(struct hists *self,
+					     struct addr_location *al,
+					     struct symbol *sym_parent,
+					     struct branch_info *bi,
+					     u64 period);
+
+void hists__output_resort(struct hists *self);
+void hists__output_resort_threaded(struct hists *hists);
+void hists__collapse_resort(struct hists *self);
+void hists__collapse_resort_threaded(struct hists *hists);
+
+void hists__decay_entries(struct hists *hists, bool zap_user, bool zap_kernel);
+void hists__decay_entries_threaded(struct hists *hists, bool zap_user,
+				   bool zap_kernel);
+void hists__output_recalc_col_len(struct hists *hists, int max_rows);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void hists__inc_nr_events(struct hists *self, u32 type);
 size_t hists__fprintf_nr_events(struct hists *self, FILE *fp);
 
 size_t hists__fprintf(struct hists *self, struct hists *pair,
+<<<<<<< HEAD
 		      bool show_displacement, FILE *fp);
+=======
+		      bool show_displacement, bool show_header,
+		      int max_rows, int max_cols, FILE *fp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int hist_entry__inc_addr_samples(struct hist_entry *self, int evidx, u64 addr);
 int hist_entry__annotate(struct hist_entry *self, size_t privsize);
 
+<<<<<<< HEAD
 void hists__filter_by_dso(struct hists *self, const struct dso *dso);
 void hists__filter_by_thread(struct hists *self, const struct thread *thread);
+=======
+void hists__filter_by_dso(struct hists *hists);
+void hists__filter_by_thread(struct hists *hists);
+void hists__filter_by_symbol(struct hists *hists);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 u16 hists__col_len(struct hists *self, enum hist_column col);
 void hists__set_col_len(struct hists *self, enum hist_column col, u16 len);
@@ -90,12 +162,20 @@ struct perf_evlist;
 #ifdef NO_NEWT_SUPPORT
 static inline
 int perf_evlist__tui_browse_hists(struct perf_evlist *evlist __used,
+<<<<<<< HEAD
 				  const char *help __used)
+=======
+				  const char *help __used,
+				  void(*timer)(void *arg) __used,
+				  void *arg __used,
+				  int refresh __used)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return 0;
 }
 
 static inline int hist_entry__tui_annotate(struct hist_entry *self __used,
+<<<<<<< HEAD
 					   int evidx __used)
 {
 	return 0;
@@ -110,6 +190,42 @@ int hist_entry__tui_annotate(struct hist_entry *self, int evidx);
 #define KEY_RIGHT NEWT_KEY_RIGHT
 
 int perf_evlist__tui_browse_hists(struct perf_evlist *evlist, const char *help);
+=======
+					   int evidx __used,
+					   void(*timer)(void *arg) __used,
+					   void *arg __used,
+					   int delay_secs __used)
+{
+	return 0;
+}
+#define K_LEFT -1
+#define K_RIGHT -2
+#else
+#include "ui/keysyms.h"
+int hist_entry__tui_annotate(struct hist_entry *he, int evidx,
+			     void(*timer)(void *arg), void *arg, int delay_secs);
+
+int perf_evlist__tui_browse_hists(struct perf_evlist *evlist, const char *help,
+				  void(*timer)(void *arg), void *arg,
+				  int refresh);
+#endif
+
+#ifdef NO_GTK2_SUPPORT
+static inline
+int perf_evlist__gtk_browse_hists(struct perf_evlist *evlist __used,
+				  const char *help __used,
+				  void(*timer)(void *arg) __used,
+				  void *arg __used,
+				  int refresh __used)
+{
+	return 0;
+}
+
+#else
+int perf_evlist__gtk_browse_hists(struct perf_evlist *evlist, const char *help,
+				  void(*timer)(void *arg), void *arg,
+				  int refresh);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 unsigned int hists__sort_list_width(struct hists *self);

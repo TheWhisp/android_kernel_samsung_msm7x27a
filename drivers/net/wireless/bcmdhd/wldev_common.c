@@ -1,9 +1,15 @@
 /*
  * Common function shared by Linux WEXT, cfg80211 and p2p drivers
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -53,6 +59,10 @@ s32 wldev_ioctl(
 	s32 ret = 0;
 	struct wl_ioctl ioc;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	memset(&ioc, 0, sizeof(ioc));
 	ioc.cmd = cmd;
 	ioc.buf = arg;
@@ -60,6 +70,10 @@ s32 wldev_ioctl(
 	ioc.set = set;
 
 	ret = dhd_ioctl_entry_local(dev, &ioc, cmd);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -82,11 +96,18 @@ s32 wldev_iovar_getbuf(
 	void *param, s32 paramlen, void *buf, s32 buflen, struct mutex* buf_sync)
 {
 	s32 ret = 0;
+<<<<<<< HEAD
 	s32 iovar_len = 0;
 	if (buf_sync) {
 		mutex_lock(buf_sync);
 	}
 	iovar_len = wldev_mkiovar(iovar_name, param, paramlen, buf, buflen);
+=======
+	if (buf_sync) {
+		mutex_lock(buf_sync);
+	}
+	wldev_mkiovar(iovar_name, param, paramlen, buf, buflen);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = wldev_ioctl(dev, WLC_GET_VAR, buf, buflen, FALSE);
 	if (buf_sync)
 		mutex_unlock(buf_sync);
@@ -196,11 +217,19 @@ s32 wldev_iovar_getbuf_bsscfg(
 	void *param, s32 paramlen, void *buf, s32 buflen, s32 bsscfg_idx, struct mutex* buf_sync)
 {
 	s32 ret = 0;
+<<<<<<< HEAD
 	s32 iovar_len = 0;
 	if (buf_sync) {
 		mutex_lock(buf_sync);
 	}
 	iovar_len = wldev_mkiovar_bsscfg(iovar_name, param, paramlen, buf, buflen, bsscfg_idx);
+=======
+	if (buf_sync) {
+		mutex_lock(buf_sync);
+	}
+
+	wldev_mkiovar_bsscfg(iovar_name, param, paramlen, buf, buflen, bsscfg_idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = wldev_ioctl(dev, WLC_GET_VAR, buf, buflen, FALSE);
 	if (buf_sync) {
 		mutex_unlock(buf_sync);
@@ -219,7 +248,10 @@ s32 wldev_iovar_setbuf_bsscfg(
 		mutex_lock(buf_sync);
 	}
 	iovar_len = wldev_mkiovar_bsscfg(iovar_name, param, paramlen, buf, buflen, bsscfg_idx);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = wldev_ioctl(dev, WLC_SET_VAR, buf, iovar_len, TRUE);
 	if (buf_sync) {
 		mutex_unlock(buf_sync);
@@ -320,8 +352,11 @@ int wldev_set_band(
 
 	if ((band == WLC_BAND_AUTO) || (band == WLC_BAND_5G) || (band == WLC_BAND_2G)) {
 		error = wldev_ioctl(dev, WLC_SET_BAND, &band, sizeof(band), 1);
+<<<<<<< HEAD
 		if (!error)
 			dhd_bus_band_set(dev, band);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return error;
 }
@@ -351,6 +386,7 @@ int wldev_set_country(
 				__FUNCTION__, error));
 			return error;
 		}
+<<<<<<< HEAD
 
 		cspec.rev = -1;
 		memcpy(cspec.country_abbrev, country_code, WLC_CNTRY_BUF_SZ);
@@ -419,3 +455,22 @@ fail :
 	}
 	return ret;
 }
+=======
+	}
+	cspec.rev = -1;
+	memcpy(cspec.country_abbrev, country_code, WLC_CNTRY_BUF_SZ);
+	memcpy(cspec.ccode, country_code, WLC_CNTRY_BUF_SZ);
+	get_customized_country_code((char *)&cspec.country_abbrev, &cspec);
+	error = wldev_iovar_setbuf(dev, "country", &cspec, sizeof(cspec),
+		smbuf, sizeof(smbuf), NULL);
+	if (error < 0) {
+		WLDEV_ERROR(("%s: set country for %s as %s rev %d failed\n",
+			__FUNCTION__, country_code, cspec.ccode, cspec.rev));
+		return error;
+	}
+	dhd_bus_country_set(dev, &cspec);
+	WLDEV_ERROR(("%s: set country for %s as %s rev %d\n",
+		__FUNCTION__, country_code, cspec.ccode, cspec.rev));
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

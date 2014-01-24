@@ -332,7 +332,15 @@ static struct country_code_to_enum_rd allCountries[] = {
 	{CTRY_GERMANY, ETSI1_WORLD, "DE"},
 	{CTRY_GREECE, ETSI1_WORLD, "GR"},
 	{CTRY_GREENLAND, ETSI1_WORLD, "GL"},
+<<<<<<< HEAD
 	{CTRY_GRENEDA, FCC3_FCCA, "GD"},
+=======
+#if 0 // by bbelief	
+	{CTRY_GRENADA, FCC3_FCCA, "GD"},
+#else
+	{CTRY_GRENEDA, FCC3_FCCA, "GD"},
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	{CTRY_GUAM, FCC1_FCCA, "GU"},
 	{CTRY_GUATEMALA, FCC1_FCCA, "GT"},
 	{CTRY_HAITI, ETSI1_WORLD, "HT"},

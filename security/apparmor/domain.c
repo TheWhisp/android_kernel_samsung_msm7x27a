@@ -67,7 +67,11 @@ static int may_change_ptraced_domain(struct task_struct *task,
 	int error = 0;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 	tracer = tracehook_tracer_task(task);
+=======
+	tracer = ptrace_parent(task);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (tracer) {
 		/* released below */
 		cred = get_task_cred(tracer);
@@ -372,13 +376,21 @@ int apparmor_bprm_set_creds(struct linux_binprm *bprm)
 	state = profile->file.start;
 
 	/* buffer freed below, name is pointer into buffer */
+<<<<<<< HEAD
 	error = aa_get_name(&bprm->file->f_path, profile->path_flags, &buffer,
 			    &name);
+=======
+	error = aa_path_name(&bprm->file->f_path, profile->path_flags, &buffer,
+			     &name, &info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error) {
 		if (profile->flags &
 		    (PFLAG_IX_ON_NAME_ERROR | PFLAG_UNCONFINED))
 			error = 0;
+<<<<<<< HEAD
 		info = "Exec failed name resolution";
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		name = bprm->filename;
 		goto audit;
 	}
@@ -411,7 +423,12 @@ int apparmor_bprm_set_creds(struct linux_binprm *bprm)
 		 * exec\0change_profile
 		 */
 		state = aa_dfa_null_transition(profile->file.dfa, state);
+<<<<<<< HEAD
 		cp = change_profile_perms(profile, cxt->onexec->ns, name,
+=======
+		cp = change_profile_perms(profile, cxt->onexec->ns,
+					  cxt->onexec->base.name,
+>>>>>>> refs/remotes/origin/cm-10.0
 					  AA_MAY_ONEXEC, state);
 
 		if (!(cp.allow & AA_MAY_ONEXEC))

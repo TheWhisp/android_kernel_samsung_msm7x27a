@@ -35,7 +35,11 @@ EXPORT_SYMBOL_GPL(xen_platform_pci_unplug);
 #ifdef CONFIG_XEN_PVHVM
 static int xen_emul_unplug;
 
+<<<<<<< HEAD
 static int __init check_platform_magic(void)
+=======
+static int check_platform_magic(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	short magic;
 	char protocol;

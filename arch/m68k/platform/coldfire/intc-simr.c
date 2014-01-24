@@ -171,8 +171,11 @@ void __init init_IRQ(void)
 {
 	int irq, eirq;
 
+<<<<<<< HEAD
 	init_vectors();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Mask all interrupt sources */
 	__raw_writeb(0xff, MCFINTC0_SIMR);
 	if (MCFINTC1_SIMR)

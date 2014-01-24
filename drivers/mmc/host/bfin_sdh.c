@@ -627,6 +627,7 @@ static struct platform_driver sdh_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init sdh_init(void)
 {
 	return platform_driver_register(&sdh_driver);
@@ -638,6 +639,9 @@ static void __exit sdh_exit(void)
 	platform_driver_unregister(&sdh_driver);
 }
 module_exit(sdh_exit);
+=======
+module_platform_driver(sdh_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Blackfin Secure Digital Host Driver");
 MODULE_AUTHOR("Cliff Cai, Roy Huang");

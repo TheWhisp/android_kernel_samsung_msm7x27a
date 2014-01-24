@@ -14,6 +14,10 @@
 #ifdef __KERNEL__
 #include <asm/byteorder.h>
 #include <asm/page.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 
 #include <linux/types.h>

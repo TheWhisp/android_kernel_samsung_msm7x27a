@@ -347,11 +347,24 @@ static void vid_dec_output_frame_done(struct video_client_ctx *client_ctx,
 		ion_flag = vidc_get_fd_info(client_ctx, BUFFER_TYPE_OUTPUT,
 				pmem_fd, kernel_vaddr, buffer_index,
 				&buff_handle);
+<<<<<<< HEAD
 		if (ion_flag == CACHED) {
 			msm_ion_do_cache_op(client_ctx->user_ion_client,
 					buff_handle,
 					(unsigned long *) kernel_vaddr,
 					(unsigned long)vcd_frame_data->data_len,
+=======
+		if (ion_flag == CACHED && buff_handle) {
+			DBG("%s: Cache invalidate: vaddr (%p), "\
+				"size %u\n", __func__,
+				(void *)kernel_vaddr,
+				vcd_frame_data->alloc_len);
+			msm_ion_do_cache_op(client_ctx->user_ion_client,
+					buff_handle,
+					(unsigned long *) kernel_vaddr,
+					(unsigned long)vcd_frame_data->\
+					alloc_len,
+>>>>>>> refs/remotes/origin/cm-10.0
 					ION_IOC_INV_CACHES);
 		}
 	}
@@ -636,6 +649,29 @@ static u32 vid_dec_set_frame_resolution(struct video_client_ctx *client_ctx,
 		return true;
 }
 
+<<<<<<< HEAD
+=======
+static u32 vid_dec_set_turbo_clk(struct video_client_ctx *client_ctx)
+{
+	struct vcd_property_hdr vcd_property_hdr;
+	u32 vcd_status = VCD_ERR_FAIL;
+	u32 dummy = 0;
+
+	if (!client_ctx)
+		return false;
+	vcd_property_hdr.prop_id = VCD_I_SET_TURBO_CLK;
+	vcd_property_hdr.sz = sizeof(struct vcd_property_frame_size);
+
+	vcd_status = vcd_set_property(client_ctx->vcd_handle,
+				      &vcd_property_hdr, &dummy);
+
+	if (vcd_status)
+		return false;
+	else
+		return true;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static u32 vid_dec_get_frame_resolution(struct video_client_ctx *client_ctx,
 					struct vdec_picsize *video_resoultion)
 {
@@ -866,10 +902,17 @@ static u32 vid_dec_set_h264_mv_buffers(struct video_client_ctx *client_ctx,
 		vcd_h264_mv_buffer->client_data = (void *) mapped_buffer;
 		vcd_h264_mv_buffer->dev_addr = (u8 *)mapped_buffer->iova[0];
 	} else {
+<<<<<<< HEAD
 		client_ctx->h264_mv_ion_handle = ion_import_fd(
 					client_ctx->user_ion_client,
 					vcd_h264_mv_buffer->pmem_fd);
 		if (!client_ctx->h264_mv_ion_handle) {
+=======
+		client_ctx->h264_mv_ion_handle = ion_import_dma_buf(
+					client_ctx->user_ion_client,
+					vcd_h264_mv_buffer->pmem_fd);
+		if (IS_ERR_OR_NULL(client_ctx->h264_mv_ion_handle)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ERR("%s(): get_ION_handle failed\n", __func__);
 			goto import_ion_error;
 		}
@@ -911,9 +954,16 @@ static u32 vid_dec_set_h264_mv_buffers(struct video_client_ctx *client_ctx,
 					SZ_4K, 0, (unsigned long *)&iova,
 					(unsigned long *)&buffer_size,
 					UNCACHED, 0);
+<<<<<<< HEAD
 			if (rc) {
 				ERR("%s():get_ION_kernel physical addr fail\n",
 						 __func__);
+=======
+			if (rc || !iova) {
+				ERR(
+				"%s():get_ION_kernel physical addr fail, rc = %d iova = 0x%lx\n",
+					__func__, rc, iova);
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto ion_map_error;
 			}
 			vcd_h264_mv_buffer->physical_addr = (u8 *) iova;
@@ -933,12 +983,25 @@ static u32 vid_dec_set_h264_mv_buffers(struct video_client_ctx *client_ctx,
 	else
 		return true;
 ion_map_error:
+<<<<<<< HEAD
 	if (vcd_h264_mv_buffer->kernel_virtual_addr)
 		ion_unmap_kernel(client_ctx->user_ion_client,
 				client_ctx->h264_mv_ion_handle);
 	if (client_ctx->h264_mv_ion_handle)
 		ion_free(client_ctx->user_ion_client,
 			client_ctx->h264_mv_ion_handle);
+=======
+	if (vcd_h264_mv_buffer->kernel_virtual_addr) {
+		ion_unmap_kernel(client_ctx->user_ion_client,
+				client_ctx->h264_mv_ion_handle);
+		vcd_h264_mv_buffer->kernel_virtual_addr = NULL;
+	}
+	if (!IS_ERR_OR_NULL(client_ctx->h264_mv_ion_handle)) {
+		ion_free(client_ctx->user_ion_client,
+			client_ctx->h264_mv_ion_handle);
+		 client_ctx->h264_mv_ion_handle = NULL;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 import_ion_error:
 	return false;
 }
@@ -1007,7 +1070,11 @@ static u32 vid_dec_free_h264_mv_buffers(struct video_client_ctx *client_ctx)
 	vcd_status = vcd_set_property(client_ctx->vcd_handle,
 				      &vcd_property_hdr, &h264_mv_buffer_size);
 
+<<<<<<< HEAD
 	if (client_ctx->h264_mv_ion_handle != NULL) {
+=======
+	if (!IS_ERR_OR_NULL(client_ctx->h264_mv_ion_handle)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ion_unmap_kernel(client_ctx->user_ion_client,
 					client_ctx->h264_mv_ion_handle);
 		if (!res_trk_check_for_sec_session() &&
@@ -1019,6 +1086,10 @@ static u32 vid_dec_free_h264_mv_buffers(struct video_client_ctx *client_ctx)
 		}
 		ion_free(client_ctx->user_ion_client,
 					client_ctx->h264_mv_ion_handle);
+<<<<<<< HEAD
+=======
+		 client_ctx->h264_mv_ion_handle = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (vcd_status)
@@ -1267,7 +1338,11 @@ static u32 vid_dec_decode_frame(struct video_client_ctx *client_ctx,
 						kernel_vaddr,
 						buffer_index,
 						&buff_handle);
+<<<<<<< HEAD
 			if (ion_flag == CACHED) {
+=======
+			if (ion_flag == CACHED && buff_handle) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				msm_ion_do_cache_op(client_ctx->user_ion_client,
 				buff_handle,
 				(unsigned long *)kernel_vaddr,
@@ -1679,6 +1754,14 @@ static long vid_dec_ioctl(struct file *file,
 		}
 		break;
 	}
+<<<<<<< HEAD
+=======
+	case VDEC_IOCTL_SET_PERF_CLK:
+	{
+		vid_dec_set_turbo_clk(client_ctx);
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	case VDEC_IOCTL_FILL_OUTPUT_BUFFER:
 	{
 		struct vdec_fillbuffer_cmd fill_buffer_cmd;
@@ -1757,7 +1840,11 @@ static long vid_dec_ioctl(struct file *file,
 			}
 			put_pmem_file(pmem_file);
 		} else {
+<<<<<<< HEAD
 			client_ctx->seq_hdr_ion_handle = ion_import_fd(
+=======
+			client_ctx->seq_hdr_ion_handle = ion_import_dma_buf(
+>>>>>>> refs/remotes/origin/cm-10.0
 				client_ctx->user_ion_client,
 				seq_header.pmem_fd);
 			if (!client_ctx->seq_hdr_ion_handle) {

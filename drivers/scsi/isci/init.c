@@ -59,10 +59,26 @@
 #include <linux/firmware.h>
 #include <linux/efi.h>
 #include <asm/string.h>
+<<<<<<< HEAD
+=======
+#include <scsi/scsi_host.h>
+#include "host.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "isci.h"
 #include "task.h"
 #include "probe_roms.h"
 
+<<<<<<< HEAD
+=======
+#define MAJ 1
+#define MIN 1
+#define BUILD 0
+#define DRV_VERSION __stringify(MAJ) "." __stringify(MIN) "." \
+	__stringify(BUILD)
+
+MODULE_VERSION(DRV_VERSION);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct scsi_transport_template *isci_transport_template;
 
 static DEFINE_PCI_DEVICE_TABLE(isci_id_table) = {
@@ -85,7 +101,11 @@ MODULE_DEVICE_TABLE(pci, isci_id_table);
 
 /* linux isci specific settings */
 
+<<<<<<< HEAD
 unsigned char no_outbound_task_to = 20;
+=======
+unsigned char no_outbound_task_to = 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(no_outbound_task_to, byte, 0);
 MODULE_PARM_DESC(no_outbound_task_to, "No Outbound Task Timeout (1us incr)");
 
@@ -105,6 +125,7 @@ u16 stp_inactive_to = 5;
 module_param(stp_inactive_to, ushort, 0);
 MODULE_PARM_DESC(stp_inactive_to, "STP inactivity timeout (100us incr)");
 
+<<<<<<< HEAD
 unsigned char phy_gen = 3;
 module_param(phy_gen, byte, 0);
 MODULE_PARM_DESC(phy_gen, "PHY generation (1: 1.5Gbps 2: 3.0Gbps 3: 6.0Gbps)");
@@ -113,6 +134,40 @@ unsigned char max_concurr_spinup = 1;
 module_param(max_concurr_spinup, byte, 0);
 MODULE_PARM_DESC(max_concurr_spinup, "Max concurrent device spinup");
 
+=======
+unsigned char phy_gen = SCIC_SDS_PARM_GEN2_SPEED;
+module_param(phy_gen, byte, 0);
+MODULE_PARM_DESC(phy_gen, "PHY generation (1: 1.5Gbps 2: 3.0Gbps 3: 6.0Gbps)");
+
+unsigned char max_concurr_spinup;
+module_param(max_concurr_spinup, byte, 0);
+MODULE_PARM_DESC(max_concurr_spinup, "Max concurrent device spinup");
+
+uint cable_selection_override = CABLE_OVERRIDE_DISABLED;
+module_param(cable_selection_override, uint, 0);
+
+MODULE_PARM_DESC(cable_selection_override,
+		 "This field indicates length of the SAS/SATA cable between "
+		 "host and device. If any bits > 15 are set (default) "
+		 "indicates \"use platform defaults\"");
+
+static ssize_t isci_show_id(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	struct Scsi_Host *shost = container_of(dev, typeof(*shost), shost_dev);
+	struct sas_ha_struct *sas_ha = SHOST_TO_SAS_HA(shost);
+	struct isci_host *ihost = container_of(sas_ha, typeof(*ihost), sas_ha);
+
+	return snprintf(buf, PAGE_SIZE, "%d\n", ihost->id);
+}
+
+static DEVICE_ATTR(isci_id, S_IRUGO, isci_show_id, NULL);
+
+struct device_attribute *isci_host_attrs[] = {
+	&dev_attr_isci_id,
+	NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct scsi_host_template isci_sht = {
 
 	.module				= THIS_MODULE,
@@ -121,7 +176,10 @@ static struct scsi_host_template isci_sht = {
 	.queuecommand			= sas_queuecommand,
 	.target_alloc			= sas_target_alloc,
 	.slave_configure		= sas_slave_configure,
+<<<<<<< HEAD
 	.slave_destroy			= sas_slave_destroy,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.scan_finished			= isci_host_scan_finished,
 	.scan_start			= isci_host_scan_start,
 	.change_queue_depth		= sas_change_queue_depth,
@@ -133,11 +191,17 @@ static struct scsi_host_template isci_sht = {
 	.sg_tablesize			= SG_ALL,
 	.max_sectors			= SCSI_DEFAULT_MAX_SECTORS,
 	.use_clustering			= ENABLE_CLUSTERING,
+<<<<<<< HEAD
 	.eh_device_reset_handler	= sas_eh_device_reset_handler,
 	.eh_bus_reset_handler		= isci_bus_reset_handler,
 	.slave_alloc			= sas_slave_alloc,
 	.target_destroy			= sas_target_destroy,
 	.ioctl				= sas_ioctl,
+=======
+	.target_destroy			= sas_target_destroy,
+	.ioctl				= sas_ioctl,
+	.shost_attrs			= isci_host_attrs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct sas_domain_function_template isci_transport_ops  = {
@@ -160,12 +224,24 @@ static struct sas_domain_function_template isci_transport_ops  = {
 	.lldd_lu_reset		= isci_task_lu_reset,
 	.lldd_query_task	= isci_task_query_task,
 
+<<<<<<< HEAD
+=======
+	/* ata recovery called from ata-eh */
+	.lldd_ata_check_ready	= isci_ata_check_ready,
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Port and Adapter management */
 	.lldd_clear_nexus_port	= isci_task_clear_nexus_port,
 	.lldd_clear_nexus_ha	= isci_task_clear_nexus_ha,
 
 	/* Phy management */
 	.lldd_control_phy	= isci_phy_control,
+<<<<<<< HEAD
+=======
+
+	/* GPIO support */
+	.lldd_write_gpio	= isci_gpio_write,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -205,18 +281,27 @@ static int isci_register_sas_ha(struct isci_host *isci_host)
 	if (!sas_ports)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	/*----------------- Libsas Initialization Stuff----------------------
 	 * Set various fields in the sas_ha struct:
 	 */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	sas_ha->sas_ha_name = DRV_NAME;
 	sas_ha->lldd_module = THIS_MODULE;
 	sas_ha->sas_addr    = &isci_host->phys[0].sas_addr[0];
 
+<<<<<<< HEAD
 	/* set the array of phy and port structs.  */
 	for (i = 0; i < SCI_MAX_PHYS; i++) {
 		sas_phys[i] = &isci_host->phys[i].sas_phy;
 		sas_ports[i] = &isci_host->ports[i].sas_port;
+=======
+	for (i = 0; i < SCI_MAX_PHYS; i++) {
+		sas_phys[i] = &isci_host->phys[i].sas_phy;
+		sas_ports[i] = &isci_host->sas_ports[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	sas_ha->sas_phy  = sas_phys;
@@ -232,6 +317,7 @@ static int isci_register_sas_ha(struct isci_host *isci_host)
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t isci_show_id(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct Scsi_Host *shost = container_of(dev, typeof(*shost), shost_dev);
@@ -243,6 +329,8 @@ static ssize_t isci_show_id(struct device *dev, struct device_attribute *attr, c
 
 static DEVICE_ATTR(isci_id, S_IRUGO, isci_show_id, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void isci_unregister(struct isci_host *isci_host)
 {
 	struct Scsi_Host *shost;
@@ -251,7 +339,10 @@ static void isci_unregister(struct isci_host *isci_host)
 		return;
 
 	shost = isci_host->shost;
+<<<<<<< HEAD
 	device_remove_file(&shost->shost_dev, &dev_attr_isci_id);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sas_unregister_ha(&isci_host->sas_ha);
 
@@ -395,6 +486,17 @@ static struct isci_host *isci_host_alloc(struct pci_dev *pdev, int id)
 		return NULL;
 	isci_host->shost = shost;
 
+<<<<<<< HEAD
+=======
+	dev_info(&pdev->dev, "%sSCU controller %d: phy 3-0 cables: "
+		 "{%s, %s, %s, %s}\n",
+		 (is_cable_select_overridden() ? "* " : ""), isci_host->id,
+		 lookup_cable_names(decode_cable_selection(isci_host, 3)),
+		 lookup_cable_names(decode_cable_selection(isci_host, 2)),
+		 lookup_cable_names(decode_cable_selection(isci_host, 1)),
+		 lookup_cable_names(decode_cable_selection(isci_host, 0)));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = isci_host_init(isci_host);
 	if (err)
 		goto err_shost;
@@ -415,6 +517,7 @@ static struct isci_host *isci_host_alloc(struct pci_dev *pdev, int id)
 	if (err)
 		goto err_shost_remove;
 
+<<<<<<< HEAD
 	err = device_create_file(&shost->shost_dev, &dev_attr_isci_id);
 	if (err)
 		goto err_unregister_ha;
@@ -423,6 +526,10 @@ static struct isci_host *isci_host_alloc(struct pci_dev *pdev, int id)
 
  err_unregister_ha:
 	sas_unregister_ha(&(isci_host->sas_ha));
+=======
+	return isci_host;
+
+>>>>>>> refs/remotes/origin/cm-10.0
  err_shost_remove:
 	scsi_remove_host(shost);
  err_shost:
@@ -448,14 +555,24 @@ static int __devinit isci_pci_probe(struct pci_dev *pdev, const struct pci_devic
 		return -ENOMEM;
 	pci_set_drvdata(pdev, pci_info);
 
+<<<<<<< HEAD
 	if (efi_enabled)
+=======
+	if (efi_enabled(EFI_RUNTIME_SERVICES))
+>>>>>>> refs/remotes/origin/cm-10.0
 		orom = isci_get_efi_var(pdev);
 
 	if (!orom)
 		orom = isci_request_oprom(pdev);
 
+<<<<<<< HEAD
 	for (i = 0; orom && i < num_controllers(pdev); i++) {
 		if (sci_oem_parameters_validate(&orom->ctrl[i])) {
+=======
+	for (i = 0; orom && i < ARRAY_SIZE(orom->ctrl); i++) {
+		if (sci_oem_parameters_validate(&orom->ctrl[i],
+						orom->hdr.version)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			dev_warn(&pdev->dev,
 				 "[%d]: invalid oem parameters detected, falling back to firmware\n", i);
 			orom = NULL;
@@ -499,6 +616,16 @@ static int __devinit isci_pci_probe(struct pci_dev *pdev, const struct pci_devic
 			goto err_host_alloc;
 		}
 		pci_info->hosts[i] = h;
+<<<<<<< HEAD
+=======
+
+		/* turn on DIF support */
+		scsi_host_set_prot(h->shost,
+				   SHOST_DIF_TYPE1_PROTECTION |
+				   SHOST_DIF_TYPE2_PROTECTION |
+				   SHOST_DIF_TYPE3_PROTECTION);
+		scsi_host_set_guard(h->shost, SHOST_DIX_GUARD_CRC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	err = isci_setup_interrupts(pdev);
@@ -522,9 +649,15 @@ static void __devexit isci_pci_remove(struct pci_dev *pdev)
 	int i;
 
 	for_each_isci_host(i, ihost, pdev) {
+<<<<<<< HEAD
 		isci_unregister(ihost);
 		isci_host_deinit(ihost);
 		sci_controller_disable_interrupts(ihost);
+=======
+		wait_for_start(ihost);
+		isci_unregister(ihost);
+		isci_host_deinit(ihost);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -539,7 +672,12 @@ static __init int isci_init(void)
 {
 	int err;
 
+<<<<<<< HEAD
 	pr_info("%s: Intel(R) C600 SAS Controller Driver\n", DRV_NAME);
+=======
+	pr_info("%s: Intel(R) C600 SAS Controller Driver - version %s\n",
+		DRV_NAME, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	isci_transport_template = sas_domain_attach_transport(&isci_transport_ops);
 	if (!isci_transport_template)

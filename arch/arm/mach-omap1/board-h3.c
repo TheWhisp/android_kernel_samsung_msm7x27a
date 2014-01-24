@@ -13,7 +13,11 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include <linux/init.h>
 #include <linux/major.h>
@@ -30,25 +34,44 @@
 #include <linux/spi/spi.h>
 #include <linux/i2c/tps65010.h>
 #include <linux/smc91x.h>
+<<<<<<< HEAD
 
 #include <asm/setup.h>
 #include <asm/page.h>
 #include <mach/hardware.h>
 #include <asm/gpio.h>
 
+=======
+#include <linux/omapfb.h>
+
+#include <asm/setup.h>
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/irqs.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/mux.h>
 #include <plat/tc.h>
 #include <plat/usb.h>
 #include <plat/keypad.h>
 #include <plat/dma.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/flash.h>
 
+=======
+#include <plat/flash.h>
+
+#include <mach/hardware.h>
+#include <mach/irqs.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "board-h3.h"
 
 /* In OMAP1710 H3 the Ethernet is directly connected to CS1 */
@@ -247,8 +270,11 @@ static struct resource smc91x_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= OMAP_GPIO_IRQ(40),
 		.end	= OMAP_GPIO_IRQ(40),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_LOWEDGE,
 	},
 };
@@ -338,7 +364,10 @@ static struct spi_board_info h3_spi_board_info[] __initdata = {
 		.modalias	= "tsc2101",
 		.bus_num	= 2,
 		.chip_select	= 0,
+<<<<<<< HEAD
 		.irq		= OMAP_GPIO_IRQ(H3_TS_GPIO),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.max_speed_hz	= 16000000,
 		/* .platform_data	= &tsc_platform_data, */
 	},
@@ -371,6 +400,7 @@ static struct omap_lcd_config h3_lcd_config __initdata = {
 	.ctrl_name	= "internal",
 };
 
+<<<<<<< HEAD
 static struct omap_board_config_kernel h3_config[] __initdata = {
 	{ OMAP_TAG_LCD,		&h3_lcd_config },
 };
@@ -383,6 +413,14 @@ static struct i2c_board_info __initdata h3_i2c_board_info[] = {
 	{
 		I2C_BOARD_INFO("isp1301_omap", 0x2d),
 		.irq		= OMAP_GPIO_IRQ(14),
+=======
+static struct i2c_board_info __initdata h3_i2c_board_info[] = {
+       {
+		I2C_BOARD_INFO("tps65013", 0x48),
+       },
+	{
+		I2C_BOARD_INFO("isp1301_omap", 0x2d),
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -424,16 +462,28 @@ static void __init h3_init(void)
 	omap_cfg_reg(E19_1610_KBR4);
 	omap_cfg_reg(N19_1610_KBR5);
 
+<<<<<<< HEAD
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 	spi_register_board_info(h3_spi_board_info,
 				ARRAY_SIZE(h3_spi_board_info));
 	omap_board_config = h3_config;
 	omap_board_config_size = ARRAY_SIZE(h3_config);
 	omap_serial_init();
+=======
+	smc91x_resources[1].start = gpio_to_irq(40);
+	smc91x_resources[1].end = gpio_to_irq(40);
+	platform_add_devices(devices, ARRAY_SIZE(devices));
+	h3_spi_board_info[0].irq = gpio_to_irq(H3_TS_GPIO);
+	spi_register_board_info(h3_spi_board_info,
+				ARRAY_SIZE(h3_spi_board_info));
+	omap_serial_init();
+	h3_i2c_board_info[1].irq = gpio_to_irq(14);
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap_register_i2c_bus(1, 100, h3_i2c_board_info,
 			      ARRAY_SIZE(h3_i2c_board_info));
 	omap1_usb_init(&h3_usb_config);
 	h3_mmc_init();
+<<<<<<< HEAD
 }
 
 static void __init h3_init_irq(void)
@@ -445,14 +495,29 @@ static void __init h3_init_irq(void)
 static void __init h3_map_io(void)
 {
 	omap1_map_common_io();
+=======
+
+	omapfb_set_lcd_config(&h3_lcd_config);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 MACHINE_START(OMAP_H3, "TI OMAP1710 H3 board")
 	/* Maintainer: Texas Instruments, Inc. */
+<<<<<<< HEAD
 	.boot_params	= 0x10000100,
 	.map_io		= h3_map_io,
 	.reserve	= omap_reserve,
 	.init_irq	= h3_init_irq,
 	.init_machine	= h3_init,
 	.timer		= &omap_timer,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= omap16xx_map_io,
+	.init_early     = omap1_init_early,
+	.reserve	= omap_reserve,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= h3_init,
+	.timer		= &omap1_timer,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

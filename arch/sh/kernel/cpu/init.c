@@ -18,13 +18,20 @@
 #include <asm/processor.h>
 #include <asm/uaccess.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 #include <asm/cache.h>
 #include <asm/elf.h>
 #include <asm/io.h>
 #include <asm/smp.h>
 #include <asm/sh_bios.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_SH_FPU
 #define cpu_has_fpu	1

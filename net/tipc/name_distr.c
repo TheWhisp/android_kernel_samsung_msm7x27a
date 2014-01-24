@@ -94,13 +94,22 @@ static void publ_to_item(struct distr_item *i, struct publication *p)
 
 static struct sk_buff *named_prepare_buf(u32 type, u32 size, u32 dest)
 {
+<<<<<<< HEAD
 	struct sk_buff *buf = tipc_buf_acquire(LONG_H_SIZE + size);
+=======
+	struct sk_buff *buf = tipc_buf_acquire(INT_H_SIZE + size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct tipc_msg *msg;
 
 	if (buf != NULL) {
 		msg = buf_msg(buf);
+<<<<<<< HEAD
 		tipc_msg_init(msg, NAME_DISTRIBUTOR, type, LONG_H_SIZE, dest);
 		msg_set_size(msg, LONG_H_SIZE + size);
+=======
+		tipc_msg_init(msg, NAME_DISTRIBUTOR, type, INT_H_SIZE, dest);
+		msg_set_size(msg, INT_H_SIZE + size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return buf;
 }
@@ -120,7 +129,11 @@ static void named_cluster_distribute(struct sk_buff *buf)
 		}
 	}
 
+<<<<<<< HEAD
 	buf_discard(buf);
+=======
+	kfree_skb(buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -173,6 +186,7 @@ void tipc_named_withdraw(struct publication *publ)
  * tipc_named_node_up - tell specified node about all publications by this node
  */
 
+<<<<<<< HEAD
 void tipc_named_node_up(unsigned long node)
 {
 	struct publication *publ;
@@ -185,6 +199,42 @@ void tipc_named_node_up(unsigned long node)
 	read_lock_bh(&tipc_nametbl_lock);
 	max_item_buf = TIPC_MAX_USER_MSG_SIZE / ITEM_SIZE;
 	max_item_buf *= ITEM_SIZE;
+=======
+void tipc_named_node_up(unsigned long nodearg)
+{
+	struct tipc_node *n_ptr;
+	struct tipc_link *l_ptr;
+	struct publication *publ;
+	struct distr_item *item = NULL;
+	struct sk_buff *buf = NULL;
+	struct list_head message_list;
+	u32 node = (u32)nodearg;
+	u32 left = 0;
+	u32 rest;
+	u32 max_item_buf = 0;
+
+	/* compute maximum amount of publication data to send per message */
+
+	read_lock_bh(&tipc_net_lock);
+	n_ptr = tipc_node_find(node);
+	if (n_ptr) {
+		tipc_node_lock(n_ptr);
+		l_ptr = n_ptr->active_links[0];
+		if (l_ptr)
+			max_item_buf = ((l_ptr->max_pkt - INT_H_SIZE) /
+				ITEM_SIZE) * ITEM_SIZE;
+		tipc_node_unlock(n_ptr);
+	}
+	read_unlock_bh(&tipc_net_lock);
+	if (!max_item_buf)
+		return;
+
+	/* create list of publication messages, then send them as a unit */
+
+	INIT_LIST_HEAD(&message_list);
+
+	read_lock_bh(&tipc_nametbl_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	rest = publ_cnt * ITEM_SIZE;
 
 	list_for_each_entry(publ, &publ_root, local_list) {
@@ -202,13 +252,22 @@ void tipc_named_node_up(unsigned long node)
 		item++;
 		left -= ITEM_SIZE;
 		if (!left) {
+<<<<<<< HEAD
 			msg_set_link_selector(buf_msg(buf), node);
 			tipc_link_send(buf, node, node);
+=======
+			list_add_tail((struct list_head *)buf, &message_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 			buf = NULL;
 		}
 	}
 exit:
 	read_unlock_bh(&tipc_nametbl_lock);
+<<<<<<< HEAD
+=======
+
+	tipc_link_send_names(&message_list, (u32)node);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -216,9 +275,12 @@ exit:
  *
  * Invoked for each publication issued by a newly failed node.
  * Removes publication structure from name table & deletes it.
+<<<<<<< HEAD
  * In rare cases the link may have come back up again when this
  * function is called, and we have two items representing the same
  * publication. Nudge this item's key to distinguish it from the other.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 static void named_purge_publ(struct publication *publ)
@@ -226,7 +288,10 @@ static void named_purge_publ(struct publication *publ)
 	struct publication *p;
 
 	write_lock_bh(&tipc_nametbl_lock);
+<<<<<<< HEAD
 	publ->key += 1222345;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	p = tipc_nametbl_remove_publ(publ->type, publ->lower,
 				     publ->node, publ->ref, publ->key);
 	if (p)
@@ -293,16 +358,26 @@ void tipc_named_recv(struct sk_buff *buf)
 		item++;
 	}
 	write_unlock_bh(&tipc_nametbl_lock);
+<<<<<<< HEAD
 	buf_discard(buf);
+=======
+	kfree_skb(buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
  * tipc_named_reinit - re-initialize local publication list
  *
+<<<<<<< HEAD
  * This routine is called whenever TIPC networking is (re)enabled.
  * All existing publications by this node that have "cluster" or "zone" scope
  * are updated to reflect the node's current network address.
  * (If the node's address is unchanged, the update loop terminates immediately.)
+=======
+ * This routine is called whenever TIPC networking is enabled.
+ * All existing publications by this node that have "cluster" or "zone" scope
+ * are updated to reflect the node's new network address.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 void tipc_named_reinit(void)
@@ -310,10 +385,17 @@ void tipc_named_reinit(void)
 	struct publication *publ;
 
 	write_lock_bh(&tipc_nametbl_lock);
+<<<<<<< HEAD
 	list_for_each_entry(publ, &publ_root, local_list) {
 		if (publ->node == tipc_own_addr)
 			break;
 		publ->node = tipc_own_addr;
 	}
+=======
+
+	list_for_each_entry(publ, &publ_root, local_list)
+		publ->node = tipc_own_addr;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	write_unlock_bh(&tipc_nametbl_lock);
 }

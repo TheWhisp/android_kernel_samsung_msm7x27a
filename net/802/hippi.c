@@ -35,7 +35,10 @@
 #include <net/arp.h>
 #include <net/sock.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Create the HIPPI MAC header for an arbitrary protocol layer

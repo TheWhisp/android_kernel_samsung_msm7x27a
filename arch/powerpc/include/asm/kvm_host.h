@@ -25,6 +25,7 @@
 #include <linux/interrupt.h>
 #include <linux/types.h>
 #include <linux/kvm_types.h>
+<<<<<<< HEAD
 #include <linux/kvm_para.h>
 #include <asm/kvm_asm.h>
 
@@ -34,6 +35,40 @@
 #define KVM_PRIVATE_MEM_SLOTS 4
 
 #define KVM_COALESCED_MMIO_PAGE_OFFSET 1
+=======
+#include <linux/threads.h>
+#include <linux/spinlock.h>
+#include <linux/kvm_para.h>
+#include <linux/list.h>
+#include <linux/atomic.h>
+#include <asm/kvm_asm.h>
+#include <asm/processor.h>
+#include <asm/page.h>
+
+#define KVM_MAX_VCPUS		NR_CPUS
+#define KVM_MAX_VCORES		NR_CPUS
+#define KVM_MEMORY_SLOTS 32
+/* memory slots that does not exposed to userspace */
+#define KVM_PRIVATE_MEM_SLOTS 4
+#define KVM_MEM_SLOTS_NUM (KVM_MEMORY_SLOTS + KVM_PRIVATE_MEM_SLOTS)
+
+#ifdef CONFIG_KVM_MMIO
+#define KVM_COALESCED_MMIO_PAGE_OFFSET 1
+#endif
+
+#ifdef CONFIG_KVM_BOOK3S_64_HV
+#include <linux/mmu_notifier.h>
+
+#define KVM_ARCH_WANT_MMU_NOTIFIER
+
+struct kvm;
+extern int kvm_unmap_hva(struct kvm *kvm, unsigned long hva);
+extern int kvm_age_hva(struct kvm *kvm, unsigned long hva);
+extern int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
+extern void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
+
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* We don't currently support large pages. */
 #define KVM_HPAGE_GFN_SHIFT(x)	0
@@ -57,6 +92,13 @@ struct kvm;
 struct kvm_run;
 struct kvm_vcpu;
 
+<<<<<<< HEAD
+=======
+struct lppaca;
+struct slb_shadow;
+struct dtl;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct kvm_vm_stat {
 	u32 remote_tlb_flush;
 };
@@ -133,9 +175,126 @@ struct kvmppc_exit_timing {
 	};
 };
 
+<<<<<<< HEAD
 struct kvm_arch {
 };
 
+=======
+struct kvmppc_pginfo {
+	unsigned long pfn;
+	atomic_t refcnt;
+};
+
+struct kvmppc_spapr_tce_table {
+	struct list_head list;
+	struct kvm *kvm;
+	u64 liobn;
+	u32 window_size;
+	struct page *pages[0];
+};
+
+struct kvmppc_linear_info {
+	void		*base_virt;
+	unsigned long	 base_pfn;
+	unsigned long	 npages;
+	struct list_head list;
+	atomic_t	 use_count;
+	int		 type;
+};
+
+/*
+ * The reverse mapping array has one entry for each HPTE,
+ * which stores the guest's view of the second word of the HPTE
+ * (including the guest physical address of the mapping),
+ * plus forward and backward pointers in a doubly-linked ring
+ * of HPTEs that map the same host page.  The pointers in this
+ * ring are 32-bit HPTE indexes, to save space.
+ */
+struct revmap_entry {
+	unsigned long guest_rpte;
+	unsigned int forw, back;
+};
+
+/*
+ * We use the top bit of each memslot->rmap entry as a lock bit,
+ * and bit 32 as a present flag.  The bottom 32 bits are the
+ * index in the guest HPT of a HPTE that points to the page.
+ */
+#define KVMPPC_RMAP_LOCK_BIT	63
+#define KVMPPC_RMAP_RC_SHIFT	32
+#define KVMPPC_RMAP_REFERENCED	(HPTE_R_R << KVMPPC_RMAP_RC_SHIFT)
+#define KVMPPC_RMAP_CHANGED	(HPTE_R_C << KVMPPC_RMAP_RC_SHIFT)
+#define KVMPPC_RMAP_PRESENT	0x100000000ul
+#define KVMPPC_RMAP_INDEX	0xfffffffful
+
+/* Low-order bits in kvm->arch.slot_phys[][] */
+#define KVMPPC_PAGE_ORDER_MASK	0x1f
+#define KVMPPC_PAGE_NO_CACHE	HPTE_R_I	/* 0x20 */
+#define KVMPPC_PAGE_WRITETHRU	HPTE_R_W	/* 0x40 */
+#define KVMPPC_GOT_PAGE		0x80
+
+struct kvm_arch_memory_slot {
+};
+
+struct kvm_arch {
+#ifdef CONFIG_KVM_BOOK3S_64_HV
+	unsigned long hpt_virt;
+	struct revmap_entry *revmap;
+	unsigned int lpid;
+	unsigned int host_lpid;
+	unsigned long host_lpcr;
+	unsigned long sdr1;
+	unsigned long host_sdr1;
+	int tlbie_lock;
+	unsigned long lpcr;
+	unsigned long rmor;
+	struct kvmppc_linear_info *rma;
+	unsigned long vrma_slb_v;
+	int rma_setup_done;
+	int using_mmu_notifiers;
+	struct list_head spapr_tce_tables;
+	spinlock_t slot_phys_lock;
+	unsigned long *slot_phys[KVM_MEM_SLOTS_NUM];
+	int slot_npages[KVM_MEM_SLOTS_NUM];
+	unsigned short last_vcpu[NR_CPUS];
+	struct kvmppc_vcore *vcores[KVM_MAX_VCORES];
+	struct kvmppc_linear_info *hpt_li;
+#endif /* CONFIG_KVM_BOOK3S_64_HV */
+};
+
+/*
+ * Struct for a virtual core.
+ * Note: entry_exit_count combines an entry count in the bottom 8 bits
+ * and an exit count in the next 8 bits.  This is so that we can
+ * atomically increment the entry count iff the exit count is 0
+ * without taking the lock.
+ */
+struct kvmppc_vcore {
+	int n_runnable;
+	int n_busy;
+	int num_threads;
+	int entry_exit_count;
+	int n_woken;
+	int nap_count;
+	int napping_threads;
+	u16 pcpu;
+	u8 vcore_state;
+	u8 in_guest;
+	struct list_head runnable_threads;
+	spinlock_t lock;
+	wait_queue_head_t wq;
+};
+
+#define VCORE_ENTRY_COUNT(vc)	((vc)->entry_exit_count & 0xff)
+#define VCORE_EXIT_COUNT(vc)	((vc)->entry_exit_count >> 8)
+
+/* Values for vcore_state */
+#define VCORE_INACTIVE	0
+#define VCORE_RUNNING	1
+#define VCORE_EXITING	2
+#define VCORE_SLEEPING	3
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct kvmppc_pte {
 	ulong eaddr;
 	u64 vpage;
@@ -163,6 +322,7 @@ struct kvmppc_mmu {
 	bool (*is_dcbz32)(struct kvm_vcpu *vcpu);
 };
 
+<<<<<<< HEAD
 struct hpte_cache {
 	struct hlist_node list_pte;
 	struct hlist_node list_pte_long;
@@ -173,12 +333,27 @@ struct hpte_cache {
 	u64 pfn;
 	ulong slot;
 	struct kvmppc_pte pte;
+=======
+struct kvmppc_slb {
+	u64 esid;
+	u64 vsid;
+	u64 orige;
+	u64 origv;
+	bool valid	: 1;
+	bool Ks		: 1;
+	bool Kp		: 1;
+	bool nx		: 1;
+	bool large	: 1;	/* PTEs are 16MB */
+	bool tb		: 1;	/* 1TB segment */
+	bool class	: 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct kvm_vcpu_arch {
 	ulong host_stack;
 	u32 host_pid;
 #ifdef CONFIG_PPC_BOOK3S
+<<<<<<< HEAD
 	ulong host_msr;
 	ulong host_r2;
 	void *host_retip;
@@ -187,6 +362,11 @@ struct kvm_vcpu_arch {
 	ulong highmem_handler;
 	ulong rmcall;
 	ulong host_paca_phys;
+=======
+	struct kvmppc_slb slb[64];
+	int slb_max;		/* 1 + index of last valid entry in slb[] */
+	int slb_nr;		/* total number of entries in SLB */
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct kvmppc_mmu mmu;
 #endif
 
@@ -195,13 +375,26 @@ struct kvm_vcpu_arch {
 	u64 fpr[32];
 	u64 fpscr;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SPE
+	ulong evr[32];
+	ulong spefscr;
+	ulong host_spefscr;
+	u64 acc;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_ALTIVEC
 	vector128 vr[32];
 	vector128 vscr;
 #endif
 
 #ifdef CONFIG_VSX
+<<<<<<< HEAD
 	u64 vsr[32];
+=======
+	u64 vsr[64];
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_PPC_BOOK3S
@@ -209,13 +402,17 @@ struct kvm_vcpu_arch {
 	u32 qpr[32];
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_BOOKE
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ulong pc;
 	ulong ctr;
 	ulong lr;
 
 	ulong xer;
 	u32 cr;
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_PPC_BOOK3S
@@ -229,6 +426,23 @@ struct kvm_vcpu_arch {
 	ulong sprg5;
 	ulong sprg6;
 	ulong sprg7;
+=======
+
+#ifdef CONFIG_PPC_BOOK3S
+	ulong hflags;
+	ulong guest_owned_ext;
+	ulong purr;
+	ulong spurr;
+	ulong dscr;
+	ulong amr;
+	ulong uamor;
+	u32 ctrl;
+	ulong dabr;
+#endif
+	u32 vrsave; /* also USPRG0 */
+	u32 mmucr;
+	ulong shadow_msr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ulong csrr0;
 	ulong csrr1;
 	ulong dsrr0;
@@ -236,12 +450,16 @@ struct kvm_vcpu_arch {
 	ulong mcsrr0;
 	ulong mcsrr1;
 	ulong mcsr;
+<<<<<<< HEAD
 	ulong esr;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 dec;
 	u32 decar;
 	u32 tbl;
 	u32 tbu;
 	u32 tcr;
+<<<<<<< HEAD
 	u32 tsr;
 	u32 ivor[64];
 	ulong ivpr;
@@ -249,6 +467,15 @@ struct kvm_vcpu_arch {
 	u32 pvr;
 
 	u32 shadow_pid;
+=======
+	ulong tsr; /* we need to perform set/clr_bits() which requires ulong */
+	u32 ivor[64];
+	ulong ivpr;
+	u32 pvr;
+
+	u32 shadow_pid;
+	u32 shadow_pid1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 pid;
 	u32 swap_pid;
 
@@ -258,6 +485,12 @@ struct kvm_vcpu_arch {
 	u32 dbcr1;
 	u32 dbsr;
 
+<<<<<<< HEAD
+=======
+	u64 mmcr[3];
+	u32 pmc[8];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_KVM_EXIT_TIMING
 	struct mutex exit_timing_lock;
 	struct kvmppc_exit_timing timing_exit;
@@ -272,8 +505,17 @@ struct kvm_vcpu_arch {
 	struct dentry *debugfs_exit_timing;
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_BOOKE
 	u32 last_inst;
+=======
+#ifdef CONFIG_PPC_BOOK3S
+	ulong fault_dar;
+	u32 fault_dsisr;
+#endif
+
+#ifdef CONFIG_BOOKE
+>>>>>>> refs/remotes/origin/cm-10.0
 	ulong fault_dear;
 	ulong fault_esr;
 	ulong queued_dear;
@@ -288,17 +530,49 @@ struct kvm_vcpu_arch {
 	u8 dcr_is_write;
 	u8 osi_needed;
 	u8 osi_enabled;
+<<<<<<< HEAD
+=======
+	u8 papr_enabled;
+	u8 sane;
+	u8 cpu_type;
+	u8 hcall_needed;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	u32 cpr0_cfgaddr; /* holds the last set cpr0_cfgaddr */
 
 	struct hrtimer dec_timer;
 	struct tasklet_struct tasklet;
 	u64 dec_jiffies;
+<<<<<<< HEAD
 	unsigned long pending_exceptions;
+=======
+	u64 dec_expires;
+	unsigned long pending_exceptions;
+	u16 last_cpu;
+	u8 ceded;
+	u8 prodded;
+	u32 last_inst;
+
+	struct lppaca *vpa;
+	struct slb_shadow *slb_shadow;
+	struct dtl *dtl;
+	struct dtl *dtl_end;
+
+	wait_queue_head_t *wqp;
+	struct kvmppc_vcore *vcore;
+	int ret;
+	int trap;
+	int state;
+	int ptid;
+	bool timer_running;
+	wait_queue_head_t cpu_run;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct kvm_vcpu_arch_shared *shared;
 	unsigned long magic_page_pa; /* phys addr to map the magic page to */
 	unsigned long magic_page_ea; /* effect. addr to map the magic page to */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_BOOK3S
 	struct hlist_head hpte_hash_pte[HPTEG_HASH_NUM_PTE];
 	struct hlist_head hpte_hash_pte_long[HPTEG_HASH_NUM_PTE_LONG];
@@ -309,4 +583,33 @@ struct kvm_vcpu_arch {
 #endif
 };
 
+=======
+#ifdef CONFIG_KVM_BOOK3S_64_HV
+	struct kvm_vcpu_arch_shared shregs;
+
+	unsigned long pgfault_addr;
+	long pgfault_index;
+	unsigned long pgfault_hpte[2];
+
+	struct list_head run_list;
+	struct task_struct *run_task;
+	struct kvm_run *kvm_run;
+	pgd_t *pgdir;
+#endif
+};
+
+/* Values for vcpu->arch.state */
+#define KVMPPC_VCPU_STOPPED		0
+#define KVMPPC_VCPU_BUSY_IN_HOST	1
+#define KVMPPC_VCPU_RUNNABLE		2
+
+/* Values for vcpu->arch.io_gpr */
+#define KVM_MMIO_REG_MASK	0x001f
+#define KVM_MMIO_REG_EXT_MASK	0xffe0
+#define KVM_MMIO_REG_GPR	0x0000
+#define KVM_MMIO_REG_FPR	0x0020
+#define KVM_MMIO_REG_QPR	0x0040
+#define KVM_MMIO_REG_FQPR	0x0060
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __POWERPC_KVM_HOST_H__ */

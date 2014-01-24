@@ -7,8 +7,13 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ":%s(): " fmt, __func__
 
+<<<<<<< HEAD
 #include <linux/version.h>
 #include <linux/fs.h>
+=======
+#include <linux/fs.h>
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/netdevice.h>
@@ -28,6 +33,10 @@
 /* 5 sec. connect timeout */
 #define CONNECT_TIMEOUT (5 * HZ)
 #define CAIF_NET_DEFAULT_QUEUE_LEN 500
+<<<<<<< HEAD
+=======
+#define UNDEF_CONNID 0xffffffff
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*This list is protected by the rtnl lock. */
 static LIST_HEAD(chnl_net_list);
@@ -72,14 +81,22 @@ static void robust_list_del(struct list_head *delete_node)
 static int chnl_recv_cb(struct cflayer *layr, struct cfpkt *pkt)
 {
 	struct sk_buff *skb;
+<<<<<<< HEAD
 	struct chnl_net *priv  = container_of(layr, struct chnl_net, chnl);
 	int pktlen;
 	int err = 0;
+=======
+	struct chnl_net *priv;
+	int pktlen;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const u8 *ip_version;
 	u8 buf;
 
 	priv = container_of(layr, struct chnl_net, chnl);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!priv)
 		return -EINVAL;
 
@@ -95,8 +112,12 @@ static int chnl_recv_cb(struct cflayer *layr, struct cfpkt *pkt)
 
 	/* check the version of IP */
 	ip_version = skb_header_pointer(skb, 0, 1, &buf);
+<<<<<<< HEAD
 	if (!ip_version)
 		return -EINVAL;
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (*ip_version >> 4) {
 	case 4:
 		skb->protocol = htons(ETH_P_IP);
@@ -105,6 +126,11 @@ static int chnl_recv_cb(struct cflayer *layr, struct cfpkt *pkt)
 		skb->protocol = htons(ETH_P_IPV6);
 		break;
 	default:
+<<<<<<< HEAD
+=======
+		kfree_skb(skb);
+		priv->netdev->stats.rx_errors++;
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -123,7 +149,11 @@ static int chnl_recv_cb(struct cflayer *layr, struct cfpkt *pkt)
 	priv->netdev->stats.rx_packets++;
 	priv->netdev->stats.rx_bytes += pktlen;
 
+<<<<<<< HEAD
 	return err;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int delete_device(struct chnl_net *dev)
@@ -221,12 +251,24 @@ static int chnl_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	if (skb->len > priv->netdev->mtu) {
 		pr_warn("Size of skb exceeded MTU\n");
+<<<<<<< HEAD
 		return -ENOSPC;
+=======
+		kfree_skb(skb);
+		dev->stats.tx_errors++;
+		return NETDEV_TX_OK;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (!priv->flowenabled) {
 		pr_debug("dropping packets flow off\n");
+<<<<<<< HEAD
 		return NETDEV_TX_BUSY;
+=======
+		kfree_skb(skb);
+		dev->stats.tx_dropped++;
+		return NETDEV_TX_OK;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (priv->conn_req.protocol == CAIFPROTO_DATAGRAM_LOOP)
@@ -240,9 +282,14 @@ static int chnl_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	/* Send the packet down the stack. */
 	result = priv->chnl.dn->transmit(priv->chnl.dn, pkt);
 	if (result) {
+<<<<<<< HEAD
 		if (result == -EAGAIN)
 			result = NETDEV_TX_BUSY;
 		return result;
+=======
+		dev->stats.tx_dropped++;
+		return NETDEV_TX_OK;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Update statistics. */
@@ -409,7 +456,11 @@ static void ipcaif_net_setup(struct net_device *dev)
 	priv->conn_req.link_selector = CAIF_LINK_HIGH_BANDW;
 	priv->conn_req.priority = CAIF_PRIO_LOW;
 	/* Insert illegal value */
+<<<<<<< HEAD
 	priv->conn_req.sockaddr.u.dgm.connection_id = 0;
+=======
+	priv->conn_req.sockaddr.u.dgm.connection_id = UNDEF_CONNID;
+>>>>>>> refs/remotes/origin/cm-10.0
 	priv->flowenabled = false;
 
 	init_waitqueue_head(&priv->netmgmt_wq);
@@ -472,9 +523,17 @@ static int ipcaif_newlink(struct net *src_net, struct net_device *dev,
 	else
 		list_add(&caifdev->list_field, &chnl_net_list);
 
+<<<<<<< HEAD
 	/* Take ifindex as connection-id if null */
 	if (caifdev->conn_req.sockaddr.u.dgm.connection_id == 0)
 		caifdev->conn_req.sockaddr.u.dgm.connection_id = dev->ifindex;
+=======
+	/* Use ifindex as connection id, and use loopback channel default. */
+	if (caifdev->conn_req.sockaddr.u.dgm.connection_id == UNDEF_CONNID) {
+		caifdev->conn_req.sockaddr.u.dgm.connection_id = dev->ifindex;
+		caifdev->conn_req.protocol = CAIFPROTO_DATAGRAM_LOOP;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 

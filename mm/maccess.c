@@ -1,7 +1,11 @@
 /*
  * Access kernel memory without faulting.
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mm.h>
 #include <linux/uaccess.h>
 

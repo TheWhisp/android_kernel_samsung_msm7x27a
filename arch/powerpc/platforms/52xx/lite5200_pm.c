@@ -3,6 +3,10 @@
 #include <asm/io.h>
 #include <asm/time.h>
 #include <asm/mpc52xx.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* defined in lite5200_sleep.S and only used here */
 extern void lite5200_low_power(void __iomem *sram, void __iomem *mbar);

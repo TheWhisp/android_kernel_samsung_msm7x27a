@@ -324,7 +324,11 @@ static const struct file_operations gru_fops = {
 
 static struct proc_entry {
 	char *name;
+<<<<<<< HEAD
 	int mode;
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct file_operations *fops;
 	struct proc_dir_entry *entry;
 } proc_files[] = {

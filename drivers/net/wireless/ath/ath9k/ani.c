@@ -15,6 +15,10 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "hw.h"
 #include "hw-ops.h"
 
@@ -135,8 +139,13 @@ static void ath9k_ani_restart(struct ath_hw *ah)
 		cck_base = AR_PHY_COUNTMAX - ah->config.cck_trig_high;
 	}
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI,
 		"Writing ofdmbase=%u   cckbase=%u\n", ofdm_base, cck_base);
+=======
+	ath_dbg(common, ANI, "Writing ofdmbase=%u   cckbase=%u\n",
+		ofdm_base, cck_base);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ENABLE_REGWRITE_BUFFER(ah);
 
@@ -267,13 +276,22 @@ static void ath9k_hw_set_ofdm_nil(struct ath_hw *ah, u8 immunityLevel)
 
 	aniState->noiseFloor = BEACON_RSSI(ah);
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI,
 		"**** ofdmlevel %d=>%d, rssi=%d[lo=%d hi=%d]\n",
+=======
+	ath_dbg(common, ANI, "**** ofdmlevel %d=>%d, rssi=%d[lo=%d hi=%d]\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		aniState->ofdmNoiseImmunityLevel,
 		immunityLevel, aniState->noiseFloor,
 		aniState->rssiThrLow, aniState->rssiThrHigh);
 
+<<<<<<< HEAD
 	aniState->ofdmNoiseImmunityLevel = immunityLevel;
+=======
+	if (aniState->update_ani)
+		aniState->ofdmNoiseImmunityLevel = immunityLevel;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	entry_ofdm = &ofdm_level_table[aniState->ofdmNoiseImmunityLevel];
 	entry_cck = &cck_level_table[aniState->cckNoiseImmunityLevel];
@@ -334,8 +352,12 @@ static void ath9k_hw_set_cck_nil(struct ath_hw *ah, u_int8_t immunityLevel)
 	const struct ani_cck_level_entry *entry_cck;
 
 	aniState->noiseFloor = BEACON_RSSI(ah);
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI,
 		"**** ccklevel %d=>%d, rssi=%d[lo=%d hi=%d]\n",
+=======
+	ath_dbg(common, ANI, "**** ccklevel %d=>%d, rssi=%d[lo=%d hi=%d]\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		aniState->cckNoiseImmunityLevel, immunityLevel,
 		aniState->noiseFloor, aniState->rssiThrLow,
 		aniState->rssiThrHigh);
@@ -346,7 +368,12 @@ static void ath9k_hw_set_cck_nil(struct ath_hw *ah, u_int8_t immunityLevel)
 	    immunityLevel > ATH9K_ANI_CCK_MAX_LEVEL_LOW_RSSI)
 		immunityLevel = ATH9K_ANI_CCK_MAX_LEVEL_LOW_RSSI;
 
+<<<<<<< HEAD
 	aniState->cckNoiseImmunityLevel = immunityLevel;
+=======
+	if (aniState->update_ani)
+		aniState->cckNoiseImmunityLevel = immunityLevel;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	entry_ofdm = &ofdm_level_table[aniState->ofdmNoiseImmunityLevel];
 	entry_cck = &cck_level_table[aniState->cckNoiseImmunityLevel];
@@ -406,20 +433,32 @@ static void ath9k_hw_ani_lower_immunity_old(struct ath_hw *ah)
 			if (aniState->ofdmWeakSigDetectOff) {
 				if (ath9k_hw_ani_control(ah,
 					 ATH9K_ANI_OFDM_WEAK_SIGNAL_DETECTION,
+<<<<<<< HEAD
 					 true) == true)
+=======
+					 true))
+>>>>>>> refs/remotes/origin/cm-10.0
 					return;
 			}
 			if (aniState->firstepLevel > 0) {
 				if (ath9k_hw_ani_control(ah,
 					 ATH9K_ANI_FIRSTEP_LEVEL,
+<<<<<<< HEAD
 					 aniState->firstepLevel - 1) == true)
+=======
+					 aniState->firstepLevel - 1))
+>>>>>>> refs/remotes/origin/cm-10.0
 					return;
 			}
 		} else {
 			if (aniState->firstepLevel > 0) {
 				if (ath9k_hw_ani_control(ah,
 					 ATH9K_ANI_FIRSTEP_LEVEL,
+<<<<<<< HEAD
 					 aniState->firstepLevel - 1) == true)
+=======
+					 aniState->firstepLevel - 1))
+>>>>>>> refs/remotes/origin/cm-10.0
 					return;
 			}
 		}
@@ -478,8 +517,12 @@ static void ath9k_ani_reset_old(struct ath_hw *ah, bool is_scanning)
 
 	if (ah->opmode != NL80211_IFTYPE_STATION
 	    && ah->opmode != NL80211_IFTYPE_ADHOC) {
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_ANI,
 			"Reset ANI state opmode %u\n", ah->opmode);
+=======
+		ath_dbg(common, ANI, "Reset ANI state opmode %u\n", ah->opmode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ah->stats.ast_ani_reset++;
 
 		if (ah->opmode == NL80211_IFTYPE_AP) {
@@ -579,7 +622,11 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 		    ATH9K_ANI_OFDM_DEF_LEVEL ||
 		    aniState->cckNoiseImmunityLevel !=
 		    ATH9K_ANI_CCK_DEF_LEVEL) {
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_ANI,
+=======
+			ath_dbg(common, ANI,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"Restore defaults: opmode %u chan %d Mhz/0x%x is_scanning=%d ofdm:%d cck:%d\n",
 				ah->opmode,
 				chan->channel,
@@ -588,6 +635,10 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 				aniState->ofdmNoiseImmunityLevel,
 				aniState->cckNoiseImmunityLevel);
 
+<<<<<<< HEAD
+=======
+			aniState->update_ani = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 			ath9k_hw_set_ofdm_nil(ah, ATH9K_ANI_OFDM_DEF_LEVEL);
 			ath9k_hw_set_cck_nil(ah, ATH9K_ANI_CCK_DEF_LEVEL);
 		}
@@ -595,7 +646,11 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 		/*
 		 * restore historical levels for this channel
 		 */
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_ANI,
+=======
+		ath_dbg(common, ANI,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"Restore history: opmode %u chan %d Mhz/0x%x is_scanning=%d ofdm:%d cck:%d\n",
 			ah->opmode,
 			chan->channel,
@@ -604,6 +659,10 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 			aniState->ofdmNoiseImmunityLevel,
 			aniState->cckNoiseImmunityLevel);
 
+<<<<<<< HEAD
+=======
+			aniState->update_ani = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 			ath9k_hw_set_ofdm_nil(ah,
 					      aniState->ofdmNoiseImmunityLevel);
 			ath9k_hw_set_cck_nil(ah,
@@ -638,7 +697,11 @@ static bool ath9k_hw_ani_read_counters(struct ath_hw *ah)
 	listenTime = ath_hw_get_listen_time(common);
 
 	if (listenTime <= 0) {
+<<<<<<< HEAD
 		ah->stats.ast_ani_lneg++;
+=======
+		ah->stats.ast_ani_lneg_or_lzero++;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ath9k_ani_restart(ah);
 		return false;
 	}
@@ -657,7 +720,11 @@ static bool ath9k_hw_ani_read_counters(struct ath_hw *ah)
 
 	if (!use_new_ani(ah) && (phyCnt1 < ofdm_base || phyCnt2 < cck_base)) {
 		if (phyCnt1 < ofdm_base) {
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_ANI,
+=======
+			ath_dbg(common, ANI,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"phyCnt1 0x%x, resetting counter value to 0x%x\n",
 				phyCnt1, ofdm_base);
 			REG_WRITE(ah, AR_PHY_ERR_1, ofdm_base);
@@ -665,7 +732,11 @@ static bool ath9k_hw_ani_read_counters(struct ath_hw *ah)
 				  AR_PHY_ERR_OFDM_TIMING);
 		}
 		if (phyCnt2 < cck_base) {
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_ANI,
+=======
+			ath_dbg(common, ANI,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"phyCnt2 0x%x, resetting counter value to 0x%x\n",
 				phyCnt2, cck_base);
 			REG_WRITE(ah, AR_PHY_ERR_2, cck_base);
@@ -708,7 +779,11 @@ void ath9k_hw_ani_monitor(struct ath_hw *ah, struct ath9k_channel *chan)
 	cckPhyErrRate =  aniState->cckPhyErrCount * 1000 /
 			 aniState->listenTime;
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI,
+=======
+	ath_dbg(common, ANI,
+>>>>>>> refs/remotes/origin/cm-10.0
 		"listenTime=%d OFDM:%d errs=%d/s CCK:%d errs=%d/s ofdm_turn=%d\n",
 		aniState->listenTime,
 		aniState->ofdmNoiseImmunityLevel,
@@ -743,7 +818,11 @@ void ath9k_enable_mib_counters(struct ath_hw *ah)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI, "Enable MIB counters\n");
+=======
+	ath_dbg(common, ANI, "Enable MIB counters\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ath9k_hw_update_mibstats(ah, &ah->ah_mibStats);
 
@@ -765,7 +844,11 @@ void ath9k_hw_disable_mib_counters(struct ath_hw *ah)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI, "Disable MIB counters\n");
+=======
+	ath_dbg(common, ANI, "Disable MIB counters\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	REG_WRITE(ah, AR_MIBC, AR_MIBC_FMC);
 	ath9k_hw_update_mibstats(ah, &ah->ah_mibStats);
@@ -840,7 +923,11 @@ void ath9k_hw_ani_init(struct ath_hw *ah)
 	struct ath_common *common = ath9k_hw_common(ah);
 	int i;
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI, "Initialize ANI\n");
+=======
+	ath_dbg(common, ANI, "Initialize ANI\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (use_new_ani(ah)) {
 		ah->config.ofdm_trig_high = ATH9K_ANI_OFDM_TRIG_HIGH_NEW;
@@ -887,6 +974,11 @@ void ath9k_hw_ani_init(struct ath_hw *ah)
 		ani->ofdmWeakSigDetectOff =
 			!ATH9K_ANI_USE_OFDM_WEAK_SIG;
 		ani->cckNoiseImmunityLevel = ATH9K_ANI_CCK_DEF_LEVEL;
+<<<<<<< HEAD
+=======
+		ani->ofdmNoiseImmunityLevel = ATH9K_ANI_OFDM_DEF_LEVEL;
+		ani->update_ani = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*

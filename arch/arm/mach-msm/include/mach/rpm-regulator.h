@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,7 +24,12 @@
 #include <mach/rpm-regulator-8660.h>
 #include <mach/rpm-regulator-8960.h>
 #include <mach/rpm-regulator-9615.h>
+<<<<<<< HEAD
 #include <mach/rpm-regulator-copper.h>
+=======
+#include <mach/rpm-regulator-8974.h>
+#include <mach/rpm-regulator-8930.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * enum rpm_vreg_version - supported RPM regulator versions
@@ -29,7 +38,12 @@ enum rpm_vreg_version {
 	RPM_VREG_VERSION_8660,
 	RPM_VREG_VERSION_8960,
 	RPM_VREG_VERSION_9615,
+<<<<<<< HEAD
 	RPM_VREG_VERSION_MAX = RPM_VREG_VERSION_9615,
+=======
+	RPM_VREG_VERSION_8930,
+	RPM_VREG_VERSION_MAX = RPM_VREG_VERSION_8930,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define RPM_VREG_PIN_CTRL_NONE		0x00
@@ -66,6 +80,36 @@ enum rpm_vreg_freq {
 };
 
 /**
+<<<<<<< HEAD
+=======
+ * enum rpm_vreg_voltage_corner - possible voltage corner values
+ *
+ * These should be used in regulator_set_voltage and rpm_vreg_set_voltage calls
+ * for corner type regulators as if they had units of uV.
+ */
+enum rpm_vreg_voltage_corner {
+	RPM_VREG_CORNER_NONE = 1,
+	RPM_VREG_CORNER_LOW,
+	RPM_VREG_CORNER_NOMINAL,
+	RPM_VREG_CORNER_HIGH,
+};
+
+/**
+ * enum rpm_vreg_voter - RPM regulator voter IDs for private APIs
+ */
+enum rpm_vreg_voter {
+	RPM_VREG_VOTER_REG_FRAMEWORK,	/* for internal use only */
+	RPM_VREG_VOTER1,		/* for use by the acpu-clock driver */
+	RPM_VREG_VOTER2,		/* for use by the acpu-clock driver */
+	RPM_VREG_VOTER3,		/* for use by other drivers */
+	RPM_VREG_VOTER4,		/* for use by the acpu-clock driver */
+	RPM_VREG_VOTER5,		/* for use by the acpu-clock driver */
+	RPM_VREG_VOTER6,		/* for use by the acpu-clock driver */
+	RPM_VREG_VOTER_COUNT,
+};
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * struct rpm_regulator_init_data - RPM regulator initialization data
  * @init_data:		regulator constraints
  * @id:			regulator id; from enum rpm_vreg_id
@@ -85,6 +129,12 @@ enum rpm_vreg_freq {
  * @pin_fn:		action to perform when pin control pin(s) is/are active
  * @force_mode:		used to specify a force mode which overrides the votes
  *			of other RPM masters.
+<<<<<<< HEAD
+=======
+ * @sleep_set_force_mode: force mode to use in sleep-set requests
+ * @power_mode:		mode to use as HPM (typically PWM or hysteretic) when
+ *			utilizing Auto mode selection
+>>>>>>> refs/remotes/origin/cm-10.0
  * @default_uV:		initial voltage to set the regulator to if enable is
  *			called before set_voltage (e.g. when boot_on or
  *			always_on is set).
@@ -105,6 +155,10 @@ struct rpm_regulator_init_data {
 	unsigned			pin_ctrl;
 	int				pin_fn;
 	int				force_mode;
+<<<<<<< HEAD
+=======
+	int				sleep_set_force_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int				power_mode;
 	int				default_uV;
 	unsigned			peak_uA;
@@ -113,6 +167,7 @@ struct rpm_regulator_init_data {
 };
 
 /**
+<<<<<<< HEAD
  * struct rpm_regulator_platform_data - RPM regulator platform data
  */
 struct rpm_regulator_platform_data {
@@ -135,6 +190,30 @@ enum rpm_vreg_voter {
 	RPM_VREG_VOTER5,		/* for use by the acpu-clock driver */
 	RPM_VREG_VOTER6,		/* for use by the acpu-clock driver */
 	RPM_VREG_VOTER_COUNT,
+=======
+ * struct rpm_regulator_consumer_mapping - mapping used by private consumers
+ */
+struct rpm_regulator_consumer_mapping {
+	const char		*dev_name;
+	const char		*supply;
+	int			vreg_id;
+	enum rpm_vreg_voter	voter;
+	int			sleep_also;
+};
+
+/**
+ * struct rpm_regulator_platform_data - RPM regulator platform data
+ */
+struct rpm_regulator_platform_data {
+	struct rpm_regulator_init_data		*init_data;
+	int					num_regulators;
+	enum rpm_vreg_version			version;
+	int					vreg_id_vdd_mem;
+	int					vreg_id_vdd_dig;
+	bool					requires_tcxo_workaround;
+	struct rpm_regulator_consumer_mapping	*consumer_map;
+	int					consumer_map_len;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #ifdef CONFIG_MSM_RPM_REGULATOR
@@ -161,6 +240,13 @@ enum rpm_vreg_voter {
  *
  * Consumers can vote to disable a regulator with this function by passing
  * min_uV = 0 and max_uV = 0.
+<<<<<<< HEAD
+=======
+ *
+ * Voltage switch type regulators may be controlled via rpm_vreg_set_voltage
+ * as well.  For this type of regulator, max_uV > 0 is treated as an enable
+ * request and max_uV == 0 is treated as a disable request.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 int rpm_vreg_set_voltage(int vreg_id, enum rpm_vreg_voter voter, int min_uV,
 			 int max_uV, int sleep_also);

@@ -131,6 +131,7 @@ static struct spi_driver dac124s085_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init dac124s085_leds_init(void)
 {
 	return spi_register_driver(&dac124s085_driver);
@@ -143,6 +144,9 @@ static void __exit dac124s085_leds_exit(void)
 
 module_init(dac124s085_leds_init);
 module_exit(dac124s085_leds_exit);
+=======
+module_spi_driver(dac124s085_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Guennadi Liakhovetski <lg@denx.de>");
 MODULE_DESCRIPTION("DAC124S085 LED driver");

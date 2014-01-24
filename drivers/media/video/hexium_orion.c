@@ -21,9 +21,18 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+<<<<<<< HEAD
 #define DEBUG_VARIABLE debug
 
 #include <media/saa7146_vv.h>
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#define DEBUG_VARIABLE debug
+
+#include <media/saa7146_vv.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int debug;
 module_param(debug, int, 0);
@@ -209,7 +218,11 @@ static int hexium_probe(struct saa7146_dev *dev)
 	union i2c_smbus_data data;
 	int err = 0;
 
+<<<<<<< HEAD
 	DEB_EE((".\n"));
+=======
+	DEB_EE("\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* there are no hexium orion cards with revision 0 saa7146s */
 	if (0 == dev->revision) {
@@ -218,7 +231,11 @@ static int hexium_probe(struct saa7146_dev *dev)
 
 	hexium = kzalloc(sizeof(struct hexium), GFP_KERNEL);
 	if (NULL == hexium) {
+<<<<<<< HEAD
 		printk("hexium_orion: hexium_probe: not enough kernel memory.\n");
+=======
+		pr_err("hexium_probe: not enough kernel memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 
@@ -234,7 +251,11 @@ static int hexium_probe(struct saa7146_dev *dev)
 	};
 	saa7146_i2c_adapter_prepare(dev, &hexium->i2c_adapter, SAA7146_I2C_BUS_BIT_RATE_480);
 	if (i2c_add_adapter(&hexium->i2c_adapter) < 0) {
+<<<<<<< HEAD
 		DEB_S(("cannot register i2c-device. skipping.\n"));
+=======
+		DEB_S("cannot register i2c-device. skipping.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(hexium);
 		return -EFAULT;
 	}
@@ -248,7 +269,11 @@ static int hexium_probe(struct saa7146_dev *dev)
 
 	/* detect newer Hexium Orion cards by subsystem ids */
 	if (0x17c8 == dev->pci->subsystem_vendor && 0x0101 == dev->pci->subsystem_device) {
+<<<<<<< HEAD
 		printk("hexium_orion: device is a Hexium Orion w/ 1 SVHS + 3 BNC inputs.\n");
+=======
+		pr_info("device is a Hexium Orion w/ 1 SVHS + 3 BNC inputs\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* we store the pointer in our private data field */
 		dev->ext_priv = hexium;
 		hexium->type = HEXIUM_ORION_1SVHS_3BNC;
@@ -256,7 +281,11 @@ static int hexium_probe(struct saa7146_dev *dev)
 	}
 
 	if (0x17c8 == dev->pci->subsystem_vendor && 0x2101 == dev->pci->subsystem_device) {
+<<<<<<< HEAD
 		printk("hexium_orion: device is a Hexium Orion w/ 4 BNC inputs.\n");
+=======
+		pr_info("device is a Hexium Orion w/ 4 BNC inputs\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* we store the pointer in our private data field */
 		dev->ext_priv = hexium;
 		hexium->type = HEXIUM_ORION_4BNC;
@@ -266,7 +295,11 @@ static int hexium_probe(struct saa7146_dev *dev)
 	/* check if this is an old hexium Orion card by looking at
 	   a saa7110 at address 0x4e */
 	if (0 == (err = i2c_smbus_xfer(&hexium->i2c_adapter, 0x4e, 0, I2C_SMBUS_READ, 0x00, I2C_SMBUS_BYTE_DATA, &data))) {
+<<<<<<< HEAD
 		printk("hexium_orion: device is a Hexium HV-PCI6/Orion (old).\n");
+=======
+		pr_info("device is a Hexium HV-PCI6/Orion (old)\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* we store the pointer in our private data field */
 		dev->ext_priv = hexium;
 		hexium->type = HEXIUM_HV_PCI6_ORION;
@@ -288,13 +321,21 @@ static int hexium_init_done(struct saa7146_dev *dev)
 	union i2c_smbus_data data;
 	int i = 0;
 
+<<<<<<< HEAD
 	DEB_D(("hexium_init_done called.\n"));
+=======
+	DEB_D("hexium_init_done called\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* initialize the helper ics to useful values */
 	for (i = 0; i < sizeof(hexium_saa7110); i++) {
 		data.byte = hexium_saa7110[i];
 		if (0 != i2c_smbus_xfer(&hexium->i2c_adapter, 0x4e, 0, I2C_SMBUS_WRITE, i, I2C_SMBUS_BYTE_DATA, &data)) {
+<<<<<<< HEAD
 			printk("hexium_orion: failed for address 0x%02x\n", i);
+=======
+			pr_err("failed for address 0x%02x\n", i);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -306,7 +347,11 @@ static int hexium_set_input(struct hexium *hexium, int input)
 	union i2c_smbus_data data;
 	int i = 0;
 
+<<<<<<< HEAD
 	DEB_D((".\n"));
+=======
+	DEB_D("\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < 8; i++) {
 		int adr = hexium_input_select[input].data[i].adr;
@@ -314,7 +359,11 @@ static int hexium_set_input(struct hexium *hexium, int input)
 		if (0 != i2c_smbus_xfer(&hexium->i2c_adapter, 0x4e, 0, I2C_SMBUS_WRITE, adr, I2C_SMBUS_BYTE_DATA, &data)) {
 			return -1;
 		}
+<<<<<<< HEAD
 		printk("%d: 0x%02x => 0x%02x\n",input, adr,data.byte);
+=======
+		pr_debug("%d: 0x%02x => 0x%02x\n", input, adr, data.byte);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
@@ -322,14 +371,22 @@ static int hexium_set_input(struct hexium *hexium, int input)
 
 static int vidioc_enum_input(struct file *file, void *fh, struct v4l2_input *i)
 {
+<<<<<<< HEAD
 	DEB_EE(("VIDIOC_ENUMINPUT %d.\n", i->index));
+=======
+	DEB_EE("VIDIOC_ENUMINPUT %d\n", i->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (i->index >= HEXIUM_INPUTS)
 		return -EINVAL;
 
 	memcpy(i, &hexium_inputs[i->index], sizeof(struct v4l2_input));
 
+<<<<<<< HEAD
 	DEB_D(("v4l2_ioctl: VIDIOC_ENUMINPUT %d.\n", i->index));
+=======
+	DEB_D("v4l2_ioctl: VIDIOC_ENUMINPUT %d\n", i->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -340,7 +397,11 @@ static int vidioc_g_input(struct file *file, void *fh, unsigned int *input)
 
 	*input = hexium->cur_input;
 
+<<<<<<< HEAD
 	DEB_D(("VIDIOC_G_INPUT: %d\n", *input));
+=======
+	DEB_D("VIDIOC_G_INPUT: %d\n", *input);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -365,18 +426,30 @@ static int hexium_attach(struct saa7146_dev *dev, struct saa7146_pci_extension_d
 {
 	struct hexium *hexium = (struct hexium *) dev->ext_priv;
 
+<<<<<<< HEAD
 	DEB_EE((".\n"));
+=======
+	DEB_EE("\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	saa7146_vv_init(dev, &vv_data);
 	vv_data.ops.vidioc_enum_input = vidioc_enum_input;
 	vv_data.ops.vidioc_g_input = vidioc_g_input;
 	vv_data.ops.vidioc_s_input = vidioc_s_input;
 	if (0 != saa7146_register_device(&hexium->video_dev, dev, "hexium orion", VFL_TYPE_GRABBER)) {
+<<<<<<< HEAD
 		printk("hexium_orion: cannot register capture v4l2 device. skipping.\n");
 		return -1;
 	}
 
 	printk("hexium_orion: found 'hexium orion' frame grabber-%d.\n", hexium_num);
+=======
+		pr_err("cannot register capture v4l2 device. skipping.\n");
+		return -1;
+	}
+
+	pr_err("found 'hexium orion' frame grabber-%d\n", hexium_num);
+>>>>>>> refs/remotes/origin/cm-10.0
 	hexium_num++;
 
 	/* the rest */
@@ -390,7 +463,11 @@ static int hexium_detach(struct saa7146_dev *dev)
 {
 	struct hexium *hexium = (struct hexium *) dev->ext_priv;
 
+<<<<<<< HEAD
 	DEB_EE(("dev:%p\n", dev));
+=======
+	DEB_EE("dev:%p\n", dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	saa7146_unregister_device(&hexium->video_dev, dev);
 	saa7146_vv_release(dev);
@@ -479,7 +556,11 @@ static struct saa7146_extension extension = {
 static int __init hexium_init_module(void)
 {
 	if (0 != saa7146_register_extension(&extension)) {
+<<<<<<< HEAD
 		DEB_S(("failed to register extension.\n"));
+=======
+		DEB_S("failed to register extension\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 

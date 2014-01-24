@@ -30,6 +30,7 @@ static const char dm_snapshot_merge_target_name[] = "snapshot-merge";
 	((ti)->type->name == dm_snapshot_merge_target_name)
 
 /*
+<<<<<<< HEAD
  * The percentage increment we will wake up users at
  */
 #define WAKE_UP_PERCENT 5
@@ -40,6 +41,8 @@ static const char dm_snapshot_merge_target_name[] = "snapshot-merge";
 #define SNAPSHOT_COPY_PRIORITY 2
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * The size of the mempool used to track chunks in use.
  */
 #define MIN_IOS 256
@@ -180,6 +183,16 @@ struct dm_snap_pending_exception {
 	 * kcopyd.
 	 */
 	int started;
+<<<<<<< HEAD
+=======
+
+	/*
+	 * For writing a complete chunk, bypassing the copy.
+	 */
+	struct bio *full_bio;
+	bio_end_io_t *full_bio_end_io;
+	void *full_bio_private;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -1054,8 +1067,12 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 
 	s = kmalloc(sizeof(*s), GFP_KERNEL);
 	if (!s) {
+<<<<<<< HEAD
 		ti->error = "Cannot allocate snapshot context private "
 		    "structure";
+=======
+		ti->error = "Cannot allocate private snapshot structure";
+>>>>>>> refs/remotes/origin/cm-10.0
 		r = -ENOMEM;
 		goto bad;
 	}
@@ -1380,6 +1397,10 @@ static void pending_complete(struct dm_snap_pending_exception *pe, int success)
 	struct dm_snapshot *s = pe->snap;
 	struct bio *origin_bios = NULL;
 	struct bio *snapshot_bios = NULL;
+<<<<<<< HEAD
+=======
+	struct bio *full_bio = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int error = 0;
 
 	if (!success) {
@@ -1415,10 +1436,22 @@ static void pending_complete(struct dm_snap_pending_exception *pe, int success)
 	 */
 	dm_insert_exception(&s->complete, e);
 
+<<<<<<< HEAD
  out:
 	dm_remove_exception(&pe->e);
 	snapshot_bios = bio_list_get(&pe->snapshot_bios);
 	origin_bios = bio_list_get(&pe->origin_bios);
+=======
+out:
+	dm_remove_exception(&pe->e);
+	snapshot_bios = bio_list_get(&pe->snapshot_bios);
+	origin_bios = bio_list_get(&pe->origin_bios);
+	full_bio = pe->full_bio;
+	if (full_bio) {
+		full_bio->bi_end_io = pe->full_bio_end_io;
+		full_bio->bi_private = pe->full_bio_private;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	free_pending_exception(pe);
 
 	increment_pending_exceptions_done_count();
@@ -1426,10 +1459,22 @@ static void pending_complete(struct dm_snap_pending_exception *pe, int success)
 	up_write(&s->lock);
 
 	/* Submit any pending write bios */
+<<<<<<< HEAD
 	if (error)
 		error_bios(snapshot_bios);
 	else
 		flush_bios(snapshot_bios);
+=======
+	if (error) {
+		if (full_bio)
+			bio_io_error(full_bio);
+		error_bios(snapshot_bios);
+	} else {
+		if (full_bio)
+			bio_endio(full_bio, 0);
+		flush_bios(snapshot_bios);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	retry_origin_bios(s, origin_bios);
 }
@@ -1480,8 +1525,38 @@ static void start_copy(struct dm_snap_pending_exception *pe)
 	dest.count = src.count;
 
 	/* Hand over to kcopyd */
+<<<<<<< HEAD
 	dm_kcopyd_copy(s->kcopyd_client,
 		    &src, 1, &dest, 0, copy_callback, pe);
+=======
+	dm_kcopyd_copy(s->kcopyd_client, &src, 1, &dest, 0, copy_callback, pe);
+}
+
+static void full_bio_end_io(struct bio *bio, int error)
+{
+	void *callback_data = bio->bi_private;
+
+	dm_kcopyd_do_callback(callback_data, 0, error ? 1 : 0);
+}
+
+static void start_full_bio(struct dm_snap_pending_exception *pe,
+			   struct bio *bio)
+{
+	struct dm_snapshot *s = pe->snap;
+	void *callback_data;
+
+	pe->full_bio = bio;
+	pe->full_bio_end_io = bio->bi_end_io;
+	pe->full_bio_private = bio->bi_private;
+
+	callback_data = dm_kcopyd_prepare_callback(s->kcopyd_client,
+						   copy_callback, pe);
+
+	bio->bi_end_io = full_bio_end_io;
+	bio->bi_private = callback_data;
+
+	generic_make_request(bio);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct dm_snap_pending_exception *
@@ -1519,6 +1594,10 @@ __find_pending_exception(struct dm_snapshot *s,
 	bio_list_init(&pe->origin_bios);
 	bio_list_init(&pe->snapshot_bios);
 	pe->started = 0;
+<<<<<<< HEAD
+=======
+	pe->full_bio = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (s->store->type->prepare_exception(s->store, &pe->e)) {
 		free_pending_exception(pe);
@@ -1612,10 +1691,26 @@ static int snapshot_map(struct dm_target *ti, struct bio *bio,
 		}
 
 		remap_exception(s, &pe->e, bio, chunk);
+<<<<<<< HEAD
 		bio_list_add(&pe->snapshot_bios, bio);
 
 		r = DM_MAPIO_SUBMITTED;
 
+=======
+
+		r = DM_MAPIO_SUBMITTED;
+
+		if (!pe->started &&
+		    bio->bi_size == (s->store->chunk_size << SECTOR_SHIFT)) {
+			pe->started = 1;
+			up_write(&s->lock);
+			start_full_bio(pe, bio);
+			goto out;
+		}
+
+		bio_list_add(&pe->snapshot_bios, bio);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!pe->started) {
 			/* this is protected by snap->lock */
 			pe->started = 1;
@@ -1628,9 +1723,15 @@ static int snapshot_map(struct dm_target *ti, struct bio *bio,
 		map_context->ptr = track_chunk(s, chunk);
 	}
 
+<<<<<<< HEAD
  out_unlock:
 	up_write(&s->lock);
  out:
+=======
+out_unlock:
+	up_write(&s->lock);
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return r;
 }
 
@@ -1974,7 +2075,11 @@ static int __origin_write(struct list_head *snapshots, sector_t sector,
 			pe_to_start_now = pe;
 		}
 
+<<<<<<< HEAD
  next_snapshot:
+=======
+next_snapshot:
+>>>>>>> refs/remotes/origin/cm-10.0
 		up_write(&snap->lock);
 
 		if (pe_to_start_now) {

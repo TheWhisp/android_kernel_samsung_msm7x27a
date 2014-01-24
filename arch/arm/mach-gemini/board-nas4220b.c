@@ -102,7 +102,11 @@ static void __init ib4220b_init(void)
 }
 
 MACHINE_START(NAS4220B, "Raidsonic NAS IB-4220-B")
+<<<<<<< HEAD
 	.boot_params	= 0x100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= gemini_map_io,
 	.init_irq	= gemini_init_irq,
 	.timer		= &ib4220b_timer,

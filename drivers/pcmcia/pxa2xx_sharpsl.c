@@ -46,6 +46,7 @@ static void sharpsl_pcmcia_init_reset(struct soc_pcmcia_socket *skt)
 
 static int sharpsl_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
+<<<<<<< HEAD
 	int ret;
 
 	if (platform_scoop_config->pcmcia_init)
@@ -64,6 +65,11 @@ static int sharpsl_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 			printk(KERN_ERR "Request for Compact Flash IRQ failed\n");
 			return ret;
 		}
+=======
+	if (SCOOP_DEV[skt->nr].cd_irq >= 0) {
+		skt->stat[SOC_STAT_CD].irq = SCOOP_DEV[skt->nr].cd_irq;
+		skt->stat[SOC_STAT_CD].name = SCOOP_DEV[skt->nr].cd_irq_str;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	skt->socket.pci_irq = SCOOP_DEV[skt->nr].irq;
@@ -71,6 +77,7 @@ static int sharpsl_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void sharpsl_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 {
 	if (SCOOP_DEV[skt->nr].cd_irq >= 0) {
@@ -84,6 +91,8 @@ static void sharpsl_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void sharpsl_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 				    struct pcmcia_state *state)
 {
@@ -225,7 +234,10 @@ static void sharpsl_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 static struct pcmcia_low_level sharpsl_pcmcia_ops = {
 	.owner                  = THIS_MODULE,
 	.hw_init                = sharpsl_pcmcia_hw_init,
+<<<<<<< HEAD
 	.hw_shutdown            = sharpsl_pcmcia_hw_shutdown,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.socket_state           = sharpsl_pcmcia_socket_state,
 	.configure_socket       = sharpsl_pcmcia_configure_socket,
 	.socket_init            = sharpsl_pcmcia_socket_init,

@@ -15,15 +15,27 @@
 #ifndef __MFD_WM8994_CORE_H__
 #define __MFD_WM8994_CORE_H__
 
+<<<<<<< HEAD
+=======
+#include <linux/mutex.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 
 enum wm8994_type {
 	WM8994 = 0,
 	WM8958 = 1,
+<<<<<<< HEAD
+=======
+	WM1811 = 2,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct regulator_dev;
 struct regulator_bulk_data;
+<<<<<<< HEAD
+=======
+struct regmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define WM8994_NUM_GPIO_REGS 11
 #define WM8994_NUM_LDO_REGS   2
@@ -50,6 +62,7 @@ struct regulator_bulk_data;
 #define WM8994_IRQ_GPIO(x) (x + WM8994_IRQ_TEMP_WARN)
 
 struct wm8994 {
+<<<<<<< HEAD
 	struct mutex io_lock;
 	struct mutex irq_lock;
 
@@ -62,11 +75,23 @@ struct wm8994 {
 			 int bytes, const void *src);
 
 	void *control_data;
+=======
+	struct mutex irq_lock;
+
+	enum wm8994_type type;
+	int revision;
+
+	struct device *dev;
+	struct regmap *regmap;
+
+	bool ldo_ena_always_driven;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int gpio_base;
 	int irq_base;
 
 	int irq;
+<<<<<<< HEAD
 	u16 irq_masks_cur[WM8994_NUM_IRQ_REGS];
 	u16 irq_masks_cache[WM8994_NUM_IRQ_REGS];
 
@@ -74,6 +99,12 @@ struct wm8994 {
 	bool suspended;
 	u16 ldo_regs[WM8994_NUM_LDO_REGS];
 	u16 gpio_regs[WM8994_NUM_GPIO_REGS];
+=======
+	struct regmap_irq_chip_data *irq_data;
+
+	/* Used over suspend/resume */
+	bool suspended;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct regulator_dev *dbvdd;
 	int num_supplies;

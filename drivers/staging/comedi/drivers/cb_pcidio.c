@@ -184,8 +184,11 @@ static int pcidio_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	int index;
 	int i;
 
+<<<<<<< HEAD
 	printk("comedi%d: cb_pcidio: \n", dev->minor);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Allocate the private structure area.  alloc_private() is a
  * convenient macro defined in comedidev.h.
@@ -223,8 +226,12 @@ static int pcidio_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		}
 	}
 
+<<<<<<< HEAD
 	printk("No supported ComputerBoards/MeasurementComputing card found on "
 	       "requested position\n");
+=======
+	dev_err(dev->hw_dev, "No supported ComputerBoards/MeasurementComputing card found on requested position\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -EIO;
 
 found:
@@ -236,6 +243,7 @@ found:
 	dev->board_name = thisboard->name;
 
 	devpriv->pci_dev = pcidev;
+<<<<<<< HEAD
 	printk("Found %s on bus %i, slot %i\n", thisboard->name,
 	       devpriv->pci_dev->bus->number,
 	       PCI_SLOT(devpriv->pci_dev->devfn));
@@ -244,6 +252,14 @@ found:
 		    ("cb_pcidio: failed to enable PCI device and request regions\n");
 		return -EIO;
 	}
+=======
+	dev_dbg(dev->hw_dev, "Found %s on bus %i, slot %i\n", thisboard->name,
+		devpriv->pci_dev->bus->number,
+		PCI_SLOT(devpriv->pci_dev->devfn));
+	if (comedi_pci_enable(pcidev, thisboard->name))
+		return -EIO;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	devpriv->dio_reg_base
 	    =
 	    pci_resource_start(devpriv->pci_dev,
@@ -259,11 +275,18 @@ found:
 	for (i = 0; i < thisboard->n_8255; i++) {
 		subdev_8255_init(dev, dev->subdevices + i,
 				 NULL, devpriv->dio_reg_base + i * 4);
+<<<<<<< HEAD
 		printk(" subdev %d: base = 0x%lx\n", i,
 		       devpriv->dio_reg_base + i * 4);
 	}
 
 	printk("attached\n");
+=======
+		dev_dbg(dev->hw_dev, "subdev %d: base = 0x%lx\n", i,
+			devpriv->dio_reg_base + i * 4);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 
@@ -277,7 +300,10 @@ found:
  */
 static int pcidio_detach(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 	printk("comedi%d: cb_pcidio: remove\n", dev->minor);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (devpriv) {
 		if (devpriv->pci_dev) {
 			if (devpriv->dio_reg_base)

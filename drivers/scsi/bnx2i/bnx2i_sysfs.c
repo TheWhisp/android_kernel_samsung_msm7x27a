@@ -1,6 +1,10 @@
 /* bnx2i_sysfs.c: Broadcom NetXtreme II iSCSI driver.
  *
+<<<<<<< HEAD
  * Copyright (c) 2004 - 2010 Broadcom Corporation
+=======
+ * Copyright (c) 2004 - 2011 Broadcom Corporation
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

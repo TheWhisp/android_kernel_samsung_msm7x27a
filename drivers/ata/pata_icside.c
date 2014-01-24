@@ -210,8 +210,13 @@ static void pata_icside_set_dmamode(struct ata_port *ap, struct ata_device *adev
 	else
 		iomd_type = 'A', cycle = 562;
 
+<<<<<<< HEAD
 	ata_dev_printk(adev, KERN_INFO, "timings: act %dns rec %dns cyc %dns (%c)\n",
 		t.active, t.recover, t.cycle, iomd_type);
+=======
+	ata_dev_info(adev, "timings: act %dns rec %dns cyc %dns (%c)\n",
+		     t.active, t.recover, t.cycle, iomd_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	state->port[ap->port_no].speed[adev->devno] = cycle;
 }

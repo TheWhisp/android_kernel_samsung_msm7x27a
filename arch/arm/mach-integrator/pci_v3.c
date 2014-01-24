@@ -30,9 +30,15 @@
 
 #include <mach/hardware.h>
 #include <mach/platform.h>
+<<<<<<< HEAD
 #include <asm/irq.h>
 #include <asm/signal.h>
 #include <asm/system.h>
+=======
+#include <mach/irqs.h>
+
+#include <asm/signal.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach/pci.h>
 #include <asm/irq_regs.h>
 
@@ -359,7 +365,11 @@ static struct resource pre_mem = {
 	.flags	= IORESOURCE_MEM | IORESOURCE_PREFETCH,
 };
 
+<<<<<<< HEAD
 static int __init pci_v3_setup_resources(struct resource **resource)
+=======
+static int __init pci_v3_setup_resources(struct pci_sys_data *sys)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (request_resource(&iomem_resource, &non_mem)) {
 		printk(KERN_ERR "PCI: unable to allocate non-prefetchable "
@@ -374,6 +384,7 @@ static int __init pci_v3_setup_resources(struct resource **resource)
 	}
 
 	/*
+<<<<<<< HEAD
 	 * bus->resource[0] is the IO resource for this bus
 	 * bus->resource[1] is the mem resource for this bus
 	 * bus->resource[2] is the prefetch mem resource for this bus
@@ -381,6 +392,16 @@ static int __init pci_v3_setup_resources(struct resource **resource)
 	resource[0] = &ioport_resource;
 	resource[1] = &non_mem;
 	resource[2] = &pre_mem;
+=======
+	 * the IO resource for this bus
+	 * the mem resource for this bus
+	 * the prefetch mem resource for this bus
+	 */
+	pci_add_resource_offset(&sys->resources,
+				&ioport_resource, sys->io_offset);
+	pci_add_resource_offset(&sys->resources, &non_mem, sys->mem_offset);
+	pci_add_resource_offset(&sys->resources, &pre_mem, sys->mem_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 1;
 }
@@ -481,7 +502,11 @@ int __init pci_v3_setup(int nr, struct pci_sys_data *sys)
 
 	if (nr == 0) {
 		sys->mem_offset = PHYS_PCI_MEM_BASE;
+<<<<<<< HEAD
 		ret = pci_v3_setup_resources(sys->resource);
+=======
+		ret = pci_v3_setup_resources(sys);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return ret;
@@ -489,7 +514,12 @@ int __init pci_v3_setup(int nr, struct pci_sys_data *sys)
 
 struct pci_bus * __init pci_v3_scan_bus(int nr, struct pci_sys_data *sys)
 {
+<<<<<<< HEAD
 	return pci_scan_bus(sys->busnr, &pci_v3_ops, sys);
+=======
+	return pci_scan_root_bus(NULL, sys->busnr, &pci_v3_ops, sys,
+				 &sys->resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -502,6 +532,12 @@ void __init pci_v3_preinit(void)
 	unsigned int temp;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	pcibios_min_io = 0x6000;
+	pcibios_min_mem = 0x00100000;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Hook in our fault handler for PCI errors
 	 */

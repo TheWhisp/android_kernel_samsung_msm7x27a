@@ -9,7 +9,11 @@
 #include <linux/mm.h>
 #include <linux/sched.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 #include <asm/pgtable.h>
 

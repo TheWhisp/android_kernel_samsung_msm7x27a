@@ -20,7 +20,10 @@ static inline void __iomem *__io(unsigned long addr)
 }
 
 #define __io(a)			__io(a)
+<<<<<<< HEAD
 #define __mem_pci(a)		(a)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

@@ -53,7 +53,11 @@
 		printk(KERN_DEBUG f, ## a);				\
 	} while (0)
 #else
+<<<<<<< HEAD
 #define ext4_debug(f, a...)	do {} while (0)
+=======
+#define ext4_debug(fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #define EXT4_ERROR_INODE(inode, fmt, a...) \
@@ -144,9 +148,23 @@ struct ext4_allocation_request {
 #define EXT4_MAP_UNWRITTEN	(1 << BH_Unwritten)
 #define EXT4_MAP_BOUNDARY	(1 << BH_Boundary)
 #define EXT4_MAP_UNINIT		(1 << BH_Uninit)
+<<<<<<< HEAD
 #define EXT4_MAP_FLAGS		(EXT4_MAP_NEW | EXT4_MAP_MAPPED |\
 				 EXT4_MAP_UNWRITTEN | EXT4_MAP_BOUNDARY |\
 				 EXT4_MAP_UNINIT)
+=======
+/* Sometimes (in the bigalloc case, from ext4_da_get_block_prep) the caller of
+ * ext4_map_blocks wants to know whether or not the underlying cluster has
+ * already been accounted for. EXT4_MAP_FROM_CLUSTER conveys to the caller that
+ * the requested mapping was from previously mapped (or delayed allocated)
+ * cluster. We use BH_AllocFromCluster only for this flag. BH_AllocFromCluster
+ * should never appear on buffer_head's state flags.
+ */
+#define EXT4_MAP_FROM_CLUSTER	(1 << BH_AllocFromCluster)
+#define EXT4_MAP_FLAGS		(EXT4_MAP_NEW | EXT4_MAP_MAPPED |\
+				 EXT4_MAP_UNWRITTEN | EXT4_MAP_BOUNDARY |\
+				 EXT4_MAP_UNINIT | EXT4_MAP_FROM_CLUSTER)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct ext4_map_blocks {
 	ext4_fsblk_t m_pblk;
@@ -176,6 +194,11 @@ struct mpage_da_data {
 #define	EXT4_IO_END_UNWRITTEN	0x0001
 #define EXT4_IO_END_ERROR	0x0002
 #define EXT4_IO_END_QUEUED	0x0004
+<<<<<<< HEAD
+=======
+#define EXT4_IO_END_DIRECT	0x0008
+#define EXT4_IO_END_IN_FSYNC	0x0010
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct ext4_io_page {
 	struct page	*p_page;
@@ -184,18 +207,37 @@ struct ext4_io_page {
 
 #define MAX_IO_PAGES 128
 
+<<<<<<< HEAD
+=======
+/*
+ * For converting uninitialized extents on a work queue.
+ *
+ * 'page' is only used from the writepage() path; 'pages' is only used for
+ * buffered writes; they are used to keep page references until conversion
+ * takes place.  For AIO/DIO, neither field is filled in.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 typedef struct ext4_io_end {
 	struct list_head	list;		/* per-file finished IO list */
 	struct inode		*inode;		/* file being written to */
 	unsigned int		flag;		/* unwritten or not */
+<<<<<<< HEAD
 	struct page		*page;		/* page struct for buffer write */
+=======
+	struct page		*page;		/* for writepage() path */
+>>>>>>> refs/remotes/origin/cm-10.0
 	loff_t			offset;		/* offset in the file */
 	ssize_t			size;		/* size of the extent */
 	struct work_struct	work;		/* data work queue */
 	struct kiocb		*iocb;		/* iocb struct for AIO */
 	int			result;		/* error value for AIO */
+<<<<<<< HEAD
 	int			num_io_pages;
 	struct ext4_io_page	*pages[MAX_IO_PAGES];
+=======
+	int			num_io_pages;   /* for writepages() */
+	struct ext4_io_page	*pages[MAX_IO_PAGES]; /* for writepages() */
+>>>>>>> refs/remotes/origin/cm-10.0
 } ext4_io_end_t;
 
 struct ext4_io_submit {
@@ -239,8 +281,16 @@ struct ext4_io_submit {
 # define EXT4_BLOCK_SIZE(s)		(EXT4_MIN_BLOCK_SIZE << (s)->s_log_block_size)
 #endif
 #define	EXT4_ADDR_PER_BLOCK(s)		(EXT4_BLOCK_SIZE(s) / sizeof(__u32))
+<<<<<<< HEAD
 #ifdef __KERNEL__
 # define EXT4_BLOCK_SIZE_BITS(s)	((s)->s_blocksize_bits)
+=======
+#define EXT4_CLUSTER_SIZE(s)		(EXT4_BLOCK_SIZE(s) << \
+					 EXT4_SB(s)->s_cluster_bits)
+#ifdef __KERNEL__
+# define EXT4_BLOCK_SIZE_BITS(s)	((s)->s_blocksize_bits)
+# define EXT4_CLUSTER_BITS(s)		(EXT4_SB(s)->s_cluster_bits)
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 # define EXT4_BLOCK_SIZE_BITS(s)	((s)->s_log_block_size + 10)
 #endif
@@ -258,6 +308,17 @@ struct ext4_io_submit {
 #endif
 #define EXT4_BLOCK_ALIGN(size, blkbits)		ALIGN((size), (1 << (blkbits)))
 
+<<<<<<< HEAD
+=======
+/* Translate a block number to a cluster number */
+#define EXT4_B2C(sbi, blk)	((blk) >> (sbi)->s_cluster_bits)
+/* Translate a cluster number to a block number */
+#define EXT4_C2B(sbi, cluster)	((cluster) << (sbi)->s_cluster_bits)
+/* Translate # of blks to # of clusters */
+#define EXT4_NUM_B2C(sbi, blks)	(((blks) + (sbi)->s_cluster_ratio - 1) >> \
+				 (sbi)->s_cluster_bits)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Structure of a blocks group descriptor
  */
@@ -288,9 +349,15 @@ struct ext4_group_desc
  */
 
 struct flex_groups {
+<<<<<<< HEAD
 	atomic_t free_inodes;
 	atomic_t free_blocks;
 	atomic_t used_dirs;
+=======
+	atomic64_t	free_clusters;
+	atomic_t	free_inodes;
+	atomic_t	used_dirs;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use */
@@ -306,6 +373,10 @@ struct flex_groups {
 #define EXT4_DESC_SIZE(s)		(EXT4_SB(s)->s_desc_size)
 #ifdef __KERNEL__
 # define EXT4_BLOCKS_PER_GROUP(s)	(EXT4_SB(s)->s_blocks_per_group)
+<<<<<<< HEAD
+=======
+# define EXT4_CLUSTERS_PER_GROUP(s)	(EXT4_SB(s)->s_clusters_per_group)
+>>>>>>> refs/remotes/origin/cm-10.0
 # define EXT4_DESC_PER_BLOCK(s)		(EXT4_SB(s)->s_desc_per_block)
 # define EXT4_INODES_PER_GROUP(s)	(EXT4_SB(s)->s_inodes_per_group)
 # define EXT4_DESC_PER_BLOCK_BITS(s)	(EXT4_SB(s)->s_desc_per_block_bits)
@@ -491,6 +562,17 @@ struct ext4_new_group_data {
 	__u32 free_blocks_count;
 };
 
+<<<<<<< HEAD
+=======
+/* Indexes used to index group tables in ext4_new_group_data */
+enum {
+	BLOCK_BITMAP = 0,	/* block bitmap */
+	INODE_BITMAP,		/* inode bitmap */
+	INODE_TABLE,		/* inode tables */
+	GROUP_TABLE_COUNT,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Flags used by ext4_map_blocks()
  */
@@ -519,6 +601,11 @@ struct ext4_new_group_data {
 #define EXT4_GET_BLOCKS_PUNCH_OUT_EXT		0x0020
 	/* Don't normalize allocation size (used for fallocate) */
 #define EXT4_GET_BLOCKS_NO_NORMALIZE		0x0040
+<<<<<<< HEAD
+=======
+	/* Request will not result in inode size update (user for fallocate) */
+#define EXT4_GET_BLOCKS_KEEP_SIZE		0x0080
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Flags used by ext4_free_blocks
@@ -527,6 +614,16 @@ struct ext4_new_group_data {
 #define EXT4_FREE_BLOCKS_FORGET		0x0002
 #define EXT4_FREE_BLOCKS_VALIDATED	0x0004
 #define EXT4_FREE_BLOCKS_NO_QUOT_UPDATE	0x0008
+<<<<<<< HEAD
+=======
+#define EXT4_FREE_BLOCKS_NOFREE_FIRST_CLUSTER	0x0010
+#define EXT4_FREE_BLOCKS_NOFREE_LAST_CLUSTER	0x0020
+
+/*
+ * Flags used by ext4_discard_partial_page_buffers
+ */
+#define EXT4_DISCARD_PARTIAL_PG_ZERO_UNMAPPED	0x0001
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * ioctl commands
@@ -537,9 +634,12 @@ struct ext4_new_group_data {
 #define	EXT4_IOC_SETVERSION		_IOW('f', 4, long)
 #define	EXT4_IOC_GETVERSION_OLD		FS_IOC_GETVERSION
 #define	EXT4_IOC_SETVERSION_OLD		FS_IOC_SETVERSION
+<<<<<<< HEAD
 #ifdef CONFIG_JBD2_DEBUG
 #define EXT4_IOC_WAIT_FOR_READONLY	_IOR('f', 99, long)
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EXT4_IOC_GETRSVSZ		_IOR('f', 5, long)
 #define EXT4_IOC_SETRSVSZ		_IOW('f', 6, long)
 #define EXT4_IOC_GROUP_EXTEND		_IOW('f', 7, unsigned long)
@@ -549,6 +649,10 @@ struct ext4_new_group_data {
  /* note ioctl 11 reserved for filesystem-independent FIEMAP ioctl */
 #define EXT4_IOC_ALLOC_DA_BLKS		_IO('f', 12)
 #define EXT4_IOC_MOVE_EXT		_IOWR('f', 15, struct move_extent)
+<<<<<<< HEAD
+=======
+#define EXT4_IOC_RESIZE_FS		_IOW('f', 16, __u64)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
 /*
@@ -562,9 +666,12 @@ struct ext4_new_group_data {
 #define EXT4_IOC32_SETRSVSZ		_IOW('f', 6, int)
 #define EXT4_IOC32_GROUP_EXTEND		_IOW('f', 7, unsigned int)
 #define EXT4_IOC32_GROUP_ADD		_IOW('f', 8, struct compat_ext4_new_group_input)
+<<<<<<< HEAD
 #ifdef CONFIG_JBD2_DEBUG
 #define EXT4_IOC32_WAIT_FOR_READONLY	_IOR('f', 99, int)
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EXT4_IOC32_GETVERSION_OLD	FS_IOC32_GETVERSION
 #define EXT4_IOC32_SETVERSION_OLD	FS_IOC32_SETVERSION
 #endif
@@ -836,6 +943,10 @@ struct ext4_inode_info {
 	ext4_group_t	i_last_alloc_group;
 
 	/* allocation reservation info for delalloc */
+<<<<<<< HEAD
+=======
+	/* In case of bigalloc, these refer to clusters rather than blocks */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int i_reserved_data_blocks;
 	unsigned int i_reserved_meta_blocks;
 	unsigned int i_allocated_meta_blocks;
@@ -885,12 +996,19 @@ struct ext4_inode_info {
 /*
  * Mount flags
  */
+<<<<<<< HEAD
 #define EXT4_MOUNT_OLDALLOC		0x00002  /* Don't use the new Orlov allocator */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EXT4_MOUNT_GRPID		0x00004	/* Create files with directory's group */
 #define EXT4_MOUNT_DEBUG		0x00008	/* Some debugging messages */
 #define EXT4_MOUNT_ERRORS_CONT		0x00010	/* Continue on errors */
 #define EXT4_MOUNT_ERRORS_RO		0x00020	/* Remount fs ro on errors */
 #define EXT4_MOUNT_ERRORS_PANIC		0x00040	/* Panic on errors */
+<<<<<<< HEAD
+=======
+#define EXT4_MOUNT_ERRORS_MASK		0x00070
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EXT4_MOUNT_MINIX_DF		0x00080	/* Mimics the Minix statfs */
 #define EXT4_MOUNT_NOLOAD		0x00100	/* Don't use existing journal*/
 #define EXT4_MOUNT_DATA_FLAGS		0x00C00	/* Mode for data writes: */
@@ -909,7 +1027,10 @@ struct ext4_inode_info {
 #define EXT4_MOUNT_DIOREAD_NOLOCK	0x400000 /* Enable support for dio read nolocking */
 #define EXT4_MOUNT_JOURNAL_CHECKSUM	0x800000 /* Journal checksums */
 #define EXT4_MOUNT_JOURNAL_ASYNC_COMMIT	0x1000000 /* Journal Async Commit */
+<<<<<<< HEAD
 #define EXT4_MOUNT_I_VERSION            0x2000000 /* i_version support */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EXT4_MOUNT_MBLK_IO_SUBMIT	0x4000000 /* multi-block io submits */
 #define EXT4_MOUNT_DELALLOC		0x8000000 /* Delalloc support */
 #define EXT4_MOUNT_DATA_ERR_ABORT	0x10000000 /* Abort on file data write */
@@ -917,6 +1038,12 @@ struct ext4_inode_info {
 #define EXT4_MOUNT_DISCARD		0x40000000 /* Issue DISCARD requests */
 #define EXT4_MOUNT_INIT_INODE_TABLE	0x80000000 /* Initialize uninitialized itables */
 
+<<<<<<< HEAD
+=======
+#define EXT4_MOUNT2_EXPLICIT_DELALLOC	0x00000001 /* User explicitly
+						      specified delalloc */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
 						~EXT4_MOUNT_##opt
 #define set_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt |= \
@@ -931,6 +1058,7 @@ struct ext4_inode_info {
 #define test_opt2(sb, opt)		(EXT4_SB(sb)->s_mount_opt2 & \
 					 EXT4_MOUNT2_##opt)
 
+<<<<<<< HEAD
 #define ext4_set_bit			__test_and_set_bit_le
 #define ext4_set_bit_atomic		ext2_set_bit_atomic
 #define ext4_clear_bit			__test_and_clear_bit_le
@@ -940,6 +1068,20 @@ struct ext4_inode_info {
 #define ext4_find_next_zero_bit		find_next_zero_bit_le
 #define ext4_find_next_bit		find_next_bit_le
 
+=======
+#define ext4_test_and_set_bit		__test_and_set_bit_le
+#define ext4_set_bit			__set_bit_le
+#define ext4_set_bit_atomic		ext2_set_bit_atomic
+#define ext4_test_and_clear_bit		__test_and_clear_bit_le
+#define ext4_clear_bit			__clear_bit_le
+#define ext4_clear_bit_atomic		ext2_clear_bit_atomic
+#define ext4_test_bit			test_bit_le
+#define ext4_find_next_zero_bit		find_next_zero_bit_le
+#define ext4_find_next_bit		find_next_bit_le
+
+extern void ext4_set_bits(void *bm, int cur, int len);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Maximal mount counts between two filesystem checks
  */
@@ -965,9 +1107,15 @@ struct ext4_super_block {
 /*10*/	__le32	s_free_inodes_count;	/* Free inodes count */
 	__le32	s_first_data_block;	/* First Data Block */
 	__le32	s_log_block_size;	/* Block size */
+<<<<<<< HEAD
 	__le32	s_obso_log_frag_size;	/* Obsoleted fragment size */
 /*20*/	__le32	s_blocks_per_group;	/* # Blocks per group */
 	__le32	s_obso_frags_per_group;	/* Obsoleted fragments per group */
+=======
+	__le32	s_log_cluster_size;	/* Allocation cluster size */
+/*20*/	__le32	s_blocks_per_group;	/* # Blocks per group */
+	__le32	s_clusters_per_group;	/* # Clusters per group */
+>>>>>>> refs/remotes/origin/cm-10.0
 	__le32	s_inodes_per_group;	/* # Inodes per group */
 	__le32	s_mtime;		/* Mount time */
 /*30*/	__le32	s_wtime;		/* Write time */
@@ -1063,7 +1211,14 @@ struct ext4_super_block {
 	__u8	s_last_error_func[32];	/* function where the error happened */
 #define EXT4_S_ERR_END offsetof(struct ext4_super_block, s_mount_opts)
 	__u8	s_mount_opts[64];
+<<<<<<< HEAD
 	__le32	s_reserved[112];        /* Padding to the end of the block */
+=======
+	__le32	s_usr_quota_inum;	/* inode for tracking user quota */
+	__le32	s_grp_quota_inum;	/* inode for tracking group quota */
+	__le32	s_overhead_clusters;	/* overhead blocks/clusters in fs */
+	__le32  s_reserved[109];        /* Padding to the end of the block */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define EXT4_S_ERR_LEN (EXT4_S_ERR_END - EXT4_S_ERR_START)
@@ -1083,14 +1238,24 @@ struct ext4_sb_info {
 	unsigned long s_desc_size;	/* Size of a group descriptor in bytes */
 	unsigned long s_inodes_per_block;/* Number of inodes per block */
 	unsigned long s_blocks_per_group;/* Number of blocks in a group */
+<<<<<<< HEAD
+=======
+	unsigned long s_clusters_per_group; /* Number of clusters in a group */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long s_inodes_per_group;/* Number of inodes in a group */
 	unsigned long s_itb_per_group;	/* Number of inode table blocks per group */
 	unsigned long s_gdb_count;	/* Number of group descriptor blocks */
 	unsigned long s_desc_per_block;	/* Number of group descriptors per block */
 	ext4_group_t s_groups_count;	/* Number of groups in the fs */
 	ext4_group_t s_blockfile_groups;/* Groups acceptable for non-extent files */
+<<<<<<< HEAD
 	unsigned long s_overhead_last;  /* Last calculated overhead */
 	unsigned long s_blocks_last;    /* Last seen block count */
+=======
+	unsigned long s_overhead;  /* # of fs overhead clusters */
+	unsigned int s_cluster_ratio;	/* Number of blocks per cluster */
+	unsigned int s_cluster_bits;	/* log2 of s_cluster_ratio */
+>>>>>>> refs/remotes/origin/cm-10.0
 	loff_t s_bitmap_maxbytes;	/* max bytes for bitmap files */
 	struct buffer_head * s_sbh;	/* Buffer containing the super block */
 	struct ext4_super_block *s_es;	/* Pointer to the super block in the buffer */
@@ -1098,6 +1263,10 @@ struct ext4_sb_info {
 	unsigned int s_mount_opt;
 	unsigned int s_mount_opt2;
 	unsigned int s_mount_flags;
+<<<<<<< HEAD
+=======
+	unsigned int s_def_mount_opt;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ext4_fsblk_t s_sb_block;
 	uid_t s_resuid;
 	gid_t s_resgid;
@@ -1114,10 +1283,17 @@ struct ext4_sb_info {
 	u32 s_hash_seed[4];
 	int s_def_hash_version;
 	int s_hash_unsigned;	/* 3 if hash should be signed, 0 if not */
+<<<<<<< HEAD
 	struct percpu_counter s_freeblocks_counter;
 	struct percpu_counter s_freeinodes_counter;
 	struct percpu_counter s_dirs_counter;
 	struct percpu_counter s_dirtyblocks_counter;
+=======
+	struct percpu_counter s_freeclusters_counter;
+	struct percpu_counter s_freeinodes_counter;
+	struct percpu_counter s_dirs_counter;
+	struct percpu_counter s_dirtyclusters_counter;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct blockgroup_lock *s_blockgroup_lock;
 	struct proc_dir_entry *s_proc;
 	struct kobject s_kobj;
@@ -1127,15 +1303,23 @@ struct ext4_sb_info {
 	struct journal_s *s_journal;
 	struct list_head s_orphan;
 	struct mutex s_orphan_lock;
+<<<<<<< HEAD
 	struct mutex s_resize_lock;
+=======
+	unsigned long s_resize_flags;		/* Flags indicating if there
+						   is a resizer */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long s_commit_interval;
 	u32 s_max_batch_time;
 	u32 s_min_batch_time;
 	struct block_device *journal_bdev;
+<<<<<<< HEAD
 #ifdef CONFIG_JBD2_DEBUG
 	struct timer_list turn_ro_timer;	/* For turning read-only (crash simulation) */
 	wait_queue_head_t ro_wait_queue;	/* For people waiting for the fs to go read-only */
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_QUOTA
 	char *s_qf_names[MAXQUOTAS];		/* Names of quota files with journalled quota */
 	int s_jquota_fmt;			/* Format of quota to use */
@@ -1152,9 +1336,12 @@ struct ext4_sb_info {
 	unsigned long s_ext_blocks;
 	unsigned long s_ext_extents;
 #endif
+<<<<<<< HEAD
 	/* ext4 extent cache stats */
 	unsigned long extent_cache_hits;
 	unsigned long extent_cache_misses;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* for buddy allocator */
 	struct ext4_group_info ***s_group_info;
@@ -1215,6 +1402,12 @@ struct ext4_sb_info {
 
 	/* Kernel thread for multiple mount protection */
 	struct task_struct *s_mmp_tsk;
+<<<<<<< HEAD
+=======
+
+	/* record the last minlen when FITRIM is called. */
+	atomic_t s_last_trim_minblks;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static inline struct ext4_sb_info *EXT4_SB(struct super_block *sb)
@@ -1241,6 +1434,18 @@ static inline int ext4_valid_inum(struct super_block *sb, unsigned long ino)
 		 ino <= le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count));
 }
 
+<<<<<<< HEAD
+=======
+static inline void ext4_set_io_unwritten_flag(struct inode *inode,
+					      struct ext4_io_end *io_end)
+{
+	if (!(io_end->flag & EXT4_IO_END_UNWRITTEN)) {
+		io_end->flag |= EXT4_IO_END_UNWRITTEN;
+		atomic_inc(&EXT4_I(inode)->i_aiodio_unwritten);
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Inode dynamic state flags
  */
@@ -1353,6 +1558,11 @@ static inline void ext4_clear_state_flags(struct ext4_inode_info *ei)
 #define EXT4_FEATURE_RO_COMPAT_DIR_NLINK	0x0020
 #define EXT4_FEATURE_RO_COMPAT_EXTRA_ISIZE	0x0040
 #define EXT4_FEATURE_RO_COMPAT_QUOTA		0x0100
+<<<<<<< HEAD
+=======
+#define EXT4_FEATURE_RO_COMPAT_BIGALLOC		0x0200
+#define EXT4_FEATURE_RO_COMPAT_METADATA_CSUM	0x0400
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define EXT4_FEATURE_INCOMPAT_COMPRESSION	0x0001
 #define EXT4_FEATURE_INCOMPAT_FILETYPE		0x0002
@@ -1365,6 +1575,12 @@ static inline void ext4_clear_state_flags(struct ext4_inode_info *ei)
 #define EXT4_FEATURE_INCOMPAT_FLEX_BG		0x0200
 #define EXT4_FEATURE_INCOMPAT_EA_INODE		0x0400 /* EA in inode */
 #define EXT4_FEATURE_INCOMPAT_DIRDATA		0x1000 /* data in dirent */
+<<<<<<< HEAD
+=======
+#define EXT4_FEATURE_INCOMPAT_BG_USE_META_CSUM	0x2000 /* use crc32c for bg */
+#define EXT4_FEATURE_INCOMPAT_LARGEDIR		0x4000 /* >2GB or 3-lvl htree */
+#define EXT4_FEATURE_INCOMPAT_INLINEDATA	0x8000 /* data in inode */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define EXT2_FEATURE_COMPAT_SUPP	EXT4_FEATURE_COMPAT_EXT_ATTR
 #define EXT2_FEATURE_INCOMPAT_SUPP	(EXT4_FEATURE_INCOMPAT_FILETYPE| \
@@ -1395,7 +1611,12 @@ static inline void ext4_clear_state_flags(struct ext4_inode_info *ei)
 					 EXT4_FEATURE_RO_COMPAT_DIR_NLINK | \
 					 EXT4_FEATURE_RO_COMPAT_EXTRA_ISIZE | \
 					 EXT4_FEATURE_RO_COMPAT_BTREE_DIR |\
+<<<<<<< HEAD
 					 EXT4_FEATURE_RO_COMPAT_HUGE_FILE)
+=======
+					 EXT4_FEATURE_RO_COMPAT_HUGE_FILE |\
+					 EXT4_FEATURE_RO_COMPAT_BIGALLOC)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Default values for user and/or group using reserved blocks
@@ -1554,7 +1775,15 @@ struct dx_hash_info
 	u32		*seed;
 };
 
+<<<<<<< HEAD
 #define EXT4_HTREE_EOF	0x7fffffff
+=======
+
+/* 32 and 64 bit signed EOF for dx directories */
+#define EXT4_HTREE_EOF_32BIT   ((1UL  << (32 - 1)) - 1)
+#define EXT4_HTREE_EOF_64BIT   ((1ULL << (64 - 1)) - 1)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Control parameters used by ext4_htree_next_block
@@ -1728,14 +1957,21 @@ extern ext4_fsblk_t ext4_new_meta_blocks(handle_t *handle, struct inode *inode,
 					 unsigned int flags,
 					 unsigned long *count,
 					 int *errp);
+<<<<<<< HEAD
 extern int ext4_claim_free_blocks(struct ext4_sb_info *sbi,
 				  s64 nblocks, unsigned int flags);
 extern ext4_fsblk_t ext4_count_free_blocks(struct super_block *);
+=======
+extern int ext4_claim_free_clusters(struct ext4_sb_info *sbi,
+				    s64 nclusters, unsigned int flags);
+extern ext4_fsblk_t ext4_count_free_clusters(struct super_block *);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void ext4_check_blocks_bitmap(struct super_block *);
 extern struct ext4_group_desc * ext4_get_group_desc(struct super_block * sb,
 						    ext4_group_t block_group,
 						    struct buffer_head ** bh);
 extern int ext4_should_retry_alloc(struct super_block *sb, int *retries);
+<<<<<<< HEAD
 struct buffer_head *ext4_read_block_bitmap(struct super_block *sb,
 				      ext4_group_t block_group);
 extern unsigned ext4_init_block_bitmap(struct super_block *sb,
@@ -1744,6 +1980,27 @@ extern unsigned ext4_init_block_bitmap(struct super_block *sb,
 				       struct ext4_group_desc *desc);
 #define ext4_free_blocks_after_init(sb, group, desc)			\
 		ext4_init_block_bitmap(sb, NULL, group, desc)
+=======
+
+extern struct buffer_head *ext4_read_block_bitmap_nowait(struct super_block *sb,
+						ext4_group_t block_group);
+extern int ext4_wait_block_bitmap(struct super_block *sb,
+				  ext4_group_t block_group,
+				  struct buffer_head *bh);
+extern struct buffer_head *ext4_read_block_bitmap(struct super_block *sb,
+						  ext4_group_t block_group);
+extern void ext4_init_block_bitmap(struct super_block *sb,
+				   struct buffer_head *bh,
+				   ext4_group_t group,
+				   struct ext4_group_desc *desc);
+extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
+					      ext4_group_t block_group,
+					      struct ext4_group_desc *gdp);
+extern unsigned ext4_num_overhead_clusters(struct super_block *sb,
+					   ext4_group_t block_group,
+					   struct ext4_group_desc *gdp);
+ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* dir.c */
 extern int __ext4_check_dir_entry(const char *, unsigned int, struct inode *,
@@ -1759,7 +2016,11 @@ extern int ext4_htree_store_dirent(struct file *dir_file, __u32 hash,
 extern void ext4_htree_free_dir_info(struct dir_private_info *p);
 
 /* fsync.c */
+<<<<<<< HEAD
 extern int ext4_sync_file(struct file *, int);
+=======
+extern int ext4_sync_file(struct file *, loff_t, loff_t, int);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int ext4_flush_completed_IO(struct inode *);
 
 /* hash.c */
@@ -1767,8 +2028,14 @@ extern int ext4fs_dirhash(const char *name, int len, struct
 			  dx_hash_info *hinfo);
 
 /* ialloc.c */
+<<<<<<< HEAD
 extern struct inode *ext4_new_inode(handle_t *, struct inode *, int,
 				    const struct qstr *qstr, __u32 goal);
+=======
+extern struct inode *ext4_new_inode(handle_t *, struct inode *, umode_t,
+				    const struct qstr *qstr, __u32 goal,
+				    uid_t *owner);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void ext4_free_inode(handle_t *, struct inode *);
 extern struct inode * ext4_orphan_get(struct super_block *, unsigned long);
 extern unsigned long ext4_count_free_inodes(struct super_block *);
@@ -1777,6 +2044,10 @@ extern void ext4_check_inodes_bitmap(struct super_block *);
 extern void ext4_mark_bitmap_end(int start_bit, int end_bit, char *bitmap);
 extern int ext4_init_inode_table(struct super_block *sb,
 				 ext4_group_t group, int barrier);
+<<<<<<< HEAD
+=======
+extern void ext4_end_bitmap_read(struct buffer_head *bh, int uptodate);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* mballoc.c */
 extern long ext4_mb_stats;
@@ -1794,7 +2065,11 @@ extern void ext4_free_blocks(handle_t *handle, struct inode *inode,
 			     unsigned long count, int flags);
 extern int ext4_mb_add_groupinfo(struct super_block *sb,
 		ext4_group_t i, struct ext4_group_desc *desc);
+<<<<<<< HEAD
 extern void ext4_add_groupblocks(handle_t *handle, struct super_block *sb,
+=======
+extern int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
+>>>>>>> refs/remotes/origin/cm-10.0
 				ext4_fsblk_t block, unsigned long count);
 extern int ext4_trim_fs(struct super_block *, struct fstrim_range *);
 
@@ -1827,14 +2102,34 @@ extern int ext4_alloc_da_blocks(struct inode *inode);
 extern void ext4_set_aops(struct inode *inode);
 extern int ext4_writepage_trans_blocks(struct inode *);
 extern int ext4_chunk_trans_blocks(struct inode *, int nrblocks);
+<<<<<<< HEAD
 extern int ext4_block_truncate_page(handle_t *handle,
 		struct address_space *mapping, loff_t from);
 extern int ext4_block_zero_page_range(handle_t *handle,
 		struct address_space *mapping, loff_t from, loff_t length);
+=======
+extern int ext4_discard_partial_page_buffers(handle_t *handle,
+		struct address_space *mapping, loff_t from,
+		loff_t length, int flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int ext4_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf);
 extern qsize_t *ext4_get_reserved_space(struct inode *inode);
 extern void ext4_da_update_reserve_space(struct inode *inode,
 					int used, int quota_claim);
+<<<<<<< HEAD
+=======
+
+/* indirect.c */
+extern int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
+				struct ext4_map_blocks *map, int flags);
+extern ssize_t ext4_ind_direct_IO(int rw, struct kiocb *iocb,
+				const struct iovec *iov, loff_t offset,
+				unsigned long nr_segs);
+extern int ext4_ind_calc_metadata_amount(struct inode *inode, sector_t lblock);
+extern int ext4_ind_trans_blocks(struct inode *inode, int nrblocks, int chunk);
+extern void ext4_ind_truncate(struct inode *inode);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ioctl.c */
 extern long ext4_ioctl(struct file *, unsigned int, unsigned long);
 extern long ext4_compat_ioctl(struct file *, unsigned int, unsigned long);
@@ -1854,6 +2149,7 @@ extern int ext4_group_add(struct super_block *sb,
 extern int ext4_group_extend(struct super_block *sb,
 				struct ext4_super_block *es,
 				ext4_fsblk_t n_blocks_count);
+<<<<<<< HEAD
 
 /* super.c */
 extern void __ext4_error(struct super_block *, const char *, unsigned int,
@@ -1881,15 +2177,57 @@ extern void __ext4_warning(struct super_block *, const char *, unsigned int,
 						       __LINE__, ## message)
 extern void ext4_msg(struct super_block *, const char *, const char *, ...)
 	__attribute__ ((format (printf, 3, 4)));
+=======
+extern int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count);
+
+/* super.c */
+extern int ext4_calculate_overhead(struct super_block *sb);
+extern void *ext4_kvmalloc(size_t size, gfp_t flags);
+extern void *ext4_kvzalloc(size_t size, gfp_t flags);
+extern void ext4_kvfree(void *ptr);
+extern __printf(4, 5)
+void __ext4_error(struct super_block *, const char *, unsigned int,
+		  const char *, ...);
+#define ext4_error(sb, message...)	__ext4_error(sb, __func__,	\
+						     __LINE__, ## message)
+extern __printf(5, 6)
+void ext4_error_inode(struct inode *, const char *, unsigned int, ext4_fsblk_t,
+		      const char *, ...);
+extern __printf(5, 6)
+void ext4_error_file(struct file *, const char *, unsigned int, ext4_fsblk_t,
+		     const char *, ...);
+extern void __ext4_std_error(struct super_block *, const char *,
+			     unsigned int, int);
+extern __printf(4, 5)
+void __ext4_abort(struct super_block *, const char *, unsigned int,
+		  const char *, ...);
+#define ext4_abort(sb, message...)	__ext4_abort(sb, __func__, \
+						       __LINE__, ## message)
+extern __printf(4, 5)
+void __ext4_warning(struct super_block *, const char *, unsigned int,
+		    const char *, ...);
+#define ext4_warning(sb, message...)	__ext4_warning(sb, __func__, \
+						       __LINE__, ## message)
+extern __printf(3, 4)
+void ext4_msg(struct super_block *, const char *, const char *, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void __dump_mmp_msg(struct super_block *, struct mmp_struct *mmp,
 			   const char *, unsigned int, const char *);
 #define dump_mmp_msg(sb, mmp, msg)	__dump_mmp_msg(sb, mmp, __func__, \
 						       __LINE__, msg)
+<<<<<<< HEAD
 extern void __ext4_grp_locked_error(const char *, unsigned int, \
 				    struct super_block *, ext4_group_t, \
 				    unsigned long, ext4_fsblk_t, \
 				    const char *, ...)
 	__attribute__ ((format (printf, 7, 8)));
+=======
+extern __printf(7, 8)
+void __ext4_grp_locked_error(const char *, unsigned int,
+			     struct super_block *, ext4_group_t,
+			     unsigned long, ext4_fsblk_t,
+			     const char *, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ext4_grp_locked_error(sb, grp, message...) \
 	__ext4_grp_locked_error(__func__, __LINE__, (sb), (grp), ## message)
 extern void ext4_update_dynamic_rev(struct super_block *sb);
@@ -1905,8 +2243,13 @@ extern ext4_fsblk_t ext4_inode_bitmap(struct super_block *sb,
 				      struct ext4_group_desc *bg);
 extern ext4_fsblk_t ext4_inode_table(struct super_block *sb,
 				     struct ext4_group_desc *bg);
+<<<<<<< HEAD
 extern __u32 ext4_free_blks_count(struct super_block *sb,
 				struct ext4_group_desc *bg);
+=======
+extern __u32 ext4_free_group_clusters(struct super_block *sb,
+				      struct ext4_group_desc *bg);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern __u32 ext4_free_inodes_count(struct super_block *sb,
 				 struct ext4_group_desc *bg);
 extern __u32 ext4_used_dirs_count(struct super_block *sb,
@@ -1919,8 +2262,14 @@ extern void ext4_inode_bitmap_set(struct super_block *sb,
 				  struct ext4_group_desc *bg, ext4_fsblk_t blk);
 extern void ext4_inode_table_set(struct super_block *sb,
 				 struct ext4_group_desc *bg, ext4_fsblk_t blk);
+<<<<<<< HEAD
 extern void ext4_free_blks_set(struct super_block *sb,
 			       struct ext4_group_desc *bg, __u32 count);
+=======
+extern void ext4_free_group_clusters_set(struct super_block *sb,
+					 struct ext4_group_desc *bg,
+					 __u32 count);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void ext4_free_inodes_set(struct super_block *sb,
 				struct ext4_group_desc *bg, __u32 count);
 extern void ext4_used_dirs_set(struct super_block *sb,
@@ -2029,6 +2378,7 @@ do {								\
 } while (0)
 
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 /* Each CPU can accumulate percpu_counter_batch blocks in their local
  * counters. So we need to make sure we have free blocks more
  * than percpu_counter_batch  * nr_cpu_ids. Also add a window of 4 times.
@@ -2036,6 +2386,15 @@ do {								\
 #define EXT4_FREEBLOCKS_WATERMARK (4 * (percpu_counter_batch * nr_cpu_ids))
 #else
 #define EXT4_FREEBLOCKS_WATERMARK 0
+=======
+/* Each CPU can accumulate percpu_counter_batch clusters in their local
+ * counters. So we need to make sure we have free clusters more
+ * than percpu_counter_batch  * nr_cpu_ids. Also add a window of 4 times.
+ */
+#define EXT4_FREECLUSTERS_WATERMARK (4 * (percpu_counter_batch * nr_cpu_ids))
+#else
+#define EXT4_FREECLUSTERS_WATERMARK 0
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static inline void ext4_update_i_disksize(struct inode *inode, loff_t newsize)
@@ -2068,11 +2427,26 @@ struct ext4_group_info {
 					 * 5 free 8-block regions. */
 };
 
+<<<<<<< HEAD
 #define EXT4_GROUP_INFO_NEED_INIT_BIT	0
+=======
+#define EXT4_GROUP_INFO_NEED_INIT_BIT		0
+#define EXT4_GROUP_INFO_WAS_TRIMMED_BIT		1
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define EXT4_MB_GRP_NEED_INIT(grp)	\
 	(test_bit(EXT4_GROUP_INFO_NEED_INIT_BIT, &((grp)->bb_state)))
 
+<<<<<<< HEAD
+=======
+#define EXT4_MB_GRP_WAS_TRIMMED(grp)	\
+	(test_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+#define EXT4_MB_GRP_SET_TRIMMED(grp)	\
+	(set_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+#define EXT4_MB_GRP_CLEAR_TRIMMED(grp)	\
+	(clear_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EXT4_MAX_CONTENTION		8
 #define EXT4_CONTENTION_THRESHOLD	2
 
@@ -2124,6 +2498,22 @@ static inline void ext4_mark_super_dirty(struct super_block *sb)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Block validity checking
+ */
+#define ext4_check_indirect_blockref(inode, bh)				\
+	ext4_check_blockref(__func__, __LINE__, inode,			\
+			    (__le32 *)(bh)->b_data,			\
+			    EXT4_ADDR_PER_BLOCK((inode)->i_sb))
+
+#define ext4_ind_check_inode(inode)					\
+	ext4_check_blockref(__func__, __LINE__, inode,			\
+			    EXT4_I(inode)->i_data,			\
+			    EXT4_NDIR_BLOCKS)
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Inodes and files operations
  */
 
@@ -2152,6 +2542,11 @@ extern void ext4_exit_system_zone(void);
 extern int ext4_data_block_valid(struct ext4_sb_info *sbi,
 				 ext4_fsblk_t start_blk,
 				 unsigned int count);
+<<<<<<< HEAD
+=======
+extern int ext4_check_blockref(const char *, unsigned int,
+			       struct inode *, __le32 *, unsigned int);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* extents.c */
 extern int ext4_ext_tree_init(handle_t *handle, struct inode *);
@@ -2198,10 +2593,25 @@ extern int ext4_multi_mount_protect(struct super_block *, ext4_fsblk_t);
 enum ext4_state_bits {
 	BH_Uninit	/* blocks are allocated but uninitialized on disk */
 	  = BH_JBDPrivateStart,
+<<<<<<< HEAD
+=======
+	BH_AllocFromCluster,	/* allocated blocks were part of already
+				 * allocated cluster. Note that this flag will
+				 * never, ever appear in a buffer_head's state
+				 * flag. See EXT4_MAP_FROM_CLUSTER to see where
+				 * this is used. */
+	BH_Da_Mapped,	/* Delayed allocated block that now has a mapping. This
+			 * flag is set when ext4_map_blocks is called on a
+			 * delayed allocated block to get its real mapping. */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 BUFFER_FNS(Uninit, uninit)
 TAS_BUFFER_FNS(Uninit, uninit)
+<<<<<<< HEAD
+=======
+BUFFER_FNS(Da_Mapped, da_mapped)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Add new method to test wether block and inode bitmaps are properly
@@ -2231,6 +2641,17 @@ static inline void set_bitmap_uptodate(struct buffer_head *bh)
 extern wait_queue_head_t ext4__ioend_wq[EXT4_WQ_HASH_SZ];
 extern struct mutex ext4__aio_mutex[EXT4_WQ_HASH_SZ];
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+#define EXT4_RESIZING	0
+extern int ext4_resize_begin(struct super_block *sb);
+extern void ext4_resize_end(struct super_block *sb);
+
+#endif	/* __KERNEL__ */
+
+#include "ext4_extents.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* _EXT4_H */

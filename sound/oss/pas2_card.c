@@ -41,6 +41,7 @@ static int      pas_irq;
 static int      pas_sb_base;
 DEFINE_SPINLOCK(pas_lock);
 #ifndef CONFIG_PAS_JOYSTICK
+<<<<<<< HEAD
 static int	joystick;
 #else
 static int 	joystick = 1;
@@ -54,6 +55,21 @@ static int 	symphony;
 static int	broken_bus_clock = 1;
 #else
 static int	broken_bus_clock;
+=======
+static bool	joystick;
+#else
+static bool 	joystick = 1;
+#endif
+#ifdef SYMPHONY_PAS
+static bool 	symphony = 1;
+#else
+static bool 	symphony;
+#endif
+#ifdef BROKEN_BUS_CLOCK
+static bool	broken_bus_clock = 1;
+#else
+static bool	broken_bus_clock;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static struct address_info cfg;

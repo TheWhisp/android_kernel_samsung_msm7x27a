@@ -2,7 +2,11 @@
  * MSM architecture CPU clock driver header
  *
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Author: San Mehat <san@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -31,12 +35,20 @@ enum setrate_reason {
 };
 
 /**
+<<<<<<< HEAD
  * struct acpuclk_soc_data - SoC data for acpuclk_init()
  */
 struct acpuclk_soc_data {
 	unsigned long max_speed_delta_khz;
 	unsigned int max_axi_khz;
 	int (*init)(struct acpuclk_soc_data *);
+=======
+ * struct acpuclk_pdata - Platform data for acpuclk
+ */
+struct acpuclk_pdata {
+	unsigned long max_speed_delta_khz;
+	unsigned int max_axi_khz;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -91,6 +103,7 @@ unsigned long acpuclk_wait_for_irq(void);
  */
 void acpuclk_register(struct acpuclk_data *data);
 
+<<<<<<< HEAD
 /**
  * acpuclk_init() - acpuclock driver initialization function
  *
@@ -111,3 +124,6 @@ extern struct acpuclk_soc_data acpuclk_9615_soc_data;
 extern struct acpuclk_soc_data acpuclk_8930_soc_data;
 
 #endif
+=======
+#endif /*__ARCH_ARM_MACH_MSM_ACPUCLOCK_H*/
+>>>>>>> refs/remotes/origin/cm-10.0

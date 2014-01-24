@@ -38,7 +38,11 @@ static unsigned long diva_dbg_mem = 0;
 module_param(diva_dbg_mem, ulong, 0);
 
 static char *DRIVERNAME =
+<<<<<<< HEAD
     "Eicon DIVA - MAINT module (http://www.melware.net)";
+=======
+	"Eicon DIVA - MAINT module (http://www.melware.net)";
+>>>>>>> refs/remotes/origin/cm-10.0
 static char *DRIVERLNAME = "diva_mnt";
 static char *DEVNAME = "DivasMAINT";
 char *DRIVERRELEASE_MNT = "2.0";
@@ -86,7 +90,11 @@ int diva_os_copy_from_user(void *os_handle, void *dst, const void __user *src,
 /*
  * get time
  */
+<<<<<<< HEAD
 void diva_os_get_time(dword * sec, dword * usec)
+=======
+void diva_os_get_time(dword *sec, dword *usec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct timeval tv;
 
@@ -115,7 +123,11 @@ void diva_os_get_time(dword * sec, dword * usec)
 /*
  * device node operations
  */
+<<<<<<< HEAD
 static unsigned int maint_poll(struct file *file, poll_table * wait)
+=======
+static unsigned int maint_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned int mask = 0;
 
@@ -153,18 +165,30 @@ static int maint_close(struct inode *ino, struct file *filep)
 
 	/* clear 'used' flag */
 	clear_bit(0, &opened);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return (0);
 }
 
 static ssize_t divas_maint_write(struct file *file, const char __user *buf,
+<<<<<<< HEAD
 				 size_t count, loff_t * ppos)
+=======
+				 size_t count, loff_t *ppos)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return (maint_read_write((char __user *) buf, (int) count));
 }
 
 static ssize_t divas_maint_read(struct file *file, char __user *buf,
+<<<<<<< HEAD
 				size_t count, loff_t * ppos)
+=======
+				size_t count, loff_t *ppos)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return (maint_read_write(buf, (int) count));
 }
@@ -238,7 +262,11 @@ static int DIVA_INIT_FUNCTION maint_init(void)
 	       DRIVERLNAME, buffer, (buffer_length / 1024),
 	       (diva_dbg_mem == 0) ? "internal" : "external", major);
 
+<<<<<<< HEAD
       out:
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return (ret);
 }
 
@@ -255,4 +283,7 @@ static void DIVA_EXIT_FUNCTION maint_exit(void)
 
 module_init(maint_init);
 module_exit(maint_exit);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

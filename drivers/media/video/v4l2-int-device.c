@@ -26,6 +26,10 @@
 #include <linux/list.h>
 #include <linux/sort.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <media/v4l2-int-device.h>
 

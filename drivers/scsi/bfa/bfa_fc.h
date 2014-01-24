@@ -1021,7 +1021,11 @@ struct fc_symname_s {
 #define FC_ED_TOV	2
 #define FC_REC_TOV	(FC_ED_TOV + 1)
 #define FC_RA_TOV	10
+<<<<<<< HEAD
 #define FC_ELS_TOV	(2 * FC_RA_TOV)
+=======
+#define FC_ELS_TOV	((2 * FC_RA_TOV) + 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define FC_FCCT_TOV	(3 * FC_RA_TOV)
 
 /*
@@ -1049,6 +1053,7 @@ struct fc_vft_s {
 };
 
 /*
+<<<<<<< HEAD
  * FCP
  */
 enum {
@@ -1058,6 +1063,8 @@ enum {
 };
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * FCP_CMND definitions
  */
 #define FCP_CMND_CDB_LEN    16

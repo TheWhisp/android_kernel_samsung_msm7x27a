@@ -681,9 +681,16 @@ int afs_writeback_all(struct afs_vnode *vnode)
  * - the return status from this call provides a reliable indication of
  *   whether any write errors occurred for this process.
  */
+<<<<<<< HEAD
 int afs_fsync(struct file *file, int datasync)
 {
 	struct dentry *dentry = file->f_path.dentry;
+=======
+int afs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	struct dentry *dentry = file->f_path.dentry;
+	struct inode *inode = file->f_mapping->host;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct afs_writeback *wb, *xwb;
 	struct afs_vnode *vnode = AFS_FS_I(dentry->d_inode);
 	int ret;
@@ -692,12 +699,27 @@ int afs_fsync(struct file *file, int datasync)
 	       vnode->fid.vid, vnode->fid.vnode, dentry->d_name.name,
 	       datasync);
 
+<<<<<<< HEAD
+=======
+	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (ret)
+		return ret;
+	mutex_lock(&inode->i_mutex);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* use a writeback record as a marker in the queue - when this reaches
 	 * the front of the queue, all the outstanding writes are either
 	 * completed or rejected */
 	wb = kzalloc(sizeof(*wb), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!wb)
 		return -ENOMEM;
+=======
+	if (!wb) {
+		ret = -ENOMEM;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	wb->vnode = vnode;
 	wb->first = 0;
 	wb->last = -1;
@@ -720,7 +742,11 @@ int afs_fsync(struct file *file, int datasync)
 	if (ret < 0) {
 		afs_put_writeback(wb);
 		_leave(" = %d [wb]", ret);
+<<<<<<< HEAD
 		return ret;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* wait for the preceding writes to actually complete */
@@ -729,6 +755,11 @@ int afs_fsync(struct file *file, int datasync)
 				       vnode->writebacks.next == &wb->link);
 	afs_put_writeback(wb);
 	_leave(" = %d", ret);
+<<<<<<< HEAD
+=======
+out:
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 

@@ -12,9 +12,14 @@
 #include <asm/machvec.h>
 #include <linux/dma-mapping.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #ifdef CONFIG_DMAR
+=======
+
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/kernel.h>
 
@@ -33,6 +38,10 @@ int force_iommu __read_mostly;
 #endif
 
 int iommu_pass_through;
+<<<<<<< HEAD
+=======
+int iommu_group_mf;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Dummy device used for NULL arguments (normally ISA). Better would
    be probably a smaller DMA mask, but this is bug-to-bug compatible

@@ -5,6 +5,11 @@
 
 struct acpi_device;
 
+<<<<<<< HEAD
+=======
+#define ACPI_VIDEO_CLASS	"video"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ACPI_VIDEO_DISPLAY_CRT  1
 #define ACPI_VIDEO_DISPLAY_TV   2
 #define ACPI_VIDEO_DISPLAY_DVI  3

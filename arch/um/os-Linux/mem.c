@@ -14,9 +14,13 @@
 #include <sys/mman.h>
 #include <sys/param.h>
 #include "init.h"
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "user.h"
+=======
+#include "os.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Modified by which_tmpdir, which is called during early boot */
 static char *default_tmpdir = "/tmp";
@@ -176,7 +180,11 @@ static int __init make_tempfile(const char *template, char **out_tempname,
 
 	find_tempdir();
 	if ((tempdir == NULL) || (strlen(tempdir) >= MAXPATHLEN))
+<<<<<<< HEAD
 		return -1;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (template[0] != '/')
 		strcpy(tempname, tempdir);
@@ -191,13 +199,22 @@ static int __init make_tempfile(const char *template, char **out_tempname,
 	}
 	if (do_unlink && (unlink(tempname) < 0)) {
 		perror("unlink");
+<<<<<<< HEAD
 		goto out;
+=======
+		goto close;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (out_tempname) {
 		*out_tempname = tempname;
 	} else
 		free(tempname);
 	return fd;
+<<<<<<< HEAD
+=======
+close:
+	close(fd);
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	free(tempname);
 	return -1;

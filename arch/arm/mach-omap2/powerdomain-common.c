@@ -1,9 +1,16 @@
 /*
+<<<<<<< HEAD
  *  linux/arch/arm/mach-omap2/powerdomain-common.c
  *  Contains common powerdomain framework functions
  *
  *  Copyright (C) 2010 Texas Instruments, Inc.
  *  Copyright (C) 2010 Nokia Corporation
+=======
+ * Common powerdomain framework functions
+ *
+ * Copyright (C) 2010-2011 Texas Instruments, Inc.
+ * Copyright (C) 2010 Nokia Corporation
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Derived from mach-omap2/powerdomain.c written by Paul Walmsley
  *
@@ -14,6 +21,10 @@
 
 #include <linux/errno.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "pm.h"
 #include "cm.h"
 #include "cm-regbits-34xx.h"

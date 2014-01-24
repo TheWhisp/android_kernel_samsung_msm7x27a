@@ -13,7 +13,11 @@
 #include <linux/init.h>
 #include <linux/cpu.h>
 #include <linux/bitmap.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -337,9 +341,15 @@ static struct kobj_type ktype_percpu_entry = {
 	.default_attrs	= sq_sysfs_attrs,
 };
 
+<<<<<<< HEAD
 static int __devinit sq_sysdev_add(struct sys_device *sysdev)
 {
 	unsigned int cpu = sysdev->id;
+=======
+static int sq_dev_add(struct device *dev, struct subsys_interface *sif)
+{
+	unsigned int cpu = dev->id;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct kobject *kobj;
 	int error;
 
@@ -348,25 +358,43 @@ static int __devinit sq_sysdev_add(struct sys_device *sysdev)
 		return -ENOMEM;
 
 	kobj = sq_kobject[cpu];
+<<<<<<< HEAD
 	error = kobject_init_and_add(kobj, &ktype_percpu_entry, &sysdev->kobj,
+=======
+	error = kobject_init_and_add(kobj, &ktype_percpu_entry, &dev->kobj,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     "%s", "sq");
 	if (!error)
 		kobject_uevent(kobj, KOBJ_ADD);
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit sq_sysdev_remove(struct sys_device *sysdev)
 {
 	unsigned int cpu = sysdev->id;
+=======
+static int sq_dev_remove(struct device *dev, struct subsys_interface *sif)
+{
+	unsigned int cpu = dev->id;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct kobject *kobj = sq_kobject[cpu];
 
 	kobject_put(kobj);
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct sysdev_driver sq_sysdev_driver = {
 	.add		= sq_sysdev_add,
 	.remove		= __devexit_p(sq_sysdev_remove),
+=======
+static struct subsys_interface sq_interface = {
+	.name		= "sq",
+	.subsys		= &cpu_subsys,
+	.add_dev	= sq_dev_add,
+	.remove_dev	= sq_dev_remove,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init sq_api_init(void)
@@ -386,7 +414,11 @@ static int __init sq_api_init(void)
 	if (unlikely(!sq_bitmap))
 		goto out;
 
+<<<<<<< HEAD
 	ret = sysdev_driver_register(&cpu_sysdev_class, &sq_sysdev_driver);
+=======
+	ret = subsys_interface_register(&sq_interface);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(ret != 0))
 		goto out;
 
@@ -401,7 +433,11 @@ out:
 
 static void __exit sq_api_exit(void)
 {
+<<<<<<< HEAD
 	sysdev_driver_unregister(&cpu_sysdev_class, &sq_sysdev_driver);
+=======
+	subsys_interface_unregister(&sq_interface);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(sq_bitmap);
 	kmem_cache_destroy(sq_cache);
 }

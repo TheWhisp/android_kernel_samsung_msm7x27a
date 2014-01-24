@@ -19,7 +19,10 @@
 #include <linux/memcontrol.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "ncp_fs.h"
 

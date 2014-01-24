@@ -41,6 +41,7 @@
  * We only have to have statically allocated lppaca structs on
  * legacy iSeries, which supports at most 64 cpus.
  */
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 #if NR_CPUS < 64
 #define NR_LPPACAS	NR_CPUS
@@ -50,6 +51,9 @@
 #else /* not iSeries */
 #define NR_LPPACAS	1
 #endif
+=======
+#define NR_LPPACAS	1
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /* The Hypervisor barfs if the lppaca crosses a page boundary.  A 1k

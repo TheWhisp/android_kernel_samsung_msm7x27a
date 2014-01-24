@@ -20,7 +20,11 @@
 
 #include <linux/kernel.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/dma-mapping.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
@@ -35,7 +39,11 @@
 /* Standard options */
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for Digigram Lola driver.");
@@ -648,7 +656,11 @@ static int __devinit lola_create(struct snd_card *card, struct pci_dev *pci,
 		goto errout;
 
 	if (request_irq(pci->irq, lola_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
 			DRVNAME, chip)) {
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR SFX "unable to grab IRQ %d\n", pci->irq);
 		err = -EBUSY;
 		goto errout;
@@ -771,7 +783,11 @@ MODULE_DEVICE_TABLE(pci, lola_ids);
 
 /* pci_driver definition */
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name = DRVNAME,
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = lola_ids,
 	.probe = lola_probe,
 	.remove = __devexit_p(lola_remove),

@@ -24,6 +24,10 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/control.h>
 #include <sound/minors.h>
@@ -279,7 +283,18 @@ static int snd_hwdep_control_ioctl(struct snd_card *card,
 			if (get_user(device, (int __user *)arg))
 				return -EFAULT;
 			mutex_lock(&register_mutex);
+<<<<<<< HEAD
 			device = device < 0 ? 0 : device + 1;
+=======
+
+			if (device < 0)
+				device = 0;
+			else if (device < SNDRV_MINOR_HWDEPS)
+				device++;
+			else
+				device = SNDRV_MINOR_HWDEPS;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			while (device < SNDRV_MINOR_HWDEPS) {
 				if (snd_hwdep_search(card, device))
 					break;

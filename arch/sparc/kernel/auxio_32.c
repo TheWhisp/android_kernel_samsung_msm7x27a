@@ -8,10 +8,18 @@
 #include <linux/spinlock.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/oplib.h>
 #include <asm/io.h>
 #include <asm/auxio.h>
 #include <asm/string.h>		/* memset(), Linux has no bzero() */
+<<<<<<< HEAD
+=======
+#include <asm/cpu_type.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Probe and map in the Auxiliary I/O register */
 

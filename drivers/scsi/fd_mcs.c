@@ -93,7 +93,10 @@
 #include <linux/mca-legacy.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "scsi.h"
 #include <scsi/scsi_host.h>

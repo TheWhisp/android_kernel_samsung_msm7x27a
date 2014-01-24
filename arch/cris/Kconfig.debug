@@ -1,6 +1,9 @@
 menu "Kernel hacking"
 
+<<<<<<< HEAD
 #bool 'Debug kmalloc/kfree' CONFIG_DEBUG_MALLOC
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config PROFILING
 	bool "Kernel profiling support"
 

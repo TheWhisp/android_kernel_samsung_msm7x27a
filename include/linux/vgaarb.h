@@ -47,6 +47,11 @@
  */
 #define VGA_DEFAULT_DEVICE     (NULL)
 
+<<<<<<< HEAD
+=======
+struct pci_dev;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* For use by clients */
 
 /**

@@ -25,7 +25,11 @@
 /*
  * receive a message from the board
  */
+<<<<<<< HEAD
 int receivemessage(int card, RspMessage *rspmsg) 
+=======
+int receivemessage(int card, RspMessage *rspmsg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	DualPortMemory *dpm;
 	unsigned long flags;
@@ -34,9 +38,15 @@ int receivemessage(int card, RspMessage *rspmsg)
 		pr_debug("Invalid param: %d is not a valid card id\n", card);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	
 	pr_debug("%s: Entered receivemessage\n",
 			sc_adapter[card]->devicename);
+=======
+
+	pr_debug("%s: Entered receivemessage\n",
+		 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * See if there are messages waiting
@@ -47,17 +57,26 @@ int receivemessage(int card, RspMessage *rspmsg)
 		 */
 		spin_lock_irqsave(&sc_adapter[card]->lock, flags);
 		outb((sc_adapter[card]->shmem_magic >> 14) | 0x80,
+<<<<<<< HEAD
 			sc_adapter[card]->ioport[sc_adapter[card]->shmem_pgport]);
 		dpm = (DualPortMemory *) sc_adapter[card]->rambase;
 		memcpy_fromio(rspmsg, &(dpm->rsp_queue[dpm->rsp_tail]), 
 			MSG_LEN);
 		dpm->rsp_tail = (dpm->rsp_tail+1) % MAX_MESSAGES;
+=======
+		     sc_adapter[card]->ioport[sc_adapter[card]->shmem_pgport]);
+		dpm = (DualPortMemory *) sc_adapter[card]->rambase;
+		memcpy_fromio(rspmsg, &(dpm->rsp_queue[dpm->rsp_tail]),
+			      MSG_LEN);
+		dpm->rsp_tail = (dpm->rsp_tail + 1) % MAX_MESSAGES;
+>>>>>>> refs/remotes/origin/cm-10.0
 		inb(sc_adapter[card]->ioport[FIFO_READ]);
 		spin_unlock_irqrestore(&sc_adapter[card]->lock, flags);
 		/*
 		 * Tell the board that the message is received
 		 */
 		pr_debug("%s: Received Message seq:%d pid:%d time:%d cmd:%d "
+<<<<<<< HEAD
 				"cnt:%d (type,class,code):(%d,%d,%d) "
 				"link:%d stat:0x%x\n",
 					sc_adapter[card]->devicename,
@@ -71,23 +90,51 @@ int receivemessage(int card, RspMessage *rspmsg)
 					rspmsg->code,
 					rspmsg->phy_link_no, 
 					rspmsg->rsp_status);
+=======
+			 "cnt:%d (type,class,code):(%d,%d,%d) "
+			 "link:%d stat:0x%x\n",
+			 sc_adapter[card]->devicename,
+			 rspmsg->sequence_no,
+			 rspmsg->process_id,
+			 rspmsg->time_stamp,
+			 rspmsg->cmd_sequence_no,
+			 rspmsg->msg_byte_cnt,
+			 rspmsg->type,
+			 rspmsg->class,
+			 rspmsg->code,
+			 rspmsg->phy_link_no,
+			 rspmsg->rsp_status);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		return 0;
 	}
 	return -ENOMSG;
 }
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * send a message to the board
  */
 int sendmessage(int card,
 		unsigned int procid,
+<<<<<<< HEAD
 		unsigned int type, 
 		unsigned int class, 
 		unsigned int code,
 		unsigned int link, 
 		unsigned int data_len, 
 		unsigned int *data) 
+=======
+		unsigned int type,
+		unsigned int class,
+		unsigned int code,
+		unsigned int link,
+		unsigned int data_len,
+		unsigned int *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	DualPortMemory *dpm;
 	ReqMessage sndmsg;
@@ -102,6 +149,7 @@ int sendmessage(int card,
 	 * Make sure we only send CEPID messages when the engine is up
 	 * and CMPID messages when it is down
 	 */
+<<<<<<< HEAD
 	if(sc_adapter[card]->EngineUp && procid == CMPID) {
 		pr_debug("%s: Attempt to send CM message with engine up\n",
 			sc_adapter[card]->devicename);
@@ -111,6 +159,17 @@ int sendmessage(int card,
 	if(!sc_adapter[card]->EngineUp && procid == CEPID) {
 		pr_debug("%s: Attempt to send CE message with engine down\n",
 			sc_adapter[card]->devicename);
+=======
+	if (sc_adapter[card]->EngineUp && procid == CMPID) {
+		pr_debug("%s: Attempt to send CM message with engine up\n",
+			 sc_adapter[card]->devicename);
+		return -ESRCH;
+	}
+
+	if (!sc_adapter[card]->EngineUp && procid == CEPID) {
+		pr_debug("%s: Attempt to send CE message with engine down\n",
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ESRCH;
 	}
 
@@ -142,6 +201,7 @@ int sendmessage(int card,
 	 */
 	spin_lock_irqsave(&sc_adapter[card]->lock, flags);
 	outb((sc_adapter[card]->shmem_magic >> 14) | 0x80,
+<<<<<<< HEAD
 		sc_adapter[card]->ioport[sc_adapter[card]->shmem_pgport]);
 	dpm = (DualPortMemory *) sc_adapter[card]->rambase;	/* Fix me */
 	memcpy_toio(&(dpm->req_queue[dpm->req_head]),&sndmsg,MSG_LEN);
@@ -162,10 +222,33 @@ int sendmessage(int card,
 				sndmsg.code,
 				sndmsg.phy_link_no); 
 		
+=======
+	     sc_adapter[card]->ioport[sc_adapter[card]->shmem_pgport]);
+	dpm = (DualPortMemory *) sc_adapter[card]->rambase;	/* Fix me */
+	memcpy_toio(&(dpm->req_queue[dpm->req_head]), &sndmsg, MSG_LEN);
+	dpm->req_head = (dpm->req_head + 1) % MAX_MESSAGES;
+	outb(sndmsg.sequence_no, sc_adapter[card]->ioport[FIFO_WRITE]);
+	spin_unlock_irqrestore(&sc_adapter[card]->lock, flags);
+
+	pr_debug("%s: Sent Message seq:%d pid:%d time:%d "
+		 "cnt:%d (type,class,code):(%d,%d,%d) "
+		 "link:%d\n ",
+		 sc_adapter[card]->devicename,
+		 sndmsg.sequence_no,
+		 sndmsg.process_id,
+		 sndmsg.time_stamp,
+		 sndmsg.msg_byte_cnt,
+		 sndmsg.type,
+		 sndmsg.class,
+		 sndmsg.code,
+		 sndmsg.phy_link_no);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 int send_and_receive(int card,
+<<<<<<< HEAD
 		unsigned int procid, 
 		unsigned char type,
 		unsigned char class, 
@@ -175,6 +258,17 @@ int send_and_receive(int card,
 		unsigned char *data, 
 		RspMessage *mesgdata,
 		int timeout) 
+=======
+		     unsigned int procid,
+		     unsigned char type,
+		     unsigned char class,
+		     unsigned char code,
+		     unsigned char link,
+		     unsigned char data_len,
+		     unsigned char *data,
+		     RspMessage *mesgdata,
+		     int timeout)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int retval;
 	int tries;
@@ -185,12 +279,21 @@ int send_and_receive(int card,
 	}
 
 	sc_adapter[card]->want_async_messages = 1;
+<<<<<<< HEAD
 	retval = sendmessage(card, procid, type, class, code, link, 
 			data_len, (unsigned int *) data);
   
 	if (retval) {
 		pr_debug("%s: SendMessage failed in SAR\n",
 			sc_adapter[card]->devicename);
+=======
+	retval = sendmessage(card, procid, type, class, code, link,
+			     data_len, (unsigned int *) data);
+
+	if (retval) {
+		pr_debug("%s: SendMessage failed in SAR\n",
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/cm-10.0
 		sc_adapter[card]->want_async_messages = 0;
 		return -EIO;
 	}
@@ -199,7 +302,11 @@ int send_and_receive(int card,
 	/* wait for the response */
 	while (tries < timeout) {
 		schedule_timeout_interruptible(1);
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_debug("SAR waiting..\n");
 
 		/*
@@ -214,14 +321,24 @@ int send_and_receive(int card,
 			 * Got it!
 			 */
 			pr_debug("%s: Got ASYNC message\n",
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 			memcpy(mesgdata, &(sc_adapter[card]->async_msg),
 				sizeof(RspMessage));
+=======
+				 sc_adapter[card]->devicename);
+			memcpy(mesgdata, &(sc_adapter[card]->async_msg),
+			       sizeof(RspMessage));
+>>>>>>> refs/remotes/origin/cm-10.0
 			sc_adapter[card]->want_async_messages = 0;
 			return 0;
 		}
 
+<<<<<<< HEAD
    		tries++;
+=======
+		tries++;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	pr_debug("%s: SAR message timeout\n", sc_adapter[card]->devicename);

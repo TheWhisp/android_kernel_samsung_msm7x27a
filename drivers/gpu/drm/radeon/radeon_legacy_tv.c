@@ -864,7 +864,11 @@ void radeon_legacy_tv_adjust_crtc_reg(struct drm_encoder *encoder,
 	*v_sync_strt_wid = tmp;
 }
 
+<<<<<<< HEAD
 static inline int get_post_div(int value)
+=======
+static int get_post_div(int value)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int post_div;
 	switch (value) {

@@ -145,7 +145,15 @@ static int __devinit tile_edac_mc_probe(struct platform_device *pdev)
 	mci->edac_ctl_cap = EDAC_FLAG_SECDED;
 
 	mci->mod_name = DRV_NAME;
+<<<<<<< HEAD
 	mci->ctl_name = "TILEPro_Memory_Controller";
+=======
+#ifdef __tilegx__
+	mci->ctl_name = "TILEGx_Memory_Controller";
+#else
+	mci->ctl_name = "TILEPro_Memory_Controller";
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	mci->dev_name = dev_name(&pdev->dev);
 	mci->edac_check = tile_edac_check;
 

@@ -7,6 +7,10 @@
  */
 
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
@@ -367,6 +371,12 @@ static struct resource net2272_bfin_resources[] = {
 		.end = 0x20300000 + 0x100,
 		.flags = IORESOURCE_MEM,
 	}, {
+<<<<<<< HEAD
+=======
+		.start = 1,
+		.flags = IORESOURCE_BUS,
+	}, {
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start = IRQ_PF7,
 		.end = IRQ_PF7,
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHLEVEL,
@@ -533,6 +543,7 @@ static struct flash_platform_data bfin_spi_flash_data = {
 /* SPI flash chip (m25p64) */
 static struct bfin5xx_spi_chip spi_flash_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -567,15 +578,20 @@ static struct bfin5xx_spi_chip ad1938_spi_chip_info = {
 static struct bfin5xx_spi_chip adav801_spi_chip_info = {
 	.enable_dma = 0,
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
 #if defined(CONFIG_INPUT_AD714X_SPI) || defined(CONFIG_INPUT_AD714X_SPI_MODULE)
 #include <linux/input/ad714x.h>
+<<<<<<< HEAD
 static struct bfin5xx_spi_chip ad7147_spi_chip_info = {
 	.enable_dma = 0,
 	.bits_per_word = 16,
 };
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct ad714x_slider_plat ad7147_spi_slider_plat[] = {
 	{
@@ -685,7 +701,10 @@ static struct ad714x_platform_data ad7142_i2c_platform_data = {
 #if defined(CONFIG_AD2S90) || defined(CONFIG_AD2S90_MODULE)
 static struct bfin5xx_spi_chip ad2s90_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 16,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -697,7 +716,10 @@ static unsigned short ad2s120x_platform_data[] = {
 
 static struct bfin5xx_spi_chip ad2s120x_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 16,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -714,14 +736,20 @@ static unsigned short ad2s1210_platform_data[] = {
 
 static struct bfin5xx_spi_chip ad2s1210_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
 #if defined(CONFIG_AD7314) || defined(CONFIG_AD7314_MODULE)
 static struct bfin5xx_spi_chip ad7314_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 16,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -735,7 +763,10 @@ static unsigned short ad7816_platform_data[] = {
 
 static struct bfin5xx_spi_chip ad7816_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -749,7 +780,10 @@ static unsigned long adt7310_platform_data[3] = {
 
 static struct bfin5xx_spi_chip adt7310_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -758,11 +792,14 @@ static unsigned short ad7298_platform_data[] = {
 	GPIO_PF7, /* busy_pin */
 	0,
 };
+<<<<<<< HEAD
 
 static struct bfin5xx_spi_chip ad7298_spi_chip_info = {
 	.enable_dma = 0,
 	.bits_per_word = 16,
 };
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #if defined(CONFIG_ADT7316_SPI) || defined(CONFIG_ADT7316_SPI_MODULE)
@@ -773,7 +810,10 @@ static unsigned long adt7316_spi_data[2] = {
 
 static struct bfin5xx_spi_chip adt7316_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -800,18 +840,24 @@ static struct mmc_spi_platform_data bfin_mmc_spi_pdata = {
 
 static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.pio_interrupt = 0,
 };
 #endif
 
 #if defined(CONFIG_TOUCHSCREEN_AD7877) || defined(CONFIG_TOUCHSCREEN_AD7877_MODULE)
 #include <linux/spi/ad7877.h>
+<<<<<<< HEAD
 static struct bfin5xx_spi_chip spi_ad7877_chip_info = {
 	.enable_dma = 0,
 	.bits_per_word = 16,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct ad7877_platform_data bfin_ad7877_ts_info = {
 	.model			= 7877,
 	.vref_delay_usecs	= 50,	/* internal, no capacitor */
@@ -883,6 +929,7 @@ static const struct adxl34x_platform_data adxl34x_info = {
 };
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_TOUCHSCREEN_AD7879_SPI) || defined(CONFIG_TOUCHSCREEN_AD7879_SPI_MODULE)
 static struct bfin5xx_spi_chip spi_ad7879_chip_info = {
 	.enable_dma = 0,
@@ -908,14 +955,22 @@ static struct bfin5xx_spi_chip lq035q1_spi_chip_info = {
 static struct bfin5xx_spi_chip enc28j60_spi_chip_info = {
 	.enable_dma	= 1,
 	.bits_per_word	= 8,
+=======
+#if defined(CONFIG_ENC28J60) || defined(CONFIG_ENC28J60_MODULE)
+static struct bfin5xx_spi_chip enc28j60_spi_chip_info = {
+	.enable_dma	= 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
 #if defined(CONFIG_ADF702X) || defined(CONFIG_ADF702X_MODULE)
+<<<<<<< HEAD
 static struct bfin5xx_spi_chip adf7021_spi_chip_info = {
 	.bits_per_word = 16,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/spi/adf702x.h>
 #define TXREG 0x0160A470
 static const u32 adf7021_regs[] = {
@@ -959,10 +1014,13 @@ static inline void adf702x_mac_init(void) {}
 
 #if defined(CONFIG_TOUCHSCREEN_ADS7846) || defined(CONFIG_TOUCHSCREEN_ADS7846_MODULE)
 #include <linux/spi/ads7846.h>
+<<<<<<< HEAD
 static struct bfin5xx_spi_chip ad7873_spi_chip_info = {
 	.bits_per_word	= 8,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int ads7873_get_pendown_state(void)
 {
 	return gpio_get_value(GPIO_PF6);
@@ -1009,6 +1067,7 @@ static struct flash_platform_data bfin_spi_dataflash_data = {
 /* DataFlash chip */
 static struct bfin5xx_spi_chip data_flash_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -1017,13 +1076,18 @@ static struct bfin5xx_spi_chip data_flash_chip_info = {
 static struct bfin5xx_spi_chip spi_adxl34x_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
 #if defined(CONFIG_AD7476) || defined(CONFIG_AD7476_MODULE)
 static struct bfin5xx_spi_chip spi_ad7476_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
+<<<<<<< HEAD
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -1053,6 +1117,7 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.mode = SPI_MODE_3,
 	},
 #endif
+<<<<<<< HEAD
 #if defined(CONFIG_BFIN_SPI_ADC) \
 	|| defined(CONFIG_BFIN_SPI_ADC_MODULE)
 	{
@@ -1069,26 +1134,44 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 	|| defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
 	{
 		.modalias = "ad183x",
+=======
+
+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) \
+	|| defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
+	{
+		.modalias = "ad1836",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num = 0,
 		.chip_select = 4,
 		.platform_data = "ad1836", /* only includes chip name for the moment */
+<<<<<<< HEAD
 		.controller_data = &ad1836_spi_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.mode = SPI_MODE_3,
 	},
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_SOC_AD193X) || defined(CONFIG_SND_BF5XX_SOC_AD193X_MODULE)
+=======
+#ifdef CONFIG_SND_SOC_AD193X_SPI
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.modalias = "ad193x",
 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num = 0,
 		.chip_select = 5,
+<<<<<<< HEAD
 		.controller_data = &ad1938_spi_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.mode = SPI_MODE_3,
 	},
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_SOC_ADAV80X) || defined(CONFIG_SND_BF5XX_SOC_ADAV80X_MODULE)
 	{
 		.modalias = "adav80x",
@@ -1096,6 +1179,14 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = 1,
 		.controller_data = &adav801_spi_chip_info,
+=======
+#if defined(CONFIG_SND_SOC_ADAV80X) || defined(CONFIG_SND_SOC_ADV80X_MODULE)
+	{
+		.modalias = "adav801",
+		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+		.bus_num = 0,
+		.chip_select = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.mode = SPI_MODE_3,
 	},
 #endif
@@ -1109,7 +1200,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.chip_select = 5,
 		.mode = SPI_MODE_3,
 		.platform_data = &ad7147_spi_platform_data,
+<<<<<<< HEAD
 		.controller_data = &ad7147_spi_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 #endif
 
@@ -1188,7 +1282,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = 4,            /* CS, change it for your board */
 		.platform_data = ad7298_platform_data,
+<<<<<<< HEAD
 		.controller_data = &ad7298_spi_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.mode = SPI_MODE_3,
 	},
 #endif
@@ -1225,7 +1322,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.max_speed_hz	= 12500000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num	= 0,
 		.chip_select  = 1,
+<<<<<<< HEAD
 		.controller_data = &spi_ad7877_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 #endif
 #if defined(CONFIG_TOUCHSCREEN_AD7879_SPI) || defined(CONFIG_TOUCHSCREEN_AD7879_SPI_MODULE)
@@ -1236,7 +1336,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.max_speed_hz = 5000000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num = 0,
 		.chip_select = 1,
+<<<<<<< HEAD
 		.controller_data = &spi_ad7879_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.mode = SPI_CPHA | SPI_CPOL,
 	},
 #endif
@@ -1246,7 +1349,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num = 0,
 		.chip_select = 1,
+<<<<<<< HEAD
 		.controller_data = &spidev_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 #endif
 #if defined(CONFIG_FB_BFIN_LQ035Q1) || defined(CONFIG_FB_BFIN_LQ035Q1_MODULE)
@@ -1255,7 +1361,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.max_speed_hz = 20000000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num = 0,
 		.chip_select = 2,
+<<<<<<< HEAD
 		.controller_data = &lq035q1_spi_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.mode = SPI_CPHA | SPI_CPOL,
 	},
 #endif
@@ -1278,7 +1387,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.max_speed_hz	= 5000000,    /* max spi clock (SCK) speed in HZ */
 		.bus_num	= 0,
 		.chip_select	= 2,
+<<<<<<< HEAD
 		.controller_data = &spi_adxl34x_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.mode = SPI_MODE_3,
 	},
 #endif
@@ -1288,7 +1400,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.max_speed_hz = 16000000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num = 0,
 		.chip_select = GPIO_PF10 + MAX_CTRL_CS,	/* GPIO controlled SSEL */
+<<<<<<< HEAD
 		.controller_data = &adf7021_spi_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.platform_data = &adf7021_platform_data,
 		.mode = SPI_MODE_0,
 	},
@@ -1300,7 +1415,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.irq = IRQ_PF6,
 		.chip_select = GPIO_PF10 + MAX_CTRL_CS,	/* GPIO controlled SSEL */
+<<<<<<< HEAD
 		.controller_data = &ad7873_spi_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.platform_data = &ad7873_pdata,
 		.mode = SPI_MODE_0,
 	},
@@ -1534,7 +1652,11 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 #endif
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 /* SPI controller data */
 static struct bfin5xx_spi_master bfin_spi0_info = {
 	.num_chipselect = MAX_CTRL_CS + MAX_BLACKFIN_GPIOS,
@@ -1576,7 +1698,11 @@ static struct platform_device bfin_spi0_device = {
 
 /* SPORT SPI controller data */
 static struct bfin5xx_spi_master bfin_sport_spi0_info = {
+<<<<<<< HEAD
 	.num_chipselect = 1, /* master only supports one device */
+=======
+	.num_chipselect = MAX_BLACKFIN_GPIOS,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.enable_dma = 0,  /* master don't support DMA */
 	.pin_req = {P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_DRPRI,
 		P_SPORT0_RSCLK, P_SPORT0_TFS, P_SPORT0_RFS, 0},
@@ -1606,7 +1732,11 @@ static struct platform_device bfin_sport_spi0_device = {
 };
 
 static struct bfin5xx_spi_master bfin_sport_spi1_info = {
+<<<<<<< HEAD
 	.num_chipselect = 1, /* master only supports one device */
+=======
+	.num_chipselect = MAX_BLACKFIN_GPIOS,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.enable_dma = 0,  /* master don't support DMA */
 	.pin_req = {P_SPORT1_DTPRI, P_SPORT1_TSCLK, P_SPORT1_DRPRI,
 		P_SPORT1_RSCLK, P_SPORT1_TFS, P_SPORT1_RFS, 0},
@@ -1672,6 +1802,74 @@ static struct platform_device bfin_lq035q1_device = {
 };
 #endif
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_VIDEO_BLACKFIN_CAPTURE) \
+	|| defined(CONFIG_VIDEO_BLACKFIN_CAPTURE_MODULE)
+#include <linux/videodev2.h>
+#include <media/blackfin/bfin_capture.h>
+#include <media/blackfin/ppi.h>
+
+static const unsigned short ppi_req[] = {
+	P_PPI0_D0, P_PPI0_D1, P_PPI0_D2, P_PPI0_D3,
+	P_PPI0_D4, P_PPI0_D5, P_PPI0_D6, P_PPI0_D7,
+	P_PPI0_CLK, P_PPI0_FS1, P_PPI0_FS2,
+	0,
+};
+
+static const struct ppi_info ppi_info = {
+	.type = PPI_TYPE_PPI,
+	.dma_ch = CH_PPI,
+	.irq_err = IRQ_PPI_ERROR,
+	.base = (void __iomem *)PPI_CONTROL,
+	.pin_req = ppi_req,
+};
+
+#if defined(CONFIG_VIDEO_VS6624) \
+	|| defined(CONFIG_VIDEO_VS6624_MODULE)
+static struct v4l2_input vs6624_inputs[] = {
+	{
+		.index = 0,
+		.name = "Camera",
+		.type = V4L2_INPUT_TYPE_CAMERA,
+		.std = V4L2_STD_UNKNOWN,
+	},
+};
+
+static struct bcap_route vs6624_routes[] = {
+	{
+		.input = 0,
+		.output = 0,
+	},
+};
+
+static const unsigned vs6624_ce_pin = GPIO_PF10;
+
+static struct bfin_capture_config bfin_capture_data = {
+	.card_name = "BF537",
+	.inputs = vs6624_inputs,
+	.num_inputs = ARRAY_SIZE(vs6624_inputs),
+	.routes = vs6624_routes,
+	.i2c_adapter_id = 0,
+	.board_info = {
+		.type = "vs6624",
+		.addr = 0x10,
+		.platform_data = (void *)&vs6624_ce_pin,
+	},
+	.ppi_info = &ppi_info,
+	.ppi_control = (PACK_EN | DLEN_8 | XFR_TYPE | 0x0020),
+};
+#endif
+
+static struct platform_device bfin_capture_device = {
+	.name = "bfin_capture",
+	.dev = {
+		.platform_data = &bfin_capture_data,
+	},
+};
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_SERIAL_BFIN) || defined(CONFIG_SERIAL_BFIN_MODULE)
 #ifdef CONFIG_SERIAL_BFIN_UART0
 static struct resource bfin_uart0_resources[] = {
@@ -1681,8 +1879,18 @@ static struct resource bfin_uart0_resources[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX+1,
+=======
+		.start = IRQ_UART0_TX,
+		.end = IRQ_UART0_TX,
+		.flags = IORESOURCE_IRQ,
+	},
+	{
+		.start = IRQ_UART0_RX,
+		.end = IRQ_UART0_RX,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -1736,8 +1944,18 @@ static struct resource bfin_uart1_resources[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start = IRQ_UART1_RX,
 		.end = IRQ_UART1_RX+1,
+=======
+		.start = IRQ_UART1_TX,
+		.end = IRQ_UART1_TX,
+		.flags = IORESOURCE_IRQ,
+	},
+	{
+		.start = IRQ_UART1_RX,
+		.end = IRQ_UART1_RX,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -2210,13 +2428,21 @@ static unsigned long adt7316_i2c_data[2] = {
 #endif
 
 static struct i2c_board_info __initdata bfin_i2c_board_info[] = {
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_SOC_AD193X) || defined(CONFIG_SND_BF5XX_SOC_AD193X_MODULE)
+=======
+#ifdef CONFIG_SND_SOC_AD193X_I2C
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		I2C_BOARD_INFO("ad1937", 0x04),
 	},
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_SOC_ADAV80X) || defined(CONFIG_SND_BF5XX_SOC_ADAV80X_MODULE)
+=======
+#if defined(CONFIG_SND_SOC_ADAV80X) || defined(CONFIG_SND_SOC_ADAV80X_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		I2C_BOARD_INFO("adav803", 0x10),
 	},
@@ -2249,6 +2475,7 @@ static struct i2c_board_info __initdata bfin_i2c_board_info[] = {
 	},
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_AD7414) || defined(CONFIG_AD7414_MODULE)
 	{
 		I2C_BOARD_INFO("ad7414", 0x9),
@@ -2266,6 +2493,8 @@ static struct i2c_board_info __initdata bfin_i2c_board_info[] = {
 	},
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_ADE7854_I2C) || defined(CONFIG_ADE7854_I2C_MODULE)
 	{
 		I2C_BOARD_INFO("ade7854", 0x38),
@@ -2276,6 +2505,7 @@ static struct i2c_board_info __initdata bfin_i2c_board_info[] = {
 	{
 		I2C_BOARD_INFO("adt75", 0x9),
 		.irq = IRQ_PG5,
+<<<<<<< HEAD
 		.irq_flags = IRQF_TRIGGER_LOW,
 	},
 #endif
@@ -2285,6 +2515,8 @@ static struct i2c_board_info __initdata bfin_i2c_board_info[] = {
 		I2C_BOARD_INFO("adt7408", 0x18),
 		.irq = IRQ_PG5,
 		.irq_flags = IRQF_TRIGGER_LOW,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 #endif
 
@@ -2293,7 +2525,10 @@ static struct i2c_board_info __initdata bfin_i2c_board_info[] = {
 		I2C_BOARD_INFO("adt7410", 0x48),
 		/* CT critical temperature event. line 0 */
 		.irq = IRQ_PG5,
+<<<<<<< HEAD
 		.irq_flags = IRQF_TRIGGER_LOW,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.platform_data = (void *)&adt7410_platform_data,
 	},
 #endif
@@ -2302,7 +2537,10 @@ static struct i2c_board_info __initdata bfin_i2c_board_info[] = {
 	{
 		I2C_BOARD_INFO("ad7291", 0x20),
 		.irq = IRQ_PG5,
+<<<<<<< HEAD
 		.irq_flags = IRQF_TRIGGER_LOW,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 #endif
 
@@ -2390,6 +2628,14 @@ static struct i2c_board_info __initdata bfin_i2c_board_info[] = {
 		I2C_BOARD_INFO("adau1361", 0x38),
 	},
 #endif
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SND_SOC_ADAU1701) || defined(CONFIG_SND_SOC_ADAU1701_MODULE)
+	{
+		I2C_BOARD_INFO("adau1701", 0x34),
+	},
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_AD525X_DPOT) || defined(CONFIG_AD525X_DPOT_MODULE)
 	{
 		I2C_BOARD_INFO("ad5258", 0x18),
@@ -2503,7 +2749,11 @@ static struct platform_device bfin_sport1_uart_device = {
 #define PATA_INT	IRQ_PF5
 static struct pata_platform_info bfin_pata_platform_data = {
 	.ioport_shift = 1,
+<<<<<<< HEAD
 	.irq_flags = IRQF_TRIGGER_HIGH | IRQF_DISABLED,
+=======
+	.irq_flags = IRQF_TRIGGER_HIGH,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct resource bfin_pata_resources[] = {
@@ -2632,20 +2882,72 @@ static struct resource bfin_snd_resources[][4] = {
 	BFIN_SND_RES(0),
 	BFIN_SND_RES(1),
 };
+<<<<<<< HEAD
 
 static struct platform_device bfin_pcm = {
 	.name = "bfin-pcm-audio",
+=======
+#endif
+
+#if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE)
+static struct platform_device bfin_i2s_pcm = {
+	.name = "bfin-i2s-pcm-audio",
 	.id = -1,
 };
 #endif
 
+#if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
+static struct platform_device bfin_tdm_pcm = {
+	.name = "bfin-tdm-pcm-audio",
+	.id = -1,
+};
+#endif
+
+#if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
+static struct platform_device bfin_ac97_pcm = {
+	.name = "bfin-ac97-pcm-audio",
+>>>>>>> refs/remotes/origin/cm-10.0
+	.id = -1,
+};
+#endif
+
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_SOC_AD73311) || defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
+=======
+#if defined(CONFIG_SND_BF5XX_SOC_AD73311) || \
+				defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
+static const unsigned ad73311_gpio[] = {
+	GPIO_PF4,
+};
+
+static struct platform_device bfin_ad73311_machine = {
+	.name = "bfin-snd-ad73311",
+	.id = 1,
+	.dev = {
+		.platform_data = (void *)ad73311_gpio,
+	},
+};
+#endif
+
+#if defined(CONFIG_SND_SOC_AD73311) || defined(CONFIG_SND_SOC_AD73311_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device bfin_ad73311_codec_device = {
 	.name = "ad73311",
 	.id = -1,
 };
 #endif
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X) || \
+	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X_MODULE)
+static struct platform_device bfin_eval_adav801_device = {
+	.name = "bfin-eval-adav801",
+	.id = -1,
+};
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_SND_BF5XX_SOC_I2S) || defined(CONFIG_SND_BF5XX_SOC_I2S_MODULE)
 static struct platform_device bfin_i2s = {
 	.name = "bfin-i2s",
@@ -2760,6 +3062,23 @@ static struct platform_device iio_gpio_trigger = {
 };
 #endif
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373) || \
+	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373_MODULE)
+static struct platform_device bf5xx_adau1373_device = {
+	.name = "bfin-eval-adau1373",
+};
+#endif
+
+#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701) || \
+	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701_MODULE)
+static struct platform_device bf5xx_adau1701_device = {
+	.name = "bfin-eval-adau1701",
+};
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device *stamp_devices[] __initdata = {
 
 	&bfin_dpmc,
@@ -2805,7 +3124,11 @@ static struct platform_device *stamp_devices[] __initdata = {
 	&net2272_bfin_device,
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	&bfin_spi0_device,
 #endif
 
@@ -2822,6 +3145,14 @@ static struct platform_device *stamp_devices[] __initdata = {
 	&bfin_lq035q1_device,
 #endif
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_VIDEO_BLACKFIN_CAPTURE) \
+	|| defined(CONFIG_VIDEO_BLACKFIN_CAPTURE_MODULE)
+	&bfin_capture_device,
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_SERIAL_BFIN) || defined(CONFIG_SERIAL_BFIN_MODULE)
 #ifdef CONFIG_SERIAL_BFIN_UART0
 	&bfin_uart0_device,
@@ -2869,6 +3200,7 @@ static struct platform_device *stamp_devices[] __initdata = {
 	&stamp_flash_device,
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE) || \
 	defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE) || \
 	defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
@@ -2876,6 +3208,26 @@ static struct platform_device *stamp_devices[] __initdata = {
 #endif
 
 #if defined(CONFIG_SND_BF5XX_SOC_AD73311) || defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
+=======
+#if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE)
+	&bfin_i2s_pcm,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
+	&bfin_tdm_pcm,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
+	&bfin_ac97_pcm,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_AD73311) || \
+		defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
+	&bfin_ad73311_machine,
+#endif
+
+#if defined(CONFIG_SND_SOC_AD73311) || defined(CONFIG_SND_SOC_AD73311_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	&bfin_ad73311_codec_device,
 #endif
 
@@ -2914,8 +3266,46 @@ static struct platform_device *stamp_devices[] __initdata = {
 	defined(CONFIG_IIO_GPIO_TRIGGER_MODULE)
 	&iio_gpio_trigger,
 #endif
+<<<<<<< HEAD
 };
 
+=======
+
+#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373) || \
+	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373_MODULE)
+	&bf5xx_adau1373_device,
+#endif
+
+#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701) || \
+	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701_MODULE)
+	&bf5xx_adau1701_device,
+#endif
+
+#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X) || \
+	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X_MODULE)
+	&bfin_eval_adav801_device,
+#endif
+};
+
+static int __init net2272_init(void)
+{
+#if defined(CONFIG_USB_NET2272) || defined(CONFIG_USB_NET2272_MODULE)
+	int ret;
+
+	ret = gpio_request(GPIO_PF6, "net2272");
+	if (ret)
+		return ret;
+
+	/* Reset the USB chip */
+	gpio_direction_output(GPIO_PF6, 0);
+	mdelay(2);
+	gpio_set_value(GPIO_PF6, 1);
+#endif
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init stamp_init(void)
 {
 	printk(KERN_INFO "%s(): registering device resources\n", __func__);
@@ -2926,6 +3316,12 @@ static int __init stamp_init(void)
 				ARRAY_SIZE(bfin_i2c_board_info));
 	spi_register_board_info(bfin_spi_board_info, ARRAY_SIZE(bfin_spi_board_info));
 
+<<<<<<< HEAD
+=======
+	if (net2272_init())
+		pr_warning("unable to configure net2272; it probably won't work\n");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -2970,9 +3366,17 @@ void native_machine_restart(char *cmd)
  * Currently the MAC address is saved in Flash by U-Boot
  */
 #define FLASH_MAC	0x203f0000
+<<<<<<< HEAD
 void bfin_get_ether_addr(char *addr)
 {
 	*(u32 *)(&(addr[0])) = bfin_read32(FLASH_MAC);
 	*(u16 *)(&(addr[4])) = bfin_read16(FLASH_MAC + 4);
+=======
+int bfin_get_ether_addr(char *addr)
+{
+	*(u32 *)(&(addr[0])) = bfin_read32(FLASH_MAC);
+	*(u16 *)(&(addr[4])) = bfin_read16(FLASH_MAC + 4);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(bfin_get_ether_addr);

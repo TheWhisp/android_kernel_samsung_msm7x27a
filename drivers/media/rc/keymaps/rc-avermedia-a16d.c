@@ -11,6 +11,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct rc_map_table avermedia_a16d[] = {
 	{ 0x20, KEY_LIST},

@@ -14,7 +14,10 @@
 #include <linux/rtc.h>
 
 #include <asm/errno.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/rtc.h>
 #include <asm/intersil.h>
 

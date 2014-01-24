@@ -37,7 +37,10 @@
 #include <asm/oplib.h>
 #include <asm/timex.h>
 #include <asm/timer.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <asm/io.h>
 #include <asm/idprom.h>

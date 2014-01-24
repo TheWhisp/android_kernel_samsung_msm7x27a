@@ -28,7 +28,11 @@
 #include "aerdrv.h"
 
 /* Override the existing corrected and uncorrected error masks */
+<<<<<<< HEAD
 static int aer_mask_override;
+=======
+static bool aer_mask_override;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(aer_mask_override, bool, 0);
 
 struct aer_error_inj {

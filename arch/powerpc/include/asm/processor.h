@@ -20,6 +20,10 @@
 
 #ifndef __ASSEMBLY__
 #include <linux/compiler.h>
+<<<<<<< HEAD
+=======
+#include <linux/cache.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ptrace.h>
 #include <asm/types.h>
 
@@ -156,6 +160,13 @@ struct thread_struct {
 #endif
 	struct pt_regs	*regs;		/* Pointer to saved register state */
 	mm_segment_t	fs;		/* for get_fs() validation */
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BOOKE
+	/* BookE base exception scratch space; align on cacheline */
+	unsigned long	normsave[8] ____cacheline_aligned;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PPC32
 	void		*pgdir;		/* root of page-table tree */
 #endif
@@ -377,6 +388,42 @@ static inline unsigned long get_clean_sp(struct pt_regs *regs, int is_32)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+extern unsigned long cpuidle_disable;
+enum idle_boot_override {IDLE_NO_OVERRIDE = 0, IDLE_POWERSAVE_OFF};
+
+extern int powersave_nap;	/* set if nap mode can be used in idle loop */
+void cpu_idle_wait(void);
+
+#ifdef CONFIG_PSERIES_IDLE
+extern void update_smt_snooze_delay(int snooze);
+extern int pseries_notify_cpuidle_add_cpu(int cpu);
+#else
+static inline void update_smt_snooze_delay(int snooze) {}
+static inline int pseries_notify_cpuidle_add_cpu(int cpu) { return 0; }
+#endif
+
+extern void flush_instruction_cache(void);
+extern void hard_reset_now(void);
+extern void poweroff_now(void);
+extern int fix_alignment(struct pt_regs *);
+extern void cvt_fd(float *from, double *to);
+extern void cvt_df(double *from, float *to);
+extern void _nmask_and_or_msr(unsigned long nmask, unsigned long or_val);
+
+#ifdef CONFIG_PPC64
+/*
+ * We handle most unaligned accesses in hardware. On the other hand 
+ * unaligned DMA can be very expensive on some ppc64 IO chips (it does
+ * powers of 2 writes until it reaches sufficient alignment).
+ *
+ * Based on this we disable the IP header alignment in network drivers.
+ */
+#define NET_IP_ALIGN	0
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KERNEL__ */
 #endif /* __ASSEMBLY__ */
 #endif /* _ASM_POWERPC_PROCESSOR_H */

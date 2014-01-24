@@ -9,6 +9,10 @@
 #include <linux/irq.h>
 #include <linux/pci.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/htirq.h>
 

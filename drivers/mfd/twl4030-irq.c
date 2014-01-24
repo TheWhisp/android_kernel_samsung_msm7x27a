@@ -28,11 +28,20 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/kthread.h>
 #include <linux/slab.h>
 
+=======
+#include <linux/export.h>
+#include <linux/interrupt.h>
+#include <linux/irq.h>
+#include <linux/slab.h>
+#include <linux/of.h>
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/i2c/twl.h>
 
 #include "twl-core.h"
@@ -54,13 +63,21 @@
  *	base + 8  .. base + 15	SIH for PWR_INT
  *	base + 16 .. base + 33	SIH for GPIO
  */
+<<<<<<< HEAD
+=======
+#define TWL4030_CORE_NR_IRQS	8
+#define TWL4030_PWR_NR_IRQS	8
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* PIH register offsets */
 #define REG_PIH_ISR_P1			0x01
 #define REG_PIH_ISR_P2			0x02
 #define REG_PIH_SIR			0x03	/* for testing */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Linux could (eventually) use either IRQ line */
 static int irq_line;
 
@@ -112,7 +129,12 @@ static int nr_sih_modules;
 #define TWL4030_MODULE_INT_PWR		TWL4030_MODULE_INT
 
 
+<<<<<<< HEAD
 /* Order in this table matches order in PIH_ISR.  That is,
+=======
+/*
+ * Order in this table matches order in PIH_ISR.  That is,
+>>>>>>> refs/remotes/origin/cm-10.0
  * BIT(n) in PIH_ISR is sih_modules[n].
  */
 /* sih_modules_twl4030 is used both in twl4030 and twl5030 */
@@ -278,6 +300,7 @@ static const struct sih sih_modules_twl5031[8] = {
 
 static unsigned twl4030_irq_base;
 
+<<<<<<< HEAD
 static struct completion irq_event;
 
 /*
@@ -331,6 +354,8 @@ static int twl4030_irq_thread(void *data)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * handle_twl4030_pih() is the desc->handle method for the twl4030 interrupt.
  * This is a chained interrupt, so there is no desc->action method for it.
@@ -342,11 +367,36 @@ static int twl4030_irq_thread(void *data)
  */
 static irqreturn_t handle_twl4030_pih(int irq, void *devid)
 {
+<<<<<<< HEAD
 	/* Acknowledge, clear *AND* mask the interrupt... */
 	disable_irq_nosync(irq);
 	complete(devid);
 	return IRQ_HANDLED;
 }
+=======
+	irqreturn_t	ret;
+	u8		pih_isr;
+
+	ret = twl_i2c_read_u8(TWL4030_MODULE_PIH, &pih_isr,
+			REG_PIH_ISR_P1);
+	if (ret) {
+		pr_warning("twl4030: I2C error %d reading PIH ISR\n", ret);
+		return IRQ_NONE;
+	}
+
+	while (pih_isr) {
+		unsigned long	pending = __ffs(pih_isr);
+		unsigned int	irq;
+
+		pih_isr &= ~BIT(pending);
+		irq = pending + twl4030_irq_base;
+		handle_nested_irq(irq);
+	}
+
+	return IRQ_HANDLED;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*----------------------------------------------------------------------*/
 
 /*
@@ -375,7 +425,10 @@ static int twl4030_init_sih_modules(unsigned line)
 	memset(buf, 0xff, sizeof buf);
 	sih = sih_modules;
 	for (i = 0; i < nr_sih_modules; i++, sih++) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* skip USB -- it's funky */
 		if (!sih->bytes_ixr)
 			continue;
@@ -390,7 +443,12 @@ static int twl4030_init_sih_modules(unsigned line)
 			pr_err("twl4030: err %d initializing %s %s\n",
 					status, sih->name, "IMR");
 
+<<<<<<< HEAD
 		/* Maybe disable "exclusive" mode; buffer second pending irq;
+=======
+		/*
+		 * Maybe disable "exclusive" mode; buffer second pending irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * set Clear-On-Read (COR) bit.
 		 *
 		 * NOTE that sometimes COR polarity is documented as being
@@ -420,7 +478,12 @@ static int twl4030_init_sih_modules(unsigned line)
 		if (sih->irq_lines <= line)
 			continue;
 
+<<<<<<< HEAD
 		/* Clear pending interrupt status.  Either the read was
+=======
+		/*
+		 * Clear pending interrupt status.  Either the read was
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * enough, or we need to write those bits.  Repeat, in
 		 * case an IRQ is pending (PENDDIS=0) ... that's not
 		 * uncommon with PWR_INT.PWRON.
@@ -436,7 +499,12 @@ static int twl4030_init_sih_modules(unsigned line)
 				status = twl_i2c_write(sih->module, buf,
 					sih->mask[line].isr_offset,
 					sih->bytes_ixr);
+<<<<<<< HEAD
 			/* else COR=1 means read sufficed.
+=======
+			/*
+			 * else COR=1 means read sufficed.
+>>>>>>> refs/remotes/origin/cm-10.0
 			 * (for most SIH modules...)
 			 */
 		}
@@ -448,7 +516,12 @@ static int twl4030_init_sih_modules(unsigned line)
 static inline void activate_irq(int irq)
 {
 #ifdef CONFIG_ARM
+<<<<<<< HEAD
 	/* ARM requires an extra step to clear IRQ_NOREQUEST, which it
+=======
+	/*
+	 * ARM requires an extra step to clear IRQ_NOREQUEST, which it
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * sets on behalf of every irq_chip.  Also sets IRQ_NOPROBE.
 	 */
 	set_irq_flags(irq, IRQF_VALID);
@@ -460,16 +533,20 @@ static inline void activate_irq(int irq)
 
 /*----------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(sih_agent_lock);
 
 static struct workqueue_struct *wq;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct sih_agent {
 	int			irq_base;
 	const struct sih	*sih;
 
 	u32			imr;
 	bool			imr_change_pending;
+<<<<<<< HEAD
 	struct work_struct	mask_work;
 
 	u32			edge_change;
@@ -567,6 +644,14 @@ static void twl4030_sih_do_edge(struct work_struct *work)
 		pr_err("twl4030: %s, %s --> %d\n", __func__,
 				"write", status);
 }
+=======
+
+	u32			edge_change;
+
+	struct mutex		irq_lock;
+	char			*irq_name;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*----------------------------------------------------------------------*/
 
@@ -579,6 +664,7 @@ static void twl4030_sih_do_edge(struct work_struct *work)
 
 static void twl4030_sih_mask(struct irq_data *data)
 {
+<<<<<<< HEAD
 	struct sih_agent *sih = irq_data_get_irq_chip_data(data);
 	unsigned long flags;
 
@@ -587,10 +673,17 @@ static void twl4030_sih_mask(struct irq_data *data)
 	sih->imr_change_pending = true;
 	queue_work(wq, &sih->mask_work);
 	spin_unlock_irqrestore(&sih_agent_lock, flags);
+=======
+	struct sih_agent *agent = irq_data_get_irq_chip_data(data);
+
+	agent->imr |= BIT(data->irq - agent->irq_base);
+	agent->imr_change_pending = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void twl4030_sih_unmask(struct irq_data *data)
 {
+<<<<<<< HEAD
 	struct sih_agent *sih = irq_data_get_irq_chip_data(data);
 	unsigned long flags;
 
@@ -599,16 +692,27 @@ static void twl4030_sih_unmask(struct irq_data *data)
 	sih->imr_change_pending = true;
 	queue_work(wq, &sih->mask_work);
 	spin_unlock_irqrestore(&sih_agent_lock, flags);
+=======
+	struct sih_agent *agent = irq_data_get_irq_chip_data(data);
+
+	agent->imr &= ~BIT(data->irq - agent->irq_base);
+	agent->imr_change_pending = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int twl4030_sih_set_type(struct irq_data *data, unsigned trigger)
 {
+<<<<<<< HEAD
 	struct sih_agent *sih = irq_data_get_irq_chip_data(data);
 	unsigned long flags;
+=======
+	struct sih_agent *agent = irq_data_get_irq_chip_data(data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (trigger & ~(IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&sih_agent_lock, flags);
 	if (irqd_get_trigger_type(data) != trigger) {
 		sih->edge_change |= BIT(data->irq - sih->irq_base);
@@ -623,6 +727,106 @@ static struct irq_chip twl4030_sih_irq_chip = {
 	.irq_mask      	= twl4030_sih_mask,
 	.irq_unmask	= twl4030_sih_unmask,
 	.irq_set_type	= twl4030_sih_set_type,
+=======
+	if (irqd_get_trigger_type(data) != trigger)
+		agent->edge_change |= BIT(data->irq - agent->irq_base);
+
+	return 0;
+}
+
+static void twl4030_sih_bus_lock(struct irq_data *data)
+{
+	struct sih_agent	*agent = irq_data_get_irq_chip_data(data);
+
+	mutex_lock(&agent->irq_lock);
+}
+
+static void twl4030_sih_bus_sync_unlock(struct irq_data *data)
+{
+	struct sih_agent	*agent = irq_data_get_irq_chip_data(data);
+	const struct sih	*sih = agent->sih;
+	int			status;
+
+	if (agent->imr_change_pending) {
+		union {
+			u32	word;
+			u8	bytes[4];
+		} imr;
+
+		/* byte[0] gets overwritten as we write ... */
+		imr.word = cpu_to_le32(agent->imr << 8);
+		agent->imr_change_pending = false;
+
+		/* write the whole mask ... simpler than subsetting it */
+		status = twl_i2c_write(sih->module, imr.bytes,
+				sih->mask[irq_line].imr_offset,
+				sih->bytes_ixr);
+		if (status)
+			pr_err("twl4030: %s, %s --> %d\n", __func__,
+					"write", status);
+	}
+
+	if (agent->edge_change) {
+		u32		edge_change;
+		u8		bytes[6];
+
+		edge_change = agent->edge_change;
+		agent->edge_change = 0;
+
+		/*
+		 * Read, reserving first byte for write scratch.  Yes, this
+		 * could be cached for some speedup ... but be careful about
+		 * any processor on the other IRQ line, EDR registers are
+		 * shared.
+		 */
+		status = twl_i2c_read(sih->module, bytes + 1,
+				sih->edr_offset, sih->bytes_edr);
+		if (status) {
+			pr_err("twl4030: %s, %s --> %d\n", __func__,
+					"read", status);
+			return;
+		}
+
+		/* Modify only the bits we know must change */
+		while (edge_change) {
+			int		i = fls(edge_change) - 1;
+			struct irq_data	*idata;
+			int		byte = 1 + (i >> 2);
+			int		off = (i & 0x3) * 2;
+			unsigned int	type;
+
+			idata = irq_get_irq_data(i + agent->irq_base);
+
+			bytes[byte] &= ~(0x03 << off);
+
+			type = irqd_get_trigger_type(idata);
+			if (type & IRQ_TYPE_EDGE_RISING)
+				bytes[byte] |= BIT(off + 1);
+			if (type & IRQ_TYPE_EDGE_FALLING)
+				bytes[byte] |= BIT(off + 0);
+
+			edge_change &= ~BIT(i);
+		}
+
+		/* Write */
+		status = twl_i2c_write(sih->module, bytes,
+				sih->edr_offset, sih->bytes_edr);
+		if (status)
+			pr_err("twl4030: %s, %s --> %d\n", __func__,
+					"write", status);
+	}
+
+	mutex_unlock(&agent->irq_lock);
+}
+
+static struct irq_chip twl4030_sih_irq_chip = {
+	.name		= "twl4030",
+	.irq_mask	= twl4030_sih_mask,
+	.irq_unmask	= twl4030_sih_unmask,
+	.irq_set_type	= twl4030_sih_set_type,
+	.irq_bus_lock	= twl4030_sih_bus_lock,
+	.irq_bus_sync_unlock = twl4030_sih_bus_sync_unlock,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*----------------------------------------------------------------------*/
@@ -648,22 +852,34 @@ static inline int sih_read_isr(const struct sih *sih)
  * Generic handler for SIH interrupts ... we "know" this is called
  * in task context, with IRQs enabled.
  */
+<<<<<<< HEAD
 static void handle_twl4030_sih(unsigned irq, struct irq_desc *desc)
+=======
+static irqreturn_t handle_twl4030_sih(int irq, void *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct sih_agent *agent = irq_get_handler_data(irq);
 	const struct sih *sih = agent->sih;
 	int isr;
 
 	/* reading ISR acks the IRQs, using clear-on-read mode */
+<<<<<<< HEAD
 	local_irq_enable();
 	isr = sih_read_isr(sih);
 	local_irq_disable();
+=======
+	isr = sih_read_isr(sih);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (isr < 0) {
 		pr_err("twl4030: %s SIH, read ISR error %d\n",
 			sih->name, isr);
 		/* REVISIT:  recover; eventually mask it all, etc */
+<<<<<<< HEAD
 		return;
+=======
+		return IRQ_HANDLED;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	while (isr) {
@@ -672,11 +888,16 @@ static void handle_twl4030_sih(unsigned irq, struct irq_desc *desc)
 		isr &= ~BIT(irq);
 
 		if (irq < sih->bits)
+<<<<<<< HEAD
 			generic_handle_irq(agent->irq_base + irq);
+=======
+			handle_nested_irq(agent->irq_base + irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			pr_err("twl4030: %s SIH, invalid ISR bit %d\n",
 				sih->name, irq);
 	}
+<<<<<<< HEAD
 }
 
 static unsigned twl4030_irq_next;
@@ -685,12 +906,20 @@ static unsigned twl4030_irq_next;
  * or negative errno
  */
 int twl4030_sih_setup(int module)
+=======
+	return IRQ_HANDLED;
+}
+
+/* returns the first IRQ used by this SIH bank, or negative errno */
+int twl4030_sih_setup(struct device *dev, int module, int irq_base)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int			sih_mod;
 	const struct sih	*sih = NULL;
 	struct sih_agent	*agent;
 	int			i, irq;
 	int			status = -EINVAL;
+<<<<<<< HEAD
 	unsigned		irq_base = twl4030_irq_next;
 
 	/* only support modules with standard clear-on-read for now */
@@ -706,6 +935,18 @@ int twl4030_sih_setup(int module)
 			break;
 		}
 	}
+=======
+
+	/* only support modules with standard clear-on-read for now */
+	for (sih_mod = 0, sih = sih_modules; sih_mod < nr_sih_modules;
+			sih_mod++, sih++) {
+		if (sih->module == module && sih->set_cor) {
+			status = 0;
+			break;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (status < 0)
 		return status;
 
@@ -713,6 +954,7 @@ int twl4030_sih_setup(int module)
 	if (!agent)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	status = 0;
 
 	agent->irq_base = irq_base;
@@ -720,10 +962,17 @@ int twl4030_sih_setup(int module)
 	agent->imr = ~0;
 	INIT_WORK(&agent->mask_work, twl4030_sih_do_mask);
 	INIT_WORK(&agent->edge_work, twl4030_sih_do_edge);
+=======
+	agent->irq_base = irq_base;
+	agent->sih = sih;
+	agent->imr = ~0;
+	mutex_init(&agent->irq_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < sih->bits; i++) {
 		irq = irq_base + i;
 
+<<<<<<< HEAD
 		irq_set_chip_and_handler(irq, &twl4030_sih_irq_chip,
 					 handle_edge_irq);
 		irq_set_chip_data(irq, agent);
@@ -742,16 +991,40 @@ int twl4030_sih_setup(int module)
 			irq, irq_base, twl4030_irq_next - 1);
 
 	return status;
+=======
+		irq_set_chip_data(irq, agent);
+		irq_set_chip_and_handler(irq, &twl4030_sih_irq_chip,
+					 handle_edge_irq);
+		irq_set_nested_thread(irq, 1);
+		activate_irq(irq);
+	}
+
+	/* replace generic PIH handler (handle_simple_irq) */
+	irq = sih_mod + twl4030_irq_base;
+	irq_set_handler_data(irq, agent);
+	agent->irq_name = kasprintf(GFP_KERNEL, "twl4030_%s", sih->name);
+	status = request_threaded_irq(irq, NULL, handle_twl4030_sih, 0,
+				      agent->irq_name ?: sih->name, NULL);
+
+	dev_info(dev, "%s (irq %d) chaining IRQs %d..%d\n", sih->name,
+			irq, irq_base, irq_base + i - 1);
+
+	return status < 0 ? status : irq_base;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* FIXME need a call to reverse twl4030_sih_setup() ... */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*----------------------------------------------------------------------*/
 
 /* FIXME pass in which interrupt line we'll use ... */
 #define twl_irq_line	0
 
+<<<<<<< HEAD
 int twl4030_init_irq(int irq_num, unsigned irq_base, unsigned irq_end)
 {
 	static struct irq_chip	twl4030_irq_chip;
@@ -759,6 +1032,32 @@ int twl4030_init_irq(int irq_num, unsigned irq_base, unsigned irq_end)
 	int			status;
 	int			i;
 	struct task_struct	*task;
+=======
+int twl4030_init_irq(struct device *dev, int irq_num)
+{
+	static struct irq_chip	twl4030_irq_chip;
+	int			status, i;
+	int			irq_base, irq_end, nr_irqs;
+	struct			device_node *node = dev->of_node;
+
+	/*
+	 * TWL core and pwr interrupts must be contiguous because
+	 * the hwirqs numbers are defined contiguously from 1 to 15.
+	 * Create only one domain for both.
+	 */
+	nr_irqs = TWL4030_PWR_NR_IRQS + TWL4030_CORE_NR_IRQS;
+
+	irq_base = irq_alloc_descs(-1, 0, nr_irqs, 0);
+	if (IS_ERR_VALUE(irq_base)) {
+		dev_err(dev, "Fail to allocate IRQ descs\n");
+		return irq_base;
+	}
+
+	irq_domain_add_legacy(node, nr_irqs, irq_base, 0,
+			      &irq_domain_simple_ops, NULL);
+
+	irq_end = irq_base + TWL4030_CORE_NR_IRQS;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Mask and clear all TWL4030 interrupts since initially we do
@@ -768,6 +1067,7 @@ int twl4030_init_irq(int irq_num, unsigned irq_base, unsigned irq_end)
 	if (status < 0)
 		return status;
 
+<<<<<<< HEAD
 	wq = create_singlethread_workqueue("twl4030-irqchip");
 	if (!wq) {
 		pr_err("twl4030: workqueue FAIL\n");
@@ -777,6 +1077,12 @@ int twl4030_init_irq(int irq_num, unsigned irq_base, unsigned irq_end)
 	twl4030_irq_base = irq_base;
 
 	/* install an irq handler for each of the SIH modules;
+=======
+	twl4030_irq_base = irq_base;
+
+	/*
+	 * Install an irq handler for each of the SIH modules;
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * clone dummy irq_chip since PIH can't *do* anything
 	 */
 	twl4030_irq_chip = dummy_irq_chip;
@@ -787,6 +1093,7 @@ int twl4030_init_irq(int irq_num, unsigned irq_base, unsigned irq_end)
 	for (i = irq_base; i < irq_end; i++) {
 		irq_set_chip_and_handler(i, &twl4030_irq_chip,
 					 handle_simple_irq);
+<<<<<<< HEAD
 		activate_irq(i);
 	}
 	twl4030_irq_next = i;
@@ -797,10 +1104,24 @@ int twl4030_init_irq(int irq_num, unsigned irq_base, unsigned irq_end)
 	status = twl4030_sih_setup(TWL4030_MODULE_INT);
 	if (status < 0) {
 		pr_err("twl4030: sih_setup PWR INT --> %d\n", status);
+=======
+		irq_set_nested_thread(i, 1);
+		activate_irq(i);
+	}
+
+	dev_info(dev, "%s (irq %d) chaining IRQs %d..%d\n", "PIH",
+			irq_num, irq_base, irq_end);
+
+	/* ... and the PWR_INT module ... */
+	status = twl4030_sih_setup(dev, TWL4030_MODULE_INT, irq_end);
+	if (status < 0) {
+		dev_err(dev, "sih_setup PWR INT --> %d\n", status);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto fail;
 	}
 
 	/* install an irq handler to demultiplex the TWL4030 interrupt */
+<<<<<<< HEAD
 
 
 	init_completion(&irq_event);
@@ -829,6 +1150,25 @@ fail:
 		irq_set_chip_and_handler(i, NULL, NULL);
 	destroy_workqueue(wq);
 	wq = NULL;
+=======
+	status = request_threaded_irq(irq_num, NULL, handle_twl4030_pih,
+				      IRQF_ONESHOT,
+				      "TWL4030-PIH", NULL);
+	if (status < 0) {
+		dev_err(dev, "could not claim irq%d: %d\n", irq_num, status);
+		goto fail_rqirq;
+	}
+
+	return irq_base;
+fail_rqirq:
+	/* clean up twl4030_sih_setup */
+fail:
+	for (i = irq_base; i < irq_end; i++) {
+		irq_set_nested_thread(i, 0);
+		irq_set_chip_and_handler(i, NULL, NULL);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return status;
 }
 

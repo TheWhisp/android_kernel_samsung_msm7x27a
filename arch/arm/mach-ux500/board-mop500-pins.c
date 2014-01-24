@@ -6,10 +6,18 @@
 
 #include <linux/kernel.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 
 #include <asm/mach-types.h>
 #include <plat/pincfg.h>
+=======
+#include <linux/bug.h>
+
+#include <asm/mach-types.h>
+#include <plat/pincfg.h>
+#include <plat/gpio-nomadik.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 
 #include "pins-db8500.h"
@@ -153,7 +161,11 @@ static pin_cfg_t mop500_pins_default[] = {
 	GPIO7_U1_RTSn	| PIN_OUTPUT_HIGH,
 };
 
+<<<<<<< HEAD
 static pin_cfg_t mop500_pins_hrefv60[] = {
+=======
+static pin_cfg_t hrefv60_pins[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* WLAN */
 	GPIO4_GPIO		| PIN_INPUT_PULLUP,/* WLAN_IRQ */
 	GPIO85_GPIO		| PIN_OUTPUT_LOW,/* WLAN_ENA */
@@ -236,6 +248,7 @@ static pin_cfg_t mop500_pins_hrefv60[] = {
 
 };
 
+<<<<<<< HEAD
 void __init mop500_pins_init(void)
 {
 	nmk_config_pins(mop500_pins_common,
@@ -246,4 +259,71 @@ void __init mop500_pins_init(void)
 	else
 		nmk_config_pins(mop500_pins_default,
 				ARRAY_SIZE(mop500_pins_default));
+=======
+static pin_cfg_t snowball_pins[] = {
+	/* SSP0, to AB8500 */
+	GPIO143_SSP0_CLK,
+	GPIO144_SSP0_FRM,
+	GPIO145_SSP0_RXD	| PIN_PULL_DOWN,
+	GPIO146_SSP0_TXD,
+
+	/* MMC0: MicroSD card */
+	GPIO21_MC0_DAT31DIR     | PIN_OUTPUT_HIGH,
+
+	/* MMC2: LAN */
+	GPIO86_SM_ADQ0,
+	GPIO87_SM_ADQ1,
+	GPIO88_SM_ADQ2,
+	GPIO89_SM_ADQ3,
+	GPIO90_SM_ADQ4,
+	GPIO91_SM_ADQ5,
+	GPIO92_SM_ADQ6,
+	GPIO93_SM_ADQ7,
+
+	GPIO94_SM_ADVn,
+	GPIO95_SM_CS0n,
+	GPIO96_SM_OEn,
+	GPIO97_SM_WEn,
+
+	GPIO128_SM_CKO,
+	GPIO130_SM_FBCLK,
+	GPIO131_SM_ADQ8,
+	GPIO132_SM_ADQ9,
+	GPIO133_SM_ADQ10,
+	GPIO134_SM_ADQ11,
+	GPIO135_SM_ADQ12,
+	GPIO136_SM_ADQ13,
+	GPIO137_SM_ADQ14,
+	GPIO138_SM_ADQ15,
+
+	/* RSTn_LAN */
+	GPIO141_GPIO		| PIN_OUTPUT_HIGH,
+};
+
+void __init mop500_pins_init(void)
+{
+	nmk_config_pins(mop500_pins_common,
+			ARRAY_SIZE(mop500_pins_common));
+
+	nmk_config_pins(mop500_pins_default,
+			ARRAY_SIZE(mop500_pins_default));
+}
+
+void __init snowball_pins_init(void)
+{
+	nmk_config_pins(mop500_pins_common,
+			ARRAY_SIZE(mop500_pins_common));
+
+	nmk_config_pins(snowball_pins,
+			ARRAY_SIZE(snowball_pins));
+}
+
+void __init hrefv60_pins_init(void)
+{
+	nmk_config_pins(mop500_pins_common,
+			ARRAY_SIZE(mop500_pins_common));
+
+	nmk_config_pins(hrefv60_pins,
+			ARRAY_SIZE(hrefv60_pins));
+>>>>>>> refs/remotes/origin/cm-10.0
 }

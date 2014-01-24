@@ -29,7 +29,10 @@
 #include <linux/bitmap.h>
 #include <linux/usb.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mm.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
@@ -45,7 +48,11 @@
 #include "cx231xx.h"
 #include "cx231xx-vbi.h"
 
+<<<<<<< HEAD
 #define CX231XX_VERSION_CODE            KERNEL_VERSION(0, 0, 1)
+=======
+#define CX231XX_VERSION "0.0.2"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVER_AUTHOR   "Srinivasa Deevi <srinivasa.deevi@conexant.com>"
 #define DRIVER_DESC     "Conexant cx231xx based USB video device driver"
@@ -70,6 +77,10 @@ do {\
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION(CX231XX_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static unsigned int card[]     = {[0 ... (CX231XX_MAXBOARDS - 1)] = UNSET };
 static unsigned int video_nr[] = {[0 ... (CX231XX_MAXBOARDS - 1)] = UNSET };
@@ -337,7 +348,11 @@ static inline int cx231xx_isoc_copy(struct cx231xx *dev, struct urb *urb)
 	if (!dev)
 		return 0;
 
+<<<<<<< HEAD
 	if ((dev->state & DEV_DISCONNECTED) || (dev->state & DEV_MISCONFIGURED))
+=======
+	if (dev->state & DEV_DISCONNECTED)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	if (urb->status < 0) {
@@ -440,7 +455,11 @@ static inline int cx231xx_bulk_copy(struct cx231xx *dev, struct urb *urb)
 	if (!dev)
 		return 0;
 
+<<<<<<< HEAD
 	if ((dev->state & DEV_DISCONNECTED) || (dev->state & DEV_MISCONFIGURED))
+=======
+	if (dev->state & DEV_DISCONNECTED)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	if (urb->status < 0) {
@@ -1000,12 +1019,15 @@ static int check_dev(struct cx231xx *dev)
 		cx231xx_errdev("v4l2 ioctl: device not present\n");
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 
 	if (dev->state & DEV_MISCONFIGURED) {
 		cx231xx_errdev("v4l2 ioctl: device is misconfigured; "
 			       "close and open it again\n");
 		return -EIO;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1179,7 +1201,12 @@ static int vidioc_enum_input(struct file *file, void *priv,
 {
 	struct cx231xx_fh *fh = priv;
 	struct cx231xx *dev = fh->dev;
+<<<<<<< HEAD
 	unsigned int n;
+=======
+	u32 gen_stat;
+	unsigned int ret, n;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	n = i->index;
 	if (n >= MAX_CX231XX_INPUT)
@@ -1198,6 +1225,21 @@ static int vidioc_enum_input(struct file *file, void *priv,
 
 	i->std = dev->vdev->tvnorms;
 
+<<<<<<< HEAD
+=======
+	/* If they are asking about the active input, read signal status */
+	if (n == dev->video_input) {
+		ret = cx231xx_read_i2c_data(dev, VID_BLK_I2C_ADDRESS,
+					    GEN_STAT, 2, &gen_stat, 4);
+		if (ret > 0) {
+			if ((gen_stat & FLD_VPRES) == 0x00)
+				i->status |= V4L2_IN_ST_NO_SIGNAL;
+			if ((gen_stat & FLD_HLOCK) == 0x00)
+				i->status |= V4L2_IN_ST_NO_H_LOCK;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1869,8 +1911,11 @@ static int vidioc_querycap(struct file *file, void *priv,
 	strlcpy(cap->card, cx231xx_boards[dev->model].name, sizeof(cap->card));
 	usb_make_path(dev->udev, cap->bus_info, sizeof(cap->bus_info));
 
+<<<<<<< HEAD
 	cap->version = CX231XX_VERSION_CODE;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	cap->capabilities = V4L2_CAP_VBI_CAPTURE |
 #if 0
 		V4L2_CAP_SLICED_VBI_CAPTURE |
@@ -2057,7 +2102,10 @@ static int radio_querycap(struct file *file, void *priv,
 	strlcpy(cap->card, cx231xx_boards[dev->model].name, sizeof(cap->card));
 	usb_make_path(dev->udev, cap->bus_info, sizeof(cap->bus_info));
 
+<<<<<<< HEAD
 	cap->version = CX231XX_VERSION_CODE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	cap->capabilities = V4L2_CAP_TUNER;
 	return 0;
 }
@@ -2315,8 +2363,12 @@ static int cx231xx_v4l2_close(struct file *filp)
 			if (dev->state & DEV_DISCONNECTED) {
 				if (atomic_read(&dev->devlist_count) > 0) {
 					cx231xx_release_resources(dev);
+<<<<<<< HEAD
 					kfree(dev);
 					dev = NULL;
+=======
+					fh->dev = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 					return 0;
 				}
 				return 0;
@@ -2337,7 +2389,12 @@ static int cx231xx_v4l2_close(struct file *filp)
 			return 0;
 		}
 
+<<<<<<< HEAD
 	if (dev->users == 1) {
+=======
+	dev->users--;
+	if (!dev->users) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		videobuf_stop(&fh->vb_vidq);
 		videobuf_mmap_free(&fh->vb_vidq);
 
@@ -2345,8 +2402,12 @@ static int cx231xx_v4l2_close(struct file *filp)
 		   free the remaining resources */
 		if (dev->state & DEV_DISCONNECTED) {
 			cx231xx_release_resources(dev);
+<<<<<<< HEAD
 			kfree(dev);
 			dev = NULL;
+=======
+			fh->dev = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 			return 0;
 		}
 
@@ -2364,7 +2425,10 @@ static int cx231xx_v4l2_close(struct file *filp)
 		cx231xx_set_alt_setting(dev, INDEX_VIDEO, 0);
 	}
 	kfree(fh);
+<<<<<<< HEAD
 	dev->users--;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	wake_up_interruptible_nr(&dev->open, 1);
 	return 0;
 }
@@ -2570,11 +2634,16 @@ int cx231xx_register_analog_devices(struct cx231xx *dev)
 {
 	int ret;
 
+<<<<<<< HEAD
 	cx231xx_info("%s: v4l2 driver version %d.%d.%d\n",
 		     dev->name,
 		     (CX231XX_VERSION_CODE >> 16) & 0xff,
 		     (CX231XX_VERSION_CODE >> 8) & 0xff,
 		     CX231XX_VERSION_CODE & 0xff);
+=======
+	cx231xx_info("%s: v4l2 driver version %s\n",
+		     dev->name, CX231XX_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* set default norm */
 	/*dev->norm = cx231xx_video_template.current_norm; */

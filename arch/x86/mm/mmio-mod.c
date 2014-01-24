@@ -29,12 +29,19 @@
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kallsyms.h>
 #include <asm/pgtable.h>
 #include <linux/mmiotrace.h>
 #include <asm/e820.h> /* for ISA_START_ADDRESS */
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/percpu.h>
 #include <linux/cpu.h>
 
@@ -76,8 +83,13 @@ static LIST_HEAD(trace_list);		/* struct remap_trace */
 
 /* module parameters */
 static unsigned long	filter_offset;
+<<<<<<< HEAD
 static int		nommiotrace;
 static int		trace_pc;
+=======
+static bool		nommiotrace;
+static bool		trace_pc;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param(filter_offset, ulong, 0);
 module_param(nommiotrace, bool, 0);

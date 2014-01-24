@@ -29,6 +29,10 @@
 #include <linux/rfkill.h>
 #include <linux/sched.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/miscdevice.h>
 #include <linux/wait.h>
 #include <linux/poll.h>
@@ -235,7 +239,11 @@ static bool __rfkill_set_hw_state(struct rfkill *rfkill,
 	else
 		rfkill->state &= ~RFKILL_BLOCK_HW;
 	*change = prev != blocked;
+<<<<<<< HEAD
 	any = rfkill->state & RFKILL_BLOCK_ANY;
+=======
+	any = !!(rfkill->state & RFKILL_BLOCK_ANY);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&rfkill->lock, flags);
 
 	rfkill_led_trigger_event(rfkill);
@@ -644,7 +652,11 @@ static ssize_t rfkill_soft_store(struct device *dev,
 	if (!capable(CAP_NET_ADMIN))
 		return -EPERM;
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 0, &state);
+=======
+	err = kstrtoul(buf, 0, &state);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -688,7 +700,11 @@ static ssize_t rfkill_state_store(struct device *dev,
 	if (!capable(CAP_NET_ADMIN))
 		return -EPERM;
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 0, &state);
+=======
+	err = kstrtoul(buf, 0, &state);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 

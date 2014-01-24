@@ -31,7 +31,11 @@ void __init ixdpg425_pci_preinit(void)
 	ixp4xx_pci_preinit();
 }
 
+<<<<<<< HEAD
 static int __init ixdpg425_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init ixdpg425_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (slot == 12 || slot == 13)
 		return IRQ_IXP4XX_GPIO7;

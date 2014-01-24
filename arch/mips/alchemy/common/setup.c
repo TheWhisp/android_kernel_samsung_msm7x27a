@@ -73,8 +73,13 @@ void __init plat_mem_setup(void)
 /* This routine should be valid for all Au1x based boards */
 phys_t __fixup_bigphys_addr(phys_t phys_addr, phys_t size)
 {
+<<<<<<< HEAD
 	u32 start = (u32)Au1500_PCI_MEM_START;
 	u32 end   = (u32)Au1500_PCI_MEM_END;
+=======
+	unsigned long start = ALCHEMY_PCI_MEMWIN_START;
+	unsigned long end = ALCHEMY_PCI_MEMWIN_END;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Don't fixup 36-bit addresses */
 	if ((phys_addr >> 32) != 0)
@@ -82,7 +87,11 @@ phys_t __fixup_bigphys_addr(phys_t phys_addr, phys_t size)
 
 	/* Check for PCI memory window */
 	if (phys_addr >= start && (phys_addr + size - 1) <= end)
+<<<<<<< HEAD
 		return (phys_t)((phys_addr - start) + Au1500_PCI_MEM_START);
+=======
+		return (phys_t)(AU1500_PCI_MEM_PHYS_ADDR + phys_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* default nop */
 	return phys_addr;

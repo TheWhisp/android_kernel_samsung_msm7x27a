@@ -21,6 +21,10 @@
 
 #include <asm/ptrace.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
+=======
+#include <asm/mce.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "proto.h"
 #include "pci_impl.h"

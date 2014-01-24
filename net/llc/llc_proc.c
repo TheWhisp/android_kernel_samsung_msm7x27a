@@ -17,6 +17,10 @@
 #include <linux/proc_fs.h>
 #include <linux/errno.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/net_namespace.h>
 #include <net/sock.h>
 #include <net/llc.h>

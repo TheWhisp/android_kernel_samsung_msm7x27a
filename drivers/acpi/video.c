@@ -46,7 +46,10 @@
 
 #define PREFIX "ACPI: "
 
+<<<<<<< HEAD
 #define ACPI_VIDEO_CLASS		"video"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ACPI_VIDEO_BUS_NAME		"Video Bus"
 #define ACPI_VIDEO_DEVICE_NAME		"Video Device"
 #define ACPI_VIDEO_NOTIFY_SWITCH	0x80
@@ -70,21 +73,33 @@ MODULE_AUTHOR("Bruno Ducrot");
 MODULE_DESCRIPTION("ACPI Video Driver");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static int brightness_switch_enabled = 1;
+=======
+static bool brightness_switch_enabled = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(brightness_switch_enabled, bool, 0644);
 
 /*
  * By default, we don't allow duplicate ACPI video bus devices
  * under the same VGA controller
  */
+<<<<<<< HEAD
 static int allow_duplicates;
+=======
+static bool allow_duplicates;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(allow_duplicates, bool, 0644);
 
 /*
  * Some BIOSes claim they use minimum backlight at boot,
  * and this may bring dimming screen after boot
  */
+<<<<<<< HEAD
 static int use_bios_initial_backlight = 1;
+=======
+static bool use_bios_initial_backlight = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(use_bios_initial_backlight, bool, 0644);
 
 static int register_count = 0;
@@ -308,7 +323,11 @@ video_set_cur_state(struct thermal_cooling_device *cooling_dev, unsigned long st
 	return acpi_video_device_lcd_set_level(video, level);
 }
 
+<<<<<<< HEAD
 static struct thermal_cooling_device_ops video_cooling_ops = {
+=======
+static const struct thermal_cooling_device_ops video_cooling_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_max_state = video_get_max_state,
 	.get_cur_state = video_get_cur_state,
 	.set_cur_state = video_set_cur_state,
@@ -579,12 +598,17 @@ acpi_video_device_EDID(struct acpi_video_device *device,
  *		1. 	The system BIOS should NOT automatically control the brightness 
  *			level of the LCD when the power changes from AC to DC.
  * Return Value:
+<<<<<<< HEAD
  * 		-1	wrong arg.
+=======
+ *		-EINVAL	wrong arg.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 static int
 acpi_video_bus_DOS(struct acpi_video_bus *video, int bios_flag, int lcd_flag)
 {
+<<<<<<< HEAD
 	u64 status = 0;
 	union acpi_object arg0 = { ACPI_TYPE_INTEGER };
 	struct acpi_object_list args = { 1, &arg0 };
@@ -600,6 +624,25 @@ acpi_video_bus_DOS(struct acpi_video_bus *video, int bios_flag, int lcd_flag)
 
       Failed:
 	return status;
+=======
+	acpi_status status;
+	union acpi_object arg0 = { ACPI_TYPE_INTEGER };
+	struct acpi_object_list args = { 1, &arg0 };
+
+	if (!video->cap._DOS)
+		return 0;
+
+	if (bios_flag < 0 || bios_flag > 3 || lcd_flag < 0 || lcd_flag > 1)
+		return -EINVAL;
+	arg0.integer.value = (lcd_flag << 2) | bios_flag;
+	video->dos_setting = arg0.integer.value;
+	status = acpi_evaluate_object(video->device->handle, "_DOS",
+		&args, NULL);
+	if (ACPI_FAILURE(status))
+		return -EIO;
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1377,12 +1420,24 @@ acpi_video_bus_get_devices(struct acpi_video_bus *video,
 	int status = 0;
 	struct acpi_device *dev;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * There are systems where video module known to work fine regardless
+	 * of broken _DOD and ignoring returned value here doesn't cause
+	 * any issues later.
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	acpi_video_device_enumerate(video);
 
 	list_for_each_entry(dev, &device->children, node) {
 
 		status = acpi_video_bus_get_one_device(dev, video);
+<<<<<<< HEAD
 		if (ACPI_FAILURE(status)) {
+=======
+		if (status) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			printk(KERN_WARNING PREFIX
 					"Can't attach device\n");
 			continue;
@@ -1475,7 +1530,12 @@ static void acpi_video_bus_notify(struct acpi_device *device, u32 event)
 	case ACPI_VIDEO_NOTIFY_SWITCH:	/* User requested a switch,
 					 * most likely via hotkey. */
 		acpi_bus_generate_proc_event(device, event, 0);
+<<<<<<< HEAD
 		keycode = KEY_SWITCHVIDEOMODE;
+=======
+		if (!acpi_notifier_call_chain(device, event, 0))
+			keycode = KEY_SWITCHVIDEOMODE;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case ACPI_VIDEO_NOTIFY_PROBE:	/* User plugged in or removed a video
@@ -1505,7 +1565,12 @@ static void acpi_video_bus_notify(struct acpi_device *device, u32 event)
 		break;
 	}
 
+<<<<<<< HEAD
 	acpi_notifier_call_chain(device, event, 0);
+=======
+	if (event != ACPI_VIDEO_NOTIFY_SWITCH)
+		acpi_notifier_call_chain(device, event, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (keycode) {
 		input_report_key(input, keycode, 1);
@@ -1682,15 +1747,31 @@ static int acpi_video_bus_add(struct acpi_device *device)
 	mutex_init(&video->device_list_lock);
 	INIT_LIST_HEAD(&video->video_device_list);
 
+<<<<<<< HEAD
 	acpi_video_bus_get_devices(video, device);
 	acpi_video_bus_start_devices(video);
+=======
+	error = acpi_video_bus_get_devices(video, device);
+	if (error)
+		goto err_free_video;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	video->input = input = input_allocate_device();
 	if (!input) {
 		error = -ENOMEM;
+<<<<<<< HEAD
 		goto err_stop_video;
 	}
 
+=======
+		goto err_put_video;
+	}
+
+	error = acpi_video_bus_start_devices(video);
+	if (error)
+		goto err_free_input_dev;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	snprintf(video->phys, sizeof(video->phys),
 		"%s/video/input0", acpi_device_hid(video->device));
 
@@ -1711,7 +1792,11 @@ static int acpi_video_bus_add(struct acpi_device *device)
 
 	error = input_register_device(input);
 	if (error)
+<<<<<<< HEAD
 		goto err_free_input_dev;
+=======
+		goto err_stop_video;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO PREFIX "%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
 	       ACPI_VIDEO_DEVICE_NAME, acpi_device_bid(device),
@@ -1721,6 +1806,7 @@ static int acpi_video_bus_add(struct acpi_device *device)
 
 	video->pm_nb.notifier_call = acpi_video_resume;
 	video->pm_nb.priority = 0;
+<<<<<<< HEAD
 	register_pm_notifier(&video->pm_nb);
 
 	return 0;
@@ -1729,6 +1815,21 @@ static int acpi_video_bus_add(struct acpi_device *device)
 	input_free_device(input);
  err_stop_video:
 	acpi_video_bus_stop_devices(video);
+=======
+	error = register_pm_notifier(&video->pm_nb);
+	if (error)
+		goto err_unregister_input_dev;
+
+	return 0;
+
+ err_unregister_input_dev:
+	input_unregister_device(input);
+ err_stop_video:
+	acpi_video_bus_stop_devices(video);
+ err_free_input_dev:
+	input_free_device(input);
+ err_put_video:
+>>>>>>> refs/remotes/origin/cm-10.0
 	acpi_video_bus_put_devices(video);
 	kfree(video->attached_array);
  err_free_video:

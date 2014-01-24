@@ -25,6 +25,10 @@
 #include <asm/cacheflush.h>
 #include <asm/io.h>
 #include <asm/exception.h>
+<<<<<<< HEAD
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
 
@@ -215,7 +219,13 @@ static uint8_t msm_irq_to_smsm[NR_IRQS] = {
 	[INT_GPIO_GROUP2] = SMSM_FAKE_IRQ,
 	[INT_A9_M2A_0] = SMSM_FAKE_IRQ,
 	[INT_A9_M2A_1] = SMSM_FAKE_IRQ,
+<<<<<<< HEAD
 	[INT_A9_M2A_5] = SMSM_FAKE_IRQ,
+=======
+	[INT_A9_M2A_2] = SMSM_FAKE_IRQ,
+	[INT_A9_M2A_5] = SMSM_FAKE_IRQ,
+	[INT_PBUS_ARM11] = SMSM_FAKE_IRQ,
+>>>>>>> refs/remotes/origin/cm-10.0
 	[INT_GP_TIMER_EXP] = SMSM_FAKE_IRQ,
 	[INT_DEBUG_TIMER_EXP] = SMSM_FAKE_IRQ,
 	[INT_ADSP_A11] = SMSM_FAKE_IRQ,

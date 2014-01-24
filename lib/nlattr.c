@@ -5,7 +5,11 @@
  * 				Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/jiffies.h>

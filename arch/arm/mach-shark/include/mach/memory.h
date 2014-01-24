@@ -17,8 +17,11 @@
  */
 #define PLAT_PHYS_OFFSET     UL(0x08000000)
 
+<<<<<<< HEAD
 #define ARM_DMA_ZONE_SIZE	SZ_4M
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Cache flushing area
  */

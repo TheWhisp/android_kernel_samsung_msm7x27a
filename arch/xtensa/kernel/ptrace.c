@@ -24,7 +24,10 @@
 
 #include <asm/pgtable.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/ptrace.h>
 #include <asm/elf.h>
@@ -334,8 +337,12 @@ void do_syscall_trace_enter(struct pt_regs *regs)
 		do_syscall_trace();
 
 #if 0
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_entry(current, AUDIT_ARCH_XTENSA..);
+=======
+	audit_syscall_entry(current, AUDIT_ARCH_XTENSA..);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 }
 

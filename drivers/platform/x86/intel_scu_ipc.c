@@ -19,11 +19,19 @@
 #include <linux/delay.h>
 #include <linux/errno.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pm.h>
 #include <linux/pci.h>
 #include <linux/interrupt.h>
 #include <linux/sfi.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mrst.h>
 #include <asm/intel_scu_ipc.h>
 
@@ -158,7 +166,11 @@ static inline int busy_loop(void) /* Wait till scu status is busy */
 /* Read/Write power control(PMIC in Langwell, MSIC in PenWell) registers */
 static int pwr_reg_rdwr(u16 *addr, u8 *data, u32 count, u32 op, u32 id)
 {
+<<<<<<< HEAD
 	int i, nc, bytes, d;
+=======
+	int nc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 offset = 0;
 	int err;
 	u8 cbuf[IPC_WWBUF_SIZE] = { };
@@ -173,6 +185,7 @@ static int pwr_reg_rdwr(u16 *addr, u8 *data, u32 count, u32 op, u32 id)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	if (platform != MRST_CPU_CHIP_PENWELL) {
 		bytes = 0;
 		d = 0;
@@ -209,12 +222,35 @@ static int pwr_reg_rdwr(u16 *addr, u8 *data, u32 count, u32 op, u32 id)
 			ipc_data_writel(wbuf[0], 0); /* Write wbuff */
 			ipc_command(4 << 16 |  id << 12 | 0 << 8 | op);
 		}
+=======
+	for (nc = 0; nc < count; nc++, offset += 2) {
+		cbuf[offset] = addr[nc];
+		cbuf[offset + 1] = addr[nc] >> 8;
+	}
+
+	if (id == IPC_CMD_PCNTRL_R) {
+		for (nc = 0, offset = 0; nc < count; nc++, offset += 4)
+			ipc_data_writel(wbuf[nc], offset);
+		ipc_command((count*2) << 16 |  id << 12 | 0 << 8 | op);
+	} else if (id == IPC_CMD_PCNTRL_W) {
+		for (nc = 0; nc < count; nc++, offset += 1)
+			cbuf[offset] = data[nc];
+		for (nc = 0, offset = 0; nc < count; nc++, offset += 4)
+			ipc_data_writel(wbuf[nc], offset);
+		ipc_command((count*3) << 16 |  id << 12 | 0 << 8 | op);
+	} else if (id == IPC_CMD_PCNTRL_M) {
+		cbuf[offset] = data[0];
+		cbuf[offset + 1] = data[1];
+		ipc_data_writel(wbuf[0], 0); /* Write wbuff */
+		ipc_command(4 << 16 |  id << 12 | 0 << 8 | op);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	err = busy_loop();
 	if (id == IPC_CMD_PCNTRL_R) { /* Read rbuf */
 		/* Workaround: values are read as 0 without memcpy_fromio */
 		memcpy_fromio(cbuf, ipcdev.ipc_base + 0x90, 16);
+<<<<<<< HEAD
 		if (platform != MRST_CPU_CHIP_PENWELL) {
 			for (nc = 0, offset = 2; nc < count; nc++, offset += 3)
 				data[nc] = ipc_data_readb(offset);
@@ -222,6 +258,10 @@ static int pwr_reg_rdwr(u16 *addr, u8 *data, u32 count, u32 op, u32 id)
 			for (nc = 0; nc < count; nc++)
 				data[nc] = ipc_data_readb(nc);
 		}
+=======
+		for (nc = 0; nc < count; nc++)
+			data[nc] = ipc_data_readb(nc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	mutex_unlock(&ipclock);
 	return err;
@@ -502,6 +542,7 @@ int intel_scu_ipc_i2c_cntrl(u32 addr, u32 *data)
 }
 EXPORT_SYMBOL(intel_scu_ipc_i2c_cntrl);
 
+<<<<<<< HEAD
 #define IPC_FW_LOAD_ADDR 0xFFFC0000 /* Storage location for FW image */
 #define IPC_FW_UPDATE_MBOX_ADDR 0xFFFFDFF4 /* Mailbox between ipc and scu */
 #define IPC_MAX_FW_SIZE 262144 /* 256K storage size for loading the FW image */
@@ -644,6 +685,8 @@ update_end:
 }
 EXPORT_SYMBOL(intel_scu_ipc_fw_update);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Interrupt handler gets called when ioc bit of IPC_COMMAND_REG set to 1
  * When ioc bit is set to 1, caller api must wait for interrupt handler called
@@ -725,8 +768,12 @@ static void ipc_remove(struct pci_dev *pdev)
 	intel_scu_devices_destroy();
 }
 
+<<<<<<< HEAD
 static const struct pci_device_id pci_ids[] = {
 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x080e)},
+=======
+static DEFINE_PCI_DEVICE_TABLE(pci_ids) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x082a)},
 	{ 0,}
 };

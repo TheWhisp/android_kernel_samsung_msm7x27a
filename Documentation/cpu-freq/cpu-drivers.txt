@@ -168,7 +168,11 @@ in-chipset dynamic frequency switching to policy->min, the upper limit
 to policy->max, and -if supported- select a performance-oriented
 setting when policy->policy is CPUFREQ_POLICY_PERFORMANCE, and a
 powersaving-oriented setting when CPUFREQ_POLICY_POWERSAVE. Also check
+<<<<<<< HEAD
 the reference implementation in arch/i386/kernel/cpu/cpufreq/longrun.c
+=======
+the reference implementation in drivers/cpufreq/longrun.c
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 

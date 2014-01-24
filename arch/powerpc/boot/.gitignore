@@ -27,7 +27,10 @@ zImage.bin.*
 zImage.chrp
 zImage.coff
 zImage.holly
+<<<<<<< HEAD
 zImage.iseries
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 zImage.*lds
 zImage.miboot
 zImage.pmac

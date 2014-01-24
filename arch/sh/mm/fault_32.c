@@ -17,9 +17,15 @@
 #include <linux/kprobes.h>
 #include <linux/perf_event.h>
 #include <asm/io_trapped.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/mmu_context.h>
 #include <asm/tlbflush.h>
+=======
+#include <asm/mmu_context.h>
+#include <asm/tlbflush.h>
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int notify_page_fault(struct pt_regs *regs, int trap)
 {
@@ -86,7 +92,11 @@ static noinline int vmalloc_fault(unsigned long address)
 	pte_t *pte_k;
 
 	/* Make sure we are in vmalloc/module/P3 area: */
+<<<<<<< HEAD
 	if (!(address >= VMALLOC_START && address < P3_ADDR_MAX))
+=======
+	if (!(address >= P3SEG && address < P3_ADDR_MAX))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
 
 	/*
@@ -160,7 +170,11 @@ asmlinkage void __kprobes do_page_fault(struct pt_regs *regs,
 	if ((regs->sr & SR_IMASK) != SR_IMASK)
 		local_irq_enable();
 
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, 0, regs, address);
+=======
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * If we're in an interrupt, have no user context or are running
@@ -210,11 +224,19 @@ good_area:
 	}
 	if (fault & VM_FAULT_MAJOR) {
 		tsk->maj_flt++;
+<<<<<<< HEAD
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1, 0,
 				     regs, address);
 	} else {
 		tsk->min_flt++;
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, 0,
+=======
+		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
+				     regs, address);
+	} else {
+		tsk->min_flt++;
+		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     regs, address);
 	}
 

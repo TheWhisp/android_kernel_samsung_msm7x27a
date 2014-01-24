@@ -32,6 +32,10 @@
 #include <net/genetlink.h>
 #include <linux/wimax.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "wimax-internal.h"
 
 #define D_SUBMODULE op_reset

@@ -5,6 +5,11 @@
 extern void __init early_ioremap_page_table_range_init(void);
 #endif
 
+<<<<<<< HEAD
+=======
+extern void __init zone_sizes_init(void);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern unsigned long __init
 kernel_physical_mapping_init(unsigned long start,
 			     unsigned long end,

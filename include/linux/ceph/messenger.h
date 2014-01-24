@@ -6,7 +6,10 @@
 #include <linux/net.h>
 #include <linux/radix-tree.h>
 #include <linux/uio.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/workqueue.h>
 
 #include "types.h"
@@ -15,8 +18,11 @@
 struct ceph_msg;
 struct ceph_connection;
 
+<<<<<<< HEAD
 extern struct workqueue_struct *ceph_msgr_wq;       /* receive work queue */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Ceph defines these callbacks for handling connection events.
  */
@@ -28,6 +34,7 @@ struct ceph_connection_operations {
 	void (*dispatch) (struct ceph_connection *con, struct ceph_msg *m);
 
 	/* authorize an outgoing connection */
+<<<<<<< HEAD
 	int (*get_authorizer) (struct ceph_connection *con,
 			       void **buf, int *len, int *proto,
 			       void **reply_buf, int *reply_len, int force_new);
@@ -37,6 +44,14 @@ struct ceph_connection_operations {
 	/* protocol version mismatch */
 	void (*bad_proto) (struct ceph_connection *con);
 
+=======
+	struct ceph_auth_handshake *(*get_authorizer) (
+				struct ceph_connection *con,
+			       int *proto, int force_new);
+	int (*verify_authorizer_reply) (struct ceph_connection *con, int len);
+	int (*invalidate_authorizer)(struct ceph_connection *con);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* there was some error on the socket (disconnect, whatever) */
 	void (*fault) (struct ceph_connection *con);
 
@@ -55,8 +70,13 @@ struct ceph_connection_operations {
 struct ceph_messenger {
 	struct ceph_entity_inst inst;    /* my name+address */
 	struct ceph_entity_addr my_enc_addr;
+<<<<<<< HEAD
 	struct page *zero_page;          /* used in certain error cases */
 
+=======
+
+	atomic_t stopping;
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool nocrc;
 
 	/*
@@ -84,7 +104,14 @@ struct ceph_msg {
 	unsigned nr_pages;              /* size of page array */
 	unsigned page_alignment;        /* io offset in first page */
 	struct ceph_pagelist *pagelist; /* instead of pages */
+<<<<<<< HEAD
 	struct list_head list_head;
+=======
+
+	struct ceph_connection *con;
+	struct list_head list_head;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct kref kref;
 	struct bio  *bio;		/* instead of pages/pagelist */
 	struct bio  *bio_iter;		/* bio iterator */
@@ -94,6 +121,10 @@ struct ceph_msg {
 	bool more_to_follow;
 	bool needs_out_seq;
 	int front_max;
+<<<<<<< HEAD
+=======
+	unsigned long ack_stamp;        /* tx: when we were acked */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct ceph_msgpool *pool;
 };
@@ -101,7 +132,11 @@ struct ceph_msg {
 struct ceph_msg_pos {
 	int page, page_pos;  /* which page; offset in page */
 	int data_pos;        /* offset in data payload */
+<<<<<<< HEAD
 	int did_page_crc;    /* true if we've calculated crc for current page */
+=======
+	bool did_page_crc;   /* true if we've calculated crc for current page */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* ceph connection fault delay defaults, for exponential backoff */
@@ -109,6 +144,7 @@ struct ceph_msg_pos {
 #define MAX_DELAY_INTERVAL	(5 * 60 * HZ)
 
 /*
+<<<<<<< HEAD
  * ceph_connection state bit flags
  */
 #define LOSSYTX         0  /* we can close channel or drop messages on errors */
@@ -126,6 +162,8 @@ struct ceph_msg_pos {
 #define BACKOFF         15
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * A single connection with another host.
  *
  * We maintain a queue of outgoing messages, and some session state to
@@ -134,11 +172,15 @@ struct ceph_msg_pos {
  */
 struct ceph_connection {
 	void *private;
+<<<<<<< HEAD
 	atomic_t nref;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	const struct ceph_connection_operations *ops;
 
 	struct ceph_messenger *msgr;
+<<<<<<< HEAD
 	struct socket *sock;
 	unsigned long state;	/* connection state (see flags above) */
 	const char *error_msg;  /* error message, if any */
@@ -146,6 +188,20 @@ struct ceph_connection {
 	struct ceph_entity_addr peer_addr; /* peer address */
 	struct ceph_entity_name peer_name; /* peer name */
 	struct ceph_entity_addr peer_addr_for_me;
+=======
+
+	atomic_t sock_state;
+	struct socket *sock;
+	struct ceph_entity_addr peer_addr; /* peer address */
+	struct ceph_entity_addr peer_addr_for_me;
+
+	unsigned long flags;
+	unsigned long state;
+	const char *error_msg;  /* error message, if any */
+
+	struct ceph_entity_name peer_name; /* peer name */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned peer_features;
 	u32 connect_seq;      /* identify the most recent connection
 				 attempt for this connection, client */
@@ -166,6 +222,7 @@ struct ceph_connection {
 
 	/* connection negotiation temps */
 	char in_banner[CEPH_BANNER_MAX_LEN];
+<<<<<<< HEAD
 	union {
 		struct {  /* outgoing connection */
 			struct ceph_msg_connect out_connect;
@@ -176,6 +233,10 @@ struct ceph_connection {
 			struct ceph_msg_connect_reply out_reply;
 		};
 	};
+=======
+	struct ceph_msg_connect out_connect;
+	struct ceph_msg_connect_reply in_reply;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ceph_entity_addr actual_peer_addr;
 
 	/* message out temps */
@@ -218,6 +279,7 @@ extern int ceph_msgr_init(void);
 extern void ceph_msgr_exit(void);
 extern void ceph_msgr_flush(void);
 
+<<<<<<< HEAD
 extern struct ceph_messenger *ceph_messenger_create(
 	struct ceph_entity_addr *myaddr,
 	u32 features, u32 required);
@@ -226,10 +288,24 @@ extern void ceph_messenger_destroy(struct ceph_messenger *);
 extern void ceph_con_init(struct ceph_messenger *msgr,
 			  struct ceph_connection *con);
 extern void ceph_con_open(struct ceph_connection *con,
+=======
+extern void ceph_messenger_init(struct ceph_messenger *msgr,
+			struct ceph_entity_addr *myaddr,
+			u32 supported_features,
+			u32 required_features,
+			bool nocrc);
+
+extern void ceph_con_init(struct ceph_connection *con, void *private,
+			const struct ceph_connection_operations *ops,
+			struct ceph_messenger *msgr);
+extern void ceph_con_open(struct ceph_connection *con,
+			  __u8 entity_type, __u64 entity_num,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  struct ceph_entity_addr *addr);
 extern bool ceph_con_opened(struct ceph_connection *con);
 extern void ceph_con_close(struct ceph_connection *con);
 extern void ceph_con_send(struct ceph_connection *con, struct ceph_msg *msg);
+<<<<<<< HEAD
 extern void ceph_con_revoke(struct ceph_connection *con, struct ceph_msg *msg);
 extern void ceph_con_revoke_message(struct ceph_connection *con,
 				  struct ceph_msg *msg);
@@ -238,6 +314,16 @@ extern struct ceph_connection *ceph_con_get(struct ceph_connection *con);
 extern void ceph_con_put(struct ceph_connection *con);
 
 extern struct ceph_msg *ceph_msg_new(int type, int front_len, gfp_t flags);
+=======
+
+extern void ceph_msg_revoke(struct ceph_msg *msg);
+extern void ceph_msg_revoke_incoming(struct ceph_msg *msg);
+
+extern void ceph_con_keepalive(struct ceph_connection *con);
+
+extern struct ceph_msg *ceph_msg_new(int type, int front_len, gfp_t flags,
+				     bool can_fail);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void ceph_msg_kfree(struct ceph_msg *m);
 
 

@@ -27,13 +27,20 @@
 #include <linux/wait.h>
 #include <linux/dma-mapping.h>
 #include <linux/msm_audio.h>
+<<<<<<< HEAD
 #include <linux/ion.h>
+=======
+#include <linux/android_pmem.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/memory_alloc.h>
 #include <mach/msm_memtypes.h>
 
 #include <mach/iommu.h>
 #include <mach/iommu_domains.h>
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/msm_adsp.h>
 #include <mach/socinfo.h>
@@ -113,7 +120,11 @@ struct audio_in {
 	/* data allocated for various buffers */
 	char *data;
 	dma_addr_t phys;
+<<<<<<< HEAD
 	struct msm_mapped_buffer *map_v_read;
+=======
+	void *map_v_read;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int opened;
 	int enabled;
@@ -122,8 +133,11 @@ struct audio_in {
 	int abort; /* set when error, like sample rate mismatch */
 	int dual_mic_config;
 	char *build_id;
+<<<<<<< HEAD
 	struct ion_client *client;
 	struct ion_handle *output_buff_handle;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct audio_in the_audio_in;
@@ -845,11 +859,18 @@ static int audpcm_in_release(struct inode *inode, struct file *file)
 	audio->audrec = NULL;
 	audio->opened = 0;
 	if (audio->data) {
+<<<<<<< HEAD
 		ion_unmap_kernel(audio->client, audio->output_buff_handle);
 		ion_free(audio->client, audio->output_buff_handle);
 		audio->data = NULL;
 	}
 	ion_client_destroy(audio->client);
+=======
+		iounmap(audio->map_v_read);
+		free_contiguous_memory_by_paddr(audio->phys);
+		audio->data = NULL;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&audio->lock);
 	return 0;
 }
@@ -859,17 +880,21 @@ static int audpcm_in_open(struct inode *inode, struct file *file)
 	struct audio_in *audio = &the_audio_in;
 	int rc;
 	int encid;
+<<<<<<< HEAD
 	int len = 0;
 	unsigned long ionflag = 0;
 	ion_phys_addr_t addr = 0;
 	struct ion_handle *handle = NULL;
 	struct ion_client *client = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&audio->lock);
 	if (audio->opened) {
 		rc = -EBUSY;
 		goto done;
 	}
+<<<<<<< HEAD
 
 	client = msm_ion_client_create(UINT_MAX, "Audio_PCM_in_client");
 	if (IS_ERR_OR_NULL(client)) {
@@ -921,6 +946,23 @@ static int audpcm_in_open(struct inode *inode, struct file *file)
 
 	audio->data = (char *)audio->map_v_read;
 
+=======
+	audio->phys = allocate_contiguous_ebi_nomap(DMASZ, SZ_4K);
+	if (audio->phys) {
+		audio->map_v_read = ioremap(audio->phys, DMASZ);
+		if (IS_ERR(audio->map_v_read)) {
+			MM_ERR("could not map read phys buffers\n");
+			rc = -ENOMEM;
+			free_contiguous_memory_by_paddr(audio->phys);
+			goto done;
+		}
+		audio->data = audio->map_v_read;
+	} else {
+		MM_ERR("could not allocate read buffers\n");
+		rc = -ENOMEM;
+		goto done;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	MM_DBG("Memory addr = 0x%8x  phy addr = 0x%8x\n",\
 		(int) audio->data, (int) audio->phys);
 	if ((file->f_mode & FMODE_WRITE) &&
@@ -986,6 +1028,7 @@ done:
 	mutex_unlock(&audio->lock);
 	return rc;
 evt_error:
+<<<<<<< HEAD
 output_buff_map_error:
 output_buff_get_phys_error:
 output_buff_get_flags_error:
@@ -993,6 +1036,8 @@ output_buff_get_flags_error:
 output_buff_alloc_error:
 	ion_client_destroy(client);
 client_create_error:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	msm_adsp_put(audio->audrec);
 	audpreproc_aenc_free(audio->enc_id);
 	mutex_unlock(&audio->lock);

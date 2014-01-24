@@ -201,7 +201,10 @@ int mthca_process_mad(struct ib_device *ibdev,
 		      struct ib_mad *out_mad)
 {
 	int err;
+<<<<<<< HEAD
 	u8 status;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 slid = in_wc ? in_wc->slid : be16_to_cpu(IB_LID_PERMISSIVE);
 	u16 prev_lid = 0;
 	struct ib_port_attr pattr;
@@ -252,6 +255,7 @@ int mthca_process_mad(struct ib_device *ibdev,
 	err = mthca_MAD_IFC(to_mdev(ibdev),
 			    mad_flags & IB_MAD_IGNORE_MKEY,
 			    mad_flags & IB_MAD_IGNORE_BKEY,
+<<<<<<< HEAD
 			    port_num, in_wc, in_grh, in_mad, out_mad,
 			    &status);
 	if (err) {
@@ -263,6 +267,13 @@ int mthca_process_mad(struct ib_device *ibdev,
 	if (status) {
 		mthca_err(to_mdev(ibdev), "MAD_IFC returned status %02x\n",
 			  status);
+=======
+			    port_num, in_wc, in_grh, in_mad, out_mad);
+	if (err == -EBADMSG)
+		return IB_MAD_RESULT_SUCCESS;
+	else if (err) {
+		mthca_err(to_mdev(ibdev), "MAD_IFC returned %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return IB_MAD_RESULT_FAILURE;
 	}
 

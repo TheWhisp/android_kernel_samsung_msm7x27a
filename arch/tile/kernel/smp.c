@@ -87,6 +87,7 @@ void send_IPI_allbutself(int tag)
 	send_IPI_many(&mask, tag);
 }
 
+<<<<<<< HEAD
 
 /*
  * Provide smp_call_function_mask, but also run function locally
@@ -106,6 +107,8 @@ void on_each_cpu_mask(const struct cpumask *mask, void (*func)(void *),
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Functions related to starting/stopping cpus.
  */
@@ -122,7 +125,11 @@ static void smp_stop_cpu_interrupt(void)
 	set_cpu_online(smp_processor_id(), 0);
 	arch_local_irq_disable_all();
 	for (;;)
+<<<<<<< HEAD
 		asm("nap");
+=======
+		asm("nap; nop");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* This function calls the 'stop' function on all other CPUs in the system. */
@@ -132,6 +139,15 @@ void smp_send_stop(void)
 	send_IPI_allbutself(MSG_TAG_STOP_CPU);
 }
 
+<<<<<<< HEAD
+=======
+/* On panic, just wait; we may get an smp_send_stop() later on. */
+void panic_smp_self_stop(void)
+{
+	while (1)
+		asm("nap; nop");
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Dispatch code called from hv_message_intr() for HV_MSG_TILE hv messages.

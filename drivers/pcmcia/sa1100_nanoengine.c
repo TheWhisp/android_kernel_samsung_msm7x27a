@@ -19,6 +19,10 @@
  */
 #include <linux/device.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/init.h>
@@ -34,6 +38,7 @@
 
 #include "sa1100_generic.h"
 
+<<<<<<< HEAD
 static struct pcmcia_irqs irqs_skt0[] = {
 	/* socket, IRQ, name */
 	{ 0, NANOENGINE_IRQ_GPIO_PC_CD0, "PC CD0" },
@@ -52,10 +57,19 @@ struct nanoengine_pins {
 	unsigned pci_irq;
 	struct pcmcia_irqs *pcmcia_irqs;
 	unsigned pcmcia_irqs_size;
+=======
+struct nanoengine_pins {
+	unsigned output_pins;
+	unsigned clear_outputs;
+	int gpio_rst;
+	int gpio_cd;
+	int gpio_rdy;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct nanoengine_pins nano_skts[] = {
 	{
+<<<<<<< HEAD
 		.input_pins		= GPIO_PC_READY0 | GPIO_PC_CD0,
 		.output_pins		= GPIO_PC_RESET0,
 		.clear_outputs		= GPIO_PC_RESET0,
@@ -71,6 +85,15 @@ static struct nanoengine_pins nano_skts[] = {
 		.pci_irq		= NANOENGINE_IRQ_GPIO_PC_READY1,
 		.pcmcia_irqs		= irqs_skt1,
 		.pcmcia_irqs_size	= ARRAY_SIZE(irqs_skt1)
+=======
+		.gpio_rst		= GPIO_PC_RESET0,
+		.gpio_cd		= GPIO_PC_CD0,
+		.gpio_rdy		= GPIO_PC_READY0,
+	}, {
+		.gpio_rst		= GPIO_PC_RESET1,
+		.gpio_cd		= GPIO_PC_CD1,
+		.gpio_rdy		= GPIO_PC_READY1,
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 };
 
@@ -79,10 +102,15 @@ unsigned num_nano_pcmcia_sockets = ARRAY_SIZE(nano_skts);
 static int nanoengine_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 	unsigned i = skt->nr;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (i >= num_nano_pcmcia_sockets)
 		return -ENXIO;
 
+<<<<<<< HEAD
 	GPDR &= ~nano_skts[i].input_pins;
 	GPDR |= nano_skts[i].output_pins;
 	GPCR = nano_skts[i].clear_outputs;
@@ -105,17 +133,39 @@ static void nanoengine_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 
 	soc_pcmcia_free_irqs(skt,
 		nano_skts[i].pcmcia_irqs, nano_skts[i].pcmcia_irqs_size);
+=======
+	ret = gpio_request_one(nano_skts[i].gpio_rst, GPIOF_OUT_INIT_LOW,
+		i ? "PC RST1" : "PC RST0");
+	if (ret)
+		return ret;
+
+	skt->stat[SOC_STAT_CD].gpio = nano_skts[i].gpio_cd;
+	skt->stat[SOC_STAT_CD].name = i ? "PC CD1" : "PC CD0";
+	skt->stat[SOC_STAT_RDY].gpio = nano_skts[i].gpio_rdy;
+	skt->stat[SOC_STAT_RDY].name = i ? "PC RDY1" : "PC RDY0";
+
+	return 0;
+}
+
+static void nanoengine_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
+{
+	gpio_free(nano_skts[skt->nr].gpio_rst);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int nanoengine_pcmcia_configure_socket(
 	struct soc_pcmcia_socket *skt, const socket_state_t *state)
 {
+<<<<<<< HEAD
 	unsigned reset;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned i = skt->nr;
 
 	if (i >= num_nano_pcmcia_sockets)
 		return -ENXIO;
 
+<<<<<<< HEAD
 	switch (i) {
 	case 0:
 		reset = GPIO_PC_RESET0;
@@ -131,6 +181,9 @@ static int nanoengine_pcmcia_configure_socket(
 		GPSR = reset;
 	else
 		GPCR = reset;
+=======
+	gpio_set_value(nano_skts[skt->nr].gpio_rst, !!(state->flags & SS_RESET));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -138,12 +191,16 @@ static int nanoengine_pcmcia_configure_socket(
 static void nanoengine_pcmcia_socket_state(
 	struct soc_pcmcia_socket *skt, struct pcmcia_state *state)
 {
+<<<<<<< HEAD
 	unsigned long levels = GPLR;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned i = skt->nr;
 
 	if (i >= num_nano_pcmcia_sockets)
 		return;
 
+<<<<<<< HEAD
 	memset(state, 0, sizeof(struct pcmcia_state));
 	switch (i) {
 	case 0:
@@ -160,10 +217,15 @@ static void nanoengine_pcmcia_socket_state(
 	state->bvd1 = 1;
 	state->bvd2 = 1;
 	state->wrprot = 0; /* Not available */
+=======
+	state->bvd1 = 1;
+	state->bvd2 = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	state->vs_3v = 1; /* Can only apply 3.3V */
 	state->vs_Xv = 0;
 }
 
+<<<<<<< HEAD
 /*
  * Enable card status IRQs on (re-)initialisation.  This can
  * be called at initialisation, power management event, or
@@ -194,6 +256,8 @@ static void nanoengine_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 		nano_skts[i].pcmcia_irqs, nano_skts[i].pcmcia_irqs_size);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct pcmcia_low_level nanoengine_pcmcia_ops = {
 	.owner			= THIS_MODULE,
 
@@ -202,8 +266,11 @@ static struct pcmcia_low_level nanoengine_pcmcia_ops = {
 
 	.configure_socket	= nanoengine_pcmcia_configure_socket,
 	.socket_state		= nanoengine_pcmcia_socket_state,
+<<<<<<< HEAD
 	.socket_init		= nanoengine_pcmcia_socket_init,
 	.socket_suspend		= nanoengine_pcmcia_socket_suspend,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int pcmcia_nanoengine_init(struct device *dev)

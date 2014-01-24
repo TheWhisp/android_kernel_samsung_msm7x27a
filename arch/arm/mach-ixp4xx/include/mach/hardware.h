@@ -17,6 +17,7 @@
 #ifndef __ASM_ARCH_HARDWARE_H__
 #define __ASM_ARCH_HARDWARE_H__
 
+<<<<<<< HEAD
 #define PCIBIOS_MIN_IO		0x00001000
 #ifdef CONFIG_IXP4XX_INDIRECT_PCI
 #define PCIBIOS_MIN_MEM		0x10000000 /* 1 GB of indirect PCI MMIO space */
@@ -30,6 +31,14 @@
 
 #define pcibios_assign_all_busses()	1
 
+=======
+#ifdef CONFIG_IXP4XX_INDIRECT_PCI
+#define PCIBIOS_MAX_MEM		0x4FFFFFFF
+#else
+#define PCIBIOS_MAX_MEM		0x4BFFFFFF
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Register locations and bits */
 #include "ixp4xx-regs.h"
 

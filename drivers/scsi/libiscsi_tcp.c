@@ -36,6 +36,10 @@
 #include <linux/delay.h>
 #include <linux/kfifo.h>
 #include <linux/scatterlist.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/tcp.h>
 #include <scsi/scsi_cmnd.h>
 #include <scsi/scsi_device.h>
@@ -134,7 +138,11 @@ static void iscsi_tcp_segment_map(struct iscsi_segment *segment, int recv)
 
 	if (recv) {
 		segment->atomic_mapped = true;
+<<<<<<< HEAD
 		segment->sg_mapped = kmap_atomic(sg_page(sg), KM_SOFTIRQ0);
+=======
+		segment->sg_mapped = kmap_atomic(sg_page(sg));
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		segment->atomic_mapped = false;
 		/* the xmit path can sleep with the page mapped so use kmap */
@@ -148,7 +156,11 @@ void iscsi_tcp_segment_unmap(struct iscsi_segment *segment)
 {
 	if (segment->sg_mapped) {
 		if (segment->atomic_mapped)
+<<<<<<< HEAD
 			kunmap_atomic(segment->sg_mapped, KM_SOFTIRQ0);
+=======
+			kunmap_atomic(segment->sg_mapped);
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			kunmap(sg_page(segment->sg));
 		segment->sg_mapped = NULL;
@@ -1169,6 +1181,27 @@ void iscsi_tcp_r2tpool_free(struct iscsi_session *session)
 }
 EXPORT_SYMBOL_GPL(iscsi_tcp_r2tpool_free);
 
+<<<<<<< HEAD
+=======
+int iscsi_tcp_set_max_r2t(struct iscsi_conn *conn, char *buf)
+{
+	struct iscsi_session *session = conn->session;
+	unsigned short r2ts = 0;
+
+	sscanf(buf, "%hu", &r2ts);
+	if (session->max_r2t == r2ts)
+		return 0;
+
+	if (!r2ts || !is_power_of_2(r2ts))
+		return -EINVAL;
+
+	session->max_r2t = r2ts;
+	iscsi_tcp_r2tpool_free(session);
+	return iscsi_tcp_r2tpool_alloc(session);
+}
+EXPORT_SYMBOL_GPL(iscsi_tcp_set_max_r2t);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void iscsi_tcp_conn_get_stats(struct iscsi_cls_conn *cls_conn,
 			      struct iscsi_stats *stats)
 {

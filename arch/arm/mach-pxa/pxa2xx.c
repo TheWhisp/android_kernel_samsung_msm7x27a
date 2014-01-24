@@ -13,6 +13,10 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
 #include <mach/pxa2xx-regs.h>

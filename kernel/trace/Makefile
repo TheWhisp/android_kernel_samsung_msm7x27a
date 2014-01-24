@@ -15,6 +15,11 @@ ifdef CONFIG_TRACING_BRANCHES
 KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
 endif
 
+<<<<<<< HEAD
+=======
+CFLAGS_trace_events_filter.o := -I$(src)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #
 # Make the trace clocks available generally: it's infrastructure
 # relied on by ptrace for example:
@@ -53,6 +58,12 @@ endif
 obj-$(CONFIG_EVENT_TRACING) += trace_events_filter.o
 obj-$(CONFIG_KPROBE_EVENT) += trace_kprobe.o
 obj-$(CONFIG_TRACEPOINTS) += power-traces.o
+<<<<<<< HEAD
+=======
+ifeq ($(CONFIG_PM_RUNTIME),y)
+obj-$(CONFIG_TRACEPOINTS) += rpm-traces.o
+endif
+>>>>>>> refs/remotes/origin/cm-10.0
 ifeq ($(CONFIG_TRACING),y)
 obj-$(CONFIG_KGDB_KDB) += trace_kdb.o
 endif

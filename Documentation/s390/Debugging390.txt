@@ -41,7 +41,10 @@ ldd
 Debugging modules
 The proc file system
 Starting points for debugging scripting languages etc.
+<<<<<<< HEAD
 Dumptool & Lcrash
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 SysRq
 References
 Special Thanks
@@ -2455,6 +2458,7 @@ jdb <filename> another fully interactive gdb style debugger.
 
 
 
+<<<<<<< HEAD
 Dumptool & Lcrash ( lkcd )
 ==========================
 Michael Holzheu & others here at IBM have a fairly mature port of 
@@ -2488,6 +2492,8 @@ collected by dumptool.
 
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 SysRq
 =====
 This is now supported by linux for s/390 & z/Architecture.

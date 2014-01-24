@@ -55,7 +55,11 @@ enum smbios_attr_enum {
 	SMBIOS_ATTR_INSTANCE_SHOW,
 };
 
+<<<<<<< HEAD
 static mode_t
+=======
+static size_t
+>>>>>>> refs/remotes/origin/cm-10.0
 find_smbios_instance_string(struct pci_dev *pdev, char *buf,
 			    enum smbios_attr_enum attribute)
 {
@@ -89,7 +93,11 @@ find_smbios_instance_string(struct pci_dev *pdev, char *buf,
 	return 0;
 }
 
+<<<<<<< HEAD
 static mode_t
+=======
+static umode_t
+>>>>>>> refs/remotes/origin/cm-10.0
 smbios_instance_string_exist(struct kobject *kobj, struct attribute *attr,
 			     int n)
 {
@@ -275,7 +283,11 @@ device_has_dsm(struct device *dev)
 	return FALSE;
 }
 
+<<<<<<< HEAD
 static mode_t
+=======
+static umode_t
+>>>>>>> refs/remotes/origin/cm-10.0
 acpi_index_string_exist(struct kobject *kobj, struct attribute *attr, int n)
 {
 	struct device *dev;

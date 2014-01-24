@@ -120,7 +120,11 @@ static int tcf_pedit_cleanup(struct tc_action *a, int bind)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tcf_pedit(struct sk_buff *skb, struct tc_action *a,
+=======
+static int tcf_pedit(struct sk_buff *skb, const struct tc_action *a,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     struct tcf_result *res)
 {
 	struct tcf_pedit *p = a->priv;

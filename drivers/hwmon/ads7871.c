@@ -34,9 +34,17 @@
 #define REG_SER_CONTROL 24 /*Serial Interface Control Register*/
 #define REG_ID		31 /*ID Register*/
 
+<<<<<<< HEAD
 /*From figure 17 in the datasheet
 * These bits get ORed with the address to form
 * the instruction byte */
+=======
+/*
+ * From figure 17 in the datasheet
+ * These bits get ORed with the address to form
+ * the instruction byte
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 /*Instruction Bit masks*/
 #define INST_MODE_bm	(1<<7)
 #define INST_READ_bm	(1<<6)
@@ -105,8 +113,15 @@ static ssize_t show_voltage(struct device *dev,
 	uint8_t channel, mux_cnv;
 
 	channel = attr->index;
+<<<<<<< HEAD
 	/*TODO: add support for conversions
 	 *other than single ended with a gain of 1*/
+=======
+	/*
+	 * TODO: add support for conversions
+	 * other than single ended with a gain of 1
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*MUX_M3_bm forces single ended*/
 	/*This is also where the gain of the PGA would be set*/
 	ads7871_write_reg8(spi, REG_GAIN_MUX,
@@ -114,8 +129,15 @@ static ssize_t show_voltage(struct device *dev,
 
 	ret = ads7871_read_reg8(spi, REG_GAIN_MUX);
 	mux_cnv = ((ret & MUX_CNV_bm)>>MUX_CNV_bv);
+<<<<<<< HEAD
 	/*on 400MHz arm9 platform the conversion
 	 *is already done when we do this test*/
+=======
+	/*
+	 * on 400MHz arm9 platform the conversion
+	 * is already done when we do this test
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	while ((i < 2) && mux_cnv) {
 		i++;
 		ret = ads7871_read_reg8(spi, REG_GAIN_MUX);
@@ -188,8 +210,15 @@ static int __devinit ads7871_probe(struct spi_device *spi)
 	ret = ads7871_read_reg8(spi, REG_OSC_CONTROL);
 
 	dev_dbg(&spi->dev, "REG_OSC_CONTROL write:%x, read:%x\n", val, ret);
+<<<<<<< HEAD
 	/*because there is no other error checking on an SPI bus
 	we need to make sure we really have a chip*/
+=======
+	/*
+	 * because there is no other error checking on an SPI bus
+	 * we need to make sure we really have a chip
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (val != ret) {
 		err = -ENODEV;
 		goto exit;
@@ -236,7 +265,10 @@ static int __devexit ads7871_remove(struct spi_device *spi)
 static struct spi_driver ads7871_driver = {
 	.driver = {
 		.name = DEVICE_NAME,
+<<<<<<< HEAD
 		.bus = &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 
@@ -244,6 +276,7 @@ static struct spi_driver ads7871_driver = {
 	.remove = __devexit_p(ads7871_remove),
 };
 
+<<<<<<< HEAD
 static int __init ads7871_init(void)
 {
 	return spi_register_driver(&ads7871_driver);
@@ -256,6 +289,9 @@ static void __exit ads7871_exit(void)
 
 module_init(ads7871_init);
 module_exit(ads7871_exit);
+=======
+module_spi_driver(ads7871_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Paul Thomas <pthomas8589@gmail.com>");
 MODULE_DESCRIPTION("TI ADS7871 A/D driver");

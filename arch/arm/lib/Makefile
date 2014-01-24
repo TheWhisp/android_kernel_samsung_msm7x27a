@@ -12,8 +12,14 @@ lib-y		:= backtrace.o changebit.o csumipv6.o csumpartial.o   \
 		   strchr.o strrchr.o                                 \
 		   testchangebit.o testclearbit.o testsetbit.o        \
 		   ashldi3.o ashrdi3.o lshrdi3.o muldi3.o             \
+<<<<<<< HEAD
 		   ucmpdi2.o lib1funcs.o div64.o sha1.o               \
 		   io-readsb.o io-writesb.o io-readsl.o io-writesl.o
+=======
+		   ucmpdi2.o lib1funcs.o div64.o                      \
+		   io-readsb.o io-writesb.o io-readsl.o io-writesl.o  \
+		   call_with_stack.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 mmu-y	:= clear_user.o copy_page.o getuser.o putuser.o
 

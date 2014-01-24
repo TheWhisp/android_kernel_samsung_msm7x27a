@@ -17,6 +17,7 @@
 
 #include <asm/hardware/vic.h>
 
+<<<<<<< HEAD
 #include <linux/serial_core.h>
 #include <mach/map.h>
 #include <plat/regs-timer.h>
@@ -53,6 +54,12 @@ static struct s3c_uart_irq uart_irqs[] = {
 	},
 #endif
 };
+=======
+#include <mach/map.h>
+#include <plat/regs-timer.h>
+#include <plat/cpu.h>
+#include <plat/irq-vic-timer.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __init s5p_init_irq(u32 *vic, u32 num_vic)
 {
@@ -65,6 +72,9 @@ void __init s5p_init_irq(u32 *vic, u32 num_vic)
 #endif
 
 	s3c_init_vic_timer_irq(5, IRQ_TIMER0);
+<<<<<<< HEAD
 
 	s3c_init_uart_irqs(uart_irqs, ARRAY_SIZE(uart_irqs));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }

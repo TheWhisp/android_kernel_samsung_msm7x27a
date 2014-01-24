@@ -1,6 +1,10 @@
 Everything you never wanted to know about kobjects, ksets, and ktypes
 
+<<<<<<< HEAD
 Greg Kroah-Hartman <gregkh@suse.de>
+=======
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 Based on an original article by Jon Corbet for lwn.net written October 1,
 2003 and located at http://lwn.net/Articles/51437/

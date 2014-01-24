@@ -36,4 +36,11 @@ do {								\
 #endif /* !CONFIG_BUG */
 
 #include <asm-generic/bug.h>
+<<<<<<< HEAD
+=======
+
+
+extern void show_regs_common(void);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_X86_BUG_H */

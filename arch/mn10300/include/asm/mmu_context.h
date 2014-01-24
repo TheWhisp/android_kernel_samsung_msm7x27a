@@ -22,7 +22,11 @@
 #ifndef _ASM_MMU_CONTEXT_H
 #define _ASM_MMU_CONTEXT_H
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgalloc.h>
 #include <asm/tlbflush.h>
 #include <asm-generic/mm_hooks.h>

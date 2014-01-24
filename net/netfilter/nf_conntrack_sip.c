@@ -1468,7 +1468,11 @@ static int sip_help_tcp(struct sk_buff *skb, unsigned int protoff,
 
 		msglen = origlen = end - dptr;
 		if (msglen > datalen)
+<<<<<<< HEAD
 			return NF_DROP;
+=======
+			return NF_ACCEPT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ret = process_sip_msg(skb, ct, dataoff, &dptr, &msglen);
 		if (ret != NF_ACCEPT)

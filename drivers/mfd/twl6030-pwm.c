@@ -161,3 +161,8 @@ void pwm_free(struct pwm_device *pwm)
 	kfree(pwm);
 }
 EXPORT_SYMBOL(pwm_free);
+<<<<<<< HEAD
+=======
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/cm-10.0

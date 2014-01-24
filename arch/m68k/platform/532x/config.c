@@ -21,14 +21,18 @@
 #include <linux/param.h>
 #include <linux/init.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/spi/spi.h>
 #include <linux/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/machdep.h>
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
 #include <asm/mcfuart.h>
 #include <asm/mcfdma.h>
 #include <asm/mcfwdebug.h>
+<<<<<<< HEAD
 #include <asm/mcfqspi.h>
 
 /***************************************************************************/
@@ -191,12 +195,19 @@ static struct platform_device m532x_qspi = {
 	.resource		= m532x_qspi_resources,
 	.dev.platform_data	= &m532x_qspi_data,
 };
+=======
+
+/***************************************************************************/
+
+#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __init m532x_qspi_init(void)
 {
 	/* setup QSPS pins for QSPI with gpio CS control */
 	writew(0x01f0, MCF_GPIO_PAR_QSPI);
 }
+<<<<<<< HEAD
 #endif /* defined(CONFIG_SPI_COLDFIRE_QSPI) || defined(CONFIG_SPI_COLDFIRE_QSPI_MODULE) */
 
 
@@ -229,6 +240,19 @@ static void __init m532x_uarts_init(void)
 	for (line = 0; (line < nrlines); line++)
 		m532x_uart_init_line(line, m532x_uart_platform[line].irq);
 }
+=======
+
+#endif /* IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI) */
+
+/***************************************************************************/
+
+static void __init m532x_uarts_init(void)
+{
+	/* UART GPIO initialization */
+	MCF_GPIO_PAR_UART |= 0x0FFF;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /***************************************************************************/
 
 static void __init m532x_fec_init(void)
@@ -242,6 +266,7 @@ static void __init m532x_fec_init(void)
 
 /***************************************************************************/
 
+<<<<<<< HEAD
 static void m532x_cpu_reset(void)
 {
 	local_irq_disable();
@@ -250,6 +275,8 @@ static void m532x_cpu_reset(void)
 
 /***************************************************************************/
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init config_BSP(char *commandp, int size)
 {
 #if !defined(CONFIG_BOOTPARAM)
@@ -263,6 +290,16 @@ void __init config_BSP(char *commandp, int size)
 	}
 #endif
 
+<<<<<<< HEAD
+=======
+	mach_sched_init = hw_timer_init;
+	m532x_uarts_init();
+	m532x_fec_init();
+#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+	m532x_qspi_init();
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_BDM_DISABLE
 	/*
 	 * Disable the BDM clocking.  This also turns off most of the rest of
@@ -274,6 +311,7 @@ void __init config_BSP(char *commandp, int size)
 }
 
 /***************************************************************************/
+<<<<<<< HEAD
 
 static int __init init_BSP(void)
 {
@@ -289,6 +327,8 @@ static int __init init_BSP(void)
 arch_initcall(init_BSP);
 
 /***************************************************************************/
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Board initialization */
 /***************************************************************************/
 /* 

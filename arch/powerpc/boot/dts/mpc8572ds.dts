@@ -9,6 +9,7 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
 /dts-v1/;
 / {
 	model = "fsl,MPC8572DS";
@@ -58,11 +59,19 @@
 			next-level-cache = <&L2>;
 		};
 	};
+=======
+/include/ "fsl/mpc8572si-pre.dtsi"
+
+/ {
+	model = "fsl,MPC8572DS";
+	compatible = "fsl,MPC8572DS";
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memory {
 		device_type = "memory";
 	};
 
+<<<<<<< HEAD
 	localbus@ffe05000 {
 		#address-cells = <2>;
 		#size-cells = <1>;
@@ -70,6 +79,10 @@
 		reg = <0 0xffe05000 0 0x1000>;
 		interrupts = <19 2>;
 		interrupt-parent = <&mpic>;
+=======
+	board_lbc: lbc: localbus@ffe05000 {
+		reg = <0 0xffe05000 0 0x1000>;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ranges = <0x0 0x0 0x0 0xe8000000 0x08000000
 			  0x1 0x0 0x0 0xe0000000 0x08000000
@@ -78,6 +91,7 @@
 			  0x4 0x0 0x0 0xffa40000 0x00040000
 			  0x5 0x0 0x0 0xffa80000 0x00040000
 			  0x6 0x0 0x0 0xffac0000 0x00040000>;
+<<<<<<< HEAD
 
 		nor@0,0 {
 			#address-cells = <1>;
@@ -673,6 +687,19 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+	};
+
+	board_soc: soc: soc8572@ffe00000 {
+		ranges = <0x0 0 0xffe00000 0x100000>;
+	};
+
+	board_pci0: pci0: pcie@ffe08000 {
+		reg = <0 0xffe08000 0 0x1000>;
+		ranges = <0x2000000 0x0 0x80000000 0 0x80000000 0x0 0x20000000
+			  0x1000000 0x0 0x00000000 0 0xffc00000 0x0 0x00010000>;
+		pcie@0 {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ranges = <0x2000000 0x0 0x80000000
 				  0x2000000 0x0 0x80000000
 				  0x0 0x20000000
@@ -680,6 +707,7 @@
 				  0x1000000 0x0 0x0
 				  0x1000000 0x0 0x0
 				  0x0 0x10000>;
+<<<<<<< HEAD
 			uli1575@0 {
 				reg = <0x0 0x0 0x0 0x0 0x0>;
 				#size-cells = <2>;
@@ -773,6 +801,16 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+		};
+	};
+
+	pci1: pcie@ffe09000 {
+		reg = <0 0xffe09000 0 0x1000>;
+		ranges = <0x2000000 0x0 0xa0000000 0 0xa0000000 0x0 0x20000000
+			  0x1000000 0x0 0x00000000 0 0xffc10000 0x0 0x00010000>;
+		pcie@0 {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ranges = <0x2000000 0x0 0xa0000000
 				  0x2000000 0x0 0xa0000000
 				  0x0 0x20000000
@@ -784,6 +822,7 @@
 	};
 
 	pci2: pcie@ffe0a000 {
+<<<<<<< HEAD
 		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
@@ -809,6 +848,12 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+		reg = <0 0xffe0a000 0 0x1000>;
+		ranges = <0x2000000 0x0 0xc0000000 0 0xc0000000 0x0 0x20000000
+			  0x1000000 0x0 0x00000000 0 0xffc20000 0x0 0x00010000>;
+		pcie@0 {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ranges = <0x2000000 0x0 0xc0000000
 				  0x2000000 0x0 0xc0000000
 				  0x0 0x20000000
@@ -819,3 +864,14 @@
 		};
 	};
 };
+<<<<<<< HEAD
+=======
+
+/*
+ * mpc8572ds.dtsi must be last to ensure board_pci0 overrides pci0 settings
+ * for interrupt-map & interrupt-map-mask
+ */
+
+/include/ "fsl/mpc8572si-post.dtsi"
+/include/ "mpc8572ds.dtsi"
+>>>>>>> refs/remotes/origin/cm-10.0

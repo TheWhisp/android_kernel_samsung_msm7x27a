@@ -15,7 +15,11 @@ REFERENCES
 EXTERNALIZED FUNCTIONS
   None
 
+<<<<<<< HEAD
 Copyright (c) 1992-2009, 2012 The Linux Foundation. All rights reserved.
+=======
+Copyright(c) 1992-2009, 2012-2013 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 This software is licensed under the terms of the GNU General Public
 License version 2, as published by the Free Software Foundation, and
@@ -414,6 +418,10 @@ struct audpp_cmd_cfg_adec_params_evrc {
 /*
  * Command Structure to configure Per decoder Parameters (AMRWB)
  */
+<<<<<<< HEAD
+=======
+#define ADEC_PARAMS_AC3_INDEX 14
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct audpp_cmd_cfg_adec_params_amrwb {
 	   audpp_cmd_cfg_adec_params_common     common;
@@ -424,6 +432,21 @@ struct audpp_cmd_cfg_adec_params_amrwb {
 	sizeof(struct audpp_cmd_cfg_adec_params_amrwb)
 
 /*
+<<<<<<< HEAD
+=======
+ * Command Structure to configure Per decoder Parameters (AC3)
+ */
+
+struct audpp_cmd_cfg_adec_params_ac3 {
+	audpp_cmd_cfg_adec_params_common	common;
+	unsigned short				index[ADEC_PARAMS_AC3_INDEX];
+} __packed;
+
+#define AUDPP_CMD_CFG_ADEC_PARAMS_AC3_LEN \
+	sizeof(struct audpp_cmd_cfg_adec_params_ac3)
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Command Structure to configure the  HOST PCM interface
  */
 
@@ -517,6 +540,21 @@ typedef struct {
   unsigned short  arm_to_dsp_buf_len;
 } __attribute__((packed)) audpp_cmd_pcm_intf_send_buffer;
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_PP_FEAT_QUERY_PARAMS  0x0003
+
+struct rtc_audpp_read_data {
+	unsigned short  cmd_id;
+	unsigned short  obj_id;
+	unsigned short  feature_id;
+	unsigned short  extbufsizemsw;
+	unsigned short  extbufsizelsw;
+	unsigned short	extpart;
+	unsigned short	extbufstartmsw;
+	unsigned short	extbufstartlsw;
+} __packed ;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Commands Related to uPAudPPCmd3Queue
@@ -551,6 +589,11 @@ typedef struct {
 #define AUDPP_CMD_COMMON_CFG_UPDATE		0x8000
 #define AUDPP_CMD_COMMON_CFG_DONT_UPDATE	0x0000
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_COPP_STREAM   0x0006
+
+>>>>>>> refs/remotes/origin/cm-10.0
 typedef struct {
 	unsigned short  cmd_id;
 	unsigned short	obj0_cfg;
@@ -567,6 +610,10 @@ typedef struct {
  * Command Structure to configure post processing params (Volume)
  */
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_VOLUME_PAN		0
+>>>>>>> refs/remotes/origin/cm-10.0
 #define AUDPP_CMD_CFG_OBJECT_PARAMS_VOLUME_LEN		\
 	sizeof(audpp_cmd_cfg_object_params_volume)
 
@@ -632,6 +679,10 @@ typedef struct {
 		pan			pan_filter[4];
 } __attribute__((packed)) filter_4;
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_IIR_TUNING_FILTER	1
+>>>>>>> refs/remotes/origin/cm-10.0
 #define AUDPP_CMD_CFG_OBJECT_PARAMS_PCM_LEN		\
 	sizeof(audpp_cmd_cfg_object_params_pcm)
 
@@ -653,6 +704,10 @@ typedef struct {
  * Command Structure to configure post processing parameters (equalizer) 
  */
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_EQUALIZER		2
+>>>>>>> refs/remotes/origin/cm-10.0
 #define AUDPP_CMD_CFG_OBJECT_PARAMS_EQALIZER_LEN		\
 	sizeof(audpp_cmd_cfg_object_params_eqalizer)
 
@@ -774,6 +829,10 @@ typedef struct {
  * Command Structure to configure post processing parameters (ADRC) 
  */
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_ADRC			3
+>>>>>>> refs/remotes/origin/cm-10.0
 #define AUDPP_CMD_CFG_OBJECT_PARAMS_ADRC_LEN		\
 	sizeof(audpp_cmd_cfg_object_params_adrc)
 
@@ -781,6 +840,10 @@ typedef struct {
 #define AUDPP_CMD_ADRC_FLAG_DIS		0x0000
 #define AUDPP_CMD_ADRC_FLAG_ENA		-1
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_MBADRC		10
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	AUDPP_MAX_MBADRC_BANDS		5
 #define	AUDPP_MBADRC_EXTERNAL_BUF_SIZE	196
 
@@ -826,6 +889,10 @@ struct audpp_cmd_cfg_object_params_adrc {
  * Command Structure to configure post processing parameters(Spectrum Analizer)
  */
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_SPECTROGRAM		4
+>>>>>>> refs/remotes/origin/cm-10.0
 #define AUDPP_CMD_CFG_OBJECT_PARAMS_SPECTRAM_LEN		\
 	sizeof(audpp_cmd_cfg_object_params_spectram)
 
@@ -840,6 +907,10 @@ typedef struct {
  * Command Structure to configure post processing parameters (QConcert) 
  */
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_QCONCERT		5
+>>>>>>> refs/remotes/origin/cm-10.0
 #define AUDPP_CMD_CFG_OBJECT_PARAMS_QCONCERT_LEN		\
 	sizeof(audpp_cmd_cfg_object_params_qconcert)
 
@@ -886,6 +957,10 @@ typedef struct {
  * Command Structure to configure post processing parameters (Side Chain) 
  */
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_SIDECHAIN_TUNING_FILTER	6
+>>>>>>> refs/remotes/origin/cm-10.0
 #define AUDPP_CMD_CFG_OBJECT_PARAMS_SIDECHAIN_LEN		\
 	sizeof(audpp_cmd_cfg_object_params_sidechain)
 
@@ -910,6 +985,10 @@ typedef struct {
  * Command Structure to configure post processing parameters (QAFX)
  */
 
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_QAFX			8
+>>>>>>> refs/remotes/origin/cm-10.0
 #define AUDPP_CMD_CFG_OBJECT_PARAMS_QAFX_LEN		\
 	sizeof(audpp_cmd_cfg_object_params_qafx)
 
@@ -1033,6 +1112,14 @@ struct audpp_cmd_cfg_object_params_srstm_l {
 	audpp_cmd_cfg_object_params_common	common;
 	unsigned short				v[SRS_PARAMS_MAX_L];
 } __packed;
+<<<<<<< HEAD
+=======
+#define AUDPP_CMD_SAMPLING_FREQUENCY	7
+#define AUDPP_CMD_QRUMBLE		9
+#define AUDPP_CMD_SRS			18
+#define AUDPP_DISABLE_FEATS_LSW		2
+#define AUDPP_DISABLE_FEATS_MSW		3
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* QDSP5AUDPPCMDI_H */
 

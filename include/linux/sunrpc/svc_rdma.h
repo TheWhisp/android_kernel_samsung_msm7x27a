@@ -190,7 +190,11 @@ extern int svc_rdma_xdr_encode_error(struct svcxprt_rdma *,
 extern void svc_rdma_xdr_encode_write_list(struct rpcrdma_msg *, int);
 extern void svc_rdma_xdr_encode_reply_array(struct rpcrdma_write_array *, int);
 extern void svc_rdma_xdr_encode_array_chunk(struct rpcrdma_write_array *, int,
+<<<<<<< HEAD
 					    u32, u64, u32);
+=======
+					    __be32, __be64, u32);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void svc_rdma_xdr_encode_reply_header(struct svcxprt_rdma *,
 					     struct rpcrdma_msg *,
 					     struct rpcrdma_msg *,
@@ -292,7 +296,11 @@ svc_rdma_get_reply_array(struct rpcrdma_msg *rmsgp)
 	if (wr_ary) {
 		rp_ary = (struct rpcrdma_write_array *)
 			&wr_ary->
+<<<<<<< HEAD
 			wc_array[wr_ary->wc_nchunks].wc_target.rs_length;
+=======
+			wc_array[ntohl(wr_ary->wc_nchunks)].wc_target.rs_length;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		goto found_it;
 	}

@@ -93,7 +93,11 @@
  */
 #define in_nmi()	(preempt_count() & NMI_MASK)
 
+<<<<<<< HEAD
 #if defined(CONFIG_PREEMPT)
+=======
+#if defined(CONFIG_PREEMPT_COUNT)
+>>>>>>> refs/remotes/origin/cm-10.0
 # define PREEMPT_CHECK_OFFSET 1
 #else
 # define PREEMPT_CHECK_OFFSET 0
@@ -115,7 +119,11 @@
 #define in_atomic_preempt_off() \
 		((preempt_count() & ~PREEMPT_ACTIVE) != PREEMPT_CHECK_OFFSET)
 
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/cm-10.0
 # define preemptible()	(preempt_count() == 0 && !irqs_disabled())
 # define IRQ_EXIT_OFFSET (HARDIRQ_OFFSET-1)
 #else
@@ -139,6 +147,7 @@ static inline void account_system_vtime(struct task_struct *tsk)
 extern void account_system_vtime(struct task_struct *tsk);
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_NO_HZ)
 #if defined(CONFIG_TINY_RCU) || defined(CONFIG_TINY_PREEMPT_RCU)
 extern void rcu_enter_nohz(void);
@@ -153,6 +162,9 @@ static inline void rcu_irq_exit(void)
 {
 	rcu_enter_nohz();
 }
+=======
+#if defined(CONFIG_TINY_RCU) || defined(CONFIG_TINY_PREEMPT_RCU)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void rcu_nmi_enter(void)
 {
@@ -163,6 +175,7 @@ static inline void rcu_nmi_exit(void)
 }
 
 #else
+<<<<<<< HEAD
 extern void rcu_irq_enter(void);
 extern void rcu_irq_exit(void);
 extern void rcu_nmi_enter(void);
@@ -174,6 +187,11 @@ extern void rcu_nmi_exit(void);
 # define rcu_nmi_enter() do { } while (0)
 # define rcu_nmi_exit() do { } while (0)
 #endif /* #if defined(CONFIG_NO_HZ) */
+=======
+extern void rcu_nmi_enter(void);
+extern void rcu_nmi_exit(void);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * It is safe to do non-atomic ops on ->hardirq_context,

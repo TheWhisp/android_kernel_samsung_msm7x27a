@@ -22,6 +22,10 @@
 struct wm831x_backup {
 	struct wm831x *wm831x;
 	struct power_supply backup;
+<<<<<<< HEAD
+=======
+	char name[20];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int wm831x_backup_read_voltage(struct wm831x *wm831x,
@@ -163,6 +167,10 @@ static enum power_supply_property wm831x_backup_props[] = {
 static __devinit int wm831x_backup_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+<<<<<<< HEAD
+=======
+	struct wm831x_pdata *wm831x_pdata = wm831x->dev->platform_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct wm831x_backup *devdata;
 	struct power_supply *backup;
 	int ret;
@@ -182,7 +190,18 @@ static __devinit int wm831x_backup_probe(struct platform_device *pdev)
 	 */
 	wm831x_config_backup(wm831x);
 
+<<<<<<< HEAD
 	backup->name = "wm831x-backup";
+=======
+	if (wm831x_pdata && wm831x_pdata->wm831x_num)
+		snprintf(devdata->name, sizeof(devdata->name),
+			 "wm831x-backup.%d", wm831x_pdata->wm831x_num);
+	else
+		snprintf(devdata->name, sizeof(devdata->name),
+			 "wm831x-backup");
+
+	backup->name = devdata->name;
+>>>>>>> refs/remotes/origin/cm-10.0
 	backup->type = POWER_SUPPLY_TYPE_BATTERY;
 	backup->properties = wm831x_backup_props;
 	backup->num_properties = ARRAY_SIZE(wm831x_backup_props);
@@ -203,6 +222,10 @@ static __devexit int wm831x_backup_remove(struct platform_device *pdev)
 	struct wm831x_backup *devdata = platform_get_drvdata(pdev);
 
 	power_supply_unregister(&devdata->backup);
+<<<<<<< HEAD
+=======
+	kfree(devdata->backup.name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(devdata);
 
 	return 0;
@@ -216,6 +239,7 @@ static struct platform_driver wm831x_backup_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init wm831x_backup_init(void)
 {
 	return platform_driver_register(&wm831x_backup_driver);
@@ -227,6 +251,9 @@ static void __exit wm831x_backup_exit(void)
 	platform_driver_unregister(&wm831x_backup_driver);
 }
 module_exit(wm831x_backup_exit);
+=======
+module_platform_driver(wm831x_backup_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Backup battery charger driver for WM831x PMICs");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

@@ -43,7 +43,11 @@
 /* This will be overridden by board-specific irq headers */
 #define IRQ_BOARD_END		IRQ_BOARD_START
 
+<<<<<<< HEAD
 #ifdef CONFIG_MACH_U8500
+=======
+#ifdef CONFIG_MACH_MOP500
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/irqs-board-mop500.h>
 #endif
 

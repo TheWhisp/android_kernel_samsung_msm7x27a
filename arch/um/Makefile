@@ -20,6 +20,7 @@ core-y			+= $(ARCH_DIR)/kernel/		\
 
 MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
 
+<<<<<<< HEAD
 include $(srctree)/$(ARCH_DIR)/Makefile-skas
 
 SHARED_HEADERS	:= $(ARCH_DIR)/include/shared
@@ -29,6 +30,30 @@ ifneq ($(KBUILD_SRC),)
 ARCH_INCLUDE	+= -I$(SHARED_HEADERS)
 endif
 KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)
+=======
+HEADER_ARCH 	:= $(SUBARCH)
+
+# Additional ARCH settings for x86
+ifeq ($(SUBARCH),i386)
+        HEADER_ARCH := x86
+endif
+ifeq ($(SUBARCH),x86_64)
+        HEADER_ARCH := x86
+	KBUILD_CFLAGS += -mcmodel=large
+endif
+
+HOST_DIR := arch/$(HEADER_ARCH)
+
+include $(srctree)/$(ARCH_DIR)/Makefile-skas
+include $(srctree)/$(HOST_DIR)/Makefile.um
+
+core-y += $(HOST_DIR)/um/
+
+SHARED_HEADERS	:= $(ARCH_DIR)/include/shared
+ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
+ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/shared
+KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
 # named - it's a common symbol in libpcap, so we get a binary which crashes.
@@ -38,23 +63,39 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)
 #
 # These apply to USER_CFLAGS to.
 
+<<<<<<< HEAD
 KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ -DSUBARCH=\"$(SUBARCH)\" \
 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
 	-Din6addr_loopback=kernel_in6addr_loopback \
 	-Din6addr_any=kernel_in6addr_any
+=======
+KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
+	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
+	-Din6addr_loopback=kernel_in6addr_loopback \
+	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
+>>>>>>> refs/remotes/origin/cm-10.0
 
 KBUILD_AFLAGS += $(ARCH_INCLUDE)
 
 USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -D__KERNEL__,,\
 	$(patsubst -I%,,$(KBUILD_CFLAGS)))) $(ARCH_INCLUDE) $(MODE_INCLUDE) \
+<<<<<<< HEAD
 	$(filter -I%,$(CFLAGS)) -D_FILE_OFFSET_BITS=64
 
 include $(srctree)/$(ARCH_DIR)/Makefile-$(SUBARCH)
+=======
+	$(filter -I%,$(CFLAGS)) -D_FILE_OFFSET_BITS=64 -idirafter include
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #This will adjust *FLAGS accordingly to the platform.
 include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
 
+<<<<<<< HEAD
 KBUILD_CPPFLAGS += -I$(srctree)/arch/$(HEADER_ARCH)/include
+=======
+KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
+		   -I$(HOST_DIR)/include/generated
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # -Derrno=kernel_errno - This turns all kernel references to errno into
 # kernel_errno to separate them from the libc errno.  This allows -fno-common
@@ -84,10 +125,20 @@ define archhelp
   echo '		   find in the kernel root.'
 endef
 
+<<<<<<< HEAD
 KBUILD_KCONFIG := arch/um/Kconfig.$(HEADER_ARCH)
 
 archprepare: $(SHARED_HEADERS)/user_constants.h
 archprepare: $(SHARED_HEADERS)/kern_constants.h
+=======
+KBUILD_KCONFIG := $(HOST_DIR)/um/Kconfig
+
+archheaders:
+	$(Q)$(MAKE) -C '$(srctree)' KBUILD_SRC= \
+		ARCH=$(HEADER_ARCH) O='$(objtree)' archheaders
+
+archprepare: include/generated/user_constants.h
+>>>>>>> refs/remotes/origin/cm-10.0
 
 LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
 LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib
@@ -118,9 +169,13 @@ endef
 
 # When cleaning we don't include .config, so we don't include
 # TT or skas makefiles and don't clean skas_ptregs.h.
+<<<<<<< HEAD
 CLEAN_FILES += linux x.i gmon.out \
 	$(SHARED_HEADERS)/user_constants.h \
 	$(SHARED_HEADERS)/kern_constants.h
+=======
+CLEAN_FILES += linux x.i gmon.out
+>>>>>>> refs/remotes/origin/cm-10.0
 
 archclean:
 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
@@ -128,8 +183,13 @@ archclean:
 
 # Generated files
 
+<<<<<<< HEAD
 $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s: FORCE
 	$(Q)$(MAKE) $(build)=$(ARCH_DIR)/sys-$(SUBARCH) $@
+=======
+$(HOST_DIR)/um/user-offsets.s: __headers FORCE
+	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um $@
+>>>>>>> refs/remotes/origin/cm-10.0
 
 define filechk_gen-asm-offsets
         (set -e; \
@@ -144,6 +204,7 @@ define filechk_gen-asm-offsets
          echo ""; )
 endef
 
+<<<<<<< HEAD
 $(SHARED_HEADERS)/user_constants.h: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s
 	$(call filechk,gen-asm-offsets)
 
@@ -152,3 +213,9 @@ $(SHARED_HEADERS)/kern_constants.h:
 	$(Q)echo '#include "../../../../include/generated/asm-offsets.h"' >$@
 
 export SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING OS HEADER_ARCH DEV_NULL_PATH
+=======
+include/generated/user_constants.h: $(HOST_DIR)/um/user-offsets.s
+	$(call filechk,gen-asm-offsets)
+
+export SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING OS DEV_NULL_PATH
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -26,7 +26,11 @@
 
 #include <asm/hardware/it8152.h>
 
+<<<<<<< HEAD
 unsigned long it8152_base_address;
+=======
+void __iomem *it8152_base_address;
+>>>>>>> refs/remotes/origin/cm-10.0
 static int cmx2xx_it8152_irq_gpio;
 
 static void cmx2xx_it8152_irq_demux(unsigned int irq, struct irq_desc *desc)
@@ -77,7 +81,11 @@ void cmx2xx_pci_resume(void) {}
 #endif
 
 /* PCI IRQ mapping*/
+<<<<<<< HEAD
 static int __init cmx2xx_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init cmx2xx_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int irq;
 
@@ -125,6 +133,12 @@ static void cmx2xx_pci_preinit(void)
 {
 	pr_info("Initializing CM-X2XX PCI subsystem\n");
 
+<<<<<<< HEAD
+=======
+	pcibios_min_io = 0;
+	pcibios_min_mem = 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	__raw_writel(0x800, IT8152_PCI_CFG_ADDR);
 	if (__raw_readl(IT8152_PCI_CFG_DATA) == 0x81521283) {
 		pr_info("PCI Bridge found.\n");

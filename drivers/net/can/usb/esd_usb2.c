@@ -470,8 +470,12 @@ static void esd_usb2_write_bulk_callback(struct urb *urb)
 		return;
 
 	if (urb->status)
+<<<<<<< HEAD
 		dev_info(netdev->dev.parent, "Tx URB aborted (%d)\n",
 			 urb->status);
+=======
+		netdev_info(netdev, "Tx URB aborted (%d)\n", urb->status);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	netdev->trans_start = jiffies;
 }
@@ -651,7 +655,11 @@ failed:
 	if (err == -ENODEV)
 		netif_device_detach(netdev);
 
+<<<<<<< HEAD
 	dev_err(netdev->dev.parent, "couldn't start device: %d\n", err);
+=======
+	netdev_err(netdev, "couldn't start device: %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return err;
 }
@@ -687,8 +695,12 @@ static int esd_usb2_open(struct net_device *netdev)
 	/* finally start device */
 	err = esd_usb2_start(priv);
 	if (err) {
+<<<<<<< HEAD
 		dev_warn(netdev->dev.parent,
 			 "couldn't start device: %d\n", err);
+=======
+		netdev_warn(netdev, "couldn't start device: %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 		close_candev(netdev);
 		return err;
 	}
@@ -721,7 +733,11 @@ static netdev_tx_t esd_usb2_start_xmit(struct sk_buff *skb,
 	/* create a URB, and a buffer for it, and copy the data to the URB */
 	urb = usb_alloc_urb(0, GFP_ATOMIC);
 	if (!urb) {
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent, "No memory left for URBs\n");
+=======
+		netdev_err(netdev, "No memory left for URBs\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		stats->tx_dropped++;
 		dev_kfree_skb(skb);
 		goto nourbmem;
@@ -730,7 +746,11 @@ static netdev_tx_t esd_usb2_start_xmit(struct sk_buff *skb,
 	buf = usb_alloc_coherent(dev->udev, size, GFP_ATOMIC,
 				 &urb->transfer_dma);
 	if (!buf) {
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent, "No memory left for USB buffer\n");
+=======
+		netdev_err(netdev, "No memory left for USB buffer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		stats->tx_dropped++;
 		dev_kfree_skb(skb);
 		goto nobufmem;
@@ -766,7 +786,11 @@ static netdev_tx_t esd_usb2_start_xmit(struct sk_buff *skb,
 	 * This may never happen.
 	 */
 	if (!context) {
+<<<<<<< HEAD
 		dev_warn(netdev->dev.parent, "couldn't find free context\n");
+=======
+		netdev_warn(netdev, "couldn't find free context\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = NETDEV_TX_BUSY;
 		goto releasebuf;
 	}
@@ -806,7 +830,11 @@ static netdev_tx_t esd_usb2_start_xmit(struct sk_buff *skb,
 		if (err == -ENODEV)
 			netif_device_detach(netdev);
 		else
+<<<<<<< HEAD
 			dev_warn(netdev->dev.parent, "failed tx_urb %d\n", err);
+=======
+			netdev_warn(netdev, "failed tx_urb %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		goto releasebuf;
 	}
@@ -845,7 +873,11 @@ static int esd_usb2_close(struct net_device *netdev)
 	for (i = 0; i <= ESD_MAX_ID_SEGMENT; i++)
 		msg.msg.filter.mask[i] = 0;
 	if (esd_usb2_send_msg(priv->usb2, &msg) < 0)
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent, "sending idadd message failed\n");
+=======
+		netdev_err(netdev, "sending idadd message failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* set CAN controller to reset mode */
 	msg.msg.hdr.len = 2;
@@ -854,7 +886,11 @@ static int esd_usb2_close(struct net_device *netdev)
 	msg.msg.setbaud.rsvd = 0;
 	msg.msg.setbaud.baud = cpu_to_le32(ESD_USB2_NO_BAUDRATE);
 	if (esd_usb2_send_msg(priv->usb2, &msg) < 0)
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent, "sending setbaud message failed\n");
+=======
+		netdev_err(netdev, "sending setbaud message failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	priv->can.state = CAN_STATE_STOPPED;
 
@@ -910,7 +946,11 @@ static int esd_usb2_set_bittiming(struct net_device *netdev)
 	msg.msg.setbaud.rsvd = 0;
 	msg.msg.setbaud.baud = cpu_to_le32(canbtr);
 
+<<<<<<< HEAD
 	dev_info(netdev->dev.parent, "setting BTR=%#x\n", canbtr);
+=======
+	netdev_info(netdev, "setting BTR=%#x\n", canbtr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return esd_usb2_send_msg(priv->usb2, &msg);
 }
@@ -988,15 +1028,23 @@ static int esd_usb2_probe_one_net(struct usb_interface *intf, int index)
 
 	err = register_candev(netdev);
 	if (err) {
+<<<<<<< HEAD
 		dev_err(&intf->dev,
 			"couldn't register CAN device: %d\n", err);
+=======
+		dev_err(&intf->dev, "couldn't register CAN device: %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_candev(netdev);
 		err = -ENOMEM;
 		goto done;
 	}
 
 	dev->nets[index] = priv;
+<<<<<<< HEAD
 	dev_info(netdev->dev.parent, "device %s registered\n", netdev->name);
+=======
+	netdev_info(netdev, "device %s registered\n", netdev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 done:
 	return err;
@@ -1108,6 +1156,7 @@ static struct usb_driver esd_usb2_driver = {
 	.id_table = esd_usb2_table,
 };
 
+<<<<<<< HEAD
 static int __init esd_usb2_init(void)
 {
 	int err;
@@ -1130,3 +1179,6 @@ static void __exit esd_usb2_exit(void)
 	usb_deregister(&esd_usb2_driver);
 }
 module_exit(esd_usb2_exit);
+=======
+module_usb_driver(esd_usb2_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

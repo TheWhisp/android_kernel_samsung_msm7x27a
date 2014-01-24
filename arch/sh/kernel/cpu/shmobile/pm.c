@@ -16,6 +16,10 @@
 #include <asm/suspend.h>
 #include <asm/uaccess.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/bl_bit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Notifier lists for pre/post sleep notification

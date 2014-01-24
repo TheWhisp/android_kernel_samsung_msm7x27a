@@ -17,6 +17,10 @@
  */
 #include <linux/kernel.h>
 #include <linux/uwb.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "uwb-internal.h"
 

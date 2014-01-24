@@ -106,4 +106,11 @@
 #define MSM8960_QFPROM_PHYS		0x00700000
 #define MSM8960_QFPROM_SIZE		SZ_4K
 
+<<<<<<< HEAD
+=======
+#ifndef __ASSEMBLY__
+extern void msm_map_msm8960_io(void);
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

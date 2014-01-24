@@ -64,6 +64,27 @@ int power_supply_set_online(struct power_supply *psy, bool enable)
 EXPORT_SYMBOL_GPL(power_supply_set_online);
 
 /**
+<<<<<<< HEAD
+=======
+ * power_supply_set_scope - set scope of the power supply
+ * @psy:	the power supply to control
+ * @scope:	value to set the scope property to, should be from
+ *		the SCOPE enum in power_supply.h
+ */
+int power_supply_set_scope(struct power_supply *psy, int scope)
+{
+	const union power_supply_propval ret = {scope, };
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_SCOPE,
+								&ret);
+
+	return -ENXIO;
+}
+EXPORT_SYMBOL_GPL(power_supply_set_scope);
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * power_supply_set_charge_type - set charge type of the power supply
  * @psy:	the power supply to control
  * @enable:	sets charge type property of power supply
@@ -170,7 +191,13 @@ static int __power_supply_is_system_supplied(struct device *dev, void *data)
 {
 	union power_supply_propval ret = {0,};
 	struct power_supply *psy = dev_get_drvdata(dev);
+<<<<<<< HEAD
 
+=======
+	unsigned int *count = data;
+
+	(*count)++;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (psy->type != POWER_SUPPLY_TYPE_BATTERY) {
 		if (psy->get_property(psy, POWER_SUPPLY_PROP_ONLINE, &ret))
 			return 0;
@@ -183,10 +210,25 @@ static int __power_supply_is_system_supplied(struct device *dev, void *data)
 int power_supply_is_system_supplied(void)
 {
 	int error;
+<<<<<<< HEAD
 
 	error = class_for_each_device(power_supply_class, NULL, NULL,
 				      __power_supply_is_system_supplied);
 
+=======
+	unsigned int count = 0;
+
+	error = class_for_each_device(power_supply_class, NULL, &count,
+				      __power_supply_is_system_supplied);
+
+	/*
+	 * If no power class device was found at all, most probably we are
+	 * running on a desktop system, so assume we are on mains power.
+	 */
+	if (count == 0)
+		return 1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return error;
 }
 EXPORT_SYMBOL_GPL(power_supply_is_system_supplied);
@@ -219,6 +261,15 @@ struct power_supply *power_supply_get_by_name(char *name)
 }
 EXPORT_SYMBOL_GPL(power_supply_get_by_name);
 
+<<<<<<< HEAD
+=======
+int power_supply_powers(struct power_supply *psy, struct device *dev)
+{
+	return sysfs_create_link(&psy->dev->kobj, &dev->kobj, "powers");
+}
+EXPORT_SYMBOL_GPL(power_supply_powers);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void power_supply_dev_release(struct device *dev)
 {
 	pr_debug("device: '%s': %s\n", dev_name(dev), __func__);
@@ -278,6 +329,10 @@ EXPORT_SYMBOL_GPL(power_supply_register);
 void power_supply_unregister(struct power_supply *psy)
 {
 	cancel_work_sync(&psy->changed_work);
+<<<<<<< HEAD
+=======
+	sysfs_remove_link(&psy->dev->kobj, "powers");
+>>>>>>> refs/remotes/origin/cm-10.0
 	power_supply_remove_triggers(psy);
 	wake_lock_destroy(&psy->work_wake_lock);
 	device_unregister(psy->dev);

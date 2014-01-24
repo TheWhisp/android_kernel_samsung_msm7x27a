@@ -252,6 +252,7 @@ static struct platform_driver pcap_ts_driver = {
 		.pm	= PCAP_TS_PM_OPS,
 	},
 };
+<<<<<<< HEAD
 
 static int __init pcap_ts_init(void)
 {
@@ -265,6 +266,9 @@ static void __exit pcap_ts_exit(void)
 
 module_init(pcap_ts_init);
 module_exit(pcap_ts_exit);
+=======
+module_platform_driver(pcap_ts_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Motorola PCAP2 touchscreen driver");
 MODULE_AUTHOR("Daniel Ribeiro / Harald Welte");

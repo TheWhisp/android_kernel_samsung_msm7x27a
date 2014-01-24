@@ -716,6 +716,15 @@
 
 struct b43_wldev;
 
+<<<<<<< HEAD
+=======
+enum b43_nphy_spur_avoid {
+	B43_SPUR_AVOID_DISABLE,
+	B43_SPUR_AVOID_AUTO,
+	B43_SPUR_AVOID_FORCE,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct b43_chanspec {
 	u16 center_freq;
 	enum nl80211_channel_type channel_type;
@@ -759,11 +768,24 @@ struct b43_phy_n_txpwrindex {
 	u16 locomp;
 };
 
+<<<<<<< HEAD
+=======
+struct b43_phy_n_pwr_ctl_info {
+	u8 idle_tssi_2g;
+	u8 idle_tssi_5g;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct b43_phy_n {
 	u8 antsel_type;
 	u8 cal_orig_pwr_idx[2];
 	u8 measure_hold;
 	u8 phyrxchain;
+<<<<<<< HEAD
+=======
+	u8 hw_phyrxchain;
+	u8 hw_phytxchain;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 perical;
 	u32 deaf_count;
 	u32 rxcalparams;
@@ -783,10 +805,21 @@ struct b43_phy_n {
 	u16 mphase_txcal_bestcoeffs[11];
 
 	bool txpwrctrl;
+<<<<<<< HEAD
+=======
+	bool pwg_gain_5ghz;
+	u8 tx_pwr_idx[2];
+	s8 tx_power_offset[101];
+	u16 adj_pwr_tbl[84];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 txcal_bbmult;
 	u16 txiqlocal_bestc[11];
 	bool txiqlocal_coeffsvalid;
 	struct b43_phy_n_txpwrindex txpwrindex[2];
+<<<<<<< HEAD
+=======
+	struct b43_phy_n_pwr_ctl_info pwr_ctl_info[2];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct b43_chanspec txiqlocal_chanspec;
 
 	u8 txrx_chain;
@@ -799,6 +832,10 @@ struct b43_phy_n {
 	u16 classifier_state;
 	u16 clip_state[2];
 
+<<<<<<< HEAD
+=======
+	enum b43_nphy_spur_avoid spur_avoid;
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool aband_spurwar_en;
 	bool gband_spurwar_en;
 

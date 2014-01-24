@@ -18,7 +18,11 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/delay.h>
@@ -30,9 +34,13 @@
 #include <linux/input.h>
 #include <linux/i2c/tps65010.h>
 #include <linux/smc91x.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <asm/gpio.h>
+=======
+#include <linux/omapfb.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
@@ -44,9 +52,17 @@
 #include <plat/irda.h>
 #include <plat/usb.h>
 #include <plat/keypad.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/flash.h>
 
+=======
+#include <plat/flash.h>
+
+#include <mach/hardware.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "board-h2.h"
 
 /* At OMAP1610 Innovator the Ethernet is directly connected to CS1 */
@@ -245,8 +261,11 @@ static struct resource h2_smc91x_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= OMAP_GPIO_IRQ(0),
 		.end	= OMAP_GPIO_IRQ(0),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_LOWEDGE,
 	},
 };
@@ -326,18 +345,24 @@ static struct platform_device h2_irda_device = {
 	.resource	= h2_irda_resources,
 };
 
+<<<<<<< HEAD
 static struct platform_device h2_lcd_device = {
 	.name		= "lcd_h2",
 	.id		= -1,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device *h2_devices[] __initdata = {
 	&h2_nor_device,
 	&h2_nand_device,
 	&h2_smc91x_device,
 	&h2_irda_device,
 	&h2_kp_device,
+<<<<<<< HEAD
 	&h2_lcd_device,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void __init h2_init_smc91x(void)
@@ -365,6 +390,7 @@ static struct tps65010_board tps_board = {
 static struct i2c_board_info __initdata h2_i2c_board_info[] = {
 	{
 		I2C_BOARD_INFO("tps65010", 0x48),
+<<<<<<< HEAD
 		.irq            = OMAP_GPIO_IRQ(58),
 		.platform_data	= &tps_board,
 	}, {
@@ -379,6 +405,14 @@ static void __init h2_init_irq(void)
 	omap_init_irq();
 }
 
+=======
+		.platform_data	= &tps_board,
+	}, {
+		I2C_BOARD_INFO("isp1301_omap", 0x2d),
+	},
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct omap_usb_config h2_usb_config __initdata = {
 	/* usb1 has a Mini-AB port and external isp1301 transceiver */
 	.otg		= 2,
@@ -398,10 +432,13 @@ static struct omap_lcd_config h2_lcd_config __initdata = {
 	.ctrl_name	= "internal",
 };
 
+<<<<<<< HEAD
 static struct omap_board_config_kernel h2_config[] __initdata = {
 	{ OMAP_TAG_LCD,		&h2_lcd_config },
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init h2_init(void)
 {
 	h2_init_smc91x();
@@ -444,27 +481,52 @@ static void __init h2_init(void)
 	omap_cfg_reg(E19_1610_KBR4);
 	omap_cfg_reg(N19_1610_KBR5);
 
+<<<<<<< HEAD
 	platform_add_devices(h2_devices, ARRAY_SIZE(h2_devices));
 	omap_board_config = h2_config;
 	omap_board_config_size = ARRAY_SIZE(h2_config);
 	omap_serial_init();
+=======
+	h2_smc91x_resources[1].start = gpio_to_irq(0);
+	h2_smc91x_resources[1].end = gpio_to_irq(0);
+	platform_add_devices(h2_devices, ARRAY_SIZE(h2_devices));
+	omap_serial_init();
+	h2_i2c_board_info[0].irq = gpio_to_irq(58);
+	h2_i2c_board_info[1].irq = gpio_to_irq(2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap_register_i2c_bus(1, 100, h2_i2c_board_info,
 			      ARRAY_SIZE(h2_i2c_board_info));
 	omap1_usb_init(&h2_usb_config);
 	h2_mmc_init();
+<<<<<<< HEAD
 }
 
 static void __init h2_map_io(void)
 {
 	omap1_map_common_io();
+=======
+
+	omapfb_set_lcd_config(&h2_lcd_config);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 MACHINE_START(OMAP_H2, "TI-H2")
 	/* Maintainer: Imre Deak <imre.deak@nokia.com> */
+<<<<<<< HEAD
 	.boot_params	= 0x10000100,
 	.map_io		= h2_map_io,
 	.reserve	= omap_reserve,
 	.init_irq	= h2_init_irq,
 	.init_machine	= h2_init,
 	.timer		= &omap_timer,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= omap16xx_map_io,
+	.init_early     = omap1_init_early,
+	.reserve	= omap_reserve,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= h2_init,
+	.timer		= &omap1_timer,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -22,6 +22,10 @@
 #include <asm/hw_breakpoint.h>
 #include <asm/mmu_context.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+=======
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Stores the breakpoints currently in use on each breakpoint address

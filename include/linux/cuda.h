@@ -5,6 +5,12 @@
  * Copyright (C) 1996 Paul Mackerras.
  */
 
+<<<<<<< HEAD
+=======
+#ifndef _LINUX_CUDA_H
+#define _LINUX_CUDA_H
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* CUDA commands (2nd byte) */
 #define CUDA_WARM_START		0
 #define CUDA_AUTOPOLL		1
@@ -34,3 +40,8 @@ extern int cuda_request(struct adb_request *req,
 extern void cuda_poll(void);
 
 #endif	/* __KERNEL */
+<<<<<<< HEAD
+=======
+
+#endif /* _LINUX_CUDA_H */
+>>>>>>> refs/remotes/origin/cm-10.0

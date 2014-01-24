@@ -37,7 +37,10 @@
 #include <asm/mac_via.h>
 
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <asm/uaccess.h>
 

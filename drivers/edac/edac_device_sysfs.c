@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * file for managing the edac_device class of devices for EDAC
+=======
+ * file for managing the edac_device subsystem of devices for EDAC
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * (C) 2007 SoftwareBitMaker 
  *
@@ -230,21 +234,36 @@ static struct kobj_type ktype_device_ctrl = {
  */
 int edac_device_register_sysfs_main_kobj(struct edac_device_ctl_info *edac_dev)
 {
+<<<<<<< HEAD
 	struct sysdev_class *edac_class;
+=======
+	struct bus_type *edac_subsys;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err;
 
 	debugf1("%s()\n", __func__);
 
 	/* get the /sys/devices/system/edac reference */
+<<<<<<< HEAD
 	edac_class = edac_get_sysfs_class();
 	if (edac_class == NULL) {
 		debugf1("%s() no edac_class error\n", __func__);
+=======
+	edac_subsys = edac_get_sysfs_subsys();
+	if (edac_subsys == NULL) {
+		debugf1("%s() no edac_subsys error\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = -ENODEV;
 		goto err_out;
 	}
 
+<<<<<<< HEAD
 	/* Point to the 'edac_class' this instance 'reports' to */
 	edac_dev->edac_class = edac_class;
+=======
+	/* Point to the 'edac_subsys' this instance 'reports' to */
+	edac_dev->edac_subsys = edac_subsys;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Init the devices's kobject */
 	memset(&edac_dev->kobj, 0, sizeof(struct kobject));
@@ -261,7 +280,11 @@ int edac_device_register_sysfs_main_kobj(struct edac_device_ctl_info *edac_dev)
 
 	/* register */
 	err = kobject_init_and_add(&edac_dev->kobj, &ktype_device_ctrl,
+<<<<<<< HEAD
 				   &edac_class->kset.kobj,
+=======
+				   &edac_subsys->dev_root->kobj,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   "%s", edac_dev->name);
 	if (err) {
 		debugf1("%s()Failed to register '.../edac/%s'\n",
@@ -284,7 +307,11 @@ err_kobj_reg:
 	module_put(edac_dev->owner);
 
 err_mod_get:
+<<<<<<< HEAD
 	edac_put_sysfs_class();
+=======
+	edac_put_sysfs_subsys();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 err_out:
 	return err;
@@ -308,7 +335,11 @@ void edac_device_unregister_sysfs_main_kobj(struct edac_device_ctl_info *dev)
 	 *   b) 'kfree' the memory
 	 */
 	kobject_put(&dev->kobj);
+<<<<<<< HEAD
 	edac_put_sysfs_class();
+=======
+	edac_put_sysfs_subsys();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* edac_dev -> instance information */

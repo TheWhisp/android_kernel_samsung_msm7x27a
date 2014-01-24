@@ -3,7 +3,10 @@
 #include "parse-options.h"
 #include "evsel.h"
 #include "cgroup.h"
+<<<<<<< HEAD
 #include "debugfs.h" /* MAX_PATH, STR() */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "evlist.h"
 
 int nr_cgroups;
@@ -12,7 +15,11 @@ static int
 cgroupfs_find_mountpoint(char *buf, size_t maxlen)
 {
 	FILE *fp;
+<<<<<<< HEAD
 	char mountpoint[MAX_PATH+1], tokens[MAX_PATH+1], type[MAX_PATH+1];
+=======
+	char mountpoint[PATH_MAX + 1], tokens[PATH_MAX + 1], type[PATH_MAX + 1];
+>>>>>>> refs/remotes/origin/cm-10.0
 	char *token, *saved_ptr = NULL;
 	int found = 0;
 
@@ -25,8 +32,13 @@ cgroupfs_find_mountpoint(char *buf, size_t maxlen)
 	 * and inspect every cgroupfs mount point to find one that has
 	 * perf_event subsystem
 	 */
+<<<<<<< HEAD
 	while (fscanf(fp, "%*s %"STR(MAX_PATH)"s %"STR(MAX_PATH)"s %"
 				STR(MAX_PATH)"s %*d %*d\n",
+=======
+	while (fscanf(fp, "%*s %"STR(PATH_MAX)"s %"STR(PATH_MAX)"s %"
+				STR(PATH_MAX)"s %*d %*d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				mountpoint, type, tokens) == 3) {
 
 		if (!strcmp(type, "cgroup")) {
@@ -57,6 +69,7 @@ cgroupfs_find_mountpoint(char *buf, size_t maxlen)
 
 static int open_cgroup(char *name)
 {
+<<<<<<< HEAD
 	char path[MAX_PATH+1];
 	char mnt[MAX_PATH+1];
 	int fd;
@@ -66,6 +79,17 @@ static int open_cgroup(char *name)
 		return -1;
 
 	snprintf(path, MAX_PATH, "%s/%s", mnt, name);
+=======
+	char path[PATH_MAX + 1];
+	char mnt[PATH_MAX + 1];
+	int fd;
+
+
+	if (cgroupfs_find_mountpoint(mnt, PATH_MAX + 1))
+		return -1;
+
+	snprintf(path, PATH_MAX, "%s/%s", mnt, name);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fd = open(path, O_RDONLY);
 	if (fd == -1)

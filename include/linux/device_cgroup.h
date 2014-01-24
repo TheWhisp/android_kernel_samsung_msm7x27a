@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 
 #ifdef CONFIG_CGROUP_DEVICE

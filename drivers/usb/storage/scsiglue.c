@@ -78,8 +78,11 @@ static const char* host_info(struct Scsi_Host *host)
 
 static int slave_alloc (struct scsi_device *sdev)
 {
+<<<<<<< HEAD
 	struct us_data *us = host_to_us(sdev->host);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Set the INQUIRY transfer length to 36.  We don't use any of
 	 * the extra data and many devices choke if asked for more or
@@ -104,6 +107,7 @@ static int slave_alloc (struct scsi_device *sdev)
 	 */
 	blk_queue_update_dma_alignment(sdev->request_queue, (512 - 1));
 
+<<<<<<< HEAD
 	/*
 	 * The UFI spec treates the Peripheral Qualifier bits in an
 	 * INQUIRY result as reserved and requires devices to set them
@@ -116,6 +120,8 @@ static int slave_alloc (struct scsi_device *sdev)
 	if (us->subclass == USB_SC_UFI)
 		sdev->sdev_target->pdt_1f_for_no_lun = 1;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -197,6 +203,12 @@ static int slave_configure(struct scsi_device *sdev)
 		 * page x08, so we will skip it. */
 		sdev->skip_ms_page_8 = 1;
 
+<<<<<<< HEAD
+=======
+		/* Some devices don't handle VPD pages correctly */
+		sdev->skip_vpd_pages = 1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Some disks return the total number of blocks in response
 		 * to READ CAPACITY rather than the highest block number.
 		 * If this device makes that mistake, tell the sd driver. */
@@ -213,10 +225,20 @@ static int slave_configure(struct scsi_device *sdev)
 		if (us->fflags & US_FL_NO_READ_CAPACITY_16)
 			sdev->no_read_capacity_16 = 1;
 
+<<<<<<< HEAD
+=======
+		/*
+		 * Many devices do not respond properly to READ_CAPACITY_16.
+		 * Tell the SCSI layer to try READ_CAPACITY_10 first.
+		 */
+		sdev->try_rc_10_first = 1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* assume SPC3 or latter devices support sense size > 18 */
 		if (sdev->scsi_level > SCSI_SPC_2)
 			us->fflags |= US_FL_SANE_SENSE;
 
+<<<<<<< HEAD
 		/* Some devices report a SCSI revision level above 2 but are
 		 * unable to handle the REPORT LUNS command (for which
 		 * support is mandatory at level 3).  Since we already have
@@ -227,6 +249,8 @@ static int slave_configure(struct scsi_device *sdev)
 			sdev->sdev_target->scsi_level =
 					sdev->scsi_level = SCSI_2;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* USB-IDE bridges tend to report SK = 0x04 (Non-recoverable
 		 * Hardware Error) when any low-level error occurs,
 		 * recoverable or not.  Setting this flag tells the SCSI
@@ -283,6 +307,36 @@ static int slave_configure(struct scsi_device *sdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int target_alloc(struct scsi_target *starget)
+{
+	struct us_data *us = host_to_us(dev_to_shost(starget->dev.parent));
+
+	/*
+	 * Some USB drives don't support REPORT LUNS, even though they
+	 * report a SCSI revision level above 2.  Tell the SCSI layer
+	 * not to issue that command; it will perform a normal sequential
+	 * scan instead.
+	 */
+	starget->no_report_luns = 1;
+
+	/*
+	 * The UFI spec treats the Peripheral Qualifier bits in an
+	 * INQUIRY result as reserved and requires devices to set them
+	 * to 0.  However the SCSI spec requires these bits to be set
+	 * to 3 to indicate when a LUN is not present.
+	 *
+	 * Let the scanning code know if this target merely sets
+	 * Peripheral Device Type to 0x1f to indicate no LUN.
+	 */
+	if (us->subclass == USB_SC_UFI)
+		starget->pdt_1f_for_no_lun = 1;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* queue a command */
 /* This is always called with scsi_lock(host) held */
 static int queuecommand_lck(struct scsi_cmnd *srb,
@@ -546,6 +600,10 @@ struct scsi_host_template usb_stor_host_template = {
 
 	.slave_alloc =			slave_alloc,
 	.slave_configure =		slave_configure,
+<<<<<<< HEAD
+=======
+	.target_alloc =			target_alloc,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* lots of sg segments can be handled */
 	.sg_tablesize =			SCSI_MAX_SG_CHAIN_SEGMENTS,

@@ -11,6 +11,10 @@
 
 #include <linux/types.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mmc/card.h>
 
 #ifndef SDIO_VENDOR_ID_TI
@@ -21,6 +25,17 @@
 #define SDIO_DEVICE_ID_TI_WL1271	0x4076
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef SDIO_VENDOR_ID_STE
+#define SDIO_VENDOR_ID_STE		0x0020
+#endif
+
+#ifndef SDIO_DEVICE_ID_STE_CW1200
+#define SDIO_DEVICE_ID_STE_CW1200	0x2280
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef SDIO_VENDOR_ID_MSM
 #define SDIO_VENDOR_ID_MSM		0x0070
 #endif
@@ -29,6 +44,21 @@
 #define SDIO_DEVICE_ID_MSM_WCN1314	0x2881
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef SDIO_VENDOR_ID_MSM_QCA
+#define SDIO_VENDOR_ID_MSM_QCA		0x271
+#endif
+
+#ifndef SDIO_DEVICE_ID_MSM_QCA_AR6003_1
+#define SDIO_DEVICE_ID_MSM_QCA_AR6003_1	0x300
+#endif
+
+#ifndef SDIO_DEVICE_ID_MSM_QCA_AR6003_2
+#define SDIO_DEVICE_ID_MSM_QCA_AR6003_2	0x301
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This hook just adds a quirk for all sdio devices
  */
@@ -51,12 +81,27 @@ static const struct mmc_fixup mmc_fixup_methods[] = {
 	SDIO_FIXUP(SDIO_VENDOR_ID_MSM, SDIO_DEVICE_ID_MSM_WCN1314,
 		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
 
+<<<<<<< HEAD
+=======
+	SDIO_FIXUP(SDIO_VENDOR_ID_MSM_QCA, SDIO_DEVICE_ID_MSM_QCA_AR6003_1,
+		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
+
+	SDIO_FIXUP(SDIO_VENDOR_ID_MSM_QCA, SDIO_DEVICE_ID_MSM_QCA_AR6003_2,
+		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	SDIO_FIXUP(SDIO_VENDOR_ID_TI, SDIO_DEVICE_ID_TI_WL1271,
 		   add_quirk, MMC_QUIRK_NONSTD_FUNC_IF),
 
 	SDIO_FIXUP(SDIO_VENDOR_ID_TI, SDIO_DEVICE_ID_TI_WL1271,
 		   add_quirk, MMC_QUIRK_DISABLE_CD),
 
+<<<<<<< HEAD
+=======
+	SDIO_FIXUP(SDIO_VENDOR_ID_STE, SDIO_DEVICE_ID_STE_CW1200,
+		   add_quirk, MMC_QUIRK_BROKEN_BYTE_MODE_512),
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	END_FIXUP
 };
 

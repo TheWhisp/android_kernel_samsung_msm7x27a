@@ -37,6 +37,11 @@
  *		Matt Domsch	:	nowayout module option
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -53,13 +58,19 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define WDT_IS_PCI
 #include "wd501p.h"
 
+<<<<<<< HEAD
 #define PFX "wdt_pci: "
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* We can only use 1 card due to the /dev/watchdog restriction */
 static int dev_count;
 
@@ -80,8 +91,13 @@ MODULE_PARM_DESC(heartbeat,
 		"Watchdog heartbeat in seconds. (0<heartbeat<65536, default="
 				__MODULE_STRING(WD_TIMO) ")");
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -312,6 +328,7 @@ static irqreturn_t wdtpci_interrupt(int irq, void *dev_id)
 	status = inb(WDT_SR);
 	udelay(8);
 
+<<<<<<< HEAD
 	printk(KERN_CRIT PFX "status %d\n", status);
 
 	if (type == 501) {
@@ -327,11 +344,28 @@ static irqreturn_t wdtpci_interrupt(int irq, void *dev_id)
 		if (tachometer) {
 			if (!(status & WDC_SR_FANGOOD))
 				printk(KERN_CRIT PFX "Possible fan fault.\n");
+=======
+	pr_crit("status %d\n", status);
+
+	if (type == 501) {
+		if (!(status & WDC_SR_TGOOD)) {
+			pr_crit("Overheat alarm (%d)\n", inb(WDT_RT));
+			udelay(8);
+		}
+		if (!(status & WDC_SR_PSUOVER))
+			pr_crit("PSU over voltage\n");
+		if (!(status & WDC_SR_PSUUNDR))
+			pr_crit("PSU under voltage\n");
+		if (tachometer) {
+			if (!(status & WDC_SR_FANGOOD))
+				pr_crit("Possible fan fault\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	if (!(status & WDC_SR_WCCR)) {
 #ifdef SOFTWARE_REBOOT
 #ifdef ONLY_TESTING
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX "Would Reboot.\n");
 #else
 		printk(KERN_CRIT PFX "Initiating system reboot.\n");
@@ -339,6 +373,15 @@ static irqreturn_t wdtpci_interrupt(int irq, void *dev_id)
 #endif
 #else
 		printk(KERN_CRIT PFX "Reset in 5ms.\n");
+=======
+		pr_crit("Would Reboot\n");
+#else
+		pr_crit("Initiating system reboot\n");
+		emergency_restart(NULL);
+#endif
+#else
+		pr_crit("Reset in 5ms\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	}
 	spin_unlock(&wdtpci_lock);
@@ -484,7 +527,11 @@ static int wdtpci_release(struct inode *inode, struct file *file)
 	if (expect_close == 42) {
 		wdtpci_stop();
 	} else {
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX "Unexpected close, not stopping timer!");
+=======
+		pr_crit("Unexpected close, not stopping timer!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		wdtpci_ping();
 	}
 	expect_close = 0;
@@ -614,35 +661,57 @@ static int __devinit wdtpci_init_one(struct pci_dev *dev,
 
 	dev_count++;
 	if (dev_count > 1) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "This driver only supports one device\n");
+=======
+		pr_err("This driver only supports one device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
 	if (type != 500 && type != 501) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "unknown card type '%d'.\n", type);
+=======
+		pr_err("unknown card type '%d'\n", type);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
 	if (pci_enable_device(dev)) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Not possible to enable PCI Device\n");
+=======
+		pr_err("Not possible to enable PCI Device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
 	if (pci_resource_start(dev, 2) == 0x0000) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "No I/O-Address for card detected\n");
+=======
+		pr_err("No I/O-Address for card detected\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENODEV;
 		goto out_pci;
 	}
 
 	if (pci_request_region(dev, 2, "wdt_pci")) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "I/O address 0x%llx already in use\n",
 			(unsigned long long)pci_resource_start(dev, 2));
+=======
+		pr_err("I/O address 0x%llx already in use\n",
+		       (unsigned long long)pci_resource_start(dev, 2));
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_pci;
 	}
 
 	irq = dev->irq;
 	io = pci_resource_start(dev, 2);
 
+<<<<<<< HEAD
 	if (request_irq(irq, wdtpci_interrupt, IRQF_DISABLED | IRQF_SHARED,
 			 "wdt_pci", &wdtpci_miscdev)) {
 		printk(KERN_ERR PFX "IRQ %d is not free\n", irq);
@@ -652,35 +721,60 @@ static int __devinit wdtpci_init_one(struct pci_dev *dev,
 	printk(KERN_INFO
 	 "PCI-WDT500/501 (PCI-WDG-CSM) driver 0.10 at 0x%llx (Interrupt %d)\n",
 					(unsigned long long)io, irq);
+=======
+	if (request_irq(irq, wdtpci_interrupt, IRQF_SHARED,
+			 "wdt_pci", &wdtpci_miscdev)) {
+		pr_err("IRQ %d is not free\n", irq);
+		goto out_reg;
+	}
+
+	pr_info("PCI-WDT500/501 (PCI-WDG-CSM) driver 0.10 at 0x%llx (Interrupt %d)\n",
+		(unsigned long long)io, irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Check that the heartbeat value is within its range;
 	   if not reset to the default */
 	if (wdtpci_set_heartbeat(heartbeat)) {
 		wdtpci_set_heartbeat(WD_TIMO);
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 		  "heartbeat value must be 0 < heartbeat < 65536, using %d\n",
 								WD_TIMO);
+=======
+		pr_info("heartbeat value must be 0 < heartbeat < 65536, using %d\n",
+			WD_TIMO);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	ret = register_reboot_notifier(&wdtpci_notifier);
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", ret);
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_irq;
 	}
 
 	if (type == 501) {
 		ret = misc_register(&temp_miscdev);
 		if (ret) {
+<<<<<<< HEAD
 			printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 							TEMP_MINOR, ret);
+=======
+			pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+			       TEMP_MINOR, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto out_rbt;
 		}
 	}
 
 	ret = misc_register(&wdtpci_miscdev);
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 						WATCHDOG_MINOR, ret);
@@ -692,6 +786,18 @@ static int __devinit wdtpci_init_one(struct pci_dev *dev,
 	if (type == 501)
 		printk(KERN_INFO "wdt: Fan Tachometer is %s\n",
 				(tachometer ? "Enabled" : "Disabled"));
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+		goto out_misc;
+	}
+
+	pr_info("initialized. heartbeat=%d sec (nowayout=%d)\n",
+		heartbeat, nowayout);
+	if (type == 501)
+		pr_info("Fan Tachometer is %s\n",
+			tachometer ? "Enabled" : "Disabled");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = 0;
 out:

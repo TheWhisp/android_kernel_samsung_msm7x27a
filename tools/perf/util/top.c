@@ -15,6 +15,7 @@
 #include "top.h"
 #include <inttypes.h>
 
+<<<<<<< HEAD
 /*
  * Ordering weight: count-1 * count-2 * ... / count-n
  */
@@ -61,6 +62,8 @@ static void rb_insert_active_sym(struct rb_root *tree, struct sym_entry *se)
 	rb_insert_color(&se->rb_node, tree);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SNPRINTF(buf, size, fmt, args...) \
 ({ \
 	size_t r = snprintf(buf, size, fmt, ## args); \
@@ -69,7 +72,10 @@ static void rb_insert_active_sym(struct rb_root *tree, struct sym_entry *se)
 
 size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
 {
+<<<<<<< HEAD
 	struct perf_evsel *counter;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	float samples_per_sec = top->samples / top->delay_secs;
 	float ksamples_per_sec = top->kernel_samples / top->delay_secs;
 	float esamples_percent = (100.0 * top->exact_samples) / top->samples;
@@ -104,7 +110,11 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
 			       esamples_percent);
 	}
 
+<<<<<<< HEAD
 	if (top->evlist->nr_entries == 1 || !top->display_weighted) {
+=======
+	if (top->evlist->nr_entries == 1) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct perf_evsel *first;
 		first = list_entry(top->evlist->entries.next, struct perf_evsel, node);
 		ret += SNPRINTF(bf + ret, size - ret, "%" PRIu64 "%s ",
@@ -112,6 +122,7 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
 				top->freq ? "Hz" : "");
 	}
 
+<<<<<<< HEAD
 	if (!top->display_weighted) {
 		ret += SNPRINTF(bf + ret, size - ret, "%s",
 				event_name(top->sym_evsel));
@@ -142,6 +153,21 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
 	else if (top->target_tid != -1)
 		ret += SNPRINTF(bf + ret, size - ret, " (target_tid: %d",
 				top->target_tid);
+=======
+	ret += SNPRINTF(bf + ret, size - ret, "%s", event_name(top->sym_evsel));
+
+	ret += SNPRINTF(bf + ret, size - ret, "], ");
+
+	if (top->target_pid)
+		ret += SNPRINTF(bf + ret, size - ret, " (target_pid: %s",
+				top->target_pid);
+	else if (top->target_tid)
+		ret += SNPRINTF(bf + ret, size - ret, " (target_tid: %s",
+				top->target_tid);
+	else if (top->uid_str != NULL)
+		ret += SNPRINTF(bf + ret, size - ret, " (uid: %s",
+				top->uid_str);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		ret += SNPRINTF(bf + ret, size - ret, " (all");
 
@@ -149,7 +175,11 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
 		ret += SNPRINTF(bf + ret, size - ret, ", CPU%s: %s)",
 				top->evlist->cpus->nr > 1 ? "s" : "", top->cpu_list);
 	else {
+<<<<<<< HEAD
 		if (top->target_tid != -1)
+=======
+		if (top->target_tid)
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret += SNPRINTF(bf + ret, size - ret, ")");
 		else
 			ret += SNPRINTF(bf + ret, size - ret, ", %d CPU%s)",
@@ -166,6 +196,7 @@ void perf_top__reset_sample_counters(struct perf_top *top)
 	top->exact_samples = top->guest_kernel_samples =
 	top->guest_us_samples = 0;
 }
+<<<<<<< HEAD
 
 float perf_top__decay_samples(struct perf_top *top, struct rb_root *root)
 {
@@ -236,3 +267,5 @@ void perf_top__find_widths(struct perf_top *top, struct rb_root *root,
 			*sym_width = sym->namelen;
 	}
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

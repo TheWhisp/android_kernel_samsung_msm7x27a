@@ -7,13 +7,20 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+<<<<<<< HEAD
+=======
+#include <stdarg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
 
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "lkc.h"
 
 static void conf_warning(const char *fmt, ...)
@@ -128,6 +135,10 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
 			sym->flags |= def_flags;
 			break;
 		}
+<<<<<<< HEAD
+=======
+		/* fall through */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case S_BOOLEAN:
 		if (p[0] == 'y') {
 			sym->def[def].tri = yes;
@@ -140,7 +151,11 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
 			break;
 		}
 		conf_warning("symbol value '%s' invalid for %s", p, sym->name);
+<<<<<<< HEAD
 		break;
+=======
+		return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case S_OTHER:
 		if (*p != '"') {
 			for (p2 = p; *p2 && !isspace(*p2); p2++)
@@ -148,6 +163,10 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
 			sym->type = S_STRING;
 			goto done;
 		}
+<<<<<<< HEAD
+=======
+		/* fall through */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case S_STRING:
 		if (*p++ != '"')
 			break;
@@ -162,6 +181,10 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
 			conf_warning("invalid string found");
 			return 1;
 		}
+<<<<<<< HEAD
+=======
+		/* fall through */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case S_INT:
 	case S_HEX:
 	done:
@@ -237,6 +260,10 @@ load:
 		case S_STRING:
 			if (sym->def[def].val)
 				free(sym->def[def].val);
+<<<<<<< HEAD
+=======
+			/* fall through */
+>>>>>>> refs/remotes/origin/cm-10.0
 		default:
 			sym->def[def].val = NULL;
 			sym->def[def].tri = no;
@@ -340,10 +367,15 @@ setsym:
 
 int conf_read(const char *name)
 {
+<<<<<<< HEAD
 	struct symbol *sym, *choice_sym;
 	struct property *prop;
 	struct expr *e;
 	int i, flags;
+=======
+	struct symbol *sym;
+	int i;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sym_set_change_count(0);
 
@@ -353,7 +385,11 @@ int conf_read(const char *name)
 	for_all_symbols(i, sym) {
 		sym_calc_value(sym);
 		if (sym_is_choice(sym) || (sym->flags & SYMBOL_AUTO))
+<<<<<<< HEAD
 			goto sym_ok;
+=======
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (sym_has_value(sym) && (sym->flags & SYMBOL_WRITE)) {
 			/* check that calculated value agrees with saved value */
 			switch (sym->type) {
@@ -362,14 +398,23 @@ int conf_read(const char *name)
 				if (sym->def[S_DEF_USER].tri != sym_get_tristate_value(sym))
 					break;
 				if (!sym_is_choice(sym))
+<<<<<<< HEAD
 					goto sym_ok;
 			default:
 				if (!strcmp(sym->curr.val, sym->def[S_DEF_USER].val))
 					goto sym_ok;
+=======
+					continue;
+				/* fall through */
+			default:
+				if (!strcmp(sym->curr.val, sym->def[S_DEF_USER].val))
+					continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 		} else if (!sym_has_value(sym) && !(sym->flags & SYMBOL_WRITE))
 			/* no previous value and not saved */
+<<<<<<< HEAD
 			goto sym_ok;
 		conf_unsaved++;
 		/* maybe print value in verbose mode... */
@@ -385,6 +430,11 @@ int conf_read(const char *name)
 			if (choice_sym->visible != no)
 				flags &= choice_sym->flags;
 		sym->flags &= flags | ~SYMBOL_DEF_USER;
+=======
+			continue;
+		conf_unsaved++;
+		/* maybe print value in verbose mode... */
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	for_all_symbols(i, sym) {
@@ -417,6 +467,7 @@ int conf_read(const char *name)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Write a S_STRING */
 static void conf_write_string(bool headerfile, const char *name,
                               const char *str, FILE *out)
@@ -475,6 +526,193 @@ static void conf_write_symbol(struct symbol *sym, FILE *out, bool write_no)
 	}
 }
 
+=======
+/*
+ * Kconfig configuration printer
+ *
+ * This printer is used when generating the resulting configuration after
+ * kconfig invocation and `defconfig' files. Unset symbol might be omitted by
+ * passing a non-NULL argument to the printer.
+ *
+ */
+static void
+kconfig_print_symbol(FILE *fp, struct symbol *sym, const char *value, void *arg)
+{
+
+	switch (sym->type) {
+	case S_BOOLEAN:
+	case S_TRISTATE:
+		if (*value == 'n') {
+			bool skip_unset = (arg != NULL);
+
+			if (!skip_unset)
+				fprintf(fp, "# %s%s is not set\n",
+				    CONFIG_, sym->name);
+			return;
+		}
+		break;
+	default:
+		break;
+	}
+
+	fprintf(fp, "%s%s=%s\n", CONFIG_, sym->name, value);
+}
+
+static void
+kconfig_print_comment(FILE *fp, const char *value, void *arg)
+{
+	const char *p = value;
+	size_t l;
+
+	for (;;) {
+		l = strcspn(p, "\n");
+		fprintf(fp, "#");
+		if (l) {
+			fprintf(fp, " ");
+			xfwrite(p, l, 1, fp);
+			p += l;
+		}
+		fprintf(fp, "\n");
+		if (*p++ == '\0')
+			break;
+	}
+}
+
+static struct conf_printer kconfig_printer_cb =
+{
+	.print_symbol = kconfig_print_symbol,
+	.print_comment = kconfig_print_comment,
+};
+
+/*
+ * Header printer
+ *
+ * This printer is used when generating the `include/generated/autoconf.h' file.
+ */
+static void
+header_print_symbol(FILE *fp, struct symbol *sym, const char *value, void *arg)
+{
+
+	switch (sym->type) {
+	case S_BOOLEAN:
+	case S_TRISTATE: {
+		const char *suffix = "";
+
+		switch (*value) {
+		case 'n':
+			break;
+		case 'm':
+			suffix = "_MODULE";
+			/* fall through */
+		default:
+			fprintf(fp, "#define %s%s%s 1\n",
+			    CONFIG_, sym->name, suffix);
+		}
+		break;
+	}
+	case S_HEX: {
+		const char *prefix = "";
+
+		if (value[0] != '0' || (value[1] != 'x' && value[1] != 'X'))
+			prefix = "0x";
+		fprintf(fp, "#define %s%s %s%s\n",
+		    CONFIG_, sym->name, prefix, value);
+		break;
+	}
+	case S_STRING:
+	case S_INT:
+		fprintf(fp, "#define %s%s %s\n",
+		    CONFIG_, sym->name, value);
+		break;
+	default:
+		break;
+	}
+
+}
+
+static void
+header_print_comment(FILE *fp, const char *value, void *arg)
+{
+	const char *p = value;
+	size_t l;
+
+	fprintf(fp, "/*\n");
+	for (;;) {
+		l = strcspn(p, "\n");
+		fprintf(fp, " *");
+		if (l) {
+			fprintf(fp, " ");
+			xfwrite(p, l, 1, fp);
+			p += l;
+		}
+		fprintf(fp, "\n");
+		if (*p++ == '\0')
+			break;
+	}
+	fprintf(fp, " */\n");
+}
+
+static struct conf_printer header_printer_cb =
+{
+	.print_symbol = header_print_symbol,
+	.print_comment = header_print_comment,
+};
+
+/*
+ * Tristate printer
+ *
+ * This printer is used when generating the `include/config/tristate.conf' file.
+ */
+static void
+tristate_print_symbol(FILE *fp, struct symbol *sym, const char *value, void *arg)
+{
+
+	if (sym->type == S_TRISTATE && *value != 'n')
+		fprintf(fp, "%s%s=%c\n", CONFIG_, sym->name, (char)toupper(*value));
+}
+
+static struct conf_printer tristate_printer_cb =
+{
+	.print_symbol = tristate_print_symbol,
+	.print_comment = kconfig_print_comment,
+};
+
+static void conf_write_symbol(FILE *fp, struct symbol *sym,
+			      struct conf_printer *printer, void *printer_arg)
+{
+	const char *str;
+
+	switch (sym->type) {
+	case S_OTHER:
+	case S_UNKNOWN:
+		break;
+	case S_STRING:
+		str = sym_get_string_value(sym);
+		str = sym_escape_string_value(str);
+		printer->print_symbol(fp, sym, str, printer_arg);
+		free((void *)str);
+		break;
+	default:
+		str = sym_get_string_value(sym);
+		printer->print_symbol(fp, sym, str, printer_arg);
+	}
+}
+
+static void
+conf_write_heading(FILE *fp, struct conf_printer *printer, void *printer_arg)
+{
+	char buf[256];
+
+	snprintf(buf, sizeof(buf),
+	    "\n"
+	    "Automatically generated file; DO NOT EDIT.\n"
+	    "%s\n",
+	    rootmenu.prompt->text);
+
+	printer->print_comment(fp, buf, printer_arg);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Write out a minimal config.
  * All values that has default values are skipped as this is redundant.
@@ -531,7 +769,11 @@ int conf_write_defconfig(const char *filename)
 						goto next_menu;
 				}
 			}
+<<<<<<< HEAD
 			conf_write_symbol(sym, out, true);
+=======
+			conf_write_symbol(out, sym, &kconfig_printer_cb, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 next_menu:
 		if (menu->list != NULL) {
@@ -596,11 +838,15 @@ int conf_write(const char *name)
 	if (!out)
 		return 1;
 
+<<<<<<< HEAD
 	fprintf(out, _("#\n"
 		       "# Automatically generated make config: don't edit\n"
 		       "# %s\n"
 		       "#\n"),
 		     rootmenu.prompt->text);
+=======
+	conf_write_heading(out, &kconfig_printer_cb, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!conf_get_changed())
 		sym_clear_all_valid();
@@ -621,8 +867,13 @@ int conf_write(const char *name)
 			if (!(sym->flags & SYMBOL_WRITE))
 				goto next;
 			sym->flags &= ~SYMBOL_WRITE;
+<<<<<<< HEAD
 			/* Write config symbol to file */
 			conf_write_symbol(sym, out, true);
+=======
+
+			conf_write_symbol(out, sym, &kconfig_printer_cb, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 next:
@@ -771,7 +1022,10 @@ out:
 int conf_write_autoconf(void)
 {
 	struct symbol *sym;
+<<<<<<< HEAD
 	const char *str;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	const char *name;
 	FILE *out, *tristate, *out_h;
 	int i;
@@ -800,6 +1054,7 @@ int conf_write_autoconf(void)
 		return 1;
 	}
 
+<<<<<<< HEAD
 	fprintf(out, "#\n"
 		     "# Automatically generated make config: don't edit\n"
 		     "# %s\n"
@@ -813,12 +1068,20 @@ int conf_write_autoconf(void)
 		       " * %s\n"
 		       " */\n",
 		       rootmenu.prompt->text);
+=======
+	conf_write_heading(out, &kconfig_printer_cb, NULL);
+
+	conf_write_heading(tristate, &tristate_printer_cb, NULL);
+
+	conf_write_heading(out_h, &header_printer_cb, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for_all_symbols(i, sym) {
 		sym_calc_value(sym);
 		if (!(sym->flags & SYMBOL_WRITE) || !sym->name)
 			continue;
 
+<<<<<<< HEAD
 		/* write symbol to config file */
 		conf_write_symbol(sym, out, false);
 
@@ -862,6 +1125,14 @@ int conf_write_autoconf(void)
 		default:
 			break;
 		}
+=======
+		/* write symbol to auto.conf, tristate and header files */
+		conf_write_symbol(out, sym, &kconfig_printer_cb, (void *)1);
+
+		conf_write_symbol(tristate, sym, &tristate_printer_cb, (void *)1);
+
+		conf_write_symbol(out_h, sym, &header_printer_cb, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	fclose(out);
 	fclose(tristate);

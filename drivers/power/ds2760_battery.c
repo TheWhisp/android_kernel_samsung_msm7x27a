@@ -64,7 +64,11 @@ static unsigned int cache_time = 1000;
 module_param(cache_time, uint, 0644);
 MODULE_PARM_DESC(cache_time, "cache time in milliseconds");
 
+<<<<<<< HEAD
 static unsigned int pmod_enabled;
+=======
+static bool pmod_enabled;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(pmod_enabled, bool, 0644);
 MODULE_PARM_DESC(pmod_enabled, "PMOD enable bit");
 
@@ -95,7 +99,15 @@ static int rated_capacities[] = {
 	2880,	/* Samsung */
 	2880,	/* BYD */
 	2880,	/* Lishen */
+<<<<<<< HEAD
 	2880	/* NEC */
+=======
+	2880,	/* NEC */
+#ifdef CONFIG_MACH_H4700
+	0,
+	3600,	/* HP iPAQ hx4700 3.7V 3600mAh (359114-001) */
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* array is level at temps 0°C, 10°C, 20°C, 30°C, 40°C
@@ -637,6 +649,7 @@ static struct platform_driver ds2760_battery_driver = {
 	.resume	  = ds2760_battery_resume,
 };
 
+<<<<<<< HEAD
 static int __init ds2760_battery_init(void)
 {
 	return platform_driver_register(&ds2760_battery_driver);
@@ -649,6 +662,9 @@ static void __exit ds2760_battery_exit(void)
 
 module_init(ds2760_battery_init);
 module_exit(ds2760_battery_exit);
+=======
+module_platform_driver(ds2760_battery_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Szabolcs Gyurko <szabolcs.gyurko@tlt.hu>, "

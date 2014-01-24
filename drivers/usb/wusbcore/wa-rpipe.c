@@ -58,9 +58,16 @@
  *  destination address.
  */
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <linux/bitmap.h>
 #include <linux/slab.h>
+=======
+#include <linux/atomic.h>
+#include <linux/bitmap.h>
+#include <linux/slab.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "wusbhc.h"
 #include "wa-hc.h"

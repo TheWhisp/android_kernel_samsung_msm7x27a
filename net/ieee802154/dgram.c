@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * ZigBee socket interface
+=======
+ * IEEE 802.15.4 dgram socket interface
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Copyright 2007, 2008 Siemens AG
  *
@@ -209,6 +213,10 @@ static int dgram_sendmsg(struct kiocb *iocb, struct sock *sk,
 	unsigned mtu;
 	struct sk_buff *skb;
 	struct dgram_sock *ro = dgram_sk(sk);
+<<<<<<< HEAD
+=======
+	int hlen, tlen;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err;
 
 	if (msg->msg_flags & MSG_OOB) {
@@ -229,13 +237,23 @@ static int dgram_sendmsg(struct kiocb *iocb, struct sock *sk,
 	mtu = dev->mtu;
 	pr_debug("name = %s, mtu = %u\n", dev->name, mtu);
 
+<<<<<<< HEAD
 	skb = sock_alloc_send_skb(sk, LL_ALLOCATED_SPACE(dev) + size,
+=======
+	hlen = LL_RESERVED_SPACE(dev);
+	tlen = dev->needed_tailroom;
+	skb = sock_alloc_send_skb(sk, hlen + tlen + size,
+>>>>>>> refs/remotes/origin/cm-10.0
 			msg->msg_flags & MSG_DONTWAIT,
 			&err);
 	if (!skb)
 		goto out_dev;
 
+<<<<<<< HEAD
 	skb_reserve(skb, LL_RESERVED_SPACE(dev));
+=======
+	skb_reserve(skb, hlen);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	skb_reset_network_header(skb);
 

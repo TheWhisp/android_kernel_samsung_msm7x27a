@@ -101,7 +101,10 @@ static void *lib80211_tkip_init(int key_idx)
 	priv->tx_tfm_arc4 = crypto_alloc_blkcipher("ecb(arc4)", 0,
 						CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->tx_tfm_arc4)) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG pr_fmt("could not allocate crypto API arc4\n"));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->tx_tfm_arc4 = NULL;
 		goto fail;
 	}
@@ -109,7 +112,10 @@ static void *lib80211_tkip_init(int key_idx)
 	priv->tx_tfm_michael = crypto_alloc_hash("michael_mic", 0,
 						 CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->tx_tfm_michael)) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG pr_fmt("could not allocate crypto API michael_mic\n"));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->tx_tfm_michael = NULL;
 		goto fail;
 	}
@@ -117,7 +123,10 @@ static void *lib80211_tkip_init(int key_idx)
 	priv->rx_tfm_arc4 = crypto_alloc_blkcipher("ecb(arc4)", 0,
 						CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->rx_tfm_arc4)) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG pr_fmt("could not allocate crypto API arc4\n"));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->rx_tfm_arc4 = NULL;
 		goto fail;
 	}
@@ -125,7 +134,10 @@ static void *lib80211_tkip_init(int key_idx)
 	priv->rx_tfm_michael = crypto_alloc_hash("michael_mic", 0,
 						 CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->rx_tfm_michael)) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG pr_fmt("could not allocate crypto API michael_mic\n"));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->rx_tfm_michael = NULL;
 		goto fail;
 	}

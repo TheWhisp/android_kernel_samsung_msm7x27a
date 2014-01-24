@@ -37,7 +37,10 @@
 #include <linux/init.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/sched.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/spinlock.h>
 #include <linux/clk.h>
 #include <linux/err.h>
@@ -45,16 +48,28 @@
 #include <linux/clockchips.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/leds.h>
 #include <asm/irq.h>
 #include <asm/sched_clock.h>
 
+<<<<<<< HEAD
 #include <asm/mach/irq.h>
 #include <asm/mach/time.h>
 
 #include <plat/common.h>
+=======
+#include <mach/hardware.h>
+#include <asm/mach/irq.h>
+#include <asm/mach/time.h>
+
+#include "iomap.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_OMAP_MPU_TIMER
 
@@ -190,6 +205,7 @@ static __init void omap_init_mpu_timer(unsigned long rate)
  * ---------------------------------------------------------------------------
  */
 
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 
 static inline unsigned long long notrace _omap_mpu_sched_clock(void)
@@ -214,6 +230,11 @@ static void notrace mpu_update_sched_clock(void)
 {
 	u32 cyc = ~omap_mpu_timer_read(1);
 	update_sched_clock(&cd, cyc, (u32)~0);
+=======
+static u32 notrace omap_mpu_read_sched_clock(void)
+{
+	return ~omap_mpu_timer_read(1);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __init omap_init_clocksource(unsigned long rate)
@@ -223,7 +244,11 @@ static void __init omap_init_clocksource(unsigned long rate)
 			"%s: can't register clocksource!\n";
 
 	omap_mpu_timer_start(1, ~0, 1);
+<<<<<<< HEAD
 	init_sched_clock(&cd, mpu_update_sched_clock, 32, rate);
+=======
+	setup_sched_clock(omap_mpu_read_sched_clock, 32, rate);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (clocksource_mmio_init(&timer->read_tim, "mpu_timer2", rate,
 			300, 32, clocksource_mmio_readl_down))
@@ -254,6 +279,7 @@ static inline void omap_mpu_timer_init(void)
 }
 #endif	/* CONFIG_OMAP_MPU_TIMER */
 
+<<<<<<< HEAD
 #if defined(CONFIG_OMAP_MPU_TIMER) && defined(CONFIG_OMAP_32K_TIMER)
 static unsigned long long (*preferred_sched_clock)(void);
 
@@ -278,6 +304,8 @@ static inline void preferred_sched_clock_init(bool use_32k_sched_clcok)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int omap_32k_timer_usable(void)
 {
 	int res = false;
@@ -297,6 +325,7 @@ static inline int omap_32k_timer_usable(void)
  * Timer initialization
  * ---------------------------------------------------------------------------
  */
+<<<<<<< HEAD
 static void __init omap_timer_init(void)
 {
 	if (omap_32k_timer_usable()) {
@@ -309,4 +338,14 @@ static void __init omap_timer_init(void)
 
 struct sys_timer omap_timer = {
 	.init		= omap_timer_init,
+=======
+static void __init omap1_timer_init(void)
+{
+	if (!omap_32k_timer_usable())
+		omap_mpu_timer_init();
+}
+
+struct sys_timer omap1_timer = {
+	.init		= omap1_timer_init,
+>>>>>>> refs/remotes/origin/cm-10.0
 };

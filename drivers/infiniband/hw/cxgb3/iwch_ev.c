@@ -46,6 +46,10 @@ static void post_qp_event(struct iwch_dev *rnicp, struct iwch_cq *chp,
 	struct ib_event event;
 	struct iwch_qp_attributes attrs;
 	struct iwch_qp *qhp;
+<<<<<<< HEAD
+=======
+	unsigned long flag;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock(&rnicp->lock);
 	qhp = get_qhp(rnicp, CQE_QPID(rsp_msg->cqe));
@@ -94,7 +98,13 @@ static void post_qp_event(struct iwch_dev *rnicp, struct iwch_cq *chp,
 	if (qhp->ibqp.event_handler)
 		(*qhp->ibqp.event_handler)(&event, qhp->ibqp.qp_context);
 
+<<<<<<< HEAD
 	(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
+=======
+	spin_lock_irqsave(&chp->comp_handler_lock, flag);
+	(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
+	spin_unlock_irqrestore(&chp->comp_handler_lock, flag);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (atomic_dec_and_test(&qhp->refcnt))
 		wake_up(&qhp->wait);
@@ -107,6 +117,10 @@ void iwch_ev_dispatch(struct cxio_rdev *rdev_p, struct sk_buff *skb)
 	struct iwch_cq *chp;
 	struct iwch_qp *qhp;
 	u32 cqid = RSPQ_CQID(rsp_msg);
+<<<<<<< HEAD
+=======
+	unsigned long flag;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rnicp = (struct iwch_dev *) rdev_p->ulp;
 	spin_lock(&rnicp->lock);
@@ -170,7 +184,13 @@ void iwch_ev_dispatch(struct cxio_rdev *rdev_p, struct sk_buff *skb)
 		 */
 		if (qhp->ep && SQ_TYPE(rsp_msg->cqe))
 			dst_confirm(qhp->ep->dst);
+<<<<<<< HEAD
 		(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
+=======
+		spin_lock_irqsave(&chp->comp_handler_lock, flag);
+		(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
+		spin_unlock_irqrestore(&chp->comp_handler_lock, flag);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case TPT_ERR_STAG:

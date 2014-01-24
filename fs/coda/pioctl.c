@@ -24,7 +24,11 @@
 #include "coda_linux.h"
 
 /* pioctl ops */
+<<<<<<< HEAD
 static int coda_ioctl_permission(struct inode *inode, int mask, unsigned int flags);
+=======
+static int coda_ioctl_permission(struct inode *inode, int mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 static long coda_pioctl(struct file *filp, unsigned int cmd,
 			unsigned long user_data);
 
@@ -41,7 +45,11 @@ const struct file_operations coda_ioctl_operations = {
 };
 
 /* the coda pioctl inode ops */
+<<<<<<< HEAD
 static int coda_ioctl_permission(struct inode *inode, int mask, unsigned int flags)
+=======
+static int coda_ioctl_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return (mask & MAY_EXEC) ? -EACCES : 0;
 }

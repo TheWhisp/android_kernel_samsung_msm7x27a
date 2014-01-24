@@ -26,6 +26,10 @@ typedef int (*intercept_handler_t)(struct kvm_vcpu *vcpu);
 
 /* negativ values are error codes, positive values for internal conditions */
 #define SIE_INTERCEPT_RERUNVCPU		(1<<0)
+<<<<<<< HEAD
+=======
+#define SIE_INTERCEPT_UCONTROL		(1<<1)
+>>>>>>> refs/remotes/origin/cm-10.0
 int kvm_handle_sie_intercept(struct kvm_vcpu *vcpu);
 
 #define VM_EVENT(d_kvm, d_loglevel, d_string, d_args...)\
@@ -47,6 +51,26 @@ static inline int __cpu_is_stopped(struct kvm_vcpu *vcpu)
 	return atomic_read(&vcpu->arch.sie_block->cpuflags) & CPUSTAT_STOP_INT;
 }
 
+<<<<<<< HEAD
+=======
+static inline int kvm_is_ucontrol(struct kvm *kvm)
+{
+#ifdef CONFIG_KVM_S390_UCONTROL
+	if (kvm->arch.gmap)
+		return 0;
+	return 1;
+#else
+	return 0;
+#endif
+}
+
+static inline void kvm_s390_set_prefix(struct kvm_vcpu *vcpu, u32 prefix)
+{
+	vcpu->arch.sie_block->prefix = prefix & 0x7fffe000u;
+	vcpu->arch.sie_block->ihcpu  = 0xffff;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int kvm_s390_handle_wait(struct kvm_vcpu *vcpu);
 enum hrtimer_restart kvm_s390_idle_wakeup(struct hrtimer *timer);
 void kvm_s390_tasklet(unsigned long parm);
@@ -58,6 +82,7 @@ int kvm_s390_inject_vcpu(struct kvm_vcpu *vcpu,
 int kvm_s390_inject_program_int(struct kvm_vcpu *vcpu, u16 code);
 int kvm_s390_inject_sigp_stop(struct kvm_vcpu *vcpu, int action);
 
+<<<<<<< HEAD
 static inline long kvm_s390_vcpu_get_memsize(struct kvm_vcpu *vcpu)
 {
 	return vcpu->arch.sie_block->gmslm
@@ -87,6 +112,11 @@ static inline void kvm_s390_vcpu_set_mem(struct kvm_vcpu *vcpu)
 
 /* implemented in priv.c */
 int kvm_s390_handle_b2(struct kvm_vcpu *vcpu);
+=======
+/* implemented in priv.c */
+int kvm_s390_handle_b2(struct kvm_vcpu *vcpu);
+int kvm_s390_handle_e5(struct kvm_vcpu *vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* implemented in sigp.c */
 int kvm_s390_handle_sigp(struct kvm_vcpu *vcpu);

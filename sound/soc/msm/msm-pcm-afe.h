@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -30,6 +34,10 @@ struct pcm_afe_info {
 	int prepared;
 	struct hrtimer hrt;
 	int poll_time;
+<<<<<<< HEAD
+=======
+	struct audio_client *audio_client;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 

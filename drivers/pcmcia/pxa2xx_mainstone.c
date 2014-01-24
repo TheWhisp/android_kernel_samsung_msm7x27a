@@ -30,6 +30,7 @@
 #include "soc_common.h"
 
 
+<<<<<<< HEAD
 static struct pcmcia_irqs irqs[] = {
 	{ 0, MAINSTONE_S0_CD_IRQ, "PCMCIA0 CD" },
 	{ 1, MAINSTONE_S1_CD_IRQ, "PCMCIA1 CD" },
@@ -37,12 +38,15 @@ static struct pcmcia_irqs irqs[] = {
 	{ 1, MAINSTONE_S1_STSCHG_IRQ, "PCMCIA1 STSCHG" },
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int mst_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 	/*
 	 * Setup default state of GPIO outputs
 	 * before we enable them as outputs.
 	 */
+<<<<<<< HEAD
 
 	skt->socket.pci_irq = (skt->nr == 0) ? MAINSTONE_S0_IRQ : MAINSTONE_S1_IRQ;
 	return soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
@@ -51,6 +55,22 @@ static int mst_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 static void mst_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 {
 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
+=======
+	if (skt->nr == 0) {
+		skt->socket.pci_irq = MAINSTONE_S0_IRQ;
+		skt->stat[SOC_STAT_CD].irq = MAINSTONE_S0_CD_IRQ;
+		skt->stat[SOC_STAT_CD].name = "PCMCIA0 CD";
+		skt->stat[SOC_STAT_BVD1].irq = MAINSTONE_S0_STSCHG_IRQ;
+		skt->stat[SOC_STAT_BVD1].name = "PCMCIA0 STSCHG";
+	} else {
+		skt->socket.pci_irq = MAINSTONE_S1_IRQ;
+		skt->stat[SOC_STAT_CD].irq = MAINSTONE_S1_CD_IRQ;
+		skt->stat[SOC_STAT_CD].name = "PCMCIA1 CD";
+		skt->stat[SOC_STAT_BVD1].irq = MAINSTONE_S1_STSCHG_IRQ;
+		skt->stat[SOC_STAT_BVD1].name = "PCMCIA1 STSCHG";
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static unsigned long mst_pcmcia_status[2];
@@ -84,7 +104,10 @@ static void mst_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 	state->bvd2   = (status & MST_PCMCIA_nSPKR_BVD2) ? 1 : 0;
 	state->vs_3v  = (status & MST_PCMCIA_nVS1) ? 0 : 1;
 	state->vs_Xv  = (status & MST_PCMCIA_nVS2) ? 0 : 1;
+<<<<<<< HEAD
 	state->wrprot = 0;  /* not available */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int mst_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
@@ -128,6 +151,7 @@ static int mst_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 	return ret;
 }
 
+<<<<<<< HEAD
 static void mst_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
 }
@@ -144,6 +168,13 @@ static struct pcmcia_low_level mst_pcmcia_ops __initdata = {
 	.configure_socket	= mst_pcmcia_configure_socket,
 	.socket_init		= mst_pcmcia_socket_init,
 	.socket_suspend		= mst_pcmcia_socket_suspend,
+=======
+static struct pcmcia_low_level mst_pcmcia_ops __initdata = {
+	.owner			= THIS_MODULE,
+	.hw_init		= mst_pcmcia_hw_init,
+	.socket_state		= mst_pcmcia_socket_state,
+	.configure_socket	= mst_pcmcia_configure_socket,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.nr			= 2,
 };
 

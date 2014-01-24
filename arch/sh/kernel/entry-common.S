@@ -145,6 +145,10 @@ work_notifysig:
 	 mov	r15, r4
 	mov	r12, r5		! set arg1(save_r0)
 	mov	r0, r6
+<<<<<<< HEAD
+=======
+	sti
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov.l	2f, r1
 	mov.l	3f, r0
 	jmp	@r1

@@ -68,16 +68,28 @@
  * Message header sizes
  */
 
+<<<<<<< HEAD
 #define SHORT_H_SIZE              24	/* Connected, in-cluster messages */
 #define DIR_MSG_H_SIZE            32	/* Directly addressed messages */
 #define LONG_H_SIZE               40	/* Named messages */
 #define MCAST_H_SIZE              44	/* Multicast messages */
+=======
+#define SHORT_H_SIZE              24	/* In-cluster basic payload message */
+#define BASIC_H_SIZE              32	/* Basic payload message */
+#define NAMED_H_SIZE              40	/* Named payload message */
+#define MCAST_H_SIZE              44	/* Multicast payload message */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define INT_H_SIZE                40	/* Internal messages */
 #define MIN_H_SIZE                24	/* Smallest legal TIPC header size */
 #define MAX_H_SIZE                60	/* Largest possible TIPC header size */
 
 #define MAX_MSG_SIZE (MAX_H_SIZE + TIPC_MAX_USER_MSG_SIZE)
 
+<<<<<<< HEAD
+=======
+#define TIPC_MEDIA_ADDR_OFFSET	5
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct tipc_msg {
 	__be32 hdr[15];
@@ -311,6 +323,7 @@ static inline void msg_set_seqno(struct tipc_msg *m, u32 n)
 }
 
 /*
+<<<<<<< HEAD
  * TIPC may utilize the "link ack #" and "link seq #" fields of a short
  * message header to hold the destination node for the message, since the
  * normal "dest node" field isn't present.  This cache is only referenced
@@ -331,6 +344,8 @@ static inline void msg_set_destnode_cache(struct tipc_msg *m, u32 dnode)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Words 3-10
  */
 
@@ -377,7 +392,11 @@ static inline void msg_set_mc_netid(struct tipc_msg *m, u32 p)
 
 static inline int msg_short(struct tipc_msg *m)
 {
+<<<<<<< HEAD
 	return msg_hdr_sz(m) == 24;
+=======
+	return msg_hdr_sz(m) == SHORT_H_SIZE;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline u32 msg_orignode(struct tipc_msg *m)
@@ -402,11 +421,14 @@ static inline void msg_set_destnode(struct tipc_msg *m, u32 a)
 	msg_set_word(m, 7, a);
 }
 
+<<<<<<< HEAD
 static inline int msg_is_dest(struct tipc_msg *m, u32 d)
 {
 	return msg_short(m) || (msg_destnode(m) == d);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline u32 msg_nametype(struct tipc_msg *m)
 {
 	return msg_word(m, 8);
@@ -535,6 +557,19 @@ static inline void msg_set_seq_gap(struct tipc_msg *m, u32 n)
 	msg_set_bits(m, 1, 16, 0x1fff, n);
 }
 
+<<<<<<< HEAD
+=======
+static inline u32 msg_node_sig(struct tipc_msg *m)
+{
+	return msg_bits(m, 1, 0, 0xffff);
+}
+
+static inline void msg_set_node_sig(struct tipc_msg *m, u32 n)
+{
+	msg_set_bits(m, 1, 0, 0xffff, n);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Word 2
@@ -635,7 +670,11 @@ static inline u32 msg_link_selector(struct tipc_msg *m)
 
 static inline void msg_set_link_selector(struct tipc_msg *m, u32 n)
 {
+<<<<<<< HEAD
 	msg_set_bits(m, 4, 0, 1, (n & 1));
+=======
+	msg_set_bits(m, 4, 0, 1, n);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -659,7 +698,11 @@ static inline u32 msg_probe(struct tipc_msg *m)
 
 static inline void msg_set_probe(struct tipc_msg *m, u32 val)
 {
+<<<<<<< HEAD
 	msg_set_bits(m, 5, 0, 1, (val & 1));
+=======
+	msg_set_bits(m, 5, 0, 1, val);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline char msg_net_plane(struct tipc_msg *m)
@@ -702,6 +745,13 @@ static inline void msg_set_redundant_link(struct tipc_msg *m, u32 r)
 	msg_set_bits(m, 5, 12, 0x1, r);
 }
 
+<<<<<<< HEAD
+=======
+static inline char *msg_media_addr(struct tipc_msg *m)
+{
+	return (char *)&m->hdr[TIPC_MEDIA_ADDR_OFFSET];
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Word 9
@@ -754,6 +804,7 @@ int tipc_msg_build(struct tipc_msg *hdr, struct iovec const *msg_sect,
 		   u32 num_sect, unsigned int total_len,
 			    int max_size, int usrmem, struct sk_buff **buf);
 
+<<<<<<< HEAD
 static inline void msg_set_media_addr(struct tipc_msg *m, struct tipc_media_addr *a)
 {
 	memcpy(&((int *)m)[5], a, sizeof(*a));
@@ -764,4 +815,6 @@ static inline void msg_get_media_addr(struct tipc_msg *m, struct tipc_media_addr
 	memcpy(a, &((int *)m)[5], sizeof(*a));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

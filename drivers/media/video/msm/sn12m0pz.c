@@ -11,6 +11,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/types.h>
 #include <linux/i2c.h>
@@ -1579,7 +1583,11 @@ init_done:
 	CDBG("init_done");
 	return rc;
 }
+<<<<<<< HEAD
 static int __init sn12m0pz_init_client(struct i2c_client *client)
+=======
+static int __devinit sn12m0pz_init_client(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* Initialize the MSM_CAMI2C Chip */
 	init_waitqueue_head(&sn12m0pz_wait_queue);
@@ -1591,7 +1599,11 @@ static const struct i2c_device_id sn12m0pz_i2c_id[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static int sn12m0pz_i2c_probe(struct i2c_client *client,
+=======
+static int __devinit sn12m0pz_i2c_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct i2c_device_id *id)
 {
 	int rc = 0;

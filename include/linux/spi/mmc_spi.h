@@ -1,10 +1,17 @@
 #ifndef __LINUX_SPI_MMC_SPI_H
 #define __LINUX_SPI_MMC_SPI_H
 
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/spi/spi.h>
 #include <linux/interrupt.h>
 
+=======
+#include <linux/spi/spi.h>
+#include <linux/interrupt.h>
+
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mmc_host;
 
 /* Put this in platform_data of a device being used to manage an MMC/SD

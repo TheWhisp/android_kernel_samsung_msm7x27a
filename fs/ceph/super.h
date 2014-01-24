@@ -28,6 +28,10 @@
 #define CEPH_MOUNT_OPT_RBYTES          (1<<5) /* dir st_bytes = rbytes */
 #define CEPH_MOUNT_OPT_NOASYNCREADDIR  (1<<7) /* no dcache readdir */
 #define CEPH_MOUNT_OPT_INO32           (1<<8) /* 32 bit inos */
+<<<<<<< HEAD
+=======
+#define CEPH_MOUNT_OPT_DCACHE          (1<<9) /* use dcache for readdir etc */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CEPH_MOUNT_OPT_DEFAULT    (CEPH_MOUNT_OPT_RBYTES)
 
@@ -36,7 +40,12 @@
 #define ceph_test_mount_opt(fsc, opt) \
 	(!!((fsc)->mount_options->flags & CEPH_MOUNT_OPT_##opt))
 
+<<<<<<< HEAD
 #define CEPH_RSIZE_DEFAULT             (512*1024) /* readahead */
+=======
+#define CEPH_RSIZE_DEFAULT             0           /* max read size */
+#define CEPH_RASIZE_DEFAULT            (8192*1024) /* readahead */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define CEPH_MAX_READDIR_DEFAULT        1024
 #define CEPH_MAX_READDIR_BYTES_DEFAULT  (512*1024)
 #define CEPH_SNAPDIRNAME_DEFAULT        ".snap"
@@ -45,8 +54,14 @@ struct ceph_mount_options {
 	int flags;
 	int sb_flags;
 
+<<<<<<< HEAD
 	int wsize;
 	int rsize;            /* max readahead */
+=======
+	int wsize;            /* max write size */
+	int rsize;            /* max read size */
+	int rasize;           /* max readahead */
+>>>>>>> refs/remotes/origin/cm-10.0
 	int congestion_kb;    /* max writeback in flight */
 	int caps_wanted_delay_min, caps_wanted_delay_max;
 	int cap_release_safety;
@@ -134,7 +149,11 @@ struct ceph_cap_snap {
 	int issued, dirty;
 	struct ceph_snap_context *context;
 
+<<<<<<< HEAD
 	mode_t mode;
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	uid_t uid;
 	gid_t gid;
 
@@ -201,6 +220,10 @@ struct ceph_inode_xattr {
  * Ceph dentry state
  */
 struct ceph_dentry_info {
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ceph_mds_session *lease_session;
 	u32 lease_gen, lease_shared_gen;
 	u32 lease_seq;
@@ -211,6 +234,21 @@ struct ceph_dentry_info {
 	u64 offset;
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * dentry flags
+ *
+ * The locking for D_COMPLETE is a bit odd:
+ *  - we can clear it at almost any time (see ceph_d_prune)
+ *  - it is only meaningful if:
+ *    - we hold dir inode i_ceph_lock
+ *    - we hold dir FILE_SHARED caps
+ *    - the dentry D_COMPLETE is set
+ */
+#define CEPH_D_COMPLETE 1  /* if set, d_u.d_subdirs is complete directory */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ceph_inode_xattrs_info {
 	/*
 	 * (still encoded) xattr blob. we avoid the overhead of parsing
@@ -235,6 +273,11 @@ struct ceph_inode_xattrs_info {
 struct ceph_inode_info {
 	struct ceph_vino i_vino;   /* ceph ino + snap */
 
+<<<<<<< HEAD
+=======
+	spinlock_t i_ceph_lock;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	u64 i_version;
 	u32 i_time_warp_seq;
 
@@ -249,14 +292,22 @@ struct ceph_inode_info {
 	struct timespec i_rctime;
 	u64 i_rbytes, i_rfiles, i_rsubdirs;
 	u64 i_files, i_subdirs;
+<<<<<<< HEAD
 	u64 i_max_offset;  /* largest readdir offset, set with I_COMPLETE */
+=======
+	u64 i_max_offset;  /* largest readdir offset, set with D_COMPLETE */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct rb_root i_fragtree;
 	struct mutex i_fragtree_mutex;
 
 	struct ceph_inode_xattrs_info i_xattrs;
 
+<<<<<<< HEAD
 	/* capabilities.  protected _both_ by i_lock and cap->session's
+=======
+	/* capabilities.  protected _both_ by i_ceph_lock and cap->session's
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * s_mutex. */
 	struct rb_root i_caps;           /* cap list */
 	struct ceph_cap *i_auth_cap;     /* authoritative cap, if any */
@@ -344,11 +395,20 @@ static inline struct ceph_vino ceph_vino(struct inode *inode)
  * x86_64+ino32  64                     32
  * x86_64        64                     64
  */
+<<<<<<< HEAD
 static inline u32 ceph_ino_to_ino32(ino_t ino)
 {
 	ino ^= ino >> (sizeof(ino) * 8 - 32);
 	if (!ino)
 		ino = 1;
+=======
+static inline u32 ceph_ino_to_ino32(__u64 vino)
+{
+	u32 ino = vino & 0xffffffff;
+	ino ^= vino >> 32;
+	if (!ino)
+		ino = 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ino;
 }
 
@@ -357,11 +417,19 @@ static inline u32 ceph_ino_to_ino32(ino_t ino)
  */
 static inline ino_t ceph_vino_to_ino(struct ceph_vino vino)
 {
+<<<<<<< HEAD
 	ino_t ino = (ino_t)vino.ino;  /* ^ (vino.snap << 20); */
 #if BITS_PER_LONG == 32
 	ino = ceph_ino_to_ino32(ino);
 #endif
 	return ino;
+=======
+#if BITS_PER_LONG == 32
+	return ceph_ino_to_ino32(vino.ino);
+#else
+	return (ino_t)vino.ino;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -413,7 +481,10 @@ static inline struct inode *ceph_find_inode(struct super_block *sb,
 /*
  * Ceph inode.
  */
+<<<<<<< HEAD
 #define CEPH_I_COMPLETE  1  /* we have complete directory cached */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define CEPH_I_NODELAY   4  /* do not delay cap release */
 #define CEPH_I_FLUSH     8  /* do not delay flush of dirty metadata */
 #define CEPH_I_NOFLUSH  16  /* do not flush dirty caps */
@@ -422,18 +493,30 @@ static inline void ceph_i_clear(struct inode *inode, unsigned mask)
 {
 	struct ceph_inode_info *ci = ceph_inode(inode);
 
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 	ci->i_ceph_flags &= ~mask;
 	spin_unlock(&inode->i_lock);
+=======
+	spin_lock(&ci->i_ceph_lock);
+	ci->i_ceph_flags &= ~mask;
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void ceph_i_set(struct inode *inode, unsigned mask)
 {
 	struct ceph_inode_info *ci = ceph_inode(inode);
 
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 	ci->i_ceph_flags |= mask;
 	spin_unlock(&inode->i_lock);
+=======
+	spin_lock(&ci->i_ceph_lock);
+	ci->i_ceph_flags |= mask;
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline bool ceph_i_test(struct inode *inode, unsigned mask)
@@ -441,9 +524,15 @@ static inline bool ceph_i_test(struct inode *inode, unsigned mask)
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	bool r;
 
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 	r = (ci->i_ceph_flags & mask) == mask;
 	spin_unlock(&inode->i_lock);
+=======
+	spin_lock(&ci->i_ceph_lock);
+	r = (ci->i_ceph_flags & mask) == mask;
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return r;
 }
 
@@ -471,6 +560,16 @@ static inline loff_t ceph_make_fpos(unsigned frag, unsigned off)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * set/clear directory D_COMPLETE flag
+ */
+void ceph_dir_set_complete(struct inode *inode);
+void ceph_dir_clear_complete(struct inode *inode);
+bool ceph_dir_test_complete(struct inode *inode);
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * caps helpers
  */
 static inline bool __ceph_is_any_real_caps(struct ceph_inode_info *ci)
@@ -486,9 +585,15 @@ extern int __ceph_caps_issued_other(struct ceph_inode_info *ci,
 static inline int ceph_caps_issued(struct ceph_inode_info *ci)
 {
 	int issued;
+<<<<<<< HEAD
 	spin_lock(&ci->vfs_inode.i_lock);
 	issued = __ceph_caps_issued(ci, NULL);
 	spin_unlock(&ci->vfs_inode.i_lock);
+=======
+	spin_lock(&ci->i_ceph_lock);
+	issued = __ceph_caps_issued(ci, NULL);
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return issued;
 }
 
@@ -496,9 +601,15 @@ static inline int ceph_caps_issued_mask(struct ceph_inode_info *ci, int mask,
 					int touch)
 {
 	int r;
+<<<<<<< HEAD
 	spin_lock(&ci->vfs_inode.i_lock);
 	r = __ceph_caps_issued_mask(ci, mask, touch);
 	spin_unlock(&ci->vfs_inode.i_lock);
+=======
+	spin_lock(&ci->i_ceph_lock);
+	r = __ceph_caps_issued_mask(ci, mask, touch);
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return r;
 }
 
@@ -543,13 +654,25 @@ extern void ceph_reservation_status(struct ceph_fs_client *client,
 /*
  * we keep buffered readdir results attached to file->private_data
  */
+<<<<<<< HEAD
 struct ceph_file_info {
 	int fmode;     /* initialized on open */
+=======
+#define CEPH_F_SYNC     1
+#define CEPH_F_ATEND    2
+
+struct ceph_file_info {
+	short fmode;     /* initialized on open */
+	short flags;     /* CEPH_F_* */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* readdir: position within the dir */
 	u32 frag;
 	struct ceph_mds_request *last_readdir;
+<<<<<<< HEAD
 	int at_end;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* readdir: position within a frag */
 	unsigned offset;       /* offset of last chunk, adjusted for . and .. */
@@ -692,7 +815,11 @@ extern void ceph_queue_invalidate(struct inode *inode);
 extern void ceph_queue_writeback(struct inode *inode);
 
 extern int ceph_do_getattr(struct inode *inode, int mask);
+<<<<<<< HEAD
 extern int ceph_permission(struct inode *inode, int mask, unsigned int flags);
+=======
+extern int ceph_permission(struct inode *inode, int mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int ceph_setattr(struct dentry *dentry, struct iattr *attr);
 extern int ceph_getattr(struct vfsmount *mnt, struct dentry *dentry,
 			struct kstat *stat);
@@ -705,6 +832,11 @@ extern ssize_t ceph_listxattr(struct dentry *, char *, size_t);
 extern int ceph_removexattr(struct dentry *, const char *);
 extern void __ceph_build_xattrs_blob(struct ceph_inode_info *ci);
 extern void __ceph_destroy_xattrs(struct ceph_inode_info *ci);
+<<<<<<< HEAD
+=======
+extern void __init ceph_xattr_init(void);
+extern void ceph_xattr_exit(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* caps.c */
 extern const char *ceph_cap_string(int c);
@@ -718,17 +850,28 @@ extern int ceph_add_cap(struct inode *inode,
 extern void __ceph_remove_cap(struct ceph_cap *cap);
 static inline void ceph_remove_cap(struct ceph_cap *cap)
 {
+<<<<<<< HEAD
 	struct inode *inode = &cap->ci->vfs_inode;
 	spin_lock(&inode->i_lock);
 	__ceph_remove_cap(cap);
 	spin_unlock(&inode->i_lock);
+=======
+	spin_lock(&cap->ci->i_ceph_lock);
+	__ceph_remove_cap(cap);
+	spin_unlock(&cap->ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 extern void ceph_put_cap(struct ceph_mds_client *mdsc,
 			 struct ceph_cap *cap);
 
 extern void ceph_queue_caps_release(struct inode *inode);
 extern int ceph_write_inode(struct inode *inode, struct writeback_control *wbc);
+<<<<<<< HEAD
 extern int ceph_fsync(struct file *file, int datasync);
+=======
+extern int ceph_fsync(struct file *file, loff_t start, loff_t end,
+		      int datasync);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void ceph_kick_flushing_caps(struct ceph_mds_client *mdsc,
 				    struct ceph_mds_session *session);
 extern struct ceph_cap *ceph_get_cap_for_mds(struct ceph_inode_info *ci,
@@ -788,6 +931,11 @@ extern const struct dentry_operations ceph_dentry_ops, ceph_snap_dentry_ops,
 	ceph_snapdir_dentry_ops;
 
 extern int ceph_handle_notrace_create(struct inode *dir, struct dentry *dentry);
+<<<<<<< HEAD
+=======
+extern int ceph_handle_snapdir(struct ceph_mds_request *req,
+			       struct dentry *dentry, int err);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct dentry *ceph_finish_lookup(struct ceph_mds_request *req,
 					 struct dentry *dentry, int err);
 
@@ -795,7 +943,12 @@ extern void ceph_dentry_lru_add(struct dentry *dn);
 extern void ceph_dentry_lru_touch(struct dentry *dn);
 extern void ceph_dentry_lru_del(struct dentry *dn);
 extern void ceph_invalidate_dentry_lease(struct dentry *dentry);
+<<<<<<< HEAD
 extern unsigned ceph_dentry_hash(struct dentry *dn);
+=======
+extern unsigned ceph_dentry_hash(struct inode *dir, struct dentry *dn);
+extern struct inode *ceph_get_dentry_parent_inode(struct dentry *dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * our d_ops vary depending on whether the inode is live,
@@ -814,6 +967,7 @@ extern const struct export_operations ceph_export_ops;
 extern int ceph_lock(struct file *file, int cmd, struct file_lock *fl);
 extern int ceph_flock(struct file *file, int cmd, struct file_lock *fl);
 extern void ceph_count_locks(struct inode *inode, int *p_num, int *f_num);
+<<<<<<< HEAD
 extern int ceph_encode_locks(struct inode *i, struct ceph_pagelist *p,
 			     int p_locks, int f_locks);
 extern int lock_to_ceph_filelock(struct file_lock *fl, struct ceph_filelock *c);
@@ -826,6 +980,17 @@ static inline struct inode *get_dentry_parent_inode(struct dentry *dentry)
 	return NULL;
 }
 
+=======
+extern int ceph_encode_locks_to_buffer(struct inode *inode,
+				       struct ceph_filelock *flocks,
+				       int num_fcntl_locks,
+				       int num_flock_locks);
+extern int ceph_locks_to_pagelist(struct ceph_filelock *flocks,
+				  struct ceph_pagelist *pagelist,
+				  int num_fcntl_locks, int num_flock_locks);
+extern int lock_to_ceph_filelock(struct file_lock *fl, struct ceph_filelock *c);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* debugfs.c */
 extern int ceph_fs_debugfs_init(struct ceph_fs_client *client);
 extern void ceph_fs_debugfs_cleanup(struct ceph_fs_client *client);

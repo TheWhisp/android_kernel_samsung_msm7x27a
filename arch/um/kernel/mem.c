@@ -4,6 +4,10 @@
  */
 
 #include <linux/stddef.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bootmem.h>
 #include <linux/highmem.h>
 #include <linux/mm.h>
@@ -20,6 +24,10 @@
 
 /* allocated in paging_init, zeroed in mem_init, and unchanged thereafter */
 unsigned long *empty_zero_page = NULL;
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(empty_zero_page);
+>>>>>>> refs/remotes/origin/cm-10.0
 /* allocated in paging_init and unchanged thereafter */
 static unsigned long *empty_bad_page = NULL;
 

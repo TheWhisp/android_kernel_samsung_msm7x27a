@@ -95,7 +95,11 @@ struct mace_video {
  * Ethernet interface
  */
 struct mace_ethernet {
+<<<<<<< HEAD
 	volatile unsigned long mac_ctrl;
+=======
+	volatile u64 mac_ctrl;
+>>>>>>> refs/remotes/origin/cm-10.0
 	volatile unsigned long int_stat;
 	volatile unsigned long dma_ctrl;
 	volatile unsigned long timer;

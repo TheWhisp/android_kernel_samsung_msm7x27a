@@ -3,6 +3,11 @@
  * Copyright (C) 2001, 2008 David S. Miller (davem@davemloft.net)
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/types.h>
@@ -189,7 +194,11 @@ static int __devinit riowd_probe(struct platform_device *op)
 
 	p->regs = of_ioremap(&op->resource[0], 0, 2, DRIVER_NAME);
 	if (!p->regs) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Cannot map registers.\n");
+=======
+		pr_err("Cannot map registers\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_free;
 	}
 	/* Make miscdev useable right away */
@@ -197,12 +206,21 @@ static int __devinit riowd_probe(struct platform_device *op)
 
 	err = misc_register(&riowd_miscdev);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Cannot register watchdog misc device.\n");
 		goto out_iounmap;
 	}
 
 	printk(KERN_INFO PFX "Hardware watchdog [%i minutes], "
 	       "regs at %p\n", riowd_timeout, p->regs);
+=======
+		pr_err("Cannot register watchdog misc device\n");
+		goto out_iounmap;
+	}
+
+	pr_info("Hardware watchdog [%i minutes], regs at %p\n",
+		riowd_timeout, p->regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_set_drvdata(&op->dev, p);
 	return 0;
@@ -247,6 +265,7 @@ static struct platform_driver riowd_driver = {
 	.remove		= __devexit_p(riowd_remove),
 };
 
+<<<<<<< HEAD
 static int __init riowd_init(void)
 {
 	return platform_driver_register(&riowd_driver);
@@ -259,3 +278,6 @@ static void __exit riowd_exit(void)
 
 module_init(riowd_init);
 module_exit(riowd_exit);
+=======
+module_platform_driver(riowd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

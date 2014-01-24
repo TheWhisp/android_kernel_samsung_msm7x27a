@@ -24,6 +24,11 @@
 
 */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/slab.h>
@@ -473,8 +478,12 @@ bttv_set_dma(struct bttv *btv, int override)
 	capctl |= (btv->cap_ctl & 0x0c) ? 0x0c : 0x00;  /* vbi data */
 	capctl |= override;
 
+<<<<<<< HEAD
 	d2printk(KERN_DEBUG
 		 "bttv%d: capctl=%x lirq=%d top=%08Lx/%08Lx even=%08Lx/%08Lx\n",
+=======
+	d2printk("%d: capctl=%x lirq=%d top=%08llx/%08llx even=%08llx/%08llx\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		 btv->c.nr,capctl,btv->loop_irq,
 		 btv->cvbi         ? (unsigned long long)btv->cvbi->top.dma            : 0,
 		 btv->curr.top     ? (unsigned long long)btv->curr.top->top.dma        : 0,
@@ -517,8 +526,13 @@ bttv_risc_init_main(struct bttv *btv)
 
 	if ((rc = btcx_riscmem_alloc(btv->c.pci,&btv->main,PAGE_SIZE)) < 0)
 		return rc;
+<<<<<<< HEAD
 	dprintk(KERN_DEBUG "bttv%d: risc main @ %08Lx\n",
 		btv->c.nr,(unsigned long long)btv->main.dma);
+=======
+	dprintk("%d: risc main @ %08llx\n",
+		btv->c.nr, (unsigned long long)btv->main.dma);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	btv->main.cpu[0] = cpu_to_le32(BT848_RISC_SYNC | BT848_RISC_RESYNC |
 				       BT848_FIFO_STATUS_VRE);
@@ -557,12 +571,21 @@ bttv_risc_hook(struct bttv *btv, int slot, struct btcx_riscmem *risc,
 	unsigned long next = btv->main.dma + ((slot+2) << 2);
 
 	if (NULL == risc) {
+<<<<<<< HEAD
 		d2printk(KERN_DEBUG "bttv%d: risc=%p slot[%d]=NULL\n",
 			 btv->c.nr,risc,slot);
 		btv->main.cpu[slot+1] = cpu_to_le32(next);
 	} else {
 		d2printk(KERN_DEBUG "bttv%d: risc=%p slot[%d]=%08Lx irq=%d\n",
 			 btv->c.nr,risc,slot,(unsigned long long)risc->dma,irqflags);
+=======
+		d2printk("%d: risc=%p slot[%d]=NULL\n", btv->c.nr, risc, slot);
+		btv->main.cpu[slot+1] = cpu_to_le32(next);
+	} else {
+		d2printk("%d: risc=%p slot[%d]=%08llx irq=%d\n",
+			 btv->c.nr, risc, slot,
+			 (unsigned long long)risc->dma, irqflags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		cmd = BT848_RISC_JUMP;
 		if (irqflags) {
 			cmd |= BT848_RISC_IRQ;
@@ -708,8 +731,12 @@ bttv_buffer_risc(struct bttv *btv, struct bttv_buffer *buf)
 	const struct bttv_tvnorm *tvnorm = bttv_tvnorms + buf->tvnorm;
 	struct videobuf_dmabuf *dma=videobuf_to_dma(&buf->vb);
 
+<<<<<<< HEAD
 	dprintk(KERN_DEBUG
 		"bttv%d: buffer field: %s  format: %s  size: %dx%d\n",
+=======
+	dprintk("%d: buffer field: %s  format: %s  size: %dx%d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		btv->c.nr, v4l2_field_names[buf->vb.field],
 		buf->fmt->name, buf->vb.width, buf->vb.height);
 
@@ -870,10 +897,16 @@ bttv_overlay_risc(struct bttv *btv,
 		  struct bttv_buffer *buf)
 {
 	/* check interleave, bottom+top fields */
+<<<<<<< HEAD
 	dprintk(KERN_DEBUG
 		"bttv%d: overlay fields: %s format: %s  size: %dx%d\n",
 		btv->c.nr, v4l2_field_names[buf->vb.field],
 		fmt->name,ov->w.width,ov->w.height);
+=======
+	dprintk("%d: overlay fields: %s format: %s  size: %dx%d\n",
+		btv->c.nr, v4l2_field_names[buf->vb.field],
+		fmt->name, ov->w.width, ov->w.height);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* calculate geometry */
 	bttv_calc_geo(btv,&buf->geo,ov->w.width,ov->w.height,

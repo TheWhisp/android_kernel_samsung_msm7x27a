@@ -50,7 +50,13 @@
 
      <sect1><title>Delaying, scheduling, and timer routines</title>
 !Iinclude/linux/sched.h
+<<<<<<< HEAD
 !Ekernel/sched.c
+=======
+!Ekernel/sched/core.c
+!Ikernel/sched/cpupri.c
+!Ikernel/sched/fair.c
+>>>>>>> refs/remotes/origin/cm-10.0
 !Iinclude/linux/completion.h
 !Ekernel/timer.c
      </sect1>
@@ -100,9 +106,18 @@ X!Iinclude/linux/kobject.h
 !Iinclude/linux/device.h
      </sect1>
      <sect1><title>Device Drivers Base</title>
+<<<<<<< HEAD
 !Edrivers/base/driver.c
 !Edrivers/base/core.c
 !Edrivers/base/class.c
+=======
+!Idrivers/base/init.c
+!Edrivers/base/driver.c
+!Edrivers/base/core.c
+!Edrivers/base/syscore.c
+!Edrivers/base/class.c
+!Idrivers/base/node.c
+>>>>>>> refs/remotes/origin/cm-10.0
 !Edrivers/base/firmware_class.c
 !Edrivers/base/transport_class.c
 <!-- Cannot be included, because
@@ -111,7 +126,11 @@ X!Iinclude/linux/kobject.h
      exceed allowed 44 characters maximum
 X!Edrivers/base/attribute_container.c
 -->
+<<<<<<< HEAD
 !Edrivers/base/sys.c
+=======
+!Edrivers/base/dd.c
+>>>>>>> refs/remotes/origin/cm-10.0
 <!--
 X!Edrivers/base/interface.c
 -->
@@ -119,6 +138,14 @@ X!Edrivers/base/interface.c
 !Edrivers/base/platform.c
 !Edrivers/base/bus.c
      </sect1>
+<<<<<<< HEAD
+=======
+     <sect1><title>Device Drivers DMA Management</title>
+!Edrivers/base/dma-buf.c
+!Edrivers/base/dma-coherent.c
+!Edrivers/base/dma-mapping.c
+     </sect1>
+>>>>>>> refs/remotes/origin/cm-10.0
      <sect1><title>Device Drivers Power Management</title>
 !Edrivers/base/power/main.c
      </sect1>
@@ -216,9 +243,14 @@ X!Isound/sound_firmware.c
 
   <chapter id="uart16x50">
      <title>16x50 UART Driver</title>
+<<<<<<< HEAD
 !Iinclude/linux/serial_core.h
 !Edrivers/tty/serial/serial_core.c
 !Edrivers/tty/serial/8250.c
+=======
+!Edrivers/tty/serial/serial_core.c
+!Edrivers/tty/serial/8250/8250.c
+>>>>>>> refs/remotes/origin/cm-10.0
   </chapter>
 
   <chapter id="fbdev">
@@ -437,4 +469,24 @@ X!Idrivers/video/console/fonts.c
 !Edrivers/i2c/i2c-core.c
   </chapter>
 
+<<<<<<< HEAD
+=======
+  <chapter id="hsi">
+     <title>High Speed Synchronous Serial Interface (HSI)</title>
+
+     <para>
+	High Speed Synchronous Serial Interface (HSI) is a
+	serial interface mainly used for connecting application
+	engines (APE) with cellular modem engines (CMT) in cellular
+	handsets.
+
+	HSI provides multiplexing for up to 16 logical channels,
+	low-latency and full duplex communication.
+     </para>
+
+!Iinclude/linux/hsi/hsi.h
+!Edrivers/hsi/hsi.c
+  </chapter>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 </book>

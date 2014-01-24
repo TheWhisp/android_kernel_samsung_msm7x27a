@@ -44,7 +44,10 @@ struct vr_nor_mtd {
 	void __iomem *csr_base;
 	struct map_info map;
 	struct mtd_info *info;
+<<<<<<< HEAD
 	int nr_parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pci_dev *dev;
 };
 
@@ -71,6 +74,7 @@ static void __devexit vr_nor_destroy_partitions(struct vr_nor_mtd *p)
 
 static int __devinit vr_nor_init_partitions(struct vr_nor_mtd *p)
 {
+<<<<<<< HEAD
 	struct mtd_partition *parts;
 	static const char *part_probes[] = { "cmdlinepart", NULL };
 
@@ -78,6 +82,11 @@ static int __devinit vr_nor_init_partitions(struct vr_nor_mtd *p)
 	/* partition the flash bank */
 	p->nr_parts = parse_mtd_partitions(p->info, part_probes, &parts, 0);
 	return mtd_device_register(p->info, parts, p->nr_parts);
+=======
+	/* register the flash bank */
+	/* partition the flash bank */
+	return mtd_device_parse_register(p->info, NULL, NULL, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __devexit vr_nor_destroy_mtd_setup(struct vr_nor_mtd *p)

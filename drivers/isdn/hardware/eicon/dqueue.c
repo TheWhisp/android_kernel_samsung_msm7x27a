@@ -14,7 +14,11 @@
 #include "dqueue.h"
 
 int
+<<<<<<< HEAD
 diva_data_q_init(diva_um_idi_data_queue_t * q,
+=======
+diva_data_q_init(diva_um_idi_data_queue_t *q,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 int max_length, int max_segments)
 {
 	int i;
@@ -38,7 +42,11 @@ diva_data_q_init(diva_um_idi_data_queue_t * q,
 	return (0);
 }
 
+<<<<<<< HEAD
 int diva_data_q_finit(diva_um_idi_data_queue_t * q)
+=======
+int diva_data_q_finit(diva_um_idi_data_queue_t *q)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
@@ -54,12 +62,20 @@ int diva_data_q_finit(diva_um_idi_data_queue_t * q)
 	return (0);
 }
 
+<<<<<<< HEAD
 int diva_data_q_get_max_length(const diva_um_idi_data_queue_t * q)
+=======
+int diva_data_q_get_max_length(const diva_um_idi_data_queue_t *q)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return (q->max_length);
 }
 
+<<<<<<< HEAD
 void *diva_data_q_get_segment4write(diva_um_idi_data_queue_t * q)
+=======
+void *diva_data_q_get_segment4write(diva_um_idi_data_queue_t *q)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if ((!q->segment_pending) && (q->count < q->segments)) {
 		q->segment_pending = 1;
@@ -70,7 +86,11 @@ void *diva_data_q_get_segment4write(diva_um_idi_data_queue_t * q)
 }
 
 void
+<<<<<<< HEAD
 diva_data_q_ack_segment4write(diva_um_idi_data_queue_t * q, int length)
+=======
+diva_data_q_ack_segment4write(diva_um_idi_data_queue_t *q, int length)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (q->segment_pending) {
 		q->length[q->write] = length;
@@ -92,12 +112,20 @@ const void *diva_data_q_get_segment4read(const diva_um_idi_data_queue_t *
 	return NULL;
 }
 
+<<<<<<< HEAD
 int diva_data_q_get_segment_length(const diva_um_idi_data_queue_t * q)
+=======
+int diva_data_q_get_segment_length(const diva_um_idi_data_queue_t *q)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return (q->length[q->read]);
 }
 
+<<<<<<< HEAD
 void diva_data_q_ack_segment4read(diva_um_idi_data_queue_t * q)
+=======
+void diva_data_q_ack_segment4read(diva_um_idi_data_queue_t *q)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (q->count) {
 		q->length[q->read] = 0;

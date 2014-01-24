@@ -395,4 +395,10 @@ u32 vcd_req_perf_level(struct vcd_clnt_ctxt *cctxt,
 
 u32 vcd_set_num_slices(struct vcd_clnt_ctxt *cctxt);
 
+<<<<<<< HEAD
+=======
+u32 vcd_update_decoder_perf_level(struct vcd_dev_ctxt *dev_ctxt, u32 perf_lvl);
+
+u32 vcd_set_perf_turbo_level(struct vcd_clnt_ctxt *cctxt);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

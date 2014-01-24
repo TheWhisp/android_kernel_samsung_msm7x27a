@@ -3,7 +3,11 @@
  *
  * No surprises, and works with signed and unsigned chars.
  */
+<<<<<<< HEAD
 #include "cache.h"
+=======
+#include "util.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum {
 	S = GIT_SPACE,

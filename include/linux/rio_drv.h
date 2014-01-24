@@ -17,7 +17,10 @@
 #include <linux/ioport.h>
 #include <linux/list.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string.h>
 #include <linux/rio.h>
 

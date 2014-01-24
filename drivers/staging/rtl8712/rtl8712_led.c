@@ -1786,7 +1786,11 @@ void LedControl871x(struct _adapter *padapter, enum LED_CTL_MODE LedAction)
 {
 	struct led_priv	*ledpriv = &(padapter->ledpriv);
 
+<<<<<<< HEAD
 	if (ledpriv == NULL || ledpriv->bRegUseLed == false)
+=======
+	if (ledpriv->bRegUseLed == false)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	switch (ledpriv->LedStrategy) {
 	case SW_LED_MODE0:

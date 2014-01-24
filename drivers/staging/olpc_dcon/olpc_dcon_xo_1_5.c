@@ -167,20 +167,34 @@ static void dcon_set_dconload_xo_1_5(int val)
 	gpio_set_value(VX855_GPIO(1), val);
 }
 
+<<<<<<< HEAD
 static u8 dcon_read_status_xo_1_5(void)
 {
 	u8 status;
 
+=======
+static int dcon_read_status_xo_1_5(u8 *status)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!dcon_was_irq())
 		return -1;
 
 	/* i believe this is the same as "inb(0x44b) & 3" */
+<<<<<<< HEAD
 	status = gpio_get_value(VX855_GPI(10));
 	status |= gpio_get_value(VX855_GPI(11)) << 1;
 
 	dcon_clear_irq();
 
 	return status;
+=======
+	*status = gpio_get_value(VX855_GPI(10));
+	*status |= gpio_get_value(VX855_GPI(11)) << 1;
+
+	dcon_clear_irq();
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct dcon_platform_data dcon_pdata_xo_1_5 = {

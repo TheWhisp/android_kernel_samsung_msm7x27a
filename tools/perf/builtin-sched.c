@@ -2,11 +2,21 @@
 #include "perf.h"
 
 #include "util/util.h"
+<<<<<<< HEAD
 #include "util/cache.h"
+=======
+#include "util/evlist.h"
+#include "util/cache.h"
+#include "util/evsel.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "util/symbol.h"
 #include "util/thread.h"
 #include "util/header.h"
 #include "util/session.h"
+<<<<<<< HEAD
+=======
+#include "util/tool.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "util/parse-options.h"
 #include "util/trace-event.h"
@@ -14,12 +24,20 @@
 #include "util/debug.h"
 
 #include <sys/prctl.h>
+<<<<<<< HEAD
+=======
+#include <sys/resource.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <semaphore.h>
 #include <pthread.h>
 #include <math.h>
 
+<<<<<<< HEAD
 static char			const *input_name = "perf.data";
+=======
+static const char		*input_name;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static char			default_sort_order[] = "avg, max, switch, runtime";
 static const char		*sort_order = default_sort_order;
@@ -723,21 +741,33 @@ struct trace_migrate_task_event {
 
 struct trace_sched_handler {
 	void (*switch_event)(struct trace_switch_event *,
+<<<<<<< HEAD
 			     struct perf_session *,
+=======
+			     struct machine *,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     struct event *,
 			     int cpu,
 			     u64 timestamp,
 			     struct thread *thread);
 
 	void (*runtime_event)(struct trace_runtime_event *,
+<<<<<<< HEAD
 			      struct perf_session *,
+=======
+			      struct machine *,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      struct event *,
 			      int cpu,
 			      u64 timestamp,
 			      struct thread *thread);
 
 	void (*wakeup_event)(struct trace_wakeup_event *,
+<<<<<<< HEAD
 			     struct perf_session *,
+=======
+			     struct machine *,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     struct event *,
 			     int cpu,
 			     u64 timestamp,
@@ -750,7 +780,11 @@ struct trace_sched_handler {
 			   struct thread *thread);
 
 	void (*migrate_task_event)(struct trace_migrate_task_event *,
+<<<<<<< HEAD
 			   struct perf_session *session,
+=======
+			   struct machine *machine,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   struct event *,
 			   int cpu,
 			   u64 timestamp,
@@ -760,7 +794,11 @@ struct trace_sched_handler {
 
 static void
 replay_wakeup_event(struct trace_wakeup_event *wakeup_event,
+<<<<<<< HEAD
 		    struct perf_session *session __used,
+=======
+		    struct machine *machine __used,
+>>>>>>> refs/remotes/origin/cm-10.0
 		    struct event *event,
 		    int cpu __used,
 		    u64 timestamp __used,
@@ -787,7 +825,11 @@ static u64 cpu_last_switched[MAX_CPUS];
 
 static void
 replay_switch_event(struct trace_switch_event *switch_event,
+<<<<<<< HEAD
 		    struct perf_session *session __used,
+=======
+		    struct machine *machine __used,
+>>>>>>> refs/remotes/origin/cm-10.0
 		    struct event *event,
 		    int cpu,
 		    u64 timestamp,
@@ -1021,7 +1063,11 @@ add_sched_in_event(struct work_atoms *atoms, u64 timestamp)
 
 static void
 latency_switch_event(struct trace_switch_event *switch_event,
+<<<<<<< HEAD
 		     struct perf_session *session,
+=======
+		     struct machine *machine,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     struct event *event __used,
 		     int cpu,
 		     u64 timestamp,
@@ -1045,8 +1091,13 @@ latency_switch_event(struct trace_switch_event *switch_event,
 		die("hm, delta: %" PRIu64 " < 0 ?\n", delta);
 
 
+<<<<<<< HEAD
 	sched_out = perf_session__findnew(session, switch_event->prev_pid);
 	sched_in = perf_session__findnew(session, switch_event->next_pid);
+=======
+	sched_out = machine__findnew_thread(machine, switch_event->prev_pid);
+	sched_in = machine__findnew_thread(machine, switch_event->next_pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	out_events = thread_atoms_search(&atom_root, sched_out, &cmp_pid);
 	if (!out_events) {
@@ -1074,13 +1125,21 @@ latency_switch_event(struct trace_switch_event *switch_event,
 
 static void
 latency_runtime_event(struct trace_runtime_event *runtime_event,
+<<<<<<< HEAD
 		     struct perf_session *session,
+=======
+		     struct machine *machine,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     struct event *event __used,
 		     int cpu,
 		     u64 timestamp,
 		     struct thread *this_thread __used)
 {
+<<<<<<< HEAD
 	struct thread *thread = perf_session__findnew(session, runtime_event->pid);
+=======
+	struct thread *thread = machine__findnew_thread(machine, runtime_event->pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct work_atoms *atoms = thread_atoms_search(&atom_root, thread, &cmp_pid);
 
 	BUG_ON(cpu >= MAX_CPUS || cpu < 0);
@@ -1097,7 +1156,11 @@ latency_runtime_event(struct trace_runtime_event *runtime_event,
 
 static void
 latency_wakeup_event(struct trace_wakeup_event *wakeup_event,
+<<<<<<< HEAD
 		     struct perf_session *session,
+=======
+		     struct machine *machine,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     struct event *__event __used,
 		     int cpu __used,
 		     u64 timestamp,
@@ -1111,7 +1174,11 @@ latency_wakeup_event(struct trace_wakeup_event *wakeup_event,
 	if (!wakeup_event->success)
 		return;
 
+<<<<<<< HEAD
 	wakee = perf_session__findnew(session, wakeup_event->pid);
+=======
+	wakee = machine__findnew_thread(machine, wakeup_event->pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 	atoms = thread_atoms_search(&atom_root, wakee, &cmp_pid);
 	if (!atoms) {
 		thread_atoms_insert(wakee);
@@ -1145,7 +1212,11 @@ latency_wakeup_event(struct trace_wakeup_event *wakeup_event,
 
 static void
 latency_migrate_task_event(struct trace_migrate_task_event *migrate_task_event,
+<<<<<<< HEAD
 		     struct perf_session *session,
+=======
+		     struct machine *machine,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     struct event *__event __used,
 		     int cpu __used,
 		     u64 timestamp,
@@ -1161,7 +1232,11 @@ latency_migrate_task_event(struct trace_migrate_task_event *migrate_task_event,
 	if (profile_cpu == -1)
 		return;
 
+<<<<<<< HEAD
 	migrant = perf_session__findnew(session, migrate_task_event->pid);
+=======
+	migrant = machine__findnew_thread(machine, migrate_task_event->pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 	atoms = thread_atoms_search(&atom_root, migrant, &cmp_pid);
 	if (!atoms) {
 		thread_atoms_insert(migrant);
@@ -1356,12 +1431,22 @@ static void sort_lat(void)
 static struct trace_sched_handler *trace_handler;
 
 static void
+<<<<<<< HEAD
 process_sched_wakeup_event(void *data, struct perf_session *session,
 			   struct event *event,
 			   int cpu __used,
 			   u64 timestamp __used,
 			   struct thread *thread __used)
 {
+=======
+process_sched_wakeup_event(struct perf_tool *tool __used,
+			   struct event *event,
+			   struct perf_sample *sample,
+			   struct machine *machine,
+			   struct thread *thread)
+{
+	void *data = sample->raw_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct trace_wakeup_event wakeup_event;
 
 	FILL_COMMON_FIELDS(wakeup_event, event, data);
@@ -1373,8 +1458,13 @@ process_sched_wakeup_event(void *data, struct perf_session *session,
 	FILL_FIELD(wakeup_event, cpu, event, data);
 
 	if (trace_handler->wakeup_event)
+<<<<<<< HEAD
 		trace_handler->wakeup_event(&wakeup_event, session, event,
 					    cpu, timestamp, thread);
+=======
+		trace_handler->wakeup_event(&wakeup_event, machine, event,
+					    sample->cpu, sample->time, thread);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1392,7 +1482,11 @@ static char next_shortname2 = '0';
 
 static void
 map_switch_event(struct trace_switch_event *switch_event,
+<<<<<<< HEAD
 		 struct perf_session *session,
+=======
+		 struct machine *machine,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 struct event *event __used,
 		 int this_cpu,
 		 u64 timestamp,
@@ -1420,8 +1514,13 @@ map_switch_event(struct trace_switch_event *switch_event,
 		die("hm, delta: %" PRIu64 " < 0 ?\n", delta);
 
 
+<<<<<<< HEAD
 	sched_out = perf_session__findnew(session, switch_event->prev_pid);
 	sched_in = perf_session__findnew(session, switch_event->next_pid);
+=======
+	sched_out = machine__findnew_thread(machine, switch_event->prev_pid);
+	sched_in = machine__findnew_thread(machine, switch_event->next_pid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	curr_thread[this_cpu] = sched_in;
 
@@ -1469,6 +1568,7 @@ map_switch_event(struct trace_switch_event *switch_event,
 	}
 }
 
+<<<<<<< HEAD
 
 static void
 process_sched_switch_event(void *data, struct perf_session *session,
@@ -1477,6 +1577,17 @@ process_sched_switch_event(void *data, struct perf_session *session,
 			   u64 timestamp __used,
 			   struct thread *thread __used)
 {
+=======
+static void
+process_sched_switch_event(struct perf_tool *tool __used,
+			   struct event *event,
+			   struct perf_sample *sample,
+			   struct machine *machine,
+			   struct thread *thread)
+{
+	int this_cpu = sample->cpu;
+	void *data = sample->raw_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct trace_switch_event switch_event;
 
 	FILL_COMMON_FIELDS(switch_event, event, data);
@@ -1498,19 +1609,34 @@ process_sched_switch_event(void *data, struct perf_session *session,
 			nr_context_switch_bugs++;
 	}
 	if (trace_handler->switch_event)
+<<<<<<< HEAD
 		trace_handler->switch_event(&switch_event, session, event,
 					    this_cpu, timestamp, thread);
+=======
+		trace_handler->switch_event(&switch_event, machine, event,
+					    this_cpu, sample->time, thread);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	curr_pid[this_cpu] = switch_event.next_pid;
 }
 
 static void
+<<<<<<< HEAD
 process_sched_runtime_event(void *data, struct perf_session *session,
 			   struct event *event,
 			   int cpu __used,
 			   u64 timestamp __used,
 			   struct thread *thread __used)
 {
+=======
+process_sched_runtime_event(struct perf_tool *tool __used,
+			    struct event *event,
+			    struct perf_sample *sample,
+			    struct machine *machine,
+			    struct thread *thread)
+{
+	void *data = sample->raw_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct trace_runtime_event runtime_event;
 
 	FILL_ARRAY(runtime_event, comm, event, data);
@@ -1519,6 +1645,7 @@ process_sched_runtime_event(void *data, struct perf_session *session,
 	FILL_FIELD(runtime_event, vruntime, event, data);
 
 	if (trace_handler->runtime_event)
+<<<<<<< HEAD
 		trace_handler->runtime_event(&runtime_event, session, event, cpu, timestamp, thread);
 }
 
@@ -1529,6 +1656,20 @@ process_sched_fork_event(void *data,
 			 u64 timestamp __used,
 			 struct thread *thread __used)
 {
+=======
+		trace_handler->runtime_event(&runtime_event, machine, event,
+					     sample->cpu, sample->time, thread);
+}
+
+static void
+process_sched_fork_event(struct perf_tool *tool __used,
+			 struct event *event,
+			 struct perf_sample *sample,
+			 struct machine *machine __used,
+			 struct thread *thread)
+{
+	void *data = sample->raw_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct trace_fork_event fork_event;
 
 	FILL_COMMON_FIELDS(fork_event, event, data);
@@ -1540,6 +1681,7 @@ process_sched_fork_event(void *data,
 
 	if (trace_handler->fork_event)
 		trace_handler->fork_event(&fork_event, event,
+<<<<<<< HEAD
 					  cpu, timestamp, thread);
 }
 
@@ -1547,6 +1689,16 @@ static void
 process_sched_exit_event(struct event *event,
 			 int cpu __used,
 			 u64 timestamp __used,
+=======
+					  sample->cpu, sample->time, thread);
+}
+
+static void
+process_sched_exit_event(struct perf_tool *tool __used,
+			 struct event *event,
+			 struct perf_sample *sample __used,
+			 struct machine *machine __used,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 struct thread *thread __used)
 {
 	if (verbose)
@@ -1554,12 +1706,22 @@ process_sched_exit_event(struct event *event,
 }
 
 static void
+<<<<<<< HEAD
 process_sched_migrate_task_event(void *data, struct perf_session *session,
 			   struct event *event,
 			   int cpu __used,
 			   u64 timestamp __used,
 			   struct thread *thread __used)
 {
+=======
+process_sched_migrate_task_event(struct perf_tool *tool __used,
+				 struct event *event,
+				 struct perf_sample *sample,
+				 struct machine *machine,
+				 struct thread *thread)
+{
+	void *data = sample->raw_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct trace_migrate_task_event migrate_task_event;
 
 	FILL_COMMON_FIELDS(migrate_task_event, event, data);
@@ -1570,6 +1732,7 @@ process_sched_migrate_task_event(void *data, struct perf_session *session,
 	FILL_FIELD(migrate_task_event, cpu, event, data);
 
 	if (trace_handler->migrate_task_event)
+<<<<<<< HEAD
 		trace_handler->migrate_task_event(&migrate_task_event, session,
 						 event, cpu, timestamp, thread);
 }
@@ -1625,18 +1788,61 @@ static int process_sample_event(union perf_event *event,
 
 	process_raw_event(event, session, sample->raw_data, sample->cpu,
 			  sample->time, thread);
+=======
+		trace_handler->migrate_task_event(&migrate_task_event, machine,
+						  event, sample->cpu,
+						  sample->time, thread);
+}
+
+typedef void (*tracepoint_handler)(struct perf_tool *tool, struct event *event,
+				   struct perf_sample *sample,
+				   struct machine *machine,
+				   struct thread *thread);
+
+static int perf_sched__process_tracepoint_sample(struct perf_tool *tool,
+						 union perf_event *event __used,
+						 struct perf_sample *sample,
+						 struct perf_evsel *evsel,
+						 struct machine *machine)
+{
+	struct thread *thread = machine__findnew_thread(machine, sample->pid);
+
+	if (thread == NULL) {
+		pr_debug("problem processing %s event, skipping it.\n",
+			 evsel->name);
+		return -1;
+	}
+
+	evsel->hists.stats.total_period += sample->period;
+	hists__inc_nr_events(&evsel->hists, PERF_RECORD_SAMPLE);
+
+	if (evsel->handler.func != NULL) {
+		tracepoint_handler f = evsel->handler.func;
+
+		if (evsel->handler.data == NULL)
+			evsel->handler.data = trace_find_event(evsel->attr.config);
+
+		f(tool, evsel->handler.data, sample, machine, thread);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct perf_event_ops event_ops = {
 	.sample			= process_sample_event,
+=======
+static struct perf_tool perf_sched = {
+	.sample			= perf_sched__process_tracepoint_sample,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.comm			= perf_event__process_comm,
 	.lost			= perf_event__process_lost,
 	.fork			= perf_event__process_task,
 	.ordered_samples	= true,
 };
 
+<<<<<<< HEAD
 static int read_events(void)
 {
 	int err = -EINVAL;
@@ -1647,13 +1853,48 @@ static int read_events(void)
 
 	if (perf_session__has_traces(session, "record -R")) {
 		err = perf_session__process_events(session, &event_ops);
+=======
+static void read_events(bool destroy, struct perf_session **psession)
+{
+	int err = -EINVAL;
+	const struct perf_evsel_str_handler handlers[] = {
+		{ "sched:sched_switch",	      process_sched_switch_event, },
+		{ "sched:sched_stat_runtime", process_sched_runtime_event, },
+		{ "sched:sched_wakeup",	      process_sched_wakeup_event, },
+		{ "sched:sched_wakeup_new",   process_sched_wakeup_event, },
+		{ "sched:sched_process_fork", process_sched_fork_event, },
+		{ "sched:sched_process_exit", process_sched_exit_event, },
+		{ "sched:sched_migrate_task", process_sched_migrate_task_event, },
+	};
+	struct perf_session *session = perf_session__new(input_name, O_RDONLY,
+							 0, false, &perf_sched);
+	if (session == NULL)
+		die("No Memory");
+
+	err = perf_evlist__set_tracepoints_handlers_array(session->evlist, handlers);
+	assert(err == 0);
+
+	if (perf_session__has_traces(session, "record -R")) {
+		err = perf_session__process_events(session, &perf_sched);
+		if (err)
+			die("Failed to process events, error %d", err);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		nr_events      = session->hists.stats.nr_events[0];
 		nr_lost_events = session->hists.stats.total_lost;
 		nr_lost_chunks = session->hists.stats.nr_events[PERF_RECORD_LOST];
 	}
 
+<<<<<<< HEAD
 	perf_session__delete(session);
 	return err;
+=======
+	if (destroy)
+		perf_session__delete(session);
+
+	if (psession)
+		*psession = session;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void print_bad_events(void)
@@ -1689,9 +1930,16 @@ static void print_bad_events(void)
 static void __cmd_lat(void)
 {
 	struct rb_node *next;
+<<<<<<< HEAD
 
 	setup_pager();
 	read_events();
+=======
+	struct perf_session *session;
+
+	setup_pager();
+	read_events(false, &session);
+>>>>>>> refs/remotes/origin/cm-10.0
 	sort_lat();
 
 	printf("\n ---------------------------------------------------------------------------------------------------------------\n");
@@ -1717,6 +1965,10 @@ static void __cmd_lat(void)
 	print_bad_events();
 	printf("\n");
 
+<<<<<<< HEAD
+=======
+	perf_session__delete(session);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct trace_sched_handler map_ops  = {
@@ -1731,7 +1983,11 @@ static void __cmd_map(void)
 	max_cpu = sysconf(_SC_NPROCESSORS_CONF);
 
 	setup_pager();
+<<<<<<< HEAD
 	read_events();
+=======
+	read_events(true, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	print_bad_events();
 }
 
@@ -1744,7 +2000,11 @@ static void __cmd_replay(void)
 
 	test_calibrations();
 
+<<<<<<< HEAD
 	read_events();
+=======
+	read_events(true, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printf("nr_run_events:        %ld\n", nr_run_events);
 	printf("nr_sleep_events:      %ld\n", nr_sleep_events);
@@ -1769,7 +2029,11 @@ static void __cmd_replay(void)
 
 
 static const char * const sched_usage[] = {
+<<<<<<< HEAD
 	"perf sched [<options>] {record|latency|map|replay|trace}",
+=======
+	"perf sched [<options>] {record|latency|map|replay|script}",
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL
 };
 

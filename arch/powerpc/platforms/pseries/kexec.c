@@ -25,6 +25,7 @@ static void pseries_kexec_cpu_down(int crash_shutdown, int secondary)
 {
 	/* Don't risk a hypervisor call if we're crashing */
 	if (firmware_has_feature(FW_FEATURE_SPLPAR) && !crash_shutdown) {
+<<<<<<< HEAD
 		unsigned long addr;
 		int ret;
 
@@ -50,6 +51,32 @@ static void pseries_kexec_cpu_down(int crash_shutdown, int secondary)
 			printk("VPA deregistration of cpu %u (hw_cpu_id %d) "
 					"failed\n", smp_processor_id(),
 					hard_smp_processor_id());
+=======
+		int ret;
+		int cpu = smp_processor_id();
+		int hwcpu = hard_smp_processor_id();
+
+		if (get_lppaca()->dtl_enable_mask) {
+			ret = unregister_dtl(hwcpu);
+			if (ret) {
+				pr_err("WARNING: DTL deregistration for cpu "
+				       "%d (hw %d) failed with %d\n",
+				       cpu, hwcpu, ret);
+			}
+		}
+
+		ret = unregister_slb_shadow(hwcpu);
+		if (ret) {
+			pr_err("WARNING: SLB shadow buffer deregistration "
+			       "for cpu %d (hw %d) failed with %d\n",
+			       cpu, hwcpu, ret);
+		}
+
+		ret = unregister_vpa(hwcpu);
+		if (ret) {
+			pr_err("WARNING: VPA deregistration for cpu %d "
+			       "(hw %d) failed with %d\n", cpu, hwcpu, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }

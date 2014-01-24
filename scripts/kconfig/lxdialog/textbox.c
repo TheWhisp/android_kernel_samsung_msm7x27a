@@ -320,7 +320,10 @@ static void print_page(WINDOW * win, int height, int width)
  */
 static void print_line(WINDOW * win, int row, int width)
 {
+<<<<<<< HEAD
 	int y, x;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	char *line;
 
 	line = get_line();
@@ -329,10 +332,17 @@ static void print_line(WINDOW * win, int row, int width)
 	waddch(win, ' ');
 	waddnstr(win, line, MIN(strlen(line), width - 2));
 
+<<<<<<< HEAD
 	getyx(win, y, x);
 	/* Clear 'residue' of previous line */
 #if OLD_NCURSES
 	{
+=======
+	/* Clear 'residue' of previous line */
+#if OLD_NCURSES
+	{
+		int x = getcurx(win);
+>>>>>>> refs/remotes/origin/cm-10.0
 		int i;
 		for (i = 0; i < width - x; i++)
 			waddch(win, ' ');

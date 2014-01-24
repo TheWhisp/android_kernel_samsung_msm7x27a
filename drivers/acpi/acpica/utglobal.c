@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +47,10 @@
 
 #define DEFINE_ACPI_GLOBALS
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <acpi/acpi.h>
 #include "accommon.h"
 
@@ -139,6 +147,10 @@ const struct acpi_predefined_names acpi_gbl_pre_defined_names[] = {
 	{NULL, ACPI_TYPE_ANY, NULL}
 };
 
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+>>>>>>> refs/remotes/origin/cm-10.0
 /******************************************************************************
  *
  * Event and Hardware globals
@@ -235,6 +247,10 @@ struct acpi_fixed_event_info acpi_gbl_fixed_event_info[ACPI_NUM_FIXED_EVENTS] = 
 					ACPI_BITMASK_RT_CLOCK_STATUS,
 					ACPI_BITMASK_RT_CLOCK_ENABLE},
 };
+<<<<<<< HEAD
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*******************************************************************************
  *
@@ -263,6 +279,15 @@ acpi_status acpi_ut_init_globals(void)
 		return_ACPI_STATUS(status);
 	}
 
+<<<<<<< HEAD
+=======
+	/* Address Range lists */
+
+	for (i = 0; i < ACPI_ADDRESS_RANGE_MAX; i++) {
+		acpi_gbl_address_range_list[i] = NULL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Mutex locked flags */
 
 	for (i = 0; i < ACPI_NUM_MUTEX; i++) {
@@ -279,6 +304,11 @@ acpi_status acpi_ut_init_globals(void)
 
 	acpi_gbl_owner_id_mask[ACPI_NUM_OWNERID_MASKS - 1] = 0x80000000;
 
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* GPE support */
 
 	acpi_gbl_gpe_xrupt_list_head = NULL;
@@ -287,6 +317,13 @@ acpi_status acpi_ut_init_globals(void)
 	acpi_current_gpe_count = 0;
 	acpi_gbl_all_gpes_initialized = FALSE;
 
+<<<<<<< HEAD
+=======
+	acpi_gbl_global_event_handler = NULL;
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Global handlers */
 
 	acpi_gbl_system_notify.handler = NULL;
@@ -295,7 +332,10 @@ acpi_status acpi_ut_init_globals(void)
 	acpi_gbl_init_handler = NULL;
 	acpi_gbl_table_handler = NULL;
 	acpi_gbl_interface_handler = NULL;
+<<<<<<< HEAD
 	acpi_gbl_global_event_handler = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Global Lock support */
 

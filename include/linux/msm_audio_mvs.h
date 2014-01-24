@@ -9,10 +9,17 @@
 	(AUDIO_MAX_COMMON_IOCTL_NUM + 1), unsigned)
 
 /* MVS modes */
+<<<<<<< HEAD
 #define MVS_MODE_IS733 0x1
 #define MVS_MODE_IS127 0x2
 #define MVS_MODE_4GV_NB 0x3
 #define MVS_MODE_4GV_WB 0x4
+=======
+#define MVS_MODE_IS733 0x1 /*QCELP 13K*/
+#define MVS_MODE_IS127 0x2 /*EVRC-8k*/
+#define MVS_MODE_4GV_NB 0x3 /*EVRC-B*/
+#define MVS_MODE_4GV_WB 0x4 /*EVRC-WB*/
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MVS_MODE_AMR 0x5
 #define MVS_MODE_EFR 0x6
 #define MVS_MODE_FR 0x7
@@ -24,7 +31,11 @@
 #define MVS_MODE_G729A 0xE
 #define MVS_MODE_G711A 0xF
 #define MVS_MODE_G722 0x10
+<<<<<<< HEAD
 #define MVS_MODE_PCM_WB 0x80000000
+=======
+#define MVS_MODE_PCM_WB 0x12
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum msm_audio_amr_mode {
 	MVS_AMR_MODE_0475, /* AMR 4.75 kbps */
@@ -47,12 +58,24 @@ enum msm_audio_amr_mode {
 	MVS_AMR_MODE_UNDEF
 };
 
+<<<<<<< HEAD
+=======
+/*The MVS VOC rate type is used to identify the rate of QCELP 13K(IS733),
+EVRC(IS127), 4GV, or 4GV-WB frame.*/
+>>>>>>> refs/remotes/origin/cm-10.0
 enum msm_audio_voc_rate {
 		MVS_VOC_0_RATE, /* Blank frame */
 		MVS_VOC_8_RATE, /* 1/8 rate    */
 		MVS_VOC_4_RATE, /* 1/4 rate    */
 		MVS_VOC_2_RATE, /* 1/2 rate    */
+<<<<<<< HEAD
 		MVS_VOC_1_RATE	/* Full rate   */
+=======
+		MVS_VOC_1_RATE,/* Full rate   */
+		MVS_VOC_ERASURE, /* erasure frame */
+		MVS_VOC_RATE_MAX,
+		MVS_VOC_RATE_UNDEF = MVS_VOC_RATE_MAX
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum msm_audio_amr_frame_type {
@@ -72,6 +95,14 @@ enum msm_audio_g711a_mode {
 	MVS_G711A_MODE_ALAW
 };
 
+<<<<<<< HEAD
+=======
+enum msm_audio_g711_mode {
+	MVS_G711_MODE_MULAW,
+	MVS_G711_MODE_ALAW
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum mvs_g722_mode_type {
 	MVS_G722_MODE_01,
 	MVS_G722_MODE_02,
@@ -133,4 +164,15 @@ struct msm_audio_mvs_frame {
 
 };
 
+<<<<<<< HEAD
+=======
+#define Q5V2_MVS_MAX_VOC_PKT_SIZE 320
+
+struct q5v2_msm_audio_mvs_frame {
+	uint32_t frame_type;
+	uint32_t len;
+	uint8_t voc_pkt[Q5V2_MVS_MAX_VOC_PKT_SIZE];
+
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __MSM_AUDIO_MVS_H */

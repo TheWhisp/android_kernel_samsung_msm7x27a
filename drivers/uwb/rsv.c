@@ -19,6 +19,10 @@
 #include <linux/uwb.h>
 #include <linux/slab.h>
 #include <linux/random.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "uwb-internal.h"
 

@@ -237,8 +237,20 @@ static void __init vulcan_init(void)
 MACHINE_START(ARCOM_VULCAN, "Arcom/Eurotech Vulcan")
 	/* Maintainer: Marc Zyngier <maz@misterjones.org> */
 	.map_io		= ixp4xx_map_io,
+<<<<<<< HEAD
 	.init_irq	= ixp4xx_init_irq,
 	.timer		= &ixp4xx_timer,
 	.boot_params	= 0x0100,
 	.init_machine	= vulcan_init,
+=======
+	.init_early	= ixp4xx_init_early,
+	.init_irq	= ixp4xx_init_irq,
+	.timer		= &ixp4xx_timer,
+	.atag_offset	= 0x100,
+	.init_machine	= vulcan_init,
+#if defined(CONFIG_PCI)
+	.dma_zone_size	= SZ_64M,
+#endif
+	.restart	= ixp4xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -33,6 +33,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -42,6 +43,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #undef	DEBUG		/* messages on error and most fault paths */
@@ -68,7 +71,10 @@
 #include <asm/byteorder.h>
 #include <asm/io.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 
 
@@ -99,8 +105,13 @@ static const char *const ep_name [] = {
  * Some gadget drivers work better with the dma support here than others.
  * These two parameters let you use PIO or more aggressive DMA.
  */
+<<<<<<< HEAD
 static int use_dma = 1;
 static int use_dma_chaining = 0;
+=======
+static bool use_dma = 1;
+static bool use_dma_chaining = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* "modprobe net2280 use_dma=n" etc */
 module_param (use_dma, bool, S_IRUGO);
@@ -121,7 +132,11 @@ module_param (fifo_mode, ushort, 0644);
  * USB suspend requests will be ignored.  This is acceptable for
  * self-powered devices
  */
+<<<<<<< HEAD
 static int enable_suspend = 0;
+=======
+static bool enable_suspend = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* "modprobe net2280 enable_suspend=1" etc */
 module_param (enable_suspend, bool, S_IRUGO);
@@ -169,7 +184,11 @@ net2280_enable (struct usb_ep *_ep, const struct usb_endpoint_descriptor *desc)
 		return -EDOM;
 
 	/* sanity check ep-e/ep-f since their fifos are small */
+<<<<<<< HEAD
 	max = le16_to_cpu (desc->wMaxPacketSize) & 0x1fff;
+=======
+	max = usb_endpoint_maxp (desc) & 0x1fff;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ep->num > 4 && max > 64)
 		return -ERANGE;
 
@@ -815,12 +834,17 @@ done (struct net2280_ep *ep, struct net2280_request *req, int status)
 		status = req->req.status;
 
 	dev = ep->dev;
+<<<<<<< HEAD
 	if (req->mapped) {
 		pci_unmap_single (dev->pdev, req->req.dma, req->req.length,
 			ep->is_in ? PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
 		req->req.dma = DMA_ADDR_INVALID;
 		req->mapped = 0;
 	}
+=======
+	if (ep->dma)
+		usb_gadget_unmap_request(&dev->gadget, &req->req, ep->is_in);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (status && status != -ESHUTDOWN)
 		VDEBUG (dev, "complete %s req %p stat %d len %u/%u\n",
@@ -866,10 +890,20 @@ net2280_queue (struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 		return -EOPNOTSUPP;
 
 	/* set up dma mapping in case the caller didn't */
+<<<<<<< HEAD
 	if (ep->dma && _req->dma == DMA_ADDR_INVALID) {
 		_req->dma = pci_map_single (dev->pdev, _req->buf, _req->length,
 			ep->is_in ? PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
 		req->mapped = 1;
+=======
+	if (ep->dma) {
+		int ret;
+
+		ret = usb_gadget_map_request(&dev->gadget, _req,
+				ep->is_in);
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 #if 0
@@ -1410,11 +1444,24 @@ static int net2280_pullup(struct usb_gadget *_gadget, int is_on)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int net2280_start(struct usb_gadget *_gadget,
+		struct usb_gadget_driver *driver);
+static int net2280_stop(struct usb_gadget *_gadget,
+		struct usb_gadget_driver *driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct usb_gadget_ops net2280_ops = {
 	.get_frame	= net2280_get_frame,
 	.wakeup		= net2280_wakeup,
 	.set_selfpowered = net2280_set_selfpowered,
 	.pullup		= net2280_pullup,
+<<<<<<< HEAD
+=======
+	.udc_start	= net2280_start,
+	.udc_stop	= net2280_stop,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*-------------------------------------------------------------------------*/
@@ -1634,7 +1681,11 @@ show_queues (struct device *_dev, struct device_attribute *attr, char *buf)
 				 default:
 					val = "iso"; break;
 				 }; val; }),
+<<<<<<< HEAD
 				le16_to_cpu (d->wMaxPacketSize) & 0x1fff,
+=======
+				usb_endpoint_maxp (d) & 0x1fff,
+>>>>>>> refs/remotes/origin/cm-10.0
 				ep->dma ? "dma" : "pio", ep->fifo_size
 				);
 		} else /* ep0 should only have one transfer queued */
@@ -1738,6 +1789,7 @@ static void set_fifo_mode (struct net2280 *dev, int mode)
 	list_add_tail (&dev->ep [6].ep.ep_list, &dev->gadget.ep_list);
 }
 
+<<<<<<< HEAD
 /* just declare this in any driver that really need it */
 extern int net2280_set_fifo_mode (struct usb_gadget *gadget, int mode);
 
@@ -1794,6 +1846,8 @@ EXPORT_SYMBOL (net2280_set_fifo_mode);
 
 /*-------------------------------------------------------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* keeping it simple:
  * - one bus driver, initted first;
  * - one function driver, initted second
@@ -1803,8 +1857,11 @@ EXPORT_SYMBOL (net2280_set_fifo_mode);
  * perhaps to bind specific drivers to specific devices.
  */
 
+<<<<<<< HEAD
 static struct net2280	*the_controller;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void usb_reset (struct net2280 *dev)
 {
 	u32	tmp;
@@ -1930,10 +1987,17 @@ static void ep0_start (struct net2280 *dev)
  * disconnect is reported.  then a host may connect again, or
  * the driver might get unbound.
  */
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *))
 {
 	struct net2280		*dev = the_controller;
+=======
+static int net2280_start(struct usb_gadget *_gadget,
+		struct usb_gadget_driver *driver)
+{
+	struct net2280		*dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int			retval;
 	unsigned		i;
 
@@ -1941,6 +2005,7 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 	 * (dev->usb->xcvrdiag & FORCE_FULL_SPEED_MODE)
 	 * "must not be used in normal operation"
 	 */
+<<<<<<< HEAD
 	if (!driver
 			|| driver->speed != USB_SPEED_HIGH
 			|| !bind || !driver->setup)
@@ -1949,6 +2014,13 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		return -ENODEV;
 	if (dev->driver)
 		return -EBUSY;
+=======
+	if (!driver || driver->max_speed < USB_SPEED_HIGH
+			|| !driver->setup)
+		return -EINVAL;
+
+	dev = container_of (_gadget, struct net2280, gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < 7; i++)
 		dev->ep [i].irqs = 0;
@@ -1958,6 +2030,7 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 	driver->driver.bus = NULL;
 	dev->driver = driver;
 	dev->gadget.dev.driver = &driver->driver;
+<<<<<<< HEAD
 	retval = bind(&dev->gadget);
 	if (retval) {
 		DEBUG (dev, "bind to driver %s --> %d\n",
@@ -1966,6 +2039,8 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		dev->gadget.dev.driver = NULL;
 		return retval;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	retval = device_create_file (&dev->pdev->dev, &dev_attr_function);
 	if (retval) goto err_unbind;
@@ -1994,7 +2069,10 @@ err_unbind:
 	dev->driver = NULL;
 	return retval;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_probe_driver);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void
 stop_activity (struct net2280 *dev, struct usb_gadget_driver *driver)
@@ -2012,6 +2090,7 @@ stop_activity (struct net2280 *dev, struct usb_gadget_driver *driver)
 	for (i = 0; i < 7; i++)
 		nuke (&dev->ep [i]);
 
+<<<<<<< HEAD
 	/* report disconnect; the driver is already quiesced */
 	if (driver) {
 		spin_unlock (&dev->lock);
@@ -2031,14 +2110,29 @@ int usb_gadget_unregister_driver (struct usb_gadget_driver *driver)
 		return -ENODEV;
 	if (!driver || driver != dev->driver || !driver->unbind)
 		return -EINVAL;
+=======
+	usb_reinit (dev);
+}
+
+static int net2280_stop(struct usb_gadget *_gadget,
+		struct usb_gadget_driver *driver)
+{
+	struct net2280	*dev;
+	unsigned long	flags;
+
+	dev = container_of (_gadget, struct net2280, gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_irqsave (&dev->lock, flags);
 	stop_activity (dev, driver);
 	spin_unlock_irqrestore (&dev->lock, flags);
 
+<<<<<<< HEAD
 	net2280_pullup (&dev->gadget, 0);
 
 	driver->unbind (&dev->gadget);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->gadget.dev.driver = NULL;
 	dev->driver = NULL;
 
@@ -2049,8 +2143,11 @@ int usb_gadget_unregister_driver (struct usb_gadget_driver *driver)
 	DEBUG (dev, "unregistered driver '%s'\n", driver->driver.name);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL (usb_gadget_unregister_driver);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*-------------------------------------------------------------------------*/
 
@@ -2319,9 +2416,13 @@ static void handle_stat0_irqs (struct net2280 *dev, u32 stat)
 			else
 				dev->gadget.speed = USB_SPEED_FULL;
 			net2280_led_speed (dev, dev->gadget.speed);
+<<<<<<< HEAD
 			DEBUG (dev, "%s speed\n",
 				(dev->gadget.speed == USB_SPEED_HIGH)
 					? "high" : "full");
+=======
+			DEBUG(dev, "%s\n", usb_speed_string(dev->gadget.speed));
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		ep = &dev->ep [0];
@@ -2534,7 +2635,11 @@ static void handle_stat1_irqs (struct net2280 *dev, u32 stat)
 	mask = (1 << HIGH_SPEED) | (1 << FULL_SPEED);
 
 	/* VBUS disconnect is indicated by VBUS_PIN and VBUS_INTERRUPT set.
+<<<<<<< HEAD
 	 * Root Port Reset is indicated by ROOT_PORT_RESET_INTERRRUPT set and
+=======
+	 * Root Port Reset is indicated by ROOT_PORT_RESET_INTERRUPT set and
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * both HIGH_SPEED and FULL_SPEED clear (as ROOT_PORT_RESET_INTERRUPT
 	 * only indicates a change in the reset state).
 	 */
@@ -2732,6 +2837,11 @@ static void net2280_remove (struct pci_dev *pdev)
 {
 	struct net2280		*dev = pci_get_drvdata (pdev);
 
+<<<<<<< HEAD
+=======
+	usb_del_gadget_udc(&dev->gadget);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(dev->driver);
 
 	/* then clean up the resources we allocated during probe() */
@@ -2760,8 +2870,11 @@ static void net2280_remove (struct pci_dev *pdev)
 	pci_set_drvdata (pdev, NULL);
 
 	INFO (dev, "unbind\n");
+<<<<<<< HEAD
 
 	the_controller = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* wrap this driver around the specified device, but
@@ -2775,6 +2888,7 @@ static int net2280_probe (struct pci_dev *pdev, const struct pci_device_id *id)
 	void			__iomem *base = NULL;
 	int			retval, i;
 
+<<<<<<< HEAD
 	/* if you want to support more than one controller in a system,
 	 * usb_gadget_driver_{register,unregister}() must change.
 	 */
@@ -2783,6 +2897,8 @@ static int net2280_probe (struct pci_dev *pdev, const struct pci_device_id *id)
 		return -EBUSY;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* alloc, and start init */
 	dev = kzalloc (sizeof *dev, GFP_KERNEL);
 	if (dev == NULL){
@@ -2794,7 +2910,11 @@ static int net2280_probe (struct pci_dev *pdev, const struct pci_device_id *id)
 	spin_lock_init (&dev->lock);
 	dev->pdev = pdev;
 	dev->gadget.ops = &net2280_ops;
+<<<<<<< HEAD
 	dev->gadget.is_dualspeed = 1;
+=======
+	dev->gadget.max_speed = USB_SPEED_HIGH;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* the "gadget" abstracts/virtualizes the controller */
 	dev_set_name(&dev->gadget.dev, "gadget");
@@ -2909,13 +3029,22 @@ static int net2280_probe (struct pci_dev *pdev, const struct pci_device_id *id)
 			use_dma
 				? (use_dma_chaining ? "chaining" : "enabled")
 				: "disabled");
+<<<<<<< HEAD
 	the_controller = dev;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = device_register (&dev->gadget.dev);
 	if (retval) goto done;
 	retval = device_create_file (&pdev->dev, &dev_attr_registers);
 	if (retval) goto done;
 
+<<<<<<< HEAD
+=======
+	retval = usb_add_gadget_udc(&pdev->dev, &dev->gadget);
+	if (retval)
+		goto done;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 done:

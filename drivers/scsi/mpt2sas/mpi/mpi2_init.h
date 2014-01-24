@@ -6,7 +6,11 @@
  *          Title:  MPI SCSI initiator mode messages and structures
  *  Creation Date:  June 23, 2006
  *
+<<<<<<< HEAD
  *    mpi2_init.h Version:  02.00.10
+=======
+ *    mpi2_init.h Version:  02.00.11
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *  Version History
  *  ---------------
@@ -33,6 +37,10 @@
  *                      Added MPI2_SCSITASKMGMT_RSP_TM_OVERLAPPED_TAG define.
  *  02-10-10  02.00.09  Removed unused structure that had "#if 0" around it.
  *  05-12-10  02.00.10  Added optional vendor-unique region to SCSI IO Request.
+<<<<<<< HEAD
+=======
+ *  11-10-10  02.00.11  Added MPI2_SCSIIO_NUM_SGLOFFSETS define.
+>>>>>>> refs/remotes/origin/cm-10.0
  *  --------------------------------------------------------------------------
  */
 
@@ -139,6 +147,12 @@ typedef struct _MPI2_SCSI_IO_REQUEST
 #define MPI2_SCSIIO_SGLFLAGS_SGL1_SHIFT             (4)
 #define MPI2_SCSIIO_SGLFLAGS_SGL0_SHIFT             (0)
 
+<<<<<<< HEAD
+=======
+/* number of SGLOffset fields */
+#define MPI2_SCSIIO_NUM_SGLOFFSETS                  (4)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* SCSI IO IoFlags bits */
 
 /* Large CDB Address Space */

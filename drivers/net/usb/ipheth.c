@@ -429,28 +429,42 @@ static void ipheth_tx_timeout(struct net_device *net)
 	usb_unlink_urb(dev->tx_urb);
 }
 
+<<<<<<< HEAD
 static struct net_device_stats *ipheth_stats(struct net_device *net)
 {
 	struct ipheth_device *dev = netdev_priv(net);
 	return &dev->net->stats;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static u32 ipheth_ethtool_op_get_link(struct net_device *net)
 {
 	struct ipheth_device *dev = netdev_priv(net);
 	return netif_carrier_ok(dev->net);
 }
 
+<<<<<<< HEAD
 static struct ethtool_ops ops = {
+=======
+static const struct ethtool_ops ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_link = ipheth_ethtool_op_get_link
 };
 
 static const struct net_device_ops ipheth_netdev_ops = {
+<<<<<<< HEAD
 	.ndo_open = &ipheth_open,
 	.ndo_stop = &ipheth_close,
 	.ndo_start_xmit = &ipheth_tx,
 	.ndo_tx_timeout = &ipheth_tx_timeout,
 	.ndo_get_stats = &ipheth_stats,
+=======
+	.ndo_open = ipheth_open,
+	.ndo_stop = ipheth_close,
+	.ndo_start_xmit = ipheth_tx,
+	.ndo_tx_timeout = ipheth_tx_timeout,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int ipheth_probe(struct usb_interface *intf,
@@ -565,6 +579,7 @@ static struct usb_driver ipheth_driver = {
 	.id_table =	ipheth_table,
 };
 
+<<<<<<< HEAD
 static int __init ipheth_init(void)
 {
 	int retval;
@@ -584,6 +599,9 @@ static void __exit ipheth_exit(void)
 
 module_init(ipheth_init);
 module_exit(ipheth_exit);
+=======
+module_usb_driver(ipheth_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Diego Giagio <diego@giagio.com>");
 MODULE_DESCRIPTION("Apple iPhone USB Ethernet driver");

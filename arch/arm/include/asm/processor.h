@@ -57,7 +57,10 @@ struct thread_struct {
 #define start_thread(regs,pc,sp)					\
 ({									\
 	unsigned long *stack = (unsigned long *)sp;			\
+<<<<<<< HEAD
 	set_fs(USER_DS);						\
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	memset(regs->uregs, 0, sizeof(regs->uregs));			\
 	if (current->personality & ADDR_LIMIT_32BIT)			\
 		regs->ARM_cpsr = USR_MODE;				\
@@ -91,6 +94,11 @@ unsigned long get_wchan(struct task_struct *p);
 #define cpu_relax()			barrier()
 #endif
 
+<<<<<<< HEAD
+=======
+void cpu_idle_wait(void);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Create a new kernel thread
  */

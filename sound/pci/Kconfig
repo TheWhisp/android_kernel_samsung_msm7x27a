@@ -1,5 +1,13 @@
 # ALSA PCI drivers
 
+<<<<<<< HEAD
+=======
+config SND_TEA575X
+	tristate
+	depends on SND_FM801_TEA575X_BOOL || SND_ES1968_RADIO || RADIO_SF16FMR2 || RADIO_MAXIRADIO
+	default SND_FM801 || SND_ES1968 || RADIO_SF16FMR2 || RADIO_MAXIRADIO
+
+>>>>>>> refs/remotes/origin/cm-10.0
 menuconfig SND_PCI
 	bool "PCI sound devices"
 	depends on PCI
@@ -563,11 +571,14 @@ config SND_FM801_TEA575X_BOOL
 	  FM801 chip with a TEA5757 tuner (MediaForte SF256-PCS, SF256-PCP and
 	  SF64-PCR) into the snd-fm801 driver.
 
+<<<<<<< HEAD
 config SND_TEA575X
 	tristate
 	depends on SND_FM801_TEA575X_BOOL || SND_ES1968_RADIO
 	default SND_FM801 || SND_ES1968
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 source "sound/pci/hda/Kconfig"
 
 config SND_HDSP

@@ -1,9 +1,20 @@
 /*
+<<<<<<< HEAD
  * GIT - The information manager from hell
+=======
+ * usage.c
+ *
+ * Various reporting routines.
+ * Originally copied from GIT source.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Copyright (C) Linus Torvalds, 2005
  */
 #include "util.h"
+<<<<<<< HEAD
+=======
+#include "debug.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void report(const char *prefix, const char *err, va_list params)
 {
@@ -78,3 +89,44 @@ void warning(const char *warn, ...)
 	warn_routine(warn, params);
 	va_end(params);
 }
+<<<<<<< HEAD
+=======
+
+uid_t parse_target_uid(const char *str, const char *tid, const char *pid)
+{
+	struct passwd pwd, *result;
+	char buf[1024];
+
+	if (str == NULL)
+		return UINT_MAX;
+
+	/* UID and PID are mutually exclusive */
+	if (tid || pid) {
+		ui__warning("PID/TID switch overriding UID\n");
+		sleep(1);
+		return UINT_MAX;
+	}
+
+	getpwnam_r(str, &pwd, buf, sizeof(buf), &result);
+
+	if (result == NULL) {
+		char *endptr;
+		int uid = strtol(str, &endptr, 10);
+
+		if (*endptr != '\0') {
+			ui__error("Invalid user %s\n", str);
+			return UINT_MAX - 1;
+		}
+
+		getpwuid_r(uid, &pwd, buf, sizeof(buf), &result);
+
+		if (result == NULL) {
+			ui__error("Problems obtaining information for user %s\n",
+				  str);
+			return UINT_MAX - 1;
+		}
+	}
+
+	return result->pw_uid;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

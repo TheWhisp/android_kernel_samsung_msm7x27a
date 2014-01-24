@@ -24,10 +24,20 @@
 #include <linux/i2c.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/videodev2.h>
 #include <media/v4l2-chip-ident.h>
 #include <media/v4l2-common.h>
 #include <media/soc_camera.h>
+=======
+#include <linux/v4l2-mediabus.h>
+#include <linux/videodev2.h>
+
+#include <media/soc_camera.h>
+#include <media/v4l2-chip-ident.h>
+#include <media/v4l2-common.h>
+#include <media/v4l2-ctrls.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "ov9640.h"
 
@@ -162,6 +172,7 @@ static enum v4l2_mbus_pixelcode ov9640_codes[] = {
 	V4L2_MBUS_FMT_RGB565_2X8_LE,
 };
 
+<<<<<<< HEAD
 static const struct v4l2_queryctrl ov9640_controls[] = {
 	{
 		.id		= V4L2_CID_VFLIP,
@@ -183,6 +194,8 @@ static const struct v4l2_queryctrl ov9640_controls[] = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* read a register */
 static int ov9640_reg_read(struct i2c_client *client, u8 reg, u8 *val)
 {
@@ -284,6 +297,7 @@ static int ov9640_s_stream(struct v4l2_subdev *sd, int enable)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Alter bus settings on camera side */
 static int ov9640_set_bus_param(struct soc_camera_device *icd,
 				unsigned long flags)
@@ -353,6 +367,27 @@ static int ov9640_s_ctrl(struct v4l2_subdev *sd, struct v4l2_control *ctrl)
 	}
 
 	return ret;
+=======
+/* Set status of additional camera capabilities */
+static int ov9640_s_ctrl(struct v4l2_ctrl *ctrl)
+{
+	struct ov9640_priv *priv = container_of(ctrl->handler, struct ov9640_priv, hdl);
+	struct i2c_client *client = v4l2_get_subdevdata(&priv->subdev);
+
+	switch (ctrl->id) {
+	case V4L2_CID_VFLIP:
+		if (ctrl->val)
+			return ov9640_reg_rmw(client, OV9640_MVFP,
+							OV9640_MVFP_V, 0);
+		return ov9640_reg_rmw(client, OV9640_MVFP, 0, OV9640_MVFP_V);
+	case V4L2_CID_HFLIP:
+		if (ctrl->val)
+			return ov9640_reg_rmw(client, OV9640_MVFP,
+							OV9640_MVFP_H, 0);
+		return ov9640_reg_rmw(client, OV9640_MVFP, 0, OV9640_MVFP_H);
+	}
+	return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Get chip identification */
@@ -646,10 +681,14 @@ static int ov9640_cropcap(struct v4l2_subdev *sd, struct v4l2_cropcap *a)
 	return 0;
 }
 
+<<<<<<< HEAD
 
 
 static int ov9640_video_probe(struct soc_camera_device *icd,
 				struct i2c_client *client)
+=======
+static int ov9640_video_probe(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
 	struct ov9640_priv *priv = to_ov9640_sensor(sd);
@@ -658,6 +697,7 @@ static int ov9640_video_probe(struct soc_camera_device *icd,
 	int		ret = 0;
 
 	/*
+<<<<<<< HEAD
 	 * We must have a parent by now. And it cannot be a wrong one.
 	 * So this entire test is completely redundant.
 	 */
@@ -669,10 +709,13 @@ static int ov9640_video_probe(struct soc_camera_device *icd,
 	}
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * check and show product ID and manufacturer ID
 	 */
 
 	ret = ov9640_reg_read(client, OV9640_PID, &pid);
+<<<<<<< HEAD
 	if (ret)
 		goto err;
 
@@ -687,6 +730,16 @@ static int ov9640_video_probe(struct soc_camera_device *icd,
 	ret = ov9640_reg_read(client, OV9640_MIDL, &midl);
 	if (ret)
 		goto err;
+=======
+	if (!ret)
+		ret = ov9640_reg_read(client, OV9640_VER, &ver);
+	if (!ret)
+		ret = ov9640_reg_read(client, OV9640_MIDH, &midh);
+	if (!ret)
+		ret = ov9640_reg_read(client, OV9640_MIDL, &midl);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (VERSION(pid, ver)) {
 	case OV9640_V2:
@@ -700,13 +753,18 @@ static int ov9640_video_probe(struct soc_camera_device *icd,
 		break;
 	default:
 		dev_err(&client->dev, "Product ID error %x:%x\n", pid, ver);
+<<<<<<< HEAD
 		ret = -ENODEV;
 		goto err;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dev_info(&client->dev, "%s Product ID %0x:%0x Manufacturer ID %x:%x\n",
 		 devname, pid, ver, midh, midl);
 
+<<<<<<< HEAD
 err:
 	return ret;
 }
@@ -721,6 +779,16 @@ static struct soc_camera_ops ov9640_ops = {
 static struct v4l2_subdev_core_ops ov9640_core_ops = {
 	.g_ctrl			= ov9640_g_ctrl,
 	.s_ctrl			= ov9640_s_ctrl,
+=======
+	return v4l2_ctrl_handler_setup(&priv->hdl);
+}
+
+static const struct v4l2_ctrl_ops ov9640_ctrl_ops = {
+	.s_ctrl = ov9640_s_ctrl,
+};
+
+static struct v4l2_subdev_core_ops ov9640_core_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.g_chip_ident		= ov9640_g_chip_ident,
 #ifdef CONFIG_VIDEO_ADV_DEBUG
 	.g_register		= ov9640_get_register,
@@ -729,6 +797,25 @@ static struct v4l2_subdev_core_ops ov9640_core_ops = {
 
 };
 
+<<<<<<< HEAD
+=======
+/* Request bus settings on camera side */
+static int ov9640_g_mbus_config(struct v4l2_subdev *sd,
+				struct v4l2_mbus_config *cfg)
+{
+	struct i2c_client *client = v4l2_get_subdevdata(sd);
+	struct soc_camera_link *icl = soc_camera_i2c_to_link(client);
+
+	cfg->flags = V4L2_MBUS_PCLK_SAMPLE_RISING | V4L2_MBUS_MASTER |
+		V4L2_MBUS_VSYNC_ACTIVE_HIGH | V4L2_MBUS_HSYNC_ACTIVE_HIGH |
+		V4L2_MBUS_DATA_ACTIVE_HIGH;
+	cfg->type = V4L2_MBUS_PARALLEL;
+	cfg->flags = soc_camera_apply_board_flags(icl, cfg);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct v4l2_subdev_video_ops ov9640_video_ops = {
 	.s_stream	= ov9640_s_stream,
 	.s_mbus_fmt	= ov9640_s_fmt,
@@ -736,7 +823,11 @@ static struct v4l2_subdev_video_ops ov9640_video_ops = {
 	.enum_mbus_fmt	= ov9640_enum_fmt,
 	.cropcap	= ov9640_cropcap,
 	.g_crop		= ov9640_g_crop,
+<<<<<<< HEAD
 
+=======
+	.g_mbus_config	= ov9640_g_mbus_config,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct v4l2_subdev_ops ov9640_subdev_ops = {
@@ -751,6 +842,7 @@ static int ov9640_probe(struct i2c_client *client,
 			const struct i2c_device_id *did)
 {
 	struct ov9640_priv *priv;
+<<<<<<< HEAD
 	struct soc_camera_device *icd	= client->dev.platform_data;
 	struct soc_camera_link *icl;
 	int ret;
@@ -761,6 +853,11 @@ static int ov9640_probe(struct i2c_client *client,
 	}
 
 	icl = to_soc_camera_link(icd);
+=======
+	struct soc_camera_link *icl = soc_camera_i2c_to_link(client);
+	int ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!icl) {
 		dev_err(&client->dev, "Missing platform_data for driver\n");
 		return -EINVAL;
@@ -775,12 +872,32 @@ static int ov9640_probe(struct i2c_client *client,
 
 	v4l2_i2c_subdev_init(&priv->subdev, client, &ov9640_subdev_ops);
 
+<<<<<<< HEAD
 	icd->ops	= &ov9640_ops;
 
 	ret = ov9640_video_probe(icd, client);
 
 	if (ret) {
 		icd->ops = NULL;
+=======
+	v4l2_ctrl_handler_init(&priv->hdl, 2);
+	v4l2_ctrl_new_std(&priv->hdl, &ov9640_ctrl_ops,
+			V4L2_CID_VFLIP, 0, 1, 1, 0);
+	v4l2_ctrl_new_std(&priv->hdl, &ov9640_ctrl_ops,
+			V4L2_CID_HFLIP, 0, 1, 1, 0);
+	priv->subdev.ctrl_handler = &priv->hdl;
+	if (priv->hdl.error) {
+		int err = priv->hdl.error;
+
+		kfree(priv);
+		return err;
+	}
+
+	ret = ov9640_video_probe(client);
+
+	if (ret) {
+		v4l2_ctrl_handler_free(&priv->hdl);
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(priv);
 	}
 
@@ -792,6 +909,11 @@ static int ov9640_remove(struct i2c_client *client)
 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
 	struct ov9640_priv *priv = to_ov9640_sensor(sd);
 
+<<<<<<< HEAD
+=======
+	v4l2_device_unregister_subdev(&priv->subdev);
+	v4l2_ctrl_handler_free(&priv->hdl);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(priv);
 	return 0;
 }
@@ -811,6 +933,7 @@ static struct i2c_driver ov9640_i2c_driver = {
 	.id_table = ov9640_id,
 };
 
+<<<<<<< HEAD
 static int __init ov9640_module_init(void)
 {
 	return i2c_add_driver(&ov9640_i2c_driver);
@@ -823,6 +946,9 @@ static void __exit ov9640_module_exit(void)
 
 module_init(ov9640_module_init);
 module_exit(ov9640_module_exit);
+=======
+module_i2c_driver(ov9640_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("SoC Camera driver for OmniVision OV96xx");
 MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");

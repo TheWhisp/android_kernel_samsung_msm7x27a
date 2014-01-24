@@ -23,6 +23,10 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/utsname.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/device.h>
 
 #include <sound/core.h>
@@ -36,6 +40,7 @@
 
 #include "gadget_chips.h"
 
+<<<<<<< HEAD
 
 /*
  * Kbuild is not very cooperative with respect to linking separately
@@ -56,10 +61,24 @@ MODULE_LICENSE("GPL v2");
 
 #define DRIVER_VERSION "25 Jul 2006"
 
+=======
+#include "composite.c"
+#include "usbstring.c"
+#include "config.c"
+#include "epautoconf.c"
+#include "f_midi.c"
+
+/*-------------------------------------------------------------------------*/
+
+MODULE_AUTHOR("Ben Williamson");
+MODULE_LICENSE("GPL v2");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const char shortname[] = "g_midi";
 static const char longname[] = "MIDI Gadget";
 
 static int index = SNDRV_DEFAULT_IDX1;
+<<<<<<< HEAD
 static char *id = SNDRV_DEFAULT_STR1;
 
 module_param(index, int, 0444);
@@ -164,6 +183,30 @@ static unsigned qlen = 32;
 module_param(buflen, uint, S_IRUGO);
 module_param(qlen, uint, S_IRUGO);
 
+=======
+module_param(index, int, S_IRUGO);
+MODULE_PARM_DESC(index, "Index value for the USB MIDI Gadget adapter.");
+
+static char *id = SNDRV_DEFAULT_STR1;
+module_param(id, charp, S_IRUGO);
+MODULE_PARM_DESC(id, "ID string for the USB MIDI Gadget adapter.");
+
+static unsigned int buflen = 256;
+module_param(buflen, uint, S_IRUGO);
+MODULE_PARM_DESC(buflen, "MIDI buffer length");
+
+static unsigned int qlen = 32;
+module_param(qlen, uint, S_IRUGO);
+MODULE_PARM_DESC(qlen, "USB read request queue length");
+
+static unsigned int in_ports = 1;
+module_param(in_ports, uint, S_IRUGO);
+MODULE_PARM_DESC(in_ports, "Number of MIDI input ports");
+
+static unsigned int out_ports = 1;
+module_param(out_ports, uint, S_IRUGO);
+MODULE_PARM_DESC(out_ports, "Number of MIDI output ports");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Thanks to Grey Innovation for donating this product ID.
  *
@@ -173,6 +216,7 @@ module_param(qlen, uint, S_IRUGO);
 #define DRIVER_VENDOR_NUM	0x17b3		/* Grey Innovation */
 #define DRIVER_PRODUCT_NUM	0x0004		/* Linux-USB "MIDI Gadget" */
 
+<<<<<<< HEAD
 
 /*
  * DESCRIPTORS ... most are static, but strings and (full)
@@ -851,10 +895,49 @@ static void /* __init_or_exit */ gmidi_unbind(struct usb_gadget *gadget)
 }
 
 static int gmidi_snd_free(struct snd_device *device)
+=======
+/* string IDs are assigned dynamically */
+
+#define STRING_MANUFACTURER_IDX		0
+#define STRING_PRODUCT_IDX		1
+#define STRING_DESCRIPTION_IDX		2
+
+static struct usb_device_descriptor device_desc = {
+	.bLength =		USB_DT_DEVICE_SIZE,
+	.bDescriptorType =	USB_DT_DEVICE,
+	.bcdUSB =		__constant_cpu_to_le16(0x0200),
+	.bDeviceClass =		USB_CLASS_PER_INTERFACE,
+	.idVendor =		__constant_cpu_to_le16(DRIVER_VENDOR_NUM),
+	.idProduct =		__constant_cpu_to_le16(DRIVER_PRODUCT_NUM),
+	/* .iManufacturer =	DYNAMIC */
+	/* .iProduct =		DYNAMIC */
+	.bNumConfigurations =	1,
+};
+
+static struct usb_string strings_dev[] = {
+	[STRING_MANUFACTURER_IDX].s	= "Grey Innovation",
+	[STRING_PRODUCT_IDX].s		= "MIDI Gadget",
+	[STRING_DESCRIPTION_IDX].s	= "MIDI",
+	{  } /* end of list */
+};
+
+static struct usb_gadget_strings stringtab_dev = {
+	.language	= 0x0409,	/* en-us */
+	.strings	= strings_dev,
+};
+
+static struct usb_gadget_strings *dev_strings[] = {
+	&stringtab_dev,
+	NULL,
+};
+
+static int __exit midi_unbind(struct usb_composite_dev *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static void gmidi_transmit_packet(struct usb_request *req, uint8_t p0,
 					uint8_t p1, uint8_t p2, uint8_t p3)
 {
@@ -1216,11 +1299,56 @@ autoconf_fail:
 	if (gcnum >= 0) {
 		device_desc.bcdDevice = cpu_to_le16(0x0200 + gcnum);
 	} else {
+=======
+static struct usb_configuration midi_config = {
+	.label		= "MIDI Gadget",
+	.bConfigurationValue = 1,
+	/* .iConfiguration = DYNAMIC */
+	.bmAttributes	= USB_CONFIG_ATT_ONE,
+	.bMaxPower	= CONFIG_USB_GADGET_VBUS_DRAW / 2,
+};
+
+static int __init midi_bind_config(struct usb_configuration *c)
+{
+	return f_midi_bind_config(c, index, id,
+				  in_ports, out_ports,
+				  buflen, qlen);
+}
+
+static int __init midi_bind(struct usb_composite_dev *cdev)
+{
+	struct usb_gadget *gadget = cdev->gadget;
+	int gcnum, status;
+
+	status = usb_string_id(cdev);
+	if (status < 0)
+		return status;
+	strings_dev[STRING_MANUFACTURER_IDX].id = status;
+	device_desc.iManufacturer = status;
+
+	status = usb_string_id(cdev);
+	if (status < 0)
+		return status;
+	strings_dev[STRING_PRODUCT_IDX].id = status;
+	device_desc.iProduct = status;
+
+	/* config description */
+	status = usb_string_id(cdev);
+	if (status < 0)
+		return status;
+	strings_dev[STRING_DESCRIPTION_IDX].id = status;
+
+	midi_config.iConfiguration = status;
+
+	gcnum = usb_gadget_controller_number(gadget);
+	if (gcnum < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* gmidi is so simple (no altsettings) that
 		 * it SHOULD NOT have problems with bulk-capable hardware.
 		 * so warn about unrecognized controllers, don't panic.
 		 */
 		pr_warning("%s: controller '%s' not recognized\n",
+<<<<<<< HEAD
 			shortname, gadget->name);
 		device_desc.bcdDevice = cpu_to_le16(0x9999);
 	}
@@ -1317,4 +1445,39 @@ static void __exit gmidi_cleanup(void)
 	usb_gadget_unregister_driver(&gmidi_driver);
 }
 module_exit(gmidi_cleanup);
+=======
+			   __func__, gadget->name);
+		device_desc.bcdDevice = cpu_to_le16(0x9999);
+	} else {
+		device_desc.bcdDevice = cpu_to_le16(0x0200 + gcnum);
+	}
+
+	status = usb_add_config(cdev, &midi_config, midi_bind_config);
+	if (status < 0)
+		return status;
+
+	pr_info("%s\n", longname);
+	return 0;
+}
+
+static struct usb_composite_driver midi_driver = {
+	.name		= (char *) longname,
+	.dev		= &device_desc,
+	.strings	= dev_strings,
+	.max_speed	= USB_SPEED_HIGH,
+	.unbind		= __exit_p(midi_unbind),
+};
+
+static int __init midi_init(void)
+{
+	return usb_composite_probe(&midi_driver, midi_bind);
+}
+module_init(midi_init);
+
+static void __exit midi_cleanup(void)
+{
+	usb_composite_unregister(&midi_driver);
+}
+module_exit(midi_cleanup);
+>>>>>>> refs/remotes/origin/cm-10.0
 

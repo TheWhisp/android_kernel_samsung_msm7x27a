@@ -17,7 +17,10 @@
 #include <linux/percpu.h>
 #include <asm/tlbflush.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/bootparam.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "lg.h"
 
 /*M:008
@@ -156,7 +159,11 @@ static pte_t *spte_addr(struct lg_cpu *cpu, pgd_t spgd, unsigned long vaddr)
 }
 
 /*
+<<<<<<< HEAD
  * These functions are just like the above two, except they access the Guest
+=======
+ * These functions are just like the above, except they access the Guest
+>>>>>>> refs/remotes/origin/cm-10.0
  * page tables.  Hence they return a Guest address.
  */
 static unsigned long gpgd_addr(struct lg_cpu *cpu, unsigned long vaddr)
@@ -196,7 +203,11 @@ static unsigned long gpte_addr(struct lg_cpu *cpu,
 #endif
 /*:*/
 
+<<<<<<< HEAD
 /*M:014
+=======
+/*M:007
+>>>>>>> refs/remotes/origin/cm-10.0
  * get_pfn is slow: we could probably try to grab batches of pages here as
  * an optimization (ie. pre-faulting).
 :*/
@@ -325,10 +336,22 @@ bool demand_page(struct lg_cpu *cpu, unsigned long vaddr, int errcode)
 #endif
 
 	/* First step: get the top-level Guest page table entry. */
+<<<<<<< HEAD
 	gpgd = lgread(cpu, gpgd_addr(cpu, vaddr), pgd_t);
 	/* Toplevel not present?  We can't map it in. */
 	if (!(pgd_flags(gpgd) & _PAGE_PRESENT))
 		return false;
+=======
+	if (unlikely(cpu->linear_pages)) {
+		/* Faking up a linear mapping. */
+		gpgd = __pgd(CHECK_GPGD_MASK);
+	} else {
+		gpgd = lgread(cpu, gpgd_addr(cpu, vaddr), pgd_t);
+		/* Toplevel not present?  We can't map it in. */
+		if (!(pgd_flags(gpgd) & _PAGE_PRESENT))
+			return false;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Now look at the matching shadow entry. */
 	spgd = spgd_addr(cpu, cpu->cpu_pgd, vaddr);
@@ -353,10 +376,22 @@ bool demand_page(struct lg_cpu *cpu, unsigned long vaddr, int errcode)
 	}
 
 #ifdef CONFIG_X86_PAE
+<<<<<<< HEAD
 	gpmd = lgread(cpu, gpmd_addr(gpgd, vaddr), pmd_t);
 	/* Middle level not present?  We can't map it in. */
 	if (!(pmd_flags(gpmd) & _PAGE_PRESENT))
 		return false;
+=======
+	if (unlikely(cpu->linear_pages)) {
+		/* Faking up a linear mapping. */
+		gpmd = __pmd(_PAGE_TABLE);
+	} else {
+		gpmd = lgread(cpu, gpmd_addr(gpgd, vaddr), pmd_t);
+		/* Middle level not present?  We can't map it in. */
+		if (!(pmd_flags(gpmd) & _PAGE_PRESENT))
+			return false;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Now look at the matching shadow entry. */
 	spmd = spmd_addr(cpu, *spgd, vaddr);
@@ -397,8 +432,18 @@ bool demand_page(struct lg_cpu *cpu, unsigned long vaddr, int errcode)
 	gpte_ptr = gpte_addr(cpu, gpgd, vaddr);
 #endif
 
+<<<<<<< HEAD
 	/* Read the actual PTE value. */
 	gpte = lgread(cpu, gpte_ptr, pte_t);
+=======
+	if (unlikely(cpu->linear_pages)) {
+		/* Linear?  Make up a PTE which points to same page. */
+		gpte = __pte((vaddr & PAGE_MASK) | _PAGE_RW | _PAGE_PRESENT);
+	} else {
+		/* Read the actual PTE value. */
+		gpte = lgread(cpu, gpte_ptr, pte_t);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* If this page isn't in the Guest page tables, we can't page it in. */
 	if (!(pte_flags(gpte) & _PAGE_PRESENT))
@@ -454,7 +499,12 @@ bool demand_page(struct lg_cpu *cpu, unsigned long vaddr, int errcode)
 	 * Finally, we write the Guest PTE entry back: we've set the
 	 * _PAGE_ACCESSED and maybe the _PAGE_DIRTY flags.
 	 */
+<<<<<<< HEAD
 	lgwrite(cpu, gpte_ptr, pte_t, gpte);
+=======
+	if (likely(!cpu->linear_pages))
+		lgwrite(cpu, gpte_ptr, pte_t, gpte);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * The fault is fixed, the page table is populated, the mapping
@@ -612,6 +662,14 @@ unsigned long guest_pa(struct lg_cpu *cpu, unsigned long vaddr)
 #ifdef CONFIG_X86_PAE
 	pmd_t gpmd;
 #endif
+<<<<<<< HEAD
+=======
+
+	/* Still not set up?  Just map 1:1. */
+	if (unlikely(cpu->linear_pages))
+		return vaddr;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* First step: get the top-level Guest page table entry. */
 	gpgd = lgread(cpu, gpgd_addr(cpu, vaddr), pgd_t);
 	/* Toplevel not present?  We can't map it in. */
@@ -708,6 +766,7 @@ static unsigned int new_pgdir(struct lg_cpu *cpu,
 	return next;
 }
 
+<<<<<<< HEAD
 /*H:430
  * (iv) Switching page tables
  *
@@ -734,6 +793,8 @@ void guest_new_pagetable(struct lg_cpu *cpu, unsigned long pgtable)
 		pin_stack_pages(cpu);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*H:470
  * Finally, a routine which throws away everything: all PGD entries in all
  * the shadow page tables, including the Guest's kernel mappings.  This is used
@@ -780,6 +841,47 @@ void guest_pagetable_clear_all(struct lg_cpu *cpu)
 	/* We need the Guest kernel stack mapped again. */
 	pin_stack_pages(cpu);
 }
+<<<<<<< HEAD
+=======
+
+/*H:430
+ * (iv) Switching page tables
+ *
+ * Now we've seen all the page table setting and manipulation, let's see
+ * what happens when the Guest changes page tables (ie. changes the top-level
+ * pgdir).  This occurs on almost every context switch.
+ */
+void guest_new_pagetable(struct lg_cpu *cpu, unsigned long pgtable)
+{
+	int newpgdir, repin = 0;
+
+	/*
+	 * The very first time they call this, we're actually running without
+	 * any page tables; we've been making it up.  Throw them away now.
+	 */
+	if (unlikely(cpu->linear_pages)) {
+		release_all_pagetables(cpu->lg);
+		cpu->linear_pages = false;
+		/* Force allocation of a new pgdir. */
+		newpgdir = ARRAY_SIZE(cpu->lg->pgdirs);
+	} else {
+		/* Look to see if we have this one already. */
+		newpgdir = find_pgdir(cpu->lg, pgtable);
+	}
+
+	/*
+	 * If not, we allocate or mug an existing one: if it's a fresh one,
+	 * repin gets set to 1.
+	 */
+	if (newpgdir == ARRAY_SIZE(cpu->lg->pgdirs))
+		newpgdir = new_pgdir(cpu, pgtable, &repin);
+	/* Change the current pgd index to the new one. */
+	cpu->cpu_pgd = newpgdir;
+	/* If it was completely blank, we map in the Guest kernel stack */
+	if (repin)
+		pin_stack_pages(cpu);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 /*:*/
 
 /*M:009
@@ -919,6 +1021,7 @@ void guest_set_pmd(struct lguest *lg, unsigned long pmdp, u32 idx)
 }
 #endif
 
+<<<<<<< HEAD
 /*H:505
  * To get through boot, we construct simple identity page mappings (which
  * set virtual == physical) and linear mappings which will get the Guest far
@@ -1081,6 +1184,28 @@ int init_guest_pagetable(struct lguest *lg)
 
 	/* This is the current page table. */
 	lg->cpus[0].cpu_pgd = 0;
+=======
+/*H:500
+ * (vii) Setting up the page tables initially.
+ *
+ * When a Guest is first created, set initialize a shadow page table which
+ * we will populate on future faults.  The Guest doesn't have any actual
+ * pagetables yet, so we set linear_pages to tell demand_page() to fake it
+ * for the moment.
+ */
+int init_guest_pagetable(struct lguest *lg)
+{
+	struct lg_cpu *cpu = &lg->cpus[0];
+	int allocated = 0;
+
+	/* lg (and lg->cpus[]) starts zeroed: this allocates a new pgdir */
+	cpu->cpu_pgd = new_pgdir(cpu, 0, &allocated);
+	if (!allocated)
+		return -ENOMEM;
+
+	/* We start with a linear mapping until the initialize. */
+	cpu->linear_pages = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1095,10 +1220,17 @@ void page_table_guest_data_init(struct lg_cpu *cpu)
 		 * of virtual addresses used by the Switcher.
 		 */
 		|| put_user(RESERVE_MEM * 1024 * 1024,
+<<<<<<< HEAD
 			&cpu->lg->lguest_data->reserve_mem)
 		|| put_user(cpu->lg->pgdirs[0].gpgdir,
 			&cpu->lg->lguest_data->pgdir))
 		kill_guest(cpu, "bad guest page %p", cpu->lg->lguest_data);
+=======
+			    &cpu->lg->lguest_data->reserve_mem)) {
+		kill_guest(cpu, "bad guest page %p", cpu->lg->lguest_data);
+		return;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * In flush_user_mappings() we loop from 0 to

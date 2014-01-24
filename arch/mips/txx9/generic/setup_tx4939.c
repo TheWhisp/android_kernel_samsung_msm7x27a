@@ -15,7 +15,11 @@
 #include <linux/delay.h>
 #include <linux/netdevice.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ethtool.h>
 #include <linux/param.h>
 #include <linux/ptrace.h>
@@ -321,7 +325,11 @@ void __init tx4939_sio_init(unsigned int sclk, unsigned int cts_mask)
 static u32 tx4939_get_eth_speed(struct net_device *dev)
 {
 	struct ethtool_cmd cmd;
+<<<<<<< HEAD
 	if (dev_ethtool_get_settings(dev, &cmd))
+=======
+	if (__ethtool_get_settings(dev, &cmd))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 100;	/* default 100Mbps */
 
 	return ethtool_cmd_speed(&cmd);

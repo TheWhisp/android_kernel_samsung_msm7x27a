@@ -25,6 +25,7 @@ struct virtqueue {
 	void *priv;
 };
 
+<<<<<<< HEAD
 /**
  * operations for virtqueue
  * virtqueue_add_buf: expose buffer to other end
@@ -87,6 +88,21 @@ static inline int virtqueue_add_buf(struct virtqueue *vq,
 
 void virtqueue_kick(struct virtqueue *vq);
 
+=======
+int virtqueue_add_buf(struct virtqueue *vq,
+		      struct scatterlist sg[],
+		      unsigned int out_num,
+		      unsigned int in_num,
+		      void *data,
+		      gfp_t gfp);
+
+void virtqueue_kick(struct virtqueue *vq);
+
+bool virtqueue_kick_prepare(struct virtqueue *vq);
+
+void virtqueue_notify(struct virtqueue *vq);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void *virtqueue_get_buf(struct virtqueue *vq, unsigned int *len);
 
 void virtqueue_disable_cb(struct virtqueue *vq);
@@ -101,6 +117,11 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
 
 void *virtqueue_detach_unused_buf(struct virtqueue *vq);
 
+<<<<<<< HEAD
+=======
+unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * virtio_device - representation of a device using virtio
  * @index: unique position on the virtio bus
@@ -130,10 +151,17 @@ void unregister_virtio_device(struct virtio_device *dev);
  * virtio_driver - operations for a virtio I/O driver
  * @driver: underlying device driver (populate name and owner).
  * @id_table: the ids serviced by this driver.
+<<<<<<< HEAD
  * @feature_table: an array of feature numbers supported by this device.
  * @feature_table_size: number of entries in the feature table array.
  * @probe: the function to call when a device is found.  Returns 0 or -errno.
  * @remove: the function when a device is removed.
+=======
+ * @feature_table: an array of feature numbers supported by this driver.
+ * @feature_table_size: number of entries in the feature table array.
+ * @probe: the function to call when a device is found.  Returns 0 or -errno.
+ * @remove: the function to call when a device is removed.
+>>>>>>> refs/remotes/origin/cm-10.0
  * @config_changed: optional function to call when the device configuration
  *    changes; may be called in interrupt context.
  */
@@ -145,6 +173,13 @@ struct virtio_driver {
 	int (*probe)(struct virtio_device *dev);
 	void (*remove)(struct virtio_device *dev);
 	void (*config_changed)(struct virtio_device *dev);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+	int (*freeze)(struct virtio_device *dev);
+	int (*restore)(struct virtio_device *dev);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int register_virtio_driver(struct virtio_driver *drv);

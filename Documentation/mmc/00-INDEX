@@ -4,3 +4,8 @@ mmc-dev-attrs.txt
         - info on SD and MMC device attributes
 mmc-dev-parts.txt
         - info on SD and MMC device partitions
+<<<<<<< HEAD
+=======
+mmc-async-req.txt
+        - info on mmc asynchronous requests
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -18,7 +18,10 @@
 #include <linux/mm.h>
 #include <linux/sched.h>
 #include <linux/file.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <media/videobuf2-core.h>
 #include <media/videobuf2-memops.h>
@@ -56,6 +59,10 @@ struct vm_area_struct *vb2_get_vma(struct vm_area_struct *vma)
 
 	return vma_copy;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(vb2_get_vma);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * vb2_put_userptr() - release a userspace virtual memory area
@@ -69,12 +76,21 @@ void vb2_put_vma(struct vm_area_struct *vma)
 	if (!vma)
 		return;
 
+<<<<<<< HEAD
 	if (vma->vm_file)
 		fput(vma->vm_file);
 
 	if (vma->vm_ops && vma->vm_ops->close)
 		vma->vm_ops->close(vma);
 
+=======
+	if (vma->vm_ops && vma->vm_ops->close)
+		vma->vm_ops->close(vma);
+
+	if (vma->vm_file)
+		fput(vma->vm_file);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(vma);
 }
 EXPORT_SYMBOL_GPL(vb2_put_vma);
@@ -101,12 +117,16 @@ int vb2_get_contig_userptr(unsigned long vaddr, unsigned long size,
 	unsigned long offset, start, end;
 	unsigned long this_pfn, prev_pfn;
 	dma_addr_t pa = 0;
+<<<<<<< HEAD
 	int ret = -EFAULT;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	start = vaddr;
 	offset = start & ~PAGE_MASK;
 	end = start + size;
 
+<<<<<<< HEAD
 	down_read(&mm->mmap_sem);
 	vma = find_vma(mm, start);
 
@@ -124,6 +144,23 @@ int vb2_get_contig_userptr(unsigned long vaddr, unsigned long size,
 			ret = -EFAULT;
 			goto done;
 		}
+=======
+	vma = find_vma(mm, start);
+
+	if (vma == NULL || vma->vm_end < end)
+		return -EFAULT;
+
+	for (prev_pfn = 0; start < end; start += PAGE_SIZE) {
+		int ret = follow_pfn(vma, start, &this_pfn);
+		if (ret)
+			return ret;
+
+		if (prev_pfn == 0)
+			pa = this_pfn << PAGE_SHIFT;
+		else if (this_pfn != prev_pfn + 1)
+			return -EFAULT;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		prev_pfn = this_pfn;
 	}
 
@@ -131,6 +168,7 @@ int vb2_get_contig_userptr(unsigned long vaddr, unsigned long size,
 	 * Memory is contigous, lock vma and return to the caller
 	 */
 	*res_vma = vb2_get_vma(vma);
+<<<<<<< HEAD
 	if (*res_vma == NULL) {
 		ret = -ENOMEM;
 		goto done;
@@ -141,6 +179,13 @@ int vb2_get_contig_userptr(unsigned long vaddr, unsigned long size,
 done:
 	up_read(&mm->mmap_sem);
 	return ret;
+=======
+	if (*res_vma == NULL)
+		return -ENOMEM;
+
+	*res_pa = pa + offset;
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(vb2_get_contig_userptr);
 
@@ -177,7 +222,11 @@ int vb2_mmap_pfn_range(struct vm_area_struct *vma, unsigned long paddr,
 
 	vma->vm_ops->open(vma);
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "%s: mapped paddr 0x%08lx at 0x%08lx, size %ld\n",
+=======
+	pr_debug("%s: mapped paddr 0x%08lx at 0x%08lx, size %ld\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			__func__, paddr, vma->vm_start, size);
 
 	return 0;
@@ -195,7 +244,11 @@ static void vb2_common_vm_open(struct vm_area_struct *vma)
 {
 	struct vb2_vmarea_handler *h = vma->vm_private_data;
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "%s: %p, refcount: %d, vma: %08lx-%08lx\n",
+=======
+	pr_debug("%s: %p, refcount: %d, vma: %08lx-%08lx\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 	       __func__, h, atomic_read(h->refcount), vma->vm_start,
 	       vma->vm_end);
 
@@ -213,7 +266,11 @@ static void vb2_common_vm_close(struct vm_area_struct *vma)
 {
 	struct vb2_vmarea_handler *h = vma->vm_private_data;
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "%s: %p, refcount: %d, vma: %08lx-%08lx\n",
+=======
+	pr_debug("%s: %p, refcount: %d, vma: %08lx-%08lx\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 	       __func__, h, atomic_read(h->refcount), vma->vm_start,
 	       vma->vm_end);
 

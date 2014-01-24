@@ -88,7 +88,11 @@ static struct sleep_save s5pv210_core_save[] = {
 	SAVE_ITEM(S3C2410_TCNTO(0)),
 };
 
+<<<<<<< HEAD
 void s5pv210_cpu_suspend(void)
+=======
+static int s5pv210_cpu_suspend(unsigned long arg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long tmp;
 
@@ -133,7 +137,11 @@ static void s5pv210_pm_prepare(void)
 	s3c_pm_do_save(s5pv210_core_save, ARRAY_SIZE(s5pv210_core_save));
 }
 
+<<<<<<< HEAD
 static int s5pv210_pm_add(struct sys_device *sysdev)
+=======
+static int s5pv210_pm_add(struct device *dev, struct subsys_interface *sif)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	pm_cpu_prep = s5pv210_pm_prepare;
 	pm_cpu_sleep = s5pv210_cpu_suspend;
@@ -141,13 +149,24 @@ static int s5pv210_pm_add(struct sys_device *sysdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct sysdev_driver s5pv210_pm_driver = {
 	.add		= s5pv210_pm_add,
+=======
+static struct subsys_interface s5pv210_pm_interface = {
+	.name		= "s5pv210_pm",
+	.subsys		= &s5pv210_subsys,
+	.add_dev	= s5pv210_pm_add,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static __init int s5pv210_pm_drvinit(void)
 {
+<<<<<<< HEAD
 	return sysdev_driver_register(&s5pv210_sysclass, &s5pv210_pm_driver);
+=======
+	return subsys_interface_register(&s5pv210_pm_interface);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 arch_initcall(s5pv210_pm_drvinit);
 

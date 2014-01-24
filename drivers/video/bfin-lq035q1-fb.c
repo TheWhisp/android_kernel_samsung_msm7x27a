@@ -13,6 +13,10 @@
 #include <linux/errno.h>
 #include <linux/string.h>
 #include <linux/fb.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/types.h>
@@ -365,10 +369,17 @@ static int __devinit bfin_lq035q1_request_ports(struct platform_device *pdev,
 	 * Drive PPI_FS3 Low
 	 */
 	if (ANOMALY_05000400) {
+<<<<<<< HEAD
 		int ret = gpio_request(P_IDENT(P_PPI0_FS3), "PPI_FS3");
 		if (ret)
 			return ret;
 		gpio_direction_output(P_IDENT(P_PPI0_FS3), 0);
+=======
+		int ret = gpio_request_one(P_IDENT(P_PPI0_FS3),
+					GPIOF_OUT_INIT_LOW, "PPI_FS3");
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (ppi16)
@@ -695,7 +706,11 @@ static int __devinit bfin_lq035q1_probe(struct platform_device *pdev)
 		goto out7;
 	}
 
+<<<<<<< HEAD
 	ret = request_irq(info->irq, bfin_lq035q1_irq_error, IRQF_DISABLED,
+=======
+	ret = request_irq(info->irq, bfin_lq035q1_irq_error, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			DRIVER_NAME" PPI ERROR", info);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "unable to request PPI ERROR IRQ\n");
@@ -716,14 +731,22 @@ static int __devinit bfin_lq035q1_probe(struct platform_device *pdev)
 	}
 
 	if (info->disp_info->use_bl) {
+<<<<<<< HEAD
 		ret = gpio_request(info->disp_info->gpio_bl, "LQ035 Backlight");
+=======
+		ret = gpio_request_one(info->disp_info->gpio_bl,
+					GPIOF_OUT_INIT_LOW, "LQ035 Backlight");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (ret) {
 			dev_err(&pdev->dev, "failed to request GPIO %d\n",
 				info->disp_info->gpio_bl);
 			goto out9;
 		}
+<<<<<<< HEAD
 		gpio_direction_output(info->disp_info->gpio_bl, 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	ret = register_framebuffer(fbinfo);

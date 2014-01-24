@@ -7,6 +7,33 @@
 #include <linux/ktime.h>
 #include <linux/tracepoint.h>
 
+<<<<<<< HEAD
+=======
+TRACE_EVENT(cpr_data,
+
+	TP_PROTO(uint32_t new_voltage, uint32_t old_voltage,
+			uint32_t err_steps),
+
+	TP_ARGS(new_voltage, old_voltage, err_steps),
+
+	TP_STRUCT__entry(
+		__field(uint32_t,	new_voltage)
+		__field(uint32_t,	old_voltage)
+		__field(uint32_t,	err_steps)
+	),
+
+	TP_fast_assign(
+		__entry->new_voltage = new_voltage;
+		__entry->old_voltage = old_voltage;
+		__entry->err_steps = err_steps;
+	),
+
+	TP_printk("New voltage = %u Earlier voltage = %u Error_steps = %d",
+		__entry->new_voltage, __entry->old_voltage, __entry->err_steps)
+
+);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 DECLARE_EVENT_CLASS(cpu,
 
 	TP_PROTO(unsigned int state, unsigned int cpu_id),
@@ -65,7 +92,10 @@ TRACE_EVENT(machine_suspend,
 	TP_printk("state=%lu", (unsigned long)__entry->state)
 );
 
+<<<<<<< HEAD
 /* This code will be removed after deprecation time exceeded (2.6.41) */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_EVENT_POWER_TRACING_DEPRECATED
 
 /*
@@ -151,6 +181,11 @@ enum {
    events get removed */
 static inline void trace_power_start(u64 type, u64 state, u64 cpuid) {};
 static inline void trace_power_end(u64 cpuid) {};
+<<<<<<< HEAD
+=======
+static inline void trace_power_start_rcuidle(u64 type, u64 state, u64 cpuid) {};
+static inline void trace_power_end_rcuidle(u64 cpuid) {};
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void trace_power_frequency(u64 type, u64 state, u64 cpuid) {};
 #endif /* _PWR_EVENT_AVOID_DOUBLE_DEFINING_DEPRECATED */
 
@@ -203,6 +238,28 @@ DEFINE_EVENT(clock, clock_set_rate,
 	TP_ARGS(name, state, cpu_id)
 );
 
+<<<<<<< HEAD
+=======
+TRACE_EVENT(clock_set_parent,
+
+	TP_PROTO(const char *name, const char *parent_name),
+
+	TP_ARGS(name, parent_name),
+
+	TP_STRUCT__entry(
+		__string(       name,           name            )
+		__string(       parent_name,    parent_name     )
+	),
+
+	TP_fast_assign(
+		__assign_str(name, name);
+		__assign_str(parent_name, parent_name);
+	),
+
+	TP_printk("%s parent=%s", __get_str(name), __get_str(parent_name))
+);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * The power domain events are used for power domains transitions
  */

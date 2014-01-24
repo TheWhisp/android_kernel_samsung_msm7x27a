@@ -15,6 +15,7 @@
 
 #include <asm/tlb.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <plat/mux.h>
 #include <plat/tc.h>
 
@@ -22,6 +23,17 @@
 
 extern void omap_check_revision(void);
 extern void omap_sram_init(void);
+=======
+
+#include <plat/mux.h>
+#include <plat/tc.h>
+
+#include "iomap.h"
+#include "common.h"
+#include "clock.h"
+
+extern void omap_check_revision(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The machine specific code may provide the extra mapping besides the
@@ -85,6 +97,7 @@ static struct map_desc omap16xx_io_desc[] __initdata = {
 #endif
 
 /*
+<<<<<<< HEAD
  * Maps common IO regions for omap1. This should only get called from
  * board specific init.
  */
@@ -129,6 +142,46 @@ void __init omap1_map_common_io(void)
  */
 void __init omap1_init_common_hw(void)
 {
+=======
+ * Maps common IO regions for omap1
+ */
+static void __init omap1_map_common_io(void)
+{
+	iotable_init(omap_io_desc, ARRAY_SIZE(omap_io_desc));
+}
+
+#if defined (CONFIG_ARCH_OMAP730) || defined (CONFIG_ARCH_OMAP850)
+void __init omap7xx_map_io(void)
+{
+	omap1_map_common_io();
+	iotable_init(omap7xx_io_desc, ARRAY_SIZE(omap7xx_io_desc));
+}
+#endif
+
+#ifdef CONFIG_ARCH_OMAP15XX
+void __init omap15xx_map_io(void)
+{
+	omap1_map_common_io();
+	iotable_init(omap1510_io_desc, ARRAY_SIZE(omap1510_io_desc));
+}
+#endif
+
+#if defined(CONFIG_ARCH_OMAP16XX)
+void __init omap16xx_map_io(void)
+{
+	omap1_map_common_io();
+	iotable_init(omap16xx_io_desc, ARRAY_SIZE(omap16xx_io_desc));
+}
+#endif
+
+/*
+ * Common low-level hardware init for omap1.
+ */
+void __init omap1_init_early(void)
+{
+	omap_check_revision();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* REVISIT: Refer to OMAP5910 Errata, Advisory SYS_1: "Timeout Abort
 	 * on a Posted Write in the TIPB Bridge".
 	 */
@@ -138,8 +191,13 @@ void __init omap1_init_common_hw(void)
 	/* Must init clocks early to assure that timer interrupt works
 	 */
 	omap1_clk_init();
+<<<<<<< HEAD
 
 	omap1_mux_init();
+=======
+	omap1_mux_init();
+	omap_init_consistent_dma_size();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*

@@ -98,7 +98,10 @@
 #include <asm/machvec.h>
 #include <asm/processor.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef DEBUG_INTERRUPT_ROUTING
 

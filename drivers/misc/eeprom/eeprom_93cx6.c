@@ -234,7 +234,10 @@ void eeprom_93cx6_multiread(struct eeprom_93cx6 *eeprom, const u8 word,
 }
 EXPORT_SYMBOL_GPL(eeprom_93cx6_multiread);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * eeprom_93cx6_wren - set the write enable state
  * @eeprom: Pointer to eeprom structure

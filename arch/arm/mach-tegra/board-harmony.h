@@ -17,6 +17,11 @@
 #ifndef _MACH_TEGRA_BOARD_HARMONY_H
 #define _MACH_TEGRA_BOARD_HARMONY_H
 
+<<<<<<< HEAD
+=======
+#include <mach/gpio-tegra.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HARMONY_GPIO_TPS6586X(_x_)	(TEGRA_NR_GPIOS + (_x_))
 #define HARMONY_GPIO_WM8903(_x_)	(HARMONY_GPIO_TPS6586X(4) + (_x_))
 
@@ -31,6 +36,10 @@
 #define TEGRA_GPIO_HP_DET		TEGRA_GPIO_PW2
 #define TEGRA_GPIO_INT_MIC_EN		TEGRA_GPIO_PX0
 #define TEGRA_GPIO_EXT_MIC_EN		TEGRA_GPIO_PX1
+<<<<<<< HEAD
+=======
+#define TEGRA_GPIO_EN_VDD_1V05_GPIO	HARMONY_GPIO_TPS6586X(2)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void harmony_pinmux_init(void);
 int harmony_regulator_init(void);

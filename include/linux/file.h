@@ -12,7 +12,10 @@
 struct file;
 
 extern void fput(struct file *);
+<<<<<<< HEAD
 extern void drop_file_write_access(struct file *file);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct file_operations;
 struct vfsmount;

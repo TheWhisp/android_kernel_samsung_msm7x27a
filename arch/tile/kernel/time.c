@@ -78,7 +78,10 @@ static struct clocksource cycle_counter_cs = {
 	.rating = 300,
 	.read = clocksource_get_cycles,
 	.mask = CLOCKSOURCE_MASK(64),
+<<<<<<< HEAD
 	.shift = 22,   /* typical value, e.g. x86 tsc uses this */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.flags = CLOCK_SOURCE_IS_CONTINUOUS,
 };
 
@@ -91,8 +94,11 @@ void __init setup_clock(void)
 	cycles_per_sec = hv_sysconf(HV_SYSCONF_CPU_SPEED);
 	sched_clock_mult =
 		clocksource_hz2mult(cycles_per_sec, SCHED_CLOCK_SHIFT);
+<<<<<<< HEAD
 	cycle_counter_cs.mult =
 		clocksource_hz2mult(cycles_per_sec, cycle_counter_cs.shift);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void __init calibrate_delay(void)
@@ -107,7 +113,11 @@ void __init calibrate_delay(void)
 void __init time_init(void)
 {
 	/* Initialize and register the clock source. */
+<<<<<<< HEAD
 	clocksource_register(&cycle_counter_cs);
+=======
+	clocksource_register_hz(&cycle_counter_cs, cycles_per_sec);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Start up the tile-timer interrupt source on the boot cpu. */
 	setup_tile_timer();

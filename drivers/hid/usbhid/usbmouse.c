@@ -241,6 +241,7 @@ static struct usb_driver usb_mouse_driver = {
 	.id_table	= usb_mouse_id_table,
 };
 
+<<<<<<< HEAD
 static int __init usb_mouse_init(void)
 {
 	int retval = usb_register(&usb_mouse_driver);
@@ -257,3 +258,6 @@ static void __exit usb_mouse_exit(void)
 
 module_init(usb_mouse_init);
 module_exit(usb_mouse_exit);
+=======
+module_usb_driver(usb_mouse_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

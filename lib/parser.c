@@ -6,7 +6,12 @@
  */
 
 #include <linux/ctype.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/types.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/parser.h>
 #include <linux/slab.h>
 #include <linux/string.h>

@@ -164,6 +164,7 @@ static struct platform_driver sgi_buttons_driver = {
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 
 static int __init sgi_buttons_init(void)
 {
@@ -178,3 +179,8 @@ static void __exit sgi_buttons_exit(void)
 MODULE_LICENSE("GPL");
 module_init(sgi_buttons_init);
 module_exit(sgi_buttons_exit);
+=======
+module_platform_driver(sgi_buttons_driver);
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/cm-10.0

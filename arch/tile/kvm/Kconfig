@@ -33,6 +33,9 @@ config KVM
 	  If unsure, say N.
 
 source drivers/vhost/Kconfig
+<<<<<<< HEAD
 source drivers/virtio/Kconfig
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 endif # VIRTUALIZATION

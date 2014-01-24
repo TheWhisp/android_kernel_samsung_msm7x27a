@@ -23,9 +23,14 @@
 #include <linux/gfp.h>
 #include <asm/page.h>
 #include <asm/pal.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/pgtable.h>
 #include <asm/atomic.h>
+=======
+#include <asm/pgtable.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlbflush.h>
 #include <asm/sn/arch.h>
 

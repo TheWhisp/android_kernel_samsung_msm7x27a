@@ -693,8 +693,12 @@ static int can_set_system_xattr(struct inode *inode, const char *name,
 			return rc;
 		}
 		if (acl) {
+<<<<<<< HEAD
 			mode_t mode = inode->i_mode;
 			rc = posix_acl_equiv_mode(acl, &mode);
+=======
+			rc = posix_acl_equiv_mode(acl, &inode->i_mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 			posix_acl_release(acl);
 			if (rc < 0) {
 				printk(KERN_ERR
@@ -702,7 +706,10 @@ static int can_set_system_xattr(struct inode *inode, const char *name,
 				       rc);
 				return rc;
 			}
+<<<<<<< HEAD
 			inode->i_mode = mode;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			mark_inode_dirty(inode);
 		}
 		/*
@@ -1091,6 +1098,7 @@ int jfs_removexattr(struct dentry *dentry, const char *name)
 }
 
 #ifdef CONFIG_JFS_SECURITY
+<<<<<<< HEAD
 int jfs_init_security(tid_t tid, struct inode *inode, struct inode *dir,
 		      const struct qstr *qstr)
 {
@@ -1124,5 +1132,39 @@ kmalloc_failed:
 	kfree(value);
 
 	return rc;
+=======
+int jfs_initxattrs(struct inode *inode, const struct xattr *xattr_array,
+		   void *fs_info)
+{
+	const struct xattr *xattr;
+	tid_t *tid = fs_info;
+	char *name;
+	int err = 0;
+
+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
+		name = kmalloc(XATTR_SECURITY_PREFIX_LEN +
+			       strlen(xattr->name) + 1, GFP_NOFS);
+		if (!name) {
+			err = -ENOMEM;
+			break;
+		}
+		strcpy(name, XATTR_SECURITY_PREFIX);
+		strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
+
+		err = __jfs_setxattr(*tid, inode, name,
+				     xattr->value, xattr->value_len, 0);
+		kfree(name);
+		if (err < 0)
+			break;
+	}
+	return err;
+}
+
+int jfs_init_security(tid_t tid, struct inode *inode, struct inode *dir,
+		      const struct qstr *qstr)
+{
+	return security_inode_init_security(inode, dir, qstr,
+					    &jfs_initxattrs, &tid);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif

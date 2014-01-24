@@ -10,8 +10,15 @@
 #include "evlist.h"
 #include "evsel.h"
 #include "session.h"
+<<<<<<< HEAD
 #include "sort.h"
 #include "util.h"
+=======
+#include "tool.h"
+#include "sort.h"
+#include "util.h"
+#include "cpumap.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int perf_session__open(struct perf_session *self, bool force)
 {
@@ -22,7 +29,11 @@ static int perf_session__open(struct perf_session *self, bool force)
 		self->fd = STDIN_FILENO;
 
 		if (perf_session__read_header(self, self->fd) < 0)
+<<<<<<< HEAD
 			pr_err("incompatible file format");
+=======
+			pr_err("incompatible file format (rerun with -v to learn more)");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		return 0;
 	}
@@ -54,7 +65,11 @@ static int perf_session__open(struct perf_session *self, bool force)
 	}
 
 	if (perf_session__read_header(self, self->fd) < 0) {
+<<<<<<< HEAD
 		pr_err("incompatible file format");
+=======
+		pr_err("incompatible file format (rerun with -v to learn more)");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_close;
 	}
 
@@ -77,6 +92,7 @@ out_close:
 	return -1;
 }
 
+<<<<<<< HEAD
 static void perf_session__id_header_size(struct perf_session *session)
 {
        struct perf_sample *data;
@@ -104,12 +120,19 @@ out:
        session->id_hdr_size = size;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void perf_session__update_sample_type(struct perf_session *self)
 {
 	self->sample_type = perf_evlist__sample_type(self->evlist);
 	self->sample_size = __perf_evsel__sample_size(self->sample_type);
 	self->sample_id_all = perf_evlist__sample_id_all(self->evlist);
+<<<<<<< HEAD
 	perf_session__id_header_size(self);
+=======
+	self->id_hdr_size = perf_evlist__id_hdr_size(self->evlist);
+	self->host_machine.id_hdr_size = self->id_hdr_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int perf_session__create_kernel_maps(struct perf_session *self)
@@ -129,18 +152,39 @@ static void perf_session__destroy_kernel_maps(struct perf_session *self)
 
 struct perf_session *perf_session__new(const char *filename, int mode,
 				       bool force, bool repipe,
+<<<<<<< HEAD
 				       struct perf_event_ops *ops)
 {
 	size_t len = filename ? strlen(filename) + 1 : 0;
 	struct perf_session *self = zalloc(sizeof(*self) + len);
+=======
+				       struct perf_tool *tool)
+{
+	struct perf_session *self;
+	struct stat st;
+	size_t len;
+
+	if (!filename || !strlen(filename)) {
+		if (!fstat(STDIN_FILENO, &st) && S_ISFIFO(st.st_mode))
+			filename = "-";
+		else
+			filename = "perf.data";
+	}
+
+	len = strlen(filename);
+	self = zalloc(sizeof(*self) + len);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (self == NULL)
 		goto out;
 
 	memcpy(self->filename, filename, len);
+<<<<<<< HEAD
 	self->threads = RB_ROOT;
 	INIT_LIST_HEAD(&self->dead_threads);
 	self->last_match = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * On 64bit we can mmap the data file in one go. No need for tiny mmap
 	 * slices. On 32bit we use 32MB.
@@ -156,6 +200,10 @@ struct perf_session *perf_session__new(const char *filename, int mode,
 	INIT_LIST_HEAD(&self->ordered_samples.sample_cache);
 	INIT_LIST_HEAD(&self->ordered_samples.to_free);
 	machine__init(&self->host_machine, "", HOST_KERNEL_ID);
+<<<<<<< HEAD
+=======
+	hists__init(&self->hists);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (mode == O_RDONLY) {
 		if (perf_session__open(self, force) < 0)
@@ -170,10 +218,17 @@ struct perf_session *perf_session__new(const char *filename, int mode,
 			goto out_delete;
 	}
 
+<<<<<<< HEAD
 	if (ops && ops->ordering_requires_timestamps &&
 	    ops->ordered_samples && !self->sample_id_all) {
 		dump_printf("WARNING: No sample_id_all support, falling back to unordered processing\n");
 		ops->ordered_samples = false;
+=======
+	if (tool && tool->ordering_requires_timestamps &&
+	    tool->ordered_samples && !self->sample_id_all) {
+		dump_printf("WARNING: No sample_id_all support, falling back to unordered processing\n");
+		tool->ordered_samples = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 out:
@@ -183,17 +238,34 @@ out_delete:
 	return NULL;
 }
 
+<<<<<<< HEAD
 static void perf_session__delete_dead_threads(struct perf_session *self)
 {
 	struct thread *n, *t;
 
 	list_for_each_entry_safe(t, n, &self->dead_threads, node) {
+=======
+static void machine__delete_dead_threads(struct machine *machine)
+{
+	struct thread *n, *t;
+
+	list_for_each_entry_safe(t, n, &machine->dead_threads, node) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		list_del(&t->node);
 		thread__delete(t);
 	}
 }
 
+<<<<<<< HEAD
 static void perf_session__delete_threads(struct perf_session *self)
+=======
+static void perf_session__delete_dead_threads(struct perf_session *session)
+{
+	machine__delete_dead_threads(&session->host_machine);
+}
+
+static void machine__delete_threads(struct machine *self)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct rb_node *nd = rb_first(&self->threads);
 
@@ -206,6 +278,14 @@ static void perf_session__delete_threads(struct perf_session *self)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static void perf_session__delete_threads(struct perf_session *session)
+{
+	machine__delete_threads(&session->host_machine);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void perf_session__delete(struct perf_session *self)
 {
 	perf_session__destroy_kernel_maps(self);
@@ -216,7 +296,11 @@ void perf_session__delete(struct perf_session *self)
 	free(self);
 }
 
+<<<<<<< HEAD
 void perf_session__remove_thread(struct perf_session *self, struct thread *th)
+=======
+void machine__remove_thread(struct machine *self, struct thread *th)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	self->last_match = NULL;
 	rb_erase(&th->rb_node, &self->threads);
@@ -235,21 +319,100 @@ static bool symbol__match_parent_regex(struct symbol *sym)
 	return 0;
 }
 
+<<<<<<< HEAD
 int perf_session__resolve_callchain(struct perf_session *self,
 				    struct thread *thread,
 				    struct ip_callchain *chain,
 				    struct symbol **parent)
+=======
+static const u8 cpumodes[] = {
+	PERF_RECORD_MISC_USER,
+	PERF_RECORD_MISC_KERNEL,
+	PERF_RECORD_MISC_GUEST_USER,
+	PERF_RECORD_MISC_GUEST_KERNEL
+};
+#define NCPUMODES (sizeof(cpumodes)/sizeof(u8))
+
+static void ip__resolve_ams(struct machine *self, struct thread *thread,
+			    struct addr_map_symbol *ams,
+			    u64 ip)
+{
+	struct addr_location al;
+	size_t i;
+	u8 m;
+
+	memset(&al, 0, sizeof(al));
+
+	for (i = 0; i < NCPUMODES; i++) {
+		m = cpumodes[i];
+		/*
+		 * We cannot use the header.misc hint to determine whether a
+		 * branch stack address is user, kernel, guest, hypervisor.
+		 * Branches may straddle the kernel/user/hypervisor boundaries.
+		 * Thus, we have to try consecutively until we find a match
+		 * or else, the symbol is unknown
+		 */
+		thread__find_addr_location(thread, self, m, MAP__FUNCTION,
+				ip, &al, NULL);
+		if (al.sym)
+			goto found;
+	}
+found:
+	ams->addr = ip;
+	ams->al_addr = al.addr;
+	ams->sym = al.sym;
+	ams->map = al.map;
+}
+
+struct branch_info *machine__resolve_bstack(struct machine *self,
+					    struct thread *thr,
+					    struct branch_stack *bs)
+{
+	struct branch_info *bi;
+	unsigned int i;
+
+	bi = calloc(bs->nr, sizeof(struct branch_info));
+	if (!bi)
+		return NULL;
+
+	for (i = 0; i < bs->nr; i++) {
+		ip__resolve_ams(self, thr, &bi[i].to, bs->entries[i].to);
+		ip__resolve_ams(self, thr, &bi[i].from, bs->entries[i].from);
+		bi[i].flags = bs->entries[i].flags;
+	}
+	return bi;
+}
+
+int machine__resolve_callchain(struct machine *self, struct perf_evsel *evsel,
+			       struct thread *thread,
+			       struct ip_callchain *chain,
+			       struct symbol **parent)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u8 cpumode = PERF_RECORD_MISC_USER;
 	unsigned int i;
 	int err;
 
+<<<<<<< HEAD
 	callchain_cursor_reset(&self->callchain_cursor);
 
 	for (i = 0; i < chain->nr; i++) {
 		u64 ip = chain->ips[i];
 		struct addr_location al;
 
+=======
+	callchain_cursor_reset(&evsel->hists.callchain_cursor);
+
+	for (i = 0; i < chain->nr; i++) {
+		u64 ip;
+		struct addr_location al;
+
+		if (callchain_param.order == ORDER_CALLEE)
+			ip = chain->ips[i];
+		else
+			ip = chain->ips[chain->nr - i - 1];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ip >= PERF_CONTEXT_MAX) {
 			switch (ip) {
 			case PERF_CONTEXT_HV:
@@ -266,7 +429,11 @@ int perf_session__resolve_callchain(struct perf_session *self,
 
 		al.filtered = false;
 		thread__find_addr_location(thread, self, cpumode,
+<<<<<<< HEAD
 				MAP__FUNCTION, thread->pid, ip, &al, NULL);
+=======
+					   MAP__FUNCTION, ip, &al, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (al.sym != NULL) {
 			if (sort__has_parent && !*parent &&
 			    symbol__match_parent_regex(al.sym))
@@ -275,7 +442,11 @@ int perf_session__resolve_callchain(struct perf_session *self,
 				break;
 		}
 
+<<<<<<< HEAD
 		err = callchain_cursor_append(&self->callchain_cursor,
+=======
+		err = callchain_cursor_append(&evsel->hists.callchain_cursor,
+>>>>>>> refs/remotes/origin/cm-10.0
 					      ip, al.map, al.sym);
 		if (err)
 			return err;
@@ -284,38 +455,79 @@ int perf_session__resolve_callchain(struct perf_session *self,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int process_event_synth_stub(union perf_event *event __used,
 				    struct perf_session *session __used)
+=======
+static int process_event_synth_tracing_data_stub(union perf_event *event __used,
+						 struct perf_session *session __used)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	dump_printf(": unhandled!\n");
 	return 0;
 }
 
+<<<<<<< HEAD
 static int process_event_sample_stub(union perf_event *event __used,
 				     struct perf_sample *sample __used,
 				     struct perf_evsel *evsel __used,
 				     struct perf_session *session __used)
+=======
+static int process_event_synth_attr_stub(union perf_event *event __used,
+					 struct perf_evlist **pevlist __used)
 {
 	dump_printf(": unhandled!\n");
 	return 0;
 }
 
+static int process_event_sample_stub(struct perf_tool *tool __used,
+				     union perf_event *event __used,
+				     struct perf_sample *sample __used,
+				     struct perf_evsel *evsel __used,
+				     struct machine *machine __used)
+>>>>>>> refs/remotes/origin/cm-10.0
+{
+	dump_printf(": unhandled!\n");
+	return 0;
+}
+
+<<<<<<< HEAD
 static int process_event_stub(union perf_event *event __used,
 			      struct perf_sample *sample __used,
 			      struct perf_session *session __used)
+=======
+static int process_event_stub(struct perf_tool *tool __used,
+			      union perf_event *event __used,
+			      struct perf_sample *sample __used,
+			      struct machine *machine __used)
 {
 	dump_printf(": unhandled!\n");
 	return 0;
 }
 
+static int process_finished_round_stub(struct perf_tool *tool __used,
+				       union perf_event *event __used,
+				       struct perf_session *perf_session __used)
+>>>>>>> refs/remotes/origin/cm-10.0
+{
+	dump_printf(": unhandled!\n");
+	return 0;
+}
+
+<<<<<<< HEAD
 static int process_finished_round_stub(union perf_event *event __used,
 				       struct perf_session *session __used,
 				       struct perf_event_ops *ops __used)
+=======
+static int process_event_type_stub(struct perf_tool *tool __used,
+				   union perf_event *event __used)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	dump_printf(": unhandled!\n");
 	return 0;
 }
 
+<<<<<<< HEAD
 static int process_finished_round(union perf_event *event,
 				  struct perf_session *session,
 				  struct perf_event_ops *ops);
@@ -353,6 +565,45 @@ static void perf_event_ops__fill_defaults(struct perf_event_ops *handler)
 			handler->finished_round = process_finished_round;
 		else
 			handler->finished_round = process_finished_round_stub;
+=======
+static int process_finished_round(struct perf_tool *tool,
+				  union perf_event *event,
+				  struct perf_session *session);
+
+static void perf_tool__fill_defaults(struct perf_tool *tool)
+{
+	if (tool->sample == NULL)
+		tool->sample = process_event_sample_stub;
+	if (tool->mmap == NULL)
+		tool->mmap = process_event_stub;
+	if (tool->comm == NULL)
+		tool->comm = process_event_stub;
+	if (tool->fork == NULL)
+		tool->fork = process_event_stub;
+	if (tool->exit == NULL)
+		tool->exit = process_event_stub;
+	if (tool->lost == NULL)
+		tool->lost = perf_event__process_lost;
+	if (tool->read == NULL)
+		tool->read = process_event_sample_stub;
+	if (tool->throttle == NULL)
+		tool->throttle = process_event_stub;
+	if (tool->unthrottle == NULL)
+		tool->unthrottle = process_event_stub;
+	if (tool->attr == NULL)
+		tool->attr = process_event_synth_attr_stub;
+	if (tool->event_type == NULL)
+		tool->event_type = process_event_type_stub;
+	if (tool->tracing_data == NULL)
+		tool->tracing_data = process_event_synth_tracing_data_stub;
+	if (tool->build_id == NULL)
+		tool->build_id = process_finished_round_stub;
+	if (tool->finished_round == NULL) {
+		if (tool->ordered_samples)
+			tool->finished_round = process_finished_round;
+		else
+			tool->finished_round = process_finished_round_stub;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -484,11 +735,19 @@ static void perf_session_free_sample_buffers(struct perf_session *session)
 static int perf_session_deliver_event(struct perf_session *session,
 				      union perf_event *event,
 				      struct perf_sample *sample,
+<<<<<<< HEAD
 				      struct perf_event_ops *ops,
 				      u64 file_offset);
 
 static void flush_sample_queue(struct perf_session *s,
 			       struct perf_event_ops *ops)
+=======
+				      struct perf_tool *tool,
+				      u64 file_offset);
+
+static void flush_sample_queue(struct perf_session *s,
+			       struct perf_tool *tool)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ordered_samples *os = &s->ordered_samples;
 	struct list_head *head = &os->samples;
@@ -496,9 +755,16 @@ static void flush_sample_queue(struct perf_session *s,
 	struct perf_sample sample;
 	u64 limit = os->next_flush;
 	u64 last_ts = os->last_sample ? os->last_sample->timestamp : 0ULL;
+<<<<<<< HEAD
 	int ret;
 
 	if (!ops->ordered_samples || !limit)
+=======
+	unsigned idx = 0, progress_next = os->nr_samples / 16;
+	int ret;
+
+	if (!tool->ordered_samples || !limit)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	list_for_each_entry_safe(iter, tmp, head, list) {
@@ -509,12 +775,24 @@ static void flush_sample_queue(struct perf_session *s,
 		if (ret)
 			pr_err("Can't parse sample, err = %d\n", ret);
 		else
+<<<<<<< HEAD
 			perf_session_deliver_event(s, iter->event, &sample, ops,
+=======
+			perf_session_deliver_event(s, iter->event, &sample, tool,
+>>>>>>> refs/remotes/origin/cm-10.0
 						   iter->file_offset);
 
 		os->last_flush = iter->timestamp;
 		list_del(&iter->list);
 		list_add(&iter->list, &os->sample_cache);
+<<<<<<< HEAD
+=======
+		if (++idx >= progress_next) {
+			progress_next += os->nr_samples / 16;
+			ui_progress__update(idx, os->nr_samples,
+					    "Processing time ordered events...");
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (list_empty(head)) {
@@ -523,6 +801,11 @@ static void flush_sample_queue(struct perf_session *s,
 		os->last_sample =
 			list_entry(head->prev, struct sample_queue, list);
 	}
+<<<<<<< HEAD
+=======
+
+	os->nr_samples = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -564,11 +847,19 @@ static void flush_sample_queue(struct perf_session *s,
  *      Flush every events below timestamp 7
  *      etc...
  */
+<<<<<<< HEAD
 static int process_finished_round(union perf_event *event __used,
 				  struct perf_session *session,
 				  struct perf_event_ops *ops)
 {
 	flush_sample_queue(session, ops);
+=======
+static int process_finished_round(struct perf_tool *tool,
+				  union perf_event *event __used,
+				  struct perf_session *session)
+{
+	flush_sample_queue(session, tool);
+>>>>>>> refs/remotes/origin/cm-10.0
 	session->ordered_samples.next_flush = session->ordered_samples.max_timestamp;
 
 	return 0;
@@ -582,6 +873,10 @@ static void __queue_event(struct sample_queue *new, struct perf_session *s)
 	u64 timestamp = new->timestamp;
 	struct list_head *p;
 
+<<<<<<< HEAD
+=======
+	++os->nr_samples;
+>>>>>>> refs/remotes/origin/cm-10.0
 	os->last_sample = new;
 
 	if (!sample) {
@@ -673,6 +968,21 @@ static void callchain__printf(struct perf_sample *sample)
 		       i, sample->callchain->ips[i]);
 }
 
+<<<<<<< HEAD
+=======
+static void branch_stack__printf(struct perf_sample *sample)
+{
+	uint64_t i;
+
+	printf("... branch stack: nr:%" PRIu64 "\n", sample->branch_stack->nr);
+
+	for (i = 0; i < sample->branch_stack->nr; i++)
+		printf("..... %2"PRIu64": %016" PRIx64 " -> %016" PRIx64 "\n",
+			i, sample->branch_stack->entries[i].from,
+			sample->branch_stack->entries[i].to);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void perf_session__print_tstamp(struct perf_session *session,
 				       union perf_event *event,
 				       struct perf_sample *sample)
@@ -714,17 +1024,50 @@ static void dump_sample(struct perf_session *session, union perf_event *event,
 	if (!dump_trace)
 		return;
 
+<<<<<<< HEAD
 	printf("(IP, %d): %d/%d: %#" PRIx64 " period: %" PRIu64 "\n",
 	       event->header.misc, sample->pid, sample->tid, sample->ip,
 	       sample->period);
 
 	if (session->sample_type & PERF_SAMPLE_CALLCHAIN)
 		callchain__printf(sample);
+=======
+	printf("(IP, %d): %d/%d: %#" PRIx64 " period: %" PRIu64 " addr: %#" PRIx64 "\n",
+	       event->header.misc, sample->pid, sample->tid, sample->ip,
+	       sample->period, sample->addr);
+
+	if (session->sample_type & PERF_SAMPLE_CALLCHAIN)
+		callchain__printf(sample);
+
+	if (session->sample_type & PERF_SAMPLE_BRANCH_STACK)
+		branch_stack__printf(sample);
+}
+
+static struct machine *
+	perf_session__find_machine_for_cpumode(struct perf_session *session,
+					       union perf_event *event)
+{
+	const u8 cpumode = event->header.misc & PERF_RECORD_MISC_CPUMODE_MASK;
+
+	if (cpumode == PERF_RECORD_MISC_GUEST_KERNEL && perf_guest) {
+		u32 pid;
+
+		if (event->header.type == PERF_RECORD_MMAP)
+			pid = event->mmap.pid;
+		else
+			pid = event->ip.pid;
+
+		return perf_session__find_machine(session, pid);
+	}
+
+	return perf_session__find_host_machine(session);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int perf_session_deliver_event(struct perf_session *session,
 				      union perf_event *event,
 				      struct perf_sample *sample,
+<<<<<<< HEAD
 				      struct perf_event_ops *ops,
 				      u64 file_offset)
 {
@@ -757,6 +1100,66 @@ static int perf_session_deliver_event(struct perf_session *session,
 		return ops->throttle(event, sample, session);
 	case PERF_RECORD_UNTHROTTLE:
 		return ops->unthrottle(event, sample, session);
+=======
+				      struct perf_tool *tool,
+				      u64 file_offset)
+{
+	struct perf_evsel *evsel;
+	struct machine *machine;
+
+	dump_event(session, event, file_offset, sample);
+
+	evsel = perf_evlist__id2evsel(session->evlist, sample->id);
+	if (evsel != NULL && event->header.type != PERF_RECORD_SAMPLE) {
+		/*
+		 * XXX We're leaving PERF_RECORD_SAMPLE unnacounted here
+		 * because the tools right now may apply filters, discarding
+		 * some of the samples. For consistency, in the future we
+		 * should have something like nr_filtered_samples and remove
+		 * the sample->period from total_sample_period, etc, KISS for
+		 * now tho.
+		 *
+		 * Also testing against NULL allows us to handle files without
+		 * attr.sample_id_all and/or without PERF_SAMPLE_ID. In the
+		 * future probably it'll be a good idea to restrict event
+		 * processing via perf_session to files with both set.
+		 */
+		hists__inc_nr_events(&evsel->hists, event->header.type);
+	}
+
+	machine = perf_session__find_machine_for_cpumode(session, event);
+
+	switch (event->header.type) {
+	case PERF_RECORD_SAMPLE:
+		dump_sample(session, event, sample);
+		if (evsel == NULL) {
+			++session->hists.stats.nr_unknown_id;
+			return 0;
+		}
+		if (machine == NULL) {
+			++session->hists.stats.nr_unprocessable_samples;
+			return 0;
+		}
+		return tool->sample(tool, event, sample, evsel, machine);
+	case PERF_RECORD_MMAP:
+		return tool->mmap(tool, event, sample, machine);
+	case PERF_RECORD_COMM:
+		return tool->comm(tool, event, sample, machine);
+	case PERF_RECORD_FORK:
+		return tool->fork(tool, event, sample, machine);
+	case PERF_RECORD_EXIT:
+		return tool->exit(tool, event, sample, machine);
+	case PERF_RECORD_LOST:
+		if (tool->lost == perf_event__process_lost)
+			session->hists.stats.total_lost += event->lost.lost;
+		return tool->lost(tool, event, sample, machine);
+	case PERF_RECORD_READ:
+		return tool->read(tool, event, sample, evsel, machine);
+	case PERF_RECORD_THROTTLE:
+		return tool->throttle(tool, event, sample, machine);
+	case PERF_RECORD_UNTHROTTLE:
+		return tool->unthrottle(tool, event, sample, machine);
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		++session->hists.stats.nr_unknown_events;
 		return -1;
@@ -780,13 +1183,21 @@ static int perf_session__preprocess_sample(struct perf_session *session,
 }
 
 static int perf_session__process_user_event(struct perf_session *session, union perf_event *event,
+<<<<<<< HEAD
 					    struct perf_event_ops *ops, u64 file_offset)
 {
+=======
+					    struct perf_tool *tool, u64 file_offset)
+{
+	int err;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	dump_event(session, event, file_offset, NULL);
 
 	/* These events are processed right away */
 	switch (event->header.type) {
 	case PERF_RECORD_HEADER_ATTR:
+<<<<<<< HEAD
 		return ops->attr(event, session);
 	case PERF_RECORD_HEADER_EVENT_TYPE:
 		return ops->event_type(event, session);
@@ -798,6 +1209,22 @@ static int perf_session__process_user_event(struct perf_session *session, union 
 		return ops->build_id(event, session);
 	case PERF_RECORD_FINISHED_ROUND:
 		return ops->finished_round(event, session, ops);
+=======
+		err = tool->attr(event, &session->evlist);
+		if (err == 0)
+			perf_session__update_sample_type(session);
+		return err;
+	case PERF_RECORD_HEADER_EVENT_TYPE:
+		return tool->event_type(tool, event);
+	case PERF_RECORD_HEADER_TRACING_DATA:
+		/* setup for reading amidst mmap */
+		lseek(session->fd, file_offset, SEEK_SET);
+		return tool->tracing_data(event, session);
+	case PERF_RECORD_HEADER_BUILD_ID:
+		return tool->build_id(tool, event, session);
+	case PERF_RECORD_FINISHED_ROUND:
+		return tool->finished_round(tool, event, session);
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		return -EINVAL;
 	}
@@ -805,7 +1232,11 @@ static int perf_session__process_user_event(struct perf_session *session, union 
 
 static int perf_session__process_event(struct perf_session *session,
 				       union perf_event *event,
+<<<<<<< HEAD
 				       struct perf_event_ops *ops,
+=======
+				       struct perf_tool *tool,
+>>>>>>> refs/remotes/origin/cm-10.0
 				       u64 file_offset)
 {
 	struct perf_sample sample;
@@ -821,7 +1252,11 @@ static int perf_session__process_event(struct perf_session *session,
 	hists__inc_nr_events(&session->hists, event->header.type);
 
 	if (event->header.type >= PERF_RECORD_USER_TYPE_START)
+<<<<<<< HEAD
 		return perf_session__process_user_event(session, event, ops, file_offset);
+=======
+		return perf_session__process_user_event(session, event, tool, file_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * For all kernel events we get the sample data
@@ -834,14 +1269,22 @@ static int perf_session__process_event(struct perf_session *session,
 	if (perf_session__preprocess_sample(session, event, &sample))
 		return 0;
 
+<<<<<<< HEAD
 	if (ops->ordered_samples) {
+=======
+	if (tool->ordered_samples) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = perf_session_queue_event(session, event, &sample,
 					       file_offset);
 		if (ret != -ETIME)
 			return ret;
 	}
 
+<<<<<<< HEAD
 	return perf_session_deliver_event(session, event, &sample, ops,
+=======
+	return perf_session_deliver_event(session, event, &sample, tool,
+>>>>>>> refs/remotes/origin/cm-10.0
 					  file_offset);
 }
 
@@ -852,6 +1295,14 @@ void perf_event_header__bswap(struct perf_event_header *self)
 	self->size = bswap_16(self->size);
 }
 
+<<<<<<< HEAD
+=======
+struct thread *perf_session__findnew(struct perf_session *session, pid_t pid)
+{
+	return machine__findnew_thread(&session->host_machine, pid);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct thread *perf_session__register_idle_thread(struct perf_session *self)
 {
 	struct thread *thread = perf_session__findnew(self, 0);
@@ -865,6 +1316,7 @@ static struct thread *perf_session__register_idle_thread(struct perf_session *se
 }
 
 static void perf_session__warn_about_errors(const struct perf_session *session,
+<<<<<<< HEAD
 					    const struct perf_event_ops *ops)
 {
 	if (ops->lost == perf_event__process_lost &&
@@ -873,6 +1325,16 @@ static void perf_session__warn_about_errors(const struct perf_session *session,
 			    "!\n\nCheck IO/CPU overload!\n\n",
 			    session->hists.stats.total_period,
 			    session->hists.stats.total_lost);
+=======
+					    const struct perf_tool *tool)
+{
+	if (tool->lost == perf_event__process_lost &&
+	    session->hists.stats.nr_events[PERF_RECORD_LOST] != 0) {
+		ui__warning("Processed %d events and lost %d chunks!\n\n"
+			    "Check IO/CPU overload!\n\n",
+			    session->hists.stats.nr_events[0],
+			    session->hists.stats.nr_events[PERF_RECORD_LOST]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (session->hists.stats.nr_unknown_events != 0) {
@@ -896,13 +1358,26 @@ static void perf_session__warn_about_errors(const struct perf_session *session,
  			    session->hists.stats.nr_invalid_chains,
  			    session->hists.stats.nr_events[PERF_RECORD_SAMPLE]);
  	}
+<<<<<<< HEAD
+=======
+
+	if (session->hists.stats.nr_unprocessable_samples != 0) {
+		ui__warning("%u unprocessable samples recorded.\n"
+			    "Do you have a KVM guest running and not using 'perf kvm'?\n",
+			    session->hists.stats.nr_unprocessable_samples);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #define session_done()	(*(volatile int *)(&session_done))
 volatile int session_done;
 
 static int __perf_session__process_pipe_events(struct perf_session *self,
+<<<<<<< HEAD
 					       struct perf_event_ops *ops)
+=======
+					       struct perf_tool *tool)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	union perf_event event;
 	uint32_t size;
@@ -911,7 +1386,11 @@ static int __perf_session__process_pipe_events(struct perf_session *self,
 	int err;
 	void *p;
 
+<<<<<<< HEAD
 	perf_event_ops__fill_defaults(ops);
+=======
+	perf_tool__fill_defaults(tool);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	head = 0;
 more:
@@ -947,8 +1426,12 @@ more:
 		}
 	}
 
+<<<<<<< HEAD
 	if (size == 0 ||
 	    (skip = perf_session__process_event(self, &event, ops, head)) < 0) {
+=======
+	if ((skip = perf_session__process_event(self, &event, tool, head)) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dump_printf("%#" PRIx64 " [%#x]: skipping unknown header type: %d\n",
 			    head, event.header.size, event.header.type);
 		/*
@@ -971,7 +1454,11 @@ more:
 done:
 	err = 0;
 out_err:
+<<<<<<< HEAD
 	perf_session__warn_about_errors(self, ops);
+=======
+	perf_session__warn_about_errors(self, tool);
+>>>>>>> refs/remotes/origin/cm-10.0
 	perf_session_free_sample_buffers(self);
 	return err;
 }
@@ -1002,17 +1489,28 @@ fetch_mmaped_event(struct perf_session *session,
 
 int __perf_session__process_events(struct perf_session *session,
 				   u64 data_offset, u64 data_size,
+<<<<<<< HEAD
 				   u64 file_size, struct perf_event_ops *ops)
 {
 	u64 head, page_offset, file_offset, file_pos, progress_next;
 	int err, mmap_prot, mmap_flags, map_idx = 0;
 	struct ui_progress *progress;
+=======
+				   u64 file_size, struct perf_tool *tool)
+{
+	u64 head, page_offset, file_offset, file_pos, progress_next;
+	int err, mmap_prot, mmap_flags, map_idx = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	size_t	page_size, mmap_size;
 	char *buf, *mmaps[8];
 	union perf_event *event;
 	uint32_t size;
 
+<<<<<<< HEAD
 	perf_event_ops__fill_defaults(ops);
+=======
+	perf_tool__fill_defaults(tool);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	page_size = sysconf(_SC_PAGESIZE);
 
@@ -1024,9 +1522,12 @@ int __perf_session__process_events(struct perf_session *session,
 		file_size = data_offset + data_size;
 
 	progress_next = file_size / 16;
+<<<<<<< HEAD
 	progress = ui_progress__new("Processing events...", file_size);
 	if (progress == NULL)
 		return -1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mmap_size = session->mmap_window;
 	if (mmap_size > file_size)
@@ -1070,7 +1571,11 @@ more:
 	size = event->header.size;
 
 	if (size == 0 ||
+<<<<<<< HEAD
 	    perf_session__process_event(session, event, ops, file_pos) < 0) {
+=======
+	    perf_session__process_event(session, event, tool, file_pos) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dump_printf("%#" PRIx64 " [%#x]: skipping unknown header type: %d\n",
 			    file_offset + head, event->header.size,
 			    event->header.type);
@@ -1089,7 +1594,12 @@ more:
 
 	if (file_pos >= progress_next) {
 		progress_next += file_size / 16;
+<<<<<<< HEAD
 		ui_progress__update(progress, file_pos);
+=======
+		ui_progress__update(file_pos, file_size,
+				    "Processing events...");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (file_pos < file_size)
@@ -1098,16 +1608,26 @@ more:
 	err = 0;
 	/* do the final flush for ordered samples */
 	session->ordered_samples.next_flush = ULLONG_MAX;
+<<<<<<< HEAD
 	flush_sample_queue(session, ops);
 out_err:
 	ui_progress__delete(progress);
 	perf_session__warn_about_errors(session, ops);
+=======
+	flush_sample_queue(session, tool);
+out_err:
+	perf_session__warn_about_errors(session, tool);
+>>>>>>> refs/remotes/origin/cm-10.0
 	perf_session_free_sample_buffers(session);
 	return err;
 }
 
 int perf_session__process_events(struct perf_session *self,
+<<<<<<< HEAD
 				 struct perf_event_ops *ops)
+=======
+				 struct perf_tool *tool)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int err;
 
@@ -1118,9 +1638,15 @@ int perf_session__process_events(struct perf_session *self,
 		err = __perf_session__process_events(self,
 						     self->header.data_offset,
 						     self->header.data_size,
+<<<<<<< HEAD
 						     self->size, ops);
 	else
 		err = __perf_session__process_pipe_events(self, ops);
+=======
+						     self->size, tool);
+	else
+		err = __perf_session__process_pipe_events(self, tool);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return err;
 }
@@ -1135,9 +1661,14 @@ bool perf_session__has_traces(struct perf_session *self, const char *msg)
 	return true;
 }
 
+<<<<<<< HEAD
 int perf_session__set_kallsyms_ref_reloc_sym(struct map **maps,
 					     const char *symbol_name,
 					     u64 addr)
+=======
+int maps__set_kallsyms_ref_reloc_sym(struct map **maps,
+				     const char *symbol_name, u64 addr)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	char *bracket;
 	enum map_type i;
@@ -1196,6 +1727,30 @@ size_t perf_session__fprintf_nr_events(struct perf_session *session, FILE *fp)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+size_t perf_session__fprintf(struct perf_session *session, FILE *fp)
+{
+	/*
+	 * FIXME: Here we have to actually print all the machines in this
+	 * session, not just the host...
+	 */
+	return machine__fprintf(&session->host_machine, fp);
+}
+
+void perf_session__remove_thread(struct perf_session *session,
+				 struct thread *th)
+{
+	/*
+	 * FIXME: This one makes no sense, we need to remove the thread from
+	 * the machine it belongs to, perf_session can have many machines, so
+	 * doing it always on ->host_machine is wrong.  Fix when auditing all
+	 * the 'perf kvm' code.
+	 */
+	machine__remove_thread(&session->host_machine, th);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct perf_evsel *perf_session__find_first_evtype(struct perf_session *session,
 					      unsigned int type)
 {
@@ -1208,6 +1763,7 @@ struct perf_evsel *perf_session__find_first_evtype(struct perf_session *session,
 	return NULL;
 }
 
+<<<<<<< HEAD
 void perf_session__print_symbols(union perf_event *event,
 				struct perf_sample *sample,
 				struct perf_session *session)
@@ -1218,6 +1774,17 @@ void perf_session__print_symbols(union perf_event *event,
 	struct callchain_cursor_node *node;
 
 	if (perf_event__preprocess_sample(event, session, &al, sample,
+=======
+void perf_event__print_ip(union perf_event *event, struct perf_sample *sample,
+			  struct machine *machine, struct perf_evsel *evsel,
+			  int print_sym, int print_dso, int print_symoffset)
+{
+	struct addr_location al;
+	struct callchain_cursor *cursor = &evsel->hists.callchain_cursor;
+	struct callchain_cursor_node *node;
+
+	if (perf_event__preprocess_sample(event, machine, &al, sample,
+>>>>>>> refs/remotes/origin/cm-10.0
 					  NULL) < 0) {
 		error("problem processing %d event, skipping it.\n",
 			event->header.type);
@@ -1226,7 +1793,11 @@ void perf_session__print_symbols(union perf_event *event,
 
 	if (symbol_conf.use_callchain && sample->callchain) {
 
+<<<<<<< HEAD
 		if (perf_session__resolve_callchain(session, al.thread,
+=======
+		if (machine__resolve_callchain(machine, evsel, al.thread,
+>>>>>>> refs/remotes/origin/cm-10.0
 						sample->callchain, NULL) != 0) {
 			if (verbose)
 				error("Failed to resolve callchain. Skipping\n");
@@ -1239,6 +1810,7 @@ void perf_session__print_symbols(union perf_event *event,
 			if (!node)
 				break;
 
+<<<<<<< HEAD
 			if (node->sym && node->sym->name)
 				symname = node->sym->name;
 			else
@@ -1267,4 +1839,98 @@ void perf_session__print_symbols(union perf_event *event,
 
 		printf("%16" PRIx64 " %s (%s)", al.addr, symname, dsoname);
 	}
+=======
+			printf("\t%16" PRIx64, node->ip);
+			if (print_sym) {
+				printf(" ");
+				symbol__fprintf_symname(node->sym, stdout);
+			}
+			if (print_dso) {
+				printf(" (");
+				map__fprintf_dsoname(al.map, stdout);
+				printf(")");
+			}
+			printf("\n");
+
+			callchain_cursor_advance(cursor);
+		}
+
+	} else {
+		printf("%16" PRIx64, sample->ip);
+		if (print_sym) {
+			printf(" ");
+			if (print_symoffset)
+				symbol__fprintf_symname_offs(al.sym, &al,
+							     stdout);
+			else
+				symbol__fprintf_symname(al.sym, stdout);
+		}
+
+		if (print_dso) {
+			printf(" (");
+			map__fprintf_dsoname(al.map, stdout);
+			printf(")");
+		}
+	}
+}
+
+int perf_session__cpu_bitmap(struct perf_session *session,
+			     const char *cpu_list, unsigned long *cpu_bitmap)
+{
+	int i;
+	struct cpu_map *map;
+
+	for (i = 0; i < PERF_TYPE_MAX; ++i) {
+		struct perf_evsel *evsel;
+
+		evsel = perf_session__find_first_evtype(session, i);
+		if (!evsel)
+			continue;
+
+		if (!(evsel->attr.sample_type & PERF_SAMPLE_CPU)) {
+			pr_err("File does not contain CPU events. "
+			       "Remove -c option to proceed.\n");
+			return -1;
+		}
+	}
+
+	map = cpu_map__new(cpu_list);
+	if (map == NULL) {
+		pr_err("Invalid cpu_list\n");
+		return -1;
+	}
+
+	for (i = 0; i < map->nr; i++) {
+		int cpu = map->map[i];
+
+		if (cpu >= MAX_NR_CPUS) {
+			pr_err("Requested CPU %d too large. "
+			       "Consider raising MAX_NR_CPUS\n", cpu);
+			return -1;
+		}
+
+		set_bit(cpu, cpu_bitmap);
+	}
+
+	return 0;
+}
+
+void perf_session__fprintf_info(struct perf_session *session, FILE *fp,
+				bool full)
+{
+	struct stat st;
+	int ret;
+
+	if (session == NULL || fp == NULL)
+		return;
+
+	ret = fstat(session->fd, &st);
+	if (ret == -1)
+		return;
+
+	fprintf(fp, "# ========\n");
+	fprintf(fp, "# captured on: %s", ctime(&st.st_ctime));
+	perf_header__fprintf_info(session, fp, full);
+	fprintf(fp, "# ========\n#\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }

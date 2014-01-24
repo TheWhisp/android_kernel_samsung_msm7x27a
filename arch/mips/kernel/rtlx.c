@@ -19,7 +19,10 @@
 
 #include <linux/device.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <asm/uaccess.h>
@@ -36,10 +39,16 @@
 #include <asm/mipsmtregs.h>
 #include <asm/mips_mt.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/cpu.h>
 #include <asm/processor.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <asm/cpu.h>
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/vpe.h>
 #include <asm/rtlx.h>
 
@@ -474,7 +483,10 @@ static const struct file_operations rtlx_fops = {
 
 static struct irqaction rtlx_irq = {
 	.handler	= rtlx_interrupt,
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name		= "RTLX",
 };
 

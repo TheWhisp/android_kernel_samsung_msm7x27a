@@ -12,7 +12,11 @@
 #include <linux/crypto.h>
 
 struct crypto_cipher * ieee80211_aes_cmac_key_setup(const u8 key[]);
+<<<<<<< HEAD
 void ieee80211_aes_cmac(struct crypto_cipher *tfm, u8 *scratch, const u8 *aad,
+=======
+void ieee80211_aes_cmac(struct crypto_cipher *tfm, const u8 *aad,
+>>>>>>> refs/remotes/origin/cm-10.0
 			const u8 *data, size_t data_len, u8 *mic);
 void ieee80211_aes_cmac_key_free(struct crypto_cipher *tfm);
 

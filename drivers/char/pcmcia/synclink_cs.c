@@ -60,7 +60,10 @@
 #include <linux/ioctl.h>
 #include <linux/synclink.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/dma.h>
@@ -439,7 +442,11 @@ static int mgslpc_device_count = 0;
  * .text section address and breakpoint on module load.
  * This is useful for use with gdb and add-symbol-file command.
  */
+<<<<<<< HEAD
 static int break_on_load=0;
+=======
+static bool break_on_load=0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Driver major number, defaults to zero to get auto
@@ -2484,7 +2491,11 @@ static int mgslpc_open(struct tty_struct *tty, struct file * filp)
 
 	/* verify range of specified line number */
 	line = tty->index;
+<<<<<<< HEAD
 	if ((line < 0) || (line >= mgslpc_device_count)) {
+=======
+	if (line >= mgslpc_device_count) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk("%s(%d):mgslpc_open with invalid line #%d.\n",
 			__FILE__,__LINE__,line);
 		return -ENODEV;
@@ -2836,7 +2847,10 @@ static int __init synclink_cs_init(void)
 
     /* Initialize the tty_driver structure */
 
+<<<<<<< HEAD
     serial_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
     serial_driver->driver_name = "synclink_cs";
     serial_driver->name = "ttySLP";
     serial_driver->major = ttymajor;

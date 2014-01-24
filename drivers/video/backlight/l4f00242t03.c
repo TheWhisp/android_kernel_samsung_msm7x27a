@@ -14,6 +14,10 @@
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/gpio.h>
 #include <linux/lcd.h>
 #include <linux/slab.h>
@@ -52,6 +56,7 @@ static void l4f00242t03_lcd_init(struct spi_device *spi)
 
 	dev_dbg(&spi->dev, "initializing LCD\n");
 
+<<<<<<< HEAD
 	if (priv->io_reg) {
 		regulator_set_voltage(priv->io_reg, 1800000, 1800000);
 		regulator_enable(priv->io_reg);
@@ -61,6 +66,13 @@ static void l4f00242t03_lcd_init(struct spi_device *spi)
 		regulator_set_voltage(priv->core_reg, 2800000, 2800000);
 		regulator_enable(priv->core_reg);
 	}
+=======
+	regulator_set_voltage(priv->io_reg, 1800000, 1800000);
+	regulator_enable(priv->io_reg);
+
+	regulator_set_voltage(priv->core_reg, 2800000, 2800000);
+	regulator_enable(priv->core_reg);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	l4f00242t03_reset(pdata->reset_gpio);
 
@@ -78,11 +90,16 @@ static void l4f00242t03_lcd_powerdown(struct spi_device *spi)
 
 	gpio_set_value(pdata->data_enable_gpio, 0);
 
+<<<<<<< HEAD
 	if (priv->io_reg)
 		regulator_disable(priv->io_reg);
 
 	if (priv->core_reg)
 		regulator_disable(priv->core_reg);
+=======
+	regulator_disable(priv->io_reg);
+	regulator_disable(priv->core_reg);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int l4f00242t03_lcd_power_get(struct lcd_device *ld)
@@ -178,25 +195,36 @@ static int __devinit l4f00242t03_probe(struct spi_device *spi)
 
 	priv->spi = spi;
 
+<<<<<<< HEAD
 	ret = gpio_request(pdata->reset_gpio, "lcd l4f00242t03 reset");
+=======
+	ret = gpio_request_one(pdata->reset_gpio, GPIOF_OUT_INIT_HIGH,
+						"lcd l4f00242t03 reset");
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(&spi->dev,
 			"Unable to get the lcd l4f00242t03 reset gpio.\n");
 		goto err;
 	}
 
+<<<<<<< HEAD
 	ret = gpio_direction_output(pdata->reset_gpio, 1);
 	if (ret)
 		goto err2;
 
 	ret = gpio_request(pdata->data_enable_gpio,
 				"lcd l4f00242t03 data enable");
+=======
+	ret = gpio_request_one(pdata->data_enable_gpio, GPIOF_OUT_INIT_LOW,
+						"lcd l4f00242t03 data enable");
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(&spi->dev,
 			"Unable to get the lcd l4f00242t03 data en gpio.\n");
 		goto err2;
 	}
 
+<<<<<<< HEAD
 	ret = gpio_direction_output(pdata->data_enable_gpio, 0);
 	if (ret)
 		goto err3;
@@ -219,6 +247,22 @@ static int __devinit l4f00242t03_probe(struct spi_device *spi)
 								__func__);
 			goto err4;
 		}
+=======
+	priv->io_reg = regulator_get(&spi->dev, "vdd");
+	if (IS_ERR(priv->io_reg)) {
+		ret = PTR_ERR(priv->io_reg);
+		dev_err(&spi->dev, "%s: Unable to get the IO regulator\n",
+		       __func__);
+		goto err3;
+	}
+
+	priv->core_reg = regulator_get(&spi->dev, "vcore");
+	if (IS_ERR(priv->core_reg)) {
+		ret = PTR_ERR(priv->core_reg);
+		dev_err(&spi->dev, "%s: Unable to get the core regulator\n",
+		       __func__);
+		goto err4;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	priv->ld = lcd_device_register("l4f00242t03",
@@ -238,11 +282,17 @@ static int __devinit l4f00242t03_probe(struct spi_device *spi)
 	return 0;
 
 err5:
+<<<<<<< HEAD
 	if (priv->core_reg)
 		regulator_put(priv->core_reg);
 err4:
 	if (priv->io_reg)
 		regulator_put(priv->io_reg);
+=======
+	regulator_put(priv->core_reg);
+err4:
+	regulator_put(priv->io_reg);
+>>>>>>> refs/remotes/origin/cm-10.0
 err3:
 	gpio_free(pdata->data_enable_gpio);
 err2:
@@ -266,10 +316,15 @@ static int __devexit l4f00242t03_remove(struct spi_device *spi)
 	gpio_free(pdata->data_enable_gpio);
 	gpio_free(pdata->reset_gpio);
 
+<<<<<<< HEAD
 	if (priv->io_reg)
 		regulator_put(priv->io_reg);
 	if (priv->core_reg)
 		regulator_put(priv->core_reg);
+=======
+	regulator_put(priv->io_reg);
+	regulator_put(priv->core_reg);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree(priv);
 
@@ -295,6 +350,7 @@ static struct spi_driver l4f00242t03_driver = {
 	.shutdown	= l4f00242t03_shutdown,
 };
 
+<<<<<<< HEAD
 static __init int l4f00242t03_init(void)
 {
 	return spi_register_driver(&l4f00242t03_driver);
@@ -307,6 +363,9 @@ static __exit void l4f00242t03_exit(void)
 
 module_init(l4f00242t03_init);
 module_exit(l4f00242t03_exit);
+=======
+module_spi_driver(l4f00242t03_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alberto Panizzo <maramaopercheseimorto@gmail.com>");
 MODULE_DESCRIPTION("EPSON L4F00242T03 LCD");

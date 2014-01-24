@@ -58,7 +58,11 @@ struct sonet_stats {
 
 #ifdef __KERNEL__
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct k_sonet_stats {
 #define __HANDLE_ITEM(i) atomic_t i

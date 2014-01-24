@@ -10,3 +10,9 @@ can-raw-y		:= raw.o
 
 obj-$(CONFIG_CAN_BCM)	+= can-bcm.o
 can-bcm-y		:= bcm.o
+<<<<<<< HEAD
+=======
+
+obj-$(CONFIG_CAN_GW)	+= can-gw.o
+can-gw-y		:= gw.o
+>>>>>>> refs/remotes/origin/cm-10.0

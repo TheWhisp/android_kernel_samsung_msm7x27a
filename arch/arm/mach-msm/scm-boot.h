@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010, 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,6 +25,14 @@
 #define SCM_FLAG_WARMBOOT_CPU2		0x10
 #define SCM_FLAG_WARMBOOT_CPU3		0x40
 
+<<<<<<< HEAD
 int scm_set_boot_addr(void *addr, int flags);
+=======
+#ifdef CONFIG_MSM_SCM
+int scm_set_boot_addr(void *addr, int flags);
+#else
+static inline int scm_set_boot_addr(void *addr, int flags) { return 0; }
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

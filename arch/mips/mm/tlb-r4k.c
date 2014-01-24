@@ -18,7 +18,11 @@
 #include <asm/bootinfo.h>
 #include <asm/mmu_context.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/tlbmisc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern void build_tlb_refill_handler(void);
 
@@ -120,22 +124,47 @@ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 
 	if (cpu_context(cpu, mm) != 0) {
 		unsigned long size, flags;
+<<<<<<< HEAD
 
 		ENTER_CRITICAL(flags);
 		size = (end - start + (PAGE_SIZE - 1)) >> PAGE_SHIFT;
 		size = (size + 1) >> 1;
+=======
+		int huge = is_vm_hugetlb_page(vma);
+
+		ENTER_CRITICAL(flags);
+		if (huge) {
+			start = round_down(start, HPAGE_SIZE);
+			end = round_up(end, HPAGE_SIZE);
+			size = (end - start) >> HPAGE_SHIFT;
+		} else {
+			start = round_down(start, PAGE_SIZE << 1);
+			end = round_up(end, PAGE_SIZE << 1);
+			size = (end - start) >> (PAGE_SHIFT + 1);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (size <= current_cpu_data.tlbsize/2) {
 			int oldpid = read_c0_entryhi();
 			int newpid = cpu_asid(cpu, mm);
 
+<<<<<<< HEAD
 			start &= (PAGE_MASK << 1);
 			end += ((PAGE_SIZE << 1) - 1);
 			end &= (PAGE_MASK << 1);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			while (start < end) {
 				int idx;
 
 				write_c0_entryhi(start | newpid);
+<<<<<<< HEAD
 				start += (PAGE_SIZE << 1);
+=======
+				if (huge)
+					start += HPAGE_SIZE;
+				else
+					start += (PAGE_SIZE << 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 				mtc0_tlbw_hazard();
 				tlb_probe();
 				tlb_probe_hazard();
@@ -337,8 +366,13 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
 	EXIT_CRITICAL(flags);
 }
 
+<<<<<<< HEAD
 void __init add_wired_entry(unsigned long entrylo0, unsigned long entrylo1,
 	unsigned long entryhi, unsigned long pagemask)
+=======
+void add_wired_entry(unsigned long entrylo0, unsigned long entrylo1,
+		     unsigned long entryhi, unsigned long pagemask)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long flags;
 	unsigned long wired;
@@ -368,6 +402,7 @@ void __init add_wired_entry(unsigned long entrylo0, unsigned long entrylo1,
 	EXIT_CRITICAL(flags);
 }
 
+<<<<<<< HEAD
 /*
  * Used for loading TLB entries before trap_init() has started, when we
  * don't actually want to add a wired entry which remains throughout the
@@ -413,6 +448,8 @@ out:
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __cpuinitdata ntlb;
 static int __init set_ntlb(char *str)
 {
@@ -450,8 +487,11 @@ void __cpuinit tlb_init(void)
 		write_c0_pagegrain(pg);
 	}
 
+<<<<<<< HEAD
 	temp_tlb_entry = current_cpu_data.tlbsize - 1;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
         /* From this point on the ARC firmware is dead.  */
 	local_flush_tlb_all();
 

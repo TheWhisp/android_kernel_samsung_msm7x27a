@@ -52,7 +52,10 @@
 #include <linux/bitops.h>
 #include <linux/random.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
 #include <linux/firmware.h>
@@ -403,7 +406,10 @@ static unsigned char *add_mcs(unsigned char *bits, int bitrate,
 
 	/* Allocate a new mcs */
 	if ((p = kmalloc(sizeof(struct yam_mcs), GFP_KERNEL)) == NULL) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "YAM: no memory to allocate mcs\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		release_firmware(fw);
 		return NULL;
 	}

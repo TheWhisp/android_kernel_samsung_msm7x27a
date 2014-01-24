@@ -21,14 +21,23 @@
 #include <linux/jhash.h>
 #include <linux/random.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 #include "br_private.h"
 
 static struct kmem_cache *br_fdb_cache __read_mostly;
 static int fdb_insert(struct net_bridge *br, struct net_bridge_port *source,
 		      const unsigned char *addr);
+<<<<<<< HEAD
 static void fdb_notify(const struct net_bridge_fdb_entry *, int);
+=======
+static void fdb_notify(struct net_bridge *br,
+		       const struct net_bridge_fdb_entry *, int);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static u32 fdb_salt __read_mostly;
 
@@ -80,10 +89,17 @@ static void fdb_rcu_free(struct rcu_head *head)
 	kmem_cache_free(br_fdb_cache, ent);
 }
 
+<<<<<<< HEAD
 static inline void fdb_delete(struct net_bridge_fdb_entry *f)
 {
 	fdb_notify(f, RTM_DELNEIGH);
 	hlist_del_rcu(&f->hlist);
+=======
+static void fdb_delete(struct net_bridge *br, struct net_bridge_fdb_entry *f)
+{
+	hlist_del_rcu(&f->hlist);
+	fdb_notify(br, f, RTM_DELNEIGH);
+>>>>>>> refs/remotes/origin/cm-10.0
 	call_rcu(&f->rcu, fdb_rcu_free);
 }
 
@@ -114,7 +130,11 @@ void br_fdb_changeaddr(struct net_bridge_port *p, const unsigned char *newaddr)
 				}
 
 				/* delete old one */
+<<<<<<< HEAD
 				fdb_delete(f);
+=======
+				fdb_delete(br, f);
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto insert;
 			}
 		}
@@ -126,6 +146,21 @@ void br_fdb_changeaddr(struct net_bridge_port *p, const unsigned char *newaddr)
 	spin_unlock_bh(&br->hash_lock);
 }
 
+<<<<<<< HEAD
+=======
+void br_fdb_change_mac_address(struct net_bridge *br, const u8 *newaddr)
+{
+	struct net_bridge_fdb_entry *f;
+
+	/* If old entry was unassociated with any port, then delete it. */
+	f = __br_fdb_get(br, br->dev->dev_addr);
+	if (f && f->is_local && !f->dst)
+		fdb_delete(br, f);
+
+	fdb_insert(br, NULL, newaddr);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void br_fdb_cleanup(unsigned long _data)
 {
 	struct net_bridge *br = (struct net_bridge *)_data;
@@ -133,7 +168,11 @@ void br_fdb_cleanup(unsigned long _data)
 	unsigned long next_timer = jiffies + br->ageing_time;
 	int i;
 
+<<<<<<< HEAD
 	spin_lock_bh(&br->hash_lock);
+=======
+	spin_lock(&br->hash_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < BR_HASH_SIZE; i++) {
 		struct net_bridge_fdb_entry *f;
 		struct hlist_node *h, *n;
@@ -144,12 +183,20 @@ void br_fdb_cleanup(unsigned long _data)
 				continue;
 			this_timer = f->updated + delay;
 			if (time_before_eq(this_timer, jiffies))
+<<<<<<< HEAD
 				fdb_delete(f);
+=======
+				fdb_delete(br, f);
+>>>>>>> refs/remotes/origin/cm-10.0
 			else if (time_before(this_timer, next_timer))
 				next_timer = this_timer;
 		}
 	}
+<<<<<<< HEAD
 	spin_unlock_bh(&br->hash_lock);
+=======
+	spin_unlock(&br->hash_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mod_timer(&br->gc_timer, round_jiffies_up(next_timer));
 }
@@ -165,7 +212,11 @@ void br_fdb_flush(struct net_bridge *br)
 		struct hlist_node *h, *n;
 		hlist_for_each_entry_safe(f, h, n, &br->hash[i], hlist) {
 			if (!f->is_static)
+<<<<<<< HEAD
 				fdb_delete(f);
+=======
+				fdb_delete(br, f);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	spin_unlock_bh(&br->hash_lock);
@@ -209,7 +260,11 @@ void br_fdb_delete_by_port(struct net_bridge *br,
 				}
 			}
 
+<<<<<<< HEAD
 			fdb_delete(f);
+=======
+			fdb_delete(br, f);
+>>>>>>> refs/remotes/origin/cm-10.0
 		skip_delete: ;
 		}
 	}
@@ -234,7 +289,11 @@ struct net_bridge_fdb_entry *__br_fdb_get(struct net_bridge *br,
 	return NULL;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_ATM_LANE) || defined(CONFIG_ATM_LANE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_ATM_LANE)
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Interface used by ATM LANE hook to test
  * if an addr is on some other bridge port */
 int br_fdb_test_addr(struct net_device *dev, unsigned char *addr)
@@ -249,7 +308,11 @@ int br_fdb_test_addr(struct net_device *dev, unsigned char *addr)
 		ret = 0;
 	else {
 		fdb = __br_fdb_get(port->br, addr);
+<<<<<<< HEAD
 		ret = fdb && fdb->dst->dev != dev &&
+=======
+		ret = fdb && fdb->dst && fdb->dst->dev != dev &&
+>>>>>>> refs/remotes/origin/cm-10.0
 			fdb->dst->state == BR_STATE_FORWARDING;
 	}
 	rcu_read_unlock();
@@ -281,6 +344,13 @@ int br_fdb_fillbuf(struct net_bridge *br, void *buf,
 			if (has_expired(br, f))
 				continue;
 
+<<<<<<< HEAD
+=======
+			/* ignore pseudo entry for local MAC address */
+			if (!f->dst)
+				continue;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (skip) {
 				--skip;
 				continue;
@@ -347,7 +417,10 @@ static struct net_bridge_fdb_entry *fdb_create(struct hlist_head *head,
 		fdb->is_static = 0;
 		fdb->updated = fdb->used = jiffies;
 		hlist_add_head_rcu(&fdb->hlist, head);
+<<<<<<< HEAD
 		fdb_notify(fdb, RTM_NEWNEIGH);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return fdb;
 }
@@ -371,7 +444,11 @@ static int fdb_insert(struct net_bridge *br, struct net_bridge_port *source,
 		br_warn(br, "adding interface %s with same address "
 		       "as a received packet\n",
 		       source->dev->name);
+<<<<<<< HEAD
 		fdb_delete(fdb);
+=======
+		fdb_delete(br, fdb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	fdb = fdb_create(head, source, addr);
@@ -379,6 +456,10 @@ static int fdb_insert(struct net_bridge *br, struct net_bridge_port *source,
 		return -ENOMEM;
 
 	fdb->is_local = fdb->is_static = 1;
+<<<<<<< HEAD
+=======
+	fdb_notify(br, fdb, RTM_NEWNEIGH);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -424,9 +505,17 @@ void br_fdb_update(struct net_bridge *br, struct net_bridge_port *source,
 		}
 	} else {
 		spin_lock(&br->hash_lock);
+<<<<<<< HEAD
 		if (likely(!fdb_find(head, addr)))
 			fdb_create(head, source, addr);
 
+=======
+		if (likely(!fdb_find(head, addr))) {
+			fdb = fdb_create(head, source, addr);
+			if (fdb)
+				fdb_notify(br, fdb, RTM_NEWNEIGH);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* else  we lose race and someone else inserts
 		 * it first, don't bother updating
 		 */
@@ -446,7 +535,11 @@ static int fdb_to_nud(const struct net_bridge_fdb_entry *fdb)
 		return NUD_REACHABLE;
 }
 
+<<<<<<< HEAD
 static int fdb_fill_info(struct sk_buff *skb,
+=======
+static int fdb_fill_info(struct sk_buff *skb, const struct net_bridge *br,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 const struct net_bridge_fdb_entry *fdb,
 			 u32 pid, u32 seq, int type, unsigned int flags)
 {
@@ -459,14 +552,21 @@ static int fdb_fill_info(struct sk_buff *skb,
 	if (nlh == NULL)
 		return -EMSGSIZE;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ndm = nlmsg_data(nlh);
 	ndm->ndm_family	 = AF_BRIDGE;
 	ndm->ndm_pad1    = 0;
 	ndm->ndm_pad2    = 0;
 	ndm->ndm_flags	 = 0;
 	ndm->ndm_type	 = 0;
+<<<<<<< HEAD
 	ndm->ndm_ifindex = fdb->dst->dev->ifindex;
+=======
+	ndm->ndm_ifindex = fdb->dst ? fdb->dst->dev->ifindex : br->dev->ifindex;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ndm->ndm_state   = fdb_to_nud(fdb);
 
 	NLA_PUT(skb, NDA_LLADDR, ETH_ALEN, &fdb->addr);
@@ -491,9 +591,16 @@ static inline size_t fdb_nlmsg_size(void)
 		+ nla_total_size(sizeof(struct nda_cacheinfo));
 }
 
+<<<<<<< HEAD
 static void fdb_notify(const struct net_bridge_fdb_entry *fdb, int type)
 {
 	struct net *net = dev_net(fdb->dst->dev);
+=======
+static void fdb_notify(struct net_bridge *br,
+		       const struct net_bridge_fdb_entry *fdb, int type)
+{
+	struct net *net = dev_net(br->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sk_buff *skb;
 	int err = -ENOBUFS;
 
@@ -501,7 +608,11 @@ static void fdb_notify(const struct net_bridge_fdb_entry *fdb, int type)
 	if (skb == NULL)
 		goto errout;
 
+<<<<<<< HEAD
 	err = fdb_fill_info(skb, fdb, 0, 0, type, 0);
+=======
+	err = fdb_fill_info(skb, br, fdb, 0, 0, type, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err < 0) {
 		/* -EMSGSIZE implies BUG in fdb_nlmsg_size() */
 		WARN_ON(err == -EMSGSIZE);
@@ -538,7 +649,11 @@ int br_fdb_dump(struct sk_buff *skb, struct netlink_callback *cb)
 				if (idx < cb->args[0])
 					goto skip;
 
+<<<<<<< HEAD
 				if (fdb_fill_info(skb, f,
+=======
+				if (fdb_fill_info(skb, br, f,
+>>>>>>> refs/remotes/origin/cm-10.0
 						  NETLINK_CB(cb->skb).pid,
 						  cb->nlh->nlmsg_seq,
 						  RTM_NEWNEIGH,
@@ -556,15 +671,22 @@ skip:
 	return skb->len;
 }
 
+<<<<<<< HEAD
 /* Create new static fdb entry */
 static int fdb_add_entry(struct net_bridge_port *source, const __u8 *addr,
 			 __u16 state)
+=======
+/* Update (create or replace) forwarding database entry */
+static int fdb_add_entry(struct net_bridge_port *source, const __u8 *addr,
+			 __u16 state, __u16 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct net_bridge *br = source->br;
 	struct hlist_head *head = &br->hash[br_mac_hash(addr)];
 	struct net_bridge_fdb_entry *fdb;
 
 	fdb = fdb_find(head, addr);
+<<<<<<< HEAD
 	if (fdb)
 		return -EEXIST;
 
@@ -576,6 +698,34 @@ static int fdb_add_entry(struct net_bridge_port *source, const __u8 *addr,
 		fdb->is_local = fdb->is_static = 1;
 	else if (state & NUD_NOARP)
 		fdb->is_static = 1;
+=======
+	if (fdb == NULL) {
+		if (!(flags & NLM_F_CREATE))
+			return -ENOENT;
+
+		fdb = fdb_create(head, source, addr);
+		if (!fdb)
+			return -ENOMEM;
+		fdb_notify(br, fdb, RTM_NEWNEIGH);
+	} else {
+		if (flags & NLM_F_EXCL)
+			return -EEXIST;
+	}
+
+	if (fdb_to_nud(fdb) != state) {
+		if (state & NUD_PERMANENT)
+			fdb->is_local = fdb->is_static = 1;
+		else if (state & NUD_NOARP) {
+			fdb->is_local = 0;
+			fdb->is_static = 1;
+		} else
+			fdb->is_local = fdb->is_static = 0;
+
+		fdb->updated = fdb->used = jiffies;
+		fdb_notify(br, fdb, RTM_NEWNEIGH);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -618,6 +768,14 @@ int br_fdb_add(struct sk_buff *skb, struct nlmsghdr *nlh, void *arg)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+=======
+	if (!(ndm->ndm_state & (NUD_PERMANENT|NUD_NOARP|NUD_REACHABLE))) {
+		pr_info("bridge: RTM_NEWNEIGH with invalid state %#x\n", ndm->ndm_state);
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	p = br_port_get_rtnl(dev);
 	if (p == NULL) {
 		pr_info("bridge: RTM_NEWNEIGH %s not a bridge port\n",
@@ -625,9 +783,21 @@ int br_fdb_add(struct sk_buff *skb, struct nlmsghdr *nlh, void *arg)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	spin_lock_bh(&p->br->hash_lock);
 	err = fdb_add_entry(p, addr, ndm->ndm_state);
 	spin_unlock_bh(&p->br->hash_lock);
+=======
+	if (ndm->ndm_flags & NTF_USE) {
+		rcu_read_lock();
+		br_fdb_update(p->br, p, addr);
+		rcu_read_unlock();
+	} else {
+		spin_lock_bh(&p->br->hash_lock);
+		err = fdb_add_entry(p, addr, ndm->ndm_state, nlh->nlmsg_flags);
+		spin_unlock_bh(&p->br->hash_lock);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return err;
 }
@@ -642,7 +812,11 @@ static int fdb_delete_by_addr(struct net_bridge_port *p, const u8 *addr)
 	if (!fdb)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	fdb_delete(fdb);
+=======
+	fdb_delete(p->br, fdb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

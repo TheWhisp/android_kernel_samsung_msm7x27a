@@ -16,7 +16,10 @@
 #define __SYSCALL_COMPAT
 
 #include <linux/compat.h>
+<<<<<<< HEAD
 #include <linux/msg.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/syscalls.h>
 #include <linux/kdev_t.h>
 #include <linux/fs.h>
@@ -95,6 +98,7 @@ long compat_sys_sched_rr_get_interval(compat_pid_t pid,
 	return ret;
 }
 
+<<<<<<< HEAD
 /*
  * The usual compat_sys_msgsnd() and _msgrcv() seem to be assuming
  * some different calling convention than our normal 32-bit tile code.
@@ -133,14 +137,19 @@ long tile_compat_sys_msgrcv(int msqid,
 	return err;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Provide the compat syscall number to call mapping. */
 #undef __SYSCALL
 #define __SYSCALL(nr, call) [nr] = (call),
 
+<<<<<<< HEAD
 /* The generic versions of these don't work for Tile. */
 #define compat_sys_msgrcv tile_compat_sys_msgrcv
 #define compat_sys_msgsnd tile_compat_sys_msgsnd
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* See comments in sys.c */
 #define compat_sys_fadvise64_64 sys32_fadvise64_64
 #define compat_sys_readahead sys32_readahead

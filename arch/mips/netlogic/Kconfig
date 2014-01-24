@@ -1,5 +1,8 @@
 config NLM_COMMON
 	bool
+<<<<<<< HEAD
 
 config NLM_XLR
 	bool
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

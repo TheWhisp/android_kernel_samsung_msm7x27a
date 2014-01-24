@@ -13,6 +13,7 @@
 #include <linux/mtd/mtd.h>
 #include "nodelist.h"
 
+<<<<<<< HEAD
 /* This ought to be in core MTD code. All registered MTD devices
    without writev should have this put in place. Bug the MTD
    maintainer */
@@ -37,6 +38,8 @@ static inline int mtd_fake_writev(struct mtd_info *mtd, const struct kvec *vecs,
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
 			      unsigned long count, loff_t to, size_t *retlen)
 {
@@ -50,18 +53,26 @@ int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
 		}
 	}
 
+<<<<<<< HEAD
 	if (c->mtd->writev)
 		return c->mtd->writev(c->mtd, vecs, count, to, retlen);
 	else {
 		return mtd_fake_writev(c->mtd, vecs, count, to, retlen);
 	}
+=======
+	return mtd_writev(c->mtd, vecs, count, to, retlen);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int jffs2_flash_direct_write(struct jffs2_sb_info *c, loff_t ofs, size_t len,
 			size_t *retlen, const u_char *buf)
 {
 	int ret;
+<<<<<<< HEAD
 	ret = c->mtd->write(c->mtd, ofs, len, retlen, buf);
+=======
+	ret = mtd_write(c->mtd, ofs, len, retlen, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (jffs2_sum_active()) {
 		struct kvec vecs[1];

@@ -61,6 +61,10 @@
 #include <linux/dmaengine.h>
 #include <linux/dma-mapping.h>
 #include <linux/prefetch.h>
+<<<<<<< HEAD
+=======
+#include "../dmaengine.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "registers.h"
 #include "hw.h"
 #include "dma.h"
@@ -73,10 +77,17 @@
 /* provide a lookup table for setting the source address in the base or
  * extended descriptor of an xor or pq descriptor
  */
+<<<<<<< HEAD
 static const u8 xor_idx_to_desc __read_mostly = 0xd0;
 static const u8 xor_idx_to_field[] __read_mostly = { 1, 4, 5, 6, 7, 0, 1, 2 };
 static const u8 pq_idx_to_desc __read_mostly = 0xf8;
 static const u8 pq_idx_to_field[] __read_mostly = { 1, 4, 5, 0, 1, 2, 4, 5 };
+=======
+static const u8 xor_idx_to_desc = 0xe0;
+static const u8 xor_idx_to_field[] = { 1, 4, 5, 6, 7, 0, 1, 2 };
+static const u8 pq_idx_to_desc = 0xf8;
+static const u8 pq_idx_to_field[] = { 1, 4, 5, 0, 1, 2, 4, 5 };
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static dma_addr_t xor_get_src(struct ioat_raw_descriptor *descs[2], int idx)
 {
@@ -256,7 +267,11 @@ static bool desc_has_ext(struct ioat_ring_ent *desc)
  * The difference from the dma_v2.c __cleanup() is that this routine
  * handles extended descriptors and dma-unmapping raid operations.
  */
+<<<<<<< HEAD
 static void __cleanup(struct ioat2_dma_chan *ioat, unsigned long phys_complete)
+=======
+static void __cleanup(struct ioat2_dma_chan *ioat, dma_addr_t phys_complete)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ioat_chan_common *chan = &ioat->base;
 	struct ioat_ring_ent *desc;
@@ -277,9 +292,14 @@ static void __cleanup(struct ioat2_dma_chan *ioat, unsigned long phys_complete)
 		dump_desc_dbg(ioat, desc);
 		tx = &desc->txd;
 		if (tx->cookie) {
+<<<<<<< HEAD
 			chan->completed_cookie = tx->cookie;
 			ioat3_dma_unmap(ioat, desc, idx + i);
 			tx->cookie = 0;
+=======
+			dma_cookie_complete(tx);
+			ioat3_dma_unmap(ioat, desc, idx + i);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (tx->callback) {
 				tx->callback(tx->callback_param);
 				tx->callback = NULL;
@@ -314,7 +334,11 @@ static void __cleanup(struct ioat2_dma_chan *ioat, unsigned long phys_complete)
 static void ioat3_cleanup(struct ioat2_dma_chan *ioat)
 {
 	struct ioat_chan_common *chan = &ioat->base;
+<<<<<<< HEAD
 	unsigned long phys_complete;
+=======
+	dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_bh(&chan->cleanup_lock);
 	if (ioat_cleanup_preamble(chan, &phys_complete))
@@ -333,7 +357,11 @@ static void ioat3_cleanup_event(unsigned long data)
 static void ioat3_restart_channel(struct ioat2_dma_chan *ioat)
 {
 	struct ioat_chan_common *chan = &ioat->base;
+<<<<<<< HEAD
 	unsigned long phys_complete;
+=======
+	dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ioat2_quiesce(chan, 0);
 	if (ioat_cleanup_preamble(chan, &phys_complete))
@@ -348,7 +376,11 @@ static void ioat3_timer_event(unsigned long data)
 	struct ioat_chan_common *chan = &ioat->base;
 
 	if (test_bit(IOAT_COMPLETION_PENDING, &chan->state)) {
+<<<<<<< HEAD
 		unsigned long phys_complete;
+=======
+		dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/cm-10.0
 		u64 status;
 
 		status = ioat_chansts(chan);
@@ -411,6 +443,7 @@ ioat3_tx_status(struct dma_chan *c, dma_cookie_t cookie,
 		struct dma_tx_state *txstate)
 {
 	struct ioat2_dma_chan *ioat = to_ioat2_chan(c);
+<<<<<<< HEAD
 
 	if (ioat_tx_status(c, cookie, txstate) == DMA_SUCCESS)
 		return DMA_SUCCESS;
@@ -418,6 +451,17 @@ ioat3_tx_status(struct dma_chan *c, dma_cookie_t cookie,
 	ioat3_cleanup(ioat);
 
 	return ioat_tx_status(c, cookie, txstate);
+=======
+	enum dma_status ret;
+
+	ret = dma_cookie_status(c, cookie, txstate);
+	if (ret == DMA_SUCCESS)
+		return ret;
+
+	ioat3_cleanup(ioat);
+
+	return dma_cookie_status(c, cookie, txstate);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct dma_async_tx_descriptor *
@@ -1147,6 +1191,47 @@ static int ioat3_reset_hw(struct ioat_chan_common *chan)
 	return ioat2_reset_sync(chan, msecs_to_jiffies(200));
 }
 
+<<<<<<< HEAD
+=======
+static bool is_jf_ioat(struct pci_dev *pdev)
+{
+	switch (pdev->device) {
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF0:
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF1:
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF2:
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF3:
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF4:
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF5:
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF6:
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF7:
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF8:
+	case PCI_DEVICE_ID_INTEL_IOAT_JSF9:
+		return true;
+	default:
+		return false;
+	}
+}
+
+static bool is_snb_ioat(struct pci_dev *pdev)
+{
+	switch (pdev->device) {
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB0:
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB1:
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB2:
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB3:
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB4:
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB5:
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB6:
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB7:
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB8:
+	case PCI_DEVICE_ID_INTEL_IOAT_SNB9:
+		return true;
+	default:
+		return false;
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int __devinit ioat3_dma_probe(struct ioatdma_device *device, int dca)
 {
 	struct pci_dev *pdev = device->pdev;
@@ -1167,6 +1252,12 @@ int __devinit ioat3_dma_probe(struct ioatdma_device *device, int dca)
 	dma->device_alloc_chan_resources = ioat2_alloc_chan_resources;
 	dma->device_free_chan_resources = ioat2_free_chan_resources;
 
+<<<<<<< HEAD
+=======
+	if (is_jf_ioat(pdev) || is_snb_ioat(pdev))
+		dma->copy_align = 6;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	dma_cap_set(DMA_INTERRUPT, dma->cap_mask);
 	dma->device_prep_dma_interrupt = ioat3_prep_interrupt_lock;
 

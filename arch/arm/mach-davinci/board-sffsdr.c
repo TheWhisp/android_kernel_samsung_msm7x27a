@@ -35,14 +35,23 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
 
+<<<<<<< HEAD
 #include <mach/dm644x.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/common.h>
 #include <mach/i2c.h>
 #include <mach/serial.h>
 #include <mach/mux.h>
 #include <mach/usb.h>
 
+<<<<<<< HEAD
 #define SFFSDR_PHY_ID		"0:01"
+=======
+#include "davinci.h"
+
+#define SFFSDR_PHY_ID		"davinci_mdio-0:01"
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct mtd_partition davinci_sffsdr_nandflash_partition[] = {
 	/* U-Boot Environment: Block 0
 	 * UBL:                Block 1
@@ -151,9 +160,18 @@ static __init void davinci_sffsdr_init(void)
 
 MACHINE_START(SFFSDR, "Lyrtech SFFSDR")
 	/* Maintainer: Hugo Villeneuve hugo.villeneuve@lyrtech.com */
+<<<<<<< HEAD
 	.boot_params  = (DAVINCI_DDR_BASE + 0x100),
+=======
+	.atag_offset  = 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io	      = davinci_sffsdr_map_io,
 	.init_irq     = davinci_irq_init,
 	.timer	      = &davinci_timer,
 	.init_machine = davinci_sffsdr_init,
+<<<<<<< HEAD
+=======
+	.dma_zone_size	= SZ_128M,
+	.restart	= davinci_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

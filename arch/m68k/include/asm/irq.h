@@ -25,6 +25,7 @@
 #define NR_IRQS	0
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 
 #include <linux/linkage.h>
@@ -40,6 +41,10 @@
 #if (1 << HARDIRQ_BITS) < NR_IRQS
 # error HARDIRQ_BITS is too low!
 #endif
+=======
+#if defined(CONFIG_M68020) || defined(CONFIG_M68030) || \
+    defined(CONFIG_M68040) || defined(CONFIG_M68060)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Interrupt source definitions
@@ -63,6 +68,7 @@
 
 #define IRQ_USER	8
 
+<<<<<<< HEAD
 extern unsigned int irq_canonicalize(unsigned int irq);
 
 struct pt_regs;
@@ -130,5 +136,29 @@ asmlinkage void __m68k_handle_int(unsigned int, struct pt_regs *);
 #else
 #define irq_canonicalize(irq)  (irq)
 #endif /* CONFIG_MMU */
+=======
+struct irq_data;
+struct irq_chip;
+struct irq_desc;
+extern unsigned int m68k_irq_startup(struct irq_data *data);
+extern unsigned int m68k_irq_startup_irq(unsigned int irq);
+extern void m68k_irq_shutdown(struct irq_data *data);
+extern void m68k_setup_auto_interrupt(void (*handler)(unsigned int,
+						      struct pt_regs *));
+extern void m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt);
+extern void m68k_setup_irq_controller(struct irq_chip *,
+				      void (*handle)(unsigned int irq,
+						     struct irq_desc *desc),
+				      unsigned int irq, unsigned int cnt);
+
+extern unsigned int irq_canonicalize(unsigned int irq);
+
+#else
+#define irq_canonicalize(irq)  (irq)
+#endif /* !(CONFIG_M68020 || CONFIG_M68030 || CONFIG_M68040 || CONFIG_M68060) */
+
+asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
+extern atomic_t irq_err_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _M68K_IRQ_H_ */

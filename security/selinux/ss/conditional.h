@@ -13,6 +13,10 @@
 #include "avtab.h"
 #include "symtab.h"
 #include "policydb.h"
+<<<<<<< HEAD
+=======
+#include "../include/conditional.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define COND_EXPR_MAXDEPTH 10
 

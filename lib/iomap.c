@@ -6,7 +6,11 @@
 #include <linux/pci.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Read/write from/to an (offsettable) iomem cookie. It might be a PIO
@@ -224,6 +228,10 @@ EXPORT_SYMBOL(iowrite8_rep);
 EXPORT_SYMBOL(iowrite16_rep);
 EXPORT_SYMBOL(iowrite32_rep);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HAS_IOPORT
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Create a virtual mapping cookie for an IO port range */
 void __iomem *ioport_map(unsigned long port, unsigned int nr)
 {
@@ -238,6 +246,7 @@ void ioport_unmap(void __iomem *addr)
 }
 EXPORT_SYMBOL(ioport_map);
 EXPORT_SYMBOL(ioport_unmap);
+<<<<<<< HEAD
 
 /**
  * pci_iomap - create a virtual mapping cookie for a PCI BAR
@@ -274,9 +283,21 @@ void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
 	return NULL;
 }
 
+=======
+#endif /* CONFIG_HAS_IOPORT */
+
+#ifdef CONFIG_PCI
+/* Hide the details if this is a MMIO or PIO address space and just do what
+ * you expect in the correct way. */
+>>>>>>> refs/remotes/origin/cm-10.0
 void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
 {
 	IO_COND(addr, /* nothing */, iounmap(addr));
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(pci_iomap);
 EXPORT_SYMBOL(pci_iounmap);
+=======
+EXPORT_SYMBOL(pci_iounmap);
+#endif /* CONFIG_PCI */
+>>>>>>> refs/remotes/origin/cm-10.0

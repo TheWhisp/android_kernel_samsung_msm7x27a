@@ -55,13 +55,24 @@ static const char *board[] __initdata = {
 	"amcc,haleakala",
 	"amcc,kilauea",
 	"amcc,makalu",
+<<<<<<< HEAD
 	"est,hotfoot"
+=======
+	"apm,klondike",
+	"est,hotfoot",
+	"plathome,obs600",
+	NULL
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init ppc40x_probe(void)
 {
 	if (of_flat_dt_match(of_get_flat_dt_root(), board)) {
+<<<<<<< HEAD
 		ppc_pci_set_flags(PPC_PCI_REASSIGN_ALL_RSRC);
+=======
+		pci_set_flags(PCI_REASSIGN_ALL_RSRC);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 	}
 

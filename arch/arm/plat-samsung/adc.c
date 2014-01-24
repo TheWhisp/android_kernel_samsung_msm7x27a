@@ -21,6 +21,10 @@
 #include <linux/clk.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/regulator/consumer.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/regs-adc.h>
 #include <plat/adc.h>
@@ -39,8 +43,16 @@
  */
 
 enum s3c_cpu_type {
+<<<<<<< HEAD
 	TYPE_S3C24XX,
 	TYPE_S3C64XX
+=======
+	TYPE_ADCV1, /* S3C24XX */
+	TYPE_ADCV11, /* S3C2443 */
+	TYPE_ADCV12, /* S3C2416, S3C2450 */
+	TYPE_ADCV2, /* S3C64XX, S5P64X0, S5PC100 */
+	TYPE_ADCV3, /* S5PV210, S5PC110, EXYNOS4210 */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct s3c_adc_client {
@@ -71,6 +83,10 @@ struct adc_device {
 	unsigned int		 prescale;
 
 	int			 irq;
+<<<<<<< HEAD
+=======
+	struct regulator	*vdd;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct adc_device *adc_dev;
@@ -91,6 +107,7 @@ static inline void s3c_adc_select(struct adc_device *adc,
 				  struct s3c_adc_client *client)
 {
 	unsigned con = readl(adc->regs + S3C2410_ADCCON);
+<<<<<<< HEAD
 
 	client->select_cb(client, 1);
 
@@ -100,6 +117,26 @@ static inline void s3c_adc_select(struct adc_device *adc,
 
 	if (!client->is_ts)
 		con |= S3C2410_ADCCON_SELMUX(client->channel);
+=======
+	enum s3c_cpu_type cpu = platform_get_device_id(adc->pdev)->driver_data;
+
+	client->select_cb(client, 1);
+
+	if (cpu == TYPE_ADCV1 || cpu == TYPE_ADCV2)
+		con &= ~S3C2410_ADCCON_MUXMASK;
+	con &= ~S3C2410_ADCCON_STDBM;
+	con &= ~S3C2410_ADCCON_STARTMASK;
+
+	if (!client->is_ts) {
+		if (cpu == TYPE_ADCV3)
+			writel(client->channel & 0xf, adc->regs + S5P_ADCMUX);
+		else if (cpu == TYPE_ADCV11 || cpu == TYPE_ADCV12)
+			writel(client->channel & 0xf,
+						adc->regs + S3C2443_ADCMUX);
+		else
+			con |= S3C2410_ADCCON_SELMUX(client->channel);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	writel(con, adc->regs + S3C2410_ADCCON);
 }
@@ -287,6 +324,7 @@ static irqreturn_t s3c_adc_irq(int irq, void *pw)
 
 	client->nr_samples--;
 
+<<<<<<< HEAD
 	if (cpu == TYPE_S3C64XX) {
 		/* S3C64XX ADC resolution is 12-bit */
 		data0 &= 0xfff;
@@ -294,6 +332,15 @@ static irqreturn_t s3c_adc_irq(int irq, void *pw)
 	} else {
 		data0 &= 0x3ff;
 		data1 &= 0x3ff;
+=======
+	if (cpu == TYPE_ADCV1 || cpu == TYPE_ADCV11) {
+		data0 &= 0x3ff;
+		data1 &= 0x3ff;
+	} else {
+		/* S3C2416/S3C64XX/S5P ADC resolution is 12-bit */
+		data0 &= 0xfff;
+		data1 &= 0xfff;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (client->convert_cb)
@@ -314,7 +361,11 @@ static irqreturn_t s3c_adc_irq(int irq, void *pw)
 	}
 
 exit:
+<<<<<<< HEAD
 	if (cpu == TYPE_S3C64XX) {
+=======
+	if (cpu == TYPE_ADCV2 || cpu == TYPE_ADCV3) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Clear ADC interrupt */
 		writel(0, adc->regs + S3C64XX_ADCCLRINT);
 	}
@@ -326,6 +377,10 @@ static int s3c_adc_probe(struct platform_device *pdev)
 	struct device *dev = &pdev->dev;
 	struct adc_device *adc;
 	struct resource *regs;
+<<<<<<< HEAD
+=======
+	enum s3c_cpu_type cpu = platform_get_device_id(pdev)->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	unsigned tmp;
 
@@ -340,17 +395,35 @@ static int s3c_adc_probe(struct platform_device *pdev)
 	adc->pdev = pdev;
 	adc->prescale = S3C2410_ADCCON_PRSCVL(49);
 
+<<<<<<< HEAD
+=======
+	adc->vdd = regulator_get(dev, "vdd");
+	if (IS_ERR(adc->vdd)) {
+		dev_err(dev, "operating without regulator \"vdd\" .\n");
+		ret = PTR_ERR(adc->vdd);
+		goto err_alloc;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	adc->irq = platform_get_irq(pdev, 1);
 	if (adc->irq <= 0) {
 		dev_err(dev, "failed to get adc irq\n");
 		ret = -ENOENT;
+<<<<<<< HEAD
 		goto err_alloc;
+=======
+		goto err_reg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	ret = request_irq(adc->irq, s3c_adc_irq, 0, dev_name(dev), adc);
 	if (ret < 0) {
 		dev_err(dev, "failed to attach adc irq\n");
+<<<<<<< HEAD
 		goto err_alloc;
+=======
+		goto err_reg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	adc->clk = clk_get(dev, "adc");
@@ -374,6 +447,7 @@ static int s3c_adc_probe(struct platform_device *pdev)
 		goto err_clk;
 	}
 
+<<<<<<< HEAD
 	clk_enable(adc->clk);
 
 	tmp = adc->prescale | S3C2410_ADCCON_PRSCEN;
@@ -381,6 +455,22 @@ static int s3c_adc_probe(struct platform_device *pdev)
 		/* Enable 12-bit ADC resolution */
 		tmp |= S3C64XX_ADCCON_RESSEL;
 	}
+=======
+	ret = regulator_enable(adc->vdd);
+	if (ret)
+		goto err_ioremap;
+
+	clk_enable(adc->clk);
+
+	tmp = adc->prescale | S3C2410_ADCCON_PRSCEN;
+
+	/* Enable 12-bit ADC resolution */
+	if (cpu == TYPE_ADCV12)
+		tmp |= S3C2416_ADCCON_RESSEL;
+	if (cpu == TYPE_ADCV2 || cpu == TYPE_ADCV3)
+		tmp |= S3C64XX_ADCCON_RESSEL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	writel(tmp, adc->regs + S3C2410_ADCCON);
 
 	dev_info(dev, "attached adc driver\n");
@@ -390,12 +480,22 @@ static int s3c_adc_probe(struct platform_device *pdev)
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+ err_ioremap:
+	iounmap(adc->regs);
+>>>>>>> refs/remotes/origin/cm-10.0
  err_clk:
 	clk_put(adc->clk);
 
  err_irq:
 	free_irq(adc->irq, adc);
+<<<<<<< HEAD
 
+=======
+ err_reg:
+	regulator_put(adc->vdd);
+>>>>>>> refs/remotes/origin/cm-10.0
  err_alloc:
 	kfree(adc);
 	return ret;
@@ -408,6 +508,11 @@ static int __devexit s3c_adc_remove(struct platform_device *pdev)
 	iounmap(adc->regs);
 	free_irq(adc->irq, adc);
 	clk_disable(adc->clk);
+<<<<<<< HEAD
+=======
+	regulator_disable(adc->vdd);
+	regulator_put(adc->vdd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_put(adc->clk);
 	kfree(adc);
 
@@ -415,8 +520,15 @@ static int __devexit s3c_adc_remove(struct platform_device *pdev)
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 static int s3c_adc_suspend(struct platform_device *pdev, pm_message_t state)
 {
+=======
+static int s3c_adc_suspend(struct device *dev)
+{
+	struct platform_device *pdev = container_of(dev,
+			struct platform_device, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct adc_device *adc = platform_get_drvdata(pdev);
 	unsigned long flags;
 	u32 con;
@@ -430,10 +542,15 @@ static int s3c_adc_suspend(struct platform_device *pdev, pm_message_t state)
 	disable_irq(adc->irq);
 	spin_unlock_irqrestore(&adc->lock, flags);
 	clk_disable(adc->clk);
+<<<<<<< HEAD
+=======
+	regulator_disable(adc->vdd);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int s3c_adc_resume(struct platform_device *pdev)
 {
 	struct adc_device *adc = platform_get_drvdata(pdev);
@@ -443,6 +560,32 @@ static int s3c_adc_resume(struct platform_device *pdev)
 
 	writel(adc->prescale | S3C2410_ADCCON_PRSCEN,
 	       adc->regs + S3C2410_ADCCON);
+=======
+static int s3c_adc_resume(struct device *dev)
+{
+	struct platform_device *pdev = container_of(dev,
+			struct platform_device, dev);
+	struct adc_device *adc = platform_get_drvdata(pdev);
+	enum s3c_cpu_type cpu = platform_get_device_id(pdev)->driver_data;
+	int ret;
+	unsigned long tmp;
+
+	ret = regulator_enable(adc->vdd);
+	if (ret)
+		return ret;
+	clk_enable(adc->clk);
+	enable_irq(adc->irq);
+
+	tmp = adc->prescale | S3C2410_ADCCON_PRSCEN;
+
+	/* Enable 12-bit ADC resolution */
+	if (cpu == TYPE_ADCV12)
+		tmp |= S3C2416_ADCCON_RESSEL;
+	if (cpu == TYPE_ADCV2 || cpu == TYPE_ADCV3)
+		tmp |= S3C64XX_ADCCON_RESSEL;
+
+	writel(tmp, adc->regs + S3C2410_ADCCON);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -455,25 +598,56 @@ static int s3c_adc_resume(struct platform_device *pdev)
 static struct platform_device_id s3c_adc_driver_ids[] = {
 	{
 		.name           = "s3c24xx-adc",
+<<<<<<< HEAD
 		.driver_data    = TYPE_S3C24XX,
 	}, {
 		.name           = "s3c64xx-adc",
 		.driver_data    = TYPE_S3C64XX,
+=======
+		.driver_data    = TYPE_ADCV1,
+	}, {
+		.name		= "s3c2443-adc",
+		.driver_data	= TYPE_ADCV11,
+	}, {
+		.name		= "s3c2416-adc",
+		.driver_data	= TYPE_ADCV12,
+	}, {
+		.name           = "s3c64xx-adc",
+		.driver_data    = TYPE_ADCV2,
+	}, {
+		.name		= "samsung-adc-v3",
+		.driver_data	= TYPE_ADCV3,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	{ }
 };
 MODULE_DEVICE_TABLE(platform, s3c_adc_driver_ids);
 
+<<<<<<< HEAD
+=======
+static const struct dev_pm_ops adc_pm_ops = {
+	.suspend	= s3c_adc_suspend,
+	.resume		= s3c_adc_resume,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver s3c_adc_driver = {
 	.id_table	= s3c_adc_driver_ids,
 	.driver		= {
 		.name	= "s3c-adc",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= s3c_adc_probe,
 	.remove		= __devexit_p(s3c_adc_remove),
 	.suspend	= s3c_adc_suspend,
 	.resume		= s3c_adc_resume,
+=======
+		.pm	= &adc_pm_ops,
+	},
+	.probe		= s3c_adc_probe,
+	.remove		= __devexit_p(s3c_adc_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init adc_init(void)
@@ -487,4 +661,8 @@ static int __init adc_init(void)
 	return ret;
 }
 
+<<<<<<< HEAD
 arch_initcall(adc_init);
+=======
+module_init(adc_init);
+>>>>>>> refs/remotes/origin/cm-10.0

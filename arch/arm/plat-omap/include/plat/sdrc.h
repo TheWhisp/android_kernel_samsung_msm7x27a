@@ -16,7 +16,10 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <mach/io.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* SDRC register offsets - read/write with sdrc_{read,write}_reg() */
 

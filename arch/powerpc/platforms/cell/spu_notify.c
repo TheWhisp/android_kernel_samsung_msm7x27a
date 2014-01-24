@@ -21,7 +21,12 @@
 
 #undef DEBUG
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+#include <linux/notifier.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/spu.h>
 #include "spufs/spufs.h"
 

@@ -76,7 +76,14 @@ struct pt_dspregs {
 #ifdef __KERNEL__
 
 #define MAX_REG_OFFSET		offsetof(struct pt_regs, tra)
+<<<<<<< HEAD
 #define regs_return_value(_regs)	((_regs)->regs[0])
+=======
+static inline long regs_return_value(struct pt_regs *regs)
+{
+	return regs->regs[0];
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __KERNEL__ */
 

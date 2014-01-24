@@ -22,7 +22,10 @@
 #include <asm/cache.h>
 #include <asm/cacheflush.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/page.h>
 #include <asm/pgalloc.h>
 #include <asm/processor.h>

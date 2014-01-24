@@ -3,7 +3,11 @@
 #
 
 menu "Input device support"
+<<<<<<< HEAD
 	depends on !S390
+=======
+	depends on !S390 && !UML
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config INPUT
 	tristate "Generic input layer (needed for keyboard, mouse, ...)" if EXPERT
@@ -25,6 +29,13 @@ config INPUT
 
 if INPUT
 
+<<<<<<< HEAD
+=======
+config INPUT_OF_MATRIX_KEYMAP
+	depends on USE_OF
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config INPUT_FF_MEMLESS
 	tristate "Support for memoryless force-feedback devices"
 	help

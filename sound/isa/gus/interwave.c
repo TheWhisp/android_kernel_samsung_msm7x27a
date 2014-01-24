@@ -27,7 +27,11 @@
 #include <linux/isa.h>
 #include <linux/delay.h>
 #include <linux/pnp.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 #include <sound/core.h>
 #include <sound/gus.h>
@@ -55,9 +59,15 @@ MODULE_SUPPORTED_DEVICE("{{AMD,InterWave STB with TEA6330T}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
 #ifdef CONFIG_PNP
 static int isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
+#ifdef CONFIG_PNP
+static bool isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x210,0x220,0x230,0x240,0x250,0x260 */
 #ifdef SNDRV_STB
@@ -684,7 +694,11 @@ static int __devinit snd_interwave_probe(struct snd_card *card, int dev)
 	if ((err = snd_gus_initialize(gus)) < 0)
 		return err;
 
+<<<<<<< HEAD
 	if (request_irq(xirq, snd_interwave_interrupt, IRQF_DISABLED,
+=======
+	if (request_irq(xirq, snd_interwave_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"InterWave", iwcard)) {
 		snd_printk(KERN_ERR PFX "unable to grab IRQ %d\n", xirq);
 		return -EBUSY;

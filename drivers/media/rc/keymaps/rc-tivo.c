@@ -9,6 +9,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Initial mapping is for the TiVo remote included in the Nero LiquidTV bundle,

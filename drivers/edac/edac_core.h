@@ -32,6 +32,7 @@
 #include <linux/completion.h>
 #include <linux/kobject.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/workqueue.h>
 
@@ -39,6 +40,13 @@
 #define EDAC_DEVICE_NAME_LEN	31
 #define EDAC_ATTRIB_VALUE_LEN	15
 #define MC_PROC_NAME_MAX_LEN	7
+=======
+#include <linux/workqueue.h>
+#include <linux/edac.h>
+
+#define EDAC_DEVICE_NAME_LEN	31
+#define EDAC_ATTRIB_VALUE_LEN	15
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if PAGE_SHIFT < 20
 #define PAGES_TO_MiB(pages)	((pages) >> (20 - PAGE_SHIFT))
@@ -101,6 +109,7 @@ extern int edac_debug_level;
 
 #define edac_dev_name(dev) (dev)->dev_name
 
+<<<<<<< HEAD
 /* memory devices */
 enum dev_type {
 	DEV_UNKNOWN = 0,
@@ -448,6 +457,8 @@ struct mem_ctl_info {
 	int op_state;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * The following are the structures to provide for a generic
  * or abstract 'edac_device'. This set of structures and the
@@ -591,8 +602,13 @@ struct edac_device_ctl_info {
 	 */
 	struct edac_dev_sysfs_attribute *sysfs_attributes;
 
+<<<<<<< HEAD
 	/* pointer to main 'edac' class in sysfs */
 	struct sysdev_class *edac_class;
+=======
+	/* pointer to main 'edac' subsys in sysfs */
+	struct bus_type *edac_subsys;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* the internal state of this controller instance */
 	int op_state;
@@ -690,7 +706,11 @@ struct edac_pci_ctl_info {
 
 	int pci_idx;
 
+<<<<<<< HEAD
 	struct sysdev_class *edac_class;	/* pointer to class */
+=======
+	struct bus_type *edac_subsys;	/* pointer to subsystem */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* the internal state of this controller instance */
 	int op_state;

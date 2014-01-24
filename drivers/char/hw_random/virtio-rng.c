@@ -23,6 +23,10 @@
 #include <linux/spinlock.h>
 #include <linux/virtio.h>
 #include <linux/virtio_rng.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct virtqueue *vq;
 static unsigned int data_avail;
@@ -46,7 +50,11 @@ static void register_buffer(u8 *buf, size_t size)
 	sg_init_one(&sg, buf, size);
 
 	/* There should always be room for one buffer. */
+<<<<<<< HEAD
 	if (virtqueue_add_buf(vq, &sg, 0, 1, buf) < 0)
+=======
+	if (virtqueue_add_buf(vq, &sg, 0, 1, buf, GFP_KERNEL) < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		BUG();
 
 	virtqueue_kick(vq);

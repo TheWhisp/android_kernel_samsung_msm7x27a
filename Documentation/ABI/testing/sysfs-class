@@ -1,6 +1,10 @@
 What:		/sys/class/
 Date:		Febuary 2006
+<<<<<<< HEAD
 Contact:	Greg Kroah-Hartman <gregkh@suse.de>
+=======
+Contact:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>>>> refs/remotes/origin/cm-10.0
 Description:
 		The /sys/class directory will consist of a group of
 		subdirectories describing individual classes of devices

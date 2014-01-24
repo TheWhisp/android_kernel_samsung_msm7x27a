@@ -7,6 +7,11 @@
  *  Based on EP93xx wdt driver
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
@@ -38,7 +43,11 @@
 #define LTQ_WDT_DIVIDER		0x40000
 #define LTQ_MAX_TIMEOUT		((1 << 16) - 1)	/* the reload field is 16 bit */
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __iomem *ltq_wdt_membase;
 static unsigned long ltq_io_region_clk_rate;
@@ -51,16 +60,27 @@ static int ltq_wdt_ok_to_close;
 static void
 ltq_wdt_enable(void)
 {
+<<<<<<< HEAD
 	ltq_wdt_timeout = ltq_wdt_timeout *
 			(ltq_io_region_clk_rate / LTQ_WDT_DIVIDER) + 0x1000;
 	if (ltq_wdt_timeout > LTQ_MAX_TIMEOUT)
 		ltq_wdt_timeout = LTQ_MAX_TIMEOUT;
+=======
+	unsigned long int timeout = ltq_wdt_timeout *
+			(ltq_io_region_clk_rate / LTQ_WDT_DIVIDER) + 0x1000;
+	if (timeout > LTQ_MAX_TIMEOUT)
+		timeout = LTQ_MAX_TIMEOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* write the first password magic */
 	ltq_w32(LTQ_WDT_PW1, ltq_wdt_membase + LTQ_WDT_CR);
 	/* write the second magic plus the configuration and new timeout */
 	ltq_w32(LTQ_WDT_SR_EN | LTQ_WDT_SR_PWD | LTQ_WDT_SR_CLKDIV |
+<<<<<<< HEAD
 		LTQ_WDT_PW2 | ltq_wdt_timeout, ltq_wdt_membase + LTQ_WDT_CR);
+=======
+		LTQ_WDT_PW2 | timeout, ltq_wdt_membase + LTQ_WDT_CR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void
@@ -160,7 +180,11 @@ ltq_wdt_release(struct inode *inode, struct file *file)
 	if (ltq_wdt_ok_to_close)
 		ltq_wdt_disable();
 	else
+<<<<<<< HEAD
 		pr_err("ltq_wdt: watchdog closed without warning\n");
+=======
+		pr_err("watchdog closed without warning\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	ltq_wdt_ok_to_close = 0;
 	clear_bit(0, &ltq_wdt_in_use);
 
@@ -222,9 +246,12 @@ ltq_wdt_remove(struct platform_device *pdev)
 {
 	misc_deregister(&ltq_wdt_miscdev);
 
+<<<<<<< HEAD
 	if (ltq_wdt_membase)
 		iounmap(ltq_wdt_membase);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -252,7 +279,11 @@ exit_ltq_wdt(void)
 module_init(init_ltq_wdt);
 module_exit(exit_ltq_wdt);
 
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started");
 
 MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");

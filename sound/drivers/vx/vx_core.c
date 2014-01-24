@@ -26,6 +26,10 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/firmware.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/asoundef.h>

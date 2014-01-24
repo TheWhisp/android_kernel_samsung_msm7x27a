@@ -22,6 +22,10 @@
 
 #include <linux/mfd/wl1273-core.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVER_DESC "WL1273 FM Radio Core"
 

@@ -5,10 +5,17 @@
  *
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
+<<<<<<< HEAD
  * 
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  * 
+=======
+ *
+ * This software may be used and distributed according to the terms
+ * of the GNU General Public License, incorporated herein by reference.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * Thanks to Dr. Neuhaus and SAGEM for information
  *
  */
@@ -23,7 +30,11 @@
 
 static const char *niccy_revision = "$Revision: 1.21.2.4 $";
 
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define bytein(addr) inb(addr)
 
 #define ISAC_PCI_DATA	0
@@ -53,21 +64,33 @@ static inline u_char readreg(unsigned int ale, unsigned int adr, u_char off)
 }
 
 static inline void readfifo(unsigned int ale, unsigned int adr, u_char off,
+<<<<<<< HEAD
 		u_char *data, int size)
+=======
+			    u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	byteout(ale, off);
 	insb(adr, data, size);
 }
 
 static inline void writereg(unsigned int ale, unsigned int adr, u_char off,
+<<<<<<< HEAD
 		u_char data)
+=======
+			    u_char data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	byteout(ale, off);
 	byteout(adr, data);
 }
 
 static inline void writefifo(unsigned int ale, unsigned int adr, u_char off,
+<<<<<<< HEAD
 		u_char *data, int size)
+=======
+			     u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	byteout(ale, off);
 	outsb(adr, data, size);
@@ -85,12 +108,20 @@ static void WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 	writereg(cs->hw.niccy.isac_ale, cs->hw.niccy.isac, offset, value);
 }
 
+<<<<<<< HEAD
 static void ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+static void ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	readfifo(cs->hw.niccy.isac_ale, cs->hw.niccy.isac, 0, data, size);
 }
 
+<<<<<<< HEAD
 static void WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+static void WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	writefifo(cs->hw.niccy.isac_ale, cs->hw.niccy.isac, 0, data, size);
 }
@@ -98,16 +129,25 @@ static void WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 static u_char ReadHSCX(struct IsdnCardState *cs, int hscx, u_char offset)
 {
 	return readreg(cs->hw.niccy.hscx_ale,
+<<<<<<< HEAD
 			cs->hw.niccy.hscx, offset + (hscx ? 0x40 : 0));
 }
 
 static void WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset,
 		u_char value)
+=======
+		       cs->hw.niccy.hscx, offset + (hscx ? 0x40 : 0));
+}
+
+static void WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset,
+		      u_char value)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	writereg(cs->hw.niccy.hscx_ale,
 		 cs->hw.niccy.hscx, offset + (hscx ? 0x40 : 0), value);
 }
 
+<<<<<<< HEAD
 #define READHSCX(cs, nr, reg) readreg(cs->hw.niccy.hscx_ale, \
 		cs->hw.niccy.hscx, reg + (nr ? 0x40 : 0))
 #define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.niccy.hscx_ale, \
@@ -118,6 +158,18 @@ static void WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset,
 
 #define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.niccy.hscx_ale, \
 		cs->hw.niccy.hscx, (nr ? 0x40 : 0), ptr, cnt)
+=======
+#define READHSCX(cs, nr, reg) readreg(cs->hw.niccy.hscx_ale,		\
+				      cs->hw.niccy.hscx, reg + (nr ? 0x40 : 0))
+#define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.niccy.hscx_ale,	\
+					      cs->hw.niccy.hscx, reg + (nr ? 0x40 : 0), data)
+
+#define READHSCXFIFO(cs, nr, ptr, cnt) readfifo(cs->hw.niccy.hscx_ale,	\
+						cs->hw.niccy.hscx, (nr ? 0x40 : 0), ptr, cnt)
+
+#define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.niccy.hscx_ale, \
+						  cs->hw.niccy.hscx, (nr ? 0x40 : 0), ptr, cnt)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "hscx_irq.c"
 
@@ -138,7 +190,11 @@ static irqreturn_t niccy_interrupt(int intno, void *dev_id)
 		outl(ival, cs->hw.niccy.cfg_reg + PCI_IRQ_CTRL_REG);
 	}
 	val = readreg(cs->hw.niccy.hscx_ale, cs->hw.niccy.hscx,
+<<<<<<< HEAD
 			HSCX_ISTA + 0x40);
+=======
+		      HSCX_ISTA + 0x40);
+>>>>>>> refs/remotes/origin/cm-10.0
 Start_HSCX:
 	if (val)
 		hscx_int_main(cs, val);
@@ -147,7 +203,11 @@ Start_ISAC:
 	if (val)
 		isac_interrupt(cs, val);
 	val = readreg(cs->hw.niccy.hscx_ale, cs->hw.niccy.hscx,
+<<<<<<< HEAD
 			HSCX_ISTA + 0x40);
+=======
+		      HSCX_ISTA + 0x40);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (val) {
 		if (cs->debug & L1_DEB_HSCX)
 			debugl1(cs, "HSCX IntStat after IntRoutine");
@@ -165,7 +225,11 @@ Start_ISAC:
 	writereg(cs->hw.niccy.isac_ale, cs->hw.niccy.isac, ISAC_MASK, 0xFF);
 	writereg(cs->hw.niccy.isac_ale, cs->hw.niccy.isac, ISAC_MASK, 0);
 	writereg(cs->hw.niccy.hscx_ale, cs->hw.niccy.hscx, HSCX_MASK, 0);
+<<<<<<< HEAD
 	writereg(cs->hw.niccy.hscx_ale, cs->hw.niccy.hscx, HSCX_MASK + 0x40,0);
+=======
+	writereg(cs->hw.niccy.hscx_ale, cs->hw.niccy.hscx, HSCX_MASK + 0x40, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&cs->lock, flags);
 	return IRQ_HANDLED;
 }
@@ -241,6 +305,7 @@ int __devinit setup_niccy(struct IsdnCard *card)
 		int err;
 
 		pnp_c = pnp_find_card(ISAPNP_VENDOR('S', 'D', 'A'),
+<<<<<<< HEAD
 				ISAPNP_FUNCTION(0x0150), pnp_c);
 		if (pnp_c) {
 			pnp_d = pnp_find_dev(pnp_c,
@@ -249,24 +314,46 @@ int __devinit setup_niccy(struct IsdnCard *card)
 			if (!pnp_d) {
 				printk(KERN_ERR "NiccyPnP: PnP error card "
 					"found, no device\n");
+=======
+				      ISAPNP_FUNCTION(0x0150), pnp_c);
+		if (pnp_c) {
+			pnp_d = pnp_find_dev(pnp_c,
+					     ISAPNP_VENDOR('S', 'D', 'A'),
+					     ISAPNP_FUNCTION(0x0150), pnp_d);
+			if (!pnp_d) {
+				printk(KERN_ERR "NiccyPnP: PnP error card "
+				       "found, no device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 				return 0;
 			}
 			pnp_disable_dev(pnp_d);
 			err = pnp_activate_dev(pnp_d);
 			if (err < 0) {
 				printk(KERN_WARNING "%s: pnp_activate_dev "
+<<<<<<< HEAD
 					"ret(%d)\n", __func__, err);
+=======
+				       "ret(%d)\n", __func__, err);
+>>>>>>> refs/remotes/origin/cm-10.0
 				return 0;
 			}
 			card->para[1] = pnp_port_start(pnp_d, 0);
 			card->para[2] = pnp_port_start(pnp_d, 1);
 			card->para[0] = pnp_irq(pnp_d, 0);
 			if (!card->para[0] || !card->para[1] ||
+<<<<<<< HEAD
 					!card->para[2]) {
 				printk(KERN_ERR "NiccyPnP:some resources are "
 					"missing %ld/%lx/%lx\n",
 					card->para[0], card->para[1],
 					card->para[2]);
+=======
+			    !card->para[2]) {
+				printk(KERN_ERR "NiccyPnP:some resources are "
+				       "missing %ld/%lx/%lx\n",
+				       card->para[0], card->para[1],
+				       card->para[2]);
+>>>>>>> refs/remotes/origin/cm-10.0
 				pnp_disable_dev(pnp_d);
 				return 0;
 			}
@@ -284,15 +371,26 @@ int __devinit setup_niccy(struct IsdnCard *card)
 		cs->irq = card->para[0];
 		if (!request_region(cs->hw.niccy.isac, 2, "niccy data")) {
 			printk(KERN_WARNING "HiSax: NICCY data port %x-%x "
+<<<<<<< HEAD
 				"already in use\n",
 				cs->hw.niccy.isac, cs->hw.niccy.isac + 1);
+=======
+			       "already in use\n",
+			       cs->hw.niccy.isac, cs->hw.niccy.isac + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return 0;
 		}
 		if (!request_region(cs->hw.niccy.isac_ale, 2, "niccy addr")) {
 			printk(KERN_WARNING "HiSax: NICCY address port %x-%x "
+<<<<<<< HEAD
 				"already in use\n",
 				cs->hw.niccy.isac_ale,
 				cs->hw.niccy.isac_ale + 1);
+=======
+			       "already in use\n",
+			       cs->hw.niccy.isac_ale,
+			       cs->hw.niccy.isac_ale + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 			release_region(cs->hw.niccy.isac, 2);
 			return 0;
 		}
@@ -303,8 +401,13 @@ int __devinit setup_niccy(struct IsdnCard *card)
 		u_int pci_ioaddr;
 		cs->subtyp = 0;
 		if ((niccy_dev = hisax_find_pci_device(PCI_VENDOR_ID_SATSAGEM,
+<<<<<<< HEAD
 						 PCI_DEVICE_ID_SATSAGEM_NICCY,
 						 niccy_dev))) {
+=======
+						       PCI_DEVICE_ID_SATSAGEM_NICCY,
+						       niccy_dev))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (pci_enable_device(niccy_dev))
 				return 0;
 			/* get IRQ */
@@ -357,8 +460,13 @@ int __devinit setup_niccy(struct IsdnCard *card)
 #endif				/* CONFIG_PCI */
 	}
 	printk(KERN_INFO "HiSax: NICCY %s config irq:%d data:0x%X ale:0x%X\n",
+<<<<<<< HEAD
 		(cs->subtyp == 1) ? "PnP" : "PCI",
 		cs->irq, cs->hw.niccy.isac, cs->hw.niccy.isac_ale);
+=======
+	       (cs->subtyp == 1) ? "PnP" : "PCI",
+	       cs->irq, cs->hw.niccy.isac, cs->hw.niccy.isac_ale);
+>>>>>>> refs/remotes/origin/cm-10.0
 	setup_isac(cs);
 	cs->readisac = &ReadISAC;
 	cs->writeisac = &WriteISAC;
@@ -372,7 +480,11 @@ int __devinit setup_niccy(struct IsdnCard *card)
 	ISACVersion(cs, "Niccy:");
 	if (HscxVersion(cs, "Niccy:")) {
 		printk(KERN_WARNING "Niccy: wrong HSCX versions check IO "
+<<<<<<< HEAD
 			"address\n");
+=======
+		       "address\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		release_io_niccy(cs);
 		return 0;
 	}

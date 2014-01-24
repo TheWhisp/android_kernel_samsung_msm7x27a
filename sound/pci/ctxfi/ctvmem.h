@@ -18,7 +18,11 @@
 #ifndef CTVMEM_H
 #define CTVMEM_H
 
+<<<<<<< HEAD
 #define CT_PTP_NUM	1	/* num of device page table pages */
+=======
+#define CT_PTP_NUM	4	/* num of device page table pages */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/mutex.h>
 #include <linux/list.h>

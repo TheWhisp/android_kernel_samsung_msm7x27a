@@ -18,12 +18,17 @@
  *	(jj@sunsite.ms.mff.cuni.cz)
  */
 
+<<<<<<< HEAD
 #include <linux/time.h>
 #include <linux/fs.h>
 #include <linux/jbd.h>
 #include <linux/quotaops.h>
 #include <linux/ext3_fs.h>
 #include <linux/ext3_jbd.h>
+=======
+#include <linux/quotaops.h>
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xattr.h"
 #include "acl.h"
 
@@ -71,7 +76,10 @@ const struct file_operations ext3_file_operations = {
 };
 
 const struct inode_operations ext3_file_inode_operations = {
+<<<<<<< HEAD
 	.truncate	= ext3_truncate,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.setattr	= ext3_setattr,
 #ifdef CONFIG_EXT3_FS_XATTR
 	.setxattr	= generic_setxattr,
@@ -79,7 +87,11 @@ const struct inode_operations ext3_file_inode_operations = {
 	.listxattr	= ext3_listxattr,
 	.removexattr	= generic_removexattr,
 #endif
+<<<<<<< HEAD
 	.check_acl	= ext3_check_acl,
+=======
+	.get_acl	= ext3_get_acl,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.fiemap		= ext3_fiemap,
 };
 

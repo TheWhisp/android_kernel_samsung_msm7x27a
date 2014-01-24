@@ -7,6 +7,10 @@
 #define _LINUX_TICK_H
 
 #include <linux/clockchips.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqflags.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_GENERIC_CLOCKEVENTS
 
@@ -121,14 +125,26 @@ static inline int tick_oneshot_mode_active(void) { return 0; }
 #endif /* !CONFIG_GENERIC_CLOCKEVENTS */
 
 # ifdef CONFIG_NO_HZ
+<<<<<<< HEAD
 extern void tick_nohz_stop_sched_tick(int inidle);
 extern void tick_nohz_restart_sched_tick(void);
+=======
+extern void tick_nohz_idle_enter(void);
+extern void tick_nohz_idle_exit(void);
+extern void tick_nohz_irq_exit(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern ktime_t tick_nohz_get_sleep_length(void);
 extern u64 get_cpu_idle_time_us(int cpu, u64 *last_update_time);
 extern u64 get_cpu_iowait_time_us(int cpu, u64 *last_update_time);
 # else
+<<<<<<< HEAD
 static inline void tick_nohz_stop_sched_tick(int inidle) { }
 static inline void tick_nohz_restart_sched_tick(void) { }
+=======
+static inline void tick_nohz_idle_enter(void) { }
+static inline void tick_nohz_idle_exit(void) { }
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline ktime_t tick_nohz_get_sleep_length(void)
 {
 	ktime_t len = { .tv64 = NSEC_PER_SEC/HZ };

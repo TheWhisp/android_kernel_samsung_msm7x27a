@@ -114,6 +114,10 @@ extern int memcmp(const void *,const void *,__kernel_size_t);
 #ifndef __HAVE_ARCH_MEMCHR
 extern void * memchr(const void *,int,__kernel_size_t);
 #endif
+<<<<<<< HEAD
+=======
+void *memchr_inv(const void *s, int c, size_t n);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern char *kstrdup(const char *s, gfp_t gfp);
 extern char *kstrndup(const char *s, size_t len, gfp_t gfp);

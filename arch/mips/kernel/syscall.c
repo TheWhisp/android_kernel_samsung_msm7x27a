@@ -37,6 +37,10 @@
 #include <asm/shmparam.h>
 #include <asm/sysmips.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * For historic reasons the pipe(2) syscall on MIPS has an unusual calling

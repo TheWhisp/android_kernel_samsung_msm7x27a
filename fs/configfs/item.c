@@ -23,7 +23,11 @@
  *
  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
  *
+<<<<<<< HEAD
  * Please see the file Documentation/filesystems/configfs.txt for
+=======
+ * Please see the file Documentation/filesystems/configfs/configfs.txt for
+>>>>>>> refs/remotes/origin/cm-10.0
  * critical information about using the config_item interface.
  */
 

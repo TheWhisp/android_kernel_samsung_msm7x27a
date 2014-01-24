@@ -90,6 +90,10 @@
 #include <linux/ctype.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "wusbhc.h"
 
 static void wusbhc_devconnect_acked_work(struct work_struct *work);

@@ -101,21 +101,31 @@ static int loop_set_rx_carrier_range(struct rc_dev *dev, u32 min, u32 max)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int loop_tx_ir(struct rc_dev *dev, int *txbuf, u32 n)
 {
 	struct loopback_dev *lodev = dev->priv;
 	u32 rxmask;
 	unsigned count;
+=======
+static int loop_tx_ir(struct rc_dev *dev, unsigned *txbuf, unsigned count)
+{
+	struct loopback_dev *lodev = dev->priv;
+	u32 rxmask;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned total_duration = 0;
 	unsigned i;
 	DEFINE_IR_RAW_EVENT(rawir);
 
+<<<<<<< HEAD
 	if (n == 0 || n % sizeof(int)) {
 		dprintk("invalid tx buffer size\n");
 		return -EINVAL;
 	}
 
 	count = n / sizeof(int);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < count; i++)
 		total_duration += abs(txbuf[i]);
 
@@ -142,7 +152,11 @@ static int loop_tx_ir(struct rc_dev *dev, int *txbuf, u32 n)
 
 	for (i = 0; i < count; i++) {
 		rawir.pulse = i % 2 ? false : true;
+<<<<<<< HEAD
 		rawir.duration = abs(txbuf[i]) * 1000;
+=======
+		rawir.duration = txbuf[i] * 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (rawir.duration)
 			ir_raw_event_store_with_filter(dev, &rawir);
 	}
@@ -158,7 +172,11 @@ out:
 	/* Lirc expects this function to take as long as the total duration */
 	set_current_state(TASK_INTERRUPTIBLE);
 	schedule_timeout(usecs_to_jiffies(total_duration));
+<<<<<<< HEAD
 	return n;
+=======
+	return count;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void loop_set_idle(struct rc_dev *dev, bool enable)

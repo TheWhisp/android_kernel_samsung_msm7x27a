@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -991,7 +995,11 @@ void msm_charger_vbus_draw(unsigned int mA)
 		usb_chg_current = mA;
 }
 
+<<<<<<< HEAD
 static int __init determine_initial_batt_status(void)
+=======
+static int determine_initial_batt_status(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (is_battery_present())
 		if (is_battery_id_valid())

@@ -76,7 +76,11 @@ static int idle_proc(void *cpup)
 		cpu_relax();
 
 	notify_cpu_starting(cpu);
+<<<<<<< HEAD
 	cpu_set(cpu, cpu_online_map);
+=======
+	set_cpu_online(cpu, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 	default_idle();
 	return 0;
 }
@@ -110,8 +114,12 @@ void smp_prepare_cpus(unsigned int maxcpus)
 	for (i = 0; i < ncpus; ++i)
 		set_cpu_possible(i, true);
 
+<<<<<<< HEAD
 	cpu_clear(me, cpu_online_map);
 	cpu_set(me, cpu_online_map);
+=======
+	set_cpu_online(me, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cpu_set(me, cpu_callin_map);
 
 	err = os_pipe(cpu_data[me].ipi_pipe, 1, 1);
@@ -138,13 +146,21 @@ void smp_prepare_cpus(unsigned int maxcpus)
 
 void smp_prepare_boot_cpu(void)
 {
+<<<<<<< HEAD
 	cpu_set(smp_processor_id(), cpu_online_map);
+=======
+	set_cpu_online(smp_processor_id(), true);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int __cpu_up(unsigned int cpu)
 {
 	cpu_set(cpu, smp_commenced_mask);
+<<<<<<< HEAD
 	while (!cpu_isset(cpu, cpu_online_map))
+=======
+	while (!cpu_online(cpu))
+>>>>>>> refs/remotes/origin/cm-10.0
 		mb();
 	return 0;
 }

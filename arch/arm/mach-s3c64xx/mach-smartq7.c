@@ -17,19 +17,33 @@
 #include <linux/leds.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/hardware/vic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
 #include <mach/map.h>
+<<<<<<< HEAD
 #include <mach/regs-fb.h>
 #include <mach/regs-gpio.h>
 #include <mach/s3c6410.h>
+=======
+#include <mach/regs-gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/cpu.h>
 #include <plat/devs.h>
 #include <plat/fb.h>
 #include <plat/gpio-cfg.h>
+<<<<<<< HEAD
 
+=======
+#include <plat/regs-fb-v4.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "mach-smartq.h"
 
 static struct gpio_led smartq7_leds[] = {
@@ -162,9 +176,19 @@ static void __init smartq7_machine_init(void)
 
 MACHINE_START(SMARTQ7, "SmartQ 7")
 	/* Maintainer: Maurus Cuelenaere <mcuelenaere AT gmail DOT com> */
+<<<<<<< HEAD
 	.boot_params	= S3C64XX_PA_SDRAM + 0x100,
 	.init_irq	= s3c6410_init_irq,
 	.map_io		= smartq_map_io,
 	.init_machine	= smartq7_machine_init,
 	.timer		= &s3c24xx_timer,
+=======
+	.atag_offset	= 0x100,
+	.init_irq	= s3c6410_init_irq,
+	.handle_irq	= vic_handle_irq,
+	.map_io		= smartq_map_io,
+	.init_machine	= smartq7_machine_init,
+	.timer		= &s3c24xx_timer,
+	.restart	= s3c64xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

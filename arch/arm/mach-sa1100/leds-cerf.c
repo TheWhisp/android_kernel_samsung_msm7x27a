@@ -7,7 +7,10 @@
 
 #include <mach/hardware.h>
 #include <asm/leds.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "leds.h"
 

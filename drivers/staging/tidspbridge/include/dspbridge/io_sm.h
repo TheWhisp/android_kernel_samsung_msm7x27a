@@ -154,8 +154,11 @@ int dump_dsp_stack(struct bridge_dev_context *bridge_context);
 
 void dump_dl_modules(struct bridge_dev_context *bridge_context);
 
+<<<<<<< HEAD
 #endif
 #if defined(CONFIG_TIDSPBRIDGE_BACKTRACE) || defined(CONFIG_TIDSPBRIDGE_DEBUG)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void print_dsp_debug_trace(struct io_mgr *hio_mgr);
 #endif
 

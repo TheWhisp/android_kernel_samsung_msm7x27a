@@ -19,6 +19,10 @@
  */
 #include <linux/errno.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/smp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
 

@@ -15,6 +15,10 @@
 #include <linux/crypto.h>
 #include <linux/list.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/skbuff.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct module;
 struct rtattr;
@@ -26,6 +30,10 @@ struct crypto_type {
 	int (*init)(struct crypto_tfm *tfm, u32 type, u32 mask);
 	int (*init_tfm)(struct crypto_tfm *tfm);
 	void (*show)(struct seq_file *m, struct crypto_alg *alg);
+<<<<<<< HEAD
+=======
+	int (*report)(struct sk_buff *skb, struct crypto_alg *alg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct crypto_alg *(*lookup)(const char *name, u32 type, u32 mask);
 
 	unsigned int type;
@@ -132,6 +140,10 @@ struct crypto_template *crypto_lookup_template(const char *name);
 
 int crypto_register_instance(struct crypto_template *tmpl,
 			     struct crypto_instance *inst);
+<<<<<<< HEAD
+=======
+int crypto_unregister_instance(struct crypto_alg *alg);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
 		      struct crypto_instance *inst, u32 mask);

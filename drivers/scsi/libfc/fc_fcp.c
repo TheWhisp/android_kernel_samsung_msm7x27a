@@ -155,6 +155,10 @@ static struct fc_fcp_pkt *fc_fcp_pkt_alloc(struct fc_lport *lport, gfp_t gfp)
 		fsp->xfer_ddp = FC_XID_UNKNOWN;
 		atomic_set(&fsp->ref_cnt, 1);
 		init_timer(&fsp->timer);
+<<<<<<< HEAD
+=======
+		fsp->timer.data = (unsigned long)fsp;
+>>>>>>> refs/remotes/origin/cm-10.0
 		INIT_LIST_HEAD(&fsp->list);
 		spin_lock_init(&fsp->scsi_pkt_lock);
 	}
@@ -484,11 +488,19 @@ static void fc_fcp_recv_data(struct fc_fcp_pkt *fsp, struct fc_frame *fp)
 
 	if (!(fr_flags(fp) & FCPHF_CRC_UNCHECKED)) {
 		copy_len = fc_copy_buffer_to_sglist(buf, len, sg, &nents,
+<<<<<<< HEAD
 						    &offset, KM_SOFTIRQ0, NULL);
 	} else {
 		crc = crc32(~0, (u8 *) fh, sizeof(*fh));
 		copy_len = fc_copy_buffer_to_sglist(buf, len, sg, &nents,
 						    &offset, KM_SOFTIRQ0, &crc);
+=======
+						    &offset, NULL);
+	} else {
+		crc = crc32(~0, (u8 *) fh, sizeof(*fh));
+		copy_len = fc_copy_buffer_to_sglist(buf, len, sg, &nents,
+						    &offset, &crc);
+>>>>>>> refs/remotes/origin/cm-10.0
 		buf = fc_frame_payload_get(fp, 0);
 		if (len % 4)
 			crc = crc32(crc, buf + len, 4 - (len % 4));
@@ -498,7 +510,11 @@ crc_err:
 			stats = per_cpu_ptr(lport->dev_stats, get_cpu());
 			stats->ErrorFrames++;
 			/* per cpu count, not total count, but OK for limit */
+<<<<<<< HEAD
 			if (stats->InvalidCRCCount++ < 5)
+=======
+			if (stats->InvalidCRCCount++ < FC_MAX_ERROR_CNT)
+>>>>>>> refs/remotes/origin/cm-10.0
 				printk(KERN_WARNING "libfc: CRC error on data "
 				       "frame for port (%6.6x)\n",
 				       lport->port_id);
@@ -649,10 +665,17 @@ static int fc_fcp_send_data(struct fc_fcp_pkt *fsp, struct fc_seq *seq,
 			 * The scatterlist item may be bigger than PAGE_SIZE,
 			 * but we must not cross pages inside the kmap.
 			 */
+<<<<<<< HEAD
 			page_addr = kmap_atomic(page, KM_SOFTIRQ0);
 			memcpy(data, (char *)page_addr + (off & ~PAGE_MASK),
 			       sg_bytes);
 			kunmap_atomic(page_addr, KM_SOFTIRQ0);
+=======
+			page_addr = kmap_atomic(page);
+			memcpy(data, (char *)page_addr + (off & ~PAGE_MASK),
+			       sg_bytes);
+			kunmap_atomic(page_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 			data += sg_bytes;
 		}
 		offset += sg_bytes;
@@ -690,7 +713,11 @@ static int fc_fcp_send_data(struct fc_fcp_pkt *fsp, struct fc_seq *seq,
 }
 
 /**
+<<<<<<< HEAD
  * fc_fcp_abts_resp() - Send an ABTS response
+=======
+ * fc_fcp_abts_resp() - Receive an ABTS response
+>>>>>>> refs/remotes/origin/cm-10.0
  * @fsp: The FCP packet that is being aborted
  * @fp:	 The response frame
  */
@@ -730,7 +757,11 @@ static void fc_fcp_abts_resp(struct fc_fcp_pkt *fsp, struct fc_frame *fp)
 }
 
 /**
+<<<<<<< HEAD
  * fc_fcp_recv() - Reveive an FCP frame
+=======
+ * fc_fcp_recv() - Receive an FCP frame
+>>>>>>> refs/remotes/origin/cm-10.0
  * @seq: The sequence the frame is on
  * @fp:	 The received frame
  * @arg: The related FCP packet
@@ -759,7 +790,10 @@ static void fc_fcp_recv(struct fc_seq *seq, struct fc_frame *fp, void *arg)
 		goto out;
 	if (fc_fcp_lock_pkt(fsp))
 		goto out;
+<<<<<<< HEAD
 	fsp->last_pkt_time = jiffies;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (fh->fh_type == FC_TYPE_BLS) {
 		fc_fcp_abts_resp(fsp, fp);
@@ -1074,8 +1108,12 @@ static int fc_fcp_pkt_send(struct fc_lport *lport, struct fc_fcp_pkt *fsp)
 	fsp->cdb_cmd.fc_dl = htonl(fsp->data_len);
 	fsp->cdb_cmd.fc_flags = fsp->req_flags & ~FCP_CFL_LEN_MASK;
 
+<<<<<<< HEAD
 	int_to_scsilun(fsp->cmd->device->lun,
 		       (struct scsi_lun *)fsp->cdb_cmd.fc_lun);
+=======
+	int_to_scsilun(fsp->cmd->device->lun, &fsp->cdb_cmd.fc_lun);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(fsp->cdb_cmd.fc_cdb, fsp->cmd->cmnd, fsp->cmd->cmd_len);
 
 	spin_lock_irqsave(&si->scsi_queue_lock, flags);
@@ -1084,6 +1122,10 @@ static int fc_fcp_pkt_send(struct fc_lport *lport, struct fc_fcp_pkt *fsp)
 	rc = lport->tt.fcp_cmd_send(lport, fsp, fc_fcp_recv);
 	if (unlikely(rc)) {
 		spin_lock_irqsave(&si->scsi_queue_lock, flags);
+<<<<<<< HEAD
+=======
+		fsp->cmd->SCp.ptr = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		list_del(&fsp->list);
 		spin_unlock_irqrestore(&si->scsi_queue_lock, flags);
 	}
@@ -1147,7 +1189,10 @@ static int fc_fcp_cmd_send(struct fc_lport *lport, struct fc_fcp_pkt *fsp,
 		rc = -1;
 		goto unlock;
 	}
+<<<<<<< HEAD
 	fsp->last_pkt_time = jiffies;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	fsp->seq_ptr = seq;
 	fc_fcp_pkt_hold(fsp);	/* hold for fc_fcp_pkt_destroy */
 
@@ -1257,7 +1302,11 @@ static int fc_lun_reset(struct fc_lport *lport, struct fc_fcp_pkt *fsp,
 
 	fsp->cdb_cmd.fc_dl = htonl(fsp->data_len);
 	fsp->cdb_cmd.fc_tm_flags = FCP_TMF_LUN_RESET;
+<<<<<<< HEAD
 	int_to_scsilun(lun, (struct scsi_lun *)fsp->cdb_cmd.fc_lun);
+=======
+	int_to_scsilun(lun, &fsp->cdb_cmd.fc_lun);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fsp->wait_for_comp = 1;
 	init_completion(&fsp->tm_done);
@@ -1645,12 +1694,18 @@ static void fc_fcp_srr(struct fc_fcp_pkt *fsp, enum fc_rctl r_ctl, u32 offset)
 	struct fc_seq *seq;
 	struct fcp_srr *srr;
 	struct fc_frame *fp;
+<<<<<<< HEAD
 	u8 cdb_op;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int rec_tov;
 
 	rport = fsp->rport;
 	rpriv = rport->dd_data;
+<<<<<<< HEAD
 	cdb_op = fsp->cdb_cmd.fc_cdb[0];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!(rpriv->flags & FC_RP_FLAGS_RETRY) ||
 	    rpriv->rp_state != RPORT_ST_READY)
@@ -1853,9 +1908,12 @@ int fc_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *sc_cmd)
 	}
 	put_cpu();
 
+<<<<<<< HEAD
 	init_timer(&fsp->timer);
 	fsp->timer.data = (unsigned long)fsp;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * send it to the lower layer
 	 * if we get -1 return then put the request in the pending
@@ -2020,6 +2078,14 @@ int fc_eh_abort(struct scsi_cmnd *sc_cmd)
 	struct fc_fcp_internal *si;
 	int rc = FAILED;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	int rval;
+
+	rval = fc_block_scsi_eh(sc_cmd);
+	if (rval)
+		return rval;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	lport = shost_priv(sc_cmd->device->host);
 	if (lport->state != LPORT_ST_READY)
@@ -2069,9 +2135,15 @@ int fc_eh_device_reset(struct scsi_cmnd *sc_cmd)
 	int rc = FAILED;
 	int rval;
 
+<<<<<<< HEAD
 	rval = fc_remote_port_chkready(rport);
 	if (rval)
 		goto out;
+=======
+	rval = fc_block_scsi_eh(sc_cmd);
+	if (rval)
+		return rval;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	lport = shost_priv(sc_cmd->device->host);
 
@@ -2117,6 +2189,11 @@ int fc_eh_host_reset(struct scsi_cmnd *sc_cmd)
 
 	FC_SCSI_DBG(lport, "Resetting host\n");
 
+<<<<<<< HEAD
+=======
+	fc_block_scsi_eh(sc_cmd);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	lport->tt.lport_reset(lport);
 	wait_tmo = jiffies + FC_HOST_RESET_TIMEOUT;
 	while (!fc_fcp_lport_queue_ready(lport) && time_before(jiffies,

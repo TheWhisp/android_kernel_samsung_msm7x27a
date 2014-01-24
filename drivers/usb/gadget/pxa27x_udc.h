@@ -9,6 +9,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,6 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307	 USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef __LINUX_USB_GADGET_PXA27X_H
@@ -88,9 +91,15 @@
 #define UDCISR_INT_MASK	(UDCICR_FIFOERR | UDCICR_PKTCOMPL)
 
 #define UDCOTGICR_IESF	(1 << 24)	/* OTG SET_FEATURE command recvd */
+<<<<<<< HEAD
 #define UDCOTGICR_IEXR	(1 << 17)	/* Extra Transciever Interrupt
 					   Rising Edge Interrupt Enable */
 #define UDCOTGICR_IEXF	(1 << 16)	/* Extra Transciever Interrupt
+=======
+#define UDCOTGICR_IEXR	(1 << 17)	/* Extra Transceiver Interrupt
+					   Rising Edge Interrupt Enable */
+#define UDCOTGICR_IEXF	(1 << 16)	/* Extra Transceiver Interrupt
+>>>>>>> refs/remotes/origin/cm-10.0
 					   Falling Edge Interrupt Enable */
 #define UDCOTGICR_IEVV40R (1 << 9)	/* OTG Vbus Valid 4.0V Rising Edge
 					   Interrupt Enable */
@@ -456,7 +465,11 @@ struct pxa_udc {
 	struct usb_gadget_driver		*driver;
 	struct device				*dev;
 	struct pxa2xx_udc_mach_info		*mach;
+<<<<<<< HEAD
 	struct otg_transceiver			*transceiver;
+=======
+	struct usb_phy				*transceiver;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	enum ep0_state				ep0state;
 	struct udc_stats			stats;

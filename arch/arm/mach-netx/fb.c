@@ -92,6 +92,7 @@ void clk_put(struct clk *clk)
 {
 }
 
+<<<<<<< HEAD
 static struct amba_device fb_device = {
 	.dev		= {
 		.init_name = "fb",
@@ -104,6 +105,9 @@ static struct amba_device fb_device = {
 	},
 	.irq		= { NETX_IRQ_LCD, NO_IRQ },
 };
+=======
+static AMBA_AHB_DEVICE(fb, "fb", 0, 0x00104000, { NETX_IRQ_LCD }, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int netx_fb_init(struct clcd_board *board, struct clcd_panel *panel)
 {

@@ -365,7 +365,11 @@ static int __devinit xenfb_probe(struct xenbus_device *dev,
 	struct fb_info *fb_info;
 	int fb_size;
 	int val;
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
 	if (info == NULL) {
@@ -458,6 +462,7 @@ static int __devinit xenfb_probe(struct xenbus_device *dev,
 	xenfb_init_shared_page(info, fb_info);
 
 	ret = xenfb_connect_backend(dev, info);
+<<<<<<< HEAD
 	if (ret < 0)
 		goto error;
 
@@ -468,16 +473,40 @@ static int __devinit xenfb_probe(struct xenbus_device *dev,
 		framebuffer_release(fb_info);
 		xenbus_dev_fatal(dev, ret, "register_framebuffer");
 		goto error;
+=======
+	if (ret < 0) {
+		xenbus_dev_fatal(dev, ret, "xenfb_connect_backend");
+		goto error_fb;
+	}
+
+	ret = register_framebuffer(fb_info);
+	if (ret) {
+		xenbus_dev_fatal(dev, ret, "register_framebuffer");
+		goto error_fb;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	info->fb_info = fb_info;
 
 	xenfb_make_preferred_console();
 	return 0;
 
+<<<<<<< HEAD
  error_nomem:
 	ret = -ENOMEM;
 	xenbus_dev_fatal(dev, ret, "allocating device memory");
  error:
+=======
+error_fb:
+	fb_deferred_io_cleanup(fb_info);
+	fb_dealloc_cmap(&fb_info->cmap);
+	framebuffer_release(fb_info);
+error_nomem:
+	if (!ret) {
+		ret = -ENOMEM;
+		xenbus_dev_fatal(dev, ret, "allocating device memory");
+	}
+error:
+>>>>>>> refs/remotes/origin/cm-10.0
 	xenfb_remove(dev);
 	return ret;
 }
@@ -671,20 +700,32 @@ InitWait:
 	}
 }
 
+<<<<<<< HEAD
 static struct xenbus_device_id xenfb_ids[] = {
+=======
+static const struct xenbus_device_id xenfb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ "vfb" },
 	{ "" }
 };
 
+<<<<<<< HEAD
 static struct xenbus_driver xenfb_driver = {
 	.name = "vfb",
 	.owner = THIS_MODULE,
 	.ids = xenfb_ids,
+=======
+static DEFINE_XENBUS_DRIVER(xenfb, ,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.probe = xenfb_probe,
 	.remove = xenfb_remove,
 	.resume = xenfb_resume,
 	.otherend_changed = xenfb_backend_changed,
+<<<<<<< HEAD
 };
+=======
+);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init xenfb_init(void)
 {

@@ -13,7 +13,10 @@
 
 #include <asm/openprom.h>
 #include <asm/oplib.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/spitfire.h>
 #include <asm/pstate.h>
 #include <asm/ldc.h>

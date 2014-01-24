@@ -5,7 +5,11 @@
  *
  */
 
+<<<<<<< HEAD
 #define SBIT(state) (1<<state)
+=======
+#define SBIT(state) (1 << state)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ALL_STATES  0x03ffffff
 
 #define PROTO_DIS_EURO	0x08
@@ -40,4 +44,7 @@ void l3_msg(struct PStack *st, int pr, void *arg);
 void setstack_dss1(struct PStack *st);
 void setstack_ni1(struct PStack *st);
 void setstack_1tr6(struct PStack *st);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

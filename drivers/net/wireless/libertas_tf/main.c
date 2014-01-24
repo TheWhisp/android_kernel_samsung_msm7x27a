@@ -9,9 +9,17 @@
  */
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+<<<<<<< HEAD
 #include <linux/slab.h>
 
 #include <linux/etherdevice.h>
+=======
+#include <linux/hardirq.h>
+#include <linux/slab.h>
+
+#include <linux/etherdevice.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "libertas_tf.h"
 
 #define DRIVER_RELEASE_VERSION "004.p0"
@@ -585,7 +593,11 @@ int lbtf_rx(struct lbtf_private *priv, struct sk_buff *skb)
 	need_padding ^= ieee80211_has_a4(hdr->frame_control);
 	need_padding ^= ieee80211_is_data_qos(hdr->frame_control) &&
 			(*ieee80211_get_qos_ctl(hdr) &
+<<<<<<< HEAD
 			 IEEE80211_QOS_CONTROL_A_MSDU_PRESENT);
+=======
+			 IEEE80211_QOS_CTL_A_MSDU_PRESENT);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (need_padding) {
 		memmove(skb->data + 2, skb->data, skb->len);
@@ -717,11 +729,19 @@ void lbtf_bcn_sent(struct lbtf_private *priv)
 		return;
 
 	if (skb_queue_empty(&priv->bc_ps_buf)) {
+<<<<<<< HEAD
 		bool tx_buff_bc = 0;
 
 		while ((skb = ieee80211_get_buffered_bc(priv->hw, priv->vif))) {
 			skb_queue_tail(&priv->bc_ps_buf, skb);
 			tx_buff_bc = 1;
+=======
+		bool tx_buff_bc = false;
+
+		while ((skb = ieee80211_get_buffered_bc(priv->hw, priv->vif))) {
+			skb_queue_tail(&priv->bc_ps_buf, skb);
+			tx_buff_bc = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		if (tx_buff_bc) {
 			ieee80211_stop_queues(priv->hw);

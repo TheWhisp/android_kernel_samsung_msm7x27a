@@ -45,6 +45,7 @@ static void pci_acpi_wake_dev(acpi_handle handle, u32 event, void *context)
 {
 	struct pci_dev *pci_dev = context;
 
+<<<<<<< HEAD
 	if (event == ACPI_NOTIFY_DEVICE_WAKE && pci_dev) {
 		pci_wakeup_event(pci_dev);
 		pci_check_pme_status(pci_dev);
@@ -52,6 +53,22 @@ static void pci_acpi_wake_dev(acpi_handle handle, u32 event, void *context)
 		if (pci_dev->subordinate)
 			pci_pme_wakeup_bus(pci_dev->subordinate);
 	}
+=======
+	if (event != ACPI_NOTIFY_DEVICE_WAKE || !pci_dev)
+		return;
+
+	if (!pci_dev->pm_cap || !pci_dev->pme_support
+	     || pci_check_pme_status(pci_dev)) {
+		if (pci_dev->pme_poll)
+			pci_dev->pme_poll = false;
+
+		pci_wakeup_event(pci_dev);
+		pm_runtime_resume(&pci_dev->dev);
+	}
+
+	if (pci_dev->subordinate)
+		pci_pme_wakeup_bus(pci_dev->subordinate);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -193,7 +210,11 @@ static pci_power_t acpi_pci_choose_state(struct pci_dev *pdev)
 		return PCI_D1;
 	case ACPI_STATE_D2:
 		return PCI_D2;
+<<<<<<< HEAD
 	case ACPI_STATE_D3:
+=======
+	case ACPI_STATE_D3_HOT:
+>>>>>>> refs/remotes/origin/cm-10.0
 		return PCI_D3hot;
 	case ACPI_STATE_D3_COLD:
 		return PCI_D3cold;
@@ -270,6 +291,7 @@ static int acpi_pci_sleep_wake(struct pci_dev *dev, bool enable)
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  * acpi_dev_run_wake - Enable/disable wake-up for given device.
  * @phys_dev: Device to enable/disable the platform to wake-up the system for.
@@ -305,6 +327,8 @@ static int acpi_dev_run_wake(struct device *phys_dev, bool enable)
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void acpi_pci_propagate_run_wake(struct pci_bus *bus, bool enable)
 {
 	while (bus->parent) {
@@ -312,14 +336,22 @@ static void acpi_pci_propagate_run_wake(struct pci_bus *bus, bool enable)
 
 		if (bridge->pme_interrupt)
 			return;
+<<<<<<< HEAD
 		if (!acpi_dev_run_wake(&bridge->dev, enable))
+=======
+		if (!acpi_pm_device_run_wake(&bridge->dev, enable))
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		bus = bus->parent;
 	}
 
 	/* We have reached the root bus. */
 	if (bus->bridge)
+<<<<<<< HEAD
 		acpi_dev_run_wake(bus->bridge, enable);
+=======
+		acpi_pm_device_run_wake(bus->bridge, enable);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int acpi_pci_run_wake(struct pci_dev *dev, bool enable)
@@ -327,7 +359,11 @@ static int acpi_pci_run_wake(struct pci_dev *dev, bool enable)
 	if (dev->pme_interrupt)
 		return 0;
 
+<<<<<<< HEAD
 	if (!acpi_dev_run_wake(&dev->dev, enable))
+=======
+	if (!acpi_pm_device_run_wake(&dev->dev, enable))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	acpi_pci_propagate_run_wake(dev->bus, enable);

@@ -186,7 +186,11 @@ static int hfs_dir_release(struct inode *inode, struct file *file)
  * a directory and return a corresponding inode, given the inode for
  * the directory and the name (and its length) of the new file.
  */
+<<<<<<< HEAD
 static int hfs_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int hfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		      struct nameidata *nd)
 {
 	struct inode *inode;
@@ -198,7 +202,11 @@ static int hfs_create(struct inode *dir, struct dentry *dentry, int mode,
 
 	res = hfs_cat_create(inode->i_ino, dir, &dentry->d_name, inode);
 	if (res) {
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		hfs_delete_inode(inode);
 		iput(inode);
 		return res;
@@ -216,7 +224,11 @@ static int hfs_create(struct inode *dir, struct dentry *dentry, int mode,
  * in a directory, given the inode for the parent directory and the
  * name (and its length) of the new directory.
  */
+<<<<<<< HEAD
 static int hfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int hfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inode *inode;
 	int res;
@@ -227,7 +239,11 @@ static int hfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 
 	res = hfs_cat_create(inode->i_ino, dir, &dentry->d_name, inode);
 	if (res) {
+<<<<<<< HEAD
 		inode->i_nlink = 0;
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		hfs_delete_inode(inode);
 		iput(inode);
 		return res;

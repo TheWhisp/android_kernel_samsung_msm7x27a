@@ -185,6 +185,7 @@ static struct platform_driver sp_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init sp_init(void)
 {
 	return platform_driver_register(&sp_driver);
@@ -197,3 +198,6 @@ static void __exit sp_exit(void)
 
 module_init(sp_init);
 module_exit(sp_exit);
+=======
+module_platform_driver(sp_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -8,7 +8,13 @@
  * published by the Free Software Foundation.
  */
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/dmaengine.h>
+=======
+#include <linux/dma-mapping.h>
+#include <linux/dmaengine.h>
+#include <linux/freezer.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/kthread.h>
 #include <linux/module.h>
@@ -212,9 +218,24 @@ static unsigned int dmatest_verify(u8 **bufs, unsigned int start,
 	return error_count;
 }
 
+<<<<<<< HEAD
 static void dmatest_callback(void *completion)
 {
 	complete(completion);
+=======
+/* poor man's completion - we want to use wait_event_freezable() on it */
+struct dmatest_done {
+	bool			done;
+	wait_queue_head_t	*wait;
+};
+
+static void dmatest_callback(void *arg)
+{
+	struct dmatest_done *done = arg;
+
+	done->done = true;
+	wake_up_all(done->wait);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -233,7 +254,13 @@ static void dmatest_callback(void *completion)
  */
 static int dmatest_func(void *data)
 {
+<<<<<<< HEAD
 	struct dmatest_thread	*thread = data;
+=======
+	DECLARE_WAIT_QUEUE_HEAD_ONSTACK(done_wait);
+	struct dmatest_thread	*thread = data;
+	struct dmatest_done	done = { .wait = &done_wait };
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dma_chan		*chan;
 	const char		*thread_name;
 	unsigned int		src_off, dst_off, len;
@@ -250,6 +277,10 @@ static int dmatest_func(void *data)
 	int			i;
 
 	thread_name = current->comm;
+<<<<<<< HEAD
+=======
+	set_freezable();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = -ENOMEM;
 
@@ -303,8 +334,11 @@ static int dmatest_func(void *data)
 		struct dma_async_tx_descriptor *tx = NULL;
 		dma_addr_t dma_srcs[src_cnt];
 		dma_addr_t dma_dsts[dst_cnt];
+<<<<<<< HEAD
 		struct completion cmp;
 		unsigned long tmo = msecs_to_jiffies(timeout);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		u8 align = 0;
 
 		total_tests++;
@@ -387,9 +421,15 @@ static int dmatest_func(void *data)
 			continue;
 		}
 
+<<<<<<< HEAD
 		init_completion(&cmp);
 		tx->callback = dmatest_callback;
 		tx->callback_param = &cmp;
+=======
+		done.done = false;
+		tx->callback = dmatest_callback;
+		tx->callback_param = &done;
+>>>>>>> refs/remotes/origin/cm-10.0
 		cookie = tx->tx_submit(tx);
 
 		if (dma_submit_error(cookie)) {
@@ -403,10 +443,27 @@ static int dmatest_func(void *data)
 		}
 		dma_async_issue_pending(chan);
 
+<<<<<<< HEAD
 		tmo = wait_for_completion_timeout(&cmp, tmo);
 		status = dma_async_is_tx_complete(chan, cookie, NULL, NULL);
 
 		if (tmo == 0) {
+=======
+		wait_event_freezable_timeout(done_wait, done.done,
+					     msecs_to_jiffies(timeout));
+
+		status = dma_async_is_tx_complete(chan, cookie, NULL, NULL);
+
+		if (!done.done) {
+			/*
+			 * We're leaving the timed out dma operation with
+			 * dangling pointer to done_wait.  To make this
+			 * correct, we'll need to allocate wait_done for
+			 * each test iteration and perform "who's gonna
+			 * free it this time?" dancing.  For now, just
+			 * leave it dangling.
+			 */
+>>>>>>> refs/remotes/origin/cm-10.0
 			pr_warning("%s: #%u: test timed out\n",
 				   thread_name, total_tests - 1);
 			failed_tests++;
@@ -476,6 +533,11 @@ err_srcs:
 	pr_notice("%s: terminating after %u tests, %u failures (status %d)\n",
 			thread_name, total_tests, failed_tests, ret);
 
+<<<<<<< HEAD
+=======
+	/* terminate all transfers on specified channels */
+	chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (iterations > 0)
 		while (!kthread_should_stop()) {
 			DECLARE_WAIT_QUEUE_HEAD_ONSTACK(wait_dmatest_exit);
@@ -498,6 +560,13 @@ static void dmatest_cleanup_channel(struct dmatest_chan *dtc)
 		list_del(&thread->node);
 		kfree(thread);
 	}
+<<<<<<< HEAD
+=======
+
+	/* terminate all transfers on specified channels */
+	dtc->chan->device->device_control(dtc->chan, DMA_TERMINATE_ALL, 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(dtc);
 }
 
@@ -571,7 +640,11 @@ static int dmatest_add_channel(struct dma_chan *chan)
 	}
 	if (dma_has_cap(DMA_PQ, dma_dev->cap_mask)) {
 		cnt = dmatest_add_threads(dtc, DMA_PQ);
+<<<<<<< HEAD
 		thread_count += cnt > 0 ?: 0;
+=======
+		thread_count += cnt > 0 ? cnt : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	pr_info("dmatest: Started %u threads using %s\n",

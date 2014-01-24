@@ -27,7 +27,10 @@
 #define OMAP3_ISP_VIDEO_H
 
 #include <linux/v4l2-mediabus.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/media-entity.h>
 #include <media/v4l2-dev.h>
 #include <media/v4l2-fh.h>
@@ -35,7 +38,11 @@
 #include "ispqueue.h"
 
 #define ISP_VIDEO_DRIVER_NAME		"ispvideo"
+<<<<<<< HEAD
 #define ISP_VIDEO_DRIVER_VERSION	KERNEL_VERSION(0, 0, 1)
+=======
+#define ISP_VIDEO_DRIVER_VERSION	"0.0.2"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct isp_device;
 struct isp_video;
@@ -86,6 +93,13 @@ enum isp_pipeline_state {
 	ISP_PIPELINE_STREAM = 64,
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * struct isp_pipeline - An ISP hardware pipeline
+ * @error: A hardware error occurred during capture
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 struct isp_pipeline {
 	struct media_pipeline pipe;
 	spinlock_t lock;		/* Pipeline state and queue flags */
@@ -97,6 +111,10 @@ struct isp_pipeline {
 	unsigned int max_rate;
 	atomic_t frame_number;
 	bool do_propagation; /* of frame number */
+<<<<<<< HEAD
+=======
+	bool error;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct v4l2_fract max_timeperframe;
 };
 
@@ -191,11 +209,19 @@ struct isp_video_fh {
 				container_of(q, struct isp_video_fh, queue)
 
 int omap3isp_video_init(struct isp_video *video, const char *name);
+<<<<<<< HEAD
 int omap3isp_video_register(struct isp_video *video,
 			    struct v4l2_device *vdev);
 void omap3isp_video_unregister(struct isp_video *video);
 struct isp_buffer *omap3isp_video_buffer_next(struct isp_video *video,
 					      unsigned int error);
+=======
+void omap3isp_video_cleanup(struct isp_video *video);
+int omap3isp_video_register(struct isp_video *video,
+			    struct v4l2_device *vdev);
+void omap3isp_video_unregister(struct isp_video *video);
+struct isp_buffer *omap3isp_video_buffer_next(struct isp_video *video);
+>>>>>>> refs/remotes/origin/cm-10.0
 void omap3isp_video_resume(struct isp_video *video, int continuous);
 struct media_pad *omap3isp_video_remote_pad(struct isp_video *video);
 

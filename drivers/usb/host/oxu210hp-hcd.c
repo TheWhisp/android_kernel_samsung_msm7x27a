@@ -40,7 +40,10 @@
 #include <linux/io.h>
 
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 
 #include <linux/irq.h>
@@ -233,7 +236,11 @@ module_param(park, uint, S_IRUGO);
 MODULE_PARM_DESC(park, "park setting; 1-3 back-to-back async packets");
 
 /* For flakey hardware, ignore overcurrent indicators */
+<<<<<<< HEAD
 static int ignore_oc;
+=======
+static bool ignore_oc;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(ignore_oc, bool, S_IRUGO);
 MODULE_PARM_DESC(ignore_oc, "ignore bogus hardware overcurrent indications");
 
@@ -3828,7 +3835,11 @@ static int oxu_drv_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 	memstart = res->start;
+<<<<<<< HEAD
 	memlen = res->end - res->start + 1;
+=======
+	memlen = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_dbg(&pdev->dev, "MEM resource %lx-%lx\n", memstart, memlen);
 	if (!request_mem_region(memstart, memlen,
 				oxu_hc_driver.description)) {
@@ -3951,6 +3962,7 @@ static struct platform_driver oxu_driver = {
 	}
 };
 
+<<<<<<< HEAD
 static int __init oxu_module_init(void)
 {
 	int retval = 0;
@@ -3969,6 +3981,9 @@ static void __exit oxu_module_cleanup(void)
 
 module_init(oxu_module_init);
 module_exit(oxu_module_cleanup);
+=======
+module_platform_driver(oxu_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Oxford OXU210HP HCD driver - ver. " DRIVER_VERSION);
 MODULE_AUTHOR("Rodolfo Giometti <giometti@linux.it>");

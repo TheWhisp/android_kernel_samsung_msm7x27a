@@ -20,7 +20,10 @@
 /* Keep includes the same across arches.  */
 #include <linux/mm.h>
 #include <linux/cache.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <arch/icache.h>
 
 /* Caches are physically-indexed and so don't need special treatment */
@@ -152,4 +155,17 @@ static inline void finv_buffer_local(void *buffer, size_t size)
  */
 void finv_buffer_remote(void *buffer, size_t size, int hfh);
 
+<<<<<<< HEAD
+=======
+/*
+ * On SMP systems, when the scheduler does migration-cost autodetection,
+ * it needs a way to flush as much of the CPU's caches as possible:
+ *
+ * TODO: fill this in!
+ */
+static inline void sched_cacheflush(void)
+{
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_TILE_CACHEFLUSH_H */

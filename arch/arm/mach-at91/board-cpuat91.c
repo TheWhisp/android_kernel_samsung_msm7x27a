@@ -19,6 +19,10 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -36,8 +40,13 @@
 #include <asm/mach/irq.h>
 
 #include <mach/board.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/at91rm9200_mc.h>
+=======
+#include <mach/at91rm9200_mc.h>
+#include <mach/at91_ramc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/cpu.h>
 
 #include "generic.h"
@@ -57,7 +66,11 @@ static void __init cpuat91_init_early(void)
 	at91rm9200_set_type(ARCH_REVISON_9200_PQFP);
 
 	/* Initialize processor: 18.432 MHz crystal */
+<<<<<<< HEAD
 	at91rm9200_initialize(18432000);
+=======
+	at91_initialize(18432000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* DBGU on ttyS0. (Rx & Tx only) */
 	at91_register_uart(0, 0, 0);
@@ -82,17 +95,27 @@ static void __init cpuat91_init_early(void)
 	at91_set_serial_console(0);
 }
 
+<<<<<<< HEAD
 static void __init cpuat91_init_irq(void)
 {
 	at91rm9200_init_interrupts(NULL);
 }
 
 static struct at91_eth_data __initdata cpuat91_eth_data = {
+=======
+static struct macb_platform_data __initdata cpuat91_eth_data = {
+	.phy_irq_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.is_rmii	= 1,
 };
 
 static struct at91_usbh_data __initdata cpuat91_usbh_data = {
 	.ports		= 1,
+<<<<<<< HEAD
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct at91_udc_data __initdata cpuat91_udc_data = {
@@ -103,6 +126,11 @@ static struct at91_udc_data __initdata cpuat91_udc_data = {
 static struct at91_mmc_data __initdata cpuat91_mmc_data = {
 	.det_pin	= AT91_PIN_PC2,
 	.wire4		= 1,
+<<<<<<< HEAD
+=======
+	.wp_pin		= -EINVAL,
+	.vcc_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct physmap_flash_data cpuat91_flash_data = {
@@ -180,8 +208,14 @@ static void __init cpuat91_board_init(void)
 MACHINE_START(CPUAT91, "Eukrea")
 	/* Maintainer: Eric Benard - EUKREA Electromatique */
 	.timer		= &at91rm9200_timer,
+<<<<<<< HEAD
 	.map_io		= at91rm9200_map_io,
 	.init_early	= cpuat91_init_early,
 	.init_irq	= cpuat91_init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= cpuat91_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= cpuat91_board_init,
 MACHINE_END

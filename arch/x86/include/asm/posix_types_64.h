@@ -7,6 +7,7 @@
  * assume GCC is being used.
  */
 
+<<<<<<< HEAD
 typedef unsigned long	__kernel_ino_t;
 typedef unsigned int	__kernel_mode_t;
 typedef unsigned long	__kernel_nlink_t;
@@ -115,5 +116,15 @@ static inline void __FD_ZERO(__kernel_fd_set *p)
 }
 
 #endif /* defined(__KERNEL__) */
+=======
+typedef unsigned short __kernel_old_uid_t;
+typedef unsigned short __kernel_old_gid_t;
+#define __kernel_old_uid_t __kernel_old_uid_t
+
+typedef unsigned long	__kernel_old_dev_t;
+#define __kernel_old_dev_t __kernel_old_dev_t
+
+#include <asm-generic/posix_types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _ASM_X86_POSIX_TYPES_64_H */

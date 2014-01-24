@@ -573,6 +573,11 @@ int wm8350_device_init(struct wm8350 *wm8350, int irq,
 	u16 id1, id2, mask_rev;
 	u16 cust_id, mode, chip_rev;
 
+<<<<<<< HEAD
+=======
+	dev_set_drvdata(wm8350->dev, wm8350);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* get WM8350 revision and config mode */
 	ret = wm8350->read_dev(wm8350, WM8350_RESET_ID, sizeof(id1), &id1);
 	if (ret != 0) {

@@ -26,6 +26,11 @@ s2ram.txt
 	- How to get suspend to ram working (and debug it when it isn't)
 states.txt
 	- System power management states
+<<<<<<< HEAD
+=======
+suspend-and-cpuhotplug.txt
+	- Explains the interaction between Suspend-to-RAM (S3) and CPU hotplug
+>>>>>>> refs/remotes/origin/cm-10.0
 swsusp-and-swap-files.txt
 	- Using swap files with software suspend (to disk)
 swsusp-dmcrypt.txt

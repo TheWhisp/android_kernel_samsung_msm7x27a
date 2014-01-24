@@ -133,6 +133,18 @@ extern struct ctl_path net_ipv6_ctl_path[];
 	SNMP_INC_STATS##modifier((net)->mib.statname##_statistics, (field));\
 })
 
+<<<<<<< HEAD
+=======
+/* per device and per net counters are atomic_long_t */
+#define _DEVINC_ATOMIC_ATOMIC(net, statname, idev, field)		\
+({									\
+	struct inet6_dev *_idev = (idev);				\
+	if (likely(_idev != NULL))					\
+		SNMP_INC_STATS_ATOMIC_LONG((_idev)->stats.statname##dev, (field)); \
+	SNMP_INC_STATS_ATOMIC_LONG((net)->mib.statname##_statistics, (field));\
+})
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define _DEVADD(net, statname, modifier, idev, field, val)		\
 ({									\
 	struct inet6_dev *_idev = (idev);				\
@@ -169,11 +181,19 @@ extern struct ctl_path net_ipv6_ctl_path[];
 		_DEVINCATOMIC(net, icmpv6, _BH, idev, field)
 
 #define ICMP6MSGOUT_INC_STATS(net, idev, field)		\
+<<<<<<< HEAD
 	_DEVINCATOMIC(net, icmpv6msg, , idev, field +256)
 #define ICMP6MSGOUT_INC_STATS_BH(net, idev, field)	\
 	_DEVINCATOMIC(net, icmpv6msg, _BH, idev, field +256)
 #define ICMP6MSGIN_INC_STATS_BH(net, idev, field)	\
 	_DEVINCATOMIC(net, icmpv6msg, _BH, idev, field)
+=======
+	_DEVINC_ATOMIC_ATOMIC(net, icmpv6msg, idev, field +256)
+#define ICMP6MSGOUT_INC_STATS_BH(net, idev, field)	\
+	_DEVINC_ATOMIC_ATOMIC(net, icmpv6msg, idev, field +256)
+#define ICMP6MSGIN_INC_STATS_BH(net, idev, field)	\
+	_DEVINC_ATOMIC_ATOMIC(net, icmpv6msg, idev, field)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct ip6_ra_chain {
 	struct ip6_ra_chain	*next;
@@ -244,6 +264,7 @@ static inline void fl6_sock_release(struct ip6_flowlabel *fl)
 		atomic_dec(&fl->users);
 }
 
+<<<<<<< HEAD
 extern void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info);
 
 int icmpv6_push_pending_frames(struct sock *sk, struct flowi6 *fl6,
@@ -252,6 +273,8 @@ int icmpv6_push_pending_frames(struct sock *sk, struct flowi6 *fl6,
 struct dst_entry *icmpv6_route_lookup(struct net *net, struct sk_buff *skb,
 				      struct sock *sk, struct flowi6 *fl6);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int 			ip6_ra_control(struct sock *sk, int sel);
 
 extern int			ipv6_parse_hopopts(struct sk_buff *skb);
@@ -294,6 +317,7 @@ static inline int ipv6_addr_src_scope(const struct in6_addr *addr)
 	return __ipv6_addr_src_scope(__ipv6_addr_type(addr));
 }
 
+<<<<<<< HEAD
 static inline bool __ipv6_addr_needs_scope_id(int type)
 {
 	return type & IPV6_ADDR_LINKLOCAL ||
@@ -306,6 +330,8 @@ static inline __u32 ipv6_iface_scope_id(const struct in6_addr *addr, int iface)
 	return __ipv6_addr_needs_scope_id(__ipv6_addr_type(addr)) ? iface : 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int ipv6_addr_cmp(const struct in6_addr *a1, const struct in6_addr *a2)
 {
 	return memcmp(a1, a2, sizeof(struct in6_addr));
@@ -321,11 +347,14 @@ ipv6_masked_addr_cmp(const struct in6_addr *a1, const struct in6_addr *m,
 		  ((a1->s6_addr32[3] ^ a2->s6_addr32[3]) & m->s6_addr32[3]));
 }
 
+<<<<<<< HEAD
 static inline void ipv6_addr_copy(struct in6_addr *a1, const struct in6_addr *a2)
 {
 	memcpy(a1, a2, sizeof(struct in6_addr));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void ipv6_addr_prefix(struct in6_addr *pfx, 
 				    const struct in6_addr *addr,
 				    int plen)
@@ -495,7 +524,11 @@ static inline int ipv6_addr_diff(const struct in6_addr *a1, const struct in6_add
 	return __ipv6_addr_diff(a1, a2, sizeof(struct in6_addr));
 }
 
+<<<<<<< HEAD
 extern void ipv6_select_ident(struct frag_hdr *fhdr, struct in6_addr *addr);
+=======
+extern void ipv6_select_ident(struct frag_hdr *fhdr, struct rt6_info *rt);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	Prototypes exported by ipv6
@@ -518,7 +551,12 @@ extern int			ip6_rcv_finish(struct sk_buff *skb);
 extern int			ip6_xmit(struct sock *sk,
 					 struct sk_buff *skb,
 					 struct flowi6 *fl6,
+<<<<<<< HEAD
 					 struct ipv6_txoptions *opt);
+=======
+					 struct ipv6_txoptions *opt,
+					 int tclass);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int			ip6_nd_hdr(struct sock *sk,
 					   struct sk_buff *skb,
@@ -585,7 +623,11 @@ extern void			ipv6_push_frag_opts(struct sk_buff *skb,
 						    u8 *proto);
 
 extern int			ipv6_skip_exthdr(const struct sk_buff *, int start,
+<<<<<<< HEAD
 					         u8 *nexthdrp);
+=======
+					         u8 *nexthdrp, __be16 *frag_offp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int 			ipv6_ext_hdr(u8 nexthdr);
 

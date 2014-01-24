@@ -1,9 +1,15 @@
 #ifndef __LINUX_MAPLE_H
 #define __LINUX_MAPLE_H
 
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <mach/maple.h>
 
+=======
+#include <mach/maple.h>
+
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct bus_type maple_bus_type;
 
 /* Maple Bus command and response codes */

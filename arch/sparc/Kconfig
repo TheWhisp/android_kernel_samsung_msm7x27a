@@ -28,10 +28,19 @@ config SPARC
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_SHOW
 	select USE_GENERIC_SMP_HELPERS if SMP
+<<<<<<< HEAD
+=======
+	select GENERIC_PCI_IOMAP
+	select HAVE_NMI_WATCHDOG if SPARC64
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SPARC32
 	def_bool !64BIT
 	select GENERIC_ATOMIC64
+<<<<<<< HEAD
+=======
+	select CLZ_TAB
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SPARC64
 	def_bool 64BIT
@@ -42,7 +51,13 @@ config SPARC64
 	select HAVE_FUNCTION_TRACE_MCOUNT_TEST
 	select HAVE_KRETPROBES
 	select HAVE_KPROBES
+<<<<<<< HEAD
 	select HAVE_MEMBLOCK
+=======
+	select HAVE_RCU_TABLE_FREE if SMP
+	select HAVE_MEMBLOCK
+	select HAVE_MEMBLOCK_NODE_MAP
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_SYSCALL_WRAPPERS
 	select HAVE_DYNAMIC_FTRACE
 	select HAVE_FTRACE_MCOUNT_RECORD
@@ -54,6 +69,10 @@ config SPARC64
 	select HAVE_PERF_EVENTS
 	select PERF_USE_VMALLOC
 	select IRQ_PREFLOW_FASTEOI
+<<<<<<< HEAD
+=======
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_C_RECORDMCOUNT
 
 config ARCH_DEFCONFIG
@@ -83,10 +102,13 @@ config IOMMU_HELPER
 	bool
 	default y if SPARC64
 
+<<<<<<< HEAD
 config QUICKLIST
 	bool
 	default y if SPARC64
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config STACKTRACE_SUPPORT
 	bool
 	default y if SPARC64
@@ -355,9 +377,12 @@ config NODES_SPAN_OTHER_NODES
 	def_bool y
 	depends on NEED_MULTIPLE_NODES
 
+<<<<<<< HEAD
 config ARCH_POPULATES_NODE_MAP
 	def_bool y if SPARC64
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config ARCH_SELECT_MEMORY_MODEL
 	def_bool y if SPARC64
 
@@ -388,9 +413,13 @@ config SCHED_MC
 	  making when dealing with multi-core CPU chips at a cost of slightly
 	  increased overhead in some places. If unsure say N here.
 
+<<<<<<< HEAD
 if SPARC64
 source "kernel/Kconfig.preempt"
 endif
+=======
+source "kernel/Kconfig.preempt"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config CMDLINE_BOOL
 	bool "Default bootloader kernel arguments"
@@ -563,12 +592,16 @@ config SUN_OPENPROMFS
 	  Only choose N if you know in advance that you will not need to modify
 	  OpenPROM settings on the running system.
 
+<<<<<<< HEAD
 # Makefile helpers
 config SPARC32_PCI
 	bool
 	default y
 	depends on SPARC32 && PCI
 
+=======
+# Makefile helper
+>>>>>>> refs/remotes/origin/cm-10.0
 config SPARC64_PCI
 	bool
 	default y
@@ -585,15 +618,22 @@ config COMPAT
 	depends on SPARC64
 	default y
 	select COMPAT_BINFMT_ELF
+<<<<<<< HEAD
+=======
+	select ARCH_WANT_OLD_COMPAT_IPC
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SYSVIPC_COMPAT
 	bool
 	depends on COMPAT && SYSVIPC
 	default y
 
+<<<<<<< HEAD
 config KEYS_COMPAT
 	def_bool y if COMPAT && KEYS
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 endmenu
 
 source "net/Kconfig"

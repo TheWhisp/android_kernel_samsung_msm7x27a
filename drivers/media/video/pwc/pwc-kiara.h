@@ -27,7 +27,11 @@
 #ifndef PWC_KIARA_H
 #define PWC_KIARA_H
 
+<<<<<<< HEAD
 #include <media/pwc-ioctl.h>
+=======
+#include "pwc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PWC_FPS_MAX_KIARA 6
 

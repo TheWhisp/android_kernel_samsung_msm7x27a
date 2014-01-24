@@ -144,7 +144,11 @@ static struct dentry *squashfs_lookup(struct inode *dir, struct dentry *dentry,
 	struct squashfs_dir_entry *dire;
 	u64 block = squashfs_i(dir)->start + msblk->directory_table;
 	int offset = squashfs_i(dir)->offset;
+<<<<<<< HEAD
 	int err, length = 0, dir_count, size;
+=======
+	int err, length, dir_count, size;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	TRACE("Entered squashfs_lookup [%llx:%x]\n", block, offset);
 
@@ -177,8 +181,12 @@ static struct dentry *squashfs_lookup(struct inode *dir, struct dentry *dentry,
 
 		dir_count = le32_to_cpu(dirh.count) + 1;
 
+<<<<<<< HEAD
 		/* dir_count should never be larger than 256 */
 		if (dir_count > 256)
+=======
+		if (dir_count > SQUASHFS_DIR_COUNT)
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto data_error;
 
 		while (dir_count--) {
@@ -220,11 +228,14 @@ static struct dentry *squashfs_lookup(struct inode *dir, struct dentry *dentry,
 					blk, off, ino_num);
 
 				inode = squashfs_iget(dir->i_sb, ino, ino_num);
+<<<<<<< HEAD
 				if (IS_ERR(inode)) {
 					err = PTR_ERR(inode);
 					goto failed;
 				}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto exit_lookup;
 			}
 		}
@@ -232,10 +243,14 @@ static struct dentry *squashfs_lookup(struct inode *dir, struct dentry *dentry,
 
 exit_lookup:
 	kfree(dire);
+<<<<<<< HEAD
 	if (inode)
 		return d_splice_alias(inode, dentry);
 	d_add(dentry, inode);
 	return ERR_PTR(0);
+=======
+	return d_splice_alias(inode, dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 data_error:
 	err = -EIO;

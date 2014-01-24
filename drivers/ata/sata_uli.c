@@ -145,7 +145,10 @@ static int uli_scr_write(struct ata_link *link, unsigned int sc_reg, u32 val)
 
 static int uli_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
+<<<<<<< HEAD
 	static int printed_version;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct ata_port_info *ppi[] = { &uli_port_info, NULL };
 	unsigned int board_idx = (unsigned int) ent->driver_data;
 	struct ata_host *host;
@@ -154,8 +157,12 @@ static int uli_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	struct ata_ioports *ioaddr;
 	int n_ports, rc;
 
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_INFO, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rc = pcim_enable_device(pdev);
 	if (rc)

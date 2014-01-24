@@ -14,6 +14,10 @@
 
 #include <linux/mfd/asic3.h>
 #include <linux/mfd/core.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	The HTC ASIC3 LED GPIOs are inputs, not outputs.
@@ -107,9 +111,16 @@ static int __devinit asic3_led_probe(struct platform_device *pdev)
 	}
 
 	led->cdev->name = led->name;
+<<<<<<< HEAD
 	led->cdev->default_trigger = led->default_trigger;
 	led->cdev->brightness_set = brightness_set;
 	led->cdev->blink_set = blink_set;
+=======
+	led->cdev->flags = LED_CORE_SUSPENDRESUME;
+	led->cdev->brightness_set = brightness_set;
+	led->cdev->blink_set = blink_set;
+	led->cdev->default_trigger = led->default_trigger;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = led_classdev_register(&pdev->dev, led->cdev);
 	if (ret < 0)
@@ -136,12 +147,47 @@ static int __devexit asic3_led_remove(struct platform_device *pdev)
 	return mfd_cell_disable(pdev);
 }
 
+<<<<<<< HEAD
+=======
+static int asic3_led_suspend(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+	const struct mfd_cell *cell = mfd_get_cell(pdev);
+	int ret;
+
+	ret = 0;
+	if (cell->suspend)
+		ret = (*cell->suspend)(pdev);
+
+	return ret;
+}
+
+static int asic3_led_resume(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+	const struct mfd_cell *cell = mfd_get_cell(pdev);
+	int ret;
+
+	ret = 0;
+	if (cell->resume)
+		ret = (*cell->resume)(pdev);
+
+	return ret;
+}
+
+static const struct dev_pm_ops asic3_led_pm_ops = {
+	.suspend	= asic3_led_suspend,
+	.resume		= asic3_led_resume,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver asic3_led_driver = {
 	.probe		= asic3_led_probe,
 	.remove		= __devexit_p(asic3_led_remove),
 	.driver		= {
 		.name	= "leds-asic3",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 };
 
@@ -159,7 +205,18 @@ static void __exit asic3_led_exit(void)
 
 module_init(asic3_led_init);
 module_exit(asic3_led_exit);
+=======
+		.pm	= &asic3_led_pm_ops,
+	},
+};
+
+module_platform_driver(asic3_led_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Paul Parsons <lost.distance@yahoo.com>");
 MODULE_DESCRIPTION("HTC ASIC3 LED driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:leds-asic3");
+>>>>>>> refs/remotes/origin/cm-10.0

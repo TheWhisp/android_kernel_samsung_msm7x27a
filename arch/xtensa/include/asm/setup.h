@@ -13,4 +13,9 @@
 
 #define COMMAND_LINE_SIZE	256
 
+<<<<<<< HEAD
+=======
+extern void set_except_vector(int n, void *addr);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

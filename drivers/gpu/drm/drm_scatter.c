@@ -83,30 +83,48 @@ int drm_sg_alloc(struct drm_device *dev, struct drm_scatter_gather * request)
 	if (dev->sg)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
 	if (!entry)
 		return -ENOMEM;
 
 	memset(entry, 0, sizeof(*entry));
+=======
+	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+	if (!entry)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	pages = (request->size + PAGE_SIZE - 1) / PAGE_SIZE;
 	DRM_DEBUG("size=%ld pages=%ld\n", request->size, pages);
 
 	entry->pages = pages;
+<<<<<<< HEAD
 	entry->pagelist = kmalloc(pages * sizeof(*entry->pagelist), GFP_KERNEL);
+=======
+	entry->pagelist = kcalloc(pages, sizeof(*entry->pagelist), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!entry->pagelist) {
 		kfree(entry);
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	memset(entry->pagelist, 0, pages * sizeof(*entry->pagelist));
 
 	entry->busaddr = kmalloc(pages * sizeof(*entry->busaddr), GFP_KERNEL);
+=======
+	entry->busaddr = kcalloc(pages, sizeof(*entry->busaddr), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!entry->busaddr) {
 		kfree(entry->pagelist);
 		kfree(entry);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	memset((void *)entry->busaddr, 0, pages * sizeof(*entry->busaddr));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	entry->virtual = drm_vmalloc_dma(pages << PAGE_SHIFT);
 	if (!entry->virtual) {

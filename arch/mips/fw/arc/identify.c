@@ -11,6 +11,10 @@
  *
  * Copyright (C) 1996 David S. Miller (davem@davemloft.net)
  */
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/types.h>

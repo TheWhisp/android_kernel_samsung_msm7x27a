@@ -12,6 +12,10 @@
 #include <linux/platform_device.h>
 #include <linux/err.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mc146818rtc.h>
 
 #include <asm/prom.h>

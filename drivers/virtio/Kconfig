@@ -7,6 +7,11 @@ config VIRTIO_RING
 	tristate
 	depends on VIRTIO
 
+<<<<<<< HEAD
+=======
+menu "Virtio drivers"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config VIRTIO_PCI
 	tristate "PCI driver for virtio devices (EXPERIMENTAL)"
 	depends on PCI && EXPERIMENTAL
@@ -33,3 +38,18 @@ config VIRTIO_BALLOON
 
 	 If unsure, say M.
 
+<<<<<<< HEAD
+=======
+ config VIRTIO_MMIO
+ 	tristate "Platform bus driver for memory mapped virtio devices (EXPERIMENTAL)"
+ 	depends on HAS_IOMEM && EXPERIMENTAL
+ 	select VIRTIO
+ 	select VIRTIO_RING
+ 	---help---
+ 	 This drivers provides support for memory mapped virtio
+	 platform device driver.
+
+ 	 If unsure, say N.
+
+endmenu
+>>>>>>> refs/remotes/origin/cm-10.0

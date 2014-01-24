@@ -19,5 +19,10 @@ void gfs2_sys_fs_del(struct gfs2_sbd *sdp);
 int gfs2_sys_init(void);
 void gfs2_sys_uninit(void);
 
+<<<<<<< HEAD
+=======
+int gfs2_recover_set(struct gfs2_sbd *sdp, unsigned jid);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __SYS_DOT_H__ */
 

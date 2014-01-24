@@ -16,7 +16,10 @@
 #define __ARCH_PXA_MTD_XIP_H__
 
 #include <mach/regs-ost.h>
+<<<<<<< HEAD
 #include <mach/regs-intc.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define xip_irqpending()	(ICIP & ICMR)
 

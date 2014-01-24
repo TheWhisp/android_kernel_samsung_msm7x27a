@@ -28,7 +28,10 @@
 #include <asm/io.h>
 #include <asm/hardware/iomd.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "sound_config.h"
 #include "vidc.h"

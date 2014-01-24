@@ -50,6 +50,10 @@
 #include <asm/pci-direct.h>
 #include <linux/init_ohci1394_dma.h>
 #include <linux/kvm_para.h>
+<<<<<<< HEAD
+=======
+#include <linux/dma-contiguous.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/errno.h>
 #include <linux/kernel.h>
@@ -90,7 +94,10 @@
 #include <asm/processor.h>
 #include <asm/bugs.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/vsyscall.h>
 #include <asm/cpu.h>
 #include <asm/desc.h>
@@ -306,7 +313,12 @@ static void __init cleanup_highmap(void)
 static void __init reserve_brk(void)
 {
 	if (_brk_end > _brk_start)
+<<<<<<< HEAD
 		memblock_x86_reserve_range(__pa(_brk_start), __pa(_brk_end), "BRK");
+=======
+		memblock_reserve(__pa(_brk_start),
+				 __pa(_brk_end) - __pa(_brk_start));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Mark brk area as locked down and no longer taking any
 	   new allocations */
@@ -331,13 +343,21 @@ static void __init relocate_initrd(void)
 	ramdisk_here = memblock_find_in_range(0, end_of_lowmem, area_size,
 					 PAGE_SIZE);
 
+<<<<<<< HEAD
 	if (ramdisk_here == MEMBLOCK_ERROR)
+=======
+	if (!ramdisk_here)
+>>>>>>> refs/remotes/origin/cm-10.0
 		panic("Cannot find place for new RAMDISK of size %lld\n",
 			 ramdisk_size);
 
 	/* Note: this includes all the lowmem currently occupied by
 	   the initrd, we rely on that fact to keep the data intact. */
+<<<<<<< HEAD
 	memblock_x86_reserve_range(ramdisk_here, ramdisk_here + area_size, "NEW RAMDISK");
+=======
+	memblock_reserve(ramdisk_here, area_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	initrd_start = ramdisk_here + PAGE_OFFSET;
 	initrd_end   = initrd_start + ramdisk_size;
 	printk(KERN_INFO "Allocated new RAMDISK: %08llx - %08llx\n",
@@ -393,7 +413,11 @@ static void __init reserve_initrd(void)
 	initrd_start = 0;
 
 	if (ramdisk_size >= (end_of_lowmem>>1)) {
+<<<<<<< HEAD
 		memblock_x86_free_range(ramdisk_image, ramdisk_end);
+=======
+		memblock_free(ramdisk_image, ramdisk_end - ramdisk_image);
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "initrd too large to handle, "
 		       "disabling initrd\n");
 		return;
@@ -416,7 +440,11 @@ static void __init reserve_initrd(void)
 
 	relocate_initrd();
 
+<<<<<<< HEAD
 	memblock_x86_free_range(ramdisk_image, ramdisk_end);
+=======
+	memblock_free(ramdisk_image, ramdisk_end - ramdisk_image);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #else
 static void __init reserve_initrd(void)
@@ -490,15 +518,22 @@ static void __init memblock_x86_reserve_range_setup_data(void)
 {
 	struct setup_data *data;
 	u64 pa_data;
+<<<<<<< HEAD
 	char buf[32];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (boot_params.hdr.version < 0x0209)
 		return;
 	pa_data = boot_params.hdr.setup_data;
 	while (pa_data) {
 		data = early_memremap(pa_data, sizeof(*data));
+<<<<<<< HEAD
 		sprintf(buf, "setup data %x", data->type);
 		memblock_x86_reserve_range(pa_data, pa_data+sizeof(*data)+data->len, buf);
+=======
+		memblock_reserve(pa_data, sizeof(*data) + data->len);
+>>>>>>> refs/remotes/origin/cm-10.0
 		pa_data = data->next;
 		early_iounmap(data, sizeof(*data));
 	}
@@ -510,6 +545,7 @@ static void __init memblock_x86_reserve_range_setup_data(void)
 
 #ifdef CONFIG_KEXEC
 
+<<<<<<< HEAD
 static inline unsigned long long get_total_mem(void)
 {
 	unsigned long long total;
@@ -519,6 +555,8 @@ static inline unsigned long long get_total_mem(void)
 	return total << PAGE_SHIFT;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Keep the crash kernel below this limit.  On 32 bits earlier kernels
  * would limit the kernel to the low 512 MiB due to mapping restrictions.
@@ -537,7 +575,11 @@ static void __init reserve_crashkernel(void)
 	unsigned long long crash_size, crash_base;
 	int ret;
 
+<<<<<<< HEAD
 	total_mem = get_total_mem();
+=======
+	total_mem = memblock_phys_mem_size();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = parse_crashkernel(boot_command_line, total_mem,
 			&crash_size, &crash_base);
@@ -554,7 +596,11 @@ static void __init reserve_crashkernel(void)
 		crash_base = memblock_find_in_range(alignment,
 			       CRASH_KERNEL_ADDR_MAX, crash_size, alignment);
 
+<<<<<<< HEAD
 		if (crash_base == MEMBLOCK_ERROR) {
+=======
+		if (!crash_base) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			pr_info("crashkernel reservation failed - No suitable area found.\n");
 			return;
 		}
@@ -568,7 +614,11 @@ static void __init reserve_crashkernel(void)
 			return;
 		}
 	}
+<<<<<<< HEAD
 	memblock_x86_reserve_range(crash_base, crash_base + crash_size, "CRASH KERNEL");
+=======
+	memblock_reserve(crash_base, crash_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "Reserving %ldMB of memory at %ldMB "
 			"for crashkernel (System RAM: %ldMB)\n",
@@ -626,7 +676,11 @@ static __init void reserve_ibft_region(void)
 	addr = find_ibft_region(&size);
 
 	if (size)
+<<<<<<< HEAD
 		memblock_x86_reserve_range(addr, addr + size, "* ibft");
+=======
+		memblock_reserve(addr, size);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static unsigned reserve_low = CONFIG_X86_RESERVE_LOW << 10;
@@ -828,6 +882,7 @@ void __init setup_arch(char **cmdline_p)
 #endif
 #ifdef CONFIG_EFI
 	if (!strncmp((char *)&boot_params.efi_info.efi_loader_signature,
+<<<<<<< HEAD
 #ifdef CONFIG_X86_32
 		     "EL32",
 #else
@@ -837,6 +892,18 @@ void __init setup_arch(char **cmdline_p)
 		efi_enabled = 1;
 		efi_memblock_x86_reserve_range();
 	}
+=======
+		     "EL32", 4)) {
+		set_bit(EFI_BOOT, &x86_efi_facility);
+	} else if (!strncmp((char *)&boot_params.efi_info.efi_loader_signature,
+		     "EL64", 4)) {
+		set_bit(EFI_BOOT, &x86_efi_facility);
+		set_bit(EFI_64BIT, &x86_efi_facility);
+	}
+
+	if (efi_enabled(EFI_BOOT))
+		efi_memblock_x86_reserve_range();
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	x86_init.oem.arch_setup();
@@ -909,7 +976,11 @@ void __init setup_arch(char **cmdline_p)
 
 	finish_e820_parsing();
 
+<<<<<<< HEAD
 	if (efi_enabled)
+=======
+	if (efi_enabled(EFI_BOOT))
+>>>>>>> refs/remotes/origin/cm-10.0
 		efi_init();
 
 	dmi_scan_machine();
@@ -992,7 +1063,11 @@ void __init setup_arch(char **cmdline_p)
 	 * The EFI specification says that boot service code won't be called
 	 * after ExitBootServices(). This is, in fact, a lie.
 	 */
+<<<<<<< HEAD
 	if (efi_enabled)
+=======
+	if (efi_enabled(EFI_MEMMAP))
+>>>>>>> refs/remotes/origin/cm-10.0
 		efi_reserve_boot_services();
 
 	/* preallocate 4k for mptable mpc */
@@ -1018,6 +1093,7 @@ void __init setup_arch(char **cmdline_p)
 #ifdef CONFIG_X86_64
 	if (max_pfn > max_low_pfn) {
 		int i;
+<<<<<<< HEAD
 		for (i = 0; i < e820.nr_map; i++) {
 			struct e820entry *ei = &e820.map[i];
 
@@ -1030,6 +1106,21 @@ void __init setup_arch(char **cmdline_p)
 			max_pfn_mapped = init_memory_mapping(
 				ei->addr < 1UL << 32 ? 1UL << 32 : ei->addr,
 				ei->addr + ei->size);
+=======
+		unsigned long start, end;
+		unsigned long start_pfn, end_pfn;
+
+		for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn,
+							 NULL) {
+
+			end = PFN_PHYS(end_pfn);
+			if (end <= (1UL<<32))
+				continue;
+
+			start = PFN_PHYS(start_pfn);
+			max_pfn_mapped = init_memory_mapping(
+						max((1UL<<32), start), end);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* can we preseve max_low_pfn ?*/
@@ -1037,6 +1128,10 @@ void __init setup_arch(char **cmdline_p)
 	}
 #endif
 	memblock.current_limit = get_max_mapped();
+<<<<<<< HEAD
+=======
+	dma_contiguous_reserve(0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * NOTE: On x86-32, only from this point on, fixmaps are ready for use.
@@ -1128,7 +1223,11 @@ void __init setup_arch(char **cmdline_p)
 
 #ifdef CONFIG_VT
 #if defined(CONFIG_VGA_CONSOLE)
+<<<<<<< HEAD
 	if (!efi_enabled || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
+=======
+	if (!efi_enabled(EFI_BOOT) || (efi_mem_type(0xa0000) != EFI_CONVENTIONAL_MEMORY))
+>>>>>>> refs/remotes/origin/cm-10.0
 		conswitchp = &vga_con;
 #elif defined(CONFIG_DUMMY_CONSOLE)
 	conswitchp = &dummy_con;
@@ -1138,9 +1237,29 @@ void __init setup_arch(char **cmdline_p)
 
 	x86_init.timers.wallclock_init();
 
+<<<<<<< HEAD
 	mcheck_init();
 
 	arch_init_ideal_nops();
+=======
+	x86_platform.wallclock_init();
+
+	mcheck_init();
+
+	arch_init_ideal_nops();
+
+#ifdef CONFIG_EFI
+	/* Once setup is done above, unmap the EFI memory map on
+	 * mismatched firmware/kernel archtectures since there is no
+	 * support for runtime services.
+	 */
+	if (efi_enabled(EFI_BOOT) &&
+	    IS_ENABLED(CONFIG_X86_64) != efi_enabled(EFI_64BIT)) {
+		pr_info("efi: Setup done, disabling due to 32/64-bit mismatch\n");
+		efi_unmap_memmap();
+	}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_X86_32

@@ -1055,8 +1055,11 @@ struct platform_device *__init at32_add_device_usart(unsigned int id)
 	return at32_usarts[id];
 }
 
+<<<<<<< HEAD
 struct platform_device *atmel_default_console_device;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init at32_setup_serial_console(unsigned int usart_id)
 {
 	atmel_default_console_device = at32_usarts[usart_id];
@@ -1067,7 +1070,11 @@ void __init at32_setup_serial_console(unsigned int usart_id)
  * -------------------------------------------------------------------- */
 
 #ifdef CONFIG_CPU_AT32AP7000
+<<<<<<< HEAD
 static struct eth_platform_data macb0_data;
+=======
+static struct macb_platform_data macb0_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct resource macb0_resource[] = {
 	PBMEM(0xfff01800),
 	IRQ(25),
@@ -1076,7 +1083,11 @@ DEFINE_DEV_DATA(macb, 0);
 DEV_CLK(hclk, macb0, hsb, 8);
 DEV_CLK(pclk, macb0, pbb, 6);
 
+<<<<<<< HEAD
 static struct eth_platform_data macb1_data;
+=======
+static struct macb_platform_data macb1_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct resource macb1_resource[] = {
 	PBMEM(0xfff01c00),
 	IRQ(26),
@@ -1086,7 +1097,11 @@ DEV_CLK(hclk, macb1, hsb, 9);
 DEV_CLK(pclk, macb1, pbb, 7);
 
 struct platform_device *__init
+<<<<<<< HEAD
 at32_add_device_eth(unsigned int id, struct eth_platform_data *data)
+=======
+at32_add_device_eth(unsigned int id, struct macb_platform_data *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct platform_device *pdev;
 	u32 pin_mask;
@@ -1163,7 +1178,11 @@ at32_add_device_eth(unsigned int id, struct eth_platform_data *data)
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	memcpy(pdev->dev.platform_data, data, sizeof(struct eth_platform_data));
+=======
+	memcpy(pdev->dev.platform_data, data, sizeof(struct macb_platform_data));
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_device_register(pdev);
 
 	return pdev;
@@ -1353,7 +1372,10 @@ at32_add_device_mci(unsigned int id, struct mci_platform_data *data)
 		goto fail;
 
 	slave->sdata.dma_dev = &dw_dmac0_device.dev;
+<<<<<<< HEAD
 	slave->sdata.reg_width = DW_DMA_SLAVE_WIDTH_32BIT;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	slave->sdata.cfg_hi = (DWC_CFGH_SRC_PER(0)
 				| DWC_CFGH_DST_PER(1));
 	slave->sdata.cfg_lo &= ~(DWC_CFGL_HS_DST_POL
@@ -2048,27 +2070,39 @@ at32_add_device_ac97c(unsigned int id, struct ac97c_platform_data *data,
 	/* Check if DMA slave interface for capture should be configured. */
 	if (flags & AC97C_CAPTURE) {
 		rx_dws->dma_dev = &dw_dmac0_device.dev;
+<<<<<<< HEAD
 		rx_dws->reg_width = DW_DMA_SLAVE_WIDTH_16BIT;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		rx_dws->cfg_hi = DWC_CFGH_SRC_PER(3);
 		rx_dws->cfg_lo &= ~(DWC_CFGL_HS_DST_POL | DWC_CFGL_HS_SRC_POL);
 		rx_dws->src_master = 0;
 		rx_dws->dst_master = 1;
+<<<<<<< HEAD
 		rx_dws->src_msize = DW_DMA_MSIZE_1;
 		rx_dws->dst_msize = DW_DMA_MSIZE_1;
 		rx_dws->fc = DW_DMA_FC_D_P2M;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Check if DMA slave interface for playback should be configured. */
 	if (flags & AC97C_PLAYBACK) {
 		tx_dws->dma_dev = &dw_dmac0_device.dev;
+<<<<<<< HEAD
 		tx_dws->reg_width = DW_DMA_SLAVE_WIDTH_16BIT;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		tx_dws->cfg_hi = DWC_CFGH_DST_PER(4);
 		tx_dws->cfg_lo &= ~(DWC_CFGL_HS_DST_POL | DWC_CFGL_HS_SRC_POL);
 		tx_dws->src_master = 0;
 		tx_dws->dst_master = 1;
+<<<<<<< HEAD
 		tx_dws->src_msize = DW_DMA_MSIZE_1;
 		tx_dws->dst_msize = DW_DMA_MSIZE_1;
 		tx_dws->fc = DW_DMA_FC_D_M2P;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (platform_device_add_data(pdev, data,
@@ -2138,14 +2172,20 @@ at32_add_device_abdac(unsigned int id, struct atmel_abdac_pdata *data)
 	dws = &data->dws;
 
 	dws->dma_dev = &dw_dmac0_device.dev;
+<<<<<<< HEAD
 	dws->reg_width = DW_DMA_SLAVE_WIDTH_32BIT;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dws->cfg_hi = DWC_CFGH_DST_PER(2);
 	dws->cfg_lo &= ~(DWC_CFGL_HS_DST_POL | DWC_CFGL_HS_SRC_POL);
 	dws->src_master = 0;
 	dws->dst_master = 1;
+<<<<<<< HEAD
 	dws->src_msize = DW_DMA_MSIZE_1;
 	dws->dst_msize = DW_DMA_MSIZE_1;
 	dws->fc = DW_DMA_FC_D_M2P;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (platform_device_add_data(pdev, data,
 				sizeof(struct atmel_abdac_pdata)))

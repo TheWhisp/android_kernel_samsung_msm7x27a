@@ -11,6 +11,13 @@ enum {
 	IPSET_ERR_INVALID_PROTO,
 	/* Protocol missing but must be specified */
 	IPSET_ERR_MISSING_PROTO,
+<<<<<<< HEAD
+=======
+	/* Range not supported */
+	IPSET_ERR_HASH_RANGE_UNSUPPORTED,
+	/* Invalid range */
+	IPSET_ERR_HASH_RANGE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #ifdef __KERNEL__

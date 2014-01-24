@@ -5,7 +5,10 @@ Arnaud
 
 TODO:
 - clean ups
+<<<<<<< HEAD
 - fix build warnings when module
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 - sort out dup ids with SiS driver
 - remove useless/wrong/unused #ifdef/code/...
 - fix printk usages

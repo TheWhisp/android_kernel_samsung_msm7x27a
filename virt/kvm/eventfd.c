@@ -586,7 +586,12 @@ kvm_assign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
 
 	kvm_iodevice_init(&p->dev, &ioeventfd_ops);
 
+<<<<<<< HEAD
 	ret = kvm_io_bus_register_dev(kvm, bus_idx, &p->dev);
+=======
+	ret = kvm_io_bus_register_dev(kvm, bus_idx, p->addr, p->length,
+				      &p->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		goto unlock_fail;
 

@@ -4,16 +4,23 @@
  * This driver is mostly used for bringup purposes and will go away.
  * It has a strong dependency on the system console. All outputs
  * are rerouted to the same facility as the one used by printk which, in our
+<<<<<<< HEAD
  * case means sys_sim.c console (goes via the simulator). The code hereafter
  * is completely leveraged from the serial.c driver.
+=======
+ * case means sys_sim.c console (goes via the simulator).
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Copyright (C) 1999-2000, 2002-2003 Hewlett-Packard Co
  *	Stephane Eranian <eranian@hpl.hp.com>
  *	David Mosberger-Tang <davidm@hpl.hp.com>
+<<<<<<< HEAD
  *
  * 02/04/00 D. Mosberger	Merged in serial.c bug fixes in rs_close().
  * 02/25/00 D. Mosberger	Synced up with 2.3.99pre-5 version of serial.c.
  * 07/30/02 D. Mosberger	Replace sti()/cli() with explicit spinlocks & local irq masking
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/init.h>
@@ -27,6 +34,7 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/capability.h>
+<<<<<<< HEAD
 #include <linux/console.h>
 #include <linux/module.h>
 #include <linux/serial.h>
@@ -36,6 +44,19 @@
 #include <asm/irq.h>
 #include <asm/hw_irq.h>
 #include <asm/uaccess.h>
+=======
+#include <linux/circ_buf.h>
+#include <linux/console.h>
+#include <linux/irq.h>
+#include <linux/module.h>
+#include <linux/serial.h>
+#include <linux/sysrq.h>
+#include <linux/uaccess.h>
+
+#include <asm/hpsim.h>
+
+#include "hpsim_ssc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef SIMSERIAL_DEBUG	/* define this to get some debug information */
 
@@ -43,6 +64,7 @@
 
 #define NR_PORTS	1	/* only one port for now */
 
+<<<<<<< HEAD
 #define IRQ_T(info) ((info->flags & ASYNC_SHARE_IRQ) ? IRQF_SHARED : IRQF_DISABLED)
 
 #define SSC_GETCHAR	21
@@ -128,11 +150,28 @@ static void rs_start(struct tty_struct *tty)
 }
 
 static  void receive_chars(struct tty_struct *tty)
+=======
+struct serial_state {
+	struct tty_port port;
+	struct circ_buf xmit;
+	int irq;
+	int x_char;
+};
+
+static struct serial_state rs_table[NR_PORTS];
+
+struct tty_driver *hp_simserial_driver;
+
+static struct console *console;
+
+static void receive_chars(struct tty_struct *tty)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned char ch;
 	static unsigned char seen_esc = 0;
 
 	while ( (ch = ia64_ssc(0, 0, 0, 0, SSC_GETCHAR)) ) {
+<<<<<<< HEAD
 		if ( ch == 27 && seen_esc == 0 ) {
 			seen_esc = 1;
 			continue;
@@ -155,6 +194,27 @@ static  void receive_chars(struct tty_struct *tty)
 				seen_esc = 0;
 				continue;
 			}
+=======
+		if (ch == 27 && seen_esc == 0) {
+			seen_esc = 1;
+			continue;
+		} else if (seen_esc == 1 && ch == 'O') {
+			seen_esc = 2;
+			continue;
+		} else if (seen_esc == 2) {
+			if (ch == 'P') /* F1 */
+				show_state();
+#ifdef CONFIG_MAGIC_SYSRQ
+			if (ch == 'S') { /* F4 */
+				do {
+					ch = ia64_ssc(0, 0, 0, 0, SSC_GETCHAR);
+				} while (!ch);
+				handle_sysrq(ch);
+			}
+#endif
+			seen_esc = 0;
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		seen_esc = 0;
 
@@ -169,6 +229,7 @@ static  void receive_chars(struct tty_struct *tty)
  */
 static irqreturn_t rs_interrupt_single(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	struct async_struct * info;
 
 	/*
@@ -178,13 +239,25 @@ static irqreturn_t rs_interrupt_single(int irq, void *dev_id)
 	info = IRQ_ports[irq];
 	if (!info || !info->tty) {
 		printk(KERN_INFO "simrs_interrupt_single: info|tty=0 info=%p problem\n", info);
+=======
+	struct serial_state *info = dev_id;
+	struct tty_struct *tty = tty_port_tty_get(&info->port);
+
+	if (!tty) {
+		printk(KERN_INFO "%s: tty=0 problem\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return IRQ_NONE;
 	}
 	/*
 	 * pretty simple in our case, because we only get interrupts
 	 * on inbound traffic
 	 */
+<<<<<<< HEAD
 	receive_chars(info->tty);
+=======
+	receive_chars(tty);
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return IRQ_HANDLED;
 }
 
@@ -194,6 +267,7 @@ static irqreturn_t rs_interrupt_single(int irq, void *dev_id)
  * -------------------------------------------------------------------
  */
 
+<<<<<<< HEAD
 static void do_softint(struct work_struct *private_)
 {
 	printk(KERN_ERR "simserial: do_softint called\n");
@@ -205,6 +279,14 @@ static int rs_put_char(struct tty_struct *tty, unsigned char ch)
 	unsigned long flags;
 
 	if (!tty || !info->xmit.buf)
+=======
+static int rs_put_char(struct tty_struct *tty, unsigned char ch)
+{
+	struct serial_state *info = tty->driver_data;
+	unsigned long flags;
+
+	if (!info->xmit.buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	local_irq_save(flags);
@@ -218,12 +300,20 @@ static int rs_put_char(struct tty_struct *tty, unsigned char ch)
 	return 1;
 }
 
+<<<<<<< HEAD
 static void transmit_chars(struct async_struct *info, int *intr_done)
+=======
+static void transmit_chars(struct tty_struct *tty, struct serial_state *info,
+		int *intr_done)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int count;
 	unsigned long flags;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_save(flags);
 
 	if (info->x_char) {
@@ -231,16 +321,27 @@ static void transmit_chars(struct async_struct *info, int *intr_done)
 
 		console->write(console, &c, 1);
 
+<<<<<<< HEAD
 		info->state->icount.tx++;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		info->x_char = 0;
 
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (info->xmit.head == info->xmit.tail || info->tty->stopped || info->tty->hw_stopped) {
 #ifdef SIMSERIAL_DEBUG
 		printk("transmit_chars: head=%d, tail=%d, stopped=%d\n",
 		       info->xmit.head, info->xmit.tail, info->tty->stopped);
+=======
+	if (info->xmit.head == info->xmit.tail || tty->stopped ||
+			tty->hw_stopped) {
+#ifdef SIMSERIAL_DEBUG
+		printk("transmit_chars: head=%d, tail=%d, stopped=%d\n",
+		       info->xmit.head, info->xmit.tail, tty->stopped);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 		goto out;
 	}
@@ -272,6 +373,7 @@ out:
 
 static void rs_flush_chars(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	struct async_struct *info = (struct async_struct *)tty->driver_data;
 
 	if (info->xmit.head == info->xmit.tail || tty->stopped || tty->hw_stopped ||
@@ -290,6 +392,26 @@ static int rs_write(struct tty_struct * tty,
 	unsigned long flags;
 
 	if (!tty || !info->xmit.buf || !tmp_buf) return 0;
+=======
+	struct serial_state *info = tty->driver_data;
+
+	if (info->xmit.head == info->xmit.tail || tty->stopped ||
+			tty->hw_stopped || !info->xmit.buf)
+		return;
+
+	transmit_chars(tty, info, NULL);
+}
+
+static int rs_write(struct tty_struct * tty,
+		    const unsigned char *buf, int count)
+{
+	struct serial_state *info = tty->driver_data;
+	int	c, ret = 0;
+	unsigned long flags;
+
+	if (!info->xmit.buf)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	local_irq_save(flags);
 	while (1) {
@@ -310,30 +432,49 @@ static int rs_write(struct tty_struct * tty,
 	/*
 	 * Hey, we transmit directly from here in our case
 	 */
+<<<<<<< HEAD
 	if (CIRC_CNT(info->xmit.head, info->xmit.tail, SERIAL_XMIT_SIZE)
 	    && !tty->stopped && !tty->hw_stopped) {
 		transmit_chars(info, NULL);
 	}
+=======
+	if (CIRC_CNT(info->xmit.head, info->xmit.tail, SERIAL_XMIT_SIZE) &&
+			!tty->stopped && !tty->hw_stopped)
+		transmit_chars(tty, info, NULL);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int rs_write_room(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	struct async_struct *info = (struct async_struct *)tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return CIRC_SPACE(info->xmit.head, info->xmit.tail, SERIAL_XMIT_SIZE);
 }
 
 static int rs_chars_in_buffer(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	struct async_struct *info = (struct async_struct *)tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return CIRC_CNT(info->xmit.head, info->xmit.tail, SERIAL_XMIT_SIZE);
 }
 
 static void rs_flush_buffer(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	struct async_struct *info = (struct async_struct *)tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long flags;
 
 	local_irq_save(flags);
@@ -349,7 +490,11 @@ static void rs_flush_buffer(struct tty_struct *tty)
  */
 static void rs_send_xchar(struct tty_struct *tty, char ch)
 {
+<<<<<<< HEAD
 	struct async_struct *info = (struct async_struct *)tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	info->x_char = ch;
 	if (ch) {
@@ -357,7 +502,11 @@ static void rs_send_xchar(struct tty_struct *tty, char ch)
 		 * I guess we could call console->write() directly but
 		 * let's do that for now.
 		 */
+<<<<<<< HEAD
 		transmit_chars(info, NULL);
+=======
+		transmit_chars(tty, info, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -371,14 +520,23 @@ static void rs_send_xchar(struct tty_struct *tty, char ch)
  */
 static void rs_throttle(struct tty_struct * tty)
 {
+<<<<<<< HEAD
 	if (I_IXOFF(tty)) rs_send_xchar(tty, STOP_CHAR(tty));
+=======
+	if (I_IXOFF(tty))
+		rs_send_xchar(tty, STOP_CHAR(tty));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "simrs_throttle called\n");
 }
 
 static void rs_unthrottle(struct tty_struct * tty)
 {
+<<<<<<< HEAD
 	struct async_struct *info = (struct async_struct *)tty->driver_data;
+=======
+	struct serial_state *info = tty->driver_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (I_IXOFF(tty)) {
 		if (info->x_char)
@@ -389,7 +547,10 @@ static void rs_unthrottle(struct tty_struct * tty)
 	printk(KERN_INFO "simrs_unthrottle called\n");
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int rs_ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg)
 {
 	if ((cmd != TIOCGSERIAL) && (cmd != TIOCSSERIAL) &&
@@ -400,6 +561,7 @@ static int rs_ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg)
 	}
 
 	switch (cmd) {
+<<<<<<< HEAD
 		case TIOCGSERIAL:
 			printk(KERN_INFO "simrs_ioctl TIOCGSERIAL called\n");
 			return 0;
@@ -442,6 +604,23 @@ static int rs_ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg)
 			return -ENOIOCTLCMD;
 		}
 	return 0;
+=======
+	case TIOCGSERIAL:
+	case TIOCSSERIAL:
+	case TIOCSERGSTRUCT:
+	case TIOCMIWAIT:
+		return 0;
+	case TIOCSERCONFIG:
+	case TIOCSERGETLSR: /* Get line status register */
+		return -EINVAL;
+	case TIOCSERGWILD:
+	case TIOCSERSWILD:
+		/* "setserial -W" is called in Debian boot */
+		printk (KERN_INFO "TIOCSER?WILD ioctl obsolete, ignored.\n");
+		return 0;
+	}
+	return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #define RELEVANT_IFLAG(iflag) (iflag & (IGNBRK|BRKINT|IGNPAR|PARMRK|INPCK))
@@ -452,13 +631,17 @@ static void rs_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 	if ((old_termios->c_cflag & CRTSCTS) &&
 	    !(tty->termios->c_cflag & CRTSCTS)) {
 		tty->hw_stopped = 0;
+<<<<<<< HEAD
 		rs_start(tty);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 /*
  * This routine will shutdown a serial port; interrupts are disabled, and
  * DTR is dropped if the hangup on close termio flag is on.
  */
+<<<<<<< HEAD
 static void shutdown(struct async_struct * info)
 {
 	unsigned long	flags;
@@ -511,10 +694,26 @@ static void shutdown(struct async_struct * info)
 		if (info->tty) set_bit(TTY_IO_ERROR, &info->tty->flags);
 
 		info->flags &= ~ASYNC_INITIALIZED;
+=======
+static void shutdown(struct tty_port *port)
+{
+	struct serial_state *info = container_of(port, struct serial_state,
+			port);
+	unsigned long flags;
+
+	local_irq_save(flags);
+	if (info->irq)
+		free_irq(info->irq, info);
+
+	if (info->xmit.buf) {
+		free_page((unsigned long) info->xmit.buf);
+		info->xmit.buf = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
 /*
  * ------------------------------------------------------------
  * rs_close()
@@ -666,6 +865,29 @@ startup(struct async_struct *info)
 	irq_handler_t handler;
 	struct serial_state *state= info->state;
 	unsigned long page;
+=======
+static void rs_close(struct tty_struct *tty, struct file * filp)
+{
+	struct serial_state *info = tty->driver_data;
+
+	tty_port_close(&info->port, tty, filp);
+}
+
+static void rs_hangup(struct tty_struct *tty)
+{
+	struct serial_state *info = tty->driver_data;
+
+	rs_flush_buffer(tty);
+	tty_port_hangup(&info->port);
+}
+
+static int activate(struct tty_port *port, struct tty_struct *tty)
+{
+	struct serial_state *state = container_of(port, struct serial_state,
+			port);
+	unsigned long flags, page;
+	int retval = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	page = get_zeroed_page(GFP_KERNEL);
 	if (!page)
@@ -673,6 +895,7 @@ startup(struct async_struct *info)
 
 	local_irq_save(flags);
 
+<<<<<<< HEAD
 	if (info->flags & ASYNC_INITIALIZED) {
 		free_page(page);
 		goto errout;
@@ -735,10 +958,26 @@ startup(struct async_struct *info)
 	timer_table[RS_TIMER].expires = jiffies + 2*HZ/100;
 	timer_active |= 1 << RS_TIMER;
 #endif
+=======
+	if (state->xmit.buf)
+		free_page(page);
+	else
+		state->xmit.buf = (unsigned char *) page;
+
+	if (state->irq) {
+		retval = request_irq(state->irq, rs_interrupt_single, 0,
+				"simserial", state);
+		if (retval)
+			goto errout;
+	}
+
+	state->xmit.head = state->xmit.tail = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Set up the tty->alt_speed kludge
 	 */
+<<<<<<< HEAD
 	if (info->tty) {
 		if ((info->flags & ASYNC_SPD_MASK) == ASYNC_SPD_HI)
 			info->tty->alt_speed = 57600;
@@ -753,6 +992,16 @@ startup(struct async_struct *info)
 	info->flags |= ASYNC_INITIALIZED;
 	local_irq_restore(flags);
 	return 0;
+=======
+	if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_HI)
+		tty->alt_speed = 57600;
+	if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_VHI)
+		tty->alt_speed = 115200;
+	if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_SHI)
+		tty->alt_speed = 230400;
+	if ((port->flags & ASYNC_SPD_MASK) == ASYNC_SPD_WARP)
+		tty->alt_speed = 460800;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 errout:
 	local_irq_restore(flags);
@@ -768,6 +1017,7 @@ errout:
  */
 static int rs_open(struct tty_struct *tty, struct file * filp)
 {
+<<<<<<< HEAD
 	struct async_struct	*info;
 	int			retval, line;
 	unsigned long		page;
@@ -818,6 +1068,13 @@ static int rs_open(struct tty_struct *tty, struct file * filp)
 	if (retval) {
 		return retval;
 	}
+=======
+	struct serial_state *info = rs_table + tty->index;
+	struct tty_port *port = &info->port;
+
+	tty->driver_data = info;
+	tty->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * figure out which console to use (should be one already)
@@ -828,16 +1085,21 @@ static int rs_open(struct tty_struct *tty, struct file * filp)
 		console = console->next;
 	}
 
+<<<<<<< HEAD
 #ifdef SIMSERIAL_DEBUG
 	printk("rs_open ttys%d successful\n", info->line);
 #endif
 	return 0;
+=======
+	return tty_port_open(port, tty, filp);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
  * /proc fs routines....
  */
 
+<<<<<<< HEAD
 static inline void line_info(struct seq_file *m, struct serial_state *state)
 {
 	seq_printf(m, "%d: uart:%s port:%lX irq:%d\n",
@@ -845,13 +1107,22 @@ static inline void line_info(struct seq_file *m, struct serial_state *state)
 		       state->port, state->irq);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int rs_proc_show(struct seq_file *m, void *v)
 {
 	int i;
 
+<<<<<<< HEAD
 	seq_printf(m, "simserinfo:1.0 driver:%s\n", serial_version);
 	for (i = 0; i < NR_PORTS; i++)
 		line_info(m, &rs_table[i]);
+=======
+	seq_printf(m, "simserinfo:1.0\n");
+	for (i = 0; i < NR_PORTS; i++)
+		seq_printf(m, "%d: uart:16550 port:3F8 irq:%d\n",
+		       i, rs_table[i].irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -868,6 +1139,7 @@ static const struct file_operations rs_proc_fops = {
 	.release	= single_release,
 };
 
+<<<<<<< HEAD
 /*
  * ---------------------------------------------------------------------
  * rs_init() and friends
@@ -887,6 +1159,8 @@ static inline void show_serial_version(void)
 	printk(KERN_INFO " no serial options enabled\n");
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct tty_operations hp_ops = {
 	.open = rs_open,
 	.close = rs_close,
@@ -901,6 +1175,7 @@ static const struct tty_operations hp_ops = {
 	.unthrottle = rs_unthrottle,
 	.send_xchar = rs_send_xchar,
 	.set_termios = rs_set_termios,
+<<<<<<< HEAD
 	.stop = rs_stop,
 	.start = rs_start,
 	.hangup = rs_hangup,
@@ -916,10 +1191,26 @@ simrs_init (void)
 {
 	int			i, rc;
 	struct serial_state	*state;
+=======
+	.hangup = rs_hangup,
+	.proc_fops = &rs_proc_fops,
+};
+
+static const struct tty_port_operations hp_port_ops = {
+	.activate = activate,
+	.shutdown = shutdown,
+};
+
+static int __init simrs_init(void)
+{
+	struct serial_state *state;
+	int retval;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!ia64_platform_is("hpsim"))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	hp_simserial_driver = alloc_tty_driver(1);
 	if (!hp_simserial_driver)
 		return -ENOMEM;
@@ -929,6 +1220,16 @@ simrs_init (void)
 	/* Initialize the tty_driver structure */
 
 	hp_simserial_driver->owner = THIS_MODULE;
+=======
+	hp_simserial_driver = alloc_tty_driver(NR_PORTS);
+	if (!hp_simserial_driver)
+		return -ENOMEM;
+
+	printk(KERN_INFO "SimSerial driver with no serial options enabled\n");
+
+	/* Initialize the tty_driver structure */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	hp_simserial_driver->driver_name = "simserial";
 	hp_simserial_driver->name = "ttyS";
 	hp_simserial_driver->major = TTY_MAJOR;
@@ -941,6 +1242,7 @@ simrs_init (void)
 	hp_simserial_driver->flags = TTY_DRIVER_REAL_RAW;
 	tty_set_operations(hp_simserial_driver, &hp_ops);
 
+<<<<<<< HEAD
 	/*
 	 * Let's have a little bit of fun !
 	 */
@@ -966,6 +1268,35 @@ simrs_init (void)
 		panic("Couldn't register simserial driver\n");
 
 	return 0;
+=======
+	state = rs_table;
+	tty_port_init(&state->port);
+	state->port.ops = &hp_port_ops;
+	state->port.close_delay = 0; /* XXX really 0? */
+
+	retval = hpsim_get_irq(KEYBOARD_INTR);
+	if (retval < 0) {
+		printk(KERN_ERR "%s: out of interrupt vectors!\n",
+				__func__);
+		goto err_free_tty;
+	}
+
+	state->irq = retval;
+
+	/* the port is imaginary */
+	printk(KERN_INFO "ttyS0 at 0x03f8 (irq = %d) is a 16550\n", state->irq);
+
+	retval = tty_register_driver(hp_simserial_driver);
+	if (retval) {
+		printk(KERN_ERR "Couldn't register simserial driver\n");
+		goto err_free_tty;
+	}
+
+	return 0;
+err_free_tty:
+	put_tty_driver(hp_simserial_driver);
+	return retval;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifndef MODULE

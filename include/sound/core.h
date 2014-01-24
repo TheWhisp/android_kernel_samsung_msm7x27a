@@ -22,12 +22,18 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>		/* wake_up() */
 #include <linux/mutex.h>		/* struct mutex */
 #include <linux/rwsem.h>		/* struct rw_semaphore */
 #include <linux/pm.h>			/* pm_message_t */
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/stringify.h>
 
 /* number of supported soundcards */
@@ -40,9 +46,16 @@
 #define CONFIG_SND_MAJOR	116	/* standard configuration */
 
 /* forward declarations */
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 struct pci_dev;
 #endif
+=======
+struct pci_dev;
+struct module;
+struct device;
+struct device_attribute;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* device allocation stuff */
 
@@ -62,6 +75,10 @@ typedef int __bitwise snd_device_type_t;
 #define	SNDRV_DEV_BUS		((__force snd_device_type_t) 0x1007)
 #define	SNDRV_DEV_CODEC		((__force snd_device_type_t) 0x1008)
 #define	SNDRV_DEV_JACK          ((__force snd_device_type_t) 0x1009)
+<<<<<<< HEAD
+=======
+#define	SNDRV_DEV_COMPRESS	((__force snd_device_type_t) 0x100A)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	SNDRV_DEV_LOWLEVEL	((__force snd_device_type_t) 0x2000)
 
 typedef int __bitwise snd_device_state_t;
@@ -328,10 +345,24 @@ void release_and_free_resource(struct resource *res);
 
 /* --- */
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_DEBUG) || defined(CONFIG_SND_VERBOSE_PRINTK)
 void __snd_printk(unsigned int level, const char *file, int line,
 		  const char *format, ...)
      __attribute__ ((format (printf, 4, 5)));
+=======
+/* sound printk debug levels */
+enum {
+	SND_PR_ALWAYS,
+	SND_PR_DEBUG,
+	SND_PR_VERBOSE,
+};
+
+#if defined(CONFIG_SND_DEBUG) || defined(CONFIG_SND_VERBOSE_PRINTK)
+__printf(4, 5)
+void __snd_printk(unsigned int level, const char *file, int line,
+		  const char *format, ...);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define __snd_printk(level, file, line, format, args...) \
 	printk(format, ##args)
@@ -357,6 +388,11 @@ void __snd_printk(unsigned int level, const char *file, int line,
  */
 #define snd_printd(fmt, args...) \
 	__snd_printk(1, __FILE__, __LINE__, fmt, ##args)
+<<<<<<< HEAD
+=======
+#define _snd_printd(level, fmt, args...) \
+	__snd_printk(level, __FILE__, __LINE__, fmt, ##args)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * snd_BUG - give a BUG warning message and stack trace
@@ -386,6 +422,10 @@ void __snd_printk(unsigned int level, const char *file, int line,
 #else /* !CONFIG_SND_DEBUG */
 
 #define snd_printd(fmt, args...)	do { } while (0)
+<<<<<<< HEAD
+=======
+#define _snd_printd(level, fmt, args...) do { } while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define snd_BUG()			do { } while (0)
 static inline int __snd_bug_on(int cond)
 {
@@ -419,6 +459,10 @@ static inline int __snd_bug_on(int cond)
 #define gameport_get_port_data(gp) (gp)->port_data
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PCI
+>>>>>>> refs/remotes/origin/cm-10.0
 /* PCI quirk list helper */
 struct snd_pci_quirk {
 	unsigned short subvendor;	/* PCI subvendor ID */
@@ -458,5 +502,9 @@ snd_pci_quirk_lookup(struct pci_dev *pci, const struct snd_pci_quirk *list);
 const struct snd_pci_quirk *
 snd_pci_quirk_lookup_id(u16 vendor, u16 device,
 			const struct snd_pci_quirk *list);
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __SOUND_CORE_H */

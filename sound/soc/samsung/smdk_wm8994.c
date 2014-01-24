@@ -8,6 +8,11 @@
  */
 
 #include "../codecs/wm8994.h"
+<<<<<<< HEAD
+=======
+#include <sound/pcm_params.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
  /*
   * Default CFG switch settings to use this driver:
@@ -44,7 +49,13 @@ static int smdk_hw_params(struct snd_pcm_substream *substream,
 	int ret;
 
 	/* AIF1CLK should be >=3MHz for optimal performance */
+<<<<<<< HEAD
 	if (params_rate(params) == 8000 || params_rate(params) == 11025)
+=======
+	if (params_format(params) == SNDRV_PCM_FORMAT_S24_LE)
+		pll_out = params_rate(params) * 384;
+	else if (params_rate(params) == 8000 || params_rate(params) == 11025)
+>>>>>>> refs/remotes/origin/cm-10.0
 		pll_out = params_rate(params) * 512;
 	else
 		pll_out = params_rate(params) * 256;
@@ -114,8 +125,11 @@ static int smdk_wm8994_init_paiftx(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_nc_pin(dapm, "IN1RP");
 	snd_soc_dapm_nc_pin(dapm, "IN2RP:VXRP");
 
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -142,6 +156,10 @@ static struct snd_soc_dai_link smdk_dai[] = {
 
 static struct snd_soc_card smdk = {
 	.name = "SMDK-I2S",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = smdk_dai,
 	.num_links = ARRAY_SIZE(smdk_dai),
 };

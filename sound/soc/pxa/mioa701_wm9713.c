@@ -151,7 +151,10 @@ static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_enable_pin(dapm, "Front Mic");
 	snd_soc_dapm_enable_pin(dapm, "GSM Line In");
 	snd_soc_dapm_enable_pin(dapm, "GSM Line Out");
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -182,6 +185,10 @@ static struct snd_soc_dai_link mioa701_dai[] = {
 
 static struct snd_soc_card mioa701 = {
 	.name = "MioA701",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = mioa701_dai,
 	.num_links = ARRAY_SIZE(mioa701_dai),
 };
@@ -228,6 +235,7 @@ static struct platform_driver mioa701_wm9713_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init mioa701_asoc_init(void)
 {
 	return platform_driver_register(&mioa701_wm9713_driver);
@@ -240,6 +248,9 @@ static void __exit mioa701_asoc_exit(void)
 
 module_init(mioa701_asoc_init);
 module_exit(mioa701_asoc_exit);
+=======
+module_platform_driver(mioa701_wm9713_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR("Robert Jarzmik (rjarzmik@free.fr)");

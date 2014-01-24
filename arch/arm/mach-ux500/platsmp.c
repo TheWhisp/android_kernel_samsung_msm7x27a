@@ -19,6 +19,10 @@
 
 #include <asm/cacheflush.h>
 #include <asm/hardware/gic.h>
+<<<<<<< HEAD
+=======
+#include <asm/smp_plat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/smp_scu.h>
 #include <mach/hardware.h>
 #include <mach/setup.h>
@@ -96,9 +100,15 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 	 * the holding pen - release it, then wait for it to flag
 	 * that it has been released by resetting pen_release.
 	 */
+<<<<<<< HEAD
 	write_pen_release(cpu);
 
 	gic_raise_softirq(cpumask_of(cpu), 1);
+=======
+	write_pen_release(cpu_logical_map(cpu));
+
+	smp_send_reschedule(cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	timeout = jiffies + (1 * HZ);
 	while (time_before(jiffies, timeout)) {
@@ -156,12 +166,19 @@ void __init smp_init_cpus(void)
 	ncores = scu_base ? scu_get_core_count(scu_base) : 1;
 
 	/* sanity check */
+<<<<<<< HEAD
 	if (ncores > NR_CPUS) {
 		printk(KERN_WARNING
 		       "U8500: no. of cores (%d) greater than configured "
 		       "maximum of %d - clipping\n",
 		       ncores, NR_CPUS);
 		ncores = NR_CPUS;
+=======
+	if (ncores > nr_cpu_ids) {
+		pr_warn("SMP: %u cores greater than maximum (%u), clipping\n",
+			ncores, nr_cpu_ids);
+		ncores = nr_cpu_ids;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	for (i = 0; i < ncores; i++)
@@ -172,6 +189,7 @@ void __init smp_init_cpus(void)
 
 void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 {
+<<<<<<< HEAD
 	int i;
 
 	/*
@@ -180,6 +198,8 @@ void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 	 */
 	for (i = 0; i < max_cpus; i++)
 		set_cpu_present(i, true);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	scu_enable(scu_base_addr());
 	wakeup_secondary();

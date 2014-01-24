@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2007-2011 B.A.T.M.A.N. contributors:
+=======
+ * Copyright (C) 2007-2012 B.A.T.M.A.N. contributors:
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Marek Lindner, Simon Wunderlich
  *
@@ -26,12 +30,16 @@
 #include "soft-interface.h"
 #include "hard-interface.h"
 #include "vis.h"
+<<<<<<< HEAD
 #include "aggregation.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "gateway_common.h"
 #include "originator.h"
 
 static void send_outstanding_bcast_packet(struct work_struct *work);
 
+<<<<<<< HEAD
 /* apply hop penalty for a normal link */
 static uint8_t hop_penalty(const uint8_t tq, struct bat_priv *bat_priv)
 {
@@ -58,6 +66,12 @@ static unsigned long forward_send_time(void)
 int send_skb_packet(struct sk_buff *skb,
 				struct hard_iface *hard_iface,
 				uint8_t *dst_addr)
+=======
+/* send out an already prepared packet to the given address via the
+ * specified batman interface */
+int send_skb_packet(struct sk_buff *skb, struct hard_iface *hard_iface,
+		    const uint8_t *dst_addr)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ethhdr *ethhdr;
 
@@ -68,18 +82,31 @@ int send_skb_packet(struct sk_buff *skb,
 		goto send_skb_err;
 
 	if (!(hard_iface->net_dev->flags & IFF_UP)) {
+<<<<<<< HEAD
 		pr_warning("Interface %s is not up - can't send packet via "
 			   "that interface!\n", hard_iface->net_dev->name);
+=======
+		pr_warning("Interface %s is not up - can't send packet via that interface!\n",
+			   hard_iface->net_dev->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto send_skb_err;
 	}
 
 	/* push to the ethernet header. */
+<<<<<<< HEAD
 	if (my_skb_head_push(skb, sizeof(struct ethhdr)) < 0)
+=======
+	if (my_skb_head_push(skb, sizeof(*ethhdr)) < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto send_skb_err;
 
 	skb_reset_mac_header(skb);
 
+<<<<<<< HEAD
 	ethhdr = (struct ethhdr *) skb_mac_header(skb);
+=======
+	ethhdr = (struct ethhdr *)skb_mac_header(skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(ethhdr->h_source, hard_iface->net_dev->dev_addr, ETH_ALEN);
 	memcpy(ethhdr->h_dest, dst_addr, ETH_ALEN);
 	ethhdr->h_proto = __constant_htons(ETH_P_BATMAN);
@@ -100,6 +127,7 @@ send_skb_err:
 	return NET_XMIT_DROP;
 }
 
+<<<<<<< HEAD
 /* Send a packet to a given interface */
 static void send_packet_to_if(struct forw_packet *forw_packet,
 			      struct hard_iface *hard_iface)
@@ -248,14 +276,75 @@ void schedule_own_packet(struct hard_iface *hard_iface)
 	unsigned long send_time;
 	struct batman_packet *batman_packet;
 	int vis_server;
+=======
+static void realloc_packet_buffer(struct hard_iface *hard_iface,
+				  int new_len)
+{
+	unsigned char *new_buff;
+
+	new_buff = kmalloc(new_len, GFP_ATOMIC);
+
+	/* keep old buffer if kmalloc should fail */
+	if (new_buff) {
+		memcpy(new_buff, hard_iface->packet_buff,
+		       BATMAN_OGM_LEN);
+
+		kfree(hard_iface->packet_buff);
+		hard_iface->packet_buff = new_buff;
+		hard_iface->packet_len = new_len;
+	}
+}
+
+/* when calling this function (hard_iface == primary_if) has to be true */
+static int prepare_packet_buffer(struct bat_priv *bat_priv,
+				  struct hard_iface *hard_iface)
+{
+	int new_len;
+
+	new_len = BATMAN_OGM_LEN +
+		  tt_len((uint8_t)atomic_read(&bat_priv->tt_local_changes));
+
+	/* if we have too many changes for one packet don't send any
+	 * and wait for the tt table request which will be fragmented */
+	if (new_len > hard_iface->soft_iface->mtu)
+		new_len = BATMAN_OGM_LEN;
+
+	realloc_packet_buffer(hard_iface, new_len);
+
+	atomic_set(&bat_priv->tt_crc, tt_local_crc(bat_priv));
+
+	/* reset the sending counter */
+	atomic_set(&bat_priv->tt_ogm_append_cnt, TT_OGM_APPEND_MAX);
+
+	return tt_changes_fill_buffer(bat_priv,
+				      hard_iface->packet_buff + BATMAN_OGM_LEN,
+				      hard_iface->packet_len - BATMAN_OGM_LEN);
+}
+
+static int reset_packet_buffer(struct bat_priv *bat_priv,
+				struct hard_iface *hard_iface)
+{
+	realloc_packet_buffer(hard_iface, BATMAN_OGM_LEN);
+	return 0;
+}
+
+void schedule_bat_ogm(struct hard_iface *hard_iface)
+{
+	struct bat_priv *bat_priv = netdev_priv(hard_iface->soft_iface);
+	struct hard_iface *primary_if;
+	int tt_num_changes = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((hard_iface->if_status == IF_NOT_IN_USE) ||
 	    (hard_iface->if_status == IF_TO_BE_REMOVED))
 		return;
 
+<<<<<<< HEAD
 	vis_server = atomic_read(&bat_priv->vis_mode);
 	primary_if = primary_if_get_selected(bat_priv);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/**
 	 * the interface gets activated here to avoid race conditions between
 	 * the moment of activating the interface in
@@ -266,6 +355,7 @@ void schedule_own_packet(struct hard_iface *hard_iface)
 	if (hard_iface->if_status == IF_TO_BE_ACTIVATED)
 		hard_iface->if_status = IF_ACTIVE;
 
+<<<<<<< HEAD
 	/* if local tt has changed and interface is a primary interface */
 	if ((atomic_read(&bat_priv->tt_local_changed)) &&
 	    (hard_iface == primary_if))
@@ -371,6 +461,28 @@ void schedule_forward_packet(struct orig_node *orig_node,
 			       (unsigned char *)batman_packet,
 			       sizeof(struct batman_packet) + tt_buff_len,
 			       if_incoming, 0, send_time);
+=======
+	primary_if = primary_if_get_selected(bat_priv);
+
+	if (hard_iface == primary_if) {
+		/* if at least one change happened */
+		if (atomic_read(&bat_priv->tt_local_changes) > 0) {
+			tt_commit_changes(bat_priv);
+			tt_num_changes = prepare_packet_buffer(bat_priv,
+							       hard_iface);
+		}
+
+		/* if the changes have been sent often enough */
+		if (!atomic_dec_not_zero(&bat_priv->tt_ogm_append_cnt))
+			tt_num_changes = reset_packet_buffer(bat_priv,
+							     hard_iface);
+	}
+
+	if (primary_if)
+		hardif_free_ref(primary_if);
+
+	bat_priv->bat_algo_ops->bat_ogm_schedule(hard_iface, tt_num_changes);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void forw_packet_free(struct forw_packet *forw_packet)
@@ -401,18 +513,31 @@ static void _add_bcast_packet_to_list(struct bat_priv *bat_priv,
 }
 
 /* add a broadcast packet to the queue and setup timers. broadcast packets
+<<<<<<< HEAD
  * are sent multiple times to increase probability for beeing received.
+=======
+ * are sent multiple times to increase probability for being received.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This function returns NETDEV_TX_OK on success and NETDEV_TX_BUSY on
  * errors.
  *
  * The skb is not consumed, so the caller should make sure that the
  * skb is freed. */
+<<<<<<< HEAD
 int add_bcast_packet_to_list(struct bat_priv *bat_priv, struct sk_buff *skb)
+=======
+int add_bcast_packet_to_list(struct bat_priv *bat_priv,
+			     const struct sk_buff *skb, unsigned long delay)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct hard_iface *primary_if = NULL;
 	struct forw_packet *forw_packet;
 	struct bcast_packet *bcast_packet;
+<<<<<<< HEAD
+=======
+	struct sk_buff *newskb;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!atomic_dec_not_zero(&bat_priv->bcast_queue_left)) {
 		bat_dbg(DBG_BATMAN, bat_priv, "bcast packet queue full\n");
@@ -423,11 +548,16 @@ int add_bcast_packet_to_list(struct bat_priv *bat_priv, struct sk_buff *skb)
 	if (!primary_if)
 		goto out_and_inc;
 
+<<<<<<< HEAD
 	forw_packet = kmalloc(sizeof(struct forw_packet), GFP_ATOMIC);
+=======
+	forw_packet = kmalloc(sizeof(*forw_packet), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!forw_packet)
 		goto out_and_inc;
 
+<<<<<<< HEAD
 	skb = skb_copy(skb, GFP_ATOMIC);
 	if (!skb)
 		goto packet_free;
@@ -439,12 +569,29 @@ int add_bcast_packet_to_list(struct bat_priv *bat_priv, struct sk_buff *skb)
 	skb_reset_mac_header(skb);
 
 	forw_packet->skb = skb;
+=======
+	newskb = skb_copy(skb, GFP_ATOMIC);
+	if (!newskb)
+		goto packet_free;
+
+	/* as we have a copy now, it is safe to decrease the TTL */
+	bcast_packet = (struct bcast_packet *)newskb->data;
+	bcast_packet->header.ttl--;
+
+	skb_reset_mac_header(newskb);
+
+	forw_packet->skb = newskb;
+>>>>>>> refs/remotes/origin/cm-10.0
 	forw_packet->if_incoming = primary_if;
 
 	/* how often did we send the bcast packet ? */
 	forw_packet->num_packets = 0;
 
+<<<<<<< HEAD
 	_add_bcast_packet_to_list(bat_priv, forw_packet, 1);
+=======
+	_add_bcast_packet_to_list(bat_priv, forw_packet, delay);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return NETDEV_TX_OK;
 
 packet_free:
@@ -502,7 +649,11 @@ out:
 	atomic_inc(&bat_priv->bcast_queue_left);
 }
 
+<<<<<<< HEAD
 void send_outstanding_bat_packet(struct work_struct *work)
+=======
+void send_outstanding_bat_ogm_packet(struct work_struct *work)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct delayed_work *delayed_work =
 		container_of(work, struct delayed_work, work);
@@ -518,7 +669,11 @@ void send_outstanding_bat_packet(struct work_struct *work)
 	if (atomic_read(&bat_priv->mesh_state) == MESH_DEACTIVATING)
 		goto out;
 
+<<<<<<< HEAD
 	send_packet(forw_packet);
+=======
+	bat_priv->bat_algo_ops->bat_ogm_emit(forw_packet);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/**
 	 * we have to have at least one packet in the queue
@@ -526,7 +681,11 @@ void send_outstanding_bat_packet(struct work_struct *work)
 	 * shutting down
 	 */
 	if (forw_packet->own)
+<<<<<<< HEAD
 		schedule_own_packet(forw_packet->if_incoming);
+=======
+		schedule_bat_ogm(forw_packet->if_incoming);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	/* don't count own packet */
@@ -537,7 +696,11 @@ out:
 }
 
 void purge_outstanding_packets(struct bat_priv *bat_priv,
+<<<<<<< HEAD
 			       struct hard_iface *hard_iface)
+=======
+			       const struct hard_iface *hard_iface)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct forw_packet *forw_packet;
 	struct hlist_node *tmp_node, *safe_tmp_node;
@@ -557,7 +720,11 @@ void purge_outstanding_packets(struct bat_priv *bat_priv,
 				  &bat_priv->forw_bcast_list, list) {
 
 		/**
+<<<<<<< HEAD
 		 * if purge_outstanding_packets() was called with an argmument
+=======
+		 * if purge_outstanding_packets() was called with an argument
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * we delete only packets belonging to the given interface
 		 */
 		if ((hard_iface) &&
@@ -586,7 +753,11 @@ void purge_outstanding_packets(struct bat_priv *bat_priv,
 				  &bat_priv->forw_bat_list, list) {
 
 		/**
+<<<<<<< HEAD
 		 * if purge_outstanding_packets() was called with an argmument
+=======
+		 * if purge_outstanding_packets() was called with an argument
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * we delete only packets belonging to the given interface
 		 */
 		if ((hard_iface) &&

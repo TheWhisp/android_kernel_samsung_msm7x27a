@@ -132,11 +132,15 @@ static struct gpmc_timings nand_timings = {
 };
 
 static struct omap_nand_platform_data board_nand_data = {
+<<<<<<< HEAD
 	.nand_setup	= NULL,
 	.gpmc_t		= &nand_timings,
 	.dma_channel	= -1,		/* disable DMA in OMAP NAND driver */
 	.dev_ready	= NULL,
 	.devsize	= 0,	/* '0' for 8-bit, '1' for 16-bit device */
+=======
+	.gpmc_t		= &nand_timings,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void
@@ -152,11 +156,14 @@ __init board_nand_init(struct mtd_partition *nand_parts,
 	board_nand_data.gpmc_irq = OMAP_GPMC_IRQ_BASE + cs;
 	gpmc_nand_init(&board_nand_data);
 }
+<<<<<<< HEAD
 #else
 void
 __init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs, int nand_type)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_MTD_NAND_OMAP2 || CONFIG_MTD_NAND_OMAP2_MODULE */
 
 /**
@@ -198,7 +205,11 @@ unmap:
  *
  * @return - void.
  */
+<<<<<<< HEAD
 void board_flash_init(struct flash_partitions partition_info[],
+=======
+void __init board_flash_init(struct flash_partitions partition_info[],
+>>>>>>> refs/remotes/origin/cm-10.0
 			char chip_sel_board[][GPMC_CS_NUM], int nand_type)
 {
 	u8		cs = 0;

@@ -24,6 +24,10 @@
 #include <linux/delay.h>
 #include <linux/gpio.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct lt3593_led_data {
 	struct led_classdev cdev;
@@ -198,6 +202,7 @@ static struct platform_driver lt3593_led_driver = {
 	},
 };
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform:leds-lt3593");
 
 static int __init lt3593_led_init(void)
@@ -212,7 +217,14 @@ static void __exit lt3593_led_exit(void)
 
 module_init(lt3593_led_init);
 module_exit(lt3593_led_exit);
+=======
+module_platform_driver(lt3593_led_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
 MODULE_DESCRIPTION("LED driver for LT3593 controllers");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:leds-lt3593");
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -15,7 +15,10 @@
 
 #include <asm/openprom.h>
 #include <asm/oplib.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ldc.h>
 
 static int prom_service_exists(const char *service_name)

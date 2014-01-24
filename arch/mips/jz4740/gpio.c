@@ -17,8 +17,11 @@
 #include <linux/module.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
 #include <linux/spinlock.h>
 #include <linux/syscore_ops.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/io.h>
 #include <linux/gpio.h>
 #include <linux/delay.h>
@@ -30,6 +33,11 @@
 
 #include <asm/mach-jz4740/base.h>
 
+<<<<<<< HEAD
+=======
+#include "irq.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define JZ4740_GPIO_BASE_A (32*0)
 #define JZ4740_GPIO_BASE_B (32*1)
 #define JZ4740_GPIO_BASE_C (32*2)
@@ -77,14 +85,20 @@
 struct jz_gpio_chip {
 	unsigned int irq;
 	unsigned int irq_base;
+<<<<<<< HEAD
 	uint32_t wakeup;
 	uint32_t suspend_mask;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	uint32_t edge_trigger_both;
 
 	void __iomem *base;
 
+<<<<<<< HEAD
 	spinlock_t lock;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct gpio_chip gpio_chip;
 };
 
@@ -102,7 +116,12 @@ static inline struct jz_gpio_chip *gpio_chip_to_jz_gpio_chip(struct gpio_chip *g
 
 static inline struct jz_gpio_chip *irq_to_jz_gpio_chip(struct irq_data *data)
 {
+<<<<<<< HEAD
 	return irq_data_get_irq_chip_data(data);
+=======
+	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(data);
+	return gc->private;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void jz_gpio_write_bit(unsigned int gpio, unsigned int reg)
@@ -304,6 +323,7 @@ static void jz_gpio_irq_demux_handler(unsigned int irq, struct irq_desc *desc)
 {
 	uint32_t flag;
 	unsigned int gpio_irq;
+<<<<<<< HEAD
 	unsigned int gpio_bank;
 	struct jz_gpio_chip *chip = irq_desc_get_handler_data(desc);
 
@@ -319,6 +339,17 @@ static void jz_gpio_irq_demux_handler(unsigned int irq, struct irq_desc *desc)
 	jz_gpio_check_trigger_both(chip, irq);
 
 	gpio_irq += (gpio_bank << 5) + JZ4740_IRQ_GPIO(0);
+=======
+	struct jz_gpio_chip *chip = irq_desc_get_handler_data(desc);
+
+	flag = readl(chip->base + JZ_REG_GPIO_FLAG);
+	if (!flag)
+		return;
+
+	gpio_irq = chip->irq_base + __fls(flag);
+
+	jz_gpio_check_trigger_both(chip, gpio_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	generic_handle_irq(gpio_irq);
 };
@@ -329,18 +360,25 @@ static inline void jz_gpio_set_irq_bit(struct irq_data *data, unsigned int reg)
 	writel(IRQ_TO_BIT(data->irq), chip->base + reg);
 }
 
+<<<<<<< HEAD
 static void jz_gpio_irq_mask(struct irq_data *data)
 {
 	jz_gpio_set_irq_bit(data, JZ_REG_GPIO_MASK_SET);
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void jz_gpio_irq_unmask(struct irq_data *data)
 {
 	struct jz_gpio_chip *chip = irq_to_jz_gpio_chip(data);
 
 	jz_gpio_check_trigger_both(chip, data->irq);
+<<<<<<< HEAD
 
 	jz_gpio_set_irq_bit(data, JZ_REG_GPIO_MASK_CLEAR);
+=======
+	irq_gc_unmask_enable_reg(data);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* TODO: Check if function is gpio */
@@ -353,18 +391,25 @@ static unsigned int jz_gpio_irq_startup(struct irq_data *data)
 
 static void jz_gpio_irq_shutdown(struct irq_data *data)
 {
+<<<<<<< HEAD
 	jz_gpio_irq_mask(data);
+=======
+	irq_gc_mask_disable_reg(data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Set direction to input */
 	jz_gpio_set_irq_bit(data, JZ_REG_GPIO_DIRECTION_CLEAR);
 	jz_gpio_set_irq_bit(data, JZ_REG_GPIO_SELECT_CLEAR);
 }
 
+<<<<<<< HEAD
 static void jz_gpio_irq_ack(struct irq_data *data)
 {
 	jz_gpio_set_irq_bit(data, JZ_REG_GPIO_FLAG_CLEAR);
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int jz_gpio_irq_set_type(struct irq_data *data, unsigned int flow_type)
 {
 	struct jz_gpio_chip *chip = irq_to_jz_gpio_chip(data);
@@ -408,6 +453,7 @@ static int jz_gpio_irq_set_type(struct irq_data *data, unsigned int flow_type)
 static int jz_gpio_irq_set_wake(struct irq_data *data, unsigned int on)
 {
 	struct jz_gpio_chip *chip = irq_to_jz_gpio_chip(data);
+<<<<<<< HEAD
 	spin_lock(&chip->lock);
 	if (on)
 		chip->wakeup |= IRQ_TO_BIT(data->irq);
@@ -437,6 +483,15 @@ static struct irq_chip jz_gpio_irq_chip = {
  */
 static struct lock_class_key gpio_lock_class;
 
+=======
+
+	irq_gc_set_wake(data, on);
+	irq_set_irq_wake(chip->irq, on);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define JZ4740_GPIO_CHIP(_bank) { \
 	.irq_base = JZ4740_IRQ_GPIO_BASE_ ## _bank, \
 	.gpio_chip = { \
@@ -458,6 +513,7 @@ static struct jz_gpio_chip jz4740_gpio_chips[] = {
 	JZ4740_GPIO_CHIP(D),
 };
 
+<<<<<<< HEAD
 static void jz4740_gpio_suspend_chip(struct jz_gpio_chip *chip)
 {
 	chip->suspend_mask = readl(chip->base + JZ_REG_GPIO_MASK);
@@ -516,6 +572,46 @@ static void jz4740_gpio_chip_init(struct jz_gpio_chip *chip, unsigned int id)
 		irq_set_chip_and_handler(irq, &jz_gpio_irq_chip,
 					 handle_level_irq);
 	}
+=======
+static void jz4740_gpio_chip_init(struct jz_gpio_chip *chip, unsigned int id)
+{
+	struct irq_chip_generic *gc;
+	struct irq_chip_type *ct;
+
+	chip->base = ioremap(JZ4740_GPIO_BASE_ADDR + (id * 0x100), 0x100);
+
+	chip->irq = JZ4740_IRQ_INTC_GPIO(id);
+	irq_set_handler_data(chip->irq, chip);
+	irq_set_chained_handler(chip->irq, jz_gpio_irq_demux_handler);
+
+	gc = irq_alloc_generic_chip(chip->gpio_chip.label, 1, chip->irq_base,
+		chip->base, handle_level_irq);
+
+	gc->wake_enabled = IRQ_MSK(chip->gpio_chip.ngpio);
+	gc->private = chip;
+
+	ct = gc->chip_types;
+	ct->regs.enable = JZ_REG_GPIO_MASK_CLEAR;
+	ct->regs.disable = JZ_REG_GPIO_MASK_SET;
+	ct->regs.ack = JZ_REG_GPIO_FLAG_CLEAR;
+
+	ct->chip.name = "GPIO";
+	ct->chip.irq_mask = irq_gc_mask_disable_reg;
+	ct->chip.irq_unmask = jz_gpio_irq_unmask;
+	ct->chip.irq_ack = irq_gc_ack_set_bit;
+	ct->chip.irq_suspend = jz4740_irq_suspend;
+	ct->chip.irq_resume = jz4740_irq_resume;
+	ct->chip.irq_startup = jz_gpio_irq_startup;
+	ct->chip.irq_shutdown = jz_gpio_irq_shutdown;
+	ct->chip.irq_set_type = jz_gpio_irq_set_type;
+	ct->chip.irq_set_wake = jz_gpio_irq_set_wake;
+	ct->chip.flags = IRQCHIP_SET_TYPE_MASKED;
+
+	irq_setup_generic_chip(gc, IRQ_MSK(chip->gpio_chip.ngpio),
+		IRQ_GC_INIT_NESTED_LOCK, 0, IRQ_NOPROBE | IRQ_LEVEL);
+
+	gpiochip_add(&chip->gpio_chip);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __init jz4740_gpio_init(void)
@@ -525,8 +621,11 @@ static int __init jz4740_gpio_init(void)
 	for (i = 0; i < ARRAY_SIZE(jz4740_gpio_chips); ++i)
 		jz4740_gpio_chip_init(&jz4740_gpio_chips[i], i);
 
+<<<<<<< HEAD
 	register_syscore_ops(&jz4740_gpio_syscore_ops);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_INFO "JZ4740 GPIO initialized\n");
 
 	return 0;

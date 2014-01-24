@@ -7,12 +7,19 @@
  * License version 2.  This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
  */
+<<<<<<< HEAD
 
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/mbus.h>
 #include <linux/io.h>
 #include <asm/gpio.h>
+=======
+#include <linux/gpio.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <plat/mpp.h>
 #include "common.h"

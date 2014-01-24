@@ -14,13 +14,19 @@
  */
 
 #include <linux/linkage.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <mach/hardware.h>
 #include <mach/at91sam9_sdramc.h>
+=======
+#include <mach/hardware.h>
+#include <mach/at91_ramc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/at91_rstc.h>
 
 			.arm
 
+<<<<<<< HEAD
 			.globl	at91sam9_alt_reset
 
 at91sam9_alt_reset:	mrc	p15, 0, r0, c1, c0, 0
@@ -29,6 +35,14 @@ at91sam9_alt_reset:	mrc	p15, 0, r0, c1, c0, 0
 
 			ldr	r0, .at91_va_base_sdramc	@ preload constants
 			ldr	r1, .at91_va_base_rstc_cr
+=======
+			.globl	at91sam9_alt_restart
+
+at91sam9_alt_restart:	ldr	r0, =at91_ramc_base		@ preload constants
+			ldr	r0, [r0]
+			ldr	r4, =at91_rstc_base
+			ldr	r1, [r4]
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			mov	r2, #1
 			mov	r3, #AT91_SDRAMC_LPCB_POWER_DOWN
@@ -38,6 +52,7 @@ at91sam9_alt_reset:	mrc	p15, 0, r0, c1, c0, 0
 
 			str	r2, [r0, #AT91_SDRAMC_TR]	@ disable SDRAM access
 			str	r3, [r0, #AT91_SDRAMC_LPR]	@ power down SDRAM
+<<<<<<< HEAD
 			str	r4, [r1]			@ reset processor
 
 			b	.
@@ -46,3 +61,8 @@ at91sam9_alt_reset:	mrc	p15, 0, r0, c1, c0, 0
 	.word AT91_VA_BASE_SYS + AT91_SDRAMC0
 .at91_va_base_rstc_cr:
 	.word AT91_VA_BASE_SYS + AT91_RSTC_CR
+=======
+			str	r4, [r1, #AT91_RSTC_CR]		@ reset processor
+
+			b	.
+>>>>>>> refs/remotes/origin/cm-10.0

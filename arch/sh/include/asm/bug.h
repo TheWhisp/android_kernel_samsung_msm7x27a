@@ -1,6 +1,11 @@
 #ifndef __ASM_SH_BUG_H
 #define __ASM_SH_BUG_H
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TRAPA_BUG_OPCODE	0xc33e	/* trapa #0x3e */
 #define BUGFLAG_UNWINDER	(1 << 1)
 
@@ -107,4 +112,10 @@ do {							\
 
 #include <asm-generic/bug.h>
 
+<<<<<<< HEAD
+=======
+struct pt_regs;
+extern void die(const char *str, struct pt_regs *regs, long err) __attribute__ ((noreturn));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASM_SH_BUG_H */

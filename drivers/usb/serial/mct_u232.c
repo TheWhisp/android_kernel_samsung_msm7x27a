@@ -19,6 +19,7 @@
  *   DTR/RTS signal handling may be incomplete or incorrect. I have mainly
  *   implemented what I have seen with SniffUSB or found in belkin_sa.c.
  *   For further TODOs check also belkin_sa.c.
+<<<<<<< HEAD
  *
  * TEST STATUS:
  *   Basic tests have been performed with minicom/zmodem transfers and
@@ -63,6 +64,8 @@
  * 27-Nov-2000 Wolfgang Grandegge
  *   A version for kernel 2.4.0-test10 released to the Linux community
  *   (via linux-usb-devel).
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/kernel.h>
@@ -89,7 +92,11 @@
 #define DRIVER_AUTHOR "Wolfgang Grandegger <wolfgang@ces.ch>"
 #define DRIVER_DESC "Magic Control Technology USB-RS232 converter driver"
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Function prototypes
@@ -132,7 +139,10 @@ static struct usb_driver mct_u232_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver mct_u232_device = {
@@ -141,7 +151,10 @@ static struct usb_serial_driver mct_u232_device = {
 		.name =		"mct_u232",
 	},
 	.description =	     "MCT U232",
+<<<<<<< HEAD
 	.usb_driver = 	     &mct_u232_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =	     id_table_combined,
 	.num_ports =	     1,
 	.open =		     mct_u232_open,
@@ -160,6 +173,13 @@ static struct usb_serial_driver mct_u232_device = {
 	.get_icount =        mct_u232_get_icount,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&mct_u232_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mct_u232_private {
 	spinlock_t lock;
 	unsigned int	     control_state; /* Modem Line Setting (TIOCM) */
@@ -529,7 +549,10 @@ static int  mct_u232_open(struct tty_struct *tty, struct usb_serial_port *port)
 	mct_u232_msr_to_state(&priv->control_state, priv->last_msr);
 	spin_unlock_irqrestore(&priv->lock, flags);
 
+<<<<<<< HEAD
 	port->read_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = usb_submit_urb(port->read_urb, GFP_KERNEL);
 	if (retval) {
 		dev_err(&port->dev,
@@ -538,7 +561,10 @@ static int  mct_u232_open(struct tty_struct *tty, struct usb_serial_port *port)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
 	if (retval) {
 		usb_kill_urb(port->read_urb);
@@ -558,6 +584,7 @@ static void mct_u232_dtr_rts(struct usb_serial_port *port, int on)
 	unsigned int control_state;
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
 
+<<<<<<< HEAD
 	mutex_lock(&port->serial->disc_mutex);
 	if (!port->serial->disconnected) {
 		/* drop DTR and RTS */
@@ -571,6 +598,17 @@ static void mct_u232_dtr_rts(struct usb_serial_port *port, int on)
 		mct_u232_set_modem_ctrl(port->serial, control_state);
 	}
 	mutex_unlock(&port->serial->disc_mutex);
+=======
+	spin_lock_irq(&priv->lock);
+	if (on)
+		priv->control_state |= TIOCM_DTR | TIOCM_RTS;
+	else
+		priv->control_state &= ~(TIOCM_DTR | TIOCM_RTS);
+	control_state = priv->control_state;
+	spin_unlock_irq(&priv->lock);
+
+	mct_u232_set_modem_ctrl(port->serial, control_state);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void mct_u232_close(struct usb_serial_port *port)
@@ -955,6 +993,7 @@ static int  mct_u232_get_icount(struct tty_struct *tty,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init mct_u232_init(void)
 {
 	int retval;
@@ -982,6 +1021,9 @@ static void __exit mct_u232_exit(void)
 
 module_init(mct_u232_init);
 module_exit(mct_u232_exit);
+=======
+module_usb_serial_driver(mct_u232_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

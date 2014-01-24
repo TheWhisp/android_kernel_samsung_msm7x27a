@@ -282,7 +282,11 @@ static int tcf_act_police_cleanup(struct tc_action *a, int bind)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int tcf_act_police(struct sk_buff *skb, struct tc_action *a,
+=======
+static int tcf_act_police(struct sk_buff *skb, const struct tc_action *a,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  struct tcf_result *res)
 {
 	struct tcf_police *police = a->priv;

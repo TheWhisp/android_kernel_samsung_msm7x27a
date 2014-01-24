@@ -19,11 +19,18 @@
  */
 
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <linux/io.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/dma.h>
 #include <plat/tc.h>

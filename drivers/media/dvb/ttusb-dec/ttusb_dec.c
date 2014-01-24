@@ -1756,6 +1756,7 @@ static struct usb_driver ttusb_dec_driver = {
 	.id_table	= ttusb_dec_table,
 };
 
+<<<<<<< HEAD
 static int __init ttusb_dec_init(void)
 {
 	int result;
@@ -1776,6 +1777,9 @@ static void __exit ttusb_dec_exit(void)
 
 module_init(ttusb_dec_init);
 module_exit(ttusb_dec_exit);
+=======
+module_usb_driver(ttusb_dec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Alex Woods <linux-dvb@giblets.org>");
 MODULE_DESCRIPTION(DRIVER_NAME);

@@ -42,7 +42,11 @@ static irqreturn_t sni_isa_irq_handler(int dummy, void *p)
 struct irqaction sni_isa_irq = {
 	.handler = sni_isa_irq_handler,
 	.name = "ISA",
+<<<<<<< HEAD
 	.flags = IRQF_SHARED | IRQF_DISABLED
+=======
+	.flags = IRQF_SHARED
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*

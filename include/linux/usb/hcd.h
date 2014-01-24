@@ -99,7 +99,10 @@ struct usb_hcd {
 	 */
 	unsigned long		flags;
 #define HCD_FLAG_HW_ACCESSIBLE		0	/* at full power */
+<<<<<<< HEAD
 #define HCD_FLAG_SAW_IRQ		1
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HCD_FLAG_POLL_RH		2	/* poll for rh status? */
 #define HCD_FLAG_POLL_PENDING		3	/* status has changed? */
 #define HCD_FLAG_WAKEUP_PENDING		4	/* root hub is resuming? */
@@ -110,7 +113,10 @@ struct usb_hcd {
 	 * be slightly faster than test_bit().
 	 */
 #define HCD_HW_ACCESSIBLE(hcd)	((hcd)->flags & (1U << HCD_FLAG_HW_ACCESSIBLE))
+<<<<<<< HEAD
 #define HCD_SAW_IRQ(hcd)	((hcd)->flags & (1U << HCD_FLAG_SAW_IRQ))
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define HCD_POLL_RH(hcd)	((hcd)->flags & (1U << HCD_FLAG_POLL_RH))
 #define HCD_POLL_PENDING(hcd)	((hcd)->flags & (1U << HCD_FLAG_POLL_PENDING))
 #define HCD_WAKEUP_PENDING(hcd)	((hcd)->flags & (1U << HCD_FLAG_WAKEUP_PENDING))
@@ -129,7 +135,11 @@ struct usb_hcd {
 	unsigned		authorized_default:1;
 	unsigned		has_tt:1;	/* Integrated TT in root hub */
 
+<<<<<<< HEAD
 	int			irq;		/* irq allocated */
+=======
+	unsigned int		irq;		/* irq allocated */
+>>>>>>> refs/remotes/origin/cm-10.0
 	void __iomem		*regs;		/* device memory/io */
 	u64			rsrc_start;	/* memory/io resource start */
 	u64			rsrc_len;	/* memory/io resource length */
@@ -212,6 +222,10 @@ struct hc_driver {
 #define	HCD_MEMORY	0x0001		/* HC regs use memory (else I/O) */
 #define	HCD_LOCAL_MEM	0x0002		/* HC needs local memory */
 #define	HCD_SHARED	0x0004		/* Two (or more) usb_hcds share HW */
+<<<<<<< HEAD
+=======
+#define	HCD_OLD_ENUM	0x0008		/* HC supports short enumeration */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	HCD_USB11	0x0010		/* USB 1.1 */
 #define	HCD_USB2	0x0020		/* USB 2.0 */
 #define	HCD_USB3	0x0040		/* USB 3.0 */
@@ -343,6 +357,17 @@ struct hc_driver {
 		 * address is set
 		 */
 	int	(*update_device)(struct usb_hcd *, struct usb_device *);
+<<<<<<< HEAD
+=======
+	int	(*set_usb2_hw_lpm)(struct usb_hcd *, struct usb_device *, int);
+
+	/* to log completion events*/
+	void	(*log_urb_complete)(struct urb *urb, char * event,
+			unsigned extra);
+	void	(*dump_regs)(struct usb_hcd *);
+	void	(*enable_ulpi_control)(struct usb_hcd *hcd, u32 linestate);
+	void	(*disable_ulpi_control)(struct usb_hcd *hcd);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 extern int usb_hcd_link_urb_to_ep(struct usb_hcd *hcd, struct urb *urb);
@@ -422,6 +447,11 @@ extern irqreturn_t usb_hcd_irq(int irq, void *__hcd);
 
 extern void usb_hc_died(struct usb_hcd *hcd);
 extern void usb_hcd_poll_rh_status(struct usb_hcd *hcd);
+<<<<<<< HEAD
+=======
+extern void usb_wakeup_notification(struct usb_device *hdev,
+		unsigned int portnum);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* The D0/D1 toggle bits ... USE WITH CAUTION (they're almost hcd-internal) */
 #define usb_gettoggle(dev, ep, out) (((dev)->toggle[out] >> (ep)) & 1)

@@ -30,6 +30,10 @@
 #include <linux/kernel.h>
 #include <linux/lcd.h>
 #include <linux/backlight.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "s6e63m0_gamma.h"
 
@@ -689,7 +693,11 @@ static ssize_t s6e63m0_sysfs_store_gamma_mode(struct device *dev,
 	struct backlight_device *bd = NULL;
 	int brightness, rc;
 
+<<<<<<< HEAD
 	rc = strict_strtoul(buf, 0, (unsigned long *)&lcd->gamma_mode);
+=======
+	rc = kstrtouint(buf, 0, &lcd->gamma_mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc < 0)
 		return rc;
 
@@ -738,6 +746,10 @@ static int __devinit s6e63m0_probe(struct spi_device *spi)
 	struct s6e63m0 *lcd = NULL;
 	struct lcd_device *ld = NULL;
 	struct backlight_device *bd = NULL;
+<<<<<<< HEAD
+=======
+	struct backlight_properties props;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	lcd = kzalloc(sizeof(struct s6e63m0), GFP_KERNEL);
 	if (!lcd)
@@ -769,16 +781,29 @@ static int __devinit s6e63m0_probe(struct spi_device *spi)
 
 	lcd->ld = ld;
 
+<<<<<<< HEAD
 	bd = backlight_device_register("s6e63m0bl-bl", &spi->dev, lcd,
 		&s6e63m0_backlight_ops, NULL);
+=======
+	memset(&props, 0, sizeof(struct backlight_properties));
+	props.type = BACKLIGHT_RAW;
+	props.max_brightness = MAX_BRIGHTNESS;
+
+	bd = backlight_device_register("s6e63m0bl-bl", &spi->dev, lcd,
+		&s6e63m0_backlight_ops, &props);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(bd)) {
 		ret =  PTR_ERR(bd);
 		goto out_lcd_unregister;
 	}
 
+<<<<<<< HEAD
 	bd->props.max_brightness = MAX_BRIGHTNESS;
 	bd->props.brightness = MAX_BRIGHTNESS;
 	bd->props.type = BACKLIGHT_RAW;
+=======
+	bd->props.brightness = MAX_BRIGHTNESS;
+>>>>>>> refs/remotes/origin/cm-10.0
 	lcd->bd = bd;
 
 	/*
@@ -840,7 +865,11 @@ static int __devexit s6e63m0_remove(struct spi_device *spi)
 }
 
 #if defined(CONFIG_PM)
+<<<<<<< HEAD
 unsigned int before_power;
+=======
+static unsigned int before_power;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int s6e63m0_suspend(struct spi_device *spi, pm_message_t mesg)
 {
@@ -905,6 +934,7 @@ static struct spi_driver s6e63m0_driver = {
 	.resume		= s6e63m0_resume,
 };
 
+<<<<<<< HEAD
 static int __init s6e63m0_init(void)
 {
 	return spi_register_driver(&s6e63m0_driver);
@@ -917,6 +947,9 @@ static void __exit s6e63m0_exit(void)
 
 module_init(s6e63m0_init);
 module_exit(s6e63m0_exit);
+=======
+module_spi_driver(s6e63m0_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("InKi Dae <inki.dae@samsung.com>");
 MODULE_DESCRIPTION("S6E63M0 LCD Driver");

@@ -61,12 +61,20 @@ static inline pmd_t *vmem_pmd_alloc(void)
 	return pmd;
 }
 
+<<<<<<< HEAD
 static pte_t __ref *vmem_pte_alloc(void)
+=======
+static pte_t __ref *vmem_pte_alloc(unsigned long address)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	pte_t *pte;
 
 	if (slab_is_available())
+<<<<<<< HEAD
 		pte = (pte_t *) page_table_alloc(&init_mm);
+=======
+		pte = (pte_t *) page_table_alloc(&init_mm, address);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		pte = alloc_bootmem(PTRS_PER_PTE * sizeof(pte_t));
 	if (!pte)
@@ -120,7 +128,11 @@ static int vmem_add_mem(unsigned long start, unsigned long size, int ro)
 		}
 #endif
 		if (pmd_none(*pm_dir)) {
+<<<<<<< HEAD
 			pt_dir = vmem_pte_alloc();
+=======
+			pt_dir = vmem_pte_alloc(address);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!pt_dir)
 				goto out;
 			pmd_populate(&init_mm, pm_dir, pt_dir);
@@ -205,7 +217,11 @@ int __meminit vmemmap_populate(struct page *start, unsigned long nr, int node)
 
 		pm_dir = pmd_offset(pu_dir, address);
 		if (pmd_none(*pm_dir)) {
+<<<<<<< HEAD
 			pt_dir = vmem_pte_alloc();
+=======
+			pt_dir = vmem_pte_alloc(address);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!pt_dir)
 				goto out;
 			pmd_populate(&init_mm, pm_dir, pt_dir);
@@ -335,6 +351,12 @@ void __init vmem_map_init(void)
 	ro_start = ((unsigned long)&_stext) & PAGE_MASK;
 	ro_end = PFN_ALIGN((unsigned long)&_eshared);
 	for (i = 0; i < MEMORY_CHUNKS && memory_chunk[i].size > 0; i++) {
+<<<<<<< HEAD
+=======
+		if (memory_chunk[i].type == CHUNK_CRASHK ||
+		    memory_chunk[i].type == CHUNK_OLDMEM)
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		start = memory_chunk[i].addr;
 		end = memory_chunk[i].addr + memory_chunk[i].size;
 		if (start >= ro_end || end <= ro_start)
@@ -368,6 +390,12 @@ static int __init vmem_convert_memory_chunk(void)
 	for (i = 0; i < MEMORY_CHUNKS; i++) {
 		if (!memory_chunk[i].size)
 			continue;
+<<<<<<< HEAD
+=======
+		if (memory_chunk[i].type == CHUNK_CRASHK ||
+		    memory_chunk[i].type == CHUNK_OLDMEM)
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		seg = kzalloc(sizeof(*seg), GFP_KERNEL);
 		if (!seg)
 			panic("Out of memory...\n");

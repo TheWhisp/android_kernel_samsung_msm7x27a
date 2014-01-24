@@ -59,7 +59,11 @@ struct usb_context {
 	struct usbnet *dev;
 };
 
+<<<<<<< HEAD
 static int turbo_mode = true;
+=======
+static bool turbo_mode = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(turbo_mode, bool, 0644);
 MODULE_PARM_DESC(turbo_mode, "Enable multiple frames per Rx transaction");
 
@@ -516,7 +520,12 @@ static void smsc95xx_status(struct usbnet *dev, struct urb *urb)
 }
 
 /* Enable or disable Tx & Rx checksum offload engines */
+<<<<<<< HEAD
 static int smsc95xx_set_features(struct net_device *netdev, u32 features)
+=======
+static int smsc95xx_set_features(struct net_device *netdev,
+	netdev_features_t features)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct usbnet *dev = netdev_priv(netdev);
 	u32 read_buf;
@@ -613,7 +622,11 @@ static void smsc95xx_init_mac_address(struct usbnet *dev)
 	}
 
 	/* no eeprom, or eeprom values are invalid. generate random MAC */
+<<<<<<< HEAD
 	random_ether_addr(dev->net->dev_addr);
+=======
+	eth_hw_addr_random(dev->net);
+>>>>>>> refs/remotes/origin/cm-10.0
 	netif_dbg(dev, ifup, dev->net, "MAC address set to random_ether_addr\n");
 }
 
@@ -972,7 +985,11 @@ static const struct net_device_ops smsc95xx_netdev_ops = {
 	.ndo_set_mac_address 	= eth_mac_addr,
 	.ndo_validate_addr	= eth_validate_addr,
 	.ndo_do_ioctl 		= smsc95xx_ioctl,
+<<<<<<< HEAD
 	.ndo_set_multicast_list = smsc95xx_set_multicast,
+=======
+	.ndo_set_rx_mode	= smsc95xx_set_multicast,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_set_features	= smsc95xx_set_features,
 };
 
@@ -1016,6 +1033,10 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
 	dev->net->ethtool_ops = &smsc95xx_ethtool_ops;
 	dev->net->flags |= IFF_MULTICAST;
 	dev->net->hard_header_len += SMSC95XX_TX_OVERHEAD_CSUM;
+<<<<<<< HEAD
+=======
+	dev->hard_mtu = dev->net->mtu + dev->net->hard_header_len;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1297,6 +1318,7 @@ static struct usb_driver smsc95xx_driver = {
 	.disconnect	= usbnet_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init smsc95xx_init(void)
 {
 	return usb_register(&smsc95xx_driver);
@@ -1308,6 +1330,9 @@ static void __exit smsc95xx_exit(void)
 	usb_deregister(&smsc95xx_driver);
 }
 module_exit(smsc95xx_exit);
+=======
+module_usb_driver(smsc95xx_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Nancy Lin");
 MODULE_AUTHOR("Steve Glendinning <steve.glendinning@smsc.com>");

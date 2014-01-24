@@ -18,6 +18,10 @@
 #include <asm/cacheflush.h>
 #include <asm/cachetype.h>
 #include <asm/proc-fns.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/mm_hooks.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __check_kvm_seq(struct mm_struct *mm);
 
@@ -133,6 +137,7 @@ switch_mm(struct mm_struct *prev, struct mm_struct *next,
 #define deactivate_mm(tsk,mm)	do { } while (0)
 #define activate_mm(prev,next)	switch_mm(prev, next, NULL)
 
+<<<<<<< HEAD
 /*
  * We are inserting a "fake" vma for the user-accessible vector page so
  * gdb and friends can get to it through ptrace and /proc/<pid>/mem.
@@ -161,4 +166,6 @@ static inline void arch_dup_mmap(struct mm_struct *oldmm,
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

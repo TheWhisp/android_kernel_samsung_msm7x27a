@@ -12,8 +12,11 @@
 #ifndef __MACH_MX1_H__
 #define __MACH_MX1_H__
 
+<<<<<<< HEAD
 #include <mach/vmalloc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Memory map
  */

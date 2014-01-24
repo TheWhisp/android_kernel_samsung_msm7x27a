@@ -2,7 +2,11 @@
     Copyright (c) 1998 - 2002  Frodo Looijaard <frodol@dds.nl>,
     Philip Edelbrock <phil@netroedge.com>, and Mark D. Studebaker
     <mdsxyz123@yahoo.com>
+<<<<<<< HEAD
     Copyright (C) 2007, 2008   Jean Delvare <khali@linux-fr.org>
+=======
+    Copyright (C) 2007 - 2012  Jean Delvare <khali@linux-fr.org>
+>>>>>>> refs/remotes/origin/cm-10.0
     Copyright (C) 2010         Intel Corporation,
                                David Woodhouse <dwmw2@infradead.org>
 
@@ -51,6 +55,11 @@
   Patsburg (PCH) IDF    0x1d72     32     hard     yes     yes     yes
   DH89xxCC (PCH)        0x2330     32     hard     yes     yes     yes
   Panther Point (PCH)   0x1e22     32     hard     yes     yes     yes
+<<<<<<< HEAD
+=======
+  Lynx Point (PCH)      0x8c22     32     hard     yes     yes     yes
+  Lynx Point-LP (PCH)   0x9c22     32     hard     yes     yes     yes
+>>>>>>> refs/remotes/origin/cm-10.0
 
   Features supported by this driver:
   Software PEC                     no
@@ -105,7 +114,11 @@
 #define SMBHSTCNT_KILL		2
 
 /* Other settings */
+<<<<<<< HEAD
 #define MAX_TIMEOUT		100
+=======
+#define MAX_RETRIES		400
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ENABLE_INT9		0	/* set to 0x01 to enable - untested */
 
 /* I801 command constants */
@@ -145,6 +158,11 @@
 #define PCI_DEVICE_ID_INTEL_PANTHERPOINT_SMBUS	0x1e22
 #define PCI_DEVICE_ID_INTEL_DH89XXCC_SMBUS	0x2330
 #define PCI_DEVICE_ID_INTEL_5_3400_SERIES_SMBUS	0x3b30
+<<<<<<< HEAD
+=======
+#define PCI_DEVICE_ID_INTEL_LYNXPOINT_SMBUS	0x8c22
+#define PCI_DEVICE_ID_INTEL_LYNXPOINT_LP_SMBUS	0x9c22
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct i801_priv {
 	struct i2c_adapter adapter;
@@ -215,7 +233,11 @@ static int i801_check_post(struct i801_priv *priv, int status, int timeout)
 		dev_dbg(&priv->pci_dev->dev, "Terminating the current operation\n");
 		outb_p(inb_p(SMBHSTCNT(priv)) | SMBHSTCNT_KILL,
 		       SMBHSTCNT(priv));
+<<<<<<< HEAD
 		msleep(1);
+=======
+		usleep_range(1000, 2000);
+>>>>>>> refs/remotes/origin/cm-10.0
 		outb_p(inb_p(SMBHSTCNT(priv)) & (~SMBHSTCNT_KILL),
 		       SMBHSTCNT(priv));
 
@@ -272,11 +294,19 @@ static int i801_transaction(struct i801_priv *priv, int xact)
 
 	/* We will always wait for a fraction of a second! */
 	do {
+<<<<<<< HEAD
 		msleep(1);
 		status = inb_p(SMBHSTSTS(priv));
 	} while ((status & SMBHSTSTS_HOST_BUSY) && (timeout++ < MAX_TIMEOUT));
 
 	result = i801_check_post(priv, status, timeout > MAX_TIMEOUT);
+=======
+		usleep_range(250, 500);
+		status = inb_p(SMBHSTSTS(priv));
+	} while ((status & SMBHSTSTS_HOST_BUSY) && (timeout++ < MAX_RETRIES));
+
+	result = i801_check_post(priv, status, timeout > MAX_RETRIES);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (result < 0)
 		return result;
 
@@ -291,12 +321,21 @@ static void i801_wait_hwpec(struct i801_priv *priv)
 	int status;
 
 	do {
+<<<<<<< HEAD
 		msleep(1);
 		status = inb_p(SMBHSTSTS(priv));
 	} while ((!(status & SMBHSTSTS_INTR))
 		 && (timeout++ < MAX_TIMEOUT));
 
 	if (timeout > MAX_TIMEOUT)
+=======
+		usleep_range(250, 500);
+		status = inb_p(SMBHSTSTS(priv));
+	} while ((!(status & SMBHSTSTS_INTR))
+		 && (timeout++ < MAX_RETRIES));
+
+	if (timeout > MAX_RETRIES)
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_dbg(&priv->pci_dev->dev, "PEC Timeout!\n");
 
 	outb_p(status, SMBHSTSTS(priv));
@@ -380,12 +419,21 @@ static int i801_block_transaction_byte_by_byte(struct i801_priv *priv,
 		/* We will always wait for a fraction of a second! */
 		timeout = 0;
 		do {
+<<<<<<< HEAD
 			msleep(1);
 			status = inb_p(SMBHSTSTS(priv));
 		} while ((!(status & SMBHSTSTS_BYTE_DONE))
 			 && (timeout++ < MAX_TIMEOUT));
 
 		result = i801_check_post(priv, status, timeout > MAX_TIMEOUT);
+=======
+			usleep_range(250, 500);
+			status = inb_p(SMBHSTSTS(priv));
+		} while ((!(status & SMBHSTSTS_BYTE_DONE))
+			 && (timeout++ < MAX_RETRIES));
+
+		result = i801_check_post(priv, status, timeout > MAX_RETRIES);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (result < 0)
 			return result;
 
@@ -609,7 +657,11 @@ static const struct i2c_algorithm smbus_algorithm = {
 	.functionality	= i801_func,
 };
 
+<<<<<<< HEAD
 static const struct pci_device_id i801_ids[] = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(i801_ids) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82801AA_3) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82801AB_3) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82801BA_2) },
@@ -633,6 +685,11 @@ static const struct pci_device_id i801_ids[] = {
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_PATSBURG_SMBUS_IDF2) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_DH89XXCC_SMBUS) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_PANTHERPOINT_SMBUS) },
+<<<<<<< HEAD
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_LYNXPOINT_SMBUS) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_LYNXPOINT_LP_SMBUS) },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ 0, }
 };
 

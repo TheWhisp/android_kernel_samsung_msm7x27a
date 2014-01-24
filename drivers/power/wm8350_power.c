@@ -522,6 +522,7 @@ static struct platform_driver wm8350_power_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init wm8350_power_init(void)
 {
 	return platform_driver_register(&wm8350_power_driver);
@@ -533,6 +534,9 @@ static void __exit wm8350_power_exit(void)
 	platform_driver_unregister(&wm8350_power_driver);
 }
 module_exit(wm8350_power_exit);
+=======
+module_platform_driver(wm8350_power_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Power supply driver for WM8350");

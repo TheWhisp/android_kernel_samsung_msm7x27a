@@ -30,6 +30,10 @@
 #include <linux/sysctl.h>
 #include <linux/spinlock.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "cluster/heartbeat.h"
 #include "cluster/nodemanager.h"

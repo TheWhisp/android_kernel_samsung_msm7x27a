@@ -42,6 +42,10 @@
 #include <linux/ieee80211.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "iwm.h"
 #include "bus.h"

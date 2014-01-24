@@ -11,6 +11,10 @@
 #include <asm/hardirq.h>
 #include <asm/div64.h>
 #include <asm/cpu.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/irq.h>
 #include <asm/mc146818-time.h>

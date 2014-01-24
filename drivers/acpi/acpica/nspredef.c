@@ -6,7 +6,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -193,6 +197,7 @@ acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 	}
 
 	/*
+<<<<<<< HEAD
 	 * 1) We have a return value, but if one wasn't expected, just exit, this is
 	 * not a problem. For example, if the "Implicit Return" feature is
 	 * enabled, methods will always return a value.
@@ -201,6 +206,22 @@ acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 	 * validation, exit.
 	 */
 	if ((!predefined->info.expected_btypes) ||
+=======
+	 * Return value validation and possible repair.
+	 *
+	 * 1) Don't perform return value validation/repair if this feature
+	 * has been disabled via a global option.
+	 *
+	 * 2) We have a return value, but if one wasn't expected, just exit,
+	 * this is not a problem. For example, if the "Implicit Return"
+	 * feature is enabled, methods will always return a value.
+	 *
+	 * 3) If the return value can be of any type, then we cannot perform
+	 * any validation, just exit.
+	 */
+	if (acpi_gbl_disable_auto_repair ||
+	    (!predefined->info.expected_btypes) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 	    (predefined->info.expected_btypes == ACPI_RTYPE_ALL)) {
 		goto cleanup;
 	}
@@ -614,6 +635,10 @@ acpi_ns_check_package(struct acpi_predefined_data *data,
 	case ACPI_PTYPE2_FIXED:
 	case ACPI_PTYPE2_MIN:
 	case ACPI_PTYPE2_COUNT:
+<<<<<<< HEAD
+=======
+	case ACPI_PTYPE2_FIX_VAR:
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
 		 * These types all return a single Package that consists of a
@@ -631,8 +656,13 @@ acpi_ns_check_package(struct acpi_predefined_data *data,
 			/* Create the new outer package and populate it */
 
 			status =
+<<<<<<< HEAD
 			    acpi_ns_repair_package_list(data,
 							return_object_ptr);
+=======
+			    acpi_ns_wrap_with_package(data, return_object,
+						      return_object_ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (ACPI_FAILURE(status)) {
 				return (status);
 			}
@@ -753,6 +783,37 @@ acpi_ns_check_package_list(struct acpi_predefined_data *data,
 			}
 			break;
 
+<<<<<<< HEAD
+=======
+		case ACPI_PTYPE2_FIX_VAR:
+			/*
+			 * Each subpackage has a fixed number of elements and an
+			 * optional element
+			 */
+			expected_count =
+			    package->ret_info.count1 + package->ret_info.count2;
+			if (sub_package->package.count < expected_count) {
+				goto package_too_small;
+			}
+
+			status =
+			    acpi_ns_check_package_elements(data, sub_elements,
+							   package->ret_info.
+							   object_type1,
+							   package->ret_info.
+							   count1,
+							   package->ret_info.
+							   object_type2,
+							   sub_package->package.
+							   count -
+							   package->ret_info.
+							   count1, 0);
+			if (ACPI_FAILURE(status)) {
+				return (status);
+			}
+			break;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		case ACPI_PTYPE2_FIXED:
 
 			/* Each sub-package has a fixed length */

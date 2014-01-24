@@ -60,12 +60,18 @@
 
 #include "compat_linux.h"
 
+<<<<<<< HEAD
 long psw_user32_bits	= (PSW_BASE32_BITS | PSW_MASK_DAT | PSW_ASC_HOME |
 			   PSW_MASK_IO | PSW_MASK_EXT | PSW_MASK_MCHECK |
 			   PSW_MASK_PSTATE | PSW_DEFAULT_KEY);
 long psw32_user_bits	= (PSW32_BASE_BITS | PSW32_MASK_DAT | PSW32_ASC_HOME |
 			   PSW32_MASK_IO | PSW32_MASK_EXT | PSW32_MASK_MCHECK |
 			   PSW32_MASK_PSTATE);
+=======
+u32 psw32_user_bits = PSW32_MASK_DAT | PSW32_MASK_IO | PSW32_MASK_EXT |
+		      PSW32_DEFAULT_KEY | PSW32_MASK_BASE | PSW32_MASK_MCHECK |
+		      PSW32_MASK_PSTATE | PSW32_ASC_HOME;
+>>>>>>> refs/remotes/origin/cm-10.0
  
 /* For this source file, we want overflow handling. */
 
@@ -281,9 +287,12 @@ asmlinkage long sys32_ipc(u32 call, int first, int second, int third, u32 ptr)
 {
 	if (call >> 16)		/* hack for backward compatibility */
 		return -EINVAL;
+<<<<<<< HEAD
 
 	call &= 0xffff;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (call) {
 	case SEMTIMEDOP:
 		return compat_sys_semtimedop(first, compat_ptr(ptr),
@@ -365,12 +374,16 @@ asmlinkage long sys32_rt_sigprocmask(int how, compat_sigset_t __user *set,
 	if (set) {
 		if (copy_from_user (&s32, set, sizeof(compat_sigset_t)))
 			return -EFAULT;
+<<<<<<< HEAD
 		switch (_NSIG_WORDS) {
 		case 4: s.sig[3] = s32.sig[6] | (((long)s32.sig[7]) << 32);
 		case 3: s.sig[2] = s32.sig[4] | (((long)s32.sig[5]) << 32);
 		case 2: s.sig[1] = s32.sig[2] | (((long)s32.sig[3]) << 32);
 		case 1: s.sig[0] = s32.sig[0] | (((long)s32.sig[1]) << 32);
 		}
+=======
+		s.sig[0] = s32.sig[0] | (((long)s32.sig[1]) << 32);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	set_fs (KERNEL_DS);
 	ret = sys_rt_sigprocmask(how,
@@ -380,12 +393,17 @@ asmlinkage long sys32_rt_sigprocmask(int how, compat_sigset_t __user *set,
 	set_fs (old_fs);
 	if (ret) return ret;
 	if (oset) {
+<<<<<<< HEAD
 		switch (_NSIG_WORDS) {
 		case 4: s32.sig[7] = (s.sig[3] >> 32); s32.sig[6] = s.sig[3];
 		case 3: s32.sig[5] = (s.sig[2] >> 32); s32.sig[4] = s.sig[2];
 		case 2: s32.sig[3] = (s.sig[1] >> 32); s32.sig[2] = s.sig[1];
 		case 1: s32.sig[1] = (s.sig[0] >> 32); s32.sig[0] = s.sig[0];
 		}
+=======
+		s32.sig[1] = (s.sig[0] >> 32);
+		s32.sig[0] = s.sig[0];
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (copy_to_user (oset, &s32, sizeof(compat_sigset_t)))
 			return -EFAULT;
 	}
@@ -404,12 +422,17 @@ asmlinkage long sys32_rt_sigpending(compat_sigset_t __user *set,
 	ret = sys_rt_sigpending((sigset_t __force __user *) &s, sigsetsize);
 	set_fs (old_fs);
 	if (!ret) {
+<<<<<<< HEAD
 		switch (_NSIG_WORDS) {
 		case 4: s32.sig[7] = (s.sig[3] >> 32); s32.sig[6] = s.sig[3];
 		case 3: s32.sig[5] = (s.sig[2] >> 32); s32.sig[4] = s.sig[2];
 		case 2: s32.sig[3] = (s.sig[1] >> 32); s32.sig[2] = s.sig[1];
 		case 1: s32.sig[1] = (s.sig[0] >> 32); s32.sig[0] = s.sig[0];
 		}
+=======
+		s32.sig[1] = (s.sig[0] >> 32);
+		s32.sig[0] = s.sig[0];
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (copy_to_user (set, &s32, sizeof(compat_sigset_t)))
 			return -EFAULT;
 	}

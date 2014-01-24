@@ -280,6 +280,12 @@ static struct sctp_association *sctp_association_init(struct sctp_association *a
 	asoc->peer.asconf_capable = 0;
 	if (sctp_addip_noauth)
 		asoc->peer.asconf_capable = 1;
+<<<<<<< HEAD
+=======
+	asoc->asconf_addr_del_pending = NULL;
+	asoc->src_out_of_asoc_ok = 0;
+	asoc->new_transport = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Create an input queue.  */
 	sctp_inq_init(&asoc->base.inqueue);
@@ -446,6 +452,13 @@ void sctp_association_free(struct sctp_association *asoc)
 
 	sctp_asconf_queue_teardown(asoc);
 
+<<<<<<< HEAD
+=======
+	/* Free pending address space being deleted */
+	if (asoc->asconf_addr_del_pending != NULL)
+		kfree(asoc->asconf_addr_del_pending);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* AUTH - Free the endpoint shared keys */
 	sctp_auth_destroy_keys(&asoc->endpoint_shared_keys);
 

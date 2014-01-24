@@ -11,17 +11,30 @@
 
 typedef struct _divas_um_idi_entity {
 	struct list_head          link;
+<<<<<<< HEAD
 	diva_um_idi_adapter_t*    adapter; /* Back to adapter */
 	ENTITY                    e;
 	void*                     os_ref;
 	dword                     status;
 	void*                     os_context;
 	int                       rc_count;
+=======
+	diva_um_idi_adapter_t *adapter; /* Back to adapter */
+	ENTITY e;
+	void *os_ref;
+	dword status;
+	void *os_context;
+	int rc_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 	diva_um_idi_data_queue_t  data; /* definad by user 1 ... MAX */
 	diva_um_idi_data_queue_t  rc;   /* two entries */
 	BUFFERS                   XData;
 	BUFFERS                   RData;
+<<<<<<< HEAD
 	byte                      buffer[2048+512];
+=======
+	byte                      buffer[2048 + 512];
+>>>>>>> refs/remotes/origin/cm-10.0
 } divas_um_idi_entity_t;
 
 

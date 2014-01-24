@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  */
 
+<<<<<<< HEAD
 /* Change Activity:
  * 2001/09/21 : engebret : Created with minimal EPOW and HW exception support.
  * End Change Activity
@@ -47,6 +48,17 @@
 #include <asm/machdep.h>
 #include <asm/rtas.h>
 #include <asm/udbg.h>
+=======
+#include <linux/sched.h>
+#include <linux/interrupt.h>
+#include <linux/irq.h>
+#include <linux/of.h>
+#include <linux/fs.h>
+#include <linux/reboot.h>
+
+#include <asm/machdep.h>
+#include <asm/rtas.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/firmware.h>
 
 #include "pseries.h"
@@ -57,7 +69,10 @@ static DEFINE_SPINLOCK(ras_log_buf_lock);
 static char global_mce_data_buf[RTAS_ERROR_LOG_MAX];
 static DEFINE_PER_CPU(__u64, mce_data_buf);
 
+<<<<<<< HEAD
 static int ras_get_sensor_state_token;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int ras_check_exception_token;
 
 #define EPOW_SENSOR_TOKEN	9
@@ -75,7 +90,10 @@ static int __init init_ras_IRQ(void)
 {
 	struct device_node *np;
 
+<<<<<<< HEAD
 	ras_get_sensor_state_token = rtas_token("get-sensor-state");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ras_check_exception_token = rtas_token("check-exception");
 
 	/* Internal Errors */
@@ -95,6 +113,7 @@ static int __init init_ras_IRQ(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 __initcall(init_ras_IRQ);
 
 /*
@@ -115,6 +134,128 @@ static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
 
 	if (state > 3)
 		critical = 1;  /* Time Critical */
+=======
+subsys_initcall(init_ras_IRQ);
+
+#define EPOW_SHUTDOWN_NORMAL				1
+#define EPOW_SHUTDOWN_ON_UPS				2
+#define EPOW_SHUTDOWN_LOSS_OF_CRITICAL_FUNCTIONS	3
+#define EPOW_SHUTDOWN_AMBIENT_TEMPERATURE_TOO_HIGH	4
+
+static void handle_system_shutdown(char event_modifier)
+{
+	switch (event_modifier) {
+	case EPOW_SHUTDOWN_NORMAL:
+		pr_emerg("Firmware initiated power off");
+		orderly_poweroff(1);
+		break;
+
+	case EPOW_SHUTDOWN_ON_UPS:
+		pr_emerg("Loss of power reported by firmware, system is "
+			"running on UPS/battery");
+		break;
+
+	case EPOW_SHUTDOWN_LOSS_OF_CRITICAL_FUNCTIONS:
+		pr_emerg("Loss of system critical functions reported by "
+			"firmware");
+		pr_emerg("Check RTAS error log for details");
+		orderly_poweroff(1);
+		break;
+
+	case EPOW_SHUTDOWN_AMBIENT_TEMPERATURE_TOO_HIGH:
+		pr_emerg("Ambient temperature too high reported by firmware");
+		pr_emerg("Check RTAS error log for details");
+		orderly_poweroff(1);
+		break;
+
+	default:
+		pr_err("Unknown power/cooling shutdown event (modifier %d)",
+			event_modifier);
+	}
+}
+
+struct epow_errorlog {
+	unsigned char sensor_value;
+	unsigned char event_modifier;
+	unsigned char extended_modifier;
+	unsigned char reserved;
+	unsigned char platform_reason;
+};
+
+#define EPOW_RESET			0
+#define EPOW_WARN_COOLING		1
+#define EPOW_WARN_POWER			2
+#define EPOW_SYSTEM_SHUTDOWN		3
+#define EPOW_SYSTEM_HALT		4
+#define EPOW_MAIN_ENCLOSURE		5
+#define EPOW_POWER_OFF			7
+
+void rtas_parse_epow_errlog(struct rtas_error_log *log)
+{
+	struct pseries_errorlog *pseries_log;
+	struct epow_errorlog *epow_log;
+	char action_code;
+	char modifier;
+
+	pseries_log = get_pseries_errorlog(log, PSERIES_ELOG_SECT_ID_EPOW);
+	if (pseries_log == NULL)
+		return;
+
+	epow_log = (struct epow_errorlog *)pseries_log->data;
+	action_code = epow_log->sensor_value & 0xF;	/* bottom 4 bits */
+	modifier = epow_log->event_modifier & 0xF;	/* bottom 4 bits */
+
+	switch (action_code) {
+	case EPOW_RESET:
+		pr_err("Non critical power or cooling issue cleared");
+		break;
+
+	case EPOW_WARN_COOLING:
+		pr_err("Non critical cooling issue reported by firmware");
+		pr_err("Check RTAS error log for details");
+		break;
+
+	case EPOW_WARN_POWER:
+		pr_err("Non critical power issue reported by firmware");
+		pr_err("Check RTAS error log for details");
+		break;
+
+	case EPOW_SYSTEM_SHUTDOWN:
+		handle_system_shutdown(epow_log->event_modifier);
+		break;
+
+	case EPOW_SYSTEM_HALT:
+		pr_emerg("Firmware initiated power off");
+		orderly_poweroff(1);
+		break;
+
+	case EPOW_MAIN_ENCLOSURE:
+	case EPOW_POWER_OFF:
+		pr_emerg("Critical power/cooling issue reported by firmware");
+		pr_emerg("Check RTAS error log for details");
+		pr_emerg("Immediate power off");
+		emergency_sync();
+		kernel_power_off();
+		break;
+
+	default:
+		pr_err("Unknown power/cooling event (action code %d)",
+			action_code);
+	}
+}
+
+/* Handle environmental and power warning (EPOW) interrupts. */
+static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
+{
+	int status;
+	int state;
+	int critical;
+
+	status = rtas_get_sensor(EPOW_SENSOR_TOKEN, EPOW_SENSOR_INDEX, &state);
+
+	if (state > 3)
+		critical = 1;		/* Time Critical */
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		critical = 0;
 
@@ -123,6 +264,7 @@ static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
 	status = rtas_call(ras_check_exception_token, 6, 1, NULL,
 			   RTAS_VECTOR_EXTERNAL_INTERRUPT,
 			   virq_to_hw(irq),
+<<<<<<< HEAD
 			   RTAS_EPOW_WARNING | RTAS_POWERMGM_EVENTS,
 			   critical, __pa(&ras_log_buf),
 				rtas_get_error_log_max());
@@ -135,6 +277,16 @@ static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
 	/* format and print the extended information */
 	log_error(ras_log_buf, ERR_TYPE_RTAS_LOG, 0);
 
+=======
+			   RTAS_EPOW_WARNING,
+			   critical, __pa(&ras_log_buf),
+				rtas_get_error_log_max());
+
+	log_error(ras_log_buf, ERR_TYPE_RTAS_LOG, 0);
+
+	rtas_parse_epow_errlog((struct rtas_error_log *)ras_log_buf);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&ras_log_buf_lock);
 	return IRQ_HANDLED;
 }
@@ -150,7 +302,11 @@ static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
 static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
 {
 	struct rtas_error_log *rtas_elog;
+<<<<<<< HEAD
 	int status = 0xdeadbeef;
+=======
+	int status;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int fatal;
 
 	spin_lock(&ras_log_buf_lock);
@@ -158,7 +314,11 @@ static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
 	status = rtas_call(ras_check_exception_token, 6, 1, NULL,
 			   RTAS_VECTOR_EXTERNAL_INTERRUPT,
 			   virq_to_hw(irq),
+<<<<<<< HEAD
 			   RTAS_INTERNAL_ERROR, 1 /*Time Critical */,
+=======
+			   RTAS_INTERNAL_ERROR, 1 /* Time Critical */,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   __pa(&ras_log_buf),
 				rtas_get_error_log_max());
 
@@ -173,6 +333,7 @@ static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
 	log_error(ras_log_buf, ERR_TYPE_RTAS_LOG, fatal);
 
 	if (fatal) {
+<<<<<<< HEAD
 		udbg_printf("Fatal HW Error <0x%lx 0x%x>\n",
 			    *((unsigned long *)&ras_log_buf), status);
 		printk(KERN_EMERG "Error: Fatal hardware error <0x%lx 0x%x>\n",
@@ -191,6 +352,15 @@ static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
 		printk(KERN_WARNING
 		       "Warning: Recoverable hardware error <0x%lx 0x%x>\n",
 		       *((unsigned long *)&ras_log_buf), status);
+=======
+		pr_emerg("Fatal hardware error reported by firmware");
+		pr_emerg("Check RTAS error log for details");
+		pr_emerg("Immediate power off");
+		emergency_sync();
+		kernel_power_off();
+	} else {
+		pr_err("Recoverable hardware error reported by firmware");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	spin_unlock(&ras_log_buf_lock);

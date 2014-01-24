@@ -2,6 +2,10 @@
 #define __PERF_RECORD_H
 
 #include <limits.h>
+<<<<<<< HEAD
+=======
+#include <stdio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "../perf.h"
 #include "map.h"
@@ -80,6 +84,10 @@ struct perf_sample {
 	u32 raw_size;
 	void *raw_data;
 	struct ip_callchain *callchain;
+<<<<<<< HEAD
+=======
+	struct branch_stack *branch_stack;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define BUILD_ID_SIZE 20
@@ -141,6 +149,7 @@ union perf_event {
 
 void perf_event__print_totals(void);
 
+<<<<<<< HEAD
 struct perf_session;
 struct thread_map;
 
@@ -178,6 +187,56 @@ int perf_event__process(union perf_event *event, struct perf_sample *sample,
 struct addr_location;
 int perf_event__preprocess_sample(const union perf_event *self,
 				  struct perf_session *session,
+=======
+struct perf_tool;
+struct thread_map;
+
+typedef int (*perf_event__handler_t)(struct perf_tool *tool,
+				     union perf_event *event,
+				     struct perf_sample *sample,
+				     struct machine *machine);
+
+int perf_event__synthesize_thread_map(struct perf_tool *tool,
+				      struct thread_map *threads,
+				      perf_event__handler_t process,
+				      struct machine *machine);
+int perf_event__synthesize_threads(struct perf_tool *tool,
+				   perf_event__handler_t process,
+				   struct machine *machine);
+int perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
+				       perf_event__handler_t process,
+				       struct machine *machine,
+				       const char *symbol_name);
+
+int perf_event__synthesize_modules(struct perf_tool *tool,
+				   perf_event__handler_t process,
+				   struct machine *machine);
+
+int perf_event__process_comm(struct perf_tool *tool,
+			     union perf_event *event,
+			     struct perf_sample *sample,
+			     struct machine *machine);
+int perf_event__process_lost(struct perf_tool *tool,
+			     union perf_event *event,
+			     struct perf_sample *sample,
+			     struct machine *machine);
+int perf_event__process_mmap(struct perf_tool *tool,
+			     union perf_event *event,
+			     struct perf_sample *sample,
+			     struct machine *machine);
+int perf_event__process_task(struct perf_tool *tool,
+			     union perf_event *event,
+			     struct perf_sample *sample,
+			     struct machine *machine);
+int perf_event__process(struct perf_tool *tool,
+			union perf_event *event,
+			struct perf_sample *sample,
+			struct machine *machine);
+
+struct addr_location;
+int perf_event__preprocess_sample(const union perf_event *self,
+				  struct machine *machine,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  struct addr_location *al,
 				  struct perf_sample *sample,
 				  symbol_filter_t filter);
@@ -186,6 +245,18 @@ const char *perf_event__name(unsigned int id);
 
 int perf_event__parse_sample(const union perf_event *event, u64 type,
 			     int sample_size, bool sample_id_all,
+<<<<<<< HEAD
 			     struct perf_sample *sample);
+=======
+			     struct perf_sample *sample, bool swapped);
+int perf_event__synthesize_sample(union perf_event *event, u64 type,
+				  const struct perf_sample *sample,
+				  bool swapped);
+
+size_t perf_event__fprintf_comm(union perf_event *event, FILE *fp);
+size_t perf_event__fprintf_mmap(union perf_event *event, FILE *fp);
+size_t perf_event__fprintf_task(union perf_event *event, FILE *fp);
+size_t perf_event__fprintf(union perf_event *event, FILE *fp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __PERF_RECORD_H */

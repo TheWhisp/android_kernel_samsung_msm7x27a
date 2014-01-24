@@ -86,7 +86,11 @@ static int __init hp6x0_apm_init(void)
 	int ret;
 
 	ret = request_irq(HP680_BTN_IRQ, hp6x0_apm_interrupt,
+<<<<<<< HEAD
 			  IRQF_DISABLED, MODNAME, NULL);
+=======
+			  0, MODNAME, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(ret < 0)) {
 		printk(KERN_ERR MODNAME ": IRQ %d request failed\n",
 		       HP680_BTN_IRQ);

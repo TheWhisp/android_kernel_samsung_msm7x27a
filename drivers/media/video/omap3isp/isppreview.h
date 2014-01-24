@@ -45,11 +45,14 @@
 #define ISPPRV_CONTRAST_HIGH		0xFF
 #define ISPPRV_CONTRAST_UNITS		0x1
 
+<<<<<<< HEAD
 #define NO_AVE				0x0
 #define AVE_2_PIX			0x1
 #define AVE_4_PIX			0x2
 #define AVE_8_PIX			0x3
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Features list */
 #define PREV_LUMA_ENHANCE		OMAP3ISP_PREV_LUMAENH
 #define PREV_INVERSE_ALAW		OMAP3ISP_PREV_INVALAW
@@ -106,7 +109,10 @@ enum preview_ycpos_mode {
  * @rgb2ycbcr: RGB to ycbcr parameters.
  * @hmed: Horizontal median filter.
  * @yclimit: YC limits parameters.
+<<<<<<< HEAD
  * @average: Downsampling rate for averager.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @contrast: Contrast.
  * @brightness: Brightness.
  */
@@ -124,7 +130,10 @@ struct prev_params {
 	struct omap3isp_prev_csc rgb2ycbcr;
 	struct omap3isp_prev_hmed hmed;
 	struct omap3isp_prev_yclimit yclimit;
+<<<<<<< HEAD
 	u8 average;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 contrast;
 	u8 brightness;
 };
@@ -159,11 +168,18 @@ struct isptables_update {
  * @subdev: V4L2 subdevice
  * @pads: Media entity pads
  * @formats: Active formats at the subdev pad
+<<<<<<< HEAD
+=======
+ * @crop: Active crop rectangle
+>>>>>>> refs/remotes/origin/cm-10.0
  * @input: Module currently connected to the input pad
  * @output: Bitmask of the active output
  * @video_in: Input video entity
  * @video_out: Output video entity
+<<<<<<< HEAD
  * @error: A hardware error occurred during capture
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @params: Module configuration data
  * @shadow_update: If set, update the hardware configured in the next interrupt
  * @underrun: Whether the preview entity has queued buffers on the output
@@ -177,6 +193,10 @@ struct isp_prev_device {
 	struct v4l2_subdev subdev;
 	struct media_pad pads[PREV_PADS_NUM];
 	struct v4l2_mbus_framefmt formats[PREV_PADS_NUM];
+<<<<<<< HEAD
+=======
+	struct v4l2_rect crop;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct v4l2_ctrl_handler ctrls;
 
@@ -184,7 +204,10 @@ struct isp_prev_device {
 	unsigned int output;
 	struct isp_video video_in;
 	struct isp_video video_out;
+<<<<<<< HEAD
 	unsigned int error;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct prev_params params;
 	unsigned int shadow_update:1;

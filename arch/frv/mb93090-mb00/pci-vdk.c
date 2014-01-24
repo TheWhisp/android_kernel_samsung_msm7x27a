@@ -327,11 +327,14 @@ void __init pcibios_fixup_bus(struct pci_bus *bus)
 	printk("### PCIBIOS_FIXUP_BUS(%d)\n",bus->number);
 #endif
 
+<<<<<<< HEAD
 	if (bus->number == 0) {
 		bus->resource[0] = &pci_ioport_resource;
 		bus->resource[1] = &pci_iomem_resource;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pci_read_bridge_bases(bus);
 
 	if (bus->number == 0) {
@@ -357,6 +360,10 @@ void __init pcibios_fixup_bus(struct pci_bus *bus)
 int __init pcibios_init(void)
 {
 	struct pci_ops *dir = NULL;
+<<<<<<< HEAD
+=======
+	LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!mb93090_mb00_detected)
 		return -ENXIO;
@@ -420,7 +427,14 @@ int __init pcibios_init(void)
 	}
 
 	printk("PCI: Probing PCI hardware\n");
+<<<<<<< HEAD
 	pci_root_bus = pci_scan_bus(0, pci_root_ops, NULL);
+=======
+	pci_add_resource(&resources, &pci_ioport_resource);
+	pci_add_resource(&resources, &pci_iomem_resource);
+	pci_root_bus = pci_scan_root_bus(NULL, 0, pci_root_ops, NULL,
+					 &resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pcibios_irq_init();
 	pcibios_fixup_peer_bridges();

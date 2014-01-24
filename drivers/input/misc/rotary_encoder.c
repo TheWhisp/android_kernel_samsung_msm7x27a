@@ -7,7 +7,11 @@
  * state machine code inspired by code from Tim Ruetz
  *
  * A generic driver for rotary encoders connected to GPIO lines.
+<<<<<<< HEAD
  * See file:Documentation/input/rotary_encoder.txt for more information
+=======
+ * See file:Documentation/input/rotary-encoder.txt for more information
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -284,6 +288,7 @@ static struct platform_driver rotary_encoder_driver = {
 		.owner	= THIS_MODULE,
 	}
 };
+<<<<<<< HEAD
 
 static int __init rotary_encoder_init(void)
 {
@@ -297,6 +302,9 @@ static void __exit rotary_encoder_exit(void)
 
 module_init(rotary_encoder_init);
 module_exit(rotary_encoder_exit);
+=======
+module_platform_driver(rotary_encoder_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_ALIAS("platform:" DRV_NAME);
 MODULE_DESCRIPTION("GPIO rotary encoder driver");

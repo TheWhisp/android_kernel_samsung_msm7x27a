@@ -36,7 +36,10 @@ static bool
 mark_free(struct drm_i915_gem_object *obj, struct list_head *unwind)
 {
 	list_add(&obj->exec_list, unwind);
+<<<<<<< HEAD
 	drm_gem_object_reference(&obj->base);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return drm_mm_scan_add_block(obj->gtt_space);
 }
 
@@ -49,6 +52,7 @@ i915_gem_evict_something(struct drm_device *dev, int min_size,
 	struct drm_i915_gem_object *obj;
 	int ret = 0;
 
+<<<<<<< HEAD
 	i915_gem_retire_requests(dev);
 
 	/* Re-check for free space after retiring requests */
@@ -64,6 +68,8 @@ i915_gem_evict_something(struct drm_device *dev, int min_size,
 			return 0;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	trace_i915_gem_evict(dev, min_size, alignment, mappable);
 
 	/*
@@ -122,7 +128,11 @@ i915_gem_evict_something(struct drm_device *dev, int min_size,
 			goto found;
 	}
 	list_for_each_entry(obj, &dev_priv->mm.active_list, mm_list) {
+<<<<<<< HEAD
 		if (! obj->base.write_domain || obj->pin_count)
+=======
+		if (!obj->base.write_domain || obj->pin_count)
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 
 		if (mark_free(obj, &unwind_list))
@@ -139,7 +149,10 @@ i915_gem_evict_something(struct drm_device *dev, int min_size,
 		BUG_ON(ret);
 
 		list_del_init(&obj->exec_list);
+<<<<<<< HEAD
 		drm_gem_object_unreference(&obj->base);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* We expect the caller to unpin, evict all and try again, or give up.
@@ -158,10 +171,17 @@ found:
 				       exec_list);
 		if (drm_mm_scan_remove_block(obj->gtt_space)) {
 			list_move(&obj->exec_list, &eviction_list);
+<<<<<<< HEAD
 			continue;
 		}
 		list_del_init(&obj->exec_list);
 		drm_gem_object_unreference(&obj->base);
+=======
+			drm_gem_object_reference(&obj->base);
+			continue;
+		}
+		list_del_init(&obj->exec_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Unbinding will emit any required flushes */
@@ -195,7 +215,11 @@ i915_gem_evict_everything(struct drm_device *dev, bool purgeable_only)
 	trace_i915_gem_evict_everything(dev, purgeable_only);
 
 	/* Flush everything (on to the inactive lists) and evict */
+<<<<<<< HEAD
 	ret = i915_gpu_idle(dev);
+=======
+	ret = i915_gpu_idle(dev, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		return ret;
 

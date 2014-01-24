@@ -280,7 +280,11 @@ static struct uhci_qh *uhci_alloc_qh(struct uhci_hcd *uhci,
 			qh->load = usb_calc_bus_time(udev->speed,
 					usb_endpoint_dir_in(&hep->desc),
 					qh->type == USB_ENDPOINT_XFER_ISOC,
+<<<<<<< HEAD
 					le16_to_cpu(hep->desc.wMaxPacketSize))
+=======
+					usb_endpoint_maxp(&hep->desc))
+>>>>>>> refs/remotes/origin/cm-10.0
 				/ 1000 + 1;
 
 	} else {		/* Skeleton QH */
@@ -792,7 +796,11 @@ static int uhci_submit_control(struct uhci_hcd *uhci, struct urb *urb,
 {
 	struct uhci_td *td;
 	unsigned long destination, status;
+<<<<<<< HEAD
 	int maxsze = le16_to_cpu(qh->hep->desc.wMaxPacketSize);
+=======
+	int maxsze = usb_endpoint_maxp(&qh->hep->desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int len = urb->transfer_buffer_length;
 	dma_addr_t data = urb->transfer_dma;
 	__hc32 *plink;
@@ -918,7 +926,11 @@ static int uhci_submit_common(struct uhci_hcd *uhci, struct urb *urb,
 {
 	struct uhci_td *td;
 	unsigned long destination, status;
+<<<<<<< HEAD
 	int maxsze = le16_to_cpu(qh->hep->desc.wMaxPacketSize);
+=======
+	int maxsze = usb_endpoint_maxp(&qh->hep->desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int len = urb->transfer_buffer_length;
 	int this_sg_len;
 	dma_addr_t data;

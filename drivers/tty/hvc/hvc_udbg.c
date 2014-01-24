@@ -36,7 +36,11 @@ static int hvc_udbg_put(uint32_t vtermno, const char *buf, int count)
 {
 	int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < count; i++)
+=======
+	for (i = 0; i < count && udbg_putc; i++)
+>>>>>>> refs/remotes/origin/cm-10.0
 		udbg_putc(buf[i]);
 
 	return i;
@@ -67,9 +71,18 @@ static int __init hvc_udbg_init(void)
 {
 	struct hvc_struct *hp;
 
+<<<<<<< HEAD
 	BUG_ON(hvc_udbg_dev);
 
 	hp = hvc_alloc(0, NO_IRQ, &hvc_udbg_ops, 16);
+=======
+	if (!udbg_putc)
+		return -ENODEV;
+
+	BUG_ON(hvc_udbg_dev);
+
+	hp = hvc_alloc(0, 0, &hvc_udbg_ops, 16);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(hp))
 		return PTR_ERR(hp);
 
@@ -88,6 +101,12 @@ module_exit(hvc_udbg_exit);
 
 static int __init hvc_udbg_console_init(void)
 {
+<<<<<<< HEAD
+=======
+	if (!udbg_putc)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	hvc_instantiate(0, 0, &hvc_udbg_ops);
 	add_preferred_console("hvc", 0, NULL);
 

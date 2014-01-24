@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ccflags-y := -Idrivers/net/cxgb3
+=======
+ccflags-y := -Idrivers/net/ethernet/chelsio/cxgb3
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-$(CONFIG_INFINIBAND_CXGB3) += iw_cxgb3.o
 

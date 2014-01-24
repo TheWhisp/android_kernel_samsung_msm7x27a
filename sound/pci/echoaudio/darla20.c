@@ -40,7 +40,11 @@
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/firmware.h>
 #include <linux/slab.h>
 #include <sound/core.h>
@@ -52,7 +56,11 @@
 #include <sound/asoundef.h>
 #include <sound/initval.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "echoaudio.h"
 
 MODULE_FIRMWARE("ea/darla20_dsp.fw");

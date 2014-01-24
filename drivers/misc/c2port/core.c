@@ -984,9 +984,15 @@ static int __init c2port_init(void)
 		" - (C) 2007 Rodolfo Giometti\n");
 
 	c2port_class = class_create(THIS_MODULE, "c2port");
+<<<<<<< HEAD
 	if (!c2port_class) {
 		printk(KERN_ERR "c2port: failed to allocate class\n");
 		return -ENOMEM;
+=======
+	if (IS_ERR(c2port_class)) {
+		printk(KERN_ERR "c2port: failed to allocate class\n");
+		return PTR_ERR(c2port_class);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	c2port_class->dev_attrs = c2port_attrs;
 

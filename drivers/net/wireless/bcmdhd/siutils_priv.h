@@ -1,9 +1,15 @@
 /*
  * Include file private to the SOC Interconnect support files.
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,7 +27,11 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: siutils_priv.h,v 1.17.4.3 2010-10-25 16:56:56 Exp $
+=======
+ * $Id: siutils_priv.h 309193 2012-01-19 00:03:57Z $
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef	_siutils_priv_h_
@@ -31,8 +41,16 @@
 
 #define	SI_MSG(args)
 
+<<<<<<< HEAD
 /* Define SI_VMSG to printf for verbose debugging, but don't check it in */
 #define	SI_VMSG(args)
+=======
+#ifdef BCMDBG_SI
+#define	SI_VMSG(args)	printf args
+#else
+#define	SI_VMSG(args)
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define	IS_SIM(chippkg)	((chippkg == HDLSIM_PKG_ID) || (chippkg == HWSIM_PKG_ID))
 
@@ -102,15 +120,31 @@ typedef struct si_info {
 
 #define PCI(si)		((BUSTYPE((si)->pub.bustype) == PCI_BUS) &&	\
 			 ((si)->pub.buscoretype == PCI_CORE_ID))
+<<<<<<< HEAD
 #define PCIE(si)	((BUSTYPE((si)->pub.bustype) == PCI_BUS) &&	\
 			 ((si)->pub.buscoretype == PCIE_CORE_ID))
+=======
+
+#define PCIE_GEN1(si)	((BUSTYPE((si)->pub.bustype) == PCI_BUS) &&	\
+			 ((si)->pub.buscoretype == PCIE_CORE_ID))
+
+#define PCIE_GEN2(si)	((BUSTYPE((si)->pub.bustype) == PCI_BUS) &&	\
+			 ((si)->pub.buscoretype == PCIE2_CORE_ID))
+
+#define PCIE(si)	(PCIE_GEN1(si) || PCIE_GEN2(si))
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PCMCIA(si)	((BUSTYPE((si)->pub.bustype) == PCMCIA_BUS) && ((si)->memseg == TRUE))
 
 /* Newer chips can access PCI/PCIE and CC core without requiring to change
  * PCI BAR0 WIN
  */
+<<<<<<< HEAD
 #define SI_FAST(si) (((si)->pub.buscoretype == PCIE_CORE_ID) ||	\
 		     (((si)->pub.buscoretype == PCI_CORE_ID) && (si)->pub.buscorerev >= 13))
+=======
+#define SI_FAST(si) (PCIE(si) || (PCI(si) && ((si)->pub.buscorerev >= 13)))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PCIEREGS(si) (((char *)((si)->curmap) + PCI_16KB0_PCIREGS_OFFSET))
 #define CCREGS_FAST(si) (((char *)((si)->curmap) + PCI_16KB0_CCREGS_OFFSET))
@@ -138,9 +172,16 @@ typedef struct si_info {
 #define	ILP_DIV_1MHZ		4		/* ILP = 1 MHz */
 
 #define PCI_FORCEHT(si)	\
+<<<<<<< HEAD
 	(((PCIE(si)) && (si->pub.chip == BCM4311_CHIP_ID) && ((si->pub.chiprev <= 1))) || \
 	((PCI(si) || PCIE(si)) && (si->pub.chip == BCM4321_CHIP_ID)) || \
 	(PCIE(si) && (si->pub.chip == BCM4716_CHIP_ID)))
+=======
+	(((PCIE_GEN1(si)) && (si->pub.chip == BCM4311_CHIP_ID) && ((si->pub.chiprev <= 1))) || \
+	((PCI(si) || PCIE_GEN1(si)) && (si->pub.chip == BCM4321_CHIP_ID)) || \
+	(PCIE_GEN1(si) && (si->pub.chip == BCM4716_CHIP_ID)) || \
+	(PCIE_GEN1(si) && (si->pub.chip == BCM4748_CHIP_ID)))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* GPIO Based LED powersave defines */
 #define DEFAULT_GPIO_ONTIME	10		/* Default: 10% on */
@@ -208,6 +249,10 @@ extern void ai_core_disable(si_t *sih, uint32 bits);
 extern int ai_numaddrspaces(si_t *sih);
 extern uint32 ai_addrspace(si_t *sih, uint asidx);
 extern uint32 ai_addrspacesize(si_t *sih, uint asidx);
+<<<<<<< HEAD
+=======
+extern void ai_coreaddrspaceX(si_t *sih, uint asidx, uint32 *addr, uint32 *size);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern uint ai_wrap_reg(si_t *sih, uint32 offset, uint32 mask, uint32 val);
 
 

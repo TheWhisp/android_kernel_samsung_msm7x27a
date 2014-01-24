@@ -43,7 +43,10 @@
 #include <linux/mca.h>
 #include <linux/kprobes.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <linux/proc_fs.h>
 #include <linux/mman.h>

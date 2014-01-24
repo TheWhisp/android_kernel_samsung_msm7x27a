@@ -22,6 +22,10 @@
 #include <linux/timex.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/msr.h>
 
 #define MMCR_BASE	0xfffef000	/* The default base address */
@@ -150,6 +154,7 @@ static struct cpufreq_driver sc520_freq_driver = {
 	.attr	= sc520_freq_attr,
 };
 
+<<<<<<< HEAD
 
 static int __init sc520_freq_init(void)
 {
@@ -162,6 +167,21 @@ static int __init sc520_freq_init(void)
 		pr_debug("no Elan SC520 processor found!\n");
 		return -ENODEV;
 	}
+=======
+static const struct x86_cpu_id sc520_ids[] = {
+	{ X86_VENDOR_AMD, 4, 9 },
+	{}
+};
+MODULE_DEVICE_TABLE(x86cpu, sc520_ids);
+
+static int __init sc520_freq_init(void)
+{
+	int err;
+
+	if (!x86_match_cpu(sc520_ids))
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	cpuctl = ioremap((unsigned long)(MMCR_BASE + OFFS_CPUCTL), 1);
 	if (!cpuctl) {
 		printk(KERN_ERR "sc520_freq: error: failed to remap memory\n");

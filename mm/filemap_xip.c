@@ -10,7 +10,11 @@
 
 #include <linux/fs.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/uio.h>
 #include <linux/rmap.h>
 #include <linux/mmu_notifier.h>

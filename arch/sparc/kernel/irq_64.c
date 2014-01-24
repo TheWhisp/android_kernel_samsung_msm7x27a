@@ -5,7 +5,10 @@
  * Copyright (C) 1998  Jakub Jelinek    (jj@ultra.linux.cz)
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/linkage.h>
 #include <linux/ptrace.h>
@@ -26,8 +29,12 @@
 
 #include <asm/ptrace.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <asm/io.h>
 #include <asm/iommu.h>

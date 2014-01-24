@@ -8,6 +8,10 @@
  */
 #include <linux/types.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/workqueue.h>
 #include <linux/kobject.h>
 
@@ -21,9 +25,16 @@ enum stat_item {
 	FREE_FROZEN,		/* Freeing to frozen slab */
 	FREE_ADD_PARTIAL,	/* Freeing moves slab to partial list */
 	FREE_REMOVE_PARTIAL,	/* Freeing removes last object */
+<<<<<<< HEAD
 	ALLOC_FROM_PARTIAL,	/* Cpu slab acquired from partial list */
 	ALLOC_SLAB,		/* Cpu slab acquired from page allocator */
 	ALLOC_REFILL,		/* Refill cpu slab from slab freelist */
+=======
+	ALLOC_FROM_PARTIAL,	/* Cpu slab acquired from node partial list */
+	ALLOC_SLAB,		/* Cpu slab acquired from page allocator */
+	ALLOC_REFILL,		/* Refill cpu slab from slab freelist */
+	ALLOC_NODE_MISMATCH,	/* Switching cpu slab */
+>>>>>>> refs/remotes/origin/cm-10.0
 	FREE_SLAB,		/* Slab freed to the page allocator */
 	CPUSLAB_FLUSH,		/* Abandoning of the cpu slab */
 	DEACTIVATE_FULL,	/* Cpu slab was full when deactivated */
@@ -31,14 +42,29 @@ enum stat_item {
 	DEACTIVATE_TO_HEAD,	/* Cpu slab was moved to the head of partials */
 	DEACTIVATE_TO_TAIL,	/* Cpu slab was moved to the tail of partials */
 	DEACTIVATE_REMOTE_FREES,/* Slab contained remotely freed objects */
+<<<<<<< HEAD
 	ORDER_FALLBACK,		/* Number of times fallback was necessary */
 	CMPXCHG_DOUBLE_CPU_FAIL,/* Failure of this_cpu_cmpxchg_double */
+=======
+	DEACTIVATE_BYPASS,	/* Implicit deactivation */
+	ORDER_FALLBACK,		/* Number of times fallback was necessary */
+	CMPXCHG_DOUBLE_CPU_FAIL,/* Failure of this_cpu_cmpxchg_double */
+	CMPXCHG_DOUBLE_FAIL,	/* Number of times that cmpxchg double did not match */
+	CPU_PARTIAL_ALLOC,	/* Used cpu partial on alloc */
+	CPU_PARTIAL_FREE,	/* Refill cpu partial on free */
+	CPU_PARTIAL_NODE,	/* Refill cpu partial from node partial */
+	CPU_PARTIAL_DRAIN,	/* Drain cpu partial to node partial */
+>>>>>>> refs/remotes/origin/cm-10.0
 	NR_SLUB_STAT_ITEMS };
 
 struct kmem_cache_cpu {
 	void **freelist;	/* Pointer to next available object */
 	unsigned long tid;	/* Globally unique transaction id */
 	struct page *page;	/* The slab from which we are allocating */
+<<<<<<< HEAD
+=======
+	struct page *partial;	/* Partially allocated frozen slabs */
+>>>>>>> refs/remotes/origin/cm-10.0
 	int node;		/* The node of the page (or -1 for debug) */
 #ifdef CONFIG_SLUB_STATS
 	unsigned stat[NR_SLUB_STAT_ITEMS];
@@ -76,6 +102,10 @@ struct kmem_cache {
 	int size;		/* The size of an object including meta data */
 	int objsize;		/* The size of an object without meta data */
 	int offset;		/* Free pointer offset. */
+<<<<<<< HEAD
+=======
+	int cpu_partial;	/* Number of per cpu partial objects to keep around */
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct kmem_cache_order_objects oo;
 
 	/* Allocation and freeing of slabs */
@@ -113,6 +143,7 @@ struct kmem_cache {
 
 #define KMALLOC_SHIFT_LOW ilog2(KMALLOC_MIN_SIZE)
 
+<<<<<<< HEAD
 #ifdef ARCH_DMA_MINALIGN
 #define ARCH_KMALLOC_MINALIGN ARCH_DMA_MINALIGN
 #else
@@ -123,6 +154,8 @@ struct kmem_cache {
 #define ARCH_SLAB_MINALIGN __alignof__(unsigned long long)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Maximum kmalloc object size handled by SLUB. Larger object allocations
  * are passed through to the page allocator. The page allocator "fastpath"
@@ -228,6 +261,22 @@ kmalloc_order(size_t size, gfp_t flags, unsigned int order)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * Calling this on allocated memory will check that the memory
+ * is expected to be in use, and print warnings if not.
+ */
+#ifdef CONFIG_SLUB_DEBUG
+extern bool verify_mem_not_deleted(const void *x);
+#else
+static inline bool verify_mem_not_deleted(const void *x)
+{
+	return true;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_TRACING
 extern void *
 kmem_cache_alloc_trace(struct kmem_cache *s, gfp_t gfpflags, size_t size);

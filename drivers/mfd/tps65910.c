@@ -16,10 +16,18 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/i2c.h>
 #include <linux/gpio.h>
 #include <linux/mfd/core.h>
+<<<<<<< HEAD
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mfd/tps65910.h>
 
 static struct mfd_cell tps65910s[] = {
@@ -38,6 +46,7 @@ static struct mfd_cell tps65910s[] = {
 static int tps65910_i2c_read(struct tps65910 *tps65910, u8 reg,
 				  int bytes, void *dest)
 {
+<<<<<<< HEAD
 	struct i2c_client *i2c = tps65910->i2c_client;
 	struct i2c_msg xfer[2];
 	int ret;
@@ -83,10 +92,20 @@ static int tps65910_i2c_write(struct tps65910 *tps65910, u8 reg,
 	if (ret != bytes + 1)
 		return -EIO;
 	return 0;
+=======
+	return regmap_bulk_read(tps65910->regmap, reg, dest, bytes);
+}
+
+static int tps65910_i2c_write(struct tps65910 *tps65910, u8 reg,
+				  int bytes, void *src)
+{
+	return regmap_bulk_write(tps65910->regmap, reg, src, bytes);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int tps65910_set_bits(struct tps65910 *tps65910, u8 reg, u8 mask)
 {
+<<<<<<< HEAD
 	u8 data;
 	int err;
 
@@ -105,11 +124,15 @@ int tps65910_set_bits(struct tps65910 *tps65910, u8 reg, u8 mask)
 out:
 	mutex_unlock(&tps65910->io_mutex);
 	return err;
+=======
+	return regmap_update_bits(tps65910->regmap, reg, mask, mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(tps65910_set_bits);
 
 int tps65910_clear_bits(struct tps65910 *tps65910, u8 reg, u8 mask)
 {
+<<<<<<< HEAD
 	u8 data;
 	int err;
 
@@ -131,6 +154,41 @@ out:
 }
 EXPORT_SYMBOL_GPL(tps65910_clear_bits);
 
+=======
+	return regmap_update_bits(tps65910->regmap, reg, mask, 0);
+}
+EXPORT_SYMBOL_GPL(tps65910_clear_bits);
+
+static bool is_volatile_reg(struct device *dev, unsigned int reg)
+{
+	struct tps65910 *tps65910 = dev_get_drvdata(dev);
+
+	/*
+	 * Caching all regulator registers.
+	 * All regualator register address range is same for
+	 * TPS65910 and TPS65911
+	 */
+	if ((reg >= TPS65910_VIO) && (reg <= TPS65910_VDAC)) {
+		/* Check for non-existing register */
+		if (tps65910_chip_id(tps65910) == TPS65910)
+			if ((reg == TPS65911_VDDCTRL_OP) ||
+				(reg == TPS65911_VDDCTRL_SR))
+				return true;
+		return false;
+	}
+	return true;
+}
+
+static const struct regmap_config tps65910_regmap_config = {
+	.reg_bits = 8,
+	.val_bits = 8,
+	.volatile_reg = is_volatile_reg,
+	.max_register = TPS65910_MAX_REGISTER,
+	.num_reg_defaults_raw = TPS65910_MAX_REGISTER,
+	.cache_type = REGCACHE_RBTREE,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int tps65910_i2c_probe(struct i2c_client *i2c,
 			    const struct i2c_device_id *id)
 {
@@ -147,12 +205,20 @@ static int tps65910_i2c_probe(struct i2c_client *i2c,
 	if (init_data == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	init_data->irq = pmic_plat_data->irq;
 	init_data->irq_base = pmic_plat_data->irq;
 
 	tps65910 = kzalloc(sizeof(struct tps65910), GFP_KERNEL);
 	if (tps65910 == NULL)
 		return -ENOMEM;
+=======
+	tps65910 = kzalloc(sizeof(struct tps65910), GFP_KERNEL);
+	if (tps65910 == NULL) {
+		kfree(init_data);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	i2c_set_clientdata(i2c, tps65910);
 	tps65910->dev = &i2c->dev;
@@ -162,12 +228,23 @@ static int tps65910_i2c_probe(struct i2c_client *i2c,
 	tps65910->write = tps65910_i2c_write;
 	mutex_init(&tps65910->io_mutex);
 
+<<<<<<< HEAD
+=======
+	tps65910->regmap = regmap_init_i2c(i2c, &tps65910_regmap_config);
+	if (IS_ERR(tps65910->regmap)) {
+		ret = PTR_ERR(tps65910->regmap);
+		dev_err(&i2c->dev, "regmap initialization failed: %d\n", ret);
+		goto regmap_err;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = mfd_add_devices(tps65910->dev, -1,
 			      tps65910s, ARRAY_SIZE(tps65910s),
 			      NULL, 0);
 	if (ret < 0)
 		goto err;
 
+<<<<<<< HEAD
 	tps65910_gpio_init(tps65910, pmic_plat_data->gpio_base);
 
 	ret = tps65910_irq_init(tps65910, init_data->irq, init_data);
@@ -179,6 +256,23 @@ static int tps65910_i2c_probe(struct i2c_client *i2c,
 err:
 	mfd_remove_devices(tps65910->dev);
 	kfree(tps65910);
+=======
+	init_data->irq = pmic_plat_data->irq;
+	init_data->irq_base = pmic_plat_data->irq_base;
+
+	tps65910_gpio_init(tps65910, pmic_plat_data->gpio_base);
+
+	tps65910_irq_init(tps65910, init_data->irq, init_data);
+
+	kfree(init_data);
+	return ret;
+
+err:
+	regmap_exit(tps65910->regmap);
+regmap_err:
+	kfree(tps65910);
+	kfree(init_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -186,7 +280,13 @@ static int tps65910_i2c_remove(struct i2c_client *i2c)
 {
 	struct tps65910 *tps65910 = i2c_get_clientdata(i2c);
 
+<<<<<<< HEAD
 	mfd_remove_devices(tps65910->dev);
+=======
+	tps65910_irq_exit(tps65910);
+	mfd_remove_devices(tps65910->dev);
+	regmap_exit(tps65910->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(tps65910);
 
 	return 0;

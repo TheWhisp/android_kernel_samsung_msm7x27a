@@ -12,7 +12,10 @@
 
 #include <asm/txx9/tx3927.h>
 #include <asm/addrspace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/txx9irq.h>
 
 /* CS */

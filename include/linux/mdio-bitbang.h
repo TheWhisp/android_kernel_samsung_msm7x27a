@@ -2,7 +2,12 @@
 #define __LINUX_MDIO_BITBANG_H
 
 #include <linux/phy.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+
+struct module;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct mdiobb_ctrl;
 
@@ -31,6 +36,11 @@ struct mdiobb_ops {
 
 struct mdiobb_ctrl {
 	const struct mdiobb_ops *ops;
+<<<<<<< HEAD
+=======
+	/* reset callback */
+	int (*reset)(struct mii_bus *bus);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* The returned bus is not yet registered with the phy layer. */

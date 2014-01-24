@@ -600,7 +600,11 @@ static int __devinit snd_msnd_attach(struct snd_card *card)
 					  mpu_io[0],
 					  MPU401_MODE_INPUT |
 					  MPU401_MODE_OUTPUT,
+<<<<<<< HEAD
 					  mpu_irq[0], IRQF_DISABLED,
+=======
+					  mpu_irq[0],
+>>>>>>> refs/remotes/origin/cm-10.0
 					  &chip->rmidi);
 		if (err < 0) {
 			printk(KERN_ERR LOGNAME
@@ -785,7 +789,11 @@ static int write_ndelay[SNDRV_CARDS] = { [0 ... (SNDRV_CARDS-1)] = 1 };
 static int calibrate_signal;
 
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
 static int isapnp[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+static bool isapnp[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_array(isapnp, bool, NULL, 0444);
 MODULE_PARM_DESC(isapnp, "ISA PnP detection for specified soundcard.");
 #define has_isapnp(x) isapnp[x]

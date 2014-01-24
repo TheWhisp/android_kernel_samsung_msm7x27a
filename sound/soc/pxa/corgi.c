@@ -45,10 +45,15 @@
 static int corgi_jack_func;
 static int corgi_spk_func;
 
+<<<<<<< HEAD
 static void corgi_ext_control(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 
+=======
+static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* set up jack connection */
 	switch (corgi_jack_func) {
 	case CORGI_HP:
@@ -104,7 +109,11 @@ static int corgi_startup(struct snd_pcm_substream *substream)
 	mutex_lock(&codec->mutex);
 
 	/* check the jack status at stream startup */
+<<<<<<< HEAD
 	corgi_ext_control(codec);
+=======
+	corgi_ext_control(&codec->dapm);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_unlock(&codec->mutex);
 
@@ -142,6 +151,7 @@ static int corgi_hw_params(struct snd_pcm_substream *substream,
 		break;
 	}
 
+<<<<<<< HEAD
 	/* set codec DAI configuration */
 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
@@ -154,6 +164,8 @@ static int corgi_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* set the codec system clock for DAC and ADC */
 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL, clk,
 		SND_SOC_CLOCK_IN);
@@ -185,13 +197,21 @@ static int corgi_get_jack(struct snd_kcontrol *kcontrol,
 static int corgi_set_jack(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
 {
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+=======
+	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (corgi_jack_func == ucontrol->value.integer.value[0])
 		return 0;
 
 	corgi_jack_func = ucontrol->value.integer.value[0];
+<<<<<<< HEAD
 	corgi_ext_control(codec);
+=======
+	corgi_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 
@@ -205,13 +225,21 @@ static int corgi_get_spk(struct snd_kcontrol *kcontrol,
 static int corgi_set_spk(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
 {
+<<<<<<< HEAD
 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+=======
+	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (corgi_spk_func == ucontrol->value.integer.value[0])
 		return 0;
 
 	corgi_spk_func = ucontrol->value.integer.value[0];
+<<<<<<< HEAD
 	corgi_ext_control(codec);
+=======
+	corgi_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 
@@ -239,7 +267,11 @@ SND_SOC_DAPM_HP("Headset Jack", NULL),
 };
 
 /* Corgi machine audio map (connections to the codec pins) */
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route corgi_audio_map[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* headset Jack  - in = micin, out = LHPOUT*/
 	{"Headset Jack", NULL, "LHPOUT"},
@@ -281,11 +313,15 @@ static int corgi_wm8731_init(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_soc_codec *codec = rtd->codec;
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	snd_soc_dapm_nc_pin(dapm, "LLINEIN");
 	snd_soc_dapm_nc_pin(dapm, "RLINEIN");
 
+<<<<<<< HEAD
 	/* Add corgi specific controls */
 	err = snd_soc_add_controls(codec, wm8731_corgi_controls,
 				ARRAY_SIZE(wm8731_corgi_controls));
@@ -300,6 +336,8 @@ static int corgi_wm8731_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
 	snd_soc_dapm_sync(dapm);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -312,10 +350,16 @@ static struct snd_soc_dai_link corgi_dai = {
 	.platform_name = "pxa-pcm-audio",
 	.codec_name = "wm8731.0-001b",
 	.init = corgi_wm8731_init,
+<<<<<<< HEAD
+=======
+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+		   SND_SOC_DAIFMT_CBS_CFS,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops = &corgi_ops,
 };
 
 /* corgi audio machine driver */
+<<<<<<< HEAD
 static struct snd_soc_card snd_soc_corgi = {
 	.name = "Corgi",
 	.dai_link = &corgi_dai,
@@ -352,8 +396,60 @@ static void __exit corgi_exit(void)
 
 module_init(corgi_init);
 module_exit(corgi_exit);
+=======
+static struct snd_soc_card corgi = {
+	.name = "Corgi",
+	.owner = THIS_MODULE,
+	.dai_link = &corgi_dai,
+	.num_links = 1,
+
+	.controls = wm8731_corgi_controls,
+	.num_controls = ARRAY_SIZE(wm8731_corgi_controls),
+	.dapm_widgets = wm8731_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8731_dapm_widgets),
+	.dapm_routes = corgi_audio_map,
+	.num_dapm_routes = ARRAY_SIZE(corgi_audio_map),
+};
+
+static int __devinit corgi_probe(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = &corgi;
+	int ret;
+
+	card->dev = &pdev->dev;
+
+	ret = snd_soc_register_card(card);
+	if (ret)
+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+			ret);
+	return ret;
+}
+
+static int __devexit corgi_remove(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = platform_get_drvdata(pdev);
+
+	snd_soc_unregister_card(card);
+	return 0;
+}
+
+static struct platform_driver corgi_driver = {
+	.driver		= {
+		.name	= "corgi-audio",
+		.owner	= THIS_MODULE,
+	},
+	.probe		= corgi_probe,
+	.remove		= __devexit_p(corgi_remove),
+};
+
+module_platform_driver(corgi_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR("Richard Purdie");
 MODULE_DESCRIPTION("ALSA SoC Corgi");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:corgi-audio");
+>>>>>>> refs/remotes/origin/cm-10.0

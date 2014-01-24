@@ -730,6 +730,10 @@ int atari_scsi_release(struct Scsi_Host *sh)
 		free_irq(IRQ_TT_MFP_SCSI, sh);
 	if (atari_dma_buffer)
 		atari_stram_free(atari_dma_buffer);
+<<<<<<< HEAD
+=======
+	NCR5380_exit(sh);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 

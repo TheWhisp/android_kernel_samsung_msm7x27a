@@ -503,6 +503,7 @@ static struct i2c_driver tsc2007_driver = {
 	.remove		= __devexit_p(tsc2007_remove),
 };
 
+<<<<<<< HEAD
 static int __init tsc2007_init(void)
 {
 	return i2c_add_driver(&tsc2007_driver);
@@ -515,6 +516,9 @@ static void __exit tsc2007_exit(void)
 
 module_init(tsc2007_init);
 module_exit(tsc2007_exit);
+=======
+module_i2c_driver(tsc2007_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Kwangwoo Lee <kwlee@mtekvision.com>");
 MODULE_DESCRIPTION("TSC2007 TouchScreen Driver");

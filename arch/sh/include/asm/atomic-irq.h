@@ -1,6 +1,11 @@
 #ifndef __ASM_SH_ATOMIC_IRQ_H
 #define __ASM_SH_ATOMIC_IRQ_H
 
+<<<<<<< HEAD
+=======
+#include <linux/irqflags.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * To get proper branch prediction for the main line, we must branch
  * forward to code at the end of this object's .text section, then

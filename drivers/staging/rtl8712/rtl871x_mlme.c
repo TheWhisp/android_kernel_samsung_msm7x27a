@@ -52,6 +52,11 @@ static sint _init_mlme_priv(struct _adapter *padapter)
 	pmlmepriv->fw_state = 0;
 	pmlmepriv->cur_network.network.InfrastructureMode =
 				 Ndis802_11AutoUnknown;
+<<<<<<< HEAD
+=======
+	/* Maybe someday we should rename this variable to "active_mode"(Jeff)*/
+	pmlmepriv->passive_mode = 1; /* 1: active, 0: passive. */
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_init(&(pmlmepriv->lock));
 	spin_lock_init(&(pmlmepriv->lock2));
 	_init_queue(&(pmlmepriv->free_bss_pool));
@@ -485,6 +490,15 @@ static int is_desired_network(struct _adapter *adapter,
 	if ((psecuritypriv->PrivacyAlgrthm != _NO_PRIVACY_) &&
 		    (pnetwork->network.Privacy == 0))
 		bselected = false;
+<<<<<<< HEAD
+=======
+	if (check_fwstate(&adapter->mlmepriv, WIFI_ADHOC_STATE) == true) {
+		if (pnetwork->network.InfrastructureMode !=
+			adapter->mlmepriv.cur_network.network.
+			InfrastructureMode)
+			bselected = false;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return bselected;
 }
 
@@ -543,7 +557,11 @@ void r8712_survey_event_callback(struct _adapter *adapter, u8 *pbuf)
 			ibss_wlan = r8712_find_network(
 						&pmlmepriv->scanned_queue,
 						pnetwork->MacAddress);
+<<<<<<< HEAD
 			if (!ibss_wlan) {
+=======
+			if (ibss_wlan) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				memcpy(ibss_wlan->network.IEs,
 					pnetwork->IEs, 8);
 				goto exit;
@@ -683,9 +701,17 @@ void r8712_ind_disconnect(struct _adapter *padapter)
 {
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 
+<<<<<<< HEAD
 	_clr_fwstate_(pmlmepriv, _FW_LINKED);
 	padapter->ledpriv.LedControlHandler(padapter, LED_CTL_NO_LINK);
 	r8712_os_indicate_disconnect(padapter);
+=======
+	if (check_fwstate(pmlmepriv, _FW_LINKED) == true) {
+		_clr_fwstate_(pmlmepriv, _FW_LINKED);
+		padapter->ledpriv.LedControlHandler(padapter, LED_CTL_NO_LINK);
+		r8712_os_indicate_disconnect(padapter);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (padapter->pwrctrlpriv.pwr_mode !=
 	    padapter->registrypriv.power_mgnt) {
 		_cancel_timer_ex(&pmlmepriv->dhcp_timer);
@@ -718,9 +744,15 @@ void r8712_joinbss_event_callback(struct _adapter *adapter, u8 *pbuf)
 
 	if (sizeof(struct list_head) == 4 * sizeof(u32)) {
 		pnetwork = (struct wlan_network *)
+<<<<<<< HEAD
 			   _malloc(sizeof(struct wlan_network));
 		memcpy((u8 *)pnetwork+16, (u8 *)pbuf + 8,
 			 sizeof(struct wlan_network) - 16);
+=======
+			_malloc(sizeof(struct wlan_network));
+		memcpy((u8 *)pnetwork+16, (u8 *)pbuf + 8,
+			sizeof(struct wlan_network) - 16);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		pnetwork = (struct wlan_network *)pbuf;
 
@@ -1271,12 +1303,22 @@ sint r8712_set_key(struct _adapter *adapter,
 			psecuritypriv->DefKey[keyid].skey, keylen);
 		break;
 	case _TKIP_:
+<<<<<<< HEAD
+=======
+		if (keyid < 1 || keyid > 2)
+			return _FAIL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		keylen = 16;
 		memcpy(psetkeyparm->key,
 			&psecuritypriv->XGrpKey[keyid - 1], keylen);
 		psetkeyparm->grpkey = 1;
 		break;
 	case _AES_:
+<<<<<<< HEAD
+=======
+		if (keyid < 1 || keyid > 2)
+			return _FAIL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		keylen = 16;
 		memcpy(psetkeyparm->key,
 			&psecuritypriv->XGrpKey[keyid - 1], keylen);
@@ -1657,7 +1699,11 @@ void r8712_update_registrypriv_dev_network(struct _adapter *adapter)
 	/* 1. Supported rates
 	 * 2. IE
 	 */
+<<<<<<< HEAD
 	sz = r8712_generate_ie(pregistrypriv, adapter);
+=======
+	sz = r8712_generate_ie(pregistrypriv);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pdev_network->IELength = sz;
 	pdev_network->Length = r8712_get_ndis_wlan_bssid_ex_sz(
 			      (struct ndis_wlan_bssid_ex *)pdev_network);
@@ -1802,6 +1848,7 @@ void r8712_issue_addbareq_cmd(struct _adapter *padapter, int priority)
 		}
 	}
 }
+<<<<<<< HEAD
 
 /*the function is >= passive_level*/
 unsigned int r8712_add_ht_addt_info(struct _adapter *padapter,
@@ -1838,3 +1885,5 @@ unsigned int r8712_add_ht_addt_info(struct _adapter *padapter,
 	}
 	return phtpriv->ht_option;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

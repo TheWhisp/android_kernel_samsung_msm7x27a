@@ -12,6 +12,10 @@
 #include <linux/user.h>
 #include <linux/elf.h>
 #include <linux/elfcore.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/highmem.h>
 #include <linux/bootmem.h>
@@ -699,3 +703,29 @@ static int __init vmcore_init(void)
 	return 0;
 }
 module_init(vmcore_init)
+<<<<<<< HEAD
+=======
+
+/* Cleanup function for vmcore module. */
+void vmcore_cleanup(void)
+{
+	struct list_head *pos, *next;
+
+	if (proc_vmcore) {
+		remove_proc_entry(proc_vmcore->name, proc_vmcore->parent);
+		proc_vmcore = NULL;
+	}
+
+	/* clear the vmcore list. */
+	list_for_each_safe(pos, next, &vmcore_list) {
+		struct vmcore *m;
+
+		m = list_entry(pos, struct vmcore, list);
+		list_del(&m->list);
+		kfree(m);
+	}
+	kfree(elfcorebuf);
+	elfcorebuf = NULL;
+}
+EXPORT_SYMBOL_GPL(vmcore_cleanup);
+>>>>>>> refs/remotes/origin/cm-10.0

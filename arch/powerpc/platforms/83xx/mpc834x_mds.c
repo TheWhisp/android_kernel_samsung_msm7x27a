@@ -25,8 +25,12 @@
 #include <linux/root_dev.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/io.h>
 #include <asm/machdep.h>
@@ -53,7 +57,11 @@ static int mpc834xemds_usb_cfg(void)
 		struct resource res;
 
 		of_address_to_resource(np, 0, &res);
+<<<<<<< HEAD
 		bcsr_regs = ioremap(res.start, res.end - res.start + 1);
+=======
+		bcsr_regs = ioremap(res.start, resource_size(&res));
+>>>>>>> refs/remotes/origin/cm-10.0
 		of_node_put(np);
 	}
 	if (!bcsr_regs)
@@ -77,6 +85,7 @@ static int mpc834xemds_usb_cfg(void)
  */
 static void __init mpc834x_mds_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
@@ -88,10 +97,17 @@ static void __init mpc834x_mds_setup_arch(void)
 	for_each_compatible_node(np, "pci", "fsl,mpc8349-pci")
 		mpc83xx_add_bridge(np);
 #endif
+=======
+	if (ppc_md.progress)
+		ppc_md.progress("mpc834x_mds_setup_arch()", 0);
+
+	mpc83xx_setup_pci();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mpc834xemds_usb_cfg();
 }
 
+<<<<<<< HEAD
 static void __init mpc834x_mds_init_IRQ(void)
 {
 	struct device_node *np;
@@ -122,6 +138,9 @@ static int __init mpc834x_declare_of_platform_devices(void)
 	return 0;
 }
 machine_device_initcall(mpc834x_mds, mpc834x_declare_of_platform_devices);
+=======
+machine_device_initcall(mpc834x_mds, mpc83xx_declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Called very early, MMU is off, device-tree isn't unflattened
@@ -137,7 +156,11 @@ define_machine(mpc834x_mds) {
 	.name			= "MPC834x MDS",
 	.probe			= mpc834x_mds_probe,
 	.setup_arch		= mpc834x_mds_setup_arch,
+<<<<<<< HEAD
 	.init_IRQ		= mpc834x_mds_init_IRQ,
+=======
+	.init_IRQ		= mpc83xx_ipic_init_IRQ,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_irq		= ipic_get_irq,
 	.restart		= mpc83xx_restart,
 	.time_init		= mpc83xx_time_init,

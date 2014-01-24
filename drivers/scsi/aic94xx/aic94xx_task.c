@@ -201,7 +201,11 @@ static void asd_get_response_tasklet(struct asd_ascb *ascb,
 
 		if (SAS_STATUS_BUF_SIZE >= sizeof(*resp)) {
 			resp->frame_len = le16_to_cpu(*(__le16 *)(r+6));
+<<<<<<< HEAD
 			memcpy(&resp->ending_fis[0], r+16, 24);
+=======
+			memcpy(&resp->ending_fis[0], r+16, ATA_RESP_FIS_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 			ts->buf_valid_size = sizeof(*resp);
 		}
 	}

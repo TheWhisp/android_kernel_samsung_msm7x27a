@@ -74,7 +74,11 @@ static int isight_decode(struct uvc_video_queue *queue, struct uvc_buffer *buf,
 	 * Empty buffers (bytesused == 0) don't trigger end of frame detection
 	 * as it doesn't make sense to return an empty buffer.
 	 */
+<<<<<<< HEAD
 	if (is_header && buf->buf.bytesused != 0) {
+=======
+	if (is_header && buf->bytesused != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		buf->state = UVC_BUF_STATE_DONE;
 		return -EAGAIN;
 	}
@@ -83,6 +87,7 @@ static int isight_decode(struct uvc_video_queue *queue, struct uvc_buffer *buf,
 	 * contain no data.
 	 */
 	if (!is_header) {
+<<<<<<< HEAD
 		maxlen = buf->buf.length - buf->buf.bytesused;
 		mem = queue->mem + buf->buf.m.offset + buf->buf.bytesused;
 		nbytes = min(len, maxlen);
@@ -90,6 +95,15 @@ static int isight_decode(struct uvc_video_queue *queue, struct uvc_buffer *buf,
 		buf->buf.bytesused += nbytes;
 
 		if (len > maxlen || buf->buf.bytesused == buf->buf.length) {
+=======
+		maxlen = buf->length - buf->bytesused;
+		mem = buf->mem + buf->bytesused;
+		nbytes = min(len, maxlen);
+		memcpy(mem, data, nbytes);
+		buf->bytesused += nbytes;
+
+		if (len > maxlen || buf->bytesused == buf->length) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			uvc_trace(UVC_TRACE_FRAME, "Frame complete "
 				  "(overflow).\n");
 			buf->state = UVC_BUF_STATE_DONE;

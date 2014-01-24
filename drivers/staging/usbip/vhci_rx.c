@@ -180,8 +180,11 @@ static void vhci_recv_ret_unlink(struct vhci_device *vdev,
 	}
 
 	kfree(unlink);
+<<<<<<< HEAD
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int vhci_priv_tx_empty(struct vhci_device *vdev)
@@ -207,7 +210,11 @@ static void vhci_rx_pdu(struct usbip_device *ud)
 	memset(&pdu, 0, sizeof(pdu));
 
 	/* 1. receive a pdu header */
+<<<<<<< HEAD
 	ret = usbip_xmit(0, ud->tcp_socket, (char *) &pdu, sizeof(pdu), 0);
+=======
+	ret = usbip_recv(ud->tcp_socket, &pdu, sizeof(pdu));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0) {
 		if (ret == -ECONNRESET)
 			pr_info("connection reset by peer\n");

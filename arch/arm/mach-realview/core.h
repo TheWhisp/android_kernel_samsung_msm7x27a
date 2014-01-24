@@ -28,6 +28,7 @@
 #include <asm/setup.h>
 #include <asm/leds.h>
 
+<<<<<<< HEAD
 #define AMBA_DEVICE(name,busid,base,plat)			\
 static struct amba_device name##_device = {			\
 	.dev		= {					\
@@ -43,6 +44,13 @@ static struct amba_device name##_device = {			\
 	.dma_mask	= ~0,					\
 	.irq		= base##_IRQ,				\
 }
+=======
+#define APB_DEVICE(name, busid, base, plat)			\
+static AMBA_APB_DEVICE(name, busid, 0, REALVIEW_##base##_BASE, base##_IRQ, plat)
+
+#define AHB_DEVICE(name, busid, base, plat)			\
+static AMBA_AHB_DEVICE(name, busid, 0, REALVIEW_##base##_BASE, base##_IRQ, plat)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct machine_desc;
 
@@ -63,8 +71,13 @@ extern int realview_flash_register(struct resource *res, u32 num);
 extern int realview_eth_register(const char *name, struct resource *res);
 extern int realview_usb_register(struct resource *res);
 extern void realview_init_early(void);
+<<<<<<< HEAD
 extern void realview_fixup(struct machine_desc *mdesc, struct tag *tags,
 			   char **from, struct meminfo *meminfo);
 extern void (*realview_reset)(char);
+=======
+extern void realview_fixup(struct tag *tags, char **from,
+			   struct meminfo *meminfo);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

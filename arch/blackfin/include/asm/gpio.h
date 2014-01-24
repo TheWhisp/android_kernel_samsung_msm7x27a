@@ -16,6 +16,7 @@
 
 #include <mach/gpio.h>
 
+<<<<<<< HEAD
 #define GPIO_0	0
 #define GPIO_1	1
 #define GPIO_2	2
@@ -68,6 +69,15 @@
 #define PERIPHERAL_USAGE 1
 #define GPIO_USAGE 0
 
+=======
+#define PERIPHERAL_USAGE 1
+#define GPIO_USAGE 0
+
+#ifndef BFIN_GPIO_PINT
+# define BFIN_GPIO_PINT 0
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef __ASSEMBLY__
 
 #include <linux/compiler.h>
@@ -89,7 +99,11 @@
 * MODIFICATION HISTORY :
 **************************************************************/
 
+<<<<<<< HEAD
 #ifndef CONFIG_BF54x
+=======
+#if !BFIN_GPIO_PINT
+>>>>>>> refs/remotes/origin/cm-10.0
 void set_gpio_dir(unsigned, unsigned short);
 void set_gpio_inen(unsigned, unsigned short);
 void set_gpio_polar(unsigned, unsigned short);
@@ -164,6 +178,13 @@ struct gpio_port_t {
 #ifdef BFIN_SPECIAL_GPIO_BANKS
 void bfin_special_gpio_free(unsigned gpio);
 int bfin_special_gpio_request(unsigned gpio, const char *label);
+<<<<<<< HEAD
+=======
+# ifdef CONFIG_PM
+void bfin_special_gpio_pm_hibernate_restore(void);
+void bfin_special_gpio_pm_hibernate_suspend(void);
+# endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_PM
@@ -182,7 +203,11 @@ static inline void bfin_pm_standby_restore(void)
 void bfin_gpio_pm_hibernate_restore(void);
 void bfin_gpio_pm_hibernate_suspend(void);
 
+<<<<<<< HEAD
 #ifndef CONFIG_BF54x
+=======
+# if !BFIN_GPIO_PINT
+>>>>>>> refs/remotes/origin/cm-10.0
 int gpio_pm_wakeup_ctrl(unsigned gpio, unsigned ctrl);
 
 struct gpio_port_s {
@@ -199,8 +224,14 @@ struct gpio_port_s {
 	unsigned short reserved;
 	unsigned short mux;
 };
+<<<<<<< HEAD
 #endif /*CONFIG_BF54x*/
 #endif /*CONFIG_PM*/
+=======
+# endif
+#endif /*CONFIG_PM*/
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /***********************************************************
 *
 * FUNCTIONS: Blackfin GPIO Driver
@@ -284,16 +315,37 @@ static inline int gpio_set_debounce(unsigned gpio, unsigned debounce)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static inline int gpio_get_value(unsigned gpio)
+=======
+static inline int __gpio_get_value(unsigned gpio)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return bfin_gpio_get_value(gpio);
 }
 
+<<<<<<< HEAD
 static inline void gpio_set_value(unsigned gpio, int value)
+=======
+static inline void __gpio_set_value(unsigned gpio, int value)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return bfin_gpio_set_value(gpio, value);
 }
 
+<<<<<<< HEAD
+=======
+static inline int gpio_get_value(unsigned gpio)
+{
+	return __gpio_get_value(gpio);
+}
+
+static inline void gpio_set_value(unsigned gpio, int value)
+{
+	return __gpio_set_value(gpio, value);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int gpio_to_irq(unsigned gpio)
 {
 	if (likely(gpio < MAX_BLACKFIN_GPIOS))

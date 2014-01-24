@@ -135,6 +135,7 @@ static struct platform_driver led_pwm_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init led_pwm_init(void)
 {
 	return platform_driver_register(&led_pwm_driver);
@@ -147,6 +148,9 @@ static void __exit led_pwm_exit(void)
 
 module_init(led_pwm_init);
 module_exit(led_pwm_exit);
+=======
+module_platform_driver(led_pwm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Luotao Fu <l.fu@pengutronix.de>");
 MODULE_DESCRIPTION("PWM LED driver for PXA");

@@ -8,6 +8,11 @@
 #ifndef _LINUX_ANON_INODES_H
 #define _LINUX_ANON_INODES_H
 
+<<<<<<< HEAD
+=======
+struct file_operations;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct file *anon_inode_getfile(const char *name,
 				const struct file_operations *fops,
 				void *priv, int flags);

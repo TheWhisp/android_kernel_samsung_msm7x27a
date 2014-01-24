@@ -28,12 +28,21 @@
 
 PISDN_ADAPTER IoAdapters[MAX_ADAPTER];
 extern IDI_CALL Requests[MAX_ADAPTER];
+<<<<<<< HEAD
 extern int create_adapter_proc(diva_os_xdi_adapter_t * a);
 extern void remove_adapter_proc(diva_os_xdi_adapter_t * a);
 
 #define DivaIdiReqFunc(N) \
 static void DivaIdiRequest##N(ENTITY *e) \
 { if ( IoAdapters[N] ) (* IoAdapters[N]->DIRequest)(IoAdapters[N], e) ; }
+=======
+extern int create_adapter_proc(diva_os_xdi_adapter_t *a);
+extern void remove_adapter_proc(diva_os_xdi_adapter_t *a);
+
+#define DivaIdiReqFunc(N)						\
+	static void DivaIdiRequest##N(ENTITY *e)			\
+	{ if (IoAdapters[N]) (*IoAdapters[N]->DIRequest)(IoAdapters[N], e); }
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
 **  Create own 32 Adapters
@@ -91,6 +100,7 @@ typedef struct _diva_supported_cards_info {
 static diva_supported_cards_info_t divas_supported_cards[] = {
 #ifdef CONFIG_ISDN_DIVAS_PRIPCI
 	/*
+<<<<<<< HEAD
 	   PRI Cards
 	 */
 	{CARDTYPE_DIVASRV_P_30M_PCI, diva_pri_init_card},
@@ -101,10 +111,23 @@ static diva_supported_cards_info_t divas_supported_cards[] = {
 	/*
 	   PRI Rev.2 VoIP Cards
 	 */
+=======
+	  PRI Cards
+	*/
+	{CARDTYPE_DIVASRV_P_30M_PCI, diva_pri_init_card},
+	/*
+	  PRI Rev.2 Cards
+	*/
+	{CARDTYPE_DIVASRV_P_30M_V2_PCI, diva_pri_init_card},
+	/*
+	  PRI Rev.2 VoIP Cards
+	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	{CARDTYPE_DIVASRV_VOICE_P_30M_V2_PCI, diva_pri_init_card},
 #endif
 #ifdef CONFIG_ISDN_DIVAS_BRIPCI
 	/*
+<<<<<<< HEAD
 	   4BRI Rev 1 Cards
 	 */
 	{CARDTYPE_DIVASRV_Q_8M_PCI, diva_4bri_init_card},
@@ -117,18 +140,42 @@ static diva_supported_cards_info_t divas_supported_cards[] = {
 	/*
 	   4BRI Based BRI Rev 2 Cards
 	 */
+=======
+	  4BRI Rev 1 Cards
+	*/
+	{CARDTYPE_DIVASRV_Q_8M_PCI, diva_4bri_init_card},
+	{CARDTYPE_DIVASRV_VOICE_Q_8M_PCI, diva_4bri_init_card},
+	/*
+	  4BRI Rev 2 Cards
+	*/
+	{CARDTYPE_DIVASRV_Q_8M_V2_PCI, diva_4bri_init_card},
+	{CARDTYPE_DIVASRV_VOICE_Q_8M_V2_PCI, diva_4bri_init_card},
+	/*
+	  4BRI Based BRI Rev 2 Cards
+	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	{CARDTYPE_DIVASRV_B_2M_V2_PCI, diva_4bri_init_card},
 	{CARDTYPE_DIVASRV_B_2F_PCI, diva_4bri_init_card},
 	{CARDTYPE_DIVASRV_VOICE_B_2M_V2_PCI, diva_4bri_init_card},
 	/*
+<<<<<<< HEAD
 	   BRI
 	 */
+=======
+	  BRI
+	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	{CARDTYPE_MAESTRA_PCI, diva_bri_init_card},
 #endif
 
 	/*
+<<<<<<< HEAD
 	   EOL
 	 */
+=======
+	  EOL
+	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	{-1}
 };
 
@@ -150,18 +197,30 @@ static int diva_find_free_adapters(int base, int nr)
 	return (0);
 }
 
+<<<<<<< HEAD
 static diva_os_xdi_adapter_t *diva_q_get_next(struct list_head * what)
+=======
+static diva_os_xdi_adapter_t *diva_q_get_next(struct list_head *what)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	diva_os_xdi_adapter_t *a = NULL;
 
 	if (what && (what->next != &adapter_queue))
 		a = list_entry(what->next, diva_os_xdi_adapter_t, link);
 
+<<<<<<< HEAD
 	return(a);
 }
 
 /* --------------------------------------------------------------------------
     Add card to the card list
+=======
+	return (a);
+}
+
+/* --------------------------------------------------------------------------
+   Add card to the card list
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 void *diva_driver_add_card(void *pdev, unsigned long CardOrdinal)
 {
@@ -203,7 +262,11 @@ void *diva_driver_add_card(void *pdev, unsigned long CardOrdinal)
 						 [CardOrdinal].Name,
 						 pdiva->controller))
 
+<<<<<<< HEAD
 					diva_os_enter_spin_lock(&adapter_lock, &old_irql, "add card");
+=======
+						diva_os_enter_spin_lock(&adapter_lock, &old_irql, "add card");
+>>>>>>> refs/remotes/origin/cm-10.0
 					pa = pdiva;
 					for (j = 1; j < nr; j++) {	/* slave adapters, if any */
 						pa = diva_q_get_next(&pa->link);
@@ -214,11 +277,19 @@ void *diva_driver_add_card(void *pdev, unsigned long CardOrdinal)
 							diva_os_leave_spin_lock(&adapter_lock, &old_irql, "add card");
 							DBG_LOG(("add slave adapter (%d)",
 								 pa->controller))
+<<<<<<< HEAD
 							create_adapter_proc(pa);	/* add adapter to proc file system */
 							diva_os_enter_spin_lock(&adapter_lock, &old_irql, "add card");
 						} else {
 							DBG_ERR(("slave adapter problem"))
 							break;
+=======
+								create_adapter_proc(pa);	/* add adapter to proc file system */
+							diva_os_enter_spin_lock(&adapter_lock, &old_irql, "add card");
+						} else {
+							DBG_ERR(("slave adapter problem"))
+								break;
+>>>>>>> refs/remotes/origin/cm-10.0
 						}
 					}
 
@@ -230,10 +301,17 @@ void *diva_driver_add_card(void *pdev, unsigned long CardOrdinal)
 			diva_os_leave_spin_lock(&adapter_lock, &old_irql, "add card");
 
 			/*
+<<<<<<< HEAD
 			   Not able to add adapter - remove it and return error
 			 */
 			DBG_ERR(("can not alloc request array"))
 			diva_driver_remove_card(pdiva);
+=======
+			  Not able to add adapter - remove it and return error
+			*/
+			DBG_ERR(("can not alloc request array"))
+				diva_driver_remove_card(pdiva);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			return NULL;
 		}
@@ -243,7 +321,11 @@ void *diva_driver_add_card(void *pdev, unsigned long CardOrdinal)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
     Called on driver load, MAIN, main, DriverEntry
+=======
+   Called on driver load, MAIN, main, DriverEntry
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 int divasa_xdi_driver_entry(void)
 {
@@ -255,7 +337,11 @@ int divasa_xdi_driver_entry(void)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
     Remove adapter from list
+=======
+   Remove adapter from list
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 static diva_os_xdi_adapter_t *get_and_remove_from_queue(void)
 {
@@ -274,7 +360,11 @@ static diva_os_xdi_adapter_t *get_and_remove_from_queue(void)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
     Remove card from the card list
+=======
+   Remove card from the card list
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 void diva_driver_remove_card(void *pdiva)
 {
@@ -318,7 +408,11 @@ void diva_driver_remove_card(void *pdiva)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
     Create diva PCI adapter and init internal adapter structures
+=======
+   Create diva PCI adapter and init internal adapter structures
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 static void *divas_create_pci_card(int handle, void *pci_dev_handle)
 {
@@ -328,10 +422,17 @@ static void *divas_create_pci_card(int handle, void *pci_dev_handle)
 
 	DBG_LOG(("found %d-%s", pI->CardOrdinal, CardProperties[pI->CardOrdinal].Name))
 
+<<<<<<< HEAD
 	if (!(a = (diva_os_xdi_adapter_t *) diva_os_malloc(0, sizeof(*a)))) {
 		DBG_ERR(("A: can't alloc adapter"));
 		return NULL;
 	}
+=======
+		if (!(a = (diva_os_xdi_adapter_t *) diva_os_malloc(0, sizeof(*a)))) {
+			DBG_ERR(("A: can't alloc adapter"));
+			return NULL;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memset(a, 0x00, sizeof(*a));
 
@@ -344,9 +445,15 @@ static void *divas_create_pci_card(int handle, void *pci_dev_handle)
 	a->resources.pci.hdev = pci_dev_handle;
 
 	/*
+<<<<<<< HEAD
 	   Add master adapter first, so slave adapters will receive higher
 	   numbers as master adapter
 	 */
+=======
+	  Add master adapter first, so slave adapters will receive higher
+	  numbers as master adapter
+	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	diva_os_enter_spin_lock(&adapter_lock, &old_irql, "found_pci_card");
 	list_add_tail(&a->link, &adapter_queue);
 	diva_os_leave_spin_lock(&adapter_lock, &old_irql, "found_pci_card");
@@ -364,7 +471,11 @@ static void *divas_create_pci_card(int handle, void *pci_dev_handle)
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
     Called on driver unload FINIT, finit, Unload
+=======
+   Called on driver unload FINIT, finit, Unload
+>>>>>>> refs/remotes/origin/cm-10.0
    -------------------------------------------------------------------------- */
 void divasa_xdi_driver_unload(void)
 {
@@ -398,11 +509,19 @@ void *diva_xdi_open_adapter(void *os_handle, const void __user *src,
 	if (length < sizeof(diva_xdi_um_cfg_cmd_t)) {
 		DBG_ERR(("A: A(?) open, msg too small (%d < %d)",
 			 length, sizeof(diva_xdi_um_cfg_cmd_t)))
+<<<<<<< HEAD
 		return NULL;
 	}
 	if ((*cp_fn) (os_handle, &msg, src, sizeof(msg)) <= 0) {
 		DBG_ERR(("A: A(?) open, write error"))
 		return NULL;
+=======
+			return NULL;
+	}
+	if ((*cp_fn) (os_handle, &msg, src, sizeof(msg)) <= 0) {
+		DBG_ERR(("A: A(?) open, write error"))
+			return NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	diva_os_enter_spin_lock(&adapter_lock, &old_irql, "open_adapter");
 	list_for_each(tmp, &adapter_queue) {
@@ -415,7 +534,11 @@ void *diva_xdi_open_adapter(void *os_handle, const void __user *src,
 
 	if (!a) {
 		DBG_ERR(("A: A(%d) open, adapter not found", msg.adapter))
+<<<<<<< HEAD
 	}
+=======
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return (a);
 }
@@ -443,19 +566,31 @@ diva_xdi_write(void *adapter, void *os_handle, const void __user *src,
 
 	if (a->xdi_mbox.status & DIVA_XDI_MBOX_BUSY) {
 		DBG_ERR(("A: A(%d) write, mbox busy", a->controller))
+<<<<<<< HEAD
 		return (-1);
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (length < sizeof(diva_xdi_um_cfg_cmd_t)) {
 		DBG_ERR(("A: A(%d) write, message too small (%d < %d)",
 			 a->controller, length,
 			 sizeof(diva_xdi_um_cfg_cmd_t)))
+<<<<<<< HEAD
 		return (-3);
+=======
+			return (-3);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (!(data = diva_os_malloc(0, length))) {
 		DBG_ERR(("A: A(%d) write, ENOMEM", a->controller))
+<<<<<<< HEAD
 		return (-2);
+=======
+			return (-2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	length = (*cp_fn) (os_handle, data, src, length);
@@ -467,7 +602,11 @@ diva_xdi_write(void *adapter, void *os_handle, const void __user *src,
 	} else {
 		DBG_ERR(("A: A(%d) write error (%d)", a->controller,
 			 length))
+<<<<<<< HEAD
 	}
+=======
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	diva_os_free(0, data);
 
@@ -486,23 +625,39 @@ diva_xdi_read(void *adapter, void *os_handle, void __user *dst,
 
 	if (!(a->xdi_mbox.status & DIVA_XDI_MBOX_BUSY)) {
 		DBG_ERR(("A: A(%d) rx mbox empty", a->controller))
+<<<<<<< HEAD
 		return (-1);
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (!a->xdi_mbox.data) {
 		a->xdi_mbox.status &= ~DIVA_XDI_MBOX_BUSY;
 		DBG_ERR(("A: A(%d) rx ENOMEM", a->controller))
+<<<<<<< HEAD
 		return (-2);
+=======
+			return (-2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (max_length < a->xdi_mbox.data_length) {
 		DBG_ERR(("A: A(%d) rx buffer too short(%d < %d)",
 			 a->controller, max_length,
 			 a->xdi_mbox.data_length))
+<<<<<<< HEAD
 		return (-3);
 	}
 
 	ret = (*cp_fn) (os_handle, dst, a->xdi_mbox.data,
 		      a->xdi_mbox.data_length);
+=======
+			return (-3);
+	}
+
+	ret = (*cp_fn) (os_handle, dst, a->xdi_mbox.data,
+			a->xdi_mbox.data_length);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret > 0) {
 		diva_os_free(0, a->xdi_mbox.data);
 		a->xdi_mbox.data = NULL;
@@ -577,6 +732,7 @@ void diva_xdi_display_adapter_features(int card)
 	features = IoAdapters[card]->Properties.Features;
 
 	DBG_LOG(("FEATURES FOR ADAPTER: %d", card + 1))
+<<<<<<< HEAD
 	DBG_LOG((" DI_FAX3          :  %s",
 		     (features & DI_FAX3) ? "Y" : "N"))
 	DBG_LOG((" DI_MODEM         :  %s",
@@ -604,6 +760,35 @@ void diva_xdi_display_adapter_features(int card)
 }
 
 void diva_add_slave_adapter(diva_os_xdi_adapter_t * a)
+=======
+		DBG_LOG((" DI_FAX3          :  %s",
+			 (features & DI_FAX3) ? "Y" : "N"))
+		DBG_LOG((" DI_MODEM         :  %s",
+			 (features & DI_MODEM) ? "Y" : "N"))
+		DBG_LOG((" DI_POST          :  %s",
+			 (features & DI_POST) ? "Y" : "N"))
+		DBG_LOG((" DI_V110          :  %s",
+			 (features & DI_V110) ? "Y" : "N"))
+		DBG_LOG((" DI_V120          :  %s",
+			 (features & DI_V120) ? "Y" : "N"))
+		DBG_LOG((" DI_POTS          :  %s",
+			 (features & DI_POTS) ? "Y" : "N"))
+		DBG_LOG((" DI_CODEC         :  %s",
+			 (features & DI_CODEC) ? "Y" : "N"))
+		DBG_LOG((" DI_MANAGE        :  %s",
+			 (features & DI_MANAGE) ? "Y" : "N"))
+		DBG_LOG((" DI_V_42          :  %s",
+			 (features & DI_V_42) ? "Y" : "N"))
+		DBG_LOG((" DI_EXTD_FAX      :  %s",
+			 (features & DI_EXTD_FAX) ? "Y" : "N"))
+		DBG_LOG((" DI_AT_PARSER     :  %s",
+			 (features & DI_AT_PARSER) ? "Y" : "N"))
+		DBG_LOG((" DI_VOICE_OVER_IP :  %s",
+			 (features & DI_VOICE_OVER_IP) ? "Y" : "N"))
+		}
+
+void diva_add_slave_adapter(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	diva_os_spin_lock_magic_t old_irql;
 
@@ -612,7 +797,11 @@ void diva_add_slave_adapter(diva_os_xdi_adapter_t * a)
 	diva_os_leave_spin_lock(&adapter_lock, &old_irql, "add_slave");
 }
 
+<<<<<<< HEAD
 int diva_card_read_xlog(diva_os_xdi_adapter_t * a)
+=======
+int diva_card_read_xlog(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	diva_get_xlog_t *req;
 	byte *data;

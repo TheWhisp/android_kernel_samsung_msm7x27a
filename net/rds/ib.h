@@ -3,6 +3,10 @@
 
 #include <rdma/ib_verbs.h>
 #include <rdma/rdma_cm.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include "rds.h"

@@ -24,7 +24,11 @@
  *
  *
  ***********************************************************************/
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/slab.h>
 
@@ -160,6 +164,7 @@ static int __devinit jsm_probe_one(struct pci_dev *pdev, const struct pci_device
 	dev_info(&pdev->dev, "board %d: Digi Neo (rev %d), irq %d\n",
 			adapter_count, brd->rev, brd->irq);
 
+<<<<<<< HEAD
 	/*
 	 * allocate flip buffer for board.
 	 *
@@ -175,12 +180,17 @@ static int __devinit jsm_probe_one(struct pci_dev *pdev, const struct pci_device
 		goto out_free_uart;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pci_set_drvdata(pdev, brd);
 	pci_save_state(pdev);
 
 	return 0;
+<<<<<<< HEAD
  out_free_uart:
 	jsm_remove_uart_port(brd);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  out_free_irq:
 	jsm_remove_uart_port(brd);
 	free_irq(brd->irq, brd);
@@ -217,7 +227,10 @@ static void __devexit jsm_remove_one(struct pci_dev *pdev)
 
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	kfree(brd->flipbuf);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(brd);
 }
 

@@ -22,6 +22,17 @@ Description:
                 mesh will be fragmented or silently discarded if the
                 packet size exceeds the outgoing interface MTU.
 
+<<<<<<< HEAD
+=======
+What:		/sys/class/net/<mesh_iface>/mesh/ap_isolation
+Date:		May 2011
+Contact:	Antonio Quartulli <ordex@autistici.org>
+Description:
+		Indicates whether the data traffic going from a
+		wireless client to another wireless client will be
+		silently dropped.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 What:           /sys/class/net/<mesh_iface>/mesh/gw_bandwidth
 Date:           October 2010
 Contact:        Marek Lindner <lindner_marek@yahoo.de>
@@ -57,6 +68,16 @@ Description:
 		Defines the penalty which will be applied to an
 		originator message's tq-field on every hop.
 
+<<<<<<< HEAD
+=======
+What:		/sys/class/net/<mesh_iface>/mesh/routing_algo
+Date:		Dec 2011
+Contact:	Marek Lindner <lindner_marek@yahoo.de>
+Description:
+		Defines the routing procotol this mesh instance
+		uses to find the optimal paths through the mesh.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 What:           /sys/class/net/<mesh_iface>/mesh/vis_mode
 Date:           May 2010
 Contact:        Marek Lindner <lindner_marek@yahoo.de>

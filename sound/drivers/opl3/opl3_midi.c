@@ -27,7 +27,11 @@
 
 extern char snd_opl3_regmap[MAX_OPL2_VOICES][4];
 
+<<<<<<< HEAD
 extern int use_internal_drums;
+=======
+extern bool use_internal_drums;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void snd_opl3_note_off_unsafe(void *p, int note, int vel,
 				     struct snd_midi_channel *chan);

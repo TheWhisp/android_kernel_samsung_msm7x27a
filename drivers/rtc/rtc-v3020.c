@@ -393,6 +393,7 @@ static struct platform_driver rtc_device_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static __init int v3020_init(void)
 {
 	return platform_driver_register(&rtc_device_driver);
@@ -405,6 +406,9 @@ static __exit void v3020_exit(void)
 
 module_init(v3020_init);
 module_exit(v3020_exit);
+=======
+module_platform_driver(rtc_device_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("V3020 RTC");
 MODULE_AUTHOR("Raphael Assenat");

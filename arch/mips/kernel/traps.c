@@ -14,8 +14,13 @@
 #include <linux/bug.h>
 #include <linux/compiler.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/mm.h>
 #include <linux/module.h>
+=======
+#include <linux/kernel.h>
+#include <linux/mm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/smp.h>
 #include <linux/spinlock.h>
@@ -45,7 +50,10 @@
 #include <asm/pgtable.h>
 #include <asm/ptrace.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlbdebug.h>
 #include <asm/traps.h>
 #include <asm/uaccess.h>
@@ -91,6 +99,10 @@ int (*board_be_handler)(struct pt_regs *regs, int is_fixup);
 void (*board_nmi_handler_setup)(void);
 void (*board_ejtag_handler_setup)(void);
 void (*board_bind_eic_interrupt)(int irq, int regset);
+<<<<<<< HEAD
+=======
+void (*board_ebase_setup)(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 static void show_raw_backtrace(unsigned long reg29)
@@ -364,21 +376,40 @@ static int regs_to_trapnr(struct pt_regs *regs)
 	return (regs->cp0_cause >> 2) & 0x1f;
 }
 
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(die_lock);
+=======
+static DEFINE_RAW_SPINLOCK(die_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __noreturn die(const char *str, struct pt_regs *regs)
 {
 	static int die_counter;
 	int sig = SIGSEGV;
 #ifdef CONFIG_MIPS_MT_SMTC
+<<<<<<< HEAD
 	unsigned long dvpret = dvpe();
 #endif /* CONFIG_MIPS_MT_SMTC */
 
+=======
+	unsigned long dvpret;
+#endif /* CONFIG_MIPS_MT_SMTC */
+
+	oops_enter();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (notify_die(DIE_OOPS, str, regs, 0, regs_to_trapnr(regs), SIGSEGV) == NOTIFY_STOP)
 		sig = 0;
 
 	console_verbose();
+<<<<<<< HEAD
 	spin_lock_irq(&die_lock);
+=======
+	raw_spin_lock_irq(&die_lock);
+#ifdef CONFIG_MIPS_MT_SMTC
+	dvpret = dvpe();
+#endif /* CONFIG_MIPS_MT_SMTC */
+>>>>>>> refs/remotes/origin/cm-10.0
 	bust_spinlocks(1);
 #ifdef CONFIG_MIPS_MT_SMTC
 	mips_mt_regdump(dvpret);
@@ -387,13 +418,23 @@ void __noreturn die(const char *str, struct pt_regs *regs)
 	printk("%s[#%d]:\n", str, ++die_counter);
 	show_registers(regs);
 	add_taint(TAINT_DIE);
+<<<<<<< HEAD
 	spin_unlock_irq(&die_lock);
+=======
+	raw_spin_unlock_irq(&die_lock);
+
+	oops_exit();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (in_interrupt())
 		panic("Fatal exception in interrupt");
 
 	if (panic_on_oops) {
+<<<<<<< HEAD
 		printk(KERN_EMERG "Fatal exception: panic in 5 seconds\n");
+=======
+		printk(KERN_EMERG "Fatal exception: panic in 5 seconds");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ssleep(5);
 		panic("Fatal exception");
 	}
@@ -578,12 +619,20 @@ static int simulate_llsc(struct pt_regs *regs, unsigned int opcode)
 {
 	if ((opcode & OPCODE) == LL) {
 		perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS,
+<<<<<<< HEAD
 				1, 0, regs, 0);
+=======
+				1, regs, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return simulate_ll(regs, opcode);
 	}
 	if ((opcode & OPCODE) == SC) {
 		perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS,
+<<<<<<< HEAD
 				1, 0, regs, 0);
+=======
+				1, regs, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return simulate_sc(regs, opcode);
 	}
 
@@ -602,7 +651,11 @@ static int simulate_rdhwr(struct pt_regs *regs, unsigned int opcode)
 		int rd = (opcode & RD) >> 11;
 		int rt = (opcode & RT) >> 16;
 		perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS,
+<<<<<<< HEAD
 				1, 0, regs, 0);
+=======
+				1, regs, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch (rd) {
 		case 0:		/* CPU number */
 			regs->regs[rt] = smp_processor_id();
@@ -640,7 +693,11 @@ static int simulate_sync(struct pt_regs *regs, unsigned int opcode)
 {
 	if ((opcode & OPCODE) == SPEC0 && (opcode & FUNC) == SYNC) {
 		perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS,
+<<<<<<< HEAD
 				1, 0, regs, 0);
+=======
+				1, regs, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 
@@ -1127,7 +1184,11 @@ asmlinkage void do_mt(struct pt_regs *regs)
 		printk(KERN_DEBUG "YIELD Scheduler Exception\n");
 		break;
 	case 5:
+<<<<<<< HEAD
 		printk(KERN_DEBUG "Gating Storage Schedulier Exception\n");
+=======
+		printk(KERN_DEBUG "Gating Storage Scheduler Exception\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		printk(KERN_DEBUG "*** UNKNOWN THREAD EXCEPTION %d ***\n",
@@ -1143,7 +1204,11 @@ asmlinkage void do_mt(struct pt_regs *regs)
 asmlinkage void do_dsp(struct pt_regs *regs)
 {
 	if (cpu_has_dsp)
+<<<<<<< HEAD
 		panic("Unexpected DSP exception\n");
+=======
+		panic("Unexpected DSP exception");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	force_sig(SIGILL, current);
 }
@@ -1332,9 +1397,24 @@ void ejtag_exception_handler(struct pt_regs *regs)
 
 /*
  * NMI exception handler.
+<<<<<<< HEAD
  */
 NORET_TYPE void ATTRIB_NORET nmi_exception_handler(struct pt_regs *regs)
 {
+=======
+ * No lock; only written during early bootup by CPU 0.
+ */
+static RAW_NOTIFIER_HEAD(nmi_chain);
+
+int register_nmi_notifier(struct notifier_block *nb)
+{
+	return raw_notifier_chain_register(&nmi_chain, nb);
+}
+
+void __noreturn nmi_exception_handler(struct pt_regs *regs)
+{
+	raw_notifier_call_chain(&nmi_chain, 0, regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 	bust_spinlocks(1);
 	printk("NMI taken!!!!\n");
 	die("NMI", regs);
@@ -1589,7 +1669,12 @@ void __cpuinit per_cpu_trap_init(void)
 	}
 #endif /* CONFIG_MIPS_MT_SMTC */
 
+<<<<<<< HEAD
 	cpu_data[cpu].asid_cache = ASID_FIRST_VERSION;
+=======
+	if (!cpu_data[cpu].asid_cache)
+		cpu_data[cpu].asid_cache = ASID_FIRST_VERSION;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	atomic_inc(&init_mm.mm_count);
 	current->active_mm = &init_mm;
@@ -1674,6 +1759,11 @@ void __init trap_init(void)
 			ebase += (read_c0_ebase() & 0x3ffff000);
 	}
 
+<<<<<<< HEAD
+=======
+	if (board_ebase_setup)
+		board_ebase_setup();
+>>>>>>> refs/remotes/origin/cm-10.0
 	per_cpu_trap_init();
 
 	/*

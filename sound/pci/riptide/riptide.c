@@ -98,6 +98,10 @@
 #include <linux/device.h>
 #include <linux/firmware.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <sound/core.h>
 #include <sound/info.h>
@@ -121,7 +125,11 @@ MODULE_FIRMWARE("riptide.hex");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef SUPPORT_JOYSTICK
 static int joystick_port[SNDRV_CARDS] = { [0 ... (SNDRV_CARDS - 1)] = 0x200 };
@@ -1890,7 +1898,11 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
 	UNSET_AIE(hwport);
 
 	if (request_irq(pci->irq, snd_riptide_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
 			"RIPTIDE", chip)) {
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_printk(KERN_ERR "Riptide: unable to grab IRQ %d\n",
 			   pci->irq);
 		snd_riptide_free(chip);
@@ -2109,7 +2121,11 @@ snd_card_riptide_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 		val = mpu_port[dev];
 		pci_write_config_word(chip->pci, PCI_EXT_MPU_Base, val);
 		err = snd_mpu401_uart_new(card, 0, MPU401_HW_RIPTIDE,
+<<<<<<< HEAD
 					  val, 0, chip->irq, 0,
+=======
+					  val, MPU401_INFO_IRQ_HOOK, -1,
+>>>>>>> refs/remotes/origin/cm-10.0
 					  &chip->rmidi);
 		if (err < 0)
 			snd_printk(KERN_WARNING
@@ -2176,7 +2192,11 @@ static void __devexit snd_card_riptide_remove(struct pci_dev *pci)
 }
 
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name = "RIPTIDE",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_riptide_ids,
 	.probe = snd_card_riptide_probe,
 	.remove = __devexit_p(snd_card_riptide_remove),
@@ -2188,7 +2208,11 @@ static struct pci_driver driver = {
 
 #ifdef SUPPORT_JOYSTICK
 static struct pci_driver joystick_driver = {
+<<<<<<< HEAD
 	.name = "Riptide Joystick",
+=======
+	.name = KBUILD_MODNAME "-joystick",
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_riptide_joystick_ids,
 	.probe = snd_riptide_joystick_probe,
 	.remove = __devexit_p(snd_riptide_joystick_remove),

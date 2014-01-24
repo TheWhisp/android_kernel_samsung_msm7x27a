@@ -4,8 +4,13 @@
  * License terms: GNU General Public License (GPL) version 2
  */
 
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/version.h>
+=======
+#include <linux/hardirq.h>
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/types.h>
@@ -38,6 +43,7 @@ MODULE_ALIAS_LDISC(N_CAIF);
 /*This list is protected by the rtnl lock. */
 static LIST_HEAD(ser_list);
 
+<<<<<<< HEAD
 static int ser_loop;
 module_param(ser_loop, bool, S_IRUGO);
 MODULE_PARM_DESC(ser_loop, "Run in simulated loopback mode.");
@@ -47,6 +53,17 @@ module_param(ser_use_stx, bool, S_IRUGO);
 MODULE_PARM_DESC(ser_use_stx, "STX enabled or not.");
 
 static int ser_use_fcs = 1;
+=======
+static bool ser_loop;
+module_param(ser_loop, bool, S_IRUGO);
+MODULE_PARM_DESC(ser_loop, "Run in simulated loopback mode.");
+
+static bool ser_use_stx = true;
+module_param(ser_use_stx, bool, S_IRUGO);
+MODULE_PARM_DESC(ser_use_stx, "STX enabled or not.");
+
+static bool ser_use_fcs = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param(ser_use_fcs, bool, S_IRUGO);
 MODULE_PARM_DESC(ser_use_fcs, "FCS enabled or not.");
@@ -261,7 +278,11 @@ static int handle_tx(struct ser_device *ser)
 		skb_pull(skb, tty_wr);
 		if (skb->len == 0) {
 			struct sk_buff *tmp = skb_dequeue(&ser->head);
+<<<<<<< HEAD
 			BUG_ON(tmp != skb);
+=======
+			WARN_ON(tmp != skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (in_interrupt())
 				dev_kfree_skb_irq(skb);
 			else
@@ -305,7 +326,11 @@ static void ldisc_tx_wakeup(struct tty_struct *tty)
 
 	ser = tty->disc_data;
 	BUG_ON(ser == NULL);
+<<<<<<< HEAD
 	BUG_ON(ser->tty != tty);
+=======
+	WARN_ON(ser->tty != tty);
+>>>>>>> refs/remotes/origin/cm-10.0
 	handle_tx(ser);
 }
 

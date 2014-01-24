@@ -14,10 +14,16 @@
 #include <linux/mm.h>
 #include <linux/of.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
 
 #include <asm/machdep.h>
 #include <asm/system.h>
 #include <asm/time.h>
+=======
+#include <linux/time.h>
+
+#include <asm/machdep.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/udbg.h>
 
 #include "ics.h"
@@ -27,7 +33,12 @@
 static void psr2_spin(void)
 {
 	hard_irq_disable();
+<<<<<<< HEAD
 	for (;;) ;
+=======
+	for (;;)
+		continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void psr2_restart(char *cmd)
@@ -35,6 +46,7 @@ static void psr2_restart(char *cmd)
 	psr2_spin();
 }
 
+<<<<<<< HEAD
 static int psr2_probe_devices(void)
 {
 	struct device_node *np;
@@ -65,16 +77,27 @@ static void __init psr2_setup_arch(void)
 #endif
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init psr2_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
 
+<<<<<<< HEAD
+=======
+	if (of_flat_dt_is_compatible(root, "ibm,wsp-chroma")) {
+		/* chroma systems also claim they are psr2s */
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!of_flat_dt_is_compatible(root, "ibm,psr2"))
 		return 0;
 
 	return 1;
 }
 
+<<<<<<< HEAD
 static void __init psr2_init_irq(void)
 {
 	wsp_init_irq();
@@ -85,11 +108,26 @@ define_machine(psr2_md) {
 	.name			= "PSR2 A2",
 	.probe			= psr2_probe,
 	.setup_arch		= psr2_setup_arch,
+=======
+define_machine(psr2_md) {
+	.name			= "PSR2 A2",
+	.probe			= psr2_probe,
+	.setup_arch		= wsp_setup_arch,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.restart		= psr2_restart,
 	.power_off		= psr2_spin,
 	.halt			= psr2_spin,
 	.calibrate_decr		= generic_calibrate_decr,
+<<<<<<< HEAD
 	.init_IRQ		= psr2_init_irq,
 	.progress		= udbg_progress,
 	.power_save		= book3e_idle,
 };
+=======
+	.init_IRQ		= wsp_setup_irq,
+	.progress		= udbg_progress,
+	.power_save		= book3e_idle,
+};
+
+machine_arch_initcall(psr2_md, wsp_probe_devices);
+>>>>>>> refs/remotes/origin/cm-10.0

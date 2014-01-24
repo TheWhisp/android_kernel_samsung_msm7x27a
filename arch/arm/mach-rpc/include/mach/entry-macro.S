@@ -10,7 +10,10 @@
 	orr	\base, \base, #ioc_base_low
 	.endif
 	.endm
+<<<<<<< HEAD
 
 	.macro  arch_ret_to_user, tmp1, tmp2
 	.endm
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

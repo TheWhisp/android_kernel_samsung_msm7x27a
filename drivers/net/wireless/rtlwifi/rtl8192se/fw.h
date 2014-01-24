@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -30,6 +34,10 @@
 #define __REALTEK_FIRMWARE92S_H__
 
 #define RTL8190_MAX_FIRMWARE_CODE_SIZE		64000
+<<<<<<< HEAD
+=======
+#define RTL8190_MAX_RAW_FIRMWARE_CODE_SIZE	90000
+>>>>>>> refs/remotes/origin/cm-10.0
 #define RTL8190_CPU_START_OFFSET		0x80
 /* Firmware Local buffer size. 64k */
 #define	MAX_FIRMWARE_CODE_SIZE			0xFF00
@@ -217,7 +225,11 @@ struct rt_firmware {
 	u8 fw_emem[RTL8190_MAX_FIRMWARE_CODE_SIZE];
 	u32 fw_imem_len;
 	u32 fw_emem_len;
+<<<<<<< HEAD
 	u8 sz_fw_tmpbuffer[164000];
+=======
+	u8 sz_fw_tmpbuffer[RTL8190_MAX_RAW_FIRMWARE_CODE_SIZE];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 sz_fw_tmpbufferlen;
 	u16 cmdpacket_fragthresold;
 };

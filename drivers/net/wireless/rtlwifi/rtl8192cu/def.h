@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -50,10 +54,13 @@
 #define IS_VENDOR_UMC(version)		\
 	(((version) & CHIP_VENDOR_UMC) ? true : false)
 
+<<<<<<< HEAD
 #define IS_VENDOR_UMC_A_CUT(version)	\
 	(((version) & CHIP_VENDOR_UMC) ? (((version) & (BIT(6) | BIT(7))) ? \
 	false : true) : false)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IS_VENDOR_8723_A_CUT(version)	\
 	(((version) & CHIP_VENDOR_UMC) ? (((version) & (BIT(6))) ? \
 	false : true) : false)

@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /*
  * $Id: pmcc4_defs.h,v 1.0 2005/09/28 00:10:09 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _INC_PMCC4_DEFS_H_
 #define _INC_PMCC4_DEFS_H_
 
@@ -25,6 +28,7 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.0 $
  * Last changed on $Date: 2005/09/28 00:10:09 $
@@ -35,6 +39,8 @@
  * Initial revision
  *
  *-----------------------------------------------------------------------------
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 

@@ -23,7 +23,11 @@ static int				tracer_enabled __read_mostly;
 
 static DEFINE_PER_CPU(int, tracing_cpu);
 
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(max_trace_lock);
+=======
+static DEFINE_RAW_SPINLOCK(max_trace_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum {
 	TRACER_IRQS_OFF		= (1 << 1),
@@ -226,7 +230,13 @@ static void irqsoff_trace_close(struct trace_iterator *iter)
 }
 
 #define GRAPH_TRACER_FLAGS (TRACE_GRAPH_PRINT_CPU | \
+<<<<<<< HEAD
 			    TRACE_GRAPH_PRINT_PROC)
+=======
+			    TRACE_GRAPH_PRINT_PROC | \
+			    TRACE_GRAPH_PRINT_ABS_TIME | \
+			    TRACE_GRAPH_PRINT_DURATION)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static enum print_line_t irqsoff_print_line(struct trace_iterator *iter)
 {
@@ -278,9 +288,26 @@ static enum print_line_t irqsoff_print_line(struct trace_iterator *iter)
 }
 
 static void irqsoff_graph_return(struct ftrace_graph_ret *trace) { }
+<<<<<<< HEAD
 static void irqsoff_print_header(struct seq_file *s) { }
 static void irqsoff_trace_open(struct trace_iterator *iter) { }
 static void irqsoff_trace_close(struct trace_iterator *iter) { }
+=======
+static void irqsoff_trace_open(struct trace_iterator *iter) { }
+static void irqsoff_trace_close(struct trace_iterator *iter) { }
+
+#ifdef CONFIG_FUNCTION_TRACER
+static void irqsoff_print_header(struct seq_file *s)
+{
+	trace_default_header(s);
+}
+#else
+static void irqsoff_print_header(struct seq_file *s)
+{
+	trace_latency_header(s);
+}
+#endif /* CONFIG_FUNCTION_TRACER */
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
 
 /*
@@ -319,7 +346,11 @@ check_critical_timing(struct trace_array *tr,
 	if (!report_latency(delta))
 		goto out;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&max_trace_lock, flags);
+=======
+	raw_spin_lock_irqsave(&max_trace_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* check if we are still the max latency */
 	if (!report_latency(delta))
@@ -342,7 +373,11 @@ check_critical_timing(struct trace_array *tr,
 	max_sequence++;
 
 out_unlock:
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&max_trace_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&max_trace_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	data->critical_sequence = max_sequence;
@@ -503,13 +538,21 @@ EXPORT_SYMBOL(trace_hardirqs_off_caller);
 #ifdef CONFIG_PREEMPT_TRACER
 void trace_preempt_on(unsigned long a0, unsigned long a1)
 {
+<<<<<<< HEAD
 	if (preempt_trace())
+=======
+	if (preempt_trace() && !irq_trace())
+>>>>>>> refs/remotes/origin/cm-10.0
 		stop_critical_timing(a0, a1);
 }
 
 void trace_preempt_off(unsigned long a0, unsigned long a1)
 {
+<<<<<<< HEAD
 	if (preempt_trace())
+=======
+	if (preempt_trace() && !irq_trace())
+>>>>>>> refs/remotes/origin/cm-10.0
 		start_critical_timing(a0, a1);
 }
 #endif /* CONFIG_PREEMPT_TRACER */

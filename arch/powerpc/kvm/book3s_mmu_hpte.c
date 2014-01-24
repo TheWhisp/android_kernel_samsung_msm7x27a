@@ -21,7 +21,10 @@
 #include <linux/kvm_host.h>
 #include <linux/hash.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include "trace.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/kvm_ppc.h>
 #include <asm/kvm_book3s.h>
@@ -29,6 +32,11 @@
 #include <asm/mmu_context.h>
 #include <asm/hw_irq.h>
 
+<<<<<<< HEAD
+=======
+#include "trace.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PTE_SIZE	12
 
 static struct kmem_cache *hpte_cache;
@@ -58,6 +66,7 @@ static inline u64 kvmppc_mmu_hash_vpte_long(u64 vpage)
 void kvmppc_mmu_hpte_cache_map(struct kvm_vcpu *vcpu, struct hpte_cache *pte)
 {
 	u64 index;
+<<<<<<< HEAD
 
 	trace_kvm_book3s_mmu_map(pte);
 
@@ -66,22 +75,47 @@ void kvmppc_mmu_hpte_cache_map(struct kvm_vcpu *vcpu, struct hpte_cache *pte)
 	/* Add to ePTE list */
 	index = kvmppc_mmu_hash_pte(pte->pte.eaddr);
 	hlist_add_head_rcu(&pte->list_pte, &vcpu->arch.hpte_hash_pte[index]);
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+
+	trace_kvm_book3s_mmu_map(pte);
+
+	spin_lock(&vcpu3s->mmu_lock);
+
+	/* Add to ePTE list */
+	index = kvmppc_mmu_hash_pte(pte->pte.eaddr);
+	hlist_add_head_rcu(&pte->list_pte, &vcpu3s->hpte_hash_pte[index]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Add to ePTE_long list */
 	index = kvmppc_mmu_hash_pte_long(pte->pte.eaddr);
 	hlist_add_head_rcu(&pte->list_pte_long,
+<<<<<<< HEAD
 			   &vcpu->arch.hpte_hash_pte_long[index]);
 
 	/* Add to vPTE list */
 	index = kvmppc_mmu_hash_vpte(pte->pte.vpage);
 	hlist_add_head_rcu(&pte->list_vpte, &vcpu->arch.hpte_hash_vpte[index]);
+=======
+			   &vcpu3s->hpte_hash_pte_long[index]);
+
+	/* Add to vPTE list */
+	index = kvmppc_mmu_hash_vpte(pte->pte.vpage);
+	hlist_add_head_rcu(&pte->list_vpte, &vcpu3s->hpte_hash_vpte[index]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Add to vPTE_long list */
 	index = kvmppc_mmu_hash_vpte_long(pte->pte.vpage);
 	hlist_add_head_rcu(&pte->list_vpte_long,
+<<<<<<< HEAD
 			   &vcpu->arch.hpte_hash_vpte_long[index]);
 
 	spin_unlock(&vcpu->arch.mmu_lock);
+=======
+			   &vcpu3s->hpte_hash_vpte_long[index]);
+
+	spin_unlock(&vcpu3s->mmu_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void free_pte_rcu(struct rcu_head *head)
@@ -92,16 +126,29 @@ static void free_pte_rcu(struct rcu_head *head)
 
 static void invalidate_pte(struct kvm_vcpu *vcpu, struct hpte_cache *pte)
 {
+<<<<<<< HEAD
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	trace_kvm_book3s_mmu_invalidate(pte);
 
 	/* Different for 32 and 64 bit */
 	kvmppc_mmu_invalidate_pte(vcpu, pte);
 
+<<<<<<< HEAD
 	spin_lock(&vcpu->arch.mmu_lock);
 
 	/* pte already invalidated in between? */
 	if (hlist_unhashed(&pte->list_pte)) {
 		spin_unlock(&vcpu->arch.mmu_lock);
+=======
+	spin_lock(&vcpu3s->mmu_lock);
+
+	/* pte already invalidated in between? */
+	if (hlist_unhashed(&pte->list_pte)) {
+		spin_unlock(&vcpu3s->mmu_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -115,14 +162,24 @@ static void invalidate_pte(struct kvm_vcpu *vcpu, struct hpte_cache *pte)
 	else
 		kvm_release_pfn_clean(pte->pfn);
 
+<<<<<<< HEAD
 	spin_unlock(&vcpu->arch.mmu_lock);
 
 	vcpu->arch.hpte_cache_count--;
+=======
+	spin_unlock(&vcpu3s->mmu_lock);
+
+	vcpu3s->hpte_cache_count--;
+>>>>>>> refs/remotes/origin/cm-10.0
 	call_rcu(&pte->rcu_head, free_pte_rcu);
 }
 
 static void kvmppc_mmu_pte_flush_all(struct kvm_vcpu *vcpu)
 {
+<<<<<<< HEAD
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct hpte_cache *pte;
 	struct hlist_node *node;
 	int i;
@@ -130,7 +187,11 @@ static void kvmppc_mmu_pte_flush_all(struct kvm_vcpu *vcpu)
 	rcu_read_lock();
 
 	for (i = 0; i < HPTEG_HASH_NUM_VPTE_LONG; i++) {
+<<<<<<< HEAD
 		struct hlist_head *list = &vcpu->arch.hpte_hash_vpte_long[i];
+=======
+		struct hlist_head *list = &vcpu3s->hpte_hash_vpte_long[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		hlist_for_each_entry_rcu(pte, node, list, list_vpte_long)
 			invalidate_pte(vcpu, pte);
@@ -141,12 +202,20 @@ static void kvmppc_mmu_pte_flush_all(struct kvm_vcpu *vcpu)
 
 static void kvmppc_mmu_pte_flush_page(struct kvm_vcpu *vcpu, ulong guest_ea)
 {
+<<<<<<< HEAD
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct hlist_head *list;
 	struct hlist_node *node;
 	struct hpte_cache *pte;
 
 	/* Find the list of entries in the map */
+<<<<<<< HEAD
 	list = &vcpu->arch.hpte_hash_pte[kvmppc_mmu_hash_pte(guest_ea)];
+=======
+	list = &vcpu3s->hpte_hash_pte[kvmppc_mmu_hash_pte(guest_ea)];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rcu_read_lock();
 
@@ -160,12 +229,20 @@ static void kvmppc_mmu_pte_flush_page(struct kvm_vcpu *vcpu, ulong guest_ea)
 
 static void kvmppc_mmu_pte_flush_long(struct kvm_vcpu *vcpu, ulong guest_ea)
 {
+<<<<<<< HEAD
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct hlist_head *list;
 	struct hlist_node *node;
 	struct hpte_cache *pte;
 
 	/* Find the list of entries in the map */
+<<<<<<< HEAD
 	list = &vcpu->arch.hpte_hash_pte_long[
+=======
+	list = &vcpu3s->hpte_hash_pte_long[
+>>>>>>> refs/remotes/origin/cm-10.0
 			kvmppc_mmu_hash_pte_long(guest_ea)];
 
 	rcu_read_lock();
@@ -203,12 +280,20 @@ void kvmppc_mmu_pte_flush(struct kvm_vcpu *vcpu, ulong guest_ea, ulong ea_mask)
 /* Flush with mask 0xfffffffff */
 static void kvmppc_mmu_pte_vflush_short(struct kvm_vcpu *vcpu, u64 guest_vp)
 {
+<<<<<<< HEAD
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct hlist_head *list;
 	struct hlist_node *node;
 	struct hpte_cache *pte;
 	u64 vp_mask = 0xfffffffffULL;
 
+<<<<<<< HEAD
 	list = &vcpu->arch.hpte_hash_vpte[kvmppc_mmu_hash_vpte(guest_vp)];
+=======
+	list = &vcpu3s->hpte_hash_vpte[kvmppc_mmu_hash_vpte(guest_vp)];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rcu_read_lock();
 
@@ -223,12 +308,20 @@ static void kvmppc_mmu_pte_vflush_short(struct kvm_vcpu *vcpu, u64 guest_vp)
 /* Flush with mask 0xffffff000 */
 static void kvmppc_mmu_pte_vflush_long(struct kvm_vcpu *vcpu, u64 guest_vp)
 {
+<<<<<<< HEAD
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct hlist_head *list;
 	struct hlist_node *node;
 	struct hpte_cache *pte;
 	u64 vp_mask = 0xffffff000ULL;
 
+<<<<<<< HEAD
 	list = &vcpu->arch.hpte_hash_vpte_long[
+=======
+	list = &vcpu3s->hpte_hash_vpte_long[
+>>>>>>> refs/remotes/origin/cm-10.0
 		kvmppc_mmu_hash_vpte_long(guest_vp)];
 
 	rcu_read_lock();
@@ -261,6 +354,10 @@ void kvmppc_mmu_pte_vflush(struct kvm_vcpu *vcpu, u64 guest_vp, u64 vp_mask)
 
 void kvmppc_mmu_pte_pflush(struct kvm_vcpu *vcpu, ulong pa_start, ulong pa_end)
 {
+<<<<<<< HEAD
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct hlist_node *node;
 	struct hpte_cache *pte;
 	int i;
@@ -270,7 +367,11 @@ void kvmppc_mmu_pte_pflush(struct kvm_vcpu *vcpu, ulong pa_start, ulong pa_end)
 	rcu_read_lock();
 
 	for (i = 0; i < HPTEG_HASH_NUM_VPTE_LONG; i++) {
+<<<<<<< HEAD
 		struct hlist_head *list = &vcpu->arch.hpte_hash_vpte_long[i];
+=======
+		struct hlist_head *list = &vcpu3s->hpte_hash_vpte_long[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		hlist_for_each_entry_rcu(pte, node, list, list_vpte_long)
 			if ((pte->pte.raddr >= pa_start) &&
@@ -283,12 +384,22 @@ void kvmppc_mmu_pte_pflush(struct kvm_vcpu *vcpu, ulong pa_start, ulong pa_end)
 
 struct hpte_cache *kvmppc_mmu_hpte_cache_next(struct kvm_vcpu *vcpu)
 {
+<<<<<<< HEAD
 	struct hpte_cache *pte;
 
 	pte = kmem_cache_zalloc(hpte_cache, GFP_KERNEL);
 	vcpu->arch.hpte_cache_count++;
 
 	if (vcpu->arch.hpte_cache_count == HPTEG_CACHE_NUM)
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+	struct hpte_cache *pte;
+
+	pte = kmem_cache_zalloc(hpte_cache, GFP_KERNEL);
+	vcpu3s->hpte_cache_count++;
+
+	if (vcpu3s->hpte_cache_count == HPTEG_CACHE_NUM)
+>>>>>>> refs/remotes/origin/cm-10.0
 		kvmppc_mmu_pte_flush_all(vcpu);
 
 	return pte;
@@ -309,6 +420,7 @@ static void kvmppc_mmu_hpte_init_hash(struct hlist_head *hash_list, int len)
 
 int kvmppc_mmu_hpte_init(struct kvm_vcpu *vcpu)
 {
+<<<<<<< HEAD
 	/* init hpte lookup hashes */
 	kvmppc_mmu_hpte_init_hash(vcpu->arch.hpte_hash_pte,
 				  ARRAY_SIZE(vcpu->arch.hpte_hash_pte));
@@ -320,6 +432,21 @@ int kvmppc_mmu_hpte_init(struct kvm_vcpu *vcpu)
 				  ARRAY_SIZE(vcpu->arch.hpte_hash_vpte_long));
 
 	spin_lock_init(&vcpu->arch.mmu_lock);
+=======
+	struct kvmppc_vcpu_book3s *vcpu3s = to_book3s(vcpu);
+
+	/* init hpte lookup hashes */
+	kvmppc_mmu_hpte_init_hash(vcpu3s->hpte_hash_pte,
+				  ARRAY_SIZE(vcpu3s->hpte_hash_pte));
+	kvmppc_mmu_hpte_init_hash(vcpu3s->hpte_hash_pte_long,
+				  ARRAY_SIZE(vcpu3s->hpte_hash_pte_long));
+	kvmppc_mmu_hpte_init_hash(vcpu3s->hpte_hash_vpte,
+				  ARRAY_SIZE(vcpu3s->hpte_hash_vpte));
+	kvmppc_mmu_hpte_init_hash(vcpu3s->hpte_hash_vpte_long,
+				  ARRAY_SIZE(vcpu3s->hpte_hash_vpte_long));
+
+	spin_lock_init(&vcpu3s->mmu_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

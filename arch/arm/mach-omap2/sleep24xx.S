@@ -27,7 +27,10 @@
 
 #include <linux/linkage.h>
 #include <asm/assembler.h>
+<<<<<<< HEAD
 #include <mach/io.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/omap24xx.h>
 

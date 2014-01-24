@@ -471,7 +471,11 @@ DECLARE_PER_CPU(seqcount_t, xt_recseq);
  *
  * Begin packet processing : all readers must wait the end
  * 1) Must be called with preemption disabled
+<<<<<<< HEAD
  * 2) softirqs must be disabled too (or we should use irqsafe_cpu_add())
+=======
+ * 2) softirqs must be disabled too (or we should use this_cpu_add())
+>>>>>>> refs/remotes/origin/cm-10.0
  * Returns :
  *  1 if no recursion on this cpu
  *  0 if recursion detected
@@ -503,7 +507,11 @@ static inline unsigned int xt_write_recseq_begin(void)
  *
  * End packet processing : all readers can proceed
  * 1) Must be called with preemption disabled
+<<<<<<< HEAD
  * 2) softirqs must be disabled too (or we should use irqsafe_cpu_add())
+=======
+ * 2) softirqs must be disabled too (or we should use this_cpu_add())
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static inline void xt_write_recseq_end(unsigned int addend)
 {

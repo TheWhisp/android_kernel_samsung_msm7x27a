@@ -32,15 +32,23 @@ int in_crash_kexec;
 
 #if defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
 
+<<<<<<< HEAD
 static void kdump_nmi_callback(int cpu, struct die_args *args)
 {
 	struct pt_regs *regs;
+=======
+static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_X86_32
 	struct pt_regs fixed_regs;
 #endif
 
+<<<<<<< HEAD
 	regs = args->regs;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_X86_32
 	if (!user_mode_vm(regs)) {
 		crash_fixup_ss_esp(&fixed_regs, regs);

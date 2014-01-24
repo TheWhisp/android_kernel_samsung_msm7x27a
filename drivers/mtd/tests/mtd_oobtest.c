@@ -30,7 +30,11 @@
 
 #define PRINT_PREF KERN_INFO "mtd_oobtest: "
 
+<<<<<<< HEAD
 static int dev;
+=======
+static int dev = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(dev, int, S_IRUGO);
 MODULE_PARM_DESC(dev, "MTD device number to use");
 
@@ -78,7 +82,11 @@ static int erase_eraseblock(int ebnum)
 	ei.addr = addr;
 	ei.len  = mtd->erasesize;
 
+<<<<<<< HEAD
 	err = mtd->erase(mtd, &ei);
+=======
+	err = mtd_erase(mtd, &ei);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
 		return err;
@@ -131,7 +139,11 @@ static int write_eraseblock(int ebnum)
 
 	for (i = 0; i < pgcnt; ++i, addr += mtd->writesize) {
 		set_random_data(writebuf, use_len);
+<<<<<<< HEAD
 		ops.mode      = MTD_OOB_AUTO;
+=======
+		ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ops.len       = 0;
 		ops.retlen    = 0;
 		ops.ooblen    = use_len;
@@ -139,7 +151,11 @@ static int write_eraseblock(int ebnum)
 		ops.ooboffs   = use_offset;
 		ops.datbuf    = NULL;
 		ops.oobbuf    = writebuf;
+<<<<<<< HEAD
 		err = mtd->write_oob(mtd, addr, &ops);
+=======
+		err = mtd_write_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err || ops.oobretlen != use_len) {
 			printk(PRINT_PREF "error: writeoob failed at %#llx\n",
 			       (long long)addr);
@@ -184,7 +200,11 @@ static int verify_eraseblock(int ebnum)
 
 	for (i = 0; i < pgcnt; ++i, addr += mtd->writesize) {
 		set_random_data(writebuf, use_len);
+<<<<<<< HEAD
 		ops.mode      = MTD_OOB_AUTO;
+=======
+		ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ops.len       = 0;
 		ops.retlen    = 0;
 		ops.ooblen    = use_len;
@@ -192,7 +212,11 @@ static int verify_eraseblock(int ebnum)
 		ops.ooboffs   = use_offset;
 		ops.datbuf    = NULL;
 		ops.oobbuf    = readbuf;
+<<<<<<< HEAD
 		err = mtd->read_oob(mtd, addr, &ops);
+=======
+		err = mtd_read_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err || ops.oobretlen != use_len) {
 			printk(PRINT_PREF "error: readoob failed at %#llx\n",
 			       (long long)addr);
@@ -211,7 +235,11 @@ static int verify_eraseblock(int ebnum)
 		if (use_offset != 0 || use_len < mtd->ecclayout->oobavail) {
 			int k;
 
+<<<<<<< HEAD
 			ops.mode      = MTD_OOB_AUTO;
+=======
+			ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 			ops.len       = 0;
 			ops.retlen    = 0;
 			ops.ooblen    = mtd->ecclayout->oobavail;
@@ -219,7 +247,11 @@ static int verify_eraseblock(int ebnum)
 			ops.ooboffs   = 0;
 			ops.datbuf    = NULL;
 			ops.oobbuf    = readbuf;
+<<<<<<< HEAD
 			err = mtd->read_oob(mtd, addr, &ops);
+=======
+			err = mtd_read_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (err || ops.oobretlen != mtd->ecclayout->oobavail) {
 				printk(PRINT_PREF "error: readoob failed at "
 				       "%#llx\n", (long long)addr);
@@ -276,7 +308,11 @@ static int verify_eraseblock_in_one_go(int ebnum)
 	size_t len = mtd->ecclayout->oobavail * pgcnt;
 
 	set_random_data(writebuf, len);
+<<<<<<< HEAD
 	ops.mode      = MTD_OOB_AUTO;
+=======
+	ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ops.len       = 0;
 	ops.retlen    = 0;
 	ops.ooblen    = len;
@@ -284,7 +320,11 @@ static int verify_eraseblock_in_one_go(int ebnum)
 	ops.ooboffs   = 0;
 	ops.datbuf    = NULL;
 	ops.oobbuf    = readbuf;
+<<<<<<< HEAD
 	err = mtd->read_oob(mtd, addr, &ops);
+=======
+	err = mtd_read_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err || ops.oobretlen != len) {
 		printk(PRINT_PREF "error: readoob failed at %#llx\n",
 		       (long long)addr);
@@ -329,7 +369,11 @@ static int is_block_bad(int ebnum)
 	int ret;
 	loff_t addr = ebnum * mtd->erasesize;
 
+<<<<<<< HEAD
 	ret = mtd->block_isbad(mtd, addr);
+=======
+	ret = mtd_block_isbad(mtd, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		printk(PRINT_PREF "block %d is bad\n", ebnum);
 	return ret;
@@ -366,6 +410,16 @@ static int __init mtd_oobtest_init(void)
 
 	printk(KERN_INFO "\n");
 	printk(KERN_INFO "=================================================\n");
+<<<<<<< HEAD
+=======
+
+	if (dev < 0) {
+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
+		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(PRINT_PREF "MTD device: %d\n", dev);
 
 	mtd = get_mtd_device(NULL, dev);
@@ -507,7 +561,11 @@ static int __init mtd_oobtest_init(void)
 		addr0 += mtd->erasesize;
 
 	/* Attempt to write off end of OOB */
+<<<<<<< HEAD
 	ops.mode      = MTD_OOB_AUTO;
+=======
+	ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ops.len       = 0;
 	ops.retlen    = 0;
 	ops.ooblen    = 1;
@@ -517,7 +575,11 @@ static int __init mtd_oobtest_init(void)
 	ops.oobbuf    = writebuf;
 	printk(PRINT_PREF "attempting to start write past end of OOB\n");
 	printk(PRINT_PREF "an error is expected...\n");
+<<<<<<< HEAD
 	err = mtd->write_oob(mtd, addr0, &ops);
+=======
+	err = mtd_write_oob(mtd, addr0, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		printk(PRINT_PREF "error occurred as expected\n");
 		err = 0;
@@ -527,7 +589,11 @@ static int __init mtd_oobtest_init(void)
 	}
 
 	/* Attempt to read off end of OOB */
+<<<<<<< HEAD
 	ops.mode      = MTD_OOB_AUTO;
+=======
+	ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ops.len       = 0;
 	ops.retlen    = 0;
 	ops.ooblen    = 1;
@@ -537,7 +603,11 @@ static int __init mtd_oobtest_init(void)
 	ops.oobbuf    = readbuf;
 	printk(PRINT_PREF "attempting to start read past end of OOB\n");
 	printk(PRINT_PREF "an error is expected...\n");
+<<<<<<< HEAD
 	err = mtd->read_oob(mtd, addr0, &ops);
+=======
+	err = mtd_read_oob(mtd, addr0, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		printk(PRINT_PREF "error occurred as expected\n");
 		err = 0;
@@ -551,7 +621,11 @@ static int __init mtd_oobtest_init(void)
 		       "block is bad\n");
 	else {
 		/* Attempt to write off end of device */
+<<<<<<< HEAD
 		ops.mode      = MTD_OOB_AUTO;
+=======
+		ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ops.len       = 0;
 		ops.retlen    = 0;
 		ops.ooblen    = mtd->ecclayout->oobavail + 1;
@@ -561,7 +635,11 @@ static int __init mtd_oobtest_init(void)
 		ops.oobbuf    = writebuf;
 		printk(PRINT_PREF "attempting to write past end of device\n");
 		printk(PRINT_PREF "an error is expected...\n");
+<<<<<<< HEAD
 		err = mtd->write_oob(mtd, mtd->size - mtd->writesize, &ops);
+=======
+		err = mtd_write_oob(mtd, mtd->size - mtd->writesize, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err) {
 			printk(PRINT_PREF "error occurred as expected\n");
 			err = 0;
@@ -571,7 +649,11 @@ static int __init mtd_oobtest_init(void)
 		}
 
 		/* Attempt to read off end of device */
+<<<<<<< HEAD
 		ops.mode      = MTD_OOB_AUTO;
+=======
+		ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ops.len       = 0;
 		ops.retlen    = 0;
 		ops.ooblen    = mtd->ecclayout->oobavail + 1;
@@ -581,7 +663,11 @@ static int __init mtd_oobtest_init(void)
 		ops.oobbuf    = readbuf;
 		printk(PRINT_PREF "attempting to read past end of device\n");
 		printk(PRINT_PREF "an error is expected...\n");
+<<<<<<< HEAD
 		err = mtd->read_oob(mtd, mtd->size - mtd->writesize, &ops);
+=======
+		err = mtd_read_oob(mtd, mtd->size - mtd->writesize, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err) {
 			printk(PRINT_PREF "error occurred as expected\n");
 			err = 0;
@@ -595,7 +681,11 @@ static int __init mtd_oobtest_init(void)
 			goto out;
 
 		/* Attempt to write off end of device */
+<<<<<<< HEAD
 		ops.mode      = MTD_OOB_AUTO;
+=======
+		ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ops.len       = 0;
 		ops.retlen    = 0;
 		ops.ooblen    = mtd->ecclayout->oobavail;
@@ -605,7 +695,11 @@ static int __init mtd_oobtest_init(void)
 		ops.oobbuf    = writebuf;
 		printk(PRINT_PREF "attempting to write past end of device\n");
 		printk(PRINT_PREF "an error is expected...\n");
+<<<<<<< HEAD
 		err = mtd->write_oob(mtd, mtd->size - mtd->writesize, &ops);
+=======
+		err = mtd_write_oob(mtd, mtd->size - mtd->writesize, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err) {
 			printk(PRINT_PREF "error occurred as expected\n");
 			err = 0;
@@ -615,7 +709,11 @@ static int __init mtd_oobtest_init(void)
 		}
 
 		/* Attempt to read off end of device */
+<<<<<<< HEAD
 		ops.mode      = MTD_OOB_AUTO;
+=======
+		ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ops.len       = 0;
 		ops.retlen    = 0;
 		ops.ooblen    = mtd->ecclayout->oobavail;
@@ -625,7 +723,11 @@ static int __init mtd_oobtest_init(void)
 		ops.oobbuf    = readbuf;
 		printk(PRINT_PREF "attempting to read past end of device\n");
 		printk(PRINT_PREF "an error is expected...\n");
+<<<<<<< HEAD
 		err = mtd->read_oob(mtd, mtd->size - mtd->writesize, &ops);
+=======
+		err = mtd_read_oob(mtd, mtd->size - mtd->writesize, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err) {
 			printk(PRINT_PREF "error occurred as expected\n");
 			err = 0;
@@ -655,7 +757,11 @@ static int __init mtd_oobtest_init(void)
 		addr = (i + 1) * mtd->erasesize - mtd->writesize;
 		for (pg = 0; pg < cnt; ++pg) {
 			set_random_data(writebuf, sz);
+<<<<<<< HEAD
 			ops.mode      = MTD_OOB_AUTO;
+=======
+			ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 			ops.len       = 0;
 			ops.retlen    = 0;
 			ops.ooblen    = sz;
@@ -663,7 +769,11 @@ static int __init mtd_oobtest_init(void)
 			ops.ooboffs   = 0;
 			ops.datbuf    = NULL;
 			ops.oobbuf    = writebuf;
+<<<<<<< HEAD
 			err = mtd->write_oob(mtd, addr, &ops);
+=======
+			err = mtd_write_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (err)
 				goto out;
 			if (i % 256 == 0)
@@ -683,7 +793,11 @@ static int __init mtd_oobtest_init(void)
 			continue;
 		set_random_data(writebuf, mtd->ecclayout->oobavail * 2);
 		addr = (i + 1) * mtd->erasesize - mtd->writesize;
+<<<<<<< HEAD
 		ops.mode      = MTD_OOB_AUTO;
+=======
+		ops.mode      = MTD_OPS_AUTO_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ops.len       = 0;
 		ops.retlen    = 0;
 		ops.ooblen    = mtd->ecclayout->oobavail * 2;
@@ -691,7 +805,11 @@ static int __init mtd_oobtest_init(void)
 		ops.ooboffs   = 0;
 		ops.datbuf    = NULL;
 		ops.oobbuf    = readbuf;
+<<<<<<< HEAD
 		err = mtd->read_oob(mtd, addr, &ops);
+=======
+		err = mtd_read_oob(mtd, addr, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			goto out;
 		if (memcmp(readbuf, writebuf, mtd->ecclayout->oobavail * 2)) {

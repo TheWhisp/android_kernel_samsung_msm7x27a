@@ -7,12 +7,19 @@
  * License version 2.  This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/pci.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/bridge-regs.h>
 #include <plat/irq.h>
 #include "common.h"

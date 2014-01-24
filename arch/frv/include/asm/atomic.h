@@ -16,7 +16,11 @@
 
 #include <linux/types.h>
 #include <asm/spr-regs.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_SMP
 #error not SMP safe
@@ -181,6 +185,7 @@ static inline void atomic64_dec(atomic64_t *v)
 #define atomic64_dec_and_test(v)	(atomic64_dec_return((v)) == 0)
 #define atomic64_inc_and_test(v)	(atomic64_inc_return((v)) == 0)
 
+<<<<<<< HEAD
 /*****************************************************************************/
 /*
  * exchange value with memory
@@ -236,12 +241,18 @@ extern uint32_t __xchg_32(uint32_t i, volatile void *v);
 
 #define tas(ptr) (xchg((ptr), 1))
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define atomic_cmpxchg(v, old, new)	(cmpxchg(&(v)->counter, old, new))
 #define atomic_xchg(v, new)		(xchg(&(v)->counter, new))
 #define atomic64_cmpxchg(v, old, new)	(__cmpxchg_64(old, new, &(v)->counter))
 #define atomic64_xchg(v, new)		(__xchg_64(new, &(v)->counter))
 
+<<<<<<< HEAD
 static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int c, old;
 	c = atomic_read(v);
@@ -253,10 +264,17 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
 			break;
 		c = old;
 	}
+<<<<<<< HEAD
 	return c != (u);
 }
 
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
 
 #include <asm-generic/atomic-long.h>
+=======
+	return c;
+}
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_ATOMIC_H */

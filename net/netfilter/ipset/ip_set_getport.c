@@ -17,6 +17,10 @@
 #include <net/ipv6.h>
 
 #include <linux/netfilter/ipset/ip_set_getport.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* We must handle non-linear skbs */
 static bool
@@ -108,16 +112,28 @@ ip_set_get_ip4_port(const struct sk_buff *skb, bool src,
 }
 EXPORT_SYMBOL_GPL(ip_set_get_ip4_port);
 
+<<<<<<< HEAD
 #if defined(CONFIG_IP6_NF_IPTABLES) || defined(CONFIG_IP6_NF_IPTABLES_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+>>>>>>> refs/remotes/origin/cm-10.0
 bool
 ip_set_get_ip6_port(const struct sk_buff *skb, bool src,
 		    __be16 *port, u8 *proto)
 {
 	int protoff;
 	u8 nexthdr;
+<<<<<<< HEAD
 
 	nexthdr = ipv6_hdr(skb)->nexthdr;
 	protoff = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &nexthdr);
+=======
+	__be16 frag_off;
+
+	nexthdr = ipv6_hdr(skb)->nexthdr;
+	protoff = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &nexthdr,
+				   &frag_off);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (protoff < 0)
 		return false;
 
@@ -133,10 +149,17 @@ ip_set_get_ip_port(const struct sk_buff *skb, u8 pf, bool src, __be16 *port)
 	u8 proto;
 
 	switch (pf) {
+<<<<<<< HEAD
 	case AF_INET:
 		ret = ip_set_get_ip4_port(skb, src, port, &proto);
 		break;
 	case AF_INET6:
+=======
+	case NFPROTO_IPV4:
+		ret = ip_set_get_ip4_port(skb, src, port, &proto);
+		break;
+	case NFPROTO_IPV6:
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = ip_set_get_ip6_port(skb, src, port, &proto);
 		break;
 	default:

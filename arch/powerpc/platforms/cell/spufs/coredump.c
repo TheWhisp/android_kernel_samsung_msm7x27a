@@ -26,7 +26,10 @@
 #include <linux/fs.h>
 #include <linux/gfp.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/syscalls.h>
 
 #include <asm/uaccess.h>
@@ -123,7 +126,11 @@ static struct spu_context *coredump_next_context(int *fd)
 	struct spu_context *ctx = NULL;
 
 	for (; *fd < fdt->max_fds; (*fd)++) {
+<<<<<<< HEAD
 		if (!FD_ISSET(*fd, fdt->open_fds))
+=======
+		if (!fd_is_open(*fd, fdt))
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 
 		file = fcheck(*fd);

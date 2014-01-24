@@ -3,6 +3,10 @@
  *
  * Copyright 2007, Domen Puncer <domen.puncer@telargo.com>
  * Copyright 2008, Freescale Semiconductor, Inc. All rights reserved.
+<<<<<<< HEAD
+=======
+ * Copyright 2011, Dmitry Eremin-Solenikov
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -145,6 +149,58 @@ static int mpc5121_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int mpc5200_rtc_read_time(struct device *dev, struct rtc_time *tm)
+{
+	struct mpc5121_rtc_data *rtc = dev_get_drvdata(dev);
+	struct mpc5121_rtc_regs __iomem *regs = rtc->regs;
+	int tmp;
+
+	tm->tm_sec = in_8(&regs->second);
+	tm->tm_min = in_8(&regs->minute);
+
+	/* 12 hour format? */
+	if (in_8(&regs->hour) & 0x20)
+		tm->tm_hour = (in_8(&regs->hour) >> 1) +
+			(in_8(&regs->hour) & 1 ? 12 : 0);
+	else
+		tm->tm_hour = in_8(&regs->hour);
+
+	tmp = in_8(&regs->wday_mday);
+	tm->tm_mday = tmp & 0x1f;
+	tm->tm_mon = in_8(&regs->month) - 1;
+	tm->tm_year = in_be16(&regs->year) - 1900;
+	tm->tm_wday = (tmp >> 5) % 7;
+	tm->tm_yday = rtc_year_days(tm->tm_mday, tm->tm_mon, tm->tm_year);
+	tm->tm_isdst = 0;
+
+	return 0;
+}
+
+static int mpc5200_rtc_set_time(struct device *dev, struct rtc_time *tm)
+{
+	struct mpc5121_rtc_data *rtc = dev_get_drvdata(dev);
+	struct mpc5121_rtc_regs __iomem *regs = rtc->regs;
+
+	mpc5121_rtc_update_smh(regs, tm);
+
+	/* date */
+	out_8(&regs->month_set, tm->tm_mon + 1);
+	out_8(&regs->weekday_set, tm->tm_wday ? tm->tm_wday : 7);
+	out_8(&regs->date_set, tm->tm_mday);
+	out_be16(&regs->year_set, tm->tm_year + 1900);
+
+	/* set date sequence */
+	out_8(&regs->set_date, 0x1);
+	out_8(&regs->set_date, 0x3);
+	out_8(&regs->set_date, 0x1);
+	out_8(&regs->set_date, 0x0);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int mpc5121_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 {
 	struct mpc5121_rtc_data *rtc = dev_get_drvdata(dev);
@@ -248,11 +304,25 @@ static const struct rtc_class_ops mpc5121_rtc_ops = {
 	.alarm_irq_enable = mpc5121_rtc_alarm_irq_enable,
 };
 
+<<<<<<< HEAD
+=======
+static const struct rtc_class_ops mpc5200_rtc_ops = {
+	.read_time = mpc5200_rtc_read_time,
+	.set_time = mpc5200_rtc_set_time,
+	.read_alarm = mpc5121_rtc_read_alarm,
+	.set_alarm = mpc5121_rtc_set_alarm,
+	.alarm_irq_enable = mpc5121_rtc_alarm_irq_enable,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit mpc5121_rtc_probe(struct platform_device *op)
 {
 	struct mpc5121_rtc_data *rtc;
 	int err = 0;
+<<<<<<< HEAD
 	u32 ka;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rtc = kzalloc(sizeof(*rtc), GFP_KERNEL);
 	if (!rtc)
@@ -270,7 +340,11 @@ static int __devinit mpc5121_rtc_probe(struct platform_device *op)
 	dev_set_drvdata(&op->dev, rtc);
 
 	rtc->irq = irq_of_parse_and_map(op->dev.of_node, 1);
+<<<<<<< HEAD
 	err = request_irq(rtc->irq, mpc5121_rtc_handler, IRQF_DISABLED,
+=======
+	err = request_irq(rtc->irq, mpc5121_rtc_handler, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 						"mpc5121-rtc", &op->dev);
 	if (err) {
 		dev_err(&op->dev, "%s: could not request irq: %i\n",
@@ -280,13 +354,18 @@ static int __devinit mpc5121_rtc_probe(struct platform_device *op)
 
 	rtc->irq_periodic = irq_of_parse_and_map(op->dev.of_node, 0);
 	err = request_irq(rtc->irq_periodic, mpc5121_rtc_handler_upd,
+<<<<<<< HEAD
 				IRQF_DISABLED, "mpc5121-rtc_upd", &op->dev);
+=======
+				0, "mpc5121-rtc_upd", &op->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		dev_err(&op->dev, "%s: could not request irq: %i\n",
 						__func__, rtc->irq_periodic);
 		goto out_dispose2;
 	}
 
+<<<<<<< HEAD
 	ka = in_be32(&rtc->regs->keep_alive);
 	if (ka & 0x02) {
 		dev_warn(&op->dev,
@@ -296,10 +375,32 @@ static int __devinit mpc5121_rtc_probe(struct platform_device *op)
 
 	rtc->rtc = rtc_device_register("mpc5121-rtc", &op->dev,
 					&mpc5121_rtc_ops, THIS_MODULE);
+=======
+	if (of_device_is_compatible(op->dev.of_node, "fsl,mpc5121-rtc")) {
+		u32 ka;
+		ka = in_be32(&rtc->regs->keep_alive);
+		if (ka & 0x02) {
+			dev_warn(&op->dev,
+				"mpc5121-rtc: Battery or oscillator failure!\n");
+			out_be32(&rtc->regs->keep_alive, ka);
+		}
+
+		rtc->rtc = rtc_device_register("mpc5121-rtc", &op->dev,
+						&mpc5121_rtc_ops, THIS_MODULE);
+	} else {
+		rtc->rtc = rtc_device_register("mpc5200-rtc", &op->dev,
+						&mpc5200_rtc_ops, THIS_MODULE);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(rtc->rtc)) {
 		err = PTR_ERR(rtc->rtc);
 		goto out_free_irq;
 	}
+<<<<<<< HEAD
+=======
+	rtc->rtc->uie_unsupported = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 
@@ -340,6 +441,10 @@ static int __devexit mpc5121_rtc_remove(struct platform_device *op)
 
 static struct of_device_id mpc5121_rtc_match[] __devinitdata = {
 	{ .compatible = "fsl,mpc5121-rtc", },
+<<<<<<< HEAD
+=======
+	{ .compatible = "fsl,mpc5200-rtc", },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{},
 };
 
@@ -353,6 +458,7 @@ static struct platform_driver mpc5121_rtc_driver = {
 	.remove = __devexit_p(mpc5121_rtc_remove),
 };
 
+<<<<<<< HEAD
 static int __init mpc5121_rtc_init(void)
 {
 	return platform_driver_register(&mpc5121_rtc_driver);
@@ -364,6 +470,9 @@ static void __exit mpc5121_rtc_exit(void)
 	platform_driver_unregister(&mpc5121_rtc_driver);
 }
 module_exit(mpc5121_rtc_exit);
+=======
+module_platform_driver(mpc5121_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("John Rigby <jcrigby@gmail.com>");

@@ -277,11 +277,17 @@ static void i82975x_get_error_info(struct mem_ctl_info *mci,
 static int i82975x_process_error_info(struct mem_ctl_info *mci,
 		struct i82975x_error_info *info, int handle_errors)
 {
+<<<<<<< HEAD
 	int row, multi_chan, chan;
 	unsigned long offst, page;
 
 	multi_chan = mci->csrows[0].nr_channels - 1;
 
+=======
+	int row, chan;
+	unsigned long offst, page;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!(info->errsts2 & 0x0003))
 		return 0;
 
@@ -294,6 +300,7 @@ static int i82975x_process_error_info(struct mem_ctl_info *mci,
 	}
 
 	page = (unsigned long) info->eap;
+<<<<<<< HEAD
 	if (info->xeap & 1)
 		page |= 0x100000000ul;
 	chan = page & 1;
@@ -302,12 +309,37 @@ static int i82975x_process_error_info(struct mem_ctl_info *mci,
 	page >>= PAGE_SHIFT;
 	row = edac_mc_find_csrow_by_page(mci, page);
 
+=======
+	page >>= 1;
+	if (info->xeap & 1)
+		page |= 0x80000000;
+	page >>= (PAGE_SHIFT - 1);
+	row = edac_mc_find_csrow_by_page(mci, page);
+
+	if (row == -1)	{
+		i82975x_mc_printk(mci, KERN_ERR, "error processing EAP:\n"
+			"\tXEAP=%u\n"
+			"\t EAP=0x%08x\n"
+			"\tPAGE=0x%08x\n",
+			(info->xeap & 1) ? 1 : 0, info->eap, (unsigned int) page);
+		return 0;
+	}
+	chan = (mci->csrows[row].nr_channels == 1) ? 0 : info->eap & 1;
+	offst = info->eap
+			& ((1 << PAGE_SHIFT) -
+				(1 << mci->csrows[row].grain));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (info->errsts & 0x0002)
 		edac_mc_handle_ue(mci, page, offst , row, "i82975x UE");
 	else
 		edac_mc_handle_ce(mci, page, offst, info->derrsyn, row,
+<<<<<<< HEAD
 				multi_chan ? chan : 0,
 				"i82975x CE");
+=======
+				chan, "i82975x CE");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 1;
 }
@@ -410,7 +442,11 @@ static void i82975x_init_csrows(struct mem_ctl_info *mci,
 		csrow->last_page = cumul_size - 1;
 		csrow->nr_pages = cumul_size - last_cumul_size;
 		last_cumul_size = cumul_size;
+<<<<<<< HEAD
 		csrow->grain = 1 << 6;	/* I82975X_EAP has 64B resolution */
+=======
+		csrow->grain = 1 << 7;	/* 128Byte cache-line resolution */
+>>>>>>> refs/remotes/origin/cm-10.0
 		csrow->mtype = MEM_DDR2; /* I82975x supports only DDR2 */
 		csrow->dtype = i82975x_dram_type(mch_window, index);
 		csrow->edac_mode = EDAC_SECDED; /* only supported */
@@ -604,7 +640,11 @@ static void __devexit i82975x_remove_one(struct pci_dev *pdev)
 	edac_mc_free(mci);
 }
 
+<<<<<<< HEAD
 static const struct pci_device_id i82975x_pci_tbl[] __devinitdata = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(i82975x_pci_tbl) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		PCI_VEND_DEV(INTEL, 82975_0), PCI_ANY_ID, PCI_ANY_ID, 0, 0,
 		I82975X

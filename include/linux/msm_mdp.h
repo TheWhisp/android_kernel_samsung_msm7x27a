@@ -68,11 +68,16 @@
 						struct msmfb_data)
 #define MSMFB_WRITEBACK_TERMINATE _IO(MSMFB_IOCTL_MAGIC, 155)
 #define MSMFB_MDP_PP _IOWR(MSMFB_IOCTL_MAGIC, 156, struct msmfb_mdp_pp)
+<<<<<<< HEAD
 
 #define MSMFB_OVERLAY_VSYNC_CTRL  _IOW(MSMFB_IOCTL_MAGIC, 160, unsigned int)
 #define MSMFB_VSYNC_CTRL  _IOW(MSMFB_IOCTL_MAGIC, 161, unsigned int)
 #define MSMFB_METADATA_SET  _IOW(MSMFB_IOCTL_MAGIC, 162, struct msmfb_metadata)
 
+=======
+#define MSMFB_OVERLAY_VSYNC_CTRL _IOW(MSMFB_IOCTL_MAGIC, 160, unsigned int)
+#define MSMFB_VSYNC_CTRL  _IOW(MSMFB_IOCTL_MAGIC, 161, unsigned int)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define FB_TYPE_3D_PANEL 0x10101010
 #define MDP_IMGTYPE2_START 0x10000
 #define MSMFB_DRIVER_VERSION	0xF9E8D701
@@ -93,6 +98,11 @@ enum {
 	MDP_YCRYCB_H2V1,  /* YCrYCb interleave */
 	MDP_Y_CRCB_H2V1,  /* Y and CrCb, pseduo planer w/ Cr is in MSB */
 	MDP_Y_CBCR_H2V1,   /* Y and CrCb, pseduo planer w/ Cr is in MSB */
+<<<<<<< HEAD
+=======
+	MDP_Y_CRCB_H1V2,
+	MDP_Y_CBCR_H1V2,
+>>>>>>> refs/remotes/origin/cm-10.0
 	MDP_RGBA_8888,    /* ARGB 888 */
 	MDP_BGRA_8888,	  /* ABGR 888 */
 	MDP_RGBX_8888,	  /* RGBX 888 */
@@ -105,10 +115,17 @@ enum {
 	MDP_Y_CBCR_H1V1,  /* Y and CbCr, pseduo planer w/ Cb is in MSB */
 	MDP_YCRCB_H1V1,   /* YCrCb interleave */
 	MDP_YCBCR_H1V1,   /* YCbCr interleave */
+<<<<<<< HEAD
 	MDP_IMGTYPE_LIMIT,
 	MDP_RGB_BORDERFILL,	/* border fill pipe */
 	MDP_BGR_565 = MDP_IMGTYPE2_START,      /* BGR 565 planer */
 	MDP_FB_FORMAT,    /* framebuffer format */
+=======
+	MDP_BGR_565,      /* BGR 565 planer */
+	MDP_IMGTYPE_LIMIT,
+	MDP_RGB_BORDERFILL,	/* border fill pipe */
+	MDP_FB_FORMAT = MDP_IMGTYPE2_START,    /* framebuffer format */
+>>>>>>> refs/remotes/origin/cm-10.0
 	MDP_IMGTYPE_LIMIT2 /* Non valid image type after this enum */
 };
 
@@ -125,6 +142,12 @@ enum {
 	NUM_HSIC_PARAM,
 };
 
+<<<<<<< HEAD
+=======
+#define MDSS_MDP_ROT_ONLY		0x80
+#define MDSS_MDP_RIGHT_MIXER		0x100
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* mdp_blit_req flag values */
 #define MDP_ROT_NOP 0
 #define MDP_FLIP_LR 0x1
@@ -135,6 +158,10 @@ enum {
 #define MDP_DITHER 0x8
 #define MDP_BLUR 0x10
 #define MDP_BLEND_FG_PREMULT 0x20000
+<<<<<<< HEAD
+=======
+#define MDP_IS_FG 0x40000
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MDP_DEINTERLACE 0x80000000
 #define MDP_SHARPENING  0x40000000
 #define MDP_NO_DMA_BARRIER_START	0x20000000
@@ -252,6 +279,10 @@ struct msmfb_overlay_data {
 	uint32_t version_key;
 	struct msmfb_data plane1_data;
 	struct msmfb_data plane2_data;
+<<<<<<< HEAD
+=======
+	struct msmfb_data dst_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct msmfb_img {
@@ -341,9 +372,15 @@ enum {
 };
 
 /*
+<<<<<<< HEAD
 mdp_histogram_start_req is used to provide the parameters for
 histogram start request
 */
+=======
+ * mdp_histogram_start_req is used to provide the parameters for
+ * histogram start request
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct mdp_histogram_start_req {
 	uint32_t block;
@@ -352,6 +389,7 @@ struct mdp_histogram_start_req {
 	uint8_t num_bins;
 };
 
+<<<<<<< HEAD
 
 /*
 
@@ -361,6 +399,13 @@ struct mdp_histogram_start_req {
  */
 
 
+=======
+/*
+ * mdp_histogram_data is used to return the histogram data, once
+ * the histogram is done/stopped/cance
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mdp_histogram_data {
 	uint32_t block;
 	uint8_t bin_cnt;
@@ -399,9 +444,12 @@ struct mdp_csc_cfg_data {
 	struct mdp_csc_cfg csc_data;
 };
 
+<<<<<<< HEAD
 #define MDP_PP_OPS_READ 0x2
 #define MDP_PP_OPS_WRITE 0x4
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 enum {
 	mdp_lut_igc,
 	mdp_lut_pgc,
@@ -409,6 +457,10 @@ enum {
 	mdp_lut_max,
 };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mdp_igc_lut_data {
 	uint32_t block;
 	uint32_t len, ops;
@@ -450,11 +502,14 @@ struct mdp_lut_cfg_data {
 	} data;
 };
 
+<<<<<<< HEAD
 struct mdp_bl_scale_data {
 	uint32_t min_lvl;
 	uint32_t scale;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mdp_qseed_cfg_data {
 	uint32_t block;
 	uint32_t table_num;
@@ -463,13 +518,25 @@ struct mdp_qseed_cfg_data {
 	uint32_t *data;
 };
 
+<<<<<<< HEAD
+=======
+struct mdp_bl_scale_data {
+	uint32_t min_lvl;
+	uint32_t scale;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum {
 	mdp_op_pcc_cfg,
 	mdp_op_csc_cfg,
 	mdp_op_lut_cfg,
+<<<<<<< HEAD
 	mdp_bl_scale_cfg,
 	mdp_op_qseed_cfg,
+=======
+	mdp_op_qseed_cfg,
+	mdp_bl_scale_cfg,
+>>>>>>> refs/remotes/origin/cm-10.0
 	mdp_op_max,
 };
 
@@ -479,6 +546,7 @@ struct msmfb_mdp_pp {
 		struct mdp_pcc_cfg_data pcc_cfg_data;
 		struct mdp_csc_cfg_data csc_cfg_data;
 		struct mdp_lut_cfg_data lut_cfg_data;
+<<<<<<< HEAD
 		struct mdp_bl_scale_data bl_scale_data;
 		struct mdp_qseed_cfg_data qseed_cfg_data;
 	} data;
@@ -501,6 +569,13 @@ struct msmfb_metadata {
 		struct mdp_blend_cfg blend_cfg;
 	} data;
 };
+=======
+		struct mdp_qseed_cfg_data qseed_cfg_data;
+		struct mdp_bl_scale_data bl_scale_data;
+	} data;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct mdp_page_protection {
 	uint32_t page_protection;

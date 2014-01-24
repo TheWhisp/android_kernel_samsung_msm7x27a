@@ -47,7 +47,11 @@
 
 const char *usbcore_name = "usbcore";
 
+<<<<<<< HEAD
 static int nousb;	/* Disable USB when built into kernel image */
+=======
+static bool nousb;	/* Disable USB when built into kernel image */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef	CONFIG_USB_SUSPEND
 static int usb_autosuspend_delay = 2;		/* Default delay value,
@@ -225,6 +229,10 @@ static void usb_release_dev(struct device *dev)
 	hcd = bus_to_hcd(udev->bus);
 
 	usb_destroy_configuration(udev);
+<<<<<<< HEAD
+=======
+	usb_release_bos_descriptor(udev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_put_hcd(hcd);
 	kfree(udev->product);
 	kfree(udev->manufacturer);
@@ -273,7 +281,11 @@ static int usb_dev_prepare(struct device *dev)
 static void usb_dev_complete(struct device *dev)
 {
 	/* Currently used only for rebinding interfaces */
+<<<<<<< HEAD
 	usb_resume(dev, PMSG_ON);	/* FIXME: change to PMSG_COMPLETE */
+=======
+	usb_resume_complete(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int usb_dev_suspend(struct device *dev)
@@ -325,7 +337,11 @@ static const struct dev_pm_ops usb_device_pm_ops = {
 #endif	/* CONFIG_PM */
 
 
+<<<<<<< HEAD
 static char *usb_devnode(struct device *dev, mode_t *mode)
+=======
+static char *usb_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct usb_device *usb_dev;
 

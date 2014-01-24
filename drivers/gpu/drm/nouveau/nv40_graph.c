@@ -35,6 +35,7 @@ struct nv40_graph_engine {
 	u32 grctx_size;
 };
 
+<<<<<<< HEAD
 static struct nouveau_channel *
 nv40_graph_channel(struct drm_device *dev)
 {
@@ -118,6 +119,8 @@ nv40_graph_unload_context(struct drm_device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int
 nv40_graph_context_new(struct nouveau_channel *chan, int engine)
 {
@@ -163,6 +166,7 @@ nv40_graph_context_del(struct nouveau_channel *chan, int engine)
 	struct nouveau_gpuobj *grctx = chan->engctx[engine];
 	struct drm_device *dev = chan->dev;
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&dev_priv->context_switch_lock, flags);
@@ -173,6 +177,18 @@ nv40_graph_context_del(struct nouveau_channel *chan, int engine)
 		nv40_graph_unload_context(dev);
 
 	nv04_graph_fifo_access(dev, true);
+=======
+	u32 inst = 0x01000000 | (grctx->pinst >> 4);
+	unsigned long flags;
+
+	spin_lock_irqsave(&dev_priv->context_switch_lock, flags);
+	nv_mask(dev, 0x400720, 0x00000000, 0x00000001);
+	if (nv_rd32(dev, 0x40032c) == inst)
+		nv_mask(dev, 0x40032c, 0x01000000, 0x00000000);
+	if (nv_rd32(dev, 0x400330) == inst)
+		nv_mask(dev, 0x400330, 0x01000000, 0x00000000);
+	nv_mask(dev, 0x400720, 0x00000001, 0x00000001);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&dev_priv->context_switch_lock, flags);
 
 	/* Free the context resources */
@@ -429,9 +445,26 @@ nv40_graph_init(struct drm_device *dev, int engine)
 }
 
 static int
+<<<<<<< HEAD
 nv40_graph_fini(struct drm_device *dev, int engine)
 {
 	nv40_graph_unload_context(dev);
+=======
+nv40_graph_fini(struct drm_device *dev, int engine, bool suspend)
+{
+	u32 inst = nv_rd32(dev, 0x40032c);
+	if (inst & 0x01000000) {
+		nv_wr32(dev, 0x400720, 0x00000000);
+		nv_wr32(dev, 0x400784, inst);
+		nv_mask(dev, 0x400310, 0x00000020, 0x00000020);
+		nv_mask(dev, 0x400304, 0x00000001, 0x00000001);
+		if (!nv_wait(dev, 0x400300, 0x00000001, 0x00000000)) {
+			u32 insn = nv_rd32(dev, 0x400308);
+			NV_ERROR(dev, "PGRAPH: ctxprog timeout 0x%08x\n", insn);
+		}
+		nv_mask(dev, 0x40032c, 0x01000000, 0x00000000);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

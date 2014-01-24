@@ -1,7 +1,12 @@
 /*
  *  Copyright (C) 2002 ARM Ltd.
+<<<<<<< HEAD
  *  Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *  All Rights Reserved
+=======
+ *  All Rights Reserved
+ *  Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -13,12 +18,22 @@
 #include <linux/cpu.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <asm/vfp.h>
 
 #include <mach/msm_rtb.h>
 
 #include "pm.h"
 #include "qdss.h"
+=======
+#include <asm/smp_plat.h>
+#include <asm/vfp.h>
+
+#include <mach/jtag.h>
+#include <mach/msm_rtb.h>
+
+#include "pm.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "spm.h"
 
 extern volatile int pen_release;
@@ -48,7 +63,11 @@ static inline void platform_do_lowpower(unsigned int cpu)
 	for (;;) {
 
 		msm_pm_cpu_enter_lowpower(cpu);
+<<<<<<< HEAD
 		if (pen_release == cpu) {
+=======
+		if (pen_release == cpu_logical_map(cpu)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * OK, proper wakeup, we're done
 			 */
@@ -74,6 +93,7 @@ static inline void platform_do_lowpower(unsigned int cpu)
 
 int platform_cpu_kill(unsigned int cpu)
 {
+<<<<<<< HEAD
 	struct completion *killed =
 		&per_cpu(msm_hotplug_devices, cpu).cpu_killed;
 	int ret;
@@ -83,6 +103,9 @@ int platform_cpu_kill(unsigned int cpu)
 		return ret;
 
 	return msm_pm_wait_cpu_shutdown(cpu);
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -104,7 +127,11 @@ void platform_cpu_die(unsigned int cpu)
 	cpu_enter_lowpower();
 	platform_do_lowpower(cpu);
 
+<<<<<<< HEAD
 	pr_notice("CPU%u: %s: normal wakeup\n", cpu, __func__);
+=======
+	pr_debug("CPU%u: %s: normal wakeup\n", cpu, __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cpu_leave_lowpower();
 }
 
@@ -167,16 +194,32 @@ int msm_platform_secondary_init(unsigned int cpu)
 		return 0;
 	}
 	msm_jtag_restore_state();
+<<<<<<< HEAD
 #ifdef CONFIG_VFP
 	vfp_reinit();
+=======
+#if defined(CONFIG_VFP) && defined (CONFIG_CPU_PM)
+	vfp_pm_resume();
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	ret = msm_spm_set_low_power_mode(MSM_SPM_MODE_CLOCK_GATING, false);
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __init init_hotplug_notifier(void)
 {
 	return register_hotcpu_notifier(&hotplug_rtb_notifier);
 }
 early_initcall(init_hotplug_notifier);
+=======
+static int __init init_hotplug(void)
+{
+
+	struct msm_hotplug_device *dev = &__get_cpu_var(msm_hotplug_devices);
+	init_completion(&dev->cpu_killed);
+	return register_hotcpu_notifier(&hotplug_rtb_notifier);
+}
+early_initcall(init_hotplug);
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -19,7 +19,10 @@
 
 #include <mach/hardware.h>
 #include <asm/hardware/ioc.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define FORCE_ONES	0xdc
 #define SCL		0x02

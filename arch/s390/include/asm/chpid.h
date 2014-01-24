@@ -6,7 +6,11 @@
  */
 
 #ifndef _ASM_S390_CHPID_H
+<<<<<<< HEAD
 #define _ASM_S390_CHPID_H _ASM_S390_CHPID_H
+=======
+#define _ASM_S390_CHPID_H
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/string.h>
 #include <linux/types.h>

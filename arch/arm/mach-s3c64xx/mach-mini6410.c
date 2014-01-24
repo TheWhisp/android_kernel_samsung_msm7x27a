@@ -24,16 +24,26 @@
 #include <linux/serial_core.h>
 #include <linux/types.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/hardware/vic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
 #include <mach/map.h>
+<<<<<<< HEAD
 #include <mach/regs-fb.h>
 #include <mach/regs-gpio.h>
 #include <mach/regs-modem.h>
 #include <mach/regs-srom.h>
 #include <mach/s3c6410.h>
+=======
+#include <mach/regs-gpio.h>
+#include <mach/regs-modem.h>
+#include <mach/regs-srom.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/adc.h>
 #include <plat/cpu.h>
@@ -42,9 +52,18 @@
 #include <plat/nand.h>
 #include <plat/regs-serial.h>
 #include <plat/ts.h>
+<<<<<<< HEAD
 
 #include <video/platform_lcd.h>
 
+=======
+#include <plat/regs-fb-v4.h>
+
+#include <video/platform_lcd.h>
+
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define UCON S3C2410_UCON_DEFAULT
 #define ULCON (S3C2410_LCON_CS8 | S3C2410_LCON_PNONE | S3C2410_LCON_STOPB)
 #define UFCON (S3C2410_UFCON_RXTRIG8 | S3C2410_UFCON_FIFOMODE)
@@ -205,12 +224,15 @@ static struct platform_device mini6410_lcd_powerdev = {
 	.dev.platform_data	= &mini6410_lcd_power_data,
 };
 
+<<<<<<< HEAD
 static struct s3c2410_ts_mach_info s3c_ts_platform __initdata = {
 	.delay			= 10000,
 	.presc			= 49,
 	.oversampling_shift	= 2,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device *mini6410_devices[] __initdata = {
 	&mini6410_device_eth,
 	&s3c_device_hsmmc0,
@@ -319,7 +341,11 @@ static void __init mini6410_machine_init(void)
 
 	s3c_nand_set_platdata(&mini6410_nand_info);
 	s3c_fb_set_platdata(&mini6410_lcd_pdata);
+<<<<<<< HEAD
 	s3c24xx_ts_set_platdata(&s3c_ts_platform);
+=======
+	s3c24xx_ts_set_platdata(NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* configure nCS1 width to 16 bits */
 
@@ -349,9 +375,19 @@ static void __init mini6410_machine_init(void)
 
 MACHINE_START(MINI6410, "MINI6410")
 	/* Maintainer: Darius Augulis <augulis.darius@gmail.com> */
+<<<<<<< HEAD
 	.boot_params	= S3C64XX_PA_SDRAM + 0x100,
 	.init_irq	= s3c6410_init_irq,
 	.map_io		= mini6410_map_io,
 	.init_machine	= mini6410_machine_init,
 	.timer		= &s3c24xx_timer,
+=======
+	.atag_offset	= 0x100,
+	.init_irq	= s3c6410_init_irq,
+	.handle_irq	= vic_handle_irq,
+	.map_io		= mini6410_map_io,
+	.init_machine	= mini6410_machine_init,
+	.timer		= &s3c24xx_timer,
+	.restart	= s3c64xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -30,6 +30,10 @@
 
 #include <linux/workqueue.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/wait.h>
 #include <linux/errno.h>
 #include <linux/kobject.h>
@@ -41,7 +45,11 @@
  * @do_shrink: The callback function.
  *
  * Arguments to the do_shrink functions are intended to be passed using
+<<<<<<< HEAD
  * inheritance. That is, the argument class derives from struct ttm_mem_srink,
+=======
+ * inheritance. That is, the argument class derives from struct ttm_mem_shrink,
+>>>>>>> refs/remotes/origin/cm-10.0
  * and can be accessed using container_of().
  */
 

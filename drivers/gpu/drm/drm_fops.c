@@ -37,6 +37,10 @@
 #include "drmP.h"
 #include <linux/poll.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* from BKL pushdown: note that nothing else serializes idr_find() */
 DEFINE_MUTEX(drm_global_mutex);
@@ -132,6 +136,12 @@ int drm_open(struct inode *inode, struct file *filp)
 	if (!(dev = minor->dev))
 		return -ENODEV;
 
+<<<<<<< HEAD
+=======
+	if (drm_device_is_unplugged(dev))
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	retcode = drm_open_helper(inode, filp, dev);
 	if (!retcode) {
 		atomic_inc(&dev->counts[_DRM_STAT_OPENS]);
@@ -183,8 +193,16 @@ int drm_stub_open(struct inode *inode, struct file *filp)
 	if (!(dev = minor->dev))
 		goto out;
 
+<<<<<<< HEAD
 	old_fops = filp->f_op;
 	filp->f_op = fops_get(&dev->driver->fops);
+=======
+	if (drm_device_is_unplugged(dev))
+		goto out;
+
+	old_fops = filp->f_op;
+	filp->f_op = fops_get(dev->driver->fops);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (filp->f_op == NULL) {
 		filp->f_op = old_fops;
 		goto out;
@@ -267,6 +285,12 @@ static int drm_open_helper(struct inode *inode, struct file *filp,
 	if (dev->driver->driver_features & DRIVER_GEM)
 		drm_gem_open(dev, priv);
 
+<<<<<<< HEAD
+=======
+	if (drm_core_check_feature(dev, DRIVER_PRIME))
+		drm_prime_init_file_private(&priv->prime);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dev->driver->open) {
 		ret = dev->driver->open(dev, priv);
 		if (ret < 0)
@@ -500,12 +524,21 @@ int drm_release(struct inode *inode, struct file *filp)
 
 	drm_events_release(file_priv);
 
+<<<<<<< HEAD
 	if (dev->driver->driver_features & DRIVER_GEM)
 		drm_gem_release(dev, file_priv);
 
 	if (dev->driver->driver_features & DRIVER_MODESET)
 		drm_fb_release(file_priv);
 
+=======
+	if (dev->driver->driver_features & DRIVER_MODESET)
+		drm_fb_release(file_priv);
+
+	if (dev->driver->driver_features & DRIVER_GEM)
+		drm_gem_release(dev, file_priv);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_lock(&dev->ctxlist_mutex);
 	if (!list_empty(&dev->ctxlist)) {
 		struct drm_ctx_list *pos, *n;
@@ -567,6 +600,13 @@ int drm_release(struct inode *inode, struct file *filp)
 
 	if (dev->driver->postclose)
 		dev->driver->postclose(dev, file_priv);
+<<<<<<< HEAD
+=======
+
+	if (drm_core_check_feature(dev, DRIVER_PRIME))
+		drm_prime_destroy_file_private(&file_priv->prime);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(file_priv);
 
 	/* ========================================================
@@ -581,6 +621,11 @@ int drm_release(struct inode *inode, struct file *filp)
 			retcode = -EBUSY;
 		} else
 			retcode = drm_lastclose(dev);
+<<<<<<< HEAD
+=======
+		if (drm_device_is_unplugged(dev))
+			drm_put_dev(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	mutex_unlock(&drm_global_mutex);
 

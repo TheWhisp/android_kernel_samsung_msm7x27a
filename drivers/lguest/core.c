@@ -117,7 +117,11 @@ static __init int map_switcher(void)
 
 	/*
 	 * Now the Switcher is mapped at the right address, we can't fail!
+<<<<<<< HEAD
 	 * Copy in the compiled-in Switcher code (from <arch>_switcher.S).
+=======
+	 * Copy in the compiled-in Switcher code (from x86/switcher_32.S).
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	memcpy(switcher_vma->addr, start_switcher_text,
 	       end_switcher_text - start_switcher_text);
@@ -232,6 +236,16 @@ int run_guest(struct lg_cpu *cpu, unsigned long __user *user)
 			}
 		}
 
+<<<<<<< HEAD
+=======
+		/*
+		 * All long-lived kernel loops need to check with this horrible
+		 * thing called the freezer.  If the Host is trying to suspend,
+		 * it stops us.
+		 */
+		try_to_freeze();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Check for signals */
 		if (signal_pending(current))
 			return -ERESTARTSYS;
@@ -246,6 +260,7 @@ int run_guest(struct lg_cpu *cpu, unsigned long __user *user)
 			try_deliver_interrupt(cpu, irq, more);
 
 		/*
+<<<<<<< HEAD
 		 * All long-lived kernel loops need to check with this horrible
 		 * thing called the freezer.  If the Host is trying to suspend,
 		 * it stops us.
@@ -253,6 +268,8 @@ int run_guest(struct lg_cpu *cpu, unsigned long __user *user)
 		try_to_freeze();
 
 		/*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * Just make absolutely sure the Guest is still alive.  One of
 		 * those hypercalls could have been fatal, for example.
 		 */
@@ -313,7 +330,11 @@ static int __init init(void)
 	int err;
 
 	/* Lguest can't run under Xen, VMI or itself.  It does Tricky Stuff. */
+<<<<<<< HEAD
 	if (paravirt_enabled()) {
+=======
+	if (get_kernel_rpl() != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk("lguest is afraid of being a guest\n");
 		return -EPERM;
 	}

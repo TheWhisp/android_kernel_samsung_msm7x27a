@@ -390,7 +390,12 @@ int omap3_noncore_dpll_enable(struct clk *clk)
 	 * propagating?
 	 */
 	if (!r)
+<<<<<<< HEAD
 		clk->rate = omap2_get_dpll_rate(clk);
+=======
+		clk->rate = (clk->recalc) ? clk->recalc(clk) :
+			omap2_get_dpll_rate(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return r;
 }
@@ -424,6 +429,10 @@ void omap3_noncore_dpll_disable(struct clk *clk)
 int omap3_noncore_dpll_set_rate(struct clk *clk, unsigned long rate)
 {
 	struct clk *new_parent = NULL;
+<<<<<<< HEAD
+=======
+	unsigned long hw_rate;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 freqsel = 0;
 	struct dpll_data *dd;
 	int ret;
@@ -435,7 +444,12 @@ int omap3_noncore_dpll_set_rate(struct clk *clk, unsigned long rate)
 	if (!dd)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (rate == omap2_get_dpll_rate(clk))
+=======
+	hw_rate = (clk->recalc) ? clk->recalc(clk) : omap2_get_dpll_rate(clk);
+	if (rate == hw_rate)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	/*
@@ -455,7 +469,11 @@ int omap3_noncore_dpll_set_rate(struct clk *clk, unsigned long rate)
 			new_parent = dd->clk_bypass;
 	} else {
 		if (dd->last_rounded_rate != rate)
+<<<<<<< HEAD
 			omap2_dpll_round_rate(clk, rate);
+=======
+			rate = clk->round_rate(clk, rate);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (dd->last_rounded_rate == 0)
 			return -EINVAL;

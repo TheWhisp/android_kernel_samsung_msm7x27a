@@ -401,6 +401,7 @@ static struct platform_driver wm831x_ts_driver = {
 	.probe = wm831x_ts_probe,
 	.remove = __devexit_p(wm831x_ts_remove),
 };
+<<<<<<< HEAD
 
 static int __init wm831x_ts_init(void)
 {
@@ -413,6 +414,9 @@ static void __exit wm831x_ts_exit(void)
 	platform_driver_unregister(&wm831x_ts_driver);
 }
 module_exit(wm831x_ts_exit);
+=======
+module_platform_driver(wm831x_ts_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

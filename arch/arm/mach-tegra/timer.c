@@ -19,7 +19,10 @@
 
 #include <linux/init.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <linux/sched.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/time.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -29,7 +32,11 @@
 #include <linux/io.h>
 
 #include <asm/mach/time.h>
+<<<<<<< HEAD
 #include <asm/localtimer.h>
+=======
+#include <asm/smp_twd.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sched_clock.h>
 
 #include <mach/iomap.h>
@@ -62,9 +69,15 @@ static struct timespec persistent_ts;
 static u64 persistent_ms, last_persistent_ms;
 
 #define timer_writel(value, reg) \
+<<<<<<< HEAD
 	__raw_writel(value, (u32)timer_reg_base + (reg))
 #define timer_readl(reg) \
 	__raw_readl((u32)timer_reg_base + (reg))
+=======
+	__raw_writel(value, timer_reg_base + (reg))
+#define timer_readl(reg) \
+	__raw_readl(timer_reg_base + (reg))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int tegra_timer_set_next_event(unsigned long cycles,
 					 struct clock_event_device *evt)
@@ -106,6 +119,7 @@ static struct clock_event_device tegra_clockevent = {
 	.set_mode	= tegra_timer_set_mode,
 };
 
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 
 /*
@@ -125,6 +139,11 @@ static void notrace tegra_update_sched_clock(void)
 {
 	u32 cyc = timer_readl(TIMERUS_CNTR_1US);
 	update_sched_clock(&cd, cyc, (u32)~0);
+=======
+static u32 notrace tegra_read_sched_clock(void)
+{
+	return timer_readl(TIMERUS_CNTR_1US);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -133,7 +152,11 @@ static void notrace tegra_update_sched_clock(void)
  * tegra_rtc driver could be executing to avoid race conditions
  * on the RTC shadow register
  */
+<<<<<<< HEAD
 u64 tegra_rtc_read_ms(void)
+=======
+static u64 tegra_rtc_read_ms(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u32 ms = readl(rtc_base + RTC_MILLISECONDS);
 	u32 s = readl(rtc_base + RTC_SHADOW_SECONDS);
@@ -179,6 +202,7 @@ static struct irqaction tegra_timer_irq = {
 	.irq		= INT_TMR3,
 };
 
+<<<<<<< HEAD
 static void __init tegra_init_timer(void)
 {
 	struct clk *clk;
@@ -188,18 +212,57 @@ static void __init tegra_init_timer(void)
 	clk = clk_get_sys("timer", NULL);
 	BUG_ON(IS_ERR(clk));
 	clk_enable(clk);
+=======
+#ifdef CONFIG_HAVE_ARM_TWD
+static DEFINE_TWD_LOCAL_TIMER(twd_local_timer,
+			      TEGRA_ARM_PERIF_BASE + 0x600,
+			      IRQ_LOCALTIMER);
+
+static void __init tegra_twd_init(void)
+{
+	int err = twd_local_timer_register(&twd_local_timer);
+	if (err)
+		pr_err("twd_local_timer_register failed %d\n", err);
+}
+#else
+#define tegra_twd_init()	do {} while(0)
+#endif
+
+static void __init tegra_init_timer(void)
+{
+	struct clk *clk;
+	unsigned long rate;
+	int ret;
+
+	clk = clk_get_sys("timer", NULL);
+	if (IS_ERR(clk)) {
+		pr_warn("Unable to get timer clock."
+			" Assuming 12Mhz input clock.\n");
+		rate = 12000000;
+	} else {
+		clk_enable(clk);
+		rate = clk_get_rate(clk);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * rtc registers are used by read_persistent_clock, keep the rtc clock
 	 * enabled
 	 */
 	clk = clk_get_sys("rtc-tegra", NULL);
+<<<<<<< HEAD
 	BUG_ON(IS_ERR(clk));
 	clk_enable(clk);
 
 #ifdef CONFIG_HAVE_ARM_TWD
 	twd_base = IO_ADDRESS(TEGRA_ARM_PERIF_BASE + 0x600);
 #endif
+=======
+	if (IS_ERR(clk))
+		pr_warn("Unable to get rtc-tegra clock\n");
+	else
+		clk_enable(clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (rate) {
 	case 12000000:
@@ -218,8 +281,12 @@ static void __init tegra_init_timer(void)
 		WARN(1, "Unknown clock rate");
 	}
 
+<<<<<<< HEAD
 	init_fixed_sched_clock(&cd, tegra_update_sched_clock, 32,
 			       1000000, SC_MULT, SC_SHIFT);
+=======
+	setup_sched_clock(tegra_read_sched_clock, 32, 1000000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (clocksource_mmio_init(timer_reg_base + TIMERUS_CNTR_1US,
 		"timer_us", 1000000, 300, 32, clocksource_mmio_readl_up)) {
@@ -241,6 +308,10 @@ static void __init tegra_init_timer(void)
 	tegra_clockevent.cpumask = cpu_all_mask;
 	tegra_clockevent.irq = tegra_timer_irq.irq;
 	clockevents_register_device(&tegra_clockevent);
+<<<<<<< HEAD
+=======
+	tegra_twd_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct sys_timer tegra_timer = {

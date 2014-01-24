@@ -23,7 +23,11 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/minors.h>
 #include <sound/info.h>
@@ -235,6 +239,10 @@ static int snd_kernel_minor(int type, struct snd_card *card, int dev)
 	case SNDRV_DEVICE_TYPE_RAWMIDI:
 	case SNDRV_DEVICE_TYPE_PCM_PLAYBACK:
 	case SNDRV_DEVICE_TYPE_PCM_CAPTURE:
+<<<<<<< HEAD
+=======
+	case SNDRV_DEVICE_TYPE_COMPRESS:
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (snd_BUG_ON(!card))
 			return -EINVAL;
 		minor = SNDRV_MINOR(card->number, type + dev);

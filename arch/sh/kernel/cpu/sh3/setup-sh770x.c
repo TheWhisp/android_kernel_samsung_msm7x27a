@@ -19,6 +19,10 @@
 #include <linux/serial.h>
 #include <linux/serial_sci.h>
 #include <linux/sh_timer.h>
+<<<<<<< HEAD
+=======
+#include <cpu/serial.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum {
 	UNUSED = 0,
@@ -108,11 +112,20 @@ static struct platform_device rtc_device = {
 
 static struct plat_sci_port scif0_platform_data = {
 	.mapbase	= 0xfffffe80,
+<<<<<<< HEAD
+=======
+	.port_reg	= 0xa4000136,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.flags		= UPF_BOOT_AUTOCONF,
 	.scscr		= SCSCR_TE | SCSCR_RE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCI,
 	.irqs		= { 23, 23, 23, 0 },
+<<<<<<< HEAD
+=======
+	.ops		= &sh770x_sci_port_ops,
+	.regshift	= 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif0_device = {
@@ -132,6 +145,11 @@ static struct plat_sci_port scif1_platform_data = {
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
 	.irqs		= { 56, 56, 56, 56 },
+<<<<<<< HEAD
+=======
+	.ops		= &sh770x_sci_port_ops,
+	.regtype	= SCIx_SH3_SCIF_REGTYPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif1_device = {
@@ -146,11 +164,20 @@ static struct platform_device scif1_device = {
     defined(CONFIG_CPU_SUBTYPE_SH7709)
 static struct plat_sci_port scif2_platform_data = {
 	.mapbase	= 0xa4000140,
+<<<<<<< HEAD
+=======
+	.port_reg	= SCIx_NOT_SUPPORTED,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.flags		= UPF_BOOT_AUTOCONF,
 	.scscr		= SCSCR_TE | SCSCR_RE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_IRDA,
 	.irqs		= { 52, 52, 52, 52 },
+<<<<<<< HEAD
+=======
+	.ops		= &sh770x_sci_port_ops,
+	.regshift	= 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device scif2_device = {

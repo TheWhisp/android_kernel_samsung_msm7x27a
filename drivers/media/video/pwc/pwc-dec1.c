@@ -22,6 +22,7 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+<<<<<<< HEAD
 
 
 
@@ -48,3 +49,13 @@ int pwc_dec1_alloc(struct pwc_device *pwc)
 	return 0;
 }
 
+=======
+#include "pwc.h"
+
+void pwc_dec1_init(struct pwc_device *pdev, const unsigned char *cmd)
+{
+	struct pwc_dec1_private *pdec = &pdev->dec1;
+
+	pdec->version = pdev->release;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

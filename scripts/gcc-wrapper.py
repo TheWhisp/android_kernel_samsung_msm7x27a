@@ -1,7 +1,11 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+<<<<<<< HEAD
 # Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+# Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -40,6 +44,7 @@ import subprocess
 # force LANG to be set to en_US.UTF-8 to get consistent warnings.
 
 allowed_warnings = set([
+<<<<<<< HEAD
     "alignment.c:720",
     "async.c:122",
     "async.c:270",
@@ -65,6 +70,11 @@ allowed_warnings = set([
     "dma-mapping.c:238",
     "dma-mapping.c:284",
     "xt_log.h:50",
+=======
+    "alignment.c:327",
+    "mmu.c:602",
+    "return_address.c:62",
+>>>>>>> refs/remotes/origin/cm-10.0
  ])
 
 # Capture the name of the object file, can find it.

@@ -30,6 +30,7 @@
 #include <asm/types.h>
 
 #include "pwc.h"
+<<<<<<< HEAD
 #include "pwc-uncompress.h"
 #include "pwc-dec1.h"
 #include "pwc-dec23.h"
@@ -38,10 +39,19 @@ int pwc_decompress(struct pwc_device *pdev)
 {
 	struct pwc_frame_buf *fbuf;
 	int n, line, col, stride;
+=======
+#include "pwc-dec1.h"
+#include "pwc-dec23.h"
+
+int pwc_decompress(struct pwc_device *pdev, struct pwc_frame_buf *fbuf)
+{
+	int n, line, col;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *yuv, *image;
 	u16 *src;
 	u16 *dsty, *dstu, *dstv;
 
+<<<<<<< HEAD
 	if (pdev == NULL)
 		return -EFAULT;
 
@@ -50,6 +60,9 @@ int pwc_decompress(struct pwc_device *pdev)
 		return -EFAULT;
 	image  = pdev->image_data;
 	image += pdev->images[pdev->fill_image].offset;
+=======
+	image = vb2_plane_vaddr(&fbuf->vb, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	yuv = fbuf->data + pdev->frame_header_size;  /* Skip header */
 
@@ -64,6 +77,7 @@ int pwc_decompress(struct pwc_device *pdev)
 			 * determine this using the type of the webcam */
 		memcpy(raw_frame->cmd, pdev->cmd_buf, 4);
 		memcpy(raw_frame+1, yuv, pdev->frame_size);
+<<<<<<< HEAD
 		return 0;
 	}
 
@@ -73,11 +87,24 @@ int pwc_decompress(struct pwc_device *pdev)
 		 * size (which may be larger than the image size).
 		 * Unfortunately we have to do a bit of byte stuffing to get
 		 * the desired output format/size.
+=======
+		vb2_set_plane_payload(&fbuf->vb, 0,
+			pdev->frame_size + sizeof(struct pwc_raw_frame));
+		return 0;
+	}
+
+	vb2_set_plane_payload(&fbuf->vb, 0,
+			      pdev->width * pdev->height * 3 / 2);
+
+	if (pdev->vbandlength == 0) {
+		/* Uncompressed mode.
+>>>>>>> refs/remotes/origin/cm-10.0
 		 *
 		 * We do some byte shuffling here to go from the
 		 * native format to YUV420P.
 		 */
 		src = (u16 *)yuv;
+<<<<<<< HEAD
 		n = pdev->view.x * pdev->view.y;
 
 		/* offset in Y plane */
@@ -94,6 +121,15 @@ int pwc_decompress(struct pwc_device *pdev)
 
 		for (line = 0; line < pdev->image.y; line++) {
 			for (col = 0; col < pdev->image.x; col += 4) {
+=======
+		n = pdev->width * pdev->height;
+		dsty = (u16 *)(image);
+		dstu = (u16 *)(image + n);
+		dstv = (u16 *)(image + n + n / 4);
+
+		for (line = 0; line < pdev->height; line++) {
+			for (col = 0; col < pdev->width; col += 4) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				*dsty++ = *src++;
 				*dsty++ = *src++;
 				if (line & 1)
@@ -101,11 +137,14 @@ int pwc_decompress(struct pwc_device *pdev)
 				else
 					*dstu++ = *src++;
 			}
+<<<<<<< HEAD
 			dsty += stride;
 			if (line & 1)
 				dstv += (stride >> 1);
 			else
 				dstu += (stride >> 1);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		return 0;
@@ -116,12 +155,15 @@ int pwc_decompress(struct pwc_device *pdev)
 	 * the decompressor routines will write the data in planar format
 	 * immediately.
 	 */
+<<<<<<< HEAD
 	if (pdev->vsize == PSZ_VGA && pdev->vframes == 5 && pdev->vsnapshot) {
 		PWC_ERROR("Mode Bayer is not supported for now\n");
 		/* flags |= PWCX_FLAG_BAYER; */
 		return -ENXIO; /* No such device or address: missing decompressor */
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (DEVICE_USE_CODEC1(pdev->type)) {
 
 		/* TODO & FIXME */
@@ -129,6 +171,7 @@ int pwc_decompress(struct pwc_device *pdev)
 		return -ENXIO; /* No such device or address: missing decompressor */
 
 	} else {
+<<<<<<< HEAD
 		pwc_dec23_decompress(pdev, yuv, image, PWCX_FLAG_PLANAR);
 	}
 	return 0;
@@ -136,3 +179,9 @@ int pwc_decompress(struct pwc_device *pdev)
 
 
 /* vim: set cino= formatoptions=croql cindent shiftwidth=8 tabstop=8: */
+=======
+		pwc_dec23_decompress(pdev, yuv, image);
+	}
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

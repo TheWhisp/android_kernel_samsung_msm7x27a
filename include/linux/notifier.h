@@ -185,6 +185,7 @@ static inline int notifier_to_errno(int ret)
  *	VC switch chains (for loadable kernel svgalib VC switch helpers) etc...
  */
  
+<<<<<<< HEAD
 /* netdevice notifier chain. Please remember to update the rtnetlink
  * notification exclusion list in rtnetlink_event() when adding new
  * types.
@@ -259,6 +260,19 @@ static inline int notifier_to_errno(int ret)
 #define PM_POST_SUSPEND		0x0004 /* Suspend finished */
 #define PM_RESTORE_PREPARE	0x0005 /* Going to restore a saved image */
 #define PM_POST_RESTORE		0x0006 /* Restore failed */
+=======
+/* CPU notfiers are defined in include/linux/cpu.h. */
+
+/* netdevice notifiers are defined in include/linux/netdevice.h */
+
+/* reboot notifiers are defined in include/linux/reboot.h. */
+
+/* Hibernation and suspend events are defined in include/linux/suspend.h. */
+
+/* Virtual Terminal events are defined in include/linux/vt.h. */
+
+#define NETLINK_URELEASE	0x0001	/* Unicast netlink socket released */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Console keyboard events.
  * Note: KBD_KEYCODE is always sent before KBD_UNBOUND_KEYCODE, KBD_UNICODE and
@@ -271,6 +285,7 @@ static inline int notifier_to_errno(int ret)
 
 extern struct blocking_notifier_head reboot_notifier_list;
 
+<<<<<<< HEAD
 /* Virtual Terminal events. */
 #define VT_ALLOCATE		0x0001 /* Console got allocated */
 #define VT_DEALLOCATE		0x0002 /* Console will be deallocated */
@@ -278,5 +293,7 @@ extern struct blocking_notifier_head reboot_notifier_list;
 #define VT_UPDATE		0x0004 /* A bigger update occurred */
 #define VT_PREWRITE		0x0005 /* A char is about to be written to the console */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KERNEL__ */
 #endif /* _LINUX_NOTIFIER_H */

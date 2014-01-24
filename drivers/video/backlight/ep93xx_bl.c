@@ -11,17 +11,24 @@
  * BRIGHT, on the Cirrus EP9307, EP9312, and EP9315 processors.
  */
 
+<<<<<<< HEAD
 
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include <linux/io.h>
 #include <linux/fb.h>
 #include <linux/backlight.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 
 #define EP93XX_RASTER_REG(x)		(EP93XX_RASTER_BASE + (x))
 #define EP93XX_RASTER_BRIGHTNESS	EP93XX_RASTER_REG(0x20)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EP93XX_MAX_COUNT		255
 #define EP93XX_MAX_BRIGHT		255
 #define EP93XX_DEF_BRIGHT		128
@@ -35,7 +42,11 @@ static int ep93xxbl_set(struct backlight_device *bl, int brightness)
 {
 	struct ep93xxbl *ep93xxbl = bl_get_data(bl);
 
+<<<<<<< HEAD
 	__raw_writel((brightness << 8) | EP93XX_MAX_COUNT, ep93xxbl->mmio);
+=======
+	writel((brightness << 8) | EP93XX_MAX_COUNT, ep93xxbl->mmio);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ep93xxbl->brightness = brightness;
 
@@ -70,21 +81,44 @@ static int __init ep93xxbl_probe(struct platform_device *dev)
 	struct ep93xxbl *ep93xxbl;
 	struct backlight_device *bl;
 	struct backlight_properties props;
+<<<<<<< HEAD
+=======
+	struct resource *res;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ep93xxbl = devm_kzalloc(&dev->dev, sizeof(*ep93xxbl), GFP_KERNEL);
 	if (!ep93xxbl)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	/*
 	 * This register is located in the range already ioremap'ed by
 	 * the framebuffer driver.  A MFD driver seems a bit of overkill
 	 * to handle this so use the static I/O mapping; this address
 	 * is already virtual.
+=======
+	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
+	if (!res)
+		return -ENXIO;
+
+	/*
+	 * FIXME - We don't do a request_mem_region here because we are
+	 * sharing the register space with the framebuffer driver (see
+	 * drivers/video/ep93xx-fb.c) and doing so will cause the second
+	 * loaded driver to return -EBUSY.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 *
 	 * NOTE: No locking is required; the framebuffer does not touch
 	 * this register.
 	 */
+<<<<<<< HEAD
 	ep93xxbl->mmio = EP93XX_RASTER_BRIGHTNESS;
+=======
+	ep93xxbl->mmio = devm_ioremap(&dev->dev, res->start,
+				      resource_size(res));
+	if (!ep93xxbl->mmio)
+		return -ENXIO;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memset(&props, 0, sizeof(struct backlight_properties));
 	props.type = BACKLIGHT_RAW;
@@ -143,6 +177,7 @@ static struct platform_driver ep93xxbl_driver = {
 	.resume		= ep93xxbl_resume,
 };
 
+<<<<<<< HEAD
 static int __init ep93xxbl_init(void)
 {
 	return platform_driver_register(&ep93xxbl_driver);
@@ -154,6 +189,9 @@ static void __exit ep93xxbl_exit(void)
 	platform_driver_unregister(&ep93xxbl_driver);
 }
 module_exit(ep93xxbl_exit);
+=======
+module_platform_driver(ep93xxbl_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("EP93xx Backlight Driver");
 MODULE_AUTHOR("H Hartley Sweeten <hsweeten@visionengravers.com>");

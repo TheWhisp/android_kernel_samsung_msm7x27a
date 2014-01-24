@@ -20,6 +20,12 @@ enum nf_ct_ext_id {
 #ifdef CONFIG_NF_CONNTRACK_TIMESTAMP
 	NF_CT_EXT_TSTAMP,
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NF_CONNTRACK_TIMEOUT
+	NF_CT_EXT_TIMEOUT,
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	NF_CT_EXT_NUM,
 };
 
@@ -29,6 +35,10 @@ enum nf_ct_ext_id {
 #define NF_CT_EXT_ECACHE_TYPE struct nf_conntrack_ecache
 #define NF_CT_EXT_ZONE_TYPE struct nf_conntrack_zone
 #define NF_CT_EXT_TSTAMP_TYPE struct nf_conn_tstamp
+<<<<<<< HEAD
+=======
+#define NF_CT_EXT_TIMEOUT_TYPE struct nf_conn_timeout
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Extensions: optional stuff which isn't permanently in struct. */
 struct nf_ct_ext {

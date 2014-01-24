@@ -56,6 +56,7 @@ static int bf5xx_ad193x_hw_params(struct snd_pcm_substream *substream,
 
 	switch (params_rate(params)) {
 	case 48000:
+<<<<<<< HEAD
 		clk = 12288000;
 		break;
 	}
@@ -72,6 +73,12 @@ static int bf5xx_ad193x_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+=======
+		clk = 24576000;
+		break;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* set the codec system clock for DAC and ADC */
 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk,
 		SND_SOC_CLOCK_IN);
@@ -92,6 +99,12 @@ static int bf5xx_ad193x_hw_params(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#define BF5XX_AD193X_DAIFMT (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_IF | \
+				SND_SOC_DAIFMT_CBM_CFM)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct snd_soc_ops bf5xx_ad193x_ops = {
 	.hw_params = bf5xx_ad193x_hw_params,
 };
@@ -105,6 +118,10 @@ static struct snd_soc_dai_link bf5xx_ad193x_dai[] = {
 		.platform_name = "bfin-tdm-pcm-audio",
 		.codec_name = "spi0.5",
 		.ops = &bf5xx_ad193x_ops,
+<<<<<<< HEAD
+=======
+		.dai_fmt = BF5XX_AD193X_DAIFMT,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	{
 		.name = "ad193x",
@@ -114,11 +131,19 @@ static struct snd_soc_dai_link bf5xx_ad193x_dai[] = {
 		.platform_name = "bfin-tdm-pcm-audio",
 		.codec_name = "spi0.5",
 		.ops = &bf5xx_ad193x_ops,
+<<<<<<< HEAD
+=======
+		.dai_fmt = BF5XX_AD193X_DAIFMT,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
 static struct snd_soc_card bf5xx_ad193x = {
 	.name = "bfin-ad193x",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = &bf5xx_ad193x_dai[CONFIG_SND_BF5XX_SPORT_NUM],
 	.num_links = 1,
 };

@@ -30,7 +30,10 @@
 #include <asm/pgtable.h>
 #include <asm/processor.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mca_asm.h>
 #include <linux/init.h>
 #include <linux/linkage.h>

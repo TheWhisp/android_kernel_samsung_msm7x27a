@@ -223,7 +223,11 @@ static int __init at32_rtc_probe(struct platform_device *pdev)
 	}
 
 	rtc->irq = irq;
+<<<<<<< HEAD
 	rtc->regs = ioremap(regs->start, regs->end - regs->start + 1);
+=======
+	rtc->regs = ioremap(regs->start, resource_size(regs));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!rtc->regs) {
 		ret = -ENOMEM;
 		dev_dbg(&pdev->dev, "could not map I/O memory\n");

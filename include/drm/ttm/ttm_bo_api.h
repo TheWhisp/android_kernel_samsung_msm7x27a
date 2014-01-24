@@ -122,17 +122,23 @@ struct ttm_mem_reg {
  * be mmapped by user space. Each of these bos occupy a slot in the
  * device address space, that can be used for normal vm operations.
  *
+<<<<<<< HEAD
  * @ttm_bo_type_user: These are user-space memory areas that are made
  * available to the GPU by mapping the buffer pages into the GPU aperture
  * space. These buffers cannot be mmaped from the device address space.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @ttm_bo_type_kernel: These buffers are like ttm_bo_type_device buffers,
  * but they cannot be accessed from user-space. For kernel-only use.
  */
 
 enum ttm_bo_type {
 	ttm_bo_type_device,
+<<<<<<< HEAD
 	ttm_bo_type_user,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ttm_bo_type_kernel
 };
 
@@ -434,9 +440,15 @@ extern void ttm_bo_unlock_delayed_workqueue(struct ttm_bo_device *bdev,
  * -EBUSY if the buffer is busy and no_wait is true.
  * -ERESTARTSYS if interrupted by a signal.
  */
+<<<<<<< HEAD
 
 extern int
 ttm_bo_synccpu_write_grab(struct ttm_buffer_object *bo, bool no_wait);
+=======
+extern int
+ttm_bo_synccpu_write_grab(struct ttm_buffer_object *bo, bool no_wait);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * ttm_bo_synccpu_write_release:
  *
@@ -447,6 +459,25 @@ ttm_bo_synccpu_write_grab(struct ttm_buffer_object *bo, bool no_wait);
 extern void ttm_bo_synccpu_write_release(struct ttm_buffer_object *bo);
 
 /**
+<<<<<<< HEAD
+=======
+ * ttm_bo_acc_size
+ *
+ * @bdev: Pointer to a ttm_bo_device struct.
+ * @bo_size: size of the buffer object in byte.
+ * @struct_size: size of the structure holding buffer object datas
+ *
+ * Returns size to account for a buffer object
+ */
+size_t ttm_bo_acc_size(struct ttm_bo_device *bdev,
+		       unsigned long bo_size,
+		       unsigned struct_size);
+size_t ttm_bo_dma_acc_size(struct ttm_bo_device *bdev,
+			   unsigned long bo_size,
+			   unsigned struct_size);
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * ttm_bo_init
  *
  * @bdev: Pointer to a ttm_bo_device struct.
@@ -493,6 +524,10 @@ extern int ttm_bo_init(struct ttm_bo_device *bdev,
 			struct file *persistent_swap_storage,
 			size_t acc_size,
 			void (*destroy) (struct ttm_buffer_object *));
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * ttm_bo_synccpu_object_init
  *
@@ -662,9 +697,12 @@ extern int ttm_bo_kmap(struct ttm_buffer_object *bo, unsigned long start_page,
 
 extern void ttm_bo_kunmap(struct ttm_bo_kmap_obj *map);
 
+<<<<<<< HEAD
 #if 0
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * ttm_fbdev_mmap - mmap fbdev memory backed by a ttm buffer object.
  *

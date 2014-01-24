@@ -32,7 +32,13 @@
 
 #include <linux/sched.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include "ipw2200.h"
+=======
+#include <net/cfg80211-wext.h>
+#include "ipw2200.h"
+#include "ipw.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #ifndef KBUILD_EXTMOD
@@ -130,6 +136,17 @@ static struct ieee80211_rate ipw2200_rates[] = {
 #define ipw2200_bg_rates	(ipw2200_rates + 0)
 #define ipw2200_num_bg_rates	12
 
+<<<<<<< HEAD
+=======
+/* Ugly macro to convert literal channel numbers into their mhz equivalents
+ * There are certianly some conditions that will break this (like feeding it '30')
+ * but they shouldn't arise since nothing talks on channel 30. */
+#define ieee80211chan2mhz(x) \
+	(((x) <= 14) ? \
+	(((x) == 14) ? 2484 : ((x) * 5) + 2407) : \
+	((x) + 1000) * 5)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_IPW2200_QOS
 static int qos_enable = 0;
 static int qos_burst_enable = 0;
@@ -7850,7 +7867,11 @@ static void ipw_handle_data_packet_monitor(struct ipw_priv *priv,
 	 * more efficiently than we can parse it. ORDER MATTERS HERE */
 	struct ipw_rt_hdr *ipw_rt;
 
+<<<<<<< HEAD
 	short len = le16_to_cpu(pkt->u.frame.length);
+=======
+	unsigned short len = le16_to_cpu(pkt->u.frame.length);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* We received data from the HW, so stop the watchdog */
 	dev->trans_start = jiffies;
@@ -8025,7 +8046,11 @@ static void ipw_handle_promiscuous_rx(struct ipw_priv *priv,
 	s8 signal = frame->rssi_dbm - IPW_RSSI_TO_DBM;
 	s8 noise = (s8) le16_to_cpu(frame->noise);
 	u8 rate = frame->rate;
+<<<<<<< HEAD
 	short len = le16_to_cpu(pkt->u.frame.length);
+=======
+	unsigned short len = le16_to_cpu(pkt->u.frame.length);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sk_buff *skb;
 	int hdr_only = 0;
 	u16 filter = priv->prom_priv->filter;
@@ -10461,7 +10486,11 @@ static void ipw_handle_promiscuous_tx(struct ipw_priv *priv,
 		} else
 			len = src->len;
 
+<<<<<<< HEAD
 		dst = alloc_skb(len + sizeof(*rt_hdr), GFP_ATOMIC);
+=======
+		dst = alloc_skb(len + sizeof(*rt_hdr) + sizeof(u16)*2, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!dst)
 			continue;
 
@@ -10550,8 +10579,13 @@ static void ipw_ethtool_get_drvinfo(struct net_device *dev,
 	char date[32];
 	u32 len;
 
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	len = sizeof(vers);
 	ipw_get_ordinal(p, IPW_ORD_STAT_FW_VERSION, vers, &len);
@@ -10560,7 +10594,12 @@ static void ipw_ethtool_get_drvinfo(struct net_device *dev,
 
 	snprintf(info->fw_version, sizeof(info->fw_version), "%s (%s)",
 		 vers, date);
+<<<<<<< HEAD
 	strcpy(info->bus_info, pci_name(p->pci_dev));
+=======
+	strlcpy(info->bus_info, pci_name(p->pci_dev),
+		sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/cm-10.0
 	info->eedump_len = IPW_EEPROM_IMAGE_SIZE;
 }
 
@@ -11436,16 +11475,35 @@ static void ipw_bg_down(struct work_struct *work)
 /* Called by register_netdev() */
 static int ipw_net_init(struct net_device *dev)
 {
+<<<<<<< HEAD
+=======
+	int rc = 0;
+	struct ipw_priv *priv = libipw_priv(dev);
+
+	mutex_lock(&priv->mutex);
+	if (ipw_up(priv))
+		rc = -EIO;
+	mutex_unlock(&priv->mutex);
+
+	return rc;
+}
+
+static int ipw_wdev_init(struct net_device *dev)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i, rc = 0;
 	struct ipw_priv *priv = libipw_priv(dev);
 	const struct libipw_geo *geo = libipw_get_geo(priv->ieee);
 	struct wireless_dev *wdev = &priv->ieee->wdev;
+<<<<<<< HEAD
 	mutex_lock(&priv->mutex);
 
 	if (ipw_up(priv)) {
 		rc = -EIO;
 		goto out;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memcpy(wdev->wiphy->perm_addr, priv->mac_addr, ETH_ALEN);
 
@@ -11501,9 +11559,15 @@ static int ipw_net_init(struct net_device *dev)
 			rc = -ENOMEM;
 			goto out;
 		}
+<<<<<<< HEAD
 		/* translate geo->bg to a_band.channels */
 		for (i = 0; i < geo->a_channels; i++) {
 			a_band->channels[i].band = IEEE80211_BAND_2GHZ;
+=======
+		/* translate geo->a to a_band.channels */
+		for (i = 0; i < geo->a_channels; i++) {
+			a_band->channels[i].band = IEEE80211_BAND_5GHZ;
+>>>>>>> refs/remotes/origin/cm-10.0
 			a_band->channels[i].center_freq = geo->a[i].freq;
 			a_band->channels[i].hw_value = geo->a[i].channel;
 			a_band->channels[i].max_power = geo->a[i].max_power;
@@ -11527,6 +11591,7 @@ static int ipw_net_init(struct net_device *dev)
 		wdev->wiphy->bands[IEEE80211_BAND_5GHZ] = a_band;
 	}
 
+<<<<<<< HEAD
 	set_wiphy_dev(wdev->wiphy, &priv->pci_dev->dev);
 
 	/* With that information in place, we can now register the wiphy... */
@@ -11537,6 +11602,17 @@ static int ipw_net_init(struct net_device *dev)
 
 out:
 	mutex_unlock(&priv->mutex);
+=======
+	wdev->wiphy->cipher_suites = ipw_cipher_suites;
+	wdev->wiphy->n_cipher_suites = ARRAY_SIZE(ipw_cipher_suites);
+
+	set_wiphy_dev(wdev->wiphy, &priv->pci_dev->dev);
+
+	/* With that information in place, we can now register the wiphy... */
+	if (wiphy_register(wdev->wiphy))
+		rc = -EIO;
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 }
 
@@ -11712,7 +11788,11 @@ static const struct net_device_ops ipw_netdev_ops = {
 	.ndo_init		= ipw_net_init,
 	.ndo_open		= ipw_net_open,
 	.ndo_stop		= ipw_net_stop,
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= ipw_net_set_multicast_list,
+=======
+	.ndo_set_rx_mode	= ipw_net_set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_set_mac_address	= ipw_net_set_mac_address,
 	.ndo_start_xmit		= libipw_xmit,
 	.ndo_change_mtu		= libipw_change_mtu,
@@ -11843,14 +11923,30 @@ static int __devinit ipw_pci_probe(struct pci_dev *pdev,
 		goto out_remove_sysfs;
 	}
 
+<<<<<<< HEAD
+=======
+	err = ipw_wdev_init(net_dev);
+	if (err) {
+		IPW_ERROR("failed to register wireless device\n");
+		goto out_unregister_netdev;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_IPW2200_PROMISCUOUS
 	if (rtap_iface) {
 	        err = ipw_prom_alloc(priv);
 		if (err) {
 			IPW_ERROR("Failed to register promiscuous network "
 				  "device (error %d).\n", err);
+<<<<<<< HEAD
 			unregister_netdev(priv->net_dev);
 			goto out_remove_sysfs;
+=======
+			wiphy_unregister(priv->ieee->wdev.wiphy);
+			kfree(priv->ieee->a_band.channels);
+			kfree(priv->ieee->bg_band.channels);
+			goto out_unregister_netdev;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 #endif
@@ -11862,6 +11958,11 @@ static int __devinit ipw_pci_probe(struct pci_dev *pdev,
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+      out_unregister_netdev:
+	unregister_netdev(priv->net_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
       out_remove_sysfs:
 	sysfs_remove_group(&pdev->dev.kobj, &ipw_attribute_group);
       out_release_irq:

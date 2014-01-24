@@ -37,6 +37,10 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "ipoib.h"
 
@@ -84,7 +88,11 @@ static void ipoib_cm_dma_unmap_rx(struct ipoib_dev_priv *priv, int frags,
 	ib_dma_unmap_single(priv->ca, mapping[0], IPOIB_CM_HEAD_SIZE, DMA_FROM_DEVICE);
 
 	for (i = 0; i < frags; ++i)
+<<<<<<< HEAD
 		ib_dma_unmap_single(priv->ca, mapping[i + 1], PAGE_SIZE, DMA_FROM_DEVICE);
+=======
+		ib_dma_unmap_page(priv->ca, mapping[i + 1], PAGE_SIZE, DMA_FROM_DEVICE);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int ipoib_cm_post_receive_srq(struct net_device *dev, int id)
@@ -169,7 +177,11 @@ static struct sk_buff *ipoib_cm_alloc_rx_skb(struct net_device *dev,
 			goto partial_error;
 		skb_fill_page_desc(skb, i, page, 0, PAGE_SIZE);
 
+<<<<<<< HEAD
 		mapping[i + 1] = ib_dma_map_page(priv->ca, skb_shinfo(skb)->frags[i].page,
+=======
+		mapping[i + 1] = ib_dma_map_page(priv->ca, page,
+>>>>>>> refs/remotes/origin/cm-10.0
 						 0, PAGE_SIZE, DMA_FROM_DEVICE);
 		if (unlikely(ib_dma_mapping_error(priv->ca, mapping[i + 1])))
 			goto partial_error;
@@ -183,7 +195,11 @@ partial_error:
 	ib_dma_unmap_single(priv->ca, mapping[0], IPOIB_CM_HEAD_SIZE, DMA_FROM_DEVICE);
 
 	for (; i > 0; --i)
+<<<<<<< HEAD
 		ib_dma_unmap_single(priv->ca, mapping[i], PAGE_SIZE, DMA_FROM_DEVICE);
+=======
+		ib_dma_unmap_page(priv->ca, mapping[i], PAGE_SIZE, DMA_FROM_DEVICE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_kfree_skb_any(skb);
 	return NULL;
@@ -537,12 +553,21 @@ static void skb_put_frags(struct sk_buff *skb, unsigned int hdr_space,
 
 		if (length == 0) {
 			/* don't need this page */
+<<<<<<< HEAD
 			skb_fill_page_desc(toskb, i, frag->page, 0, PAGE_SIZE);
+=======
+			skb_fill_page_desc(toskb, i, skb_frag_page(frag),
+					   0, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 			--skb_shinfo(skb)->nr_frags;
 		} else {
 			size = min(length, (unsigned) PAGE_SIZE);
 
+<<<<<<< HEAD
 			frag->size = size;
+=======
+			skb_frag_size_set(frag, size);
+>>>>>>> refs/remotes/origin/cm-10.0
 			skb->data_len += size;
 			skb->truesize += size;
 			skb->len += size;
@@ -1500,6 +1525,10 @@ static void ipoib_cm_create_srq(struct net_device *dev, int max_sge)
 {
 	struct ipoib_dev_priv *priv = netdev_priv(dev);
 	struct ib_srq_init_attr srq_init_attr = {
+<<<<<<< HEAD
+=======
+		.srq_type = IB_SRQT_BASIC,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.attr = {
 			.max_wr  = ipoib_recvq_size,
 			.max_sge = max_sge

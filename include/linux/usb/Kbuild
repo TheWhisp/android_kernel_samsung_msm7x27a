@@ -7,3 +7,7 @@ header-y += gadgetfs.h
 header-y += midi.h
 header-y += g_printer.h
 header-y += tmc.h
+<<<<<<< HEAD
+=======
+header-y += video.h
+>>>>>>> refs/remotes/origin/cm-10.0

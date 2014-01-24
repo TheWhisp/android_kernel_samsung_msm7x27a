@@ -11,7 +11,10 @@
 #include <linux/init.h>
 #include <linux/smp.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/processor.h>
 #include <asm/cputable.h>
 #include <asm/oprofile_impl.h>

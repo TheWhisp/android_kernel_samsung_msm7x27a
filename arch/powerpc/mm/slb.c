@@ -21,7 +21,10 @@
 #include <asm/cputable.h>
 #include <asm/cacheflush.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
 #include <asm/firmware.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/compiler.h>
 #include <asm/udbg.h>
 #include <asm/code-patching.h>
@@ -307,11 +310,14 @@ void slb_initialize(void)
 
 	get_paca()->stab_rr = SLB_NUM_BOLTED;
 
+<<<<<<< HEAD
 	/* On iSeries the bolted entries have already been set up by
 	 * the hypervisor from the lparMap data in head.S */
 	if (firmware_has_feature(FW_FEATURE_ISERIES))
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	lflags = SLB_VSID_KERNEL | linear_llp;
 	vflags = SLB_VSID_KERNEL | vmalloc_llp;
 

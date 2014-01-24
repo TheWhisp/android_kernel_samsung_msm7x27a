@@ -20,7 +20,11 @@
 /* re-define device name depending on support. */
 static inline void s3c_adc_setname(char *name)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_SAMSUNG_DEV_ADC
+=======
+#if defined(CONFIG_SAMSUNG_DEV_ADC) || defined(CONFIG_PLAT_S3C24XX)
+>>>>>>> refs/remotes/origin/cm-10.0
 	s3c_device_adc.name = name;
 #endif
 }

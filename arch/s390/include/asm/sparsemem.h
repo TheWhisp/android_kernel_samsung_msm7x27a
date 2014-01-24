@@ -4,8 +4,13 @@
 #ifdef CONFIG_64BIT
 
 #define SECTION_SIZE_BITS	28
+<<<<<<< HEAD
 #define MAX_PHYSADDR_BITS	42
 #define MAX_PHYSMEM_BITS	42
+=======
+#define MAX_PHYSADDR_BITS	46
+#define MAX_PHYSMEM_BITS	46
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else
 

@@ -12,7 +12,10 @@
 #include <linux/slab.h>
 #include <linux/proc_fs.h>
 #include <linux/nodemask.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/sn/sn_sal.h>
 #include <asm/sn/sn_cpuid.h>

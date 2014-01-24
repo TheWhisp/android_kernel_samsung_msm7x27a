@@ -11,7 +11,10 @@
 
 #include <asm/page.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/idprom.h>
 #include <asm/machines.h>
 #include <asm/oplib.h>

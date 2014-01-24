@@ -37,12 +37,15 @@
  *
  */
 
+<<<<<<< HEAD
 #ifdef __ASSEMBLY__
 #define IOMEM(x)	x
 #else
 #define IOMEM(x)	((void __force __iomem *)(x))
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MSM_VIC_BASE          IOMEM(0xF8000000)
 #define MSM_VIC_PHYS          0xC0000000
 #define MSM_VIC_SIZE          SZ_4K

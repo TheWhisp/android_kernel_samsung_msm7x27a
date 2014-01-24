@@ -4,7 +4,11 @@
 
 # Object file lists.
 
+<<<<<<< HEAD
 obj-y			:= irq.o mm.o time.o
+=======
+obj-y			:= common.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-m			:=
 obj-n			:=
 obj-			:=

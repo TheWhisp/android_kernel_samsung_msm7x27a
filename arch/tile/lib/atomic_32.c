@@ -17,7 +17,11 @@
 #include <linux/uaccess.h>
 #include <linux/module.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/futex.h>
 #include <arch/chip.h>
 

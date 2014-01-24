@@ -100,9 +100,20 @@ extern void cpu_idle_on_new_stack(struct thread_info *old_ti,
 
 #else /* __ASSEMBLY__ */
 
+<<<<<<< HEAD
 /* how to get the thread information struct from ASM */
 #ifdef __tilegx__
 #define GET_THREAD_INFO(reg) move reg, sp; mm reg, zero, LOG2_THREAD_SIZE, 63
+=======
+/*
+ * How to get the thread information struct from assembly.
+ * Note that we use different macros since different architectures
+ * have different semantics in their "mm" instruction and we would
+ * like to guarantee that the macro expands to exactly one instruction.
+ */
+#ifdef __tilegx__
+#define EXTRACT_THREAD_INFO(reg) mm reg, zero, LOG2_THREAD_SIZE, 63
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define GET_THREAD_INFO(reg) mm reg, sp, zero, LOG2_THREAD_SIZE, 31
 #endif

@@ -23,10 +23,22 @@ config IA64
 	select HAVE_ARCH_TRACEHOOK
 	select HAVE_DMA_API_DEBUG
 	select HAVE_GENERIC_HARDIRQS
+<<<<<<< HEAD
+=======
+	select HAVE_MEMBLOCK
+	select HAVE_MEMBLOCK_NODE_MAP
+	select ARCH_DISCARD_MEMBLOCK
+>>>>>>> refs/remotes/origin/cm-10.0
 	select GENERIC_IRQ_PROBE
 	select GENERIC_PENDING_IRQ if SMP
 	select IRQ_PER_CPU
 	select GENERIC_IRQ_SHOW
+<<<<<<< HEAD
+=======
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+	select GENERIC_IOMAP
+>>>>>>> refs/remotes/origin/cm-10.0
 	default y
 	help
 	  The Itanium Processor Family is Intel's 64-bit successor to
@@ -89,6 +101,12 @@ config GENERIC_TIME_VSYSCALL
 config HAVE_SETUP_PER_CPU_AREA
 	def_bool y
 
+<<<<<<< HEAD
+=======
+config GENERIC_GPIO
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config DMI
 	bool
 	default y
@@ -97,9 +115,14 @@ config EFI
 	bool
 	default y
 
+<<<<<<< HEAD
 config GENERIC_IOMAP
 	bool
 	default y
+=======
+config ARCH_CLOCKSOURCE_DATA
+	def_bool y
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SCHED_OMIT_FRAME_POINTER
 	bool
@@ -154,7 +177,10 @@ config IA64_GENERIC
 	select ACPI_NUMA
 	select SWIOTLB
 	select PCI_MSI
+<<<<<<< HEAD
 	select DMAR
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This selects the system type of your hardware.  A "generic" kernel
 	  will run on any supported IA-64 system.  However, if you configure
@@ -467,9 +493,12 @@ config NODES_SHIFT
 	  MAX_NUMNODES will be 2^(This value).
 	  If in doubt, use the default.
 
+<<<<<<< HEAD
 config ARCH_POPULATES_NODE_MAP
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 # VIRTUAL_MEM_MAP and FLAT_NODE_MEM_MAP are functionally equivalent.
 # VIRTUAL_MEM_MAP has been retained for historical reasons.
 config VIRTUAL_MEM_MAP
@@ -627,6 +656,7 @@ source "drivers/pci/hotplug/Kconfig"
 
 source "drivers/pcmcia/Kconfig"
 
+<<<<<<< HEAD
 config DMAR
         bool "Support for DMA Remapping Devices (EXPERIMENTAL)"
         depends on IA64_GENERIC && ACPI && EXPERIMENTAL
@@ -648,6 +678,8 @@ config DMAR_DEFAULT_ON
 	  recommended you say N here while the DMAR code remains
 	  experimental.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 endmenu
 
 endif
@@ -681,6 +713,9 @@ source "lib/Kconfig"
 
 config IOMMU_HELPER
 	def_bool (IA64_HP_ZX1 || IA64_HP_ZX1_SWIOTLB || IA64_GENERIC || SWIOTLB)
+<<<<<<< HEAD
 
 config IOMMU_API
 	def_bool (DMAR)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

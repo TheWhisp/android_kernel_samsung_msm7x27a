@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -13,6 +17,10 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/soc.h>
 #include <sound/pcm.h>
@@ -25,6 +33,12 @@ static struct snd_soc_platform_driver msm_soc_hostless_platform = {
 
 static __devinit int msm_pcm_hostless_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
+=======
+	if (pdev->dev.of_node)
+		dev_set_name(&pdev->dev, "%s", "msm-pcm-hostless");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	pr_debug("%s: dev name %s\n", __func__, dev_name(&pdev->dev));
 	return snd_soc_register_platform(&pdev->dev,
 				   &msm_soc_hostless_platform);
@@ -36,10 +50,22 @@ static int msm_pcm_hostless_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id msm_pcm_hostless_dt_match[] = {
+	{.compatible = "qcom,msm-pcm-hostless"},
+	{}
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver msm_pcm_hostless_driver = {
 	.driver = {
 		.name = "msm-pcm-hostless",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = msm_pcm_hostless_dt_match,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe = msm_pcm_hostless_probe,
 	.remove = __devexit_p(msm_pcm_hostless_remove),

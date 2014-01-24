@@ -149,10 +149,18 @@ int g364fb_cursor(struct fb_info *info, struct fb_cursor *cursor)
 static int g364fb_pan_display(struct fb_var_screeninfo *var, 
 			      struct fb_info *info)
 {
+<<<<<<< HEAD
 	if (var->xoffset || var->yoffset + var->yres > var->yres_virtual)
 		return -EINVAL;
 
 	*(unsigned int *) TOP_REG = var->yoffset * var->xres;
+=======
+	if (var->xoffset ||
+	    var->yoffset + info->var.yres > info->var.yres_virtual)
+		return -EINVAL;
+
+	*(unsigned int *) TOP_REG = var->yoffset * info->var.xres;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

@@ -25,16 +25,27 @@ struct iotlb_entry {
 	};
 };
 
+<<<<<<< HEAD
 struct iommu {
+=======
+struct omap_iommu {
+>>>>>>> refs/remotes/origin/cm-10.0
 	const char	*name;
 	struct module	*owner;
 	struct clk	*clk;
 	void __iomem	*regbase;
 	struct device	*dev;
 	void		*isr_priv;
+<<<<<<< HEAD
 
 	unsigned int	refcount;
 	struct mutex	iommu_lock;	/* global for this whole object */
+=======
+	struct iommu_domain *domain;
+
+	unsigned int	refcount;
+	spinlock_t	iommu_lock;	/* global for this whole object */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * We don't change iopgd for a situation like pgd for a task,
@@ -48,8 +59,11 @@ struct iommu {
 	struct list_head	mmap;
 	struct mutex		mmap_lock; /* protect mmap */
 
+<<<<<<< HEAD
 	int (*isr)(struct iommu *obj, u32 da, u32 iommu_errs, void *priv);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *ctx; /* iommu context: registres saved area */
 	u32 da_start;
 	u32 da_end;
@@ -81,6 +95,7 @@ struct iotlb_lock {
 struct iommu_functions {
 	unsigned long	version;
 
+<<<<<<< HEAD
 	int (*enable)(struct iommu *obj);
 	void (*disable)(struct iommu *obj);
 	void (*set_twl)(struct iommu *obj, bool on);
@@ -100,6 +115,29 @@ struct iommu_functions {
 	void (*save_ctx)(struct iommu *obj);
 	void (*restore_ctx)(struct iommu *obj);
 	ssize_t (*dump_ctx)(struct iommu *obj, char *buf, ssize_t len);
+=======
+	int (*enable)(struct omap_iommu *obj);
+	void (*disable)(struct omap_iommu *obj);
+	void (*set_twl)(struct omap_iommu *obj, bool on);
+	u32 (*fault_isr)(struct omap_iommu *obj, u32 *ra);
+
+	void (*tlb_read_cr)(struct omap_iommu *obj, struct cr_regs *cr);
+	void (*tlb_load_cr)(struct omap_iommu *obj, struct cr_regs *cr);
+
+	struct cr_regs *(*alloc_cr)(struct omap_iommu *obj,
+							struct iotlb_entry *e);
+	int (*cr_valid)(struct cr_regs *cr);
+	u32 (*cr_to_virt)(struct cr_regs *cr);
+	void (*cr_to_e)(struct cr_regs *cr, struct iotlb_entry *e);
+	ssize_t (*dump_cr)(struct omap_iommu *obj, struct cr_regs *cr,
+							char *buf);
+
+	u32 (*get_pte_attr)(struct iotlb_entry *e);
+
+	void (*save_ctx)(struct omap_iommu *obj);
+	void (*restore_ctx)(struct omap_iommu *obj);
+	ssize_t (*dump_ctx)(struct omap_iommu *obj, char *buf, ssize_t len);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct iommu_platform_data {
@@ -110,6 +148,35 @@ struct iommu_platform_data {
 	u32 da_end;
 };
 
+<<<<<<< HEAD
+=======
+/**
+ * struct iommu_arch_data - omap iommu private data
+ * @name: name of the iommu device
+ * @iommu_dev: handle of the iommu device
+ *
+ * This is an omap iommu private data object, which binds an iommu user
+ * to its iommu device. This object should be placed at the iommu user's
+ * dev_archdata so generic IOMMU API can be used without having to
+ * utilize omap-specific plumbing anymore.
+ */
+struct omap_iommu_arch_data {
+	const char *name;
+	struct omap_iommu *iommu_dev;
+};
+
+/**
+ * dev_to_omap_iommu() - retrieves an omap iommu object from a user device
+ * @dev: iommu client device
+ */
+static inline struct omap_iommu *dev_to_omap_iommu(struct device *dev)
+{
+	struct omap_iommu_arch_data *arch_data = dev->archdata.iommu;
+
+	return arch_data->iommu_dev;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* IOMMU errors */
 #define OMAP_IOMMU_ERR_TLB_MISS		(1 << 0)
 #define OMAP_IOMMU_ERR_TRANS_FAULT	(1 << 1)
@@ -150,6 +217,7 @@ struct iommu_platform_data {
 /*
  * global functions
  */
+<<<<<<< HEAD
 extern u32 iommu_arch_version(void);
 
 extern void iotlb_cr_to_e(struct cr_regs *cr, struct iotlb_entry *e);
@@ -185,5 +253,32 @@ extern int foreach_iommu_device(void *data,
 
 extern ssize_t iommu_dump_ctx(struct iommu *obj, char *buf, ssize_t len);
 extern size_t dump_tlb_entries(struct iommu *obj, char *buf, ssize_t len);
+=======
+extern u32 omap_iommu_arch_version(void);
+
+extern void omap_iotlb_cr_to_e(struct cr_regs *cr, struct iotlb_entry *e);
+
+extern int
+omap_iopgtable_store_entry(struct omap_iommu *obj, struct iotlb_entry *e);
+
+extern int omap_iommu_set_isr(const char *name,
+		 int (*isr)(struct omap_iommu *obj, u32 da, u32 iommu_errs,
+				    void *priv),
+			 void *isr_priv);
+
+extern void omap_iommu_save_ctx(struct device *dev);
+extern void omap_iommu_restore_ctx(struct device *dev);
+
+extern int omap_install_iommu_arch(const struct iommu_functions *ops);
+extern void omap_uninstall_iommu_arch(const struct iommu_functions *ops);
+
+extern int omap_foreach_iommu_device(void *data,
+				int (*fn)(struct device *, void *));
+
+extern ssize_t
+omap_iommu_dump_ctx(struct omap_iommu *obj, char *buf, ssize_t len);
+extern size_t
+omap_dump_tlb_entries(struct omap_iommu *obj, char *buf, ssize_t len);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __MACH_IOMMU_H */

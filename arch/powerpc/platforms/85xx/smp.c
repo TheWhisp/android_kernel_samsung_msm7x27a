@@ -2,7 +2,11 @@
  * Author: Andy Fleming <afleming@freescale.com>
  * 	   Kumar Gala <galak@kernel.crashing.org>
  *
+<<<<<<< HEAD
  * Copyright 2006-2008 Freescale Semiconductor Inc.
+=======
+ * Copyright 2006-2008, 2011 Freescale Semiconductor Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -27,6 +31,10 @@
 
 #include <sysdev/fsl_soc.h>
 #include <sysdev/mpic.h>
+<<<<<<< HEAD
+=======
+#include "smp.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern void __early_start(void);
 
@@ -48,10 +56,18 @@ smp_85xx_kick_cpu(int nr)
 	const u64 *cpu_rel_addr;
 	__iomem u32 *bptr_vaddr;
 	struct device_node *np;
+<<<<<<< HEAD
 	int n = 0;
 	int ioremappable;
 
 	WARN_ON (nr < 0 || nr >= NR_CPUS);
+=======
+	int n = 0, hw_cpu = get_hard_smp_processor_id(nr);
+	int ioremappable;
+
+	WARN_ON(nr < 0 || nr >= NR_CPUS);
+	WARN_ON(hw_cpu < 0 || hw_cpu >= NR_CPUS);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pr_debug("smp_85xx_kick_cpu: kick CPU #%d\n", nr);
 
@@ -79,7 +95,11 @@ smp_85xx_kick_cpu(int nr)
 
 	local_irq_save(flags);
 
+<<<<<<< HEAD
 	out_be32(bptr_vaddr + BOOT_ENTRY_PIR, nr);
+=======
+	out_be32(bptr_vaddr + BOOT_ENTRY_PIR, hw_cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PPC32
 	out_be32(bptr_vaddr + BOOT_ENTRY_ADDR_LOWER, __pa(__early_start));
 
@@ -88,7 +108,11 @@ smp_85xx_kick_cpu(int nr)
 				(ulong)(bptr_vaddr + SIZE_BOOT_ENTRY));
 
 	/* Wait a bit for the CPU to ack. */
+<<<<<<< HEAD
 	while ((__secondary_hold_acknowledge != nr) && (++n < 1000))
+=======
+	while ((__secondary_hold_acknowledge != hw_cpu) && (++n < 1000))
+>>>>>>> refs/remotes/origin/cm-10.0
 		mdelay(1);
 #else
 	smp_generic_kick_cpu(nr);
@@ -111,6 +135,7 @@ smp_85xx_kick_cpu(int nr)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __init
 smp_85xx_setup_cpu(int cpu_nr)
 {
@@ -119,6 +144,8 @@ smp_85xx_setup_cpu(int cpu_nr)
 		doorbell_setup_this_cpu();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct smp_ops_t smp_85xx_ops = {
 	.kick_cpu = smp_85xx_kick_cpu,
 #ifdef CONFIG_KEXEC
@@ -214,7 +241,11 @@ static void mpc85xx_smp_machine_kexec(struct kimage *image)
 	if ( !timeout )
 		printk(KERN_ERR "Unable to bring down secondary cpu(s)");
 
+<<<<<<< HEAD
 	for (i = 0; i < num_cpus; i++)
+=======
+	for_each_online_cpu(i)
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		if ( i == smp_processor_id() ) continue;
 		mpic_reset_core(i);
@@ -224,24 +255,56 @@ static void mpc85xx_smp_machine_kexec(struct kimage *image)
 }
 #endif /* CONFIG_KEXEC */
 
+<<<<<<< HEAD
+=======
+static void __init
+smp_85xx_setup_cpu(int cpu_nr)
+{
+	if (smp_85xx_ops.probe == smp_mpic_probe)
+		mpic_setup_this_cpu();
+
+	if (cpu_has_feature(CPU_FTR_DBELL))
+		doorbell_setup_this_cpu();
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init mpc85xx_smp_init(void)
 {
 	struct device_node *np;
 
+<<<<<<< HEAD
 	np = of_find_node_by_type(NULL, "open-pic");
 	if (np) {
 		smp_85xx_ops.probe = smp_mpic_probe;
 		smp_85xx_ops.setup_cpu = smp_85xx_setup_cpu;
+=======
+	smp_85xx_ops.setup_cpu = smp_85xx_setup_cpu;
+
+	np = of_find_node_by_type(NULL, "open-pic");
+	if (np) {
+		smp_85xx_ops.probe = smp_mpic_probe;
+>>>>>>> refs/remotes/origin/cm-10.0
 		smp_85xx_ops.message_pass = smp_mpic_message_pass;
 	}
 
 	if (cpu_has_feature(CPU_FTR_DBELL)) {
+<<<<<<< HEAD
 		smp_85xx_ops.message_pass = smp_muxed_ipi_message_pass;
 		smp_85xx_ops.cause_ipi = doorbell_cause_ipi;
 	}
 
 	BUG_ON(!smp_85xx_ops.message_pass);
 
+=======
+		/*
+		 * If left NULL, .message_pass defaults to
+		 * smp_muxed_ipi_message_pass
+		 */
+		smp_85xx_ops.message_pass = NULL;
+		smp_85xx_ops.cause_ipi = doorbell_cause_ipi;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	smp_ops = &smp_85xx_ops;
 
 #ifdef CONFIG_KEXEC

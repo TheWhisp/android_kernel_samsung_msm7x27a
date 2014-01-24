@@ -34,6 +34,10 @@
 #include <asm/tce.h>
 #include <asm/calgary.h>
 #include <asm/proto.h>
+<<<<<<< HEAD
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* flush a tce at 'tceaddr' to main memory */
 static inline void flush_tce(void* tceaddr)

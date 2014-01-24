@@ -39,8 +39,16 @@ static struct timer_list supply_timer;
 static struct timer_list polling_timer;
 static int polling;
 
+<<<<<<< HEAD
 static struct otg_transceiver *transceiver;
 static struct notifier_block otg_nb;
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+static struct usb_phy *transceiver;
+static struct notifier_block otg_nb;
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct regulator *ac_draw;
 
 enum {
@@ -317,13 +325,22 @@ static int pda_power_probe(struct platform_device *pdev)
 		ret = PTR_ERR(ac_draw);
 	}
 
+<<<<<<< HEAD
 	transceiver = otg_get_transceiver();
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+	transceiver = usb_get_transceiver();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (transceiver && !pdata->is_usb_online) {
 		pdata->is_usb_online = otg_is_usb_online;
 	}
 	if (transceiver && !pdata->is_ac_online) {
 		pdata->is_ac_online = otg_is_ac_online;
 	}
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (pdata->is_ac_online) {
 		ret = power_supply_register(&pdev->dev, &pda_psy_ac);
@@ -367,15 +384,26 @@ static int pda_power_probe(struct platform_device *pdev)
 		}
 	}
 
+<<<<<<< HEAD
 	if (transceiver && pdata->use_otg_notifier) {
 		otg_nb.notifier_call = otg_handle_notification;
 		ret = otg_register_notifier(transceiver, &otg_nb);
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+	if (transceiver && pdata->use_otg_notifier) {
+		otg_nb.notifier_call = otg_handle_notification;
+		ret = usb_register_notifier(transceiver, &otg_nb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret) {
 			dev_err(dev, "failure to register otg notifier\n");
 			goto otg_reg_notifier_failed;
 		}
 		polling = 0;
 	}
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (polling) {
 		dev_dbg(dev, "will poll for status\n");
@@ -389,17 +417,32 @@ static int pda_power_probe(struct platform_device *pdev)
 
 	return 0;
 
+<<<<<<< HEAD
 otg_reg_notifier_failed:
 	if (pdata->is_usb_online && usb_irq)
 		free_irq(usb_irq->start, &pda_psy_usb);
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+otg_reg_notifier_failed:
+	if (pdata->is_usb_online && usb_irq)
+		free_irq(usb_irq->start, &pda_psy_usb);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 usb_irq_failed:
 	if (pdata->is_usb_online)
 		power_supply_unregister(&pda_psy_usb);
 usb_supply_failed:
 	if (pdata->is_ac_online && ac_irq)
 		free_irq(ac_irq->start, &pda_psy_ac);
+<<<<<<< HEAD
 	if (transceiver)
 		otg_put_transceiver(transceiver);
+=======
+#ifdef CONFIG_USB_OTG_UTILS
+	if (transceiver)
+		usb_put_transceiver(transceiver);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 ac_irq_failed:
 	if (pdata->is_ac_online)
 		power_supply_unregister(&pda_psy_ac);
@@ -433,7 +476,11 @@ static int pda_power_remove(struct platform_device *pdev)
 		power_supply_unregister(&pda_psy_ac);
 #ifdef CONFIG_USB_OTG_UTILS
 	if (transceiver)
+<<<<<<< HEAD
 		otg_put_transceiver(transceiver);
+=======
+		usb_put_transceiver(transceiver);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	if (ac_draw) {
 		regulator_put(ac_draw);
@@ -487,8 +534,11 @@ static int pda_power_resume(struct platform_device *pdev)
 #define pda_power_resume NULL
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform:pda-power");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver pda_power_pdrv = {
 	.driver = {
 		.name = "pda-power",
@@ -499,6 +549,7 @@ static struct platform_driver pda_power_pdrv = {
 	.resume = pda_power_resume,
 };
 
+<<<<<<< HEAD
 static int __init pda_power_init(void)
 {
 	return platform_driver_register(&pda_power_pdrv);
@@ -513,3 +564,10 @@ module_init(pda_power_init);
 module_exit(pda_power_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Anton Vorontsov <cbou@mail.ru>");
+=======
+module_platform_driver(pda_power_pdrv);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Anton Vorontsov <cbou@mail.ru>");
+MODULE_ALIAS("platform:pda-power");
+>>>>>>> refs/remotes/origin/cm-10.0

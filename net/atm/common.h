@@ -24,6 +24,10 @@ int vcc_setsockopt(struct socket *sock, int level, int optname,
 		   char __user *optval, unsigned int optlen);
 int vcc_getsockopt(struct socket *sock, int level, int optname,
 		   char __user *optval, int __user *optlen);
+<<<<<<< HEAD
+=======
+void vcc_process_recv_queue(struct atm_vcc *vcc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int atmpvc_init(void);
 void atmpvc_exit(void);

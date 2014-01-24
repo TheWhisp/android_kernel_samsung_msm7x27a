@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation. All rights reserved.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -108,7 +112,11 @@ static void _TwoOutEpMapping(struct ieee80211_hw *hw, bool bIsChipB,
 
 	if (bwificfg) { /* for WMM */
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG,
+<<<<<<< HEAD
 			 ("USB Chip-B & WMM Setting.....\n"));
+=======
+			 "USB Chip-B & WMM Setting.....\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ep_map->ep_mapping[RTL_TXQ_BE]	= 2;
 		ep_map->ep_mapping[RTL_TXQ_BK]	= 3;
 		ep_map->ep_mapping[RTL_TXQ_VI]	= 3;
@@ -118,7 +126,11 @@ static void _TwoOutEpMapping(struct ieee80211_hw *hw, bool bIsChipB,
 		ep_map->ep_mapping[RTL_TXQ_HI]	= 2;
 	} else { /* typical setting */
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG,
+<<<<<<< HEAD
 			 ("USB typical Setting.....\n"));
+=======
+			 "USB typical Setting.....\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ep_map->ep_mapping[RTL_TXQ_BE]	= 3;
 		ep_map->ep_mapping[RTL_TXQ_BK]	= 3;
 		ep_map->ep_mapping[RTL_TXQ_VI]	= 2;
@@ -135,7 +147,11 @@ static void _ThreeOutEpMapping(struct ieee80211_hw *hw, bool  bwificfg,
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	if (bwificfg) { /* for WMM */
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG,
+<<<<<<< HEAD
 			 ("USB 3EP Setting for WMM.....\n"));
+=======
+			 "USB 3EP Setting for WMM.....\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ep_map->ep_mapping[RTL_TXQ_BE]	= 5;
 		ep_map->ep_mapping[RTL_TXQ_BK]	= 3;
 		ep_map->ep_mapping[RTL_TXQ_VI]	= 3;
@@ -145,7 +161,11 @@ static void _ThreeOutEpMapping(struct ieee80211_hw *hw, bool  bwificfg,
 		ep_map->ep_mapping[RTL_TXQ_HI]	= 2;
 	} else { /* typical setting */
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG,
+<<<<<<< HEAD
 			 ("USB 3EP Setting for typical.....\n"));
+=======
+			 "USB 3EP Setting for typical.....\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ep_map->ep_mapping[RTL_TXQ_BE]	= 5;
 		ep_map->ep_mapping[RTL_TXQ_BK]	= 5;
 		ep_map->ep_mapping[RTL_TXQ_VI]	= 3;
@@ -244,8 +264,13 @@ u16 rtl8192cu_mq_to_hwq(__le16 fc, u16 mac80211_queue_index)
 		break;
 	default:
 		hw_queue_index = RTL_TXQ_BE;
+<<<<<<< HEAD
 		RT_ASSERT(false, ("QSLT_BE queue, skb_queue:%d\n",
 			  mac80211_queue_index));
+=======
+		RT_ASSERT(false, "QSLT_BE queue, skb_queue:%d\n",
+			  mac80211_queue_index);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 out:
@@ -270,23 +295,39 @@ static enum rtl_desc_qsel _rtl8192cu_mq_to_descq(struct ieee80211_hw *hw,
 	case 0:	/* VO */
 		qsel = QSLT_VO;
 		RT_TRACE(rtlpriv, COMP_USB, DBG_DMESG,
+<<<<<<< HEAD
 			 ("VO queue, set qsel = 0x%x\n", QSLT_VO));
+=======
+			 "VO queue, set qsel = 0x%x\n", QSLT_VO);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case 1:	/* VI */
 		qsel = QSLT_VI;
 		RT_TRACE(rtlpriv, COMP_USB, DBG_DMESG,
+<<<<<<< HEAD
 			 ("VI queue, set qsel = 0x%x\n", QSLT_VI));
+=======
+			 "VI queue, set qsel = 0x%x\n", QSLT_VI);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case 3:	/* BK */
 		qsel = QSLT_BK;
 		RT_TRACE(rtlpriv, COMP_USB, DBG_DMESG,
+<<<<<<< HEAD
 			 ("BK queue, set qsel = 0x%x\n", QSLT_BK));
+=======
+			 "BK queue, set qsel = 0x%x\n", QSLT_BK);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case 2:	/* BE */
 	default:
 		qsel = QSLT_BE;
 		RT_TRACE(rtlpriv, COMP_USB, DBG_DMESG,
+<<<<<<< HEAD
 			 ("BE queue, set qsel = 0x%x\n", QSLT_BE));
+=======
+			 "BE queue, set qsel = 0x%x\n", QSLT_BE);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 out:
@@ -337,6 +378,7 @@ bool rtl92cu_rx_query_desc(struct ieee80211_hw *hw,
 	rx_status->flag |= RX_FLAG_MACTIME_MPDU;
 	if (stats->decrypted)
 		rx_status->flag |= RX_FLAG_DECRYPTED;
+<<<<<<< HEAD
 	rx_status->rate_idx = _rtl92c_rate_mapping(hw,
 						(bool)GET_RX_DESC_RX_HT(pdesc),
 						(u8)GET_RX_DESC_RX_MCS(pdesc),
@@ -344,6 +386,16 @@ bool rtl92cu_rx_query_desc(struct ieee80211_hw *hw,
 	rx_status->mactime = GET_RX_DESC_TSFL(pdesc);
 	if (phystatus == true) {
 		p_drvinfo = (struct rx_fwinfo_92c *)(pdesc + RTL_RX_DESC_SIZE);
+=======
+	rx_status->rate_idx = rtlwifi_rate_mapping(hw,
+					(bool)GET_RX_DESC_RX_HT(pdesc),
+					(u8)GET_RX_DESC_RX_MCS(pdesc),
+					(bool)GET_RX_DESC_PAGGR(pdesc));
+	rx_status->mactime = GET_RX_DESC_TSFL(pdesc);
+	if (phystatus) {
+		p_drvinfo = (struct rx_fwinfo_92c *)(skb->data +
+						     stats->rx_bufshift);
+>>>>>>> refs/remotes/origin/cm-10.0
 		rtl92c_translate_rx_signal_stuff(hw, skb, stats, pdesc,
 						 p_drvinfo);
 	}
@@ -406,11 +458,18 @@ static void _rtl_rx_process(struct ieee80211_hw *hw, struct sk_buff *skb)
 	if (GET_RX_DESC_RX_HT(rxdesc))
 		rx_status->flag |= RX_FLAG_HT;
 	/* Data rate */
+<<<<<<< HEAD
 	rx_status->rate_idx = _rtl92c_rate_mapping(hw,
 						(bool)GET_RX_DESC_RX_HT(rxdesc),
 						(u8)GET_RX_DESC_RX_MCS(rxdesc),
 						(bool)GET_RX_DESC_PAGGR(rxdesc)
 						);
+=======
+	rx_status->rate_idx = rtlwifi_rate_mapping(hw,
+					(bool)GET_RX_DESC_RX_HT(rxdesc),
+					(u8)GET_RX_DESC_RX_MCS(rxdesc),
+					(bool)GET_RX_DESC_PAGGR(rxdesc));
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*  There is a phy status after this rx descriptor. */
 	if (GET_RX_DESC_PHY_STATUS(rxdesc)) {
 		p_drvinfo = (struct rx_fwinfo_92c *)(rxdesc + RTL_RX_DESC_SIZE);
@@ -423,6 +482,7 @@ static void _rtl_rx_process(struct ieee80211_hw *hw, struct sk_buff *skb)
 	bv = ieee80211_is_probe_resp(fc);
 	if (bv)
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG,
+<<<<<<< HEAD
 			 ("Got probe response frame.\n"));
 	if (ieee80211_is_beacon(fc))
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG,
@@ -434,6 +494,19 @@ static void _rtl_rx_process(struct ieee80211_hw *hw, struct sk_buff *skb)
 		 "0x%02X\n", fc, (u32)hdr->addr1[0], (u32)hdr->addr1[1],
 		 (u32)hdr->addr1[2], (u32)hdr->addr1[3], (u32)hdr->addr1[4],
 		 (u32)hdr->addr1[5]));
+=======
+			 "Got probe response frame\n");
+	if (ieee80211_is_beacon(fc))
+		RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG, "Got beacon frame\n");
+	if (ieee80211_is_data(fc))
+		RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG, "Got data frame\n");
+	RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG,
+		 "Fram: fc = 0x%X addr1 = 0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X\n",
+		 fc,
+		 (u32)hdr->addr1[0], (u32)hdr->addr1[1],
+		 (u32)hdr->addr1[2], (u32)hdr->addr1[3],
+		 (u32)hdr->addr1[4], (u32)hdr->addr1[5]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(IEEE80211_SKB_RXCB(skb), rx_status, sizeof(*rx_status));
 	ieee80211_rx_irqsafe(hw, skb);
 }
@@ -492,7 +565,11 @@ static void _rtl_tx_desc_checksum(u8 *txdesc)
 	SET_TX_DESC_TX_DESC_CHECKSUM(txdesc, 0);
 	for (index = 0; index < 16; index++)
 		checksum = checksum ^ (*(ptr + index));
+<<<<<<< HEAD
 	SET_TX_DESC_TX_DESC_CHECKSUM(txdesc, checksum);
+=======
+	SET_TX_DESC_TX_DESC_CHECKSUM(txdesc, cpu_to_le16(checksum));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void rtl92cu_tx_fill_desc(struct ieee80211_hw *hw,
@@ -545,7 +622,11 @@ void rtl92cu_tx_fill_desc(struct ieee80211_hw *hw,
 	SET_TX_DESC_RTS_BW(txdesc, 0);
 	SET_TX_DESC_RTS_SC(txdesc, tcb_desc->rts_sc);
 	SET_TX_DESC_RTS_SHORT(txdesc,
+<<<<<<< HEAD
 			      ((tcb_desc->rts_rate <= DESC92C_RATE54M) ?
+=======
+			      ((tcb_desc->rts_rate <= DESC92_RATE54M) ?
+>>>>>>> refs/remotes/origin/cm-10.0
 			       (tcb_desc->rts_use_shortpreamble ? 1 : 0)
 			       : (tcb_desc->rts_use_shortgi ? 1 : 0)));
 	if (mac->bw_40) {
@@ -595,7 +676,11 @@ void rtl92cu_tx_fill_desc(struct ieee80211_hw *hw,
 	if (ieee80211_is_data_qos(fc)) {
 		if (mac->rdg_en) {
 			RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE,
+<<<<<<< HEAD
 				 ("Enable RDG function.\n"));
+=======
+				 "Enable RDG function\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			SET_TX_DESC_RDG_ENABLE(txdesc, 1);
 			SET_TX_DESC_HTC(txdesc, 1);
 		}
@@ -621,7 +706,11 @@ void rtl92cu_tx_fill_desc(struct ieee80211_hw *hw,
 		SET_TX_DESC_BMC(txdesc, 1);
 	_rtl_fill_usb_tx_desc(txdesc);
 	_rtl_tx_desc_checksum(txdesc);
+<<<<<<< HEAD
 	RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE, (" %s ==>\n", __func__));
+=======
+	RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE, "==>\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void rtl92cu_fill_fake_txdesc(struct ieee80211_hw *hw, u8 * pDesc,
@@ -644,7 +733,11 @@ void rtl92cu_fill_fake_txdesc(struct ieee80211_hw *hw, u8 * pDesc,
 	}
 	SET_TX_DESC_USE_RATE(pDesc, 1); /* use data rate which is set by Sw */
 	SET_TX_DESC_OWN(pDesc, 1);
+<<<<<<< HEAD
 	SET_TX_DESC_TX_RATE(pDesc, DESC92C_RATE1M);
+=======
+	SET_TX_DESC_TX_RATE(pDesc, DESC92_RATE1M);
+>>>>>>> refs/remotes/origin/cm-10.0
 	_rtl_tx_desc_checksum(pDesc);
 }
 
@@ -660,7 +753,11 @@ void rtl92cu_tx_fill_cmddesc(struct ieee80211_hw *hw,
 	memset((void *)pdesc, 0, RTL_TX_HEADER_SIZE);
 	if (firstseg)
 		SET_TX_DESC_OFFSET(pdesc, RTL_TX_HEADER_SIZE);
+<<<<<<< HEAD
 	SET_TX_DESC_TX_RATE(pdesc, DESC92C_RATE1M);
+=======
+	SET_TX_DESC_TX_RATE(pdesc, DESC92_RATE1M);
+>>>>>>> refs/remotes/origin/cm-10.0
 	SET_TX_DESC_SEQ(pdesc, 0);
 	SET_TX_DESC_LINIP(pdesc, 0);
 	SET_TX_DESC_QUEUE_SEL(pdesc, fw_queue);
@@ -678,7 +775,11 @@ void rtl92cu_tx_fill_cmddesc(struct ieee80211_hw *hw,
 		SET_TX_DESC_HWSEQ_EN(pdesc, 1);
 		SET_TX_DESC_PKT_ID(pdesc, 8);
 	}
+<<<<<<< HEAD
 	RT_PRINT_DATA(rtlpriv, COMP_CMD, DBG_LOUD, "H2C Tx Cmd Content\n",
+=======
+	RT_PRINT_DATA(rtlpriv, COMP_CMD, DBG_LOUD, "H2C Tx Cmd Content",
+>>>>>>> refs/remotes/origin/cm-10.0
 		      pdesc, RTL_TX_DESC_SIZE);
 }
 

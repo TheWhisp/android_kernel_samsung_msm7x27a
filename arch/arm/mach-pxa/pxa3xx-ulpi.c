@@ -33,7 +33,11 @@ struct pxa3xx_u2d_ulpi {
 	struct clk		*clk;
 	void __iomem		*mmio_base;
 
+<<<<<<< HEAD
 	struct otg_transceiver	*otg;
+=======
+	struct usb_phy		*otg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int		ulpi_mode;
 };
 
@@ -79,7 +83,11 @@ static int pxa310_ulpi_poll(void)
 	return -ETIMEDOUT;
 }
 
+<<<<<<< HEAD
 static int pxa310_ulpi_read(struct otg_transceiver *otg, u32 reg)
+=======
+static int pxa310_ulpi_read(struct usb_phy *otg, u32 reg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int err;
 
@@ -98,7 +106,11 @@ static int pxa310_ulpi_read(struct otg_transceiver *otg, u32 reg)
 	return u2d_readl(U2DOTGUCR) & U2DOTGUCR_RDATA;
 }
 
+<<<<<<< HEAD
 static int pxa310_ulpi_write(struct otg_transceiver *otg, u32 val, u32 reg)
+=======
+static int pxa310_ulpi_write(struct usb_phy *otg, u32 val, u32 reg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (pxa310_ulpi_get_phymode() != SYNCH) {
 		pr_warning("%s: PHY is not in SYNCH mode!\n", __func__);
@@ -111,7 +123,11 @@ static int pxa310_ulpi_write(struct otg_transceiver *otg, u32 val, u32 reg)
 	return pxa310_ulpi_poll();
 }
 
+<<<<<<< HEAD
 struct otg_io_access_ops pxa310_ulpi_access_ops = {
+=======
+struct usb_phy_io_ops pxa310_ulpi_access_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read	= pxa310_ulpi_read,
 	.write	= pxa310_ulpi_write,
 };
@@ -139,19 +155,31 @@ static int pxa310_start_otg_host_transcvr(struct usb_bus *host)
 
 	pxa310_otg_transceiver_rtsm();
 
+<<<<<<< HEAD
 	err = otg_init(u2d->otg);
+=======
+	err = usb_phy_init(u2d->otg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		pr_err("OTG transceiver init failed");
 		return err;
 	}
 
+<<<<<<< HEAD
 	err = otg_set_vbus(u2d->otg, 1);
+=======
+	err = otg_set_vbus(u2d->otg->otg, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err) {
 		pr_err("OTG transceiver VBUS set failed");
 		return err;
 	}
 
+<<<<<<< HEAD
 	err = otg_set_host(u2d->otg, host);
+=======
+	err = otg_set_host(u2d->otg->otg, host);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		pr_err("OTG transceiver Host mode set failed");
 
@@ -189,9 +217,15 @@ static void pxa310_stop_otg_hc(void)
 {
 	pxa310_otg_transceiver_rtsm();
 
+<<<<<<< HEAD
 	otg_set_host(u2d->otg, NULL);
 	otg_set_vbus(u2d->otg, 0);
 	otg_shutdown(u2d->otg);
+=======
+	otg_set_host(u2d->otg->otg, NULL);
+	otg_set_vbus(u2d->otg->otg, 0);
+	usb_phy_shutdown(u2d->otg);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void pxa310_u2d_setup_otg_hc(void)
@@ -265,6 +299,10 @@ int pxa3xx_u2d_start_hc(struct usb_bus *host)
 
 	return err;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(pxa3xx_u2d_start_hc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void pxa3xx_u2d_stop_hc(struct usb_bus *host)
 {
@@ -277,6 +315,10 @@ void pxa3xx_u2d_stop_hc(struct usb_bus *host)
 
 	clk_disable(u2d->clk);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(pxa3xx_u2d_stop_hc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int pxa3xx_u2d_probe(struct platform_device *pdev)
 {

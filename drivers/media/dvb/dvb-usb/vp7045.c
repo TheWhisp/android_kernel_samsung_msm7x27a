@@ -214,7 +214,11 @@ static int vp7045_frontend_attach(struct dvb_usb_adapter *adap)
 /*	Dump the EEPROM */
 /*	vp7045_read_eeprom(d,buf, 255, FX2_ID_ADDR); */
 
+<<<<<<< HEAD
 	adap->fe = vp7045_fe_attach(adap->dev);
+=======
+	adap->fe_adap[0].fe = vp7045_fe_attach(adap->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -245,6 +249,11 @@ static struct dvb_usb_device_properties vp7045_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.frontend_attach  = vp7045_frontend_attach,
 			/* parameter for the MPEG2-data transfer */
 			.stream = {
@@ -257,6 +266,10 @@ static struct dvb_usb_device_properties vp7045_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 	.power_ctrl       = vp7045_power_ctrl,
@@ -291,6 +304,7 @@ static struct usb_driver vp7045_usb_driver = {
 	.id_table	= vp7045_usb_table,
 };
 
+<<<<<<< HEAD
 /* module stuff */
 static int __init vp7045_usb_module_init(void)
 {
@@ -311,6 +325,9 @@ static void __exit vp7045_usb_module_exit(void)
 
 module_init(vp7045_usb_module_init);
 module_exit(vp7045_usb_module_exit);
+=======
+module_usb_driver(vp7045_usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Patrick Boettcher <patrick.boettcher@desy.de>");
 MODULE_DESCRIPTION("Driver for Twinhan MagicBox/Alpha and DNTV tinyUSB2 DVB-T USB2.0");

@@ -7,7 +7,10 @@
  */
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/time.h>
 #include <linux/kernel.h>
@@ -20,9 +23,15 @@
 
 #include "ncp_fs.h"
 
+<<<<<<< HEAD
 static int ncp_fsync(struct file *file, int datasync)
 {
 	return 0;
+=======
+static int ncp_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	return filemap_write_and_wait_range(file->f_mapping, start, end);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*

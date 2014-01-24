@@ -21,7 +21,11 @@
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct usb_device_id id_table[] = {
 	{ USB_DEVICE(0x0a99, 0x0001) },	/* Talon Technology device */
@@ -35,7 +39,10 @@ static struct usb_driver navman_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void navman_read_int_callback(struct urb *urb)
@@ -122,7 +129,10 @@ static struct usb_serial_driver navman_device = {
 		.name =		"navman",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver =		&navman_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports =		1,
 	.open =			navman_open,
 	.close = 		navman_close,
@@ -130,6 +140,7 @@ static struct usb_serial_driver navman_device = {
 	.read_int_callback =	navman_read_int_callback,
 };
 
+<<<<<<< HEAD
 static int __init navman_init(void)
 {
 	int retval;
@@ -151,6 +162,14 @@ static void __exit navman_exit(void)
 
 module_init(navman_init);
 module_exit(navman_exit);
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&navman_device, NULL
+};
+
+module_usb_serial_driver(navman_driver, serial_drivers);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");
 
 module_param(debug, bool, S_IRUGO | S_IWUSR);

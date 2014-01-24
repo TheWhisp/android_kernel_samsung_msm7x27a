@@ -88,8 +88,12 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
 
 	ret = install_special_mapping(mm, addr, PAGE_SIZE,
 				      VM_READ|VM_EXEC|
+<<<<<<< HEAD
 				      VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC|
 				      VM_ALWAYSDUMP,
+=======
+				      VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
+>>>>>>> refs/remotes/origin/cm-10.0
 				      &vdso_page);
 
 	if (ret)

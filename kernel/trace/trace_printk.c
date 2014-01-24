@@ -49,7 +49,11 @@ static
 void hold_module_trace_bprintk_format(const char **start, const char **end)
 {
 	const char **iter;
+<<<<<<< HEAD
 	char *fmt = NULL;
+=======
+	char *fmt;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&btrace_mutex);
 	for (iter = start; iter < end; iter++) {
@@ -59,6 +63,7 @@ void hold_module_trace_bprintk_format(const char **start, const char **end)
 			continue;
 		}
 
+<<<<<<< HEAD
 		tb_fmt = kmalloc(sizeof(*tb_fmt), GFP_KERNEL);
 		if (tb_fmt)
 			fmt = kmalloc(strlen(*iter) + 1, GFP_KERNEL);
@@ -71,6 +76,21 @@ void hold_module_trace_bprintk_format(const char **start, const char **end)
 			kfree(tb_fmt);
 			*iter = NULL;
 		}
+=======
+		fmt = NULL;
+		tb_fmt = kmalloc(sizeof(*tb_fmt), GFP_KERNEL);
+		if (tb_fmt) {
+			fmt = kmalloc(strlen(*iter) + 1, GFP_KERNEL);
+			if (fmt) {
+				list_add_tail(&tb_fmt->list, &trace_bprintk_fmt_list);
+				strcpy(fmt, *iter);
+				tb_fmt->fmt = fmt;
+			} else
+				kfree(tb_fmt);
+		}
+		*iter = fmt;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	mutex_unlock(&btrace_mutex);
 }

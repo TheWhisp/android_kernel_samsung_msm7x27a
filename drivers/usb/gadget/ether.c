@@ -9,6 +9,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,6 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 /* #define VERBOSE_DEBUG */
@@ -259,9 +262,15 @@ static struct usb_configuration rndis_config_driver = {
 /*-------------------------------------------------------------------------*/
 
 #ifdef CONFIG_USB_ETH_EEM
+<<<<<<< HEAD
 static int use_eem = 1;
 #else
 static int use_eem;
+=======
+static bool use_eem = 1;
+#else
+static bool use_eem;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 module_param(use_eem, bool, 0);
 MODULE_PARM_DESC(use_eem, "use CDC EEM mode");
@@ -401,6 +410,10 @@ static struct usb_composite_driver eth_driver = {
 	.name		= "g_ether",
 	.dev		= &device_desc,
 	.strings	= dev_strings,
+<<<<<<< HEAD
+=======
+	.max_speed	= USB_SPEED_SUPER,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.unbind		= __exit_p(eth_unbind),
 };
 

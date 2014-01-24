@@ -145,6 +145,7 @@ static struct platform_driver wm831x_on_driver = {
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 
 static int __init wm831x_on_init(void)
 {
@@ -157,6 +158,9 @@ static void __exit wm831x_on_exit(void)
 	platform_driver_unregister(&wm831x_on_driver);
 }
 module_exit(wm831x_on_exit);
+=======
+module_platform_driver(wm831x_on_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_ALIAS("platform:wm831x-on");
 MODULE_DESCRIPTION("WM831x ON pin");

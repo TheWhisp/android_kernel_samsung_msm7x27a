@@ -131,6 +131,7 @@ static struct platform_driver octeon_rng_driver = {
 	.remove		= __exit_p(octeon_rng_remove),
 };
 
+<<<<<<< HEAD
 static int __init octeon_rng_mod_init(void)
 {
 	return platform_driver_register(&octeon_rng_driver);
@@ -143,6 +144,9 @@ static void __exit octeon_rng_mod_exit(void)
 
 module_init(octeon_rng_mod_init);
 module_exit(octeon_rng_mod_exit);
+=======
+module_platform_driver(octeon_rng_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("David Daney");
 MODULE_LICENSE("GPL");

@@ -24,6 +24,10 @@
 #include <asm/sysinfo.h>
 #include <asm/hwrpb.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
+=======
+#include <asm/special_insns.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "proto.h"
 

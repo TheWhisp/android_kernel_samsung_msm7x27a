@@ -19,6 +19,10 @@
 #include <linux/err.h>
 #include <linux/hrtimer.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "pmic.h"
 #include "timed_output.h"
 

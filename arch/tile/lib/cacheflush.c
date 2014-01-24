@@ -39,7 +39,25 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 {
 	char *p, *base;
 	size_t step_size, load_count;
+<<<<<<< HEAD
 	const unsigned long STRIPE_WIDTH = 8192;
+=======
+
+	/*
+	 * On TILEPro the striping granularity is a fixed 8KB; on
+	 * TILE-Gx it is configurable, and we rely on the fact that
+	 * the hypervisor always configures maximum striping, so that
+	 * bits 9 and 10 of the PA are part of the stripe function, so
+	 * every 512 bytes we hit a striping boundary.
+	 *
+	 */
+#ifdef __tilegx__
+	const unsigned long STRIPE_WIDTH = 512;
+#else
+	const unsigned long STRIPE_WIDTH = 8192;
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef __tilegx__
 	/*
 	 * On TILE-Gx, we must disable the dstream prefetcher before doing
@@ -74,7 +92,11 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 	 * memory, that one load would be sufficient, but since we may
 	 * be, we also need to back up to the last load issued to
 	 * another memory controller, which would be the point where
+<<<<<<< HEAD
 	 * we crossed an 8KB boundary (the granularity of striping
+=======
+	 * we crossed a "striping" boundary (the granularity of striping
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * across memory controllers).  Keep backing up and doing this
 	 * until we are before the beginning of the buffer, or have
 	 * hit all the controllers.
@@ -88,12 +110,31 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 	 * every cache line on a full memory stripe on each
 	 * controller" that we simply do that, to simplify the logic.
 	 *
+<<<<<<< HEAD
 	 * FIXME: See bug 9535 for some issues with this code.
 	 */
 	if (hfh) {
 		step_size = L2_CACHE_BYTES;
 		load_count = (STRIPE_WIDTH / L2_CACHE_BYTES) *
 			      (1 << CHIP_LOG_NUM_MSHIMS());
+=======
+	 * On TILE-Gx the hash-for-home function is much more complex,
+	 * with the upshot being we can't readily guarantee we have
+	 * hit both entries in the 128-entry AMT that were hit by any
+	 * load in the entire range, so we just re-load them all.
+	 * With larger buffers, we may want to consider using a hypervisor
+	 * trap to issue loads directly to each hash-for-home tile for
+	 * each controller (doing it from Linux would trash the TLB).
+	 */
+	if (hfh) {
+		step_size = L2_CACHE_BYTES;
+#ifdef __tilegx__
+		load_count = (size + L2_CACHE_BYTES - 1) / L2_CACHE_BYTES;
+#else
+		load_count = (STRIPE_WIDTH / L2_CACHE_BYTES) *
+			      (1 << CHIP_LOG_NUM_MSHIMS());
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		step_size = STRIPE_WIDTH;
 		load_count = (1 << CHIP_LOG_NUM_MSHIMS());
@@ -109,7 +150,11 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 
 	/* Figure out how far back we need to go. */
 	base = p - (step_size * (load_count - 2));
+<<<<<<< HEAD
 	if ((long)base < (long)buffer)
+=======
+	if ((unsigned long)base < (unsigned long)buffer)
+>>>>>>> refs/remotes/origin/cm-10.0
 		base = buffer;
 
 	/*

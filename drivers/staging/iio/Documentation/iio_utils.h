@@ -13,10 +13,18 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdint.h>
+<<<<<<< HEAD
 
 #define IIO_MAX_NAME_LENGTH 30
 
 #define FORMAT_SCAN_ELEMENTS_DIR "%s:buffer0/scan_elements"
+=======
+#include <dirent.h>
+
+#define IIO_MAX_NAME_LENGTH 30
+
+#define FORMAT_SCAN_ELEMENTS_DIR "%s/scan_elements"
+>>>>>>> refs/remotes/origin/cm-10.0
 #define FORMAT_TYPE_FILE "%s_type"
 
 const char *iio_dir = "/sys/bus/iio/devices/";
@@ -73,6 +81,10 @@ struct iio_channel_info {
 	unsigned bits_used;
 	unsigned shift;
 	uint64_t mask;
+<<<<<<< HEAD
+=======
+	unsigned be;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned is_signed;
 	unsigned enabled;
 	unsigned location;
@@ -83,6 +95,10 @@ struct iio_channel_info {
  * @is_signed: output whether channel is signed
  * @bytes: output how many bytes the channel storage occupies
  * @mask: output a bit mask for the raw data
+<<<<<<< HEAD
+=======
+ * @be: big endian
+>>>>>>> refs/remotes/origin/cm-10.0
  * @device_dir: the iio device directory
  * @name: the channel name
  * @generic_name: the channel type name
@@ -92,6 +108,10 @@ inline int iioutils_get_type(unsigned *is_signed,
 			     unsigned *bits_used,
 			     unsigned *shift,
 			     uint64_t *mask,
+<<<<<<< HEAD
+=======
+			     unsigned *be,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     const char *device_dir,
 			     const char *name,
 			     const char *generic_name)
@@ -100,7 +120,11 @@ inline int iioutils_get_type(unsigned *is_signed,
 	int ret;
 	DIR *dp;
 	char *scan_el_dir, *builtname, *builtname_generic, *filename = 0;
+<<<<<<< HEAD
 	char signchar;
+=======
+	char signchar, endianchar;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned padint;
 	const struct dirent *ent;
 
@@ -144,9 +168,24 @@ inline int iioutils_get_type(unsigned *is_signed,
 				ret = -errno;
 				goto error_free_filename;
 			}
+<<<<<<< HEAD
 			fscanf(sysfsfp,
 			       "%c%u/%u>>%u", &signchar, bits_used,
 			       &padint, shift);
+=======
+
+			ret = fscanf(sysfsfp,
+				     "%ce:%c%u/%u>>%u",
+				     &endianchar,
+				     &signchar,
+				     bits_used,
+				     &padint, shift);
+			if (ret < 0) {
+				printf("failed to pass scan type description\n");
+				return ret;
+			}
+			*be = (endianchar == 'b');
+>>>>>>> refs/remotes/origin/cm-10.0
 			*bytes = padint / 8;
 			if (*bits_used == 64)
 				*mask = ~0;
@@ -156,6 +195,13 @@ inline int iioutils_get_type(unsigned *is_signed,
 				*is_signed = 1;
 			else
 				*is_signed = 0;
+<<<<<<< HEAD
+=======
+			fclose(sysfsfp);
+			free(filename);
+
+			filename = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 error_free_filename:
 	if (filename)
@@ -386,6 +432,10 @@ inline int build_channel_array(const char *device_dir,
 						&current->bits_used,
 						&current->shift,
 						&current->mask,
+<<<<<<< HEAD
+=======
+						&current->be,
+>>>>>>> refs/remotes/origin/cm-10.0
 						device_dir,
 						current->name,
 						current->generic_name);

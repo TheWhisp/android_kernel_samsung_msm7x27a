@@ -51,6 +51,7 @@
 #include <linux/security.h>
 struct linux_binprm;
 
+<<<<<<< HEAD
 /**
  * tracehook_expect_breakpoints - guess if task memory might be touched
  * @task:		current task, making a new mapping
@@ -75,6 +76,17 @@ static inline void ptrace_report_syscall(struct pt_regs *regs)
 
 	if (!(ptrace & PT_PTRACED))
 		return;
+=======
+/*
+ * ptrace report for syscall entry and exit looks identical.
+ */
+static inline int ptrace_report_syscall(struct pt_regs *regs)
+{
+	int ptrace = current->ptrace;
+
+	if (!(ptrace & PT_PTRACED))
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ptrace_notify(SIGTRAP | ((ptrace & PT_TRACESYSGOOD) ? 0x80 : 0));
 
@@ -87,6 +99,11 @@ static inline void ptrace_report_syscall(struct pt_regs *regs)
 		send_sig(current->exit_code, current, 1);
 		current->exit_code = 0;
 	}
+<<<<<<< HEAD
+=======
+
+	return fatal_signal_pending(current);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -111,8 +128,12 @@ static inline void ptrace_report_syscall(struct pt_regs *regs)
 static inline __must_check int tracehook_report_syscall_entry(
 	struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	ptrace_report_syscall(regs);
 	return 0;
+=======
+	return ptrace_report_syscall(regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -145,6 +166,7 @@ static inline void tracehook_report_syscall_exit(struct pt_regs *regs, int step)
 }
 
 /**
+<<<<<<< HEAD
  * tracehook_unsafe_exec - check for exec declared unsafe due to tracing
  * @task:		current task doing exec
  *
@@ -368,6 +390,8 @@ static inline void tracehook_finish_release_task(struct task_struct *task)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * tracehook_signal_handler - signal handler setup is complete
  * @sig:		number of signal being delivered
  * @info:		siginfo_t of signal being delivered
@@ -390,6 +414,7 @@ static inline void tracehook_signal_handler(int sig, siginfo_t *info,
 		ptrace_notify(SIGTRAP);
 }
 
+<<<<<<< HEAD
 /**
  * tracehook_consider_ignored_signal - suppress short-circuit of ignored signal
  * @task:		task receiving the signal
@@ -535,6 +560,8 @@ static inline void tracehook_report_death(struct task_struct *task,
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef TIF_NOTIFY_RESUME
 /**
  * set_notify_resume - cause tracehook_notify_resume() to be called

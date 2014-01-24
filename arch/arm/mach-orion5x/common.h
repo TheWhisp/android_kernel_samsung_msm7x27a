@@ -20,14 +20,21 @@ extern struct sys_timer orion5x_timer;
  * functions to map its interfaces and by the machine-setup to map its on-
  * board devices. Details in /mach-orion/addr-map.c
  */
+<<<<<<< HEAD
 extern struct mbus_dram_target_info orion5x_mbus_dram_info;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void orion5x_setup_cpu_mbus_bridge(void);
 void orion5x_setup_dev_boot_win(u32 base, u32 size);
 void orion5x_setup_dev0_win(u32 base, u32 size);
 void orion5x_setup_dev1_win(u32 base, u32 size);
 void orion5x_setup_dev2_win(u32 base, u32 size);
 void orion5x_setup_pcie_wa_win(u32 base, u32 size);
+<<<<<<< HEAD
 int orion5x_setup_sram_win(void);
+=======
+void orion5x_setup_sram_win(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void orion5x_ehci0_init(void);
 void orion5x_ehci1_init(void);
@@ -39,6 +46,10 @@ void orion5x_spi_init(void);
 void orion5x_uart0_init(void);
 void orion5x_uart1_init(void);
 void orion5x_xor_init(void);
+<<<<<<< HEAD
+=======
+void orion5x_restart(char, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * PCIe/PCI functions.
@@ -51,6 +62,7 @@ void orion5x_pci_disable(void);
 void orion5x_pci_set_cardbus_mode(void);
 int orion5x_pci_sys_setup(int nr, struct pci_sys_data *sys);
 struct pci_bus *orion5x_pci_sys_scan_bus(int nr, struct pci_sys_data *sys);
+<<<<<<< HEAD
 int orion5x_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin);
 
 struct machine_desc;
@@ -59,5 +71,22 @@ struct tag;
 extern void __init tag_fixup_mem32(struct machine_desc *, struct tag *,
 				   char **, struct meminfo *);
 
+=======
+int orion5x_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin);
+
+struct meminfo;
+struct tag;
+extern void __init tag_fixup_mem32(struct tag *, char **, struct meminfo *);
+
+/*****************************************************************************
+ * Helpers to access Orion registers
+ ****************************************************************************/
+/*
+ * These are not preempt-safe.  Locks, if needed, must be taken
+ * care of by the caller.
+ */
+#define orion5x_setbits(r, mask)	writel(readl(r) | (mask), (r))
+#define orion5x_clrbits(r, mask)	writel(readl(r) & ~(mask), (r))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

@@ -10,6 +10,10 @@
 
 #include <linux/clk.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 #include <linux/platform_device.h>
 #include <linux/irq.h>
@@ -461,7 +465,11 @@ void __init at32_init_pio(struct platform_device *pdev)
 		clk_enable(pio->clk);
 
 	pio->pdev = pdev;
+<<<<<<< HEAD
 	pio->regs = ioremap(regs->start, regs->end - regs->start + 1);
+=======
+	pio->regs = ioremap(regs->start, resource_size(regs));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* start with irqs disabled and acked */
 	pio_writel(pio, IDR, ~0UL);

@@ -27,5 +27,10 @@
 
 void *tcm_alloc(size_t len);
 void tcm_free(void *addr, size_t len);
+<<<<<<< HEAD
+=======
+bool tcm_dtcm_present(void);
+bool tcm_itcm_present(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

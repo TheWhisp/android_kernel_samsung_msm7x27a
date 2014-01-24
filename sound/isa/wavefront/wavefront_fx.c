@@ -21,6 +21,10 @@
 #include <linux/time.h>
 #include <linux/wait.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/firmware.h>
 #include <sound/core.h>
 #include <sound/snd_wavefront.h>

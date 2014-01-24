@@ -6,7 +6,10 @@
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/console.h>
 
 #include <asm/btext.h>

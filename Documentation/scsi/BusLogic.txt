@@ -553,7 +553,11 @@ replacing "/usr/src" with wherever you keep your Linux kernel source tree:
   make config
   make zImage
 
+<<<<<<< HEAD
 Then install "arch/i386/boot/zImage" as your standard kernel, run lilo if
+=======
+Then install "arch/x86/boot/zImage" as your standard kernel, run lilo if
+>>>>>>> refs/remotes/origin/cm-10.0
 appropriate, and reboot.
 
 

@@ -26,7 +26,14 @@ enum xsd_sockmsg_type
     XS_SET_PERMS,
     XS_WATCH_EVENT,
     XS_ERROR,
+<<<<<<< HEAD
     XS_IS_DOMAIN_INTRODUCED
+=======
+    XS_IS_DOMAIN_INTRODUCED,
+    XS_RESUME,
+    XS_SET_TARGET,
+    XS_RESTRICT
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define XS_WRITE_NONE "NONE"

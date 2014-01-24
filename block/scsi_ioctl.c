@@ -566,7 +566,11 @@ int scsi_cmd_ioctl(struct request_queue *q, struct gendisk *bd_disk, fmode_t mod
 {
 	int err;
 
+<<<<<<< HEAD
 	if (!q || blk_get_queue(q))
+=======
+	if (!q)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENXIO;
 
 	switch (cmd) {
@@ -687,7 +691,10 @@ int scsi_cmd_ioctl(struct request_queue *q, struct gendisk *bd_disk, fmode_t mod
 			err = -ENOTTY;
 	}
 
+<<<<<<< HEAD
 	blk_put_queue(q);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 EXPORT_SYMBOL(scsi_cmd_ioctl);
@@ -717,7 +724,11 @@ int scsi_verify_blk_ioctl(struct block_device *bd, unsigned int cmd)
 		 * and we do not want to spam dmesg about it.   CD-ROMs do
 		 * not have partitions, so we get here only for disks.
 		 */
+<<<<<<< HEAD
 		return -ENOTTY;
+=======
+		return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		break;
 	}
@@ -729,7 +740,11 @@ int scsi_verify_blk_ioctl(struct block_device *bd, unsigned int cmd)
 	printk_ratelimited(KERN_WARNING
 			   "%s: sending ioctl %x to a partition!\n", current->comm, cmd);
 
+<<<<<<< HEAD
 	return -ENOTTY;
+=======
+	return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(scsi_verify_blk_ioctl);
 

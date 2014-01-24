@@ -23,7 +23,11 @@
 #include <linux/mutex.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/fsnotify_backend.h>
 #include "fsnotify.h"

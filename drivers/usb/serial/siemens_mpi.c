@@ -42,6 +42,7 @@ static struct usb_serial_driver siemens_usb_mpi_device = {
 		.name =		"siemens_mpi",
 	},
 	.id_table =		id_table,
+<<<<<<< HEAD
 	.usb_driver =		&siemens_usb_mpi_driver,
 	.num_ports =		1,
 };
@@ -73,6 +74,17 @@ static void __exit siemens_usb_mpi_exit(void)
 
 module_init(siemens_usb_mpi_init);
 module_exit(siemens_usb_mpi_exit);
+=======
+	.num_ports =		1,
+};
+
+static struct usb_serial_driver * const serial_drivers[] = {
+	&siemens_usb_mpi_device, NULL
+};
+
+module_usb_serial_driver(siemens_usb_mpi_driver, serial_drivers);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");

@@ -44,6 +44,10 @@
  * ISP2100 HBAs.
  */
 #define MAILBOX_REGISTER_COUNT_2100	8
+<<<<<<< HEAD
+=======
+#define MAILBOX_REGISTER_COUNT_2200	24
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MAILBOX_REGISTER_COUNT		32
 
 #define QLA2200A_RISC_ROM_VER	4
@@ -124,17 +128,28 @@
  * Fibre Channel device definitions.
  */
 #define WWN_SIZE		8	/* Size of WWPN, WWN & WWNN */
+<<<<<<< HEAD
 #define MAX_FIBRE_DEVICES	512
 #define MAX_FIBRE_LUNS  	0xFFFF
 #define	MAX_RSCN_COUNT		32
+=======
+#define MAX_FIBRE_DEVICES_2100	512
+#define MAX_FIBRE_DEVICES_2400	2048
+#define MAX_FIBRE_DEVICES_LOOP	128
+#define MAX_FIBRE_DEVICES_MAX	MAX_FIBRE_DEVICES_2400
+#define MAX_FIBRE_LUNS  	0xFFFF
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	MAX_HOST_COUNT		16
 
 /*
  * Host adapter default definitions.
  */
 #define MAX_BUSES		1  /* We only have one bus today */
+<<<<<<< HEAD
 #define MAX_TARGETS_2100	MAX_FIBRE_DEVICES
 #define MAX_TARGETS_2200	MAX_FIBRE_DEVICES
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MIN_LUNS		8
 #define MAX_LUNS		MAX_FIBRE_LUNS
 #define MAX_CMDS_PER_LUN	255
@@ -201,6 +216,7 @@ struct sd_dif_tuple {
 /*
  * SCSI Request Block
  */
+<<<<<<< HEAD
 typedef struct srb {
 	atomic_t ref_count;
 	struct fc_port *fcport;
@@ -215,6 +231,14 @@ typedef struct srb {
 
 	void *ctx;
 } srb_t;
+=======
+struct srb_cmd {
+	struct scsi_cmnd *cmd;		/* Linux SCSI command pkt */
+	uint32_t request_sense_length;
+	uint8_t *request_sense_ptr;
+	void *ctx;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * SRB flag definitions
@@ -253,10 +277,14 @@ struct srb_iocb {
 	} u;
 
 	struct timer_list timer;
+<<<<<<< HEAD
 
 	void (*done)(srb_t *);
 	void (*free)(srb_t *);
 	void (*timeout)(srb_t *);
+=======
+	void (*timeout)(void *);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Values for srb_ctx type */
@@ -267,6 +295,7 @@ struct srb_iocb {
 #define SRB_CT_CMD	5
 #define SRB_ADISC_CMD	6
 #define SRB_TM_CMD	7
+<<<<<<< HEAD
 
 struct srb_ctx {
 	uint16_t type;
@@ -276,6 +305,39 @@ struct srb_ctx {
 		struct fc_bsg_job *bsg_job;
 	} u;
 };
+=======
+#define SRB_SCSI_CMD	8
+
+typedef struct srb {
+	atomic_t ref_count;
+	struct fc_port *fcport;
+	uint32_t handle;
+	uint16_t flags;
+	uint16_t type;
+	char *name;
+	int iocbs;
+	union {
+		struct srb_iocb iocb_cmd;
+		struct fc_bsg_job *bsg_job;
+		struct srb_cmd scmd;
+	} u;
+	void (*done)(void *, void *, int);
+	void (*free)(void *, void *);
+} srb_t;
+
+#define GET_CMD_SP(sp) (sp->u.scmd.cmd)
+#define SET_CMD_SP(sp, cmd) (sp->u.scmd.cmd = cmd)
+#define GET_CMD_CTX_SP(sp) (sp->u.scmd.ctx)
+
+#define GET_CMD_SENSE_LEN(sp) \
+	(sp->u.scmd.request_sense_length)
+#define SET_CMD_SENSE_LEN(sp, len) \
+	(sp->u.scmd.request_sense_length = len)
+#define GET_CMD_SENSE_PTR(sp) \
+	(sp->u.scmd.request_sense_ptr)
+#define SET_CMD_SENSE_PTR(sp, ptr) \
+	(sp->u.scmd.request_sense_ptr = ptr)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct msg_echo_lb {
 	dma_addr_t send_dma;
@@ -651,8 +713,15 @@ typedef struct {
 #define MBC_DIAGNOSTIC_LOOP_BACK	0x45	/* Diagnostic loop back. */
 #define MBC_ONLINE_SELF_TEST		0x46	/* Online self-test. */
 #define MBC_ENHANCED_GET_PORT_DATABASE	0x47	/* Get port database + login */
+<<<<<<< HEAD
 #define MBC_RESET_LINK_STATUS		0x52	/* Reset Link Error Status */
 #define MBC_IOCB_COMMAND_A64		0x54	/* Execute IOCB command (64) */
+=======
+#define MBC_CONFIGURE_VF		0x4b	/* Configure VFs */
+#define MBC_RESET_LINK_STATUS		0x52	/* Reset Link Error Status */
+#define MBC_IOCB_COMMAND_A64		0x54	/* Execute IOCB command (64) */
+#define MBC_PORT_LOGOUT			0x56	/* Port Logout request */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MBC_SEND_RNID_ELS		0x57	/* Send RNID ELS request */
 #define MBC_SET_RNID_PARAMS		0x59	/* Set RNID parameters */
 #define MBC_GET_RNID_PARAMS		0x5a	/* Data Rate */
@@ -1707,6 +1776,10 @@ typedef struct fc_port {
 
 	uint16_t vp_idx;
 	uint8_t fc4_type;
+<<<<<<< HEAD
+=======
+	uint8_t scan_state;
+>>>>>>> refs/remotes/origin/cm-10.0
 } fc_port_t;
 
 /*
@@ -1759,7 +1832,10 @@ static const char * const port_state_str[] = {
 
 #define	GID_PT_CMD	0x1A1
 #define	GID_PT_REQ_SIZE	(16 + 4)
+<<<<<<< HEAD
 #define	GID_PT_RSP_SIZE	(16 + (MAX_FIBRE_DEVICES * 4))
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define	GPN_ID_CMD	0x112
 #define	GPN_ID_REQ_SIZE	(16 + 4)
@@ -2049,7 +2125,13 @@ struct ct_sns_rsp {
 		} ga_nxt;
 
 		struct {
+<<<<<<< HEAD
 			struct ct_sns_gid_pt_data entries[MAX_FIBRE_DEVICES];
+=======
+			/* Assume the largest number of targets for the union */
+			struct ct_sns_gid_pt_data
+			    entries[MAX_FIBRE_DEVICES_MAX];
+>>>>>>> refs/remotes/origin/cm-10.0
 		} gid_pt;
 
 		struct {
@@ -2110,7 +2192,15 @@ struct ct_sns_pkt {
 
 #define	GID_PT_SNS_SCMD_LEN	6
 #define	GID_PT_SNS_CMD_SIZE	28
+<<<<<<< HEAD
 #define	GID_PT_SNS_DATA_SIZE	(MAX_FIBRE_DEVICES * 4 + 16)
+=======
+/*
+ * Assume MAX_FIBRE_DEVICES_2100 as these defines are only used with older
+ * adapters.
+ */
+#define	GID_PT_SNS_DATA_SIZE	(MAX_FIBRE_DEVICES_2100 * 4 + 16)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define	GPN_ID_SNS_SCMD_LEN	6
 #define	GPN_ID_SNS_CMD_SIZE	28
@@ -2158,7 +2248,10 @@ struct gid_list_info {
 	uint16_t loop_id;	/* ISP23XX         -- 6 bytes. */
 	uint16_t reserved_1;	/* ISP24XX         -- 8 bytes. */
 };
+<<<<<<< HEAD
 #define GID_LIST_SIZE (sizeof(struct gid_list_info) * MAX_FIBRE_DEVICES)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* NPIV */
 typedef struct vport_info {
@@ -2244,6 +2337,10 @@ struct isp_operations {
 	int (*get_flash_version) (struct scsi_qla_host *, void *);
 	int (*start_scsi) (srb_t *);
 	int (*abort_isp) (struct scsi_qla_host *);
+<<<<<<< HEAD
+=======
+	int (*iospace_config)(struct qla_hw_data*);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* MSI-X Support *************************************************************/
@@ -2258,6 +2355,10 @@ struct isp_operations {
 #define QLA_MIDX_DEFAULT	0
 #define QLA_MIDX_RSP_Q		1
 #define QLA_PCI_MSIX_CONTROL	0xa2
+<<<<<<< HEAD
+=======
+#define QLA_83XX_PCI_MSIX_CONTROL	0x92
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct scsi_qla_host;
 
@@ -2338,7 +2439,11 @@ struct qla_statistics {
 #define QLA_MQ_SIZE 32
 #define QLA_MAX_QUEUES 256
 #define ISP_QUE_REG(ha, id) \
+<<<<<<< HEAD
 	((ha->mqenable) ? \
+=======
+	((ha->mqenable || IS_QLA83XX(ha)) ? \
+>>>>>>> refs/remotes/origin/cm-10.0
 	((void *)(ha->mqiobase) +\
 	(QLA_QUE_PAGE * id)) :\
 	((void *)(ha->iobase)))
@@ -2438,7 +2543,12 @@ struct qla_hw_data {
 		uint32_t	quiesce_owner:1;
 		uint32_t	thermal_supported:1;
 		uint32_t	isp82xx_reset_hdlr_active:1;
+<<<<<<< HEAD
 		/* 26 bits */
+=======
+		uint32_t	isp82xx_reset_owner:1;
+		/* 28 bits */
+>>>>>>> refs/remotes/origin/cm-10.0
 	} flags;
 
 	/* This spinlock is used to protect "io transactions", you must
@@ -2457,6 +2567,10 @@ struct qla_hw_data {
 #define MIN_IOBASE_LEN          0x100
 /* Multi queue data structs */
 	device_reg_t __iomem *mqiobase;
+<<<<<<< HEAD
+=======
+	device_reg_t __iomem *msixbase;
+>>>>>>> refs/remotes/origin/cm-10.0
 	uint16_t        msix_count;
 	uint8_t         mqenable;
 	struct req_que **req_q_map;
@@ -2481,6 +2595,10 @@ struct qla_hw_data {
 	atomic_t	loop_down_timer;         /* loop down timer */
 	uint8_t		link_down_timeout;       /* link down timeout */
 	uint16_t	max_loop_id;
+<<<<<<< HEAD
+=======
+	uint16_t	max_fibre_devices;	/* Maximum number of targets */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	uint16_t	fb_rev;
 	uint16_t	min_external_loopid;    /* First external loop Id */
@@ -2490,6 +2608,10 @@ struct qla_hw_data {
 #define PORT_SPEED_2GB  0x01
 #define PORT_SPEED_4GB  0x03
 #define PORT_SPEED_8GB  0x04
+<<<<<<< HEAD
+=======
+#define PORT_SPEED_16GB 0x05
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PORT_SPEED_10GB	0x13
 	uint16_t	link_data_rate;         /* F/W operating speed */
 
@@ -2511,6 +2633,11 @@ struct qla_hw_data {
 #define PCI_DEVICE_ID_QLOGIC_ISP2532    0x2532
 #define PCI_DEVICE_ID_QLOGIC_ISP8432    0x8432
 #define PCI_DEVICE_ID_QLOGIC_ISP8001	0x8001
+<<<<<<< HEAD
+=======
+#define PCI_DEVICE_ID_QLOGIC_ISP8031	0x8031
+#define PCI_DEVICE_ID_QLOGIC_ISP2031	0x2031
+>>>>>>> refs/remotes/origin/cm-10.0
 	uint32_t	device_type;
 #define DT_ISP2100                      BIT_0
 #define DT_ISP2200                      BIT_1
@@ -2527,8 +2654,16 @@ struct qla_hw_data {
 #define DT_ISP8432                      BIT_12
 #define DT_ISP8001			BIT_13
 #define DT_ISP8021			BIT_14
+<<<<<<< HEAD
 #define DT_ISP_LAST			(DT_ISP8021 << 1)
 
+=======
+#define DT_ISP2031			BIT_15
+#define DT_ISP8031			BIT_16
+#define DT_ISP_LAST			(DT_ISP8031 << 1)
+
+#define DT_T10_PI                       BIT_25
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DT_IIDMA                        BIT_26
 #define DT_FWI2                         BIT_27
 #define DT_ZIO_SUPPORTED                BIT_28
@@ -2550,13 +2685,21 @@ struct qla_hw_data {
 #define IS_QLA2532(ha)  (DT_MASK(ha) & DT_ISP2532)
 #define IS_QLA8432(ha)  (DT_MASK(ha) & DT_ISP8432)
 #define IS_QLA8001(ha)	(DT_MASK(ha) & DT_ISP8001)
+<<<<<<< HEAD
 #define IS_QLA82XX(ha)	(DT_MASK(ha) & DT_ISP8021)
+=======
+#define IS_QLA81XX(ha)	(IS_QLA8001(ha))
+#define IS_QLA82XX(ha)	(DT_MASK(ha) & DT_ISP8021)
+#define IS_QLA2031(ha)	(DT_MASK(ha) & DT_ISP2031)
+#define IS_QLA8031(ha)	(DT_MASK(ha) & DT_ISP8031)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define IS_QLA23XX(ha)  (IS_QLA2300(ha) || IS_QLA2312(ha) || IS_QLA2322(ha) || \
 			IS_QLA6312(ha) || IS_QLA6322(ha))
 #define IS_QLA24XX(ha)  (IS_QLA2422(ha) || IS_QLA2432(ha))
 #define IS_QLA54XX(ha)  (IS_QLA5422(ha) || IS_QLA5432(ha))
 #define IS_QLA25XX(ha)  (IS_QLA2532(ha))
+<<<<<<< HEAD
 #define IS_QLA84XX(ha)  (IS_QLA8432(ha))
 #define IS_QLA24XX_TYPE(ha)     (IS_QLA24XX(ha) || IS_QLA54XX(ha) || \
 				IS_QLA84XX(ha))
@@ -2572,11 +2715,35 @@ struct qla_hw_data {
 #define IS_NOCACHE_VPD_TYPE(ha)	(IS_QLA81XX(ha))
 #define IS_ALOGIO_CAPABLE(ha)	(IS_QLA23XX(ha) || IS_FWI2_CAPABLE(ha))
 
+=======
+#define IS_QLA83XX(ha)	(IS_QLA2031(ha) || IS_QLA8031(ha))
+#define IS_QLA84XX(ha)  (IS_QLA8432(ha))
+#define IS_QLA24XX_TYPE(ha)     (IS_QLA24XX(ha) || IS_QLA54XX(ha) || \
+				IS_QLA84XX(ha))
+#define IS_CNA_CAPABLE(ha)	(IS_QLA81XX(ha) || IS_QLA82XX(ha) || \
+				IS_QLA8031(ha))
+#define IS_QLA2XXX_MIDTYPE(ha)	(IS_QLA24XX(ha) || IS_QLA84XX(ha) || \
+				IS_QLA25XX(ha) || IS_QLA81XX(ha) || \
+				IS_QLA82XX(ha) || IS_QLA83XX(ha))
+#define IS_MSIX_NACK_CAPABLE(ha) (IS_QLA81XX(ha) || IS_QLA83XX(ha))
+#define IS_NOPOLLING_TYPE(ha)	((IS_QLA25XX(ha) || IS_QLA81XX(ha) || \
+			IS_QLA83XX(ha)) && (ha)->flags.msix_enabled)
+#define IS_FAC_REQUIRED(ha)	(IS_QLA81XX(ha) || IS_QLA83XX(ha))
+#define IS_NOCACHE_VPD_TYPE(ha)	(IS_QLA81XX(ha) || IS_QLA83XX(ha))
+#define IS_ALOGIO_CAPABLE(ha)	(IS_QLA23XX(ha) || IS_FWI2_CAPABLE(ha))
+
+#define IS_T10_PI_CAPABLE(ha)   ((ha)->device_type & DT_T10_PI)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IS_IIDMA_CAPABLE(ha)    ((ha)->device_type & DT_IIDMA)
 #define IS_FWI2_CAPABLE(ha)     ((ha)->device_type & DT_FWI2)
 #define IS_ZIO_SUPPORTED(ha)    ((ha)->device_type & DT_ZIO_SUPPORTED)
 #define IS_OEM_001(ha)          ((ha)->device_type & DT_OEM_001)
 #define HAS_EXTENDED_IDS(ha)    ((ha)->device_type & DT_EXTENDED_IDS)
+<<<<<<< HEAD
+=======
+#define IS_CT6_SUPPORTED(ha)	((ha)->device_type & DT_CT6_SUPPORTED)
+#define IS_MQUE_CAPABLE(ha)	((ha)->mqenable || IS_QLA83XX(ha))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* HBA serial number */
 	uint8_t		serial0;
@@ -2615,10 +2782,13 @@ struct qla_hw_data {
 	void		*sfp_data;
 	dma_addr_t	sfp_data_dma;
 
+<<<<<<< HEAD
 	uint8_t		*edc_data;
 	dma_addr_t	edc_data_dma;
 	uint16_t	edc_data_len;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define XGMAC_DATA_SIZE	4096
 	void		*xgmac_data;
 	dma_addr_t	xgmac_data_dma;
@@ -2647,6 +2817,11 @@ struct qla_hw_data {
 	void		*async_pd;
 	dma_addr_t	async_pd_dma;
 
+<<<<<<< HEAD
+=======
+	void		*swl;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* These are used by mailbox operations. */
 	volatile uint16_t mailbox_out[MAILBOX_REGISTER_COUNT];
 
@@ -2668,6 +2843,11 @@ struct qla_hw_data {
 	uint16_t	fw_minor_version;
 	uint16_t	fw_subminor_version;
 	uint16_t	fw_attributes;
+<<<<<<< HEAD
+=======
+	uint16_t	fw_attributes_h;
+	uint16_t	fw_attributes_ext[2];
+>>>>>>> refs/remotes/origin/cm-10.0
 	uint32_t	fw_memory_size;
 	uint32_t	fw_transfer_size;
 	uint32_t	fw_srisc_address;
@@ -2820,6 +3000,15 @@ struct qla_hw_data {
 
 	uint8_t fw_type;
 	__le32 file_prd_off;	/* File firmware product offset */
+<<<<<<< HEAD
+=======
+
+	uint32_t	md_template_size;
+	void		*md_tmplt_hdr;
+	dma_addr_t      md_tmplt_hdr_dma;
+	void            *md_dump;
+	uint32_t	md_dump_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -2839,7 +3028,10 @@ typedef struct scsi_qla_host {
 	volatile struct {
 		uint32_t	init_done		:1;
 		uint32_t	online			:1;
+<<<<<<< HEAD
 		uint32_t	rscn_queue_overflow	:1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		uint32_t	reset_active		:1;
 
 		uint32_t	management_server_logged_in :1;
@@ -2893,11 +3085,14 @@ typedef struct scsi_qla_host {
 
 
 
+<<<<<<< HEAD
 	/* RSCN queue. */
 	uint32_t rscn_queue[MAX_RSCN_COUNT];
 	uint8_t rscn_in_ptr;
 	uint8_t rscn_out_ptr;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Timeout timers. */
 	uint8_t         loop_down_abort_time;    /* port down timer */
 	atomic_t        loop_down_timer;         /* loop down timer */
@@ -2969,10 +3164,13 @@ typedef struct scsi_qla_host {
 	atomic_dec(&__vha->vref_count);			     \
 } while (0)
 
+<<<<<<< HEAD
 
 #define qla_printk(level, ha, format, arg...) \
 	dev_printk(level , &((ha)->pdev->dev) , format , ## arg)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * qla2x00 local function return status codes
  */
@@ -2997,7 +3195,10 @@ typedef struct scsi_qla_host {
 #define QLA_ABORTED			0x105
 #define QLA_SUSPENDED			0x106
 #define QLA_BUSY			0x107
+<<<<<<< HEAD
 #define QLA_RSCNS_HANDLED		0x108
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define QLA_ALREADY_REGISTERED		0x109
 
 #define NVRAM_DELAY()		udelay(10)
@@ -3013,6 +3214,10 @@ typedef struct scsi_qla_host {
 #define OPTROM_SIZE_25XX	0x200000
 #define OPTROM_SIZE_81XX	0x400000
 #define OPTROM_SIZE_82XX	0x800000
+<<<<<<< HEAD
+=======
+#define OPTROM_SIZE_83XX	0x1000000
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define OPTROM_BURST_SIZE	0x1000
 #define OPTROM_BURST_DWORDS	(OPTROM_BURST_SIZE / 4)

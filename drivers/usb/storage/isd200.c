@@ -61,7 +61,11 @@
 #include "scsiglue.h"
 
 MODULE_DESCRIPTION("Driver for In-System Design, Inc. ISD200 ASIC");
+<<<<<<< HEAD
 MODULE_AUTHOR("Bjˆrn Stenberg <bjorn@haxx.se>");
+=======
+MODULE_AUTHOR("Bj√∂rn Stenberg <bjorn@haxx.se>");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");
 
 static int isd200_Initialization(struct us_data *us);
@@ -76,7 +80,11 @@ static int isd200_Initialization(struct us_data *us);
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
+<<<<<<< HEAD
 struct usb_device_id isd200_usb_ids[] = {
+=======
+static struct usb_device_id isd200_usb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 #	include "unusual_isd200.h"
 	{ }		/* Terminating entry */
 };
@@ -1566,6 +1574,7 @@ static struct usb_driver isd200_driver = {
 	.post_reset =	usb_stor_post_reset,
 	.id_table =	isd200_usb_ids,
 	.soft_unbind =	1,
+<<<<<<< HEAD
 };
 
 static int __init isd200_init(void)
@@ -1580,3 +1589,9 @@ static void __exit isd200_exit(void)
 
 module_init(isd200_init);
 module_exit(isd200_exit);
+=======
+	.no_dynamic_id = 1,
+};
+
+module_usb_driver(isd200_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

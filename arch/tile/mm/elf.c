@@ -21,6 +21,10 @@
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
+=======
+#include <arch/sim_def.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Notify a running simulator, if any, that an exec just occurred. */
 static void sim_notify_exec(const char *binary_name)
@@ -117,17 +121,24 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
 
 	/*
 	 * MAYWRITE to allow gdb to COW and set breakpoints
+<<<<<<< HEAD
 	 *
 	 * Make sure the vDSO gets into every core dump.  Dumping its
 	 * contents makes post-mortem fully interpretable later
 	 * without matching up the same kernel and hardware config to
 	 * see what PC values meant.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	vdso_base = VDSO_BASE;
 	retval = install_special_mapping(mm, vdso_base, PAGE_SIZE,
 					 VM_READ|VM_EXEC|
+<<<<<<< HEAD
 					 VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC|
 					 VM_ALWAYSDUMP,
+=======
+					 VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
+>>>>>>> refs/remotes/origin/cm-10.0
 					 vdso_pages);
 
 #ifndef __tilegx__

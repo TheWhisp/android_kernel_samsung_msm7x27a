@@ -580,6 +580,7 @@ static struct usb_driver keyspan_driver =
 	.id_table =	keyspan_table
 };
 
+<<<<<<< HEAD
 static int __init usb_keyspan_init(void)
 {
 	int result;
@@ -600,6 +601,9 @@ static void __exit usb_keyspan_exit(void)
 
 module_init(usb_keyspan_init);
 module_exit(usb_keyspan_exit);
+=======
+module_usb_driver(keyspan_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DEVICE_TABLE(usb, keyspan_table);
 MODULE_AUTHOR(DRIVER_AUTHOR);

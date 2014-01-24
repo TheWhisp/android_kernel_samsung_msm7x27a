@@ -22,10 +22,18 @@
  * along with this driver.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+<<<<<<< HEAD
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
 #include "crystalhd_hw.h"
+=======
+#include "crystalhd.h"
+
+#include <linux/pci.h>
+#include <linux/slab.h>
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Functions internal to this file */
 
@@ -766,7 +774,11 @@ static enum BC_STATUS crystalhd_hw_fill_desc(struct crystalhd_dio_req *ioreq,
 	crystalhd_hw_dump_desc(desc, last_desc_ix, 1);
 
 	if (count != xfr_sz) {
+<<<<<<< HEAD
 		BCMLOG_ERR("interal error sz curr:%x exp:%x\n", count, xfr_sz);
+=======
+		BCMLOG_ERR("internal error sz curr:%x exp:%x\n", count, xfr_sz);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return BC_STS_ERROR;
 	}
 
@@ -868,8 +880,12 @@ static enum BC_STATUS crystalhd_stop_tx_dma_engine(struct crystalhd_hw *hw)
 
 	BCMLOG(BCMLOG_DBG, "Stopping TX DMA Engine..\n");
 
+<<<<<<< HEAD
 	/* FIXME: jarod: invert dma_ctrl and check bit? or are there missing parens? */
 	if (!dma_cntrl & DMA_START_BIT) {
+=======
+	if (!(dma_cntrl & DMA_START_BIT)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		BCMLOG(BCMLOG_DBG, "Already Stopped\n");
 		return BC_STS_SUCCESS;
 	}
@@ -1628,7 +1644,10 @@ enum BC_STATUS crystalhd_download_fw(struct crystalhd_adp *adp, void *buffer, ui
 	uint32_t fw_sig_len = 36;
 	uint32_t dram_offset = BC_FWIMG_ST_ADDR, sig_reg;
 
+<<<<<<< HEAD
 	BCMLOG_ENTER;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!adp || !buffer || !sz) {
 		BCMLOG_ERR("Invalid Params.\n");
@@ -1725,8 +1744,11 @@ enum BC_STATUS crystalhd_do_fw_cmd(struct crystalhd_hw *hw,
 
 	crystalhd_create_event(&fw_cmd_event);
 
+<<<<<<< HEAD
 	BCMLOG_ENTER;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!hw || !fw_cmd) {
 		BCMLOG_ERR("Invalid Arguments\n");
 		return BC_STS_INV_ARG;

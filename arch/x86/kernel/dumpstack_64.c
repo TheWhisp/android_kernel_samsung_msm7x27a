@@ -105,6 +105,7 @@ in_irq_stack(unsigned long *stack, unsigned long *irq_stack,
 }
 
 /*
+<<<<<<< HEAD
  * We are returning from the irq stack and go to the previous one.
  * If the previous stack is also in the irq stack, then bp in the first
  * frame of the irq stack points to the previous, interrupted one.
@@ -133,6 +134,8 @@ fixup_bp_irq_link(unsigned long bp, unsigned long *stack,
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * x86-64 can have up to three kernel stacks:
  * process stack
  * interrupt stack
@@ -155,9 +158,18 @@ void dump_trace(struct task_struct *task, struct pt_regs *regs,
 		task = current;
 
 	if (!stack) {
+<<<<<<< HEAD
 		stack = &dummy;
 		if (task && task != current)
 			stack = (unsigned long *)task->thread.sp;
+=======
+		if (regs)
+			stack = (unsigned long *)regs->sp;
+		else if (task != current)
+			stack = (unsigned long *)task->thread.sp;
+		else
+			stack = &dummy;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (!bp)
@@ -205,8 +217,11 @@ void dump_trace(struct task_struct *task, struct pt_regs *regs,
 				 * pointer (index -1 to end) in the IRQ stack:
 				 */
 				stack = (unsigned long *) (irq_stack_end[-1]);
+<<<<<<< HEAD
 				bp = fixup_bp_irq_link(bp, stack, irq_stack,
 						       irq_stack_end);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				irq_stack_end = NULL;
 				ops->stack(data, "EOI");
 				continue;
@@ -296,11 +311,19 @@ void show_registers(struct pt_regs *regs)
 		unsigned char c;
 		u8 *ip;
 
+<<<<<<< HEAD
 		printk(KERN_EMERG "Stack:\n");
 		show_stack_log_lvl(NULL, regs, (unsigned long *)sp,
 				   0, KERN_EMERG);
 
 		printk(KERN_EMERG "Code: ");
+=======
+		printk(KERN_DEFAULT "Stack:\n");
+		show_stack_log_lvl(NULL, regs, (unsigned long *)sp,
+				   0, KERN_DEFAULT);
+
+		printk(KERN_DEFAULT "Code: ");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ip = (u8 *)regs->ip - code_prologue;
 		if (ip < (u8 *)PAGE_OFFSET || probe_kernel_address(ip, c)) {
@@ -311,6 +334,7 @@ void show_registers(struct pt_regs *regs)
 		for (i = 0; i < code_len; i++, ip++) {
 			if (ip < (u8 *)PAGE_OFFSET ||
 					probe_kernel_address(ip, c)) {
+<<<<<<< HEAD
 				printk(" Bad RIP value.");
 				break;
 			}
@@ -321,6 +345,18 @@ void show_registers(struct pt_regs *regs)
 		}
 	}
 	printk("\n");
+=======
+				printk(KERN_CONT " Bad RIP value.");
+				break;
+			}
+			if (ip == (u8 *)regs->ip)
+				printk(KERN_CONT "<%02x> ", c);
+			else
+				printk(KERN_CONT "%02x ", c);
+		}
+	}
+	printk(KERN_CONT "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int is_valid_bugaddr(unsigned long ip)

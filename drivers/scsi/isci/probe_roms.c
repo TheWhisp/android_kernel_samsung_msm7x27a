@@ -146,7 +146,11 @@ struct isci_orom *isci_request_firmware(struct pci_dev *pdev, const struct firmw
 
 	memcpy(orom, fw->data, fw->size);
 
+<<<<<<< HEAD
 	if (is_c0(pdev))
+=======
+	if (is_c0(pdev) || is_c1(pdev))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 
 	/*

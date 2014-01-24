@@ -16,7 +16,11 @@
 #include <linux/mutex.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>		/* put_/get_user			*/
 #include <asm/io.h>
 
@@ -275,6 +279,7 @@ static struct platform_driver d7s_driver = {
 	.remove		= __devexit_p(d7s_remove),
 };
 
+<<<<<<< HEAD
 static int __init d7s_init(void)
 {
 	return platform_driver_register(&d7s_driver);
@@ -287,3 +292,6 @@ static void __exit d7s_exit(void)
 
 module_init(d7s_init);
 module_exit(d7s_exit);
+=======
+module_platform_driver(d7s_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

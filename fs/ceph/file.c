@@ -122,7 +122,11 @@ int ceph_open(struct inode *inode, struct file *file)
 	struct ceph_mds_client *mdsc = fsc->mdsc;
 	struct ceph_mds_request *req;
 	struct ceph_file_info *cf = file->private_data;
+<<<<<<< HEAD
 	struct inode *parent_inode = file->f_dentry->d_parent->d_inode;
+=======
+	struct inode *parent_inode = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err;
 	int flags, fmode, wanted;
 
@@ -147,9 +151,15 @@ int ceph_open(struct inode *inode, struct file *file)
 
 	/* trivially open snapdir */
 	if (ceph_snap(inode) == CEPH_SNAPDIR) {
+<<<<<<< HEAD
 		spin_lock(&inode->i_lock);
 		__ceph_get_fmode(ci, fmode);
 		spin_unlock(&inode->i_lock);
+=======
+		spin_lock(&ci->i_ceph_lock);
+		__ceph_get_fmode(ci, fmode);
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ceph_init_file(inode, file, fmode);
 	}
 
@@ -158,7 +168,11 @@ int ceph_open(struct inode *inode, struct file *file)
 	 * write) or any MDS (for read).  Update wanted set
 	 * asynchronously.
 	 */
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (__ceph_is_any_real_caps(ci) &&
 	    (((fmode & CEPH_FILE_MODE_WR) == 0) || ci->i_auth_cap)) {
 		int mds_wanted = __ceph_caps_mds_wanted(ci);
@@ -168,7 +182,11 @@ int ceph_open(struct inode *inode, struct file *file)
 		     inode, fmode, ceph_cap_string(wanted),
 		     ceph_cap_string(issued));
 		__ceph_get_fmode(ci, fmode);
+<<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
+=======
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* adjust wanted? */
 		if ((issued & wanted) != wanted &&
@@ -180,10 +198,17 @@ int ceph_open(struct inode *inode, struct file *file)
 	} else if (ceph_snap(inode) != CEPH_NOSNAP &&
 		   (ci->i_snap_caps & wanted) == wanted) {
 		__ceph_get_fmode(ci, fmode);
+<<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
 		return ceph_init_file(inode, file, fmode);
 	}
 	spin_unlock(&inode->i_lock);
+=======
+		spin_unlock(&ci->i_ceph_lock);
+		return ceph_init_file(inode, file, fmode);
+	}
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dout("open fmode %d wants %s\n", fmode, ceph_cap_string(wanted));
 	req = prepare_open_request(inode->i_sb, flags, 0);
@@ -194,7 +219,14 @@ int ceph_open(struct inode *inode, struct file *file)
 	req->r_inode = inode;
 	ihold(inode);
 	req->r_num_caps = 1;
+<<<<<<< HEAD
 	err = ceph_mdsc_do_request(mdsc, parent_inode, req);
+=======
+	if (flags & (O_CREAT|O_TRUNC))
+		parent_inode = ceph_get_dentry_parent_inode(file->f_dentry);
+	err = ceph_mdsc_do_request(mdsc, parent_inode, req);
+	iput(parent_inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!err)
 		err = ceph_init_file(inode, file, req->r_fmode);
 	ceph_mdsc_put_request(req);
@@ -222,11 +254,19 @@ struct dentry *ceph_lookup_open(struct inode *dir, struct dentry *dentry,
 {
 	struct ceph_fs_client *fsc = ceph_sb_to_client(dir->i_sb);
 	struct ceph_mds_client *mdsc = fsc->mdsc;
+<<<<<<< HEAD
 	struct file *file = nd->intent.open.file;
 	struct inode *parent_inode = get_dentry_parent_inode(file->f_dentry);
 	struct ceph_mds_request *req;
 	int err;
 	int flags = nd->intent.open.flags - 1;  /* silly vfs! */
+=======
+	struct file *file;
+	struct ceph_mds_request *req;
+	struct dentry *ret;
+	int err;
+	int flags = nd->intent.open.flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dout("ceph_lookup_open dentry %p '%.*s' flags %d mode 0%o\n",
 	     dentry, dentry->d_name.len, dentry->d_name.name, flags, mode);
@@ -242,6 +282,7 @@ struct dentry *ceph_lookup_open(struct inode *dir, struct dentry *dentry,
 		req->r_dentry_unless = CEPH_CAP_FILE_EXCL;
 	}
 	req->r_locked_dir = dir;           /* caller holds dir->i_mutex */
+<<<<<<< HEAD
 	err = ceph_mdsc_do_request(mdsc, parent_inode, req);
 	dentry = ceph_finish_lookup(req, dentry, err);
 	if (!err && (flags & O_CREAT) && !req->r_reply_info.head->is_dentry)
@@ -252,6 +293,26 @@ struct dentry *ceph_lookup_open(struct inode *dir, struct dentry *dentry,
 	ceph_mdsc_put_request(req);
 	dout("ceph_lookup_open result=%p\n", dentry);
 	return dentry;
+=======
+	err = ceph_mdsc_do_request(mdsc,
+				   (flags & (O_CREAT|O_TRUNC)) ? dir : NULL,
+				   req);
+	err = ceph_handle_snapdir(req, dentry, err);
+	if (err)
+		goto out;
+	if ((flags & O_CREAT) && !req->r_reply_info.head->is_dentry)
+		err = ceph_handle_notrace_create(dir, dentry);
+	if (err)
+		goto out;
+	file = lookup_instantiate_filp(nd, req->r_dentry, ceph_open);
+	if (IS_ERR(file))
+		err = PTR_ERR(file);
+out:
+	ret = ceph_finish_lookup(req, dentry, err);
+	ceph_mdsc_put_request(req);
+	dout("ceph_lookup_open result=%p\n", ret);
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int ceph_release(struct inode *inode, struct file *file)
@@ -518,8 +579,13 @@ more:
 				    do_sync,
 				    ci->i_truncate_seq, ci->i_truncate_size,
 				    &mtime, false, 2, page_align);
+<<<<<<< HEAD
 	if (!req)
 		return -ENOMEM;
+=======
+	if (IS_ERR(req))
+		return PTR_ERR(req);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (file->f_flags & O_DIRECT) {
 		pages = ceph_get_direct_page_vector(data, num_pages, false);
@@ -643,7 +709,12 @@ again:
 
 	if ((got & (CEPH_CAP_FILE_CACHE|CEPH_CAP_FILE_LAZYIO)) == 0 ||
 	    (iocb->ki_filp->f_flags & O_DIRECT) ||
+<<<<<<< HEAD
 	    (inode->i_sb->s_flags & MS_SYNCHRONOUS))
+=======
+	    (inode->i_sb->s_flags & MS_SYNCHRONOUS) ||
+	    (fi->flags & CEPH_F_SYNC))
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* hmm, this isn't really async... */
 		ret = ceph_sync_read(filp, base, len, ppos, &checkeof);
 	else
@@ -712,7 +783,11 @@ retry_snap:
 		want = CEPH_CAP_FILE_BUFFER;
 	ret = ceph_get_caps(ci, CEPH_CAP_FILE_WR, want, &got, endoff);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out_put;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dout("aio_write %p %llx.%llx %llu~%u  got cap refs on %s\n",
 	     inode, ceph_vinop(inode), pos, (unsigned)iov->iov_len,
@@ -720,12 +795,32 @@ retry_snap:
 
 	if ((got & (CEPH_CAP_FILE_BUFFER|CEPH_CAP_FILE_LAZYIO)) == 0 ||
 	    (iocb->ki_filp->f_flags & O_DIRECT) ||
+<<<<<<< HEAD
 	    (inode->i_sb->s_flags & MS_SYNCHRONOUS)) {
 		ret = ceph_sync_write(file, iov->iov_base, iov->iov_len,
 			&iocb->ki_pos);
 	} else {
 		ret = generic_file_aio_write(iocb, iov, nr_segs, pos);
 
+=======
+	    (inode->i_sb->s_flags & MS_SYNCHRONOUS) ||
+	    (fi->flags & CEPH_F_SYNC)) {
+		ret = ceph_sync_write(file, iov->iov_base, iov->iov_len,
+			&iocb->ki_pos);
+	} else {
+		/*
+		 * buffered write; drop Fw early to avoid slow
+		 * revocation if we get stuck on balance_dirty_pages
+		 */
+		int dirty;
+
+		spin_lock(&ci->i_ceph_lock);
+		dirty = __ceph_mark_dirty_caps(ci, CEPH_CAP_FILE_WR);
+		spin_unlock(&ci->i_ceph_lock);
+		ceph_put_cap_refs(ci, got);
+
+		ret = generic_file_aio_write(iocb, iov, nr_segs, pos);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if ((ret >= 0 || ret == -EIOCBQUEUED) &&
 		    ((file->f_flags & O_SYNC) || IS_SYNC(file->f_mapping->host)
 		     || ceph_osdmap_flag(osdc->osdmap, CEPH_OSDMAP_NEARFULL))) {
@@ -733,22 +828,44 @@ retry_snap:
 			if (err < 0)
 				ret = err;
 		}
+<<<<<<< HEAD
 	}
 	if (ret >= 0) {
 		int dirty;
 		spin_lock(&inode->i_lock);
 		dirty = __ceph_mark_dirty_caps(ci, CEPH_CAP_FILE_WR);
 		spin_unlock(&inode->i_lock);
+=======
+
+		if (dirty)
+			__mark_inode_dirty(inode, dirty);
+		goto out;
+	}
+
+	if (ret >= 0) {
+		int dirty;
+		spin_lock(&ci->i_ceph_lock);
+		dirty = __ceph_mark_dirty_caps(ci, CEPH_CAP_FILE_WR);
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (dirty)
 			__mark_inode_dirty(inode, dirty);
 	}
 
+<<<<<<< HEAD
 out:
+=======
+out_put:
+>>>>>>> refs/remotes/origin/cm-10.0
 	dout("aio_write %p %llx.%llx %llu~%u  dropping cap refs on %s\n",
 	     inode, ceph_vinop(inode), pos, (unsigned)iov->iov_len,
 	     ceph_cap_string(got));
 	ceph_put_cap_refs(ci, got);
 
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret == -EOLDSNAPC) {
 		dout("aio_write %p %llx.%llx %llu~%u got EOLDSNAPC, retrying\n",
 		     inode, ceph_vinop(inode), pos, (unsigned)iov->iov_len);
@@ -768,13 +885,25 @@ static loff_t ceph_llseek(struct file *file, loff_t offset, int origin)
 
 	mutex_lock(&inode->i_mutex);
 	__ceph_do_pending_vmtruncate(inode);
+<<<<<<< HEAD
 	switch (origin) {
 	case SEEK_END:
+=======
+
+	if (origin == SEEK_END || origin == SEEK_DATA || origin == SEEK_HOLE) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = ceph_do_getattr(inode, CEPH_STAT_CAP_SIZE);
 		if (ret < 0) {
 			offset = ret;
 			goto out;
 		}
+<<<<<<< HEAD
+=======
+	}
+
+	switch (origin) {
+	case SEEK_END:
+>>>>>>> refs/remotes/origin/cm-10.0
 		offset += inode->i_size;
 		break;
 	case SEEK_CUR:
@@ -790,6 +919,22 @@ static loff_t ceph_llseek(struct file *file, loff_t offset, int origin)
 		}
 		offset += file->f_pos;
 		break;
+<<<<<<< HEAD
+=======
+	case SEEK_DATA:
+		if (offset >= inode->i_size) {
+			ret = -ENXIO;
+			goto out;
+		}
+		break;
+	case SEEK_HOLE:
+		if (offset >= inode->i_size) {
+			ret = -ENXIO;
+			goto out;
+		}
+		offset = inode->i_size;
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (offset < 0 || offset > inode->i_sb->s_maxbytes) {

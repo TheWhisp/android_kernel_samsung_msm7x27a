@@ -31,7 +31,11 @@
 #include <linux/err.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 
 #include "ap_bus.h"
@@ -56,11 +60,14 @@
 #define PCIXCC_MAX_ICA_RESPONSE_SIZE 0x77c /* max size type86 v2 reply	    */
 
 #define PCIXCC_MAX_XCRB_MESSAGE_SIZE (12*1024)
+<<<<<<< HEAD
 #define PCIXCC_MAX_XCRB_RESPONSE_SIZE PCIXCC_MAX_XCRB_MESSAGE_SIZE
 #define PCIXCC_MAX_XCRB_DATA_SIZE (11*1024)
 #define PCIXCC_MAX_XCRB_REPLY_SIZE (5*1024)
 
 #define PCIXCC_MAX_RESPONSE_SIZE PCIXCC_MAX_XCRB_RESPONSE_SIZE
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PCIXCC_CLEANUP_TIME	(15*HZ)
 
@@ -80,13 +87,19 @@ static struct ap_device_id zcrypt_pcixcc_ids[] = {
 	{ /* end of list */ },
 };
 
+<<<<<<< HEAD
 #ifndef CONFIG_ZCRYPT_MONOLITHIC
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DEVICE_TABLE(ap, zcrypt_pcixcc_ids);
 MODULE_AUTHOR("IBM Corporation");
 MODULE_DESCRIPTION("PCIXCC Cryptographic Coprocessor device driver, "
 		   "Copyright 2001, 2006 IBM Corporation");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int zcrypt_pcixcc_probe(struct ap_device *ap_dev);
 static void zcrypt_pcixcc_remove(struct ap_device *ap_dev);
@@ -265,7 +278,11 @@ static int ICACRT_msg_to_type6CRT_msgX(struct zcrypt_device *zdev,
  * @ap_msg: pointer to AP message
  * @xcRB: pointer to user input data
  *
+<<<<<<< HEAD
  * Returns 0 on success or -EFAULT.
+=======
+ * Returns 0 on success or -EFAULT, -EINVAL.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct type86_fmt2_msg {
 	struct type86_hdr hdr;
@@ -295,6 +312,7 @@ static int XCRB_msg_to_type6CPRB_msgX(struct zcrypt_device *zdev,
 		CEIL4(xcRB->request_control_blk_length) +
 		xcRB->request_data_length;
 	if (ap_msg->length > PCIXCC_MAX_XCRB_MESSAGE_SIZE)
+<<<<<<< HEAD
 		return -EFAULT;
 	if (CEIL4(xcRB->reply_control_blk_length) > PCIXCC_MAX_XCRB_REPLY_SIZE)
 		return -EFAULT;
@@ -308,6 +326,14 @@ static int XCRB_msg_to_type6CPRB_msgX(struct zcrypt_device *zdev,
 			(sizeof(struct type86_fmt2_msg) +
 			    CEIL4(xcRB->reply_data_length));
 	}
+=======
+		return -EINVAL;
+	replylen = sizeof(struct type86_fmt2_msg) +
+		CEIL4(xcRB->reply_control_blk_length) +
+		xcRB->reply_data_length;
+	if (replylen > PCIXCC_MAX_XCRB_MESSAGE_SIZE)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* prepare type6 header */
 	msg->hdr = static_type6_hdrX;
@@ -326,7 +352,11 @@ static int XCRB_msg_to_type6CPRB_msgX(struct zcrypt_device *zdev,
 		return -EFAULT;
 	if (msg->cprbx.cprb_len + sizeof(msg->hdr.function_code) >
 	    xcRB->request_control_blk_length)
+<<<<<<< HEAD
 		return -EFAULT;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	function_code = ((unsigned char *)&msg->cprbx) + msg->cprbx.cprb_len;
 	memcpy(msg->hdr.function_code, function_code, sizeof(msg->hdr.function_code));
 
@@ -678,7 +708,11 @@ static void zcrypt_pcixcc_receive(struct ap_device *ap_dev,
 			break;
 		case PCIXCC_RESPONSE_TYPE_XCRB:
 			length = t86r->fmt2.offset2 + t86r->fmt2.count2;
+<<<<<<< HEAD
 			length = min(PCIXCC_MAX_XCRB_RESPONSE_SIZE, length);
+=======
+			length = min(PCIXCC_MAX_XCRB_MESSAGE_SIZE, length);
+>>>>>>> refs/remotes/origin/cm-10.0
 			memcpy(msg->message, reply->message, length);
 			break;
 		default:
@@ -1043,7 +1077,11 @@ static int zcrypt_pcixcc_probe(struct ap_device *ap_dev)
 	struct zcrypt_device *zdev;
 	int rc = 0;
 
+<<<<<<< HEAD
 	zdev = zcrypt_device_alloc(PCIXCC_MAX_RESPONSE_SIZE);
+=======
+	zdev = zcrypt_device_alloc(PCIXCC_MAX_XCRB_MESSAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!zdev)
 		return -ENOMEM;
 	zdev->ap_dev = ap_dev;
@@ -1133,7 +1171,12 @@ void zcrypt_pcixcc_exit(void)
 	ap_driver_unregister(&zcrypt_pcixcc_driver);
 }
 
+<<<<<<< HEAD
 #ifndef CONFIG_ZCRYPT_MONOLITHIC
 module_init(zcrypt_pcixcc_init);
 module_exit(zcrypt_pcixcc_exit);
 #endif
+=======
+module_init(zcrypt_pcixcc_init);
+module_exit(zcrypt_pcixcc_exit);
+>>>>>>> refs/remotes/origin/cm-10.0

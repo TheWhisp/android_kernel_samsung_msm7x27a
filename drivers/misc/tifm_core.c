@@ -13,6 +13,10 @@
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/idr.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVER_NAME "tifm_core"
 #define DRIVER_VERSION "0.8"

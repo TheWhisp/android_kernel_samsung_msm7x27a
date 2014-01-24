@@ -16,6 +16,10 @@
 #include <linux/kdev_t.h>
 #include <linux/gfp.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "drm_sysfs.h"
 #include "drm_core.h"
@@ -71,7 +75,11 @@ static int drm_class_resume(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static char *drm_devnode(struct device *dev, mode_t *mode)
+=======
+static char *drm_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return kasprintf(GFP_KERNEL, "dri/%s", dev_name(dev));
 }
@@ -453,6 +461,11 @@ void drm_sysfs_connector_remove(struct drm_connector *connector)
 {
 	int i;
 
+<<<<<<< HEAD
+=======
+	if (!connector->kdev.parent)
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	DRM_DEBUG("removing \"%s\" from sysfs\n",
 		  drm_get_connector_name(connector));
 
@@ -460,6 +473,10 @@ void drm_sysfs_connector_remove(struct drm_connector *connector)
 		device_remove_file(&connector->kdev, &connector_attrs[i]);
 	sysfs_remove_bin_file(&connector->kdev.kobj, &edid_attr);
 	device_unregister(&connector->kdev);
+<<<<<<< HEAD
+=======
+	connector->kdev.parent = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(drm_sysfs_connector_remove);
 
@@ -532,7 +549,13 @@ err_out:
  */
 void drm_sysfs_device_remove(struct drm_minor *minor)
 {
+<<<<<<< HEAD
 	device_unregister(&minor->kdev);
+=======
+	if (minor->kdev.parent)
+		device_unregister(&minor->kdev);
+	minor->kdev.parent = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 

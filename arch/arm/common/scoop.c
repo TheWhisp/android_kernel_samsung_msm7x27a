@@ -12,11 +12,20 @@
  */
 
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/string.h>
 #include <linux/slab.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
 #include <asm/gpio.h>
+=======
+#include <linux/gpio.h>
+#include <linux/string.h>
+#include <linux/slab.h>
+#include <linux/platform_device.h>
+#include <linux/export.h>
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardware/scoop.h>
 
 /* PCMCIA to Scoop linkage
@@ -193,7 +202,11 @@ static int __devinit scoop_probe(struct platform_device *pdev)
 	spin_lock_init(&devptr->scoop_lock);
 
 	inf = pdev->dev.platform_data;
+<<<<<<< HEAD
 	devptr->base = ioremap(mem->start, mem->end - mem->start + 1);
+=======
+	devptr->base = ioremap(mem->start, resource_size(mem));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!devptr->base) {
 		ret = -ENOMEM;

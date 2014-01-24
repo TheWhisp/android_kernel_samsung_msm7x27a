@@ -422,7 +422,11 @@
 
 void MACvSetMultiAddrByHash(PSDevice pDevice, BYTE byHashIdx);
 void MACvWriteMultiAddr(PSDevice pDevice, unsigned int uByteIdx, BYTE byData);
+<<<<<<< HEAD
 BOOL MACbShutdown(PSDevice pDevice);
+=======
+void MACbShutdown(PSDevice pDevice);
+>>>>>>> refs/remotes/origin/cm-10.0
 void MACvSetBBType(PSDevice pDevice, BYTE byType);
 void MACvSetMISCFifo(PSDevice pDevice, WORD wOffset, DWORD dwData);
 void MACvDisableKeyEntry(PSDevice pDevice, unsigned int uEntryIdx);

@@ -26,6 +26,10 @@
 #include "xfs_ag.h"
 #include "xfs_mount.h"
 #include "xfs_trans_priv.h"
+<<<<<<< HEAD
+=======
+#include "xfs_trace.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xfs_error.h"
 
 #ifdef DEBUG
@@ -161,6 +165,7 @@ xfs_ail_max_lsn(
 }
 
 /*
+<<<<<<< HEAD
  * AIL traversal cursor initialisation.
  *
  * The cursor keeps track of where our current traversal is up
@@ -172,6 +177,13 @@ xfs_ail_max_lsn(
  *
  * We don't link the push cursor because it is embedded in the struct
  * xfs_ail and hence easily findable.
+=======
+ * The cursor keeps track of where our current traversal is up to by tracking
+ * the next item in the list for us. However, for this to be safe, removing an
+ * object from the AIL needs to invalidate any cursor that points to it. hence
+ * the traversal cursor needs to be linked to the struct xfs_ail so that
+ * deletion can search all the active cursors for invalidation.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 STATIC void
 xfs_trans_ail_cursor_init(
@@ -179,6 +191,7 @@ xfs_trans_ail_cursor_init(
 	struct xfs_ail_cursor	*cur)
 {
 	cur->item = NULL;
+<<<<<<< HEAD
 	if (cur == &ailp->xa_cursors)
 		return;
 
@@ -204,6 +217,14 @@ xfs_trans_ail_cursor_set(
  * Get the next item in the traversal and advance the cursor.
  * If the cursor was invalidated (inidicated by a lip of 1),
  * restart the traversal.
+=======
+	list_add_tail(&cur->list, &ailp->xa_cursors);
+}
+
+/*
+ * Get the next item in the traversal and advance the cursor.  If the cursor
+ * was invalidated (indicated by a lip of 1), restart the traversal.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct xfs_log_item *
 xfs_trans_ail_cursor_next(
@@ -214,19 +235,30 @@ xfs_trans_ail_cursor_next(
 
 	if ((__psint_t)lip & 1)
 		lip = xfs_ail_min(ailp);
+<<<<<<< HEAD
 	xfs_trans_ail_cursor_set(ailp, cur, lip);
+=======
+	if (lip)
+		cur->item = xfs_ail_next(ailp, lip);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return lip;
 }
 
 /*
+<<<<<<< HEAD
  * Now that the traversal is complete, we need to remove the cursor
  * from the list of traversing cursors. Avoid removing the embedded
  * push cursor, but use the fact it is always present to make the
  * list deletion simple.
+=======
+ * When the traversal is complete, we need to remove the cursor from the list
+ * of traversing cursors.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 void
 xfs_trans_ail_cursor_done(
 	struct xfs_ail		*ailp,
+<<<<<<< HEAD
 	struct xfs_ail_cursor	*done)
 {
 	struct xfs_ail_cursor	*prev = NULL;
@@ -253,6 +285,21 @@ xfs_trans_ail_cursor_done(
  * cursor item to a value of 1 so we can distinguish between an
  * invalidation and the end of the list when getting the next item
  * from the cursor.
+=======
+	struct xfs_ail_cursor	*cur)
+{
+	cur->item = NULL;
+	list_del_init(&cur->list);
+}
+
+/*
+ * Invalidate any cursor that is pointing to this item. This is called when an
+ * item is removed from the AIL. Any cursor pointing to this object is now
+ * invalid and the traversal needs to be terminated so it doesn't reference a
+ * freed object. We set the low bit of the cursor item pointer so we can
+ * distinguish between an invalidation and the end of the list when getting the
+ * next item from the cursor.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 STATIC void
 xfs_trans_ail_cursor_clear(
@@ -261,8 +308,12 @@ xfs_trans_ail_cursor_clear(
 {
 	struct xfs_ail_cursor	*cur;
 
+<<<<<<< HEAD
 	/* need to search all cursors */
 	for (cur = &ailp->xa_cursors; cur; cur = cur->next) {
+=======
+	list_for_each_entry(cur, &ailp->xa_cursors, list) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (cur->item == lip)
 			cur->item = (struct xfs_log_item *)
 					((__psint_t)cur->item | 1);
@@ -270,9 +321,16 @@ xfs_trans_ail_cursor_clear(
 }
 
 /*
+<<<<<<< HEAD
  * Initialise the cursor to the first item in the AIL with the given @lsn.
  * This searches the list from lowest LSN to highest. Pass a @lsn of zero
  * to initialise the cursor to the first item in the AIL.
+=======
+ * Find the first item in the AIL with the given @lsn by searching in ascending
+ * LSN order and initialise the cursor to point to the next item for a
+ * ascending traversal.  Pass a @lsn of zero to initialise the cursor to the
+ * first item in the AIL. Returns NULL if the list is empty.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 xfs_log_item_t *
 xfs_trans_ail_cursor_first(
@@ -283,14 +341,23 @@ xfs_trans_ail_cursor_first(
 	xfs_log_item_t		*lip;
 
 	xfs_trans_ail_cursor_init(ailp, cur);
+<<<<<<< HEAD
 	lip = xfs_ail_min(ailp);
 	if (lsn == 0)
 		goto out;
+=======
+
+	if (lsn == 0) {
+		lip = xfs_ail_min(ailp);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	list_for_each_entry(lip, &ailp->xa_ail, li_ail) {
 		if (XFS_LSN_CMP(lip->li_lsn, lsn) >= 0)
 			goto out;
 	}
+<<<<<<< HEAD
 	lip = NULL;
 out:
 	xfs_trans_ail_cursor_set(ailp, cur, lip);
@@ -303,6 +370,16 @@ out:
  * the value of @lsn, then it sets the cursor to the last item with an LSN lower
  * than @lsn.
  */
+=======
+	return NULL;
+
+out:
+	if (lip)
+		cur->item = xfs_ail_next(ailp, lip);
+	return lip;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct xfs_log_item *
 __xfs_trans_ail_cursor_last(
 	struct xfs_ail		*ailp,
@@ -318,8 +395,15 @@ __xfs_trans_ail_cursor_last(
 }
 
 /*
+<<<<<<< HEAD
  * Initialise the cursor to the last item in the AIL with the given @lsn.
  * This searches the list from highest LSN to lowest.
+=======
+ * Find the last item in the AIL with the given @lsn by searching in descending
+ * LSN order and initialise the cursor to point to that item.  If there is no
+ * item with the value of @lsn, then it sets the cursor to the last item with an
+ * LSN lower than @lsn.  Returns NULL if the list is empty.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct xfs_log_item *
 xfs_trans_ail_cursor_last(
@@ -333,10 +417,17 @@ xfs_trans_ail_cursor_last(
 }
 
 /*
+<<<<<<< HEAD
  * splice the log item list into the AIL at the given LSN. We splice to the
  * tail of the given LSN to maintain insert order for push traversals. The
  * cursor is optional, allowing repeated updates to the same LSN to avoid
  * repeated traversals.
+=======
+ * Splice the log item list into the AIL at the given LSN. We splice to the
+ * tail of the given LSN to maintain insert order for push traversals. The
+ * cursor is optional, allowing repeated updates to the same LSN to avoid
+ * repeated traversals.  This should not be called with an empty list.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void
 xfs_ail_splice(
@@ -345,6 +436,7 @@ xfs_ail_splice(
 	struct list_head	*list,
 	xfs_lsn_t		lsn)
 {
+<<<<<<< HEAD
 	struct xfs_log_item	*lip = cur ? cur->item : NULL;
 	struct xfs_log_item	*next_lip;
 
@@ -389,6 +481,41 @@ xfs_ail_splice(
 		cur->item = next_lip;
 	}
 	list_splice(list, &lip->li_ail);
+=======
+	struct xfs_log_item	*lip;
+
+	ASSERT(!list_empty(list));
+
+	/*
+	 * Use the cursor to determine the insertion point if one is
+	 * provided.  If not, or if the one we got is not valid,
+	 * find the place in the AIL where the items belong.
+	 */
+	lip = cur ? cur->item : NULL;
+	if (!lip || (__psint_t) lip & 1)
+		lip = __xfs_trans_ail_cursor_last(ailp, lsn);
+
+	/*
+	 * If a cursor is provided, we know we're processing the AIL
+	 * in lsn order, and future items to be spliced in will
+	 * follow the last one being inserted now.  Update the
+	 * cursor to point to that last item, now while we have a
+	 * reliable pointer to it.
+	 */
+	if (cur)
+		cur->item = list_entry(list->prev, struct xfs_log_item, li_ail);
+
+	/*
+	 * Finally perform the splice.  Unless the AIL was empty,
+	 * lip points to the item in the AIL _after_ which the new
+	 * items should go.  If lip is null the AIL was empty, so
+	 * the new items go at the head of the AIL.
+	 */
+	if (lip)
+		list_splice(list, &lip->li_ail);
+	else
+		list_splice(list, &ailp->xa_ail);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -409,25 +536,55 @@ xfsaild_push(
 	struct xfs_ail		*ailp)
 {
 	xfs_mount_t		*mp = ailp->xa_mount;
+<<<<<<< HEAD
 	struct xfs_ail_cursor	*cur = &ailp->xa_cursors;
+=======
+	struct xfs_ail_cursor	cur;
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_log_item_t		*lip;
 	xfs_lsn_t		lsn;
 	xfs_lsn_t		target;
 	long			tout = 10;
+<<<<<<< HEAD
 	int			flush_log = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int			stuck = 0;
 	int			count = 0;
 	int			push_xfsbufd = 0;
 
+<<<<<<< HEAD
 	spin_lock(&ailp->xa_lock);
 	target = ailp->xa_target;
 	xfs_trans_ail_cursor_init(ailp, cur);
 	lip = xfs_trans_ail_cursor_first(ailp, cur, ailp->xa_last_pushed_lsn);
+=======
+	/*
+	 * If last time we ran we encountered pinned items, force the log first
+	 * and wait for it before pushing again.
+	 */
+	spin_lock(&ailp->xa_lock);
+	if (ailp->xa_last_pushed_lsn == 0 && ailp->xa_log_flush &&
+	    !list_empty(&ailp->xa_ail)) {
+		ailp->xa_log_flush = 0;
+		spin_unlock(&ailp->xa_lock);
+		XFS_STATS_INC(xs_push_ail_flush);
+		xfs_log_force(mp, XFS_LOG_SYNC);
+		spin_lock(&ailp->xa_lock);
+	}
+
+	target = ailp->xa_target;
+	lip = xfs_trans_ail_cursor_first(ailp, &cur, ailp->xa_last_pushed_lsn);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!lip || XFS_FORCED_SHUTDOWN(mp)) {
 		/*
 		 * AIL is empty or our push has reached the end.
 		 */
+<<<<<<< HEAD
 		xfs_trans_ail_cursor_done(ailp, cur);
+=======
+		xfs_trans_ail_cursor_done(ailp, &cur);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock(&ailp->xa_lock);
 		goto out_done;
 	}
@@ -464,16 +621,30 @@ xfsaild_push(
 		switch (lock_result) {
 		case XFS_ITEM_SUCCESS:
 			XFS_STATS_INC(xs_push_ail_success);
+<<<<<<< HEAD
+=======
+			trace_xfs_ail_push(lip);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			IOP_PUSH(lip);
 			ailp->xa_last_pushed_lsn = lsn;
 			break;
 
 		case XFS_ITEM_PUSHBUF:
 			XFS_STATS_INC(xs_push_ail_pushbuf);
+<<<<<<< HEAD
 
 			if (!IOP_PUSHBUF(lip)) {
 				stuck++;
 				flush_log = 1;
+=======
+			trace_xfs_ail_pushbuf(lip);
+
+			if (!IOP_PUSHBUF(lip)) {
+				trace_xfs_ail_pushbuf_pinned(lip);
+				stuck++;
+				ailp->xa_log_flush++;
+>>>>>>> refs/remotes/origin/cm-10.0
 			} else {
 				ailp->xa_last_pushed_lsn = lsn;
 			}
@@ -482,12 +653,23 @@ xfsaild_push(
 
 		case XFS_ITEM_PINNED:
 			XFS_STATS_INC(xs_push_ail_pinned);
+<<<<<<< HEAD
 			stuck++;
 			flush_log = 1;
+=======
+			trace_xfs_ail_pinned(lip);
+
+			stuck++;
+			ailp->xa_log_flush++;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 
 		case XFS_ITEM_LOCKED:
 			XFS_STATS_INC(xs_push_ail_locked);
+<<<<<<< HEAD
+=======
+			trace_xfs_ail_locked(lip);
+>>>>>>> refs/remotes/origin/cm-10.0
 			stuck++;
 			break;
 
@@ -519,11 +701,16 @@ xfsaild_push(
 		if (stuck > 100)
 			break;
 
+<<<<<<< HEAD
 		lip = xfs_trans_ail_cursor_next(ailp, cur);
+=======
+		lip = xfs_trans_ail_cursor_next(ailp, &cur);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (lip == NULL)
 			break;
 		lsn = lip->li_lsn;
 	}
+<<<<<<< HEAD
 	xfs_trans_ail_cursor_done(ailp, cur);
 	spin_unlock(&ailp->xa_lock);
 
@@ -537,6 +724,11 @@ xfsaild_push(
 		xfs_log_force(mp, 0);
 	}
 
+=======
+	xfs_trans_ail_cursor_done(ailp, &cur);
+	spin_unlock(&ailp->xa_lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (push_xfsbufd) {
 		/* we've got delayed write buffers to flush */
 		wake_up_process(mp->m_ddev_targp->bt_task);
@@ -547,6 +739,10 @@ out_done:
 	if (!count) {
 		/* We're past our target or empty, so idle */
 		ailp->xa_last_pushed_lsn = 0;
+<<<<<<< HEAD
+=======
+		ailp->xa_log_flush = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		tout = 50;
 	} else if (XFS_LSN_CMP(lsn, target) >= 0) {
@@ -565,9 +761,19 @@ out_done:
 		 * were stuck.
 		 *
 		 * Backoff a bit more to allow some I/O to complete before
+<<<<<<< HEAD
 		 * continuing from where we were.
 		 */
 		tout = 20;
+=======
+		 * restarting from the start of the AIL. This prevents us
+		 * from spinning on the same items, and if they are pinned will
+		 * all the restart to issue a log force to unpin the stuck
+		 * items.
+		 */
+		tout = 20;
+		ailp->xa_last_pushed_lsn = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return tout;
@@ -647,6 +853,7 @@ xfs_ail_push_all(
 }
 
 /*
+<<<<<<< HEAD
  * This is to be called when an item is unlocked that may have
  * been in the AIL.  It will wake up the first member of the AIL
  * wait list if this item's unlocking might allow it to progress.
@@ -691,6 +898,8 @@ xfs_trans_unlocked_item(
 }	/* xfs_trans_unlocked_item */
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * xfs_trans_ail_update - bulk AIL insertion operation.
  *
  * @xfs_trans_ail_update takes an array of log items that all need to be
@@ -721,11 +930,18 @@ xfs_trans_ail_update_bulk(
 	xfs_lsn_t		lsn) __releases(ailp->xa_lock)
 {
 	xfs_log_item_t		*mlip;
+<<<<<<< HEAD
 	xfs_lsn_t		tail_lsn;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int			mlip_changed = 0;
 	int			i;
 	LIST_HEAD(tmp);
 
+<<<<<<< HEAD
+=======
+	ASSERT(nr_items > 0);		/* Not required, but true. */
+>>>>>>> refs/remotes/origin/cm-10.0
 	mlip = xfs_ail_min(ailp);
 
 	for (i = 0; i < nr_items; i++) {
@@ -745,6 +961,7 @@ xfs_trans_ail_update_bulk(
 		list_add(&lip->li_ail, &tmp);
 	}
 
+<<<<<<< HEAD
 	xfs_ail_splice(ailp, cur, &tmp, lsn);
 
 	if (!mlip_changed) {
@@ -762,6 +979,16 @@ xfs_trans_ail_update_bulk(
 	tail_lsn = mlip->li_lsn;
 	spin_unlock(&ailp->xa_lock);
 	xfs_log_move_tail(ailp->xa_mount, tail_lsn);
+=======
+	if (!list_empty(&tmp))
+		xfs_ail_splice(ailp, cur, &tmp, lsn);
+	spin_unlock(&ailp->xa_lock);
+
+	if (mlip_changed && !XFS_FORCED_SHUTDOWN(ailp->xa_mount)) {
+		xlog_assign_tail_lsn(ailp->xa_mount);
+		xfs_log_space_wake(ailp->xa_mount);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -792,7 +1019,10 @@ xfs_trans_ail_delete_bulk(
 	int			nr_items) __releases(ailp->xa_lock)
 {
 	xfs_log_item_t		*mlip;
+<<<<<<< HEAD
 	xfs_lsn_t		tail_lsn;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int			mlip_changed = 0;
 	int			i;
 
@@ -819,6 +1049,7 @@ xfs_trans_ail_delete_bulk(
 		if (mlip == lip)
 			mlip_changed = 1;
 	}
+<<<<<<< HEAD
 
 	if (!mlip_changed) {
 		spin_unlock(&ailp->xa_lock);
@@ -836,6 +1067,14 @@ xfs_trans_ail_delete_bulk(
 	tail_lsn = mlip ? mlip->li_lsn : 0;
 	spin_unlock(&ailp->xa_lock);
 	xfs_log_move_tail(ailp->xa_mount, tail_lsn);
+=======
+	spin_unlock(&ailp->xa_lock);
+
+	if (mlip_changed && !XFS_FORCED_SHUTDOWN(ailp->xa_mount)) {
+		xlog_assign_tail_lsn(ailp->xa_mount);
+		xfs_log_space_wake(ailp->xa_mount);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -864,6 +1103,10 @@ xfs_trans_ail_init(
 
 	ailp->xa_mount = mp;
 	INIT_LIST_HEAD(&ailp->xa_ail);
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&ailp->xa_cursors);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_init(&ailp->xa_lock);
 
 	ailp->xa_task = kthread_run(xfsaild, ailp, "xfsaild/%s",

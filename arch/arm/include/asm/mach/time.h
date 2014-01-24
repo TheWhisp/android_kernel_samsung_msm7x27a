@@ -10,8 +10,11 @@
 #ifndef __ASM_ARM_MACH_TIME_H
 #define __ASM_ARM_MACH_TIME_H
 
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This is our kernel timer structure.
  *

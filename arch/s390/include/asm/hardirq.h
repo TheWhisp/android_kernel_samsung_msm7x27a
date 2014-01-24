@@ -18,6 +18,10 @@
 
 #define __ARCH_IRQ_STAT
 #define __ARCH_HAS_DO_SOFTIRQ
+<<<<<<< HEAD
+=======
+#define __ARCH_IRQ_EXIT_IRQS_DISABLED
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define HARDIRQ_BITS	8
 

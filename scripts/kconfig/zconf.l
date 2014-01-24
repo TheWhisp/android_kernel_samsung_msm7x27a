@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 %option backup nostdinit noyywrap never-interactive full ecs
 %option 8bit backup nodefault perf-report perf-report
+=======
+%option nostdinit noyywrap never-interactive full ecs
+%option 8bit nodefault perf-report perf-report
+>>>>>>> refs/remotes/origin/cm-10.0
 %option noinput
 %x COMMAND HELP STRING PARAM
 %{
@@ -14,7 +19,10 @@
 #include <string.h>
 #include <unistd.h>
 
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "lkc.h"
 
 #define START_STRSIZE	16
@@ -96,7 +104,11 @@ n	[A-Za-z0-9_]
 
 <COMMAND>{
 	{n}+	{
+<<<<<<< HEAD
 		struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
+=======
+		const struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
+>>>>>>> refs/remotes/origin/cm-10.0
 		BEGIN(PARAM);
 		current_pos.file = current_file;
 		current_pos.lineno = current_file->lineno;
@@ -132,7 +144,11 @@ n	[A-Za-z0-9_]
 	\n	BEGIN(INITIAL); current_file->lineno++; return T_EOL;
 	---	/* ignore */
 	({n}|[-/.])+	{
+<<<<<<< HEAD
 		struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
+=======
+		const struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (id && id->flags & TF_PARAM) {
 			zconflval.id = id;
 			return id->token;

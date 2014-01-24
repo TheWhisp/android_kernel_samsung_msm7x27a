@@ -85,6 +85,10 @@ static struct ltc4261_data *ltc4261_update_device(struct device *dev)
 					"Failed to read ADC value: error %d\n",
 					val);
 				ret = ERR_PTR(val);
+<<<<<<< HEAD
+=======
+				data->valid = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto abort;
 			}
 			data->regs[i] = val;
@@ -234,11 +238,17 @@ static int ltc4261_probe(struct i2c_client *client,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
 	if (!data) {
 		ret = -ENOMEM;
 		goto out_kzalloc;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
@@ -249,7 +259,11 @@ static int ltc4261_probe(struct i2c_client *client,
 	/* Register sysfs hooks */
 	ret = sysfs_create_group(&client->dev.kobj, &ltc4261_group);
 	if (ret)
+<<<<<<< HEAD
 		goto out_sysfs_create_group;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -261,9 +275,12 @@ static int ltc4261_probe(struct i2c_client *client,
 
 out_hwmon_device_register:
 	sysfs_remove_group(&client->dev.kobj, &ltc4261_group);
+<<<<<<< HEAD
 out_sysfs_create_group:
 	kfree(data);
 out_kzalloc:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -274,8 +291,11 @@ static int ltc4261_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &ltc4261_group);
 
+<<<<<<< HEAD
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -296,6 +316,7 @@ static struct i2c_driver ltc4261_driver = {
 	.id_table = ltc4261_id,
 };
 
+<<<<<<< HEAD
 static int __init ltc4261_init(void)
 {
 	return i2c_add_driver(&ltc4261_driver);
@@ -305,10 +326,16 @@ static void __exit ltc4261_exit(void)
 {
 	i2c_del_driver(&ltc4261_driver);
 }
+=======
+module_i2c_driver(ltc4261_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Guenter Roeck <guenter.roeck@ericsson.com>");
 MODULE_DESCRIPTION("LTC4261 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(ltc4261_init);
 module_exit(ltc4261_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -26,6 +26,10 @@
  * Send feedback to <colpatch@us.ibm.com>
  */
 #include <linux/nodemask.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mmzone.h>
 #include <linux/init.h>
 #include <linux/smp.h>

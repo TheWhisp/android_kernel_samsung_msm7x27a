@@ -68,7 +68,10 @@ static struct inode *efs_alloc_inode(struct super_block *sb)
 static void efs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kmem_cache_free(efs_inode_cachep, INODE_INFO(inode));
 }
 
@@ -318,10 +321,16 @@ static int efs_fill_super(struct super_block *s, void *d, int silent)
 		goto out_no_fs;
 	}
 
+<<<<<<< HEAD
 	s->s_root = d_alloc_root(root);
 	if (!(s->s_root)) {
 		printk(KERN_ERR "EFS: get root dentry failed\n");
 		iput(root);
+=======
+	s->s_root = d_make_root(root);
+	if (!(s->s_root)) {
+		printk(KERN_ERR "EFS: get root dentry failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENOMEM;
 		goto out_no_fs;
 	}

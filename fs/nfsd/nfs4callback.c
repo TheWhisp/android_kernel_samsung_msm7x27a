@@ -39,6 +39,11 @@
 
 #define NFSDDBG_FACILITY                NFSDDBG_PROC
 
+<<<<<<< HEAD
+=======
+static void nfsd4_mark_cb_fault(struct nfs4_client *, int reason);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NFSPROC4_CB_NULL 0
 #define NFSPROC4_CB_COMPOUND 1
 
@@ -351,7 +356,11 @@ static void encode_cb_recall4args(struct xdr_stream *xdr,
 	__be32 *p;
 
 	encode_nfs_cb_opnum4(xdr, OP_CB_RECALL);
+<<<<<<< HEAD
 	encode_stateid4(xdr, &dp->dl_stateid);
+=======
+	encode_stateid4(xdr, &dp->dl_stid.sc_stateid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	p = xdr_reserve_space(xdr, 4);
 	*p++ = xdr_zero;			/* truncate */
@@ -460,6 +469,11 @@ static int decode_cb_sequence4resok(struct xdr_stream *xdr,
 	 */
 	status = 0;
 out:
+<<<<<<< HEAD
+=======
+	if (status)
+		nfsd4_mark_cb_fault(cb->cb_clp, status);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return status;
 out_overflow:
 	print_overflow_msg(__func__, xdr);
@@ -601,24 +615,40 @@ static struct rpc_version nfs_cb_version4 = {
 	.procs			= nfs4_cb_procedures
 };
 
+<<<<<<< HEAD
 static struct rpc_version *nfs_cb_version[] = {
 	&nfs_cb_version4,
 };
 
 static struct rpc_program cb_program;
+=======
+static const struct rpc_version *nfs_cb_version[] = {
+	&nfs_cb_version4,
+};
+
+static const struct rpc_program cb_program;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct rpc_stat cb_stats = {
 	.program		= &cb_program
 };
 
 #define NFS4_CALLBACK 0x40000000
+<<<<<<< HEAD
 static struct rpc_program cb_program = {
+=======
+static const struct rpc_program cb_program = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name			= "nfs4_cb",
 	.number			= NFS4_CALLBACK,
 	.nrvers			= ARRAY_SIZE(nfs_cb_version),
 	.version		= nfs_cb_version,
 	.stats			= &cb_stats,
+<<<<<<< HEAD
 	.pipe_dir_name		= "/nfsd4_cb",
+=======
+	.pipe_dir_name		= "nfsd4_cb",
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int max_cb_time(void)
@@ -641,7 +671,10 @@ static int setup_callback_client(struct nfs4_client *clp, struct nfs4_cb_conn *c
 		.timeout	= &timeparms,
 		.program	= &cb_program,
 		.version	= 0,
+<<<<<<< HEAD
 		.authflavor	= clp->cl_flavor,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags		= (RPC_CLNT_CREATE_NOPING | RPC_CLNT_CREATE_QUIET),
 	};
 	struct rpc_clnt *client;
@@ -652,6 +685,10 @@ static int setup_callback_client(struct nfs4_client *clp, struct nfs4_cb_conn *c
 		args.client_name = clp->cl_principal;
 		args.prognumber	= conn->cb_prog,
 		args.protocol = XPRT_TRANSPORT_TCP;
+<<<<<<< HEAD
+=======
+		args.authflavor = clp->cl_flavor;
+>>>>>>> refs/remotes/origin/cm-10.0
 		clp->cl_cb_ident = conn->cb_ident;
 	} else {
 		if (!conn->cb_xprt)
@@ -661,6 +698,10 @@ static int setup_callback_client(struct nfs4_client *clp, struct nfs4_cb_conn *c
 		args.bc_xprt = conn->cb_xprt;
 		args.prognumber = clp->cl_cb_session->se_cb_prog;
 		args.protocol = XPRT_TRANSPORT_BC_TCP;
+<<<<<<< HEAD
+=======
+		args.authflavor = RPC_AUTH_UNIX;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	/* Create RPC client */
 	client = rpc_create(&args);
@@ -686,6 +727,15 @@ static void nfsd4_mark_cb_down(struct nfs4_client *clp, int reason)
 	warn_no_callback_path(clp, reason);
 }
 
+<<<<<<< HEAD
+=======
+static void nfsd4_mark_cb_fault(struct nfs4_client *clp, int reason)
+{
+	clp->cl_cb_state = NFSD4_CB_FAULT;
+	warn_no_callback_path(clp, reason);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void nfsd4_cb_probe_done(struct rpc_task *task, void *calldata)
 {
 	struct nfs4_client *clp = container_of(calldata, struct nfs4_client, cl_cb_null);
@@ -708,7 +758,11 @@ int set_callback_cred(void)
 {
 	if (callback_cred)
 		return 0;
+<<<<<<< HEAD
 	callback_cred = rpc_lookup_machine_cred();
+=======
+	callback_cred = rpc_lookup_machine_cred("nfs");
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!callback_cred)
 		return -ENOMEM;
 	return 0;
@@ -744,9 +798,15 @@ static void do_probe_callback(struct nfs4_client *clp)
  */
 void nfsd4_probe_callback(struct nfs4_client *clp)
 {
+<<<<<<< HEAD
 	/* XXX: atomicity?  Also, should we be using cl_cb_flags? */
 	clp->cl_cb_state = NFSD4_CB_UNKNOWN;
 	set_bit(NFSD4_CLIENT_CB_UPDATE, &clp->cl_cb_flags);
+=======
+	/* XXX: atomicity?  Also, should we be using cl_flags? */
+	clp->cl_cb_state = NFSD4_CB_UNKNOWN;
+	set_bit(NFSD4_CLIENT_CB_UPDATE, &clp->cl_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	do_probe_callback(clp);
 }
 
@@ -787,7 +847,11 @@ static void nfsd4_cb_prepare(struct rpc_task *task, void *calldata)
 {
 	struct nfsd4_callback *cb = calldata;
 	struct nfs4_delegation *dp = container_of(cb, struct nfs4_delegation, dl_recall);
+<<<<<<< HEAD
 	struct nfs4_client *clp = dp->dl_client;
+=======
+	struct nfs4_client *clp = dp->dl_stid.sc_client;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 minorversion = clp->cl_minorversion;
 
 	cb->cb_minorversion = minorversion;
@@ -809,7 +873,11 @@ static void nfsd4_cb_done(struct rpc_task *task, void *calldata)
 {
 	struct nfsd4_callback *cb = calldata;
 	struct nfs4_delegation *dp = container_of(cb, struct nfs4_delegation, dl_recall);
+<<<<<<< HEAD
 	struct nfs4_client *clp = dp->dl_client;
+=======
+	struct nfs4_client *clp = dp->dl_stid.sc_client;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dprintk("%s: minorversion=%d\n", __func__,
 		clp->cl_minorversion);
@@ -832,7 +900,11 @@ static void nfsd4_cb_recall_done(struct rpc_task *task, void *calldata)
 {
 	struct nfsd4_callback *cb = calldata;
 	struct nfs4_delegation *dp = container_of(cb, struct nfs4_delegation, dl_recall);
+<<<<<<< HEAD
 	struct nfs4_client *clp = dp->dl_client;
+=======
+	struct nfs4_client *clp = dp->dl_stid.sc_client;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct rpc_clnt *current_rpc_client = clp->cl_cb_client;
 
 	nfsd4_cb_done(task, calldata);
@@ -905,7 +977,11 @@ void nfsd4_destroy_callback_queue(void)
 /* must be called under the state lock */
 void nfsd4_shutdown_callback(struct nfs4_client *clp)
 {
+<<<<<<< HEAD
 	set_bit(NFSD4_CLIENT_KILL, &clp->cl_cb_flags);
+=======
+	set_bit(NFSD4_CLIENT_CB_KILL, &clp->cl_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Note this won't actually result in a null callback;
 	 * instead, nfsd4_do_callback_rpc() will detect the killed
@@ -956,15 +1032,24 @@ static void nfsd4_process_cb_update(struct nfsd4_callback *cb)
 		svc_xprt_put(clp->cl_cb_conn.cb_xprt);
 		clp->cl_cb_conn.cb_xprt = NULL;
 	}
+<<<<<<< HEAD
 	if (test_bit(NFSD4_CLIENT_KILL, &clp->cl_cb_flags))
+=======
+	if (test_bit(NFSD4_CLIENT_CB_KILL, &clp->cl_flags))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	spin_lock(&clp->cl_lock);
 	/*
 	 * Only serialized callback code is allowed to clear these
 	 * flags; main nfsd code can only set them:
 	 */
+<<<<<<< HEAD
 	BUG_ON(!clp->cl_cb_flags);
 	clear_bit(NFSD4_CLIENT_CB_UPDATE, &clp->cl_cb_flags);
+=======
+	BUG_ON(!(clp->cl_flags & NFSD4_CLIENT_CB_FLAG_MASK));
+	clear_bit(NFSD4_CLIENT_CB_UPDATE, &clp->cl_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(&conn, &cb->cb_clp->cl_cb_conn, sizeof(struct nfs4_cb_conn));
 	c = __nfsd4_find_backchannel(clp);
 	if (c) {
@@ -976,7 +1061,11 @@ static void nfsd4_process_cb_update(struct nfsd4_callback *cb)
 
 	err = setup_callback_client(clp, &conn, ses);
 	if (err) {
+<<<<<<< HEAD
 		warn_no_callback_path(clp, err);
+=======
+		nfsd4_mark_cb_down(clp, err);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	/* Yay, the callback channel's back! Restart any callbacks: */
@@ -990,7 +1079,11 @@ void nfsd4_do_callback_rpc(struct work_struct *w)
 	struct nfs4_client *clp = cb->cb_clp;
 	struct rpc_clnt *clnt;
 
+<<<<<<< HEAD
 	if (clp->cl_cb_flags)
+=======
+	if (clp->cl_flags & NFSD4_CLIENT_CB_FLAG_MASK)
+>>>>>>> refs/remotes/origin/cm-10.0
 		nfsd4_process_cb_update(cb);
 
 	clnt = clp->cl_cb_client;
@@ -1006,7 +1099,11 @@ void nfsd4_do_callback_rpc(struct work_struct *w)
 void nfsd4_cb_recall(struct nfs4_delegation *dp)
 {
 	struct nfsd4_callback *cb = &dp->dl_recall;
+<<<<<<< HEAD
 	struct nfs4_client *clp = dp->dl_client;
+=======
+	struct nfs4_client *clp = dp->dl_stid.sc_client;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dp->dl_retries = 1;
 	cb->cb_op = dp;

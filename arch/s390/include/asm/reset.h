@@ -17,5 +17,9 @@ struct reset_call {
 
 extern void register_reset_call(struct reset_call *reset);
 extern void unregister_reset_call(struct reset_call *reset);
+<<<<<<< HEAD
 extern void s390_reset_system(void);
+=======
+extern void s390_reset_system(void (*func)(void *), void *data);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_S390_RESET_H */

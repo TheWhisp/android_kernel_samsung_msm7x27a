@@ -36,6 +36,10 @@
 #include <linux/init.h>
 #include <linux/screen_info.h>
 #include <linux/vga_switcheroo.h>
+<<<<<<< HEAD
+=======
+#include <linux/console.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "drmP.h"
 #include "drm.h"
@@ -279,8 +283,14 @@ nouveau_fbcon_create(struct nouveau_fbdev *nfbdev,
 	struct fb_info *info;
 	struct drm_framebuffer *fb;
 	struct nouveau_framebuffer *nouveau_fb;
+<<<<<<< HEAD
 	struct nouveau_bo *nvbo;
 	struct drm_mode_fb_cmd mode_cmd;
+=======
+	struct nouveau_channel *chan;
+	struct nouveau_bo *nvbo;
+	struct drm_mode_fb_cmd2 mode_cmd;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pci_dev *pdev = dev->pdev;
 	struct device *device = &pdev->dev;
 	int size, ret;
@@ -288,6 +298,7 @@ nouveau_fbcon_create(struct nouveau_fbdev *nfbdev,
 	mode_cmd.width = sizes->surface_width;
 	mode_cmd.height = sizes->surface_height;
 
+<<<<<<< HEAD
 	mode_cmd.bpp = sizes->surface_bpp;
 	mode_cmd.pitch = mode_cmd.width * (mode_cmd.bpp >> 3);
 	mode_cmd.pitch = roundup(mode_cmd.pitch, 256);
@@ -298,6 +309,19 @@ nouveau_fbcon_create(struct nouveau_fbdev *nfbdev,
 
 	ret = nouveau_gem_new(dev, dev_priv->channel, size, 0,
 			      NOUVEAU_GEM_DOMAIN_VRAM, 0, 0x0000, &nvbo);
+=======
+	mode_cmd.pitches[0] = mode_cmd.width * (sizes->surface_bpp >> 3);
+	mode_cmd.pitches[0] = roundup(mode_cmd.pitches[0], 256);
+
+	mode_cmd.pixel_format = drm_mode_legacy_fb_format(sizes->surface_bpp,
+							  sizes->surface_depth);
+
+	size = mode_cmd.pitches[0] * mode_cmd.height;
+	size = roundup(size, PAGE_SIZE);
+
+	ret = nouveau_gem_new(dev, size, 0, NOUVEAU_GEM_DOMAIN_VRAM,
+			      0, 0x0000, &nvbo);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		NV_ERROR(dev, "failed to allocate framebuffer\n");
 		goto out;
@@ -318,6 +342,18 @@ nouveau_fbcon_create(struct nouveau_fbdev *nfbdev,
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	chan = nouveau_nofbaccel ? NULL : dev_priv->channel;
+	if (chan && dev_priv->card_type >= NV_50) {
+		ret = nouveau_bo_vma_add(nvbo, chan->vm, &nfbdev->nouveau_fb.vma);
+		if (ret) {
+			NV_ERROR(dev, "failed to map fb into chan: %d\n", ret);
+			chan = NULL;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_lock(&dev->struct_mutex);
 
 	info = framebuffer_alloc(0, device);
@@ -359,7 +395,11 @@ nouveau_fbcon_create(struct nouveau_fbdev *nfbdev,
 	info->screen_base = nvbo_kmap_obj_iovirtual(nouveau_fb->nvbo);
 	info->screen_size = size;
 
+<<<<<<< HEAD
 	drm_fb_helper_fill_fix(info, fb->pitch, fb->depth);
+=======
+	drm_fb_helper_fill_fix(info, fb->pitches[0], fb->depth);
+>>>>>>> refs/remotes/origin/cm-10.0
 	drm_fb_helper_fill_var(info, &nfbdev->helper, sizes->fb_width, sizes->fb_height);
 
 	/* Set aperture base/size for vesafb takeover */
@@ -369,11 +409,15 @@ nouveau_fbcon_create(struct nouveau_fbdev *nfbdev,
 		goto out_unref;
 	}
 
+<<<<<<< HEAD
 	info->pixmap.size = 64*1024;
 	info->pixmap.buf_align = 8;
 	info->pixmap.access_align = 32;
 	info->pixmap.flags = FB_PIXMAP_SYSTEM;
 	info->pixmap.scan_align = 1;
+=======
+	/* Use default scratch pixmap (info->pixmap.flags = FB_PIXMAP_SYSTEM) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_unlock(&dev->struct_mutex);
 
@@ -448,6 +492,10 @@ nouveau_fbcon_destroy(struct drm_device *dev, struct nouveau_fbdev *nfbdev)
 
 	if (nouveau_fb->nvbo) {
 		nouveau_bo_unmap(nouveau_fb->nvbo);
+<<<<<<< HEAD
+=======
+		nouveau_bo_vma_del(nouveau_fb->nvbo, &nouveau_fb->vma);
+>>>>>>> refs/remotes/origin/cm-10.0
 		drm_gem_object_unreference_unlocked(nouveau_fb->nvbo->gem);
 		nouveau_fb->nvbo = NULL;
 	}
@@ -476,6 +524,10 @@ int nouveau_fbcon_init(struct drm_device *dev)
 {
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 	struct nouveau_fbdev *nfbdev;
+<<<<<<< HEAD
+=======
+	int preferred_bpp;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	nfbdev = kzalloc(sizeof(struct nouveau_fbdev), GFP_KERNEL);
@@ -494,7 +546,19 @@ int nouveau_fbcon_init(struct drm_device *dev)
 	}
 
 	drm_fb_helper_single_add_all_connectors(&nfbdev->helper);
+<<<<<<< HEAD
 	drm_fb_helper_initial_config(&nfbdev->helper, 32);
+=======
+
+	if (dev_priv->vram_size <= 32 * 1024 * 1024)
+		preferred_bpp = 8;
+	else if (dev_priv->vram_size <= 64 * 1024 * 1024)
+		preferred_bpp = 16;
+	else
+		preferred_bpp = 32;
+
+	drm_fb_helper_initial_config(&nfbdev->helper, preferred_bpp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -527,7 +591,17 @@ void nouveau_fbcon_restore_accel(struct drm_device *dev)
 void nouveau_fbcon_set_suspend(struct drm_device *dev, int state)
 {
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 	fb_set_suspend(dev_priv->nfbdev->helper.fbdev, state);
+=======
+	console_lock();
+	if (state == 0)
+		nouveau_fbcon_save_disable_accel(dev);
+	fb_set_suspend(dev_priv->nfbdev->helper.fbdev, state);
+	if (state == 1)
+		nouveau_fbcon_restore_accel(dev);
+	console_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void nouveau_fbcon_zfill_all(struct drm_device *dev)

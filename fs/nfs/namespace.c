@@ -128,7 +128,11 @@ Elong:
 }
 
 #ifdef CONFIG_NFS_V4
+<<<<<<< HEAD
 static rpc_authflavor_t nfs_find_best_sec(struct nfs4_secinfo_flavors *flavors)
+=======
+rpc_authflavor_t nfs_find_best_sec(struct nfs4_secinfo_flavors *flavors)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct gss_api_mech *mech;
 	struct xdr_netobj oid;
@@ -157,6 +161,7 @@ static rpc_authflavor_t nfs_find_best_sec(struct nfs4_secinfo_flavors *flavors)
 	return pseudoflavor;
 }
 
+<<<<<<< HEAD
 static int nfs_negotiate_security(const struct dentry *parent,
 				  const struct dentry *dentry,
 				  rpc_authflavor_t *flavor)
@@ -217,6 +222,33 @@ static inline int nfs_lookup_with_sec(struct nfs_server *server,
 				      rpc_authflavor_t *flavor)
 {
 	return -EPERM;
+=======
+static struct rpc_clnt *nfs_lookup_mountpoint(struct inode *dir,
+					      struct qstr *name,
+					      struct nfs_fh *fh,
+					      struct nfs_fattr *fattr)
+{
+	int err;
+
+	if (NFS_PROTO(dir)->version == 4)
+		return nfs4_proc_lookup_mountpoint(dir, name, fh, fattr);
+
+	err = NFS_PROTO(dir)->lookup(NFS_SERVER(dir)->client, dir, name, fh, fattr);
+	if (err)
+		return ERR_PTR(err);
+	return rpc_clone_client(NFS_SERVER(dir)->client);
+}
+#else /* CONFIG_NFS_V4 */
+static inline struct rpc_clnt *nfs_lookup_mountpoint(struct inode *dir,
+						     struct qstr *name,
+						     struct nfs_fh *fh,
+						     struct nfs_fattr *fattr)
+{
+	int err = NFS_PROTO(dir)->lookup(NFS_SERVER(dir)->client, dir, name, fh, fattr);
+	if (err)
+		return ERR_PTR(err);
+	return rpc_clone_client(NFS_SERVER(dir)->client);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif /* CONFIG_NFS_V4 */
 
@@ -235,12 +267,19 @@ static inline int nfs_lookup_with_sec(struct nfs_server *server,
 struct vfsmount *nfs_d_automount(struct path *path)
 {
 	struct vfsmount *mnt;
+<<<<<<< HEAD
 	struct nfs_server *server = NFS_SERVER(path->dentry->d_inode);
 	struct dentry *parent;
 	struct nfs_fh *fh = NULL;
 	struct nfs_fattr *fattr = NULL;
 	int err;
 	rpc_authflavor_t flavor = RPC_AUTH_UNIX;
+=======
+	struct dentry *parent;
+	struct nfs_fh *fh = NULL;
+	struct nfs_fattr *fattr = NULL;
+	struct rpc_clnt *client;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dprintk("--> nfs_d_automount()\n");
 
@@ -258,6 +297,7 @@ struct vfsmount *nfs_d_automount(struct path *path)
 
 	/* Look it up again to get its attributes */
 	parent = dget_parent(path->dentry);
+<<<<<<< HEAD
 	err = server->nfs_client->rpc_ops->lookup(server->client, parent->d_inode,
 						  &path->dentry->d_name,
 						  fh, fattr);
@@ -266,13 +306,27 @@ struct vfsmount *nfs_d_automount(struct path *path)
 	dput(parent);
 	if (err != 0) {
 		mnt = ERR_PTR(err);
+=======
+	client = nfs_lookup_mountpoint(parent->d_inode, &path->dentry->d_name, fh, fattr);
+	dput(parent);
+	if (IS_ERR(client)) {
+		mnt = ERR_CAST(client);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 
 	if (fattr->valid & NFS_ATTR_FATTR_V4_REFERRAL)
+<<<<<<< HEAD
 		mnt = nfs_do_refmount(path->dentry);
 	else
 		mnt = nfs_do_submount(path->dentry, fh, fattr, flavor);
+=======
+		mnt = nfs_do_refmount(client, path->dentry);
+	else
+		mnt = nfs_do_submount(path->dentry, fh, fattr, client->cl_auth->au_flavor);
+	rpc_shutdown_client(client);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(mnt))
 		goto out;
 
@@ -285,6 +339,7 @@ out:
 	nfs_free_fattr(fattr);
 	nfs_free_fhandle(fh);
 out_nofree:
+<<<<<<< HEAD
 	dprintk("<-- nfs_follow_mountpoint() = %p\n", mnt);
 	return mnt;
 }
@@ -294,6 +349,40 @@ const struct inode_operations nfs_mountpoint_inode_operations = {
 };
 
 const struct inode_operations nfs_referral_inode_operations = {
+=======
+	if (IS_ERR(mnt))
+		dprintk("<-- %s(): error %ld\n", __func__, PTR_ERR(mnt));
+	else
+		dprintk("<-- %s() = %p\n", __func__, mnt);
+	return mnt;
+}
+
+static int
+nfs_namespace_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat)
+{
+	if (NFS_FH(dentry->d_inode)->size != 0)
+		return nfs_getattr(mnt, dentry, stat);
+	generic_fillattr(dentry->d_inode, stat);
+	return 0;
+}
+
+static int
+nfs_namespace_setattr(struct dentry *dentry, struct iattr *attr)
+{
+	if (NFS_FH(dentry->d_inode)->size != 0)
+		return nfs_setattr(dentry, attr);
+	return -EACCES;
+}
+
+const struct inode_operations nfs_mountpoint_inode_operations = {
+	.getattr	= nfs_getattr,
+	.setattr	= nfs_setattr,
+};
+
+const struct inode_operations nfs_referral_inode_operations = {
+	.getattr	= nfs_namespace_getattr,
+	.setattr	= nfs_namespace_setattr,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void nfs_expire_automounts(struct work_struct *work)

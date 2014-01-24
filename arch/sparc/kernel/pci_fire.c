@@ -7,6 +7,10 @@
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/msi.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/irq.h>
 #include <linux/of_device.h>
 

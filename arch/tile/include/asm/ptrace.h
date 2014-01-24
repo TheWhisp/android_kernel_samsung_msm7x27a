@@ -112,8 +112,11 @@ struct pt_regs *get_pt_regs(struct pt_regs *);
 /* Trace the current syscall. */
 extern void do_syscall_trace(void);
 
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define arch_has_single_step()	(1)
 
 /*

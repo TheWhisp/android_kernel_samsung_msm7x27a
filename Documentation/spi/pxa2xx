@@ -2,7 +2,11 @@ PXA2xx SPI on SSP driver HOWTO
 ===================================================
 This a mini howto on the pxa2xx_spi driver.  The driver turns a PXA2xx
 synchronous serial port into a SPI master controller
+<<<<<<< HEAD
 (see Documentation/spi/spi_summary). The driver has the following features
+=======
+(see Documentation/spi/spi-summary). The driver has the following features
+>>>>>>> refs/remotes/origin/cm-10.0
 
 - Support for any PXA2xx SSP
 - SSP PIO and SSP DMA data transfers.
@@ -22,15 +26,21 @@ Typically a SPI master is defined in the arch/.../mach-*/board-*.c as a
 found in include/linux/spi/pxa2xx_spi.h:
 
 struct pxa2xx_spi_master {
+<<<<<<< HEAD
 	enum pxa_ssp_type ssp_type;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 clock_enable;
 	u16 num_chipselect;
 	u8 enable_dma;
 };
 
+<<<<<<< HEAD
 The "pxa2xx_spi_master.ssp_type" field must have a value between 1 and 3 and
 informs the driver which features a particular SSP supports.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 The "pxa2xx_spi_master.clock_enable" field is used to enable/disable the
 corresponding SSP peripheral block in the "Clock Enable Register (CKEN"). See
 the "PXA2xx Developer Manual" section "Clocks and Power Management".
@@ -61,7 +71,10 @@ static struct resource pxa_spi_nssp_resources[] = {
 };
 
 static struct pxa2xx_spi_master pxa_nssp_master_info = {
+<<<<<<< HEAD
 	.ssp_type = PXA25x_NSSP, /* Type of SSP */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.clock_enable = CKEN_NSSP, /* NSSP Peripheral clock */
 	.num_chipselect = 1, /* Matches the number of chips attached to NSSP */
 	.enable_dma = 1, /* Enables NSSP DMA */
@@ -90,7 +103,11 @@ Declaring Slave Devices
 -----------------------
 Typically each SPI slave (chip) is defined in the arch/.../mach-*/board-*.c
 using the "spi_board_info" structure found in "linux/spi/spi.h". See
+<<<<<<< HEAD
 "Documentation/spi/spi_summary" for additional information.
+=======
+"Documentation/spi/spi-summary" for additional information.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 Each slave device attached to the PXA must provide slave specific configuration
 information via the structure "pxa2xx_spi_chip" found in

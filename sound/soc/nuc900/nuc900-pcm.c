@@ -227,7 +227,11 @@ static int nuc900_dma_trigger(struct snd_pcm_substream *substream, int cmd)
 	return ret;
 }
 
+<<<<<<< HEAD
 int nuc900_dma_getposition(struct snd_pcm_substream *substream,
+=======
+static int nuc900_dma_getposition(struct snd_pcm_substream *substream,
+>>>>>>> refs/remotes/origin/cm-10.0
 					dma_addr_t *src, dma_addr_t *dst)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
@@ -268,7 +272,11 @@ static int nuc900_dma_open(struct snd_pcm_substream *substream)
 	nuc900_audio = nuc900_ac97_data;
 
 	if (request_irq(nuc900_audio->irq_num, nuc900_dma_interrupt,
+<<<<<<< HEAD
 			IRQF_DISABLED, "nuc900-dma", substream))
+=======
+			0, "nuc900-dma", substream))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EBUSY;
 
 	runtime->private_data = nuc900_audio;
@@ -318,7 +326,10 @@ static u64 nuc900_pcm_dmamask = DMA_BIT_MASK(32);
 static int nuc900_dma_new(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_card *card = rtd->card->snd_card;
+<<<<<<< HEAD
 	struct snd_soc_dai *dai = rtd->cpu_dai;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_pcm *pcm = rtd->pcm;
 
 	if (!card->dev->dma_mask)
@@ -359,6 +370,7 @@ static struct platform_driver nuc900_pcm_driver = {
 	.remove = __devexit_p(nuc900_soc_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init nuc900_pcm_init(void)
 {
 	return platform_driver_register(&nuc900_pcm_driver);
@@ -370,6 +382,9 @@ static void __exit nuc900_pcm_exit(void)
 	platform_driver_unregister(&nuc900_pcm_driver);
 }
 module_exit(nuc900_pcm_exit);
+=======
+module_platform_driver(nuc900_pcm_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Wan ZongShun, <mcuos.com@gmail.com>");
 MODULE_DESCRIPTION("nuc900 Audio DMA module");

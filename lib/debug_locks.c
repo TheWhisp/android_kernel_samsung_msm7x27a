@@ -10,7 +10,11 @@
  */
 #include <linux/rwsem.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/spinlock.h>
 #include <linux/debug_locks.h>
 

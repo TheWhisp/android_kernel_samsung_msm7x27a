@@ -11,20 +11,39 @@
 #define _ASMARM_PGTABLE_H
 
 #include <linux/const.h>
+<<<<<<< HEAD
 #include <asm-generic/4level-fixup.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/proc-fns.h>
 
 #ifndef CONFIG_MMU
 
+<<<<<<< HEAD
+=======
+#include <asm-generic/4level-fixup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "pgtable-nommu.h"
 
 #else
 
+<<<<<<< HEAD
 #include <asm/memory.h>
 #include <mach/vmalloc.h>
 #include <mach/memory.h>
 #include <asm/pgtable-hwdef.h>
 #include <asm/tlbflush.h>
+=======
+#include <asm-generic/pgtable-nopud.h>
+#include <asm/memory.h>
+#include <asm/pgtable-hwdef.h>
+
+#ifdef CONFIG_ARM_LPAE
+#include <asm/pgtable-3level.h>
+#else
+#include <asm/pgtable-2level.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Just any arbitrary offset to the start of the vmalloc VM area: the
@@ -33,6 +52,7 @@
  * any out-of-bounds memory accesses will hopefully be caught.
  * The vmalloc() routines leaves a hole of 4kB between each vmalloced
  * area for the same reason. ;)
+<<<<<<< HEAD
  *
  * Note that platforms may override VMALLOC_START, but they must provide
  * VMALLOC_END.  VMALLOC_END defines the (exclusive) limit of this space,
@@ -115,6 +135,12 @@
  */
 #define PMD_SHIFT		21
 #define PGDIR_SHIFT		21
+=======
+ */
+#define VMALLOC_OFFSET		(8*1024*1024)
+#define VMALLOC_START		(((unsigned long)high_memory + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
+#define VMALLOC_END		0xff000000UL
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define LIBRARY_TEXT_START	0x0c000000
 
@@ -126,12 +152,15 @@ extern void __pgd_error(const char *file, int line, pgd_t);
 #define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte)
 #define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd)
 #define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd)
+<<<<<<< HEAD
 #endif /* !__ASSEMBLY__ */
 
 #define PMD_SIZE		(1UL << PMD_SHIFT)
 #define PMD_MASK		(~(PMD_SIZE-1))
 #define PGDIR_SIZE		(1UL << PGDIR_SHIFT)
 #define PGDIR_MASK		(~(PGDIR_SIZE-1))
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * This is the lowest virtual address we can permit any user space
@@ -140,6 +169,7 @@ extern void __pgd_error(const char *file, int line, pgd_t);
  */
 #define FIRST_USER_ADDRESS	PAGE_SIZE
 
+<<<<<<< HEAD
 #define USER_PTRS_PER_PGD	(TASK_SIZE / PGDIR_SIZE)
 
 /*
@@ -193,6 +223,16 @@ extern void __pgd_error(const char *file, int line, pgd_t);
 #define L_PTE_MT_MASK		(_AT(pteval_t, 0x0f) << 2)
 
 #ifndef __ASSEMBLY__
+=======
+/*
+ * Use TASK_SIZE as the ceiling argument for free_pgtables() and
+ * free_pgd_range() to avoid freeing the modules pmd when LPAE is enabled (pmd
+ * page shared between user and kernel).
+ */
+#ifdef CONFIG_ARM_LPAE
+#define USER_PGTABLES_CEILING	TASK_SIZE
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The pgprot_* and protection_map entries will be fixed up in runtime
@@ -234,6 +274,12 @@ extern pgprot_t		pgprot_kernel;
 #define pgprot_writecombine(prot) \
 	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_BUFFERABLE)
 
+<<<<<<< HEAD
+=======
+#define pgprot_stronglyordered(prot) \
+	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_UNCACHED)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define pgprot_device(prot) \
 	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_DEV_NONSHARED)
 
@@ -307,6 +353,7 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 /* to find an entry in a kernel page-table-directory */
 #define pgd_offset_k(addr)	pgd_offset(&init_mm, addr)
 
+<<<<<<< HEAD
 /*
  * The "pgd_xxx()" functions here are trivial for a folded two-level
  * setup: the pgd is never bad, and a pmd always exists (as it's folded
@@ -351,6 +398,17 @@ static inline pte_t *pmd_page_vaddr(pmd_t pmd)
 /* we don't need complex calculations here as the pmd is folded into the pgd */
 #define pmd_addr_end(addr,end)	(end)
 
+=======
+#define pmd_none(pmd)		(!pmd_val(pmd))
+#define pmd_present(pmd)	(pmd_val(pmd))
+
+static inline pte_t *pmd_page_vaddr(pmd_t pmd)
+{
+	return __va(pmd_val(pmd) & PHYS_MASK & (s32)PAGE_MASK);
+}
+
+#define pmd_page(pmd)		pfn_to_page(__phys_to_pfn(pmd_val(pmd) & PHYS_MASK))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef CONFIG_HIGHPTE
 #define __pte_map(pmd)		pmd_page_vaddr(*(pmd))
@@ -367,13 +425,20 @@ static inline pte_t *pmd_page_vaddr(pmd_t pmd)
 #define pte_offset_map(pmd,addr)	(__pte_map(pmd) + pte_index(addr))
 #define pte_unmap(pte)			__pte_unmap(pte)
 
+<<<<<<< HEAD
 #define pte_pfn(pte)		(pte_val(pte) >> PAGE_SHIFT)
+=======
+#define pte_pfn(pte)		((pte_val(pte) & PHYS_MASK) >> PAGE_SHIFT)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define pfn_pte(pfn,prot)	__pte(__pfn_to_phys(pfn) | pgprot_val(prot))
 
 #define pte_page(pte)		pfn_to_page(pte_pfn(pte))
 #define mk_pte(page,prot)	pfn_pte(page_to_pfn(page), prot)
 
+<<<<<<< HEAD
 #define set_pte_ext(ptep,pte,ext) cpu_set_pte_ext(ptep,pte,ext)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define pte_clear(mm,addr,ptep)	set_pte_ext(ptep, __pte(0), 0)
 
 #define pte_none(pte)		(!pte_val(pte))
@@ -492,9 +557,12 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
 
 #define pgtable_cache_init() do { } while (0)
 
+<<<<<<< HEAD
 void identity_mapping_add(pgd_t *, unsigned long, unsigned long);
 void identity_mapping_del(pgd_t *, unsigned long, unsigned long);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !__ASSEMBLY__ */
 
 #endif /* CONFIG_MMU */

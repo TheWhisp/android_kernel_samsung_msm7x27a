@@ -10,9 +10,13 @@
 #include <sys/socket.h>
 #include <sys/uio.h>
 #include <sys/un.h>
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "mconsole.h"
 #include "user.h"
+=======
+#include "mconsole.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct mconsole_command commands[] = {
 	/*

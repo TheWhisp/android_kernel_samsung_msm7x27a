@@ -20,6 +20,10 @@
  */
   
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #define SND_PCM_FORMAT_UNKNOWN (-1)

@@ -17,9 +17,16 @@
 
 #include <mach/hardware.h>
 #include <asm/leds.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/mach-types.h>
 
+=======
+#include <asm/mach-types.h>
+
+#include "core.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static spinlock_t leds_lock;
 
 static void ebsa110_leds_event(led_event_t ledevt)

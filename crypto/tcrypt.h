@@ -51,7 +51,13 @@ static u8 speed_template_8_32[] = {8, 32, 0};
 static u8 speed_template_16_32[] = {16, 32, 0};
 static u8 speed_template_16_24_32[] = {16, 24, 32, 0};
 static u8 speed_template_32_40_48[] = {32, 40, 48, 0};
+<<<<<<< HEAD
 static u8 speed_template_32_48_64[] = {32, 48, 64, 0};
+=======
+static u8 speed_template_32_48[] = {32, 48, 0};
+static u8 speed_template_32_48_64[] = {32, 48, 64, 0};
+static u8 speed_template_32_64[] = {32, 64, 0};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Digest speed tests

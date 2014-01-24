@@ -19,6 +19,10 @@
 
 #include "opl4_local.h"
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/info.h>
 
 #ifdef CONFIG_PROC_FS

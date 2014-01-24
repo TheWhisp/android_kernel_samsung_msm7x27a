@@ -5,7 +5,11 @@
  * NetLabel system.  The NetLabel system manages static and dynamic label
  * mappings for network protocols such as CIPSO and RIPSO.
  *
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 

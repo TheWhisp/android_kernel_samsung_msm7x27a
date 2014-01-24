@@ -24,6 +24,7 @@
 .global _ramstart
 .global _ramend
 
+<<<<<<< HEAD
 .global penguin_bits
 
 #ifdef CONFIG_PILOT
@@ -37,6 +38,9 @@ penguin_bits:
 #include "bootlogo.rh"
 
 #endif
+=======
+.global bootlogo_bits
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*****************************************************************************/
 
@@ -185,9 +189,12 @@ L3:
 	moveq	#79, %d7
 	movel	%d0, _ramend
 
+<<<<<<< HEAD
 	movel	%a3, %d0
 	movel	%d0, rom_length
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pea	0
 	pea	env
 	pea	%sp@(4)
@@ -196,7 +203,11 @@ L3:
 	DBG_PUTC('H')
 
 #ifdef CONFIG_PILOT
+<<<<<<< HEAD
 	movel	#penguin_bits, 0xFFFFFA00
+=======
+	movel	#bootlogo_bits, 0xFFFFFA00
+>>>>>>> refs/remotes/origin/cm-10.0
 	moveb	#10, 0xFFFFFA05
 	movew	#160, 0xFFFFFA08
 	movew	#160, 0xFFFFFA0A

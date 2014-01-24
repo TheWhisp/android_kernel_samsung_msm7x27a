@@ -49,6 +49,7 @@
  *    inside the execution of NCR5380_intr(), leading to recursive
  *    calls.
  *
+<<<<<<< HEAD
  *  - I've added a function merge_contiguous_buffers() that tries to
  *    merge scatter-gather buffers that are located at contiguous
  *    physical addresses and can be processed with the same DMA setup.
@@ -56,6 +57,8 @@
  *    4 buffers (1K), in more than 90% of all cases three interrupts and
  *    DMA setup actions are saved.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * - I've deleted all the stuff for AUTOPROBE_IRQ, REAL_DMA_POLL, PSEUDO_DMA
  *    and USLEEP, because these were messing up readability and will never be
  *    needed for Atari SCSI.
@@ -266,8 +269,14 @@ static struct scsi_host_template *the_template = NULL;
 	(struct NCR5380_hostdata *)(in)->hostdata
 #define	HOSTDATA(in) ((struct NCR5380_hostdata *)(in)->hostdata)
 
+<<<<<<< HEAD
 #define	NEXT(cmd)	(*(struct scsi_cmnd **)&((cmd)->host_scribble))
 #define	NEXTADDR(cmd)	((struct scsi_cmnd **)&((cmd)->host_scribble))
+=======
+#define	NEXT(cmd)		((struct scsi_cmnd *)(cmd)->host_scribble)
+#define	SET_NEXT(cmd, next)	((cmd)->host_scribble = (void *)(next))
+#define	NEXTADDR(cmd)		((struct scsi_cmnd **)&((cmd)->host_scribble))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define	HOSTNO		instance->host_no
 #define	H_NO(cmd)	(cmd)->device->host->host_no
@@ -459,6 +468,7 @@ static void free_all_tags( void )
 
 
 /*
+<<<<<<< HEAD
  * Function: void merge_contiguous_buffers(struct scsi_cmnd *cmd)
  *
  * Purpose: Try to merge several scatter-gather requests into one DMA
@@ -500,6 +510,8 @@ static void merge_contiguous_buffers(struct scsi_cmnd *cmd)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Function : void initialize_SCp(struct scsi_cmnd *cmd)
  *
  * Purpose : initialize the saved data pointers for cmd to point to the 
@@ -520,11 +532,14 @@ static __inline__ void initialize_SCp(struct scsi_cmnd *cmd)
 	cmd->SCp.buffers_residual = scsi_sg_count(cmd) - 1;
 	cmd->SCp.ptr = (char *) SGADDR(cmd->SCp.buffer);
 	cmd->SCp.this_residual = cmd->SCp.buffer->length;
+<<<<<<< HEAD
 
 	/* ++roman: Try to merge some scatter-buffers if they are at
 	 * contiguous physical addresses.
 	 */
 //	merge_contiguous_buffers( cmd );
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
     } else {
 	cmd->SCp.buffer = NULL;
 	cmd->SCp.buffers_residual = 0;
@@ -841,7 +856,11 @@ static char *lprint_Scsi_Cmnd(struct scsi_cmnd *cmd, char *pos, char *buffer,
  * 
  */
 
+<<<<<<< HEAD
 static int NCR5380_init (struct Scsi_Host *instance, int flags)
+=======
+static int __init NCR5380_init(struct Scsi_Host *instance, int flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
     int i;
     SETUP_HOSTDATA(instance);
@@ -889,6 +908,14 @@ static int NCR5380_init (struct Scsi_Host *instance, int flags)
     return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void NCR5380_exit(struct Scsi_Host *instance)
+{
+	/* Empty, as we didn't schedule any delayed work */
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* 
  * Function : int NCR5380_queue_command (struct scsi_cmnd *cmd,
  *	void (*done)(struct scsi_cmnd *))
@@ -962,7 +989,11 @@ static int NCR5380_queue_command_lck(struct scsi_cmnd *cmd,
      * in a queue 
      */
 
+<<<<<<< HEAD
     NEXT(cmd) = NULL;
+=======
+    SET_NEXT(cmd, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
     cmd->scsi_done = done;
 
     cmd->result = 0;
@@ -990,14 +1021,22 @@ static int NCR5380_queue_command_lck(struct scsi_cmnd *cmd,
      */
     if (!(hostdata->issue_queue) || (cmd->cmnd[0] == REQUEST_SENSE)) {
 	LIST(cmd, hostdata->issue_queue);
+<<<<<<< HEAD
 	NEXT(cmd) = hostdata->issue_queue;
+=======
+	SET_NEXT(cmd, hostdata->issue_queue);
+>>>>>>> refs/remotes/origin/cm-10.0
 	hostdata->issue_queue = cmd;
     } else {
 	for (tmp = (struct scsi_cmnd *)hostdata->issue_queue;
 	     NEXT(tmp); tmp = NEXT(tmp))
 	    ;
 	LIST(cmd, tmp);
+<<<<<<< HEAD
 	NEXT(tmp) = cmd;
+=======
+	SET_NEXT(tmp, cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
     }
 
     local_irq_restore(flags);
@@ -1105,12 +1144,20 @@ static void NCR5380_main (struct work_struct *bl)
 		    local_irq_disable();
 		    if (prev) {
 		        REMOVE(prev, NEXT(prev), tmp, NEXT(tmp));
+<<<<<<< HEAD
 			NEXT(prev) = NEXT(tmp);
+=======
+			SET_NEXT(prev, NEXT(tmp));
+>>>>>>> refs/remotes/origin/cm-10.0
 		    } else {
 		        REMOVE(-1, hostdata->issue_queue, tmp, NEXT(tmp));
 			hostdata->issue_queue = NEXT(tmp);
 		    }
+<<<<<<< HEAD
 		    NEXT(tmp) = NULL;
+=======
+		    SET_NEXT(tmp, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		    
 		    /* reenable interrupts after finding one */
 		    local_irq_restore(flags);
@@ -1144,7 +1191,11 @@ static void NCR5380_main (struct work_struct *bl)
 		    } else {
 			local_irq_disable();
 			LIST(tmp, hostdata->issue_queue);
+<<<<<<< HEAD
 			NEXT(tmp) = hostdata->issue_queue;
+=======
+			SET_NEXT(tmp, hostdata->issue_queue);
+>>>>>>> refs/remotes/origin/cm-10.0
 			hostdata->issue_queue = tmp;
 #ifdef SUPPORT_TAGS
 			cmd_free_tag( tmp );
@@ -1439,7 +1490,11 @@ static int NCR5380_select(struct Scsi_Host *instance, struct scsi_cmnd *cmd,
     local_irq_restore(flags);
 
     /* Wait for arbitration logic to complete */
+<<<<<<< HEAD
 #if NCR_TIMEOUT
+=======
+#ifdef NCR_TIMEOUT
+>>>>>>> refs/remotes/origin/cm-10.0
     {
       unsigned long timeout = jiffies + 2*NCR_TIMEOUT;
 
@@ -2070,11 +2125,14 @@ static void NCR5380_information_transfer (struct Scsi_Host *instance)
 		    --cmd->SCp.buffers_residual;
 		    cmd->SCp.this_residual = cmd->SCp.buffer->length;
 		    cmd->SCp.ptr = SGADDR(cmd->SCp.buffer);
+<<<<<<< HEAD
 
 		    /* ++roman: Try to merge some scatter-buffers if
 		     * they are at contiguous physical addresses.
 		     */
 //		    merge_contiguous_buffers( cmd );
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		    INF_PRINTK("scsi%d: %d bytes and %d buffers left\n",
 			       HOSTNO, cmd->SCp.this_residual,
 			       cmd->SCp.buffers_residual);
@@ -2274,7 +2332,11 @@ static void NCR5380_information_transfer (struct Scsi_Host *instance)
 
 			local_irq_save(flags);
 			LIST(cmd,hostdata->issue_queue);
+<<<<<<< HEAD
 			NEXT(cmd) = hostdata->issue_queue;
+=======
+			SET_NEXT(cmd, hostdata->issue_queue);
+>>>>>>> refs/remotes/origin/cm-10.0
 		        hostdata->issue_queue = (struct scsi_cmnd *) cmd;
 		        local_irq_restore(flags);
 			QU_PRINTK("scsi%d: REQUEST SENSE added to head of "
@@ -2330,7 +2392,11 @@ static void NCR5380_information_transfer (struct Scsi_Host *instance)
 		    local_irq_save(flags);
 		    cmd->device->disconnect = 1;
 		    LIST(cmd,hostdata->disconnected_queue);
+<<<<<<< HEAD
 		    NEXT(cmd) = hostdata->disconnected_queue;
+=======
+		    SET_NEXT(cmd, hostdata->disconnected_queue);
+>>>>>>> refs/remotes/origin/cm-10.0
 		    hostdata->connected = NULL;
 		    hostdata->disconnected_queue = cmd;
 		    local_irq_restore(flags);
@@ -2589,12 +2655,20 @@ static void NCR5380_reselect (struct Scsi_Host *instance)
 	    ) {
 	    if (prev) {
 		REMOVE(prev, NEXT(prev), tmp, NEXT(tmp));
+<<<<<<< HEAD
 		NEXT(prev) = NEXT(tmp);
+=======
+		SET_NEXT(prev, NEXT(tmp));
+>>>>>>> refs/remotes/origin/cm-10.0
 	    } else {
 		REMOVE(-1, hostdata->disconnected_queue, tmp, NEXT(tmp));
 		hostdata->disconnected_queue = NEXT(tmp);
 	    }
+<<<<<<< HEAD
 	    NEXT(tmp) = NULL;
+=======
+	    SET_NEXT(tmp, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	    break;
 	}
     }
@@ -2762,7 +2836,11 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
 	if (cmd == tmp) {
 	    REMOVE(5, *prev, tmp, NEXT(tmp));
 	    (*prev) = NEXT(tmp);
+<<<<<<< HEAD
 	    NEXT(tmp) = NULL;
+=======
+	    SET_NEXT(tmp, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	    tmp->result = DID_ABORT << 16;
 	    local_irq_restore(flags);
 	    ABRT_PRINTK("scsi%d: abort removed command from issue queue.\n",
@@ -2835,7 +2913,11 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
 		    if (cmd == tmp) {
 		    REMOVE(5, *prev, tmp, NEXT(tmp));
 		    *prev = NEXT(tmp);
+<<<<<<< HEAD
 		    NEXT(tmp) = NULL;
+=======
+		    SET_NEXT(tmp, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		    tmp->result = DID_ABORT << 16;
 		    /* We must unlock the tag/LUN immediately here, since the
 		     * target goes to BUS FREE and doesn't send us another
@@ -2943,7 +3025,11 @@ static int NCR5380_bus_reset(struct scsi_cmnd *cmd)
 
     for (i = 0; (cmd = disconnected_queue); ++i) {
 	disconnected_queue = NEXT(cmd);
+<<<<<<< HEAD
 	NEXT(cmd) = NULL;
+=======
+	SET_NEXT(cmd, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cmd->result = (cmd->result & 0xffff) | (DID_RESET << 16);
 	cmd->scsi_done( cmd );
     }

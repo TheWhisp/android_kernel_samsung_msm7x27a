@@ -35,8 +35,11 @@ struct gserial {
 
 	struct usb_ep			*in;
 	struct usb_ep			*out;
+<<<<<<< HEAD
 	struct usb_endpoint_descriptor	*in_desc;
 	struct usb_endpoint_descriptor	*out_desc;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* REVISIT avoid this CDC-ACM support harder ... */
 	struct usb_cdc_line_coding port_line_coding;	/* 9600-8-N-1 etc */

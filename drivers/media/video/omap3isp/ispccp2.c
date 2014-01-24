@@ -30,6 +30,10 @@
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/regulator/consumer.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "isp.h"
 #include "ispreg.h"
@@ -163,6 +167,12 @@ static void ccp2_if_enable(struct isp_ccp2_device *ccp2, u8 enable)
 	struct isp_pipeline *pipe = to_isp_pipeline(&ccp2->subdev.entity);
 	int i;
 
+<<<<<<< HEAD
+=======
+	if (enable && ccp2->vdds_csib)
+		regulator_enable(ccp2->vdds_csib);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Enable/Disable all the LCx channels */
 	for (i = 0; i < CCP2_LCx_CHANS_NUM; i++)
 		isp_reg_clr_set(isp, OMAP3_ISP_IOMEM_CCP2, ISPCCP2_LCx_CTRL(i),
@@ -186,6 +196,12 @@ static void ccp2_if_enable(struct isp_ccp2_device *ccp2, u8 enable)
 				    ISPCCP2_LC01_IRQENABLE,
 				    ISPCCP2_LC01_IRQSTATUS_LC0_FS_IRQ);
 	}
+<<<<<<< HEAD
+=======
+
+	if (!enable && ccp2->vdds_csib)
+		regulator_disable(ccp2->vdds_csib);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -236,9 +252,15 @@ static int ccp2_phyif_config(struct isp_ccp2_device *ccp2,
 
 	val = isp_reg_readl(isp, OMAP3_ISP_IOMEM_CCP2, ISPCCP2_CTRL);
 	if (!(val & ISPCCP2_CTRL_MODE)) {
+<<<<<<< HEAD
 		if (pdata->ccp2_mode)
 			dev_warn(isp->dev, "OMAP3 CCP2 bus not available\n");
 		if (pdata->phy_layer == ISPCCP2_CTRL_PHY_SEL_STROBE)
+=======
+		if (pdata->ccp2_mode == ISP_CCP2_MODE_CCP2)
+			dev_warn(isp->dev, "OMAP3 CCP2 bus not available\n");
+		if (pdata->phy_layer == ISP_CCP2_PHY_DATA_STROBE)
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* Strobe mode requires CCP2 */
 			return -EIO;
 	}
@@ -549,7 +571,11 @@ static void ccp2_isr_buffer(struct isp_ccp2_device *ccp2)
 	struct isp_pipeline *pipe = to_isp_pipeline(&ccp2->subdev.entity);
 	struct isp_buffer *buffer;
 
+<<<<<<< HEAD
 	buffer = omap3isp_video_buffer_next(&ccp2->video_in, ccp2->error);
+=======
+	buffer = omap3isp_video_buffer_next(&ccp2->video_in);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (buffer != NULL)
 		ccp2_set_inaddr(ccp2, buffer->isp_addr);
 
@@ -560,8 +586,11 @@ static void ccp2_isr_buffer(struct isp_ccp2_device *ccp2)
 			omap3isp_pipeline_set_stream(pipe,
 						ISP_PIPELINE_STREAM_SINGLESHOT);
 	}
+<<<<<<< HEAD
 
 	ccp2->error = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -569,6 +598,7 @@ static void ccp2_isr_buffer(struct isp_ccp2_device *ccp2)
  * @ccp2: Pointer to ISP CCP2 device
  *
  * This will handle the CCP2 interrupts
+<<<<<<< HEAD
  *
  * Returns -EIO in case of error, or 0 on success.
  */
@@ -576,6 +606,13 @@ int omap3isp_ccp2_isr(struct isp_ccp2_device *ccp2)
 {
 	struct isp_device *isp = to_isp_device(ccp2);
 	int ret = 0;
+=======
+ */
+void omap3isp_ccp2_isr(struct isp_ccp2_device *ccp2)
+{
+	struct isp_pipeline *pipe = to_isp_pipeline(&ccp2->subdev.entity);
+	struct isp_device *isp = to_isp_device(ccp2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	static const u32 ISPCCP2_LC01_ERROR =
 		ISPCCP2_LC01_IRQSTATUS_LC0_FIFO_OVF_IRQ |
 		ISPCCP2_LC01_IRQSTATUS_LC0_CRC_IRQ |
@@ -597,6 +634,7 @@ int omap3isp_ccp2_isr(struct isp_ccp2_device *ccp2)
 		       ISPCCP2_LCM_IRQSTATUS);
 	/* Errors */
 	if (lcx_irqstatus & ISPCCP2_LC01_ERROR) {
+<<<<<<< HEAD
 		ccp2->error = 1;
 		dev_dbg(isp->dev, "CCP2 err:%x\n", lcx_irqstatus);
 		return -EIO;
@@ -610,6 +648,20 @@ int omap3isp_ccp2_isr(struct isp_ccp2_device *ccp2)
 
 	if (omap3isp_module_sync_is_stopping(&ccp2->wait, &ccp2->stopping))
 		return 0;
+=======
+		pipe->error = true;
+		dev_dbg(isp->dev, "CCP2 err:%x\n", lcx_irqstatus);
+		return;
+	}
+
+	if (lcm_irqstatus & ISPCCP2_LCM_IRQSTATUS_OCPERROR_IRQ) {
+		pipe->error = true;
+		dev_dbg(isp->dev, "CCP2 OCP err:%x\n", lcm_irqstatus);
+	}
+
+	if (omap3isp_module_sync_is_stopping(&ccp2->wait, &ccp2->stopping))
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Frame number propagation */
 	if (lcx_irqstatus & ISPCCP2_LC01_IRQSTATUS_LC0_FS_IRQ) {
@@ -622,8 +674,11 @@ int omap3isp_ccp2_isr(struct isp_ccp2_device *ccp2)
 	/* Handle queued buffers on frame end interrupts */
 	if (lcm_irqstatus & ISPCCP2_LCM_IRQSTATUS_EOF_IRQ)
 		ccp2_isr_buffer(ccp2);
+<<<<<<< HEAD
 
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* -----------------------------------------------------------------------------
@@ -860,7 +915,10 @@ static int ccp2_s_stream(struct v4l2_subdev *sd, int enable)
 		if (enable == ISP_PIPELINE_STREAM_STOPPED)
 			return 0;
 		atomic_set(&ccp2->stopping, 0);
+<<<<<<< HEAD
 		ccp2->error = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	switch (enable) {
@@ -1025,6 +1083,51 @@ static const struct media_entity_operations ccp2_media_ops = {
 };
 
 /*
+<<<<<<< HEAD
+=======
+ * omap3isp_ccp2_unregister_entities - Unregister media entities: subdev
+ * @ccp2: Pointer to ISP CCP2 device
+ */
+void omap3isp_ccp2_unregister_entities(struct isp_ccp2_device *ccp2)
+{
+	v4l2_device_unregister_subdev(&ccp2->subdev);
+	omap3isp_video_unregister(&ccp2->video_in);
+}
+
+/*
+ * omap3isp_ccp2_register_entities - Register the subdev media entity
+ * @ccp2: Pointer to ISP CCP2 device
+ * @vdev: Pointer to v4l device
+ * return negative error code or zero on success
+ */
+
+int omap3isp_ccp2_register_entities(struct isp_ccp2_device *ccp2,
+				    struct v4l2_device *vdev)
+{
+	int ret;
+
+	/* Register the subdev and video nodes. */
+	ret = v4l2_device_register_subdev(vdev, &ccp2->subdev);
+	if (ret < 0)
+		goto error;
+
+	ret = omap3isp_video_register(&ccp2->video_in, vdev);
+	if (ret < 0)
+		goto error;
+
+	return 0;
+
+error:
+	omap3isp_ccp2_unregister_entities(ccp2);
+	return ret;
+}
+
+/* -----------------------------------------------------------------------------
+ * ISP ccp2 initialisation and cleanup
+ */
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * ccp2_init_entities - Initialize ccp2 subdev and media entity.
  * @ccp2: Pointer to ISP CCP2 device
  * return negative error code or zero on success
@@ -1076,12 +1179,17 @@ static int ccp2_init_entities(struct isp_ccp2_device *ccp2)
 
 	ret = omap3isp_video_init(&ccp2->video_in, "CCP2");
 	if (ret < 0)
+<<<<<<< HEAD
 		return ret;
+=======
+		goto error_video;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Connect the video node to the ccp2 subdev. */
 	ret = media_entity_create_link(&ccp2->video_in.video.entity, 0,
 				       &ccp2->subdev.entity, CCP2_PAD_SINK, 0);
 	if (ret < 0)
+<<<<<<< HEAD
 		return ret;
 
 	return 0;
@@ -1139,6 +1247,19 @@ void omap3isp_ccp2_cleanup(struct isp_device *isp)
 {
 }
 
+=======
+		goto error_link;
+
+	return 0;
+
+error_link:
+	omap3isp_video_cleanup(&ccp2->video_in);
+error_video:
+	media_entity_cleanup(&ccp2->subdev.entity);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * omap3isp_ccp2_init - CCP2 initialization.
  * @isp : Pointer to ISP device
@@ -1151,12 +1272,22 @@ int omap3isp_ccp2_init(struct isp_device *isp)
 
 	init_waitqueue_head(&ccp2->wait);
 
+<<<<<<< HEAD
 	/* On the OMAP36xx, the CCP2 uses the CSI PHY1 or PHY2, shared with
+=======
+	/*
+	 * On the OMAP34xx the CSI1 receiver is operated in the CSIb IO
+	 * complex, which is powered by vdds_csib power rail. Hence the
+	 * request for the regulator.
+	 *
+	 * On the OMAP36xx, the CCP2 uses the CSI PHY1 or PHY2, shared with
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * the CSI2c or CSI2a receivers. The PHY then needs to be explicitly
 	 * configured.
 	 *
 	 * TODO: Don't hardcode the usage of PHY1 (shared with CSI2c).
 	 */
+<<<<<<< HEAD
 	if (isp->revision == ISP_REVISION_15_0)
 		ccp2->phy = &isp->isp_csiphy1;
 
@@ -1170,4 +1301,39 @@ out:
 		omap3isp_ccp2_cleanup(isp);
 
 	return ret;
+=======
+	if (isp->revision == ISP_REVISION_2_0) {
+		ccp2->vdds_csib = regulator_get(isp->dev, "vdds_csib");
+		if (IS_ERR(ccp2->vdds_csib)) {
+			dev_dbg(isp->dev,
+				"Could not get regulator vdds_csib\n");
+			ccp2->vdds_csib = NULL;
+		}
+	} else if (isp->revision == ISP_REVISION_15_0) {
+		ccp2->phy = &isp->isp_csiphy1;
+	}
+
+	ret = ccp2_init_entities(ccp2);
+	if (ret < 0) {
+		regulator_put(ccp2->vdds_csib);
+		return ret;
+	}
+
+	ccp2_reset(ccp2);
+	return 0;
+}
+
+/*
+ * omap3isp_ccp2_cleanup - CCP2 un-initialization
+ * @isp : Pointer to ISP device
+ */
+void omap3isp_ccp2_cleanup(struct isp_device *isp)
+{
+	struct isp_ccp2_device *ccp2 = &isp->isp_ccp2;
+
+	omap3isp_video_cleanup(&ccp2->video_in);
+	media_entity_cleanup(&ccp2->subdev.entity);
+
+	regulator_put(ccp2->vdds_csib);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

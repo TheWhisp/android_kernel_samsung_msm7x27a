@@ -10,6 +10,10 @@
 #include <linux/skbuff.h>
 #include <linux/debugfs.h>
 #include <linux/ieee80211.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/mac80211.h>
 #include "rc80211_minstrel.h"
 #include "rc80211_minstrel_ht.h"

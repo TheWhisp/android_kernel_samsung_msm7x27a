@@ -145,6 +145,7 @@ config ISCSI_IBFT
 	  detect iSCSI boot parameters dynamically during system boot, say Y.
 	  Otherwise, say N.
 
+<<<<<<< HEAD
 config SIGMA
 	tristate "SigmaStudio firmware loader"
 	depends on I2C
@@ -157,6 +158,8 @@ config SIGMA
 	  If unsure, say N here.  Drivers that need these helpers will select
 	  this option automatically.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/firmware/google/Kconfig"
 
 endmenu

@@ -31,6 +31,7 @@
 
 #include <asm/xen/hypervisor.h>
 
+<<<<<<< HEAD
 struct vm_struct *xen_alloc_vm_area(unsigned long size)
 {
 	int order;
@@ -93,6 +94,8 @@ void xen_free_vm_area(struct vm_struct *area)
 EXPORT_SYMBOL_GPL(xen_free_vm_area);
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /****************************************************************************
  * grant table hack
  * cmd: GNTTABOP_xxx

@@ -33,7 +33,11 @@
 #include <linux/errno.h>
 #include <linux/err.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
 #include <linux/clk.h>
@@ -64,6 +68,7 @@ static LIST_HEAD(clocks);
  */
 DEFINE_SPINLOCK(clocks_lock);
 
+<<<<<<< HEAD
 /* enable and disable calls for use with the clk struct */
 
 static int clk_null_enable(struct clk *clk, int enable)
@@ -137,35 +142,79 @@ struct clk *clk_get(struct device *dev, const char *id)
 void clk_put(struct clk *clk)
 {
 	module_put(clk->owner);
+=======
+/* Global watchdog clock used by arch_wtd_reset() callback */
+struct clk *s3c2410_wdtclk;
+static int __init s3c_wdt_reset_init(void)
+{
+	s3c2410_wdtclk = clk_get(NULL, "watchdog");
+	if (IS_ERR(s3c2410_wdtclk))
+		printk(KERN_WARNING "%s: warning: cannot get watchdog clock\n", __func__);
+	return 0;
+}
+arch_initcall(s3c_wdt_reset_init);
+
+/* enable and disable calls for use with the clk struct */
+
+static int clk_null_enable(struct clk *clk, int enable)
+{
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int clk_enable(struct clk *clk)
 {
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(clk) || clk == NULL)
 		return -EINVAL;
 
 	clk_enable(clk->parent);
 
+<<<<<<< HEAD
 	spin_lock(&clocks_lock);
+=======
+	spin_lock_irqsave(&clocks_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((clk->usage++) == 0)
 		(clk->enable)(clk, 1);
 
+<<<<<<< HEAD
 	spin_unlock(&clocks_lock);
+=======
+	spin_unlock_irqrestore(&clocks_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 void clk_disable(struct clk *clk)
 {
+<<<<<<< HEAD
 	if (IS_ERR(clk) || clk == NULL)
 		return;
 
 	spin_lock(&clocks_lock);
+=======
+	unsigned long flags;
+
+	if (IS_ERR(clk) || clk == NULL)
+		return;
+
+	spin_lock_irqsave(&clocks_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((--clk->usage) == 0)
 		(clk->enable)(clk, 0);
 
+<<<<<<< HEAD
 	spin_unlock(&clocks_lock);
+=======
+	spin_unlock_irqrestore(&clocks_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_disable(clk->parent);
 }
 
@@ -241,8 +290,11 @@ int clk_set_parent(struct clk *clk, struct clk *parent)
 	return ret;
 }
 
+<<<<<<< HEAD
 EXPORT_SYMBOL(clk_get);
 EXPORT_SYMBOL(clk_put);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(clk_enable);
 EXPORT_SYMBOL(clk_disable);
 EXPORT_SYMBOL(clk_get_rate);
@@ -265,7 +317,10 @@ struct clk_ops clk_ops_def_setrate = {
 
 struct clk clk_xtal = {
 	.name		= "xtal",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rate		= 0,
 	.parent		= NULL,
 	.ctrlbit	= 0,
@@ -273,30 +328,45 @@ struct clk clk_xtal = {
 
 struct clk clk_ext = {
 	.name		= "ext",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct clk clk_epll = {
 	.name		= "epll",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct clk clk_mpll = {
 	.name		= "mpll",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops		= &clk_ops_def_setrate,
 };
 
 struct clk clk_upll = {
 	.name		= "upll",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.parent		= NULL,
 	.ctrlbit	= 0,
 };
 
 struct clk clk_f = {
 	.name		= "fclk",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rate		= 0,
 	.parent		= &clk_mpll,
 	.ctrlbit	= 0,
@@ -304,7 +374,10 @@ struct clk clk_f = {
 
 struct clk clk_h = {
 	.name		= "hclk",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rate		= 0,
 	.parent		= NULL,
 	.ctrlbit	= 0,
@@ -313,7 +386,10 @@ struct clk clk_h = {
 
 struct clk clk_p = {
 	.name		= "pclk",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rate		= 0,
 	.parent		= NULL,
 	.ctrlbit	= 0,
@@ -322,7 +398,10 @@ struct clk clk_p = {
 
 struct clk clk_usb_bus = {
 	.name		= "usb-bus",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rate		= 0,
 	.parent		= &clk_upll,
 };
@@ -330,7 +409,10 @@ struct clk clk_usb_bus = {
 
 struct clk s3c24xx_uclk = {
 	.name		= "uclk",
+<<<<<<< HEAD
 	.id		= -1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* initialise the clock system */
@@ -346,6 +428,7 @@ int s3c24xx_register_clock(struct clk *clk)
 	if (clk->enable == NULL)
 		clk->enable = clk_null_enable;
 
+<<<<<<< HEAD
 	/* add to the list of available clocks */
 
 	/* Quick check to see if this clock has already been registered. */
@@ -354,6 +437,13 @@ int s3c24xx_register_clock(struct clk *clk)
 	spin_lock(&clocks_lock);
 	list_add(&clk->list, &clocks);
 	spin_unlock(&clocks_lock);
+=======
+	/* fill up the clk_lookup structure and register it*/
+	clk->lookup.dev_id = clk->devname;
+	clk->lookup.con_id = clk->name;
+	clk->lookup.clk = clk;
+	clkdev_add(&clk->lookup);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -458,15 +548,23 @@ static struct dentry *clk_debugfs_root;
 static int clk_debugfs_register_one(struct clk *c)
 {
 	int err;
+<<<<<<< HEAD
 	struct dentry *d, *child, *child_tmp;
+=======
+	struct dentry *d;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct clk *pa = c->parent;
 	char s[255];
 	char *p = s;
 
+<<<<<<< HEAD
 	p += sprintf(p, "%s", c->name);
 
 	if (c->id >= 0)
 		sprintf(p, ":%d", c->id);
+=======
+	p += sprintf(p, "%s", c->devname);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	d = debugfs_create_dir(s, pa ? pa->dent : clk_debugfs_root);
 	if (!d)
@@ -488,10 +586,14 @@ static int clk_debugfs_register_one(struct clk *c)
 	return 0;
 
 err_out:
+<<<<<<< HEAD
 	d = c->dent;
 	list_for_each_entry_safe(child, child_tmp, &d->d_subdirs, d_u.d_child)
 		debugfs_remove(child);
 	debugfs_remove(c->dent);
+=======
+	debugfs_remove_recursive(c->dent);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 

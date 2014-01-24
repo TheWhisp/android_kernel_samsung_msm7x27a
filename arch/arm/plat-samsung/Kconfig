@@ -65,11 +65,14 @@ config SAMSUNG_IRQ_VIC_TIMER
        help
          Internal configuration to build the VIC timer interrupt code.
 
+<<<<<<< HEAD
 config SAMSUNG_IRQ_UART
        bool
        help
          Internal configuration to build the IRQ UART demux code.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 # options for gpio configuration support
 
 config SAMSUNG_GPIOLIB_4BIT
@@ -79,18 +82,22 @@ config SAMSUNG_GPIOLIB_4BIT
 	  configuration. GPIOlib shall be compiled only for S3C64XX and S5P
 	  series of processors.
 
+<<<<<<< HEAD
 config S3C_GPIO_CFG_S3C24XX
 	bool
 	help
 	  Internal configuration to enable S3C24XX style GPIO configuration
 	  functions.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config S3C_GPIO_CFG_S3C64XX
 	bool
 	help
 	  Internal configuration to enable S3C64XX style GPIO configuration
 	  functions.
 
+<<<<<<< HEAD
 config S3C_GPIO_PULL_UPDOWN
 	bool
 	help
@@ -112,6 +119,8 @@ config S3C_GPIO_PULL_UP
 	help
 	  Internal configuration to enable the correct GPIO pull helper
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config S5P_GPIO_DRVSTR
 	bool
 	help
@@ -120,12 +129,26 @@ config S5P_GPIO_DRVSTR
 
 config SAMSUNG_GPIO_EXTRA
 	int "Number of additional GPIO pins"
+<<<<<<< HEAD
+=======
+	default 128 if SAMSUNG_GPIO_EXTRA128
+	default 64 if SAMSUNG_GPIO_EXTRA64
+>>>>>>> refs/remotes/origin/cm-10.0
 	default 0
 	help
 	  Use additional GPIO space in addition to the GPIO's the SOC
 	  provides. This allows expanding the GPIO space for use with
 	  GPIO expanders.
 
+<<<<<<< HEAD
+=======
+config SAMSUNG_GPIO_EXTRA64
+	bool
+
+config SAMSUNG_GPIO_EXTRA128
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config S3C_GPIO_SPACE
 	int "Space between gpio banks"
 	default 0
@@ -229,7 +252,11 @@ config S3C_DEV_USB_HSOTG
 
 config S3C_DEV_WDT
 	bool
+<<<<<<< HEAD
 	default y if ARCH_S3C2410
+=======
+	default y if ARCH_S3C24XX
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Complie in platform device definition for Watchdog Timer
 
@@ -258,11 +285,31 @@ config SAMSUNG_DEV_IDE
 	help
 	  Compile in platform device definitions for IDE
 
+<<<<<<< HEAD
 config S3C64XX_DEV_SPI
 	bool
 	help
 	  Compile in platform device definitions for S3C64XX's type
 	  SPI controllers.
+=======
+config S3C64XX_DEV_SPI0
+	bool
+	help
+	  Compile in platform device definitions for S3C64XX's type
+	  SPI controller 0
+
+config S3C64XX_DEV_SPI1
+	bool
+	help
+	  Compile in platform device definitions for S3C64XX's type
+	  SPI controller 1
+
+config S3C64XX_DEV_SPI2
+	bool
+	help
+	  Compile in platform device definitions for S3C64XX's type
+	  SPI controller 2
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SAMSUNG_DEV_TS
 	bool
@@ -276,10 +323,23 @@ config SAMSUNG_DEV_KEYPAD
 
 config SAMSUNG_DEV_PWM
 	bool
+<<<<<<< HEAD
 	default y if ARCH_S3C2410
 	help
 	  Compile in platform device definition for PWM Timer
 
+=======
+	default y if ARCH_S3C24XX
+	help
+	  Compile in platform device definition for PWM Timer
+
+config SAMSUNG_DEV_BACKLIGHT
+	bool
+	depends on SAMSUNG_DEV_PWM
+	help
+	  Compile in platform device definition LCD backlight with PWM Timer
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config S3C24XX_PWM
 	bool "PWM device support"
 	select HAVE_PWM
@@ -294,17 +354,32 @@ config S3C_DMA
 	help
 	  Internal configuration for S3C DMA core
 
+<<<<<<< HEAD
 config S3C_PL330_DMA
 	bool
 	select PL330
 	help
 	  S3C DMA API Driver for PL330 DMAC.
+=======
+config SAMSUNG_DMADEV
+	bool
+	select DMADEVICES
+	select PL330_DMA if (CPU_EXYNOS4210 || CPU_S5PV210 || CPU_S5PC100 || \
+					CPU_S5P6450 || CPU_S5P6440)
+	select ARM_AMBA
+	help
+	  Use DMA device engine for PL330 DMAC.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 comment "Power management"
 
 config SAMSUNG_PM_DEBUG
 	bool "S3C2410 PM Suspend debug"
 	depends on PM
+<<<<<<< HEAD
+=======
+	select DEBUG_LL
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Say Y here if you want verbose debugging from the PM Suspend and
 	  Resume code. See <file:Documentation/arm/Samsung-S3C24XX/Suspend.txt>
@@ -361,4 +436,14 @@ config SAMSUNG_PD
 	help
 	  Say Y here if you want to control Power Domain by Runtime PM.
 
+<<<<<<< HEAD
+=======
+config DEBUG_S3C_UART
+	depends on PLAT_SAMSUNG
+	int
+	default "0" if DEBUG_S3C_UART0
+	default "1" if DEBUG_S3C_UART1
+	default "2" if DEBUG_S3C_UART2
+
+>>>>>>> refs/remotes/origin/cm-10.0
 endif

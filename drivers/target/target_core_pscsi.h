@@ -2,7 +2,10 @@
 #define TARGET_CORE_PSCSI_H
 
 #define PSCSI_VERSION		"v4.0"
+<<<<<<< HEAD
 #define PSCSI_VIRTUAL_HBA_DEPTH	2048
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* used in pscsi_find_alloc_len() */
 #ifndef INQUIRY_DATA_SIZE
@@ -24,13 +27,20 @@
 
 struct pscsi_plugin_task {
 	struct se_task pscsi_task;
+<<<<<<< HEAD
 	unsigned char *pscsi_cdb;
 	unsigned char __pscsi_cdb[TCM_MAX_COMMAND_SIZE];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned char pscsi_sense[SCSI_SENSE_BUFFERSIZE];
 	int	pscsi_direction;
 	int	pscsi_result;
 	u32	pscsi_resid;
+<<<<<<< HEAD
 	struct request *pscsi_req;
+=======
+	unsigned char pscsi_cdb[0];
+>>>>>>> refs/remotes/origin/cm-10.0
 } ____cacheline_aligned;
 
 #define PDF_HAS_CHANNEL_ID	0x01
@@ -52,7 +62,11 @@ struct pscsi_dev_virt {
 } ____cacheline_aligned;
 
 typedef enum phv_modes {
+<<<<<<< HEAD
 	PHV_VIRUTAL_HOST_ID,
+=======
+	PHV_VIRTUAL_HOST_ID,
+>>>>>>> refs/remotes/origin/cm-10.0
 	PHV_LLD_SCSI_HOST_NO
 } phv_modes_t;
 

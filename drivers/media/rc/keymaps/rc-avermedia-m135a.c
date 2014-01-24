@@ -10,6 +10,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Avermedia M135A with RM-JX and RM-K6 remote controls

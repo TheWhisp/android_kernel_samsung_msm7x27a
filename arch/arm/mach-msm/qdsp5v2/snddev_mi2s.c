@@ -154,12 +154,21 @@ static int snddev_mi2s_open(struct msm_snddev_info *dev_info)
 			mutex_unlock(&drv->lock);
 			return -EIO;
 		}
+<<<<<<< HEAD
 		clk_enable(drv->mclk);
 		clk_enable(drv->sclk);
 		drv->clocks_enabled = 1;
 		MM_DBG("%s: clks enabled \n", __func__);
 	} else
 		MM_DBG("%s: clks already enabled \n", __func__);
+=======
+		clk_prepare_enable(drv->mclk);
+		clk_prepare_enable(drv->sclk);
+		drv->clocks_enabled = 1;
+		MM_DBG("%s: clks enabled\n", __func__);
+	} else
+		MM_DBG("%s: clks already enabled\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (snddev_mi2s_data->capability & SNDDEV_CAP_RX) {
 
@@ -225,8 +234,13 @@ mi2s_cleanup_open:
 
 mi2s_data_gpio_failure:
 	if (!drv->sd_lines_used) {
+<<<<<<< HEAD
 		clk_disable(drv->sclk);
 		clk_disable(drv->mclk);
+=======
+		clk_disable_unprepare(drv->sclk);
+		clk_disable_unprepare(drv->mclk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		drv->clocks_enabled = 0;
 		mi2s_unconfig_clk_gpio();
 	}
@@ -268,8 +282,13 @@ static int snddev_mi2s_close(struct msm_snddev_info *dev_info)
 	mi2s_unconfig_data_gpio(dir, snddev_mi2s_data->sd_lines);
 
 	if (!drv->sd_lines_used) {
+<<<<<<< HEAD
 		clk_disable(drv->sclk);
 		clk_disable(drv->mclk);
+=======
+		clk_disable_unprepare(drv->sclk);
+		clk_disable_unprepare(drv->mclk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		drv->clocks_enabled = 0;
 		mi2s_unconfig_clk_gpio();
 	}

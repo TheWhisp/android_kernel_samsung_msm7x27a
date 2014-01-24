@@ -13,6 +13,10 @@
 #include <linux/spi/spi.h>
 #include <linux/regulator/consumer.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/div64.h>
 
 #include "../iio.h"
@@ -52,7 +56,11 @@ static int ad9832_write_frequency(struct ad9832_state *st,
 					((addr - 3) << ADD_SHIFT) |
 					((regval >> 0) & 0xFF));
 
+<<<<<<< HEAD
 	return spi_sync(st->spi, &st->freq_msg);;
+=======
+	return spi_sync(st->spi, &st->freq_msg);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int ad9832_write_phase(struct ad9832_state *st,
@@ -76,8 +84,13 @@ static ssize_t ad9832_write(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 	struct ad9832_state *st = dev_info->dev_data;
+=======
+	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+	struct ad9832_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret;
 	long val;
@@ -86,8 +99,13 @@ static ssize_t ad9832_write(struct device *dev,
 	if (ret)
 		goto error_ret;
 
+<<<<<<< HEAD
 	mutex_lock(&dev_info->mlock);
 	switch (this_attr->address) {
+=======
+	mutex_lock(&indio_dev->mlock);
+	switch ((u32) this_attr->address) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case AD9832_FREQ0HM:
 	case AD9832_FREQ1HM:
 		ret = ad9832_write_frequency(st, this_attr->address, val);
@@ -147,7 +165,11 @@ static ssize_t ad9832_write(struct device *dev,
 	default:
 		ret = -ENODEV;
 	}
+<<<<<<< HEAD
 	mutex_unlock(&dev_info->mlock);
+=======
+	mutex_unlock(&indio_dev->mlock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 error_ret:
 	return ret ? ret : len;
@@ -203,7 +225,13 @@ static const struct iio_info ad9832_info = {
 static int __devinit ad9832_probe(struct spi_device *spi)
 {
 	struct ad9832_platform_data *pdata = spi->dev.platform_data;
+<<<<<<< HEAD
 	struct ad9832_state *st;
+=======
+	struct iio_dev *indio_dev;
+	struct ad9832_state *st;
+	struct regulator *reg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	if (!pdata) {
@@ -211,6 +239,7 @@ static int __devinit ad9832_probe(struct spi_device *spi)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	st = kzalloc(sizeof(*st), GFP_KERNEL);
 	if (st == NULL) {
 		ret = -ENOMEM;
@@ -220,10 +249,16 @@ static int __devinit ad9832_probe(struct spi_device *spi)
 	st->reg = regulator_get(&spi->dev, "vcc");
 	if (!IS_ERR(st->reg)) {
 		ret = regulator_enable(st->reg);
+=======
+	reg = regulator_get(&spi->dev, "vcc");
+	if (!IS_ERR(reg)) {
+		ret = regulator_enable(reg);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret)
 			goto error_put_reg;
 	}
 
+<<<<<<< HEAD
 	st->mclk = pdata->mclk;
 
 	spi_set_drvdata(spi, st);
@@ -240,6 +275,23 @@ static int __devinit ad9832_probe(struct spi_device *spi)
 	st->indio_dev->info = &ad9832_info;
 	st->indio_dev->dev_data = (void *) st;
 	st->indio_dev->modes = INDIO_DIRECT_MODE;
+=======
+	indio_dev = iio_allocate_device(sizeof(*st));
+	if (indio_dev == NULL) {
+		ret = -ENOMEM;
+		goto error_disable_reg;
+	}
+	spi_set_drvdata(spi, indio_dev);
+	st = iio_priv(indio_dev);
+	st->reg = reg;
+	st->mclk = pdata->mclk;
+	st->spi = spi;
+
+	indio_dev->dev.parent = &spi->dev;
+	indio_dev->name = spi_get_device_id(spi)->name;
+	indio_dev->info = &ad9832_info;
+	indio_dev->modes = INDIO_DIRECT_MODE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Setup default messages */
 
@@ -310,13 +362,18 @@ static int __devinit ad9832_probe(struct spi_device *spi)
 	if (ret)
 		goto error_free_device;
 
+<<<<<<< HEAD
 	ret = iio_device_register(st->indio_dev);
+=======
+	ret = iio_device_register(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto error_free_device;
 
 	return 0;
 
 error_free_device:
+<<<<<<< HEAD
 	iio_free_device(st->indio_dev);
 error_disable_reg:
 	if (!IS_ERR(st->reg))
@@ -326,19 +383,41 @@ error_put_reg:
 		regulator_put(st->reg);
 	kfree(st);
 error_ret:
+=======
+	iio_free_device(indio_dev);
+error_disable_reg:
+	if (!IS_ERR(reg))
+		regulator_disable(reg);
+error_put_reg:
+	if (!IS_ERR(reg))
+		regulator_put(reg);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit ad9832_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	struct ad9832_state *st = spi_get_drvdata(spi);
 
 	iio_device_unregister(st->indio_dev);
+=======
+	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+	struct ad9832_state *st = iio_priv(indio_dev);
+
+	iio_device_unregister(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!IS_ERR(st->reg)) {
 		regulator_disable(st->reg);
 		regulator_put(st->reg);
 	}
+<<<<<<< HEAD
 	kfree(st);
+=======
+	iio_free_device(indio_dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -347,17 +426,25 @@ static const struct spi_device_id ad9832_id[] = {
 	{"ad9835", 0},
 	{}
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(spi, ad9832_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct spi_driver ad9832_driver = {
 	.driver = {
 		.name	= "ad9832",
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 	},
 	.probe		= ad9832_probe,
 	.remove		= __devexit_p(ad9832_remove),
 	.id_table	= ad9832_id,
 };
+<<<<<<< HEAD
 
 static int __init ad9832_init(void)
 {
@@ -370,8 +457,14 @@ static void __exit ad9832_exit(void)
 	spi_unregister_driver(&ad9832_driver);
 }
 module_exit(ad9832_exit);
+=======
+module_spi_driver(ad9832_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("Analog Devices AD9832/AD9835 DDS");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 MODULE_ALIAS("spi:ad9832");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -53,15 +53,24 @@ void dccp_time_wait(struct sock *sk, int state, int timeo)
 	if (tw != NULL) {
 		const struct inet_connection_sock *icsk = inet_csk(sk);
 		const int rto = (icsk->icsk_rto << 2) - (icsk->icsk_rto >> 1);
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (tw->tw_family == PF_INET6) {
 			const struct ipv6_pinfo *np = inet6_sk(sk);
 			struct inet6_timewait_sock *tw6;
 
 			tw->tw_ipv6_offset = inet6_tw_offset(sk->sk_prot);
 			tw6 = inet6_twsk((struct sock *)tw);
+<<<<<<< HEAD
 			ipv6_addr_copy(&tw6->tw_v6_daddr, &np->daddr);
 			ipv6_addr_copy(&tw6->tw_v6_rcv_saddr, &np->rcv_saddr);
+=======
+			tw6->tw_v6_daddr = np->daddr;
+			tw6->tw_v6_rcv_saddr = np->rcv_saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 			tw->tw_ipv6only = np->ipv6only;
 		}
 #endif
@@ -100,7 +109,11 @@ struct sock *dccp_create_openreq_child(struct sock *sk,
 	 *   (* Generate a new socket and switch to that socket *)
 	 *   Set S := new socket for this port pair
 	 */
+<<<<<<< HEAD
 	struct sock *newsk = inet_csk_clone(sk, req, GFP_ATOMIC);
+=======
+	struct sock *newsk = inet_csk_clone_lock(sk, req, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (newsk != NULL) {
 		struct dccp_request_sock *dreq = dccp_rsk(req);
@@ -127,9 +140,17 @@ struct sock *dccp_create_openreq_child(struct sock *sk,
 		 *    activation below, as these windows all depend on the local
 		 *    and remote Sequence Window feature values (7.5.2).
 		 */
+<<<<<<< HEAD
 		newdp->dccps_gss = newdp->dccps_iss = dreq->dreq_iss;
 		newdp->dccps_gar = newdp->dccps_iss;
 		newdp->dccps_gsr = newdp->dccps_isr = dreq->dreq_isr;
+=======
+		newdp->dccps_iss = dreq->dreq_iss;
+		newdp->dccps_gss = dreq->dreq_gss;
+		newdp->dccps_gar = newdp->dccps_iss;
+		newdp->dccps_isr = dreq->dreq_isr;
+		newdp->dccps_gsr = dreq->dreq_gsr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
 		 * Activate features: initialise CCIDs, sequence windows etc.
@@ -164,9 +185,15 @@ struct sock *dccp_check_req(struct sock *sk, struct sk_buff *skb,
 	/* Check for retransmitted REQUEST */
 	if (dccp_hdr(skb)->dccph_type == DCCP_PKT_REQUEST) {
 
+<<<<<<< HEAD
 		if (after48(DCCP_SKB_CB(skb)->dccpd_seq, dreq->dreq_isr)) {
 			dccp_pr_debug("Retransmitted REQUEST\n");
 			dreq->dreq_isr = DCCP_SKB_CB(skb)->dccpd_seq;
+=======
+		if (after48(DCCP_SKB_CB(skb)->dccpd_seq, dreq->dreq_gsr)) {
+			dccp_pr_debug("Retransmitted REQUEST\n");
+			dreq->dreq_gsr = DCCP_SKB_CB(skb)->dccpd_seq;
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * Send another RESPONSE packet
 			 * To protect against Request floods, increment retrans
@@ -186,12 +213,23 @@ struct sock *dccp_check_req(struct sock *sk, struct sk_buff *skb,
 		goto drop;
 
 	/* Invalid ACK */
+<<<<<<< HEAD
 	if (DCCP_SKB_CB(skb)->dccpd_ack_seq != dreq->dreq_iss) {
 		dccp_pr_debug("Invalid ACK number: ack_seq=%llu, "
 			      "dreq_iss=%llu\n",
 			      (unsigned long long)
 			      DCCP_SKB_CB(skb)->dccpd_ack_seq,
 			      (unsigned long long) dreq->dreq_iss);
+=======
+	if (!between48(DCCP_SKB_CB(skb)->dccpd_ack_seq,
+				dreq->dreq_iss, dreq->dreq_gss)) {
+		dccp_pr_debug("Invalid ACK number: ack_seq=%llu, "
+			      "dreq_iss=%llu, dreq_gss=%llu\n",
+			      (unsigned long long)
+			      DCCP_SKB_CB(skb)->dccpd_ack_seq,
+			      (unsigned long long) dreq->dreq_iss,
+			      (unsigned long long) dreq->dreq_gss);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto drop;
 	}
 

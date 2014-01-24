@@ -11,7 +11,11 @@
  *   NON INFRINGEMENT.  See the GNU General Public License for
  *   more details.
  *
+<<<<<<< HEAD
  * Do not include directly; use <asm/atomic.h>.
+=======
+ * Do not include directly; use <linux/atomic.h>.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef _ASM_TILE_ATOMIC_64_H
@@ -19,6 +23,10 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
+=======
+#include <asm/barrier.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <arch/spr_def.h>
 
 /* First, the 32-bit atomic ops that are "real" on our 64-bit platform. */
@@ -64,7 +72,11 @@ static inline int atomic_add_return(int i, atomic_t *v)
 	return val;
 }
 
+<<<<<<< HEAD
 static inline int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int guess, oldval = v->counter;
 	do {
@@ -73,7 +85,11 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
 		guess = oldval;
 		oldval = atomic_cmpxchg(v, guess, guess + a);
 	} while (guess != oldval);
+<<<<<<< HEAD
 	return oldval != u;
+=======
+	return oldval;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Now the true 64-bit operations. */

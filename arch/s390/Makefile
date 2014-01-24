@@ -88,7 +88,10 @@ KBUILD_CFLAGS	+= -pipe -fno-strength-reduce -Wno-sign-compare
 KBUILD_AFLAGS	+= $(aflags-y)
 
 OBJCOPYFLAGS	:= -O binary
+<<<<<<< HEAD
 LDFLAGS_vmlinux := -e start
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 head-y		:= arch/s390/kernel/head.o
 head-y		+= arch/s390/kernel/$(if $(CONFIG_64BIT),head64.o,head31.o)
@@ -99,7 +102,10 @@ core-y		+= arch/s390/
 
 libs-y		+= arch/s390/lib/
 drivers-y	+= drivers/s390/
+<<<<<<< HEAD
 drivers-$(CONFIG_MATHEMU) += arch/s390/math-emu/
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # must be linked after kernel
 drivers-$(CONFIG_OPROFILE)	+= arch/s390/oprofile/

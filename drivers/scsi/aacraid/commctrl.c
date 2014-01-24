@@ -650,6 +650,10 @@ static int aac_send_raw_srb(struct aac_dev* dev, void __user * arg)
 				     AAC_OPT_NEW_COMM) ?
 				      (dev->scsi_host_ptr->max_sectors << 9) :
 				      65536)) {
+<<<<<<< HEAD
+=======
+					kfree(usg);
+>>>>>>> refs/remotes/origin/cm-10.0
 					rcode = -EINVAL;
 					goto cleanup;
 				}

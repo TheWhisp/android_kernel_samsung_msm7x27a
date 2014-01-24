@@ -76,6 +76,10 @@
 #include <linux/slab.h>
 #include <linux/netdevice.h>
 #include <linux/ethtool.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "i2400m.h"
 
 
@@ -366,6 +370,7 @@ netdev_tx_t i2400m_hard_start_xmit(struct sk_buff *skb,
 {
 	struct i2400m *i2400m = net_dev_to_i2400m(net_dev);
 	struct device *dev = i2400m_dev(i2400m);
+<<<<<<< HEAD
 	int result;
 
 	d_fnstart(3, dev, "(skb %p net_dev %p)\n", skb, net_dev);
@@ -382,11 +387,21 @@ netdev_tx_t i2400m_hard_start_xmit(struct sk_buff *skb,
 			goto error_expand;
 		}
 	}
+=======
+	int result = -1;
+
+	d_fnstart(3, dev, "(skb %p net_dev %p)\n", skb, net_dev);
+
+	if (skb_header_cloned(skb) && 
+	    pskb_expand_head(skb, 0, 0, GFP_ATOMIC))
+		goto drop;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (i2400m->state == I2400M_SS_IDLE)
 		result = i2400m_net_wake_tx(i2400m, net_dev, skb);
 	else
 		result = i2400m_net_tx(i2400m, net_dev, skb);
+<<<<<<< HEAD
 	if (result <  0)
 		net_dev->stats.tx_dropped++;
 	else {
@@ -398,6 +413,18 @@ error_expand:
 	kfree_skb(skb);
 	d_fnend(3, dev, "(skb %p net_dev %p) = %d\n", skb, net_dev, result);
 	return result;
+=======
+	if (result <  0) {
+drop:
+		net_dev->stats.tx_dropped++;
+	} else {
+		net_dev->stats.tx_packets++;
+		net_dev->stats.tx_bytes += skb->len;
+	}
+	dev_kfree_skb(skb);
+	d_fnend(3, dev, "(skb %p net_dev %p) = %d\n", skb, net_dev, result);
+	return NETDEV_TX_OK;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 

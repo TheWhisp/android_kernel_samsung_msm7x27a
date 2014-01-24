@@ -20,7 +20,10 @@
 #include <linux/workqueue.h>
 
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <dvb_demux.h>
 

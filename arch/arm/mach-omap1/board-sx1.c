@@ -14,7 +14,11 @@
 * it under the terms of the GNU General Public License version 2 as
 * published by the Free Software Foundation.
 */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/input.h>
@@ -26,13 +30,22 @@
 #include <linux/types.h>
 #include <linux/i2c.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
+=======
+#include <linux/export.h>
+#include <linux/omapfb.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/flash.h>
 #include <plat/mux.h>
 #include <plat/dma.h>
@@ -40,10 +53,20 @@
 #include <plat/usb.h>
 #include <plat/tc.h>
 #include <plat/board.h>
+<<<<<<< HEAD
 #include <plat/common.h>
 #include <plat/keypad.h>
 #include <plat/board-sx1.h>
 
+=======
+#include <plat/keypad.h>
+#include <plat/board-sx1.h>
+
+#include <mach/hardware.h>
+
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Write to I2C device */
 int sx1_i2c_write_byte(u8 devaddr, u8 regoffset, u8 value)
 {
@@ -355,11 +378,14 @@ static struct omap_usb_config sx1_usb_config __initdata = {
 
 /*----------- LCD -------------------------*/
 
+<<<<<<< HEAD
 static struct platform_device sx1_lcd_device = {
 	.name		= "lcd_sx1",
 	.id		= -1,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct omap_lcd_config sx1_lcd_config __initdata = {
 	.ctrl_name	= "internal",
 };
@@ -368,6 +394,7 @@ static struct omap_lcd_config sx1_lcd_config __initdata = {
 static struct platform_device *sx1_devices[] __initdata = {
 	&sx1_flash_device,
 	&sx1_kp_device,
+<<<<<<< HEAD
 	&sx1_lcd_device,
 	&sx1_irda_device,
 };
@@ -376,6 +403,10 @@ static struct platform_device *sx1_devices[] __initdata = {
 static struct omap_board_config_kernel sx1_config[] __initdata = {
 	{ OMAP_TAG_LCD,	&sx1_lcd_config },
 };
+=======
+	&sx1_irda_device,
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*-----------------------------------------*/
 
@@ -391,8 +422,11 @@ static void __init omap_sx1_init(void)
 
 	platform_add_devices(sx1_devices, ARRAY_SIZE(sx1_devices));
 
+<<<<<<< HEAD
 	omap_board_config = sx1_config;
 	omap_board_config_size = ARRAY_SIZE(sx1_config);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	omap_serial_init();
 	omap_register_i2c_bus(1, 100, NULL, 0);
 	omap1_usb_init(&sx1_usb_config);
@@ -406,6 +440,7 @@ static void __init omap_sx1_init(void)
 	gpio_direction_output(1, 1);	/*A_IRDA_OFF = 1 */
 	gpio_direction_output(11, 0);	/*A_SWITCH = 0 */
 	gpio_direction_output(15, 0);	/*A_USB_ON = 0 */
+<<<<<<< HEAD
 }
 /*----------------------------------------*/
 static void __init omap_sx1_init_irq(void)
@@ -427,4 +462,19 @@ MACHINE_START(SX1, "OMAP310 based Siemens SX1")
 	.init_irq	= omap_sx1_init_irq,
 	.init_machine	= omap_sx1_init,
 	.timer		= &omap_timer,
+=======
+
+	omapfb_set_lcd_config(&sx1_lcd_config);
+}
+
+MACHINE_START(SX1, "OMAP310 based Siemens SX1")
+	.atag_offset	= 0x100,
+	.map_io		= omap15xx_map_io,
+	.init_early     = omap1_init_early,
+	.reserve	= omap_reserve,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= omap_sx1_init,
+	.timer		= &omap1_timer,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

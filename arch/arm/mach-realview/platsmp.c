@@ -17,7 +17,10 @@
 #include <asm/hardware/gic.h>
 #include <asm/mach-types.h>
 #include <asm/smp_scu.h>
+<<<<<<< HEAD
 #include <asm/unified.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/board-eb.h>
 #include <mach/board-pb11mp.h>
@@ -52,12 +55,19 @@ void __init smp_init_cpus(void)
 	ncores = scu_base ? scu_get_core_count(scu_base) : 1;
 
 	/* sanity check */
+<<<<<<< HEAD
 	if (ncores > NR_CPUS) {
 		printk(KERN_WARNING
 		       "Realview: no. of cores (%d) greater than configured "
 		       "maximum of %d - clipping\n",
 		       ncores, NR_CPUS);
 		ncores = NR_CPUS;
+=======
+	if (ncores > nr_cpu_ids) {
+		pr_warn("SMP: %u cores greater than maximum (%u), clipping\n",
+			ncores, nr_cpu_ids);
+		ncores = nr_cpu_ids;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	for (i = 0; i < ncores; i++)
@@ -68,6 +78,7 @@ void __init smp_init_cpus(void)
 
 void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 {
+<<<<<<< HEAD
 	int i;
 
 	/*
@@ -76,6 +87,8 @@ void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 	 */
 	for (i = 0; i < max_cpus; i++)
 		set_cpu_present(i, true);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	scu_enable(scu_base_addr());
 
@@ -85,6 +98,10 @@ void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 	 * until it receives a soft interrupt, and then the
 	 * secondary CPU branches to this address.
 	 */
+<<<<<<< HEAD
 	__raw_writel(BSYM(virt_to_phys(versatile_secondary_startup)),
+=======
+	__raw_writel(virt_to_phys(versatile_secondary_startup),
+>>>>>>> refs/remotes/origin/cm-10.0
 		     __io_address(REALVIEW_SYS_FLAGSSET));
 }

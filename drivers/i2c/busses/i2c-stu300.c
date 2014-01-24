@@ -916,7 +916,11 @@ stu300_probe(struct platform_device *pdev)
 	}
 
 	dev->irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
 	if (request_irq(dev->irq, stu300_irh, IRQF_DISABLED,
+=======
+	if (request_irq(dev->irq, stu300_irh, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			NAME, dev)) {
 		ret = -EIO;
 		goto err_no_irq;

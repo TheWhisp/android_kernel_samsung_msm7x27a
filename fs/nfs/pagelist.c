@@ -13,11 +13,19 @@
 #include <linux/file.h>
 #include <linux/sched.h>
 #include <linux/sunrpc/clnt.h>
+<<<<<<< HEAD
+=======
+#include <linux/nfs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/nfs3.h>
 #include <linux/nfs4.h>
 #include <linux/nfs_page.h>
 #include <linux/nfs_fs.h>
 #include <linux/nfs_mount.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "internal.h"
 #include "pnfs.h"
@@ -41,7 +49,11 @@ nfs_page_free(struct nfs_page *p)
 
 /**
  * nfs_create_request - Create an NFS read/write request.
+<<<<<<< HEAD
  * @file: file descriptor to use
+=======
+ * @ctx: open context to use
+>>>>>>> refs/remotes/origin/cm-10.0
  * @inode: inode to which the request is attached
  * @page: page to write
  * @offset: starting offset within the page for the write
@@ -105,6 +117,7 @@ void nfs_unlock_request(struct nfs_page *req)
 	nfs_release_request(req);
 }
 
+<<<<<<< HEAD
 /**
  * nfs_set_page_tag_locked - Tag a request as locked
  * @req:
@@ -135,6 +148,8 @@ void nfs_clear_page_tag_locked(struct nfs_page *req)
 		nfs_unlock_request(req);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * nfs_clear_request - Free up all resources allocated to the request
  * @req:
@@ -230,7 +245,11 @@ EXPORT_SYMBOL_GPL(nfs_generic_pg_test);
  */
 void nfs_pageio_init(struct nfs_pageio_descriptor *desc,
 		     struct inode *inode,
+<<<<<<< HEAD
 		     int (*doio)(struct nfs_pageio_descriptor *),
+=======
+		     const struct nfs_pageio_ops *pg_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     size_t bsize,
 		     int io_flags)
 {
@@ -240,6 +259,7 @@ void nfs_pageio_init(struct nfs_pageio_descriptor *desc,
 	desc->pg_bsize = bsize;
 	desc->pg_base = 0;
 	desc->pg_moreio = 0;
+<<<<<<< HEAD
 	desc->pg_inode = inode;
 	desc->pg_doio = doio;
 	desc->pg_ioflags = io_flags;
@@ -247,6 +267,14 @@ void nfs_pageio_init(struct nfs_pageio_descriptor *desc,
 	desc->pg_lseg = NULL;
 	desc->pg_test = nfs_generic_pg_test;
 	pnfs_pageio_init(desc, inode);
+=======
+	desc->pg_recoalesce = 0;
+	desc->pg_inode = inode;
+	desc->pg_ops = pg_ops;
+	desc->pg_ioflags = io_flags;
+	desc->pg_error = 0;
+	desc->pg_lseg = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -276,7 +304,11 @@ static bool nfs_can_coalesce_requests(struct nfs_page *prev,
 		return false;
 	if (prev->wb_pgbase + prev->wb_bytes != PAGE_CACHE_SIZE)
 		return false;
+<<<<<<< HEAD
 	return pgio->pg_test(pgio, prev, req);
+=======
+	return pgio->pg_ops->pg_test(pgio, prev, req);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -297,6 +329,11 @@ static int nfs_pageio_do_add_request(struct nfs_pageio_descriptor *desc,
 		if (!nfs_can_coalesce_requests(prev, req, desc))
 			return 0;
 	} else {
+<<<<<<< HEAD
+=======
+		if (desc->pg_ops->pg_init)
+			desc->pg_ops->pg_init(desc, req);
+>>>>>>> refs/remotes/origin/cm-10.0
 		desc->pg_base = req->wb_pgbase;
 	}
 	nfs_list_remove_request(req);
@@ -311,7 +348,11 @@ static int nfs_pageio_do_add_request(struct nfs_pageio_descriptor *desc,
 static void nfs_pageio_doio(struct nfs_pageio_descriptor *desc)
 {
 	if (!list_empty(&desc->pg_list)) {
+<<<<<<< HEAD
 		int error = desc->pg_doio(desc);
+=======
+		int error = desc->pg_ops->pg_doio(desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error < 0)
 			desc->pg_error = error;
 		else
@@ -331,7 +372,11 @@ static void nfs_pageio_doio(struct nfs_pageio_descriptor *desc)
  * Returns true if the request 'req' was successfully coalesced into the
  * existing list of pages 'desc'.
  */
+<<<<<<< HEAD
 int nfs_pageio_add_request(struct nfs_pageio_descriptor *desc,
+=======
+static int __nfs_pageio_add_request(struct nfs_pageio_descriptor *desc,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   struct nfs_page *req)
 {
 	while (!nfs_pageio_do_add_request(desc, req)) {
@@ -340,17 +385,77 @@ int nfs_pageio_add_request(struct nfs_pageio_descriptor *desc,
 		if (desc->pg_error < 0)
 			return 0;
 		desc->pg_moreio = 0;
+<<<<<<< HEAD
+=======
+		if (desc->pg_recoalesce)
+			return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+static int nfs_do_recoalesce(struct nfs_pageio_descriptor *desc)
+{
+	LIST_HEAD(head);
+
+	do {
+		list_splice_init(&desc->pg_list, &head);
+		desc->pg_bytes_written -= desc->pg_count;
+		desc->pg_count = 0;
+		desc->pg_base = 0;
+		desc->pg_recoalesce = 0;
+
+		while (!list_empty(&head)) {
+			struct nfs_page *req;
+
+			req = list_first_entry(&head, struct nfs_page, wb_list);
+			nfs_list_remove_request(req);
+			if (__nfs_pageio_add_request(desc, req))
+				continue;
+			if (desc->pg_error < 0)
+				return 0;
+			break;
+		}
+	} while (desc->pg_recoalesce);
+	return 1;
+}
+
+int nfs_pageio_add_request(struct nfs_pageio_descriptor *desc,
+		struct nfs_page *req)
+{
+	int ret;
+
+	do {
+		ret = __nfs_pageio_add_request(desc, req);
+		if (ret)
+			break;
+		if (desc->pg_error < 0)
+			break;
+		ret = nfs_do_recoalesce(desc);
+	} while (ret);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * nfs_pageio_complete - Complete I/O on an nfs_pageio_descriptor
  * @desc: pointer to io descriptor
  */
 void nfs_pageio_complete(struct nfs_pageio_descriptor *desc)
 {
+<<<<<<< HEAD
 	nfs_pageio_doio(desc);
+=======
+	for (;;) {
+		nfs_pageio_doio(desc);
+		if (!desc->pg_recoalesce)
+			break;
+		if (!nfs_do_recoalesce(desc))
+			break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -369,6 +474,7 @@ void nfs_pageio_cond_complete(struct nfs_pageio_descriptor *desc, pgoff_t index)
 	if (!list_empty(&desc->pg_list)) {
 		struct nfs_page *prev = nfs_list_entry(desc->pg_list.prev);
 		if (index != prev->wb_index + 1)
+<<<<<<< HEAD
 			nfs_pageio_doio(desc);
 	}
 }
@@ -432,6 +538,10 @@ int nfs_scan_list(struct nfs_inode *nfsi,
 	}
 out:
 	return res;
+=======
+			nfs_pageio_complete(desc);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int __init nfs_init_nfspagecache(void)

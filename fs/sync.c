@@ -6,7 +6,11 @@
 #include <linux/file.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/namei.h>
 #include <linux/sched.h>
 #include <linux/writeback.h>
@@ -14,7 +18,10 @@
 #include <linux/linkage.h>
 #include <linux/pagemap.h>
 #include <linux/quotaops.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/backing-dev.h>
 #include "internal.h"
 
@@ -43,7 +50,11 @@ static int __sync_filesystem(struct super_block *sb, int wait)
 	if (wait)
 		sync_inodes_sb(sb);
 	else
+<<<<<<< HEAD
 		writeback_inodes_sb(sb);
+=======
+		writeback_inodes_sb(sb, WB_REASON_SYNC);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (sb->s_op->sync_fs)
 		sb->s_op->sync_fs(sb, wait);
@@ -98,7 +109,11 @@ static void sync_filesystems(int wait)
  */
 SYSCALL_DEFINE0(sync)
 {
+<<<<<<< HEAD
 	wakeup_flusher_threads(0);
+=======
+	wakeup_flusher_threads(0, WB_REASON_SYNC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	sync_filesystems(0);
 	sync_filesystems(1);
 	if (unlikely(laptop_mode))
@@ -165,6 +180,7 @@ SYSCALL_DEFINE1(syncfs, int, fd)
  */
 int vfs_fsync_range(struct file *file, loff_t start, loff_t end, int datasync)
 {
+<<<<<<< HEAD
 	struct address_space *mapping = file->f_mapping;
 	int err, ret;
 
@@ -187,6 +203,11 @@ int vfs_fsync_range(struct file *file, loff_t start, loff_t end, int datasync)
 
 out:
 	return ret;
+=======
+	if (!file->f_op || !file->f_op->fsync)
+		return -EINVAL;
+	return file->f_op->fsync(file, start, end, datasync);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(vfs_fsync_range);
 

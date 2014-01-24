@@ -11,6 +11,10 @@
 #include <linux/pci.h>
 #include <linux/bitmap.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sn/sn_sal.h>
 #include <asm/sn/addrs.h>
 #include <asm/sn/io.h>
@@ -599,11 +603,19 @@ tioca_bus_fixup(struct pcibus_bussoft *prom_bussoft, struct pci_controller *cont
 	 * Allocate kernel bus soft and copy from prom.
 	 */
 
+<<<<<<< HEAD
 	tioca_common = kzalloc(sizeof(struct tioca_common), GFP_KERNEL);
 	if (!tioca_common)
 		return NULL;
 
 	memcpy(tioca_common, prom_bussoft, sizeof(struct tioca_common));
+=======
+	tioca_common = kmemdup(prom_bussoft, sizeof(struct tioca_common),
+			       GFP_KERNEL);
+	if (!tioca_common)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	tioca_common->ca_common.bs_base = (unsigned long)
 		ioremap(REGION_OFFSET(tioca_common->ca_common.bs_base),
 			sizeof(struct tioca_common));
@@ -648,6 +660,10 @@ tioca_bus_fixup(struct pcibus_bussoft *prom_bussoft, struct pci_controller *cont
 		       __func__, SGI_TIOCA_ERROR,
 		       (int)tioca_common->ca_common.bs_persist_busnum);
 
+<<<<<<< HEAD
+=======
+	irq_set_handler(SGI_TIOCA_ERROR, handle_level_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	sn_set_err_irq_affinity(SGI_TIOCA_ERROR);
 
 	/* Setup locality information */

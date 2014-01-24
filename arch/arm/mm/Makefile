@@ -7,6 +7,10 @@ obj-y				:= dma-mapping.o extable.o fault.o init.o \
 
 obj-$(CONFIG_MMU)		+= fault-armv.o flush.o idmap.o ioremap.o \
 				   mmap.o pgd.o mmu.o vmregion.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_DEBUG_RODATA)	+= rodata.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 ifneq ($(CONFIG_MMU),y)
 obj-y				+= nommu.o
@@ -99,6 +103,10 @@ AFLAGS_proc-v7.o	:=-Wa,-march=armv7-a
 
 obj-$(CONFIG_CACHE_FEROCEON_L2)	+= cache-feroceon-l2.o
 obj-$(CONFIG_CACHE_L2X0)	+= cache-l2x0.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_CACHE_PL310_ERP)   += cache-pl310-erp.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_CACHE_XSC3L2)	+= cache-xsc3l2.o
 obj-$(CONFIG_CACHE_TAUROS2)	+= cache-tauros2.o
 obj-$(CONFIG_VCM)		+= vcm.o vcm_alloc.o

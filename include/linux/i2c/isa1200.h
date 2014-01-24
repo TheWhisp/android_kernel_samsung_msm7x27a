@@ -3,7 +3,11 @@
  *
  *  Copyright (C) 2009 Samsung Electronics
  *  Kyungmin Park <kyungmin.park@samsung.com>
+<<<<<<< HEAD
  *  Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ *  Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -49,12 +53,20 @@ struct isa1200_platform_data {
 	bool smart_en; /* smart mode enable/disable */
 	bool is_erm;
 	bool ext_clk_en;
+<<<<<<< HEAD
+=======
+	bool need_pwm_clk;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int chip_en;
 	unsigned int duty;
 	struct isa1200_regulator *regulator_info;
 	u8 num_regulators;
 	int (*power_on)(int on);
 	int (*dev_setup)(bool on);
+<<<<<<< HEAD
+=======
+	int (*clk_enable)(bool on);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif /* __LINUX_ISA1200_H */

@@ -26,6 +26,10 @@ config MPC86XADS
 config MPC885ADS
 	bool "MPC885ADS"
 	select CPM1
+<<<<<<< HEAD
+=======
+	select OF_DYNAMIC
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Freescale Semiconductor MPC885 Application Development System (ADS).
 	  Also known as DUET.

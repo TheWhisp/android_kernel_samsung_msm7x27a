@@ -10,6 +10,11 @@
 #include "ql4_def.h"
 #include "ql4_glbl.h"
 
+<<<<<<< HEAD
+=======
+#include <asm-generic/io-64-nonatomic-lo-hi.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MASK(n)		DMA_BIT_MASK(n)
 #define MN_WIN(addr)	(((addr & 0x1fc0000) >> 1) | ((addr >> 25) & 0x3ff))
 #define OCM_WIN(addr)	(((addr & 0x1ff0000) >> 1) | ((addr >> 25) & 0x3ff))
@@ -655,6 +660,7 @@ static int qla4_8xxx_pci_is_same_window(struct scsi_qla_host *ha,
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifndef readq
 static inline __u64 readq(const volatile void __iomem *addr)
 {
@@ -676,6 +682,8 @@ static inline void writeq(__u64 val, volatile void __iomem *addr)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int qla4_8xxx_pci_mem_read_direct(struct scsi_qla_host *ha,
 		u64 off, void *data, int size)
 {
@@ -860,11 +868,16 @@ qla4_8xxx_rom_lock(struct scsi_qla_host *ha)
 		done = qla4_8xxx_rd_32(ha, QLA82XX_PCIE_REG(PCIE_SEM2_LOCK));
 		if (done == 1)
 			break;
+<<<<<<< HEAD
 		if (timeout >= qla4_8xxx_rom_lock_timeout) {
 			ql4_printk(KERN_WARNING, ha,
 			    "%s: Failed to acquire rom lock", __func__);
 			return -1;
 		}
+=======
+		if (timeout >= qla4_8xxx_rom_lock_timeout)
+			return -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		timeout++;
 
@@ -1015,6 +1028,7 @@ qla4_8xxx_pinit_from_rom(struct scsi_qla_host *ha, int verbose)
 	else
 		qla4_8xxx_wr_32(ha, QLA82XX_ROMUSB_GLB_SW_RESET, 0xffffffff);
 
+<<<<<<< HEAD
 	/* reset ms */
 	val = qla4_8xxx_rd_32(ha, QLA82XX_CRB_QDR_NET + 0xe4);
 	val |= (1 << 1);
@@ -1027,6 +1041,8 @@ qla4_8xxx_pinit_from_rom(struct scsi_qla_host *ha, int verbose)
 	qla4_8xxx_wr_32(ha, QLA82XX_CRB_QDR_NET + 0xe4, val);
 	msleep(20);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	qla4_8xxx_rom_unlock(ha);
 
 	/* Read the signature value from the flash.
@@ -1792,8 +1808,16 @@ int qla4_8xxx_device_state_handler(struct scsi_qla_host *ha)
 	int rval = QLA_SUCCESS;
 	unsigned long dev_init_timeout;
 
+<<<<<<< HEAD
 	if (!test_bit(AF_INIT_DONE, &ha->flags))
 		qla4_8xxx_set_drv_active(ha);
+=======
+	if (!test_bit(AF_INIT_DONE, &ha->flags)) {
+		qla4_8xxx_idc_lock(ha);
+		qla4_8xxx_set_drv_active(ha);
+		qla4_8xxx_idc_unlock(ha);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_state = qla4_8xxx_rd_32(ha, QLA82XX_CRB_DEV_STATE);
 	ql4_printk(KERN_INFO, ha, "1:Device state is 0x%x = %s\n", dev_state,
@@ -1802,8 +1826,13 @@ int qla4_8xxx_device_state_handler(struct scsi_qla_host *ha)
 	/* wait for 30 seconds for device to go ready */
 	dev_init_timeout = jiffies + (ha->nx_dev_init_timeout * HZ);
 
+<<<<<<< HEAD
 	while (1) {
 		qla4_8xxx_idc_lock(ha);
+=======
+	qla4_8xxx_idc_lock(ha);
+	while (1) {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (time_after_eq(jiffies, dev_init_timeout)) {
 			ql4_printk(KERN_WARNING, ha, "Device init failed!\n");
@@ -1819,15 +1848,25 @@ int qla4_8xxx_device_state_handler(struct scsi_qla_host *ha)
 		/* NOTE: Make sure idc unlocked upon exit of switch statement */
 		switch (dev_state) {
 		case QLA82XX_DEV_READY:
+<<<<<<< HEAD
 			qla4_8xxx_idc_unlock(ha);
 			goto exit;
 		case QLA82XX_DEV_COLD:
 			rval = qla4_8xxx_device_bootstrap(ha);
 			qla4_8xxx_idc_unlock(ha);
+=======
+			goto exit;
+		case QLA82XX_DEV_COLD:
+			rval = qla4_8xxx_device_bootstrap(ha);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto exit;
 		case QLA82XX_DEV_INITIALIZING:
 			qla4_8xxx_idc_unlock(ha);
 			msleep(1000);
+<<<<<<< HEAD
+=======
+			qla4_8xxx_idc_lock(ha);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case QLA82XX_DEV_NEED_RESET:
 			if (!ql4xdontresethba) {
@@ -1836,6 +1875,7 @@ int qla4_8xxx_device_state_handler(struct scsi_qla_host *ha)
 				 * reset handler */
 				dev_init_timeout = jiffies +
 					(ha->nx_dev_init_timeout * HZ);
+<<<<<<< HEAD
 			}
 			qla4_8xxx_idc_unlock(ha);
 			break;
@@ -1848,26 +1888,62 @@ int qla4_8xxx_device_state_handler(struct scsi_qla_host *ha)
 		case QLA82XX_DEV_QUIESCENT:
 			qla4_8xxx_idc_unlock(ha);
 			msleep(1000);
+=======
+			} else {
+				qla4_8xxx_idc_unlock(ha);
+				msleep(1000);
+				qla4_8xxx_idc_lock(ha);
+			}
+			break;
+		case QLA82XX_DEV_NEED_QUIESCENT:
+			/* idc locked/unlocked in handler */
+			qla4_8xxx_need_qsnt_handler(ha);
+			break;
+		case QLA82XX_DEV_QUIESCENT:
+			qla4_8xxx_idc_unlock(ha);
+			msleep(1000);
+			qla4_8xxx_idc_lock(ha);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case QLA82XX_DEV_FAILED:
 			qla4_8xxx_idc_unlock(ha);
 			qla4xxx_dead_adapter_cleanup(ha);
 			rval = QLA_ERROR;
+<<<<<<< HEAD
+=======
+			qla4_8xxx_idc_lock(ha);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto exit;
 		default:
 			qla4_8xxx_idc_unlock(ha);
 			qla4xxx_dead_adapter_cleanup(ha);
 			rval = QLA_ERROR;
+<<<<<<< HEAD
+=======
+			qla4_8xxx_idc_lock(ha);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto exit;
 		}
 	}
 exit:
+<<<<<<< HEAD
+=======
+	qla4_8xxx_idc_unlock(ha);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rval;
 }
 
 int qla4_8xxx_load_risc(struct scsi_qla_host *ha)
 {
 	int retval;
+<<<<<<< HEAD
+=======
+
+	/* clear the interrupt */
+	writel(0, &ha->qla4_8xxx_reg->host_int);
+	readl(&ha->qla4_8xxx_reg->host_int);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = qla4_8xxx_device_state_handler(ha);
 
 	if (retval == QLA_SUCCESS && !test_bit(AF_INIT_DONE, &ha->flags))
@@ -2015,11 +2091,25 @@ qla4_8xxx_get_flt_info(struct scsi_qla_host *ha, uint32_t flt_addr)
 			hw->flt_region_boot = start;
 			break;
 		case FLT_REG_FW_82:
+<<<<<<< HEAD
+=======
+		case FLT_REG_FW_82_1:
+>>>>>>> refs/remotes/origin/cm-10.0
 			hw->flt_region_fw = start;
 			break;
 		case FLT_REG_BOOTLOAD_82:
 			hw->flt_region_bootload = start;
 			break;
+<<<<<<< HEAD
+=======
+		case FLT_REG_ISCSI_PARAM:
+			hw->flt_iscsi_param =  start;
+			break;
+		case FLT_REG_ISCSI_CHAP:
+			hw->flt_region_chap =  start;
+			hw->flt_chap_size =  le32_to_cpu(region->size);
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	goto done;
@@ -2032,6 +2122,12 @@ no_flash_data:
 	hw->flt_region_boot     = FA_BOOT_CODE_ADDR_82;
 	hw->flt_region_bootload = FA_BOOT_LOAD_ADDR_82;
 	hw->flt_region_fw       = FA_RISC_CODE_ADDR_82;
+<<<<<<< HEAD
+=======
+	hw->flt_region_chap	= FA_FLASH_ISCSI_CHAP;
+	hw->flt_chap_size	= FA_FLASH_CHAP_SIZE;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 done:
 	DEBUG2(ql4_printk(KERN_INFO, ha, "FLT[%s]: flt=0x%x fdt=0x%x "
 	    "boot=0x%x bootload=0x%x fw=0x%x\n", loc, hw->flt_region_flt,
@@ -2258,10 +2354,22 @@ int qla4_8xxx_get_sys_info(struct scsi_qla_host *ha)
 	}
 
 	/* Save M.A.C. address & serial_number */
+<<<<<<< HEAD
+=======
+	ha->port_num = sys_info->port_num;
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(ha->my_mac, &sys_info->mac_addr[0],
 	    min(sizeof(ha->my_mac), sizeof(sys_info->mac_addr)));
 	memcpy(ha->serial_number, &sys_info->serial_number,
 	    min(sizeof(ha->serial_number), sizeof(sys_info->serial_number)));
+<<<<<<< HEAD
+=======
+	memcpy(ha->model_name, &sys_info->board_id_str,
+	       min(sizeof(ha->model_name), sizeof(sys_info->board_id_str)));
+	ha->phy_port_cnt = sys_info->phys_port_cnt;
+	ha->phy_port_num = sys_info->port_num;
+	ha->iscsi_pci_func_cnt = sys_info->iscsi_pci_func_cnt;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	DEBUG2(printk("scsi%ld: %s: "
 	    "mac %02x:%02x:%02x:%02x:%02x:%02x "

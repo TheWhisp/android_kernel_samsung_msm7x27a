@@ -1457,10 +1457,16 @@ static int __devinit vcc_table_allocate(struct lanai_dev *lanai)
 	return (lanai->vccs == NULL) ? -ENOMEM : 0;
 #else
 	int bytes = (lanai->num_vci) * sizeof(struct lanai_vcc *);
+<<<<<<< HEAD
 	lanai->vccs = (struct lanai_vcc **) vmalloc(bytes);
 	if (unlikely(lanai->vccs == NULL))
 		return -ENOMEM;
 	memset(lanai->vccs, 0, bytes);
+=======
+	lanai->vccs = vzalloc(bytes);
+	if (unlikely(lanai->vccs == NULL))
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 #endif
 }
@@ -1573,7 +1579,11 @@ static inline void host_vcc_unbind(struct lanai_dev *lanai,
 
 static void lanai_reset(struct lanai_dev *lanai)
 {
+<<<<<<< HEAD
 	printk(KERN_CRIT DEV_LABEL "(itf %d): *NOT* reseting - not "
+=======
+	printk(KERN_CRIT DEV_LABEL "(itf %d): *NOT* resetting - not "
+>>>>>>> refs/remotes/origin/cm-10.0
 	    "implemented\n", lanai->number);
 	/* TODO */
 	/* The following is just a hack until we write the real
@@ -1947,7 +1957,10 @@ static int __devinit lanai_pci_start(struct lanai_dev *lanai)
 {
 	struct pci_dev *pci = lanai->pci;
 	int result;
+<<<<<<< HEAD
 	u16 w;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (pci_enable_device(pci) != 0) {
 		printk(KERN_ERR DEV_LABEL "(itf %d): can't enable "
@@ -1965,6 +1978,7 @@ static int __devinit lanai_pci_start(struct lanai_dev *lanai)
 		    "(itf %d): No suitable DMA available.\n", lanai->number);
 		return -EBUSY;
 	}
+<<<<<<< HEAD
 	result = pci_read_config_word(pci, PCI_SUBSYSTEM_ID, &w);
 	if (result != PCIBIOS_SUCCESSFUL) {
 		printk(KERN_ERR DEV_LABEL "(itf %d): can't read "
@@ -1972,6 +1986,9 @@ static int __devinit lanai_pci_start(struct lanai_dev *lanai)
 		return -EINVAL;
 	}
 	result = check_board_id_and_rev("PCI", w, NULL);
+=======
+	result = check_board_id_and_rev("PCI", pci->subsystem_device, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (result != 0)
 		return result;
 	/* Set latency timer to zero as per lanai docs */

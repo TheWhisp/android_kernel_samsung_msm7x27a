@@ -906,7 +906,11 @@ static const char *sctp_state_name(int state)
 	return "?";
 }
 
+<<<<<<< HEAD
 static inline int
+=======
+static inline void
+>>>>>>> refs/remotes/origin/cm-10.0
 set_sctp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
 		int direction, const struct sk_buff *skb)
 {
@@ -924,7 +928,11 @@ set_sctp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
 	sch = skb_header_pointer(skb, ihl + sizeof(sctp_sctphdr_t),
 				sizeof(_sctpch), &_sctpch);
 	if (sch == NULL)
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	chunk_type = sch->type;
 	/*
@@ -993,6 +1001,7 @@ set_sctp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
 		cp->timeout = pd->timeout_table[cp->state = next_state];
 	else	/* What to do ? */
 		cp->timeout = sctp_timeouts[cp->state = next_state];
+<<<<<<< HEAD
 
 	return 1;
 }
@@ -1008,6 +1017,17 @@ sctp_state_transition(struct ip_vs_conn *cp, int direction,
 	spin_unlock(&cp->lock);
 
 	return ret;
+=======
+}
+
+static void
+sctp_state_transition(struct ip_vs_conn *cp, int direction,
+		const struct sk_buff *skb, struct ip_vs_proto_data *pd)
+{
+	spin_lock(&cp->lock);
+	set_sctp_state(pd, cp, direction, skb);
+	spin_unlock(&cp->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline __u16 sctp_app_hashkey(__be16 port)
@@ -1096,7 +1116,11 @@ out:
  *   timeouts is netns related now.
  * ---------------------------------------------
  */
+<<<<<<< HEAD
 static void __ip_vs_sctp_init(struct net *net, struct ip_vs_proto_data *pd)
+=======
+static int __ip_vs_sctp_init(struct net *net, struct ip_vs_proto_data *pd)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
@@ -1104,6 +1128,12 @@ static void __ip_vs_sctp_init(struct net *net, struct ip_vs_proto_data *pd)
 	spin_lock_init(&ipvs->sctp_app_lock);
 	pd->timeout_table = ip_vs_create_timeout_table((int *)sctp_timeouts,
 							sizeof(sctp_timeouts));
+<<<<<<< HEAD
+=======
+	if (!pd->timeout_table)
+		return -ENOMEM;
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __ip_vs_sctp_exit(struct net *net, struct ip_vs_proto_data *pd)

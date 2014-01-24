@@ -3,13 +3,22 @@
 
 #ifdef CONFIG_HAVE_GENERIC_DMA_COHERENT
 /*
+<<<<<<< HEAD
  * These two functions are only for dma allocator.
+=======
+ * These three functions are only for dma allocator.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Don't use them in device drivers.
  */
 int dma_alloc_from_coherent(struct device *dev, ssize_t size,
 				       dma_addr_t *dma_handle, void **ret);
 int dma_release_from_coherent(struct device *dev, int order, void *vaddr);
 
+<<<<<<< HEAD
+=======
+int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
+			    void *cpu_addr, size_t size, int *ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Standard interface
  */

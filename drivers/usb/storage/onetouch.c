@@ -69,7 +69,11 @@ struct usb_onetouch {
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
+<<<<<<< HEAD
 struct usb_device_id onetouch_usb_ids[] = {
+=======
+static struct usb_device_id onetouch_usb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 #	include "unusual_onetouch.h"
 	{ }		/* Terminating entry */
 };
@@ -312,6 +316,7 @@ static struct usb_driver onetouch_driver = {
 	.post_reset =	usb_stor_post_reset,
 	.id_table =	onetouch_usb_ids,
 	.soft_unbind =	1,
+<<<<<<< HEAD
 };
 
 static int __init onetouch_init(void)
@@ -326,3 +331,9 @@ static void __exit onetouch_exit(void)
 
 module_init(onetouch_init);
 module_exit(onetouch_exit);
+=======
+	.no_dynamic_id = 1,
+};
+
+module_usb_driver(onetouch_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

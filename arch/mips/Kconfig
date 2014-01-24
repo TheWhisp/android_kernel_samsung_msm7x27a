@@ -16,6 +16,10 @@ config MIPS
 	select HAVE_FUNCTION_GRAPH_TRACER
 	select HAVE_KPROBES
 	select HAVE_KRETPROBES
+<<<<<<< HEAD
+=======
+	select ARCH_BINFMT_ELF_RANDOMIZE_PIE
+>>>>>>> refs/remotes/origin/cm-10.0
 	select RTC_LIB if !MACH_LOONGSON
 	select GENERIC_ATOMIC64 if !64BIT
 	select HAVE_DMA_ATTRS
@@ -23,7 +27,16 @@ config MIPS
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_PROBE
 	select GENERIC_IRQ_SHOW
+<<<<<<< HEAD
 	select HAVE_ARCH_JUMP_LABEL
+=======
+	select GENERIC_PCI_IOMAP
+	select HAVE_ARCH_JUMP_LABEL
+	select IRQ_FORCED_THREADING
+	select HAVE_MEMBLOCK
+	select HAVE_MEMBLOCK_NODE_MAP
+	select ARCH_DISCARD_MEMBLOCK
+>>>>>>> refs/remotes/origin/cm-10.0
 
 menu "Machine selection"
 
@@ -46,6 +59,11 @@ config MIPS_ALCHEMY
 	select GENERIC_GPIO
 	select ARCH_WANT_OPTIONAL_GPIOLIB
 	select SYS_SUPPORTS_ZBOOT
+<<<<<<< HEAD
+=======
+	select USB_ARCH_HAS_OHCI
+	select USB_ARCH_HAS_EHCI
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config AR7
 	bool "Texas Instruments AR7"
@@ -62,7 +80,10 @@ config AR7
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_SUPPORTS_ZBOOT_UART16550
 	select ARCH_REQUIRE_GPIOLIB
+<<<<<<< HEAD
 	select GCD
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	select VLYNQ
 	help
 	  Support for the Texas Instruments AR7 System-on-a-Chip
@@ -91,6 +112,7 @@ config BCM47XX
 	select DMA_NONCOHERENT
 	select HW_HAS_PCI
 	select IRQ_CPU
+<<<<<<< HEAD
 	select SYS_HAS_CPU_MIPS32_R1
 	select SYS_SUPPORTS_32BIT_KERNEL
 	select SYS_SUPPORTS_LITTLE_ENDIAN
@@ -100,6 +122,10 @@ config BCM47XX
 	select SSB_EMBEDDED
 	select SSB_B43_PCI_BRIDGE if PCI
 	select SSB_PCICORE_HOSTMODE if PCI
+=======
+	select SYS_SUPPORTS_32BIT_KERNEL
+	select SYS_SUPPORTS_LITTLE_ENDIAN
+>>>>>>> refs/remotes/origin/cm-10.0
 	select GENERIC_GPIO
 	select SYS_HAS_EARLY_PRINTK
 	select CFE
@@ -185,6 +211,10 @@ config MACH_JAZZ
 	select CSRC_R4K
 	select DEFAULT_SGI_PARTITION if CPU_BIG_ENDIAN
 	select GENERIC_ISA_DMA
+<<<<<<< HEAD
+=======
+	select HAVE_PCSPKR_PLATFORM
+>>>>>>> refs/remotes/origin/cm-10.0
 	select IRQ_CPU
 	select I8253
 	select I8259
@@ -211,6 +241,10 @@ config MACH_JZ4740
 	select SYS_HAS_EARLY_PRINTK
 	select HAVE_PWM
 	select HAVE_CLK
+<<<<<<< HEAD
+=======
+	select GENERIC_IRQ_CHIP
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config LANTIQ
 	bool "Lantiq based platforms"
@@ -266,6 +300,10 @@ config MIPS_MALTA
 	select CSRC_R4K
 	select DMA_NONCOHERENT
 	select GENERIC_ISA_DMA
+<<<<<<< HEAD
+=======
+	select HAVE_PCSPKR_PLATFORM
+>>>>>>> refs/remotes/origin/cm-10.0
 	select IRQ_CPU
 	select IRQ_GIC
 	select HW_HAS_PCI
@@ -640,6 +678,10 @@ config SNI_RM
 	select DEFAULT_SGI_PARTITION if CPU_BIG_ENDIAN
 	select DMA_NONCOHERENT
 	select GENERIC_ISA_DMA
+<<<<<<< HEAD
+=======
+	select HAVE_PCSPKR_PLATFORM
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HW_HAS_EISA
 	select HW_HAS_PCI
 	select IRQ_CPU
@@ -716,9 +758,15 @@ config CAVIUM_OCTEON_SIMULATOR
 	select DMA_COHERENT
 	select SYS_SUPPORTS_64BIT_KERNEL
 	select SYS_SUPPORTS_BIG_ENDIAN
+<<<<<<< HEAD
 	select SYS_SUPPORTS_HIGHMEM
 	select SYS_SUPPORTS_HOTPLUG_CPU
 	select SYS_HAS_CPU_CAVIUM_OCTEON
+=======
+	select SYS_SUPPORTS_HOTPLUG_CPU
+	select SYS_HAS_CPU_CAVIUM_OCTEON
+	select HOLES_IN_ZONE
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  The Octeon simulator is software performance model of the Cavium
 	  Octeon Processor. It supports simulating Octeon processors on x86
@@ -731,7 +779,10 @@ config CAVIUM_OCTEON_REFERENCE_BOARD
 	select DMA_COHERENT
 	select SYS_SUPPORTS_64BIT_KERNEL
 	select SYS_SUPPORTS_BIG_ENDIAN
+<<<<<<< HEAD
 	select SYS_SUPPORTS_HIGHMEM
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SYS_SUPPORTS_HOTPLUG_CPU
 	select SYS_HAS_EARLY_PRINTK
 	select SYS_HAS_CPU_CAVIUM_OCTEON
@@ -741,6 +792,10 @@ config CAVIUM_OCTEON_REFERENCE_BOARD
 	select ZONE_DMA32
 	select USB_ARCH_HAS_OHCI
 	select USB_ARCH_HAS_EHCI
+<<<<<<< HEAD
+=======
+	select HOLES_IN_ZONE
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option supports all of the Octeon reference boards from Cavium
 	  Networks. It builds a kernel that dynamically determines the Octeon
@@ -759,7 +814,10 @@ config NLM_XLR_BOARD
 	depends on EXPERIMENTAL
 	select BOOT_ELF32
 	select NLM_COMMON
+<<<<<<< HEAD
 	select NLM_XLR
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SYS_HAS_CPU_XLR
 	select SYS_SUPPORTS_SMP
 	select HW_HAS_PCI
@@ -774,6 +832,10 @@ config NLM_XLR_BOARD
 	select CEVT_R4K
 	select CSRC_R4K
 	select IRQ_CPU
+<<<<<<< HEAD
+=======
+	select ARCH_SUPPORTS_MSI
+>>>>>>> refs/remotes/origin/cm-10.0
 	select ZONE_DMA if 64BIT
 	select SYNC_R4K
 	select SYS_HAS_EARLY_PRINTK
@@ -781,10 +843,44 @@ config NLM_XLR_BOARD
 	  Support for systems based on Netlogic XLR and XLS processors.
 	  Say Y here if you have a XLR or XLS based board.
 
+<<<<<<< HEAD
+=======
+config NLM_XLP_BOARD
+	bool "Netlogic XLP based systems"
+	depends on EXPERIMENTAL
+	select BOOT_ELF32
+	select NLM_COMMON
+	select SYS_HAS_CPU_XLP
+	select SYS_SUPPORTS_SMP
+	select HW_HAS_PCI
+	select SWAP_IO_SPACE
+	select SYS_SUPPORTS_32BIT_KERNEL
+	select SYS_SUPPORTS_64BIT_KERNEL
+	select 64BIT_PHYS_ADDR
+	select SYS_SUPPORTS_BIG_ENDIAN
+	select SYS_SUPPORTS_LITTLE_ENDIAN
+	select SYS_SUPPORTS_HIGHMEM
+	select DMA_COHERENT
+	select NR_CPUS_DEFAULT_32
+	select CEVT_R4K
+	select CSRC_R4K
+	select IRQ_CPU
+	select ZONE_DMA if 64BIT
+	select SYNC_R4K
+	select SYS_HAS_EARLY_PRINTK
+	help
+	  This board is based on Netlogic XLP Processor.
+	  Say Y here if you have a XLP based board.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 endchoice
 
 source "arch/mips/alchemy/Kconfig"
 source "arch/mips/ath79/Kconfig"
+<<<<<<< HEAD
+=======
+source "arch/mips/bcm47xx/Kconfig"
+>>>>>>> refs/remotes/origin/cm-10.0
 source "arch/mips/bcm63xx/Kconfig"
 source "arch/mips/jazz/Kconfig"
 source "arch/mips/jz4740/Kconfig"
@@ -817,10 +913,13 @@ config ARCH_HAS_ILOG2_U64
 	bool
 	default n
 
+<<<<<<< HEAD
 config ARCH_SUPPORTS_OPROFILE
 	bool
 	default y if !MIPS_MT_SMTC
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config GENERIC_HWEIGHT
 	bool
 	default y
@@ -970,6 +1069,12 @@ config ISA_DMA_API
 config GENERIC_GPIO
 	bool
 
+<<<<<<< HEAD
+=======
+config HOLES_IN_ZONE
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #
 # Endianess selection.  Sufficiently obscure so many users don't know what to
 # answer,so we try hard to limit the available choices.  Also the use of a
@@ -1411,17 +1516,22 @@ config CPU_CAVIUM_OCTEON
 config CPU_BMIPS3300
 	bool "BMIPS3300"
 	depends on SYS_HAS_CPU_BMIPS3300
+<<<<<<< HEAD
 	select DMA_NONCOHERENT
 	select IRQ_CPU
 	select SWAP_IO_SPACE
 	select SYS_SUPPORTS_32BIT_KERNEL
 	select WEAK_ORDERING
+=======
+	select CPU_BMIPS
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Broadcom BMIPS3300 processors.
 
 config CPU_BMIPS4350
 	bool "BMIPS4350"
 	depends on SYS_HAS_CPU_BMIPS4350
+<<<<<<< HEAD
 	select CPU_SUPPORTS_32BIT_KERNEL
 	select DMA_NONCOHERENT
 	select IRQ_CPU
@@ -1429,12 +1539,18 @@ config CPU_BMIPS4350
 	select SYS_SUPPORTS_SMP
 	select SYS_SUPPORTS_HOTPLUG_CPU
 	select WEAK_ORDERING
+=======
+	select CPU_BMIPS
+	select SYS_SUPPORTS_SMP
+	select SYS_SUPPORTS_HOTPLUG_CPU
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Broadcom BMIPS4350 ("VIPER") processors.
 
 config CPU_BMIPS4380
 	bool "BMIPS4380"
 	depends on SYS_HAS_CPU_BMIPS4380
+<<<<<<< HEAD
 	select CPU_SUPPORTS_32BIT_KERNEL
 	select DMA_NONCOHERENT
 	select IRQ_CPU
@@ -1442,12 +1558,18 @@ config CPU_BMIPS4380
 	select SYS_SUPPORTS_SMP
 	select SYS_SUPPORTS_HOTPLUG_CPU
 	select WEAK_ORDERING
+=======
+	select CPU_BMIPS
+	select SYS_SUPPORTS_SMP
+	select SYS_SUPPORTS_HOTPLUG_CPU
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Broadcom BMIPS4380 processors.
 
 config CPU_BMIPS5000
 	bool "BMIPS5000"
 	depends on SYS_HAS_CPU_BMIPS5000
+<<<<<<< HEAD
 	select CPU_SUPPORTS_32BIT_KERNEL
 	select CPU_SUPPORTS_HIGHMEM
 	select DMA_NONCOHERENT
@@ -1456,6 +1578,13 @@ config CPU_BMIPS5000
 	select SYS_SUPPORTS_SMP
 	select SYS_SUPPORTS_HOTPLUG_CPU
 	select WEAK_ORDERING
+=======
+	select CPU_BMIPS
+	select CPU_SUPPORTS_HIGHMEM
+	select MIPS_CPU_SCACHE
+	select SYS_SUPPORTS_SMP
+	select SYS_SUPPORTS_HOTPLUG_CPU
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Broadcom BMIPS5000 processors.
 
@@ -1470,6 +1599,22 @@ config CPU_XLR
 	select CPU_SUPPORTS_HUGEPAGES
 	help
 	  Netlogic Microsystems XLR/XLS processors.
+<<<<<<< HEAD
+=======
+
+config CPU_XLP
+	bool "Netlogic XLP SoC"
+	depends on SYS_HAS_CPU_XLP
+	select CPU_SUPPORTS_32BIT_KERNEL
+	select CPU_SUPPORTS_64BIT_KERNEL
+	select CPU_SUPPORTS_HIGHMEM
+	select CPU_HAS_LLSC
+	select WEAK_ORDERING
+	select WEAK_REORDERING_BEYOND_LLSC
+	select CPU_HAS_PREFETCH
+	help
+	  Netlogic Microsystems XLP processors.
+>>>>>>> refs/remotes/origin/cm-10.0
 endchoice
 
 if CPU_LOONGSON2F
@@ -1516,6 +1661,18 @@ config CPU_LOONGSON2
 	select CPU_SUPPORTS_64BIT_KERNEL
 	select CPU_SUPPORTS_HIGHMEM
 
+<<<<<<< HEAD
+=======
+config CPU_BMIPS
+	bool
+	select CPU_MIPS32
+	select CPU_SUPPORTS_32BIT_KERNEL
+	select DMA_NONCOHERENT
+	select IRQ_CPU
+	select SWAP_IO_SPACE
+	select WEAK_ORDERING
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config SYS_HAS_CPU_LOONGSON2E
 	bool
 
@@ -1603,6 +1760,12 @@ config SYS_HAS_CPU_BMIPS5000
 config SYS_HAS_CPU_XLR
 	bool
 
+<<<<<<< HEAD
+=======
+config SYS_HAS_CPU_XLP
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #
 # CPU may reorder R->R, R->W, W->R, W->W
 # Reordering beyond LL and SC is handled in WEAK_REORDERING_BEYOND_LLSC
@@ -1990,6 +2153,12 @@ config CPU_HAS_SMARTMIPS
 config CPU_HAS_WB
 	bool
 
+<<<<<<< HEAD
+=======
+config XKS01
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #
 # Vectored interrupt mode is an R2 feature
 #
@@ -2062,9 +2231,12 @@ config ARCH_DISCONTIGMEM_ENABLE
 	  or have huge holes in the physical address space for other reasons.
 	  See <file:Documentation/vm/numa> for more.
 
+<<<<<<< HEAD
 config ARCH_POPULATES_NODE_MAP
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config ARCH_SPARSEMEM_ENABLE
 	bool
 	select SPARSEMEM_STATIC
@@ -2089,7 +2261,11 @@ config NODES_SHIFT
 
 config HW_PERF_EVENTS
 	bool "Enable hardware performance counter support for perf events"
+<<<<<<< HEAD
 	depends on PERF_EVENTS && !MIPS_MT_SMTC && OPROFILE=n && CPU_MIPS32
+=======
+	depends on PERF_EVENTS && !MIPS_MT_SMTC && OPROFILE=n && (CPU_MIPS32 || CPU_MIPS64 || CPU_R10000 || CPU_SB1 || CPU_CAVIUM_OCTEON)
+>>>>>>> refs/remotes/origin/cm-10.0
 	default y
 	help
 	  Enable hardware performance counter support for perf events. If
@@ -2249,6 +2425,7 @@ config HZ
 
 source "kernel/Kconfig.preempt"
 
+<<<<<<< HEAD
 config MIPS_INSANE_LARGE
 	bool "Support for large 64-bit configurations"
 	depends on CPU_R10000 && 64BIT
@@ -2259,6 +2436,8 @@ config MIPS_INSANE_LARGE
 	  This will result in additional memory usage, so it is not
 	  recommended for normal users.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config KEXEC
 	bool "Kexec system call (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
@@ -2297,6 +2476,10 @@ config USE_OF
 	bool "Flattened Device Tree support"
 	select OF
 	select OF_EARLY_FLATTREE
+<<<<<<< HEAD
+=======
+	select IRQ_DOMAIN
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Include support for flattened device tree machine descriptions.
 
@@ -2325,6 +2508,10 @@ config PCI
 	bool "Support for PCI controller"
 	depends on HW_HAS_PCI
 	select PCI_DOMAINS
+<<<<<<< HEAD
+=======
+	select NO_GENERIC_PCI_IOPORT_MAP
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Find out whether you have a PCI motherboard. PCI is the name of a
 	  bus system, i.e. the way the CPU talks to the other stuff inside
@@ -2377,10 +2564,13 @@ config TC
 	  Linux driver support status is documented at:
 	  <http://www.linux-mips.org/wiki/DECstation>
 
+<<<<<<< HEAD
 #config ACCESSBUS
 #	bool "Access.Bus support"
 #	depends on TC
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config MMU
 	bool
 	default y
@@ -2388,6 +2578,10 @@ config MMU
 config I8253
 	bool
 	select CLKSRC_I8253
+<<<<<<< HEAD
+=======
+	select CLKEVT_I8253
+>>>>>>> refs/remotes/origin/cm-10.0
 	select MIPS_EXTERNAL_TIMER
 
 config ZONE_DMA32
@@ -2427,6 +2621,10 @@ config MIPS32_COMPAT
 config COMPAT
 	bool
 	depends on MIPS32_COMPAT
+<<<<<<< HEAD
+=======
+	select ARCH_WANT_OLD_COMPAT_IPC
+>>>>>>> refs/remotes/origin/cm-10.0
 	default y
 
 config SYSVIPC_COMPAT
@@ -2489,6 +2687,7 @@ source "security/Kconfig"
 
 source "crypto/Kconfig"
 
+<<<<<<< HEAD
 menuconfig VIRTUALIZATION
 	bool "Virtualization"
 	default n
@@ -2505,4 +2704,6 @@ source drivers/virtio/Kconfig
 
 endif # VIRTUALIZATION
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 source "lib/Kconfig"

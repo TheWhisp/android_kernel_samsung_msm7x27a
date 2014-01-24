@@ -1,7 +1,10 @@
 #include <linux/module.h>
 #include <linux/dma-mapping.h>
 #include <asm/machvec.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_IA64_GENERIC
 

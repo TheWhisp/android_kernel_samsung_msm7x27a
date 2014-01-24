@@ -60,6 +60,10 @@ extern void s3c_i2c4_set_platdata(struct s3c2410_platform_i2c *i2c);
 extern void s3c_i2c5_set_platdata(struct s3c2410_platform_i2c *i2c);
 extern void s3c_i2c6_set_platdata(struct s3c2410_platform_i2c *i2c);
 extern void s3c_i2c7_set_platdata(struct s3c2410_platform_i2c *i2c);
+<<<<<<< HEAD
+=======
+extern void s5p_i2c_hdmiphy_set_platdata(struct s3c2410_platform_i2c *i2c);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* defined by architecture to configure gpio */
 extern void s3c_i2c0_cfg_gpio(struct platform_device *dev);
@@ -71,4 +75,9 @@ extern void s3c_i2c5_cfg_gpio(struct platform_device *dev);
 extern void s3c_i2c6_cfg_gpio(struct platform_device *dev);
 extern void s3c_i2c7_cfg_gpio(struct platform_device *dev);
 
+<<<<<<< HEAD
+=======
+extern struct s3c2410_platform_i2c default_i2c_data;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASM_ARCH_IIC_H */

@@ -21,7 +21,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
+<<<<<<< HEAD
  * see Documentation/dvb/REDME.dvb-usb for more information
+=======
+ * see Documentation/dvb/README.dvb-usb for more information
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 #include "af9005.h"
 /* debug */

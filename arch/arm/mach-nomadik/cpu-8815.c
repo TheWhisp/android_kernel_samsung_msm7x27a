@@ -21,8 +21,14 @@
 #include <linux/device.h>
 #include <linux/amba/bus.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 
+=======
+#include <linux/io.h>
+
+#include <plat/gpio-nomadik.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 #include <asm/mach/map.h>
@@ -32,6 +38,10 @@
 #include <asm/hardware/cache-l2x0.h>
 
 #include "clock.h"
+<<<<<<< HEAD
+=======
+#include "cpu-8815.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define __MEM_4K_RESOURCE(x) \
 	.res = {.start = (x), .end = (x) + SZ_4K - 1, .flags = IORESOURCE_MEM}
@@ -95,12 +105,16 @@ static struct platform_device cpu8815_platform_gpio[] = {
 	GPIO_DEVICE(3),
 };
 
+<<<<<<< HEAD
 static struct amba_device cpu8815_amba_rng = {
 	.dev = {
 		.init_name = "rng",
 	},
 	__MEM_4K_RESOURCE(NOMADIK_RNG_BASE),
 };
+=======
+static AMBA_APB_DEVICE(cpu8815_amba_rng, "rng", 0, NOMADIK_RNG_BASE, { }, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct platform_device *platform_devs[] __initdata = {
 	cpu8815_platform_gpio + 0,
@@ -110,7 +124,11 @@ static struct platform_device *platform_devs[] __initdata = {
 };
 
 static struct amba_device *amba_devs[] __initdata = {
+<<<<<<< HEAD
 	&cpu8815_amba_rng
+=======
+	&cpu8815_amba_rng_device
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init cpu8815_init(void)
@@ -164,3 +182,16 @@ void __init cpu8815_init_irq(void)
 #endif
 	 return;
 }
+<<<<<<< HEAD
+=======
+
+void cpu8815_restart(char mode, const char *cmd)
+{
+	void __iomem *src_rstsr = io_p2v(NOMADIK_SRC_BASE + 0x18);
+
+	/* FIXME: use egpio when implemented */
+
+	/* Write anything to Reset status register */
+	writel(1, src_rstsr);
+}
+>>>>>>> refs/remotes/origin/cm-10.0

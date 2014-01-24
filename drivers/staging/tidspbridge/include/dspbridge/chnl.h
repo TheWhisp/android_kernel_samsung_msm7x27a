@@ -48,7 +48,10 @@
  *      -ECHRNG:     This manager cannot handle this many channels.
  *      -EEXIST:       Channel manager already exists for this device.
  *  Requires:
+<<<<<<< HEAD
  *      chnl_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *      channel_mgr != NULL.
  *      mgr_attrts != NULL.
  *  Ensures:
@@ -70,7 +73,10 @@ extern int chnl_create(struct chnl_mgr **channel_mgr,
  *      0:            Success.
  *      -EFAULT:        hchnl_mgr was invalid.
  *  Requires:
+<<<<<<< HEAD
  *      chnl_init(void) called.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *  Ensures:
  *      0:            Cancels I/O on each open channel.
  *                          Closes each open channel.
@@ -79,6 +85,7 @@ extern int chnl_create(struct chnl_mgr **channel_mgr,
  */
 extern int chnl_destroy(struct chnl_mgr *hchnl_mgr);
 
+<<<<<<< HEAD
 /*
  *  ======== chnl_exit ========
  *  Purpose:
@@ -106,4 +113,6 @@ extern void chnl_exit(void);
  */
 extern bool chnl_init(void);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CHNL_ */

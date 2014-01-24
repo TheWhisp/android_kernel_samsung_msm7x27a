@@ -100,7 +100,11 @@ static int cns3xxx_ohci_probe(struct platform_device *pdev)
 		goto err1;
 	}
 	hcd->rsrc_start = res->start;
+<<<<<<< HEAD
 	hcd->rsrc_len = res->end - res->start + 1;
+=======
+	hcd->rsrc_len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len,
 			driver->description)) {

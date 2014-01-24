@@ -17,7 +17,10 @@
 #include <linux/delay.h>
 
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <hwregs/reg_map.h>
 #include <hwregs/reg_rdwr.h>

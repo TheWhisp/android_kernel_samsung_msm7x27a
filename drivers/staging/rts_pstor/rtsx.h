@@ -24,12 +24,20 @@
 #ifndef __REALTEK_RTSX_H
 #define __REALTEK_RTSX_H
 
+<<<<<<< HEAD
 #include <asm/io.h>
 #include <asm/bitops.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
 #include <linux/version.h>
+=======
+#include <linux/io.h>
+#include <linux/bitops.h>
+#include <linux/delay.h>
+#include <linux/interrupt.h>
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/init.h>
@@ -81,7 +89,11 @@
 
 #define wait_timeout_x(task_state, msecs)		\
 do {							\
+<<<<<<< HEAD
 		set_current_state((task_state)); 	\
+=======
+		set_current_state((task_state));	\
+>>>>>>> refs/remotes/origin/cm-10.0
 		schedule_timeout((msecs) * HZ / 1000);	\
 } while (0)
 #define wait_timeout(msecs)	wait_timeout_x(TASK_INTERRUPTIBLE, (msecs))
@@ -103,19 +115,40 @@ typedef unsigned long DELAY_PARA_T;
 struct rtsx_chip;
 
 struct rtsx_dev {
+<<<<<<< HEAD
 	struct pci_dev 		*pci;
+=======
+	struct pci_dev *pci;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* pci resources */
 	unsigned long 		addr;
 	void __iomem 		*remap_addr;
+<<<<<<< HEAD
 	int 			irq;
+=======
+	int irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* locks */
 	spinlock_t 		reg_lock;
 
+<<<<<<< HEAD
 	/* mutual exclusion and synchronization structures */
 	struct semaphore	sema;		 /* to sleep thread on	    */
 	struct completion	notify;		 /* thread begin/end	    */
+=======
+	struct task_struct	*ctl_thread;	 /* the control thread   */
+	struct task_struct	*polling_thread; /* the polling thread   */
+
+	/* mutual exclusion and synchronization structures */
+	struct completion	cmnd_ready;	 /* to sleep thread on	    */
+	struct completion	control_exit;	 /* control thread exit	    */
+	struct completion	polling_exit;	 /* polling thread exit	    */
+	struct completion	notify;		 /* thread begin/end	    */
+	struct completion	scanning_done;	 /* wait for scan thread    */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	wait_queue_head_t	delay_wait;	 /* wait during scan, reset */
 	struct mutex		dev_mutex;
 

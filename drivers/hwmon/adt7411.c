@@ -8,7 +8,11 @@
  *  published by the Free Software Foundation.
  *
  *  TODO: SPI, support for external temperature sensor
+<<<<<<< HEAD
  * 	  use power-down mode for suspend?, interrupt handling?
+=======
+ *	  use power-down mode for suspend?, interrupt handling?
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/kernel.h>
@@ -197,7 +201,11 @@ static ssize_t adt7411_set_bit(struct device *dev,
 	int ret;
 	unsigned long flag;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 0, &flag);
+=======
+	ret = kstrtoul(buf, 0, &flag);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret || flag > 1)
 		return -EINVAL;
 
@@ -348,6 +356,7 @@ static struct i2c_driver adt7411_driver = {
 	.class = I2C_CLASS_HWMON,
 };
 
+<<<<<<< HEAD
 static int __init sensors_adt7411_init(void)
 {
 	return i2c_add_driver(&adt7411_driver);
@@ -359,6 +368,9 @@ static void __exit sensors_adt7411_exit(void)
 	i2c_del_driver(&adt7411_driver);
 }
 module_exit(sensors_adt7411_exit)
+=======
+module_i2c_driver(adt7411_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de> and "
 	"Wolfram Sang <w.sang@pengutronix.de>");

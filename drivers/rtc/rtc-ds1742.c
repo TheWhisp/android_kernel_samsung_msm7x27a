@@ -21,6 +21,10 @@
 #include <linux/rtc.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRV_VERSION "0.4"
 
@@ -173,7 +177,11 @@ static int __devinit ds1742_rtc_probe(struct platform_device *pdev)
 	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
 	if (!pdata)
 		return -ENOMEM;
+<<<<<<< HEAD
 	pdata->size = res->end - res->start + 1;
+=======
+	pdata->size = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!devm_request_mem_region(&pdev->dev, res->start, pdata->size,
 		pdev->name))
 		return -EBUSY;
@@ -239,6 +247,7 @@ static struct platform_driver ds1742_rtc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static __init int ds1742_init(void)
 {
 	return platform_driver_register(&ds1742_rtc_driver);
@@ -251,6 +260,9 @@ static __exit void ds1742_exit(void)
 
 module_init(ds1742_init);
 module_exit(ds1742_exit);
+=======
+module_platform_driver(ds1742_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Atsushi Nemoto <anemo@mba.ocn.ne.jp>");
 MODULE_DESCRIPTION("Dallas DS1742 RTC driver");

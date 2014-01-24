@@ -23,6 +23,10 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 #include <linux/spi/spi.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/lcd_mipid.h>
 
@@ -602,13 +606,17 @@ static int mipid_spi_remove(struct spi_device *spi)
 static struct spi_driver mipid_spi_driver = {
 	.driver = {
 		.name	= MIPID_MODULE_NAME,
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 	},
 	.probe	= mipid_spi_probe,
 	.remove	= __devexit_p(mipid_spi_remove),
 };
 
+<<<<<<< HEAD
 static int __init mipid_drv_init(void)
 {
 	spi_register_driver(&mipid_spi_driver);
@@ -622,6 +630,9 @@ static void __exit mipid_drv_cleanup(void)
 	spi_unregister_driver(&mipid_spi_driver);
 }
 module_exit(mipid_drv_cleanup);
+=======
+module_spi_driver(mipid_spi_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("MIPI display driver");
 MODULE_LICENSE("GPL");

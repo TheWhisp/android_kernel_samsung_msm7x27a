@@ -219,6 +219,11 @@ static int __init
 acpi_parse_x2apic(struct acpi_subtable_header *header, const unsigned long end)
 {
 	struct acpi_madt_local_x2apic *processor = NULL;
+<<<<<<< HEAD
+=======
+	int apic_id;
+	u8 enabled;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	processor = (struct acpi_madt_local_x2apic *)header;
 
@@ -227,6 +232,11 @@ acpi_parse_x2apic(struct acpi_subtable_header *header, const unsigned long end)
 
 	acpi_table_print_madt_entry(header);
 
+<<<<<<< HEAD
+=======
+	apic_id = processor->local_apic_id;
+	enabled = processor->lapic_flags & ACPI_MADT_ENABLED;
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_X86_X2APIC
 	/*
 	 * We need to register disabled CPU as well to permit
@@ -235,8 +245,15 @@ acpi_parse_x2apic(struct acpi_subtable_header *header, const unsigned long end)
 	 * to not preallocating memory for all NR_CPUS
 	 * when we use CPU hotplug.
 	 */
+<<<<<<< HEAD
 	acpi_register_lapic(processor->local_apic_id,	/* APIC ID */
 			    processor->lapic_flags & ACPI_MADT_ENABLED);
+=======
+	if (!apic->apic_id_valid(apic_id) && enabled)
+		printk(KERN_WARNING PREFIX "x2apic entry ignored\n");
+	else
+		acpi_register_lapic(apic_id, enabled);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 	printk(KERN_WARNING PREFIX "x2apic entry ignored\n");
 #endif
@@ -589,7 +606,11 @@ void __init acpi_set_irq_model_ioapic(void)
 #ifdef CONFIG_ACPI_HOTPLUG_CPU
 #include <acpi/processor.h>
 
+<<<<<<< HEAD
 static void acpi_map_cpu2node(acpi_handle handle, int cpu, int physid)
+=======
+static void __cpuinit acpi_map_cpu2node(acpi_handle handle, int cpu, int physid)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 #ifdef CONFIG_ACPI_NUMA
 	int nid;
@@ -638,6 +659,10 @@ static int __cpuinit _acpi_map_lsapic(acpi_handle handle, int *pcpu)
 	kfree(buffer.pointer);
 	buffer.length = ACPI_ALLOCATE_BUFFER;
 	buffer.pointer = NULL;
+<<<<<<< HEAD
+=======
+	lapic = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!alloc_cpumask_var(&tmp_map, GFP_KERNEL))
 		goto out;
@@ -646,7 +671,11 @@ static int __cpuinit _acpi_map_lsapic(acpi_handle handle, int *pcpu)
 		goto free_tmp_map;
 
 	cpumask_copy(tmp_map, cpu_present_mask);
+<<<<<<< HEAD
 	acpi_register_lapic(physid, lapic->lapic_flags & ACPI_MADT_ENABLED);
+=======
+	acpi_register_lapic(physid, ACPI_MADT_ENABLED);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * If mp_register_lapic successfully generates a new logical cpu

@@ -17,7 +17,11 @@
  * Maintainers: http://www.nslu2-linux.org/
  *
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/if_ether.h>
 #include <linux/irq.h>
 #include <linux/jiffies.h>
@@ -32,7 +36,10 @@
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define NAS100D_SDA_PIN		5
 #define NAS100D_SCL_PIN		6
@@ -314,9 +321,22 @@ static void __init nas100d_init(void)
 
 MACHINE_START(NAS100D, "Iomega NAS 100d")
 	/* Maintainer: www.nslu2-linux.org */
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 	.map_io		= ixp4xx_map_io,
 	.init_irq	= ixp4xx_init_irq,
 	.timer          = &ixp4xx_timer,
 	.init_machine	= nas100d_init,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ixp4xx_map_io,
+	.init_early	= ixp4xx_init_early,
+	.init_irq	= ixp4xx_init_irq,
+	.timer          = &ixp4xx_timer,
+	.init_machine	= nas100d_init,
+#if defined(CONFIG_PCI)
+	.dma_zone_size	= SZ_64M,
+#endif
+	.restart	= ixp4xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

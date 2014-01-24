@@ -16,7 +16,10 @@
 #include <linux/types.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/superio.h>
 
 #define DEBUG_RESOURCES 0
@@ -195,6 +198,7 @@ void __init pcibios_init_bus(struct pci_bus *bus)
 	pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bridge_ctl);
 }
 
+<<<<<<< HEAD
 /* called by drivers/pci/setup-bus.c:pci_setup_bridge().  */
 void __devinit pcibios_resource_to_bus(struct pci_dev *dev,
 		struct pci_bus_region *region, struct resource *res)
@@ -247,6 +251,8 @@ EXPORT_SYMBOL(pcibios_resource_to_bus);
 EXPORT_SYMBOL(pcibios_bus_to_resource);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * pcibios align resources() is called every time generic PCI code
  * wants to generate a new address. The process of looking for

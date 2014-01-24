@@ -132,8 +132,11 @@ struct pt_regs {
 #define instruction_pointer(regs)       ((regs)->pc)
 #define profile_pc(regs)                instruction_pointer(regs)
 
+<<<<<<< HEAD
 extern void show_regs (struct pt_regs *);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static __inline__ int valid_user_regs(struct pt_regs *regs)
 {
 	/*

@@ -249,6 +249,10 @@ EXPORT_SYMBOL_GPL(speedstep_get_frequency);
  *                 DETECT SPEEDSTEP-CAPABLE PROCESSOR                *
  *********************************************************************/
 
+<<<<<<< HEAD
+=======
+/* Keep in sync with the x86_cpu_id tables in the different modules */
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned int speedstep_detect_processor(void)
 {
 	struct cpuinfo_x86 *c = &cpu_data(0);

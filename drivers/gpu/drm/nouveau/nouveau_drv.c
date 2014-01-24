@@ -23,6 +23,10 @@
  */
 
 #include <linux/console.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "drmP.h"
 #include "drm.h"
@@ -41,7 +45,11 @@ int nouveau_agpmode = -1;
 module_param_named(agpmode, nouveau_agpmode, int, 0400);
 
 MODULE_PARM_DESC(modeset, "Enable kernel modesetting");
+<<<<<<< HEAD
 static int nouveau_modeset = -1; /* kms */
+=======
+int nouveau_modeset = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(modeset, nouveau_modeset, int, 0400);
 
 MODULE_PARM_DESC(vbios, "Override default VBIOS location");
@@ -56,6 +64,13 @@ MODULE_PARM_DESC(vram_notify, "Force DMA notifiers to be in VRAM");
 int nouveau_vram_notify = 0;
 module_param_named(vram_notify, nouveau_vram_notify, int, 0400);
 
+<<<<<<< HEAD
+=======
+MODULE_PARM_DESC(vram_type, "Override detected VRAM type");
+char *nouveau_vram_type;
+module_param_named(vram_type, nouveau_vram_type, charp, 0400);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(duallink, "Allow dual-link TMDS (>=GeForce 8)");
 int nouveau_duallink = 1;
 module_param_named(duallink, nouveau_duallink, int, 0400);
@@ -73,7 +88,11 @@ int nouveau_ignorelid = 0;
 module_param_named(ignorelid, nouveau_ignorelid, int, 0400);
 
 MODULE_PARM_DESC(noaccel, "Disable all acceleration");
+<<<<<<< HEAD
 int nouveau_noaccel = 0;
+=======
+int nouveau_noaccel = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(noaccel, nouveau_noaccel, int, 0400);
 
 MODULE_PARM_DESC(nofbaccel, "Disable fbcon acceleration");
@@ -88,7 +107,11 @@ MODULE_PARM_DESC(override_conntype, "Ignore DCB connector type");
 int nouveau_override_conntype = 0;
 module_param_named(override_conntype, nouveau_override_conntype, int, 0400);
 
+<<<<<<< HEAD
 MODULE_PARM_DESC(tv_disable, "Disable TV-out detection\n");
+=======
+MODULE_PARM_DESC(tv_disable, "Disable TV-out detection");
+>>>>>>> refs/remotes/origin/cm-10.0
 int nouveau_tv_disable = 0;
 module_param_named(tv_disable, nouveau_tv_disable, int, 0400);
 
@@ -103,6 +126,7 @@ module_param_named(tv_norm, nouveau_tv_norm, charp, 0400);
 MODULE_PARM_DESC(reg_debug, "Register access debug bitmask:\n"
 		"\t\t0x1 mc, 0x2 video, 0x4 fb, 0x8 extdev,\n"
 		"\t\t0x10 crtc, 0x20 ramdac, 0x40 vgacrtc, 0x80 rmvio,\n"
+<<<<<<< HEAD
 		"\t\t0x100 vgaattr, 0x200 EVO (G80+). ");
 int nouveau_reg_debug;
 module_param_named(reg_debug, nouveau_reg_debug, int, 0600);
@@ -119,6 +143,32 @@ MODULE_PARM_DESC(msi, "Enable MSI (default: off)\n");
 int nouveau_msi;
 module_param_named(msi, nouveau_msi, int, 0400);
 
+=======
+		"\t\t0x100 vgaattr, 0x200 EVO (G80+)");
+int nouveau_reg_debug;
+module_param_named(reg_debug, nouveau_reg_debug, int, 0600);
+
+MODULE_PARM_DESC(perflvl, "Performance level (default: boot)");
+char *nouveau_perflvl;
+module_param_named(perflvl, nouveau_perflvl, charp, 0400);
+
+MODULE_PARM_DESC(perflvl_wr, "Allow perflvl changes (warning: dangerous!)");
+int nouveau_perflvl_wr;
+module_param_named(perflvl_wr, nouveau_perflvl_wr, int, 0400);
+
+MODULE_PARM_DESC(msi, "Enable MSI (default: off)");
+int nouveau_msi;
+module_param_named(msi, nouveau_msi, int, 0400);
+
+MODULE_PARM_DESC(ctxfw, "Use external HUB/GPC ucode (fermi)");
+int nouveau_ctxfw;
+module_param_named(ctxfw, nouveau_ctxfw, int, 0400);
+
+MODULE_PARM_DESC(mxmdcb, "Santise DCB table according to MXM-SIS");
+int nouveau_mxmdcb = 1;
+module_param_named(mxmdcb, nouveau_mxmdcb, int, 0400);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int nouveau_fbpercrtc;
 #if 0
 module_param_named(fbpercrtc, nouveau_fbpercrtc, int, 0400);
@@ -173,8 +223,18 @@ nouveau_pci_suspend(struct pci_dev *pdev, pm_message_t pm_state)
 	if (dev->switch_power_state == DRM_SWITCH_POWER_OFF)
 		return 0;
 
+<<<<<<< HEAD
 	NV_INFO(dev, "Disabling fbcon acceleration...\n");
 	nouveau_fbcon_save_disable_accel(dev);
+=======
+	if (dev->mode_config.num_crtc) {
+		NV_INFO(dev, "Disabling display...\n");
+		nouveau_display_fini(dev);
+
+		NV_INFO(dev, "Disabling fbcon...\n");
+		nouveau_fbcon_set_suspend(dev, 1);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	NV_INFO(dev, "Unpinning framebuffer(s)...\n");
 	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
@@ -210,10 +270,20 @@ nouveau_pci_suspend(struct pci_dev *pdev, pm_message_t pm_state)
 	pfifo->unload_context(dev);
 
 	for (e = NVOBJ_ENGINE_NR - 1; e >= 0; e--) {
+<<<<<<< HEAD
 		if (dev_priv->eng[e]) {
 			ret = dev_priv->eng[e]->fini(dev, e);
 			if (ret)
 				goto out_abort;
+=======
+		if (!dev_priv->eng[e])
+			continue;
+
+		ret = dev_priv->eng[e]->fini(dev, e, true);
+		if (ret) {
+			NV_ERROR(dev, "... engine %d failed: %d\n", e, ret);
+			goto out_abort;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -238,10 +308,13 @@ nouveau_pci_suspend(struct pci_dev *pdev, pm_message_t pm_state)
 		pci_set_power_state(pdev, PCI_D3hot);
 	}
 
+<<<<<<< HEAD
 	console_lock();
 	nouveau_fbcon_set_suspend(dev, 1);
 	console_unlock();
 	nouveau_fbcon_restore_accel(dev);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 out_abort:
@@ -267,8 +340,11 @@ nouveau_pci_resume(struct pci_dev *pdev)
 	if (dev->switch_power_state == DRM_SWITCH_POWER_OFF)
 		return 0;
 
+<<<<<<< HEAD
 	nouveau_fbcon_save_disable_accel(dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	NV_INFO(dev, "We're back, enabling device...\n");
 	pci_set_power_state(pdev, PCI_D0);
 	pci_restore_state(pdev);
@@ -288,8 +364,11 @@ nouveau_pci_resume(struct pci_dev *pdev)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	nouveau_pm_resume(dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dev_priv->gart_info.type == NOUVEAU_GART_AGP) {
 		ret = nouveau_mem_init_agp(dev);
 		if (ret) {
@@ -329,6 +408,11 @@ nouveau_pci_resume(struct pci_dev *pdev)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	nouveau_pm_resume(dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	NV_INFO(dev, "Restoring mode...\n");
 	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
 		struct nouveau_framebuffer *nouveau_fb;
@@ -350,6 +434,7 @@ nouveau_pci_resume(struct pci_dev *pdev)
 			NV_ERROR(dev, "Could not pin/map cursor.\n");
 	}
 
+<<<<<<< HEAD
 	engine->display.init(dev);
 
 	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
@@ -359,6 +444,13 @@ nouveau_pci_resume(struct pci_dev *pdev)
 		nv_crtc->cursor.set_offset(nv_crtc, offset);
 		nv_crtc->cursor.set_pos(nv_crtc, nv_crtc->cursor_saved_x,
 						 nv_crtc->cursor_saved_y);
+=======
+	if (dev->mode_config.num_crtc) {
+		nouveau_fbcon_set_suspend(dev, 0);
+		nouveau_fbcon_zfill_all(dev);
+
+		nouveau_display_init(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Force CLUT to get re-loaded during modeset */
@@ -368,6 +460,7 @@ nouveau_pci_resume(struct pci_dev *pdev)
 		nv_crtc->lut.depth = 0;
 	}
 
+<<<<<<< HEAD
 	console_lock();
 	nouveau_fbcon_set_suspend(dev, 0);
 	console_unlock();
@@ -380,6 +473,37 @@ nouveau_pci_resume(struct pci_dev *pdev)
 	return 0;
 }
 
+=======
+	drm_helper_resume_force_mode(dev);
+
+	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
+		struct nouveau_crtc *nv_crtc = nouveau_crtc(crtc);
+		u32 offset = nv_crtc->cursor.nvbo->bo.offset;
+
+		nv_crtc->cursor.set_offset(nv_crtc, offset);
+		nv_crtc->cursor.set_pos(nv_crtc, nv_crtc->cursor_saved_x,
+						 nv_crtc->cursor_saved_y);
+	}
+
+	return 0;
+}
+
+static const struct file_operations nouveau_driver_fops = {
+	.owner = THIS_MODULE,
+	.open = drm_open,
+	.release = drm_release,
+	.unlocked_ioctl = drm_ioctl,
+	.mmap = nouveau_ttm_mmap,
+	.poll = drm_poll,
+	.fasync = drm_fasync,
+	.read = drm_read,
+#if defined(CONFIG_COMPAT)
+	.compat_ioctl = nouveau_compat_ioctl,
+#endif
+	.llseek = noop_llseek,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct drm_driver driver = {
 	.driver_features =
 		DRIVER_USE_AGP | DRIVER_PCI_DMA | DRIVER_SG |
@@ -389,7 +513,13 @@ static struct drm_driver driver = {
 	.firstopen = nouveau_firstopen,
 	.lastclose = nouveau_lastclose,
 	.unload = nouveau_unload,
+<<<<<<< HEAD
 	.preclose = nouveau_preclose,
+=======
+	.open = nouveau_open,
+	.preclose = nouveau_preclose,
+	.postclose = nouveau_postclose,
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_DRM_NOUVEAU_DEBUG)
 	.debugfs_init = nouveau_debugfs_init,
 	.debugfs_cleanup = nouveau_debugfs_takedown,
@@ -403,6 +533,7 @@ static struct drm_driver driver = {
 	.disable_vblank = nouveau_vblank_disable,
 	.reclaim_buffers = drm_core_reclaim_buffers,
 	.ioctls = nouveau_ioctls,
+<<<<<<< HEAD
 	.fops = {
 		.owner = THIS_MODULE,
 		.open = drm_open,
@@ -420,6 +551,17 @@ static struct drm_driver driver = {
 
 	.gem_init_object = nouveau_gem_object_new,
 	.gem_free_object = nouveau_gem_object_del,
+=======
+	.fops = &nouveau_driver_fops,
+	.gem_init_object = nouveau_gem_object_new,
+	.gem_free_object = nouveau_gem_object_del,
+	.gem_open_object = nouveau_gem_object_open,
+	.gem_close_object = nouveau_gem_object_close,
+
+	.dumb_create = nouveau_display_dumb_create,
+	.dumb_map_offset = nouveau_display_dumb_map_offset,
+	.dumb_destroy = nouveau_display_dumb_destroy,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.name = DRIVER_NAME,
 	.desc = DRIVER_DESC,
@@ -450,9 +592,13 @@ static int __init nouveau_init(void)
 #ifdef CONFIG_VGA_CONSOLE
 		if (vgacon_text_force())
 			nouveau_modeset = 0;
+<<<<<<< HEAD
 		else
 #endif
 			nouveau_modeset = 1;
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (!nouveau_modeset)

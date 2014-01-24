@@ -18,9 +18,15 @@
 #include <linux/delay.h>
 #include <mach/msm_qdsp6_audio.h>
 #include <mach/htc_acoustic_qsd.h>
+<<<<<<< HEAD
 
 #include "board-mahimahi.h"
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+
+#include "board-mahimahi.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "pmic.h"
 #include "board-mahimahi-tpa2018d1.h"
 

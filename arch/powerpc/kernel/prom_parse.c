@@ -2,7 +2,10 @@
 
 #include <linux/kernel.h>
 #include <linux/string.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ioport.h>
 #include <linux/etherdevice.h>
 #include <linux/of_address.h>

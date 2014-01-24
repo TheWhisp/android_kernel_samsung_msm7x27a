@@ -25,6 +25,13 @@ struct s3c_adc_bat_pdata {
 	const unsigned int current_channel;
 	const unsigned int backup_volt_channel;
 
+<<<<<<< HEAD
+=======
+	const unsigned int volt_samples;
+	const unsigned int current_samples;
+	const unsigned int backup_volt_samples;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	const unsigned int volt_mult;
 	const unsigned int current_mult;
 	const unsigned int backup_volt_mult;

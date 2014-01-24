@@ -37,8 +37,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  *
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/module.h>

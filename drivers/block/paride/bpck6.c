@@ -20,9 +20,12 @@
 */
 
 
+<<<<<<< HEAD
 /* PARAMETERS */
 static int verbose; /* set this to 1 to see debugging messages and whatnot */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define BACKPACK_VERSION "2.0.2"
 
 #include <linux/module.h>
@@ -36,6 +39,11 @@ static int verbose; /* set this to 1 to see debugging messages and whatnot */
 #include "ppc6lnx.c"
 #include "paride.h"
 
+<<<<<<< HEAD
+=======
+/* PARAMETERS */
+static bool verbose; /* set this to 1 to see debugging messages and whatnot */
+>>>>>>> refs/remotes/origin/cm-10.0
  
 
 #define PPCSTRUCT(pi) ((Interface *)(pi->private))

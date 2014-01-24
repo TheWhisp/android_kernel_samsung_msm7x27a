@@ -25,7 +25,10 @@
 #include <linux/vmalloc.h>
 #include <asm/cacheflush.h>
 #include <asm/sizes.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/page.h>

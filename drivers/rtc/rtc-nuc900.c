@@ -269,7 +269,11 @@ static int __devinit nuc900_rtc_probe(struct platform_device *pdev)
 
 	nuc900_rtc->irq_num = platform_get_irq(pdev, 0);
 	if (request_irq(nuc900_rtc->irq_num, nuc900_rtc_interrupt,
+<<<<<<< HEAD
 				IRQF_DISABLED, "nuc900rtc", nuc900_rtc)) {
+=======
+				0, "nuc900rtc", nuc900_rtc)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_err(&pdev->dev, "NUC900 RTC request irq failed\n");
 		err = -EBUSY;
 		goto fail4;

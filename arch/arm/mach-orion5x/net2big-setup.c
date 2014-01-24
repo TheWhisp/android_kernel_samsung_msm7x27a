@@ -419,12 +419,20 @@ static void __init net2big_init(void)
 
 /* Warning: LaCie use a wrong mach-type (0x20e=526) in their bootloader. */
 MACHINE_START(NET2BIG, "LaCie 2Big Network")
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= net2big_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
+<<<<<<< HEAD
+=======
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 

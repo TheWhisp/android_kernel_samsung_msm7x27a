@@ -13,9 +13,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+<<<<<<< HEAD
 /* DO NOT EDIT!! - this file automatically generated
  *                 from .s file by awk -f s2h.awk
  */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**************************************************************************
  * * Copyright © ARM Limited 1998.  All rights reserved.
  * ***********************************************************************/
@@ -399,6 +402,7 @@
 #define INTEGRATOR_TIMER1_BASE          (INTEGRATOR_CT_BASE + 0x100)
 #define INTEGRATOR_TIMER2_BASE          (INTEGRATOR_CT_BASE + 0x200)
 
+<<<<<<< HEAD
 #define TICKS_PER_uSEC                  24
 
 /*
@@ -408,6 +412,8 @@
 #define mSEC_1                          1000
 #define mSEC_10                         (mSEC_1 * 10)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define INTEGRATOR_CSR_BASE             0x10000000
 #define INTEGRATOR_CSR_SIZE             0x10000000
 

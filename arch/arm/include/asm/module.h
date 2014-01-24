@@ -31,11 +31,15 @@ struct mod_arch_specific {
 
 /* Add __virt_to_phys patching state as well */
 #ifdef CONFIG_ARM_PATCH_PHYS_VIRT
+<<<<<<< HEAD
 #ifdef CONFIG_ARM_PATCH_PHYS_VIRT_16BIT
 #define MODULE_ARCH_VERMAGIC_P2V "p2v16 "
 #else
 #define MODULE_ARCH_VERMAGIC_P2V "p2v8 "
 #endif
+=======
+#define MODULE_ARCH_VERMAGIC_P2V "p2v8 "
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define MODULE_ARCH_VERMAGIC_P2V ""
 #endif

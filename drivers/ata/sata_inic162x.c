@@ -408,9 +408,14 @@ static void inic_host_intr(struct ata_port *ap)
 	}
 
  spurious:
+<<<<<<< HEAD
 	ata_port_printk(ap, KERN_WARNING, "unhandled interrupt: "
 			"cmd=0x%x irq_stat=0x%x idma_stat=0x%x\n",
 			qc ? qc->tf.command : 0xff, irq_stat, idma_stat);
+=======
+	ata_port_warn(ap, "unhandled interrupt: cmd=0x%x irq_stat=0x%x idma_stat=0x%x\n",
+		      qc ? qc->tf.command : 0xff, irq_stat, idma_stat);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static irqreturn_t inic_interrupt(int irq, void *dev_instance)
@@ -631,8 +636,14 @@ static int inic_hardreset(struct ata_link *link, unsigned int *class,
 
 	rc = sata_link_resume(link, timing, deadline);
 	if (rc) {
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_WARNING, "failed to resume "
 				"link after reset (errno=%d)\n", rc);
+=======
+		ata_link_warn(link,
+			      "failed to resume link after reset (errno=%d)\n",
+			      rc);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return rc;
 	}
 
@@ -644,8 +655,14 @@ static int inic_hardreset(struct ata_link *link, unsigned int *class,
 		rc = ata_wait_after_reset(link, deadline, inic_check_ready);
 		/* link occupied, -ENODEV too is an error */
 		if (rc) {
+<<<<<<< HEAD
 			ata_link_printk(link, KERN_WARNING, "device not ready "
 					"after hardreset (errno=%d)\n", rc);
+=======
+			ata_link_warn(link,
+				      "device not ready after hardreset (errno=%d)\n",
+				      rc);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return rc;
 		}
 
@@ -811,7 +828,10 @@ static int inic_pci_device_resume(struct pci_dev *pdev)
 
 static int inic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
+<<<<<<< HEAD
 	static int printed_version;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct ata_port_info *ppi[] = { &inic_port_info, NULL };
 	struct ata_host *host;
 	struct inic_host_priv *hpriv;
@@ -819,8 +839,12 @@ static int inic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	int mmio_bar;
 	int i, rc;
 
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_alert(&pdev->dev, "inic162x support is broken with common data corruption issues and will be disabled by default, contact linux-ide@vger.kernel.org if in production use\n");
 
@@ -861,15 +885,23 @@ static int inic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* Set dma_mask.  This devices doesn't support 64bit addressing. */
 	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 	if (rc) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "32-bit DMA enable failed\n");
+=======
+		dev_err(&pdev->dev, "32-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return rc;
 	}
 
 	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 	if (rc) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "32-bit consistent DMA enable failed\n");
+=======
+		dev_err(&pdev->dev, "32-bit consistent DMA enable failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return rc;
 	}
 
@@ -880,15 +912,23 @@ static int inic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	 */
 	rc = pci_set_dma_max_seg_size(pdev, 65536 - 512);
 	if (rc) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "failed to set the maximum segment size.\n");
+=======
+		dev_err(&pdev->dev, "failed to set the maximum segment size\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return rc;
 	}
 
 	rc = init_controller(hpriv->mmio_base, hpriv->cached_hctl);
 	if (rc) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "failed to initialize controller\n");
+=======
+		dev_err(&pdev->dev, "failed to initialize controller\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return rc;
 	}
 

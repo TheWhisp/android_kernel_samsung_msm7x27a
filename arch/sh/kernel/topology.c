@@ -11,8 +11,15 @@
 #include <linux/cpumask.h>
 #include <linux/init.h>
 #include <linux/percpu.h>
+<<<<<<< HEAD
 #include <linux/node.h>
 #include <linux/nodemask.h>
+=======
+#include <linux/topology.h>
+#include <linux/node.h>
+#include <linux/nodemask.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static DEFINE_PER_CPU(struct cpu, cpu_devices);
 
@@ -25,7 +32,11 @@ static cpumask_t cpu_coregroup_map(unsigned int cpu)
 	 * Presently all SH-X3 SMP cores are multi-cores, so just keep it
 	 * simple until we have a method for determining topology..
 	 */
+<<<<<<< HEAD
 	return cpu_possible_map;
+=======
+	return *cpu_possible_mask;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 const struct cpumask *cpu_coregroup_mask(unsigned int cpu)

@@ -12,6 +12,10 @@
 #define _TIMEWAIT_SOCK_H
 
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/sock.h>
 
 struct timewait_sock_ops {

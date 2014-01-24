@@ -104,7 +104,11 @@ static bool sil164_readb(struct intel_dvo_device *dvo, int addr, uint8_t *ch)
 
 static bool sil164_writeb(struct intel_dvo_device *dvo, int addr, uint8_t ch)
 {
+<<<<<<< HEAD
 	struct sil164_priv *sil= dvo->dev_priv;
+=======
+	struct sil164_priv *sil = dvo->dev_priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct i2c_adapter *adapter = dvo->i2c_bus;
 	uint8_t out_buf[2];
 	struct i2c_msg msg = {

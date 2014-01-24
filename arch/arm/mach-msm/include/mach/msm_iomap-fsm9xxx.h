@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -78,7 +82,16 @@
 #define MSM_UART1_PHYS        0x94000000
 #define MSM_UART1_SIZE        SZ_4K
 
+<<<<<<< HEAD
 #define MSM_UART2_PHYS        0x94100000
 #define MSM_UART2_SIZE        SZ_4K
 
+=======
+#define MSM_UART2_PHYS        0x94010000
+#define MSM_UART2_SIZE        SZ_4K
+
+#define MSM_UART3_PHYS        0x94100000
+#define MSM_UART3_SIZE        SZ_4K
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

@@ -59,6 +59,11 @@ struct lg_cpu {
 
 	struct lguest_pages *last_pages;
 
+<<<<<<< HEAD
+=======
+	/* Initialization mode: linear map everything. */
+	bool linear_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int cpu_pgd; /* Which pgd this cpu is currently using */
 
 	/* If a hypercall was asked for, this points to the arguments. */

@@ -174,6 +174,7 @@ int module_frob_arch_sections(Elf32_Ehdr *hdr,
 	return 0;
 }
 
+<<<<<<< HEAD
 int apply_relocate(Elf32_Shdr *sechdrs,
 		   const char *strtab,
 		   unsigned int symindex,
@@ -185,6 +186,8 @@ int apply_relocate(Elf32_Shdr *sechdrs,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int entry_matches(struct ppc_plt_entry *entry, Elf32_Addr val)
 {
 	if (entry->jump[0] == 0x3d800000 + ((val + 0x8000) >> 16)

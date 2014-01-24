@@ -9,6 +9,10 @@
 #include <linux/input.h>	/* BUS_SPI */
 #include <linux/pm.h>
 #include <linux/spi/spi.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "ad7879.h"
 
@@ -21,6 +25,7 @@
 #define AD7879_WRITECMD(reg) (AD7879_CMD(reg))
 #define AD7879_READCMD(reg)  (AD7879_CMD(reg) | AD7879_CMD_READ)
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
 static int ad7879_spi_suspend(struct device *dev)
 {
@@ -45,6 +50,8 @@ static int ad7879_spi_resume(struct device *dev)
 
 static SIMPLE_DEV_PM_OPS(ad7879_spi_pm, ad7879_spi_suspend, ad7879_spi_resume);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * ad7879_read/write are only used for initial setup and for sysfs controls.
  * The main traffic is done in ad7879_collect().
@@ -173,14 +180,20 @@ static int __devexit ad7879_spi_remove(struct spi_device *spi)
 static struct spi_driver ad7879_spi_driver = {
 	.driver = {
 		.name	= "ad7879",
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
 		.owner	= THIS_MODULE,
 		.pm	= &ad7879_spi_pm,
+=======
+		.owner	= THIS_MODULE,
+		.pm	= &ad7879_pm_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe		= ad7879_spi_probe,
 	.remove		= __devexit_p(ad7879_spi_remove),
 };
 
+<<<<<<< HEAD
 static int __init ad7879_spi_init(void)
 {
 	return spi_register_driver(&ad7879_spi_driver);
@@ -192,6 +205,9 @@ static void __exit ad7879_spi_exit(void)
 	spi_unregister_driver(&ad7879_spi_driver);
 }
 module_exit(ad7879_spi_exit);
+=======
+module_spi_driver(ad7879_spi_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("AD7879(-1) touchscreen SPI bus driver");

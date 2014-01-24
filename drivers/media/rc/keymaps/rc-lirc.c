@@ -10,6 +10,10 @@
  */
 
 #include <media/rc-core.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct rc_map_table lirc[] = {
 	{ },

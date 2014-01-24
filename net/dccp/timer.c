@@ -12,6 +12,10 @@
 
 #include <linux/dccp.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "dccp.h"
 

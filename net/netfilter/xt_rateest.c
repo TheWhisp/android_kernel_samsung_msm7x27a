@@ -78,7 +78,11 @@ static int xt_rateest_mt_checkentry(const struct xt_mtchk_param *par)
 {
 	struct xt_rateest_match_info *info = par->matchinfo;
 	struct xt_rateest *est1, *est2;
+<<<<<<< HEAD
 	int ret = false;
+=======
+	int ret = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (hweight32(info->flags & (XT_RATEEST_MATCH_ABS |
 				     XT_RATEEST_MATCH_REL)) != 1)
@@ -101,13 +105,21 @@ static int xt_rateest_mt_checkentry(const struct xt_mtchk_param *par)
 	if (!est1)
 		goto err1;
 
+<<<<<<< HEAD
+=======
+	est2 = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (info->flags & XT_RATEEST_MATCH_REL) {
 		est2 = xt_rateest_lookup(info->name2);
 		if (!est2)
 			goto err2;
+<<<<<<< HEAD
 	} else
 		est2 = NULL;
 
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	info->est1 = est1;
 	info->est2 = est2;
@@ -116,7 +128,11 @@ static int xt_rateest_mt_checkentry(const struct xt_mtchk_param *par)
 err2:
 	xt_rateest_put(est1);
 err1:
+<<<<<<< HEAD
 	return -EINVAL;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void xt_rateest_mt_destroy(const struct xt_mtdtor_param *par)

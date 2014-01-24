@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
     gl520sm.c - Part of lm_sensors, Linux kernel modules for hardware
                 monitoring
     Copyright (c) 1998, 1999  Frodo Looijaard <frodol@dds.nl>,
@@ -20,6 +21,29 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
+=======
+ * gl520sm.c - Part of lm_sensors, Linux kernel modules for hardware
+ *	       monitoring
+ * Copyright (c) 1998, 1999  Frodo Looijaard <frodol@dds.nl>,
+ *			     Kyösti Mälkki <kmalkki@cc.hut.fi>
+ * Copyright (c) 2005	Maarten Deprez <maartendeprez@users.sourceforge.net>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -41,10 +65,18 @@ MODULE_PARM_DESC(extra_sensor_type, "Type of extra sensor (0=autodetect, 1=tempe
 /* Addresses to scan */
 static const unsigned short normal_i2c[] = { 0x2c, 0x2d, I2C_CLIENT_END };
 
+<<<<<<< HEAD
 /* Many GL520 constants specified below
 One of the inputs can be configured as either temp or voltage.
 That's why _TEMP2 and _IN4 access the same register
 */
+=======
+/*
+ * Many GL520 constants specified below
+ * One of the inputs can be configured as either temp or voltage.
+ * That's why _TEMP2 and _IN4 access the same register
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* The GL520 registers */
 #define GL520_REG_CHIP_ID		0x00
@@ -142,11 +174,19 @@ static ssize_t get_cpu_vid(struct device *dev, struct device_attribute *attr,
 }
 static DEVICE_ATTR(cpu0_vid, S_IRUGO, get_cpu_vid, NULL);
 
+<<<<<<< HEAD
 #define VDD_FROM_REG(val) (((val)*95+2)/4)
 #define VDD_TO_REG(val) (SENSORS_LIMIT((((val)*4+47)/95),0,255))
 
 #define IN_FROM_REG(val) ((val)*19)
 #define IN_TO_REG(val) (SENSORS_LIMIT((((val)+9)/19),0,255))
+=======
+#define VDD_FROM_REG(val) (((val) * 95 + 2) / 4)
+#define VDD_TO_REG(val) SENSORS_LIMIT((((val) * 4 + 47) / 95), 0, 255)
+
+#define IN_FROM_REG(val) ((val) * 19)
+#define IN_TO_REG(val) SENSORS_LIMIT((((val) + 9) / 19), 0, 255)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static ssize_t get_in_input(struct device *dev, struct device_attribute *attr,
 			    char *buf)
@@ -193,8 +233,18 @@ static ssize_t set_in_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct gl520_data *data = i2c_get_clientdata(client);
 	int n = to_sensor_dev_attr(attr)->index;
+<<<<<<< HEAD
 	long v = simple_strtol(buf, NULL, 10);
 	u8 r;
+=======
+	u8 r;
+	long v;
+	int err;
+
+	err = kstrtol(buf, 10, &v);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 
@@ -222,8 +272,18 @@ static ssize_t set_in_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct gl520_data *data = i2c_get_clientdata(client);
 	int n = to_sensor_dev_attr(attr)->index;
+<<<<<<< HEAD
 	long v = simple_strtol(buf, NULL, 10);
 	u8 r;
+=======
+	u8 r;
+	long v;
+	int err;
+
+	err = kstrtol(buf, 10, &v);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (n == 0)
 		r = VDD_TO_REG(v);
@@ -272,8 +332,15 @@ static SENSOR_DEVICE_ATTR(in4_max, S_IRUGO | S_IWUSR,
 		get_in_max, set_in_max, 4);
 
 #define DIV_FROM_REG(val) (1 << (val))
+<<<<<<< HEAD
 #define FAN_FROM_REG(val,div) ((val)==0 ? 0 : (480000/((val) << (div))))
 #define FAN_TO_REG(val,div) ((val)<=0?0:SENSORS_LIMIT((480000 + ((val) << ((div)-1))) / ((val) << (div)), 1, 255));
+=======
+#define FAN_FROM_REG(val, div) ((val) == 0 ? 0 : (480000 / ((val) << (div))))
+#define FAN_TO_REG(val, div) ((val) <= 0 ? 0 : \
+	SENSORS_LIMIT((480000 + ((val) << ((div)-1))) / ((val) << (div)), 1, \
+		      255))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static ssize_t get_fan_input(struct device *dev, struct device_attribute *attr,
 			     char *buf)
@@ -317,8 +384,18 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct gl520_data *data = i2c_get_clientdata(client);
 	int n = to_sensor_dev_attr(attr)->index;
+<<<<<<< HEAD
 	unsigned long v = simple_strtoul(buf, NULL, 10);
 	u8 r;
+=======
+	u8 r;
+	unsigned long v;
+	int err;
+
+	err = kstrtoul(buf, 10, &v);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	r = FAN_TO_REG(v, data->fan_div[n]);
@@ -351,6 +428,7 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct gl520_data *data = i2c_get_clientdata(client);
 	int n = to_sensor_dev_attr(attr)->index;
+<<<<<<< HEAD
 	unsigned long v = simple_strtoul(buf, NULL, 10);
 	u8 r;
 
@@ -361,6 +439,32 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	case 8: r = 3; break;
 	default:
 		dev_err(&client->dev, "fan_div value %ld not supported. Choose one of 1, 2, 4 or 8!\n", v);
+=======
+	u8 r;
+	unsigned long v;
+	int err;
+
+	err = kstrtoul(buf, 10, &v);
+	if (err)
+		return err;
+
+	switch (v) {
+	case 1:
+		r = 0;
+		break;
+	case 2:
+		r = 1;
+		break;
+	case 4:
+		r = 2;
+		break;
+	case 8:
+		r = 3;
+		break;
+	default:
+		dev_err(&client->dev,
+	"fan_div value %ld not supported. Choose one of 1, 2, 4 or 8!\n", v);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -385,7 +489,19 @@ static ssize_t set_fan_off(struct device *dev, struct device_attribute *attr,
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct gl520_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 	u8 r = simple_strtoul(buf, NULL, 10)?1:0;
+=======
+	u8 r;
+	unsigned long v;
+	int err;
+
+	err = kstrtoul(buf, 10, &v);
+	if (err)
+		return err;
+
+	r = (v ? 1 : 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->fan_off = r;
@@ -410,7 +526,12 @@ static DEVICE_ATTR(fan1_off, S_IRUGO | S_IWUSR,
 		get_fan_off, set_fan_off);
 
 #define TEMP_FROM_REG(val) (((val) - 130) * 1000)
+<<<<<<< HEAD
 #define TEMP_TO_REG(val) (SENSORS_LIMIT(((((val)<0?(val)-500:(val)+500) / 1000)+130),0,255))
+=======
+#define TEMP_TO_REG(val) SENSORS_LIMIT(((((val) < 0 ? \
+			(val) - 500 : (val) + 500) / 1000) + 130), 0, 255)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static ssize_t get_temp_input(struct device *dev, struct device_attribute *attr,
 			      char *buf)
@@ -430,8 +551,13 @@ static ssize_t get_temp_max(struct device *dev, struct device_attribute *attr,
 	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp_max[n]));
 }
 
+<<<<<<< HEAD
 static ssize_t get_temp_max_hyst(struct device *dev, struct device_attribute
 				 *attr, char *buf)
+=======
+static ssize_t get_temp_max_hyst(struct device *dev,
+				 struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int n = to_sensor_dev_attr(attr)->index;
 	struct gl520_data *data = gl520_update_device(dev);
@@ -445,7 +571,16 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct gl520_data *data = i2c_get_clientdata(client);
 	int n = to_sensor_dev_attr(attr)->index;
+<<<<<<< HEAD
 	long v = simple_strtol(buf, NULL, 10);
+=======
+	long v;
+	int err;
+
+	err = kstrtol(buf, 10, &v);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_max[n] = TEMP_TO_REG(v);
@@ -460,7 +595,16 @@ static ssize_t set_temp_max_hyst(struct device *dev, struct device_attribute
 	struct i2c_client *client = to_i2c_client(dev);
 	struct gl520_data *data = i2c_get_clientdata(client);
 	int n = to_sensor_dev_attr(attr)->index;
+<<<<<<< HEAD
 	long v = simple_strtol(buf, NULL, 10);
+=======
+	long v;
+	int err;
+
+	err = kstrtol(buf, 10, &v);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_max_hyst[n] = TEMP_TO_REG(v);
@@ -507,7 +651,19 @@ static ssize_t set_beep_enable(struct device *dev, struct device_attribute
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct gl520_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 	u8 r = simple_strtoul(buf, NULL, 10)?0:1;
+=======
+	u8 r;
+	unsigned long v;
+	int err;
+
+	err = kstrtoul(buf, 10, &v);
+	if (err)
+		return err;
+
+	r = (v ? 0 : 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->beep_enable = !r;
@@ -523,7 +679,16 @@ static ssize_t set_beep_mask(struct device *dev, struct device_attribute *attr,
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct gl520_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 	u8 r = simple_strtoul(buf, NULL, 10);
+=======
+	unsigned long r;
+	int err;
+
+	err = kstrtoul(buf, 10, &r);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	r &= data->alarm_mask;
@@ -575,7 +740,15 @@ static ssize_t set_beep(struct device *dev, struct device_attribute *attr,
 	int bitnr = to_sensor_dev_attr(attr)->index;
 	unsigned long bit;
 
+<<<<<<< HEAD
 	bit = simple_strtoul(buf, NULL, 10);
+=======
+	int err;
+
+	err = kstrtoul(buf, 10, &bit);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (bit & ~1)
 		return -EINVAL;
 
@@ -652,13 +825,24 @@ static const struct attribute_group gl520_group = {
 	.attrs = gl520_attributes,
 };
 
+<<<<<<< HEAD
 static struct attribute *gl520_attributes_opt[] = {
+=======
+static struct attribute *gl520_attributes_in4[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	&sensor_dev_attr_in4_input.dev_attr.attr,
 	&sensor_dev_attr_in4_min.dev_attr.attr,
 	&sensor_dev_attr_in4_max.dev_attr.attr,
 	&sensor_dev_attr_in4_alarm.dev_attr.attr,
 	&sensor_dev_attr_in4_beep.dev_attr.attr,
+<<<<<<< HEAD
 
+=======
+	NULL
+};
+
+static struct attribute *gl520_attributes_temp2[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	&sensor_dev_attr_temp2_input.dev_attr.attr,
 	&sensor_dev_attr_temp2_max.dev_attr.attr,
 	&sensor_dev_attr_temp2_max_hyst.dev_attr.attr,
@@ -667,8 +851,17 @@ static struct attribute *gl520_attributes_opt[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 static const struct attribute_group gl520_group_opt = {
 	.attrs = gl520_attributes_opt,
+=======
+static const struct attribute_group gl520_group_in4 = {
+	.attrs = gl520_attributes_in4,
+};
+
+static const struct attribute_group gl520_group_temp2 = {
+	.attrs = gl520_attributes_temp2,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -717,6 +910,7 @@ static int gl520_probe(struct i2c_client *client,
 	gl520_init_client(client);
 
 	/* Register sysfs hooks */
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&client->dev.kobj, &gl520_group)))
 		goto exit_free;
 
@@ -746,6 +940,19 @@ static int gl520_probe(struct i2c_client *client,
 			goto exit_remove_files;
 	}
 
+=======
+	err = sysfs_create_group(&client->dev.kobj, &gl520_group);
+	if (err)
+		goto exit_free;
+
+	if (data->two_temps)
+		err = sysfs_create_group(&client->dev.kobj, &gl520_group_temp2);
+	else
+		err = sysfs_create_group(&client->dev.kobj, &gl520_group_in4);
+
+	if (err)
+		goto exit_remove_files;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -757,7 +964,12 @@ static int gl520_probe(struct i2c_client *client,
 
 exit_remove_files:
 	sysfs_remove_group(&client->dev.kobj, &gl520_group);
+<<<<<<< HEAD
 	sysfs_remove_group(&client->dev.kobj, &gl520_group_opt);
+=======
+	sysfs_remove_group(&client->dev.kobj, &gl520_group_in4);
+	sysfs_remove_group(&client->dev.kobj, &gl520_group_temp2);
+>>>>>>> refs/remotes/origin/cm-10.0
 exit_free:
 	kfree(data);
 exit:
@@ -809,19 +1021,35 @@ static int gl520_remove(struct i2c_client *client)
 
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &gl520_group);
+<<<<<<< HEAD
 	sysfs_remove_group(&client->dev.kobj, &gl520_group_opt);
+=======
+	sysfs_remove_group(&client->dev.kobj, &gl520_group_in4);
+	sysfs_remove_group(&client->dev.kobj, &gl520_group_temp2);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree(data);
 	return 0;
 }
 
 
+<<<<<<< HEAD
 /* Registers 0x07 to 0x0c are word-sized, others are byte-sized
    GL520 uses a high-byte first convention */
 static int gl520_read_value(struct i2c_client *client, u8 reg)
 {
 	if ((reg >= 0x07) && (reg <= 0x0c))
 		return swab16(i2c_smbus_read_word_data(client, reg));
+=======
+/*
+ * Registers 0x07 to 0x0c are word-sized, others are byte-sized
+ * GL520 uses a high-byte first convention
+ */
+static int gl520_read_value(struct i2c_client *client, u8 reg)
+{
+	if ((reg >= 0x07) && (reg <= 0x0c))
+		return i2c_smbus_read_word_swapped(client, reg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		return i2c_smbus_read_byte_data(client, reg);
 }
@@ -829,7 +1057,11 @@ static int gl520_read_value(struct i2c_client *client, u8 reg)
 static int gl520_write_value(struct i2c_client *client, u8 reg, u16 value)
 {
 	if ((reg >= 0x07) && (reg <= 0x0c))
+<<<<<<< HEAD
 		return i2c_smbus_write_word_data(client, reg, swab16(value));
+=======
+		return i2c_smbus_write_word_swapped(client, reg, value);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		return i2c_smbus_write_byte_data(client, reg, value);
 }
@@ -849,7 +1081,12 @@ static struct gl520_data *gl520_update_device(struct device *dev)
 
 		data->alarms = gl520_read_value(client, GL520_REG_ALARMS);
 		data->beep_mask = gl520_read_value(client, GL520_REG_BEEP_MASK);
+<<<<<<< HEAD
 		data->vid = gl520_read_value(client, GL520_REG_VID_INPUT) & 0x1f;
+=======
+		data->vid = gl520_read_value(client,
+					     GL520_REG_VID_INPUT) & 0x1f;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		for (i = 0; i < 4; i++) {
 			data->in_input[i] = gl520_read_value(client,
@@ -910,6 +1147,7 @@ static struct gl520_data *gl520_update_device(struct device *dev)
 	return data;
 }
 
+<<<<<<< HEAD
 
 static int __init sensors_gl520sm_init(void)
 {
@@ -921,12 +1159,18 @@ static void __exit sensors_gl520sm_exit(void)
 	i2c_del_driver(&gl520_driver);
 }
 
+=======
+module_i2c_driver(gl520_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Frodo Looijaard <frodol@dds.nl>, "
 	"Kyösti Mälkki <kmalkki@cc.hut.fi>, "
 	"Maarten Deprez <maartendeprez@users.sourceforge.net>");
 MODULE_DESCRIPTION("GL520SM driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(sensors_gl520sm_init);
 module_exit(sensors_gl520sm_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

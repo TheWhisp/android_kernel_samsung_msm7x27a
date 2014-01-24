@@ -14,6 +14,10 @@
  */
 
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -88,14 +92,41 @@ static struct snd_soc_platform_driver dummy_platform = {
 	.ops = &dummy_dma_ops,
 };
 
+<<<<<<< HEAD
 static __devinit int snd_soc_dummy_probe(struct platform_device *pdev)
 {
 	return snd_soc_register_platform(&pdev->dev, &dummy_platform);
+=======
+static struct snd_soc_codec_driver dummy_codec;
+static struct snd_soc_dai_driver dummy_dai = {
+	.name = "snd-soc-dummy-dai",
+};
+
+static __devinit int snd_soc_dummy_probe(struct platform_device *pdev)
+{
+	int ret;
+
+	ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
+	if (ret < 0)
+		return ret;
+
+	ret = snd_soc_register_platform(&pdev->dev, &dummy_platform);
+	if (ret < 0) {
+		snd_soc_unregister_codec(&pdev->dev);
+		return ret;
+	}
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static __devexit int snd_soc_dummy_remove(struct platform_device *pdev)
 {
 	snd_soc_unregister_platform(&pdev->dev);
+<<<<<<< HEAD
+=======
+	snd_soc_unregister_codec(&pdev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

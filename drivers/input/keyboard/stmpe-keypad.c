@@ -368,6 +368,7 @@ static struct platform_driver stmpe_keypad_driver = {
 	.probe		= stmpe_keypad_probe,
 	.remove		= __devexit_p(stmpe_keypad_remove),
 };
+<<<<<<< HEAD
 
 static int __init stmpe_keypad_init(void)
 {
@@ -380,6 +381,9 @@ static void __exit stmpe_keypad_exit(void)
 	platform_driver_unregister(&stmpe_keypad_driver);
 }
 module_exit(stmpe_keypad_exit);
+=======
+module_platform_driver(stmpe_keypad_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("STMPExxxx keypad driver");

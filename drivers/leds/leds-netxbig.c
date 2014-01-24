@@ -81,6 +81,7 @@ static int __devinit gpio_ext_init(struct netxbig_gpio_ext *gpio_ext)
 
 	/* Configure address GPIOs. */
 	for (i = 0; i < gpio_ext->num_addr; i++) {
+<<<<<<< HEAD
 		err = gpio_request(gpio_ext->addr[i], "GPIO extension addr");
 		if (err)
 			goto err_free_addr;
@@ -110,6 +111,25 @@ static int __devinit gpio_ext_init(struct netxbig_gpio_ext *gpio_ext)
 		gpio_free(gpio_ext->enable);
 		goto err_free_data;
 	}
+=======
+		err = gpio_request_one(gpio_ext->addr[i], GPIOF_OUT_INIT_LOW,
+				       "GPIO extension addr");
+		if (err)
+			goto err_free_addr;
+	}
+	/* Configure data GPIOs. */
+	for (i = 0; i < gpio_ext->num_data; i++) {
+		err = gpio_request_one(gpio_ext->data[i], GPIOF_OUT_INIT_LOW,
+				   "GPIO extension data");
+		if (err)
+			goto err_free_data;
+	}
+	/* Configure "enable select" GPIO. */
+	err = gpio_request_one(gpio_ext->enable, GPIOF_OUT_INIT_LOW,
+			       "GPIO extension enable");
+	if (err)
+		goto err_free_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 
@@ -124,7 +144,11 @@ err_free_addr:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit gpio_ext_free(struct netxbig_gpio_ext *gpio_ext)
+=======
+static void gpio_ext_free(struct netxbig_gpio_ext *gpio_ext)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
@@ -306,7 +330,11 @@ static ssize_t netxbig_led_sata_show(struct device *dev,
 
 static DEVICE_ATTR(sata, 0644, netxbig_led_sata_show, netxbig_led_sata_store);
 
+<<<<<<< HEAD
 static void __devexit delete_netxbig_led(struct netxbig_led_data *led_dat)
+=======
+static void delete_netxbig_led(struct netxbig_led_data *led_dat)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (led_dat->mode_val[NETXBIG_LED_SATA] != NETXBIG_LED_INVALID_MODE)
 		device_remove_file(led_dat->cdev.dev, &dev_attr_sata);
@@ -429,6 +457,7 @@ static struct platform_driver netxbig_led_driver = {
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 MODULE_ALIAS("platform:leds-netxbig");
 
 static int __init netxbig_led_init(void)
@@ -443,7 +472,15 @@ static void __exit netxbig_led_exit(void)
 
 module_init(netxbig_led_init);
 module_exit(netxbig_led_exit);
+=======
+
+module_platform_driver(netxbig_led_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Simon Guinot <sguinot@lacie.com>");
 MODULE_DESCRIPTION("LED driver for LaCie xBig Network boards");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:leds-netxbig");
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -3,7 +3,11 @@
 
 #include <linux/init.h>
 #include <linux/sh_intc.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern atomic_t irq_err_count;
 

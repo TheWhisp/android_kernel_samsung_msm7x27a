@@ -40,7 +40,10 @@ struct winsize {
 };
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * c_cc characters in the termio structure.  Oh, how I love being

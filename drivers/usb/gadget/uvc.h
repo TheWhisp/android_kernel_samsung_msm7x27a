@@ -8,7 +8,10 @@
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation; either version 2 of the License, or
  *	(at your option) any later version.
+<<<<<<< HEAD
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef _UVC_GADGET_H_
@@ -56,6 +59,10 @@ struct uvc_event
 #include <linux/usb.h>	/* For usb_endpoint_* */
 #include <linux/usb/gadget.h>
 #include <linux/videodev2.h>
+<<<<<<< HEAD
+=======
+#include <linux/version.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/v4l2-fh.h>
 
 #include "uvc_queue.h"

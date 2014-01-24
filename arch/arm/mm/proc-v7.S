@@ -12,7 +12,10 @@
 #include <linux/init.h>
 #include <linux/linkage.h>
 #include <asm/assembler.h>
+<<<<<<< HEAD
 #include <asm/domain.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/asm-offsets.h>
 #include <asm/hwcap.h>
 #include <asm/pgtable-hwdef.h>
@@ -20,6 +23,7 @@
 
 #include "proc-macros.S"
 
+<<<<<<< HEAD
 #define TTB_S		(1 << 1)
 #define TTB_RGN_NC	(0 << 3)
 #define TTB_RGN_OC_WBWA	(1 << 3)
@@ -38,6 +42,13 @@
 /* PTWs cacheable, inner WBWA shareable, outer WBWA not shareable */
 #define TTB_FLAGS_SMP	TTB_IRGN_WBWA|TTB_S|TTB_NOS|TTB_RGN_OC_WBWA
 #define PMD_FLAGS_SMP	PMD_SECT_WBWA|PMD_SECT_S
+=======
+#ifdef CONFIG_ARM_LPAE
+#include "proc-v7-3level.S"
+#else
+#include "proc-v7-2level.S"
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 ENTRY(cpu_v7_proc_init)
 	mov	pc, lr
@@ -59,6 +70,7 @@ ENDPROC(cpu_v7_proc_fin)
  *	to what would be the reset vector.
  *
  *	- loc   - location to jump to for soft reset
+<<<<<<< HEAD
  */
 	.align	5
 ENTRY(cpu_v7_reset)
@@ -71,6 +83,26 @@ ENTRY(cpu_v7_reset)
         isb
 	mov     pc,r0
 ENDPROC(cpu_v7_reset)
+=======
+ *
+ *	This code must be executed using a flat identity mapping with
+ *      caches disabled.
+ */
+	.align	5
+	.pushsection	.idmap.text, "ax"
+ENTRY(cpu_v7_reset)
+	mrc	p15, 0, r1, c1, c0, 0		@ ctrl register
+	bic	r1, r1, #0x1			@ ...............m
+ THUMB(	bic	r1, r1, #1 << 30 )		@ SCTLR.TE (Thumb exceptions)
+	mcr	p15, 0, r1, c1, c0, 0		@ disable MMU
+	mcr     p15, 0, ip, c8, c7, 0           @ invalidate I & D,flush TLB
+	mcr     p15, 0, ip, c7, c5, 6           @ flush BTC
+	dsb
+	isb
+	mov	pc, r0
+ENDPROC(cpu_v7_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	cpu_v7_do_idle()
@@ -97,6 +129,7 @@ ENTRY(cpu_v7_dcache_clean_area)
 	mov	pc, lr
 ENDPROC(cpu_v7_dcache_clean_area)
 
+<<<<<<< HEAD
 /*
  *	cpu_v7_switch_mm(pgd_phys, tsk)
  *
@@ -249,12 +282,35 @@ ENTRY(cpu_v7_do_suspend)
 	mrc	p15, 0, r11, c1, c0, 2	@ Co-processor access control
 	stmia	r0, {r6 - r11}
 	ldmfd	sp!, {r4 - r11, pc}
+=======
+	string	cpu_v7_name, "ARMv7 Processor"
+	.align
+
+/* Suspend/resume support: derived from arch/arm/mach-s5pv210/sleep.S */
+.globl	cpu_v7_suspend_size
+.equ	cpu_v7_suspend_size, 4 * 8
+#ifdef CONFIG_ARM_CPU_SUSPEND
+ENTRY(cpu_v7_do_suspend)
+	stmfd	sp!, {r4 - r10, lr}
+	mrc	p15, 0, r4, c13, c0, 0	@ FCSE/PID
+	mrc	p15, 0, r5, c13, c0, 3	@ User r/o thread ID
+	stmia	r0!, {r4 - r5}
+	mrc	p15, 0, r6, c3, c0, 0	@ Domain ID
+	mrc	p15, 0, r7, c2, c0, 1	@ TTB 1
+	mrc	p15, 0, r11, c2, c0, 2	@ TTB control register
+	mrc	p15, 0, r8, c1, c0, 0	@ Control register
+	mrc	p15, 0, r9, c1, c0, 1	@ Auxiliary control register
+	mrc	p15, 0, r10, c1, c0, 2	@ Co-processor access control
+	stmia	r0, {r6 - r11}
+	ldmfd	sp!, {r4 - r10, pc}
+>>>>>>> refs/remotes/origin/cm-10.0
 ENDPROC(cpu_v7_do_suspend)
 
 ENTRY(cpu_v7_do_resume)
 	mov	ip, #0
 	mcr	p15, 0, ip, c8, c7, 0	@ invalidate TLBs
 	mcr	p15, 0, ip, c7, c5, 0	@ invalidate I cache
+<<<<<<< HEAD
 	ldmia	r0!, {r4 - r6}
 	mcr	p15, 0, r4, c13, c0, 0	@ FCSE/PID
 	mcr	p15, 0, r5, c13, c0, 1	@ Context ID
@@ -266,11 +322,31 @@ ENTRY(cpu_v7_do_resume)
 	mcr	p15, 0, ip, c2, c0, 2	@ TTB control register
 	mcr	p15, 0, r10, c1, c0, 1	@ Auxiliary control register
 	mcr	p15, 0, r11, c1, c0, 2	@ Co-processor access control
+=======
+	mcr	p15, 0, ip, c13, c0, 1	@ set reserved context ID
+	ldmia	r0!, {r4 - r5}
+	mcr	p15, 0, r4, c13, c0, 0	@ FCSE/PID
+	mcr	p15, 0, r5, c13, c0, 3	@ User r/o thread ID
+	ldmia	r0, {r6 - r11}
+	mcr	p15, 0, r6, c3, c0, 0	@ Domain ID
+#ifndef CONFIG_ARM_LPAE
+	ALT_SMP(orr	r1, r1, #TTB_FLAGS_SMP)
+	ALT_UP(orr	r1, r1, #TTB_FLAGS_UP)
+#endif
+	mcr	p15, 0, r1, c2, c0, 0	@ TTB 0
+	mcr	p15, 0, r7, c2, c0, 1	@ TTB 1
+	mcr	p15, 0, r11, c2, c0, 2	@ TTB control register
+	mrc	p15, 0, r4, c1, c0, 1	@ Read Auxiliary control register
+	teq	r4, r9			@ Is it already set?
+	mcrne	p15, 0, r9, c1, c0, 1	@ No, so write it
+	mcr	p15, 0, r10, c1, c0, 2	@ Co-processor access control
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldr	r4, =PRRR		@ PRRR
 	ldr	r5, =NMRR		@ NMRR
 	mcr	p15, 0, r4, c10, c2, 0	@ write PRRR
 	mcr	p15, 0, r5, c10, c2, 1	@ write NMRR
 	isb
+<<<<<<< HEAD
 	mov	r0, r9			@ control register
 	mov	r2, r7, lsr #14		@ get TTB0 base
 	mov	r2, r2, lsl #14
@@ -283,6 +359,12 @@ cpu_resume_l1_flags:
 #else
 #define cpu_v7_do_suspend	0
 #define cpu_v7_do_resume	0
+=======
+	dsb
+	mov	r0, r8			@ control register
+	b	cpu_resume_mmu
+ENDPROC(cpu_v7_do_resume)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	__CPUINIT
@@ -300,6 +382,7 @@ cpu_resume_l1_flags:
  */
 __v7_ca5mp_setup:
 __v7_ca9mp_setup:
+<<<<<<< HEAD
 	mov     r10, #(1 << 0)                  @ TLB ops broadcasting
 	b       1f
 __v7_ca15mp_setup:
@@ -312,6 +395,21 @@ __v7_ca15mp_setup:
 	orreq   r0, r0, #(1 << 6)               @ Enable SMP/nAMP mode
 	orreq   r0, r0, r10                     @ Enable CPU-specific SMP bits
 	mcreq   p15, 0, r0, c1, c0, 1
+=======
+	mov	r10, #(1 << 0)			@ TLB ops broadcasting
+	b	1f
+__v7_ca7mp_setup:
+__v7_ca15mp_setup:
+	mov	r10, #0
+1:
+#ifdef CONFIG_SMP
+	ALT_SMP(mrc	p15, 0, r0, c1, c0, 1)
+	ALT_UP(mov	r0, #(1 << 6))		@ fake it for UP
+	tst	r0, #(1 << 6)			@ SMP/nAMP mode enabled?
+	orreq	r0, r0, #(1 << 6)		@ Enable SMP/nAMP mode
+	orreq	r0, r0, r10			@ Enable CPU-specific SMP bits
+	mcreq	p15, 0, r0, c1, c0, 1
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 __v7_setup:
 	adr	r12, __v7_setup_stack		@ the local stack
@@ -379,11 +477,21 @@ __v7_setup:
 	orreq	r10, r10, #1 << 6		@ set bit #6
 	mcreq	p15, 0, r10, c15, c0, 1		@ write diagnostic register
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_ARM_ERRATA_751472
 	cmp	r6, #0x30			@ present prior to r3p0
 	mrclt	p15, 0, r10, c15, c0, 1		@ read diagnostic register
 	orrlt	r10, r10, #1 << 11		@ set bit #11
 	mcrlt	p15, 0, r10, c15, c0, 1		@ write diagnostic register
+=======
+#if defined(CONFIG_ARM_ERRATA_751472) && defined(CONFIG_SMP)
+	ALT_SMP(cmp r6, #0x30)			@ present prior to r3p0
+	ALT_UP_B(1f)
+	mrclt	p15, 0, r10, c15, c0, 1		@ read diagnostic register
+	orrlt	r10, r10, #1 << 11		@ set bit #11
+	mcrlt	p15, 0, r10, c15, c0, 1		@ write diagnostic register
+1:
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 3:	mov	r10, #0
@@ -391,6 +499,7 @@ __v7_setup:
 	dsb
 #ifdef CONFIG_MMU
 	mcr	p15, 0, r10, c8, c7, 0		@ invalidate I + D TLBs
+<<<<<<< HEAD
 	mcr	p15, 0, r10, c2, c0, 2		@ TTB control register
 	ALT_SMP(orr	r4, r4, #TTB_FLAGS_SMP)
 	ALT_UP(orr	r4, r4, #TTB_FLAGS_UP)
@@ -401,6 +510,15 @@ __v7_setup:
 	mov     r10, #0x1f                      @ domains 0, 1 = manager
 	mcr     p15, 0, r10, c3, c0, 0          @ load domain access register
 #endif
+=======
+	v7_ttb_setup r10, r4, r8, r5		@ TTBCR, TTBRx setup
+	ldr	r5, =PRRR			@ PRRR
+	ldr	r6, =NMRR			@ NMRR
+	mcr	p15, 0, r5, c10, c2, 0		@ write PRRR
+	mcr	p15, 0, r6, c10, c2, 1		@ write NMRR
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
 	mov     r0, #0x33
 	mcr     p15, 3, r0, c15, c0, 3          @ set L2CR1
@@ -419,6 +537,7 @@ __v7_setup:
 	mcr     p15, 0, r0, c1, c0, 1           @ write ACTLR
 #endif
 #endif
+<<<<<<< HEAD
 
 #if defined (CONFIG_ARCH_MSM_SCORPIONMP)
 	mrc     p15, 3, r0, c15, c0, 2  @ optimal setting for Scorpion MP
@@ -431,6 +550,14 @@ __v7_setup:
 	mcr	p15, 0, r5, c10, c2, 0		@ write PRRR
 	mcr	p15, 0, r6, c10, c2, 1		@ write NMRR
 #endif
+=======
+#if defined (CONFIG_ARCH_MSM_SCORPIONMP)
+	mrc     p15, 3, r0, c15, c0, 2  @ optimal setting for Scorpion MP
+	orr         r0, r0, #0x1 << 21
+	mcr     p15, 3, r0, c15, c0, 2
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef CONFIG_ARM_THUMBEE
 	mrc	p15, 0, r0, c0, c1, 0		@ read ID_PFR0 for ThumbEE
 	and	r0, r0, #(0xf << 12)		@ ThumbEE enabled field
@@ -459,6 +586,7 @@ __v7_setup:
 	mov	pc, lr				@ return to head.S:__ret
 ENDPROC(__v7_setup)
 
+<<<<<<< HEAD
 	/*   AT
 	 *  TFR   EV X F   I D LR    S
 	 * .EEE ..EE PUI. .T.T 4RVI ZWRS BLDP WCAM
@@ -469,11 +597,15 @@ ENDPROC(__v7_setup)
 v7_crval:
 	crval	clear=0x0120c302, mmuset=0x10c03c7d, ucset=0x00c01c7c
 
+=======
+	.align	2
+>>>>>>> refs/remotes/origin/cm-10.0
 __v7_setup_stack:
 	.space	4 * 11				@ 11 registers
 
 	__INITDATA
 
+<<<<<<< HEAD
 	.type	v7_processor_functions, #object
 ENTRY(v7_processor_functions)
 	.word	v7_early_abort
@@ -501,6 +633,15 @@ cpu_arch_name:
 cpu_elf_name:
 	.asciz	"v7"
 	.size	cpu_elf_name, . - cpu_elf_name
+=======
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions v7, dabort=v7_early_abort, pabort=v7_pabort, suspend=1
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv7"
+	string	cpu_elf_name, "v7"
+>>>>>>> refs/remotes/origin/cm-10.0
 	.align
 
 	.section ".proc.info.init", #alloc, #execinstr
@@ -510,11 +651,19 @@ cpu_elf_name:
 	 */
 .macro __v7_proc initfunc, mm_mmuflags = 0, io_mmuflags = 0, hwcaps = 0
 	ALT_SMP(.long	PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_AP_READ | \
+<<<<<<< HEAD
 			PMD_FLAGS_SMP | \mm_mmuflags)
 	ALT_UP(.long	PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_AP_READ | \
 			PMD_FLAGS_UP | \mm_mmuflags)
 	.long	PMD_TYPE_SECT | PMD_SECT_XN | PMD_SECT_AP_WRITE | \
 		PMD_SECT_AP_READ | \io_mmuflags
+=======
+			PMD_SECT_AF | PMD_FLAGS_SMP | \mm_mmuflags)
+	ALT_UP(.long	PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_AP_READ | \
+			PMD_SECT_AF | PMD_FLAGS_UP | \mm_mmuflags)
+	.long	PMD_TYPE_SECT | PMD_SECT_AP_WRITE | \
+		PMD_SECT_AP_READ | PMD_SECT_AF | \io_mmuflags
+>>>>>>> refs/remotes/origin/cm-10.0
 	W(b)	\initfunc
 	.long	cpu_arch_name
 	.long	cpu_elf_name
@@ -527,6 +676,10 @@ cpu_elf_name:
 	.long	v7_cache_fns
 .endm
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_ARM_LPAE
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * ARM Ltd. Cortex A5 processor.
 	 */
@@ -546,6 +699,7 @@ __v7_ca9mp_proc_info:
 	.long	0xff0ffff0
 	__v7_proc __v7_ca9mp_setup
 	.size	__v7_ca9mp_proc_info, . - __v7_ca9mp_proc_info
+<<<<<<< HEAD
 
         /*
 	 * ARM Ltd. Cortex A15 processor.
@@ -556,6 +710,29 @@ __v7_ca15mp_proc_info:
 	.long   0xff0ffff0
 	__v7_proc __v7_ca15mp_setup, hwcaps = HWCAP_IDIV
 	.size   __v7_ca15mp_proc_info, . - __v7_ca15mp_proc_info
+=======
+#endif	/* CONFIG_ARM_LPAE */
+
+	/*
+	 * ARM Ltd. Cortex A7 processor.
+	 */
+	.type	__v7_ca7mp_proc_info, #object
+__v7_ca7mp_proc_info:
+	.long	0x410fc070
+	.long	0xff0ffff0
+	__v7_proc __v7_ca7mp_setup, hwcaps = HWCAP_IDIV
+	.size	__v7_ca7mp_proc_info, . - __v7_ca7mp_proc_info
+
+	/*
+	 * ARM Ltd. Cortex A15 processor.
+	 */
+	.type	__v7_ca15mp_proc_info, #object
+__v7_ca15mp_proc_info:
+	.long	0x410fc0f0
+	.long	0xff0ffff0
+	__v7_proc __v7_ca15mp_setup, hwcaps = HWCAP_IDIV
+	.size	__v7_ca15mp_proc_info, . - __v7_ca15mp_proc_info
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Match any ARMv7 processor core.

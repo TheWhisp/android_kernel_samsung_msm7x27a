@@ -34,11 +34,31 @@ static struct __initdata resource omap15xx_mpu_gpio_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct __initdata omap_gpio_platform_data omap15xx_mpu_gpio_config = {
 	.virtual_irq_start	= IH_MPUIO_BASE,
 	.bank_type		= METHOD_MPUIO,
 	.bank_width		= 16,
 	.bank_stride		= 1,
+=======
+static struct omap_gpio_reg_offs omap15xx_mpuio_regs = {
+	.revision       = USHRT_MAX,
+	.direction	= OMAP_MPUIO_IO_CNTL,
+	.datain		= OMAP_MPUIO_INPUT_LATCH,
+	.dataout	= OMAP_MPUIO_OUTPUT,
+	.irqstatus	= OMAP_MPUIO_GPIO_INT,
+	.irqenable	= OMAP_MPUIO_GPIO_MASKIT,
+	.irqenable_inv	= true,
+	.irqctrl	= OMAP_MPUIO_GPIO_INT_EDGE,
+};
+
+static struct __initdata omap_gpio_platform_data omap15xx_mpu_gpio_config = {
+	.virtual_irq_start	= IH_MPUIO_BASE,
+	.is_mpuio		= true,
+	.bank_width		= 16,
+	.bank_stride		= 1,
+	.regs			= &omap15xx_mpuio_regs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device omap15xx_mpu_gpio = {
@@ -64,10 +84,29 @@ static struct __initdata resource omap15xx_gpio_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct __initdata omap_gpio_platform_data omap15xx_gpio_config = {
 	.virtual_irq_start	= IH_GPIO_BASE,
 	.bank_type		= METHOD_GPIO_1510,
 	.bank_width		= 16,
+=======
+static struct omap_gpio_reg_offs omap15xx_gpio_regs = {
+	.revision	= USHRT_MAX,
+	.direction	= OMAP1510_GPIO_DIR_CONTROL,
+	.datain		= OMAP1510_GPIO_DATA_INPUT,
+	.dataout	= OMAP1510_GPIO_DATA_OUTPUT,
+	.irqstatus	= OMAP1510_GPIO_INT_STATUS,
+	.irqenable	= OMAP1510_GPIO_INT_MASK,
+	.irqenable_inv	= true,
+	.irqctrl	= OMAP1510_GPIO_INT_CONTROL,
+	.pinctrl	= OMAP1510_GPIO_PIN_CONTROL,
+};
+
+static struct __initdata omap_gpio_platform_data omap15xx_gpio_config = {
+	.virtual_irq_start	= IH_GPIO_BASE,
+	.bank_width		= 16,
+	.regs                   = &omap15xx_gpio_regs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device omap15xx_gpio = {
@@ -93,7 +132,10 @@ static int __init omap15xx_gpio_init(void)
 	platform_device_register(&omap15xx_mpu_gpio);
 	platform_device_register(&omap15xx_gpio);
 
+<<<<<<< HEAD
 	gpio_bank_count = 2;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 postcore_initcall(omap15xx_gpio_init);

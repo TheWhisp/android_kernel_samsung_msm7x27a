@@ -12,6 +12,10 @@
 #include <linux/pci.h>
 #include <linux/moduleparam.h>
 #include <linux/pci_ids.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/initval.h>
 #include "ctatc.h"
@@ -31,7 +35,11 @@ module_param(multiple, uint, S_IRUGO);
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/cm-10.0
 static unsigned int subsystem[SNDRV_CARDS];
 
 module_param_array(index, int, NULL, 0444);
@@ -80,11 +88,19 @@ ct_card_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 		       "are 48000 and 44100, Value 48000 is assumed.\n");
 		reference_rate = 48000;
 	}
+<<<<<<< HEAD
 	if ((multiple != 1) && (multiple != 2)) {
 		printk(KERN_ERR "ctxfi: Invalid multiple value %u!!!\n",
 		       multiple);
 		printk(KERN_ERR "ctxfi: The valid values for multiple are "
 		       "1 and 2, Value 2 is assumed.\n");
+=======
+	if ((multiple != 1) && (multiple != 2) && (multiple != 4)) {
+		printk(KERN_ERR "ctxfi: Invalid multiple value %u!!!\n",
+		       multiple);
+		printk(KERN_ERR "ctxfi: The valid values for multiple are "
+		       "1, 2 and 4, Value 2 is assumed.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		multiple = 2;
 	}
 	err = ct_atc_create(card, pci, reference_rate, multiple,
@@ -143,7 +159,11 @@ static int ct_card_resume(struct pci_dev *pci)
 #endif
 
 static struct pci_driver ct_driver = {
+<<<<<<< HEAD
 	.name = "SB-XFi",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = ct_pci_dev_ids,
 	.probe = ct_card_probe,
 	.remove = __devexit_p(ct_card_remove),

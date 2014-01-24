@@ -23,7 +23,11 @@
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/of_device.h>
 #include <linux/of_platform.h>
 
@@ -253,7 +257,11 @@ static int __devinit xps2_of_probe(struct platform_device *ofdev)
 	}
 
 	/* Get IRQ for the device */
+<<<<<<< HEAD
 	if (of_irq_to_resource(ofdev->dev.of_node, 0, &r_irq) == NO_IRQ) {
+=======
+	if (!of_irq_to_resource(ofdev->dev.of_node, 0, &r_irq)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_err(dev, "no IRQ found\n");
 		return -ENODEV;
 	}
@@ -369,6 +377,7 @@ static struct platform_driver xps2_of_driver = {
 	.probe		= xps2_of_probe,
 	.remove		= __devexit_p(xps2_of_remove),
 };
+<<<<<<< HEAD
 
 static int __init xps2_init(void)
 {
@@ -382,6 +391,9 @@ static void __exit xps2_cleanup(void)
 
 module_init(xps2_init);
 module_exit(xps2_cleanup);
+=======
+module_platform_driver(xps2_of_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Xilinx, Inc.");
 MODULE_DESCRIPTION("Xilinx XPS PS/2 driver");

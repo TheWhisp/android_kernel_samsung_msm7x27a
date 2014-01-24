@@ -11,6 +11,10 @@
 #include <linux/device.h>
 #include <linux/mod_devicetable.h>
 #include <asm/fcx.h>
+<<<<<<< HEAD
+=======
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* structs from asm/cio.h */
 struct irb;
@@ -127,6 +131,10 @@ enum uc_todo {
  * @restore: callback for restoring after hibernation
  * @uc_handler: callback for unit check handler
  * @driver: embedded device driver structure
+<<<<<<< HEAD
+=======
+ * @int_class: interruption class to use for accounting interrupts
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct ccw_driver {
 	struct ccw_device_id *ids;
@@ -144,6 +152,10 @@ struct ccw_driver {
 	int (*restore)(struct ccw_device *);
 	enum uc_todo (*uc_handler) (struct ccw_device *, struct irb *);
 	struct device_driver driver;
+<<<<<<< HEAD
+=======
+	enum interruption_class int_class;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 extern struct ccw_device *get_ccwdev_by_busid(struct ccw_driver *cdrv,

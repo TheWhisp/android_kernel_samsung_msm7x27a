@@ -306,7 +306,11 @@ static int __devinit pmcmsptwi_probe(struct platform_device *pldev)
 	pmcmsptwi_data.irq = platform_get_irq(pldev, 0);
 	if (pmcmsptwi_data.irq) {
 		rc = request_irq(pmcmsptwi_data.irq, &pmcmsptwi_interrupt,
+<<<<<<< HEAD
 			IRQF_SHARED | IRQF_DISABLED | IRQF_SAMPLE_RANDOM,
+=======
+			IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+>>>>>>> refs/remotes/origin/cm-10.0
 			pldev->name, &pmcmsptwi_data);
 		if (rc == 0) {
 			/*
@@ -627,9 +631,12 @@ static struct i2c_adapter pmcmsptwi_adapter = {
 	.name		= DRV_NAME,
 };
 
+<<<<<<< HEAD
 /* work with hotplug and coldplug */
 MODULE_ALIAS("platform:" DRV_NAME);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver pmcmsptwi_driver = {
 	.probe  = pmcmsptwi_probe,
 	.remove	= __devexit_p(pmcmsptwi_remove),
@@ -639,6 +646,7 @@ static struct platform_driver pmcmsptwi_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init pmcmsptwi_init(void)
 {
 	return platform_driver_register(&pmcmsptwi_driver);
@@ -654,3 +662,10 @@ MODULE_LICENSE("GPL");
 
 module_init(pmcmsptwi_init);
 module_exit(pmcmsptwi_exit);
+=======
+module_platform_driver(pmcmsptwi_driver);
+
+MODULE_DESCRIPTION("PMC MSP TWI/SMBus/I2C driver");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:" DRV_NAME);
+>>>>>>> refs/remotes/origin/cm-10.0

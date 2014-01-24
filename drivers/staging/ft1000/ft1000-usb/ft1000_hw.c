@@ -485,7 +485,11 @@ void card_send_command(struct ft1000_device *ft1000dev, void *ptempbuffer,
 
 	DEBUG("card_send_command: enter card_send_command... size=%d\n", size);
 
+<<<<<<< HEAD
 	commandbuf = (unsigned char *)kmalloc(size + 2, GFP_KERNEL);
+=======
+	commandbuf = kmalloc(size + 2, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy((void *)commandbuf + 2, (void *)ptempbuffer, size);
 
 	ft1000_read_register(ft1000dev, &temp, FT1000_REG_DOORBELL);
@@ -601,7 +605,11 @@ static void ft1000_reset_asic(struct net_device *dev)
 
 	mdelay(1);
 
+<<<<<<< HEAD
 	/* set watermark to -1 in order to not generate an interrrupt */
+=======
+	/* set watermark to -1 in order to not generate an interrupt */
+>>>>>>> refs/remotes/origin/cm-10.0
 	ft1000_write_register(ft1000dev, 0xffff, FT1000_REG_MAG_WATERMARK);
 
 	/* clear interrupts */
@@ -671,7 +679,10 @@ static int ft1000_reset_card(struct net_device *dev)
 	return TRUE;
 }
 
+<<<<<<< HEAD
 #ifdef HAVE_NET_DEVICE_OPS
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct net_device_ops ftnet_ops =
 {
 	.ndo_open = &ft1000_open,
@@ -679,7 +690,10 @@ static const struct net_device_ops ftnet_ops =
 	.ndo_start_xmit = &ft1000_start_xmit,
 	.ndo_get_stats = &ft1000_netdev_stats,
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 //---------------------------------------------------------------------------
@@ -764,6 +778,7 @@ int init_ft1000_netdev(struct ft1000_device *ft1000dev)
 
 	INIT_LIST_HEAD(&pInfo->nodes.list);
 
+<<<<<<< HEAD
 #ifdef HAVE_NET_DEVICE_OPS
 	netdev->netdev_ops = &ftnet_ops;
 #else
@@ -772,6 +787,9 @@ int init_ft1000_netdev(struct ft1000_device *ft1000dev)
 	netdev->open = &ft1000_open;
 	netdev->stop = &ft1000_close;
 #endif
+=======
+	netdev->netdev_ops = &ftnet_ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ft1000dev->net = netdev;
 

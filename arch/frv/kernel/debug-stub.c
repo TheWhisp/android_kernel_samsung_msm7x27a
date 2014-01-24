@@ -17,7 +17,10 @@
 #include <linux/serial_reg.h>
 #include <linux/start_kernel.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/serial-regs.h>
 #include <asm/timer-regs.h>
 #include <asm/irc-regs.h>

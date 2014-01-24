@@ -13,6 +13,10 @@
 #ifndef __ASSEMBLY__
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <asm/psr.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern void arch_local_irq_restore(unsigned long);
 extern unsigned long arch_local_irq_save(void);

@@ -205,6 +205,7 @@ static int pseries_drconf_memory(unsigned long *base, unsigned int action)
 static int pseries_memory_notifier(struct notifier_block *nb,
 				unsigned long action, void *node)
 {
+<<<<<<< HEAD
 	int err = NOTIFY_OK;
 
 	switch (action) {
@@ -226,6 +227,23 @@ static int pseries_memory_notifier(struct notifier_block *nb,
 		break;
 	}
 	return err;
+=======
+	int err = 0;
+
+	switch (action) {
+	case PSERIES_RECONFIG_ADD:
+		err = pseries_add_memory(node);
+		break;
+	case PSERIES_RECONFIG_REMOVE:
+		err = pseries_remove_memory(node);
+		break;
+	case PSERIES_DRCONF_MEM_ADD:
+	case PSERIES_DRCONF_MEM_REMOVE:
+		err = pseries_drconf_memory(node, action);
+		break;
+	}
+	return notifier_from_errno(err);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct notifier_block pseries_mem_nb = {

@@ -79,7 +79,10 @@
 
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 extern spinlock_t ns87303_lock;

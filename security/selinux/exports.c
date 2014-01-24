@@ -12,6 +12,10 @@
  * as published by the Free Software Foundation.
  */
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/selinux.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "security.h"
 

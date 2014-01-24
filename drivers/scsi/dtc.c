@@ -72,7 +72,10 @@
 #endif
 
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/signal.h>
 #include <linux/blkdev.h>

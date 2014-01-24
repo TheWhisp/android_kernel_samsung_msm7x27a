@@ -379,6 +379,7 @@ static struct platform_driver stmpe_ts_driver = {
 	.probe = stmpe_input_probe,
 	.remove = __devexit_p(stmpe_ts_remove),
 };
+<<<<<<< HEAD
 
 static int __init stmpe_ts_init(void)
 {
@@ -393,6 +394,9 @@ static void __exit stmpe_ts_exit(void)
 }
 
 module_exit(stmpe_ts_exit);
+=======
+module_platform_driver(stmpe_ts_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Luotao Fu <l.fu@pengutronix.de>");
 MODULE_DESCRIPTION("STMPEXXX touchscreen driver");

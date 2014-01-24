@@ -62,6 +62,10 @@ ENTRY(cpu_sa110_proc_fin)
  * loc: location to jump to for soft reset
  */
 	.align	5
+<<<<<<< HEAD
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
 ENTRY(cpu_sa110_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -74,6 +78,11 @@ ENTRY(cpu_sa110_reset)
 	bic	ip, ip, #0x1100			@ ...i...s........
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_sa110_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * cpu_sa110_do_idle(type)
@@ -187,6 +196,7 @@ sa110_crval:
 
 	__INITDATA
 
+<<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
  *	     come through these
@@ -224,6 +234,16 @@ cpu_elf_name:
 cpu_sa110_name:
 	.asciz	"StrongARM-110"
 	.size	cpu_sa110_name, . - cpu_sa110_name
+=======
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions sa110, dabort=v4_early_abort, pabort=legacy_pabort
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv4"
+	string	cpu_elf_name, "v4"
+	string	cpu_sa110_name, "StrongARM-110"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.align
 

@@ -21,7 +21,11 @@
 #include <linux/user_namespace.h>
 #include "internal.h"
 
+<<<<<<< HEAD
 static struct kmem_cache	*key_jar;
+=======
+struct kmem_cache *key_jar;
+>>>>>>> refs/remotes/origin/cm-10.0
 struct rb_root		key_serial_tree; /* tree of keys indexed by serial */
 DEFINE_SPINLOCK(key_serial_lock);
 
@@ -36,6 +40,7 @@ unsigned int key_quota_maxbytes = 20000;	/* general key space quota */
 static LIST_HEAD(key_types_list);
 static DECLARE_RWSEM(key_types_sem);
 
+<<<<<<< HEAD
 static void key_cleanup(struct work_struct *work);
 static DECLARE_WORK(key_cleanup_task, key_cleanup);
 
@@ -47,6 +52,11 @@ static struct key_type key_type_dead = {
 	.name		= "dead",
 };
 
+=======
+/* We serialise key instantiation and link */
+DEFINE_MUTEX(key_construction_mutex);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef KEY_DEBUGGING
 void __key_check(const struct key *key)
 {
@@ -299,6 +309,10 @@ struct key *key_alloc(struct key_type *type, const char *desc,
 
 	atomic_set(&key->usage, 1);
 	init_rwsem(&key->sem);
+<<<<<<< HEAD
+=======
+	lockdep_set_class(&key->sem, &type->lock_class);
+>>>>>>> refs/remotes/origin/cm-10.0
 	key->type = type;
 	key->user = user;
 	key->quotalen = quotalen;
@@ -591,6 +605,7 @@ int key_reject_and_link(struct key *key,
 }
 EXPORT_SYMBOL(key_reject_and_link);
 
+<<<<<<< HEAD
 /*
  * Garbage collect keys in process context so that we don't have to disable
  * interrupts all over the place.
@@ -656,6 +671,8 @@ found_dead_key:
 	goto go_again;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * key_put - Discard a reference to a key.
  * @key: The key to discard a reference from.
@@ -670,7 +687,11 @@ void key_put(struct key *key)
 		key_check(key);
 
 		if (atomic_dec_and_test(&key->usage))
+<<<<<<< HEAD
 			schedule_work(&key_cleanup_task);
+=======
+			queue_work(system_nrt_wq, &key_gc_work);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 EXPORT_SYMBOL(key_put);
@@ -743,6 +764,29 @@ found_kernel_type:
 	return ktype;
 }
 
+<<<<<<< HEAD
+=======
+void key_set_timeout(struct key *key, unsigned timeout)
+{
+	struct timespec now;
+	time_t expiry = 0;
+
+	/* make the changes with the locks held to prevent races */
+	down_write(&key->sem);
+
+	if (timeout > 0) {
+		now = current_kernel_time();
+		expiry = now.tv_sec + timeout;
+	}
+
+	key->expiry = expiry;
+	key_schedule_gc(key->expiry + key_gc_delay);
+
+	up_write(&key->sem);
+}
+EXPORT_SYMBOL_GPL(key_set_timeout);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Unlock a key type locked by key_type_lookup().
  */
@@ -1019,6 +1063,11 @@ int register_key_type(struct key_type *ktype)
 	struct key_type *p;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	memset(&ktype->lock_class, 0, sizeof(ktype->lock_class));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = -EEXIST;
 	down_write(&key_types_sem);
 
@@ -1048,6 +1097,7 @@ EXPORT_SYMBOL(register_key_type);
  */
 void unregister_key_type(struct key_type *ktype)
 {
+<<<<<<< HEAD
 	struct rb_node *_n;
 	struct key *key;
 
@@ -1091,6 +1141,13 @@ void unregister_key_type(struct key_type *ktype)
 	up_write(&key_types_sem);
 
 	key_schedule_gc(0);
+=======
+	down_write(&key_types_sem);
+	list_del_init(&ktype->link);
+	downgrade_write(&key_types_sem);
+	key_gc_keytype(ktype);
+	up_read(&key_types_sem);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(unregister_key_type);
 
@@ -1107,6 +1164,10 @@ void __init key_init(void)
 	list_add_tail(&key_type_keyring.link, &key_types_list);
 	list_add_tail(&key_type_dead.link, &key_types_list);
 	list_add_tail(&key_type_user.link, &key_types_list);
+<<<<<<< HEAD
+=======
+	list_add_tail(&key_type_logon.link, &key_types_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* record the root user tracking */
 	rb_link_node(&root_key_user.node,

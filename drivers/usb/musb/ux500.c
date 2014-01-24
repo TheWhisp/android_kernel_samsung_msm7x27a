@@ -37,7 +37,11 @@ struct ux500_glue {
 
 static int ux500_musb_init(struct musb *musb)
 {
+<<<<<<< HEAD
 	musb->xceiv = otg_get_transceiver();
+=======
+	musb->xceiv = usb_get_transceiver();
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!musb->xceiv) {
 		pr_err("HS USB OTG: no transceiver configured\n");
 		return -ENODEV;
@@ -48,7 +52,11 @@ static int ux500_musb_init(struct musb *musb)
 
 static int ux500_musb_exit(struct musb *musb)
 {
+<<<<<<< HEAD
 	otg_put_transceiver(musb->xceiv);
+=======
+	usb_put_transceiver(musb->xceiv);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -58,7 +66,11 @@ static const struct musb_platform_ops ux500_ops = {
 	.exit		= ux500_musb_exit,
 };
 
+<<<<<<< HEAD
 static int __init ux500_probe(struct platform_device *pdev)
+=======
+static int __devinit ux500_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct musb_hdrc_platform_data	*pdata = pdev->dev.platform_data;
 	struct platform_device		*musb;
@@ -141,7 +153,11 @@ err0:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __exit ux500_remove(struct platform_device *pdev)
+=======
+static int __devexit ux500_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ux500_glue	*glue = platform_get_drvdata(pdev);
 
@@ -160,7 +176,11 @@ static int ux500_suspend(struct device *dev)
 	struct ux500_glue	*glue = dev_get_drvdata(dev);
 	struct musb		*musb = glue_to_musb(glue);
 
+<<<<<<< HEAD
 	otg_set_suspend(musb->xceiv, 1);
+=======
+	usb_phy_set_suspend(musb->xceiv, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_disable(glue->clk);
 
 	return 0;
@@ -178,7 +198,11 @@ static int ux500_resume(struct device *dev)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	otg_set_suspend(musb->xceiv, 0);
+=======
+	usb_phy_set_suspend(musb->xceiv, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -194,7 +218,12 @@ static const struct dev_pm_ops ux500_pm_ops = {
 #endif
 
 static struct platform_driver ux500_driver = {
+<<<<<<< HEAD
 	.remove		= __exit_p(ux500_remove),
+=======
+	.probe		= ux500_probe,
+	.remove		= __devexit_p(ux500_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver		= {
 		.name	= "musb-ux500",
 		.pm	= DEV_PM_OPS,
@@ -207,9 +236,15 @@ MODULE_LICENSE("GPL v2");
 
 static int __init ux500_init(void)
 {
+<<<<<<< HEAD
 	return platform_driver_probe(&ux500_driver, ux500_probe);
 }
 subsys_initcall(ux500_init);
+=======
+	return platform_driver_register(&ux500_driver);
+}
+module_init(ux500_init);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __exit ux500_exit(void)
 {

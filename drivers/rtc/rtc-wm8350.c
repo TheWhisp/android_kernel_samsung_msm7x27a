@@ -486,6 +486,7 @@ static struct platform_driver wm8350_rtc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init wm8350_rtc_init(void)
 {
 	return platform_driver_register(&wm8350_rtc_driver);
@@ -497,6 +498,9 @@ static void __exit wm8350_rtc_exit(void)
 	platform_driver_unregister(&wm8350_rtc_driver);
 }
 module_exit(wm8350_rtc_exit);
+=======
+module_platform_driver(wm8350_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_DESCRIPTION("RTC driver for the WM8350");

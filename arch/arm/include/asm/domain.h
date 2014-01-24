@@ -11,6 +11,13 @@
 #ifndef __ASM_PROC_DOMAIN_H
 #define __ASM_PROC_DOMAIN_H
 
+<<<<<<< HEAD
+=======
+#ifndef __ASSEMBLY__
+#include <asm/barrier.h>
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Domain numbers
  *
@@ -101,9 +108,15 @@ void emulate_domain_manager_switch_mm(
  * instructions (inline assembly)
  */
 #ifdef CONFIG_CPU_USE_DOMAINS
+<<<<<<< HEAD
 #define T(instr)	#instr "t"
 #else
 #define T(instr)	#instr
+=======
+#define TUSER(instr)	#instr "t"
+#else
+#define TUSER(instr)	#instr
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #else /* __ASSEMBLY__ */
@@ -113,9 +126,15 @@ void emulate_domain_manager_switch_mm(
  * instructions
  */
 #ifdef CONFIG_CPU_USE_DOMAINS
+<<<<<<< HEAD
 #define T(instr)	instr ## t
 #else
 #define T(instr)	instr
+=======
+#define TUSER(instr)	instr ## t
+#else
+#define TUSER(instr)	instr
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #endif /* __ASSEMBLY__ */

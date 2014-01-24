@@ -15,22 +15,35 @@
 #include <linux/fs.h>
 #include <linux/exportfs.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/debugfs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/cleancache.h>
 
 /*
  * This global enablement flag may be read thousands of times per second
+<<<<<<< HEAD
  * by cleancache_get/put/flush even on systems where cleancache_ops
+=======
+ * by cleancache_get/put/invalidate even on systems where cleancache_ops
+>>>>>>> refs/remotes/origin/cm-10.0
  * is not claimed (e.g. cleancache is config'ed on but remains
  * disabled), so is preferred to the slower alternative: a function
  * call that checks a non-global.
  */
+<<<<<<< HEAD
 int cleancache_enabled;
+=======
+int cleancache_enabled __read_mostly;
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(cleancache_enabled);
 
 /*
  * cleancache_ops is set by cleancache_ops_register to contain the pointers
  * to the cleancache "backend" implementation functions.
  */
+<<<<<<< HEAD
 static struct cleancache_ops cleancache_ops;
 
 /* useful stats available in /sys/kernel/mm/cleancache */
@@ -38,6 +51,19 @@ static unsigned long cleancache_succ_gets;
 static unsigned long cleancache_failed_gets;
 static unsigned long cleancache_puts;
 static unsigned long cleancache_flushes;
+=======
+static struct cleancache_ops cleancache_ops __read_mostly;
+
+/*
+ * Counters available via /sys/kernel/debug/frontswap (if debugfs is
+ * properly configured.  These are for information only so are not protected
+ * against increment races.
+ */
+static u64 cleancache_succ_gets;
+static u64 cleancache_failed_gets;
+static u64 cleancache_puts;
+static u64 cleancache_invalidates;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * register operations for cleancache, returning previous thus allowing
@@ -148,10 +174,18 @@ void __cleancache_put_page(struct page *page)
 EXPORT_SYMBOL(__cleancache_put_page);
 
 /*
+<<<<<<< HEAD
  * Flush any data from cleancache associated with the poolid and the
  * page's inode and page index so that a subsequent "get" will fail.
  */
 void __cleancache_flush_page(struct address_space *mapping, struct page *page)
+=======
+ * Invalidate any data from cleancache associated with the poolid and the
+ * page's inode and page index so that a subsequent "get" will fail.
+ */
+void __cleancache_invalidate_page(struct address_space *mapping,
+					struct page *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* careful... page->mapping is NULL sometimes when this is called */
 	int pool_id = mapping->host->i_sb->cleancache_poolid;
@@ -160,6 +194,7 @@ void __cleancache_flush_page(struct address_space *mapping, struct page *page)
 	if (pool_id >= 0) {
 		VM_BUG_ON(!PageLocked(page));
 		if (cleancache_get_key(mapping->host, &key) >= 0) {
+<<<<<<< HEAD
 			(*cleancache_ops.flush_page)(pool_id, key, page->index);
 			cleancache_flushes++;
 		}
@@ -173,25 +208,52 @@ EXPORT_SYMBOL(__cleancache_flush_page);
  * will fail.
  */
 void __cleancache_flush_inode(struct address_space *mapping)
+=======
+			(*cleancache_ops.invalidate_page)(pool_id,
+							  key, page->index);
+			cleancache_invalidates++;
+		}
+	}
+}
+EXPORT_SYMBOL(__cleancache_invalidate_page);
+
+/*
+ * Invalidate all data from cleancache associated with the poolid and the
+ * mappings's inode so that all subsequent gets to this poolid/inode
+ * will fail.
+ */
+void __cleancache_invalidate_inode(struct address_space *mapping)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int pool_id = mapping->host->i_sb->cleancache_poolid;
 	struct cleancache_filekey key = { .u.key = { 0 } };
 
 	if (pool_id >= 0 && cleancache_get_key(mapping->host, &key) >= 0)
+<<<<<<< HEAD
 		(*cleancache_ops.flush_inode)(pool_id, key);
 }
 EXPORT_SYMBOL(__cleancache_flush_inode);
+=======
+		(*cleancache_ops.invalidate_inode)(pool_id, key);
+}
+EXPORT_SYMBOL(__cleancache_invalidate_inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Called by any cleancache-enabled filesystem at time of unmount;
  * note that pool_id is surrendered and may be reutrned by a subsequent
  * cleancache_init_fs or cleancache_init_shared_fs
  */
+<<<<<<< HEAD
 void __cleancache_flush_fs(struct super_block *sb)
+=======
+void __cleancache_invalidate_fs(struct super_block *sb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (sb->cleancache_poolid >= 0) {
 		int old_poolid = sb->cleancache_poolid;
 		sb->cleancache_poolid = -1;
+<<<<<<< HEAD
 		(*cleancache_ops.flush_fs)(old_poolid);
 	}
 }
@@ -239,6 +301,26 @@ static int __init init_cleancache(void)
 
 	err = sysfs_create_group(mm_kobj, &cleancache_attr_group);
 #endif /* CONFIG_SYSFS */
+=======
+		(*cleancache_ops.invalidate_fs)(old_poolid);
+	}
+}
+EXPORT_SYMBOL(__cleancache_invalidate_fs);
+
+static int __init init_cleancache(void)
+{
+#ifdef CONFIG_DEBUG_FS
+	struct dentry *root = debugfs_create_dir("cleancache", NULL);
+	if (root == NULL)
+		return -ENXIO;
+	debugfs_create_u64("succ_gets", S_IRUGO, root, &cleancache_succ_gets);
+	debugfs_create_u64("failed_gets", S_IRUGO,
+				root, &cleancache_failed_gets);
+	debugfs_create_u64("puts", S_IRUGO, root, &cleancache_puts);
+	debugfs_create_u64("invalidates", S_IRUGO,
+				root, &cleancache_invalidates);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 module_init(init_cleancache)

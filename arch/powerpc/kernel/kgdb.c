@@ -24,6 +24,10 @@
 #include <asm/current.h>
 #include <asm/processor.h>
 #include <asm/machdep.h>
+<<<<<<< HEAD
+=======
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * This table contains the mapping between PowerPC hardware trap types, and

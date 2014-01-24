@@ -8,7 +8,11 @@
  *  it under the terms of the GNU General Public License version 2 as
  *  publishhed by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
@@ -23,7 +27,11 @@
 #include <mach/addr-map.h>
 #include <mach/mfp-pxa168.h>
 #include <mach/pxa168.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <video/pxa168fb.h>
 #include <linux/input.h>
 #include <plat/pxa27x_keypad.h>
@@ -120,8 +128,13 @@ static struct resource smc91x_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= gpio_to_irq(27),
 		.end	= gpio_to_irq(27),
+=======
+		.start	= MMP_GPIO_TO_IRQ(27),
+		.end	= MMP_GPIO_TO_IRQ(27),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	}
 };
@@ -160,15 +173,25 @@ static struct mtd_partition aspenite_nand_partitions[] = {
 	}, {
 		.name		= "filesystem",
 		.offset		= MTDPART_OFS_APPEND,
+<<<<<<< HEAD
 		.size		= SZ_48M,
+=======
+		.size		= SZ_32M + SZ_16M,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.mask_flags	= 0,
 	}
 };
 
 static struct pxa3xx_nand_platform_data aspenite_nand_info = {
 	.enable_arbiter	= 1,
+<<<<<<< HEAD
 	.parts		= aspenite_nand_partitions,
 	.nr_parts	= ARRAY_SIZE(aspenite_nand_partitions),
+=======
+	.num_cs = 1,
+	.parts[0]	= aspenite_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(aspenite_nand_partitions),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct i2c_board_info aspenite_i2c_info[] __initdata = {
@@ -231,6 +254,10 @@ static void __init common_init(void)
 	pxa168_add_nand(&aspenite_nand_info);
 	pxa168_add_fb(&aspenite_lcd_info);
 	pxa168_add_keypad(&aspenite_keypad_info);
+<<<<<<< HEAD
+=======
+	platform_device_register(&pxa168_device_gpio);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* off-chip devices */
 	platform_device_register(&smc91x_device);
@@ -238,16 +265,32 @@ static void __init common_init(void)
 
 MACHINE_START(ASPENITE, "PXA168-based Aspenite Development Platform")
 	.map_io		= mmp_map_io,
+<<<<<<< HEAD
 	.nr_irqs	= IRQ_BOARD_START,
 	.init_irq       = pxa168_init_irq,
 	.timer          = &pxa168_timer,
 	.init_machine   = common_init,
+=======
+	.nr_irqs	= MMP_NR_IRQS,
+	.init_irq       = pxa168_init_irq,
+	.timer          = &pxa168_timer,
+	.init_machine   = common_init,
+	.restart	= pxa168_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 
 MACHINE_START(ZYLONITE2, "PXA168-based Zylonite2 Development Platform")
 	.map_io		= mmp_map_io,
+<<<<<<< HEAD
 	.nr_irqs	= IRQ_BOARD_START,
 	.init_irq       = pxa168_init_irq,
 	.timer          = &pxa168_timer,
 	.init_machine   = common_init,
+=======
+	.nr_irqs	= MMP_NR_IRQS,
+	.init_irq       = pxa168_init_irq,
+	.timer          = &pxa168_timer,
+	.init_machine   = common_init,
+	.restart	= pxa168_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

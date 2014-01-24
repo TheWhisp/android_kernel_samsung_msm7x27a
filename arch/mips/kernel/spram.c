@@ -15,7 +15,10 @@
 
 #include <asm/fpu.h>
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/r4kcache.h>
 #include <asm/hazards.h>
 

@@ -19,12 +19,19 @@
 #include "bfa_modules.h"
 
 BFA_TRC_FILE(HAL, FCPIM);
+<<<<<<< HEAD
 BFA_MODULE(fcpim);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *  BFA ITNIM Related definitions
  */
 static void bfa_itnim_update_del_itn_stats(struct bfa_itnim_s *itnim);
+<<<<<<< HEAD
+=======
+static void bfa_ioim_lm_init(struct bfa_s *bfa);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define BFA_ITNIM_FROM_TAG(_fcpim, _tag)                                \
 	(((_fcpim)->itnim_arr + ((_tag) & ((_fcpim)->num_itnims - 1))))
@@ -67,6 +74,14 @@ static void bfa_itnim_update_del_itn_stats(struct bfa_itnim_s *itnim);
 	}								\
 } while (0)
 
+<<<<<<< HEAD
+=======
+enum bfa_ioim_lm_ua_status {
+	BFA_IOIM_LM_UA_RESET = 0,
+	BFA_IOIM_LM_UA_SET = 1,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *  itnim state machine event
  */
@@ -287,14 +302,21 @@ static void     bfa_tskim_sm_hcb(struct bfa_tskim_s *tskim,
  * Compute and return memory needed by FCP(im) module.
  */
 static void
+<<<<<<< HEAD
 bfa_fcpim_meminfo(struct bfa_iocfc_cfg_s *cfg, u32 *km_len,
 		u32 *dm_len)
 {
 	bfa_itnim_meminfo(cfg, km_len, dm_len);
+=======
+bfa_fcpim_meminfo(struct bfa_iocfc_cfg_s *cfg, u32 *km_len)
+{
+	bfa_itnim_meminfo(cfg, km_len);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * IO memory
 	 */
+<<<<<<< HEAD
 	if (cfg->fwcfg.num_ioim_reqs < BFA_IOIM_MIN)
 		cfg->fwcfg.num_ioim_reqs = BFA_IOIM_MIN;
 	else if (cfg->fwcfg.num_ioim_reqs > BFA_IOIM_MAX)
@@ -305,6 +327,11 @@ bfa_fcpim_meminfo(struct bfa_iocfc_cfg_s *cfg, u32 *km_len,
 
 	*dm_len += cfg->fwcfg.num_ioim_reqs * BFI_IOIM_SNSLEN;
 
+=======
+	*km_len += cfg->fwcfg.num_ioim_reqs *
+	  (sizeof(struct bfa_ioim_s) + sizeof(struct bfa_ioim_sp_s));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * task management command memory
 	 */
@@ -315,25 +342,40 @@ bfa_fcpim_meminfo(struct bfa_iocfc_cfg_s *cfg, u32 *km_len,
 
 
 static void
+<<<<<<< HEAD
 bfa_fcpim_attach(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 		struct bfa_meminfo_s *meminfo, struct bfa_pcidev_s *pcidev)
 {
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
+=======
+bfa_fcpim_attach(struct bfa_fcp_mod_s *fcp, void *bfad,
+		struct bfa_iocfc_cfg_s *cfg, struct bfa_pcidev_s *pcidev)
+{
+	struct bfa_fcpim_s *fcpim = &fcp->fcpim;
+	struct bfa_s *bfa = fcp->bfa;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bfa_trc(bfa, cfg->drvcfg.path_tov);
 	bfa_trc(bfa, cfg->fwcfg.num_rports);
 	bfa_trc(bfa, cfg->fwcfg.num_ioim_reqs);
 	bfa_trc(bfa, cfg->fwcfg.num_tskim_reqs);
 
+<<<<<<< HEAD
 	fcpim->bfa		= bfa;
 	fcpim->num_itnims	= cfg->fwcfg.num_rports;
 	fcpim->num_ioim_reqs  = cfg->fwcfg.num_ioim_reqs;
+=======
+	fcpim->fcp		= fcp;
+	fcpim->bfa		= bfa;
+	fcpim->num_itnims	= cfg->fwcfg.num_rports;
+>>>>>>> refs/remotes/origin/cm-10.0
 	fcpim->num_tskim_reqs = cfg->fwcfg.num_tskim_reqs;
 	fcpim->path_tov		= cfg->drvcfg.path_tov;
 	fcpim->delay_comp	= cfg->drvcfg.delay_comp;
 	fcpim->profile_comp = NULL;
 	fcpim->profile_start = NULL;
 
+<<<<<<< HEAD
 	bfa_itnim_attach(fcpim, meminfo);
 	bfa_tskim_attach(fcpim, meminfo);
 	bfa_ioim_attach(fcpim, meminfo);
@@ -361,6 +403,23 @@ bfa_fcpim_iocdisable(struct bfa_s *bfa)
 	struct bfa_itnim_s *itnim;
 	struct list_head *qe, *qen;
 
+=======
+	bfa_itnim_attach(fcpim);
+	bfa_tskim_attach(fcpim);
+	bfa_ioim_attach(fcpim);
+}
+
+static void
+bfa_fcpim_iocdisable(struct bfa_fcp_mod_s *fcp)
+{
+	struct bfa_fcpim_s *fcpim = &fcp->fcpim;
+	struct bfa_itnim_s *itnim;
+	struct list_head *qe, *qen;
+
+	/* Enqueue unused ioim resources to free_q */
+	list_splice_tail_init(&fcpim->tskim_unused_q, &fcpim->tskim_free_q);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each_safe(qe, qen, &fcpim->itnim_q) {
 		itnim = (struct bfa_itnim_s *) qe;
 		bfa_itnim_iocdisable(itnim);
@@ -370,7 +429,11 @@ bfa_fcpim_iocdisable(struct bfa_s *bfa)
 void
 bfa_fcpim_path_tov_set(struct bfa_s *bfa, u16 path_tov)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fcpim->path_tov = path_tov * 1000;
 	if (fcpim->path_tov > BFA_FCPIM_PATHTOV_MAX)
@@ -380,15 +443,151 @@ bfa_fcpim_path_tov_set(struct bfa_s *bfa, u16 path_tov)
 u16
 bfa_fcpim_path_tov_get(struct bfa_s *bfa)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return fcpim->path_tov / 1000;
+}
+
+<<<<<<< HEAD
+u16
+bfa_fcpim_qdepth_get(struct bfa_s *bfa)
+{
+	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
+=======
+#define bfa_fcpim_add_iostats(__l, __r, __stats)	\
+	(__l->__stats += __r->__stats)
+
+void
+bfa_fcpim_add_stats(struct bfa_itnim_iostats_s *lstats,
+		struct bfa_itnim_iostats_s *rstats)
+{
+	bfa_fcpim_add_iostats(lstats, rstats, total_ios);
+	bfa_fcpim_add_iostats(lstats, rstats, qresumes);
+	bfa_fcpim_add_iostats(lstats, rstats, no_iotags);
+	bfa_fcpim_add_iostats(lstats, rstats, io_aborts);
+	bfa_fcpim_add_iostats(lstats, rstats, no_tskims);
+	bfa_fcpim_add_iostats(lstats, rstats, iocomp_ok);
+	bfa_fcpim_add_iostats(lstats, rstats, iocomp_underrun);
+	bfa_fcpim_add_iostats(lstats, rstats, iocomp_overrun);
+	bfa_fcpim_add_iostats(lstats, rstats, iocomp_aborted);
+	bfa_fcpim_add_iostats(lstats, rstats, iocomp_timedout);
+	bfa_fcpim_add_iostats(lstats, rstats, iocom_nexus_abort);
+	bfa_fcpim_add_iostats(lstats, rstats, iocom_proto_err);
+	bfa_fcpim_add_iostats(lstats, rstats, iocom_dif_err);
+	bfa_fcpim_add_iostats(lstats, rstats, iocom_sqer_needed);
+	bfa_fcpim_add_iostats(lstats, rstats, iocom_res_free);
+	bfa_fcpim_add_iostats(lstats, rstats, iocom_hostabrts);
+	bfa_fcpim_add_iostats(lstats, rstats, iocom_utags);
+	bfa_fcpim_add_iostats(lstats, rstats, io_cleanups);
+	bfa_fcpim_add_iostats(lstats, rstats, io_tmaborts);
+	bfa_fcpim_add_iostats(lstats, rstats, onlines);
+	bfa_fcpim_add_iostats(lstats, rstats, offlines);
+	bfa_fcpim_add_iostats(lstats, rstats, creates);
+	bfa_fcpim_add_iostats(lstats, rstats, deletes);
+	bfa_fcpim_add_iostats(lstats, rstats, create_comps);
+	bfa_fcpim_add_iostats(lstats, rstats, delete_comps);
+	bfa_fcpim_add_iostats(lstats, rstats, sler_events);
+	bfa_fcpim_add_iostats(lstats, rstats, fw_create);
+	bfa_fcpim_add_iostats(lstats, rstats, fw_delete);
+	bfa_fcpim_add_iostats(lstats, rstats, ioc_disabled);
+	bfa_fcpim_add_iostats(lstats, rstats, cleanup_comps);
+	bfa_fcpim_add_iostats(lstats, rstats, tm_cmnds);
+	bfa_fcpim_add_iostats(lstats, rstats, tm_fw_rsps);
+	bfa_fcpim_add_iostats(lstats, rstats, tm_success);
+	bfa_fcpim_add_iostats(lstats, rstats, tm_failures);
+	bfa_fcpim_add_iostats(lstats, rstats, tm_io_comps);
+	bfa_fcpim_add_iostats(lstats, rstats, tm_qresumes);
+	bfa_fcpim_add_iostats(lstats, rstats, tm_iocdowns);
+	bfa_fcpim_add_iostats(lstats, rstats, tm_cleanups);
+	bfa_fcpim_add_iostats(lstats, rstats, tm_cleanup_comps);
+	bfa_fcpim_add_iostats(lstats, rstats, io_comps);
+	bfa_fcpim_add_iostats(lstats, rstats, input_reqs);
+	bfa_fcpim_add_iostats(lstats, rstats, output_reqs);
+	bfa_fcpim_add_iostats(lstats, rstats, rd_throughput);
+	bfa_fcpim_add_iostats(lstats, rstats, wr_throughput);
+}
+
+bfa_status_t
+bfa_fcpim_port_iostats(struct bfa_s *bfa,
+		struct bfa_itnim_iostats_s *stats, u8 lp_tag)
+{
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+	struct list_head *qe, *qen;
+	struct bfa_itnim_s *itnim;
+
+	/* accumulate IO stats from itnim */
+	memset(stats, 0, sizeof(struct bfa_itnim_iostats_s));
+	list_for_each_safe(qe, qen, &fcpim->itnim_q) {
+		itnim = (struct bfa_itnim_s *) qe;
+		if (itnim->rport->rport_info.lp_tag != lp_tag)
+			continue;
+		bfa_fcpim_add_stats(stats, &(itnim->stats));
+	}
+	return BFA_STATUS_OK;
+}
+
+void
+bfa_ioim_profile_comp(struct bfa_ioim_s *ioim)
+{
+	struct bfa_itnim_latency_s *io_lat =
+			&(ioim->itnim->ioprofile.io_latency);
+	u32 val, idx;
+
+	val = (u32)(jiffies - ioim->start_time);
+	idx = bfa_ioim_get_index(scsi_bufflen((struct scsi_cmnd *)ioim->dio));
+	bfa_itnim_ioprofile_update(ioim->itnim, idx);
+
+	io_lat->count[idx]++;
+	io_lat->min[idx] = (io_lat->min[idx] < val) ? io_lat->min[idx] : val;
+	io_lat->max[idx] = (io_lat->max[idx] > val) ? io_lat->max[idx] : val;
+	io_lat->avg[idx] += val;
+}
+
+void
+bfa_ioim_profile_start(struct bfa_ioim_s *ioim)
+{
+	ioim->start_time = jiffies;
+}
+
+bfa_status_t
+bfa_fcpim_profile_on(struct bfa_s *bfa, u32 time)
+{
+	struct bfa_itnim_s *itnim;
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+	struct list_head *qe, *qen;
+
+	/* accumulate IO stats from itnim */
+	list_for_each_safe(qe, qen, &fcpim->itnim_q) {
+		itnim = (struct bfa_itnim_s *) qe;
+		bfa_itnim_clear_stats(itnim);
+	}
+	fcpim->io_profile = BFA_TRUE;
+	fcpim->io_profile_start_time = time;
+	fcpim->profile_comp = bfa_ioim_profile_comp;
+	fcpim->profile_start = bfa_ioim_profile_start;
+	return BFA_STATUS_OK;
+}
+
+bfa_status_t
+bfa_fcpim_profile_off(struct bfa_s *bfa)
+{
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+	fcpim->io_profile = BFA_FALSE;
+	fcpim->io_profile_start_time = 0;
+	fcpim->profile_comp = NULL;
+	fcpim->profile_start = NULL;
+	return BFA_STATUS_OK;
 }
 
 u16
 bfa_fcpim_qdepth_get(struct bfa_s *bfa)
 {
-	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return fcpim->q_depth;
 }
@@ -990,8 +1189,12 @@ bfa_itnim_tskdone(struct bfa_itnim_s *itnim)
 }
 
 void
+<<<<<<< HEAD
 bfa_itnim_meminfo(struct bfa_iocfc_cfg_s *cfg, u32 *km_len,
 		u32 *dm_len)
+=======
+bfa_itnim_meminfo(struct bfa_iocfc_cfg_s *cfg, u32 *km_len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/*
 	 * ITN memory
@@ -1000,15 +1203,26 @@ bfa_itnim_meminfo(struct bfa_iocfc_cfg_s *cfg, u32 *km_len,
 }
 
 void
+<<<<<<< HEAD
 bfa_itnim_attach(struct bfa_fcpim_mod_s *fcpim, struct bfa_meminfo_s *minfo)
 {
 	struct bfa_s	*bfa = fcpim->bfa;
+=======
+bfa_itnim_attach(struct bfa_fcpim_s *fcpim)
+{
+	struct bfa_s	*bfa = fcpim->bfa;
+	struct bfa_fcp_mod_s	*fcp = fcpim->fcp;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct bfa_itnim_s *itnim;
 	int	i, j;
 
 	INIT_LIST_HEAD(&fcpim->itnim_q);
 
+<<<<<<< HEAD
 	itnim = (struct bfa_itnim_s *) bfa_meminfo_kva(minfo);
+=======
+	itnim = (struct bfa_itnim_s *) bfa_mem_kva_curp(fcp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fcpim->itnim_arr = itnim;
 
 	for (i = 0; i < fcpim->num_itnims; i++, itnim++) {
@@ -1030,7 +1244,11 @@ bfa_itnim_attach(struct bfa_fcpim_mod_s *fcpim, struct bfa_meminfo_s *minfo)
 		bfa_sm_set_state(itnim, bfa_itnim_sm_uninit);
 	}
 
+<<<<<<< HEAD
 	bfa_meminfo_kva(minfo) = (u8 *) itnim;
+=======
+	bfa_mem_kva_curp(fcp) = (u8 *) itnim;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void
@@ -1043,7 +1261,11 @@ bfa_itnim_iocdisable(struct bfa_itnim_s *itnim)
 static bfa_boolean_t
 bfa_itnim_send_fwcreate(struct bfa_itnim_s *itnim)
 {
+<<<<<<< HEAD
 	struct bfi_itnim_create_req_s *m;
+=======
+	struct bfi_itn_create_req_s *m;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	itnim->msg_no++;
 
@@ -1056,8 +1278,13 @@ bfa_itnim_send_fwcreate(struct bfa_itnim_s *itnim)
 		return BFA_FALSE;
 	}
 
+<<<<<<< HEAD
 	bfi_h2i_set(m->mh, BFI_MC_ITNIM, BFI_ITNIM_H2I_CREATE_REQ,
 			bfa_lpuid(itnim->bfa));
+=======
+	bfi_h2i_set(m->mh, BFI_MC_ITN, BFI_ITN_H2I_CREATE_REQ,
+			bfa_fn_lpu(itnim->bfa));
+>>>>>>> refs/remotes/origin/cm-10.0
 	m->fw_handle = itnim->rport->fw_handle;
 	m->class = FC_CLASS_3;
 	m->seq_rec = itnim->seq_rec;
@@ -1067,14 +1294,22 @@ bfa_itnim_send_fwcreate(struct bfa_itnim_s *itnim)
 	/*
 	 * queue I/O message to firmware
 	 */
+<<<<<<< HEAD
 	bfa_reqq_produce(itnim->bfa, itnim->reqq);
+=======
+	bfa_reqq_produce(itnim->bfa, itnim->reqq, m->mh);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return BFA_TRUE;
 }
 
 static bfa_boolean_t
 bfa_itnim_send_fwdelete(struct bfa_itnim_s *itnim)
 {
+<<<<<<< HEAD
 	struct bfi_itnim_delete_req_s *m;
+=======
+	struct bfi_itn_delete_req_s *m;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * check for room in queue to send request now
@@ -1085,15 +1320,24 @@ bfa_itnim_send_fwdelete(struct bfa_itnim_s *itnim)
 		return BFA_FALSE;
 	}
 
+<<<<<<< HEAD
 	bfi_h2i_set(m->mh, BFI_MC_ITNIM, BFI_ITNIM_H2I_DELETE_REQ,
 			bfa_lpuid(itnim->bfa));
+=======
+	bfi_h2i_set(m->mh, BFI_MC_ITN, BFI_ITN_H2I_DELETE_REQ,
+			bfa_fn_lpu(itnim->bfa));
+>>>>>>> refs/remotes/origin/cm-10.0
 	m->fw_handle = itnim->rport->fw_handle;
 	bfa_stats(itnim, fw_delete);
 
 	/*
 	 * queue I/O message to firmware
 	 */
+<<<<<<< HEAD
 	bfa_reqq_produce(itnim->bfa, itnim->reqq);
+=======
+	bfa_reqq_produce(itnim->bfa, itnim->reqq, m->mh);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return BFA_TRUE;
 }
 
@@ -1224,7 +1468,11 @@ bfa_itnim_iotov_delete(struct bfa_itnim_s *itnim)
 static void
 bfa_itnim_update_del_itn_stats(struct bfa_itnim_s *itnim)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(itnim->bfa);
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(itnim->bfa);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fcpim->del_itn_stats.del_itn_iocomp_aborted +=
 		itnim->stats.iocomp_aborted;
 	fcpim->del_itn_stats.del_itn_iocomp_timedout +=
@@ -1250,8 +1498,13 @@ bfa_itnim_update_del_itn_stats(struct bfa_itnim_s *itnim)
 void
 bfa_itnim_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
 	union bfi_itnim_i2h_msg_u msg;
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+	union bfi_itn_i2h_msg_u msg;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct bfa_itnim_s *itnim;
 
 	bfa_trc(bfa, m->mhdr.msg_id);
@@ -1259,7 +1512,11 @@ bfa_itnim_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 	msg.msg = m;
 
 	switch (m->mhdr.msg_id) {
+<<<<<<< HEAD
 	case BFI_ITNIM_I2H_CREATE_RSP:
+=======
+	case BFI_ITN_I2H_CREATE_RSP:
+>>>>>>> refs/remotes/origin/cm-10.0
 		itnim = BFA_ITNIM_FROM_TAG(fcpim,
 						msg.create_rsp->bfa_handle);
 		WARN_ON(msg.create_rsp->status != BFA_STATUS_OK);
@@ -1267,7 +1524,11 @@ bfa_itnim_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 		bfa_sm_send_event(itnim, BFA_ITNIM_SM_FWRSP);
 		break;
 
+<<<<<<< HEAD
 	case BFI_ITNIM_I2H_DELETE_RSP:
+=======
+	case BFI_ITN_I2H_DELETE_RSP:
+>>>>>>> refs/remotes/origin/cm-10.0
 		itnim = BFA_ITNIM_FROM_TAG(fcpim,
 						msg.delete_rsp->bfa_handle);
 		WARN_ON(msg.delete_rsp->status != BFA_STATUS_OK);
@@ -1275,7 +1536,11 @@ bfa_itnim_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 		bfa_sm_send_event(itnim, BFA_ITNIM_SM_FWRSP);
 		break;
 
+<<<<<<< HEAD
 	case BFI_ITNIM_I2H_SLER_EVENT:
+=======
+	case BFI_ITN_I2H_SLER_EVENT:
+>>>>>>> refs/remotes/origin/cm-10.0
 		itnim = BFA_ITNIM_FROM_TAG(fcpim,
 						msg.sler_event->bfa_handle);
 		bfa_stats(itnim, sler_events);
@@ -1295,9 +1560,17 @@ bfa_itnim_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 struct bfa_itnim_s *
 bfa_itnim_create(struct bfa_s *bfa, struct bfa_rport_s *rport, void *ditn)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
 	struct bfa_itnim_s *itnim;
 
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+	struct bfa_itnim_s *itnim;
+
+	bfa_itn_create(bfa, rport, bfa_itnim_isr);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	itnim = BFA_ITNIM_FROM_TAG(fcpim, rport->rport_tag);
 	WARN_ON(itnim->rport != rport);
 
@@ -1347,6 +1620,29 @@ bfa_itnim_hold_io(struct bfa_itnim_s *itnim)
 		 bfa_sm_cmp_state(itnim, bfa_itnim_sm_iocdisable));
 }
 
+<<<<<<< HEAD
+=======
+#define bfa_io_lat_clock_res_div	HZ
+#define bfa_io_lat_clock_res_mul	1000
+bfa_status_t
+bfa_itnim_get_ioprofile(struct bfa_itnim_s *itnim,
+			struct bfa_itnim_ioprofile_s *ioprofile)
+{
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(itnim->bfa);
+	if (!fcpim->io_profile)
+		return BFA_STATUS_IOPROFILE_OFF;
+
+	itnim->ioprofile.index = BFA_IOBUCKET_MAX;
+	itnim->ioprofile.io_profile_start_time =
+				bfa_io_profile_start_time(itnim->bfa);
+	itnim->ioprofile.clock_res_mul = bfa_io_lat_clock_res_mul;
+	itnim->ioprofile.clock_res_div = bfa_io_lat_clock_res_div;
+	*ioprofile = itnim->ioprofile;
+
+	return BFA_STATUS_OK;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void
 bfa_itnim_clear_stats(struct bfa_itnim_s *itnim)
 {
@@ -1415,7 +1711,11 @@ bfa_ioim_sm_uninit(struct bfa_ioim_s *ioim, enum bfa_ioim_event event)
 		bfa_sm_set_state(ioim, bfa_ioim_sm_hcb);
 		WARN_ON(!bfa_q_is_on_q(&ioim->itnim->pending_q, ioim));
 		bfa_cb_queue(ioim->bfa, &ioim->hcb_qe,
+<<<<<<< HEAD
 				__bfa_cb_ioim_abort, ioim);
+=======
+			__bfa_cb_ioim_abort, ioim);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	default:
@@ -1955,6 +2255,30 @@ bfa_ioim_sm_resfree(struct bfa_ioim_s *ioim, enum bfa_ioim_event event)
 	}
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * This is called from bfa_fcpim_start after the bfa_init() with flash read
+ * is complete by driver. now invalidate the stale content of lun mask
+ * like unit attention, rp tag and lp tag.
+ */
+static void
+bfa_ioim_lm_init(struct bfa_s *bfa)
+{
+	struct bfa_lun_mask_s *lunm_list;
+	int	i;
+
+	if (bfa_get_lun_mask_status(bfa) == BFA_LUNMASK_MINCFG)
+		return;
+
+	lunm_list = bfa_get_lun_mask_list(bfa);
+	for (i = 0; i < MAX_LUN_MASK_CFG; i++) {
+		lunm_list[i].ua = BFA_IOIM_LM_UA_RESET;
+		lunm_list[i].lp_tag = BFA_LP_TAG_INVALID;
+		lunm_list[i].rp_tag = BFA_RPORT_TAG_INVALID;
+	}
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void
 __bfa_cb_ioim_good_comp(void *cbarg, bfa_boolean_t complete)
@@ -1991,7 +2315,12 @@ __bfa_cb_ioim_comp(void *cbarg, bfa_boolean_t complete)
 		if ((m->scsi_status == SCSI_STATUS_CHECK_CONDITION) &&
 					m->sns_len) {
 			sns_len = m->sns_len;
+<<<<<<< HEAD
 			snsinfo = ioim->iosp->snsinfo;
+=======
+			snsinfo = BFA_SNSINFO_FROM_TAG(ioim->fcpim->fcp,
+						ioim->iotag);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/*
@@ -2012,6 +2341,227 @@ __bfa_cb_ioim_comp(void *cbarg, bfa_boolean_t complete)
 			  m->scsi_status, sns_len, snsinfo, residue);
 }
 
+<<<<<<< HEAD
+=======
+void
+bfa_fcpim_lunmask_rp_update(struct bfa_s *bfa, wwn_t lp_wwn, wwn_t rp_wwn,
+			u16 rp_tag, u8 lp_tag)
+{
+	struct bfa_lun_mask_s *lun_list;
+	u8	i;
+
+	if (bfa_get_lun_mask_status(bfa) == BFA_LUNMASK_MINCFG)
+		return;
+
+	lun_list = bfa_get_lun_mask_list(bfa);
+	for (i = 0; i < MAX_LUN_MASK_CFG; i++) {
+		if (lun_list[i].state == BFA_IOIM_LUN_MASK_ACTIVE) {
+			if ((lun_list[i].lp_wwn == lp_wwn) &&
+			    (lun_list[i].rp_wwn == rp_wwn)) {
+				lun_list[i].rp_tag = rp_tag;
+				lun_list[i].lp_tag = lp_tag;
+			}
+		}
+	}
+}
+
+/*
+ * set UA for all active luns in LM DB
+ */
+static void
+bfa_ioim_lm_set_ua(struct bfa_s *bfa)
+{
+	struct bfa_lun_mask_s	*lunm_list;
+	int	i;
+
+	lunm_list = bfa_get_lun_mask_list(bfa);
+	for (i = 0; i < MAX_LUN_MASK_CFG; i++) {
+		if (lunm_list[i].state != BFA_IOIM_LUN_MASK_ACTIVE)
+			continue;
+		lunm_list[i].ua = BFA_IOIM_LM_UA_SET;
+	}
+}
+
+bfa_status_t
+bfa_fcpim_lunmask_update(struct bfa_s *bfa, u32 update)
+{
+	struct bfa_lunmask_cfg_s	*lun_mask;
+
+	bfa_trc(bfa, bfa_get_lun_mask_status(bfa));
+	if (bfa_get_lun_mask_status(bfa) == BFA_LUNMASK_MINCFG)
+		return BFA_STATUS_FAILED;
+
+	if (bfa_get_lun_mask_status(bfa) == update)
+		return BFA_STATUS_NO_CHANGE;
+
+	lun_mask = bfa_get_lun_mask(bfa);
+	lun_mask->status = update;
+
+	if (bfa_get_lun_mask_status(bfa) == BFA_LUNMASK_ENABLED)
+		bfa_ioim_lm_set_ua(bfa);
+
+	return  bfa_dconf_update(bfa);
+}
+
+bfa_status_t
+bfa_fcpim_lunmask_clear(struct bfa_s *bfa)
+{
+	int i;
+	struct bfa_lun_mask_s	*lunm_list;
+
+	bfa_trc(bfa, bfa_get_lun_mask_status(bfa));
+	if (bfa_get_lun_mask_status(bfa) == BFA_LUNMASK_MINCFG)
+		return BFA_STATUS_FAILED;
+
+	lunm_list = bfa_get_lun_mask_list(bfa);
+	for (i = 0; i < MAX_LUN_MASK_CFG; i++) {
+		if (lunm_list[i].state == BFA_IOIM_LUN_MASK_ACTIVE) {
+			if (lunm_list[i].rp_tag != BFA_RPORT_TAG_INVALID)
+				bfa_rport_unset_lunmask(bfa,
+				  BFA_RPORT_FROM_TAG(bfa, lunm_list[i].rp_tag));
+		}
+	}
+
+	memset(lunm_list, 0, sizeof(struct bfa_lun_mask_s) * MAX_LUN_MASK_CFG);
+	return bfa_dconf_update(bfa);
+}
+
+bfa_status_t
+bfa_fcpim_lunmask_query(struct bfa_s *bfa, void *buf)
+{
+	struct bfa_lunmask_cfg_s *lun_mask;
+
+	bfa_trc(bfa, bfa_get_lun_mask_status(bfa));
+	if (bfa_get_lun_mask_status(bfa) == BFA_LUNMASK_MINCFG)
+		return BFA_STATUS_FAILED;
+
+	lun_mask = bfa_get_lun_mask(bfa);
+	memcpy(buf, lun_mask, sizeof(struct bfa_lunmask_cfg_s));
+	return BFA_STATUS_OK;
+}
+
+bfa_status_t
+bfa_fcpim_lunmask_add(struct bfa_s *bfa, u16 vf_id, wwn_t *pwwn,
+		      wwn_t rpwwn, struct scsi_lun lun)
+{
+	struct bfa_lun_mask_s *lunm_list;
+	struct bfa_rport_s *rp = NULL;
+	int i, free_index = MAX_LUN_MASK_CFG + 1;
+	struct bfa_fcs_lport_s *port = NULL;
+	struct bfa_fcs_rport_s *rp_fcs;
+
+	bfa_trc(bfa, bfa_get_lun_mask_status(bfa));
+	if (bfa_get_lun_mask_status(bfa) == BFA_LUNMASK_MINCFG)
+		return BFA_STATUS_FAILED;
+
+	port = bfa_fcs_lookup_port(&((struct bfad_s *)bfa->bfad)->bfa_fcs,
+				   vf_id, *pwwn);
+	if (port) {
+		*pwwn = port->port_cfg.pwwn;
+		rp_fcs = bfa_fcs_lport_get_rport_by_pwwn(port, rpwwn);
+		if (rp_fcs)
+			rp = rp_fcs->bfa_rport;
+	}
+
+	lunm_list = bfa_get_lun_mask_list(bfa);
+	/* if entry exists */
+	for (i = 0; i < MAX_LUN_MASK_CFG; i++) {
+		if (lunm_list[i].state != BFA_IOIM_LUN_MASK_ACTIVE)
+			free_index = i;
+		if ((lunm_list[i].lp_wwn == *pwwn) &&
+		    (lunm_list[i].rp_wwn == rpwwn) &&
+		    (scsilun_to_int((struct scsi_lun *)&lunm_list[i].lun) ==
+		     scsilun_to_int((struct scsi_lun *)&lun)))
+			return  BFA_STATUS_ENTRY_EXISTS;
+	}
+
+	if (free_index > MAX_LUN_MASK_CFG)
+		return BFA_STATUS_MAX_ENTRY_REACHED;
+
+	if (rp) {
+		lunm_list[free_index].lp_tag = bfa_lps_get_tag_from_pid(bfa,
+						   rp->rport_info.local_pid);
+		lunm_list[free_index].rp_tag = rp->rport_tag;
+	} else {
+		lunm_list[free_index].lp_tag = BFA_LP_TAG_INVALID;
+		lunm_list[free_index].rp_tag = BFA_RPORT_TAG_INVALID;
+	}
+
+	lunm_list[free_index].lp_wwn = *pwwn;
+	lunm_list[free_index].rp_wwn = rpwwn;
+	lunm_list[free_index].lun = lun;
+	lunm_list[free_index].state = BFA_IOIM_LUN_MASK_ACTIVE;
+
+	/* set for all luns in this rp */
+	for (i = 0; i < MAX_LUN_MASK_CFG; i++) {
+		if ((lunm_list[i].lp_wwn == *pwwn) &&
+		    (lunm_list[i].rp_wwn == rpwwn))
+			lunm_list[i].ua = BFA_IOIM_LM_UA_SET;
+	}
+
+	return bfa_dconf_update(bfa);
+}
+
+bfa_status_t
+bfa_fcpim_lunmask_delete(struct bfa_s *bfa, u16 vf_id, wwn_t *pwwn,
+			 wwn_t rpwwn, struct scsi_lun lun)
+{
+	struct bfa_lun_mask_s	*lunm_list;
+	struct bfa_rport_s	*rp = NULL;
+	struct bfa_fcs_lport_s *port = NULL;
+	struct bfa_fcs_rport_s *rp_fcs;
+	int	i;
+
+	/* in min cfg lunm_list could be NULL but  no commands should run. */
+	if (bfa_get_lun_mask_status(bfa) == BFA_LUNMASK_MINCFG)
+		return BFA_STATUS_FAILED;
+
+	bfa_trc(bfa, bfa_get_lun_mask_status(bfa));
+	bfa_trc(bfa, *pwwn);
+	bfa_trc(bfa, rpwwn);
+	bfa_trc(bfa, scsilun_to_int((struct scsi_lun *)&lun));
+
+	if (*pwwn == 0) {
+		port = bfa_fcs_lookup_port(
+				&((struct bfad_s *)bfa->bfad)->bfa_fcs,
+				vf_id, *pwwn);
+		if (port) {
+			*pwwn = port->port_cfg.pwwn;
+			rp_fcs = bfa_fcs_lport_get_rport_by_pwwn(port, rpwwn);
+			if (rp_fcs)
+				rp = rp_fcs->bfa_rport;
+		}
+	}
+
+	lunm_list = bfa_get_lun_mask_list(bfa);
+	for (i = 0; i < MAX_LUN_MASK_CFG; i++) {
+		if ((lunm_list[i].lp_wwn == *pwwn) &&
+		    (lunm_list[i].rp_wwn == rpwwn) &&
+		    (scsilun_to_int((struct scsi_lun *)&lunm_list[i].lun) ==
+		     scsilun_to_int((struct scsi_lun *)&lun))) {
+			lunm_list[i].lp_wwn = 0;
+			lunm_list[i].rp_wwn = 0;
+			int_to_scsilun(0, &lunm_list[i].lun);
+			lunm_list[i].state = BFA_IOIM_LUN_MASK_INACTIVE;
+			if (lunm_list[i].rp_tag != BFA_RPORT_TAG_INVALID) {
+				lunm_list[i].rp_tag = BFA_RPORT_TAG_INVALID;
+				lunm_list[i].lp_tag = BFA_LP_TAG_INVALID;
+			}
+			return bfa_dconf_update(bfa);
+		}
+	}
+
+	/* set for all luns in this rp */
+	for (i = 0; i < MAX_LUN_MASK_CFG; i++) {
+		if ((lunm_list[i].lp_wwn == *pwwn) &&
+		    (lunm_list[i].rp_wwn == rpwwn))
+			lunm_list[i].ua = BFA_IOIM_LM_UA_SET;
+	}
+
+	return BFA_STATUS_ENTRY_NOT_EXISTS;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void
 __bfa_cb_ioim_failed(void *cbarg, bfa_boolean_t complete)
 {
@@ -2189,12 +2739,20 @@ bfa_ioim_send_ioreq(struct bfa_ioim_s *ioim)
 	 */
 	switch (m->cmnd.iodir) {
 	case FCP_IODIR_READ:
+<<<<<<< HEAD
 		bfi_h2i_set(m->mh, BFI_MC_IOIM_READ, 0, bfa_lpuid(ioim->bfa));
+=======
+		bfi_h2i_set(m->mh, BFI_MC_IOIM_READ, 0, bfa_fn_lpu(ioim->bfa));
+>>>>>>> refs/remotes/origin/cm-10.0
 		bfa_stats(itnim, input_reqs);
 		ioim->itnim->stats.rd_throughput += fcp_dl;
 		break;
 	case FCP_IODIR_WRITE:
+<<<<<<< HEAD
 		bfi_h2i_set(m->mh, BFI_MC_IOIM_WRITE, 0, bfa_lpuid(ioim->bfa));
+=======
+		bfi_h2i_set(m->mh, BFI_MC_IOIM_WRITE, 0, bfa_fn_lpu(ioim->bfa));
+>>>>>>> refs/remotes/origin/cm-10.0
 		bfa_stats(itnim, output_reqs);
 		ioim->itnim->stats.wr_throughput += fcp_dl;
 		break;
@@ -2202,16 +2760,28 @@ bfa_ioim_send_ioreq(struct bfa_ioim_s *ioim)
 		bfa_stats(itnim, input_reqs);
 		bfa_stats(itnim, output_reqs);
 	default:
+<<<<<<< HEAD
 		bfi_h2i_set(m->mh, BFI_MC_IOIM_IO, 0, bfa_lpuid(ioim->bfa));
 	}
 	if (itnim->seq_rec ||
 	    (scsi_bufflen(cmnd) & (sizeof(u32) - 1)))
 		bfi_h2i_set(m->mh, BFI_MC_IOIM_IO, 0, bfa_lpuid(ioim->bfa));
+=======
+		bfi_h2i_set(m->mh, BFI_MC_IOIM_IO, 0, bfa_fn_lpu(ioim->bfa));
+	}
+	if (itnim->seq_rec ||
+	    (scsi_bufflen(cmnd) & (sizeof(u32) - 1)))
+		bfi_h2i_set(m->mh, BFI_MC_IOIM_IO, 0, bfa_fn_lpu(ioim->bfa));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * queue I/O message to firmware
 	 */
+<<<<<<< HEAD
 	bfa_reqq_produce(ioim->bfa, ioim->reqq);
+=======
+	bfa_reqq_produce(ioim->bfa, ioim->reqq, m->mh);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return BFA_TRUE;
 }
 
@@ -2269,14 +2839,22 @@ bfa_ioim_send_abort(struct bfa_ioim_s *ioim)
 	else
 		msgop = BFI_IOIM_H2I_IOCLEANUP_REQ;
 
+<<<<<<< HEAD
 	bfi_h2i_set(m->mh, BFI_MC_IOIM, msgop, bfa_lpuid(ioim->bfa));
+=======
+	bfi_h2i_set(m->mh, BFI_MC_IOIM, msgop, bfa_fn_lpu(ioim->bfa));
+>>>>>>> refs/remotes/origin/cm-10.0
 	m->io_tag    = cpu_to_be16(ioim->iotag);
 	m->abort_tag = ++ioim->abort_tag;
 
 	/*
 	 * queue I/O message to firmware
 	 */
+<<<<<<< HEAD
 	bfa_reqq_produce(ioim->bfa, ioim->reqq);
+=======
+	bfa_reqq_produce(ioim->bfa, ioim->reqq, m->mh);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return BFA_TRUE;
 }
 
@@ -2360,6 +2938,7 @@ bfa_ioim_delayed_comp(struct bfa_ioim_s *ioim, bfa_boolean_t iotov)
  * Memory allocation and initialization.
  */
 void
+<<<<<<< HEAD
 bfa_ioim_attach(struct bfa_fcpim_mod_s *fcpim, struct bfa_meminfo_s *minfo)
 {
 	struct bfa_ioim_s		*ioim;
@@ -2367,10 +2946,19 @@ bfa_ioim_attach(struct bfa_fcpim_mod_s *fcpim, struct bfa_meminfo_s *minfo)
 	u16		i;
 	u8			*snsinfo;
 	u32		snsbufsz;
+=======
+bfa_ioim_attach(struct bfa_fcpim_s *fcpim)
+{
+	struct bfa_ioim_s		*ioim;
+	struct bfa_fcp_mod_s	*fcp = fcpim->fcp;
+	struct bfa_ioim_sp_s	*iosp;
+	u16		i;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * claim memory first
 	 */
+<<<<<<< HEAD
 	ioim = (struct bfa_ioim_s *) bfa_meminfo_kva(minfo);
 	fcpim->ioim_arr = ioim;
 	bfa_meminfo_kva(minfo) = (u8 *) (ioim + fcpim->num_ioim_reqs);
@@ -2390,16 +2978,33 @@ bfa_ioim_attach(struct bfa_fcpim_mod_s *fcpim, struct bfa_meminfo_s *minfo)
 	bfa_meminfo_dma_virt(minfo) += snsbufsz;
 	snsinfo = fcpim->snsbase.kva;
 	bfa_iocfc_set_snsbase(fcpim->bfa, fcpim->snsbase.pa);
+=======
+	ioim = (struct bfa_ioim_s *) bfa_mem_kva_curp(fcp);
+	fcpim->ioim_arr = ioim;
+	bfa_mem_kva_curp(fcp) = (u8 *) (ioim + fcpim->fcp->num_ioim_reqs);
+
+	iosp = (struct bfa_ioim_sp_s *) bfa_mem_kva_curp(fcp);
+	fcpim->ioim_sp_arr = iosp;
+	bfa_mem_kva_curp(fcp) = (u8 *) (iosp + fcpim->fcp->num_ioim_reqs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Initialize ioim free queues
 	 */
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&fcpim->ioim_free_q);
 	INIT_LIST_HEAD(&fcpim->ioim_resfree_q);
 	INIT_LIST_HEAD(&fcpim->ioim_comp_q);
 
 	for (i = 0; i < fcpim->num_ioim_reqs;
 	     i++, ioim++, iosp++, snsinfo += BFI_IOIM_SNSLEN) {
+=======
+	INIT_LIST_HEAD(&fcpim->ioim_resfree_q);
+	INIT_LIST_HEAD(&fcpim->ioim_comp_q);
+
+	for (i = 0; i < fcpim->fcp->num_ioim_reqs;
+	     i++, ioim++, iosp++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * initialize IOIM
 		 */
@@ -2408,22 +3013,32 @@ bfa_ioim_attach(struct bfa_fcpim_mod_s *fcpim, struct bfa_meminfo_s *minfo)
 		ioim->bfa     = fcpim->bfa;
 		ioim->fcpim   = fcpim;
 		ioim->iosp    = iosp;
+<<<<<<< HEAD
 		iosp->snsinfo = snsinfo;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		INIT_LIST_HEAD(&ioim->sgpg_q);
 		bfa_reqq_winit(&ioim->iosp->reqq_wait,
 				   bfa_ioim_qresume, ioim);
 		bfa_sgpg_winit(&ioim->iosp->sgpg_wqe,
 				   bfa_ioim_sgpg_alloced, ioim);
 		bfa_sm_set_state(ioim, bfa_ioim_sm_uninit);
+<<<<<<< HEAD
 
 		list_add_tail(&ioim->qe, &fcpim->ioim_free_q);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
 void
 bfa_ioim_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct bfi_ioim_rsp_s *rsp = (struct bfi_ioim_rsp_s *) m;
 	struct bfa_ioim_s *ioim;
 	u16	iotag;
@@ -2507,7 +3122,11 @@ bfa_ioim_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 void
 bfa_ioim_good_comp_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct bfi_ioim_rsp_s *rsp = (struct bfi_ioim_rsp_s *) m;
 	struct bfa_ioim_s *ioim;
 	u16	iotag;
@@ -2518,6 +3137,10 @@ bfa_ioim_good_comp_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 	WARN_ON(BFA_IOIM_TAG_2_ID(ioim->iotag) != iotag);
 
 	bfa_ioim_cb_profile_comp(fcpim, ioim);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	bfa_sm_send_event(ioim, BFA_IOIM_SM_COMP_GOOD);
 }
 
@@ -2573,18 +3196,34 @@ struct bfa_ioim_s *
 bfa_ioim_alloc(struct bfa_s *bfa, struct bfad_ioim_s *dio,
 		struct bfa_itnim_s *itnim, u16 nsges)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
 	struct bfa_ioim_s *ioim;
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+	struct bfa_ioim_s *ioim;
+	struct bfa_iotag_s *iotag = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * alocate IOIM resource
 	 */
+<<<<<<< HEAD
 	bfa_q_deq(&fcpim->ioim_free_q, &ioim);
 	if (!ioim) {
+=======
+	bfa_q_deq(&fcpim->fcp->iotag_ioim_free_q, &iotag);
+	if (!iotag) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		bfa_stats(itnim, no_iotags);
 		return NULL;
 	}
 
+<<<<<<< HEAD
+=======
+	ioim = BFA_IOIM_FROM_TAG(fcpim, iotag->tag);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ioim->dio = dio;
 	ioim->itnim = itnim;
 	ioim->nsges = nsges;
@@ -2601,7 +3240,12 @@ bfa_ioim_alloc(struct bfa_s *bfa, struct bfad_ioim_s *dio,
 void
 bfa_ioim_free(struct bfa_ioim_s *ioim)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = ioim->fcpim;
+=======
+	struct bfa_fcpim_s *fcpim = ioim->fcpim;
+	struct bfa_iotag_s *iotag;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ioim->nsgpgs > 0)
 		bfa_sgpg_mfree(ioim->bfa, &ioim->sgpg_q, ioim->nsgpgs);
@@ -2610,8 +3254,22 @@ bfa_ioim_free(struct bfa_ioim_s *ioim)
 	fcpim->ios_active--;
 
 	ioim->iotag &= BFA_IOIM_IOTAG_MASK;
+<<<<<<< HEAD
 	list_del(&ioim->qe);
 	list_add_tail(&ioim->qe, &fcpim->ioim_free_q);
+=======
+
+	WARN_ON(!(ioim->iotag <
+		(fcpim->fcp->num_ioim_reqs + fcpim->fcp->num_fwtio_reqs)));
+	iotag = BFA_IOTAG_FROM_TAG(fcpim->fcp, ioim->iotag);
+
+	if (ioim->iotag < fcpim->fcp->num_ioim_reqs)
+		list_add_tail(&iotag->qe, &fcpim->fcp->iotag_ioim_free_q);
+	else
+		list_add_tail(&iotag->qe, &fcpim->fcp->iotag_tio_free_q);
+
+	list_del(&ioim->qe);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void
@@ -3021,7 +3679,11 @@ bfa_tskim_send(struct bfa_tskim_s *tskim)
 	 * build i/o request message next
 	 */
 	bfi_h2i_set(m->mh, BFI_MC_TSKIM, BFI_TSKIM_H2I_TM_REQ,
+<<<<<<< HEAD
 			bfa_lpuid(tskim->bfa));
+=======
+			bfa_fn_lpu(tskim->bfa));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	m->tsk_tag = cpu_to_be16(tskim->tsk_tag);
 	m->itn_fhdl = tskim->itnim->rport->fw_handle;
@@ -3032,7 +3694,11 @@ bfa_tskim_send(struct bfa_tskim_s *tskim)
 	/*
 	 * queue I/O message to firmware
 	 */
+<<<<<<< HEAD
 	bfa_reqq_produce(tskim->bfa, itnim->reqq);
+=======
+	bfa_reqq_produce(tskim->bfa, itnim->reqq, m->mh);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return BFA_TRUE;
 }
 
@@ -3056,14 +3722,22 @@ bfa_tskim_send_abort(struct bfa_tskim_s *tskim)
 	 * build i/o request message next
 	 */
 	bfi_h2i_set(m->mh, BFI_MC_TSKIM, BFI_TSKIM_H2I_ABORT_REQ,
+<<<<<<< HEAD
 			bfa_lpuid(tskim->bfa));
+=======
+			bfa_fn_lpu(tskim->bfa));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	m->tsk_tag  = cpu_to_be16(tskim->tsk_tag);
 
 	/*
 	 * queue I/O message to firmware
 	 */
+<<<<<<< HEAD
 	bfa_reqq_produce(tskim->bfa, itnim->reqq);
+=======
+	bfa_reqq_produce(tskim->bfa, itnim->reqq, m->mh);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return BFA_TRUE;
 }
 
@@ -3129,6 +3803,7 @@ bfa_tskim_cleanup(struct bfa_tskim_s *tskim)
  * Memory allocation and initialization.
  */
 void
+<<<<<<< HEAD
 bfa_tskim_attach(struct bfa_fcpim_mod_s *fcpim, struct bfa_meminfo_s *minfo)
 {
 	struct bfa_tskim_s *tskim;
@@ -3137,6 +3812,18 @@ bfa_tskim_attach(struct bfa_fcpim_mod_s *fcpim, struct bfa_meminfo_s *minfo)
 	INIT_LIST_HEAD(&fcpim->tskim_free_q);
 
 	tskim = (struct bfa_tskim_s *) bfa_meminfo_kva(minfo);
+=======
+bfa_tskim_attach(struct bfa_fcpim_s *fcpim)
+{
+	struct bfa_tskim_s *tskim;
+	struct bfa_fcp_mod_s	*fcp = fcpim->fcp;
+	u16	i;
+
+	INIT_LIST_HEAD(&fcpim->tskim_free_q);
+	INIT_LIST_HEAD(&fcpim->tskim_unused_q);
+
+	tskim = (struct bfa_tskim_s *) bfa_mem_kva_curp(fcp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fcpim->tskim_arr = tskim;
 
 	for (i = 0; i < fcpim->num_tskim_reqs; i++, tskim++) {
@@ -3155,13 +3842,21 @@ bfa_tskim_attach(struct bfa_fcpim_mod_s *fcpim, struct bfa_meminfo_s *minfo)
 		list_add_tail(&tskim->qe, &fcpim->tskim_free_q);
 	}
 
+<<<<<<< HEAD
 	bfa_meminfo_kva(minfo) = (u8 *) tskim;
+=======
+	bfa_mem_kva_curp(fcp) = (u8 *) tskim;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void
 bfa_tskim_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct bfi_tskim_rsp_s *rsp = (struct bfi_tskim_rsp_s *) m;
 	struct bfa_tskim_s *tskim;
 	u16	tsk_tag = be16_to_cpu(rsp->tsk_tag);
@@ -3188,7 +3883,11 @@ bfa_tskim_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
 struct bfa_tskim_s *
 bfa_tskim_alloc(struct bfa_s *bfa, struct bfad_tskim_s *dtsk)
 {
+<<<<<<< HEAD
 	struct bfa_fcpim_mod_s *fcpim = BFA_FCPIM_MOD(bfa);
+=======
+	struct bfa_fcpim_s *fcpim = BFA_FCPIM(bfa);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct bfa_tskim_s *tskim;
 
 	bfa_q_deq(&fcpim->tskim_free_q, &tskim);
@@ -3233,3 +3932,224 @@ bfa_tskim_start(struct bfa_tskim_s *tskim, struct bfa_itnim_s *itnim,
 	list_add_tail(&tskim->qe, &itnim->tsk_q);
 	bfa_sm_send_event(tskim, BFA_TSKIM_SM_START);
 }
+<<<<<<< HEAD
+=======
+
+void
+bfa_tskim_res_recfg(struct bfa_s *bfa, u16 num_tskim_fw)
+{
+	struct bfa_fcpim_s	*fcpim = BFA_FCPIM(bfa);
+	struct list_head	*qe;
+	int	i;
+
+	for (i = 0; i < (fcpim->num_tskim_reqs - num_tskim_fw); i++) {
+		bfa_q_deq_tail(&fcpim->tskim_free_q, &qe);
+		list_add_tail(qe, &fcpim->tskim_unused_q);
+	}
+}
+
+/* BFA FCP module - parent module for fcpim */
+
+BFA_MODULE(fcp);
+
+static void
+bfa_fcp_meminfo(struct bfa_iocfc_cfg_s *cfg, struct bfa_meminfo_s *minfo,
+		struct bfa_s *bfa)
+{
+	struct bfa_fcp_mod_s *fcp = BFA_FCP_MOD(bfa);
+	struct bfa_mem_kva_s *fcp_kva = BFA_MEM_FCP_KVA(bfa);
+	struct bfa_mem_dma_s *seg_ptr;
+	u16	nsegs, idx, per_seg_ios, num_io_req;
+	u32	km_len = 0;
+
+	/*
+	 * ZERO for num_ioim_reqs and num_fwtio_reqs is allowed config value.
+	 * So if the values are non zero, adjust them appropriately.
+	 */
+	if (cfg->fwcfg.num_ioim_reqs &&
+	    cfg->fwcfg.num_ioim_reqs < BFA_IOIM_MIN)
+		cfg->fwcfg.num_ioim_reqs = BFA_IOIM_MIN;
+	else if (cfg->fwcfg.num_ioim_reqs > BFA_IOIM_MAX)
+		cfg->fwcfg.num_ioim_reqs = BFA_IOIM_MAX;
+
+	if (cfg->fwcfg.num_fwtio_reqs > BFA_FWTIO_MAX)
+		cfg->fwcfg.num_fwtio_reqs = BFA_FWTIO_MAX;
+
+	num_io_req = (cfg->fwcfg.num_ioim_reqs + cfg->fwcfg.num_fwtio_reqs);
+	if (num_io_req > BFA_IO_MAX) {
+		if (cfg->fwcfg.num_ioim_reqs && cfg->fwcfg.num_fwtio_reqs) {
+			cfg->fwcfg.num_ioim_reqs = BFA_IO_MAX/2;
+			cfg->fwcfg.num_fwtio_reqs = BFA_IO_MAX/2;
+		} else if (cfg->fwcfg.num_fwtio_reqs)
+			cfg->fwcfg.num_fwtio_reqs = BFA_FWTIO_MAX;
+		else
+			cfg->fwcfg.num_ioim_reqs = BFA_IOIM_MAX;
+	}
+
+	bfa_fcpim_meminfo(cfg, &km_len);
+
+	num_io_req = (cfg->fwcfg.num_ioim_reqs + cfg->fwcfg.num_fwtio_reqs);
+	km_len += num_io_req * sizeof(struct bfa_iotag_s);
+	km_len += cfg->fwcfg.num_rports * sizeof(struct bfa_itn_s);
+
+	/* dma memory */
+	nsegs = BFI_MEM_DMA_NSEGS(num_io_req, BFI_IOIM_SNSLEN);
+	per_seg_ios = BFI_MEM_NREQS_SEG(BFI_IOIM_SNSLEN);
+
+	bfa_mem_dma_seg_iter(fcp, seg_ptr, nsegs, idx) {
+		if (num_io_req >= per_seg_ios) {
+			num_io_req -= per_seg_ios;
+			bfa_mem_dma_setup(minfo, seg_ptr,
+				per_seg_ios * BFI_IOIM_SNSLEN);
+		} else
+			bfa_mem_dma_setup(minfo, seg_ptr,
+				num_io_req * BFI_IOIM_SNSLEN);
+	}
+
+	/* kva memory */
+	bfa_mem_kva_setup(minfo, fcp_kva, km_len);
+}
+
+static void
+bfa_fcp_attach(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
+		struct bfa_pcidev_s *pcidev)
+{
+	struct bfa_fcp_mod_s *fcp = BFA_FCP_MOD(bfa);
+	struct bfa_mem_dma_s *seg_ptr;
+	u16	idx, nsegs, num_io_req;
+
+	fcp->num_ioim_reqs = cfg->fwcfg.num_ioim_reqs;
+	fcp->num_fwtio_reqs  = cfg->fwcfg.num_fwtio_reqs;
+	fcp->num_itns   = cfg->fwcfg.num_rports;
+	fcp->bfa = bfa;
+
+	/*
+	 * Setup the pool of snsbase addr's, that is passed to fw as
+	 * part of bfi_iocfc_cfg_s.
+	 */
+	num_io_req = (cfg->fwcfg.num_ioim_reqs + cfg->fwcfg.num_fwtio_reqs);
+	nsegs = BFI_MEM_DMA_NSEGS(num_io_req, BFI_IOIM_SNSLEN);
+
+	bfa_mem_dma_seg_iter(fcp, seg_ptr, nsegs, idx) {
+
+		if (!bfa_mem_dma_virt(seg_ptr))
+			break;
+
+		fcp->snsbase[idx].pa = bfa_mem_dma_phys(seg_ptr);
+		fcp->snsbase[idx].kva = bfa_mem_dma_virt(seg_ptr);
+		bfa_iocfc_set_snsbase(bfa, idx, fcp->snsbase[idx].pa);
+	}
+
+	bfa_fcpim_attach(fcp, bfad, cfg, pcidev);
+
+	bfa_iotag_attach(fcp);
+
+	fcp->itn_arr = (struct bfa_itn_s *) bfa_mem_kva_curp(fcp);
+	bfa_mem_kva_curp(fcp) = (u8 *)fcp->itn_arr +
+			(fcp->num_itns * sizeof(struct bfa_itn_s));
+	memset(fcp->itn_arr, 0,
+			(fcp->num_itns * sizeof(struct bfa_itn_s)));
+}
+
+static void
+bfa_fcp_detach(struct bfa_s *bfa)
+{
+}
+
+static void
+bfa_fcp_start(struct bfa_s *bfa)
+{
+	struct bfa_fcp_mod_s *fcp = BFA_FCP_MOD(bfa);
+
+	/*
+	 * bfa_init() with flash read is complete. now invalidate the stale
+	 * content of lun mask like unit attention, rp tag and lp tag.
+	 */
+	bfa_ioim_lm_init(fcp->bfa);
+}
+
+static void
+bfa_fcp_stop(struct bfa_s *bfa)
+{
+}
+
+static void
+bfa_fcp_iocdisable(struct bfa_s *bfa)
+{
+	struct bfa_fcp_mod_s *fcp = BFA_FCP_MOD(bfa);
+
+	/* Enqueue unused ioim resources to free_q */
+	list_splice_tail_init(&fcp->iotag_unused_q, &fcp->iotag_ioim_free_q);
+
+	bfa_fcpim_iocdisable(fcp);
+}
+
+void
+bfa_fcp_res_recfg(struct bfa_s *bfa, u16 num_ioim_fw)
+{
+	struct bfa_fcp_mod_s	*mod = BFA_FCP_MOD(bfa);
+	struct list_head	*qe;
+	int	i;
+
+	for (i = 0; i < (mod->num_ioim_reqs - num_ioim_fw); i++) {
+		bfa_q_deq_tail(&mod->iotag_ioim_free_q, &qe);
+		list_add_tail(qe, &mod->iotag_unused_q);
+	}
+}
+
+void
+bfa_itn_create(struct bfa_s *bfa, struct bfa_rport_s *rport,
+		void (*isr)(struct bfa_s *bfa, struct bfi_msg_s *m))
+{
+	struct bfa_fcp_mod_s *fcp = BFA_FCP_MOD(bfa);
+	struct bfa_itn_s *itn;
+
+	itn =  BFA_ITN_FROM_TAG(fcp, rport->rport_tag);
+	itn->isr = isr;
+}
+
+/*
+ * Itn interrupt processing.
+ */
+void
+bfa_itn_isr(struct bfa_s *bfa, struct bfi_msg_s *m)
+{
+	struct bfa_fcp_mod_s *fcp = BFA_FCP_MOD(bfa);
+	union bfi_itn_i2h_msg_u msg;
+	struct bfa_itn_s *itn;
+
+	msg.msg = m;
+	itn =  BFA_ITN_FROM_TAG(fcp, msg.create_rsp->bfa_handle);
+
+	if (itn->isr)
+		itn->isr(bfa, m);
+	else
+		WARN_ON(1);
+}
+
+void
+bfa_iotag_attach(struct bfa_fcp_mod_s *fcp)
+{
+	struct bfa_iotag_s *iotag;
+	u16	num_io_req, i;
+
+	iotag = (struct bfa_iotag_s *) bfa_mem_kva_curp(fcp);
+	fcp->iotag_arr = iotag;
+
+	INIT_LIST_HEAD(&fcp->iotag_ioim_free_q);
+	INIT_LIST_HEAD(&fcp->iotag_tio_free_q);
+	INIT_LIST_HEAD(&fcp->iotag_unused_q);
+
+	num_io_req = fcp->num_ioim_reqs + fcp->num_fwtio_reqs;
+	for (i = 0; i < num_io_req; i++, iotag++) {
+		memset(iotag, 0, sizeof(struct bfa_iotag_s));
+		iotag->tag = i;
+		if (i < fcp->num_ioim_reqs)
+			list_add_tail(&iotag->qe, &fcp->iotag_ioim_free_q);
+		else
+			list_add_tail(&iotag->qe, &fcp->iotag_tio_free_q);
+	}
+
+	bfa_mem_kva_curp(fcp) = (u8 *) iotag;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -60,7 +60,11 @@ extern int omfs_shrink_inode(struct inode *inode);
 /* inode.c */
 extern struct buffer_head *omfs_bread(struct super_block *sb, sector_t block);
 extern struct inode *omfs_iget(struct super_block *sb, ino_t inode);
+<<<<<<< HEAD
 extern struct inode *omfs_new_inode(struct inode *dir, int mode);
+=======
+extern struct inode *omfs_new_inode(struct inode *dir, umode_t mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int omfs_reserve_block(struct super_block *sb, sector_t block);
 extern int omfs_find_empty_block(struct super_block *sb, int mode, ino_t *ino);
 extern int omfs_sync_inode(struct inode *inode);

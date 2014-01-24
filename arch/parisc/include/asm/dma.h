@@ -9,7 +9,10 @@
 #define _ASM_DMA_H
 
 #include <asm/io.h>		/* need byte IO */
+<<<<<<< HEAD
 #include <asm/system.h>	
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define dma_outb	outb
 #define dma_inb		inb

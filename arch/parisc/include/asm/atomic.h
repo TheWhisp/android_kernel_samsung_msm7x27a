@@ -6,7 +6,11 @@
 #define _ASM_PARISC_ATOMIC_H_
 
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Atomic operations that C can't guarantee us.  Useful for
@@ -49,6 +53,7 @@ extern arch_spinlock_t __atomic_hash[ATOMIC_HASH_SIZE] __lock_aligned;
 #  define _atomic_spin_unlock_irqrestore(l,f) do { local_irq_restore(f); } while (0)
 #endif
 
+<<<<<<< HEAD
 /* This should get optimized out since it's never called.
 ** Or get a link error if xchg is used "wrong".
 */
@@ -155,6 +160,8 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
 #define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Note that we need not lock read accesses - aligned word writes/reads
  * are atomic, so a reader never sees inconsistent values.
@@ -197,15 +204,25 @@ static __inline__ int atomic_read(const atomic_t *v)
 #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
 
 /**
+<<<<<<< HEAD
  * atomic_add_unless - add unless the number is a given value
+=======
+ * __atomic_add_unless - add unless the number is a given value
+>>>>>>> refs/remotes/origin/cm-10.0
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
 static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+ * Returns the old value of @v.
+ */
+static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int c, old;
 	c = atomic_read(v);
@@ -217,10 +234,16 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
 			break;
 		c = old;
 	}
+<<<<<<< HEAD
 	return c != (u);
 }
 
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+=======
+	return c;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define atomic_add(i,v)	((void)(__atomic_add_return( (i),(v))))
 #define atomic_sub(i,v)	((void)(__atomic_add_return(-(i),(v))))
@@ -317,7 +340,11 @@ atomic64_read(const atomic64_t *v)
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
+=======
+ * Returns the old value of @v.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 {
@@ -336,6 +363,7 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 
 #define atomic64_inc_not_zero(v) atomic64_add_unless((v), 1, 0)
 
+<<<<<<< HEAD
 #else /* CONFIG_64BIT */
 
 #include <asm-generic/atomic64.h>
@@ -343,5 +371,9 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 #endif /* !CONFIG_64BIT */
 
 #include <asm-generic/atomic-long.h>
+=======
+#endif /* !CONFIG_64BIT */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _ASM_PARISC_ATOMIC_H_ */

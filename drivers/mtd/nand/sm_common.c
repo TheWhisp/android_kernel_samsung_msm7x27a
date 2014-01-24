@@ -8,6 +8,10 @@
  */
 #include <linux/kernel.h>
 #include <linux/mtd/nand.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "sm_common.h"
 
 static struct nand_ecclayout nand_oob_sm = {
@@ -47,14 +51,22 @@ static int sm_block_markbad(struct mtd_info *mtd, loff_t ofs)
 
 	/* As long as this function is called on erase block boundaries
 		it will work correctly for 256 byte nand */
+<<<<<<< HEAD
 	ops.mode = MTD_OOB_PLACE;
+=======
+	ops.mode = MTD_OPS_PLACE_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ops.ooboffs = 0;
 	ops.ooblen = mtd->oobsize;
 	ops.oobbuf = (void *)&oob;
 	ops.datbuf = NULL;
 
 
+<<<<<<< HEAD
 	ret = mtd->write_oob(mtd, ofs, &ops);
+=======
+	ret = mtd_write_oob(mtd, ofs, &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0 || ops.oobretlen != SM_OOB_SIZE) {
 		printk(KERN_NOTICE
 			"sm_common: can't mark sector at %i as bad\n",

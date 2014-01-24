@@ -2,6 +2,10 @@
  *  linux/mm/memory.c
  *
  *  Copyright (C) 1991, 1992, 1993, 1994  Linus Torvalds
+<<<<<<< HEAD
+=======
+ *  Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 /*
@@ -47,8 +51,14 @@
 #include <linux/pagemap.h>
 #include <linux/ksm.h>
 #include <linux/rmap.h>
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/delayacct.h>
+=======
+#include <linux/export.h>
+#include <linux/delayacct.h>
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/writeback.h>
 #include <linux/memcontrol.h>
@@ -125,17 +135,30 @@ core_initcall(init_zero_pfn);
 
 #if defined(SPLIT_RSS_COUNTING)
 
+<<<<<<< HEAD
 static void __sync_task_rss_stat(struct task_struct *task, struct mm_struct *mm)
+=======
+void sync_mm_rss(struct mm_struct *mm)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
 	for (i = 0; i < NR_MM_COUNTERS; i++) {
+<<<<<<< HEAD
 		if (task->rss_stat.count[i]) {
 			add_mm_counter(mm, i, task->rss_stat.count[i]);
 			task->rss_stat.count[i] = 0;
 		}
 	}
 	task->rss_stat.events = 0;
+=======
+		if (current->rss_stat.count[i]) {
+			add_mm_counter(mm, i, current->rss_stat.count[i]);
+			current->rss_stat.count[i] = 0;
+		}
+	}
+	current->rss_stat.events = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void add_mm_counter_fast(struct mm_struct *mm, int member, int val)
@@ -157,6 +180,7 @@ static void check_sync_rss_stat(struct task_struct *task)
 	if (unlikely(task != current))
 		return;
 	if (unlikely(task->rss_stat.events++ > TASK_RSS_EVENTS_THRESH))
+<<<<<<< HEAD
 		__sync_task_rss_stat(task, task->mm);
 }
 
@@ -181,6 +205,9 @@ unsigned long get_mm_counter(struct mm_struct *mm, int member)
 void sync_mm_rss(struct task_struct *task, struct mm_struct *mm)
 {
 	__sync_task_rss_stat(task, mm);
+=======
+		sync_mm_rss(task->mm);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #else /* SPLIT_RSS_COUNTING */
 
@@ -298,7 +325,11 @@ int __tlb_remove_page(struct mmu_gather *tlb, struct page *page)
 {
 	struct mmu_gather_batch *batch;
 
+<<<<<<< HEAD
 	tlb->need_flush = 1;
+=======
+	VM_BUG_ON(!tlb->need_flush);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (tlb_fast_mode(tlb)) {
 		free_page_and_swap_cache(page);
@@ -666,7 +697,11 @@ static inline void add_mm_rss_vec(struct mm_struct *mm, int *rss)
 	int i;
 
 	if (current->mm == mm)
+<<<<<<< HEAD
 		sync_mm_rss(current, mm);
+=======
+		sync_mm_rss(mm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < NR_MM_COUNTERS; i++)
 		if (rss[i])
 			add_mm_counter(mm, i, rss[i]);
@@ -883,6 +918,7 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 			}
 			if (likely(!non_swap_entry(entry)))
 				rss[MM_SWAPENTS]++;
+<<<<<<< HEAD
 			else if (is_write_migration_entry(entry) &&
 					is_cow_mapping(vm_flags)) {
 				/*
@@ -892,6 +928,26 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 				make_migration_entry_read(&entry);
 				pte = swp_entry_to_pte(entry);
 				set_pte_at(src_mm, addr, src_pte, pte);
+=======
+			else if (is_migration_entry(entry)) {
+				page = migration_entry_to_page(entry);
+
+				if (PageAnon(page))
+					rss[MM_ANONPAGES]++;
+				else
+					rss[MM_FILEPAGES]++;
+
+				if (is_write_migration_entry(entry) &&
+				    is_cow_mapping(vm_flags)) {
+					/*
+					 * COW mappings require pages in both
+					 * parent and child to be set to read.
+					 */
+					make_migration_entry_read(&entry);
+					pte = swp_entry_to_pte(entry);
+					set_pte_at(src_mm, addr, src_pte, pte);
+				}
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 		goto out_set_pte;
@@ -1196,6 +1252,19 @@ again:
 
 			if (!non_swap_entry(entry))
 				rss[MM_SWAPENTS]--;
+<<<<<<< HEAD
+=======
+			else if (is_migration_entry(entry)) {
+				struct page *page;
+
+				page = migration_entry_to_page(entry);
+
+				if (PageAnon(page))
+					rss[MM_ANONPAGES]--;
+				else
+					rss[MM_FILEPAGES]--;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (unlikely(!free_swap_and_cache(entry)))
 				print_bad_pte(vma, addr, ptent, NULL);
 		}
@@ -1236,7 +1305,11 @@ static inline unsigned long zap_pmd_range(struct mmu_gather *tlb,
 			if (next - addr != HPAGE_PMD_SIZE) {
 				VM_BUG_ON(!rwsem_is_locked(&tlb->mm->mmap_sem));
 				split_huge_page_pmd(vma->vm_mm, pmd);
+<<<<<<< HEAD
 			} else if (zap_huge_pmd(tlb, vma, pmd))
+=======
+			} else if (zap_huge_pmd(tlb, vma, pmd, addr))
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto next;
 			/* fall through */
 		}
@@ -1276,10 +1349,17 @@ static inline unsigned long zap_pud_range(struct mmu_gather *tlb,
 	return addr;
 }
 
+<<<<<<< HEAD
 static unsigned long unmap_page_range(struct mmu_gather *tlb,
 				struct vm_area_struct *vma,
 				unsigned long addr, unsigned long end,
 				struct zap_details *details)
+=======
+static void unmap_page_range(struct mmu_gather *tlb,
+			     struct vm_area_struct *vma,
+			     unsigned long addr, unsigned long end,
+			     struct zap_details *details)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	pgd_t *pgd;
 	unsigned long next;
@@ -1299,6 +1379,7 @@ static unsigned long unmap_page_range(struct mmu_gather *tlb,
 	} while (pgd++, addr = next, addr != end);
 	tlb_end_vma(tlb, vma);
 	mem_cgroup_uncharge_end();
+<<<<<<< HEAD
 
 	return addr;
 }
@@ -1309,6 +1390,50 @@ static unsigned long unmap_page_range(struct mmu_gather *tlb,
 /* No preempt: go for improved straight-line efficiency */
 # define ZAP_BLOCK_SIZE	(1024 * PAGE_SIZE)
 #endif
+=======
+}
+
+
+static void unmap_single_vma(struct mmu_gather *tlb,
+		struct vm_area_struct *vma, unsigned long start_addr,
+		unsigned long end_addr, unsigned long *nr_accounted,
+		struct zap_details *details)
+{
+	unsigned long start = max(vma->vm_start, start_addr);
+	unsigned long end;
+
+	if (start >= vma->vm_end)
+		return;
+	end = min(vma->vm_end, end_addr);
+	if (end <= vma->vm_start)
+		return;
+
+	if (vma->vm_flags & VM_ACCOUNT)
+		*nr_accounted += (end - start) >> PAGE_SHIFT;
+
+	if (unlikely(is_pfn_mapping(vma)))
+		untrack_pfn_vma(vma, 0, 0);
+
+	if (start != end) {
+		if (unlikely(is_vm_hugetlb_page(vma))) {
+			/*
+			 * It is undesirable to test vma->vm_file as it
+			 * should be non-null for valid hugetlb area.
+			 * However, vm_file will be NULL in the error
+			 * cleanup path of do_mmap_pgoff. When
+			 * hugetlbfs ->mmap method fails,
+			 * do_mmap_pgoff() nullifies vma->vm_file
+			 * before calling this function to clean up.
+			 * Since no pte has actually been setup, it is
+			 * safe to do nothing in this case.
+			 */
+			if (vma->vm_file)
+				unmap_hugepage_range(vma, start, end, NULL);
+		} else
+			unmap_page_range(tlb, vma, start, end, details);
+	}
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * unmap_vmas - unmap a range of memory covered by a list of vma's
@@ -1319,6 +1444,7 @@ static unsigned long unmap_page_range(struct mmu_gather *tlb,
  * @nr_accounted: Place number of unmapped pages in vm-accountable vma's here
  * @details: details of nonlinear truncation or shared cache invalidation
  *
+<<<<<<< HEAD
  * Returns the end address of the unmapping (restart addr if interrupted).
  *
  * Unmap all pages in the vma list.
@@ -1327,6 +1453,10 @@ static unsigned long unmap_page_range(struct mmu_gather *tlb,
  * So zap pages in ZAP_BLOCK_SIZE bytecounts.  This means we need to
  * return the ending mmu_gather to the caller.
  *
+=======
+ * Unmap all pages in the vma list.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * Only addresses between `start' and `end' will be unmapped.
  *
  * The VMA list must be sorted in ascending virtual address order.
@@ -1336,11 +1466,16 @@ static unsigned long unmap_page_range(struct mmu_gather *tlb,
  * ensure that any thus-far unmapped pages are flushed before unmap_vmas()
  * drops the lock and schedules.
  */
+<<<<<<< HEAD
 unsigned long unmap_vmas(struct mmu_gather *tlb,
+=======
+void unmap_vmas(struct mmu_gather *tlb,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct vm_area_struct *vma, unsigned long start_addr,
 		unsigned long end_addr, unsigned long *nr_accounted,
 		struct zap_details *details)
 {
+<<<<<<< HEAD
 	unsigned long start = start_addr;
 	struct mm_struct *mm = vma->vm_mm;
 
@@ -1385,6 +1520,15 @@ unsigned long unmap_vmas(struct mmu_gather *tlb,
 
 	mmu_notifier_invalidate_range_end(mm, start_addr, end_addr);
 	return start;	/* which is now the end (or restart) address */
+=======
+	struct mm_struct *mm = vma->vm_mm;
+
+	mmu_notifier_invalidate_range_start(mm, start_addr, end_addr);
+	for ( ; vma && vma->vm_start < end_addr; vma = vma->vm_next)
+		unmap_single_vma(tlb, vma, start_addr, end_addr, nr_accounted,
+				 details);
+	mmu_notifier_invalidate_range_end(mm, start_addr, end_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -1393,8 +1537,15 @@ unsigned long unmap_vmas(struct mmu_gather *tlb,
  * @address: starting address of pages to zap
  * @size: number of bytes to zap
  * @details: details of nonlinear truncation or shared cache invalidation
+<<<<<<< HEAD
  */
 unsigned long zap_page_range(struct vm_area_struct *vma, unsigned long address,
+=======
+ *
+ * Caller must protect the VMA list
+ */
+void zap_page_range(struct vm_area_struct *vma, unsigned long address,
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned long size, struct zap_details *details)
 {
 	struct mm_struct *mm = vma->vm_mm;
@@ -1405,9 +1556,40 @@ unsigned long zap_page_range(struct vm_area_struct *vma, unsigned long address,
 	lru_add_drain();
 	tlb_gather_mmu(&tlb, mm, 0);
 	update_hiwater_rss(mm);
+<<<<<<< HEAD
 	end = unmap_vmas(&tlb, vma, address, end, &nr_accounted, details);
 	tlb_finish_mmu(&tlb, address, end);
 	return end;
+=======
+	unmap_vmas(&tlb, vma, address, end, &nr_accounted, details);
+	tlb_finish_mmu(&tlb, address, end);
+}
+
+/**
+ * zap_page_range_single - remove user pages in a given range
+ * @vma: vm_area_struct holding the applicable pages
+ * @address: starting address of pages to zap
+ * @size: number of bytes to zap
+ * @details: details of nonlinear truncation or shared cache invalidation
+ *
+ * The range must fit into one VMA.
+ */
+static void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
+		unsigned long size, struct zap_details *details)
+{
+	struct mm_struct *mm = vma->vm_mm;
+	struct mmu_gather tlb;
+	unsigned long end = address + size;
+	unsigned long nr_accounted = 0;
+
+	lru_add_drain();
+	tlb_gather_mmu(&tlb, mm, 0);
+	update_hiwater_rss(mm);
+	mmu_notifier_invalidate_range_start(mm, address, end);
+	unmap_single_vma(&tlb, vma, address, end, &nr_accounted, details);
+	mmu_notifier_invalidate_range_end(mm, address, end);
+	tlb_finish_mmu(&tlb, address, end);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -1428,7 +1610,11 @@ int zap_vma_ptes(struct vm_area_struct *vma, unsigned long address,
 	if (address < vma->vm_start || address + size > vma->vm_end ||
 	    		!(vma->vm_flags & VM_PFNMAP))
 		return -1;
+<<<<<<< HEAD
 	zap_page_range(vma, address, size, NULL);
+=======
+	zap_page_range_single(vma, address, size, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 EXPORT_SYMBOL_GPL(zap_vma_ptes);
@@ -2499,7 +2685,11 @@ static inline void cow_user_page(struct page *dst, struct page *src, unsigned lo
 	 * fails, we just zero-fill it. Live with it.
 	 */
 	if (unlikely(!src)) {
+<<<<<<< HEAD
 		void *kaddr = kmap_atomic(dst, KM_USER0);
+=======
+		void *kaddr = kmap_atomic(dst);
+>>>>>>> refs/remotes/origin/cm-10.0
 		void __user *uaddr = (void __user *)(va & PAGE_MASK);
 
 		/*
@@ -2510,7 +2700,11 @@ static inline void cow_user_page(struct page *dst, struct page *src, unsigned lo
 		 */
 		if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE))
 			clear_page(kaddr);
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		flush_dcache_page(dst);
 	} else
 		copy_user_highpage(dst, src, va, vma);
@@ -2822,7 +3016,11 @@ static void unmap_mapping_range_vma(struct vm_area_struct *vma,
 		unsigned long start_addr, unsigned long end_addr,
 		struct zap_details *details)
 {
+<<<<<<< HEAD
 	zap_page_range(vma, start_addr, end_addr - start_addr, details);
+=======
+	zap_page_range_single(vma, start_addr, end_addr - start_addr, details);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void unmap_mapping_range_tree(struct prio_tree_root *root,
@@ -2939,6 +3137,19 @@ static int do_swap_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	entry = pte_to_swp_entry(orig_pte);
 	if (unlikely(non_swap_entry(entry))) {
 		if (is_migration_entry(entry)) {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+			/*
+			 * FIXME: mszyprow: cruel, brute-force method for
+			 * letting cma/migration to finish it's job without
+			 * stealing the lock migration_entry_wait() and creating
+			 * a live-lock on the faulted page
+			 * (page->_count == 2 migration failure issue)
+			 */
+			mdelay(10);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 			migration_entry_wait(mm, pmd, address);
 		} else if (is_hwpoison_entry(entry)) {
 			ret = VM_FAULT_HWPOISON;
@@ -3220,14 +3431,43 @@ static int __do_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 	pte_t *page_table;
 	spinlock_t *ptl;
 	struct page *page;
+<<<<<<< HEAD
 	pte_t entry;
 	int anon = 0;
 	int charged = 0;
+=======
+	struct page *cow_page;
+	pte_t entry;
+	int anon = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct page *dirty_page = NULL;
 	struct vm_fault vmf;
 	int ret;
 	int page_mkwrite = 0;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If we do COW later, allocate page befor taking lock_page()
+	 * on the file cache page. This will reduce lock holding time.
+	 */
+	if ((flags & FAULT_FLAG_WRITE) && !(vma->vm_flags & VM_SHARED)) {
+
+		if (unlikely(anon_vma_prepare(vma)))
+			return VM_FAULT_OOM;
+
+		cow_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma, address);
+		if (!cow_page)
+			return VM_FAULT_OOM;
+
+		if (mem_cgroup_newpage_charge(cow_page, mm, GFP_KERNEL)) {
+			page_cache_release(cow_page);
+			return VM_FAULT_OOM;
+		}
+	} else
+		cow_page = NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	vmf.virtual_address = (void __user *)(address & PAGE_MASK);
 	vmf.pgoff = pgoff;
 	vmf.flags = flags;
@@ -3236,12 +3476,21 @@ static int __do_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 	ret = vma->vm_ops->fault(vma, &vmf);
 	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE |
 			    VM_FAULT_RETRY)))
+<<<<<<< HEAD
 		return ret;
+=======
+		goto uncharge_out;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (unlikely(PageHWPoison(vmf.page))) {
 		if (ret & VM_FAULT_LOCKED)
 			unlock_page(vmf.page);
+<<<<<<< HEAD
 		return VM_FAULT_HWPOISON;
+=======
+		ret = VM_FAULT_HWPOISON;
+		goto uncharge_out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -3259,6 +3508,7 @@ static int __do_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 	page = vmf.page;
 	if (flags & FAULT_FLAG_WRITE) {
 		if (!(vma->vm_flags & VM_SHARED)) {
+<<<<<<< HEAD
 			anon = 1;
 			if (unlikely(anon_vma_prepare(vma))) {
 				ret = VM_FAULT_OOM;
@@ -3276,6 +3526,10 @@ static int __do_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 				goto out;
 			}
 			charged = 1;
+=======
+			page = cow_page;
+			anon = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 			copy_user_highpage(page, vmf.page, address, vma);
 			__SetPageUptodate(page);
 		} else {
@@ -3344,8 +3598,13 @@ static int __do_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 		/* no need to invalidate: a not-present page won't be cached */
 		update_mmu_cache(vma, address, page_table);
 	} else {
+<<<<<<< HEAD
 		if (charged)
 			mem_cgroup_uncharge_page(page);
+=======
+		if (cow_page)
+			mem_cgroup_uncharge_page(cow_page);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (anon)
 			page_cache_release(page);
 		else
@@ -3354,7 +3613,10 @@ static int __do_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 
 	pte_unmap_unlock(page_table, ptl);
 
+<<<<<<< HEAD
 out:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dirty_page) {
 		struct address_space *mapping = page->mapping;
 
@@ -3384,6 +3646,16 @@ out:
 unwritable_page:
 	page_cache_release(page);
 	return ret;
+<<<<<<< HEAD
+=======
+uncharge_out:
+	/* fs's fault handler get error */
+	if (cow_page) {
+		mem_cgroup_uncharge_page(cow_page);
+		page_cache_release(cow_page);
+	}
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int do_linear_fault(struct mm_struct *mm, struct vm_area_struct *vma,
@@ -3663,6 +3935,7 @@ static int __init gate_vma_init(void)
 	gate_vma.vm_end = FIXADDR_USER_END;
 	gate_vma.vm_flags = VM_READ | VM_MAYREAD | VM_EXEC | VM_MAYEXEC;
 	gate_vma.vm_page_prot = __P101;
+<<<<<<< HEAD
 	/*
 	 * Make sure the vDSO gets into every core dump.
 	 * Dumping its contents makes post-mortem fully interpretable later
@@ -3670,6 +3943,9 @@ static int __init gate_vma_init(void)
 	 * what PC values meant.
 	 */
 	gate_vma.vm_flags |= VM_ALWAYSDUMP;
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 __initcall(gate_vma_init);

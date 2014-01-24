@@ -29,7 +29,10 @@
 
 #include <asm/bootinfo.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable.h>
 #include <asm/amigahw.h>
 #include <asm/amigaints.h>
@@ -511,8 +514,12 @@ static unsigned long amiga_gettimeoffset(void)
 	return ticks + offset;
 }
 
+<<<<<<< HEAD
 static NORET_TYPE void amiga_reset(void)
     ATTRIB_NORET;
+=======
+static void amiga_reset(void)  __noreturn;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void amiga_reset(void)
 {

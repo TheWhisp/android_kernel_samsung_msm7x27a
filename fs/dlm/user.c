@@ -213,9 +213,15 @@ void dlm_user_add_ast(struct dlm_lkb *lkb, uint32_t flags, int mode,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (list_empty(&lkb->lkb_astqueue)) {
 		kref_get(&lkb->lkb_ref);
 		list_add_tail(&lkb->lkb_astqueue, &proc->asts);
+=======
+	if (list_empty(&lkb->lkb_cb_list)) {
+		kref_get(&lkb->lkb_ref);
+		list_add_tail(&lkb->lkb_cb_list, &proc->asts);
+>>>>>>> refs/remotes/origin/cm-10.0
 		wake_up_interruptible(&proc->wait);
 	}
 	spin_unlock(&proc->asts_spin);
@@ -392,8 +398,14 @@ static int device_create_lockspace(struct dlm_lspace_params *params)
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
 
+<<<<<<< HEAD
 	error = dlm_new_lockspace(params->name, strlen(params->name),
 				  &lockspace, params->flags, DLM_USER_LVB_LEN);
+=======
+	error = dlm_new_lockspace(params->name, NULL, params->flags,
+				  DLM_USER_LVB_LEN, NULL, NULL, NULL,
+				  &lockspace);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		return error;
 
@@ -832,24 +844,39 @@ static ssize_t device_read(struct file *file, char __user *buf, size_t count,
 	}
 
 	/* if we empty lkb_callbacks, we don't want to unlock the spinlock
+<<<<<<< HEAD
 	   without removing lkb_astqueue; so empty lkb_astqueue is always
 	   consistent with empty lkb_callbacks */
 
 	lkb = list_entry(proc->asts.next, struct dlm_lkb, lkb_astqueue);
+=======
+	   without removing lkb_cb_list; so empty lkb_cb_list is always
+	   consistent with empty lkb_callbacks */
+
+	lkb = list_entry(proc->asts.next, struct dlm_lkb, lkb_cb_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rv = dlm_rem_lkb_callback(lkb->lkb_resource->res_ls, lkb, &cb, &resid);
 	if (rv < 0) {
 		/* this shouldn't happen; lkb should have been removed from
 		   list when resid was zero */
 		log_print("dlm_rem_lkb_callback empty %x", lkb->lkb_id);
+<<<<<<< HEAD
 		list_del_init(&lkb->lkb_astqueue);
+=======
+		list_del_init(&lkb->lkb_cb_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock(&proc->asts_spin);
 		/* removes ref for proc->asts, may cause lkb to be freed */
 		dlm_put_lkb(lkb);
 		goto try_another;
 	}
 	if (!resid)
+<<<<<<< HEAD
 		list_del_init(&lkb->lkb_astqueue);
+=======
+		list_del_init(&lkb->lkb_cb_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&proc->asts_spin);
 
 	if (cb.flags & DLM_CB_SKIP) {

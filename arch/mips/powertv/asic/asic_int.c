@@ -34,6 +34,10 @@
 #include <asm/irq_cpu.h>
 #include <linux/io.h>
 #include <asm/irq_regs.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mips-boards/generic.h>
 
 #include <asm/mach-powertv/asic_regs.h>

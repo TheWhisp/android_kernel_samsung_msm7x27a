@@ -40,7 +40,12 @@ static struct symbol *symtab[HASH_BUCKETS];
 static FILE *debugfile;
 
 int cur_line = 1;
+<<<<<<< HEAD
 char *cur_filename;
+=======
+char *cur_filename, *source_file;
+int in_source_file;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int flag_debug, flag_dump_defs, flag_reference, flag_dump_types,
 	   flag_preserve, flag_warnings;
@@ -448,7 +453,11 @@ static struct string_list *read_node(FILE *f)
 	node.string = buffer;
 
 	if (node.string[1] == '#') {
+<<<<<<< HEAD
 		int n;
+=======
+		size_t n;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		for (n = 0; n < ARRAY_SIZE(symbol_types); n++) {
 			if (node.string[0] == symbol_types[n].n) {

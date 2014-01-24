@@ -14,7 +14,10 @@
 
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/smp.h>
 #include <linux/interrupt.h>
@@ -23,11 +26,19 @@
 #include <linux/spinlock.h>
 #include <linux/cache.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/cpu.h>
 
 #include <asm/ptrace.h>
 #include <asm/atomic.h>
+=======
+#include <linux/device.h>
+#include <linux/cpu.h>
+
+#include <asm/ptrace.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -38,13 +49,19 @@
 #include <asm/machdep.h>
 #include <asm/cputable.h>
 #include <asm/firmware.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/rtas.h>
 #include <asm/pSeries_reconfig.h>
 #include <asm/mpic.h>
 #include <asm/vdso_datapage.h>
 #include <asm/cputhreads.h>
+<<<<<<< HEAD
 #include <asm/mpic.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/xics.h>
 
 #include "plpar_wrappers.h"
@@ -150,6 +167,10 @@ static void __devinit smp_xics_setup_cpu(int cpu)
 	set_cpu_current_state(cpu, CPU_STATE_ONLINE);
 	set_default_offline_state(cpu);
 #endif
+<<<<<<< HEAD
+=======
+	pseries_notify_cpuidle_add_cpu(cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit smp_pSeries_kick_cpu(int nr)
@@ -207,7 +228,11 @@ static struct smp_ops_t pSeries_mpic_smp_ops = {
 };
 
 static struct smp_ops_t pSeries_xics_smp_ops = {
+<<<<<<< HEAD
 	.message_pass	= smp_muxed_ipi_message_pass,
+=======
+	.message_pass	= NULL,	/* Use smp_muxed_ipi_message_pass */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.cause_ipi	= NULL,	/* Filled at runtime by xics_smp_probe() */
 	.probe		= xics_smp_probe,
 	.kick_cpu	= smp_pSeries_kick_cpu,

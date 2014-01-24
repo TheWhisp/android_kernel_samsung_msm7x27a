@@ -687,11 +687,19 @@ mpc52xx_ata_probe(struct platform_device *op)
 	int ata_irq = 0;
 	struct mpc52xx_ata __iomem *ata_regs;
 	struct mpc52xx_ata_priv *priv = NULL;
+<<<<<<< HEAD
 	int rv, ret, task_irq = 0;
 	int mwdma_mask = 0, udma_mask = 0;
 	const __be32 *prop;
 	int proplen;
 	struct bcom_task *dmatsk = NULL;
+=======
+	int rv, task_irq;
+	int mwdma_mask = 0, udma_mask = 0;
+	const __be32 *prop;
+	int proplen;
+	struct bcom_task *dmatsk;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Get ipb frequency */
 	ipb_freq = mpc5xxx_get_bus_frequency(op->dev.of_node);
@@ -717,8 +725,12 @@ mpc52xx_ata_probe(struct platform_device *op)
 	ata_regs = devm_ioremap(&op->dev, res_mem.start, sizeof(*ata_regs));
 	if (!ata_regs) {
 		dev_err(&op->dev, "error mapping device registers\n");
+<<<<<<< HEAD
 		rv = -ENOMEM;
 		goto err;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -753,7 +765,11 @@ mpc52xx_ata_probe(struct platform_device *op)
 	if (!priv) {
 		dev_err(&op->dev, "error allocating private structure\n");
 		rv = -ENOMEM;
+<<<<<<< HEAD
 		goto err;
+=======
+		goto err1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	priv->ipb_period = 1000000000 / (ipb_freq / 1000);
@@ -776,6 +792,7 @@ mpc52xx_ata_probe(struct platform_device *op)
 	if (!dmatsk) {
 		dev_err(&op->dev, "bestcomm initialization failed\n");
 		rv = -ENOMEM;
+<<<<<<< HEAD
 		goto err;
 	}
 
@@ -785,6 +802,17 @@ mpc52xx_ata_probe(struct platform_device *op)
 	if (ret) {
 		dev_err(&op->dev, "error requesting DMA IRQ\n");
 		goto err;
+=======
+		goto err1;
+	}
+
+	task_irq = bcom_get_task_irq(dmatsk);
+	rv = devm_request_irq(&op->dev, task_irq, &mpc52xx_ata_task_irq, 0,
+				"ATA task", priv);
+	if (rv) {
+		dev_err(&op->dev, "error requesting DMA IRQ\n");
+		goto err2;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	priv->dmatsk = dmatsk;
 
@@ -792,7 +820,11 @@ mpc52xx_ata_probe(struct platform_device *op)
 	rv = mpc52xx_ata_hw_init(priv);
 	if (rv) {
 		dev_err(&op->dev, "error initializing hardware\n");
+<<<<<<< HEAD
 		goto err;
+=======
+		goto err2;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Register ourselves to libata */
@@ -800,11 +832,16 @@ mpc52xx_ata_probe(struct platform_device *op)
 				  mwdma_mask, udma_mask);
 	if (rv) {
 		dev_err(&op->dev, "error registering with ATA layer\n");
+<<<<<<< HEAD
 		goto err;
+=======
+		goto err2;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
 
+<<<<<<< HEAD
  err:
 	devm_release_mem_region(&op->dev, res_mem.start, sizeof(*ata_regs));
 	if (ata_irq)
@@ -817,6 +854,13 @@ mpc52xx_ata_probe(struct platform_device *op)
 		devm_iounmap(&op->dev, ata_regs);
 	if (priv)
 		devm_kfree(&op->dev, priv);
+=======
+ err2:
+	irq_dispose_mapping(task_irq);
+	bcom_ata_release(dmatsk);
+ err1:
+	irq_dispose_mapping(ata_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rv;
 }
 
@@ -835,12 +879,15 @@ mpc52xx_ata_remove(struct platform_device *op)
 	bcom_ata_release(priv->dmatsk);
 	irq_dispose_mapping(priv->ata_irq);
 
+<<<<<<< HEAD
 	/* Clear up IO allocations */
 	devm_iounmap(&op->dev, priv->ata_regs);
 	devm_release_mem_region(&op->dev, priv->ata_regs_pa,
 				sizeof(*priv->ata_regs));
 	devm_kfree(&op->dev, priv);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -897,6 +944,7 @@ static struct platform_driver mpc52xx_ata_of_platform_driver = {
 	},
 };
 
+<<<<<<< HEAD
 
 /* ======================================================================== */
 /* Module                                                                   */
@@ -917,6 +965,9 @@ mpc52xx_ata_exit(void)
 
 module_init(mpc52xx_ata_init);
 module_exit(mpc52xx_ata_exit);
+=======
+module_platform_driver(mpc52xx_ata_of_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Sylvain Munaut <tnt@246tNt.com>");
 MODULE_DESCRIPTION("Freescale MPC52xx IDE/ATA libata driver");

@@ -33,15 +33,26 @@
 #include <net/sock.h>
 #include <linux/errno.h>
 #include <linux/timer.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/unaligned.h>
 #include <linux/filter.h>
 #include <linux/reciprocal_div.h>
 #include <linux/ratelimit.h>
 
+<<<<<<< HEAD
 /* No hurry in this branch */
 static void *__load_pointer(const struct sk_buff *skb, int k, unsigned int size)
+=======
+/* No hurry in this branch
+ *
+ * Exported for the bpf jit load helper.
+ */
+void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb, int k, unsigned int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u8 *ptr = NULL;
 
@@ -60,7 +71,11 @@ static inline void *load_pointer(const struct sk_buff *skb, int k,
 {
 	if (k >= 0)
 		return skb_header_pointer(skb, k, size, buffer);
+<<<<<<< HEAD
 	return __load_pointer(skb, k, size);
+=======
+	return bpf_internal_load_pointer_neg_helper(skb, k, size);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -436,7 +451,11 @@ error:
  *
  * Returns 0 if the rule set is legal or -EINVAL if not.
  */
+<<<<<<< HEAD
 int sk_chk_filter(struct sock_filter *filter, int flen)
+=======
+int sk_chk_filter(struct sock_filter *filter, unsigned int flen)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/*
 	 * Valid instructions are initialized to non-0.
@@ -645,7 +664,11 @@ int sk_detach_filter(struct sock *sk)
 	filter = rcu_dereference_protected(sk->sk_filter,
 					   sock_owned_by_user(sk));
 	if (filter) {
+<<<<<<< HEAD
 		rcu_assign_pointer(sk->sk_filter, NULL);
+=======
+		RCU_INIT_POINTER(sk->sk_filter, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		sk_filter_uncharge(sk, filter);
 		ret = 0;
 	}

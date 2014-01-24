@@ -11,8 +11,13 @@
  * warranty of any kind, whether express or implied.
  */
 
+<<<<<<< HEAD
 #ifndef MMC_SDHCI_SPEAR_H
 #define MMC_SDHCI_SPEAR_H
+=======
+#ifndef LINUX_MMC_SDHCI_SPEAR_H
+#define LINUX_MMC_SDHCI_SPEAR_H
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/platform_device.h>
 /*
@@ -39,4 +44,8 @@ sdhci_set_plat_data(struct platform_device *pdev, struct sdhci_plat_data *data)
 	pdev->dev.platform_data = data;
 }
 
+<<<<<<< HEAD
 #endif /* MMC_SDHCI_SPEAR_H */
+=======
+#endif /* LINUX_MMC_SDHCI_SPEAR_H */
+>>>>>>> refs/remotes/origin/cm-10.0

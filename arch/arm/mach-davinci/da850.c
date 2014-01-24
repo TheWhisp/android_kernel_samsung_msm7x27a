@@ -11,6 +11,10 @@
  * is licensed "as is" without any warranty of any kind, whether express
  * or implied.
  */
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/clk.h>
 #include <linux/platform_device.h>
@@ -27,7 +31,11 @@
 #include <mach/da8xx.h>
 #include <mach/cpufreq.h>
 #include <mach/pm.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <mach/gpio-davinci.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "clock.h"
 #include "mux.h"
@@ -58,6 +66,10 @@ static struct pll_data pll0_data = {
 static struct clk ref_clk = {
 	.name		= "ref_clk",
 	.rate		= DA850_REF_FREQ,
+<<<<<<< HEAD
+=======
+	.set_rate	= davinci_simple_set_rate,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct clk pll0_clk = {
@@ -151,6 +163,7 @@ static struct clk pll1_sysclk3 = {
 	.div_reg	= PLLDIV3,
 };
 
+<<<<<<< HEAD
 static struct clk pll1_sysclk4 = {
 	.name		= "pll1_sysclk4",
 	.parent		= &pll1_clk,
@@ -179,6 +192,8 @@ static struct clk pll1_sysclk7 = {
 	.div_reg	= PLLDIV7,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct clk i2c0_clk = {
 	.name		= "i2c0",
 	.parent		= &pll0_aux_clk,
@@ -373,6 +388,17 @@ static struct clk spi1_clk = {
 	.flags		= DA850_CLK_ASYNC3,
 };
 
+<<<<<<< HEAD
+=======
+static struct clk sata_clk = {
+	.name		= "sata",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA850_LPSC1_SATA,
+	.gpsc		= 1,
+	.flags		= PSC_FORCE,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"ref",		&ref_clk),
 	CLK(NULL,		"pll0",		&pll0_clk),
@@ -387,10 +413,13 @@ static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"pll1_aux",	&pll1_aux_clk),
 	CLK(NULL,		"pll1_sysclk2",	&pll1_sysclk2),
 	CLK(NULL,		"pll1_sysclk3",	&pll1_sysclk3),
+<<<<<<< HEAD
 	CLK(NULL,		"pll1_sysclk4",	&pll1_sysclk4),
 	CLK(NULL,		"pll1_sysclk5",	&pll1_sysclk5),
 	CLK(NULL,		"pll1_sysclk6",	&pll1_sysclk6),
 	CLK(NULL,		"pll1_sysclk7",	&pll1_sysclk7),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	CLK("i2c_davinci.1",	NULL,		&i2c0_clk),
 	CLK(NULL,		"timer0",	&timerp64_0_clk),
 	CLK("watchdog",		NULL,		&timerp64_1_clk),
@@ -419,6 +448,10 @@ static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"usb20",	&usb20_clk),
 	CLK("spi_davinci.0",	NULL,		&spi0_clk),
 	CLK("spi_davinci.1",	NULL,		&spi1_clk),
+<<<<<<< HEAD
+=======
+	CLK("ahci",		NULL,		&sata_clk),
+>>>>>>> refs/remotes/origin/cm-10.0
 	CLK(NULL,		NULL,		NULL),
 };
 
@@ -525,6 +558,16 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, MMCSD0_DAT_3,	10,	20,	15,	2,	false)
 	MUX_CFG(DA850, MMCSD0_CLK,	10,	0,	15,	2,	false)
 	MUX_CFG(DA850, MMCSD0_CMD,	10,	4,	15,	2,	false)
+<<<<<<< HEAD
+=======
+	/* MMC/SD1 function */
+	MUX_CFG(DA850, MMCSD1_DAT_0,	18,	8,	15,	2,	false)
+	MUX_CFG(DA850, MMCSD1_DAT_1,	19,	16,	15,	2,	false)
+	MUX_CFG(DA850, MMCSD1_DAT_2,	19,	12,	15,	2,	false)
+	MUX_CFG(DA850, MMCSD1_DAT_3,	19,	8,	15,	2,	false)
+	MUX_CFG(DA850, MMCSD1_CLK,	18,	12,	15,	2,	false)
+	MUX_CFG(DA850, MMCSD1_CMD,	18,	16,	15,	2,	false)
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* EMIF2.5/EMIFA function */
 	MUX_CFG(DA850, EMA_D_7,		9,	0,	15,	1,	false)
 	MUX_CFG(DA850, EMA_D_6,		9,	4,	15,	1,	false)
@@ -583,6 +626,11 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, GPIO3_13,	7,	8,	15,	8,	false)
 	MUX_CFG(DA850, GPIO4_0,		10,	28,	15,	8,	false)
 	MUX_CFG(DA850, GPIO4_1,		10,	24,	15,	8,	false)
+<<<<<<< HEAD
+=======
+	MUX_CFG(DA850, GPIO6_9,		13,	24,	15,	8,	false)
+	MUX_CFG(DA850, GPIO6_10,	13,	20,	15,	8,	false)
+>>>>>>> refs/remotes/origin/cm-10.0
 	MUX_CFG(DA850, GPIO6_13,	13,	8,	15,	8,	false)
 	MUX_CFG(DA850, RTC_ALARM,	0,	28,	15,	2,	false)
 #endif
@@ -1038,7 +1086,11 @@ static int da850_round_armrate(struct clk *clk, unsigned long rate)
 }
 #endif
 
+<<<<<<< HEAD
 int da850_register_pm(struct platform_device *pdev)
+=======
+int __init da850_register_pm(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 	struct davinci_pm_config *pdata = pdev->dev.platform_data;
@@ -1101,7 +1153,10 @@ static struct davinci_soc_info davinci_soc_info_da850 = {
 	.emac_pdata		= &da8xx_emac_pdata,
 	.sram_dma		= DA8XX_ARM_RAM_BASE,
 	.sram_len		= SZ_8K,
+<<<<<<< HEAD
 	.reset_device		= &da8xx_wdt_device,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void __init da850_init(void)

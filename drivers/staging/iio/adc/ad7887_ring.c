@@ -8,6 +8,7 @@
  */
 
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
@@ -55,6 +56,19 @@ error_ret:
 	return ret;
 }
 
+=======
+#include <linux/kernel.h>
+#include <linux/slab.h>
+#include <linux/spi/spi.h>
+
+#include "../iio.h"
+#include "../buffer.h"
+#include "../ring_sw.h"
+#include "../trigger_consumer.h"
+
+#include "ad7887.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * ad7887_ring_preenable() setup the parameters of the ring before enabling
  *
@@ -64,10 +78,18 @@ error_ret:
  **/
 static int ad7887_ring_preenable(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
 	struct ad7887_state *st = indio_dev->dev_data;
 	struct iio_ring_buffer *ring = indio_dev->ring;
 
 	st->d_size = ring->scan_count *
+=======
+	struct ad7887_state *st = iio_priv(indio_dev);
+	struct iio_buffer *ring = indio_dev->buffer;
+
+	st->d_size = bitmap_weight(indio_dev->active_scan_mask,
+				   indio_dev->masklength) *
+>>>>>>> refs/remotes/origin/cm-10.0
 		st->chip_info->channel[0].scan_type.storagebits / 8;
 
 	if (ring->scan_timestamp) {
@@ -77,11 +99,20 @@ static int ad7887_ring_preenable(struct iio_dev *indio_dev)
 			st->d_size += sizeof(s64) - (st->d_size % sizeof(s64));
 	}
 
+<<<<<<< HEAD
 	if (indio_dev->ring->access->set_bytes_per_datum)
 		indio_dev->ring->access->set_bytes_per_datum(indio_dev->ring,
 							    st->d_size);
 
 	switch (ring->scan_mask) {
+=======
+	if (indio_dev->buffer->access->set_bytes_per_datum)
+		indio_dev->buffer->access->
+			set_bytes_per_datum(indio_dev->buffer, st->d_size);
+
+	/* We know this is a single long so can 'cheat' */
+	switch (*indio_dev->active_scan_mask) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case (1 << 0):
 		st->ring_msg = &st->msg[AD7887_CH0];
 		break;
@@ -100,7 +131,11 @@ static int ad7887_ring_preenable(struct iio_dev *indio_dev)
 
 static int ad7887_ring_postdisable(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
 	struct ad7887_state *st = indio_dev->dev_data;
+=======
+	struct ad7887_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* dummy read: restore default CH0 settin */
 	return spi_sync(st->spi, &st->msg[AD7887_CH0]);
@@ -115,14 +150,25 @@ static int ad7887_ring_postdisable(struct iio_dev *indio_dev)
 static irqreturn_t ad7887_trigger_handler(int irq, void *p)
 {
 	struct iio_poll_func *pf = p;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = pf->private_data;
 	struct ad7887_state *st = iio_dev_get_devdata(indio_dev);
 	struct iio_ring_buffer *ring = indio_dev->ring;
+=======
+	struct iio_dev *indio_dev = pf->indio_dev;
+	struct ad7887_state *st = iio_priv(indio_dev);
+	struct iio_buffer *ring = indio_dev->buffer;
+>>>>>>> refs/remotes/origin/cm-10.0
 	s64 time_ns;
 	__u8 *buf;
 	int b_sent;
 
+<<<<<<< HEAD
 	unsigned int bytes = ring->scan_count *
+=======
+	unsigned int bytes = bitmap_weight(indio_dev->active_scan_mask,
+					   indio_dev->masklength) *
+>>>>>>> refs/remotes/origin/cm-10.0
 		st->chip_info->channel[0].scan_type.storagebits / 8;
 
 	buf = kzalloc(st->d_size, GFP_KERNEL);
@@ -140,7 +186,11 @@ static irqreturn_t ad7887_trigger_handler(int irq, void *p)
 		memcpy(buf + st->d_size - sizeof(s64),
 		       &time_ns, sizeof(time_ns));
 
+<<<<<<< HEAD
 	indio_dev->ring->access->store_to(indio_dev->ring, buf, time_ns);
+=======
+	indio_dev->buffer->access->store_to(indio_dev->buffer, buf, time_ns);
+>>>>>>> refs/remotes/origin/cm-10.0
 done:
 	kfree(buf);
 	iio_trigger_notify_done(indio_dev->trig);
@@ -148,10 +198,17 @@ done:
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static const struct iio_ring_setup_ops ad7887_ring_setup_ops = {
 	.preenable = &ad7887_ring_preenable,
 	.postenable = &iio_triggered_ring_postenable,
 	.predisable = &iio_triggered_ring_predisable,
+=======
+static const struct iio_buffer_setup_ops ad7887_ring_setup_ops = {
+	.preenable = &ad7887_ring_preenable,
+	.postenable = &iio_triggered_buffer_postenable,
+	.predisable = &iio_triggered_buffer_predisable,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.postdisable = &ad7887_ring_postdisable,
 };
 
@@ -159,6 +216,7 @@ int ad7887_register_ring_funcs_and_init(struct iio_dev *indio_dev)
 {
 	int ret;
 
+<<<<<<< HEAD
 	indio_dev->ring = iio_sw_rb_allocate(indio_dev);
 	if (!indio_dev->ring) {
 		ret = -ENOMEM;
@@ -166,6 +224,13 @@ int ad7887_register_ring_funcs_and_init(struct iio_dev *indio_dev)
 	}
 	/* Effectively select the ring buffer implementation */
 	indio_dev->ring->access = &ring_sw_access_funcs;
+=======
+	indio_dev->buffer = iio_sw_rb_allocate(indio_dev);
+	if (!indio_dev->buffer) {
+		ret = -ENOMEM;
+		goto error_ret;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	indio_dev->pollfunc = iio_alloc_pollfunc(&iio_pollfunc_store_time,
 						 &ad7887_trigger_handler,
 						 IRQF_ONESHOT,
@@ -177,6 +242,7 @@ int ad7887_register_ring_funcs_and_init(struct iio_dev *indio_dev)
 		goto error_deallocate_sw_rb;
 	}
 	/* Ring buffer functions - here trigger setup related */
+<<<<<<< HEAD
 	indio_dev->ring->setup_ops = &ad7887_ring_setup_ops;
 
 	/* Flag that polled ring buffering is possible */
@@ -185,12 +251,23 @@ int ad7887_register_ring_funcs_and_init(struct iio_dev *indio_dev)
 
 error_deallocate_sw_rb:
 	iio_sw_rb_free(indio_dev->ring);
+=======
+	indio_dev->setup_ops = &ad7887_ring_setup_ops;
+
+	/* Flag that polled ring buffering is possible */
+	indio_dev->modes |= INDIO_BUFFER_TRIGGERED;
+	return 0;
+
+error_deallocate_sw_rb:
+	iio_sw_rb_free(indio_dev->buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
 	return ret;
 }
 
 void ad7887_ring_cleanup(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
 	/* ensure that the trigger has been detached */
 	if (indio_dev->trig) {
 		iio_put_trigger(indio_dev->trig);
@@ -199,4 +276,8 @@ void ad7887_ring_cleanup(struct iio_dev *indio_dev)
 	}
 	iio_dealloc_pollfunc(indio_dev->pollfunc);
 	iio_sw_rb_free(indio_dev->ring);
+=======
+	iio_dealloc_pollfunc(indio_dev->pollfunc);
+	iio_sw_rb_free(indio_dev->buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

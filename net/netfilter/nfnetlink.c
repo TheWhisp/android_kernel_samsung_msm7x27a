@@ -23,7 +23,10 @@
 #include <linux/net.h>
 #include <linux/skbuff.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/sock.h>
 #include <net/netlink.h>
 #include <linux/init.h>
@@ -37,7 +40,11 @@ MODULE_ALIAS_NET_PF_PROTO(PF_NETLINK, NETLINK_NETFILTER);
 
 static char __initdata nfversion[] = "0.30";
 
+<<<<<<< HEAD
 static const struct nfnetlink_subsystem *subsys_table[NFNL_SUBSYS_COUNT];
+=======
+static const struct nfnetlink_subsystem __rcu *subsys_table[NFNL_SUBSYS_COUNT];
+>>>>>>> refs/remotes/origin/cm-10.0
 static DEFINE_MUTEX(nfnl_mutex);
 
 void nfnl_lock(void)
@@ -59,7 +66,11 @@ int nfnetlink_subsys_register(const struct nfnetlink_subsystem *n)
 		nfnl_unlock();
 		return -EBUSY;
 	}
+<<<<<<< HEAD
 	subsys_table[n->subsys_id] = n;
+=======
+	rcu_assign_pointer(subsys_table[n->subsys_id], n);
+>>>>>>> refs/remotes/origin/cm-10.0
 	nfnl_unlock();
 
 	return 0;
@@ -71,7 +82,11 @@ int nfnetlink_subsys_unregister(const struct nfnetlink_subsystem *n)
 	nfnl_lock();
 	subsys_table[n->subsys_id] = NULL;
 	nfnl_unlock();
+<<<<<<< HEAD
 
+=======
+	synchronize_rcu();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 EXPORT_SYMBOL_GPL(nfnetlink_subsys_unregister);
@@ -83,7 +98,11 @@ static inline const struct nfnetlink_subsystem *nfnetlink_get_subsys(u_int16_t t
 	if (subsys_id >= NFNL_SUBSYS_COUNT)
 		return NULL;
 
+<<<<<<< HEAD
 	return subsys_table[subsys_id];
+=======
+	return rcu_dereference(subsys_table[subsys_id]);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline const struct nfnl_callback *
@@ -130,7 +149,11 @@ static int nfnetlink_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 	const struct nfnetlink_subsystem *ss;
 	int type, err;
 
+<<<<<<< HEAD
 	if (security_netlink_recv(skb, CAP_NET_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EPERM;
 
 	/* All the messages must at least contain nfgenmsg */
@@ -139,6 +162,7 @@ static int nfnetlink_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 
 	type = nlh->nlmsg_type;
 replay:
+<<<<<<< HEAD
 	ss = nfnetlink_get_subsys(type);
 	if (!ss) {
 #ifdef CONFIG_MODULES
@@ -154,6 +178,29 @@ replay:
 	nc = nfnetlink_find_client(type, ss);
 	if (!nc)
 		return -EINVAL;
+=======
+	rcu_read_lock();
+	ss = nfnetlink_get_subsys(type);
+	if (!ss) {
+#ifdef CONFIG_MODULES
+		rcu_read_unlock();
+		request_module("nfnetlink-subsys-%d", NFNL_SUBSYS_ID(type));
+		rcu_read_lock();
+		ss = nfnetlink_get_subsys(type);
+		if (!ss)
+#endif
+		{
+			rcu_read_unlock();
+			return -EINVAL;
+		}
+	}
+
+	nc = nfnetlink_find_client(type, ss);
+	if (!nc) {
+		rcu_read_unlock();
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	{
 		int min_len = NLMSG_SPACE(sizeof(struct nfgenmsg));
@@ -167,7 +214,27 @@ replay:
 		if (err < 0)
 			return err;
 
+<<<<<<< HEAD
 		err = nc->call(net->nfnl, skb, nlh, (const struct nlattr **)cda);
+=======
+		if (nc->call_rcu) {
+			err = nc->call_rcu(net->nfnl, skb, nlh,
+					   (const struct nlattr **)cda);
+			rcu_read_unlock();
+		} else {
+			rcu_read_unlock();
+			nfnl_lock();
+			if (rcu_dereference_protected(
+					subsys_table[NFNL_SUBSYS_ID(type)],
+					lockdep_is_held(&nfnl_mutex)) != ss ||
+			    nfnetlink_find_client(type, ss) != nc)
+				err = -EAGAIN;
+			else
+				err = nc->call(net->nfnl, skb, nlh,
+						   (const struct nlattr **)cda);
+			nfnl_unlock();
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err == -EAGAIN)
 			goto replay;
 		return err;
@@ -176,9 +243,13 @@ replay:
 
 static void nfnetlink_rcv(struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	nfnl_lock();
 	netlink_rcv_skb(skb, &nfnetlink_rcv_msg);
 	nfnl_unlock();
+=======
+	netlink_rcv_skb(skb, &nfnetlink_rcv_msg);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __net_init nfnetlink_net_init(struct net *net)
@@ -199,7 +270,11 @@ static void __net_exit nfnetlink_net_exit_batch(struct list_head *net_exit_list)
 	struct net *net;
 
 	list_for_each_entry(net, net_exit_list, exit_list)
+<<<<<<< HEAD
 		rcu_assign_pointer(net->nfnl, NULL);
+=======
+		RCU_INIT_POINTER(net->nfnl, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	synchronize_net();
 	list_for_each_entry(net, net_exit_list, exit_list)
 		netlink_kernel_release(net->nfnl_stash);

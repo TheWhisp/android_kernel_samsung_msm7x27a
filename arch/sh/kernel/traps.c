@@ -7,7 +7,11 @@
 #include <linux/uaccess.h>
 #include <linux/hardirq.h>
 #include <asm/unwinder.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_GENERIC_BUG
 static void handle_BUG(struct pt_regs *regs)

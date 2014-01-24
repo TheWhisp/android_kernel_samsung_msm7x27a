@@ -397,7 +397,11 @@ static void __exit parport_mfc3_exit(void)
 
 
 MODULE_AUTHOR("Joerg Dorchain <joerg@dorchain.net>");
+<<<<<<< HEAD
 MODULE_DESCRIPTION("Parport Driver for Multiface 3 expansion cards Paralllel Port");
+=======
+MODULE_DESCRIPTION("Parport Driver for Multiface 3 expansion cards Parallel Port");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_SUPPORTED_DEVICE("Multiface 3 Parallel Port");
 MODULE_LICENSE("GPL");
 

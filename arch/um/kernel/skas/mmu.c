@@ -92,8 +92,11 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
 		goto out_free;
 	}
 
+<<<<<<< HEAD
 	to_mm->stub_pages = NULL;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
  out_free:
@@ -103,9 +106,14 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
 	return ret;
 }
 
+<<<<<<< HEAD
 void arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
 {
 	struct page **pages;
+=======
+void uml_setup_stubs(struct mm_struct *mm)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err, ret;
 
 	if (!skas_needs_stub)
@@ -120,6 +128,7 @@ void arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 	pages = kmalloc(2 * sizeof(struct page *), GFP_KERNEL);
 	if (pages == NULL) {
 		printk(KERN_ERR "arch_dup_mmap failed to allocate 2 page "
@@ -130,10 +139,15 @@ void arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
 	pages[0] = virt_to_page(&__syscall_stub_start);
 	pages[1] = virt_to_page(mm->context.id.stack);
 	mm->context.stub_pages = pages;
+=======
+	mm->context.stub_pages[0] = virt_to_page(&__syscall_stub_start);
+	mm->context.stub_pages[1] = virt_to_page(mm->context.id.stack);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* dup_mmap already holds mmap_sem */
 	err = install_special_mapping(mm, STUB_START, STUB_END - STUB_START,
 				      VM_READ | VM_MAYREAD | VM_EXEC |
+<<<<<<< HEAD
 				      VM_MAYEXEC | VM_DONTCOPY, pages);
 	if (err) {
 		printk(KERN_ERR "install_special_mapping returned %d\n", err);
@@ -143,6 +157,16 @@ void arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
 
 out_free:
 	kfree(pages);
+=======
+				      VM_MAYEXEC | VM_DONTCOPY,
+				      mm->context.stub_pages);
+	if (err) {
+		printk(KERN_ERR "install_special_mapping returned %d\n", err);
+		goto out;
+	}
+	return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	force_sigsegv(SIGSEGV, current);
 }
@@ -151,8 +175,11 @@ void arch_exit_mmap(struct mm_struct *mm)
 {
 	pte_t *pte;
 
+<<<<<<< HEAD
 	if (mm->context.stub_pages != NULL)
 		kfree(mm->context.stub_pages);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pte = virt_to_pte(mm, STUB_CODE);
 	if (pte != NULL)
 		pte_clear(mm, STUB_CODE, pte);

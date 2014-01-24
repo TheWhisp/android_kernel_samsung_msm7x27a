@@ -24,11 +24,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+<<<<<<< HEAD
 #include <ctype.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <errno.h>
 
 #include "../../perf.h"
 #include "../util.h"
+<<<<<<< HEAD
+=======
+#include "../event.h"
+#include "../thread.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "../trace-event.h"
 
 PyMODINIT_FUNC initperf_trace_context(void);
@@ -207,7 +215,11 @@ static inline struct event *find_cache_event(int type)
 static void python_process_event(union perf_event *pevent __unused,
 				 struct perf_sample *sample,
 				 struct perf_evsel *evsel __unused,
+<<<<<<< HEAD
 				 struct perf_session *session __unused,
+=======
+				 struct machine *machine __unused,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 struct thread *thread)
 {
 	PyObject *handler, *retval, *context, *t, *obj, *dict = NULL;

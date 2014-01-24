@@ -17,6 +17,10 @@
  */
 
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/acpi.h>
 #include <linux/slab.h>
 #include <acpi/acpi_bus.h>
@@ -26,7 +30,11 @@ struct ioapic {
 	u32		gsi_base;
 };
 
+<<<<<<< HEAD
 static int ioapic_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+=======
+static int __devinit ioapic_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	acpi_handle handle;
 	acpi_status status;
@@ -87,7 +95,11 @@ exit_free:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static void ioapic_remove(struct pci_dev *dev)
+=======
+static void __devexit ioapic_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ioapic *ioapic = pci_get_drvdata(dev);
 
@@ -98,6 +110,7 @@ static void ioapic_remove(struct pci_dev *dev)
 }
 
 
+<<<<<<< HEAD
 static struct pci_device_id ioapic_devices[] = {
 	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
 	  PCI_CLASS_SYSTEM_PIC_IOAPIC << 8, 0xffff00, },
@@ -105,6 +118,14 @@ static struct pci_device_id ioapic_devices[] = {
 	  PCI_CLASS_SYSTEM_PIC_IOXAPIC << 8, 0xffff00, },
 	{ }
 };
+=======
+static DEFINE_PCI_DEVICE_TABLE(ioapic_devices) = {
+	{ PCI_DEVICE_CLASS(PCI_CLASS_SYSTEM_PIC_IOAPIC, ~0) },
+	{ PCI_DEVICE_CLASS(PCI_CLASS_SYSTEM_PIC_IOXAPIC, ~0) },
+	{ }
+};
+MODULE_DEVICE_TABLE(pci, ioapic_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct pci_driver ioapic_driver = {
 	.name		= "ioapic",

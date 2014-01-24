@@ -19,10 +19,16 @@
 #include <linux/time.h>
 #include <linux/workqueue.h>
 #include <scsi/scsi_dh.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 
 #define DM_MSG_PREFIX "multipath"
 #define MESG_STR(x) x, sizeof(x)
+=======
+#include <linux/atomic.h>
+
+#define DM_MSG_PREFIX "multipath"
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DM_PG_INIT_DELAY_MSECS 2000
 #define DM_PG_INIT_DELAY_DEFAULT ((unsigned) -1)
 
@@ -227,6 +233,30 @@ static void free_multipath(struct multipath *m)
 	kfree(m);
 }
 
+<<<<<<< HEAD
+=======
+static int set_mapinfo(struct multipath *m, union map_info *info)
+{
+	struct dm_mpath_io *mpio;
+
+	mpio = mempool_alloc(m->mpio_pool, GFP_ATOMIC);
+	if (!mpio)
+		return -ENOMEM;
+
+	memset(mpio, 0, sizeof(*mpio));
+	info->ptr = mpio;
+
+	return 0;
+}
+
+static void clear_mapinfo(struct multipath *m, union map_info *info)
+{
+	struct dm_mpath_io *mpio = info->ptr;
+
+	info->ptr = NULL;
+	mempool_free(mpio, m->mpio_pool);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*-----------------------------------------------
  * Path selection
@@ -342,13 +372,21 @@ static int __must_push_back(struct multipath *m)
 }
 
 static int map_io(struct multipath *m, struct request *clone,
+<<<<<<< HEAD
 		  struct dm_mpath_io *mpio, unsigned was_queued)
+=======
+		  union map_info *map_context, unsigned was_queued)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int r = DM_MAPIO_REMAPPED;
 	size_t nr_bytes = blk_rq_bytes(clone);
 	unsigned long flags;
 	struct pgpath *pgpath;
 	struct block_device *bdev;
+<<<<<<< HEAD
+=======
+	struct dm_mpath_io *mpio = map_context->ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_irqsave(&m->lock, flags);
 
@@ -424,7 +462,10 @@ static void dispatch_queued_ios(struct multipath *m)
 {
 	int r;
 	unsigned long flags;
+<<<<<<< HEAD
 	struct dm_mpath_io *mpio;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	union map_info *info;
 	struct request *clone, *n;
 	LIST_HEAD(cl);
@@ -437,16 +478,27 @@ static void dispatch_queued_ios(struct multipath *m)
 		list_del_init(&clone->queuelist);
 
 		info = dm_get_rq_mapinfo(clone);
+<<<<<<< HEAD
 		mpio = info->ptr;
 
 		r = map_io(m, clone, mpio, 1);
 		if (r < 0) {
 			mempool_free(mpio, m->mpio_pool);
+=======
+
+		r = map_io(m, clone, info, 1);
+		if (r < 0) {
+			clear_mapinfo(m, info);
+>>>>>>> refs/remotes/origin/cm-10.0
 			dm_kill_unmapped_request(clone, r);
 		} else if (r == DM_MAPIO_REMAPPED)
 			dm_dispatch_request(clone);
 		else if (r == DM_MAPIO_REQUEUE) {
+<<<<<<< HEAD
 			mempool_free(mpio, m->mpio_pool);
+=======
+			clear_mapinfo(m, info);
+>>>>>>> refs/remotes/origin/cm-10.0
 			dm_requeue_unmapped_request(clone);
 		}
 	}
@@ -505,6 +557,7 @@ static void trigger_event(struct work_struct *work)
  *      <#paths> <#per-path selector args>
  *         [<path> [<arg>]* ]+ ]+
  *---------------------------------------------------------------*/
+<<<<<<< HEAD
 struct param {
 	unsigned min;
 	unsigned max;
@@ -551,34 +604,52 @@ static void consume(struct arg_set *as, unsigned n)
 }
 
 static int parse_path_selector(struct arg_set *as, struct priority_group *pg,
+=======
+static int parse_path_selector(struct dm_arg_set *as, struct priority_group *pg,
+>>>>>>> refs/remotes/origin/cm-10.0
 			       struct dm_target *ti)
 {
 	int r;
 	struct path_selector_type *pst;
 	unsigned ps_argc;
 
+<<<<<<< HEAD
 	static struct param _params[] = {
 		{0, 1024, "invalid number of path selector args"},
 	};
 
 	pst = dm_get_path_selector(shift(as));
+=======
+	static struct dm_arg _args[] = {
+		{0, 1024, "invalid number of path selector args"},
+	};
+
+	pst = dm_get_path_selector(dm_shift_arg(as));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!pst) {
 		ti->error = "unknown path selector type";
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	r = read_param(_params, shift(as), &ps_argc, &ti->error);
+=======
+	r = dm_read_arg_group(_args, as, &ps_argc, &ti->error);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (r) {
 		dm_put_path_selector(pst);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (ps_argc > as->argc) {
 		dm_put_path_selector(pst);
 		ti->error = "not enough arguments for path selector";
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = pst->create(&pg->ps, ps_argc, as->argv);
 	if (r) {
 		dm_put_path_selector(pst);
@@ -587,12 +658,20 @@ static int parse_path_selector(struct arg_set *as, struct priority_group *pg,
 	}
 
 	pg->ps.type = pst;
+<<<<<<< HEAD
 	consume(as, ps_argc);
+=======
+	dm_consume_args(as, ps_argc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct pgpath *parse_path(struct arg_set *as, struct path_selector *ps,
+=======
+static struct pgpath *parse_path(struct dm_arg_set *as, struct path_selector *ps,
+>>>>>>> refs/remotes/origin/cm-10.0
 			       struct dm_target *ti)
 {
 	int r;
@@ -609,7 +688,11 @@ static struct pgpath *parse_path(struct arg_set *as, struct path_selector *ps,
 	if (!p)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	r = dm_get_device(ti, shift(as), dm_table_get_mode(ti->table),
+=======
+	r = dm_get_device(ti, dm_shift_arg(as), dm_table_get_mode(ti->table),
+>>>>>>> refs/remotes/origin/cm-10.0
 			  &p->path.dev);
 	if (r) {
 		ti->error = "error getting device";
@@ -660,16 +743,27 @@ static struct pgpath *parse_path(struct arg_set *as, struct path_selector *ps,
 	return ERR_PTR(r);
 }
 
+<<<<<<< HEAD
 static struct priority_group *parse_priority_group(struct arg_set *as,
 						   struct multipath *m)
 {
 	static struct param _params[] = {
+=======
+static struct priority_group *parse_priority_group(struct dm_arg_set *as,
+						   struct multipath *m)
+{
+	static struct dm_arg _args[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 		{1, 1024, "invalid number of paths"},
 		{0, 1024, "invalid number of selector args"}
 	};
 
 	int r;
+<<<<<<< HEAD
 	unsigned i, nr_selector_args, nr_params;
+=======
+	unsigned i, nr_selector_args, nr_args;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct priority_group *pg;
 	struct dm_target *ti = m->ti;
 
@@ -693,6 +787,7 @@ static struct priority_group *parse_priority_group(struct arg_set *as,
 	/*
 	 * read the paths
 	 */
+<<<<<<< HEAD
 	r = read_param(_params, shift(as), &pg->nr_pgpaths, &ti->error);
 	if (r)
 		goto bad;
@@ -707,12 +802,32 @@ static struct priority_group *parse_priority_group(struct arg_set *as,
 		struct arg_set path_args;
 
 		if (as->argc < nr_params) {
+=======
+	r = dm_read_arg(_args, as, &pg->nr_pgpaths, &ti->error);
+	if (r)
+		goto bad;
+
+	r = dm_read_arg(_args + 1, as, &nr_selector_args, &ti->error);
+	if (r)
+		goto bad;
+
+	nr_args = 1 + nr_selector_args;
+	for (i = 0; i < pg->nr_pgpaths; i++) {
+		struct pgpath *pgpath;
+		struct dm_arg_set path_args;
+
+		if (as->argc < nr_args) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ti->error = "not enough path parameters";
 			r = -EINVAL;
 			goto bad;
 		}
 
+<<<<<<< HEAD
 		path_args.argc = nr_params;
+=======
+		path_args.argc = nr_args;
+>>>>>>> refs/remotes/origin/cm-10.0
 		path_args.argv = as->argv;
 
 		pgpath = parse_path(&path_args, &pg->ps, ti);
@@ -723,7 +838,11 @@ static struct priority_group *parse_priority_group(struct arg_set *as,
 
 		pgpath->pg = pg;
 		list_add_tail(&pgpath->list, &pg->pgpaths);
+<<<<<<< HEAD
 		consume(as, nr_params);
+=======
+		dm_consume_args(as, nr_args);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return pg;
@@ -733,22 +852,35 @@ static struct priority_group *parse_priority_group(struct arg_set *as,
 	return ERR_PTR(r);
 }
 
+<<<<<<< HEAD
 static int parse_hw_handler(struct arg_set *as, struct multipath *m)
+=======
+static int parse_hw_handler(struct dm_arg_set *as, struct multipath *m)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned hw_argc;
 	int ret;
 	struct dm_target *ti = m->ti;
 
+<<<<<<< HEAD
 	static struct param _params[] = {
 		{0, 1024, "invalid number of hardware handler args"},
 	};
 
 	if (read_param(_params, shift(as), &hw_argc, &ti->error))
+=======
+	static struct dm_arg _args[] = {
+		{0, 1024, "invalid number of hardware handler args"},
+	};
+
+	if (dm_read_arg_group(_args, as, &hw_argc, &ti->error))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	if (!hw_argc)
 		return 0;
 
+<<<<<<< HEAD
 	if (hw_argc > as->argc) {
 		ti->error = "not enough arguments for hardware handler";
 		return -EINVAL;
@@ -757,6 +889,11 @@ static int parse_hw_handler(struct arg_set *as, struct multipath *m)
 	m->hw_handler_name = kstrdup(shift(as), GFP_KERNEL);
 	request_module("scsi_dh_%s", m->hw_handler_name);
 	if (scsi_dh_handler_exist(m->hw_handler_name) == 0) {
+=======
+	m->hw_handler_name = kstrdup(dm_shift_arg(as), GFP_KERNEL);
+	if (!try_then_request_module(scsi_dh_handler_exist(m->hw_handler_name),
+				     "scsi_dh_%s", m->hw_handler_name)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ti->error = "unknown hardware handler type";
 		ret = -EINVAL;
 		goto fail;
@@ -778,7 +915,11 @@ static int parse_hw_handler(struct arg_set *as, struct multipath *m)
 		for (i = 0, p+=j+1; i <= hw_argc - 2; i++, p+=j+1)
 			j = sprintf(p, "%s", as->argv[i]);
 	}
+<<<<<<< HEAD
 	consume(as, hw_argc - 1);
+=======
+	dm_consume_args(as, hw_argc - 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 fail:
@@ -787,20 +928,34 @@ fail:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int parse_features(struct arg_set *as, struct multipath *m)
+=======
+static int parse_features(struct dm_arg_set *as, struct multipath *m)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int r;
 	unsigned argc;
 	struct dm_target *ti = m->ti;
+<<<<<<< HEAD
 	const char *param_name;
 
 	static struct param _params[] = {
+=======
+	const char *arg_name;
+
+	static struct dm_arg _args[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 		{0, 5, "invalid number of feature args"},
 		{1, 50, "pg_init_retries must be between 1 and 50"},
 		{0, 60000, "pg_init_delay_msecs must be between 0 and 60000"},
 	};
 
+<<<<<<< HEAD
 	r = read_param(_params, shift(as), &argc, &ti->error);
+=======
+	r = dm_read_arg_group(_args, as, &argc, &ti->error);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (r)
 		return -EINVAL;
 
@@ -813,26 +968,45 @@ static int parse_features(struct arg_set *as, struct multipath *m)
 	}
 
 	do {
+<<<<<<< HEAD
 		param_name = shift(as);
 		argc--;
 
 		if (!strnicmp(param_name, MESG_STR("queue_if_no_path"))) {
+=======
+		arg_name = dm_shift_arg(as);
+		argc--;
+
+		if (!strcasecmp(arg_name, "queue_if_no_path")) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			r = queue_if_no_path(m, 1, 0);
 			continue;
 		}
 
+<<<<<<< HEAD
 		if (!strnicmp(param_name, MESG_STR("pg_init_retries")) &&
 		    (argc >= 1)) {
 			r = read_param(_params + 1, shift(as),
 				       &m->pg_init_retries, &ti->error);
+=======
+		if (!strcasecmp(arg_name, "pg_init_retries") &&
+		    (argc >= 1)) {
+			r = dm_read_arg(_args + 1, as, &m->pg_init_retries, &ti->error);
+>>>>>>> refs/remotes/origin/cm-10.0
 			argc--;
 			continue;
 		}
 
+<<<<<<< HEAD
 		if (!strnicmp(param_name, MESG_STR("pg_init_delay_msecs")) &&
 		    (argc >= 1)) {
 			r = read_param(_params + 2, shift(as),
 				       &m->pg_init_delay_msecs, &ti->error);
+=======
+		if (!strcasecmp(arg_name, "pg_init_delay_msecs") &&
+		    (argc >= 1)) {
+			r = dm_read_arg(_args + 2, as, &m->pg_init_delay_msecs, &ti->error);
+>>>>>>> refs/remotes/origin/cm-10.0
 			argc--;
 			continue;
 		}
@@ -847,15 +1021,24 @@ static int parse_features(struct arg_set *as, struct multipath *m)
 static int multipath_ctr(struct dm_target *ti, unsigned int argc,
 			 char **argv)
 {
+<<<<<<< HEAD
 	/* target parameters */
 	static struct param _params[] = {
+=======
+	/* target arguments */
+	static struct dm_arg _args[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 		{0, 1024, "invalid number of priority groups"},
 		{0, 1024, "invalid initial priority group number"},
 	};
 
 	int r;
 	struct multipath *m;
+<<<<<<< HEAD
 	struct arg_set as;
+=======
+	struct dm_arg_set as;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned pg_count = 0;
 	unsigned next_pg_num;
 
@@ -876,11 +1059,19 @@ static int multipath_ctr(struct dm_target *ti, unsigned int argc,
 	if (r)
 		goto bad;
 
+<<<<<<< HEAD
 	r = read_param(_params, shift(&as), &m->nr_priority_groups, &ti->error);
 	if (r)
 		goto bad;
 
 	r = read_param(_params + 1, shift(&as), &next_pg_num, &ti->error);
+=======
+	r = dm_read_arg(_args, &as, &m->nr_priority_groups, &ti->error);
+	if (r)
+		goto bad;
+
+	r = dm_read_arg(_args + 1, &as, &next_pg_num, &ti->error);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (r)
 		goto bad;
 
@@ -972,6 +1163,7 @@ static int multipath_map(struct dm_target *ti, struct request *clone,
 			 union map_info *map_context)
 {
 	int r;
+<<<<<<< HEAD
 	struct dm_mpath_io *mpio;
 	struct multipath *m = (struct multipath *) ti->private;
 
@@ -986,6 +1178,18 @@ static int multipath_map(struct dm_target *ti, struct request *clone,
 	r = map_io(m, clone, mpio, 0);
 	if (r < 0 || r == DM_MAPIO_REQUEUE)
 		mempool_free(mpio, m->mpio_pool);
+=======
+	struct multipath *m = (struct multipath *) ti->private;
+
+	if (set_mapinfo(m, map_context) < 0)
+		/* ENOMEM, requeue */
+		return DM_MAPIO_REQUEUE;
+
+	clone->cmd_flags |= REQ_FAILFAST_TRANSPORT;
+	r = map_io(m, clone, map_context, 0);
+	if (r < 0 || r == DM_MAPIO_REQUEUE)
+		clear_mapinfo(m, map_context);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return r;
 }
@@ -1118,8 +1322,14 @@ static int switch_pg_num(struct multipath *m, const char *pgstr)
 	struct priority_group *pg;
 	unsigned pgnum;
 	unsigned long flags;
+<<<<<<< HEAD
 
 	if (!pgstr || (sscanf(pgstr, "%u", &pgnum) != 1) || !pgnum ||
+=======
+	char dummy;
+
+	if (!pgstr || (sscanf(pgstr, "%u%c", &pgnum, &dummy) != 1) || !pgnum ||
+>>>>>>> refs/remotes/origin/cm-10.0
 	    (pgnum > m->nr_priority_groups)) {
 		DMWARN("invalid PG number supplied to switch_pg_num");
 		return -EINVAL;
@@ -1149,8 +1359,14 @@ static int bypass_pg_num(struct multipath *m, const char *pgstr, int bypassed)
 {
 	struct priority_group *pg;
 	unsigned pgnum;
+<<<<<<< HEAD
 
 	if (!pgstr || (sscanf(pgstr, "%u", &pgnum) != 1) || !pgnum ||
+=======
+	char dummy;
+
+	if (!pgstr || (sscanf(pgstr, "%u%c", &pgnum, &dummy) != 1) || !pgnum ||
+>>>>>>> refs/remotes/origin/cm-10.0
 	    (pgnum > m->nr_priority_groups)) {
 		DMWARN("invalid PG number supplied to bypass_pg");
 		return -EINVAL;
@@ -1325,13 +1541,22 @@ static int multipath_end_io(struct dm_target *ti, struct request *clone,
 	struct path_selector *ps;
 	int r;
 
+<<<<<<< HEAD
+=======
+	BUG_ON(!mpio);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r  = do_end_io(m, clone, error, mpio);
 	if (pgpath) {
 		ps = &pgpath->pg->ps;
 		if (ps->type->end_io)
 			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes);
 	}
+<<<<<<< HEAD
 	mempool_free(mpio, m->mpio_pool);
+=======
+	clear_mapinfo(m, map_context);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return r;
 }
@@ -1510,10 +1735,17 @@ static int multipath_message(struct dm_target *ti, unsigned argc, char **argv)
 	}
 
 	if (argc == 1) {
+<<<<<<< HEAD
 		if (!strnicmp(argv[0], MESG_STR("queue_if_no_path"))) {
 			r = queue_if_no_path(m, 1, 0);
 			goto out;
 		} else if (!strnicmp(argv[0], MESG_STR("fail_if_no_path"))) {
+=======
+		if (!strcasecmp(argv[0], "queue_if_no_path")) {
+			r = queue_if_no_path(m, 1, 0);
+			goto out;
+		} else if (!strcasecmp(argv[0], "fail_if_no_path")) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			r = queue_if_no_path(m, 0, 0);
 			goto out;
 		}
@@ -1524,6 +1756,7 @@ static int multipath_message(struct dm_target *ti, unsigned argc, char **argv)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (!strnicmp(argv[0], MESG_STR("disable_group"))) {
 		r = bypass_pg_num(m, argv[1], 1);
 		goto out;
@@ -1536,6 +1769,20 @@ static int multipath_message(struct dm_target *ti, unsigned argc, char **argv)
 	} else if (!strnicmp(argv[0], MESG_STR("reinstate_path")))
 		action = reinstate_path;
 	else if (!strnicmp(argv[0], MESG_STR("fail_path")))
+=======
+	if (!strcasecmp(argv[0], "disable_group")) {
+		r = bypass_pg_num(m, argv[1], 1);
+		goto out;
+	} else if (!strcasecmp(argv[0], "enable_group")) {
+		r = bypass_pg_num(m, argv[1], 0);
+		goto out;
+	} else if (!strcasecmp(argv[0], "switch_group")) {
+		r = switch_pg_num(m, argv[1]);
+		goto out;
+	} else if (!strcasecmp(argv[0], "reinstate_path"))
+		action = reinstate_path;
+	else if (!strcasecmp(argv[0], "fail_path"))
+>>>>>>> refs/remotes/origin/cm-10.0
 		action = fail_path;
 	else {
 		DMWARN("Unrecognised multipath message received.");

@@ -75,7 +75,11 @@ int ipv6_sock_ac_join(struct sock *sk, int ifindex, const struct in6_addr *addr)
 	if (pac == NULL)
 		return -ENOMEM;
 	pac->acl_next = NULL;
+<<<<<<< HEAD
 	ipv6_addr_copy(&pac->acl_addr, addr);
+=======
+	pac->acl_addr = *addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rcu_read_lock();
 	if (ifindex == 0) {
@@ -83,7 +87,11 @@ int ipv6_sock_ac_join(struct sock *sk, int ifindex, const struct in6_addr *addr)
 
 		rt = rt6_lookup(net, addr, NULL, 0, 0);
 		if (rt) {
+<<<<<<< HEAD
 			dev = rt->rt6i_dev;
+=======
+			dev = rt->dst.dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 			dst_release(&rt->dst);
 		} else if (ishost) {
 			err = -EADDRNOTAVAIL;
@@ -211,6 +219,7 @@ void ipv6_sock_ac_close(struct sock *sk)
 	rcu_read_unlock();
 }
 
+<<<<<<< HEAD
 #if 0
 /* The function is not used, which is funny. Apparently, author
  * supposed to use it to filter out datagrams inside udp/raw but forgot.
@@ -240,6 +249,8 @@ int inet6_ac_check(struct sock *sk, struct in6_addr *addr, int ifindex)
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void aca_put(struct ifacaddr6 *ac)
 {
 	if (atomic_dec_and_test(&ac->aca_refcnt)) {
@@ -289,14 +300,22 @@ int ipv6_dev_ac_inc(struct net_device *dev, const struct in6_addr *addr)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	rt = addrconf_dst_alloc(idev, addr, 1);
+=======
+	rt = addrconf_dst_alloc(idev, addr, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(rt)) {
 		kfree(aca);
 		err = PTR_ERR(rt);
 		goto out;
 	}
 
+<<<<<<< HEAD
 	ipv6_addr_copy(&aca->aca_addr, addr);
+=======
+	aca->aca_addr = *addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	aca->aca_idev = idev;
 	aca->aca_rt = rt;
 	aca->aca_users = 1;

@@ -338,9 +338,15 @@ rpcrdma_inline_pullup(struct rpc_rqst *rqst, int pad)
 			curlen = copy_len;
 		dprintk("RPC:       %s: page %d destp 0x%p len %d curlen %d\n",
 			__func__, i, destp, copy_len, curlen);
+<<<<<<< HEAD
 		srcp = kmap_atomic(ppages[i], KM_SKB_SUNRPC_DATA);
 		memcpy(destp, srcp+page_base, curlen);
 		kunmap_atomic(srcp, KM_SKB_SUNRPC_DATA);
+=======
+		srcp = kmap_atomic(ppages[i]);
+		memcpy(destp, srcp+page_base, curlen);
+		kunmap_atomic(srcp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		rqst->rq_svec[0].iov_len += curlen;
 		destp += curlen;
 		copy_len -= curlen;
@@ -639,10 +645,17 @@ rpcrdma_inline_fixup(struct rpc_rqst *rqst, char *srcp, int copy_len, int pad)
 			dprintk("RPC:       %s: page %d"
 				" srcp 0x%p len %d curlen %d\n",
 				__func__, i, srcp, copy_len, curlen);
+<<<<<<< HEAD
 			destp = kmap_atomic(ppages[i], KM_SKB_SUNRPC_DATA);
 			memcpy(destp + page_base, srcp, curlen);
 			flush_dcache_page(ppages[i]);
 			kunmap_atomic(destp, KM_SKB_SUNRPC_DATA);
+=======
+			destp = kmap_atomic(ppages[i]);
+			memcpy(destp + page_base, srcp, curlen);
+			flush_dcache_page(ppages[i]);
+			kunmap_atomic(destp);
+>>>>>>> refs/remotes/origin/cm-10.0
 			srcp += curlen;
 			copy_len -= curlen;
 			if (copy_len == 0)
@@ -771,13 +784,26 @@ repost:
 
 	/* get request object */
 	req = rpcr_to_rdmar(rqst);
+<<<<<<< HEAD
+=======
+	if (req->rl_reply) {
+		spin_unlock(&xprt->transport_lock);
+		dprintk("RPC:       %s: duplicate reply 0x%p to RPC "
+			"request 0x%p: xid 0x%08x\n", __func__, rep, req,
+			headerp->rm_xid);
+		goto repost;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dprintk("RPC:       %s: reply 0x%p completes request 0x%p\n"
 		"                   RPC request 0x%p xid 0x%08x\n",
 			__func__, rep, req, rqst, headerp->rm_xid);
 
+<<<<<<< HEAD
 	BUG_ON(!req || req->rl_reply);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* from here on, the reply is no longer an orphan */
 	req->rl_reply = rep;
 

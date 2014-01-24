@@ -3,12 +3,21 @@
 #
 
 obj-y := sock.o request_sock.o skbuff.o iovec.o datagram.o stream.o scm.o \
+<<<<<<< HEAD
 	 gen_stats.o gen_estimator.o net_namespace.o secure_seq.o
+=======
+	 gen_stats.o gen_estimator.o net_namespace.o secure_seq.o flow_dissector.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-$(CONFIG_SYSCTL) += sysctl_net_core.o
 
 obj-y		     += dev.o ethtool.o dev_addr_lists.o dst.o netevent.o \
+<<<<<<< HEAD
 			neighbour.o rtnetlink.o utils.o link_watch.o filter.o
+=======
+			neighbour.o rtnetlink.o utils.o link_watch.o filter.o \
+			sock_diag.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-$(CONFIG_XFRM) += flow.o
 obj-y += net-sysfs.o
@@ -19,3 +28,7 @@ obj-$(CONFIG_FIB_RULES) += fib_rules.o
 obj-$(CONFIG_TRACEPOINTS) += net-traces.o
 obj-$(CONFIG_NET_DROP_MONITOR) += drop_monitor.o
 obj-$(CONFIG_NETWORK_PHY_TIMESTAMPING) += timestamping.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_NETPRIO_CGROUP) += netprio_cgroup.o
+>>>>>>> refs/remotes/origin/cm-10.0

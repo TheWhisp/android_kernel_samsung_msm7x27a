@@ -59,8 +59,11 @@ static struct dentry *ufs_lookup(struct inode * dir, struct dentry *dentry, stru
 	if (ino)
 		inode = ufs_iget(dir->i_sb, ino);
 	unlock_ufs(dir->i_sb);
+<<<<<<< HEAD
 	if (IS_ERR(inode))
 		return ERR_CAST(inode);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return d_splice_alias(inode, dentry);
 }
 
@@ -72,7 +75,11 @@ static struct dentry *ufs_lookup(struct inode * dir, struct dentry *dentry, stru
  * If the create succeeds, we fill in the inode information
  * with d_instantiate(). 
  */
+<<<<<<< HEAD
 static int ufs_create (struct inode * dir, struct dentry * dentry, int mode,
+=======
+static int ufs_create (struct inode * dir, struct dentry * dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct nameidata *nd)
 {
 	struct inode *inode;
@@ -96,7 +103,11 @@ static int ufs_create (struct inode * dir, struct dentry * dentry, int mode,
 	return err;
 }
 
+<<<<<<< HEAD
 static int ufs_mknod (struct inode * dir, struct dentry *dentry, int mode, dev_t rdev)
+=======
+static int ufs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct inode *inode;
 	int err;
@@ -168,10 +179,13 @@ static int ufs_link (struct dentry * old_dentry, struct inode * dir,
 	int error;
 
 	lock_ufs(dir->i_sb);
+<<<<<<< HEAD
 	if (inode->i_nlink >= UFS_LINK_MAX) {
 		unlock_ufs(dir->i_sb);
 		return -EMLINK;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	inode->i_ctime = CURRENT_TIME_SEC;
 	inode_inc_link_count(inode);
@@ -182,6 +196,7 @@ static int ufs_link (struct dentry * old_dentry, struct inode * dir,
 	return error;
 }
 
+<<<<<<< HEAD
 static int ufs_mkdir(struct inode * dir, struct dentry * dentry, int mode)
 {
 	struct inode * inode;
@@ -189,6 +204,12 @@ static int ufs_mkdir(struct inode * dir, struct dentry * dentry, int mode)
 
 	if (dir->i_nlink >= UFS_LINK_MAX)
 		goto out;
+=======
+static int ufs_mkdir(struct inode * dir, struct dentry * dentry, umode_t mode)
+{
+	struct inode * inode;
+	int err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	lock_ufs(dir->i_sb);
 	inode_inc_link_count(dir);
@@ -307,11 +328,14 @@ static int ufs_rename(struct inode *old_dir, struct dentry *old_dentry,
 			drop_nlink(new_inode);
 		inode_dec_link_count(new_inode);
 	} else {
+<<<<<<< HEAD
 		if (dir_de) {
 			err = -EMLINK;
 			if (new_dir->i_nlink >= UFS_LINK_MAX)
 				goto out_dir;
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = ufs_add_link(new_dentry, old_inode);
 		if (err)
 			goto out_dir;

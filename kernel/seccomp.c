@@ -6,6 +6,10 @@
  * This defines a simple but solid secure-computing mode.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/audit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/seccomp.h>
 #include <linux/sched.h>
 #include <linux/compat.h>
@@ -54,6 +58,10 @@ void __secure_computing(int this_syscall)
 #ifdef SECCOMP_DEBUG
 	dump_stack();
 #endif
+<<<<<<< HEAD
+=======
+	audit_seccomp(this_syscall);
+>>>>>>> refs/remotes/origin/cm-10.0
 	do_exit(SIGKILL);
 }
 

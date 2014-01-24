@@ -384,12 +384,24 @@ void __init orion_gpio_init(int gpio_base, int ngpio,
 	struct orion_gpio_chip *ochip;
 	struct irq_chip_generic *gc;
 	struct irq_chip_type *ct;
+<<<<<<< HEAD
+=======
+	char gc_label[16];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (orion_gpio_chip_count == ARRAY_SIZE(orion_gpio_chips))
 		return;
 
+<<<<<<< HEAD
 	ochip = orion_gpio_chips + orion_gpio_chip_count;
 	ochip->chip.label = "orion_gpio";
+=======
+	snprintf(gc_label, sizeof(gc_label), "orion_gpio%d",
+		orion_gpio_chip_count);
+
+	ochip = orion_gpio_chips + orion_gpio_chip_count;
+	ochip->chip.label = kstrdup(gc_label, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ochip->chip.request = orion_gpio_request;
 	ochip->chip.direction_input = orion_gpio_direction_input;
 	ochip->chip.get = orion_gpio_get;

@@ -404,6 +404,7 @@ static struct platform_driver wm8505fb_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init wm8505fb_init(void)
 {
 	return platform_driver_register(&wm8505fb_driver);
@@ -416,6 +417,9 @@ static void __exit wm8505fb_exit(void)
 
 module_init(wm8505fb_init);
 module_exit(wm8505fb_exit);
+=======
+module_platform_driver(wm8505fb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Ed Spiridonov <edo.rus@gmail.com>");
 MODULE_DESCRIPTION("Framebuffer driver for WMT WM8505");

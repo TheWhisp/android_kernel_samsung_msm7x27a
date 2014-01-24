@@ -14,6 +14,10 @@
 #include <linux/rtc.h>
 #include <linux/bcd.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRV_VERSION "0.6"
 
@@ -688,6 +692,7 @@ static struct i2c_driver rs5c372_driver = {
 	.id_table	= rs5c372_id,
 };
 
+<<<<<<< HEAD
 static __init int rs5c372_init(void)
 {
 	return i2c_add_driver(&rs5c372_driver);
@@ -700,6 +705,9 @@ static __exit void rs5c372_exit(void)
 
 module_init(rs5c372_init);
 module_exit(rs5c372_exit);
+=======
+module_i2c_driver(rs5c372_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(
 		"Pavel Mironchik <pmironchik@optifacio.net>, "

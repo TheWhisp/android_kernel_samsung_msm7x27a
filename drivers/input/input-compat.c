@@ -8,6 +8,10 @@
  * the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include "input-compat.h"
 
@@ -16,7 +20,11 @@
 int input_event_from_user(const char __user *buffer,
 			  struct input_event *event)
 {
+<<<<<<< HEAD
 	if (INPUT_COMPAT_TEST) {
+=======
+	if (INPUT_COMPAT_TEST && !COMPAT_USE_64BIT_TIME) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct input_event_compat compat_event;
 
 		if (copy_from_user(&compat_event, buffer,
@@ -40,7 +48,11 @@ int input_event_from_user(const char __user *buffer,
 int input_event_to_user(char __user *buffer,
 			const struct input_event *event)
 {
+<<<<<<< HEAD
 	if (INPUT_COMPAT_TEST) {
+=======
+	if (INPUT_COMPAT_TEST && !COMPAT_USE_64BIT_TIME) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct input_event_compat compat_event;
 
 		compat_event.time.tv_sec = event->time.tv_sec;

@@ -14,6 +14,15 @@
 
 #include <linux/types.h>
 
+<<<<<<< HEAD
+=======
+struct koneplus_talk {
+	uint8_t command; /* KONEPLUS_COMMAND_TALK */
+	uint8_t size; /* always 0x10 */
+	uint8_t data[14];
+} __packed;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * case 1: writes request 80 and reads value 1
  *
@@ -137,12 +146,20 @@ enum koneplus_commands {
 	KONEPLUS_COMMAND_PROFILE_BUTTONS = 0x7,
 	KONEPLUS_COMMAND_MACRO = 0x8,
 	KONEPLUS_COMMAND_INFO = 0x9,
+<<<<<<< HEAD
 	KONEPLUS_COMMAND_E = 0xe,
 	KONEPLUS_COMMAND_SENSOR = 0xf,
+=======
+	KONEPLUS_COMMAND_TCU = 0xc,
+	KONEPLUS_COMMAND_E = 0xe,
+	KONEPLUS_COMMAND_SENSOR = 0xf,
+	KONEPLUS_COMMAND_TALK = 0x10,
+>>>>>>> refs/remotes/origin/cm-10.0
 	KONEPLUS_COMMAND_FIRMWARE_WRITE = 0x1b,
 	KONEPLUS_COMMAND_FIRMWARE_WRITE_CONTROL = 0x1c,
 };
 
+<<<<<<< HEAD
 enum koneplus_usb_commands {
 	KONEPLUS_USB_COMMAND_CONTROL = 0x304,
 	KONEPLUS_USB_COMMAND_ACTUAL_PROFILE = 0x305,
@@ -157,6 +174,8 @@ enum koneplus_usb_commands {
 	KONEPLUS_USB_COMMAND_FIRMWARE_WRITE_CONTROL = 0x31c,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 enum koneplus_mouse_report_numbers {
 	KONEPLUS_MOUSE_REPORT_NUMBER_HID = 1,
 	KONEPLUS_MOUSE_REPORT_NUMBER_AUDIO = 2,
@@ -193,6 +212,10 @@ enum koneplus_mouse_report_button_types {
 	 * data2 = action
 	 */
 	KONEPLUS_MOUSE_REPORT_BUTTON_TYPE_MULTIMEDIA = 0xf0,
+<<<<<<< HEAD
+=======
+	KONEPLUS_MOUSE_REPORT_TALK = 0xff,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum koneplus_mouse_report_button_action {

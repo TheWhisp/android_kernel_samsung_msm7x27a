@@ -148,7 +148,10 @@ static struct snd_soc_dai_driver ad1980_dai = {
 		.rates = SNDRV_PCM_RATE_48000,
 		.formats = SND_SOC_STD_AC97_FMTS, },
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(ad1980_dai);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int ad1980_reset(struct snd_soc_codec *codec, int try_warm)
 {
@@ -200,18 +203,36 @@ static int ad1980_soc_probe(struct snd_soc_codec *codec)
 	}
 
 	/* Read out vendor ID to make sure it is ad1980 */
+<<<<<<< HEAD
 	if (ac97_read(codec, AC97_VENDOR_ID1) != 0x4144)
 		goto reset_err;
+=======
+	if (ac97_read(codec, AC97_VENDOR_ID1) != 0x4144) {
+		ret = -ENODEV;
+		goto reset_err;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	vendor_id2 = ac97_read(codec, AC97_VENDOR_ID2);
 
 	if (vendor_id2 != 0x5370) {
+<<<<<<< HEAD
 		if (vendor_id2 != 0x5374)
 			goto reset_err;
 		else
 			printk(KERN_WARNING "ad1980: "
 				"Found AD1981 - only 2/2 IN/OUT Channels "
 				"supported\n");
+=======
+		if (vendor_id2 != 0x5374) {
+			ret = -ENODEV;
+			goto reset_err;
+		} else {
+			printk(KERN_WARNING "ad1980: "
+				"Found AD1981 - only 2/2 IN/OUT Channels "
+				"supported\n");
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* unmute captures and playbacks volume */
@@ -225,7 +246,11 @@ static int ad1980_soc_probe(struct snd_soc_codec *codec)
 	ext_status = ac97_read(codec, AC97_EXTENDED_STATUS);
 	ac97_write(codec, AC97_EXTENDED_STATUS, ext_status&~0x3800);
 
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, ad1980_snd_ac97_controls,
+=======
+	snd_soc_add_codec_controls(codec, ad1980_snd_ac97_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				ARRAY_SIZE(ad1980_snd_ac97_controls));
 
 	return 0;
@@ -274,6 +299,7 @@ static struct platform_driver ad1980_codec_driver = {
 	.remove = __devexit_p(ad1980_remove),
 };
 
+<<<<<<< HEAD
 static int __init ad1980_init(void)
 {
 	return platform_driver_register(&ad1980_codec_driver);
@@ -285,6 +311,9 @@ static void __exit ad1980_exit(void)
 	platform_driver_unregister(&ad1980_codec_driver);
 }
 module_exit(ad1980_exit);
+=======
+module_platform_driver(ad1980_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("ASoC ad1980 driver (Obsolete)");
 MODULE_AUTHOR("Roy Huang, Cliff Cai");

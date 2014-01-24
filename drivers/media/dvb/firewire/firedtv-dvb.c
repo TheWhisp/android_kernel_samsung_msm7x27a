@@ -203,7 +203,13 @@ int fdtv_dvb_register(struct firedtv *fdtv, const char *name)
 	if (err)
 		goto fail_rem_frontend;
 
+<<<<<<< HEAD
 	dvb_net_init(&fdtv->adapter, &fdtv->dvbnet, &fdtv->demux.dmx);
+=======
+	err = dvb_net_init(&fdtv->adapter, &fdtv->dvbnet, &fdtv->demux.dmx);
+	if (err)
+		goto fail_disconnect_frontend;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fdtv_frontend_init(fdtv, name);
 	err = dvb_register_frontend(&fdtv->adapter, &fdtv->fe);
@@ -218,6 +224,10 @@ int fdtv_dvb_register(struct firedtv *fdtv, const char *name)
 
 fail_net_release:
 	dvb_net_release(&fdtv->dvbnet);
+<<<<<<< HEAD
+=======
+fail_disconnect_frontend:
+>>>>>>> refs/remotes/origin/cm-10.0
 	fdtv->demux.dmx.close(&fdtv->demux.dmx);
 fail_rem_frontend:
 	fdtv->demux.dmx.remove_frontend(&fdtv->demux.dmx, &fdtv->frontend);

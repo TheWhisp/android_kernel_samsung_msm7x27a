@@ -24,6 +24,10 @@
 #include <linux/highmem.h>
 #include <linux/time.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/list.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string.h>
 #include <linux/mount.h>
 #include <linux/ramfs.h>
@@ -32,25 +36,43 @@
 #include <linux/magic.h>
 #include <linux/pstore.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/spinlock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/uaccess.h>
 
 #include "internal.h"
 
 #define	PSTORE_NAMELEN	64
 
+<<<<<<< HEAD
 struct pstore_private {
 	u64	id;
 	int	(*erase)(u64);
+=======
+static DEFINE_SPINLOCK(allpstore_lock);
+static LIST_HEAD(allpstore);
+
+struct pstore_private {
+	struct list_head list;
+	struct pstore_info *psi;
+	enum pstore_type_id type;
+	u64	id;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ssize_t	size;
 	char	data[];
 };
 
+<<<<<<< HEAD
 static int pstore_file_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t pstore_file_read(struct file *file, char __user *userbuf,
 						size_t count, loff_t *ppos)
 {
@@ -60,7 +82,11 @@ static ssize_t pstore_file_read(struct file *file, char __user *userbuf,
 }
 
 static const struct file_operations pstore_file_operations = {
+<<<<<<< HEAD
 	.open	= pstore_file_open,
+=======
+	.open	= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read	= pstore_file_read,
 	.llseek	= default_llseek,
 };
@@ -73,15 +99,33 @@ static int pstore_unlink(struct inode *dir, struct dentry *dentry)
 {
 	struct pstore_private *p = dentry->d_inode->i_private;
 
+<<<<<<< HEAD
 	p->erase(p->id);
+=======
+	if (p->psi->erase)
+		p->psi->erase(p->type, p->id, p->psi);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return simple_unlink(dir, dentry);
 }
 
 static void pstore_evict_inode(struct inode *inode)
 {
+<<<<<<< HEAD
 	end_writeback(inode);
 	kfree(inode->i_private);
+=======
+	struct pstore_private	*p = inode->i_private;
+	unsigned long		flags;
+
+	end_writeback(inode);
+	if (p) {
+		spin_lock_irqsave(&allpstore_lock, flags);
+		list_del(&p->list);
+		spin_unlock_irqrestore(&allpstore_lock, flags);
+		kfree(p);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static const struct inode_operations pstore_dir_inode_operations = {
@@ -89,6 +133,7 @@ static const struct inode_operations pstore_dir_inode_operations = {
 	.unlink		= pstore_unlink,
 };
 
+<<<<<<< HEAD
 static struct inode *pstore_get_inode(struct super_block *sb,
 					const struct inode *dir, int mode, dev_t dev)
 {
@@ -109,6 +154,14 @@ static struct inode *pstore_get_inode(struct super_block *sb,
 			inc_nlink(inode);
 			break;
 		}
+=======
+static struct inode *pstore_get_inode(struct super_block *sb)
+{
+	struct inode *inode = new_inode(sb);
+	if (inode) {
+		inode->i_ino = get_next_ino();
+		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return inode;
 }
@@ -175,12 +228,18 @@ int pstore_is_mounted(void)
  * Set the mtime & ctime to the date that this record was originally stored.
  */
 int pstore_mkfile(enum pstore_type_id type, char *psname, u64 id,
+<<<<<<< HEAD
 			      char *data, size_t size,
 			      struct timespec time, int (*erase)(u64))
+=======
+		  char *data, size_t size, struct timespec time,
+		  struct pstore_info *psi)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct dentry		*root = pstore_sb->s_root;
 	struct dentry		*dentry;
 	struct inode		*inode;
+<<<<<<< HEAD
 	int			rc;
 	char			name[PSTORE_NAMELEN];
 	struct pstore_private	*private;
@@ -194,6 +253,38 @@ int pstore_mkfile(enum pstore_type_id type, char *psname, u64 id,
 		goto fail_alloc;
 	private->id = id;
 	private->erase = erase;
+=======
+	int			rc = 0;
+	char			name[PSTORE_NAMELEN];
+	struct pstore_private	*private, *pos;
+	unsigned long		flags;
+
+	spin_lock_irqsave(&allpstore_lock, flags);
+	list_for_each_entry(pos, &allpstore, list) {
+		if (pos->type == type &&
+		    pos->id == id &&
+		    pos->psi == psi) {
+			rc = -EEXIST;
+			break;
+		}
+	}
+	spin_unlock_irqrestore(&allpstore_lock, flags);
+	if (rc)
+		return rc;
+
+	rc = -ENOMEM;
+	inode = pstore_get_inode(pstore_sb);
+	if (!inode)
+		goto fail;
+	inode->i_mode = S_IFREG | 0444;
+	inode->i_fop = &pstore_file_operations;
+	private = kmalloc(sizeof *private + size, GFP_KERNEL);
+	if (!private)
+		goto fail_alloc;
+	private->type = type;
+	private->id = id;
+	private->psi = psi;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (type) {
 	case PSTORE_TYPE_DMESG:
@@ -227,6 +318,13 @@ int pstore_mkfile(enum pstore_type_id type, char *psname, u64 id,
 
 	d_add(dentry, inode);
 
+<<<<<<< HEAD
+=======
+	spin_lock_irqsave(&allpstore_lock, flags);
+	list_add(&private->list, &allpstore);
+	spin_unlock_irqrestore(&allpstore_lock, flags);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&root->d_inode->i_mutex);
 
 	return 0;
@@ -243,9 +341,13 @@ fail:
 
 int pstore_fill_super(struct super_block *sb, void *data, int silent)
 {
+<<<<<<< HEAD
 	struct inode *inode = NULL;
 	struct dentry *root;
 	int err;
+=======
+	struct inode *inode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	save_mount_options(sb, data);
 
@@ -260,6 +362,7 @@ int pstore_fill_super(struct super_block *sb, void *data, int silent)
 
 	parse_options(data);
 
+<<<<<<< HEAD
 	inode = pstore_get_inode(sb, NULL, S_IFDIR | 0755, 0);
 	if (!inode) {
 		err = -ENOMEM;
@@ -281,6 +384,22 @@ int pstore_fill_super(struct super_block *sb, void *data, int silent)
 fail:
 	iput(inode);
 	return err;
+=======
+	inode = pstore_get_inode(sb);
+	if (inode) {
+		inode->i_mode = S_IFDIR | 0755;
+		inode->i_op = &pstore_dir_inode_operations;
+		inode->i_fop = &simple_dir_operations;
+		inc_nlink(inode);
+	}
+	sb->s_root = d_make_root(inode);
+	if (!sb->s_root)
+		return -ENOMEM;
+
+	pstore_get_records(0);
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct dentry *pstore_mount(struct file_system_type *fs_type,

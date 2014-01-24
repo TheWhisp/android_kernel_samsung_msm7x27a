@@ -92,6 +92,10 @@ struct key_type {
 
 	/* internal fields */
 	struct list_head	link;		/* link in types list */
+<<<<<<< HEAD
+=======
+	struct lock_class_key	lock_class;	/* key->sem lock class */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 extern struct key_type key_type_keyring;

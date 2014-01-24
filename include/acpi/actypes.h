@@ -470,7 +470,10 @@ typedef u64 acpi_integer;
  */
 #define ACPI_FULL_INITIALIZATION        0x00
 #define ACPI_NO_ADDRESS_SPACE_INIT      0x01
+<<<<<<< HEAD
 #define ACPI_NO_HARDWARE_INIT           0x02
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ACPI_NO_EVENT_INIT              0x04
 #define ACPI_NO_HANDLER_INIT            0x08
 #define ACPI_NO_ACPI_ENABLE             0x10
@@ -500,9 +503,16 @@ typedef u64 acpi_integer;
 #define ACPI_STATE_D0                   (u8) 0
 #define ACPI_STATE_D1                   (u8) 1
 #define ACPI_STATE_D2                   (u8) 2
+<<<<<<< HEAD
 #define ACPI_STATE_D3                   (u8) 3
 #define ACPI_STATE_D3_COLD              (u8) 4
 #define ACPI_D_STATES_MAX               ACPI_STATE_D3_COLD
+=======
+#define ACPI_STATE_D3_HOT               (u8) 3
+#define ACPI_STATE_D3                   (u8) 4
+#define ACPI_STATE_D3_COLD              ACPI_STATE_D3
+#define ACPI_D_STATES_MAX               ACPI_STATE_D3
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ACPI_D_STATE_COUNT              5
 
 #define ACPI_STATE_C0                   (u8) 0
@@ -519,6 +529,16 @@ typedef u64 acpi_integer;
 #define ACPI_SLEEP_TYPE_INVALID         0xFF
 
 /*
+<<<<<<< HEAD
+=======
+ * Sleep/Wake flags
+ */
+#define ACPI_NO_OPTIONAL_METHODS        0x00	/* Do not execute any optional methods */
+#define ACPI_EXECUTE_GTS                0x01	/* For enter sleep interface */
+#define ACPI_EXECUTE_BFS                0x02	/* For leave sleep prep interface */
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Standard notify values
  */
 #define ACPI_NOTIFY_BUS_CHECK           (u8) 0x00
@@ -533,8 +553,14 @@ typedef u64 acpi_integer;
 #define ACPI_NOTIFY_DEVICE_PLD_CHECK    (u8) 0x09
 #define ACPI_NOTIFY_RESERVED            (u8) 0x0A
 #define ACPI_NOTIFY_LOCALITY_UPDATE     (u8) 0x0B
+<<<<<<< HEAD
 
 #define ACPI_NOTIFY_MAX                 0x0B
+=======
+#define ACPI_NOTIFY_SHUTDOWN_REQUEST    (u8) 0x0C
+
+#define ACPI_NOTIFY_MAX                 0x0C
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Types associated with ACPI names and objects. The first group of
@@ -699,7 +725,12 @@ typedef u32 acpi_event_status;
 #define ACPI_ALL_NOTIFY                 (ACPI_SYSTEM_NOTIFY | ACPI_DEVICE_NOTIFY)
 #define ACPI_MAX_NOTIFY_HANDLER_TYPE    0x3
 
+<<<<<<< HEAD
 #define ACPI_MAX_SYS_NOTIFY             0x7f
+=======
+#define ACPI_MAX_SYS_NOTIFY             0x7F
+#define ACPI_MAX_DEVICE_SPECIFIC_NOTIFY 0xBF
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Address Space (Operation Region) Types */
 
@@ -713,8 +744,15 @@ typedef u8 acpi_adr_space_type;
 #define ACPI_ADR_SPACE_CMOS             (acpi_adr_space_type) 5
 #define ACPI_ADR_SPACE_PCI_BAR_TARGET   (acpi_adr_space_type) 6
 #define ACPI_ADR_SPACE_IPMI             (acpi_adr_space_type) 7
+<<<<<<< HEAD
 
 #define ACPI_NUM_PREDEFINED_REGIONS     8
+=======
+#define ACPI_ADR_SPACE_GPIO             (acpi_adr_space_type) 8
+#define ACPI_ADR_SPACE_GSBUS            (acpi_adr_space_type) 9
+
+#define ACPI_NUM_PREDEFINED_REGIONS     10
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Special Address Spaces
@@ -785,6 +823,18 @@ typedef u8 acpi_adr_space_type;
 #define ACPI_ENABLE_EVENT                       1
 #define ACPI_DISABLE_EVENT                      0
 
+<<<<<<< HEAD
+=======
+/* Sleep function dispatch */
+
+typedef acpi_status(*ACPI_SLEEP_FUNCTION) (u8 sleep_state, u8 flags);
+
+struct acpi_sleep_functions {
+	ACPI_SLEEP_FUNCTION legacy_function;
+	ACPI_SLEEP_FUNCTION extended_function;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * External ACPI object definition
  */
@@ -958,6 +1008,17 @@ acpi_status(*acpi_adr_space_handler) (u32 function,
 
 #define ACPI_DEFAULT_HANDLER            NULL
 
+<<<<<<< HEAD
+=======
+/* Special Context data for generic_serial_bus/general_purpose_io (ACPI 5.0) */
+
+struct acpi_connection_info {
+	u8 *connection;
+	u16 length;
+	u8 access_length;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 typedef
 acpi_status(*acpi_adr_space_setup) (acpi_handle region_handle,
 				    u32 function,

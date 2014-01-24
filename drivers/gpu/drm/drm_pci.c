@@ -39,6 +39,10 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 
 /**********************************************************************/
@@ -323,8 +327,11 @@ int drm_get_pci_dev(struct pci_dev *pdev, const struct pci_device_id *ent,
 	if (ret)
 		goto err_g1;
 
+<<<<<<< HEAD
 	pci_set_master(pdev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->pdev = pdev;
 	dev->dev = &pdev->dev;
 

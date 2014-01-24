@@ -44,10 +44,15 @@ static int spitz_jack_func;
 static int spitz_spk_func;
 static int spitz_mic_gpio;
 
+<<<<<<< HEAD
 static void spitz_ext_control(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 
+=======
+static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (spitz_spk_func == SPITZ_SPK_ON)
 		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
 	else
@@ -113,7 +118,11 @@ static int spitz_startup(struct snd_pcm_substream *substream)
 	mutex_lock(&codec->mutex);
 
 	/* check the jack status at stream startup */
+<<<<<<< HEAD
 	spitz_ext_control(codec);
+=======
+	spitz_ext_control(&codec->dapm);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_unlock(&codec->mutex);
 
@@ -143,6 +152,7 @@ static int spitz_hw_params(struct snd_pcm_substream *substream,
 		break;
 	}
 
+<<<<<<< HEAD
 	/* set codec DAI configuration */
 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
@@ -155,6 +165,8 @@ static int spitz_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* set the codec system clock for DAC and ADC */
 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
 		SND_SOC_CLOCK_IN);
@@ -185,13 +197,21 @@ static int spitz_get_jack(struct snd_kcontrol *kcontrol,
 static int spitz_set_jack(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
 {
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+=======
+	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (spitz_jack_func == ucontrol->value.integer.value[0])
 		return 0;
 
 	spitz_jack_func = ucontrol->value.integer.value[0];
+<<<<<<< HEAD
 	spitz_ext_control(codec);
+=======
+	spitz_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 
@@ -205,13 +225,21 @@ static int spitz_get_spk(struct snd_kcontrol *kcontrol,
 static int spitz_set_spk(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
 {
+<<<<<<< HEAD
 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+=======
+	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (spitz_spk_func == ucontrol->value.integer.value[0])
 		return 0;
 
 	spitz_spk_func = ucontrol->value.integer.value[0];
+<<<<<<< HEAD
 	spitz_ext_control(codec);
+=======
+	spitz_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 
@@ -234,7 +262,11 @@ static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
 };
 
 /* Spitz machine audio_map */
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route spitz_audio_map[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* headphone connected to LOUT1, ROUT1 */
 	{"Headphone Jack", NULL, "LOUT1"},
@@ -277,7 +309,10 @@ static int spitz_wm8750_init(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_soc_codec *codec = rtd->codec;
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* NC codec pins */
 	snd_soc_dapm_nc_pin(dapm, "RINPUT1");
@@ -288,6 +323,7 @@ static int spitz_wm8750_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_nc_pin(dapm, "OUT3");
 	snd_soc_dapm_nc_pin(dapm, "MONO1");
 
+<<<<<<< HEAD
 	/* Add spitz specific controls */
 	err = snd_soc_add_controls(codec, wm8750_spitz_controls,
 				ARRAY_SIZE(wm8750_spitz_controls));
@@ -302,6 +338,8 @@ static int spitz_wm8750_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
 	snd_soc_dapm_sync(dapm);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -312,16 +350,36 @@ static struct snd_soc_dai_link spitz_dai = {
 	.cpu_dai_name = "pxa2xx-i2s",
 	.codec_dai_name = "wm8750-hifi",
 	.platform_name = "pxa-pcm-audio",
+<<<<<<< HEAD
 	.codec_name = "wm8750-codec.0-001b",
 	.init = spitz_wm8750_init,
+=======
+	.codec_name = "wm8750.0-001b",
+	.init = spitz_wm8750_init,
+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+		   SND_SOC_DAIFMT_CBS_CFS,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops = &spitz_ops,
 };
 
 /* spitz audio machine driver */
 static struct snd_soc_card snd_soc_spitz = {
 	.name = "Spitz",
+<<<<<<< HEAD
 	.dai_link = &spitz_dai,
 	.num_links = 1,
+=======
+	.owner = THIS_MODULE,
+	.dai_link = &spitz_dai,
+	.num_links = 1,
+
+	.controls = wm8750_spitz_controls,
+	.num_controls = ARRAY_SIZE(wm8750_spitz_controls),
+	.dapm_widgets = wm8750_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8750_dapm_widgets),
+	.dapm_routes = spitz_audio_map,
+	.num_dapm_routes = ARRAY_SIZE(spitz_audio_map),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device *spitz_snd_device;

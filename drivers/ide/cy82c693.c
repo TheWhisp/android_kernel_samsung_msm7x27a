@@ -1,7 +1,11 @@
 /*
  *  Copyright (C) 1998-2000 Andreas S. Krebs (akrebs@altavista.net), Maintainer
  *  Copyright (C) 1998-2002 Andre Hedrick <andre@linux-ide.org>, Integrator
+<<<<<<< HEAD
  *  Copyright (C) 2007-2010 Bartlomiej Zolnierkiewicz
+=======
+ *  Copyright (C) 2007-2011 Bartlomiej Zolnierkiewicz
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * CYPRESS CY82C693 chipset IDE controller
  *
@@ -90,7 +94,11 @@ static void cy82c693_set_pio_mode(ide_hwif_t *hwif, ide_drive_t *drive)
 	u8 time_16, time_8;
 
 	/* select primary or secondary channel */
+<<<<<<< HEAD
 	if (hwif->index > 0) {  /* drive is on the secondary channel */
+=======
+	if (drive->dn > 1) {  /* drive is on the secondary channel */
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev = pci_get_slot(dev->bus, dev->devfn+1);
 		if (!dev) {
 			printk(KERN_ERR "%s: tune_drive: "
@@ -141,6 +149,11 @@ static void cy82c693_set_pio_mode(ide_hwif_t *hwif, ide_drive_t *drive)
 		pci_write_config_byte(dev, CY82_IDE_SLAVE_IOW, time_16);
 		pci_write_config_byte(dev, CY82_IDE_SLAVE_8BIT, time_8);
 	}
+<<<<<<< HEAD
+=======
+	if (drive->dn > 1)
+		pci_dev_put(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __devinit init_iops_cy82c693(ide_hwif_t *hwif)

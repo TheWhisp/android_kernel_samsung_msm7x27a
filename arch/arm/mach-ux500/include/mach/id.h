@@ -47,6 +47,33 @@ static inline bool __attribute_const__ cpu_is_u5500(void)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * 5500 revisions
+ */
+
+static inline bool __attribute_const__ cpu_is_u5500v1(void)
+{
+	return cpu_is_u5500() && (dbx500_revision() & 0xf0) == 0xA0;
+}
+
+static inline bool __attribute_const__ cpu_is_u5500v2(void)
+{
+	return (dbx500_id.revision & 0xf0) == 0xB0;
+}
+
+static inline bool __attribute_const__ cpu_is_u5500v20(void)
+{
+	return cpu_is_u5500() && ((dbx500_revision() & 0xf0) == 0xB0);
+}
+
+static inline bool __attribute_const__ cpu_is_u5500v21(void)
+{
+	return cpu_is_u5500() && (dbx500_revision() == 0xB1);
+}
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * 8500 revisions
  */
 

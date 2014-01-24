@@ -7,7 +7,11 @@
 #ifndef __LINUX_MFD_TC3589x_H
 #define __LINUX_MFD_TC3589x_H
 
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum tx3589x_block {
 	TC3589x_BLOCK_GPIO        = 1 << 0,

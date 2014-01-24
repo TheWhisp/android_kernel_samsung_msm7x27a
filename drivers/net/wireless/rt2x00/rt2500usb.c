@@ -39,7 +39,11 @@
 /*
  * Allow hardware encryption to be disabled.
  */
+<<<<<<< HEAD
 static int modparam_nohwcrypt;
+=======
+static bool modparam_nohwcrypt;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(nohwcrypt, modparam_nohwcrypt, bool, S_IRUGO);
 MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption.");
 
@@ -1836,6 +1840,10 @@ static const struct ieee80211_ops rt2500usb_mac80211_ops = {
 	.set_antenna		= rt2x00mac_set_antenna,
 	.get_antenna		= rt2x00mac_get_antenna,
 	.get_ringparam		= rt2x00mac_get_ringparam,
+<<<<<<< HEAD
+=======
+	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct rt2x00lib_ops rt2500usb_rt2x00_ops = {
@@ -1990,6 +1998,7 @@ static struct usb_driver rt2500usb_driver = {
 	.resume		= rt2x00usb_resume,
 };
 
+<<<<<<< HEAD
 static int __init rt2500usb_init(void)
 {
 	return usb_register(&rt2500usb_driver);
@@ -2002,3 +2011,6 @@ static void __exit rt2500usb_exit(void)
 
 module_init(rt2500usb_init);
 module_exit(rt2500usb_exit);
+=======
+module_usb_driver(rt2500usb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -7,6 +7,7 @@
  * assume GCC is being used.
  */
 
+<<<<<<< HEAD
 typedef unsigned long	__kernel_ino_t;
 typedef unsigned int	__kernel_mode_t;
 typedef long		__kernel_off_t;
@@ -125,4 +126,24 @@ static __inline__ void __FD_ZERO(__kernel_fd_set *p)
 
 #endif /* defined(__KERNEL__) */
 #endif /* __GNUC__ */
+=======
+#ifdef __powerpc64__
+typedef unsigned long	__kernel_old_dev_t;
+#define __kernel_old_dev_t __kernel_old_dev_t
+#else
+typedef unsigned int	__kernel_size_t;
+typedef int		__kernel_ssize_t;
+typedef long		__kernel_ptrdiff_t;
+#define __kernel_size_t __kernel_size_t
+
+typedef unsigned short	__kernel_nlink_t;
+#define __kernel_nlink_t __kernel_nlink_t
+
+typedef short		__kernel_ipc_pid_t;
+#define __kernel_ipc_pid_t __kernel_ipc_pid_t
+#endif
+
+#include <asm-generic/posix_types.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_POWERPC_POSIX_TYPES_H */

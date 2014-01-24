@@ -167,7 +167,11 @@ static void sdk7786_pcie_clk_disable(struct clk *clk)
 	fpga_write_reg(fpga_read_reg(PCIECR) & ~PCIECR_CLKEN, PCIECR);
 }
 
+<<<<<<< HEAD
 static struct clk_ops sdk7786_pcie_clk_ops = {
+=======
+static struct sh_clk_ops sdk7786_pcie_clk_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.enable		= sdk7786_pcie_clk_enable,
 	.disable	= sdk7786_pcie_clk_disable,
 };
@@ -194,7 +198,11 @@ static int sdk7786_clk_init(void)
 		return -EINVAL;
 
 	clk = clk_get(NULL, "extal");
+<<<<<<< HEAD
 	if (!clk || IS_ERR(clk))
+=======
+	if (IS_ERR(clk))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return PTR_ERR(clk);
 	ret = clk_set_rate(clk, 33333333);
 	clk_put(clk);

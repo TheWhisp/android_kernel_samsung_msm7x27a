@@ -133,6 +133,7 @@ void pgd_dtor(void *pgd)
 
 pgd_t *pgd_alloc(struct mm_struct *mm)
 {
+<<<<<<< HEAD
 	pgd_t *pgd;
 
 	pgd = quicklist_alloc(0, GFP_KERNEL, pgd_ctor);
@@ -140,6 +141,9 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
 		return pgd;
 
 	return pgd;
+=======
+	return quicklist_alloc(0, GFP_KERNEL, pgd_ctor);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void pgd_free(struct mm_struct *mm, pgd_t *pgd)

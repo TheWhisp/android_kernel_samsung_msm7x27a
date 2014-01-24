@@ -3,7 +3,11 @@
  *
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -32,7 +36,10 @@
 
 #include <mach/msm_adsp.h>
 #include <mach/iommu.h>
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/iommu_domains.h>
 #include <mach/qdsp5v2/qdsp5audreccmdi.h>
 #include <mach/qdsp5v2/qdsp5audrecmsg.h>
@@ -97,8 +104,13 @@ struct audio_in {
 	wait_queue_head_t write_wait;
 	int32_t out_phys; /* physical address of write buffer */
 	char *out_data;
+<<<<<<< HEAD
 	struct msm_mapped_buffer *map_v_read;
 	struct msm_mapped_buffer *map_v_write;
+=======
+	void *map_v_read;
+	void *map_v_write;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int mfield; /* meta field embedded in data */
 	int wflush; /*write flush */
@@ -1109,7 +1121,11 @@ static void audpreproc_pcm_send_data(struct audio_in *audio, unsigned needed)
 }
 
 
+<<<<<<< HEAD
 static int audaac_in_fsync(struct file *file,	int datasync)
+=======
+static int audaac_in_fsync(struct file *file, loff_t ppos1, loff_t ppos2, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 {
 	struct audio_in *audio = file->private_data;
@@ -1292,12 +1308,20 @@ static int audaac_in_release(struct inode *inode, struct file *file)
 	audio->audrec = NULL;
 	audio->opened = 0;
 	if (audio->data) {
+<<<<<<< HEAD
 		msm_subsystem_unmap_buffer(audio->map_v_read);
+=======
+		iounmap(audio->map_v_read);
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_contiguous_memory_by_paddr(audio->phys);
 		audio->data = NULL;
 	}
 	if (audio->out_data) {
+<<<<<<< HEAD
 		msm_subsystem_unmap_buffer(audio->map_v_write);
+=======
+		iounmap(audio->map_v_write);
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_contiguous_memory_by_paddr(audio->out_phys);
 		audio->out_data = NULL;
 	}
@@ -1320,16 +1344,24 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 	}
 	audio->phys = allocate_contiguous_ebi_nomap(DMASZ, SZ_4K);
 	if (audio->phys) {
+<<<<<<< HEAD
 		audio->map_v_read = msm_subsystem_map_buffer(
 					audio->phys, DMASZ,
 					MSM_SUBSYSTEM_MAP_KADDR, NULL, 0);
+=======
+		audio->map_v_read = ioremap(audio->phys, DMASZ);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(audio->map_v_read)) {
 			MM_ERR("could not map DMA buffers\n");
 			rc = -ENOMEM;
 			free_contiguous_memory_by_paddr(audio->phys);
 			goto done;
 		}
+<<<<<<< HEAD
 		audio->data = audio->map_v_read->vaddr;
+=======
+		audio->data = audio->map_v_read;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		MM_ERR("could not allocate DMA buffers\n");
 		rc = -ENOMEM;
@@ -1398,16 +1430,25 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 		rc = -ENOMEM;
 		goto evt_error;
 	} else {
+<<<<<<< HEAD
 		audio->map_v_write = msm_subsystem_map_buffer(
 					audio->out_phys, BUFFER_SIZE,
 					MSM_SUBSYSTEM_MAP_KADDR, NULL, 0);
+=======
+		audio->map_v_write = ioremap(
+					audio->out_phys, BUFFER_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(audio->map_v_write)) {
 			MM_ERR("could not map write phys address\n");
 			rc = -ENOMEM;
 			free_contiguous_memory_by_paddr(audio->out_phys);
 			goto evt_error;
 		}
+<<<<<<< HEAD
 		audio->out_data = audio->map_v_write->vaddr;
+=======
+		audio->out_data = audio->map_v_write;
+>>>>>>> refs/remotes/origin/cm-10.0
 		MM_DBG("write buf: phy addr 0x%08x kernel addr 0x%08x\n",
 				audio->out_phys, (int)audio->out_data);
 	}
@@ -1434,7 +1475,11 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 					aac_in_listener, (void *) audio);
 	if (rc) {
 		MM_ERR("failed to register device event listener\n");
+<<<<<<< HEAD
 		msm_subsystem_unmap_buffer(audio->map_v_write);
+=======
+		iounmap(audio->map_v_write);
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_contiguous_memory_by_paddr(audio->out_phys);
 		goto evt_error;
 	}

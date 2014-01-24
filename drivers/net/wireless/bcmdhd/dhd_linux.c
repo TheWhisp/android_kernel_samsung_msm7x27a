@@ -2,9 +2,15 @@
  * Broadcom Dongle Host Driver (DHD), Linux-specific network interface
  * Basically selected code segments from usb-cdc.c and usb-rndis.c
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -22,7 +28,11 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: dhd_linux.c 333885 2012-05-18 00:39:03Z $
+=======
+ * $Id: dhd_linux.c 329678 2012-04-26 08:51:32Z $
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <typedefs.h>
@@ -64,9 +74,17 @@
 #include <wl_cfg80211.h>
 #endif
 
+<<<<<<< HEAD
 #include <proto/802.11_bta.h>
 #include <proto/bt_amp_hci.h>
 #include <dhd_bta.h>
+=======
+#ifdef WLBTAMP
+#include <proto/802.11_bta.h>
+#include <proto/bt_amp_hci.h>
+#include <dhd_bta.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef WLMEDIA_HTSF
 #include <linux/time.h>
@@ -102,6 +120,13 @@ extern bool ap_fw_loaded;
 /* enable HOSTIP cache update from the host side when an eth0:N is up */
 #define AOE_IP_ALIAS_SUPPORT 1
 
+<<<<<<< HEAD
+=======
+#ifdef BCM_FD_AGGR
+#include <bcm_rpc.h>
+#include <bcm_rpc_tp.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef PROP_TXSTATUS
 #include <wlfc_proto.h>
 #include <dhd_wlfc.h>
@@ -129,20 +154,33 @@ DECLARE_WAIT_QUEUE_HEAD(dhd_dpc_wait);
 #if defined(OOB_INTR_ONLY)
 extern void dhd_enable_oob_intr(struct dhd_bus *bus, bool enable);
 #endif /* defined(OOB_INTR_ONLY) */
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 static void dhd_hang_process(struct work_struct *work);
 #endif 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0))
 MODULE_LICENSE("GPL v2");
 #endif /* LinuxVer */
 
 #include <dhd_bus.h>
 
+<<<<<<< HEAD
+=======
+#ifdef BCM_FD_AGGR
+#define DBUS_RX_BUFFER_SIZE_DHD(net)	(BCM_RPC_TP_DNGL_AGG_MAX_BYTE)
+#else
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef PROP_TXSTATUS
 #define DBUS_RX_BUFFER_SIZE_DHD(net)	(net->mtu + net->hard_header_len + dhd->pub.hdrlen)
 #else
 #define DBUS_RX_BUFFER_SIZE_DHD(net)	(net->mtu + net->hard_header_len + dhd->pub.hdrlen + 128)
 #endif
+<<<<<<< HEAD
+=======
+#endif /* BCM_FD_AGGR */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if LINUX_VERSION_CODE == KERNEL_VERSION(2, 6, 15)
 const char *
@@ -153,6 +191,7 @@ print_tainted()
 #endif	/* LINUX_VERSION_CODE == KERNEL_VERSION(2, 6, 15) */
 
 /* Linux wireless extension support */
+<<<<<<< HEAD
 #if defined(WL_WIRELESS_EXT)
 #include <wl_iw.h>
 extern wl_iw_extra_params_t  g_wl_iw_params;
@@ -162,6 +201,18 @@ extern wl_iw_extra_params_t  g_wl_iw_params;
 #include <linux/earlysuspend.h>
 #endif /* defined(CONFIG_HAS_EARLYSUSPEND) */
 extern int dhd_get_dtim_skip(dhd_pub_t *dhd);
+=======
+#if defined(CONFIG_WIRELESS_EXT)
+#include <wl_iw.h>
+extern wl_iw_extra_params_t  g_wl_iw_params;
+#endif /* defined(CONFIG_WIRELESS_EXT) */
+
+#if defined(CONFIG_HAS_EARLYSUSPEND)
+#include <linux/earlysuspend.h>
+extern int dhdcdc_set_ioctl(dhd_pub_t *dhd, int ifidx, uint cmd, void *buf, uint len);
+extern int dhd_get_dtim_skip(dhd_pub_t *dhd);
+#endif /* defined(CONFIG_HAS_EARLYSUSPEND) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef PKT_FILTER_SUPPORT
 extern void dhd_pktfilter_offload_set(dhd_pub_t * dhd, char *arg);
@@ -183,6 +234,10 @@ typedef struct dhd_if {
 	char			name[IFNAMSIZ+1]; /* linux interface name */
 	uint8			bssidx;			/* bsscfg index for the interface */
 	bool			set_multicast;
+<<<<<<< HEAD
+=======
+	bool			event2cfg80211;	/* To determine if pass event to cfg80211 */
+>>>>>>> refs/remotes/origin/cm-10.0
 } dhd_if_t;
 
 #ifdef WLMEDIA_HTSF
@@ -215,9 +270,15 @@ static uint32 maxdelay = 0, tspktcnt = 0, maxdelaypktno = 0;
 
 /* Local private structure (extension of pub) */
 typedef struct dhd_info {
+<<<<<<< HEAD
 #if defined(WL_WIRELESS_EXT)
 	wl_iw_t		iw;		/* wireless extensions state (must be first) */
 #endif /* defined(WL_WIRELESS_EXT) */
+=======
+#if defined(CONFIG_WIRELESS_EXT)
+	wl_iw_t		iw;		/* wireless extensions state (must be first) */
+#endif /* defined(CONFIG_WIRELESS_EXT) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dhd_pub_t pub;
 
@@ -245,6 +306,7 @@ typedef struct dhd_info {
 
 	tsk_ctl_t	thr_dpc_ctl;
 	tsk_ctl_t	thr_wdt_ctl;
+<<<<<<< HEAD
 
 #else
 	bool dhd_tasklet_create;
@@ -253,19 +315,31 @@ typedef struct dhd_info {
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 	struct work_struct work_hang;
 #endif 
+=======
+#endif /* DHDTHREAD */
+	bool dhd_tasklet_create;
+	tsk_ctl_t	thr_sysioc_ctl;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Wakelocks */
 #if defined(CONFIG_HAS_WAKELOCK) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 	struct wake_lock wl_wifi;   /* Wifi wakelock */
 	struct wake_lock wl_rxwake; /* Wifi rx wakelock */
+<<<<<<< HEAD
 	struct wake_lock wl_ctrlwake; /* Wifi ctrl wakelock */
 #endif
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25))
+=======
+#endif
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) && 1
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* net_device interface lock, prevent race conditions among net_dev interface
 	 * calls and wifi_on or wifi_off
 	 */
 	struct mutex dhd_net_if_mutex;
+<<<<<<< HEAD
 	struct mutex dhd_suspend_mutex;
 #endif
 	spinlock_t wakelock_spinlock;
@@ -275,26 +349,53 @@ typedef struct dhd_info {
 
 	/* Thread to issue ioctl for multicast */
 	bool set_macaddress;
+=======
+#endif
+	spinlock_t wakelock_spinlock;
+	int wakelock_counter;
+	int wakelock_timeout_enable;
+
+	/* Thread to issue ioctl for multicast */
+	unsigned char set_macaddress;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ether_addr macvalue;
 	wait_queue_head_t ctrl_wait;
 	atomic_t pend_8021x_cnt;
 	dhd_attach_states_t dhd_state;
 
+<<<<<<< HEAD
 #if defined(CONFIG_HAS_EARLYSUSPEND) && defined(DHD_USE_EARLYSUSPEND)
+=======
+#ifdef CONFIG_HAS_EARLYSUSPEND
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct early_suspend early_suspend;
 #endif /* CONFIG_HAS_EARLYSUSPEND */
 
 #ifdef ARP_OFFLOAD_SUPPORT
 	u32 pend_ipaddr;
 #endif /* ARP_OFFLOAD_SUPPORT */
+<<<<<<< HEAD
 } dhd_info_t;
 
+=======
+#ifdef BCM_FD_AGGR
+	void *rpc_th;
+	void *rpc_osh;
+	struct timer_list rpcth_timer;
+	bool rpcth_timer_active;
+	bool fdaggr;
+#endif
+} dhd_info_t;
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Definitions to provide path to the firmware and nvram
  * example nvram_path[MOD_PARAM_PATHLEN]="/projects/wlan/nvram.txt"
  */
 char firmware_path[MOD_PARAM_PATHLEN];
 char nvram_path[MOD_PARAM_PATHLEN];
 
+<<<<<<< HEAD
 /* load firmware and/or nvram values from the filesystem */
 module_param_string(firmware_path, firmware_path, MOD_PARAM_PATHLEN, 0660);
 module_param_string(nvram_path, nvram_path, MOD_PARAM_PATHLEN, 0);
@@ -307,6 +408,16 @@ module_param(op_mode, int, 0644);
 extern int wl_control_wl_start(struct net_device *dev);
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 struct semaphore dhd_registration_sem;
+=======
+int op_mode = 0;
+module_param(op_mode, int, 0644);
+extern int wl_control_wl_start(struct net_device *dev);
+extern int net_os_send_hang_message(struct net_device *dev);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+struct semaphore dhd_registration_sem;
+struct semaphore dhd_chipup_sem;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DHD_REGISTRATION_TIMEOUT  12000  /* msec : allowed time to finished dhd registration */
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) */
 
@@ -317,8 +428,17 @@ module_param(dhd_sysioc, uint, 0);
 /* Error bits */
 module_param(dhd_msg_level, int, 0);
 
+<<<<<<< HEAD
 /* Watchdog interval */
 uint dhd_watchdog_ms = 10;
+=======
+/* load firmware and/or nvram values from the filesystem */
+module_param_string(firmware_path, firmware_path, MOD_PARAM_PATHLEN, 0660);
+module_param_string(nvram_path, nvram_path, MOD_PARAM_PATHLEN, 0);
+
+/* Watchdog interval */
+uint dhd_watchdog_ms = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(dhd_watchdog_ms, uint, 0);
 
 #if defined(DHD_DEBUG)
@@ -327,6 +447,12 @@ uint dhd_console_ms = 0;
 module_param(dhd_console_ms, uint, 0644);
 #endif /* defined(DHD_DEBUG) */
 
+<<<<<<< HEAD
+=======
+uint dhd_slpauto = TRUE;
+module_param(dhd_slpauto, uint, 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ARP offload agent mode : Enable ARP Host Auto-Reply and ARP Peer Auto-Reply */
 uint dhd_arp_mode = 0xb;
 module_param(dhd_arp_mode, uint, 0);
@@ -335,9 +461,17 @@ module_param(dhd_arp_mode, uint, 0);
 uint dhd_arp_enable = TRUE;
 module_param(dhd_arp_enable, uint, 0);
 
+<<<<<<< HEAD
 /* Global Pkt filter enable control */
 uint dhd_pkt_filter_enable = TRUE;
 module_param(dhd_pkt_filter_enable, uint, 0);
+=======
+#ifdef PKT_FILTER_SUPPORT
+/* Global Pkt filter enable control */
+uint dhd_pkt_filter_enable = TRUE;
+module_param(dhd_pkt_filter_enable, uint, 0);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*  Pkt filter init setup */
 uint dhd_pkt_filter_init = 0;
@@ -345,6 +479,7 @@ module_param(dhd_pkt_filter_init, uint, 0);
 
 /* Pkt filter mode control */
 uint dhd_master_mode = TRUE;
+<<<<<<< HEAD
 module_param(dhd_master_mode, uint, 0);
 
 #ifdef DHDTHREAD
@@ -356,6 +491,20 @@ module_param(dhd_watchdog_prio, int, 0);
 int dhd_dpc_prio = 1;
 module_param(dhd_dpc_prio, int, 0);
 
+=======
+module_param(dhd_master_mode, uint, 1);
+
+#ifdef DHDTHREAD
+/* Watchdog thread priority, -1 to use kernel timer */
+int dhd_watchdog_prio = 97;
+module_param(dhd_watchdog_prio, int, 0);
+
+/* DPC thread priority, -1 to use tasklet */
+int dhd_dpc_prio = 98;
+module_param(dhd_dpc_prio, int, 0);
+
+/* DPC thread priority, -1 to use tasklet */
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int dhd_dongle_memsize;
 module_param(dhd_dongle_memsize, int, 0);
 #endif /* DHDTHREAD */
@@ -369,6 +518,15 @@ uint dhd_radio_up = 1;
 char iface_name[IFNAMSIZ] = {'\0'};
 module_param_string(iface_name, iface_name, IFNAMSIZ, 0);
 
+<<<<<<< HEAD
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0))
+#define BLOCKABLE()	(!in_atomic())
+#else
+#define BLOCKABLE()	(!in_interrupt())
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* The following are specific to the SDIO dongle */
 
 /* IOCTL response timeout */
@@ -434,11 +592,14 @@ static char dhd_version[] = "Dongle Host Driver, version " EPI_VERSION_STR
 ;
 static void dhd_net_if_lock_local(dhd_info_t *dhd);
 static void dhd_net_if_unlock_local(dhd_info_t *dhd);
+<<<<<<< HEAD
 static void dhd_suspend_lock(dhd_pub_t *dhdp);
 static void dhd_suspend_unlock(dhd_pub_t *dhdp);
 #if !defined(AP) && defined(WLP2P) && defined(WL_ENABLE_P2P_IF)
 static u32 dhd_concurrent_fw(dhd_pub_t *dhd);
 #endif 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef WLMEDIA_HTSF
 void htsf_update(dhd_info_t *dhd, void *data);
@@ -457,9 +618,15 @@ int dhd_monitor_init(void *dhd_pub);
 int dhd_monitor_uninit(void);
 
 
+<<<<<<< HEAD
 #if defined(WL_WIRELESS_EXT)
 struct iw_statistics *dhd_get_wireless_stats(struct net_device *dev);
 #endif /* defined(WL_WIRELESS_EXT) */
+=======
+#if defined(CONFIG_WIRELESS_EXT)
+struct iw_statistics *dhd_get_wireless_stats(struct net_device *dev);
+#endif /* defined(CONFIG_WIRELESS_EXT) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void dhd_dpc(ulong data);
 /* forward decl */
@@ -481,6 +648,7 @@ static int dhd_sleep_pm_callback(struct notifier_block *nfb, unsigned long actio
 {
 	int ret = NOTIFY_DONE;
 
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 39))
 	switch (action) {
 		case PM_HIBERNATION_PREPARE:
@@ -492,6 +660,19 @@ static int dhd_sleep_pm_callback(struct notifier_block *nfb, unsigned long actio
 		case PM_POST_SUSPEND:
 			dhd_mmc_suspend = FALSE;
 			ret = NOTIFY_OK;
+=======
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 39))
+	switch (action) {
+	case PM_HIBERNATION_PREPARE:
+	case PM_SUSPEND_PREPARE:
+		dhd_mmc_suspend = TRUE;
+		ret = NOTIFY_OK;
+		break;
+	case PM_POST_HIBERNATION:
+	case PM_POST_SUSPEND:
+		dhd_mmc_suspend = FALSE;
+		ret = NOTIFY_OK;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 	smp_mb();
@@ -501,7 +682,11 @@ static int dhd_sleep_pm_callback(struct notifier_block *nfb, unsigned long actio
 
 static struct notifier_block dhd_sleep_pm_notifier = {
 	.notifier_call = dhd_sleep_pm_callback,
+<<<<<<< HEAD
 	.priority = 10
+=======
+	.priority = 0
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 extern int register_pm_notifier(struct notifier_block *nb);
 extern int unregister_pm_notifier(struct notifier_block *nb);
@@ -513,8 +698,12 @@ static void dhd_set_packet_filter(int value, dhd_pub_t *dhd)
 	DHD_TRACE(("%s: %d\n", __FUNCTION__, value));
 	/* 1 - Enable packet filter, only allow unicast packet to send up */
 	/* 0 - Disable packet filter */
+<<<<<<< HEAD
 	if (dhd_pkt_filter_enable && (!value ||
 	    (dhd_check_ap_wfd_mode_set(dhd) == FALSE))) {
+=======
+	if (dhd_pkt_filter_enable && !dhd->dhcp_in_progress) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		int i;
 
 		for (i = 0; i < dhd->pktfilter_count; i++) {
@@ -526,6 +715,10 @@ static void dhd_set_packet_filter(int value, dhd_pub_t *dhd)
 #endif
 }
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_HAS_EARLYSUSPEND)
+>>>>>>> refs/remotes/origin/cm-10.0
 static int dhd_set_suspend(int value, dhd_pub_t *dhd)
 {
 	int power_mode = PM_MAX;
@@ -537,6 +730,7 @@ static int dhd_set_suspend(int value, dhd_pub_t *dhd)
 	DHD_TRACE(("%s: enter, value = %d in_suspend=%d\n",
 		__FUNCTION__, value, dhd->in_suspend));
 
+<<<<<<< HEAD
 	dhd_suspend_lock(dhd);
 	if (dhd && dhd->up) {
 		if (value && dhd->in_suspend) {
@@ -594,10 +788,72 @@ static int dhd_suspend_resume_helper(struct dhd_info *dhd, int val, int force)
 {
 	dhd_pub_t *dhdp = &dhd->pub;
 	int ret = 0;
+=======
+	if (dhd && dhd->up) {
+		if (value && dhd->in_suspend) {
+#ifdef PKT_FILTER_SUPPORT
+				dhd->early_suspended = 1;
+#endif
+				/* Kernel suspended */
+				DHD_ERROR(("%s: force extra Suspend setting \n", __FUNCTION__));
+
+				dhd_wl_ioctl_cmd(dhd, WLC_SET_PM, (char *)&power_mode,
+				                 sizeof(power_mode), TRUE, 0);
+
+				/* Enable packet filter, only allow unicast packet to send up */
+				dhd_set_packet_filter(1, dhd);
+
+				/* If DTIM skip is set up as default, force it to wake
+				 * each third DTIM for better power savings.  Note that
+				 * one side effect is a chance to miss BC/MC packet.
+				 */
+				bcn_li_dtim = dhd_get_dtim_skip(dhd);
+				bcm_mkiovar("bcn_li_dtim", (char *)&bcn_li_dtim,
+					4, iovbuf, sizeof(iovbuf));
+				dhd_wl_ioctl_cmd(dhd, WLC_SET_VAR, iovbuf, sizeof(iovbuf), TRUE, 0);
+
+				/* Disable firmware roaming during suspend */
+				bcm_mkiovar("roam_off", (char *)&roamvar, 4,
+					iovbuf, sizeof(iovbuf));
+				dhd_wl_ioctl_cmd(dhd, WLC_SET_VAR, iovbuf, sizeof(iovbuf), TRUE, 0);
+			} else {
+#ifdef PKT_FILTER_SUPPORT
+				dhd->early_suspended = 0;
+#endif
+				/* Kernel resumed  */
+				DHD_TRACE(("%s: Remove extra suspend setting \n", __FUNCTION__));
+
+				power_mode = PM_FAST;
+				dhd_wl_ioctl_cmd(dhd, WLC_SET_PM, (char *)&power_mode,
+				                 sizeof(power_mode), TRUE, 0);
+
+				/* disable pkt filter */
+				dhd_set_packet_filter(0, dhd);
+
+				/* restore pre-suspend setting for dtim_skip */
+				bcm_mkiovar("bcn_li_dtim", (char *)&dhd->dtim_skip,
+					4, iovbuf, sizeof(iovbuf));
+
+				dhd_wl_ioctl_cmd(dhd, WLC_SET_VAR, iovbuf, sizeof(iovbuf), TRUE, 0);
+				roamvar = dhd_roam_disable;
+				bcm_mkiovar("roam_off", (char *)&roamvar, 4, iovbuf,
+					sizeof(iovbuf));
+				dhd_wl_ioctl_cmd(dhd, WLC_SET_VAR, iovbuf, sizeof(iovbuf), TRUE, 0);
+			}
+	}
+
+	return 0;
+}
+
+static void dhd_suspend_resume_helper(struct dhd_info *dhd, int val)
+{
+	dhd_pub_t *dhdp = &dhd->pub;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	DHD_OS_WAKE_LOCK(dhdp);
 	/* Set flag when early suspend was called */
 	dhdp->in_suspend = val;
+<<<<<<< HEAD
 	if ((force || !dhdp->suspend_disable_flag) &&
 	    (dhd_check_ap_wfd_mode_set(dhdp) == FALSE)) {
 		ret = dhd_set_suspend(val, dhdp);
@@ -607,6 +863,13 @@ static int dhd_suspend_resume_helper(struct dhd_info *dhd, int val, int force)
 }
 
 #if defined(CONFIG_HAS_EARLYSUSPEND) && defined(DHD_USE_EARLYSUSPEND)
+=======
+	if ((!dhdp->suspend_disable_flag) && (dhd_check_ap_wfd_mode_set(dhdp) == FALSE))
+		dhd_set_suspend(val, dhdp);
+	DHD_OS_WAKE_UNLOCK(dhdp);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void dhd_early_suspend(struct early_suspend *h)
 {
 	struct dhd_info *dhd = container_of(h, struct dhd_info, early_suspend);
@@ -614,7 +877,11 @@ static void dhd_early_suspend(struct early_suspend *h)
 	DHD_TRACE(("%s: enter\n", __FUNCTION__));
 
 	if (dhd)
+<<<<<<< HEAD
 		dhd_suspend_resume_helper(dhd, 1, 0);
+=======
+		dhd_suspend_resume_helper(dhd, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void dhd_late_resume(struct early_suspend *h)
@@ -624,7 +891,11 @@ static void dhd_late_resume(struct early_suspend *h)
 	DHD_TRACE(("%s: enter\n", __FUNCTION__));
 
 	if (dhd)
+<<<<<<< HEAD
 		dhd_suspend_resume_helper(dhd, 0, 0);
+=======
+		dhd_suspend_resume_helper(dhd, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif /* defined(CONFIG_HAS_EARLYSUSPEND) */
 
@@ -646,7 +917,11 @@ dhd_timeout_start(dhd_timeout_t *tmo, uint usec)
 	tmo->limit = usec;
 	tmo->increment = 0;
 	tmo->elapsed = 0;
+<<<<<<< HEAD
 	tmo->tick = jiffies_to_usecs(1);
+=======
+	tmo->tick = 1000000 / HZ;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int
@@ -672,12 +947,24 @@ dhd_timeout_expired(dhd_timeout_t *tmo)
 	} else {
 		wait_queue_head_t delay_wait;
 		DECLARE_WAITQUEUE(wait, current);
+<<<<<<< HEAD
+=======
+		int pending;
+>>>>>>> refs/remotes/origin/cm-10.0
 		init_waitqueue_head(&delay_wait);
 		add_wait_queue(&delay_wait, &wait);
 		set_current_state(TASK_INTERRUPTIBLE);
 		schedule_timeout(1);
+<<<<<<< HEAD
 		remove_wait_queue(&delay_wait, &wait);
 		set_current_state(TASK_RUNNING);
+=======
+		pending = signal_pending(current);
+		remove_wait_queue(&delay_wait, &wait);
+		set_current_state(TASK_RUNNING);
+		if (pending)
+			return 1;	/* Interrupted */
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
@@ -942,7 +1229,11 @@ extern tsk_ctl_t ap_eth_ctl; /* ap netdev heper thread ctl */
 static void
 dhd_op_if(dhd_if_t *ifp)
 {
+<<<<<<< HEAD
 	dhd_info_t *dhd;
+=======
+	dhd_info_t	*dhd;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0, err = 0;
 #ifdef SOFTAP
 	unsigned long flags;
@@ -987,6 +1278,10 @@ dhd_op_if(dhd_if_t *ifp)
 				if (!wl_cfg80211_notify_ifadd(ifp->net, ifp->idx, ifp->bssidx,
 					(void*)dhd_net_attach)) {
 					ifp->state = DHD_IF_NONE;
+<<<<<<< HEAD
+=======
+					ifp->event2cfg80211 = TRUE;
+>>>>>>> refs/remotes/origin/cm-10.0
 					return;
 				}
 #endif
@@ -1021,11 +1316,16 @@ dhd_op_if(dhd_if_t *ifp)
 			DHD_TRACE(("\n%s: got 'DHD_IF_DEL' state\n", __FUNCTION__));
 #ifdef WL_CFG80211
 			if (dhd->dhd_state & DHD_ATTACH_STATE_CFG80211) {
+<<<<<<< HEAD
 				wl_cfg80211_ifdel_ops(ifp->net);
+=======
+				wl_cfg80211_notify_ifdel(ifp->net);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 #endif
 			netif_stop_queue(ifp->net);
 			unregister_netdev(ifp->net);
+<<<<<<< HEAD
 			ret = DHD_DEL_IF;
 
 #ifdef WL_CFG80211
@@ -1033,6 +1333,9 @@ dhd_op_if(dhd_if_t *ifp)
 				wl_cfg80211_notify_ifdel();
 			}
 #endif
+=======
+			ret = DHD_DEL_IF;	/* Make sure the free_netdev() is called */
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		break;
 	case DHD_IF_DELETING:
@@ -1104,10 +1407,17 @@ _dhd_sysioc_thread(void *data)
 					continue;
 				}
 #ifdef SOFTAP
+<<<<<<< HEAD
 				if (in_ap && dhd->set_macaddress)  {
 					DHD_TRACE(("attempt to set MAC for %s in AP Mode,"
 						"blocked. \n", dhd->iflist[i]->net->name));
 					dhd->set_macaddress = FALSE;
+=======
+				if (in_ap && dhd->set_macaddress == i+1)  {
+					DHD_TRACE(("attempt to set MAC for %s in AP Mode,"
+						"blocked. \n", dhd->iflist[i]->net->name));
+					dhd->set_macaddress = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 					continue;
 				}
 
@@ -1122,8 +1432,13 @@ _dhd_sysioc_thread(void *data)
 					dhd->iflist[i]->set_multicast = FALSE;
 					_dhd_set_multicast_list(dhd, i);
 				}
+<<<<<<< HEAD
 				if (dhd->set_macaddress) {
 					dhd->set_macaddress = FALSE;
+=======
+				if (dhd->set_macaddress == i+1) {
+					dhd->set_macaddress = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 					_dhd_set_mac_address(dhd, i, &dhd->macvalue);
 				}
 			}
@@ -1149,9 +1464,15 @@ dhd_set_mac_address(struct net_device *dev, void *addr)
 	if (ifidx == DHD_BAD_IF)
 		return -1;
 
+<<<<<<< HEAD
 	ASSERT(dhd->thr_sysioc_ctl.thr_pid >= 0);
 	memcpy(&dhd->macvalue, sa->sa_data, ETHER_ADDR_LEN);
 	dhd->set_macaddress = TRUE;
+=======
+	ASSERT(&dhd->thr_sysioc_ctl.thr_pid >= 0);
+	memcpy(&dhd->macvalue, sa->sa_data, ETHER_ADDR_LEN);
+	dhd->set_macaddress = ifidx+1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	up(&dhd->thr_sysioc_ctl.sema);
 
 	return ret;
@@ -1167,7 +1488,11 @@ dhd_set_multicast_list(struct net_device *dev)
 	if (ifidx == DHD_BAD_IF)
 		return;
 
+<<<<<<< HEAD
 	ASSERT(dhd->thr_sysioc_ctl.thr_pid >= 0);
+=======
+	ASSERT(&dhd->thr_sysioc_ctl.thr_pid >= 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dhd->iflist[ifidx]->set_multicast = TRUE;
 	up(&dhd->thr_sysioc_ctl.sema);
 }
@@ -1178,7 +1503,10 @@ dhd_os_wlfc_block(dhd_pub_t *pub)
 {
 	dhd_info_t *di = (dhd_info_t *)(pub->info);
 	ASSERT(di != NULL);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_bh(&di->wlfc_spinlock);
 	return 1;
 }
@@ -1187,6 +1515,11 @@ int
 dhd_os_wlfc_unblock(dhd_pub_t *pub)
 {
 	dhd_info_t *di = (dhd_info_t *)(pub->info);
+<<<<<<< HEAD
+=======
+
+	(void)di;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ASSERT(di != NULL);
 	spin_unlock_bh(&di->wlfc_spinlock);
 	return 1;
@@ -1221,8 +1554,13 @@ dhd_sendpkt(dhd_pub_t *dhdp, int ifidx, void *pktbuf)
 		if (ntoh16(eh->ether_type) == ETHER_TYPE_802_1X)
 			atomic_inc(&dhd->pend_8021x_cnt);
 	} else {
+<<<<<<< HEAD
 		PKTFREE(dhd->pub.osh, pktbuf, TRUE);
 		return BCME_ERROR;
+=======
+			PKTFREE(dhd->pub.osh, pktbuf, TRUE);
+			return BCME_ERROR;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Look into the packet and update the packet priority */
@@ -1254,7 +1592,11 @@ dhd_sendpkt(dhd_pub_t *dhdp, int ifidx, void *pktbuf)
 #endif
 #ifdef PROP_TXSTATUS
 	if (dhdp->wlfc_state && ((athost_wl_status_info_t*)dhdp->wlfc_state)->proptxstatus_mode
+<<<<<<< HEAD
 			!= WLFC_FCMODE_NONE) {
+=======
+		!= WLFC_FCMODE_NONE) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dhd_os_wlfc_block(dhdp);
 		ret = dhd_wlfc_enque_sendq(dhdp->wlfc_state, DHD_PKTTAG_FIFO(PKTTAG(pktbuf)),
 			pktbuf);
@@ -1272,7 +1614,10 @@ dhd_sendpkt(dhd_pub_t *dhdp, int ifidx, void *pktbuf)
 	ret = dhd_bus_txdata(dhdp->bus, pktbuf);
 #endif /* PROP_TXSTATUS */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -1298,15 +1643,27 @@ dhd_start_xmit(struct sk_buff *skb, struct net_device *net)
 		DHD_ERROR(("%s: xmit rejected pub.up=%d busstate=%d \n",
 			__FUNCTION__, dhd->pub.up, dhd->pub.busstate));
 		netif_stop_queue(net);
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Send Event when bus down detected during data session */
 		if (dhd->pub.busstate == DHD_BUS_DOWN)  {
 			DHD_ERROR(("%s: Event HANG sent up\n", __FUNCTION__));
 			net_os_send_hang_message(net);
 		}
+<<<<<<< HEAD
 #endif
 		DHD_OS_WAKE_UNLOCK(&dhd->pub);
 		return -ENODEV;
+=======
+		DHD_OS_WAKE_UNLOCK(&dhd->pub);
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 20))
+		return -ENODEV;
+#else
+		return NETDEV_TX_BUSY;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	ifidx = dhd_net2idx(dhd, net);
@@ -1314,7 +1671,15 @@ dhd_start_xmit(struct sk_buff *skb, struct net_device *net)
 		DHD_ERROR(("%s: bad ifidx %d\n", __FUNCTION__, ifidx));
 		netif_stop_queue(net);
 		DHD_OS_WAKE_UNLOCK(&dhd->pub);
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 20))
+		return -ENODEV;
+#else
+		return NETDEV_TX_BUSY;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Make sure there's enough room for any header */
@@ -1369,7 +1734,15 @@ done:
 	DHD_OS_WAKE_UNLOCK(&dhd->pub);
 
 	/* Return ok: we always eat the packet */
+<<<<<<< HEAD
 	return 0;
+=======
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 20))
+	return 0;
+#else
+	return NETDEV_TX_OK;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void
@@ -1414,6 +1787,7 @@ dhd_rx_frame(dhd_pub_t *dhdp, int ifidx, void *pktbuf, int numpkt, uint8 chan)
 	struct sk_buff *skb;
 	uchar *eth;
 	uint len;
+<<<<<<< HEAD
 	void *data, *pnext = NULL, *save_pktbuf;
 	int i;
 	dhd_if_t *ifp;
@@ -1428,6 +1802,23 @@ dhd_rx_frame(dhd_pub_t *dhdp, int ifidx, void *pktbuf, int numpkt, uint8 chan)
 	for (i = 0; pktbuf && i < numpkt; i++, pktbuf = pnext) {
 		struct ether_header *eh;
 		struct dot11_llc_snap_header *lsh;
+=======
+	void *data, *pnext = NULL;
+	int i;
+	dhd_if_t *ifp;
+	wl_event_msg_t event;
+	int tout = DHD_PACKET_TIMEOUT_MS;
+
+
+	BCM_REFERENCE(tout);
+	DHD_TRACE(("%s: Enter\n", __FUNCTION__));
+
+	for (i = 0; pktbuf && i < numpkt; i++, pktbuf = pnext) {
+#ifdef WLBTAMP
+		struct ether_header *eh;
+		struct dot11_llc_snap_header *lsh;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ifp = dhd->iflist[ifidx];
 		if (ifp == NULL) {
@@ -1450,6 +1841,10 @@ dhd_rx_frame(dhd_pub_t *dhdp, int ifidx, void *pktbuf, int numpkt, uint8 chan)
 		pnext = PKTNEXT(dhdp->osh, pktbuf);
 		PKTSETNEXT(wl->sh.osh, pktbuf, NULL);
 
+<<<<<<< HEAD
+=======
+#ifdef WLBTAMP
+>>>>>>> refs/remotes/origin/cm-10.0
 		eh = (struct ether_header *)PKTDATA(wl->sh.osh, pktbuf);
 		lsh = (struct dot11_llc_snap_header *)&eh[1];
 
@@ -1461,6 +1856,10 @@ dhd_rx_frame(dhd_pub_t *dhdp, int ifidx, void *pktbuf, int numpkt, uint8 chan)
 			        ((uint8 *)eh + RFC1042_HDR_LEN);
 			ACL_data = NULL;
 		}
+<<<<<<< HEAD
+=======
+#endif /* WLBTAMP */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef PROP_TXSTATUS
 		if (dhdp->wlfc_state && PKTLEN(wl->sh.osh, pktbuf) == 0) {
@@ -1470,7 +1869,10 @@ dhd_rx_frame(dhd_pub_t *dhdp, int ifidx, void *pktbuf, int numpkt, uint8 chan)
 			*/
 			((athost_wl_status_info_t*)dhdp->wlfc_state)->stats.wlfc_header_only_pkt++;
 			PKTFREE(dhdp->osh, pktbuf, TRUE);
+<<<<<<< HEAD
 			DHD_TRACE(("RX: wlfc header \n"));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 		}
 #endif
@@ -1505,7 +1907,11 @@ dhd_rx_frame(dhd_pub_t *dhdp, int ifidx, void *pktbuf, int numpkt, uint8 chan)
 		skb->len = len;
 
 #ifdef WLMEDIA_HTSF
+<<<<<<< HEAD
 	dhd_htsf_addrxts(dhdp, pktbuf);
+=======
+		dhd_htsf_addrxts(dhdp, pktbuf);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 		/* Strip header, count, deliver upward */
 		skb_pull(skb, ETH_HLEN);
@@ -1521,6 +1927,7 @@ dhd_rx_frame(dhd_pub_t *dhdp, int ifidx, void *pktbuf, int numpkt, uint8 chan)
 			&event,
 			&data);
 
+<<<<<<< HEAD
 			wl_event_to_host_order(&event);
 			if (!tout_ctrl)
 				tout_ctrl = DHD_PACKET_TIMEOUT_MS;
@@ -1534,6 +1941,15 @@ dhd_rx_frame(dhd_pub_t *dhdp, int ifidx, void *pktbuf, int numpkt, uint8 chan)
 #endif /* PNO_SUPPORT */
 		} else {
 			tout_rx = DHD_PACKET_TIMEOUT_MS;
+=======
+#ifdef WLBTAMP
+			wl_event_to_host_order(&event);
+			if (event.event_type == WLC_E_BTA_HCI_EVENT) {
+				dhd_bta_doevt(dhdp, data, event.datalen);
+			}
+			tout = DHD_EVENT_TIMEOUT_MS;
+#endif /* WLBTAMP */
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		ASSERT(ifidx < DHD_MAX_IFS && dhd->iflist[ifidx]);
@@ -1566,9 +1982,13 @@ dhd_rx_frame(dhd_pub_t *dhdp, int ifidx, void *pktbuf, int numpkt, uint8 chan)
 #endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0) */
 		}
 	}
+<<<<<<< HEAD
 
 	DHD_OS_WAKE_LOCK_RX_TIMEOUT_ENABLE(dhdp, tout_rx);
 	DHD_OS_WAKE_LOCK_CTRL_TIMEOUT_ENABLE(dhdp, tout_ctrl);
+=======
+	DHD_OS_WAKE_LOCK_TIMEOUT_ENABLE(dhdp, tout);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void
@@ -1585,9 +2005,17 @@ dhd_txcomplete(dhd_pub_t *dhdp, void *txp, bool success)
 	dhd_info_t *dhd = (dhd_info_t *)(dhdp->info);
 	struct ether_header *eh;
 	uint16 type;
+<<<<<<< HEAD
 	uint len;
 
 	dhd_prot_hdrpull(dhdp, &ifidx, txp);
+=======
+#ifdef WLBTAMP
+	uint len;
+#endif
+
+	dhd_prot_hdrpull(dhdp, &ifidx, txp, NULL, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	eh = (struct ether_header *)PKTDATA(dhdp->osh, txp);
 	type  = ntoh16(eh->ether_type);
@@ -1595,6 +2023,10 @@ dhd_txcomplete(dhd_pub_t *dhdp, void *txp, bool success)
 	if (type == ETHER_TYPE_802_1X)
 		atomic_dec(&dhd->pend_8021x_cnt);
 
+<<<<<<< HEAD
+=======
+#ifdef WLBTAMP
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Crack open the packet and check to see if it is BT HCI ACL data packet.
 	 * If yes generate packet completion event.
 	 */
@@ -1610,6 +2042,10 @@ dhd_txcomplete(dhd_pub_t *dhdp, void *txp, bool success)
 			dhd_bta_tx_hcidata_complete(dhdp, txp, success);
 		}
 	}
+<<<<<<< HEAD
+=======
+#endif /* WLBTAMP */
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct net_device_stats *
@@ -1692,14 +2128,22 @@ dhd_watchdog_thread(void *data)
 				/* Reschedule the watchdog */
 				if (dhd->wd_timer_valid)
 					mod_timer(&dhd->timer,
+<<<<<<< HEAD
 					jiffies + msecs_to_jiffies(dhd_watchdog_ms));
+=======
+					jiffies + dhd_watchdog_ms * HZ / 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
 				dhd_os_spin_unlock(&dhd->pub, flags);
 			}
 			dhd_os_sdunlock(&dhd->pub);
 			DHD_OS_WAKE_UNLOCK(&dhd->pub);
 		} else {
 			break;
+<<<<<<< HEAD
 		}
+=======
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	complete_and_exit(&tsk->completed, 0);
 }
@@ -1733,7 +2177,11 @@ static void dhd_watchdog(ulong data)
 
 	/* Reschedule the watchdog */
 	if (dhd->wd_timer_valid)
+<<<<<<< HEAD
 		mod_timer(&dhd->timer, jiffies + msecs_to_jiffies(dhd_watchdog_ms));
+=======
+		mod_timer(&dhd->timer, jiffies + dhd_watchdog_ms * HZ / 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dhd_os_spin_unlock(&dhd->pub, flags);
 	dhd_os_sdunlock(&dhd->pub);
 	DHD_OS_WAKE_UNLOCK(&dhd->pub);
@@ -1829,7 +2277,12 @@ dhd_sched_dpc(dhd_pub_t *dhdp)
 	}
 #endif /* DHDTHREAD */
 
+<<<<<<< HEAD
 	tasklet_schedule(&dhd->tasklet);
+=======
+	if (dhd->dhd_tasklet_create)
+		tasklet_schedule(&dhd->tasklet);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef TOE
@@ -2036,7 +2489,10 @@ dhd_ethtool(dhd_info_t *dhd, void *uaddr)
 
 static bool dhd_check_hang(struct net_device *net, dhd_pub_t *dhdp, int error)
 {
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!dhdp)
 		return FALSE;
 	if ((error == -ETIMEDOUT) || ((dhdp->busstate == DHD_BUS_DOWN) &&
@@ -2046,7 +2502,10 @@ static bool dhd_check_hang(struct net_device *net, dhd_pub_t *dhdp, int error)
 		net_os_send_hang_message(net);
 		return TRUE;
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return FALSE;
 }
 
@@ -2067,7 +2526,11 @@ dhd_ioctl_entry(struct net_device *net, struct ifreq *ifr, int cmd)
 	/* send to dongle only if we are not waiting for reload already */
 	if (dhd->pub.hang_was_sent) {
 		DHD_ERROR(("%s: HANG was sent up earlier\n", __FUNCTION__));
+<<<<<<< HEAD
 		DHD_OS_WAKE_LOCK_CTRL_TIMEOUT_ENABLE(&dhd->pub, DHD_EVENT_TIMEOUT_MS);
+=======
+		DHD_OS_WAKE_LOCK_TIMEOUT_ENABLE(&dhd->pub, DHD_EVENT_TIMEOUT_MS);
+>>>>>>> refs/remotes/origin/cm-10.0
 		DHD_OS_WAKE_UNLOCK(&dhd->pub);
 		return OSL_ERROR(BCME_DONGLE_DOWN);
 	}
@@ -2081,7 +2544,11 @@ dhd_ioctl_entry(struct net_device *net, struct ifreq *ifr, int cmd)
 		return -1;
 	}
 
+<<<<<<< HEAD
 #if defined(WL_WIRELESS_EXT)
+=======
+#if defined(CONFIG_WIRELESS_EXT)
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* linux wireless extensions */
 	if ((cmd >= SIOCIWFIRST) && (cmd <= SIOCIWLAST)) {
 		/* may recurse, do NOT lock */
@@ -2089,7 +2556,11 @@ dhd_ioctl_entry(struct net_device *net, struct ifreq *ifr, int cmd)
 		DHD_OS_WAKE_UNLOCK(&dhd->pub);
 		return ret;
 	}
+<<<<<<< HEAD
 #endif /* defined(WL_WIRELESS_EXT) */
+=======
+#endif /* defined(CONFIG_WIRELESS_EXT) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if LINUX_VERSION_CODE > KERNEL_VERSION(2, 4, 2)
 	if (cmd == SIOCETHTOOL) {
@@ -2121,6 +2592,14 @@ dhd_ioctl_entry(struct net_device *net, struct ifreq *ifr, int cmd)
 
 	/* Copy out any buffer passed */
 	if (ioc.buf) {
+<<<<<<< HEAD
+=======
+		if (ioc.len == 0) {
+			DHD_TRACE(("%s: ioc.len=0, returns BCME_BADARG \n", __FUNCTION__));
+			bcmerror = -BCME_BADARG;
+			goto done;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		buflen = MIN(ioc.len, DHD_IOCTL_MAXLEN);
 		/* optimization for direct ioctl calls from kernel */
 		/*
@@ -2236,6 +2715,18 @@ dhd_ioctl_entry(struct net_device *net, struct ifreq *ifr, int cmd)
 	}
 #endif /* WLMEDIA_HTSF */
 
+<<<<<<< HEAD
+=======
+	if ((ioc.cmd == WLC_SET_VAR || ioc.cmd == WLC_GET_VAR) &&
+		ioc.buf != NULL && strncmp("rpc_", ioc.buf, 4) == 0) {
+#ifdef BCM_FD_AGGR
+		bcmerror = dhd_fdaggr_ioctl(&dhd->pub, ifidx, (wl_ioctl_t *)&ioc, buf, buflen);
+#else
+		bcmerror = BCME_UNSUPPORTED;
+#endif
+		goto done;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	bcmerror = dhd_wl_ioctl(&dhd->pub, ifidx, (wl_ioctl_t *)&ioc, buf, buflen);
 
 done:
@@ -2274,17 +2765,28 @@ dhd_cleanup_virt_ifaces(dhd_info_t *dhd)
 #endif
 
 	for (i = 1; i < DHD_MAX_IFS; i++) {
+<<<<<<< HEAD
 		dhd_net_if_lock_local(dhd);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (dhd->iflist[i]) {
 			DHD_TRACE(("Deleting IF: %d \n", i));
 			if ((dhd->iflist[i]->state != DHD_IF_DEL) &&
 				(dhd->iflist[i]->state != DHD_IF_DELETING)) {
 				dhd->iflist[i]->state = DHD_IF_DEL;
 				dhd->iflist[i]->idx = i;
+<<<<<<< HEAD
 				dhd_op_if(dhd->iflist[i]);
 			}
 		}
 		dhd_net_if_unlock_local(dhd);
+=======
+				dhd_net_if_lock_local(dhd);
+				dhd_op_if(dhd->iflist[i]);
+				dhd_net_if_unlock_local(dhd);
+			}
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
@@ -2299,7 +2801,11 @@ dhd_cleanup_virt_ifaces(dhd_info_t *dhd)
 static int
 dhd_stop(struct net_device *net)
 {
+<<<<<<< HEAD
 	int ifidx = 0;
+=======
+	int ifidx;
+>>>>>>> refs/remotes/origin/cm-10.0
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(net);
 	DHD_OS_WAKE_LOCK(&dhd->pub);
 	DHD_TRACE(("%s: Enter %p\n", __FUNCTION__, net));
@@ -2307,6 +2813,10 @@ dhd_stop(struct net_device *net)
 		goto exit;
 	}
 	ifidx = dhd_net2idx(dhd, net);
+<<<<<<< HEAD
+=======
+	BCM_REFERENCE(ifidx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef WL_CFG80211
 	if (ifidx == 0) {
@@ -2333,6 +2843,7 @@ dhd_stop(struct net_device *net)
 	/* Stop the protocol module */
 	dhd_prot_stop(&dhd->pub);
 
+<<<<<<< HEAD
 	OLD_MOD_DEC_USE_COUNT;
 exit:
 #if defined(WL_CFG80211)
@@ -2342,6 +2853,17 @@ exit:
 	dhd->pub.rxcnt_timeout = 0;
 	dhd->pub.txcnt_timeout = 0;
 
+=======
+#if defined(WL_CFG80211)
+	if (ifidx == 0 && !dhd_download_fw_on_driverload)
+		wl_android_wifi_off(net);
+#endif 
+	dhd->pub.hang_was_sent = 0;
+	dhd->pub.rxcnt_timeout = 0;
+	dhd->pub.txcnt_timeout = 0;
+	OLD_MOD_DEC_USE_COUNT;
+exit:
+>>>>>>> refs/remotes/origin/cm-10.0
 	DHD_OS_WAKE_UNLOCK(&dhd->pub);
 	return 0;
 }
@@ -2350,13 +2872,20 @@ static int
 dhd_open(struct net_device *net)
 {
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(net);
+<<<<<<< HEAD
 
+=======
+	uint up = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef TOE
 	uint32 toe_ol;
 #endif
 	int ifidx;
 	int32 ret = 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	DHD_OS_WAKE_LOCK(&dhd->pub);
 	/* Update FW path if it was changed */
 	if ((firmware_path != NULL) && (firmware_path[0] != '\0')) {
@@ -2366,6 +2895,7 @@ dhd_open(struct net_device *net)
 		firmware_path[0] = '\0';
 	}
 
+<<<<<<< HEAD
 	dhd->pub.hang_was_sent = 0;
 #if !defined(WL_CFG80211)
 	/*
@@ -2380,6 +2910,16 @@ dhd_open(struct net_device *net)
 		goto exit;
 	}
 #endif
+=======
+#if !defined(WL_CFG80211)
+	/*
+	 * Force start if ifconfig_up gets called before START command
+	 *  We keep WEXT's wl_control_wl_start to provide backward compatibility
+	 *  This should be removed in the future
+	 */
+	wl_control_wl_start(net);
+#endif 
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ifidx = dhd_net2idx(dhd, net);
 	DHD_TRACE(("%s: ifidx %d\n", __FUNCTION__, ifidx));
@@ -2403,12 +2943,20 @@ dhd_open(struct net_device *net)
 		if (!dhd_download_fw_on_driverload) {
 			ret = wl_android_wifi_on(net);
 			if (ret != 0) {
+<<<<<<< HEAD
 				DHD_ERROR(("%s: failed with code %d\n", __FUNCTION__, ret));
 				ret = -1;
 				goto exit;
 			}
 		}
 #endif /* defined(WL_CFG80211) */
+=======
+				DHD_ERROR(("wl_android_wifi_on failed (%d)\n", ret));
+				goto exit;
+			}
+		}
+#endif 
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (dhd->pub.busstate != DHD_BUS_DATA) {
 
@@ -2445,15 +2993,25 @@ dhd_open(struct net_device *net)
 	netif_start_queue(net);
 	dhd->pub.up = 1;
 
+<<<<<<< HEAD
+=======
+	/* Fire a WLC_UP for primary interface to enable RF */
+	if (ifidx == 0)
+		dhd_wl_ioctl_cmd(&dhd->pub, WLC_UP, (char *)&up, sizeof(up), TRUE, 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef BCMDBGFS
 	dhd_dbg_init(&dhd->pub);
 #endif
 
 	OLD_MOD_INC_USE_COUNT;
 exit:
+<<<<<<< HEAD
 	if (ret)
 		dhd_stop(net);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	DHD_OS_WAKE_UNLOCK(&dhd->pub);
 	return ret;
 }
@@ -2497,9 +3055,18 @@ dhd_osl_detach(osl_t *osh)
 		DHD_ERROR(("%s: MEMORY LEAK %d bytes\n", __FUNCTION__, MALLOCED(osh)));
 	}
 	osl_detach(osh);
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 	up(&dhd_registration_sem);
 #endif
+=======
+#if 1 && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+	up(&dhd_registration_sem);
+#if	defined(BCMLXSDMMC)
+	up(&dhd_chipup_sem);
+#endif
+#endif 
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int
@@ -2526,6 +3093,10 @@ dhd_add_if(dhd_info_t *dhd, int ifidx, void *handle, char *name,
 		}
 
 	memset(ifp, 0, sizeof(dhd_if_t));
+<<<<<<< HEAD
+=======
+	ifp->event2cfg80211 = FALSE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ifp->info = dhd;
 	dhd->iflist[ifidx] = ifp;
 	strncpy(ifp->name, name, IFNAMSIZ);
@@ -2537,11 +3108,22 @@ dhd_add_if(dhd_info_t *dhd, int ifidx, void *handle, char *name,
 		ifp->state = DHD_IF_ADD;
 		ifp->idx = ifidx;
 		ifp->bssidx = bssidx;
+<<<<<<< HEAD
 		ASSERT(dhd->thr_sysioc_ctl.thr_pid >= 0);
+=======
+		ASSERT(&dhd->thr_sysioc_ctl.thr_pid >= 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		up(&dhd->thr_sysioc_ctl.sema);
 	} else
 		ifp->net = (struct net_device *)handle;
 
+<<<<<<< HEAD
+=======
+	if (ifidx == 0) {
+		ifp->event2cfg80211 = TRUE;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -2561,7 +3143,11 @@ dhd_del_if(dhd_info_t *dhd, int ifidx)
 
 	ifp->state = DHD_IF_DEL;
 	ifp->idx = ifidx;
+<<<<<<< HEAD
 	ASSERT(dhd->thr_sysioc_ctl.thr_pid >= 0);
+=======
+	ASSERT(&dhd->thr_sysioc_ctl.thr_pid >= 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	up(&dhd->thr_sysioc_ctl.sema);
 }
 
@@ -2573,7 +3159,15 @@ static struct net_device_ops dhd_ops_pri = {
 	.ndo_do_ioctl = dhd_ioctl_entry,
 	.ndo_start_xmit = dhd_start_xmit,
 	.ndo_set_mac_address = dhd_set_mac_address,
+<<<<<<< HEAD
 	.ndo_set_multicast_list = dhd_set_multicast_list,
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 2, 0))
+	.ndo_set_rx_mode = dhd_set_multicast_list,
+#else
+	.ndo_set_multicast_list = dhd_set_multicast_list,
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct net_device_ops dhd_ops_virt = {
@@ -2581,7 +3175,15 @@ static struct net_device_ops dhd_ops_virt = {
 	.ndo_do_ioctl = dhd_ioctl_entry,
 	.ndo_start_xmit = dhd_start_xmit,
 	.ndo_set_mac_address = dhd_set_mac_address,
+<<<<<<< HEAD
 	.ndo_set_multicast_list = dhd_set_multicast_list,
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 2, 0))
+	.ndo_set_rx_mode = dhd_set_multicast_list,
+#else
+	.ndo_set_multicast_list = dhd_set_multicast_list,
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 31)) */
 
@@ -2617,9 +3219,14 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 #ifdef DHDTHREAD
 	dhd->thr_dpc_ctl.thr_pid = DHD_PID_KT_TL_INVALID;
 	dhd->thr_wdt_ctl.thr_pid = DHD_PID_KT_INVALID;
+<<<<<<< HEAD
 #else
 	dhd->dhd_tasklet_create = FALSE;
 #endif /* DHDTHREAD */
+=======
+#endif /* DHDTHREAD */
+	dhd->dhd_tasklet_create = FALSE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	dhd->thr_sysioc_ctl.thr_pid = DHD_PID_KT_INVALID;
 	dhd_state |= DHD_ATTACH_STATE_DHD_ALLOC;
 
@@ -2647,8 +3254,22 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 			strcat(net->name, "%d");
 	}
 
+<<<<<<< HEAD
 	sema_init(&dhd->proto_sem, 1);
 	sema_init(&dhd->sdsem, 1);
+=======
+	if (dhd_add_if(dhd, 0, (void *)net, net->name, NULL, 0, 0) == DHD_BAD_IF)
+		goto fail;
+	dhd_state |= DHD_ATTACH_STATE_ADD_IF;
+
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 31))
+	net->open = NULL;
+#else
+	net->netdev_ops = NULL;
+#endif
+
+	sema_init(&dhd->proto_sem, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef PROP_TXSTATUS
 	spin_lock_init(&dhd->wlfc_spinlock);
@@ -2664,6 +3285,7 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	spin_lock_init(&dhd->txqlock);
 	spin_lock_init(&dhd->dhd_lock);
 
+<<<<<<< HEAD
 
 	if (dhd_add_if(dhd, 0, (void *)net, net->name, NULL, 0, 0) == DHD_BAD_IF)
 		goto fail;
@@ -2688,6 +3310,18 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25))
 	mutex_init(&dhd->dhd_net_if_mutex);
 	mutex_init(&dhd->dhd_suspend_mutex);
+=======
+	/* Initialize Wakelock stuff */
+	spin_lock_init(&dhd->wakelock_spinlock);
+	dhd->wakelock_counter = 0;
+	dhd->wakelock_timeout_enable = 0;
+#ifdef CONFIG_HAS_WAKELOCK
+	wake_lock_init(&dhd->wl_wifi, WAKE_LOCK_SUSPEND, "wlan_wake");
+	wake_lock_init(&dhd->wl_rxwake, WAKE_LOCK_SUSPEND, "wlan_rx_wake");
+#endif
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) && 1
+	mutex_init(&dhd->dhd_net_if_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	dhd_state |= DHD_ATTACH_STATE_WAKELOCKS_INIT;
 
@@ -2708,6 +3342,7 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	dhd_monitor_init(&dhd->pub);
 	dhd_state |= DHD_ATTACH_STATE_CFG80211;
 #endif
+<<<<<<< HEAD
 #if defined(WL_WIRELESS_EXT)
 	/* Attach and link in the iw */
 	if (!(dhd_state &  DHD_ATTACH_STATE_CFG80211)) {
@@ -2718,6 +3353,18 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	dhd_state |= DHD_ATTACH_STATE_WL_ATTACH;
 	}
 #endif /* defined(WL_WIRELESS_EXT) */
+=======
+#if defined(CONFIG_WIRELESS_EXT)
+	/* Attach and link in the iw */
+	if (!(dhd_state &  DHD_ATTACH_STATE_CFG80211)) {
+		if (wl_iw_attach(net, (void *)&dhd->pub) != 0) {
+		DHD_ERROR(("wl_iw_attach failed\n"));
+		goto fail;
+	}
+	dhd_state |= DHD_ATTACH_STATE_WL_ATTACH;
+	}
+#endif /* defined(CONFIG_WIRELESS_EXT) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 	/* Set up the watchdog timer */
@@ -2727,6 +3374,10 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 
 #ifdef DHDTHREAD
 	/* Initialize thread based operation and lock */
+<<<<<<< HEAD
+=======
+	sema_init(&dhd->sdsem, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((dhd_watchdog_prio >= 0) && (dhd_dpc_prio >= 0)) {
 		dhd->threads_only = TRUE;
 	}
@@ -2762,9 +3413,13 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 		dhd->thr_sysioc_ctl.thr_pid = -1;
 	}
 	dhd_state |= DHD_ATTACH_STATE_THREADS_CREATED;
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 	INIT_WORK(&dhd->work_hang, dhd_hang_process);
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))  */
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Save the dhd_info into the priv
 	 */
@@ -2774,7 +3429,11 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	register_pm_notifier(&dhd_sleep_pm_notifier);
 #endif /*  (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) && defined(CONFIG_PM_SLEEP) */
 
+<<<<<<< HEAD
 #if defined(CONFIG_HAS_EARLYSUSPEND) && defined(DHD_USE_EARLYSUSPEND)
+=======
+#ifdef CONFIG_HAS_EARLYSUSPEND
+>>>>>>> refs/remotes/origin/cm-10.0
 	dhd->early_suspend.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN + 20;
 	dhd->early_suspend.suspend = dhd_early_suspend;
 	dhd->early_suspend.resume = dhd_late_resume;
@@ -2821,6 +3480,10 @@ dhd_bus_start(dhd_pub_t *dhdp)
 		dhd_os_sdlock(dhdp);
 #endif /* DHDTHREAD */
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* try to download image and nvram to the dongle */
 	if  ((dhd->pub.busstate == DHD_BUS_DOWN) &&
 		(fw_path != NULL) && (fw_path[0] != '\0') &&
@@ -2924,7 +3587,11 @@ dhd_bus_start(dhd_pub_t *dhdp)
 	return 0;
 }
 
+<<<<<<< HEAD
 #if !defined(AP) && defined(WLP2P) && defined(WL_ENABLE_P2P_IF)
+=======
+#if !defined(AP) && defined(WLP2P)
+>>>>>>> refs/remotes/origin/cm-10.0
 /* For Android ICS MR2 release, the concurrent mode is enabled by default and the firmware
  * name would be fw_bcmdhd.bin. So we need to determine whether P2P is enabled in the STA
  * firmware and accordingly enable concurrent mode (Apply P2P settings). SoftAP firmware
@@ -2945,12 +3612,17 @@ dhd_concurrent_fw(dhd_pub_t *dhd)
 		bcm_mkiovar("p2p", 0, 0, buf, sizeof(buf));
 		if ((ret = dhd_wl_ioctl_cmd(dhd, WLC_GET_VAR, buf, sizeof(buf),
 			FALSE, 0)) < 0) {
+<<<<<<< HEAD
 			DHD_ERROR(("%s: Get P2P failed (error=%d)\n", __FUNCTION__, ret));
+=======
+			DHD_TRACE(("%s: Get P2P failed (error=%d)\n", __FUNCTION__, ret));
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else if (buf[0] == 1) {
 			DHD_TRACE(("%s: P2P is supported\n", __FUNCTION__));
 			return 1;
 		}
 	}
+<<<<<<< HEAD
 	return ret;
 }
 #endif 
@@ -2959,12 +3631,18 @@ dhd_concurrent_fw(dhd_pub_t *dhd)
  *   dhd_preinit_ioctls makes special pre-setting in the firmware before radio turns on
  *   returns : 0 if all settings passed or negative value if anything failed
 */
+=======
+	return 0;
+}
+#endif 
+>>>>>>> refs/remotes/origin/cm-10.0
 int
 dhd_preinit_ioctls(dhd_pub_t *dhd)
 {
 	int ret = 0;
 	char eventmask[WL_EVENTING_MASK_LEN];
 	char iovbuf[WL_EVENTING_MASK_LEN + 12];	/*  Room for "event_msgs" + '\0' + bitvec  */
+<<<<<<< HEAD
 #if !defined(WL_CFG80211)
 	uint up = 0;
 #endif /* defined(WL_CFG80211) */
@@ -2973,13 +3651,23 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 	uint32 glom = 0;
 	uint bcn_timeout = DHD_BEACON_TIMEOUT_NORMAL;
 
+=======
+
+	uint power_mode = PM_OFF; /* PM_FAST; */
+	uint32 dongle_align = DHD_SDALIGN;
+	uint32 glom = 0;
+	uint bcn_timeout = 4;
+>>>>>>> refs/remotes/origin/cm-10.0
 	uint retry_max = 3;
 #if defined(ARP_OFFLOAD_SUPPORT)
 	int arpoe = 1;
 #endif
+<<<<<<< HEAD
 #if defined(KEEP_ALIVE)
 	int res;
 #endif /* defined(KEEP_ALIVE) */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int scan_assoc_time = DHD_SCAN_ACTIVE_TIME;
 	int scan_unassoc_time = 40;
 	int scan_passive_time = DHD_SCAN_PASSIVE_TIME;
@@ -2993,12 +3681,20 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 #if (defined(AP) && !defined(WLP2P)) || (!defined(AP) && defined(WL_CFG80211))
 	uint32 mpc = 0; /* Turn MPC off for AP/APSTA mode */
 #endif
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(AP) || defined(WLP2P)
 	uint32 apsta = 1; /* Enable APSTA mode */
 #endif /* defined(AP) || defined(WLP2P) */
 #ifdef GET_CUSTOM_MAC_ENABLE
 	struct ether_addr ea_addr;
 #endif /* GET_CUSTOM_MAC_ENABLE */
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	DHD_TRACE(("Enter %s\n", __FUNCTION__));
 	dhd->op_mode = 0;
 #ifdef GET_CUSTOM_MAC_ENABLE
@@ -3008,10 +3704,16 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 		bcm_mkiovar("cur_etheraddr", (void *)&ea_addr, ETHER_ADDR_LEN, buf, sizeof(buf));
 		ret = dhd_wl_ioctl_cmd(dhd, WLC_SET_VAR, buf, sizeof(buf), TRUE, 0);
 		if (ret < 0) {
+<<<<<<< HEAD
 			DHD_ERROR(("%s: can't set custom MAC address , error=%d\n", __FUNCTION__, ret));
 			return BCME_NOTUP;
 		}
 		memcpy(dhd->mac.octet, ea_addr.octet, ETHER_ADDR_LEN);
+=======
+			DHD_ERROR(("%s: can't set MAC address , error=%d\n", __FUNCTION__, ret));
+			return BCME_NOTUP;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 #endif /* GET_CUSTOM_MAC_ENABLE */
 		/* Get the default device MAC address directly from firmware */
@@ -3024,12 +3726,20 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 		}
 		/* Update public MAC address after reading from Firmware */
 		memcpy(dhd->mac.octet, buf, ETHER_ADDR_LEN);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef GET_CUSTOM_MAC_ENABLE
 	}
 #endif /* GET_CUSTOM_MAC_ENABLE */
 
 #ifdef SET_RANDOM_MAC_SOFTAP
+<<<<<<< HEAD
 	if ((!op_mode && strstr(fw_path, "_apsta") != NULL) || (op_mode == HOSTAPD_MASK)) {
+=======
+	if ((!op_mode && strstr(fw_path, "_apsta") != NULL) || (op_mode == 0x02)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		uint rand_mac;
 
 		srandom32((uint)jiffies);
@@ -3051,6 +3761,7 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 #endif /* SET_RANDOM_MAC_SOFTAP */
 
 	DHD_TRACE(("Firmware = %s\n", fw_path));
+<<<<<<< HEAD
 
 #if !defined(AP)  && defined(WLP2P)
 	/* Check if firmware with WFD support used */
@@ -3110,6 +3821,31 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 					DHD_TRACE(("%s set wme succeeded for g ONLY firmware\n", __FUNCTION__));
 				}
 			}
+=======
+#if !defined(AP) && defined(WLP2P)
+	/* Check if firmware with WFD support used */
+	if ((!op_mode && strstr(fw_path, "_p2p") != NULL) || (op_mode == 0x04) ||
+		(dhd_concurrent_fw(dhd))) {
+		bcm_mkiovar("apsta", (char *)&apsta, 4, iovbuf, sizeof(iovbuf));
+		if ((ret = dhd_wl_ioctl_cmd(dhd, WLC_SET_VAR,
+			iovbuf, sizeof(iovbuf), TRUE, 0)) < 0) {
+			DHD_ERROR(("%s APSTA for WFD failed ret= %d\n", __FUNCTION__, ret));
+		} else {
+			dhd->op_mode |= WFD_MASK;
+#if defined(ARP_OFFLOAD_SUPPORT)
+			arpoe = 0;
+#endif /* (ARP_OFFLOAD_SUPPORT) */
+#ifdef PKT_FILTER_SUPPORT
+			dhd_pkt_filter_enable = FALSE;
+#endif
+		}
+	}
+#endif 
+
+#if !defined(AP) && defined(WL_CFG80211)
+	/* Check if firmware with HostAPD support used */
+	if ((!op_mode && strstr(fw_path, "_apsta") != NULL) || (op_mode == 0x02)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* Turn off MPC in AP mode */
 			bcm_mkiovar("mpc", (char *)&mpc, 4, iovbuf, sizeof(iovbuf));
 			if ((ret = dhd_wl_ioctl_cmd(dhd, WLC_SET_VAR, iovbuf,
@@ -3120,6 +3856,7 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 #if defined(ARP_OFFLOAD_SUPPORT)
 				arpoe = 0;
 #endif /* (ARP_OFFLOAD_SUPPORT) */
+<<<<<<< HEAD
 				/* disable any filtering for SoftAP mode */
 				dhd_pkt_filter_enable = FALSE;
 			}
@@ -3134,6 +3871,22 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 		dhd_pkt_filter_enable = TRUE;
 	}
 #endif /* !defined(WL_ENABLE_P2P_IF) */
+=======
+#ifdef PKT_FILTER_SUPPORT
+				dhd_pkt_filter_enable = FALSE;
+#endif
+			}
+	}
+#endif 
+
+	if ((dhd->op_mode != WFD_MASK) && (dhd->op_mode != HOSTAPD_MASK)) {
+		/* STA only operation mode */
+		dhd->op_mode |= STA_MASK;
+#ifdef PKT_FILTER_SUPPORT
+		dhd_pkt_filter_enable = TRUE;
+#endif
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	DHD_ERROR(("Firmware up: op_mode=%d, "
 			"Broadcom Dongle Host Driver mac=%.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
@@ -3175,7 +3928,10 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 	/* Setup assoc_retry_max count to reconnect target AP in dongle */
 	bcm_mkiovar("assoc_retry_max", (char *)&retry_max, 4, iovbuf, sizeof(iovbuf));
 	dhd_wl_ioctl_cmd(dhd, WLC_SET_VAR, iovbuf, sizeof(iovbuf), TRUE, 0);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(AP) && !defined(WLP2P)
 	/* Turn off MPC in AP mode */
 	bcm_mkiovar("mpc", (char *)&mpc, 4, iovbuf, sizeof(iovbuf));
@@ -3188,6 +3944,7 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 	if (ap_fw_loaded == TRUE) {
 		dhd_wl_ioctl_cmd(dhd, WLC_SET_DTIMPRD, (char *)&dtim, sizeof(dtim), TRUE, 0);
 	}
+<<<<<<< HEAD
 #endif
 
 #if defined(KEEP_ALIVE)
@@ -3198,6 +3955,22 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 		if ((res = dhd_keep_alive_onoff(dhd)) < 0)
 			DHD_ERROR(("%s set keeplive failed %d\n",
 			__FUNCTION__, res));
+=======
+#endif 
+
+#if defined(KEEP_ALIVE)
+	{
+	/* Set Keep Alive : be sure to use FW with -keepalive */
+	int res;
+
+#if defined(SOFTAP)
+	if (ap_fw_loaded == FALSE)
+#endif 
+		if ((res = dhd_keep_alive_onoff(dhd)) < 0)
+			DHD_ERROR(("%s set keeplive failed %d\n",
+			__FUNCTION__, res));
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* defined(KEEP_ALIVE) */
 
 	/* Read event_msgs mask */
@@ -3270,24 +4043,39 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 #else
 	if (arpoe) {
 #endif 
+<<<<<<< HEAD
 		dhd_arp_offload_set(dhd, dhd_arp_mode);
 		dhd_arp_offload_enable(dhd, arpoe);
 	} else {
 		dhd_arp_offload_set(dhd, 0);
 		dhd_arp_offload_enable(dhd, FALSE);
+=======
+		dhd_arp_offload_enable(dhd, TRUE);
+		dhd_arp_offload_set(dhd, dhd_arp_mode);
+	} else {
+		dhd_arp_offload_enable(dhd, FALSE);
+		dhd_arp_offload_set(dhd, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 #endif /* ARP_OFFLOAD_SUPPORT */
 
 #ifdef PKT_FILTER_SUPPORT
 	/* Setup defintions for pktfilter , enable in suspend */
+<<<<<<< HEAD
 	dhd->pktfilter_count = 5;
+=======
+	dhd->pktfilter_count = 4;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Setup filter to allow only unicast */
 	dhd->pktfilter[0] = "100 0 0 0 0x01 0x00";
 	dhd->pktfilter[1] = NULL;
 	dhd->pktfilter[2] = NULL;
 	dhd->pktfilter[3] = NULL;
+<<<<<<< HEAD
 	/* Add filter to pass multicastDNS packet and NOT filter out as Broadcast */
 	dhd->pktfilter[4] = "104 0 0 0 0xFFFFFFFFFFFF 0x01005E0000FB";
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(SOFTAP)
 	if (ap_fw_loaded) {
 		int i;
@@ -3299,6 +4087,7 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 #endif /* defined(SOFTAP) */
 #endif /* PKT_FILTER_SUPPORT */
 
+<<<<<<< HEAD
 #if !defined(WL_CFG80211)
 	/* Force STA UP */
 	if ((ret = dhd_wl_ioctl_cmd(dhd, WLC_UP, (char *)&up, sizeof(up), TRUE, 0)) < 0) {
@@ -3306,6 +4095,8 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 		goto done;
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* query for 'ver' to get version info from firmware */
 	memset(buf, 0, sizeof(buf));
 	ptr = buf;
@@ -3316,6 +4107,7 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 		bcmstrtok(&ptr, "\n", 0);
 		/* Print fw version info */
 		DHD_ERROR(("Firmware version = %s\n", buf));
+<<<<<<< HEAD
 
 		dhd_set_version_info(dhd, buf);
 
@@ -3327,6 +4119,8 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 			dhd_os_set_ioctl_resp_timeout(IOCTL_RESP_TIMEOUT * 10);
 			DHD_ERROR(("%s : adjust IOCTL response time for Manufactring Firmware\n", __FUNCTION__));
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 done:
@@ -3536,7 +4330,11 @@ dhd_net_attach(dhd_pub_t *dhdp, int ifidx)
 #else
 	ASSERT(!net->netdev_ops);
 	net->netdev_ops = &dhd_ops_virt;
+<<<<<<< HEAD
 #endif
+=======
+#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 31) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Ok, link into the network layer... */
 	if (ifidx == 0) {
@@ -3548,7 +4346,11 @@ dhd_net_attach(dhd_pub_t *dhdp, int ifidx)
 		net->stop = dhd_stop;
 #else
 		net->netdev_ops = &dhd_ops_pri;
+<<<<<<< HEAD
 #endif
+=======
+#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 31) */
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		/*
 		 * We have to use the primary MAC for virtual interfaces
@@ -3572,14 +4374,22 @@ dhd_net_attach(dhd_pub_t *dhdp, int ifidx)
 	net->ethtool_ops = &dhd_ethtool_ops;
 #endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 24) */
 
+<<<<<<< HEAD
 #if defined(WL_WIRELESS_EXT)
+=======
+#if defined(CONFIG_WIRELESS_EXT)
+>>>>>>> refs/remotes/origin/cm-10.0
 #if WIRELESS_EXT < 19
 	net->get_wireless_stats = dhd_get_wireless_stats;
 #endif /* WIRELESS_EXT < 19 */
 #if WIRELESS_EXT > 12
 	net->wireless_handlers = (struct iw_handler_def *)&wl_iw_handler_def;
 #endif /* WIRELESS_EXT > 12 */
+<<<<<<< HEAD
 #endif /* defined(WL_WIRELESS_EXT) */
+=======
+#endif /* defined(CONFIG_WIRELESS_EXT) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dhd->pub.rxsz = DBUS_RX_BUFFER_SIZE_DHD(net);
 
@@ -3595,6 +4405,7 @@ dhd_net_attach(dhd_pub_t *dhdp, int ifidx)
 		net->dev_addr[0], net->dev_addr[1], net->dev_addr[2],
 		net->dev_addr[3], net->dev_addr[4], net->dev_addr[5]);
 
+<<<<<<< HEAD
 #if defined(SOFTAP) && defined(WL_WIRELESS_EXT) && !defined(WL_CFG80211)
 		wl_iw_iscan_set_scan_broadcast_prep(net, 1);
 #endif
@@ -3605,6 +4416,17 @@ dhd_net_attach(dhd_pub_t *dhdp, int ifidx)
 		up(&dhd_registration_sem);
 	}
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) */
+=======
+#if defined(SOFTAP) && defined(CONFIG_WIRELESS_EXT) && !defined(WL_CFG80211)
+		wl_iw_iscan_set_scan_broadcast_prep(net, 1);
+#endif
+
+#if 1 && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+	if (ifidx == 0) {
+		up(&dhd_registration_sem);
+	}
+#endif 
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 fail:
@@ -3629,7 +4451,11 @@ dhd_bus_detach(dhd_pub_t *dhdp)
 
 			/*
 			 * In case of Android cfg80211 driver, the bus is down in dhd_stop,
+<<<<<<< HEAD
 			 * calling stop again will cuase SD read/write errors.
+=======
+			 *  calling stop again will cuase SD read/write errors.
+>>>>>>> refs/remotes/origin/cm-10.0
 			 */
 			if (dhd->pub.busstate != DHD_BUS_DOWN) {
 				/* Stop the protocol module */
@@ -3673,25 +4499,40 @@ void dhd_detach(dhd_pub_t *dhdp)
 	unregister_inetaddr_notifier(&dhd_notifier);
 #endif /* ARP_OFFLOAD_SUPPORT */
 
+<<<<<<< HEAD
 #if defined(CONFIG_HAS_EARLYSUSPEND) && defined(DHD_USE_EARLYSUSPEND)
+=======
+#if defined(CONFIG_HAS_EARLYSUSPEND)
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dhd->dhd_state & DHD_ATTACH_STATE_EARLYSUSPEND_DONE) {
 		if (dhd->early_suspend.suspend)
 			unregister_early_suspend(&dhd->early_suspend);
 	}
 #endif /* defined(CONFIG_HAS_EARLYSUSPEND) */
 
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 	cancel_work_sync(&dhd->work_hang);
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))  */
 
 #if defined(WL_WIRELESS_EXT)
+=======
+
+#if defined(CONFIG_WIRELESS_EXT)
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dhd->dhd_state & DHD_ATTACH_STATE_WL_ATTACH) {
 		/* Detatch and unlink in the iw */
 		wl_iw_detach();
 	}
+<<<<<<< HEAD
 #endif /* defined(WL_WIRELESS_EXT) */
 
 	if (dhd->thr_sysioc_ctl.thr_pid >= 0) {
+=======
+#endif /* defined(CONFIG_WIRELESS_EXT) */
+
+	if (&dhd->thr_sysioc_ctl.thr_pid >= 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		PROC_STOP(&dhd->thr_sysioc_ctl);
 	}
 
@@ -3701,19 +4542,31 @@ void dhd_detach(dhd_pub_t *dhdp)
 		dhd_if_t *ifp;
 
 		/* Cleanup virtual interfaces */
+<<<<<<< HEAD
 		for (i = 1; i < DHD_MAX_IFS; i++) {
 			dhd_net_if_lock_local(dhd);
+=======
+		for (i = 1; i < DHD_MAX_IFS; i++)
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (dhd->iflist[i]) {
 				dhd->iflist[i]->state = DHD_IF_DEL;
 				dhd->iflist[i]->idx = i;
 				dhd_op_if(dhd->iflist[i]);
 			}
+<<<<<<< HEAD
 			dhd_net_if_unlock_local(dhd);
 		}
 		/*  delete primary interface 0 */
 		ifp = dhd->iflist[0];
 		ASSERT(ifp);
 
+=======
+
+		/*  delete primary interface 0 */
+		ifp = dhd->iflist[0];
+		ASSERT(ifp);
+		ASSERT(ifp->net);
+>>>>>>> refs/remotes/origin/cm-10.0
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 31))
 		if (ifp->net->open)
 #else
@@ -3727,6 +4580,10 @@ void dhd_detach(dhd_pub_t *dhdp)
 			}
 			MFREE(dhd->pub.osh, ifp, sizeof(*ifp));
 			dhd->iflist[0] = NULL;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -3765,15 +4622,26 @@ void dhd_detach(dhd_pub_t *dhdp)
 	}
 #endif
 
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) && defined(CONFIG_PM_SLEEP)
 		unregister_pm_notifier(&dhd_sleep_pm_notifier);
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) && defined(CONFIG_PM_SLEEP) */
+=======
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) && defined(CONFIG_PM_SLEEP)
+		unregister_pm_notifier(&dhd_sleep_pm_notifier);
+#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) && defined(CONFIG_PM_SLEEP) */
+	/* && defined(CONFIG_PM_SLEEP) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (dhd->dhd_state & DHD_ATTACH_STATE_WAKELOCKS_INIT) {
 #ifdef CONFIG_HAS_WAKELOCK
 		wake_lock_destroy(&dhd->wl_wifi);
 		wake_lock_destroy(&dhd->wl_rxwake);
+<<<<<<< HEAD
 		wake_lock_destroy(&dhd->wl_ctrlwake);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	}
 }
@@ -3786,6 +4654,25 @@ dhd_free(dhd_pub_t *dhdp)
 	DHD_TRACE(("%s: Enter\n", __FUNCTION__));
 
 	if (dhdp) {
+<<<<<<< HEAD
+=======
+		int i;
+		for (i = 0; i < ARRAYSIZE(dhdp->reorder_bufs); i++) {
+			if (dhdp->reorder_bufs[i]) {
+				reorder_info_t *ptr;
+				uint32 buf_size = sizeof(struct reorder_info);
+
+				ptr = dhdp->reorder_bufs[i];
+
+				buf_size += ((ptr->max_idx + 1) * sizeof(void*));
+				DHD_REORDER(("free flow id buf %d, maxidx is %d, buf_size %d\n",
+					i, ptr->max_idx, buf_size));
+
+				MFREE(dhdp->osh, dhdp->reorder_bufs[i], buf_size);
+				dhdp->reorder_bufs[i] = NULL;
+			}
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		dhd = (dhd_info_t *)dhdp->info;
 		if (dhd)
 			MFREE(dhd->pub.osh, dhd, sizeof(*dhd));
@@ -3808,16 +4695,32 @@ dhd_module_cleanup(void)
 	dhd_customer_gpio_wlan_ctrl(WLAN_POWER_OFF);
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init
 dhd_module_init(void)
 {
 	int error = 0;
 
+<<<<<<< HEAD
+=======
+#if 1 && defined(BCMLXSDMMC) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+	int retry = POWERUP_MAX_RETRY;
+	int chip_up = 0;
+#endif 
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	DHD_TRACE(("%s: Enter\n", __FUNCTION__));
 
 	wl_android_init();
 
+<<<<<<< HEAD
 #ifdef DHDTHREAD
+=======
+#if defined(DHDTHREAD)
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Sanity check on the module parameters */
 	do {
 		/* Both watchdog and DPC as tasklets are ok */
@@ -3831,6 +4734,7 @@ dhd_module_init(void)
 		DHD_ERROR(("Invalid module parameters.\n"));
 		return -EINVAL;
 	} while (0);
+<<<<<<< HEAD
 #endif /* DHDTHREAD */
 
 	/* Call customer gpio to turn on power with WL_REG_ON signal */
@@ -3844,6 +4748,52 @@ dhd_module_init(void)
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 		sema_init(&dhd_registration_sem, 0);
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) */
+=======
+#endif 
+
+#if 1 && defined(BCMLXSDMMC) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+	do {
+		sema_init(&dhd_chipup_sem, 0);
+		dhd_bus_reg_sdio_notify(&dhd_chipup_sem);
+		dhd_customer_gpio_wlan_ctrl(WLAN_POWER_ON);
+#if defined(CONFIG_WIFI_CONTROL_FUNC)
+		if (wl_android_wifictrl_func_add() < 0)
+			goto fail_1;
+#endif /* defined(CONFIG_WIFI_CONTROL_FUNC) */
+		if (down_timeout(&dhd_chipup_sem,
+			msecs_to_jiffies(POWERUP_WAIT_MS)) == 0) {
+			dhd_bus_unreg_sdio_notify();
+			chip_up = 1;
+			break;
+		}
+		DHD_ERROR(("\nfailed to power up wifi chip, retry again (%d left) **\n\n",
+			retry+1));
+		dhd_bus_unreg_sdio_notify();
+#if defined(CONFIG_WIFI_CONTROL_FUNC)
+		wl_android_wifictrl_func_del();
+#endif /* defined(CONFIG_WIFI_CONTROL_FUNC) */
+		dhd_customer_gpio_wlan_ctrl(WLAN_POWER_OFF);
+	} while (retry-- > 0);
+
+	if (!chip_up) {
+		DHD_ERROR(("\nfailed to power up wifi chip, max retry reached, exits **\n\n"));
+		return -ENODEV;
+	}
+#else
+	dhd_customer_gpio_wlan_ctrl(WLAN_POWER_ON);
+#if defined(CONFIG_WIFI_CONTROL_FUNC)
+	if (wl_android_wifictrl_func_add() < 0)
+		goto fail_1;
+#endif /* defined(CONFIG_WIFI_CONTROL_FUNC) */
+
+#endif 
+
+#if 1 && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+	sema_init(&dhd_registration_sem, 0);
+#endif 
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	error = dhd_bus_register();
 
 	if (!error)
@@ -3864,17 +4814,32 @@ dhd_module_init(void)
 		DHD_ERROR(("%s: sdio_register_driver timeout\n", __FUNCTION__));
 		goto fail_2;
 	}
+<<<<<<< HEAD
 #endif
+=======
+#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) */
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(WL_CFG80211)
 	wl_android_post_init();
 #endif /* defined(WL_CFG80211) */
 
 	return error;
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 fail_2:
 	dhd_bus_unregister();
 #endif
 fail_1:
+=======
+
+#if 1 && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+fail_2:
+	dhd_bus_unregister();
+#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) */
+
+fail_1:
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_WIFI_CONTROL_FUNC)
 	wl_android_wifictrl_func_del();
 #endif 
@@ -3890,6 +4855,10 @@ late_initcall(dhd_module_init);
 #else
 module_init(dhd_module_init);
 #endif
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 module_exit(dhd_module_cleanup);
 
 /*
@@ -3937,12 +4906,45 @@ int
 dhd_os_ioctl_resp_wait(dhd_pub_t *pub, uint *condition, bool *pending)
 {
 	dhd_info_t * dhd = (dhd_info_t *)(pub->info);
+<<<<<<< HEAD
 	int timeout;
 
 	/* Convert timeout in millsecond to jiffies */
 	timeout = msecs_to_jiffies(dhd_ioctl_timeout_msec);
 
 	timeout = wait_event_timeout(dhd->ioctl_resp_wait, (*condition), timeout);
+=======
+	DECLARE_WAITQUEUE(wait, current);
+	int timeout = dhd_ioctl_timeout_msec;
+
+	/* Convert timeout in millsecond to jiffies */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
+	timeout = msecs_to_jiffies(timeout);
+#else
+	timeout = timeout * HZ / 1000;
+#endif
+
+	/* Wait until control frame is available */
+	add_wait_queue(&dhd->ioctl_resp_wait, &wait);
+	set_current_state(TASK_INTERRUPTIBLE);
+
+	/* Memory barrier to support multi-processing
+	 * As the variable "condition", which points to dhd->rxlen (dhd_bus_rxctl[dhd_sdio.c])
+	 * Can be changed by another processor.
+	 */
+	smp_mb();
+	while (!(*condition) && (!signal_pending(current) && timeout)) {
+		timeout = schedule_timeout(timeout);
+		smp_mb();
+	}
+
+	if (signal_pending(current))
+		*pending = TRUE;
+
+	set_current_state(TASK_RUNNING);
+	remove_wait_queue(&dhd->ioctl_resp_wait, &wait);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return timeout;
 }
 
@@ -3952,7 +4954,11 @@ dhd_os_ioctl_resp_wake(dhd_pub_t *pub)
 	dhd_info_t *dhd = (dhd_info_t *)(pub->info);
 
 	if (waitqueue_active(&dhd->ioctl_resp_wait)) {
+<<<<<<< HEAD
 		wake_up(&dhd->ioctl_resp_wait);
+=======
+		wake_up_interruptible(&dhd->ioctl_resp_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
@@ -3990,7 +4996,11 @@ dhd_os_wd_timer(void *bus, uint wdtick)
 	if (wdtick) {
 		dhd_watchdog_ms = (uint)wdtick;
 		/* Re arm the timer, at last watchdog period */
+<<<<<<< HEAD
 		mod_timer(&dhd->timer, jiffies + msecs_to_jiffies(dhd_watchdog_ms));
+=======
+		mod_timer(&dhd->timer, jiffies + dhd_watchdog_ms * HZ / 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
 		dhd->wd_timer_valid = TRUE;
 	}
 	dhd_os_spin_unlock(pub, flags);
@@ -4117,9 +5127,15 @@ uint8* dhd_os_prealloc(void *osh, int section, uint size)
 void dhd_os_prefree(void *osh, void *addr, uint size)
 {
 }
+<<<<<<< HEAD
 #endif /* defined(CONFIG_DHD_USE_STATIC_BUF) */
 
 #if defined(WL_WIRELESS_EXT)
+=======
+#endif /* defined(CONFIG_WIFI_CONTROL_FUNC) */
+
+#if defined(CONFIG_WIRELESS_EXT)
+>>>>>>> refs/remotes/origin/cm-10.0
 struct iw_statistics *
 dhd_get_wireless_stats(struct net_device *dev)
 {
@@ -4137,7 +5153,11 @@ dhd_get_wireless_stats(struct net_device *dev)
 	else
 		return NULL;
 }
+<<<<<<< HEAD
 #endif /* defined(WL_WIRELESS_EXT) */
+=======
+#endif /* defined(CONFIG_WIRELESS_EXT) */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int
 dhd_wl_host_event(dhd_info_t *dhd, int *ifidx, void *pktdata,
@@ -4150,12 +5170,17 @@ dhd_wl_host_event(dhd_info_t *dhd, int *ifidx, void *pktdata,
 	if (bcmerror != BCME_OK)
 		return (bcmerror);
 
+<<<<<<< HEAD
 #if defined(WL_WIRELESS_EXT)
+=======
+#if defined(CONFIG_WIRELESS_EXT)
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (event->bsscfgidx == 0) {
 		/*
 		 * Wireless ext is on primary interface only
 		 */
 
+<<<<<<< HEAD
 		ASSERT(dhd->iflist[*ifidx] != NULL);
 		ASSERT(dhd->iflist[*ifidx]->net != NULL);
 
@@ -4164,6 +5189,16 @@ dhd_wl_host_event(dhd_info_t *dhd, int *ifidx, void *pktdata,
 		}
 	}
 #endif /* defined(WL_WIRELESS_EXT)  */
+=======
+	ASSERT(dhd->iflist[*ifidx] != NULL);
+	ASSERT(dhd->iflist[*ifidx]->net != NULL);
+
+		if (dhd->iflist[*ifidx]->net) {
+		wl_iw_event(dhd->iflist[*ifidx]->net, event, *data);
+		}
+	}
+#endif /* defined(CONFIG_WIRELESS_EXT)  */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef WL_CFG80211
 	if ((ntoh32(event->event_type) == WLC_E_IF) &&
@@ -4184,7 +5219,11 @@ dhd_wl_host_event(dhd_info_t *dhd, int *ifidx, void *pktdata,
 
 	ASSERT(dhd->iflist[*ifidx] != NULL);
 	ASSERT(dhd->iflist[*ifidx]->net != NULL);
+<<<<<<< HEAD
 	if (dhd->iflist[*ifidx]->net) {
+=======
+	if (dhd->iflist[*ifidx]->event2cfg80211 && dhd->iflist[*ifidx]->net) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		wl_cfg80211_event(dhd->iflist[*ifidx]->net, event, *data);
 	}
 #endif /* defined(WL_CFG80211) */
@@ -4197,6 +5236,10 @@ void
 dhd_sendup_event(dhd_pub_t *dhdp, wl_event_msg_t *event, void *data)
 {
 	switch (ntoh32(event->event_type)) {
+<<<<<<< HEAD
+=======
+#ifdef WLBTAMP
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Send up locally generated AMP HCI Events */
 	case WLC_E_BTA_HCI_EVENT: {
 		struct sk_buff *p, *skb;
@@ -4291,6 +5334,10 @@ dhd_sendup_event(dhd_pub_t *dhdp, wl_event_msg_t *event, void *data)
 		}
 		break;
 	} /* case WLC_E_BTA_HCI_EVENT */
+<<<<<<< HEAD
+=======
+#endif /* WLBTAMP */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	default:
 		break;
@@ -4299,11 +5346,18 @@ dhd_sendup_event(dhd_pub_t *dhdp, wl_event_msg_t *event, void *data)
 
 void dhd_wait_for_event(dhd_pub_t *dhd, bool *lockvar)
 {
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0))
 	struct dhd_info *dhdinfo =  dhd->info;
 	int timeout = msecs_to_jiffies(2000);
 	dhd_os_sdunlock(dhd);
 	wait_event_timeout(dhdinfo->ctrl_wait, (*lockvar == FALSE), timeout);
+=======
+#if 1 && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0))
+	struct dhd_info *dhdinfo =  dhd->info;
+	dhd_os_sdunlock(dhd);
+	wait_event_interruptible_timeout(dhdinfo->ctrl_wait, (*lockvar == FALSE), HZ * 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dhd_os_sdlock(dhd);
 #endif
 	return;
@@ -4311,10 +5365,17 @@ void dhd_wait_for_event(dhd_pub_t *dhd, bool *lockvar)
 
 void dhd_wait_event_wakeup(dhd_pub_t *dhd)
 {
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0))
 	struct dhd_info *dhdinfo =  dhd->info;
 	if (waitqueue_active(&dhdinfo->ctrl_wait))
 		wake_up(&dhdinfo->ctrl_wait);
+=======
+#if 1 && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0))
+	struct dhd_info *dhdinfo =  dhd->info;
+	if (waitqueue_active(&dhdinfo->ctrl_wait))
+		wake_up_interruptible(&dhdinfo->ctrl_wait);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	return;
 }
@@ -4347,6 +5408,7 @@ int net_os_set_suspend_disable(struct net_device *dev, int val)
 	return ret;
 }
 
+<<<<<<< HEAD
 int net_os_set_suspend(struct net_device *dev, int val, int force)
 {
 	int ret = 0;
@@ -4359,6 +5421,18 @@ int net_os_set_suspend(struct net_device *dev, int val, int force)
 		ret = dhd_suspend_resume_helper(dhd, val, force);
 #endif
 	}
+=======
+int net_os_set_suspend(struct net_device *dev, int val)
+{
+	int ret = 0;
+#if defined(CONFIG_HAS_EARLYSUSPEND)
+	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
+
+	if (dhd) {
+		ret = dhd_set_suspend(val, &dhd->pub);
+	}
+#endif /* defined(CONFIG_HAS_EARLYSUSPEND) */
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -4378,8 +5452,12 @@ int net_os_rxfilter_add_remove(struct net_device *dev, int add_remove, int num)
 	char *filterp = NULL;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (!dhd || (num == DHD_UNICAST_FILTER_NUM) ||
 	    (num == DHD_MDNS_FILTER_NUM))
+=======
+	if (!dhd || (num == DHD_UNICAST_FILTER_NUM))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 	if (num >= dhd->pub.pktfilter_count)
 		return -EINVAL;
@@ -4402,8 +5480,14 @@ int net_os_rxfilter_add_remove(struct net_device *dev, int add_remove, int num)
 	return ret;
 }
 
+<<<<<<< HEAD
 int dhd_os_set_packet_filter(dhd_pub_t *dhdp, int val)
 {
+=======
+int net_os_set_packet_filter(struct net_device *dev, int val)
+{
+	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0;
 
 	/* Packet filtering is set only if we still in early-suspend and
@@ -4411,6 +5495,7 @@ int dhd_os_set_packet_filter(dhd_pub_t *dhdp, int val)
 	 * We can always turn it OFF in case of early-suspend, but we turn it
 	 * back ON only if suspend_disable_flag was not set
 	*/
+<<<<<<< HEAD
 	if (dhdp && dhdp->up) {
 		if (dhdp->in_suspend) {
 			if (!val || (val && !dhdp->suspend_disable_flag))
@@ -4429,11 +5514,28 @@ int net_os_set_packet_filter(struct net_device *dev, int val)
 }
 
 int
+=======
+	if (dhd && dhd->pub.up) {
+		if (dhd->pub.in_suspend) {
+			if (!val || (val && !dhd->pub.suspend_disable_flag))
+				dhd_set_packet_filter(val, &dhd->pub);
+		}
+	}
+	return ret;
+}
+
+
+void
+>>>>>>> refs/remotes/origin/cm-10.0
 dhd_dev_init_ioctl(struct net_device *dev)
 {
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
 
+<<<<<<< HEAD
 	return dhd_preinit_ioctls(&dhd->pub);
+=======
+	dhd_preinit_ioctls(&dhd->pub);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef PNO_SUPPORT
@@ -4467,6 +5569,7 @@ dhd_dev_pno_set(struct net_device *dev, wlc_ssid_t* ssids_local, int nssid,
 	return (dhd_pno_set(&dhd->pub, ssids_local, nssid, scan_fr, pno_repeat, pno_freq_expo_max));
 }
 
+<<<<<<< HEAD
 /* Linux wrapper to call common dhd_pno_set_ex */
 int
 dhd_dev_pno_set_ex(struct net_device *dev, wl_pfn_t* ssidnet, int nssid,
@@ -4478,6 +5581,8 @@ dhd_dev_pno_set_ex(struct net_device *dev, wl_pfn_t* ssidnet, int nssid,
 					pno_interval, pno_repeat, pno_expo_max, pno_lost_time));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Linux wrapper to get  pno status */
 int
 dhd_dev_get_pno_status(struct net_device *dev)
@@ -4489,6 +5594,7 @@ dhd_dev_get_pno_status(struct net_device *dev)
 
 #endif /* PNO_SUPPORT */
 
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 static void dhd_hang_process(struct work_struct *work)
 {
@@ -4521,12 +5627,30 @@ int dhd_os_send_hang_message(dhd_pub_t *dhdp)
 			dhdp->hang_was_sent = 1;
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 			schedule_work(&dhdp->info->work_hang);
+=======
+int net_os_send_hang_message(struct net_device *dev)
+{
+	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
+	int ret = 0;
+
+	if (dhd) {
+		if (!dhd->pub.hang_was_sent) {
+			dhd->pub.hang_was_sent = 1;
+#if defined(CONFIG_WIRELESS_EXT)
+			ret = wl_iw_send_priv_event(dev, "HANG");
+#endif
+#if defined(WL_CFG80211)
+			ret = wl_cfg80211_hang(dev, WLAN_REASON_UNSPECIFIED);
+			dev_close(dev);
+			dev_open(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 		}
 	}
 	return ret;
 }
 
+<<<<<<< HEAD
 int net_os_send_hang_message(struct net_device *dev)
 {
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
@@ -4538,10 +5662,13 @@ int net_os_send_hang_message(struct net_device *dev)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void dhd_bus_country_set(struct net_device *dev, wl_country_t *cspec)
 {
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
 
+<<<<<<< HEAD
 	if (dhd && dhd->pub.up) {
 		memcpy(&dhd->pub.dhd_cspec, cspec, sizeof(wl_country_t));
 #ifdef WL_CFG80211
@@ -4559,6 +5686,10 @@ void dhd_bus_band_set(struct net_device *dev, uint band)
 		wl_update_wiphybands(NULL);
 #endif
 	}
+=======
+	if (dhd && dhd->pub.up)
+			memcpy(&dhd->pub.dhd_cspec, cspec, sizeof(wl_country_t));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void dhd_net_if_lock(struct net_device *dev)
@@ -4575,7 +5706,11 @@ void dhd_net_if_unlock(struct net_device *dev)
 
 static void dhd_net_if_lock_local(dhd_info_t *dhd)
 {
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25))
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) && 1
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dhd)
 		mutex_lock(&dhd->dhd_net_if_mutex);
 #endif
@@ -4583,12 +5718,17 @@ static void dhd_net_if_lock_local(dhd_info_t *dhd)
 
 static void dhd_net_if_unlock_local(dhd_info_t *dhd)
 {
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25))
+=======
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) && 1
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (dhd)
 		mutex_unlock(&dhd->dhd_net_if_mutex);
 #endif
 }
 
+<<<<<<< HEAD
 static void dhd_suspend_lock(dhd_pub_t *pub)
 {
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25))
@@ -4607,6 +5747,8 @@ static void dhd_suspend_unlock(dhd_pub_t *pub)
 #endif
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned long dhd_os_spin_lock(dhd_pub_t *pub)
 {
 	dhd_info_t *dhd = (dhd_info_t *)(pub->info);
@@ -4638,7 +5780,11 @@ int
 dhd_wait_pend8021x(struct net_device *dev)
 {
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
+<<<<<<< HEAD
 	int timeout = msecs_to_jiffies(10);
+=======
+	int timeout = 10 * HZ / 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ntimes = MAX_WAIT_FOR_8021X_TX;
 	int pend = dhd_get_pend_8021x_cnt(dhd);
 
@@ -4699,6 +5845,7 @@ int dhd_os_wake_lock_timeout(dhd_pub_t *pub)
 
 	if (dhd) {
 		spin_lock_irqsave(&dhd->wakelock_spinlock, flags);
+<<<<<<< HEAD
 		ret = dhd->wakelock_rx_timeout_enable > dhd->wakelock_ctrl_timeout_enable ?
 			dhd->wakelock_rx_timeout_enable : dhd->wakelock_ctrl_timeout_enable;
 #ifdef CONFIG_HAS_WAKELOCK
@@ -4711,6 +5858,15 @@ int dhd_os_wake_lock_timeout(dhd_pub_t *pub)
 #endif
 		dhd->wakelock_rx_timeout_enable = 0;
 		dhd->wakelock_ctrl_timeout_enable = 0;
+=======
+		ret = dhd->wakelock_timeout_enable;
+#ifdef CONFIG_HAS_WAKELOCK
+		if (dhd->wakelock_timeout_enable)
+			wake_lock_timeout(&dhd->wl_rxwake,
+				msecs_to_jiffies(dhd->wakelock_timeout_enable));
+#endif
+		dhd->wakelock_timeout_enable = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock_irqrestore(&dhd->wakelock_spinlock, flags);
 	}
 	return ret;
@@ -4726,6 +5882,7 @@ int net_os_wake_lock_timeout(struct net_device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 int dhd_os_wake_lock_rx_timeout_enable(dhd_pub_t *pub, int val)
 {
 	dhd_info_t *dhd = (dhd_info_t *)(pub->info);
@@ -4741,19 +5898,28 @@ int dhd_os_wake_lock_rx_timeout_enable(dhd_pub_t *pub, int val)
 }
 
 int dhd_os_wake_lock_ctrl_timeout_enable(dhd_pub_t *pub, int val)
+=======
+int dhd_os_wake_lock_timeout_enable(dhd_pub_t *pub, int val)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	dhd_info_t *dhd = (dhd_info_t *)(pub->info);
 	unsigned long flags;
 
 	if (dhd) {
 		spin_lock_irqsave(&dhd->wakelock_spinlock, flags);
+<<<<<<< HEAD
 		if (val > dhd->wakelock_ctrl_timeout_enable)
 			dhd->wakelock_ctrl_timeout_enable = val;
+=======
+		if (val > dhd->wakelock_timeout_enable)
+			dhd->wakelock_timeout_enable = val;
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock_irqrestore(&dhd->wakelock_spinlock, flags);
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 int net_os_wake_lock_rx_timeout_enable(struct net_device *dev, int val)
 {
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
@@ -4765,12 +5931,19 @@ int net_os_wake_lock_rx_timeout_enable(struct net_device *dev, int val)
 }
 
 int net_os_wake_lock_ctrl_timeout_enable(struct net_device *dev, int val)
+=======
+int net_os_wake_lock_timeout_enable(struct net_device *dev, int val)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
 	int ret = 0;
 
 	if (dhd)
+<<<<<<< HEAD
 		ret = dhd_os_wake_lock_ctrl_timeout_enable(&dhd->pub, val);
+=======
+		ret = dhd_os_wake_lock_timeout_enable(&dhd->pub, val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -4840,7 +6013,10 @@ int dhd_os_check_wakelock(void *dhdp)
 #endif
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int net_os_wake_unlock(struct net_device *dev)
 {
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
@@ -4859,6 +6035,7 @@ int dhd_os_check_if_up(void *dhdp)
 		return 0;
 	return pub->up;
 }
+<<<<<<< HEAD
 
 void dhd_set_version_info(dhd_pub_t *dhdp, char *fw)
 {
@@ -4874,6 +6051,8 @@ void dhd_set_version_info(dhd_pub_t *dhdp, char *fw)
 		dhd_bus_chiprev_id(dhdp), dhd_bus_chippkg_id(dhdp));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int dhd_ioctl_entry_local(struct net_device *net, wl_ioctl_t *ioc, int cmd)
 {
 	int ifidx;

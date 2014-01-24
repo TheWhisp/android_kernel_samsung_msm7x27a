@@ -41,7 +41,11 @@
  * @active: Status of the wakeup source.
  */
 struct wakeup_source {
+<<<<<<< HEAD
 	char 			*name;
+=======
+	const char 		*name;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head	entry;
 	spinlock_t		lock;
 	struct timer_list	timer;
@@ -73,7 +77,13 @@ static inline bool device_may_wakeup(struct device *dev)
 }
 
 /* drivers/base/power/wakeup.c */
+<<<<<<< HEAD
 extern struct wakeup_source *wakeup_source_create(const char *name);
+=======
+extern void wakeup_source_prepare(struct wakeup_source *ws, const char *name);
+extern struct wakeup_source *wakeup_source_create(const char *name);
+extern void wakeup_source_drop(struct wakeup_source *ws);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void wakeup_source_destroy(struct wakeup_source *ws);
 extern void wakeup_source_add(struct wakeup_source *ws);
 extern void wakeup_source_remove(struct wakeup_source *ws);
@@ -103,11 +113,22 @@ static inline bool device_can_wakeup(struct device *dev)
 	return dev->power.can_wakeup;
 }
 
+<<<<<<< HEAD
+=======
+static inline void wakeup_source_prepare(struct wakeup_source *ws,
+					 const char *name) {}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline struct wakeup_source *wakeup_source_create(const char *name)
 {
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+static inline void wakeup_source_drop(struct wakeup_source *ws) {}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void wakeup_source_destroy(struct wakeup_source *ws) {}
 
 static inline void wakeup_source_add(struct wakeup_source *ws) {}
@@ -165,4 +186,20 @@ static inline void pm_wakeup_event(struct device *dev, unsigned int msec) {}
 
 #endif /* !CONFIG_PM_SLEEP */
 
+<<<<<<< HEAD
+=======
+static inline void wakeup_source_init(struct wakeup_source *ws,
+				      const char *name)
+{
+	wakeup_source_prepare(ws, name);
+	wakeup_source_add(ws);
+}
+
+static inline void wakeup_source_trash(struct wakeup_source *ws)
+{
+	wakeup_source_remove(ws);
+	wakeup_source_drop(ws);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _LINUX_PM_WAKEUP_H */

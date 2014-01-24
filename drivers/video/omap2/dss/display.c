@@ -29,6 +29,10 @@
 
 #include <video/omapdss.h>
 #include "dss.h"
+<<<<<<< HEAD
+=======
+#include "dss_features.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static ssize_t display_enabled_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -44,6 +48,7 @@ static ssize_t display_enabled_store(struct device *dev,
 		const char *buf, size_t size)
 {
 	struct omap_dss_device *dssdev = to_dss_device(dev);
+<<<<<<< HEAD
 	int r, enabled;
 
 	r = kstrtoint(buf, 0, &enabled);
@@ -52,6 +57,15 @@ static ssize_t display_enabled_store(struct device *dev,
 
 	enabled = !!enabled;
 
+=======
+	int r;
+	bool enabled;
+
+	r = strtobool(buf, &enabled);
+	if (r)
+		return r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (enabled != (dssdev->state != OMAP_DSS_DISPLAY_DISABLED)) {
 		if (enabled) {
 			r = dssdev->driver->enable(dssdev);
@@ -65,6 +79,7 @@ static ssize_t display_enabled_store(struct device *dev,
 	return size;
 }
 
+<<<<<<< HEAD
 static ssize_t display_upd_mode_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -107,6 +122,8 @@ static ssize_t display_upd_mode_store(struct device *dev,
 	return size;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t display_tear_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -120,17 +137,29 @@ static ssize_t display_tear_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t size)
 {
 	struct omap_dss_device *dssdev = to_dss_device(dev);
+<<<<<<< HEAD
 	int te, r;
+=======
+	int r;
+	bool te;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!dssdev->driver->enable_te || !dssdev->driver->get_te)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	r = kstrtoint(buf, 0, &te);
 	if (r)
 		return r;
 
 	te = !!te;
 
+=======
+	r = strtobool(buf, &te);
+	if (r)
+		return r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = dssdev->driver->enable_te(dssdev, te);
 	if (r)
 		return r;
@@ -236,17 +265,29 @@ static ssize_t display_mirror_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t size)
 {
 	struct omap_dss_device *dssdev = to_dss_device(dev);
+<<<<<<< HEAD
 	int mirror, r;
+=======
+	int r;
+	bool mirror;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!dssdev->driver->set_mirror || !dssdev->driver->get_mirror)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	r = kstrtoint(buf, 0, &mirror);
 	if (r)
 		return r;
 
 	mirror = !!mirror;
 
+=======
+	r = strtobool(buf, &mirror);
+	if (r)
+		return r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = dssdev->driver->set_mirror(dssdev, mirror);
 	if (r)
 		return r;
@@ -294,8 +335,11 @@ static ssize_t display_wss_store(struct device *dev,
 
 static DEVICE_ATTR(enabled, S_IRUGO|S_IWUSR,
 		display_enabled_show, display_enabled_store);
+<<<<<<< HEAD
 static DEVICE_ATTR(update_mode, S_IRUGO|S_IWUSR,
 		display_upd_mode_show, display_upd_mode_store);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static DEVICE_ATTR(tear_elim, S_IRUGO|S_IWUSR,
 		display_tear_show, display_tear_store);
 static DEVICE_ATTR(timings, S_IRUGO|S_IWUSR,
@@ -309,7 +353,10 @@ static DEVICE_ATTR(wss, S_IRUGO|S_IWUSR,
 
 static struct device_attribute *display_sysfs_attrs[] = {
 	&dev_attr_enabled,
+<<<<<<< HEAD
 	&dev_attr_update_mode,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	&dev_attr_tear_elim,
 	&dev_attr_timings,
 	&dev_attr_rotate,
@@ -326,6 +373,7 @@ void omapdss_default_get_resolution(struct omap_dss_device *dssdev,
 }
 EXPORT_SYMBOL(omapdss_default_get_resolution);
 
+<<<<<<< HEAD
 void default_get_overlay_fifo_thresholds(enum omap_plane plane,
 		u32 fifo_size, enum omap_burst_size *burst_size,
 		u32 *fifo_low, u32 *fifo_high)
@@ -339,6 +387,8 @@ void default_get_overlay_fifo_thresholds(enum omap_plane plane,
 	*fifo_low = fifo_size - burst_size_bytes;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int omapdss_default_get_recommended_bpp(struct omap_dss_device *dssdev)
 {
 	switch (dssdev->type) {
@@ -349,11 +399,22 @@ int omapdss_default_get_recommended_bpp(struct omap_dss_device *dssdev)
 			return 16;
 
 	case OMAP_DISPLAY_TYPE_DBI:
+<<<<<<< HEAD
 	case OMAP_DISPLAY_TYPE_DSI:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (dssdev->ctrl.pixel_size == 24)
 			return 24;
 		else
 			return 16;
+<<<<<<< HEAD
+=======
+	case OMAP_DISPLAY_TYPE_DSI:
+		if (dsi_get_pixel_size(dssdev->panel.dsi_pix_fmt) > 16)
+			return 24;
+		else
+			return 16;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case OMAP_DISPLAY_TYPE_VENC:
 	case OMAP_DISPLAY_TYPE_SDI:
 	case OMAP_DISPLAY_TYPE_HDMI:
@@ -389,9 +450,17 @@ bool dss_use_replication(struct omap_dss_device *dssdev,
 		bpp = 24;
 		break;
 	case OMAP_DISPLAY_TYPE_DBI:
+<<<<<<< HEAD
 	case OMAP_DISPLAY_TYPE_DSI:
 		bpp = dssdev->ctrl.pixel_size;
 		break;
+=======
+		bpp = dssdev->ctrl.pixel_size;
+		break;
+	case OMAP_DISPLAY_TYPE_DSI:
+		bpp = dsi_get_pixel_size(dssdev->panel.dsi_pix_fmt);
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		BUG();
 	}

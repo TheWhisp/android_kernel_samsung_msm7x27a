@@ -18,6 +18,10 @@
 
 #include <linux/init.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/errno.h>
 #include <linux/ioport.h>
@@ -74,8 +78,12 @@ void pci_update_resource(struct pci_dev *dev, int resno)
 			resno, new, check);
 	}
 
+<<<<<<< HEAD
 	if ((new & (PCI_BASE_ADDRESS_SPACE|PCI_BASE_ADDRESS_MEM_TYPE_MASK)) ==
 	    (PCI_BASE_ADDRESS_SPACE_MEMORY|PCI_BASE_ADDRESS_MEM_TYPE_64)) {
+=======
+	if (res->flags & IORESOURCE_MEM_64) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		new = region.start >> 16 >> 16;
 		pci_write_config_dword(dev, reg + 4, new);
 		pci_read_config_dword(dev, reg + 4, &check);
@@ -85,9 +93,15 @@ void pci_update_resource(struct pci_dev *dev, int resno)
 		}
 	}
 	res->flags &= ~IORESOURCE_UNSET;
+<<<<<<< HEAD
 	dev_info(&dev->dev, "BAR %d: set to %pR (PCI address [%#llx-%#llx])\n",
 		 resno, res, (unsigned long long)region.start,
 		 (unsigned long long)region.end);
+=======
+	dev_dbg(&dev->dev, "BAR %d: set to %pR (PCI address [%#llx-%#llx])\n",
+		resno, res, (unsigned long long)region.start,
+		(unsigned long long)region.end);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int pci_claim_resource(struct pci_dev *dev, int resource)
@@ -114,7 +128,10 @@ int pci_claim_resource(struct pci_dev *dev, int resource)
 }
 EXPORT_SYMBOL(pci_claim_resource);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI_QUIRKS
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void pci_disable_bridge_window(struct pci_dev *dev)
 {
 	dev_info(&dev->dev, "disabling bridge mem windows\n");
@@ -127,9 +144,12 @@ void pci_disable_bridge_window(struct pci_dev *dev)
 	pci_write_config_dword(dev, PCI_PREF_MEMORY_BASE, 0x0000fff0);
 	pci_write_config_dword(dev, PCI_PREF_BASE_UPPER32, 0xffffffff);
 }
+<<<<<<< HEAD
 #endif	/* CONFIG_PCI_QUIRKS */
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
 		int resno, resource_size_t size, resource_size_t align)
@@ -158,6 +178,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int pci_revert_fw_address(struct resource *res, struct pci_dev *dev,
 		int resno, resource_size_t size)
 {
@@ -174,6 +195,46 @@ static int pci_revert_fw_address(struct resource *res, struct pci_dev *dev,
 	end = res->end;
 	res->start = dev->fw_addr[resno];
 	res->end = res->start + size - 1;
+=======
+/*
+ * Generic function that returns a value indicating that the device's
+ * original BIOS BAR address was not saved and so is not available for
+ * reinstatement.
+ *
+ * Can be over-ridden by architecture specific code that implements
+ * reinstatement functionality rather than leaving it disabled when
+ * normal allocation attempts fail.
+ */
+resource_size_t __weak pcibios_retrieve_fw_addr(struct pci_dev *dev, int idx)
+{
+	return 0;
+}
+
+static int pci_revert_fw_address(struct resource *res, struct pci_dev *dev, 
+		int resno, resource_size_t size)
+{
+	struct resource *root, *conflict;
+	resource_size_t fw_addr, start, end;
+	int ret = 0;
+
+	fw_addr = pcibios_retrieve_fw_addr(dev, resno);
+	if (!fw_addr)
+		return 1;
+
+	start = res->start;
+	end = res->end;
+	res->start = fw_addr;
+	res->end = res->start + size - 1;
+
+	root = pci_find_parent_resource(dev, res);
+	if (!root) {
+		if (res->flags & IORESOURCE_IO)
+			root = &ioport_resource;
+		else
+			root = &iomem_resource;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_info(&dev->dev, "BAR %d: trying firmware assignment %pR\n",
 		 resno, res);
 	conflict = request_resource_conflict(root, res);
@@ -188,7 +249,12 @@ static int pci_revert_fw_address(struct resource *res, struct pci_dev *dev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int _pci_assign_resource(struct pci_dev *dev, int resno, int size, resource_size_t min_align)
+=======
+static int _pci_assign_resource(struct pci_dev *dev, int resno,
+				resource_size_t size, resource_size_t min_align)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct resource *res = dev->resource + resno;
 	struct pci_bus *bus;
@@ -228,7 +294,11 @@ int pci_reassign_resource(struct pci_dev *dev, int resno, resource_size_t addsiz
 	int ret;
 
 	if (!res->parent) {
+<<<<<<< HEAD
 		dev_info(&dev->dev, "BAR %d: can't reassign an unassigned resouce %pR "
+=======
+		dev_info(&dev->dev, "BAR %d: can't reassign an unassigned resource %pR "
+>>>>>>> refs/remotes/origin/cm-10.0
 			 "\n", resno, res);
 		return -EINVAL;
 	}
@@ -268,7 +338,11 @@ int pci_assign_resource(struct pci_dev *dev, int resno)
 	 * where firmware left it.  That at least has a chance of
 	 * working, which is better than just leaving it disabled.
 	 */
+<<<<<<< HEAD
 	if (ret < 0 && dev->fw_addr[resno])
+=======
+	if (ret < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = pci_revert_fw_address(res, dev, resno, size);
 
 	if (!ret) {
@@ -280,6 +354,7 @@ int pci_assign_resource(struct pci_dev *dev, int resno)
 	return ret;
 }
 
+<<<<<<< HEAD
 
 /* Sort resources by alignment */
 void pdev_sort_resources(struct pci_dev *dev, struct resource_list *head)
@@ -327,6 +402,8 @@ void pdev_sort_resources(struct pci_dev *dev, struct resource_list *head)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int pci_enable_resources(struct pci_dev *dev, int mask)
 {
 	u16 cmd, old_cmd;

@@ -23,12 +23,20 @@
 #include <linux/pm.h>
 #include <linux/delay.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/cacheflush.h>
 #include <asm/tlbflush.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq_regs.h>
 #include <asm/traps.h>
 
@@ -78,6 +86,11 @@ void __cpuinit leon_callin(void)
 	local_flush_tlb_all();
 	leon_configure_cache_smp();
 
+<<<<<<< HEAD
+=======
+	notify_cpu_starting(cpuid);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Get our local ticker going. */
 	smp_setup_percpu_timer();
 

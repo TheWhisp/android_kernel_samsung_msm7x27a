@@ -12,10 +12,13 @@
 #ifndef FAS216_H
 #define FAS216_H
 
+<<<<<<< HEAD
 #ifndef NO_IRQ
 #define NO_IRQ 255
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <scsi/scsi_eh.h>
 
 #include "queue.h"

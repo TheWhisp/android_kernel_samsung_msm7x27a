@@ -37,7 +37,10 @@
 #include <linux/proc_fs.h>
 #include <linux/spinlock.h>
 #include <asm/dma.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <linux/blkdev.h>
 #include <linux/isapnp.h>

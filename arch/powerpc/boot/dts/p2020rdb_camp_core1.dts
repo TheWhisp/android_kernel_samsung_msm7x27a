@@ -15,12 +15,17 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
 /include/ "p2020si.dtsi"
+=======
+/include/ "p2020rdb.dts"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 / {
 	model = "fsl,P2020RDB";
 	compatible = "fsl,P2020RDB", "fsl,MPC85XXRDB-CAMP";
 
+<<<<<<< HEAD
 	aliases {
 		ethernet0 = &enet0;
 		serial0 = &serial1;
@@ -37,6 +42,14 @@
 		device_type = "memory";
 	};
 
+=======
+	cpus {
+		PowerPC,P2020@0 {
+			status = "disabled";
+		};
+	};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	localbus@ffe05000 {
 		status = "disabled";
 	};
@@ -70,6 +83,7 @@
 			status = "disabled";
 		};
 
+<<<<<<< HEAD
 		dma@c300 {
 			#address-cells = <1>;
 			#size-cells = <1>;
@@ -107,10 +121,13 @@
 			};
 		};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		gpio: gpio-controller@f000 {
 			status = "disabled";
 		};
 
+<<<<<<< HEAD
 		L2: l2-cache-controller@20000 {
 			compatible = "fsl,p2020-l2-cache-controller";
 			reg = <0x20000 0x1000>;
@@ -119,6 +136,8 @@
 			interrupt-parent = <&mpic>;
 		};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		dma@21300 {
 			status = "disabled";
 		};
@@ -139,12 +158,15 @@
 			status = "disabled";
 		};
 
+<<<<<<< HEAD
 		enet0: ethernet@24000 {
 			fixed-link = <1 1 1000 0 0>;
 			phy-connection-type = "rgmii-id";
 
 		};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		enet1: ethernet@25000 {
 			status = "disabled";
 		};
@@ -170,6 +192,7 @@
 			>;
 		};
 
+<<<<<<< HEAD
 		msi@41600 {
 			compatible = "fsl,p2020-msi", "fsl,mpic-msi";
 			reg = <0x41600 0x80>;
@@ -186,6 +209,8 @@
 			interrupt-parent = <&mpic>;
 		};
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		global-utilities@e0000 {	//global utilities block
 			status = "disabled";
 		};
@@ -199,6 +224,7 @@
 	pci1: pcie@ffe09000 {
 		status = "disabled";
 	};
+<<<<<<< HEAD
 
 	pci2: pcie@ffe0a000 {
 		ranges = <0x2000000 0x0 0x80000000 0 0x80000000 0x0 0x20000000
@@ -225,4 +251,6 @@
 				  0x0 0x100000>;
 		};
 	};
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };

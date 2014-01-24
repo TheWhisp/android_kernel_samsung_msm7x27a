@@ -12,6 +12,10 @@
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/clk.h>
@@ -27,9 +31,15 @@
 #include <mach/psc.h>
 #include <mach/cp_intc.h>
 #include <mach/irqs.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/hardware.h>
 #include <mach/tnetv107x.h>
+=======
+#include <mach/hardware.h>
+#include <mach/tnetv107x.h>
+#include <mach/gpio-davinci.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "clock.h"
 #include "mux.h"
@@ -729,6 +739,14 @@ static void tnetv107x_watchdog_reset(struct platform_device *pdev)
 	__raw_writel(1, &regs->kick);
 }
 
+<<<<<<< HEAD
+=======
+void tnetv107x_restart(char mode, const char *cmd)
+{
+	tnetv107x_watchdog_reset(&tnetv107x_wdt_device);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct davinci_soc_info tnetv107x_soc_info = {
 	.io_desc		= io_desc,
 	.io_desc_num		= ARRAY_SIZE(io_desc),
@@ -751,8 +769,11 @@ static struct davinci_soc_info tnetv107x_soc_info = {
 	.gpio_num		= TNETV107X_N_GPIO,
 	.timer_info		= &timer_info,
 	.serial_dev		= &tnetv107x_serial_device,
+<<<<<<< HEAD
 	.reset			= tnetv107x_watchdog_reset,
 	.reset_device		= &tnetv107x_wdt_device,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void __init tnetv107x_init(void)

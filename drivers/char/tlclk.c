@@ -797,7 +797,11 @@ static int __init tlclk_init(void)
 	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
 
 	if (0x0F == telclk_interrupt ) { /* not MCPBL0010 ? */
+<<<<<<< HEAD
 		printk(KERN_ERR "telclk_interrup = 0x%x non-mcpbl0010 hw.\n",
+=======
+		printk(KERN_ERR "telclk_interrupt = 0x%x non-mcpbl0010 hw.\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			telclk_interrupt);
 		ret = -ENXIO;
 		goto out3;

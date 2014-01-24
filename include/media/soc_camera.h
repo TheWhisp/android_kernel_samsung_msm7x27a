@@ -12,12 +12,17 @@
 #ifndef SOC_CAMERA_H
 #define SOC_CAMERA_H
 
+<<<<<<< HEAD
+=======
+#include <linux/bitops.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/device.h>
 #include <linux/mutex.h>
 #include <linux/pm.h>
 #include <linux/videodev2.h>
 #include <media/videobuf-core.h>
 #include <media/videobuf2-core.h>
+<<<<<<< HEAD
 #include <media/v4l2-device.h>
 
 extern struct bus_type soc_camera_bus_type;
@@ -28,6 +33,20 @@ struct soc_camera_device {
 	struct list_head list;
 	struct device dev;
 	struct device *pdev;		/* Platform device */
+=======
+#include <media/v4l2-ctrls.h>
+#include <media/v4l2-device.h>
+
+struct file;
+struct soc_camera_link;
+
+struct soc_camera_device {
+	struct list_head list;		/* list of all registered devices */
+	struct soc_camera_link *link;
+	struct device *pdev;		/* Platform device */
+	struct device *parent;		/* Camera host device */
+	struct device *control;		/* E.g., the i2c client */
+>>>>>>> refs/remotes/origin/cm-10.0
 	s32 user_width;
 	s32 user_height;
 	u32 bytesperline;		/* for padding, zero if unused */
@@ -36,8 +55,13 @@ struct soc_camera_device {
 	unsigned char iface;		/* Host number */
 	unsigned char devnum;		/* Device number per host */
 	struct soc_camera_sense *sense;	/* See comment in struct definition */
+<<<<<<< HEAD
 	struct soc_camera_ops *ops;
 	struct video_device *vdev;
+=======
+	struct video_device *vdev;
+	struct v4l2_ctrl_handler ctrl_handler;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct soc_camera_format_xlate *current_fmt;
 	struct soc_camera_format_xlate *user_formats;
 	int num_user_formats;
@@ -56,7 +80,12 @@ struct soc_camera_device {
 struct soc_camera_host {
 	struct v4l2_device v4l2_dev;
 	struct list_head list;
+<<<<<<< HEAD
 	unsigned char nr;				/* Host number */
+=======
+	struct mutex host_lock;		/* Protect during probing */
+	unsigned char nr;		/* Host number */
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *priv;
 	const char *drv_name;
 	struct soc_camera_host_ops *ops;
@@ -66,8 +95,11 @@ struct soc_camera_host_ops {
 	struct module *owner;
 	int (*add)(struct soc_camera_device *);
 	void (*remove)(struct soc_camera_device *);
+<<<<<<< HEAD
 	int (*suspend)(struct soc_camera_device *, pm_message_t);
 	int (*resume)(struct soc_camera_device *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * .get_formats() is called for each client device format, but
 	 * .put_formats() is only called once. Further, if any of the calls to
@@ -93,15 +125,22 @@ struct soc_camera_host_ops {
 			      struct soc_camera_device *);
 	int (*reqbufs)(struct soc_camera_device *, struct v4l2_requestbuffers *);
 	int (*querycap)(struct soc_camera_host *, struct v4l2_capability *);
+<<<<<<< HEAD
 	int (*set_bus_param)(struct soc_camera_device *, __u32);
 	int (*get_ctrl)(struct soc_camera_device *, struct v4l2_control *);
 	int (*set_ctrl)(struct soc_camera_device *, struct v4l2_control *);
+=======
+	int (*set_bus_param)(struct soc_camera_device *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*get_parm)(struct soc_camera_device *, struct v4l2_streamparm *);
 	int (*set_parm)(struct soc_camera_device *, struct v4l2_streamparm *);
 	int (*enum_fsizes)(struct soc_camera_device *, struct v4l2_frmsizeenum *);
 	unsigned int (*poll)(struct file *, poll_table *);
+<<<<<<< HEAD
 	const struct v4l2_queryctrl *controls;
 	int num_controls;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define SOCAM_SENSOR_INVERT_PCLK	(1 << 0)
@@ -109,12 +148,15 @@ struct soc_camera_host_ops {
 #define SOCAM_SENSOR_INVERT_HSYNC	(1 << 2)
 #define SOCAM_SENSOR_INVERT_VSYNC	(1 << 3)
 #define SOCAM_SENSOR_INVERT_DATA	(1 << 4)
+<<<<<<< HEAD
 #define SOCAM_MIPI_1LANE		(1 << 5)
 #define SOCAM_MIPI_2LANE		(1 << 6)
 #define SOCAM_MIPI_3LANE		(1 << 7)
 #define SOCAM_MIPI_4LANE		(1 << 8)
 #define SOCAM_MIPI	(SOCAM_MIPI_1LANE | SOCAM_MIPI_2LANE | \
 			SOCAM_MIPI_3LANE | SOCAM_MIPI_4LANE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct i2c_board_info;
 struct regulator_bulk_data;
@@ -134,11 +176,19 @@ struct soc_camera_link {
 	int num_regulators;
 
 	/*
+<<<<<<< HEAD
 	 * For non-I2C devices platform platform has to provide methods to
 	 * add a device to the system and to remove
 	 */
 	int (*add_device)(struct soc_camera_link *, struct device *);
 	void (*del_device)(struct soc_camera_link *);
+=======
+	 * For non-I2C devices platform has to provide methods to add a device
+	 * to the system and to remove it
+	 */
+	int (*add_device)(struct soc_camera_device *);
+	void (*del_device)(struct soc_camera_device *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Optional callbacks to power on or off and reset the sensor */
 	int (*power)(struct device *, int);
 	int (*reset)(struct device *);
@@ -152,12 +202,15 @@ struct soc_camera_link {
 	void (*free_bus)(struct soc_camera_link *);
 };
 
+<<<<<<< HEAD
 static inline struct soc_camera_device *to_soc_camera_dev(
 	const struct device *dev)
 {
 	return container_of(dev, struct soc_camera_device, dev);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline struct soc_camera_host *to_soc_camera_host(
 	const struct device *dev)
 {
@@ -169,13 +222,21 @@ static inline struct soc_camera_host *to_soc_camera_host(
 static inline struct soc_camera_link *to_soc_camera_link(
 	const struct soc_camera_device *icd)
 {
+<<<<<<< HEAD
 	return icd->dev.platform_data;
+=======
+	return icd->link;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline struct device *to_soc_camera_control(
 	const struct soc_camera_device *icd)
 {
+<<<<<<< HEAD
 	return dev_get_drvdata(&icd->dev);
+=======
+	return icd->control;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline struct v4l2_subdev *soc_camera_to_subdev(
@@ -206,6 +267,7 @@ struct soc_camera_format_xlate {
 	const struct soc_mbus_pixelfmt *host_fmt;
 };
 
+<<<<<<< HEAD
 struct soc_camera_ops {
 	int (*suspend)(struct soc_camera_device *, pm_message_t state);
 	int (*resume)(struct soc_camera_device *);
@@ -216,6 +278,8 @@ struct soc_camera_ops {
 	int num_controls;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SOCAM_SENSE_PCLK_CHANGED	(1 << 0)
 
 /**
@@ -242,6 +306,7 @@ struct soc_camera_sense {
 	unsigned long pixel_clock;
 };
 
+<<<<<<< HEAD
 static inline struct v4l2_queryctrl const *soc_camera_find_qctrl(
 	struct soc_camera_ops *ops, int id)
 {
@@ -270,11 +335,21 @@ static inline struct v4l2_queryctrl const *soc_camera_find_qctrl(
 #define SOCAM_PCLK_SAMPLE_FALLING	(1 << 13)
 #define SOCAM_DATA_ACTIVE_HIGH		(1 << 14)
 #define SOCAM_DATA_ACTIVE_LOW		(1 << 15)
+=======
+#define SOCAM_DATAWIDTH(x)	BIT((x) - 1)
+#define SOCAM_DATAWIDTH_4	SOCAM_DATAWIDTH(4)
+#define SOCAM_DATAWIDTH_8	SOCAM_DATAWIDTH(8)
+#define SOCAM_DATAWIDTH_9	SOCAM_DATAWIDTH(9)
+#define SOCAM_DATAWIDTH_10	SOCAM_DATAWIDTH(10)
+#define SOCAM_DATAWIDTH_15	SOCAM_DATAWIDTH(15)
+#define SOCAM_DATAWIDTH_16	SOCAM_DATAWIDTH(16)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SOCAM_DATAWIDTH_MASK (SOCAM_DATAWIDTH_4 | SOCAM_DATAWIDTH_8 | \
 			      SOCAM_DATAWIDTH_9 | SOCAM_DATAWIDTH_10 | \
 			      SOCAM_DATAWIDTH_15 | SOCAM_DATAWIDTH_16)
 
+<<<<<<< HEAD
 static inline unsigned long soc_camera_bus_param_compatible(
 			unsigned long camera_flags, unsigned long bus_flags)
 {
@@ -295,6 +370,8 @@ static inline unsigned long soc_camera_bus_param_compatible(
 		common_flags;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void soc_camera_limit_side(int *start, int *length,
 		unsigned int start_min,
 		unsigned int length_min, unsigned int length_max)
@@ -310,6 +387,7 @@ static inline void soc_camera_limit_side(int *start, int *length,
 		*start = start_min + length_max - *length;
 }
 
+<<<<<<< HEAD
 extern unsigned long soc_camera_apply_sensor_flags(struct soc_camera_link *icl,
 						   unsigned long flags);
 
@@ -322,15 +400,55 @@ static inline struct video_device *soc_camera_i2c_to_vdev(struct i2c_client *cli
 }
 
 static inline struct soc_camera_device *soc_camera_from_vb2q(struct vb2_queue *vq)
+=======
+unsigned long soc_camera_apply_sensor_flags(struct soc_camera_link *icl,
+					    unsigned long flags);
+unsigned long soc_camera_apply_board_flags(struct soc_camera_link *icl,
+					   const struct v4l2_mbus_config *cfg);
+
+/* This is only temporary here - until v4l2-subdev begins to link to video_device */
+#include <linux/i2c.h>
+static inline struct video_device *soc_camera_i2c_to_vdev(const struct i2c_client *client)
+{
+	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+	struct soc_camera_device *icd = v4l2_get_subdev_hostdata(sd);
+	return icd ? icd->vdev : NULL;
+}
+
+static inline struct soc_camera_link *soc_camera_i2c_to_link(const struct i2c_client *client)
+{
+	return client->dev.platform_data;
+}
+
+static inline struct v4l2_subdev *soc_camera_vdev_to_subdev(const struct video_device *vdev)
+{
+	struct soc_camera_device *icd = dev_get_drvdata(vdev->parent);
+	return soc_camera_to_subdev(icd);
+}
+
+static inline struct soc_camera_device *soc_camera_from_vb2q(const struct vb2_queue *vq)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return container_of(vq, struct soc_camera_device, vb2_vidq);
 }
 
+<<<<<<< HEAD
 static inline struct soc_camera_device *soc_camera_from_vbq(struct videobuf_queue *vq)
+=======
+static inline struct soc_camera_device *soc_camera_from_vbq(const struct videobuf_queue *vq)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return container_of(vq, struct soc_camera_device, vb_vidq);
 }
 
+<<<<<<< HEAD
+=======
+static inline u32 soc_camera_grp_id(const struct soc_camera_device *icd)
+{
+	return (icd->iface << 8) | (icd->devnum + 1);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void soc_camera_lock(struct vb2_queue *vq);
 void soc_camera_unlock(struct vb2_queue *vq);
 

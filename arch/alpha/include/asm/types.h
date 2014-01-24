@@ -15,9 +15,12 @@
 #include <asm-generic/int-l64.h>
 #endif
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 
 typedef unsigned int umode_t;
 
 #endif /* __ASSEMBLY__ */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ALPHA_TYPES_H */

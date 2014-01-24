@@ -54,7 +54,11 @@ static struct sys_timer iq80332_timer = {
  * IQ80332 PCI.
  */
 static int __init
+<<<<<<< HEAD
 iq80332_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+iq80332_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int irq;
 
@@ -141,9 +145,17 @@ static void __init iq80332_init_machine(void)
 
 MACHINE_START(IQ80332, "Intel IQ80332")
 	/* Maintainer: Intel Corp. */
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_io		= iop3xx_map_io,
 	.init_irq	= iop33x_init_irq,
 	.timer		= &iq80332_timer,
 	.init_machine	= iq80332_init_machine,
+<<<<<<< HEAD
+=======
+	.restart	= iop3xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

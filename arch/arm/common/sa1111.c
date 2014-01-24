@@ -16,6 +16,10 @@
  */
 #include <linux/module.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/irq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/delay.h>
 #include <linux/errno.h>
@@ -28,9 +32,14 @@
 #include <linux/io.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <asm/mach-types.h>
 #include <asm/irq.h>
 #include <asm/mach/irq.h>
+=======
+#include <asm/mach/irq.h>
+#include <asm/mach-types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sizes.h>
 
 #include <asm/hardware/sa1111.h>
@@ -86,8 +95,15 @@
 #define IRQ_S1_CD_VALID		(52)
 #define IRQ_S0_BVD1_STSCHG	(53)
 #define IRQ_S1_BVD1_STSCHG	(54)
+<<<<<<< HEAD
 
 extern void __init sa1110_mb_enable(void);
+=======
+#define SA1111_IRQ_NR		(55)
+
+extern void sa1110_mb_enable(void);
+extern void sa1110_mb_disable(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * We keep the following data for the overall SA1111.  Note that the
@@ -104,6 +120,10 @@ struct sa1111 {
 	int		irq_base;	/* base for cascaded on-chip IRQs */
 	spinlock_t	lock;
 	void __iomem	*base;
+<<<<<<< HEAD
+=======
+	struct sa1111_platform_data *pdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PM
 	void		*saved_state;
 #endif
@@ -118,6 +138,10 @@ static struct sa1111 *g_sa1111;
 struct sa1111_dev_info {
 	unsigned long	offset;
 	unsigned long	skpcr_mask;
+<<<<<<< HEAD
+=======
+	bool		dma;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int	devid;
 	unsigned int	irq[6];
 };
@@ -126,6 +150,10 @@ static struct sa1111_dev_info sa1111_devices[] = {
 	{
 		.offset		= SA1111_USB,
 		.skpcr_mask	= SKPCR_UCLKEN,
+<<<<<<< HEAD
+=======
+		.dma		= true,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.devid		= SA1111_DEVID_USB,
 		.irq = {
 			IRQ_USBPWR,
@@ -139,6 +167,10 @@ static struct sa1111_dev_info sa1111_devices[] = {
 	{
 		.offset		= 0x0600,
 		.skpcr_mask	= SKPCR_I2SCLKEN | SKPCR_L3CLKEN,
+<<<<<<< HEAD
+=======
+		.dma		= true,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.devid		= SA1111_DEVID_SAC,
 		.irq = {
 			AUDXMTDMADONEA,
@@ -155,7 +187,11 @@ static struct sa1111_dev_info sa1111_devices[] = {
 	{
 		.offset		= SA1111_KBD,
 		.skpcr_mask	= SKPCR_PTCLKEN,
+<<<<<<< HEAD
 		.devid		= SA1111_DEVID_PS2,
+=======
+		.devid		= SA1111_DEVID_PS2_KBD,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.irq = {
 			IRQ_TPRXINT,
 			IRQ_TPTXINT
@@ -164,7 +200,11 @@ static struct sa1111_dev_info sa1111_devices[] = {
 	{
 		.offset		= SA1111_MSE,
 		.skpcr_mask	= SKPCR_PMCLKEN,
+<<<<<<< HEAD
 		.devid		= SA1111_DEVID_PS2,
+=======
+		.devid		= SA1111_DEVID_PS2_MSE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.irq = {
 			IRQ_MSRXINT,
 			IRQ_MSTXINT
@@ -434,16 +474,38 @@ static struct irq_chip sa1111_high_chip = {
 	.irq_set_wake	= sa1111_wake_highirq,
 };
 
+<<<<<<< HEAD
 static void sa1111_setup_irq(struct sa1111 *sachip)
 {
 	void __iomem *irqbase = sachip->base + SA1111_INTC;
 	unsigned int irq;
+=======
+static int sa1111_setup_irq(struct sa1111 *sachip, unsigned irq_base)
+{
+	void __iomem *irqbase = sachip->base + SA1111_INTC;
+	unsigned i, irq;
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * We're guaranteed that this region hasn't been taken.
 	 */
 	request_mem_region(sachip->phys + SA1111_INTC, 512, "irq");
 
+<<<<<<< HEAD
+=======
+	ret = irq_alloc_descs(-1, irq_base, SA1111_IRQ_NR, -1);
+	if (ret <= 0) {
+		dev_err(sachip->dev, "unable to allocate %u irqs: %d\n",
+			SA1111_IRQ_NR, ret);
+		if (ret == 0)
+			ret = -EINVAL;
+		return ret;
+	}
+
+	sachip->irq_base = ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* disable all IRQs */
 	sa1111_writel(0, irqbase + SA1111_INTEN0);
 	sa1111_writel(0, irqbase + SA1111_INTEN1);
@@ -463,14 +525,24 @@ static void sa1111_setup_irq(struct sa1111 *sachip)
 	sa1111_writel(~0, irqbase + SA1111_INTSTATCLR0);
 	sa1111_writel(~0, irqbase + SA1111_INTSTATCLR1);
 
+<<<<<<< HEAD
 	for (irq = IRQ_GPAIN0; irq <= SSPROR; irq++) {
+=======
+	for (i = IRQ_GPAIN0; i <= SSPROR; i++) {
+		irq = sachip->irq_base + i;
+>>>>>>> refs/remotes/origin/cm-10.0
 		irq_set_chip_and_handler(irq, &sa1111_low_chip,
 					 handle_edge_irq);
 		irq_set_chip_data(irq, sachip);
 		set_irq_flags(irq, IRQF_VALID | IRQF_PROBE);
 	}
 
+<<<<<<< HEAD
 	for (irq = AUDXMTDMADONEA; irq <= IRQ_S1_BVD1_STSCHG; irq++) {
+=======
+	for (i = AUDXMTDMADONEA; i <= IRQ_S1_BVD1_STSCHG; i++) {
+		irq = sachip->irq_base + i;
+>>>>>>> refs/remotes/origin/cm-10.0
 		irq_set_chip_and_handler(irq, &sa1111_high_chip,
 					 handle_edge_irq);
 		irq_set_chip_data(irq, sachip);
@@ -483,6 +555,14 @@ static void sa1111_setup_irq(struct sa1111 *sachip)
 	irq_set_irq_type(sachip->irq, IRQ_TYPE_EDGE_RISING);
 	irq_set_handler_data(sachip->irq, sachip);
 	irq_set_chained_handler(sachip->irq, sa1111_irq_handler);
+<<<<<<< HEAD
+=======
+
+	dev_info(sachip->dev, "Providing IRQ%u-%u\n",
+		sachip->irq_base, sachip->irq_base + SA1111_IRQ_NR - 1);
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -579,14 +659,20 @@ sa1111_configure_smc(struct sa1111 *sachip, int sdram, unsigned int drac,
 
 	sachip->dev->coherent_dma_mask &= sa1111_dma_mask[drac >> 2];
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static void sa1111_dev_release(struct device *_dev)
 {
 	struct sa1111_dev *dev = SA1111_DEV(_dev);
 
+<<<<<<< HEAD
 	release_resource(&dev->res);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(dev);
 }
 
@@ -595,26 +681,41 @@ sa1111_init_one_child(struct sa1111 *sachip, struct resource *parent,
 		      struct sa1111_dev_info *info)
 {
 	struct sa1111_dev *dev;
+<<<<<<< HEAD
+=======
+	unsigned i;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	dev = kzalloc(sizeof(struct sa1111_dev), GFP_KERNEL);
 	if (!dev) {
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto out;
 	}
 
+=======
+		goto err_alloc;
+	}
+
+	device_initialize(&dev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_set_name(&dev->dev, "%4.4lx", info->offset);
 	dev->devid	 = info->devid;
 	dev->dev.parent  = sachip->dev;
 	dev->dev.bus     = &sa1111_bus_type;
 	dev->dev.release = sa1111_dev_release;
+<<<<<<< HEAD
 	dev->dev.coherent_dma_mask = sachip->dev->coherent_dma_mask;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->res.start   = sachip->phys + info->offset;
 	dev->res.end     = dev->res.start + 511;
 	dev->res.name    = dev_name(&dev->dev);
 	dev->res.flags   = IORESOURCE_MEM;
 	dev->mapbase     = sachip->base + info->offset;
 	dev->skpcr_mask  = info->skpcr_mask;
+<<<<<<< HEAD
 	memmove(dev->irq, info->irq, sizeof(dev->irq));
 
 	ret = request_resource(parent, &dev->res);
@@ -655,6 +756,39 @@ sa1111_init_one_child(struct sa1111 *sachip, struct resource *parent,
 #endif
 
 out:
+=======
+
+	for (i = 0; i < ARRAY_SIZE(info->irq); i++)
+		dev->irq[i] = sachip->irq_base + info->irq[i];
+
+	/*
+	 * If the parent device has a DMA mask associated with it, and
+	 * this child supports DMA, propagate it down to the children.
+	 */
+	if (info->dma && sachip->dev->dma_mask) {
+		dev->dma_mask = *sachip->dev->dma_mask;
+		dev->dev.dma_mask = &dev->dma_mask;
+		dev->dev.coherent_dma_mask = sachip->dev->coherent_dma_mask;
+	}
+
+	ret = request_resource(parent, &dev->res);
+	if (ret) {
+		dev_err(sachip->dev, "failed to allocate resource for %s\n",
+			dev->res.name);
+		goto err_resource;
+	}
+
+	ret = device_add(&dev->dev);
+	if (ret)
+		goto err_add;
+	return 0;
+
+ err_add:
+	release_resource(&dev->res);
+ err_resource:
+	put_device(&dev->dev);
+ err_alloc:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -668,16 +802,30 @@ out:
  *	Returns:
  *	%-ENODEV	device not found.
  *	%-EBUSY		physical address already marked in-use.
+<<<<<<< HEAD
+=======
+ *	%-EINVAL	no platform data passed
+>>>>>>> refs/remotes/origin/cm-10.0
  *	%0		successful.
  */
 static int __devinit
 __sa1111_probe(struct device *me, struct resource *mem, int irq)
 {
+<<<<<<< HEAD
+=======
+	struct sa1111_platform_data *pd = me->platform_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sa1111 *sachip;
 	unsigned long id;
 	unsigned int has_devs;
 	int i, ret = -ENODEV;
 
+<<<<<<< HEAD
+=======
+	if (!pd)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	sachip = kzalloc(sizeof(struct sa1111), GFP_KERNEL);
 	if (!sachip)
 		return -ENOMEM;
@@ -688,11 +836,22 @@ __sa1111_probe(struct device *me, struct resource *mem, int irq)
 		goto err_free;
 	}
 
+<<<<<<< HEAD
+=======
+	ret = clk_prepare(sachip->clk);
+	if (ret)
+		goto err_clkput;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_init(&sachip->lock);
 
 	sachip->dev = me;
 	dev_set_drvdata(sachip->dev, sachip);
 
+<<<<<<< HEAD
+=======
+	sachip->pdata = pd;
+>>>>>>> refs/remotes/origin/cm-10.0
 	sachip->phys = mem->start;
 	sachip->irq = irq;
 
@@ -703,7 +862,11 @@ __sa1111_probe(struct device *me, struct resource *mem, int irq)
 	sachip->base = ioremap(mem->start, PAGE_SIZE * 2);
 	if (!sachip->base) {
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto err_clkput;
+=======
+		goto err_clk_unprep;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -725,6 +888,19 @@ __sa1111_probe(struct device *me, struct resource *mem, int irq)
 	 */
 	sa1111_wake(sachip);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * The interrupt controller must be initialised before any
+	 * other device to ensure that the interrupts are available.
+	 */
+	if (sachip->irq != NO_IRQ) {
+		ret = sa1111_setup_irq(sachip, pd->irq_base);
+		if (ret)
+			goto err_unmap;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_ARCH_SA1100
 	{
 	unsigned int val;
@@ -755,6 +931,7 @@ __sa1111_probe(struct device *me, struct resource *mem, int irq)
 	}
 #endif
 
+<<<<<<< HEAD
 	/*
 	 * The interrupt controller must be initialised before any
 	 * other device to ensure that the interrupts are available.
@@ -773,12 +950,27 @@ __sa1111_probe(struct device *me, struct resource *mem, int irq)
 
 	for (i = 0; i < ARRAY_SIZE(sa1111_devices); i++)
 		if (has_devs & (1 << i))
+=======
+	g_sa1111 = sachip;
+
+	has_devs = ~0;
+	if (pd)
+		has_devs &= ~pd->disable_devs;
+
+	for (i = 0; i < ARRAY_SIZE(sa1111_devices); i++)
+		if (sa1111_devices[i].devid & has_devs)
+>>>>>>> refs/remotes/origin/cm-10.0
 			sa1111_init_one_child(sachip, mem, &sa1111_devices[i]);
 
 	return 0;
 
  err_unmap:
 	iounmap(sachip->base);
+<<<<<<< HEAD
+=======
+ err_clk_unprep:
+	clk_unprepare(sachip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
  err_clkput:
 	clk_put(sachip->clk);
  err_free:
@@ -788,7 +980,14 @@ __sa1111_probe(struct device *me, struct resource *mem, int irq)
 
 static int sa1111_remove_one(struct device *dev, void *data)
 {
+<<<<<<< HEAD
 	device_unregister(dev);
+=======
+	struct sa1111_dev *sadev = SA1111_DEV(dev);
+	device_del(&sadev->dev);
+	release_resource(&sadev->res);
+	put_device(&sadev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -805,10 +1004,18 @@ static void __sa1111_remove(struct sa1111 *sachip)
 	sa1111_writel(0, irqbase + SA1111_WAKEEN1);
 
 	clk_disable(sachip->clk);
+<<<<<<< HEAD
+=======
+	clk_unprepare(sachip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (sachip->irq != NO_IRQ) {
 		irq_set_chained_handler(sachip->irq, NULL);
 		irq_set_handler_data(sachip->irq, NULL);
+<<<<<<< HEAD
+=======
+		irq_free_descs(sachip->irq_base, SA1111_IRQ_NR);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		release_mem_region(sachip->phys + SA1111_INTC, 512);
 	}
@@ -818,6 +1025,7 @@ static void __sa1111_remove(struct sa1111 *sachip)
 	kfree(sachip);
 }
 
+<<<<<<< HEAD
 /*
  * According to the "Intel StrongARM SA-1111 Microprocessor Companion
  * Chip Specification Update" (June 2000), erratum #7, there is a
@@ -846,6 +1054,8 @@ int dma_needs_bounce(struct device *dev, dma_addr_t addr, size_t size)
 		(addr >= 0xc8000000 || (addr + size) >= 0xc8000000));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct sa1111_save_data {
 	unsigned int	skcr;
 	unsigned int	skpcr;
@@ -895,6 +1105,12 @@ static int sa1111_suspend(struct platform_device *dev, pm_message_t state)
 	save->skpwm0   = sa1111_readl(base + SA1111_SKPWM0);
 	save->skpwm1   = sa1111_readl(base + SA1111_SKPWM1);
 
+<<<<<<< HEAD
+=======
+	sa1111_writel(0, sachip->base + SA1111_SKPWM0);
+	sa1111_writel(0, sachip->base + SA1111_SKPWM1);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	base = sachip->base + SA1111_INTC;
 	save->intpol0  = sa1111_readl(base + SA1111_INTPOL0);
 	save->intpol1  = sa1111_readl(base + SA1111_INTPOL1);
@@ -910,13 +1126,23 @@ static int sa1111_suspend(struct platform_device *dev, pm_message_t state)
 	 */
 	val = sa1111_readl(sachip->base + SA1111_SKCR);
 	sa1111_writel(val | SKCR_SLEEP, sachip->base + SA1111_SKCR);
+<<<<<<< HEAD
 	sa1111_writel(0, sachip->base + SA1111_SKPWM0);
 	sa1111_writel(0, sachip->base + SA1111_SKPWM1);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	clk_disable(sachip->clk);
 
 	spin_unlock_irqrestore(&sachip->lock, flags);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARCH_SA1100
+	sa1110_mb_disable();
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -957,6 +1183,14 @@ static int sa1111_resume(struct platform_device *dev)
 	 */
 	sa1111_wake(sachip);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARCH_SA1100
+	/* Enable the memory bus request/grant signals */
+	sa1110_mb_enable();
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Only lock for write ops. Also, sa1111_wake must be called with
 	 * released spinlock!
@@ -1044,6 +1278,10 @@ static struct platform_driver sa1111_device_driver = {
 	.resume		= sa1111_resume,
 	.driver		= {
 		.name	= "sa1111",
+<<<<<<< HEAD
+=======
+		.owner	= THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -1229,16 +1467,35 @@ EXPORT_SYMBOL(sa1111_set_sleep_io);
  *	sa1111_enable_device - enable an on-chip SA1111 function block
  *	@sadev: SA1111 function block device to enable
  */
+<<<<<<< HEAD
 void sa1111_enable_device(struct sa1111_dev *sadev)
+=======
+int sa1111_enable_device(struct sa1111_dev *sadev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct sa1111 *sachip = sa1111_chip_driver(sadev);
 	unsigned long flags;
 	unsigned int val;
+<<<<<<< HEAD
 
 	spin_lock_irqsave(&sachip->lock, flags);
 	val = sa1111_readl(sachip->base + SA1111_SKPCR);
 	sa1111_writel(val | sadev->skpcr_mask, sachip->base + SA1111_SKPCR);
 	spin_unlock_irqrestore(&sachip->lock, flags);
+=======
+	int ret = 0;
+
+	if (sachip->pdata && sachip->pdata->enable)
+		ret = sachip->pdata->enable(sachip->pdata->data, sadev->devid);
+
+	if (ret == 0) {
+		spin_lock_irqsave(&sachip->lock, flags);
+		val = sa1111_readl(sachip->base + SA1111_SKPCR);
+		sa1111_writel(val | sadev->skpcr_mask, sachip->base + SA1111_SKPCR);
+		spin_unlock_irqrestore(&sachip->lock, flags);
+	}
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(sa1111_enable_device);
 
@@ -1256,6 +1513,12 @@ void sa1111_disable_device(struct sa1111_dev *sadev)
 	val = sa1111_readl(sachip->base + SA1111_SKPCR);
 	sa1111_writel(val & ~sadev->skpcr_mask, sachip->base + SA1111_SKPCR);
 	spin_unlock_irqrestore(&sachip->lock, flags);
+<<<<<<< HEAD
+=======
+
+	if (sachip->pdata && sachip->pdata->disable)
+		sachip->pdata->disable(sachip->pdata->data, sadev->devid);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(sa1111_disable_device);
 
@@ -1270,7 +1533,11 @@ static int sa1111_match(struct device *_dev, struct device_driver *_drv)
 	struct sa1111_dev *dev = SA1111_DEV(_dev);
 	struct sa1111_driver *drv = SA1111_DRV(_drv);
 
+<<<<<<< HEAD
 	return dev->devid == drv->devid;
+=======
+	return dev->devid & drv->devid;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int sa1111_bus_suspend(struct device *dev, pm_message_t state)
@@ -1295,6 +1562,17 @@ static int sa1111_bus_resume(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static void sa1111_bus_shutdown(struct device *dev)
+{
+	struct sa1111_driver *drv = SA1111_DRV(dev->driver);
+
+	if (drv && drv->shutdown)
+		drv->shutdown(SA1111_DEV(dev));
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int sa1111_bus_probe(struct device *dev)
 {
 	struct sa1111_dev *sadev = SA1111_DEV(dev);
@@ -1324,6 +1602,10 @@ struct bus_type sa1111_bus_type = {
 	.remove		= sa1111_bus_remove,
 	.suspend	= sa1111_bus_suspend,
 	.resume		= sa1111_bus_resume,
+<<<<<<< HEAD
+=======
+	.shutdown	= sa1111_bus_shutdown,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 EXPORT_SYMBOL(sa1111_bus_type);
 
@@ -1340,9 +1622,76 @@ void sa1111_driver_unregister(struct sa1111_driver *driver)
 }
 EXPORT_SYMBOL(sa1111_driver_unregister);
 
+<<<<<<< HEAD
 static int __init sa1111_init(void)
 {
 	int ret = bus_register(&sa1111_bus_type);
+=======
+#ifdef CONFIG_DMABOUNCE
+/*
+ * According to the "Intel StrongARM SA-1111 Microprocessor Companion
+ * Chip Specification Update" (June 2000), erratum #7, there is a
+ * significant bug in the SA1111 SDRAM shared memory controller.  If
+ * an access to a region of memory above 1MB relative to the bank base,
+ * it is important that address bit 10 _NOT_ be asserted. Depending
+ * on the configuration of the RAM, bit 10 may correspond to one
+ * of several different (processor-relative) address bits.
+ *
+ * This routine only identifies whether or not a given DMA address
+ * is susceptible to the bug.
+ *
+ * This should only get called for sa1111_device types due to the
+ * way we configure our device dma_masks.
+ */
+static int sa1111_needs_bounce(struct device *dev, dma_addr_t addr, size_t size)
+{
+	/*
+	 * Section 4.6 of the "Intel StrongARM SA-1111 Development Module
+	 * User's Guide" mentions that jumpers R51 and R52 control the
+	 * target of SA-1111 DMA (either SDRAM bank 0 on Assabet, or
+	 * SDRAM bank 1 on Neponset). The default configuration selects
+	 * Assabet, so any address in bank 1 is necessarily invalid.
+	 */
+	return (machine_is_assabet() || machine_is_pfs168()) &&
+		(addr >= 0xc8000000 || (addr + size) >= 0xc8000000);
+}
+
+static int sa1111_notifier_call(struct notifier_block *n, unsigned long action,
+	void *data)
+{
+	struct sa1111_dev *dev = SA1111_DEV(data);
+
+	switch (action) {
+	case BUS_NOTIFY_ADD_DEVICE:
+		if (dev->dev.dma_mask && dev->dma_mask < 0xffffffffUL) {
+			int ret = dmabounce_register_dev(&dev->dev, 1024, 4096,
+					sa1111_needs_bounce);
+			if (ret)
+				dev_err(&dev->dev, "failed to register with dmabounce: %d\n", ret);
+		}
+		break;
+
+	case BUS_NOTIFY_DEL_DEVICE:
+		if (dev->dev.dma_mask && dev->dma_mask < 0xffffffffUL)
+			dmabounce_unregister_dev(&dev->dev);
+		break;
+	}
+	return NOTIFY_OK;
+}
+
+static struct notifier_block sa1111_bus_notifier = {
+	.notifier_call = sa1111_notifier_call,
+};
+#endif
+
+static int __init sa1111_init(void)
+{
+	int ret = bus_register(&sa1111_bus_type);
+#ifdef CONFIG_DMABOUNCE
+	if (ret == 0)
+		bus_register_notifier(&sa1111_bus_type, &sa1111_bus_notifier);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret == 0)
 		platform_driver_register(&sa1111_device_driver);
 	return ret;
@@ -1351,6 +1700,12 @@ static int __init sa1111_init(void)
 static void __exit sa1111_exit(void)
 {
 	platform_driver_unregister(&sa1111_device_driver);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DMABOUNCE
+	bus_unregister_notifier(&sa1111_bus_type, &sa1111_bus_notifier);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	bus_unregister(&sa1111_bus_type);
 }
 

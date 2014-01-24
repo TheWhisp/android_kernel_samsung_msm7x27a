@@ -122,6 +122,11 @@ struct tda18271_priv {
 
 	struct mutex lock;
 
+<<<<<<< HEAD
+=======
+	u16 if_freq;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 frequency;
 	u32 bandwidth;
 };
@@ -136,6 +141,7 @@ extern int tda18271_debug;
 #define DBG_ADV  8
 #define DBG_CAL  16
 
+<<<<<<< HEAD
 #define tda_printk(st, kern, fmt, arg...) do {\
 	if (st) { \
 		struct tda18271_priv *state = st; \
@@ -159,6 +165,28 @@ extern int tda18271_debug;
 #define tda_map(fmt, arg...)  tda_dprintk(priv, DBG_MAP,     fmt, ##arg)
 #define tda_reg(fmt, arg...)  tda_dprintk(priv, DBG_REG,     fmt, ##arg)
 #define tda_cal(fmt, arg...)  tda_dprintk(priv, DBG_CAL,     fmt, ##arg)
+=======
+__attribute__((format(printf, 4, 5)))
+int _tda_printk(struct tda18271_priv *state, const char *level,
+		const char *func, const char *fmt, ...);
+
+#define tda_printk(st, lvl, fmt, arg...)			\
+	_tda_printk(st, lvl, __func__, fmt, ##arg)
+
+#define tda_dprintk(st, lvl, fmt, arg...)			\
+do {								\
+	if (tda18271_debug & lvl)				\
+		tda_printk(st, KERN_DEBUG, fmt, ##arg);		\
+} while (0)
+
+#define tda_info(fmt, arg...)	pr_info(fmt, ##arg)
+#define tda_warn(fmt, arg...)	tda_printk(priv, KERN_WARNING, fmt, ##arg)
+#define tda_err(fmt, arg...)	tda_printk(priv, KERN_ERR,     fmt, ##arg)
+#define tda_dbg(fmt, arg...)	tda_dprintk(priv, DBG_INFO,    fmt, ##arg)
+#define tda_map(fmt, arg...)	tda_dprintk(priv, DBG_MAP,     fmt, ##arg)
+#define tda_reg(fmt, arg...)	tda_dprintk(priv, DBG_REG,     fmt, ##arg)
+#define tda_cal(fmt, arg...)	tda_dprintk(priv, DBG_CAL,     fmt, ##arg)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define tda_fail(ret)							     \
 ({									     \

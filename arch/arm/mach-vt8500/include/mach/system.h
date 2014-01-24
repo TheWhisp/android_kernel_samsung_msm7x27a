@@ -7,11 +7,14 @@
 /* PM Software Reset request register */
 #define VT8500_PMSR_VIRT	0xf8130060
 
+<<<<<<< HEAD
 static inline void arch_idle(void)
 {
 	cpu_do_idle();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void arch_reset(char mode, const char *cmd)
 {
 	writel(1, VT8500_PMSR_VIRT);

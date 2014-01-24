@@ -32,7 +32,11 @@
 
 /* find_boot_record: Find the NFTL Media Header and its Spare copy which contains the
  *	various device information of the NFTL partition and Bad Unit Table. Update
+<<<<<<< HEAD
  *	the ReplUnitTable[] table accroding to the Bad Unit Table. ReplUnitTable[]
+=======
+ *	the ReplUnitTable[] table according to the Bad Unit Table. ReplUnitTable[]
+>>>>>>> refs/remotes/origin/cm-10.0
  *	is used for management of Erase Unit in other routines in nftl.c and nftlmount.c
  */
 static int find_boot_record(struct NFTLrecord *nftl)
@@ -63,8 +67,13 @@ static int find_boot_record(struct NFTLrecord *nftl)
 
 		/* Check for ANAND header first. Then can whinge if it's found but later
 		   checks fail */
+<<<<<<< HEAD
 		ret = mtd->read(mtd, block * nftl->EraseSize, SECTORSIZE,
 				&retlen, buf);
+=======
+		ret = mtd_read(mtd, block * nftl->EraseSize, SECTORSIZE,
+			       &retlen, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* We ignore ret in case the ECC of the MediaHeader is invalid
 		   (which is apparently acceptable) */
 		if (retlen != SECTORSIZE) {
@@ -242,7 +251,12 @@ The new DiskOnChip driver already scanned the bad block table.  Just query it.
 			if (buf[i & (SECTORSIZE - 1)] != 0xff)
 				nftl->ReplUnitTable[i] = BLOCK_RESERVED;
 #endif
+<<<<<<< HEAD
 			if (nftl->mbd.mtd->block_isbad(nftl->mbd.mtd, i * nftl->EraseSize))
+=======
+			if (mtd_block_isbad(nftl->mbd.mtd,
+					    i * nftl->EraseSize))
+>>>>>>> refs/remotes/origin/cm-10.0
 				nftl->ReplUnitTable[i] = BLOCK_RESERVED;
 		}
 
@@ -274,7 +288,11 @@ static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int
 	int i;
 
 	for (i = 0; i < len; i += SECTORSIZE) {
+<<<<<<< HEAD
 		if (mtd->read(mtd, address, SECTORSIZE, &retlen, buf))
+=======
+		if (mtd_read(mtd, address, SECTORSIZE, &retlen, buf))
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -1;
 		if (memcmpb(buf, 0xff, SECTORSIZE) != 0)
 			return -1;
@@ -297,7 +315,11 @@ static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int
  *
  * Return: 0 when succeed, -1 on error.
  *
+<<<<<<< HEAD
  *  ToDo: 1. Is it neceressary to check_free_sector after erasing ??
+=======
+ *  ToDo: 1. Is it necessary to check_free_sector after erasing ??
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 int NFTL_formatblock(struct NFTLrecord *nftl, int block)
 {
@@ -326,7 +348,11 @@ int NFTL_formatblock(struct NFTLrecord *nftl, int block)
 	instr->mtd = nftl->mbd.mtd;
 	instr->addr = block * nftl->EraseSize;
 	instr->len = nftl->EraseSize;
+<<<<<<< HEAD
 	mtd->erase(mtd, instr);
+=======
+	mtd_erase(mtd, instr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (instr->state == MTD_ERASE_FAILED) {
 		printk("Error while formatting block %d\n", block);
@@ -337,7 +363,11 @@ int NFTL_formatblock(struct NFTLrecord *nftl, int block)
 		nb_erases = le32_to_cpu(uci.WearInfo);
 		nb_erases++;
 
+<<<<<<< HEAD
 		/* wrap (almost impossible with current flashs) or free block */
+=======
+		/* wrap (almost impossible with current flash) or free block */
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (nb_erases == 0)
 			nb_erases = 1;
 
@@ -355,7 +385,11 @@ int NFTL_formatblock(struct NFTLrecord *nftl, int block)
 fail:
 	/* could not format, update the bad block table (caller is responsible
 	   for setting the ReplUnitTable to BLOCK_RESERVED on failure) */
+<<<<<<< HEAD
 	nftl->mbd.mtd->block_markbad(nftl->mbd.mtd, instr->addr);
+=======
+	mtd_block_markbad(nftl->mbd.mtd, instr->addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -1;
 }
 
@@ -363,10 +397,17 @@ fail:
  *	Mark as 'IGNORE' each incorrect sector. This check is only done if the chain
  *	was being folded when NFTL was interrupted.
  *
+<<<<<<< HEAD
  *	The check_free_sectors in this function is neceressary. There is a possible
  *	situation that after writing the Data area, the Block Control Information is
  *	not updated according (due to power failure or something) which leaves the block
  *	in an umconsistent state. So we have to check if a block is really FREE in this
+=======
+ *	The check_free_sectors in this function is necessary. There is a possible
+ *	situation that after writing the Data area, the Block Control Information is
+ *	not updated according (due to power failure or something) which leaves the block
+ *	in an inconsistent state. So we have to check if a block is really FREE in this
+>>>>>>> refs/remotes/origin/cm-10.0
  *	case. */
 static void check_sectors_in_chain(struct NFTLrecord *nftl, unsigned int first_block)
 {
@@ -428,7 +469,11 @@ static int calc_chain_length(struct NFTLrecord *nftl, unsigned int first_block)
 
 	for (;;) {
 		length++;
+<<<<<<< HEAD
 		/* avoid infinite loops, although this is guaranted not to
+=======
+		/* avoid infinite loops, although this is guaranteed not to
+>>>>>>> refs/remotes/origin/cm-10.0
 		   happen because of the previous checks */
 		if (length >= nftl->nb_blocks) {
 			printk("nftl: length too long %d !\n", length);
@@ -447,11 +492,19 @@ static int calc_chain_length(struct NFTLrecord *nftl, unsigned int first_block)
 /* format_chain: Format an invalid Virtual Unit chain. It frees all the Erase Units in a
  *	Virtual Unit Chain, i.e. all the units are disconnected.
  *
+<<<<<<< HEAD
  *	It is not stricly correct to begin from the first block of the chain because
  *	if we stop the code, we may see again a valid chain if there was a first_block
  *	flag in a block inside it. But is it really a problem ?
  *
  * FixMe: Figure out what the last statesment means. What if power failure when we are
+=======
+ *	It is not strictly correct to begin from the first block of the chain because
+ *	if we stop the code, we may see again a valid chain if there was a first_block
+ *	flag in a block inside it. But is it really a problem ?
+ *
+ * FixMe: Figure out what the last statement means. What if power failure when we are
+>>>>>>> refs/remotes/origin/cm-10.0
  *	in the for (;;) loop formatting blocks ??
  */
 static void format_chain(struct NFTLrecord *nftl, unsigned int first_block)
@@ -485,7 +538,11 @@ static void format_chain(struct NFTLrecord *nftl, unsigned int first_block)
  *	totally free (only 0xff).
  *
  * Definition: Free Erase Unit -- A properly erased/formatted Free Erase Unit should have meet the
+<<<<<<< HEAD
  *	following critia:
+=======
+ *	following criteria:
+>>>>>>> refs/remotes/origin/cm-10.0
  *	1. */
 static int check_and_mark_free_block(struct NFTLrecord *nftl, int block)
 {
@@ -502,7 +559,11 @@ static int check_and_mark_free_block(struct NFTLrecord *nftl, int block)
 	erase_mark = le16_to_cpu ((h1.EraseMark | h1.EraseMark1));
 	if (erase_mark != ERASE_MARK) {
 		/* if no erase mark, the block must be totally free. This is
+<<<<<<< HEAD
 		   possible in two cases : empty filsystem or interrupted erase (very unlikely) */
+=======
+		   possible in two cases : empty filesystem or interrupted erase (very unlikely) */
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (check_free_sectors (nftl, block * nftl->EraseSize, nftl->EraseSize, 1) != 0)
 			return -1;
 
@@ -544,7 +605,11 @@ static int check_and_mark_free_block(struct NFTLrecord *nftl, int block)
 /* get_fold_mark: Read fold mark from Unit Control Information #2, we use FOLD_MARK_IN_PROGRESS
  *	to indicate that we are in the progression of a Virtual Unit Chain folding. If the UCI #2
  *	is FOLD_MARK_IN_PROGRESS when mounting the NFTL, the (previous) folding process is interrupted
+<<<<<<< HEAD
  *	for some reason. A clean up/check of the VUC is neceressary in this case.
+=======
+ *	for some reason. A clean up/check of the VUC is necessary in this case.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * WARNING: return 0 if read error
  */
@@ -657,7 +722,11 @@ int NFTL_mount(struct NFTLrecord *s)
 						printk("Block %d: incorrect logical block: %d expected: %d\n",
 						       block, logical_block, first_logical_block);
 						/* the chain is incorrect : we must format it,
+<<<<<<< HEAD
 						   but we need to read it completly */
+=======
+						   but we need to read it completely */
+>>>>>>> refs/remotes/origin/cm-10.0
 						do_format_chain = 1;
 					}
 					if (is_first_block) {
@@ -669,7 +738,11 @@ int NFTL_mount(struct NFTLrecord *s)
 							printk("Block %d: incorrectly marked as first block in chain\n",
 							       block);
 							/* the chain is incorrect : we must format it,
+<<<<<<< HEAD
 							   but we need to read it completly */
+=======
+							   but we need to read it completely */
+>>>>>>> refs/remotes/origin/cm-10.0
 							do_format_chain = 1;
 						} else {
 							printk("Block %d: folding in progress - ignoring first block flag\n",

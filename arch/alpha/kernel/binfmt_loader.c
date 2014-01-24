@@ -46,6 +46,11 @@ static struct linux_binfmt loader_format = {
 
 static int __init init_loader_binfmt(void)
 {
+<<<<<<< HEAD
 	return insert_binfmt(&loader_format);
+=======
+	insert_binfmt(&loader_format);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 arch_initcall(init_loader_binfmt);

@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,12 +45,20 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acevents.h"
 #include "acnamesp.h"
 #include "acdebug.h"
 #include "actables.h"
+<<<<<<< HEAD
+=======
+#include "acinterp.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define _COMPONENT          ACPI_UTILITIES
 ACPI_MODULE_NAME("utxface")
@@ -143,6 +155,11 @@ acpi_status acpi_enable_subsystem(u32 flags)
 
 	ACPI_FUNCTION_TRACE(acpi_enable_subsystem);
 
+<<<<<<< HEAD
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Enable ACPI mode */
 
 	if (!(flags & ACPI_NO_ACPI_ENABLE)) {
@@ -167,6 +184,10 @@ acpi_status acpi_enable_subsystem(u32 flags)
 		ACPI_WARNING((AE_INFO, "Could not map the FACS table"));
 		return_ACPI_STATUS(status);
 	}
+<<<<<<< HEAD
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Install the default op_region handlers. These are installed unless
@@ -182,7 +203,11 @@ acpi_status acpi_enable_subsystem(u32 flags)
 			return_ACPI_STATUS(status);
 		}
 	}
+<<<<<<< HEAD
 
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Initialize ACPI Event handling (Fixed and General Purpose)
 	 *
@@ -218,6 +243,10 @@ acpi_status acpi_enable_subsystem(u32 flags)
 			return_ACPI_STATUS(status);
 		}
 	}
+<<<<<<< HEAD
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return_ACPI_STATUS(status);
 }
@@ -639,4 +668,44 @@ acpi_status acpi_install_interface_handler(acpi_interface_handler handler)
 }
 
 ACPI_EXPORT_SYMBOL(acpi_install_interface_handler)
+<<<<<<< HEAD
+=======
+
+/*****************************************************************************
+ *
+ * FUNCTION:    acpi_check_address_range
+ *
+ * PARAMETERS:  space_id            - Address space ID
+ *              Address             - Start address
+ *              Length              - Length
+ *              Warn                - TRUE if warning on overlap desired
+ *
+ * RETURN:      Count of the number of conflicts detected.
+ *
+ * DESCRIPTION: Check if the input address range overlaps any of the
+ *              ASL operation region address ranges.
+ *
+ ****************************************************************************/
+u32
+acpi_check_address_range(acpi_adr_space_type space_id,
+			 acpi_physical_address address,
+			 acpi_size length, u8 warn)
+{
+	u32 overlaps;
+	acpi_status status;
+
+	status = acpi_ut_acquire_mutex(ACPI_MTX_NAMESPACE);
+	if (ACPI_FAILURE(status)) {
+		return (0);
+	}
+
+	overlaps = acpi_ut_check_address_range(space_id, address,
+					       (u32)length, warn);
+
+	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
+	return (overlaps);
+}
+
+ACPI_EXPORT_SYMBOL(acpi_check_address_range)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif				/* !ACPI_ASL_COMPILER */

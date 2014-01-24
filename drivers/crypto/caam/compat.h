@@ -28,8 +28,16 @@
 #include <crypto/aes.h>
 #include <crypto/des.h>
 #include <crypto/sha.h>
+<<<<<<< HEAD
 #include <crypto/aead.h>
 #include <crypto/authenc.h>
 #include <crypto/scatterwalk.h>
+=======
+#include <crypto/md5.h>
+#include <crypto/aead.h>
+#include <crypto/authenc.h>
+#include <crypto/scatterwalk.h>
+#include <crypto/internal/skcipher.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* !defined(CAAM_COMPAT_H) */

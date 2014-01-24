@@ -26,6 +26,10 @@
 
 #undef HAVE_REALLY_SLOW_DMA_CONTROLLER
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <asm/dma.h>
 

@@ -20,6 +20,10 @@
  * flag.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/clk.h>
@@ -322,7 +326,11 @@ static int __devinit ep93xx_keypad_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, keypad);
 
 	err = request_irq(keypad->irq, ep93xx_keypad_irq_handler,
+<<<<<<< HEAD
 			  IRQF_DISABLED, pdev->name, keypad);
+=======
+			  0, pdev->name, keypad);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto failed_free_dev;
 
@@ -389,6 +397,7 @@ static struct platform_driver ep93xx_keypad_driver = {
 	.suspend	= ep93xx_keypad_suspend,
 	.resume		= ep93xx_keypad_resume,
 };
+<<<<<<< HEAD
 
 static int __init ep93xx_keypad_init(void)
 {
@@ -402,6 +411,9 @@ static void __exit ep93xx_keypad_exit(void)
 
 module_init(ep93xx_keypad_init);
 module_exit(ep93xx_keypad_exit);
+=======
+module_platform_driver(ep93xx_keypad_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("H Hartley Sweeten <hsweeten@visionengravers.com>");

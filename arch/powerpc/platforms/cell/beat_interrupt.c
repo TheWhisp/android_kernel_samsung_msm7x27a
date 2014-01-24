@@ -34,7 +34,11 @@ static DEFINE_RAW_SPINLOCK(beatic_irq_mask_lock);
 static uint64_t	beatic_irq_mask_enable[(MAX_IRQS+255)/64];
 static uint64_t	beatic_irq_mask_ack[(MAX_IRQS+255)/64];
 
+<<<<<<< HEAD
 static struct irq_host *beatic_host;
+=======
+static struct irq_domain *beatic_host;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * In this implementation, "virq" == "IRQ plug number",
@@ -122,7 +126,11 @@ static struct irq_chip beatic_pic = {
  *
  * Note that the number (virq) is already assigned at upper layer.
  */
+<<<<<<< HEAD
 static void beatic_pic_host_unmap(struct irq_host *h, unsigned int virq)
+=======
+static void beatic_pic_host_unmap(struct irq_domain *h, unsigned int virq)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	beat_destruct_irq_plug(virq);
 }
@@ -133,7 +141,11 @@ static void beatic_pic_host_unmap(struct irq_host *h, unsigned int virq)
  *
  * Note that the number (virq) is already assigned at upper layer.
  */
+<<<<<<< HEAD
 static int beatic_pic_host_map(struct irq_host *h, unsigned int virq,
+=======
+static int beatic_pic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			       irq_hw_number_t hw)
 {
 	int64_t	err;
@@ -154,7 +166,11 @@ static int beatic_pic_host_map(struct irq_host *h, unsigned int virq,
  * Called from irq_create_of_mapping() only.
  * Note: We have only 1 entry to translate.
  */
+<<<<<<< HEAD
 static int beatic_pic_host_xlate(struct irq_host *h, struct device_node *ct,
+=======
+static int beatic_pic_host_xlate(struct irq_domain *h, struct device_node *ct,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 const u32 *intspec, unsigned int intsize,
 				 irq_hw_number_t *out_hwirq,
 				 unsigned int *out_flags)
@@ -166,13 +182,21 @@ static int beatic_pic_host_xlate(struct irq_host *h, struct device_node *ct,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int beatic_pic_host_match(struct irq_host *h, struct device_node *np)
+=======
+static int beatic_pic_host_match(struct irq_domain *h, struct device_node *np)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* Match all */
 	return 1;
 }
 
+<<<<<<< HEAD
 static struct irq_host_ops beatic_pic_host_ops = {
+=======
+static const struct irq_domain_ops beatic_pic_host_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map = beatic_pic_host_map,
 	.unmap = beatic_pic_host_unmap,
 	.xlate = beatic_pic_host_xlate,
@@ -239,9 +263,13 @@ void __init beatic_init_IRQ(void)
 	ppc_md.get_irq = beatic_get_irq;
 
 	/* Allocate an irq host */
+<<<<<<< HEAD
 	beatic_host = irq_alloc_host(NULL, IRQ_HOST_MAP_NOMAP, 0,
 				     &beatic_pic_host_ops,
 					 0);
+=======
+	beatic_host = irq_domain_add_nomap(NULL, 0, &beatic_pic_host_ops, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(beatic_host == NULL);
 	irq_set_default_host(beatic_host);
 }
@@ -250,6 +278,10 @@ void beatic_deinit_IRQ(void)
 {
 	int	i;
 
+<<<<<<< HEAD
 	for (i = 1; i < NR_IRQS; i++)
+=======
+	for (i = 1; i < nr_irqs; i++)
+>>>>>>> refs/remotes/origin/cm-10.0
 		beat_destruct_irq_plug(i);
 }

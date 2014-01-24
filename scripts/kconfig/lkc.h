@@ -21,12 +21,16 @@ static inline char *bind_textdomain_codeset(const char *dn, char *c) { return c;
 extern "C" {
 #endif
 
+<<<<<<< HEAD
 #ifdef LKC_DIRECT_LINK
 #define P(name,type,arg)	extern type name arg
 #else
 #include "lkc_defs.h"
 #define P(name,type,arg)	extern type (*name ## _p) arg
 #endif
+=======
+#define P(name,type,arg)	extern type name arg
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "lkc_proto.h"
 #undef P
 
@@ -68,9 +72,13 @@ struct kconf_id {
 	enum symbol_type stype;
 };
 
+<<<<<<< HEAD
 #ifdef YYDEBUG
 extern int zconfdebug;
 #endif
+=======
+extern int zconfdebug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int zconfparse(void);
 void zconfdump(FILE *out);
@@ -81,9 +89,12 @@ void zconf_nextfile(const char *name);
 int zconf_lineno(void);
 const char *zconf_curname(void);
 
+<<<<<<< HEAD
 /* conf.c */
 void xfgets(char *str, int size, FILE *in);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* confdata.c */
 const char *conf_get_configname(void);
 const char *conf_get_autoconfig_name(void);
@@ -92,6 +103,7 @@ void sym_set_change_count(int count);
 void sym_add_change_count(int count);
 void conf_set_all_new_symbols(enum conf_def_mode mode);
 
+<<<<<<< HEAD
 /* confdata.c and expr.c */
 static inline void xfwrite(const void *str, size_t len, size_t count, FILE *out)
 {
@@ -101,6 +113,21 @@ static inline void xfwrite(const void *str, size_t len, size_t count, FILE *out)
 
 /* kconfig_load.c */
 void kconfig_load(void);
+=======
+struct conf_printer {
+	void (*print_symbol)(FILE *, struct symbol *, const char *, void *);
+	void (*print_comment)(FILE *, const char *, void *);
+};
+
+/* confdata.c and expr.c */
+static inline void xfwrite(const void *str, size_t len, size_t count, FILE *out)
+{
+	assert(len != 0);
+
+	if (fwrite(str, len, count, out) != count)
+		fprintf(stderr, "Error in writing or end of file.\n");
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* menu.c */
 void _menu_init(void);

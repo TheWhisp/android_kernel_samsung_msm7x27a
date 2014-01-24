@@ -63,7 +63,11 @@
 #include <linux/mutex.h>
 #include <linux/amifdreg.h>
 #include <linux/amifd.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
+=======
+#include <linux/fs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/blkdev.h>
 #include <linux/elevator.h>
 #include <linux/interrupt.h>

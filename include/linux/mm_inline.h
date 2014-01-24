@@ -22,6 +22,7 @@ static inline int page_is_file_cache(struct page *page)
 }
 
 static inline void
+<<<<<<< HEAD
 __add_page_to_lru_list(struct zone *zone, struct page *page, enum lru_list l,
 		       struct list_head *head)
 {
@@ -42,6 +43,23 @@ del_page_from_lru_list(struct zone *zone, struct page *page, enum lru_list l)
 	list_del(&page->lru);
 	__mod_zone_page_state(zone, NR_LRU_BASE + l, -hpage_nr_pages(page));
 	mem_cgroup_del_lru_list(page, l);
+=======
+add_page_to_lru_list(struct zone *zone, struct page *page, enum lru_list lru)
+{
+	struct lruvec *lruvec;
+
+	lruvec = mem_cgroup_lru_add_list(zone, page, lru);
+	list_add(&page->lru, &lruvec->lists[lru]);
+	__mod_zone_page_state(zone, NR_LRU_BASE + lru, hpage_nr_pages(page));
+}
+
+static inline void
+del_page_from_lru_list(struct zone *zone, struct page *page, enum lru_list lru)
+{
+	mem_cgroup_lru_del_list(page, lru);
+	list_del(&page->lru);
+	__mod_zone_page_state(zone, NR_LRU_BASE + lru, -hpage_nr_pages(page));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -59,6 +77,7 @@ static inline enum lru_list page_lru_base_type(struct page *page)
 	return LRU_INACTIVE_ANON;
 }
 
+<<<<<<< HEAD
 static inline void
 del_page_from_lru(struct zone *zone, struct page *page)
 {
@@ -77,6 +96,30 @@ del_page_from_lru(struct zone *zone, struct page *page)
 	}
 	__mod_zone_page_state(zone, NR_LRU_BASE + l, -hpage_nr_pages(page));
 	mem_cgroup_del_lru_list(page, l);
+=======
+/**
+ * page_off_lru - which LRU list was page on? clearing its lru flags.
+ * @page: the page to test
+ *
+ * Returns the LRU list a page was on, as an index into the array of LRU
+ * lists; and clears its Unevictable or Active flags, ready for freeing.
+ */
+static inline enum lru_list page_off_lru(struct page *page)
+{
+	enum lru_list lru;
+
+	if (PageUnevictable(page)) {
+		__ClearPageUnevictable(page);
+		lru = LRU_UNEVICTABLE;
+	} else {
+		lru = page_lru_base_type(page);
+		if (PageActive(page)) {
+			__ClearPageActive(page);
+			lru += LRU_ACTIVE;
+		}
+	}
+	return lru;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -97,7 +140,10 @@ static inline enum lru_list page_lru(struct page *page)
 		if (PageActive(page))
 			lru += LRU_ACTIVE;
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return lru;
 }
 

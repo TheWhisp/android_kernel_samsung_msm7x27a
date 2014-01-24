@@ -35,7 +35,10 @@
 #include <linux/syscalls.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgalloc.h>
 #include <asm/sections.h>
 #include <asm/traps.h>
@@ -54,7 +57,11 @@ static noinline void force_sig_info_fault(const char *type, int si_signo,
 	if (unlikely(tsk->pid < 2)) {
 		panic("Signal %d (code %d) at %#lx sent to %s!",
 		      si_signo, si_code & 0xffff, address,
+<<<<<<< HEAD
 		      tsk->pid ? "init" : "the idle task");
+=======
+		      is_idle_task(tsk) ? "the idle task" : "init");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	info.si_signo = si_signo;
@@ -131,7 +138,11 @@ static inline pmd_t *vmalloc_sync_one(pgd_t *pgd, unsigned long address)
 }
 
 /*
+<<<<<<< HEAD
  * Handle a fault on the vmalloc or module mapping area
+=======
+ * Handle a fault on the vmalloc area.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static inline int vmalloc_fault(pgd_t *pgd, unsigned long address)
 {
@@ -204,9 +215,20 @@ static pgd_t *get_current_pgd(void)
  * interrupt or a critical region, and must do as little as possible.
  * Similarly, we can't use atomic ops here, since we may be handling a
  * fault caused by an atomic op access.
+<<<<<<< HEAD
  */
 static int handle_migrating_pte(pgd_t *pgd, int fault_num,
 				unsigned long address,
+=======
+ *
+ * If we find a migrating PTE while we're in an NMI context, and we're
+ * at a PC that has a registered exception handler, we don't wait,
+ * since this thread may (e.g.) have been interrupted while migrating
+ * its own stack, which would then cause us to self-deadlock.
+ */
+static int handle_migrating_pte(pgd_t *pgd, int fault_num,
+				unsigned long address, unsigned long pc,
+>>>>>>> refs/remotes/origin/cm-10.0
 				int is_kernel_mode, int write)
 {
 	pud_t *pud;
@@ -228,6 +250,11 @@ static int handle_migrating_pte(pgd_t *pgd, int fault_num,
 		pte_offset_kernel(pmd, address);
 	pteval = *pte;
 	if (pte_migrating(pteval)) {
+<<<<<<< HEAD
+=======
+		if (in_nmi() && search_exception_tables(pc))
+			return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		wait_for_migration(pte);
 		return 1;
 	}
@@ -301,7 +328,11 @@ static int handle_page_fault(struct pt_regs *regs,
 	 * rather than trying to patch up the existing PTE.
 	 */
 	pgd = get_current_pgd();
+<<<<<<< HEAD
 	if (handle_migrating_pte(pgd, fault_num, address,
+=======
+	if (handle_migrating_pte(pgd, fault_num, address, regs->pc,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 is_kernel_mode, write))
 		return 1;
 
@@ -336,9 +367,18 @@ static int handle_page_fault(struct pt_regs *regs,
 	/*
 	 * If we're trying to touch user-space addresses, we must
 	 * be either at PL0, or else with interrupts enabled in the
+<<<<<<< HEAD
 	 * kernel, so either way we can re-enable interrupts here.
 	 */
 	local_irq_enable();
+=======
+	 * kernel, so either way we can re-enable interrupts here
+	 * unless we are doing atomic access to user space with
+	 * interrupts disabled.
+	 */
+	if (!(regs->flags & PT_FLAGS_DISABLE_IRQ))
+		local_irq_enable();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mm = tsk->mm;
 
@@ -515,7 +555,11 @@ no_context:
 
 	if (unlikely(tsk->pid < 2)) {
 		panic("Kernel page fault running %s!",
+<<<<<<< HEAD
 		      tsk->pid ? "init" : "the idle task");
+=======
+		      is_idle_task(tsk) ? "the idle task" : "init");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -666,7 +710,11 @@ struct intvec_state do_page_fault_ics(struct pt_regs *regs, int fault_num,
 	 */
 	if (fault_num == INT_DTLB_ACCESS)
 		write = 1;
+<<<<<<< HEAD
 	if (handle_migrating_pte(pgd, fault_num, address, 1, write))
+=======
+	if (handle_migrating_pte(pgd, fault_num, address, pc, 1, write))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return state;
 
 	/* Return zero so that we continue on with normal fault handling. */

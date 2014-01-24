@@ -27,23 +27,49 @@
 
 asmlinkage void preempt_schedule(void);
 
+<<<<<<< HEAD
+=======
+#define preempt_check_resched() \
+do { \
+	if (unlikely(test_thread_flag(TIF_NEED_RESCHED))) \
+		preempt_schedule(); \
+} while (0)
+
+#else /* !CONFIG_PREEMPT */
+
+#define preempt_check_resched()		do { } while (0)
+
+#endif /* CONFIG_PREEMPT */
+
+
+#ifdef CONFIG_PREEMPT_COUNT
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define preempt_disable() \
 do { \
 	inc_preempt_count(); \
 	barrier(); \
 } while (0)
 
+<<<<<<< HEAD
 #define preempt_enable_no_resched() \
+=======
+#define sched_preempt_enable_no_resched() \
+>>>>>>> refs/remotes/origin/cm-10.0
 do { \
 	barrier(); \
 	dec_preempt_count(); \
 } while (0)
 
+<<<<<<< HEAD
 #define preempt_check_resched() \
 do { \
 	if (unlikely(test_thread_flag(TIF_NEED_RESCHED))) \
 		preempt_schedule(); \
 } while (0)
+=======
+#define preempt_enable_no_resched()	sched_preempt_enable_no_resched()
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define preempt_enable() \
 do { \
@@ -80,7 +106,11 @@ do { \
 	preempt_check_resched(); \
 } while (0)
 
+<<<<<<< HEAD
 #else
+=======
+#else /* !CONFIG_PREEMPT_COUNT */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Even if we don't have any preemption, we need preempt disable/enable
@@ -89,15 +119,25 @@ do { \
  * region.
  */
 #define preempt_disable()		barrier()
+<<<<<<< HEAD
 #define preempt_enable_no_resched()	barrier()
 #define preempt_enable()		barrier()
 #define preempt_check_resched()		barrier()
+=======
+#define sched_preempt_enable_no_resched()	barrier()
+#define preempt_enable_no_resched()	barrier()
+#define preempt_enable()		barrier()
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define preempt_disable_notrace()		barrier()
 #define preempt_enable_no_resched_notrace()	barrier()
 #define preempt_enable_notrace()		barrier()
 
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_PREEMPT_COUNT */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_PREEMPT_NOTIFIERS
 

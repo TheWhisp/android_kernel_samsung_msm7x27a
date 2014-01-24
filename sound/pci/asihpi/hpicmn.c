@@ -1,7 +1,11 @@
 /******************************************************************************
 
     AudioScience HPI driver
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/cm-10.0
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -57,7 +61,11 @@ u16 hpi_validate_response(struct hpi_message *phm, struct hpi_response *phr)
 	}
 
 	if (phr->function != phm->function) {
+<<<<<<< HEAD
 		HPI_DEBUG_LOG(ERROR, "header type %d invalid\n",
+=======
+		HPI_DEBUG_LOG(ERROR, "header function %d invalid\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			phr->function);
 		return HPI_ERROR_INVALID_RESPONSE;
 	}
@@ -68,7 +76,11 @@ u16 hpi_validate_response(struct hpi_message *phm, struct hpi_response *phr)
 u16 hpi_add_adapter(struct hpi_adapter_obj *pao)
 {
 	u16 retval = 0;
+<<<<<<< HEAD
 	/*HPI_ASSERT(pao->wAdapterType); */
+=======
+	/*HPI_ASSERT(pao->type); */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	hpios_alistlock_lock(&adapters);
 
@@ -77,6 +89,7 @@ u16 hpi_add_adapter(struct hpi_adapter_obj *pao)
 		goto unlock;
 	}
 
+<<<<<<< HEAD
 	if (adapters.adapter[pao->index].adapter_type) {
 		int a;
 		for (a = HPI_MAX_ADAPTERS - 1; a >= 0; a--) {
@@ -84,6 +97,15 @@ u16 hpi_add_adapter(struct hpi_adapter_obj *pao)
 				HPI_DEBUG_LOG(WARNING,
 					"ASI%X duplicate index %d moved to %d\n",
 					pao->adapter_type, pao->index, a);
+=======
+	if (adapters.adapter[pao->index].type) {
+		int a;
+		for (a = HPI_MAX_ADAPTERS - 1; a >= 0; a--) {
+			if (!adapters.adapter[a].type) {
+				HPI_DEBUG_LOG(WARNING,
+					"ASI%X duplicate index %d moved to %d\n",
+					pao->type, pao->index, a);
+>>>>>>> refs/remotes/origin/cm-10.0
 				pao->index = a;
 				break;
 			}
@@ -104,13 +126,21 @@ unlock:
 
 void hpi_delete_adapter(struct hpi_adapter_obj *pao)
 {
+<<<<<<< HEAD
 	if (!pao->adapter_type) {
+=======
+	if (!pao->type) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		HPI_DEBUG_LOG(ERROR, "removing null adapter?\n");
 		return;
 	}
 
 	hpios_alistlock_lock(&adapters);
+<<<<<<< HEAD
 	if (adapters.adapter[pao->index].adapter_type)
+=======
+	if (adapters.adapter[pao->index].type)
+>>>>>>> refs/remotes/origin/cm-10.0
 		adapters.gw_num_adapters--;
 	memset(&adapters.adapter[pao->index], 0, sizeof(adapters.adapter[0]));
 	hpios_alistlock_unlock(&adapters);
@@ -132,7 +162,11 @@ struct hpi_adapter_obj *hpi_find_adapter(u16 adapter_index)
 	}
 
 	pao = &adapters.adapter[adapter_index];
+<<<<<<< HEAD
 	if (pao->adapter_type != 0) {
+=======
+	if (pao->type != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		   HPI_DEBUG_LOG(VERBOSE, "Found adapter index %d\n",
 		   wAdapterIndex);
@@ -165,7 +199,11 @@ static void subsys_get_adapter(struct hpi_message *phm,
 
 	/* find the nCount'th nonzero adapter in array */
 	for (index = 0; index < HPI_MAX_ADAPTERS; index++) {
+<<<<<<< HEAD
 		if (adapters.adapter[index].adapter_type) {
+=======
+		if (adapters.adapter[index].type) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!count)
 				break;
 			count--;
@@ -174,11 +212,19 @@ static void subsys_get_adapter(struct hpi_message *phm,
 
 	if (index < HPI_MAX_ADAPTERS) {
 		phr->u.s.adapter_index = adapters.adapter[index].index;
+<<<<<<< HEAD
 		phr->u.s.adapter_type = adapters.adapter[index].adapter_type;
 	} else {
 		phr->u.s.adapter_index = 0;
 		phr->u.s.adapter_type = 0;
 		phr->error = HPI_ERROR_BAD_ADAPTER_NUMBER;
+=======
+		phr->u.s.adapter_type = adapters.adapter[index].type;
+	} else {
+		phr->u.s.adapter_index = 0;
+		phr->u.s.adapter_type = 0;
+		phr->error = HPI_ERROR_INVALID_OBJ_INDEX;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -315,8 +361,12 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
 	short found = 1;
 	struct hpi_control_cache_info *pI;
 	struct hpi_control_cache_single *pC;
+<<<<<<< HEAD
 	struct hpi_control_cache_pad *p_pad;
 
+=======
+	size_t response_size;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!find_control(phm->obj_index, p_cache, &pI)) {
 		HPI_DEBUG_LOG(VERBOSE,
 			"HPICMN find_control() failed for adap %d\n",
@@ -325,12 +375,25 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
 	}
 
 	phr->error = 0;
+<<<<<<< HEAD
+=======
+	phr->specific_error = 0;
+	phr->version = 0;
+
+	/* set the default response size */
+	response_size =
+		sizeof(struct hpi_response_header) +
+		sizeof(struct hpi_control_res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* pC is the default cached control strucure. May be cast to
 	   something else in the following switch statement.
 	 */
 	pC = (struct hpi_control_cache_single *)pI;
+<<<<<<< HEAD
 	p_pad = (struct hpi_control_cache_pad *)pI;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (pI->control_type) {
 
@@ -528,10 +591,19 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
 		found ? "Cached" : "Uncached", phm->adapter_index,
 		pI->control_index, pI->control_type, phm->u.c.attribute);
 
+<<<<<<< HEAD
 	if (found)
 		phr->size =
 			sizeof(struct hpi_response_header) +
 			sizeof(struct hpi_control_res);
+=======
+	if (found) {
+		phr->size = (u16)response_size;
+		phr->type = HPI_TYPE_RESPONSE;
+		phr->object = phm->object;
+		phr->function = phm->function;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return found;
 }
@@ -630,13 +702,21 @@ struct hpi_control_cache *hpi_alloc_control_cache(const u32 control_count,
 	if (!p_cache)
 		return NULL;
 
+<<<<<<< HEAD
 	p_cache->p_info =
 		kmalloc(sizeof(*p_cache->p_info) * control_count, GFP_KERNEL);
+=======
+	p_cache->p_info = kcalloc(control_count, sizeof(*p_cache->p_info),
+				  GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!p_cache->p_info) {
 		kfree(p_cache);
 		return NULL;
 	}
+<<<<<<< HEAD
 	memset(p_cache->p_info, 0, sizeof(*p_cache->p_info) * control_count);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	p_cache->cache_size_in_bytes = size_in_bytes;
 	p_cache->control_count = control_count;
 	p_cache->p_cache = p_dsp_control_buffer;
@@ -682,7 +762,11 @@ static void subsys_message(struct hpi_message *phm, struct hpi_response *phr)
 void HPI_COMMON(struct hpi_message *phm, struct hpi_response *phr)
 {
 	switch (phm->type) {
+<<<<<<< HEAD
 	case HPI_TYPE_MESSAGE:
+=======
+	case HPI_TYPE_REQUEST:
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch (phm->object) {
 		case HPI_OBJ_SUBSYSTEM:
 			subsys_message(phm, phr);

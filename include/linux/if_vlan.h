@@ -17,11 +17,19 @@
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <linux/rtnetlink.h>
+<<<<<<< HEAD
 
 #define VLAN_HLEN	4		/* The additional bytes (on top of the Ethernet header)
 					 * that VLAN requires.
 					 */
 #define VLAN_ETH_ALEN	6		/* Octets in one ethernet addr	 */
+=======
+#include <linux/bug.h>
+
+#define VLAN_HLEN	4		/* The additional bytes required by VLAN
+					 * (in addition to the Ethernet header)
+					 */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define VLAN_ETH_HLEN	18		/* Total octets in header.	 */
 #define VLAN_ETH_ZLEN	64		/* Min. octets in frame sans FCS */
 
@@ -74,6 +82,7 @@ static inline struct vlan_ethhdr *vlan_eth_hdr(const struct sk_buff *skb)
 /* found in socket.c */
 extern void vlan_ioctl_set(int (*hook)(struct net *, void __user *));
 
+<<<<<<< HEAD
 /* if this changes, algorithm will have to be reworked because this
  * depends on completely exhausting the VLAN identifier space.  Thus
  * it gives constant time look-up, but in many cases it wastes memory.
@@ -109,6 +118,9 @@ static inline void vlan_group_set_device(struct vlan_group *vg,
 	array = vg->vlan_devices_arrays[vlan_id / VLAN_GROUP_ARRAY_PART_LEN];
 	array[vlan_id % VLAN_GROUP_ARRAY_PART_LEN] = dev;
 }
+=======
+struct vlan_info;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int is_vlan_dev(struct net_device *dev)
 {
@@ -116,6 +128,7 @@ static inline int is_vlan_dev(struct net_device *dev)
 }
 
 #define vlan_tx_tag_present(__skb)	((__skb)->vlan_tci & VLAN_TAG_PRESENT)
+<<<<<<< HEAD
 #define vlan_tx_tag_get(__skb)		((__skb)->vlan_tci & ~VLAN_TAG_PRESENT)
 
 #if defined(CONFIG_VLAN_8021Q) || defined(CONFIG_VLAN_8021Q_MODULE)
@@ -148,6 +161,32 @@ vlan_gro_frags(struct napi_struct *napi, struct vlan_group *grp,
 #else
 static inline struct net_device *vlan_find_dev(struct net_device *real_dev,
 					       u16 vlan_id)
+=======
+#define vlan_tx_nonzero_tag_present(__skb) \
+	(vlan_tx_tag_present(__skb) && ((__skb)->vlan_tci & VLAN_VID_MASK))
+#define vlan_tx_tag_get(__skb)		((__skb)->vlan_tci & ~VLAN_TAG_PRESENT)
+
+#if defined(CONFIG_VLAN_8021Q) || defined(CONFIG_VLAN_8021Q_MODULE)
+
+extern struct net_device *__vlan_find_dev_deep(struct net_device *real_dev,
+					       u16 vlan_id);
+extern struct net_device *vlan_dev_real_dev(const struct net_device *dev);
+extern u16 vlan_dev_vlan_id(const struct net_device *dev);
+
+extern bool vlan_do_receive(struct sk_buff **skb);
+extern struct sk_buff *vlan_untag(struct sk_buff *skb);
+
+extern int vlan_vid_add(struct net_device *dev, unsigned short vid);
+extern void vlan_vid_del(struct net_device *dev, unsigned short vid);
+
+extern int vlan_vids_add_by_dev(struct net_device *dev,
+				const struct net_device *by_dev);
+extern void vlan_vids_del_by_dev(struct net_device *dev,
+				 const struct net_device *by_dev);
+#else
+static inline struct net_device *
+__vlan_find_dev_deep(struct net_device *real_dev, u16 vlan_id)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return NULL;
 }
@@ -164,6 +203,7 @@ static inline u16 vlan_dev_vlan_id(const struct net_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int __vlan_hwaccel_rx(struct sk_buff *skb, struct vlan_group *grp,
 				    u16 vlan_tci, int polling)
 {
@@ -175,6 +215,10 @@ static inline bool vlan_do_receive(struct sk_buff **skb)
 {
 	if ((*skb)->vlan_tci & VLAN_VID_MASK)
 		(*skb)->pkt_type = PACKET_OTHERHOST;
+=======
+static inline bool vlan_do_receive(struct sk_buff **skb)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	return false;
 }
 
@@ -183,6 +227,7 @@ static inline struct sk_buff *vlan_untag(struct sk_buff *skb)
 	return skb;
 }
 
+<<<<<<< HEAD
 static inline gro_result_t
 vlan_gro_receive(struct napi_struct *napi, struct vlan_group *grp,
 		 unsigned int vlan_tci, struct sk_buff *skb)
@@ -223,6 +268,28 @@ static inline int vlan_hwaccel_receive_skb(struct sk_buff *skb,
 {
 	return __vlan_hwaccel_rx(skb, grp, vlan_tci, 1);
 }
+=======
+static inline int vlan_vid_add(struct net_device *dev, unsigned short vid)
+{
+	return 0;
+}
+
+static inline void vlan_vid_del(struct net_device *dev, unsigned short vid)
+{
+}
+
+static inline int vlan_vids_add_by_dev(struct net_device *dev,
+				       const struct net_device *by_dev)
+{
+	return 0;
+}
+
+static inline void vlan_vids_del_by_dev(struct net_device *dev,
+					const struct net_device *by_dev)
+{
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * vlan_insert_tag - regular VLAN tag inserting
@@ -248,7 +315,11 @@ static inline struct sk_buff *vlan_insert_tag(struct sk_buff *skb, u16 vlan_tci)
 	veth = (struct vlan_ethhdr *)skb_push(skb, VLAN_HLEN);
 
 	/* Move the mac addresses to the beginning of the new header. */
+<<<<<<< HEAD
 	memmove(skb->data, skb->data + VLAN_HLEN, 2 * VLAN_ETH_ALEN);
+=======
+	memmove(skb->data, skb->data + VLAN_HLEN, 2 * ETH_ALEN);
+>>>>>>> refs/remotes/origin/cm-10.0
 	skb->mac_header -= VLAN_HLEN;
 
 	/* first, the ethernet type */
@@ -393,6 +464,43 @@ static inline __be16 vlan_get_protocol(const struct sk_buff *skb)
 
 	return protocol;
 }
+<<<<<<< HEAD
+=======
+
+static inline void vlan_set_encap_proto(struct sk_buff *skb,
+					struct vlan_hdr *vhdr)
+{
+	__be16 proto;
+	unsigned short *rawp;
+
+	/*
+	 * Was a VLAN packet, grab the encapsulated protocol, which the layer
+	 * three protocols care about.
+	 */
+
+	proto = vhdr->h_vlan_encapsulated_proto;
+	if (ntohs(proto) >= 1536) {
+		skb->protocol = proto;
+		return;
+	}
+
+	rawp = (unsigned short *)(vhdr + 1);
+	if (*rawp == 0xFFFF)
+		/*
+		 * This is a magic hack to spot IPX packets. Older Novell
+		 * breaks the protocol design and runs IPX over 802.3 without
+		 * an 802.2 LLC layer. We look for FFFF which isn't a used
+		 * 802.2 SSAP/DSAP. This won't work for fault tolerant netware
+		 * but does for the rest.
+		 */
+		skb->protocol = htons(ETH_P_802_3);
+	else
+		/*
+		 * Real 802.2 LLC
+		 */
+		skb->protocol = htons(ETH_P_802_2);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KERNEL__ */
 
 /* VLAN IOCTLs are found in sockios.h */
@@ -435,7 +543,11 @@ struct vlan_ioctl_args {
 		unsigned int skb_priority;
 		unsigned int name_type;
 		unsigned int bind_type;
+<<<<<<< HEAD
 		unsigned int flag; /* Matches vlan_dev_info flags */
+=======
+		unsigned int flag; /* Matches vlan_dev_priv flags */
+>>>>>>> refs/remotes/origin/cm-10.0
         } u;
 
 	short vlan_qos;   

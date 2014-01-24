@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,6 +28,10 @@
 static struct clk_lookup msm_clocks_fsm9xxx[] = {
 	CLK_DUMMY("core_clk",	ADM0_CLK,	"msm_dmov", OFF),
 	CLK_DUMMY("core_clk",	UART1_CLK,	"msm_serial.0", OFF),
+<<<<<<< HEAD
+=======
+	CLK_DUMMY("core_clk",	UART3_CLK,	"msm_uim.2", OFF),
+>>>>>>> refs/remotes/origin/cm-10.0
 	CLK_DUMMY("core_clk",	CE_CLK,		"qce.0", OFF),
 	CLK_DUMMY("core_clk",	CE_CLK,		"qcota.0", OFF),
 	CLK_DUMMY("core_clk",	CE_CLK,		"qcrypto.0", OFF),

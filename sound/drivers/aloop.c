@@ -34,7 +34,11 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include <sound/core.h>
 #include <sound/control.h>
@@ -51,7 +55,11 @@ MODULE_SUPPORTED_DEVICE("{{ALSA,Loopback soundcard}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 0};
+=======
+static bool enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 0};
+>>>>>>> refs/remotes/origin/cm-10.0
 static int pcm_substreams[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 8};
 static int pcm_notify[SNDRV_CARDS];
 
@@ -580,7 +588,12 @@ static void loopback_runtime_free(struct snd_pcm_runtime *runtime)
 static int loopback_hw_params(struct snd_pcm_substream *substream,
 			      struct snd_pcm_hw_params *params)
 {
+<<<<<<< HEAD
 	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+=======
+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
+						params_buffer_bytes(params));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int loopback_hw_free(struct snd_pcm_substream *substream)
@@ -592,7 +605,11 @@ static int loopback_hw_free(struct snd_pcm_substream *substream)
 	mutex_lock(&dpcm->loopback->cable_lock);
 	cable->valid &= ~(1 << substream->stream);
 	mutex_unlock(&dpcm->loopback->cable_lock);
+<<<<<<< HEAD
 	return snd_pcm_lib_free_pages(substream);
+=======
+	return snd_pcm_lib_free_vmalloc_buffer(substream);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static unsigned int get_cable_index(struct snd_pcm_substream *substream)
@@ -746,6 +763,11 @@ static struct snd_pcm_ops loopback_playback_ops = {
 	.prepare =	loopback_prepare,
 	.trigger =	loopback_trigger,
 	.pointer =	loopback_pointer,
+<<<<<<< HEAD
+=======
+	.page =		snd_pcm_lib_get_vmalloc_page,
+	.mmap =		snd_pcm_lib_mmap_vmalloc,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct snd_pcm_ops loopback_capture_ops = {
@@ -757,6 +779,11 @@ static struct snd_pcm_ops loopback_capture_ops = {
 	.prepare =	loopback_prepare,
 	.trigger =	loopback_trigger,
 	.pointer =	loopback_pointer,
+<<<<<<< HEAD
+=======
+	.page =		snd_pcm_lib_get_vmalloc_page,
+	.mmap =		snd_pcm_lib_mmap_vmalloc,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __devinit loopback_pcm_new(struct loopback *loopback,
@@ -777,10 +804,13 @@ static int __devinit loopback_pcm_new(struct loopback *loopback,
 	strcpy(pcm->name, "Loopback PCM");
 
 	loopback->pcm[device] = pcm;
+<<<<<<< HEAD
 
 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
 			snd_dma_continuous_data(GFP_KERNEL),
 			0, 2 * 1024 * 1024);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

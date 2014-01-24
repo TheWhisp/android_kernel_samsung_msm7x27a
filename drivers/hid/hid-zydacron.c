@@ -201,9 +201,13 @@ static void zc_remove(struct hid_device *hdev)
 	struct zc_device *zc = hid_get_drvdata(hdev);
 
 	hid_hw_stop(hdev);
+<<<<<<< HEAD
 
 	if (NULL != zc)
 		kfree(zc);
+=======
+	kfree(zc);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static const struct hid_device_id zc_devices[] = {

@@ -2,6 +2,10 @@
  *  GPIO driven matrix keyboard driver
  *
  *  Copyright (c) 2008 Marek Vasut <marek.vasut@gmail.com>
+<<<<<<< HEAD
+=======
+ *  Copyright (c) 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *  Based on corgikbd.c
  *
@@ -34,7 +38,11 @@ struct matrix_keypad {
 
 	uint32_t last_key_state[MATRIX_MAX_COLS];
 	struct delayed_work work;
+<<<<<<< HEAD
 	spinlock_t lock;
+=======
+	struct mutex lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool scan_pending;
 	bool stopped;
 	bool gpio_all_disabled;
@@ -162,19 +170,31 @@ static void matrix_keypad_scan(struct work_struct *work)
 
 	activate_all_cols(pdata, true);
 
+<<<<<<< HEAD
 	/* Enable IRQs again */
 	spin_lock_irq(&keypad->lock);
 	keypad->scan_pending = false;
 	enable_row_irqs(keypad);
 	spin_unlock_irq(&keypad->lock);
+=======
+	mutex_lock(&keypad->lock);
+	keypad->scan_pending = false;
+	enable_row_irqs(keypad);
+	mutex_unlock(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static irqreturn_t matrix_keypad_interrupt(int irq, void *id)
 {
 	struct matrix_keypad *keypad = id;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&keypad->lock, flags);
+=======
+
+	mutex_lock(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * See if another IRQ beaten us to it and scheduled the
@@ -190,7 +210,11 @@ static irqreturn_t matrix_keypad_interrupt(int irq, void *id)
 		msecs_to_jiffies(keypad->pdata->debounce_ms));
 
 out:
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&keypad->lock, flags);
+=======
+	mutex_unlock(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return IRQ_HANDLED;
 }
 
@@ -341,10 +365,18 @@ static int __devinit init_matrix_gpio(struct platform_device *pdev,
 		}
 	} else {
 		for (i = 0; i < pdata->num_row_gpios; i++) {
+<<<<<<< HEAD
 			err = request_any_context_irq(
 					gpio_to_irq(pdata->row_gpios[i]),
 					matrix_keypad_interrupt,
 					IRQF_DISABLED |
+=======
+			err = request_threaded_irq(
+					gpio_to_irq(pdata->row_gpios[i]),
+					NULL,
+					matrix_keypad_interrupt,
+					IRQF_DISABLED | IRQF_ONESHOT |
+>>>>>>> refs/remotes/origin/cm-10.0
 					IRQF_TRIGGER_RISING |
 					IRQF_TRIGGER_FALLING,
 					"matrix-keypad", keypad);
@@ -417,7 +449,11 @@ static int __devinit matrix_keypad_probe(struct platform_device *pdev)
 	keypad->row_shift = row_shift;
 	keypad->stopped = true;
 	INIT_DELAYED_WORK(&keypad->work, matrix_keypad_scan);
+<<<<<<< HEAD
 	spin_lock_init(&keypad->lock);
+=======
+	mutex_init(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	input_dev->name		= pdev->name;
 	input_dev->id.bustype	= BUS_HOST;
@@ -479,6 +515,10 @@ static int __devexit matrix_keypad_remove(struct platform_device *pdev)
 	for (i = 0; i < pdata->num_col_gpios; i++)
 		gpio_free(pdata->col_gpios[i]);
 
+<<<<<<< HEAD
+=======
+	mutex_destroy(&keypad->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	input_unregister_device(keypad->input_dev);
 	platform_set_drvdata(pdev, NULL);
 	kfree(keypad->keycodes);
@@ -498,6 +538,7 @@ static struct platform_driver matrix_keypad_driver = {
 #endif
 	},
 };
+<<<<<<< HEAD
 
 static int __init matrix_keypad_init(void)
 {
@@ -511,6 +552,9 @@ static void __exit matrix_keypad_exit(void)
 
 module_init(matrix_keypad_init);
 module_exit(matrix_keypad_exit);
+=======
+module_platform_driver(matrix_keypad_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");
 MODULE_DESCRIPTION("GPIO Driven Matrix Keypad Driver");

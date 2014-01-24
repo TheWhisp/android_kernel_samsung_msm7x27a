@@ -53,6 +53,7 @@ void rv515_debugfs(struct radeon_device *rdev)
 	}
 }
 
+<<<<<<< HEAD
 void rv515_ring_start(struct radeon_device *rdev)
 {
 	int r;
@@ -63,10 +64,23 @@ void rv515_ring_start(struct radeon_device *rdev)
 	}
 	radeon_ring_write(rdev, PACKET0(ISYNC_CNTL, 0));
 	radeon_ring_write(rdev,
+=======
+void rv515_ring_start(struct radeon_device *rdev, struct radeon_ring *ring)
+{
+	int r;
+
+	r = radeon_ring_lock(rdev, ring, 64);
+	if (r) {
+		return;
+	}
+	radeon_ring_write(ring, PACKET0(ISYNC_CNTL, 0));
+	radeon_ring_write(ring,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  ISYNC_ANY2D_IDLE3D |
 			  ISYNC_ANY3D_IDLE2D |
 			  ISYNC_WAIT_IDLEGUI |
 			  ISYNC_CPSCRATCH_IDLEGUI);
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(WAIT_UNTIL, 0));
 	radeon_ring_write(rdev, WAIT_2D_IDLECLEAN | WAIT_3D_IDLECLEAN);
 	radeon_ring_write(rdev, PACKET0(R300_DST_PIPE_CONFIG, 0));
@@ -93,6 +107,34 @@ void rv515_ring_start(struct radeon_device *rdev)
 	radeon_ring_write(rdev, ZC_FLUSH | ZC_FREE);
 	radeon_ring_write(rdev, PACKET0(GB_MSPOS0, 0));
 	radeon_ring_write(rdev,
+=======
+	radeon_ring_write(ring, PACKET0(WAIT_UNTIL, 0));
+	radeon_ring_write(ring, WAIT_2D_IDLECLEAN | WAIT_3D_IDLECLEAN);
+	radeon_ring_write(ring, PACKET0(R300_DST_PIPE_CONFIG, 0));
+	radeon_ring_write(ring, R300_PIPE_AUTO_CONFIG);
+	radeon_ring_write(ring, PACKET0(GB_SELECT, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(GB_ENABLE, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(R500_SU_REG_DEST, 0));
+	radeon_ring_write(ring, (1 << rdev->num_gb_pipes) - 1);
+	radeon_ring_write(ring, PACKET0(VAP_INDEX_OFFSET, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(RB3D_DSTCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, RB3D_DC_FLUSH | RB3D_DC_FREE);
+	radeon_ring_write(ring, PACKET0(ZB_ZCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, ZC_FLUSH | ZC_FREE);
+	radeon_ring_write(ring, PACKET0(WAIT_UNTIL, 0));
+	radeon_ring_write(ring, WAIT_2D_IDLECLEAN | WAIT_3D_IDLECLEAN);
+	radeon_ring_write(ring, PACKET0(GB_AA_CONFIG, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_write(ring, PACKET0(RB3D_DSTCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, RB3D_DC_FLUSH | RB3D_DC_FREE);
+	radeon_ring_write(ring, PACKET0(ZB_ZCACHE_CTLSTAT, 0));
+	radeon_ring_write(ring, ZC_FLUSH | ZC_FREE);
+	radeon_ring_write(ring, PACKET0(GB_MSPOS0, 0));
+	radeon_ring_write(ring,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  ((6 << MS_X0_SHIFT) |
 			   (6 << MS_Y0_SHIFT) |
 			   (6 << MS_X1_SHIFT) |
@@ -101,8 +143,13 @@ void rv515_ring_start(struct radeon_device *rdev)
 			   (6 << MS_Y2_SHIFT) |
 			   (6 << MSBD0_Y_SHIFT) |
 			   (6 << MSBD0_X_SHIFT)));
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(GB_MSPOS1, 0));
 	radeon_ring_write(rdev,
+=======
+	radeon_ring_write(ring, PACKET0(GB_MSPOS1, 0));
+	radeon_ring_write(ring,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  ((6 << MS_X3_SHIFT) |
 			   (6 << MS_Y3_SHIFT) |
 			   (6 << MS_X4_SHIFT) |
@@ -110,6 +157,7 @@ void rv515_ring_start(struct radeon_device *rdev)
 			   (6 << MS_X5_SHIFT) |
 			   (6 << MS_Y5_SHIFT) |
 			   (6 << MSBD1_SHIFT)));
+<<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(GA_ENHANCE, 0));
 	radeon_ring_write(rdev, GA_DEADLOCK_CNTL | GA_FASTSYNC_CNTL);
 	radeon_ring_write(rdev, PACKET0(GA_POLY_MODE, 0));
@@ -119,6 +167,17 @@ void rv515_ring_start(struct radeon_device *rdev)
 	radeon_ring_write(rdev, PACKET0(0x20C8, 0));
 	radeon_ring_write(rdev, 0);
 	radeon_ring_unlock_commit(rdev);
+=======
+	radeon_ring_write(ring, PACKET0(GA_ENHANCE, 0));
+	radeon_ring_write(ring, GA_DEADLOCK_CNTL | GA_FASTSYNC_CNTL);
+	radeon_ring_write(ring, PACKET0(GA_POLY_MODE, 0));
+	radeon_ring_write(ring, FRONT_PTYPE_TRIANGE | BACK_PTYPE_TRIANGE);
+	radeon_ring_write(ring, PACKET0(GA_ROUND_MODE, 0));
+	radeon_ring_write(ring, GEOMETRY_ROUND_NEAREST | COLOR_ROUND_NEAREST);
+	radeon_ring_write(ring, PACKET0(0x20C8, 0));
+	radeon_ring_write(ring, 0);
+	radeon_ring_unlock_commit(rdev, ring);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int rv515_mc_wait_for_idle(struct radeon_device *rdev)
@@ -149,7 +208,11 @@ void rv515_gpu_init(struct radeon_device *rdev)
 
 	if (r100_gui_wait_for_idle(rdev)) {
 		printk(KERN_WARNING "Failed to wait GUI idle while "
+<<<<<<< HEAD
 		       "reseting GPU. Bad things might happen.\n");
+=======
+		       "resetting GPU. Bad things might happen.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	rv515_vga_render_disable(rdev);
 	r420_pipes_init(rdev);
@@ -161,7 +224,11 @@ void rv515_gpu_init(struct radeon_device *rdev)
 	WREG32_PLL(0x000D, tmp);
 	if (r100_gui_wait_for_idle(rdev)) {
 		printk(KERN_WARNING "Failed to wait GUI idle while "
+<<<<<<< HEAD
 		       "reseting GPU. Bad things might happen.\n");
+=======
+		       "resetting GPU. Bad things might happen.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (rv515_mc_wait_for_idle(rdev)) {
 		printk(KERN_WARNING "Failed to wait MC idle while "
@@ -379,7 +446,23 @@ static int rv515_startup(struct radeon_device *rdev)
 	if (r)
 		return r;
 
+<<<<<<< HEAD
 	/* Enable IRQ */
+=======
+	r = radeon_fence_driver_start_ring(rdev, RADEON_RING_TYPE_GFX_INDEX);
+	if (r) {
+		dev_err(rdev->dev, "failed initializing CP fences (%d).\n", r);
+		return r;
+	}
+
+	/* Enable IRQ */
+	if (!rdev->irq.installed) {
+		r = radeon_irq_kms_init(rdev);
+		if (r)
+			return r;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rs600_irq_set(rdev);
 	rdev->config.r300.hdp_cntl = RREG32(RADEON_HOST_PATH_CNTL);
 	/* 1M ring buffer */
@@ -388,9 +471,21 @@ static int rv515_startup(struct radeon_device *rdev)
 		dev_err(rdev->dev, "failed initializing CP (%d).\n", r);
 		return r;
 	}
+<<<<<<< HEAD
 	r = r100_ib_init(rdev);
 	if (r) {
 		dev_err(rdev->dev, "failed initializing IB (%d).\n", r);
+=======
+
+	r = radeon_ib_pool_start(rdev);
+	if (r)
+		return r;
+
+	r = radeon_ib_test(rdev, RADEON_RING_TYPE_GFX_INDEX, &rdev->ring[RADEON_RING_TYPE_GFX_INDEX]);
+	if (r) {
+		dev_err(rdev->dev, "failed testing IB (%d).\n", r);
+		rdev->accel_working = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 		return r;
 	}
 	return 0;
@@ -398,6 +493,11 @@ static int rv515_startup(struct radeon_device *rdev)
 
 int rv515_resume(struct radeon_device *rdev)
 {
+<<<<<<< HEAD
+=======
+	int r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Make sur GART are not working */
 	if (rdev->flags & RADEON_IS_PCIE)
 		rv370_pcie_gart_disable(rdev);
@@ -415,7 +515,17 @@ int rv515_resume(struct radeon_device *rdev)
 	rv515_clock_startup(rdev);
 	/* Initialize surface registers */
 	radeon_surface_init(rdev);
+<<<<<<< HEAD
 	return rv515_startup(rdev);
+=======
+
+	rdev->accel_working = true;
+	r =  rv515_startup(rdev);
+	if (r) {
+		rdev->accel_working = false;
+	}
+	return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int rv515_suspend(struct radeon_device *rdev)
@@ -500,9 +610,12 @@ int rv515_init(struct radeon_device *rdev)
 	r = radeon_fence_driver_init(rdev);
 	if (r)
 		return r;
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Memory manager */
 	r = radeon_bo_init(rdev);
 	if (r)
@@ -511,7 +624,18 @@ int rv515_init(struct radeon_device *rdev)
 	if (r)
 		return r;
 	rv515_set_safe_registers(rdev);
+<<<<<<< HEAD
 	rdev->accel_working = true;
+=======
+
+	r = radeon_ib_pool_init(rdev);
+	rdev->accel_working = true;
+	if (r) {
+		dev_err(rdev->dev, "IB initialization failed (%d).\n", r);
+		rdev->accel_working = false;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = rv515_startup(rdev);
 	if (r) {
 		/* Somethings want wront with the accel init stop accel */

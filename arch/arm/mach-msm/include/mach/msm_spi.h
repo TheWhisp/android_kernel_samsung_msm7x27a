@@ -21,4 +21,8 @@ struct msm_spi_platform_data {
 	int (*dma_config)(void);
 	const char *rsl_id;
 	uint32_t pm_lat;
+<<<<<<< HEAD
+=======
+	uint32_t infinite_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 };

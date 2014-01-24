@@ -120,6 +120,15 @@ struct wm831x_pdata {
 	/** Put the /IRQ line into CMOS mode */
 	bool irq_cmos;
 
+<<<<<<< HEAD
+=======
+	/** Disable the touchscreen */
+	bool disable_touch;
+
+	/** The driver should initiate a power off sequence during shutdown */
+	bool soft_shutdown;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	int irq_base;
 	int gpio_base;
 	int gpio_defaults[WM831X_GPIO_NUM];

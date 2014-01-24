@@ -12,7 +12,10 @@
 #include <sys/resource.h>
 #include "as-layout.h"
 #include "init.h"
+<<<<<<< HEAD
 #include "kern_constants.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "kern_util.h"
 #include "os.h"
 #include "um_malloc.h"
@@ -21,6 +24,11 @@
 #define STACKSIZE (8 * 1024 * 1024)
 #define THREAD_NAME_LEN (256)
 
+<<<<<<< HEAD
+=======
+long elf_aux_hwcap;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void set_stklim(void)
 {
 	struct rlimit lim;
@@ -143,7 +151,13 @@ int __init main(int argc, char **argv, char **envp)
 	install_fatal_handler(SIGINT);
 	install_fatal_handler(SIGTERM);
 
+<<<<<<< HEAD
 	scan_elf_aux(envp);
+=======
+#ifdef CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA
+	scan_elf_aux(envp);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	do_uml_initcalls();
 	ret = linux_main(argc, argv);

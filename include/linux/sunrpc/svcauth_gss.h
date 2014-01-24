@@ -18,6 +18,11 @@
 
 int gss_svc_init(void);
 void gss_svc_shutdown(void);
+<<<<<<< HEAD
+=======
+int gss_svc_init_net(struct net *net);
+void gss_svc_shutdown_net(struct net *net);
+>>>>>>> refs/remotes/origin/cm-10.0
 int svcauth_gss_register_pseudoflavor(u32 pseudoflavor, char * name);
 u32 svcauth_gss_flavor(struct auth_domain *dom);
 char *svc_gss_principal(struct svc_rqst *);

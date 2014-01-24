@@ -19,7 +19,10 @@
 #include <linux/param.h>
 #include <linux/seq_file.h>
 #include <linux/serial.h>
+<<<<<<< HEAD
 #include <linux/serialP.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/uaccess.h>
 #include <asm/irq.h>
@@ -37,6 +40,10 @@
 #define SERIAL_TIMER_VALUE (20 * HZ)
 
 static struct tty_driver *serial_driver;
+<<<<<<< HEAD
+=======
+static struct tty_port serial_port;
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct timer_list serial_timer;
 
 static DEFINE_SPINLOCK(timer_lock);
@@ -68,6 +75,7 @@ static void rs_poll(unsigned long);
 
 static int rs_open(struct tty_struct *tty, struct file * filp)
 {
+<<<<<<< HEAD
 	int line = tty->index;
 
 	if ((line < 0) || (line >= SERIAL_MAX_NUM_LINES))
@@ -79,6 +87,12 @@ static int rs_open(struct tty_struct *tty, struct file * filp)
 		init_timer(&serial_timer);
 		serial_timer.data = (unsigned long) tty;
 		serial_timer.function = rs_poll;
+=======
+	tty->port = &serial_port;
+	spin_lock(&timer_lock);
+	if (tty->count == 1) {
+		setup_timer(&serial_timer, rs_poll, (unsigned long)tty);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mod_timer(&serial_timer, jiffies + SERIAL_TIMER_VALUE);
 	}
 	spin_unlock(&timer_lock);
@@ -99,10 +113,17 @@ static int rs_open(struct tty_struct *tty, struct file * filp)
  */
 static void rs_close(struct tty_struct *tty, struct file * filp)
 {
+<<<<<<< HEAD
 	spin_lock(&timer_lock);
 	if (tty->count == 1)
 		del_timer_sync(&serial_timer);
 	spin_unlock(&timer_lock);
+=======
+	spin_lock_bh(&timer_lock);
+	if (tty->count == 1)
+		del_timer_sync(&serial_timer);
+	spin_unlock_bh(&timer_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -210,13 +231,22 @@ static const struct tty_operations serial_ops = {
 
 int __init rs_init(void)
 {
+<<<<<<< HEAD
 	serial_driver = alloc_tty_driver(1);
+=======
+	tty_port_init(&serial_port);
+
+	serial_driver = alloc_tty_driver(SERIAL_MAX_NUM_LINES);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk ("%s %s\n", serial_name, serial_version);
 
 	/* Initialize the tty_driver structure */
 
+<<<<<<< HEAD
 	serial_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	serial_driver->driver_name = "iss_serial";
 	serial_driver->name = "ttyS";
 	serial_driver->major = TTY_MAJOR;

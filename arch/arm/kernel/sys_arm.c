@@ -12,7 +12,11 @@
  *  have a non-standard calling sequence on the Linux/arm
  *  platform.
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/errno.h>
 #include <linux/sched.h>
 #include <linux/mm.h>

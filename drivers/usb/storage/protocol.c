@@ -43,6 +43,10 @@
  */
 
 #include <linux/highmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
 

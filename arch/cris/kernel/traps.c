@@ -17,6 +17,10 @@
 
 #include <asm/pgtable.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern void arch_enable_nmi(void);
 extern void stop_watchdog(void);

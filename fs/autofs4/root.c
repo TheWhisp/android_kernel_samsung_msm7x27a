@@ -26,7 +26,11 @@
 static int autofs4_dir_symlink(struct inode *,struct dentry *,const char *);
 static int autofs4_dir_unlink(struct inode *,struct dentry *);
 static int autofs4_dir_rmdir(struct inode *,struct dentry *);
+<<<<<<< HEAD
 static int autofs4_dir_mkdir(struct inode *,struct dentry *,int);
+=======
+static int autofs4_dir_mkdir(struct inode *,struct dentry *,umode_t);
+>>>>>>> refs/remotes/origin/cm-10.0
 static long autofs4_root_ioctl(struct file *,unsigned int,unsigned long);
 #ifdef CONFIG_COMPAT
 static long autofs4_root_compat_ioctl(struct file *,unsigned int,unsigned long);
@@ -701,7 +705,11 @@ static int autofs4_dir_rmdir(struct inode *dir, struct dentry *dentry)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int autofs4_dir_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int autofs4_dir_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct autofs_sb_info *sbi = autofs4_sbi(dir->i_sb);
 	struct autofs_info *ino = autofs4_dentry_ino(dentry);

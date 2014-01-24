@@ -36,7 +36,12 @@ static struct tcf_hashinfo simp_hash_info = {
 };
 
 #define SIMP_MAX_DATA	32
+<<<<<<< HEAD
 static int tcf_simp(struct sk_buff *skb, struct tc_action *a, struct tcf_result *res)
+=======
+static int tcf_simp(struct sk_buff *skb, const struct tc_action *a,
+		    struct tcf_result *res)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tcf_defact *d = a->priv;
 

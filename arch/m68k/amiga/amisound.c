@@ -14,7 +14,10 @@
 #include <linux/string.h>
 #include <linux/module.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/amigahw.h>
 
 static unsigned short *snd_data;

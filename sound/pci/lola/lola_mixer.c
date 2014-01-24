@@ -144,12 +144,17 @@ int __devinit lola_init_mixer_widget(struct lola *chip, int nid)
 	chip->mixer.dest_stream_ins = chip->pcm[CAPT].num_streams;
 	chip->mixer.dest_phys_outs = chip->pin[PLAY].num_pins;
 
+<<<<<<< HEAD
 	/* mixer matrix can have unused areas between PhysIn and
+=======
+	/* mixer matrix may have unused areas between PhysIn and
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * Play or Record and PhysOut zones
 	 */
 	chip->mixer.src_stream_out_ofs = chip->mixer.src_phys_ins +
 		LOLA_MIXER_SRC_INPUT_PLAY_SEPARATION(val);
 	chip->mixer.dest_phys_out_ofs = chip->mixer.dest_stream_ins +
+<<<<<<< HEAD
 		LOLA_MIXER_DEST_REC_OUTPUT_SEPATATION(val);
 
 	/* example : MixerMatrix of LoLa881
@@ -178,6 +183,57 @@ int __devinit lola_init_mixer_widget(struct lola *chip, int nid)
 	 * |       |       |       |       |
 	 * |       |       |       |       |
 	 * 16-------------------------------
+=======
+		LOLA_MIXER_DEST_REC_OUTPUT_SEPARATION(val);
+
+	/* example : MixerMatrix of LoLa881 (LoLa16161 uses unused zones)
+	 * +-+  0-------8------16-------8------16
+	 * | |  |       |       |       |       |
+	 * |s|  | INPUT |       | INPUT |       |
+	 * | |->|  ->   |unused |  ->   |unused |
+	 * |r|  |CAPTURE|       | OUTPUT|       |
+	 * | |  |  MIX  |       |  MIX  |       |
+	 * |c|  8--------------------------------
+	 * | |  |       |       |       |       |
+	 * | |  |       |       |       |       |
+	 * |g|  |unused |unused |unused |unused |
+	 * | |  |       |       |       |       |
+	 * |a|  |       |       |       |       |
+	 * | |  16-------------------------------
+	 * |i|  |       |       |       |       |
+	 * | |  | PLAYBK|       | PLAYBK|       |
+	 * |n|->|  ->   |unused |  ->   |unused |
+	 * | |  |CAPTURE|       | OUTPUT|       |
+	 * | |  |  MIX  |       |  MIX  |       |
+	 * |a|  8--------------------------------
+	 * |r|  |       |       |       |       |
+	 * |r|  |       |       |       |       |
+	 * |a|  |unused |unused |unused |unused |
+	 * |y|  |       |       |       |       |
+	 * | |  |       |       |       |       |
+	 * +++  16--|---------------|------------
+	 *      +---V---------------V-----------+
+	 *      |  dest_mix_gain_enable array   |
+	 *      +-------------------------------+
+	 */
+	/* example : MixerMatrix of LoLa280
+	 * +-+  0-------8-2
+	 * | |  |       | |
+	 * |s|  | INPUT | |     INPUT
+	 * |r|->|  ->   | |      ->
+	 * |c|  |CAPTURE| | <-  OUTPUT
+	 * | |  |  MIX  | |      MIX
+	 * |g|  8----------
+	 * |a|  |       | |
+	 * |i|  | PLAYBK| |     PLAYBACK
+	 * |n|->|  ->   | |      ->
+	 * | |  |CAPTURE| | <-  OUTPUT
+	 * |a|  |  MIX  | |      MIX
+	 * |r|  8---|----|-
+	 * |r|  +---V----V-------------------+
+	 * |a|  | dest_mix_gain_enable array |
+	 * |y|  +----------------------------+
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	if (chip->mixer.src_stream_out_ofs > MAX_AUDIO_INOUT_COUNT ||
 	    chip->mixer.dest_phys_out_ofs > MAX_STREAM_IN_COUNT) {
@@ -192,6 +248,12 @@ int __devinit lola_init_mixer_widget(struct lola *chip, int nid)
 		(((1U << chip->mixer.dest_phys_outs) - 1)
 		 << chip->mixer.dest_phys_out_ofs);
 
+<<<<<<< HEAD
+=======
+	snd_printdd("Mixer src_mask=%x, dest_mask=%x\n",
+		    chip->mixer.src_mask, chip->mixer.dest_mask);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -202,12 +264,26 @@ static int lola_mixer_set_src_gain(struct lola *chip, unsigned int id,
 
 	if (!(chip->mixer.src_mask & (1 << id)))
 		return -EINVAL;
+<<<<<<< HEAD
 	writew(gain, &chip->mixer.array->src_gain[id]);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	oldval = val = readl(&chip->mixer.array->src_gain_enable);
 	if (on)
 		val |= (1 << id);
 	else
 		val &= ~(1 << id);
+<<<<<<< HEAD
+=======
+	/* test if values unchanged */
+	if ((val == oldval) &&
+	    (gain == readw(&chip->mixer.array->src_gain[id])))
+		return 0;
+
+	snd_printdd("lola_mixer_set_src_gain (id=%d, gain=%d) enable=%x\n",
+			id, gain, val);
+	writew(gain, &chip->mixer.array->src_gain[id]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	writel(val, &chip->mixer.array->src_gain_enable);
 	lola_codec_flush(chip);
 	/* inform micro-controller about the new source gain */
@@ -269,6 +345,10 @@ static int lola_mixer_set_mapping_gain(struct lola *chip,
 				src, dest);
 }
 
+<<<<<<< HEAD
+=======
+#if 0 /* not used */
+>>>>>>> refs/remotes/origin/cm-10.0
 static int lola_mixer_set_dest_gains(struct lola *chip, unsigned int id,
 				     unsigned int mask, unsigned short *gains)
 {
@@ -289,6 +369,10 @@ static int lola_mixer_set_dest_gains(struct lola *chip, unsigned int id,
 	return lola_codec_write(chip, chip->mixer.nid,
 				LOLA_VERB_SET_DESTINATION_GAIN, id, 0);
 }
+<<<<<<< HEAD
+=======
+#endif /* not used */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  */
@@ -376,6 +460,11 @@ static int set_analog_volume(struct lola *chip, int dir,
 		return 0;
 	if (external_call)
 		lola_codec_flush(chip);
+<<<<<<< HEAD
+=======
+	snd_printdd("set_analog_volume (dir=%d idx=%d, volume=%d)\n",
+			dir, idx, val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = lola_codec_write(chip, pin->nid,
 			       LOLA_VERB_SET_AMP_GAIN_MUTE, val, 0);
 	if (err < 0)
@@ -427,6 +516,7 @@ static int init_mixer_values(struct lola *chip)
 {
 	int i;
 
+<<<<<<< HEAD
 	/* all src on */
 	lola_set_src_config(chip, (1 << chip->pin[CAPT].num_pins) - 1, false);
 
@@ -435,15 +525,49 @@ static int init_mixer_values(struct lola *chip)
 	/* set src gain to 0dB */
 	for (i = 0; i < chip->mixer.src_phys_ins; i++)
 		lola_mixer_set_src_gain(chip, i, 336, true); /* 0dB */
+=======
+	/* all sample rate converters on */
+	lola_set_src_config(chip, (1 << chip->pin[CAPT].num_pins) - 1, false);
+
+	/* clear all mixer matrix settings */
+	memset_io(chip->mixer.array, 0, sizeof(*chip->mixer.array));
+	/* inform firmware about all updated matrix columns - capture part */
+	for (i = 0; i < chip->mixer.dest_stream_ins; i++)
+		lola_codec_write(chip, chip->mixer.nid,
+				 LOLA_VERB_SET_DESTINATION_GAIN,
+				 i, 0);
+	/* inform firmware about all updated matrix columns - output part */
+	for (i = 0; i < chip->mixer.dest_phys_outs; i++)
+		lola_codec_write(chip, chip->mixer.nid,
+				 LOLA_VERB_SET_DESTINATION_GAIN,
+				 chip->mixer.dest_phys_out_ofs + i, 0);
+
+	/* set all digital input source (master) gains to 0dB */
+	for (i = 0; i < chip->mixer.src_phys_ins; i++)
+		lola_mixer_set_src_gain(chip, i, 336, true); /* 0dB */
+
+	/* set all digital playback source (master) gains to 0dB */
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < chip->mixer.src_stream_outs; i++)
 		lola_mixer_set_src_gain(chip,
 					i + chip->mixer.src_stream_out_ofs,
 					336, true); /* 0dB */
+<<<<<<< HEAD
 	/* set 1:1 dest gain */
+=======
+	/* set gain value 0dB diagonally in matrix - part INPUT -> CAPTURE */
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < chip->mixer.dest_stream_ins; i++) {
 		int src = i % chip->mixer.src_phys_ins;
 		lola_mixer_set_mapping_gain(chip, src, i, 336, true);
 	}
+<<<<<<< HEAD
+=======
+	/* set gain value 0dB diagonally in matrix , part PLAYBACK -> OUTPUT
+	 * (LoLa280 : playback channel 0,2,4,6 linked to output channel 0)
+	 * (LoLa280 : playback channel 1,3,5,7 linked to output channel 1)
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < chip->mixer.src_stream_outs; i++) {
 		int src = chip->mixer.src_stream_out_ofs + i;
 		int dst = chip->mixer.dest_phys_out_ofs +
@@ -693,6 +817,10 @@ static int __devinit create_src_gain_mixer(struct lola *chip,
 			   snd_ctl_new1(&lola_src_gain_mixer, chip));
 }
 
+<<<<<<< HEAD
+=======
+#if 0 /* not used */
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * destination gain (matrix-like) mixer
  */
@@ -781,6 +909,10 @@ static int __devinit create_dest_gain_mixer(struct lola *chip,
 	return snd_ctl_add(chip->card,
 			  snd_ctl_new1(&lola_dest_gain_mixer, chip));
 }
+<<<<<<< HEAD
+=======
+#endif /* not used */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  */
@@ -798,14 +930,26 @@ int __devinit lola_create_mixer(struct lola *chip)
 	if (err < 0)
 		return err;
 	err = create_src_gain_mixer(chip, chip->mixer.src_phys_ins, 0,
+<<<<<<< HEAD
 				    "Line Source Gain Volume");
+=======
+				    "Digital Capture Volume");
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err < 0)
 		return err;
 	err = create_src_gain_mixer(chip, chip->mixer.src_stream_outs,
 				    chip->mixer.src_stream_out_ofs,
+<<<<<<< HEAD
 				    "Stream Source Gain Volume");
 	if (err < 0)
 		return err;
+=======
+				    "Digital Playback Volume");
+	if (err < 0)
+		return err;
+#if 0
+/* FIXME: buggy mixer matrix handling */
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = create_dest_gain_mixer(chip,
 				     chip->mixer.src_phys_ins, 0,
 				     chip->mixer.dest_stream_ins, 0,
@@ -834,6 +978,10 @@ int __devinit lola_create_mixer(struct lola *chip)
 				     "Stream Playback Volume");
 	if (err < 0)
 		return err;
+<<<<<<< HEAD
 
+=======
+#endif /* FIXME */
+>>>>>>> refs/remotes/origin/cm-10.0
 	return init_mixer_values(chip);
 }

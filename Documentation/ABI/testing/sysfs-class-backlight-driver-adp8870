@@ -53,4 +53,8 @@ Description:
 		Documentation/ABI/stable/sysfs-class-backlight.
 		It can be enabled by writing the value stored in
 		/sys/class/backlight/<backlight>/max_brightness to
+<<<<<<< HEAD
 		/sys/class/backlight/<backlight>/brightness.
+=======
+		/sys/class/backlight/<backlight>/brightness.
+>>>>>>> refs/remotes/origin/cm-10.0

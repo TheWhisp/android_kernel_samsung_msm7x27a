@@ -35,7 +35,11 @@ CREATING DEVICE NODES
     sh Documentation/aoe/mkshelf.sh /dev/etherd 0
 
   There is also an autoload script that shows how to edit
+<<<<<<< HEAD
   /etc/modprobe.conf to ensure that the aoe module is loaded when
+=======
+  /etc/modprobe.d/aoe.conf to ensure that the aoe module is loaded when
+>>>>>>> refs/remotes/origin/cm-10.0
   necessary.
 
 USING DEVICE NODES

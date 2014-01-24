@@ -3,7 +3,11 @@
 #ifdef __KERNEL__
 
 
+<<<<<<< HEAD
 struct sys_device;
+=======
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
 struct device_node;
 
 #ifdef CONFIG_NUMA
@@ -19,6 +23,7 @@ struct device_node;
 #define RECLAIM_DISTANCE 10
 
 /*
+<<<<<<< HEAD
  * Before going off node we want the VM to try and reclaim from the local
  * node. It does this if the remote distance is larger than RECLAIM_DISTANCE.
  * With the default REMOTE_DISTANCE of 20 and the default RECLAIM_DISTANCE of
@@ -27,6 +32,12 @@ struct device_node;
  * To fix this we choose a smaller value of RECLAIM_DISTANCE.
  */
 #define RECLAIM_DISTANCE 10
+=======
+ * Avoid creating an extra level of balancing (SD_ALLNODES) on the largest
+ * POWER7 boxes which have a maximum of 32 nodes.
+ */
+#define SD_NODES_PER_DOMAIN 32
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mmzone.h>
 
@@ -69,11 +80,19 @@ static inline int pcibus_to_node(struct pci_bus *bus)
 	.forkexec_idx		= 0,					\
 									\
 	.flags			= 1*SD_LOAD_BALANCE			\
+<<<<<<< HEAD
 				| 1*SD_BALANCE_NEWIDLE			\
 				| 1*SD_BALANCE_EXEC			\
 				| 1*SD_BALANCE_FORK			\
 				| 0*SD_BALANCE_WAKE			\
 				| 0*SD_WAKE_AFFINE			\
+=======
+				| 0*SD_BALANCE_NEWIDLE			\
+				| 1*SD_BALANCE_EXEC			\
+				| 1*SD_BALANCE_FORK			\
+				| 0*SD_BALANCE_WAKE			\
+				| 1*SD_WAKE_AFFINE			\
+>>>>>>> refs/remotes/origin/cm-10.0
 				| 0*SD_PREFER_LOCAL			\
 				| 0*SD_SHARE_CPUPOWER			\
 				| 0*SD_POWERSAVINGS_BALANCE		\
@@ -90,19 +109,32 @@ extern int __node_distance(int, int);
 
 extern void __init dump_numa_cpu_topology(void);
 
+<<<<<<< HEAD
 extern int sysfs_add_device_to_node(struct sys_device *dev, int nid);
 extern void sysfs_remove_device_from_node(struct sys_device *dev, int nid);
+=======
+extern int sysfs_add_device_to_node(struct device *dev, int nid);
+extern void sysfs_remove_device_from_node(struct device *dev, int nid);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else
 
 static inline void dump_numa_cpu_topology(void) {}
 
+<<<<<<< HEAD
 static inline int sysfs_add_device_to_node(struct sys_device *dev, int nid)
+=======
+static inline int sysfs_add_device_to_node(struct device *dev, int nid)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline void sysfs_remove_device_from_node(struct sys_device *dev,
+=======
+static inline void sysfs_remove_device_from_node(struct device *dev,
+>>>>>>> refs/remotes/origin/cm-10.0
 						int nid)
 {
 }

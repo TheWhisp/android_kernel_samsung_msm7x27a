@@ -10,6 +10,10 @@
 #include <linux/bitops.h>
 #include <linux/types.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 
 #include <net/mac80211.h>
@@ -101,6 +105,10 @@ static void tkip_mixing_phase1(const u8 *tk, struct tkip_ctx *ctx,
 		p1k[4] += tkipS(p1k[3] ^ get_unaligned_le16(tk + 0 + j)) + i;
 	}
 	ctx->state = TKIP_STATE_PHASE1_DONE;
+<<<<<<< HEAD
+=======
+	ctx->p1k_iv32 = tsc_IV32;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void tkip_mixing_phase2(const u8 *tk, struct tkip_ctx *ctx,
@@ -140,14 +148,23 @@ static void tkip_mixing_phase2(const u8 *tk, struct tkip_ctx *ctx,
 /* Add TKIP IV and Ext. IV at @pos. @iv0, @iv1, and @iv2 are the first octets
  * of the IV. Returns pointer to the octet following IVs (i.e., beginning of
  * the packet payload). */
+<<<<<<< HEAD
 u8 *ieee80211_tkip_add_iv(u8 *pos, struct ieee80211_key *key, u16 iv16)
 {
 	pos = write_tkip_iv(pos, iv16);
+=======
+u8 *ieee80211_tkip_add_iv(u8 *pos, struct ieee80211_key *key)
+{
+	lockdep_assert_held(&key->u.tkip.txlock);
+
+	pos = write_tkip_iv(pos, key->u.tkip.tx.iv16);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*pos++ = (key->conf.keyidx << 6) | (1 << 5) /* Ext IV */;
 	put_unaligned_le32(key->u.tkip.tx.iv32, pos);
 	return pos + 4;
 }
 
+<<<<<<< HEAD
 void ieee80211_get_tkip_key(struct ieee80211_key_conf *keyconf,
 			struct sk_buff *skb, enum ieee80211_tkip_key_type type,
 			u8 *outkey)
@@ -194,6 +211,72 @@ void ieee80211_get_tkip_key(struct ieee80211_key_conf *keyconf,
 	tkip_mixing_phase2(tk, ctx, iv16, outkey);
 }
 EXPORT_SYMBOL(ieee80211_get_tkip_key);
+=======
+static void ieee80211_compute_tkip_p1k(struct ieee80211_key *key, u32 iv32)
+{
+	struct ieee80211_sub_if_data *sdata = key->sdata;
+	struct tkip_ctx *ctx = &key->u.tkip.tx;
+	const u8 *tk = &key->conf.key[NL80211_TKIP_DATA_OFFSET_ENCR_KEY];
+
+	lockdep_assert_held(&key->u.tkip.txlock);
+
+	/*
+	 * Update the P1K when the IV32 is different from the value it
+	 * had when we last computed it (or when not initialised yet).
+	 * This might flip-flop back and forth if packets are processed
+	 * out-of-order due to the different ACs, but then we have to
+	 * just compute the P1K more often.
+	 */
+	if (ctx->p1k_iv32 != iv32 || ctx->state == TKIP_STATE_NOT_INIT)
+		tkip_mixing_phase1(tk, ctx, sdata->vif.addr, iv32);
+}
+
+void ieee80211_get_tkip_p1k_iv(struct ieee80211_key_conf *keyconf,
+			       u32 iv32, u16 *p1k)
+{
+	struct ieee80211_key *key = (struct ieee80211_key *)
+			container_of(keyconf, struct ieee80211_key, conf);
+	struct tkip_ctx *ctx = &key->u.tkip.tx;
+	unsigned long flags;
+
+	spin_lock_irqsave(&key->u.tkip.txlock, flags);
+	ieee80211_compute_tkip_p1k(key, iv32);
+	memcpy(p1k, ctx->p1k, sizeof(ctx->p1k));
+	spin_unlock_irqrestore(&key->u.tkip.txlock, flags);
+}
+EXPORT_SYMBOL(ieee80211_get_tkip_p1k_iv);
+
+void ieee80211_get_tkip_rx_p1k(struct ieee80211_key_conf *keyconf,
+                               const u8 *ta, u32 iv32, u16 *p1k)
+{
+	const u8 *tk = &keyconf->key[NL80211_TKIP_DATA_OFFSET_ENCR_KEY];
+	struct tkip_ctx ctx;
+
+	tkip_mixing_phase1(tk, &ctx, ta, iv32);
+	memcpy(p1k, ctx.p1k, sizeof(ctx.p1k));
+}
+EXPORT_SYMBOL(ieee80211_get_tkip_rx_p1k);
+
+void ieee80211_get_tkip_p2k(struct ieee80211_key_conf *keyconf,
+			    struct sk_buff *skb, u8 *p2k)
+{
+	struct ieee80211_key *key = (struct ieee80211_key *)
+			container_of(keyconf, struct ieee80211_key, conf);
+	const u8 *tk = &key->conf.key[NL80211_TKIP_DATA_OFFSET_ENCR_KEY];
+	struct tkip_ctx *ctx = &key->u.tkip.tx;
+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+	const u8 *data = (u8 *)hdr + ieee80211_hdrlen(hdr->frame_control);
+	u32 iv32 = get_unaligned_le32(&data[4]);
+	u16 iv16 = data[2] | (data[0] << 8);
+	unsigned long flags;
+
+	spin_lock_irqsave(&key->u.tkip.txlock, flags);
+	ieee80211_compute_tkip_p1k(key, iv32);
+	tkip_mixing_phase2(tk, ctx, iv16, p2k);
+	spin_unlock_irqrestore(&key->u.tkip.txlock, flags);
+}
+EXPORT_SYMBOL(ieee80211_get_tkip_p2k);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Encrypt packet payload with TKIP using @key. @pos is a pointer to the
@@ -204,6 +287,7 @@ EXPORT_SYMBOL(ieee80211_get_tkip_key);
  */
 int ieee80211_tkip_encrypt_data(struct crypto_cipher *tfm,
 				struct ieee80211_key *key,
+<<<<<<< HEAD
 				u8 *pos, size_t payload_len, u8 *ta)
 {
 	u8 rc4key[16];
@@ -217,6 +301,17 @@ int ieee80211_tkip_encrypt_data(struct crypto_cipher *tfm,
 	tkip_mixing_phase2(tk, ctx, ctx->iv16, rc4key);
 
 	return ieee80211_wep_encrypt_data(tfm, rc4key, 16, pos, payload_len);
+=======
+				struct sk_buff *skb,
+				u8 *payload, size_t payload_len)
+{
+	u8 rc4key[16];
+
+	ieee80211_get_tkip_p2k(&key->conf, skb, rc4key);
+
+	return ieee80211_wep_encrypt_data(tfm, rc4key, 16,
+					  payload, payload_len);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Decrypt packet payload with TKIP using @key. @pos is a pointer to the

@@ -25,6 +25,10 @@ struct kmem_cache *gfs2_inode_cachep __read_mostly;
 struct kmem_cache *gfs2_bufdata_cachep __read_mostly;
 struct kmem_cache *gfs2_rgrpd_cachep __read_mostly;
 struct kmem_cache *gfs2_quotad_cachep __read_mostly;
+<<<<<<< HEAD
+=======
+mempool_t *gfs2_bh_pool __read_mostly;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void gfs2_assert_i(struct gfs2_sbd *sdp)
 {

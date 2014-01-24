@@ -142,7 +142,15 @@ int hfsplus_uni2asc(struct super_block *sb,
 		/* search for single decomposed char */
 		if (likely(compose))
 			ce1 = hfsplus_compose_lookup(hfsplus_compose_table, c0);
+<<<<<<< HEAD
 		if (ce1 && (cc = ce1[0])) {
+=======
+		if (ce1)
+			cc = ce1[0];
+		else
+			cc = 0;
+		if (cc) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* start of a possibly decomposed Hangul char */
 			if (cc != 0xffff)
 				goto done;
@@ -209,7 +217,12 @@ int hfsplus_uni2asc(struct super_block *sb,
 				i++;
 				ce2 = ce1;
 			}
+<<<<<<< HEAD
 			if ((cc = ce2[0])) {
+=======
+			cc = ce2[0];
+			if (cc) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				ip += i;
 				ustrlen -= i;
 				goto done;
@@ -301,7 +314,15 @@ int hfsplus_asc2uni(struct super_block *sb, struct hfsplus_unistr *ustr,
 	while (outlen < HFSPLUS_MAX_STRLEN && len > 0) {
 		size = asc2unichar(sb, astr, len, &c);
 
+<<<<<<< HEAD
 		if (decompose && (dstr = decompose_unichar(c, &dsize))) {
+=======
+		if (decompose)
+			dstr = decompose_unichar(c, &dsize);
+		else
+			dstr = NULL;
+		if (dstr) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (outlen + dsize > HFSPLUS_MAX_STRLEN)
 				break;
 			do {
@@ -346,15 +367,34 @@ int hfsplus_hash_dentry(const struct dentry *dentry, const struct inode *inode,
 		astr += size;
 		len -= size;
 
+<<<<<<< HEAD
 		if (decompose && (dstr = decompose_unichar(c, &dsize))) {
 			do {
 				c2 = *dstr++;
 				if (!casefold || (c2 = case_fold(c2)))
+=======
+		if (decompose)
+			dstr = decompose_unichar(c, &dsize);
+		else
+			dstr = NULL;
+		if (dstr) {
+			do {
+				c2 = *dstr++;
+				if (casefold)
+					c2 = case_fold(c2);
+				if (!casefold || c2)
+>>>>>>> refs/remotes/origin/cm-10.0
 					hash = partial_name_hash(c2, hash);
 			} while (--dsize > 0);
 		} else {
 			c2 = c;
+<<<<<<< HEAD
 			if (!casefold || (c2 = case_fold(c2)))
+=======
+			if (casefold)
+				c2 = case_fold(c2);
+			if (!casefold || c2)
+>>>>>>> refs/remotes/origin/cm-10.0
 				hash = partial_name_hash(c2, hash);
 		}
 	}
@@ -422,12 +462,22 @@ int hfsplus_compare_dentry(const struct dentry *parent,
 		c1 = *dstr1;
 		c2 = *dstr2;
 		if (casefold) {
+<<<<<<< HEAD
 			if  (!(c1 = case_fold(c1))) {
+=======
+			c1 = case_fold(c1);
+			if (!c1) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				dstr1++;
 				dsize1--;
 				continue;
 			}
+<<<<<<< HEAD
 			if (!(c2 = case_fold(c2))) {
+=======
+			c2 = case_fold(c2);
+			if (!c2) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				dstr2++;
 				dsize2--;
 				continue;

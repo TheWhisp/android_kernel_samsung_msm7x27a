@@ -223,6 +223,32 @@ int ecryptfs_send_miscdev(char *data, size_t data_size,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * miscdevfs packet format:
+ *  Octet 0: Type
+ *  Octets 1-4: network byte order msg_ctx->counter
+ *  Octets 5-N0: Size of struct ecryptfs_message to follow
+ *  Octets N0-N1: struct ecryptfs_message (including data)
+ *
+ *  Octets 5-N1 not written if the packet type does not include a message
+ */
+#define PKT_TYPE_SIZE		1
+#define PKT_CTR_SIZE		4
+#define MIN_NON_MSG_PKT_SIZE	(PKT_TYPE_SIZE + PKT_CTR_SIZE)
+#define MIN_MSG_PKT_SIZE	(PKT_TYPE_SIZE + PKT_CTR_SIZE \
+				 + ECRYPTFS_MIN_PKT_LEN_SIZE)
+/* 4 + ECRYPTFS_MAX_ENCRYPTED_KEY_BYTES comes from tag 65 packet format */
+#define MAX_MSG_PKT_SIZE	(PKT_TYPE_SIZE + PKT_CTR_SIZE \
+				 + ECRYPTFS_MAX_PKT_LEN_SIZE \
+				 + sizeof(struct ecryptfs_message) \
+				 + 4 + ECRYPTFS_MAX_ENCRYPTED_KEY_BYTES)
+#define PKT_TYPE_OFFSET		0
+#define PKT_CTR_OFFSET		PKT_TYPE_SIZE
+#define PKT_LEN_OFFSET		(PKT_TYPE_SIZE + PKT_CTR_SIZE)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * ecryptfs_miscdev_read - format and send message from queue
  * @file: fs/ecryptfs/euid miscdevfs handle (ignored)
@@ -242,7 +268,11 @@ ecryptfs_miscdev_read(struct file *file, char __user *buf, size_t count,
 	struct ecryptfs_daemon *daemon;
 	struct ecryptfs_msg_ctx *msg_ctx;
 	size_t packet_length_size;
+<<<<<<< HEAD
 	char packet_length[3];
+=======
+	char packet_length[ECRYPTFS_MAX_PKT_LEN_SIZE];
+>>>>>>> refs/remotes/origin/cm-10.0
 	size_t i;
 	size_t total_length;
 	uid_t euid = current_euid();
@@ -315,6 +345,7 @@ check_list:
 		packet_length_size = 0;
 		msg_ctx->msg_size = 0;
 	}
+<<<<<<< HEAD
 	/* miscdevfs packet format:
 	 *  Octet 0: Type
 	 *  Octets 1-4: network byte order msg_ctx->counter
@@ -324,6 +355,10 @@ check_list:
 	 *  Octets 5-N1 not written if the packet type does not
 	 *  include a message */
 	total_length = (1 + 4 + packet_length_size + msg_ctx->msg_size);
+=======
+	total_length = (PKT_TYPE_SIZE + PKT_CTR_SIZE + packet_length_size
+			+ msg_ctx->msg_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (count < total_length) {
 		rc = 0;
 		printk(KERN_WARNING "%s: Only given user buffer of "
@@ -334,9 +369,16 @@ check_list:
 	rc = -EFAULT;
 	if (put_user(msg_ctx->type, buf))
 		goto out_unlock_msg_ctx;
+<<<<<<< HEAD
 	if (put_user(cpu_to_be32(msg_ctx->counter), (__be32 __user *)(buf + 1)))
 		goto out_unlock_msg_ctx;
 	i = 5;
+=======
+	if (put_user(cpu_to_be32(msg_ctx->counter),
+		     (__be32 __user *)(&buf[PKT_CTR_OFFSET])))
+		goto out_unlock_msg_ctx;
+	i = PKT_TYPE_SIZE + PKT_CTR_SIZE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (msg_ctx->msg) {
 		if (copy_to_user(&buf[i], packet_length, packet_length_size))
 			goto out_unlock_msg_ctx;
@@ -401,12 +443,15 @@ out:
  * @count: Amount of data in @buf
  * @ppos: Pointer to offset in file (ignored)
  *
+<<<<<<< HEAD
  * miscdevfs packet format:
  *  Octet 0: Type
  *  Octets 1-4: network byte order msg_ctx->counter (0's for non-response)
  *  Octets 5-N0: Size of struct ecryptfs_message to follow
  *  Octets N0-N1: struct ecryptfs_message (including data)
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Returns the number of bytes read from @buf
  */
 static ssize_t
@@ -415,6 +460,7 @@ ecryptfs_miscdev_write(struct file *file, const char __user *buf,
 {
 	__be32 counter_nbo;
 	u32 seq;
+<<<<<<< HEAD
 	size_t packet_size, packet_size_length, i;
 	ssize_t sz = 0;
 	char *data;
@@ -439,6 +485,27 @@ ecryptfs_miscdev_write(struct file *file, const char __user *buf,
 	}
 
 	if (copy_from_user(packet_size_peek, (buf + 1 + 4),
+=======
+	size_t packet_size, packet_size_length;
+	char *data;
+	uid_t euid = current_euid();
+	unsigned char packet_size_peek[ECRYPTFS_MAX_PKT_LEN_SIZE];
+	ssize_t rc;
+
+	if (count == 0) {
+		return 0;
+	} else if (count == MIN_NON_MSG_PKT_SIZE) {
+		/* Likely a harmless MSG_HELO or MSG_QUIT - no packet length */
+		goto memdup;
+	} else if (count < MIN_MSG_PKT_SIZE || count > MAX_MSG_PKT_SIZE) {
+		printk(KERN_WARNING "%s: Acceptable packet size range is "
+		       "[%d-%zu], but amount of data written is [%zu].",
+		       __func__, MIN_MSG_PKT_SIZE, MAX_MSG_PKT_SIZE, count);
+		return -EINVAL;
+	}
+
+	if (copy_from_user(packet_size_peek, &buf[PKT_LEN_OFFSET],
+>>>>>>> refs/remotes/origin/cm-10.0
 			   sizeof(packet_size_peek))) {
 		printk(KERN_WARNING "%s: Error while inspecting packet size\n",
 		       __func__);
@@ -449,11 +516,20 @@ ecryptfs_miscdev_write(struct file *file, const char __user *buf,
 					  &packet_size_length);
 	if (rc) {
 		printk(KERN_WARNING "%s: Error parsing packet length; "
+<<<<<<< HEAD
 		       "rc = [%d]\n", __func__, rc);
 		return rc;
 	}
 
 	if ((1 + 4 + packet_size_length + packet_size) != count) {
+=======
+		       "rc = [%zd]\n", __func__, rc);
+		return rc;
+	}
+
+	if ((PKT_TYPE_SIZE + PKT_CTR_SIZE + packet_size_length + packet_size)
+	    != count) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_WARNING "%s: Invalid packet size [%zu]\n", __func__,
 		       packet_size);
 		return -EINVAL;
@@ -464,6 +540,7 @@ memdup:
 	if (IS_ERR(data)) {
 		printk(KERN_ERR "%s: memdup_user returned error [%ld]\n",
 		       __func__, PTR_ERR(data));
+<<<<<<< HEAD
 		goto out;
 	}
 	sz = count;
@@ -471,10 +548,19 @@ memdup:
 	switch (data[i++]) {
 	case ECRYPTFS_MSG_RESPONSE:
 		if (count < (1 + 4 + 1 + sizeof(struct ecryptfs_message))) {
+=======
+		return PTR_ERR(data);
+	}
+	switch (data[PKT_TYPE_OFFSET]) {
+	case ECRYPTFS_MSG_RESPONSE:
+		if (count < (MIN_MSG_PKT_SIZE
+			     + sizeof(struct ecryptfs_message))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			printk(KERN_WARNING "%s: Minimum acceptable packet "
 			       "size is [%zd], but amount of data written is "
 			       "only [%zd]. Discarding response packet.\n",
 			       __func__,
+<<<<<<< HEAD
 			       (1 + 4 + 1 + sizeof(struct ecryptfs_message)),
 			       count);
 			goto out_free;
@@ -489,6 +575,25 @@ memdup:
 			printk(KERN_WARNING "%s: Failed to deliver miscdev "
 			       "response to requesting operation; rc = [%d]\n",
 			       __func__, rc);
+=======
+			       (MIN_MSG_PKT_SIZE
+				+ sizeof(struct ecryptfs_message)), count);
+			rc = -EINVAL;
+			goto out_free;
+		}
+		memcpy(&counter_nbo, &data[PKT_CTR_OFFSET], PKT_CTR_SIZE);
+		seq = be32_to_cpu(counter_nbo);
+		rc = ecryptfs_miscdev_response(
+				&data[PKT_LEN_OFFSET + packet_size_length],
+				packet_size, euid, current_user_ns(),
+				task_pid(current), seq);
+		if (rc) {
+			printk(KERN_WARNING "%s: Failed to deliver miscdev "
+			       "response to requesting operation; rc = [%zd]\n",
+			       __func__, rc);
+			goto out_free;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case ECRYPTFS_MSG_HELO:
 	case ECRYPTFS_MSG_QUIT:
@@ -497,12 +602,22 @@ memdup:
 		ecryptfs_printk(KERN_WARNING, "Dropping miscdev "
 				"message of unrecognized type [%d]\n",
 				data[0]);
+<<<<<<< HEAD
 		break;
 	}
 out_free:
 	kfree(data);
 out:
 	return sz;
+=======
+		rc = -EINVAL;
+		goto out_free;
+	}
+	rc = count;
+out_free:
+	kfree(data);
+	return rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 

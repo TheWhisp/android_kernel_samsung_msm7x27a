@@ -6,7 +6,11 @@
  * system manages static and dynamic label mappings for network protocols such
  * as CIPSO and RIPSO.
  *
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 
@@ -96,7 +100,11 @@ struct netlbl_af4list *netlbl_af4list_search_exact(__be32 addr,
 }
 
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * netlbl_af6list_search - Search for a matching IPv6 address entry
  * @addr: IPv6 address
@@ -185,7 +193,11 @@ int netlbl_af4list_add(struct netlbl_af4list *entry, struct list_head *head)
 	return 0;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * netlbl_af6list_add - Add a new IPv6 address entry to a list
  * @entry: address entry
@@ -263,7 +275,11 @@ struct netlbl_af4list *netlbl_af4list_remove(__be32 addr, __be32 mask,
 	return entry;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * netlbl_af6list_remove_entry - Remove an IPv6 address entry
  * @entry: address entry
@@ -342,7 +358,11 @@ void netlbl_af4list_audit_addr(struct audit_buffer *audit_buf,
 	}
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * netlbl_af6list_audit_addr - Audit an IPv6 address
  * @audit_buf: audit buffer

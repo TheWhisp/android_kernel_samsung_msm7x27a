@@ -33,6 +33,10 @@
 #include <linux/pci.h>
 #include <linux/spinlock.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardware.h>
 #include <asm/io.h>
 #include <asm/pdc.h>

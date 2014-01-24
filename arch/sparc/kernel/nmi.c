@@ -10,7 +10,11 @@
 #include <linux/init.h>
 #include <linux/percpu.h>
 #include <linux/nmi.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kprobes.h>
 #include <linux/kernel_stat.h>
 #include <linux/reboot.h>
@@ -22,6 +26,10 @@
 #include <asm/perf_event.h>
 #include <asm/ptrace.h>
 #include <asm/pcr.h>
+<<<<<<< HEAD
+=======
+#include <asm/perfctr.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "kstack.h"
 

@@ -17,8 +17,13 @@
 #include <linux/init.h>
 
 #include <asm/bootinfo.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/wbflush.h>
+=======
+#include <asm/wbflush.h>
+#include <asm/barrier.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void wbflush_kn01(void);
 static void wbflush_kn210(void);

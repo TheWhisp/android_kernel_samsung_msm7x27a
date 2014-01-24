@@ -7,7 +7,11 @@
  *  it under the terms of the GNU General Public License version 2 as
  *  publishhed by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
@@ -18,7 +22,11 @@
 #include <mach/addr-map.h>
 #include <mach/mfp-pxa910.h>
 #include <mach/pxa910.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "common.h"
 
@@ -71,8 +79,13 @@ static struct resource smc91x_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= gpio_to_irq(80),
 		.end	= gpio_to_irq(80),
+=======
+		.start	= MMP_GPIO_TO_IRQ(80),
+		.end	= MMP_GPIO_TO_IRQ(80),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	}
 };
@@ -93,6 +106,10 @@ static void __init tavorevb_init(void)
 
 	/* on-chip devices */
 	pxa910_add_uart(1);
+<<<<<<< HEAD
+=======
+	platform_device_register(&pxa910_device_gpio);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* off-chip devices */
 	platform_device_register(&smc91x_device);
@@ -100,7 +117,15 @@ static void __init tavorevb_init(void)
 
 MACHINE_START(TAVOREVB, "PXA910 Evaluation Board (aka TavorEVB)")
 	.map_io		= mmp_map_io,
+<<<<<<< HEAD
 	.init_irq       = pxa910_init_irq,
 	.timer          = &pxa910_timer,
 	.init_machine   = tavorevb_init,
+=======
+	.nr_irqs	= MMP_NR_IRQS,
+	.init_irq       = pxa910_init_irq,
+	.timer          = &pxa910_timer,
+	.init_machine   = tavorevb_init,
+	.restart	= mmp_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

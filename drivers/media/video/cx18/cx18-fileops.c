@@ -751,6 +751,7 @@ int cx18_v4l2_close(struct file *filp)
 
 	CX18_DEBUG_IOCTL("close() of %s\n", s->name);
 
+<<<<<<< HEAD
 	v4l2_fh_del(fh);
 	v4l2_fh_exit(fh);
 
@@ -765,6 +766,12 @@ int cx18_v4l2_close(struct file *filp)
 	/* Stop radio */
 	mutex_lock(&cx->serialize_lock);
 	if (id->type == CX18_ENC_STREAM_TYPE_RAD) {
+=======
+	mutex_lock(&cx->serialize_lock);
+	/* Stop radio */
+	if (id->type == CX18_ENC_STREAM_TYPE_RAD &&
+			v4l2_fh_is_singular_file(filp)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Closing radio device, return to TV mode */
 		cx18_mute(cx);
 		/* Mark that the radio is no longer in use */
@@ -781,12 +788,23 @@ int cx18_v4l2_close(struct file *filp)
 		}
 		/* Done! Unmute and continue. */
 		cx18_unmute(cx);
+<<<<<<< HEAD
 		cx18_release_stream(s);
 	} else {
 		cx18_stop_capture(id, 0);
 		if (id->type == CX18_ENC_STREAM_TYPE_YUV)
 			videobuf_mmap_free(&id->vbuf_q);
 	}
+=======
+	}
+
+	v4l2_fh_del(fh);
+	v4l2_fh_exit(fh);
+
+	/* 'Unclaim' this stream */
+	if (s->id == id->open_id)
+		cx18_stop_capture(id, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(id);
 	mutex_unlock(&cx->serialize_lock);
 	return 0;
@@ -812,6 +830,7 @@ static int cx18_serialized_open(struct cx18_stream *s, struct file *filp)
 
 	item->open_id = cx->open_id++;
 	filp->private_data = &item->fh;
+<<<<<<< HEAD
 
 	if (item->type == CX18_ENC_STREAM_TYPE_RAD) {
 		/* Try to claim this stream */
@@ -822,11 +841,21 @@ static int cx18_serialized_open(struct cx18_stream *s, struct file *filp)
 			return -EBUSY;
 		}
 
+=======
+	v4l2_fh_add(&item->fh);
+
+	if (item->type == CX18_ENC_STREAM_TYPE_RAD &&
+			v4l2_fh_is_singular_file(filp)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!test_bit(CX18_F_I_RADIO_USER, &cx->i_flags)) {
 			if (atomic_read(&cx->ana_capturing) > 0) {
 				/* switching to radio while capture is
 				   in progress is not polite */
+<<<<<<< HEAD
 				cx18_release_stream(s);
+=======
+				v4l2_fh_del(&item->fh);
+>>>>>>> refs/remotes/origin/cm-10.0
 				v4l2_fh_exit(&item->fh);
 				kfree(item);
 				return -EBUSY;
@@ -844,7 +873,10 @@ static int cx18_serialized_open(struct cx18_stream *s, struct file *filp)
 		/* Done! Unmute and continue. */
 		cx18_unmute(cx);
 	}
+<<<<<<< HEAD
 	v4l2_fh_add(&item->fh);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

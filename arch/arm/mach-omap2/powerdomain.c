@@ -1,7 +1,11 @@
 /*
  * OMAP powerdomain control
  *
+<<<<<<< HEAD
  * Copyright (C) 2007-2008 Texas Instruments, Inc.
+=======
+ * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright (C) 2007-2011 Nokia Corporation
  *
  * Written by Paul Walmsley
@@ -77,13 +81,20 @@ static struct powerdomain *_pwrdm_lookup(const char *name)
 static int _pwrdm_register(struct powerdomain *pwrdm)
 {
 	int i;
+<<<<<<< HEAD
+=======
+	struct voltagedomain *voltdm;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!pwrdm || !pwrdm->name)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!omap_chip_is(pwrdm->omap_chip))
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (cpu_is_omap44xx() &&
 	    pwrdm->prcm_partition == OMAP4430_INVALID_PRCM_PARTITION) {
 		pr_err("powerdomain: %s: missing OMAP4 PRCM partition ID\n",
@@ -94,6 +105,19 @@ static int _pwrdm_register(struct powerdomain *pwrdm)
 	if (_pwrdm_lookup(pwrdm->name))
 		return -EEXIST;
 
+<<<<<<< HEAD
+=======
+	voltdm = voltdm_lookup(pwrdm->voltdm.name);
+	if (!voltdm) {
+		pr_err("powerdomain: %s: voltagedomain %s does not exist\n",
+		       pwrdm->name, pwrdm->voltdm.name);
+		return -EINVAL;
+	}
+	pwrdm->voltdm.ptr = voltdm;
+	INIT_LIST_HEAD(&pwrdm->voltdm_node);
+	voltdm_add_pwrdm(voltdm, pwrdm);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_add(&pwrdm->node, &pwrdm_list);
 
 	/* Initialize the powerdomain's state counter */
@@ -194,6 +218,7 @@ static int _pwrdm_post_transition_cb(struct powerdomain *pwrdm, void *unused)
 /* Public functions */
 
 /**
+<<<<<<< HEAD
  * pwrdm_init - set up the powerdomain layer
  * @pwrdm_list: array of struct powerdomain pointers to register
  * @custom_funcs: func pointers for arch specific implementations
@@ -217,6 +242,78 @@ void pwrdm_init(struct powerdomain **pwrdm_list, struct pwrdm_ops *custom_funcs)
 		for (p = pwrdm_list; *p; p++)
 			_pwrdm_register(*p);
 	}
+=======
+ * pwrdm_register_platform_funcs - register powerdomain implementation fns
+ * @po: func pointers for arch specific implementations
+ *
+ * Register the list of function pointers used to implement the
+ * powerdomain functions on different OMAP SoCs.  Should be called
+ * before any other pwrdm_register*() function.  Returns -EINVAL if
+ * @po is null, -EEXIST if platform functions have already been
+ * registered, or 0 upon success.
+ */
+int pwrdm_register_platform_funcs(struct pwrdm_ops *po)
+{
+	if (!po)
+		return -EINVAL;
+
+	if (arch_pwrdm)
+		return -EEXIST;
+
+	arch_pwrdm = po;
+
+	return 0;
+}
+
+/**
+ * pwrdm_register_pwrdms - register SoC powerdomains
+ * @ps: pointer to an array of struct powerdomain to register
+ *
+ * Register the powerdomains available on a particular OMAP SoC.  Must
+ * be called after pwrdm_register_platform_funcs().  May be called
+ * multiple times.  Returns -EACCES if called before
+ * pwrdm_register_platform_funcs(); -EINVAL if the argument @ps is
+ * null; or 0 upon success.
+ */
+int pwrdm_register_pwrdms(struct powerdomain **ps)
+{
+	struct powerdomain **p = NULL;
+
+	if (!arch_pwrdm)
+		return -EEXIST;
+
+	if (!ps)
+		return -EINVAL;
+
+	for (p = ps; *p; p++)
+		_pwrdm_register(*p);
+
+	return 0;
+}
+
+/**
+ * pwrdm_complete_init - set up the powerdomain layer
+ *
+ * Do whatever is necessary to initialize registered powerdomains and
+ * powerdomain code.  Currently, this programs the next power state
+ * for each powerdomain to ON.  This prevents powerdomains from
+ * unexpectedly losing context or entering high wakeup latency modes
+ * with non-power-management-enabled kernels.  Must be called after
+ * pwrdm_register_pwrdms().  Returns -EACCES if called before
+ * pwrdm_register_pwrdms(), or 0 upon success.
+ */
+int pwrdm_complete_init(void)
+{
+	struct powerdomain *temp_p;
+
+	if (list_empty(&pwrdm_list))
+		return -EACCES;
+
+	list_for_each_entry(temp_p, &pwrdm_list, node)
+		pwrdm_set_next_pwrst(temp_p, PWRDM_POWER_ON);
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -383,6 +480,21 @@ int pwrdm_for_each_clkdm(struct powerdomain *pwrdm,
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * pwrdm_get_voltdm - return a ptr to the voltdm that this pwrdm resides in
+ * @pwrdm: struct powerdomain *
+ *
+ * Return a pointer to the struct voltageomain that the specified powerdomain
+ * @pwrdm exists in.
+ */
+struct voltagedomain *pwrdm_get_voltdm(struct powerdomain *pwrdm)
+{
+	return pwrdm->voltdm.ptr;
+}
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * pwrdm_get_mem_bank_count - get number of memory banks in this powerdomain
  * @pwrdm: struct powerdomain *
  *
@@ -905,7 +1017,17 @@ int pwrdm_wait_transition(struct powerdomain *pwrdm)
 
 int pwrdm_state_switch(struct powerdomain *pwrdm)
 {
+<<<<<<< HEAD
 	return _pwrdm_state_switch(pwrdm, PWRDM_STATE_NOW);
+=======
+	int ret;
+
+	ret = pwrdm_wait_transition(pwrdm);
+	if (!ret)
+		ret = _pwrdm_state_switch(pwrdm, PWRDM_STATE_NOW);
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int pwrdm_clkdm_state_switch(struct clockdomain *clkdm)
@@ -935,16 +1057,27 @@ int pwrdm_post_transition(void)
  * @pwrdm: struct powerdomain * to wait for
  *
  * Context loss count is the sum of powerdomain off-mode counter, the
+<<<<<<< HEAD
  * logic off counter and the per-bank memory off counter.  Returns 0
  * (and WARNs) upon error, otherwise, returns the context loss count.
  */
 u32 pwrdm_get_context_loss_count(struct powerdomain *pwrdm)
+=======
+ * logic off counter and the per-bank memory off counter.  Returns negative
+ * (and WARNs) upon error, otherwise, returns the context loss count.
+ */
+int pwrdm_get_context_loss_count(struct powerdomain *pwrdm)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i, count;
 
 	if (!pwrdm) {
 		WARN(1, "powerdomain: %s: pwrdm is null\n", __func__);
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	count = pwrdm->state_counter[PWRDM_POWER_OFF];
@@ -953,7 +1086,17 @@ u32 pwrdm_get_context_loss_count(struct powerdomain *pwrdm)
 	for (i = 0; i < pwrdm->banks; i++)
 		count += pwrdm->ret_mem_off_counter[i];
 
+<<<<<<< HEAD
 	pr_debug("powerdomain: %s: context loss count = %u\n",
+=======
+	/*
+	 * Context loss count has to be a non-negative value. Clear the sign
+	 * bit to get a value range from 0 to INT_MAX.
+	 */
+	count &= INT_MAX;
+
+	pr_debug("powerdomain: %s: context loss count = %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		 pwrdm->name, count);
 
 	return count;

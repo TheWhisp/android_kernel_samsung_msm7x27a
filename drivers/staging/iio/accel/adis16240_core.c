@@ -17,12 +17,20 @@
 #include <linux/slab.h>
 #include <linux/sysfs.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 
 #include "../iio.h"
 #include "../sysfs.h"
 #include "../ring_generic.h"
 #include "accel.h"
 #include "../adc/adc.h"
+=======
+#include <linux/module.h>
+
+#include "../iio.h"
+#include "../sysfs.h"
+#include "../buffer.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "adis16240.h"
 
@@ -41,7 +49,11 @@ static int adis16240_spi_write_reg_8(struct iio_dev *indio_dev,
 				     u8 val)
 {
 	int ret;
+<<<<<<< HEAD
 	struct adis16240_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct adis16240_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&st->buf_lock);
 	st->tx[0] = ADIS16240_WRITE_REG(reg_address);
@@ -66,7 +78,11 @@ static int adis16240_spi_write_reg_16(struct iio_dev *indio_dev,
 {
 	int ret;
 	struct spi_message msg;
+<<<<<<< HEAD
 	struct adis16240_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct adis16240_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct spi_transfer xfers[] = {
 		{
 			.tx_buf = st->tx,
@@ -109,7 +125,11 @@ static int adis16240_spi_read_reg_16(struct iio_dev *indio_dev,
 		u16 *val)
 {
 	struct spi_message msg;
+<<<<<<< HEAD
 	struct adis16240_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct adis16240_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	struct spi_transfer xfers[] = {
 		{
@@ -326,7 +346,11 @@ err_ret:
 	return ret;
 }
 
+<<<<<<< HEAD
 static IIO_DEVICE_ATTR(accel_xyz_squared_peak_raw, S_IRUGO,
+=======
+static IIO_DEVICE_ATTR(in_accel_xyz_squared_peak_raw, S_IRUGO,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       adis16240_read_12bit_signed, NULL,
 		       ADIS16240_XYZPEAK_OUT);
 
@@ -370,6 +394,7 @@ static int adis16240_read_raw(struct iio_dev *indio_dev,
 		mutex_lock(&indio_dev->mlock);
 		addr = adis16240_addresses[chan->address][0];
 		ret = adis16240_spi_read_reg_16(indio_dev, addr, &val16);
+<<<<<<< HEAD
 		if (ret)
 			return ret;
 
@@ -377,6 +402,19 @@ static int adis16240_read_raw(struct iio_dev *indio_dev,
 			ret = adis16240_check_status(indio_dev);
 			if (ret)
 				return ret;
+=======
+		if (ret) {
+			mutex_unlock(&indio_dev->mlock);
+			return ret;
+		}
+
+		if (val16 & ADIS16240_ERROR_ACTIVE) {
+			ret = adis16240_check_status(indio_dev);
+			if (ret) {
+				mutex_unlock(&indio_dev->mlock);
+				return ret;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		val16 = val16 & ((1 << chan->scan_type.realbits) - 1);
 		if (chan->scan_type.sign == 's')
@@ -386,10 +424,16 @@ static int adis16240_read_raw(struct iio_dev *indio_dev,
 		*val = val16;
 		mutex_unlock(&indio_dev->mlock);
 		return IIO_VAL_INT;
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_SCALE_SEPARATE):
 	case (1 << IIO_CHAN_INFO_SCALE_SHARED):
 		switch (chan->type) {
 		case IIO_IN:
+=======
+	case IIO_CHAN_INFO_SCALE:
+		switch (chan->type) {
+		case IIO_VOLTAGE:
+>>>>>>> refs/remotes/origin/cm-10.0
 			*val = 0;
 			if (chan->channel == 0)
 				*val2 = 4880;
@@ -408,6 +452,7 @@ static int adis16240_read_raw(struct iio_dev *indio_dev,
 			return -EINVAL;
 		}
 		break;
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_PEAK_SCALE_SHARED):
 		*val = 6;
 		*val2 = 629295;
@@ -416,6 +461,16 @@ static int adis16240_read_raw(struct iio_dev *indio_dev,
 		*val = 25;
 		return IIO_VAL_INT;
 	case (1 << IIO_CHAN_INFO_CALIBBIAS_SEPARATE):
+=======
+	case IIO_CHAN_INFO_PEAK_SCALE:
+		*val = 6;
+		*val2 = 629295;
+		return IIO_VAL_INT_PLUS_MICRO;
+	case IIO_CHAN_INFO_OFFSET:
+		*val = 25;
+		return IIO_VAL_INT;
+	case IIO_CHAN_INFO_CALIBBIAS:
+>>>>>>> refs/remotes/origin/cm-10.0
 		bits = 10;
 		mutex_lock(&indio_dev->mlock);
 		addr = adis16240_addresses[chan->address][1];
@@ -429,7 +484,11 @@ static int adis16240_read_raw(struct iio_dev *indio_dev,
 		*val = val16;
 		mutex_unlock(&indio_dev->mlock);
 		return IIO_VAL_INT;
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_PEAK_SEPARATE):
+=======
+	case IIO_CHAN_INFO_PEAK:
+>>>>>>> refs/remotes/origin/cm-10.0
 		bits = 10;
 		mutex_lock(&indio_dev->mlock);
 		addr = adis16240_addresses[chan->address][2];
@@ -457,7 +516,11 @@ static int adis16240_write_raw(struct iio_dev *indio_dev,
 	s16 val16;
 	u8 addr;
 	switch (mask) {
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_CALIBBIAS_SEPARATE):
+=======
+	case IIO_CHAN_INFO_CALIBBIAS:
+>>>>>>> refs/remotes/origin/cm-10.0
 		val16 = val & ((1 << bits) - 1);
 		addr = adis16240_addresses[chan->address][1];
 		return adis16240_spi_write_reg_16(indio_dev, addr, val16);
@@ -466,15 +529,24 @@ static int adis16240_write_raw(struct iio_dev *indio_dev,
 }
 
 static struct iio_chan_spec adis16240_channels[] = {
+<<<<<<< HEAD
 	IIO_CHAN(IIO_IN, 0, 1, 0, "supply", 0, 0,
 		 (1 << IIO_CHAN_INFO_SCALE_SEPARATE),
 		 in_supply, ADIS16240_SCAN_SUPPLY,
 		 IIO_ST('u', 10, 16, 0), 0),
 	IIO_CHAN(IIO_IN, 0, 1, 0, NULL, 1, 0,
+=======
+	IIO_CHAN(IIO_VOLTAGE, 0, 1, 0, "supply", 0, 0,
+		 IIO_CHAN_INFO_SCALE_SEPARATE_BIT,
+		 in_supply, ADIS16240_SCAN_SUPPLY,
+		 IIO_ST('u', 10, 16, 0), 0),
+	IIO_CHAN(IIO_VOLTAGE, 0, 1, 0, NULL, 1, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 0,
 		 in_aux, ADIS16240_SCAN_AUX_ADC,
 		 IIO_ST('u', 10, 16, 0), 0),
 	IIO_CHAN(IIO_ACCEL, 1, 0, 0, NULL, 0, IIO_MOD_X,
+<<<<<<< HEAD
 		 (1 << IIO_CHAN_INFO_SCALE_SHARED) |
 		 (1 << IIO_CHAN_INFO_CALIBBIAS_SEPARATE),
 		 accel_x, ADIS16240_SCAN_ACC_X,
@@ -491,13 +563,35 @@ static struct iio_chan_spec adis16240_channels[] = {
 		 IIO_ST('s', 10, 16, 0), 0),
 	IIO_CHAN(IIO_TEMP, 0, 1, 0, NULL, 0, 0,
 		 (1 << IIO_CHAN_INFO_SCALE_SEPARATE),
+=======
+		 IIO_CHAN_INFO_SCALE_SHARED_BIT |
+		 IIO_CHAN_INFO_CALIBBIAS_SEPARATE_BIT,
+		 accel_x, ADIS16240_SCAN_ACC_X,
+		 IIO_ST('s', 10, 16, 0), 0),
+	IIO_CHAN(IIO_ACCEL, 1, 0, 0, NULL, 0, IIO_MOD_Y,
+		 IIO_CHAN_INFO_SCALE_SHARED_BIT |
+		 IIO_CHAN_INFO_CALIBBIAS_SEPARATE_BIT,
+		 accel_y, ADIS16240_SCAN_ACC_Y,
+		 IIO_ST('s', 10, 16, 0), 0),
+	IIO_CHAN(IIO_ACCEL, 1, 0, 0, NULL, 0, IIO_MOD_Z,
+		 IIO_CHAN_INFO_SCALE_SHARED_BIT |
+		 IIO_CHAN_INFO_CALIBBIAS_SEPARATE_BIT,
+		 accel_z, ADIS16240_SCAN_ACC_Z,
+		 IIO_ST('s', 10, 16, 0), 0),
+	IIO_CHAN(IIO_TEMP, 0, 1, 0, NULL, 0, 0,
+		 IIO_CHAN_INFO_SCALE_SEPARATE_BIT,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 temp, ADIS16240_SCAN_TEMP,
 		 IIO_ST('u', 10, 16, 0), 0),
 	IIO_CHAN_SOFT_TIMESTAMP(6)
 };
 
 static struct attribute *adis16240_attributes[] = {
+<<<<<<< HEAD
 	&iio_dev_attr_accel_xyz_squared_peak_raw.dev_attr.attr,
+=======
+	&iio_dev_attr_in_accel_xyz_squared_peak_raw.dev_attr.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 	&iio_const_attr_sampling_frequency_available.dev_attr.attr,
 	&iio_dev_attr_reset.dev_attr.attr,
 	NULL
@@ -516,6 +610,7 @@ static const struct iio_info adis16240_info = {
 
 static int __devinit adis16240_probe(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	int ret, regdone = 0;
 	struct adis16240_state *st = kzalloc(sizeof *st, GFP_KERNEL);
 	if (!st) {
@@ -565,24 +660,69 @@ static int __devinit adis16240_probe(struct spi_device *spi)
 	ret = iio_ring_buffer_register_ex(st->indio_dev->ring, 0,
 					  adis16240_channels,
 					  ARRAY_SIZE(adis16240_channels));
+=======
+	int ret;
+	struct adis16240_state *st;
+	struct iio_dev *indio_dev;
+
+	/* setup the industrialio driver allocated elements */
+	indio_dev = iio_allocate_device(sizeof(*st));
+	if (indio_dev == NULL) {
+		ret = -ENOMEM;
+		goto error_ret;
+	}
+	st = iio_priv(indio_dev);
+	/* this is only used for removal purposes */
+	spi_set_drvdata(spi, indio_dev);
+
+	st->us = spi;
+	mutex_init(&st->buf_lock);
+
+	indio_dev->name = spi->dev.driver->name;
+	indio_dev->dev.parent = &spi->dev;
+	indio_dev->info = &adis16240_info;
+	indio_dev->channels = adis16240_channels;
+	indio_dev->num_channels = ARRAY_SIZE(adis16240_channels);
+	indio_dev->modes = INDIO_DIRECT_MODE;
+
+	ret = adis16240_configure_ring(indio_dev);
+	if (ret)
+		goto error_free_dev;
+
+	ret = iio_buffer_register(indio_dev,
+				  adis16240_channels,
+				  ARRAY_SIZE(adis16240_channels));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		printk(KERN_ERR "failed to initialize the ring\n");
 		goto error_unreg_ring_funcs;
 	}
 
 	if (spi->irq) {
+<<<<<<< HEAD
 		ret = adis16240_probe_trigger(st->indio_dev);
+=======
+		ret = adis16240_probe_trigger(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret)
 			goto error_uninitialize_ring;
 	}
 
 	/* Get the device into a sane initial state */
+<<<<<<< HEAD
 	ret = adis16240_initial_setup(st->indio_dev);
+=======
+	ret = adis16240_initial_setup(indio_dev);
+	if (ret)
+		goto error_remove_trigger;
+	ret = iio_device_register(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto error_remove_trigger;
 	return 0;
 
 error_remove_trigger:
+<<<<<<< HEAD
 	adis16240_remove_trigger(st->indio_dev);
 error_uninitialize_ring:
 	iio_ring_buffer_unregister(st->indio_dev->ring);
@@ -599,12 +739,22 @@ error_free_rx:
 	kfree(st->rx);
 error_free_st:
 	kfree(st);
+=======
+	adis16240_remove_trigger(indio_dev);
+error_uninitialize_ring:
+	iio_buffer_unregister(indio_dev);
+error_unreg_ring_funcs:
+	adis16240_unconfigure_ring(indio_dev);
+error_free_dev:
+	iio_free_device(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
 	return ret;
 }
 
 static int adis16240_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	struct adis16240_state *st = spi_get_drvdata(spi);
 	struct iio_dev *indio_dev = st->indio_dev;
 
@@ -617,6 +767,18 @@ static int adis16240_remove(struct spi_device *spi)
 	kfree(st->tx);
 	kfree(st->rx);
 	kfree(st);
+=======
+
+	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+
+	flush_scheduled_work();
+
+	iio_device_unregister(indio_dev);
+	adis16240_remove_trigger(indio_dev);
+	iio_buffer_unregister(indio_dev);
+	adis16240_unconfigure_ring(indio_dev);
+	iio_free_device(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -629,6 +791,7 @@ static struct spi_driver adis16240_driver = {
 	.probe = adis16240_probe,
 	.remove = __devexit_p(adis16240_remove),
 };
+<<<<<<< HEAD
 
 static __init int adis16240_init(void)
 {
@@ -641,7 +804,14 @@ static __exit void adis16240_exit(void)
 	spi_unregister_driver(&adis16240_driver);
 }
 module_exit(adis16240_exit);
+=======
+module_spi_driver(adis16240_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
 MODULE_DESCRIPTION("Analog Devices Programmable Impact Sensor and Recorder");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("spi:adis16240");
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -23,6 +23,10 @@
  * information.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/plist.h>
 #include <linux/spinlock.h>
 

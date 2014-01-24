@@ -697,7 +697,10 @@ static struct reserve_info *flat_read_mem_reserve(struct inbuf *inb)
 {
 	struct reserve_info *reservelist = NULL;
 	struct reserve_info *new;
+<<<<<<< HEAD
 	const char *p;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct fdt_reserve_entry re;
 
 	/*
@@ -706,7 +709,10 @@ static struct reserve_info *flat_read_mem_reserve(struct inbuf *inb)
 	 *
 	 * First pass, count entries.
 	 */
+<<<<<<< HEAD
 	p = inb->ptr;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (1) {
 		flat_read_chunk(inb, &re, sizeof(re));
 		re.address  = fdt64_to_cpu(re.address);

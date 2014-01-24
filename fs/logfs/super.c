@@ -13,6 +13,10 @@
 #include <linux/bio.h>
 #include <linux/slab.h>
 #include <linux/blkdev.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mtd/mtd.h>
 #include <linux/statfs.h>
 #include <linux/buffer_head.h>
@@ -91,6 +95,7 @@ void logfs_crash_dump(struct super_block *sb)
 }
 
 /*
+<<<<<<< HEAD
  * TODO: move to lib/string.c
  */
 /**
@@ -113,6 +118,8 @@ void *memchr_inv(const void *s, int c, size_t n)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * FIXME: There should be a reserve for root, similar to ext2.
  */
 int logfs_statfs(struct dentry *dentry, struct kstatfs *stats)
@@ -336,11 +343,17 @@ static int logfs_get_sb_final(struct super_block *sb)
 	if (IS_ERR(rootdir))
 		goto fail;
 
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(rootdir);
 	if (!sb->s_root) {
 		iput(rootdir);
 		goto fail;
 	}
+=======
+	sb->s_root = d_make_root(rootdir);
+	if (!sb->s_root)
+		goto fail;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* at that point we know that ->put_super() will be called */
 	super->s_erase_page = alloc_pages(GFP_KERNEL, 0);
@@ -507,14 +520,24 @@ static void logfs_kill_sb(struct super_block *sb)
 	/* Alias entries slow down mount, so evict as many as possible */
 	sync_filesystem(sb);
 	logfs_write_anchor(sb);
+<<<<<<< HEAD
+=======
+	free_areas(sb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * From this point on alias entries are simply dropped - and any
 	 * writes to the object store are considered bugs.
 	 */
+<<<<<<< HEAD
 	super->s_flags |= LOGFS_SB_FLAG_SHUTDOWN;
 	log_super("LogFS: Now in shutdown\n");
 	generic_shutdown_super(sb);
+=======
+	log_super("LogFS: Now in shutdown\n");
+	generic_shutdown_super(sb);
+	super->s_flags |= LOGFS_SB_FLAG_SHUTDOWN;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	BUG_ON(super->s_dirty_used_bytes || super->s_dirty_free_bytes);
 
@@ -562,6 +585,10 @@ static struct dentry *logfs_get_sb_device(struct logfs_super *super,
 	 * the filesystem incompatible with 32bit systems.
 	 */
 	sb->s_maxbytes	= (1ull << 43) - 1;
+<<<<<<< HEAD
+=======
+	sb->s_max_links = LOGFS_LINK_MAX;
+>>>>>>> refs/remotes/origin/cm-10.0
 	sb->s_op	= &logfs_super_operations;
 	sb->s_flags	= flags | MS_NOATIME;
 
@@ -647,7 +674,14 @@ static int __init logfs_init(void)
 	if (ret)
 		goto out2;
 
+<<<<<<< HEAD
 	return register_filesystem(&logfs_fs_type);
+=======
+	ret = register_filesystem(&logfs_fs_type);
+	if (!ret)
+		return 0;
+	logfs_destroy_inode_cache();
+>>>>>>> refs/remotes/origin/cm-10.0
 out2:
 	logfs_compr_exit();
 out1:

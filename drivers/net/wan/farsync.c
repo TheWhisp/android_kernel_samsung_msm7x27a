@@ -25,6 +25,10 @@
 #include <linux/slab.h>
 #include <linux/ioport.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/if.h>
 #include <linux/hdlc.h>
 #include <asm/io.h>
@@ -1664,10 +1668,16 @@ check_started_ok(struct fst_card_info *card)
 	 * existing firmware etc so we just report it for the moment.
 	 */
 	if (FST_RDL(card, numberOfPorts) != card->nports) {
+<<<<<<< HEAD
 		pr_warning("Port count mismatch on card %d. "
 			   "Firmware thinks %d we say %d\n",
 			   card->card_no,
 			   FST_RDL(card, numberOfPorts), card->nports);
+=======
+		pr_warn("Port count mismatch on card %d.  Firmware thinks %d we say %d\n",
+			card->card_no,
+			FST_RDL(card, numberOfPorts), card->nports);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -1972,6 +1982,10 @@ fst_get_iface(struct fst_card_info *card, struct fst_port_info *port,
 	}
 
 	i = port->index;
+<<<<<<< HEAD
+=======
+	memset(&sync, 0, sizeof(sync));
+>>>>>>> refs/remotes/origin/cm-10.0
 	sync.clock_rate = FST_RDL(card, portConfig[i].lineSpeed);
 	/* Lucky card and linux use same encoding here */
 	sync.clock_type = FST_RDB(card, portConfig[i].internalClock) ==
@@ -2483,6 +2497,10 @@ fst_add_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		pr_err("Control memory remap failed\n");
 		pci_release_regions(pdev);
 		pci_disable_device(pdev);
+<<<<<<< HEAD
+=======
+		iounmap(card->mem);
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(card);
 		return -ENODEV;
 	}

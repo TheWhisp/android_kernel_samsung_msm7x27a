@@ -13,6 +13,10 @@
 #define NORM_MODE	0x0
 #define TDM_MODE	0x1
 #define I2S_MODE	0x2
+<<<<<<< HEAD
+=======
+#define NDSO_MODE	0x3
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Data format, normal, a-law or u-law */
 #define NORM_FORMAT	0x0
@@ -56,6 +60,11 @@ struct sport_config {
 /* Userspace interface */
 #define SPORT_IOC_MAGIC		'P'
 #define SPORT_IOC_CONFIG	_IOWR('P', 0x01, struct sport_config)
+<<<<<<< HEAD
+=======
+#define SPORT_IOC_GET_SYSTEMCLOCK         _IOR('P', 0x02, unsigned long)
+#define SPORT_IOC_SET_BAUDRATE            _IOW('P', 0x03, unsigned long)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
 

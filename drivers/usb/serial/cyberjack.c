@@ -43,7 +43,11 @@
 
 #define CYBERJACK_LOCAL_BUF_SIZE 32
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Version Information
@@ -82,7 +86,10 @@ static struct usb_driver cyberjack_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver cyberjack_device = {
@@ -91,7 +98,10 @@ static struct usb_serial_driver cyberjack_device = {
 		.name =		"cyberjack",
 	},
 	.description =		"Reiner SCT Cyberjack USB card reader",
+<<<<<<< HEAD
 	.usb_driver = 		&cyberjack_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		id_table,
 	.num_ports =		1,
 	.attach =		cyberjack_startup,
@@ -106,6 +116,13 @@ static struct usb_serial_driver cyberjack_device = {
 	.write_bulk_callback =	cyberjack_write_bulk_callback,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&cyberjack_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct cyberjack_private {
 	spinlock_t	lock;		/* Lock for SMP */
 	short		rdtodo;		/* Bytes still to read */
@@ -138,7 +155,10 @@ static int cyberjack_startup(struct usb_serial *serial)
 
 	for (i = 0; i < serial->num_ports; ++i) {
 		int result;
+<<<<<<< HEAD
 		serial->port[i]->interrupt_in_urb->dev = serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		result = usb_submit_urb(serial->port[i]->interrupt_in_urb,
 					GFP_KERNEL);
 		if (result)
@@ -208,7 +228,10 @@ static void cyberjack_close(struct usb_serial_port *port)
 static int cyberjack_write(struct tty_struct *tty,
 	struct usb_serial_port *port, const unsigned char *buf, int count)
 {
+<<<<<<< HEAD
 	struct usb_serial *serial = port->serial;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct cyberjack_private *priv = usb_get_serial_port_data(port);
 	unsigned long flags;
 	int result;
@@ -221,6 +244,7 @@ static int cyberjack_write(struct tty_struct *tty,
 		return 0;
 	}
 
+<<<<<<< HEAD
 	spin_lock_bh(&port->lock);
 	if (port->write_urb_busy) {
 		spin_unlock_bh(&port->lock);
@@ -229,14 +253,25 @@ static int cyberjack_write(struct tty_struct *tty,
 	}
 	port->write_urb_busy = 1;
 	spin_unlock_bh(&port->lock);
+=======
+	if (!test_and_clear_bit(0, &port->write_urbs_free)) {
+		dbg("%s - already writing", __func__);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_irqsave(&priv->lock, flags);
 
 	if (count+priv->wrfilled > sizeof(priv->wrbuf)) {
 		/* To much data for buffer. Reset buffer. */
 		priv->wrfilled = 0;
+<<<<<<< HEAD
 		port->write_urb_busy = 0;
 		spin_unlock_irqrestore(&priv->lock, flags);
+=======
+		spin_unlock_irqrestore(&priv->lock, flags);
+		set_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 
@@ -265,6 +300,7 @@ static int cyberjack_write(struct tty_struct *tty,
 		priv->wrsent = length;
 
 		/* set up our urb */
+<<<<<<< HEAD
 		usb_fill_bulk_urb(port->write_urb, serial->dev,
 			      usb_sndbulkpipe(serial->dev, port->bulk_out_endpointAddress),
 			      port->write_urb->transfer_buffer, length,
@@ -272,6 +308,9 @@ static int cyberjack_write(struct tty_struct *tty,
 			       serial->type->write_bulk_callback :
 			       cyberjack_write_bulk_callback),
 			      port);
+=======
+		port->write_urb->transfer_buffer_length = length;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* send the data out the bulk port */
 		result = usb_submit_urb(port->write_urb, GFP_ATOMIC);
@@ -283,7 +322,11 @@ static int cyberjack_write(struct tty_struct *tty,
 			priv->wrfilled = 0;
 			priv->wrsent = 0;
 			spin_unlock_irqrestore(&priv->lock, flags);
+<<<<<<< HEAD
 			port->write_urb_busy = 0;
+=======
+			set_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return 0;
 		}
 
@@ -351,7 +394,10 @@ static void cyberjack_read_int_callback(struct urb *urb)
 		spin_unlock(&priv->lock);
 
 		if (!old_rdtodo) {
+<<<<<<< HEAD
 			port->read_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			result = usb_submit_urb(port->read_urb, GFP_ATOMIC);
 			if (result)
 				dev_err(&port->dev, "%s - failed resubmitting "
@@ -362,7 +408,10 @@ static void cyberjack_read_int_callback(struct urb *urb)
 	}
 
 resubmit:
+<<<<<<< HEAD
 	port->interrupt_in_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	result = usb_submit_urb(port->interrupt_in_urb, GFP_ATOMIC);
 	if (result)
 		dev_err(&port->dev, "usb_submit_urb(read int) failed\n");
@@ -415,7 +464,10 @@ static void cyberjack_read_bulk_callback(struct urb *urb)
 
 	/* Continue to read if we have still urbs to do. */
 	if (todo /* || (urb->actual_length==port->bulk_in_endpointAddress)*/) {
+<<<<<<< HEAD
 		port->read_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		result = usb_submit_urb(port->read_urb, GFP_ATOMIC);
 		if (result)
 			dev_err(&port->dev, "%s - failed resubmitting read "
@@ -432,7 +484,11 @@ static void cyberjack_write_bulk_callback(struct urb *urb)
 
 	dbg("%s - port %d", __func__, port->number);
 
+<<<<<<< HEAD
 	port->write_urb_busy = 0;
+=======
+	set_bit(0, &port->write_urbs_free);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (status) {
 		dbg("%s - nonzero write bulk status received: %d",
 		    __func__, status);
@@ -455,6 +511,7 @@ static void cyberjack_write_bulk_callback(struct urb *urb)
 		priv->wrsent += length;
 
 		/* set up our urb */
+<<<<<<< HEAD
 		usb_fill_bulk_urb(port->write_urb, port->serial->dev,
 			      usb_sndbulkpipe(port->serial->dev, port->bulk_out_endpointAddress),
 			      port->write_urb->transfer_buffer, length,
@@ -462,6 +519,9 @@ static void cyberjack_write_bulk_callback(struct urb *urb)
 			       port->serial->type->write_bulk_callback :
 			       cyberjack_write_bulk_callback),
 			      port);
+=======
+		port->write_urb->transfer_buffer_length = length;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* send the data out the bulk port */
 		result = usb_submit_urb(port->write_urb, GFP_ATOMIC);
@@ -494,6 +554,7 @@ exit:
 	usb_serial_port_softint(port);
 }
 
+<<<<<<< HEAD
 static int __init cyberjack_init(void)
 {
 	int retval;
@@ -523,6 +584,9 @@ static void __exit cyberjack_exit(void)
 
 module_init(cyberjack_init);
 module_exit(cyberjack_exit);
+=======
+module_usb_serial_driver(cyberjack_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

@@ -4,7 +4,10 @@
 #include <asm/bootinfo.h>
 
 #include <asm/lasat/lasat.h>
+<<<<<<< HEAD
 #include <asm/gt64120.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/nile4.h>
 
 #define PCI_ACCESS_READ  0

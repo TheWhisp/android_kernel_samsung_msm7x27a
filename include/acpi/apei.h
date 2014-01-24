@@ -16,8 +16,18 @@
 
 #ifdef __KERNEL__
 
+<<<<<<< HEAD
 extern int hest_disable;
 extern int erst_disable;
+=======
+extern bool hest_disable;
+extern int erst_disable;
+#ifdef CONFIG_ACPI_APEI_GHES
+extern bool ghes_disable;
+#else
+#define ghes_disable 1
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_ACPI_APEI
 void __init acpi_hest_init(void);

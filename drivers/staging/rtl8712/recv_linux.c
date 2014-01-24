@@ -28,11 +28,21 @@
 
 #define _RECV_OSDEP_C_
 
+<<<<<<< HEAD
+=======
+#include <linux/usb.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "wifi.h"
 #include "recv_osdep.h"
 #include "osdep_intf.h"
+<<<<<<< HEAD
+=======
+#include "ethernet.h"
+#include <linux/if_arp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "usb_ops.h"
 
 /*init os related resource in struct recv_priv*/
@@ -51,7 +61,11 @@ int r8712_os_recvbuf_resource_alloc(struct _adapter *padapter,
 	int res = _SUCCESS;
 
 	precvbuf->irp_pending = false;
+<<<<<<< HEAD
 	precvbuf->purb = _usb_alloc_urb(0, GFP_KERNEL);
+=======
+	precvbuf->purb = usb_alloc_urb(0, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (precvbuf->purb == NULL)
 		res = _FAIL;
 	precvbuf->pskb = NULL;

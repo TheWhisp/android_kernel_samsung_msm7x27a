@@ -193,7 +193,11 @@ periodic_usecs (struct ehci_hcd *ehci, unsigned frame, unsigned uframe)
 		}
 	}
 #ifdef	DEBUG
+<<<<<<< HEAD
 	if (usecs > 100)
+=======
+	if (usecs > ehci->uframe_periodic_max)
+>>>>>>> refs/remotes/origin/cm-10.0
 		ehci_err (ehci, "uframe %d sched overrun: %d usecs\n",
 			frame * 8 + uframe, usecs);
 #endif
@@ -500,7 +504,10 @@ static int enable_periodic (struct ehci_hcd *ehci)
 	cmd = ehci_readl(ehci, &ehci->regs->command) | CMD_PSE;
 	ehci_writel(ehci, cmd, &ehci->regs->command);
 	/* posted write ... PSS happens later */
+<<<<<<< HEAD
 	ehci_to_hcd(ehci)->state = HC_STATE_RUNNING;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* make sure ehci_work scans these */
 	ehci->next_uframe = ehci_read_frame_index(ehci)
@@ -698,7 +705,11 @@ static void intr_deschedule (struct ehci_hcd *ehci, struct ehci_qh *qh)
 
 	/* reschedule QH iff another request is queued */
 	if (!list_empty(&qh->qtd_list) &&
+<<<<<<< HEAD
 			HC_IS_RUNNING(ehci_to_hcd(ehci)->state)) {
+=======
+			ehci->rh_state == EHCI_RH_RUNNING) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = qh_schedule(ehci, qh);
 
 		/* An error here likely indicates handshake failure
@@ -730,11 +741,16 @@ static int check_period (
 	if (uframe >= 8)
 		return 0;
 
+<<<<<<< HEAD
 	/*
 	 * 80% periodic == 100 usec/uframe available
 	 * convert "usecs we need" to "max already claimed"
 	 */
 	usecs = 100 - usecs;
+=======
+	/* convert "usecs we need" to "max already claimed" */
+	usecs = ehci->uframe_periodic_max - usecs;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* we "know" 2 and 4 uframe intervals were rejected; so
 	 * for period 0, check _every_ microframe in the schedule.
@@ -1307,9 +1323,15 @@ itd_slot_ok (
 {
 	uframe %= period;
 	do {
+<<<<<<< HEAD
 		/* can't commit more than 80% periodic == 100 usec */
 		if (periodic_usecs (ehci, uframe >> 3, uframe & 0x7)
 				> (100 - usecs))
+=======
+		/* can't commit more than uframe_periodic_max usec */
+		if (periodic_usecs (ehci, uframe >> 3, uframe & 0x7)
+				> (ehci->uframe_periodic_max - usecs))
+>>>>>>> refs/remotes/origin/cm-10.0
 			return 0;
 
 		/* we know urb->interval is 2^N uframes */
@@ -1366,7 +1388,11 @@ sitd_slot_ok (
 #endif
 
 		/* check starts (OUT uses more than one) */
+<<<<<<< HEAD
 		max_used = 100 - stream->usecs;
+=======
+		max_used = ehci->uframe_periodic_max - stream->usecs;
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (tmp = stream->raw_mask & 0xff; tmp; tmp >>= 1, uf++) {
 			if (periodic_usecs (ehci, frame, uf) > max_used)
 				return 0;
@@ -1375,7 +1401,11 @@ sitd_slot_ok (
 		/* for IN, check CSPLIT */
 		if (stream->c_usecs) {
 			uf = uframe & 7;
+<<<<<<< HEAD
 			max_used = 100 - stream->c_usecs;
+=======
+			max_used = ehci->uframe_periodic_max - stream->c_usecs;
+>>>>>>> refs/remotes/origin/cm-10.0
 			do {
 				tmp = 1 << uf;
 				tmp <<= 8;
@@ -2305,7 +2335,11 @@ scan_periodic (struct ehci_hcd *ehci)
 	 * Touches as few pages as possible:  cache-friendly.
 	 */
 	now_uframe = ehci->next_uframe;
+<<<<<<< HEAD
 	if (HC_IS_RUNNING(ehci_to_hcd(ehci)->state)) {
+=======
+	if (ehci->rh_state == EHCI_RH_RUNNING) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		clock = ehci_read_frame_index(ehci);
 		clock_frame = (clock >> 3) & (ehci->periodic_size - 1);
 	} else  {
@@ -2340,7 +2374,11 @@ restart:
 			union ehci_shadow	temp;
 			int			live;
 
+<<<<<<< HEAD
 			live = HC_IS_RUNNING (ehci_to_hcd(ehci)->state);
+=======
+			live = (ehci->rh_state == EHCI_RH_RUNNING);
+>>>>>>> refs/remotes/origin/cm-10.0
 			switch (hc32_to_cpu(ehci, type)) {
 			case Q_TYPE_QH:
 				/* handle any completions */
@@ -2465,7 +2503,11 @@ restart:
 		 * We can't advance our scan without collecting the ISO
 		 * transfers that are still pending in this frame.
 		 */
+<<<<<<< HEAD
 		if (incomplete && HC_IS_RUNNING(ehci_to_hcd(ehci)->state)) {
+=======
+		if (incomplete && ehci->rh_state == EHCI_RH_RUNNING) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ehci->next_uframe = now_uframe;
 			break;
 		}
@@ -2481,7 +2523,11 @@ restart:
 		if (now_uframe == clock) {
 			unsigned	now;
 
+<<<<<<< HEAD
 			if (!HC_IS_RUNNING (ehci_to_hcd(ehci)->state)
+=======
+			if (ehci->rh_state != EHCI_RH_RUNNING
+>>>>>>> refs/remotes/origin/cm-10.0
 					|| ehci->periodic_sched == 0)
 				break;
 			ehci->next_uframe = now_uframe;

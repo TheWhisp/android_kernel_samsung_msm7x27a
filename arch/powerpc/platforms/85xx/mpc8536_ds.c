@@ -19,7 +19,10 @@
 #include <linux/of_platform.h>
 #include <linux/memblock.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -32,6 +35,7 @@
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
 
+<<<<<<< HEAD
 void __init mpc8536_ds_pic_init(void)
 {
 	struct mpic *mpic;
@@ -57,6 +61,15 @@ void __init mpc8536_ds_pic_init(void)
 	BUG_ON(mpic == NULL);
 	of_node_put(np);
 
+=======
+#include "mpc85xx.h"
+
+void __init mpc8536_ds_pic_init(void)
+{
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mpic_init(mpic);
 }
 
@@ -104,6 +117,7 @@ static void __init mpc8536_ds_setup_arch(void)
 	printk("MPC8536 DS board from Freescale Semiconductor\n");
 }
 
+<<<<<<< HEAD
 static struct of_device_id __initdata mpc8536_ds_ids[] = {
 	{ .type = "soc", },
 	{ .compatible = "soc", },
@@ -117,6 +131,9 @@ static int __init mpc8536_ds_publish_devices(void)
 	return of_platform_bus_probe(NULL, mpc8536_ds_ids, NULL);
 }
 machine_device_initcall(mpc8536_ds, mpc8536_ds_publish_devices);
+=======
+machine_device_initcall(mpc8536_ds, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 machine_arch_initcall(mpc8536_ds, swiotlb_setup_bus_notifier);
 

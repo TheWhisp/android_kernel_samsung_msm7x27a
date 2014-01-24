@@ -23,6 +23,7 @@
 #include <asm/kmap_types.h>
 
 
+<<<<<<< HEAD
 extern enum km_type crypto_km_types[];
 
 static inline enum km_type crypto_kmap_type(int out)
@@ -40,6 +41,8 @@ static inline void crypto_kunmap(void *vaddr, int out)
 	kunmap_atomic(vaddr, crypto_kmap_type(out));
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void crypto_yield(struct crypto_tfm *tfm)
 {
 	if (!in_softirq())

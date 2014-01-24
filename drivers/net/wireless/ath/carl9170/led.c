@@ -118,7 +118,11 @@ static void carl9170_led_set_brightness(struct led_classdev *led,
 	}
 
 	if (likely(IS_ACCEPTING_CMD(ar) && arl->toggled))
+<<<<<<< HEAD
 		ieee80211_queue_delayed_work(ar->hw, &ar->led_work, HZ/10);
+=======
+		ieee80211_queue_delayed_work(ar->hw, &ar->led_work, HZ / 10);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int carl9170_led_register_led(struct ar9170 *ar, int i, char *name,

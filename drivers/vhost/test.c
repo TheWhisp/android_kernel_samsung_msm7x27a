@@ -155,7 +155,11 @@ static int vhost_test_release(struct inode *inode, struct file *f)
 
 	vhost_test_stop(n, &private);
 	vhost_test_flush(n);
+<<<<<<< HEAD
 	vhost_dev_cleanup(&n->dev);
+=======
+	vhost_dev_cleanup(&n->dev, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* We do an extra flush before freeing memory,
 	 * since jobs can re-queue themselves. */
 	vhost_test_flush(n);
@@ -195,8 +199,18 @@ static long vhost_test_run(struct vhost_test *n, int test)
 						    lockdep_is_held(&vq->mutex));
 		rcu_assign_pointer(vq->private_data, priv);
 
+<<<<<<< HEAD
 		mutex_unlock(&vq->mutex);
 
+=======
+		r = vhost_init_used(&n->vqs[index]);
+
+		mutex_unlock(&vq->mutex);
+
+		if (r)
+			goto err;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (oldpriv) {
 			vhost_test_flush_vq(n, index);
 		}

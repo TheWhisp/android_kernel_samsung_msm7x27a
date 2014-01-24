@@ -3,6 +3,10 @@
 #include <linux/ioport.h>
 #include <linux/swap.h>
 #include <linux/memblock.h>
+<<<<<<< HEAD
+=======
+#include <linux/bootmem.h>	/* for max_low_pfn */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/cacheflush.h>
 #include <asm/e820.h>
@@ -11,10 +15,17 @@
 #include <asm/page_types.h>
 #include <asm/sections.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/tlbflush.h>
 #include <asm/tlb.h>
 #include <asm/proto.h>
+=======
+#include <asm/tlbflush.h>
+#include <asm/tlb.h>
+#include <asm/proto.h>
+#include <asm/dma.h>		/* for MAX_DMA_PFN */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned long __initdata pgt_buf_start;
 unsigned long __meminitdata pgt_buf_end;
@@ -86,7 +97,11 @@ static void __init find_early_table_space(struct map_range *mr, int nr_range)
 	good_end = max_pfn_mapped << PAGE_SHIFT;
 
 	base = memblock_find_in_range(start, good_end, tables, PAGE_SIZE);
+<<<<<<< HEAD
 	if (base == MEMBLOCK_ERROR)
+=======
+	if (!base)
+>>>>>>> refs/remotes/origin/cm-10.0
 		panic("Cannot find space for the kernel page tables");
 
 	pgt_buf_start = base >> PAGE_SHIFT;
@@ -100,7 +115,11 @@ static void __init find_early_table_space(struct map_range *mr, int nr_range)
 
 void __init native_pagetable_reserve(u64 start, u64 end)
 {
+<<<<<<< HEAD
 	memblock_x86_reserve_range(start, end, "PGTABLE");
+=======
+	memblock_reserve(start, end - start);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_X86_32
@@ -293,8 +312,13 @@ unsigned long __init_refok init_memory_mapping(unsigned long start,
 	 * pgt_buf_end) and free the other ones (pgt_buf_end - pgt_buf_top)
 	 * so that they can be reused for other purposes.
 	 *
+<<<<<<< HEAD
 	 * On native it just means calling memblock_x86_reserve_range, on Xen it
 	 * also means marking RW the pagetable pages that we allocated before
+=======
+	 * On native it just means calling memblock_reserve, on Xen it also
+	 * means marking RW the pagetable pages that we allocated before
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * but that haven't been used.
 	 *
 	 * In fact on xen we mark RO the whole range pgt_buf_start -
@@ -406,3 +430,27 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 	free_init_pages("initrd memory", start, PAGE_ALIGN(end));
 }
 #endif
+<<<<<<< HEAD
+=======
+
+void __init zone_sizes_init(void)
+{
+	unsigned long max_zone_pfns[MAX_NR_ZONES];
+
+	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
+
+#ifdef CONFIG_ZONE_DMA
+	max_zone_pfns[ZONE_DMA]		= MAX_DMA_PFN;
+#endif
+#ifdef CONFIG_ZONE_DMA32
+	max_zone_pfns[ZONE_DMA32]	= MAX_DMA32_PFN;
+#endif
+	max_zone_pfns[ZONE_NORMAL]	= max_low_pfn;
+#ifdef CONFIG_HIGHMEM
+	max_zone_pfns[ZONE_HIGHMEM]	= max_pfn;
+#endif
+
+	free_area_init_nodes(max_zone_pfns);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0

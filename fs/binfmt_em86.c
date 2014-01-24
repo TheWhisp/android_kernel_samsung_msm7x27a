@@ -99,7 +99,12 @@ static struct linux_binfmt em86_format = {
 
 static int __init init_em86_binfmt(void)
 {
+<<<<<<< HEAD
 	return register_binfmt(&em86_format);
+=======
+	register_binfmt(&em86_format);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __exit exit_em86_binfmt(void)

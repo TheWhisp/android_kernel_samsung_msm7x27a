@@ -38,13 +38,22 @@
 #include <linux/delay.h>
 #include <linux/uio.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ioport.h>
 #include <linux/wait.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/io.h>
 #include <asm/atomic.h>
+=======
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/string.h>
 #include <asm/byteorder.h>

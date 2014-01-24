@@ -16,6 +16,13 @@
 #ifndef ANI_H
 #define ANI_H
 
+<<<<<<< HEAD
+=======
+#include "../ath.h"
+
+enum ath5k_phy_error_code;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* these thresholds are relative to the ATH5K_ANI_LISTEN_PERIOD */
 #define ATH5K_ANI_LISTEN_PERIOD		100
 #define ATH5K_ANI_OFDM_TRIG_HIGH	500
@@ -36,6 +43,7 @@
  * enum ath5k_ani_mode - mode for ANI / noise sensitivity
  *
  * @ATH5K_ANI_MODE_OFF: Turn ANI off. This can be useful to just stop the ANI
+<<<<<<< HEAD
  *	algorithm after it has been on auto mode.
  * ATH5K_ANI_MODE_MANUAL_LOW: Manually set all immunity parameters to low,
  *	maximizing sensitivity. ANI will not run.
@@ -43,6 +51,15 @@
  *	minimizing sensitivity. ANI will not run.
  * ATH5K_ANI_MODE_AUTO: Automatically control immunity parameters based on the
  *	amount of OFDM and CCK frame errors (default).
+=======
+ *			algorithm after it has been on auto mode.
+ * @ATH5K_ANI_MODE_MANUAL_LOW: Manually set all immunity parameters to low,
+ *			maximizing sensitivity. ANI will not run.
+ * @ATH5K_ANI_MODE_MANUAL_HIGH: Manually set all immunity parameters to high,
+ *			minimizing sensitivity. ANI will not run.
+ * @ATH5K_ANI_MODE_AUTO: Automatically control immunity parameters based on the
+ *			amount of OFDM and CCK frame errors (default).
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 enum ath5k_ani_mode {
 	ATH5K_ANI_MODE_OFF		= 0,
@@ -54,8 +71,27 @@ enum ath5k_ani_mode {
 
 /**
  * struct ath5k_ani_state - ANI state and associated counters
+<<<<<<< HEAD
  *
  * @max_spur_level: the maximum spur level is chip dependent
+=======
+ * @ani_mode: One of enum ath5k_ani_mode
+ * @noise_imm_level: Noise immunity level
+ * @spur_level: Spur immunity level
+ * @firstep_level: FIRstep level
+ * @ofdm_weak_sig: OFDM weak signal detection state (on/off)
+ * @cck_weak_sig: CCK weak signal detection state (on/off)
+ * @max_spur_level: Max spur immunity level (chip specific)
+ * @listen_time: Listen time
+ * @ofdm_errors: OFDM timing error count
+ * @cck_errors: CCK timing error count
+ * @last_cc: The &struct ath_cycle_counters (for stats)
+ * @last_listen: Listen time from previous run (for stats)
+ * @last_ofdm_errors: OFDM timing error count from previous run (for tats)
+ * @last_cck_errors: CCK timing error count from previous run (for stats)
+ * @sum_ofdm_errors: Sum of OFDM timing errors (for stats)
+ * @sum_cck_errors: Sum of all CCK timing errors (for stats)
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct ath5k_ani_state {
 	enum ath5k_ani_mode	ani_mode;

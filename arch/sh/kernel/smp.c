@@ -21,13 +21,22 @@
 #include <linux/cpu.h>
 #include <linux/interrupt.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/processor.h>
 #include <asm/system.h>
+=======
+#include <linux/atomic.h>
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mmu_context.h>
 #include <asm/smp.h>
 #include <asm/cacheflush.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int __cpu_number_map[NR_CPUS];		/* Map physical to logical */
 int __cpu_logical_map[NR_CPUS];		/* Map logical to physical */
@@ -63,7 +72,11 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 	mp_ops->prepare_cpus(max_cpus);
 
 #ifndef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
 	init_cpu_present(&cpu_possible_map);
+=======
+	init_cpu_present(cpu_possible_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 }
 

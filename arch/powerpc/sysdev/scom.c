@@ -21,6 +21,11 @@
 #include <linux/kernel.h>
 #include <linux/debugfs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/prom.h>
 #include <asm/scom.h>
 

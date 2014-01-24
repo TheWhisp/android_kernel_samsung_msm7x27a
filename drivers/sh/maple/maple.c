@@ -20,6 +20,10 @@
 #include <linux/maple.h>
 #include <linux/dma-mapping.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 #include <asm/dma.h>
 #include <asm/io.h>

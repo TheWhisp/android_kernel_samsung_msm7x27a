@@ -32,7 +32,10 @@
 #include <linux/spinlock.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 #include "scsi.h"

@@ -268,6 +268,7 @@ struct VPITTable VPIT = {
 /* Mode Table       */
 /********************/
 
+<<<<<<< HEAD
 /* 480x640 */
 static struct crt_mode_table CRTM480x640[] = {
 	/* r_rate,              hsp,             vsp   */
@@ -853,6 +854,80 @@ static struct VideoModeTable viafb_rb_modes[] = {
 	/* Display : 1920x1200 (CVT Reduce Blanking) */
 	{CRTM1920x1200_RB, ARRAY_SIZE(CRTM1920x1200_RB)}
 };
+=======
+static const struct fb_videomode viafb_modes[] = {
+	{NULL, 60, 480, 640, 40285, 72, 24, 19, 1, 48, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 640, 480, 39682, 48, 16, 33, 10, 96, 2, 0, 0, 0},
+	{NULL, 75, 640, 480, 31746, 120, 16, 16, 1, 64, 3, 0, 0, 0},
+	{NULL, 85, 640, 480, 27780, 80, 56, 25, 1, 56, 3, 0, 0, 0},
+	{NULL, 100, 640, 480, 23167, 104, 40, 25, 1, 64, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 120, 640, 480, 19081, 104, 40, 31, 1, 64, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 720, 480, 37426, 88, 16, 13, 1, 72, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 720, 576, 30611, 96, 24, 17, 1, 72, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 800, 600, 25131, 88, 40, 23, 1, 128, 4, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 75, 800, 600, 20202, 160, 16, 21, 1, 80, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 85, 800, 600, 17790, 152, 32, 27, 1, 64, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 100, 800, 600, 14667, 136, 48, 32, 1, 88, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 120, 800, 600, 11911, 144, 56, 39, 1, 88, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 800, 480, 33602, 96, 24, 10, 3, 72, 7, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 848, 480, 31565, 104, 24, 12, 3, 80, 5, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 856, 480, 31517, 104, 16, 13, 1, 88, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1024, 512, 24218, 136, 32, 15, 1, 104, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1024, 600, 20423, 144, 40, 18, 1, 104, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1024, 768, 15385, 160, 24, 29, 3, 136, 6, 0, 0, 0},
+	{NULL, 75, 1024, 768, 12703, 176, 16, 28, 1, 96, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 85, 1024, 768, 10581, 208, 48, 36, 1, 96, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 100, 1024, 768, 8825, 184, 72, 42, 1, 112, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 75, 1152, 864, 9259, 256, 64, 32, 1, 128, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1280, 768, 12478, 200, 64, 23, 1, 136, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 50, 1280, 768, 15342, 184, 56, 19, 1, 128, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 960, 600, 21964, 128, 32, 15, 3, 96, 6, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1000, 600, 20803, 144, 40, 18, 1, 104, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1024, 576, 21278, 144, 40, 17, 1, 104, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1088, 612, 18825, 152, 48, 16, 3, 104, 5, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1152, 720, 14974, 168, 56, 19, 3, 112, 6, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1200, 720, 14248, 184, 56, 22, 1, 128, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 49, 1200, 900, 17703, 21, 11, 1, 1, 32, 10, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1280, 600, 16259, 184, 56, 18, 1, 128, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1280, 800, 11938, 200, 72, 22, 3, 128, 6, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1280, 960, 9259, 312, 96, 36, 1, 112, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1280, 1024, 9262, 248, 48, 38, 1, 112, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 75, 1280, 1024, 7409, 248, 16, 38, 1, 144, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 85, 1280, 1024, 6351, 224, 64, 44, 1, 160, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1360, 768, 11759, 208, 72, 22, 3, 136, 5, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1368, 768, 11646, 216, 72, 23, 1, 144, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 50, 1368, 768, 14301, 200, 56, 19, 1, 144, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1368, 768, 11646, 216, 72, 23, 1, 144, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1440, 900, 9372, 232, 80, 25, 3, 152, 6, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 75, 1440, 900, 7311, 248, 96, 33, 3, 152, 6, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1440, 1040, 7993, 248, 96, 33, 1, 152, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1600, 900, 8449, 256, 88, 26, 3, 168, 5, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1600, 1024, 7333, 272, 104, 32, 1, 168, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1600, 1200, 6172, 304, 64, 46, 1, 192, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 75, 1600, 1200, 4938, 304, 64, 46, 1, 192, 3, FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1680, 1050, 6832, 280, 104, 30, 3, 176, 6, 0, 0, 0},
+	{NULL, 75, 1680, 1050, 5339, 296, 120, 40, 3, 176, 6, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1792, 1344, 4883, 328, 128, 46, 1, 200, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1856, 1392, 4581, 352, 96, 43, 1, 224, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1920, 1440, 4273, 344, 128, 56, 1, 208, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 75, 1920, 1440, 3367, 352, 144, 56, 1, 224, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 2048, 1536, 3738, 376, 152, 49, 3, 224, 4, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1280, 720, 13484, 216, 112, 20, 5, 40, 5, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 50, 1280, 720, 16538, 176, 48, 17, 1, 128, 3, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1920, 1080, 5776, 328, 128, 32, 3, 200, 5, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1920, 1200, 5164, 336, 136, 36, 3, 200, 6, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 60, 1400, 1050, 8210, 232, 88, 32, 3, 144, 4, FB_SYNC_VERT_HIGH_ACT, 0, 0},
+	{NULL, 75, 1400, 1050, 6398, 248, 104, 42, 3, 144, 4, FB_SYNC_VERT_HIGH_ACT, 0, 0} };
+
+static const struct fb_videomode viafb_rb_modes[] = {
+	{NULL, 60, 1360, 768, 13879, 80, 48, 14, 3, 32, 5, FB_SYNC_HOR_HIGH_ACT, 0, 0},
+	{NULL, 60, 1440, 900, 11249, 80, 48, 17, 3, 32, 6, FB_SYNC_HOR_HIGH_ACT, 0, 0},
+	{NULL, 60, 1400, 1050, 9892, 80, 48, 23, 3, 32, 4, FB_SYNC_HOR_HIGH_ACT, 0, 0},
+	{NULL, 60, 1600, 900, 10226, 80, 48, 18, 3, 32, 5, FB_SYNC_HOR_HIGH_ACT, 0, 0},
+	{NULL, 60, 1680, 1050, 8387, 80, 48, 21, 3, 32, 6, FB_SYNC_HOR_HIGH_ACT, 0, 0},
+	{NULL, 60, 1920, 1080, 7212, 80, 48, 23, 3, 32, 5, FB_SYNC_HOR_HIGH_ACT, 0, 0},
+	{NULL, 60, 1920, 1200, 6488, 80, 48, 26, 3, 32, 6, FB_SYNC_HOR_HIGH_ACT, 0, 0} };
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int NUM_TOTAL_CN400_ModeXregs = ARRAY_SIZE(CN400_ModeXregs);
 int NUM_TOTAL_CN700_ModeXregs = ARRAY_SIZE(CN700_ModeXregs);
@@ -863,6 +938,7 @@ int NUM_TOTAL_CLE266_ModeXregs = ARRAY_SIZE(CLE266_ModeXregs);
 int NUM_TOTAL_PATCH_MODE = ARRAY_SIZE(res_patch_table);
 
 
+<<<<<<< HEAD
 struct VideoModeTable *viafb_get_mode(int hres, int vres)
 {
 	u32 i;
@@ -885,4 +961,36 @@ struct VideoModeTable *viafb_get_rb_mode(int hres, int vres)
 			return &viafb_rb_modes[i];
 
 	return NULL;
+=======
+static const struct fb_videomode *get_best_mode(
+	const struct fb_videomode *modes, int n,
+	int hres, int vres, int refresh)
+{
+	const struct fb_videomode *best = NULL;
+	int i;
+
+	for (i = 0; i < n; i++) {
+		if (modes[i].xres != hres || modes[i].yres != vres)
+			continue;
+
+		if (!best || abs(modes[i].refresh - refresh) <
+			abs(best->refresh - refresh))
+			best = &modes[i];
+	}
+
+	return best;
+}
+
+const struct fb_videomode *viafb_get_best_mode(int hres, int vres, int refresh)
+{
+	return get_best_mode(viafb_modes, ARRAY_SIZE(viafb_modes),
+		hres, vres, refresh);
+}
+
+const struct fb_videomode *viafb_get_best_rb_mode(int hres, int vres,
+	int refresh)
+{
+	return get_best_mode(viafb_rb_modes, ARRAY_SIZE(viafb_rb_modes),
+		hres, vres, refresh);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

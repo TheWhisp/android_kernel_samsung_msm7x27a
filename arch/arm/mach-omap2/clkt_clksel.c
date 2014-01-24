@@ -43,6 +43,10 @@
 #include <linux/errno.h>
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/clock.h>
 

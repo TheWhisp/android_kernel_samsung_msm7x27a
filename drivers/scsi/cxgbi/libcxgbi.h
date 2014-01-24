@@ -574,7 +574,11 @@ struct cxgbi_endpoint {
 #define MAX_PDU_FRAGS	((ULP2_MAX_PDU_PAYLOAD + 512 - 1) / 512)
 struct cxgbi_task_data {
 	unsigned short nr_frags;
+<<<<<<< HEAD
 	skb_frag_t frags[MAX_PDU_FRAGS];
+=======
+	struct page_frag frags[MAX_PDU_FRAGS];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sk_buff *skb;
 	unsigned int offset;
 	unsigned int count;
@@ -709,6 +713,10 @@ int cxgbi_conn_xmit_pdu(struct iscsi_task *);
 
 void cxgbi_cleanup_task(struct iscsi_task *task);
 
+<<<<<<< HEAD
+=======
+umode_t cxgbi_attr_is_visible(int param_type, int param);
+>>>>>>> refs/remotes/origin/cm-10.0
 void cxgbi_get_conn_stats(struct iscsi_cls_conn *, struct iscsi_stats *);
 int cxgbi_set_conn_param(struct iscsi_cls_conn *,
 			enum iscsi_param, char *, int);

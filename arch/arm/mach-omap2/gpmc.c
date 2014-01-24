@@ -888,6 +888,10 @@ int gpmc_enable_hwecc(int cs, int mode, int dev_width, int ecc_size)
 	gpmc_write_reg(GPMC_ECC_CONFIG, val);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(gpmc_enable_hwecc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * gpmc_calculate_ecc - generate non-inverted ecc bytes
@@ -918,3 +922,7 @@ int gpmc_calculate_ecc(int cs, const u_char *dat, u_char *ecc_code)
 	gpmc_ecc_used = -EINVAL;
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(gpmc_calculate_ecc);
+>>>>>>> refs/remotes/origin/cm-10.0

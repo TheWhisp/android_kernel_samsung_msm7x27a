@@ -39,6 +39,14 @@ struct ion_heap *ion_heap_create(struct ion_platform_heap *heap_data)
 	case ION_HEAP_TYPE_CP:
 		heap = ion_cp_heap_create(heap_data);
 		break;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+	case ION_HEAP_TYPE_DMA:
+		heap = ion_cma_heap_create(heap_data);
+		break;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		pr_err("%s: Invalid heap type %d\n", __func__,
 		       heap_data->type);
@@ -78,6 +86,14 @@ void ion_heap_destroy(struct ion_heap *heap)
 	case ION_HEAP_TYPE_CP:
 		ion_cp_heap_destroy(heap);
 		break;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+	case ION_HEAP_TYPE_DMA:
+		ion_cma_heap_destroy(heap);
+		break;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		pr_err("%s: Invalid heap type %d\n", __func__,
 		       heap->type);

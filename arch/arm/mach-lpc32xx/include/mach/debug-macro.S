@@ -20,7 +20,11 @@
  * Debug output is hardcoded to standard UART 5
 */
 
+<<<<<<< HEAD
 	.macro	addruart, rp, rv
+=======
+	.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldreq	\rp, =0x40090000
 	ldrne	\rv, =0xF4090000
 	.endm

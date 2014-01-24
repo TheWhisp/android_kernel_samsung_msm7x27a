@@ -35,7 +35,11 @@ static unsigned long siumckb_recalc(struct clk *clk)
 	return codec_freq;
 }
 
+<<<<<<< HEAD
 static struct clk_ops siumckb_clk_ops = {
+=======
+static struct sh_clk_ops siumckb_clk_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.recalc = siumckb_recalc,
 };
 
@@ -164,6 +168,10 @@ static struct snd_soc_dai_link migor_dai = {
 /* migor audio machine driver */
 static struct snd_soc_card snd_soc_migor = {
 	.name = "Migo-R",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = &migor_dai,
 	.num_links = 1,
 };

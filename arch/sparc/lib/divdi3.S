@@ -17,6 +17,7 @@ along with GNU CC; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
+<<<<<<< HEAD
 	.data
 	.align 8
 	.globl	__clz_tab
@@ -34,6 +35,11 @@ __clz_tab:
 
 	.text
 	.align 4
+=======
+	.text
+	.align 4
+	.global .udiv
+>>>>>>> refs/remotes/origin/cm-10.0
 	.globl __divdi3
 __divdi3:
 	save %sp,-104,%sp

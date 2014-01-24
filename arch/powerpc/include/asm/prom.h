@@ -18,6 +18,7 @@
  */
 #include <linux/types.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
 
 #define HAVE_ARCH_DEVTREE_FIXUPS
@@ -36,6 +37,12 @@ extern struct device_node* pci_device_to_OF_node(struct pci_dev *);
 extern void pci_create_OF_bus_map(void);
 #endif
 
+=======
+#include <linux/atomic.h>
+
+#define HAVE_ARCH_DEVTREE_FIXUPS
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * OF address retreival & translation
  */

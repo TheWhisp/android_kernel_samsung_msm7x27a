@@ -1,9 +1,17 @@
 /* $Id: b1pci.c,v 1.1.2.2 2004/01/16 21:09:27 keil Exp $
+<<<<<<< HEAD
  * 
  * Module for AVM B1 PCI-card.
  * 
  * Copyright 1999 by Carsten Paeth <calle@calle.de>
  * 
+=======
+ *
+ * Module for AVM B1 PCI-card.
+ *
+ * Copyright 1999 by Carsten Paeth <calle@calle.de>
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -79,7 +87,11 @@ static int b1pci_probe(struct capicardparams *p, struct pci_dev *pdev)
 	card->port = p->port;
 	card->irq = p->irq;
 	card->cardtype = avm_b1pci;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!request_region(card->port, AVMB1_PORTLEN, card->name)) {
 		printk(KERN_WARNING "b1pci: ports 0x%03x-0x%03x in use.\n",
 		       card->port, card->port + AVMB1_PORTLEN);
@@ -96,14 +108,22 @@ static int b1pci_probe(struct capicardparams *p, struct pci_dev *pdev)
 	}
 	b1_reset(card->port);
 	b1_getrevision(card);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	retval = request_irq(card->irq, b1_interrupt, IRQF_SHARED, card->name, card);
 	if (retval) {
 		printk(KERN_ERR "b1pci: unable to get IRQ %d.\n", card->irq);
 		retval = -EBUSY;
 		goto err_release_region;
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	cinfo->capi_ctrl.driver_name   = "b1pci";
 	cinfo->capi_ctrl.driverdata    = cinfo;
 	cinfo->capi_ctrl.register_appl = b1_register_appl;
@@ -133,6 +153,7 @@ static int b1pci_probe(struct capicardparams *p, struct pci_dev *pdev)
 	pci_set_drvdata(pdev, card);
 	return 0;
 
+<<<<<<< HEAD
  err_free_irq:
 	free_irq(card->irq, card);
  err_release_region:
@@ -140,6 +161,15 @@ static int b1pci_probe(struct capicardparams *p, struct pci_dev *pdev)
  err_free:
 	b1_free_card(card);
  err:
+=======
+err_free_irq:
+	free_irq(card->irq, card);
+err_release_region:
+	release_region(card->port, AVMB1_PORTLEN);
+err_free:
+	b1_free_card(card);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
@@ -193,7 +223,11 @@ static int b1pciv4_probe(struct capicardparams *p, struct pci_dev *pdev)
 		goto err;
 	}
 
+<<<<<<< HEAD
         card->dma = avmcard_dma_alloc("b1pci", pdev, 2048+128, 2048+128);
+=======
+	card->dma = avmcard_dma_alloc("b1pci", pdev, 2048 + 128, 2048 + 128);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!card->dma) {
 		printk(KERN_WARNING "b1pci: dma alloc.\n");
 		retval = -ENOMEM;
@@ -267,6 +301,7 @@ static int b1pciv4_probe(struct capicardparams *p, struct pci_dev *pdev)
 	pci_set_drvdata(pdev, card);
 	return 0;
 
+<<<<<<< HEAD
  err_free_irq:
 	free_irq(card->irq, card);
  err_unmap:
@@ -278,6 +313,19 @@ static int b1pciv4_probe(struct capicardparams *p, struct pci_dev *pdev)
  err_free:
 	b1_free_card(card);
  err:
+=======
+err_free_irq:
+	free_irq(card->irq, card);
+err_unmap:
+	iounmap(card->mbase);
+err_release_region:
+	release_region(card->port, AVMB1_PORTLEN);
+err_free_dma:
+	avmcard_dma_free(card->dma);
+err_free:
+	b1_free_card(card);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 
 }
@@ -287,13 +335,21 @@ static void b1pciv4_remove(struct pci_dev *pdev)
 	avmcard *card = pci_get_drvdata(pdev);
 	avmctrl_info *cinfo = card->ctrlinfo;
 
+<<<<<<< HEAD
  	b1dma_reset(card);
+=======
+	b1dma_reset(card);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	detach_capi_ctr(&cinfo->capi_ctrl);
 	free_irq(card->irq, card);
 	iounmap(card->mbase);
 	release_region(card->port, AVMB1_PORTLEN);
+<<<<<<< HEAD
         avmcard_dma_free(card->dma);
+=======
+	avmcard_dma_free(card->dma);
+>>>>>>> refs/remotes/origin/cm-10.0
 	b1_free_card(card);
 }
 
@@ -326,7 +382,11 @@ static int __devinit b1pci_pci_probe(struct pci_dev *pdev,
 		retval = b1pci_probe(&param, pdev);
 #endif
 		if (retval != 0) {
+<<<<<<< HEAD
 		        printk(KERN_ERR "b1pci: no AVM-B1 V4 at i/o %#x, irq %d, mem %#x detected\n",
+=======
+			printk(KERN_ERR "b1pci: no AVM-B1 V4 at i/o %#x, irq %d, mem %#x detected\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			       param.port, param.irq, param.membase);
 		}
 	} else {
@@ -337,7 +397,11 @@ static int __devinit b1pci_pci_probe(struct pci_dev *pdev,
 		       param.port, param.irq);
 		retval = b1pci_probe(&param, pdev);
 		if (retval != 0) {
+<<<<<<< HEAD
 		        printk(KERN_ERR "b1pci: no AVM-B1 at i/o %#x, irq %d detected\n",
+=======
+			printk(KERN_ERR "b1pci: no AVM-B1 at i/o %#x, irq %d detected\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			       param.port, param.irq);
 		}
 	}
@@ -385,7 +449,11 @@ static int __init b1pci_init(void)
 	if ((p = strchr(revision, ':')) != NULL && p[1]) {
 		strlcpy(rev, p + 2, 32);
 		if ((p = strchr(rev, '$')) != NULL && p > rev)
+<<<<<<< HEAD
 		   *(p-1) = 0;
+=======
+			*(p - 1) = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		strcpy(rev, "1.0");
 

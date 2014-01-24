@@ -692,13 +692,23 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
 			/* Indicate free memory when release */
 			NLP_SET_FREE_REQ(ndlp);
 		} else {
+<<<<<<< HEAD
 			if (!NLP_CHK_NODE_ACT(ndlp))
+=======
+			if (!NLP_CHK_NODE_ACT(ndlp)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				ndlp = lpfc_enable_node(vport, ndlp,
 						NLP_STE_UNUSED_NODE);
 				if (!ndlp)
 					goto skip_logo;
+<<<<<<< HEAD
 
 			/* Remove ndlp from vport npld list */
+=======
+			}
+
+			/* Remove ndlp from vport list */
+>>>>>>> refs/remotes/origin/cm-10.0
 			lpfc_dequeue_node(vport, ndlp);
 			spin_lock_irq(&phba->ndlp_lock);
 			if (!NLP_CHK_FREE_REQ(ndlp))
@@ -711,8 +721,22 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
 			}
 			spin_unlock_irq(&phba->ndlp_lock);
 		}
+<<<<<<< HEAD
 		if (!(vport->vpi_state & LPFC_VPI_REGISTERED))
 			goto skip_logo;
+=======
+
+		/*
+		 * If the vpi is not registered, then a valid FDISC doesn't
+		 * exist and there is no need for a ELS LOGO.  Just cleanup
+		 * the ndlp.
+		 */
+		if (!(vport->vpi_state & LPFC_VPI_REGISTERED)) {
+			lpfc_nlp_put(ndlp);
+			goto skip_logo;
+		}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		vport->unreg_vpi_cmpl = VPORT_INVAL;
 		timeout = msecs_to_jiffies(phba->fc_ratov * 2000);
 		if (!lpfc_issue_els_npiv_logo(vport, ndlp))
@@ -764,10 +788,17 @@ lpfc_create_vport_work_array(struct lpfc_hba *phba)
 		return NULL;
 	spin_lock_irq(&phba->hbalock);
 	list_for_each_entry(port_iterator, &phba->port_list, listentry) {
+<<<<<<< HEAD
 		if (!scsi_host_get(lpfc_shost_from_vport(port_iterator))) {
 			if (!(port_iterator->load_flag & FC_UNLOADING))
 				lpfc_printf_vlog(port_iterator, KERN_ERR,
 					 LOG_VPORT,
+=======
+		if (port_iterator->load_flag & FC_UNLOADING)
+			continue;
+		if (!scsi_host_get(lpfc_shost_from_vport(port_iterator))) {
+			lpfc_printf_vlog(port_iterator, KERN_ERR, LOG_VPORT,
+>>>>>>> refs/remotes/origin/cm-10.0
 					 "1801 Create vport work array FAILED: "
 					 "cannot do scsi_host_get\n");
 			continue;

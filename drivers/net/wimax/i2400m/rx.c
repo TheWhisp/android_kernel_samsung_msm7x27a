@@ -149,6 +149,11 @@
 #include <linux/if_arp.h>
 #include <linux/netdevice.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "i2400m.h"
 
 

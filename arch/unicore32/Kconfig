@@ -12,6 +12,10 @@ config UNICORE32
 	select GENERIC_IRQ_PROBE
 	select GENERIC_IRQ_SHOW
 	select ARCH_WANT_FRAME_POINTERS
+<<<<<<< HEAD
+=======
+	select GENERIC_IOMAP
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  UniCore-32 is 32-bit Instruction Set Architecture,
 	  including a series of low-power-consumption RISC chip
@@ -30,9 +34,12 @@ config GENERIC_CLOCKEVENTS
 config GENERIC_CSUM
 	def_bool y
 
+<<<<<<< HEAD
 config GENERIC_IOMAP
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config NO_IOPORT
 	bool
 
@@ -237,13 +244,21 @@ menu "PKUnity NetBook-0916 Features"
 
 config I2C_BATTERY_BQ27200
 	tristate "I2C Battery BQ27200 Support"
+<<<<<<< HEAD
 	select PUV3_I2C
+=======
+	select I2C_PUV3
+>>>>>>> refs/remotes/origin/cm-10.0
 	select POWER_SUPPLY
 	select BATTERY_BQ27x00
 
 config I2C_EEPROM_AT24
 	tristate "I2C EEPROMs AT24 support"
+<<<<<<< HEAD
 	select PUV3_I2C
+=======
+	select I2C_PUV3
+>>>>>>> refs/remotes/origin/cm-10.0
 	select MISC_DEVICES
 	select EEPROM_AT24
 

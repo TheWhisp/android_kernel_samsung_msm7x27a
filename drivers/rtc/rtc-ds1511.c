@@ -23,6 +23,10 @@
 #include <linux/rtc.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRV_VERSION "0.6"
 
@@ -490,7 +494,11 @@ ds1511_rtc_probe(struct platform_device *pdev)
 	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
 	if (!pdata)
 		return -ENOMEM;
+<<<<<<< HEAD
 	pdata->size = res->end - res->start + 1;
+=======
+	pdata->size = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!devm_request_mem_region(&pdev->dev, res->start, pdata->size,
 			pdev->name))
 		return -EBUSY;
@@ -531,7 +539,11 @@ ds1511_rtc_probe(struct platform_device *pdev)
 	if (pdata->irq > 0) {
 		rtc_read(RTC_CMD1);
 		if (devm_request_irq(&pdev->dev, pdata->irq, ds1511_interrupt,
+<<<<<<< HEAD
 			IRQF_DISABLED | IRQF_SHARED, pdev->name, pdev) < 0) {
+=======
+			IRQF_SHARED, pdev->name, pdev) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			dev_warn(&pdev->dev, "interrupt not available.\n");
 			pdata->irq = 0;
@@ -579,6 +591,7 @@ static struct platform_driver ds1511_rtc_driver = {
 	},
 };
 
+<<<<<<< HEAD
  static int __init
 ds1511_rtc_init(void)
 {
@@ -593,6 +606,9 @@ ds1511_rtc_exit(void)
 
 module_init(ds1511_rtc_init);
 module_exit(ds1511_rtc_exit);
+=======
+module_platform_driver(ds1511_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Andrew Sharp <andy.sharp@lsi.com>");
 MODULE_DESCRIPTION("Dallas DS1511 RTC driver");

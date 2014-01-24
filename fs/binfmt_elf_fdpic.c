@@ -39,6 +39,10 @@
 #include <asm/uaccess.h>
 #include <asm/param.h>
 #include <asm/pgalloc.h>
+<<<<<<< HEAD
+=======
+#include <asm/exec.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 typedef char *elf_caddr_t;
 
@@ -91,7 +95,12 @@ static struct linux_binfmt elf_fdpic_format = {
 
 static int __init init_elf_fdpic_binfmt(void)
 {
+<<<<<<< HEAD
 	return register_binfmt(&elf_fdpic_format);
+=======
+	register_binfmt(&elf_fdpic_format);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __exit exit_elf_fdpic_binfmt(void)
@@ -245,8 +254,12 @@ static int load_elf_fdpic_binary(struct linux_binprm *bprm,
 			 * mm->dumpable = 0 regardless of the interpreter's
 			 * permissions.
 			 */
+<<<<<<< HEAD
 			if (file_permission(interpreter, MAY_READ) < 0)
 				bprm->interp_flags |= BINPRM_FLAGS_ENFORCE_NONDUMP;
+=======
+			would_dump(bprm, interpreter);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			retval = kernel_read(interpreter, 0, bprm->buf,
 					     BINPRM_BUF_SIZE);
@@ -335,8 +348,11 @@ static int load_elf_fdpic_binary(struct linux_binprm *bprm,
 	current->mm->context.exec_fdpic_loadmap = 0;
 	current->mm->context.interp_fdpic_loadmap = 0;
 
+<<<<<<< HEAD
 	current->flags &= ~PF_FORKNOEXEC;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_MMU
 	elf_fdpic_arch_lay_out_mm(&exec_params,
 				  &interp_params,
@@ -391,21 +407,31 @@ static int load_elf_fdpic_binary(struct linux_binprm *bprm,
 	    (executable_stack == EXSTACK_DEFAULT && VM_STACK_FLAGS & VM_EXEC))
 		stack_prot |= PROT_EXEC;
 
+<<<<<<< HEAD
 	down_write(&current->mm->mmap_sem);
 	current->mm->start_brk = do_mmap(NULL, 0, stack_size, stack_prot,
+=======
+	current->mm->start_brk = vm_mmap(NULL, 0, stack_size, stack_prot,
+>>>>>>> refs/remotes/origin/cm-10.0
 					 MAP_PRIVATE | MAP_ANONYMOUS |
 					 MAP_UNINITIALIZED | MAP_GROWSDOWN,
 					 0);
 
 	if (IS_ERR_VALUE(current->mm->start_brk)) {
+<<<<<<< HEAD
 		up_write(&current->mm->mmap_sem);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = current->mm->start_brk;
 		current->mm->start_brk = 0;
 		goto error_kill;
 	}
 
+<<<<<<< HEAD
 	up_write(&current->mm->mmap_sem);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	current->mm->brk = current->mm->start_brk;
 	current->mm->context.end_brk = current->mm->start_brk;
 	current->mm->context.end_brk +=
@@ -414,7 +440,10 @@ static int load_elf_fdpic_binary(struct linux_binprm *bprm,
 #endif
 
 	install_exec_creds(bprm);
+<<<<<<< HEAD
 	current->flags &= ~PF_FORKNOEXEC;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (create_elf_fdpic_tables(bprm, current->mm,
 				    &exec_params, &interp_params) < 0)
 		goto error_kill;
@@ -957,10 +986,15 @@ static int elf_fdpic_map_file_constdisp_on_uclinux(
 	if (params->flags & ELF_FDPIC_FLAG_EXECUTABLE)
 		mflags |= MAP_EXECUTABLE;
 
+<<<<<<< HEAD
 	down_write(&mm->mmap_sem);
 	maddr = do_mmap(NULL, load_addr, top - base,
 			PROT_READ | PROT_WRITE | PROT_EXEC, mflags, 0);
 	up_write(&mm->mmap_sem);
+=======
+	maddr = vm_mmap(NULL, load_addr, top - base,
+			PROT_READ | PROT_WRITE | PROT_EXEC, mflags, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR_VALUE(maddr))
 		return (int) maddr;
 
@@ -1098,10 +1132,15 @@ static int elf_fdpic_map_file_by_direct_mmap(struct elf_fdpic_params *params,
 
 		/* create the mapping */
 		disp = phdr->p_vaddr & ~PAGE_MASK;
+<<<<<<< HEAD
 		down_write(&mm->mmap_sem);
 		maddr = do_mmap(file, maddr, phdr->p_memsz + disp, prot, flags,
 				phdr->p_offset - disp);
 		up_write(&mm->mmap_sem);
+=======
+		maddr = vm_mmap(file, maddr, phdr->p_memsz + disp, prot, flags,
+				phdr->p_offset - disp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		kdebug("mmap[%d] <file> sz=%lx pr=%x fl=%x of=%lx --> %08lx",
 		       loop, phdr->p_memsz + disp, prot, flags,
@@ -1145,10 +1184,15 @@ static int elf_fdpic_map_file_by_direct_mmap(struct elf_fdpic_params *params,
 			unsigned long xmaddr;
 
 			flags |= MAP_FIXED | MAP_ANONYMOUS;
+<<<<<<< HEAD
 			down_write(&mm->mmap_sem);
 			xmaddr = do_mmap(NULL, xaddr, excess - excess1,
 					 prot, flags, 0);
 			up_write(&mm->mmap_sem);
+=======
+			xmaddr = vm_mmap(NULL, xaddr, excess - excess1,
+					 prot, flags, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			kdebug("mmap[%d] <anon>"
 			       " ad=%lx sz=%lx pr=%x fl=%x of=0 --> %08lx",

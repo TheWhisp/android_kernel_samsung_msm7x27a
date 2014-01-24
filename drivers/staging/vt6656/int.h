@@ -67,6 +67,10 @@ SINTData, *PSINTData;
 /*---------------------  Export Functions  --------------------------*/
 
 void INTvWorkItem(void *Context);
+<<<<<<< HEAD
 int INTnsProcessData(PSDevice pDevice);
+=======
+void INTnsProcessData(PSDevice pDevice);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __INT_H__ */

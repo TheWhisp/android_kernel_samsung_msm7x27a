@@ -358,6 +358,12 @@ static enum stb0899_status stb0899_check_data(struct stb0899_state *state)
 	else
 		dataTime = 500;
 
+<<<<<<< HEAD
+=======
+	/* clear previous failed END_LOOPVIT */
+	stb0899_read_reg(state, STB0899_VSTATUS);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	stb0899_write_reg(state, STB0899_DSTATUS2, 0x00); /* force search loop	*/
 	while (1) {
 		/* WARNING! VIT LOCKED has to be tested before VIT_END_LOOOP	*/

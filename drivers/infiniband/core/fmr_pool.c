@@ -33,6 +33,10 @@
 
 #include <linux/errno.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/jhash.h>
 #include <linux/kthread.h>

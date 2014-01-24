@@ -71,7 +71,10 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_MTRR
 #include <asm/mtrr.h>
@@ -84,11 +87,19 @@
 
 /* --------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int internal;
 static int external;
 static int libretto;
 static int nostretch;
 static int nopciburst;
+=======
+static bool internal;
+static bool external;
+static bool libretto;
+static bool nostretch;
+static bool nopciburst;
+>>>>>>> refs/remotes/origin/cm-10.0
 static char *mode_option __devinitdata = NULL;
 
 #ifdef MODULE
@@ -1185,8 +1196,13 @@ static int neofb_pan_display(struct fb_var_screeninfo *var,
 
 	DBG("neofb_update_start");
 
+<<<<<<< HEAD
 	Base = (var->yoffset * var->xres_virtual + var->xoffset) >> 2;
 	Base *= (var->bits_per_pixel + 7) / 8;
+=======
+	Base = (var->yoffset * info->var.xres_virtual + var->xoffset) >> 2;
+	Base *= (info->var.bits_per_pixel + 7) / 8;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	neoUnlock();
 

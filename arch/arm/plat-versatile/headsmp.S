@@ -38,3 +38,7 @@ pen:	ldr	r7, [r6]
 	.align
 1:	.long	.
 	.long	pen_release
+<<<<<<< HEAD
+=======
+ENDPROC(versatile_secondary_startup)
+>>>>>>> refs/remotes/origin/cm-10.0

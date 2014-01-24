@@ -611,6 +611,7 @@ static BOOL device_init_registers(PSDevice pDevice, DEVICE_INIT_TYPE InitType)
 
         // if exist SW network address, use SW network address.
 
+<<<<<<< HEAD
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Network address = %02x-%02x-%02x=%02x-%02x-%02x\n",
             pDevice->abyCurrentNetAddr[0],
             pDevice->abyCurrentNetAddr[1],
@@ -622,6 +623,12 @@ static BOOL device_init_registers(PSDevice pDevice, DEVICE_INIT_TYPE InitType)
 
 
 
+=======
+	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Network address = %pM\n",
+		pDevice->abyCurrentNetAddr);
+    }
+
+>>>>>>> refs/remotes/origin/cm-10.0
     // Set BB and packet type at the same time.
     // Set Short Slot Time, xIFS, and RSPINF.
     if (pDevice->byBBType == BB_TYPE_11A) {
@@ -749,7 +756,11 @@ static const struct net_device_ops device_netdev_ops = {
     .ndo_do_ioctl           = device_ioctl,
     .ndo_get_stats          = device_get_stats,
     .ndo_start_xmit         = device_xmit,
+<<<<<<< HEAD
     .ndo_set_multicast_list = device_set_multi,
+=======
+    .ndo_set_rx_mode	    = device_set_multi,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __devinit
@@ -903,7 +914,11 @@ static BOOL device_alloc_bufs(PSDevice pDevice) {
     }
 
     // allocate rcb mem
+<<<<<<< HEAD
     pDevice->pRCBMem = kmalloc((sizeof(RCB) * pDevice->cbRD), GFP_KERNEL);
+=======
+	pDevice->pRCBMem = kzalloc((sizeof(RCB) * pDevice->cbRD), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
     if (pDevice->pRCBMem == NULL) {
         DBG_PRT(MSG_LEVEL_ERR,KERN_ERR "%s : alloc rx usb context failed\n", pDevice->dev->name);
         goto free_tx;
@@ -915,7 +930,10 @@ static BOOL device_alloc_bufs(PSDevice pDevice) {
     pDevice->FirstRecvMngList = NULL;
     pDevice->LastRecvMngList = NULL;
     pDevice->NumRecvFreeList = 0;
+<<<<<<< HEAD
     memset(pDevice->pRCBMem, 0, (sizeof(RCB) * pDevice->cbRD));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
     pRCB = (PRCB) pDevice->pRCBMem;
 
     for (ii = 0; ii < pDevice->cbRD; ii++) {
@@ -1622,6 +1640,7 @@ static int  device_ioctl(struct net_device *dev, struct ifreq *rq, int cmd) {
 		break;
 
 	case SIOCSIWNWID:
+<<<<<<< HEAD
         rc = -EOPNOTSUPP;
 		break;
 
@@ -1631,6 +1650,10 @@ static int  device_ioctl(struct net_device *dev, struct ifreq *rq, int cmd) {
 	#else
         rc = -EOPNOTSUPP;
 	#endif
+=======
+	case SIOCGIWNWID:     //0x8b03  support
+		rc = -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 		// Set frequency/channel
@@ -1669,8 +1692,13 @@ static int  device_ioctl(struct net_device *dev, struct ifreq *rq, int cmd) {
 		{
 			char essid[IW_ESSID_MAX_SIZE+1];
 			if (wrq->u.essid.pointer) {
+<<<<<<< HEAD
 				rc = iwctl_giwessid(dev, NULL,
 						    &(wrq->u.essid), essid);
+=======
+				iwctl_giwessid(dev, NULL,
+					    &(wrq->u.essid), essid);
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (copy_to_user(wrq->u.essid.pointer,
 						         essid,
 						         wrq->u.essid.length) )
@@ -1710,14 +1738,22 @@ static int  device_ioctl(struct net_device *dev, struct ifreq *rq, int cmd) {
 
 	// Get the current bit-rate
 	case SIOCGIWRATE:
+<<<<<<< HEAD
 
 		rc = iwctl_giwrate(dev, NULL, &(wrq->u.bitrate), NULL);
+=======
+		iwctl_giwrate(dev, NULL, &(wrq->u.bitrate), NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	// Set the desired RTS threshold
 	case SIOCSIWRTS:
 
+<<<<<<< HEAD
 		rc = iwctl_siwrts(dev, NULL, &(wrq->u.rts), NULL);
+=======
+		rc = iwctl_siwrts(dev, &(wrq->u.rts));
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	// Get the current RTS threshold
@@ -1745,7 +1781,11 @@ static int  device_ioctl(struct net_device *dev, struct ifreq *rq, int cmd) {
 
 		// Get mode of operation
 	case SIOCGIWMODE:
+<<<<<<< HEAD
 		rc = iwctl_giwmode(dev, NULL, &(wrq->u.mode), NULL);
+=======
+		iwctl_giwmode(dev, NULL, &(wrq->u.mode), NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 		// Set WEP keys and mode
@@ -1823,7 +1863,11 @@ static int  device_ioctl(struct net_device *dev, struct ifreq *rq, int cmd) {
 		{
 			struct iw_range range;
 
+<<<<<<< HEAD
 			rc = iwctl_giwrange(dev, NULL, &(wrq->u.data), (char *) &range);
+=======
+			iwctl_giwrange(dev, NULL, &(wrq->u.data), (char *) &range);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (copy_to_user(wrq->u.data.pointer, &range, sizeof(struct iw_range)))
 				rc = -EFAULT;
 		}
@@ -2107,6 +2151,7 @@ static struct usb_driver vt6656_driver = {
 #endif /* CONFIG_PM */
 };
 
+<<<<<<< HEAD
 static int __init vt6656_init_module(void)
 {
     printk(KERN_NOTICE DEVICE_FULL_DRV_NAM " " DEVICE_VERSION);
@@ -2120,3 +2165,6 @@ static void __exit vt6656_cleanup_module(void)
 
 module_init(vt6656_init_module);
 module_exit(vt6656_cleanup_module);
+=======
+module_usb_driver(vt6656_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

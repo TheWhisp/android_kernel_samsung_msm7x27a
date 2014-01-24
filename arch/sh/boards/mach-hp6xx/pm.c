@@ -14,6 +14,10 @@
 #include <linux/gfp.h>
 #include <asm/io.h>
 #include <asm/hd64461.h>
+<<<<<<< HEAD
+=======
+#include <asm/bl_bit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hp6xx.h>
 #include <cpu/dac.h>
 #include <asm/freq.h>

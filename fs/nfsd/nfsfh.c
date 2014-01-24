@@ -59,6 +59,7 @@ static int nfsd_acceptable(void *expv, struct dentry *dentry)
  * the write call).
  */
 static inline __be32
+<<<<<<< HEAD
 nfsd_mode_check(struct svc_rqst *rqstp, umode_t mode, int type)
 {
 	/* Type can be negative when creating hardlinks - not to a dir */
@@ -81,6 +82,27 @@ nfsd_mode_check(struct svc_rqst *rqstp, umode_t mode, int type)
 			return nfserr_notdir;
 	}
 	return 0;
+=======
+nfsd_mode_check(struct svc_rqst *rqstp, umode_t mode, umode_t requested)
+{
+	mode &= S_IFMT;
+
+	if (requested == 0) /* the caller doesn't care */
+		return nfs_ok;
+	if (mode == requested)
+		return nfs_ok;
+	/*
+	 * v4 has an error more specific than err_notdir which we should
+	 * return in preference to err_notdir:
+	 */
+	if (rqstp->rq_vers == 4 && mode == S_IFLNK)
+		return nfserr_symlink;
+	if (requested == S_IFDIR)
+		return nfserr_notdir;
+	if (mode == S_IFDIR)
+		return nfserr_isdir;
+	return nfserr_inval;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static __be32 nfsd_setuser_and_check_port(struct svc_rqst *rqstp,
@@ -296,7 +318,11 @@ out:
  * include/linux/nfsd/nfsd.h.
  */
 __be32
+<<<<<<< HEAD
 fh_verify(struct svc_rqst *rqstp, struct svc_fh *fhp, int type, int access)
+=======
+fh_verify(struct svc_rqst *rqstp, struct svc_fh *fhp, umode_t type, int access)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct svc_export *exp;
 	struct dentry	*dentry;

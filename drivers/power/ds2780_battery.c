@@ -841,13 +841,17 @@ static int __devexit ds2780_battery_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform:ds2780-battery");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver ds2780_battery_driver = {
 	.driver = {
 		.name = "ds2780-battery",
 	},
 	.probe	  = ds2780_battery_probe,
+<<<<<<< HEAD
 	.remove   = ds2780_battery_remove,
 };
 
@@ -863,7 +867,17 @@ static void __exit ds2780_battery_exit(void)
 
 module_init(ds2780_battery_init);
 module_exit(ds2780_battery_exit);
+=======
+	.remove   = __devexit_p(ds2780_battery_remove),
+};
+
+module_platform_driver(ds2780_battery_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Clifton Barnes <cabarnes@indesign-llc.com>");
 MODULE_DESCRIPTION("Maxim/Dallas DS2780 Stand-Alone Fuel Gauage IC driver");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:ds2780-battery");
+>>>>>>> refs/remotes/origin/cm-10.0

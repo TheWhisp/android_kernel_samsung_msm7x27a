@@ -24,7 +24,11 @@
 
 static DEFINE_SPINLOCK(die_lock);
 
+<<<<<<< HEAD
 void NORET_TYPE die(const char *str, struct pt_regs *regs, long err)
+=======
+void die(const char *str, struct pt_regs *regs, long err)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static int die_counter;
 

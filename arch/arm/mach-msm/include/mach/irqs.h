@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -19,6 +23,11 @@
 
 #define MSM_IRQ_BIT(irq)     (1 << ((irq) & 31))
 
+<<<<<<< HEAD
+=======
+#include "irqs-8625.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_APQ8064) || \
 	defined(CONFIG_ARCH_MSM8930)
 
@@ -39,20 +48,44 @@
 #define NR_MSM_IRQS 288
 #define NR_GPIO_IRQS 152
 #define NR_PM8921_IRQS 256
+<<<<<<< HEAD
 #define NR_PM8821_IRQS 64
 #define NR_TABLA_IRQS 49
 #define NR_GPIO_EXPANDER_IRQS 8
 #define NR_BOARD_IRQS (NR_PM8921_IRQS + NR_PM8821_IRQS + \
 		NR_TABLA_IRQS + NR_GPIO_EXPANDER_IRQS)
+=======
+#define NR_PM8821_IRQS 112
+#define NR_WCD9XXX_IRQS 49
+#define NR_TABLA_IRQS NR_WCD9XXX_IRQS
+#define NR_GPIO_EXPANDER_IRQS 64
+#ifdef CONFIG_PCI_MSI
+#define NR_PCIE_MSI_IRQS 256
+#define NR_BOARD_IRQS (NR_PM8921_IRQS + NR_PM8821_IRQS + \
+		NR_WCD9XXX_IRQS + NR_GPIO_EXPANDER_IRQS + NR_PCIE_MSI_IRQS)
+#else
+#define NR_BOARD_IRQS (NR_PM8921_IRQS + NR_PM8821_IRQS + \
+		NR_WCD9XXX_IRQS + NR_GPIO_EXPANDER_IRQS)
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NR_TLMM_MSM_DIR_CONN_IRQ 8 /*Need to Verify this Count*/
 #define NR_MSM_GPIOS NR_GPIO_IRQS
 
 #else
 
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSMCOPPER)
 #include "irqs-copper.h"
 #elif defined(CONFIG_ARCH_MSM9615)
 #include "irqs-9615.h"
+=======
+#if defined(CONFIG_ARCH_MSM8974)
+#include "irqs-8974.h"
+#elif defined(CONFIG_ARCH_MSM9615)
+#include "irqs-9615.h"
+#elif defined(CONFIG_ARCH_MSM9625)
+#include "irqs-9625.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #elif defined(CONFIG_ARCH_MSM7X30)
 #include "irqs-7x30.h"
 #elif defined(CONFIG_ARCH_QSD8X50)
@@ -63,6 +96,14 @@
 #elif defined(CONFIG_ARCH_MSM7X01A) || defined(CONFIG_ARCH_MSM7X25) \
 	|| defined(CONFIG_ARCH_MSM7X27)
 #include "irqs-7xxx.h"
+<<<<<<< HEAD
+=======
+
+#define NR_GPIO_IRQS 133
+#define NR_MSM_IRQS 256
+#define NR_BOARD_IRQS 256
+#define NR_MSM_GPIOS NR_GPIO_IRQS
+>>>>>>> refs/remotes/origin/cm-10.0
 #elif defined(CONFIG_ARCH_FSM9XXX)
 #include "irqs-fsm9xxx.h"
 #include "sirc.h"
@@ -72,9 +113,22 @@
 
 #endif
 
+<<<<<<< HEAD
+=======
+#if !defined(CONFIG_SPARSE_IRQ)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NR_IRQS (NR_MSM_IRQS + NR_GPIO_IRQS + NR_BOARD_IRQS)
 #define MSM_GPIO_TO_INT(n) (NR_MSM_IRQS + (n))
 #define FIRST_GPIO_IRQ MSM_GPIO_TO_INT(0)
 #define MSM_INT_TO_REG(base, irq) (base + irq / 32)
+<<<<<<< HEAD
+=======
+#endif
+
+#if defined(CONFIG_PCI_MSI) && defined(CONFIG_MSM_PCIE)
+#define MSM_PCIE_MSI_INT(n) (NR_MSM_IRQS + NR_GPIO_IRQS + NR_PM8921_IRQS +  \
+		NR_PM8821_IRQS + NR_TABLA_IRQS + NR_GPIO_EXPANDER_IRQS + (n))
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

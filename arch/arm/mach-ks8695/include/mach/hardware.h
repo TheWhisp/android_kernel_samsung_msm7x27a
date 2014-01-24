@@ -42,6 +42,7 @@
 #define KS8695_PCIIO_PA		0x80000000
 #define KS8695_PCIIO_SIZE	SZ_64K
 
+<<<<<<< HEAD
 
 /*
  * PCI support
@@ -51,4 +52,6 @@
 #define PCIBIOS_MIN_IO		0
 #define PCIBIOS_MIN_MEM		0
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

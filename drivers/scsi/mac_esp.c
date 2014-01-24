@@ -25,6 +25,10 @@
 #include <asm/dma.h>
 #include <asm/macints.h>
 #include <asm/macintosh.h>
+<<<<<<< HEAD
+=======
+#include <asm/mac_via.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <scsi/scsi_host.h>
 
@@ -149,7 +153,11 @@ static inline int mac_esp_wait_for_dreq(struct esp *esp)
 
 	do {
 		if (mep->pdma_regs == NULL) {
+<<<<<<< HEAD
 			if (mac_irq_pending(IRQ_MAC_SCSIDRQ))
+=======
+			if (via2_scsi_drq_pending())
+>>>>>>> refs/remotes/origin/cm-10.0
 				return 0;
 		} else {
 			if (nubus_readl(mep->pdma_regs) & 0x200)
@@ -230,9 +238,12 @@ static void mac_esp_send_pdma_cmd(struct esp *esp, u32 addr, u32 esp_count,
 				  u32 dma_count, int write, u8 cmd)
 {
 	struct mac_esp_priv *mep = MAC_ESP_GET_PRIV(esp);
+<<<<<<< HEAD
 	unsigned long flags;
 
 	local_irq_save(flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mep->error = 0;
 
@@ -270,8 +281,11 @@ static void mac_esp_send_pdma_cmd(struct esp *esp, u32 addr, u32 esp_count,
 			esp_count = n;
 		}
 	} while (esp_count);
+<<<<<<< HEAD
 
 	local_irq_restore(flags);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -353,8 +367,11 @@ static void mac_esp_send_pio_cmd(struct esp *esp, u32 addr, u32 esp_count,
 	struct mac_esp_priv *mep = MAC_ESP_GET_PRIV(esp);
 	u8 *fifo = esp->regs + ESP_FDATA * 16;
 
+<<<<<<< HEAD
 	disable_irq(esp->host->irq);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	cmd &= ~ESP_CMD_DMA;
 	mep->error = 0;
 
@@ -431,8 +448,11 @@ static void mac_esp_send_pio_cmd(struct esp *esp, u32 addr, u32 esp_count,
 			scsi_esp_cmd(esp, ESP_CMD_TI);
 		}
 	}
+<<<<<<< HEAD
 
 	enable_irq(esp->host->irq);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int mac_esp_irq_pending(struct esp *esp)
@@ -573,8 +593,12 @@ static int __devinit esp_mac_probe(struct platform_device *dev)
 	esp_chips[dev->id] = esp;
 	mb();
 	if (esp_chips[!dev->id] == NULL) {
+<<<<<<< HEAD
 		err = request_irq(host->irq, mac_scsi_esp_intr, 0,
 		                  "Mac ESP", NULL);
+=======
+		err = request_irq(host->irq, mac_scsi_esp_intr, 0, "ESP", NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err < 0) {
 			esp_chips[dev->id] = NULL;
 			goto fail_free_priv;

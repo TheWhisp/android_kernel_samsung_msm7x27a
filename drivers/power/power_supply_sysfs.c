@@ -12,8 +12,15 @@
  */
 
 #include <linux/ctype.h>
+<<<<<<< HEAD
 #include <linux/power_supply.h>
 #include <linux/slab.h>
+=======
+#include <linux/device.h>
+#include <linux/power_supply.h>
+#include <linux/slab.h>
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "power_supply.h"
 
@@ -42,7 +49,11 @@ static ssize_t power_supply_show_property(struct device *dev,
 					  struct device_attribute *attr,
 					  char *buf) {
 	static char *type_text[] = {
+<<<<<<< HEAD
 		"Battery", "UPS", "Mains", "USB",
+=======
+		"Unknown", "Battery", "UPS", "Mains", "USB",
+>>>>>>> refs/remotes/origin/cm-10.0
 		"USB_DCP", "USB_CDP", "USB_ACA"
 	};
 	static char *status_text[] = {
@@ -62,6 +73,12 @@ static ssize_t power_supply_show_property(struct device *dev,
 	static char *capacity_level_text[] = {
 		"Unknown", "Critical", "Low", "Normal", "High", "Full"
 	};
+<<<<<<< HEAD
+=======
+	static char *scope_text[] = {
+		"Unknown", "System", "Device"
+	};
+>>>>>>> refs/remotes/origin/cm-10.0
 	ssize_t ret = 0;
 	struct power_supply *psy = dev_get_drvdata(dev);
 	const ptrdiff_t off = attr - power_supply_attrs;
@@ -77,8 +94,13 @@ static ssize_t power_supply_show_property(struct device *dev,
 			dev_dbg(dev, "driver has no data for `%s' property\n",
 				attr->attr.name);
 		else if (ret != -ENODEV)
+<<<<<<< HEAD
 			dev_err(dev, "driver failed to report `%s' property\n",
 				attr->attr.name);
+=======
+			dev_err(dev, "driver failed to report `%s' property: %zd\n",
+				attr->attr.name, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ret;
 	}
 
@@ -94,6 +116,11 @@ static ssize_t power_supply_show_property(struct device *dev,
 		return sprintf(buf, "%s\n", capacity_level_text[value.intval]);
 	else if (off == POWER_SUPPLY_PROP_TYPE)
 		return sprintf(buf, "%s\n", type_text[value.intval]);
+<<<<<<< HEAD
+=======
+	else if (off == POWER_SUPPLY_PROP_SCOPE)
+		return sprintf(buf, "%s\n", scope_text[value.intval]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else if (off >= POWER_SUPPLY_PROP_MODEL_NAME)
 		return sprintf(buf, "%s\n", value.strval);
 
@@ -166,6 +193,10 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(time_to_full_now),
 	POWER_SUPPLY_ATTR(time_to_full_avg),
 	POWER_SUPPLY_ATTR(type),
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_ATTR(scope),
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Properties of type `const char *' */
 	POWER_SUPPLY_ATTR(model_name),
 	POWER_SUPPLY_ATTR(manufacturer),
@@ -175,13 +206,21 @@ static struct device_attribute power_supply_attrs[] = {
 static struct attribute *
 __power_supply_attrs[ARRAY_SIZE(power_supply_attrs) + 1];
 
+<<<<<<< HEAD
 static mode_t power_supply_attr_is_visible(struct kobject *kobj,
+=======
+static umode_t power_supply_attr_is_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/cm-10.0
 					   struct attribute *attr,
 					   int attrno)
 {
 	struct device *dev = container_of(kobj, struct device, kobj);
 	struct power_supply *psy = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	mode_t mode = S_IRUSR | S_IRGRP | S_IROTH;
+=======
+	umode_t mode = S_IRUSR | S_IRGRP | S_IROTH;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 
 	if (attrno == POWER_SUPPLY_PROP_TYPE)

@@ -1,6 +1,10 @@
 #include <linux/platform_device.h>
 
 #include <asm/btfixup.h>
+<<<<<<< HEAD
+=======
+#include <asm/cpu_type.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct irq_bucket {
         struct irq_bucket *next;

@@ -47,6 +47,10 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/stat.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "fuse_i.h"
 

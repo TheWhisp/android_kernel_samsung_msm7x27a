@@ -204,7 +204,12 @@ static inline long ioport_panic(void)
 
 static inline void __iomem *ioport_map(unsigned long port, unsigned int len)
 {
+<<<<<<< HEAD
 	return (void __iomem *) ioport_panic();
+=======
+	pr_info("ioport_map: mapping IO resources is unsupported on tile.\n");
+	return NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void ioport_unmap(void __iomem *addr)

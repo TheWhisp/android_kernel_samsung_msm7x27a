@@ -11,6 +11,10 @@
 #include <linux/pm.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/io.h>
 #include <asm/oplib.h>

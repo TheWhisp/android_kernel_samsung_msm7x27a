@@ -6,7 +6,11 @@
  */
 
 struct fsyscall_gtod_data_t {
+<<<<<<< HEAD
 	seqlock_t	lock;
+=======
+	seqcount_t	seq;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct timespec	wall_time;
 	struct timespec monotonic_time;
 	cycle_t		clk_mask;

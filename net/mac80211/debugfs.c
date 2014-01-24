@@ -15,12 +15,15 @@
 #include "rate.h"
 #include "debugfs.h"
 
+<<<<<<< HEAD
 int mac80211_open_file_generic(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DEBUGFS_FORMAT_BUFFER_SIZE 100
 
 int mac80211_format_buffer(char __user *userbuf, size_t count,
@@ -50,7 +53,11 @@ static ssize_t name## _read(struct file *file, char __user *userbuf,	\
 #define DEBUGFS_READONLY_FILE_OPS(name)			\
 static const struct file_operations name## _ops = {			\
 	.read = name## _read,						\
+<<<<<<< HEAD
 	.open = mac80211_open_file_generic,				\
+=======
+	.open = simple_open,						\
+>>>>>>> refs/remotes/origin/cm-10.0
 	.llseek = generic_file_llseek,					\
 };
 
@@ -78,6 +85,7 @@ DEBUGFS_READONLY_FILE(wep_iv, "%#08x",
 DEBUGFS_READONLY_FILE(rate_ctrl_alg, "%s",
 	local->rate_ctrl ? local->rate_ctrl->ops->name : "hw/driver");
 
+<<<<<<< HEAD
 static ssize_t tsf_read(struct file *file, char __user *user_buf,
 			     size_t count, loff_t *ppos)
 {
@@ -129,6 +137,8 @@ static const struct file_operations tsf_ops = {
 	.llseek = default_llseek,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t reset_write(struct file *file, const char __user *user_buf,
 			   size_t count, loff_t *ppos)
 {
@@ -144,6 +154,7 @@ static ssize_t reset_write(struct file *file, const char __user *user_buf,
 
 static const struct file_operations reset_ops = {
 	.write = reset_write,
+<<<<<<< HEAD
 	.open = mac80211_open_file_generic,
 	.llseek = noop_llseek,
 };
@@ -269,6 +280,12 @@ static const struct file_operations uapsd_max_sp_len_ops = {
 	.llseek = default_llseek,
 };
 
+=======
+	.open = simple_open,
+	.llseek = noop_llseek,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t channel_type_read(struct file *file, char __user *user_buf,
 		       size_t count, loff_t *ppos)
 {
@@ -305,6 +322,12 @@ static ssize_t hwflags_read(struct file *file, char __user *user_buf,
 	char *buf = kzalloc(mxln, GFP_KERNEL);
 	int sf = 0; /* how many written so far */
 
+<<<<<<< HEAD
+=======
+	if (!buf)
+		return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	sf += snprintf(buf, mxln - sf, "0x%x\n", local->hw.flags);
 	if (local->hw.flags & IEEE80211_HW_HAS_RATE_CONTROL)
 		sf += snprintf(buf + sf, mxln - sf, "HAS_RATE_CONTROL\n");
@@ -337,8 +360,11 @@ static ssize_t hwflags_read(struct file *file, char __user *user_buf,
 		sf += snprintf(buf + sf, mxln - sf, "SUPPORTS_DYNAMIC_PS\n");
 	if (local->hw.flags & IEEE80211_HW_MFP_CAPABLE)
 		sf += snprintf(buf + sf, mxln - sf, "MFP_CAPABLE\n");
+<<<<<<< HEAD
 	if (local->hw.flags & IEEE80211_HW_BEACON_FILTER)
 		sf += snprintf(buf + sf, mxln - sf, "BEACON_FILTER\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (local->hw.flags & IEEE80211_HW_SUPPORTS_STATIC_SMPS)
 		sf += snprintf(buf + sf, mxln - sf, "SUPPORTS_STATIC_SMPS\n");
 	if (local->hw.flags & IEEE80211_HW_SUPPORTS_DYNAMIC_SMPS)
@@ -349,12 +375,22 @@ static ssize_t hwflags_read(struct file *file, char __user *user_buf,
 		sf += snprintf(buf + sf, mxln - sf, "REPORTS_TX_ACK_STATUS\n");
 	if (local->hw.flags & IEEE80211_HW_CONNECTION_MONITOR)
 		sf += snprintf(buf + sf, mxln - sf, "CONNECTION_MONITOR\n");
+<<<<<<< HEAD
 	if (local->hw.flags & IEEE80211_HW_SUPPORTS_CQM_RSSI)
 		sf += snprintf(buf + sf, mxln - sf, "SUPPORTS_CQM_RSSI\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (local->hw.flags & IEEE80211_HW_SUPPORTS_PER_STA_GTK)
 		sf += snprintf(buf + sf, mxln - sf, "SUPPORTS_PER_STA_GTK\n");
 	if (local->hw.flags & IEEE80211_HW_AP_LINK_PS)
 		sf += snprintf(buf + sf, mxln - sf, "AP_LINK_PS\n");
+<<<<<<< HEAD
+=======
+	if (local->hw.flags & IEEE80211_HW_TX_AMPDU_SETUP_IN_HW)
+		sf += snprintf(buf + sf, mxln - sf, "TX_AMPDU_SETUP_IN_HW\n");
+	if (local->hw.flags & IEEE80211_HW_SCAN_WHILE_IDLE)
+		sf += snprintf(buf + sf, mxln - sf, "SCAN_WHILE_IDLE\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rv = simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
 	kfree(buf);
@@ -423,7 +459,11 @@ static ssize_t stats_ ##name## _read(struct file *file,			\
 									\
 static const struct file_operations stats_ ##name## _ops = {		\
 	.read = stats_ ##name## _read,					\
+<<<<<<< HEAD
 	.open = mac80211_open_file_generic,				\
+=======
+	.open = simple_open,						\
+>>>>>>> refs/remotes/origin/cm-10.0
 	.llseek = generic_file_llseek,					\
 };
 
@@ -450,12 +490,17 @@ void debugfs_hw_add(struct ieee80211_local *local)
 	DEBUGFS_ADD(frequency);
 	DEBUGFS_ADD(total_ps_buffered);
 	DEBUGFS_ADD(wep_iv);
+<<<<<<< HEAD
 	DEBUGFS_ADD(tsf);
 	DEBUGFS_ADD(queues);
 	DEBUGFS_ADD_MODE(reset, 0200);
 	DEBUGFS_ADD(noack);
 	DEBUGFS_ADD(uapsd_queues);
 	DEBUGFS_ADD(uapsd_max_sp_len);
+=======
+	DEBUGFS_ADD(queues);
+	DEBUGFS_ADD_MODE(reset, 0200);
+>>>>>>> refs/remotes/origin/cm-10.0
 	DEBUGFS_ADD(channel_type);
 	DEBUGFS_ADD(hwflags);
 	DEBUGFS_ADD(user_power);

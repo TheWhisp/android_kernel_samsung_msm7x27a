@@ -86,7 +86,12 @@ static int flexcop_dvb_init(struct flexcop_device *fc)
 	fc->demux.stop_feed = flexcop_dvb_stop_feed;
 	fc->demux.write_to_decoder = NULL;
 
+<<<<<<< HEAD
 	if ((ret = dvb_dmx_init(&fc->demux)) < 0) {
+=======
+	ret = dvb_dmx_init(&fc->demux);
+	if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		err("dvb_dmx failed: error %d", ret);
 		goto err_dmx;
 	}
@@ -96,32 +101,65 @@ static int flexcop_dvb_init(struct flexcop_device *fc)
 	fc->dmxdev.filternum = fc->demux.feednum;
 	fc->dmxdev.demux = &fc->demux.dmx;
 	fc->dmxdev.capabilities = 0;
+<<<<<<< HEAD
 	if ((ret = dvb_dmxdev_init(&fc->dmxdev, &fc->dvb_adapter)) < 0) {
+=======
+	ret = dvb_dmxdev_init(&fc->dmxdev, &fc->dvb_adapter);
+	if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		err("dvb_dmxdev_init failed: error %d", ret);
 		goto err_dmx_dev;
 	}
 
+<<<<<<< HEAD
 	if ((ret = fc->demux.dmx.add_frontend(&fc->demux.dmx, &fc->hw_frontend)) < 0) {
+=======
+	ret = fc->demux.dmx.add_frontend(&fc->demux.dmx, &fc->hw_frontend);
+	if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		err("adding hw_frontend to dmx failed: error %d", ret);
 		goto err_dmx_add_hw_frontend;
 	}
 
 	fc->mem_frontend.source = DMX_MEMORY_FE;
+<<<<<<< HEAD
 	if ((ret = fc->demux.dmx.add_frontend(&fc->demux.dmx, &fc->mem_frontend)) < 0) {
+=======
+	ret = fc->demux.dmx.add_frontend(&fc->demux.dmx, &fc->mem_frontend);
+	if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		err("adding mem_frontend to dmx failed: error %d", ret);
 		goto err_dmx_add_mem_frontend;
 	}
 
+<<<<<<< HEAD
 	if ((ret = fc->demux.dmx.connect_frontend(&fc->demux.dmx, &fc->hw_frontend)) < 0) {
+=======
+	ret = fc->demux.dmx.connect_frontend(&fc->demux.dmx, &fc->hw_frontend);
+	if (ret < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		err("connect frontend failed: error %d", ret);
 		goto err_connect_frontend;
 	}
 
+<<<<<<< HEAD
 	dvb_net_init(&fc->dvb_adapter, &fc->dvbnet, &fc->demux.dmx);
+=======
+	ret = dvb_net_init(&fc->dvb_adapter, &fc->dvbnet, &fc->demux.dmx);
+	if (ret < 0) {
+		err("dvb_net_init failed: error %d", ret);
+		goto err_net;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fc->init_state |= FC_STATE_DVB_INIT;
 	return 0;
 
+<<<<<<< HEAD
+=======
+err_net:
+	fc->demux.dmx.disconnect_frontend(&fc->demux.dmx);
+>>>>>>> refs/remotes/origin/cm-10.0
 err_connect_frontend:
 	fc->demux.dmx.remove_frontend(&fc->demux.dmx, &fc->mem_frontend);
 err_dmx_add_mem_frontend:
@@ -254,7 +292,12 @@ int flexcop_device_initialize(struct flexcop_device *fc)
 	flexcop_hw_filter_init(fc);
 	flexcop_smc_ctrl(fc, 0);
 
+<<<<<<< HEAD
 	if ((ret = flexcop_dvb_init(fc)))
+=======
+	ret = flexcop_dvb_init(fc);
+	if (ret)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto error;
 
 	/* i2c has to be done before doing EEProm stuff -
@@ -272,7 +315,12 @@ int flexcop_device_initialize(struct flexcop_device *fc)
 	} else
 		warn("reading of MAC address failed.\n");
 
+<<<<<<< HEAD
 	if ((ret = flexcop_frontend_init(fc)))
+=======
+	ret = flexcop_frontend_init(fc);
+	if (ret)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto error;
 
 	flexcop_device_name(fc,"initialization of","complete");

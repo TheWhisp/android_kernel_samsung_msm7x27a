@@ -13,6 +13,10 @@
 #include <linux/err.h>
 #include <linux/string.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/bitops.h>
 #include <linux/mfd/pmic8058.h>
@@ -1692,7 +1696,11 @@ static int __devinit pm8058_vreg_probe(struct platform_device *pdev)
 			      &= ~(REGULATOR_MODE_NORMAL | REGULATOR_MODE_IDLE);
 
 		vreg->rdev = regulator_register(rdesc, &pdev->dev,
+<<<<<<< HEAD
 				&vreg->pdata->init_data, vreg);
+=======
+				&vreg->pdata->init_data, vreg, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(vreg->rdev)) {
 			rc = PTR_ERR(vreg->rdev);
 			pr_err("%s: regulator_register failed for %s, rc=%d\n",

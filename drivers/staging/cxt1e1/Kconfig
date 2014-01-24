@@ -6,8 +6,12 @@ config CXT1E1
       channelized stream WAN adapter card which contains a HDLC/Transparent
       mode controller.
 
+<<<<<<< HEAD
       If you want to compile this driver as a module
       say M here and read <file:Documentation/modules.txt>.
+=======
+      If you want to compile this driver as a module say M here.
+>>>>>>> refs/remotes/origin/cm-10.0
       The module will be called 'cxt1e1'.
 
       If unsure, say N.

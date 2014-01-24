@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # arch/arm/plat-s3c64xx/Makefile
+=======
+# arch/arm/plat-samsung/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 #
 # Copyright 2009 Simtec Electronics
 #
@@ -11,6 +15,7 @@ obj-				:=
 
 # Objects we always build independent of SoC choice
 
+<<<<<<< HEAD
 obj-y				+= init.o
 obj-$(CONFIG_ARCH_USES_GETTIMEOFFSET)   += time.o
 obj-y				+= clock.o
@@ -22,6 +27,15 @@ obj-y				+= dev-asocdma.o
 obj-$(CONFIG_SAMSUNG_CLKSRC)	+= clock-clksrc.o
 
 obj-$(CONFIG_SAMSUNG_IRQ_UART)	+= irq-uart.o
+=======
+obj-y				+= init.o cpu.o
+obj-$(CONFIG_ARCH_USES_GETTIMEOFFSET)   += time.o
+obj-y				+= clock.o
+obj-y				+= pwm-clock.o
+
+obj-$(CONFIG_SAMSUNG_CLKSRC)	+= clock-clksrc.o
+
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_SAMSUNG_IRQ_VIC_TIMER) += irq-vic-timer.o
 
 # ADC
@@ -32,6 +46,7 @@ obj-$(CONFIG_S3C_ADC)	+= adc.o
 
 obj-y				+= platformdata.o
 
+<<<<<<< HEAD
 obj-$(CONFIG_S3C_DEV_HSMMC)	+= dev-hsmmc.o
 obj-$(CONFIG_S3C_DEV_HSMMC1)	+= dev-hsmmc1.o
 obj-$(CONFIG_S3C_DEV_HSMMC2)	+= dev-hsmmc2.o
@@ -65,6 +80,18 @@ obj-$(CONFIG_SAMSUNG_DEV_PWM)	+= dev-pwm.o
 obj-$(CONFIG_S3C_DMA)		+= dma.o
 
 obj-$(CONFIG_S3C_PL330_DMA)	+= s3c-pl330.o
+=======
+obj-y				+= devs.o
+obj-y				+= dev-uart.o
+
+obj-$(CONFIG_SAMSUNG_DEV_BACKLIGHT)	+= dev-backlight.o
+
+# DMA support
+
+obj-$(CONFIG_S3C_DMA)		+= dma.o s3c-dma-ops.o
+
+obj-$(CONFIG_SAMSUNG_DMADEV)	+= dma-ops.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # PM support
 

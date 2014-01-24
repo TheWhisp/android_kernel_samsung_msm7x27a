@@ -35,7 +35,11 @@ struct arch_hw_breakpoint {
 
 #include <linux/kdebug.h>
 #include <asm/reg.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct perf_event;
 struct pmu;
@@ -57,7 +61,11 @@ void hw_breakpoint_pmu_read(struct perf_event *bp);
 extern void flush_ptrace_hw_breakpoint(struct task_struct *tsk);
 
 extern struct pmu perf_ops_bp;
+<<<<<<< HEAD
 extern void ptrace_triggered(struct perf_event *bp, int nmi,
+=======
+extern void ptrace_triggered(struct perf_event *bp,
+>>>>>>> refs/remotes/origin/cm-10.0
 			struct perf_sample_data *data, struct pt_regs *regs);
 static inline void hw_breakpoint_disable(void)
 {

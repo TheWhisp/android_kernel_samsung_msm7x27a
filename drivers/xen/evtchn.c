@@ -268,7 +268,19 @@ static int evtchn_bind_to_user(struct per_user_data *u, int port)
 	rc = bind_evtchn_to_irqhandler(port, evtchn_interrupt, IRQF_DISABLED,
 				       u->name, (void *)(unsigned long)port);
 	if (rc >= 0)
+<<<<<<< HEAD
 		rc = 0;
+=======
+		rc = evtchn_make_refcounted(port);
+	else {
+		/* bind failed, should close the port now */
+		struct evtchn_close close;
+		close.port = port;
+		if (HYPERVISOR_event_channel_op(EVTCHNOP_close, &close) != 0)
+			BUG();
+		set_port_user(port, NULL);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return rc;
 }
@@ -277,6 +289,11 @@ static void evtchn_unbind_from_user(struct per_user_data *u, int port)
 {
 	int irq = irq_from_evtchn(port);
 
+<<<<<<< HEAD
+=======
+	BUG_ON(irq < 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	unbind_from_irqhandler(irq, (void *)(unsigned long)port);
 
 	set_port_user(port, NULL);

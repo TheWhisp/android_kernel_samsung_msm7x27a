@@ -15,6 +15,11 @@ obj-y		:= enlighten.o setup.o multicalls.o mmu.o irq.o \
 			grant-table.o suspend.o platform-pci-unplug.o \
 			p2m.o
 
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_EVENT_TRACING) += trace.o
+
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_SMP)		+= smp.o
 obj-$(CONFIG_PARAVIRT_SPINLOCKS)+= spinlock.o
 obj-$(CONFIG_XEN_DEBUG_FS)	+= debugfs.o

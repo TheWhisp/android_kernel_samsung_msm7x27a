@@ -7,6 +7,11 @@ menuconfig SND_SOC
 	select SND_PCM
 	select AC97_BUS if SND_SOC_AC97_BUS
 	select SND_JACK if INPUT=y || INPUT=SND
+<<<<<<< HEAD
+=======
+	select REGMAP_I2C if I2C
+	select REGMAP_SPI if SPI_MASTER
+>>>>>>> refs/remotes/origin/cm-10.0
 	---help---
 
 	  If you want ASoC support, you should say Y here and also to the
@@ -20,6 +25,7 @@ menuconfig SND_SOC
 
 if SND_SOC
 
+<<<<<<< HEAD
 config SND_SOC_CACHE_LZO
 	bool "Support LZO compression for register caches"
 	select LZO_COMPRESS
@@ -38,6 +44,14 @@ config SND_SOC_CACHE_LZO
 config SND_SOC_AC97_BUS
 	bool
 
+=======
+config SND_SOC_AC97_BUS
+	bool
+
+config SND_SOC_DMAENGINE_PCM
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 # All the supported SoCs
 source "sound/soc/atmel/Kconfig"
 source "sound/soc/au1x/Kconfig"
@@ -51,13 +65,21 @@ source "sound/soc/nuc900/Kconfig"
 source "sound/soc/omap/Kconfig"
 source "sound/soc/kirkwood/Kconfig"
 source "sound/soc/mid-x86/Kconfig"
+<<<<<<< HEAD
+=======
+source "sound/soc/msm/Kconfig"
+source "sound/soc/mxs/Kconfig"
+>>>>>>> refs/remotes/origin/cm-10.0
 source "sound/soc/pxa/Kconfig"
 source "sound/soc/samsung/Kconfig"
 source "sound/soc/s6000/Kconfig"
 source "sound/soc/sh/Kconfig"
 source "sound/soc/tegra/Kconfig"
 source "sound/soc/txx9/Kconfig"
+<<<<<<< HEAD
 source "sound/soc/msm/Kconfig"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # Supported codecs
 source "sound/soc/codecs/Kconfig"

@@ -7,6 +7,10 @@
 #include <linux/acpi.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 
 static void pci_note_irq_problem(struct pci_dev *pdev, const char *reason)

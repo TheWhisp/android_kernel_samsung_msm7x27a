@@ -34,6 +34,10 @@
 #include <linux/in.h>
 #include <linux/device.h>
 #include <linux/dmapool.h>
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "rds.h"
 #include "iw.h"
@@ -258,8 +262,12 @@ void rds_iw_send_cq_comp_handler(struct ib_cq *cq, void *context)
 				 * when the SEND completes. */
 				break;
 			default:
+<<<<<<< HEAD
 				if (printk_ratelimit())
 					printk(KERN_NOTICE
+=======
+				printk_ratelimited(KERN_NOTICE
+>>>>>>> refs/remotes/origin/cm-10.0
 						"RDS/IW: %s: unexpected opcode 0x%x in WR!\n",
 						__func__, send->s_wr.opcode);
 				break;

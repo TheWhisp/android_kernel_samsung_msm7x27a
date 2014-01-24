@@ -78,7 +78,11 @@ static inline int cpu_time_before(const clockid_t which_clock,
 	if (CPUCLOCK_WHICH(which_clock) == CPUCLOCK_SCHED) {
 		return now.sched < then.sched;
 	}  else {
+<<<<<<< HEAD
 		return cputime_lt(now.cpu, then.cpu);
+=======
+		return now.cpu < then.cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 static inline void cpu_time_add(const clockid_t which_clock,
@@ -88,7 +92,11 @@ static inline void cpu_time_add(const clockid_t which_clock,
 	if (CPUCLOCK_WHICH(which_clock) == CPUCLOCK_SCHED) {
 		acc->sched += val.sched;
 	}  else {
+<<<<<<< HEAD
 		acc->cpu = cputime_add(acc->cpu, val.cpu);
+=======
+		acc->cpu += val.cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 static inline union cpu_time_count cpu_time_sub(const clockid_t which_clock,
@@ -98,12 +106,17 @@ static inline union cpu_time_count cpu_time_sub(const clockid_t which_clock,
 	if (CPUCLOCK_WHICH(which_clock) == CPUCLOCK_SCHED) {
 		a.sched -= b.sched;
 	}  else {
+<<<<<<< HEAD
 		a.cpu = cputime_sub(a.cpu, b.cpu);
+=======
+		a.cpu -= b.cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return a;
 }
 
 /*
+<<<<<<< HEAD
  * Divide and limit the result to res >= 1
  *
  * This is necessary to prevent signal delivery starvation, when the result of
@@ -117,6 +130,8 @@ static inline cputime_t cputime_div_non_zero(cputime_t time, unsigned long div)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * Update expiry time from increment, and increase overrun count,
  * given the current clock sample.
  */
@@ -148,6 +163,7 @@ static void bump_cpu_timer(struct k_itimer *timer,
 	} else {
 		cputime_t delta, incr;
 
+<<<<<<< HEAD
 		if (cputime_lt(now.cpu, timer->it.cpu.expires.cpu))
 			return;
 		incr = timer->it.cpu.incr.cpu;
@@ -163,13 +179,32 @@ static void bump_cpu_timer(struct k_itimer *timer,
 				cputime_add(timer->it.cpu.expires.cpu, incr);
 			timer->it_overrun += 1 << i;
 			delta = cputime_sub(delta, incr);
+=======
+		if (now.cpu < timer->it.cpu.expires.cpu)
+			return;
+		incr = timer->it.cpu.incr.cpu;
+		delta = now.cpu + incr - timer->it.cpu.expires.cpu;
+		/* Don't use (incr*2 < delta), incr*2 might overflow. */
+		for (i = 0; incr < delta - incr; i++)
+			     incr += incr;
+		for (; i >= 0; incr = incr >> 1, i--) {
+			if (delta < incr)
+				continue;
+			timer->it.cpu.expires.cpu += incr;
+			timer->it_overrun += 1 << i;
+			delta -= incr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }
 
 static inline cputime_t prof_ticks(struct task_struct *p)
 {
+<<<<<<< HEAD
 	return cputime_add(p->utime, p->stime);
+=======
+	return p->utime + p->stime;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 static inline cputime_t virt_ticks(struct task_struct *p)
 {
@@ -248,8 +283,13 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
 
 	t = tsk;
 	do {
+<<<<<<< HEAD
 		times->utime = cputime_add(times->utime, t->utime);
 		times->stime = cputime_add(times->stime, t->stime);
+=======
+		times->utime += t->utime;
+		times->stime += t->stime;
+>>>>>>> refs/remotes/origin/cm-10.0
 		times->sum_exec_runtime += task_sched_runtime(t);
 	} while_each_thread(tsk, t);
 out:
@@ -258,10 +298,17 @@ out:
 
 static void update_gt_cputime(struct task_cputime *a, struct task_cputime *b)
 {
+<<<<<<< HEAD
 	if (cputime_gt(b->utime, a->utime))
 		a->utime = b->utime;
 
 	if (cputime_gt(b->stime, a->stime))
+=======
+	if (b->utime > a->utime)
+		a->utime = b->utime;
+
+	if (b->stime > a->stime)
+>>>>>>> refs/remotes/origin/cm-10.0
 		a->stime = b->stime;
 
 	if (b->sum_exec_runtime > a->sum_exec_runtime)
@@ -282,6 +329,7 @@ void thread_group_cputimer(struct task_struct *tsk, struct task_cputime *times)
 		 * it.
 		 */
 		thread_group_cputime(tsk, &sum);
+<<<<<<< HEAD
 		spin_lock_irqsave(&cputimer->lock, flags);
 		cputimer->running = 1;
 		update_gt_cputime(&cputimer->cputime, &sum);
@@ -289,6 +337,15 @@ void thread_group_cputimer(struct task_struct *tsk, struct task_cputime *times)
 		spin_lock_irqsave(&cputimer->lock, flags);
 	*times = cputimer->cputime;
 	spin_unlock_irqrestore(&cputimer->lock, flags);
+=======
+		raw_spin_lock_irqsave(&cputimer->lock, flags);
+		cputimer->running = 1;
+		update_gt_cputime(&cputimer->cputime, &sum);
+	} else
+		raw_spin_lock_irqsave(&cputimer->lock, flags);
+	*times = cputimer->cputime;
+	raw_spin_unlock_irqrestore(&cputimer->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -306,7 +363,11 @@ static int cpu_clock_sample_group(const clockid_t which_clock,
 		return -EINVAL;
 	case CPUCLOCK_PROF:
 		thread_group_cputime(p, &cputime);
+<<<<<<< HEAD
 		cpu->cpu = cputime_add(cputime.utime, cputime.stime);
+=======
+		cpu->cpu = cputime.utime + cputime.stime;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case CPUCLOCK_VIRT:
 		thread_group_cputime(p, &cputime);
@@ -470,6 +531,7 @@ static void cleanup_timers(struct list_head *head,
 			   unsigned long long sum_exec_runtime)
 {
 	struct cpu_timer_list *timer, *next;
+<<<<<<< HEAD
 	cputime_t ptime = cputime_add(utime, stime);
 
 	list_for_each_entry_safe(timer, next, head, entry) {
@@ -479,17 +541,34 @@ static void cleanup_timers(struct list_head *head,
 		} else {
 			timer->expires.cpu = cputime_sub(timer->expires.cpu,
 							 ptime);
+=======
+	cputime_t ptime = utime + stime;
+
+	list_for_each_entry_safe(timer, next, head, entry) {
+		list_del_init(&timer->entry);
+		if (timer->expires.cpu < ptime) {
+			timer->expires.cpu = 0;
+		} else {
+			timer->expires.cpu -= ptime;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
 	++head;
 	list_for_each_entry_safe(timer, next, head, entry) {
 		list_del_init(&timer->entry);
+<<<<<<< HEAD
 		if (cputime_lt(timer->expires.cpu, utime)) {
 			timer->expires.cpu = cputime_zero;
 		} else {
 			timer->expires.cpu = cputime_sub(timer->expires.cpu,
 							 utime);
+=======
+		if (timer->expires.cpu < utime) {
+			timer->expires.cpu = 0;
+		} else {
+			timer->expires.cpu -= utime;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -520,8 +599,12 @@ void posix_cpu_timers_exit_group(struct task_struct *tsk)
 	struct signal_struct *const sig = tsk->signal;
 
 	cleanup_timers(tsk->signal->cpu_timers,
+<<<<<<< HEAD
 		       cputime_add(tsk->utime, sig->utime),
 		       cputime_add(tsk->stime, sig->stime),
+=======
+		       tsk->utime + sig->utime, tsk->stime + sig->stime,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       tsk->se.sum_exec_runtime + sig->sum_sched_runtime);
 }
 
@@ -540,8 +623,12 @@ static void clear_dead_task(struct k_itimer *timer, union cpu_time_count now)
 
 static inline int expires_gt(cputime_t expires, cputime_t new_exp)
 {
+<<<<<<< HEAD
 	return cputime_eq(expires, cputime_zero) ||
 	       cputime_gt(expires, new_exp);
+=======
+	return expires == 0 || expires > new_exp;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -651,7 +738,11 @@ static int cpu_timer_sample_group(const clockid_t which_clock,
 	default:
 		return -EINVAL;
 	case CPUCLOCK_PROF:
+<<<<<<< HEAD
 		cpu->cpu = cputime_add(cputime.utime, cputime.stime);
+=======
+		cpu->cpu = cputime.utime + cputime.stime;
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case CPUCLOCK_VIRT:
 		cpu->cpu = cputime.utime;
@@ -918,12 +1009,20 @@ static void check_thread_timers(struct task_struct *tsk,
 	unsigned long soft;
 
 	maxfire = 20;
+<<<<<<< HEAD
 	tsk->cputime_expires.prof_exp = cputime_zero;
+=======
+	tsk->cputime_expires.prof_exp = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (!list_empty(timers)) {
 		struct cpu_timer_list *t = list_first_entry(timers,
 						      struct cpu_timer_list,
 						      entry);
+<<<<<<< HEAD
 		if (!--maxfire || cputime_lt(prof_ticks(tsk), t->expires.cpu)) {
+=======
+		if (!--maxfire || prof_ticks(tsk) < t->expires.cpu) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			tsk->cputime_expires.prof_exp = t->expires.cpu;
 			break;
 		}
@@ -933,12 +1032,20 @@ static void check_thread_timers(struct task_struct *tsk,
 
 	++timers;
 	maxfire = 20;
+<<<<<<< HEAD
 	tsk->cputime_expires.virt_exp = cputime_zero;
+=======
+	tsk->cputime_expires.virt_exp = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (!list_empty(timers)) {
 		struct cpu_timer_list *t = list_first_entry(timers,
 						      struct cpu_timer_list,
 						      entry);
+<<<<<<< HEAD
 		if (!--maxfire || cputime_lt(virt_ticks(tsk), t->expires.cpu)) {
+=======
+		if (!--maxfire || virt_ticks(tsk) < t->expires.cpu) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			tsk->cputime_expires.virt_exp = t->expires.cpu;
 			break;
 		}
@@ -999,9 +1106,15 @@ static void stop_process_timers(struct signal_struct *sig)
 	struct thread_group_cputimer *cputimer = &sig->cputimer;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&cputimer->lock, flags);
 	cputimer->running = 0;
 	spin_unlock_irqrestore(&cputimer->lock, flags);
+=======
+	raw_spin_lock_irqsave(&cputimer->lock, flags);
+	cputimer->running = 0;
+	raw_spin_unlock_irqrestore(&cputimer->lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static u32 onecputick;
@@ -1009,6 +1122,7 @@ static u32 onecputick;
 static void check_cpu_itimer(struct task_struct *tsk, struct cpu_itimer *it,
 			     cputime_t *expires, cputime_t cur_time, int signo)
 {
+<<<<<<< HEAD
 	if (cputime_eq(it->expires, cputime_zero))
 		return;
 
@@ -1023,6 +1137,21 @@ static void check_cpu_itimer(struct task_struct *tsk, struct cpu_itimer *it,
 			}
 		} else {
 			it->expires = cputime_zero;
+=======
+	if (!it->expires)
+		return;
+
+	if (cur_time >= it->expires) {
+		if (it->incr) {
+			it->expires += it->incr;
+			it->error += it->incr_error;
+			if (it->error >= onecputick) {
+				it->expires -= cputime_one_jiffy;
+				it->error -= onecputick;
+			}
+		} else {
+			it->expires = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		trace_itimer_expire(signo == SIGPROF ?
@@ -1031,9 +1160,13 @@ static void check_cpu_itimer(struct task_struct *tsk, struct cpu_itimer *it,
 		__group_send_sig_info(signo, SEND_SIG_PRIV, tsk);
 	}
 
+<<<<<<< HEAD
 	if (!cputime_eq(it->expires, cputime_zero) &&
 	    (cputime_eq(*expires, cputime_zero) ||
 	     cputime_lt(it->expires, *expires))) {
+=======
+	if (it->expires && (!*expires || it->expires < *expires)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		*expires = it->expires;
 	}
 }
@@ -1048,9 +1181,13 @@ static void check_cpu_itimer(struct task_struct *tsk, struct cpu_itimer *it,
  */
 static inline int task_cputime_zero(const struct task_cputime *cputime)
 {
+<<<<<<< HEAD
 	if (cputime_eq(cputime->utime, cputime_zero) &&
 	    cputime_eq(cputime->stime, cputime_zero) &&
 	    cputime->sum_exec_runtime == 0)
+=======
+	if (!cputime->utime && !cputime->stime && !cputime->sum_exec_runtime)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 	return 0;
 }
@@ -1076,15 +1213,26 @@ static void check_process_timers(struct task_struct *tsk,
 	 */
 	thread_group_cputimer(tsk, &cputime);
 	utime = cputime.utime;
+<<<<<<< HEAD
 	ptime = cputime_add(utime, cputime.stime);
 	sum_sched_runtime = cputime.sum_exec_runtime;
 	maxfire = 20;
 	prof_expires = cputime_zero;
+=======
+	ptime = utime + cputime.stime;
+	sum_sched_runtime = cputime.sum_exec_runtime;
+	maxfire = 20;
+	prof_expires = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (!list_empty(timers)) {
 		struct cpu_timer_list *tl = list_first_entry(timers,
 						      struct cpu_timer_list,
 						      entry);
+<<<<<<< HEAD
 		if (!--maxfire || cputime_lt(ptime, tl->expires.cpu)) {
+=======
+		if (!--maxfire || ptime < tl->expires.cpu) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			prof_expires = tl->expires.cpu;
 			break;
 		}
@@ -1094,12 +1242,20 @@ static void check_process_timers(struct task_struct *tsk,
 
 	++timers;
 	maxfire = 20;
+<<<<<<< HEAD
 	virt_expires = cputime_zero;
+=======
+	virt_expires = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (!list_empty(timers)) {
 		struct cpu_timer_list *tl = list_first_entry(timers,
 						      struct cpu_timer_list,
 						      entry);
+<<<<<<< HEAD
 		if (!--maxfire || cputime_lt(utime, tl->expires.cpu)) {
+=======
+		if (!--maxfire || utime < tl->expires.cpu) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			virt_expires = tl->expires.cpu;
 			break;
 		}
@@ -1154,8 +1310,12 @@ static void check_process_timers(struct task_struct *tsk,
 			}
 		}
 		x = secs_to_cputime(soft);
+<<<<<<< HEAD
 		if (cputime_eq(prof_expires, cputime_zero) ||
 		    cputime_lt(x, prof_expires)) {
+=======
+		if (!prof_expires || x < prof_expires) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			prof_expires = x;
 		}
 	}
@@ -1249,12 +1409,18 @@ out:
 static inline int task_cputime_expired(const struct task_cputime *sample,
 					const struct task_cputime *expires)
 {
+<<<<<<< HEAD
 	if (!cputime_eq(expires->utime, cputime_zero) &&
 	    cputime_ge(sample->utime, expires->utime))
 		return 1;
 	if (!cputime_eq(expires->stime, cputime_zero) &&
 	    cputime_ge(cputime_add(sample->utime, sample->stime),
 		       expires->stime))
+=======
+	if (expires->utime && sample->utime >= expires->utime)
+		return 1;
+	if (expires->stime && sample->utime + sample->stime >= expires->stime)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 	if (expires->sum_exec_runtime != 0 &&
 	    sample->sum_exec_runtime >= expires->sum_exec_runtime)
@@ -1291,9 +1457,15 @@ static inline int fastpath_timer_check(struct task_struct *tsk)
 	if (sig->cputimer.running) {
 		struct task_cputime group_sample;
 
+<<<<<<< HEAD
 		spin_lock(&sig->cputimer.lock);
 		group_sample = sig->cputimer.cputime;
 		spin_unlock(&sig->cputimer.lock);
+=======
+		raw_spin_lock(&sig->cputimer.lock);
+		group_sample = sig->cputimer.cputime;
+		raw_spin_unlock(&sig->cputimer.lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (task_cputime_expired(&group_sample, &sig->cputime_expires))
 			return 1;
@@ -1389,6 +1561,7 @@ void set_process_cpu_timer(struct task_struct *tsk, unsigned int clock_idx,
 		 * it to be relative, *newval argument is relative and we update
 		 * it to be absolute.
 		 */
+<<<<<<< HEAD
 		if (!cputime_eq(*oldval, cputime_zero)) {
 			if (cputime_le(*oldval, now.cpu)) {
 				/* Just about to fire. */
@@ -1401,6 +1574,20 @@ void set_process_cpu_timer(struct task_struct *tsk, unsigned int clock_idx,
 		if (cputime_eq(*newval, cputime_zero))
 			return;
 		*newval = cputime_add(*newval, now.cpu);
+=======
+		if (*oldval) {
+			if (*oldval <= now.cpu) {
+				/* Just about to fire. */
+				*oldval = cputime_one_jiffy;
+			} else {
+				*oldval -= now.cpu;
+			}
+		}
+
+		if (!*newval)
+			return;
+		*newval += now.cpu;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*

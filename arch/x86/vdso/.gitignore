@@ -1,5 +1,10 @@
 vdso.lds
 vdso-syms.lds
+<<<<<<< HEAD
+=======
+vdsox32.lds
+vdsox32-syms.lds
+>>>>>>> refs/remotes/origin/cm-10.0
 vdso32-syms.lds
 vdso32-syscall-syms.lds
 vdso32-sysenter-syms.lds

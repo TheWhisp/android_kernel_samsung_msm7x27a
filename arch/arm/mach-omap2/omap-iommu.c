@@ -10,6 +10,10 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 
 #include <plat/iommu.h>
@@ -67,7 +71,11 @@ static struct iommu_device omap4_devices[] = {
 		.pdata = {
 			.name = "ducati",
 			.nr_tlb_entries = 32,
+<<<<<<< HEAD
 			.clk_name = "ducati_ick",
+=======
+			.clk_name = "ipu_fck",
+>>>>>>> refs/remotes/origin/cm-10.0
 			.da_start = 0x0,
 			.da_end = 0xFFFFF000,
 		},
@@ -149,7 +157,12 @@ err_out:
 		platform_device_put(omap_iommu_pdev[i]);
 	return err;
 }
+<<<<<<< HEAD
 module_init(omap_iommu_init);
+=======
+/* must be ready before omap3isp is probed */
+subsys_initcall(omap_iommu_init);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __exit omap_iommu_exit(void)
 {

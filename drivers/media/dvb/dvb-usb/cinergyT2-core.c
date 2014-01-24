@@ -69,7 +69,11 @@ static int cinergyt2_frontend_attach(struct dvb_usb_adapter *adap)
 	char state[3];
 	int ret;
 
+<<<<<<< HEAD
 	adap->fe = cinergyt2_fe_attach(adap->dev);
+=======
+	adap->fe_adap[0].fe = cinergyt2_fe_attach(adap->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = dvb_usb_generic_rw(adap->dev, query, sizeof(query), state,
 				sizeof(state), 0);
@@ -198,6 +202,11 @@ static struct dvb_usb_device_properties cinergyt2_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.streaming_ctrl   = cinergyt2_streaming_ctrl,
 			.frontend_attach  = cinergyt2_frontend_attach,
 
@@ -212,6 +221,10 @@ static struct dvb_usb_device_properties cinergyt2_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 
@@ -244,6 +257,7 @@ static struct usb_driver cinergyt2_driver = {
 	.id_table	= cinergyt2_usb_table
 };
 
+<<<<<<< HEAD
 static int __init cinergyt2_usb_init(void)
 {
 	int err;
@@ -263,6 +277,9 @@ static void __exit cinergyt2_usb_exit(void)
 
 module_init(cinergyt2_usb_init);
 module_exit(cinergyt2_usb_exit);
+=======
+module_usb_driver(cinergyt2_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Terratec Cinergy T2 DVB-T driver");
 MODULE_LICENSE("GPL");

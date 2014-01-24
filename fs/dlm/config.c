@@ -2,7 +2,11 @@
 *******************************************************************************
 **
 **  Copyright (C) Sistina Software, Inc.  1997-2003  All rights reserved.
+<<<<<<< HEAD
 **  Copyright (C) 2004-2008 Red Hat, Inc.  All rights reserved.
+=======
+**  Copyright (C) 2004-2011 Red Hat, Inc.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
 **
 **  This copyrighted material is made available to anyone wishing to use,
 **  modify, copy, or redistribute it subject to the terms and conditions
@@ -17,6 +21,10 @@
 #include <linux/slab.h>
 #include <linux/in.h>
 #include <linux/in6.h>
+<<<<<<< HEAD
+=======
+#include <linux/dlmconstants.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/ipv6.h>
 #include <net/sock.h>
 
@@ -28,13 +36,22 @@
  * /config/dlm/<cluster>/spaces/<space>/nodes/<node>/weight
  * /config/dlm/<cluster>/comms/<comm>/nodeid
  * /config/dlm/<cluster>/comms/<comm>/local
+<<<<<<< HEAD
  * /config/dlm/<cluster>/comms/<comm>/addr
+=======
+ * /config/dlm/<cluster>/comms/<comm>/addr      (write only)
+ * /config/dlm/<cluster>/comms/<comm>/addr_list (read only)
+>>>>>>> refs/remotes/origin/cm-10.0
  * The <cluster> level is useless, but I haven't figured out how to avoid it.
  */
 
 static struct config_group *space_list;
 static struct config_group *comm_list;
 static struct dlm_comm *local_comm;
+<<<<<<< HEAD
+=======
+static uint32_t dlm_comm_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct dlm_clusters;
 struct dlm_cluster;
@@ -80,6 +97,10 @@ static ssize_t comm_local_write(struct dlm_comm *cm, const char *buf,
 				size_t len);
 static ssize_t comm_addr_write(struct dlm_comm *cm, const char *buf,
 				size_t len);
+<<<<<<< HEAD
+=======
+static ssize_t comm_addr_list_read(struct dlm_comm *cm, char *buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t node_nodeid_read(struct dlm_node *nd, char *buf);
 static ssize_t node_nodeid_write(struct dlm_node *nd, const char *buf,
 				size_t len);
@@ -92,7 +113,10 @@ struct dlm_cluster {
 	unsigned int cl_tcp_port;
 	unsigned int cl_buffer_size;
 	unsigned int cl_rsbtbl_size;
+<<<<<<< HEAD
 	unsigned int cl_lkbtbl_size;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int cl_dirtbl_size;
 	unsigned int cl_recover_timer;
 	unsigned int cl_toss_secs;
@@ -101,13 +125,22 @@ struct dlm_cluster {
 	unsigned int cl_protocol;
 	unsigned int cl_timewarn_cs;
 	unsigned int cl_waitwarn_us;
+<<<<<<< HEAD
+=======
+	unsigned int cl_new_rsb_count;
+	unsigned int cl_recover_callbacks;
+	char cl_cluster_name[DLM_LOCKSPACE_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum {
 	CLUSTER_ATTR_TCP_PORT = 0,
 	CLUSTER_ATTR_BUFFER_SIZE,
 	CLUSTER_ATTR_RSBTBL_SIZE,
+<<<<<<< HEAD
 	CLUSTER_ATTR_LKBTBL_SIZE,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	CLUSTER_ATTR_DIRTBL_SIZE,
 	CLUSTER_ATTR_RECOVER_TIMER,
 	CLUSTER_ATTR_TOSS_SECS,
@@ -116,6 +149,12 @@ enum {
 	CLUSTER_ATTR_PROTOCOL,
 	CLUSTER_ATTR_TIMEWARN_CS,
 	CLUSTER_ATTR_WAITWARN_US,
+<<<<<<< HEAD
+=======
+	CLUSTER_ATTR_NEW_RSB_COUNT,
+	CLUSTER_ATTR_RECOVER_CALLBACKS,
+	CLUSTER_ATTR_CLUSTER_NAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct cluster_attribute {
@@ -124,6 +163,30 @@ struct cluster_attribute {
 	ssize_t (*store)(struct dlm_cluster *, const char *, size_t);
 };
 
+<<<<<<< HEAD
+=======
+static ssize_t cluster_cluster_name_read(struct dlm_cluster *cl, char *buf)
+{
+	return sprintf(buf, "%s\n", cl->cl_cluster_name);
+}
+
+static ssize_t cluster_cluster_name_write(struct dlm_cluster *cl,
+					  const char *buf, size_t len)
+{
+	strncpy(dlm_config.ci_cluster_name, buf, DLM_LOCKSPACE_LEN);
+	strncpy(cl->cl_cluster_name, buf, DLM_LOCKSPACE_LEN);
+	return len;
+}
+
+static struct cluster_attribute cluster_attr_cluster_name = {
+	.attr   = { .ca_owner = THIS_MODULE,
+                    .ca_name = "cluster_name",
+                    .ca_mode = S_IRUGO | S_IWUSR },
+	.show   = cluster_cluster_name_read,
+	.store  = cluster_cluster_name_write,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t cluster_set(struct dlm_cluster *cl, unsigned int *cl_field,
 			   int *info_field, int check_zero,
 			   const char *buf, size_t len)
@@ -160,7 +223,10 @@ __CONFIGFS_ATTR(name, 0644, name##_read, name##_write)
 CLUSTER_ATTR(tcp_port, 1);
 CLUSTER_ATTR(buffer_size, 1);
 CLUSTER_ATTR(rsbtbl_size, 1);
+<<<<<<< HEAD
 CLUSTER_ATTR(lkbtbl_size, 1);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 CLUSTER_ATTR(dirtbl_size, 1);
 CLUSTER_ATTR(recover_timer, 1);
 CLUSTER_ATTR(toss_secs, 1);
@@ -169,12 +235,20 @@ CLUSTER_ATTR(log_debug, 0);
 CLUSTER_ATTR(protocol, 0);
 CLUSTER_ATTR(timewarn_cs, 1);
 CLUSTER_ATTR(waitwarn_us, 0);
+<<<<<<< HEAD
+=======
+CLUSTER_ATTR(new_rsb_count, 0);
+CLUSTER_ATTR(recover_callbacks, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct configfs_attribute *cluster_attrs[] = {
 	[CLUSTER_ATTR_TCP_PORT] = &cluster_attr_tcp_port.attr,
 	[CLUSTER_ATTR_BUFFER_SIZE] = &cluster_attr_buffer_size.attr,
 	[CLUSTER_ATTR_RSBTBL_SIZE] = &cluster_attr_rsbtbl_size.attr,
+<<<<<<< HEAD
 	[CLUSTER_ATTR_LKBTBL_SIZE] = &cluster_attr_lkbtbl_size.attr,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	[CLUSTER_ATTR_DIRTBL_SIZE] = &cluster_attr_dirtbl_size.attr,
 	[CLUSTER_ATTR_RECOVER_TIMER] = &cluster_attr_recover_timer.attr,
 	[CLUSTER_ATTR_TOSS_SECS] = &cluster_attr_toss_secs.attr,
@@ -183,6 +257,12 @@ static struct configfs_attribute *cluster_attrs[] = {
 	[CLUSTER_ATTR_PROTOCOL] = &cluster_attr_protocol.attr,
 	[CLUSTER_ATTR_TIMEWARN_CS] = &cluster_attr_timewarn_cs.attr,
 	[CLUSTER_ATTR_WAITWARN_US] = &cluster_attr_waitwarn_us.attr,
+<<<<<<< HEAD
+=======
+	[CLUSTER_ATTR_NEW_RSB_COUNT] = &cluster_attr_new_rsb_count.attr,
+	[CLUSTER_ATTR_RECOVER_CALLBACKS] = &cluster_attr_recover_callbacks.attr,
+	[CLUSTER_ATTR_CLUSTER_NAME] = &cluster_attr_cluster_name.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL,
 };
 
@@ -190,6 +270,10 @@ enum {
 	COMM_ATTR_NODEID = 0,
 	COMM_ATTR_LOCAL,
 	COMM_ATTR_ADDR,
+<<<<<<< HEAD
+=======
+	COMM_ATTR_ADDR_LIST,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct comm_attribute {
@@ -217,14 +301,32 @@ static struct comm_attribute comm_attr_local = {
 static struct comm_attribute comm_attr_addr = {
 	.attr   = { .ca_owner = THIS_MODULE,
                     .ca_name = "addr",
+<<<<<<< HEAD
                     .ca_mode = S_IRUGO | S_IWUSR },
 	.store  = comm_addr_write,
 };
 
+=======
+                    .ca_mode = S_IWUSR },
+	.store  = comm_addr_write,
+};
+
+static struct comm_attribute comm_attr_addr_list = {
+	.attr   = { .ca_owner = THIS_MODULE,
+                    .ca_name = "addr_list",
+                    .ca_mode = S_IRUGO },
+	.show   = comm_addr_list_read,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct configfs_attribute *comm_attrs[] = {
 	[COMM_ATTR_NODEID] = &comm_attr_nodeid.attr,
 	[COMM_ATTR_LOCAL] = &comm_attr_local.attr,
 	[COMM_ATTR_ADDR] = &comm_attr_addr.attr,
+<<<<<<< HEAD
+=======
+	[COMM_ATTR_ADDR_LIST] = &comm_attr_addr_list.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL,
 };
 
@@ -282,6 +384,10 @@ struct dlm_comms {
 
 struct dlm_comm {
 	struct config_item item;
+<<<<<<< HEAD
+=======
+	int seq;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int nodeid;
 	int local;
 	int addr_count;
@@ -298,6 +404,10 @@ struct dlm_node {
 	int nodeid;
 	int weight;
 	int new;
+<<<<<<< HEAD
+=======
+	int comm_seq; /* copy of cm->seq when nd->nodeid is set */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct configfs_group_operations clusters_ops = {
@@ -435,7 +545,10 @@ static struct config_group *make_cluster(struct config_group *g,
 	cl->cl_tcp_port = dlm_config.ci_tcp_port;
 	cl->cl_buffer_size = dlm_config.ci_buffer_size;
 	cl->cl_rsbtbl_size = dlm_config.ci_rsbtbl_size;
+<<<<<<< HEAD
 	cl->cl_lkbtbl_size = dlm_config.ci_lkbtbl_size;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	cl->cl_dirtbl_size = dlm_config.ci_dirtbl_size;
 	cl->cl_recover_timer = dlm_config.ci_recover_timer;
 	cl->cl_toss_secs = dlm_config.ci_toss_secs;
@@ -444,6 +557,13 @@ static struct config_group *make_cluster(struct config_group *g,
 	cl->cl_protocol = dlm_config.ci_protocol;
 	cl->cl_timewarn_cs = dlm_config.ci_timewarn_cs;
 	cl->cl_waitwarn_us = dlm_config.ci_waitwarn_us;
+<<<<<<< HEAD
+=======
+	cl->cl_new_rsb_count = dlm_config.ci_new_rsb_count;
+	cl->cl_recover_callbacks = dlm_config.ci_recover_callbacks;
+	memcpy(cl->cl_cluster_name, dlm_config.ci_cluster_name,
+	       DLM_LOCKSPACE_LEN);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	space_list = &sps->ss_group;
 	comm_list = &cms->cs_group;
@@ -547,6 +667,14 @@ static struct config_item *make_comm(struct config_group *g, const char *name)
 		return ERR_PTR(-ENOMEM);
 
 	config_item_init_type_name(&cm->item, name, &comm_type);
+<<<<<<< HEAD
+=======
+
+	cm->seq = dlm_comm_count++;
+	if (!cm->seq)
+		cm->seq = dlm_comm_count++;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	cm->nodeid = -1;
 	cm->local = 0;
 	cm->addr_count = 0;
@@ -720,6 +848,53 @@ static ssize_t comm_addr_write(struct dlm_comm *cm, const char *buf, size_t len)
 	return len;
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t comm_addr_list_read(struct dlm_comm *cm, char *buf)
+{
+	ssize_t s;
+	ssize_t allowance;
+	int i;
+	struct sockaddr_storage *addr;
+	struct sockaddr_in *addr_in;
+	struct sockaddr_in6 *addr_in6;
+	
+	/* Taken from ip6_addr_string() defined in lib/vsprintf.c */
+	char buf0[sizeof("AF_INET6	xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:255.255.255.255\n")];
+	
+
+	/* Derived from SIMPLE_ATTR_SIZE of fs/configfs/file.c */
+	allowance = 4096;
+	buf[0] = '\0';
+
+	for (i = 0; i < cm->addr_count; i++) {
+		addr = cm->addr[i];
+
+		switch(addr->ss_family) {
+		case AF_INET:
+			addr_in = (struct sockaddr_in *)addr;
+			s = sprintf(buf0, "AF_INET	%pI4\n", &addr_in->sin_addr.s_addr);
+			break;
+		case AF_INET6:
+			addr_in6 = (struct sockaddr_in6 *)addr;
+			s = sprintf(buf0, "AF_INET6	%pI6\n", &addr_in6->sin6_addr);
+			break;
+		default:
+			s = sprintf(buf0, "%s\n", "<UNKNOWN>");
+			break;
+		}
+		allowance -= s;
+		if (allowance >= 0)
+			strcat(buf, buf0);
+		else {
+			allowance += s;
+			break;
+		}
+	}
+	return 4096 - allowance;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t show_node(struct config_item *i, struct configfs_attribute *a,
 			 char *buf)
 {
@@ -746,7 +921,14 @@ static ssize_t node_nodeid_read(struct dlm_node *nd, char *buf)
 static ssize_t node_nodeid_write(struct dlm_node *nd, const char *buf,
 				 size_t len)
 {
+<<<<<<< HEAD
 	nd->nodeid = simple_strtol(buf, NULL, 0);
+=======
+	uint32_t seq = 0;
+	nd->nodeid = simple_strtol(buf, NULL, 0);
+	dlm_comm_seq(nd->nodeid, &seq);
+	nd->comm_seq = seq;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return len;
 }
 
@@ -853,6 +1035,7 @@ static void put_comm(struct dlm_comm *cm)
 }
 
 /* caller must free mem */
+<<<<<<< HEAD
 int dlm_nodeid_list(char *lsname, int **ids_out, int *ids_count_out,
 		    int **new_out, int *new_count_out)
 {
@@ -860,6 +1043,15 @@ int dlm_nodeid_list(char *lsname, int **ids_out, int *ids_count_out,
 	struct dlm_node *nd;
 	int i = 0, rv = 0, ids_count = 0, new_count = 0;
 	int *ids, *new;
+=======
+int dlm_config_nodes(char *lsname, struct dlm_config_node **nodes_out,
+		     int *count_out)
+{
+	struct dlm_space *sp;
+	struct dlm_node *nd;
+	struct dlm_config_node *nodes, *node;
+	int rv, count;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sp = get_space(lsname);
 	if (!sp)
@@ -872,14 +1064,22 @@ int dlm_nodeid_list(char *lsname, int **ids_out, int *ids_count_out,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	ids_count = sp->members_count;
 
 	ids = kcalloc(ids_count, sizeof(int), GFP_NOFS);
 	if (!ids) {
+=======
+	count = sp->members_count;
+
+	nodes = kcalloc(count, sizeof(struct dlm_config_node), GFP_NOFS);
+	if (!nodes) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		rv = -ENOMEM;
 		goto out;
 	}
 
+<<<<<<< HEAD
 	list_for_each_entry(nd, &sp->members, list) {
 		ids[i++] = nd->nodeid;
 		if (nd->new)
@@ -912,12 +1112,29 @@ int dlm_nodeid_list(char *lsname, int **ids_out, int *ids_count_out,
  out_ids:
 	*ids_count_out = ids_count;
 	*ids_out = ids;
+=======
+	node = nodes;
+	list_for_each_entry(nd, &sp->members, list) {
+		node->nodeid = nd->nodeid;
+		node->weight = nd->weight;
+		node->new = nd->new;
+		node->comm_seq = nd->comm_seq;
+		node++;
+
+		nd->new = 0;
+	}
+
+	*count_out = count;
+	*nodes_out = nodes;
+	rv = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
  out:
 	mutex_unlock(&sp->members_lock);
 	put_space(sp);
 	return rv;
 }
 
+<<<<<<< HEAD
 int dlm_node_weight(char *lsname, int nodeid)
 {
 	struct dlm_space *sp;
@@ -939,6 +1156,16 @@ int dlm_node_weight(char *lsname, int nodeid)
 	put_space(sp);
  out:
 	return w;
+=======
+int dlm_comm_seq(int nodeid, uint32_t *seq)
+{
+	struct dlm_comm *cm = get_comm(nodeid, NULL);
+	if (!cm)
+		return -EEXIST;
+	*seq = cm->seq;
+	put_comm(cm);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int dlm_nodeid_to_addr(int nodeid, struct sockaddr_storage *addr)
@@ -983,7 +1210,10 @@ int dlm_our_addr(struct sockaddr_storage *addr, int num)
 #define DEFAULT_TCP_PORT       21064
 #define DEFAULT_BUFFER_SIZE     4096
 #define DEFAULT_RSBTBL_SIZE     1024
+<<<<<<< HEAD
 #define DEFAULT_LKBTBL_SIZE     1024
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DEFAULT_DIRTBL_SIZE     1024
 #define DEFAULT_RECOVER_TIMER      5
 #define DEFAULT_TOSS_SECS         10
@@ -992,12 +1222,21 @@ int dlm_our_addr(struct sockaddr_storage *addr, int num)
 #define DEFAULT_PROTOCOL           0
 #define DEFAULT_TIMEWARN_CS      500 /* 5 sec = 500 centiseconds */
 #define DEFAULT_WAITWARN_US	   0
+<<<<<<< HEAD
+=======
+#define DEFAULT_NEW_RSB_COUNT    128
+#define DEFAULT_RECOVER_CALLBACKS  0
+#define DEFAULT_CLUSTER_NAME      ""
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct dlm_config_info dlm_config = {
 	.ci_tcp_port = DEFAULT_TCP_PORT,
 	.ci_buffer_size = DEFAULT_BUFFER_SIZE,
 	.ci_rsbtbl_size = DEFAULT_RSBTBL_SIZE,
+<<<<<<< HEAD
 	.ci_lkbtbl_size = DEFAULT_LKBTBL_SIZE,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ci_dirtbl_size = DEFAULT_DIRTBL_SIZE,
 	.ci_recover_timer = DEFAULT_RECOVER_TIMER,
 	.ci_toss_secs = DEFAULT_TOSS_SECS,
@@ -1005,6 +1244,13 @@ struct dlm_config_info dlm_config = {
 	.ci_log_debug = DEFAULT_LOG_DEBUG,
 	.ci_protocol = DEFAULT_PROTOCOL,
 	.ci_timewarn_cs = DEFAULT_TIMEWARN_CS,
+<<<<<<< HEAD
 	.ci_waitwarn_us = DEFAULT_WAITWARN_US
+=======
+	.ci_waitwarn_us = DEFAULT_WAITWARN_US,
+	.ci_new_rsb_count = DEFAULT_NEW_RSB_COUNT,
+	.ci_recover_callbacks = DEFAULT_RECOVER_CALLBACKS,
+	.ci_cluster_name = DEFAULT_CLUSTER_NAME
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 

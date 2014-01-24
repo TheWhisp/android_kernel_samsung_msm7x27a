@@ -344,7 +344,11 @@ static void create_pit_timer(struct kvm *kvm, u32 val, int is_period)
 	struct kvm_timer *pt = &ps->pit_timer;
 	s64 interval;
 
+<<<<<<< HEAD
 	if (!irqchip_in_kernel(kvm))
+=======
+	if (!irqchip_in_kernel(kvm) || ps->flags & KVM_PIT_FLAGS_HPET_LEGACY)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	interval = muldiv64(val, NSEC_PER_SEC, KVM_PIT_FREQ);
@@ -397,6 +401,7 @@ static void pit_load_count(struct kvm *kvm, int channel, u32 val)
 	case 1:
         /* FIXME: enhance mode 4 precision */
 	case 4:
+<<<<<<< HEAD
 		if (!(ps->flags & KVM_PIT_FLAGS_HPET_LEGACY)) {
 			create_pit_timer(kvm, val, 0);
 		}
@@ -406,6 +411,13 @@ static void pit_load_count(struct kvm *kvm, int channel, u32 val)
 		if (!(ps->flags & KVM_PIT_FLAGS_HPET_LEGACY)){
 			create_pit_timer(kvm, val, 1);
 		}
+=======
+		create_pit_timer(kvm, val, 0);
+		break;
+	case 2:
+	case 3:
+		create_pit_timer(kvm, val, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		destroy_pit_timer(kvm->arch.vpit);
@@ -717,14 +729,24 @@ struct kvm_pit *kvm_create_pit(struct kvm *kvm, u32 flags)
 	kvm_register_irq_mask_notifier(kvm, 0, &pit->mask_notifier);
 
 	kvm_iodevice_init(&pit->dev, &pit_dev_ops);
+<<<<<<< HEAD
 	ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, &pit->dev);
+=======
+	ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, KVM_PIT_BASE_ADDRESS,
+				      KVM_PIT_MEM_LENGTH, &pit->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		goto fail;
 
 	if (flags & KVM_PIT_SPEAKER_DUMMY) {
 		kvm_iodevice_init(&pit->speaker_dev, &speaker_dev_ops);
 		ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS,
+<<<<<<< HEAD
 						&pit->speaker_dev);
+=======
+					      KVM_SPEAKER_BASE_ADDRESS, 4,
+					      &pit->speaker_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret < 0)
 			goto fail_unregister;
 	}

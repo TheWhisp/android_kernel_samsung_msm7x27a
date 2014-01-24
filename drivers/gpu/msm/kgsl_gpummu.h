@@ -47,7 +47,10 @@ struct kgsl_tlbflushfilter {
 struct kgsl_gpummu_pt {
 	struct kgsl_memdesc  base;
 	unsigned int   last_superpte;
+<<<<<<< HEAD
 	unsigned int tlb_flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Maintain filter to manage tlb flushing */
 	struct kgsl_tlbflushfilter tlbflushfilter;
 };
@@ -76,9 +79,12 @@ struct kgsl_ptpool {
 void *kgsl_gpummu_ptpool_init(int entries);
 void kgsl_gpummu_ptpool_destroy(void *ptpool);
 
+<<<<<<< HEAD
 static inline unsigned int kgsl_pt_get_base_addr(struct kgsl_pagetable *pt)
 {
 	struct kgsl_gpummu_pt *gpummu_pt = pt->priv;
 	return gpummu_pt->base.gpuaddr;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KGSL_GPUMMU_H */

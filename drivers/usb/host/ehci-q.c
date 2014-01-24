@@ -111,8 +111,11 @@ qh_update (struct ehci_hcd *ehci, struct ehci_qh *qh, struct ehci_qtd *qtd)
 		}
 	}
 
+<<<<<<< HEAD
 	/* HC must see latest qtd and qh data before we clear ACTIVE+HALT */
 	wmb ();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	hw->hw_token &= cpu_to_hc32(ehci, QTD_TOGGLE | QTD_STS_PING);
 }
 
@@ -161,7 +164,11 @@ static void ehci_clear_tt_buffer_complete(struct usb_hcd *hcd,
 	spin_lock_irqsave(&ehci->lock, flags);
 	qh->clearing_tt = 0;
 	if (qh->qh_state == QH_STATE_IDLE && !list_empty(&qh->qtd_list)
+<<<<<<< HEAD
 			&& HC_IS_RUNNING(hcd->state))
+=======
+			&& ehci->rh_state == EHCI_RH_RUNNING)
+>>>>>>> refs/remotes/origin/cm-10.0
 		qh_link_async(ehci, qh);
 	spin_unlock_irqrestore(&ehci->lock, flags);
 }
@@ -383,6 +390,20 @@ qh_completions (struct ehci_hcd *ehci, struct ehci_qh *qh)
  retry_xacterr:
 		if ((token & QTD_STS_ACTIVE) == 0) {
 
+<<<<<<< HEAD
+=======
+			/* Report Data Buffer Error: non-fatal but useful */
+			if (token & QTD_STS_DBE)
+				ehci_dbg(ehci,
+					"detected DataBufferErr for urb %p ep%d%s len %d, qtd %p [qh %p]\n",
+					urb,
+					usb_endpoint_num(&urb->ep->desc),
+					usb_endpoint_dir_in(&urb->ep->desc) ? "in" : "out",
+					urb->transfer_buffer_length,
+					qtd,
+					qh);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* on STALL, error, and short reads this urb must
 			 * complete and all its qtds must be recycled.
 			 */
@@ -433,7 +454,11 @@ qh_completions (struct ehci_hcd *ehci, struct ehci_qh *qh)
 
 		/* stop scanning when we reach qtds the hc is using */
 		} else if (likely (!stopped
+<<<<<<< HEAD
 				&& HC_IS_RUNNING (ehci_to_hcd(ehci)->state))) {
+=======
+				&& ehci->rh_state == EHCI_RH_RUNNING)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 
 		/* scan the whole queue for unlinks whenever it stops */
@@ -441,7 +466,11 @@ qh_completions (struct ehci_hcd *ehci, struct ehci_qh *qh)
 			stopped = 1;
 
 			/* cancel everything if we halt, suspend, etc */
+<<<<<<< HEAD
 			if (!HC_IS_RUNNING(ehci_to_hcd(ehci)->state))
+=======
+			if (ehci->rh_state != EHCI_RH_RUNNING)
+>>>>>>> refs/remotes/origin/cm-10.0
 				last_status = -ESHUTDOWN;
 
 			/* this qtd is active; skip it unless a previous qtd
@@ -732,7 +761,12 @@ qh_urb_transaction (
 
 	/*
 	 * control requests may need a terminating data "status" ack;
+<<<<<<< HEAD
 	 * bulk ones may need a terminating short packet (zero length).
+=======
+	 * other OUT ones may need a terminating short packet
+	 * (zero length).
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	if (likely (urb->transfer_buffer_length != 0)) {
 		int	one_more = 0;
@@ -741,7 +775,11 @@ qh_urb_transaction (
 			one_more = 1;
 			token ^= 0x0100;	/* "in" <--> "out"  */
 			token |= QTD_TOGGLE;	/* force DATA1 */
+<<<<<<< HEAD
 		} else if (usb_pipebulk (urb->pipe)
+=======
+		} else if (usb_pipeout(urb->pipe)
+>>>>>>> refs/remotes/origin/cm-10.0
 				&& (urb->transfer_flags & URB_ZERO_PACKET)
 				&& !(urb->transfer_buffer_length % maxpacket)) {
 			one_more = 1;
@@ -985,9 +1023,14 @@ static void qh_link_async (struct ehci_hcd *ehci, struct ehci_qh *qh)
 			/* in case a clear of CMD_ASE didn't take yet */
 			(void)handshake(ehci, &ehci->regs->status,
 					STS_ASS, 0, 150);
+<<<<<<< HEAD
 			cmd |= CMD_ASE | CMD_RUN;
 			ehci_writel(ehci, cmd, &ehci->regs->command);
 			ehci_to_hcd(ehci)->state = HC_STATE_RUNNING;
+=======
+			cmd |= CMD_ASE;
+			ehci_writel(ehci, cmd, &ehci->regs->command);
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* posted write need not be known to HC yet ... */
 		}
 	}
@@ -1003,12 +1046,15 @@ static void qh_link_async (struct ehci_hcd *ehci, struct ehci_qh *qh)
 	head->qh_next.qh = qh;
 	head->hw->hw_next = dma;
 
+<<<<<<< HEAD
 	/*
 	 * flush qh descriptor into memory immediately,
 	 * see comments in qh_append_tds.
 	 * */
 	ehci_sync_mem();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	qh_get(qh);
 	qh->xacterrs = 0;
 	qh->qh_state = QH_STATE_LINKED;
@@ -1072,7 +1118,11 @@ static struct ehci_qh *qh_append_tds (
 			 */
 			token = qtd->hw_token;
 			qtd->hw_token = HALT_BIT(ehci);
+<<<<<<< HEAD
 			wmb ();
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			dummy = qh->dummy;
 
 			dma = dummy->qtd_dma;
@@ -1096,6 +1146,7 @@ static struct ehci_qh *qh_append_tds (
 			wmb ();
 			dummy->hw_token = token;
 
+<<<<<<< HEAD
 			/*
 			 * Writing to dma coherent buffer on ARM may
 			 * be delayed to reach memory, so HC may not see
@@ -1108,6 +1159,8 @@ static struct ehci_qh *qh_append_tds (
 			 * */
 			ehci_sync_mem();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			urb->hcpriv = qh_get (qh);
 		}
 	}
@@ -1170,6 +1223,10 @@ submit_async (
 		qtd_list_free (ehci, urb, qtd_list);
 	return rc;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*-------------------------------------------------------------------------*/
 /* This function creates the qtds and submits them for the
  * SINGLE_STEP_SET_FEATURE Test.
@@ -1274,6 +1331,10 @@ cleanup:
 	return -1;
 }
 #endif
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*-------------------------------------------------------------------------*/
 
 /* the async qh for the qtds being reclaimed are now unlinked from the HC */
@@ -1297,6 +1358,7 @@ static void end_unlink_async (struct ehci_hcd *ehci)
 
 	qh_completions (ehci, qh);
 
+<<<<<<< HEAD
 	if (!list_empty (&qh->qtd_list)
 			&& HC_IS_RUNNING (ehci_to_hcd(ehci)->state))
 		qh_link_async (ehci, qh);
@@ -1305,6 +1367,15 @@ static void end_unlink_async (struct ehci_hcd *ehci)
 		 * active but idle for a while once it empties.
 		 */
 		if (HC_IS_RUNNING (ehci_to_hcd(ehci)->state)
+=======
+	if (!list_empty(&qh->qtd_list) && ehci->rh_state == EHCI_RH_RUNNING) {
+		qh_link_async (ehci, qh);
+	} else {
+		/* it's not free to turn the async schedule on/off; leave it
+		 * active but idle for a while once it empties.
+		 */
+		if (ehci->rh_state == EHCI_RH_RUNNING
+>>>>>>> refs/remotes/origin/cm-10.0
 				&& ehci->async->qh_next.qh == NULL)
 			timer_action (ehci, TIMER_ASYNC_OFF);
 	}
@@ -1340,7 +1411,11 @@ static void start_unlink_async (struct ehci_hcd *ehci, struct ehci_qh *qh)
 	/* stop async schedule right now? */
 	if (unlikely (qh == ehci->async)) {
 		/* can't get here without STS_ASS set */
+<<<<<<< HEAD
 		if (ehci_to_hcd(ehci)->state != HC_STATE_HALT
+=======
+		if (ehci->rh_state != EHCI_RH_HALTED
+>>>>>>> refs/remotes/origin/cm-10.0
 				&& !ehci->reclaim) {
 			/* ... and CMD_IAAD clear */
 			ehci_writel(ehci, cmd & ~CMD_ASE,
@@ -1366,7 +1441,11 @@ static void start_unlink_async (struct ehci_hcd *ehci, struct ehci_qh *qh)
 	wmb ();
 
 	/* If the controller isn't running, we don't have to wait for it */
+<<<<<<< HEAD
 	if (unlikely(!HC_IS_RUNNING(ehci_to_hcd(ehci)->state))) {
+=======
+	if (unlikely(ehci->rh_state != EHCI_RH_RUNNING)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* if (unlikely (qh->reclaim != 0))
 		 *	this will recurse, probably not much
 		 */
@@ -1389,7 +1468,11 @@ static void scan_async (struct ehci_hcd *ehci)
 	enum ehci_timer_action	action = TIMER_IO_WATCHDOG;
 
 	timer_action_done (ehci, TIMER_ASYNC_SHRINK);
+<<<<<<< HEAD
 	stopped = !HC_IS_RUNNING(ehci_to_hcd(ehci)->state);
+=======
+	stopped = (ehci->rh_state != EHCI_RH_RUNNING);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ehci->qh_scan_next = ehci->async->qh_next.qh;
 	while (ehci->qh_scan_next) {

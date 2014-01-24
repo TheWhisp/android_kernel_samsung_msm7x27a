@@ -1,5 +1,9 @@
 #include <linux/i2c.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "dibx000_common.h"
 

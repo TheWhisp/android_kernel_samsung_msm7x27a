@@ -113,7 +113,12 @@
  *		2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#define pr_fmt(fmt) "IPv4: " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/kernel.h>
@@ -148,7 +153,11 @@
 /*
  *	Process Router Attention IP option (RFC 2113)
  */
+<<<<<<< HEAD
 int ip_call_ra_chain(struct sk_buff *skb)
+=======
+bool ip_call_ra_chain(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ip_ra_chain *ra;
 	u8 protocol = ip_hdr(skb)->protocol;
@@ -165,9 +174,15 @@ int ip_call_ra_chain(struct sk_buff *skb)
 		    (!sk->sk_bound_dev_if ||
 		     sk->sk_bound_dev_if == dev->ifindex) &&
 		    net_eq(sock_net(sk), dev_net(dev))) {
+<<<<<<< HEAD
 			if (ip_hdr(skb)->frag_off & htons(IP_MF | IP_OFFSET)) {
 				if (ip_defrag(skb, IP_DEFRAG_CALL_RA_CHAIN))
 					return 1;
+=======
+			if (ip_is_fragment(ip_hdr(skb))) {
+				if (ip_defrag(skb, IP_DEFRAG_CALL_RA_CHAIN))
+					return true;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			if (last) {
 				struct sk_buff *skb2 = skb_clone(skb, GFP_ATOMIC);
@@ -180,9 +195,15 @@ int ip_call_ra_chain(struct sk_buff *skb)
 
 	if (last) {
 		raw_rcv(last, skb);
+<<<<<<< HEAD
 		return 1;
 	}
 	return 0;
+=======
+		return true;
+	}
+	return false;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int ip_local_deliver_finish(struct sk_buff *skb)
@@ -256,7 +277,11 @@ int ip_local_deliver(struct sk_buff *skb)
 	 *	Reassemble IP fragments.
 	 */
 
+<<<<<<< HEAD
 	if (ip_hdr(skb)->frag_off & htons(IP_MF | IP_OFFSET)) {
+=======
+	if (ip_is_fragment(ip_hdr(skb))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ip_defrag(skb, IP_DEFRAG_LOCAL_DELIVER))
 			return 0;
 	}
@@ -265,7 +290,11 @@ int ip_local_deliver(struct sk_buff *skb)
 		       ip_local_deliver_finish);
 }
 
+<<<<<<< HEAD
 static inline int ip_rcv_options(struct sk_buff *skb)
+=======
+static inline bool ip_rcv_options(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ip_options *opt;
 	const struct iphdr *iph;
@@ -299,8 +328,13 @@ static inline int ip_rcv_options(struct sk_buff *skb)
 			if (!IN_DEV_SOURCE_ROUTE(in_dev)) {
 				if (IN_DEV_LOG_MARTIANS(in_dev) &&
 				    net_ratelimit())
+<<<<<<< HEAD
 					printk(KERN_INFO "source route option %pI4 -> %pI4\n",
 					       &iph->saddr, &iph->daddr);
+=======
+					pr_info("source route option %pI4 -> %pI4\n",
+						&iph->saddr, &iph->daddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto drop;
 			}
 		}
@@ -309,9 +343,15 @@ static inline int ip_rcv_options(struct sk_buff *skb)
 			goto drop;
 	}
 
+<<<<<<< HEAD
 	return 0;
 drop:
 	return -1;
+=======
+	return false;
+drop:
+	return true;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int ip_rcv_finish(struct sk_buff *skb)

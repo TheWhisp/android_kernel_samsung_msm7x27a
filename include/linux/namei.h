@@ -48,13 +48,21 @@ enum {LAST_NORM, LAST_ROOT, LAST_DOT, LAST_DOTDOT, LAST_BIND};
  */
 #define LOOKUP_FOLLOW		0x0001
 #define LOOKUP_DIRECTORY	0x0002
+<<<<<<< HEAD
 #define LOOKUP_CONTINUE		0x0004
 #define LOOKUP_AUTOMOUNT	0x0008
+=======
+#define LOOKUP_AUTOMOUNT	0x0004
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define LOOKUP_PARENT		0x0010
 #define LOOKUP_REVAL		0x0020
 #define LOOKUP_RCU		0x0040
+<<<<<<< HEAD
 #define LOOKUP_NO_AUTOMOUNT	0x0080
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Intent data
  */
@@ -77,9 +85,17 @@ extern int user_path_at_empty(int, const char __user *, unsigned, struct path *,
 
 extern int kern_path(const char *, unsigned, struct path *);
 
+<<<<<<< HEAD
 extern int kern_path_parent(const char *, struct nameidata *);
 extern int vfs_path_lookup(struct dentry *, struct vfsmount *,
 			   const char *, unsigned int, struct nameidata *);
+=======
+extern struct dentry *kern_path_create(int, const char *, struct path *, int);
+extern struct dentry *user_path_create(int, const char __user *, struct path *, int);
+extern int kern_path_parent(const char *, struct nameidata *);
+extern int vfs_path_lookup(struct dentry *, struct vfsmount *,
+			   const char *, unsigned int, struct path *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern struct file *lookup_instantiate_filp(struct nameidata *nd, struct dentry *dentry,
 		int (*open)(struct inode *, struct file *));

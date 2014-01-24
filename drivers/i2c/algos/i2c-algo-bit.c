@@ -15,7 +15,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
+<<<<<<< HEAD
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301 USA.
+>>>>>>> refs/remotes/origin/cm-10.0
  * ------------------------------------------------------------------------- */
 
 /* With some changes from Frodo Looijaard <frodol@dds.nl>, Kyösti Mälkki
@@ -47,8 +52,13 @@
 /* ----- global variables ---------------------------------------------	*/
 
 static int bit_test;	/* see if the line-setting functions work	*/
+<<<<<<< HEAD
 module_param(bit_test, bool, 0);
 MODULE_PARM_DESC(bit_test, "Test the lines of the bus to see if it is stuck");
+=======
+module_param(bit_test, int, S_IRUGO);
+MODULE_PARM_DESC(bit_test, "lines testing - 0 off; 1 report; 2 fail if stuck");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef DEBUG
 static int i2c_debug = 1;
@@ -111,7 +121,11 @@ static int sclhi(struct i2c_algo_bit_data *adap)
 				break;
 			return -ETIMEDOUT;
 		}
+<<<<<<< HEAD
 		cond_resched();
+=======
+		cpu_relax();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 #ifdef DEBUG
 	if (jiffies != start && i2c_debug >= 3)
@@ -256,7 +270,13 @@ static int test_bus(struct i2c_adapter *i2c_adap)
 	sda = getsda(adap);
 	scl = (adap->getscl == NULL) ? 1 : getscl(adap);
 	if (!scl || !sda) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: bus seems to be busy\n", name);
+=======
+		printk(KERN_WARNING
+		       "%s: bus seems to be busy (scl=%d, sda=%d)\n",
+		       name, scl, sda);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto bailout;
 	}
 
@@ -447,7 +467,11 @@ static int readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msg)
 					acknak(i2c_adap, 0);
 				dev_err(&i2c_adap->dev, "readbytes: invalid "
 					"block length (%d)\n", inval);
+<<<<<<< HEAD
 				return -EREMOTEIO;
+=======
+				return -EPROTO;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			/* The original count value accounts for the extra
 			   bytes, that is, either 1 for a regular transaction,
@@ -476,7 +500,11 @@ static int readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msg)
  * reads, writes as well as 10bit-addresses.
  * returns:
  *  0 everything went okay, the chip ack'ed, or IGNORE_NAK flag was set
+<<<<<<< HEAD
  * -x an error occurred (like: -EREMOTEIO if the device did not answer, or
+=======
+ * -x an error occurred (like: -ENXIO if the device did not answer, or
+>>>>>>> refs/remotes/origin/cm-10.0
  *	-ETIMEDOUT, for example if the lines are stuck...)
  */
 static int bit_doAddress(struct i2c_adapter *i2c_adap, struct i2c_msg *msg)
@@ -499,14 +527,22 @@ static int bit_doAddress(struct i2c_adapter *i2c_adap, struct i2c_msg *msg)
 		if ((ret != 1) && !nak_ok)  {
 			dev_err(&i2c_adap->dev,
 				"died at extended address code\n");
+<<<<<<< HEAD
 			return -EREMOTEIO;
+=======
+			return -ENXIO;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		/* the remaining 8 bit address */
 		ret = i2c_outb(i2c_adap, msg->addr & 0xff);
 		if ((ret != 1) && !nak_ok) {
 			/* the chip did not ack / xmission error occurred */
 			dev_err(&i2c_adap->dev, "died at 2nd address code\n");
+<<<<<<< HEAD
 			return -EREMOTEIO;
+=======
+			return -ENXIO;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		if (flags & I2C_M_RD) {
 			bit_dbg(3, &i2c_adap->dev, "emitting repeated "
@@ -518,7 +554,11 @@ static int bit_doAddress(struct i2c_adapter *i2c_adap, struct i2c_msg *msg)
 			if ((ret != 1) && !nak_ok) {
 				dev_err(&i2c_adap->dev,
 					"died at repeated address code\n");
+<<<<<<< HEAD
 				return -EREMOTEIO;
+=======
+				return -EIO;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 	} else {		/* normal 7bit address	*/
@@ -549,6 +589,15 @@ static int bit_xfer(struct i2c_adapter *i2c_adap,
 			return ret;
 	}
 
+<<<<<<< HEAD
+=======
+	if (!getsda(adap)) {
+		dev_err(&i2c_adap->dev, "SDA low, applying bus recovery\n");
+		/* I2C Bus Recovery */
+		i2c_adap->recover_bus(i2c_adap);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	bit_dbg(3, &i2c_adap->dev, "emitting start condition\n");
 	i2c_start(adap);
 	for (i = 0; i < num; i++) {
@@ -576,7 +625,11 @@ static int bit_xfer(struct i2c_adapter *i2c_adap,
 					ret, ret == 1 ? "" : "s");
 			if (ret < pmsg->len) {
 				if (ret >= 0)
+<<<<<<< HEAD
 					ret = -EREMOTEIO;
+=======
+					ret = -EIO;
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto bailout;
 			}
 		} else {
@@ -587,7 +640,11 @@ static int bit_xfer(struct i2c_adapter *i2c_adap,
 					ret, ret == 1 ? "" : "s");
 			if (ret < pmsg->len) {
 				if (ret >= 0)
+<<<<<<< HEAD
 					ret = -EREMOTEIO;
+=======
+					ret = -EIO;
+>>>>>>> refs/remotes/origin/cm-10.0
 				goto bailout;
 			}
 		}
@@ -614,10 +671,52 @@ static u32 bit_func(struct i2c_adapter *adap)
 
 /* -----exported algorithm data: -------------------------------------	*/
 
+<<<<<<< HEAD
 static const struct i2c_algorithm i2c_bit_algo = {
 	.master_xfer	= bit_xfer,
 	.functionality	= bit_func,
 };
+=======
+const struct i2c_algorithm i2c_bit_algo = {
+	.master_xfer	= bit_xfer,
+	.functionality	= bit_func,
+};
+EXPORT_SYMBOL(i2c_bit_algo);
+
+/* I2C Bus recovey sequence:
+ * 1. Master tries to pull up SDA line
+ * 2. Master generates a clock pulse on SCL (1-0-1 transition)
+ * 3. Master checks SDA. If SDA = 0 goto Step 2 until 9 iterations completed;
+ *    if SDA = 1 goto Step 4.
+ * 4. Master sends a STOP command initializing completely the bus.
+ */
+static int i2c_algo_bit_recovery(struct i2c_adapter *i2c_adap)
+{
+	int i;
+	struct i2c_algo_bit_data *adap = i2c_adap->algo_data;
+
+	/* 9 clock pulses on SCL line */
+	for (i = 0; i < 9; i++) {
+		sdahi(adap);
+		sclhi(adap);
+		scllo(adap);
+		sclhi(adap);
+		if (getsda(adap)) {
+			bit_dbg(2, &i2c_adap->dev, "SDA = 1 and bus has recovered\n");
+			break;
+		}
+	}
+
+	if (i == 9) {
+		bit_dbg(2, &i2c_adap->dev, "SDA = 0 and bus recovery failed\n");
+		return -ENODEV;
+	}
+	/* stop condition */
+	i2c_stop(adap);
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * registering functions to load algorithms at runtime
@@ -630,13 +729,21 @@ static int __i2c_bit_add_bus(struct i2c_adapter *adap,
 
 	if (bit_test) {
 		ret = test_bus(adap);
+<<<<<<< HEAD
 		if (ret < 0)
+=======
+		if (bit_test >= 2 && ret < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -ENODEV;
 	}
 
 	/* register new adapter to i2c module... */
 	adap->algo = &i2c_bit_algo;
 	adap->retries = 3;
+<<<<<<< HEAD
+=======
+	adap->recover_bus = i2c_algo_bit_recovery;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = add_adapter(adap);
 	if (ret < 0)

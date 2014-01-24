@@ -13,9 +13,15 @@
 #include <linux/sys.h>
 #include <linux/linkage.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/thread_info.h>
 #include <asm/cpu-regs.h>
+=======
+#include <asm/thread_info.h>
+#include <asm/cpu-regs.h>
+#include <asm/intctl-regs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <proc/smp-regs.h>
 #include <asm/asm-offsets.h>
 #include <asm/frame.inc>

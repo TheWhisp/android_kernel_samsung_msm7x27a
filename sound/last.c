@@ -38,4 +38,8 @@ static int __init alsa_sound_last_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 __initcall(alsa_sound_last_init);
+=======
+late_initcall_sync(alsa_sound_last_init);
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -172,6 +172,7 @@ static int tmds_register_read_bytes(int index, u8 *buff, int buff_len)
 }
 
 /* DVI Set Mode */
+<<<<<<< HEAD
 void viafb_dvi_set_mode(struct VideoModeTable *mode, int mode_bpp,
 	int set_iga)
 {
@@ -196,6 +197,23 @@ void viafb_dvi_set_mode(struct VideoModeTable *mode, int mode_bpp,
 		}
 	}
 	viafb_fill_crtc_timing(pDviTiming, mode, mode_bpp / 8, set_iga);
+=======
+void viafb_dvi_set_mode(const struct fb_var_screeninfo *var,
+	u16 cxres, u16 cyres, int iga)
+{
+	struct fb_var_screeninfo dvi_var = *var;
+	const struct fb_videomode *rb_mode;
+	int maxPixelClock;
+
+	maxPixelClock = viaparinfo->shared->tmds_setting_info.max_pixel_clock;
+	if (maxPixelClock && PICOS2KHZ(var->pixclock) / 1000 > maxPixelClock) {
+		rb_mode = viafb_get_best_rb_mode(var->xres, var->yres, 60);
+		if (rb_mode)
+			viafb_fill_var_timing_info(&dvi_var, rb_mode);
+	}
+
+	viafb_fill_crtc_timing(&dvi_var, cxres, cyres, iga);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Sense DVI Connector */

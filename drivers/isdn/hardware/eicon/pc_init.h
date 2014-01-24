@@ -1,6 +1,7 @@
 
 /*
  *
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -21,6 +22,28 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+ Copyright (c) Eicon Networks, 2002.
+ *
+ This source file is supplied for the use with
+ Eicon Networks range of DIVA Server Adapters.
+ *
+ Eicon File Revision :    2.1
+ *
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+ *
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY OF ANY KIND WHATSOEVER INCLUDING ANY
+ implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+ *
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 #ifndef PC_INIT_H_
@@ -57,6 +80,7 @@
   0x0060          length (8)
   0x0061          RBS Answer Delay
   0x0062          RBS Config Bit 3, 4:
+<<<<<<< HEAD
                              0  0 -> Wink Start
                              1  0 -> Loop Start
                              0  1 -> Ground Start
@@ -66,6 +90,17 @@
                              1  0 -> DTMF
                              0  1 -> MF
                              1  1 -> reserved
+=======
+  0  0 -> Wink Start
+  1  0 -> Loop Start
+  0  1 -> Ground Start
+  1  1 -> reserved
+  Bit 5, 6:
+  0  0 -> Pulse Dial -> Rotary
+  1  0 -> DTMF
+  0  1 -> MF
+  1  1 -> reserved
+>>>>>>> refs/remotes/origin/cm-10.0
   0x0063          RBS RX Digit Timeout
   0x0064          RBS Bearer Capability
   0x0065-0x0069   RBS Debug Mask

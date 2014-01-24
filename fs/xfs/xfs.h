@@ -22,8 +22,15 @@
 #define STATIC
 #define DEBUG 1
 #define XFS_BUF_LOCK_TRACKING 1
+<<<<<<< HEAD
 /* #define QUOTADEBUG 1 */
 #endif
 
 #include <linux-2.6/xfs_linux.h>
+=======
+#endif
+
+#include "xfs_linux.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* __XFS_H__ */

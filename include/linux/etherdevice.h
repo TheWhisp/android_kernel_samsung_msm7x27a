@@ -38,7 +38,11 @@ extern int eth_header(struct sk_buff *skb, struct net_device *dev,
 		      const void *daddr, const void *saddr, unsigned len);
 extern int eth_rebuild_header(struct sk_buff *skb);
 extern int eth_header_parse(const struct sk_buff *skb, unsigned char *haddr);
+<<<<<<< HEAD
 extern int eth_header_cache(const struct neighbour *neigh, struct hh_cache *hh);
+=======
+extern int eth_header_cache(const struct neighbour *neigh, struct hh_cache *hh, __be16 type);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void eth_header_cache_update(struct hh_cache *hh,
 				    const struct net_device *dev,
 				    const unsigned char *haddr);
@@ -140,6 +144,7 @@ static inline void random_ether_addr(u8 *addr)
 }
 
 /**
+<<<<<<< HEAD
  * dev_hw_addr_random - Create random MAC and set device flag
  * @dev: pointer to net_device structure
  * @hwaddr: Pointer to a six-byte array containing the Ethernet address
@@ -151,6 +156,20 @@ static inline void dev_hw_addr_random(struct net_device *dev, u8 *hwaddr)
 {
 	dev->addr_assign_type |= NET_ADDR_RANDOM;
 	random_ether_addr(hwaddr);
+=======
+ * eth_hw_addr_random - Generate software assigned random Ethernet and
+ * set device flag
+ * @dev: pointer to net_device structure
+ *
+ * Generate a random Ethernet address (MAC) to be used by a net device
+ * and set addr_assign_type so the state can be read by sysfs and be
+ * used by userspace.
+ */
+static inline void eth_hw_addr_random(struct net_device *dev)
+{
+	dev->addr_assign_type |= NET_ADDR_RANDOM;
+	random_ether_addr(dev->dev_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -158,7 +177,12 @@ static inline void dev_hw_addr_random(struct net_device *dev, u8 *hwaddr)
  * @addr1: Pointer to a six-byte array containing the Ethernet address
  * @addr2: Pointer other six-byte array containing the Ethernet address
  *
+<<<<<<< HEAD
  * Compare two ethernet addresses, returns 0 if equal
+=======
+ * Compare two ethernet addresses, returns 0 if equal, non-zero otherwise.
+ * Unlike memcmp(), it doesn't return a value suitable for sorting.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static inline unsigned compare_ether_addr(const u8 *addr1, const u8 *addr2)
 {
@@ -183,10 +207,17 @@ static inline unsigned long zap_last_2bytes(unsigned long value)
  * @addr1: Pointer to an array of 8 bytes
  * @addr2: Pointer to an other array of 8 bytes
  *
+<<<<<<< HEAD
  * Compare two ethernet addresses, returns 0 if equal.
  * Same result than "memcmp(addr1, addr2, ETH_ALEN)" but without conditional
  * branches, and possibly long word memory accesses on CPU allowing cheap
  * unaligned memory reads.
+=======
+ * Compare two ethernet addresses, returns 0 if equal, non-zero otherwise.
+ * Unlike memcmp(), it doesn't return a value suitable for sorting.
+ * The function doesn't need any conditional branches and possibly uses
+ * word memory accesses on CPU allowing cheap unaligned memory reads.
+>>>>>>> refs/remotes/origin/cm-10.0
  * arrays = { byte1, byte2, byte3, byte4, byte6, byte7, pad1, pad2}
  *
  * Please note that alignment of addr1 & addr2 is only guaranted to be 16 bits.

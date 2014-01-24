@@ -36,6 +36,7 @@
 #include <linux/android_pmem.h>
 #include <mach/msm_iomap.h>
 #include <mach/socinfo.h>
+<<<<<<< HEAD
 #include <../../mm/mm.h>
 #include <linux/fmem.h>
 
@@ -47,6 +48,23 @@ void map_page_strongly_ordered(void)
 #if defined(CONFIG_ARCH_MSM7X27) && !defined(CONFIG_ARCH_MSM7X27A)
 	long unsigned int phys;
 	struct map_desc map;
+=======
+#include <linux/sched.h>
+
+/* fixme */
+#include <asm/tlbflush.h>
+#include <../../mm/mm.h>
+#include <linux/fmem.h>
+
+#if defined(CONFIG_ARCH_MSM7X27)
+static void *strongly_ordered_page;
+static char strongly_ordered_mem[PAGE_SIZE*2-4];
+
+void __init map_page_strongly_ordered(void)
+{
+	long unsigned int phys;
+	struct map_desc map[1];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (strongly_ordered_page)
 		return;
@@ -54,6 +72,7 @@ void map_page_strongly_ordered(void)
 	strongly_ordered_page = (void*)PFN_ALIGN((int)&strongly_ordered_mem);
 	phys = __pa(strongly_ordered_page);
 
+<<<<<<< HEAD
 	map.pfn = __phys_to_pfn(phys);
 	map.virtual = MSM_STRONGLY_ORDERED_PAGE;
 	map.length = PAGE_SIZE;
@@ -81,6 +100,28 @@ void write_to_strongly_ordered_memory(void)
 	*(int *)MSM_STRONGLY_ORDERED_PAGE = 0;
 #endif
 }
+=======
+	map[0].pfn = __phys_to_pfn(phys);
+	map[0].virtual = MSM_STRONGLY_ORDERED_PAGE;
+	map[0].length = PAGE_SIZE;
+	map[0].type = MT_MEMORY_SO;
+	iotable_init(map, ARRAY_SIZE(map));
+
+	printk(KERN_ALERT "Initialized strongly ordered page successfully\n");
+}
+#else
+void map_page_strongly_ordered(void) { }
+#endif
+
+#if defined(CONFIG_ARCH_MSM7X27)
+void write_to_strongly_ordered_memory(void)
+{
+	*(int *)MSM_STRONGLY_ORDERED_PAGE = 0;
+}
+#else
+void write_to_strongly_ordered_memory(void) { }
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(write_to_strongly_ordered_memory);
 
 /* These cache related routines make the assumption (if outer cache is
@@ -108,7 +149,11 @@ void invalidate_caches(unsigned long vstart,
 	outer_inv_range(pstart, pstart + length);
 }
 
+<<<<<<< HEAD
 void *alloc_bootmem_aligned(unsigned long size, unsigned long alignment)
+=======
+void * __init alloc_bootmem_aligned(unsigned long size, unsigned long alignment)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void *unused_addr = NULL;
 	unsigned long addr, tmp_size, unused_size;
@@ -279,6 +324,11 @@ static void __init reserve_memory_for_mempools(void)
 			if (size >= mt->size) {
 				size = stable_size(mb,
 					reserve_info->low_unstable_address);
+<<<<<<< HEAD
+=======
+				if (!size)
+					continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 				/* mt->size may be larger than size, all this
 				 * means is that we are carving the memory pool
 				 * out of multiple contiguous memory banks.
@@ -292,6 +342,7 @@ static void __init reserve_memory_for_mempools(void)
 	}
 }
 
+<<<<<<< HEAD
 unsigned long __init reserve_memory_for_fmem(unsigned long fmem_size, 
 						unsigned long align)
 {
@@ -313,6 +364,8 @@ unsigned long __init reserve_memory_for_fmem(unsigned long fmem_size,
 	return fmem_phys;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init initialize_mempools(void)
 {
 	struct mem_pool *mpool;
@@ -330,6 +383,11 @@ static void __init initialize_mempools(void)
 	}
 }
 
+<<<<<<< HEAD
+=======
+#define  MAX_FIXED_AREA_SIZE 0x11000000
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init msm_reserve(void)
 {
 	unsigned long msm_fixed_area_size;
@@ -341,7 +399,14 @@ void __init msm_reserve(void)
 	msm_fixed_area_size = reserve_info->fixed_area_size;
 	msm_fixed_area_start = reserve_info->fixed_area_start;
 	if (msm_fixed_area_size)
+<<<<<<< HEAD
 		reserve_info->low_unstable_address = msm_fixed_area_start;
+=======
+		if (msm_fixed_area_start > reserve_info->low_unstable_address
+			- MAX_FIXED_AREA_SIZE)
+			reserve_info->low_unstable_address =
+			msm_fixed_area_start;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	calculate_reserve_limits();
 	adjust_reserve_sizes();
@@ -373,6 +438,7 @@ unsigned long allocate_contiguous_ebi_nomap(unsigned long size,
 }
 EXPORT_SYMBOL(allocate_contiguous_ebi_nomap);
 
+<<<<<<< HEAD
 /* emulation of the deprecated pmem_kalloc and pmem_kfree */
 int32_t pmem_kalloc(const size_t size, const uint32_t flags)
 {
@@ -431,6 +497,8 @@ int pmem_kfree(const int32_t physaddr)
 }
 EXPORT_SYMBOL(pmem_kfree);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned int msm_ttbr0;
 
 void store_ttbr0(void)
@@ -449,3 +517,17 @@ int release_fmem_c_region(void *unused)
 {
 	return fmem_set_state(FMEM_T_STATE);
 }
+<<<<<<< HEAD
+=======
+
+unsigned long get_ddr_size(void)
+{
+	unsigned int i;
+	unsigned long ret = 0;
+
+	for (i = 0; i < meminfo.nr_banks; i++)
+		ret += meminfo.bank[i].size;
+
+	return ret;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

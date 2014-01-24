@@ -28,7 +28,11 @@
 #include <linux/fs.h>
 #include <linux/file.h>
 #include <net/genetlink.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Maximum length of a cpumask that can be specified in
@@ -291,6 +295,7 @@ static int add_del_listener(pid_t pid, const struct cpumask *mask, int isadd)
 	if (!cpumask_subset(mask, cpu_possible_mask))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	s = NULL;
 	if (isadd == REGISTER) {
 		for_each_cpu(cpu, mask) {
@@ -301,10 +306,21 @@ static int add_del_listener(pid_t pid, const struct cpumask *mask, int isadd)
 				goto cleanup;
 			s->pid = pid;
 			INIT_LIST_HEAD(&s->list);
+=======
+	if (isadd == REGISTER) {
+		for_each_cpu(cpu, mask) {
+			s = kmalloc_node(sizeof(struct listener),
+					GFP_KERNEL, cpu_to_node(cpu));
+			if (!s)
+				goto cleanup;
+
+			s->pid = pid;
+>>>>>>> refs/remotes/origin/cm-10.0
 			s->valid = 1;
 
 			listeners = &per_cpu(listener_array, cpu);
 			down_write(&listeners->sem);
+<<<<<<< HEAD
 			list_for_each_entry_safe(s2, tmp, &listeners->list, list) {
 				if (s2->pid == pid)
 					goto next_cpu;
@@ -315,6 +331,18 @@ next_cpu:
 			up_write(&listeners->sem);
 		}
 		kfree(s);
+=======
+			list_for_each_entry(s2, &listeners->list, list) {
+				if (s2->pid == pid && s2->valid)
+					goto exists;
+			}
+			list_add(&s->list, &listeners->list);
+			s = NULL;
+exists:
+			up_write(&listeners->sem);
+			kfree(s); /* nop if NULL */
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 

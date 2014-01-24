@@ -65,6 +65,7 @@ static int hx4700_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 	int ret = 0;
 
+<<<<<<< HEAD
 	/* set codec DAI configuration */
 	ret = snd_soc_dai_set_fmt(codec_dai,
 			SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF |
@@ -79,6 +80,8 @@ static int hx4700_hw_params(struct snd_pcm_substream *substream,
 	if (ret < 0)
 		return ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* set the I2S system clock as output */
 	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
 			SND_SOC_CLOCK_OUT);
@@ -175,12 +178,21 @@ static struct snd_soc_dai_link hx4700_dai = {
 	.platform_name = "pxa-pcm-audio",
 	.codec_name = "ak4641.0-0012",
 	.init = hx4700_ak4641_init,
+<<<<<<< HEAD
+=======
+	.dai_fmt = SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF |
+		   SND_SOC_DAIFMT_CBS_CFS,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops = &hx4700_ops,
 };
 
 /* hx4700 audio machine driver */
 static struct snd_soc_card snd_soc_card_hx4700 = {
 	.name			= "iPAQ hx4700",
+<<<<<<< HEAD
+=======
+	.owner			= THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link		= &hx4700_dai,
 	.num_links		= 1,
 	.dapm_widgets		= hx4700_dapm_widgets,
@@ -209,9 +221,16 @@ static int __devinit hx4700_audio_probe(struct platform_device *pdev)
 	snd_soc_card_hx4700.dev = &pdev->dev;
 	ret = snd_soc_register_card(&snd_soc_card_hx4700);
 	if (ret)
+<<<<<<< HEAD
 		return ret;
 
 	return 0;
+=======
+		gpio_free_array(hx4700_audio_gpios,
+				ARRAY_SIZE(hx4700_audio_gpios));
+
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devexit hx4700_audio_remove(struct platform_device *pdev)
@@ -236,6 +255,7 @@ static struct platform_driver hx4700_audio_driver = {
 	.remove	= __devexit_p(hx4700_audio_remove),
 };
 
+<<<<<<< HEAD
 static int __init hx4700_modinit(void)
 {
 	return platform_driver_register(&hx4700_audio_driver);
@@ -248,6 +268,9 @@ static void __exit hx4700_modexit(void)
 }
 
 module_exit(hx4700_modexit);
+=======
+module_platform_driver(hx4700_audio_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Philipp Zabel");
 MODULE_DESCRIPTION("ALSA SoC iPAQ hx4700");

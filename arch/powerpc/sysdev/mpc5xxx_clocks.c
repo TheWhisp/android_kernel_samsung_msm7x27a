@@ -8,6 +8,10 @@
 
 #include <linux/kernel.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned int
 mpc5xxx_get_bus_frequency(struct device_node *node)

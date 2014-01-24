@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2009-2011 B.A.T.M.A.N. contributors:
+=======
+ * Copyright (C) 2009-2012 B.A.T.M.A.N. contributors:
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Marek Lindner
  *
@@ -31,6 +35,12 @@ void gw_node_update(struct bat_priv *bat_priv,
 void gw_node_delete(struct bat_priv *bat_priv, struct orig_node *orig_node);
 void gw_node_purge(struct bat_priv *bat_priv);
 int gw_client_seq_print_text(struct seq_file *seq, void *offset);
+<<<<<<< HEAD
 int gw_is_target(struct bat_priv *bat_priv, struct sk_buff *skb);
+=======
+bool gw_is_dhcp_target(struct sk_buff *skb, unsigned int *header_len);
+bool gw_out_of_range(struct bat_priv *bat_priv,
+		     struct sk_buff *skb, struct ethhdr *ethhdr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _NET_BATMAN_ADV_GATEWAY_CLIENT_H_ */

@@ -17,7 +17,10 @@
 #include <linux/gfp.h>
 #include <linux/mm.h>
 #include <linux/mmzone.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/quicklist.h>
 
 DEFINE_PER_CPU(struct quicklist [CONFIG_NR_QUICK], quicklist);

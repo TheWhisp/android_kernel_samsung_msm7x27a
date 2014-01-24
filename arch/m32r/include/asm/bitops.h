@@ -16,9 +16,16 @@
 #endif
 
 #include <linux/compiler.h>
+<<<<<<< HEAD
 #include <asm/assembler.h>
 #include <asm/system.h>
 #include <asm/byteorder.h>
+=======
+#include <linux/irqflags.h>
+#include <asm/assembler.h>
+#include <asm/byteorder.h>
+#include <asm/dcache_clear.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/types.h>
 
 /*

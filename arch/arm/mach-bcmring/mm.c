@@ -13,6 +13,11 @@
 *****************************************************************************/
 
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/dma-mapping.h>
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach/map.h>
 
 #include <mach/hardware.h>
@@ -53,4 +58,9 @@ void __init bcmring_map_io(void)
 {
 
 	iotable_init(bcmring_io_desc, ARRAY_SIZE(bcmring_io_desc));
+<<<<<<< HEAD
+=======
+	/* Maximum DMA memory allowed is 14M */
+	init_consistent_dma_size(14 << 20);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

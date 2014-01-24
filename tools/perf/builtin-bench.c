@@ -52,6 +52,12 @@ static struct bench_suite mem_suites[] = {
 	{ "memcpy",
 	  "Simple memory copy in various ways",
 	  bench_mem_memcpy },
+<<<<<<< HEAD
+=======
+	{ "memset",
+	  "Simple memory set in various ways",
+	  bench_mem_memset },
+>>>>>>> refs/remotes/origin/cm-10.0
 	suite_all,
 	{ NULL,
 	  NULL,

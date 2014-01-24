@@ -19,6 +19,7 @@
 #include <linux/threads.h>
 #include <asm/assembler.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_CPU_AVS
 /* 11 general purpose registers (r4-r14), 10 cp15 registers, 3 AVS registers */
 #define CPU_SAVED_STATE_SIZE (4 * 11 + 4 * 10 + 4 * 3)
@@ -26,6 +27,11 @@
 /* 11 general purpose registers (r4-r14), 10 cp15 registers */
 #define CPU_SAVED_STATE_SIZE (4 * 11 + 4 * 10)
 #endif
+=======
+#include "idle.h"
+#include "idle-macros.S"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_ARCH_MSM_KRAIT
 #define SCM_SVC_BOOT 0x1
 #define SCM_CMD_TERMINATE_PC 0x2
@@ -75,11 +81,22 @@ ENTRY(msm_pm_collapse)
 	cpsid   f
 #endif
 
+<<<<<<< HEAD
 	ldr     r0, =saved_state
 #if (NR_CPUS >= 2)
 	mrc	p15, 0, r1, c0, c0, 5	/* MPIDR */
 	ands	r1, r1, #15		/* What CPU am I */
 	addne	r0, r0, #CPU_SAVED_STATE_SIZE
+=======
+	ldr     r0, =msm_saved_state	/* address of msm_saved_state ptr */
+	ldr	r0, [r0]		/* load ptr */
+#if (NR_CPUS >= 2)
+	mrc	p15, 0, r1, c0, c0, 5	/* MPIDR */
+	ands	r1, r1, #15		/* What CPU am I */
+	mov	r2, #CPU_SAVED_STATE_SIZE
+	mul	r1, r1, r2
+	add	r0, r0, r1
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	stmia   r0!, {r4-r14}
@@ -128,6 +145,7 @@ ENTRY(msm_pm_collapse)
 	cmp	r1, #1
 	bne	skip
 	bl	v7_flush_dcache_all
+<<<<<<< HEAD
 
 skip:	ldr	r0, =saved_state
 	ldr	r1, =saved_state_end
@@ -140,6 +158,9 @@ skip:	ldr	r0, =saved_state
 	mcr     p15, 0, r0, c1, c0, 0    /* disable d/i cache  */
 
 	dsb
+=======
+skip:
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_ARCH_MSM_KRAIT
 	ldr	r0, =SCM_SVC_BOOT
 	ldr	r1, =SCM_CMD_TERMINATE_PC
@@ -147,10 +168,29 @@ skip:	ldr	r0, =saved_state
 	ldr	r2, [r2]
 	bl	scm_call_atomic1
 #else
+<<<<<<< HEAD
 	wfi
 #endif
 	mcr     p15, 0, r4, c1, c0, 0    /* restore d/i cache  */
 	isb
+=======
+	mrc     p15, 0, r4, c1, c0, 0    /* read current CR    */
+	bic     r0, r4, #(1 << 2)        /* clear dcache bit   */
+	bic     r0, r0, #(1 << 12)       /* clear icache bit   */
+	mcr     p15, 0, r0, c1, c0, 0    /* disable d/i cache  */
+	isb
+
+	SUSPEND_8x25_L2
+	SET_SMP_COHERENCY OFF
+	wfi
+	DELAY_8x25 300
+
+	mcr     p15, 0, r4, c1, c0, 0    /* restore d/i cache  */
+	isb
+	ENABLE_8x25_L2 /* enable only l2, no need to restore the reg back */
+	SET_SMP_COHERENCY ON
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_MSM_FIQ_SUPPORT)
 	cpsie   f
@@ -158,6 +198,7 @@ skip:	ldr	r0, =saved_state
 #ifdef CONFIG_MSM_JTAG
 	bl	msm_jtag_restore_state
 #endif
+<<<<<<< HEAD
 	ldr     r0, =saved_state        /* restore registers */
 #if (NR_CPUS >= 2)
 	mrc	p15, 0, r1, c0, c0, 5	/* MPIDR */
@@ -166,6 +207,18 @@ skip:	ldr	r0, =saved_state
 #endif
 
 	ldmfd   r0, {r4-r14}
+=======
+	ldr     r0, =msm_saved_state	/* address of msm_saved_state ptr */
+	ldr	r0, [r0]		/* load ptr */
+#if (NR_CPUS >= 2)
+	mrc	p15, 0, r1, c0, c0, 5	/* MPIDR */
+	ands	r1, r1, #15		/* What CPU am I */
+	mov	r2, #CPU_SAVED_STATE_SIZE
+	mul	r2, r2, r1
+	add	r0, r0, r2
+#endif
+	ldmfd   r0, {r4-r14}		 /* restore registers */
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov     r0, #0                   /* return power collapse failed */
 	bx      lr
 
@@ -179,15 +232,30 @@ ENTRY(msm_pm_collapse_exit)
 	mov     r1, #'A'
 	str     r1, [r0, #0x00C]
 #endif
+<<<<<<< HEAD
 	ldr     r1, =saved_state_end
+=======
+	ldr     r1, =msm_saved_state_phys
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldr     r2, =msm_pm_collapse_exit
 	adr     r3, msm_pm_collapse_exit
 	add     r1, r1, r3
 	sub     r1, r1, r2
+<<<<<<< HEAD
 #if (NR_CPUS >= 2)
 	mrc	p15, 0, r2, c0, c0, 5	/* MPIDR */
 	ands	r2, r2, #15		/* What CPU am I */
 	subeq	r1, r1, #CPU_SAVED_STATE_SIZE
+=======
+	ldr	r1, [r1]
+	add	r1, r1, #CPU_SAVED_STATE_SIZE
+#if (NR_CPUS >= 2)
+	mrc	p15, 0, r2, c0, c0, 5	/* MPIDR */
+	ands	r2, r2, #15		/* What CPU am I */
+	mov	r3, #CPU_SAVED_STATE_SIZE
+	mul	r2, r2, r3
+	add	r1, r1, r2
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_MSM_CPU_AVS
@@ -237,6 +305,10 @@ msm_pm_pa_to_va:
 	mcr     p15, 0, r3, c7, c5, 6   /* BPIALL */
 	dsb
 	isb
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_ARCH_MSM_KRAIT
 	mrc	p15, 0, r1, c0, c0, 0
 	ldr	r3, =0xff00fc00
@@ -246,6 +318,7 @@ msm_pm_pa_to_va:
 	mrceq	p15, 7, r3, c15, c0, 2
 	biceq	r3, r3, #0x400
 	mcreq	p15, 7, r3, c15, c0, 2
+<<<<<<< HEAD
 #endif
 	stmfd   sp!, {lr}
 	bl      v7_flush_kern_cache_all
@@ -253,6 +326,18 @@ msm_pm_pa_to_va:
 	bl      msm_jtag_restore_state
 #endif
 	ldmfd   sp!, {lr}
+=======
+#else
+	RESUME_8x25_L2
+	SET_SMP_COHERENCY ON
+#endif
+
+#ifdef CONFIG_MSM_JTAG
+	stmfd   sp!, {lr}
+	bl      msm_jtag_restore_state
+	ldmfd   sp!, {lr}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov     r0, #1
 	bx      lr
 	nop
@@ -275,6 +360,7 @@ ENTRY(msm_pm_boot_entry)
 	add     r1, r1, r0, LSL #2       /* locate boot vector for our cpu */
 	ldr     pc, [r1]                 /* jump                           */
 
+<<<<<<< HEAD
 ENTRY(msm_pm_write_boot_vector)
 	ldr     r2, =msm_pm_boot_vector
 	add     r2, r2, r0, LSL #2       /* locate boot vector for our cpu */
@@ -286,6 +372,8 @@ ENTRY(msm_pm_write_boot_vector)
 	ldmfd	sp!, {lr}
 	bx      lr
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 ENTRY(msm_pm_set_l2_flush_flag)
 	ldr r1, =msm_pm_flush_l2_flag
 	str r0, [r1]
@@ -297,6 +385,7 @@ ENTRY(msm_pm_set_l2_flush_flag)
 msm_pm_pc_pgd:
 	.long	0x0
 
+<<<<<<< HEAD
 saved_state:
 #if (NR_CPUS >= 2)
 	.space	CPU_SAVED_STATE_SIZE * 2 /* This code only supports 2 cores */
@@ -308,6 +397,32 @@ saved_state_end:
 msm_pm_boot_vector:
 	.space  4 * NR_CPUS
 
+=======
+	.globl msm_saved_state
+msm_saved_state:
+	.long	0x0
+
+	.globl msm_saved_state_phys
+msm_saved_state_phys:
+	.long	0x0
+
+	.globl msm_pm_boot_vector
+msm_pm_boot_vector:
+	.space  4 * NR_CPUS
+
+	.globl target_type
+target_type:
+	.long  0x0
+
+	.globl apps_power_collapse
+apps_power_collapse:
+	.long 0x0
+
+	.globl l2x0_base_addr
+l2x0_base_addr:
+	.long 0x0
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Default the l2 flush flag to 1 so that caches are flushed during power
  * collapse unless the  L2 driver decides to flush them only during L2
@@ -315,3 +430,16 @@ msm_pm_boot_vector:
  */
 msm_pm_flush_l2_flag:
 	.long 0x1
+<<<<<<< HEAD
+=======
+
+/*
+ * Save & restore l2x0 registers while system is entering and resuming
+ * from Power Collapse.
+ * 1. aux_ctrl_save (0x0)
+ * 2. data_latency_ctrl (0x4)
+ * 3. prefetch control (0x8)
+ */
+l2x0_saved_ctrl_reg_val:
+	.space 4 * 3
+>>>>>>> refs/remotes/origin/cm-10.0

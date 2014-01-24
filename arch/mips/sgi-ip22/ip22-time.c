@@ -10,6 +10,10 @@
  * Copyright (C) 2003, 06 Ralf Baechle (ralf@linux-mips.org)
  */
 #include <linux/bcd.h>
+<<<<<<< HEAD
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/irq.h>
 #include <linux/kernel.h>
@@ -20,7 +24,10 @@
 
 #include <asm/cpu.h>
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
 #include <asm/i8253.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/time.h>

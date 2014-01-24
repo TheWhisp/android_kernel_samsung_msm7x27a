@@ -67,7 +67,10 @@
 #include <asm/page.h>
 #include <asm/pdc.h>
 #include <asm/pdcpat.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/processor.h>	/* for boot_cpu_data */
 
 static DEFINE_SPINLOCK(pdc_lock);

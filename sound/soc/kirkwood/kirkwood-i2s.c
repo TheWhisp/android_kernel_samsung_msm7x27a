@@ -373,7 +373,11 @@ static int kirkwood_i2s_remove(struct snd_soc_dai *dai)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops kirkwood_i2s_dai_ops = {
+=======
+static const struct snd_soc_dai_ops kirkwood_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.startup	= kirkwood_i2s_startup,
 	.trigger	= kirkwood_i2s_trigger,
 	.hw_params      = kirkwood_i2s_hw_params,
@@ -424,7 +428,11 @@ static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
 	if (!priv->mem) {
 		dev_err(&pdev->dev, "request_mem_region failed\n");
 		err = -EBUSY;
+<<<<<<< HEAD
 		goto error;
+=======
+		goto err_alloc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	priv->io = ioremap(priv->mem->start, SZ_16K);
@@ -441,13 +449,20 @@ static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
 		goto err_ioremap;
 	}
 
+<<<<<<< HEAD
 	if (!data || !data->dram) {
+=======
+	if (!data) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_err(&pdev->dev, "no platform data ?!\n");
 		err = -EINVAL;
 		goto err_ioremap;
 	}
 
+<<<<<<< HEAD
 	priv->dram = data->dram;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	priv->burst = data->burst;
 
 	return snd_soc_register_dai(&pdev->dev, &kirkwood_i2s_dai);
@@ -476,13 +491,18 @@ static __devexit int kirkwood_i2s_dev_remove(struct platform_device *pdev)
 
 static struct platform_driver kirkwood_i2s_driver = {
 	.probe  = kirkwood_i2s_dev_probe,
+<<<<<<< HEAD
 	.remove = kirkwood_i2s_dev_remove,
+=======
+	.remove = __devexit_p(kirkwood_i2s_dev_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver = {
 		.name = DRV_NAME,
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init kirkwood_i2s_init(void)
 {
 	return platform_driver_register(&kirkwood_i2s_driver);
@@ -494,6 +514,9 @@ static void __exit kirkwood_i2s_exit(void)
 	platform_driver_unregister(&kirkwood_i2s_driver);
 }
 module_exit(kirkwood_i2s_exit);
+=======
+module_platform_driver(kirkwood_i2s_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR("Arnaud Patard, <arnaud.patard@rtp-net.org>");

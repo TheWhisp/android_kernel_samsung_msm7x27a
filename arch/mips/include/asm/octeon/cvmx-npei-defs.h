@@ -4,7 +4,11 @@
  * Contact: support@caviumnetworks.com
  * This file is part of the OCTEON SDK
  *
+<<<<<<< HEAD
  * Copyright (c) 2003-2010 Cavium Networks
+=======
+ * Copyright (c) 2003-2011 Cavium Networks
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This file is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, Version 2, as
@@ -65,7 +69,11 @@
 #define CVMX_NPEI_LAST_WIN_RDATA0 (0x0000000000000600ull)
 #define CVMX_NPEI_LAST_WIN_RDATA1 (0x0000000000000610ull)
 #define CVMX_NPEI_MEM_ACCESS_CTL (0x00000000000004F0ull)
+<<<<<<< HEAD
 #define CVMX_NPEI_MEM_ACCESS_SUBIDX(offset) (0x0000000000000340ull + ((offset) & 31) * 16 - 16*12)
+=======
+#define CVMX_NPEI_MEM_ACCESS_SUBIDX(offset) (0x0000000000000280ull + ((offset) & 31) * 16 - 16*12)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define CVMX_NPEI_MSI_ENB0 (0x0000000000003C50ull)
 #define CVMX_NPEI_MSI_ENB1 (0x0000000000003C60ull)
 #define CVMX_NPEI_MSI_ENB2 (0x0000000000003C70ull)

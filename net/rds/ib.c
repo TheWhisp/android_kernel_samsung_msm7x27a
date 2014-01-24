@@ -38,6 +38,10 @@
 #include <linux/if_arp.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "rds.h"
 #include "ib.h"

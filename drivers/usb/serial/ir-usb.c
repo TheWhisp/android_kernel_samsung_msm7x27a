@@ -22,6 +22,7 @@
  *
  * See Documentation/usb/usb-serial.txt for more information on using this
  * driver
+<<<<<<< HEAD
  *
  * 2008_Jun_02  Felipe Balbi <me@felipebalbi.com>
  *	Introduced common header to be used also in USB Gadget Framework.
@@ -54,6 +55,8 @@
  *
  * 2001_Oct_07	greg kh
  *	initial version released.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/kernel.h>
@@ -77,7 +80,11 @@
 #define DRIVER_AUTHOR "Greg Kroah-Hartman <greg@kroah.com>, Johan Hovold <jhovold@gmail.com>"
 #define DRIVER_DESC "USB IR Dongle driver"
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* if overridden by the user, then use their value for the size of the read and
  * write urbs */
@@ -114,7 +121,10 @@ static struct usb_driver ir_driver = {
 	.probe		= usb_serial_probe,
 	.disconnect	= usb_serial_disconnect,
 	.id_table	= ir_id_table,
+<<<<<<< HEAD
 	.no_dynamic_id	= 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver ir_device = {
@@ -123,7 +133,10 @@ static struct usb_serial_driver ir_device = {
 		.name	= "ir-usb",
 	},
 	.description		= "IR Dongle",
+<<<<<<< HEAD
 	.usb_driver		= &ir_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table		= ir_id_table,
 	.num_ports		= 1,
 	.set_termios		= ir_set_termios,
@@ -133,6 +146,13 @@ static struct usb_serial_driver ir_device = {
 	.process_read_urb	= ir_process_read_urb,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ir_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void irda_usb_dump_class_desc(struct usb_irda_cs_descriptor *desc)
 {
 	dbg("bLength=%x", desc->bLength);
@@ -477,6 +497,7 @@ static int __init ir_init(void)
 		ir_device.bulk_out_size = buffer_size;
 	}
 
+<<<<<<< HEAD
 	retval = usb_serial_register(&ir_device);
 	if (retval)
 		goto failed_usb_serial_register;
@@ -494,13 +515,23 @@ failed_usb_register:
 	usb_serial_deregister(&ir_device);
 
 failed_usb_serial_register:
+=======
+	retval = usb_serial_register_drivers(&ir_driver, serial_drivers);
+	if (retval == 0)
+		printk(KERN_INFO KBUILD_MODNAME ": " DRIVER_VERSION ":"
+			       DRIVER_DESC "\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
 static void __exit ir_exit(void)
 {
+<<<<<<< HEAD
 	usb_deregister(&ir_driver);
 	usb_serial_deregister(&ir_device);
+=======
+	usb_serial_deregister_drivers(&ir_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 

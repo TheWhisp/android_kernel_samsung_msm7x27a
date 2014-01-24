@@ -1,8 +1,12 @@
 #ifndef _ASM_X86_SPINLOCK_H
 #define _ASM_X86_SPINLOCK_H
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/rwlock.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/page.h>
 #include <asm/processor.h>
 #include <linux/compiler.h>
@@ -50,6 +54,7 @@
  * issues and should be optimal for the uncontended case. Note the tail must be
  * in the high part, because a wide xadd increment of the low part would carry
  * up and contaminate the high part.
+<<<<<<< HEAD
  *
  * With fewer than 2^8 possible CPUs, we can use x86's partial registers to
  * save some instructions and make the code more elegant. There really isn't
@@ -75,10 +80,27 @@ static __always_inline void __ticket_spin_lock(arch_spinlock_t *lock)
 		: "+Q" (inc), "+m" (lock->slock)
 		:
 		: "memory", "cc");
+=======
+ */
+static __always_inline void __ticket_spin_lock(arch_spinlock_t *lock)
+{
+	register struct __raw_tickets inc = { .tail = 1 };
+
+	inc = xadd(&lock->tickets, inc);
+
+	for (;;) {
+		if (inc.head == inc.tail)
+			break;
+		cpu_relax();
+		inc.head = ACCESS_ONCE(lock->tickets.head);
+	}
+	barrier();		/* make sure nothing creeps before the lock is taken */
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static __always_inline int __ticket_spin_trylock(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	int tmp, new;
 
 	asm volatile("movzwl %2, %0\n\t"
@@ -147,10 +169,23 @@ static __always_inline int __ticket_spin_trylock(arch_spinlock_t *lock)
 		     : "memory", "cc");
 
 	return tmp;
+=======
+	arch_spinlock_t old, new;
+
+	old.tickets = ACCESS_ONCE(lock->tickets);
+	if (old.tickets.head != old.tickets.tail)
+		return 0;
+
+	new.head_tail = old.head_tail + (1 << TICKET_SHIFT);
+
+	/* cmpxchg is a full barrier, so nothing can move before it */
+	return cmpxchg(&lock->head_tail, old.head_tail, new.head_tail) == old.head_tail;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static __always_inline void __ticket_spin_unlock(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	asm volatile(UNLOCK_LOCK_PREFIX "incw %0"
 		     : "+m" (lock->slock)
 		     :
@@ -163,13 +198,29 @@ static inline int __ticket_spin_is_locked(arch_spinlock_t *lock)
 	int tmp = ACCESS_ONCE(lock->slock);
 
 	return !!(((tmp >> TICKET_SHIFT) ^ tmp) & ((1 << TICKET_SHIFT) - 1));
+=======
+	__add(&lock->tickets.head, 1, UNLOCK_LOCK_PREFIX);
+}
+
+static inline int __ticket_spin_is_locked(arch_spinlock_t *lock)
+{
+	struct __raw_tickets tmp = ACCESS_ONCE(lock->tickets);
+
+	return tmp.tail != tmp.head;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline int __ticket_spin_is_contended(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	int tmp = ACCESS_ONCE(lock->slock);
 
 	return (((tmp >> TICKET_SHIFT) - tmp) & ((1 << TICKET_SHIFT) - 1)) > 1;
+=======
+	struct __raw_tickets tmp = ACCESS_ONCE(lock->tickets);
+
+	return (__ticket_t)(tmp.tail - tmp.head) > 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifndef CONFIG_PARAVIRT_SPINLOCKS
@@ -234,7 +285,11 @@ static inline void arch_spin_unlock_wait(arch_spinlock_t *lock)
  */
 static inline int arch_read_can_lock(arch_rwlock_t *lock)
 {
+<<<<<<< HEAD
 	return (int)(lock)->lock > 0;
+=======
+	return lock->lock > 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -243,12 +298,20 @@ static inline int arch_read_can_lock(arch_rwlock_t *lock)
  */
 static inline int arch_write_can_lock(arch_rwlock_t *lock)
 {
+<<<<<<< HEAD
 	return (lock)->lock == RW_LOCK_BIAS;
+=======
+	return lock->write == WRITE_LOCK_CMP;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void arch_read_lock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	asm volatile(LOCK_PREFIX " subl $1,(%0)\n\t"
+=======
+	asm volatile(LOCK_PREFIX READ_LOCK_SIZE(dec) " (%0)\n\t"
+>>>>>>> refs/remotes/origin/cm-10.0
 		     "jns 1f\n"
 		     "call __read_lock_failed\n\t"
 		     "1:\n"
@@ -257,47 +320,91 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
 
 static inline void arch_write_lock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	asm volatile(LOCK_PREFIX " subl %1,(%0)\n\t"
 		     "jz 1f\n"
 		     "call __write_lock_failed\n\t"
 		     "1:\n"
 		     ::LOCK_PTR_REG (rw), "i" (RW_LOCK_BIAS) : "memory");
+=======
+	asm volatile(LOCK_PREFIX WRITE_LOCK_SUB(%1) "(%0)\n\t"
+		     "jz 1f\n"
+		     "call __write_lock_failed\n\t"
+		     "1:\n"
+		     ::LOCK_PTR_REG (&rw->write), "i" (RW_LOCK_BIAS)
+		     : "memory");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline int arch_read_trylock(arch_rwlock_t *lock)
 {
+<<<<<<< HEAD
 	atomic_t *count = (atomic_t *)lock;
 
 	if (atomic_dec_return(count) >= 0)
 		return 1;
 	atomic_inc(count);
+=======
+	READ_LOCK_ATOMIC(t) *count = (READ_LOCK_ATOMIC(t) *)lock;
+
+	if (READ_LOCK_ATOMIC(dec_return)(count) >= 0)
+		return 1;
+	READ_LOCK_ATOMIC(inc)(count);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static inline int arch_write_trylock(arch_rwlock_t *lock)
 {
+<<<<<<< HEAD
 	atomic_t *count = (atomic_t *)lock;
 
 	if (atomic_sub_and_test(RW_LOCK_BIAS, count))
 		return 1;
 	atomic_add(RW_LOCK_BIAS, count);
+=======
+	atomic_t *count = (atomic_t *)&lock->write;
+
+	if (atomic_sub_and_test(WRITE_LOCK_CMP, count))
+		return 1;
+	atomic_add(WRITE_LOCK_CMP, count);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static inline void arch_read_unlock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	asm volatile(LOCK_PREFIX "incl %0" :"+m" (rw->lock) : : "memory");
+=======
+	asm volatile(LOCK_PREFIX READ_LOCK_SIZE(inc) " %0"
+		     :"+m" (rw->lock) : : "memory");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void arch_write_unlock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	asm volatile(LOCK_PREFIX "addl %1, %0"
 		     : "+m" (rw->lock) : "i" (RW_LOCK_BIAS) : "memory");
+=======
+	asm volatile(LOCK_PREFIX WRITE_LOCK_ADD(%1) "%0"
+		     : "+m" (rw->write) : "i" (RW_LOCK_BIAS) : "memory");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
 #define arch_write_lock_flags(lock, flags) arch_write_lock(lock)
 
+<<<<<<< HEAD
+=======
+#undef READ_LOCK_SIZE
+#undef READ_LOCK_ATOMIC
+#undef WRITE_LOCK_ADD
+#undef WRITE_LOCK_SUB
+#undef WRITE_LOCK_CMP
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define arch_spin_relax(lock)	cpu_relax()
 #define arch_read_relax(lock)	cpu_relax()
 #define arch_write_relax(lock)	cpu_relax()

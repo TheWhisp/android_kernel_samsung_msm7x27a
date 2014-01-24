@@ -10,6 +10,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/kmod.h>
@@ -17,7 +22,10 @@
 #include <linux/in.h>
 #include <linux/ip.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/spinlock.h>
 #include <net/protocol.h>
 #include <net/gre.h>
@@ -35,7 +43,11 @@ int gre_add_protocol(const struct gre_protocol *proto, u8 version)
 	if (gre_proto[version])
 		goto err_out_unlock;
 
+<<<<<<< HEAD
 	rcu_assign_pointer(gre_proto[version], proto);
+=======
+	RCU_INIT_POINTER(gre_proto[version], proto);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&gre_proto_lock);
 	return 0;
 
@@ -55,7 +67,11 @@ int gre_del_protocol(const struct gre_protocol *proto, u8 version)
 	if (rcu_dereference_protected(gre_proto[version],
 			lockdep_is_held(&gre_proto_lock)) != proto)
 		goto err_out_unlock;
+<<<<<<< HEAD
 	rcu_assign_pointer(gre_proto[version], NULL);
+=======
+	RCU_INIT_POINTER(gre_proto[version], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&gre_proto_lock);
 	synchronize_rcu();
 	return 0;
@@ -119,10 +135,17 @@ static const struct net_protocol net_gre_protocol = {
 
 static int __init gre_init(void)
 {
+<<<<<<< HEAD
 	pr_info("GRE over IPv4 demultiplexor driver");
 
 	if (inet_add_protocol(&net_gre_protocol, IPPROTO_GRE) < 0) {
 		pr_err("gre: can't add protocol\n");
+=======
+	pr_info("GRE over IPv4 demultiplexor driver\n");
+
+	if (inet_add_protocol(&net_gre_protocol, IPPROTO_GRE) < 0) {
+		pr_err("can't add protocol\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EAGAIN;
 	}
 

@@ -33,6 +33,10 @@
 #include <linux/percpu.h>
 #include <linux/seq_file.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "rds.h"
 

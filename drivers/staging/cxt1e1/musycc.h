@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /*
  * $Id: musycc.h,v 1.3 2005/09/28 00:10:08 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _INC_MUSYCC_H_
 #define _INC_MUSYCC_H_
 
@@ -24,6 +27,7 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.3 $
  * Last changed on $Date: 2005/09/28 00:10:08 $
@@ -45,15 +49,23 @@
 #else
 #include <linux/types.h>
 #endif
+=======
+ */
+
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define VINT8   volatile u_int8_t
 #define VINT32  volatile u_int32_t
 
+<<<<<<< HEAD
 #ifdef __cplusplus
 extern      "C"
 {
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "pmcc4_defs.h"
 
 
@@ -448,10 +460,13 @@ extern      "C"
 /*  This must be defined on an entire channel group (Port) basis */
 #define SUERM_THRESHOLD     0x1f
 
+<<<<<<< HEAD
 #ifdef __cplusplus
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #undef VINT32
 #undef VINT8
 

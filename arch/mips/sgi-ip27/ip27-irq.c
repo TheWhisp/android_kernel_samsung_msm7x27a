@@ -27,7 +27,10 @@
 #include <asm/bootinfo.h>
 #include <asm/io.h>
 #include <asm/mipsregs.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/processor.h>
 #include <asm/pci/bridge.h>
@@ -73,7 +76,11 @@ static inline int alloc_level(int cpu, int irq)
 
 	level = find_first_zero_bit(hub->irq_alloc_mask, LEVELS_PER_SLICE);
 	if (level >= LEVELS_PER_SLICE)
+<<<<<<< HEAD
 		panic("Cpu %d flooded with devices\n", cpu);
+=======
+		panic("Cpu %d flooded with devices", cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__set_bit(level, hub->irq_alloc_mask);
 	si->level_to_irq[level] = irq;
@@ -96,7 +103,11 @@ static inline int find_level(cpuid_t *cpunum, int irq)
 			}
 	}
 
+<<<<<<< HEAD
 	panic("Could not identify cpu/level for irq %d\n", irq);
+=======
+	panic("Could not identify cpu/level for irq %d", irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -116,7 +127,11 @@ static int ms1bit(unsigned long x)
 }
 
 /*
+<<<<<<< HEAD
  * This code is unnecessarily complex, because we do IRQF_DISABLED
+=======
+ * This code is unnecessarily complex, because we do
+>>>>>>> refs/remotes/origin/cm-10.0
  * intr enabling. Basically, once we grab the set of intrs we need
  * to service, we must mask _all_ these interrupts; firstly, to make
  * sure the same intr does not intr again, causing recursion that
@@ -337,12 +352,20 @@ static struct irq_chip bridge_irq_type = {
 	.irq_unmask	= enable_bridge_irq,
 };
 
+<<<<<<< HEAD
 void __devinit register_bridge_irq(unsigned int irq)
+=======
+void register_bridge_irq(unsigned int irq)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	irq_set_chip_and_handler(irq, &bridge_irq_type, handle_level_irq);
 }
 
+<<<<<<< HEAD
 int __devinit request_bridge_irq(struct bridge_controller *bc)
+=======
+int request_bridge_irq(struct bridge_controller *bc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int irq = allocate_irqno();
 	int swlevel, cpu;

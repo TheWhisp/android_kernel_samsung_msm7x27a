@@ -151,7 +151,11 @@ struct tipc_port {
 };
 
 extern spinlock_t tipc_port_list_lock;
+<<<<<<< HEAD
 struct port_list;
+=======
+struct tipc_port_list;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * TIPC port manipulation routines
@@ -205,6 +209,10 @@ int tipc_disconnect_port(struct tipc_port *tp_ptr);
 /*
  * TIPC messaging routines
  */
+<<<<<<< HEAD
+=======
+int tipc_port_recv_msg(struct sk_buff *buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 int tipc_send(u32 portref, unsigned int num_sect, struct iovec const *msg_sect,
 	      unsigned int total_len);
 
@@ -228,7 +236,11 @@ int tipc_port_reject_sections(struct tipc_port *p_ptr, struct tipc_msg *hdr,
 			      unsigned int total_len, int err);
 struct sk_buff *tipc_port_get_ports(void);
 void tipc_port_recv_proto_msg(struct sk_buff *buf);
+<<<<<<< HEAD
 void tipc_port_recv_mcast(struct sk_buff *buf, struct port_list *dp);
+=======
+void tipc_port_recv_mcast(struct sk_buff *buf, struct tipc_port_list *dp);
+>>>>>>> refs/remotes/origin/cm-10.0
 void tipc_port_reinit(void);
 
 /**
@@ -271,6 +283,7 @@ static inline int tipc_port_congested(struct tipc_port *p_ptr)
 	return (p_ptr->sent - p_ptr->acked) >= (TIPC_FLOW_CONTROL_WIN * 2);
 }
 
+<<<<<<< HEAD
 /**
  * tipc_port_recv_msg - receive message from lower layer and deliver to port user
  */
@@ -312,4 +325,6 @@ reject:
 	return tipc_reject_msg(buf, err);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

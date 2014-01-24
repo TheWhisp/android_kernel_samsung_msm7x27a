@@ -1,9 +1,15 @@
 /*
  * BCMSDH Function Driver for the native SDIO/MMC driver in the Linux Kernel
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,7 +27,11 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: bcmsdh_sdmmc.c 314904 2012-02-14 21:36:04Z $
+=======
+ * $Id: bcmsdh_sdmmc.c 321372 2012-03-15 01:10:32Z $
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 #include <typedefs.h>
 
@@ -683,7 +693,11 @@ sdioh_enable_hw_oob_intr(sdioh_info_t *sd, bool enable)
 	if (enable)
 		data = SDIO_SEPINT_MASK | SDIO_SEPINT_OE | SDIO_SEPINT_ACT_HI;
 	else
+<<<<<<< HEAD
 		data = SDIO_SEPINT_ACT_HI;
+=======
+		data = SDIO_SEPINT_ACT_HI;	/* disable hw oob interrupt */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	status = sdioh_request_byte(sd, SDIOH_WRITE, 0, SDIOD_CCCR_BRCM_SEPINT, &data);
 	return status;
@@ -1405,3 +1419,31 @@ sdioh_waitlockfree(sdioh_info_t *sd)
 {
 	return (1);
 }
+<<<<<<< HEAD
+=======
+
+
+SDIOH_API_RC
+sdioh_gpioouten(sdioh_info_t *sd, uint32 gpio)
+{
+	return SDIOH_API_RC_FAIL;
+}
+
+SDIOH_API_RC
+sdioh_gpioout(sdioh_info_t *sd, uint32 gpio, bool enab)
+{
+	return SDIOH_API_RC_FAIL;
+}
+
+bool
+sdioh_gpioin(sdioh_info_t *sd, uint32 gpio)
+{
+	return FALSE;
+}
+
+SDIOH_API_RC
+sdioh_gpio_init(sdioh_info_t *sd)
+{
+	return SDIOH_API_RC_FAIL;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -52,7 +52,10 @@
 #include <linux/route.h>
 #include <linux/slab.h>
 #include <net/sock.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/termios.h>

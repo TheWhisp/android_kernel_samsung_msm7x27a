@@ -21,7 +21,10 @@
 #include <linux/if_ether.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 #include <linux/inet.h>

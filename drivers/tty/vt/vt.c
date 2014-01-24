@@ -99,7 +99,10 @@
 #include <linux/notifier.h>
 #include <linux/device.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/uaccess.h>
 #include <linux/kdb.h>
 #include <linux/ctype.h>
@@ -259,7 +262,11 @@ EXPORT_SYMBOL_GPL(unregister_vt_notifier);
 
 static void notify_write(struct vc_data *vc, unsigned int unicode)
 {
+<<<<<<< HEAD
 	struct vt_notifier_param param = { .vc = vc, unicode = unicode };
+=======
+	struct vt_notifier_param param = { .vc = vc, .c = unicode };
+>>>>>>> refs/remotes/origin/cm-10.0
 	atomic_notifier_call_chain(&vt_notifier_list, VT_WRITE, &param);
 }
 
@@ -657,7 +664,11 @@ static inline void save_screen(struct vc_data *vc)
  *	Redrawing of screen
  */
 
+<<<<<<< HEAD
 static void clear_buffer_attributes(struct vc_data *vc)
+=======
+void clear_buffer_attributes(struct vc_data *vc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned short *p = (unsigned short *)vc->vc_origin;
 	int count = vc->vc_screenbuf_size / 2;
@@ -1028,9 +1039,15 @@ void vc_deallocate(unsigned int currcons)
  *	VT102 emulator
  */
 
+<<<<<<< HEAD
 #define set_kbd(vc, x)	set_vc_kbd_mode(kbd_table + (vc)->vc_num, (x))
 #define clr_kbd(vc, x)	clr_vc_kbd_mode(kbd_table + (vc)->vc_num, (x))
 #define is_kbd(vc, x)	vc_kbd_mode(kbd_table + (vc)->vc_num, (x))
+=======
+#define set_kbd(vc, x)	vt_set_kbd_mode_bit((vc)->vc_num, (x))
+#define clr_kbd(vc, x)	vt_clr_kbd_mode_bit((vc)->vc_num, (x))
+#define is_kbd(vc, x)	vt_get_kbd_mode_bit((vc)->vc_num, (x))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define decarm		VC_REPEAT
 #define decckm		VC_CKMODE
@@ -1652,6 +1669,7 @@ static void reset_terminal(struct vc_data *vc, int do_clear)
 	vc->vc_deccm		= global_cursor_default;
 	vc->vc_decim		= 0;
 
+<<<<<<< HEAD
 	set_kbd(vc, decarm);
 	clr_kbd(vc, decckm);
 	clr_kbd(vc, kbdapplic);
@@ -1662,6 +1680,9 @@ static void reset_terminal(struct vc_data *vc, int do_clear)
 	kbd_table[vc->vc_num].ledflagstate = kbd_table[vc->vc_num].default_ledflagstate;
 	/* do not do set_leds here because this causes an endless tasklet loop
 	   when the keyboard hasn't been initialized yet */
+=======
+	vt_reset_keyboard(vc->vc_num);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	vc->vc_cursor_type = cur_default;
 	vc->vc_complement_mask = vc->vc_s_complement_mask;
@@ -1979,7 +2000,11 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
 		case 'q': /* DECLL - but only 3 leds */
 			/* map 0,1,2,3 to 0,1,2,4 */
 			if (vc->vc_par[0] < 4)
+<<<<<<< HEAD
 				setledstate(kbd_table + vc->vc_num,
+=======
+				vt_set_led_state(vc->vc_num,
+>>>>>>> refs/remotes/origin/cm-10.0
 					    (vc->vc_par[0] < 3) ? vc->vc_par[0] : 4);
 			return;
 		case 'r':
@@ -2632,7 +2657,13 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 			console_unlock();
 			break;
 		case TIOCL_SELLOADLUT:
+<<<<<<< HEAD
 			ret = sel_loadlut(p);
+=======
+			console_lock();
+			ret = sel_loadlut(p);
+			console_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case TIOCL_GETSHIFTSTATE:
 
@@ -2642,6 +2673,7 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 	 * kernel-internal variable; programs not closely
 	 * related to the kernel should not use this.
 	 */
+<<<<<<< HEAD
 	 		data = shift_state;
 			ret = __put_user(data, p);
 			break;
@@ -2651,6 +2683,21 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 			break;
 		case TIOCL_SETVESABLANK:
 			ret = set_vesa_blanking(p);
+=======
+			data = vt_get_shift_state();
+			ret = __put_user(data, p);
+			break;
+		case TIOCL_GETMOUSEREPORTING:
+			console_lock();	/* May be overkill */
+			data = mouse_reporting();
+			console_unlock();
+			ret = __put_user(data, p);
+			break;
+		case TIOCL_SETVESABLANK:
+			console_lock();
+			ret = set_vesa_blanking(p);
+			console_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case TIOCL_GETKMSGREDIRECT:
 			data = vt_get_kmsg_redirect();
@@ -2667,13 +2714,28 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 			}
 			break;
 		case TIOCL_GETFGCONSOLE:
+<<<<<<< HEAD
+=======
+			/* No locking needed as this is a transiently
+			   correct return anyway if the caller hasn't
+			   disabled switching */
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = fg_console;
 			break;
 		case TIOCL_SCROLLCONSOLE:
 			if (get_user(lines, (s32 __user *)(p+4))) {
 				ret = -EFAULT;
 			} else {
+<<<<<<< HEAD
 				scrollfront(vc_cons[fg_console].d, lines);
+=======
+				/* Need the console lock here. Note that lots
+				   of other calls need fixing before the lock
+				   is actually useful ! */
+				console_lock();
+				scrollfront(vc_cons[fg_console].d, lines);
+				console_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 				ret = 0;
 			}
 			break;
@@ -2753,8 +2815,12 @@ static void con_stop(struct tty_struct *tty)
 	console_num = tty->index;
 	if (!vc_cons_allocated(console_num))
 		return;
+<<<<<<< HEAD
 	set_vc_kbd_led(kbd_table + console_num, VC_SCROLLOCK);
 	set_leds();
+=======
+	vt_kbd_con_stop(console_num);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -2768,8 +2834,12 @@ static void con_start(struct tty_struct *tty)
 	console_num = tty->index;
 	if (!vc_cons_allocated(console_num))
 		return;
+<<<<<<< HEAD
 	clr_vc_kbd_led(kbd_table + console_num, VC_SCROLLOCK);
 	set_leds();
+=======
+	vt_kbd_con_start(console_num);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void con_flush_chars(struct tty_struct *tty)
@@ -2930,11 +3000,18 @@ static int __init con_init(void)
 	gotoxy(vc, vc->vc_x, vc->vc_y);
 	csi_J(vc, 0);
 	update_screen(vc);
+<<<<<<< HEAD
 	pr_info("Console: %s %s %dx%d",
 		vc->vc_can_do_color ? "colour" : "mono",
 		display_desc, vc->vc_cols, vc->vc_rows);
 	printable = 1;
 	printk("\n");
+=======
+	pr_info("Console: %s %s %dx%d\n",
+		vc->vc_can_do_color ? "colour" : "mono",
+		display_desc, vc->vc_cols, vc->vc_rows);
+	printable = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	console_unlock();
 
@@ -2991,7 +3068,11 @@ int __init vty_init(const struct file_operations *console_fops)
 	console_driver = alloc_tty_driver(MAX_NR_CONSOLES);
 	if (!console_driver)
 		panic("Couldn't allocate console driver\n");
+<<<<<<< HEAD
 	console_driver->owner = THIS_MODULE;
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	console_driver->name = "tty";
 	console_driver->name_base = 1;
 	console_driver->major = TTY_MAJOR;
@@ -3490,6 +3571,22 @@ int con_debug_enter(struct vc_data *vc)
 			kdb_set(2, setargs);
 		}
 	}
+<<<<<<< HEAD
+=======
+	if (vc->vc_cols < 999) {
+		int colcount;
+		char cols[4];
+		const char *setargs[3] = {
+			"set",
+			"COLUMNS",
+			cols,
+		};
+		if (kdbgetintenv(setargs[0], &colcount)) {
+			snprintf(cols, 4, "%i", vc->vc_cols);
+			kdb_set(2, setargs);
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_KGDB_KDB */
 	return ret;
 }
@@ -4040,9 +4137,12 @@ static int con_font_get(struct vc_data *vc, struct console_font_op *op)
 	int rc = -EINVAL;
 	int c;
 
+<<<<<<< HEAD
 	if (vc->vc_mode != KD_TEXT)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (op->data) {
 		font.data = kmalloc(max_font_size, GFP_KERNEL);
 		if (!font.data)
@@ -4051,7 +4151,13 @@ static int con_font_get(struct vc_data *vc, struct console_font_op *op)
 		font.data = NULL;
 
 	console_lock();
+<<<<<<< HEAD
 	if (vc->vc_sw->con_font_get)
+=======
+	if (vc->vc_mode != KD_TEXT)
+		rc = -EINVAL;
+	else if (vc->vc_sw->con_font_get)
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = vc->vc_sw->con_font_get(vc, &font);
 	else
 		rc = -ENOSYS;
@@ -4133,7 +4239,13 @@ static int con_font_set(struct vc_data *vc, struct console_font_op *op)
 	if (IS_ERR(font.data))
 		return PTR_ERR(font.data);
 	console_lock();
+<<<<<<< HEAD
 	if (vc->vc_sw->con_font_set)
+=======
+	if (vc->vc_mode != KD_TEXT)
+		rc = -EINVAL;
+	else if (vc->vc_sw->con_font_set)
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = vc->vc_sw->con_font_set(vc, &font, op->flags);
 	else
 		rc = -ENOSYS;
@@ -4149,8 +4261,11 @@ static int con_font_default(struct vc_data *vc, struct console_font_op *op)
 	char *s = name;
 	int rc;
 
+<<<<<<< HEAD
 	if (vc->vc_mode != KD_TEXT)
 		return -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!op->data)
 		s = NULL;
@@ -4160,6 +4275,13 @@ static int con_font_default(struct vc_data *vc, struct console_font_op *op)
 		name[MAX_FONT_NAME - 1] = 0;
 
 	console_lock();
+<<<<<<< HEAD
+=======
+	if (vc->vc_mode != KD_TEXT) {
+		console_unlock();
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (vc->vc_sw->con_font_default)
 		rc = vc->vc_sw->con_font_default(vc, &font, s);
 	else
@@ -4177,11 +4299,19 @@ static int con_font_copy(struct vc_data *vc, struct console_font_op *op)
 	int con = op->height;
 	int rc;
 
+<<<<<<< HEAD
 	if (vc->vc_mode != KD_TEXT)
 		return -EINVAL;
 
 	console_lock();
 	if (!vc->vc_sw->con_font_copy)
+=======
+
+	console_lock();
+	if (vc->vc_mode != KD_TEXT)
+		rc = -EINVAL;
+	else if (!vc->vc_sw->con_font_copy)
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = -ENOSYS;
 	else if (con < 0 || !vc_cons_allocated(con))
 		rc = -ENOTTY;

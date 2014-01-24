@@ -409,7 +409,11 @@ static int s6000_i2s_dai_probe(struct snd_soc_dai *dai)
 			 SNDRV_PCM_RATE_8000_192000)
 #define S6000_I2S_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops s6000_i2s_dai_ops = {
+=======
+static const struct snd_soc_dai_ops s6000_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_fmt = s6000_i2s_set_dai_fmt,
 	.set_clkdiv = s6000_i2s_set_clkdiv,
 	.hw_params = s6000_i2s_hw_params,
@@ -604,6 +608,7 @@ static struct platform_driver s6000_i2s_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init s6000_i2s_init(void)
 {
 	return platform_driver_register(&s6000_i2s_driver);
@@ -615,6 +620,9 @@ static void __exit s6000_i2s_exit(void)
 	platform_driver_unregister(&s6000_i2s_driver);
 }
 module_exit(s6000_i2s_exit);
+=======
+module_platform_driver(s6000_i2s_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Daniel Gloeckner");
 MODULE_DESCRIPTION("Stretch s6000 family I2S SoC Interface");

@@ -1,14 +1,23 @@
 #include <linux/capability.h>
 #include <linux/fs.h>
 #include <linux/posix_acl.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/errno.h>
 #include <linux/pagemap.h>
 #include <linux/xattr.h>
 #include <linux/slab.h>
 #include <linux/posix_acl_xattr.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_xattr.h>
 #include <linux/reiserfs_acl.h>
+=======
+#include "xattr.h"
+#include "acl.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 
 static int reiserfs_set_acl(struct reiserfs_transaction_handle *th,
@@ -272,12 +281,19 @@ reiserfs_set_acl(struct reiserfs_transaction_handle *th, struct inode *inode,
 	case ACL_TYPE_ACCESS:
 		name = POSIX_ACL_XATTR_ACCESS;
 		if (acl) {
+<<<<<<< HEAD
 			mode_t mode = inode->i_mode;
 			error = posix_acl_equiv_mode(acl, &mode);
 			if (error < 0)
 				return error;
 			else {
 				inode->i_mode = mode;
+=======
+			error = posix_acl_equiv_mode(acl, &inode->i_mode);
+			if (error < 0)
+				return error;
+			else {
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (error == 0)
 					acl = NULL;
 			}
@@ -354,10 +370,13 @@ reiserfs_inherit_default_acl(struct reiserfs_transaction_handle *th,
 		return PTR_ERR(acl);
 
 	if (acl) {
+<<<<<<< HEAD
 		struct posix_acl *acl_copy;
 		mode_t mode = inode->i_mode;
 		int need_acl;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Copy the default ACL to the default ACL of a new directory */
 		if (S_ISDIR(inode->i_mode)) {
 			err = reiserfs_set_acl(th, inode, ACL_TYPE_DEFAULT,
@@ -368,6 +387,7 @@ reiserfs_inherit_default_acl(struct reiserfs_transaction_handle *th,
 
 		/* Now we reconcile the new ACL and the mode,
 		   potentially modifying both */
+<<<<<<< HEAD
 		acl_copy = posix_acl_clone(acl, GFP_NOFS);
 		if (!acl_copy) {
 			err = -ENOMEM;
@@ -391,6 +411,15 @@ reiserfs_inherit_default_acl(struct reiserfs_transaction_handle *th,
 		}
 	      cleanup_copy:
 		posix_acl_release(acl_copy);
+=======
+		err = posix_acl_create(&acl, GFP_NOFS, &inode->i_mode);
+		if (err < 0)
+			return err;
+
+		/* If we need an ACL.. */
+		if (err > 0)
+			err = reiserfs_set_acl(th, inode, ACL_TYPE_ACCESS, acl);
+>>>>>>> refs/remotes/origin/cm-10.0
 	      cleanup:
 		posix_acl_release(acl);
 	} else {
@@ -445,7 +474,14 @@ int reiserfs_cache_default_acl(struct inode *inode)
 
 int reiserfs_acl_chmod(struct inode *inode)
 {
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
+=======
+	struct reiserfs_transaction_handle th;
+	struct posix_acl *acl;
+	size_t size;
+	int depth;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int error;
 
 	if (S_ISLNK(inode->i_mode))
@@ -463,6 +499,7 @@ int reiserfs_acl_chmod(struct inode *inode)
 		return 0;
 	if (IS_ERR(acl))
 		return PTR_ERR(acl);
+<<<<<<< HEAD
 	clone = posix_acl_clone(acl, GFP_NOFS);
 	posix_acl_release(acl);
 	if (!clone)
@@ -487,6 +524,24 @@ int reiserfs_acl_chmod(struct inode *inode)
 		reiserfs_write_unlock_once(inode->i_sb, depth);
 	}
 	posix_acl_release(clone);
+=======
+	error = posix_acl_chmod(&acl, GFP_NOFS, inode->i_mode);
+	if (error)
+		return error;
+
+	size = reiserfs_xattr_nblocks(inode, reiserfs_acl_size(acl->a_count));
+	depth = reiserfs_write_lock_once(inode->i_sb);
+	error = journal_begin(&th, inode->i_sb, size * 2);
+	if (!error) {
+		int error2;
+		error = reiserfs_set_acl(&th, inode, ACL_TYPE_ACCESS, acl);
+		error2 = journal_end(&th, inode->i_sb, size * 2);
+		if (error2)
+			error = error2;
+	}
+	reiserfs_write_unlock_once(inode->i_sb, depth);
+	posix_acl_release(acl);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return error;
 }
 

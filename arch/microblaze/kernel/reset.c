@@ -19,6 +19,7 @@
 static int handle; /* reset pin handle */
 static unsigned int reset_val;
 
+<<<<<<< HEAD
 static int of_reset_gpio_handle(void)
 {
 	int ret; /* variable which stored handle reset gpio pin */
@@ -63,6 +64,13 @@ void of_platform_reset_gpio_probe(void)
 {
 	int ret;
 	handle = of_reset_gpio_handle();
+=======
+void of_platform_reset_gpio_probe(void)
+{
+	int ret;
+	handle = of_get_named_gpio(of_find_node_by_path("/"),
+				   "hard-reset-gpios", 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!gpio_is_valid(handle)) {
 		printk(KERN_INFO "Skipping unavailable RESET gpio %d (%s)\n",

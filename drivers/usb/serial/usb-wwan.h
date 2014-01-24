@@ -24,6 +24,11 @@ extern int usb_wwan_send_setup(struct usb_serial_port *port);
 extern int usb_wwan_write(struct tty_struct *tty, struct usb_serial_port *port,
 			  const unsigned char *buf, int count);
 extern int usb_wwan_chars_in_buffer(struct tty_struct *tty);
+<<<<<<< HEAD
+=======
+extern void usb_wwan_throttle(struct tty_struct *tty);
+extern void usb_wwan_unthrottle(struct tty_struct *tty);
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PM
 extern int usb_wwan_suspend(struct usb_serial *serial, pm_message_t message);
 extern int usb_wwan_resume(struct usb_serial *serial);
@@ -31,10 +36,17 @@ extern int usb_wwan_resume(struct usb_serial *serial);
 
 /* per port private data */
 
+<<<<<<< HEAD
 #define N_IN_URB 4
 #define N_OUT_URB 4
 #define IN_BUFLEN 4096
 #define OUT_BUFLEN 4096
+=======
+#define N_IN_URB 5
+#define N_OUT_URB 5
+#define IN_BUFLEN 16384
+#define OUT_BUFLEN 65536
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct usb_wwan_intf_private {
 	spinlock_t susp_lock;
@@ -53,7 +65,16 @@ struct usb_wwan_port_private {
 	u8 *out_buffer[N_OUT_URB];
 	unsigned long out_busy;	/* Bit vector of URBs in use */
 	int opened;
+<<<<<<< HEAD
 	struct usb_anchor delayed;
+=======
+	struct usb_anchor submitted;
+	struct usb_anchor delayed;
+	struct list_head in_urb_list;
+	spinlock_t in_lock;
+	ssize_t n_read;
+	struct work_struct in_work;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Settings for the port */
 	int rts_state;		/* Handshaking pins (outputs) */

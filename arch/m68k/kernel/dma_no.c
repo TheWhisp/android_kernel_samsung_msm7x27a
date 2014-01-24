@@ -10,6 +10,10 @@
 #include <linux/mm.h>
 #include <linux/device.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 
 void *dma_alloc_coherent(struct device *dev, size_t size,

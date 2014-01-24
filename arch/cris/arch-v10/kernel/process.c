@@ -16,6 +16,10 @@
 #include <linux/fs.h>
 #include <arch/svinto.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_ETRAX_GPIO
 void etrax_gpio_wake_up_check(void); /* drivers/gpio.c */

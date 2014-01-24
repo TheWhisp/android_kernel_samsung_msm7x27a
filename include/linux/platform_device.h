@@ -42,16 +42,71 @@ extern void platform_device_unregister(struct platform_device *);
 extern struct bus_type platform_bus_type;
 extern struct device platform_bus;
 
+<<<<<<< HEAD
+=======
+extern void arch_setup_pdev_archdata(struct platform_device *);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct resource *platform_get_resource(struct platform_device *, unsigned int, unsigned int);
 extern int platform_get_irq(struct platform_device *, unsigned int);
 extern struct resource *platform_get_resource_byname(struct platform_device *, unsigned int, const char *);
 extern int platform_get_irq_byname(struct platform_device *, const char *);
 extern int platform_add_devices(struct platform_device **, int);
 
+<<<<<<< HEAD
 extern struct platform_device *platform_device_register_resndata(
 		struct device *parent, const char *name, int id,
 		const struct resource *res, unsigned int num,
 		const void *data, size_t size);
+=======
+struct platform_device_info {
+		struct device *parent;
+
+		const char *name;
+		int id;
+
+		const struct resource *res;
+		unsigned int num_res;
+
+		const void *data;
+		size_t size_data;
+		u64 dma_mask;
+};
+extern struct platform_device *platform_device_register_full(
+		const struct platform_device_info *pdevinfo);
+
+/**
+ * platform_device_register_resndata - add a platform-level device with
+ * resources and platform-specific data
+ *
+ * @parent: parent device for the device we're adding
+ * @name: base name of the device we're adding
+ * @id: instance id
+ * @res: set of resources that needs to be allocated for the device
+ * @num: number of resources
+ * @data: platform specific data for this platform device
+ * @size: size of platform specific data
+ *
+ * Returns &struct platform_device pointer on success, or ERR_PTR() on error.
+ */
+static inline struct platform_device *platform_device_register_resndata(
+		struct device *parent, const char *name, int id,
+		const struct resource *res, unsigned int num,
+		const void *data, size_t size) {
+
+	struct platform_device_info pdevinfo = {
+		.parent = parent,
+		.name = name,
+		.id = id,
+		.res = res,
+		.num_res = num,
+		.data = data,
+		.size_data = size,
+		.dma_mask = 0,
+	};
+
+	return platform_device_register_full(&pdevinfo);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * platform_device_register_simple - add a platform-level device and its resources
@@ -145,6 +200,18 @@ static inline void platform_set_drvdata(struct platform_device *pdev, void *data
 	dev_set_drvdata(&pdev->dev, data);
 }
 
+<<<<<<< HEAD
+=======
+/* module_platform_driver() - Helper macro for drivers that don't do
+ * anything special in module init/exit.  This eliminates a lot of
+ * boilerplate.  Each module may only use this macro once, and
+ * calling it replaces module_init() and module_exit()
+ */
+#define module_platform_driver(__platform_driver) \
+	module_driver(__platform_driver, platform_driver_register, \
+			platform_driver_unregister)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct platform_device *platform_create_bundle(struct platform_driver *driver,
 					int (*probe)(struct platform_device *),
 					struct resource *res, unsigned int n_res,
@@ -202,6 +269,7 @@ static inline char *early_platform_driver_setup_func(void)		\
 }
 #endif /* MODULE */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
 extern int platform_pm_prepare(struct device *dev);
 extern void platform_pm_complete(struct device *dev);
@@ -220,10 +288,19 @@ extern int platform_pm_resume_noirq(struct device *dev);
 #define platform_pm_resume		NULL
 #define platform_pm_suspend_noirq	NULL
 #define platform_pm_resume_noirq	NULL
+=======
+#ifdef CONFIG_SUSPEND
+extern int platform_pm_suspend(struct device *dev);
+extern int platform_pm_resume(struct device *dev);
+#else
+#define platform_pm_suspend		NULL
+#define platform_pm_resume		NULL
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_HIBERNATE_CALLBACKS
 extern int platform_pm_freeze(struct device *dev);
+<<<<<<< HEAD
 extern int platform_pm_freeze_noirq(struct device *dev);
 extern int platform_pm_thaw(struct device *dev);
 extern int platform_pm_thaw_noirq(struct device *dev);
@@ -231,26 +308,38 @@ extern int platform_pm_poweroff(struct device *dev);
 extern int platform_pm_poweroff_noirq(struct device *dev);
 extern int platform_pm_restore(struct device *dev);
 extern int platform_pm_restore_noirq(struct device *dev);
+=======
+extern int platform_pm_thaw(struct device *dev);
+extern int platform_pm_poweroff(struct device *dev);
+extern int platform_pm_restore(struct device *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define platform_pm_freeze		NULL
 #define platform_pm_thaw		NULL
 #define platform_pm_poweroff		NULL
 #define platform_pm_restore		NULL
+<<<<<<< HEAD
 #define platform_pm_freeze_noirq	NULL
 #define platform_pm_thaw_noirq		NULL
 #define platform_pm_poweroff_noirq	NULL
 #define platform_pm_restore_noirq	NULL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_PM_SLEEP
 #define USE_PLATFORM_PM_SLEEP_OPS \
+<<<<<<< HEAD
 	.prepare = platform_pm_prepare, \
 	.complete = platform_pm_complete, \
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.suspend = platform_pm_suspend, \
 	.resume = platform_pm_resume, \
 	.freeze = platform_pm_freeze, \
 	.thaw = platform_pm_thaw, \
 	.poweroff = platform_pm_poweroff, \
+<<<<<<< HEAD
 	.restore = platform_pm_restore, \
 	.suspend_noirq = platform_pm_suspend_noirq, \
 	.resume_noirq = platform_pm_resume_noirq, \
@@ -258,6 +347,9 @@ extern int platform_pm_restore_noirq(struct device *dev);
 	.thaw_noirq = platform_pm_thaw_noirq, \
 	.poweroff_noirq = platform_pm_poweroff_noirq, \
 	.restore_noirq = platform_pm_restore_noirq,
+=======
+	.restore = platform_pm_restore,
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define USE_PLATFORM_PM_SLEEP_OPS
 #endif

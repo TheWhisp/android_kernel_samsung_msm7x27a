@@ -2,8 +2,13 @@
  *
  * ISDN interface module for Eicon active cards DIVA.
  * CAPI Interface common functions
+<<<<<<< HEAD
  * 
  * Copyright 2000-2003 by Armin Schindler (mac@melware.de) 
+=======
+ *
+ * Copyright 2000-2003 by Armin Schindler (mac@melware.de)
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright 2000-2003 Cytronics & Melware (info@melware.de)
  *
  * This software may be used and distributed according to the terms

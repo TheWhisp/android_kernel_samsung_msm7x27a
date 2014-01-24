@@ -19,8 +19,12 @@
 #endif
 
 #include <arch/bitops.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/compiler.h>
 
 /*
@@ -156,8 +160,12 @@ static inline int test_and_change_bit(int nr, volatile unsigned long *addr)
 
 #include <asm-generic/bitops/le.h>
 
+<<<<<<< HEAD
 #define ext2_set_bit_atomic(l,n,a)   test_and_set_bit(n,a)
 #define ext2_clear_bit_atomic(l,n,a) test_and_clear_bit(n,a)
+=======
+#include <asm-generic/bitops/ext2-atomic-setbit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm-generic/bitops/sched.h>
 

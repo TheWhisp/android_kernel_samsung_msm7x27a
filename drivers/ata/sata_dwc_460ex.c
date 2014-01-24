@@ -766,11 +766,23 @@ static int dma_dwc_xfer_setup(struct scatterlist *sg, int num_elems,
 static void dma_dwc_exit(struct sata_dwc_device *hsdev)
 {
 	dev_dbg(host_pvt.dwc_dev, "%s:\n", __func__);
+<<<<<<< HEAD
 	if (host_pvt.sata_dma_regs)
 		iounmap(host_pvt.sata_dma_regs);
 
 	if (hsdev->irq_dma)
 		free_irq(hsdev->irq_dma, hsdev);
+=======
+	if (host_pvt.sata_dma_regs) {
+		iounmap(host_pvt.sata_dma_regs);
+		host_pvt.sata_dma_regs = NULL;
+	}
+
+	if (hsdev->irq_dma) {
+		free_irq(hsdev->irq_dma, hsdev);
+		hsdev->irq_dma = 0;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -1325,7 +1337,11 @@ static int sata_dwc_port_start(struct ata_port *ap)
 			dev_err(ap->dev, "%s: dma_alloc_coherent failed\n",
 				 __func__);
 			err = -ENOMEM;
+<<<<<<< HEAD
 			goto CLEANUP;
+=======
+			goto CLEANUP_ALLOC;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -1345,6 +1361,7 @@ static int sata_dwc_port_start(struct ata_port *ap)
 	/* Clear any error bits before libata starts issuing commands */
 	clear_serror();
 	ap->private_data = hsdevp;
+<<<<<<< HEAD
 
 CLEANUP:
 	if (err) {
@@ -1354,6 +1371,15 @@ CLEANUP:
 		dev_dbg(ap->dev, "%s: done\n", __func__);
 	}
 
+=======
+	dev_dbg(ap->dev, "%s: done\n", __func__);
+	return 0;
+
+CLEANUP_ALLOC:
+	kfree(hsdevp);
+CLEANUP:
+	dev_dbg(ap->dev, "%s: fail. ap->id = %d\n", __func__, ap->print_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 
@@ -1638,6 +1664,7 @@ static int sata_dwc_probe(struct platform_device *ofdev)
 	const struct ata_port_info *ppi[] = { &pi, NULL };
 
 	/* Allocate DWC SATA device */
+<<<<<<< HEAD
 	hsdev = kmalloc(sizeof(*hsdev), GFP_KERNEL);
 	if (hsdev == NULL) {
 		dev_err(&ofdev->dev, "kmalloc failed for hsdev\n");
@@ -1645,6 +1672,14 @@ static int sata_dwc_probe(struct platform_device *ofdev)
 		goto error_out;
 	}
 	memset(hsdev, 0, sizeof(*hsdev));
+=======
+	hsdev = kzalloc(sizeof(*hsdev), GFP_KERNEL);
+	if (hsdev == NULL) {
+		dev_err(&ofdev->dev, "kmalloc failed for hsdev\n");
+		err = -ENOMEM;
+		goto error;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Ioremap SATA registers */
 	base = of_iomap(ofdev->dev.of_node, 0);
@@ -1652,7 +1687,11 @@ static int sata_dwc_probe(struct platform_device *ofdev)
 		dev_err(&ofdev->dev, "ioremap failed for SATA register"
 			" address\n");
 		err = -ENODEV;
+<<<<<<< HEAD
 		goto error_out;
+=======
+		goto error_kmalloc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	hsdev->reg_base = base;
 	dev_dbg(&ofdev->dev, "ioremap done for SATA register address\n");
@@ -1665,7 +1704,11 @@ static int sata_dwc_probe(struct platform_device *ofdev)
 	if (!host) {
 		dev_err(&ofdev->dev, "ata_host_alloc_pinfo failed\n");
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto error_out;
+=======
+		goto error_iomap;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	host->private_data = hsdev;
@@ -1733,8 +1776,16 @@ error_out:
 	/* Free SATA DMA resources */
 	dma_dwc_exit(hsdev);
 
+<<<<<<< HEAD
 	if (base)
 		iounmap(base);
+=======
+error_iomap:
+	iounmap(base);
+error_kmalloc:
+	kfree(hsdev);
+error:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 
@@ -1773,6 +1824,7 @@ static struct platform_driver sata_dwc_driver = {
 	.remove = sata_dwc_remove,
 };
 
+<<<<<<< HEAD
 static int __init sata_dwc_init(void)
 {
 	return platform_driver_register(&sata_dwc_driver);
@@ -1785,6 +1837,9 @@ static void __exit sata_dwc_exit(void)
 
 module_init(sata_dwc_init);
 module_exit(sata_dwc_exit);
+=======
+module_platform_driver(sata_dwc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Mark Miesfeld <mmiesfeld@amcc.com>");

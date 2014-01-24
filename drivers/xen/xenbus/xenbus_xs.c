@@ -45,6 +45,10 @@
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <xen/xenbus.h>
+<<<<<<< HEAD
+=======
+#include <xen/xen.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xenbus_comms.h"
 
 struct xs_stored_msg {
@@ -531,6 +535,7 @@ int xenbus_printf(struct xenbus_transaction t,
 {
 	va_list ap;
 	int ret;
+<<<<<<< HEAD
 #define PRINTF_BUFFER_SIZE 4096
 	char *printf_buffer;
 
@@ -546,6 +551,20 @@ int xenbus_printf(struct xenbus_transaction t,
 	ret = xenbus_write(t, dir, node, printf_buffer);
 
 	kfree(printf_buffer);
+=======
+	char *buf;
+
+	va_start(ap, fmt);
+	buf = kvasprintf(GFP_NOIO | __GFP_HIGH, fmt, ap);
+	va_end(ap);
+
+	if (!buf)
+		return -ENOMEM;
+
+	ret = xenbus_write(t, dir, node, buf);
+
+	kfree(buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -638,8 +657,12 @@ int register_xenbus_watch(struct xenbus_watch *watch)
 
 	err = xs_watch(watch->node, token);
 
+<<<<<<< HEAD
 	/* Ignore errors due to multiple registration. */
 	if ((err != 0) && (err != -EEXIST)) {
+=======
+	if (err) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_lock(&watches_lock);
 		list_del(&watch->list);
 		spin_unlock(&watches_lock);

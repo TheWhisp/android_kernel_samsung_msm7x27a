@@ -10,14 +10,21 @@ extern struct sys_timer sa1100_timer;
 extern void __init sa1100_map_io(void);
 extern void __init sa1100_init_irq(void);
 extern void __init sa1100_init_gpio(void);
+<<<<<<< HEAD
+=======
+extern void sa11x0_restart(char, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SET_BANK(__nr,__start,__size) \
 	mi->bank[__nr].start = (__start), \
 	mi->bank[__nr].size = (__size)
 
+<<<<<<< HEAD
 extern void (*sa1100fb_backlight_power)(int on);
 extern void (*sa1100fb_lcd_power)(int on);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void sa1110_mb_enable(void);
 extern void sa1110_mb_disable(void);
 
@@ -38,4 +45,12 @@ struct irda_platform_data;
 void sa11x0_register_irda(struct irda_platform_data *irda);
 
 struct mcp_plat_data;
+<<<<<<< HEAD
 void sa11x0_register_mcp(struct mcp_plat_data *data);
+=======
+void sa11x0_ppc_configure_mcp(void);
+void sa11x0_register_mcp(struct mcp_plat_data *data);
+
+struct sa1100fb_mach_info;
+void sa11x0_register_lcd(struct sa1100fb_mach_info *inf);
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -5,7 +5,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -30,7 +34,11 @@
  *
  * BSD LICENSE
  *
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -168,6 +176,10 @@
  * the scheduler (especially for queue #4/#9, the command queue, otherwise
  * the driver can't issue commands!):
  */
+<<<<<<< HEAD
+=======
+#define SCD_MEM_LOWER_BOUND		(0x0000)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * Max Tx window size is the max number of contiguous TFDs that the scheduler
@@ -177,6 +189,7 @@
 #define SCD_WIN_SIZE				64
 #define SCD_FRAME_LIMIT				64
 
+<<<<<<< HEAD
 #define IWL_SCD_TXFIFO_POS_TID			(0)
 #define IWL_SCD_TXFIFO_POS_RA			(4)
 #define IWL_SCD_QUEUE_RA_TID_MAP_RATID_MSK	(0x01FF)
@@ -224,6 +237,81 @@
 #define IWLAGN_SCD_AGGR_SEL		(IWLAGN_SCD_BASE + 0x248)
 #define IWLAGN_SCD_INTERRUPT_MASK	(IWLAGN_SCD_BASE + 0x108)
 #define IWLAGN_SCD_QUEUE_STATUS_BITS(x)	(IWLAGN_SCD_BASE + 0x10c + (x) * 4)
+=======
+#define SCD_TXFIFO_POS_TID			(0)
+#define SCD_TXFIFO_POS_RA			(4)
+#define SCD_QUEUE_RA_TID_MAP_RATID_MSK	(0x01FF)
+
+/* agn SCD */
+#define SCD_QUEUE_STTS_REG_POS_TXF	(0)
+#define SCD_QUEUE_STTS_REG_POS_ACTIVE	(3)
+#define SCD_QUEUE_STTS_REG_POS_WSL	(4)
+#define SCD_QUEUE_STTS_REG_POS_SCD_ACT_EN (19)
+#define SCD_QUEUE_STTS_REG_MSK		(0x00FF0000)
+
+#define SCD_QUEUE_CTX_REG1_CREDIT_POS		(8)
+#define SCD_QUEUE_CTX_REG1_CREDIT_MSK		(0x00FFFF00)
+#define SCD_QUEUE_CTX_REG1_SUPER_CREDIT_POS	(24)
+#define SCD_QUEUE_CTX_REG1_SUPER_CREDIT_MSK	(0xFF000000)
+#define SCD_QUEUE_CTX_REG2_WIN_SIZE_POS		(0)
+#define SCD_QUEUE_CTX_REG2_WIN_SIZE_MSK		(0x0000007F)
+#define SCD_QUEUE_CTX_REG2_FRAME_LIMIT_POS	(16)
+#define SCD_QUEUE_CTX_REG2_FRAME_LIMIT_MSK	(0x007F0000)
+
+/* Context Data */
+#define SCD_CONTEXT_MEM_LOWER_BOUND	(SCD_MEM_LOWER_BOUND + 0x600)
+#define SCD_CONTEXT_MEM_UPPER_BOUND	(SCD_MEM_LOWER_BOUND + 0x6A0)
+
+/* Tx status */
+#define SCD_TX_STTS_MEM_LOWER_BOUND	(SCD_MEM_LOWER_BOUND + 0x6A0)
+#define SCD_TX_STTS_MEM_UPPER_BOUND	(SCD_MEM_LOWER_BOUND + 0x7E0)
+
+/* Translation Data */
+#define SCD_TRANS_TBL_MEM_LOWER_BOUND	(SCD_MEM_LOWER_BOUND + 0x7E0)
+#define SCD_TRANS_TBL_MEM_UPPER_BOUND	(SCD_MEM_LOWER_BOUND + 0x808)
+
+#define SCD_CONTEXT_QUEUE_OFFSET(x)\
+	(SCD_CONTEXT_MEM_LOWER_BOUND + ((x) * 8))
+
+#define SCD_TRANS_TBL_OFFSET_QUEUE(x) \
+	((SCD_TRANS_TBL_MEM_LOWER_BOUND + ((x) * 2)) & 0xfffc)
+
+#define SCD_BASE			(PRPH_BASE + 0xa02c00)
+
+#define SCD_SRAM_BASE_ADDR	(SCD_BASE + 0x0)
+#define SCD_DRAM_BASE_ADDR	(SCD_BASE + 0x8)
+#define SCD_AIT			(SCD_BASE + 0x0c)
+#define SCD_TXFACT		(SCD_BASE + 0x10)
+#define SCD_ACTIVE		(SCD_BASE + 0x14)
+#define SCD_QUEUECHAIN_SEL	(SCD_BASE + 0xe8)
+#define SCD_CHAINEXT_EN		(SCD_BASE + 0x244)
+#define SCD_AGGR_SEL		(SCD_BASE + 0x248)
+#define SCD_INTERRUPT_MASK	(SCD_BASE + 0x108)
+
+static inline unsigned int SCD_QUEUE_WRPTR(unsigned int chnl)
+{
+	if (chnl < 20)
+		return SCD_BASE + 0x18 + chnl * 4;
+	WARN_ON_ONCE(chnl >= 32);
+	return SCD_BASE + 0x284 + (chnl - 20) * 4;
+}
+
+static inline unsigned int SCD_QUEUE_RDPTR(unsigned int chnl)
+{
+	if (chnl < 20)
+		return SCD_BASE + 0x68 + chnl * 4;
+	WARN_ON_ONCE(chnl >= 32);
+	return SCD_BASE + 0x2B4 + (chnl - 20) * 4;
+}
+
+static inline unsigned int SCD_QUEUE_STATUS_BITS(unsigned int chnl)
+{
+	if (chnl < 20)
+		return SCD_BASE + 0x10c + chnl * 4;
+	WARN_ON_ONCE(chnl >= 32);
+	return SCD_BASE + 0x384 + (chnl - 20) * 4;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*********************** END TX SCHEDULER *************************************/
 

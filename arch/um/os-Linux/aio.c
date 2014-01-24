@@ -11,10 +11,15 @@
 #include <asm/unistd.h>
 #include "aio.h"
 #include "init.h"
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "kern_util.h"
 #include "os.h"
 #include "user.h"
+=======
+#include "kern_util.h"
+#include "os.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct aio_thread_req {
 	enum aio_type type;

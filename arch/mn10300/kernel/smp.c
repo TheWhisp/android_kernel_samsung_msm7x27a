@@ -24,8 +24,13 @@
 #include <linux/sched.h>
 #include <linux/profile.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
 #include <asm/tlbflush.h>
 #include <asm/system.h>
+=======
+#include <linux/cpu.h>
+#include <asm/tlbflush.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/bitops.h>
 #include <asm/processor.h>
 #include <asm/bug.h>
@@ -39,7 +44,10 @@
 #include "internal.h"
 
 #ifdef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
 #include <linux/cpu.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 
 static unsigned long sleep_mode[NR_CPUS];
@@ -875,10 +883,20 @@ static void __init smp_online(void)
 
 	cpu = smp_processor_id();
 
+<<<<<<< HEAD
 	local_irq_enable();
 
 	set_cpu_online(cpu, true);
 	smp_wmb();
+=======
+	notify_cpu_starting(cpu);
+
+	ipi_call_lock();
+	set_cpu_online(cpu, true);
+	ipi_call_unlock();
+
+	local_irq_enable();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**

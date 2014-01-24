@@ -1,5 +1,9 @@
 menuconfig OMAP2_DSS
+<<<<<<< HEAD
         tristate "OMAP2+ Display Subsystem support (EXPERIMENTAL)"
+=======
+        tristate "OMAP2+ Display Subsystem support"
+>>>>>>> refs/remotes/origin/cm-10.0
         depends on ARCH_OMAP2PLUS
         help
 	  OMAP2+ Display Subsystem support.
@@ -117,6 +121,7 @@ config OMAP2_DSS_MIN_FCK_PER_PCK
 	  Max FCK is 173MHz, so this doesn't work if your PCK
 	  is very high.
 
+<<<<<<< HEAD
 config OMAP2_DSS_SLEEP_BEFORE_RESET
 	bool "Sleep 50ms before DSS reset"
 	default y
@@ -129,6 +134,8 @@ config OMAP2_DSS_SLEEP_BEFORE_RESET
 	  configurations the SYNC_LOST may never happen, so the sleep can
 	  be disabled here.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config OMAP2_DSS_SLEEP_AFTER_VENC_RESET
 	bool "Sleep 20ms after VENC reset"
 	default y

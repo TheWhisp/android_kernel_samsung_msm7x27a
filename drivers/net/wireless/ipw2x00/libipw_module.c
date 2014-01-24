@@ -150,10 +150,16 @@ struct net_device *alloc_libipw(int sizeof_priv, int monitor)
 	LIBIPW_DEBUG_INFO("Initializing...\n");
 
 	dev = alloc_etherdev(sizeof(struct libipw_device) + sizeof_priv);
+<<<<<<< HEAD
 	if (!dev) {
 		LIBIPW_ERROR("Unable to allocate network device.\n");
 		goto failed;
 	}
+=======
+	if (!dev)
+		goto failed;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ieee = netdev_priv(dev);
 
 	ieee->dev = dev;

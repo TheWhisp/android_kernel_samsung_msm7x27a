@@ -192,7 +192,11 @@ struct posix_acl *nfs3_proc_getacl(struct inode *inode, int type)
 		.pages = pages,
 	};
 	struct nfs3_getaclres res = {
+<<<<<<< HEAD
 		0
+=======
+		NULL,
+>>>>>>> refs/remotes/origin/cm-10.0
 	};
 	struct rpc_message msg = {
 		.rpc_argp	= &args,
@@ -415,7 +419,11 @@ fail:
 }
 
 int nfs3_proc_set_default_acl(struct inode *dir, struct inode *inode,
+<<<<<<< HEAD
 		mode_t mode)
+=======
+		umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct posix_acl *dfacl, *acl;
 	int error = 0;
@@ -427,6 +435,7 @@ int nfs3_proc_set_default_acl(struct inode *dir, struct inode *inode,
 	}
 	if (!dfacl)
 		return 0;
+<<<<<<< HEAD
 	acl = posix_acl_clone(dfacl, GFP_KERNEL);
 	error = -ENOMEM;
 	if (!acl)
@@ -437,6 +446,14 @@ int nfs3_proc_set_default_acl(struct inode *dir, struct inode *inode,
 	error = nfs3_proc_setacls(inode, acl, S_ISDIR(inode->i_mode) ?
 						      dfacl : NULL);
 out_release_acl:
+=======
+	acl = posix_acl_dup(dfacl);
+	error = posix_acl_create(&acl, GFP_KERNEL, &mode);
+	if (error < 0)
+		goto out_release_dfacl;
+	error = nfs3_proc_setacls(inode, acl, S_ISDIR(inode->i_mode) ?
+						      dfacl : NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	posix_acl_release(acl);
 out_release_dfacl:
 	posix_acl_release(dfacl);

@@ -5,7 +5,11 @@
  *
  *  Bits taken from various places.
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/pci.h>
 #include <linux/slab.h>
@@ -16,7 +20,10 @@
 #include <asm/mach/pci.h>
 
 static int debug_pci;
+<<<<<<< HEAD
 static int use_firmware;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * We can't use pci_find_device() here since we are
@@ -295,6 +302,7 @@ static inline int pdev_bad_for_parity(struct pci_dev *dev)
 }
 
 /*
+<<<<<<< HEAD
  * Adjust the device resources from bus-centric to Linux-centric.
  */
 static void __devinit
@@ -332,17 +340,25 @@ pbus_assign_bus_resources(struct pci_bus *bus, struct pci_sys_data *root)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * pcibios_fixup_bus - Called after each bus is probed,
  * but before its children are examined.
  */
 void pcibios_fixup_bus(struct pci_bus *bus)
 {
+<<<<<<< HEAD
 	struct pci_sys_data *root = bus->sysdata;
 	struct pci_dev *dev;
 	u16 features = PCI_COMMAND_SERR | PCI_COMMAND_PARITY | PCI_COMMAND_FAST_BACK;
 
 	pbus_assign_bus_resources(bus, root);
 
+=======
+	struct pci_dev *dev;
+	u16 features = PCI_COMMAND_SERR | PCI_COMMAND_PARITY | PCI_COMMAND_FAST_BACK;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Walk the devices on this bus, working out what we can
 	 * and can't support.
@@ -350,8 +366,11 @@ void pcibios_fixup_bus(struct pci_bus *bus)
 	list_for_each_entry(dev, &bus->devices, bus_list) {
 		u16 status;
 
+<<<<<<< HEAD
 		pdev_fixup_device_resources(root, dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		pci_read_config_word(dev, PCI_STATUS, &status);
 
 		/*
@@ -412,6 +431,7 @@ void pcibios_fixup_bus(struct pci_bus *bus)
 	printk(KERN_INFO "PCI: bus%d: Fast back to back transfers %sabled\n",
 		bus->number, (features & PCI_COMMAND_FAST_BACK) ? "en" : "dis");
 }
+<<<<<<< HEAD
 
 /*
  * Convert from Linux-centric to bus-centric addresses for bridge devices.
@@ -452,6 +472,10 @@ pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 EXPORT_SYMBOL(pcibios_fixup_bus);
 EXPORT_SYMBOL(pcibios_resource_to_bus);
 EXPORT_SYMBOL(pcibios_bus_to_resource);
+=======
+#ifdef CONFIG_HOTPLUG
+EXPORT_SYMBOL(pcibios_fixup_bus);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*
@@ -476,7 +500,11 @@ static u8 __devinit pcibios_swizzle(struct pci_dev *dev, u8 *pin)
 /*
  * Map a slot/pin to an IRQ.
  */
+<<<<<<< HEAD
 static int pcibios_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pci_sys_data *sys = dev->sysdata;
 	int irq = -1;
@@ -509,12 +537,26 @@ static void __init pcibios_init_hw(struct hw_pci *hw)
 		sys->busnr   = busnr;
 		sys->swizzle = hw->swizzle;
 		sys->map_irq = hw->map_irq;
+<<<<<<< HEAD
 		sys->resource[0] = &ioport_resource;
 		sys->resource[1] = &iomem_resource;
+=======
+		INIT_LIST_HEAD(&sys->resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ret = hw->setup(nr, sys);
 
 		if (ret > 0) {
+<<<<<<< HEAD
+=======
+			if (list_empty(&sys->resources)) {
+				pci_add_resource_offset(&sys->resources,
+					 &ioport_resource, sys->io_offset);
+				pci_add_resource_offset(&sys->resources,
+					 &iomem_resource, sys->mem_offset);
+			}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			sys->bus = hw->scan(nr, sys);
 
 			if (!sys->bus)
@@ -537,6 +579,10 @@ void __init pci_common_init(struct hw_pci *hw)
 
 	INIT_LIST_HEAD(&hw->buses);
 
+<<<<<<< HEAD
+=======
+	pci_add_flags(PCI_REASSIGN_ALL_RSRC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (hw->preinit)
 		hw->preinit();
 	pcibios_init_hw(hw);
@@ -548,7 +594,11 @@ void __init pci_common_init(struct hw_pci *hw)
 	list_for_each_entry(sys, &hw->buses, node) {
 		struct pci_bus *bus = sys->bus;
 
+<<<<<<< HEAD
 		if (!use_firmware) {
+=======
+		if (!pci_has_flag(PCI_PROBE_ONLY)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * Size the bridge windows.
 			 */
@@ -572,13 +622,27 @@ void __init pci_common_init(struct hw_pci *hw)
 	}
 }
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_PCI_HOST_ITE8152
+void pcibios_set_master(struct pci_dev *dev)
+{
+	/* No special bus mastering setup handling */
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 char * __init pcibios_setup(char *str)
 {
 	if (!strcmp(str, "debug")) {
 		debug_pci = 1;
 		return NULL;
 	} else if (!strcmp(str, "firmware")) {
+<<<<<<< HEAD
 		use_firmware = 1;
+=======
+		pci_add_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return NULL;
 	}
 	return str;

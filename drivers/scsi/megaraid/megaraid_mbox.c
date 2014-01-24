@@ -67,10 +67,18 @@
  *
  * NEC	MegaRAID PCI Express ROMB	1000	0408	1033	8287
  *
+<<<<<<< HEAD
  * For history of changes, see Documentation/ChangeLog.megaraid
  */
 
 #include <linux/slab.h>
+=======
+ * For history of changes, see Documentation/scsi/ChangeLog.megaraid
+ */
+
+#include <linux/slab.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "megaraid_mbox.h"
 
 static int megaraid_init(void);

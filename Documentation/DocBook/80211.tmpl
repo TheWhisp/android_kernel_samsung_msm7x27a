@@ -129,7 +129,10 @@
 !Finclude/net/cfg80211.h cfg80211_pmksa
 !Finclude/net/cfg80211.h cfg80211_send_rx_auth
 !Finclude/net/cfg80211.h cfg80211_send_auth_timeout
+<<<<<<< HEAD
 !Finclude/net/cfg80211.h __cfg80211_auth_canceled
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 !Finclude/net/cfg80211.h cfg80211_send_rx_assoc
 !Finclude/net/cfg80211.h cfg80211_send_assoc_timeout
 !Finclude/net/cfg80211.h cfg80211_send_deauth
@@ -402,8 +405,14 @@
 !Finclude/net/mac80211.h set_key_cmd
 !Finclude/net/mac80211.h ieee80211_key_conf
 !Finclude/net/mac80211.h ieee80211_key_flags
+<<<<<<< HEAD
 !Finclude/net/mac80211.h ieee80211_tkip_key_type
 !Finclude/net/mac80211.h ieee80211_get_tkip_key
+=======
+!Finclude/net/mac80211.h ieee80211_get_tkip_p1k
+!Finclude/net/mac80211.h ieee80211_get_tkip_p1k_iv
+!Finclude/net/mac80211.h ieee80211_get_tkip_p2k
+>>>>>>> refs/remotes/origin/cm-10.0
 !Finclude/net/mac80211.h ieee80211_key_removed
       </chapter>
 
@@ -432,8 +441,23 @@
           Insert notes about VLAN interfaces with hw crypto here or
           in the hw crypto chapter.
         </para>
+<<<<<<< HEAD
 !Finclude/net/mac80211.h ieee80211_get_buffered_bc
 !Finclude/net/mac80211.h ieee80211_beacon_get
+=======
+      <section id="ps-client">
+        <title>support for powersaving clients</title>
+!Pinclude/net/mac80211.h AP support for powersaving clients
+      </section>
+!Finclude/net/mac80211.h ieee80211_get_buffered_bc
+!Finclude/net/mac80211.h ieee80211_beacon_get
+!Finclude/net/mac80211.h ieee80211_sta_eosp_irqsafe
+!Finclude/net/mac80211.h ieee80211_frame_release_type
+!Finclude/net/mac80211.h ieee80211_sta_ps_transition
+!Finclude/net/mac80211.h ieee80211_sta_ps_transition_ni
+!Finclude/net/mac80211.h ieee80211_sta_set_buffered
+!Finclude/net/mac80211.h ieee80211_sta_block_awake
+>>>>>>> refs/remotes/origin/cm-10.0
       </chapter>
 
       <chapter id="multi-iface">
@@ -459,7 +483,10 @@
 !Finclude/net/mac80211.h sta_notify_cmd
 !Finclude/net/mac80211.h ieee80211_find_sta
 !Finclude/net/mac80211.h ieee80211_find_sta_by_ifaddr
+<<<<<<< HEAD
 !Finclude/net/mac80211.h ieee80211_sta_block_awake
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
       </chapter>
 
       <chapter id="hardware-scan-offload">

@@ -37,13 +37,25 @@ print_ftrace_graph_addr(unsigned long addr, void *data,
 			const struct stacktrace_ops *ops,
 			struct thread_info *tinfo, int *graph)
 {
+<<<<<<< HEAD
 	struct task_struct *task = tinfo->task;
 	unsigned long ret_addr;
 	int index = task->curr_ret_stack;
+=======
+	struct task_struct *task;
+	unsigned long ret_addr;
+	int index;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (addr != (unsigned long)return_to_handler)
 		return;
 
+<<<<<<< HEAD
+=======
+	task = tinfo->task;
+	index = task->curr_ret_stack;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!task->ret_stack || index < *graph)
 		return;
 
@@ -252,7 +264,12 @@ int __kprobes __die(const char *str, struct pt_regs *regs, long err)
 	unsigned short ss;
 	unsigned long sp;
 #endif
+<<<<<<< HEAD
 	printk(KERN_EMERG "%s: %04lx [#%d] ", str, err & 0xffff, ++die_counter);
+=======
+	printk(KERN_DEFAULT
+	       "%s: %04lx [#%d] ", str, err & 0xffff, ++die_counter);
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PREEMPT
 	printk("PREEMPT ");
 #endif
@@ -264,7 +281,11 @@ int __kprobes __die(const char *str, struct pt_regs *regs, long err)
 #endif
 	printk("\n");
 	if (notify_die(DIE_OOPS, str, regs, err,
+<<<<<<< HEAD
 			current->thread.trap_no, SIGSEGV) == NOTIFY_STOP)
+=======
+			current->thread.trap_nr, SIGSEGV) == NOTIFY_STOP)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 
 	show_registers(regs);

@@ -12,7 +12,11 @@
 
 #undef DEBUG
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/string.h>
 #include <linux/sched.h>
 #include <linux/init.h>
@@ -51,7 +55,10 @@
 #include <asm/btext.h>
 #include <asm/nvram.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/rtas.h>
 #include <asm/iommu.h>
 #include <asm/serial.h>
@@ -61,6 +68,10 @@
 #include <asm/xmon.h>
 #include <asm/cputhreads.h>
 #include <mm/mmu_decl.h>
+<<<<<<< HEAD
+=======
+#include <asm/fadump.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "setup.h"
 
@@ -109,6 +120,17 @@ EXPORT_SYMBOL(ppc_do_canonicalize_irqs);
 /* also used by kexec */
 void machine_shutdown(void)
 {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_FA_DUMP
+	/*
+	 * if fadump is active, cleanup the fadump registration before we
+	 * shutdown.
+	 */
+	fadump_cleanup();
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ppc_md.machine_shutdown)
 		ppc_md.machine_shutdown();
 }
@@ -375,6 +397,12 @@ void __init check_for_initrd(void)
 
 int threads_per_core, threads_shift;
 cpumask_t threads_core_mask;
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(threads_per_core);
+EXPORT_SYMBOL_GPL(threads_shift);
+EXPORT_SYMBOL_GPL(threads_core_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __init cpu_init_thread_core_maps(int tpc)
 {
@@ -636,6 +664,14 @@ EXPORT_SYMBOL(check_legacy_ioport);
 static int ppc_panic_event(struct notifier_block *this,
                              unsigned long event, void *ptr)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * If firmware-assisted dump has been registered then trigger
+	 * firmware-assisted dump and let firmware handle everything else.
+	 */
+	crash_fadump(NULL, ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ppc_md.panic(ptr);  /* May not return */
 	return NOTIFY_DONE;
 }
@@ -704,6 +740,7 @@ static int powerpc_debugfs_init(void)
 arch_initcall(powerpc_debugfs_init);
 #endif
 
+<<<<<<< HEAD
 static int ppc_dflt_bus_notify(struct notifier_block *nb,
 				unsigned long action, void *data)
 {
@@ -730,3 +767,16 @@ static int __init setup_bus_notifier(void)
 }
 
 arch_initcall(setup_bus_notifier);
+=======
+void ppc_printk_progress(char *s, unsigned short hex)
+{
+	pr_info("%s\n", s);
+}
+
+void arch_setup_pdev_archdata(struct platform_device *pdev)
+{
+	pdev->archdata.dma_mask = DMA_BIT_MASK(32);
+	pdev->dev.dma_mask = &pdev->archdata.dma_mask;
+ 	set_dma_ops(&pdev->dev, &dma_direct_ops);
+}
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -40,7 +40,10 @@
 #include <linux/moduleparam.h>
 #include <linux/bitops.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/byteorder.h>
 
 #include <net/irda/irda.h>
@@ -67,7 +70,11 @@ static void *ckey;
 static void *skey;
 
 /* Module parameters */
+<<<<<<< HEAD
 static int eth;   /* Use "eth" or "irlan" name for devices */
+=======
+static bool eth;   /* Use "eth" or "irlan" name for devices */
+>>>>>>> refs/remotes/origin/cm-10.0
 static int access = ACCESS_PEER; /* PEER, DIRECT or HOSTED */
 
 #ifdef CONFIG_PROC_FS
@@ -317,8 +324,13 @@ static void irlan_connect_indication(void *instance, void *sap,
 
 	IRDA_DEBUG(2, "%s()\n", __func__ );
 
+<<<<<<< HEAD
 	self = (struct irlan_cb *) instance;
 	tsap = (struct tsap_cb *) sap;
+=======
+	self = instance;
+	tsap = sap;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRLAN_MAGIC, return;);
@@ -361,7 +373,11 @@ static void irlan_connect_confirm(void *instance, void *sap,
 {
 	struct irlan_cb *self;
 
+<<<<<<< HEAD
 	self = (struct irlan_cb *) instance;
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRLAN_MAGIC, return;);
@@ -406,8 +422,13 @@ static void irlan_disconnect_indication(void *instance,
 
 	IRDA_DEBUG(0, "%s(), reason=%d\n", __func__ , reason);
 
+<<<<<<< HEAD
 	self = (struct irlan_cb *) instance;
 	tsap = (struct tsap_cb *) sap;
+=======
+	self = instance;
+	tsap = sap;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRLAN_MAGIC, return;);

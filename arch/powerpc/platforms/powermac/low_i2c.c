@@ -33,7 +33,11 @@
 #include <linux/types.h>
 #include <linux/sched.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/adb.h>
 #include <linux/pmu.h>
 #include <linux/delay.h>
@@ -366,11 +370,26 @@ static void kw_i2c_timeout(unsigned long data)
 	unsigned long flags;
 
 	spin_lock_irqsave(&host->lock, flags);
+<<<<<<< HEAD
+=======
+
+	/*
+	 * If the timer is pending, that means we raced with the
+	 * irq, in which case we just return
+	 */
+	if (timer_pending(&host->timeout_timer))
+		goto skip;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	kw_i2c_handle_interrupt(host, kw_read_reg(reg_isr));
 	if (host->state != state_idle) {
 		host->timeout_timer.expires = jiffies + KW_POLL_TIMEOUT;
 		add_timer(&host->timeout_timer);
 	}
+<<<<<<< HEAD
+=======
+ skip:
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&host->lock, flags);
 }
 

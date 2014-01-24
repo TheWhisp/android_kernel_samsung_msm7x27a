@@ -14,6 +14,10 @@
  */
 
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <net/fib_rules.h>
 #include <net/ipv6.h>
@@ -95,7 +99,11 @@ static int fib6_rule_action(struct fib_rule *rule, struct flowi *flp,
 			if (!ipv6_prefix_equal(&saddr, &r->src.addr,
 					       r->src.plen))
 				goto again;
+<<<<<<< HEAD
 			ipv6_addr_copy(&flp6->saddr, &saddr);
+=======
+			flp6->saddr = saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		goto out;
 	}

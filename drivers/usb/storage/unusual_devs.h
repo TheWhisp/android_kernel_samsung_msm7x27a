@@ -664,6 +664,7 @@ UNUSUAL_DEV(  0x054c, 0x02a5, 0x0100, 0x0100,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_NO_READ_CAPACITY_16 ),
 
+<<<<<<< HEAD
 /* Submitted by Ren Bigcren <bigcren.ren@sonymobile.com> */
 UNUSUAL_DEV(  0x054c, 0x02a5, 0x0100, 0x0100,
 		"Sony Corp.",
@@ -671,6 +672,8 @@ UNUSUAL_DEV(  0x054c, 0x02a5, 0x0100, 0x0100,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_NO_READ_CAPACITY_16 ),
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* floppy reports multiple luns */
 UNUSUAL_DEV(  0x055d, 0x2020, 0x0000, 0x0210,
 		"SAMSUNG",
@@ -1912,6 +1915,7 @@ UNUSUAL_DEV(  0x1652, 0x6600, 0x0201, 0x0201,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_IGNORE_RESIDUE ),
 
+<<<<<<< HEAD
 /* Reported by Jesse Feddema <jdfeddema@gmail.com> */
 UNUSUAL_DEV(  0x177f, 0x0400, 0x0000, 0x0000,
 		"Yarvik",
@@ -1919,6 +1923,8 @@ UNUSUAL_DEV(  0x177f, 0x0400, 0x0000, 0x0000,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_BULK_IGNORE_TAG | US_FL_MAX_SECTORS_64 ),
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Reported by Hans de Goede <hdegoede@redhat.com>
  * These Appotech controllers are found in Picture Frames, they provide a
  * (buggy) emulation of a cdrom drive which contains the windows software
@@ -1948,7 +1954,11 @@ UNUSUAL_DEV(  0x1b1c, 0x1ab5, 0x0200, 0x0200,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_INITIAL_READ10 ),
 
+<<<<<<< HEAD
 /* Patch by Richard Sch¸tz <r.schtz@t-online.de>
+=======
+/* Patch by Richard Sch√ºtz <r.schtz@t-online.de>
+>>>>>>> refs/remotes/origin/cm-10.0
  * This external hard drive enclosure uses a JMicron chip which
  * needs the US_FL_IGNORE_RESIDUE flag to work properly. */
 UNUSUAL_DEV(  0x1e68, 0x001b, 0x0000, 0x0000,

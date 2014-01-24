@@ -37,6 +37,7 @@
 #include <linux/sched.h>
 #include <linux/rcupdate.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
 #include <linux/mutex.h>
 #include <linux/delay.h>
 #include <linux/swap.h>
@@ -51,6 +52,10 @@
 #define OOM_SCORE_ADJ_MAX       1000
 
 static uint32_t lowmem_debug_level = 1;
+=======
+
+static uint32_t lowmem_debug_level = 2;
+>>>>>>> refs/remotes/origin/cm-10.0
 static int lowmem_adj[6] = {
 	0,
 	1,
@@ -65,7 +70,10 @@ static int lowmem_minfree[6] = {
 	16 * 1024,	/* 64MB */
 };
 static int lowmem_minfree_size = 4;
+<<<<<<< HEAD
 static int lmk_fast_run = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static unsigned long lowmem_deathpending_timeout;
 
@@ -91,6 +99,7 @@ static int test_task_flag(struct task_struct *p, int flag)
 	return 0;
 }
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(scan_mutex);
 
 void tune_lmk_zone_param(struct zonelist *zonelist, int classzone_idx,
@@ -172,6 +181,8 @@ void tune_lmk_param(int *other_free, int *other_file, gfp_t gfp_mask)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 {
 	struct task_struct *tsk;
@@ -183,6 +194,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	int selected_tasksize = 0;
 	int selected_oom_score_adj;
 	int array_size = ARRAY_SIZE(lowmem_adj);
+<<<<<<< HEAD
 	int other_free;
 	int other_file;
 
@@ -197,6 +209,12 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 
 	tune_lmk_param(&other_free, &other_file, sc->gfp_mask);
 
+=======
+	int other_free = global_page_state(NR_FREE_PAGES);
+	int other_file = global_page_state(NR_FILE_PAGES) -
+						global_page_state(NR_SHMEM);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (lowmem_adj_size < array_size)
 		array_size = lowmem_adj_size;
 	if (lowmem_minfree_size < array_size)
@@ -219,10 +237,13 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	if (sc->nr_to_scan <= 0 || min_score_adj == OOM_SCORE_ADJ_MAX + 1) {
 		lowmem_print(5, "lowmem_shrink %lu, %x, return %d\n",
 			     sc->nr_to_scan, sc->gfp_mask, rem);
+<<<<<<< HEAD
 
 		if (sc->nr_to_scan > 0)
 			mutex_unlock(&scan_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		return rem;
 	}
 	selected_oom_score_adj = min_score_adj;
@@ -230,8 +251,11 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	rcu_read_lock();
 	for_each_process(tsk) {
 		struct task_struct *p;
+<<<<<<< HEAD
 		struct mm_struct *mm;
 		struct signal_struct *sig;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		int oom_score_adj;
 
 		if (tsk->flags & PF_KTHREAD)
@@ -240,9 +264,12 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		if (time_before_eq(jiffies, lowmem_deathpending_timeout)) {
 			if (test_task_flag(tsk, TIF_MEMDIE)) {
 				rcu_read_unlock();
+<<<<<<< HEAD
 				/* give the system time to free up the memory */
 				msleep_interruptible(20);
 				mutex_unlock(&scan_mutex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				return 0;
 			}
 		}
@@ -251,6 +278,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		if (!p)
 			continue;
 
+<<<<<<< HEAD
 		/* if task no longer has any memory ignore it */
 		mm = p->mm;
 		sig = p->signal;
@@ -260,6 +288,9 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		}
 
 		oom_score_adj = p->signal->oom_adj;
+=======
+		oom_score_adj = p->signal->oom_score_adj;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (oom_score_adj < min_score_adj) {
 			task_unlock(p);
 			continue;
@@ -289,6 +320,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		send_sig(SIGKILL, selected, 0);
 		set_tsk_thread_flag(selected, TIF_MEMDIE);
 		rem -= selected_tasksize;
+<<<<<<< HEAD
 		rcu_read_unlock();
 		/* give the system time to free up the memory */
 		msleep_interruptible(20);
@@ -298,6 +330,12 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	lowmem_print(4, "lowmem_shrink %lu, %x, return %d\n",
 		     sc->nr_to_scan, sc->gfp_mask, rem);
 	mutex_unlock(&scan_mutex);
+=======
+	}
+	lowmem_print(4, "lowmem_shrink %lu, %x, return %d\n",
+		     sc->nr_to_scan, sc->gfp_mask, rem);
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rem;
 }
 
@@ -317,6 +355,7 @@ static void __exit lowmem_exit(void)
 	unregister_shrinker(&lowmem_shrinker);
 }
 
+<<<<<<< HEAD
 module_param_named(cost, lowmem_shrinker.seeks, int, S_IRUGO | S_IWUSR);
 module_param_array_named(adj, lowmem_adj, int, &lowmem_adj_size,
 			 S_IRUGO | S_IWUSR);
@@ -324,8 +363,105 @@ module_param_array_named(minfree, lowmem_minfree, uint, &lowmem_minfree_size,
 			 S_IRUGO | S_IWUSR);
 module_param_named(debug_level, lowmem_debug_level, uint, S_IRUGO | S_IWUSR);
 module_param_named(lmk_fast_run, lmk_fast_run, int, S_IRUGO | S_IWUSR);
+=======
+#ifdef CONFIG_ANDROID_LOW_MEMORY_KILLER_AUTODETECT_OOM_ADJ_VALUES
+static int lowmem_oom_adj_to_oom_score_adj(int oom_adj)
+{
+	if (oom_adj == OOM_ADJUST_MAX)
+		return OOM_SCORE_ADJ_MAX;
+	else
+		return (oom_adj * OOM_SCORE_ADJ_MAX) / -OOM_DISABLE;
+}
+
+static void lowmem_autodetect_oom_adj_values(void)
+{
+	int i;
+	int oom_adj;
+	int oom_score_adj;
+	int array_size = ARRAY_SIZE(lowmem_adj);
+
+	if (lowmem_adj_size < array_size)
+		array_size = lowmem_adj_size;
+
+	if (array_size <= 0)
+		return;
+
+	oom_adj = lowmem_adj[array_size - 1];
+	if (oom_adj > OOM_ADJUST_MAX)
+		return;
+
+	oom_score_adj = lowmem_oom_adj_to_oom_score_adj(oom_adj);
+	if (oom_score_adj <= OOM_ADJUST_MAX)
+		return;
+
+	lowmem_print(1, "lowmem_shrink: convert oom_adj to oom_score_adj:\n");
+	for (i = 0; i < array_size; i++) {
+		oom_adj = lowmem_adj[i];
+		oom_score_adj = lowmem_oom_adj_to_oom_score_adj(oom_adj);
+		lowmem_adj[i] = oom_score_adj;
+		lowmem_print(1, "oom_adj %d => oom_score_adj %d\n",
+			     oom_adj, oom_score_adj);
+	}
+}
+
+static int lowmem_adj_array_set(const char *val, const struct kernel_param *kp)
+{
+	int ret;
+
+	ret = param_array_ops.set(val, kp);
+
+	/* HACK: Autodetect oom_adj values in lowmem_adj array */
+	lowmem_autodetect_oom_adj_values();
+
+	return ret;
+}
+
+static int lowmem_adj_array_get(char *buffer, const struct kernel_param *kp)
+{
+	return param_array_ops.get(buffer, kp);
+}
+
+static void lowmem_adj_array_free(void *arg)
+{
+	param_array_ops.free(arg);
+}
+
+static struct kernel_param_ops lowmem_adj_array_ops = {
+	.set = lowmem_adj_array_set,
+	.get = lowmem_adj_array_get,
+	.free = lowmem_adj_array_free,
+};
+
+static const struct kparam_array __param_arr_adj = {
+	.max = ARRAY_SIZE(lowmem_adj),
+	.num = &lowmem_adj_size,
+	.ops = &param_ops_int,
+	.elemsize = sizeof(lowmem_adj[0]),
+	.elem = lowmem_adj,
+};
+#endif
+
+module_param_named(cost, lowmem_shrinker.seeks, int, S_IRUGO | S_IWUSR);
+#ifdef CONFIG_ANDROID_LOW_MEMORY_KILLER_AUTODETECT_OOM_ADJ_VALUES
+__module_param_call(MODULE_PARAM_PREFIX, adj,
+		    &lowmem_adj_array_ops,
+		    .arr = &__param_arr_adj,
+		    S_IRUGO | S_IWUSR, -1);
+__MODULE_PARM_TYPE(adj, "array of int");
+#else
+module_param_array_named(adj, lowmem_adj, int, &lowmem_adj_size,
+			 S_IRUGO | S_IWUSR);
+#endif
+module_param_array_named(minfree, lowmem_minfree, uint, &lowmem_minfree_size,
+			 S_IRUGO | S_IWUSR);
+module_param_named(debug_level, lowmem_debug_level, uint, S_IRUGO | S_IWUSR);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_init(lowmem_init);
 module_exit(lowmem_exit);
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0

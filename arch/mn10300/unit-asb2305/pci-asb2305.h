@@ -31,8 +31,11 @@ extern unsigned int pci_probe;
 
 /* pci-asb2305.c */
 
+<<<<<<< HEAD
 extern unsigned int pcibios_max_latency;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void pcibios_resource_survey(void);
 
 /* pci.c */

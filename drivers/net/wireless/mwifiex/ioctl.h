@@ -50,7 +50,11 @@ struct mwifiex_chan_freq {
 };
 
 struct mwifiex_ssid_bssid {
+<<<<<<< HEAD
 	struct mwifiex_802_11_ssid ssid;
+=======
+	struct cfg80211_ssid ssid;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 bssid[ETH_ALEN];
 };
 
@@ -62,6 +66,7 @@ enum {
 	BAND_AN = 16,
 };
 
+<<<<<<< HEAD
 #define NO_SEC_CHANNEL               0
 #define SEC_CHANNEL_ABOVE            1
 #define SEC_CHANNEL_BELOW            3
@@ -73,6 +78,8 @@ struct mwifiex_ds_band_cfg {
 	u32 sec_chan_offset;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 enum {
 	ADHOC_IDLE,
 	ADHOC_STARTED,
@@ -133,8 +140,12 @@ struct mwifiex_ver_ext {
 
 struct mwifiex_bss_info {
 	u32 bss_mode;
+<<<<<<< HEAD
 	struct mwifiex_802_11_ssid ssid;
 	u32 scan_table_idx;
+=======
+	struct cfg80211_ssid ssid;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 bss_chan;
 	u32 region_code;
 	u32 media_connected;
@@ -249,6 +260,10 @@ struct mwifiex_ds_hs_cfg {
 };
 
 #define DEEP_SLEEP_ON  1
+<<<<<<< HEAD
+=======
+#define DEEP_SLEEP_OFF 0
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DEEP_SLEEP_IDLE_TIME	100
 #define PS_MODE_AUTO		1
 
@@ -306,10 +321,19 @@ struct mwifiex_ds_read_eeprom {
 	u8 value[MAX_EEPROM_DATA];
 };
 
+<<<<<<< HEAD
 struct mwifiex_ds_misc_gen_ie {
 	u32 type;
 	u32 len;
 	u8 ie_data[IW_CUSTOM_MAX];
+=======
+#define IEEE_MAX_IE_SIZE		256
+
+struct mwifiex_ds_misc_gen_ie {
+	u32 type;
+	u32 len;
+	u8 ie_data[IEEE_MAX_IE_SIZE];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct mwifiex_ds_misc_cmd {

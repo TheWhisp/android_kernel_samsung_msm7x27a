@@ -21,7 +21,10 @@
 #include <linux/seq_file.h>
 #include <linux/of_platform.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -32,11 +35,17 @@
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
 
+<<<<<<< HEAD
+=======
+#include "mpc85xx.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_CPM2
 #include <asm/cpm2.h>
 #include <sysdev/cpm2_pic.h>
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPM2
 
 static void cpm2_cascade(unsigned int irq, struct irq_desc *desc)
@@ -94,6 +103,16 @@ static void __init sbc8560_pic_init(void)
 	of_node_put(np);
 	irq_set_chained_handler(irq, cpm2_cascade);
 #endif
+=======
+static void __init sbc8560_pic_init(void)
+{
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+	mpic_init(mpic);
+
+	mpc85xx_cpm2_pic_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -208,6 +227,7 @@ static void sbc8560_show_cpuinfo(struct seq_file *m)
 	seq_printf(m, "PLL setting\t: 0x%x\n", ((phid1 >> 24) & 0x3f));
 }
 
+<<<<<<< HEAD
 static struct of_device_id __initdata of_bus_ids[] = {
 	{ .name = "soc", },
 	{ .type = "soc", },
@@ -225,6 +245,9 @@ static int __init declare_of_platform_devices(void)
 	return 0;
 }
 machine_device_initcall(sbc8560, declare_of_platform_devices);
+=======
+machine_device_initcall(sbc8560, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Called very early, device-tree isn't unflattened
@@ -283,9 +306,15 @@ static int __init sbc8560_bdrstcr_init(void)
 
 	of_address_to_resource(np, 0, &res);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "sbc8560: Found BRSTCR at i/o 0x%x\n", res.start);
 
 	brstcr = ioremap(res.start, res.end - res.start);
+=======
+	printk(KERN_INFO "sbc8560: Found BRSTCR at %pR\n", &res);
+
+	brstcr = ioremap(res.start, resource_size(&res));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if(!brstcr)
 		printk(KERN_WARNING "sbc8560: ioremap of brstcr failed.\n");
 

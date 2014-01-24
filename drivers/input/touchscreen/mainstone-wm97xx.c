@@ -157,9 +157,15 @@ static int wm97xx_acc_pen_down(struct wm97xx *wm)
 			x, y, p);
 
 		/* are samples valid */
+<<<<<<< HEAD
 		if ((x & WM97XX_ADCSRC_MASK) != WM97XX_ADCSEL_X ||
 		    (y & WM97XX_ADCSRC_MASK) != WM97XX_ADCSEL_Y ||
 		    (p & WM97XX_ADCSRC_MASK) != WM97XX_ADCSEL_PRES)
+=======
+		if ((x & WM97XX_ADCSEL_MASK) != WM97XX_ADCSEL_X ||
+		    (y & WM97XX_ADCSEL_MASK) != WM97XX_ADCSEL_Y ||
+		    (p & WM97XX_ADCSEL_MASK) != WM97XX_ADCSEL_PRES)
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto up;
 
 		/* coordinate is good */
@@ -302,6 +308,7 @@ static struct platform_driver mainstone_wm97xx_driver = {
 		.name = "wm97xx-touch",
 	},
 };
+<<<<<<< HEAD
 
 static int __init mainstone_wm97xx_init(void)
 {
@@ -315,6 +322,9 @@ static void __exit mainstone_wm97xx_exit(void)
 
 module_init(mainstone_wm97xx_init);
 module_exit(mainstone_wm97xx_exit);
+=======
+module_platform_driver(mainstone_wm97xx_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR("Liam Girdwood <lrg@slimlogic.co.uk>");

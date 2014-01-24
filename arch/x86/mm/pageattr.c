@@ -998,7 +998,11 @@ out_err:
 }
 EXPORT_SYMBOL(set_memory_uc);
 
+<<<<<<< HEAD
 int _set_memory_array(unsigned long *addr, int addrinarray,
+=======
+static int _set_memory_array(unsigned long *addr, int addrinarray,
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned long new_type)
 {
 	int i, j;
@@ -1334,12 +1338,15 @@ void kernel_map_pages(struct page *page, int numpages, int enable)
 	}
 
 	/*
+<<<<<<< HEAD
 	 * If page allocator is not up yet then do not call c_p_a():
 	 */
 	if (!debug_pagealloc_enabled)
 		return;
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * The return value is ignored as the calls cannot fail.
 	 * Large pages for identity mappings are not used at boot time
 	 * and hence no memory allocations during large page split.

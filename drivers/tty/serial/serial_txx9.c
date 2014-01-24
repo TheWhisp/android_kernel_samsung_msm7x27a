@@ -28,6 +28,11 @@
 #include <linux/pci.h>
 #include <linux/serial_core.h>
 #include <linux/serial.h>
+<<<<<<< HEAD
+=======
+#include <linux/tty.h>
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/io.h>
 

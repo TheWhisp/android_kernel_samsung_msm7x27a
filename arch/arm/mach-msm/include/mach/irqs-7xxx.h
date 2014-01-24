@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Author: Brian Swetland <swetland@google.com>
  */
 
@@ -79,11 +83,14 @@
 #define INT_CE_IRQ           (32 + 24)
 #endif
 
+<<<<<<< HEAD
 /* 7x00A uses 122, but 7x25 has up to 132. */
 #define NR_GPIO_IRQS 133
 #define NR_MSM_IRQS 64
 #define NR_BOARD_IRQS 64
 #define NR_MSM_GPIOS NR_GPIO_IRQS
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define INT_ADSP_A11_SMSM    INT_ADSP_A11
 #endif

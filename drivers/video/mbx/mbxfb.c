@@ -34,7 +34,11 @@
 #include "regs.h"
 #include "reg_bits.h"
 
+<<<<<<< HEAD
 static unsigned long virt_base_2700;
+=======
+static void __iomem *virt_base_2700;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define write_reg(val, reg) do { writel((val), (reg)); } while(0)
 
@@ -850,7 +854,11 @@ static int mbxfb_suspend(struct platform_device *dev, pm_message_t state)
 {
 	/* make frame buffer memory enter self-refresh mode */
 	write_reg_dly(LMPWR_MC_PWR_SRM, LMPWR);
+<<<<<<< HEAD
 	while (LMPWRSTAT != LMPWRSTAT_MC_PWR_SRM)
+=======
+	while (readl(LMPWRSTAT) != LMPWRSTAT_MC_PWR_SRM)
+>>>>>>> refs/remotes/origin/cm-10.0
 		; /* empty statement */
 
 	/* reset the device, since it's initial state is 'mostly sleeping' */
@@ -946,7 +954,11 @@ static int __devinit mbxfb_probe(struct platform_device *dev)
 		ret = -EINVAL;
 		goto err3;
 	}
+<<<<<<< HEAD
 	virt_base_2700 = (unsigned long)mfbi->reg_virt_addr;
+=======
+	virt_base_2700 = mfbi->reg_virt_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mfbi->fb_virt_addr = ioremap_nocache(mfbi->fb_phys_addr,
 					     res_size(mfbi->fb_req));
@@ -1053,6 +1065,7 @@ static struct platform_driver mbxfb_driver = {
 	},
 };
 
+<<<<<<< HEAD
 int __devinit mbxfb_init(void)
 {
 	return platform_driver_register(&mbxfb_driver);
@@ -1065,6 +1078,9 @@ static void __devexit mbxfb_exit(void)
 
 module_init(mbxfb_init);
 module_exit(mbxfb_exit);
+=======
+module_platform_driver(mbxfb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("loadable framebuffer driver for Marathon device");
 MODULE_AUTHOR("Mike Rapoport, Compulab");

@@ -33,6 +33,10 @@
 #include <asm/pgalloc.h>
 #include <asm/fixmap.h>
 #include <asm/io.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "mmu_decl.h"
 
@@ -207,7 +211,11 @@ __ioremap_caller(phys_addr_t addr, unsigned long size, unsigned long flags,
 	 */
 	if (mem_init_done && (p < virt_to_phys(high_memory)) &&
 	    !(__allow_ioremap_reserved && memblock_is_region_reserved(p, size))) {
+<<<<<<< HEAD
 		printk("__ioremap(): phys addr 0x%llx is RAM lr %p\n",
+=======
+		printk("__ioremap(): phys addr 0x%llx is RAM lr %pf\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       (unsigned long long)p, __builtin_return_address(0));
 		return NULL;
 	}

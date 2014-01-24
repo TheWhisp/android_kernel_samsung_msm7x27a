@@ -36,16 +36,29 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 #include <asm/irq.h>
 #include <mach/hardware.h>
 #include <asm/hardware/iomd.h>
 #include <asm/system.h>
+=======
+#include <mach/hardware.h>
+#include <asm/hardware/iomd.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Vojtech Pavlik, Russell King");
 MODULE_DESCRIPTION("Acorn RiscPC PS/2 keyboard controller driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:kart");
 
+<<<<<<< HEAD
+=======
+struct rpckbd_data {
+	int tx_irq;
+	int rx_irq;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int rpckbd_write(struct serio *port, unsigned char val)
 {
 	while (!(iomd_readb(IOMD_KCTRL) & (1 << 7)))
@@ -78,19 +91,34 @@ static irqreturn_t rpckbd_tx(int irq, void *dev_id)
 
 static int rpckbd_open(struct serio *port)
 {
+<<<<<<< HEAD
+=======
+	struct rpckbd_data *rpckbd = port->port_data;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Reset the keyboard state machine. */
 	iomd_writeb(0, IOMD_KCTRL);
 	iomd_writeb(8, IOMD_KCTRL);
 	iomd_readb(IOMD_KARTRX);
 
+<<<<<<< HEAD
 	if (request_irq(IRQ_KEYBOARDRX, rpckbd_rx, 0, "rpckbd", port) != 0) {
+=======
+	if (request_irq(rpckbd->rx_irq, rpckbd_rx, 0, "rpckbd", port) != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "rpckbd.c: Could not allocate keyboard receive IRQ\n");
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	if (request_irq(IRQ_KEYBOARDTX, rpckbd_tx, 0, "rpckbd", port) != 0) {
 		printk(KERN_ERR "rpckbd.c: Could not allocate keyboard transmit IRQ\n");
 		free_irq(IRQ_KEYBOARDRX, port);
+=======
+	if (request_irq(rpckbd->tx_irq, rpckbd_tx, 0, "rpckbd", port) != 0) {
+		printk(KERN_ERR "rpckbd.c: Could not allocate keyboard transmit IRQ\n");
+		free_irq(rpckbd->rx_irq, port);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EBUSY;
 	}
 
@@ -99,8 +127,15 @@ static int rpckbd_open(struct serio *port)
 
 static void rpckbd_close(struct serio *port)
 {
+<<<<<<< HEAD
 	free_irq(IRQ_KEYBOARDRX, port);
 	free_irq(IRQ_KEYBOARDTX, port);
+=======
+	struct rpckbd_data *rpckbd = port->port_data;
+
+	free_irq(rpckbd->rx_irq, port);
+	free_irq(rpckbd->tx_irq, port);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -109,17 +144,46 @@ static void rpckbd_close(struct serio *port)
  */
 static int __devinit rpckbd_probe(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	struct serio *serio;
 
 	serio = kzalloc(sizeof(struct serio), GFP_KERNEL);
 	if (!serio)
 		return -ENOMEM;
+=======
+	struct rpckbd_data *rpckbd;
+	struct serio *serio;
+	int tx_irq, rx_irq;
+
+	rx_irq = platform_get_irq(dev, 0);
+	if (rx_irq <= 0)
+		return rx_irq < 0 ? rx_irq : -ENXIO;
+
+	tx_irq = platform_get_irq(dev, 1);
+	if (tx_irq <= 0)
+		return tx_irq < 0 ? tx_irq : -ENXIO;
+
+	serio = kzalloc(sizeof(struct serio), GFP_KERNEL);
+	rpckbd = kzalloc(sizeof(*rpckbd), GFP_KERNEL);
+	if (!serio || !rpckbd) {
+		kfree(rpckbd);
+		kfree(serio);
+		return -ENOMEM;
+	}
+
+	rpckbd->rx_irq = rx_irq;
+	rpckbd->tx_irq = tx_irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	serio->id.type		= SERIO_8042;
 	serio->write		= rpckbd_write;
 	serio->open		= rpckbd_open;
 	serio->close		= rpckbd_close;
 	serio->dev.parent	= &dev->dev;
+<<<<<<< HEAD
+=======
+	serio->port_data	= rpckbd;
+>>>>>>> refs/remotes/origin/cm-10.0
 	strlcpy(serio->name, "RiscPC PS/2 kbd port", sizeof(serio->name));
 	strlcpy(serio->phys, "rpckbd/serio0", sizeof(serio->phys));
 
@@ -131,7 +195,15 @@ static int __devinit rpckbd_probe(struct platform_device *dev)
 static int __devexit rpckbd_remove(struct platform_device *dev)
 {
 	struct serio *serio = platform_get_drvdata(dev);
+<<<<<<< HEAD
 	serio_unregister_port(serio);
+=======
+	struct rpckbd_data *rpckbd = serio->port_data;
+
+	serio_unregister_port(serio);
+	kfree(rpckbd);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -143,6 +215,7 @@ static struct platform_driver rpckbd_driver = {
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 
 static int __init rpckbd_init(void)
 {
@@ -156,3 +229,6 @@ static void __exit rpckbd_exit(void)
 
 module_init(rpckbd_init);
 module_exit(rpckbd_exit);
+=======
+module_platform_driver(rpckbd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

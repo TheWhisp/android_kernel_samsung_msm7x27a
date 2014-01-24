@@ -438,7 +438,11 @@
 struct bfin_pint_regs {
 	u32 mask_set;
 	u32 mask_clear;
+<<<<<<< HEAD
 	u32 irq;
+=======
+	u32 request;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 assign;
 	u32 edge_set;
 	u32 edge_clear;

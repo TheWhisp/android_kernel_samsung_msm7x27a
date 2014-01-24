@@ -3,7 +3,11 @@
  * ALSA SoC Audio Layer - S3C PCM-Controller driver
  *
  * Copyright (c) 2009 Samsung Electronics Co. Ltd
+<<<<<<< HEAD
  * Author: Jaswinder Singh <jassi.brar@samsung.com>
+=======
+ * Author: Jaswinder Singh <jassisinghbrar@gmail.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  * based upon I2S drivers by Ben Dooks.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -13,6 +17,11 @@
 
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/soc.h>
 #include <sound/pcm_params.h>
@@ -451,7 +460,11 @@ static int s3c_pcm_set_sysclk(struct snd_soc_dai *cpu_dai,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops s3c_pcm_dai_ops = {
+=======
+static const struct snd_soc_dai_ops s3c_pcm_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_sysclk	= s3c_pcm_set_sysclk,
 	.set_clkdiv	= s3c_pcm_set_clkdiv,
 	.trigger	= s3c_pcm_trigger,
@@ -477,7 +490,11 @@ static struct snd_soc_dai_ops s3c_pcm_dai_ops = {
 		.formats	= SNDRV_PCM_FMTBIT_S16_LE,	\
 	}
 
+<<<<<<< HEAD
 struct snd_soc_dai_driver s3c_pcm_dai[] = {
+=======
+static struct snd_soc_dai_driver s3c_pcm_dai[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	[0] = {
 		.name	= "samsung-pcm.0",
 		S3C_PCM_DAI_DECLARE,
@@ -487,7 +504,10 @@ struct snd_soc_dai_driver s3c_pcm_dai[] = {
 		S3C_PCM_DAI_DECLARE,
 	},
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(s3c_pcm_dai);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
 {
@@ -569,12 +589,15 @@ static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
 	}
 	clk_enable(pcm->pclk);
 
+<<<<<<< HEAD
 	ret = snd_soc_register_dai(&pdev->dev, &s3c_pcm_dai[pdev->id]);
 	if (ret != 0) {
 		dev_err(&pdev->dev, "failed to get pcm_clock\n");
 		goto err5;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	s3c_pcm_stereo_in[pdev->id].dma_addr = mem_res->start
 							+ S3C_PCM_RXFIFO;
 	s3c_pcm_stereo_out[pdev->id].dma_addr = mem_res->start
@@ -586,6 +609,17 @@ static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
 	pcm->dma_capture = &s3c_pcm_stereo_in[pdev->id];
 	pcm->dma_playback = &s3c_pcm_stereo_out[pdev->id];
 
+<<<<<<< HEAD
+=======
+	pm_runtime_enable(&pdev->dev);
+
+	ret = snd_soc_register_dai(&pdev->dev, &s3c_pcm_dai[pdev->id]);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "failed to get register DAI: %d\n", ret);
+		goto err5;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 err5:
@@ -609,6 +643,11 @@ static __devexit int s3c_pcm_dev_remove(struct platform_device *pdev)
 
 	snd_soc_unregister_dai(&pdev->dev);
 
+<<<<<<< HEAD
+=======
+	pm_runtime_disable(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	iounmap(pcm->regs);
 
 	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -624,13 +663,18 @@ static __devexit int s3c_pcm_dev_remove(struct platform_device *pdev)
 
 static struct platform_driver s3c_pcm_driver = {
 	.probe  = s3c_pcm_dev_probe,
+<<<<<<< HEAD
 	.remove = s3c_pcm_dev_remove,
+=======
+	.remove = __devexit_p(s3c_pcm_dev_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver = {
 		.name = "samsung-pcm",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init s3c_pcm_init(void)
 {
 	return platform_driver_register(&s3c_pcm_driver);
@@ -645,6 +689,12 @@ module_exit(s3c_pcm_exit);
 
 /* Module information */
 MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
+=======
+module_platform_driver(s3c_pcm_driver);
+
+/* Module information */
+MODULE_AUTHOR("Jaswinder Singh, <jassisinghbrar@gmail.com>");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("S3C PCM Controller Driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:samsung-pcm");

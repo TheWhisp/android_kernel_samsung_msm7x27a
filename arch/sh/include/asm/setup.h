@@ -20,6 +20,10 @@
 
 void sh_mv_setup(void);
 void check_for_initrd(void);
+<<<<<<< HEAD
+=======
+void per_cpu_trap_init(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __KERNEL__ */
 

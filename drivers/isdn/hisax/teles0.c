@@ -5,7 +5,11 @@
  * Author       Karsten Keil
  *              based on the teles driver from Jan den Ouden
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -24,7 +28,11 @@
 static const char *teles0_revision = "$Revision: 2.15.2.4 $";
 
 #define TELES_IOMEM_SIZE	0x400
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define bytein(addr) inb(addr)
 
 static inline u_char
@@ -55,7 +63,11 @@ writehscx(void __iomem *adr, int hscx, u_char off, u_char data)
 }
 
 static inline void
+<<<<<<< HEAD
 read_fifo_isac(void __iomem *adr, u_char * data, int size)
+=======
+read_fifo_isac(void __iomem *adr, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	register int i;
 	register u_char __iomem *ad = adr + 0x100;
@@ -64,7 +76,11 @@ read_fifo_isac(void __iomem *adr, u_char * data, int size)
 }
 
 static inline void
+<<<<<<< HEAD
 write_fifo_isac(void __iomem *adr, u_char * data, int size)
+=======
+write_fifo_isac(void __iomem *adr, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	register int i;
 	register u_char __iomem *ad = adr + 0x100;
@@ -74,7 +90,11 @@ write_fifo_isac(void __iomem *adr, u_char * data, int size)
 }
 
 static inline void
+<<<<<<< HEAD
 read_fifo_hscx(void __iomem *adr, int hscx, u_char * data, int size)
+=======
+read_fifo_hscx(void __iomem *adr, int hscx, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	register int i;
 	register u_char __iomem *ad = adr + (hscx ? 0x1c0 : 0x180);
@@ -83,7 +103,11 @@ read_fifo_hscx(void __iomem *adr, int hscx, u_char * data, int size)
 }
 
 static inline void
+<<<<<<< HEAD
 write_fifo_hscx(void __iomem *adr, int hscx, u_char * data, int size)
+=======
+write_fifo_hscx(void __iomem *adr, int hscx, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 	register u_char __iomem *ad = adr + (hscx ? 0x1c0 : 0x180);
@@ -107,13 +131,21 @@ WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 }
 
 static void
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	read_fifo_isac(cs->hw.teles0.membase, data, size);
 }
 
 static void
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	write_fifo_isac(cs->hw.teles0.membase, data, size);
 }
@@ -151,11 +183,19 @@ teles0_interrupt(int intno, void *dev_id)
 
 	spin_lock_irqsave(&cs->lock, flags);
 	val = readhscx(cs->hw.teles0.membase, 1, HSCX_ISTA);
+<<<<<<< HEAD
       Start_HSCX:
 	if (val)
 		hscx_int_main(cs, val);
 	val = readisac(cs->hw.teles0.membase, ISAC_ISTA);
       Start_ISAC:
+=======
+Start_HSCX:
+	if (val)
+		hscx_int_main(cs, val);
+	val = readisac(cs->hw.teles0.membase, ISAC_ISTA);
+Start_ISAC:
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (val)
 		isac_interrupt(cs, val);
 	count++;
@@ -197,6 +237,7 @@ reset_teles0(struct IsdnCardState *cs)
 
 	if (cs->hw.teles0.cfg_reg) {
 		switch (cs->irq) {
+<<<<<<< HEAD
 			case 2:
 			case 9:
 				cfval = 0x00;
@@ -224,6 +265,35 @@ reset_teles0(struct IsdnCardState *cs)
 				break;
 			default:
 				return(1);
+=======
+		case 2:
+		case 9:
+			cfval = 0x00;
+			break;
+		case 3:
+			cfval = 0x02;
+			break;
+		case 4:
+			cfval = 0x04;
+			break;
+		case 5:
+			cfval = 0x06;
+			break;
+		case 10:
+			cfval = 0x08;
+			break;
+		case 11:
+			cfval = 0x0A;
+			break;
+		case 12:
+			cfval = 0x0C;
+			break;
+		case 15:
+			cfval = 0x0E;
+			break;
+		default:
+			return (1);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		cfval |= ((cs->hw.teles0.phymem >> 9) & 0xF0);
 		byteout(cs->hw.teles0.cfg_reg + 4, cfval);
@@ -235,7 +305,11 @@ reset_teles0(struct IsdnCardState *cs)
 	HZDELAY(HZ / 5 + 1);
 	writeb(1, cs->hw.teles0.membase + 0x80); mb();
 	HZDELAY(HZ / 5 + 1);
+<<<<<<< HEAD
 	return(0);
+=======
+	return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int
@@ -244,6 +318,7 @@ Teles_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	u_long flags;
 
 	switch (mt) {
+<<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
 			reset_teles0(cs);
@@ -261,6 +336,25 @@ Teles_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 			return(0);
 	}
 	return(0);
+=======
+	case CARD_RESET:
+		spin_lock_irqsave(&cs->lock, flags);
+		reset_teles0(cs);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_RELEASE:
+		release_io_teles0(cs);
+		return (0);
+	case CARD_INIT:
+		spin_lock_irqsave(&cs->lock, flags);
+		inithscxisac(cs, 3);
+		spin_unlock_irqrestore(&cs->lock, flags);
+		return (0);
+	case CARD_TEST:
+		return (0);
+	}
+	return (0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int __devinit
@@ -283,14 +377,22 @@ setup_teles0(struct IsdnCard *card)
 	if (card->para[1] < 0x10000) {
 		card->para[1] <<= 4;
 		printk(KERN_INFO
+<<<<<<< HEAD
 		   "Teles0: membase configured DOSish, assuming 0x%lx\n",
+=======
+		       "Teles0: membase configured DOSish, assuming 0x%lx\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       (unsigned long) card->para[1]);
 	}
 	cs->irq = card->para[0];
 	if (cs->hw.teles0.cfg_reg) {
 		if (!request_region(cs->hw.teles0.cfg_reg, 8, "teles cfg")) {
 			printk(KERN_WARNING
+<<<<<<< HEAD
 			  "HiSax: %s config port %x-%x already in use\n",
+=======
+			       "HiSax: %s config port %x-%x already in use\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			       CardType[card->typ],
 			       cs->hw.teles0.cfg_reg,
 			       cs->hw.teles0.cfg_reg + 8);
@@ -311,8 +413,13 @@ setup_teles0(struct IsdnCard *card)
 			return (0);
 		}
 		val = bytein(cs->hw.teles0.cfg_reg + 2);	/* 0x1e=without AB
+<<<<<<< HEAD
 								   * 0x1f=with AB
 								   * 0x1c 16.3 ???
+=======
+								 * 0x1f=with AB
+								 * 0x1c 16.3 ???
+>>>>>>> refs/remotes/origin/cm-10.0
 								 */
 		if (val != 0x1e && val != 0x1f) {
 			printk(KERN_WARNING "Teles0: 16.0 Byte at %x is %x\n",
@@ -326,10 +433,17 @@ setup_teles0(struct IsdnCard *card)
 	cs->hw.teles0.phymem = card->para[1];
 	if (!request_mem_region(cs->hw.teles0.phymem, TELES_IOMEM_SIZE, "teles iomem")) {
 		printk(KERN_WARNING
+<<<<<<< HEAD
 			"HiSax: %s memory region %lx-%lx already in use\n",
 			CardType[card->typ],
 			cs->hw.teles0.phymem,
 			cs->hw.teles0.phymem + TELES_IOMEM_SIZE);
+=======
+		       "HiSax: %s memory region %lx-%lx already in use\n",
+		       CardType[card->typ],
+		       cs->hw.teles0.phymem,
+		       cs->hw.teles0.phymem + TELES_IOMEM_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (cs->hw.teles0.cfg_reg)
 			release_region(cs->hw.teles0.cfg_reg, 8);
 		return (0);
@@ -357,7 +471,11 @@ setup_teles0(struct IsdnCard *card)
 	ISACVersion(cs, "Teles0:");
 	if (HscxVersion(cs, "Teles0:")) {
 		printk(KERN_WARNING
+<<<<<<< HEAD
 		 "Teles0: wrong HSCX versions check IO/MEM addresses\n");
+=======
+		       "Teles0: wrong HSCX versions check IO/MEM addresses\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		release_io_teles0(cs);
 		return (0);
 	}

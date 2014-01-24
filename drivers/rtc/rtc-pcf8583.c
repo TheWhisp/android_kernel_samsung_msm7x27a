@@ -320,6 +320,7 @@ static struct i2c_driver pcf8583_driver = {
 	.id_table	= pcf8583_id,
 };
 
+<<<<<<< HEAD
 static __init int pcf8583_init(void)
 {
 	return i2c_add_driver(&pcf8583_driver);
@@ -332,6 +333,9 @@ static __exit void pcf8583_exit(void)
 
 module_init(pcf8583_init);
 module_exit(pcf8583_exit);
+=======
+module_i2c_driver(pcf8583_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Russell King");
 MODULE_DESCRIPTION("PCF8583 I2C RTC driver");

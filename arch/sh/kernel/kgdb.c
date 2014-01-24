@@ -14,6 +14,10 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Macros for single step instruction identification */
 #define OPCODE_BT(op)		(((op) & 0xff00) == 0x8900)

@@ -27,8 +27,14 @@
 #include <asm/mach/irq.h>
 
 #include <plat/pincfg.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/gpio.h>
+=======
+#include <plat/gpio-nomadik.h>
+#include <mach/hardware.h>
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The GPIO module in the Nomadik family of Systems-on-Chip is an
@@ -58,7 +64,10 @@ struct nmk_gpio_chip {
 	u32 rwimsc;
 	u32 fwimsc;
 	u32 slpm;
+<<<<<<< HEAD
 	u32 enabled;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 pull_up;
 };
 
@@ -276,6 +285,11 @@ static void nmk_gpio_glitch_slpm_init(unsigned int *slpm)
 		if (!chip)
 			break;
 
+<<<<<<< HEAD
+=======
+		clk_enable(chip->clk);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		slpm[i] = readl(chip->addr + NMK_GPIO_SLPC);
 		writel(temp, chip->addr + NMK_GPIO_SLPC);
 	}
@@ -292,6 +306,11 @@ static void nmk_gpio_glitch_slpm_restore(unsigned int *slpm)
 			break;
 
 		writel(slpm[i], chip->addr + NMK_GPIO_SLPC);
+<<<<<<< HEAD
+=======
+
+		clk_disable(chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -336,10 +355,18 @@ static int __nmk_config_pins(pin_cfg_t *cfgs, int num, bool sleep)
 			break;
 		}
 
+<<<<<<< HEAD
+=======
+		clk_enable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_lock(&nmk_chip->lock);
 		__nmk_config_pin(nmk_chip, pin - nmk_chip->chip.base,
 				 cfgs[i], sleep, glitch ? slpm : NULL);
 		spin_unlock(&nmk_chip->lock);
+<<<<<<< HEAD
+=======
+		clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (glitch)
@@ -424,6 +451,10 @@ int nmk_gpio_set_slpm(int gpio, enum nmk_gpio_slpm mode)
 	if (!nmk_chip)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	clk_enable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&nmk_gpio_slpm_lock, flags);
 	spin_lock(&nmk_chip->lock);
 
@@ -431,6 +462,10 @@ int nmk_gpio_set_slpm(int gpio, enum nmk_gpio_slpm mode)
 
 	spin_unlock(&nmk_chip->lock);
 	spin_unlock_irqrestore(&nmk_gpio_slpm_lock, flags);
+<<<<<<< HEAD
+=======
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -457,9 +492,17 @@ int nmk_gpio_set_pull(int gpio, enum nmk_gpio_pull pull)
 	if (!nmk_chip)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&nmk_chip->lock, flags);
 	__nmk_gpio_set_pull(nmk_chip, gpio - nmk_chip->chip.base, pull);
 	spin_unlock_irqrestore(&nmk_chip->lock, flags);
+=======
+	clk_enable(nmk_chip->clk);
+	spin_lock_irqsave(&nmk_chip->lock, flags);
+	__nmk_gpio_set_pull(nmk_chip, gpio - nmk_chip->chip.base, pull);
+	spin_unlock_irqrestore(&nmk_chip->lock, flags);
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -483,9 +526,17 @@ int nmk_gpio_set_mode(int gpio, int gpio_mode)
 	if (!nmk_chip)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&nmk_chip->lock, flags);
 	__nmk_gpio_set_mode(nmk_chip, gpio - nmk_chip->chip.base, gpio_mode);
 	spin_unlock_irqrestore(&nmk_chip->lock, flags);
+=======
+	clk_enable(nmk_chip->clk);
+	spin_lock_irqsave(&nmk_chip->lock, flags);
+	__nmk_gpio_set_mode(nmk_chip, gpio - nmk_chip->chip.base, gpio_mode);
+	spin_unlock_irqrestore(&nmk_chip->lock, flags);
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -502,9 +553,19 @@ int nmk_gpio_get_mode(int gpio)
 
 	bit = 1 << (gpio - nmk_chip->chip.base);
 
+<<<<<<< HEAD
 	afunc = readl(nmk_chip->addr + NMK_GPIO_AFSLA) & bit;
 	bfunc = readl(nmk_chip->addr + NMK_GPIO_AFSLB) & bit;
 
+=======
+	clk_enable(nmk_chip->clk);
+
+	afunc = readl(nmk_chip->addr + NMK_GPIO_AFSLA) & bit;
+	bfunc = readl(nmk_chip->addr + NMK_GPIO_AFSLB) & bit;
+
+	clk_disable(nmk_chip->clk);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return (afunc ? NMK_GPIO_ALT_A : 0) | (bfunc ? NMK_GPIO_ALT_B : 0);
 }
 EXPORT_SYMBOL(nmk_gpio_get_mode);
@@ -525,7 +586,14 @@ static void nmk_gpio_irq_ack(struct irq_data *d)
 	nmk_chip = irq_data_get_irq_chip_data(d);
 	if (!nmk_chip)
 		return;
+<<<<<<< HEAD
 	writel(nmk_gpio_get_bitmask(gpio), nmk_chip->addr + NMK_GPIO_IC);
+=======
+
+	clk_enable(nmk_chip->clk);
+	writel(nmk_gpio_get_bitmask(gpio), nmk_chip->addr + NMK_GPIO_IC);
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 enum nmk_gpio_irq_type {
@@ -586,11 +654,15 @@ static int nmk_gpio_irq_maskunmask(struct irq_data *d, bool enable)
 	if (!nmk_chip)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (enable)
 		nmk_chip->enabled |= bitmask;
 	else
 		nmk_chip->enabled &= ~bitmask;
 
+=======
+	clk_enable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&nmk_gpio_slpm_lock, flags);
 	spin_lock(&nmk_chip->lock);
 
@@ -601,6 +673,10 @@ static int nmk_gpio_irq_maskunmask(struct irq_data *d, bool enable)
 
 	spin_unlock(&nmk_chip->lock);
 	spin_unlock_irqrestore(&nmk_gpio_slpm_lock, flags);
+<<<<<<< HEAD
+=======
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -628,10 +704,18 @@ static int nmk_gpio_irq_set_wake(struct irq_data *d, unsigned int on)
 		return -EINVAL;
 	bitmask = nmk_gpio_get_bitmask(gpio);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&nmk_gpio_slpm_lock, flags);
 	spin_lock(&nmk_chip->lock);
 
 	if (!(nmk_chip->enabled & bitmask))
+=======
+	clk_enable(nmk_chip->clk);
+	spin_lock_irqsave(&nmk_gpio_slpm_lock, flags);
+	spin_lock(&nmk_chip->lock);
+
+	if (irqd_irq_disabled(d))
+>>>>>>> refs/remotes/origin/cm-10.0
 		__nmk_gpio_set_wake(nmk_chip, gpio, on);
 
 	if (on)
@@ -641,13 +725,22 @@ static int nmk_gpio_irq_set_wake(struct irq_data *d, unsigned int on)
 
 	spin_unlock(&nmk_chip->lock);
 	spin_unlock_irqrestore(&nmk_gpio_slpm_lock, flags);
+<<<<<<< HEAD
+=======
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
 static int nmk_gpio_irq_set_type(struct irq_data *d, unsigned int type)
 {
+<<<<<<< HEAD
 	bool enabled, wake = irqd_is_wakeup_set(d);
+=======
+	bool enabled = !irqd_irq_disabled(d);
+	bool wake = irqd_is_wakeup_set(d);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int gpio;
 	struct nmk_gpio_chip *nmk_chip;
 	unsigned long flags;
@@ -664,8 +757,12 @@ static int nmk_gpio_irq_set_type(struct irq_data *d, unsigned int type)
 	if (type & IRQ_TYPE_LEVEL_LOW)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	enabled = nmk_chip->enabled & bitmask;
 
+=======
+	clk_enable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock_irqsave(&nmk_chip->lock, flags);
 
 	if (enabled)
@@ -689,10 +786,34 @@ static int nmk_gpio_irq_set_type(struct irq_data *d, unsigned int type)
 		__nmk_gpio_irq_modify(nmk_chip, gpio, WAKE, true);
 
 	spin_unlock_irqrestore(&nmk_chip->lock, flags);
+<<<<<<< HEAD
+=======
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static unsigned int nmk_gpio_irq_startup(struct irq_data *d)
+{
+	struct nmk_gpio_chip *nmk_chip = irq_data_get_irq_chip_data(d);
+
+	clk_enable(nmk_chip->clk);
+	nmk_gpio_irq_unmask(d);
+	return 0;
+}
+
+static void nmk_gpio_irq_shutdown(struct irq_data *d)
+{
+	struct nmk_gpio_chip *nmk_chip = irq_data_get_irq_chip_data(d);
+
+	nmk_gpio_irq_mask(d);
+	clk_disable(nmk_chip->clk);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct irq_chip nmk_gpio_irq_chip = {
 	.name		= "Nomadik-GPIO",
 	.irq_ack	= nmk_gpio_irq_ack,
@@ -700,6 +821,11 @@ static struct irq_chip nmk_gpio_irq_chip = {
 	.irq_unmask	= nmk_gpio_irq_unmask,
 	.irq_set_type	= nmk_gpio_irq_set_type,
 	.irq_set_wake	= nmk_gpio_irq_set_wake,
+<<<<<<< HEAD
+=======
+	.irq_startup	= nmk_gpio_irq_startup,
+	.irq_shutdown	= nmk_gpio_irq_shutdown,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void __nmk_gpio_irq_handler(unsigned int irq, struct irq_desc *desc,
@@ -726,7 +852,15 @@ static void __nmk_gpio_irq_handler(unsigned int irq, struct irq_desc *desc,
 static void nmk_gpio_irq_handler(unsigned int irq, struct irq_desc *desc)
 {
 	struct nmk_gpio_chip *nmk_chip = irq_get_handler_data(irq);
+<<<<<<< HEAD
 	u32 status = readl(nmk_chip->addr + NMK_GPIO_IS);
+=======
+	u32 status;
+
+	clk_enable(nmk_chip->clk);
+	status = readl(nmk_chip->addr + NMK_GPIO_IS);
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__nmk_gpio_irq_handler(irq, desc, status);
 }
@@ -772,7 +906,16 @@ static int nmk_gpio_make_input(struct gpio_chip *chip, unsigned offset)
 	struct nmk_gpio_chip *nmk_chip =
 		container_of(chip, struct nmk_gpio_chip, chip);
 
+<<<<<<< HEAD
 	writel(1 << offset, nmk_chip->addr + NMK_GPIO_DIRC);
+=======
+	clk_enable(nmk_chip->clk);
+
+	writel(1 << offset, nmk_chip->addr + NMK_GPIO_DIRC);
+
+	clk_disable(nmk_chip->clk);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -781,8 +924,20 @@ static int nmk_gpio_get_input(struct gpio_chip *chip, unsigned offset)
 	struct nmk_gpio_chip *nmk_chip =
 		container_of(chip, struct nmk_gpio_chip, chip);
 	u32 bit = 1 << offset;
+<<<<<<< HEAD
 
 	return (readl(nmk_chip->addr + NMK_GPIO_DAT) & bit) != 0;
+=======
+	int value;
+
+	clk_enable(nmk_chip->clk);
+
+	value = (readl(nmk_chip->addr + NMK_GPIO_DAT) & bit) != 0;
+
+	clk_disable(nmk_chip->clk);
+
+	return value;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void nmk_gpio_set_output(struct gpio_chip *chip, unsigned offset,
@@ -791,7 +946,15 @@ static void nmk_gpio_set_output(struct gpio_chip *chip, unsigned offset,
 	struct nmk_gpio_chip *nmk_chip =
 		container_of(chip, struct nmk_gpio_chip, chip);
 
+<<<<<<< HEAD
 	__nmk_gpio_set_output(nmk_chip, offset, val);
+=======
+	clk_enable(nmk_chip->clk);
+
+	__nmk_gpio_set_output(nmk_chip, offset, val);
+
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int nmk_gpio_make_output(struct gpio_chip *chip, unsigned offset,
@@ -800,8 +963,17 @@ static int nmk_gpio_make_output(struct gpio_chip *chip, unsigned offset,
 	struct nmk_gpio_chip *nmk_chip =
 		container_of(chip, struct nmk_gpio_chip, chip);
 
+<<<<<<< HEAD
 	__nmk_gpio_make_output(nmk_chip, offset, val);
 
+=======
+	clk_enable(nmk_chip->clk);
+
+	__nmk_gpio_make_output(nmk_chip, offset, val);
+
+	clk_disable(nmk_chip->clk);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -832,6 +1004,11 @@ static void nmk_gpio_dbg_show(struct seq_file *s, struct gpio_chip *chip)
 		[NMK_GPIO_ALT_C]	= "altC",
 	};
 
+<<<<<<< HEAD
+=======
+	clk_enable(nmk_chip->clk);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < chip->ngpio; i++, gpio++) {
 		const char *label = gpiochip_is_requested(chip, i);
 		bool pull;
@@ -876,6 +1053,11 @@ static void nmk_gpio_dbg_show(struct seq_file *s, struct gpio_chip *chip)
 
 		seq_printf(s, "\n");
 	}
+<<<<<<< HEAD
+=======
+
+	clk_disable(nmk_chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #else
@@ -893,6 +1075,37 @@ static struct gpio_chip nmk_gpio_template = {
 	.can_sleep		= 0,
 };
 
+<<<<<<< HEAD
+=======
+void nmk_gpio_clocks_enable(void)
+{
+	int i;
+
+	for (i = 0; i < NUM_BANKS; i++) {
+		struct nmk_gpio_chip *chip = nmk_gpio_chips[i];
+
+		if (!chip)
+			continue;
+
+		clk_enable(chip->clk);
+	}
+}
+
+void nmk_gpio_clocks_disable(void)
+{
+	int i;
+
+	for (i = 0; i < NUM_BANKS; i++) {
+		struct nmk_gpio_chip *chip = nmk_gpio_chips[i];
+
+		if (!chip)
+			continue;
+
+		clk_disable(chip->clk);
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Called from the suspend/resume path to only keep the real wakeup interrupts
  * (those that have had set_irq_wake() called on them) as wakeup interrupts,
@@ -912,6 +1125,11 @@ void nmk_gpio_wakeups_suspend(void)
 		if (!chip)
 			break;
 
+<<<<<<< HEAD
+=======
+		clk_enable(chip->clk);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		chip->rwimsc = readl(chip->addr + NMK_GPIO_RWIMSC);
 		chip->fwimsc = readl(chip->addr + NMK_GPIO_FWIMSC);
 
@@ -926,6 +1144,11 @@ void nmk_gpio_wakeups_suspend(void)
 			/* 0 -> wakeup enable */
 			writel(~chip->real_wake, chip->addr + NMK_GPIO_SLPC);
 		}
+<<<<<<< HEAD
+=======
+
+		clk_disable(chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -939,11 +1162,21 @@ void nmk_gpio_wakeups_resume(void)
 		if (!chip)
 			break;
 
+<<<<<<< HEAD
+=======
+		clk_enable(chip->clk);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		writel(chip->rwimsc, chip->addr + NMK_GPIO_RWIMSC);
 		writel(chip->fwimsc, chip->addr + NMK_GPIO_FWIMSC);
 
 		if (chip->sleepmode)
 			writel(chip->slpm, chip->addr + NMK_GPIO_SLPC);
+<<<<<<< HEAD
+=======
+
+		clk_disable(chip->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -1010,8 +1243,11 @@ static int __devinit nmk_gpio_probe(struct platform_device *dev)
 		goto out_release;
 	}
 
+<<<<<<< HEAD
 	clk_enable(clk);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	nmk_chip = kzalloc(sizeof(*nmk_chip), GFP_KERNEL);
 	if (!nmk_chip) {
 		ret = -ENOMEM;
@@ -1050,8 +1286,13 @@ static int __devinit nmk_gpio_probe(struct platform_device *dev)
 
 	nmk_gpio_init_irq(nmk_chip);
 
+<<<<<<< HEAD
 	dev_info(&dev->dev, "Bits %i-%i at address %p\n",
 		 nmk_chip->chip.base, nmk_chip->chip.base+31, nmk_chip->addr);
+=======
+	dev_info(&dev->dev, "at address %p\n",
+		 nmk_chip->addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 out_free:

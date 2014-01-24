@@ -96,7 +96,11 @@ void __init plat_mem_setup(void)
 
 	io_base = (unsigned long)ioremap(AR7_REGS_BASE, 0x10000);
 	if (!io_base)
+<<<<<<< HEAD
 		panic("Can't remap IO base!\n");
+=======
+		panic("Can't remap IO base!");
+>>>>>>> refs/remotes/origin/cm-10.0
 	set_io_port_base(io_base);
 
 	prom_meminit();

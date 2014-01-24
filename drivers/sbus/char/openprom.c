@@ -40,7 +40,10 @@
 #include <linux/fs.h>
 #include <asm/oplib.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/openpromio.h>
 #ifdef CONFIG_PCI

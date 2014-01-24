@@ -5,7 +5,11 @@
   PHY workarounds.
 
   Copyright (c) 2005-2007 Stefano Brivio <stefano.brivio@polimi.it>
+<<<<<<< HEAD
   Copyright (c) 2005-2007 Michael Buesch <mbuesch@freenet.de>
+=======
+  Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -458,17 +462,28 @@ static void b43_wa_rssi_adc(struct b43_wldev *dev)
 
 static void b43_wa_boards_a(struct b43_wldev *dev)
 {
+<<<<<<< HEAD
 	struct ssb_bus *bus = dev->sdev->bus;
 
 	if (bus->boardinfo.vendor == SSB_BOARDVENDOR_BCM &&
 	    bus->boardinfo.type == SSB_BOARD_BU4306 &&
 	    bus->boardinfo.rev < 0x30) {
+=======
+	if (dev->dev->board_vendor == SSB_BOARDVENDOR_BCM &&
+	    dev->dev->board_type == SSB_BOARD_BU4306 &&
+	    dev->dev->board_rev < 0x30) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		b43_phy_write(dev, 0x0010, 0xE000);
 		b43_phy_write(dev, 0x0013, 0x0140);
 		b43_phy_write(dev, 0x0014, 0x0280);
 	} else {
+<<<<<<< HEAD
 		if (bus->boardinfo.type == SSB_BOARD_MP4318 &&
 		    bus->boardinfo.rev < 0x20) {
+=======
+		if (dev->dev->board_type == SSB_BOARD_MP4318 &&
+		    dev->dev->board_rev < 0x20) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			b43_phy_write(dev, 0x0013, 0x0210);
 			b43_phy_write(dev, 0x0014, 0x0840);
 		} else {
@@ -486,19 +501,32 @@ static void b43_wa_boards_a(struct b43_wldev *dev)
 
 static void b43_wa_boards_g(struct b43_wldev *dev)
 {
+<<<<<<< HEAD
 	struct ssb_bus *bus = dev->sdev->bus;
 	struct b43_phy *phy = &dev->phy;
 
 	if (bus->boardinfo.vendor != SSB_BOARDVENDOR_BCM ||
 	    bus->boardinfo.type != SSB_BOARD_BU4306 ||
 	    bus->boardinfo.rev != 0x17) {
+=======
+	struct ssb_sprom *sprom = dev->dev->bus_sprom;
+	struct b43_phy *phy = &dev->phy;
+
+	if (dev->dev->board_vendor != SSB_BOARDVENDOR_BCM ||
+	    dev->dev->board_type != SSB_BOARD_BU4306 ||
+	    dev->dev->board_rev != 0x17) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (phy->rev < 2) {
 			b43_ofdmtab_write16(dev, B43_OFDMTAB_GAINX_R1, 1, 0x0002);
 			b43_ofdmtab_write16(dev, B43_OFDMTAB_GAINX_R1, 2, 0x0001);
 		} else {
 			b43_ofdmtab_write16(dev, B43_OFDMTAB_GAINX, 1, 0x0002);
 			b43_ofdmtab_write16(dev, B43_OFDMTAB_GAINX, 2, 0x0001);
+<<<<<<< HEAD
 			if ((bus->sprom.boardflags_lo & B43_BFL_EXTLNA) &&
+=======
+			if ((sprom->boardflags_lo & B43_BFL_EXTLNA) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 			    (phy->rev >= 7)) {
 				b43_phy_mask(dev, B43_PHY_EXTG(0x11), 0xF7FF);
 				b43_ofdmtab_write16(dev, B43_OFDMTAB_GAINX, 0x0020, 0x0001);
@@ -510,7 +538,11 @@ static void b43_wa_boards_g(struct b43_wldev *dev)
 			}
 		}
 	}
+<<<<<<< HEAD
 	if (bus->sprom.boardflags_lo & B43_BFL_FEM) {
+=======
+	if (sprom->boardflags_lo & B43_BFL_FEM) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		b43_phy_write(dev, B43_PHY_GTABCTL, 0x3120);
 		b43_phy_write(dev, B43_PHY_GTABDATA, 0xC480);
 	}

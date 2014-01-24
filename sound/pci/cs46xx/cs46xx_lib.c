@@ -53,6 +53,10 @@
 #include <linux/slab.h>
 #include <linux/gameport.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #include <sound/core.h>
@@ -3835,7 +3839,11 @@ int __devinit snd_cs46xx_create(struct snd_card *card,
 	}
 
 	if (request_irq(pci->irq, snd_cs46xx_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
 			"CS46XX", chip)) {
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		snd_cs46xx_free(chip);
 		return -EBUSY;

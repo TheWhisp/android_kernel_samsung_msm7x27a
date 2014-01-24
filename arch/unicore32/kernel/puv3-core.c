@@ -13,7 +13,10 @@
 
 #include <linux/init.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/amba/bus.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>

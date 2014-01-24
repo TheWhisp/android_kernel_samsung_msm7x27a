@@ -428,7 +428,11 @@ static const struct net_device_ops dm9601_netdev_ops = {
 	.ndo_change_mtu		= usbnet_change_mtu,
 	.ndo_validate_addr	= eth_validate_addr,
 	.ndo_do_ioctl 		= dm9601_ioctl,
+<<<<<<< HEAD
 	.ndo_set_multicast_list = dm9601_set_multicast,
+=======
+	.ndo_set_rx_mode	= dm9601_set_multicast,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_set_mac_address	= dm9601_set_mac_address,
 };
 
@@ -445,12 +449,16 @@ static int dm9601_bind(struct usbnet *dev, struct usb_interface *intf)
 	dev->net->ethtool_ops = &dm9601_ethtool_ops;
 	dev->net->hard_header_len += DM_TX_OVERHEAD;
 	dev->hard_mtu = dev->net->mtu + dev->net->hard_header_len;
+<<<<<<< HEAD
 
 	/* dm9620/21a require room for 4 byte padding, even in dm9601
 	 * mode, so we need +1 to be able to receive full size
 	 * ethernet frames.
 	 */
 	dev->rx_urb_size = dev->net->mtu + ETH_HLEN + DM_RX_OVERHEAD + 1;
+=======
+	dev->rx_urb_size = dev->net->mtu + ETH_HLEN + DM_RX_OVERHEAD;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev->mii.dev = dev->net;
 	dev->mii.mdio_read = dm9601_mdio_read;
@@ -536,7 +544,11 @@ static int dm9601_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 				       gfp_t flags)
 {
+<<<<<<< HEAD
 	int len, pad;
+=======
+	int len;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* format:
 	   b1: packet length low
@@ -544,6 +556,7 @@ static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 	   b3..n: packet data
 	*/
 
+<<<<<<< HEAD
 	len = skb->len + DM_TX_OVERHEAD;
 
 	/* workaround for dm962x errata with tx fifo getting out of
@@ -561,6 +574,14 @@ static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 		struct sk_buff *skb2;
 
 		skb2 = skb_copy_expand(skb, DM_TX_OVERHEAD, pad, flags);
+=======
+	len = skb->len;
+
+	if (skb_headroom(skb) < DM_TX_OVERHEAD) {
+		struct sk_buff *skb2;
+
+		skb2 = skb_copy_expand(skb, DM_TX_OVERHEAD, 0, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_kfree_skb_any(skb);
 		skb = skb2;
 		if (!skb)
@@ -569,10 +590,17 @@ static struct sk_buff *dm9601_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
 
 	__skb_push(skb, DM_TX_OVERHEAD);
 
+<<<<<<< HEAD
 	if (pad) {
 		memset(skb->data + skb->len, 0, pad);
 		__skb_put(skb, pad);
 	}
+=======
+	/* usbnet adds padding if length is a multiple of packet size
+	   if so, adjust length value in header */
+	if ((skb->len % dev->maxpacket) == 0)
+		len++;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	skb->data[0] = len;
 	skb->data[1] = len >> 8;
@@ -688,6 +716,7 @@ static struct usb_driver dm9601_driver = {
 	.resume = usbnet_resume,
 };
 
+<<<<<<< HEAD
 static int __init dm9601_init(void)
 {
 	return usb_register(&dm9601_driver);
@@ -700,6 +729,9 @@ static void __exit dm9601_exit(void)
 
 module_init(dm9601_init);
 module_exit(dm9601_exit);
+=======
+module_usb_driver(dm9601_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Peter Korsgaard <jacmet@sunsite.dk>");
 MODULE_DESCRIPTION("Davicom DM9601 USB 1.1 ethernet devices");

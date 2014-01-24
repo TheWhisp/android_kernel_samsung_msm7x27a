@@ -6,7 +6,11 @@
 
 #include <linux/stddef.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/time.h>
 #include <linux/mm.h>
 #include <linux/errno.h>

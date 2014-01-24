@@ -10,7 +10,10 @@
 #include <linux/kallsyms.h>
 #include <linux/linkage.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ktime.h>
 #include <linux/sched.h>
 #include <linux/types.h>
@@ -19,6 +22,10 @@
 
 #include <asm/ftrace.h>
 
+<<<<<<< HEAD
+=======
+struct module;
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ftrace_hash;
 
 #ifdef CONFIG_FUNCTION_TRACER
@@ -31,16 +38,42 @@ ftrace_enable_sysctl(struct ctl_table *table, int write,
 
 typedef void (*ftrace_func_t)(unsigned long ip, unsigned long parent_ip);
 
+<<<<<<< HEAD
+=======
+/*
+ * FTRACE_OPS_FL_* bits denote the state of ftrace_ops struct and are
+ * set in the flags member.
+ *
+ * ENABLED - set/unset when ftrace_ops is registered/unregistered
+ * GLOBAL  - set manualy by ftrace_ops user to denote the ftrace_ops
+ *           is part of the global tracers sharing the same filter
+ *           via set_ftrace_* debugfs files.
+ * DYNAMIC - set when ftrace_ops is registered to denote dynamically
+ *           allocated ftrace_ops which need special care
+ * CONTROL - set manualy by ftrace_ops user to denote the ftrace_ops
+ *           could be controled by following calls:
+ *             ftrace_function_local_enable
+ *             ftrace_function_local_disable
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 enum {
 	FTRACE_OPS_FL_ENABLED		= 1 << 0,
 	FTRACE_OPS_FL_GLOBAL		= 1 << 1,
 	FTRACE_OPS_FL_DYNAMIC		= 1 << 2,
+<<<<<<< HEAD
+=======
+	FTRACE_OPS_FL_CONTROL		= 1 << 3,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct ftrace_ops {
 	ftrace_func_t			func;
 	struct ftrace_ops		*next;
 	unsigned long			flags;
+<<<<<<< HEAD
+=======
+	int __percpu			*disabled;
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_DYNAMIC_FTRACE
 	struct ftrace_hash		*notrace_hash;
 	struct ftrace_hash		*filter_hash;
@@ -97,6 +130,58 @@ int register_ftrace_function(struct ftrace_ops *ops);
 int unregister_ftrace_function(struct ftrace_ops *ops);
 void clear_ftrace_function(void);
 
+<<<<<<< HEAD
+=======
+/**
+ * ftrace_function_local_enable - enable controlled ftrace_ops on current cpu
+ *
+ * This function enables tracing on current cpu by decreasing
+ * the per cpu control variable.
+ * It must be called with preemption disabled and only on ftrace_ops
+ * registered with FTRACE_OPS_FL_CONTROL. If called without preemption
+ * disabled, this_cpu_ptr will complain when CONFIG_DEBUG_PREEMPT is enabled.
+ */
+static inline void ftrace_function_local_enable(struct ftrace_ops *ops)
+{
+	if (WARN_ON_ONCE(!(ops->flags & FTRACE_OPS_FL_CONTROL)))
+		return;
+
+	(*this_cpu_ptr(ops->disabled))--;
+}
+
+/**
+ * ftrace_function_local_disable - enable controlled ftrace_ops on current cpu
+ *
+ * This function enables tracing on current cpu by decreasing
+ * the per cpu control variable.
+ * It must be called with preemption disabled and only on ftrace_ops
+ * registered with FTRACE_OPS_FL_CONTROL. If called without preemption
+ * disabled, this_cpu_ptr will complain when CONFIG_DEBUG_PREEMPT is enabled.
+ */
+static inline void ftrace_function_local_disable(struct ftrace_ops *ops)
+{
+	if (WARN_ON_ONCE(!(ops->flags & FTRACE_OPS_FL_CONTROL)))
+		return;
+
+	(*this_cpu_ptr(ops->disabled))++;
+}
+
+/**
+ * ftrace_function_local_disabled - returns ftrace_ops disabled value
+ *                                  on current cpu
+ *
+ * This function returns value of ftrace_ops::disabled on current cpu.
+ * It must be called with preemption disabled and only on ftrace_ops
+ * registered with FTRACE_OPS_FL_CONTROL. If called without preemption
+ * disabled, this_cpu_ptr will complain when CONFIG_DEBUG_PREEMPT is enabled.
+ */
+static inline int ftrace_function_local_disabled(struct ftrace_ops *ops)
+{
+	WARN_ON_ONCE(!(ops->flags & FTRACE_OPS_FL_CONTROL));
+	return *this_cpu_ptr(ops->disabled);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void ftrace_stub(unsigned long a0, unsigned long a1);
 
 #else /* !CONFIG_FUNCTION_TRACER */
@@ -133,6 +218,11 @@ struct ftrace_func_command {
 int ftrace_arch_code_modify_prepare(void);
 int ftrace_arch_code_modify_post_process(void);
 
+<<<<<<< HEAD
+=======
+void ftrace_bug(int err, unsigned long ip);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct seq_file;
 
 struct ftrace_probe_ops {
@@ -161,7 +251,10 @@ extern int ftrace_text_reserved(void *start, void *end);
 
 enum {
 	FTRACE_FL_ENABLED	= (1 << 30),
+<<<<<<< HEAD
 	FTRACE_FL_FREE		= (1 << 31),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define FTRACE_FL_MASK		(0x3UL << 30)
@@ -172,24 +265,90 @@ struct dyn_ftrace {
 		unsigned long		ip; /* address of mcount call-site */
 		struct dyn_ftrace	*freelist;
 	};
+<<<<<<< HEAD
 	union {
 		unsigned long		flags;
 		struct dyn_ftrace	*newlist;
 	};
+=======
+	unsigned long		flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dyn_arch_ftrace		arch;
 };
 
 int ftrace_force_update(void);
+<<<<<<< HEAD
 void ftrace_set_filter(struct ftrace_ops *ops, unsigned char *buf,
 		       int len, int reset);
 void ftrace_set_notrace(struct ftrace_ops *ops, unsigned char *buf,
 			int len, int reset);
 void ftrace_set_global_filter(unsigned char *buf, int len, int reset);
 void ftrace_set_global_notrace(unsigned char *buf, int len, int reset);
+=======
+int ftrace_set_filter(struct ftrace_ops *ops, unsigned char *buf,
+		       int len, int reset);
+int ftrace_set_notrace(struct ftrace_ops *ops, unsigned char *buf,
+			int len, int reset);
+void ftrace_set_global_filter(unsigned char *buf, int len, int reset);
+void ftrace_set_global_notrace(unsigned char *buf, int len, int reset);
+void ftrace_free_filter(struct ftrace_ops *ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int register_ftrace_command(struct ftrace_func_command *cmd);
 int unregister_ftrace_command(struct ftrace_func_command *cmd);
 
+<<<<<<< HEAD
+=======
+enum {
+	FTRACE_UPDATE_CALLS		= (1 << 0),
+	FTRACE_DISABLE_CALLS		= (1 << 1),
+	FTRACE_UPDATE_TRACE_FUNC	= (1 << 2),
+	FTRACE_START_FUNC_RET		= (1 << 3),
+	FTRACE_STOP_FUNC_RET		= (1 << 4),
+};
+
+enum {
+	FTRACE_UPDATE_IGNORE,
+	FTRACE_UPDATE_MAKE_CALL,
+	FTRACE_UPDATE_MAKE_NOP,
+};
+
+enum {
+	FTRACE_ITER_FILTER	= (1 << 0),
+	FTRACE_ITER_NOTRACE	= (1 << 1),
+	FTRACE_ITER_PRINTALL	= (1 << 2),
+	FTRACE_ITER_DO_HASH	= (1 << 3),
+	FTRACE_ITER_HASH	= (1 << 4),
+	FTRACE_ITER_ENABLED	= (1 << 5),
+};
+
+void arch_ftrace_update_code(int command);
+
+struct ftrace_rec_iter;
+
+struct ftrace_rec_iter *ftrace_rec_iter_start(void);
+struct ftrace_rec_iter *ftrace_rec_iter_next(struct ftrace_rec_iter *iter);
+struct dyn_ftrace *ftrace_rec_iter_record(struct ftrace_rec_iter *iter);
+
+int ftrace_update_record(struct dyn_ftrace *rec, int enable);
+int ftrace_test_record(struct dyn_ftrace *rec, int enable);
+void ftrace_run_stop_machine(int command);
+int ftrace_location(unsigned long ip);
+
+extern ftrace_func_t ftrace_trace_function;
+
+int ftrace_regex_open(struct ftrace_ops *ops, int flag,
+		  struct inode *inode, struct file *file);
+ssize_t ftrace_filter_write(struct file *file, const char __user *ubuf,
+			    size_t cnt, loff_t *ppos);
+ssize_t ftrace_notrace_write(struct file *file, const char __user *ubuf,
+			     size_t cnt, loff_t *ppos);
+int ftrace_regex_release(struct inode *inode, struct file *file);
+
+void __init
+ftrace_set_early_filter(struct ftrace_ops *ops, char *buf, int enable);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* defined in arch */
 extern int ftrace_ip_converted(unsigned long ip);
 extern int ftrace_dyn_arch_init(void *data);
@@ -266,9 +425,12 @@ extern void ftrace_enable_daemon(void);
 #else
 static inline int skip_trace(unsigned long ip) { return 0; }
 static inline int ftrace_force_update(void) { return 0; }
+<<<<<<< HEAD
 static inline void ftrace_set_filter(unsigned char *buf, int len, int reset)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void ftrace_disable_daemon(void) { }
 static inline void ftrace_enable_daemon(void) { }
 static inline void ftrace_release_mod(struct module *mod) {}
@@ -284,8 +446,37 @@ static inline int ftrace_text_reserved(void *start, void *end)
 {
 	return 0;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_DYNAMIC_FTRACE */
 
+=======
+
+/*
+ * Again users of functions that have ftrace_ops may not
+ * have them defined when ftrace is not enabled, but these
+ * functions may still be called. Use a macro instead of inline.
+ */
+#define ftrace_regex_open(ops, flag, inod, file) ({ -ENODEV; })
+#define ftrace_set_early_filter(ops, buf, enable) do { } while (0)
+#define ftrace_set_filter(ops, buf, len, reset) ({ -ENODEV; })
+#define ftrace_set_notrace(ops, buf, len, reset) ({ -ENODEV; })
+#define ftrace_free_filter(ops) do { } while (0)
+
+static inline ssize_t ftrace_filter_write(struct file *file, const char __user *ubuf,
+			    size_t cnt, loff_t *ppos) { return -ENODEV; }
+static inline ssize_t ftrace_notrace_write(struct file *file, const char __user *ubuf,
+			     size_t cnt, loff_t *ppos) { return -ENODEV; }
+static inline loff_t ftrace_regex_lseek(struct file *file, loff_t offset, int origin)
+{
+	return -ENODEV;
+}
+static inline int
+ftrace_regex_release(struct inode *inode, struct file *file) { return -ENODEV; }
+#endif /* CONFIG_DYNAMIC_FTRACE */
+
+loff_t ftrace_filter_lseek(struct file *file, loff_t offset, int whence);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* totally disable ftrace - can not re-enable after this */
 void ftrace_kill(void);
 

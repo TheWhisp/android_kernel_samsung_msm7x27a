@@ -105,9 +105,12 @@ fp_fetoxm1(struct fp_ext *dest, struct fp_ext *src)
 
 	fp_monadic_check(dest, src);
 
+<<<<<<< HEAD
 	if (IS_ZERO(dest))
 		return dest;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return dest;
 }
 

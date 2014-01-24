@@ -27,7 +27,11 @@
 #include <linux/time.h>
 #include <linux/wait.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <sound/rawmidi.h>
 #include <sound/info.h>
@@ -92,6 +96,7 @@ static inline int snd_rawmidi_ready_append(struct snd_rawmidi_substream *substre
 	       (!substream->append || runtime->avail >= count);
 }
 
+<<<<<<< HEAD
 static void snd_rawmidi_input_event_tasklet(unsigned long data)
 {
 	struct snd_rawmidi_substream *substream = (struct snd_rawmidi_substream *)data;
@@ -102,6 +107,14 @@ static void snd_rawmidi_output_trigger_tasklet(unsigned long data)
 {
 	struct snd_rawmidi_substream *substream = (struct snd_rawmidi_substream *)data;
 	substream->ops->trigger(substream, 1);
+=======
+static void snd_rawmidi_input_event_work(struct work_struct *work)
+{
+	struct snd_rawmidi_runtime *runtime =
+		container_of(work, struct snd_rawmidi_runtime, event_work);
+	if (runtime->event)
+		runtime->event(runtime->substream);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
@@ -110,6 +123,7 @@ static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
 
 	if ((runtime = kzalloc(sizeof(*runtime), GFP_KERNEL)) == NULL)
 		return -ENOMEM;
+<<<<<<< HEAD
 	spin_lock_init(&runtime->lock);
 	init_waitqueue_head(&runtime->sleep);
 	if (substream->stream == SNDRV_RAWMIDI_STREAM_INPUT)
@@ -120,6 +134,12 @@ static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
 		tasklet_init(&runtime->tasklet,
 			     snd_rawmidi_output_trigger_tasklet,
 			     (unsigned long)substream);
+=======
+	runtime->substream = substream;
+	spin_lock_init(&runtime->lock);
+	init_waitqueue_head(&runtime->sleep);
+	INIT_WORK(&runtime->event_work, snd_rawmidi_input_event_work);
+>>>>>>> refs/remotes/origin/cm-10.0
 	runtime->event = NULL;
 	runtime->buffer_size = PAGE_SIZE;
 	runtime->avail_min = 1;
@@ -150,12 +170,16 @@ static inline void snd_rawmidi_output_trigger(struct snd_rawmidi_substream *subs
 {
 	if (!substream->opened)
 		return;
+<<<<<<< HEAD
 	if (up) {
 		tasklet_schedule(&substream->runtime->tasklet);
 	} else {
 		tasklet_kill(&substream->runtime->tasklet);
 		substream->ops->trigger(substream, 0);
 	}
+=======
+	substream->ops->trigger(substream, up);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void snd_rawmidi_input_trigger(struct snd_rawmidi_substream *substream, int up)
@@ -163,8 +187,13 @@ static void snd_rawmidi_input_trigger(struct snd_rawmidi_substream *substream, i
 	if (!substream->opened)
 		return;
 	substream->ops->trigger(substream, up);
+<<<<<<< HEAD
 	if (!up && substream->runtime->event)
 		tasklet_kill(&substream->runtime->tasklet);
+=======
+	if (!up)
+		cancel_work_sync(&substream->runtime->event_work);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int snd_rawmidi_drop_output(struct snd_rawmidi_substream *substream)
@@ -649,10 +678,17 @@ int snd_rawmidi_output_params(struct snd_rawmidi_substream *substream,
 		return -EINVAL;
 	}
 	if (params->buffer_size != runtime->buffer_size) {
+<<<<<<< HEAD
 		newbuf = kmalloc(params->buffer_size, GFP_KERNEL);
 		if (!newbuf)
 			return -ENOMEM;
 		kfree(runtime->buffer);
+=======
+		newbuf = krealloc(runtime->buffer, params->buffer_size,
+				  GFP_KERNEL);
+		if (!newbuf)
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 		runtime->buffer = newbuf;
 		runtime->buffer_size = params->buffer_size;
 		runtime->avail = runtime->buffer_size;
@@ -676,10 +712,17 @@ int snd_rawmidi_input_params(struct snd_rawmidi_substream *substream,
 		return -EINVAL;
 	}
 	if (params->buffer_size != runtime->buffer_size) {
+<<<<<<< HEAD
 		newbuf = kmalloc(params->buffer_size, GFP_KERNEL);
 		if (!newbuf)
 			return -ENOMEM;
 		kfree(runtime->buffer);
+=======
+		newbuf = krealloc(runtime->buffer, params->buffer_size,
+				  GFP_KERNEL);
+		if (!newbuf)
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 		runtime->buffer = newbuf;
 		runtime->buffer_size = params->buffer_size;
 	}
@@ -934,7 +977,11 @@ int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
 	}
 	if (result > 0) {
 		if (runtime->event)
+<<<<<<< HEAD
 			tasklet_schedule(&runtime->tasklet);
+=======
+			schedule_work(&runtime->event_work);
+>>>>>>> refs/remotes/origin/cm-10.0
 		else if (snd_rawmidi_ready(substream))
 			wake_up(&runtime->sleep);
 	}

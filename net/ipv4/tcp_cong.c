@@ -6,6 +6,11 @@
  * Copyright (C) 2005 Stephen Hemminger <shemminger@osdl.org>
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "TCP: " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/mm.h>
 #include <linux/types.h>
@@ -41,18 +46,30 @@ int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
 
 	/* all algorithms must implement ssthresh and cong_avoid ops */
 	if (!ca->ssthresh || !ca->cong_avoid) {
+<<<<<<< HEAD
 		printk(KERN_ERR "TCP %s does not implement required ops\n",
 		       ca->name);
+=======
+		pr_err("%s does not implement required ops\n", ca->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
 	spin_lock(&tcp_cong_list_lock);
 	if (tcp_ca_find(ca->name)) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "TCP %s already registered\n", ca->name);
 		ret = -EEXIST;
 	} else {
 		list_add_tail_rcu(&ca->list, &tcp_cong_list);
 		printk(KERN_INFO "TCP %s registered\n", ca->name);
+=======
+		pr_notice("%s already registered\n", ca->name);
+		ret = -EEXIST;
+	} else {
+		list_add_tail_rcu(&ca->list, &tcp_cong_list);
+		pr_info("%s registered\n", ca->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	spin_unlock(&tcp_cong_list_lock);
 
@@ -293,7 +310,11 @@ int tcp_is_cwnd_limited(const struct sock *sk, u32 in_flight)
 	    left * tp->mss_cache < sk->sk_gso_max_size &&
 	    left < sk->sk_gso_max_segs)
 		return 1;
+<<<<<<< HEAD
 	return left <= tcp_max_burst(tp);
+=======
+	return left <= tcp_max_tso_deferred_mss(tp);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(tcp_is_cwnd_limited);
 

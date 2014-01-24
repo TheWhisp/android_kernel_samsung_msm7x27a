@@ -21,6 +21,18 @@
 #define IO_APIC_REDIR_LEVEL_TRIGGER	(1 << 15)
 #define IO_APIC_REDIR_MASKED		(1 << 16)
 
+<<<<<<< HEAD
+=======
+struct io_apic_ops {
+	void		(*init)  (void);
+	unsigned int	(*read)  (unsigned int apic, unsigned int reg);
+	void		(*write) (unsigned int apic, unsigned int reg, unsigned int value);
+	void		(*modify)(unsigned int apic, unsigned int reg, unsigned int value);
+};
+
+void __init set_io_apic_ops(const struct io_apic_ops *);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * The structure of the IO-APIC:
  */

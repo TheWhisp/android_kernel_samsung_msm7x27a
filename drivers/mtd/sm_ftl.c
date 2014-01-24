@@ -25,7 +25,11 @@
 struct workqueue_struct *cache_flush_workqueue;
 
 static int cache_timeout = 1000;
+<<<<<<< HEAD
 module_param(cache_timeout, bool, S_IRUGO);
+=======
+module_param(cache_timeout, int, S_IRUGO);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(cache_timeout,
 	"Timeout (in ms) for cache flush (1000 ms default");
 
@@ -34,7 +38,11 @@ module_param(debug, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug level (0-2)");
 
 
+<<<<<<< HEAD
 /* ------------------- sysfs attributtes ---------------------------------- */
+=======
+/* ------------------- sysfs attributes ---------------------------------- */
+>>>>>>> refs/remotes/origin/cm-10.0
 struct sm_sysfs_attribute {
 	struct device_attribute dev_attr;
 	char *data;
@@ -138,7 +146,11 @@ static int sm_get_lba(uint8_t *lba)
 	if ((lba[0] & 0xF8) != 0x10)
 		return -2;
 
+<<<<<<< HEAD
 	/* check parity - endianess doesn't matter */
+=======
+	/* check parity - endianness doesn't matter */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (hweight16(*(uint16_t *)lba) & 1)
 		return -2;
 
@@ -147,7 +159,11 @@ static int sm_get_lba(uint8_t *lba)
 
 
 /*
+<<<<<<< HEAD
  * Read LBA asscociated with block
+=======
+ * Read LBA associated with block
+>>>>>>> refs/remotes/origin/cm-10.0
  * returns -1, if block is erased
  * returns -2 if error happens
  */
@@ -252,11 +268,19 @@ static int sm_read_sector(struct sm_ftl *ftl,
 		return 0;
 	}
 
+<<<<<<< HEAD
 	/* User might not need the oob, but we do for data vertification */
 	if (!oob)
 		oob = &tmp_oob;
 
 	ops.mode = ftl->smallpagenand ? MTD_OOB_RAW : MTD_OOB_PLACE;
+=======
+	/* User might not need the oob, but we do for data verification */
+	if (!oob)
+		oob = &tmp_oob;
+
+	ops.mode = ftl->smallpagenand ? MTD_OPS_RAW : MTD_OPS_PLACE_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ops.ooboffs = 0;
 	ops.ooblen = SM_OOB_SIZE;
 	ops.oobbuf = (void *)oob;
@@ -276,12 +300,21 @@ again:
 			return ret;
 	}
 
+<<<<<<< HEAD
 	/* Unfortunelly, oob read will _always_ succeed,
 		despite card removal..... */
 	ret = mtd->read_oob(mtd, sm_mkoffset(ftl, zone, block, boffset), &ops);
 
 	/* Test for unknown errors */
 	if (ret != 0 && ret != -EUCLEAN && ret != -EBADMSG) {
+=======
+	/* Unfortunately, oob read will _always_ succeed,
+		despite card removal..... */
+	ret = mtd_read_oob(mtd, sm_mkoffset(ftl, zone, block, boffset), &ops);
+
+	/* Test for unknown errors */
+	if (ret != 0 && !mtd_is_bitflip_or_eccerr(ret)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dbg("read of block %d at zone %d, failed due to error (%d)",
 			block, zone, ret);
 		goto again;
@@ -306,7 +339,11 @@ again:
 	}
 
 	/* Test ECC*/
+<<<<<<< HEAD
 	if (ret == -EBADMSG ||
+=======
+	if (mtd_is_eccerr(ret) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 		(ftl->smallpagenand && sm_correct_sector(buffer, oob))) {
 
 		dbg("read of block %d at zone %d, failed due to ECC error",
@@ -336,14 +373,22 @@ static int sm_write_sector(struct sm_ftl *ftl,
 	if (ftl->unstable)
 		return -EIO;
 
+<<<<<<< HEAD
 	ops.mode = ftl->smallpagenand ? MTD_OOB_RAW : MTD_OOB_PLACE;
+=======
+	ops.mode = ftl->smallpagenand ? MTD_OPS_RAW : MTD_OPS_PLACE_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ops.len = SM_SECTOR_SIZE;
 	ops.datbuf = buffer;
 	ops.ooboffs = 0;
 	ops.ooblen = SM_OOB_SIZE;
 	ops.oobbuf = (void *)oob;
 
+<<<<<<< HEAD
 	ret = mtd->write_oob(mtd, sm_mkoffset(ftl, zone, block, boffset), &ops);
+=======
+	ret = mtd_write_oob(mtd, sm_mkoffset(ftl, zone, block, boffset), &ops);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Now we assume that hardware will catch write bitflip errors */
 	/* If you are paranoid, use CONFIG_MTD_NAND_VERIFY_WRITE */
@@ -447,14 +492,22 @@ static void sm_mark_block_bad(struct sm_ftl *ftl, int zone, int block)
 
 	/* We aren't checking the return value, because we don't care */
 	/* This also fails on fake xD cards, but I guess these won't expose
+<<<<<<< HEAD
 		any bad blocks till fail completly */
+=======
+		any bad blocks till fail completely */
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (boffset = 0; boffset < ftl->block_size; boffset += SM_SECTOR_SIZE)
 		sm_write_sector(ftl, zone, block, boffset, NULL, &oob);
 }
 
 /*
  * Erase a block within a zone
+<<<<<<< HEAD
  * If erase succedes, it updates free block fifo, otherwise marks block as bad
+=======
+ * If erase succeeds, it updates free block fifo, otherwise marks block as bad
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int sm_erase_block(struct sm_ftl *ftl, int zone_num, uint16_t block,
 			  int put_free)
@@ -479,7 +532,11 @@ static int sm_erase_block(struct sm_ftl *ftl, int zone_num, uint16_t block,
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	if (mtd->erase(mtd, &erase)) {
+=======
+	if (mtd_erase(mtd, &erase)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		sm_printk("erase of block %d in zone %d failed",
 							block, zone_num);
 		goto error;
@@ -510,7 +567,11 @@ static void sm_erase_callback(struct erase_info *self)
 	complete(&ftl->erase_completion);
 }
 
+<<<<<<< HEAD
 /* Throughtly test that block is valid. */
+=======
+/* Thoroughly test that block is valid. */
+>>>>>>> refs/remotes/origin/cm-10.0
 static int sm_check_block(struct sm_ftl *ftl, int zone, int block)
 {
 	int boffset;
@@ -526,7 +587,11 @@ static int sm_check_block(struct sm_ftl *ftl, int zone, int block)
 	for (boffset = 0; boffset < ftl->block_size;
 					boffset += SM_SECTOR_SIZE) {
 
+<<<<<<< HEAD
 		/* This shoudn't happen anyway */
+=======
+		/* This shouldn't happen anyway */
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (sm_read_sector(ftl, zone, block, boffset, NULL, &oob))
 			return -2;
 
@@ -645,8 +710,13 @@ int sm_get_media_info(struct sm_ftl *ftl, struct mtd_info *mtd)
 	if (!ftl->smallpagenand && mtd->oobsize < SM_OOB_SIZE)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	/* We use these functions for IO */
 	if (!mtd->read_oob || !mtd->write_oob)
+=======
+	/* We use OOB */
+	if (!mtd_has_oob(mtd))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 
 	/* Find geometry information */

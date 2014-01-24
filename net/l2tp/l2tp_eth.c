@@ -64,7 +64,11 @@ static int l2tp_eth_dev_init(struct net_device *dev)
 	struct l2tp_eth *priv = netdev_priv(dev);
 
 	priv->dev = dev;
+<<<<<<< HEAD
 	random_ether_addr(dev->dev_addr);
+=======
+	eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memset(&dev->broadcast[0], 0xff, 6);
 
 	return 0;

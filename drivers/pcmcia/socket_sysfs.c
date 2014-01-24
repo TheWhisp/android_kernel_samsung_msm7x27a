@@ -23,7 +23,10 @@
 #include <linux/pm.h>
 #include <linux/device.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 
 #include <pcmcia/ss.h>

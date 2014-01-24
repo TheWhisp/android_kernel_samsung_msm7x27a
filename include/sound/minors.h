@@ -35,7 +35,11 @@
 #define SNDRV_MINOR_TIMER		33	/* SNDRV_MINOR_GLOBAL + 1 * 32 */
 
 #ifndef CONFIG_SND_DYNAMIC_MINORS
+<<<<<<< HEAD
 						/* 2 - 3 (reserved) */
+=======
+#define SNDRV_MINOR_COMPRESS		2	/* 2 - 3 */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SNDRV_MINOR_HWDEP		4	/* 4 - 7 */
 #define SNDRV_MINOR_RAWMIDI		8	/* 8 - 15 */
 #define SNDRV_MINOR_PCM_PLAYBACK	16	/* 16 - 23 */
@@ -49,6 +53,10 @@
 #define SNDRV_DEVICE_TYPE_PCM_CAPTURE	SNDRV_MINOR_PCM_CAPTURE
 #define SNDRV_DEVICE_TYPE_SEQUENCER	SNDRV_MINOR_SEQUENCER
 #define SNDRV_DEVICE_TYPE_TIMER		SNDRV_MINOR_TIMER
+<<<<<<< HEAD
+=======
+#define SNDRV_DEVICE_TYPE_COMPRESS	SNDRV_MINOR_COMPRESS
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else /* CONFIG_SND_DYNAMIC_MINORS */
 
@@ -60,6 +68,10 @@ enum {
 	SNDRV_DEVICE_TYPE_RAWMIDI,
 	SNDRV_DEVICE_TYPE_PCM_PLAYBACK,
 	SNDRV_DEVICE_TYPE_PCM_CAPTURE,
+<<<<<<< HEAD
+=======
+	SNDRV_DEVICE_TYPE_COMPRESS,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif /* CONFIG_SND_DYNAMIC_MINORS */

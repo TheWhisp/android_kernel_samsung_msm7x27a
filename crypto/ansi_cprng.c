@@ -414,10 +414,24 @@ static int fips_cprng_get_random(struct crypto_rng *tfm, u8 *rdata,
 static int fips_cprng_reset(struct crypto_rng *tfm, u8 *seed, unsigned int slen)
 {
 	u8 rdata[DEFAULT_BLK_SZ];
+<<<<<<< HEAD
+=======
+	u8 *key = seed + DEFAULT_BLK_SZ;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int rc;
 
 	struct prng_context *prng = crypto_rng_ctx(tfm);
 
+<<<<<<< HEAD
+=======
+	if (slen < DEFAULT_PRNG_KSZ + DEFAULT_BLK_SZ)
+		return -EINVAL;
+
+	/* fips strictly requires seed != key */
+	if (!memcmp(seed, key, DEFAULT_PRNG_KSZ))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rc = cprng_reset(tfm, seed, slen);
 
 	if (!rc)

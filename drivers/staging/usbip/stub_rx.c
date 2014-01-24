@@ -175,12 +175,20 @@ static int tweak_reset_device_cmd(struct urb *urb)
 	dev_info(&urb->dev->dev, "usb_queue_reset_device\n");
 
 	/*
+<<<<<<< HEAD
 	 * With the implementation of pre_reset and post_reset the driver no 
 	 * longer unbinds. This allows the use of synchronous reset.
 	 */
 
 	if (usb_lock_device_for_reset(sdev->udev, sdev->interface)<0)
 	{
+=======
+	 * With the implementation of pre_reset and post_reset the driver no
+	 * longer unbinds. This allows the use of synchronous reset.
+	 */
+
+	if (usb_lock_device_for_reset(sdev->udev, sdev->interface) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_err(&urb->dev->dev, "could not obtain lock to reset device\n");
 		return 0;
 	}
@@ -306,18 +314,30 @@ static int stub_recv_cmd_unlink(struct stub_device *sdev,
 static int valid_request(struct stub_device *sdev, struct usbip_header *pdu)
 {
 	struct usbip_device *ud = &sdev->ud;
+<<<<<<< HEAD
+=======
+	int valid = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (pdu->base.devid == sdev->devid) {
 		spin_lock(&ud->lock);
 		if (ud->status == SDEV_ST_USED) {
 			/* A request is valid. */
+<<<<<<< HEAD
 			spin_unlock(&ud->lock);
 			return 1;
+=======
+			valid = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		spin_unlock(&ud->lock);
 	}
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return valid;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct stub_priv *stub_priv_alloc(struct stub_device *sdev,
@@ -368,6 +388,7 @@ static int get_pipe(struct stub_device *sdev, int epnum, int dir)
 	}
 
 	epd = &ep->desc;
+<<<<<<< HEAD
 #if 0
 	/* epnum 0 is always control */
 	if (epnum == 0) {
@@ -377,6 +398,8 @@ static int get_pipe(struct stub_device *sdev, int epnum, int dir)
 			return usb_rcvctrlpipe(udev, 0);
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (usb_endpoint_xfer_control(epd)) {
 		if (dir == USBIP_DIR_OUT)
 			return usb_sndctrlpipe(udev, epnum);
@@ -565,7 +588,11 @@ static void stub_rx_pdu(struct usbip_device *ud)
 	memset(&pdu, 0, sizeof(pdu));
 
 	/* 1. receive a pdu header */
+<<<<<<< HEAD
 	ret = usbip_xmit(0, ud->tcp_socket, (char *) &pdu, sizeof(pdu), 0);
+=======
+	ret = usbip_recv(ud->tcp_socket, &pdu, sizeof(pdu));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret != sizeof(pdu)) {
 		dev_err(dev, "recv a header, %d\n", ret);
 		usbip_event_add(ud, SDEV_EVENT_ERROR_TCP);

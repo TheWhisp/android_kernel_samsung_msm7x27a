@@ -98,6 +98,7 @@ int l2cap_sock_le_params_valid(struct bt_le_params *le_params)
 	return 1;
 }
 
+<<<<<<< HEAD
 int l2cap_sock_le_conn_update_params_valid(struct bt_le_params *le_params)
 {
 	if (!le_params || le_params->latency > BT_LE_LATENCY_MAX ||
@@ -112,6 +113,8 @@ int l2cap_sock_le_conn_update_params_valid(struct bt_le_params *le_params)
 	return 1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct sock *__l2cap_get_sock_by_addr(__le16 psm, bdaddr_t *src)
 {
 	struct sock *sk;
@@ -201,7 +204,11 @@ static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr, int al
 		l2cap_pi(sk)->mode, sk->sk_state);
 
 	if (!addr || alen < sizeof(addr->sa_family) ||
+<<<<<<< HEAD
 		addr->sa_family != AF_BLUETOOTH)
+=======
+	    addr->sa_family != AF_BLUETOOTH)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	memset(&la, 0, sizeof(la));
@@ -853,8 +860,12 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 		}
 
 		if (!conn->hcon->out ||
+<<<<<<< HEAD
 				!l2cap_sock_le_conn_update_params_valid(
 					&le_params)) {
+=======
+				!l2cap_sock_le_params_valid(&le_params)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			err = -EINVAL;
 			break;
 		}

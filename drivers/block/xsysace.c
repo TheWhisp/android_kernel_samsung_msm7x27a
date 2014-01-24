@@ -456,7 +456,11 @@ static inline void ace_fsm_yieldirq(struct ace_device *ace)
 {
 	dev_dbg(ace->dev, "ace_fsm_yieldirq()\n");
 
+<<<<<<< HEAD
 	if (ace->irq == NO_IRQ)
+=======
+	if (!ace->irq)
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* No IRQ assigned, so need to poll */
 		tasklet_schedule(&ace->fsm_tasklet);
 	ace->fsm_continue_flag = 0;
@@ -1034,12 +1038,20 @@ static int __devinit ace_setup(struct ace_device *ace)
 		ACE_CTRL_DATABUFRDYIRQ | ACE_CTRL_ERRORIRQ);
 
 	/* Now we can hook up the irq handler */
+<<<<<<< HEAD
 	if (ace->irq != NO_IRQ) {
+=======
+	if (ace->irq) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = request_irq(ace->irq, ace_interrupt, 0, "systemace", ace);
 		if (rc) {
 			/* Failure - fall back to polled mode */
 			dev_err(ace->dev, "request_irq failed\n");
+<<<<<<< HEAD
 			ace->irq = NO_IRQ;
+=======
+			ace->irq = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -1086,7 +1098,11 @@ static void __devexit ace_teardown(struct ace_device *ace)
 
 	tasklet_kill(&ace->fsm_tasklet);
 
+<<<<<<< HEAD
 	if (ace->irq != NO_IRQ)
+=======
+	if (ace->irq)
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_irq(ace->irq, ace);
 
 	iounmap(ace->baseaddr);
@@ -1156,7 +1172,11 @@ static int __devinit ace_probe(struct platform_device *dev)
 	resource_size_t physaddr = 0;
 	int bus_width = ACE_BUS_WIDTH_16; /* FIXME: should not be hard coded */
 	u32 id = dev->id;
+<<<<<<< HEAD
 	int irq = NO_IRQ;
+=======
+	int irq = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 
 	dev_dbg(&dev->dev, "ace_probe(%p)\n", dev);

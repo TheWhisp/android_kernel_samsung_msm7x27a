@@ -14,6 +14,11 @@
 #include <linux/io.h>
 #include <asm/mach/arch.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
+=======
+#include <mach/dove.h>
+#include <plat/addr-map.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "common.h"
 
 /*
@@ -34,6 +39,7 @@
 #define ATTR_PCIE_MEM		0xe8
 #define ATTR_SCRATCHPAD		0x0
 
+<<<<<<< HEAD
 /*
  * CPU Address Decode Windows registers
  */
@@ -44,11 +50,14 @@
 
 struct mbus_dram_target_info dove_mbus_dram_info;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void __iomem *ddr_map_sc(int i)
 {
 	return (void __iomem *)(DOVE_MC_VIRT_BASE + 0x100 + ((i) << 4));
 }
 
+<<<<<<< HEAD
 static int cpu_win_can_remap(int win)
 {
 	if (win < 4)
@@ -121,11 +130,73 @@ void __init dove_setup_cpu_mbus(void)
 	 */
 	setup_cpu_win(6, DOVE_SCRATCHPAD_PHYS_BASE, DOVE_SCRATCHPAD_SIZE,
 		      TARGET_SCRATCHPAD, ATTR_SCRATCHPAD, -1);
+=======
+/*
+ * Description of the windows needed by the platform code
+ */
+static struct __initdata orion_addr_map_cfg addr_map_cfg = {
+	.num_wins = 8,
+	.remappable_wins = 4,
+	.bridge_virt_base = BRIDGE_VIRT_BASE,
+};
+
+static const struct __initdata orion_addr_map_info addr_map_info[] = {
+	/*
+	 * Windows for PCIe IO+MEM space.
+	 */
+	{ 0, DOVE_PCIE0_IO_PHYS_BASE, DOVE_PCIE0_IO_SIZE,
+	  TARGET_PCIE0, ATTR_PCIE_IO, DOVE_PCIE0_IO_BUS_BASE
+	},
+	{ 1, DOVE_PCIE1_IO_PHYS_BASE, DOVE_PCIE1_IO_SIZE,
+	  TARGET_PCIE1, ATTR_PCIE_IO, DOVE_PCIE1_IO_BUS_BASE
+	},
+	{ 2, DOVE_PCIE0_MEM_PHYS_BASE, DOVE_PCIE0_MEM_SIZE,
+	  TARGET_PCIE0, ATTR_PCIE_MEM, -1
+	},
+	{ 3, DOVE_PCIE1_MEM_PHYS_BASE, DOVE_PCIE1_MEM_SIZE,
+	  TARGET_PCIE1, ATTR_PCIE_MEM, -1
+	},
+	/*
+	 * Window for CESA engine.
+	 */
+	{ 4, DOVE_CESA_PHYS_BASE, DOVE_CESA_SIZE,
+	  TARGET_CESA, ATTR_CESA, -1
+	},
+	/*
+	 * Window to the BootROM for Standby and Sleep Resume
+	 */
+	{ 5, DOVE_BOOTROM_PHYS_BASE, DOVE_BOOTROM_SIZE,
+	  TARGET_BOOTROM, ATTR_BOOTROM, -1
+	},
+	/*
+	 * Window to the PMU Scratch Pad space
+	 */
+	{ 6, DOVE_SCRATCHPAD_PHYS_BASE, DOVE_SCRATCHPAD_SIZE,
+	  TARGET_SCRATCHPAD, ATTR_SCRATCHPAD, -1
+	},
+	/* End marker */
+	{ -1, 0, 0, 0, 0, 0 }
+};
+
+void __init dove_setup_cpu_mbus(void)
+{
+	int i;
+	int cs;
+
+	/*
+	 * Disable, clear and configure windows.
+	 */
+	orion_config_wins(&addr_map_cfg, addr_map_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Setup MBUS dram target info.
 	 */
+<<<<<<< HEAD
 	dove_mbus_dram_info.mbus_dram_target_id = TARGET_DDR;
+=======
+	orion_mbus_dram_info.mbus_dram_target_id = TARGET_DDR;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0, cs = 0; i < 2; i++) {
 		u32 map = readl(ddr_map_sc(i));
@@ -136,7 +207,11 @@ void __init dove_setup_cpu_mbus(void)
 		if (map & 1) {
 			struct mbus_dram_window *w;
 
+<<<<<<< HEAD
 			w = &dove_mbus_dram_info.cs[cs++];
+=======
+			w = &orion_mbus_dram_info.cs[cs++];
+>>>>>>> refs/remotes/origin/cm-10.0
 			w->cs_index = i;
 			w->mbus_attr = 0; /* CS address decoding done inside */
 					  /* the DDR controller, no need to  */
@@ -145,5 +220,9 @@ void __init dove_setup_cpu_mbus(void)
 			w->size = 0x100000 << (((map & 0x000f0000) >> 16) - 4);
 		}
 	}
+<<<<<<< HEAD
 	dove_mbus_dram_info.num_cs = cs;
+=======
+	orion_mbus_dram_info.num_cs = cs;
+>>>>>>> refs/remotes/origin/cm-10.0
 }

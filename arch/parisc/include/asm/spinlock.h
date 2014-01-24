@@ -1,7 +1,12 @@
 #ifndef __ASM_SPINLOCK_H
 #define __ASM_SPINLOCK_H
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/barrier.h>
+#include <asm/ldcw.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/processor.h>
 #include <asm/spinlock_types.h>
 

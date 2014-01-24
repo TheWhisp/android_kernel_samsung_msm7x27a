@@ -44,8 +44,11 @@ struct pk_device {
 	struct pcmidi_snd	*pm; /* pcmidi device context */
 };
 
+<<<<<<< HEAD
 struct pcmidi_snd;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct pcmidi_sustain {
 	unsigned long		in_use;
 	struct pcmidi_snd	*pm;
@@ -92,7 +95,11 @@ static const char longname[] = "Prodikeys PC-MIDI Keyboard";
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param_array(index, int, NULL, 0444);
 module_param_array(id, charp, NULL, 0444);
@@ -242,7 +249,11 @@ drop_note:
 	return;
 }
 
+<<<<<<< HEAD
 void pcmidi_sustained_note_release(unsigned long data)
+=======
+static void pcmidi_sustained_note_release(unsigned long data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pcmidi_sustain *pms = (struct pcmidi_sustain *)data;
 
@@ -250,7 +261,11 @@ void pcmidi_sustained_note_release(unsigned long data)
 	pms->in_use = 0;
 }
 
+<<<<<<< HEAD
 void init_sustain_timers(struct pcmidi_snd *pm)
+=======
+static void init_sustain_timers(struct pcmidi_snd *pm)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pcmidi_sustain *pms;
 	unsigned i;
@@ -264,7 +279,11 @@ void init_sustain_timers(struct pcmidi_snd *pm)
 	}
 }
 
+<<<<<<< HEAD
 void stop_sustain_timers(struct pcmidi_snd *pm)
+=======
+static void stop_sustain_timers(struct pcmidi_snd *pm)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pcmidi_sustain *pms;
 	unsigned i;
@@ -499,7 +518,11 @@ static int pcmidi_handle_report4(struct pcmidi_snd *pm, u8 *data)
 	return 1;
 }
 
+<<<<<<< HEAD
 int pcmidi_handle_report(
+=======
+static int pcmidi_handle_report(
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pcmidi_snd *pm, unsigned report_id, u8 *data, int size)
 {
 	int ret = 0;
@@ -518,7 +541,12 @@ int pcmidi_handle_report(
 	return ret;
 }
 
+<<<<<<< HEAD
 void pcmidi_setup_extra_keys(struct pcmidi_snd *pm, struct input_dev *input)
+=======
+static void pcmidi_setup_extra_keys(
+	struct pcmidi_snd *pm, struct input_dev *input)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* reassigned functionality for N/A keys
 		MY PICTURES =>	KEY_WORDPROCESSOR
@@ -602,7 +630,11 @@ static struct snd_rawmidi_ops pcmidi_in_ops = {
 	.trigger = pcmidi_in_trigger
 };
 
+<<<<<<< HEAD
 int pcmidi_snd_initialise(struct pcmidi_snd *pm)
+=======
+static int pcmidi_snd_initialise(struct pcmidi_snd *pm)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static int dev;
 	struct snd_card *card;
@@ -720,7 +752,11 @@ fail:
 	return err;
 }
 
+<<<<<<< HEAD
 int pcmidi_snd_terminate(struct pcmidi_snd *pm)
+=======
+static int pcmidi_snd_terminate(struct pcmidi_snd *pm)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (pm->card) {
 		stop_sustain_timers(pm);
@@ -817,7 +853,11 @@ static int pk_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	if (pm == NULL) {
 		hid_err(hdev, "can't alloc descriptor\n");
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto err_free;
+=======
+		goto err_free_pk;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	pm->pk = pk;
@@ -850,10 +890,17 @@ static int pk_probe(struct hid_device *hdev, const struct hid_device_id *id)
 err_stop:
 	hid_hw_stop(hdev);
 err_free:
+<<<<<<< HEAD
 	if (pm != NULL)
 		kfree(pm);
 
 	kfree(pk);
+=======
+	kfree(pm);
+err_free_pk:
+	kfree(pk);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 

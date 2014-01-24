@@ -42,7 +42,10 @@
  */
 
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ehca_classes.h"
 #include "ehca_tools.h"
 #include "ehca_qes.h"

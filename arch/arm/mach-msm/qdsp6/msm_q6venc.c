@@ -24,6 +24,13 @@
 #include <linux/wakelock.h>
 #include <linux/android_pmem.h>
 #include <linux/msm_q6venc.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_qos.h>
+
+#include <mach/cpuidle.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "dal.h"
 
 #define DALDEVICEID_VENC_DEVICE         0x0200002D
@@ -142,13 +149,22 @@ static int venc_ref;
 static DEFINE_MUTEX(idlecount_lock);
 static int idlecount;
 static struct wake_lock wakelock;
+<<<<<<< HEAD
 static struct wake_lock idlelock;
+=======
+static struct pm_qos_request pm_qos_req;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void prevent_sleep(void)
 {
 	mutex_lock(&idlecount_lock);
 	if (++idlecount == 1) {
+<<<<<<< HEAD
 		wake_lock(&idlelock);
+=======
+		pm_qos_update_request(&pm_qos_req,
+				      msm_cpuidle_get_deep_idle_latency());
+>>>>>>> refs/remotes/origin/cm-10.0
 		wake_lock(&wakelock);
 	}
 	mutex_unlock(&idlecount_lock);
@@ -158,8 +174,13 @@ static void allow_sleep(void)
 {
 	mutex_lock(&idlecount_lock);
 	if (--idlecount == 0) {
+<<<<<<< HEAD
 		wake_unlock(&idlelock);
 		wake_unlock(&wakelock);
+=======
+		wake_unlock(&wakelock);
+		pm_qos_update_request(&pm_qos_req, PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	mutex_unlock(&idlecount_lock);
 }
@@ -1130,7 +1151,12 @@ static int __init q6venc_init(void)
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 	wake_lock_init(&idlelock, WAKE_LOCK_IDLE, "venc_idle");
+=======
+	pm_qos_add_request(&pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
+				PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	wake_lock_init(&wakelock, WAKE_LOCK_SUSPEND, "venc_suspend");
 
 	venc_device_p = kzalloc(sizeof(struct venc_dev), GFP_KERNEL);

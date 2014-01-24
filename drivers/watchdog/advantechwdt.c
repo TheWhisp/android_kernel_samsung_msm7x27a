@@ -28,6 +28,11 @@
  *	    add wdt_start and wdt_stop as parameters.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -40,10 +45,15 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #define DRV_NAME "advantechwdt"
 #define PFX DRV_NAME ": "
+=======
+
+#define DRV_NAME "advantechwdt"
+>>>>>>> refs/remotes/origin/cm-10.0
 #define WATCHDOG_NAME "Advantech WDT"
 #define WATCHDOG_TIMEOUT 60		/* 60 sec default timeout */
 
@@ -77,8 +87,13 @@ MODULE_PARM_DESC(timeout,
 	"Watchdog timeout in seconds. 1<= timeout <=63, default="
 		__MODULE_STRING(WATCHDOG_TIMEOUT) ".");
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 		__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -207,8 +222,12 @@ static int advwdt_close(struct inode *inode, struct file *file)
 	if (adv_expect_close == 42) {
 		advwdt_disable();
 	} else {
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 				"Unexpected close, not stopping watchdog!\n");
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		advwdt_ping();
 	}
 	clear_bit(0, &advwdt_is_open);
@@ -245,18 +264,27 @@ static int __devinit advwdt_probe(struct platform_device *dev)
 
 	if (wdt_stop != wdt_start) {
 		if (!request_region(wdt_stop, 1, WATCHDOG_NAME)) {
+<<<<<<< HEAD
 			printk(KERN_ERR PFX
 				"I/O address 0x%04x already in use\n",
 								wdt_stop);
+=======
+			pr_err("I/O address 0x%04x already in use\n",
+			       wdt_stop);
+>>>>>>> refs/remotes/origin/cm-10.0
 			ret = -EIO;
 			goto out;
 		}
 	}
 
 	if (!request_region(wdt_start, 1, WATCHDOG_NAME)) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 				"I/O address 0x%04x already in use\n",
 								wdt_start);
+=======
+		pr_err("I/O address 0x%04x already in use\n", wdt_start);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -EIO;
 		goto unreg_stop;
 	}
@@ -265,18 +293,30 @@ static int __devinit advwdt_probe(struct platform_device *dev)
 	 * if not reset to the default */
 	if (advwdt_set_heartbeat(timeout)) {
 		advwdt_set_heartbeat(WATCHDOG_TIMEOUT);
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"timeout value must be 1<=x<=63, using %d\n", timeout);
+=======
+		pr_info("timeout value must be 1<=x<=63, using %d\n", timeout);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	ret = misc_register(&advwdt_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 							WATCHDOG_MINOR, ret);
 		goto unreg_regions;
 	}
 	printk(KERN_INFO PFX "initialized. timeout=%d sec (nowayout=%d)\n",
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+		goto unreg_regions;
+	}
+	pr_info("initialized. timeout=%d sec (nowayout=%d)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		timeout, nowayout);
 out:
 	return ret;
@@ -318,8 +358,12 @@ static int __init advwdt_init(void)
 {
 	int err;
 
+<<<<<<< HEAD
 	printk(KERN_INFO
 	     "WDT driver for Advantech single board computer initialising.\n");
+=======
+	pr_info("WDT driver for Advantech single board computer initialising\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = platform_driver_register(&advwdt_driver);
 	if (err)
@@ -343,7 +387,11 @@ static void __exit advwdt_exit(void)
 {
 	platform_device_unregister(advwdt_platform_device);
 	platform_driver_unregister(&advwdt_driver);
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog Module Unloaded.\n");
+=======
+	pr_info("Watchdog Module Unloaded\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 module_init(advwdt_init);

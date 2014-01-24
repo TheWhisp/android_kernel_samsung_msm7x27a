@@ -3,6 +3,15 @@ if ARCH_AT91
 config HAVE_AT91_DATAFLASH_CARD
 	bool
 
+<<<<<<< HEAD
+=======
+config HAVE_AT91_DBGU0
+	bool
+
+config HAVE_AT91_DBGU1
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config HAVE_AT91_USART3
 	bool
 
@@ -12,6 +21,17 @@ config HAVE_AT91_USART4
 config HAVE_AT91_USART5
 	bool
 
+<<<<<<< HEAD
+=======
+config AT91_SAM9_ALT_RESET
+	bool
+	default !ARCH_AT91X40
+
+config AT91_SAM9G45_RESET
+	bool
+	default !ARCH_AT91X40
+
+>>>>>>> refs/remotes/origin/cm-10.0
 menu "Atmel AT91 System-on-Chip"
 
 choice
@@ -21,12 +41,20 @@ config ARCH_AT91RM9200
 	bool "AT91RM9200"
 	select CPU_ARM920T
 	select GENERIC_CLOCKEVENTS
+<<<<<<< HEAD
+=======
+	select HAVE_AT91_DBGU0
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_AT91_USART3
 
 config ARCH_AT91SAM9260
 	bool "AT91SAM9260 or AT91SAM9XE"
 	select CPU_ARM926T
 	select GENERIC_CLOCKEVENTS
+<<<<<<< HEAD
+=======
+	select HAVE_AT91_DBGU0
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_AT91_USART3
 	select HAVE_AT91_USART4
 	select HAVE_AT91_USART5
@@ -37,11 +65,19 @@ config ARCH_AT91SAM9261
 	select CPU_ARM926T
 	select GENERIC_CLOCKEVENTS
 	select HAVE_FB_ATMEL
+<<<<<<< HEAD
+=======
+	select HAVE_AT91_DBGU0
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config ARCH_AT91SAM9G10
 	bool "AT91SAM9G10"
 	select CPU_ARM926T
 	select GENERIC_CLOCKEVENTS
+<<<<<<< HEAD
+=======
+	select HAVE_AT91_DBGU0
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_FB_ATMEL
 
 config ARCH_AT91SAM9263
@@ -50,6 +86,10 @@ config ARCH_AT91SAM9263
 	select GENERIC_CLOCKEVENTS
 	select HAVE_FB_ATMEL
 	select HAVE_NET_MACB
+<<<<<<< HEAD
+=======
+	select HAVE_AT91_DBGU1
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config ARCH_AT91SAM9RL
 	bool "AT91SAM9RL"
@@ -57,11 +97,19 @@ config ARCH_AT91SAM9RL
 	select GENERIC_CLOCKEVENTS
 	select HAVE_AT91_USART3
 	select HAVE_FB_ATMEL
+<<<<<<< HEAD
+=======
+	select HAVE_AT91_DBGU0
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config ARCH_AT91SAM9G20
 	bool "AT91SAM9G20"
 	select CPU_ARM926T
 	select GENERIC_CLOCKEVENTS
+<<<<<<< HEAD
+=======
+	select HAVE_AT91_DBGU0
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_AT91_USART3
 	select HAVE_AT91_USART4
 	select HAVE_AT91_USART5
@@ -74,13 +122,24 @@ config ARCH_AT91SAM9G45
 	select HAVE_AT91_USART3
 	select HAVE_FB_ATMEL
 	select HAVE_NET_MACB
+<<<<<<< HEAD
 
 config ARCH_AT91CAP9
 	bool "AT91CAP9"
+=======
+	select HAVE_AT91_DBGU1
+
+config ARCH_AT91SAM9X5
+	bool "AT91SAM9x5 family"
+>>>>>>> refs/remotes/origin/cm-10.0
 	select CPU_ARM926T
 	select GENERIC_CLOCKEVENTS
 	select HAVE_FB_ATMEL
 	select HAVE_NET_MACB
+<<<<<<< HEAD
+=======
+	select HAVE_AT91_DBGU0
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config ARCH_AT91X40
 	bool "AT91x40"
@@ -182,6 +241,14 @@ config MACH_ECO920
 	help
 	  Select this if you are using the eco920 board
 
+<<<<<<< HEAD
+=======
+config MACH_RSI_EWS
+	bool "RSI Embedded Webserver"
+	depends on ARCH_AT91RM9200
+	help
+	  Select this if you are using RSIs EWS board.
+>>>>>>> refs/remotes/origin/cm-10.0
 endif
 
 # ----------------------------------------------------------
@@ -190,12 +257,15 @@ if ARCH_AT91SAM9260
 
 comment "AT91SAM9260 Variants"
 
+<<<<<<< HEAD
 config ARCH_AT91SAM9260_SAM9XE
 	bool "AT91SAM9XE"
 	help
 	  Select this if you are using Atmel's AT91SAM9XE System-on-Chip.
 	  They are basically AT91SAM9260s with various sizes of embedded Flash.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 comment "AT91SAM9260 / AT91SAM9XE Board Type"
 
 config MACH_AT91SAM9260EK
@@ -381,6 +451,17 @@ config MACH_GSIA18S
 	  This enables support for the GS_IA18_S board
 	  produced by GeoSIG Ltd company. This is an internet accelerograph.
 	  <http://www.geosig.com>
+<<<<<<< HEAD
+=======
+
+config MACH_USB_A9G20
+	bool "CALAO USB-A9G20"
+	depends on ARCH_AT91SAM9G20
+	help
+	  Select this if you are using a Calao Systems USB-A9G20.
+	  <http://www.calao-systems.com>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 endif
 
 if (ARCH_AT91SAM9260 || ARCH_AT91SAM9G20)
@@ -411,6 +492,7 @@ endif
 
 # ----------------------------------------------------------
 
+<<<<<<< HEAD
 if ARCH_AT91CAP9
 
 comment "AT91CAP9 Board Type"
@@ -426,6 +508,8 @@ endif
 
 # ----------------------------------------------------------
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 if ARCH_AT91X40
 
 comment "AT91X40 Board Type"
@@ -442,6 +526,20 @@ endif
 
 # ----------------------------------------------------------
 
+<<<<<<< HEAD
+=======
+comment "Generic Board Type"
+
+config MACH_AT91SAM_DT
+	bool "Atmel AT91SAM Evaluation Kits with device-tree support"
+	select USE_OF
+	help
+	  Select this if you want to experiment device-tree with
+	  an Atmel Evaluation Kit.
+
+# ----------------------------------------------------------
+
+>>>>>>> refs/remotes/origin/cm-10.0
 comment "AT91 Board Options"
 
 config MTD_AT91_DATAFLASH_CARD
@@ -492,8 +590,18 @@ config AT91_TIMER_HZ
 choice
 	prompt "Select a UART for early kernel messages"
 
+<<<<<<< HEAD
 config AT91_EARLY_DBGU
 	bool "DBGU"
+=======
+config AT91_EARLY_DBGU0
+	bool "DBGU on rm9200, 9260/9g20, 9261/9g10 and 9rl"
+	depends on HAVE_AT91_DBGU0
+
+config AT91_EARLY_DBGU1
+	bool "DBGU on 9263 and 9g45"
+	depends on HAVE_AT91_DBGU1
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config AT91_EARLY_USART0
 	bool "USART0"

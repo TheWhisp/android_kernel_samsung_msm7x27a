@@ -19,7 +19,13 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/hardirq.h>
+#include <linux/interrupt.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/firmware.h>
 #include <linux/jiffies.h>
 #include <linux/list.h>
@@ -529,10 +535,13 @@ static int if_spi_prog_helper_firmware(struct if_spi_card *card,
 		goto out;
 	err = spu_write_u16(card, IF_SPI_CARD_INT_CAUSE_REG,
 				IF_SPI_CIC_CMD_DOWNLOAD_OVER);
+<<<<<<< HEAD
 		goto out;
 
 	lbs_deb_spi("waiting for helper to boot...\n");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	if (err)
 		pr_err("failed to load helper firmware (err=%d)\n", err);
@@ -1033,7 +1042,10 @@ static irqreturn_t if_spi_host_interrupt(int irq, void *dev_id)
 static int if_spi_init_card(struct if_spi_card *card)
 {
 	struct lbs_private *priv = card->priv;
+<<<<<<< HEAD
 	struct spi_device *spi = card->spi;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err, i;
 	u32 scratch;
 	const struct firmware *helper = NULL;
@@ -1081,8 +1093,14 @@ static int if_spi_init_card(struct if_spi_card *card)
 				"attached to SPI bus_num %d, chip_select %d. "
 				"spi->max_speed_hz=%d\n",
 				card->card_id, card->card_rev,
+<<<<<<< HEAD
 				spi->master->bus_num, spi->chip_select,
 				spi->max_speed_hz);
+=======
+				card->spi->master->bus_num,
+				card->spi->chip_select,
+				card->spi->max_speed_hz);
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = if_spi_prog_helper_firmware(card, helper);
 		if (err)
 			goto out;
@@ -1293,7 +1311,10 @@ static struct spi_driver libertas_spi_driver = {
 	.remove = __devexit_p(libertas_spi_remove),
 	.driver = {
 		.name	= "libertas_spi",
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 		.pm	= &if_spi_pm_ops,
 	},

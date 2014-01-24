@@ -2,16 +2,25 @@
 # Makefile for the linux kernel.
 #
 
+<<<<<<< HEAD
 obj-y     = sched.o fork.o exec_domain.o panic.o printk.o \
+=======
+obj-y     = fork.o exec_domain.o panic.o printk.o \
+>>>>>>> refs/remotes/origin/cm-10.0
 	    cpu.o exit.o itimer.o time.o softirq.o resource.o \
 	    sysctl.o sysctl_binary.o capability.o ptrace.o timer.o user.o \
 	    signal.o sys.o kmod.o workqueue.o pid.o \
 	    rcupdate.o extable.o params.o posix-timers.o \
 	    kthread.o wait.o kfifo.o sys_ni.o posix-cpu-timers.o mutex.o \
 	    hrtimer.o rwsem.o nsproxy.o srcu.o semaphore.o \
+<<<<<<< HEAD
 	    notifier.o ksysfs.o pm_qos_params.o sched_clock.o cred.o \
 	    async.o range.o jump_label.o
 obj-y += groups.o
+=======
+	    notifier.o ksysfs.o cred.o \
+	    async.o range.o groups.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 ifdef CONFIG_FUNCTION_TRACER
 # Do not trace debug files and internal ftrace files
@@ -20,6 +29,7 @@ CFLAGS_REMOVE_lockdep_proc.o = -pg
 CFLAGS_REMOVE_mutex-debug.o = -pg
 CFLAGS_REMOVE_rtmutex-debug.o = -pg
 CFLAGS_REMOVE_cgroup-debug.o = -pg
+<<<<<<< HEAD
 CFLAGS_REMOVE_sched_clock.o = -pg
 CFLAGS_REMOVE_irq_work.o = -pg
 endif
@@ -27,6 +37,16 @@ endif
 obj-$(CONFIG_FREEZER) += freezer.o
 obj-$(CONFIG_PROFILING) += profile.o
 obj-$(CONFIG_SYSCTL_SYSCALL_CHECK) += sysctl_check.o
+=======
+CFLAGS_REMOVE_irq_work.o = -pg
+endif
+
+obj-y += sched/
+obj-y += power/
+
+obj-$(CONFIG_FREEZER) += freezer.o
+obj-$(CONFIG_PROFILING) += profile.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_STACKTRACE) += stacktrace.o
 obj-y += time/
 obj-$(CONFIG_DEBUG_MUTEXES) += mutex-debug.o
@@ -52,8 +72,11 @@ obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
 obj-$(CONFIG_UID16) += uid16.o
 obj-$(CONFIG_MODULES) += module.o
 obj-$(CONFIG_KALLSYMS) += kallsyms.o
+<<<<<<< HEAD
 obj-$(CONFIG_PM) += power/
 obj-$(CONFIG_FREEZER) += power/
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
 obj-$(CONFIG_KEXEC) += kexec.o
 obj-$(CONFIG_BACKTRACE_SELF_TEST) += backtracetest.o
@@ -99,7 +122,10 @@ obj-$(CONFIG_TRACING) += trace/
 obj-$(CONFIG_X86_DS) += trace/
 obj-$(CONFIG_RING_BUFFER) += trace/
 obj-$(CONFIG_TRACEPOINTS) += trace/
+<<<<<<< HEAD
 obj-$(CONFIG_SMP) += sched_cpupri.o
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_IRQ_WORK) += irq_work.o
 obj-$(CONFIG_CPU_PM) += cpu_pm.o
 
@@ -108,6 +134,7 @@ obj-$(CONFIG_PERF_EVENTS) += events/
 obj-$(CONFIG_USER_RETURN_NOTIFIER) += user-return-notifier.o
 obj-$(CONFIG_PADATA) += padata.o
 obj-$(CONFIG_CRASH_DUMP) += crash_dump.o
+<<<<<<< HEAD
 
 ifneq ($(CONFIG_SCHED_OMIT_FRAME_POINTER),y)
 # According to Alan Modra <alan@linuxcare.com.au>, the -fno-omit-frame-pointer is
@@ -117,6 +144,9 @@ ifneq ($(CONFIG_SCHED_OMIT_FRAME_POINTER),y)
 # to get a correct value for the wait-channel (WCHAN in ps). --davidm
 CFLAGS_sched.o := $(PROFILING) -fno-omit-frame-pointer
 endif
+=======
+obj-$(CONFIG_JUMP_LABEL) += jump_label.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 $(obj)/configs.o: $(obj)/config_data.h
 

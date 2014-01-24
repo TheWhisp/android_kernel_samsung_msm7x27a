@@ -77,7 +77,11 @@ int rs400_gart_init(struct radeon_device *rdev)
 {
 	int r;
 
+<<<<<<< HEAD
 	if (rdev->gart.table.ram.ptr) {
+=======
+	if (rdev->gart.ptr) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		WARN(1, "RS400 GART already initialized\n");
 		return 0;
 	}
@@ -185,6 +189,12 @@ int rs400_gart_enable(struct radeon_device *rdev)
 	/* Enable gart */
 	WREG32_MC(RS480_AGP_ADDRESS_SPACE_SIZE, (RS480_GART_EN | size_reg));
 	rs400_gart_tlb_flush(rdev);
+<<<<<<< HEAD
+=======
+	DRM_INFO("PCIE GART of %uM enabled (table at 0x%016llX).\n",
+		 (unsigned)(rdev->mc.gtt_size >> 20),
+		 (unsigned long long)rdev->gart.table_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	rdev->gart.ready = true;
 	return 0;
 }
@@ -212,6 +222,10 @@ void rs400_gart_fini(struct radeon_device *rdev)
 int rs400_gart_set_page(struct radeon_device *rdev, int i, uint64_t addr)
 {
 	uint32_t entry;
+<<<<<<< HEAD
+=======
+	u32 *gtt = rdev->gart.ptr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (i < 0 || i > rdev->gart.num_gpu_pages) {
 		return -EINVAL;
@@ -221,7 +235,11 @@ int rs400_gart_set_page(struct radeon_device *rdev, int i, uint64_t addr)
 		((upper_32_bits(addr) & 0xff) << 4) |
 		RS400_PTE_WRITEABLE | RS400_PTE_READABLE;
 	entry = cpu_to_le32(entry);
+<<<<<<< HEAD
 	rdev->gart.table.ram.ptr[i] = entry;
+=======
+	gtt[i] = entry;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -409,7 +427,23 @@ static int rs400_startup(struct radeon_device *rdev)
 	if (r)
 		return r;
 
+<<<<<<< HEAD
 	/* Enable IRQ */
+=======
+	r = radeon_fence_driver_start_ring(rdev, RADEON_RING_TYPE_GFX_INDEX);
+	if (r) {
+		dev_err(rdev->dev, "failed initializing CP fences (%d).\n", r);
+		return r;
+	}
+
+	/* Enable IRQ */
+	if (!rdev->irq.installed) {
+		r = radeon_irq_kms_init(rdev);
+		if (r)
+			return r;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r100_irq_set(rdev);
 	rdev->config.r300.hdp_cntl = RREG32(RADEON_HOST_PATH_CNTL);
 	/* 1M ring buffer */
@@ -418,16 +452,36 @@ static int rs400_startup(struct radeon_device *rdev)
 		dev_err(rdev->dev, "failed initializing CP (%d).\n", r);
 		return r;
 	}
+<<<<<<< HEAD
 	r = r100_ib_init(rdev);
 	if (r) {
 		dev_err(rdev->dev, "failed initializing IB (%d).\n", r);
 		return r;
 	}
+=======
+
+	r = radeon_ib_pool_start(rdev);
+	if (r)
+		return r;
+
+	r = radeon_ib_test(rdev, RADEON_RING_TYPE_GFX_INDEX, &rdev->ring[RADEON_RING_TYPE_GFX_INDEX]);
+	if (r) {
+		dev_err(rdev->dev, "failed testing IB (%d).\n", r);
+		rdev->accel_working = false;
+		return r;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 int rs400_resume(struct radeon_device *rdev)
 {
+<<<<<<< HEAD
+=======
+	int r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Make sur GART are not working */
 	rs400_gart_disable(rdev);
 	/* Resume clock before doing reset */
@@ -446,11 +500,25 @@ int rs400_resume(struct radeon_device *rdev)
 	r300_clock_startup(rdev);
 	/* Initialize surface registers */
 	radeon_surface_init(rdev);
+<<<<<<< HEAD
 	return rs400_startup(rdev);
+=======
+
+	rdev->accel_working = true;
+	r = rs400_startup(rdev);
+	if (r) {
+		rdev->accel_working = false;
+	}
+	return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int rs400_suspend(struct radeon_device *rdev)
 {
+<<<<<<< HEAD
+=======
+	radeon_ib_pool_suspend(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	r100_cp_disable(rdev);
 	radeon_wb_disable(rdev);
 	r100_irq_disable(rdev);
@@ -518,9 +586,12 @@ int rs400_init(struct radeon_device *rdev)
 	r = radeon_fence_driver_init(rdev);
 	if (r)
 		return r;
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Memory manager */
 	r = radeon_bo_init(rdev);
 	if (r)
@@ -529,7 +600,18 @@ int rs400_init(struct radeon_device *rdev)
 	if (r)
 		return r;
 	r300_set_reg_safe(rdev);
+<<<<<<< HEAD
 	rdev->accel_working = true;
+=======
+
+	r = radeon_ib_pool_init(rdev);
+	rdev->accel_working = true;
+	if (r) {
+		dev_err(rdev->dev, "IB initialization failed (%d).\n", r);
+		rdev->accel_working = false;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = rs400_startup(rdev);
 	if (r) {
 		/* Somethings want wront with the accel init stop accel */

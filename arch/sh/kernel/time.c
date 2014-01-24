@@ -21,7 +21,10 @@
 #include <linux/smp.h>
 #include <linux/rtc.h>
 #include <asm/clock.h>
+<<<<<<< HEAD
 #include <asm/hwblk.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/rtc.h>
 
 /* Dummy RTC ops */
@@ -110,7 +113,10 @@ void __init time_init(void)
 	if (board_time_init)
 		board_time_init();
 
+<<<<<<< HEAD
 	hwblk_init();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_init();
 
 	late_time_init = sh_late_time_init;

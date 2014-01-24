@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * arch/arm/mach-tegra/include/mach/gpio.h
  *
@@ -58,3 +59,6 @@ void tegra_gpio_enable(int gpio);
 void tegra_gpio_disable(int gpio);
 
 #endif
+=======
+/* empty */
+>>>>>>> refs/remotes/origin/cm-10.0

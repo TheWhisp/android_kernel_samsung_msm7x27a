@@ -15,8 +15,15 @@
  * RPCROUTER SMD XPRT module.
  */
 
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/types.h>
+=======
+#include <linux/module.h>
+#include <linux/platform_device.h>
+#include <linux/types.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/msm_smd.h>
 #include "smd_rpcrouter.h"

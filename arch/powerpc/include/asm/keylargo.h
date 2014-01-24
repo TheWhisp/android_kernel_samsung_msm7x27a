@@ -21,7 +21,11 @@
 #define KEYLARGO_FCR4		0x48
 #define KEYLARGO_FCR5		0x4c	/* Pangea only */
 
+<<<<<<< HEAD
 /* K2 aditional FCRs */
+=======
+/* K2 additional FCRs */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define K2_FCR6			0x34
 #define K2_FCR7			0x30
 #define K2_FCR8			0x2c
@@ -51,7 +55,11 @@
 
 #define KL_GPIO_SOUND_POWER		(KEYLARGO_GPIO_0+0x05)
 
+<<<<<<< HEAD
 /* Hrm... this one is only to be used on Pismo. It seeem to also
+=======
+/* Hrm... this one is only to be used on Pismo. It seems to also
+>>>>>>> refs/remotes/origin/cm-10.0
  * control the timebase enable on other machines. Still to be
  * experimented... --BenH.
  */

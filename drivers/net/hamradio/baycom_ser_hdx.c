@@ -66,6 +66,10 @@
 #include <linux/ioport.h>
 #include <linux/string.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/io.h>
 #include <linux/hdlcdrv.h>

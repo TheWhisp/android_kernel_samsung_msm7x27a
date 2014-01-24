@@ -9,11 +9,19 @@
 #define __MACH_IRQS_BOARD_MOP500_H
 
 /* Number of AB8500 irqs is taken from header file */
+<<<<<<< HEAD
 #include <linux/mfd/ab8500.h>
 
 #define MOP500_AB8500_IRQ_BASE		IRQ_BOARD_START
 #define MOP500_AB8500_IRQ_END		(MOP500_AB8500_IRQ_BASE \
 					 + AB8500_NR_IRQS)
+=======
+#include <linux/mfd/abx500/ab8500.h>
+
+#define MOP500_AB8500_IRQ_BASE		IRQ_BOARD_START
+#define MOP500_AB8500_IRQ_END		(MOP500_AB8500_IRQ_BASE \
+					 + AB8500_MAX_NR_IRQS)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* TC35892 */
 #define TC35892_NR_INTERNAL_IRQS	8

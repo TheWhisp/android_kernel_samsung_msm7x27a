@@ -24,8 +24,12 @@
  * along with this driver.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+<<<<<<< HEAD
 #include "crystalhd_cmds.h"
 #include "crystalhd_hw.h"
+=======
+#include "crystalhd.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct crystalhd_user *bc_cproc_get_uid(struct crystalhd_cmd *ctx)
 {

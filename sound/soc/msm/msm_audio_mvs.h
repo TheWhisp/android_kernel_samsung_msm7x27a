@@ -16,6 +16,10 @@
 #define __MSM_AUDIO_MVS_H
 #include <linux/msm_audio.h>
 #include <linux/wakelock.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/msm_rpcrouter.h>
 #include <mach/debug_mm.h>
 #include <linux/slab.h>
@@ -286,7 +290,11 @@ struct audio_mvs_info_type {
 	struct mutex out_lock;
 
 	struct wake_lock suspend_lock;
+<<<<<<< HEAD
 	struct wake_lock idle_lock;
+=======
+	struct pm_qos_request pm_qos_req;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct timer_list timer;
 	unsigned long expiry;
 	int ack_dl_count;
@@ -335,7 +343,11 @@ struct audio_voip_info_type {
 	struct mutex prepare_lock;
 
 	struct wake_lock suspend_lock;
+<<<<<<< HEAD
 	struct wake_lock idle_lock;
+=======
+	struct pm_qos_request pm_qos_req;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int playback_start;
 	int capture_start;
 	int instance;

@@ -16,6 +16,7 @@
  *
  * See http://geocities.com/i0xox0i for information on this driver and the
  * earthmate usb device.
+<<<<<<< HEAD
  *
  *  Lonnie Mendez <dignome@gmail.com>
  *  4-29-2005
@@ -42,6 +43,8 @@
  *  10-2003
  *	Driver first released.
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 /* Thanks to Neil Whelchel for writing the first cypress m8 implementation
@@ -72,10 +75,17 @@
 #include "cypress_m8.h"
 
 
+<<<<<<< HEAD
 static int debug;
 static int stats;
 static int interval;
 static int unstable_bauds;
+=======
+static bool debug;
+static bool stats;
+static int interval;
+static bool unstable_bauds;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Version Information
@@ -122,7 +132,10 @@ static struct usb_driver cypress_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum packet_format {
@@ -191,7 +204,10 @@ static struct usb_serial_driver cypress_earthmate_device = {
 		.name =			"earthmate",
 	},
 	.description =			"DeLorme Earthmate USB",
+<<<<<<< HEAD
 	.usb_driver = 			&cypress_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =			id_table_earthmate,
 	.num_ports =			1,
 	.attach =			cypress_earthmate_startup,
@@ -218,7 +234,10 @@ static struct usb_serial_driver cypress_hidcom_device = {
 		.name =			"cyphidcom",
 	},
 	.description =			"HID->COM RS232 Adapter",
+<<<<<<< HEAD
 	.usb_driver = 			&cypress_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =			id_table_cyphidcomrs232,
 	.num_ports =			1,
 	.attach =			cypress_hidcom_startup,
@@ -245,7 +264,10 @@ static struct usb_serial_driver cypress_ca42v2_device = {
 		.name =			"nokiaca42v2",
 	},
 	.description =			"Nokia CA-42 V2 Adapter",
+<<<<<<< HEAD
 	.usb_driver = 			&cypress_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =			id_table_nokiaca42v2,
 	.num_ports =			1,
 	.attach =			cypress_ca42v2_startup,
@@ -266,6 +288,14 @@ static struct usb_serial_driver cypress_ca42v2_device = {
 	.write_int_callback =		cypress_write_int_callback,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&cypress_earthmate_device, &cypress_hidcom_device,
+	&cypress_ca42v2_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*****************************************************************************
  * Cypress serial helper functions
  *****************************************************************************/
@@ -842,7 +872,11 @@ send:
 		cypress_write_int_callback, port, priv->write_urb_interval);
 	result = usb_submit_urb(port->interrupt_out_urb, GFP_ATOMIC);
 	if (result) {
+<<<<<<< HEAD
 		dev_err(&port->dev,
+=======
+		dev_err_console(port,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"%s - failed submitting write urb, error %d\n",
 							__func__, result);
 		priv->write_urb_in_use = 0;
@@ -1178,8 +1212,11 @@ static void cypress_unthrottle(struct tty_struct *tty)
 		return;
 
 	if (actually_throttled) {
+<<<<<<< HEAD
 		port->interrupt_in_urb->dev = port->serial->dev;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		result = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
 		if (result) {
 			dev_err(&port->dev, "%s - failed submitting read urb, "
@@ -1368,7 +1405,10 @@ static void cypress_write_int_callback(struct urb *urb)
 		dbg("%s - nonzero write bulk status received: %d",
 			__func__, status);
 		port->interrupt_out_urb->transfer_buffer_length = 1;
+<<<<<<< HEAD
 		port->interrupt_out_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		result = usb_submit_urb(port->interrupt_out_urb, GFP_ATOMIC);
 		if (!result)
 			return;
@@ -1390,6 +1430,7 @@ static void cypress_write_int_callback(struct urb *urb)
 	cypress_send(port);
 }
 
+<<<<<<< HEAD
 
 /*****************************************************************************
  * Module functions
@@ -1442,6 +1483,9 @@ static void __exit cypress_exit(void)
 
 module_init(cypress_init);
 module_exit(cypress_exit);
+=======
+module_usb_serial_driver(cypress_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

@@ -22,6 +22,13 @@
 typedef u64 cycle_t;
 struct clocksource;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
+#include <asm/clocksource.h>
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct cyclecounter - hardware abstraction for a free running counter
  *	Provides completely state-free accessors to the underlying hardware.
@@ -67,7 +74,11 @@ struct timecounter {
 
 /**
  * cyclecounter_cyc2ns - converts cycle counter cycles to nanoseconds
+<<<<<<< HEAD
  * @tc:		Pointer to cycle counter.
+=======
+ * @cc:		Pointer to cycle counter.
+>>>>>>> refs/remotes/origin/cm-10.0
  * @cycles:	Cycles
  *
  * XXX - This could use some mult_lxl_ll() asm optimization. Same code
@@ -110,7 +121,11 @@ extern u64 timecounter_read(struct timecounter *tc);
  *                        time base as values returned by
  *                        timecounter_read()
  * @tc:		Pointer to time counter.
+<<<<<<< HEAD
  * @cycle:	a value returned by tc->cc->read()
+=======
+ * @cycle_tstamp:	a value returned by tc->cc->read()
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Cycle counts that are converted correctly as long as they
  * fall into the interval [-1/2 max cycle count, +1/2 max cycle count],
@@ -152,10 +167,19 @@ extern u64 timecounter_cyc2time(struct timecounter *tc,
  * @mult:		cycle to nanosecond multiplier
  * @shift:		cycle to nanosecond divisor (power of two)
  * @max_idle_ns:	max idle time permitted by the clocksource (nsecs)
+<<<<<<< HEAD
  * @flags:		flags describing special properties
  * @vread:		vsyscall based read
  * @suspend:		suspend function for the clocksource, if necessary
  * @resume:		resume function for the clocksource, if necessary
+=======
+ * @maxadj:		maximum adjustment value to mult (~11%)
+ * @flags:		flags describing special properties
+ * @archdata:		arch-specific data
+ * @suspend:		suspend function for the clocksource, if necessary
+ * @resume:		resume function for the clocksource, if necessary
+ * @cycle_last:		most recent cycle counter value seen by ::read()
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct clocksource {
 	/*
@@ -168,6 +192,7 @@ struct clocksource {
 	u32 mult;
 	u32 shift;
 	u64 max_idle_ns;
+<<<<<<< HEAD
 
 #ifdef CONFIG_IA64
 	void *fsys_mmio;        /* used by fsyscall asm code */
@@ -179,12 +204,26 @@ struct clocksource {
 	struct list_head list;
 	int rating;
 	cycle_t (*vread)(void);
+=======
+	u32 maxadj;
+#ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
+	struct arch_clocksource_data archdata;
+#endif
+
+	const char *name;
+	struct list_head list;
+	int rating;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*enable)(struct clocksource *cs);
 	void (*disable)(struct clocksource *cs);
 	unsigned long flags;
 	void (*suspend)(struct clocksource *cs);
 	void (*resume)(struct clocksource *cs);
 
+<<<<<<< HEAD
+=======
+	/* private: */
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
 	/* Watchdog related data, used by the framework */
 	struct list_head wd_list;
@@ -259,6 +298,12 @@ static inline u32 clocksource_hz2mult(u32 hz, u32 shift_constant)
 
 /**
  * clocksource_cyc2ns - converts clocksource cycles to nanoseconds
+<<<<<<< HEAD
+=======
+ * @cycles:	cycles
+ * @mult:	cycle to nanosecond multiplier
+ * @shift:	cycle to nanosecond divisor (power of two)
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Converts cycles to nanoseconds, using the given mult and shift.
  *
@@ -312,6 +357,7 @@ static inline void __clocksource_updatefreq_khz(struct clocksource *cs, u32 khz)
 	__clocksource_updatefreq_scale(cs, 1000, khz);
 }
 
+<<<<<<< HEAD
 static inline void
 clocksource_calc_mult_shift(struct clocksource *cs, u32 freq, u32 minsec)
 {
@@ -319,6 +365,8 @@ clocksource_calc_mult_shift(struct clocksource *cs, u32 freq, u32 minsec)
 				      NSEC_PER_SEC, minsec);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_GENERIC_TIME_VSYSCALL
 extern void
 update_vsyscall(struct timespec *ts, struct timespec *wtm,

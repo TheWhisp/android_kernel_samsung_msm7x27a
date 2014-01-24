@@ -22,6 +22,10 @@
 #include <linux/mount.h>
 #include <linux/mman.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/ima.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "ima.h"
 
@@ -82,11 +86,19 @@ out:
 				  "open_writers");
 }
 
+<<<<<<< HEAD
 static void ima_check_last_writer(struct ima_iint_cache *iint,
 				  struct inode *inode,
 				  struct file *file)
 {
 	mode_t mode = file->f_mode;
+=======
+static void ima_check_last_writer(struct integrity_iint_cache *iint,
+				  struct inode *inode,
+				  struct file *file)
+{
+	fmode_t mode = file->f_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&iint->mutex);
 	if (mode & FMODE_WRITE &&
@@ -105,12 +117,20 @@ static void ima_check_last_writer(struct ima_iint_cache *iint,
 void ima_file_free(struct file *file)
 {
 	struct inode *inode = file->f_dentry->d_inode;
+<<<<<<< HEAD
 	struct ima_iint_cache *iint;
+=======
+	struct integrity_iint_cache *iint;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!iint_initialized || !S_ISREG(inode->i_mode))
 		return;
 
+<<<<<<< HEAD
 	iint = ima_iint_find(inode);
+=======
+	iint = integrity_iint_find(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!iint)
 		return;
 
@@ -121,7 +141,11 @@ static int process_measurement(struct file *file, const unsigned char *filename,
 			       int mask, int function)
 {
 	struct inode *inode = file->f_dentry->d_inode;
+<<<<<<< HEAD
 	struct ima_iint_cache *iint;
+=======
+	struct integrity_iint_cache *iint;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int rc = 0;
 
 	if (!ima_initialized || !S_ISREG(inode->i_mode))
@@ -131,9 +155,15 @@ static int process_measurement(struct file *file, const unsigned char *filename,
 	if (rc != 0)
 		return rc;
 retry:
+<<<<<<< HEAD
 	iint = ima_iint_find(inode);
 	if (!iint) {
 		rc = ima_inode_alloc(inode);
+=======
+	iint = integrity_iint_find(inode);
+	if (!iint) {
+		rc = integrity_inode_alloc(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!rc || rc == -EEXIST)
 			goto retry;
 		return rc;

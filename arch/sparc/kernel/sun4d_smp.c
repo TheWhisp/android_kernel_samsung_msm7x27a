@@ -14,6 +14,10 @@
 #include <asm/sbi.h>
 #include <asm/mmu.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cacheflush.h>
 
 #include "kernel.h"

@@ -36,17 +36,29 @@
  * Note that not all PXA2xx chips implement all those addresses, and the
  * kernel only maps the minimum needed range of this mapping.
  */
+<<<<<<< HEAD
 #define io_p2v(x) (0xf2000000 + ((x) & 0x01ffffff) + (((x) & 0x1c000000) >> 1))
 #define io_v2p(x) (0x3c000000 + ((x) & 0x01ffffff) + (((x) & 0x0e000000) << 1))
 
 #ifndef __ASSEMBLY__
 
 # define __REG(x)	(*((volatile u32 *)io_p2v(x)))
+=======
+#define io_v2p(x) (0x3c000000 + ((x) & 0x01ffffff) + (((x) & 0x0e000000) << 1))
+#define io_p2v(x) IOMEM(0xf2000000 + ((x) & 0x01ffffff) + (((x) & 0x1c000000) >> 1))
+
+#ifndef __ASSEMBLY__
+# define __REG(x)	(*((volatile u32 __iomem *)io_p2v(x)))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* With indexed regs we don't want to feed the index through io_p2v()
    especially if it is a variable, otherwise horrible code will result. */
 # define __REG2(x,y)	\
+<<<<<<< HEAD
 	(*(volatile u32 *)((u32)&__REG(x) + (y)))
+=======
+	(*(volatile u32 __iomem*)((u32)&__REG(x) + (y)))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 # define __PREG(x)	(io_v2p((u32)&(x)))
 
@@ -336,6 +348,7 @@ extern unsigned int get_memclk_frequency_10khz(void);
 extern unsigned long get_clock_tick_rate(void);
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_ARMCORE) && defined(CONFIG_PCI)
 #define PCIBIOS_MIN_IO		0
 #define PCIBIOS_MIN_MEM		0
@@ -343,4 +356,6 @@ extern unsigned long get_clock_tick_rate(void);
 #define ARCH_HAS_DMA_SET_COHERENT_MASK
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif  /* _ASM_ARCH_HARDWARE_H */

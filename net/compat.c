@@ -22,6 +22,10 @@
 #include <linux/filter.h>
 #include <linux/compat.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <net/scm.h>
 #include <net/sock.h>
@@ -70,6 +74,11 @@ int get_compat_msghdr(struct msghdr *kmsg, struct compat_msghdr __user *umsg)
 	    __get_user(kmsg->msg_controllen, &umsg->msg_controllen) ||
 	    __get_user(kmsg->msg_flags, &umsg->msg_flags))
 		return -EFAULT;
+<<<<<<< HEAD
+=======
+	if (kmsg->msg_namelen > sizeof(struct sockaddr_storage))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	kmsg->msg_name = compat_ptr(tmp1);
 	kmsg->msg_iov = compat_ptr(tmp2);
 	kmsg->msg_control = compat_ptr(tmp3);
@@ -78,7 +87,11 @@ int get_compat_msghdr(struct msghdr *kmsg, struct compat_msghdr __user *umsg)
 
 /* I've named the args so it is easy to tell whose space the pointers are in. */
 int verify_compat_iovec(struct msghdr *kern_msg, struct iovec *kern_iov,
+<<<<<<< HEAD
 		   struct sockaddr *kern_address, int mode)
+=======
+		   struct sockaddr_storage *kern_address, int mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int tot_len;
 
@@ -218,10 +231,17 @@ Efault:
 
 int put_cmsg_compat(struct msghdr *kmsg, int level, int type, int len, void *data)
 {
+<<<<<<< HEAD
 	struct compat_timeval ctv;
 	struct compat_timespec cts[3];
 	struct compat_cmsghdr __user *cm = (struct compat_cmsghdr __user *) kmsg->msg_control;
 	struct compat_cmsghdr cmhdr;
+=======
+	struct compat_cmsghdr __user *cm = (struct compat_cmsghdr __user *) kmsg->msg_control;
+	struct compat_cmsghdr cmhdr;
+	struct compat_timeval ctv;
+	struct compat_timespec cts[3];
+>>>>>>> refs/remotes/origin/cm-10.0
 	int cmlen;
 
 	if (cm == NULL || kmsg->msg_controllen < sizeof(*cm)) {
@@ -229,6 +249,7 @@ int put_cmsg_compat(struct msghdr *kmsg, int level, int type, int len, void *dat
 		return 0; /* XXX: return error? check spec. */
 	}
 
+<<<<<<< HEAD
 	if (level == SOL_SOCKET && type == SCM_TIMESTAMP) {
 		struct timeval *tv = (struct timeval *)data;
 		ctv.tv_sec = tv->tv_sec;
@@ -247,6 +268,28 @@ int put_cmsg_compat(struct msghdr *kmsg, int level, int type, int len, void *dat
 		}
 		data = &cts;
 		len = sizeof(cts[0]) * count;
+=======
+	if (!COMPAT_USE_64BIT_TIME) {
+		if (level == SOL_SOCKET && type == SCM_TIMESTAMP) {
+			struct timeval *tv = (struct timeval *)data;
+			ctv.tv_sec = tv->tv_sec;
+			ctv.tv_usec = tv->tv_usec;
+			data = &ctv;
+			len = sizeof(ctv);
+		}
+		if (level == SOL_SOCKET &&
+		    (type == SCM_TIMESTAMPNS || type == SCM_TIMESTAMPING)) {
+			int count = type == SCM_TIMESTAMPNS ? 1 : 3;
+			int i;
+			struct timespec *ts = (struct timespec *)data;
+			for (i = 0; i < count; i++) {
+				cts[i].tv_sec = ts[i].tv_sec;
+				cts[i].tv_nsec = ts[i].tv_nsec;
+			}
+			data = &cts;
+			len = sizeof(cts[0]) * count;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	cmlen = CMSG_COMPAT_LEN(len);
@@ -453,11 +496,23 @@ static int compat_sock_getsockopt(struct socket *sock, int level, int optname,
 
 int compat_sock_get_timestamp(struct sock *sk, struct timeval __user *userstamp)
 {
+<<<<<<< HEAD
 	struct compat_timeval __user *ctv =
 			(struct compat_timeval __user *) userstamp;
 	int err = -ENOENT;
 	struct timeval tv;
 
+=======
+	struct compat_timeval __user *ctv;
+	int err;
+	struct timeval tv;
+
+	if (COMPAT_USE_64BIT_TIME)
+		return sock_get_timestamp(sk, userstamp);
+
+	ctv = (struct compat_timeval __user *) userstamp;
+	err = -ENOENT;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!sock_flag(sk, SOCK_TIMESTAMP))
 		sock_enable_timestamp(sk, SOCK_TIMESTAMP);
 	tv = ktime_to_timeval(sk->sk_stamp);
@@ -477,11 +532,23 @@ EXPORT_SYMBOL(compat_sock_get_timestamp);
 
 int compat_sock_get_timestampns(struct sock *sk, struct timespec __user *userstamp)
 {
+<<<<<<< HEAD
 	struct compat_timespec __user *ctv =
 			(struct compat_timespec __user *) userstamp;
 	int err = -ENOENT;
 	struct timespec ts;
 
+=======
+	struct compat_timespec __user *ctv;
+	int err;
+	struct timespec ts;
+
+	if (COMPAT_USE_64BIT_TIME)
+		return sock_get_timestampns (sk, userstamp);
+
+	ctv = (struct compat_timespec __user *) userstamp;
+	err = -ENOENT;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!sock_flag(sk, SOCK_TIMESTAMP))
 		sock_enable_timestamp(sk, SOCK_TIMESTAMP);
 	ts = ktime_to_timespec(sk->sk_stamp);
@@ -775,6 +842,14 @@ asmlinkage long compat_sys_recvmmsg(int fd, struct compat_mmsghdr __user *mmsg,
 	if (flags & MSG_CMSG_COMPAT)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (COMPAT_USE_64BIT_TIME)
+		return __sys_recvmmsg(fd, (struct mmsghdr __user *)mmsg, vlen,
+				      flags | MSG_CMSG_COMPAT,
+				      (struct timespec *) timeout);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (timeout == NULL)
 		return __sys_recvmmsg(fd, (struct mmsghdr __user *)mmsg, vlen,
 				      flags | MSG_CMSG_COMPAT, NULL);

@@ -16,7 +16,11 @@
 #include <linux/interrupt.h>
 #include <mach/irqs.h>
 #include "msm_vfe8x_proc.h"
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define ON  1
 #define OFF 0

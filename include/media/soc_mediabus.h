@@ -82,5 +82,10 @@ const struct soc_mbus_pixelfmt *soc_mbus_get_fmtdesc(
 s32 soc_mbus_bytes_per_line(u32 width, const struct soc_mbus_pixelfmt *mf);
 int soc_mbus_samples_per_pixel(const struct soc_mbus_pixelfmt *mf,
 			unsigned int *numerator, unsigned int *denominator);
+<<<<<<< HEAD
+=======
+unsigned int soc_mbus_config_compatible(const struct v4l2_mbus_config *cfg,
+					unsigned int flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

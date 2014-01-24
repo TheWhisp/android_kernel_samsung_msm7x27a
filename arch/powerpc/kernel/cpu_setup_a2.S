@@ -41,11 +41,23 @@ _GLOBAL(__setup_cpu_a2)
 	 * core local but doing it always won't hurt
 	 */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_WSP_COPRO
+=======
+#ifdef CONFIG_PPC_ICSWX
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Make sure ACOP starts out as zero */
 	li	r3,0
 	mtspr   SPRN_ACOP,r3
 
+<<<<<<< HEAD
+=======
+	/* Skip the following if we are in Guest mode */
+	mfmsr	r3
+	andis.	r0,r3,MSR_GS@h
+	bne	_icswx_skip_guest
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Enable icswx instruction */
 	mfspr   r3,SPRN_A2_CCR2
 	ori     r3,r3,A2_CCR2_ENABLE_ICSWX
@@ -54,7 +66,12 @@ _GLOBAL(__setup_cpu_a2)
 	/* Unmask all CTs in HACOP */
 	li      r3,-1
 	mtspr   SPRN_HACOP,r3
+<<<<<<< HEAD
 #endif /* CONFIG_PPC_WSP_COPRO */
+=======
+_icswx_skip_guest:
+#endif /* CONFIG_PPC_ICSWX */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Enable doorbell */
 	mfspr   r3,SPRN_A2_CCR2

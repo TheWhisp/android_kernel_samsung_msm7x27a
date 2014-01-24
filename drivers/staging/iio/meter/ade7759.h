@@ -41,6 +41,7 @@
 /**
  * struct ade7759_state - device instance specific data
  * @us:			actual spi_device
+<<<<<<< HEAD
  * @indio_dev:		industrial I/O device structure
  * @tx:			transmit buffer
  * @rx:			receive buffer
@@ -52,6 +53,17 @@ struct ade7759_state {
 	u8				*tx;
 	u8				*rx;
 	struct mutex			buf_lock;
+=======
+ * @buf_lock:		mutex to protect tx and rx
+ * @tx:			transmit buffer
+ * @rx:			receive buffer
+ **/
+struct ade7759_state {
+	struct spi_device	*us;
+	struct mutex		buf_lock;
+	u8			tx[ADE7759_MAX_TX] ____cacheline_aligned;
+	u8			rx[ADE7759_MAX_RX];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif

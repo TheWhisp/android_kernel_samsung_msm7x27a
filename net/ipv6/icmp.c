@@ -55,7 +55,10 @@
 
 #include <net/ipv6.h>
 #include <net/ip6_checksum.h>
+<<<<<<< HEAD
 #include <net/ping.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/protocol.h>
 #include <net/raw.h>
 #include <net/rawv6.h>
@@ -67,7 +70,10 @@
 #include <net/inet_common.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	The ICMP socket(s). This is the most convenient way to flow control
@@ -81,6 +87,7 @@ static inline struct sock *icmpv6_sk(struct net *net)
 	return net->ipv6.icmp_sk[smp_processor_id()];
 }
 
+<<<<<<< HEAD
 static void icmpv6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 		       u8 type, u8 code, int offset, __be32 info)
 {
@@ -92,11 +99,16 @@ static void icmpv6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 			ping_err(skb, offset, info);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int icmpv6_rcv(struct sk_buff *skb);
 
 static const struct inet6_protocol icmpv6_protocol = {
 	.handler	=	icmpv6_rcv,
+<<<<<<< HEAD
 	.err_handler	=	icmpv6_err,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.flags		=	INET6_PROTO_NOPOLICY|INET6_PROTO_FINAL,
 };
 
@@ -148,11 +160,19 @@ static int is_ineligible(struct sk_buff *skb)
 	int ptr = (u8 *)(ipv6_hdr(skb) + 1) - skb->data;
 	int len = skb->len - ptr;
 	__u8 nexthdr = ipv6_hdr(skb)->nexthdr;
+<<<<<<< HEAD
+=======
+	__be16 frag_off;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (len < 0)
 		return 1;
 
+<<<<<<< HEAD
 	ptr = ipv6_skip_exthdr(skb, ptr, &nexthdr);
+=======
+	ptr = ipv6_skip_exthdr(skb, ptr, &nexthdr, &frag_off);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ptr < 0)
 		return 0;
 	if (nexthdr == IPPROTO_ICMPV6) {
@@ -230,8 +250,12 @@ static __inline__ int opt_unrec(struct sk_buff *skb, __u32 offset)
 	return (*op & 0xC0) == 0x80;
 }
 
+<<<<<<< HEAD
 int icmpv6_push_pending_frames(struct sock *sk, struct flowi6 *fl6,
 			       struct icmp6hdr *thdr, int len)
+=======
+static int icmpv6_push_pending_frames(struct sock *sk, struct flowi6 *fl6, struct icmp6hdr *thdr, int len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct sk_buff *skb;
 	struct icmp6hdr *icmp6h;
@@ -304,9 +328,15 @@ static void mip6_addr_swap(struct sk_buff *skb)
 		if (likely(off >= 0)) {
 			hao = (struct ipv6_destopt_hao *)
 					(skb_network_header(skb) + off);
+<<<<<<< HEAD
 			ipv6_addr_copy(&tmp, &iph->saddr);
 			ipv6_addr_copy(&iph->saddr, &hao->addr);
 			ipv6_addr_copy(&hao->addr, &tmp);
+=======
+			tmp = iph->saddr;
+			iph->saddr = hao->addr;
+			hao->addr = tmp;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }
@@ -314,8 +344,13 @@ static void mip6_addr_swap(struct sk_buff *skb)
 static inline void mip6_addr_swap(struct sk_buff *skb) {}
 #endif
 
+<<<<<<< HEAD
 struct dst_entry *icmpv6_route_lookup(struct net *net, struct sk_buff *skb,
 				      struct sock *sk, struct flowi6 *fl6)
+=======
+static struct dst_entry *icmpv6_route_lookup(struct net *net, struct sk_buff *skb,
+					     struct sock *sk, struct flowi6 *fl6)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct dst_entry *dst, *dst2;
 	struct flowi6 fl2;
@@ -458,9 +493,15 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 
 	memset(&fl6, 0, sizeof(fl6));
 	fl6.flowi6_proto = IPPROTO_ICMPV6;
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6.daddr, &hdr->saddr);
 	if (saddr)
 		ipv6_addr_copy(&fl6.saddr, saddr);
+=======
+	fl6.daddr = hdr->saddr;
+	if (saddr)
+		fl6.saddr = *saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	fl6.flowi6_oif = iif;
 	fl6.fl6_icmp_type = type;
 	fl6.fl6_icmp_code = code;
@@ -481,6 +522,11 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 
 	if (!fl6.flowi6_oif && ipv6_addr_is_multicast(&fl6.daddr))
 		fl6.flowi6_oif = np->mcast_oif;
+<<<<<<< HEAD
+=======
+	else if (!fl6.flowi6_oif)
+		fl6.flowi6_oif = np->ucast_oif;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dst = icmpv6_route_lookup(net, skb, sk, &fl6);
 	if (IS_ERR(dst))
@@ -504,7 +550,12 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 		goto out_dst_release;
 	}
 
+<<<<<<< HEAD
 	idev = in6_dev_get(skb->dev);
+=======
+	rcu_read_lock();
+	idev = __in6_dev_get(skb->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = ip6_append_data(sk, icmpv6_getfrag, &msg,
 			      len + sizeof(struct icmp6hdr),
@@ -514,6 +565,7 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 	if (err) {
 		ICMP6_INC_STATS_BH(net, idev, ICMP6_MIB_OUTERRORS);
 		ip6_flush_pending_frames(sk);
+<<<<<<< HEAD
 		goto out_put;
 	}
 	err = icmpv6_push_pending_frames(sk, &fl6, &tmp_hdr, len + sizeof(struct icmp6hdr));
@@ -521,12 +573,22 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 out_put:
 	if (likely(idev != NULL))
 		in6_dev_put(idev);
+=======
+	} else {
+		err = icmpv6_push_pending_frames(sk, &fl6, &tmp_hdr,
+						 len + sizeof(struct icmp6hdr));
+	}
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 out_dst_release:
 	dst_release(dst);
 out:
 	icmpv6_xmit_unlock(sk);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(icmpv6_send);
 
 static void icmpv6_echo_reply(struct sk_buff *skb)
@@ -554,9 +616,15 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 
 	memset(&fl6, 0, sizeof(fl6));
 	fl6.flowi6_proto = IPPROTO_ICMPV6;
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6.daddr, &ipv6_hdr(skb)->saddr);
 	if (saddr)
 		ipv6_addr_copy(&fl6.saddr, saddr);
+=======
+	fl6.daddr = ipv6_hdr(skb)->saddr;
+	if (saddr)
+		fl6.saddr = *saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	fl6.flowi6_oif = skb->dev->ifindex;
 	fl6.fl6_icmp_type = ICMPV6_ECHO_REPLY;
 	security_skb_classify_flow(skb, flowi6_to_flowi(&fl6));
@@ -568,6 +636,11 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 
 	if (!fl6.flowi6_oif && ipv6_addr_is_multicast(&fl6.daddr))
 		fl6.flowi6_oif = np->mcast_oif;
+<<<<<<< HEAD
+=======
+	else if (!fl6.flowi6_oif)
+		fl6.flowi6_oif = np->ucast_oif;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = ip6_dst_lookup(sk, &dst, &fl6);
 	if (err)
@@ -583,7 +656,11 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 	if (hlimit < 0)
 		hlimit = ip6_dst_hoplimit(dst);
 
+<<<<<<< HEAD
 	idev = in6_dev_get(skb->dev);
+=======
+	idev = __in6_dev_get(skb->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	msg.skb = skb;
 	msg.offset = 0;
@@ -597,6 +674,7 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 	if (err) {
 		ICMP6_INC_STATS_BH(net, idev, ICMP6_MIB_OUTERRORS);
 		ip6_flush_pending_frames(sk);
+<<<<<<< HEAD
 		goto out_put;
 	}
 	err = icmpv6_push_pending_frames(sk, &fl6, &tmp_hdr, skb->len + sizeof(struct icmp6hdr));
@@ -604,17 +682,31 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 out_put:
 	if (likely(idev != NULL))
 		in6_dev_put(idev);
+=======
+	} else {
+		err = icmpv6_push_pending_frames(sk, &fl6, &tmp_hdr,
+						 skb->len + sizeof(struct icmp6hdr));
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	dst_release(dst);
 out:
 	icmpv6_xmit_unlock(sk);
 }
 
+<<<<<<< HEAD
 void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info)
+=======
+static void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct inet6_protocol *ipprot;
 	int inner_offset;
 	int hash;
 	u8 nexthdr;
+<<<<<<< HEAD
+=======
+	__be16 frag_off;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!pskb_may_pull(skb, sizeof(struct ipv6hdr)))
 		return;
@@ -622,7 +714,12 @@ void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info)
 	nexthdr = ((struct ipv6hdr *)skb->data)->nexthdr;
 	if (ipv6_ext_hdr(nexthdr)) {
 		/* now skip over extension headers */
+<<<<<<< HEAD
 		inner_offset = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &nexthdr);
+=======
+		inner_offset = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr),
+						&nexthdr, &frag_off);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (inner_offset<0)
 			return;
 	} else {
@@ -700,8 +797,12 @@ static int icmpv6_rcv(struct sk_buff *skb)
 		skb->csum = ~csum_unfold(csum_ipv6_magic(saddr, daddr, skb->len,
 					     IPPROTO_ICMPV6, 0));
 		if (__skb_checksum_complete(skb)) {
+<<<<<<< HEAD
 			LIMIT_NETDEBUG(KERN_DEBUG
 				       "ICMPv6 checksum failed [%pI6c > %pI6c]\n",
+=======
+			LIMIT_NETDEBUG(KERN_DEBUG "ICMPv6 checksum failed [%pI6 > %pI6]\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				       saddr, daddr);
 			goto discard_it;
 		}
@@ -722,7 +823,11 @@ static int icmpv6_rcv(struct sk_buff *skb)
 		break;
 
 	case ICMPV6_ECHO_REPLY:
+<<<<<<< HEAD
 		ping_rcv(skb);
+=======
+		/* we couldn't care less */
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case ICMPV6_PKT_TOOBIG:
@@ -806,8 +911,13 @@ void icmpv6_flow_init(struct sock *sk, struct flowi6 *fl6,
 		      int oif)
 {
 	memset(fl6, 0, sizeof(*fl6));
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6->saddr, saddr);
 	ipv6_addr_copy(&fl6->daddr, daddr);
+=======
+	fl6->saddr = *saddr;
+	fl6->daddr = *daddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	fl6->flowi6_proto 	= IPPROTO_ICMPV6;
 	fl6->fl6_icmp_type	= type;
 	fl6->fl6_icmp_code	= 0;
@@ -855,8 +965,12 @@ static int __net_init icmpv6_sk_init(struct net *net)
 		/* Enough space for 2 64K ICMP packets, including
 		 * sk_buff struct overhead.
 		 */
+<<<<<<< HEAD
 		sk->sk_sndbuf =
 			(2 * ((64 * 1024) + sizeof(struct sk_buff)));
+=======
+		sk->sk_sndbuf = 2 * SKB_TRUESIZE(64 * 1024);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 

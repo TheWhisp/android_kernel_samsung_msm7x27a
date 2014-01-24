@@ -20,7 +20,11 @@ ip_no_pmtu_disc - BOOLEAN
 	default FALSE
 
 min_pmtu - INTEGER
+<<<<<<< HEAD
 	default 562 - minimum discovered Path MTU
+=======
+	default 552 - minimum discovered Path MTU
+>>>>>>> refs/remotes/origin/cm-10.0
 
 route/max_size - INTEGER
 	Maximum number of routes allowed in the kernel.  Increase
@@ -31,6 +35,19 @@ neigh/default/gc_thresh3 - INTEGER
 	when using large numbers of interfaces and when communicating
 	with large numbers of directly-connected peers.
 
+<<<<<<< HEAD
+=======
+neigh/default/unres_qlen_bytes - INTEGER
+	The maximum number of bytes which may be used by packets
+	queued for each	unresolved address by other network layers.
+	(added in linux 3.3)
+
+neigh/default/unres_qlen - INTEGER
+	The maximum number of packets which may be queued for each
+	unresolved address by other network layers.
+	(deprecated in linux 3.3) : use unres_qlen_bytes instead.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 mtu_expires - INTEGER
 	Time, in seconds, that cached PMTU information is kept.
 
@@ -106,6 +123,7 @@ inet_peer_maxttl - INTEGER
 	when the number of entries in the pool is very small).
 	Measured in seconds.
 
+<<<<<<< HEAD
 inet_peer_gc_mintime - INTEGER
 	Minimum interval between garbage collection passes.  This interval is
 	in effect under high memory pressure on the pool.
@@ -116,6 +134,8 @@ inet_peer_gc_maxtime - INTEGER
 	in effect under low (or absent) memory pressure on the pool.
 	Measured in seconds.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 TCP variables:
 
 somaxconn - INTEGER
@@ -175,6 +195,12 @@ tcp_congestion_control - STRING
 	connections. The algorithm "reno" is always available, but
 	additional choices may be available based on kernel configuration.
 	Default is set as part of kernel configuration.
+<<<<<<< HEAD
+=======
+	For passive connections, the listener congestion control choice
+	is inherited.
+	[see setsockopt(listenfd, SOL_TCP, TCP_CONGESTION, "name" ...) ]
+>>>>>>> refs/remotes/origin/cm-10.0
 
 tcp_cookie_size - INTEGER
 	Default size of TCP Cookie Transactions (TCPCT) option, that may be
@@ -292,11 +318,19 @@ tcp_max_ssthresh - INTEGER
 	Default: 0 (off)
 
 tcp_max_syn_backlog - INTEGER
+<<<<<<< HEAD
 	Maximal number of remembered connection requests, which are
 	still did not receive an acknowledgment from connecting client.
 	Default value is 1024 for systems with more than 128Mb of memory,
 	and 128 for low memory machines. If server suffers of overload,
 	try to increase this number.
+=======
+	Maximal number of remembered connection requests, which have not
+	received an acknowledgment from connecting client.
+	The minimal value is 128 for low memory machines, and it will
+	increase in proportion to the memory of machine.
+	If server suffers from overload, try increasing this number.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 tcp_max_tw_buckets - INTEGER
 	Maximal number of timewait sockets held by system simultaneously.
@@ -394,7 +428,11 @@ tcp_rmem - vector of 3 INTEGERs: min, default, max
 	min: Minimal size of receive buffer used by TCP sockets.
 	It is guaranteed to each TCP socket, even under moderate memory
 	pressure.
+<<<<<<< HEAD
 	Default: 8K
+=======
+	Default: 1 page
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	default: initial size of receive buffer used by TCP sockets.
 	This value overrides net.core.rmem_default used by other protocols.
@@ -483,7 +521,11 @@ tcp_window_scaling - BOOLEAN
 tcp_wmem - vector of 3 INTEGERs: min, default, max
 	min: Amount of memory reserved for send buffers for TCP sockets.
 	Each TCP socket has rights to use it due to fact of its birth.
+<<<<<<< HEAD
 	Default: 4K
+=======
+	Default: 1 page
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	default: initial size of send buffer used by TCP sockets.  This
 	value overrides net.core.wmem_default used by other protocols.
@@ -558,13 +600,21 @@ udp_rmem_min - INTEGER
 	Minimal size of receive buffer used by UDP sockets in moderation.
 	Each UDP socket is able to use the size for receiving data, even if
 	total pages of UDP sockets exceed udp_mem pressure. The unit is byte.
+<<<<<<< HEAD
 	Default: 4096
+=======
+	Default: 1 page
+>>>>>>> refs/remotes/origin/cm-10.0
 
 udp_wmem_min - INTEGER
 	Minimal size of send buffer used by UDP sockets in moderation.
 	Each UDP socket is able to use the size for sending data, even if
 	total pages of UDP sockets exceed udp_mem pressure. The unit is byte.
+<<<<<<< HEAD
 	Default: 4096
+=======
+	Default: 1 page
+>>>>>>> refs/remotes/origin/cm-10.0
 
 CIPSOv4 Variables:
 
@@ -606,6 +656,7 @@ IP Variables:
 ip_local_port_range - 2 INTEGERS
 	Defines the local port range that is used by TCP and UDP to
 	choose the local port. The first number is the first, the
+<<<<<<< HEAD
 	second the last local port number. Default value depends on
 	amount of memory available on the system:
 	> 128Mb 32768-61000
@@ -615,6 +666,10 @@ ip_local_port_range - 2 INTEGERS
 	TCP extensions (timestamps). With tcp_tw_recycle enabled
 	(i.e. by default) range 1024-4999 is enough to issue up to
 	2000 connections per second to systems supporting timestamps.
+=======
+	second the last local port number. The default values are
+	32768 and 61000 respectively.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 ip_local_reserved_ports - list of comma separated ranges
 	Specify the ports which are reserved for known third-party
@@ -1007,7 +1062,11 @@ bindv6only - BOOLEAN
 		TRUE: disable IPv4-mapped address feature
 		FALSE: enable IPv4-mapped address feature
 
+<<<<<<< HEAD
 	Default: FALSE (as specified in RFC2553bis)
+=======
+	Default: FALSE (as specified in RFC3493)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 IPv6 Fragmentation:
 
@@ -1063,9 +1122,20 @@ conf/interface/*:
 	The functional behaviour for certain settings is different
 	depending on whether local forwarding is enabled or not.
 
+<<<<<<< HEAD
 accept_ra - BOOLEAN
 	Accept Router Advertisements; autoconfigure using them.
 
+=======
+accept_ra - INTEGER
+	Accept Router Advertisements; autoconfigure using them.
+
+	It also determines whether or not to transmit Router
+	Solicitations. If and only if the functional setting is to
+	accept Router Advertisements, Router Solicitations will be
+	transmitted.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	Possible values are:
 		0 Do not accept Router Advertisements.
 		1 Accept Router Advertisements if forwarding is disabled.
@@ -1127,7 +1197,11 @@ dad_transmits - INTEGER
 	The amount of Duplicate Address Detection probes to send.
 	Default: 1
 
+<<<<<<< HEAD
 forwarding - BOOLEAN
+=======
+forwarding - INTEGER
+>>>>>>> refs/remotes/origin/cm-10.0
 	Configure interface-specific Host/Router behaviour.
 
 	Note: It is recommended to have the same setting on all
@@ -1136,14 +1210,22 @@ forwarding - BOOLEAN
 	Possible values are:
 		0 Forwarding disabled
 		1 Forwarding enabled
+<<<<<<< HEAD
 		2 Forwarding enabled (Hybrid Mode)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	FALSE (0):
 
 	By default, Host behaviour is assumed.  This means:
 
 	1. IsRouter flag is not set in Neighbour Advertisements.
+<<<<<<< HEAD
 	2. Router Solicitations are being sent when necessary.
+=======
+	2. If accept_ra is TRUE (default), transmit Router
+	   Solicitations.
+>>>>>>> refs/remotes/origin/cm-10.0
 	3. If accept_ra is TRUE (default), accept Router
 	   Advertisements (and do autoconfiguration).
 	4. If accept_redirects is TRUE (default), accept Redirects.
@@ -1154,6 +1236,7 @@ forwarding - BOOLEAN
 	This means exactly the reverse from the above:
 
 	1. IsRouter flag is set in Neighbour Advertisements.
+<<<<<<< HEAD
 	2. Router Solicitations are not sent.
 	3. Router Advertisements are ignored unless accept_ra is 2.
 	4. Redirects are ignored.
@@ -1164,6 +1247,12 @@ forwarding - BOOLEAN
 
 	2. Router Solicitations are being sent when necessary.
 
+=======
+	2. Router Solicitations are not sent unless accept_ra is 2.
+	3. Router Advertisements are ignored unless accept_ra is 2.
+	4. Redirects are ignored.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	Default: 0 (disabled) if global forwarding is disabled (default),
 		 otherwise 1 (enabled).
 
@@ -1476,10 +1565,24 @@ sctp_mem - vector of 3 INTEGERs: min, pressure, max
 	Default is calculated at boot time from amount of available memory.
 
 sctp_rmem - vector of 3 INTEGERs: min, default, max
+<<<<<<< HEAD
 	See tcp_rmem for a description.
 
 sctp_wmem  - vector of 3 INTEGERs: min, default, max
 	See tcp_wmem for a description.
+=======
+	Only the first value ("min") is used, "default" and "max" are
+	ignored.
+
+	min: Minimal size of receive buffer used by SCTP socket.
+	It is guaranteed to each SCTP socket (but not association) even
+	under moderate memory pressure.
+
+	Default: 1 page
+
+sctp_wmem  - vector of 3 INTEGERs: min, default, max
+	Currently this tunable has no effect.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 addr_scope_policy - INTEGER
 	Control IPv4 address scoping - draft-stewart-tsvwg-sctp-ipv4-00

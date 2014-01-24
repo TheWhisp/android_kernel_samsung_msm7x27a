@@ -99,7 +99,11 @@ bitmap_ipmac_exist(const struct ipmac_telem *elem)
 /* Base variant */
 
 static int
+<<<<<<< HEAD
 bitmap_ipmac_test(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ipmac_test(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct bitmap_ipmac *map = set->data;
 	const struct ipmac *data = value;
@@ -117,7 +121,11 @@ bitmap_ipmac_test(struct ip_set *set, void *value, u32 timeout)
 }
 
 static int
+<<<<<<< HEAD
 bitmap_ipmac_add(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ipmac_add(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ipmac *map = set->data;
 	const struct ipmac *data = value;
@@ -146,7 +154,11 @@ bitmap_ipmac_add(struct ip_set *set, void *value, u32 timeout)
 }
 
 static int
+<<<<<<< HEAD
 bitmap_ipmac_del(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ipmac_del(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ipmac *map = set->data;
 	const struct ipmac *data = value;
@@ -212,7 +224,11 @@ nla_put_failure:
 /* Timeout variant */
 
 static int
+<<<<<<< HEAD
 bitmap_ipmac_ttest(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ipmac_ttest(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct bitmap_ipmac *map = set->data;
 	const struct ipmac *data = value;
@@ -231,15 +247,27 @@ bitmap_ipmac_ttest(struct ip_set *set, void *value, u32 timeout)
 }
 
 static int
+<<<<<<< HEAD
 bitmap_ipmac_tadd(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ipmac_tadd(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ipmac *map = set->data;
 	const struct ipmac *data = value;
 	struct ipmac_telem *elem = bitmap_ipmac_elem(map, data->id);
+<<<<<<< HEAD
 
 	switch (elem->match) {
 	case MAC_UNSET:
 		if (!data->ether)
+=======
+	bool flag_exist = flags & IPSET_FLAG_EXIST;
+
+	switch (elem->match) {
+	case MAC_UNSET:
+		if (!(data->ether || flag_exist))
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* Already added without ethernet address */
 			return -IPSET_ERR_EXIST;
 		/* Fill the MAC address and activate the timer */
@@ -251,7 +279,11 @@ bitmap_ipmac_tadd(struct ip_set *set, void *value, u32 timeout)
 		elem->timeout = ip_set_timeout_set(timeout);
 		break;
 	case MAC_FILLED:
+<<<<<<< HEAD
 		if (!bitmap_expired(map, data->id))
+=======
+		if (!(bitmap_expired(map, data->id) || flag_exist))
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -IPSET_ERR_EXIST;
 		/* Fall through */
 	case MAC_EMPTY:
@@ -273,7 +305,11 @@ bitmap_ipmac_tadd(struct ip_set *set, void *value, u32 timeout)
 }
 
 static int
+<<<<<<< HEAD
 bitmap_ipmac_tdel(struct ip_set *set, void *value, u32 timeout)
+=======
+bitmap_ipmac_tdel(struct ip_set *set, void *value, u32 timeout, u32 flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ipmac *map = set->data;
 	const struct ipmac *data = value;
@@ -337,17 +373,29 @@ nla_put_failure:
 
 static int
 bitmap_ipmac_kadt(struct ip_set *set, const struct sk_buff *skb,
+<<<<<<< HEAD
 		  enum ipset_adt adt, u8 pf, u8 dim, u8 flags)
+=======
+		  const struct xt_action_param *par,
+		  enum ipset_adt adt, const struct ip_set_adt_opt *opt)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct bitmap_ipmac *map = set->data;
 	ipset_adtfn adtfn = set->variant->adt[adt];
 	struct ipmac data;
 
 	/* MAC can be src only */
+<<<<<<< HEAD
 	if (!(flags & IPSET_DIM_TWO_SRC))
 		return 0;
 
 	data.id = ntohl(ip4addr(skb, flags & IPSET_DIM_ONE_SRC));
+=======
+	if (!(opt->flags & IPSET_DIM_TWO_SRC))
+		return 0;
+
+	data.id = ntohl(ip4addr(skb, opt->flags & IPSET_DIM_ONE_SRC));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (data.id < map->first_ip || data.id > map->last_ip)
 		return -IPSET_ERR_BITMAP_RANGE;
 
@@ -359,12 +407,20 @@ bitmap_ipmac_kadt(struct ip_set *set, const struct sk_buff *skb,
 	data.id -= map->first_ip;
 	data.ether = eth_hdr(skb)->h_source;
 
+<<<<<<< HEAD
 	return adtfn(set, &data, map->timeout);
+=======
+	return adtfn(set, &data, opt_timeout(opt, map), opt->cmdflags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int
 bitmap_ipmac_uadt(struct ip_set *set, struct nlattr *tb[],
+<<<<<<< HEAD
 		  enum ipset_adt adt, u32 *lineno, u32 flags)
+=======
+		  enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	const struct bitmap_ipmac *map = set->data;
 	ipset_adtfn adtfn = set->variant->adt[adt];
@@ -399,7 +455,11 @@ bitmap_ipmac_uadt(struct ip_set *set, struct nlattr *tb[],
 
 	data.id -= map->first_ip;
 
+<<<<<<< HEAD
 	ret = adtfn(set, &data, timeout);
+=======
+	ret = adtfn(set, &data, timeout, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ip_set_eexist(ret, flags) ? 0 : ret;
 }
@@ -541,7 +601,11 @@ init_map_ipmac(struct ip_set *set, struct bitmap_ipmac *map,
 	map->timeout = IPSET_NO_TIMEOUT;
 
 	set->data = map;
+<<<<<<< HEAD
 	set->family = AF_INET;
+=======
+	set->family = NFPROTO_IPV4;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return true;
 }
@@ -577,7 +641,11 @@ bitmap_ipmac_create(struct ip_set *set, struct nlattr *tb[],
 
 		if (cidr >= 32)
 			return -IPSET_ERR_INVALID_CIDR;
+<<<<<<< HEAD
 		last_ip = first_ip | ~ip_set_hostmask(cidr);
+=======
+		ip_set_mask_from_to(first_ip, last_ip, cidr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		return -IPSET_ERR_PROTOCOL;
 
@@ -621,8 +689,14 @@ static struct ip_set_type bitmap_ipmac_type = {
 	.protocol	= IPSET_PROTOCOL,
 	.features	= IPSET_TYPE_IP | IPSET_TYPE_MAC,
 	.dimension	= IPSET_DIM_TWO,
+<<<<<<< HEAD
 	.family		= AF_INET,
 	.revision	= 0,
+=======
+	.family		= NFPROTO_IPV4,
+	.revision_min	= 0,
+	.revision_max	= 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.create		= bitmap_ipmac_create,
 	.create_policy	= {
 		[IPSET_ATTR_IP]		= { .type = NLA_NESTED },
@@ -632,7 +706,12 @@ static struct ip_set_type bitmap_ipmac_type = {
 	},
 	.adt_policy	= {
 		[IPSET_ATTR_IP]		= { .type = NLA_NESTED },
+<<<<<<< HEAD
 		[IPSET_ATTR_ETHER]	= { .type = NLA_BINARY, .len  = ETH_ALEN },
+=======
+		[IPSET_ATTR_ETHER]	= { .type = NLA_BINARY,
+					    .len  = ETH_ALEN },
+>>>>>>> refs/remotes/origin/cm-10.0
 		[IPSET_ATTR_TIMEOUT]	= { .type = NLA_U32 },
 		[IPSET_ATTR_LINENO]	= { .type = NLA_U32 },
 	},

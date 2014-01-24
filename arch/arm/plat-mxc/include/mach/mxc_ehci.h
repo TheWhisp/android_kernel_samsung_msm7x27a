@@ -44,7 +44,11 @@ struct mxc_usbh_platform_data {
 	int (*exit)(struct platform_device *pdev);
 
 	unsigned int		 portsc;
+<<<<<<< HEAD
 	struct otg_transceiver	*otg;
+=======
+	struct usb_phy		*otg;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int mx51_initialize_usb_hw(int port, unsigned int flags);

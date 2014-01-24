@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 config XVMALLOC
 	bool
 	default n
@@ -6,6 +7,14 @@ config ZRAM
 	tristate "Compressed RAM block device support"
 	depends on BLOCK && SYSFS
 	select XVMALLOC
+=======
+config ZRAM
+	tristate "Compressed RAM block device support"
+	# X86 dependency is because zsmalloc uses non-portable pte/tlb
+	# functions
+	depends on BLOCK && SYSFS && X86
+	select ZSMALLOC
+>>>>>>> refs/remotes/origin/cm-10.0
 	select LZO_COMPRESS
 	select LZO_DECOMPRESS
 	default n

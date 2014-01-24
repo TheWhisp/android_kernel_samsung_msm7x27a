@@ -12,6 +12,10 @@
 
 /* #define DEBUG */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/types.h>
 #include <linux/i2c.h>

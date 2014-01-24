@@ -35,7 +35,11 @@
 #include <linux/mutex.h>
 #include <linux/errno.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/keypad.h>
 #include <plat/menelaus.h>
 #include <asm/irq.h>
@@ -473,6 +477,7 @@ static struct platform_driver omap_kp_driver = {
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 
 static int __init omap_kp_init(void)
 {
@@ -487,6 +492,9 @@ static void __exit omap_kp_exit(void)
 
 module_init(omap_kp_init);
 module_exit(omap_kp_exit);
+=======
+module_platform_driver(omap_kp_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Timo Teräs");
 MODULE_DESCRIPTION("OMAP Keypad Driver");

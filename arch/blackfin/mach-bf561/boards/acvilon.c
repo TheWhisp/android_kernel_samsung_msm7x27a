@@ -203,8 +203,18 @@ static struct resource bfin_uart0_resources[] = {
 	 .flags = IORESOURCE_MEM,
 	 },
 	{
+<<<<<<< HEAD
 	 .start = IRQ_UART_RX,
 	 .end = IRQ_UART_RX + 1,
+=======
+	 .start = IRQ_UART_TX,
+	 .end = IRQ_UART_TX,
+	 .flags = IORESOURCE_IRQ,
+	 },
+	{
+	 .start = IRQ_UART_RX,
+	 .end = IRQ_UART_RX,
+>>>>>>> refs/remotes/origin/cm-10.0
 	 .flags = IORESOURCE_IRQ,
 	 },
 	{
@@ -364,6 +374,7 @@ static struct flash_platform_data bfin_spi_dataflash_data = {
 /* DataFlash chip */
 static struct bfin5xx_spi_chip data_flash_chip_info = {
 	.enable_dma = 0,	/* use dma transfer with this chip */
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -376,6 +387,12 @@ static struct bfin5xx_spi_chip spidev_chip_info = {
 #endif
 
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
+=======
+};
+#endif
+
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 /* SPI (0) */
 static struct resource bfin_spi0_resource[] = {
 	[0] = {
@@ -420,7 +437,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 	 .max_speed_hz = 3125000,	/* max spi clock (SCK) speed in HZ */
 	 .bus_num = 0,
 	 .chip_select = 3,
+<<<<<<< HEAD
 	 .controller_data = &spidev_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	 },
 #endif
 #if defined(CONFIG_MTD_DATAFLASH) || defined(CONFIG_MTD_DATAFLASH_MODULE)
@@ -479,7 +499,11 @@ static struct platform_device bfin_dpmc = {
 static struct platform_device *acvilon_devices[] __initdata = {
 	&bfin_dpmc,
 
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	&bfin_spi0_device,
 #endif
 

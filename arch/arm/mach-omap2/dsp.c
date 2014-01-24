@@ -18,6 +18,10 @@
  * of the OMAP PM core code.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include "cm2xxx_3xxx.h"
 #include "prm2xxx_3xxx.h"

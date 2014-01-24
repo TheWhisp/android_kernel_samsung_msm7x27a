@@ -37,7 +37,11 @@ extern unsigned long dcache_invld_count[NR_CPUS];
 #endif
 
 void smp_icache_flush_range_others(unsigned long start,
+<<<<<<< HEAD
 				   unsigned long end);
+=======
+					unsigned long end);
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_HOTPLUG_CPU
 void coreb_die(void);
 void cpu_die(void);
@@ -46,4 +50,10 @@ int __cpu_disable(void);
 int __cpu_die(unsigned int cpu);
 #endif
 
+<<<<<<< HEAD
+=======
+void smp_timer_broadcast(const struct cpumask *mask);
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !__ASM_BLACKFIN_SMP_H */

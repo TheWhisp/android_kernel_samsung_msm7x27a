@@ -16,9 +16,18 @@
 #include <linux/compiler.h>
 #include <linux/const.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <mach/memory.h>
 #include <asm/sizes.h>
 
+=======
+#include <asm/sizes.h>
+
+#ifdef CONFIG_NEED_MACH_MEMORY_H
+#include <mach/memory.h>
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Allow for constants defined here to be used from assembly code
  * by prepending the UL suffix only with actual C code compilation.
@@ -77,6 +86,7 @@
  */
 #define IOREMAP_MAX_ORDER	24
 
+<<<<<<< HEAD
 /*
  * Size of DMA-consistent memory region.  Must be multiple of 2M,
  * between 2MB and 14MB inclusive.
@@ -87,6 +97,9 @@
 
 #define CONSISTENT_END		(0xffe00000UL)
 #define CONSISTENT_BASE		(CONSISTENT_END - CONSISTENT_DMA_SIZE)
+=======
+#define CONSISTENT_END		(0xffe00000UL)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else /* CONFIG_MMU */
 
@@ -122,6 +135,11 @@
 #define MODULES_END		(END_MEM)
 #define MODULES_VADDR		(PHYS_OFFSET)
 
+<<<<<<< HEAD
+=======
+#define XIP_VIRT_ADDR(physaddr)  (physaddr)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !CONFIG_MMU */
 
 /*
@@ -160,7 +178,10 @@
  * so that all we need to do is modify the 8-bit constant field.
  */
 #define __PV_BITS_31_24	0x81000000
+<<<<<<< HEAD
 #define __PV_BITS_23_16	0x00810000
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern unsigned long __pv_phys_offset;
 #define PHYS_OFFSET __pv_phys_offset
@@ -178,9 +199,12 @@ static inline unsigned long __virt_to_phys(unsigned long x)
 {
 	unsigned long t;
 	__pv_stub(x, t, "add", __PV_BITS_31_24);
+<<<<<<< HEAD
 #ifdef CONFIG_ARM_PATCH_PHYS_VIRT_16BIT
 	__pv_stub(t, t, "add", __PV_BITS_23_16);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return t;
 }
 
@@ -188,9 +212,12 @@ static inline unsigned long __phys_to_virt(unsigned long x)
 {
 	unsigned long t;
 	__pv_stub(x, t, "sub", __PV_BITS_31_24);
+<<<<<<< HEAD
 #ifdef CONFIG_ARM_PATCH_PHYS_VIRT_16BIT
 	__pv_stub(t, t, "sub", __PV_BITS_23_16);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return t;
 }
 #else
@@ -200,6 +227,7 @@ static inline unsigned long __phys_to_virt(unsigned long x)
 #endif
 
 #ifndef PHYS_OFFSET
+<<<<<<< HEAD
 #define PHYS_OFFSET	PLAT_PHYS_OFFSET
 #endif
 
@@ -213,6 +241,13 @@ static inline unsigned long __phys_to_virt(unsigned long x)
 #define ISA_DMA_THRESHOLD	(0xffffffffULL)
 #else
 #define ISA_DMA_THRESHOLD	(PHYS_OFFSET + ARM_DMA_ZONE_SIZE - 1)
+=======
+#ifdef PLAT_PHYS_OFFSET
+#define PHYS_OFFSET	PLAT_PHYS_OFFSET
+#else
+#define PHYS_OFFSET	UL(CONFIG_PHYS_OFFSET)
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*

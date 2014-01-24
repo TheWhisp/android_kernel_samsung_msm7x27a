@@ -25,11 +25,26 @@
 
 #include <linux/list.h>
 #include <linux/kvm_host.h>
+<<<<<<< HEAD
 #include <linux/pci.h>
+=======
+#include <linux/module.h>
+#include <linux/pci.h>
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/dmar.h>
 #include <linux/iommu.h>
 #include <linux/intel-iommu.h>
 
+<<<<<<< HEAD
+=======
+static bool allow_unsafe_assigned_interrupts;
+module_param_named(allow_unsafe_assigned_interrupts,
+		   allow_unsafe_assigned_interrupts, bool, S_IRUGO | S_IWUSR);
+MODULE_PARM_DESC(allow_unsafe_assigned_interrupts,
+ "Enable device assignment on platforms without interrupt remapping support.");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int kvm_iommu_unmap_memslots(struct kvm *kvm);
 static void kvm_iommu_put_pages(struct kvm *kvm,
 				gfn_t base_gfn, unsigned long npages);
@@ -105,7 +120,11 @@ int kvm_iommu_map_pages(struct kvm *kvm, struct kvm_memory_slot *slot)
 
 		/* Map into IO address space */
 		r = iommu_map(domain, gfn_to_gpa(gfn), pfn_to_hpa(pfn),
+<<<<<<< HEAD
 			      get_order(page_size), flags);
+=======
+			      page_size, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (r) {
 			printk(KERN_ERR "kvm_iommu_map_address:"
 			       "iommu failed to map pfn=%llx\n", pfn);
@@ -126,14 +145,25 @@ unmap_pages:
 
 static int kvm_iommu_map_memslots(struct kvm *kvm)
 {
+<<<<<<< HEAD
 	int i, idx, r = 0;
 	struct kvm_memslots *slots;
+=======
+	int idx, r = 0;
+	struct kvm_memslots *slots;
+	struct kvm_memory_slot *memslot;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	idx = srcu_read_lock(&kvm->srcu);
 	slots = kvm_memslots(kvm);
 
+<<<<<<< HEAD
 	for (i = 0; i < slots->nmemslots; i++) {
 		r = kvm_iommu_map_pages(kvm, &slots->memslots[i]);
+=======
+	kvm_for_each_memslot(memslot, slots) {
+		r = kvm_iommu_map_pages(kvm, memslot);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (r)
 			break;
 	}
@@ -181,6 +211,11 @@ int kvm_assign_device(struct kvm *kvm,
 			goto out_unmap;
 	}
 
+<<<<<<< HEAD
+=======
+	pdev->dev_flags |= PCI_DEV_FLAGS_ASSIGNED;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_DEBUG "assign device %x:%x:%x.%x\n",
 		assigned_dev->host_segnr,
 		assigned_dev->host_busnr,
@@ -209,6 +244,11 @@ int kvm_deassign_device(struct kvm *kvm,
 
 	iommu_detach_device(domain, &pdev->dev);
 
+<<<<<<< HEAD
+=======
+	pdev->dev_flags &= ~PCI_DEV_FLAGS_ASSIGNED;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_DEBUG "deassign device %x:%x:%x.%x\n",
 		assigned_dev->host_segnr,
 		assigned_dev->host_busnr,
@@ -222,11 +262,16 @@ int kvm_iommu_map_guest(struct kvm *kvm)
 {
 	int r;
 
+<<<<<<< HEAD
 	if (!iommu_found()) {
+=======
+	if (!iommu_present(&pci_bus_type)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "%s: iommu not found\n", __func__);
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	kvm->arch.iommu_domain = iommu_domain_alloc(0);
 	if (!kvm->arch.iommu_domain)
 		return -ENOMEM;
@@ -239,6 +284,35 @@ int kvm_iommu_map_guest(struct kvm *kvm)
 
 out_unmap:
 	kvm_iommu_unmap_memslots(kvm);
+=======
+	mutex_lock(&kvm->slots_lock);
+
+	kvm->arch.iommu_domain = iommu_domain_alloc(&pci_bus_type, 0);
+	if (!kvm->arch.iommu_domain) {
+		r = -ENOMEM;
+		goto out_unlock;
+	}
+
+	if (!allow_unsafe_assigned_interrupts &&
+	    !iommu_domain_has_cap(kvm->arch.iommu_domain,
+				  IOMMU_CAP_INTR_REMAP)) {
+		printk(KERN_WARNING "%s: No interrupt remapping support,"
+		       " disallowing device assignment."
+		       " Re-enble with \"allow_unsafe_assigned_interrupts=1\""
+		       " module option.\n", __func__);
+		iommu_domain_free(kvm->arch.iommu_domain);
+		kvm->arch.iommu_domain = NULL;
+		r = -EPERM;
+		goto out_unlock;
+	}
+
+	r = kvm_iommu_map_memslots(kvm);
+	if (r)
+		kvm_iommu_unmap_memslots(kvm);
+
+out_unlock:
+	mutex_unlock(&kvm->slots_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return r;
 }
 
@@ -268,15 +342,24 @@ static void kvm_iommu_put_pages(struct kvm *kvm,
 
 	while (gfn < end_gfn) {
 		unsigned long unmap_pages;
+<<<<<<< HEAD
 		int order;
+=======
+		size_t size;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Get physical address */
 		phys = iommu_iova_to_phys(domain, gfn_to_gpa(gfn));
 		pfn  = phys >> PAGE_SHIFT;
 
 		/* Unmap address from IO address space */
+<<<<<<< HEAD
 		order       = iommu_unmap(domain, gfn_to_gpa(gfn), 0);
 		unmap_pages = 1ULL << order;
+=======
+		size       = iommu_unmap(domain, gfn_to_gpa(gfn), PAGE_SIZE);
+		unmap_pages = 1ULL << get_order(size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Unpin all pages we just unmapped to not leak any memory */
 		kvm_unpin_pages(kvm, pfn, unmap_pages);
@@ -292,14 +375,25 @@ void kvm_iommu_unmap_pages(struct kvm *kvm, struct kvm_memory_slot *slot)
 
 static int kvm_iommu_unmap_memslots(struct kvm *kvm)
 {
+<<<<<<< HEAD
 	int i, idx;
 	struct kvm_memslots *slots;
+=======
+	int idx;
+	struct kvm_memslots *slots;
+	struct kvm_memory_slot *memslot;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	idx = srcu_read_lock(&kvm->srcu);
 	slots = kvm_memslots(kvm);
 
+<<<<<<< HEAD
 	for (i = 0; i < slots->nmemslots; i++)
 		kvm_iommu_unmap_pages(kvm, &slots->memslots[i]);
+=======
+	kvm_for_each_memslot(memslot, slots)
+		kvm_iommu_unmap_pages(kvm, memslot);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	srcu_read_unlock(&kvm->srcu, idx);
 
@@ -314,7 +408,15 @@ int kvm_iommu_unmap_guest(struct kvm *kvm)
 	if (!domain)
 		return 0;
 
+<<<<<<< HEAD
 	kvm_iommu_unmap_memslots(kvm);
+=======
+	mutex_lock(&kvm->slots_lock);
+	kvm_iommu_unmap_memslots(kvm);
+	kvm->arch.iommu_domain = NULL;
+	mutex_unlock(&kvm->slots_lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	iommu_domain_free(domain);
 	return 0;
 }

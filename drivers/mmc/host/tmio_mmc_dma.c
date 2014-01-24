@@ -11,6 +11,10 @@
  */
 
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/dmaengine.h>
 #include <linux/mfd/tmio.h>
 #include <linux/mmc/host.h>
@@ -22,6 +26,7 @@
 
 #define TMIO_MMC_MIN_DMA_LEN 8
 
+<<<<<<< HEAD
 static void tmio_mmc_enable_dma(struct tmio_mmc_host *host, bool enable)
 {
 #if defined(CONFIG_SUPERH) || defined(CONFIG_ARCH_SHMOBILE)
@@ -30,6 +35,31 @@ static void tmio_mmc_enable_dma(struct tmio_mmc_host *host, bool enable)
 #endif
 }
 
+=======
+void tmio_mmc_enable_dma(struct tmio_mmc_host *host, bool enable)
+{
+	if (!host->chan_tx || !host->chan_rx)
+		return;
+
+#if defined(CONFIG_SUPERH) || defined(CONFIG_ARCH_SHMOBILE)
+	/* Switch DMA mode on or off - SuperH specific? */
+	sd_ctrl_write16(host, CTL_DMA_ENABLE, enable ? 2 : 0);
+#endif
+}
+
+void tmio_mmc_abort_dma(struct tmio_mmc_host *host)
+{
+	tmio_mmc_enable_dma(host, false);
+
+	if (host->chan_rx)
+		dmaengine_terminate_all(host->chan_rx);
+	if (host->chan_tx)
+		dmaengine_terminate_all(host->chan_tx);
+
+	tmio_mmc_enable_dma(host, true);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void tmio_mmc_start_dma_rx(struct tmio_mmc_host *host)
 {
 	struct scatterlist *sg = host->sg_ptr, *sg_tmp;
@@ -72,8 +102,13 @@ static void tmio_mmc_start_dma_rx(struct tmio_mmc_host *host)
 
 	ret = dma_map_sg(chan->device->dev, sg, host->sg_len, DMA_FROM_DEVICE);
 	if (ret > 0)
+<<<<<<< HEAD
 		desc = chan->device->device_prep_slave_sg(chan, sg, ret,
 			DMA_FROM_DEVICE, DMA_CTRL_ACK);
+=======
+		desc = dmaengine_prep_slave_sg(chan, sg, ret,
+			DMA_DEV_TO_MEM, DMA_CTRL_ACK);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (desc) {
 		cookie = dmaengine_submit(desc);
@@ -88,6 +123,10 @@ static void tmio_mmc_start_dma_rx(struct tmio_mmc_host *host)
 pio:
 	if (!desc) {
 		/* DMA failed, fall back to PIO */
+<<<<<<< HEAD
+=======
+		tmio_mmc_enable_dma(host, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret >= 0)
 			ret = -EIO;
 		host->chan_rx = NULL;
@@ -100,7 +139,10 @@ pio:
 		}
 		dev_warn(&host->pdev->dev,
 			 "DMA failed: %d, falling back to PIO\n", ret);
+<<<<<<< HEAD
 		tmio_mmc_enable_dma(host, false);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dev_dbg(&host->pdev->dev, "%s(): desc %p, cookie %d, sg[%d]\n", __func__,
@@ -153,8 +195,13 @@ static void tmio_mmc_start_dma_tx(struct tmio_mmc_host *host)
 
 	ret = dma_map_sg(chan->device->dev, sg, host->sg_len, DMA_TO_DEVICE);
 	if (ret > 0)
+<<<<<<< HEAD
 		desc = chan->device->device_prep_slave_sg(chan, sg, ret,
 			DMA_TO_DEVICE, DMA_CTRL_ACK);
+=======
+		desc = dmaengine_prep_slave_sg(chan, sg, ret,
+			DMA_MEM_TO_DEV, DMA_CTRL_ACK);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (desc) {
 		cookie = dmaengine_submit(desc);
@@ -169,6 +216,10 @@ static void tmio_mmc_start_dma_tx(struct tmio_mmc_host *host)
 pio:
 	if (!desc) {
 		/* DMA failed, fall back to PIO */
+<<<<<<< HEAD
+=======
+		tmio_mmc_enable_dma(host, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret >= 0)
 			ret = -EIO;
 		host->chan_tx = NULL;
@@ -181,7 +232,10 @@ pio:
 		}
 		dev_warn(&host->pdev->dev,
 			 "DMA failed: %d, falling back to PIO\n", ret);
+<<<<<<< HEAD
 		tmio_mmc_enable_dma(host, false);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dev_dbg(&host->pdev->dev, "%s(): desc %p, cookie %d\n", __func__,

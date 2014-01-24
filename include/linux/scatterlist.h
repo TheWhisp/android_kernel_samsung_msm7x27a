@@ -1,10 +1,19 @@
 #ifndef _LINUX_SCATTERLIST_H
 #define _LINUX_SCATTERLIST_H
 
+<<<<<<< HEAD
 #include <asm/types.h>
 #include <asm/scatterlist.h>
 #include <linux/mm.h>
 #include <linux/string.h>
+=======
+#include <linux/string.h>
+#include <linux/bug.h>
+#include <linux/mm.h>
+
+#include <asm/types.h>
+#include <asm/scatterlist.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 struct sg_table {

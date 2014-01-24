@@ -491,7 +491,11 @@ void phonet_proto_unregister(unsigned int protocol, struct phonet_protocol *pp)
 {
 	mutex_lock(&proto_tab_lock);
 	BUG_ON(proto_tab[protocol] != pp);
+<<<<<<< HEAD
 	rcu_assign_pointer(proto_tab[protocol], NULL);
+=======
+	RCU_INIT_POINTER(proto_tab[protocol], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&proto_tab_lock);
 	synchronize_rcu();
 	proto_unregister(pp->prot);

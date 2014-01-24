@@ -24,7 +24,10 @@
 #include <linux/bitops.h>
 #include <asm/irq.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/addrspace.h>
 
 #include <pcmcia/ss.h>

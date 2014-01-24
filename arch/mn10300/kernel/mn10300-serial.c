@@ -36,7 +36,10 @@ static const char serial_revdate[] = "2007-11-06";
 #include <linux/console.h>
 #include <linux/sysrq.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/bitops.h>

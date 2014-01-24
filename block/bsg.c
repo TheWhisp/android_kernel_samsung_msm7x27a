@@ -182,7 +182,11 @@ static int blk_fill_sgv4_hdr_rq(struct request_queue *q, struct request *rq,
 			return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	if (copy_from_user(rq->cmd, (void *)(unsigned long)hdr->request,
+=======
+	if (copy_from_user(rq->cmd, (void __user *)(unsigned long)hdr->request,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   hdr->request_len))
 		return -EFAULT;
 
@@ -249,7 +253,11 @@ bsg_map_hdr(struct bsg_device *bd, struct sg_io_v4 *hdr, fmode_t has_write_perm,
 	struct request *rq, *next_rq = NULL;
 	int ret, rw;
 	unsigned int dxfer_len;
+<<<<<<< HEAD
 	void *dxferp = NULL;
+=======
+	void __user *dxferp = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct bsg_class_device *bcd = &q->bsg_dev;
 
 	/* if the LLD has been removed then the bsg_unregister_queue will
@@ -291,7 +299,11 @@ bsg_map_hdr(struct bsg_device *bd, struct sg_io_v4 *hdr, fmode_t has_write_perm,
 		rq->next_rq = next_rq;
 		next_rq->cmd_type = rq->cmd_type;
 
+<<<<<<< HEAD
 		dxferp = (void*)(unsigned long)hdr->din_xferp;
+=======
+		dxferp = (void __user *)(unsigned long)hdr->din_xferp;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret =  blk_rq_map_user(q, next_rq, NULL, dxferp,
 				       hdr->din_xfer_len, GFP_KERNEL);
 		if (ret)
@@ -300,10 +312,17 @@ bsg_map_hdr(struct bsg_device *bd, struct sg_io_v4 *hdr, fmode_t has_write_perm,
 
 	if (hdr->dout_xfer_len) {
 		dxfer_len = hdr->dout_xfer_len;
+<<<<<<< HEAD
 		dxferp = (void*)(unsigned long)hdr->dout_xferp;
 	} else if (hdr->din_xfer_len) {
 		dxfer_len = hdr->din_xfer_len;
 		dxferp = (void*)(unsigned long)hdr->din_xferp;
+=======
+		dxferp = (void __user *)(unsigned long)hdr->dout_xferp;
+	} else if (hdr->din_xfer_len) {
+		dxfer_len = hdr->din_xfer_len;
+		dxferp = (void __user *)(unsigned long)hdr->din_xferp;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		dxfer_len = 0;
 
@@ -445,7 +464,11 @@ static int blk_complete_sgv4_hdr_rq(struct request *rq, struct sg_io_v4 *hdr,
 		int len = min_t(unsigned int, hdr->max_response_len,
 					rq->sense_len);
 
+<<<<<<< HEAD
 		ret = copy_to_user((void*)(unsigned long)hdr->response,
+=======
+		ret = copy_to_user((void __user *)(unsigned long)hdr->response,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   rq->sense, len);
 		if (!ret)
 			hdr->response_len = len;
@@ -606,7 +629,11 @@ bsg_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 	ret = __bsg_read(buf, count, bd, NULL, &bytes_read);
 	*ppos = bytes_read;
 
+<<<<<<< HEAD
 	if (!bytes_read || (bytes_read && err_block_err(ret)))
+=======
+	if (!bytes_read || err_block_err(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
 		bytes_read = ret;
 
 	return bytes_read;
@@ -686,7 +713,11 @@ bsg_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos)
 	/*
 	 * return bytes written on non-fatal errors
 	 */
+<<<<<<< HEAD
 	if (!bytes_written || (bytes_written && err_block_err(ret)))
+=======
+	if (!bytes_written || err_block_err(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
 		bytes_written = ret;
 
 	dprintk("%s: returning %Zd\n", bd->name, bytes_written);
@@ -769,12 +800,19 @@ static struct bsg_device *bsg_add_device(struct inode *inode,
 					 struct file *file)
 {
 	struct bsg_device *bd;
+<<<<<<< HEAD
 	int ret;
 #ifdef BSG_DEBUG
 	unsigned char buf[32];
 #endif
 	ret = blk_get_queue(rq);
 	if (ret)
+=======
+#ifdef BSG_DEBUG
+	unsigned char buf[32];
+#endif
+	if (!blk_get_queue(rq))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return ERR_PTR(-ENXIO);
 
 	bd = bsg_alloc_device();
@@ -878,7 +916,11 @@ static unsigned int bsg_poll(struct file *file, poll_table *wait)
 	spin_lock_irq(&bd->lock);
 	if (!list_empty(&bd->done_list))
 		mask |= POLLIN | POLLRDNORM;
+<<<<<<< HEAD
 	if (bd->queued_cmds >= bd->max_queue)
+=======
+	if (bd->queued_cmds < bd->max_queue)
+>>>>>>> refs/remotes/origin/cm-10.0
 		mask |= POLLOUT;
 	spin_unlock_irq(&bd->lock);
 
@@ -1071,7 +1113,11 @@ EXPORT_SYMBOL_GPL(bsg_register_queue);
 
 static struct cdev bsg_cdev;
 
+<<<<<<< HEAD
 static char *bsg_devnode(struct device *dev, mode_t *mode)
+=======
+static char *bsg_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return kasprintf(GFP_KERNEL, "bsg/%s", dev_name(dev));
 }

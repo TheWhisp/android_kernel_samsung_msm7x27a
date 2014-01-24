@@ -309,6 +309,10 @@ config SCSI_FC_TGT_ATTRS
 config SCSI_ISCSI_ATTRS
 	tristate "iSCSI Transport Attributes"
 	depends on SCSI && NET
+<<<<<<< HEAD
+=======
+	select BLK_DEV_BSGLIB
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  If you wish to export transport-specific information about
 	  each attached iSCSI device to sysfs, say Y.
@@ -559,6 +563,18 @@ source "drivers/scsi/aic7xxx/Kconfig.aic79xx"
 source "drivers/scsi/aic94xx/Kconfig"
 source "drivers/scsi/mvsas/Kconfig"
 
+<<<<<<< HEAD
+=======
+config SCSI_MVUMI
+	tristate "Marvell UMI driver"
+	depends on SCSI && PCI
+	help
+	  Module for Marvell Universal Message Interface(UMI) driver
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called mvumi.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config SCSI_DPT_I2O
 	tristate "Adaptec I2O RAID support "
 	depends on SCSI && PCI && VIRT_TO_BUS
@@ -607,6 +623,7 @@ config SCSI_ARCMSR
 	  To compile this driver as a module, choose M here: the
 	  module will be called arcmsr (modprobe arcmsr).
 
+<<<<<<< HEAD
 config SCSI_ARCMSR_AER
 	bool "Enable PCI Error Recovery Capability in Areca Driver(ARCMSR)"
 	depends on SCSI_ARCMSR && PCIEAER
@@ -623,6 +640,11 @@ config SCSI_ARCMSR_AER
 
 source "drivers/scsi/megaraid/Kconfig.megaraid"
 source "drivers/scsi/mpt2sas/Kconfig"
+=======
+source "drivers/scsi/megaraid/Kconfig.megaraid"
+source "drivers/scsi/mpt2sas/Kconfig"
+source "drivers/scsi/ufs/Kconfig"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SCSI_HPTIOP
 	tristate "HighPoint RocketRAID 3xxx/4xxx Controller support"
@@ -666,6 +688,16 @@ config VMWARE_PVSCSI
 	  To compile this driver as a module, choose M here: the
 	  module will be called vmw_pvscsi.
 
+<<<<<<< HEAD
+=======
+config HYPERV_STORAGE
+	tristate "Microsoft Hyper-V virtual storage driver"
+	depends on SCSI && HYPERV
+	default HYPERV
+	help
+	  Select this option to enable the Hyper-V virtual storage driver.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config LIBFC
 	tristate "LibFC module"
 	select SCSI_FC_ATTRS
@@ -834,15 +866,21 @@ config SCSI_ISCI
 	tristate "Intel(R) C600 Series Chipset SAS Controller"
 	depends on PCI && SCSI
 	depends on X86
+<<<<<<< HEAD
 	# (temporary): known alpha quality driver
 	depends on EXPERIMENTAL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SCSI_SAS_LIBSAS
 	---help---
 	  This driver supports the 6Gb/s SAS capabilities of the storage
 	  control unit found in the Intel(R) C600 series chipset.
 
+<<<<<<< HEAD
 	  The experimental tag will be removed after the driver exits alpha
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config SCSI_GENERIC_NCR5380
 	tristate "Generic NCR5380/53c400 SCSI PIO support"
 	depends on ISA && SCSI
@@ -975,9 +1013,14 @@ config SCSI_IPS
 
 config SCSI_IBMVSCSI
 	tristate "IBM Virtual SCSI support"
+<<<<<<< HEAD
 	depends on PPC_PSERIES || PPC_ISERIES
 	select SCSI_SRP_ATTRS
 	select VIOPATH if PPC_ISERIES
+=======
+	depends on PPC_PSERIES
+	select SCSI_SRP_ATTRS
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This is the IBM POWER Virtual SCSI Client
 
@@ -1871,10 +1914,13 @@ config ZFCP
           called zfcp. If you want to compile it as a module, say M here
           and read <file:Documentation/kbuild/modules.txt>.
 
+<<<<<<< HEAD
 config ZFCP_DIF
 	tristate "T10 DIF/DIX support for the zfcp driver (EXPERIMENTAL)"
 	depends on ZFCP && EXPERIMENTAL
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config SCSI_PMCRAID
 	tristate "PMC SIERRA Linux MaxRAID adapter support"
 	depends on PCI && SCSI && NET
@@ -1909,6 +1955,17 @@ config SCSI_BFA_FC
 	  To compile this driver as a module, choose M here. The module will
 	  be called bfa.
 
+<<<<<<< HEAD
+=======
+config SCSI_VIRTIO
+	tristate "virtio-scsi support (EXPERIMENTAL)"
+	depends on EXPERIMENTAL && VIRTIO
+	help
+          This is the virtual HBA driver for virtio.  If the kernel will
+          be used in a virtual machine, say Y or M.
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 endif # SCSI_LOWLEVEL
 
 source "drivers/scsi/pcmcia/Kconfig"

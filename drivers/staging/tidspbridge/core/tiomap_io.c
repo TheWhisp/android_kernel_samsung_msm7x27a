@@ -21,9 +21,12 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*  ----------------------------------- Platform Manager */
 #include <dspbridge/dev.h>
 #include <dspbridge/drv.h>
@@ -68,20 +71,29 @@ int read_ext_dsp_data(struct bridge_dev_context *dev_ctxt,
 		status = dev_get_symbol(dev_context->dev_obj,
 					SHMBASENAME, &ul_shm_base_virt);
 	}
+<<<<<<< HEAD
 	DBC_ASSERT(ul_shm_base_virt != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Check if it is a read of Trace section */
 	if (!status && !ul_trace_sec_beg) {
 		status = dev_get_symbol(dev_context->dev_obj,
 					DSP_TRACESEC_BEG, &ul_trace_sec_beg);
 	}
+<<<<<<< HEAD
 	DBC_ASSERT(ul_trace_sec_beg != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!status && !ul_trace_sec_end) {
 		status = dev_get_symbol(dev_context->dev_obj,
 					DSP_TRACESEC_END, &ul_trace_sec_end);
 	}
+<<<<<<< HEAD
 	DBC_ASSERT(ul_trace_sec_end != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!status) {
 		if ((dsp_addr <= ul_trace_sec_end) &&
@@ -105,19 +117,28 @@ int read_ext_dsp_data(struct bridge_dev_context *dev_ctxt,
 			status = dev_get_symbol(dev_context->dev_obj,
 						DYNEXTBASE, &ul_dyn_ext_base);
 		}
+<<<<<<< HEAD
 		DBC_ASSERT(ul_dyn_ext_base != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (!status) {
 			status = dev_get_symbol(dev_context->dev_obj,
 						EXTBASE, &ul_ext_base);
 		}
+<<<<<<< HEAD
 		DBC_ASSERT(ul_ext_base != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (!status) {
 			status = dev_get_symbol(dev_context->dev_obj,
 						EXTEND, &ul_ext_end);
 		}
+<<<<<<< HEAD
 		DBC_ASSERT(ul_ext_end != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Trace buffer is right after the shm SEG0,
 		 *  so set the base address to SHMBASE */
@@ -126,8 +147,11 @@ int read_ext_dsp_data(struct bridge_dev_context *dev_ctxt,
 			ul_ext_end = ul_trace_sec_end;
 		}
 
+<<<<<<< HEAD
 		DBC_ASSERT(ul_ext_end != 0);
 		DBC_ASSERT(ul_ext_end > ul_ext_base);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (ul_ext_end < ul_ext_base)
 			status = -EPERM;
@@ -135,7 +159,10 @@ int read_ext_dsp_data(struct bridge_dev_context *dev_ctxt,
 		if (!status) {
 			ul_tlb_base_virt =
 			    dev_context->atlb_entry[0].dsp_va * DSPWORDSIZE;
+<<<<<<< HEAD
 			DBC_ASSERT(ul_tlb_base_virt <= ul_shm_base_virt);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			dw_ext_prog_virt_mem =
 			    dev_context->atlb_entry[0].gpp_va;
 
@@ -271,7 +298,10 @@ int write_ext_dsp_data(struct bridge_dev_context *dev_context,
 			/* Get SHM_BEG  EXT_BEG and EXT_END. */
 			ret = dev_get_symbol(dev_context->dev_obj,
 					     SHMBASENAME, &ul_shm_base_virt);
+<<<<<<< HEAD
 		DBC_ASSERT(ul_shm_base_virt != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (dynamic_load) {
 			if (!ret) {
 				if (symbols_reloaded)
@@ -280,7 +310,10 @@ int write_ext_dsp_data(struct bridge_dev_context *dev_context,
 					    (dev_context->dev_obj, DYNEXTBASE,
 					     &ul_ext_base);
 			}
+<<<<<<< HEAD
 			DBC_ASSERT(ul_ext_base != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (!ret) {
 				/* DR  OMAPS00013235 : DLModules array may be
 				 * in EXTMEM. It is expected that DYNEXTMEM and
@@ -299,7 +332,10 @@ int write_ext_dsp_data(struct bridge_dev_context *dev_context,
 					    dev_get_symbol
 					    (dev_context->dev_obj, EXTBASE,
 					     &ul_ext_base);
+<<<<<<< HEAD
 				DBC_ASSERT(ul_ext_base != 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (!ret)
 					ret =
 					    dev_get_symbol
@@ -312,15 +348,21 @@ int write_ext_dsp_data(struct bridge_dev_context *dev_context,
 		if (trace_load)
 			ul_ext_base = ul_shm_base_virt;
 
+<<<<<<< HEAD
 		DBC_ASSERT(ul_ext_end != 0);
 		DBC_ASSERT(ul_ext_end > ul_ext_base);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ul_ext_end < ul_ext_base)
 			ret = -EPERM;
 
 		if (!ret) {
 			ul_tlb_base_virt =
 			    dev_context->atlb_entry[0].dsp_va * DSPWORDSIZE;
+<<<<<<< HEAD
 			DBC_ASSERT(ul_tlb_base_virt <= ul_shm_base_virt);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (symbols_reloaded) {
 				ret = dev_get_symbol

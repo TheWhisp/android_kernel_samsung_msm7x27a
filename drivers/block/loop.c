@@ -69,17 +69,30 @@
 #include <linux/freezer.h>
 #include <linux/mutex.h>
 #include <linux/writeback.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h>		/* for invalidate_bdev() */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/completion.h>
 #include <linux/highmem.h>
 #include <linux/kthread.h>
 #include <linux/splice.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
 
 #include <asm/uaccess.h>
 
 static LIST_HEAD(loop_devices);
 static DEFINE_MUTEX(loop_devices_mutex);
+=======
+#include <linux/miscdevice.h>
+#include <linux/falloc.h>
+
+#include <asm/uaccess.h>
+
+static DEFINE_IDR(loop_index_idr);
+static DEFINE_MUTEX(loop_index_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int max_part;
 static int part_shift;
@@ -92,16 +105,26 @@ static int transfer_none(struct loop_device *lo, int cmd,
 			 struct page *loop_page, unsigned loop_off,
 			 int size, sector_t real_block)
 {
+<<<<<<< HEAD
 	char *raw_buf = kmap_atomic(raw_page, KM_USER0) + raw_off;
 	char *loop_buf = kmap_atomic(loop_page, KM_USER1) + loop_off;
+=======
+	char *raw_buf = kmap_atomic(raw_page) + raw_off;
+	char *loop_buf = kmap_atomic(loop_page) + loop_off;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (cmd == READ)
 		memcpy(loop_buf, raw_buf, size);
 	else
 		memcpy(raw_buf, loop_buf, size);
 
+<<<<<<< HEAD
 	kunmap_atomic(loop_buf, KM_USER1);
 	kunmap_atomic(raw_buf, KM_USER0);
+=======
+	kunmap_atomic(loop_buf);
+	kunmap_atomic(raw_buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cond_resched();
 	return 0;
 }
@@ -111,8 +134,13 @@ static int transfer_xor(struct loop_device *lo, int cmd,
 			struct page *loop_page, unsigned loop_off,
 			int size, sector_t real_block)
 {
+<<<<<<< HEAD
 	char *raw_buf = kmap_atomic(raw_page, KM_USER0) + raw_off;
 	char *loop_buf = kmap_atomic(loop_page, KM_USER1) + loop_off;
+=======
+	char *raw_buf = kmap_atomic(raw_page) + raw_off;
+	char *loop_buf = kmap_atomic(loop_page) + loop_off;
+>>>>>>> refs/remotes/origin/cm-10.0
 	char *in, *out, *key;
 	int i, keysize;
 
@@ -129,8 +157,13 @@ static int transfer_xor(struct loop_device *lo, int cmd,
 	for (i = 0; i < size; i++)
 		*out++ = *in++ ^ key[(i & 511) % keysize];
 
+<<<<<<< HEAD
 	kunmap_atomic(loop_buf, KM_USER1);
 	kunmap_atomic(raw_buf, KM_USER0);
+=======
+	kunmap_atomic(loop_buf);
+	kunmap_atomic(raw_buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cond_resched();
 	return 0;
 }
@@ -159,6 +192,7 @@ static struct loop_func_table *xfer_funcs[MAX_LO_CRYPT] = {
 	&xor_funcs
 };
 
+<<<<<<< HEAD
 static loff_t get_loop_size(struct loop_device *lo, struct file *file)
 {
 	loff_t size, offset, loopsize;
@@ -170,6 +204,21 @@ static loff_t get_loop_size(struct loop_device *lo, struct file *file)
 	if (lo->lo_sizelimit > 0 && lo->lo_sizelimit < loopsize)
 		loopsize = lo->lo_sizelimit;
 
+=======
+static loff_t get_size(loff_t offset, loff_t sizelimit, struct file *file)
+{
+	loff_t size, loopsize;
+
+	/* Compute loopsize in bytes */
+	size = i_size_read(file->f_mapping->host);
+	loopsize = size - offset;
+	/* offset is beyond i_size, wierd but possible */
+	if (loopsize < 0)
+		return 0;
+
+	if (sizelimit > 0 && sizelimit < loopsize)
+		loopsize = sizelimit;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Unfortunately, if we want to do I/O on the device,
 	 * the number of 512-byte sectors has to fit into a sector_t.
@@ -177,17 +226,38 @@ static loff_t get_loop_size(struct loop_device *lo, struct file *file)
 	return loopsize >> 9;
 }
 
+<<<<<<< HEAD
 static int
 figure_loop_size(struct loop_device *lo)
 {
 	loff_t size = get_loop_size(lo, lo->lo_backing_file);
+=======
+static loff_t get_loop_size(struct loop_device *lo, struct file *file)
+{
+	return get_size(lo->lo_offset, lo->lo_sizelimit, file);
+}
+
+static int
+figure_loop_size(struct loop_device *lo, loff_t offset, loff_t sizelimit)
+{
+	loff_t size = get_size(offset, sizelimit, lo->lo_backing_file);
+>>>>>>> refs/remotes/origin/cm-10.0
 	sector_t x = (sector_t)size;
 
 	if (unlikely((loff_t)x != size))
 		return -EFBIG;
+<<<<<<< HEAD
 
 	set_capacity(lo->lo_disk, x);
 	return 0;					
+=======
+	if (lo->lo_offset != offset)
+		lo->lo_offset = offset;
+	if (lo->lo_sizelimit != sizelimit)
+		lo->lo_sizelimit = sizelimit;
+	set_capacity(lo->lo_disk, x);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline int
@@ -203,6 +273,7 @@ lo_do_transfer(struct loop_device *lo, int cmd,
 }
 
 /**
+<<<<<<< HEAD
  * do_lo_send_aops - helper for writing data to a loop device
  *
  * This is the fast version for backing filesystems which implement the address
@@ -271,6 +342,8 @@ fail:
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * __do_lo_send_write - helper for writing data to a loop device
  *
  * This helper just factors out common code between do_lo_send_direct_write()
@@ -297,10 +370,15 @@ static int __do_lo_send_write(struct file *file,
 /**
  * do_lo_send_direct_write - helper for writing data to a loop device
  *
+<<<<<<< HEAD
  * This is the fast, non-transforming version for backing filesystems which do
  * not implement the address space operations write_begin and write_end.
  * It uses the write file operation which should be present on all writeable
  * filesystems.
+=======
+ * This is the fast, non-transforming version that does not need double
+ * buffering.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int do_lo_send_direct_write(struct loop_device *lo,
 		struct bio_vec *bvec, loff_t pos, struct page *page)
@@ -316,6 +394,7 @@ static int do_lo_send_direct_write(struct loop_device *lo,
 /**
  * do_lo_send_write - helper for writing data to a loop device
  *
+<<<<<<< HEAD
  * This is the slow, transforming version for filesystems which do not
  * implement the address space operations write_begin and write_end.  It
  * uses the write file operation which should be present on all writeable
@@ -325,6 +404,11 @@ static int do_lo_send_direct_write(struct loop_device *lo,
  * transforming case because we need to double buffer the data as we cannot do
  * the transformations in place as we do not have direct access to the
  * destination pages of the backing file.
+=======
+ * This is the slow, transforming version that needs to double buffer the
+ * data as it cannot do the transformations in place without having direct
+ * access to the destination pages of the backing file.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int do_lo_send_write(struct loop_device *lo, struct bio_vec *bvec,
 		loff_t pos, struct page *page)
@@ -350,6 +434,7 @@ static int lo_send(struct loop_device *lo, struct bio *bio, loff_t pos)
 	struct page *page = NULL;
 	int i, ret = 0;
 
+<<<<<<< HEAD
 	do_lo_send = do_lo_send_aops;
 	if (!(lo->lo_flags & LO_FLAGS_USE_AOPS)) {
 		do_lo_send = do_lo_send_direct_write;
@@ -361,6 +446,18 @@ static int lo_send(struct loop_device *lo, struct bio *bio, loff_t pos)
 			do_lo_send = do_lo_send_write;
 		}
 	}
+=======
+	if (lo->transfer != transfer_none) {
+		page = alloc_page(GFP_NOIO | __GFP_HIGHMEM);
+		if (unlikely(!page))
+			goto fail;
+		kmap(page);
+		do_lo_send = do_lo_send_write;
+	} else {
+		do_lo_send = do_lo_send_direct_write;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	bio_for_each_segment(bvec, bio, i) {
 		ret = do_lo_send(lo, bvec, pos, page);
 		if (ret < 0)
@@ -422,14 +519,22 @@ lo_direct_splice_actor(struct pipe_inode_info *pipe, struct splice_desc *sd)
 	return __splice_from_pipe(pipe, sd, lo_splice_actor);
 }
 
+<<<<<<< HEAD
 static int
+=======
+static ssize_t
+>>>>>>> refs/remotes/origin/cm-10.0
 do_lo_receive(struct loop_device *lo,
 	      struct bio_vec *bvec, int bsize, loff_t pos)
 {
 	struct lo_read_data cookie;
 	struct splice_desc sd;
 	struct file *file;
+<<<<<<< HEAD
 	long retval;
+=======
+	ssize_t retval;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cookie.lo = lo;
 	cookie.page = bvec->bv_page;
@@ -445,16 +550,21 @@ do_lo_receive(struct loop_device *lo,
 	file = lo->lo_backing_file;
 	retval = splice_direct_to_actor(file, &sd, lo_direct_splice_actor);
 
+<<<<<<< HEAD
 	if (retval < 0)
 		return retval;
 
 	return 0;
+=======
+	return retval;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int
 lo_receive(struct loop_device *lo, struct bio *bio, int bsize, loff_t pos)
 {
 	struct bio_vec *bvec;
+<<<<<<< HEAD
 	int i, ret = 0;
 
 	bio_for_each_segment(bvec, bio, i) {
@@ -464,6 +574,23 @@ lo_receive(struct loop_device *lo, struct bio *bio, int bsize, loff_t pos)
 		pos += bvec->bv_len;
 	}
 	return ret;
+=======
+	ssize_t s;
+	int i;
+
+	bio_for_each_segment(bvec, bio, i) {
+		s = do_lo_receive(lo, bvec, bsize, pos);
+		if (s < 0)
+			return s;
+
+		if (s != bvec->bv_len) {
+			zero_fill_bio(bio);
+			break;
+		}
+		pos += bvec->bv_len;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int do_bio_filebacked(struct loop_device *lo, struct bio *bio)
@@ -484,6 +611,32 @@ static int do_bio_filebacked(struct loop_device *lo, struct bio *bio)
 			}
 		}
 
+<<<<<<< HEAD
+=======
+		/*
+		 * We use punch hole to reclaim the free space used by the
+		 * image a.k.a. discard. However we do not support discard if
+		 * encryption is enabled, because it may give an attacker
+		 * useful information.
+		 */
+		if (bio->bi_rw & REQ_DISCARD) {
+			struct file *file = lo->lo_backing_file;
+			int mode = FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE;
+
+			if ((!file->f_op->fallocate) ||
+			    lo->lo_encrypt_key_size) {
+				ret = -EOPNOTSUPP;
+				goto out;
+			}
+			ret = file->f_op->fallocate(file, mode, pos,
+						    bio->bi_size);
+			if (unlikely(ret && ret != -EINVAL &&
+				     ret != -EOPNOTSUPP))
+				ret = -EIO;
+			goto out;
+		}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = lo_send(lo, bio, pos);
 
 		if ((bio->bi_rw & REQ_FUA) && !ret) {
@@ -514,7 +667,11 @@ static struct bio *loop_get_bio(struct loop_device *lo)
 	return bio_list_pop(&lo->lo_bio_list);
 }
 
+<<<<<<< HEAD
 static int loop_make_request(struct request_queue *q, struct bio *old_bio)
+=======
+static void loop_make_request(struct request_queue *q, struct bio *old_bio)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct loop_device *lo = q->queuedata;
 	int rw = bio_rw(old_bio);
@@ -532,12 +689,19 @@ static int loop_make_request(struct request_queue *q, struct bio *old_bio)
 	loop_add_bio(lo, old_bio);
 	wake_up(&lo->lo_event);
 	spin_unlock_irq(&lo->lo_lock);
+<<<<<<< HEAD
 	return 0;
+=======
+	return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	spin_unlock_irq(&lo->lo_lock);
 	bio_io_error(old_bio);
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct switch_request {
@@ -700,7 +864,11 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
 		goto out_putf;
 
 	fput(old_file);
+<<<<<<< HEAD
 	if (max_part > 0)
+=======
+	if (lo->lo_flags & LO_FLAGS_PARTSCAN)
+>>>>>>> refs/remotes/origin/cm-10.0
 		ioctl_by_bdev(bdev, BLKRRPART, 0);
 	return 0;
 
@@ -722,6 +890,7 @@ static inline int is_loop_device(struct file *file)
 static ssize_t loop_attr_show(struct device *dev, char *page,
 			      ssize_t (*callback)(struct loop_device *, char *))
 {
+<<<<<<< HEAD
 	struct loop_device *l, *lo = NULL;
 
 	mutex_lock(&loop_devices_mutex);
@@ -733,6 +902,12 @@ static ssize_t loop_attr_show(struct device *dev, char *page,
 	mutex_unlock(&loop_devices_mutex);
 
 	return lo ? callback(lo, page) : -EIO;
+=======
+	struct gendisk *disk = dev_to_disk(dev);
+	struct loop_device *lo = disk->private_data;
+
+	return callback(lo, page);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #define LOOP_ATTR_RO(_name)						\
@@ -784,16 +959,34 @@ static ssize_t loop_attr_autoclear_show(struct loop_device *lo, char *buf)
 	return sprintf(buf, "%s\n", autoclear ? "1" : "0");
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t loop_attr_partscan_show(struct loop_device *lo, char *buf)
+{
+	int partscan = (lo->lo_flags & LO_FLAGS_PARTSCAN);
+
+	return sprintf(buf, "%s\n", partscan ? "1" : "0");
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 LOOP_ATTR_RO(backing_file);
 LOOP_ATTR_RO(offset);
 LOOP_ATTR_RO(sizelimit);
 LOOP_ATTR_RO(autoclear);
+<<<<<<< HEAD
+=======
+LOOP_ATTR_RO(partscan);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct attribute *loop_attrs[] = {
 	&loop_attr_backing_file.attr,
 	&loop_attr_offset.attr,
 	&loop_attr_sizelimit.attr,
 	&loop_attr_autoclear.attr,
+<<<<<<< HEAD
+=======
+	&loop_attr_partscan.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL,
 };
 
@@ -814,6 +1007,38 @@ static void loop_sysfs_exit(struct loop_device *lo)
 			   &loop_attribute_group);
 }
 
+<<<<<<< HEAD
+=======
+static void loop_config_discard(struct loop_device *lo)
+{
+	struct file *file = lo->lo_backing_file;
+	struct inode *inode = file->f_mapping->host;
+	struct request_queue *q = lo->lo_queue;
+
+	/*
+	 * We use punch hole to reclaim the free space used by the
+	 * image a.k.a. discard. However we do support discard if
+	 * encryption is enabled, because it may give an attacker
+	 * useful information.
+	 */
+	if ((!file->f_op->fallocate) ||
+	    lo->lo_encrypt_key_size) {
+		q->limits.discard_granularity = 0;
+		q->limits.discard_alignment = 0;
+		q->limits.max_discard_sectors = 0;
+		q->limits.discard_zeroes_data = 0;
+		queue_flag_clear_unlocked(QUEUE_FLAG_DISCARD, q);
+		return;
+	}
+
+	q->limits.discard_granularity = inode->i_sb->s_blocksize;
+	q->limits.discard_alignment = 0;
+	q->limits.max_discard_sectors = UINT_MAX >> 9;
+	q->limits.discard_zeroes_data = 1;
+	queue_flag_set_unlocked(QUEUE_FLAG_DISCARD, q);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int loop_set_fd(struct loop_device *lo, fmode_t mode,
 		       struct block_device *bdev, unsigned int arg)
 {
@@ -856,6 +1081,7 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
 	mapping = file->f_mapping;
 	inode = mapping->host;
 
+<<<<<<< HEAD
 	if (!(file->f_mode & FMODE_WRITE))
 		lo_flags |= LO_FLAGS_READ_ONLY;
 
@@ -885,6 +1111,25 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
 
 	if (!(mode & FMODE_WRITE))
 		lo_flags |= LO_FLAGS_READ_ONLY;
+=======
+	error = -EINVAL;
+	if (!S_ISREG(inode->i_mode) && !S_ISBLK(inode->i_mode))
+		goto out_putf;
+
+	if (!(file->f_mode & FMODE_WRITE) || !(mode & FMODE_WRITE) ||
+	    !file->f_op->write)
+		lo_flags |= LO_FLAGS_READ_ONLY;
+
+	lo_blocksize = S_ISBLK(inode->i_mode) ?
+		inode->i_bdev->bd_block_size : PAGE_SIZE;
+
+	error = -EFBIG;
+	size = get_loop_size(lo, file);
+	if ((loff_t)(sector_t)size != size)
+		goto out_putf;
+
+	error = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	set_device_ro(bdev, (lo_flags & LO_FLAGS_READ_ONLY) != 0);
 
@@ -926,7 +1171,13 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
 	}
 	lo->lo_state = Lo_bound;
 	wake_up_process(lo->lo_thread);
+<<<<<<< HEAD
 	if (max_part > 0)
+=======
+	if (part_shift)
+		lo->lo_flags |= LO_FLAGS_PARTSCAN;
+	if (lo->lo_flags & LO_FLAGS_PARTSCAN)
+>>>>>>> refs/remotes/origin/cm-10.0
 		ioctl_by_bdev(bdev, BLKRRPART, 0);
 
 	/* Grab the block_device to prevent its destruction after we
@@ -992,10 +1243,18 @@ loop_init_xfer(struct loop_device *lo, struct loop_func_table *xfer,
 	return err;
 }
 
+<<<<<<< HEAD
 static int loop_clr_fd(struct loop_device *lo, struct block_device *bdev)
 {
 	struct file *filp = lo->lo_backing_file;
 	gfp_t gfp = lo->old_gfp_mask;
+=======
+static int loop_clr_fd(struct loop_device *lo)
+{
+	struct file *filp = lo->lo_backing_file;
+	gfp_t gfp = lo->old_gfp_mask;
+	struct block_device *bdev = lo->lo_device;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (lo->lo_state != Lo_bound)
 		return -ENXIO;
@@ -1024,7 +1283,10 @@ static int loop_clr_fd(struct loop_device *lo, struct block_device *bdev)
 	lo->lo_offset = 0;
 	lo->lo_sizelimit = 0;
 	lo->lo_encrypt_key_size = 0;
+<<<<<<< HEAD
 	lo->lo_flags = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	lo->lo_thread = NULL;
 	memset(lo->lo_encrypt_key, 0, LO_KEY_SIZE);
 	memset(lo->lo_crypt_name, 0, LO_NAME_SIZE);
@@ -1044,8 +1306,16 @@ static int loop_clr_fd(struct loop_device *lo, struct block_device *bdev)
 	lo->lo_state = Lo_unbound;
 	/* This is safe: open() is still holding a reference. */
 	module_put(THIS_MODULE);
+<<<<<<< HEAD
 	if (max_part > 0 && bdev)
 		ioctl_by_bdev(bdev, BLKRRPART, 0);
+=======
+	if (lo->lo_flags & LO_FLAGS_PARTSCAN && bdev)
+		ioctl_by_bdev(bdev, BLKRRPART, 0);
+	lo->lo_flags = 0;
+	if (!part_shift)
+		lo->lo_disk->flags |= GENHD_FL_NO_PART_SCAN;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&lo->lo_ctl_mutex);
 	/*
 	 * Need not hold lo_ctl_mutex to fput backing file.
@@ -1094,11 +1364,18 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
 
 	if (lo->lo_offset != info->lo_offset ||
 	    lo->lo_sizelimit != info->lo_sizelimit) {
+<<<<<<< HEAD
 		lo->lo_offset = info->lo_offset;
 		lo->lo_sizelimit = info->lo_sizelimit;
 		if (figure_loop_size(lo))
 			return -EFBIG;
 	}
+=======
+		if (figure_loop_size(lo, info->lo_offset, info->lo_sizelimit))
+			return -EFBIG;
+	}
+	loop_config_discard(lo);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memcpy(lo->lo_file_name, info->lo_file_name, LO_NAME_SIZE);
 	memcpy(lo->lo_crypt_name, info->lo_crypt_name, LO_NAME_SIZE);
@@ -1114,6 +1391,16 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
 	     (info->lo_flags & LO_FLAGS_AUTOCLEAR))
 		lo->lo_flags ^= LO_FLAGS_AUTOCLEAR;
 
+<<<<<<< HEAD
+=======
+	if ((info->lo_flags & LO_FLAGS_PARTSCAN) &&
+	     !(lo->lo_flags & LO_FLAGS_PARTSCAN)) {
+		lo->lo_flags |= LO_FLAGS_PARTSCAN;
+		lo->lo_disk->flags &= ~GENHD_FL_NO_PART_SCAN;
+		ioctl_by_bdev(lo->lo_device, BLKRRPART, 0);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	lo->lo_encrypt_key_size = info->lo_encrypt_key_size;
 	lo->lo_init[0] = info->lo_init[0];
 	lo->lo_init[1] = info->lo_init[1];
@@ -1274,7 +1561,11 @@ static int loop_set_capacity(struct loop_device *lo, struct block_device *bdev)
 	err = -ENXIO;
 	if (unlikely(lo->lo_state != Lo_bound))
 		goto out;
+<<<<<<< HEAD
 	err = figure_loop_size(lo);
+=======
+	err = figure_loop_size(lo, lo->lo_offset, lo->lo_sizelimit);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(err))
 		goto out;
 	sec = get_capacity(lo->lo_disk);
@@ -1305,18 +1596,36 @@ static int lo_ioctl(struct block_device *bdev, fmode_t mode,
 		break;
 	case LOOP_CLR_FD:
 		/* loop_clr_fd would have unlocked lo_ctl_mutex on success */
+<<<<<<< HEAD
 		err = loop_clr_fd(lo, bdev);
+=======
+		err = loop_clr_fd(lo);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!err)
 			goto out_unlocked;
 		break;
 	case LOOP_SET_STATUS:
+<<<<<<< HEAD
 		err = loop_set_status_old(lo, (struct loop_info __user *) arg);
+=======
+		err = -EPERM;
+		if ((mode & FMODE_WRITE) || capable(CAP_SYS_ADMIN))
+			err = loop_set_status_old(lo,
+					(struct loop_info __user *)arg);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case LOOP_GET_STATUS:
 		err = loop_get_status_old(lo, (struct loop_info __user *) arg);
 		break;
 	case LOOP_SET_STATUS64:
+<<<<<<< HEAD
 		err = loop_set_status64(lo, (struct loop_info64 __user *) arg);
+=======
+		err = -EPERM;
+		if ((mode & FMODE_WRITE) || capable(CAP_SYS_ADMIN))
+			err = loop_set_status64(lo,
+					(struct loop_info64 __user *) arg);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case LOOP_GET_STATUS64:
 		err = loop_get_status64(lo, (struct loop_info64 __user *) arg);
@@ -1492,13 +1801,31 @@ static int lo_compat_ioctl(struct block_device *bdev, fmode_t mode,
 
 static int lo_open(struct block_device *bdev, fmode_t mode)
 {
+<<<<<<< HEAD
 	struct loop_device *lo = bdev->bd_disk->private_data;
+=======
+	struct loop_device *lo;
+	int err = 0;
+
+	mutex_lock(&loop_index_mutex);
+	lo = bdev->bd_disk->private_data;
+	if (!lo) {
+		err = -ENXIO;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&lo->lo_ctl_mutex);
 	lo->lo_refcnt++;
 	mutex_unlock(&lo->lo_ctl_mutex);
+<<<<<<< HEAD
 
 	return 0;
+=======
+out:
+	mutex_unlock(&loop_index_mutex);
+	return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int lo_release(struct gendisk *disk, fmode_t mode)
@@ -1516,7 +1843,11 @@ static int lo_release(struct gendisk *disk, fmode_t mode)
 		 * In autoclear mode, stop the loop thread
 		 * and remove configuration after last close.
 		 */
+<<<<<<< HEAD
 		err = loop_clr_fd(lo, NULL);
+=======
+		err = loop_clr_fd(lo);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!err)
 			goto out_unlocked;
 	} else {
@@ -1564,16 +1895,35 @@ int loop_register_transfer(struct loop_func_table *funcs)
 	return 0;
 }
 
+<<<<<<< HEAD
 int loop_unregister_transfer(int number)
 {
 	unsigned int n = number;
 	struct loop_device *lo;
+=======
+static int unregister_transfer_cb(int id, void *ptr, void *data)
+{
+	struct loop_device *lo = ptr;
+	struct loop_func_table *xfer = data;
+
+	mutex_lock(&lo->lo_ctl_mutex);
+	if (lo->lo_encryption == xfer)
+		loop_release_xfer(lo);
+	mutex_unlock(&lo->lo_ctl_mutex);
+	return 0;
+}
+
+int loop_unregister_transfer(int number)
+{
+	unsigned int n = number;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct loop_func_table *xfer;
 
 	if (n == 0 || n >= MAX_LO_CRYPT || (xfer = xfer_funcs[n]) == NULL)
 		return -EINVAL;
 
 	xfer_funcs[n] = NULL;
+<<<<<<< HEAD
 
 	list_for_each_entry(lo, &loop_devices, lo_list) {
 		mutex_lock(&lo->lo_ctl_mutex);
@@ -1584,12 +1934,16 @@ int loop_unregister_transfer(int number)
 		mutex_unlock(&lo->lo_ctl_mutex);
 	}
 
+=======
+	idr_for_each(&loop_index_idr, &unregister_transfer_cb, xfer);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 EXPORT_SYMBOL(loop_register_transfer);
 EXPORT_SYMBOL(loop_unregister_transfer);
 
+<<<<<<< HEAD
 static struct loop_device *loop_alloc(int i)
 {
 	struct loop_device *lo;
@@ -1598,6 +1952,45 @@ static struct loop_device *loop_alloc(int i)
 	lo = kzalloc(sizeof(*lo), GFP_KERNEL);
 	if (!lo)
 		goto out;
+=======
+static int loop_add(struct loop_device **l, int i)
+{
+	struct loop_device *lo;
+	struct gendisk *disk;
+	int err;
+
+	lo = kzalloc(sizeof(*lo), GFP_KERNEL);
+	if (!lo) {
+		err = -ENOMEM;
+		goto out;
+	}
+
+	err = idr_pre_get(&loop_index_idr, GFP_KERNEL);
+	if (err < 0)
+		goto out_free_dev;
+
+	if (i >= 0) {
+		int m;
+
+		/* create specific i in the index */
+		err = idr_get_new_above(&loop_index_idr, lo, i, &m);
+		if (err >= 0 && i != m) {
+			idr_remove(&loop_index_idr, m);
+			err = -EEXIST;
+		}
+	} else if (i == -1) {
+		int m;
+
+		/* get next free nr */
+		err = idr_get_new(&loop_index_idr, lo, &m);
+		if (err >= 0)
+			i = m;
+	} else {
+		err = -EINVAL;
+	}
+	if (err < 0)
+		goto out_free_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	lo->lo_queue = blk_alloc_queue(GFP_KERNEL);
 	if (!lo->lo_queue)
@@ -1607,6 +2000,30 @@ static struct loop_device *loop_alloc(int i)
 	if (!disk)
 		goto out_free_queue;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Disable partition scanning by default. The in-kernel partition
+	 * scanning can be requested individually per-device during its
+	 * setup. Userspace can always add and remove partitions from all
+	 * devices. The needed partition minors are allocated from the
+	 * extended minor space, the main loop device numbers will continue
+	 * to match the loop minors, regardless of the number of partitions
+	 * used.
+	 *
+	 * If max_part is given, partition scanning is globally enabled for
+	 * all loop devices. The minors for the main loop devices will be
+	 * multiples of max_part.
+	 *
+	 * Note: Global-for-all-devices, set-only-at-init, read-only module
+	 * parameteters like 'max_loop' and 'max_part' make things needlessly
+	 * complicated, are too static, inflexible and may surprise
+	 * userspace tools. Parameters like this in general should be avoided.
+	 */
+	if (!part_shift)
+		disk->flags |= GENHD_FL_NO_PART_SCAN;
+	disk->flags |= GENHD_FL_EXT_DEVT;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_init(&lo->lo_ctl_mutex);
 	lo->lo_number		= i;
 	lo->lo_thread		= NULL;
@@ -1618,13 +2035,20 @@ static struct loop_device *loop_alloc(int i)
 	disk->private_data	= lo;
 	disk->queue		= lo->lo_queue;
 	sprintf(disk->disk_name, "loop%d", i);
+<<<<<<< HEAD
 	return lo;
+=======
+	add_disk(disk);
+	*l = lo;
+	return lo->lo_number;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out_free_queue:
 	blk_cleanup_queue(lo->lo_queue);
 out_free_dev:
 	kfree(lo);
 out:
+<<<<<<< HEAD
 	return NULL;
 }
 
@@ -1657,26 +2081,157 @@ static void loop_del_one(struct loop_device *lo)
 {
 	del_gendisk(lo->lo_disk);
 	loop_free(lo);
+=======
+	return err;
+}
+
+static void loop_remove(struct loop_device *lo)
+{
+	del_gendisk(lo->lo_disk);
+	blk_cleanup_queue(lo->lo_queue);
+	put_disk(lo->lo_disk);
+	kfree(lo);
+}
+
+static int find_free_cb(int id, void *ptr, void *data)
+{
+	struct loop_device *lo = ptr;
+	struct loop_device **l = data;
+
+	if (lo->lo_state == Lo_unbound) {
+		*l = lo;
+		return 1;
+	}
+	return 0;
+}
+
+static int loop_lookup(struct loop_device **l, int i)
+{
+	struct loop_device *lo;
+	int ret = -ENODEV;
+
+	if (i < 0) {
+		int err;
+
+		err = idr_for_each(&loop_index_idr, &find_free_cb, &lo);
+		if (err == 1) {
+			*l = lo;
+			ret = lo->lo_number;
+		}
+		goto out;
+	}
+
+	/* lookup and return a specific i */
+	lo = idr_find(&loop_index_idr, i);
+	if (lo) {
+		*l = lo;
+		ret = lo->lo_number;
+	}
+out:
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct kobject *loop_probe(dev_t dev, int *part, void *data)
 {
 	struct loop_device *lo;
 	struct kobject *kobj;
+<<<<<<< HEAD
 
 	mutex_lock(&loop_devices_mutex);
 	lo = loop_init_one(MINOR(dev) >> part_shift);
 	kobj = lo ? get_disk(lo->lo_disk) : ERR_PTR(-ENOMEM);
 	mutex_unlock(&loop_devices_mutex);
+=======
+	int err;
+
+	mutex_lock(&loop_index_mutex);
+	err = loop_lookup(&lo, MINOR(dev) >> part_shift);
+	if (err < 0)
+		err = loop_add(&lo, MINOR(dev) >> part_shift);
+	if (err < 0)
+		kobj = ERR_PTR(err);
+	else
+		kobj = get_disk(lo->lo_disk);
+	mutex_unlock(&loop_index_mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*part = 0;
 	return kobj;
 }
 
+<<<<<<< HEAD
+=======
+static long loop_control_ioctl(struct file *file, unsigned int cmd,
+			       unsigned long parm)
+{
+	struct loop_device *lo;
+	int ret = -ENOSYS;
+
+	mutex_lock(&loop_index_mutex);
+	switch (cmd) {
+	case LOOP_CTL_ADD:
+		ret = loop_lookup(&lo, parm);
+		if (ret >= 0) {
+			ret = -EEXIST;
+			break;
+		}
+		ret = loop_add(&lo, parm);
+		break;
+	case LOOP_CTL_REMOVE:
+		ret = loop_lookup(&lo, parm);
+		if (ret < 0)
+			break;
+		mutex_lock(&lo->lo_ctl_mutex);
+		if (lo->lo_state != Lo_unbound) {
+			ret = -EBUSY;
+			mutex_unlock(&lo->lo_ctl_mutex);
+			break;
+		}
+		if (lo->lo_refcnt > 0) {
+			ret = -EBUSY;
+			mutex_unlock(&lo->lo_ctl_mutex);
+			break;
+		}
+		lo->lo_disk->private_data = NULL;
+		mutex_unlock(&lo->lo_ctl_mutex);
+		idr_remove(&loop_index_idr, lo->lo_number);
+		loop_remove(lo);
+		break;
+	case LOOP_CTL_GET_FREE:
+		ret = loop_lookup(&lo, -1);
+		if (ret >= 0)
+			break;
+		ret = loop_add(&lo, -1);
+	}
+	mutex_unlock(&loop_index_mutex);
+
+	return ret;
+}
+
+static const struct file_operations loop_ctl_fops = {
+	.open		= nonseekable_open,
+	.unlocked_ioctl	= loop_control_ioctl,
+	.compat_ioctl	= loop_control_ioctl,
+	.owner		= THIS_MODULE,
+	.llseek		= noop_llseek,
+};
+
+static struct miscdevice loop_misc = {
+	.minor		= LOOP_CTRL_MINOR,
+	.name		= "loop-control",
+	.fops		= &loop_ctl_fops,
+};
+
+MODULE_ALIAS_MISCDEV(LOOP_CTRL_MINOR);
+MODULE_ALIAS("devname:loop-control");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init loop_init(void)
 {
 	int i, nr;
 	unsigned long range;
+<<<<<<< HEAD
 	struct loop_device *lo, *next;
 
 	/*
@@ -1693,6 +2248,14 @@ static int __init loop_init(void)
 	 *     themselves and have kernel automatically instantiate actual
 	 *     device on-demand.
 	 */
+=======
+	struct loop_device *lo;
+	int err;
+
+	err = misc_register(&loop_misc);
+	if (err < 0)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	part_shift = 0;
 	if (max_part > 0) {
@@ -1709,16 +2272,38 @@ static int __init loop_init(void)
 		max_part = (1UL << part_shift) - 1;
 	}
 
+<<<<<<< HEAD
 	if ((1UL << part_shift) > DISK_MAX_PARTS)
 		return -EINVAL;
 
 	if (max_loop > 1UL << (MINORBITS - part_shift))
 		return -EINVAL;
 
+=======
+	if ((1UL << part_shift) > DISK_MAX_PARTS) {
+		err = -EINVAL;
+		goto misc_out;
+	}
+
+	if (max_loop > 1UL << (MINORBITS - part_shift)) {
+		err = -EINVAL;
+		goto misc_out;
+	}
+
+	/*
+	 * If max_loop is specified, create that many devices upfront.
+	 * This also becomes a hard limit. If max_loop is not specified,
+	 * create CONFIG_BLK_DEV_LOOP_MIN_COUNT loop devices at module
+	 * init time. Loop devices can be requested on-demand with the
+	 * /dev/loop-control interface, or be instantiated by accessing
+	 * a 'dead' device node.
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (max_loop) {
 		nr = max_loop;
 		range = max_loop << part_shift;
 	} else {
+<<<<<<< HEAD
 		nr = 8;
 		range = 1UL << MINORBITS;
 	}
@@ -1752,11 +2337,46 @@ Enomem:
 
 	unregister_blkdev(LOOP_MAJOR, "loop");
 	return -ENOMEM;
+=======
+		nr = CONFIG_BLK_DEV_LOOP_MIN_COUNT;
+		range = 1UL << MINORBITS;
+	}
+
+	if (register_blkdev(LOOP_MAJOR, "loop")) {
+		err = -EIO;
+		goto misc_out;
+	}
+
+	blk_register_region(MKDEV(LOOP_MAJOR, 0), range,
+				  THIS_MODULE, loop_probe, NULL, NULL);
+
+	/* pre-create number of devices given by config or max_loop */
+	mutex_lock(&loop_index_mutex);
+	for (i = 0; i < nr; i++)
+		loop_add(&lo, i);
+	mutex_unlock(&loop_index_mutex);
+
+	printk(KERN_INFO "loop: module loaded\n");
+	return 0;
+
+misc_out:
+	misc_deregister(&loop_misc);
+	return err;
+}
+
+static int loop_exit_cb(int id, void *ptr, void *data)
+{
+	struct loop_device *lo = ptr;
+
+	loop_remove(lo);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __exit loop_exit(void)
 {
 	unsigned long range;
+<<<<<<< HEAD
 	struct loop_device *lo, *next;
 
 	range = max_loop ? max_loop << part_shift : 1UL << MINORBITS;
@@ -1766,6 +2386,19 @@ static void __exit loop_exit(void)
 
 	blk_unregister_region(MKDEV(LOOP_MAJOR, 0), range);
 	unregister_blkdev(LOOP_MAJOR, "loop");
+=======
+
+	range = max_loop ? max_loop << part_shift : 1UL << MINORBITS;
+
+	idr_for_each(&loop_index_idr, &loop_exit_cb, NULL);
+	idr_remove_all(&loop_index_idr);
+	idr_destroy(&loop_index_idr);
+
+	blk_unregister_region(MKDEV(LOOP_MAJOR, 0), range);
+	unregister_blkdev(LOOP_MAJOR, "loop");
+
+	misc_deregister(&loop_misc);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 module_init(loop_init);

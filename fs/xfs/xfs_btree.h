@@ -199,6 +199,7 @@ struct xfs_btree_ops {
 				union xfs_btree_rec *r1,
 				union xfs_btree_rec *r2);
 #endif
+<<<<<<< HEAD
 
 	/* btree tracing */
 #ifdef XFS_BTREE_TRACE
@@ -218,6 +219,8 @@ struct xfs_btree_ops {
 					union xfs_btree_rec *, __uint64_t *,
 					__uint64_t *, __uint64_t *);
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -281,7 +284,11 @@ typedef struct xfs_btree_cur
 /*
  * Convert from buffer to btree block header.
  */
+<<<<<<< HEAD
 #define	XFS_BUF_TO_BLOCK(bp)	((struct xfs_btree_block *)XFS_BUF_PTR(bp))
+=======
+#define	XFS_BUF_TO_BLOCK(bp)	((struct xfs_btree_block *)((bp)->b_addr))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /*
@@ -452,4 +459,26 @@ static inline int xfs_btree_get_level(struct xfs_btree_block *block)
 	(XFS_FSB_TO_AGNO(mp, fsb) < mp->m_sb.sb_agcount && \
 		XFS_FSB_TO_AGBNO(mp, fsb) < mp->m_sb.sb_agblocks)
 
+<<<<<<< HEAD
+=======
+/*
+ * Trace hooks.  Currently not implemented as they need to be ported
+ * over to the generic tracing functionality, which is some effort.
+ *
+ * i,j = integer (32 bit)
+ * b = btree block buffer (xfs_buf_t)
+ * p = btree ptr
+ * r = btree record
+ * k = btree key
+ */
+#define	XFS_BTREE_TRACE_ARGBI(c, b, i)
+#define	XFS_BTREE_TRACE_ARGBII(c, b, i, j)
+#define	XFS_BTREE_TRACE_ARGI(c, i)
+#define	XFS_BTREE_TRACE_ARGIPK(c, i, p, s)
+#define	XFS_BTREE_TRACE_ARGIPR(c, i, p, r)
+#define	XFS_BTREE_TRACE_ARGIK(c, i, k)
+#define XFS_BTREE_TRACE_ARGR(c, r)
+#define	XFS_BTREE_TRACE_CURSOR(c, t)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* __XFS_BTREE_H__ */

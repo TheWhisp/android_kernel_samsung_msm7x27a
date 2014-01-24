@@ -28,6 +28,7 @@ static struct pl061_platform_data gpio_plat_data = {
 	.irq_base	= SPEAR3XX_GPIO_INT_BASE,
 };
 
+<<<<<<< HEAD
 struct amba_device spear3xx_gpio_device = {
 	.dev = {
 		.init_name = "gpio",
@@ -53,6 +54,14 @@ struct amba_device spear3xx_uart_device = {
 	},
 	.irq = {SPEAR3XX_IRQ_UART, NO_IRQ},
 };
+=======
+AMBA_APB_DEVICE(spear3xx_gpio, "gpio", 0, SPEAR3XX_ICM3_GPIO_BASE,
+	{SPEAR3XX_IRQ_BASIC_GPIO}, &gpio_plat_data);
+
+/* uart device registration */
+AMBA_APB_DEVICE(spear3xx_uart, "uart", 0, SPEAR3XX_ICM1_UART_BASE,
+	{SPEAR3XX_IRQ_UART}, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Do spear3xx familiy common initialization part here */
 void __init spear3xx_init(void)

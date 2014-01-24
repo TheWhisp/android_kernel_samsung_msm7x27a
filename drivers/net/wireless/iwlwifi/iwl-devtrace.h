@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2009 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2009 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -29,27 +33,51 @@
 
 #include <linux/tracepoint.h>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if !defined(CONFIG_IWLWIFI_DEVICE_TRACING) || defined(__CHECKER__)
 #undef TRACE_EVENT
 #define TRACE_EVENT(name, proto, ...) \
 static inline void trace_ ## name(proto) {}
+<<<<<<< HEAD
 #endif
 
 #define PRIV_ENTRY	__field(struct iwl_priv *, priv)
 #define PRIV_ASSIGN	__entry->priv = priv
+=======
+#undef DECLARE_EVENT_CLASS
+#define DECLARE_EVENT_CLASS(...)
+#undef DEFINE_EVENT
+#define DEFINE_EVENT(evt_class, name, proto, ...) \
+static inline void trace_ ## name(proto) {}
+#endif
+
+#define DEV_ENTRY	__string(dev, dev_name(dev))
+#define DEV_ASSIGN	__assign_str(dev, dev_name(dev))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef TRACE_SYSTEM
 #define TRACE_SYSTEM iwlwifi_io
 
 TRACE_EVENT(iwlwifi_dev_ioread32,
+<<<<<<< HEAD
 	TP_PROTO(struct iwl_priv *priv, u32 offs, u32 val),
 	TP_ARGS(priv, offs, val),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+	TP_PROTO(const struct device *dev, u32 offs, u32 val),
+	TP_ARGS(dev, offs, val),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 		__field(u32, offs)
 		__field(u32, val)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		PRIV_ASSIGN;
 		__entry->offs = offs;
 		__entry->val = val;
@@ -62,10 +90,26 @@ TRACE_EVENT(iwlwifi_dev_iowrite8,
 	TP_ARGS(priv, offs, val),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+		DEV_ASSIGN;
+		__entry->offs = offs;
+		__entry->val = val;
+	),
+	TP_printk("[%s] read io[%#x] = %#x",
+		  __get_str(dev), __entry->offs, __entry->val)
+);
+
+TRACE_EVENT(iwlwifi_dev_iowrite8,
+	TP_PROTO(const struct device *dev, u32 offs, u8 val),
+	TP_ARGS(dev, offs, val),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 		__field(u32, offs)
 		__field(u8, val)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		PRIV_ASSIGN;
 		__entry->offs = offs;
 		__entry->val = val;
@@ -78,36 +122,102 @@ TRACE_EVENT(iwlwifi_dev_iowrite32,
 	TP_ARGS(priv, offs, val),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+		DEV_ASSIGN;
+		__entry->offs = offs;
+		__entry->val = val;
+	),
+	TP_printk("[%s] write io[%#x] = %#x)",
+		  __get_str(dev), __entry->offs, __entry->val)
+);
+
+TRACE_EVENT(iwlwifi_dev_iowrite32,
+	TP_PROTO(const struct device *dev, u32 offs, u32 val),
+	TP_ARGS(dev, offs, val),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 		__field(u32, offs)
 		__field(u32, val)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		PRIV_ASSIGN;
 		__entry->offs = offs;
 		__entry->val = val;
 	),
 	TP_printk("[%p] write io[%#x] = %#x)", __entry->priv, __entry->offs, __entry->val)
+=======
+		DEV_ASSIGN;
+		__entry->offs = offs;
+		__entry->val = val;
+	),
+	TP_printk("[%s] write io[%#x] = %#x)",
+		  __get_str(dev), __entry->offs, __entry->val)
+);
+
+TRACE_EVENT(iwlwifi_dev_irq,
+	TP_PROTO(const struct device *dev),
+	TP_ARGS(dev),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+	),
+	TP_fast_assign(
+		DEV_ASSIGN;
+	),
+	/* TP_printk("") doesn't compile */
+	TP_printk("%d", 0)
+);
+
+TRACE_EVENT(iwlwifi_dev_ict_read,
+	TP_PROTO(const struct device *dev, u32 index, u32 value),
+	TP_ARGS(dev, index, value),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+		__field(u32, index)
+		__field(u32, value)
+	),
+	TP_fast_assign(
+		DEV_ASSIGN;
+		__entry->index = index;
+		__entry->value = value;
+	),
+	TP_printk("[%s] read ict[%d] = %#.8x",
+		  __get_str(dev), __entry->index, __entry->value)
+>>>>>>> refs/remotes/origin/cm-10.0
 );
 
 #undef TRACE_SYSTEM
 #define TRACE_SYSTEM iwlwifi_ucode
 
 TRACE_EVENT(iwlwifi_dev_ucode_cont_event,
+<<<<<<< HEAD
 	TP_PROTO(struct iwl_priv *priv, u32 time, u32 data, u32 ev),
 	TP_ARGS(priv, time, data, ev),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+	TP_PROTO(const struct device *dev, u32 time, u32 data, u32 ev),
+	TP_ARGS(dev, time, data, ev),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		__field(u32, time)
 		__field(u32, data)
 		__field(u32, ev)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		PRIV_ASSIGN;
+=======
+		DEV_ASSIGN;
+>>>>>>> refs/remotes/origin/cm-10.0
 		__entry->time = time;
 		__entry->data = data;
 		__entry->ev = ev;
 	),
+<<<<<<< HEAD
 	TP_printk("[%p] EVT_LOGT:%010u:0x%08x:%04u",
 		  __entry->priv, __entry->time, __entry->data, __entry->ev)
 );
@@ -117,23 +227,44 @@ TRACE_EVENT(iwlwifi_dev_ucode_wrap_event,
 	TP_ARGS(priv, wraps, n_entry, p_entry),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+	TP_printk("[%s] EVT_LOGT:%010u:0x%08x:%04u",
+		  __get_str(dev), __entry->time, __entry->data, __entry->ev)
+);
+
+TRACE_EVENT(iwlwifi_dev_ucode_wrap_event,
+	TP_PROTO(const struct device *dev, u32 wraps, u32 n_entry, u32 p_entry),
+	TP_ARGS(dev, wraps, n_entry, p_entry),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		__field(u32, wraps)
 		__field(u32, n_entry)
 		__field(u32, p_entry)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		PRIV_ASSIGN;
+=======
+		DEV_ASSIGN;
+>>>>>>> refs/remotes/origin/cm-10.0
 		__entry->wraps = wraps;
 		__entry->n_entry = n_entry;
 		__entry->p_entry = p_entry;
 	),
+<<<<<<< HEAD
 	TP_printk("[%p] wraps=#%02d n=0x%X p=0x%X",
 		  __entry->priv, __entry->wraps, __entry->n_entry,
+=======
+	TP_printk("[%s] wraps=#%02d n=0x%X p=0x%X",
+		  __get_str(dev), __entry->wraps, __entry->n_entry,
+>>>>>>> refs/remotes/origin/cm-10.0
 		  __entry->p_entry)
 );
 
 #undef TRACE_SYSTEM
+<<<<<<< HEAD
 #define TRACE_SYSTEM iwlwifi
 
 TRACE_EVENT(iwlwifi_dev_hcmd,
@@ -144,24 +275,106 @@ TRACE_EVENT(iwlwifi_dev_hcmd,
 	TP_ARGS(priv, flags, hcmd0, len0, hcmd1, len1, hcmd2, len2),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+#define TRACE_SYSTEM iwlwifi_msg
+
+#define MAX_MSG_LEN	100
+
+DECLARE_EVENT_CLASS(iwlwifi_msg_event,
+	TP_PROTO(struct va_format *vaf),
+	TP_ARGS(vaf),
+	TP_STRUCT__entry(
+		__dynamic_array(char, msg, MAX_MSG_LEN)
+	),
+	TP_fast_assign(
+		WARN_ON_ONCE(vsnprintf(__get_dynamic_array(msg),
+				       MAX_MSG_LEN, vaf->fmt,
+				       *vaf->va) >= MAX_MSG_LEN);
+	),
+	TP_printk("%s", (char *)__get_dynamic_array(msg))
+);
+
+DEFINE_EVENT(iwlwifi_msg_event, iwlwifi_err,
+	TP_PROTO(struct va_format *vaf),
+	TP_ARGS(vaf)
+);
+
+DEFINE_EVENT(iwlwifi_msg_event, iwlwifi_warn,
+	TP_PROTO(struct va_format *vaf),
+	TP_ARGS(vaf)
+);
+
+DEFINE_EVENT(iwlwifi_msg_event, iwlwifi_info,
+	TP_PROTO(struct va_format *vaf),
+	TP_ARGS(vaf)
+);
+
+DEFINE_EVENT(iwlwifi_msg_event, iwlwifi_crit,
+	TP_PROTO(struct va_format *vaf),
+	TP_ARGS(vaf)
+);
+
+TRACE_EVENT(iwlwifi_dbg,
+	TP_PROTO(u32 level, bool in_interrupt, const char *function,
+		 struct va_format *vaf),
+	TP_ARGS(level, in_interrupt, function, vaf),
+	TP_STRUCT__entry(
+		__field(u32, level)
+		__field(u8, in_interrupt)
+		__string(function, function)
+		__dynamic_array(char, msg, MAX_MSG_LEN)
+	),
+	TP_fast_assign(
+		__entry->level = level;
+		__entry->in_interrupt = in_interrupt;
+		__assign_str(function, function);
+		WARN_ON_ONCE(vsnprintf(__get_dynamic_array(msg),
+				       MAX_MSG_LEN, vaf->fmt,
+				       *vaf->va) >= MAX_MSG_LEN);
+	),
+	TP_printk("%s", (char *)__get_dynamic_array(msg))
+);
+
+#undef TRACE_SYSTEM
+#define TRACE_SYSTEM iwlwifi
+
+TRACE_EVENT(iwlwifi_dev_hcmd,
+	TP_PROTO(const struct device *dev, u32 flags,
+		 const void *hcmd0, size_t len0,
+		 const void *hcmd1, size_t len1,
+		 const void *hcmd2, size_t len2),
+	TP_ARGS(dev, flags, hcmd0, len0, hcmd1, len1, hcmd2, len2),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 		__dynamic_array(u8, hcmd0, len0)
 		__dynamic_array(u8, hcmd1, len1)
 		__dynamic_array(u8, hcmd2, len2)
 		__field(u32, flags)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		PRIV_ASSIGN;
+=======
+		DEV_ASSIGN;
+>>>>>>> refs/remotes/origin/cm-10.0
 		memcpy(__get_dynamic_array(hcmd0), hcmd0, len0);
 		memcpy(__get_dynamic_array(hcmd1), hcmd1, len1);
 		memcpy(__get_dynamic_array(hcmd2), hcmd2, len2);
 		__entry->flags = flags;
 	),
+<<<<<<< HEAD
 	TP_printk("[%p] hcmd %#.2x (%ssync)",
 		  __entry->priv, ((u8 *)__get_dynamic_array(hcmd0))[0],
+=======
+	TP_printk("[%s] hcmd %#.2x (%ssync)",
+		  __get_str(dev), ((u8 *)__get_dynamic_array(hcmd0))[0],
+>>>>>>> refs/remotes/origin/cm-10.0
 		  __entry->flags & CMD_ASYNC ? "a" : "")
 );
 
 TRACE_EVENT(iwlwifi_dev_rx,
+<<<<<<< HEAD
 	TP_PROTO(struct iwl_priv *priv, void *rxbuf, size_t len),
 	TP_ARGS(priv, rxbuf, len),
 	TP_STRUCT__entry(
@@ -183,6 +396,29 @@ TRACE_EVENT(iwlwifi_dev_tx,
 	TP_ARGS(priv, tfd, tfdlen, buf0, buf0_len, buf1, buf1_len),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+	TP_PROTO(const struct device *dev, void *rxbuf, size_t len),
+	TP_ARGS(dev, rxbuf, len),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+		__dynamic_array(u8, rxbuf, len)
+	),
+	TP_fast_assign(
+		DEV_ASSIGN;
+		memcpy(__get_dynamic_array(rxbuf), rxbuf, len);
+	),
+	TP_printk("[%s] RX cmd %#.2x",
+		  __get_str(dev), ((u8 *)__get_dynamic_array(rxbuf))[4])
+);
+
+TRACE_EVENT(iwlwifi_dev_tx,
+	TP_PROTO(const struct device *dev, void *tfd, size_t tfdlen,
+		 void *buf0, size_t buf0_len,
+		 void *buf1, size_t buf1_len),
+	TP_ARGS(dev, tfd, tfdlen, buf0, buf0_len, buf1, buf1_len),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		__field(size_t, framelen)
 		__dynamic_array(u8, tfd, tfdlen)
@@ -196,29 +432,50 @@ TRACE_EVENT(iwlwifi_dev_tx,
 		__dynamic_array(u8, buf1, buf1_len)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		PRIV_ASSIGN;
+=======
+		DEV_ASSIGN;
+>>>>>>> refs/remotes/origin/cm-10.0
 		__entry->framelen = buf0_len + buf1_len;
 		memcpy(__get_dynamic_array(tfd), tfd, tfdlen);
 		memcpy(__get_dynamic_array(buf0), buf0, buf0_len);
 		memcpy(__get_dynamic_array(buf1), buf1, buf1_len);
 	),
+<<<<<<< HEAD
 	TP_printk("[%p] TX %.2x (%zu bytes)",
 		  __entry->priv,
 		  ((u8 *)__get_dynamic_array(buf0))[0],
+=======
+	TP_printk("[%s] TX %.2x (%zu bytes)",
+		  __get_str(dev), ((u8 *)__get_dynamic_array(buf0))[0],
+>>>>>>> refs/remotes/origin/cm-10.0
 		  __entry->framelen)
 );
 
 TRACE_EVENT(iwlwifi_dev_ucode_error,
+<<<<<<< HEAD
 	TP_PROTO(struct iwl_priv *priv, u32 desc, u32 tsf_low,
+=======
+	TP_PROTO(const struct device *dev, u32 desc, u32 tsf_low,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 u32 data1, u32 data2, u32 line, u32 blink1,
 		 u32 blink2, u32 ilink1, u32 ilink2, u32 bcon_time,
 		 u32 gp1, u32 gp2, u32 gp3, u32 ucode_ver, u32 hw_ver,
 		 u32 brd_ver),
+<<<<<<< HEAD
 	TP_ARGS(priv, desc, tsf_low, data1, data2, line,
 		blink1, blink2, ilink1, ilink2, bcon_time, gp1, gp2,
 		gp3, ucode_ver, hw_ver, brd_ver),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+	TP_ARGS(dev, desc, tsf_low, data1, data2, line,
+		blink1, blink2, ilink1, ilink2, bcon_time, gp1, gp2,
+		gp3, ucode_ver, hw_ver, brd_ver),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 		__field(u32, desc)
 		__field(u32, tsf_low)
 		__field(u32, data1)
@@ -237,7 +494,11 @@ TRACE_EVENT(iwlwifi_dev_ucode_error,
 		__field(u32, brd_ver)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		PRIV_ASSIGN;
+=======
+		DEV_ASSIGN;
+>>>>>>> refs/remotes/origin/cm-10.0
 		__entry->desc = desc;
 		__entry->tsf_low = tsf_low;
 		__entry->data1 = data1;
@@ -255,11 +516,19 @@ TRACE_EVENT(iwlwifi_dev_ucode_error,
 		__entry->hw_ver = hw_ver;
 		__entry->brd_ver = brd_ver;
 	),
+<<<<<<< HEAD
 	TP_printk("[%p] #%02d %010u data 0x%08X 0x%08X line %u, "
 		  "blink 0x%05X 0x%05X ilink 0x%05X 0x%05X "
 		  "bcon_tm %010u gp 0x%08X 0x%08X 0x%08X uCode 0x%08X "
 		  "hw 0x%08X brd 0x%08X",
 		  __entry->priv, __entry->desc, __entry->tsf_low,
+=======
+	TP_printk("[%s] #%02d %010u data 0x%08X 0x%08X line %u, "
+		  "blink 0x%05X 0x%05X ilink 0x%05X 0x%05X "
+		  "bcon_tm %010u gp 0x%08X 0x%08X 0x%08X uCode 0x%08X "
+		  "hw 0x%08X brd 0x%08X",
+		  __get_str(dev), __entry->desc, __entry->tsf_low,
+>>>>>>> refs/remotes/origin/cm-10.0
 		  __entry->data1,
 		  __entry->data2, __entry->line, __entry->blink1,
 		  __entry->blink2, __entry->ilink1, __entry->ilink2,
@@ -269,23 +538,39 @@ TRACE_EVENT(iwlwifi_dev_ucode_error,
 );
 
 TRACE_EVENT(iwlwifi_dev_ucode_event,
+<<<<<<< HEAD
 	TP_PROTO(struct iwl_priv *priv, u32 time, u32 data, u32 ev),
 	TP_ARGS(priv, time, data, ev),
 	TP_STRUCT__entry(
 		PRIV_ENTRY
+=======
+	TP_PROTO(const struct device *dev, u32 time, u32 data, u32 ev),
+	TP_ARGS(dev, time, data, ev),
+	TP_STRUCT__entry(
+		DEV_ENTRY
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		__field(u32, time)
 		__field(u32, data)
 		__field(u32, ev)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		PRIV_ASSIGN;
+=======
+		DEV_ASSIGN;
+>>>>>>> refs/remotes/origin/cm-10.0
 		__entry->time = time;
 		__entry->data = data;
 		__entry->ev = ev;
 	),
+<<<<<<< HEAD
 	TP_printk("[%p] EVT_LOGT:%010u:0x%08x:%04u",
 		  __entry->priv, __entry->time, __entry->data, __entry->ev)
+=======
+	TP_printk("[%s] EVT_LOGT:%010u:0x%08x:%04u",
+		  __get_str(dev), __entry->time, __entry->data, __entry->ev)
+>>>>>>> refs/remotes/origin/cm-10.0
 );
 #endif /* __IWLWIFI_DEVICE_TRACE */
 

@@ -118,9 +118,17 @@ static int tef6862_s_frequency(struct v4l2_subdev *sd, struct v4l2_frequency *f)
 	i2cmsg[2] = pll & 0xff;
 
 	err = i2c_master_send(client, i2cmsg, sizeof(i2cmsg));
+<<<<<<< HEAD
 	if (!err)
 		state->freq = f->frequency;
 	return err;
+=======
+	if (err != sizeof(i2cmsg))
+		return err < 0 ? err : -EIO;
+
+	state->freq = f->frequency;
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int tef6862_g_frequency(struct v4l2_subdev *sd, struct v4l2_frequency *f)
@@ -213,6 +221,7 @@ static struct i2c_driver tef6862_driver = {
 	.id_table	= tef6862_id,
 };
 
+<<<<<<< HEAD
 static __init int tef6862_init(void)
 {
 	return i2c_add_driver(&tef6862_driver);
@@ -225,8 +234,14 @@ static __exit void tef6862_exit(void)
 
 module_init(tef6862_init);
 module_exit(tef6862_exit);
+=======
+module_i2c_driver(tef6862_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("TEF6862 Car Radio Enhanced Selectivity Tuner");
 MODULE_AUTHOR("Mocean Laboratories");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

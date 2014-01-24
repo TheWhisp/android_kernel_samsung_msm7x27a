@@ -283,7 +283,11 @@ static int proc_getattr(struct vfsmount *mnt, struct dentry *dentry,
 	struct inode *inode = dentry->d_inode;
 	struct proc_dir_entry *de = PROC_I(inode)->pde;
 	if (de && de->nlink)
+<<<<<<< HEAD
 		inode->i_nlink = de->nlink;
+=======
+		set_nlink(inode, de->nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	generic_fillattr(inode, stat);
 	return 0;
@@ -597,7 +601,11 @@ static int proc_register(struct proc_dir_entry * dir, struct proc_dir_entry * dp
 
 static struct proc_dir_entry *__proc_create(struct proc_dir_entry **parent,
 					  const char *name,
+<<<<<<< HEAD
 					  mode_t mode,
+=======
+					  umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 					  nlink_t nlink)
 {
 	struct proc_dir_entry *ent = NULL;
@@ -620,8 +628,12 @@ static struct proc_dir_entry *__proc_create(struct proc_dir_entry **parent,
 	if (!ent) goto out;
 
 	memset(ent, 0, sizeof(struct proc_dir_entry));
+<<<<<<< HEAD
 	memcpy(((char *) ent) + sizeof(struct proc_dir_entry), fn, len + 1);
 	ent->name = ((char *) ent) + sizeof(*ent);
+=======
+	memcpy(ent->name, fn, len + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ent->namelen = len;
 	ent->mode = mode;
 	ent->nlink = nlink;
@@ -660,7 +672,11 @@ struct proc_dir_entry *proc_symlink(const char *name,
 }
 EXPORT_SYMBOL(proc_symlink);
 
+<<<<<<< HEAD
 struct proc_dir_entry *proc_mkdir_mode(const char *name, mode_t mode,
+=======
+struct proc_dir_entry *proc_mkdir_mode(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct proc_dir_entry *parent)
 {
 	struct proc_dir_entry *ent;
@@ -700,7 +716,11 @@ struct proc_dir_entry *proc_mkdir(const char *name,
 }
 EXPORT_SYMBOL(proc_mkdir);
 
+<<<<<<< HEAD
 struct proc_dir_entry *create_proc_entry(const char *name, mode_t mode,
+=======
+struct proc_dir_entry *create_proc_entry(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 					 struct proc_dir_entry *parent)
 {
 	struct proc_dir_entry *ent;
@@ -729,7 +749,11 @@ struct proc_dir_entry *create_proc_entry(const char *name, mode_t mode,
 }
 EXPORT_SYMBOL(create_proc_entry);
 
+<<<<<<< HEAD
 struct proc_dir_entry *proc_create_data(const char *name, mode_t mode,
+=======
+struct proc_dir_entry *proc_create_data(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 					struct proc_dir_entry *parent,
 					const struct file_operations *proc_fops,
 					void *data)

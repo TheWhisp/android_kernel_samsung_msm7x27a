@@ -47,6 +47,10 @@
 #include <linux/ioport.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/rtnetlink.h>
 #include <linux/dma-mapping.h>
 #include <linux/gfp.h>
@@ -676,7 +680,11 @@ static void w83977af_dma_xmit_complete(struct w83977af_ir *self)
 	switch_bank(iobase, SET0);
 	outb(inb(iobase+HCR) & ~HCR_EN_DMA, iobase+HCR);
 	
+<<<<<<< HEAD
 	/* Check for underrrun! */
+=======
+	/* Check for underrun! */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (inb(iobase+AUDR) & AUDR_UNDR) {
 		IRDA_DEBUG(0, "%s(), Transmit underrun!\n", __func__ );
 		
@@ -1171,7 +1179,11 @@ static int w83977af_net_open(struct net_device *dev)
 	 * and clean up on failure.
 	 */
 	if (request_dma(self->io.dma, dev->name)) {
+<<<<<<< HEAD
 		free_irq(self->io.irq, self);
+=======
+		free_irq(self->io.irq, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EAGAIN;
 	}
 		

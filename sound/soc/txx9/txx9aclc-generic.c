@@ -32,6 +32,10 @@ static struct snd_soc_dai_link txx9aclc_generic_dai = {
 
 static struct snd_soc_card txx9aclc_generic_card = {
 	.name		= "Generic TXx9 ACLC Audio",
+<<<<<<< HEAD
+=======
+	.owner		= THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link	= &txx9aclc_generic_dai,
 	.num_links	= 1,
 };
@@ -62,7 +66,11 @@ static int __exit txx9aclc_generic_remove(struct platform_device *pdev)
 }
 
 static struct platform_driver txx9aclc_generic_driver = {
+<<<<<<< HEAD
 	.remove = txx9aclc_generic_remove,
+=======
+	.remove = __exit_p(txx9aclc_generic_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver = {
 		.name = "txx9aclc-generic",
 		.owner = THIS_MODULE,

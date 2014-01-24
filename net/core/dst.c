@@ -172,7 +172,10 @@ void *dst_alloc(struct dst_ops *ops, struct net_device *dev,
 	dst->expires = 0UL;
 	dst->path = dst;
 	RCU_INIT_POINTER(dst->_neighbour, NULL);
+<<<<<<< HEAD
 	dst->hh = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_XFRM
 	dst->xfrm = NULL;
 #endif
@@ -226,12 +229,16 @@ struct dst_entry *dst_destroy(struct dst_entry * dst)
 {
 	struct dst_entry *child;
 	struct neighbour *neigh;
+<<<<<<< HEAD
 	struct hh_cache *hh;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	smp_rmb();
 
 again:
 	neigh = rcu_dereference_protected(dst->_neighbour, 1);
+<<<<<<< HEAD
 	hh = dst->hh;
 	child = dst->child;
 
@@ -239,6 +246,10 @@ again:
 	if (hh)
 		hh_cache_put(hh);
 
+=======
+	child = dst->child;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (neigh) {
 		RCU_INIT_POINTER(dst->_neighbour, NULL);
 		neigh_release(neigh);
@@ -373,7 +384,11 @@ static void dst_ifdown(struct dst_entry *dst, struct net_device *dev,
 		dev_hold(dst->dev);
 		dev_put(dev);
 		rcu_read_lock();
+<<<<<<< HEAD
 		neigh = dst_get_neighbour(dst);
+=======
+		neigh = dst_get_neighbour_noref(dst);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (neigh && neigh->dev == dev) {
 			neigh->dev = dst->dev;
 			dev_hold(dst->dev);

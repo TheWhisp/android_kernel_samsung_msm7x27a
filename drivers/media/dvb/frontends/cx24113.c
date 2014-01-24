@@ -31,8 +31,13 @@
 
 static int debug;
 
+<<<<<<< HEAD
 #define info(args...) do { printk(KERN_INFO "CX24113: " args); } while (0)
 #define err(args...)  do { printk(KERN_ERR  "CX24113: " args); } while (0)
+=======
+#define cx_info(args...) do { printk(KERN_INFO "CX24113: " args); } while (0)
+#define cx_err(args...)  do { printk(KERN_ERR  "CX24113: " args); } while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define dprintk(args...) \
 	do { \
@@ -341,7 +346,11 @@ static void cx24113_calc_pll_nf(struct cx24113_state *state, u16 *n, s32 *f)
 	} while (N < 6 && R < 3);
 
 	if (N < 6) {
+<<<<<<< HEAD
 		err("strange frequency: N < 6\n");
+=======
+		cx_err("strange frequency: N < 6\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 	F = freq_hz;
@@ -476,21 +485,35 @@ static int cx24113_init(struct dvb_frontend *fe)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int cx24113_set_params(struct dvb_frontend *fe,
 		struct dvb_frontend_parameters *p)
 {
+=======
+static int cx24113_set_params(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct cx24113_state *state = fe->tuner_priv;
 	/* for a ROLL-OFF factor of 0.35, 0.2: 600, 0.25: 625 */
 	u32 roll_off = 675;
 	u32 bw;
 
+<<<<<<< HEAD
 	bw  = ((p->u.qpsk.symbol_rate/100) * roll_off) / 1000;
+=======
+	bw  = ((c->symbol_rate/100) * roll_off) / 1000;
+>>>>>>> refs/remotes/origin/cm-10.0
 	bw += (10000000/100) + 5;
 	bw /= 10;
 	bw += 1000;
 	cx24113_set_bandwidth(state, bw);
 
+<<<<<<< HEAD
 	cx24113_set_frequency(state, p->frequency);
+=======
+	cx24113_set_frequency(state, c->frequency);
+>>>>>>> refs/remotes/origin/cm-10.0
 	msleep(5);
 	return cx24113_get_status(fe, &bw);
 }
@@ -547,11 +570,17 @@ static const struct dvb_tuner_ops cx24113_tuner_ops = {
 	.release       = cx24113_release,
 
 	.init          = cx24113_init,
+<<<<<<< HEAD
 	.sleep         = NULL,
 
 	.set_params    = cx24113_set_params,
 	.get_frequency = cx24113_get_frequency,
 	.get_bandwidth = NULL,
+=======
+
+	.set_params    = cx24113_set_params,
+	.get_frequency = cx24113_get_frequency,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_status    = cx24113_get_status,
 };
 
@@ -563,7 +592,11 @@ struct dvb_frontend *cx24113_attach(struct dvb_frontend *fe,
 		kzalloc(sizeof(struct cx24113_state), GFP_KERNEL);
 	int rc;
 	if (state == NULL) {
+<<<<<<< HEAD
 		err("Unable to kzalloc\n");
+=======
+		cx_err("Unable to kzalloc\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto error;
 	}
 
@@ -571,7 +604,11 @@ struct dvb_frontend *cx24113_attach(struct dvb_frontend *fe,
 	state->config = config;
 	state->i2c = i2c;
 
+<<<<<<< HEAD
 	info("trying to detect myself\n");
+=======
+	cx_info("trying to detect myself\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* making a dummy read, because of some expected troubles
 	 * after power on */
@@ -579,13 +616,18 @@ struct dvb_frontend *cx24113_attach(struct dvb_frontend *fe,
 
 	rc = cx24113_readreg(state, 0x00);
 	if (rc < 0) {
+<<<<<<< HEAD
 		info("CX24113 not found.\n");
+=======
+		cx_info("CX24113 not found.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto error;
 	}
 	state->rev = rc;
 
 	switch (rc) {
 	case 0x43:
+<<<<<<< HEAD
 		info("detected CX24113 variant\n");
 		break;
 	case REV_CX24113:
@@ -597,6 +639,19 @@ struct dvb_frontend *cx24113_attach(struct dvb_frontend *fe,
 	}
 	state->ver = cx24113_readreg(state, 0x01);
 	info("version: %x\n", state->ver);
+=======
+		cx_info("detected CX24113 variant\n");
+		break;
+	case REV_CX24113:
+		cx_info("successfully detected\n");
+		break;
+	default:
+		cx_err("unsupported device id: %x\n", state->rev);
+		goto error;
+	}
+	state->ver = cx24113_readreg(state, 0x01);
+	cx_info("version: %x\n", state->ver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* create dvb_frontend */
 	memcpy(&fe->ops.tuner_ops, &cx24113_tuner_ops,

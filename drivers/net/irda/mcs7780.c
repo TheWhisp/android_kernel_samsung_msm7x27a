@@ -968,6 +968,7 @@ static void mcs_disconnect(struct usb_interface *intf)
 	IRDA_DEBUG(0, "MCS7780 now disconnected.\n");
 }
 
+<<<<<<< HEAD
 /* Module insertion */
 static int __init mcs_init(void)
 {
@@ -990,3 +991,6 @@ static void __exit mcs_exit(void)
 }
 module_exit(mcs_exit);
 
+=======
+module_usb_driver(mcs_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

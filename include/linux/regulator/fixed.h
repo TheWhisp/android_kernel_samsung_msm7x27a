@@ -48,4 +48,20 @@ struct fixed_voltage_config {
 	struct regulator_init_data *init_data;
 };
 
+<<<<<<< HEAD
+=======
+struct regulator_consumer_supply;
+
+#if IS_ENABLED(CONFIG_REGULATOR)
+struct platform_device *regulator_register_fixed(int id,
+		struct regulator_consumer_supply *supplies, int num_supplies);
+#else
+static inline struct platform_device *regulator_register_fixed(int id,
+		struct regulator_consumer_supply *supplies, int num_supplies)
+{
+	return NULL;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

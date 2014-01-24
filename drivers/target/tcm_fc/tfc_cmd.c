@@ -19,7 +19,10 @@
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <generated/utsrelease.h>
 #include <linux/utsname.h>
 #include <linux/init.h>
@@ -40,6 +43,7 @@
 #include <scsi/fc_encode.h>
 
 #include <target/target_core_base.h>
+<<<<<<< HEAD
 #include <target/target_core_transport.h>
 #include <target/target_core_fabric_ops.h>
 #include <target/target_core_device.h>
@@ -47,6 +51,10 @@
 #include <target/target_core_configfs.h>
 #include <target/target_core_base.h>
 #include <target/target_core_tmr.h>
+=======
+#include <target/target_core_fabric.h>
+#include <target/target_core_configfs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <target/configfs_macros.h>
 
 #include "tcm_fc.h"
@@ -59,6 +67,7 @@ void ft_dump_cmd(struct ft_cmd *cmd, const char *caller)
 	struct fc_exch *ep;
 	struct fc_seq *sp;
 	struct se_cmd *se_cmd;
+<<<<<<< HEAD
 	struct se_mem *mem;
 	struct se_transport_task *task;
 
@@ -86,10 +95,34 @@ void ft_dump_cmd(struct ft_cmd *cmd, const char *caller)
 	if (sp) {
 		ep = fc_seq_exch(sp);
 		printk(KERN_INFO "%s: cmd %p sid %x did %x "
+=======
+	struct scatterlist *sg;
+	int count;
+
+	se_cmd = &cmd->se_cmd;
+	pr_debug("%s: cmd %p sess %p seq %p se_cmd %p\n",
+		caller, cmd, cmd->sess, cmd->seq, se_cmd);
+
+	pr_debug("%s: cmd %p data_nents %u len %u se_cmd_flags <0x%x>\n",
+		caller, cmd, se_cmd->t_data_nents,
+	       se_cmd->data_length, se_cmd->se_cmd_flags);
+
+	for_each_sg(se_cmd->t_data_sg, sg, se_cmd->t_data_nents, count)
+		pr_debug("%s: cmd %p sg %p page %p "
+			"len 0x%x off 0x%x\n",
+			caller, cmd, sg,
+			sg_page(sg), sg->length, sg->offset);
+
+	sp = cmd->seq;
+	if (sp) {
+		ep = fc_seq_exch(sp);
+		pr_debug("%s: cmd %p sid %x did %x "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"ox_id %x rx_id %x seq_id %x e_stat %x\n",
 			caller, cmd, ep->sid, ep->did, ep->oxid, ep->rxid,
 			sp->id, ep->esb_stat);
 	}
+<<<<<<< HEAD
 	print_hex_dump(KERN_INFO, "ft_dump_cmd ", DUMP_PREFIX_NONE,
 		16, 4, cmd->cdb, MAX_COMMAND_SIZE, 0);
 }
@@ -122,6 +155,8 @@ static struct ft_cmd *ft_dequeue_cmd(struct se_queue_obj *qobj)
 	atomic_dec(&qobj->queue_cnt);
 	spin_unlock_irqrestore(&qobj->cmd_queue_lock, flags);
 	return container_of(qr, struct ft_cmd, se_req);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void ft_free_cmd(struct ft_cmd *cmd)
@@ -147,9 +182,16 @@ void ft_release_cmd(struct se_cmd *se_cmd)
 	ft_free_cmd(cmd);
 }
 
+<<<<<<< HEAD
 void ft_check_stop_free(struct se_cmd *se_cmd)
 {
 	transport_generic_free_cmd(se_cmd, 0, 1, 0);
+=======
+int ft_check_stop_free(struct se_cmd *se_cmd)
+{
+	transport_generic_free_cmd(se_cmd, 0);
+	return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -164,6 +206,11 @@ int ft_queue_status(struct se_cmd *se_cmd)
 	struct fc_exch *ep;
 	size_t len;
 
+<<<<<<< HEAD
+=======
+	if (cmd->aborted)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ft_dump_cmd(cmd, __func__);
 	ep = fc_seq_exch(cmd->seq);
 	lport = ep->lp;
@@ -230,11 +277,20 @@ int ft_write_pending(struct se_cmd *se_cmd)
 
 	ft_dump_cmd(cmd, __func__);
 
+<<<<<<< HEAD
+=======
+	if (cmd->aborted)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ep = fc_seq_exch(cmd->seq);
 	lport = ep->lp;
 	fp = fc_frame_alloc(lport, sizeof(*txrdy));
 	if (!fp)
+<<<<<<< HEAD
 		return PYX_TRANSPORT_OUT_OF_MEMORY_RESOURCES;
+=======
+		return -ENOMEM; /* Signal QUEUE_FULL */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	txrdy = fc_frame_payload_get(fp, sizeof(*txrdy));
 	memset(txrdy, 0, sizeof(*txrdy));
@@ -256,6 +312,7 @@ int ft_write_pending(struct se_cmd *se_cmd)
 		    (fh->fh_r_ctl == FC_RCTL_DD_DATA_DESC)) {
 			if (se_cmd->se_cmd_flags & SCF_SCSI_DATA_SG_IO_CDB) {
 				/*
+<<<<<<< HEAD
 				 * Map se_mem list to scatterlist, so that
 				 * DDP can be setup. DDP setup function require
 				 * scatterlist. se_mem_list is internal to
@@ -268,6 +325,20 @@ int ft_write_pending(struct se_cmd *se_cmd)
 			}
 			if (cmd->sg && lport->tt.ddp_setup(lport, ep->xid,
 						    cmd->sg, cmd->sg_cnt))
+=======
+				 * cmd may have been broken up into multiple
+				 * tasks. Link their sgs together so we can
+				 * operate on them all at once.
+				 */
+				transport_do_task_sg_chain(se_cmd);
+				cmd->sg = se_cmd->t_tasks_sg_chained;
+				cmd->sg_cnt =
+					se_cmd->t_tasks_sg_chained_no;
+			}
+			if (cmd->sg && lport->tt.ddp_target(lport, ep->xid,
+							    cmd->sg,
+							    cmd->sg_cnt))
+>>>>>>> refs/remotes/origin/cm-10.0
 				cmd->was_ddp_setup = 1;
 		}
 	}
@@ -279,11 +350,17 @@ u32 ft_get_task_tag(struct se_cmd *se_cmd)
 {
 	struct ft_cmd *cmd = container_of(se_cmd, struct ft_cmd, se_cmd);
 
+<<<<<<< HEAD
+=======
+	if (cmd->aborted)
+		return ~0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return fc_seq_exch(cmd->seq)->rxid;
 }
 
 int ft_get_cmd_state(struct se_cmd *se_cmd)
 {
+<<<<<<< HEAD
 	struct ft_cmd *cmd = container_of(se_cmd, struct ft_cmd, se_cmd);
 
 	return cmd->state;
@@ -298,6 +375,9 @@ void ft_new_cmd_failure(struct se_cmd *se_cmd)
 {
 	/* XXX TBD */
 	printk(KERN_INFO "%s: se_cmd %p\n", __func__, se_cmd);
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -308,11 +388,18 @@ static void ft_recv_seq(struct fc_seq *sp, struct fc_frame *fp, void *arg)
 	struct ft_cmd *cmd = arg;
 	struct fc_frame_header *fh;
 
+<<<<<<< HEAD
 	if (IS_ERR(fp)) {
 		/* XXX need to find cmd if queued */
 		cmd->se_cmd.t_state = TRANSPORT_REMOVE;
 		cmd->seq = NULL;
 		transport_generic_free_cmd(&cmd->se_cmd, 0, 1, 0);
+=======
+	if (unlikely(IS_ERR(fp))) {
+		/* XXX need to find cmd if queued */
+		cmd->seq = NULL;
+		cmd->aborted = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
@@ -326,10 +413,18 @@ static void ft_recv_seq(struct fc_seq *sp, struct fc_frame *fp, void *arg)
 	case FC_RCTL_DD_SOL_CTL:	/* transfer ready */
 	case FC_RCTL_DD_DATA_DESC:	/* transfer ready */
 	default:
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: unhandled frame r_ctl %x\n",
 		       __func__, fh->fh_r_ctl);
 		fc_frame_free(fp);
 		transport_generic_free_cmd(&cmd->se_cmd, 0, 1, 0);
+=======
+		pr_debug("%s: unhandled frame r_ctl %x\n",
+		       __func__, fh->fh_r_ctl);
+		ft_invl_hw_context(cmd);
+		fc_frame_free(fp);
+		transport_generic_free_cmd(&cmd->se_cmd, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 }
@@ -351,7 +446,11 @@ static void ft_send_resp_status(struct fc_lport *lport,
 	struct fcp_resp_rsp_info *info;
 
 	fh = fc_frame_header_get(rx_fp);
+<<<<<<< HEAD
 	FT_IO_DBG("FCP error response: did %x oxid %x status %x code %x\n",
+=======
+	pr_debug("FCP error response: did %x oxid %x status %x code %x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		  ntoh24(fh->fh_s_id), ntohs(fh->fh_ox_id), status, code);
 	len = sizeof(*fcp);
 	if (status == SAM_STAT_GOOD)
@@ -381,12 +480,32 @@ static void ft_send_resp_status(struct fc_lport *lport,
 
 /*
  * Send error or task management response.
+<<<<<<< HEAD
  * Always frees the cmd and associated state.
  */
 static void ft_send_resp_code(struct ft_cmd *cmd, enum fcp_resp_rsp_codes code)
 {
 	ft_send_resp_status(cmd->sess->tport->lport,
 			    cmd->req_frame, SAM_STAT_GOOD, code);
+=======
+ */
+static void ft_send_resp_code(struct ft_cmd *cmd,
+			      enum fcp_resp_rsp_codes code)
+{
+	ft_send_resp_status(cmd->sess->tport->lport,
+			    cmd->req_frame, SAM_STAT_GOOD, code);
+}
+
+
+/*
+ * Send error or task management response.
+ * Always frees the cmd and associated state.
+ */
+static void ft_send_resp_code_and_free(struct ft_cmd *cmd,
+				      enum fcp_resp_rsp_codes code)
+{
+	ft_send_resp_code(cmd, code);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ft_free_cmd(cmd);
 }
 
@@ -395,9 +514,14 @@ static void ft_send_resp_code(struct ft_cmd *cmd, enum fcp_resp_rsp_codes code)
  */
 static void ft_send_tm(struct ft_cmd *cmd)
 {
+<<<<<<< HEAD
 	struct se_tmr_req *tmr;
 	struct fcp_cmnd *fcp;
 	struct ft_sess *sess;
+=======
+	struct fcp_cmnd *fcp;
+	int rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 tm_func;
 
 	fcp = fc_frame_payload_get(cmd->req_frame, sizeof(*fcp));
@@ -423,6 +547,7 @@ static void ft_send_tm(struct ft_cmd *cmd)
 		 * FCP4r01 indicates having a combination of
 		 * tm_flags set is invalid.
 		 */
+<<<<<<< HEAD
 		FT_TM_DBG("invalid FCP tm_flags %x\n", fcp->fc_tm_flags);
 		ft_send_resp_code(cmd, FCP_CMND_FIELDS_INVALID);
 		return;
@@ -467,6 +592,19 @@ static void ft_send_tm(struct ft_cmd *cmd)
 		return;
 	}
 	transport_generic_handle_tmr(&cmd->se_cmd);
+=======
+		pr_debug("invalid FCP tm_flags %x\n", fcp->fc_tm_flags);
+		ft_send_resp_code_and_free(cmd, FCP_CMND_FIELDS_INVALID);
+		return;
+	}
+
+	/* FIXME: Add referenced task tag for ABORT_TASK */
+	rc = target_submit_tmr(&cmd->se_cmd, cmd->sess->se_sess,
+		&cmd->ft_sense_buffer[0], scsilun_to_int(&fcp->fc_lun),
+		cmd, tm_func, GFP_KERNEL, 0, 0);
+	if (rc < 0)
+		ft_send_resp_code_and_free(cmd, FCP_TMF_FAILED);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -478,6 +616,11 @@ int ft_queue_tm_resp(struct se_cmd *se_cmd)
 	struct se_tmr_req *tmr = se_cmd->se_tmr_req;
 	enum fcp_resp_rsp_codes code;
 
+<<<<<<< HEAD
+=======
+	if (cmd->aborted)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (tmr->response) {
 	case TMR_FUNCTION_COMPLETE:
 		code = FCP_TMF_CMPL;
@@ -497,12 +640,21 @@ int ft_queue_tm_resp(struct se_cmd *se_cmd)
 		code = FCP_TMF_FAILED;
 		break;
 	}
+<<<<<<< HEAD
 	FT_TM_DBG("tmr fn %d resp %d fcp code %d\n",
+=======
+	pr_debug("tmr fn %d resp %d fcp code %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		  tmr->function, tmr->response, code);
 	ft_send_resp_code(cmd, code);
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void ft_send_work(struct work_struct *work);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Handle incoming FCP command.
  */
@@ -521,11 +673,21 @@ static void ft_recv_cmd(struct ft_sess *sess, struct fc_frame *fp)
 		goto busy;
 	}
 	cmd->req_frame = fp;		/* hold frame during cmd */
+<<<<<<< HEAD
 	ft_queue_cmd(sess, cmd);
 	return;
 
 busy:
 	FT_IO_DBG("cmd or seq allocation failure - sending BUSY\n");
+=======
+
+	INIT_WORK(&cmd->work, ft_send_work);
+	queue_work(sess->tport->tpg->workqueue, &cmd->work);
+	return;
+
+busy:
+	pr_debug("cmd or seq allocation failure - sending BUSY\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	ft_send_resp_status(lport, fp, SAM_STAT_BUSY, 0);
 	fc_frame_free(fp);
 	ft_sess_put(sess);		/* undo get from lookup */
@@ -550,7 +712,11 @@ void ft_recv_req(struct ft_sess *sess, struct fc_frame *fp)
 	case FC_RCTL_DD_DATA_DESC:	/* transfer ready */
 	case FC_RCTL_ELS4_REQ:		/* SRR, perhaps */
 	default:
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: unhandled frame r_ctl %x\n",
+=======
+		pr_debug("%s: unhandled frame r_ctl %x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       __func__, fh->fh_r_ctl);
 		fc_frame_free(fp);
 		ft_sess_put(sess);	/* undo get from lookup */
@@ -561,6 +727,7 @@ void ft_recv_req(struct ft_sess *sess, struct fc_frame *fp)
 /*
  * Send new command to target.
  */
+<<<<<<< HEAD
 static void ft_send_cmd(struct ft_cmd *cmd)
 {
 	struct fc_frame_header *fh = fc_frame_header_get(cmd->req_frame);
@@ -570,6 +737,15 @@ static void ft_send_cmd(struct ft_cmd *cmd)
 	u32 data_len;
 	int task_attr;
 	int ret;
+=======
+static void ft_send_work(struct work_struct *work)
+{
+	struct ft_cmd *cmd = container_of(work, struct ft_cmd, work);
+	struct fc_frame_header *fh = fc_frame_header_get(cmd->req_frame);
+	struct fcp_cmnd *fcp;
+	int data_dir = 0;
+	int task_attr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	fcp = fc_frame_payload_get(cmd->req_frame, sizeof(*fcp));
 	if (!fcp)
@@ -578,6 +754,7 @@ static void ft_send_cmd(struct ft_cmd *cmd)
 	if (fcp->fc_flags & FCP_CFL_LEN_MASK)
 		goto err;		/* not handling longer CDBs yet */
 
+<<<<<<< HEAD
 	if (fcp->fc_tm_flags) {
 		task_attr = FCP_PTA_SIMPLE;
 		data_dir = DMA_NONE;
@@ -628,6 +805,8 @@ static void ft_send_cmd(struct ft_cmd *cmd)
 	transport_init_se_cmd(se_cmd, &ft_configfs->tf_ops, cmd->sess->se_sess,
 			      data_len, data_dir, task_attr,
 			      &cmd->ft_sense_buffer[0]);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Check for FCP task management flags
 	 */
@@ -636,6 +815,7 @@ static void ft_send_cmd(struct ft_cmd *cmd)
 		return;
 	}
 
+<<<<<<< HEAD
 	fc_seq_exch(cmd->seq)->lp->tt.seq_set_resp(cmd->seq, ft_recv_seq, cmd);
 
 	cmd->lun = scsilun_to_int((struct scsi_lun *)fcp->fc_lun);
@@ -715,4 +895,50 @@ int ft_thread(void *arg)
 
 out:
 	return 0;
+=======
+	switch (fcp->fc_flags & (FCP_CFL_RDDATA | FCP_CFL_WRDATA)) {
+	case 0:
+		data_dir = DMA_NONE;
+		break;
+	case FCP_CFL_RDDATA:
+		data_dir = DMA_FROM_DEVICE;
+		break;
+	case FCP_CFL_WRDATA:
+		data_dir = DMA_TO_DEVICE;
+		break;
+	case FCP_CFL_WRDATA | FCP_CFL_RDDATA:
+		goto err;	/* TBD not supported by tcm_fc yet */
+	}
+	/*
+	 * Locate the SAM Task Attr from fc_pri_ta
+	 */
+	switch (fcp->fc_pri_ta & FCP_PTA_MASK) {
+	case FCP_PTA_HEADQ:
+		task_attr = MSG_HEAD_TAG;
+		break;
+	case FCP_PTA_ORDERED:
+		task_attr = MSG_ORDERED_TAG;
+		break;
+	case FCP_PTA_ACA:
+		task_attr = MSG_ACA_TAG;
+		break;
+	case FCP_PTA_SIMPLE: /* Fallthrough */
+	default:
+		task_attr = MSG_SIMPLE_TAG;
+	}
+
+	fc_seq_exch(cmd->seq)->lp->tt.seq_set_resp(cmd->seq, ft_recv_seq, cmd);
+	/*
+	 * Use a single se_cmd->cmd_kref as we expect to release se_cmd
+	 * directly from ft_check_stop_free callback in response path.
+	 */
+	target_submit_cmd(&cmd->se_cmd, cmd->sess->se_sess, fcp->fc_cdb,
+			&cmd->ft_sense_buffer[0], scsilun_to_int(&fcp->fc_lun),
+			ntohl(fcp->fc_dl), task_attr, data_dir, 0);
+	pr_debug("r_ctl %x alloc target_submit_cmd\n", fh->fh_r_ctl);
+	return;
+
+err:
+	ft_send_resp_code_and_free(cmd, FCP_CMND_FIELDS_INVALID);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

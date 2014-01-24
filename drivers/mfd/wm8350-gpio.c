@@ -37,7 +37,11 @@ static int gpio_set_dir(struct wm8350 *wm8350, int gpio, int dir)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int gpio_set_debounce(struct wm8350 *wm8350, int gpio, int db)
+=======
+static int wm8350_gpio_set_debounce(struct wm8350 *wm8350, int gpio, int db)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (db == WM8350_GPIO_DEBOUNCE_ON)
 		return wm8350_set_bits(wm8350, WM8350_GPIO_DEBOUNCE,
@@ -210,7 +214,11 @@ int wm8350_gpio_config(struct wm8350 *wm8350, int gpio, int dir, int func,
 		goto err;
 	if (gpio_set_polarity(wm8350, gpio, pol))
 		goto err;
+<<<<<<< HEAD
 	if (gpio_set_debounce(wm8350, gpio, debounce))
+=======
+	if (wm8350_gpio_set_debounce(wm8350, gpio, debounce))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto err;
 	if (gpio_set_dir(wm8350, gpio, dir))
 		goto err;

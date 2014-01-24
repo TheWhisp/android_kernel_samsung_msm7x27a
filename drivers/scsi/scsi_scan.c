@@ -297,7 +297,11 @@ static struct scsi_device *scsi_alloc_sdev(struct scsi_target *starget,
 		kfree(sdev);
 		goto out;
 	}
+<<<<<<< HEAD
 	blk_get_queue(sdev->request_queue);
+=======
+	WARN_ON_ONCE(!blk_get_queue(sdev->request_queue));
+>>>>>>> refs/remotes/origin/cm-10.0
 	sdev->request_queue->queuedata = sdev;
 	scsi_adjust_queue_depth(sdev, 0, sdev->host->cmd_per_lun);
 
@@ -1305,6 +1309,10 @@ EXPORT_SYMBOL(int_to_scsilun);
  *   LUNs even if it's older than SCSI-3.
  *   If BLIST_NOREPORTLUN is set, return 1 always.
  *   If BLIST_NOLUN is set, return 0 always.
+<<<<<<< HEAD
+=======
+ *   If starget->no_report_luns is set, return 1 always.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Return:
  *     0: scan completed (or no memory, so further scanning is futile)
@@ -1331,6 +1339,10 @@ static int scsi_report_lun_scan(struct scsi_target *starget, int bflags,
 	 * Only support SCSI-3 and up devices if BLIST_NOREPORTLUN is not set.
 	 * Also allow SCSI-2 if BLIST_REPORTLUN2 is set and host adapter does
 	 * support more than 8 LUNs.
+<<<<<<< HEAD
+=======
+	 * Don't attempt if the target doesn't support REPORT LUNS.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	if (bflags & BLIST_NOREPORTLUN)
 		return 1;
@@ -1342,6 +1354,11 @@ static int scsi_report_lun_scan(struct scsi_target *starget, int bflags,
 		return 1;
 	if (bflags & BLIST_NOLUN)
 		return 0;
+<<<<<<< HEAD
+=======
+	if (starget->no_report_luns)
+		return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!(sdev = scsi_device_lookup_by_target(starget, 0))) {
 		sdev = scsi_alloc_sdev(starget, 0, NULL);

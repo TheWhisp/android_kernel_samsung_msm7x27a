@@ -37,6 +37,10 @@
 #include <asm/idle.h>
 #include <asm/io_apic.h>
 #include <asm/sync_bitops.h>
+<<<<<<< HEAD
+=======
+#include <asm/xen/page.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/xen/pci.h>
 #include <asm/xen/hypercall.h>
 #include <asm/xen/hypervisor.h>
@@ -54,7 +58,11 @@
  * This lock protects updates to the following mapping and reference-count
  * arrays. The lock does not need to be acquired to read the mapping tables.
  */
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(irq_mapping_update_lock);
+=======
+static DEFINE_MUTEX(irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static LIST_HEAD(xen_irq_list_head);
 
@@ -85,9 +93,15 @@ enum xen_irq_type {
  *    IPI - IPI vector
  *    EVTCHN -
  */
+<<<<<<< HEAD
 struct irq_info
 {
 	struct list_head list;
+=======
+struct irq_info {
+	struct list_head list;
+	int refcnt;
+>>>>>>> refs/remotes/origin/cm-10.0
 	enum xen_irq_type type;	/* type */
 	unsigned irq;
 	unsigned short evtchn;	/* event channel */
@@ -109,6 +123,11 @@ struct irq_info
 #define PIRQ_SHAREABLE	(1 << 1)
 
 static int *evtchn_to_irq;
+<<<<<<< HEAD
+=======
+static unsigned long *pirq_eoi_map;
+static bool (*pirq_needs_eoi)(unsigned irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static DEFINE_PER_CPU(unsigned long [NR_EVENT_CHANNELS/BITS_PER_LONG],
 		      cpu_evtchn_mask);
@@ -269,10 +288,21 @@ static unsigned int cpu_from_evtchn(unsigned int evtchn)
 	return ret;
 }
 
+<<<<<<< HEAD
 static bool pirq_needs_eoi(unsigned irq)
 {
 	struct irq_info *info = info_for_irq(irq);
 
+=======
+static bool pirq_check_eoi_map(unsigned irq)
+{
+	return test_bit(pirq_from_irq(irq), pirq_eoi_map);
+}
+
+static bool pirq_needs_eoi_flag(unsigned irq)
+{
+	struct irq_info *info = info_for_irq(irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(info->type != IRQT_PIRQ);
 
 	return info->u.pirq.flags & PIRQ_NEEDS_EOI;
@@ -282,9 +312,15 @@ static inline unsigned long active_evtchns(unsigned int cpu,
 					   struct shared_info *sh,
 					   unsigned int idx)
 {
+<<<<<<< HEAD
 	return (sh->evtchn_pending[idx] &
 		per_cpu(cpu_evtchn_mask, cpu)[idx] &
 		~sh->evtchn_mask[idx]);
+=======
+	return sh->evtchn_pending[idx] &
+		per_cpu(cpu_evtchn_mask, cpu)[idx] &
+		~sh->evtchn_mask[idx];
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void bind_evtchn_to_cpu(unsigned int chn, unsigned int cpu)
@@ -407,6 +443,10 @@ static void xen_irq_init(unsigned irq)
 		panic("Unable to allocate metadata for IRQ%d\n", irq);
 
 	info->type = IRQT_UNBOUND;
+<<<<<<< HEAD
+=======
+	info->refcnt = -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	irq_set_handler_data(irq, info);
 
@@ -432,7 +472,12 @@ static int __must_check xen_allocate_irq_dynamic(void)
 
 	irq = irq_alloc_desc_from(first, -1);
 
+<<<<<<< HEAD
 	xen_irq_init(irq);
+=======
+	if (irq >= 0)
+		xen_irq_init(irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return irq;
 }
@@ -469,6 +514,11 @@ static void xen_free_irq(unsigned irq)
 
 	irq_set_handler_data(irq, NULL);
 
+<<<<<<< HEAD
+=======
+	WARN_ON(info->refcnt > 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(info);
 
 	/* Legacy IRQ descriptors are managed by the arch. */
@@ -615,11 +665,14 @@ static int find_irq_by_gsi(unsigned gsi)
 	return -1;
 }
 
+<<<<<<< HEAD
 int xen_allocate_pirq_gsi(unsigned gsi)
 {
 	return gsi;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Do not make any assumptions regarding the relationship between the
  * IRQ number returned here and the Xen pirq argument.
@@ -636,13 +689,21 @@ int xen_bind_pirq_gsi_to_irq(unsigned gsi,
 	int irq = -1;
 	struct physdev_irq irq_op;
 
+<<<<<<< HEAD
 	spin_lock(&irq_mapping_update_lock);
+=======
+	mutex_lock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	irq = find_irq_by_gsi(gsi);
 	if (irq != -1) {
 		printk(KERN_INFO "xen_map_pirq_gsi: returning irq %d for gsi %u\n",
 		       irq, gsi);
+<<<<<<< HEAD
 		goto out;	/* XXX need refcount? */
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	irq = xen_allocate_irq_gsi(gsi);
@@ -689,7 +750,11 @@ int xen_bind_pirq_gsi_to_irq(unsigned gsi,
 				handle_edge_irq, name);
 
 out:
+<<<<<<< HEAD
 	spin_unlock(&irq_mapping_update_lock);
+=======
+	mutex_unlock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return irq;
 }
@@ -715,10 +780,17 @@ int xen_bind_pirq_msi_to_irq(struct pci_dev *dev, struct msi_desc *msidesc,
 {
 	int irq, ret;
 
+<<<<<<< HEAD
 	spin_lock(&irq_mapping_update_lock);
 
 	irq = xen_allocate_irq_dynamic();
 	if (irq == -1)
+=======
+	mutex_lock(&irq_mapping_update_lock);
+
+	irq = xen_allocate_irq_dynamic();
+	if (irq < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 
 	irq_set_chip_and_handler_name(irq, &xen_pirq_chip, handle_edge_irq,
@@ -729,12 +801,21 @@ int xen_bind_pirq_msi_to_irq(struct pci_dev *dev, struct msi_desc *msidesc,
 	if (ret < 0)
 		goto error_irq;
 out:
+<<<<<<< HEAD
 	spin_unlock(&irq_mapping_update_lock);
 	return irq;
 error_irq:
 	spin_unlock(&irq_mapping_update_lock);
 	xen_free_irq(irq);
 	return -1;
+=======
+	mutex_unlock(&irq_mapping_update_lock);
+	return irq;
+error_irq:
+	mutex_unlock(&irq_mapping_update_lock);
+	xen_free_irq(irq);
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 
@@ -745,7 +826,11 @@ int xen_destroy_irq(int irq)
 	struct irq_info *info = info_for_irq(irq);
 	int rc = -ENOENT;
 
+<<<<<<< HEAD
 	spin_lock(&irq_mapping_update_lock);
+=======
+	mutex_lock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	desc = irq_to_desc(irq);
 	if (!desc)
@@ -771,7 +856,11 @@ int xen_destroy_irq(int irq)
 	xen_free_irq(irq);
 
 out:
+<<<<<<< HEAD
 	spin_unlock(&irq_mapping_update_lock);
+=======
+	mutex_unlock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 }
 
@@ -781,10 +870,17 @@ int xen_irq_from_pirq(unsigned pirq)
 
 	struct irq_info *info;
 
+<<<<<<< HEAD
 	spin_lock(&irq_mapping_update_lock);
 
 	list_for_each_entry(info, &xen_irq_list_head, list) {
 		if (info == NULL || info->type != IRQT_PIRQ)
+=======
+	mutex_lock(&irq_mapping_update_lock);
+
+	list_for_each_entry(info, &xen_irq_list_head, list) {
+		if (info->type != IRQT_PIRQ)
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 		irq = info->irq;
 		if (info->u.pirq.pirq == pirq)
@@ -792,7 +888,11 @@ int xen_irq_from_pirq(unsigned pirq)
 	}
 	irq = -1;
 out:
+<<<<<<< HEAD
 	spin_unlock(&irq_mapping_update_lock);
+=======
+	mutex_unlock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return irq;
 }
@@ -807,7 +907,11 @@ int bind_evtchn_to_irq(unsigned int evtchn)
 {
 	int irq;
 
+<<<<<<< HEAD
 	spin_lock(&irq_mapping_update_lock);
+=======
+	mutex_lock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	irq = evtchn_to_irq[evtchn];
 
@@ -823,7 +927,11 @@ int bind_evtchn_to_irq(unsigned int evtchn)
 	}
 
 out:
+<<<<<<< HEAD
 	spin_unlock(&irq_mapping_update_lock);
+=======
+	mutex_unlock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return irq;
 }
@@ -834,7 +942,11 @@ static int bind_ipi_to_irq(unsigned int ipi, unsigned int cpu)
 	struct evtchn_bind_ipi bind_ipi;
 	int evtchn, irq;
 
+<<<<<<< HEAD
 	spin_lock(&irq_mapping_update_lock);
+=======
+	mutex_lock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	irq = per_cpu(ipi_to_irq, cpu)[ipi];
 
@@ -858,7 +970,11 @@ static int bind_ipi_to_irq(unsigned int ipi, unsigned int cpu)
 	}
 
  out:
+<<<<<<< HEAD
 	spin_unlock(&irq_mapping_update_lock);
+=======
+	mutex_unlock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return irq;
 }
 
@@ -877,13 +993,43 @@ static int bind_interdomain_evtchn_to_irq(unsigned int remote_domain,
 	return err ? : bind_evtchn_to_irq(bind_interdomain.local_port);
 }
 
+<<<<<<< HEAD
+=======
+static int find_virq(unsigned int virq, unsigned int cpu)
+{
+	struct evtchn_status status;
+	int port, rc = -ENOENT;
+
+	memset(&status, 0, sizeof(status));
+	for (port = 0; port <= NR_EVENT_CHANNELS; port++) {
+		status.dom = DOMID_SELF;
+		status.port = port;
+		rc = HYPERVISOR_event_channel_op(EVTCHNOP_status, &status);
+		if (rc < 0)
+			continue;
+		if (status.status != EVTCHNSTAT_virq)
+			continue;
+		if (status.u.virq == virq && status.vcpu == cpu) {
+			rc = port;
+			break;
+		}
+	}
+	return rc;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int bind_virq_to_irq(unsigned int virq, unsigned int cpu)
 {
 	struct evtchn_bind_virq bind_virq;
+<<<<<<< HEAD
 	int evtchn, irq;
 
 	spin_lock(&irq_mapping_update_lock);
+=======
+	int evtchn, irq, ret;
+
+	mutex_lock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	irq = per_cpu(virq_to_irq, cpu)[virq];
 
@@ -897,10 +1043,23 @@ int bind_virq_to_irq(unsigned int virq, unsigned int cpu)
 
 		bind_virq.virq = virq;
 		bind_virq.vcpu = cpu;
+<<<<<<< HEAD
 		if (HYPERVISOR_event_channel_op(EVTCHNOP_bind_virq,
 						&bind_virq) != 0)
 			BUG();
 		evtchn = bind_virq.port;
+=======
+		ret = HYPERVISOR_event_channel_op(EVTCHNOP_bind_virq,
+						&bind_virq);
+		if (ret == 0)
+			evtchn = bind_virq.port;
+		else {
+			if (ret == -EEXIST)
+				ret = find_virq(virq, cpu);
+			BUG_ON(ret < 0);
+			evtchn = ret;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		xen_irq_info_virq_init(cpu, irq, evtchn, virq);
 
@@ -908,7 +1067,11 @@ int bind_virq_to_irq(unsigned int virq, unsigned int cpu)
 	}
 
 out:
+<<<<<<< HEAD
 	spin_unlock(&irq_mapping_update_lock);
+=======
+	mutex_unlock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return irq;
 }
@@ -917,8 +1080,20 @@ static void unbind_from_irq(unsigned int irq)
 {
 	struct evtchn_close close;
 	int evtchn = evtchn_from_irq(irq);
+<<<<<<< HEAD
 
 	spin_lock(&irq_mapping_update_lock);
+=======
+	struct irq_info *info = irq_get_handler_data(irq);
+
+	mutex_lock(&irq_mapping_update_lock);
+
+	if (info->refcnt > 0) {
+		info->refcnt--;
+		if (info->refcnt != 0)
+			goto done;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (VALID_EVTCHN(evtchn)) {
 		close.port = evtchn;
@@ -948,7 +1123,12 @@ static void unbind_from_irq(unsigned int irq)
 
 	xen_free_irq(irq);
 
+<<<<<<< HEAD
 	spin_unlock(&irq_mapping_update_lock);
+=======
+ done:
+	mutex_unlock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int bind_evtchn_to_irqhandler(unsigned int evtchn,
@@ -1043,6 +1223,72 @@ void unbind_from_irqhandler(unsigned int irq, void *dev_id)
 }
 EXPORT_SYMBOL_GPL(unbind_from_irqhandler);
 
+<<<<<<< HEAD
+=======
+int evtchn_make_refcounted(unsigned int evtchn)
+{
+	int irq = evtchn_to_irq[evtchn];
+	struct irq_info *info;
+
+	if (irq == -1)
+		return -ENOENT;
+
+	info = irq_get_handler_data(irq);
+
+	if (!info)
+		return -ENOENT;
+
+	WARN_ON(info->refcnt != -1);
+
+	info->refcnt = 1;
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(evtchn_make_refcounted);
+
+int evtchn_get(unsigned int evtchn)
+{
+	int irq;
+	struct irq_info *info;
+	int err = -ENOENT;
+
+	if (evtchn >= NR_EVENT_CHANNELS)
+		return -EINVAL;
+
+	mutex_lock(&irq_mapping_update_lock);
+
+	irq = evtchn_to_irq[evtchn];
+	if (irq == -1)
+		goto done;
+
+	info = irq_get_handler_data(irq);
+
+	if (!info)
+		goto done;
+
+	err = -EINVAL;
+	if (info->refcnt <= 0)
+		goto done;
+
+	info->refcnt++;
+	err = 0;
+ done:
+	mutex_unlock(&irq_mapping_update_lock);
+
+	return err;
+}
+EXPORT_SYMBOL_GPL(evtchn_get);
+
+void evtchn_put(unsigned int evtchn)
+{
+	int irq = evtchn_to_irq[evtchn];
+	if (WARN_ON(irq == -1))
+		return;
+	unbind_from_irq(irq);
+}
+EXPORT_SYMBOL_GPL(evtchn_put);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void xen_send_IPI_one(unsigned int cpu, enum ipi_vector vector)
 {
 	int irq = per_cpu(ipi_to_irq, cpu)[vector];
@@ -1157,7 +1403,11 @@ static void __xen_evtchn_do_upcall(void)
 	int cpu = get_cpu();
 	struct shared_info *s = HYPERVISOR_shared_info;
 	struct vcpu_info *vcpu_info = __this_cpu_read(xen_vcpu);
+<<<<<<< HEAD
  	unsigned count;
+=======
+	unsigned count;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	do {
 		unsigned long pending_words;
@@ -1271,8 +1521,13 @@ void xen_evtchn_do_upcall(struct pt_regs *regs)
 {
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
+<<<<<<< HEAD
 	exit_idle();
 	irq_enter();
+=======
+	irq_enter();
+	exit_idle();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__xen_evtchn_do_upcall();
 
@@ -1295,7 +1550,11 @@ void rebind_evtchn_irq(int evtchn, int irq)
 	   will also be masked. */
 	disable_irq(irq);
 
+<<<<<<< HEAD
 	spin_lock(&irq_mapping_update_lock);
+=======
+	mutex_lock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* After resume the irq<->evtchn mappings are all cleared out */
 	BUG_ON(evtchn_to_irq[evtchn] != -1);
@@ -1305,7 +1564,11 @@ void rebind_evtchn_irq(int evtchn, int irq)
 
 	xen_irq_info_evtchn_init(irq, evtchn);
 
+<<<<<<< HEAD
 	spin_unlock(&irq_mapping_update_lock);
+=======
+	mutex_unlock(&irq_mapping_update_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* new event channels are always bound to cpu 0 */
 	irq_set_affinity(irq, cpumask_of(0));
@@ -1682,10 +1945,18 @@ void xen_callback_vector(void) {}
 
 void __init xen_init_IRQ(void)
 {
+<<<<<<< HEAD
 	int i;
 
 	evtchn_to_irq = kcalloc(NR_EVENT_CHANNELS, sizeof(*evtchn_to_irq),
 				    GFP_KERNEL);
+=======
+	int i, rc;
+
+	evtchn_to_irq = kcalloc(NR_EVENT_CHANNELS, sizeof(*evtchn_to_irq),
+				    GFP_KERNEL);
+	BUG_ON(!evtchn_to_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < NR_EVENT_CHANNELS; i++)
 		evtchn_to_irq[i] = -1;
 
@@ -1695,6 +1966,11 @@ void __init xen_init_IRQ(void)
 	for (i = 0; i < NR_EVENT_CHANNELS; i++)
 		mask_evtchn(i);
 
+<<<<<<< HEAD
+=======
+	pirq_needs_eoi = pirq_needs_eoi_flag;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (xen_hvm_domain()) {
 		xen_callback_vector();
 		native_init_IRQ();
@@ -1702,8 +1978,25 @@ void __init xen_init_IRQ(void)
 		 * __acpi_register_gsi can point at the right function */
 		pci_xen_hvm_init();
 	} else {
+<<<<<<< HEAD
 		irq_ctx_init(smp_processor_id());
 		if (xen_initial_domain())
 			xen_setup_pirqs();
+=======
+		struct physdev_pirq_eoi_gmfn eoi_gmfn;
+
+		irq_ctx_init(smp_processor_id());
+		if (xen_initial_domain())
+			pci_xen_initial_domain();
+
+		pirq_eoi_map = (void *)__get_free_page(GFP_KERNEL|__GFP_ZERO);
+		eoi_gmfn.gmfn = virt_to_mfn(pirq_eoi_map);
+		rc = HYPERVISOR_physdev_op(PHYSDEVOP_pirq_eoi_gmfn_v2, &eoi_gmfn);
+		if (rc != 0) {
+			free_page((unsigned long) pirq_eoi_map);
+			pirq_eoi_map = NULL;
+		} else
+			pirq_needs_eoi = pirq_check_eoi_map;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }

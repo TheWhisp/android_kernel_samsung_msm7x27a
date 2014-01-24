@@ -115,10 +115,14 @@ static int __init tx4939_rng_probe(struct platform_device *dev)
 	rngdev = devm_kzalloc(&dev->dev, sizeof(*rngdev), GFP_KERNEL);
 	if (!rngdev)
 		return -ENOMEM;
+<<<<<<< HEAD
 	if (!devm_request_mem_region(&dev->dev, r->start, resource_size(r),
 				     dev_name(&dev->dev)))
 		return -EBUSY;
 	rngdev->base = devm_ioremap(&dev->dev, r->start, resource_size(r));
+=======
+	rngdev->base = devm_request_and_ioremap(&dev->dev, r);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!rngdev->base)
 		return -EBUSY;
 

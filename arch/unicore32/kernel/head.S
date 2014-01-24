@@ -17,7 +17,11 @@
 #include <generated/asm-offsets.h>
 #include <asm/memory.h>
 #include <asm/thread_info.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/hwdef-copro.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable-hwdef.h>
 
 #if (PHYS_OFFSET & 0x003fffff)

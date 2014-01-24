@@ -450,7 +450,11 @@ exit:
 /**
  *	usb_alphatrack_poll
  */
+<<<<<<< HEAD
 static unsigned int usb_alphatrack_poll(struct file *file, poll_table * wait)
+=======
+static unsigned int usb_alphatrack_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct usb_alphatrack *dev;
 	unsigned int mask = 0;
@@ -867,6 +871,7 @@ static struct usb_driver usb_alphatrack_driver = {
 	.id_table = usb_alphatrack_table,
 };
 
+<<<<<<< HEAD
 /**
  *	usb_alphatrack_init
  */
@@ -894,3 +899,6 @@ static void __exit usb_alphatrack_exit(void)
 
 module_init(usb_alphatrack_init);
 module_exit(usb_alphatrack_exit);
+=======
+module_usb_driver(usb_alphatrack_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

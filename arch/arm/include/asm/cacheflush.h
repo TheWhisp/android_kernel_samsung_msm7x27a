@@ -16,6 +16,10 @@
 #include <asm/shmparam.h>
 #include <asm/cachetype.h>
 #include <asm/outercache.h>
+<<<<<<< HEAD
+=======
+#include <asm/rodata.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CACHE_COLOUR(vaddr)	((vaddr & (SHMLBA - 1)) >> PAGE_SHIFT)
 
@@ -326,9 +330,13 @@ static inline void flush_anon_page(struct vm_area_struct *vma,
 }
 
 #define ARCH_HAS_FLUSH_KERNEL_DCACHE_PAGE
+<<<<<<< HEAD
 static inline void flush_kernel_dcache_page(struct page *page)
 {
 }
+=======
+extern void flush_kernel_dcache_page(struct page *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define flush_dcache_mmap_lock(mapping) \
 	spin_lock_irq(&(mapping)->tree_lock)

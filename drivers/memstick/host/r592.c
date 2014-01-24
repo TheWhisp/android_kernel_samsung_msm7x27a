@@ -23,7 +23,11 @@
 #include <linux/swab.h>
 #include "r592.h"
 
+<<<<<<< HEAD
 static int r592_enable_dma = 1;
+=======
+static bool r592_enable_dma = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 static int debug;
 
 static const char *tpc_names[] = {

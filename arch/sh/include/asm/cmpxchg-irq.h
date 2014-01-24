@@ -1,6 +1,11 @@
 #ifndef __ASM_SH_CMPXCHG_IRQ_H
 #define __ASM_SH_CMPXCHG_IRQ_H
 
+<<<<<<< HEAD
+=======
+#include <linux/irqflags.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline unsigned long xchg_u32(volatile u32 *m, unsigned long val)
 {
 	unsigned long flags, retval;

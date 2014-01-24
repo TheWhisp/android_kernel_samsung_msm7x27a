@@ -1,8 +1,15 @@
 /*
+<<<<<<< HEAD
  * drivers/base/cpu.c - basic CPU class support
  */
 
 #include <linux/sysdev.h>
+=======
+ * CPU subsystem support
+ */
+
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/sched.h>
@@ -11,6 +18,7 @@
 #include <linux/device.h>
 #include <linux/node.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
 
 #include "base.h"
 
@@ -37,17 +45,55 @@ static ssize_t __ref store_online(struct sys_device *dev, struct sysdev_attribut
 				 const char *buf, size_t count)
 {
 	struct cpu *cpu = container_of(dev, struct cpu, sysdev);
+=======
+#include <linux/slab.h>
+#include <linux/percpu.h>
+
+#include "base.h"
+
+struct bus_type cpu_subsys = {
+	.name = "cpu",
+	.dev_name = "cpu",
+};
+EXPORT_SYMBOL_GPL(cpu_subsys);
+
+static DEFINE_PER_CPU(struct device *, cpu_sys_devices);
+
+#ifdef CONFIG_HOTPLUG_CPU
+static ssize_t show_online(struct device *dev,
+			   struct device_attribute *attr,
+			   char *buf)
+{
+	struct cpu *cpu = container_of(dev, struct cpu, dev);
+
+	return sprintf(buf, "%u\n", !!cpu_online(cpu->dev.id));
+}
+
+static ssize_t __ref store_online(struct device *dev,
+				  struct device_attribute *attr,
+				  const char *buf, size_t count)
+{
+	struct cpu *cpu = container_of(dev, struct cpu, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ssize_t ret;
 
 	cpu_hotplug_driver_lock();
 	switch (buf[0]) {
 	case '0':
+<<<<<<< HEAD
 		ret = cpu_down(cpu->sysdev.id);
+=======
+		ret = cpu_down(cpu->dev.id);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!ret)
 			kobject_uevent(&dev->kobj, KOBJ_OFFLINE);
 		break;
 	case '1':
+<<<<<<< HEAD
 		ret = cpu_up(cpu->sysdev.id);
+=======
+		ret = cpu_up(cpu->dev.id);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!ret)
 			kobject_uevent(&dev->kobj, KOBJ_ONLINE);
 		break;
@@ -60,6 +106,7 @@ static ssize_t __ref store_online(struct sys_device *dev, struct sysdev_attribut
 		ret = count;
 	return ret;
 }
+<<<<<<< HEAD
 static SYSDEV_ATTR(online, 0644, show_online, store_online);
 
 static void __cpuinit register_cpu_control(struct cpu *cpu)
@@ -75,29 +122,61 @@ void unregister_cpu(struct cpu *cpu)
 	sysdev_remove_file(&cpu->sysdev, &attr_online);
 
 	sysdev_unregister(&cpu->sysdev);
+=======
+static DEVICE_ATTR(online, 0644, show_online, store_online);
+
+static void __cpuinit register_cpu_control(struct cpu *cpu)
+{
+	device_create_file(&cpu->dev, &dev_attr_online);
+}
+void unregister_cpu(struct cpu *cpu)
+{
+	int logical_cpu = cpu->dev.id;
+
+	unregister_cpu_under_node(logical_cpu, cpu_to_node(logical_cpu));
+
+	device_remove_file(&cpu->dev, &dev_attr_online);
+
+	device_unregister(&cpu->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	per_cpu(cpu_sys_devices, logical_cpu) = NULL;
 	return;
 }
 
 #ifdef CONFIG_ARCH_CPU_PROBE_RELEASE
+<<<<<<< HEAD
 static ssize_t cpu_probe_store(struct sysdev_class *class,
 			       struct sysdev_class_attribute *attr,
+=======
+static ssize_t cpu_probe_store(struct device *dev,
+			       struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 			       const char *buf,
 			       size_t count)
 {
 	return arch_cpu_probe(buf, count);
 }
 
+<<<<<<< HEAD
 static ssize_t cpu_release_store(struct sysdev_class *class,
 				 struct sysdev_class_attribute *attr,
+=======
+static ssize_t cpu_release_store(struct device *dev,
+				 struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 const char *buf,
 				 size_t count)
 {
 	return arch_cpu_release(buf, count);
 }
 
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(probe, S_IWUSR, NULL, cpu_probe_store);
 static SYSDEV_CLASS_ATTR(release, S_IWUSR, NULL, cpu_release_store);
+=======
+static DEVICE_ATTR(probe, S_IWUSR, NULL, cpu_probe_store);
+static DEVICE_ATTR(release, S_IWUSR, NULL, cpu_release_store);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_ARCH_CPU_PROBE_RELEASE */
 
 #else /* ... !CONFIG_HOTPLUG_CPU */
@@ -109,15 +188,26 @@ static inline void register_cpu_control(struct cpu *cpu)
 #ifdef CONFIG_KEXEC
 #include <linux/kexec.h>
 
+<<<<<<< HEAD
 static ssize_t show_crash_notes(struct sys_device *dev, struct sysdev_attribute *attr,
 				char *buf)
 {
 	struct cpu *cpu = container_of(dev, struct cpu, sysdev);
+=======
+static ssize_t show_crash_notes(struct device *dev, struct device_attribute *attr,
+				char *buf)
+{
+	struct cpu *cpu = container_of(dev, struct cpu, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ssize_t rc;
 	unsigned long long addr;
 	int cpunum;
 
+<<<<<<< HEAD
 	cpunum = cpu->sysdev.id;
+=======
+	cpunum = cpu->dev.id;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Might be reading other cpu's data based on which cpu read thread
@@ -129,7 +219,11 @@ static ssize_t show_crash_notes(struct sys_device *dev, struct sysdev_attribute 
 	rc = sprintf(buf, "%Lx\n", addr);
 	return rc;
 }
+<<<<<<< HEAD
 static SYSDEV_ATTR(crash_notes, 0400, show_crash_notes, NULL);
+=======
+static DEVICE_ATTR(crash_notes, 0400, show_crash_notes, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*
@@ -137,12 +231,21 @@ static SYSDEV_ATTR(crash_notes, 0400, show_crash_notes, NULL);
  */
 
 struct cpu_attr {
+<<<<<<< HEAD
 	struct sysdev_class_attribute attr;
 	const struct cpumask *const * const map;
 };
 
 static ssize_t show_cpus_attr(struct sysdev_class *class,
 			      struct sysdev_class_attribute *attr,
+=======
+	struct device_attribute attr;
+	const struct cpumask *const * const map;
+};
+
+static ssize_t show_cpus_attr(struct device *dev,
+			      struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      char *buf)
 {
 	struct cpu_attr *ca = container_of(attr, struct cpu_attr, attr);
@@ -153,10 +256,17 @@ static ssize_t show_cpus_attr(struct sysdev_class *class,
 	return n;
 }
 
+<<<<<<< HEAD
 #define _CPU_ATTR(name, map)						\
 	{ _SYSDEV_CLASS_ATTR(name, 0444, show_cpus_attr, NULL), map }
 
 /* Keep in sync with cpu_sysdev_class_attrs */
+=======
+#define _CPU_ATTR(name, map) \
+	{ __ATTR(name, 0444, show_cpus_attr, NULL), map }
+
+/* Keep in sync with cpu_subsys_attrs */
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct cpu_attr cpu_attrs[] = {
 	_CPU_ATTR(online, &cpu_online_mask),
 	_CPU_ATTR(possible, &cpu_possible_mask),
@@ -166,19 +276,33 @@ static struct cpu_attr cpu_attrs[] = {
 /*
  * Print values for NR_CPUS and offlined cpus
  */
+<<<<<<< HEAD
 static ssize_t print_cpus_kernel_max(struct sysdev_class *class,
 				     struct sysdev_class_attribute *attr, char *buf)
+=======
+static ssize_t print_cpus_kernel_max(struct device *dev,
+				     struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int n = snprintf(buf, PAGE_SIZE-2, "%d\n", NR_CPUS - 1);
 	return n;
 }
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(kernel_max, 0444, print_cpus_kernel_max, NULL);
+=======
+static DEVICE_ATTR(kernel_max, 0444, print_cpus_kernel_max, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* arch-optional setting to enable display of offline cpus >= nr_cpu_ids */
 unsigned int total_cpus;
 
+<<<<<<< HEAD
 static ssize_t print_cpus_offline(struct sysdev_class *class,
 				  struct sysdev_class_attribute *attr, char *buf)
+=======
+static ssize_t print_cpus_offline(struct device *dev,
+				  struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int n = 0, len = PAGE_SIZE-2;
 	cpumask_var_t offline;
@@ -205,7 +329,30 @@ static ssize_t print_cpus_offline(struct sysdev_class *class,
 	n += snprintf(&buf[n], len - n, "\n");
 	return n;
 }
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(offline, 0444, print_cpus_offline, NULL);
+=======
+static DEVICE_ATTR(offline, 0444, print_cpus_offline, NULL);
+
+static void cpu_device_release(struct device *dev)
+{
+	/*
+	 * This is an empty function to prevent the driver core from spitting a
+	 * warning at us.  Yes, I know this is directly opposite of what the
+	 * documentation for the driver core and kobjects say, and the author
+	 * of this code has already been publically ridiculed for doing
+	 * something as foolish as this.  However, at this point in time, it is
+	 * the only way to handle the issue of statically allocated cpu
+	 * devices.  The different architectures will have their cpu device
+	 * code reworked to properly handle this in the near future, so this
+	 * function will then be changed to correctly free up the memory held
+	 * by the cpu device.
+	 *
+	 * Never copy this way of doing things, or you too will be made fun of
+	 * on the linux-kerenl list, you have been warned.
+	 */
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * register_cpu - Setup a sysfs device for a CPU.
@@ -218,6 +365,7 @@ static SYSDEV_CLASS_ATTR(offline, 0444, print_cpus_offline, NULL);
 int __cpuinit register_cpu(struct cpu *cpu, int num)
 {
 	int error;
+<<<<<<< HEAD
 	cpu->node_id = cpu_to_node(num);
 	cpu->sysdev.id = num;
 	cpu->sysdev.cls = &cpu_sysdev_class;
@@ -228,23 +376,48 @@ int __cpuinit register_cpu(struct cpu *cpu, int num)
 		register_cpu_control(cpu);
 	if (!error)
 		per_cpu(cpu_sys_devices, num) = &cpu->sysdev;
+=======
+
+	cpu->node_id = cpu_to_node(num);
+	memset(&cpu->dev, 0x00, sizeof(struct device));
+	cpu->dev.id = num;
+	cpu->dev.bus = &cpu_subsys;
+	cpu->dev.release = cpu_device_release;
+#ifdef CONFIG_ARCH_HAS_CPU_AUTOPROBE
+	cpu->dev.bus->uevent = arch_cpu_uevent;
+#endif
+	error = device_register(&cpu->dev);
+	if (!error && cpu->hotpluggable)
+		register_cpu_control(cpu);
+	if (!error)
+		per_cpu(cpu_sys_devices, num) = &cpu->dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!error)
 		register_cpu_under_node(num, cpu_to_node(num));
 
 #ifdef CONFIG_KEXEC
 	if (!error)
+<<<<<<< HEAD
 		error = sysdev_create_file(&cpu->sysdev, &attr_crash_notes);
+=======
+		error = device_create_file(&cpu->dev, &dev_attr_crash_notes);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	return error;
 }
 
+<<<<<<< HEAD
 struct sys_device *get_cpu_sysdev(unsigned cpu)
+=======
+struct device *get_cpu_device(unsigned cpu)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (cpu < nr_cpu_ids && cpu_possible(cpu))
 		return per_cpu(cpu_sys_devices, cpu);
 	else
 		return NULL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(get_cpu_sysdev);
 
 int __init cpu_dev_init(void)
@@ -272,3 +445,70 @@ static struct sysdev_class_attribute *cpu_sysdev_class_attrs[] = {
 	&attr_offline,
 	NULL
 };
+=======
+EXPORT_SYMBOL_GPL(get_cpu_device);
+
+#ifdef CONFIG_ARCH_HAS_CPU_AUTOPROBE
+static DEVICE_ATTR(modalias, 0444, arch_print_cpu_modalias, NULL);
+#endif
+
+static struct attribute *cpu_root_attrs[] = {
+#ifdef CONFIG_ARCH_CPU_PROBE_RELEASE
+	&dev_attr_probe.attr,
+	&dev_attr_release.attr,
+#endif
+	&cpu_attrs[0].attr.attr,
+	&cpu_attrs[1].attr.attr,
+	&cpu_attrs[2].attr.attr,
+	&dev_attr_kernel_max.attr,
+	&dev_attr_offline.attr,
+#ifdef CONFIG_ARCH_HAS_CPU_AUTOPROBE
+	&dev_attr_modalias.attr,
+#endif
+	NULL
+};
+
+static struct attribute_group cpu_root_attr_group = {
+	.attrs = cpu_root_attrs,
+};
+
+static const struct attribute_group *cpu_root_attr_groups[] = {
+	&cpu_root_attr_group,
+	NULL,
+};
+
+bool cpu_is_hotpluggable(unsigned cpu)
+{
+	struct device *dev = get_cpu_device(cpu);
+	return dev && container_of(dev, struct cpu, dev)->hotpluggable;
+}
+EXPORT_SYMBOL_GPL(cpu_is_hotpluggable);
+
+#ifdef CONFIG_GENERIC_CPU_DEVICES
+static DEFINE_PER_CPU(struct cpu, cpu_devices);
+#endif
+
+static void __init cpu_dev_register_generic(void)
+{
+#ifdef CONFIG_GENERIC_CPU_DEVICES
+	int i;
+
+	for_each_possible_cpu(i) {
+		if (register_cpu(&per_cpu(cpu_devices, i), i))
+			panic("Failed to register CPU device");
+	}
+#endif
+}
+
+void __init cpu_dev_init(void)
+{
+	if (subsys_system_register(&cpu_subsys, cpu_root_attr_groups))
+		panic("Failed to register CPU subsystem");
+
+	cpu_dev_register_generic();
+
+#if defined(CONFIG_SCHED_MC) || defined(CONFIG_SCHED_SMT)
+	sched_create_sysfs_power_savings_entries(cpu_subsys.dev_root);
+#endif
+}
+>>>>>>> refs/remotes/origin/cm-10.0

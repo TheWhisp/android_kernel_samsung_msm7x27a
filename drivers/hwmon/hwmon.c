@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
     hwmon.c - part of lm_sensors, Linux kernel modules for hardware monitoring
 
     This file defines the sysfs class "hwmon", for use by sensors drivers.
@@ -9,6 +10,18 @@
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; version 2 of the License.
 */
+=======
+ * hwmon.c - part of lm_sensors, Linux kernel modules for hardware monitoring
+ *
+ * This file defines the sysfs class "hwmon", for use by sensors drivers.
+ *
+ * Copyright (C) 2005 Mark M. Hoffman <mhoffman@lightlink.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
@@ -27,8 +40,12 @@
 
 static struct class *hwmon_class;
 
+<<<<<<< HEAD
 static DEFINE_IDR(hwmon_idr);
 static DEFINE_SPINLOCK(idr_lock);
+=======
+static DEFINE_IDA(hwmon_ida);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * hwmon_device_register - register w/ hwmon
@@ -42,6 +59,7 @@ static DEFINE_SPINLOCK(idr_lock);
 struct device *hwmon_device_register(struct device *dev)
 {
 	struct device *hwdev;
+<<<<<<< HEAD
 	int id, err;
 
 again:
@@ -69,6 +87,23 @@ again:
 
 	return hwdev;
 }
+=======
+	int id;
+
+	id = ida_simple_get(&hwmon_ida, 0, 0, GFP_KERNEL);
+	if (id < 0)
+		return ERR_PTR(id);
+
+	hwdev = device_create(hwmon_class, dev, MKDEV(0, 0), NULL,
+			      HWMON_ID_FORMAT, id);
+
+	if (IS_ERR(hwdev))
+		ida_simple_remove(&hwmon_ida, id);
+
+	return hwdev;
+}
+EXPORT_SYMBOL_GPL(hwmon_device_register);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * hwmon_device_unregister - removes the previously registered class device
@@ -81,13 +116,21 @@ void hwmon_device_unregister(struct device *dev)
 
 	if (likely(sscanf(dev_name(dev), HWMON_ID_FORMAT, &id) == 1)) {
 		device_unregister(dev);
+<<<<<<< HEAD
 		spin_lock(&idr_lock);
 		idr_remove(&hwmon_idr, id);
 		spin_unlock(&idr_lock);
+=======
+		ida_simple_remove(&hwmon_ida, id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		dev_dbg(dev->parent,
 			"hwmon_device_unregister() failed: bad class ID!\n");
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(hwmon_device_unregister);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __init hwmon_pci_quirks(void)
 {
@@ -135,9 +178,12 @@ static void __exit hwmon_exit(void)
 subsys_initcall(hwmon_init);
 module_exit(hwmon_exit);
 
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(hwmon_device_register);
 EXPORT_SYMBOL_GPL(hwmon_device_unregister);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_AUTHOR("Mark M. Hoffman <mhoffman@lightlink.com>");
 MODULE_DESCRIPTION("hardware monitoring sysfs/class support");
 MODULE_LICENSE("GPL");

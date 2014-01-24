@@ -74,7 +74,11 @@ static int __qib_get_user_pages(unsigned long start_page, size_t num_pages,
 			goto bail_release;
 	}
 
+<<<<<<< HEAD
 	current->mm->locked_vm += num_pages;
+=======
+	current->mm->pinned_vm += num_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = 0;
 	goto bail;
@@ -151,7 +155,11 @@ void qib_release_user_pages(struct page **p, size_t num_pages)
 	__qib_release_user_pages(p, num_pages, 1);
 
 	if (current->mm) {
+<<<<<<< HEAD
 		current->mm->locked_vm -= num_pages;
+=======
+		current->mm->pinned_vm -= num_pages;
+>>>>>>> refs/remotes/origin/cm-10.0
 		up_write(&current->mm->mmap_sem);
 	}
 }

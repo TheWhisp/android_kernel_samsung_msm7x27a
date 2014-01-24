@@ -18,7 +18,10 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/dma.h>
 #include <asm/mmu_context.h>
@@ -183,7 +186,11 @@ alcor_init_irq(void)
  */
 
 static int __init
+<<<<<<< HEAD
 alcor_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+alcor_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static char irq_tab[7][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */

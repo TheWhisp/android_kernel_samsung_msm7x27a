@@ -17,7 +17,11 @@
  *
  * Copyright (C) IBM Corporation, 2004
  *
+<<<<<<< HEAD
  * Author: Max Asbˆck <amax@us.ibm.com>
+=======
+ * Author: Max Asb√∂ck <amax@us.ibm.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 

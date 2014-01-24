@@ -36,6 +36,10 @@ drwxr-xr-x 2 root root 0 Feb  8 10:42 state3
 /sys/devices/system/cpu/cpu0/cpuidle/state0:
 total 0
 -r--r--r-- 1 root root 4096 Feb  8 10:42 desc
+<<<<<<< HEAD
+=======
+-rw-r--r-- 1 root root 4096 Feb  8 10:42 disable
+>>>>>>> refs/remotes/origin/cm-10.0
 -r--r--r-- 1 root root 4096 Feb  8 10:42 latency
 -r--r--r-- 1 root root 4096 Feb  8 10:42 name
 -r--r--r-- 1 root root 4096 Feb  8 10:42 power
@@ -45,6 +49,10 @@ total 0
 /sys/devices/system/cpu/cpu0/cpuidle/state1:
 total 0
 -r--r--r-- 1 root root 4096 Feb  8 10:42 desc
+<<<<<<< HEAD
+=======
+-rw-r--r-- 1 root root 4096 Feb  8 10:42 disable
+>>>>>>> refs/remotes/origin/cm-10.0
 -r--r--r-- 1 root root 4096 Feb  8 10:42 latency
 -r--r--r-- 1 root root 4096 Feb  8 10:42 name
 -r--r--r-- 1 root root 4096 Feb  8 10:42 power
@@ -54,6 +62,10 @@ total 0
 /sys/devices/system/cpu/cpu0/cpuidle/state2:
 total 0
 -r--r--r-- 1 root root 4096 Feb  8 10:42 desc
+<<<<<<< HEAD
+=======
+-rw-r--r-- 1 root root 4096 Feb  8 10:42 disable
+>>>>>>> refs/remotes/origin/cm-10.0
 -r--r--r-- 1 root root 4096 Feb  8 10:42 latency
 -r--r--r-- 1 root root 4096 Feb  8 10:42 name
 -r--r--r-- 1 root root 4096 Feb  8 10:42 power
@@ -63,6 +75,10 @@ total 0
 /sys/devices/system/cpu/cpu0/cpuidle/state3:
 total 0
 -r--r--r-- 1 root root 4096 Feb  8 10:42 desc
+<<<<<<< HEAD
+=======
+-rw-r--r-- 1 root root 4096 Feb  8 10:42 disable
+>>>>>>> refs/remotes/origin/cm-10.0
 -r--r--r-- 1 root root 4096 Feb  8 10:42 latency
 -r--r--r-- 1 root root 4096 Feb  8 10:42 name
 -r--r--r-- 1 root root 4096 Feb  8 10:42 power
@@ -72,6 +88,10 @@ total 0
 
 
 * desc : Small description about the idle state (string)
+<<<<<<< HEAD
+=======
+* disable : Option to disable this idle state (bool)
+>>>>>>> refs/remotes/origin/cm-10.0
 * latency : Latency to exit out of this idle state (in microseconds)
 * name : Name of the idle state (string)
 * power : Power consumed while in this idle state (in milliwatts)

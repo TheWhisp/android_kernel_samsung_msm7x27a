@@ -59,12 +59,17 @@ static int ms02nv_read(struct mtd_info *mtd, loff_t from,
 {
 	struct ms02nv_private *mp = mtd->priv;
 
+<<<<<<< HEAD
 	if (from + len > mtd->size)
 		return -EINVAL;
 
 	memcpy(buf, mp->uaddr + from, len);
 	*retlen = len;
 
+=======
+	memcpy(buf, mp->uaddr + from, len);
+	*retlen = len;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -73,12 +78,17 @@ static int ms02nv_write(struct mtd_info *mtd, loff_t to,
 {
 	struct ms02nv_private *mp = mtd->priv;
 
+<<<<<<< HEAD
 	if (to + len > mtd->size)
 		return -EINVAL;
 
 	memcpy(mp->uaddr + to, buf, len);
 	*retlen = len;
 
+=======
+	memcpy(mp->uaddr + to, buf, len);
+	*retlen = len;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -215,8 +225,13 @@ static int __init ms02nv_init_one(ulong addr)
 	mtd->size = fixsize;
 	mtd->name = (char *)ms02nv_name;
 	mtd->owner = THIS_MODULE;
+<<<<<<< HEAD
 	mtd->read = ms02nv_read;
 	mtd->write = ms02nv_write;
+=======
+	mtd->_read = ms02nv_read;
+	mtd->_write = ms02nv_write;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mtd->writesize = 1;
 
 	ret = -EIO;

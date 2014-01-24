@@ -21,6 +21,10 @@
 
 #include "flask.h"
 #include "av_permissions.h"
+<<<<<<< HEAD
+=======
+#include "security.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct nlmsg_perm {
 	u16	nlmsg_type;

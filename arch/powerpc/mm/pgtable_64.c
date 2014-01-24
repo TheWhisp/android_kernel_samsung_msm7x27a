@@ -26,6 +26,10 @@
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include <linux/mman.h>
 #include <linux/mm.h>
@@ -50,7 +54,10 @@
 #include <asm/processor.h>
 #include <asm/cputable.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/abs_addr.h>
 #include <asm/firmware.h>
 

@@ -1022,6 +1022,7 @@ static struct usb_driver gtco_driverinfo_table = {
 	.disconnect	= gtco_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  *  Register this module with the USB subsystem
  */
@@ -1049,6 +1050,9 @@ static void __exit gtco_exit(void)
 
 module_init(gtco_init);
 module_exit(gtco_exit);
+=======
+module_usb_driver(gtco_driverinfo_table);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("GTCO digitizer USB driver");
 MODULE_LICENSE("GPL");

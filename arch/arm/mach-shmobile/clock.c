@@ -22,8 +22,14 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/sh_clk.h>
+<<<<<<< HEAD
 
 int __init clk_init(void)
+=======
+#include <linux/export.h>
+
+int __init shmobile_clk_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/* Kick the child clocks.. */
 	recalculate_root_clocks();

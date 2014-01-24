@@ -8,7 +8,11 @@
 #include <linux/compiler.h>
 #include <asm/types.h>		/* for BITS_PER_LONG/SHIFT_PER_LONG */
 #include <asm/byteorder.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * HP-PARISC specific bit operations
@@ -223,6 +227,7 @@ static __inline__ int fls(int x)
 #ifdef __KERNEL__
 
 #include <asm-generic/bitops/le.h>
+<<<<<<< HEAD
 
 /* '3' is bits per byte */
 #define LE_BYTE_ADDR ((sizeof(unsigned long) - 1) << 3)
@@ -231,6 +236,9 @@ static __inline__ int fls(int x)
 		test_and_set_bit((nr)   ^ LE_BYTE_ADDR, (unsigned long *)addr)
 #define ext2_clear_bit_atomic(l,nr,addr) \
 		test_and_clear_bit( (nr) ^ LE_BYTE_ADDR, (unsigned long *)addr)
+=======
+#include <asm-generic/bitops/ext2-atomic-setbit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif	/* __KERNEL__ */
 

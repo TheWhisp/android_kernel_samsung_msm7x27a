@@ -11,12 +11,19 @@
 #include <linux/types.h>
 #include <linux/crypto.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <crypto/aes.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <net/mac80211.h>
 #include "key.h"
 #include "aes_cmac.h"
 
+<<<<<<< HEAD
 #define AES_BLOCK_SIZE 16
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define AES_CMAC_KEY_LEN 16
 #define CMAC_TLEN 8 /* CMAC TLen = 64 bits (8 octets) */
 #define AAD_LEN 20
@@ -35,10 +42,17 @@ static void gf_mulx(u8 *pad)
 }
 
 
+<<<<<<< HEAD
 static void aes_128_cmac_vector(struct crypto_cipher *tfm, u8 *scratch,
 				size_t num_elem,
 				const u8 *addr[], const size_t *len, u8 *mac)
 {
+=======
+static void aes_128_cmac_vector(struct crypto_cipher *tfm, size_t num_elem,
+				const u8 *addr[], const size_t *len, u8 *mac)
+{
+	u8 scratch[2 * AES_BLOCK_SIZE];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 *cbc, *pad;
 	const u8 *pos, *end;
 	size_t i, e, left, total_len;
@@ -95,7 +109,11 @@ static void aes_128_cmac_vector(struct crypto_cipher *tfm, u8 *scratch,
 }
 
 
+<<<<<<< HEAD
 void ieee80211_aes_cmac(struct crypto_cipher *tfm, u8 *scratch, const u8 *aad,
+=======
+void ieee80211_aes_cmac(struct crypto_cipher *tfm, const u8 *aad,
+>>>>>>> refs/remotes/origin/cm-10.0
 			const u8 *data, size_t data_len, u8 *mic)
 {
 	const u8 *addr[3];
@@ -110,7 +128,11 @@ void ieee80211_aes_cmac(struct crypto_cipher *tfm, u8 *scratch, const u8 *aad,
 	addr[2] = zero;
 	len[2] = CMAC_TLEN;
 
+<<<<<<< HEAD
 	aes_128_cmac_vector(tfm, scratch, 3, addr, len, mic);
+=======
+	aes_128_cmac_vector(tfm, 3, addr, len, mic);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 

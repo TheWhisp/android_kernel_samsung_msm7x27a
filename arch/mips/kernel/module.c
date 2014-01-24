@@ -28,7 +28,10 @@
 #include <linux/fs.h>
 #include <linux/string.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/spinlock.h>
 #include <linux/jump_label.h>
 
@@ -45,6 +48,7 @@ static struct mips_hi16 *mips_hi16_list;
 static LIST_HEAD(dbe_list);
 static DEFINE_SPINLOCK(dbe_lock);
 
+<<<<<<< HEAD
 void *module_alloc(unsigned long size)
 {
 #ifdef MODULE_START
@@ -69,6 +73,16 @@ int module_frob_arch_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
 {
 	return 0;
 }
+=======
+#ifdef MODULE_START
+void *module_alloc(unsigned long size)
+{
+	return __vmalloc_node_range(size, 1, MODULE_START, MODULE_END,
+				GFP_KERNEL, PAGE_KERNEL, -1,
+				__builtin_return_address(0));
+}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int apply_r_mips_none(struct module *me, u32 *location, Elf_Addr v)
 {

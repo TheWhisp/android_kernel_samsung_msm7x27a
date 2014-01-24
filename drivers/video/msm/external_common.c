@@ -79,7 +79,10 @@ const char edid_blk1[0x100] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xDF};
 #endif /* DEBUG_EDID */
 
+<<<<<<< HEAD
 #ifdef CONFIG_FB_MSM_HDMI_MHL
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DMA_E_BASE 0xB0000
 void mdp_vid_quant_set(void)
 {
@@ -96,6 +99,7 @@ void mdp_vid_quant_set(void)
 		MDP_OUTP(MDP_BASE + DMA_E_BASE + 0x78, 0x00FF0000);
 	}
 }
+<<<<<<< HEAD
 #else
 void mdp_vid_quant_set(void)
 {
@@ -105,6 +109,8 @@ void mdp_vid_quant_set(void)
 	 */
 }
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 const char *video_format_2string(uint32 format)
 {
@@ -569,6 +575,17 @@ static ssize_t hdmi_msm_wta_cec(struct device *dev,
 		mutex_lock(&hdmi_msm_state_mutex);
 		hdmi_msm_state->cec_enabled = true;
 		hdmi_msm_state->cec_logical_addr = 4;
+<<<<<<< HEAD
+=======
+
+		/* flush CEC queue */
+		hdmi_msm_state->cec_queue_wr = hdmi_msm_state->cec_queue_start;
+		hdmi_msm_state->cec_queue_rd = hdmi_msm_state->cec_queue_start;
+		hdmi_msm_state->cec_queue_full = false;
+		memset(hdmi_msm_state->cec_queue_rd, 0,
+			sizeof(struct hdmi_msm_cec_msg)*CEC_QUEUE_SIZE);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		mutex_unlock(&hdmi_msm_state_mutex);
 		hdmi_msm_cec_init();
 		hdmi_msm_cec_write_logical_addr(
@@ -661,7 +678,11 @@ static ssize_t hdmi_msm_wta_cec_frame(struct device *dev,
 			if (hdmi_msm_state->fsm_reset_done)
 				retry++;
 			mutex_unlock(&hdmi_msm_state_mutex);
+<<<<<<< HEAD
 			msleep(360);
+=======
+			msleep(20);
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else
 			break;
 	}
@@ -1454,21 +1475,37 @@ ssize_t video_3d_format_2string(uint32 format, char *buf)
 	len += ret;
 
 	if (len && (format & TOP_AND_BOTTOM))
+<<<<<<< HEAD
 		ret = snprintf(buf + len, PAGE_SIZE, ":%s",
 			single_video_3d_format_2string(
 				format & TOP_AND_BOTTOM));
 	else
 		ret = snprintf(buf + len, PAGE_SIZE, "%s",
+=======
+		ret = snprintf(buf + len, PAGE_SIZE - len, ":%s",
+			single_video_3d_format_2string(
+				format & TOP_AND_BOTTOM));
+	else
+		ret = snprintf(buf + len, PAGE_SIZE - len, "%s",
+>>>>>>> refs/remotes/origin/cm-10.0
 			single_video_3d_format_2string(
 				format & TOP_AND_BOTTOM));
 	len += ret;
 
 	if (len && (format & SIDE_BY_SIDE_HALF))
+<<<<<<< HEAD
 		ret = snprintf(buf + len, PAGE_SIZE, ":%s",
 			single_video_3d_format_2string(
 				format & SIDE_BY_SIDE_HALF));
 	else
 		ret = snprintf(buf + len, PAGE_SIZE, "%s",
+=======
+		ret = snprintf(buf + len, PAGE_SIZE - len, ":%s",
+			single_video_3d_format_2string(
+				format & SIDE_BY_SIDE_HALF));
+	else
+		ret = snprintf(buf + len, PAGE_SIZE - len, "%s",
+>>>>>>> refs/remotes/origin/cm-10.0
 			single_video_3d_format_2string(
 				format & SIDE_BY_SIDE_HALF));
 	len += ret;
@@ -1979,13 +2016,22 @@ EXPORT_SYMBOL(hdmi_common_read_edid);
 
 bool hdmi_common_get_video_format_from_drv_data(struct msm_fb_data_type *mfd)
 {
+<<<<<<< HEAD
 	uint32 format;
+=======
+	uint32 format = HDMI_VFRMT_1920x1080p60_16_9;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct fb_var_screeninfo *var = &mfd->fbi->var;
 	bool changed = TRUE;
 
 	if (var->reserved[3]) {
 		format = var->reserved[3]-1;
 		DEV_DBG("reserved format is %d\n", format);
+<<<<<<< HEAD
+=======
+	} else if (hdmi_prim_resolution) {
+		format = hdmi_prim_resolution - 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		DEV_DBG("detecting resolution from %dx%d use var->reserved[3]"
 			" to specify mode", mfd->var_xres, mfd->var_yres);
@@ -2000,15 +2046,44 @@ bool hdmi_common_get_video_format_from_drv_data(struct msm_fb_data_type *mfd)
 				: HDMI_VFRMT_720x576p50_16_9;
 			break;
 		case 1280:
+<<<<<<< HEAD
 			format = HDMI_VFRMT_1280x720p60_16_9;
 			break;
 		case 1440:
 			format = (mfd->var_yres == 480)
+=======
+			if (mfd->var_frame_rate == 50000)
+				format = HDMI_VFRMT_1280x720p50_16_9;
+			else
+				format = HDMI_VFRMT_1280x720p60_16_9;
+			break;
+		case 1440:
+			format = (mfd->var_yres == 240) /* interlaced has half
+							   of y res.
+							*/
+>>>>>>> refs/remotes/origin/cm-10.0
 				? HDMI_VFRMT_1440x480i60_16_9
 				: HDMI_VFRMT_1440x576i50_16_9;
 			break;
 		case 1920:
+<<<<<<< HEAD
 			format = HDMI_VFRMT_1920x1080p60_16_9;
+=======
+			if (mfd->var_yres == 540) {/* interlaced */
+				format = HDMI_VFRMT_1920x1080i60_16_9;
+			} else if (mfd->var_yres == 1080) {
+				if (mfd->var_frame_rate == 50000)
+					format = HDMI_VFRMT_1920x1080p50_16_9;
+				else if (mfd->var_frame_rate == 24000)
+					format = HDMI_VFRMT_1920x1080p24_16_9;
+				else if (mfd->var_frame_rate == 25000)
+					format = HDMI_VFRMT_1920x1080p25_16_9;
+				else if (mfd->var_frame_rate == 30000)
+					format = HDMI_VFRMT_1920x1080p30_16_9;
+				else
+					format = HDMI_VFRMT_1920x1080p60_16_9;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 	}

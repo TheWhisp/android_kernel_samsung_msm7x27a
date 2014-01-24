@@ -50,6 +50,7 @@ static void mpc837x_rdb_sd_cfg(void)
  */
 static void __init mpc837x_rdb_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
@@ -63,10 +64,17 @@ static void __init mpc837x_rdb_setup_arch(void)
 	for_each_compatible_node(np, "pci", "fsl,mpc8314-pcie")
 		mpc83xx_add_bridge(np);
 #endif
+=======
+	if (ppc_md.progress)
+		ppc_md.progress("mpc837x_rdb_setup_arch()", 0);
+
+	mpc83xx_setup_pci();
+>>>>>>> refs/remotes/origin/cm-10.0
 	mpc837x_usb_cfg();
 	mpc837x_rdb_sd_cfg();
 }
 
+<<<<<<< HEAD
 static struct of_device_id mpc837x_ids[] = {
 	{ .type = "soc", },
 	{ .compatible = "soc", },
@@ -100,6 +108,9 @@ static void __init mpc837x_rdb_init_IRQ(void)
 	 */
 	ipic_set_default_priority();
 }
+=======
+machine_device_initcall(mpc837x_rdb, mpc83xx_declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const char *board[] __initdata = {
 	"fsl,mpc8377rdb",
@@ -121,7 +132,11 @@ define_machine(mpc837x_rdb) {
 	.name			= "MPC837x RDB/WLAN",
 	.probe			= mpc837x_rdb_probe,
 	.setup_arch		= mpc837x_rdb_setup_arch,
+<<<<<<< HEAD
 	.init_IRQ		= mpc837x_rdb_init_IRQ,
+=======
+	.init_IRQ		= mpc83xx_ipic_init_IRQ,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_irq		= ipic_get_irq,
 	.restart		= mpc83xx_restart,
 	.time_init		= mpc83xx_time_init,

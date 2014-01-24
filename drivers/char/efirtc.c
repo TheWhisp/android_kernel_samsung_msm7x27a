@@ -37,7 +37,10 @@
 #include <linux/efi.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define EFI_RTC_VERSION		"0.4"
 

@@ -41,6 +41,11 @@
 #include "registers.h"
 #include "hw.h"
 
+<<<<<<< HEAD
+=======
+#include "../dmaengine.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int ioat_ring_alloc_order = 8;
 module_param(ioat_ring_alloc_order, int, 0644);
 MODULE_PARM_DESC(ioat_ring_alloc_order,
@@ -126,7 +131,11 @@ static void ioat2_start_null_desc(struct ioat2_dma_chan *ioat)
 	spin_unlock_bh(&ioat->prep_lock);
 }
 
+<<<<<<< HEAD
 static void __cleanup(struct ioat2_dma_chan *ioat, unsigned long phys_complete)
+=======
+static void __cleanup(struct ioat2_dma_chan *ioat, dma_addr_t phys_complete)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ioat_chan_common *chan = &ioat->base;
 	struct dma_async_tx_descriptor *tx;
@@ -147,8 +156,12 @@ static void __cleanup(struct ioat2_dma_chan *ioat, unsigned long phys_complete)
 		dump_desc_dbg(ioat, desc);
 		if (tx->cookie) {
 			ioat_dma_unmap(chan, tx->flags, desc->len, desc->hw);
+<<<<<<< HEAD
 			chan->completed_cookie = tx->cookie;
 			tx->cookie = 0;
+=======
+			dma_cookie_complete(tx);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (tx->callback) {
 				tx->callback(tx->callback_param);
 				tx->callback = NULL;
@@ -178,7 +191,11 @@ static void __cleanup(struct ioat2_dma_chan *ioat, unsigned long phys_complete)
 static void ioat2_cleanup(struct ioat2_dma_chan *ioat)
 {
 	struct ioat_chan_common *chan = &ioat->base;
+<<<<<<< HEAD
 	unsigned long phys_complete;
+=======
+	dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_bh(&chan->cleanup_lock);
 	if (ioat_cleanup_preamble(chan, &phys_complete))
@@ -259,7 +276,11 @@ int ioat2_reset_sync(struct ioat_chan_common *chan, unsigned long tmo)
 static void ioat2_restart_channel(struct ioat2_dma_chan *ioat)
 {
 	struct ioat_chan_common *chan = &ioat->base;
+<<<<<<< HEAD
 	unsigned long phys_complete;
+=======
+	dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ioat2_quiesce(chan, 0);
 	if (ioat_cleanup_preamble(chan, &phys_complete))
@@ -274,7 +295,11 @@ void ioat2_timer_event(unsigned long data)
 	struct ioat_chan_common *chan = &ioat->base;
 
 	if (test_bit(IOAT_COMPLETION_PENDING, &chan->state)) {
+<<<<<<< HEAD
 		unsigned long phys_complete;
+=======
+		dma_addr_t phys_complete;
+>>>>>>> refs/remotes/origin/cm-10.0
 		u64 status;
 
 		status = ioat_chansts(chan);
@@ -398,6 +423,7 @@ static dma_cookie_t ioat2_tx_submit_unlock(struct dma_async_tx_descriptor *tx)
 	struct dma_chan *c = tx->chan;
 	struct ioat2_dma_chan *ioat = to_ioat2_chan(c);
 	struct ioat_chan_common *chan = &ioat->base;
+<<<<<<< HEAD
 	dma_cookie_t cookie = c->cookie;
 
 	cookie++;
@@ -405,6 +431,11 @@ static dma_cookie_t ioat2_tx_submit_unlock(struct dma_async_tx_descriptor *tx)
 		cookie = 1;
 	tx->cookie = cookie;
 	c->cookie = cookie;
+=======
+	dma_cookie_t cookie;
+
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_dbg(to_dev(&ioat->base), "%s: cookie: %d\n", __func__, cookie);
 
 	if (!test_and_set_bit(IOAT_COMPLETION_PENDING, &chan->state))
@@ -575,9 +606,15 @@ bool reshape_ring(struct ioat2_dma_chan *ioat, int order)
 	 */
 	struct ioat_chan_common *chan = &ioat->base;
 	struct dma_chan *c = &chan->common;
+<<<<<<< HEAD
 	const u16 curr_size = ioat2_ring_size(ioat);
 	const u16 active = ioat2_ring_active(ioat);
 	const u16 new_size = 1 << order;
+=======
+	const u32 curr_size = ioat2_ring_size(ioat);
+	const u16 active = ioat2_ring_active(ioat);
+	const u32 new_size = 1 << order;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ioat_ring_ent **ring;
 	u16 i;
 

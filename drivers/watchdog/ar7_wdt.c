@@ -23,6 +23,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/errno.h>
@@ -39,7 +44,10 @@
 #include <asm/addrspace.h>
 #include <asm/mach-ar7/ar7.h>
 
+<<<<<<< HEAD
 #define DRVNAME "ar7_wdt"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define LONGNAME "TI AR7 Watchdog Timer"
 
 MODULE_AUTHOR("Nicolas Thill <nico@openwrt.org>");
@@ -51,8 +59,13 @@ static int margin = 60;
 module_param(margin, int, 0);
 MODULE_PARM_DESC(margin, "Watchdog margin in seconds");
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout, "Disable watchdog shutdown on close");
 
 #define READ_REG(x) readl((void __iomem *)&(x))
@@ -70,8 +83,13 @@ struct ar7_wdt {
 };
 
 static unsigned long wdt_is_open;
+<<<<<<< HEAD
 static spinlock_t wdt_lock;
 static unsigned expect_close;
+=======
+static unsigned expect_close;
+static DEFINE_SPINLOCK(wdt_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* XXX currently fixed, allows max margin ~68.72 secs */
 #define prescale_value 0xffff
@@ -93,7 +111,11 @@ static void ar7_wdt_kick(u32 value)
 			return;
 		}
 	}
+<<<<<<< HEAD
 	printk(KERN_ERR DRVNAME ": failed to unlock WDT kick reg\n");
+=======
+	pr_err("failed to unlock WDT kick reg\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void ar7_wdt_prescale(u32 value)
@@ -106,7 +128,11 @@ static void ar7_wdt_prescale(u32 value)
 			return;
 		}
 	}
+<<<<<<< HEAD
 	printk(KERN_ERR DRVNAME ": failed to unlock WDT prescale reg\n");
+=======
+	pr_err("failed to unlock WDT prescale reg\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void ar7_wdt_change(u32 value)
@@ -119,7 +145,11 @@ static void ar7_wdt_change(u32 value)
 			return;
 		}
 	}
+<<<<<<< HEAD
 	printk(KERN_ERR DRVNAME ": failed to unlock WDT change reg\n");
+=======
+	pr_err("failed to unlock WDT change reg\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void ar7_wdt_disable(u32 value)
@@ -135,7 +165,11 @@ static void ar7_wdt_disable(u32 value)
 			}
 		}
 	}
+<<<<<<< HEAD
 	printk(KERN_ERR DRVNAME ": failed to unlock WDT disable reg\n");
+=======
+	pr_err("failed to unlock WDT disable reg\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void ar7_wdt_update_margin(int new_margin)
@@ -151,21 +185,34 @@ static void ar7_wdt_update_margin(int new_margin)
 		change = 0xffff;
 	ar7_wdt_change(change);
 	margin = change * prescale_value / vbus_rate;
+<<<<<<< HEAD
 	printk(KERN_INFO DRVNAME
 	       ": timer margin %d seconds (prescale %d, change %d, freq %d)\n",
 	       margin, prescale_value, change, vbus_rate);
+=======
+	pr_info("timer margin %d seconds (prescale %d, change %d, freq %d)\n",
+		margin, prescale_value, change, vbus_rate);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void ar7_wdt_enable_wdt(void)
 {
+<<<<<<< HEAD
 	printk(KERN_DEBUG DRVNAME ": enabling watchdog timer\n");
+=======
+	pr_debug("enabling watchdog timer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	ar7_wdt_disable(1);
 	ar7_wdt_kick(1);
 }
 
 static void ar7_wdt_disable_wdt(void)
 {
+<<<<<<< HEAD
 	printk(KERN_DEBUG DRVNAME ": disabling watchdog timer\n");
+=======
+	pr_debug("disabling watchdog timer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	ar7_wdt_disable(0);
 }
 
@@ -183,9 +230,13 @@ static int ar7_wdt_open(struct inode *inode, struct file *file)
 static int ar7_wdt_release(struct inode *inode, struct file *file)
 {
 	if (!expect_close)
+<<<<<<< HEAD
 		printk(KERN_WARNING DRVNAME
 		": watchdog device closed unexpectedly,"
 		"will not disable the watchdog timer\n");
+=======
+		pr_warn("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	else if (!nowayout)
 		ar7_wdt_disable_wdt();
 	clear_bit(0, &wdt_is_open);
@@ -280,33 +331,52 @@ static int __devinit ar7_wdt_probe(struct platform_device *pdev)
 {
 	int rc;
 
+<<<<<<< HEAD
 	spin_lock_init(&wdt_lock);
 
 	ar7_regs_wdt =
 		platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
 	if (!ar7_regs_wdt) {
 		printk(KERN_ERR DRVNAME ": could not get registers resource\n");
+=======
+	ar7_regs_wdt =
+		platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
+	if (!ar7_regs_wdt) {
+		pr_err("could not get registers resource\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = -ENODEV;
 		goto out;
 	}
 
 	if (!request_mem_region(ar7_regs_wdt->start,
 				resource_size(ar7_regs_wdt), LONGNAME)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING DRVNAME ": watchdog I/O region busy\n");
+=======
+		pr_warn("watchdog I/O region busy\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = -EBUSY;
 		goto out;
 	}
 
 	ar7_wdt = ioremap(ar7_regs_wdt->start, resource_size(ar7_regs_wdt));
 	if (!ar7_wdt) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRVNAME ": could not ioremap registers\n");
+=======
+		pr_err("could not ioremap registers\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = -ENXIO;
 		goto out_mem_region;
 	}
 
 	vbus_clk = clk_get(NULL, "vbus");
 	if (IS_ERR(vbus_clk)) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRVNAME ": could not get vbus clock\n");
+=======
+		pr_err("could not get vbus clock\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = PTR_ERR(vbus_clk);
 		goto out_mem_region;
 	}
@@ -317,7 +387,11 @@ static int __devinit ar7_wdt_probe(struct platform_device *pdev)
 
 	rc = misc_register(&ar7_wdt_miscdev);
 	if (rc) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRVNAME ": unable to register misc device\n");
+=======
+		pr_err("unable to register misc device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_alloc;
 	}
 	goto out;
@@ -355,6 +429,7 @@ static struct platform_driver ar7_wdt_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init ar7_wdt_init(void)
 {
 	return platform_driver_register(&ar7_wdt_driver);
@@ -367,3 +442,6 @@ static void __exit ar7_wdt_cleanup(void)
 
 module_init(ar7_wdt_init);
 module_exit(ar7_wdt_cleanup);
+=======
+module_platform_driver(ar7_wdt_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

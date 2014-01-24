@@ -26,11 +26,19 @@
 #include <linux/interrupt.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
 #include <asm/irq.h>
 #include <asm/system.h>
 #include <asm/mach/pci.h>
 #include <asm/mach-types.h>
 
+=======
+#include <asm/mach/pci.h>
+#include <asm/mach-types.h>
+
+#include <mach/irqs.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* 
  * A small note about bridges and interrupts.  The DECchip 21050 (and
  * later) adheres to the PCI-PCI bridge specification.  This says that
@@ -95,7 +103,11 @@ static int irq_tab[4] __initdata = {
  * map the specified device/slot/pin to an IRQ.  This works out such
  * that slot 9 pin 1 is INT0, pin 2 is INT1, and slot 10 pin 1 is INT1.
  */
+<<<<<<< HEAD
 static int __init integrator_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init integrator_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int intnr = ((slot - 9) + (pin - 1)) & 3;
 

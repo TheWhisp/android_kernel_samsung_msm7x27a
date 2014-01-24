@@ -19,7 +19,14 @@
 #include <linux/smp.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <mach/omap4-common.h>
+=======
+
+#include "common.h"
+
+#include "powerdomain.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int platform_cpu_kill(unsigned int cpu)
 {
@@ -30,8 +37,15 @@ int platform_cpu_kill(unsigned int cpu)
  * platform-specific code to shutdown a CPU
  * Called with IRQs disabled
  */
+<<<<<<< HEAD
 void platform_cpu_die(unsigned int cpu)
 {
+=======
+void __ref platform_cpu_die(unsigned int cpu)
+{
+	unsigned int this_cpu;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	flush_cache_all();
 	dsb();
 
@@ -39,6 +53,7 @@ void platform_cpu_die(unsigned int cpu)
 	 * we're ready for shutdown now, so do it
 	 */
 	if (omap_modify_auxcoreboot0(0x0, 0x200) != 0x0)
+<<<<<<< HEAD
 		printk(KERN_CRIT "Secure clear status failed\n");
 
 	for (;;) {
@@ -48,6 +63,17 @@ void platform_cpu_die(unsigned int cpu)
 		do_wfi();
 
 		if (omap_read_auxcoreboot0() == cpu) {
+=======
+		pr_err("Secure clear status failed\n");
+
+	for (;;) {
+		/*
+		 * Enter into low power state
+		 */
+		omap4_hotplug_cpu(cpu, PWRDM_POWER_OFF);
+		this_cpu = smp_processor_id();
+		if (omap_read_auxcoreboot0() == this_cpu) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * OK, proper wakeup, we're done
 			 */

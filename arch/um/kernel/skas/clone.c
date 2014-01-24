@@ -8,7 +8,10 @@
 #include <asm/unistd.h>
 #include <sys/time.h>
 #include "as-layout.h"
+<<<<<<< HEAD
 #include "kern_constants.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ptrace_user.h"
 #include "stub-data.h"
 #include "sysdep/stub.h"

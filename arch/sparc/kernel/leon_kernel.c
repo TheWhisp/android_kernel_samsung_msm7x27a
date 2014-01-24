@@ -4,7 +4,10 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/errno.h>
 #include <linux/mutex.h>
 #include <linux/of.h>
@@ -105,11 +108,19 @@ static int irq_choose_cpu(const struct cpumask *affinity)
 {
 	cpumask_t mask;
 
+<<<<<<< HEAD
 	cpus_and(mask, cpu_online_map, *affinity);
 	if (cpus_equal(mask, cpu_online_map) || cpus_empty(mask))
 		return boot_cpu_id;
 	else
 		return first_cpu(mask);
+=======
+	cpumask_and(&mask, cpu_online_mask, affinity);
+	if (cpumask_equal(&mask, cpu_online_mask) || cpumask_empty(&mask))
+		return boot_cpu_id;
+	else
+		return cpumask_first(&mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #else
 #define irq_choose_cpu(affinity) boot_cpu_id

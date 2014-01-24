@@ -43,9 +43,15 @@
 #define DRIVER_DESC	"Streamzap Remote Control driver"
 
 #ifdef CONFIG_USB_DEBUG
+<<<<<<< HEAD
 static int debug = 1;
 #else
 static int debug;
+=======
+static bool debug = 1;
+#else
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #define USB_STREAMZAP_VENDOR_ID		0x0e9c
@@ -523,6 +529,7 @@ static int streamzap_resume(struct usb_interface *intf)
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  *	streamzap_init
  */
@@ -550,6 +557,9 @@ static void __exit streamzap_exit(void)
 
 module_init(streamzap_init);
 module_exit(streamzap_exit);
+=======
+module_usb_driver(streamzap_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Jarod Wilson <jarod@wilsonet.com>");
 MODULE_DESCRIPTION(DRIVER_DESC);

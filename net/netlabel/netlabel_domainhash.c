@@ -6,7 +6,11 @@
  * system manages static and dynamic label mappings for network protocols such
  * as CIPSO and RIPSO.
  *
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 
@@ -55,8 +59,12 @@ struct netlbl_domhsh_tbl {
  * should be okay */
 static DEFINE_SPINLOCK(netlbl_domhsh_lock);
 #define netlbl_domhsh_rcu_deref(p) \
+<<<<<<< HEAD
 	rcu_dereference_check(p, rcu_read_lock_held() || \
 				 lockdep_is_held(&netlbl_domhsh_lock))
+=======
+	rcu_dereference_check(p, lockdep_is_held(&netlbl_domhsh_lock))
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct netlbl_domhsh_tbl *netlbl_domhsh = NULL;
 static struct netlbl_dom_map *netlbl_domhsh_def = NULL;
 
@@ -79,7 +87,11 @@ static void netlbl_domhsh_free_entry(struct rcu_head *entry)
 	struct netlbl_dom_map *ptr;
 	struct netlbl_af4list *iter4;
 	struct netlbl_af4list *tmp4;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct netlbl_af6list *iter6;
 	struct netlbl_af6list *tmp6;
 #endif /* IPv6 */
@@ -91,7 +103,11 @@ static void netlbl_domhsh_free_entry(struct rcu_head *entry)
 			netlbl_af4list_remove_entry(iter4);
 			kfree(netlbl_domhsh_addr4_entry(iter4));
 		}
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 		netlbl_af6list_foreach_safe(iter6, tmp6,
 					    &ptr->type_def.addrsel->list6) {
 			netlbl_af6list_remove_entry(iter6);
@@ -218,7 +234,11 @@ static void netlbl_domhsh_audit_add(struct netlbl_dom_map *entry,
 			cipsov4 = map4->type_def.cipsov4;
 			netlbl_af4list_audit_addr(audit_buf, 0, NULL,
 						  addr4->addr, addr4->mask);
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else if (addr6 != NULL) {
 			struct netlbl_domaddr6_map *map6;
 			map6 = netlbl_domhsh_addr6_entry(addr6);
@@ -258,7 +278,11 @@ static int netlbl_domhsh_validate(const struct netlbl_dom_map *entry)
 {
 	struct netlbl_af4list *iter4;
 	struct netlbl_domaddr4_map *map4;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct netlbl_af6list *iter6;
 	struct netlbl_domaddr6_map *map6;
 #endif /* IPv6 */
@@ -292,7 +316,11 @@ static int netlbl_domhsh_validate(const struct netlbl_dom_map *entry)
 				return -EINVAL;
 			}
 		}
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 		netlbl_af6list_foreach(iter6, &entry->type_def.addrsel->list6) {
 			map6 = netlbl_domhsh_addr6_entry(iter6);
 			switch (map6->type) {
@@ -372,7 +400,11 @@ int netlbl_domhsh_add(struct netlbl_dom_map *entry,
 	struct netlbl_dom_map *entry_old;
 	struct netlbl_af4list *iter4;
 	struct netlbl_af4list *tmp4;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct netlbl_af6list *iter6;
 	struct netlbl_af6list *tmp6;
 #endif /* IPv6 */
@@ -408,7 +440,11 @@ int netlbl_domhsh_add(struct netlbl_dom_map *entry,
 					       &entry->type_def.addrsel->list4)
 				netlbl_domhsh_audit_add(entry, iter4, NULL,
 							ret_val, audit_info);
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 			netlbl_af6list_foreach_rcu(iter6,
 					       &entry->type_def.addrsel->list6)
 				netlbl_domhsh_audit_add(entry, NULL, iter6,
@@ -435,7 +471,11 @@ int netlbl_domhsh_add(struct netlbl_dom_map *entry,
 				ret_val = -EEXIST;
 				goto add_return;
 			}
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 		netlbl_af6list_foreach_rcu(iter6,
 					   &entry->type_def.addrsel->list6)
 			if (netlbl_af6list_search_exact(&iter6->addr,
@@ -456,7 +496,11 @@ int netlbl_domhsh_add(struct netlbl_dom_map *entry,
 			if (ret_val != 0)
 				goto add_return;
 		}
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 		netlbl_af6list_foreach_safe(iter6, tmp6,
 					    &entry->type_def.addrsel->list6) {
 			netlbl_af6list_remove_entry(iter6);
@@ -521,7 +565,11 @@ int netlbl_domhsh_remove_entry(struct netlbl_dom_map *entry,
 		if (entry != rcu_dereference(netlbl_domhsh_def))
 			list_del_rcu(&entry->list);
 		else
+<<<<<<< HEAD
 			rcu_assign_pointer(netlbl_domhsh_def, NULL);
+=======
+			RCU_INIT_POINTER(netlbl_domhsh_def, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		ret_val = -ENOENT;
 	spin_unlock(&netlbl_domhsh_lock);
@@ -580,7 +628,11 @@ int netlbl_domhsh_remove_af4(const char *domain,
 	struct netlbl_dom_map *entry_map;
 	struct netlbl_af4list *entry_addr;
 	struct netlbl_af4list *iter4;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct netlbl_af6list *iter6;
 #endif /* IPv6 */
 	struct netlbl_domaddr4_map *entry;
@@ -603,7 +655,11 @@ int netlbl_domhsh_remove_af4(const char *domain,
 		goto remove_af4_failure;
 	netlbl_af4list_foreach_rcu(iter4, &entry_map->type_def.addrsel->list4)
 		goto remove_af4_single_addr;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 	netlbl_af6list_foreach_rcu(iter6, &entry_map->type_def.addrsel->list6)
 		goto remove_af4_single_addr;
 #endif /* IPv6 */
@@ -714,7 +770,11 @@ struct netlbl_domaddr4_map *netlbl_domhsh_getentry_af4(const char *domain,
 	return netlbl_domhsh_addr4_entry(addr_iter);
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * netlbl_domhsh_getentry_af6 - Get an entry from the domain hash table
  * @domain: the domain name to search for

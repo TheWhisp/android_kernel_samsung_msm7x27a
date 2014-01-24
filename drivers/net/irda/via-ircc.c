@@ -46,6 +46,10 @@ F02 Oct/28/02: Add SB device ID for 3147 and 3177.
 #include <linux/ioport.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/rtnetlink.h>
 #include <linux/pci.h>
 #include <linux/dma-mapping.h>
@@ -941,14 +945,22 @@ static int via_ircc_dma_xmit_complete(struct via_ircc_cb *self)
 	iobase = self->io.fir_base;
 	/* Disable DMA */
 //      DisableDmaChannel(self->io.dma);
+<<<<<<< HEAD
 	/* Check for underrrun! */
+=======
+	/* Check for underrun! */
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Clear bit, by writing 1 into it */
 	Tx_status = GetTXStatus(iobase);
 	if (Tx_status & 0x08) {
 		self->netdev->stats.tx_errors++;
 		self->netdev->stats.tx_fifo_errors++;
 		hwreset(self);
+<<<<<<< HEAD
 // how to clear underrrun ?
+=======
+	/* how to clear underrun? */
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		self->netdev->stats.tx_packets++;
 		ResetChip(iobase, 3);
@@ -1494,14 +1506,22 @@ static int via_ircc_net_open(struct net_device *dev)
 	if (request_dma(self->io.dma, dev->name)) {
 		IRDA_WARNING("%s, unable to allocate dma=%d\n", driver_name,
 			     self->io.dma);
+<<<<<<< HEAD
 		free_irq(self->io.irq, self);
+=======
+		free_irq(self->io.irq, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EAGAIN;
 	}
 	if (self->io.dma2 != self->io.dma) {
 		if (request_dma(self->io.dma2, dev->name)) {
 			IRDA_WARNING("%s, unable to allocate dma2=%d\n",
 				     driver_name, self->io.dma2);
+<<<<<<< HEAD
 			free_irq(self->io.irq, self);
+=======
+			free_irq(self->io.irq, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 			free_dma(self->io.dma);
 			return -EAGAIN;
 		}

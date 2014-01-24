@@ -7,8 +7,11 @@
 
 #include <asm/processor.h>
 
+<<<<<<< HEAD
 extern int msm_krait_need_wfe_fixup;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * sev and wfe are ARMv6K extensions.  Uniprocessor ARMv6 may not have the K
  * extensions, so when running on UP, we have to patch these instructions away.
@@ -23,16 +26,34 @@ extern int msm_krait_need_wfe_fixup;
 #ifdef CONFIG_THUMB2_KERNEL
 #define SEV		ALT_SMP("sev.w", "nop.w")
 /*
+<<<<<<< HEAD
  * Both instructions given to the ALT_SMP macro need to be the same size, to
  * allow the SMP_ON_UP fixups to function correctly. Hence the explicit encoding
  * specifications.
  */
 #define WFE()		ALT_SMP(		\
 	"wfe.w",				\
+=======
+ * For Thumb-2, special care is needed to ensure that the conditional WFE
+ * instruction really does assemble to exactly 4 bytes (as required by
+ * the SMP_ON_UP fixup code).   By itself "wfene" might cause the
+ * assembler to insert a extra (16-bit) IT instruction, depending on the
+ * presence or absence of neighbouring conditional instructions.
+ *
+ * To avoid this unpredictableness, an approprite IT is inserted explicitly:
+ * the assembler won't change IT instructions which are explicitly present
+ * in the input.
+ */
+#define WFE(cond)	ALT_SMP(		\
+	"it " cond "\n\t"			\
+	"wfe" cond ".n",			\
+						\
+>>>>>>> refs/remotes/origin/cm-10.0
 	"nop.w"					\
 )
 #else
 #define SEV		ALT_SMP("sev", "nop")
+<<<<<<< HEAD
 #define WFE()		ALT_SMP("wfe", "nop")
 #endif
 
@@ -61,6 +82,9 @@ extern int msm_krait_need_wfe_fixup;
 "10:	msr	cpsr_cf, " tmp "\n"
 #else
 #define WFE_SAFE(fixup, tmp)	"	wfe\n"
+=======
+#define WFE(cond)	ALT_SMP("wfe" cond, "nop")
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static inline void dsb_sev(void)
@@ -100,6 +124,7 @@ static inline void dsb_sev(void)
 
 static inline void arch_spin_lock(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	unsigned long tmp, fixup = msm_krait_need_wfe_fixup;
 
 	__asm__ __volatile__(
@@ -113,6 +138,19 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 "	bne	1b"
 	: [tmp] "=&r" (tmp), [fixup] "+r" (fixup)
 	: [lock] "r" (&lock->lock), [bit0] "r" (1)
+=======
+	unsigned long tmp;
+
+	__asm__ __volatile__(
+"1:	ldrex	%0, [%1]\n"
+"	teq	%0, #0\n"
+	WFE("ne")
+"	strexeq	%0, %2, [%1]\n"
+"	teqeq	%0, #0\n"
+"	bne	1b"
+	: "=&r" (tmp)
+	: "r" (&lock->lock), "r" (1)
+>>>>>>> refs/remotes/origin/cm-10.0
 	: "cc");
 
 	smp_mb();
@@ -178,7 +216,10 @@ static inline void arch_spin_unlock(arch_spinlock_t *lock)
 static inline void arch_spin_lock(arch_spinlock_t *lock)
 {
 	unsigned long tmp, ticket, next_ticket;
+<<<<<<< HEAD
 	unsigned long fixup = msm_krait_need_wfe_fixup;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Grab the next ticket and wait for it to be "served" */
 	__asm__ __volatile__(
@@ -190,15 +231,23 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 "	uxth	%[ticket], %[ticket]\n"
 "2:\n"
 #ifdef CONFIG_CPU_32v6K
+<<<<<<< HEAD
 "	beq	3f\n"
 	WFE_SAFE("%[fixup]", "%[tmp]")
 "3:\n"
+=======
+"	wfene\n"
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 "	ldr	%[tmp], [%[lockaddr]]\n"
 "	cmp	%[ticket], %[tmp], lsr #16\n"
 "	bne	2b"
+<<<<<<< HEAD
 	: [ticket]"=&r" (ticket), [tmp]"=&r" (tmp),
 	  [next_ticket]"=&r" (next_ticket), [fixup]"+r" (fixup)
+=======
+	: [ticket]"=&r" (ticket), [tmp]"=&r" (tmp), [next_ticket]"=&r" (next_ticket)
+>>>>>>> refs/remotes/origin/cm-10.0
 	: [lockaddr]"r" (&lock->lock), [val1]"r" (1)
 	: "cc");
 	smp_mb();
@@ -247,16 +296,24 @@ static inline void arch_spin_unlock(arch_spinlock_t *lock)
 
 static inline void arch_spin_unlock_wait(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	unsigned long ticket, tmp, fixup = msm_krait_need_wfe_fixup;
+=======
+	unsigned long ticket;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Wait for now_serving == next_ticket */
 	__asm__ __volatile__(
 #ifdef CONFIG_CPU_32v6K
 "	cmpne	%[lockaddr], %[lockaddr]\n"
+<<<<<<< HEAD
 "1:\n"
 "	beq	2f\n"
 	WFE_SAFE("%[fixup]", "%[tmp]")
 "2:\n"
+=======
+"1:	wfene\n"
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 "1:\n"
 #endif
@@ -265,8 +322,12 @@ static inline void arch_spin_unlock_wait(arch_spinlock_t *lock)
 "	uxth	%[ticket], %[ticket]\n"
 "	cmp	%[ticket], #0\n"
 "	bne	1b"
+<<<<<<< HEAD
 	: [ticket]"=&r" (ticket), [tmp]"=&r" (tmp),
 	  [fixup]"+r" (fixup)
+=======
+	: [ticket]"=&r" (ticket)
+>>>>>>> refs/remotes/origin/cm-10.0
 	: [lockaddr]"r" (&lock->lock)
 	: "cc");
 }
@@ -294,6 +355,7 @@ static inline int arch_spin_is_contended(arch_spinlock_t *lock)
 
 static inline void arch_write_lock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	unsigned long tmp, fixup = msm_krait_need_wfe_fixup;
 
 	__asm__ __volatile__(
@@ -307,6 +369,19 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
 "	bne	1b"
 	: [tmp] "=&r" (tmp), [fixup] "+r" (fixup)
 	: [lock] "r" (&rw->lock), [bit31] "r" (0x80000000)
+=======
+	unsigned long tmp;
+
+	__asm__ __volatile__(
+"1:	ldrex	%0, [%1]\n"
+"	teq	%0, #0\n"
+	WFE("ne")
+"	strexeq	%0, %2, [%1]\n"
+"	teq	%0, #0\n"
+"	bne	1b"
+	: "=&r" (tmp)
+	: "r" (&rw->lock), "r" (0x80000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 	: "cc");
 
 	smp_mb();
@@ -362,6 +437,7 @@ static inline void arch_write_unlock(arch_rwlock_t *rw)
  */
 static inline void arch_read_lock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	unsigned long tmp, tmp2, fixup = msm_krait_need_wfe_fixup;
 
 	__asm__ __volatile__(
@@ -375,6 +451,19 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
 "	bmi	1b"
 	: [tmp] "=&r" (tmp), [tmp2] "=&r" (tmp2), [fixup] "+r" (fixup)
 	: [lock] "r" (&rw->lock)
+=======
+	unsigned long tmp, tmp2;
+
+	__asm__ __volatile__(
+"1:	ldrex	%0, [%2]\n"
+"	adds	%0, %0, #1\n"
+"	strexpl	%1, %0, [%2]\n"
+	WFE("mi")
+"	rsbpls	%0, %1, #0\n"
+"	bmi	1b"
+	: "=&r" (tmp), "=&r" (tmp2)
+	: "r" (&rw->lock)
+>>>>>>> refs/remotes/origin/cm-10.0
 	: "cc");
 
 	smp_mb();

@@ -34,6 +34,7 @@
  */
 
 #include <linux/highmem.h>
+<<<<<<< HEAD
 #include "drmP.h"
 
 /**
@@ -55,6 +56,11 @@ int drm_mem_info(char *buf, char **start, off_t offset,
 	return 0;
 }
 
+=======
+#include <linux/export.h>
+#include "drmP.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if __OS_HAS_AGP
 static void *agp_remap(unsigned long offset, unsigned long size,
 		       struct drm_device * dev)

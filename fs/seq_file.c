@@ -6,13 +6,36 @@
  */
 
 #include <linux/fs.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 
 #include <asm/uaccess.h>
 #include <asm/page.h>
 
+<<<<<<< HEAD
+=======
+
+/*
+ * seq_files have a buffer which can may overflow. When this happens a larger
+ * buffer is reallocated and all the data will be printed again.
+ * The overflow state is true when m->count == m->size.
+ */
+static bool seq_overflow(struct seq_file *m)
+{
+	return m->count == m->size;
+}
+
+static void seq_set_overflow(struct seq_file *m)
+{
+	m->count = m->size;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  *	seq_open -	initialize sequential file
  *	@file: file we initialize
@@ -92,7 +115,11 @@ static int traverse(struct seq_file *m, loff_t offset)
 			error = 0;
 			m->count = 0;
 		}
+<<<<<<< HEAD
 		if (m->count == m->size)
+=======
+		if (seq_overflow(m))
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto Eoverflow;
 		if (pos + m->count > offset) {
 			m->from = offset - pos;
@@ -140,9 +167,27 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
 
 	mutex_lock(&m->lock);
 
+<<<<<<< HEAD
 	/* Don't assume *ppos is where we left it */
 	if (unlikely(*ppos != m->read_pos)) {
 		m->read_pos = *ppos;
+=======
+	/*
+	 * seq_file->op->..m_start/m_stop/m_next may do special actions
+	 * or optimisations based on the file->f_version, so we want to
+	 * pass the file->f_version to those methods.
+	 *
+	 * seq_file->version is just copy of f_version, and seq_file
+	 * methods can treat it simply as file version.
+	 * It is copied in first and copied out after all operations.
+	 * It is convenient to have it as  part of structure to avoid the
+	 * need of passing another argument to all the seq_file methods.
+	 */
+	m->version = file->f_version;
+
+	/* Don't assume *ppos is where we left it */
+	if (unlikely(*ppos != m->read_pos)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		while ((err = traverse(m, *ppos)) == -EAGAIN)
 			;
 		if (err) {
@@ -152,6 +197,7 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
 			m->index = 0;
 			m->count = 0;
 			goto Done;
+<<<<<<< HEAD
 		}
 	}
 
@@ -167,6 +213,13 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
 	 * need of passing another argument to all the seq_file methods.
 	 */
 	m->version = file->f_version;
+=======
+		} else {
+			m->read_pos = *ppos;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* grab buffer if we didn't have one */
 	if (!m->buf) {
 		m->buf = kmalloc(m->size = PAGE_SIZE, GFP_KERNEL);
@@ -232,7 +285,11 @@ Fill:
 			break;
 		}
 		err = m->op->show(m, p);
+<<<<<<< HEAD
 		if (m->count == m->size || err) {
+=======
+		if (seq_overflow(m) || err) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			m->count = offs;
 			if (likely(err <= 0))
 				break;
@@ -359,7 +416,11 @@ int seq_escape(struct seq_file *m, const char *s, const char *esc)
 			*p++ = '0' + (c & 07);
 			continue;
 		}
+<<<<<<< HEAD
 		m->count = m->size;
+=======
+		seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
         }
 	m->count = p - m->buf;
@@ -381,7 +442,11 @@ int seq_printf(struct seq_file *m, const char *f, ...)
 			return 0;
 		}
 	}
+<<<<<<< HEAD
 	m->count = m->size;
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -1;
 }
 EXPORT_SYMBOL(seq_printf);
@@ -397,7 +462,11 @@ EXPORT_SYMBOL(seq_printf);
  *      Returns pointer past last written character in @s, or NULL in case of
  *      failure.
  */
+<<<<<<< HEAD
 char *mangle_path(char *s, char *p, char *esc)
+=======
+char *mangle_path(char *s, const char *p, const char *esc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	while (s <= p) {
 		char c = *p++;
@@ -427,7 +496,11 @@ EXPORT_SYMBOL(mangle_path);
  * return the absolute path of 'path', as represented by the
  * dentry / mnt pair in the path parameter.
  */
+<<<<<<< HEAD
 int seq_path(struct seq_file *m, struct path *path, char *esc)
+=======
+int seq_path(struct seq_file *m, const struct path *path, const char *esc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	char *buf;
 	size_t size = seq_get_buf(m, &buf);
@@ -450,8 +523,13 @@ EXPORT_SYMBOL(seq_path);
 /*
  * Same as seq_path, but relative to supplied root.
  */
+<<<<<<< HEAD
 int seq_path_root(struct seq_file *m, struct path *path, struct path *root,
 		  char *esc)
+=======
+int seq_path_root(struct seq_file *m, const struct path *path,
+		  const struct path *root, const char *esc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	char *buf;
 	size_t size = seq_get_buf(m, &buf);
@@ -480,7 +558,11 @@ int seq_path_root(struct seq_file *m, struct path *path, struct path *root,
 /*
  * returns the path of the 'dentry' from the root of its filesystem.
  */
+<<<<<<< HEAD
 int seq_dentry(struct seq_file *m, struct dentry *dentry, char *esc)
+=======
+int seq_dentry(struct seq_file *m, struct dentry *dentry, const char *esc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	char *buf;
 	size_t size = seq_get_buf(m, &buf);
@@ -510,7 +592,11 @@ int seq_bitmap(struct seq_file *m, const unsigned long *bits,
 			return 0;
 		}
 	}
+<<<<<<< HEAD
 	m->count = m->size;
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -1;
 }
 EXPORT_SYMBOL(seq_bitmap);
@@ -526,7 +612,11 @@ int seq_bitmap_list(struct seq_file *m, const unsigned long *bits,
 			return 0;
 		}
 	}
+<<<<<<< HEAD
 	m->count = m->size;
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -1;
 }
 EXPORT_SYMBOL(seq_bitmap_list);
@@ -637,11 +727,70 @@ int seq_puts(struct seq_file *m, const char *s)
 		m->count += len;
 		return 0;
 	}
+<<<<<<< HEAD
 	m->count = m->size;
+=======
+	seq_set_overflow(m);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -1;
 }
 EXPORT_SYMBOL(seq_puts);
 
+<<<<<<< HEAD
+=======
+/*
+ * A helper routine for putting decimal numbers without rich format of printf().
+ * only 'unsigned long long' is supported.
+ * This routine will put one byte delimiter + number into seq_file.
+ * This routine is very quick when you show lots of numbers.
+ * In usual cases, it will be better to use seq_printf(). It's easier to read.
+ */
+int seq_put_decimal_ull(struct seq_file *m, char delimiter,
+			unsigned long long num)
+{
+	int len;
+
+	if (m->count + 2 >= m->size) /* we'll write 2 bytes at least */
+		goto overflow;
+
+	if (delimiter)
+		m->buf[m->count++] = delimiter;
+
+	if (num < 10) {
+		m->buf[m->count++] = num + '0';
+		return 0;
+	}
+
+	len = num_to_str(m->buf + m->count, m->size - m->count, num);
+	if (!len)
+		goto overflow;
+	m->count += len;
+	return 0;
+overflow:
+	seq_set_overflow(m);
+	return -1;
+}
+EXPORT_SYMBOL(seq_put_decimal_ull);
+
+int seq_put_decimal_ll(struct seq_file *m, char delimiter,
+			long long num)
+{
+	if (num < 0) {
+		if (m->count + 3 >= m->size) {
+			seq_set_overflow(m);
+			return -1;
+		}
+		if (delimiter)
+			m->buf[m->count++] = delimiter;
+		num = -num;
+		delimiter = '-';
+	}
+	return seq_put_decimal_ull(m, delimiter, num);
+
+}
+EXPORT_SYMBOL(seq_put_decimal_ll);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * seq_write - write arbitrary data to buffer
  * @seq: seq_file identifying the buffer to which data should be written
@@ -657,7 +806,11 @@ int seq_write(struct seq_file *seq, const void *data, size_t len)
 		seq->count += len;
 		return 0;
 	}
+<<<<<<< HEAD
 	seq->count = seq->size;
+=======
+	seq_set_overflow(seq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -1;
 }
 EXPORT_SYMBOL(seq_write);

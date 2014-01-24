@@ -9,6 +9,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/fs.h>
@@ -156,7 +161,11 @@ static void *jffs2_acl_to_medium(const struct posix_acl *acl, size_t *size)
 	return ERR_PTR(-EINVAL);
 }
 
+<<<<<<< HEAD
 static struct posix_acl *jffs2_get_acl(struct inode *inode, int type)
+=======
+struct posix_acl *jffs2_get_acl(struct inode *inode, int type)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct posix_acl *acl;
 	char *value = NULL;
@@ -227,7 +236,11 @@ static int jffs2_set_acl(struct inode *inode, int type, struct posix_acl *acl)
 	case ACL_TYPE_ACCESS:
 		xprefix = JFFS2_XPREFIX_ACL_ACCESS;
 		if (acl) {
+<<<<<<< HEAD
 			mode_t mode = inode->i_mode;
+=======
+			umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 			rc = posix_acl_equiv_mode(acl, &mode);
 			if (rc < 0)
 				return rc;
@@ -259,11 +272,16 @@ static int jffs2_set_acl(struct inode *inode, int type, struct posix_acl *acl)
 	return rc;
 }
 
+<<<<<<< HEAD
 int jffs2_check_acl(struct inode *inode, int mask, unsigned int flags)
+=======
+int jffs2_init_acl_pre(struct inode *dir_i, struct inode *inode, umode_t *i_mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct posix_acl *acl;
 	int rc;
 
+<<<<<<< HEAD
 	if (flags & IPERM_FLAG_RCU)
 		return -ECHILD;
 
@@ -283,6 +301,8 @@ int jffs2_init_acl_pre(struct inode *dir_i, struct inode *inode, int *i_mode)
 	struct posix_acl *acl, *clone;
 	int rc;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	cache_no_acl(inode);
 
 	if (S_ISLNK(*i_mode))
@@ -298,6 +318,7 @@ int jffs2_init_acl_pre(struct inode *dir_i, struct inode *inode, int *i_mode)
 		if (S_ISDIR(*i_mode))
 			set_cached_acl(inode, ACL_TYPE_DEFAULT, acl);
 
+<<<<<<< HEAD
 		clone = posix_acl_clone(acl, GFP_KERNEL);
 		if (!clone)
 			return -ENOMEM;
@@ -310,6 +331,15 @@ int jffs2_init_acl_pre(struct inode *dir_i, struct inode *inode, int *i_mode)
 			set_cached_acl(inode, ACL_TYPE_ACCESS, clone);
 
 		posix_acl_release(clone);
+=======
+		rc = posix_acl_create(&acl, GFP_KERNEL, i_mode);
+		if (rc < 0)
+			return rc;
+		if (rc > 0)
+			set_cached_acl(inode, ACL_TYPE_ACCESS, acl);
+
+		posix_acl_release(acl);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }
@@ -335,7 +365,11 @@ int jffs2_init_acl_post(struct inode *inode)
 
 int jffs2_acl_chmod(struct inode *inode)
 {
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
+=======
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int rc;
 
 	if (S_ISLNK(inode->i_mode))
@@ -343,6 +377,7 @@ int jffs2_acl_chmod(struct inode *inode)
 	acl = jffs2_get_acl(inode, ACL_TYPE_ACCESS);
 	if (IS_ERR(acl) || !acl)
 		return PTR_ERR(acl);
+<<<<<<< HEAD
 	clone = posix_acl_clone(acl, GFP_KERNEL);
 	posix_acl_release(acl);
 	if (!clone)
@@ -351,6 +386,13 @@ int jffs2_acl_chmod(struct inode *inode)
 	if (!rc)
 		rc = jffs2_set_acl(inode, ACL_TYPE_ACCESS, clone);
 	posix_acl_release(clone);
+=======
+	rc = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+	if (rc)
+		return rc;
+	rc = jffs2_set_acl(inode, ACL_TYPE_ACCESS, acl);
+	posix_acl_release(acl);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 }
 

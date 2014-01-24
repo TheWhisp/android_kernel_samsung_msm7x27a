@@ -29,8 +29,11 @@
 #include "op_x86_model.h"
 #include "op_counter.h"
 
+<<<<<<< HEAD
 #define NUM_COUNTERS		4
 #define NUM_COUNTERS_F15H	6
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_OPROFILE_EVENT_MULTIPLEX
 #define NUM_VIRT_COUNTERS	32
 #else
@@ -70,6 +73,7 @@ static struct ibs_config ibs_config;
 static struct ibs_state ibs_state;
 
 /*
+<<<<<<< HEAD
  * IBS cpuid feature detection
  */
 
@@ -99,12 +103,15 @@ static struct ibs_state ibs_state;
 #define IBSCTL_LVT_OFFSET_MASK		0x0F
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * IBS randomization macros
  */
 #define IBS_RANDOM_BITS			12
 #define IBS_RANDOM_MASK			((1ULL << IBS_RANDOM_BITS) - 1)
 #define IBS_RANDOM_MAXCNT_OFFSET	(1ULL << (IBS_RANDOM_BITS - 5))
 
+<<<<<<< HEAD
 static u32 get_ibs_caps(void)
 {
 	u32 ibs_caps;
@@ -126,6 +133,8 @@ static u32 get_ibs_caps(void)
 	return ibs_caps;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * 16-bit Linear Feedback Shift Register (LFSR)
  *
@@ -316,6 +325,7 @@ static void op_amd_stop_ibs(void)
 		wrmsrl(MSR_AMD64_IBSOPCTL, 0);
 }
 
+<<<<<<< HEAD
 static inline int get_eilvt(int offset)
 {
 	return !setup_APIC_eilvt(offset, 0, APIC_EILVT_MSG_NMI, 1);
@@ -391,6 +401,8 @@ static void clear_APIC_ibs(void)
 		setup_APIC_eilvt(offset, 0, APIC_EILVT_MSG_FIX, 1);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_OPROFILE_EVENT_MULTIPLEX
 
 static void op_mux_switch_ctrl(struct op_x86_model_spec const *model,
@@ -439,7 +451,11 @@ static int op_amd_fill_in_addresses(struct op_msrs * const msrs)
 			goto fail;
 		}
 		/* both registers must be reserved */
+<<<<<<< HEAD
 		if (num_counters == NUM_COUNTERS_F15H) {
+=======
+		if (num_counters == AMD64_NUM_COUNTERS_F15H) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			msrs->counters[i].addr = MSR_F15H_PERF_CTR + (i << 1);
 			msrs->controls[i].addr = MSR_F15H_PERF_CTL + (i << 1);
 		} else {
@@ -504,6 +520,7 @@ static void op_amd_setup_ctrs(struct op_x86_model_spec const *model,
 		val |= op_x86_get_ctrl(model, &counter_config[virt]);
 		wrmsrl(msrs->controls[i].addr, val);
 	}
+<<<<<<< HEAD
 
 	if (ibs_caps)
 		setup_APIC_ibs();
@@ -513,6 +530,8 @@ static void op_amd_cpu_shutdown(void)
 {
 	if (ibs_caps)
 		clear_APIC_ibs();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int op_amd_check_ctrs(struct pt_regs * const regs,
@@ -575,6 +594,7 @@ static void op_amd_stop(struct op_msrs const * const msrs)
 	op_amd_stop_ibs();
 }
 
+<<<<<<< HEAD
 static int setup_ibs_ctl(int ibs_eilvt_off)
 {
 	struct pci_dev *cpu_cfg;
@@ -655,6 +675,8 @@ out:
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * check and reserve APIC extended interrupt LVT offset for IBS if
  * available
@@ -667,6 +689,7 @@ static void init_ibs(void)
 	if (!ibs_caps)
 		return;
 
+<<<<<<< HEAD
 	if (ibs_eilvt_valid())
 		goto out;
 
@@ -678,6 +701,8 @@ static void init_ibs(void)
 	return;
 
 out:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_INFO "oprofile: AMD IBS detected (0x%08x)\n", ibs_caps);
 }
 
@@ -741,9 +766,15 @@ static int op_amd_init(struct oprofile_operations *ops)
 	ops->create_files = setup_ibs_files;
 
 	if (boot_cpu_data.x86 == 0x15) {
+<<<<<<< HEAD
 		num_counters = NUM_COUNTERS_F15H;
 	} else {
 		num_counters = NUM_COUNTERS;
+=======
+		num_counters = AMD64_NUM_COUNTERS_F15H;
+	} else {
+		num_counters = AMD64_NUM_COUNTERS;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	op_amd_spec.num_counters = num_counters;
@@ -760,7 +791,10 @@ struct op_x86_model_spec op_amd_spec = {
 	.init			= op_amd_init,
 	.fill_in_addresses	= &op_amd_fill_in_addresses,
 	.setup_ctrs		= &op_amd_setup_ctrs,
+<<<<<<< HEAD
 	.cpu_down		= &op_amd_cpu_shutdown,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.check_ctrs		= &op_amd_check_ctrs,
 	.start			= &op_amd_start,
 	.stop			= &op_amd_stop,

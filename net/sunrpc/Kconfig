@@ -4,6 +4,13 @@ config SUNRPC
 config SUNRPC_GSS
 	tristate
 
+<<<<<<< HEAD
+=======
+config SUNRPC_BACKCHANNEL
+	bool
+	depends on SUNRPC
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config SUNRPC_XPRT_RDMA
 	tristate
 	depends on SUNRPC && INFINIBAND && INFINIBAND_ADDR_TRANS && EXPERIMENTAL
@@ -35,3 +42,19 @@ config RPCSEC_GSS_KRB5
 	  Kerberos support should be installed.
 
 	  If unsure, say Y.
+<<<<<<< HEAD
+=======
+
+config SUNRPC_DEBUG
+	bool "RPC: Enable dprintk debugging"
+	depends on SUNRPC && SYSCTL
+	help
+	  This option enables a sysctl-based debugging interface
+	  that is be used by the 'rpcdebug' utility to turn on or off
+	  logging of different aspects of the kernel RPC activity.
+
+	  Disabling this option will make your kernel slightly smaller,
+	  but makes troubleshooting NFS issues significantly harder.
+
+	  If unsure, say Y.
+>>>>>>> refs/remotes/origin/cm-10.0

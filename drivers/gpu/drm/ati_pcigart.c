@@ -31,6 +31,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 
 # define ATI_PCIGART_PAGE_SIZE		4096	/**< PCI GART page size */

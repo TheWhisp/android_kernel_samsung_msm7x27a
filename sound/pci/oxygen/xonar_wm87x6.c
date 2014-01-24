@@ -1275,7 +1275,12 @@ static const struct oxygen_model model_xonar_ds = {
 	.model_data_size = sizeof(struct xonar_wm87x6),
 	.device_config = PLAYBACK_0_TO_I2S |
 			 PLAYBACK_1_TO_SPDIF |
+<<<<<<< HEAD
 			 CAPTURE_0_FROM_I2S_1,
+=======
+			 CAPTURE_0_FROM_I2S_1 |
+			 CAPTURE_1_FROM_SPDIF,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dac_channels_pcm = 8,
 	.dac_channels_mixer = 8,
 	.dac_volume_min = 255 - 2*60,
@@ -1307,7 +1312,12 @@ static const struct oxygen_model model_xonar_hdav_slim = {
 	.model_data_size = sizeof(struct xonar_wm87x6),
 	.device_config = PLAYBACK_0_TO_I2S |
 			 PLAYBACK_1_TO_SPDIF |
+<<<<<<< HEAD
 			 CAPTURE_0_FROM_I2S_1,
+=======
+			 CAPTURE_0_FROM_I2S_1 |
+			 CAPTURE_1_FROM_SPDIF,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dac_channels_pcm = 8,
 	.dac_channels_mixer = 2,
 	.dac_volume_min = 255 - 2*60,

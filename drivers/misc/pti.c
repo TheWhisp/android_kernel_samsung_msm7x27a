@@ -33,6 +33,11 @@
 #include <linux/mutex.h>
 #include <linux/miscdevice.h>
 #include <linux/pti.h>
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+#include <linux/uaccess.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVERNAME		"pti"
 #define PCINAME			"pciPTI"
@@ -146,17 +151,30 @@ static void pti_write_to_aperture(struct pti_masterchannel *mc,
 /**
  *  pti_control_frame_built_and_sent()- control frame build and send function.
  *
+<<<<<<< HEAD
  *  @mc: The master / channel structure on which the function
  *       built a control frame.
+=======
+ *  @mc:          The master / channel structure on which the function
+ *                built a control frame.
+ *  @thread_name: The thread name associated with the master / channel or
+ *                'NULL' if using the 'current' global variable.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *  To be able to post process the PTI contents on host side, a control frame
  *  is added before sending any PTI content. So the host side knows on
  *  each PTI frame the name of the thread using a dedicated master / channel.
+<<<<<<< HEAD
  *  The thread name is retrieved from the 'current' global variable.
+=======
+ *  The thread name is retrieved from 'current' global variable if 'thread_name'
+ *  is 'NULL', else it is retrieved from 'thread_name' parameter.
+>>>>>>> refs/remotes/origin/cm-10.0
  *  This function builds this frame and sends it to a master ID CONTROL_ID.
  *  The overhead is only 32 bytes since the driver only writes to HW
  *  in 32 byte chunks.
  */
+<<<<<<< HEAD
 
 static void pti_control_frame_built_and_sent(struct pti_masterchannel *mc)
 {
@@ -179,12 +197,44 @@ static void pti_control_frame_built_and_sent(struct pti_masterchannel *mc)
 
 	/* Absolutely ensure our buffer is zero terminated. */
 	comm[TASK_COMM_LEN-1] = 0;
+=======
+static void pti_control_frame_built_and_sent(struct pti_masterchannel *mc,
+					     const char *thread_name)
+{
+	/*
+	 * Since we access the comm member in current's task_struct, we only
+	 * need to be as large as what 'comm' in that structure is.
+	 */
+	char comm[TASK_COMM_LEN];
+	struct pti_masterchannel mccontrol = {.master = CONTROL_ID,
+					      .channel = 0};
+	const char *thread_name_p;
+	const char *control_format = "%3d %3d %s";
+	u8 control_frame[CONTROL_FRAME_LEN];
+
+	if (!thread_name) {
+		if (!in_interrupt())
+			get_task_comm(comm, current);
+		else
+			strncpy(comm, "Interrupt", TASK_COMM_LEN);
+
+		/* Absolutely ensure our buffer is zero terminated. */
+		comm[TASK_COMM_LEN-1] = 0;
+		thread_name_p = comm;
+	} else {
+		thread_name_p = thread_name;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mccontrol.channel = pti_control_channel;
 	pti_control_channel = (pti_control_channel + 1) & 0x7f;
 
 	snprintf(control_frame, CONTROL_FRAME_LEN, control_format, mc->master,
+<<<<<<< HEAD
 		mc->channel, comm);
+=======
+		mc->channel, thread_name_p);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pti_write_to_aperture(&mccontrol, control_frame, strlen(control_frame));
 }
 
@@ -206,18 +256,32 @@ static void pti_write_full_frame_to_aperture(struct pti_masterchannel *mc,
 						const unsigned char *buf,
 						int len)
 {
+<<<<<<< HEAD
 	pti_control_frame_built_and_sent(mc);
+=======
+	pti_control_frame_built_and_sent(mc, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	pti_write_to_aperture(mc, (u8 *)buf, len);
 }
 
 /**
  * get_id()- Allocate a master and channel ID.
  *
+<<<<<<< HEAD
  * @id_array: an array of bits representing what channel
  *            id's are allocated for writing.
  * @max_ids:  The max amount of available write IDs to use.
  * @base_id:  The starting SW channel ID, based on the Intel
  *            PTI arch.
+=======
+ * @id_array:    an array of bits representing what channel
+ *               id's are allocated for writing.
+ * @max_ids:     The max amount of available write IDs to use.
+ * @base_id:     The starting SW channel ID, based on the Intel
+ *               PTI arch.
+ * @thread_name: The thread name associated with the master / channel or
+ *               'NULL' if using the 'current' global variable.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Returns:
  *	pti_masterchannel struct with master, channel ID address
@@ -227,7 +291,14 @@ static void pti_write_full_frame_to_aperture(struct pti_masterchannel *mc,
  * channel id. The bit is one if the id is taken and 0 if free. For
  * every master there are 128 channel id's.
  */
+<<<<<<< HEAD
 static struct pti_masterchannel *get_id(u8 *id_array, int max_ids, int base_id)
+=======
+static struct pti_masterchannel *get_id(u8 *id_array,
+					int max_ids,
+					int base_id,
+					const char *thread_name)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pti_masterchannel *mc;
 	int i, j, mask;
@@ -257,7 +328,11 @@ static struct pti_masterchannel *get_id(u8 *id_array, int max_ids, int base_id)
 	mc->master  = base_id;
 	mc->channel = ((i & 0xf)<<3) + j;
 	/* write new master Id / channel Id allocation to channel control */
+<<<<<<< HEAD
 	pti_control_frame_built_and_sent(mc);
+=======
+	pti_control_frame_built_and_sent(mc, thread_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return mc;
 }
 
@@ -273,18 +348,35 @@ static struct pti_masterchannel *get_id(u8 *id_array, int max_ids, int base_id)
  *				a master, channel ID address
  *				to write to PTI HW.
  *
+<<<<<<< HEAD
  * @type: 0- request Application  master, channel aperture ID write address.
  *        1- request OS master, channel aperture ID write
  *           address.
  *        2- request Modem master, channel aperture ID
  *           write address.
  *        Other values, error.
+=======
+ * @type:        0- request Application  master, channel aperture ID
+ *                  write address.
+ *               1- request OS master, channel aperture ID write
+ *                  address.
+ *               2- request Modem master, channel aperture ID
+ *                  write address.
+ *               Other values, error.
+ * @thread_name: The thread name associated with the master / channel or
+ *               'NULL' if using the 'current' global variable.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Returns:
  *	pti_masterchannel struct
  *	0 for error
  */
+<<<<<<< HEAD
 struct pti_masterchannel *pti_request_masterchannel(u8 type)
+=======
+struct pti_masterchannel *pti_request_masterchannel(u8 type,
+						    const char *thread_name)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pti_masterchannel *mc;
 
@@ -293,6 +385,7 @@ struct pti_masterchannel *pti_request_masterchannel(u8 type)
 	switch (type) {
 
 	case 0:
+<<<<<<< HEAD
 		mc = get_id(drv_data->ia_app, MAX_APP_IDS, APP_BASE_ID);
 		break;
 
@@ -302,6 +395,20 @@ struct pti_masterchannel *pti_request_masterchannel(u8 type)
 
 	case 2:
 		mc = get_id(drv_data->ia_modem, MAX_MODEM_IDS, MODEM_BASE_ID);
+=======
+		mc = get_id(drv_data->ia_app, MAX_APP_IDS,
+			    APP_BASE_ID, thread_name);
+		break;
+
+	case 1:
+		mc = get_id(drv_data->ia_os, MAX_OS_IDS,
+			    OS_BASE_ID, thread_name);
+		break;
+
+	case 2:
+		mc = get_id(drv_data->ia_modem, MAX_MODEM_IDS,
+			    MODEM_BASE_ID, thread_name);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		mc = NULL;
@@ -445,9 +552,15 @@ static void pti_tty_driver_close(struct tty_struct *tty, struct file *filp)
 }
 
 /**
+<<<<<<< HEAD
  * pti_tty_intstall()- Used to set up specific master-channels
  *		       to tty ports for organizational purposes when
  *		       tracing viewed from debuging tools.
+=======
+ * pti_tty_install()- Used to set up specific master-channels
+ *		      to tty ports for organizational purposes when
+ *		      tracing viewed from debuging tools.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * @driver: tty driver information.
  * @tty: tty struct containing pti information.
@@ -460,6 +573,7 @@ static int pti_tty_install(struct tty_driver *driver, struct tty_struct *tty)
 {
 	int idx = tty->index;
 	struct pti_tty *pti_tty_data;
+<<<<<<< HEAD
 	int ret = tty_init_termios(tty);
 
 	if (ret == 0) {
@@ -467,14 +581,25 @@ static int pti_tty_install(struct tty_driver *driver, struct tty_struct *tty)
 		tty->count++;
 		driver->ttys[idx] = tty;
 
+=======
+	int ret = tty_standard_install(driver, tty);
+
+	if (ret == 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pti_tty_data = kmalloc(sizeof(struct pti_tty), GFP_KERNEL);
 		if (pti_tty_data == NULL)
 			return -ENOMEM;
 
 		if (idx == PTITTY_MINOR_START)
+<<<<<<< HEAD
 			pti_tty_data->mc = pti_request_masterchannel(0);
 		else
 			pti_tty_data->mc = pti_request_masterchannel(2);
+=======
+			pti_tty_data->mc = pti_request_masterchannel(0, NULL);
+		else
+			pti_tty_data->mc = pti_request_masterchannel(2, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (pti_tty_data->mc == NULL) {
 			kfree(pti_tty_data);
@@ -563,7 +688,11 @@ static int pti_char_open(struct inode *inode, struct file *filp)
 	 * before assigning the value to filp->private_data.
 	 * Slightly easier to debug if this driver needs debugging.
 	 */
+<<<<<<< HEAD
 	mc = pti_request_masterchannel(0);
+=======
+	mc = pti_request_masterchannel(0, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (mc == NULL)
 		return -ENOMEM;
 	filp->private_data = mc;
@@ -890,21 +1019,31 @@ static int __init pti_init(void)
 
 	/* First register module as tty device */
 
+<<<<<<< HEAD
 	pti_tty_driver = alloc_tty_driver(1);
+=======
+	pti_tty_driver = alloc_tty_driver(PTITTY_MINOR_NUM);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pti_tty_driver == NULL) {
 		pr_err("%s(%d): Memory allocation failed for ptiTTY driver\n",
 			__func__, __LINE__);
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	pti_tty_driver->owner			= THIS_MODULE;
 	pti_tty_driver->magic			= TTY_DRIVER_MAGIC;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pti_tty_driver->driver_name		= DRIVERNAME;
 	pti_tty_driver->name			= TTYNAME;
 	pti_tty_driver->major			= 0;
 	pti_tty_driver->minor_start		= PTITTY_MINOR_START;
+<<<<<<< HEAD
 	pti_tty_driver->minor_num		= PTITTY_MINOR_NUM;
 	pti_tty_driver->num			= PTITTY_MINOR_NUM;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pti_tty_driver->type			= TTY_DRIVER_TYPE_SYSTEM;
 	pti_tty_driver->subtype			= SYSTEM_TYPE_SYSCONS;
 	pti_tty_driver->flags			= TTY_DRIVER_REAL_RAW |

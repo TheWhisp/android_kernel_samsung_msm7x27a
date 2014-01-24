@@ -27,6 +27,10 @@
 #include <linux/proc_fs.h>
 #include <linux/stat.h>
 #include <linux/sysctl.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ctype.h>
 #include <linux/cache.h>
 #include <linux/init.h>
@@ -39,7 +43,10 @@
 #include <asm/mmu_context.h>
 #include <asm/page.h>
 #include <asm/types.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/machdep.h>
 #include <asm/prom.h>
@@ -54,6 +61,11 @@
 #include <asm/spu.h>
 #include <asm/udbg.h>
 #include <asm/code-patching.h>
+<<<<<<< HEAD
+=======
+#include <asm/fadump.h>
+#include <asm/firmware.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef DEBUG
 #define DBG(fmt...) udbg_printf(fmt)
@@ -105,9 +117,12 @@ int mmu_kernel_ssize = MMU_SEGSIZE_256M;
 int mmu_highuser_ssize = MMU_SEGSIZE_256M;
 u16 mmu_slb_size = 64;
 EXPORT_SYMBOL_GPL(mmu_slb_size);
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
 unsigned int HPAGE_SHIFT;
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PPC_64K_PAGES
 int mmu_ci_restrictions;
 #endif
@@ -627,6 +642,19 @@ static void __init htab_initialize(void)
 		/* Using a hypervisor which owns the htab */
 		htab_address = NULL;
 		_SDR1 = 0; 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_FA_DUMP
+		/*
+		 * If firmware assisted dump is active firmware preserves
+		 * the contents of htab along with entire partition memory.
+		 * Clear the htab if firmware assisted dump is active so
+		 * that we dont end up using old mappings.
+		 */
+		if (is_fadump_active() && ppc_md.hpte_clear_all)
+			ppc_md.hpte_clear_all();
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		/* Find storage for the HPT.  Must be contiguous in
 		 * the absolute address space. On cell we want it to be
@@ -747,11 +775,18 @@ void __init early_init_mmu(void)
 	 */
 	htab_initialize();
 
+<<<<<<< HEAD
 	/* Initialize stab / SLB management except on iSeries
 	 */
 	if (mmu_has_feature(MMU_FTR_SLB))
 		slb_initialize();
 	else if (!firmware_has_feature(FW_FEATURE_ISERIES))
+=======
+	/* Initialize stab / SLB management */
+	if (mmu_has_feature(MMU_FTR_SLB))
+		slb_initialize();
+	else
+>>>>>>> refs/remotes/origin/cm-10.0
 		stab_initialize(get_paca()->stab_real);
 }
 
@@ -763,8 +798,12 @@ void __cpuinit early_init_mmu_secondary(void)
 		mtspr(SPRN_SDR1, _SDR1);
 
 	/* Initialize STAB/SLB. We use a virtual address as it works
+<<<<<<< HEAD
 	 * in real mode on pSeries and we want a virtual address on
 	 * iSeries anyway
+=======
+	 * in real mode on pSeries.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	if (mmu_has_feature(MMU_FTR_SLB))
 		slb_initialize();

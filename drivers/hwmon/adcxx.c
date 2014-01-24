@@ -125,7 +125,11 @@ static ssize_t adcxx_set_max(struct device *dev,
 	struct adcxx *adc = spi_get_drvdata(spi);
 	unsigned long value;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &value))
+=======
+	if (kstrtoul(buf, 10, &value))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	if (mutex_lock_interruptible(&adc->lock))
@@ -248,6 +252,7 @@ static struct spi_driver adcxx_driver = {
 	.remove	= __devexit_p(adcxx_remove),
 };
 
+<<<<<<< HEAD
 static int __init init_adcxx(void)
 {
 	return spi_register_driver(&adcxx_driver);
@@ -260,6 +265,9 @@ static void __exit exit_adcxx(void)
 
 module_init(init_adcxx);
 module_exit(exit_adcxx);
+=======
+module_spi_driver(adcxx_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Marc Pignat");
 MODULE_DESCRIPTION("National Semiconductor adcxx8sxxx Linux driver");

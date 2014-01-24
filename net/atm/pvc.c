@@ -11,6 +11,10 @@
 #include <linux/init.h>
 #include <linux/skbuff.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/sock.h>		/* for sock_no_* */
 
 #include "resources.h"		/* devs and vccs */

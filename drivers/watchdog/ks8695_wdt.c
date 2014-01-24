@@ -8,6 +8,11 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bitops.h>
 #include <linux/errno.h>
 #include <linux/fs.h>
@@ -28,21 +33,33 @@
 #define WDT_MAX_TIME		171	/* seconds */
 
 static int wdt_time = WDT_DEFAULT_TIME;
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param(wdt_time, int, 0);
 MODULE_PARM_DESC(wdt_time, "Watchdog time in seconds. (default="
 					__MODULE_STRING(WDT_DEFAULT_TIME) ")");
 
 #ifdef CONFIG_WATCHDOG_NOWAYOUT
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 #endif
 
 
 static unsigned long ks8695wdt_busy;
+<<<<<<< HEAD
 static spinlock_t ks8695_lock;
+=======
+static DEFINE_SPINLOCK(ks8695_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ......................................................................... */
 
@@ -233,8 +250,13 @@ static int __devinit ks8695wdt_probe(struct platform_device *pdev)
 	if (res)
 		return res;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "KS8695 Watchdog Timer enabled (%d seconds%s)\n",
 				wdt_time, nowayout ? ", nowayout" : "");
+=======
+	pr_info("KS8695 Watchdog Timer enabled (%d seconds%s)\n",
+		wdt_time, nowayout ? ", nowayout" : "");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -288,7 +310,10 @@ static struct platform_driver ks8695wdt_driver = {
 
 static int __init ks8695_wdt_init(void)
 {
+<<<<<<< HEAD
 	spin_lock_init(&ks8695_lock);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Check that the heartbeat value is within range;
 	   if not reset to the default */
 	if (ks8695_wdt_settimeout(wdt_time)) {

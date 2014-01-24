@@ -116,6 +116,7 @@ xfs_rename(
 	trace_xfs_rename(src_dp, target_dp, src_name, target_name);
 
 	new_parent = (src_dp != target_dp);
+<<<<<<< HEAD
 	src_is_directory = ((src_ip->i_d.di_mode & S_IFMT) == S_IFDIR);
 
 	if (src_is_directory) {
@@ -128,6 +129,9 @@ xfs_rename(
 			goto std_return;
 		}
 	}
+=======
+	src_is_directory = S_ISDIR(src_ip->i_d.di_mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	xfs_sort_for_rename(src_dp, target_dp, src_ip, target_ip,
 				inodes, &num_inodes);
@@ -170,12 +174,21 @@ xfs_rename(
 	 * we can rely on either trans_commit or trans_cancel to unlock
 	 * them.
 	 */
+<<<<<<< HEAD
 	xfs_trans_ijoin_ref(tp, src_dp, XFS_ILOCK_EXCL);
 	if (new_parent)
 		xfs_trans_ijoin_ref(tp, target_dp, XFS_ILOCK_EXCL);
 	xfs_trans_ijoin_ref(tp, src_ip, XFS_ILOCK_EXCL);
 	if (target_ip)
 		xfs_trans_ijoin_ref(tp, target_ip, XFS_ILOCK_EXCL);
+=======
+	xfs_trans_ijoin(tp, src_dp, XFS_ILOCK_EXCL);
+	if (new_parent)
+		xfs_trans_ijoin(tp, target_dp, XFS_ILOCK_EXCL);
+	xfs_trans_ijoin(tp, src_ip, XFS_ILOCK_EXCL);
+	if (target_ip)
+		xfs_trans_ijoin(tp, target_ip, XFS_ILOCK_EXCL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * If we are using project inheritance, we only allow renames
@@ -226,7 +239,11 @@ xfs_rename(
 		 * target and source are directories and that target can be
 		 * destroyed, or that neither is a directory.
 		 */
+<<<<<<< HEAD
 		if ((target_ip->i_d.di_mode & S_IFMT) == S_IFDIR) {
+=======
+		if (S_ISDIR(target_ip->i_d.di_mode)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * Make sure target dir is empty.
 			 */

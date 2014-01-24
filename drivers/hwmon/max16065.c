@@ -137,10 +137,17 @@ static int max16065_read_adc(struct i2c_client *client, int reg)
 {
 	int rv;
 
+<<<<<<< HEAD
 	rv = i2c_smbus_read_word_data(client, reg);
 	if (unlikely(rv < 0))
 		return rv;
 	return ((rv & 0xff) << 2) | ((rv >> 14) & 0x03);
+=======
+	rv = i2c_smbus_read_word_swapped(client, reg);
+	if (unlikely(rv < 0))
+		return rv;
+	return rv >> 6;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct max16065_data *max16065_update_device(struct device *dev)
@@ -230,7 +237,11 @@ static ssize_t max16065_set_limit(struct device *dev,
 	int err;
 	int limit;
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(err < 0))
 		return err;
 
@@ -554,7 +565,11 @@ static int max16065_probe(struct i2c_client *client,
 				     | I2C_FUNC_SMBUS_READ_WORD_DATA))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(!data))
 		return -ENOMEM;
 
@@ -567,20 +582,30 @@ static int max16065_probe(struct i2c_client *client,
 
 	if (have_secondary) {
 		val = i2c_smbus_read_byte_data(client, MAX16065_SW_ENABLE);
+<<<<<<< HEAD
 		if (unlikely(val < 0)) {
 			ret = val;
 			goto out_free;
 		}
+=======
+		if (unlikely(val < 0))
+			return val;
+>>>>>>> refs/remotes/origin/cm-10.0
 		secondary_is_max = val & MAX16065_WARNING_OV;
 	}
 
 	/* Read scale registers, convert to range */
 	for (i = 0; i < DIV_ROUND_UP(data->num_adc, 4); i++) {
 		val = i2c_smbus_read_byte_data(client, MAX16065_SCALE(i));
+<<<<<<< HEAD
 		if (unlikely(val < 0)) {
 			ret = val;
 			goto out_free;
 		}
+=======
+		if (unlikely(val < 0))
+			return val;
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (j = 0; j < 4 && i * 4 + j < data->num_adc; j++) {
 			data->range[i * 4 + j] =
 			  max16065_adc_range[(val >> (j * 2)) & 0x3];
@@ -595,10 +620,15 @@ static int max16065_probe(struct i2c_client *client,
 		for (j = 0; j < data->num_adc; j++) {
 			val = i2c_smbus_read_byte_data(client,
 						       MAX16065_LIMIT(i, j));
+<<<<<<< HEAD
 			if (unlikely(val < 0)) {
 				ret = val;
 				goto out_free;
 			}
+=======
+			if (unlikely(val < 0))
+				return val;
+>>>>>>> refs/remotes/origin/cm-10.0
 			data->limit[i][j] = LIMIT_TO_MV(val, data->range[j]);
 		}
 	}
@@ -661,8 +691,11 @@ static int max16065_probe(struct i2c_client *client,
 
 out:
 	max16065_cleanup(client);
+<<<<<<< HEAD
 out_free:
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -672,7 +705,10 @@ static int max16065_remove(struct i2c_client *client)
 
 	hwmon_device_unregister(data->hwmon_dev);
 	max16065_cleanup(client);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -699,6 +735,7 @@ static struct i2c_driver max16065_driver = {
 	.id_table = max16065_id,
 };
 
+<<<<<<< HEAD
 static int __init max16065_init(void)
 {
 	return i2c_add_driver(&max16065_driver);
@@ -708,10 +745,16 @@ static void __exit max16065_exit(void)
 {
 	i2c_del_driver(&max16065_driver);
 }
+=======
+module_i2c_driver(max16065_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Guenter Roeck <guenter.roeck@ericsson.com>");
 MODULE_DESCRIPTION("MAX16065 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(max16065_init);
 module_exit(max16065_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

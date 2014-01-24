@@ -8,12 +8,20 @@
 
 #include <linux/atm.h>
 #include <linux/atmdev.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sonet.h>
 #include <linux/skbuff.h>
 #include <linux/time.h>
 #include <linux/pci.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "midway.h"
 
@@ -71,6 +79,10 @@ struct eni_dev {
 	u32 events;			/* pending events */
 	/*-------------------------------- base pointers into Midway address
 					   space */
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void __iomem *phy;		/* PHY interface chip registers */
 	void __iomem *reg;		/* register base */
 	void __iomem *ram;		/* RAM base */
@@ -85,6 +97,13 @@ struct eni_dev {
 	wait_queue_head_t tx_wait;	/* for close */
 	int tx_bw;			/* remaining bandwidth */
 	u32 dma[TX_DMA_BUF*2];		/* DMA request scratch area */
+<<<<<<< HEAD
+=======
+	struct eni_zero {		/* aligned "magic" zeroes */
+		u32 *addr;
+		dma_addr_t dma;
+	} zero;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int tx_mult;			/* buffer size multiplier (percent) */
 	/*-------------------------------- RX part */
 	u32 serv_read;			/* host service read index */

@@ -25,7 +25,10 @@
 #include <net/protocol.h>
 #include <net/tcp.h>
 #include <net/udp.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/stat.h>
 #include <linux/proc_fs.h>
 
@@ -60,9 +63,12 @@ static int __used __init register_ip_vs_protocol(struct ip_vs_protocol *pp)
 	return 0;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IP_VS_PROTO_TCP) || defined(CONFIG_IP_VS_PROTO_UDP) || \
     defined(CONFIG_IP_VS_PROTO_SCTP) || defined(CONFIG_IP_VS_PROTO_AH) || \
     defined(CONFIG_IP_VS_PROTO_ESP)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *	register an ipvs protocols netns related data
  */
@@ -74,21 +80,42 @@ register_ip_vs_proto_netns(struct net *net, struct ip_vs_protocol *pp)
 	struct ip_vs_proto_data *pd =
 			kzalloc(sizeof(struct ip_vs_proto_data), GFP_ATOMIC);
 
+<<<<<<< HEAD
 	if (!pd) {
 		pr_err("%s(): no memory.\n", __func__);
 		return -ENOMEM;
 	}
+=======
+	if (!pd)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	pd->pp = pp;	/* For speed issues */
 	pd->next = ipvs->proto_data_table[hash];
 	ipvs->proto_data_table[hash] = pd;
 	atomic_set(&pd->appcnt, 0);	/* Init app counter */
 
+<<<<<<< HEAD
 	if (pp->init_netns != NULL)
 		pp->init_netns(net, pd);
 
 	return 0;
 }
 #endif
+=======
+	if (pp->init_netns != NULL) {
+		int ret = pp->init_netns(net, pd);
+		if (ret) {
+			/* unlink an free proto data */
+			ipvs->proto_data_table[hash] = pd->next;
+			kfree(pd);
+			return ret;
+		}
+	}
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	unregister an ipvs protocol
@@ -316,6 +343,7 @@ ip_vs_tcpudp_debug_packet(int af, struct ip_vs_protocol *pp,
 /*
  * per network name-space init
  */
+<<<<<<< HEAD
 int __net_init __ip_vs_protocol_init(struct net *net)
 {
 #ifdef CONFIG_IP_VS_PROTO_TCP
@@ -337,6 +365,42 @@ int __net_init __ip_vs_protocol_init(struct net *net)
 }
 
 void __net_exit __ip_vs_protocol_cleanup(struct net *net)
+=======
+int __net_init ip_vs_protocol_net_init(struct net *net)
+{
+	int i, ret;
+	static struct ip_vs_protocol *protos[] = {
+#ifdef CONFIG_IP_VS_PROTO_TCP
+        &ip_vs_protocol_tcp,
+#endif
+#ifdef CONFIG_IP_VS_PROTO_UDP
+	&ip_vs_protocol_udp,
+#endif
+#ifdef CONFIG_IP_VS_PROTO_SCTP
+	&ip_vs_protocol_sctp,
+#endif
+#ifdef CONFIG_IP_VS_PROTO_AH
+	&ip_vs_protocol_ah,
+#endif
+#ifdef CONFIG_IP_VS_PROTO_ESP
+	&ip_vs_protocol_esp,
+#endif
+	};
+
+	for (i = 0; i < ARRAY_SIZE(protos); i++) {
+		ret = register_ip_vs_proto_netns(net, protos[i]);
+		if (ret < 0)
+			goto cleanup;
+	}
+	return 0;
+
+cleanup:
+	ip_vs_protocol_net_cleanup(net);
+	return ret;
+}
+
+void __net_exit ip_vs_protocol_net_cleanup(struct net *net)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct netns_ipvs *ipvs = net_ipvs(net);
 	struct ip_vs_proto_data *pd;

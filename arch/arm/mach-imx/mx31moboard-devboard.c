@@ -158,7 +158,11 @@ static int devboard_usbh1_hw_init(struct platform_device *pdev)
 #define USBH1_VBUSEN_B	IOMUX_TO_GPIO(MX31_PIN_NFRE_B)
 #define USBH1_MODE	IOMUX_TO_GPIO(MX31_PIN_NFALE)
 
+<<<<<<< HEAD
 static int devboard_isp1105_init(struct otg_transceiver *otg)
+=======
+static int devboard_isp1105_init(struct usb_phy *otg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = gpio_request(USBH1_MODE, "usbh1-mode");
 	if (ret)
@@ -177,7 +181,11 @@ static int devboard_isp1105_init(struct otg_transceiver *otg)
 }
 
 
+<<<<<<< HEAD
 static int devboard_isp1105_set_vbus(struct otg_transceiver *otg, bool on)
+=======
+static int devboard_isp1105_set_vbus(struct usb_otg *otg, bool on)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (on)
 		gpio_set_value(USBH1_VBUSEN_B, 0);
@@ -194,6 +202,7 @@ static struct mxc_usbh_platform_data usbh1_pdata __initdata = {
 
 static int __init devboard_usbh1_init(void)
 {
+<<<<<<< HEAD
 	struct otg_transceiver *otg;
 	struct platform_device *pdev;
 
@@ -206,6 +215,26 @@ static int __init devboard_usbh1_init(void)
 	otg->set_vbus	= devboard_isp1105_set_vbus;
 
 	usbh1_pdata.otg = otg;
+=======
+	struct usb_phy *phy;
+	struct platform_device *pdev;
+
+	phy = kzalloc(sizeof(*phy), GFP_KERNEL);
+	if (!phy)
+		return -ENOMEM;
+
+	phy->otg = kzalloc(sizeof(struct usb_otg), GFP_KERNEL);
+	if (!phy->otg) {
+		kfree(phy);
+		return -ENOMEM;
+	}
+
+	phy->label	= "ISP1105";
+	phy->init	= devboard_isp1105_init;
+	phy->otg->set_vbus	= devboard_isp1105_set_vbus;
+
+	usbh1_pdata.otg = phy;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pdev = imx31_add_mxc_ehci_hs(1, &usbh1_pdata);
 	if (IS_ERR(pdev))

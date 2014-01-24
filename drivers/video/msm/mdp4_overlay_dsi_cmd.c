@@ -294,7 +294,11 @@ int mdp4_dsi_cmd_pipe_commit(void)
 		/* Blt */
 		if (vctrl->blt_wait)
 			need_dmap_wait = 1;
+<<<<<<< HEAD
 		else if (vctrl->ov_koff != vctrl->ov_done) {
+=======
+		if (vctrl->ov_koff != vctrl->ov_done) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			INIT_COMPLETION(vctrl->ov_comp);
 			need_ov_wait = 1;
 		}
@@ -510,9 +514,15 @@ static void primary_rdptr_isr(int cndx)
 	vctrl = &vsync_ctrl_db[cndx];
 	pr_debug("%s: ISR, cpu=%d\n", __func__, smp_processor_id());
 	vctrl->rdptr_intr_tot++;
+<<<<<<< HEAD
 
 	spin_lock(&vctrl->spin_lock);
 	vctrl->vsync_time = ktime_get();
+=======
+	vctrl->vsync_time = ktime_get();
+
+	spin_lock(&vctrl->spin_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	complete_all(&vctrl->vsync_comp);
 	vctrl->wait_vsync_cnt = 0;
@@ -630,14 +640,21 @@ static void clk_ctrl_work(struct work_struct *work)
 	mutex_unlock(&vctrl->update_lock);
 }
 
+<<<<<<< HEAD
 ssize_t mdp4_dsi_cmd_show_event(struct device *dev,
+=======
+static ssize_t vsync_show_event(struct device *dev,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct device_attribute *attr, char *buf)
 {
 	int cndx;
 	struct vsycn_ctrl *vctrl;
 	ssize_t ret = 0;
 	unsigned long flags;
+<<<<<<< HEAD
 	u64 vsync_tick;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cndx = 0;
 	vctrl = &vsync_ctrl_db[0];
@@ -652,6 +669,7 @@ ssize_t mdp4_dsi_cmd_show_event(struct device *dev,
 	vctrl->wait_vsync_cnt++;
 	spin_unlock_irqrestore(&vctrl->spin_lock, flags);
 
+<<<<<<< HEAD
 	ret = wait_for_completion_interruptible_timeout(&vctrl->vsync_comp,
 		msecs_to_jiffies(VSYNC_PERIOD * 4));
 	if (ret <= 0) {
@@ -664,6 +682,12 @@ ssize_t mdp4_dsi_cmd_show_event(struct device *dev,
 	spin_unlock_irqrestore(&vctrl->spin_lock, flags);
 
 	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu", vsync_tick);
+=======
+	wait_for_completion(&vctrl->vsync_comp);
+
+	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu",
+			ktime_to_ns(vctrl->vsync_time));
+>>>>>>> refs/remotes/origin/cm-10.0
 	buf[strlen(buf) + 1] = '\0';
 	return ret;
 }
@@ -688,7 +712,11 @@ void mdp4_dsi_rdptr_init(int cndx)
 	init_completion(&vctrl->dmap_comp);
 	init_completion(&vctrl->vsync_comp);
 	spin_lock_init(&vctrl->spin_lock);
+<<<<<<< HEAD
 	atomic_set(&vctrl->suspend, 1);
+=======
+	atomic_set(&vctrl->vsync_resume, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	INIT_WORK(&vctrl->clk_work, clk_ctrl_work);
 }
 
@@ -969,6 +997,17 @@ void mdp4_dsi_cmd_overlay_blt(struct msm_fb_data_type *mfd,
 	mdp4_dsi_cmd_do_blt(mfd, req->enable);
 }
 
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(vsync_event, S_IRUGO, vsync_show_event, NULL);
+static struct attribute *vsync_fs_attrs[] = {
+	&dev_attr_vsync_event.attr,
+	NULL,
+};
+static struct attribute_group vsync_fs_attr_group = {
+	.attrs = vsync_fs_attrs,
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 int mdp4_dsi_cmd_on(struct platform_device *pdev)
 {
 	int ret = 0;
@@ -993,6 +1032,23 @@ int mdp4_dsi_cmd_on(struct platform_device *pdev)
 	atomic_set(&vctrl->suspend, 0);
 	pr_debug("%s-:\n", __func__);
 
+<<<<<<< HEAD
+=======
+	if (!vctrl->sysfs_created) {
+		ret = sysfs_create_group(&vctrl->dev->kobj,
+			&vsync_fs_attr_group);
+		if (ret) {
+			pr_err("%s: sysfs group creation failed, ret=%d\n",
+				__func__, ret);
+			return ret;
+		}
+
+		kobject_uevent(&vctrl->dev->kobj, KOBJ_ADD);
+		pr_debug("%s: kobject_uevent(KOBJ_ADD)\n", __func__);
+		vctrl->sysfs_created = 1;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 

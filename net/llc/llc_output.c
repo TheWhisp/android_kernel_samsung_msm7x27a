@@ -18,6 +18,10 @@
 #include <linux/netdevice.h>
 #include <linux/trdevice.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/llc.h>
 #include <net/llc_pdu.h>
 

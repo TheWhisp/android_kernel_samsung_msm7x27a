@@ -108,6 +108,10 @@ obj-$(CONFIG_MEGARAID_LEGACY)	+= megaraid.o
 obj-$(CONFIG_MEGARAID_NEWGEN)	+= megaraid/
 obj-$(CONFIG_MEGARAID_SAS)	+= megaraid/
 obj-$(CONFIG_SCSI_MPT2SAS)	+= mpt2sas/
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SCSI_UFSHCD)	+= ufs/
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_SCSI_ACARD)	+= atp870u.o
 obj-$(CONFIG_SCSI_SUNESP)	+= esp_scsi.o	sun_esp.o
 obj-$(CONFIG_SCSI_GDTH)		+= gdth.o
@@ -134,13 +138,23 @@ obj-$(CONFIG_SCSI_IBMVFC)	+= ibmvscsi/
 obj-$(CONFIG_SCSI_HPTIOP)	+= hptiop.o
 obj-$(CONFIG_SCSI_STEX)		+= stex.o
 obj-$(CONFIG_SCSI_MVSAS)	+= mvsas/
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SCSI_MVUMI)	+= mvumi.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_PS3_ROM)		+= ps3rom.o
 obj-$(CONFIG_SCSI_CXGB3_ISCSI)	+= libiscsi.o libiscsi_tcp.o cxgbi/
 obj-$(CONFIG_SCSI_CXGB4_ISCSI)	+= libiscsi.o libiscsi_tcp.o cxgbi/
 obj-$(CONFIG_SCSI_BNX2_ISCSI)	+= libiscsi.o bnx2i/
 obj-$(CONFIG_BE2ISCSI)		+= libiscsi.o be2iscsi/
 obj-$(CONFIG_SCSI_PMCRAID)	+= pmcraid.o
+<<<<<<< HEAD
 obj-$(CONFIG_VMWARE_PVSCSI)	+= vmw_pvscsi.o
+=======
+obj-$(CONFIG_SCSI_VIRTIO)	+= virtio_scsi.o
+obj-$(CONFIG_VMWARE_PVSCSI)	+= vmw_pvscsi.o
+obj-$(CONFIG_HYPERV_STORAGE)	+= hv_storvsc.o
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-$(CONFIG_ARM)		+= arm/
 
@@ -169,6 +183,11 @@ scsi_mod-$(CONFIG_SCSI_PROC_FS)	+= scsi_proc.o
 scsi_mod-y			+= scsi_trace.o
 scsi_mod-$(CONFIG_PM)		+= scsi_pm.o
 
+<<<<<<< HEAD
+=======
+hv_storvsc-y			:= storvsc_drv.o
+
+>>>>>>> refs/remotes/origin/cm-10.0
 scsi_tgt-y			+= scsi_tgt_lib.o scsi_tgt_if.o
 
 sd_mod-objs	:= sd.o

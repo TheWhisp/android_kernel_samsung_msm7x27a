@@ -8,6 +8,10 @@
 
 #include <linux/dma-mapping.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/addrspace.h>
 #include <asm/cacheflush.h>

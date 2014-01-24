@@ -17,6 +17,10 @@
 #include <linux/interrupt.h>
 
 #include <linux/i2c/dm355evm_msp.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /*
@@ -266,6 +270,7 @@ static struct platform_driver dm355evm_keys_driver = {
 		.name	= "dm355evm_keys",
 	},
 };
+<<<<<<< HEAD
 
 static int __init dm355evm_keys_init(void)
 {
@@ -278,5 +283,8 @@ static void __exit dm355evm_keys_exit(void)
 	platform_driver_unregister(&dm355evm_keys_driver);
 }
 module_exit(dm355evm_keys_exit);
+=======
+module_platform_driver(dm355evm_keys_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");

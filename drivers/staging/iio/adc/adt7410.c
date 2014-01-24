@@ -13,9 +13,17 @@
 #include <linux/sysfs.h>
 #include <linux/list.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+#include <linux/module.h>
+
+#include "../iio.h"
+#include "../sysfs.h"
+#include "../events.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * ADT7410 registers definition
@@ -75,7 +83,10 @@
 
 struct adt7410_chip_info {
 	struct i2c_client *client;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8  config;
 };
 
@@ -144,7 +155,11 @@ static ssize_t adt7410_show_mode(struct device *dev,
 		char *buf)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 config;
 
 	config = chip->config & ADT7410_MODE_MASK;
@@ -167,7 +182,11 @@ static ssize_t adt7410_store_mode(struct device *dev,
 		size_t len)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 config;
 	int ret;
 
@@ -211,7 +230,11 @@ static ssize_t adt7410_show_resolution(struct device *dev,
 		char *buf)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	int bits;
 
@@ -233,7 +256,11 @@ static ssize_t adt7410_store_resolution(struct device *dev,
 		size_t len)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long data;
 	u16 config;
 	int ret;
@@ -269,7 +296,11 @@ static ssize_t adt7410_show_id(struct device *dev,
 		char *buf)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 id;
 	int ret;
 
@@ -319,7 +350,11 @@ static ssize_t adt7410_show_value(struct device *dev,
 		char *buf)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 status;
 	u16 data;
 	int ret, i = 0;
@@ -358,7 +393,11 @@ static const struct attribute_group adt7410_attribute_group = {
 static irqreturn_t adt7410_event_handler(int irq, void *private)
 {
 	struct iio_dev *indio_dev = private;
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = iio_dev_get_devdata(indio_dev);
+=======
+	struct adt7410_chip_info *chip = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	s64 timestamp = iio_get_time_ns();
 	u8 status;
 
@@ -366,19 +405,31 @@ static irqreturn_t adt7410_event_handler(int irq, void *private)
 		return IRQ_HANDLED;
 
 	if (status & ADT7410_STAT_T_HIGH)
+<<<<<<< HEAD
 		iio_push_event(indio_dev, 0,
+=======
+		iio_push_event(indio_dev,
+>>>>>>> refs/remotes/origin/cm-10.0
 			       IIO_UNMOD_EVENT_CODE(IIO_TEMP, 0,
 						    IIO_EV_TYPE_THRESH,
 						    IIO_EV_DIR_RISING),
 			       timestamp);
 	if (status & ADT7410_STAT_T_LOW)
+<<<<<<< HEAD
 		iio_push_event(indio_dev, 0,
+=======
+		iio_push_event(indio_dev,
+>>>>>>> refs/remotes/origin/cm-10.0
 			       IIO_UNMOD_EVENT_CODE(IIO_TEMP, 0,
 						    IIO_EV_TYPE_THRESH,
 						    IIO_EV_DIR_FALLING),
 			       timestamp);
 	if (status & ADT7410_STAT_T_CRIT)
+<<<<<<< HEAD
 		iio_push_event(indio_dev, 0,
+=======
+		iio_push_event(indio_dev,
+>>>>>>> refs/remotes/origin/cm-10.0
 			       IIO_UNMOD_EVENT_CODE(IIO_TEMP, 0,
 						    IIO_EV_TYPE_THRESH,
 						    IIO_EV_DIR_RISING),
@@ -392,7 +443,11 @@ static ssize_t adt7410_show_event_mode(struct device *dev,
 		char *buf)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	ret = adt7410_i2c_read_byte(chip, ADT7410_CONFIG, &chip->config);
@@ -411,7 +466,11 @@ static ssize_t adt7410_set_event_mode(struct device *dev,
 		size_t len)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 config;
 	int ret;
 
@@ -444,7 +503,11 @@ static ssize_t adt7410_show_fault_queue(struct device *dev,
 		char *buf)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	ret = adt7410_i2c_read_byte(chip, ADT7410_CONFIG, &chip->config);
@@ -460,7 +523,11 @@ static ssize_t adt7410_set_fault_queue(struct device *dev,
 		size_t len)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long data;
 	int ret;
 	u8 config;
@@ -490,7 +557,11 @@ static inline ssize_t adt7410_show_t_bound(struct device *dev,
 		char *buf)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16 data;
 	int ret;
 
@@ -508,7 +579,11 @@ static inline ssize_t adt7410_set_t_bound(struct device *dev,
 		size_t len)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	long tmp1, tmp2;
 	u16 data;
 	char *pos;
@@ -628,7 +703,11 @@ static ssize_t adt7410_show_t_hyst(struct device *dev,
 		char *buf)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	u8 t_hyst;
 
@@ -645,7 +724,11 @@ static inline ssize_t adt7410_set_t_hyst(struct device *dev,
 		size_t len)
 {
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = dev_info->dev_data;
+=======
+	struct adt7410_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	unsigned long data;
 	u8 t_hyst;
@@ -692,6 +775,7 @@ static struct attribute *adt7410_event_int_attributes[] = {
 	&iio_dev_attr_fault_queue.dev_attr.attr,
 	&iio_dev_attr_t_alarm_high.dev_attr.attr,
 	&iio_dev_attr_t_alarm_low.dev_attr.attr,
+<<<<<<< HEAD
 	&iio_dev_attr_t_hyst.dev_attr.attr,
 	NULL,
 };
@@ -700,23 +784,35 @@ static struct attribute *adt7410_event_ct_attributes[] = {
 	&iio_dev_attr_event_mode.dev_attr.attr,
 	&iio_dev_attr_available_event_modes.dev_attr.attr,
 	&iio_dev_attr_fault_queue.dev_attr.attr,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	&iio_dev_attr_t_crit.dev_attr.attr,
 	&iio_dev_attr_t_hyst.dev_attr.attr,
 	NULL,
 };
 
+<<<<<<< HEAD
 static struct attribute_group adt7410_event_attribute_group[ADT7410_IRQS] = {
 	{
 		.attrs = adt7410_event_int_attributes,
 	}, {
 		.attrs = adt7410_event_ct_attributes,
 	}
+=======
+static struct attribute_group adt7410_event_attribute_group = {
+	.attrs = adt7410_event_int_attributes,
+	.name = "events",
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const struct iio_info adt7410_info = {
 	.attrs = &adt7410_attribute_group,
+<<<<<<< HEAD
 	.num_interrupt_lines = ADT7410_IRQS,
 	.event_attrs = adt7410_event_attribute_group,
+=======
+	.event_attrs = &adt7410_event_attribute_group,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver_module = THIS_MODULE,
 };
 
@@ -728,6 +824,7 @@ static int __devinit adt7410_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
 {
 	struct adt7410_chip_info *chip;
+<<<<<<< HEAD
 	int ret = 0;
 	unsigned long *adt7410_platform_data = client->dev.platform_data;
 
@@ -755,6 +852,27 @@ static int __devinit adt7410_probe(struct i2c_client *client,
 	ret = iio_device_register(chip->indio_dev);
 	if (ret)
 		goto error_free_dev;
+=======
+	struct iio_dev *indio_dev;
+	int ret = 0;
+	unsigned long *adt7410_platform_data = client->dev.platform_data;
+
+	indio_dev = iio_allocate_device(sizeof(*chip));
+	if (indio_dev == NULL) {
+		ret = -ENOMEM;
+		goto error_ret;
+	}
+	chip = iio_priv(indio_dev);
+	/* this is only used for device removal purposes */
+	i2c_set_clientdata(client, indio_dev);
+
+	chip->client = client;
+
+	indio_dev->name = id->name;
+	indio_dev->dev.parent = &client->dev;
+	indio_dev->info = &adt7410_info;
+	indio_dev->modes = INDIO_DIRECT_MODE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* CT critcal temperature event. line 0 */
 	if (client->irq) {
@@ -763,9 +881,15 @@ static int __devinit adt7410_probe(struct i2c_client *client,
 					   &adt7410_event_handler,
 					   IRQF_TRIGGER_LOW,
 					   id->name,
+<<<<<<< HEAD
 					   chip->indio_dev);
 		if (ret)
 			goto error_unreg_dev;
+=======
+					   indio_dev);
+		if (ret)
+			goto error_free_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* INT bound temperature alarm event. line 1 */
@@ -775,7 +899,11 @@ static int __devinit adt7410_probe(struct i2c_client *client,
 					   &adt7410_event_handler,
 					   adt7410_platform_data[1],
 					   id->name,
+<<<<<<< HEAD
 					   chip->indio_dev);
+=======
+					   indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret)
 			goto error_unreg_ct_irq;
 	}
@@ -802,6 +930,12 @@ static int __devinit adt7410_probe(struct i2c_client *client,
 			goto error_unreg_int_irq;
 		}
 	}
+<<<<<<< HEAD
+=======
+	ret = iio_device_register(indio_dev);
+	if (ret)
+		goto error_unreg_int_irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_info(&client->dev, "%s temperature sensor registered.\n",
 			 id->name);
@@ -809,6 +943,7 @@ static int __devinit adt7410_probe(struct i2c_client *client,
 	return 0;
 
 error_unreg_int_irq:
+<<<<<<< HEAD
 	free_irq(adt7410_platform_data[0], chip->indio_dev);
 error_unreg_ct_irq:
 	free_irq(client->irq, chip->indio_dev);
@@ -819,11 +954,20 @@ error_free_dev:
 error_free_chip:
 	kfree(chip);
 
+=======
+	free_irq(adt7410_platform_data[0], indio_dev);
+error_unreg_ct_irq:
+	free_irq(client->irq, indio_dev);
+error_free_dev:
+	iio_free_device(indio_dev);
+error_ret:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit adt7410_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	struct adt7410_chip_info *chip = i2c_get_clientdata(client);
 	struct iio_dev *indio_dev = chip->indio_dev;
 	unsigned long *adt7410_platform_data = client->dev.platform_data;
@@ -835,6 +979,17 @@ static int __devexit adt7410_remove(struct i2c_client *client)
 	iio_device_unregister(indio_dev);
 	iio_free_device(chip->indio_dev);
 	kfree(chip);
+=======
+	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+	unsigned long *adt7410_platform_data = client->dev.platform_data;
+
+	iio_device_unregister(indio_dev);
+	if (adt7410_platform_data[0])
+		free_irq(adt7410_platform_data[0], indio_dev);
+	if (client->irq)
+		free_irq(client->irq, indio_dev);
+	iio_free_device(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -854,6 +1009,7 @@ static struct i2c_driver adt7410_driver = {
 	.remove = __devexit_p(adt7410_remove),
 	.id_table = adt7410_id,
 };
+<<<<<<< HEAD
 
 static __init int adt7410_init(void)
 {
@@ -864,11 +1020,17 @@ static __exit void adt7410_exit(void)
 {
 	i2c_del_driver(&adt7410_driver);
 }
+=======
+module_i2c_driver(adt7410_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Sonic Zhang <sonic.zhang@analog.com>");
 MODULE_DESCRIPTION("Analog Devices ADT7410 digital"
 			" temperature sensor driver");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 
 module_init(adt7410_init);
 module_exit(adt7410_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

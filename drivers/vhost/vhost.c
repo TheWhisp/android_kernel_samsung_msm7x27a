@@ -37,6 +37,11 @@ enum {
 	VHOST_MEMORY_F_LOG = 0x1,
 };
 
+<<<<<<< HEAD
+=======
+static unsigned vhost_zcopy_mask __read_mostly;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define vhost_used_event(vq) ((u16 __user *)&vq->avail->ring[vq->num])
 #define vhost_avail_event(vq) ((u16 __user *)&vq->used->ring[vq->num])
 
@@ -179,6 +184,12 @@ static void vhost_vq_reset(struct vhost_dev *dev,
 	vq->call_ctx = NULL;
 	vq->call = NULL;
 	vq->log_ctx = NULL;
+<<<<<<< HEAD
+=======
+	vq->upend_idx = 0;
+	vq->done_idx = 0;
+	vq->ubufs = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int vhost_worker(void *data)
@@ -227,10 +238,34 @@ static int vhost_worker(void *data)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void vhost_vq_free_iovecs(struct vhost_virtqueue *vq)
+{
+	kfree(vq->indirect);
+	vq->indirect = NULL;
+	kfree(vq->log);
+	vq->log = NULL;
+	kfree(vq->heads);
+	vq->heads = NULL;
+	kfree(vq->ubuf_info);
+	vq->ubuf_info = NULL;
+}
+
+void vhost_enable_zcopy(int vq)
+{
+	vhost_zcopy_mask |= 0x1 << vq;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Helper to allocate iovec buffers for all vqs. */
 static long vhost_dev_alloc_iovecs(struct vhost_dev *dev)
 {
 	int i;
+<<<<<<< HEAD
+=======
+	bool zcopy;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < dev->nvqs; ++i) {
 		dev->vqs[i].indirect = kmalloc(sizeof *dev->vqs[i].indirect *
@@ -239,19 +274,35 @@ static long vhost_dev_alloc_iovecs(struct vhost_dev *dev)
 					  GFP_KERNEL);
 		dev->vqs[i].heads = kmalloc(sizeof *dev->vqs[i].heads *
 					    UIO_MAXIOV, GFP_KERNEL);
+<<<<<<< HEAD
 
 		if (!dev->vqs[i].indirect || !dev->vqs[i].log ||
 			!dev->vqs[i].heads)
+=======
+		zcopy = vhost_zcopy_mask & (0x1 << i);
+		if (zcopy)
+			dev->vqs[i].ubuf_info =
+				kmalloc(sizeof *dev->vqs[i].ubuf_info *
+					UIO_MAXIOV, GFP_KERNEL);
+		if (!dev->vqs[i].indirect || !dev->vqs[i].log ||
+			!dev->vqs[i].heads ||
+			(zcopy && !dev->vqs[i].ubuf_info))
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto err_nomem;
 	}
 	return 0;
 
 err_nomem:
+<<<<<<< HEAD
 	for (; i >= 0; --i) {
 		kfree(dev->vqs[i].indirect);
 		kfree(dev->vqs[i].log);
 		kfree(dev->vqs[i].heads);
 	}
+=======
+	for (; i >= 0; --i)
+		vhost_vq_free_iovecs(&dev->vqs[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ENOMEM;
 }
 
@@ -259,6 +310,7 @@ static void vhost_dev_free_iovecs(struct vhost_dev *dev)
 {
 	int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < dev->nvqs; ++i) {
 		kfree(dev->vqs[i].indirect);
 		dev->vqs[i].indirect = NULL;
@@ -267,6 +319,10 @@ static void vhost_dev_free_iovecs(struct vhost_dev *dev)
 		kfree(dev->vqs[i].heads);
 		dev->vqs[i].heads = NULL;
 	}
+=======
+	for (i = 0; i < dev->nvqs; ++i)
+		vhost_vq_free_iovecs(&dev->vqs[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 long vhost_dev_init(struct vhost_dev *dev,
@@ -289,6 +345,10 @@ long vhost_dev_init(struct vhost_dev *dev,
 		dev->vqs[i].log = NULL;
 		dev->vqs[i].indirect = NULL;
 		dev->vqs[i].heads = NULL;
+<<<<<<< HEAD
+=======
+		dev->vqs[i].ubuf_info = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev->vqs[i].dev = dev;
 		mutex_init(&dev->vqs[i].mutex);
 		vhost_vq_reset(dev, dev->vqs + i);
@@ -385,15 +445,48 @@ long vhost_dev_reset_owner(struct vhost_dev *dev)
 	if (!memory)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	vhost_dev_cleanup(dev);
+=======
+	vhost_dev_cleanup(dev, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memory->nregions = 0;
 	RCU_INIT_POINTER(dev->memory, memory);
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Caller should have device mutex */
 void vhost_dev_cleanup(struct vhost_dev *dev)
+=======
+/* In case of DMA done not in order in lower device driver for some reason.
+ * upend_idx is used to track end of used idx, done_idx is used to track head
+ * of used idx. Once lower device DMA done contiguously, we will signal KVM
+ * guest used idx.
+ */
+int vhost_zerocopy_signal_used(struct vhost_virtqueue *vq)
+{
+	int i;
+	int j = 0;
+
+	for (i = vq->done_idx; i != vq->upend_idx; i = (i + 1) % UIO_MAXIOV) {
+		if ((vq->heads[i].len == VHOST_DMA_DONE_LEN)) {
+			vq->heads[i].len = VHOST_DMA_CLEAR_LEN;
+			vhost_add_used_and_signal(vq->dev, vq,
+						  vq->heads[i].id, 0);
+			++j;
+		} else
+			break;
+	}
+	if (j)
+		vq->done_idx = i;
+	return j;
+}
+
+/* Caller should have device mutex if and only if locked is set */
+void vhost_dev_cleanup(struct vhost_dev *dev, bool locked)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 
@@ -402,6 +495,16 @@ void vhost_dev_cleanup(struct vhost_dev *dev)
 			vhost_poll_stop(&dev->vqs[i].poll);
 			vhost_poll_flush(&dev->vqs[i].poll);
 		}
+<<<<<<< HEAD
+=======
+		/* Wait for all lower device DMAs done. */
+		if (dev->vqs[i].ubufs)
+			vhost_ubuf_put_and_wait(dev->vqs[i].ubufs);
+
+		/* Signal guest as appropriate. */
+		vhost_zerocopy_signal_used(&dev->vqs[i]);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (dev->vqs[i].error_ctx)
 			eventfd_ctx_put(dev->vqs[i].error_ctx);
 		if (dev->vqs[i].error)
@@ -423,7 +526,12 @@ void vhost_dev_cleanup(struct vhost_dev *dev)
 	dev->log_file = NULL;
 	/* No one will access memory at this point */
 	kfree(rcu_dereference_protected(dev->memory,
+<<<<<<< HEAD
 					lockdep_is_held(&dev->mutex)));
+=======
+					locked ==
+						lockdep_is_held(&dev->mutex)));
+>>>>>>> refs/remotes/origin/cm-10.0
 	RCU_INIT_POINTER(dev->memory, NULL);
 	WARN_ON(!list_empty(&dev->work_list));
 	if (dev->worker) {
@@ -580,6 +688,7 @@ static long vhost_set_memory(struct vhost_dev *d, struct vhost_memory __user *m)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int init_used(struct vhost_virtqueue *vq,
 		     struct vring_used __user *used)
 {
@@ -591,6 +700,8 @@ static int init_used(struct vhost_virtqueue *vq,
 	return get_user(vq->last_used_idx, &used->idx);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static long vhost_set_vring(struct vhost_dev *d, int ioctl, void __user *argp)
 {
 	struct file *eventfp, *filep = NULL,
@@ -703,10 +814,13 @@ static long vhost_set_vring(struct vhost_dev *d, int ioctl, void __user *argp)
 			}
 		}
 
+<<<<<<< HEAD
 		r = init_used(vq, (struct vring_used __user *)(unsigned long)
 			      a.used_user_addr);
 		if (r)
 			break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		vq->log_used = !!(a.flags & (0x1 << VHOST_VRING_F_LOG));
 		vq->desc = (void __user *)(unsigned long)a.desc_user_addr;
 		vq->avail = (void __user *)(unsigned long)a.avail_user_addr;
@@ -903,9 +1017,15 @@ static int set_bit_to_user(int nr, void __user *addr)
 	if (r < 0)
 		return r;
 	BUG_ON(r != 1);
+<<<<<<< HEAD
 	base = kmap_atomic(page, KM_USER0);
 	set_bit(bit, base);
 	kunmap_atomic(base, KM_USER0);
+=======
+	base = kmap_atomic(page);
+	set_bit(bit, base);
+	kunmap_atomic(base);
+>>>>>>> refs/remotes/origin/cm-10.0
 	set_page_dirty_lock(page);
 	put_page(page);
 	return 0;
@@ -961,6 +1081,60 @@ int vhost_log_write(struct vhost_virtqueue *vq, struct vhost_log *log,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int vhost_update_used_flags(struct vhost_virtqueue *vq)
+{
+	void __user *used;
+	if (__put_user(vq->used_flags, &vq->used->flags) < 0)
+		return -EFAULT;
+	if (unlikely(vq->log_used)) {
+		/* Make sure the flag is seen before log. */
+		smp_wmb();
+		/* Log used flag write. */
+		used = &vq->used->flags;
+		log_write(vq->log_base, vq->log_addr +
+			  (used - (void __user *)vq->used),
+			  sizeof vq->used->flags);
+		if (vq->log_ctx)
+			eventfd_signal(vq->log_ctx, 1);
+	}
+	return 0;
+}
+
+static int vhost_update_avail_event(struct vhost_virtqueue *vq, u16 avail_event)
+{
+	if (__put_user(vq->avail_idx, vhost_avail_event(vq)))
+		return -EFAULT;
+	if (unlikely(vq->log_used)) {
+		void __user *used;
+		/* Make sure the event is seen before log. */
+		smp_wmb();
+		/* Log avail event write */
+		used = vhost_avail_event(vq);
+		log_write(vq->log_base, vq->log_addr +
+			  (used - (void __user *)vq->used),
+			  sizeof *vhost_avail_event(vq));
+		if (vq->log_ctx)
+			eventfd_signal(vq->log_ctx, 1);
+	}
+	return 0;
+}
+
+int vhost_init_used(struct vhost_virtqueue *vq)
+{
+	int r;
+	if (!vq->private_data)
+		return 0;
+
+	r = vhost_update_used_flags(vq);
+	if (r)
+		return r;
+	vq->signalled_used_valid = false;
+	return get_user(vq->last_used_idx, &vq->used->idx);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int translate_desc(struct vhost_dev *dev, u64 addr, u32 len,
 			  struct iovec iov[], int iov_size)
 {
@@ -1432,20 +1606,29 @@ bool vhost_enable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
 		return false;
 	vq->used_flags &= ~VRING_USED_F_NO_NOTIFY;
 	if (!vhost_has_feature(dev, VIRTIO_RING_F_EVENT_IDX)) {
+<<<<<<< HEAD
 		r = put_user(vq->used_flags, &vq->used->flags);
+=======
+		r = vhost_update_used_flags(vq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (r) {
 			vq_err(vq, "Failed to enable notification at %p: %d\n",
 			       &vq->used->flags, r);
 			return false;
 		}
 	} else {
+<<<<<<< HEAD
 		r = put_user(vq->avail_idx, vhost_avail_event(vq));
+=======
+		r = vhost_update_avail_event(vq, vq->avail_idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (r) {
 			vq_err(vq, "Failed to update avail event index at %p: %d\n",
 			       vhost_avail_event(vq), r);
 			return false;
 		}
 	}
+<<<<<<< HEAD
 	if (unlikely(vq->log_used)) {
 		void __user *used;
 		/* Make sure data is seen before log. */
@@ -1460,6 +1643,8 @@ bool vhost_enable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
 		if (vq->log_ctx)
 			eventfd_signal(vq->log_ctx, 1);
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* They could have slipped one in as we were doing that: make
 	 * sure it's written, then check again. */
 	smp_mb();
@@ -1482,9 +1667,62 @@ void vhost_disable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
 		return;
 	vq->used_flags |= VRING_USED_F_NO_NOTIFY;
 	if (!vhost_has_feature(dev, VIRTIO_RING_F_EVENT_IDX)) {
+<<<<<<< HEAD
 		r = put_user(vq->used_flags, &vq->used->flags);
+=======
+		r = vhost_update_used_flags(vq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (r)
 			vq_err(vq, "Failed to enable notification at %p: %d\n",
 			       &vq->used->flags, r);
 	}
 }
+<<<<<<< HEAD
+=======
+
+static void vhost_zerocopy_done_signal(struct kref *kref)
+{
+	struct vhost_ubuf_ref *ubufs = container_of(kref, struct vhost_ubuf_ref,
+						    kref);
+	wake_up(&ubufs->wait);
+}
+
+struct vhost_ubuf_ref *vhost_ubuf_alloc(struct vhost_virtqueue *vq,
+					bool zcopy)
+{
+	struct vhost_ubuf_ref *ubufs;
+	/* No zero copy backend? Nothing to count. */
+	if (!zcopy)
+		return NULL;
+	ubufs = kmalloc(sizeof *ubufs, GFP_KERNEL);
+	if (!ubufs)
+		return ERR_PTR(-ENOMEM);
+	kref_init(&ubufs->kref);
+	init_waitqueue_head(&ubufs->wait);
+	ubufs->vq = vq;
+	return ubufs;
+}
+
+void vhost_ubuf_put(struct vhost_ubuf_ref *ubufs)
+{
+	kref_put(&ubufs->kref, vhost_zerocopy_done_signal);
+}
+
+void vhost_ubuf_put_and_wait(struct vhost_ubuf_ref *ubufs)
+{
+	kref_put(&ubufs->kref, vhost_zerocopy_done_signal);
+	wait_event(ubufs->wait, !atomic_read(&ubufs->kref.refcount));
+	kfree(ubufs);
+}
+
+void vhost_zerocopy_callback(struct ubuf_info *ubuf)
+{
+	struct vhost_ubuf_ref *ubufs = ubuf->ctx;
+	struct vhost_virtqueue *vq = ubufs->vq;
+
+	vhost_poll_queue(&vq->poll);
+	/* set len = 1 to mark this desc buffers done DMA */
+	vq->heads[ubuf->desc].len = VHOST_DMA_DONE_LEN;
+	kref_put(&ubufs->kref, vhost_zerocopy_done_signal);
+}
+>>>>>>> refs/remotes/origin/cm-10.0

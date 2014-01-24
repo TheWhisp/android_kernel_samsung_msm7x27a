@@ -34,6 +34,7 @@
 #include <linux/err.h>
 #include <linux/ftrace.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/cpu.h>
 #include <asm/processor.h>
@@ -41,6 +42,15 @@
 #include <asm/system.h>
 #include <asm/mmu_context.h>
 #include <asm/time.h>
+=======
+#include <linux/atomic.h>
+#include <asm/cpu.h>
+#include <asm/processor.h>
+#include <asm/r4k-timer.h>
+#include <asm/mmu_context.h>
+#include <asm/time.h>
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_MIPS_MT_SMTC
 #include <asm/mipsmtregs.h>
@@ -148,7 +158,11 @@ static void stop_this_cpu(void *dummy)
 	/*
 	 * Remove this CPU:
 	 */
+<<<<<<< HEAD
 	cpu_clear(smp_processor_id(), cpu_online_map);
+=======
+	set_cpu_online(smp_processor_id(), false);
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (;;) {
 		if (cpu_wait)
 			(*cpu_wait)();		/* Wait if available. */
@@ -174,7 +188,11 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 	mp_ops->prepare_cpus(max_cpus);
 	set_cpu_sibling_map(0);
 #ifndef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
 	init_cpu_present(&cpu_possible_map);
+=======
+	init_cpu_present(cpu_possible_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 }
 
@@ -248,7 +266,11 @@ int __cpuinit __cpu_up(unsigned int cpu)
 	while (!cpu_isset(cpu, cpu_callin_map))
 		udelay(100);
 
+<<<<<<< HEAD
 	cpu_set(cpu, cpu_online_map);
+=======
+	set_cpu_online(cpu, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -320,6 +342,7 @@ void flush_tlb_mm(struct mm_struct *mm)
 	if ((atomic_read(&mm->mm_users) != 1) || (current->mm != mm)) {
 		smp_on_other_tlbs(flush_tlb_mm_ipi, mm);
 	} else {
+<<<<<<< HEAD
 		cpumask_t mask = cpu_online_map;
 		unsigned int cpu;
 
@@ -327,6 +350,14 @@ void flush_tlb_mm(struct mm_struct *mm)
 		for_each_cpu_mask(cpu, mask)
 			if (cpu_context(cpu, mm))
 				cpu_context(cpu, mm) = 0;
+=======
+		unsigned int cpu;
+
+		for_each_online_cpu(cpu) {
+			if (cpu != smp_processor_id() && cpu_context(cpu, mm))
+				cpu_context(cpu, mm) = 0;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	local_flush_tlb_mm(mm);
 
@@ -360,6 +391,7 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start, unsigned l
 
 		smp_on_other_tlbs(flush_tlb_range_ipi, &fd);
 	} else {
+<<<<<<< HEAD
 		cpumask_t mask = cpu_online_map;
 		unsigned int cpu;
 
@@ -367,6 +399,14 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start, unsigned l
 		for_each_cpu_mask(cpu, mask)
 			if (cpu_context(cpu, mm))
 				cpu_context(cpu, mm) = 0;
+=======
+		unsigned int cpu;
+
+		for_each_online_cpu(cpu) {
+			if (cpu != smp_processor_id() && cpu_context(cpu, mm))
+				cpu_context(cpu, mm) = 0;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	local_flush_tlb_range(vma, start, end);
 	preempt_enable();
@@ -407,6 +447,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long page)
 
 		smp_on_other_tlbs(flush_tlb_page_ipi, &fd);
 	} else {
+<<<<<<< HEAD
 		cpumask_t mask = cpu_online_map;
 		unsigned int cpu;
 
@@ -414,6 +455,14 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long page)
 		for_each_cpu_mask(cpu, mask)
 			if (cpu_context(cpu, vma->vm_mm))
 				cpu_context(cpu, vma->vm_mm) = 0;
+=======
+		unsigned int cpu;
+
+		for_each_online_cpu(cpu) {
+			if (cpu != smp_processor_id() && cpu_context(cpu, vma->vm_mm))
+				cpu_context(cpu, vma->vm_mm) = 0;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	local_flush_tlb_page(vma, page);
 	preempt_enable();

@@ -10,7 +10,11 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/blkdev.h>
 #include <linux/fs.h>
 #include <linux/init.h>
@@ -66,6 +70,11 @@ struct dm_kcopyd_client {
 	struct list_head pages_jobs;
 };
 
+<<<<<<< HEAD
+=======
+static struct page_list zero_page_list;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void wake(struct dm_kcopyd_client *kc)
 {
 	queue_work(kc->kcopyd_wq, &kc->kcopyd_work);
@@ -224,8 +233,11 @@ struct kcopyd_job {
 	unsigned int num_dests;
 	struct dm_io_region dests[DM_KCOPYD_MAX_REGIONS];
 
+<<<<<<< HEAD
 	sector_t offset;
 	unsigned int nr_pages;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct page_list *pages;
 
 	/*
@@ -256,6 +268,12 @@ int __init dm_kcopyd_init(void)
 	if (!_job_cache)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	zero_page_list.next = &zero_page_list;
+	zero_page_list.page = ZERO_PAGE(0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -324,7 +342,11 @@ static int run_complete_job(struct kcopyd_job *job)
 	dm_kcopyd_notify_fn fn = job->fn;
 	struct dm_kcopyd_client *kc = job->kc;
 
+<<<<<<< HEAD
 	if (job->pages)
+=======
+	if (job->pages && job->pages != &zero_page_list)
+>>>>>>> refs/remotes/origin/cm-10.0
 		kcopyd_put_pages(kc, job->pages);
 	/*
 	 * If this is the master job, the sub jobs have already
@@ -380,7 +402,11 @@ static int run_io_job(struct kcopyd_job *job)
 		.bi_rw = job->rw,
 		.mem.type = DM_IO_PAGE_LIST,
 		.mem.ptr.pl = job->pages,
+<<<<<<< HEAD
 		.mem.offset = job->offset,
+=======
+		.mem.offset = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.notify.fn = complete_io,
 		.notify.context = job,
 		.client = job->kc->io_client,
@@ -397,10 +423,16 @@ static int run_io_job(struct kcopyd_job *job)
 static int run_pages_job(struct kcopyd_job *job)
 {
 	int r;
+<<<<<<< HEAD
 
 	job->nr_pages = dm_div_up(job->dests[0].count + job->offset,
 				  PAGE_SIZE >> 9);
 	r = kcopyd_get_pages(job->kc, job->nr_pages, &job->pages);
+=======
+	unsigned nr_pages = dm_div_up(job->dests[0].count, PAGE_SIZE >> 9);
+
+	r = kcopyd_get_pages(job->kc, nr_pages, &job->pages);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!r) {
 		/* this job is ready for io */
 		push(&job->kc->io_jobs, job);
@@ -487,6 +519,11 @@ static void dispatch_job(struct kcopyd_job *job)
 	atomic_inc(&kc->nr_jobs);
 	if (unlikely(!job->source.count))
 		push(&kc->complete_jobs, job);
+<<<<<<< HEAD
+=======
+	else if (job->pages == &zero_page_list)
+		push(&kc->io_jobs, job);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		push(&kc->pages_jobs, job);
 	wake(kc);
@@ -595,16 +632,32 @@ int dm_kcopyd_copy(struct dm_kcopyd_client *kc, struct dm_io_region *from,
 	job->flags = flags;
 	job->read_err = 0;
 	job->write_err = 0;
+<<<<<<< HEAD
 	job->rw = READ;
 
 	job->source = *from;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	job->num_dests = num_dests;
 	memcpy(&job->dests, dests, sizeof(*dests) * num_dests);
 
+<<<<<<< HEAD
 	job->offset = 0;
 	job->nr_pages = 0;
 	job->pages = NULL;
+=======
+	if (from) {
+		job->source = *from;
+		job->pages = NULL;
+		job->rw = READ;
+	} else {
+		memset(&job->source, 0, sizeof job->source);
+		job->source.count = job->dests[0].count;
+		job->pages = &zero_page_list;
+		job->rw = WRITE;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	job->fn = fn;
 	job->context = context;
@@ -622,6 +675,49 @@ int dm_kcopyd_copy(struct dm_kcopyd_client *kc, struct dm_io_region *from,
 }
 EXPORT_SYMBOL(dm_kcopyd_copy);
 
+<<<<<<< HEAD
+=======
+int dm_kcopyd_zero(struct dm_kcopyd_client *kc,
+		   unsigned num_dests, struct dm_io_region *dests,
+		   unsigned flags, dm_kcopyd_notify_fn fn, void *context)
+{
+	return dm_kcopyd_copy(kc, NULL, num_dests, dests, flags, fn, context);
+}
+EXPORT_SYMBOL(dm_kcopyd_zero);
+
+void *dm_kcopyd_prepare_callback(struct dm_kcopyd_client *kc,
+				 dm_kcopyd_notify_fn fn, void *context)
+{
+	struct kcopyd_job *job;
+
+	job = mempool_alloc(kc->job_pool, GFP_NOIO);
+
+	memset(job, 0, sizeof(struct kcopyd_job));
+	job->kc = kc;
+	job->fn = fn;
+	job->context = context;
+	job->master_job = job;
+
+	atomic_inc(&kc->nr_jobs);
+
+	return job;
+}
+EXPORT_SYMBOL(dm_kcopyd_prepare_callback);
+
+void dm_kcopyd_do_callback(void *j, int read_err, unsigned long write_err)
+{
+	struct kcopyd_job *job = j;
+	struct dm_kcopyd_client *kc = job->kc;
+
+	job->read_err = read_err;
+	job->write_err = write_err;
+
+	push(&kc->complete_jobs, job);
+	wake(kc);
+}
+EXPORT_SYMBOL(dm_kcopyd_do_callback);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Cancels a kcopyd job, eg. someone might be deactivating a
  * mirror.

@@ -374,9 +374,14 @@ static int __init smd_pkt_init(void)
 	for (i = 0; i < NUM_SMD_PKT_PORTS; ++i) {
 		smd_pkt_devp[i] = kzalloc(sizeof(struct smd_pkt_dev),
 					  GFP_KERNEL);
+<<<<<<< HEAD
 		if (IS_ERR(smd_pkt_devp[i])) {
 			r = PTR_ERR(smd_pkt_devp[i]);
 			pr_err("kmalloc() failed %d\n", r);
+=======
+		if (!smd_pkt_devp[i]) {
+			pr_err("kmalloc() failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto clean_cdevs;
 		}
 

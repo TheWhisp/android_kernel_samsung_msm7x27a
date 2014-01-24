@@ -67,7 +67,11 @@ static int afs_inode_map_status(struct afs_vnode *vnode, struct key *key)
 		fscache_attr_changed(vnode->cache);
 #endif
 
+<<<<<<< HEAD
 	inode->i_nlink		= vnode->status.nlink;
+=======
+	set_nlink(inode, vnode->status.nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_uid		= vnode->status.owner;
 	inode->i_gid		= 0;
 	inode->i_size		= vnode->status.size;
@@ -174,7 +178,11 @@ struct inode *afs_iget_autocell(struct inode *dir, const char *dev_name,
 	inode->i_size		= 0;
 	inode->i_mode		= S_IFDIR | S_IRUGO | S_IXUGO;
 	inode->i_op		= &afs_autocell_inode_operations;
+<<<<<<< HEAD
 	inode->i_nlink		= 2;
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_uid		= 0;
 	inode->i_gid		= 0;
 	inode->i_ctime.tv_sec	= get_seconds();

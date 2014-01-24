@@ -68,6 +68,10 @@ void switch_task_namespaces(struct task_struct *tsk, struct nsproxy *new);
 void free_nsproxy(struct nsproxy *ns);
 int unshare_nsproxy_namespaces(unsigned long, struct nsproxy **,
 	struct fs_struct *);
+<<<<<<< HEAD
+=======
+int __init nsproxy_cache_init(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void put_nsproxy(struct nsproxy *ns)
 {

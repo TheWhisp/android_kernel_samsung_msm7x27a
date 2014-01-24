@@ -18,6 +18,7 @@
 #include <asm/pgtable.h>
 #include <asm/cacheflush.h>
 
+<<<<<<< HEAD
 void *module_alloc(unsigned long size)
 {
 	void *ret;
@@ -49,6 +50,8 @@ int apply_relocate(Elf32_Shdr *sechdrs, const char *strtab,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
 	unsigned int symindex, unsigned int relsec, struct module *module)
 {
@@ -131,7 +134,11 @@ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
 			break;
 
 		case R_MICROBLAZE_64_NONE:
+<<<<<<< HEAD
 			pr_debug("R_MICROBLAZE_NONE\n");
+=======
+			pr_debug("R_MICROBLAZE_64_NONE\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 
 		case R_MICROBLAZE_NONE:
@@ -155,7 +162,10 @@ int module_finalize(const Elf32_Ehdr *hdr, const Elf_Shdr *sechdrs,
 	flush_dcache();
 	return 0;
 }
+<<<<<<< HEAD
 
 void module_arch_cleanup(struct module *mod)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

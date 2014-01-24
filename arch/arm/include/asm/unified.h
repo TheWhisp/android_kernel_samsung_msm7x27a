@@ -37,8 +37,13 @@
 #define THUMB(x...)	x
 #ifdef __ASSEMBLY__
 #define W(instr)	instr.w
+<<<<<<< HEAD
 #endif
 #define BSYM(sym)	sym + 1
+=======
+#define BSYM(sym)	sym + 1
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else	/* !CONFIG_THUMB2_KERNEL */
 
@@ -49,8 +54,13 @@
 #define THUMB(x...)
 #ifdef __ASSEMBLY__
 #define W(instr)	instr
+<<<<<<< HEAD
 #endif
 #define BSYM(sym)	sym
+=======
+#define BSYM(sym)	sym
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif	/* CONFIG_THUMB2_KERNEL */
 

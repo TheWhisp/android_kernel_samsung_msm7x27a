@@ -1,7 +1,11 @@
 
 config CPU_IDLE
 	bool "CPU idle PM support"
+<<<<<<< HEAD
 	default ACPI
+=======
+	default y if ACPI || PPC_PSERIES
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  CPU idle is a generic framework for supporting software-controlled
 	  idle processor power management.  It includes modular cross-platform

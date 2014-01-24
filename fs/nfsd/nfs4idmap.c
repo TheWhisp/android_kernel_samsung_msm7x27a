@@ -36,10 +36,25 @@
 #include <linux/seq_file.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <net/net_namespace.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "idmap.h"
 #include "nfsd.h"
 
 /*
+<<<<<<< HEAD
+=======
+ * Turn off idmapping when using AUTH_SYS.
+ */
+static bool nfs4_disable_idmapping = true;
+module_param(nfs4_disable_idmapping, bool, 0644);
+MODULE_PARM_DESC(nfs4_disable_idmapping,
+		"Turn off server's NFSv4 idmapping when using 'sec=sys'");
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Cache entry
  */
 
@@ -469,17 +484,29 @@ nfsd_idmap_init(void)
 	rv = cache_register_net(&idtoname_cache, &init_net);
 	if (rv)
 		return rv;
+<<<<<<< HEAD
 	rv = cache_register_net(&idtoname_cache, &init_net);
 	if (rv)
 		cache_unregister(&idtoname_cache);
+=======
+	rv = cache_register_net(&nametoid_cache, &init_net);
+	if (rv)
+		cache_unregister_net(&idtoname_cache, &init_net);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rv;
 }
 
 void
 nfsd_idmap_shutdown(void)
 {
+<<<<<<< HEAD
            cache_unregister_net(&idtoname_cache, &init_net);
            cache_unregister_net(&idtoname_cache, &init_net);
+=======
+	cache_unregister_net(&idtoname_cache, &init_net);
+	cache_unregister_net(&nametoid_cache, &init_net);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int
 idmap_lookup(struct svc_rqst *rqstp,
@@ -559,28 +586,84 @@ idmap_id_to_name(struct svc_rqst *rqstp, int type, uid_t id, char *name)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static bool
+numeric_name_to_id(struct svc_rqst *rqstp, int type, const char *name, u32 namelen, uid_t *id)
+{
+	int ret;
+	char buf[11];
+
+	if (namelen + 1 > sizeof(buf))
+		/* too long to represent a 32-bit id: */
+		return false;
+	/* Just to make sure it's null-terminated: */
+	memcpy(buf, name, namelen);
+	buf[namelen] = '\0';
+	ret = kstrtouint(buf, 10, id);
+	return ret == 0;
+}
+
+static __be32
+do_name_to_id(struct svc_rqst *rqstp, int type, const char *name, u32 namelen, uid_t *id)
+{
+	if (nfs4_disable_idmapping && rqstp->rq_flavor < RPC_AUTH_GSS)
+		if (numeric_name_to_id(rqstp, type, name, namelen, id))
+			return 0;
+		/*
+		 * otherwise, fall through and try idmapping, for
+		 * backwards compatibility with clients sending names:
+		 */
+	return idmap_name_to_id(rqstp, type, name, namelen, id);
+}
+
+static int
+do_id_to_name(struct svc_rqst *rqstp, int type, uid_t id, char *name)
+{
+	if (nfs4_disable_idmapping && rqstp->rq_flavor < RPC_AUTH_GSS)
+		return sprintf(name, "%u", id);
+	return idmap_id_to_name(rqstp, type, id, name);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 __be32
 nfsd_map_name_to_uid(struct svc_rqst *rqstp, const char *name, size_t namelen,
 		__u32 *id)
 {
+<<<<<<< HEAD
 	return idmap_name_to_id(rqstp, IDMAP_TYPE_USER, name, namelen, id);
+=======
+	return do_name_to_id(rqstp, IDMAP_TYPE_USER, name, namelen, id);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 __be32
 nfsd_map_name_to_gid(struct svc_rqst *rqstp, const char *name, size_t namelen,
 		__u32 *id)
 {
+<<<<<<< HEAD
 	return idmap_name_to_id(rqstp, IDMAP_TYPE_GROUP, name, namelen, id);
+=======
+	return do_name_to_id(rqstp, IDMAP_TYPE_GROUP, name, namelen, id);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int
 nfsd_map_uid_to_name(struct svc_rqst *rqstp, __u32 id, char *name)
 {
+<<<<<<< HEAD
 	return idmap_id_to_name(rqstp, IDMAP_TYPE_USER, id, name);
+=======
+	return do_id_to_name(rqstp, IDMAP_TYPE_USER, id, name);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int
 nfsd_map_gid_to_name(struct svc_rqst *rqstp, __u32 id, char *name)
 {
+<<<<<<< HEAD
 	return idmap_id_to_name(rqstp, IDMAP_TYPE_GROUP, id, name);
+=======
+	return do_id_to_name(rqstp, IDMAP_TYPE_GROUP, id, name);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

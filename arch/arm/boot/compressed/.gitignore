@@ -1,8 +1,16 @@
+<<<<<<< HEAD
+=======
+ashldi3.S
+>>>>>>> refs/remotes/origin/cm-10.0
 font.c
 lib1funcs.S
 piggy.gzip
 piggy.lzo
 piggy.lzma
+<<<<<<< HEAD
+=======
+piggy.xzkern
+>>>>>>> refs/remotes/origin/cm-10.0
 vmlinux
 vmlinux.lds
 

@@ -57,12 +57,20 @@ struct snd_line6_midi {
 	/**
 		 Bit mask for output MIDI channels.
 	*/
+<<<<<<< HEAD
 	int midi_mask_transmit;
+=======
+	unsigned short midi_mask_transmit;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/**
 		 Bit mask for input MIDI channels.
 	*/
+<<<<<<< HEAD
 	int midi_mask_receive;
+=======
+	unsigned short midi_mask_receive;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/**
 		 Buffer for incoming MIDI stream.

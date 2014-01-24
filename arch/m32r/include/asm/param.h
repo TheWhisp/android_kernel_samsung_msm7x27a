@@ -1,6 +1,7 @@
 #ifndef _ASM_M32R_PARAM_H
 #define _ASM_M32R_PARAM_H
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 # define HZ		CONFIG_HZ	/* Internal kernel timer frequency */
 # define USER_HZ	100		/* .. some user interfaces are in "ticks" */
@@ -18,6 +19,9 @@
 #endif
 
 #define MAXHOSTNAMELEN	64	/* max length of hostname */
+=======
+#include <asm-generic/param.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _ASM_M32R_PARAM_H */
 

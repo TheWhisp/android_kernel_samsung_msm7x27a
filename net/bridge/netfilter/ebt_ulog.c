@@ -102,16 +102,26 @@ static struct sk_buff *ulog_alloc_skb(unsigned int size)
 	unsigned int n;
 
 	n = max(size, nlbufsiz);
+<<<<<<< HEAD
 	skb = alloc_skb(n, GFP_ATOMIC);
 	if (!skb) {
 		pr_debug("cannot alloc whole buffer of size %ub!\n", n);
+=======
+	skb = alloc_skb(n, GFP_ATOMIC | __GFP_NOWARN);
+	if (!skb) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (n > size) {
 			/* try to allocate only as much as we need for
 			 * current packet */
 			skb = alloc_skb(size, GFP_ATOMIC);
 			if (!skb)
+<<<<<<< HEAD
 				pr_debug("cannot even allocate "
 					 "buffer of size %ub\n", size);
+=======
+				pr_debug("cannot even allocate buffer of size %ub\n",
+					 size);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -216,7 +226,10 @@ unlock:
 nlmsg_failure:
 	pr_debug("error during NLMSG_PUT. This should "
 		 "not happen, please report to author.\n");
+<<<<<<< HEAD
 	goto unlock;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 alloc_failure:
 	goto unlock;
 }

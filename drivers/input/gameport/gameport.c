@@ -47,7 +47,11 @@ static void gameport_disconnect_port(struct gameport *gameport);
 
 #if defined(__i386__)
 
+<<<<<<< HEAD
 #include <asm/i8253.h>
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DELTA(x,y)      ((y)-(x)+((y)<(x)?1193182/HZ:0))
 #define GET_TIME(x)     do { x = get_time_pit(); } while (0)
@@ -449,7 +453,10 @@ static ssize_t gameport_rebind_driver(struct device *dev, struct device_attribut
 	} else if ((drv = driver_find(buf, &gameport_bus)) != NULL) {
 		gameport_disconnect_port(gameport);
 		error = gameport_bind_driver(gameport, to_gameport_driver(drv));
+<<<<<<< HEAD
 		put_driver(drv);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		error = -EINVAL;
 	}

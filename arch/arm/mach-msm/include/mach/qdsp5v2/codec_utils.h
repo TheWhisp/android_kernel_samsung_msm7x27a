@@ -41,6 +41,10 @@ struct buffer {
 	unsigned used;		/* Input usage actual DSP produced PCM size  */
 	unsigned addr;
 };
+<<<<<<< HEAD
+=======
+struct audio;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
 struct audio_suspend_ctl {
@@ -122,8 +126,12 @@ struct audio {
 	uint64_t bytecount_given;
 	uint64_t bytecount_query;
 
+<<<<<<< HEAD
 	struct list_head ion_region_queue; /* protected by lock */
 	struct ion_client *client;
+=======
+	struct list_head pmem_region_queue; /* protected by lock */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int eq_enable;
 	int eq_needs_commit;
@@ -132,6 +140,11 @@ struct audio {
 
 	unsigned int minor_no;
 	struct codec_operations codec_ops;
+<<<<<<< HEAD
+=======
+	uint32_t buffer_size;
+	uint32_t buffer_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif /* !CODEC_UTILS_H */

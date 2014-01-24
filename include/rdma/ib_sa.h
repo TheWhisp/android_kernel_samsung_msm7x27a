@@ -38,7 +38,11 @@
 #include <linux/completion.h>
 #include <linux/compiler.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <rdma/ib_verbs.h>
 #include <rdma/ib_mad.h>

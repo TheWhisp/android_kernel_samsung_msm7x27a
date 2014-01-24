@@ -15,6 +15,10 @@
 #include <linux/module.h>
 #include <linux/delay.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/ioport.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/c2port.h>
 
 #define DATA_PORT	0x325

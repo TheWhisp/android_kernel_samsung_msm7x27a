@@ -505,7 +505,11 @@ static void pnpbios_encode_mem(struct pnp_dev *dev, unsigned char *p,
 
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
+<<<<<<< HEAD
 		len = res->end - res->start + 1;
+=======
+		len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		base = 0;
 		len = 0;
@@ -529,7 +533,11 @@ static void pnpbios_encode_mem32(struct pnp_dev *dev, unsigned char *p,
 
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
+<<<<<<< HEAD
 		len = res->end - res->start + 1;
+=======
+		len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		base = 0;
 		len = 0;
@@ -559,7 +567,11 @@ static void pnpbios_encode_fixed_mem32(struct pnp_dev *dev, unsigned char *p,
 
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
+<<<<<<< HEAD
 		len = res->end - res->start + 1;
+=======
+		len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		base = 0;
 		len = 0;
@@ -617,7 +629,11 @@ static void pnpbios_encode_port(struct pnp_dev *dev, unsigned char *p,
 
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
+<<<<<<< HEAD
 		len = res->end - res->start + 1;
+=======
+		len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		base = 0;
 		len = 0;
@@ -636,11 +652,19 @@ static void pnpbios_encode_fixed_port(struct pnp_dev *dev, unsigned char *p,
 				      struct resource *res)
 {
 	unsigned long base = res->start;
+<<<<<<< HEAD
 	unsigned long len = res->end - res->start + 1;
 
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
 		len = res->end - res->start + 1;
+=======
+	unsigned long len = resource_size(res);
+
+	if (pnp_resource_enabled(res)) {
+		base = res->start;
+		len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		base = 0;
 		len = 0;

@@ -113,7 +113,10 @@
  
 #include <linux/module.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/signal.h>
 #include <linux/proc_fs.h>
 #include <asm/io.h>

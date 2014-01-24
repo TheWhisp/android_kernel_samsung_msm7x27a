@@ -39,7 +39,11 @@ static ssize_t arvo_sysfs_show_mode_key(struct device *dev,
 	int retval;
 
 	mutex_lock(&arvo->arvo_lock);
+<<<<<<< HEAD
 	retval = roccat_common_receive(usb_dev, ARVO_USB_COMMAND_MODE_KEY,
+=======
+	retval = roccat_common_receive(usb_dev, ARVO_COMMAND_MODE_KEY,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&temp_buf, sizeof(struct arvo_mode_key));
 	mutex_unlock(&arvo->arvo_lock);
 	if (retval)
@@ -67,7 +71,11 @@ static ssize_t arvo_sysfs_set_mode_key(struct device *dev,
 	temp_buf.state = state;
 
 	mutex_lock(&arvo->arvo_lock);
+<<<<<<< HEAD
 	retval = roccat_common_send(usb_dev, ARVO_USB_COMMAND_MODE_KEY,
+=======
+	retval = roccat_common_send(usb_dev, ARVO_COMMAND_MODE_KEY,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&temp_buf, sizeof(struct arvo_mode_key));
 	mutex_unlock(&arvo->arvo_lock);
 	if (retval)
@@ -87,7 +95,11 @@ static ssize_t arvo_sysfs_show_key_mask(struct device *dev,
 	int retval;
 
 	mutex_lock(&arvo->arvo_lock);
+<<<<<<< HEAD
 	retval = roccat_common_receive(usb_dev, ARVO_USB_COMMAND_KEY_MASK,
+=======
+	retval = roccat_common_receive(usb_dev, ARVO_COMMAND_KEY_MASK,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&temp_buf, sizeof(struct arvo_key_mask));
 	mutex_unlock(&arvo->arvo_lock);
 	if (retval)
@@ -115,7 +127,11 @@ static ssize_t arvo_sysfs_set_key_mask(struct device *dev,
 	temp_buf.key_mask = key_mask;
 
 	mutex_lock(&arvo->arvo_lock);
+<<<<<<< HEAD
 	retval = roccat_common_send(usb_dev, ARVO_USB_COMMAND_KEY_MASK,
+=======
+	retval = roccat_common_send(usb_dev, ARVO_COMMAND_KEY_MASK,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&temp_buf, sizeof(struct arvo_key_mask));
 	mutex_unlock(&arvo->arvo_lock);
 	if (retval)
@@ -130,7 +146,11 @@ static int arvo_get_actual_profile(struct usb_device *usb_dev)
 	struct arvo_actual_profile temp_buf;
 	int retval;
 
+<<<<<<< HEAD
 	retval = roccat_common_receive(usb_dev, ARVO_USB_COMMAND_ACTUAL_PROFILE,
+=======
+	retval = roccat_common_receive(usb_dev, ARVO_COMMAND_ACTUAL_PROFILE,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&temp_buf, sizeof(struct arvo_actual_profile));
 
 	if (retval)
@@ -163,11 +183,21 @@ static ssize_t arvo_sysfs_set_actual_profile(struct device *dev,
 	if (retval)
 		return retval;
 
+<<<<<<< HEAD
+=======
+	if (profile < 1 || profile > 5)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	temp_buf.command = ARVO_COMMAND_ACTUAL_PROFILE;
 	temp_buf.actual_profile = profile;
 
 	mutex_lock(&arvo->arvo_lock);
+<<<<<<< HEAD
 	retval = roccat_common_send(usb_dev, ARVO_USB_COMMAND_ACTUAL_PROFILE,
+=======
+	retval = roccat_common_send(usb_dev, ARVO_COMMAND_ACTUAL_PROFILE,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&temp_buf, sizeof(struct arvo_actual_profile));
 	if (!retval) {
 		arvo->actual_profile = profile;
@@ -225,7 +255,11 @@ static ssize_t arvo_sysfs_write_button(struct file *fp,
 		loff_t off, size_t count)
 {
 	return arvo_sysfs_write(fp, kobj, buf, off, count,
+<<<<<<< HEAD
 			sizeof(struct arvo_button), ARVO_USB_COMMAND_BUTTON);
+=======
+			sizeof(struct arvo_button), ARVO_COMMAND_BUTTON);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static ssize_t arvo_sysfs_read_info(struct file *fp,
@@ -233,7 +267,11 @@ static ssize_t arvo_sysfs_read_info(struct file *fp,
 		loff_t off, size_t count)
 {
 	return arvo_sysfs_read(fp, kobj, buf, off, count,
+<<<<<<< HEAD
 			sizeof(struct arvo_info), ARVO_USB_COMMAND_INFO);
+=======
+			sizeof(struct arvo_info), ARVO_COMMAND_INFO);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -399,7 +437,11 @@ static int arvo_raw_event(struct hid_device *hdev,
 	if (size != 3)
 		return 0;
 
+<<<<<<< HEAD
 	if (arvo->roccat_claimed)
+=======
+	if (arvo && arvo->roccat_claimed)
+>>>>>>> refs/remotes/origin/cm-10.0
 		arvo_report_to_chrdev(arvo, data);
 
 	return 0;

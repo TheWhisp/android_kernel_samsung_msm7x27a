@@ -24,7 +24,11 @@
  * This file may also be available under a different license from Cavium.
  * Contact Cavium Networks for more information
 *********************************************************************/
+<<<<<<< HEAD
 #include "cvmx-fau.h"
+=======
+#include <asm/octeon/cvmx-fau.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void cvm_oct_poll_controller(struct net_device *dev);
 void cvm_oct_rx_initialize(void);

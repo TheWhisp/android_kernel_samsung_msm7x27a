@@ -20,6 +20,10 @@
 #include <linux/delay.h>
 #include <linux/io.h>
 #include <asm/ist.h>
+<<<<<<< HEAD
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "speedstep-lib.h"
 
@@ -379,6 +383,20 @@ static struct cpufreq_driver speedstep_driver = {
 	.attr		= speedstep_attr,
 };
 
+<<<<<<< HEAD
+=======
+static const struct x86_cpu_id ss_smi_ids[] = {
+	{ X86_VENDOR_INTEL, 6, 0xb, },
+	{ X86_VENDOR_INTEL, 6, 0x8, },
+	{ X86_VENDOR_INTEL, 15, 2 },
+	{}
+};
+#if 0
+/* Not auto loaded currently */
+MODULE_DEVICE_TABLE(x86cpu, ss_smi_ids);
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * speedstep_init - initializes the SpeedStep CPUFreq driver
  *
@@ -388,6 +406,12 @@ static struct cpufreq_driver speedstep_driver = {
  */
 static int __init speedstep_init(void)
 {
+<<<<<<< HEAD
+=======
+	if (!x86_match_cpu(ss_smi_ids))
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	speedstep_processor = speedstep_detect_processor();
 
 	switch (speedstep_processor) {

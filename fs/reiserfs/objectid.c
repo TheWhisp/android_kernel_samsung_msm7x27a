@@ -5,8 +5,12 @@
 #include <linux/string.h>
 #include <linux/random.h>
 #include <linux/time.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 #include <linux/reiserfs_fs_sb.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 // find where objectid map starts
 #define objectid_map(s,rs) (old_format_only (s) ? \

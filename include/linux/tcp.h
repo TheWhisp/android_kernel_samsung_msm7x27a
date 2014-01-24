@@ -111,7 +111,12 @@ enum {
 #define TCPI_OPT_TIMESTAMPS	1
 #define TCPI_OPT_SACK		2
 #define TCPI_OPT_WSCALE		4
+<<<<<<< HEAD
 #define TCPI_OPT_ECN		8
+=======
+#define TCPI_OPT_ECN		8 /* ECN was negociated at TCP session init */
+#define TCPI_OPT_ECN_SEEN	16 /* we received at least one packet with ECT */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 enum tcp_ca_state {
 	TCP_CA_Open = 0,
@@ -238,6 +243,14 @@ struct tcp_sack_block {
 	u32	end_seq;
 };
 
+<<<<<<< HEAD
+=======
+/*These are used to set the sack_ok field in struct tcp_options_received */
+#define TCP_SACK_SEEN     (1 << 0)   /*1 = peer is SACK capable, */
+#define TCP_FACK_ENABLED  (1 << 1)   /*1 = FACK is enabled locally*/
+#define TCP_DSACK_SEEN    (1 << 2)   /*1 = DSACK was received from peer*/
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct tcp_options_received {
 /*	PAWS/RTTM data	*/
 	long	ts_recent_stamp;/* Time we stored ts_recent (for aging) */
@@ -283,6 +296,10 @@ struct tcp_request_sock {
 #endif
 	u32				rcv_isn;
 	u32				snt_isn;
+<<<<<<< HEAD
+=======
+	u32				snt_synack; /* synack sent time */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static inline struct tcp_request_sock *tcp_rsk(const struct request_sock *req)
@@ -379,6 +396,13 @@ struct tcp_sock {
 	u32	snd_cwnd_clamp; /* Do not allow snd_cwnd to grow above this */
 	u32	snd_cwnd_used;
 	u32	snd_cwnd_stamp;
+<<<<<<< HEAD
+=======
+	u32	prior_cwnd;	/* Congestion window at start of Recovery. */
+	u32	prr_delivered;	/* Number of newly delivered packets to
+				 * receiver in Recovery. */
+	u32	prr_out;	/* Total number of pkts sent during Recovery. */
+>>>>>>> refs/remotes/origin/cm-10.0
 
  	u32	rcv_wnd;	/* Current receiver window		*/
 	u32	write_seq;	/* Tail(+1) of data held in tcp send buffer */
@@ -402,7 +426,12 @@ struct tcp_sock {
 
 	struct tcp_sack_block recv_sack_cache[4];
 
+<<<<<<< HEAD
 	struct sk_buff *highest_sack;   /* highest skb with SACK received
+=======
+	struct sk_buff *highest_sack;   /* skb just after the highest
+					 * skb with SACKed bit set
+>>>>>>> refs/remotes/origin/cm-10.0
 					 * (validity guaranteed only if
 					 * sacked_out > 0)
 					 */
@@ -453,7 +482,11 @@ struct tcp_sock {
 	const struct tcp_sock_af_ops	*af_specific;
 
 /* TCP MD5 Signature Option information */
+<<<<<<< HEAD
 	struct tcp_md5sig_info	*md5sig_info;
+=======
+	struct tcp_md5sig_info	__rcu *md5sig_info;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	/* When the cookie options are generated and exchanged, then this
@@ -476,8 +509,12 @@ struct tcp_timewait_sock {
 	u32			  tw_ts_recent;
 	long			  tw_ts_recent_stamp;
 #ifdef CONFIG_TCP_MD5SIG
+<<<<<<< HEAD
 	u16			  tw_md5_keylen;
 	u8			  tw_md5_key[TCP_MD5SIG_MAXKEYLEN];
+=======
+	struct tcp_md5sig_key	*tw_md5_key;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	/* Few sockets in timewait have cookies; in that case, then this
 	 * object holds a reference to them (tw_cookie_values->kref).

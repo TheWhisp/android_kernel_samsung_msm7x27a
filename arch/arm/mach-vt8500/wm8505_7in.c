@@ -68,7 +68,11 @@ void __init wm8505_7in_init(void)
 }
 
 MACHINE_START(WM8505_7IN_NETBOOK, "WM8505 7-inch generic netbook")
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.reserve	= wm8505_reserve_mem,
 	.map_io		= wm8505_map_io,
 	.init_irq	= wm8505_init_irq,

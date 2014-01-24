@@ -26,7 +26,10 @@
 #define KMSG_COMPONENT		"lcs"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
+<<<<<<< HEAD
 #include <linux/kernel_stat.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/if.h>
 #include <linux/netdevice.h>
@@ -51,7 +54,11 @@
 #include "lcs.h"
 
 
+<<<<<<< HEAD
 #if !defined(CONFIG_NET_ETHERNET) && \
+=======
+#if !defined(CONFIG_ETHERNET) && \
+>>>>>>> refs/remotes/origin/cm-10.0
     !defined(CONFIG_TR) && !defined(CONFIG_FDDI)
 #error Cannot compile lcs.c without some net devices switched on.
 #endif
@@ -1399,7 +1406,10 @@ lcs_irq(struct ccw_device *cdev, unsigned long intparm, struct irb *irb)
 	int rc, index;
 	int cstat, dstat;
 
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[IOINT_LCS]++;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (lcs_check_irb_error(cdev, irb))
 		return;
 
@@ -1636,7 +1646,11 @@ lcs_startlan_auto(struct lcs_card *card)
 	int rc;
 
 	LCS_DBF_TEXT(2, trace, "strtauto");
+<<<<<<< HEAD
 #ifdef CONFIG_NET_ETHERNET
+=======
+#ifdef CONFIG_ETHERNET
+>>>>>>> refs/remotes/origin/cm-10.0
 	card->lan_type = LCS_FRAME_TYPE_ENET;
 	rc = lcs_send_startlan(card, LCS_INITIATOR_TCPIP);
 	if (rc == 0)
@@ -1972,7 +1986,11 @@ lcs_portno_store (struct device *dev, struct device_attribute *attr, const char 
 
 static DEVICE_ATTR(portno, 0644, lcs_portno_show, lcs_portno_store);
 
+<<<<<<< HEAD
 const char *lcs_type[] = {
+=======
+static const char *lcs_type[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	"not a channel",
 	"2216 parallel",
 	"2216 channel",
@@ -2122,7 +2140,11 @@ static const struct net_device_ops lcs_mc_netdev_ops = {
 	.ndo_stop		= lcs_stop_device,
 	.ndo_get_stats		= lcs_getstats,
 	.ndo_start_xmit		= lcs_start_xmit,
+<<<<<<< HEAD
 	.ndo_set_multicast_list = lcs_set_multicast_list,
+=======
+	.ndo_set_rx_mode	= lcs_set_multicast_list,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int
@@ -2168,7 +2190,11 @@ lcs_new_device(struct ccwgroup_device *ccwgdev)
 		goto netdev_out;
 	}
 	switch (card->lan_type) {
+<<<<<<< HEAD
 #ifdef CONFIG_NET_ETHERNET
+=======
+#ifdef CONFIG_ETHERNET
+>>>>>>> refs/remotes/origin/cm-10.0
 	case LCS_FRAME_TYPE_ENET:
 		card->lan_type_trans = eth_type_trans;
 		dev = alloc_etherdev(0);
@@ -2242,7 +2268,11 @@ __lcs_shutdown_device(struct ccwgroup_device *ccwgdev, int recovery_mode)
 {
 	struct lcs_card *card;
 	enum lcs_dev_states recover_state;
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret = 0, ret2 = 0, ret3 = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	LCS_DBF_TEXT(3, setup, "shtdndev");
 	card = dev_get_drvdata(&ccwgdev->dev);
@@ -2257,6 +2287,7 @@ __lcs_shutdown_device(struct ccwgroup_device *ccwgdev, int recovery_mode)
 	recover_state = card->state;
 
 	ret = lcs_stop_device(card->dev);
+<<<<<<< HEAD
 	ret = ccw_device_set_offline(card->read.ccwdev);
 	ret = ccw_device_set_offline(card->write.ccwdev);
 	if (recover_state == DEV_STATE_UP) {
@@ -2264,6 +2295,17 @@ __lcs_shutdown_device(struct ccwgroup_device *ccwgdev, int recovery_mode)
 	}
 	if (ret)
 		return ret;
+=======
+	ret2 = ccw_device_set_offline(card->read.ccwdev);
+	ret3 = ccw_device_set_offline(card->write.ccwdev);
+	if (!ret)
+		ret = (ret2) ? ret2 : ret3;
+	if (ret)
+		LCS_DBF_TEXT_(3, setup, "1err:%d", ret);
+	if (recover_state == DEV_STATE_UP) {
+		card->state = DEV_STATE_RECOVER;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -2399,6 +2441,10 @@ static struct ccw_driver lcs_ccw_driver = {
 	.ids	= lcs_ids,
 	.probe	= ccwgroup_probe_ccwdev,
 	.remove	= ccwgroup_remove_ccwdev,
+<<<<<<< HEAD
+=======
+	.int_class = IOINT_LCS,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**

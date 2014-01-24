@@ -32,8 +32,12 @@ struct pci_ops *pci_root_ops;
  * insert specific PCI bus resources instead of using the platform-level bus
  * resources directly for the PCI root bus.
  *
+<<<<<<< HEAD
  * These are configured and inserted by pcibios_init() and are attached to the
  * root bus by pcibios_fixup_bus().
+=======
+ * These are configured and inserted by pcibios_init().
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static struct resource pci_ioport_resource = {
 	.name	= "PCI IO",
@@ -78,6 +82,7 @@ static inline int __query(const struct pci_bus *bus, unsigned int devfn)
 }
 
 /*
+<<<<<<< HEAD
  * translate Linuxcentric addresses to PCI bus addresses
  */
 void pcibios_resource_to_bus(struct pci_dev *dev, struct pci_bus_region *region,
@@ -124,6 +129,8 @@ void pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 EXPORT_SYMBOL(pcibios_bus_to_resource);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  */
 static int pci_ampci_read_config_byte(struct pci_bus *bus, unsigned int devfn,
@@ -364,9 +371,12 @@ static void __devinit pcibios_fixup_device_resources(struct pci_dev *dev)
 		if (!dev->resource[i].flags)
 			continue;
 
+<<<<<<< HEAD
 		region.start = dev->resource[i].start;
 		region.end = dev->resource[i].end;
 		pcibios_bus_to_resource(dev, &dev->resource[i], &region);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (is_valid_resource(dev, i))
 			pci_claim_resource(dev, i);
 	}
@@ -380,11 +390,14 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
 {
 	struct pci_dev *dev;
 
+<<<<<<< HEAD
 	if (bus->number == 0) {
 		bus->resource[0] = &pci_ioport_resource;
 		bus->resource[1] = &pci_iomem_resource;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (bus->self) {
 		pci_read_bridge_bases(bus);
 		pcibios_fixup_device_resources(bus->self);
@@ -402,6 +415,12 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
  */
 static int __init pcibios_init(void)
 {
+<<<<<<< HEAD
+=======
+	resource_size_t io_offset, mem_offset;
+	LIST_HEAD(resources);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ioport_resource.start	= 0xA0000000;
 	ioport_resource.end	= 0xDFFFFFFF;
 	iomem_resource.start	= 0xA0000000;
@@ -423,7 +442,19 @@ static int __init pcibios_init(void)
 	printk(KERN_INFO "PCI: Probing PCI hardware [mempage %08x]\n",
 	       MEM_PAGING_REG);
 
+<<<<<<< HEAD
 	pci_root_bus = pci_scan_bus(0, &pci_direct_ampci, NULL);
+=======
+	io_offset = pci_ioport_resource.start -
+	    (pci_ioport_resource.start & 0x00ffffff);
+	mem_offset = pci_iomem_resource.start -
+	    ((pci_iomem_resource.start & 0x03ffffff) | MEM_PAGING_REG);
+
+	pci_add_resource_offset(&resources, &pci_ioport_resource, io_offset);
+	pci_add_resource_offset(&resources, &pci_iomem_resource, mem_offset);
+	pci_root_bus = pci_scan_root_bus(NULL, 0, &pci_direct_ampci, NULL,
+					 &resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pcibios_irq_init();
 	pcibios_fixup_irqs();

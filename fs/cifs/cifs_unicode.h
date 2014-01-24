@@ -74,6 +74,7 @@ extern const struct UniCaseRange CifsUniLowerRange[];
 #endif				/* UNIUPR_NOLOWER */
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
 int cifs_from_ucs2(char *to, const __le16 *from, int tolen, int fromlen,
 		   const struct nls_table *codepage, bool mapchar);
 int cifs_ucs2_bytes(const __le16 *from, int maxbytes,
@@ -84,6 +85,18 @@ char *cifs_strndup_from_ucs(const char *src, const int maxlen,
 			    const struct nls_table *codepage);
 extern int cifsConvertToUCS(__le16 *target, const char *source, int maxlen,
 			const struct nls_table *cp, int mapChars);
+=======
+int cifs_from_utf16(char *to, const __le16 *from, int tolen, int fromlen,
+		    const struct nls_table *codepage, bool mapchar);
+int cifs_utf16_bytes(const __le16 *from, int maxbytes,
+		     const struct nls_table *codepage);
+int cifs_strtoUTF16(__le16 *, const char *, int, const struct nls_table *);
+char *cifs_strndup_from_utf16(const char *src, const int maxlen,
+			      const bool is_unicode,
+			      const struct nls_table *codepage);
+extern int cifsConvertToUTF16(__le16 *target, const char *source, int maxlen,
+			      const struct nls_table *cp, int mapChars);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif
 
@@ -323,6 +336,7 @@ UniToupper(register wchar_t uc)
 /*
  * UniStrupr:  Upper case a unicode string
  */
+<<<<<<< HEAD
 static inline wchar_t *
 UniStrupr(register wchar_t *upin)
 {
@@ -331,6 +345,16 @@ UniStrupr(register wchar_t *upin)
 	up = upin;
 	while (*up) {		/* For all characters */
 		*up = UniToupper(*up);
+=======
+static inline __le16 *
+UniStrupr(register __le16 *upin)
+{
+	register __le16 *up;
+
+	up = upin;
+	while (*up) {		/* For all characters */
+		*up = cpu_to_le16(UniToupper(le16_to_cpu(*up)));
+>>>>>>> refs/remotes/origin/cm-10.0
 		up++;
 	}
 	return upin;		/* Return input pointer */

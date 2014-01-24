@@ -39,16 +39,25 @@
 #include <asm/reboot.h>
 #include <asm/time.h>
 #include <asm/bootinfo.h>
+<<<<<<< HEAD
 #include <asm/smp-ops.h>
 
 #include <asm/netlogic/interrupt.h>
 #include <asm/netlogic/psb-bootinfo.h>
+=======
+
+#include <asm/netlogic/interrupt.h>
+#include <asm/netlogic/psb-bootinfo.h>
+#include <asm/netlogic/haldefs.h>
+#include <asm/netlogic/common.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/netlogic/xlr/xlr.h>
 #include <asm/netlogic/xlr/iomap.h>
 #include <asm/netlogic/xlr/pic.h>
 #include <asm/netlogic/xlr/gpio.h>
 
+<<<<<<< HEAD
 unsigned long netlogic_io_base = (unsigned long)(DEFAULT_NETLOGIC_IO_BASE);
 unsigned long nlm_common_ebase = 0x0;
 struct psb_info nlm_prom_info;
@@ -59,6 +68,24 @@ static void nlm_early_serial_setup(void)
 	nlm_reg_t *uart_base;
 
 	uart_base = netlogic_io_mmio(NETLOGIC_IO_UART_0_OFFSET);
+=======
+uint64_t nlm_io_base = DEFAULT_NETLOGIC_IO_BASE;
+uint64_t nlm_pic_base;
+struct psb_info nlm_prom_info;
+
+unsigned long nlm_common_ebase = 0x0;
+
+/* default to uniprocessor */
+uint32_t nlm_coremask = 1, nlm_cpumask  = 1;
+int  nlm_threads_per_core = 1;
+
+static void __init nlm_early_serial_setup(void)
+{
+	struct uart_port s;
+	unsigned long uart_base;
+
+	uart_base = (unsigned long)nlm_mmio_base(NETLOGIC_IO_UART_0_OFFSET);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memset(&s, 0, sizeof(s));
 	s.flags		= ASYNC_BOOT_AUTOCONF | ASYNC_SKIP_TEST;
 	s.iotype	= UPIO_MEM32;
@@ -67,18 +94,30 @@ static void nlm_early_serial_setup(void)
 	s.uartclk	= PIC_CLKS_PER_SEC;
 	s.serial_in	= nlm_xlr_uart_in;
 	s.serial_out	= nlm_xlr_uart_out;
+<<<<<<< HEAD
 	s.mapbase	= (unsigned long)uart_base;
+=======
+	s.mapbase	= uart_base;
+>>>>>>> refs/remotes/origin/cm-10.0
 	s.membase	= (unsigned char __iomem *)uart_base;
 	early_serial_setup(&s);
 }
 
 static void nlm_linux_exit(void)
 {
+<<<<<<< HEAD
 	nlm_reg_t *mmio;
 
 	mmio = netlogic_io_mmio(NETLOGIC_IO_GPIO_OFFSET);
 	/* trigger a chip reset by writing 1 to GPIO_SWRESET_REG */
 	netlogic_write_reg(mmio, NETLOGIC_GPIO_SWRESET_REG, 1);
+=======
+	uint64_t gpiobase;
+
+	gpiobase = nlm_mmio_base(NETLOGIC_IO_GPIO_OFFSET);
+	/* trigger a chip reset by writing 1 to GPIO_SWRESET_REG */
+	nlm_write_reg(gpiobase, NETLOGIC_GPIO_SWRESET_REG, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	for ( ; ; )
 		cpu_wait();
 }
@@ -96,12 +135,24 @@ const char *get_system_type(void)
 	return "Netlogic XLR/XLS Series";
 }
 
+<<<<<<< HEAD
+=======
+unsigned int nlm_get_cpu_frequency(void)
+{
+	return (unsigned int)nlm_prom_info.cpu_frequency;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init prom_free_prom_memory(void)
 {
 	/* Nothing yet */
 }
 
+<<<<<<< HEAD
 static void build_arcs_cmdline(int *argv)
+=======
+static void __init build_arcs_cmdline(int *argv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i, remain, len;
 	char *arg;
@@ -175,6 +226,10 @@ void __init prom_init(void)
 	prom_infop = (struct psb_info *)(long)(int)fw_arg3;
 
 	nlm_prom_info = *prom_infop;
+<<<<<<< HEAD
+=======
+	nlm_pic_base = nlm_mmio_base(NETLOGIC_IO_PIC_OFFSET);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	nlm_early_serial_setup();
 	build_arcs_cmdline(argv);

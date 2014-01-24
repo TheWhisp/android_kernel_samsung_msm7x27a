@@ -85,6 +85,10 @@ STD_ENTRY(cpu_idle_on_new_stack)
 /* Loop forever on a nap during SMP boot. */
 STD_ENTRY(smp_nap)
 	nap
+<<<<<<< HEAD
+=======
+	nop       /* avoid provoking the icache prefetch with a jump */
+>>>>>>> refs/remotes/origin/cm-10.0
 	j smp_nap /* we are not architecturally guaranteed not to exit nap */
 	jrp lr    /* clue in the backtracer */
 	STD_ENDPROC(smp_nap)
@@ -105,5 +109,9 @@ STD_ENTRY(_cpu_idle)
 	.global _cpu_idle_nap
 _cpu_idle_nap:
 	nap
+<<<<<<< HEAD
+=======
+	nop       /* avoid provoking the icache prefetch with a jump */
+>>>>>>> refs/remotes/origin/cm-10.0
 	jrp lr
 	STD_ENDPROC(_cpu_idle)

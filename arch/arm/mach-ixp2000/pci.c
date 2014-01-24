@@ -26,7 +26,10 @@
 #include <linux/io.h>
 
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 
 #include <asm/mach/pci.h>
@@ -132,7 +135,12 @@ static struct pci_ops ixp2000_pci_ops = {
 
 struct pci_bus *ixp2000_pci_scan_bus(int nr, struct pci_sys_data *sysdata)
 {
+<<<<<<< HEAD
 	return pci_scan_bus(sysdata->busnr, &ixp2000_pci_ops, sysdata);
+=======
+	return pci_scan_root_bus(NULL, sysdata->busnr, &ixp2000_pci_ops,
+				 sysdata, &sysdata->resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -196,6 +204,14 @@ clear_master_aborts(void)
 void __init
 ixp2000_pci_preinit(void)
 {
+<<<<<<< HEAD
+=======
+	pci_set_flags(0);
+
+	pcibios_min_io = 0;
+	pcibios_min_mem = 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef CONFIG_IXP2000_SUPPORT_BROKEN_PCI_IO
 	/*
 	 * Configure the PCI unit to properly byteswap I/O transactions,
@@ -237,9 +253,16 @@ int ixp2000_pci_setup(int nr, struct pci_sys_data *sys)
 	if (nr >= 1)
 		return 0;
 
+<<<<<<< HEAD
 	sys->resource[0] = &ixp2000_pci_io_space;
 	sys->resource[1] = &ixp2000_pci_mem_space;
 	sys->resource[2] = NULL;
+=======
+	pci_add_resource_offset(&sys->resources,
+				&ixp2000_pci_io_space, sys->io_offset);
+	pci_add_resource_offset(&sys->resources,
+				&ixp2000_pci_mem_space, sys->mem_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 1;
 }

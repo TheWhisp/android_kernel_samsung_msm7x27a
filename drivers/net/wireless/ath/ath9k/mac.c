@@ -16,11 +16,19 @@
 
 #include "hw.h"
 #include "hw-ops.h"
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void ath9k_hw_set_txq_interrupts(struct ath_hw *ah,
 					struct ath9k_tx_queue_info *qi)
 {
+<<<<<<< HEAD
 	ath_dbg(ath9k_hw_common(ah), ATH_DBG_INTERRUPT,
+=======
+	ath_dbg(ath9k_hw_common(ah), INTERRUPT,
+>>>>>>> refs/remotes/origin/cm-10.0
 		"tx ok 0x%x err 0x%x desc 0x%x eol 0x%x urn 0x%x\n",
 		ah->txok_interrupt_mask, ah->txerr_interrupt_mask,
 		ah->txdesc_interrupt_mask, ah->txeol_interrupt_mask,
@@ -56,12 +64,17 @@ EXPORT_SYMBOL(ath9k_hw_puttxbuf);
 
 void ath9k_hw_txstart(struct ath_hw *ah, u32 q)
 {
+<<<<<<< HEAD
 	ath_dbg(ath9k_hw_common(ah), ATH_DBG_QUEUE,
 		"Enable TXE on queue: %u\n", q);
+=======
+	ath_dbg(ath9k_hw_common(ah), QUEUE, "Enable TXE on queue: %u\n", q);
+>>>>>>> refs/remotes/origin/cm-10.0
 	REG_WRITE(ah, AR_Q_TXE, 1 << q);
 }
 EXPORT_SYMBOL(ath9k_hw_txstart);
 
+<<<<<<< HEAD
 void ath9k_hw_cleartxdesc(struct ath_hw *ah, void *ds)
 {
 	struct ar5416_desc *ads = AR5416DESC(ds);
@@ -74,6 +87,8 @@ void ath9k_hw_cleartxdesc(struct ath_hw *ah, void *ds)
 }
 EXPORT_SYMBOL(ath9k_hw_cleartxdesc);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 u32 ath9k_hw_numtxpending(struct ath_hw *ah, u32 q)
 {
 	u32 npend;
@@ -197,6 +212,7 @@ bool ath9k_hw_stop_dma_queue(struct ath_hw *ah, u32 q)
 }
 EXPORT_SYMBOL(ath9k_hw_stop_dma_queue);
 
+<<<<<<< HEAD
 void ath9k_hw_gettxintrtxqs(struct ath_hw *ah, u32 *txqs)
 {
 	*txqs &= ah->intr_txqs;
@@ -204,6 +220,8 @@ void ath9k_hw_gettxintrtxqs(struct ath_hw *ah, u32 *txqs)
 }
 EXPORT_SYMBOL(ath9k_hw_gettxintrtxqs);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 bool ath9k_hw_set_txq_props(struct ath_hw *ah, int q,
 			    const struct ath9k_tx_queue_info *qinfo)
 {
@@ -213,12 +231,20 @@ bool ath9k_hw_set_txq_props(struct ath_hw *ah, int q,
 
 	qi = &ah->txq[q];
 	if (qi->tqi_type == ATH9K_TX_QUEUE_INACTIVE) {
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_QUEUE,
+=======
+		ath_dbg(common, QUEUE,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"Set TXQ properties, inactive queue: %u\n", q);
 		return false;
 	}
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_QUEUE, "Set queue properties for: %u\n", q);
+=======
+	ath_dbg(common, QUEUE, "Set queue properties for: %u\n", q);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	qi->tqi_ver = qinfo->tqi_ver;
 	qi->tqi_subtype = qinfo->tqi_subtype;
@@ -277,7 +303,11 @@ bool ath9k_hw_get_txq_props(struct ath_hw *ah, int q,
 
 	qi = &ah->txq[q];
 	if (qi->tqi_type == ATH9K_TX_QUEUE_INACTIVE) {
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_QUEUE,
+=======
+		ath_dbg(common, QUEUE,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"Get TXQ properties, inactive queue: %u\n", q);
 		return false;
 	}
@@ -336,7 +366,11 @@ int ath9k_hw_setuptxqueue(struct ath_hw *ah, enum ath9k_tx_queue type,
 		return -1;
 	}
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_QUEUE, "Setup TX queue: %u\n", q);
+=======
+	ath_dbg(common, QUEUE, "Setup TX queue: %u\n", q);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	qi = &ah->txq[q];
 	if (qi->tqi_type != ATH9K_TX_QUEUE_INACTIVE) {
@@ -345,6 +379,7 @@ int ath9k_hw_setuptxqueue(struct ath_hw *ah, enum ath9k_tx_queue type,
 	}
 	memset(qi, 0, sizeof(struct ath9k_tx_queue_info));
 	qi->tqi_type = type;
+<<<<<<< HEAD
 	if (qinfo == NULL) {
 		qi->tqi_qflags =
 			TXQ_FLAG_TXOKINT_ENABLE
@@ -360,11 +395,27 @@ int ath9k_hw_setuptxqueue(struct ath_hw *ah, enum ath9k_tx_queue type,
 		qi->tqi_physCompBuf = qinfo->tqi_physCompBuf;
 		(void) ath9k_hw_set_txq_props(ah, q, qinfo);
 	}
+=======
+	qi->tqi_physCompBuf = qinfo->tqi_physCompBuf;
+	(void) ath9k_hw_set_txq_props(ah, q, qinfo);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return q;
 }
 EXPORT_SYMBOL(ath9k_hw_setuptxqueue);
 
+<<<<<<< HEAD
+=======
+static void ath9k_hw_clear_queue_interrupts(struct ath_hw *ah, u32 q)
+{
+	ah->txok_interrupt_mask &= ~(1 << q);
+	ah->txerr_interrupt_mask &= ~(1 << q);
+	ah->txdesc_interrupt_mask &= ~(1 << q);
+	ah->txeol_interrupt_mask &= ~(1 << q);
+	ah->txurn_interrupt_mask &= ~(1 << q);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 bool ath9k_hw_releasetxqueue(struct ath_hw *ah, u32 q)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
@@ -372,6 +423,7 @@ bool ath9k_hw_releasetxqueue(struct ath_hw *ah, u32 q)
 
 	qi = &ah->txq[q];
 	if (qi->tqi_type == ATH9K_TX_QUEUE_INACTIVE) {
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_QUEUE,
 			"Release TXQ, inactive queue: %u\n", q);
 		return false;
@@ -385,6 +437,16 @@ bool ath9k_hw_releasetxqueue(struct ath_hw *ah, u32 q)
 	ah->txdesc_interrupt_mask &= ~(1 << q);
 	ah->txeol_interrupt_mask &= ~(1 << q);
 	ah->txurn_interrupt_mask &= ~(1 << q);
+=======
+		ath_dbg(common, QUEUE, "Release TXQ, inactive queue: %u\n", q);
+		return false;
+	}
+
+	ath_dbg(common, QUEUE, "Release TX queue: %u\n", q);
+
+	qi->tqi_type = ATH9K_TX_QUEUE_INACTIVE;
+	ath9k_hw_clear_queue_interrupts(ah, q);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ath9k_hw_set_txq_interrupts(ah, qi);
 
 	return true;
@@ -400,12 +462,20 @@ bool ath9k_hw_resettxqueue(struct ath_hw *ah, u32 q)
 
 	qi = &ah->txq[q];
 	if (qi->tqi_type == ATH9K_TX_QUEUE_INACTIVE) {
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_QUEUE,
 			"Reset TXQ, inactive queue: %u\n", q);
 		return true;
 	}
 
 	ath_dbg(common, ATH_DBG_QUEUE, "Reset TX queue: %u\n", q);
+=======
+		ath_dbg(common, QUEUE, "Reset TXQ, inactive queue: %u\n", q);
+		return true;
+	}
+
+	ath_dbg(common, QUEUE, "Reset TX queue: %u\n", q);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (qi->tqi_cwmin == ATH9K_TXQ_USEDEFAULT) {
 		if (chan && IS_CHAN_B(chan))
@@ -537,6 +607,7 @@ bool ath9k_hw_resettxqueue(struct ath_hw *ah, u32 q)
 	if (AR_SREV_9300_20_OR_LATER(ah))
 		REG_WRITE(ah, AR_Q_DESC_CRCCHK, AR_Q_DESC_CRCCHK_EN);
 
+<<<<<<< HEAD
 	if (qi->tqi_qflags & TXQ_FLAG_TXOKINT_ENABLE)
 		ah->txok_interrupt_mask |= 1 << q;
 	else
@@ -557,6 +628,19 @@ bool ath9k_hw_resettxqueue(struct ath_hw *ah, u32 q)
 		ah->txurn_interrupt_mask |= 1 << q;
 	else
 		ah->txurn_interrupt_mask &= ~(1 << q);
+=======
+	ath9k_hw_clear_queue_interrupts(ah, q);
+	if (qi->tqi_qflags & TXQ_FLAG_TXINT_ENABLE) {
+		ah->txok_interrupt_mask |= 1 << q;
+		ah->txerr_interrupt_mask |= 1 << q;
+	}
+	if (qi->tqi_qflags & TXQ_FLAG_TXDESCINT_ENABLE)
+		ah->txdesc_interrupt_mask |= 1 << q;
+	if (qi->tqi_qflags & TXQ_FLAG_TXEOLINT_ENABLE)
+		ah->txeol_interrupt_mask |= 1 << q;
+	if (qi->tqi_qflags & TXQ_FLAG_TXURNINT_ENABLE)
+		ah->txurn_interrupt_mask |= 1 << q;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ath9k_hw_set_txq_interrupts(ah, qi);
 
 	return true;
@@ -564,7 +648,11 @@ bool ath9k_hw_resettxqueue(struct ath_hw *ah, u32 q)
 EXPORT_SYMBOL(ath9k_hw_resettxqueue);
 
 int ath9k_hw_rxprocdesc(struct ath_hw *ah, struct ath_desc *ds,
+<<<<<<< HEAD
 			struct ath_rx_status *rs, u64 tsf)
+=======
+			struct ath_rx_status *rs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ar5416_desc ads;
 	struct ar5416_desc *adsp = AR5416DESC(ds);
@@ -609,7 +697,11 @@ int ath9k_hw_rxprocdesc(struct ath_hw *ah, struct ath_desc *ds,
 	else
 		rs->rs_keyix = ATH9K_RXKEYIX_INVALID;
 
+<<<<<<< HEAD
 	rs->rs_rate = RXSTATUS_RATE(ah, (&ads));
+=======
+	rs->rs_rate = MS(ads.ds_rxstatus0, AR_RxRate);
+>>>>>>> refs/remotes/origin/cm-10.0
 	rs->rs_more = (ads.ds_rxstatus1 & AR_RxMore) ? 1 : 0;
 
 	rs->rs_isaggr = (ads.ds_rxstatus8 & AR_RxAggr) ? 1 : 0;
@@ -645,10 +737,18 @@ int ath9k_hw_rxprocdesc(struct ath_hw *ah, struct ath_desc *ds,
 			rs->rs_status |= ATH9K_RXERR_DECRYPT;
 		else if (ads.ds_rxstatus8 & AR_MichaelErr)
 			rs->rs_status |= ATH9K_RXERR_MIC;
+<<<<<<< HEAD
 		else if (ads.ds_rxstatus8 & AR_KeyMiss)
 			rs->rs_status |= ATH9K_RXERR_DECRYPT;
 	}
 
+=======
+	}
+
+	if (ads.ds_rxstatus8 & AR_KeyMiss)
+		rs->rs_status |= ATH9K_RXERR_KEYMISS;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 EXPORT_SYMBOL(ath9k_hw_rxprocdesc);
@@ -771,7 +871,14 @@ int ath9k_hw_beaconq_setup(struct ath_hw *ah)
 	qi.tqi_aifs = 1;
 	qi.tqi_cwmin = 0;
 	qi.tqi_cwmax = 0;
+<<<<<<< HEAD
 	/* NB: don't enable any interrupts */
+=======
+
+	if (ah->caps.hw_caps & ATH9K_HW_CAP_EDMA)
+		qi.tqi_qflags = TXQ_FLAG_TXINT_ENABLE;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ath9k_hw_setuptxqueue(ah, ATH9K_TX_QUEUE_BEACON, &qi);
 }
 EXPORT_SYMBOL(ath9k_hw_beaconq_setup);
@@ -784,7 +891,14 @@ bool ath9k_hw_intrpend(struct ath_hw *ah)
 		return true;
 
 	host_isr = REG_READ(ah, AR_INTR_ASYNC_CAUSE);
+<<<<<<< HEAD
 	if ((host_isr & AR_INTR_MAC_IRQ) && (host_isr != AR_INTR_SPURIOUS))
+=======
+
+	if (((host_isr & AR_INTR_MAC_IRQ) ||
+	     (host_isr & AR_INTR_ASYNC_MASK_MCI)) &&
+	    (host_isr != AR_INTR_SPURIOUS))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return true;
 
 	host_isr = REG_READ(ah, AR_INTR_SYNC_CAUSE);
@@ -800,7 +914,16 @@ void ath9k_hw_disable_interrupts(struct ath_hw *ah)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_INTERRUPT, "disable IER\n");
+=======
+	if (!(ah->imask & ATH9K_INT_GLOBAL))
+		atomic_set(&ah->intr_ref_cnt, -1);
+	else
+		atomic_dec(&ah->intr_ref_cnt);
+
+	ath_dbg(common, INTERRUPT, "disable IER\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	REG_WRITE(ah, AR_IER, AR_IER_DISABLE);
 	(void) REG_READ(ah, AR_IER);
 	if (!AR_SREV_9100(ah)) {
@@ -817,10 +940,15 @@ void ath9k_hw_enable_interrupts(struct ath_hw *ah)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
 	u32 sync_default = AR_INTR_SYNC_DEFAULT;
+<<<<<<< HEAD
+=======
+	u32 async_mask;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!(ah->imask & ATH9K_INT_GLOBAL))
 		return;
 
+<<<<<<< HEAD
 	if (AR_SREV_9340(ah))
 		sync_default &= ~AR_INTR_SYNC_HOST1_FATAL;
 
@@ -831,18 +959,49 @@ void ath9k_hw_enable_interrupts(struct ath_hw *ah)
 			  AR_INTR_MAC_IRQ);
 		REG_WRITE(ah, AR_INTR_ASYNC_MASK, AR_INTR_MAC_IRQ);
 
+=======
+	if (!atomic_inc_and_test(&ah->intr_ref_cnt)) {
+		ath_dbg(common, INTERRUPT, "Do not enable IER ref count %d\n",
+			atomic_read(&ah->intr_ref_cnt));
+		return;
+	}
+
+	if (AR_SREV_9340(ah))
+		sync_default &= ~AR_INTR_SYNC_HOST1_FATAL;
+
+	async_mask = AR_INTR_MAC_IRQ;
+
+	if (ah->imask & ATH9K_INT_MCI)
+		async_mask |= AR_INTR_ASYNC_MASK_MCI;
+
+	ath_dbg(common, INTERRUPT, "enable IER\n");
+	REG_WRITE(ah, AR_IER, AR_IER_ENABLE);
+	if (!AR_SREV_9100(ah)) {
+		REG_WRITE(ah, AR_INTR_ASYNC_ENABLE, async_mask);
+		REG_WRITE(ah, AR_INTR_ASYNC_MASK, async_mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		REG_WRITE(ah, AR_INTR_SYNC_ENABLE, sync_default);
 		REG_WRITE(ah, AR_INTR_SYNC_MASK, sync_default);
 	}
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_INTERRUPT, "AR_IMR 0x%x IER 0x%x\n",
+=======
+	ath_dbg(common, INTERRUPT, "AR_IMR 0x%x IER 0x%x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		REG_READ(ah, AR_IMR), REG_READ(ah, AR_IER));
 }
 EXPORT_SYMBOL(ath9k_hw_enable_interrupts);
 
+<<<<<<< HEAD
 void ath9k_hw_set_interrupts(struct ath_hw *ah, enum ath9k_int ints)
 {
 	enum ath9k_int omask = ah->imask;
+=======
+void ath9k_hw_set_interrupts(struct ath_hw *ah)
+{
+	enum ath9k_int ints = ah->imask;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 mask, mask2;
 	struct ath9k_hw_capabilities *pCap = &ah->caps;
 	struct ath_common *common = ath9k_hw_common(ah);
@@ -850,9 +1009,14 @@ void ath9k_hw_set_interrupts(struct ath_hw *ah, enum ath9k_int ints)
 	if (!(ints & ATH9K_INT_GLOBAL))
 		ath9k_hw_disable_interrupts(ah);
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_INTERRUPT, "0x%x => 0x%x\n", omask, ints);
 
 	/* TODO: global int Ref count */
+=======
+	ath_dbg(common, INTERRUPT, "New interrupt mask 0x%x\n", ints);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mask = ints & ATH9K_INT_COMMON;
 	mask2 = 0;
 
@@ -914,7 +1078,11 @@ void ath9k_hw_set_interrupts(struct ath_hw *ah, enum ath9k_int ints)
 			mask2 |= AR_IMR_S2_CST;
 	}
 
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_INTERRUPT, "new IMR 0x%x\n", mask);
+=======
+	ath_dbg(common, INTERRUPT, "new IMR 0x%x\n", mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 	REG_WRITE(ah, AR_IMR, mask);
 	ah->imrs2_reg &= ~(AR_IMR_S2_TIM | AR_IMR_S2_DTIM | AR_IMR_S2_DTIMSYNC |
 			   AR_IMR_S2_CABEND | AR_IMR_S2_CABTO |
@@ -929,9 +1097,12 @@ void ath9k_hw_set_interrupts(struct ath_hw *ah, enum ath9k_int ints)
 			REG_CLR_BIT(ah, AR_IMR_S5, AR_IMR_S5_TIM_TIMER);
 	}
 
+<<<<<<< HEAD
 	if (ints & ATH9K_INT_GLOBAL)
 		ath9k_hw_enable_interrupts(ah);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return;
 }
 EXPORT_SYMBOL(ath9k_hw_set_interrupts);

@@ -1,7 +1,11 @@
 /*
  * Qualcomm PM8XXX Multi-Purpose Pin (MPP) driver
  *
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,6 +19,10 @@
 
 #define pr_fmt(fmt) "%s: " fmt, __func__
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
 #include <linux/seq_file.h>
@@ -250,7 +258,11 @@ static int __devinit pm8xxx_mpp_probe(struct platform_device *pdev)
 	mpp_chip->gpio_chip.set = pm8xxx_mpp_set;
 	mpp_chip->gpio_chip.dbg_show = pm8xxx_mpp_dbg_show;
 	mpp_chip->gpio_chip.ngpio = pdata->core_data.nmpps;
+<<<<<<< HEAD
 	mpp_chip->gpio_chip.can_sleep = 1;
+=======
+	mpp_chip->gpio_chip.can_sleep = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mpp_chip->gpio_chip.dev = &pdev->dev;
 	mpp_chip->gpio_chip.base = pdata->mpp_base;
 	mpp_chip->irq_base = platform_get_irq(pdev, 0);

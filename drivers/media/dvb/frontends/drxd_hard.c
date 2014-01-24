@@ -28,7 +28,10 @@
 #include <linux/delay.h>
 #include <linux/firmware.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/div64.h>
 
 #include "dvb_frontend.h"
@@ -102,9 +105,15 @@ struct SCfgAgc {
 
 struct SNoiseCal {
 	int cpOpt;
+<<<<<<< HEAD
 	u16 cpNexpOfs;
 	u16 tdCal2k;
 	u16 tdCal8k;
+=======
+	short cpNexpOfs;
+	short tdCal2k;
+	short tdCal8k;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum app_env {
@@ -121,7 +130,11 @@ enum EIFFilter {
 struct drxd_state {
 	struct dvb_frontend frontend;
 	struct dvb_frontend_ops ops;
+<<<<<<< HEAD
 	struct dvb_frontend_parameters param;
+=======
+	struct dtv_frontend_properties props;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	const struct firmware *fw;
 	struct device *dev;
@@ -233,7 +246,11 @@ static int i2c_read(struct i2c_adapter *adap,
 	return 0;
 }
 
+<<<<<<< HEAD
 inline u32 MulDiv32(u32 a, u32 b, u32 c)
+=======
+static inline u32 MulDiv32(u32 a, u32 b, u32 c)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u64 tmp64;
 
@@ -890,10 +907,22 @@ static int ReadIFAgc(struct drxd_state *state, u32 * pValue)
 			u32 R2 = state->if_agc_cfg.R2;
 			u32 R3 = state->if_agc_cfg.R3;
 
+<<<<<<< HEAD
 			u32 Vmax = (3300 * R2) / (R1 + R2);
 			u32 Rpar = (R2 * R3) / (R3 + R2);
 			u32 Vmin = (3300 * Rpar) / (R1 + Rpar);
 			u32 Vout = Vmin + ((Vmax - Vmin) * Value) / 1024;
+=======
+			u32 Vmax, Rpar, Vmin, Vout;
+
+			if (R2 == 0 && (R1 == 0 || R3 == 0))
+				return 0;
+
+			Vmax = (3300 * R2) / (R1 + R2);
+			Rpar = (R2 * R3) / (R3 + R2);
+			Vmin = (3300 * Rpar) / (R1 + Rpar);
+			Vout = Vmin + ((Vmax - Vmin) * Value) / 1024;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			*pValue = Vout;
 		}
@@ -910,6 +939,7 @@ static int load_firmware(struct drxd_state *state, const char *fw_name)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	state->microcode = kzalloc(fw->size, GFP_KERNEL);
 	if (state->microcode == NULL) {
 		printk(KERN_ERR "drxd: firmware load failure: nomemory\n");
@@ -918,6 +948,17 @@ static int load_firmware(struct drxd_state *state, const char *fw_name)
 
 	memcpy(state->microcode, fw->data, fw->size);
 	state->microcode_length = fw->size;
+=======
+	state->microcode = kmemdup(fw->data, fw->size, GFP_KERNEL);
+	if (state->microcode == NULL) {
+		release_firmware(fw);
+		printk(KERN_ERR "drxd: firmware load failure: no memory\n");
+		return -ENOMEM;
+	}
+
+	state->microcode_length = fw->size;
+	release_firmware(fw);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -925,16 +966,27 @@ static int DownloadMicrocode(struct drxd_state *state,
 			     const u8 *pMCImage, u32 Length)
 {
 	u8 *pSrc;
+<<<<<<< HEAD
 	u16 Flags;
 	u32 Address;
 	u16 nBlocks;
 	u16 BlockSize;
 	u16 BlockCRC;
+=======
+	u32 Address;
+	u16 nBlocks;
+	u16 BlockSize;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 offset = 0;
 	int i, status = 0;
 
 	pSrc = (u8 *) pMCImage;
+<<<<<<< HEAD
 	Flags = (pSrc[0] << 8) | pSrc[1];
+=======
+	/* We're not using Flags */
+	/* Flags = (pSrc[0] << 8) | pSrc[1]; */
+>>>>>>> refs/remotes/origin/cm-10.0
 	pSrc += sizeof(u16);
 	offset += sizeof(u16);
 	nBlocks = (pSrc[0] << 8) | pSrc[1];
@@ -951,11 +1003,21 @@ static int DownloadMicrocode(struct drxd_state *state,
 		pSrc += sizeof(u16);
 		offset += sizeof(u16);
 
+<<<<<<< HEAD
 		Flags = (pSrc[0] << 8) | pSrc[1];
 		pSrc += sizeof(u16);
 		offset += sizeof(u16);
 
 		BlockCRC = (pSrc[0] << 8) | pSrc[1];
+=======
+		/* We're not using Flags */
+		/* u16 Flags = (pSrc[0] << 8) | pSrc[1]; */
+		pSrc += sizeof(u16);
+		offset += sizeof(u16);
+
+		/* We're not using BlockCRC */
+		/* u16 BlockCRC = (pSrc[0] << 8) | pSrc[1]; */
+>>>>>>> refs/remotes/origin/cm-10.0
 		pSrc += sizeof(u16);
 		offset += sizeof(u16);
 
@@ -1615,6 +1677,7 @@ static int CorrectSysClockDeviation(struct drxd_state *state)
 				break;
 		}
 
+<<<<<<< HEAD
 		switch (state->param.u.ofdm.bandwidth) {
 		case BANDWIDTH_8_MHZ:
 			bandwidth = DRXD_BANDWIDTH_8MHZ_IN_HZ;
@@ -1623,6 +1686,16 @@ static int CorrectSysClockDeviation(struct drxd_state *state)
 			bandwidth = DRXD_BANDWIDTH_7MHZ_IN_HZ;
 			break;
 		case BANDWIDTH_6_MHZ:
+=======
+		switch (state->props.bandwidth_hz) {
+		case 8000000:
+			bandwidth = DRXD_BANDWIDTH_8MHZ_IN_HZ;
+			break;
+		case 7000000:
+			bandwidth = DRXD_BANDWIDTH_7MHZ_IN_HZ;
+			break;
+		case 6000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 			bandwidth = DRXD_BANDWIDTH_6MHZ_IN_HZ;
 			break;
 		default:
@@ -1797,7 +1870,11 @@ static int StartDiversity(struct drxd_state *state)
 			status = WriteTable(state, state->m_StartDiversityEnd);
 			if (status < 0)
 				break;
+<<<<<<< HEAD
 			if (state->param.u.ofdm.bandwidth == BANDWIDTH_8_MHZ) {
+=======
+			if (state->props.bandwidth_hz == 8000000) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				status = WriteTable(state, state->m_DiversityDelay8MHZ);
 				if (status < 0)
 					break;
@@ -1899,7 +1976,11 @@ static int SetCfgNoiseCalibration(struct drxd_state *state,
 
 static int DRX_Start(struct drxd_state *state, s32 off)
 {
+<<<<<<< HEAD
 	struct dvb_ofdm_parameters *p = &state->param.u.ofdm;
+=======
+	struct dtv_frontend_properties *p = &state->props;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int status;
 
 	u16 transmissionParams = 0;
@@ -1964,7 +2045,11 @@ static int DRX_Start(struct drxd_state *state, s32 off)
 		if (status < 0)
 			break;
 
+<<<<<<< HEAD
 		mirrorFreqSpect = (state->param.inversion == INVERSION_ON);
+=======
+		mirrorFreqSpect = (state->props.inversion == INVERSION_ON);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		switch (p->transmission_mode) {
 		default:	/* Not set, detect it automatically */
@@ -2014,7 +2099,11 @@ static int DRX_Start(struct drxd_state *state, s32 off)
 			break;
 		}
 
+<<<<<<< HEAD
 		switch (p->hierarchy_information) {
+=======
+		switch (p->hierarchy) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		case HIERARCHY_1:
 			transmissionParams |= SC_RA_RAM_OP_PARAM_HIER_A1;
 			if (state->type_A) {
@@ -2140,7 +2229,11 @@ static int DRX_Start(struct drxd_state *state, s32 off)
 		if (status < 0)
 			break;
 
+<<<<<<< HEAD
 		switch (p->constellation) {
+=======
+		switch (p->modulation) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		default:
 			operationMode |= SC_RA_RAM_OP_AUTO_CONST__M;
 			/* fall through , try first guess
@@ -2324,9 +2417,17 @@ static int DRX_Start(struct drxd_state *state, s32 off)
 		   by SC for fix for some 8K,1/8 guard but is restored by
 		   InitEC and ResetEC
 		   functions */
+<<<<<<< HEAD
 		switch (p->bandwidth) {
 		case BANDWIDTH_AUTO:
 		case BANDWIDTH_8_MHZ:
+=======
+		switch (p->bandwidth_hz) {
+		case 0:
+			p->bandwidth_hz = 8000000;
+			/* fall through */
+		case 8000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* (64/7)*(8/8)*1000000 */
 			bandwidth = DRXD_BANDWIDTH_8MHZ_IN_HZ;
 
@@ -2334,14 +2435,22 @@ static int DRX_Start(struct drxd_state *state, s32 off)
 			status = Write16(state,
 					 FE_AG_REG_IND_DEL__A, 50, 0x0000);
 			break;
+<<<<<<< HEAD
 		case BANDWIDTH_7_MHZ:
+=======
+		case 7000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* (64/7)*(7/8)*1000000 */
 			bandwidth = DRXD_BANDWIDTH_7MHZ_IN_HZ;
 			bandwidthParam = 0x4807;	/*binary:0100 1000 0000 0111 */
 			status = Write16(state,
 					 FE_AG_REG_IND_DEL__A, 59, 0x0000);
 			break;
+<<<<<<< HEAD
 		case BANDWIDTH_6_MHZ:
+=======
+		case 6000000:
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* (64/7)*(6/8)*1000000 */
 			bandwidth = DRXD_BANDWIDTH_6MHZ_IN_HZ;
 			bandwidthParam = 0x0F07;	/*binary: 0000 1111 0000 0111 */
@@ -2880,17 +2989,21 @@ static int drxd_sleep(struct dvb_frontend *fe)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int drxd_get_frontend(struct dvb_frontend *fe,
 			     struct dvb_frontend_parameters *param)
 {
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int drxd_i2c_gate_ctrl(struct dvb_frontend *fe, int enable)
 {
 	return drxd_config_i2c(fe, enable);
 }
 
+<<<<<<< HEAD
 static int drxd_set_frontend(struct dvb_frontend *fe,
 			     struct dvb_frontend_parameters *param)
 {
@@ -2902,10 +3015,24 @@ static int drxd_set_frontend(struct dvb_frontend *fe,
 
 	if (fe->ops.tuner_ops.set_params) {
 		fe->ops.tuner_ops.set_params(fe, param);
+=======
+static int drxd_set_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+	struct drxd_state *state = fe->demodulator_priv;
+	s32 off = 0;
+
+	state->props = *p;
+	DRX_Stop(state);
+
+	if (fe->ops.tuner_ops.set_params) {
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl)
 			fe->ops.i2c_gate_ctrl(fe, 0);
 	}
 
+<<<<<<< HEAD
 	/* FIXME: move PLL drivers */
 	if (state->config.pll_set &&
 	    state->config.pll_set(state->priv, param,
@@ -2915,6 +3042,8 @@ static int drxd_set_frontend(struct dvb_frontend *fe,
 		return -1;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	msleep(200);
 
 	return DRX_Start(state, off);
@@ -2928,10 +3057,16 @@ static void drxd_release(struct dvb_frontend *fe)
 }
 
 static struct dvb_frontend_ops drxd_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		 .name = "Micronas DRXD DVB-T",
 		 .type = FE_OFDM,
+=======
+	.delsys = { SYS_DVBT},
+	.info = {
+		 .name = "Micronas DRXD DVB-T",
+>>>>>>> refs/remotes/origin/cm-10.0
 		 .frequency_min = 47125000,
 		 .frequency_max = 855250000,
 		 .frequency_stepsize = 166667,
@@ -2951,7 +3086,10 @@ static struct dvb_frontend_ops drxd_ops = {
 	.i2c_gate_ctrl = drxd_i2c_gate_ctrl,
 
 	.set_frontend = drxd_set_frontend,
+<<<<<<< HEAD
 	.get_frontend = drxd_get_frontend,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_tune_settings = drxd_get_tune_settings,
 
 	.read_status = drxd_read_status,

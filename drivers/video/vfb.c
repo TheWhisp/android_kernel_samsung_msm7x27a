@@ -117,7 +117,11 @@ static struct fb_fix_screeninfo vfb_fix __devinitdata = {
 	.accel =	FB_ACCEL_NONE,
 };
 
+<<<<<<< HEAD
 static int vfb_enable __initdata = 0;	/* disabled by default */
+=======
+static bool vfb_enable __initdata = 0;	/* disabled by default */
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(vfb_enable, bool, 0);
 
 static int vfb_check_var(struct fb_var_screeninfo *var,
@@ -402,8 +406,13 @@ static int vfb_pan_display(struct fb_var_screeninfo *var,
 		    || var->xoffset)
 			return -EINVAL;
 	} else {
+<<<<<<< HEAD
 		if (var->xoffset + var->xres > info->var.xres_virtual ||
 		    var->yoffset + var->yres > info->var.yres_virtual)
+=======
+		if (var->xoffset + info->var.xres > info->var.xres_virtual ||
+		    var->yoffset + info->var.yres > info->var.yres_virtual)
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EINVAL;
 	}
 	info->var.xoffset = var->xoffset;

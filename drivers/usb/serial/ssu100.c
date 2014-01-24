@@ -46,7 +46,11 @@
 #define FULLPWRBIT          0x00000080
 #define NEXT_BOARD_POWER_BIT        0x00000004
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Version Information */
 #define DRIVER_VERSION "v0.1"
@@ -70,7 +74,10 @@ static struct usb_driver ssu100_driver = {
 	.id_table		       = id_table,
 	.suspend		       = usb_serial_suspend,
 	.resume			       = usb_serial_resume,
+<<<<<<< HEAD
 	.no_dynamic_id		       = 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.supports_autosuspend	       = 1,
 };
 
@@ -533,6 +540,7 @@ static void ssu100_dtr_rts(struct usb_serial_port *port, int on)
 
 	dbg("%s\n", __func__);
 
+<<<<<<< HEAD
 	mutex_lock(&port->serial->disc_mutex);
 	if (!port->serial->disconnected) {
 		/* Disable flow control */
@@ -546,6 +554,18 @@ static void ssu100_dtr_rts(struct usb_serial_port *port, int on)
 			clear_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
 	}
 	mutex_unlock(&port->serial->disc_mutex);
+=======
+	/* Disable flow control */
+	if (!on) {
+		if (ssu100_setregister(dev, 0, UART_MCR, 0) < 0)
+			dev_err(&port->dev, "error from flowcontrol urb\n");
+	}
+	/* drop RTS and DTR */
+	if (on)
+		set_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
+	else
+		clear_mctrl(dev, TIOCM_DTR | TIOCM_RTS);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void ssu100_update_msr(struct usb_serial_port *port, u8 msr)
@@ -677,7 +697,10 @@ static struct usb_serial_driver ssu100_device = {
 	},
 	.description	     = DRIVER_DESC,
 	.id_table	     = id_table,
+<<<<<<< HEAD
 	.usb_driver	     = &ssu100_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports	     = 1,
 	.open		     = ssu100_open,
 	.close		     = ssu100_close,
@@ -693,6 +716,7 @@ static struct usb_serial_driver ssu100_device = {
 	.disconnect          = usb_serial_generic_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init ssu100_init(void)
 {
 	int retval;
@@ -728,6 +752,13 @@ static void __exit ssu100_exit(void)
 
 module_init(ssu100_init);
 module_exit(ssu100_exit);
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ssu100_device, NULL
+};
+
+module_usb_serial_driver(ssu100_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");

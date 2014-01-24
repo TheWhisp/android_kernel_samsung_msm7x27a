@@ -40,6 +40,14 @@ int adm_close(int port);
 int adm_matrix_map(int session_id, int path, int num_copps,
 				unsigned int *port_id, int copp_id);
 
+<<<<<<< HEAD
+=======
+int adm_connect_afe_port(int mode, int session_id, int port_id);
+int adm_disconnect_afe_port(int mode, int session_id, int port_id);
+
+void adm_ec_ref_rx_id(int  port_id);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_RTAC
 int adm_get_copp_id(int port_id);
 #endif

@@ -26,7 +26,11 @@
 #include <asm/mach-types.h>
 
 #include <plat/board.h>
+<<<<<<< HEAD
 #include <plat/common.h>
+=======
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/menelaus.h>
 #include <mach/irqs.h>
 #include <plat/mcspi.h>
@@ -36,17 +40,24 @@
 
 #include "mux.h"
 
+<<<<<<< HEAD
 static int slot1_cover_open;
 static int slot2_cover_open;
 static struct device *mmc_device;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TUSB6010_ASYNC_CS	1
 #define TUSB6010_SYNC_CS	4
 #define TUSB6010_GPIO_INT	58
 #define TUSB6010_GPIO_ENABLE	0
 #define TUSB6010_DMACHAN	0x3f
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_TUSB6010
+=======
+#if defined(CONFIG_USB_MUSB_TUSB6010) || defined(CONFIG_USB_MUSB_TUSB6010_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Enable or disable power to TUSB6010. When enabling, turn on 3.3 V and
  * 1.5 V voltage regulators of PM companion chip. Companion chip will then
@@ -137,7 +148,10 @@ static void __init n8x0_usb_init(void) {}
 
 static struct omap2_mcspi_device_config p54spi_mcspi_config = {
 	.turbo_mode	= 0,
+<<<<<<< HEAD
 	.single_channel = 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct spi_board_info n800_spi_board_info[] __initdata = {
@@ -211,6 +225,13 @@ static struct omap_onenand_platform_data board_onenand_data[] = {
 #define N810_EMMC_VSD_GPIO	23
 #define N810_EMMC_VIO_GPIO	9
 
+<<<<<<< HEAD
+=======
+static int slot1_cover_open;
+static int slot2_cover_open;
+static struct device *mmc_device;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int n8x0_mmc_switch_slot(struct device *dev, int slot)
 {
 #ifdef CONFIG_MMC_DEBUG
@@ -371,7 +392,15 @@ static void n8x0_mmc_callback(void *data, u8 card_mask)
 	else
 		*openp = 0;
 
+<<<<<<< HEAD
 	omap_mmc_notify_cover_event(mmc_device, index, *openp);
+=======
+#ifdef CONFIG_MMC_OMAP
+	omap_mmc_notify_cover_event(mmc_device, index, *openp);
+#else
+	pr_warn("MMC: notify cover event not available\n");
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int n8x0_mmc_late_init(struct device *dev)
@@ -616,6 +645,7 @@ static struct i2c_board_info n810_i2c_board_info_2[] __initdata = {
 	},
 };
 
+<<<<<<< HEAD
 static void __init n8x0_map_io(void)
 {
 	omap2_set_globals_242x();
@@ -628,6 +658,8 @@ static void __init n8x0_init_early(void)
 	omap2_init_common_devices(NULL, NULL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_OMAP_MUX
 static struct omap_board_mux board_mux[] __initdata = {
 	/* I2S codec port pins for McBSP block */
@@ -656,15 +688,26 @@ static inline void board_serial_init(void)
 	bdata.pads_cnt = 0;
 
 	bdata.id = 0;
+<<<<<<< HEAD
 	omap_serial_init_port(&bdata);
 
 	bdata.id = 1;
 	omap_serial_init_port(&bdata);
+=======
+	omap_serial_init_port(&bdata, NULL);
+
+	bdata.id = 1;
+	omap_serial_init_port(&bdata, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bdata.id = 2;
 	bdata.pads = serial2_pads;
 	bdata.pads_cnt = ARRAY_SIZE(serial2_pads);
+<<<<<<< HEAD
 	omap_serial_init_port(&bdata);
+=======
+	omap_serial_init_port(&bdata, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #else
@@ -689,12 +732,17 @@ static void __init n8x0_init_machine(void)
 		i2c_register_board_info(2, n810_i2c_board_info_2,
 					ARRAY_SIZE(n810_i2c_board_info_2));
 	board_serial_init();
+<<<<<<< HEAD
+=======
+	omap_sdrc_init(NULL, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	gpmc_onenand_init(board_onenand_data);
 	n8x0_mmc_init();
 	n8x0_usb_init();
 }
 
 MACHINE_START(NOKIA_N800, "Nokia N800")
+<<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.reserve	= omap_reserve,
 	.map_io		= n8x0_map_io,
@@ -722,4 +770,39 @@ MACHINE_START(NOKIA_N810_WIMAX, "Nokia N810 WiMAX")
 	.init_irq	= omap_init_irq,
 	.init_machine	= n8x0_init_machine,
 	.timer		= &omap_timer,
+=======
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap242x_map_io,
+	.init_early	= omap2420_init_early,
+	.init_irq	= omap2_init_irq,
+	.handle_irq	= omap2_intc_handle_irq,
+	.init_machine	= n8x0_init_machine,
+	.timer		= &omap2_timer,
+	.restart	= omap_prcm_restart,
+MACHINE_END
+
+MACHINE_START(NOKIA_N810, "Nokia N810")
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap242x_map_io,
+	.init_early	= omap2420_init_early,
+	.init_irq	= omap2_init_irq,
+	.handle_irq	= omap2_intc_handle_irq,
+	.init_machine	= n8x0_init_machine,
+	.timer		= &omap2_timer,
+	.restart	= omap_prcm_restart,
+MACHINE_END
+
+MACHINE_START(NOKIA_N810_WIMAX, "Nokia N810 WiMAX")
+	.atag_offset	= 0x100,
+	.reserve	= omap_reserve,
+	.map_io		= omap242x_map_io,
+	.init_early	= omap2420_init_early,
+	.init_irq	= omap2_init_irq,
+	.handle_irq	= omap2_intc_handle_irq,
+	.init_machine	= n8x0_init_machine,
+	.timer		= &omap2_timer,
+	.restart	= omap_prcm_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

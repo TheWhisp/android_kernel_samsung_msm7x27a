@@ -21,6 +21,37 @@
 #include <asm/firmware.h>
 #include <asm/ps3.h>
 
+<<<<<<< HEAD
+=======
+static void ps3_ehci_setup_insnreg(struct ehci_hcd *ehci)
+{
+	/* PS3 HC internal setup register offsets. */
+
+	enum ps3_ehci_hc_insnreg {
+		ps3_ehci_hc_insnreg01 = 0x084,
+		ps3_ehci_hc_insnreg02 = 0x088,
+		ps3_ehci_hc_insnreg03 = 0x08c,
+	};
+
+	/* PS3 EHCI HC errata fix 316 - The PS3 EHCI HC will reset its
+	 * internal INSNREGXX setup regs back to the chip default values
+	 * on Host Controller Reset (CMD_RESET) or Light Host Controller
+	 * Reset (CMD_LRESET).  The work-around for this is for the HC
+	 * driver to re-initialise these regs when ever the HC is reset.
+	 */
+
+	/* Set burst transfer counts to 256 out, 32 in. */
+
+	writel_be(0x01000020, (void __iomem *)ehci->regs +
+		ps3_ehci_hc_insnreg01);
+
+	/* Enable burst transfer counts. */
+
+	writel_be(0x00000001, (void __iomem *)ehci->regs +
+		ps3_ehci_hc_insnreg03);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int ps3_ehci_hc_reset(struct usb_hcd *hcd)
 {
 	int result;
@@ -49,6 +80,11 @@ static int ps3_ehci_hc_reset(struct usb_hcd *hcd)
 
 	ehci_reset(ehci);
 
+<<<<<<< HEAD
+=======
+	ps3_ehci_setup_insnreg(ehci);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return result;
 }
 
@@ -167,7 +203,11 @@ static int __devinit ps3_ehci_probe(struct ps3_system_bus_device *dev)
 
 	ps3_system_bus_set_drvdata(dev, hcd);
 
+<<<<<<< HEAD
 	result = usb_add_hcd(hcd, virq, IRQF_DISABLED);
+=======
+	result = usb_add_hcd(hcd, virq, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (result) {
 		dev_dbg(&dev->core, "%s:%d: usb_add_hcd failed (%d)\n",

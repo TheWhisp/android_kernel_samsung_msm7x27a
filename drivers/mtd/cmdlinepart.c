@@ -43,6 +43,10 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* error message prefix */
 #define ERRP "mtd: "
@@ -188,10 +192,14 @@ static struct mtd_partition * newpart(char *s,
 			     extra_mem_size;
 		parts = kzalloc(alloc_size, GFP_KERNEL);
 		if (!parts)
+<<<<<<< HEAD
 		{
 			printk(KERN_ERR ERRP "out of memory\n");
 			return NULL;
 		}
+=======
+			return NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		extra_mem = (unsigned char *)(parts + *num_parts);
 	}
 	/* enter this partition (offset will be calculated later if it is zero at this point) */
@@ -316,8 +324,13 @@ static int mtdpart_setup_real(char *s)
  * the first one in the chain if a NULL mtd_id is passed in.
  */
 static int parse_cmdline_partitions(struct mtd_info *master,
+<<<<<<< HEAD
                              struct mtd_partition **pparts,
                              unsigned long origin)
+=======
+				    struct mtd_partition **pparts,
+				    struct mtd_part_parser_data *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long offset;
 	int i;

@@ -24,7 +24,15 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/module.h>
+#include <linux/errno.h>
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/moduleparam.h>
 #include <net/9p/9p.h>
 #include <linux/fs.h>
@@ -39,6 +47,32 @@ unsigned int p9_debug_level = 0;	/* feature-rific global debug level  */
 EXPORT_SYMBOL(p9_debug_level);
 module_param_named(debug, p9_debug_level, uint, 0);
 MODULE_PARM_DESC(debug, "9P debugging level");
+<<<<<<< HEAD
+=======
+
+void _p9_debug(enum p9_debug_flags level, const char *func,
+		const char *fmt, ...)
+{
+	struct va_format vaf;
+	va_list args;
+
+	if ((p9_debug_level & level) != level)
+		return;
+
+	va_start(args, fmt);
+
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	if (level == P9_DEBUG_9P)
+		pr_notice("(%8.8d) %pV", task_pid_nr(current), &vaf);
+	else
+		pr_notice("-- %s (%d): %pV", func, task_pid_nr(current), &vaf);
+
+	va_end(args);
+}
+EXPORT_SYMBOL(_p9_debug);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*
@@ -80,14 +114,22 @@ EXPORT_SYMBOL(v9fs_unregister_trans);
  * @name: string identifying transport
  *
  */
+<<<<<<< HEAD
 struct p9_trans_module *v9fs_get_trans_by_name(const substring_t *name)
+=======
+struct p9_trans_module *v9fs_get_trans_by_name(char *s)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct p9_trans_module *t, *found = NULL;
 
 	spin_lock(&v9fs_trans_lock);
 
 	list_for_each_entry(t, &v9fs_trans_list, list)
+<<<<<<< HEAD
 		if (strncmp(t->name, name->from, name->to-name->from) == 0 &&
+=======
+		if (strcmp(t->name, s) == 0 &&
+>>>>>>> refs/remotes/origin/cm-10.0
 		    try_module_get(t->owner)) {
 			found = t;
 			break;
@@ -147,7 +189,11 @@ static int __init init_p9(void)
 	int ret = 0;
 
 	p9_error_init();
+<<<<<<< HEAD
 	printk(KERN_INFO "Installing 9P2000 support\n");
+=======
+	pr_info("Installing 9P2000 support\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	p9_trans_fd_init();
 
 	return ret;
@@ -160,7 +206,11 @@ static int __init init_p9(void)
 
 static void __exit exit_p9(void)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO "Unloading 9P2000 support\n");
+=======
+	pr_info("Unloading 9P2000 support\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	p9_trans_fd_exit();
 }

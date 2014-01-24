@@ -2,7 +2,11 @@
  *  arch/s390/kernel/ipl.c
  *    ipl/reipl/dump support for Linux on s390.
  *
+<<<<<<< HEAD
  *    Copyright IBM Corp. 2005,2007
+=======
+ *    Copyright IBM Corp. 2005,2012
+>>>>>>> refs/remotes/origin/cm-10.0
  *    Author(s): Michael Holzheu <holzheu@de.ibm.com>
  *		 Heiko Carstens <heiko.carstens@de.ibm.com>
  *		 Volker Sameske <sameske@de.ibm.com>
@@ -16,6 +20,11 @@
 #include <linux/ctype.h>
 #include <linux/fs.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/crash_dump.h>
+#include <linux/debug_locks.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ipl.h>
 #include <asm/smp.h>
 #include <asm/setup.h>
@@ -24,8 +33,15 @@
 #include <asm/ebcdic.h>
 #include <asm/reset.h>
 #include <asm/sclp.h>
+<<<<<<< HEAD
 #include <asm/sigp.h>
 #include <asm/checksum.h>
+=======
+#include <asm/checksum.h>
+#include <asm/debug.h>
+#include <asm/os_info.h>
+#include "entry.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define IPL_PARM_BLOCK_VERSION 0
 
@@ -45,11 +61,19 @@
  * - halt
  * - power off
  * - reipl
+<<<<<<< HEAD
+=======
+ * - restart
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 #define ON_PANIC_STR		"on_panic"
 #define ON_HALT_STR		"on_halt"
 #define ON_POFF_STR		"on_poff"
 #define ON_REIPL_STR		"on_reboot"
+<<<<<<< HEAD
+=======
+#define ON_RESTART_STR		"on_restart"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct shutdown_action;
 struct shutdown_trigger {
@@ -273,8 +297,13 @@ static ssize_t ipl_type_show(struct kobject *kobj, struct kobj_attribute *attr,
 static struct kobj_attribute sys_ipl_type_attr = __ATTR_RO(ipl_type);
 
 /* VM IPL PARM routines */
+<<<<<<< HEAD
 size_t reipl_get_ascii_vmparm(char *dest, size_t size,
 				   const struct ipl_parameter_block *ipb)
+=======
+static size_t reipl_get_ascii_vmparm(char *dest, size_t size,
+				     const struct ipl_parameter_block *ipb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i;
 	size_t len;
@@ -336,8 +365,13 @@ static size_t scpdata_length(const char* buf, size_t count)
 	return count;
 }
 
+<<<<<<< HEAD
 size_t reipl_append_ascii_scpdata(char *dest, size_t size,
 				  const struct ipl_parameter_block *ipb)
+=======
+static size_t reipl_append_ascii_scpdata(char *dest, size_t size,
+					 const struct ipl_parameter_block *ipb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	size_t count;
 	size_t i;
@@ -567,7 +601,11 @@ static void __ipl_run(void *unused)
 
 static void ipl_run(struct shutdown_trigger *trigger)
 {
+<<<<<<< HEAD
 	smp_switch_to_ipl_cpu(__ipl_run, NULL);
+=======
+	smp_call_ipl_cpu(__ipl_run, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __init ipl_init(void)
@@ -946,6 +984,16 @@ static struct attribute_group reipl_nss_attr_group = {
 	.attrs = reipl_nss_attrs,
 };
 
+<<<<<<< HEAD
+=======
+static void set_reipl_block_actual(struct ipl_parameter_block *reipl_block)
+{
+	reipl_block_actual = reipl_block;
+	os_info_entry_add(OS_INFO_REIPL_BLOCK, reipl_block_actual,
+			  reipl_block->hdr.len);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* reipl type */
 
 static int reipl_set_type(enum ipl_type type)
@@ -961,7 +1009,11 @@ static int reipl_set_type(enum ipl_type type)
 			reipl_method = REIPL_METHOD_CCW_VM;
 		else
 			reipl_method = REIPL_METHOD_CCW_CIO;
+<<<<<<< HEAD
 		reipl_block_actual = reipl_block_ccw;
+=======
+		set_reipl_block_actual(reipl_block_ccw);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case IPL_TYPE_FCP:
 		if (diag308_set_works)
@@ -970,7 +1022,11 @@ static int reipl_set_type(enum ipl_type type)
 			reipl_method = REIPL_METHOD_FCP_RO_VM;
 		else
 			reipl_method = REIPL_METHOD_FCP_RO_DIAG;
+<<<<<<< HEAD
 		reipl_block_actual = reipl_block_fcp;
+=======
+		set_reipl_block_actual(reipl_block_fcp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case IPL_TYPE_FCP_DUMP:
 		reipl_method = REIPL_METHOD_FCP_DUMP;
@@ -980,7 +1036,11 @@ static int reipl_set_type(enum ipl_type type)
 			reipl_method = REIPL_METHOD_NSS_DIAG;
 		else
 			reipl_method = REIPL_METHOD_NSS;
+<<<<<<< HEAD
 		reipl_block_actual = reipl_block_nss;
+=======
+		set_reipl_block_actual(reipl_block_nss);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case IPL_TYPE_UNKNOWN:
 		reipl_method = REIPL_METHOD_DEFAULT;
@@ -1097,7 +1157,11 @@ static void __reipl_run(void *unused)
 
 static void reipl_run(struct shutdown_trigger *trigger)
 {
+<<<<<<< HEAD
 	smp_switch_to_ipl_cpu(__reipl_run, NULL);
+=======
+	smp_call_ipl_cpu(__reipl_run, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void reipl_block_ccw_init(struct ipl_parameter_block *ipb)
@@ -1218,7 +1282,11 @@ static int __init reipl_fcp_init(void)
 	/* sysfs: create fcp kset for mixing attr group and bin attrs */
 	reipl_fcp_kset = kset_create_and_add(IPL_FCP_STR, NULL,
 					     &reipl_kset->kobj);
+<<<<<<< HEAD
 	if (!reipl_kset) {
+=======
+	if (!reipl_fcp_kset) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_page((unsigned long) reipl_block_fcp);
 		return -ENOMEM;
 	}
@@ -1252,6 +1320,32 @@ static int __init reipl_fcp_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int __init reipl_type_init(void)
+{
+	enum ipl_type reipl_type = ipl_info.type;
+	struct ipl_parameter_block *reipl_block;
+	unsigned long size;
+
+	reipl_block = os_info_old_entry(OS_INFO_REIPL_BLOCK, &size);
+	if (!reipl_block)
+		goto out;
+	/*
+	 * If we have an OS info reipl block, this will be used
+	 */
+	if (reipl_block->hdr.pbt == DIAG308_IPL_TYPE_FCP) {
+		memcpy(reipl_block_fcp, reipl_block, size);
+		reipl_type = IPL_TYPE_FCP;
+	} else if (reipl_block->hdr.pbt == DIAG308_IPL_TYPE_CCW) {
+		memcpy(reipl_block_ccw, reipl_block, size);
+		reipl_type = IPL_TYPE_CCW;
+	}
+out:
+	return reipl_set_type(reipl_type);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init reipl_init(void)
 {
 	int rc;
@@ -1273,10 +1367,14 @@ static int __init reipl_init(void)
 	rc = reipl_nss_init();
 	if (rc)
 		return rc;
+<<<<<<< HEAD
 	rc = reipl_set_type(ipl_info.type);
 	if (rc)
 		return rc;
 	return 0;
+=======
+	return reipl_type_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct shutdown_action __refdata reipl_action = {
@@ -1417,7 +1515,11 @@ static void dump_run(struct shutdown_trigger *trigger)
 	if (dump_method == DUMP_METHOD_NONE)
 		return;
 	smp_send_stop();
+<<<<<<< HEAD
 	smp_switch_to_ipl_cpu(__dump_run, NULL);
+=======
+	smp_call_ipl_cpu(__dump_run, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __init dump_ccw_init(void)
@@ -1495,6 +1597,7 @@ static struct shutdown_action __refdata dump_action = {
 
 static void dump_reipl_run(struct shutdown_trigger *trigger)
 {
+<<<<<<< HEAD
 	preempt_disable();
 	/*
 	 * Bypass dynamic address translation (DAT) when storing IPL parameter
@@ -1519,6 +1622,14 @@ static void dump_reipl_run(struct shutdown_trigger *trigger)
 				     reipl_block_actual->hdr.len, 0)),
 		"a" (&lowcore_ptr[smp_processor_id()]->ipib_checksum));
 	preempt_enable();
+=======
+	u32 csum;
+
+	csum = csum_partial(reipl_block_actual, reipl_block_actual->hdr.len, 0);
+	copy_to_absolute_zero(&S390_lowcore.ipib_checksum, &csum, sizeof(csum));
+	copy_to_absolute_zero(&S390_lowcore.ipib, &reipl_block_actual,
+			      sizeof(reipl_block_actual));
+>>>>>>> refs/remotes/origin/cm-10.0
 	dump_run(trigger);
 }
 
@@ -1544,17 +1655,29 @@ static char vmcmd_on_reboot[128];
 static char vmcmd_on_panic[128];
 static char vmcmd_on_halt[128];
 static char vmcmd_on_poff[128];
+<<<<<<< HEAD
+=======
+static char vmcmd_on_restart[128];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 DEFINE_IPL_ATTR_STR_RW(vmcmd, on_reboot, "%s\n", "%s\n", vmcmd_on_reboot);
 DEFINE_IPL_ATTR_STR_RW(vmcmd, on_panic, "%s\n", "%s\n", vmcmd_on_panic);
 DEFINE_IPL_ATTR_STR_RW(vmcmd, on_halt, "%s\n", "%s\n", vmcmd_on_halt);
 DEFINE_IPL_ATTR_STR_RW(vmcmd, on_poff, "%s\n", "%s\n", vmcmd_on_poff);
+<<<<<<< HEAD
+=======
+DEFINE_IPL_ATTR_STR_RW(vmcmd, on_restart, "%s\n", "%s\n", vmcmd_on_restart);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct attribute *vmcmd_attrs[] = {
 	&sys_vmcmd_on_reboot_attr.attr,
 	&sys_vmcmd_on_panic_attr.attr,
 	&sys_vmcmd_on_halt_attr.attr,
 	&sys_vmcmd_on_poff_attr.attr,
+<<<<<<< HEAD
+=======
+	&sys_vmcmd_on_restart_attr.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL,
 };
 
@@ -1576,6 +1699,11 @@ static void vmcmd_run(struct shutdown_trigger *trigger)
 		cmd = vmcmd_on_halt;
 	else if (strcmp(trigger->name, ON_POFF_STR) == 0)
 		cmd = vmcmd_on_poff;
+<<<<<<< HEAD
+=======
+	else if (strcmp(trigger->name, ON_RESTART_STR) == 0)
+		cmd = vmcmd_on_restart;
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		return;
 
@@ -1611,11 +1739,18 @@ static struct shutdown_action vmcmd_action = {SHUTDOWN_ACTION_VMCMD_STR,
 
 static void stop_run(struct shutdown_trigger *trigger)
 {
+<<<<<<< HEAD
 	if (strcmp(trigger->name, ON_PANIC_STR) == 0)
 		disabled_wait((unsigned long) __builtin_return_address(0));
 	while (sigp(smp_processor_id(), sigp_stop) == sigp_busy)
 		cpu_relax();
 	for (;;);
+=======
+	if (strcmp(trigger->name, ON_PANIC_STR) == 0 ||
+	    strcmp(trigger->name, ON_RESTART_STR) == 0)
+		disabled_wait((unsigned long) __builtin_return_address(0));
+	smp_stop_cpu();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct shutdown_action stop_action = {SHUTDOWN_ACTION_STOP_STR,
@@ -1703,10 +1838,56 @@ static struct kobj_attribute on_panic_attr =
 
 static void do_panic(void)
 {
+<<<<<<< HEAD
+=======
+	lgr_info_log();
+>>>>>>> refs/remotes/origin/cm-10.0
 	on_panic_trigger.action->fn(&on_panic_trigger);
 	stop_run(&on_panic_trigger);
 }
 
+<<<<<<< HEAD
+=======
+/* on restart */
+
+static struct shutdown_trigger on_restart_trigger = {ON_RESTART_STR,
+	&stop_action};
+
+static ssize_t on_restart_show(struct kobject *kobj,
+			       struct kobj_attribute *attr, char *page)
+{
+	return sprintf(page, "%s\n", on_restart_trigger.action->name);
+}
+
+static ssize_t on_restart_store(struct kobject *kobj,
+				struct kobj_attribute *attr,
+				const char *buf, size_t len)
+{
+	return set_trigger(buf, &on_restart_trigger, len);
+}
+
+static struct kobj_attribute on_restart_attr =
+	__ATTR(on_restart, 0644, on_restart_show, on_restart_store);
+
+static void __do_restart(void *ignore)
+{
+	smp_send_stop();
+#ifdef CONFIG_CRASH_DUMP
+	crash_kexec(NULL);
+#endif
+	on_restart_trigger.action->fn(&on_restart_trigger);
+	stop_run(&on_restart_trigger);
+}
+
+void do_restart(void)
+{
+	tracing_off();
+	debug_locks_off();
+	lgr_info_log();
+	smp_call_online_cpu(__do_restart, NULL);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* on halt */
 
 static struct shutdown_trigger on_halt_trigger = {ON_HALT_STR, &stop_action};
@@ -1783,7 +1964,13 @@ static void __init shutdown_triggers_init(void)
 	if (sysfs_create_file(&shutdown_actions_kset->kobj,
 			      &on_poff_attr.attr))
 		goto fail;
+<<<<<<< HEAD
 
+=======
+	if (sysfs_create_file(&shutdown_actions_kset->kobj,
+			      &on_restart_attr.attr))
+		goto fail;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return;
 fail:
 	panic("shutdown_triggers_init failed\n");
@@ -1959,13 +2146,26 @@ static void do_reset_calls(void)
 {
 	struct reset_call *reset;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_64BIT
+	if (diag308_set_works) {
+		diag308_reset();
+		return;
+	}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each_entry(reset, &rcall, list)
 		reset->fn();
 }
 
 u32 dump_prefix_page;
 
+<<<<<<< HEAD
 void s390_reset_system(void)
+=======
+void s390_reset_system(void (*func)(void *), void *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct _lowcore *lc;
 
@@ -1984,11 +2184,16 @@ void s390_reset_system(void)
 	__ctl_clear_bit(0,28);
 
 	/* Set new machine check handler */
+<<<<<<< HEAD
 	S390_lowcore.mcck_new_psw.mask = psw_kernel_bits & ~PSW_MASK_MCHECK;
+=======
+	S390_lowcore.mcck_new_psw.mask = psw_kernel_bits | PSW_MASK_DAT;
+>>>>>>> refs/remotes/origin/cm-10.0
 	S390_lowcore.mcck_new_psw.addr =
 		PSW_ADDR_AMODE | (unsigned long) s390_base_mcck_handler;
 
 	/* Set new program check handler */
+<<<<<<< HEAD
 	S390_lowcore.program_new_psw.mask = psw_kernel_bits & ~PSW_MASK_MCHECK;
 	S390_lowcore.program_new_psw.addr =
 		PSW_ADDR_AMODE | (unsigned long) s390_base_pgm_handler;
@@ -1996,3 +2201,16 @@ void s390_reset_system(void)
 	do_reset_calls();
 }
 
+=======
+	S390_lowcore.program_new_psw.mask = psw_kernel_bits | PSW_MASK_DAT;
+	S390_lowcore.program_new_psw.addr =
+		PSW_ADDR_AMODE | (unsigned long) s390_base_pgm_handler;
+
+	/* Store status at absolute zero */
+	store_status();
+
+	do_reset_calls();
+	if (func)
+		func(data);
+}
+>>>>>>> refs/remotes/origin/cm-10.0

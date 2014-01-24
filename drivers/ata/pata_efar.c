@@ -73,7 +73,11 @@ static DEFINE_SPINLOCK(efar_lock);
 /**
  *	efar_set_piomode - Initialize host controller PATA PIO timings
  *	@ap: Port whose timings we are configuring
+<<<<<<< HEAD
  *	@adev: um
+=======
+ *	@adev: Device to program
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *	Set PIO mode for device, in host controller PCI config space.
  *
@@ -85,9 +89,15 @@ static void efar_set_piomode (struct ata_port *ap, struct ata_device *adev)
 {
 	unsigned int pio	= adev->pio_mode - XFER_PIO_0;
 	struct pci_dev *dev	= to_pci_dev(ap->host->dev);
+<<<<<<< HEAD
 	unsigned int idetm_port= ap->port_no ? 0x42 : 0x40;
 	unsigned long flags;
 	u16 idetm_data;
+=======
+	unsigned int master_port = ap->port_no ? 0x42 : 0x40;
+	unsigned long flags;
+	u16 master_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 udma_enable;
 	int control = 0;
 
@@ -113,6 +123,7 @@ static void efar_set_piomode (struct ata_port *ap, struct ata_device *adev)
 
 	spin_lock_irqsave(&efar_lock, flags);
 
+<<<<<<< HEAD
 	pci_read_config_word(dev, idetm_port, &idetm_data);
 
 	/* Set PPE, IE, and TIME as appropriate */
@@ -120,13 +131,27 @@ static void efar_set_piomode (struct ata_port *ap, struct ata_device *adev)
 		idetm_data &= 0xCCF0;
 		idetm_data |= control;
 		idetm_data |= (timings[pio][0] << 12) |
+=======
+	pci_read_config_word(dev, master_port, &master_data);
+
+	/* Set PPE, IE, and TIME as appropriate */
+	if (adev->devno == 0) {
+		master_data &= 0xCCF0;
+		master_data |= control;
+		master_data |= (timings[pio][0] << 12) |
+>>>>>>> refs/remotes/origin/cm-10.0
 			(timings[pio][1] << 8);
 	} else {
 		int shift = 4 * ap->port_no;
 		u8 slave_data;
 
+<<<<<<< HEAD
 		idetm_data &= 0xFF0F;
 		idetm_data |= (control << 4);
+=======
+		master_data &= 0xFF0F;
+		master_data |= (control << 4);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Slave timing in separate register */
 		pci_read_config_byte(dev, 0x44, &slave_data);
@@ -135,8 +160,13 @@ static void efar_set_piomode (struct ata_port *ap, struct ata_device *adev)
 		pci_write_config_byte(dev, 0x44, slave_data);
 	}
 
+<<<<<<< HEAD
 	idetm_data |= 0x4000;	/* Ensure SITRE is set */
 	pci_write_config_word(dev, idetm_port, idetm_data);
+=======
+	master_data |= 0x4000;	/* Ensure SITRE is set */
+	pci_write_config_word(dev, master_port, master_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pci_read_config_byte(dev, 0x48, &udma_enable);
 	udma_enable &= ~(1 << (2 * ap->port_no + adev->devno));
@@ -263,7 +293,10 @@ static struct ata_port_operations efar_ops = {
 
 static int efar_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 {
+<<<<<<< HEAD
 	static int printed_version;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	static const struct ata_port_info info = {
 		.flags		= ATA_FLAG_SLAVE_POSS,
 		.pio_mask	= ATA_PIO4,
@@ -273,9 +306,13 @@ static int efar_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 	};
 	const struct ata_port_info *ppi[] = { &info, &info };
 
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev,
 			   "version " DRV_VERSION "\n");
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ata_pci_bmdma_init_one(pdev, ppi, &efar_sht, NULL,
 				      ATA_HOST_PARALLEL_SCAN);

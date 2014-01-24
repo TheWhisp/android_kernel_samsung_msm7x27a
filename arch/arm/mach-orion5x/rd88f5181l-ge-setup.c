@@ -7,7 +7,11 @@
  * License version 2.  This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -19,7 +23,10 @@
 #include <linux/i2c.h>
 #include <net/dsa.h>
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/leds.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/pci.h>
@@ -140,7 +147,11 @@ static void __init rd88f5181l_ge_init(void)
 }
 
 static int __init
+<<<<<<< HEAD
 rd88f5181l_ge_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+rd88f5181l_ge_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int irq;
 
@@ -181,11 +192,19 @@ subsys_initcall(rd88f5181l_ge_pci_init);
 
 MACHINE_START(RD88F5181L_GE, "Marvell Orion-VoIP GE Reference Design")
 	/* Maintainer: Lennert Buytenhek <buytenh@marvell.com> */
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= rd88f5181l_ge_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
+<<<<<<< HEAD
+=======
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

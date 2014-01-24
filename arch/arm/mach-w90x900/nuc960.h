@@ -12,6 +12,7 @@
  * published by the Free Software Foundation.
  *
  */
+<<<<<<< HEAD
 
 struct map_desc;
 struct sys_timer;
@@ -20,6 +21,9 @@ struct sys_timer;
 
 extern void nuc900_init_irq(void);
 extern struct sys_timer nuc900_timer;
+=======
+#include "nuc9xx.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* extern file from nuc960.c */
 

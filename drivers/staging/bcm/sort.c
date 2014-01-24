@@ -1,4 +1,8 @@
 #include "headers.h"
+<<<<<<< HEAD
+=======
+#include <linux/sort.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * File Name: sort.c
@@ -10,6 +14,7 @@
  * Copyright (c) 2007 Beceem Communications Pvt. Ltd
  */
 
+<<<<<<< HEAD
 VOID SortPackInfo(PMINI_ADAPTER Adapter)
 {
 	UINT nIndex1;
@@ -34,10 +39,42 @@ VOID SortPackInfo(PMINI_ADAPTER Adapter)
 			}
 		}
 	}
+=======
+static int compare_packet_info(void const *a, void const *b)
+{
+	PacketInfo const *pa = a;
+	PacketInfo const *pb = b;
+
+	if (!pa->bValid || !pb->bValid)
+		return 0;
+
+	return pa->u8TrafficPriority - pb->u8TrafficPriority;
+}
+
+VOID SortPackInfo(PMINI_ADAPTER Adapter)
+{
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, CONN_MSG,
+			DBG_LVL_ALL, "<=======");
+
+	sort(Adapter->PackInfo, NO_OF_QUEUES, sizeof(PacketInfo),
+		compare_packet_info, NULL);
+}
+
+static int compare_classifiers(void const *a, void const *b)
+{
+	S_CLASSIFIER_RULE const *pa = a;
+	S_CLASSIFIER_RULE const *pb = b;
+
+	if (!pa->bUsed || !pb->bUsed)
+		return 0;
+
+	return pa->u8ClassifierRulePriority - pb->u8ClassifierRulePriority;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 VOID SortClassifiers(PMINI_ADAPTER Adapter)
 {
+<<<<<<< HEAD
 	UINT nIndex1;
 	UINT nIndex2;
 
@@ -60,4 +97,11 @@ VOID SortClassifiers(PMINI_ADAPTER Adapter)
 			}
 		}
 	}
+=======
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, CONN_MSG,
+			DBG_LVL_ALL, "<=======");
+
+	sort(Adapter->astClassifierTable, MAX_CLASSIFIERS,
+		sizeof(S_CLASSIFIER_RULE), compare_classifiers, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

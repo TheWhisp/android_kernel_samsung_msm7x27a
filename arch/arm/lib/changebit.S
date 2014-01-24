@@ -12,6 +12,10 @@
 #include "bitops.h"
                 .text
 
+<<<<<<< HEAD
 ENTRY(_change_bit)
 	bitop	eor
 ENDPROC(_change_bit)
+=======
+bitop	_change_bit, eor
+>>>>>>> refs/remotes/origin/cm-10.0

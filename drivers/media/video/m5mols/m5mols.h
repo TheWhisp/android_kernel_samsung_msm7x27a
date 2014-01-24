@@ -162,9 +162,13 @@ struct m5mols_version {
  * @pad: media pad
  * @ffmt: current fmt according to resolution type
  * @res_type: current resolution type
+<<<<<<< HEAD
  * @code: current code
  * @irq_waitq: waitqueue for the capture
  * @work_irq: workqueue for the IRQ
+=======
+ * @irq_waitq: waitqueue for the capture
+>>>>>>> refs/remotes/origin/cm-10.0
  * @flags: state variable for the interrupt handler
  * @handle: control handler
  * @autoexposure: Auto Exposure control
@@ -176,6 +180,7 @@ struct m5mols_version {
  * @ver: information of the version
  * @cap: the capture mode attributes
  * @power: current sensor's power status
+<<<<<<< HEAD
  * @ctrl_sync: true means all controls of the sensor are initialized
  * @int_capture: true means the capture interrupt is issued once
  * @lock_ae: true means the Auto Exposure is locked
@@ -184,6 +189,14 @@ struct m5mols_version {
  * @interrupt: register value for current interrupt status
  * @mode: register value for current operation mode
  * @mode_save: register value for current operation mode for saving
+=======
+ * @isp_ready: 1 when the ISP controller has completed booting
+ * @ctrl_sync: 1 when the control handler state is restored in H/W
+ * @lock_ae: true means the Auto Exposure is locked
+ * @lock_awb: true means the Aut WhiteBalance is locked
+ * @resolution:	register value for current resolution
+ * @mode: register value for current operation mode
+>>>>>>> refs/remotes/origin/cm-10.0
  * @set_power: optional power callback to the board code
  */
 struct m5mols_info {
@@ -192,6 +205,7 @@ struct m5mols_info {
 	struct media_pad pad;
 	struct v4l2_mbus_framefmt ffmt[M5MOLS_RESTYPE_MAX];
 	int res_type;
+<<<<<<< HEAD
 	enum v4l2_mbus_pixelcode code;
 	wait_queue_head_t irq_waitq;
 	struct work_struct work_irq;
@@ -203,6 +217,18 @@ struct m5mols_info {
 		struct v4l2_ctrl *autoexposure;
 		struct v4l2_ctrl *exposure;
 	};
+=======
+
+	wait_queue_head_t irq_waitq;
+	atomic_t irq_done;
+
+	struct v4l2_ctrl_handler handle;
+
+	/* Autoexposure/exposure control cluster */
+	struct v4l2_ctrl *autoexposure;
+	struct v4l2_ctrl *exposure;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct v4l2_ctrl *autowb;
 	struct v4l2_ctrl *colorfx;
 	struct v4l2_ctrl *saturation;
@@ -210,6 +236,7 @@ struct m5mols_info {
 
 	struct m5mols_version ver;
 	struct m5mols_capture cap;
+<<<<<<< HEAD
 	bool power;
 	bool ctrl_sync;
 	bool lock_ae;
@@ -225,6 +252,21 @@ struct m5mols_info {
 
 #define is_powered(__info) (__info->power)
 #define is_ctrl_synced(__info) (__info->ctrl_sync)
+=======
+
+	unsigned int isp_ready:1;
+	unsigned int power:1;
+	unsigned int ctrl_sync:1;
+
+	bool lock_ae;
+	bool lock_awb;
+	u8 resolution;
+	u8 mode;
+
+	int (*set_power)(struct device *dev, int on);
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define is_available_af(__info)	(__info->ver.af)
 #define is_code(__code, __type) (__code == m5mols_default_ffmt[__type].code)
 #define is_manufacturer(__info, __manufacturer)	\
@@ -259,7 +301,19 @@ int m5mols_read_u8(struct v4l2_subdev *sd, u32 reg_comb, u8 *val);
 int m5mols_read_u16(struct v4l2_subdev *sd, u32 reg_comb, u16 *val);
 int m5mols_read_u32(struct v4l2_subdev *sd, u32 reg_comb, u32 *val);
 int m5mols_write(struct v4l2_subdev *sd, u32 reg_comb, u32 val);
+<<<<<<< HEAD
 int m5mols_busy(struct v4l2_subdev *sd, u8 category, u8 cmd, u8 value);
+=======
+
+int m5mols_busy_wait(struct v4l2_subdev *sd, u32 reg, u32 value, u32 mask,
+		     int timeout);
+
+/* Mask value for busy waiting until M-5MOLS I2C interface is initialized */
+#define M5MOLS_I2C_RDY_WAIT_FL		(1 << 16)
+/* ISP state transition timeout, in ms */
+#define M5MOLS_MODE_CHANGE_TIMEOUT	200
+#define M5MOLS_BUSY_WAIT_DEF_TIMEOUT	250
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Mode operation of the M-5MOLS
@@ -284,7 +338,12 @@ int m5mols_busy(struct v4l2_subdev *sd, u8 category, u8 cmd, u8 value);
 int m5mols_mode(struct m5mols_info *info, u8 mode);
 
 int m5mols_enable_interrupt(struct v4l2_subdev *sd, u8 reg);
+<<<<<<< HEAD
 int m5mols_sync_controls(struct m5mols_info *info);
+=======
+int m5mols_wait_interrupt(struct v4l2_subdev *sd, u8 condition, u32 timeout);
+int m5mols_restore_controls(struct m5mols_info *info);
+>>>>>>> refs/remotes/origin/cm-10.0
 int m5mols_start_capture(struct m5mols_info *info);
 int m5mols_do_scenemode(struct m5mols_info *info, u8 mode);
 int m5mols_lock_3a(struct m5mols_info *info, bool lock);

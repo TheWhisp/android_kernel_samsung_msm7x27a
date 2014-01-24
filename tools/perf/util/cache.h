@@ -45,6 +45,21 @@ void setup_browser(bool fallback_to_pager);
 void exit_browser(bool wait_for_ok);
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef NO_GTK2_SUPPORT
+static inline void perf_gtk_setup_browser(int argc __used, const char *argv[] __used, bool fallback_to_pager)
+{
+	if (fallback_to_pager)
+		setup_pager();
+}
+static inline void perf_gtk_exit_browser(bool wait_for_ok __used) {}
+#else
+void perf_gtk_setup_browser(int argc, const char *argv[], bool fallback_to_pager);
+void perf_gtk_exit_browser(bool wait_for_ok);
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 char *alias_lookup(const char *alias);
 int split_cmdline(char *cmdline, const char ***argv);
 

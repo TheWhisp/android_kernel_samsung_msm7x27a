@@ -20,6 +20,10 @@
 #include <linux/gpio.h>
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <sound/soc.h>
 #include <sound/pcm_params.h>
@@ -69,10 +73,17 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
 	s3c2412_i2s.dma_playback = &s3c2412_i2s_pcm_stereo_out;
 
 	s3c2412_i2s.iis_cclk = clk_get(dai->dev, "i2sclk");
+<<<<<<< HEAD
 	if (s3c2412_i2s.iis_cclk == NULL) {
 		pr_err("failed to get i2sclk clock\n");
 		iounmap(s3c2412_i2s.regs);
 		return -ENODEV;
+=======
+	if (IS_ERR(s3c2412_i2s.iis_cclk)) {
+		pr_err("failed to get i2sclk clock\n");
+		iounmap(s3c2412_i2s.regs);
+		return PTR_ERR(s3c2412_i2s.iis_cclk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Set MPLL as the source for IIS CLK */
@@ -141,7 +152,11 @@ static int s3c2412_i2s_hw_params(struct snd_pcm_substream *substream,
 	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
 	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops s3c2412_i2s_dai_ops = {
+=======
+static const struct snd_soc_dai_ops s3c2412_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.hw_params	= s3c2412_i2s_hw_params,
 };
 
@@ -165,7 +180,11 @@ static struct snd_soc_dai_driver s3c2412_i2s_dai = {
 
 static __devinit int s3c2412_iis_dev_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	return snd_soc_register_dai(&pdev->dev, &s3c2412_i2s_dai);
+=======
+	return s3c_i2sv2_register_dai(&pdev->dev, -1, &s3c2412_i2s_dai);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static __devexit int s3c2412_iis_dev_remove(struct platform_device *pdev)
@@ -176,13 +195,18 @@ static __devexit int s3c2412_iis_dev_remove(struct platform_device *pdev)
 
 static struct platform_driver s3c2412_iis_driver = {
 	.probe  = s3c2412_iis_dev_probe,
+<<<<<<< HEAD
 	.remove = s3c2412_iis_dev_remove,
+=======
+	.remove = __devexit_p(s3c2412_iis_dev_remove),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.driver = {
 		.name = "s3c2412-iis",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init s3c2412_i2s_init(void)
 {
 	return platform_driver_register(&s3c2412_iis_driver);
@@ -194,6 +218,9 @@ static void __exit s3c2412_i2s_exit(void)
 	platform_driver_unregister(&s3c2412_iis_driver);
 }
 module_exit(s3c2412_i2s_exit);
+=======
+module_platform_driver(s3c2412_iis_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");

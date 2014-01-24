@@ -211,6 +211,12 @@ ENTRY(v7_coherent_user_range)
  * isn't mapped, just try the next page.
  */
 9001:
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARM_ERRATA_775420
+	dsb
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov	r12, r12, lsr #12
 	mov	r12, r12, lsl #12
 	add	r12, r12, #4096
@@ -256,7 +262,11 @@ ENDPROC(v7_flush_kern_dcache_area)
  *	- start   - virtual start address of region
  *	- end     - virtual end address of region
  */
+<<<<<<< HEAD
 ENTRY(v7_dma_inv_range)
+=======
+v7_dma_inv_range:
+>>>>>>> refs/remotes/origin/cm-10.0
 	dcache_line_size r2, r3
 	sub	r3, r2, #1
 	tst	r0, r3
@@ -284,7 +294,11 @@ ENDPROC(v7_dma_inv_range)
  *	- start   - virtual start address of region
  *	- end     - virtual end address of region
  */
+<<<<<<< HEAD
 ENTRY(v7_dma_clean_range)
+=======
+v7_dma_clean_range:
+>>>>>>> refs/remotes/origin/cm-10.0
 	dcache_line_size r2, r3
 	sub	r3, r2, #1
 	bic	r0, r0, r3
@@ -351,6 +365,7 @@ ENDPROC(v7_dma_unmap_area)
 
 	__INITDATA
 
+<<<<<<< HEAD
 	.type	v7_cache_fns, #object
 ENTRY(v7_cache_fns)
 	.long	v7_flush_icache_all
@@ -366,3 +381,7 @@ ENTRY(v7_cache_fns)
 	.long	v7_dma_clean_range
 	.long	v7_dma_flush_range
 	.size	v7_cache_fns, . - v7_cache_fns
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions v7
+>>>>>>> refs/remotes/origin/cm-10.0

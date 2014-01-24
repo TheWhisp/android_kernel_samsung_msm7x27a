@@ -5,6 +5,10 @@
 #ifndef __NET_GENERIC_H__
 #define __NET_GENERIC_H__
 
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/rcupdate.h>
 
 /*

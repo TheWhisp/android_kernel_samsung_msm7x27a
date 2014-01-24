@@ -10,7 +10,11 @@
 
 #include <linux/mm.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mempool.h>
 #include <linux/blkdev.h>
 #include <linux/writeback.h>
@@ -27,7 +31,19 @@ static void *remove_element(mempool_t *pool)
 	return pool->elements[--pool->curr_nr];
 }
 
+<<<<<<< HEAD
 static void free_pool(mempool_t *pool)
+=======
+/**
+ * mempool_destroy - deallocate a memory pool
+ * @pool:      pointer to the memory pool which was allocated via
+ *             mempool_create().
+ *
+ * Free all reserved elements in @pool and @pool itself.  This function
+ * only sleeps if the free_fn() function sleeps.
+ */
+void mempool_destroy(mempool_t *pool)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	while (pool->curr_nr) {
 		void *element = remove_element(pool);
@@ -36,6 +52,10 @@ static void free_pool(mempool_t *pool)
 	kfree(pool->elements);
 	kfree(pool);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(mempool_destroy);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * mempool_create - create a memory pool
@@ -86,7 +106,11 @@ mempool_t *mempool_create_node(int min_nr, mempool_alloc_t *alloc_fn,
 
 		element = pool->alloc(GFP_KERNEL, pool->pool_data);
 		if (unlikely(!element)) {
+<<<<<<< HEAD
 			free_pool(pool);
+=======
+			mempool_destroy(pool);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return NULL;
 		}
 		add_element(pool, element);
@@ -172,6 +196,7 @@ out:
 EXPORT_SYMBOL(mempool_resize);
 
 /**
+<<<<<<< HEAD
  * mempool_destroy - deallocate a memory pool
  * @pool:      pointer to the memory pool which was allocated via
  *             mempool_create().
@@ -189,6 +214,8 @@ void mempool_destroy(mempool_t *pool)
 EXPORT_SYMBOL(mempool_destroy);
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * mempool_alloc - allocate an element from a specific memory pool
  * @pool:      pointer to the memory pool which was allocated via
  *             mempool_create().
@@ -224,6 +251,7 @@ repeat_alloc:
 	if (likely(pool->curr_nr)) {
 		element = remove_element(pool);
 		spin_unlock_irqrestore(&pool->lock, flags);
+<<<<<<< HEAD
 		return element;
 	}
 	spin_unlock_irqrestore(&pool->lock, flags);
@@ -246,6 +274,42 @@ repeat_alloc:
 	}
 	finish_wait(&pool->wait, &wait);
 
+=======
+		/* paired with rmb in mempool_free(), read comment there */
+		smp_wmb();
+		return element;
+	}
+
+	/*
+	 * We use gfp mask w/o __GFP_WAIT or IO for the first round.  If
+	 * alloc failed with that and @pool was empty, retry immediately.
+	 */
+	if (gfp_temp != gfp_mask) {
+		spin_unlock_irqrestore(&pool->lock, flags);
+		gfp_temp = gfp_mask;
+		goto repeat_alloc;
+	}
+
+	/* We must not sleep if !__GFP_WAIT */
+	if (!(gfp_mask & __GFP_WAIT)) {
+		spin_unlock_irqrestore(&pool->lock, flags);
+		return NULL;
+	}
+
+	/* Let's wait for someone else to return an element to @pool */
+	init_wait(&wait);
+	prepare_to_wait(&pool->wait, &wait, TASK_UNINTERRUPTIBLE);
+
+	spin_unlock_irqrestore(&pool->lock, flags);
+
+	/*
+	 * FIXME: this should be io_schedule().  The timeout is there as a
+	 * workaround for some DM problems in 2.6.18.
+	 */
+	io_schedule_timeout(5*HZ);
+
+	finish_wait(&pool->wait, &wait);
+>>>>>>> refs/remotes/origin/cm-10.0
 	goto repeat_alloc;
 }
 EXPORT_SYMBOL(mempool_alloc);
@@ -265,7 +329,43 @@ void mempool_free(void *element, mempool_t *pool)
 	if (unlikely(element == NULL))
 		return;
 
+<<<<<<< HEAD
 	smp_mb();
+=======
+	/*
+	 * Paired with the wmb in mempool_alloc().  The preceding read is
+	 * for @element and the following @pool->curr_nr.  This ensures
+	 * that the visible value of @pool->curr_nr is from after the
+	 * allocation of @element.  This is necessary for fringe cases
+	 * where @element was passed to this task without going through
+	 * barriers.
+	 *
+	 * For example, assume @p is %NULL at the beginning and one task
+	 * performs "p = mempool_alloc(...);" while another task is doing
+	 * "while (!p) cpu_relax(); mempool_free(p, ...);".  This function
+	 * may end up using curr_nr value which is from before allocation
+	 * of @p without the following rmb.
+	 */
+	smp_rmb();
+
+	/*
+	 * For correctness, we need a test which is guaranteed to trigger
+	 * if curr_nr + #allocated == min_nr.  Testing curr_nr < min_nr
+	 * without locking achieves that and refilling as soon as possible
+	 * is desirable.
+	 *
+	 * Because curr_nr visible here is always a value after the
+	 * allocation of @element, any task which decremented curr_nr below
+	 * min_nr is guaranteed to see curr_nr < min_nr unless curr_nr gets
+	 * incremented to min_nr afterwards.  If curr_nr gets incremented
+	 * to min_nr after the allocation of @element, the elements
+	 * allocated after that are subject to the same guarantee.
+	 *
+	 * Waiters happen iff curr_nr is 0 and the above guarantee also
+	 * ensures that there will be frees which return elements to the
+	 * pool waking up the waiters.
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pool->curr_nr < pool->min_nr) {
 		spin_lock_irqsave(&pool->lock, flags);
 		if (pool->curr_nr < pool->min_nr) {

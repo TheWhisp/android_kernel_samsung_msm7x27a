@@ -40,6 +40,10 @@
 #include <mach/pxafb.h>
 #include <mach/mmc.h>
 #include <plat/pxa27x_keypad.h>
+<<<<<<< HEAD
+=======
+#include <mach/pm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "generic.h"
 #include "devices.h"
@@ -572,7 +576,11 @@ static struct spi_board_info spi_board_info[] __initdata = {
 	.modalias		= "libertas_spi",
 	.platform_data		= &z2_lbs_pdata,
 	.controller_data	= &z2_lbs_chip_info,
+<<<<<<< HEAD
 	.irq			= gpio_to_irq(GPIO36_ZIPITZ2_WIFI_IRQ),
+=======
+	.irq			= PXA_GPIO_TO_IRQ(GPIO36_ZIPITZ2_WIFI_IRQ),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.max_speed_hz		= 13000000,
 	.bus_num		= 1,
 	.chip_select		= 0,
@@ -677,6 +685,24 @@ static void __init z2_pmic_init(void)
 static inline void z2_pmic_init(void) {}
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+static void z2_power_off(void)
+{
+	/* We're using deep sleep as poweroff, so clear PSPR to ensure that
+	 * bootloader will jump to its entry point in resume handler
+	 */
+	PSPR = 0x0;
+	local_irq_disable();
+	pxa27x_set_pwrmode(PWRMODE_DEEPSLEEP);
+	pxa27x_cpu_pm_enter(PM_SUSPEND_MEM);
+}
+#else
+#define z2_power_off   NULL
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /******************************************************************************
  * Machine init
  ******************************************************************************/
@@ -698,6 +724,7 @@ static void __init z2_init(void)
 	z2_leds_init();
 	z2_keys_init();
 	z2_pmic_init();
+<<<<<<< HEAD
 }
 
 MACHINE_START(ZIPIT2, "Zipit Z2")
@@ -706,4 +733,19 @@ MACHINE_START(ZIPIT2, "Zipit Z2")
 	.init_irq	= pxa27x_init_irq,
 	.timer		= &pxa_timer,
 	.init_machine	= z2_init,
+=======
+
+	pm_power_off = z2_power_off;
+}
+
+MACHINE_START(ZIPIT2, "Zipit Z2")
+	.atag_offset	= 0x100,
+	.map_io		= pxa27x_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa27x_init_irq,
+	.handle_irq	= pxa27x_handle_irq,
+	.timer		= &pxa_timer,
+	.init_machine	= z2_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

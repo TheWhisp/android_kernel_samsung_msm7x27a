@@ -15,13 +15,22 @@
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/ion.h>
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-types.h>
 #include <mach/msm_bus_board.h>
 #include <mach/msm_memtypes.h>
 #include <mach/board.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/gpiomux.h>
 #include <linux/ion.h>
+=======
+#include <mach/gpiomux.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/ion.h>
 #include <mach/socinfo.h>
 
@@ -30,23 +39,42 @@
 
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
 #define MSM_FB_PRIM_BUF_SIZE \
+<<<<<<< HEAD
 		(roundup((1920 * 1200 * 4), 4096) * 3) /* 4 bpp x 3 pages */
 #else
 #define MSM_FB_PRIM_BUF_SIZE \
 		(roundup((1920 * 1200 * 4), 4096) * 2) /* 4 bpp x 2 pages */
+=======
+		(roundup((roundup(1920, 32) * roundup(1200, 32) * 4), 4096) * 3)
+			/* 4 bpp x 3 pages */
+#else
+#define MSM_FB_PRIM_BUF_SIZE \
+		(roundup((roundup(1920, 32) * roundup(1200, 32) * 4), 4096) * 2)
+			/* 4 bpp x 2 pages */
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /* Note: must be multiple of 4096 */
 #define MSM_FB_SIZE roundup(MSM_FB_PRIM_BUF_SIZE, 4096)
 
 #ifdef CONFIG_FB_MSM_OVERLAY0_WRITEBACK
+<<<<<<< HEAD
 #define MSM_FB_OVERLAY0_WRITEBACK_SIZE roundup((1920 * 1200 * 3 * 2), 4096)
+=======
+#define MSM_FB_OVERLAY0_WRITEBACK_SIZE \
+		roundup((roundup(1920, 32) * roundup(1200, 32) * 3 * 2), 4096)
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define MSM_FB_OVERLAY0_WRITEBACK_SIZE (0)
 #endif  /* CONFIG_FB_MSM_OVERLAY0_WRITEBACK */
 
 #ifdef CONFIG_FB_MSM_OVERLAY1_WRITEBACK
+<<<<<<< HEAD
 #define MSM_FB_OVERLAY1_WRITEBACK_SIZE roundup((1920 * 1088 * 3 * 2), 4096)
+=======
+#define MSM_FB_OVERLAY1_WRITEBACK_SIZE \
+		roundup((roundup(1920, 32) * roundup(1080, 32) * 3 * 2), 4096)
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 #define MSM_FB_OVERLAY1_WRITEBACK_SIZE (0)
 #endif  /* CONFIG_FB_MSM_OVERLAY1_WRITEBACK */
@@ -84,6 +112,10 @@ static struct resource msm_fb_resources[] = {
 };
 
 static void set_mdp_clocks_for_wuxga(void);
+<<<<<<< HEAD
+=======
+static struct mipi_dsi_platform_data mipi_dsi_pdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int msm_fb_detect_panel(const char *name)
 {
@@ -92,8 +124,15 @@ static int msm_fb_detect_panel(const char *name)
 		if (SOCINFO_VERSION_MAJOR(ver) == 3) {
 			if (!strncmp(name, MIPI_VIDEO_CHIMEI_WUXGA_PANEL_NAME,
 				     strnlen(MIPI_VIDEO_CHIMEI_WUXGA_PANEL_NAME,
+<<<<<<< HEAD
 						PANEL_NAME_MAX_LEN)))
 				return 0;
+=======
+						PANEL_NAME_MAX_LEN))) {
+				set_mdp_clocks_for_wuxga();
+				return 0;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 			if (!strncmp(name, MIPI_VIDEO_CHIMEI_WXGA_PANEL_NAME,
 				     strnlen(MIPI_VIDEO_CHIMEI_WXGA_PANEL_NAME,
@@ -106,7 +145,12 @@ static int msm_fb_detect_panel(const char *name)
 					PANEL_NAME_MAX_LEN)))
 			return 0;
 
+<<<<<<< HEAD
 #ifndef CONFIG_FB_MSM_MIPI_PANEL_DETECT
+=======
+#if !defined(CONFIG_FB_MSM_LVDS_MIPI_PANEL_DETECT) && \
+	!defined(CONFIG_FB_MSM_MIPI_PANEL_DETECT)
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!strncmp(name, MIPI_VIDEO_NOVATEK_QHD_PANEL_NAME,
 				strnlen(MIPI_VIDEO_NOVATEK_QHD_PANEL_NAME,
 					PANEL_NAME_MAX_LEN)))
@@ -124,8 +168,15 @@ static int msm_fb_detect_panel(const char *name)
 
 		if (!strncmp(name, MIPI_CMD_RENESAS_FWVGA_PANEL_NAME,
 				strnlen(MIPI_CMD_RENESAS_FWVGA_PANEL_NAME,
+<<<<<<< HEAD
 					PANEL_NAME_MAX_LEN)))
 			return 0;
+=======
+					PANEL_NAME_MAX_LEN))) {
+			mipi_dsi_pdata.dlane_swap = 0x1;
+			return 0;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (!strncmp(name, MIPI_VIDEO_TOSHIBA_WUXGA_PANEL_NAME,
 				strnlen(MIPI_VIDEO_TOSHIBA_WUXGA_PANEL_NAME,
@@ -480,6 +531,10 @@ static struct mipi_dsi_platform_data mipi_dsi_pdata = {
 	.vsync_gpio = MDP_VSYNC_GPIO,
 	.dsi_power_save = mipi_dsi_panel_power,
 	.splash_is_enabled = mipi_dsi_splash_is_enabled,
+<<<<<<< HEAD
+=======
+	.dlane_swap	   = 0x0,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #ifdef CONFIG_MSM_BUS_SCALING
@@ -579,6 +634,10 @@ static struct msm_panel_common_pdata mdp_pdata = {
 	.mem_hid = MEMTYPE_EBI1,
 #endif
 	.cont_splash_enabled = 0x01,
+<<<<<<< HEAD
+=======
+	.mdp_iommu_split_domain = 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void __init msm8960_mdp_writeback(struct memtype_reserve* reserve_table)

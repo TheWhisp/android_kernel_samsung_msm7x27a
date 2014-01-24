@@ -10,6 +10,10 @@
 #include <linux/personality.h>
 #include <asm/uaccess.h>
 #include "internal.h"
+<<<<<<< HEAD
+=======
+#include "mount.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static long do_sys_name_to_handle(struct path *path,
 				  struct file_handle __user *ufh,
@@ -24,8 +28,13 @@ static long do_sys_name_to_handle(struct path *path,
 	 * We need t make sure wether the file system
 	 * support decoding of the file handle
 	 */
+<<<<<<< HEAD
 	if (!path->mnt->mnt_sb->s_export_op ||
 	    !path->mnt->mnt_sb->s_export_op->fh_to_dentry)
+=======
+	if (!path->dentry->d_sb->s_export_op ||
+	    !path->dentry->d_sb->s_export_op->fh_to_dentry)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EOPNOTSUPP;
 
 	if (copy_from_user(&f_handle, ufh, sizeof(struct file_handle)))
@@ -66,7 +75,12 @@ static long do_sys_name_to_handle(struct path *path,
 	} else
 		retval = 0;
 	/* copy the mount id */
+<<<<<<< HEAD
 	if (copy_to_user(mnt_id, &path->mnt->mnt_id, sizeof(*mnt_id)) ||
+=======
+	if (copy_to_user(mnt_id, &real_mount(path->mnt)->mnt_id,
+			 sizeof(*mnt_id)) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 	    copy_to_user(ufh, handle,
 			 sizeof(struct file_handle) + handle_bytes))
 		retval = -EFAULT;

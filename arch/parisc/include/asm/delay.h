@@ -1,7 +1,11 @@
 #ifndef _PARISC_DELAY_H
 #define _PARISC_DELAY_H
 
+<<<<<<< HEAD
 #include <asm/system.h>    /* for mfctl() */
+=======
+#include <asm/special_insns.h>    /* for mfctl() */
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/processor.h> /* for boot_cpu_data */
 
 

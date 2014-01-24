@@ -30,6 +30,11 @@
  * @reset_gpio:		GPIO which is used for reseting rfkill switch
  * @shutdown_gpio:	GPIO which is used for shutdown of rfkill switch
  * @power_clk_name:	[optional] name of clk to turn off while blocked
+<<<<<<< HEAD
+=======
+ * @gpio_runtime_close:	clean up platform specific gpio configuration
+ * @gpio_runtime_setup:	set up platform specific gpio configuration
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 struct rfkill_gpio_platform_data {
@@ -38,6 +43,11 @@ struct rfkill_gpio_platform_data {
 	int			shutdown_gpio;
 	const char		*power_clk_name;
 	enum rfkill_type	type;
+<<<<<<< HEAD
+=======
+	void	(*gpio_runtime_close)(struct platform_device *);
+	int	(*gpio_runtime_setup)(struct platform_device *);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif /* __RFKILL_GPIO_H */

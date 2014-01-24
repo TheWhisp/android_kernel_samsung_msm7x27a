@@ -61,7 +61,11 @@ static unsigned long free_mem_end_ptr;
 
 extern _sclp_print_early(const char *);
 
+<<<<<<< HEAD
 int puts(const char *s)
+=======
+static int puts(const char *s)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	_sclp_print_early(s);
 	return 0;

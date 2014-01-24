@@ -134,7 +134,11 @@ struct net_device *x25_dev_get(char *devname)
 
 	if (dev &&
 	    (!(dev->flags & IFF_UP) || (dev->type != ARPHRD_X25
+<<<<<<< HEAD
 #if defined(CONFIG_LLC) || defined(CONFIG_LLC_MODULE)
+=======
+#if IS_ENABLED(CONFIG_LLC)
+>>>>>>> refs/remotes/origin/cm-10.0
 					&& dev->type != ARPHRD_ETHER
 #endif
 					))){

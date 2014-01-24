@@ -26,6 +26,7 @@
 /* ---- Include Files ---------------------------------------------------- */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/wait.h>
 #include <linux/semaphore.h>
 #include <csp/dmacHw.h>
@@ -35,6 +36,11 @@
 #include <linux/mm.h>
 #include <linux/vmalloc.h>
 #include <linux/pagemap.h>
+=======
+#include <linux/semaphore.h>
+#include <csp/dmacHw.h>
+#include <mach/timer.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ---- Constants and Types ---------------------------------------------- */
 
@@ -113,6 +119,7 @@ typedef struct {
 
 /****************************************************************************
 *
+<<<<<<< HEAD
 *   The DMA_MemType_t and DMA_MemMap_t are helper structures used to setup
 *   DMA chains from a variety of memory sources.
 *
@@ -185,6 +192,8 @@ typedef struct {
 
 /****************************************************************************
 *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 *   The DMA_DeviceAttribute_t contains information which describes a
 *   particular DMA device (or peripheral).
 *
@@ -570,6 +579,7 @@ int dma_alloc_double_dst_descriptors(DMA_Handle_t handle,	/* DMA Handle */
 
 /****************************************************************************/
 /**
+<<<<<<< HEAD
 *   Initializes a DMA_MemMap_t data structure
 */
 /****************************************************************************/
@@ -688,6 +698,8 @@ int dma_unmap(DMA_MemMap_t *memMap,	/* Stores state information about the map */
 
 /****************************************************************************/
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 *   Initiates a transfer when the descriptors have already been setup.
 *
 *   This is a special case, and normally, the dma_transfer_xxx functions should

@@ -25,7 +25,11 @@
 #include <linux/mutex.h>
 #include <linux/list.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "ctree.h"
 

@@ -57,10 +57,16 @@ static const struct contec_board contec_boards[] = {
 
 #define PCI_DEVICE_ID_PIO1616L 0x8172
 static DEFINE_PCI_DEVICE_TABLE(contec_pci_table) = {
+<<<<<<< HEAD
 	{
 	PCI_VENDOR_ID_CONTEC, PCI_DEVICE_ID_PIO1616L, PCI_ANY_ID,
 		    PCI_ANY_ID, 0, 0, PIO1616L}, {
 	0}
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_CONTEC, PCI_DEVICE_ID_PIO1616L),
+		.driver_data = PIO1616L },
+	{0}
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 MODULE_DEVICE_TABLE(pci, contec_pci_table);
@@ -197,8 +203,13 @@ static int contec_do_insn_bits(struct comedi_device *dev,
 			       struct comedi_insn *insn, unsigned int *data)
 {
 
+<<<<<<< HEAD
 	printk("contec_do_insn_bits called\n");
 	printk(" data: %d %d\n", data[0], data[1]);
+=======
+	dev_dbg(dev->hw_dev, "contec_do_insn_bits called\n");
+	dev_dbg(dev->hw_dev, "data: %d %d\n", data[0], data[1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (insn->n != 2)
 		return -EINVAL;
@@ -206,8 +217,13 @@ static int contec_do_insn_bits(struct comedi_device *dev,
 	if (data[0]) {
 		s->state &= ~data[0];
 		s->state |= data[0] & data[1];
+<<<<<<< HEAD
 		printk("  out: %d on %lx\n", s->state,
 		       dev->iobase + thisboard->out_offs);
+=======
+		dev_dbg(dev->hw_dev, "out: %d on %lx\n", s->state,
+			dev->iobase + thisboard->out_offs);
+>>>>>>> refs/remotes/origin/cm-10.0
 		outw(s->state, dev->iobase + thisboard->out_offs);
 	}
 	return 2;
@@ -218,8 +234,13 @@ static int contec_di_insn_bits(struct comedi_device *dev,
 			       struct comedi_insn *insn, unsigned int *data)
 {
 
+<<<<<<< HEAD
 	printk("contec_di_insn_bits called\n");
 	printk(" data: %d %d\n", data[0], data[1]);
+=======
+	dev_dbg(dev->hw_dev, "contec_di_insn_bits called\n");
+	dev_dbg(dev->hw_dev, "data: %d %d\n", data[0], data[1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (insn->n != 2)
 		return -EINVAL;

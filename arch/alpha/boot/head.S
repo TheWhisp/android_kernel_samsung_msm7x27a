@@ -4,7 +4,10 @@
  * initial bootloader stuff..
  */
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.set noreorder
 	.globl	__start

@@ -14,7 +14,10 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ":%s: " fmt, __func__
 
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <scsi/scsi_host.h>
@@ -106,6 +109,7 @@ static struct iscsi_transport cxgb3i_iscsi_transport = {
 	.caps		= CAP_RECOVERY_L0 | CAP_MULTI_R2T | CAP_HDRDGST
 				| CAP_DATADGST | CAP_DIGEST_OFFLOAD |
 				CAP_PADDING_OFFLOAD | CAP_TEXT_NEGO,
+<<<<<<< HEAD
 	.param_mask	= ISCSI_MAX_RECV_DLENGTH | ISCSI_MAX_XMIT_DLENGTH |
 				ISCSI_HDRDGST_EN | ISCSI_DATADGST_EN |
 				ISCSI_INITIAL_R2T_EN | ISCSI_MAX_R2T |
@@ -125,6 +129,9 @@ static struct iscsi_transport cxgb3i_iscsi_transport = {
 	.host_param_mask	= ISCSI_HOST_HWADDRESS | ISCSI_HOST_IPADDRESS |
 				ISCSI_HOST_INITIATOR_NAME |
 				ISCSI_HOST_NETDEV_NAME,
+=======
+	.attr_is_visible	= cxgbi_attr_is_visible,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_host_param	= cxgbi_get_host_param,
 	.set_host_param	= cxgbi_set_host_param,
 	/* session management */
@@ -985,7 +992,11 @@ static int init_act_open(struct cxgbi_sock *csk)
 		csk->saddr.sin_addr.s_addr = chba->ipv4addr;
 
 	csk->rss_qid = 0;
+<<<<<<< HEAD
 	csk->l2t = t3_l2t_get(t3dev, dst_get_neighbour(dst), ndev);
+=======
+	csk->l2t = t3_l2t_get(t3dev, dst, ndev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!csk->l2t) {
 		pr_err("NO l2t available.\n");
 		return -EINVAL;
@@ -1245,7 +1256,11 @@ static int cxgb3i_ddp_init(struct cxgbi_device *cdev)
 	struct cxgbi_ddp_info *ddp = tdev->ulp_iscsi;
 	struct ulp_iscsi_info uinfo;
 	unsigned int pgsz_factor[4];
+<<<<<<< HEAD
 	int err;
+=======
+	int i, err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ddp) {
 		kref_get(&ddp->refcnt);
@@ -1271,6 +1286,11 @@ static int cxgb3i_ddp_init(struct cxgbi_device *cdev)
 
 	uinfo.tagmask = ddp->idx_mask << PPOD_IDX_SHIFT;
 	cxgbi_ddp_page_size_factor(pgsz_factor);
+<<<<<<< HEAD
+=======
+	for (i = 0; i < 4; i++)
+		uinfo.pgsz_factor[i] = pgsz_factor[i];
+>>>>>>> refs/remotes/origin/cm-10.0
 	uinfo.ulimit = uinfo.llimit + (ddp->nppods << PPOD_SIZE_SHIFT);
 
 	err = tdev->ctl(tdev, ULP_ISCSI_SET_PARAMS, &uinfo);

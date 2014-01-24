@@ -21,12 +21,21 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DEBUG_VARIABLE debug
 
 #include <media/saa7146_vv.h>
 #include <media/tuner.h>
 #include <media/v4l2-common.h>
 #include <media/saa7115.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "mxb.h"
 #include "tea6415c.h"
@@ -171,7 +180,11 @@ static int mxb_probe(struct saa7146_dev *dev)
 
 	mxb = kzalloc(sizeof(struct mxb), GFP_KERNEL);
 	if (mxb == NULL) {
+<<<<<<< HEAD
 		DEB_D(("not enough kernel memory.\n"));
+=======
+		DEB_D("not enough kernel memory\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 
@@ -179,7 +192,11 @@ static int mxb_probe(struct saa7146_dev *dev)
 
 	saa7146_i2c_adapter_prepare(dev, &mxb->i2c_adapter, SAA7146_I2C_BUS_BIT_RATE_480);
 	if (i2c_add_adapter(&mxb->i2c_adapter) < 0) {
+<<<<<<< HEAD
 		DEB_S(("cannot register i2c-device. skipping.\n"));
+=======
+		DEB_S("cannot register i2c-device. skipping.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(mxb);
 		return -EFAULT;
 	}
@@ -200,7 +217,11 @@ static int mxb_probe(struct saa7146_dev *dev)
 	/* check if all devices are present */
 	if (!mxb->tea6420_1 || !mxb->tea6420_2 || !mxb->tea6415c ||
 	    !mxb->tda9840 || !mxb->saa7111a || !mxb->tuner) {
+<<<<<<< HEAD
 		printk("mxb: did not find all i2c devices. aborting\n");
+=======
+		pr_err("did not find all i2c devices. aborting\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		i2c_del_adapter(&mxb->i2c_adapter);
 		kfree(mxb);
 		return -ENODEV;
@@ -346,11 +367,19 @@ static int mxb_init_done(struct saa7146_dev* dev)
 			msg.buf = &mxb_saa7740_init[i].data[0];
 			err = i2c_transfer(&mxb->i2c_adapter, &msg, 1);
 			if (err != 1) {
+<<<<<<< HEAD
 				DEB_D(("failed to initialize 'sound arena module'.\n"));
 				goto err;
 			}
 		}
 		INFO(("'sound arena module' detected.\n"));
+=======
+				DEB_D("failed to initialize 'sound arena module'\n");
+				goto err;
+			}
+		}
+		pr_info("'sound arena module' detected\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 err:
 	/* the rest for saa7146: you should definitely set some basic values
@@ -390,7 +419,11 @@ static int vidioc_queryctrl(struct file *file, void *fh, struct v4l2_queryctrl *
 	for (i = MAXCONTROLS - 1; i >= 0; i--) {
 		if (mxb_controls[i].id == qc->id) {
 			*qc = mxb_controls[i];
+<<<<<<< HEAD
 			DEB_D(("VIDIOC_QUERYCTRL %d.\n", qc->id));
+=======
+			DEB_D("VIDIOC_QUERYCTRL %d\n", qc->id);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return 0;
 		}
 	}
@@ -413,11 +446,19 @@ static int vidioc_g_ctrl(struct file *file, void *fh, struct v4l2_control *vc)
 
 	if (vc->id == V4L2_CID_AUDIO_MUTE) {
 		vc->value = mxb->cur_mute;
+<<<<<<< HEAD
 		DEB_D(("VIDIOC_G_CTRL V4L2_CID_AUDIO_MUTE:%d.\n", vc->value));
 		return 0;
 	}
 
 	DEB_EE(("VIDIOC_G_CTRL V4L2_CID_AUDIO_MUTE:%d.\n", vc->value));
+=======
+		DEB_D("VIDIOC_G_CTRL V4L2_CID_AUDIO_MUTE:%d\n", vc->value);
+		return 0;
+	}
+
+	DEB_EE("VIDIOC_G_CTRL V4L2_CID_AUDIO_MUTE:%d\n", vc->value);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -440,14 +481,22 @@ static int vidioc_s_ctrl(struct file *file, void *fh, struct v4l2_control *vc)
 		/* switch the audio-source */
 		tea6420_route_line(mxb, vc->value ? 6 :
 				video_audio_connect[mxb->cur_input]);
+<<<<<<< HEAD
 		DEB_EE(("VIDIOC_S_CTRL, V4L2_CID_AUDIO_MUTE: %d.\n", vc->value));
+=======
+		DEB_EE("VIDIOC_S_CTRL, V4L2_CID_AUDIO_MUTE: %d\n", vc->value);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return 0;
 }
 
 static int vidioc_enum_input(struct file *file, void *fh, struct v4l2_input *i)
 {
+<<<<<<< HEAD
 	DEB_EE(("VIDIOC_ENUMINPUT %d.\n", i->index));
+=======
+	DEB_EE("VIDIOC_ENUMINPUT %d\n", i->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (i->index >= MXB_INPUTS)
 		return -EINVAL;
 	memcpy(i, &mxb_inputs[i->index], sizeof(struct v4l2_input));
@@ -460,7 +509,11 @@ static int vidioc_g_input(struct file *file, void *fh, unsigned int *i)
 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
 	*i = mxb->cur_input;
 
+<<<<<<< HEAD
 	DEB_EE(("VIDIOC_G_INPUT %d.\n", *i));
+=======
+	DEB_EE("VIDIOC_G_INPUT %d\n", *i);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -471,7 +524,11 @@ static int vidioc_s_input(struct file *file, void *fh, unsigned int input)
 	int err = 0;
 	int i = 0;
 
+<<<<<<< HEAD
 	DEB_EE(("VIDIOC_S_INPUT %d.\n", input));
+=======
+	DEB_EE("VIDIOC_S_INPUT %d\n", input);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (input >= MXB_INPUTS)
 		return -EINVAL;
@@ -514,7 +571,11 @@ static int vidioc_s_input(struct file *file, void *fh, unsigned int input)
 
 	/* switch video in saa7111a */
 	if (saa7111a_call(mxb, video, s_routing, i, SAA7111_FMT_CCIR, 0))
+<<<<<<< HEAD
 		printk(KERN_ERR "VIDIOC_S_INPUT: could not address saa7111a.\n");
+=======
+		pr_err("VIDIOC_S_INPUT: could not address saa7111a\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* switch the audio-source only if necessary */
 	if (0 == mxb->cur_mute)
@@ -529,11 +590,20 @@ static int vidioc_g_tuner(struct file *file, void *fh, struct v4l2_tuner *t)
 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
 
 	if (t->index) {
+<<<<<<< HEAD
 		DEB_D(("VIDIOC_G_TUNER: channel %d does not have a tuner attached.\n", t->index));
 		return -EINVAL;
 	}
 
 	DEB_EE(("VIDIOC_G_TUNER: %d\n", t->index));
+=======
+		DEB_D("VIDIOC_G_TUNER: channel %d does not have a tuner attached\n",
+		      t->index);
+		return -EINVAL;
+	}
+
+	DEB_EE("VIDIOC_G_TUNER: %d\n", t->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memset(t, 0, sizeof(*t));
 	strlcpy(t->name, "TV Tuner", sizeof(t->name));
@@ -550,7 +620,12 @@ static int vidioc_s_tuner(struct file *file, void *fh, struct v4l2_tuner *t)
 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
 
 	if (t->index) {
+<<<<<<< HEAD
 		DEB_D(("VIDIOC_S_TUNER: channel %d does not have a tuner attached.\n", t->index));
+=======
+		DEB_D("VIDIOC_S_TUNER: channel %d does not have a tuner attached\n",
+		      t->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -564,14 +639,23 @@ static int vidioc_g_frequency(struct file *file, void *fh, struct v4l2_frequency
 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
 
 	if (mxb->cur_input) {
+<<<<<<< HEAD
 		DEB_D(("VIDIOC_G_FREQ: channel %d does not have a tuner!\n",
 					mxb->cur_input));
+=======
+		DEB_D("VIDIOC_G_FREQ: channel %d does not have a tuner!\n",
+		      mxb->cur_input);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
 	*f = mxb->cur_freq;
 
+<<<<<<< HEAD
 	DEB_EE(("VIDIOC_G_FREQ: freq:0x%08x.\n", mxb->cur_freq.frequency));
+=======
+	DEB_EE("VIDIOC_G_FREQ: freq:0x%08x\n", mxb->cur_freq.frequency);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -588,12 +672,21 @@ static int vidioc_s_frequency(struct file *file, void *fh, struct v4l2_frequency
 		return -EINVAL;
 
 	if (mxb->cur_input) {
+<<<<<<< HEAD
 		DEB_D(("VIDIOC_S_FREQ: channel %d does not have a tuner!\n", mxb->cur_input));
+=======
+		DEB_D("VIDIOC_S_FREQ: channel %d does not have a tuner!\n",
+		      mxb->cur_input);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
 	mxb->cur_freq = *f;
+<<<<<<< HEAD
 	DEB_EE(("VIDIOC_S_FREQUENCY: freq:0x%08x.\n", mxb->cur_freq.frequency));
+=======
+	DEB_EE("VIDIOC_S_FREQUENCY: freq:0x%08x\n", mxb->cur_freq.frequency);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* tune in desired frequency */
 	tuner_call(mxb, tuner, s_frequency, &mxb->cur_freq);
@@ -612,18 +705,30 @@ static int vidioc_g_audio(struct file *file, void *fh, struct v4l2_audio *a)
 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
 
 	if (a->index > MXB_INPUTS) {
+<<<<<<< HEAD
 		DEB_D(("VIDIOC_G_AUDIO %d out of range.\n", a->index));
 		return -EINVAL;
 	}
 
 	DEB_EE(("VIDIOC_G_AUDIO %d.\n", a->index));
+=======
+		DEB_D("VIDIOC_G_AUDIO %d out of range\n", a->index);
+		return -EINVAL;
+	}
+
+	DEB_EE("VIDIOC_G_AUDIO %d\n", a->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 	memcpy(a, &mxb_audios[video_audio_connect[mxb->cur_input]], sizeof(struct v4l2_audio));
 	return 0;
 }
 
 static int vidioc_s_audio(struct file *file, void *fh, struct v4l2_audio *a)
 {
+<<<<<<< HEAD
 	DEB_D(("VIDIOC_S_AUDIO %d.\n", a->index));
+=======
+	DEB_D("VIDIOC_S_AUDIO %d\n", a->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -655,11 +760,19 @@ static long vidioc_default(struct file *file, void *fh, bool valid_prio,
 		int i = *(int *)arg;
 
 		if (i < 0 || i >= MXB_AUDIOS) {
+<<<<<<< HEAD
 			DEB_D(("illegal argument to MXB_S_AUDIO_CD: i:%d.\n", i));
 			return -EINVAL;
 		}
 
 		DEB_EE(("MXB_S_AUDIO_CD: i:%d.\n", i));
+=======
+			DEB_D("invalid argument to MXB_S_AUDIO_CD: i:%d\n", i);
+			return -EINVAL;
+		}
+
+		DEB_EE("MXB_S_AUDIO_CD: i:%d\n", i);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		tea6420_route_cd(mxb, i);
 		return 0;
@@ -669,17 +782,30 @@ static long vidioc_default(struct file *file, void *fh, bool valid_prio,
 		int i = *(int *)arg;
 
 		if (i < 0 || i >= MXB_AUDIOS) {
+<<<<<<< HEAD
 			DEB_D(("illegal argument to MXB_S_AUDIO_LINE: i:%d.\n", i));
 			return -EINVAL;
 		}
 
 		DEB_EE(("MXB_S_AUDIO_LINE: i:%d.\n", i));
+=======
+			DEB_D("invalid argument to MXB_S_AUDIO_LINE: i:%d\n",
+			      i);
+			return -EINVAL;
+		}
+
+		DEB_EE("MXB_S_AUDIO_LINE: i:%d\n", i);
+>>>>>>> refs/remotes/origin/cm-10.0
 		tea6420_route_line(mxb, i);
 		return 0;
 	}
 	default:
 /*
+<<<<<<< HEAD
 		DEB2(printk("does not handle this ioctl.\n"));
+=======
+		DEB2(pr_err("does not handle this ioctl\n"));
+>>>>>>> refs/remotes/origin/cm-10.0
 */
 		return -ENOIOCTLCMD;
 	}
@@ -693,7 +819,11 @@ static int mxb_attach(struct saa7146_dev *dev, struct saa7146_pci_extension_data
 {
 	struct mxb *mxb;
 
+<<<<<<< HEAD
 	DEB_EE(("dev:%p\n", dev));
+=======
+	DEB_EE("dev:%p\n", dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	saa7146_vv_init(dev, &vv_data);
 	if (mxb_probe(dev)) {
@@ -720,7 +850,11 @@ static int mxb_attach(struct saa7146_dev *dev, struct saa7146_pci_extension_data
 #endif
 	vv_data.ops.vidioc_default = vidioc_default;
 	if (saa7146_register_device(&mxb->video_dev, dev, "mxb", VFL_TYPE_GRABBER)) {
+<<<<<<< HEAD
 		ERR(("cannot register capture v4l2 device. skipping.\n"));
+=======
+		ERR("cannot register capture v4l2 device. skipping.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		saa7146_vv_release(dev);
 		return -1;
 	}
@@ -728,11 +862,19 @@ static int mxb_attach(struct saa7146_dev *dev, struct saa7146_pci_extension_data
 	/* initialization stuff (vbi) (only for revision > 0 and for extensions which want it)*/
 	if (MXB_BOARD_CAN_DO_VBI(dev)) {
 		if (saa7146_register_device(&mxb->vbi_dev, dev, "mxb", VFL_TYPE_VBI)) {
+<<<<<<< HEAD
 			ERR(("cannot register vbi v4l2 device. skipping.\n"));
 		}
 	}
 
 	printk("mxb: found Multimedia eXtension Board #%d.\n", mxb_num);
+=======
+			ERR("cannot register vbi v4l2 device. skipping.\n");
+		}
+	}
+
+	pr_info("found Multimedia eXtension Board #%d\n", mxb_num);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mxb_num++;
 	mxb_init_done(dev);
@@ -743,7 +885,11 @@ static int mxb_detach(struct saa7146_dev *dev)
 {
 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
 
+<<<<<<< HEAD
 	DEB_EE(("dev:%p\n", dev));
+=======
+	DEB_EE("dev:%p\n", dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	saa7146_unregister_device(&mxb->video_dev,dev);
 	if (MXB_BOARD_CAN_DO_VBI(dev))
@@ -765,7 +911,11 @@ static int std_callback(struct saa7146_dev *dev, struct saa7146_standard *standa
 	if (V4L2_STD_PAL_I == standard->id) {
 		v4l2_std_id std = V4L2_STD_PAL_I;
 
+<<<<<<< HEAD
 		DEB_D(("VIDIOC_S_STD: setting mxb for PAL_I.\n"));
+=======
+		DEB_D("VIDIOC_S_STD: setting mxb for PAL_I\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* set the 7146 gpio register -- I don't know what this does exactly */
 		saa7146_write(dev, GPIO_CTRL, 0x00404050);
 		/* unset the 7111 gpio register -- I don't know what this does exactly */
@@ -774,7 +924,11 @@ static int std_callback(struct saa7146_dev *dev, struct saa7146_standard *standa
 	} else {
 		v4l2_std_id std = V4L2_STD_PAL_BG;
 
+<<<<<<< HEAD
 		DEB_D(("VIDIOC_S_STD: setting mxb for PAL/NTSC/SECAM.\n"));
+=======
+		DEB_D("VIDIOC_S_STD: setting mxb for PAL/NTSC/SECAM\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* set the 7146 gpio register -- I don't know what this does exactly */
 		saa7146_write(dev, GPIO_CTRL, 0x00404050);
 		/* set the 7111 gpio register -- I don't know what this does exactly */
@@ -852,7 +1006,11 @@ static struct saa7146_extension extension = {
 static int __init mxb_init_module(void)
 {
 	if (saa7146_register_extension(&extension)) {
+<<<<<<< HEAD
 		DEB_S(("failed to register extension.\n"));
+=======
+		DEB_S("failed to register extension\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 

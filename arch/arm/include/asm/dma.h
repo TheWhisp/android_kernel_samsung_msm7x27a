@@ -1,6 +1,7 @@
 #ifndef __ASM_ARM_DMA_H
 #define __ASM_ARM_DMA_H
 
+<<<<<<< HEAD
 #include <asm/memory.h>
 
 /*
@@ -10,6 +11,18 @@
 #define MAX_DMA_ADDRESS	0xffffffff
 #else
 #define MAX_DMA_ADDRESS	(PAGE_OFFSET + ARM_DMA_ZONE_SIZE)
+=======
+/*
+ * This is the maximum virtual address which can be DMA'd from.
+ */
+#ifndef CONFIG_ZONE_DMA
+#define MAX_DMA_ADDRESS	0xffffffffUL
+#else
+#define MAX_DMA_ADDRESS	({ \
+	extern unsigned long arm_dma_zone_size; \
+	arm_dma_zone_size ? \
+		(PAGE_OFFSET + arm_dma_zone_size) : 0xffffffffUL; })
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_ISA_DMA_API
@@ -18,7 +31,10 @@
  * It should not be re-used except for that purpose.
  */
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/scatterlist.h>
 
 #include <mach/isa-dma.h>

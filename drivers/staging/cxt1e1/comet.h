@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /*
  * $Id: comet.h,v 1.3 2005/09/28 00:10:07 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _INC_COMET_H_
 #define _INC_COMET_H_
 
@@ -23,6 +26,7 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.3 $
  * Last changed on $Date: 2005/09/28 00:10:07 $
@@ -44,6 +48,11 @@
 #include <linux/types.h>
 #endif
 
+=======
+ */
+
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define VINT32  volatile u_int32_t
 

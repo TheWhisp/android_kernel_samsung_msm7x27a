@@ -95,7 +95,11 @@ my %VCS_cmds_git = (
     "execute_cmd" => \&git_execute_cmd,
     "available" => '(which("git") ne "") && (-d ".git")',
     "find_signers_cmd" =>
+<<<<<<< HEAD
 	"git log --no-color --since=\$email_git_since " .
+=======
+	"git log --no-color --follow --since=\$email_git_since " .
+>>>>>>> refs/remotes/origin/cm-10.0
 	    '--format="GitCommit: %H%n' .
 		      'GitAuthor: %an <%ae>%n' .
 		      'GitDate: %aD%n' .
@@ -328,7 +332,12 @@ sub read_mailmap {
 	# name1 <mail1> <mail2>
 	# name1 <mail1> name2 <mail2>
 	# (see man git-shortlog)
+<<<<<<< HEAD
 	if (/^(.+)<(.+)>$/) {
+=======
+
+	if (/^([^<]+)<([^>]+)>$/) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    my $real_name = $1;
 	    my $address = $2;
 
@@ -336,13 +345,21 @@ sub read_mailmap {
 	    ($real_name, $address) = parse_email("$real_name <$address>");
 	    $mailmap->{names}->{$address} = $real_name;
 
+<<<<<<< HEAD
 	} elsif (/^<([^\s]+)>\s*<([^\s]+)>$/) {
+=======
+	} elsif (/^<([^>]+)>\s*<([^>]+)>$/) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    my $real_address = $1;
 	    my $wrong_address = $2;
 
 	    $mailmap->{addresses}->{$wrong_address} = $real_address;
 
+<<<<<<< HEAD
 	} elsif (/^(.+)<([^\s]+)>\s*<([^\s]+)>$/) {
+=======
+	} elsif (/^(.+)<([^>]+)>\s*<([^>]+)>$/) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    my $real_name = $1;
 	    my $real_address = $2;
 	    my $wrong_address = $3;
@@ -353,7 +370,11 @@ sub read_mailmap {
 	    $mailmap->{names}->{$wrong_address} = $real_name;
 	    $mailmap->{addresses}->{$wrong_address} = $real_address;
 
+<<<<<<< HEAD
 	} elsif (/^(.+)<([^\s]+)>\s*([^\s].*)<([^\s]+)>$/) {
+=======
+	} elsif (/^(.+)<([^>]+)>\s*(.+)\s*<([^>]+)>$/) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	    my $real_name = $1;
 	    my $real_address = $2;
 	    my $wrong_name = $3;
@@ -930,7 +951,11 @@ sub get_maintainer_role {
     my $start = find_starting_index($index);
     my $end = find_ending_index($index);
 
+<<<<<<< HEAD
     my $role;
+=======
+    my $role = "unknown";
+>>>>>>> refs/remotes/origin/cm-10.0
     my $subsystem = $typevalue[$start];
     if (length($subsystem) > 20) {
 	$subsystem = substr($subsystem, 0, 17);
@@ -1026,8 +1051,18 @@ sub add_categories {
 		    if ($email_list) {
 			if (!$hash_list_to{lc($list_address)}) {
 			    $hash_list_to{lc($list_address)} = 1;
+<<<<<<< HEAD
 			    push(@list_to, [$list_address,
 					    "open list${list_role}"]);
+=======
+			    if ($list_additional =~ m/moderated/) {
+				push(@list_to, [$list_address,
+						"moderated list${list_role}"]);
+			    } else {
+				push(@list_to, [$list_address,
+						"open list${list_role}"]);
+			    }
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		    }
 		}
@@ -1388,7 +1423,11 @@ sub vcs_exists {
 	warn("$P: No supported VCS found.  Add --nogit to options?\n");
 	warn("Using a git repository produces better results.\n");
 	warn("Try Linus Torvalds' latest git repository using:\n");
+<<<<<<< HEAD
 	warn("git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git\n");
+=======
+	warn("git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	$printed_novcs = 1;
     }
     return 0;

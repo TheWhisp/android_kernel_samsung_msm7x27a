@@ -93,7 +93,11 @@ struct kern_ipc_perm
 	gid_t		gid;
 	uid_t		cuid;
 	gid_t		cgid;
+<<<<<<< HEAD
 	mode_t		mode; 
+=======
+	umode_t		mode; 
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long	seq;
 	void		*security;
 };

@@ -16,6 +16,10 @@
  */
 
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include <linux/regulator/driver.h>
 #include <linux/regulator/machine.h>
@@ -36,6 +40,32 @@ static struct regulator_desc dummy_desc = {
 	.ops = &dummy_ops,
 };
 
+<<<<<<< HEAD
+=======
+static int __devinit dummy_regulator_probe(struct platform_device *pdev)
+{
+	int ret;
+
+	dummy_regulator_rdev = regulator_register(&dummy_desc, NULL,
+						  &dummy_initdata, NULL, NULL);
+	if (IS_ERR(dummy_regulator_rdev)) {
+		ret = PTR_ERR(dummy_regulator_rdev);
+		pr_err("Failed to register regulator: %d\n", ret);
+		return ret;
+	}
+
+	return 0;
+}
+
+static struct platform_driver dummy_regulator_driver = {
+	.probe		= dummy_regulator_probe,
+	.driver		= {
+		.name		= "reg-dummy",
+		.owner		= THIS_MODULE,
+	},
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device *dummy_pdev;
 
 void __init regulator_dummy_init(void)
@@ -55,6 +85,7 @@ void __init regulator_dummy_init(void)
 		return;
 	}
 
+<<<<<<< HEAD
 	dummy_regulator_rdev = regulator_register(&dummy_desc, NULL,
 						  &dummy_initdata, NULL);
 	if (IS_ERR(dummy_regulator_rdev)) {
@@ -62,5 +93,11 @@ void __init regulator_dummy_init(void)
 		pr_err("Failed to register regulator: %d\n", ret);
 		platform_device_unregister(dummy_pdev);
 		return;
+=======
+	ret = platform_driver_register(&dummy_regulator_driver);
+	if (ret != 0) {
+		pr_err("Failed to register dummy regulator driver: %d\n", ret);
+		platform_device_unregister(dummy_pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }

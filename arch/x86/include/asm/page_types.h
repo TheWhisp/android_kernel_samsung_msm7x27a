@@ -55,7 +55,10 @@ extern unsigned long init_memory_mapping(unsigned long start,
 					 unsigned long end);
 
 extern void initmem_init(void);
+<<<<<<< HEAD
 extern void free_initmem(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif	/* !__ASSEMBLY__ */
 

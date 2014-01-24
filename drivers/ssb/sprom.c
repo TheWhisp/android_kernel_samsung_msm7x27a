@@ -2,7 +2,11 @@
  * Sonics Silicon Backplane
  * Common SPROM support routines
  *
+<<<<<<< HEAD
  * Copyright (C) 2005-2008 Michael Buesch <mb@bu3sch.de>
+=======
+ * Copyright (C) 2005-2008 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
  * Copyright (C) 2005 Martin Langer <martin-langer@gmx.de>
  * Copyright (C) 2005 Stefano Brivio <st3@riseup.net>
  * Copyright (C) 2005 Danny van Dyk <kugelfang@gentoo.org>

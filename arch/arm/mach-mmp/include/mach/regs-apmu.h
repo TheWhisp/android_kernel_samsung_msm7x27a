@@ -29,6 +29,10 @@
 #define APMU_BUS	APMU_REG(0x06c)
 #define APMU_SDH2	APMU_REG(0x0e8)
 #define APMU_SDH3	APMU_REG(0x0ec)
+<<<<<<< HEAD
+=======
+#define APMU_ETH	APMU_REG(0x0fc)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define APMU_FNCLK_EN	(1 << 4)
 #define APMU_AXICLK_EN	(1 << 3)

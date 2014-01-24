@@ -15,6 +15,10 @@
 #include <linux/mv643xx_eth.h>
 #include <linux/timex.h>
 #include <linux/serial_reg.h>
+<<<<<<< HEAD
+=======
+#include <mach/orion5x.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "tsx09-common.h"
 #include "common.h"
 

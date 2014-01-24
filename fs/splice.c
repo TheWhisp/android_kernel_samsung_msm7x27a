@@ -25,8 +25,12 @@
 #include <linux/mm_inline.h>
 #include <linux/swap.h>
 #include <linux/writeback.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/syscalls.h>
 #include <linux/uio.h>
 #include <linux/security.h>
@@ -133,7 +137,11 @@ error:
 	return err;
 }
 
+<<<<<<< HEAD
 static const struct pipe_buf_operations page_cache_pipe_buf_ops = {
+=======
+const struct pipe_buf_operations page_cache_pipe_buf_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.can_merge = 0,
 	.map = generic_pipe_buf_map,
 	.unmap = generic_pipe_buf_unmap,
@@ -265,7 +273,11 @@ ssize_t splice_to_pipe(struct pipe_inode_info *pipe,
 	return ret;
 }
 
+<<<<<<< HEAD
 static void spd_release_page(struct splice_pipe_desc *spd, unsigned int i)
+=======
+void spd_release_page(struct splice_pipe_desc *spd, unsigned int i)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	page_cache_release(spd->pages[i]);
 }
@@ -747,6 +759,7 @@ int pipe_to_file(struct pipe_inode_info *pipe, struct pipe_buffer *buf,
 		goto out;
 
 	if (buf->page != page) {
+<<<<<<< HEAD
 		/*
 		 * Careful, ->map() uses KM_USER0!
 		 */
@@ -756,6 +769,14 @@ int pipe_to_file(struct pipe_inode_info *pipe, struct pipe_buffer *buf,
 		memcpy(dst + offset, src + buf->offset, this_len);
 		flush_dcache_page(page);
 		kunmap_atomic(dst, KM_USER1);
+=======
+		char *src = buf->ops->map(pipe, buf, 1);
+		char *dst = kmap_atomic(page);
+
+		memcpy(dst + offset, src + buf->offset, this_len);
+		flush_dcache_page(page);
+		kunmap_atomic(dst);
+>>>>>>> refs/remotes/origin/cm-10.0
 		buf->ops->unmap(pipe, buf, src);
 	}
 	ret = pagecache_write_end(file, mapping, sd->pos, this_len, this_len,

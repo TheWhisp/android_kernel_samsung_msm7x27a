@@ -38,6 +38,7 @@
 /*
  * Definitions for the Atheros Wireless LAN controller driver.
  */
+<<<<<<< HEAD
 #ifndef _DEV_ATH_ATHVAR_H
 #define _DEV_ATH_ATHVAR_H
 
@@ -61,6 +62,29 @@
 #define ATH_BCBUF	4		/* number of beacon buffers */
 #define ATH5K_TXQ_LEN_MAX	(ATH_TXBUF / 4)		/* bufs per queue */
 #define ATH5K_TXQ_LEN_LOW	(ATH5K_TXQ_LEN_MAX / 2)	/* low mark */
+=======
+#ifndef _DEV_ATH5K_BASE_H
+#define _DEV_ATH5K_BASE_H
+
+struct ieee80211_vif;
+struct ieee80211_hw;
+struct ath5k_hw;
+struct ath5k_txq;
+struct ieee80211_channel;
+struct ath_bus_ops;
+enum nl80211_iftype;
+
+enum ath5k_srev_type {
+	AR5K_VERSION_MAC,
+	AR5K_VERSION_RAD,
+};
+
+struct ath5k_srev_name {
+	const char		*sr_name;
+	enum ath5k_srev_type	sr_type;
+	u_int			sr_val;
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct ath5k_buf {
 	struct list_head	list;
@@ -70,6 +94,7 @@ struct ath5k_buf {
 	dma_addr_t		skbaddr;/* physical addr of skb data */
 };
 
+<<<<<<< HEAD
 /*
  * Data transmit queue state.  One of these exists for each
  * hardware transmit queue.  Packets sent to us from above
@@ -159,11 +184,14 @@ struct ath5k_statistics {
 #define ATH_CHAN_MAX	(14+14+14+252+20)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ath5k_vif {
 	bool			assoc; /* are we associated or not */
 	enum nl80211_iftype	opmode;
 	int			bslot;
 	struct ath5k_buf	*bbuf; /* beacon buffer */
+<<<<<<< HEAD
 	u8			lladdr[ETH_ALEN];
 };
 
@@ -263,6 +291,8 @@ struct ath5k_softc {
 	struct delayed_work	tx_complete_work;
 
 	struct survey_info	survey;		/* collected survey info */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct ath5k_vif_iter_data {
@@ -275,6 +305,7 @@ struct ath5k_vif_iter_data {
 	enum nl80211_iftype opmode;
 	int n_stas;
 };
+<<<<<<< HEAD
 void ath5k_vif_iter(void *data, u8 *mac, struct ieee80211_vif *vif);
 
 
@@ -284,3 +315,37 @@ void ath5k_vif_iter(void *data, u8 *mac, struct ieee80211_vif *vif);
 	(ath5k_hw_get_capability(_ah, AR5K_CAP_VEOL, 0, NULL) == 0)
 
 #endif
+=======
+
+void ath5k_vif_iter(void *data, u8 *mac, struct ieee80211_vif *vif);
+bool ath5k_any_vif_assoc(struct ath5k_hw *ah);
+
+int ath5k_start(struct ieee80211_hw *hw);
+void ath5k_stop(struct ieee80211_hw *hw);
+
+void ath5k_beacon_update_timers(struct ath5k_hw *ah, u64 bc_tsf);
+int ath5k_beacon_update(struct ieee80211_hw *hw, struct ieee80211_vif *vif);
+void ath5k_beacon_config(struct ath5k_hw *ah);
+void ath5k_set_beacon_filter(struct ieee80211_hw *hw, bool enable);
+
+void ath5k_update_bssid_mask_and_opmode(struct ath5k_hw *ah,
+					struct ieee80211_vif *vif);
+int ath5k_chan_set(struct ath5k_hw *ah, struct ieee80211_channel *chan);
+void ath5k_txbuf_free_skb(struct ath5k_hw *ah, struct ath5k_buf *bf);
+void ath5k_rxbuf_free_skb(struct ath5k_hw *ah, struct ath5k_buf *bf);
+void ath5k_tx_queue(struct ieee80211_hw *hw, struct sk_buff *skb,
+		    struct ath5k_txq *txq);
+
+const char *ath5k_chip_name(enum ath5k_srev_type type, u_int16_t val);
+
+int ath5k_init_ah(struct ath5k_hw *ah, const struct ath_bus_ops *bus_ops);
+void ath5k_deinit_ah(struct ath5k_hw *ah);
+
+/* Check whether BSSID mask is supported */
+#define ath5k_hw_hasbssidmask(_ah) (ah->ah_version == AR5K_AR5212)
+
+/* Check whether virtual EOL is supported */
+#define ath5k_hw_hasveol(_ah) (ah->ah_version != AR5K_AR5210)
+
+#endif	/* _DEV_ATH5K_BASE_H */
+>>>>>>> refs/remotes/origin/cm-10.0

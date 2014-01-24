@@ -49,7 +49,11 @@
 #define		I5100_FERR_NF_MEM_M6ERR_MASK	(1 << 6)
 #define		I5100_FERR_NF_MEM_M5ERR_MASK	(1 << 5)
 #define		I5100_FERR_NF_MEM_M4ERR_MASK	(1 << 4)
+<<<<<<< HEAD
 #define		I5100_FERR_NF_MEM_M1ERR_MASK	1
+=======
+#define		I5100_FERR_NF_MEM_M1ERR_MASK	(1 << 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define		I5100_FERR_NF_MEM_ANY_MASK	\
 			(I5100_FERR_NF_MEM_M16ERR_MASK | \
 			I5100_FERR_NF_MEM_M15ERR_MASK | \
@@ -535,6 +539,7 @@ static void i5100_read_log(struct mem_ctl_info *mci, int chan,
 static void i5100_check_error(struct mem_ctl_info *mci)
 {
 	struct i5100_priv *priv = mci->pvt_info;
+<<<<<<< HEAD
 	u32 dw;
 
 
@@ -547,11 +552,26 @@ static void i5100_check_error(struct mem_ctl_info *mci)
 			pci_write_config_dword(priv->mc, I5100_NERR_NF_MEM,
 					       dw2);
 		pci_write_config_dword(priv->mc, I5100_FERR_NF_MEM, dw);
+=======
+	u32 dw, dw2;
+
+	pci_read_config_dword(priv->mc, I5100_FERR_NF_MEM, &dw);
+	if (i5100_ferr_nf_mem_any(dw)) {
+
+		pci_read_config_dword(priv->mc, I5100_NERR_NF_MEM, &dw2);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		i5100_read_log(mci, i5100_ferr_nf_mem_chan_indx(dw),
 			       i5100_ferr_nf_mem_any(dw),
 			       i5100_nerr_nf_mem_any(dw2));
+<<<<<<< HEAD
 	}
+=======
+
+		pci_write_config_dword(priv->mc, I5100_NERR_NF_MEM, dw2);
+	}
+	pci_write_config_dword(priv->mc, I5100_FERR_NF_MEM, dw);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* The i5100 chipset will scrub the entire memory once, then
@@ -1051,7 +1071,11 @@ static void __devexit i5100_remove_one(struct pci_dev *pdev)
 	edac_mc_free(mci);
 }
 
+<<<<<<< HEAD
 static const struct pci_device_id i5100_pci_tbl[] __devinitdata = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(i5100_pci_tbl) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Device 16, Function 0, Channel 0 Memory Map, Error Flag/Mask, ... */
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_5100_16) },
 	{ 0, }

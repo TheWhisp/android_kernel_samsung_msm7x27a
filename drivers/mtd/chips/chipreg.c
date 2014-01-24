@@ -76,10 +76,14 @@ struct mtd_info *do_map_probe(const char *name, struct map_info *map)
 	*/
 	module_put(drv->module);
 
+<<<<<<< HEAD
 	if (ret)
 		return ret;
 
 	return NULL;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 /*
  * Destroy an MTD device which was created for a map device.

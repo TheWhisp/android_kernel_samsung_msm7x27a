@@ -86,6 +86,10 @@ extern unsigned long mips_machtype;
 #define BOOT_MEM_RAM		1
 #define BOOT_MEM_ROM_DATA	2
 #define BOOT_MEM_RESERVED	3
+<<<<<<< HEAD
+=======
+#define BOOT_MEM_INIT_RAM	4
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * A memory map that's built upon what was determined

@@ -47,6 +47,7 @@ packets is preferred.
 
 struct net_device synchronization rules
 =======================================
+<<<<<<< HEAD
 dev->open:
 	Synchronization: rtnl_lock() semaphore.
 	Context: process
@@ -67,13 +68,38 @@ dev->get_stats:
 
 dev->hard_start_xmit:
 	Synchronization: netif_tx_lock spinlock.
+=======
+ndo_open:
+	Synchronization: rtnl_lock() semaphore.
+	Context: process
+
+ndo_stop:
+	Synchronization: rtnl_lock() semaphore.
+	Context: process
+	Note: netif_running() is guaranteed false
+
+ndo_do_ioctl:
+	Synchronization: rtnl_lock() semaphore.
+	Context: process
+
+ndo_get_stats:
+	Synchronization: dev_base_lock rwlock.
+	Context: nominally process, but don't sleep inside an rwlock
+
+ndo_start_xmit:
+	Synchronization: __netif_tx_lock spinlock.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	When the driver sets NETIF_F_LLTX in dev->features this will be
 	called without holding netif_tx_lock. In this case the driver
 	has to lock by itself when needed. It is recommended to use a try lock
 	for this and return NETDEV_TX_LOCKED when the spin lock fails.
 	The locking there should also properly protect against 
+<<<<<<< HEAD
 	set_multicast_list. Note that the use of NETIF_F_LLTX is deprecated.
+=======
+	set_rx_mode. Note that the use of NETIF_F_LLTX is deprecated.
+>>>>>>> refs/remotes/origin/cm-10.0
 	Don't use it for new drivers.
 
 	Context: Process with BHs disabled or BH (timer),
@@ -87,6 +113,7 @@ dev->hard_start_xmit:
 	o NETDEV_TX_LOCKED Locking failed, please retry quickly.
 	  Only valid when NETIF_F_LLTX is set.
 
+<<<<<<< HEAD
 dev->tx_timeout:
 	Synchronization: netif_tx_lock spinlock.
 	Context: BHs disabled
@@ -94,13 +121,26 @@ dev->tx_timeout:
 
 dev->set_multicast_list:
 	Synchronization: netif_tx_lock spinlock.
+=======
+ndo_tx_timeout:
+	Synchronization: netif_tx_lock spinlock; all TX queues frozen.
+	Context: BHs disabled
+	Notes: netif_queue_stopped() is guaranteed true
+
+ndo_set_rx_mode:
+	Synchronization: netif_addr_lock spinlock.
+>>>>>>> refs/remotes/origin/cm-10.0
 	Context: BHs disabled
 
 struct napi_struct synchronization rules
 ========================================
 napi->poll:
 	Synchronization: NAPI_STATE_SCHED bit in napi->state.  Device
+<<<<<<< HEAD
 		driver's dev->close method will invoke napi_disable() on
+=======
+		driver's ndo_stop method will invoke napi_disable() on
+>>>>>>> refs/remotes/origin/cm-10.0
 		all NAPI instances which will do a sleeping poll on the
 		NAPI_STATE_SCHED napi->state bit, waiting for all pending
 		NAPI activity to cease.

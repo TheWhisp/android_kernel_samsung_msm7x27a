@@ -17,6 +17,10 @@
  *
  * bit     23 - Input/Output (PXA2xx specific)
  * bit     24 - Wakeup Enable(PXA2xx specific)
+<<<<<<< HEAD
+=======
+ * bit     25 - Keep Output  (PXA2xx specific)
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #define MFP_DIR_IN		(0x0 << 23)
@@ -25,6 +29,15 @@
 #define MFP_DIR(x)		(((x) >> 23) & 0x1)
 
 #define MFP_LPM_CAN_WAKEUP	(0x1 << 24)
+<<<<<<< HEAD
+=======
+
+/*
+ * MFP_LPM_KEEP_OUTPUT must be specified for pins that need to
+ * retain their last output level (low or high).
+ * Note: MFP_LPM_KEEP_OUTPUT has no effect on pins configured for input.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MFP_LPM_KEEP_OUTPUT	(0x1 << 25)
 
 #define WAKEUP_ON_EDGE_RISE	(MFP_LPM_CAN_WAKEUP | MFP_LPM_EDGE_RISE)

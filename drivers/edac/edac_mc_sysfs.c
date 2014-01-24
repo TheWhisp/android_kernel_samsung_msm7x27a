@@ -452,7 +452,11 @@ static ssize_t mci_sdram_scrub_rate_store(struct mem_ctl_info *mci,
 	int new_bw = 0;
 
 	if (!mci->set_sdram_scrub_rate)
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (strict_strtoul(data, 10, &bandwidth) < 0)
 		return -EINVAL;
@@ -475,7 +479,11 @@ static ssize_t mci_sdram_scrub_rate_show(struct mem_ctl_info *mci, char *data)
 	int bandwidth = 0;
 
 	if (!mci->get_sdram_scrub_rate)
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bandwidth = mci->get_sdram_scrub_rate(mci);
 	if (bandwidth < 0) {
@@ -1021,6 +1029,7 @@ void edac_remove_sysfs_mci_device(struct mem_ctl_info *mci)
 int edac_sysfs_setup_mc_kset(void)
 {
 	int err = -EINVAL;
+<<<<<<< HEAD
 	struct sysdev_class *edac_class;
 
 	debugf1("%s()\n", __func__);
@@ -1029,11 +1038,25 @@ int edac_sysfs_setup_mc_kset(void)
 	edac_class = edac_get_sysfs_class();
 	if (edac_class == NULL) {
 		debugf1("%s() no edac_class error=%d\n", __func__, err);
+=======
+	struct bus_type *edac_subsys;
+
+	debugf1("%s()\n", __func__);
+
+	/* get the /sys/devices/system/edac subsys reference */
+	edac_subsys = edac_get_sysfs_subsys();
+	if (edac_subsys == NULL) {
+		debugf1("%s() no edac_subsys error=%d\n", __func__, err);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto fail_out;
 	}
 
 	/* Init the MC's kobject */
+<<<<<<< HEAD
 	mc_kset = kset_create_and_add("mc", NULL, &edac_class->kset.kobj);
+=======
+	mc_kset = kset_create_and_add("mc", NULL, &edac_subsys->dev_root->kobj);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!mc_kset) {
 		err = -ENOMEM;
 		debugf1("%s() Failed to register '.../edac/mc'\n", __func__);
@@ -1045,7 +1068,11 @@ int edac_sysfs_setup_mc_kset(void)
 	return 0;
 
 fail_kset:
+<<<<<<< HEAD
 	edac_put_sysfs_class();
+=======
+	edac_put_sysfs_subsys();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 fail_out:
 	return err;
@@ -1059,6 +1086,10 @@ fail_out:
 void edac_sysfs_teardown_mc_kset(void)
 {
 	kset_unregister(mc_kset);
+<<<<<<< HEAD
 	edac_put_sysfs_class();
+=======
+	edac_put_sysfs_subsys();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 

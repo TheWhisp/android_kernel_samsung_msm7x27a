@@ -14,7 +14,10 @@
 #include <linux/interrupt.h>
 #include <linux/bitops.h>
 #include <linux/bio.h>
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/completion.h>
 #include <linux/pm.h>
@@ -23,7 +26,10 @@
 #include <acpi/acpi.h>
 #endif
 #include <asm/byteorder.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 /* for request_sense */
@@ -43,6 +49,11 @@
 #define ERROR_RESET	3	/* Reset controller every 4th retry */
 #define ERROR_RECAL	1	/* Recalibrate every 2nd retry */
 
+<<<<<<< HEAD
+=======
+struct device;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Error codes returned in rq->errors to the higher part of the driver. */
 enum {
 	IDE_DRV_ERROR_GENERAL	= 101,
@@ -920,7 +931,11 @@ __IDE_PROC_DEVSET(_name, _min, _max, NULL, NULL)
 
 typedef struct {
 	const char	*name;
+<<<<<<< HEAD
 	mode_t		mode;
+=======
+	umode_t		mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const struct file_operations *proc_fops;
 } ide_proc_entry_t;
 

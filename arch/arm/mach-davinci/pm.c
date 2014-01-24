@@ -17,6 +17,10 @@
 
 #include <asm/cacheflush.h>
 #include <asm/delay.h>
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/da8xx.h>
 #include <mach/sram.h>

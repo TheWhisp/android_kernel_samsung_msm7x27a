@@ -26,7 +26,10 @@
 #include <linux/unistd.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 
 #include "setup.h"

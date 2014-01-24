@@ -447,6 +447,13 @@ static int clcdfb_register(struct clcd_fb *fb)
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	ret = clk_prepare(fb->clk);
+	if (ret)
+		goto free_clk;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	fb->fb.device		= &fb->dev->dev;
 
 	fb->fb.fix.mmio_start	= fb->dev->res.start;
@@ -456,7 +463,11 @@ static int clcdfb_register(struct clcd_fb *fb)
 	if (!fb->regs) {
 		printk(KERN_ERR "CLCD: unable to remap registers\n");
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto free_clk;
+=======
+		goto clk_unprep;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	fb->fb.fbops		= &clcdfb_ops;
@@ -530,6 +541,11 @@ static int clcdfb_register(struct clcd_fb *fb)
 	fb_dealloc_cmap(&fb->fb.cmap);
  unmap:
 	iounmap(fb->regs);
+<<<<<<< HEAD
+=======
+ clk_unprep:
+	clk_unprepare(fb->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
  free_clk:
 	clk_put(fb->clk);
  out:
@@ -595,6 +611,10 @@ static int clcdfb_remove(struct amba_device *dev)
 	if (fb->fb.cmap.len)
 		fb_dealloc_cmap(&fb->fb.cmap);
 	iounmap(fb->regs);
+<<<<<<< HEAD
+=======
+	clk_unprepare(fb->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_put(fb->clk);
 
 	fb->board->remove(fb);
@@ -614,6 +634,11 @@ static struct amba_id clcdfb_id_table[] = {
 	{ 0, 0 },
 };
 
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(amba, clcdfb_id_table);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct amba_driver clcd_driver = {
 	.drv 		= {
 		.name	= "clcd-pl11x",

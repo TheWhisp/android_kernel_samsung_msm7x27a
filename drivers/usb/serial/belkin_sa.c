@@ -20,6 +20,7 @@
  * TODO:
  * -- Add true modem contol line query capability.  Currently we track the
  *    states reported by the interrupt and the states we request.
+<<<<<<< HEAD
  * -- Add error reporting back to application for UART error conditions.
  *    Just point me at how to implement this and I'll do it. I've put the
  *    framework in, but haven't analyzed the "tty_flip" interface yet.
@@ -64,6 +65,9 @@
  *    adapter, so pardon any stupid mistakes.  All of the information
  *    I am using to write this driver was acquired by using a modified
  *    UsbSnoop on Windows2000 and from examining the other USB drivers.
+=======
+ * -- Add support for flush commands
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/kernel.h>
@@ -80,7 +84,11 @@
 #include <linux/usb/serial.h>
 #include "belkin_sa.h"
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Version Information
@@ -121,7 +129,10 @@ static struct usb_driver belkin_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id =	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* All of the device info needed for the serial converters */
@@ -131,7 +142,10 @@ static struct usb_serial_driver belkin_device = {
 		.name =		"belkin",
 	},
 	.description =		"Belkin / Peracom / GoHubs USB Serial Adapter",
+<<<<<<< HEAD
 	.usb_driver =		&belkin_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =		id_table_combined,
 	.num_ports =		1,
 	.open =			belkin_sa_open,
@@ -146,6 +160,13 @@ static struct usb_serial_driver belkin_device = {
 	.release =		belkin_sa_release,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&belkin_device, NULL
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct belkin_sa_private {
 	spinlock_t		lock;
 	unsigned long		control_state;
@@ -565,6 +586,7 @@ exit:
 	return retval;
 }
 
+<<<<<<< HEAD
 
 static int __init belkin_sa_init(void)
 {
@@ -593,6 +615,9 @@ static void __exit belkin_sa_exit (void)
 
 module_init(belkin_sa_init);
 module_exit(belkin_sa_exit);
+=======
+module_usb_serial_driver(belkin_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

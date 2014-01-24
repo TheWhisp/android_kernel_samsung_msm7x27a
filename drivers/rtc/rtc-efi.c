@@ -213,7 +213,10 @@ static struct platform_driver efi_rtc_driver = {
 		.name = "rtc-efi",
 		.owner = THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.probe = efi_rtc_probe,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.remove = __exit_p(efi_rtc_remove),
 };
 

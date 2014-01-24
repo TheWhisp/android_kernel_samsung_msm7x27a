@@ -155,14 +155,22 @@ int ipv6_sock_mc_join(struct sock *sk, int ifindex, const struct in6_addr *addr)
 		return -ENOMEM;
 
 	mc_lst->next = NULL;
+<<<<<<< HEAD
 	ipv6_addr_copy(&mc_lst->addr, addr);
+=======
+	mc_lst->addr = *addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rcu_read_lock();
 	if (ifindex == 0) {
 		struct rt6_info *rt;
 		rt = rt6_lookup(net, addr, NULL, 0, 0);
 		if (rt) {
+<<<<<<< HEAD
 			dev = rt->rt6i_dev;
+=======
+			dev = rt->dst.dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 			dst_release(&rt->dst);
 		}
 	} else
@@ -256,7 +264,11 @@ static struct inet6_dev *ip6_mc_find_dev_rcu(struct net *net,
 		struct rt6_info *rt = rt6_lookup(net, group, NULL, 0, 0);
 
 		if (rt) {
+<<<<<<< HEAD
 			dev = rt->rt6i_dev;
+=======
+			dev = rt->dst.dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 			dst_release(&rt->dst);
 		}
 	} else
@@ -857,7 +869,11 @@ int ipv6_dev_mc_inc(struct net_device *dev, const struct in6_addr *addr)
 
 	setup_timer(&mc->mca_timer, igmp6_timer_handler, (unsigned long)mc);
 
+<<<<<<< HEAD
 	ipv6_addr_copy(&mc->mca_addr, addr);
+=======
+	mc->mca_addr = *addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mc->idev = idev; /* (reference taken) */
 	mc->mca_users = 1;
 	/* mca_stamp should be updated upon changes */
@@ -1343,13 +1359,22 @@ static struct sk_buff *mld_newpack(struct inet6_dev *idev, int size)
 	struct mld2_report *pmr;
 	struct in6_addr addr_buf;
 	const struct in6_addr *saddr;
+<<<<<<< HEAD
+=======
+	int hlen = LL_RESERVED_SPACE(dev);
+	int tlen = dev->needed_tailroom;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err;
 	u8 ra[8] = { IPPROTO_ICMPV6, 0,
 		     IPV6_TLV_ROUTERALERT, 2, 0, 0,
 		     IPV6_TLV_PADN, 0 };
 
 	/* we assume size > sizeof(ra) here */
+<<<<<<< HEAD
 	size += LL_ALLOCATED_SPACE(dev);
+=======
+	size += hlen + tlen;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* limit our allocations to order-0 page */
 	size = min_t(int, size, SKB_MAX_ORDER(0, 0));
 	skb = sock_alloc_send_skb(sk, size, 1, &err);
@@ -1357,7 +1382,11 @@ static struct sk_buff *mld_newpack(struct inet6_dev *idev, int size)
 	if (!skb)
 		return NULL;
 
+<<<<<<< HEAD
 	skb_reserve(skb, LL_RESERVED_SPACE(dev));
+=======
+	skb_reserve(skb, hlen);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (__ipv6_get_lladdr(idev, &addr_buf, IFA_F_TENTATIVE)) {
 		/* <draft-ietf-magma-mld-source-05.txt>:
@@ -1408,6 +1437,7 @@ static void mld_sendpack(struct sk_buff *skb)
 					   csum_partial(skb_transport_header(skb),
 							mldlen, 0));
 
+<<<<<<< HEAD
 	dst = icmp6_dst_alloc(skb->dev, NULL, &ipv6_hdr(skb)->daddr);
 
 	if (!dst) {
@@ -1420,6 +1450,13 @@ static void mld_sendpack(struct sk_buff *skb)
 			 skb->dev->ifindex);
 
 	dst = xfrm_lookup(net, dst, flowi6_to_flowi(&fl6), NULL, 0);
+=======
+	icmpv6_flow_init(net->ipv6.igmp_sk, &fl6, ICMPV6_MLD2_REPORT,
+			 &ipv6_hdr(skb)->saddr, &ipv6_hdr(skb)->daddr,
+			 skb->dev->ifindex);
+	dst = icmp6_dst_alloc(skb->dev, NULL, &fl6);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = 0;
 	if (IS_ERR(dst)) {
 		err = PTR_ERR(dst);
@@ -1724,6 +1761,11 @@ static void igmp6_send(struct in6_addr *addr, struct net_device *dev, int type)
 	struct mld_msg *hdr;
 	const struct in6_addr *snd_addr, *saddr;
 	struct in6_addr addr_buf;
+<<<<<<< HEAD
+=======
+	int hlen = LL_RESERVED_SPACE(dev);
+	int tlen = dev->needed_tailroom;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int err, len, payload_len, full_len;
 	u8 ra[8] = { IPPROTO_ICMPV6, 0,
 		     IPV6_TLV_ROUTERALERT, 2, 0, 0,
@@ -1745,7 +1787,11 @@ static void igmp6_send(struct in6_addr *addr, struct net_device *dev, int type)
 		      IPSTATS_MIB_OUT, full_len);
 	rcu_read_unlock();
 
+<<<<<<< HEAD
 	skb = sock_alloc_send_skb(sk, LL_ALLOCATED_SPACE(dev) + full_len, 1, &err);
+=======
+	skb = sock_alloc_send_skb(sk, hlen + tlen + full_len, 1, &err);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (skb == NULL) {
 		rcu_read_lock();
@@ -1755,7 +1801,11 @@ static void igmp6_send(struct in6_addr *addr, struct net_device *dev, int type)
 		return;
 	}
 
+<<<<<<< HEAD
 	skb_reserve(skb, LL_RESERVED_SPACE(dev));
+=======
+	skb_reserve(skb, hlen);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ipv6_get_lladdr(dev, &addr_buf, IFA_F_TENTATIVE)) {
 		/* <draft-ietf-magma-mld-source-05.txt>:
@@ -1773,7 +1823,11 @@ static void igmp6_send(struct in6_addr *addr, struct net_device *dev, int type)
 	hdr = (struct mld_msg *) skb_put(skb, sizeof(struct mld_msg));
 	memset(hdr, 0, sizeof(struct mld_msg));
 	hdr->mld_type = type;
+<<<<<<< HEAD
 	ipv6_addr_copy(&hdr->mld_mca, addr);
+=======
+	hdr->mld_mca = *addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	hdr->mld_cksum = csum_ipv6_magic(saddr, snd_addr, len,
 					 IPPROTO_ICMPV6,
@@ -1782,6 +1836,7 @@ static void igmp6_send(struct in6_addr *addr, struct net_device *dev, int type)
 	rcu_read_lock();
 	idev = __in6_dev_get(skb->dev);
 
+<<<<<<< HEAD
 	dst = icmp6_dst_alloc(skb->dev, NULL, &ipv6_hdr(skb)->daddr);
 	if (!dst) {
 		err = -ENOMEM;
@@ -1793,6 +1848,12 @@ static void igmp6_send(struct in6_addr *addr, struct net_device *dev, int type)
 			 skb->dev->ifindex);
 
 	dst = xfrm_lookup(net, dst, flowi6_to_flowi(&fl6), NULL, 0);
+=======
+	icmpv6_flow_init(sk, &fl6, type,
+			 &ipv6_hdr(skb)->saddr, &ipv6_hdr(skb)->daddr,
+			 skb->dev->ifindex);
+	dst = icmp6_dst_alloc(skb->dev, NULL, &fl6);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(dst)) {
 		err = PTR_ERR(dst);
 		goto err_out;
@@ -1915,7 +1976,11 @@ static int ip6_mc_del_src(struct inet6_dev *idev, const struct in6_addr *pmca,
  * Add multicast single-source filter to the interface list
  */
 static int ip6_mc_add1_src(struct ifmcaddr6 *pmc, int sfmode,
+<<<<<<< HEAD
 	const struct in6_addr *psfsrc, int delta)
+=======
+	const struct in6_addr *psfsrc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ip6_sf_list *psf, *psf_prev;
 
@@ -2046,7 +2111,11 @@ static int ip6_mc_add_src(struct inet6_dev *idev, const struct in6_addr *pmca,
 		pmc->mca_sfcount[sfmode]++;
 	err = 0;
 	for (i=0; i<sfcount; i++) {
+<<<<<<< HEAD
 		err = ip6_mc_add1_src(pmc, sfmode, &psfsrc[i], delta);
+=======
+		err = ip6_mc_add1_src(pmc, sfmode, &psfsrc[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			break;
 	}

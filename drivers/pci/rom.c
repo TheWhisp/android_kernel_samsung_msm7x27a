@@ -7,6 +7,10 @@
  * PCI ROM access routines
  */
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/slab.h>
 

@@ -68,6 +68,7 @@ static DEFINE_MUTEX(list_mutex);
 
 static struct kobject *idletimer_tg_kobj;
 
+<<<<<<< HEAD
 static void notify_netlink_uevent(const char *label, struct idletimer_tg *timer)
 {
 	char label_msg[NLMSG_MAX_SIZE];
@@ -77,6 +78,17 @@ static void notify_netlink_uevent(const char *label, struct idletimer_tg *timer)
 
 	res = snprintf(label_msg, NLMSG_MAX_SIZE, "LABEL=%s",
 		       label);
+=======
+static void notify_netlink_uevent(const char *iface, struct idletimer_tg *timer)
+{
+	char iface_msg[NLMSG_MAX_SIZE];
+	char state_msg[NLMSG_MAX_SIZE];
+	char *envp[] = { iface_msg, state_msg, NULL };
+	int res;
+
+	res = snprintf(iface_msg, NLMSG_MAX_SIZE, "INTERFACE=%s",
+		       iface);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (NLMSG_MAX_SIZE <= res) {
 		pr_err("message too long (%d)", res);
 		return;
@@ -87,7 +99,11 @@ static void notify_netlink_uevent(const char *label, struct idletimer_tg *timer)
 		pr_err("message too long (%d)", res);
 		return;
 	}
+<<<<<<< HEAD
 	pr_debug("putting nlmsg: <%s> <%s>\n", label_msg, state_msg);
+=======
+	pr_debug("putting nlmsg: <%s> <%s>\n", iface_msg, state_msg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kobject_uevent_env(idletimer_tg_kobj, KOBJ_CHANGE, envp);
 	return;
 
@@ -162,14 +178,20 @@ static int idletimer_tg_create(struct idletimer_tg_info *info)
 
 	info->timer = kmalloc(sizeof(*info->timer), GFP_KERNEL);
 	if (!info->timer) {
+<<<<<<< HEAD
 		pr_debug("couldn't alloc timer\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENOMEM;
 		goto out;
 	}
 
 	info->timer->attr.attr.name = kstrdup(info->label, GFP_KERNEL);
 	if (!info->timer->attr.attr.name) {
+<<<<<<< HEAD
 		pr_debug("couldn't alloc attribute name\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENOMEM;
 		goto out_free_timer;
 	}
@@ -263,8 +285,12 @@ static int idletimer_tg_checkentry(const struct xt_tgchk_param *par)
 
 		if (time_before(info->timer->timer.expires, now)) {
 			schedule_work(&info->timer->work);
+<<<<<<< HEAD
 			pr_debug("Starting Checkentry timer"
 				"(Expired, Jiffies): %lu, %lu\n",
+=======
+			pr_debug("Starting Checkentry timer (Expired, Jiffies): %lu, %lu\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				info->timer->timer.expires, now);
 		}
 

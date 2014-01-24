@@ -32,7 +32,11 @@ enum bus_reset_handling {
 	SUCCEED_ON_BUS_RESET,
 };
 
+<<<<<<< HEAD
 static __attribute__((format(printf, 2, 3)))
+=======
+static __printf(2, 3)
+>>>>>>> refs/remotes/origin/cm-10.0
 void cmp_error(struct cmp_connection *c, const char *fmt, ...)
 {
 	va_list va;

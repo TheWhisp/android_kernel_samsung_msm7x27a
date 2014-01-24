@@ -4,7 +4,10 @@
 #include "util/util.h"
 #include "util/strbuf.h"
 
+<<<<<<< HEAD
 extern const char perf_version_string[];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern const char perf_usage_string[];
 extern const char perf_more_info_string[];
 

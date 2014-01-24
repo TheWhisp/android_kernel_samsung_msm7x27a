@@ -1,6 +1,11 @@
 #ifndef _IP6T_LOG_H
 #define _IP6T_LOG_H
 
+<<<<<<< HEAD
+=======
+#warning "Please update iptables, this file will be removed soon!"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* make sure not to change this without changing netfilter.h:NF_LOG_* (!) */
 #define IP6T_LOG_TCPSEQ		0x01	/* Log TCP sequence numbers */
 #define IP6T_LOG_TCPOPT		0x02	/* Log TCP options */

@@ -10,6 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,6 +20,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #undef	DEBUG
@@ -49,7 +52,10 @@
 #include <asm/byteorder.h>
 #include <asm/io.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 #include <asm/mach-types.h>
 
@@ -107,7 +113,11 @@ module_param (fifo_mode, uint, 0);
 MODULE_PARM_DESC (fifo_mode, "endpoint configuration");
 
 #ifdef	USE_DMA
+<<<<<<< HEAD
 static unsigned use_dma = 1;
+=======
+static bool use_dma = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* "modprobe omap_udc use_dma=y", or else as a kernel
  * boot parameter "omap_udc:use_dma=y"
@@ -166,6 +176,7 @@ static int omap_ep_enable(struct usb_ep *_ep,
 	if (!_ep || !desc || ep->desc
 			|| desc->bDescriptorType != USB_DT_ENDPOINT
 			|| ep->bEndpointAddress != desc->bEndpointAddress
+<<<<<<< HEAD
 			|| ep->maxpacket < le16_to_cpu
 						(desc->wMaxPacketSize)) {
 		DBG("%s, bad ep or descriptor\n", __func__);
@@ -175,6 +186,16 @@ static int omap_ep_enable(struct usb_ep *_ep,
 	if ((desc->bmAttributes == USB_ENDPOINT_XFER_BULK
 				&& maxp != ep->maxpacket)
 			|| le16_to_cpu(desc->wMaxPacketSize) > ep->maxpacket
+=======
+			|| ep->maxpacket < usb_endpoint_maxp(desc)) {
+		DBG("%s, bad ep or descriptor\n", __func__);
+		return -EINVAL;
+	}
+	maxp = usb_endpoint_maxp(desc);
+	if ((desc->bmAttributes == USB_ENDPOINT_XFER_BULK
+				&& maxp != ep->maxpacket)
+			|| usb_endpoint_maxp(desc) > ep->maxpacket
+>>>>>>> refs/remotes/origin/cm-10.0
 			|| !desc->wMaxPacketSize) {
 		DBG("%s, bad %s maxpacket\n", __func__, _ep->name);
 		return -ERANGE;
@@ -261,6 +282,10 @@ static int omap_ep_disable(struct usb_ep *_ep)
 
 	spin_lock_irqsave(&ep->udc->lock, flags);
 	ep->desc = NULL;
+<<<<<<< HEAD
+=======
+	ep->ep.desc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	nuke (ep, -ESHUTDOWN);
 	ep->ep.maxpacket = ep->maxpacket;
 	ep->has_dma = 0;
@@ -1223,7 +1248,11 @@ static int omap_wakeup(struct usb_gadget *gadget)
 	/* NOTE:  non-OTG systems may use SRP TOO... */
 	} else if (!(udc->devstat & UDC_ATT)) {
 		if (udc->transceiver)
+<<<<<<< HEAD
 			retval = otg_start_srp(udc->transceiver);
+=======
+			retval = otg_start_srp(udc->transceiver->otg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	spin_unlock_irqrestore(&udc->lock, flags);
 
@@ -1355,7 +1384,11 @@ static int omap_vbus_draw(struct usb_gadget *gadget, unsigned mA)
 
 	udc = container_of(gadget, struct omap_udc, gadget);
 	if (udc->transceiver)
+<<<<<<< HEAD
 		return otg_set_power(udc->transceiver, mA);
+=======
+		return usb_phy_set_power(udc->transceiver, mA);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -EOPNOTSUPP;
 }
 
@@ -1375,6 +1408,13 @@ static int omap_pullup(struct usb_gadget *gadget, int is_on)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int omap_udc_start(struct usb_gadget_driver *driver,
+		int (*bind)(struct usb_gadget *));
+static int omap_udc_stop(struct usb_gadget_driver *driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct usb_gadget_ops omap_gadget_ops = {
 	.get_frame		= omap_get_frame,
 	.wakeup			= omap_wakeup,
@@ -1382,6 +1422,11 @@ static struct usb_gadget_ops omap_gadget_ops = {
 	.vbus_session		= omap_vbus_session,
 	.vbus_draw		= omap_vbus_draw,
 	.pullup			= omap_pullup,
+<<<<<<< HEAD
+=======
+	.start			= omap_udc_start,
+	.stop			= omap_udc_stop,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*-------------------------------------------------------------------------*/
@@ -1843,11 +1888,21 @@ static void devstate_irq(struct omap_udc *udc, u16 irq_src)
 					spin_lock(&udc->lock);
 				}
 				if (udc->transceiver)
+<<<<<<< HEAD
 					otg_set_suspend(udc->transceiver, 1);
 			} else {
 				VDBG("resume\n");
 				if (udc->transceiver)
 					otg_set_suspend(udc->transceiver, 0);
+=======
+					usb_phy_set_suspend(
+							udc->transceiver, 1);
+			} else {
+				VDBG("resume\n");
+				if (udc->transceiver)
+					usb_phy_set_suspend(
+							udc->transceiver, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (udc->gadget.speed == USB_SPEED_FULL
 						&& udc->driver->resume) {
 					spin_unlock(&udc->lock);
@@ -2102,7 +2157,11 @@ static inline int machine_without_vbus_sense(void)
 		);
 }
 
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
+=======
+static int omap_udc_start(struct usb_gadget_driver *driver,
+>>>>>>> refs/remotes/origin/cm-10.0
 		int (*bind)(struct usb_gadget *))
 {
 	int		status = -ENODEV;
@@ -2114,7 +2173,11 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		return -ENODEV;
 	if (!driver
 			// FIXME if otg, check:  driver->is_otg
+<<<<<<< HEAD
 			|| driver->speed < USB_SPEED_FULL
+=======
+			|| driver->max_speed < USB_SPEED_FULL
+>>>>>>> refs/remotes/origin/cm-10.0
 			|| !bind || !driver->setup)
 		return -EINVAL;
 
@@ -2158,7 +2221,12 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 
 	/* connect to bus through transceiver */
 	if (udc->transceiver) {
+<<<<<<< HEAD
 		status = otg_set_peripheral(udc->transceiver, &udc->gadget);
+=======
+		status = otg_set_peripheral(udc->transceiver->otg,
+						&udc->gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (status < 0) {
 			ERR("can't bind to transceiver\n");
 			if (driver->unbind) {
@@ -2186,9 +2254,14 @@ done:
 		omap_udc_enable_clock(0);
 	return status;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_probe_driver);
 
 int usb_gadget_unregister_driver (struct usb_gadget_driver *driver)
+=======
+
+static int omap_udc_stop(struct usb_gadget_driver *driver)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long	flags;
 	int		status = -ENODEV;
@@ -2205,7 +2278,11 @@ int usb_gadget_unregister_driver (struct usb_gadget_driver *driver)
 		omap_vbus_session(&udc->gadget, 0);
 
 	if (udc->transceiver)
+<<<<<<< HEAD
 		(void) otg_set_peripheral(udc->transceiver, NULL);
+=======
+		(void) otg_set_peripheral(udc->transceiver->otg, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		pullup_disable(udc);
 
@@ -2222,8 +2299,11 @@ int usb_gadget_unregister_driver (struct usb_gadget_driver *driver)
 	DBG("unregistered driver '%s'\n", driver->driver.name);
 	return status;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*-------------------------------------------------------------------------*/
 
@@ -2657,7 +2737,11 @@ static void omap_udc_release(struct device *dev)
 }
 
 static int __init
+<<<<<<< HEAD
 omap_udc_setup(struct platform_device *odev, struct otg_transceiver *xceiv)
+=======
+omap_udc_setup(struct platform_device *odev, struct usb_phy *xceiv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned	tmp, buf;
 
@@ -2683,6 +2767,10 @@ omap_udc_setup(struct platform_device *odev, struct otg_transceiver *xceiv)
 	INIT_LIST_HEAD(&udc->gadget.ep_list);
 	INIT_LIST_HEAD(&udc->iso);
 	udc->gadget.speed = USB_SPEED_UNKNOWN;
+<<<<<<< HEAD
+=======
+	udc->gadget.max_speed = USB_SPEED_FULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	udc->gadget.name = driver_name;
 
 	device_initialize(&udc->gadget.dev);
@@ -2796,7 +2884,11 @@ static int __init omap_udc_probe(struct platform_device *pdev)
 {
 	int			status = -ENODEV;
 	int			hmc;
+<<<<<<< HEAD
 	struct otg_transceiver	*xceiv = NULL;
+=======
+	struct usb_phy		*xceiv = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const char		*type = NULL;
 	struct omap_usb_config	*config = pdev->dev.platform_data;
 	struct clk		*dc_clk;
@@ -2869,7 +2961,11 @@ static int __init omap_udc_probe(struct platform_device *pdev)
 		 * use it.  Except for OTG, we don't _need_ to talk to one;
 		 * but not having one probably means no VBUS detection.
 		 */
+<<<<<<< HEAD
 		xceiv = otg_get_transceiver();
+=======
+		xceiv = usb_get_transceiver();
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (xceiv)
 			type = xceiv->label;
 		else if (config->otg) {
@@ -2965,7 +3061,11 @@ known:
 	}
 #ifdef	USE_ISO
 	status = request_irq(pdev->resource[3].start, omap_udc_iso_irq,
+<<<<<<< HEAD
 			IRQF_DISABLED, "omap_udc iso", udc);
+=======
+			0, "omap_udc iso", udc);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (status != 0) {
 		ERR("can't get irq %d, err %d\n",
 			(int) pdev->resource[3].start, status);
@@ -2991,9 +3091,22 @@ known:
 
 	create_proc_file();
 	status = device_add(&udc->gadget.dev);
+<<<<<<< HEAD
 	if (!status)
 		return status;
 	/* If fail, fall through */
+=======
+	if (status)
+		goto cleanup4;
+
+	status = usb_add_gadget_udc(&pdev->dev, &udc->gadget);
+	if (!status)
+		return status;
+	/* If fail, fall through */
+cleanup4:
+	remove_proc_file();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef	USE_ISO
 cleanup3:
 	free_irq(pdev->resource[2].start, udc);
@@ -3008,7 +3121,11 @@ cleanup1:
 
 cleanup0:
 	if (xceiv)
+<<<<<<< HEAD
 		otg_put_transceiver(xceiv);
+=======
+		usb_put_transceiver(xceiv);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (cpu_is_omap16xx() || cpu_is_omap24xx() || cpu_is_omap7xx()) {
 		clk_disable(hhc_clk);
@@ -3029,6 +3146,11 @@ static int __exit omap_udc_remove(struct platform_device *pdev)
 
 	if (!udc)
 		return -ENODEV;
+<<<<<<< HEAD
+=======
+
+	usb_del_gadget_udc(&udc->gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (udc->driver)
 		return -EBUSY;
 
@@ -3036,7 +3158,11 @@ static int __exit omap_udc_remove(struct platform_device *pdev)
 
 	pullup_disable(udc);
 	if (udc->transceiver) {
+<<<<<<< HEAD
 		otg_put_transceiver(udc->transceiver);
+=======
+		usb_put_transceiver(udc->transceiver);
+>>>>>>> refs/remotes/origin/cm-10.0
 		udc->transceiver = NULL;
 	}
 	omap_writew(0, UDC_SYSCON1);

@@ -39,7 +39,11 @@ static struct tcf_hashinfo skbedit_hash_info = {
 	.lock	=	&skbedit_lock,
 };
 
+<<<<<<< HEAD
 static int tcf_skbedit(struct sk_buff *skb, struct tc_action *a,
+=======
+static int tcf_skbedit(struct sk_buff *skb, const struct tc_action *a,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       struct tcf_result *res)
 {
 	struct tcf_skbedit *d = a->priv;

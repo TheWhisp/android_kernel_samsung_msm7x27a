@@ -92,7 +92,12 @@ struct ar9003_txc {
 	u32 ctl20;  /* DMA control 20 */
 	u32 ctl21;  /* DMA control 21 */
 	u32 ctl22;  /* DMA control 22 */
+<<<<<<< HEAD
 	u32 pad[9]; /* pad to cache line (128 bytes/32 dwords) */
+=======
+	u32 ctl23;  /* DMA control 23 */
+	u32 pad[8]; /* pad to cache line (128 bytes/32 dwords) */
+>>>>>>> refs/remotes/origin/cm-10.0
 } __packed __aligned(4);
 
 struct ar9003_txs {
@@ -118,5 +123,9 @@ int ath9k_hw_process_rxdesc_edma(struct ath_hw *ah,
 void ath9k_hw_reset_txstatus_ring(struct ath_hw *ah);
 void ath9k_hw_setup_statusring(struct ath_hw *ah, void *ts_start,
 			       u32 ts_paddr_start,
+<<<<<<< HEAD
 			       u8 size);
+=======
+			       u16 size);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

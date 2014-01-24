@@ -17,18 +17,32 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
 #include <linux/errno.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <asm/mach/irq.h>
 
 #include <plat/fpga.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+
+#include <mach/hardware.h>
+
+#include "iomap.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void fpga_mask_irq(struct irq_data *d)
 {

@@ -46,7 +46,11 @@
 #include <net/xfrm.h>
 #include <net/checksum.h>
 #include <net/udp.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "avc.h"
 #include "objsec.h"
@@ -152,6 +156,7 @@ int selinux_xfrm_state_pol_flow_match(struct xfrm_state *x, struct xfrm_policy *
 	return rc;
 }
 
+<<<<<<< HEAD
 static int selinux_xfrm_skb_sid_ingress(struct sk_buff *skb,
 					u32 *sid, int ckall)
 {
@@ -159,6 +164,23 @@ static int selinux_xfrm_skb_sid_ingress(struct sk_buff *skb,
 
 	*sid = SECSID_NULL;
 
+=======
+/*
+ * LSM hook implementation that checks and/or returns the xfrm sid for the
+ * incoming packet.
+ */
+
+int selinux_xfrm_decode_session(struct sk_buff *skb, u32 *sid, int ckall)
+{
+	struct sec_path *sp;
+
+	*sid = SECSID_NULL;
+
+	if (skb == NULL)
+		return 0;
+
+	sp = skb->sp;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (sp) {
 		int i, sid_set = 0;
 
@@ -182,6 +204,7 @@ static int selinux_xfrm_skb_sid_ingress(struct sk_buff *skb,
 	return 0;
 }
 
+<<<<<<< HEAD
 static u32 selinux_xfrm_skb_sid_egress(struct sk_buff *skb)
 {
 	struct dst_entry *dst = skb_dst(skb);
@@ -221,6 +244,8 @@ int selinux_xfrm_skb_sid(struct sk_buff *skb, u32 *sid)
 	return rc;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Security blob allocation for xfrm_policy and xfrm_state
  * CTX does not have a meaningful value on input

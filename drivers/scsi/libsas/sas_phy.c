@@ -32,39 +32,61 @@
 
 static void sas_phye_loss_of_signal(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct asd_sas_event *ev =
 		container_of(work, struct asd_sas_event, work);
 	struct asd_sas_phy *phy = ev->phy;
 
 	sas_begin_event(PHYE_LOSS_OF_SIGNAL, &phy->ha->event_lock,
 			&phy->phy_events_pending);
+=======
+	struct asd_sas_event *ev = to_asd_sas_event(work);
+	struct asd_sas_phy *phy = ev->phy;
+
+	clear_bit(PHYE_LOSS_OF_SIGNAL, &phy->phy_events_pending);
+>>>>>>> refs/remotes/origin/cm-10.0
 	phy->error = 0;
 	sas_deform_port(phy, 1);
 }
 
 static void sas_phye_oob_done(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct asd_sas_event *ev =
 		container_of(work, struct asd_sas_event, work);
 	struct asd_sas_phy *phy = ev->phy;
 
 	sas_begin_event(PHYE_OOB_DONE, &phy->ha->event_lock,
 			&phy->phy_events_pending);
+=======
+	struct asd_sas_event *ev = to_asd_sas_event(work);
+	struct asd_sas_phy *phy = ev->phy;
+
+	clear_bit(PHYE_OOB_DONE, &phy->phy_events_pending);
+>>>>>>> refs/remotes/origin/cm-10.0
 	phy->error = 0;
 }
 
 static void sas_phye_oob_error(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct asd_sas_event *ev =
 		container_of(work, struct asd_sas_event, work);
+=======
+	struct asd_sas_event *ev = to_asd_sas_event(work);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct asd_sas_phy *phy = ev->phy;
 	struct sas_ha_struct *sas_ha = phy->ha;
 	struct asd_sas_port *port = phy->port;
 	struct sas_internal *i =
 		to_sas_internal(sas_ha->core.shost->transportt);
 
+<<<<<<< HEAD
 	sas_begin_event(PHYE_OOB_ERROR, &phy->ha->event_lock,
 			&phy->phy_events_pending);
+=======
+	clear_bit(PHYE_OOB_ERROR, &phy->phy_events_pending);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sas_deform_port(phy, 1);
 
@@ -88,15 +110,23 @@ static void sas_phye_oob_error(struct work_struct *work)
 
 static void sas_phye_spinup_hold(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct asd_sas_event *ev =
 		container_of(work, struct asd_sas_event, work);
+=======
+	struct asd_sas_event *ev = to_asd_sas_event(work);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct asd_sas_phy *phy = ev->phy;
 	struct sas_ha_struct *sas_ha = phy->ha;
 	struct sas_internal *i =
 		to_sas_internal(sas_ha->core.shost->transportt);
 
+<<<<<<< HEAD
 	sas_begin_event(PHYE_SPINUP_HOLD, &phy->ha->event_lock,
 			&phy->phy_events_pending);
+=======
+	clear_bit(PHYE_SPINUP_HOLD, &phy->phy_events_pending);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	phy->error = 0;
 	i->dft->lldd_control_phy(phy, PHY_FUNC_RELEASE_SPINUP_HOLD, NULL);
@@ -131,14 +161,22 @@ int sas_register_phys(struct sas_ha_struct *sas_ha)
 		phy->error = 0;
 		INIT_LIST_HEAD(&phy->port_phy_el);
 		for (k = 0; k < PORT_NUM_EVENTS; k++) {
+<<<<<<< HEAD
 			INIT_WORK(&phy->port_events[k].work,
 				  sas_port_event_fns[k]);
+=======
+			INIT_SAS_WORK(&phy->port_events[k].work, sas_port_event_fns[k]);
+>>>>>>> refs/remotes/origin/cm-10.0
 			phy->port_events[k].phy = phy;
 		}
 
 		for (k = 0; k < PHY_NUM_EVENTS; k++) {
+<<<<<<< HEAD
 			INIT_WORK(&phy->phy_events[k].work,
 				  sas_phy_event_fns[k]);
+=======
+			INIT_SAS_WORK(&phy->phy_events[k].work, sas_phy_event_fns[k]);
+>>>>>>> refs/remotes/origin/cm-10.0
 			phy->phy_events[k].phy = phy;
 		}
 
@@ -148,8 +186,12 @@ int sas_register_phys(struct sas_ha_struct *sas_ha)
 		spin_lock_init(&phy->sas_prim_lock);
 		phy->frame_rcvd_size = 0;
 
+<<<<<<< HEAD
 		phy->phy = sas_phy_alloc(&sas_ha->core.shost->shost_gendev,
 					 i);
+=======
+		phy->phy = sas_phy_alloc(&sas_ha->core.shost->shost_gendev, i);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!phy->phy)
 			return -ENOMEM;
 

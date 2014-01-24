@@ -12,7 +12,10 @@
 
 #include <linux/percpu.h>
 #include <asm/assembler.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/local.h>
 
 /*

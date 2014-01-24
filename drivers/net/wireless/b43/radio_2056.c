@@ -3,6 +3,11 @@
   Broadcom B43 wireless driver
   IEEE 802.11n 2056 radio device data tables
 
+<<<<<<< HEAD
+=======
+  Copyright (c) 2010 Rafał Miłecki <zajec5@gmail.com>
+
+>>>>>>> refs/remotes/origin/cm-10.0
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -1570,6 +1575,7 @@ static const struct b2056_inittab_entry b2056_inittab_rev6_syn[] = {
 	[B2056_SYN_PLL_XTAL5]		= { .ghz5 = 0x0077, .ghz2 = 0x0077, NOUPLOAD, },
 	[B2056_SYN_PLL_XTAL6]		= { .ghz5 = 0x0007, .ghz2 = 0x0007, NOUPLOAD, },
 	[B2056_SYN_PLL_REFDIV]		= { .ghz5 = 0x0001, .ghz2 = 0x0001, NOUPLOAD, },
+<<<<<<< HEAD
 	[B2056_SYN_PLL_PFD]		= { .ghz5 = 0x0004, .ghz2 = 0x0004, NOUPLOAD, },
 	[B2056_SYN_PLL_CP1]		= { .ghz5 = 0x000f, .ghz2 = 0x000f, NOUPLOAD, },
 	[B2056_SYN_PLL_CP2]		= { .ghz5 = 0x0030, .ghz2 = 0x0030, NOUPLOAD, },
@@ -1578,6 +1584,16 @@ static const struct b2056_inittab_entry b2056_inittab_rev6_syn[] = {
 	[B2056_SYN_PLL_LOOPFILTER2]	= { .ghz5 = 0x000d, .ghz2 = 0x000d, NOUPLOAD, },
 	[B2056_SYN_PLL_LOOPFILTER3]	= { .ghz5 = 0x0004, .ghz2 = 0x0004, NOUPLOAD, },
 	[B2056_SYN_PLL_LOOPFILTER4]	= { .ghz5 = 0x0006, .ghz2 = 0x0006, NOUPLOAD, },
+=======
+	[B2056_SYN_PLL_PFD]		= { .ghz5 = 0x0006, .ghz2 = 0x0006, UPLOAD, },
+	[B2056_SYN_PLL_CP1]		= { .ghz5 = 0x000f, .ghz2 = 0x000f, NOUPLOAD, },
+	[B2056_SYN_PLL_CP2]		= { .ghz5 = 0x003f, .ghz2 = 0x003f, UPLOAD, },
+	[B2056_SYN_PLL_CP3]		= { .ghz5 = 0x0032, .ghz2 = 0x0032, NOUPLOAD, },
+	[B2056_SYN_PLL_LOOPFILTER1]	= { .ghz5 = 0x0006, .ghz2 = 0x0006, UPLOAD, },
+	[B2056_SYN_PLL_LOOPFILTER2]	= { .ghz5 = 0x0006, .ghz2 = 0x0006, UPLOAD, },
+	[B2056_SYN_PLL_LOOPFILTER3]	= { .ghz5 = 0x0004, .ghz2 = 0x0004, NOUPLOAD, },
+	[B2056_SYN_PLL_LOOPFILTER4]	= { .ghz5 = 0x002b, .ghz2 = 0x002b, UPLOAD, },
+>>>>>>> refs/remotes/origin/cm-10.0
 	[B2056_SYN_PLL_LOOPFILTER5]	= { .ghz5 = 0x0001, .ghz2 = 0x0001, NOUPLOAD, },
 	[B2056_SYN_PLL_MMD1]		= { .ghz5 = 0x001c, .ghz2 = 0x001c, NOUPLOAD, },
 	[B2056_SYN_PLL_MMD2]		= { .ghz5 = 0x0002, .ghz2 = 0x0002, NOUPLOAD, },
@@ -9053,6 +9069,24 @@ void b2056_upload_inittabs(struct b43_wldev *dev,
 				B2056_RX1, pts->rx, pts->rx_length);
 }
 
+<<<<<<< HEAD
+=======
+void b2056_upload_syn_pll_cp2(struct b43_wldev *dev, bool ghz5)
+{
+	struct b2056_inittabs_pts *pts;
+	const struct b2056_inittab_entry *e;
+
+	if (dev->phy.rev >= ARRAY_SIZE(b2056_inittabs)) {
+		B43_WARN_ON(1);
+		return;
+	}
+	pts = &b2056_inittabs[dev->phy.rev];
+	e = &pts->syn[B2056_SYN_PLL_CP2];
+
+	b43_radio_write(dev, B2056_SYN_PLL_CP2, ghz5 ? e->ghz5 : e->ghz2);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 const struct b43_nphy_channeltab_entry_rev3 *
 b43_nphy_get_chantabent_rev3(struct b43_wldev *dev, u16 freq)
 {

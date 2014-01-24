@@ -39,6 +39,10 @@ struct rdma_cm_id_stats {
 
 struct ibnl_client_cbs {
 	int (*dump)(struct sk_buff *skb, struct netlink_callback *nlcb);
+<<<<<<< HEAD
+=======
+	struct module *module;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int ibnl_init(void);

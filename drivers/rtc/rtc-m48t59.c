@@ -433,7 +433,11 @@ static int __devinit m48t59_rtc_probe(struct platform_device *pdev)
 
 	if (!m48t59->ioaddr) {
 		/* ioaddr not mapped externally */
+<<<<<<< HEAD
 		m48t59->ioaddr = ioremap(res->start, res->end - res->start + 1);
+=======
+		m48t59->ioaddr = ioremap(res->start, resource_size(res));
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!m48t59->ioaddr)
 			goto out;
 	}
@@ -530,6 +534,7 @@ static struct platform_driver m48t59_rtc_driver = {
 	.remove		= __devexit_p(m48t59_rtc_remove),
 };
 
+<<<<<<< HEAD
 static int __init m48t59_rtc_init(void)
 {
 	return platform_driver_register(&m48t59_rtc_driver);
@@ -542,6 +547,9 @@ static void __exit m48t59_rtc_exit(void)
 
 module_init(m48t59_rtc_init);
 module_exit(m48t59_rtc_exit);
+=======
+module_platform_driver(m48t59_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Mark Zhan <rongkai.zhan@windriver.com>");
 MODULE_DESCRIPTION("M48T59/M48T02/M48T08 RTC driver");

@@ -78,6 +78,10 @@ void bacct_add_tsk(struct taskstats *stats, struct task_struct *tsk)
 
 #define KB 1024
 #define MB (1024*KB)
+<<<<<<< HEAD
+=======
+#define KB_MASK (~(KB-1))
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * fill in extended accounting fields
  */
@@ -95,6 +99,7 @@ void xacct_add_tsk(struct taskstats *stats, struct task_struct *p)
 		stats->hiwater_vm    = get_mm_hiwater_vm(mm)  * PAGE_SIZE / KB;
 		mmput(mm);
 	}
+<<<<<<< HEAD
 	stats->read_char	= p->ioac.rchar;
 	stats->write_char	= p->ioac.wchar;
 	stats->read_syscalls	= p->ioac.syscr;
@@ -103,6 +108,16 @@ void xacct_add_tsk(struct taskstats *stats, struct task_struct *p)
 	stats->read_bytes	= p->ioac.read_bytes;
 	stats->write_bytes	= p->ioac.write_bytes;
 	stats->cancelled_write_bytes = p->ioac.cancelled_write_bytes;
+=======
+	stats->read_char	= p->ioac.rchar & KB_MASK;
+	stats->write_char	= p->ioac.wchar & KB_MASK;
+	stats->read_syscalls	= p->ioac.syscr & KB_MASK;
+	stats->write_syscalls	= p->ioac.syscw & KB_MASK;
+#ifdef CONFIG_TASK_IO_ACCOUNTING
+	stats->read_bytes	= p->ioac.read_bytes & KB_MASK;
+	stats->write_bytes	= p->ioac.write_bytes & KB_MASK;
+	stats->cancelled_write_bytes = p->ioac.cancelled_write_bytes & KB_MASK;
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 	stats->read_bytes	= 0;
 	stats->write_bytes	= 0;
@@ -126,7 +141,11 @@ void acct_update_integrals(struct task_struct *tsk)
 
 		local_irq_save(flags);
 		time = tsk->stime + tsk->utime;
+<<<<<<< HEAD
 		dtime = cputime_sub(time, tsk->acct_timexpd);
+=======
+		dtime = time - tsk->acct_timexpd;
+>>>>>>> refs/remotes/origin/cm-10.0
 		jiffies_to_timeval(cputime_to_jiffies(dtime), &value);
 		delta = value.tv_sec;
 		delta = delta * USEC_PER_SEC + value.tv_usec;

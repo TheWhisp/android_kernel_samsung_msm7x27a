@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2009 Intel Corporation.  All rights reserved.
+=======
+ * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This software is available to you under a choice of one of two
  * licenses.  You may choose to be licensed under the terms of the GNU

@@ -24,6 +24,10 @@
  *
  */
 #include <linux/rculist.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/async_tx.h>
 

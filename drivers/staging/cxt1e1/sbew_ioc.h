@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /*
  * $Id: sbew_ioc.h,v 1.0 2005/09/28 00:10:10 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _INC_SBEWIOC_H_
 #define _INC_SBEWIOC_H_
 
@@ -24,6 +27,7 @@
  * SBE, Inc.  San Ramon, California  U.S.A.
  *
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.0 $
  * Last changed on $Date: 2005/09/28 00:10:10 $
@@ -73,6 +77,11 @@
 extern      "C"
 {
 #endif
+=======
+ */
+
+#include <linux/ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SBE_LOCKFILE   "/tmp/.sbewan.LCK"
 
@@ -128,9 +137,12 @@ extern      "C"
 
 #define SBE_IOC_MAXVEC    1
 
+<<<<<<< HEAD
 
 #ifdef __cplusplus
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif                          /*** _INC_SBEWIOC_H_ ***/

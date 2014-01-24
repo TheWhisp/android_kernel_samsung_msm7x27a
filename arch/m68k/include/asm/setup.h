@@ -40,6 +40,10 @@
 #define MACH_HP300    9
 #define MACH_Q40     10
 #define MACH_SUN3X   11
+<<<<<<< HEAD
+=======
+#define MACH_M54XX   12
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define COMMAND_LINE_SIZE 256
 
@@ -211,23 +215,39 @@ extern unsigned long m68k_machtype;
 #define CPUB_68030     1
 #define CPUB_68040     2
 #define CPUB_68060     3
+<<<<<<< HEAD
+=======
+#define CPUB_COLDFIRE  4
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CPU_68020      (1<<CPUB_68020)
 #define CPU_68030      (1<<CPUB_68030)
 #define CPU_68040      (1<<CPUB_68040)
 #define CPU_68060      (1<<CPUB_68060)
+<<<<<<< HEAD
+=======
+#define CPU_COLDFIRE   (1<<CPUB_COLDFIRE)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define FPUB_68881     0
 #define FPUB_68882     1
 #define FPUB_68040     2                       /* Internal FPU */
 #define FPUB_68060     3                       /* Internal FPU */
 #define FPUB_SUNFPA    4                       /* Sun-3 FPA */
+<<<<<<< HEAD
+=======
+#define FPUB_COLDFIRE  5                       /* ColdFire FPU */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define FPU_68881      (1<<FPUB_68881)
 #define FPU_68882      (1<<FPUB_68882)
 #define FPU_68040      (1<<FPUB_68040)
 #define FPU_68060      (1<<FPUB_68060)
 #define FPU_SUNFPA     (1<<FPUB_SUNFPA)
+<<<<<<< HEAD
+=======
+#define FPU_COLDFIRE   (1<<FPUB_COLDFIRE)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MMUB_68851     0
 #define MMUB_68030     1                       /* Internal MMU */
@@ -235,6 +255,10 @@ extern unsigned long m68k_machtype;
 #define MMUB_68060     3                       /* Internal MMU */
 #define MMUB_APOLLO    4                       /* Custom Apollo */
 #define MMUB_SUN3      5                       /* Custom Sun-3 */
+<<<<<<< HEAD
+=======
+#define MMUB_COLDFIRE  6                       /* Internal MMU */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MMU_68851      (1<<MMUB_68851)
 #define MMU_68030      (1<<MMUB_68030)
@@ -242,6 +266,10 @@ extern unsigned long m68k_machtype;
 #define MMU_68060      (1<<MMUB_68060)
 #define MMU_SUN3       (1<<MMUB_SUN3)
 #define MMU_APOLLO     (1<<MMUB_APOLLO)
+<<<<<<< HEAD
+=======
+#define MMU_COLDFIRE   (1<<MMUB_COLDFIRE)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
 
@@ -341,6 +369,16 @@ extern int m68k_is040or060;
 #  endif
 #endif
 
+<<<<<<< HEAD
+=======
+#if !defined(CONFIG_COLDFIRE)
+#  define CPU_IS_COLDFIRE (0)
+#else
+#  define CPU_IS_COLDFIRE (1)
+#  define MMU_IS_COLDFIRE (1)
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define CPU_TYPE (m68k_cputype)
 
 #ifdef CONFIG_M68KFPU_EMU

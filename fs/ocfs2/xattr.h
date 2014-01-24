@@ -68,7 +68,11 @@ int ocfs2_calc_security_init(struct inode *,
 			     struct ocfs2_security_xattr_info *,
 			     int *, int *, struct ocfs2_alloc_context **);
 int ocfs2_calc_xattr_init(struct inode *, struct buffer_head *,
+<<<<<<< HEAD
 			  int, struct ocfs2_security_xattr_info *,
+=======
+			  umode_t, struct ocfs2_security_xattr_info *,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  int *, int *, int *);
 
 /*

@@ -73,6 +73,10 @@ extern int __pci_pme_wakeup(struct pci_dev *dev, void *ign);
 extern void pci_pm_init(struct pci_dev *dev);
 extern void platform_pci_wakeup_init(struct pci_dev *dev);
 extern void pci_allocate_cap_save_buffers(struct pci_dev *dev);
+<<<<<<< HEAD
+=======
+void pci_free_cap_save_buffers(struct pci_dev *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void pci_wakeup_event(struct pci_dev *dev)
 {
@@ -136,6 +140,11 @@ static inline void pci_remove_legacy_files(struct pci_bus *bus) { return; }
 /* Lock for read/write access to pci device and bus lists */
 extern struct rw_semaphore pci_bus_sem;
 
+<<<<<<< HEAD
+=======
+extern raw_spinlock_t pci_lock;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern unsigned int pci_pm_d3_delay;
 
 #ifdef CONFIG_PCI_MSI
@@ -146,7 +155,11 @@ static inline void pci_no_msi(void) { }
 static inline void pci_msi_init_pci_dev(struct pci_dev *dev) { }
 #endif
 
+<<<<<<< HEAD
 extern void pci_realloc(void);
+=======
+void pci_realloc_get_opt(char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int pci_no_d1d2(struct pci_dev *dev)
 {
@@ -186,8 +199,11 @@ pci_match_one_device(const struct pci_device_id *id, const struct pci_dev *dev)
 	return NULL;
 }
 
+<<<<<<< HEAD
 struct pci_dev *pci_find_upstream_pcie_bridge(struct pci_dev *pdev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* PCI slot sysfs helper code */
 #define to_pci_slot(s) container_of(s, struct pci_slot, kobj)
 
@@ -207,6 +223,11 @@ enum pci_bar_type {
 	pci_bar_mem64,		/* A 64-bit memory BAR */
 };
 
+<<<<<<< HEAD
+=======
+bool pci_bus_read_dev_vendor_id(struct pci_bus *bus, int devfn, u32 *pl,
+				int crs_timeout);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int pci_setup_device(struct pci_dev *dev);
 extern int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 				struct resource *res, unsigned int reg);
@@ -225,11 +246,16 @@ static inline int pci_ari_enabled(struct pci_bus *bus)
 	return bus->self && bus->self->ari_enabled;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI_QUIRKS
 extern int pci_is_reassigndev(struct pci_dev *dev);
 resource_size_t pci_specified_resource_alignment(struct pci_dev *dev);
 extern void pci_disable_bridge_window(struct pci_dev *dev);
 #endif
+=======
+void pci_reassigndev_resource_alignment(struct pci_dev *dev);
+extern void pci_disable_bridge_window(struct pci_dev *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Single Root I/O Virtualization */
 struct pci_sriov {
@@ -251,6 +277,17 @@ struct pci_sriov {
 	u8 __iomem *mstate;	/* VF Migration State Array */
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PCI_ATS
+extern void pci_restore_ats_state(struct pci_dev *dev);
+#else
+static inline void pci_restore_ats_state(struct pci_dev *dev)
+{
+}
+#endif /* CONFIG_PCI_ATS */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PCI_IOV
 extern int pci_iov_init(struct pci_dev *dev);
 extern void pci_iov_release(struct pci_dev *dev);
@@ -285,6 +322,11 @@ static inline int pci_iov_bus_range(struct pci_bus *bus)
 
 #endif /* CONFIG_PCI_IOV */
 
+<<<<<<< HEAD
+=======
+extern unsigned long pci_cardbus_resource_alignment(struct resource *);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline resource_size_t pci_resource_alignment(struct pci_dev *dev,
 					 struct resource *res)
 {
@@ -294,6 +336,11 @@ static inline resource_size_t pci_resource_alignment(struct pci_dev *dev,
 	if (resno >= PCI_IOV_RESOURCES && resno <= PCI_IOV_RESOURCE_END)
 		return pci_sriov_resource_alignment(dev, resno);
 #endif
+<<<<<<< HEAD
+=======
+	if (dev->class >> 8  == PCI_CLASS_BRIDGE_CARDBUS)
+		return pci_cardbus_resource_alignment(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return resource_alignment(res);
 }
 

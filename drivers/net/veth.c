@@ -12,10 +12,18 @@
 #include <linux/slab.h>
 #include <linux/ethtool.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/u64_stats_sync.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <net/dst.h>
 #include <net/xfrm.h>
 #include <linux/veth.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRV_NAME	"veth"
 #define DRV_VERSION	"1.0"
@@ -24,12 +32,21 @@
 #define MAX_MTU 65535		/* Max L3 MTU (arbitrary) */
 
 struct veth_net_stats {
+<<<<<<< HEAD
 	unsigned long	rx_packets;
 	unsigned long	tx_packets;
 	unsigned long	rx_bytes;
 	unsigned long	tx_bytes;
 	unsigned long	tx_dropped;
 	unsigned long	rx_dropped;
+=======
+	u64			rx_packets;
+	u64			rx_bytes;
+	u64			tx_packets;
+	u64			tx_bytes;
+	u64			rx_dropped;
+	struct u64_stats_sync	syncp;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct veth_priv {
@@ -64,9 +81,14 @@ static int veth_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
 
 static void veth_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
 	strcpy(info->fw_version, "N/A");
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void veth_get_strings(struct net_device *dev, u32 stringset, u8 *buf)
@@ -124,9 +146,12 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
 	stats = this_cpu_ptr(priv->stats);
 	rcv_stats = this_cpu_ptr(rcv_priv->stats);
 
+<<<<<<< HEAD
 	if (!(rcv->flags & IFF_UP))
 		goto tx_drop;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* don't change ip_summed == CHECKSUM_PARTIAL, as that
 	   will cause bad checksum on forwarded packets */
 	if (skb->ip_summed == CHECKSUM_NONE &&
@@ -137,6 +162,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
 	if (dev_forward_skb(rcv, skb) != NET_RX_SUCCESS)
 		goto rx_drop;
 
+<<<<<<< HEAD
 	stats->tx_bytes += length;
 	stats->tx_packets++;
 
@@ -152,6 +178,24 @@ tx_drop:
 
 rx_drop:
 	rcv_stats->rx_dropped++;
+=======
+	u64_stats_update_begin(&stats->syncp);
+	stats->tx_bytes += length;
+	stats->tx_packets++;
+	u64_stats_update_end(&stats->syncp);
+
+	u64_stats_update_begin(&rcv_stats->syncp);
+	rcv_stats->rx_bytes += length;
+	rcv_stats->rx_packets++;
+	u64_stats_update_end(&rcv_stats->syncp);
+
+	return NETDEV_TX_OK;
+
+rx_drop:
+	u64_stats_update_begin(&rcv_stats->syncp);
+	rcv_stats->rx_dropped++;
+	u64_stats_update_end(&rcv_stats->syncp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return NETDEV_TX_OK;
 }
 
@@ -159,6 +203,7 @@ rx_drop:
  * general routines
  */
 
+<<<<<<< HEAD
 static struct net_device_stats *veth_get_stats(struct net_device *dev)
 {
 	struct veth_priv *priv;
@@ -185,6 +230,36 @@ static struct net_device_stats *veth_get_stats(struct net_device *dev)
 	dev->stats.rx_dropped = total.rx_dropped;
 
 	return &dev->stats;
+=======
+static struct rtnl_link_stats64 *veth_get_stats64(struct net_device *dev,
+						  struct rtnl_link_stats64 *tot)
+{
+	struct veth_priv *priv = netdev_priv(dev);
+	int cpu;
+
+	for_each_possible_cpu(cpu) {
+		struct veth_net_stats *stats = per_cpu_ptr(priv->stats, cpu);
+		u64 rx_packets, rx_bytes, rx_dropped;
+		u64 tx_packets, tx_bytes;
+		unsigned int start;
+
+		do {
+			start = u64_stats_fetch_begin_bh(&stats->syncp);
+			rx_packets = stats->rx_packets;
+			tx_packets = stats->tx_packets;
+			rx_bytes = stats->rx_bytes;
+			tx_bytes = stats->tx_bytes;
+			rx_dropped = stats->rx_dropped;
+		} while (u64_stats_fetch_retry_bh(&stats->syncp, start));
+		tot->rx_packets += rx_packets;
+		tot->tx_packets += tx_packets;
+		tot->rx_bytes   += rx_bytes;
+		tot->tx_bytes   += tx_bytes;
+		tot->rx_dropped += rx_dropped;
+	}
+
+	return tot;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int veth_open(struct net_device *dev)
@@ -254,7 +329,11 @@ static const struct net_device_ops veth_netdev_ops = {
 	.ndo_stop            = veth_close,
 	.ndo_start_xmit      = veth_xmit,
 	.ndo_change_mtu      = veth_change_mtu,
+<<<<<<< HEAD
 	.ndo_get_stats       = veth_get_stats,
+=======
+	.ndo_get_stats64     = veth_get_stats64,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ndo_set_mac_address = eth_mac_addr,
 };
 
@@ -269,7 +348,11 @@ static void veth_setup(struct net_device *dev)
 	dev->features |= NETIF_F_LLTX;
 	dev->destructor = veth_dev_free;
 
+<<<<<<< HEAD
 	dev->hw_features = NETIF_F_NO_CSUM | NETIF_F_SG | NETIF_F_RXCSUM;
+=======
+	dev->hw_features = NETIF_F_HW_CSUM | NETIF_F_SG | NETIF_F_RXCSUM;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -345,7 +428,11 @@ static int veth_newlink(struct net *src_net, struct net_device *dev,
 	}
 
 	if (tbp[IFLA_ADDRESS] == NULL)
+<<<<<<< HEAD
 		random_ether_addr(peer->dev_addr);
+=======
+		eth_hw_addr_random(peer);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = register_netdevice(peer);
 	put_net(net);
@@ -367,7 +454,11 @@ static int veth_newlink(struct net *src_net, struct net_device *dev,
 	 */
 
 	if (tb[IFLA_ADDRESS] == NULL)
+<<<<<<< HEAD
 		random_ether_addr(dev->dev_addr);
+=======
+		eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (tb[IFLA_IFNAME])
 		nla_strlcpy(dev->name, tb[IFLA_IFNAME], IFNAMSIZ);

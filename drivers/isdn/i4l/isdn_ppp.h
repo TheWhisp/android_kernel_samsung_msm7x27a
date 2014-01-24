@@ -39,5 +39,8 @@ extern int isdn_ppp_unregister_compressor(struct isdn_ppp_compressor *ipc);
 #define IPPP_ASSIGNED	0x10
 
 #define IPPP_MAX_HEADER 10
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

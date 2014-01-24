@@ -9,11 +9,16 @@
 #include <signal.h>
 #include <string.h>
 #include "irq_user.h"
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "process.h"
 #include "um_malloc.h"
 #include "user.h"
+=======
+#include "os.h"
+#include "um_malloc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Locked by irq_lock in arch/um/kernel/irq.c.  Changed by os_create_pollfd

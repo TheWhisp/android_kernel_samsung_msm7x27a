@@ -4,6 +4,10 @@
 
 #include <linux/blkdev.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 
 #include <scsi/scsi.h>

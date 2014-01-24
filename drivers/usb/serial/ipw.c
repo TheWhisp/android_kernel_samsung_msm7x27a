@@ -47,6 +47,10 @@
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include "usb-wwan.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Version Information
@@ -143,10 +147,16 @@ static struct usb_driver usb_ipw_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	usb_ipw_ids,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
 };
 
 static int debug;
+=======
+};
+
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int ipw_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
@@ -185,7 +195,11 @@ static int ipw_open(struct tty_struct *tty, struct usb_serial_port *port)
 
 	/*--2: Start reading from the device */
 	dbg("%s: setting up bulk read callback", __func__);
+<<<<<<< HEAD
 	usb_serial_generic_open(tty, port);
+=======
+	usb_wwan_open(tty, port);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*--3: Tell the modem to open the floodgates on the rx bulk channel */
 	dbg("%s:asking modem for RxRead (RXBULK_ON)", __func__);
@@ -219,6 +233,32 @@ static int ipw_open(struct tty_struct *tty, struct usb_serial_port *port)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/* fake probe - only to allocate data structures */
+static int ipw_probe(struct usb_serial *serial, const struct usb_device_id *id)
+{
+	struct usb_wwan_intf_private *data;
+
+	data = kzalloc(sizeof(struct usb_wwan_intf_private), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+
+	spin_lock_init(&data->susp_lock);
+	usb_set_serial_data(serial, data);
+	return 0;
+}
+
+static void ipw_release(struct usb_serial *serial)
+{
+	struct usb_wwan_intf_private *data = usb_get_serial_data(serial);
+
+	usb_wwan_release(serial);
+	usb_set_serial_data(serial, NULL);
+	kfree(data);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void ipw_dtr_rts(struct usb_serial_port *port, int on)
 {
 	struct usb_device *dev = port->serial->dev;
@@ -285,7 +325,11 @@ static void ipw_close(struct usb_serial_port *port)
 		dev_err(&port->dev,
 			"Disabling bulk RxRead failed (error = %d)\n", result);
 
+<<<<<<< HEAD
 	usb_serial_generic_close(port);
+=======
+	usb_wwan_close(port);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct usb_serial_driver ipw_device = {
@@ -294,6 +338,7 @@ static struct usb_serial_driver ipw_device = {
 		.name =		"ipw",
 	},
 	.description =		"IPWireless converter",
+<<<<<<< HEAD
 	.usb_driver =		&usb_ipw_driver,
 	.id_table =		usb_ipw_ids,
 	.num_ports =		1,
@@ -329,6 +374,25 @@ static void __exit usb_ipw_exit(void)
 
 module_init(usb_ipw_init);
 module_exit(usb_ipw_exit);
+=======
+	.id_table =		usb_ipw_ids,
+	.num_ports =		1,
+	.disconnect =		usb_wwan_disconnect,
+	.open =			ipw_open,
+	.close =		ipw_close,
+	.probe =		ipw_probe,
+	.attach =		usb_wwan_startup,
+	.release =		ipw_release,
+	.dtr_rts =		ipw_dtr_rts,
+	.write =		usb_wwan_write,
+};
+
+static struct usb_serial_driver * const serial_drivers[] = {
+	&ipw_device, NULL
+};
+
+module_usb_serial_driver(usb_ipw_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR(DRIVER_AUTHOR);

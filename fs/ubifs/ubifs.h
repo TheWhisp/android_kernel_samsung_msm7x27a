@@ -84,9 +84,12 @@
 #define INUM_WARN_WATERMARK 0xFFF00000
 #define INUM_WATERMARK      0xFFFFFF00
 
+<<<<<<< HEAD
 /* Largest key size supported in this implementation */
 #define CUR_MAX_KEY_LEN UBIFS_SK_LEN
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Maximum number of entries in each LPT (LEB category) heap */
 #define LPT_HEAP_SZ 256
 
@@ -230,6 +233,7 @@ enum {
  * LPT cnode flag bits.
  *
  * DIRTY_CNODE: cnode is dirty
+<<<<<<< HEAD
  * COW_CNODE: cnode is being committed and must be copied before writing
  * OBSOLETE_CNODE: cnode is being committed and has been copied (or deleted),
  * so it can (and must) be freed when the commit is finished
@@ -238,6 +242,16 @@ enum {
 	DIRTY_CNODE    = 0,
 	COW_CNODE      = 1,
 	OBSOLETE_CNODE = 2,
+=======
+ * OBSOLETE_CNODE: cnode is being committed and has been copied (or deleted),
+ *                 so it can (and must) be freed when the commit is finished
+ * COW_CNODE: cnode is being committed and must be copied before writing
+ */
+enum {
+	DIRTY_CNODE    = 0,
+	OBSOLETE_CNODE = 1,
+	COW_CNODE      = 2,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -277,10 +291,17 @@ struct ubifs_old_idx {
 
 /* The below union makes it easier to deal with keys */
 union ubifs_key {
+<<<<<<< HEAD
 	uint8_t u8[CUR_MAX_KEY_LEN];
 	uint32_t u32[CUR_MAX_KEY_LEN/4];
 	uint64_t u64[CUR_MAX_KEY_LEN/8];
 	__le32 j32[CUR_MAX_KEY_LEN/4];
+=======
+	uint8_t u8[UBIFS_SK_LEN];
+	uint32_t u32[UBIFS_SK_LEN/4];
+	uint64_t u64[UBIFS_SK_LEN/8];
+	__le32 j32[UBIFS_SK_LEN/4];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
@@ -1471,6 +1492,18 @@ extern struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
 
 /* io.c */
 void ubifs_ro_mode(struct ubifs_info *c, int err);
+<<<<<<< HEAD
+=======
+int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
+		   int len, int even_ebadmsg);
+int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
+		    int len, int dtype);
+int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
+		     int dtype);
+int ubifs_leb_unmap(struct ubifs_info *c, int lnum);
+int ubifs_leb_map(struct ubifs_info *c, int lnum, int dtype);
+int ubifs_is_mapped(const struct ubifs_info *c, int lnum);
+>>>>>>> refs/remotes/origin/cm-10.0
 int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len);
 int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs,
 			   int dtype);
@@ -1723,12 +1756,20 @@ const struct ubifs_lprops *ubifs_fast_find_frdi_idx(struct ubifs_info *c);
 int ubifs_calc_dark(const struct ubifs_info *c, int spc);
 
 /* file.c */
+<<<<<<< HEAD
 int ubifs_fsync(struct file *file, int datasync);
+=======
+int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
+>>>>>>> refs/remotes/origin/cm-10.0
 int ubifs_setattr(struct dentry *dentry, struct iattr *attr);
 
 /* dir.c */
 struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
+<<<<<<< HEAD
 			      int mode);
+=======
+			      umode_t mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 int ubifs_getattr(struct vfsmount *mnt, struct dentry *dentry,
 		  struct kstat *stat);
 
@@ -1750,8 +1791,13 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
 					 int offs, void *sbuf, int jhead);
 struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
 					     int offs, void *sbuf);
+<<<<<<< HEAD
 int ubifs_recover_inl_heads(const struct ubifs_info *c, void *sbuf);
 int ubifs_clean_lebs(const struct ubifs_info *c, void *sbuf);
+=======
+int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf);
+int ubifs_clean_lebs(struct ubifs_info *c, void *sbuf);
+>>>>>>> refs/remotes/origin/cm-10.0
 int ubifs_rcvry_gc_commit(struct ubifs_info *c);
 int ubifs_recover_size_accum(struct ubifs_info *c, union ubifs_key *key,
 			     int deletion, loff_t new_size);

@@ -31,8 +31,11 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/version.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <linux/miscdevice.h>
@@ -678,7 +681,11 @@ pxa3xx_gcu_probe(struct platform_device *dev)
 	}
 
 	ret = request_irq(irq, pxa3xx_gcu_handle_irq,
+<<<<<<< HEAD
 			  IRQF_DISABLED, DRV_NAME, priv);
+=======
+			  0, DRV_NAME, priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(&dev->dev, "request_irq failed\n");
 		ret = -EBUSY;
@@ -749,6 +756,7 @@ static struct platform_driver pxa3xx_gcu_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init
 pxa3xx_gcu_init(void)
 {
@@ -763,6 +771,9 @@ pxa3xx_gcu_exit(void)
 
 module_init(pxa3xx_gcu_init);
 module_exit(pxa3xx_gcu_exit);
+=======
+module_platform_driver(pxa3xx_gcu_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("PXA3xx graphics controller unit driver");
 MODULE_LICENSE("GPL");

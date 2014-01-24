@@ -32,6 +32,10 @@
 
 #include <linux/list.h>
 #include <linux/list_sort.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 #include "drm.h"
 #include "drm_crtc.h"
@@ -685,8 +689,11 @@ void drm_mode_set_crtcinfo(struct drm_display_mode *p, int adjust_flags)
 			p->crtc_vsync_end /= 2;
 			p->crtc_vtotal /= 2;
 		}
+<<<<<<< HEAD
 
 		p->crtc_vtotal |= 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (p->flags & DRM_MODE_FLAG_DBLSCAN) {
@@ -715,6 +722,30 @@ EXPORT_SYMBOL(drm_mode_set_crtcinfo);
 
 
 /**
+<<<<<<< HEAD
+=======
+ * drm_mode_copy - copy the mode
+ * @dst: mode to overwrite
+ * @src: mode to copy
+ *
+ * LOCKING:
+ * None.
+ *
+ * Copy an existing mode into another mode, preserving the object id
+ * of the destination mode.
+ */
+void drm_mode_copy(struct drm_display_mode *dst, const struct drm_display_mode *src)
+{
+	int id = dst->base.id;
+
+	*dst = *src;
+	dst->base.id = id;
+	INIT_LIST_HEAD(&dst->head);
+}
+EXPORT_SYMBOL(drm_mode_copy);
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * drm_mode_duplicate - allocate and duplicate an existing mode
  * @m: mode to duplicate
  *
@@ -728,16 +759,24 @@ struct drm_display_mode *drm_mode_duplicate(struct drm_device *dev,
 					    const struct drm_display_mode *mode)
 {
 	struct drm_display_mode *nmode;
+<<<<<<< HEAD
 	int new_id;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	nmode = drm_mode_create(dev);
 	if (!nmode)
 		return NULL;
 
+<<<<<<< HEAD
 	new_id = nmode->base.id;
 	*nmode = *mode;
 	nmode->base.id = new_id;
 	INIT_LIST_HEAD(&nmode->head);
+=======
+	drm_mode_copy(nmode, mode);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return nmode;
 }
 EXPORT_SYMBOL(drm_mode_duplicate);
@@ -994,9 +1033,16 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 {
 	const char *name;
 	unsigned int namelen;
+<<<<<<< HEAD
 	int res_specified = 0, bpp_specified = 0, refresh_specified = 0;
 	unsigned int xres = 0, yres = 0, bpp = 32, refresh = 0;
 	int yres_specified = 0, cvt = 0, rb = 0, interlace = 0, margins = 0;
+=======
+	bool res_specified = false, bpp_specified = false, refresh_specified = false;
+	unsigned int xres = 0, yres = 0, bpp = 32, refresh = 0;
+	bool yres_specified = false, cvt = false, rb = false;
+	bool interlace = false, margins = false, was_digit = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 	enum drm_connector_force force = DRM_FORCE_UNSPECIFIED;
 
@@ -1015,6 +1061,7 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 	for (i = namelen-1; i >= 0; i--) {
 		switch (name[i]) {
 		case '@':
+<<<<<<< HEAD
 			namelen = i;
 			if (!refresh_specified && !bpp_specified &&
 			    !yres_specified) {
@@ -1022,20 +1069,36 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 				refresh_specified = 1;
 				if (cvt || rb)
 					cvt = 0;
+=======
+			if (!refresh_specified && !bpp_specified &&
+			    !yres_specified && !cvt && !rb && was_digit) {
+				refresh = simple_strtol(&name[i+1], NULL, 10);
+				refresh_specified = true;
+				was_digit = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 			} else
 				goto done;
 			break;
 		case '-':
+<<<<<<< HEAD
 			namelen = i;
 			if (!bpp_specified && !yres_specified) {
 				bpp = simple_strtol(&name[i+1], NULL, 10);
 				bpp_specified = 1;
 				if (cvt || rb)
 					cvt = 0;
+=======
+			if (!bpp_specified && !yres_specified && !cvt &&
+			    !rb && was_digit) {
+				bpp = simple_strtol(&name[i+1], NULL, 10);
+				bpp_specified = true;
+				was_digit = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 			} else
 				goto done;
 			break;
 		case 'x':
+<<<<<<< HEAD
 			if (!yres_specified) {
 				yres = simple_strtol(&name[i+1], NULL, 10);
 				yres_specified = 1;
@@ -1063,6 +1126,49 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 			force = DRM_FORCE_ON;
 			break;
 		case 'D':
+=======
+			if (!yres_specified && was_digit) {
+				yres = simple_strtol(&name[i+1], NULL, 10);
+				yres_specified = true;
+				was_digit = false;
+			} else
+				goto done;
+		case '0' ... '9':
+			was_digit = true;
+			break;
+		case 'M':
+			if (yres_specified || cvt || was_digit)
+				goto done;
+			cvt = true;
+			break;
+		case 'R':
+			if (yres_specified || cvt || rb || was_digit)
+				goto done;
+			rb = true;
+			break;
+		case 'm':
+			if (cvt || yres_specified || was_digit)
+				goto done;
+			margins = true;
+			break;
+		case 'i':
+			if (cvt || yres_specified || was_digit)
+				goto done;
+			interlace = true;
+			break;
+		case 'e':
+			if (yres_specified || bpp_specified || refresh_specified ||
+			    was_digit || (force != DRM_FORCE_UNSPECIFIED))
+				goto done;
+
+			force = DRM_FORCE_ON;
+			break;
+		case 'D':
+			if (yres_specified || bpp_specified || refresh_specified ||
+			    was_digit || (force != DRM_FORCE_UNSPECIFIED))
+				goto done;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			if ((connector->connector_type != DRM_MODE_CONNECTOR_DVII) &&
 			    (connector->connector_type != DRM_MODE_CONNECTOR_HDMIB))
 				force = DRM_FORCE_ON;
@@ -1070,17 +1176,48 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 				force = DRM_FORCE_ON_DIGITAL;
 			break;
 		case 'd':
+<<<<<<< HEAD
+=======
+			if (yres_specified || bpp_specified || refresh_specified ||
+			    was_digit || (force != DRM_FORCE_UNSPECIFIED))
+				goto done;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			force = DRM_FORCE_OFF;
 			break;
 		default:
 			goto done;
 		}
 	}
+<<<<<<< HEAD
 	if (i < 0 && yres_specified) {
 		xres = simple_strtol(name, NULL, 10);
 		res_specified = 1;
 	}
 done:
+=======
+
+	if (i < 0 && yres_specified) {
+		char *ch;
+		xres = simple_strtol(name, &ch, 10);
+		if ((ch != NULL) && (*ch == 'x'))
+			res_specified = true;
+		else
+			i = ch - name;
+	} else if (!yres_specified && was_digit) {
+		/* catch mode that begins with digits but has no 'x' */
+		i = 0;
+	}
+done:
+	if (i >= 0) {
+		printk(KERN_WARNING
+			"parse error at position %i in video mode '%s'\n",
+			i, name);
+		mode->specified = false;
+		return false;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (res_specified) {
 		mode->specified = true;
 		mode->xres = xres;
@@ -1096,9 +1233,16 @@ done:
 		mode->bpp_specified = true;
 		mode->bpp = bpp;
 	}
+<<<<<<< HEAD
 	mode->rb = rb ? true : false;
 	mode->cvt = cvt  ? true : false;
 	mode->interlace = interlace ? true : false;
+=======
+	mode->rb = rb;
+	mode->cvt = cvt;
+	mode->interlace = interlace;
+	mode->margins = margins;
+>>>>>>> refs/remotes/origin/cm-10.0
 	mode->force = force;
 
 	return true;

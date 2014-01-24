@@ -3,13 +3,21 @@
  * Broadcom PCI-core driver
  *
  * Copyright 2005, Broadcom Corporation
+<<<<<<< HEAD
  * Copyright 2006, 2007, Michael Buesch <mb@bu3sch.de>
+=======
+ * Copyright 2006, 2007, Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  */
 
 #include <linux/ssb/ssb.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 #include <linux/ssb/ssb_embedded.h>
 
@@ -74,7 +82,11 @@ static u32 get_cfgspace_addr(struct ssb_pcicore *pc,
 	u32 tmp;
 
 	/* We do only have one cardbus device behind the bridge. */
+<<<<<<< HEAD
 	if (pc->cardbusmode && (dev >= 1))
+=======
+	if (pc->cardbusmode && (dev > 1))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 
 	if (bus == 0) {
@@ -314,7 +326,11 @@ int ssb_pcicore_pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 	return ssb_mips_irq(extpci_core->dev) + 2;
 }
 
+<<<<<<< HEAD
 static void ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
+=======
+static void __devinit ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u32 val;
 
@@ -379,7 +395,11 @@ static void ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
 	register_pci_controller(&ssb_pcicore_controller);
 }
 
+<<<<<<< HEAD
 static int pcicore_is_in_hostmode(struct ssb_pcicore *pc)
+=======
+static int __devinit pcicore_is_in_hostmode(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ssb_bus *bus = pc->dev->bus;
 	u16 chipid_top;
@@ -412,7 +432,11 @@ static int pcicore_is_in_hostmode(struct ssb_pcicore *pc)
  * Workarounds.
  **************************************************/
 
+<<<<<<< HEAD
 static void ssb_pcicore_fix_sprom_core_index(struct ssb_pcicore *pc)
+=======
+static void __devinit ssb_pcicore_fix_sprom_core_index(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u16 tmp = pcicore_read16(pc, SSB_PCICORE_SPROM(0));
 	if (((tmp & 0xF000) >> 12) != pc->dev->core_index) {
@@ -514,7 +538,11 @@ static void ssb_pcicore_pcie_setup_workarounds(struct ssb_pcicore *pc)
  * Generic and Clientmode operation code.
  **************************************************/
 
+<<<<<<< HEAD
 static void ssb_pcicore_init_clientmode(struct ssb_pcicore *pc)
+=======
+static void __devinit ssb_pcicore_init_clientmode(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ssb_device *pdev = pc->dev;
 	struct ssb_bus *bus = pdev->bus;
@@ -533,7 +561,11 @@ static void ssb_pcicore_init_clientmode(struct ssb_pcicore *pc)
 	}
 }
 
+<<<<<<< HEAD
 void ssb_pcicore_init(struct ssb_pcicore *pc)
+=======
+void __devinit ssb_pcicore_init(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ssb_device *dev = pc->dev;
 

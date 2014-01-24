@@ -385,6 +385,7 @@ TRACE_EVENT(i915_flip_complete,
 );
 
 TRACE_EVENT(i915_reg_rw,
+<<<<<<< HEAD
            TP_PROTO(bool write, u32 reg, u64 val, int len),
 
            TP_ARGS(write, reg, val, len),
@@ -408,6 +409,31 @@ TRACE_EVENT(i915_reg_rw,
 		     __entry->reg, __entry->len,
 		     (u32)(__entry->val & 0xffffffff),
 		     (u32)(__entry->val >> 32))
+=======
+	TP_PROTO(bool write, u32 reg, u64 val, int len),
+
+	TP_ARGS(write, reg, val, len),
+
+	TP_STRUCT__entry(
+		__field(u64, val)
+		__field(u32, reg)
+		__field(u16, write)
+		__field(u16, len)
+		),
+
+	TP_fast_assign(
+		__entry->val = (u64)val;
+		__entry->reg = reg;
+		__entry->write = write;
+		__entry->len = len;
+		),
+
+	TP_printk("%s reg=0x%x, len=%d, val=(0x%x, 0x%x)",
+		__entry->write ? "write" : "read",
+		__entry->reg, __entry->len,
+		(u32)(__entry->val & 0xffffffff),
+		(u32)(__entry->val >> 32))
+>>>>>>> refs/remotes/origin/cm-10.0
 );
 
 #endif /* _I915_TRACE_H_ */

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/fs.h>
 #include <linux/path.h>
@@ -26,11 +30,18 @@ void set_fs_root(struct fs_struct *fs, struct path *path)
 {
 	struct path old_root;
 
+<<<<<<< HEAD
+=======
+	path_get_longterm(path);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock(&fs->lock);
 	write_seqcount_begin(&fs->seq);
 	old_root = fs->root;
 	fs->root = *path;
+<<<<<<< HEAD
 	path_get_longterm(path);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	write_seqcount_end(&fs->seq);
 	spin_unlock(&fs->lock);
 	if (old_root.dentry)
@@ -45,11 +56,18 @@ void set_fs_pwd(struct fs_struct *fs, struct path *path)
 {
 	struct path old_pwd;
 
+<<<<<<< HEAD
+=======
+	path_get_longterm(path);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock(&fs->lock);
 	write_seqcount_begin(&fs->seq);
 	old_pwd = fs->pwd;
 	fs->pwd = *path;
+<<<<<<< HEAD
 	path_get_longterm(path);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	write_seqcount_end(&fs->seq);
 	spin_unlock(&fs->lock);
 
@@ -57,6 +75,17 @@ void set_fs_pwd(struct fs_struct *fs, struct path *path)
 		path_put_longterm(&old_pwd);
 }
 
+<<<<<<< HEAD
+=======
+static inline int replace_path(struct path *p, const struct path *old, const struct path *new)
+{
+	if (likely(p->dentry != old->dentry || p->mnt != old->mnt))
+		return 0;
+	*p = *new;
+	return 1;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void chroot_fs_refs(struct path *old_root, struct path *new_root)
 {
 	struct task_struct *g, *p;
@@ -68,6 +97,7 @@ void chroot_fs_refs(struct path *old_root, struct path *new_root)
 		task_lock(p);
 		fs = p->fs;
 		if (fs) {
+<<<<<<< HEAD
 			spin_lock(&fs->lock);
 			write_seqcount_begin(&fs->seq);
 			if (fs->root.dentry == old_root->dentry
@@ -83,6 +113,18 @@ void chroot_fs_refs(struct path *old_root, struct path *new_root)
 				count++;
 			}
 			write_seqcount_end(&fs->seq);
+=======
+			int hits = 0;
+			spin_lock(&fs->lock);
+			write_seqcount_begin(&fs->seq);
+			hits += replace_path(&fs->root, old_root, new_root);
+			hits += replace_path(&fs->pwd, old_root, new_root);
+			write_seqcount_end(&fs->seq);
+			while (hits--) {
+				count++;
+				path_get_longterm(new_root);
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 			spin_unlock(&fs->lock);
 		}
 		task_unlock(p);
@@ -107,10 +149,15 @@ void exit_fs(struct task_struct *tsk)
 		int kill;
 		task_lock(tsk);
 		spin_lock(&fs->lock);
+<<<<<<< HEAD
 		write_seqcount_begin(&fs->seq);
 		tsk->fs = NULL;
 		kill = !--fs->users;
 		write_seqcount_end(&fs->seq);
+=======
+		tsk->fs = NULL;
+		kill = !--fs->users;
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_unlock(&fs->lock);
 		task_unlock(tsk);
 		if (kill)

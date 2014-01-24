@@ -47,7 +47,11 @@
 #include <linux/err.h>
 #include <linux/isa.h>
 #include <linux/pnp.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/wss.h>
 #include <sound/opl3.h>
@@ -69,9 +73,15 @@ MODULE_SUPPORTED_DEVICE("{{C-Media,CMI8330,isapnp:{CMI0001,@@@0001,@X@0001}}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP;
 #ifdef CONFIG_PNP
 static int isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP;
+#ifdef CONFIG_PNP
+static bool isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 static long sbport[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;
 static int sbirq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;
@@ -597,7 +607,11 @@ static int __devinit snd_cmi8330_probe(struct snd_card *card, int dev)
 	if (mpuport[dev] != SNDRV_AUTO_PORT) {
 		if (snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
 					mpuport[dev], 0, mpuirq[dev],
+<<<<<<< HEAD
 					IRQF_DISABLED, NULL) < 0)
+=======
+					NULL) < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 			printk(KERN_ERR PFX "no MPU-401 device at 0x%lx.\n",
 				mpuport[dev]);
 	}

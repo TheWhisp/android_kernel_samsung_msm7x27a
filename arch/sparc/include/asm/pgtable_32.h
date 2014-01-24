@@ -21,7 +21,11 @@
 #include <asm/vac-ops.h>
 #include <asm/oplib.h>
 #include <asm/btfixup.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cpu_type.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 struct vm_area_struct;

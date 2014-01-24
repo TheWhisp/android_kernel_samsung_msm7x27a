@@ -29,6 +29,7 @@ ENTRY(cpu_arm7_dcache_clean_area)
 /*
  * Function: arm6_7_data_abort ()
  *
+<<<<<<< HEAD
  * Params  : r2 = address of aborted instruction
  *	   : sp = pointer to registers
  *
@@ -36,12 +37,25 @@ ENTRY(cpu_arm7_dcache_clean_area)
  *
  * Returns : r0 = address of abort
  *	   : r1 = FSR
+=======
+ * Params  : r2 = pt_regs
+ *	   : r4 = aborted context pc
+ *	   : r5 = aborted context psr
+ *
+ * Purpose : obtain information about current aborted instruction
+ *
+ * Returns : r4-r5, r10-r11, r13 preserved
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 ENTRY(cpu_arm7_data_abort)
 	mrc	p15, 0, r1, c5, c0, 0		@ get FSR
 	mrc	p15, 0, r0, c6, c0, 0		@ get FAR
+<<<<<<< HEAD
 	ldr	r8, [r2]			@ read arm instruction
+=======
+	ldr	r8, [r4]			@ read arm instruction
+>>>>>>> refs/remotes/origin/cm-10.0
 	tst	r8, #1 << 20			@ L = 0 -> write?
 	orreq	r1, r1, #1 << 11		@ yes.
 	and	r7, r8, #15 << 24
@@ -49,7 +63,11 @@ ENTRY(cpu_arm7_data_abort)
 	nop
 
 /* 0 */	b	.data_unknown
+<<<<<<< HEAD
 /* 1 */	mov	pc, lr				@ swp
+=======
+/* 1 */	b	do_DataAbort			@ swp
+>>>>>>> refs/remotes/origin/cm-10.0
 /* 2 */	b	.data_unknown
 /* 3 */	b	.data_unknown
 /* 4 */	b	.data_arm_lateldrpostconst	@ ldr	rd, [rn], #m
@@ -60,6 +78,7 @@ ENTRY(cpu_arm7_data_abort)
 /* 9 */	b	.data_arm_ldmstm		@ ldm*b	rn, <rlist>
 /* a */	b	.data_unknown
 /* b */	b	.data_unknown
+<<<<<<< HEAD
 /* c */	mov	pc, lr				@ ldc	rd, [rn], #m	@ Same as ldr	rd, [rn], #m
 /* d */	mov	pc, lr				@ ldc	rd, [rn, #m]
 /* e */	b	.data_unknown
@@ -70,15 +89,30 @@ ENTRY(cpu_arm7_data_abort)
 	mov	r2, sp
 	bl	baddataabort
 	b	ret_from_exception
+=======
+/* c */	b	do_DataAbort			@ ldc	rd, [rn], #m	@ Same as ldr	rd, [rn], #m
+/* d */	b	do_DataAbort			@ ldc	rd, [rn, #m]
+/* e */	b	.data_unknown
+/* f */
+.data_unknown:	@ Part of jumptable
+	mov	r0, r4
+	mov	r1, r8
+	b	baddataabort
+>>>>>>> refs/remotes/origin/cm-10.0
 
 ENTRY(cpu_arm6_data_abort)
 	mrc	p15, 0, r1, c5, c0, 0		@ get FSR
 	mrc	p15, 0, r0, c6, c0, 0		@ get FAR
+<<<<<<< HEAD
 	ldr	r8, [r2]			@ read arm instruction
+=======
+	ldr	r8, [r4]			@ read arm instruction
+>>>>>>> refs/remotes/origin/cm-10.0
 	tst	r8, #1 << 20			@ L = 0 -> write?
 	orreq	r1, r1, #1 << 11		@ yes.
 	and	r7, r8, #14 << 24
 	teq	r7, #8 << 24			@ was it ldm/stm
+<<<<<<< HEAD
 	movne	pc, lr
 
 .data_arm_ldmstm:
@@ -135,12 +169,74 @@ ENTRY(cpu_arm6_data_abort)
 	ldr	r6, [sp, r7, lsl #2]		@ Get register 'Rm'
 	mov	r5, r8, lsr #7			@ get shift count
 	ands	r5, r5, #31
+=======
+	bne	do_DataAbort
+
+.data_arm_ldmstm:
+	tst	r8, #1 << 21			@ check writeback bit
+	beq	do_DataAbort			@ no writeback -> no fixup
+	mov	r7, #0x11
+	orr	r7, r7, #0x1100
+	and	r6, r8, r7
+	and	r9, r8, r7, lsl #1
+	add	r6, r6, r9, lsr #1
+	and	r9, r8, r7, lsl #2
+	add	r6, r6, r9, lsr #2
+	and	r9, r8, r7, lsl #3
+	add	r6, r6, r9, lsr #3
+	add	r6, r6, r6, lsr #8
+	add	r6, r6, r6, lsr #4
+	and	r6, r6, #15			@ r6 = no. of registers to transfer.
+	and	r9, r8, #15 << 16		@ Extract 'n' from instruction
+	ldr	r7, [r2, r9, lsr #14]		@ Get register 'Rn'
+	tst	r8, #1 << 23			@ Check U bit
+	subne	r7, r7, r6, lsl #2		@ Undo increment
+	addeq	r7, r7, r6, lsl #2		@ Undo decrement
+	str	r7, [r2, r9, lsr #14]		@ Put register 'Rn'
+	b	do_DataAbort
+
+.data_arm_apply_r6_and_rn:
+	and	r9, r8, #15 << 16		@ Extract 'n' from instruction
+	ldr	r7, [r2, r9, lsr #14]		@ Get register 'Rn'
+	tst	r8, #1 << 23			@ Check U bit
+	subne	r7, r7, r6			@ Undo incrmenet
+	addeq	r7, r7, r6			@ Undo decrement
+	str	r7, [r2, r9, lsr #14]		@ Put register 'Rn'
+	b	do_DataAbort
+
+.data_arm_lateldrpreconst:
+	tst	r8, #1 << 21			@ check writeback bit
+	beq	do_DataAbort			@ no writeback -> no fixup
+.data_arm_lateldrpostconst:
+	movs	r6, r8, lsl #20			@ Get offset
+	beq	do_DataAbort			@ zero -> no fixup
+	and	r9, r8, #15 << 16		@ Extract 'n' from instruction
+	ldr	r7, [r2, r9, lsr #14]		@ Get register 'Rn'
+	tst	r8, #1 << 23			@ Check U bit
+	subne	r7, r7, r6, lsr #20		@ Undo increment
+	addeq	r7, r7, r6, lsr #20		@ Undo decrement
+	str	r7, [r2, r9, lsr #14]		@ Put register 'Rn'
+	b	do_DataAbort
+
+.data_arm_lateldrprereg:
+	tst	r8, #1 << 21			@ check writeback bit
+	beq	do_DataAbort			@ no writeback -> no fixup
+.data_arm_lateldrpostreg:
+	and	r7, r8, #15			@ Extract 'm' from instruction
+	ldr	r6, [r2, r7, lsl #2]		@ Get register 'Rm'
+	mov	r9, r8, lsr #7			@ get shift count
+	ands	r9, r9, #31
+>>>>>>> refs/remotes/origin/cm-10.0
 	and	r7, r8, #0x70			@ get shift type
 	orreq	r7, r7, #8			@ shift count = 0
 	add	pc, pc, r7
 	nop
 
+<<<<<<< HEAD
 	mov	r6, r6, lsl r5			@ 0: LSL #!0
+=======
+	mov	r6, r6, lsl r9			@ 0: LSL #!0
+>>>>>>> refs/remotes/origin/cm-10.0
 	b	.data_arm_apply_r6_and_rn
 	b	.data_arm_apply_r6_and_rn	@ 1: LSL #0
 	nop
@@ -148,7 +244,11 @@ ENTRY(cpu_arm6_data_abort)
 	nop
 	b	.data_unknown			@ 3: MUL?
 	nop
+<<<<<<< HEAD
 	mov	r6, r6, lsr r5			@ 4: LSR #!0
+=======
+	mov	r6, r6, lsr r9			@ 4: LSR #!0
+>>>>>>> refs/remotes/origin/cm-10.0
 	b	.data_arm_apply_r6_and_rn
 	mov	r6, r6, lsr #32			@ 5: LSR #32
 	b	.data_arm_apply_r6_and_rn
@@ -156,7 +256,11 @@ ENTRY(cpu_arm6_data_abort)
 	nop
 	b	.data_unknown			@ 7: MUL?
 	nop
+<<<<<<< HEAD
 	mov	r6, r6, asr r5			@ 8: ASR #!0
+=======
+	mov	r6, r6, asr r9			@ 8: ASR #!0
+>>>>>>> refs/remotes/origin/cm-10.0
 	b	.data_arm_apply_r6_and_rn
 	mov	r6, r6, asr #32			@ 9: ASR #32
 	b	.data_arm_apply_r6_and_rn
@@ -164,7 +268,11 @@ ENTRY(cpu_arm6_data_abort)
 	nop
 	b	.data_unknown			@ B: MUL?
 	nop
+<<<<<<< HEAD
 	mov	r6, r6, ror r5			@ C: ROR #!0
+=======
+	mov	r6, r6, ror r9			@ C: ROR #!0
+>>>>>>> refs/remotes/origin/cm-10.0
 	b	.data_arm_apply_r6_and_rn
 	mov	r6, r6, rrx			@ D: RRX
 	b	.data_arm_apply_r6_and_rn
@@ -227,6 +335,10 @@ ENTRY(cpu_arm7_set_pte_ext)
  * Params  : r0 = address to jump to
  * Notes   : This sets up everything for a reset
  */
+<<<<<<< HEAD
+=======
+		.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
 ENTRY(cpu_arm6_reset)
 ENTRY(cpu_arm7_reset)
 		mov	r1, #0
@@ -237,6 +349,12 @@ ENTRY(cpu_arm7_reset)
 		mov	r1, #0x30
 		mcr	p15, 0, r1, c1, c0, 0		@ turn off MMU etc
 		mov	pc, r0
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_arm6_reset)
+ENDPROC(cpu_arm7_reset)
+		.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		__CPUINIT
 
@@ -269,6 +387,7 @@ __arm7_setup:	mov	r0, #0
 
 		__INITDATA
 
+<<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
  *	     come through these
@@ -336,11 +455,26 @@ cpu_arm7_name:	.asciz	"ARM7"
 cpu_arm710_name:
 		.asciz	"ARM710"
 		.size	cpu_arm710_name, . - cpu_arm710_name
+=======
+		@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+		define_processor_functions arm6, dabort=cpu_arm6_data_abort, pabort=legacy_pabort
+		define_processor_functions arm7, dabort=cpu_arm7_data_abort, pabort=legacy_pabort
+
+		.section ".rodata"
+
+		string	cpu_arch_name, "armv3"
+		string	cpu_elf_name, "v3"
+		string	cpu_arm6_name, "ARM6"
+		string	cpu_arm610_name, "ARM610"
+		string	cpu_arm7_name, "ARM7"
+		string	cpu_arm710_name, "ARM710"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		.align
 
 		.section ".proc.info.init", #alloc, #execinstr
 
+<<<<<<< HEAD
 		.type	__arm6_proc_info, #object
 __arm6_proc_info:
 		.long	0x41560600
@@ -366,10 +500,20 @@ __arm610_proc_info:
 		.long	0x41560610
 		.long	0xfffffff0
 		.long	0x00000c1e
+=======
+.macro arm67_proc_info name:req, cpu_val:req, cpu_mask:req, cpu_name:req, \
+	cpu_mm_mmu_flags:req, cpu_flush:req, cpu_proc_funcs:req
+		.type	__\name\()_proc_info, #object
+__\name\()_proc_info:
+		.long	\cpu_val
+		.long	\cpu_mask
+		.long	\cpu_mm_mmu_flags
+>>>>>>> refs/remotes/origin/cm-10.0
 		.long   PMD_TYPE_SECT | \
 			PMD_BIT4 | \
 			PMD_SECT_AP_WRITE | \
 			PMD_SECT_AP_READ
+<<<<<<< HEAD
 		b	__arm6_setup
 		.long	cpu_arch_name
 		.long	cpu_elf_name
@@ -406,10 +550,33 @@ __arm710_proc_info:
 		.long	0x41007100
 		.long	0xfff8ff00
 		.long   PMD_TYPE_SECT | \
+=======
+		b	\cpu_flush
+		.long	cpu_arch_name
+		.long	cpu_elf_name
+		.long	HWCAP_SWP | HWCAP_26BIT
+		.long	\cpu_name
+		.long	\cpu_proc_funcs
+		.long	v3_tlb_fns
+		.long	v3_user_fns
+		.long	v3_cache_fns
+		.size	__\name\()_proc_info, . - __\name\()_proc_info
+.endm
+
+	arm67_proc_info	arm6,	0x41560600, 0xfffffff0, cpu_arm6_name, \
+		0x00000c1e, __arm6_setup, arm6_processor_functions
+	arm67_proc_info	arm610,	0x41560610, 0xfffffff0, cpu_arm610_name, \
+		0x00000c1e, __arm6_setup, arm6_processor_functions
+	arm67_proc_info	arm7,	0x41007000, 0xffffff00, cpu_arm7_name, \
+		0x00000c1e, __arm7_setup, arm7_processor_functions
+	arm67_proc_info	arm710,	0x41007100, 0xfff8ff00, cpu_arm710_name, \
+			PMD_TYPE_SECT | \
+>>>>>>> refs/remotes/origin/cm-10.0
 			PMD_SECT_BUFFERABLE | \
 			PMD_SECT_CACHEABLE | \
 			PMD_BIT4 | \
 			PMD_SECT_AP_WRITE | \
+<<<<<<< HEAD
 			PMD_SECT_AP_READ
 		.long   PMD_TYPE_SECT | \
 			PMD_BIT4 | \
@@ -425,3 +592,7 @@ __arm710_proc_info:
 		.long	v3_user_fns
 		.long	v3_cache_fns
 		.size	__arm710_proc_info, . - __arm710_proc_info
+=======
+			PMD_SECT_AP_READ, \
+		__arm7_setup, arm7_processor_functions
+>>>>>>> refs/remotes/origin/cm-10.0

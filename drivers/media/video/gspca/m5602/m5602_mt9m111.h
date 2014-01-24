@@ -106,7 +106,11 @@
 
 /* Kernel module parameters */
 extern int force_sensor;
+<<<<<<< HEAD
 extern int dump_sensor;
+=======
+extern bool dump_sensor;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int mt9m111_probe(struct sd *sd);
 int mt9m111_init(struct sd *sd);

@@ -18,7 +18,10 @@
 #include <linux/interrupt.h>
 #include <linux/phy.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -30,6 +33,10 @@
 #include <linux/of_platform.h>
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
+<<<<<<< HEAD
+=======
+#include <asm/ehv_pic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "corenet_ds.h"
 
@@ -39,8 +46,37 @@
 static int __init p3041_ds_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
+<<<<<<< HEAD
 
 	return of_flat_dt_is_compatible(root, "fsl,P3041DS");
+=======
+#ifdef CONFIG_SMP
+	extern struct smp_ops_t smp_85xx_ops;
+#endif
+
+	if (of_flat_dt_is_compatible(root, "fsl,P3041DS"))
+		return 1;
+
+	/* Check if we're running under the Freescale hypervisor */
+	if (of_flat_dt_is_compatible(root, "fsl,P3041DS-hv")) {
+		ppc_md.init_IRQ = ehv_pic_init;
+		ppc_md.get_irq = ehv_pic_get_irq;
+		ppc_md.restart = fsl_hv_restart;
+		ppc_md.power_off = fsl_hv_halt;
+		ppc_md.halt = fsl_hv_halt;
+#ifdef CONFIG_SMP
+		/*
+		 * Disable the timebase sync operations because we can't write
+		 * to the timebase registers under the hypervisor.
+		  */
+		smp_85xx_ops.give_timebase = NULL;
+		smp_85xx_ops.take_timebase = NULL;
+#endif
+		return 1;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 define_machine(p3041_ds) {
@@ -55,6 +91,10 @@ define_machine(p3041_ds) {
 	.restart		= fsl_rstcr_restart,
 	.calibrate_decr		= generic_calibrate_decr,
 	.progress		= udbg_progress,
+<<<<<<< HEAD
+=======
+	.power_save		= e500_idle,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 machine_device_initcall(p3041_ds, corenet_ds_publish_devices);

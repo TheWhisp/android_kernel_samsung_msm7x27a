@@ -35,10 +35,19 @@
 #define FW_CDEV_EVENT_RESPONSE				0x01
 #define FW_CDEV_EVENT_REQUEST				0x02
 #define FW_CDEV_EVENT_ISO_INTERRUPT			0x03
+<<<<<<< HEAD
 #define FW_CDEV_EVENT_ISO_RESOURCE_ALLOCATED		0x04
 #define FW_CDEV_EVENT_ISO_RESOURCE_DEALLOCATED		0x05
 
 /* available since kernel version 2.6.30 */
+=======
+
+/* available since kernel version 2.6.30 */
+#define FW_CDEV_EVENT_ISO_RESOURCE_ALLOCATED		0x04
+#define FW_CDEV_EVENT_ISO_RESOURCE_DEALLOCATED		0x05
+
+/* available since kernel version 2.6.36 */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define FW_CDEV_EVENT_REQUEST2				0x06
 #define FW_CDEV_EVENT_PHY_PACKET_SENT			0x07
 #define FW_CDEV_EVENT_PHY_PACKET_RECEIVED		0x08
@@ -73,7 +82,11 @@ struct fw_cdev_event_common {
  * @generation:    New bus generation
  *
  * This event is sent when the bus the device belongs to goes through a bus
+<<<<<<< HEAD
  * reset.  It provides information about the new bus Configuration, such as
+=======
+ * reset.  It provides information about the new bus configuration, such as
+>>>>>>> refs/remotes/origin/cm-10.0
  * new node ID for this device, new root ID, and others.
  *
  * If @bm_node_id is 0xffff right after bus reset it can be reread by an
@@ -122,6 +135,11 @@ struct fw_cdev_event_response {
 /**
  * struct fw_cdev_event_request - Old version of &fw_cdev_event_request2
  * @type:	See &fw_cdev_event_common; always %FW_CDEV_EVENT_REQUEST
+<<<<<<< HEAD
+=======
+ *
+ * This event is sent instead of &fw_cdev_event_request2 if the kernel or
+>>>>>>> refs/remotes/origin/cm-10.0
  * the client implements ABI version <= 3.  &fw_cdev_event_request lacks
  * essential information; use &fw_cdev_event_request2 instead.
  */
@@ -203,12 +221,24 @@ struct fw_cdev_event_request2 {
  * @closure:	See &fw_cdev_event_common;
  *		set by %FW_CDEV_CREATE_ISO_CONTEXT ioctl
  * @type:	See &fw_cdev_event_common; always %FW_CDEV_EVENT_ISO_INTERRUPT
+<<<<<<< HEAD
  * @cycle:	Cycle counter of the interrupt packet
+=======
+ * @cycle:	Cycle counter of the last completed packet
+>>>>>>> refs/remotes/origin/cm-10.0
  * @header_length: Total length of following headers, in bytes
  * @header:	Stripped headers, if any
  *
  * This event is sent when the controller has completed an &fw_cdev_iso_packet
+<<<<<<< HEAD
  * with the %FW_CDEV_ISO_INTERRUPT bit set.
+=======
+ * with the %FW_CDEV_ISO_INTERRUPT bit set, when explicitly requested with
+ * %FW_CDEV_IOC_FLUSH_ISO, or when there have been so many completed packets
+ * without the interrupt bit set that the kernel's internal buffer for @header
+ * is about to overflow.  (In the last case, ABI versions < 5 drop header data
+ * up to the next interrupt packet.)
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Isochronous transmit events (context type %FW_CDEV_ISO_CONTEXT_TRANSMIT):
  *
@@ -263,9 +293,15 @@ struct fw_cdev_event_iso_interrupt {
  *
  * This event is sent in multichannel contexts (context type
  * %FW_CDEV_ISO_CONTEXT_RECEIVE_MULTICHANNEL) for &fw_cdev_iso_packet buffer
+<<<<<<< HEAD
  * chunks that have the %FW_CDEV_ISO_INTERRUPT bit set.  Whether this happens
  * when a packet is completed and/or when a buffer chunk is completed depends
  * on the hardware implementation.
+=======
+ * chunks that have been completely filled and that have the
+ * %FW_CDEV_ISO_INTERRUPT bit set, or when explicitly requested with
+ * %FW_CDEV_IOC_FLUSH_ISO.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * The buffer is continuously filled with the following data, per packet:
  *  - the 1394 iso packet header as described at &fw_cdev_event_iso_interrupt,
@@ -415,6 +451,12 @@ union fw_cdev_event {
 #define FW_CDEV_IOC_RECEIVE_PHY_PACKETS _IOW('#', 0x16, struct fw_cdev_receive_phy_packets)
 #define FW_CDEV_IOC_SET_ISO_CHANNELS    _IOW('#', 0x17, struct fw_cdev_set_iso_channels)
 
+<<<<<<< HEAD
+=======
+/* available since kernel version 3.4 */
+#define FW_CDEV_IOC_FLUSH_ISO           _IOW('#', 0x18, struct fw_cdev_flush_iso)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * ABI version history
  *  1  (2.6.22)  - initial version
@@ -437,6 +479,12 @@ union fw_cdev_event {
  *               - added %FW_CDEV_EVENT_ISO_INTERRUPT_MULTICHANNEL,
  *                 %FW_CDEV_ISO_CONTEXT_RECEIVE_MULTICHANNEL, and
  *                 %FW_CDEV_IOC_SET_ISO_CHANNELS
+<<<<<<< HEAD
+=======
+ *  5  (3.4)     - send %FW_CDEV_EVENT_ISO_INTERRUPT events when needed to
+ *                 avoid dropping data
+ *               - added %FW_CDEV_IOC_FLUSH_ISO
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 /**
@@ -444,9 +492,15 @@ union fw_cdev_event {
  * @version:	The version field is just a running serial number.  Both an
  *		input parameter (ABI version implemented by the client) and
  *		output parameter (ABI version implemented by the kernel).
+<<<<<<< HEAD
  *	        A client shall fill in the ABI @version for which the client
  *              was implemented.  This is necessary for forward compatibility.
  * @rom_length:  If @rom is non-zero, up to @rom_length bytes of Configuration
+=======
+ *		A client shall fill in the ABI @version for which the client
+ *		was implemented.  This is necessary for forward compatibility.
+ * @rom_length:	If @rom is non-zero, up to @rom_length bytes of Configuration
+>>>>>>> refs/remotes/origin/cm-10.0
  *		ROM will be copied into that user space address.  In either
  *		case, @rom_length is updated with the actual length of the
  *		Configuration ROM.
@@ -458,6 +512,12 @@ union fw_cdev_event {
  * @bus_reset_closure: Value of &closure in this and subsequent bus reset events
  * @card:	The index of the card this device belongs to
  *
+<<<<<<< HEAD
+=======
+ * The %FW_CDEV_IOC_GET_INFO ioctl is usually the very first one which a client
+ * performs right after it opened a /dev/fw* file.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * As a side effect, reception of %FW_CDEV_EVENT_BUS_RESET events to be read(2)
  * is started by this ioctl.
  */
@@ -640,7 +700,11 @@ struct fw_cdev_remove_descriptor {
 
 #define FW_CDEV_ISO_CONTEXT_TRANSMIT			0
 #define FW_CDEV_ISO_CONTEXT_RECEIVE			1
+<<<<<<< HEAD
 #define FW_CDEV_ISO_CONTEXT_RECEIVE_MULTICHANNEL	2 /* added in 2.6.30 */
+=======
+#define FW_CDEV_ISO_CONTEXT_RECEIVE_MULTICHANNEL	2 /* added in 2.6.36 */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * struct fw_cdev_create_iso_context - Create a context for isochronous I/O
@@ -654,7 +718,11 @@ struct fw_cdev_remove_descriptor {
  * @handle:	Handle to context, written back by kernel
  *
  * Prior to sending or receiving isochronous I/O, a context must be created.
+<<<<<<< HEAD
  * The context records information about the transmit or receive Configuration
+=======
+ * The context records information about the transmit or receive configuration
+>>>>>>> refs/remotes/origin/cm-10.0
  * and typically maps to an underlying hardware resource.  A context is set up
  * for either sending or receiving.  It is bound to a specific isochronous
  * @channel.
@@ -844,6 +912,28 @@ struct fw_cdev_stop_iso {
 };
 
 /**
+<<<<<<< HEAD
+=======
+ * struct fw_cdev_flush_iso - flush completed iso packets
+ * @handle:	handle of isochronous context to flush
+ *
+ * For %FW_CDEV_ISO_CONTEXT_TRANSMIT or %FW_CDEV_ISO_CONTEXT_RECEIVE contexts,
+ * report any completed packets.
+ *
+ * For %FW_CDEV_ISO_CONTEXT_RECEIVE_MULTICHANNEL contexts, report the current
+ * offset in the receive buffer, if it has changed; this is typically in the
+ * middle of some buffer chunk.
+ *
+ * Any %FW_CDEV_EVENT_ISO_INTERRUPT or %FW_CDEV_EVENT_ISO_INTERRUPT_MULTICHANNEL
+ * events generated by this ioctl are sent synchronously, i.e., are available
+ * for reading from the file descriptor when this ioctl returns.
+ */
+struct fw_cdev_flush_iso {
+	__u32 handle;
+};
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * struct fw_cdev_get_cycle_timer - read cycle timer register
  * @local_time:   system time, in microseconds since the Epoch
  * @cycle_timer:  Cycle Time register contents
@@ -865,6 +955,10 @@ struct fw_cdev_get_cycle_timer {
  * @tv_nsec:      system time, sub-seconds part in nanoseconds
  * @clk_id:       input parameter, clock from which to get the system time
  * @cycle_timer:  Cycle Time register contents
+<<<<<<< HEAD
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * The %FW_CDEV_IOC_GET_CYCLE_TIMER2 ioctl reads the isochronous cycle timer
  * and also the system clock.  This allows to correlate reception time of
  * isochronous packets with system time.
@@ -997,8 +1091,12 @@ struct fw_cdev_receive_phy_packets {
 	__u64 closure;
 };
 
+<<<<<<< HEAD
 +#define FW_CDEV_VERSION 3 /* Meaningless legacy macro; don't use it. */
 
 +
+=======
+#define FW_CDEV_VERSION 3 /* Meaningless legacy macro; don't use it. */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _LINUX_FIREWIRE_CDEV_H */

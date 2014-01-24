@@ -55,7 +55,10 @@
 
 #include <asm/pdc.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/hardware.h>
 
@@ -553,7 +556,10 @@ dino_fixup_bus(struct pci_bus *bus)
 	struct list_head *ln;
         struct pci_dev *dev;
         struct dino_device *dino_dev = DINO_DEV(parisc_walk_tree(bus->bridge));
+<<<<<<< HEAD
 	int port_base = HBA_PORT_BASE(dino_dev->hba.hba_num);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	DBG(KERN_WARNING "%s(0x%p) bus %d platform_data 0x%p\n",
 	    __func__, bus, bus->secondary,
@@ -562,6 +568,7 @@ dino_fixup_bus(struct pci_bus *bus)
 	/* Firmware doesn't set up card-mode dino, so we have to */
 	if (is_card_dino(&dino_dev->hba.dev->id)) {
 		dino_card_setup(bus, dino_dev->hba.base_addr);
+<<<<<<< HEAD
 	} else if(bus->parent == NULL) {
 		/* must have a dino above it, reparent the resources
 		 * into the dino window */
@@ -575,6 +582,8 @@ dino_fixup_bus(struct pci_bus *bus)
 			bus->resource[i+1] = &res[i];
 		}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else if (bus->parent) {
 		int i;
 
@@ -612,8 +621,11 @@ dino_fixup_bus(struct pci_bus *bus)
 
 
 	list_for_each(ln, &bus->devices) {
+<<<<<<< HEAD
 		int i;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev = pci_dev_b(ln);
 		if (is_card_dino(&dino_dev->hba.dev->id))
 			dino_card_fixup(dev);
@@ -625,6 +637,7 @@ dino_fixup_bus(struct pci_bus *bus)
 		if ((dev->class >> 8) == PCI_CLASS_BRIDGE_PCI)
 			continue;
 
+<<<<<<< HEAD
 		/* Adjust the I/O Port space addresses */
 		for (i = 0; i < PCI_NUM_RESOURCES; i++) {
 			struct resource *res = &dev->resource[i];
@@ -640,6 +653,8 @@ dino_fixup_bus(struct pci_bus *bus)
 			}
 #endif
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* null out the ROM resource if there is one (we don't
 		 * care about an expansion rom on parisc, since it
 		 * usually contains (x86) bios code) */
@@ -927,6 +942,10 @@ static int __init dino_probe(struct parisc_device *dev)
 	const char *version = "unknown";
 	char *name;
 	int is_cujo = 0;
+<<<<<<< HEAD
+=======
+	LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pci_bus *bus;
 	unsigned long hpa = dev->hpa.start;
 
@@ -1003,10 +1022,25 @@ static int __init dino_probe(struct parisc_device *dev)
 
 	dev->dev.platform_data = dino_dev;
 
+<<<<<<< HEAD
+=======
+	pci_add_resource_offset(&resources, &dino_dev->hba.io_space,
+				HBA_PORT_BASE(dino_dev->hba.hba_num));
+	if (dino_dev->hba.lmmio_space.flags)
+		pci_add_resource_offset(&resources, &dino_dev->hba.lmmio_space,
+					dino_dev->hba.lmmio_space_offset);
+	if (dino_dev->hba.elmmio_space.flags)
+		pci_add_resource_offset(&resources, &dino_dev->hba.elmmio_space,
+					dino_dev->hba.lmmio_space_offset);
+	if (dino_dev->hba.gmmio_space.flags)
+		pci_add_resource(&resources, &dino_dev->hba.gmmio_space);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	** It's not used to avoid chicken/egg problems
 	** with configuration accessor functions.
 	*/
+<<<<<<< HEAD
 	dino_dev->hba.hba_bus = bus = pci_scan_bus_parented(&dev->dev,
 			 dino_current_bus, &dino_cfg_ops, NULL);
 
@@ -1023,6 +1057,27 @@ static int __init dino_probe(struct parisc_device *dev)
 		/* increment the bus number in case of duplicates */
 		dino_current_bus++;
 	}
+=======
+	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
+			 dino_current_bus, &dino_cfg_ops, NULL, &resources);
+	if (!bus) {
+		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
+		       dev_name(&dev->dev), dino_current_bus);
+		pci_free_resource_list(&resources);
+		/* increment the bus number in case of duplicates */
+		dino_current_bus++;
+		return 0;
+	}
+
+	bus->subordinate = pci_scan_child_bus(bus);
+
+	/* This code *depends* on scanning being single threaded
+	 * if it isn't, this global bus number count will fail
+	 */
+	dino_current_bus = bus->subordinate + 1;
+	pci_bus_assign_resources(bus);
+	pci_bus_add_devices(bus);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

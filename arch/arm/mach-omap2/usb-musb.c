@@ -33,8 +33,11 @@
 #include <plat/omap_device.h>
 #include "mux.h"
 
+<<<<<<< HEAD
 #if defined(CONFIG_USB_MUSB_OMAP2PLUS) || defined (CONFIG_USB_MUSB_AM35X)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct musb_hdrc_config musb_config = {
 	.multipoint	= 1,
 	.dyn_fifo	= 1,
@@ -62,6 +65,7 @@ static struct musb_hdrc_platform_data musb_plat = {
 
 static u64 musb_dmamask = DMA_BIT_MASK(32);
 
+<<<<<<< HEAD
 static struct omap_device_pm_latency omap_musb_latency[] = {
 	{
 		.deactivate_func	= omap_device_idle_hwmods,
@@ -108,6 +112,8 @@ static void usb_musb_mux_init(struct omap_musb_board_data *board_data)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct omap_musb_board_data musb_default_board_data = {
 	.interface_type		= MUSB_INTERFACE_ULPI,
 	.mode			= MUSB_OTG,
@@ -117,7 +123,10 @@ static struct omap_musb_board_data musb_default_board_data = {
 void __init usb_musb_init(struct omap_musb_board_data *musb_board_data)
 {
 	struct omap_hwmod		*oh;
+<<<<<<< HEAD
 	struct omap_device		*od;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct platform_device		*pdev;
 	struct device			*dev;
 	int				bus_id = -1;
@@ -139,17 +148,27 @@ void __init usb_musb_init(struct omap_musb_board_data *musb_board_data)
 	musb_plat.mode = board_data->mode;
 	musb_plat.extvbus = board_data->extvbus;
 
+<<<<<<< HEAD
 	if (cpu_is_omap44xx())
 		omap4430_phy_init(dev);
 
 	if (cpu_is_omap3517() || cpu_is_omap3505()) {
 		oh_name = "am35x_otg_hs";
 		name = "musb-am35x";
+=======
+	if (cpu_is_omap3517() || cpu_is_omap3505()) {
+		oh_name = "am35x_otg_hs";
+		name = "musb-am35x";
+	} else if (cpu_is_ti81xx()) {
+		oh_name = "usb_otg_hs";
+		name = "musb-ti81xx";
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		oh_name = "usb_otg_hs";
 		name = "musb-omap2430";
 	}
 
+<<<<<<< HEAD
 	oh = omap_hwmod_lookup(oh_name);
 	if (!oh) {
 		pr_err("Could not look up %s\n", oh_name);
@@ -160,12 +179,25 @@ void __init usb_musb_init(struct omap_musb_board_data *musb_board_data)
 			       sizeof(musb_plat), omap_musb_latency,
 			       ARRAY_SIZE(omap_musb_latency), false);
 	if (IS_ERR(od)) {
+=======
+        oh = omap_hwmod_lookup(oh_name);
+        if (WARN(!oh, "%s: could not find omap_hwmod for %s\n",
+                 __func__, oh_name))
+                return;
+
+	pdev = omap_device_build(name, bus_id, oh, &musb_plat,
+			       sizeof(musb_plat), NULL, 0, false);
+	if (IS_ERR(pdev)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_err("Could not build omap_device for %s %s\n",
 						name, oh_name);
 		return;
 	}
 
+<<<<<<< HEAD
 	pdev = &od->pdev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev = &pdev->dev;
 	get_device(dev);
 	dev->dma_mask = &musb_dmamask;
@@ -175,6 +207,7 @@ void __init usb_musb_init(struct omap_musb_board_data *musb_board_data)
 	if (cpu_is_omap44xx())
 		omap4430_phy_init(dev);
 }
+<<<<<<< HEAD
 
 #else
 void __init usb_musb_init(struct omap_musb_board_data *board_data)
@@ -183,3 +216,5 @@ void __init usb_musb_init(struct omap_musb_board_data *board_data)
 		omap4430_phy_init(NULL);
 }
 #endif /* CONFIG_USB_MUSB_SOC */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

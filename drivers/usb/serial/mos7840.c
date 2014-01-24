@@ -262,7 +262,11 @@ struct moschip_port {
 };
 
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * mos7840_set_reg_sync
@@ -772,8 +776,11 @@ static void mos7840_bulk_in_callback(struct urb *urb)
 	}
 
 
+<<<<<<< HEAD
 	mos7840_port->read_urb->dev = serial->dev;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mos7840_port->read_urb_busy = true;
 	retval = usb_submit_urb(mos7840_port->read_urb, GFP_ATOMIC);
 
@@ -1505,7 +1512,11 @@ static int mos7840_write(struct tty_struct *tty, struct usb_serial_port *port,
 		    kmalloc(URB_TRANSFER_BUFFER_SIZE, GFP_KERNEL);
 
 		if (urb->transfer_buffer == NULL) {
+<<<<<<< HEAD
 			dev_err(&port->dev, "%s no more kernel memory...\n",
+=======
+			dev_err_console(port, "%s no more kernel memory...\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__);
 			goto exit;
 		}
@@ -1543,7 +1554,11 @@ static int mos7840_write(struct tty_struct *tty, struct usb_serial_port *port,
 
 	if (status) {
 		mos7840_port->busy[i] = 0;
+<<<<<<< HEAD
 		dev_err(&port->dev, "%s - usb_submit_urb(write bulk) failed "
+=======
+		dev_err_console(port, "%s - usb_submit_urb(write bulk) failed "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"with status = %d\n", __func__, status);
 		bytes_sent = status;
 		goto exit;
@@ -2064,7 +2079,10 @@ static void mos7840_change_port_settings(struct tty_struct *tty,
 	mos7840_set_uart_reg(port, INTERRUPT_ENABLE_REGISTER, Data);
 
 	if (mos7840_port->read_urb_busy == false) {
+<<<<<<< HEAD
 		mos7840_port->read_urb->dev = serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		mos7840_port->read_urb_busy = true;
 		status = usb_submit_urb(mos7840_port->read_urb, GFP_ATOMIC);
 		if (status) {
@@ -2136,7 +2154,10 @@ static void mos7840_set_termios(struct tty_struct *tty,
 	}
 
 	if (mos7840_port->read_urb_busy == false) {
+<<<<<<< HEAD
 		mos7840_port->read_urb->dev = serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		mos7840_port->read_urb_busy = true;
 		status = usb_submit_urb(mos7840_port->read_urb, GFP_ATOMIC);
 		if (status) {
@@ -2269,7 +2290,10 @@ static int mos7840_ioctl(struct tty_struct *tty,
 	case TIOCSERGETLSR:
 		dbg("%s (%d) TIOCSERGETLSR", __func__, port->number);
 		return mos7840_get_lsr_info(tty, argp);
+<<<<<<< HEAD
 		return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	case TIOCGSERIAL:
 		dbg("%s (%d) TIOCGSERIAL", __func__, port->number);
@@ -2652,7 +2676,10 @@ static struct usb_driver io_driver = {
 	.probe = usb_serial_probe,
 	.disconnect = usb_serial_disconnect,
 	.id_table = moschip_id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct usb_serial_driver moschip7840_4port_device = {
@@ -2661,7 +2688,10 @@ static struct usb_serial_driver moschip7840_4port_device = {
 		   .name = "mos7840",
 		   },
 	.description = DRIVER_DESC,
+<<<<<<< HEAD
 	.usb_driver = &io_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = moschip_port_id_table,
 	.num_ports = 4,
 	.open = mos7840_open,
@@ -2688,6 +2718,7 @@ static struct usb_serial_driver moschip7840_4port_device = {
 	.read_int_callback = mos7840_interrupt_callback,
 };
 
+<<<<<<< HEAD
 /****************************************************************************
  * moschip7840_init
  *	This is called by the module subsystem, or on startup to initialize us
@@ -2739,6 +2770,14 @@ module_init(moschip7840_init);
 module_exit(moschip7840_exit);
 
 /* Module information */
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&moschip7840_4port_device, NULL
+};
+
+module_usb_serial_driver(io_driver, serial_drivers);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 

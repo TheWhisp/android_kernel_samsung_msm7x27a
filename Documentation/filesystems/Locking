@@ -29,6 +29,10 @@ d_hash		no		no		no		maybe
 d_compare:	yes		no		no		maybe
 d_delete:	no		yes		no		no
 d_release:	no		no		yes		no
+<<<<<<< HEAD
+=======
+d_prune:        no              yes             no              no
+>>>>>>> refs/remotes/origin/cm-10.0
 d_iput:		no		no		yes		no
 d_dname:	no		no		no		no
 d_automount:	no		no		yes		no
@@ -36,15 +40,25 @@ d_manage:	no		no		yes (ref-walk)	maybe
 
 --------------------------- inode_operations --------------------------- 
 prototypes:
+<<<<<<< HEAD
 	int (*create) (struct inode *,struct dentry *,int, struct nameidata *);
+=======
+	int (*create) (struct inode *,struct dentry *,umode_t, struct nameidata *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dentry * (*lookup) (struct inode *,struct dentry *, struct nameid
 ata *);
 	int (*link) (struct dentry *,struct inode *,struct dentry *);
 	int (*unlink) (struct inode *,struct dentry *);
 	int (*symlink) (struct inode *,struct dentry *,const char *);
+<<<<<<< HEAD
 	int (*mkdir) (struct inode *,struct dentry *,int);
 	int (*rmdir) (struct inode *,struct dentry *);
 	int (*mknod) (struct inode *,struct dentry *,int,dev_t);
+=======
+	int (*mkdir) (struct inode *,struct dentry *,umode_t);
+	int (*rmdir) (struct inode *,struct dentry *);
+	int (*mknod) (struct inode *,struct dentry *,umode_t,dev_t);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*rename) (struct inode *, struct dentry *,
 			struct inode *, struct dentry *);
 	int (*readlink) (struct dentry *, char __user *,int);
@@ -52,7 +66,11 @@ ata *);
 	void (*put_link) (struct dentry *, struct nameidata *, void *);
 	void (*truncate) (struct inode *);
 	int (*permission) (struct inode *, int, unsigned int);
+<<<<<<< HEAD
 	int (*check_acl)(struct inode *, int, unsigned int);
+=======
+	int (*get_acl)(struct inode *, int);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*setattr) (struct dentry *, struct iattr *);
 	int (*getattr) (struct vfsmount *, struct dentry *, struct kstat *);
 	int (*setxattr) (struct dentry *, const char *,const void *,size_t,int);
@@ -80,7 +98,11 @@ put_link:	no
 truncate:	yes		(see below)
 setattr:	yes
 permission:	no (may not block if called in rcu-walk mode)
+<<<<<<< HEAD
 check_acl:	no
+=======
+get_acl:	no
+>>>>>>> refs/remotes/origin/cm-10.0
 getattr:	no
 setxattr:	yes
 getxattr:	no
@@ -116,7 +138,11 @@ prototypes:
 	int (*statfs) (struct dentry *, struct kstatfs *);
 	int (*remount_fs) (struct super_block *, int *, char *);
 	void (*umount_begin) (struct super_block *);
+<<<<<<< HEAD
 	int (*show_options)(struct seq_file *, struct vfsmount *);
+=======
+	int (*show_options)(struct seq_file *, struct dentry *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ssize_t (*quota_read)(struct super_block *, int, char *, size_t, loff_t);
 	ssize_t (*quota_write)(struct super_block *, int, const char *, size_t, loff_t);
 	int (*bdev_try_to_free_page)(struct super_block*, struct page*, gfp_t);
@@ -338,6 +364,7 @@ fl_release_private:	maybe		no
 
 ----------------------- lock_manager_operations ---------------------------
 prototypes:
+<<<<<<< HEAD
 	int (*fl_compare_owner)(struct file_lock *, struct file_lock *);
 	void (*fl_notify)(struct file_lock *);  /* unblock callback */
 	int (*fl_grant)(struct file_lock *, struct file_lock *, int);
@@ -353,6 +380,23 @@ fl_grant:		no		no
 fl_release_private:	maybe		no
 fl_break:		yes		no
 fl_change		yes		no
+=======
+	int (*lm_compare_owner)(struct file_lock *, struct file_lock *);
+	void (*lm_notify)(struct file_lock *);  /* unblock callback */
+	int (*lm_grant)(struct file_lock *, struct file_lock *, int);
+	void (*lm_release_private)(struct file_lock *);
+	void (*lm_break)(struct file_lock *); /* break_lease callback */
+	int (*lm_change)(struct file_lock **, int);
+
+locking rules:
+			file_lock_lock	may block
+lm_compare_owner:	yes		no
+lm_notify:		yes		no
+lm_grant:		no		no
+lm_release_private:	maybe		no
+lm_break:		yes		no
+lm_change		yes		no
+>>>>>>> refs/remotes/origin/cm-10.0
 
 --------------------------- buffer_head -----------------------------------
 prototypes:
@@ -412,7 +456,11 @@ prototypes:
 	int (*open) (struct inode *, struct file *);
 	int (*flush) (struct file *);
 	int (*release) (struct inode *, struct file *);
+<<<<<<< HEAD
 	int (*fsync) (struct file *, int datasync);
+=======
+	int (*fsync) (struct file *, loff_t start, loff_t end, int datasync);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*aio_fsync) (struct kiocb *, int datasync);
 	int (*fasync) (int, struct file *, int);
 	int (*lock) (struct file *, int, struct file_lock *);
@@ -438,9 +486,13 @@ prototypes:
 
 locking rules:
 	All may block except for ->setlease.
+<<<<<<< HEAD
 	No VFS locks held on entry except for ->fsync and ->setlease.
 
 ->fsync() has i_mutex on inode.
+=======
+	No VFS locks held on entry except for ->setlease.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 ->setlease has the file_list_lock held and must not sleep.
 

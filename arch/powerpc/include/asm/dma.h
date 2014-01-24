@@ -24,7 +24,10 @@
 
 #include <asm/io.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifndef MAX_DMA_CHANNELS
 #define MAX_DMA_CHANNELS	8
@@ -34,8 +37,11 @@
 /* Doesn't really apply... */
 #define MAX_DMA_ADDRESS		(~0UL)
 
+<<<<<<< HEAD
 #if !defined(CONFIG_PPC_ISERIES) || defined(CONFIG_PCI)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef HAVE_REALLY_SLOW_DMA_CONTROLLER
 #define dma_outb	outb_p
 #else
@@ -354,7 +360,10 @@ extern int isa_dma_bridge_buggy;
 #define isa_dma_bridge_buggy	(0)
 #endif
 
+<<<<<<< HEAD
 #endif	/* !defined(CONFIG_PPC_ISERIES) || defined(CONFIG_PCI) */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KERNEL__ */
 #endif	/* _ASM_POWERPC_DMA_H */

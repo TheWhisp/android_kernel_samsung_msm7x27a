@@ -9,6 +9,10 @@
  */
 
 #include <linux/suspend.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/smp.h>
 #include <linux/perf_event.h>
 
@@ -20,6 +24,10 @@
 #include <asm/xcr.h>
 #include <asm/suspend.h>
 #include <asm/debugreg.h>
+<<<<<<< HEAD
+=======
+#include <asm/fpu-internal.h> /* pcntxt_mask */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_X86_32
 static struct saved_context saved_context;
@@ -114,7 +122,11 @@ static void __save_processor_state(struct saved_context *ctxt)
 void save_processor_state(void)
 {
 	__save_processor_state(&saved_context);
+<<<<<<< HEAD
 	save_sched_clock_state();
+=======
+	x86_platform.save_sched_clock_state();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #ifdef CONFIG_X86_32
 EXPORT_SYMBOL(save_processor_state);
@@ -224,6 +236,10 @@ static void __restore_processor_state(struct saved_context *ctxt)
 	fix_processor_context();
 
 	do_fpu_end();
+<<<<<<< HEAD
+=======
+	x86_platform.restore_sched_clock_state();
+>>>>>>> refs/remotes/origin/cm-10.0
 	mtrr_bp_restore();
 	perf_restore_debug_store();
 }
@@ -232,7 +248,10 @@ static void __restore_processor_state(struct saved_context *ctxt)
 void restore_processor_state(void)
 {
 	__restore_processor_state(&saved_context);
+<<<<<<< HEAD
 	restore_sched_clock_state();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #ifdef CONFIG_X86_32
 EXPORT_SYMBOL(restore_processor_state);

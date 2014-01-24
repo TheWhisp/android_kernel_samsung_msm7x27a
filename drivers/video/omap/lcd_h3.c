@@ -23,7 +23,11 @@
 #include <linux/platform_device.h>
 #include <linux/i2c/tps65010.h>
 
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "omapfb.h"
 
 #define MODULE_NAME	"omapfb-lcd_h3"
@@ -113,7 +117,11 @@ static int h3_panel_resume(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct platform_driver h3_panel_driver = {
+=======
+static struct platform_driver h3_panel_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.probe		= h3_panel_probe,
 	.remove		= h3_panel_remove,
 	.suspend	= h3_panel_suspend,
@@ -124,6 +132,7 @@ struct platform_driver h3_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init h3_panel_drv_init(void)
 {
 	return platform_driver_register(&h3_panel_driver);
@@ -137,3 +146,6 @@ static void __exit h3_panel_drv_cleanup(void)
 module_init(h3_panel_drv_init);
 module_exit(h3_panel_drv_cleanup);
 
+=======
+module_platform_driver(h3_panel_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

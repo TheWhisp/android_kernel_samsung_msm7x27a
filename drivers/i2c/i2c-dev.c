@@ -17,7 +17,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
+<<<<<<< HEAD
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301 USA.
+>>>>>>> refs/remotes/origin/cm-10.0
 */
 
 /* Note that this is a complete rewrite of Simon Vogl's i2c-dev module.
@@ -251,6 +256,7 @@ static noinline int i2cdev_ioctl_rdrw(struct i2c_client *client,
 	if (rdwr_arg.nmsgs > I2C_RDRW_IOCTL_MAX_MSGS)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	rdwr_pa = kmalloc(rdwr_arg.nmsgs * sizeof(struct i2c_msg), GFP_KERNEL);
 	if (!rdwr_pa)
 		return -ENOMEM;
@@ -260,6 +266,12 @@ static noinline int i2cdev_ioctl_rdrw(struct i2c_client *client,
 		kfree(rdwr_pa);
 		return -EFAULT;
 	}
+=======
+	rdwr_pa = memdup_user(rdwr_arg.msgs,
+			      rdwr_arg.nmsgs * sizeof(struct i2c_msg));
+	if (IS_ERR(rdwr_pa))
+		return PTR_ERR(rdwr_pa);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	data_ptrs = kmalloc(rdwr_arg.nmsgs * sizeof(u8 __user *), GFP_KERNEL);
 	if (data_ptrs == NULL) {
@@ -579,7 +591,11 @@ static int i2cdev_detach_adapter(struct device *dev, void *dummy)
 	return 0;
 }
 
+<<<<<<< HEAD
 int i2cdev_notifier_call(struct notifier_block *nb, unsigned long action,
+=======
+static int i2cdev_notifier_call(struct notifier_block *nb, unsigned long action,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 void *data)
 {
 	struct device *dev = data;

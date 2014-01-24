@@ -78,7 +78,12 @@ unsigned long lx_dsp_reg_read(struct lx6464es *chip, int port)
 	return ioread32(address);
 }
 
+<<<<<<< HEAD
 void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data, u32 len)
+=======
+static void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data,
+			       u32 len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u32 __iomem *address = lx_dsp_register(chip, port);
 	int i;
@@ -95,8 +100,13 @@ void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data)
 	iowrite32(data, address);
 }
 
+<<<<<<< HEAD
 void lx_dsp_reg_writebuf(struct lx6464es *chip, int port, const u32 *data,
 			 u32 len)
+=======
+static void lx_dsp_reg_writebuf(struct lx6464es *chip, int port,
+				const u32 *data, u32 len)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u32 __iomem *address = lx_dsp_register(chip, port);
 	int i;
@@ -432,7 +442,11 @@ int lx_dsp_get_clock_frequency(struct lx6464es *chip, u32 *rfreq)
 	return ret;
 }
 
+<<<<<<< HEAD
 int lx_dsp_get_mac(struct lx6464es *chip, u8 *mac_address)
+=======
+int lx_dsp_get_mac(struct lx6464es *chip)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u32 macmsb, maclsb;
 
@@ -440,12 +454,21 @@ int lx_dsp_get_mac(struct lx6464es *chip, u8 *mac_address)
 	maclsb = lx_dsp_reg_read(chip, eReg_ADMACESLSB) & 0x00FFFFFF;
 
 	/* todo: endianess handling */
+<<<<<<< HEAD
 	mac_address[5] = ((u8 *)(&maclsb))[0];
 	mac_address[4] = ((u8 *)(&maclsb))[1];
 	mac_address[3] = ((u8 *)(&maclsb))[2];
 	mac_address[2] = ((u8 *)(&macmsb))[0];
 	mac_address[1] = ((u8 *)(&macmsb))[1];
 	mac_address[0] = ((u8 *)(&macmsb))[2];
+=======
+	chip->mac_address[5] = ((u8 *)(&maclsb))[0];
+	chip->mac_address[4] = ((u8 *)(&maclsb))[1];
+	chip->mac_address[3] = ((u8 *)(&maclsb))[2];
+	chip->mac_address[2] = ((u8 *)(&macmsb))[0];
+	chip->mac_address[1] = ((u8 *)(&macmsb))[1];
+	chip->mac_address[0] = ((u8 *)(&macmsb))[2];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

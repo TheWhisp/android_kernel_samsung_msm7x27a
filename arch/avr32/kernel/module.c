@@ -19,6 +19,7 @@
 #include <linux/moduleloader.h>
 #include <linux/vmalloc.h>
 
+<<<<<<< HEAD
 void *module_alloc(unsigned long size)
 {
 	if (size == 0)
@@ -26,6 +27,8 @@ void *module_alloc(unsigned long size)
 	return vmalloc(size);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void module_free(struct module *mod, void *module_region)
 {
 	vfree(mod->arch.syminfo);
@@ -299,6 +302,7 @@ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
 	return ret;
 }
 
+<<<<<<< HEAD
 int apply_relocate(Elf32_Shdr *sechdrs, const char *strtab,
 		   unsigned int symindex, unsigned int relindex,
 		   struct module *module)
@@ -308,6 +312,8 @@ int apply_relocate(Elf32_Shdr *sechdrs, const char *strtab,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int module_finalize(const Elf_Ehdr *hdr, const Elf_Shdr *sechdrs,
 		    struct module *module)
 {
@@ -316,7 +322,10 @@ int module_finalize(const Elf_Ehdr *hdr, const Elf_Shdr *sechdrs,
 
 	return 0;
 }
+<<<<<<< HEAD
 
 void module_arch_cleanup(struct module *module)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -33,7 +33,10 @@
 #include <linux/mm.h>
 #include <linux/smp.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlb.h>
 #include <asm/io.h>
 #include <asm/uaccess.h>

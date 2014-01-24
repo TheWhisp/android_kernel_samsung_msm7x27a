@@ -26,12 +26,17 @@
 #include <linux/device.h>
 #include <linux/dma-mapping.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/irqreturn.h>
 #include <linux/proc_fs.h>
 #include <linux/slab.h>
 
 #include <mach/timer.h>
 
+<<<<<<< HEAD
 #include <linux/mm.h>
 #include <linux/pfn.h>
 #include <asm/atomic.h>
@@ -42,6 +47,12 @@
 
 #define ALLOW_MAP_OF_KMALLOC_MEMORY 0
 
+=======
+#include <linux/pfn.h>
+#include <linux/atomic.h>
+#include <mach/dma.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ---- Public Variables ------------------------------------------------- */
 
 /* ---- Private Constants and Types -------------------------------------- */
@@ -51,6 +62,7 @@
 #define CONTROLLER_FROM_HANDLE(handle)    (((handle) >> 4) & 0x0f)
 #define CHANNEL_FROM_HANDLE(handle)       ((handle) & 0x0f)
 
+<<<<<<< HEAD
 #define DMA_MAP_DEBUG   0
 
 #if DMA_MAP_DEBUG
@@ -58,17 +70,22 @@
 #else
 #   define  DMA_MAP_PRINT(fmt, args...)
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* ---- Private Variables ------------------------------------------------ */
 
 static DMA_Global_t gDMA;
 static struct proc_dir_entry *gDmaDir;
 
+<<<<<<< HEAD
 static atomic_t gDmaStatMemTypeKmalloc = ATOMIC_INIT(0);
 static atomic_t gDmaStatMemTypeVmalloc = ATOMIC_INIT(0);
 static atomic_t gDmaStatMemTypeUser = ATOMIC_INIT(0);
 static atomic_t gDmaStatMemTypeCoherent = ATOMIC_INIT(0);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "dma_device.c"
 
 /* ---- Private Function Prototypes -------------------------------------- */
@@ -77,6 +94,7 @@ static atomic_t gDmaStatMemTypeCoherent = ATOMIC_INIT(0);
 
 /****************************************************************************/
 /**
+<<<<<<< HEAD
 *   Displays information for /proc/dma/mem-type
 */
 /****************************************************************************/
@@ -105,6 +123,8 @@ static int dma_proc_read_mem_type(char *buf, char **start, off_t offset,
 
 /****************************************************************************/
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 *   Displays information for /proc/dma/channels
 */
 /****************************************************************************/
@@ -835,7 +855,11 @@ int dma_init(void)
 
 	/* Create /proc/dma/channels and /proc/dma/devices */
 
+<<<<<<< HEAD
 	gDmaDir = create_proc_entry("dma", S_IFDIR | S_IRUGO | S_IXUGO, NULL);
+=======
+	gDmaDir = proc_mkdir("dma", NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (gDmaDir == NULL) {
 		printk(KERN_ERR "Unable to create /proc/dma\n");
@@ -844,8 +868,11 @@ int dma_init(void)
 				       dma_proc_read_channels, NULL);
 		create_proc_read_entry("devices", 0, gDmaDir,
 				       dma_proc_read_devices, NULL);
+<<<<<<< HEAD
 		create_proc_read_entry("mem-type", 0, gDmaDir,
 				       dma_proc_read_mem_type, NULL);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 out:
@@ -1563,6 +1590,7 @@ int dma_set_device_handler(DMA_Device_t dev,	/* Device to set the callback for. 
 }
 
 EXPORT_SYMBOL(dma_set_device_handler);
+<<<<<<< HEAD
 
 /****************************************************************************/
 /**
@@ -2327,3 +2355,5 @@ out:
 }
 
 EXPORT_SYMBOL(dma_unmap);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

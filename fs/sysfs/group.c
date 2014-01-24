@@ -33,7 +33,11 @@ static int create_files(struct sysfs_dirent *dir_sd, struct kobject *kobj,
 	int error = 0, i;
 
 	for (i = 0, attr = grp->attrs; *attr && !error; i++, attr++) {
+<<<<<<< HEAD
 		mode_t mode = 0;
+=======
+		umode_t mode = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* in update mode, we're changing the permissions or
 		 * visibility.  Do this by first removing then
@@ -67,7 +71,15 @@ static int internal_create_group(struct kobject *kobj, int update,
 	/* Updates may happen before the object has been instantiated */
 	if (unlikely(update && !kobj->sd))
 		return -EINVAL;
+<<<<<<< HEAD
 
+=======
+	if (!grp->attrs) {
+		WARN(1, "sysfs: attrs not set by subsystem for group: %s/%s\n",
+			kobj->name, grp->name ? "" : grp->name);
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (grp->name) {
 		error = sysfs_create_subdir(kobj, grp->name, &sd);
 		if (error)

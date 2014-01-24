@@ -10,9 +10,21 @@
 
 #include <asm/unistd.h>
 #include <asm/ftrace.h>
+<<<<<<< HEAD
 #include <mach/entry-macro.S>
 #include <asm/unwind.h>
 
+=======
+#include <asm/unwind.h>
+
+#ifdef CONFIG_NEED_RET_TO_USER
+#include <mach/entry-macro.S>
+#else
+	.macro  arch_ret_to_user, tmp1, tmp2
+	.endm
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "entry-header.S"
 
 
@@ -87,7 +99,11 @@ ENTRY(ret_from_fork)
 	get_thread_info tsk
 	ldr	r1, [tsk, #TI_FLAGS]		@ check for syscall tracing
 	mov	why, #1
+<<<<<<< HEAD
 	tst	r1, #_TIF_SYSCALL_TRACE		@ are we tracing syscalls?
+=======
+	tst	r1, #_TIF_SYSCALL_WORK		@ are we tracing syscalls?
+>>>>>>> refs/remotes/origin/cm-10.0
 	beq	ret_slow_syscall
 	mov	r1, sp
 	mov	r0, #1				@ trace exit [IP = 1]
@@ -149,6 +165,14 @@ ENDPROC(ret_from_fork)
 #endif
 #endif
 
+<<<<<<< HEAD
+=======
+.macro mcount_adjust_addr rd, rn
+	bic	\rd, \rn, #1		@ clear the Thumb bit if present
+	sub	\rd, \rd, #MCOUNT_INSN_SIZE
+.endm
+
+>>>>>>> refs/remotes/origin/cm-10.0
 .macro __mcount suffix
 	mcount_enter
 	ldr	r0, =ftrace_trace_function
@@ -173,8 +197,12 @@ ENDPROC(ret_from_fork)
 	mcount_exit
 
 1: 	mcount_get_lr	r1			@ lr of instrumented func
+<<<<<<< HEAD
 	mov	r0, lr				@ instrumented function
 	sub	r0, r0, #MCOUNT_INSN_SIZE
+=======
+	mcount_adjust_addr	r0, lr		@ instrumented function
+>>>>>>> refs/remotes/origin/cm-10.0
 	adr	lr, BSYM(2f)
 	mov	pc, r2
 2:	mcount_exit
@@ -184,8 +212,12 @@ ENDPROC(ret_from_fork)
 	mcount_enter
 
 	mcount_get_lr	r1			@ lr of instrumented func
+<<<<<<< HEAD
 	mov	r0, lr				@ instrumented function
 	sub	r0, r0, #MCOUNT_INSN_SIZE
+=======
+	mcount_adjust_addr	r0, lr		@ instrumented function
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.globl ftrace_call\suffix
 ftrace_call\suffix:
@@ -205,11 +237,19 @@ ftrace_graph_call\suffix:
 #ifdef CONFIG_DYNAMIC_FTRACE
 	@ called from __ftrace_caller, saved in mcount_enter
 	ldr	r1, [sp, #16]		@ instrumented routine (func)
+<<<<<<< HEAD
 #else
 	@ called from __mcount, untouched in lr
 	mov	r1, lr			@ instrumented routine (func)
 #endif
 	sub	r1, r1, #MCOUNT_INSN_SIZE
+=======
+	mcount_adjust_addr	r1, r1
+#else
+	@ called from __mcount, untouched in lr
+	mcount_adjust_addr	r1, lr	@ instrumented routine (func)
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov	r2, fp			@ frame pointer
 	bl	prepare_ftrace_return
 	mcount_exit
@@ -443,7 +483,11 @@ ENTRY(vector_swi)
 1:
 #endif
 
+<<<<<<< HEAD
 	tst	r10, #_TIF_SYSCALL_TRACE		@ are we tracing syscalls?
+=======
+	tst	r10, #_TIF_SYSCALL_WORK		@ are we tracing syscalls?
+>>>>>>> refs/remotes/origin/cm-10.0
 	bne	__sys_trace
 
 	cmp	scno, #NR_syscalls		@ check upper syscall limit

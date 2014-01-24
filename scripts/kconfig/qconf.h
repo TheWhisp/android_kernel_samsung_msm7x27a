@@ -311,7 +311,11 @@ public slots:
 	void listFocusChanged(void);
 	void goBack(void);
 	void loadConfig(void);
+<<<<<<< HEAD
 	void saveConfig(void);
+=======
+	bool saveConfig(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 	void saveConfigAs(void);
 	void searchConfig(void);
 	void showSingleView(void);

@@ -87,10 +87,18 @@ static void __init cm_a510_init(void)
 }
 
 MACHINE_START(CM_A510, "Compulab CM-A510 Board")
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= cm_a510_init,
 	.map_io		= dove_map_io,
 	.init_early	= dove_init_early,
 	.init_irq	= dove_init_irq,
 	.timer		= &dove_timer,
+<<<<<<< HEAD
+=======
+	.restart	= dove_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

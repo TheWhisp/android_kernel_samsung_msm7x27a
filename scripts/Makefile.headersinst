@@ -4,12 +4,22 @@
 # header-y  - list files to be installed. They are preprocessed
 #             to remove __KERNEL__ section of the file
 # objhdr-y  - Same as header-y but for generated files
+<<<<<<< HEAD
+=======
+# genhdr-y  - Same as objhdr-y but in a generated/ directory
+>>>>>>> refs/remotes/origin/cm-10.0
 #
 # ==========================================================================
 
 # called may set destination dir (when installing to asm/)
 _dst := $(if $(dst),$(dst),$(obj))
 
+<<<<<<< HEAD
+=======
+# generated header directory
+gen := $(if $(gen),$(gen),$(subst include/,include/generated/,$(obj)))
+
+>>>>>>> refs/remotes/origin/cm-10.0
 kbuild-file := $(srctree)/$(obj)/Kbuild
 include $(kbuild-file)
 
@@ -33,9 +43,16 @@ wrapper-files := $(filter $(header-y), $(generic-y))
 
 # all headers files for this dir
 header-y      := $(filter-out $(generic-y), $(header-y))
+<<<<<<< HEAD
 all-files     := $(header-y) $(objhdr-y) $(wrapper-files)
 input-files   := $(addprefix $(srctree)/$(obj)/,$(header-y)) \
                  $(addprefix $(objtree)/$(obj)/,$(objhdr-y))
+=======
+all-files     := $(header-y) $(objhdr-y) $(genhdr-y) $(wrapper-files)
+input-files   := $(addprefix $(srctree)/$(obj)/,$(header-y)) \
+                 $(addprefix $(objtree)/$(obj)/,$(objhdr-y)) \
+                 $(addprefix $(objtree)/$(gen)/,$(genhdr-y))
+>>>>>>> refs/remotes/origin/cm-10.0
 output-files  := $(addprefix $(install)/, $(all-files))
 
 # Work out what needs to be removed
@@ -52,6 +69,10 @@ quiet_cmd_install = INSTALL $(printdir) ($(words $(all-files))\
       cmd_install = \
         $(PERL) $< $(srctree)/$(obj) $(install) $(SRCARCH) $(header-y); \
         $(PERL) $< $(objtree)/$(obj) $(install) $(SRCARCH) $(objhdr-y); \
+<<<<<<< HEAD
+=======
+        $(PERL) $< $(objtree)/$(gen) $(install) $(SRCARCH) $(genhdr-y); \
+>>>>>>> refs/remotes/origin/cm-10.0
         for F in $(wrapper-files); do                                   \
                 echo "\#include <asm-generic/$$F>" > $(install)/$$F;    \
         done;                                                           \

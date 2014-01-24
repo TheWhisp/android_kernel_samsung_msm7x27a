@@ -1,7 +1,11 @@
 /*
  *	w1_family.h
  *
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,7 +28,11 @@
 
 #include <linux/types.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define W1_FAMILY_DEFAULT	0
 #define W1_FAMILY_SMEM_01	0x01
@@ -38,6 +46,11 @@
 #define W1_EEPROM_DS2431	0x2D
 #define W1_FAMILY_DS2760	0x30
 #define W1_FAMILY_DS2780	0x32
+<<<<<<< HEAD
+=======
+#define W1_FAMILY_DS2781	0x3D
+#define W1_THERM_DS28EA00	0x42
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MAXNAMELEN		32
 

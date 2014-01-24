@@ -1076,7 +1076,11 @@ int
 lpfc_vport_symbolic_node_name(struct lpfc_vport *vport, char *symbol,
 	size_t size)
 {
+<<<<<<< HEAD
 	char fwrev[16];
+=======
+	char fwrev[FW_REV_STR_SIZE];
+>>>>>>> refs/remotes/origin/cm-10.0
 	int n;
 
 	lpfc_decode_firmware_rev(vport->phba, fwrev, 0);
@@ -1834,7 +1838,11 @@ lpfc_decode_firmware_rev(struct lpfc_hba *phba, char *fwrevision, int flag)
 	uint8_t *fwname;
 
 	if (phba->sli_rev == LPFC_SLI_REV4)
+<<<<<<< HEAD
 		sprintf(fwrevision, "%s", vp->rev.opFwName);
+=======
+		snprintf(fwrevision, FW_REV_STR_SIZE, "%s", vp->rev.opFwName);
+>>>>>>> refs/remotes/origin/cm-10.0
 	else if (vp->rev.rBit) {
 		if (psli->sli_flag & LPFC_SLI_ACTIVE)
 			rev = vp->rev.sli2FwRev;
@@ -1856,6 +1864,12 @@ lpfc_decode_firmware_rev(struct lpfc_hba *phba, char *fwrevision, int flag)
 		case 2:
 			c = 'B';
 			break;
+<<<<<<< HEAD
+=======
+		case 3:
+			c = 'X';
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		default:
 			c = 0;
 			break;

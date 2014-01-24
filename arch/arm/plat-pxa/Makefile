@@ -4,7 +4,10 @@
 
 obj-y	:= dma.o
 
+<<<<<<< HEAD
 obj-$(CONFIG_GENERIC_GPIO)	+= gpio.o
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_PXA3xx)		+= mfp.o
 obj-$(CONFIG_PXA95x)		+= mfp.o
 obj-$(CONFIG_ARCH_MMP)		+= mfp.o

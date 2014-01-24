@@ -4,12 +4,21 @@
  *
  * Author       Matt Henderson & Guy Ellis
  * Copyright    by Traverse Technologies Pty Ltd, www.travers.com.au
+<<<<<<< HEAD
  * 
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
  * 1999.7.14 Initial implementation of routines for Siemens ISDN 
  * Communication Controller PEB 2070 based on the ISAC routines 
+=======
+ *
+ * This software may be used and distributed according to the terms
+ * of the GNU General Public License, incorporated herein by reference.
+ *
+ * 1999.7.14 Initial implementation of routines for Siemens ISDN
+ * Communication Controller PEB 2070 based on the ISAC routines
+>>>>>>> refs/remotes/origin/cm-10.0
  * written by Karsten Keil.
  */
 

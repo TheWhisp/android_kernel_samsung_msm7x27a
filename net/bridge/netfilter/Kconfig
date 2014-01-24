@@ -4,7 +4,11 @@
 
 menuconfig BRIDGE_NF_EBTABLES
 	tristate "Ethernet Bridge tables (ebtables) support"
+<<<<<<< HEAD
 	depends on BRIDGE && BRIDGE_NETFILTER
+=======
+	depends on BRIDGE && NETFILTER
+>>>>>>> refs/remotes/origin/cm-10.0
 	select NETFILTER_XTABLES
 	help
 	  ebtables is a general, extensible frame/packet identification

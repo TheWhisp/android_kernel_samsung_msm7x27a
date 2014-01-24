@@ -1138,6 +1138,7 @@ static struct platform_driver envctrl_driver = {
 	.remove		= __devexit_p(envctrl_remove),
 };
 
+<<<<<<< HEAD
 static int __init envctrl_init(void)
 {
 	return platform_driver_register(&envctrl_driver);
@@ -1150,4 +1151,8 @@ static void __exit envctrl_exit(void)
 
 module_init(envctrl_init);
 module_exit(envctrl_exit);
+=======
+module_platform_driver(envctrl_driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");

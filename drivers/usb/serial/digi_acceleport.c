@@ -13,6 +13,7 @@
 *
 *  Peter Berger (pberger@brimson.com)
 *  Al Borchers (borchers@steinerpoint.com)
+<<<<<<< HEAD
 * 
 * (12/03/2001) gkh
 *	switched to using port->port.count instead of private version.
@@ -229,6 +230,8 @@
 *    in case a wake up is lost.
 *  - Following Documentation/DocBook/kernel-locking.pdf no spin locks
 *    are held when calling copy_to/from_user or printk.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 */
 
 #include <linux/kernel.h>
@@ -467,7 +470,11 @@ static int digi_read_oob_callback(struct urb *urb);
 
 /* Statics */
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct usb_device_id id_table_combined[] = {
 	{ USB_DEVICE(DIGI_VENDOR_ID, DIGI_2_ID) },
@@ -492,7 +499,10 @@ static struct usb_driver digi_driver = {
 	.probe =	usb_serial_probe,
 	.disconnect =	usb_serial_disconnect,
 	.id_table =	id_table_combined,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -504,7 +514,10 @@ static struct usb_serial_driver digi_acceleport_2_device = {
 		.name =			"digi_2",
 	},
 	.description =			"Digi 2 port USB adapter",
+<<<<<<< HEAD
 	.usb_driver = 			&digi_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =			id_table_2,
 	.num_ports =			3,
 	.open =				digi_open,
@@ -532,7 +545,10 @@ static struct usb_serial_driver digi_acceleport_4_device = {
 		.name =			"digi_4",
 	},
 	.description =			"Digi 4 port USB adapter",
+<<<<<<< HEAD
 	.usb_driver = 			&digi_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table =			id_table_4,
 	.num_ports =			4,
 	.open =				digi_open,
@@ -553,6 +569,12 @@ static struct usb_serial_driver digi_acceleport_4_device = {
 	.release =			digi_release,
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&digi_acceleport_2_device, &digi_acceleport_4_device, NULL
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Functions */
 
@@ -654,7 +676,10 @@ static int digi_write_oob_command(struct usb_serial_port *port,
 			len &= ~3;
 		memcpy(oob_port->write_urb->transfer_buffer, buf, len);
 		oob_port->write_urb->transfer_buffer_length = len;
+<<<<<<< HEAD
 		oob_port->write_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = usb_submit_urb(oob_port->write_urb, GFP_ATOMIC);
 		if (ret == 0) {
 			oob_priv->dp_write_urb_in_use = 1;
@@ -732,7 +757,10 @@ static int digi_write_inb_command(struct usb_serial_port *port,
 			memcpy(data, buf, len);
 			port->write_urb->transfer_buffer_length = len;
 		}
+<<<<<<< HEAD
 		port->write_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ret = usb_submit_urb(port->write_urb, GFP_ATOMIC);
 		if (ret == 0) {
@@ -803,7 +831,10 @@ static int digi_set_modem_signals(struct usb_serial_port *port,
 	data[7] = 0;
 
 	oob_port->write_urb->transfer_buffer_length = 8;
+<<<<<<< HEAD
 	oob_port->write_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = usb_submit_urb(oob_port->write_urb, GFP_ATOMIC);
 	if (ret == 0) {
@@ -899,10 +930,15 @@ static void digi_rx_unthrottle(struct tty_struct *tty)
 	spin_lock_irqsave(&priv->dp_port_lock, flags);
 
 	/* restart read chain */
+<<<<<<< HEAD
 	if (priv->dp_throttle_restart) {
 		port->read_urb->dev = port->serial->dev;
 		ret = usb_submit_urb(port->read_urb, GFP_ATOMIC);
 	}
+=======
+	if (priv->dp_throttle_restart)
+		ret = usb_submit_urb(port->read_urb, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* turn throttle off */
 	priv->dp_throttled = 0;
@@ -1195,7 +1231,10 @@ static int digi_write(struct tty_struct *tty, struct usb_serial_port *port,
 	}
 
 	port->write_urb->transfer_buffer_length = data_len+2;
+<<<<<<< HEAD
 	port->write_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*data++ = DIGI_CMD_SEND_DATA;
 	*data++ = data_len;
@@ -1217,7 +1256,11 @@ static int digi_write(struct tty_struct *tty, struct usb_serial_port *port,
 	/* return length of new data written, or error */
 	spin_unlock_irqrestore(&priv->dp_port_lock, flags);
 	if (ret < 0)
+<<<<<<< HEAD
 		dev_err(&port->dev,
+=======
+		dev_err_console(port,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"%s: usb_submit_urb failed, ret=%d, port=%d\n",
 			__func__, ret, priv->dp_port_num);
 	dbg("digi_write: returning %d", ret);
@@ -1271,7 +1314,10 @@ static void digi_write_bulk_callback(struct urb *urb)
 			= (unsigned char)priv->dp_out_buf_len;
 		port->write_urb->transfer_buffer_length =
 						priv->dp_out_buf_len + 2;
+<<<<<<< HEAD
 		port->write_urb->dev = serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		memcpy(port->write_urb->transfer_buffer + 2, priv->dp_out_buf,
 			priv->dp_out_buf_len);
 		ret = usb_submit_urb(port->write_urb, GFP_ATOMIC);
@@ -1288,7 +1334,11 @@ static void digi_write_bulk_callback(struct urb *urb)
 
 	spin_unlock(&priv->dp_port_lock);
 	if (ret && ret != -EPERM)
+<<<<<<< HEAD
 		dev_err(&port->dev,
+=======
+		dev_err_console(port,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"%s: usb_submit_urb failed, ret=%d, port=%d\n",
 			__func__, ret, priv->dp_port_num);
 }
@@ -1473,7 +1523,10 @@ static int digi_startup_device(struct usb_serial *serial)
 	/* set USB_DISABLE_SPD flag for write bulk urbs */
 	for (i = 0; i < serial->type->num_ports + 1; i++) {
 		port = serial->port[i];
+<<<<<<< HEAD
 		port->write_urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = usb_submit_urb(port->read_urb, GFP_KERNEL);
 		if (ret != 0) {
 			dev_err(&port->dev,
@@ -1616,7 +1669,10 @@ static void digi_read_bulk_callback(struct urb *urb)
 	}
 
 	/* continue read */
+<<<<<<< HEAD
 	urb->dev = port->serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = usb_submit_urb(urb, GFP_ATOMIC);
 	if (ret != 0 && ret != -EPERM) {
 		dev_err(&port->dev,
@@ -1805,6 +1861,7 @@ static int digi_read_oob_callback(struct urb *urb)
 
 }
 
+<<<<<<< HEAD
 static int __init digi_init(void)
 {
 	int retval;
@@ -1839,6 +1896,9 @@ static void __exit digi_exit (void)
 module_init(digi_init);
 module_exit(digi_exit);
 
+=======
+module_usb_serial_driver(digi_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

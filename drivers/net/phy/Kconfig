@@ -15,6 +15,14 @@ if PHYLIB
 
 comment "MII PHY device drivers"
 
+<<<<<<< HEAD
+=======
+config AMD_PHY
+	tristate "Drivers for the AMD PHYs"
+	---help---
+	  Currently supports the am79c874
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config MARVELL_PHY
 	tristate "Drivers for Marvell PHYs"
 	---help---
@@ -131,3 +139,10 @@ config MDIO_OCTEON
 	  If in doubt, say Y.
 
 endif # PHYLIB
+<<<<<<< HEAD
+=======
+
+config MICREL_KS8995MA
+	tristate "Micrel KS8995MA 5-ports 10/100 managed Ethernet switch"
+	depends on SPI
+>>>>>>> refs/remotes/origin/cm-10.0

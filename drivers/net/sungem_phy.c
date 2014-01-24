@@ -33,7 +33,11 @@
 #include <asm/prom.h>
 #endif
 
+<<<<<<< HEAD
 #include "sungem_phy.h"
+=======
+#include <linux/sungem_phy.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Link modes of the BCM5400 PHY */
 static const int phy_BCM5400_link_table[8][3] = {
@@ -1156,7 +1160,11 @@ static struct mii_phy_def* mii_phy_table[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 int mii_phy_probe(struct mii_phy *phy, int mii_id)
+=======
+int sungem_phy_probe(struct mii_phy *phy, int mii_id)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int rc;
 	u32 id;
@@ -1195,6 +1203,11 @@ fail:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 EXPORT_SYMBOL(mii_phy_probe);
 MODULE_LICENSE("GPL");
 
+=======
+EXPORT_SYMBOL(sungem_phy_probe);
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/cm-10.0

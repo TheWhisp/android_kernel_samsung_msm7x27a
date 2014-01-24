@@ -1,6 +1,10 @@
 config SND_ATMEL_SOC
 	tristate "SoC Audio for the Atmel System-on-Chip"
+<<<<<<< HEAD
 	depends on ARCH_AT91 || AVR32
+=======
+	depends on ARCH_AT91
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Say Y or M if you want to add support for codecs attached to
 	  the ATMEL SSC interface. You will also need
@@ -24,6 +28,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
 	  Say Y if you want to add support for SoC audio on WM8731-based
 	  AT91sam9g20 evaluation board.
 
+<<<<<<< HEAD
 config SND_AT32_SOC_PLAYPAQ
         tristate "SoC Audio support for PlayPaq with WM8510"
         depends on SND_ATMEL_SOC && BOARD_PLAYPAQ && AT91_PROGRAMMABLE_CLOCKS
@@ -46,6 +51,11 @@ config SND_AT32_SOC_PLAYPAQ_SLAVE
 config SND_AT91_SOC_AFEB9260
 	tristate "SoC Audio support for AFEB9260 board"
 	depends on ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
+=======
+config SND_AT91_SOC_AFEB9260
+	tristate "SoC Audio support for AFEB9260 board"
+	depends on ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SND_ATMEL_SOC_SSC
 	select SND_SOC_TLV320AIC23
 	help

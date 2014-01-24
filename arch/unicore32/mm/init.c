@@ -20,11 +20,19 @@
 #include <linux/memblock.h>
 #include <linux/sort.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/sections.h>
 #include <asm/setup.h>
 #include <asm/sizes.h>
 #include <asm/tlb.h>
+<<<<<<< HEAD
+=======
+#include <asm/memblock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/map.h>
 
 #include "mm.h"
@@ -64,6 +72,12 @@ void show_mem(unsigned int filter)
 	printk(KERN_DEFAULT "Mem-info:\n");
 	show_free_areas(filter);
 
+<<<<<<< HEAD
+=======
+	if (filter & SHOW_MEM_FILTER_PAGE_COUNT)
+		return;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for_each_bank(i, mi) {
 		struct membank *bank = &mi->bank[i];
 		unsigned int pfn1, pfn2;
@@ -244,7 +258,10 @@ void __init uc32_memblock_init(struct meminfo *mi)
 	sort(&meminfo.bank, meminfo.nr_banks, sizeof(meminfo.bank[0]),
 		meminfo_cmp, NULL);
 
+<<<<<<< HEAD
 	memblock_init();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < mi->nr_banks; i++)
 		memblock_add(mi->bank[i].start, mi->bank[i].size);
 
@@ -263,7 +280,11 @@ void __init uc32_memblock_init(struct meminfo *mi)
 
 	uc32_mm_memblock_reserve();
 
+<<<<<<< HEAD
 	memblock_analyze();
+=======
+	memblock_allow_resize();
+>>>>>>> refs/remotes/origin/cm-10.0
 	memblock_dump_all();
 }
 

@@ -3,7 +3,11 @@
  *
  * Copyright 2006-2009 Wolfson Microelectronics PLC.
  *
+<<<<<<< HEAD
  * Author: Liam Girdwood <linux@wolfsonmicro.com>
+=======
+ * Author: Liam Girdwood <Liam.Girdwood@wolfsonmicro.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -17,7 +21,10 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -49,10 +56,13 @@ static const u16 wm8974_reg[WM8974_CACHEREGNUM] = {
 #define WM8974_POWER1_BIASEN  0x08
 #define WM8974_POWER1_BUFIOEN 0x04
 
+<<<<<<< HEAD
 struct wm8974_priv {
 	enum snd_soc_control_type control_type;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define wm8974_reset(c)	snd_soc_write(c, WM8974_RESET, 0)
 
 static const char *wm8974_companding[] = {"Off", "NC", "u-law", "A-law" };
@@ -226,7 +236,11 @@ SND_SOC_DAPM_MIXER("Input PGA", WM8974_POWER2, 2, 0, wm8974_inpga,
 SND_SOC_DAPM_MIXER("Boost Mixer", WM8974_POWER2, 4, 0,
 		   wm8974_boost_mixer, ARRAY_SIZE(wm8974_boost_mixer)),
 
+<<<<<<< HEAD
 SND_SOC_DAPM_MICBIAS("Mic Bias", WM8974_POWER1, 4, 0),
+=======
+SND_SOC_DAPM_SUPPLY("Mic Bias", WM8974_POWER1, 4, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
 
 SND_SOC_DAPM_INPUT("MICN"),
 SND_SOC_DAPM_INPUT("MICP"),
@@ -236,7 +250,11 @@ SND_SOC_DAPM_OUTPUT("SPKOUTP"),
 SND_SOC_DAPM_OUTPUT("SPKOUTN"),
 };
 
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route wm8974_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Mono output mixer */
 	{"Mono Mixer", "PCM Playback Switch", "DAC"},
 	{"Mono Mixer", "Aux Playback Switch", "Aux Input"},
@@ -270,6 +288,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"Aux Input", NULL, "AUX"},
 };
 
+<<<<<<< HEAD
 static int wm8974_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -281,6 +300,8 @@ static int wm8974_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct pll_ {
 	unsigned int pre_div:1;
 	unsigned int n:4;
@@ -530,6 +551,11 @@ static int wm8974_set_bias_level(struct snd_soc_codec *codec,
 		power1 |= WM8974_POWER1_BIASEN | WM8974_POWER1_BUFIOEN;
 
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+<<<<<<< HEAD
+=======
+			snd_soc_cache_sync(codec);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* Initial cap charge at VMID 5k */
 			snd_soc_write(codec, WM8974_POWER1, power1 | 0x3);
 			mdelay(100);
@@ -555,7 +581,11 @@ static int wm8974_set_bias_level(struct snd_soc_codec *codec,
 #define WM8974_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 	SNDRV_PCM_FMTBIT_S24_LE)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8974_ops = {
+=======
+static const struct snd_soc_dai_ops wm8974_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.hw_params = wm8974_pcm_hw_params,
 	.digital_mute = wm8974_mute,
 	.set_fmt = wm8974_set_dai_fmt,
@@ -581,7 +611,11 @@ static struct snd_soc_dai_driver wm8974_dai = {
 	.symmetric_rates = 1,
 };
 
+<<<<<<< HEAD
 static int wm8974_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8974_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	wm8974_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -589,6 +623,7 @@ static int wm8974_suspend(struct snd_soc_codec *codec, pm_message_t state)
 
 static int wm8974_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	int i;
 	u8 data[2];
 	u16 *cache = codec->reg_cache;
@@ -601,6 +636,9 @@ static int wm8974_resume(struct snd_soc_codec *codec)
 	}
 	wm8974_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+=======
+	wm8974_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -621,9 +659,12 @@ static int wm8974_probe(struct snd_soc_codec *codec)
 	}
 
 	wm8974_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8974_snd_controls,
 			     ARRAY_SIZE(wm8974_snd_controls));
 	wm8974_add_widgets(codec);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -644,6 +685,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8974 = {
 	.reg_cache_size = ARRAY_SIZE(wm8974_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8974_reg,
+<<<<<<< HEAD
 };
 
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
@@ -663,13 +705,36 @@ static __devinit int wm8974_i2c_probe(struct i2c_client *i2c,
 			&soc_codec_dev_wm8974, &wm8974_dai, 1);
 	if (ret < 0)
 		kfree(wm8974);
+=======
+
+	.controls = wm8974_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8974_snd_controls),
+	.dapm_widgets = wm8974_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8974_dapm_widgets),
+	.dapm_routes = wm8974_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8974_dapm_routes),
+};
+
+static __devinit int wm8974_i2c_probe(struct i2c_client *i2c,
+				      const struct i2c_device_id *id)
+{
+	int ret;
+
+	ret = snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_wm8974, &wm8974_dai, 1);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8974_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
+<<<<<<< HEAD
 	kfree(i2c_get_clientdata(client));
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -681,34 +746,51 @@ MODULE_DEVICE_TABLE(i2c, wm8974_i2c_id);
 
 static struct i2c_driver wm8974_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name = "wm8974-codec",
+=======
+		.name = "wm8974",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8974_i2c_probe,
 	.remove =   __devexit_p(wm8974_i2c_remove),
 	.id_table = wm8974_i2c_id,
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init wm8974_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = i2c_add_driver(&wm8974_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register wm8974 I2C driver: %d\n",
 		       ret);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 module_init(wm8974_modinit);
 
 static void __exit wm8974_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 	i2c_del_driver(&wm8974_i2c_driver);
 #endif
+=======
+	i2c_del_driver(&wm8974_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 module_exit(wm8974_exit);
 

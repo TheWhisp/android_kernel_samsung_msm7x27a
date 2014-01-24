@@ -25,7 +25,11 @@
 #include <linux/percpu.h>
 #include <linux/ima.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "internal.h"
 
@@ -204,7 +208,11 @@ EXPORT_SYMBOL(alloc_file);
  * to write to @file, along with access to write through
  * its vfsmount.
  */
+<<<<<<< HEAD
 void drop_file_write_access(struct file *file)
+=======
+static void drop_file_write_access(struct file *file)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct vfsmount *mnt = file->f_path.mnt;
 	struct dentry *dentry = file->f_path.dentry;
@@ -219,7 +227,10 @@ void drop_file_write_access(struct file *file)
 	mnt_drop_write(mnt);
 	file_release_write(file);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(drop_file_write_access);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* the real guts of fput() - releasing the last reference to file
  */
@@ -474,6 +485,7 @@ void file_sb_list_del(struct file *file)
 
 #endif
 
+<<<<<<< HEAD
 int fs_may_remount_ro(struct super_block *sb)
 {
 	struct file *file;
@@ -497,6 +509,8 @@ too_bad:
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  *	mark_files_ro - mark all files read-only
  *	@sb: superblock in question

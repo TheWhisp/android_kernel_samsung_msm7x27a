@@ -42,6 +42,10 @@
 #include <linux/inetdevice.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/sock.h>
 #include <net/raw.h>
 
@@ -55,17 +59,28 @@ static int sockstat_seq_show(struct seq_file *seq, void *v)
 
 	local_bh_disable();
 	orphans = percpu_counter_sum_positive(&tcp_orphan_count);
+<<<<<<< HEAD
 	sockets = percpu_counter_sum_positive(&tcp_sockets_allocated);
+=======
+	sockets = proto_sockets_allocated_sum_positive(&tcp_prot);
+>>>>>>> refs/remotes/origin/cm-10.0
 	local_bh_enable();
 
 	socket_seq_show(seq);
 	seq_printf(seq, "TCP: inuse %d orphan %d tw %d alloc %d mem %ld\n",
 		   sock_prot_inuse_get(net, &tcp_prot), orphans,
 		   tcp_death_row.tw_count, sockets,
+<<<<<<< HEAD
 		   atomic_long_read(&tcp_memory_allocated));
 	seq_printf(seq, "UDP: inuse %d mem %ld\n",
 		   sock_prot_inuse_get(net, &udp_prot),
 		   atomic_long_read(&udp_memory_allocated));
+=======
+		   proto_memory_allocated(&tcp_prot));
+	seq_printf(seq, "UDP: inuse %d mem %ld\n",
+		   sock_prot_inuse_get(net, &udp_prot),
+		   proto_memory_allocated(&udp_prot));
+>>>>>>> refs/remotes/origin/cm-10.0
 	seq_printf(seq, "UDPLITE: inuse %d\n",
 		   sock_prot_inuse_get(net, &udplite_prot));
 	seq_printf(seq, "RAW: inuse %d\n",
@@ -215,7 +230,10 @@ static const struct snmp_mib snmp4_net_list[] = {
 	SNMP_MIB_ITEM("TCPPartialUndo", LINUX_MIB_TCPPARTIALUNDO),
 	SNMP_MIB_ITEM("TCPDSACKUndo", LINUX_MIB_TCPDSACKUNDO),
 	SNMP_MIB_ITEM("TCPLossUndo", LINUX_MIB_TCPLOSSUNDO),
+<<<<<<< HEAD
 	SNMP_MIB_ITEM("TCPLoss", LINUX_MIB_TCPLOSS),
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	SNMP_MIB_ITEM("TCPLostRetransmit", LINUX_MIB_TCPLOSTRETRANSMIT),
 	SNMP_MIB_ITEM("TCPRenoFailures", LINUX_MIB_TCPRENOFAILURES),
 	SNMP_MIB_ITEM("TCPSackFailures", LINUX_MIB_TCPSACKFAILURES),
@@ -253,6 +271,13 @@ static const struct snmp_mib snmp4_net_list[] = {
 	SNMP_MIB_ITEM("TCPDeferAcceptDrop", LINUX_MIB_TCPDEFERACCEPTDROP),
 	SNMP_MIB_ITEM("IPReversePathFilter", LINUX_MIB_IPRPFILTER),
 	SNMP_MIB_ITEM("TCPTimeWaitOverflow", LINUX_MIB_TCPTIMEWAITOVERFLOW),
+<<<<<<< HEAD
+=======
+	SNMP_MIB_ITEM("TCPReqQFullDoCookies", LINUX_MIB_TCPREQQFULLDOCOOKIES),
+	SNMP_MIB_ITEM("TCPReqQFullDrop", LINUX_MIB_TCPREQQFULLDROP),
+	SNMP_MIB_ITEM("TCPRetransFail", LINUX_MIB_TCPRETRANSFAIL),
+	SNMP_MIB_ITEM("TCPRcvCoalesce", LINUX_MIB_TCPRCVCOALESCE),
+>>>>>>> refs/remotes/origin/cm-10.0
 	SNMP_MIB_ITEM("TCPChallengeACK", LINUX_MIB_TCPCHALLENGEACK),
 	SNMP_MIB_ITEM("TCPSYNChallenge", LINUX_MIB_TCPSYNCHALLENGE),
 	SNMP_MIB_SENTINEL
@@ -286,7 +311,11 @@ static void icmpmsg_put(struct seq_file *seq)
 
 	count = 0;
 	for (i = 0; i < ICMPMSG_MIB_MAX; i++) {
+<<<<<<< HEAD
 		val = snmp_fold_field((void __percpu **) net->mib.icmpmsg_statistics, i);
+=======
+		val = atomic_long_read(&net->mib.icmpmsg_statistics->mibs[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (val) {
 			type[count] = i;
 			vals[count++] = val;
@@ -305,6 +334,10 @@ static void icmp_put(struct seq_file *seq)
 {
 	int i;
 	struct net *net = seq->private;
+<<<<<<< HEAD
+=======
+	atomic_long_t *ptr = net->mib.icmpmsg_statistics->mibs;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	seq_puts(seq, "\nIcmp: InMsgs InErrors");
 	for (i=0; icmpmibmap[i].name != NULL; i++)
@@ -317,15 +350,23 @@ static void icmp_put(struct seq_file *seq)
 		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_INERRORS));
 	for (i=0; icmpmibmap[i].name != NULL; i++)
 		seq_printf(seq, " %lu",
+<<<<<<< HEAD
 			snmp_fold_field((void __percpu **) net->mib.icmpmsg_statistics,
 				icmpmibmap[i].index));
+=======
+			   atomic_long_read(ptr + icmpmibmap[i].index));
+>>>>>>> refs/remotes/origin/cm-10.0
 	seq_printf(seq, " %lu %lu",
 		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_OUTMSGS),
 		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_OUTERRORS));
 	for (i=0; icmpmibmap[i].name != NULL; i++)
 		seq_printf(seq, " %lu",
+<<<<<<< HEAD
 			snmp_fold_field((void __percpu **) net->mib.icmpmsg_statistics,
 				icmpmibmap[i].index | 0x100));
+=======
+			   atomic_long_read(ptr + (icmpmibmap[i].index | 0x100)));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*

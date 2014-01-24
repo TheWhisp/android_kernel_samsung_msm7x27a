@@ -359,7 +359,10 @@
 #include <asm/byteorder.h>
 #include <asm/processor.h>
 #include <asm/types.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>

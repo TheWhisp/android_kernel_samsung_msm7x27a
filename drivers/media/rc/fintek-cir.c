@@ -117,7 +117,11 @@ static u8 fintek_cir_reg_read(struct fintek_dev *fintek, u8 offset)
 static void cir_dump_regs(struct fintek_dev *fintek)
 {
 	fintek_config_mode_enable(fintek);
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	pr_reg("%s: Dump CIR logical device registers:\n", FINTEK_DRIVER_NAME);
 	pr_reg(" * CR CIR BASE ADDR: 0x%x\n",
@@ -143,7 +147,11 @@ static int fintek_hw_detect(struct fintek_dev *fintek)
 	u8 chip_major, chip_minor;
 	u8 vendor_major, vendor_minor;
 	u8 portsel, ir_class;
+<<<<<<< HEAD
 	u16 vendor;
+=======
+	u16 vendor, chip;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0;
 
 	fintek_config_mode_enable(fintek);
@@ -176,6 +184,10 @@ static int fintek_hw_detect(struct fintek_dev *fintek)
 
 	chip_major = fintek_cr_read(fintek, GCR_CHIP_ID_HI);
 	chip_minor = fintek_cr_read(fintek, GCR_CHIP_ID_LO);
+<<<<<<< HEAD
+=======
+	chip  = chip_major << 8 | chip_minor;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	vendor_major = fintek_cr_read(fintek, GCR_VENDOR_ID_HI);
 	vendor_minor = fintek_cr_read(fintek, GCR_VENDOR_ID_LO);
@@ -192,6 +204,18 @@ static int fintek_hw_detect(struct fintek_dev *fintek)
 	fintek->chip_major  = chip_major;
 	fintek->chip_minor  = chip_minor;
 	fintek->chip_vendor = vendor;
+<<<<<<< HEAD
+=======
+
+	/*
+	 * Newer reviews of this chipset uses port 8 instead of 5
+	 */
+	if ((chip != 0x0408) && (chip != 0x0804))
+		fintek->logical_dev_cir = LOGICAL_DEV_CIR_REV2;
+	else
+		fintek->logical_dev_cir = LOGICAL_DEV_CIR_REV1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&fintek->fintek_lock, flags);
 
 	return ret;
@@ -200,7 +224,11 @@ static int fintek_hw_detect(struct fintek_dev *fintek)
 static void fintek_cir_ldev_init(struct fintek_dev *fintek)
 {
 	/* Select CIR logical device and enable */
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fintek_cr_write(fintek, LOGICAL_DEV_ENABLE, CIR_CR_DEV_EN);
 
 	/* Write allocated CIR address and IRQ information to hardware */
@@ -381,7 +409,11 @@ static irqreturn_t fintek_cir_isr(int irq, void *data)
 	fit_dbg_verbose("%s firing", __func__);
 
 	fintek_config_mode_enable(fintek);
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fintek_config_mode_disable(fintek);
 
 	/*
@@ -422,7 +454,11 @@ static void fintek_enable_cir(struct fintek_dev *fintek)
 	fintek_config_mode_enable(fintek);
 
 	/* enable the CIR logical device */
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fintek_cr_write(fintek, LOGICAL_DEV_ENABLE, CIR_CR_DEV_EN);
 
 	fintek_config_mode_disable(fintek);
@@ -439,7 +475,11 @@ static void fintek_disable_cir(struct fintek_dev *fintek)
 	fintek_config_mode_enable(fintek);
 
 	/* disable the CIR logical device */
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fintek_cr_write(fintek, LOGICAL_DEV_DISABLE, CIR_CR_DEV_EN);
 
 	fintek_config_mode_disable(fintek);
@@ -611,7 +651,11 @@ static int fintek_suspend(struct pnp_dev *pdev, pm_message_t state)
 	fintek_config_mode_enable(fintek);
 
 	/* disable cir logical dev */
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fintek_cr_write(fintek, LOGICAL_DEV_DISABLE, CIR_CR_DEV_EN);
 
 	fintek_config_mode_disable(fintek);
@@ -634,7 +678,11 @@ static int fintek_resume(struct pnp_dev *pdev)
 
 	/* Enable CIR logical device */
 	fintek_config_mode_enable(fintek);
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fintek_cr_write(fintek, LOGICAL_DEV_ENABLE, CIR_CR_DEV_EN);
 
 	fintek_config_mode_disable(fintek);

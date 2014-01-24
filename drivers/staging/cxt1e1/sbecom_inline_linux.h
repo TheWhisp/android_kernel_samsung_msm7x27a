@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 /*
  * $Id: sbecom_inline_linux.h,v 1.2 2007/08/15 22:51:35 rickd PMCC4_3_1B $
  */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _INC_SBECOM_INLNX_H_
 #define _INC_SBECOM_INLNX_H_
 
@@ -24,6 +27,7 @@
  * For further information, contact via email: support@onestopsystems.com
  * One Stop Systems, Inc.  Escondido, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.2 $
  * Last changed on $Date: 2007/08/15 22:51:35 $
@@ -63,11 +67,19 @@
 #endif
 #endif
 
+=======
+ */
+
+
+#include <linux/types.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>       /* resolves kmalloc references */
 #include <linux/skbuff.h>       /* resolves skb references */
 #include <linux/netdevice.h>    /* resolves dev_kree_skb_any */
 #include <asm/byteorder.h>      /* resolves cpu_to_le32 */
 
+<<<<<<< HEAD
 #if 0
 
 /*** PORT POINT WARNING
@@ -113,12 +125,17 @@ pci_write_32 (u_int32_t *p, u_int32_t v)
                                      * writing routines. */
 }
 #else
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* forward reference */
 u_int32_t   pci_read_32 (u_int32_t *p);
 void        pci_write_32 (u_int32_t *p, u_int32_t v);
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * system dependent callbacks

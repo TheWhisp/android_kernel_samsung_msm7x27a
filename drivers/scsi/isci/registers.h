@@ -370,6 +370,30 @@ struct scu_iit_entry {
 		>> SMU_DEVICE_CONTEXT_CAPACITY_MAX_RNC_SHIFT \
 	)
 
+<<<<<<< HEAD
+=======
+/* ***************************************************************************** */
+#define SMU_CLOCK_GATING_CONTROL_IDLE_ENABLE_SHIFT    (0)
+#define SMU_CLOCK_GATING_CONTROL_IDLE_ENABLE_MASK     (0x00000001)
+#define SMU_CLOCK_GATING_CONTROL_XCLK_ENABLE_SHIFT    (1)
+#define SMU_CLOCK_GATING_CONTROL_XCLK_ENABLE_MASK     (0x00000002)
+#define SMU_CLOCK_GATING_CONTROL_TXCLK_ENABLE_SHIFT   (2)
+#define SMU_CLOCK_GATING_CONTROL_TXCLK_ENABLE_MASK    (0x00000004)
+#define SMU_CLOCK_GATING_CONTROL_REGCLK_ENABLE_SHIFT  (3)
+#define SMU_CLOCK_GATING_CONTROL_REGCLK_ENABLE_MASK   (0x00000008)
+#define SMU_CLOCK_GATING_CONTROL_IDLE_TIMEOUT_SHIFT   (16)
+#define SMU_CLOCK_GATING_CONTROL_IDLE_TIMEOUT_MASK    (0x000F0000)
+#define SMU_CLOCK_GATING_CONTROL_FORCE_IDLE_SHIFT     (31)
+#define SMU_CLOCK_GATING_CONTROL_FORCE_IDLE_MASK      (0x80000000)
+#define SMU_CLOCK_GATING_CONTROL_RESERVED_MASK        (0x7FF0FFF0)
+
+#define SMU_CGUCR_GEN_VAL(name, value) \
+	SCU_GEN_VALUE(SMU_CLOCK_GATING_CONTROL_##name, value)
+
+#define SMU_CGUCR_GEN_BIT(name) \
+	SCU_GEN_BIT(SMU_CLOCK_GATING_CONTROL_##name)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* -------------------------------------------------------------------------- */
 
 #define SMU_CONTROL_STATUS_TASK_CONTEXT_RANGE_ENABLE_SHIFT      (0)
@@ -875,6 +899,7 @@ struct scu_iit_entry {
 #define SCU_PTSxSR_GEN_BIT(name) \
 	SCU_GEN_BIT(SCU_PTSG_PORT_TASK_SCHEDULER_STATUS_ ## name)
 
+<<<<<<< HEAD
 
 /*
  * *****************************************************************************
@@ -991,6 +1016,8 @@ struct scu_iit_entry {
 #define SCU_SGODSR_GEN_BIT(name) \
 	SCU_GEN_BIT(SCU_SGPIO_OUPUT_DATA_SELECT_ ## name)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * *****************************************************************************
  * * SMU Registers
@@ -1108,8 +1135,15 @@ struct smu_registers {
 	u32 mmr_address_window;
 /* 0x00A4 SMDW */
 	u32 mmr_data_window;
+<<<<<<< HEAD
 	u32 reserved_A8;
 	u32 reserved_AC;
+=======
+/* 0x00A8 CGUCR */
+	u32 clock_gating_control;
+/* 0x00AC CGUPC */
+	u32 clock_gating_performance;
+>>>>>>> refs/remotes/origin/cm-10.0
 /* A whole bunch of reserved space */
 	u32 reserved_Bx[4];
 	u32 reserved_Cx[4];
@@ -1529,10 +1563,19 @@ struct scu_sgpio_registers {
 	u32 serial_input_upper;
 /* 0x0018 SGPIO_SGVSCR */
 	u32 vendor_specific_code;
+<<<<<<< HEAD
 /* 0x0020 SGPIO_SGODSR */
 	u32 ouput_data_select[8];
 /* Remainder of memory space 256 bytes */
 	u32 reserved_1444_14ff[0x31];
+=======
+/* 0x001C Reserved */
+	u32 reserved_001c;
+/* 0x0020 SGPIO_SGODSR */
+	u32 output_data_select[8];
+/* Remainder of memory space 256 bytes */
+	u32 reserved_1444_14ff[0x30];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 };
 

@@ -216,10 +216,20 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
 
 void __init setup_arch(char **cmdline_p)
 {
+<<<<<<< HEAD
 	int i;
 
 	/* The bootinfo is located right after the kernel bss */
 	m68k_parse_bootinfo((const struct bi_record *)_end);
+=======
+#ifndef CONFIG_SUN3
+	int i;
+#endif
+
+	/* The bootinfo is located right after the kernel bss */
+	if (!CPU_IS_COLDFIRE)
+		m68k_parse_bootinfo((const struct bi_record *)_end);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (CPU_IS_040)
 		m68k_is040or060 = 4;
@@ -233,7 +243,11 @@ void __init setup_arch(char **cmdline_p)
 	 *  with them, we should add a test to check_bugs() below] */
 #ifndef CONFIG_M68KFPU_EMU_ONLY
 	/* clear the fpu if we have one */
+<<<<<<< HEAD
 	if (m68k_fputype & (FPU_68881|FPU_68882|FPU_68040|FPU_68060)) {
+=======
+	if (m68k_fputype & (FPU_68881|FPU_68882|FPU_68040|FPU_68060|FPU_COLDFIRE)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		volatile int zero = 0;
 		asm volatile ("frestore %0" : : "m" (zero));
 	}
@@ -256,6 +270,13 @@ void __init setup_arch(char **cmdline_p)
 	init_mm.end_data = (unsigned long)_edata;
 	init_mm.brk = (unsigned long)_end;
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_BOOTPARAM)
+	strncpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
+	m68k_command_line[CL_SIZE - 1] = 0;
+#endif /* CONFIG_BOOTPARAM */
+>>>>>>> refs/remotes/origin/cm-10.0
 	*cmdline_p = m68k_command_line;
 	memcpy(boot_command_line, *cmdline_p, CL_SIZE);
 
@@ -321,6 +342,14 @@ void __init setup_arch(char **cmdline_p)
 		config_sun3x();
 		break;
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COLDFIRE
+	case MACH_M54XX:
+		config_BSP(NULL, 0);
+		break;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		panic("No configuration setup");
 	}
@@ -382,6 +411,10 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 #define LOOP_CYCLES_68030	(8)
 #define LOOP_CYCLES_68040	(3)
 #define LOOP_CYCLES_68060	(1)
+<<<<<<< HEAD
+=======
+#define LOOP_CYCLES_COLDFIRE	(2)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (CPU_IS_020) {
 		cpu = "68020";
@@ -395,6 +428,12 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 	} else if (CPU_IS_060) {
 		cpu = "68060";
 		clockfactor = LOOP_CYCLES_68060;
+<<<<<<< HEAD
+=======
+	} else if (CPU_IS_COLDFIRE) {
+		cpu = "ColdFire";
+		clockfactor = LOOP_CYCLES_COLDFIRE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		cpu = "680x0";
 		clockfactor = 0;
@@ -413,6 +452,11 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 		fpu = "68060";
 	else if (m68k_fputype & FPU_SUNFPA)
 		fpu = "Sun FPA";
+<<<<<<< HEAD
+=======
+	else if (m68k_fputype & FPU_COLDFIRE)
+		fpu = "ColdFire";
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		fpu = "none";
 #endif
@@ -429,6 +473,11 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 		mmu = "Sun-3";
 	else if (m68k_mmutype & MMU_APOLLO)
 		mmu = "Apollo";
+<<<<<<< HEAD
+=======
+	else if (m68k_mmutype & MMU_COLDFIRE)
+		mmu = "ColdFire";
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		mmu = "unknown";
 

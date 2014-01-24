@@ -21,6 +21,10 @@
 #include <linux/interrupt.h>
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 #define CAFE_NAND_CTRL1		0x00
@@ -57,7 +61,10 @@
 
 struct cafe_priv {
 	struct nand_chip nand;
+<<<<<<< HEAD
 	struct mtd_partition *parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pci_dev *pdev;
 	void __iomem *mmio;
 	struct rs_control *rs;
@@ -371,7 +378,11 @@ static int cafe_nand_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
 	return 1;
 }
 /**
+<<<<<<< HEAD
  * cafe_nand_read_page_syndrome - {REPLACABLE] hardware ecc syndrom based page read
+=======
+ * cafe_nand_read_page_syndrome - [REPLACEABLE] hardware ecc syndrome based page read
+>>>>>>> refs/remotes/origin/cm-10.0
  * @mtd:	mtd info structure
  * @chip:	nand chip info structure
  * @buf:	buffer to store read data
@@ -630,8 +641,11 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
 	struct cafe_priv *cafe;
 	uint32_t ctrl;
 	int err = 0;
+<<<<<<< HEAD
 	struct mtd_partition *parts;
 	int nr_parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Very old versions shared the same PCI ident for all three
 	   functions on the chip. Verify the class too... */
@@ -686,7 +700,12 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
 	cafe->nand.chip_delay = 0;
 
 	/* Enable the following for a flash based bad block table */
+<<<<<<< HEAD
 	cafe->nand.options = NAND_USE_FLASH_BBT | NAND_NO_AUTOINCR | NAND_OWN_BUFFERS;
+=======
+	cafe->nand.bbt_options = NAND_BBT_USE_FLASH;
+	cafe->nand.options = NAND_NO_AUTOINCR | NAND_OWN_BUFFERS;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (skipbbt) {
 		cafe->nand.options |= NAND_SKIP_BBTSCAN;
@@ -784,6 +803,10 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
 	cafe->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
 	cafe->nand.ecc.size = mtd->writesize;
 	cafe->nand.ecc.bytes = 14;
+<<<<<<< HEAD
+=======
+	cafe->nand.ecc.strength = 4;
+>>>>>>> refs/remotes/origin/cm-10.0
 	cafe->nand.ecc.hwctl  = (void *)cafe_nand_bug;
 	cafe->nand.ecc.calculate = (void *)cafe_nand_bug;
 	cafe->nand.ecc.correct  = (void *)cafe_nand_bug;
@@ -799,6 +822,7 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
 
 	pci_set_drvdata(pdev, mtd);
 
+<<<<<<< HEAD
 	/* We register the whole device first, separate from the partitions */
 	mtd_device_register(mtd, NULL, 0);
 
@@ -811,6 +835,11 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
 		dev_info(&cafe->pdev->dev, "%d partitions found\n", nr_parts);
 		mtd_device_register(mtd, parts, nr_parts);
 	}
+=======
+	mtd->name = "cafe_nand";
+	mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	goto out;
 
  out_irq:

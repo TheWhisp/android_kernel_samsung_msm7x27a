@@ -96,12 +96,20 @@ static irqreturn_t ip6_action(int cpl, void *dev_id)
 struct irqaction ip6_irqaction = {
 	.handler = ip6_action,
 	.name = "cascade",
+<<<<<<< HEAD
 	.flags = IRQF_SHARED,
+=======
+	.flags = IRQF_SHARED | IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct irqaction cascade_irqaction = {
 	.handler = no_action,
 	.name = "cascade",
+<<<<<<< HEAD
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void __init mach_init_irq(void)

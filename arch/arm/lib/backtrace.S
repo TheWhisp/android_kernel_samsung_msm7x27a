@@ -22,15 +22,21 @@
 #define mask	r7
 #define offset	r8
 
+<<<<<<< HEAD
 ENTRY(__backtrace)
 		mov	r1, #0x10
 		mov	r0, fp
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 ENTRY(c_backtrace)
 
 #if !defined(CONFIG_FRAME_POINTER) || !defined(CONFIG_PRINTK)
 		mov	pc, lr
+<<<<<<< HEAD
 ENDPROC(__backtrace)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 ENDPROC(c_backtrace)
 #else
 		stmfd	sp!, {r4 - r8, lr}	@ Save an extra register so we have a location...
@@ -107,7 +113,10 @@ for_each_frame:	tst	frame, mask		@ Check for address exceptions
 		mov	r1, frame
 		bl	printk
 no_frame:	ldmfd	sp!, {r4 - r8, pc}
+<<<<<<< HEAD
 ENDPROC(__backtrace)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 ENDPROC(c_backtrace)
 		
 		.pushsection __ex_table,"a"

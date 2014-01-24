@@ -143,6 +143,10 @@ struct scsi_cmnd;
 #define READ_ATTRIBUTE        0x8c
 #define WRITE_ATTRIBUTE	      0x8d
 #define VERIFY_16	      0x8f
+<<<<<<< HEAD
+=======
+#define SYNCHRONIZE_CACHE_16  0x91
+>>>>>>> refs/remotes/origin/cm-10.0
 #define WRITE_SAME_16	      0x93
 #define SERVICE_ACTION_IN     0x9e
 /* values for service action in */
@@ -495,7 +499,11 @@ static inline int scsi_is_wlun(unsigned int lun)
 
 #define sense_class(sense)  (((sense) >> 4) & 0x7)
 #define sense_error(sense)  ((sense) & 0xf)
+<<<<<<< HEAD
 #define sense_valid(sense)  ((sense) & 0x80);
+=======
+#define sense_valid(sense)  ((sense) & 0x80)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * default timeouts

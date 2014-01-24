@@ -56,7 +56,11 @@ struct netns_xfrm {
 #endif
 
 	struct dst_ops		xfrm4_dst_ops;
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dst_ops		xfrm6_dst_ops;
 #endif
 };

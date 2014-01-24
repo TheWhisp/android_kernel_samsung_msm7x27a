@@ -1,9 +1,15 @@
 /*
  * Broadcom device-specific manifest constants.
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -21,10 +27,16 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: bcmdevs.h 332966 2012-05-11 22:40:21Z $
  */
 
 
+=======
+ * $Id: bcmdevs.h 327007 2012-04-11 22:45:50Z $
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef	_BCMDEVS_H
 #define	_BCMDEVS_H
 
@@ -60,10 +72,20 @@
 #define BCM_DNGL_BL_PID_43236   0xbd17
 #define BCM_DNGL_BL_PID_4332	0xbd18
 #define BCM_DNGL_BL_PID_4330	0xbd19
+<<<<<<< HEAD
 #define BCM_DNGL_BL_PID_43239   0xbd1b
 #define BCM_DNGL_BDC_PID	0x0bdc
 #define BCM_DNGL_JTAG_PID	0x4a44
 #define BCM_DNGL_BL_PID_4324   0xbd1c
+=======
+#define BCM_DNGL_BL_PID_4334	0xbd1a
+#define BCM_DNGL_BL_PID_43239   0xbd1b
+#define BCM_DNGL_BL_PID_4324	0xbd1c
+#define BCM_DNGL_BL_PID_4360	0xbd1d
+
+#define BCM_DNGL_BDC_PID	0x0bdc
+#define BCM_DNGL_JTAG_PID	0x4a44
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #define BCM_HWUSB_PID_43239     43239
@@ -135,16 +157,44 @@
 #define BCM43237_D11N_ID	0x4355		
 #define BCM43237_D11N5G_ID	0x4356		
 #define BCM43227_D11N2G_ID	0x4358		
+<<<<<<< HEAD
 #define BCM43228_D11N_ID		0x4359		
+=======
+#define BCM43228_D11N_ID	0x4359		
+>>>>>>> refs/remotes/origin/cm-10.0
 #define BCM43228_D11N5G_ID	0x435a		
 #define BCM43362_D11N_ID	0x4363		
 #define BCM43239_D11N_ID	0x4370		
 #define BCM4324_D11N_ID		0x4374		
 #define BCM43217_D11N2G_ID	0x43a9		
 #define BCM43131_D11N2G_ID	0x43aa		
+<<<<<<< HEAD
 
 #define BCM4314_D11N2G_ID	0x4364		
 #define BCM43142_D11N2G_ID	0x4365		
+=======
+#define BCM4314_D11N2G_ID	0x4364		
+#define BCM43142_D11N2G_ID	0x4365		
+#define BCM4334_D11N_ID		0x4380		
+#define BCM4334_D11N2G_ID	0x4381		
+#define BCM4334_D11N5G_ID	0x4382		
+#define BCM4360_D11AC_ID	0x43a0
+#define BCM4360_D11AC2G_ID	0x43a1
+#define BCM4360_D11AC5G_ID	0x43a2
+
+
+#define BCM943228HMB_SSID_VEN1	0x0607
+#define BCM94313HMGBL_SSID_VEN1	0x0608
+#define BCM94313HMG_SSID_VEN1	0x0609
+
+
+#define BCM4335_D11AC_ID	0x43ae
+#define BCM4335_D11AC2G_ID	0x43af
+#define BCM4335_D11AC5G_ID	0x43b0
+#define BCM4352_D11AC_ID	0x43b1		
+#define BCM4352_D11AC2G_ID	0x43b2		
+#define BCM4352_D11AC5G_ID	0x43b3		
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define	BCMGPRS_UART_ID		0x4333		
 #define	BCMGPRS2_UART_ID	0x4344		
@@ -226,6 +276,10 @@
 #define	BCM43421_CHIP_ID	43421		
 #define	BCM43428_CHIP_ID	43428		
 #define	BCM43431_CHIP_ID	43431		
+<<<<<<< HEAD
+=======
+#define	BCM43460_CHIP_ID	43460		
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	BCM4325_CHIP_ID		0x4325		
 #define	BCM4328_CHIP_ID		0x4328		
 #define	BCM4329_CHIP_ID		0x4329		
@@ -236,11 +290,26 @@
 #define BCM6362_CHIP_ID		0x6362		
 #define BCM4314_CHIP_ID		0x4314		
 #define BCM43142_CHIP_ID	43142		
+<<<<<<< HEAD
 #define BCM4324_CHIP_ID		0x4324		
+=======
+#define	BCM4324_CHIP_ID		0x4324		
+#define	BCM43242_CHIP_ID	43242		
+#define BCM4334_CHIP_ID		0x4334		
+#define BCM4360_CHIP_ID		0x4360          
+#define BCM4352_CHIP_ID		0x4352          
+#define BCM43526_CHIP_ID	0xAA06
+
+#define BCM4335_CHIP_ID         0x4335
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define	BCM4342_CHIP_ID		4342		
 #define	BCM4402_CHIP_ID		0x4402		
 #define	BCM4704_CHIP_ID		0x4704		
+<<<<<<< HEAD
+=======
+#define	BCM4706_CHIP_ID		0x5300		
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	BCM4710_CHIP_ID		0x4710		
 #define	BCM4712_CHIP_ID		0x4712		
 #define	BCM4716_CHIP_ID		0x4716		
@@ -279,11 +348,22 @@
 #define BCM5357_PKG_ID		11		
 #define BCM5356U_PKG_ID		12		
 #define BCM53572_PKG_ID		8		
+<<<<<<< HEAD
 #define BCM47188_PKG_ID		9		
 #define BCM4331TT_PKG_ID        8		
 #define BCM4331TN_PKG_ID        9		
 #define BCM4331TNA0_PKG_ID     0xb		
 
+=======
+#define BCM5357C0_PKG_ID	8		
+#define BCM47188_PKG_ID		9		
+#define BCM5358C0_PKG_ID	0xa		
+#define BCM5356C0_PKG_ID	0xb		
+#define BCM4331TT_PKG_ID        8		
+#define BCM4331TN_PKG_ID        9		
+#define BCM4331TNA0_PKG_ID     0xb		
+#define	BCM4706L_PKG_ID		1		
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define HDLSIM5350_PKG_ID	1		
 #define HDLSIM_PKG_ID		14		
@@ -308,14 +388,22 @@
 #define	BFL_PACTRL		0x00000002  
 #define BFL_AIRLINEMODE	0x00000004  
 #define	BFL_ADCDIV		0x00000008  
+<<<<<<< HEAD
+=======
+#define	BFL_RFPLL	        0x00000008  
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	BFL_ENETROBO		0x00000010  
 #define	BFL_NOPLLDOWN		0x00000020  
 #define	BFL_CCKHIPWR		0x00000040  
 #define	BFL_ENETADM		0x00000080  
 #define	BFL_ENETVLAN		0x00000100  
+<<<<<<< HEAD
 #ifdef WLAFTERBURNER
 #define	BFL_AFTERBURNER		0x00000200  
 #endif 
+=======
+#define	BFL_UNUSED		0x00000200
+>>>>>>> refs/remotes/origin/cm-10.0
 #define BFL_NOPCI		0x00000400  
 #define BFL_FEM			0x00000800  
 #define BFL_EXTLNA		0x00001000  
@@ -363,6 +451,12 @@
 #define BFL2_IPALVLSHIFT_3P3    0x00020000
 #define BFL2_INTERNDET_TXIQCAL  0x00040000  
 #define BFL2_XTALBUFOUTEN       0x00080000  
+<<<<<<< HEAD
+=======
+				
+				
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define BFL2_ANAPACTRL_2G	0x00100000  
 #define BFL2_ANAPACTRL_5G	0x00200000  
 #define BFL2_ELNACTRL_TRSW_2G	0x00400000  
@@ -370,11 +464,19 @@
 #define BFL2_TEMPSENSE_HIGHER	0x01000000  
 #define BFL2_BTC3WIREONLY       0x02000000  
 #define BFL2_PWR_NOMINAL	0x04000000  
+<<<<<<< HEAD
 #define BFL2_EXTLNA_TX		0x08000000  
 						
 #define BFL2_4313_RADIOREG	0x10000000
 #define BFL2_SECI_LOPWR_DIS	0x20000000  
 									   
+=======
+#define BFL2_EXTLNA_PWRSAVE	0x08000000  
+						
+#define BFL2_4313_RADIOREG	0x10000000
+									   
+#define BFL2_SDR_EN		0x20000000	
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #define	BOARD_GPIO_BTC3W_IN	0x850	
@@ -390,7 +492,12 @@
 #define BOARD_GPIO_BTC4_BT	0x2000	
 #define BOARD_GPIO_BTC4_STAT	0x4000	
 #define BOARD_GPIO_BTC4_WLAN	0x8000	
+<<<<<<< HEAD
 #define	BOARD_GPIO_1_WLAN_PWR	0x2	
+=======
+#define	BOARD_GPIO_1_WLAN_PWR	0x02	
+#define	BOARD_GPIO_3_WLAN_PWR	0x08	
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	BOARD_GPIO_4_WLAN_PWR	0x10	
 
 #define GPIO_BTC4W_OUT_4312  0x010  
@@ -399,6 +506,10 @@
 #define GPIO_BTC4W_OUT_43225  0x0e0  
 #define GPIO_BTC4W_OUT_43421  0x020  
 #define GPIO_BTC4W_OUT_4313  0x060  
+<<<<<<< HEAD
+=======
+#define GPIO_BTC4W_OUT_4331_SHARED  0x010  
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define	PCI_CFG_GPIO_SCS	0x10	
 #define PCI_CFG_GPIO_HWRAD	0x20	
@@ -412,6 +523,7 @@
 #define	XTAL_ON_DELAY		1000		
 
 
+<<<<<<< HEAD
 #define	BU4710_BOARD		0x0400
 #define	VSIM4710_BOARD		0x0401
 #define	QT4710_BOARD		0x0402
@@ -722,6 +834,8 @@
 #define BCM943236PREPROTOBLU2O3_SSID 0x5b9
 #define BCM943236USBELNA_SSID 0x5f8
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define GPIO_NUMPINS		32
 
@@ -740,8 +854,28 @@
 
 #define MUXENAB_UART		0x00000001
 #define MUXENAB_GPIO		0x00000002
+<<<<<<< HEAD
 #define MUXENAB_ERCX		0x00000004
 #define MUXENAB_JTAG		0x00000008
 #define MUXENAB_HOST_WAKE	0x00000010
+=======
+#define MUXENAB_ERCX		0x00000004	
+#define MUXENAB_JTAG		0x00000008
+#define MUXENAB_HOST_WAKE	0x00000010	
+#define MUXENAB_I2S_EN		0x00000020
+#define MUXENAB_I2S_MASTER	0x00000040
+#define MUXENAB_I2S_FULL	0x00000080
+#define MUXENAB_SFLASH		0x00000100
+#define MUXENAB_RFSWCTRL0	0x00000200
+#define MUXENAB_RFSWCTRL1	0x00000400
+#define MUXENAB_RFSWCTRL2	0x00000800
+#define MUXENAB_SECI		0x00001000
+#define MUXENAB_BT_LEGACY	0x00002000
+#define MUXENAB_HOST_WAKE1	0x00004000	
+
+
+#define FLASH_KERNEL_NFLASH	0x00000001
+#define FLASH_BOOT_NFLASH	0x00000002
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif 

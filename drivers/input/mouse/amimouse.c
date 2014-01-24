@@ -25,7 +25,10 @@
 
 #include <asm/irq.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/amigahw.h>
 #include <asm/amigaints.h>

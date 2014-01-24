@@ -28,7 +28,11 @@ int notifier_add_irq(struct hvc_struct *hp, int irq)
 		hp->irq_requested = 0;
 		return 0;
 	}
+<<<<<<< HEAD
 	rc = request_irq(irq, hvc_handle_interrupt, IRQF_DISABLED,
+=======
+	rc = request_irq(irq, hvc_handle_interrupt, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   "hvc_console", hp);
 	if (!rc)
 		hp->irq_requested = 1;

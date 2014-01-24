@@ -28,9 +28,15 @@
 #define MAX_CMDLEN 240
 #define MIN_INTERVAL 15
 static char vmwdt_cmd[MAX_CMDLEN] = "IPL";
+<<<<<<< HEAD
 static int vmwdt_conceal;
 
 static int vmwdt_nowayout = WATCHDOG_NOWAYOUT;
+=======
+static bool vmwdt_conceal;
+
+static bool vmwdt_nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Arnd Bergmann <arndb@de.ibm.com>");
@@ -258,13 +264,21 @@ static int vmwdt_suspend(void)
 	if (test_and_set_bit(VMWDT_OPEN, &vmwdt_is_open)) {
 		pr_err("The system cannot be suspended while the watchdog"
 			" is in use\n");
+<<<<<<< HEAD
 		return NOTIFY_BAD;
+=======
+		return notifier_from_errno(-EBUSY);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	if (test_bit(VMWDT_RUNNING, &vmwdt_is_open)) {
 		clear_bit(VMWDT_OPEN, &vmwdt_is_open);
 		pr_err("The system cannot be suspended while the watchdog"
 			" is running\n");
+<<<<<<< HEAD
 		return NOTIFY_BAD;
+=======
+		return notifier_from_errno(-EBUSY);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return NOTIFY_DONE;
 }

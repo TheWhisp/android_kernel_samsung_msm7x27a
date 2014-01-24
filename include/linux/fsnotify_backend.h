@@ -16,7 +16,11 @@
 #include <linux/spinlock.h>
 #include <linux/types.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * IN_* from inotfy.h lines up EXACTLY with FS_*, this is so we can easily

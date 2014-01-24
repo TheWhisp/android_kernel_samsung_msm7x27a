@@ -16,13 +16,22 @@
 #include <linux/mmc/host.h>
 #include <linux/highmem.h>
 #include <linux/scatterlist.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 #define DRIVER_NAME "tifm_sd"
 #define DRIVER_VERSION "0.8"
 
+<<<<<<< HEAD
 static int no_dma = 0;
 static int fixed_timeout = 0;
+=======
+static bool no_dma = 0;
+static bool fixed_timeout = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(no_dma, bool, 0644);
 module_param(fixed_timeout, bool, 0644);
 
@@ -117,7 +126,11 @@ static void tifm_sd_read_fifo(struct tifm_sd *host, struct page *pg,
 	unsigned char *buf;
 	unsigned int pos = 0, val;
 
+<<<<<<< HEAD
 	buf = kmap_atomic(pg, KM_BIO_DST_IRQ) + off;
+=======
+	buf = kmap_atomic(pg) + off;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (host->cmd_flags & DATA_CARRY) {
 		buf[pos++] = host->bounce_buf_data[0];
 		host->cmd_flags &= ~DATA_CARRY;
@@ -133,7 +146,11 @@ static void tifm_sd_read_fifo(struct tifm_sd *host, struct page *pg,
 		}
 		buf[pos++] = (val >> 8) & 0xff;
 	}
+<<<<<<< HEAD
 	kunmap_atomic(buf - off, KM_BIO_DST_IRQ);
+=======
+	kunmap_atomic(buf - off);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void tifm_sd_write_fifo(struct tifm_sd *host, struct page *pg,
@@ -143,7 +160,11 @@ static void tifm_sd_write_fifo(struct tifm_sd *host, struct page *pg,
 	unsigned char *buf;
 	unsigned int pos = 0, val;
 
+<<<<<<< HEAD
 	buf = kmap_atomic(pg, KM_BIO_SRC_IRQ) + off;
+=======
+	buf = kmap_atomic(pg) + off;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (host->cmd_flags & DATA_CARRY) {
 		val = host->bounce_buf_data[0] | ((buf[pos++] << 8) & 0xff00);
 		writel(val, sock->addr + SOCK_MMCSD_DATA);
@@ -160,7 +181,11 @@ static void tifm_sd_write_fifo(struct tifm_sd *host, struct page *pg,
 		val |= (buf[pos++] << 8) & 0xff00;
 		writel(val, sock->addr + SOCK_MMCSD_DATA);
 	}
+<<<<<<< HEAD
 	kunmap_atomic(buf - off, KM_BIO_SRC_IRQ);
+=======
+	kunmap_atomic(buf - off);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void tifm_sd_transfer_data(struct tifm_sd *host)
@@ -211,6 +236,7 @@ static void tifm_sd_copy_page(struct page *dst, unsigned int dst_off,
 			      struct page *src, unsigned int src_off,
 			      unsigned int count)
 {
+<<<<<<< HEAD
 	unsigned char *src_buf = kmap_atomic(src, KM_BIO_SRC_IRQ) + src_off;
 	unsigned char *dst_buf = kmap_atomic(dst, KM_BIO_DST_IRQ) + dst_off;
 
@@ -218,6 +244,15 @@ static void tifm_sd_copy_page(struct page *dst, unsigned int dst_off,
 
 	kunmap_atomic(dst_buf - dst_off, KM_BIO_DST_IRQ);
 	kunmap_atomic(src_buf - src_off, KM_BIO_SRC_IRQ);
+=======
+	unsigned char *src_buf = kmap_atomic(src) + src_off;
+	unsigned char *dst_buf = kmap_atomic(dst) + dst_off;
+
+	memcpy(dst_buf, src_buf, count);
+
+	kunmap_atomic(dst_buf - dst_off);
+	kunmap_atomic(src_buf - src_off);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void tifm_sd_bounce_block(struct tifm_sd *host, struct mmc_data *r_data)
@@ -631,7 +666,11 @@ static void tifm_sd_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	}
 
 	if (host->req) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s : unfinished request detected\n",
+=======
+		pr_err("%s : unfinished request detected\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       dev_name(&sock->dev));
 		mrq->cmd->error = -ETIMEDOUT;
 		goto err_out;
@@ -671,7 +710,11 @@ static void tifm_sd_request(struct mmc_host *mmc, struct mmc_request *mrq)
 					    r_data->flags & MMC_DATA_WRITE
 					    ? PCI_DMA_TODEVICE
 					    : PCI_DMA_FROMDEVICE)) {
+<<<<<<< HEAD
 				printk(KERN_ERR "%s : scatterlist map failed\n",
+=======
+				pr_err("%s : scatterlist map failed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				       dev_name(&sock->dev));
 				mrq->cmd->error = -ENOMEM;
 				goto err_out;
@@ -683,7 +726,11 @@ static void tifm_sd_request(struct mmc_host *mmc, struct mmc_request *mrq)
 						   ? PCI_DMA_TODEVICE
 						   : PCI_DMA_FROMDEVICE);
 			if (host->sg_len < 1) {
+<<<<<<< HEAD
 				printk(KERN_ERR "%s : scatterlist map failed\n",
+=======
+				pr_err("%s : scatterlist map failed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				       dev_name(&sock->dev));
 				tifm_unmap_sg(sock, &host->bounce_buf, 1,
 					      r_data->flags & MMC_DATA_WRITE
@@ -747,7 +794,11 @@ static void tifm_sd_end_cmd(unsigned long data)
 	host->req = NULL;
 
 	if (!mrq) {
+<<<<<<< HEAD
 		printk(KERN_ERR " %s : no request to complete?\n",
+=======
+		pr_err(" %s : no request to complete?\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       dev_name(&sock->dev));
 		spin_unlock_irqrestore(&sock->lock, flags);
 		return;
@@ -786,8 +837,12 @@ static void tifm_sd_abort(unsigned long data)
 {
 	struct tifm_sd *host = (struct tifm_sd*)data;
 
+<<<<<<< HEAD
 	printk(KERN_ERR
 	       "%s : card failed to respond for a long period of time "
+=======
+	pr_err("%s : card failed to respond for a long period of time "
+>>>>>>> refs/remotes/origin/cm-10.0
 	       "(%x, %x)\n",
 	       dev_name(&host->dev->dev), host->req->cmd->opcode, host->cmd_flags);
 
@@ -905,7 +960,11 @@ static int tifm_sd_initialize_host(struct tifm_sd *host)
 	}
 
 	if (rc) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s : controller failed to reset\n",
+=======
+		pr_err("%s : controller failed to reset\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       dev_name(&sock->dev));
 		return -ENODEV;
 	}
@@ -931,8 +990,12 @@ static int tifm_sd_initialize_host(struct tifm_sd *host)
 	}
 
 	if (rc) {
+<<<<<<< HEAD
 		printk(KERN_ERR
 		       "%s : card not ready - probe failed on initialization\n",
+=======
+		pr_err("%s : card not ready - probe failed on initialization\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       dev_name(&sock->dev));
 		return -ENODEV;
 	}
@@ -953,7 +1016,11 @@ static int tifm_sd_probe(struct tifm_dev *sock)
 
 	if (!(TIFM_SOCK_STATE_OCCUPIED
 	      & readl(sock->addr + SOCK_PRESENT_STATE))) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s : card gone, unexpectedly\n",
+=======
+		pr_warning("%s : card gone, unexpectedly\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		       dev_name(&sock->dev));
 		return rc;
 	}

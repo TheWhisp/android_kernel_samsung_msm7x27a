@@ -11,6 +11,7 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/pm.h>
 
 #include <asm/irq.h>
@@ -42,6 +43,22 @@ static struct map_desc at91sam9263_io_desc[] __initdata = {
 		.type		= MT_DEVICE,
 	},
 };
+=======
+
+#include <asm/proc-fns.h>
+#include <asm/irq.h>
+#include <asm/mach/arch.h>
+#include <asm/mach/map.h>
+#include <asm/system_misc.h>
+#include <mach/at91sam9263.h>
+#include <mach/at91_pmc.h>
+#include <mach/at91_rstc.h>
+
+#include "soc.h"
+#include "generic.h"
+#include "clock.h"
+#include "sam9_smc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* --------------------------------------------------------------------
  *  Clocks
@@ -136,7 +153,11 @@ static struct clk pwm_clk = {
 	.type		= CLK_TYPE_PERIPHERAL,
 };
 static struct clk macb_clk = {
+<<<<<<< HEAD
 	.name		= "macb_clk",
+=======
+	.name		= "pclk",
+>>>>>>> refs/remotes/origin/cm-10.0
 	.pmc_mask	= 1 << AT91SAM9263_ID_EMAC,
 	.type		= CLK_TYPE_PERIPHERAL,
 };
@@ -200,6 +221,11 @@ static struct clk *periph_clocks[] __initdata = {
 };
 
 static struct clk_lookup periph_clocks_lookups[] = {
+<<<<<<< HEAD
+=======
+	/* One additional fake clock for macb_hclk */
+	CLKDEV_CON_ID("hclk", &macb_clk),
+>>>>>>> refs/remotes/origin/cm-10.0
 	CLKDEV_CON_DEV_ID("pclk", "ssc.0", &ssc0_clk),
 	CLKDEV_CON_DEV_ID("pclk", "ssc.1", &ssc1_clk),
 	CLKDEV_CON_DEV_ID("mci_clk", "at91_mci.0", &mmc0_clk),
@@ -207,6 +233,16 @@ static struct clk_lookup periph_clocks_lookups[] = {
 	CLKDEV_CON_DEV_ID("spi_clk", "atmel_spi.0", &spi0_clk),
 	CLKDEV_CON_DEV_ID("spi_clk", "atmel_spi.1", &spi1_clk),
 	CLKDEV_CON_DEV_ID("t0_clk", "atmel_tcb.0", &tcb_clk),
+<<<<<<< HEAD
+=======
+	/* fake hclk clock */
+	CLKDEV_CON_DEV_ID("hclk", "at91_ohci", &ohci_clk),
+	CLKDEV_CON_ID("pioA", &pioA_clk),
+	CLKDEV_CON_ID("pioB", &pioB_clk),
+	CLKDEV_CON_ID("pioC", &pioCDE_clk),
+	CLKDEV_CON_ID("pioD", &pioCDE_clk),
+	CLKDEV_CON_ID("pioE", &pioCDE_clk),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct clk_lookup usart_clocks_lookups[] = {
@@ -279,6 +315,7 @@ void __init at91sam9263_set_console_clock(int id)
  *  GPIO
  * -------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static struct at91_gpio_bank at91sam9263_gpio[] = {
 	{
 		.id		= AT91SAM9263_ID_PIOA,
@@ -309,10 +346,32 @@ static void at91sam9263_poweroff(void)
 }
 
 
+=======
+static struct at91_gpio_bank at91sam9263_gpio[] __initdata = {
+	{
+		.id		= AT91SAM9263_ID_PIOA,
+		.regbase	= AT91SAM9263_BASE_PIOA,
+	}, {
+		.id		= AT91SAM9263_ID_PIOB,
+		.regbase	= AT91SAM9263_BASE_PIOB,
+	}, {
+		.id		= AT91SAM9263_ID_PIOCDE,
+		.regbase	= AT91SAM9263_BASE_PIOC,
+	}, {
+		.id		= AT91SAM9263_ID_PIOCDE,
+		.regbase	= AT91SAM9263_BASE_PIOD,
+	}, {
+		.id		= AT91SAM9263_ID_PIOCDE,
+		.regbase	= AT91SAM9263_BASE_PIOE,
+	}
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* --------------------------------------------------------------------
  *  AT91SAM9263 processor initialization
  * -------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 void __init at91sam9263_map_io(void)
 {
 	/* Map peripherals */
@@ -330,6 +389,31 @@ void __init at91sam9263_initialize(unsigned long main_clock)
 
 	/* Register the processor-specific clocks */
 	at91sam9263_register_clocks();
+=======
+static void __init at91sam9263_map_io(void)
+{
+	at91_init_sram(0, AT91SAM9263_SRAM0_BASE, AT91SAM9263_SRAM0_SIZE);
+	at91_init_sram(1, AT91SAM9263_SRAM1_BASE, AT91SAM9263_SRAM1_SIZE);
+}
+
+static void __init at91sam9263_ioremap_registers(void)
+{
+	at91_ioremap_shdwc(AT91SAM9263_BASE_SHDWC);
+	at91_ioremap_rstc(AT91SAM9263_BASE_RSTC);
+	at91_ioremap_ramc(0, AT91SAM9263_BASE_SDRAMC0, 512);
+	at91_ioremap_ramc(1, AT91SAM9263_BASE_SDRAMC1, 512);
+	at91sam926x_ioremap_pit(AT91SAM9263_BASE_PIT);
+	at91sam9_ioremap_smc(0, AT91SAM9263_BASE_SMC0);
+	at91sam9_ioremap_smc(1, AT91SAM9263_BASE_SMC1);
+	at91_ioremap_matrix(AT91SAM9263_BASE_MATRIX);
+}
+
+static void __init at91sam9263_initialize(void)
+{
+	arm_pm_idle = at91sam9_idle;
+	arm_pm_restart = at91sam9_alt_restart;
+	at91_extern_irq = (1 << AT91SAM9263_ID_IRQ0) | (1 << AT91SAM9263_ID_IRQ1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Register GPIO subsystem */
 	at91_gpio_init(at91sam9263_gpio, 5);
@@ -377,6 +461,7 @@ static unsigned int at91sam9263_default_irq_priority[NR_AIC_IRQS] __initdata = {
 	0,	/* Advanced Interrupt Controller (IRQ1) */
 };
 
+<<<<<<< HEAD
 void __init at91sam9263_init_interrupts(unsigned int priority[NR_AIC_IRQS])
 {
 	if (!priority)
@@ -388,3 +473,12 @@ void __init at91sam9263_init_interrupts(unsigned int priority[NR_AIC_IRQS])
 	/* Enable GPIO interrupts */
 	at91_gpio_irq_setup();
 }
+=======
+struct at91_init_soc __initdata at91sam9263_soc = {
+	.map_io = at91sam9263_map_io,
+	.default_irq_priority = at91sam9263_default_irq_priority,
+	.ioremap_registers = at91sam9263_ioremap_registers,
+	.register_clocks = at91sam9263_register_clocks,
+	.init = at91sam9263_initialize,
+};
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -14,6 +14,10 @@
 #include <linux/pagemap.h>
 #include <linux/udp.h>
 #include <linux/sunrpc/xdr.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /**
@@ -113,7 +117,11 @@ ssize_t xdr_partial_copy_from_skb(struct xdr_buf *xdr, unsigned int base, struct
 		}
 
 		len = PAGE_CACHE_SIZE;
+<<<<<<< HEAD
 		kaddr = kmap_atomic(*ppage, KM_SKB_SUNRPC_DATA);
+=======
+		kaddr = kmap_atomic(*ppage);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (base) {
 			len -= base;
 			if (pglen < len)
@@ -126,7 +134,11 @@ ssize_t xdr_partial_copy_from_skb(struct xdr_buf *xdr, unsigned int base, struct
 			ret = copy_actor(desc, kaddr, len);
 		}
 		flush_dcache_page(*ppage);
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_SKB_SUNRPC_DATA);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		copied += ret;
 		if (ret != len || !desc->count)
 			goto out;

@@ -118,6 +118,12 @@ static struct str_ident {
 
 #if defined(CONFIG_PM)
 static struct gpio_port_s gpio_bank_saved[GPIO_BANK_NUM];
+<<<<<<< HEAD
+=======
+# ifdef BF538_FAMILY
+static unsigned short port_fer_saved[3];
+# endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static void gpio_error(unsigned gpio)
@@ -604,6 +610,14 @@ void bfin_gpio_pm_hibernate_suspend(void)
 {
 	int i, bank;
 
+<<<<<<< HEAD
+=======
+#ifdef BF538_FAMILY
+	for (i = 0; i < ARRAY_SIZE(port_fer_saved); ++i)
+		port_fer_saved[i] = *port_fer[i];
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < MAX_BLACKFIN_GPIOS; i += GPIO_BANKSIZE) {
 		bank = gpio_bank(i);
 
@@ -625,6 +639,13 @@ void bfin_gpio_pm_hibernate_suspend(void)
 		gpio_bank_saved[bank].maska = gpio_array[bank]->maska;
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef BFIN_SPECIAL_GPIO_BANKS
+	bfin_special_gpio_pm_hibernate_suspend();
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	AWA_DUMMY_READ(maska);
 }
 
@@ -632,6 +653,14 @@ void bfin_gpio_pm_hibernate_restore(void)
 {
 	int i, bank;
 
+<<<<<<< HEAD
+=======
+#ifdef BF538_FAMILY
+	for (i = 0; i < ARRAY_SIZE(port_fer_saved); ++i)
+		*port_fer[i] = port_fer_saved[i];
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < MAX_BLACKFIN_GPIOS; i += GPIO_BANKSIZE) {
 		bank = gpio_bank(i);
 
@@ -653,6 +682,14 @@ void bfin_gpio_pm_hibernate_restore(void)
 		gpio_array[bank]->both  = gpio_bank_saved[bank].both;
 		gpio_array[bank]->maska = gpio_bank_saved[bank].maska;
 	}
+<<<<<<< HEAD
+=======
+
+#ifdef BFIN_SPECIAL_GPIO_BANKS
+	bfin_special_gpio_pm_hibernate_restore();
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	AWA_DUMMY_READ(maska);
 }
 
@@ -691,9 +728,15 @@ void bfin_gpio_pm_hibernate_restore(void)
 		gpio_array[bank]->port_mux = gpio_bank_saved[bank].mux;
 		gpio_array[bank]->port_fer = gpio_bank_saved[bank].fer;
 		gpio_array[bank]->inen = gpio_bank_saved[bank].inen;
+<<<<<<< HEAD
 		gpio_array[bank]->dir_set = gpio_bank_saved[bank].dir;
 		gpio_array[bank]->data_set = gpio_bank_saved[bank].data
 						| gpio_bank_saved[bank].dir;
+=======
+		gpio_array[bank]->data_set = gpio_bank_saved[bank].data
+						& gpio_bank_saved[bank].dir;
+		gpio_array[bank]->dir_set = gpio_bank_saved[bank].dir;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 #endif

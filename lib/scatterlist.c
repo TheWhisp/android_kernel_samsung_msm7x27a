@@ -6,7 +6,11 @@
  * This source code is licensed under the GNU General Public License,
  * Version 2. See the file COPYING for more details.
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/scatterlist.h>
 #include <linux/highmem.h>
@@ -390,7 +394,11 @@ bool sg_miter_next(struct sg_mapping_iter *miter)
 	miter->consumed = miter->length;
 
 	if (miter->__flags & SG_MITER_ATOMIC)
+<<<<<<< HEAD
 		miter->addr = kmap_atomic(miter->page, KM_BIO_SRC_IRQ) + off;
+=======
+		miter->addr = kmap_atomic(miter->page) + off;
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		miter->addr = kmap(miter->page) + off;
 
@@ -419,12 +427,21 @@ void sg_miter_stop(struct sg_mapping_iter *miter)
 	if (miter->addr) {
 		miter->__offset += miter->consumed;
 
+<<<<<<< HEAD
 		if (miter->__flags & SG_MITER_TO_SG)
+=======
+		if ((miter->__flags & SG_MITER_TO_SG) &&
+		    !PageSlab(miter->page))
+>>>>>>> refs/remotes/origin/cm-10.0
 			flush_kernel_dcache_page(miter->page);
 
 		if (miter->__flags & SG_MITER_ATOMIC) {
 			WARN_ON(!irqs_disabled());
+<<<<<<< HEAD
 			kunmap_atomic(miter->addr, KM_BIO_SRC_IRQ);
+=======
+			kunmap_atomic(miter->addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else
 			kunmap(miter->page);
 

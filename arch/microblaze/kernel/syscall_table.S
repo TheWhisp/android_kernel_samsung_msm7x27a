@@ -173,7 +173,11 @@ ENTRY(sys_call_table)
 	.long sys_ni_syscall		/* sys_vm86 */
 	.long sys_ni_syscall		/* Old sys_query_module */
 	.long sys_poll
+<<<<<<< HEAD
 	.long sys_nfsservctl
+=======
+	.long sys_ni_syscall		/* old nfsservctl */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.long sys_setresgid		/* 170 */
 	.long sys_getresgid
 	.long sys_prctl
@@ -380,3 +384,9 @@ ENTRY(sys_call_table)
 	.long sys_clock_adjtime
 	.long sys_syncfs
 	.long sys_setns			/* 375 */
+<<<<<<< HEAD
+=======
+	.long sys_sendmmsg
+	.long sys_process_vm_readv
+	.long sys_process_vm_writev
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -20,6 +20,11 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/time.h>
 #include <linux/slab.h>
 #include <linux/ioport.h>
@@ -70,7 +75,11 @@ void __snd_printk(unsigned int level, const char *path, int line,
 	char verbose_fmt[] = KERN_DEFAULT "ALSA %s:%d %pV";
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SND_DEBUG	
+=======
+#ifdef CONFIG_SND_DEBUG
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (debug < level)
 		return;
 #endif

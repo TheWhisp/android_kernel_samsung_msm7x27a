@@ -78,6 +78,11 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/wimax/i2400m.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #define D_SUBMODULE control

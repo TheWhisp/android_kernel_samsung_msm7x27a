@@ -1,5 +1,10 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) Freescale Semicondutor, Inc. 2006-2010. All rights reserved.
+=======
+ * Copyright (C) 2006-2010, 2012 Freescale Semicondutor, Inc.
+ * All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Author: Andy Fleming <afleming@freescale.com>
  *
@@ -28,15 +33,22 @@
 #include <linux/delay.h>
 #include <linux/seq_file.h>
 #include <linux/initrd.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fsl_devices.h>
 #include <linux/of_platform.h>
 #include <linux/of_device.h>
 #include <linux/phy.h>
 #include <linux/memblock.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/time.h>
 #include <asm/io.h>
 #include <asm/machdep.h>
@@ -52,6 +64,13 @@
 #include <asm/qe_ic.h>
 #include <asm/mpic.h>
 #include <asm/swiotlb.h>
+<<<<<<< HEAD
+=======
+#include <asm/fsl_guts.h>
+#include "smp.h"
+
+#include "mpc85xx.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef DEBUG
 #ifdef DEBUG
@@ -154,6 +173,7 @@ static int mpc8568_mds_phy_fixups(struct phy_device *phydev)
  * Setup the architecture
  *
  */
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 extern void __init mpc85xx_smp_init(void);
 #endif
@@ -178,6 +198,9 @@ static void __init mpc85xx_publish_qe_devices(void)
 	of_platform_bus_probe(NULL, mpc85xx_qe_ids, NULL);
 }
 
+=======
+#ifdef CONFIG_QUICC_ENGINE
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init mpc85xx_mds_reset_ucc_phys(void)
 {
 	struct device_node *np;
@@ -289,6 +312,7 @@ static void __init mpc85xx_mds_qe_init(void)
 	mpc85xx_mds_reset_ucc_phys();
 
 	if (machine_is(p1021_mds)) {
+<<<<<<< HEAD
 #define MPC85xx_PMUXCR_OFFSET           0x60
 #define MPC85xx_PMUXCR_QE0              0x00008000
 #define MPC85xx_PMUXCR_QE3              0x00001000
@@ -306,17 +330,37 @@ static void __init mpc85xx_mds_qe_init(void)
 					" signal multiplex control register not"
 					" mapped!\n");
 			else
+=======
+
+		struct ccsr_guts __iomem *guts;
+
+		np = of_find_node_by_name(NULL, "global-utilities");
+		if (np) {
+			guts = of_iomap(np, 0);
+			if (!guts)
+				pr_err("mpc85xx-rdb: could not map global utilities register\n");
+			else{
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* P1021 has pins muxed for QE and other functions. To
 			 * enable QE UEC mode, we need to set bit QE0 for UCC1
 			 * in Eth mode, QE0 and QE3 for UCC5 in Eth mode, QE9
 			 * and QE12 for QE MII management signals in PMUXCR
 			 * register.
 			 */
+<<<<<<< HEAD
 				setbits32(pmuxcr, MPC85xx_PMUXCR_QE0 |
 						  MPC85xx_PMUXCR_QE3 |
 						  MPC85xx_PMUXCR_QE9 |
 						  MPC85xx_PMUXCR_QE12);
 
+=======
+				setbits32(&guts->pmuxcr, MPC85xx_PMUXCR_QE(0) |
+						  MPC85xx_PMUXCR_QE(3) |
+						  MPC85xx_PMUXCR_QE(9) |
+						  MPC85xx_PMUXCR_QE(12));
+				iounmap(guts);
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 			of_node_put(np);
 		}
 
@@ -348,7 +392,10 @@ static void __init mpc85xx_mds_qeic_init(void)
 	of_node_put(np);
 }
 #else
+<<<<<<< HEAD
 static void __init mpc85xx_publish_qe_devices(void) { }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init mpc85xx_mds_qe_init(void) { }
 static void __init mpc85xx_mds_qeic_init(void) { }
 #endif	/* CONFIG_QUICC_ENGINE */
@@ -382,9 +429,13 @@ static void __init mpc85xx_mds_setup_arch(void)
 	}
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	mpc85xx_smp_init();
 #endif
+=======
+	mpc85xx_smp_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mpc85xx_mds_qe_init();
 
@@ -429,6 +480,7 @@ static int __init board_fixups(void)
 machine_arch_initcall(mpc8568_mds, board_fixups);
 machine_arch_initcall(mpc8569_mds, board_fixups);
 
+<<<<<<< HEAD
 static struct of_device_id mpc85xx_ids[] = {
 	{ .type = "soc", },
 	{ .compatible = "soc", },
@@ -448,6 +500,8 @@ static struct of_device_id p1021_ids[] = {
 	{},
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init mpc85xx_publish_devices(void)
 {
 	if (machine_is(mpc8568_mds))
@@ -455,6 +509,7 @@ static int __init mpc85xx_publish_devices(void)
 	if (machine_is(mpc8569_mds))
 		simple_gpiochip_init("fsl,mpc8569mds-bcsr-gpio");
 
+<<<<<<< HEAD
 	of_platform_bus_probe(NULL, mpc85xx_ids, NULL);
 	mpc85xx_publish_qe_devices();
 
@@ -467,11 +522,18 @@ static int __init p1021_publish_devices(void)
 	mpc85xx_publish_qe_devices();
 
 	return 0;
+=======
+	return mpc85xx_common_publish_devices();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 machine_device_initcall(mpc8568_mds, mpc85xx_publish_devices);
 machine_device_initcall(mpc8569_mds, mpc85xx_publish_devices);
+<<<<<<< HEAD
 machine_device_initcall(p1021_mds, p1021_publish_devices);
+=======
+machine_device_initcall(p1021_mds, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 machine_arch_initcall(mpc8568_mds, swiotlb_setup_bus_notifier);
 machine_arch_initcall(mpc8569_mds, swiotlb_setup_bus_notifier);
@@ -479,6 +541,7 @@ machine_arch_initcall(p1021_mds, swiotlb_setup_bus_notifier);
 
 static void __init mpc85xx_mds_pic_init(void)
 {
+<<<<<<< HEAD
 	struct mpic *mpic;
 	struct resource r;
 	struct device_node *np = NULL;
@@ -499,6 +562,12 @@ static void __init mpc85xx_mds_pic_init(void)
 			0, 256, " OpenPIC  ");
 	BUG_ON(mpic == NULL);
 	of_node_put(np);
+=======
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN |
+			MPIC_SINGLE_DEST_CPU,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mpic_init(mpic);
 	mpc85xx_mds_qeic_init();

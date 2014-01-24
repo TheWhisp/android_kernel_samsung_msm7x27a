@@ -456,6 +456,7 @@ static struct platform_driver bfin_rtc_driver = {
 	.resume		= bfin_rtc_resume,
 };
 
+<<<<<<< HEAD
 static int __init bfin_rtc_init(void)
 {
 	return platform_driver_register(&bfin_rtc_driver);
@@ -468,6 +469,9 @@ static void __exit bfin_rtc_exit(void)
 
 module_init(bfin_rtc_init);
 module_exit(bfin_rtc_exit);
+=======
+module_platform_driver(bfin_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Blackfin On-Chip Real Time Clock Driver");
 MODULE_AUTHOR("Mike Frysinger <vapier@gentoo.org>");

@@ -5,7 +5,11 @@
 #include <linux/sched.h>
 
 #include <asm/processor.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/special_insns.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_PARAVIRT
 #include <asm/paravirt.h>

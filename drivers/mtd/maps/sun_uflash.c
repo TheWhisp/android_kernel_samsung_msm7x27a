@@ -158,6 +158,7 @@ static struct platform_driver uflash_driver = {
 	.remove		= __devexit_p(uflash_remove),
 };
 
+<<<<<<< HEAD
 static int __init uflash_init(void)
 {
 	return platform_driver_register(&uflash_driver);
@@ -170,3 +171,6 @@ static void __exit uflash_exit(void)
 
 module_init(uflash_init);
 module_exit(uflash_exit);
+=======
+module_platform_driver(uflash_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

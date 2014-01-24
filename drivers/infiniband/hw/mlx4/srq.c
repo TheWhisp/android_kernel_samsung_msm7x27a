@@ -76,6 +76,11 @@ struct ib_srq *mlx4_ib_create_srq(struct ib_pd *pd,
 	struct mlx4_ib_srq *srq;
 	struct mlx4_wqe_srq_next_seg *next;
 	struct mlx4_wqe_data_seg *scatter;
+<<<<<<< HEAD
+=======
+	u32 cqn;
+	u16 xrcdn;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int desc_size;
 	int buf_size;
 	int err;
@@ -174,12 +179,25 @@ struct ib_srq *mlx4_ib_create_srq(struct ib_pd *pd,
 		}
 	}
 
+<<<<<<< HEAD
 	err = mlx4_srq_alloc(dev->dev, to_mpd(pd)->pdn, &srq->mtt,
+=======
+	cqn = (init_attr->srq_type == IB_SRQT_XRC) ?
+		to_mcq(init_attr->ext.xrc.cq)->mcq.cqn : 0;
+	xrcdn = (init_attr->srq_type == IB_SRQT_XRC) ?
+		to_mxrcd(init_attr->ext.xrc.xrcd)->xrcdn :
+		(u16) dev->dev->caps.reserved_xrcds;
+	err = mlx4_srq_alloc(dev->dev, to_mpd(pd)->pdn, cqn, xrcdn, &srq->mtt,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     srq->db.dma, &srq->msrq);
 	if (err)
 		goto err_wrid;
 
 	srq->msrq.event = mlx4_ib_srq_event;
+<<<<<<< HEAD
+=======
+	srq->ibsrq.ext.xrc.srq_num = srq->msrq.srqn;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (pd->uobject)
 		if (ib_copy_to_udata(udata, &srq->msrq.srqn, sizeof (__u32))) {

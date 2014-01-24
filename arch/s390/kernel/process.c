@@ -12,6 +12,10 @@
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/elfcore.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/smp.h>
 #include <linux/slab.h>
 #include <linux/interrupt.h>
@@ -22,13 +26,20 @@
 #include <linux/kprobes.h>
 #include <linux/random.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/processor.h>
 #include <asm/irq.h>
 #include <asm/timer.h>
 #include <asm/nmi.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "entry.h"
 
 asmlinkage void ret_from_fork(void) asm ("ret_from_fork");
@@ -74,6 +85,7 @@ static void default_idle(void)
 	if (test_thread_flag(TIF_MCCK_PENDING)) {
 		local_mcck_enable();
 		local_irq_enable();
+<<<<<<< HEAD
 		s390_handle_mcck();
 		return;
 	}
@@ -84,11 +96,18 @@ static void default_idle(void)
 	vtime_stop_cpu();
 	/* Reenable preemption tracer. */
 	start_critical_timings();
+=======
+		return;
+	}
+	/* Halt the cpu and keep track of cpu time accounting. */
+	vtime_stop_cpu();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void cpu_idle(void)
 {
 	for (;;) {
+<<<<<<< HEAD
 		tick_nohz_stop_sched_tick(1);
 		while (!need_resched())
 			default_idle();
@@ -96,6 +115,17 @@ void cpu_idle(void)
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+		tick_nohz_idle_enter();
+		rcu_idle_enter();
+		while (!need_resched() && !test_thread_flag(TIF_MCCK_PENDING))
+			default_idle();
+		rcu_idle_exit();
+		tick_nohz_idle_exit();
+		if (test_thread_flag(TIF_MCCK_PENDING))
+			s390_handle_mcck();
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -116,7 +146,12 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 	struct pt_regs regs;
 
 	memset(&regs, 0, sizeof(regs));
+<<<<<<< HEAD
 	regs.psw.mask = psw_kernel_bits | PSW_MASK_IO | PSW_MASK_EXT;
+=======
+	regs.psw.mask = psw_kernel_bits |
+		PSW_MASK_DAT | PSW_MASK_IO | PSW_MASK_EXT | PSW_MASK_MCHECK;
+>>>>>>> refs/remotes/origin/cm-10.0
 	regs.psw.addr = (unsigned long) kernel_thread_starter | PSW_ADDR_AMODE;
 	regs.gprs[9] = (unsigned long) fn;
 	regs.gprs[10] = (unsigned long) arg;

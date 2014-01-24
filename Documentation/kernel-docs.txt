@@ -300,7 +300,11 @@
        
      * Title: "The Kernel Hacking HOWTO"
        Author: Various Talented People, and Rusty.
+<<<<<<< HEAD
        Location: in kernel tree, Documentation/DocBook/kernel-hacking/
+=======
+       Location: in kernel tree, Documentation/DocBook/kernel-hacking.tmpl
+>>>>>>> refs/remotes/origin/cm-10.0
        (must be built as "make {htmldocs | psdocs | pdfdocs})
        Keywords: HOWTO, kernel contexts, deadlock, locking, modules,
        symbols, return conventions.
@@ -351,7 +355,11 @@
        
      * Title: "Linux Kernel Locking HOWTO"
        Author: Various Talented People, and Rusty.
+<<<<<<< HEAD
        Location: in kernel tree, Documentation/DocBook/kernel-locking/
+=======
+       Location: in kernel tree, Documentation/DocBook/kernel-locking.tmpl
+>>>>>>> refs/remotes/origin/cm-10.0
        (must be built as "make {htmldocs | psdocs | pdfdocs})
        Keywords: locks, locking, spinlock, semaphore, atomic, race
        condition, bottom halves, tasklets, softirqs.
@@ -620,6 +628,7 @@
        (including this document itself) have been moved there, and might
        be more up to date than the web version.
 
+<<<<<<< HEAD
      * Name: "Linux Source Driver"
        URL: http://lsd.linux.cz
        Keywords: Browsing source code.
@@ -631,6 +640,8 @@
        and variables) and LSD can generate patches for you on the fly
        (files, directories or kernel)".
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
      * Name: "Linux Kernel Source Reference"
        Author: Thomas Graichen.
        URL: http://marc.info/?l=linux-kernel&m=96446640102205&w=4

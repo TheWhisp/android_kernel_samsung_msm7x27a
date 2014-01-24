@@ -22,6 +22,18 @@ void *memcpy(void *to, const void *from, size_t n)
 		from = cfrom;
 		n--;
 	}
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_M68000)
+	if ((long)from & 1) {
+		char *cto = to;
+		const char *cfrom = from;
+		for (; n; n--)
+			*cto++ = *cfrom++;
+		return xto;
+	}
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (n > 2 && (long)to & 2) {
 		short *sto = to;
 		const short *sfrom = from;

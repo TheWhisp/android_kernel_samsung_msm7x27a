@@ -126,9 +126,15 @@ static void adfs_put_super(struct super_block *sb)
 	sb->s_fs_info = NULL;
 }
 
+<<<<<<< HEAD
 static int adfs_show_options(struct seq_file *seq, struct vfsmount *mnt)
 {
 	struct adfs_sb_info *asb = ADFS_SB(mnt->mnt_sb);
+=======
+static int adfs_show_options(struct seq_file *seq, struct dentry *root)
+{
+	struct adfs_sb_info *asb = ADFS_SB(root->d_sb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (asb->s_uid != 0)
 		seq_printf(seq, ",uid=%u", asb->s_uid);
@@ -483,10 +489,16 @@ static int adfs_fill_super(struct super_block *sb, void *data, int silent)
 
 	sb->s_d_op = &adfs_dentry_operations;
 	root = adfs_iget(sb, &root_obj);
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root);
 	if (!sb->s_root) {
 		int i;
 		iput(root);
+=======
+	sb->s_root = d_make_root(root);
+	if (!sb->s_root) {
+		int i;
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (i = 0; i < asb->s_map_size; i++)
 			brelse(asb->s_map[i].dm_bh);
 		kfree(asb->s_map);

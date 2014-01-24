@@ -97,7 +97,11 @@ static struct device_node *derive_parent(const char *path)
 	return parent;
 }
 
+<<<<<<< HEAD
 BLOCKING_NOTIFIER_HEAD(pSeries_reconfig_chain);
+=======
+static BLOCKING_NOTIFIER_HEAD(pSeries_reconfig_chain);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int pSeries_reconfig_notifier_register(struct notifier_block *nb)
 {
@@ -109,6 +113,17 @@ void pSeries_reconfig_notifier_unregister(struct notifier_block *nb)
 	blocking_notifier_chain_unregister(&pSeries_reconfig_chain, nb);
 }
 
+<<<<<<< HEAD
+=======
+int pSeries_reconfig_notify(unsigned long action, void *p)
+{
+	int err = blocking_notifier_call_chain(&pSeries_reconfig_chain,
+						action, p);
+
+	return notifier_to_errno(err);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int pSeries_reconfig_add_node(const char *path, struct property *proplist)
 {
 	struct device_node *np;
@@ -132,11 +147,17 @@ static int pSeries_reconfig_add_node(const char *path, struct property *proplist
 		goto out_err;
 	}
 
+<<<<<<< HEAD
 	err = blocking_notifier_call_chain(&pSeries_reconfig_chain,
 				  PSERIES_RECONFIG_ADD, np);
 	if (err == NOTIFY_BAD) {
 		printk(KERN_ERR "Failed to add device node %s\n", path);
 		err = -ENOMEM; /* For now, safe to assume kmalloc failure */
+=======
+	err = pSeries_reconfig_notify(PSERIES_RECONFIG_ADD, np);
+	if (err) {
+		printk(KERN_ERR "Failed to add device node %s\n", path);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_err;
 	}
 
@@ -173,8 +194,12 @@ static int pSeries_reconfig_remove_node(struct device_node *np)
 
 	remove_node_proc_entries(np);
 
+<<<<<<< HEAD
 	blocking_notifier_call_chain(&pSeries_reconfig_chain,
 			    PSERIES_RECONFIG_REMOVE, np);
+=======
+	pSeries_reconfig_notify(PSERIES_RECONFIG_REMOVE, np);
+>>>>>>> refs/remotes/origin/cm-10.0
 	of_detach_node(np);
 
 	of_node_put(parent);
@@ -472,11 +497,18 @@ static int do_update_property(char *buf, size_t bufsize)
 		else
 			action = PSERIES_DRCONF_MEM_REMOVE;
 
+<<<<<<< HEAD
 		rc = blocking_notifier_call_chain(&pSeries_reconfig_chain,
 						  action, value);
 		if (rc == NOTIFY_BAD) {
 			rc = prom_update_property(np, oldprop, newprop);
 			return -ENOMEM;
+=======
+		rc = pSeries_reconfig_notify(action, value);
+		if (rc) {
+			prom_update_property(np, oldprop, newprop);
+			return rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 

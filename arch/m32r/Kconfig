@@ -10,6 +10,10 @@ config M32R
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_PROBE
 	select GENERIC_IRQ_SHOW
+<<<<<<< HEAD
+=======
+	select GENERIC_ATOMIC64
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SBUS
 	bool
@@ -268,6 +272,7 @@ config SCHED_OMIT_FRAME_POINTER
         bool
         default y
 
+<<<<<<< HEAD
 config PREEMPT
 	bool "Preemptible Kernel"
 	help
@@ -279,6 +284,9 @@ config PREEMPT
 
 	  Say Y here if you are building a kernel for a desktop, embedded
 	  or real-time system.  Say N if you are unsure.
+=======
+source "kernel/Kconfig.preempt"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SMP
 	bool "Symmetric multi-processing support"
@@ -332,6 +340,7 @@ config NODES_SHIFT
 	default "1"
 	depends on NEED_MULTIPLE_NODES
 
+<<<<<<< HEAD
 # turning this on wastes a bunch of space.
 # Summit needs it only when NUMA is on
 config BOOT_IOREMAP
@@ -339,6 +348,8 @@ config BOOT_IOREMAP
 	depends on NUMA
 	default n
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 endmenu
 
 

@@ -22,6 +22,10 @@
  */
 #include <linux/module.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/console.h>
@@ -57,9 +61,17 @@ static struct lock_class_key port_lock_key;
 
 static void uart_change_speed(struct tty_struct *tty, struct uart_state *state,
 					struct ktermios *old_termios);
+<<<<<<< HEAD
 static void __uart_wait_until_sent(struct uart_port *port, int timeout);
 static void uart_change_pm(struct uart_state *state, int pm_state);
 
+=======
+static void uart_wait_until_sent(struct tty_struct *tty, int timeout);
+static void uart_change_pm(struct uart_state *state, int pm_state);
+
+static void uart_port_shutdown(struct tty_port *port);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This routine is used by the interrupt handler to schedule processing in
  * the software interrupt portion of the driver.
@@ -72,7 +84,11 @@ void uart_write_wakeup(struct uart_port *port)
 	 * closed.  No cookie for you.
 	 */
 	BUG_ON(!state);
+<<<<<<< HEAD
 	tasklet_schedule(&state->tlet);
+=======
+	tty_wakeup(state->port.tty);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void uart_stop(struct tty_struct *tty)
@@ -110,12 +126,15 @@ static void uart_start(struct tty_struct *tty)
 	spin_unlock_irqrestore(&port->lock, flags);
 }
 
+<<<<<<< HEAD
 static void uart_tasklet_action(unsigned long data)
 {
 	struct uart_state *state = (struct uart_state *)data;
 	tty_wakeup(state->port.tty);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void
 uart_update_mctrl(struct uart_port *port, unsigned int set, unsigned int clear)
 {
@@ -137,13 +156,19 @@ uart_update_mctrl(struct uart_port *port, unsigned int set, unsigned int clear)
  * Startup the port.  This will be called once per open.  All calls
  * will be serialised by the per-port mutex.
  */
+<<<<<<< HEAD
 static int uart_startup(struct tty_struct *tty, struct uart_state *state, int init_hw)
+=======
+static int uart_port_startup(struct tty_struct *tty, struct uart_state *state,
+		int init_hw)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct uart_port *uport = state->uart_port;
 	struct tty_port *port = &state->port;
 	unsigned long page;
 	int retval = 0;
 
+<<<<<<< HEAD
 	if (port->flags & ASYNC_INITIALIZED)
 		return 0;
 
@@ -156,6 +181,10 @@ static int uart_startup(struct tty_struct *tty, struct uart_state *state, int in
 
 	if (uport->type == PORT_UNKNOWN)
 		return 0;
+=======
+	if (uport->type == PORT_UNKNOWN)
+		return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Initialise and allocate the transmit and temporary
@@ -197,6 +226,7 @@ static int uart_startup(struct tty_struct *tty, struct uart_state *state, int in
 				tty->hw_stopped = 1;
 			spin_unlock_irq(&uport->lock);
 		}
+<<<<<<< HEAD
 
 		set_bit(ASYNCB_INITIALIZED, &port->flags);
 
@@ -204,6 +234,41 @@ static int uart_startup(struct tty_struct *tty, struct uart_state *state, int in
 	}
 
 	if (retval && capable(CAP_SYS_ADMIN))
+=======
+	}
+
+	/*
+	 * This is to allow setserial on this port. People may want to set
+	 * port/irq/type and then reconfigure the port properly if it failed
+	 * now.
+	 */
+	if (retval && capable(CAP_SYS_ADMIN))
+		return 1;
+
+	return retval;
+}
+
+static int uart_startup(struct tty_struct *tty, struct uart_state *state,
+		int init_hw)
+{
+	struct tty_port *port = &state->port;
+	int retval;
+
+	if (port->flags & ASYNC_INITIALIZED)
+		return 0;
+
+	/*
+	 * Set the TTY IO error marker - we will only clear this
+	 * once we have successfully opened the port.
+	 */
+	set_bit(TTY_IO_ERROR, &tty->flags);
+
+	retval = uart_port_startup(tty, state, init_hw);
+	if (!retval) {
+		set_bit(ASYNCB_INITIALIZED, &port->flags);
+		clear_bit(TTY_IO_ERROR, &tty->flags);
+	} else if (retval > 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		retval = 0;
 
 	return retval;
@@ -232,6 +297,7 @@ static void uart_shutdown(struct tty_struct *tty, struct uart_state *state)
 		if (!tty || (tty->termios->c_cflag & HUPCL))
 			uart_clear_mctrl(uport, TIOCM_DTR | TIOCM_RTS);
 
+<<<<<<< HEAD
 		/*
 		 * clear delta_msr_wait queue to avoid mem leaks: we may free
 		 * the irq here so the queue might never be woken up.  Note
@@ -256,6 +322,17 @@ static void uart_shutdown(struct tty_struct *tty, struct uart_state *state)
 	 * kill off our tasklet
 	 */
 	tasklet_kill(&state->tlet);
+=======
+		uart_port_shutdown(port);
+	}
+
+	/*
+	 * It's possible for shutdown to be called after suspend if we get
+	 * a DCD drop (hangup) at just the right time.  Clear suspended bit so
+	 * we don't try to resume a port that has been shutdown.
+	 */
+	clear_bit(ASYNCB_SUSPENDED, &port->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Free the transmit buffer page.
@@ -425,7 +502,11 @@ uart_get_divisor(struct uart_port *port, unsigned int baud)
 	if (baud == 38400 && (port->flags & UPF_SPD_MASK) == UPF_SPD_CUST)
 		quot = port->custom_divisor;
 	else
+<<<<<<< HEAD
 		quot = (port->uartclk + (8 * baud)) / (16 * baud);
+=======
+		quot = DIV_ROUND_CLOSEST(port->uartclk, 16 * baud);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return quot;
 }
@@ -660,10 +741,17 @@ static int uart_get_info(struct uart_state *state,
 	tmp.flags	    = uport->flags;
 	tmp.xmit_fifo_size  = uport->fifosize;
 	tmp.baud_base	    = uport->uartclk / 16;
+<<<<<<< HEAD
 	tmp.close_delay	    = port->close_delay / 10;
 	tmp.closing_wait    = port->closing_wait == ASYNC_CLOSING_WAIT_NONE ?
 				ASYNC_CLOSING_WAIT_NONE :
 				port->closing_wait / 10;
+=======
+	tmp.close_delay	    = jiffies_to_msecs(port->close_delay) / 10;
+	tmp.closing_wait    = port->closing_wait == ASYNC_CLOSING_WAIT_NONE ?
+				ASYNC_CLOSING_WAIT_NONE :
+				jiffies_to_msecs(port->closing_wait) / 10;
+>>>>>>> refs/remotes/origin/cm-10.0
 	tmp.custom_divisor  = uport->custom_divisor;
 	tmp.hub6	    = uport->hub6;
 	tmp.io_type         = uport->iotype;
@@ -697,9 +785,16 @@ static int uart_set_info(struct tty_struct *tty, struct uart_state *state,
 		new_port += (unsigned long) new_serial.port_high << HIGH_BITS_OFFSET;
 
 	new_serial.irq = irq_canonicalize(new_serial.irq);
+<<<<<<< HEAD
 	close_delay = new_serial.close_delay * 10;
 	closing_wait = new_serial.closing_wait == ASYNC_CLOSING_WAIT_NONE ?
 			ASYNC_CLOSING_WAIT_NONE : new_serial.closing_wait * 10;
+=======
+	close_delay = msecs_to_jiffies(new_serial.close_delay * 10);
+	closing_wait = new_serial.closing_wait == ASYNC_CLOSING_WAIT_NONE ?
+			ASYNC_CLOSING_WAIT_NONE :
+			msecs_to_jiffies(new_serial.closing_wait * 10);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * This semaphore protects port->count.  It is also
@@ -1259,8 +1354,11 @@ static void uart_close(struct tty_struct *tty, struct file *filp)
 	struct uart_port *uport;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	BUG_ON(!tty_locked());
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!state)
 		return;
 
@@ -1269,6 +1367,7 @@ static void uart_close(struct tty_struct *tty, struct file *filp)
 
 	pr_debug("uart_close(%d) called\n", uport->line);
 
+<<<<<<< HEAD
 	mutex_lock(&port->mutex);
 	spin_lock_irqsave(&port->lock, flags);
 
@@ -1317,6 +1416,10 @@ static void uart_close(struct tty_struct *tty, struct file *filp)
 				!tty_chars_in_buffer(tty), timeout) >= 0)
 			__uart_wait_until_sent(uport, timeout);
 	}
+=======
+	if (tty_port_close_start(port, tty, filp) == 0)
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * At this point, we stop accepting input.  To do this, we
@@ -1332,9 +1435,16 @@ static void uart_close(struct tty_struct *tty, struct file *filp)
 		 * has completely drained; this is especially
 		 * important if there is a transmit FIFO!
 		 */
+<<<<<<< HEAD
 		__uart_wait_until_sent(uport, uport->timeout);
 	}
 
+=======
+		uart_wait_until_sent(tty, uport->timeout);
+	}
+
+	mutex_lock(&port->mutex);
+>>>>>>> refs/remotes/origin/cm-10.0
 	uart_shutdown(tty, state);
 	uart_flush_buffer(tty);
 
@@ -1347,7 +1457,12 @@ static void uart_close(struct tty_struct *tty, struct file *filp)
 	if (port->blocked_open) {
 		spin_unlock_irqrestore(&port->lock, flags);
 		if (port->close_delay)
+<<<<<<< HEAD
 			msleep_interruptible(port->close_delay);
+=======
+			msleep_interruptible(
+					jiffies_to_msecs(port->close_delay));
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_lock_irqsave(&port->lock, flags);
 	} else if (!uart_console(uport)) {
 		spin_unlock_irqrestore(&port->lock, flags);
@@ -1359,6 +1474,7 @@ static void uart_close(struct tty_struct *tty, struct file *filp)
 	 * Wake up anyone trying to open this port.
 	 */
 	clear_bit(ASYNCB_NORMAL_ACTIVE, &port->flags);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&port->lock, flags);
 	wake_up_interruptible(&port->open_wait);
 
@@ -1368,6 +1484,20 @@ done:
 
 static void __uart_wait_until_sent(struct uart_port *port, int timeout)
 {
+=======
+	clear_bit(ASYNCB_CLOSING, &port->flags);
+	spin_unlock_irqrestore(&port->lock, flags);
+	wake_up_interruptible(&port->open_wait);
+	wake_up_interruptible(&port->close_wait);
+
+	mutex_unlock(&port->mutex);
+}
+
+static void uart_wait_until_sent(struct tty_struct *tty, int timeout)
+{
+	struct uart_state *state = tty->driver_data;
+	struct uart_port *port = state->uart_port;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long char_time, expire;
 
 	if (port->type == PORT_UNKNOWN || port->fifosize == 0)
@@ -1419,6 +1549,7 @@ static void __uart_wait_until_sent(struct uart_port *port, int timeout)
 	}
 }
 
+<<<<<<< HEAD
 static void uart_wait_until_sent(struct tty_struct *tty, int timeout)
 {
 	struct uart_state *state = tty->driver_data;
@@ -1429,6 +1560,8 @@ static void uart_wait_until_sent(struct tty_struct *tty, int timeout)
 	tty_unlock();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This is called with the BKL held in
  *  linux/drivers/char/tty_io.c:do_tty_hangup()
@@ -1441,7 +1574,10 @@ static void uart_hangup(struct tty_struct *tty)
 	struct tty_port *port = &state->port;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	BUG_ON(!tty_locked());
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pr_debug("uart_hangup(%d)\n", state->uart_port->line);
 
 	mutex_lock(&port->mutex);
@@ -1459,6 +1595,39 @@ static void uart_hangup(struct tty_struct *tty)
 	mutex_unlock(&port->mutex);
 }
 
+<<<<<<< HEAD
+=======
+static int uart_port_activate(struct tty_port *port, struct tty_struct *tty)
+{
+	return 0;
+}
+
+static void uart_port_shutdown(struct tty_port *port)
+{
+	struct uart_state *state = container_of(port, struct uart_state, port);
+	struct uart_port *uport = state->uart_port;
+
+	/*
+	 * clear delta_msr_wait queue to avoid mem leaks: we may free
+	 * the irq here so the queue might never be woken up.  Note
+	 * that we won't end up waiting on delta_msr_wait again since
+	 * any outstanding file descriptors should be pointing at
+	 * hung_up_tty_fops now.
+	 */
+	wake_up_interruptible(&port->delta_msr_wait);
+
+	/*
+	 * Free the IRQ and disable the port.
+	 */
+	uport->ops->shutdown(uport);
+
+	/*
+	 * Ensure that the IRQ handler isn't running on another CPU.
+	 */
+	synchronize_irq(uport->irq);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int uart_carrier_raised(struct tty_port *port)
 {
 	struct uart_state *state = container_of(port, struct uart_state, port);
@@ -1484,6 +1653,7 @@ static void uart_dtr_rts(struct tty_port *port, int onoff)
 		uart_clear_mctrl(uport, TIOCM_DTR | TIOCM_RTS);
 }
 
+<<<<<<< HEAD
 static struct uart_state *uart_get(struct uart_driver *drv, int line)
 {
 	struct uart_state *state;
@@ -1511,6 +1681,8 @@ static struct uart_state *uart_get(struct uart_driver *drv, int line)
 	return ERR_PTR(ret);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * calls to uart_open are serialised by the BKL in
  *   fs/char_dev.c:chrdev_open()
@@ -1524,6 +1696,7 @@ static struct uart_state *uart_get(struct uart_driver *drv, int line)
 static int uart_open(struct tty_struct *tty, struct file *filp)
 {
 	struct uart_driver *drv = (struct uart_driver *)tty->driver->driver_state;
+<<<<<<< HEAD
 	struct uart_state *state;
 	struct tty_port *port;
 	int retval, line = tty->index;
@@ -1545,6 +1718,31 @@ static int uart_open(struct tty_struct *tty, struct file *filp)
 		goto fail;
 	}
 	port = &state->port;
+=======
+	int retval, line = tty->index;
+	struct uart_state *state = drv->state + line;
+	struct tty_port *port = &state->port;
+
+	pr_debug("uart_open(%d) called\n", line);
+
+	/*
+	 * We take the semaphore here to guarantee that we won't be re-entered
+	 * while allocating the state structure, or while we request any IRQs
+	 * that the driver may need.  This also has the nice side-effect that
+	 * it delays the action of uart_hangup, so we can guarantee that
+	 * state->port.tty will always contain something reasonable.
+	 */
+	if (mutex_lock_interruptible(&port->mutex)) {
+		retval = -ERESTARTSYS;
+		goto end;
+	}
+
+	port->count++;
+	if (!state->uart_port || state->uart_port->flags & UPF_DEAD) {
+		retval = -ENXIO;
+		goto err_dec_count;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Once we set tty->driver_data here, we are guaranteed that
@@ -1554,7 +1752,10 @@ static int uart_open(struct tty_struct *tty, struct file *filp)
 	tty->driver_data = state;
 	state->uart_port->state = state;
 	tty->low_latency = (state->uart_port->flags & UPF_LOW_LATENCY) ? 1 : 0;
+<<<<<<< HEAD
 	tty->alt_speed = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	tty_port_tty_set(port, tty);
 
 	/*
@@ -1562,9 +1763,13 @@ static int uart_open(struct tty_struct *tty, struct file *filp)
 	 */
 	if (tty_hung_up_p(filp)) {
 		retval = -EAGAIN;
+<<<<<<< HEAD
 		port->count--;
 		mutex_unlock(&port->mutex);
 		goto fail;
+=======
+		goto err_dec_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -1585,8 +1790,17 @@ static int uart_open(struct tty_struct *tty, struct file *filp)
 	if (retval == 0)
 		retval = tty_port_block_til_ready(port, tty, filp);
 
+<<<<<<< HEAD
 fail:
 	return retval;
+=======
+end:
+	return retval;
+err_dec_count:
+	port->count--;
+	mutex_unlock(&port->mutex);
+	goto end;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static const char *uart_type(struct uart_port *port)
@@ -1877,6 +2091,17 @@ uart_set_options(struct uart_port *port, struct console *co,
 EXPORT_SYMBOL_GPL(uart_set_options);
 #endif /* CONFIG_SERIAL_CORE_CONSOLE */
 
+<<<<<<< HEAD
+=======
+/**
+ * uart_change_pm - set power state of the port
+ *
+ * @state: port descriptor
+ * @pm_state: new state
+ *
+ * Locking: port->mutex has to be held
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 static void uart_change_pm(struct uart_state *state, int pm_state)
 {
 	struct uart_port *port = state->uart_port;
@@ -2076,8 +2301,11 @@ uart_report_port(struct uart_driver *drv, struct uart_port *port)
 	case UPIO_MEM32:
 	case UPIO_AU:
 	case UPIO_TSI:
+<<<<<<< HEAD
 	case UPIO_DWAPB:
 	case UPIO_DWAPB32:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		snprintf(address, sizeof(address),
 			 "MMIO 0x%llx", (unsigned long long)port->mapbase);
 		break;
@@ -2243,6 +2471,11 @@ static const struct tty_operations uart_ops = {
 };
 
 static const struct tty_port_operations uart_port_ops = {
+<<<<<<< HEAD
+=======
+	.activate	= uart_port_activate,
+	.shutdown	= uart_port_shutdown,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.carrier_raised = uart_carrier_raised,
 	.dtr_rts	= uart_dtr_rts,
 };
@@ -2281,7 +2514,10 @@ int uart_register_driver(struct uart_driver *drv)
 
 	drv->tty_driver = normal;
 
+<<<<<<< HEAD
 	normal->owner		= drv->owner;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	normal->driver_name	= drv->driver_name;
 	normal->name		= drv->dev_name;
 	normal->major		= drv->major;
@@ -2304,10 +2540,15 @@ int uart_register_driver(struct uart_driver *drv)
 
 		tty_port_init(port);
 		port->ops = &uart_port_ops;
+<<<<<<< HEAD
 		port->close_delay     = 500;	/* .5 seconds */
 		port->closing_wait    = 30000;	/* 30 seconds */
 		tasklet_init(&state->tlet, uart_tasklet_action,
 			     (unsigned long)state);
+=======
+		port->close_delay     = HZ / 2;	/* .5 seconds */
+		port->closing_wait    = 30 * HZ;/* 30 seconds */
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	retval = tty_register_driver(normal);
@@ -2336,7 +2577,10 @@ void uart_unregister_driver(struct uart_driver *drv)
 	tty_unregister_driver(p);
 	put_tty_driver(p);
 	kfree(drv->state);
+<<<<<<< HEAD
 	drv->state = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	drv->tty_driver = NULL;
 }
 
@@ -2402,11 +2646,19 @@ int uart_add_one_port(struct uart_driver *drv, struct uart_port *uport)
 	 */
 	tty_dev = tty_register_device(drv->tty_driver, uport->line, uport->dev);
 	if (likely(!IS_ERR(tty_dev))) {
+<<<<<<< HEAD
 		device_init_wakeup(tty_dev, 1);
 		device_set_wakeup_enable(tty_dev, 0);
 	} else
 		printk(KERN_ERR "Cannot register tty device on line %d\n",
 		       uport->line);
+=======
+		device_set_wakeup_capable(tty_dev, 1);
+	} else {
+		printk(KERN_ERR "Cannot register tty device on line %d\n",
+		       uport->line);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Ensure UPF_DEAD is not set.
@@ -2469,11 +2721,14 @@ int uart_remove_one_port(struct uart_driver *drv, struct uart_port *uport)
 	 */
 	uport->type = PORT_UNKNOWN;
 
+<<<<<<< HEAD
 	/*
 	 * Kill the tasklet, and free resources.
 	 */
 	tasklet_kill(&state->tlet);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	state->uart_port = NULL;
 	mutex_unlock(&port_mutex);
 
@@ -2498,14 +2753,113 @@ int uart_match_port(struct uart_port *port1, struct uart_port *port2)
 	case UPIO_MEM32:
 	case UPIO_AU:
 	case UPIO_TSI:
+<<<<<<< HEAD
 	case UPIO_DWAPB:
 	case UPIO_DWAPB32:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		return (port1->mapbase == port2->mapbase);
 	}
 	return 0;
 }
 EXPORT_SYMBOL(uart_match_port);
 
+<<<<<<< HEAD
+=======
+/**
+ *	uart_handle_dcd_change - handle a change of carrier detect state
+ *	@uport: uart_port structure for the open port
+ *	@status: new carrier detect status, nonzero if active
+ */
+void uart_handle_dcd_change(struct uart_port *uport, unsigned int status)
+{
+	struct uart_state *state = uport->state;
+	struct tty_port *port = &state->port;
+	struct tty_ldisc *ld = tty_ldisc_ref(port->tty);
+	struct pps_event_time ts;
+
+	if (ld && ld->ops->dcd_change)
+		pps_get_ts(&ts);
+
+	uport->icount.dcd++;
+#ifdef CONFIG_HARD_PPS
+	if ((uport->flags & UPF_HARDPPS_CD) && status)
+		hardpps();
+#endif
+
+	if (port->flags & ASYNC_CHECK_CD) {
+		if (status)
+			wake_up_interruptible(&port->open_wait);
+		else if (port->tty)
+			tty_hangup(port->tty);
+	}
+
+	if (ld && ld->ops->dcd_change)
+		ld->ops->dcd_change(port->tty, status, &ts);
+	if (ld)
+		tty_ldisc_deref(ld);
+}
+EXPORT_SYMBOL_GPL(uart_handle_dcd_change);
+
+/**
+ *	uart_handle_cts_change - handle a change of clear-to-send state
+ *	@uport: uart_port structure for the open port
+ *	@status: new clear to send status, nonzero if active
+ */
+void uart_handle_cts_change(struct uart_port *uport, unsigned int status)
+{
+	struct tty_port *port = &uport->state->port;
+	struct tty_struct *tty = port->tty;
+
+	uport->icount.cts++;
+
+	if (port->flags & ASYNC_CTS_FLOW) {
+		if (tty->hw_stopped) {
+			if (status) {
+				tty->hw_stopped = 0;
+				uport->ops->start_tx(uport);
+				uart_write_wakeup(uport);
+			}
+		} else {
+			if (!status) {
+				tty->hw_stopped = 1;
+				uport->ops->stop_tx(uport);
+			}
+		}
+	}
+}
+EXPORT_SYMBOL_GPL(uart_handle_cts_change);
+
+/**
+ * uart_insert_char - push a char to the uart layer
+ *
+ * User is responsible to call tty_flip_buffer_push when they are done with
+ * insertion.
+ *
+ * @port: corresponding port
+ * @status: state of the serial port RX buffer (LSR for 8250)
+ * @overrun: mask of overrun bits in @status
+ * @ch: character to push
+ * @flag: flag for the character (see TTY_NORMAL and friends)
+ */
+void uart_insert_char(struct uart_port *port, unsigned int status,
+		 unsigned int overrun, unsigned int ch, unsigned int flag)
+{
+	struct tty_struct *tty = port->state->port.tty;
+
+	if ((status & port->ignore_status_mask & ~overrun) == 0)
+		tty_insert_flip_char(tty, ch, flag);
+
+	/*
+	 * Overrun is special.  Since it's reported immediately,
+	 * it doesn't affect the current character.
+	 */
+	if (status & ~port->ignore_status_mask & overrun)
+		tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+}
+EXPORT_SYMBOL_GPL(uart_insert_char);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(uart_write_wakeup);
 EXPORT_SYMBOL(uart_register_driver);
 EXPORT_SYMBOL(uart_unregister_driver);

@@ -25,11 +25,21 @@ struct intel_iommu;
 struct dmar_domain;
 struct root_entry;
 
+<<<<<<< HEAD
 extern void free_dmar_iommu(struct intel_iommu *iommu);
 
 #ifdef CONFIG_DMAR
 extern int iommu_calculate_agaw(struct intel_iommu *iommu);
 extern int iommu_calculate_max_sagaw(struct intel_iommu *iommu);
+=======
+
+#ifdef CONFIG_INTEL_IOMMU
+extern void free_dmar_iommu(struct intel_iommu *iommu);
+extern int iommu_calculate_agaw(struct intel_iommu *iommu);
+extern int iommu_calculate_max_sagaw(struct intel_iommu *iommu);
+extern int dmar_disabled;
+extern int intel_iommu_enabled;
+>>>>>>> refs/remotes/origin/cm-10.0
 #else
 static inline int iommu_calculate_agaw(struct intel_iommu *iommu)
 {
@@ -39,8 +49,18 @@ static inline int iommu_calculate_max_sagaw(struct intel_iommu *iommu)
 {
 	return 0;
 }
+<<<<<<< HEAD
 #endif
 
 extern int dmar_disabled;
+=======
+static inline void free_dmar_iommu(struct intel_iommu *iommu)
+{
+}
+#define dmar_disabled	(1)
+#define intel_iommu_enabled (0)
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

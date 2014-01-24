@@ -9,6 +9,10 @@
 
 #include <linux/types.h>
 #include <linux/linkage.h>
+<<<<<<< HEAD
+=======
+#include <mach/irq.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* init functions only */
 extern int __init init_arch_irq(void);

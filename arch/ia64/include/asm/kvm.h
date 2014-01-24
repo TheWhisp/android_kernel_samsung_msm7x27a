@@ -261,4 +261,11 @@ struct kvm_debug_exit_arch {
 struct kvm_guest_debug_arch {
 };
 
+<<<<<<< HEAD
+=======
+/* definition of registers in kvm_run */
+struct kvm_sync_regs {
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

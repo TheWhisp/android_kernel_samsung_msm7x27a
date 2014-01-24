@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,7 +28,12 @@ enum rpm_regulator_type {
 	RPM_REGULATOR_TYPE_SMPS,
 	RPM_REGULATOR_TYPE_VS,
 	RPM_REGULATOR_TYPE_NCP,
+<<<<<<< HEAD
 	RPM_REGULATOR_TYPE_MAX = RPM_REGULATOR_TYPE_NCP,
+=======
+	RPM_REGULATOR_TYPE_CORNER,
+	RPM_REGULATOR_TYPE_MAX = RPM_REGULATOR_TYPE_CORNER,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct request_member {
@@ -78,6 +87,10 @@ struct vreg {
 	struct rpm_vreg_parts		*part;
 	int				type;
 	int				id;
+<<<<<<< HEAD
+=======
+	bool				requires_cxo;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mutex			pc_lock;
 	int				save_uV;
 	int				mode;
@@ -144,7 +157,11 @@ struct vreg_config {
 #define MICRO_TO_MILLI(uV)			((uV) / 1000)
 #define MILLI_TO_MICRO(mV)			((mV) * 1000)
 
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM8X60)
+=======
+#if defined(CONFIG_MSM_RPM_REGULATOR) && defined(CONFIG_ARCH_MSM8X60)
+>>>>>>> refs/remotes/origin/cm-10.0
 struct vreg_config *get_config_8660(void);
 #else
 static inline struct vreg_config *get_config_8660(void)
@@ -153,7 +170,12 @@ static inline struct vreg_config *get_config_8660(void)
 }
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_APQ8064)
+=======
+#if defined(CONFIG_MSM_RPM_REGULATOR) && \
+	(defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_APQ8064))
+>>>>>>> refs/remotes/origin/cm-10.0
 struct vreg_config *get_config_8960(void);
 #else
 static inline struct vreg_config *get_config_8960(void)
@@ -162,7 +184,11 @@ static inline struct vreg_config *get_config_8960(void)
 }
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM9615)
+=======
+#if defined(CONFIG_MSM_RPM_REGULATOR) && defined(CONFIG_ARCH_MSM9615)
+>>>>>>> refs/remotes/origin/cm-10.0
 struct vreg_config *get_config_9615(void);
 #else
 static inline struct vreg_config *get_config_9615(void)
@@ -171,4 +197,16 @@ static inline struct vreg_config *get_config_9615(void)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_MSM_RPM_REGULATOR) && defined(CONFIG_ARCH_MSM8930)
+struct vreg_config *get_config_8930(void);
+#else
+static inline struct vreg_config *get_config_8930(void)
+{
+	return NULL;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

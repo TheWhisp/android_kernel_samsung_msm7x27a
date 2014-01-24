@@ -34,6 +34,9 @@
 #define AK4535_VOL		0xe
 #define AK4535_STATUS		0xf
 
+<<<<<<< HEAD
 #define AK4535_CACHEREGNUM 	0x10
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

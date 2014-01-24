@@ -107,7 +107,11 @@ static void __maybe_unused dbg_hcc_params (struct ehci_hcd *ehci, char *label)
 			HCC_PER_PORT_CHANGE_EVENT(params) ? " ppce" : "",
 			HCC_HW_PREFETCH(params) ? " hw prefetch" : "",
 			HCC_32FRAME_PERIODIC_LIST(params) ?
+<<<<<<< HEAD
 				" 32 peridic list" : "");
+=======
+				" 32 periodic list" : "");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 #else
@@ -352,7 +356,10 @@ static int debug_async_open(struct inode *, struct file *);
 static int debug_periodic_open(struct inode *, struct file *);
 static int debug_registers_open(struct inode *, struct file *);
 static int debug_async_open(struct inode *, struct file *);
+<<<<<<< HEAD
 static int debug_lpm_open(struct inode *, struct file *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t debug_lpm_read(struct file *file, char __user *user_buf,
 				   size_t count, loff_t *ppos);
 static ssize_t debug_lpm_write(struct file *file, const char __user *buffer,
@@ -385,7 +392,11 @@ static const struct file_operations debug_registers_fops = {
 };
 static const struct file_operations debug_lpm_fops = {
 	.owner		= THIS_MODULE,
+<<<<<<< HEAD
 	.open		= debug_lpm_open,
+=======
+	.open		= simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read		= debug_lpm_read,
 	.write		= debug_lpm_write,
 	.release	= debug_lpm_close,
@@ -697,6 +708,22 @@ static ssize_t fill_periodic_buffer(struct debug_buffer *buf)
 }
 #undef DBG_SCHED_LIMIT
 
+<<<<<<< HEAD
+=======
+static const char *rh_state_string(struct ehci_hcd *ehci)
+{
+	switch (ehci->rh_state) {
+	case EHCI_RH_HALTED:
+		return "halted";
+	case EHCI_RH_SUSPENDED:
+		return "suspended";
+	case EHCI_RH_RUNNING:
+		return "running";
+	}
+	return "?";
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t fill_registers_buffer(struct debug_buffer *buf)
 {
 	struct usb_hcd		*hcd;
@@ -730,11 +757,19 @@ static ssize_t fill_registers_buffer(struct debug_buffer *buf)
 	temp = scnprintf (next, size,
 		"bus %s, device %s\n"
 		"%s\n"
+<<<<<<< HEAD
 		"EHCI %x.%02x, hcd state %d\n",
 		hcd->self.controller->bus->name,
 		dev_name(hcd->self.controller),
 		hcd->product_desc,
 		i >> 8, i & 0x0ff, hcd->state);
+=======
+		"EHCI %x.%02x, rh state %s\n",
+		hcd->self.controller->bus->name,
+		dev_name(hcd->self.controller),
+		hcd->product_desc,
+		i >> 8, i & 0x0ff, rh_state_string(ehci));
+>>>>>>> refs/remotes/origin/cm-10.0
 	size -= temp;
 	next += temp;
 
@@ -957,12 +992,15 @@ static int debug_registers_open(struct inode *inode, struct file *file)
 	return file->private_data ? 0 : -ENOMEM;
 }
 
+<<<<<<< HEAD
 static int debug_lpm_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int debug_lpm_close(struct inode *inode, struct file *file)
 {
 	return 0;

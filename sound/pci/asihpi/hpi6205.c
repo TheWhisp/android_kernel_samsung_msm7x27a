@@ -1,7 +1,11 @@
 /******************************************************************************
 
     AudioScience HPI driver
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/cm-10.0
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -45,6 +49,7 @@
 #define HPI6205_ERROR_MSG_RESP_TIMEOUT          1016
 
 /* initialization/bootload errors */
+<<<<<<< HEAD
 #define HPI6205_ERROR_6205_NO_IRQ               1002
 #define HPI6205_ERROR_6205_INIT_FAILED          1003
 #define HPI6205_ERROR_6205_REG                  1006
@@ -57,6 +62,23 @@
 #define HPI6205_ERROR_DSP_PLD                   1014
 #define HPI6205_ERROR_6205_EEPROM               1017
 #define HPI6205_ERROR_DSP_EMIF                  1018
+=======
+#define HPI6205_ERROR_6205_NO_IRQ       1002
+#define HPI6205_ERROR_6205_INIT_FAILED  1003
+#define HPI6205_ERROR_6205_REG          1006
+#define HPI6205_ERROR_6205_DSPPAGE      1007
+#define HPI6205_ERROR_C6713_HPIC        1009
+#define HPI6205_ERROR_C6713_HPIA        1010
+#define HPI6205_ERROR_C6713_PLL         1011
+#define HPI6205_ERROR_DSP_INTMEM        1012
+#define HPI6205_ERROR_DSP_EXTMEM        1013
+#define HPI6205_ERROR_DSP_PLD           1014
+#define HPI6205_ERROR_6205_EEPROM       1017
+#define HPI6205_ERROR_DSP_EMIF1         1018
+#define HPI6205_ERROR_DSP_EMIF2         1019
+#define HPI6205_ERROR_DSP_EMIF3         1020
+#define HPI6205_ERROR_DSP_EMIF4         1021
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*****************************************************************************/
 /* for C6205 PCI i/f */
@@ -373,6 +395,10 @@ static void instream_message(struct hpi_adapter_obj *pao,
 /** Entry point to this HPI backend
  * All calls to the HPI start here
  */
+<<<<<<< HEAD
+=======
+static
+>>>>>>> refs/remotes/origin/cm-10.0
 void _HPI_6205(struct hpi_adapter_obj *pao, struct hpi_message *phm,
 	struct hpi_response *phr)
 {
@@ -392,7 +418,11 @@ void _HPI_6205(struct hpi_adapter_obj *pao, struct hpi_message *phm,
 
 	HPI_DEBUG_LOG(VERBOSE, "start of switch\n");
 	switch (phm->type) {
+<<<<<<< HEAD
 	case HPI_TYPE_MESSAGE:
+=======
+	case HPI_TYPE_REQUEST:
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch (phm->object) {
 		case HPI_OBJ_SUBSYSTEM:
 			subsys_message(pao, phm, phr);
@@ -402,7 +432,10 @@ void _HPI_6205(struct hpi_adapter_obj *pao, struct hpi_message *phm,
 			adapter_message(pao, phm, phr);
 			break;
 
+<<<<<<< HEAD
 		case HPI_OBJ_CONTROLEX:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		case HPI_OBJ_CONTROL:
 			control_message(pao, phm, phr);
 			break;
@@ -488,7 +521,11 @@ static void subsys_create_adapter(struct hpi_message *phm,
 		return;
 	}
 
+<<<<<<< HEAD
 	phr->u.s.adapter_type = ao.adapter_type;
+=======
+	phr->u.s.adapter_type = ao.type;
+>>>>>>> refs/remotes/origin/cm-10.0
 	phr->u.s.adapter_index = ao.index;
 	phr->error = 0;
 }
@@ -503,7 +540,11 @@ static void adapter_delete(struct hpi_adapter_obj *pao,
 		phr->error = HPI_ERROR_INVALID_OBJ_INDEX;
 		return;
 	}
+<<<<<<< HEAD
 	phw = (struct hpi_hw_obj *)pao->priv;
+=======
+	phw = pao->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* reset adapter h/w */
 	/* Reset C6713 #1 */
 	boot_loader_write_mem32(pao, 0, C6205_BAR0_TIMER1_CTL, 0);
@@ -634,11 +675,20 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
 
 		HPI_DEBUG_LOG(VERBOSE, "init ADAPTER_GET_INFO\n");
 		memset(&hm, 0, sizeof(hm));
+<<<<<<< HEAD
 		hm.type = HPI_TYPE_MESSAGE;
 		hm.size = sizeof(hm);
 		hm.object = HPI_OBJ_ADAPTER;
 		hm.function = HPI_ADAPTER_GET_INFO;
 		hm.adapter_index = 0;
+=======
+		/* wAdapterIndex == version == 0 */
+		hm.type = HPI_TYPE_REQUEST;
+		hm.size = sizeof(hm);
+		hm.object = HPI_OBJ_ADAPTER;
+		hm.function = HPI_ADAPTER_GET_INFO;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		memset(&hr, 0, sizeof(hr));
 		hr.size = sizeof(hr);
 
@@ -651,24 +701,34 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
 		if (hr.error)
 			return hr.error;
 
+<<<<<<< HEAD
 		pao->adapter_type = hr.u.ax.info.adapter_type;
+=======
+		pao->type = hr.u.ax.info.adapter_type;
+>>>>>>> refs/remotes/origin/cm-10.0
 		pao->index = hr.u.ax.info.adapter_index;
 
 		max_streams =
 			hr.u.ax.info.num_outstreams +
 			hr.u.ax.info.num_instreams;
 
+<<<<<<< HEAD
 		hpios_locked_mem_prepare((max_streams * 6) / 10, max_streams,
 			65536, pao->pci.pci_dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		HPI_DEBUG_LOG(VERBOSE,
 			"got adapter info type %x index %d serial %d\n",
 			hr.u.ax.info.adapter_type, hr.u.ax.info.adapter_index,
 			hr.u.ax.info.serial_number);
 	}
 
+<<<<<<< HEAD
 	pao->open = 0;	/* upon creation the adapter is closed */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (phw->p_cache)
 		phw->p_cache->adap_idx = pao->index;
 
@@ -709,9 +769,12 @@ static void delete_adapter_obj(struct hpi_adapter_obj *pao)
 				[i]);
 			phw->outstream_host_buffer_size[i] = 0;
 		}
+<<<<<<< HEAD
 
 	hpios_locked_mem_unprepare(pao->pci.pci_dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(phw);
 }
 
@@ -808,8 +871,13 @@ static void outstream_host_buffer_allocate(struct hpi_adapter_obj *pao,
 			obj_index];
 		status->samples_processed = 0;
 		status->stream_state = HPI_STATE_STOPPED;
+<<<<<<< HEAD
 		status->dSP_index = 0;
 		status->host_index = status->dSP_index;
+=======
+		status->dsp_index = 0;
+		status->host_index = status->dsp_index;
+>>>>>>> refs/remotes/origin/cm-10.0
 		status->size_in_bytes = phm->u.d.u.buffer.buffer_size;
 		status->auxiliary_data_available = 0;
 
@@ -883,7 +951,11 @@ static void outstream_host_buffer_free(struct hpi_adapter_obj *pao,
 static u32 outstream_get_space_available(struct hpi_hostbuffer_status *status)
 {
 	return status->size_in_bytes - (status->host_index -
+<<<<<<< HEAD
 		status->dSP_index);
+=======
+		status->dsp_index);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void outstream_write(struct hpi_adapter_obj *pao,
@@ -1085,8 +1157,13 @@ static void instream_host_buffer_allocate(struct hpi_adapter_obj *pao,
 			obj_index];
 		status->samples_processed = 0;
 		status->stream_state = HPI_STATE_STOPPED;
+<<<<<<< HEAD
 		status->dSP_index = 0;
 		status->host_index = status->dSP_index;
+=======
+		status->dsp_index = 0;
+		status->host_index = status->dsp_index;
+>>>>>>> refs/remotes/origin/cm-10.0
 		status->size_in_bytes = phm->u.d.u.buffer.buffer_size;
 		status->auxiliary_data_available = 0;
 
@@ -1167,7 +1244,11 @@ static void instream_start(struct hpi_adapter_obj *pao,
 
 static u32 instream_get_bytes_available(struct hpi_hostbuffer_status *status)
 {
+<<<<<<< HEAD
 	return status->dSP_index - status->host_index;
+=======
+	return status->dsp_index - status->host_index;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void instream_read(struct hpi_adapter_obj *pao,
@@ -1371,9 +1452,14 @@ static u16 adapter_boot_load_dsp(struct hpi_adapter_obj *pao,
 			return err;
 
 		/* write the DSP code down into the DSPs memory */
+<<<<<<< HEAD
 		dsp_code.ps_dev = pao->pci.pci_dev;
 		err = hpi_dsp_code_open(boot_code_id[dsp], &dsp_code,
 			pos_error_code);
+=======
+		err = hpi_dsp_code_open(boot_code_id[dsp], pao->pci.pci_dev,
+			&dsp_code, pos_error_code);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err)
 			return err;
 
@@ -1620,7 +1706,11 @@ static u16 boot_loader_config_emif(struct hpi_adapter_obj *pao, int dsp_index)
 		boot_loader_write_mem32(pao, dsp_index, 0x01800008, setting);
 		if (setting != boot_loader_read_mem32(pao, dsp_index,
 				0x01800008))
+<<<<<<< HEAD
 			return HPI6205_ERROR_DSP_EMIF;
+=======
+			return HPI6205_ERROR_DSP_EMIF1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* EMIF CE1 setup - 32 bit async. This is 6713 #1 HPI, */
 		/* which occupies D15..0. 6713 starts at 27MHz, so need */
@@ -1633,7 +1723,11 @@ static u16 boot_loader_config_emif(struct hpi_adapter_obj *pao, int dsp_index)
 		boot_loader_write_mem32(pao, dsp_index, 0x01800004, setting);
 		if (setting != boot_loader_read_mem32(pao, dsp_index,
 				0x01800004))
+<<<<<<< HEAD
 			return HPI6205_ERROR_DSP_EMIF;
+=======
+			return HPI6205_ERROR_DSP_EMIF2;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* EMIF CE2 setup - 32 bit async. This is 6713 #2 HPI, */
 		/* which occupies D15..0. 6713 starts at 27MHz, so need */
@@ -1645,7 +1739,11 @@ static u16 boot_loader_config_emif(struct hpi_adapter_obj *pao, int dsp_index)
 		boot_loader_write_mem32(pao, dsp_index, 0x01800010, setting);
 		if (setting != boot_loader_read_mem32(pao, dsp_index,
 				0x01800010))
+<<<<<<< HEAD
 			return HPI6205_ERROR_DSP_EMIF;
+=======
+			return HPI6205_ERROR_DSP_EMIF3;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* EMIF CE3 setup - 32 bit async. */
 		/* This is the PLD on the ASI5000 cards only */
@@ -1656,7 +1754,11 @@ static u16 boot_loader_config_emif(struct hpi_adapter_obj *pao, int dsp_index)
 		boot_loader_write_mem32(pao, dsp_index, 0x01800014, setting);
 		if (setting != boot_loader_read_mem32(pao, dsp_index,
 				0x01800014))
+<<<<<<< HEAD
 			return HPI6205_ERROR_DSP_EMIF;
+=======
+			return HPI6205_ERROR_DSP_EMIF4;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* set EMIF SDRAM control for 2Mx32 SDRAM (512x32x4 bank) */
 		/*  need to use this else DSP code crashes? */
@@ -2084,6 +2186,7 @@ static u16 message_response_sequence(struct hpi_adapter_obj *pao,
 	u16 err = 0;
 
 	message_count++;
+<<<<<<< HEAD
 	if (phm->size > sizeof(interface->u)) {
 		phr->error = HPI_ERROR_MESSAGE_BUFFER_TOO_SMALL;
 		phr->specific_error = sizeof(interface->u);
@@ -2091,6 +2194,15 @@ static u16 message_response_sequence(struct hpi_adapter_obj *pao,
 		HPI_DEBUG_LOG(ERROR,
 			"message len %d too big for buffer %zd \n", phm->size,
 			sizeof(interface->u));
+=======
+	if (phm->size > sizeof(interface->u.message_buffer)) {
+		phr->error = HPI_ERROR_MESSAGE_BUFFER_TOO_SMALL;
+		phr->specific_error = sizeof(interface->u.message_buffer);
+		phr->size = sizeof(struct hpi_response_header);
+		HPI_DEBUG_LOG(ERROR,
+			"message len %d too big for buffer %zd \n", phm->size,
+			sizeof(interface->u.message_buffer));
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 
@@ -2122,6 +2234,7 @@ static u16 message_response_sequence(struct hpi_adapter_obj *pao,
 
 	/* read the result */
 	if (time_out) {
+<<<<<<< HEAD
 		if (interface->u.response_buffer.size <= phr->size)
 			memcpy(phr, &interface->u.response_buffer,
 				interface->u.response_buffer.size);
@@ -2129,11 +2242,25 @@ static u16 message_response_sequence(struct hpi_adapter_obj *pao,
 			HPI_DEBUG_LOG(ERROR,
 				"response len %d too big for buffer %d\n",
 				interface->u.response_buffer.size, phr->size);
+=======
+		if (interface->u.response_buffer.response.size <= phr->size)
+			memcpy(phr, &interface->u.response_buffer,
+				interface->u.response_buffer.response.size);
+		else {
+			HPI_DEBUG_LOG(ERROR,
+				"response len %d too big for buffer %d\n",
+				interface->u.response_buffer.response.size,
+				phr->size);
+>>>>>>> refs/remotes/origin/cm-10.0
 			memcpy(phr, &interface->u.response_buffer,
 				sizeof(struct hpi_response_header));
 			phr->error = HPI_ERROR_RESPONSE_BUFFER_TOO_SMALL;
 			phr->specific_error =
+<<<<<<< HEAD
 				interface->u.response_buffer.size;
+=======
+				interface->u.response_buffer.response.size;
+>>>>>>> refs/remotes/origin/cm-10.0
 			phr->size = sizeof(struct hpi_response_header);
 		}
 	}
@@ -2202,6 +2329,7 @@ static void hw_message(struct hpi_adapter_obj *pao, struct hpi_message *phm,
 			phm->u.d.u.data.data_size, H620_HIF_GET_DATA);
 		break;
 
+<<<<<<< HEAD
 	case HPI_CONTROL_SET_STATE:
 		if (phm->object == HPI_OBJ_CONTROLEX
 			&& phm->u.cx.attribute == HPI_COBRANET_SET_DATA)
@@ -2219,6 +2347,8 @@ static void hw_message(struct hpi_adapter_obj *pao, struct hpi_message *phm,
 				phr->u.cx.u.cobranet_data.byte_count,
 				H620_HIF_GET_DATA);
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	phr->error = err;
 

@@ -18,7 +18,11 @@
 #include <linux/init.h>
 #include <linux/errno.h>
 #include <linux/printk.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
  
 /* Each escaped entry is prefixed by ESCAPE_CODE
  * then one of the following codes, then the
@@ -166,7 +170,11 @@ ssize_t oprofilefs_ulong_to_user(unsigned long val, char __user * buf, size_t co
 int oprofilefs_ulong_from_user(unsigned long * val, char const __user * buf, size_t count);
 
 /** lock for read/write safety */
+<<<<<<< HEAD
 extern spinlock_t oprofilefs_lock;
+=======
+extern raw_spinlock_t oprofilefs_lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * Add the contents of a circular buffer to the event buffer.

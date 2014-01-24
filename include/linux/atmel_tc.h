@@ -34,10 +34,25 @@
 struct clk;
 
 /**
+<<<<<<< HEAD
+=======
+ * struct atmel_tcb_config - SoC data for a Timer/Counter Block
+ * @counter_width: size in bits of a timer counter register
+ */
+struct atmel_tcb_config {
+	size_t	counter_width;
+};
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * struct atmel_tc - information about a Timer/Counter Block
  * @pdev: physical device
  * @iomem: resource associated with the I/O register
  * @regs: mapping through which the I/O registers can be accessed
+<<<<<<< HEAD
+=======
+ * @tcb_config: configuration data from SoC
+>>>>>>> refs/remotes/origin/cm-10.0
  * @irq: irq for each of the three channels
  * @clk: internal clock source for each of the three channels
  * @node: list node, for tclib internal use
@@ -54,6 +69,10 @@ struct atmel_tc {
 	struct platform_device	*pdev;
 	struct resource		*iomem;
 	void __iomem		*regs;
+<<<<<<< HEAD
+=======
+	struct atmel_tcb_config	*tcb_config;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int			irq[3];
 	struct clk		*clk[3];
 	struct list_head	node;

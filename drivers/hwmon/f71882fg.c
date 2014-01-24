@@ -112,7 +112,11 @@ MODULE_PARM_DESC(force_id, "Override the detected device ID");
 enum chips { f71808e, f71808a, f71858fg, f71862fg, f71869, f71869a, f71882fg,
 	     f71889fg, f71889ed, f71889a, f8000, f81865f };
 
+<<<<<<< HEAD
 static const char *f71882fg_names[] = {
+=======
+static const char *const f71882fg_names[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	"f71808e",
 	"f71808a",
 	"f71858fg",
@@ -252,9 +256,17 @@ struct f71882fg_data {
 	u16	fan_full_speed[4];
 	u8	fan_status;
 	u8	fan_beep;
+<<<<<<< HEAD
 	/* Note: all models have max 3 temperature channels, but on some
 	   they are addressed as 0-2 and on others as 1-3, so for coding
 	   convenience we reserve space for 4 channels */
+=======
+	/*
+	 * Note: all models have max 3 temperature channels, but on some
+	 * they are addressed as 0-2 and on others as 1-3, so for coding
+	 * convenience we reserve space for 4 channels
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	u16	temp[4];
 	u8	temp_ovt[4];
 	u8	temp_high[4];
@@ -362,7 +374,11 @@ static ssize_t store_pwm_auto_point_temp(struct device *dev,
 static ssize_t show_name(struct device *dev, struct device_attribute *devattr,
 	char *buf);
 
+<<<<<<< HEAD
 static int __devinit f71882fg_probe(struct platform_device * pdev);
+=======
+static int __devinit f71882fg_probe(struct platform_device *pdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 static int f71882fg_remove(struct platform_device *pdev);
 
 static struct platform_driver f71882fg_driver = {
@@ -376,8 +392,15 @@ static struct platform_driver f71882fg_driver = {
 
 static DEVICE_ATTR(name, S_IRUGO, show_name, NULL);
 
+<<<<<<< HEAD
 /* Temp attr for the f71858fg, the f71858fg is special as it has its
    temperature indexes start at 0 (the others start at 1) */
+=======
+/*
+ * Temp attr for the f71858fg, the f71858fg is special as it has its
+ * temperature indexes start at 0 (the others start at 1)
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct sensor_device_attribute_2 f71858fg_temp_attr[] = {
 	SENSOR_ATTR_2(temp1_input, S_IRUGO, show_temp, NULL, 0, 0),
 	SENSOR_ATTR_2(temp1_max, S_IRUGO|S_IWUSR, show_temp_max,
@@ -424,9 +447,17 @@ static struct sensor_device_attribute_2 fxxxx_temp_attr[3][9] = { {
 		store_temp_max, 0, 1),
 	SENSOR_ATTR_2(temp1_max_hyst, S_IRUGO|S_IWUSR, show_temp_max_hyst,
 		store_temp_max_hyst, 0, 1),
+<<<<<<< HEAD
 	/* Should really be temp1_max_alarm, but older versions did not handle
 	   the max and crit alarms separately and lm_sensors v2 depends on the
 	   presence of temp#_alarm files. The same goes for temp2/3 _alarm. */
+=======
+	/*
+	 * Should really be temp1_max_alarm, but older versions did not handle
+	 * the max and crit alarms separately and lm_sensors v2 depends on the
+	 * presence of temp#_alarm files. The same goes for temp2/3 _alarm.
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(temp1_alarm, S_IRUGO, show_temp_alarm, NULL, 0, 1),
 	SENSOR_ATTR_2(temp1_crit, S_IRUGO|S_IWUSR, show_temp_crit,
 		store_temp_crit, 0, 1),
@@ -485,10 +516,18 @@ static struct sensor_device_attribute_2 fxxxx_temp_beep_attr[3][2] = { {
 		store_temp_beep, 0, 7),
 } };
 
+<<<<<<< HEAD
 /* Temp attr for the f8000
    Note on the f8000 temp_ovt (crit) is used as max, and temp_high (max)
    is used as hysteresis value to clear alarms
    Also like the f71858fg its temperature indexes start at 0
+=======
+/*
+ * Temp attr for the f8000
+ * Note on the f8000 temp_ovt (crit) is used as max, and temp_high (max)
+ * is used as hysteresis value to clear alarms
+ * Also like the f71858fg its temperature indexes start at 0
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static struct sensor_device_attribute_2 f8000_temp_attr[] = {
 	SENSOR_ATTR_2(temp1_input, S_IRUGO, show_temp, NULL, 0, 0),
@@ -603,9 +642,17 @@ static struct sensor_device_attribute_2 fxxxx_fan_beep_attr[] = {
 		store_fan_beep, 0, 3),
 };
 
+<<<<<<< HEAD
 /* PWM attr for the f71862fg, fewer pwms and fewer zones per pwm than the
    standard models */
 static struct sensor_device_attribute_2 f71862fg_auto_pwm_attr[] = {
+=======
+/*
+ * PWM attr for the f71862fg, fewer pwms and fewer zones per pwm than the
+ * standard models
+ */
+static struct sensor_device_attribute_2 f71862fg_auto_pwm_attr[3][7] = { {
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(pwm1_auto_channels_temp, S_IRUGO|S_IWUSR,
 		      show_pwm_auto_point_channel,
 		      store_pwm_auto_point_channel, 0, 0),
@@ -627,7 +674,11 @@ static struct sensor_device_attribute_2 f71862fg_auto_pwm_attr[] = {
 		      0, 0),
 	SENSOR_ATTR_2(pwm1_auto_point2_temp_hyst, S_IRUGO,
 		      show_pwm_auto_point_temp_hyst, NULL, 3, 0),
+<<<<<<< HEAD
 
+=======
+}, {
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(pwm2_auto_channels_temp, S_IRUGO|S_IWUSR,
 		      show_pwm_auto_point_channel,
 		      store_pwm_auto_point_channel, 0, 1),
@@ -649,7 +700,11 @@ static struct sensor_device_attribute_2 f71862fg_auto_pwm_attr[] = {
 		      0, 1),
 	SENSOR_ATTR_2(pwm2_auto_point2_temp_hyst, S_IRUGO,
 		      show_pwm_auto_point_temp_hyst, NULL, 3, 1),
+<<<<<<< HEAD
 
+=======
+}, {
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(pwm3_auto_channels_temp, S_IRUGO|S_IWUSR,
 		      show_pwm_auto_point_channel,
 		      store_pwm_auto_point_channel, 0, 2),
@@ -671,12 +726,23 @@ static struct sensor_device_attribute_2 f71862fg_auto_pwm_attr[] = {
 		      0, 2),
 	SENSOR_ATTR_2(pwm3_auto_point2_temp_hyst, S_IRUGO,
 		      show_pwm_auto_point_temp_hyst, NULL, 3, 2),
+<<<<<<< HEAD
 };
 
 /* PWM attr for the f71808e/f71869, almost identical to the f71862fg, but the
    pwm setting when the temperature is above the pwmX_auto_point1_temp can be
    programmed instead of being hardcoded to 0xff */
 static struct sensor_device_attribute_2 f71869_auto_pwm_attr[] = {
+=======
+} };
+
+/*
+ * PWM attr for the f71808e/f71869, almost identical to the f71862fg, but the
+ * pwm setting when the temperature is above the pwmX_auto_point1_temp can be
+ * programmed instead of being hardcoded to 0xff
+ */
+static struct sensor_device_attribute_2 f71869_auto_pwm_attr[3][8] = { {
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(pwm1_auto_channels_temp, S_IRUGO|S_IWUSR,
 		      show_pwm_auto_point_channel,
 		      store_pwm_auto_point_channel, 0, 0),
@@ -701,7 +767,11 @@ static struct sensor_device_attribute_2 f71869_auto_pwm_attr[] = {
 		      0, 0),
 	SENSOR_ATTR_2(pwm1_auto_point2_temp_hyst, S_IRUGO,
 		      show_pwm_auto_point_temp_hyst, NULL, 3, 0),
+<<<<<<< HEAD
 
+=======
+}, {
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(pwm2_auto_channels_temp, S_IRUGO|S_IWUSR,
 		      show_pwm_auto_point_channel,
 		      store_pwm_auto_point_channel, 0, 1),
@@ -726,7 +796,11 @@ static struct sensor_device_attribute_2 f71869_auto_pwm_attr[] = {
 		      0, 1),
 	SENSOR_ATTR_2(pwm2_auto_point2_temp_hyst, S_IRUGO,
 		      show_pwm_auto_point_temp_hyst, NULL, 3, 1),
+<<<<<<< HEAD
 
+=======
+}, {
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(pwm3_auto_channels_temp, S_IRUGO|S_IWUSR,
 		      show_pwm_auto_point_channel,
 		      store_pwm_auto_point_channel, 0, 2),
@@ -751,7 +825,11 @@ static struct sensor_device_attribute_2 f71869_auto_pwm_attr[] = {
 		      0, 2),
 	SENSOR_ATTR_2(pwm3_auto_point2_temp_hyst, S_IRUGO,
 		      show_pwm_auto_point_temp_hyst, NULL, 3, 2),
+<<<<<<< HEAD
 };
+=======
+} };
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* PWM attr for the standard models */
 static struct sensor_device_attribute_2 fxxxx_auto_pwm_attr[4][14] = { {
@@ -925,10 +1003,19 @@ static struct sensor_device_attribute_2 f8000_fan_attr[] = {
 	SENSOR_ATTR_2(fan4_input, S_IRUGO, show_fan, NULL, 0, 3),
 };
 
+<<<<<<< HEAD
 /* PWM attr for the f8000, zones mapped to temp instead of to pwm!
    Also the register block at offset A0 maps to TEMP1 (so our temp2, as the
    F8000 starts counting temps at 0), B0 maps the TEMP2 and C0 maps to TEMP0 */
 static struct sensor_device_attribute_2 f8000_auto_pwm_attr[] = {
+=======
+/*
+ * PWM attr for the f8000, zones mapped to temp instead of to pwm!
+ * Also the register block at offset A0 maps to TEMP1 (so our temp2, as the
+ * F8000 starts counting temps at 0), B0 maps the TEMP2 and C0 maps to TEMP0
+ */
+static struct sensor_device_attribute_2 f8000_auto_pwm_attr[3][14] = { {
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(pwm1_auto_channels_temp, S_IRUGO|S_IWUSR,
 		      show_pwm_auto_point_channel,
 		      store_pwm_auto_point_channel, 0, 0),
@@ -969,7 +1056,11 @@ static struct sensor_device_attribute_2 f8000_auto_pwm_attr[] = {
 		      show_pwm_auto_point_temp_hyst, NULL, 2, 2),
 	SENSOR_ATTR_2(temp1_auto_point4_temp_hyst, S_IRUGO,
 		      show_pwm_auto_point_temp_hyst, NULL, 3, 2),
+<<<<<<< HEAD
 
+=======
+}, {
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(pwm2_auto_channels_temp, S_IRUGO|S_IWUSR,
 		      show_pwm_auto_point_channel,
 		      store_pwm_auto_point_channel, 0, 1),
@@ -1010,7 +1101,11 @@ static struct sensor_device_attribute_2 f8000_auto_pwm_attr[] = {
 		      show_pwm_auto_point_temp_hyst, NULL, 2, 0),
 	SENSOR_ATTR_2(temp2_auto_point4_temp_hyst, S_IRUGO,
 		      show_pwm_auto_point_temp_hyst, NULL, 3, 0),
+<<<<<<< HEAD
 
+=======
+}, {
+>>>>>>> refs/remotes/origin/cm-10.0
 	SENSOR_ATTR_2(pwm3_auto_channels_temp, S_IRUGO|S_IWUSR,
 		      show_pwm_auto_point_channel,
 		      store_pwm_auto_point_channel, 0, 2),
@@ -1051,7 +1146,11 @@ static struct sensor_device_attribute_2 f8000_auto_pwm_attr[] = {
 		      show_pwm_auto_point_temp_hyst, NULL, 2, 1),
 	SENSOR_ATTR_2(temp3_auto_point4_temp_hyst, S_IRUGO,
 		      show_pwm_auto_point_temp_hyst, NULL, 3, 1),
+<<<<<<< HEAD
 };
+=======
+} };
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Super I/O functions */
 static inline int superio_inb(int base, int reg)
@@ -1333,7 +1432,11 @@ static ssize_t store_fan_full_speed(struct device *dev,
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1367,7 +1470,11 @@ static ssize_t store_fan_beep(struct device *dev, struct device_attribute
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	unsigned long val;
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1420,7 +1527,11 @@ static ssize_t store_in_max(struct device *dev, struct device_attribute
 	int err;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1454,7 +1565,11 @@ static ssize_t store_in_beep(struct device *dev, struct device_attribute
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	unsigned long val;
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1524,7 +1639,11 @@ static ssize_t store_temp_max(struct device *dev, struct device_attribute
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1566,7 +1685,11 @@ static ssize_t store_temp_max_hyst(struct device *dev, struct device_attribute
 	u8 reg;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1609,7 +1732,11 @@ static ssize_t store_temp_crit(struct device *dev, struct device_attribute
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1670,7 +1797,11 @@ static ssize_t store_temp_beep(struct device *dev, struct device_attribute
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	unsigned long val;
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1737,7 +1868,11 @@ static ssize_t store_pwm(struct device *dev,
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1788,7 +1923,11 @@ static ssize_t store_simple_pwm(struct device *dev,
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1835,7 +1974,11 @@ static ssize_t store_pwm_enable(struct device *dev, struct device_attribute
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1915,7 +2058,11 @@ static ssize_t store_pwm_auto_point_pwm(struct device *dev,
 	int point = to_sensor_dev_attr_2(devattr)->nr;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -1969,7 +2116,11 @@ static ssize_t store_pwm_auto_point_temp_hyst(struct device *dev,
 	u8 reg;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -2015,7 +2166,11 @@ static ssize_t store_pwm_interpolate(struct device *dev,
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	unsigned long val;
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -2055,7 +2210,11 @@ static ssize_t store_pwm_auto_point_channel(struct device *dev,
 	int err, nr = to_sensor_dev_attr_2(devattr)->index;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -2106,7 +2265,11 @@ static ssize_t store_pwm_auto_point_temp(struct device *dev,
 	int point = to_sensor_dev_attr_2(devattr)->nr;
 	long val;
 
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 
@@ -2154,6 +2317,107 @@ static void f71882fg_remove_sysfs_files(struct platform_device *pdev,
 		device_remove_file(&pdev->dev, &attr[i].dev_attr);
 }
 
+<<<<<<< HEAD
+=======
+static int __devinit f71882fg_create_fan_sysfs_files(
+	struct platform_device *pdev, int idx)
+{
+	struct f71882fg_data *data = platform_get_drvdata(pdev);
+	int err;
+
+	/* Sanity check the pwm setting */
+	err = 0;
+	switch (data->type) {
+	case f71858fg:
+		if (((data->pwm_enable >> (idx * 2)) & 3) == 3)
+			err = 1;
+		break;
+	case f71862fg:
+		if (((data->pwm_enable >> (idx * 2)) & 1) != 1)
+			err = 1;
+		break;
+	case f8000:
+		if (idx == 2)
+			err = data->pwm_enable & 0x20;
+		break;
+	default:
+		break;
+	}
+	if (err) {
+		dev_err(&pdev->dev,
+			"Invalid (reserved) pwm settings: 0x%02x, "
+			"skipping fan %d\n",
+			(data->pwm_enable >> (idx * 2)) & 3, idx + 1);
+		return 0; /* This is a non fatal condition */
+	}
+
+	err = f71882fg_create_sysfs_files(pdev, &fxxxx_fan_attr[idx][0],
+					  ARRAY_SIZE(fxxxx_fan_attr[0]));
+	if (err)
+		return err;
+
+	if (f71882fg_fan_has_beep[data->type]) {
+		err = f71882fg_create_sysfs_files(pdev,
+						  &fxxxx_fan_beep_attr[idx],
+						  1);
+		if (err)
+			return err;
+	}
+
+	dev_info(&pdev->dev, "Fan: %d is in %s mode\n", idx + 1,
+		 (data->pwm_enable & (1 << (2 * idx))) ? "duty-cycle" : "RPM");
+
+	/* Check for unsupported auto pwm settings */
+	switch (data->type) {
+	case f71808e:
+	case f71808a:
+	case f71869:
+	case f71869a:
+	case f71889fg:
+	case f71889ed:
+	case f71889a:
+		data->pwm_auto_point_mapping[idx] =
+			f71882fg_read8(data, F71882FG_REG_POINT_MAPPING(idx));
+		if ((data->pwm_auto_point_mapping[idx] & 0x80) ||
+		    (data->pwm_auto_point_mapping[idx] & 3) == 0) {
+			dev_warn(&pdev->dev,
+				 "Auto pwm controlled by raw digital "
+				 "data, disabling pwm auto_point "
+				 "sysfs attributes for fan %d\n", idx + 1);
+			return 0; /* This is a non fatal condition */
+		}
+		break;
+	default:
+		break;
+	}
+
+	switch (data->type) {
+	case f71862fg:
+		err = f71882fg_create_sysfs_files(pdev,
+					&f71862fg_auto_pwm_attr[idx][0],
+					ARRAY_SIZE(f71862fg_auto_pwm_attr[0]));
+		break;
+	case f71808e:
+	case f71869:
+		err = f71882fg_create_sysfs_files(pdev,
+					&f71869_auto_pwm_attr[idx][0],
+					ARRAY_SIZE(f71869_auto_pwm_attr[0]));
+		break;
+	case f8000:
+		err = f71882fg_create_sysfs_files(pdev,
+					&f8000_auto_pwm_attr[idx][0],
+					ARRAY_SIZE(f8000_auto_pwm_attr[0]));
+		break;
+	default:
+		err = f71882fg_create_sysfs_files(pdev,
+					&fxxxx_auto_pwm_attr[idx][0],
+					ARRAY_SIZE(fxxxx_auto_pwm_attr[0]));
+	}
+
+	return err;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit f71882fg_probe(struct platform_device *pdev)
 {
 	struct f71882fg_data *data;
@@ -2197,8 +2461,15 @@ static int __devinit f71882fg_probe(struct platform_device *pdev)
 			data->temp_config =
 				f71882fg_read8(data, F71882FG_REG_TEMP_CONFIG);
 			if (data->temp_config & 0x10)
+<<<<<<< HEAD
 				/* The f71858fg temperature alarms behave as
 				   the f8000 alarms in this mode */
+=======
+				/*
+				 * The f71858fg temperature alarms behave as
+				 * the f8000 alarms in this mode
+				 */
+>>>>>>> refs/remotes/origin/cm-10.0
 				err = f71882fg_create_sysfs_files(pdev,
 					f8000_temp_attr,
 					ARRAY_SIZE(f8000_temp_attr));
@@ -2272,6 +2543,7 @@ static int __devinit f71882fg_probe(struct platform_device *pdev)
 		data->pwm_enable =
 			f71882fg_read8(data, F71882FG_REG_PWM_ENABLE);
 
+<<<<<<< HEAD
 		/* Sanity check the pwm settings */
 		switch (data->type) {
 		case f71858fg:
@@ -2306,10 +2578,15 @@ static int __devinit f71882fg_probe(struct platform_device *pdev)
 		if (f71882fg_fan_has_beep[data->type]) {
 			err = f71882fg_create_sysfs_files(pdev,
 					fxxxx_fan_beep_attr, nr_fans);
+=======
+		for (i = 0; i < nr_fans; i++) {
+			err = f71882fg_create_fan_sysfs_files(pdev, i);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (err)
 				goto exit_unregister_sysfs;
 		}
 
+<<<<<<< HEAD
 		switch (data->type) {
 		case f71808e:
 		case f71808a:
@@ -2360,10 +2637,20 @@ static int __devinit f71882fg_probe(struct platform_device *pdev)
 					f71869_auto_pwm_attr,
 					ARRAY_SIZE(f71869_auto_pwm_attr));
 			break;
+=======
+		/* Some types have 1 extra fan with limited functionality */
+		switch (data->type) {
+		case f71808a:
+			err = f71882fg_create_sysfs_files(pdev,
+					f71808a_fan3_attr,
+					ARRAY_SIZE(f71808a_fan3_attr));
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		case f8000:
 			err = f71882fg_create_sysfs_files(pdev,
 					f8000_fan_attr,
 					ARRAY_SIZE(f8000_fan_attr));
+<<<<<<< HEAD
 			if (err)
 				goto exit_unregister_sysfs;
 			err = f71882fg_create_sysfs_files(pdev,
@@ -2383,6 +2670,14 @@ no_pwm_auto_point:
 			dev_info(&pdev->dev, "Fan: %d is in %s mode\n", i + 1,
 				 (data->pwm_enable & (1 << 2 * i)) ?
 				 "duty-cycle" : "RPM");
+=======
+			break;
+		default:
+			break;
+		}
+		if (err)
+			goto exit_unregister_sysfs;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	data->hwmon_dev = hwmon_device_register(&pdev->dev);
@@ -2476,22 +2771,38 @@ static int f71882fg_remove(struct platform_device *pdev)
 			break;
 		case f71862fg:
 			f71882fg_remove_sysfs_files(pdev,
+<<<<<<< HEAD
 					f71862fg_auto_pwm_attr,
 					ARRAY_SIZE(f71862fg_auto_pwm_attr));
+=======
+				&f71862fg_auto_pwm_attr[0][0],
+				ARRAY_SIZE(f71862fg_auto_pwm_attr[0]) *
+					nr_fans);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case f71808e:
 		case f71869:
 			f71882fg_remove_sysfs_files(pdev,
+<<<<<<< HEAD
 					f71869_auto_pwm_attr,
 					ARRAY_SIZE(f71869_auto_pwm_attr));
+=======
+				&f71869_auto_pwm_attr[0][0],
+				ARRAY_SIZE(f71869_auto_pwm_attr[0]) * nr_fans);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case f8000:
 			f71882fg_remove_sysfs_files(pdev,
 					f8000_fan_attr,
 					ARRAY_SIZE(f8000_fan_attr));
 			f71882fg_remove_sysfs_files(pdev,
+<<<<<<< HEAD
 					f8000_auto_pwm_attr,
 					ARRAY_SIZE(f8000_auto_pwm_attr));
+=======
+				&f8000_auto_pwm_attr[0][0],
+				ARRAY_SIZE(f8000_auto_pwm_attr[0]) * nr_fans);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		default:
 			f71882fg_remove_sysfs_files(pdev,

@@ -1,4 +1,8 @@
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Qualcomm Secure Execution Environment Communicator (QSEECOM) driver
  *
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
@@ -31,6 +35,11 @@
 #include <linux/types.h>
 #include <linux/clk.h>
 #include <linux/qseecom.h>
+<<<<<<< HEAD
+=======
+#include <linux/freezer.h>
+#include <mach/board.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/msm_bus.h>
 #include <mach/msm_bus_board.h>
 #include <mach/scm.h>
@@ -55,6 +64,11 @@ enum qseecom_qceos_cmd_id {
 	QSEOS_DEREGISTER_LISTENER,
 	QSEOS_CLIENT_SEND_DATA_COMMAND,
 	QSEOS_LISTENER_DATA_RSP_COMMAND,
+<<<<<<< HEAD
+=======
+	QSEOS_LOAD_EXTERNAL_ELF_COMMAND,
+	QSEOS_UNLOAD_EXTERNAL_ELF_COMMAND,
+>>>>>>> refs/remotes/origin/cm-10.0
 	QSEOS_CMD_MAX     = 0xEFFFFFFF
 };
 
@@ -64,6 +78,14 @@ enum qseecom_qceos_cmd_status {
 	QSEOS_RESULT_FAILURE  = 0xFFFFFFFF
 };
 
+<<<<<<< HEAD
+=======
+enum qseecom_clk_definitions {
+	CLK_DFAB = 0,
+	CLK_SFPB,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 __packed struct qseecom_check_app_ireq {
 	uint32_t qsee_cmd_id;
 	char     app_name[MAX_APP_NAME_SIZE];
@@ -131,11 +153,20 @@ static void *pil;
 static uint32_t pil_ref_cnt;
 static DEFINE_MUTEX(pil_access_lock);
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(send_msg_lock);
 static DEFINE_MUTEX(qsee_bw_mutex);
 static DEFINE_MUTEX(app_access_lock);
 
 static int qsee_bw_count;
+=======
+static DEFINE_MUTEX(qsee_bw_mutex);
+static DEFINE_MUTEX(qsee_sfpb_bw_mutex);
+static DEFINE_MUTEX(app_access_lock);
+
+static int qsee_bw_count;
+static int qsee_sfpb_bw_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct clk *qseecom_bus_clk;
 static uint32_t qsee_perf_client;
 
@@ -199,6 +230,13 @@ struct qseecom_dev_handle {
 	atomic_t          ioctl_count;
 };
 
+<<<<<<< HEAD
+=======
+/* Function proto types */
+static int qsee_vote_for_clock(int32_t);
+static void qsee_disable_clock_vote(int32_t);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __qseecom_is_svc_unique(struct qseecom_dev_handle *data,
 		struct qseecom_register_listener_req *svc)
 {
@@ -246,7 +284,12 @@ static int __qseecom_set_sb_memory(struct qseecom_registered_listener_list *svc,
 	ion_phys_addr_t pa;
 
 	/* Get the handle of the shared fd */
+<<<<<<< HEAD
 	svc->ihandle = ion_import_fd(qseecom.ion_clnt, listener->ifd_data_fd);
+=======
+	svc->ihandle = ion_import_dma_buf(qseecom.ion_clnt,
+					listener->ifd_data_fd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (svc->ihandle == NULL) {
 		pr_err("Ion client could not retrieve the handle\n");
 		return -ENOMEM;
@@ -438,7 +481,11 @@ static int qseecom_unregister_listener(struct qseecom_dev_handle *data)
 	spin_unlock_irqrestore(&qseecom.registered_listener_list_lock, flags);
 
 	while (atomic_read(&data->ioctl_count) > 1) {
+<<<<<<< HEAD
 		if (wait_event_interruptible(data->abort_wq,
+=======
+		if (wait_event_freezable(data->abort_wq,
+>>>>>>> refs/remotes/origin/cm-10.0
 				atomic_read(&data->ioctl_count) <= 1)) {
 			pr_err("Interrupted from abort\n");
 			ret = -ERESTARTSYS;
@@ -488,7 +535,12 @@ static int qseecom_set_client_mem_param(struct qseecom_dev_handle *data,
 		return -EFAULT;
 
 	/* Get the handle of the shared fd */
+<<<<<<< HEAD
 	data->client.ihandle = ion_import_fd(qseecom.ion_clnt, req.ifd_data_fd);
+=======
+	data->client.ihandle = ion_import_dma_buf(qseecom.ion_clnt,
+						req.ifd_data_fd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR_OR_NULL(data->client.ihandle)) {
 		pr_err("Ion client could not retrieve the handle\n");
 		return -ENOMEM;
@@ -546,7 +598,11 @@ static int __qseecom_process_incomplete_cmd(struct qseecom_dev_handle *data,
 		}
 		pr_debug("waking up rcv_req_wq and "
 				"waiting for send_resp_wq\n");
+<<<<<<< HEAD
 		if (wait_event_interruptible(qseecom.send_resp_wq,
+=======
+		if (wait_event_freezable(qseecom.send_resp_wq,
+>>>>>>> refs/remotes/origin/cm-10.0
 				__qseecom_listener_has_sent_rsp(data))) {
 			pr_warning("Interrupted: exiting send_cmd loop\n");
 			return -ERESTARTSYS;
@@ -569,10 +625,55 @@ static int __qseecom_process_incomplete_cmd(struct qseecom_dev_handle *data,
 			pr_err("qseecom_scm_call failed with err: %d\n", ret);
 			return ret;
 		}
+<<<<<<< HEAD
+=======
+		if (resp->result == QSEOS_RESULT_FAILURE) {
+			pr_err("Response result %d not supported\n",
+							resp->result);
+			return -EINVAL;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int __qseecom_check_app_exists(struct qseecom_check_app_ireq req)
+{
+	int32_t ret;
+	struct qseecom_command_scm_resp resp;
+
+	/*  SCM_CALL  to check if app_id for the mentioned app exists */
+	ret = scm_call(SCM_SVC_TZSCHEDULER, 1,  &req,
+				sizeof(struct qseecom_check_app_ireq),
+				&resp, sizeof(resp));
+	if (ret) {
+		pr_err("scm_call to check if app is already loaded failed\n");
+		return -EINVAL;
+	}
+
+	if (resp.result == QSEOS_RESULT_FAILURE) {
+			return 0;
+	} else {
+		switch (resp.resp_type) {
+		/*qsee returned listener type response */
+		case QSEOS_LISTENER_ID:
+			pr_err("resp type is of listener type instead of app");
+			return -EINVAL;
+			break;
+		case QSEOS_APP_ID:
+			return resp.data;
+		default:
+			pr_err("invalid resp type (%d) from qsee",
+					resp.resp_type);
+			return -ENODEV;
+			break;
+		}
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int qseecom_load_app(struct qseecom_dev_handle *data, void __user *argp)
 {
 	struct qseecom_registered_app_list *entry = NULL;
@@ -585,6 +686,11 @@ static int qseecom_load_app(struct qseecom_dev_handle *data, void __user *argp)
 	uint32_t len;
 	struct qseecom_command_scm_resp resp;
 	struct qseecom_check_app_ireq req;
+<<<<<<< HEAD
+=======
+	struct qseecom_load_app_ireq load_req;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Copy the relevant information needed for loading the image */
 	if (__copy_from_user(&load_img_req,
 				(void __user *)argp,
@@ -592,10 +698,18 @@ static int qseecom_load_app(struct qseecom_dev_handle *data, void __user *argp)
 		pr_err("copy_from_user failed\n");
 		return -EFAULT;
 	}
+<<<<<<< HEAD
+=======
+	/* Vote for the SFPB clock */
+	ret = qsee_vote_for_clock(CLK_SFPB);
+	if (ret)
+		pr_warning("Unable to vote for SFPB clock");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	req.qsee_cmd_id = QSEOS_APP_LOOKUP_COMMAND;
 	memcpy(req.app_name, load_img_req.img_name, MAX_APP_NAME_SIZE);
 
+<<<<<<< HEAD
 	/*  SCM_CALL  to check if app_id for the mentioned app exists */
 	ret = scm_call(SCM_SVC_TZSCHEDULER, 1,  &req,
 				sizeof(struct qseecom_check_app_ireq),
@@ -693,13 +807,102 @@ static int qseecom_load_app(struct qseecom_dev_handle *data, void __user *argp)
 		pr_warn("App with id %d  (%s) now loaded\n", app_id,
 			(char *)(load_req.app_name));
 	}
+=======
+	pr_warn("App (%s) does not exist, loading apps for first time\n",
+			(char *)(req.app_name));
+	/* Get the handle of the shared fd */
+	ihandle = ion_import_dma_buf(qseecom.ion_clnt,
+					load_img_req.ifd_data_fd);
+	if (IS_ERR_OR_NULL(ihandle)) {
+		pr_err("Ion client could not retrieve the handle\n");
+		qsee_disable_clock_vote(CLK_SFPB);
+		return -ENOMEM;
+	}
+
+	/* Get the physical address of the ION BUF */
+	ret = ion_phys(qseecom.ion_clnt, ihandle, &pa, &len);
+
+	/* Populate the structure for sending scm call to load image */
+	load_req.qsee_cmd_id = QSEOS_APP_START_COMMAND;
+	load_req.mdt_len = load_img_req.mdt_len;
+	load_req.img_len = load_img_req.img_len;
+	load_req.phy_addr = pa;
+
+	/*  SCM_CALL  to load the app and get the app_id back */
+	ret = scm_call(SCM_SVC_TZSCHEDULER, 1,  &load_req,
+			sizeof(struct qseecom_load_app_ireq),
+			&resp, sizeof(resp));
+	if (ret) {
+		pr_err("scm_call to load app failed\n");
+		return -EINVAL;
+	}
+
+	if (resp.result == QSEOS_RESULT_FAILURE) {
+		pr_err("scm_call rsp.result is QSEOS_RESULT_FAILURE\n");
+		if (!IS_ERR_OR_NULL(ihandle))
+			ion_free(qseecom.ion_clnt, ihandle);
+		qsee_disable_clock_vote(CLK_SFPB);
+		return -EFAULT;
+	}
+
+	if (resp.result == QSEOS_RESULT_INCOMPLETE) {
+		ret = __qseecom_process_incomplete_cmd(data, &resp);
+		if (ret) {
+			pr_err("process_incomplete_cmd failed err: %d\n",
+					ret);
+			if (!IS_ERR_OR_NULL(ihandle))
+				ion_free(qseecom.ion_clnt, ihandle);
+			qsee_disable_clock_vote(CLK_SFPB);
+			return ret;
+		}
+	}
+
+	if (resp.result != QSEOS_RESULT_SUCCESS) {
+		pr_err("scm_call failed resp.result unknown, %d\n",
+				resp.result);
+		if (!IS_ERR_OR_NULL(ihandle))
+			ion_free(qseecom.ion_clnt, ihandle);
+		qsee_disable_clock_vote(CLK_SFPB);
+		return -EFAULT;
+	}
+
+	app_id = resp.data;
+
+	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+	if (!entry) {
+		pr_err("kmalloc failed\n");
+		qsee_disable_clock_vote(CLK_SFPB);
+		return -ENOMEM;
+	}
+	entry->app_id = app_id;
+	entry->ref_cnt = 1;
+
+	/* Deallocate the handle */
+	if (!IS_ERR_OR_NULL(ihandle))
+		ion_free(qseecom.ion_clnt, ihandle);
+
+	spin_lock_irqsave(&qseecom.registered_app_list_lock, flags);
+	list_add_tail(&entry->list, &qseecom.registered_app_list_head);
+	spin_unlock_irqrestore(&qseecom.registered_app_list_lock, flags);
+
+	pr_warn("App with id %d (%s) now loaded\n", app_id,
+		(char *)(req.app_name));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	data->client.app_id = app_id;
 	load_img_req.app_id = app_id;
 	if (copy_to_user(argp, &load_img_req, sizeof(load_img_req))) {
 		pr_err("copy_to_user failed\n");
 		kzfree(entry);
+<<<<<<< HEAD
 		return -EFAULT;
 	}
+=======
+		qsee_disable_clock_vote(CLK_SFPB);
+		return -EFAULT;
+	}
+	qsee_disable_clock_vote(CLK_SFPB);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -707,7 +910,11 @@ static int __qseecom_cleanup_app(struct qseecom_dev_handle *data)
 {
 	wake_up_all(&qseecom.send_resp_wq);
 	while (atomic_read(&data->ioctl_count) > 1) {
+<<<<<<< HEAD
 		if (wait_event_interruptible(data->abort_wq,
+=======
+		if (wait_event_freezable(data->abort_wq,
+>>>>>>> refs/remotes/origin/cm-10.0
 					atomic_read(&data->ioctl_count) <= 1)) {
 			pr_err("Interrupted from abort\n");
 			return -ERESTARTSYS;
@@ -735,8 +942,11 @@ static int qseecom_unload_app(struct qseecom_dev_handle *data)
 					unload = __qseecom_cleanup_app(data);
 					list_del(&ptr_app->list);
 					kzfree(ptr_app);
+<<<<<<< HEAD
 					pr_warn("App id %d now unloaded\n",
 							ptr_app->app_id);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 					break;
 				} else {
 					ptr_app->ref_cnt--;
@@ -767,8 +977,16 @@ static int qseecom_unload_app(struct qseecom_dev_handle *data)
 				sizeof(struct qseecom_unload_app_ireq),
 				&resp, sizeof(resp));
 		if (ret) {
+<<<<<<< HEAD
 			pr_err("Fail to unload app id %d\n", req.app_id);
 			return -EFAULT;
+=======
+			pr_err("scm_call to unload app (id = %d) failed\n",
+							req.app_id);
+			return -EFAULT;
+		} else {
+			pr_warn("App id %d now unloaded\n", req.app_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		if (resp.result == QSEOS_RESULT_INCOMPLETE) {
 			ret = __qseecom_process_incomplete_cmd(data, &resp);
@@ -784,7 +1002,11 @@ static int qseecom_unload_app(struct qseecom_dev_handle *data)
 		data->abort = 1;
 		wake_up_all(&qseecom.send_resp_wq);
 		while (atomic_read(&data->ioctl_count) > 0) {
+<<<<<<< HEAD
 			if (wait_event_interruptible(data->abort_wq,
+=======
+			if (wait_event_freezable(data->abort_wq,
+>>>>>>> refs/remotes/origin/cm-10.0
 					atomic_read(&data->ioctl_count) <= 0)) {
 				pr_err("Interrupted from abort\n");
 				ret = -ERESTARTSYS;
@@ -872,7 +1094,11 @@ static int __qseecom_send_cmd_legacy(struct qseecom_dev_handle *data,
 
 		pr_debug("waking up rcv_req_wq and "
 				"waiting for send_resp_wq\n");
+<<<<<<< HEAD
 		if (wait_event_interruptible(qseecom.send_resp_wq,
+=======
+		if (wait_event_freezable(qseecom.send_resp_wq,
+>>>>>>> refs/remotes/origin/cm-10.0
 				__qseecom_listener_has_sent_rsp(data))) {
 			pr_warning("qseecom Interrupted: exiting send_cmd loop\n");
 			return -ERESTARTSYS;
@@ -947,6 +1173,15 @@ static int __qseecom_send_cmd(struct qseecom_dev_handle *data,
 			pr_err("process_incomplete_cmd failed err: %d\n", ret);
 			return ret;
 		}
+<<<<<<< HEAD
+=======
+	} else {
+		if (resp.result != QSEOS_RESULT_SUCCESS) {
+			pr_err("Response result %d not supported\n",
+							resp.result);
+			ret = -EINVAL;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return ret;
 }
@@ -1007,7 +1242,11 @@ static int __qseecom_update_with_phy_addr(
 	for (i = 0; i < MAX_ION_FD; i++) {
 		if (req->ifd_data[i].fd > 0) {
 			/* Get the handle of the shared fd */
+<<<<<<< HEAD
 			ihandle = ion_import_fd(qseecom.ion_clnt,
+=======
+			ihandle = ion_import_dma_buf(qseecom.ion_clnt,
+>>>>>>> refs/remotes/origin/cm-10.0
 						req->ifd_data[i].fd);
 			if (IS_ERR_OR_NULL(ihandle)) {
 				pr_err("Ion client can't retrieve the handle\n");
@@ -1080,7 +1319,11 @@ static int qseecom_receive_req(struct qseecom_dev_handle *data)
 
 	this_lstnr = __qseecom_find_svc(data->listener.id);
 	while (1) {
+<<<<<<< HEAD
 		if (wait_event_interruptible(this_lstnr->rcv_req_wq,
+=======
+		if (wait_event_freezable(this_lstnr->rcv_req_wq,
+>>>>>>> refs/remotes/origin/cm-10.0
 				__qseecom_listener_has_rcvd_req(data,
 				this_lstnr))) {
 			pr_warning("Interrupted: exiting wait_rcv_req loop\n");
@@ -1127,13 +1370,18 @@ static int qseecom_get_qseos_version(struct qseecom_dev_handle *data,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int qsee_vote_for_clock(void)
+=======
+static int qsee_vote_for_clock(int32_t clk_type)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = 0;
 
 	if (!qsee_perf_client)
 		return ret;
 
+<<<<<<< HEAD
 	/* Check if the clk is valid */
 	if (IS_ERR_OR_NULL(qseecom_bus_clk)) {
 		pr_warn("qseecom bus clock is null or error");
@@ -1183,6 +1431,290 @@ static void qsee_disable_clock_vote(void)
 	mutex_unlock(&qsee_bw_mutex);
 }
 
+=======
+	switch (clk_type) {
+	case CLK_DFAB:
+		/* Check if the clk is valid */
+		if (IS_ERR_OR_NULL(qseecom_bus_clk)) {
+			pr_warn("qseecom bus clock is null or error");
+			return -EINVAL;
+		}
+		mutex_lock(&qsee_bw_mutex);
+		if (!qsee_bw_count) {
+			ret = msm_bus_scale_client_update_request(
+					qsee_perf_client, 1);
+			if (ret)
+				pr_err("DFAB Bandwidth req failed (%d)\n",
+								ret);
+			else
+				qsee_bw_count++;
+		}
+		mutex_unlock(&qsee_bw_mutex);
+		break;
+	case CLK_SFPB:
+		mutex_lock(&qsee_sfpb_bw_mutex);
+		if (!qsee_sfpb_bw_count) {
+			ret = msm_bus_scale_client_update_request(
+					qsee_perf_client, 2);
+			if (ret)
+				pr_err("SFPB Bandwidth req failed (%d)\n",
+								ret);
+			else
+				qsee_sfpb_bw_count++;
+		}
+		mutex_unlock(&qsee_sfpb_bw_mutex);
+		break;
+	default:
+		pr_err("Clock type not defined\n");
+		break;
+	}
+	return ret;
+}
+
+static void qsee_disable_clock_vote(int32_t clk_type)
+{
+	int32_t ret = 0;
+
+	if (!qsee_perf_client)
+		return;
+
+	switch (clk_type) {
+	case CLK_DFAB:
+		/* Check if the DFAB clk is valid */
+		if (IS_ERR_OR_NULL(qseecom_bus_clk)) {
+			pr_warn("qseecom bus clock is null or error");
+			return;
+		}
+		mutex_lock(&qsee_bw_mutex);
+		if (qsee_bw_count > 0) {
+			if (qsee_bw_count-- == 1) {
+				ret = msm_bus_scale_client_update_request(
+						qsee_perf_client, 0);
+				if (ret)
+					pr_err("SFPB Bandwidth req fail (%d)\n",
+								ret);
+			}
+		}
+		mutex_unlock(&qsee_bw_mutex);
+		break;
+	case CLK_SFPB:
+		mutex_lock(&qsee_sfpb_bw_mutex);
+		if (qsee_sfpb_bw_count > 0) {
+			if (qsee_sfpb_bw_count-- == 1) {
+				ret = msm_bus_scale_client_update_request(
+						qsee_perf_client, 0);
+				if (ret)
+					pr_err("SFPB Bandwidth req fail (%d)\n",
+								ret);
+			}
+		}
+		mutex_unlock(&qsee_sfpb_bw_mutex);
+		break;
+	default:
+		pr_err("Clock type not defined\n");
+		break;
+	}
+
+}
+
+static int qseecom_load_external_elf(struct qseecom_dev_handle *data,
+				void __user *argp)
+{
+	struct ion_handle *ihandle;	/* Ion handle */
+	struct qseecom_load_img_req load_img_req;
+	int ret;
+	int set_cpu_ret = 0;
+	ion_phys_addr_t pa = 0;
+	uint32_t len;
+	struct cpumask mask;
+	struct qseecom_load_app_ireq load_req;
+	struct qseecom_command_scm_resp resp;
+
+	/* Copy the relevant information needed for loading the image */
+	if (__copy_from_user(&load_img_req,
+				(void __user *)argp,
+				sizeof(struct qseecom_load_img_req))) {
+		pr_err("copy_from_user failed\n");
+		return -EFAULT;
+	}
+
+	/* Get the handle of the shared fd */
+	ihandle = ion_import_dma_buf(qseecom.ion_clnt,
+				load_img_req.ifd_data_fd);
+	if (IS_ERR_OR_NULL(ihandle)) {
+		pr_err("Ion client could not retrieve the handle\n");
+		return -ENOMEM;
+	}
+
+	/* Get the physical address of the ION BUF */
+	ret = ion_phys(qseecom.ion_clnt, ihandle, &pa, &len);
+
+	/* Populate the structure for sending scm call to load image */
+	load_req.qsee_cmd_id = QSEOS_LOAD_EXTERNAL_ELF_COMMAND;
+	load_req.mdt_len = load_img_req.mdt_len;
+	load_req.img_len = load_img_req.img_len;
+	load_req.phy_addr = pa;
+
+	/* SCM_CALL tied to Core0 */
+	mask = CPU_MASK_CPU0;
+	set_cpu_ret = set_cpus_allowed_ptr(current, &mask);
+	if (set_cpu_ret) {
+		pr_err("set_cpus_allowed_ptr failed : ret %d\n",
+				set_cpu_ret);
+		ret = -EFAULT;
+		goto qseecom_load_external_elf_set_cpu_err;
+	}
+
+	/*  SCM_CALL to load the external elf */
+	ret = scm_call(SCM_SVC_TZSCHEDULER, 1,  &load_req,
+			sizeof(struct qseecom_load_app_ireq),
+			&resp, sizeof(resp));
+	if (ret) {
+		pr_err("scm_call to load failed : ret %d\n",
+				ret);
+		ret = -EFAULT;
+		goto qseecom_load_external_elf_scm_err;
+	}
+
+	if (resp.result == QSEOS_RESULT_INCOMPLETE) {
+		ret = __qseecom_process_incomplete_cmd(data, &resp);
+		if (ret)
+			pr_err("process_incomplete_cmd failed err: %d\n",
+					ret);
+	} else {
+		if (resp.result != QSEOS_RESULT_SUCCESS) {
+			pr_err("scm_call to load image failed resp.result =%d\n",
+						resp.result);
+			ret = -EFAULT;
+		}
+	}
+
+qseecom_load_external_elf_scm_err:
+	/* Restore the CPU mask */
+	mask = CPU_MASK_ALL;
+	set_cpu_ret = set_cpus_allowed_ptr(current, &mask);
+	if (set_cpu_ret) {
+		pr_err("set_cpus_allowed_ptr failed to restore mask: ret %d\n",
+				set_cpu_ret);
+		ret = -EFAULT;
+	}
+
+qseecom_load_external_elf_set_cpu_err:
+	/* Deallocate the handle */
+	if (!IS_ERR_OR_NULL(ihandle))
+		ion_free(qseecom.ion_clnt, ihandle);
+
+	return ret;
+}
+
+static int qseecom_unload_external_elf(struct qseecom_dev_handle *data)
+{
+	int ret = 0;
+	int set_cpu_ret = 0;
+	struct qseecom_command_scm_resp resp;
+	struct qseecom_unload_app_ireq req;
+	struct cpumask mask;
+
+	/* Populate the structure for sending scm call to unload image */
+	req.qsee_cmd_id = QSEOS_UNLOAD_EXTERNAL_ELF_COMMAND;
+
+	/* SCM_CALL tied to Core0 */
+	mask = CPU_MASK_CPU0;
+	ret = set_cpus_allowed_ptr(current, &mask);
+	if (ret) {
+		pr_err("set_cpus_allowed_ptr failed : ret %d\n",
+				ret);
+		return -EFAULT;
+	}
+
+	/* SCM_CALL to unload the external elf */
+	ret = scm_call(SCM_SVC_TZSCHEDULER, 1,  &req,
+			sizeof(struct qseecom_unload_app_ireq),
+			&resp, sizeof(resp));
+	if (ret) {
+		pr_err("scm_call to unload failed : ret %d\n",
+				ret);
+		ret = -EFAULT;
+		goto qseecom_unload_external_elf_scm_err;
+	}
+	if (resp.result == QSEOS_RESULT_INCOMPLETE) {
+		ret = __qseecom_process_incomplete_cmd(data, &resp);
+		if (ret)
+			pr_err("process_incomplete_cmd fail err: %d\n",
+					ret);
+	} else {
+		if (resp.result != QSEOS_RESULT_SUCCESS) {
+			pr_err("scm_call to unload image failed resp.result =%d\n",
+						resp.result);
+			ret = -EFAULT;
+		}
+	}
+
+qseecom_unload_external_elf_scm_err:
+	/* Restore the CPU mask */
+	mask = CPU_MASK_ALL;
+	set_cpu_ret = set_cpus_allowed_ptr(current, &mask);
+	if (set_cpu_ret) {
+		pr_err("set_cpus_allowed_ptr failed to restore mask: ret %d\n",
+				set_cpu_ret);
+		ret = -EFAULT;
+	}
+
+	return ret;
+}
+
+static int qseecom_query_app_loaded(struct qseecom_dev_handle *data,
+					void __user *argp)
+{
+
+	int32_t ret;
+	struct qseecom_qseos_app_load_query query_req;
+	struct qseecom_check_app_ireq req;
+	struct qseecom_registered_app_list *entry = NULL;
+	unsigned long flags = 0;
+
+	/* Copy the relevant information needed for loading the image */
+	if (__copy_from_user(&query_req,
+				(void __user *)argp,
+				sizeof(struct qseecom_qseos_app_load_query))) {
+		pr_err("copy_from_user failed\n");
+		return -EFAULT;
+	}
+
+	req.qsee_cmd_id = QSEOS_APP_LOOKUP_COMMAND;
+	memcpy(req.app_name, query_req.app_name, MAX_APP_NAME_SIZE);
+
+	ret = __qseecom_check_app_exists(req);
+
+	if ((ret == -EINVAL) || (ret == -ENODEV)) {
+		pr_err(" scm call to check if app is loaded failed");
+		return ret;	/* scm call failed */
+	} else if (ret > 0) {
+		pr_warn("App id %d (%s) already exists\n", ret,
+			(char *)(req.app_name));
+		spin_lock_irqsave(&qseecom.registered_app_list_lock, flags);
+		list_for_each_entry(entry,
+				&qseecom.registered_app_list_head, list){
+			if (entry->app_id == ret) {
+				entry->ref_cnt++;
+				break;
+			}
+		}
+		spin_unlock_irqrestore(
+				&qseecom.registered_app_list_lock, flags);
+		data->client.app_id = ret;
+		query_req.app_id = ret;
+
+		if (copy_to_user(argp, &query_req, sizeof(query_req))) {
+			pr_err("copy_to_user failed\n");
+			return -EFAULT;
+		}
+		return -EEXIST;	/* app already loaded */
+	} else {
+		return 0;	/* app not loaded */
+	}
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static long qseecom_ioctl(struct file *file, unsigned cmd,
 		unsigned long arg)
@@ -1219,24 +1751,40 @@ static long qseecom_ioctl(struct file *file, unsigned cmd,
 	}
 	case QSEECOM_IOCTL_SEND_CMD_REQ: {
 		/* Only one client allowed here at a time */
+<<<<<<< HEAD
 		mutex_lock(&send_msg_lock);
+=======
+		mutex_lock(&app_access_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		atomic_inc(&data->ioctl_count);
 		ret = qseecom_send_cmd(data, argp);
 		atomic_dec(&data->ioctl_count);
 		wake_up_all(&data->abort_wq);
+<<<<<<< HEAD
 		mutex_unlock(&send_msg_lock);
+=======
+		mutex_unlock(&app_access_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret)
 			pr_err("failed qseecom_send_cmd: %d\n", ret);
 		break;
 	}
 	case QSEECOM_IOCTL_SEND_MODFD_CMD_REQ: {
 		/* Only one client allowed here at a time */
+<<<<<<< HEAD
 		mutex_lock(&send_msg_lock);
+=======
+		mutex_lock(&app_access_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		atomic_inc(&data->ioctl_count);
 		ret = qseecom_send_modfd_cmd(data, argp);
 		atomic_dec(&data->ioctl_count);
 		wake_up_all(&data->abort_wq);
+<<<<<<< HEAD
 		mutex_unlock(&send_msg_lock);
+=======
+		mutex_unlock(&app_access_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret)
 			pr_err("failed qseecom_send_cmd: %d\n", ret);
 		break;
@@ -1296,16 +1844,67 @@ static long qseecom_ioctl(struct file *file, unsigned cmd,
 	}
 	case QSEECOM_IOCTL_PERF_ENABLE_REQ:{
 		atomic_inc(&data->ioctl_count);
+<<<<<<< HEAD
 		ret = qsee_vote_for_clock();
 		if (ret)
 			pr_err("Failed to vote for clock%d\n", ret);
+=======
+		ret = qsee_vote_for_clock(CLK_DFAB);
+		if (ret)
+			pr_err("Failed to vote for DFAB clock%d\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		atomic_dec(&data->ioctl_count);
 		break;
 	}
 	case QSEECOM_IOCTL_PERF_DISABLE_REQ:{
 		atomic_inc(&data->ioctl_count);
+<<<<<<< HEAD
 		qsee_disable_clock_vote();
 		atomic_dec(&data->ioctl_count);
+=======
+		qsee_disable_clock_vote(CLK_DFAB);
+		atomic_dec(&data->ioctl_count);
+		break;
+	}
+	case QSEECOM_IOCTL_LOAD_EXTERNAL_ELF_REQ: {
+		data->released = true;
+		if (qseecom.qseos_version == QSEOS_VERSION_13) {
+			pr_err("Loading External elf image unsupported in rev 0x13\n");
+			ret = -EINVAL;
+			break;
+		}
+		mutex_lock(&app_access_lock);
+		atomic_inc(&data->ioctl_count);
+		ret = qseecom_load_external_elf(data, argp);
+		atomic_dec(&data->ioctl_count);
+		mutex_unlock(&app_access_lock);
+		if (ret)
+			pr_err("failed load_external_elf request: %d\n", ret);
+		break;
+	}
+	case QSEECOM_IOCTL_UNLOAD_EXTERNAL_ELF_REQ: {
+		data->released = true;
+		if (qseecom.qseos_version == QSEOS_VERSION_13) {
+			pr_err("Unloading External elf image unsupported in rev 0x13\n");
+			ret = -EINVAL;
+			break;
+		}
+		mutex_lock(&app_access_lock);
+		atomic_inc(&data->ioctl_count);
+		ret = qseecom_unload_external_elf(data);
+		atomic_dec(&data->ioctl_count);
+		mutex_unlock(&app_access_lock);
+		if (ret)
+			pr_err("failed unload_app request: %d\n", ret);
+		break;
+	}
+	case QSEECOM_IOCTL_APP_LOADED_QUERY_REQ: {
+		mutex_lock(&app_access_lock);
+		atomic_inc(&data->ioctl_count);
+		ret = qseecom_query_app_loaded(data, argp);
+		atomic_dec(&data->ioctl_count);
+		mutex_unlock(&app_access_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 	default:
@@ -1374,11 +1973,16 @@ static int qseecom_release(struct inode *inode, struct file *file)
 		mutex_unlock(&pil_access_lock);
 	}
 	kfree(data);
+<<<<<<< HEAD
 	qsee_disable_clock_vote();
+=======
+	qsee_disable_clock_vote(CLK_DFAB);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
 
+<<<<<<< HEAD
 /* qseecom bus scaling */
 static struct msm_bus_paths qsee_bw_table[] = {
 	{
@@ -1409,6 +2013,8 @@ static struct msm_bus_scale_pdata qsee_bus_pdata = {
 	.name = "qsee",
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct file_operations qseecom_fops = {
 		.owner = THIS_MODULE,
 		.unlocked_ioctl = qseecom_ioctl,
@@ -1416,11 +2022,19 @@ static const struct file_operations qseecom_fops = {
 		.release = qseecom_release
 };
 
+<<<<<<< HEAD
 static int __init qseecom_init(void)
+=======
+static int __devinit qseecom_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int rc;
 	struct device *class_dev;
 	char qsee_not_legacy = 0;
+<<<<<<< HEAD
+=======
+	struct msm_bus_scale_pdata *qseecom_platform_support;
+>>>>>>> refs/remotes/origin/cm-10.0
 	uint32_t system_call_id = QSEOS_CHECK_VERSION_CMD;
 
 	qsee_bw_count = 0;
@@ -1486,6 +2100,7 @@ static int __init qseecom_init(void)
 	}
 
 	/* register client for bus scaling */
+<<<<<<< HEAD
 	qsee_perf_client = msm_bus_scale_register_client(
 					&qsee_bus_pdata);
 	if (!qsee_perf_client) {
@@ -1500,6 +2115,28 @@ static int __init qseecom_init(void)
 		}
 	}
 	return 0;
+=======
+	if (!pdev->dev.of_node) {
+		qseecom_platform_support = (struct msm_bus_scale_pdata *)
+						pdev->dev.platform_data;
+		qsee_perf_client = msm_bus_scale_register_client(
+						qseecom_platform_support);
+
+		if (!qsee_perf_client) {
+			pr_err("Unable to register bus client\n");
+		} else {
+			qseecom_bus_clk = clk_get(class_dev, "bus_clk");
+			if (IS_ERR(qseecom_bus_clk)) {
+				qseecom_bus_clk = NULL;
+			} else if (qseecom_bus_clk != NULL) {
+				pr_debug("Enabled DFAB clock");
+				clk_set_rate(qseecom_bus_clk, 64000000);
+			}
+		}
+	}
+	return 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 err:
 	device_destroy(driver_class, qseecom_device_no);
 class_destroy:
@@ -1509,8 +2146,44 @@ unregister_chrdev_region:
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __exit qseecom_exit(void)
 {
+=======
+static int __devinit qseecom_remove(struct platform_device *pdev)
+{
+	if (pdev->dev.platform_data != NULL)
+		msm_bus_scale_unregister_client(qsee_perf_client);
+	return 0;
+};
+
+static struct of_device_id qseecom_match[] = {
+	{
+		.compatible = "qcom,qseecom",
+	},
+	{}
+};
+
+static struct platform_driver qseecom_plat_driver = {
+	.probe = qseecom_probe,
+	.remove = qseecom_remove,
+	.driver = {
+		.name = "qseecom",
+		.owner = THIS_MODULE,
+		.of_match_table = qseecom_match,
+	},
+};
+
+static int __devinit qseecom_init(void)
+{
+	return platform_driver_register(&qseecom_plat_driver);
+}
+
+static void __devexit qseecom_exit(void)
+{
+	clk_put(qseecom_bus_clk);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	device_destroy(driver_class, qseecom_device_no);
 	class_destroy(driver_class);
 	unregister_chrdev_region(qseecom_device_no, 1);

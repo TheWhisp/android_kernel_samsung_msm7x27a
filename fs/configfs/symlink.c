@@ -110,13 +110,21 @@ out:
 
 
 static int get_target(const char *symname, struct path *path,
+<<<<<<< HEAD
 		      struct config_item **target)
+=======
+		      struct config_item **target, struct super_block *sb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 
 	ret = kern_path(symname, LOOKUP_FOLLOW|LOOKUP_DIRECTORY, path);
 	if (!ret) {
+<<<<<<< HEAD
 		if (path->dentry->d_sb == configfs_sb) {
+=======
+		if (path->dentry->d_sb == sb) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			*target = configfs_get_config_item(path->dentry);
 			if (!*target) {
 				ret = -ENOENT;
@@ -141,10 +149,13 @@ int configfs_symlink(struct inode *dir, struct dentry *dentry, const char *symna
 	struct config_item *target_item = NULL;
 	struct config_item_type *type;
 
+<<<<<<< HEAD
 	ret = -EPERM;  /* What lack-of-symlink returns */
 	if (dentry->d_parent == configfs_sb->s_root)
 		goto out;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	sd = dentry->d_parent->d_fsdata;
 	/*
 	 * Fake invisibility if dir belongs to a group/default groups hierarchy
@@ -162,7 +173,11 @@ int configfs_symlink(struct inode *dir, struct dentry *dentry, const char *symna
 	    !type->ct_item_ops->allow_link)
 		goto out_put;
 
+<<<<<<< HEAD
 	ret = get_target(symname, &path, &target_item);
+=======
+	ret = get_target(symname, &path, &target_item, dentry->d_sb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto out_put;
 
@@ -198,8 +213,11 @@ int configfs_unlink(struct inode *dir, struct dentry *dentry)
 	if (!(sd->s_type & CONFIGFS_ITEM_LINK))
 		goto out;
 
+<<<<<<< HEAD
 	BUG_ON(dentry->d_parent == configfs_sb->s_root);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	sl = sd->s_element;
 
 	parent_item = configfs_get_config_item(dentry->d_parent);

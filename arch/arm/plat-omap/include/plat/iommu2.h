@@ -83,12 +83,20 @@
 /*
  * register accessors
  */
+<<<<<<< HEAD
 static inline u32 iommu_read_reg(struct iommu *obj, size_t offs)
+=======
+static inline u32 iommu_read_reg(struct omap_iommu *obj, size_t offs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return __raw_readl(obj->regbase + offs);
 }
 
+<<<<<<< HEAD
 static inline void iommu_write_reg(struct iommu *obj, u32 val, size_t offs)
+=======
+static inline void iommu_write_reg(struct omap_iommu *obj, u32 val, size_t offs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	__raw_writel(val, obj->regbase + offs);
 }

@@ -436,6 +436,7 @@ static struct i2c_driver rv3029c2_driver = {
 	.id_table = rv3029c2_id,
 };
 
+<<<<<<< HEAD
 static int __init rv3029c2_init(void)
 {
 	return i2c_add_driver(&rv3029c2_driver);
@@ -448,6 +449,9 @@ static void __exit rv3029c2_exit(void)
 
 module_init(rv3029c2_init);
 module_exit(rv3029c2_exit);
+=======
+module_i2c_driver(rv3029c2_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Gregory Hermant <gregory.hermant@calao-systems.com>");
 MODULE_DESCRIPTION("Micro Crystal RV3029C2 RTC driver");

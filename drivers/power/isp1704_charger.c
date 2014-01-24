@@ -56,7 +56,11 @@ static u16 isp170x_id[] = {
 struct isp1704_charger {
 	struct device		*dev;
 	struct power_supply	psy;
+<<<<<<< HEAD
 	struct otg_transceiver	*otg;
+=======
+	struct usb_phy		*phy;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct notifier_block	nb;
 	struct work_struct	work;
 
@@ -71,6 +75,19 @@ struct isp1704_charger {
 	unsigned		max_power;
 };
 
+<<<<<<< HEAD
+=======
+static inline int isp1704_read(struct isp1704_charger *isp, u32 reg)
+{
+	return usb_phy_io_read(isp->phy, reg);
+}
+
+static inline int isp1704_write(struct isp1704_charger *isp, u32 val, u32 reg)
+{
+	return usb_phy_io_write(isp->phy, val, reg);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Disable/enable the power from the isp1704 if a function for it
  * has been provided with platform data.
@@ -79,7 +96,11 @@ static void isp1704_charger_set_power(struct isp1704_charger *isp, bool on)
 {
 	struct isp1704_charger_data	*board = isp->dev->platform_data;
 
+<<<<<<< HEAD
 	if (board->set_power)
+=======
+	if (board && board->set_power)
+>>>>>>> refs/remotes/origin/cm-10.0
 		board->set_power(on);
 }
 
@@ -97,6 +118,7 @@ static inline int isp1704_charger_type(struct isp1704_charger *isp)
 	u8 otg_ctrl;
 	int type = POWER_SUPPLY_TYPE_USB_DCP;
 
+<<<<<<< HEAD
 	func_ctrl = otg_io_read(isp->otg, ULPI_FUNC_CTRL);
 	otg_ctrl = otg_io_read(isp->otg, ULPI_OTG_CTRL);
 
@@ -108,20 +130,45 @@ static inline int isp1704_charger_type(struct isp1704_charger *isp)
 	otg_io_write(isp->otg, ULPI_CLR(ULPI_FUNC_CTRL),
 			ULPI_FUNC_CTRL_XCVRSEL_MASK);
 	otg_io_write(isp->otg, ULPI_SET(ULPI_FUNC_CTRL),
+=======
+	func_ctrl = isp1704_read(isp, ULPI_FUNC_CTRL);
+	otg_ctrl = isp1704_read(isp, ULPI_OTG_CTRL);
+
+	/* disable pulldowns */
+	reg = ULPI_OTG_CTRL_DM_PULLDOWN | ULPI_OTG_CTRL_DP_PULLDOWN;
+	isp1704_write(isp, ULPI_CLR(ULPI_OTG_CTRL), reg);
+
+	/* full speed */
+	isp1704_write(isp, ULPI_CLR(ULPI_FUNC_CTRL),
+			ULPI_FUNC_CTRL_XCVRSEL_MASK);
+	isp1704_write(isp, ULPI_SET(ULPI_FUNC_CTRL),
+>>>>>>> refs/remotes/origin/cm-10.0
 			ULPI_FUNC_CTRL_FULL_SPEED);
 
 	/* Enable strong pull-up on DP (1.5K) and reset */
 	reg = ULPI_FUNC_CTRL_TERMSELECT | ULPI_FUNC_CTRL_RESET;
+<<<<<<< HEAD
 	otg_io_write(isp->otg, ULPI_SET(ULPI_FUNC_CTRL), reg);
 	usleep_range(1000, 2000);
 
 	reg = otg_io_read(isp->otg, ULPI_DEBUG);
+=======
+	isp1704_write(isp, ULPI_SET(ULPI_FUNC_CTRL), reg);
+	usleep_range(1000, 2000);
+
+	reg = isp1704_read(isp, ULPI_DEBUG);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((reg & 3) != 3)
 		type = POWER_SUPPLY_TYPE_USB_CDP;
 
 	/* recover original state */
+<<<<<<< HEAD
 	otg_io_write(isp->otg, ULPI_FUNC_CTRL, func_ctrl);
 	otg_io_write(isp->otg, ULPI_OTG_CTRL, otg_ctrl);
+=======
+	isp1704_write(isp, ULPI_FUNC_CTRL, func_ctrl);
+	isp1704_write(isp, ULPI_OTG_CTRL, otg_ctrl);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return type;
 }
@@ -136,13 +183,20 @@ static inline int isp1704_charger_verify(struct isp1704_charger *isp)
 	u8	r;
 
 	/* Reset the transceiver */
+<<<<<<< HEAD
 	r = otg_io_read(isp->otg, ULPI_FUNC_CTRL);
 	r |= ULPI_FUNC_CTRL_RESET;
 	otg_io_write(isp->otg, ULPI_FUNC_CTRL, r);
+=======
+	r = isp1704_read(isp, ULPI_FUNC_CTRL);
+	r |= ULPI_FUNC_CTRL_RESET;
+	isp1704_write(isp, ULPI_FUNC_CTRL, r);
+>>>>>>> refs/remotes/origin/cm-10.0
 	usleep_range(1000, 2000);
 
 	/* Set normal mode */
 	r &= ~(ULPI_FUNC_CTRL_RESET | ULPI_FUNC_CTRL_OPMODE_MASK);
+<<<<<<< HEAD
 	otg_io_write(isp->otg, ULPI_FUNC_CTRL, r);
 
 	/* Clear the DP and DM pull-down bits */
@@ -158,6 +212,23 @@ static inline int isp1704_charger_verify(struct isp1704_charger *isp)
 	if (!otg_io_read(isp->otg, ULPI_DEBUG)) {
 		/* Disable strong pull-up on DP (1.5K) */
 		otg_io_write(isp->otg, ULPI_CLR(ULPI_FUNC_CTRL),
+=======
+	isp1704_write(isp, ULPI_FUNC_CTRL, r);
+
+	/* Clear the DP and DM pull-down bits */
+	r = ULPI_OTG_CTRL_DP_PULLDOWN | ULPI_OTG_CTRL_DM_PULLDOWN;
+	isp1704_write(isp, ULPI_CLR(ULPI_OTG_CTRL), r);
+
+	/* Enable strong pull-up on DP (1.5K) and reset */
+	r = ULPI_FUNC_CTRL_TERMSELECT | ULPI_FUNC_CTRL_RESET;
+	isp1704_write(isp, ULPI_SET(ULPI_FUNC_CTRL), r);
+	usleep_range(1000, 2000);
+
+	/* Read the line state */
+	if (!isp1704_read(isp, ULPI_DEBUG)) {
+		/* Disable strong pull-up on DP (1.5K) */
+		isp1704_write(isp, ULPI_CLR(ULPI_FUNC_CTRL),
+>>>>>>> refs/remotes/origin/cm-10.0
 				ULPI_FUNC_CTRL_TERMSELECT);
 		return 1;
 	}
@@ -165,6 +236,7 @@ static inline int isp1704_charger_verify(struct isp1704_charger *isp)
 	/* Is it a charger or PS/2 connection */
 
 	/* Enable weak pull-up resistor on DP */
+<<<<<<< HEAD
 	otg_io_write(isp->otg, ULPI_SET(ISP1704_PWR_CTRL),
 			ISP1704_PWR_CTRL_DP_WKPU_EN);
 
@@ -182,6 +254,25 @@ static inline int isp1704_charger_verify(struct isp1704_charger *isp)
 
 	/* Disable weak pull-up resistor on DP */
 	otg_io_write(isp->otg, ULPI_CLR(ISP1704_PWR_CTRL),
+=======
+	isp1704_write(isp, ULPI_SET(ISP1704_PWR_CTRL),
+			ISP1704_PWR_CTRL_DP_WKPU_EN);
+
+	/* Disable strong pull-up on DP (1.5K) */
+	isp1704_write(isp, ULPI_CLR(ULPI_FUNC_CTRL),
+			ULPI_FUNC_CTRL_TERMSELECT);
+
+	/* Enable weak pull-down resistor on DM */
+	isp1704_write(isp, ULPI_SET(ULPI_OTG_CTRL),
+			ULPI_OTG_CTRL_DM_PULLDOWN);
+
+	/* It's a charger if the line states are clear */
+	if (!(isp1704_read(isp, ULPI_DEBUG)))
+		ret = 1;
+
+	/* Disable weak pull-up resistor on DP */
+	isp1704_write(isp, ULPI_CLR(ISP1704_PWR_CTRL),
+>>>>>>> refs/remotes/origin/cm-10.0
 			ISP1704_PWR_CTRL_DP_WKPU_EN);
 
 	return ret;
@@ -193,6 +284,7 @@ static inline int isp1704_charger_detect(struct isp1704_charger *isp)
 	u8		pwr_ctrl;
 	int		ret = 0;
 
+<<<<<<< HEAD
 	pwr_ctrl = otg_io_read(isp->otg, ISP1704_PWR_CTRL);
 
 	/* set SW control bit in PWR_CTRL register */
@@ -201,6 +293,16 @@ static inline int isp1704_charger_detect(struct isp1704_charger *isp)
 
 	/* enable manual charger detection */
 	otg_io_write(isp->otg, ULPI_SET(ISP1704_PWR_CTRL),
+=======
+	pwr_ctrl = isp1704_read(isp, ISP1704_PWR_CTRL);
+
+	/* set SW control bit in PWR_CTRL register */
+	isp1704_write(isp, ISP1704_PWR_CTRL,
+			ISP1704_PWR_CTRL_SWCTRL);
+
+	/* enable manual charger detection */
+	isp1704_write(isp, ULPI_SET(ISP1704_PWR_CTRL),
+>>>>>>> refs/remotes/origin/cm-10.0
 			ISP1704_PWR_CTRL_SWCTRL
 			| ISP1704_PWR_CTRL_DPVSRC_EN);
 	usleep_range(1000, 2000);
@@ -208,7 +310,11 @@ static inline int isp1704_charger_detect(struct isp1704_charger *isp)
 	timeout = jiffies + msecs_to_jiffies(300);
 	do {
 		/* Check if there is a charger */
+<<<<<<< HEAD
 		if (otg_io_read(isp->otg, ISP1704_PWR_CTRL)
+=======
+		if (isp1704_read(isp, ISP1704_PWR_CTRL)
+>>>>>>> refs/remotes/origin/cm-10.0
 				& ISP1704_PWR_CTRL_VDAT_DET) {
 			ret = isp1704_charger_verify(isp);
 			break;
@@ -216,7 +322,11 @@ static inline int isp1704_charger_detect(struct isp1704_charger *isp)
 	} while (!time_after(jiffies, timeout) && isp->online);
 
 	/* recover original state */
+<<<<<<< HEAD
 	otg_io_write(isp->otg, ISP1704_PWR_CTRL, pwr_ctrl);
+=======
+	isp1704_write(isp, ISP1704_PWR_CTRL, pwr_ctrl);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -264,8 +374,13 @@ static void isp1704_charger_work(struct work_struct *data)
 		case POWER_SUPPLY_TYPE_USB:
 		default:
 			/* enable data pullups */
+<<<<<<< HEAD
 			if (isp->otg->gadget)
 				usb_gadget_connect(isp->otg->gadget);
+=======
+			if (isp->phy->otg->gadget)
+				usb_gadget_connect(isp->phy->otg->gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		break;
 	case USB_EVENT_NONE:
@@ -283,8 +398,13 @@ static void isp1704_charger_work(struct work_struct *data)
 		 * chargers. The pullups may be enabled elsewhere, so this can
 		 * not be the final solution.
 		 */
+<<<<<<< HEAD
 		if (isp->otg->gadget)
 			usb_gadget_disconnect(isp->otg->gadget);
+=======
+		if (isp->phy->otg->gadget)
+			usb_gadget_disconnect(isp->phy->otg->gadget);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		isp1704_charger_set_power(isp, 0);
 		break;
@@ -364,11 +484,19 @@ static inline int isp1704_test_ulpi(struct isp1704_charger *isp)
 	int ret = -ENODEV;
 
 	/* Test ULPI interface */
+<<<<<<< HEAD
 	ret = otg_io_write(isp->otg, ULPI_SCRATCH, 0xaa);
 	if (ret < 0)
 		return ret;
 
 	ret = otg_io_read(isp->otg, ULPI_SCRATCH);
+=======
+	ret = isp1704_write(isp, ULPI_SCRATCH, 0xaa);
+	if (ret < 0)
+		return ret;
+
+	ret = isp1704_read(isp, ULPI_SCRATCH);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0)
 		return ret;
 
@@ -376,6 +504,7 @@ static inline int isp1704_test_ulpi(struct isp1704_charger *isp)
 		return -ENODEV;
 
 	/* Verify the product and vendor id matches */
+<<<<<<< HEAD
 	vendor = otg_io_read(isp->otg, ULPI_VENDOR_ID_LOW);
 	vendor |= otg_io_read(isp->otg, ULPI_VENDOR_ID_HIGH) << 8;
 	if (vendor != NXP_VENDOR_ID)
@@ -383,6 +512,15 @@ static inline int isp1704_test_ulpi(struct isp1704_charger *isp)
 
 	product = otg_io_read(isp->otg, ULPI_PRODUCT_ID_LOW);
 	product |= otg_io_read(isp->otg, ULPI_PRODUCT_ID_HIGH) << 8;
+=======
+	vendor = isp1704_read(isp, ULPI_VENDOR_ID_LOW);
+	vendor |= isp1704_read(isp, ULPI_VENDOR_ID_HIGH) << 8;
+	if (vendor != NXP_VENDOR_ID)
+		return -ENODEV;
+
+	product = isp1704_read(isp, ULPI_PRODUCT_ID_LOW);
+	product |= isp1704_read(isp, ULPI_PRODUCT_ID_HIGH) << 8;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < ARRAY_SIZE(isp170x_id); i++) {
 		if (product == isp170x_id[i]) {
@@ -405,8 +543,13 @@ static int __devinit isp1704_charger_probe(struct platform_device *pdev)
 	if (!isp)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	isp->otg = otg_get_transceiver();
 	if (!isp->otg)
+=======
+	isp->phy = usb_get_transceiver();
+	if (!isp->phy)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto fail0;
 
 	isp->dev = &pdev->dev;
@@ -429,14 +572,22 @@ static int __devinit isp1704_charger_probe(struct platform_device *pdev)
 		goto fail1;
 
 	/*
+<<<<<<< HEAD
 	 * REVISIT: using work in order to allow the otg notifications to be
+=======
+	 * REVISIT: using work in order to allow the usb notifications to be
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * made atomically in the future.
 	 */
 	INIT_WORK(&isp->work, isp1704_charger_work);
 
 	isp->nb.notifier_call = isp1704_notifier_call;
 
+<<<<<<< HEAD
 	ret = otg_register_notifier(isp->otg, &isp->nb);
+=======
+	ret = usb_register_notifier(isp->phy, &isp->nb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto fail2;
 
@@ -449,6 +600,7 @@ static int __devinit isp1704_charger_probe(struct platform_device *pdev)
 	 * enumerated. The charger driver should be always loaded before any
 	 * gadget is loaded.
 	 */
+<<<<<<< HEAD
 	if (isp->otg->gadget)
 		usb_gadget_disconnect(isp->otg->gadget);
 
@@ -456,6 +608,15 @@ static int __devinit isp1704_charger_probe(struct platform_device *pdev)
 	ret = otg_io_read(isp->otg, ULPI_USB_INT_STS);
 	isp1704_charger_set_power(isp, 0);
 	if ((ret & ULPI_INT_VBUS_VALID) && !isp->otg->default_a) {
+=======
+	if (isp->phy->otg->gadget)
+		usb_gadget_disconnect(isp->phy->otg->gadget);
+
+	/* Detect charger if VBUS is valid (the cable was already plugged). */
+	ret = isp1704_read(isp, ULPI_USB_INT_STS);
+	isp1704_charger_set_power(isp, 0);
+	if ((ret & ULPI_INT_VBUS_VALID) && !isp->phy->otg->default_a) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		isp->event = USB_EVENT_VBUS;
 		schedule_work(&isp->work);
 	}
@@ -464,12 +625,20 @@ static int __devinit isp1704_charger_probe(struct platform_device *pdev)
 fail2:
 	power_supply_unregister(&isp->psy);
 fail1:
+<<<<<<< HEAD
 	otg_put_transceiver(isp->otg);
+=======
+	usb_put_transceiver(isp->phy);
+>>>>>>> refs/remotes/origin/cm-10.0
 fail0:
 	kfree(isp);
 
 	dev_err(&pdev->dev, "failed to register isp1704 with error %d\n", ret);
 
+<<<<<<< HEAD
+=======
+	isp1704_charger_set_power(isp, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -477,9 +646,15 @@ static int __devexit isp1704_charger_remove(struct platform_device *pdev)
 {
 	struct isp1704_charger *isp = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	otg_unregister_notifier(isp->otg, &isp->nb);
 	power_supply_unregister(&isp->psy);
 	otg_put_transceiver(isp->otg);
+=======
+	usb_unregister_notifier(isp->phy, &isp->nb);
+	power_supply_unregister(&isp->psy);
+	usb_put_transceiver(isp->phy);
+>>>>>>> refs/remotes/origin/cm-10.0
 	isp1704_charger_set_power(isp, 0);
 	kfree(isp);
 
@@ -494,6 +669,7 @@ static struct platform_driver isp1704_charger_driver = {
 	.remove = __devexit_p(isp1704_charger_remove),
 };
 
+<<<<<<< HEAD
 static int __init isp1704_charger_init(void)
 {
 	return platform_driver_register(&isp1704_charger_driver);
@@ -505,6 +681,9 @@ static void __exit isp1704_charger_exit(void)
 	platform_driver_unregister(&isp1704_charger_driver);
 }
 module_exit(isp1704_charger_exit);
+=======
+module_platform_driver(isp1704_charger_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_ALIAS("platform:isp1704_charger");
 MODULE_AUTHOR("Nokia Corporation");

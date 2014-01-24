@@ -24,7 +24,11 @@
 extern struct proc_dir_entry *hysdn_proc_entry;
 
 static DEFINE_MUTEX(hysdn_log_mutex);
+<<<<<<< HEAD
 static void put_log_buffer(hysdn_card * card, char *cp);
+=======
+static void put_log_buffer(hysdn_card *card, char *cp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*************************************************/
 /* structure keeping ascii log for device output */
@@ -54,7 +58,11 @@ struct procdata {
 /* log function for cards error log interface */
 /**********************************************/
 void
+<<<<<<< HEAD
 hysdn_card_errlog(hysdn_card * card, tErrLogEntry * logp, int maxsize)
+=======
+hysdn_card_errlog(hysdn_card *card, tErrLogEntry *logp, int maxsize)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	char buf[ERRLOG_TEXT_SIZE + 40];
 
@@ -66,7 +74,11 @@ hysdn_card_errlog(hysdn_card * card, tErrLogEntry * logp, int maxsize)
 /* Log function using format specifiers for output */
 /***************************************************/
 void
+<<<<<<< HEAD
 hysdn_addlog(hysdn_card * card, char *fmt,...)
+=======
+hysdn_addlog(hysdn_card *card, char *fmt, ...)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct procdata *pd = card->proclog;
 	char *cp;
@@ -98,7 +110,11 @@ hysdn_addlog(hysdn_card * card, char *fmt,...)
 /* Flushes buffers not longer in use.       */
 /********************************************/
 static void
+<<<<<<< HEAD
 put_log_buffer(hysdn_card * card, char *cp)
+=======
+put_log_buffer(hysdn_card *card, char *cp)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct log_data *ib;
 	struct procdata *pd = card->proclog;
@@ -115,7 +131,11 @@ put_log_buffer(hysdn_card * card, char *cp)
 		return;		/* no open file for read */
 
 	if (!(ib = kmalloc(sizeof(struct log_data) + strlen(cp), GFP_ATOMIC)))
+<<<<<<< HEAD
 		 return;	/* no memory */
+=======
+		return;	/* no memory */
+>>>>>>> refs/remotes/origin/cm-10.0
 	strcpy(ib->log_start, cp);	/* set output string */
 	ib->next = NULL;
 	ib->proc_ctrl = pd;	/* point to own control structure */
@@ -153,7 +173,11 @@ put_log_buffer(hysdn_card * card, char *cp)
 /* write log file -> set log level bits */
 /****************************************/
 static ssize_t
+<<<<<<< HEAD
 hysdn_log_write(struct file *file, const char __user *buf, size_t count, loff_t * off)
+=======
+hysdn_log_write(struct file *file, const char __user *buf, size_t count, loff_t *off)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int rc;
 	unsigned char valbuf[128];
@@ -177,7 +201,11 @@ hysdn_log_write(struct file *file, const char __user *buf, size_t count, loff_t 
 /* read log file */
 /******************/
 static ssize_t
+<<<<<<< HEAD
 hysdn_log_read(struct file *file, char __user *buf, size_t count, loff_t * off)
+=======
+hysdn_log_read(struct file *file, char __user *buf, size_t count, loff_t *off)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct log_data *inf;
 	int len;
@@ -324,7 +352,11 @@ hysdn_log_close(struct inode *ino, struct file *filep)
 /* select/poll routine to be able using select() */
 /*************************************************/
 static unsigned int
+<<<<<<< HEAD
 hysdn_log_poll(struct file *file, poll_table * wait)
+=======
+hysdn_log_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned int mask = 0;
 	struct proc_dir_entry *pde = PDE(file->f_path.dentry->d_inode);
@@ -364,7 +396,11 @@ static const struct file_operations log_fops =
 	.write          = hysdn_log_write,
 	.poll           = hysdn_log_poll,
 	.open           = hysdn_log_open,
+<<<<<<< HEAD
 	.release        = hysdn_log_close,                                        
+=======
+	.release        = hysdn_log_close,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -373,7 +409,11 @@ static const struct file_operations log_fops =
 /* conf files.                                                                     */
 /***********************************************************************************/
 int
+<<<<<<< HEAD
 hysdn_proclog_init(hysdn_card * card)
+=======
+hysdn_proclog_init(hysdn_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct procdata *pd;
 
@@ -382,8 +422,13 @@ hysdn_proclog_init(hysdn_card * card)
 	if ((pd = kzalloc(sizeof(struct procdata), GFP_KERNEL)) != NULL) {
 		sprintf(pd->log_name, "%s%d", PROC_LOG_BASENAME, card->myid);
 		pd->log = proc_create(pd->log_name,
+<<<<<<< HEAD
 				S_IFREG | S_IRUGO | S_IWUSR, hysdn_proc_entry,
 				&log_fops);
+=======
+				      S_IFREG | S_IRUGO | S_IWUSR, hysdn_proc_entry,
+				      &log_fops);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		init_waitqueue_head(&(pd->rd_queue));
 
@@ -398,7 +443,11 @@ hysdn_proclog_init(hysdn_card * card)
 /* The module counter is assumed to be 0 !                                          */
 /************************************************************************************/
 void
+<<<<<<< HEAD
 hysdn_proclog_release(hysdn_card * card)
+=======
+hysdn_proclog_release(hysdn_card *card)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct procdata *pd;
 

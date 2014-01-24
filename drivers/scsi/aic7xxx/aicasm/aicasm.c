@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Aic7xxx SCSI host adapter firmware asssembler
+=======
+ * Aic7xxx SCSI host adapter firmware assembler
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Copyright (c) 1997, 1998, 2000, 2001 Justin T. Gibbs.
  * Copyright (c) 2001, 2002 Adaptec Inc.

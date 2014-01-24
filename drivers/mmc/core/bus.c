@@ -11,9 +11,17 @@
  *  MMC card bus driver model
  */
 
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/err.h>
 #include <linux/slab.h>
+=======
+#include <linux/export.h>
+#include <linux/device.h>
+#include <linux/err.h>
+#include <linux/slab.h>
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pm_runtime.h>
 
 #include <linux/mmc/card.h>
@@ -120,7 +128,12 @@ static int mmc_bus_remove(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int mmc_bus_pm_suspend(struct device *dev)
+=======
+#ifdef CONFIG_PM_SLEEP
+static int mmc_bus_suspend(struct device *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct mmc_driver *drv = to_mmc_driver(dev->driver);
 	struct mmc_card *card = mmc_dev_to_card(dev);
@@ -131,7 +144,11 @@ static int mmc_bus_pm_suspend(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int mmc_bus_pm_resume(struct device *dev)
+=======
+static int mmc_bus_resume(struct device *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct mmc_driver *drv = to_mmc_driver(dev->driver);
 	struct mmc_card *card = mmc_dev_to_card(dev);
@@ -141,8 +158,18 @@ static int mmc_bus_pm_resume(struct device *dev)
 		ret = drv->resume(card);
 	return ret;
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_PM_RUNTIME
+=======
+#else
+#define mmc_bus_suspend NULL
+#define mmc_bus_resume NULL
+#endif
+
+#ifdef CONFIG_PM_RUNTIME
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int mmc_runtime_suspend(struct device *dev)
 {
 	struct mmc_card *card = mmc_dev_to_card(dev);
@@ -161,6 +188,7 @@ static int mmc_runtime_idle(struct device *dev)
 {
 	return pm_runtime_suspend(dev);
 }
+<<<<<<< HEAD
 #else /* !CONFIG_PM_RUNTIME */
 #define mmc_runtime_suspend	NULL
 #define mmc_runtime_resume	NULL
@@ -170,6 +198,15 @@ static int mmc_runtime_idle(struct device *dev)
 static const struct dev_pm_ops mmc_bus_pm_ops = {
 	SET_SYSTEM_SLEEP_PM_OPS(mmc_bus_pm_suspend, mmc_bus_pm_resume)
 	SET_RUNTIME_PM_OPS(mmc_runtime_suspend, mmc_runtime_resume, mmc_runtime_idle)
+=======
+
+#endif /* !CONFIG_PM_RUNTIME */
+
+static const struct dev_pm_ops mmc_bus_pm_ops = {
+	SET_RUNTIME_PM_OPS(mmc_runtime_suspend, mmc_runtime_resume,
+			mmc_runtime_idle)
+	SET_SYSTEM_SLEEP_PM_OPS(mmc_bus_suspend, mmc_bus_resume)
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct bus_type mmc_bus_type = {
@@ -248,6 +285,11 @@ struct mmc_card *mmc_alloc_card(struct mmc_host *host, struct device_type *type)
 	card->dev.release = mmc_release_card;
 	card->dev.type = type;
 
+<<<<<<< HEAD
+=======
+	spin_lock_init(&card->wr_pack_stats.lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return card;
 }
 
@@ -259,6 +301,17 @@ int mmc_add_card(struct mmc_card *card)
 	int ret;
 	const char *type;
 	const char *uhs_bus_speed_mode = "";
+<<<<<<< HEAD
+=======
+	static const char *const uhs_speeds[] = {
+		[UHS_SDR12_BUS_SPEED] = "SDR12 ",
+		[UHS_SDR25_BUS_SPEED] = "SDR25 ",
+		[UHS_SDR50_BUS_SPEED] = "SDR50 ",
+		[UHS_SDR104_BUS_SPEED] = "SDR104 ",
+		[UHS_DDR50_BUS_SPEED] = "DDR50 ",
+	};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_set_name(&card->dev, "%s:%04x", mmc_hostname(card->host), card->rca);
 
@@ -288,6 +341,7 @@ int mmc_add_card(struct mmc_card *card)
 		break;
 	}
 
+<<<<<<< HEAD
 	if (mmc_sd_card_uhs(card)) {
 		switch (card->sd_bus_speed) {
 		case UHS_SDR104_BUS_SPEED:
@@ -312,11 +366,20 @@ int mmc_add_card(struct mmc_card *card)
 	}
 	if (mmc_host_is_spi(card->host)) {
 		printk(KERN_INFO "%s: new %s%s%s card on SPI\n",
+=======
+	if (mmc_sd_card_uhs(card) &&
+		(card->sd_bus_speed < ARRAY_SIZE(uhs_speeds)))
+		uhs_bus_speed_mode = uhs_speeds[card->sd_bus_speed];
+
+	if (mmc_host_is_spi(card->host)) {
+		pr_info("%s: new %s%s%s card on SPI\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			mmc_hostname(card->host),
 			mmc_card_highspeed(card) ? "high speed " : "",
 			mmc_card_ddr_mode(card) ? "DDR " : "",
 			type);
 	} else {
+<<<<<<< HEAD
 		pr_info("%s: new %s%s%s%s card at address %04x\n",
 			mmc_hostname(card->host),
 			mmc_sd_card_uhs(card) ? "ultra high speed " :
@@ -324,6 +387,15 @@ int mmc_add_card(struct mmc_card *card)
 			mmc_card_ddr_mode(card) ? "DDR " : "",
 			uhs_bus_speed_mode,
 			type, card->rca);
+=======
+		pr_info("%s: new %s%s%s%s%s card at address %04x\n",
+			mmc_hostname(card->host),
+			mmc_card_uhs(card) ? "ultra high speed " :
+			(mmc_card_highspeed(card) ? "high speed " : ""),
+			(mmc_card_hs200(card) ? "HS200 " : ""),
+			mmc_card_ddr_mode(card) ? "DDR " : "",
+			uhs_bus_speed_mode, type, card->rca);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 #ifdef CONFIG_DEBUG_FS
@@ -351,15 +423,27 @@ void mmc_remove_card(struct mmc_card *card)
 
 	if (mmc_card_present(card)) {
 		if (mmc_host_is_spi(card->host)) {
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: SPI card removed\n",
 				mmc_hostname(card->host));
 		} else {
 			printk(KERN_INFO "%s: card %04x removed\n",
+=======
+			pr_info("%s: SPI card removed\n",
+				mmc_hostname(card->host));
+		} else {
+			pr_info("%s: card %04x removed\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				mmc_hostname(card->host), card->rca);
 		}
 		device_del(&card->dev);
 	}
 
+<<<<<<< HEAD
+=======
+	kfree(card->wr_pack_stats.packing_events);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	put_device(&card->dev);
 }
 

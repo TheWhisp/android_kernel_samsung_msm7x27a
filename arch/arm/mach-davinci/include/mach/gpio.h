@@ -13,6 +13,7 @@
 #ifndef	__DAVINCI_GPIO_H
 #define	__DAVINCI_GPIO_H
 
+<<<<<<< HEAD
 #include <linux/io.h>
 #include <linux/spinlock.h>
 
@@ -87,6 +88,14 @@ static inline u32 __gpio_mask(unsigned gpio)
 {
 	return 1 << (gpio % 32);
 }
+=======
+#include <asm-generic/gpio.h>
+
+#define __ARM_GPIOLIB_COMPLEX
+
+/* The inline versions use the static inlines in the driver header */
+#include "gpio-davinci.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The get/set/clear functions will inline when called with constant
@@ -147,11 +156,14 @@ static inline int gpio_cansleep(unsigned gpio)
 		return __gpio_cansleep(gpio);
 }
 
+<<<<<<< HEAD
 static inline int gpio_to_irq(unsigned gpio)
 {
 	return __gpio_to_irq(gpio);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int irq_to_gpio(unsigned irq)
 {
 	/* don't support the reverse mapping */

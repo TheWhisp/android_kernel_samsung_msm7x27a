@@ -13,6 +13,7 @@
 #ifndef __ASSEMBLY__
 
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/kernel_stat.h>
 #include <linux/regset.h>
 #include <linux/hardirq.h>
@@ -460,6 +461,20 @@ static inline void kernel_fpu_end(void)
 	stts();
 	preempt_enable();
 }
+=======
+#include <linux/hardirq.h>
+
+struct pt_regs;
+struct user_i387_struct;
+
+extern int init_fpu(struct task_struct *child);
+extern int dump_fpu(struct pt_regs *, struct user_i387_struct *);
+extern void math_state_restore(void);
+
+extern bool irq_fpu_usable(void);
+extern void kernel_fpu_begin(void);
+extern void kernel_fpu_end(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Some instructions like VIA's padlock instructions generate a spurious
@@ -501,6 +516,7 @@ static inline void irq_ts_restore(int TS_state)
  * we can just assume we have FPU access - typically
  * to save the FP state - we'll just take a #NM
  * fault and get the FPU access back.
+<<<<<<< HEAD
  *
  * The actual user_fpu_begin/end() functions
  * need to be preemption-safe, though.
@@ -621,6 +637,15 @@ static inline void fpu_copy(struct fpu *dst, struct fpu *src)
 }
 
 extern void fpu_finit(struct fpu *fpu);
+=======
+ */
+static inline int user_has_fpu(void)
+{
+	return current->thread.fpu.has_fpu;
+}
+
+extern void unlazy_fpu(struct task_struct *tsk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __ASSEMBLY__ */
 

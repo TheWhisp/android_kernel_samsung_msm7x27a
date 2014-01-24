@@ -1,7 +1,11 @@
 /*
  * Qualcomm Serial USB driver
  *
+<<<<<<< HEAD
  *	Copyright (c) 2008 QUALCOMM Incorporated.
+=======
+ *	Copyright (c) 2008, 2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *	Copyright (c) 2009 Greg Kroah-Hartman <gregkh@suse.de>
  *	Copyright (c) 2009 Novell Inc.
  *
@@ -13,6 +17,10 @@
 
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 #include <linux/slab.h>
@@ -21,7 +29,11 @@
 #define DRIVER_AUTHOR "Qualcomm Inc"
 #define DRIVER_DESC "Qualcomm USB Serial driver"
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DEVICE_G1K(v, p) \
 	USB_DEVICE(v, p), .driver_info = 1
@@ -102,7 +114,10 @@ static const struct usb_device_id id_table[] = {
 	{USB_DEVICE(0x16d8, 0x8002)},	/* CMDTech Gobi 2000 Modem device (VU922) */
 	{USB_DEVICE(0x05c6, 0x9204)},	/* Gobi 2000 QDL device */
 	{USB_DEVICE(0x05c6, 0x9205)},	/* Gobi 2000 Modem device */
+<<<<<<< HEAD
 	{USB_DEVICE(0x05c6, 0x9048)},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Gobi 3000 devices */
 	{USB_DEVICE(0x03f0, 0x371d)},	/* HP un2430 Gobi 3000 QDL */
@@ -121,6 +136,11 @@ static const struct usb_device_id id_table[] = {
 	{USB_DEVICE(0x1199, 0x9019)},	/* Sierra Wireless Gobi 3000 Modem device */
 	{USB_DEVICE(0x12D1, 0x14F0)},	/* Sony Gobi 3000 QDL */
 	{USB_DEVICE(0x12D1, 0x14F1)},	/* Sony Gobi 3000 Composite */
+<<<<<<< HEAD
+=======
+	{USB_DEVICE(0x05c6, 0x9048)},	/* MDM9x15 device */
+	{USB_DEVICE(0x05c6, 0x904C)},	/* MDM9x15 device */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ }				/* Terminating entry */
 };
 MODULE_DEVICE_TABLE(usb, id_table);
@@ -161,8 +181,11 @@ static int qcprobe(struct usb_serial *serial, const struct usb_device_id *id)
 
 	spin_lock_init(&data->susp_lock);
 
+<<<<<<< HEAD
 	usb_enable_autosuspend(serial->dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (nintf) {
 	case 1:
 		/* QDL mode */
@@ -290,7 +313,10 @@ static struct usb_serial_driver qcdevice = {
 	},
 	.description         = "Qualcomm USB modem",
 	.id_table            = id_table,
+<<<<<<< HEAD
 	.usb_driver          = &qcdriver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports           = 1,
 	.probe               = qcprobe,
 	.open		     = usb_wwan_open,
@@ -298,6 +324,11 @@ static struct usb_serial_driver qcdevice = {
 	.write		     = usb_wwan_write,
 	.write_room	     = usb_wwan_write_room,
 	.chars_in_buffer     = usb_wwan_chars_in_buffer,
+<<<<<<< HEAD
+=======
+	.throttle            = usb_wwan_throttle,
+	.unthrottle          = usb_wwan_unthrottle,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.attach		     = usb_wwan_startup,
 	.disconnect	     = usb_wwan_disconnect,
 	.release	     = qc_release,
@@ -307,6 +338,7 @@ static struct usb_serial_driver qcdevice = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init qcinit(void)
 {
 	int retval;
@@ -332,6 +364,13 @@ static void __exit qcexit(void)
 
 module_init(qcinit);
 module_exit(qcexit);
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&qcdevice, NULL
+};
+
+module_usb_serial_driver(qcdriver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

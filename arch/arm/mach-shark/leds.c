@@ -23,7 +23,10 @@
 #include <linux/io.h>
 
 #include <asm/leds.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define LED_STATE_ENABLED	1
 #define LED_STATE_CLAIMED	2

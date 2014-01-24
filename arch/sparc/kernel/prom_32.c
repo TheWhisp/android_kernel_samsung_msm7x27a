@@ -20,7 +20,10 @@
 #include <linux/string.h>
 #include <linux/mm.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/prom.h>
 #include <asm/oplib.h>

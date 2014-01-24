@@ -66,7 +66,11 @@
  *  - turns interrupts off every loop (low overhead, but longer latency)
  *  - DMA version, which do not suffer from this issue. DMA versions have
  *      different name (prefixed by dma_ ), and are located in
+<<<<<<< HEAD
  *      ../kernel/bfin_dma_5xx.c
+=======
+ *      ../kernel/bfin_dma.c
+>>>>>>> refs/remotes/origin/cm-10.0
  * Using the dma related functions are recommended for transferring large
  * buffers in/out of FIFOs.
  */

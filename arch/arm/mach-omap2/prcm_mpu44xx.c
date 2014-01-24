@@ -15,8 +15,13 @@
 #include <linux/err.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <plat/common.h>
 
+=======
+#include "iomap.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "prcm_mpu44xx.h"
 #include "cm-regbits-44xx.h"
 

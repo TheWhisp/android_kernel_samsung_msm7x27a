@@ -16,11 +16,18 @@
 #include <linux/slab.h>
 #include <linux/miscdevice.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/asm-offsets.h>
 #include <asm/ipl.h>
 #include <asm/sclp.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
 #include <asm/sigp.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/debug.h>
 #include <asm/processor.h>
@@ -142,6 +149,7 @@ static int memcpy_hsa_kernel(void *dest, unsigned long src, size_t count)
 	return memcpy_hsa(dest, src, count, TO_KERNEL);
 }
 
+<<<<<<< HEAD
 static int memcpy_real_user(void __user *dest, unsigned long src, size_t count)
 {
 	static char buf[4096];
@@ -158,6 +166,8 @@ static int memcpy_real_user(void __user *dest, unsigned long src, size_t count)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init init_cpu_info(enum arch_id arch)
 {
 	struct save_area *sa;
@@ -346,8 +356,13 @@ static ssize_t zcore_read(struct file *file, char __user *buf, size_t count,
 
 	/* Copy from real mem */
 	size = count - mem_offs - hdr_count;
+<<<<<<< HEAD
 	rc = memcpy_real_user(buf + hdr_count + mem_offs, mem_start + mem_offs,
 			      size);
+=======
+	rc = copy_to_user_real(buf + hdr_count + mem_offs,
+			       (void *) mem_start + mem_offs, size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc)
 		goto fail;
 
@@ -656,6 +671,11 @@ static int __init zcore_init(void)
 
 	if (ipl_info.type != IPL_TYPE_FCP_DUMP)
 		return -ENODATA;
+<<<<<<< HEAD
+=======
+	if (OLDMEM_BASE)
+		return -ENODATA;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	zcore_dbf = debug_register("zcore", 4, 1, 4 * sizeof(long));
 	debug_register_view(zcore_dbf, &debug_sprintf_view);

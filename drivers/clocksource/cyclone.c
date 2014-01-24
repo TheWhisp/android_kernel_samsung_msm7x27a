@@ -55,11 +55,18 @@ static int __init init_cyclone_clocksource(void)
 	}
 	/* even on 64bit systems, this is only 32bits: */
 	base = readl(reg);
+<<<<<<< HEAD
+=======
+	iounmap(reg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!base) {
 		printk(KERN_ERR "Summit chipset: Could not find valid CBAR value.\n");
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 	iounmap(reg);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* setup PMCC: */
 	offset = base + CYCLONE_PMCC_OFFSET;

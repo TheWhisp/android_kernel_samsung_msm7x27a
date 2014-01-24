@@ -94,7 +94,11 @@ void tick_handle_periodic(struct clock_event_device *dev)
 	 */
 	next = ktime_add(dev->next_event, tick_period);
 	for (;;) {
+<<<<<<< HEAD
 		if (!clockevents_program_event(dev, next, ktime_get()))
+=======
+		if (!clockevents_program_event(dev, next, false))
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		/*
 		 * Have to be careful here. If we're in oneshot mode,
@@ -137,7 +141,11 @@ void tick_setup_periodic(struct clock_event_device *dev, int broadcast)
 		clockevents_set_mode(dev, CLOCK_EVT_MODE_ONESHOT);
 
 		for (;;) {
+<<<<<<< HEAD
 			if (!clockevents_program_event(dev, next, ktime_get()))
+=======
+			if (!clockevents_program_event(dev, next, false))
+>>>>>>> refs/remotes/origin/cm-10.0
 				return;
 			next = ktime_add(next, tick_period);
 		}

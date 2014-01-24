@@ -15,6 +15,11 @@
  * or implied.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
@@ -58,8 +63,13 @@ static unsigned int bus_clk;
 static char expect_close;
 static DEFINE_SPINLOCK(mv64x60_wdt_spinlock);
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -100,7 +110,11 @@ static void mv64x60_wdt_handler_enable(void)
 	if (mv64x60_wdt_toggle_wdc(MV64x60_WDC_ENABLED_FALSE,
 				   MV64x60_WDC_ENABLE_SHIFT)) {
 		mv64x60_wdt_service();
+<<<<<<< HEAD
 		printk(KERN_NOTICE "mv64x60_wdt: watchdog activated\n");
+=======
+		pr_notice("watchdog activated\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -108,7 +122,11 @@ static void mv64x60_wdt_handler_disable(void)
 {
 	if (mv64x60_wdt_toggle_wdc(MV64x60_WDC_ENABLED_TRUE,
 				   MV64x60_WDC_ENABLE_SHIFT))
+<<<<<<< HEAD
 		printk(KERN_NOTICE "mv64x60_wdt: watchdog deactivated\n");
+=======
+		pr_notice("watchdog deactivated\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void mv64x60_wdt_set_timeout(unsigned int timeout)
@@ -139,8 +157,12 @@ static int mv64x60_wdt_release(struct inode *inode, struct file *file)
 	if (expect_close == 42)
 		mv64x60_wdt_handler_disable();
 	else {
+<<<<<<< HEAD
 		printk(KERN_CRIT
 		       "mv64x60_wdt: unexpected close, not stopping timer!\n");
+=======
+		pr_crit("unexpected close, not stopping timer!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		mv64x60_wdt_service();
 	}
 	expect_close = 0;
@@ -308,7 +330,11 @@ static struct platform_driver mv64x60_wdt_driver = {
 
 static int __init mv64x60_wdt_init(void)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO "MV64x60 watchdog driver\n");
+=======
+	pr_info("MV64x60 watchdog driver\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return platform_driver_register(&mv64x60_wdt_driver);
 }

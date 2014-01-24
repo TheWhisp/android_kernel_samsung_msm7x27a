@@ -45,11 +45,19 @@ enum cipher rt2x00crypto_key_to_cipher(struct ieee80211_key_conf *key)
 	}
 }
 
+<<<<<<< HEAD
 void rt2x00crypto_create_tx_descriptor(struct queue_entry *entry,
 				       struct txentry_desc *txdesc)
 {
 	struct rt2x00_dev *rt2x00dev = entry->queue->rt2x00dev;
 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(entry->skb);
+=======
+void rt2x00crypto_create_tx_descriptor(struct rt2x00_dev *rt2x00dev,
+				       struct sk_buff *skb,
+				       struct txentry_desc *txdesc)
+{
+	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ieee80211_key_conf *hw_key = tx_info->control.hw_key;
 
 	if (!test_bit(CAPABILITY_HW_CRYPTO, &rt2x00dev->cap_flags) || !hw_key)

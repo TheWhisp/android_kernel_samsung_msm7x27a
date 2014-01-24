@@ -105,6 +105,11 @@ static int __devinit pm860x_onkey_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, info);
+<<<<<<< HEAD
+=======
+	device_init_wakeup(&pdev->dev, 1);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 out_irq:
@@ -129,14 +134,45 @@ static int __devexit pm860x_onkey_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+static int pm860x_onkey_suspend(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+	struct pm860x_chip *chip = dev_get_drvdata(pdev->dev.parent);
+
+	if (device_may_wakeup(dev))
+		chip->wakeup_flag |= 1 << PM8607_IRQ_ONKEY;
+	return 0;
+}
+static int pm860x_onkey_resume(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+	struct pm860x_chip *chip = dev_get_drvdata(pdev->dev.parent);
+
+	if (device_may_wakeup(dev))
+		chip->wakeup_flag &= ~(1 << PM8607_IRQ_ONKEY);
+	return 0;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(pm860x_onkey_pm_ops, pm860x_onkey_suspend, pm860x_onkey_resume);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver pm860x_onkey_driver = {
 	.driver		= {
 		.name	= "88pm860x-onkey",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.pm	= &pm860x_onkey_pm_ops,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe		= pm860x_onkey_probe,
 	.remove		= __devexit_p(pm860x_onkey_remove),
 };
+<<<<<<< HEAD
 
 static int __init pm860x_onkey_init(void)
 {
@@ -149,6 +185,9 @@ static void __exit pm860x_onkey_exit(void)
 	platform_driver_unregister(&pm860x_onkey_driver);
 }
 module_exit(pm860x_onkey_exit);
+=======
+module_platform_driver(pm860x_onkey_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Marvell 88PM860x ONKEY driver");
 MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");

@@ -73,7 +73,10 @@
 #include <stdarg.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/errno.h>
 #include <linux/fs.h>
@@ -1157,16 +1160,27 @@ magic_found:
 			    "fast symlink size (%u)\n", uspi->s_maxsymlinklen);
 		uspi->s_maxsymlinklen = maxsymlen;
 	}
+<<<<<<< HEAD
+=======
+	sb->s_max_links = UFS_LINK_MAX;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	inode = ufs_iget(sb, UFS_ROOTINO);
 	if (IS_ERR(inode)) {
 		ret = PTR_ERR(inode);
 		goto failed;
 	}
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(inode);
 	if (!sb->s_root) {
 		ret = -ENOMEM;
 		goto dalloc_failed;
+=======
+	sb->s_root = d_make_root(inode);
+	if (!sb->s_root) {
+		ret = -ENOMEM;
+		goto failed;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	ufs_setup_cstotal(sb);
@@ -1180,8 +1194,11 @@ magic_found:
 	UFSD("EXIT\n");
 	return 0;
 
+<<<<<<< HEAD
 dalloc_failed:
 	iput(inode);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 failed:
 	if (ubh)
 		ubh_brelse_uspi (uspi);
@@ -1351,9 +1368,15 @@ static int ufs_remount (struct super_block *sb, int *mount_flags, char *data)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ufs_show_options(struct seq_file *seq, struct vfsmount *vfs)
 {
 	struct ufs_sb_info *sbi = UFS_SB(vfs->mnt_sb);
+=======
+static int ufs_show_options(struct seq_file *seq, struct dentry *root)
+{
+	struct ufs_sb_info *sbi = UFS_SB(root->d_sb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned mval = sbi->s_mount_opt & UFS_MOUNT_UFSTYPE;
 	const struct match_token *tp = tokens;
 
@@ -1425,7 +1448,10 @@ static struct inode *ufs_alloc_inode(struct super_block *sb)
 static void ufs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kmem_cache_free(ufs_inode_cachep, UFS_I(inode));
 }
 

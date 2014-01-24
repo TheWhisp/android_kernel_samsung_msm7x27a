@@ -254,6 +254,18 @@
 extern volatile __u8 *via1,*via2;
 extern int rbv_present,via_alt_mapping;
 
+<<<<<<< HEAD
+=======
+extern void via_register_interrupts(void);
+extern void via_irq_enable(int);
+extern void via_irq_disable(int);
+extern void via_nubus_irq_startup(int irq);
+extern void via_nubus_irq_shutdown(int irq);
+extern void via1_irq(unsigned int irq, struct irq_desc *desc);
+extern void via1_set_head(int);
+extern int via2_scsi_drq_pending(void);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline int rbv_set_video_bpp(int bpp)
 {
 	char val = (bpp==1)?0:(bpp==2)?1:(bpp==4)?2:(bpp==8)?3:-1;

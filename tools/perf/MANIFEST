@@ -1,4 +1,8 @@
 tools/perf
+<<<<<<< HEAD
+=======
+include/linux/const.h
+>>>>>>> refs/remotes/origin/cm-10.0
 include/linux/perf_event.h
 include/linux/rbtree.h
 include/linux/list.h
@@ -8,6 +12,10 @@ lib/rbtree.c
 include/linux/swab.h
 arch/*/include/asm/unistd*.h
 arch/*/lib/memcpy*.S
+<<<<<<< HEAD
+=======
+arch/*/lib/memset*.S
+>>>>>>> refs/remotes/origin/cm-10.0
 include/linux/poison.h
 include/linux/magic.h
 include/linux/hw_breakpoint.h

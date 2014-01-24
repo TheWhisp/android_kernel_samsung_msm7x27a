@@ -71,7 +71,11 @@ static int usb_stor_sddr09_init(struct us_data *us);
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
+<<<<<<< HEAD
 struct usb_device_id sddr09_usb_ids[] = {
+=======
+static struct usb_device_id sddr09_usb_ids[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 #	include "unusual_sddr09.h"
 	{ }		/* Terminating entry */
 };
@@ -1787,6 +1791,7 @@ static struct usb_driver sddr09_driver = {
 	.post_reset =	usb_stor_post_reset,
 	.id_table =	sddr09_usb_ids,
 	.soft_unbind =	1,
+<<<<<<< HEAD
 };
 
 static int __init sddr09_init(void)
@@ -1801,3 +1806,9 @@ static void __exit sddr09_exit(void)
 
 module_init(sddr09_init);
 module_exit(sddr09_exit);
+=======
+	.no_dynamic_id = 1,
+};
+
+module_usb_driver(sddr09_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

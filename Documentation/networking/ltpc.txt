@@ -25,7 +25,11 @@ the driver will try to determine them itself.
 
 If you load the driver as a module, you can pass the parameters "io=",
 "irq=", and "dma=" on the command line with insmod or modprobe, or add
+<<<<<<< HEAD
 them as options in /etc/modprobe.conf:
+=======
+them as options in a configuration file in /etc/modprobe.d/ directory:
+>>>>>>> refs/remotes/origin/cm-10.0
 
  alias lt0 ltpc # autoload the module when the interface is configured
  options ltpc io=0x240 irq=9 dma=1

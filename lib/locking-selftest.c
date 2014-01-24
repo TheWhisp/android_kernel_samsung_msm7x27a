@@ -14,7 +14,10 @@
 #include <linux/mutex.h>
 #include <linux/sched.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/lockdep.h>
 #include <linux/spinlock.h>
 #include <linux/kallsyms.h>

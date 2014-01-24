@@ -49,12 +49,21 @@ asynchronous and synchronous parts of the kernel.
 */
 
 #include <linux/async.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/atomic.h>
+#include <linux/ktime.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/wait.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static async_cookie_t next_cookie = 1;
 
@@ -77,8 +86,11 @@ static DECLARE_WAIT_QUEUE_HEAD(async_done);
 
 static atomic_t entry_count;
 
+<<<<<<< HEAD
 extern int initcall_debug;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * MUST be called with the lock held!
@@ -126,7 +138,11 @@ static void async_run_entry_fn(struct work_struct *work)
 	struct async_entry *entry =
 		container_of(work, struct async_entry, work);
 	unsigned long flags;
+<<<<<<< HEAD
 	ktime_t calltime, delta, rettime;
+=======
+	ktime_t uninitialized_var(calltime), delta, rettime;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* 1) move self to the running queue */
 	spin_lock_irqsave(&async_lock, flags);
@@ -135,7 +151,12 @@ static void async_run_entry_fn(struct work_struct *work)
 
 	/* 2) run (and print duration) */
 	if (initcall_debug && system_state == SYSTEM_BOOTING) {
+<<<<<<< HEAD
 		printk("calling  %lli_%pF @ %i\n", (long long)entry->cookie,
+=======
+		printk(KERN_DEBUG "calling  %lli_%pF @ %i\n",
+			(long long)entry->cookie,
+>>>>>>> refs/remotes/origin/cm-10.0
 			entry->func, task_pid_nr(current));
 		calltime = ktime_get();
 	}
@@ -143,7 +164,11 @@ static void async_run_entry_fn(struct work_struct *work)
 	if (initcall_debug && system_state == SYSTEM_BOOTING) {
 		rettime = ktime_get();
 		delta = ktime_sub(rettime, calltime);
+<<<<<<< HEAD
 		printk("initcall %lli_%pF returned 0 after %lld usecs\n",
+=======
+		printk(KERN_DEBUG "initcall %lli_%pF returned 0 after %lld usecs\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			(long long)entry->cookie,
 			entry->func,
 			(long long)ktime_to_ns(delta) >> 10);
@@ -272,10 +297,17 @@ EXPORT_SYMBOL_GPL(async_synchronize_full_domain);
 void async_synchronize_cookie_domain(async_cookie_t cookie,
 				     struct list_head *running)
 {
+<<<<<<< HEAD
 	ktime_t starttime, delta, endtime;
 
 	if (initcall_debug && system_state == SYSTEM_BOOTING) {
 		printk("async_waiting @ %i\n", task_pid_nr(current));
+=======
+	ktime_t uninitialized_var(starttime), delta, endtime;
+
+	if (initcall_debug && system_state == SYSTEM_BOOTING) {
+		printk(KERN_DEBUG "async_waiting @ %i\n", task_pid_nr(current));
+>>>>>>> refs/remotes/origin/cm-10.0
 		starttime = ktime_get();
 	}
 
@@ -285,7 +317,11 @@ void async_synchronize_cookie_domain(async_cookie_t cookie,
 		endtime = ktime_get();
 		delta = ktime_sub(endtime, starttime);
 
+<<<<<<< HEAD
 		printk("async_continuing @ %i after %lli usec\n",
+=======
+		printk(KERN_DEBUG "async_continuing @ %i after %lli usec\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			task_pid_nr(current),
 			(long long)ktime_to_ns(delta) >> 10);
 	}

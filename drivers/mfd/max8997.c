@@ -23,7 +23,13 @@
 
 #include <linux/slab.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/pm_runtime.h>
+=======
+#include <linux/interrupt.h>
+#include <linux/pm_runtime.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <linux/mfd/core.h>
 #include <linux/mfd/max8997.h>
@@ -41,7 +47,12 @@ static struct mfd_cell max8997_devs[] = {
 	{ .name = "max8997-battery", },
 	{ .name = "max8997-haptic", },
 	{ .name = "max8997-muic", },
+<<<<<<< HEAD
 	{ .name = "max8997-flash", },
+=======
+	{ .name = "max8997-led", .id = 1 },
+	{ .name = "max8997-led", .id = 2 },
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int max8997_read_reg(struct i2c_client *i2c, u8 reg, u8 *dest)
@@ -135,11 +146,20 @@ static int max8997_i2c_probe(struct i2c_client *i2c,
 	max8997->dev = &i2c->dev;
 	max8997->i2c = i2c;
 	max8997->type = id->driver_data;
+<<<<<<< HEAD
+=======
+	max8997->irq = i2c->irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!pdata)
 		goto err;
 
+<<<<<<< HEAD
 	max8997->wakeup = pdata->wakeup;
+=======
+	max8997->irq_base = pdata->irq_base;
+	max8997->ono = pdata->ono;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_init(&max8997->iolock);
 
@@ -152,6 +172,11 @@ static int max8997_i2c_probe(struct i2c_client *i2c,
 
 	pm_runtime_set_active(max8997->dev);
 
+<<<<<<< HEAD
+=======
+	max8997_irq_init(max8997);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mfd_add_devices(max8997->dev, -1, max8997_devs,
 			ARRAY_SIZE(max8997_devs),
 			NULL, 0);
@@ -164,6 +189,12 @@ static int max8997_i2c_probe(struct i2c_client *i2c,
 	if (ret < 0)
 		goto err_mfd;
 
+<<<<<<< HEAD
+=======
+	/* MAX8997 has a power button input. */
+	device_init_wakeup(max8997->dev, pdata->wakeup);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 
 err_mfd:
@@ -393,7 +424,33 @@ static int max8997_restore(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 const struct dev_pm_ops max8997_pm = {
+=======
+static int max8997_suspend(struct device *dev)
+{
+	struct i2c_client *i2c = container_of(dev, struct i2c_client, dev);
+	struct max8997_dev *max8997 = i2c_get_clientdata(i2c);
+
+	if (device_may_wakeup(dev))
+		irq_set_irq_wake(max8997->irq, 1);
+	return 0;
+}
+
+static int max8997_resume(struct device *dev)
+{
+	struct i2c_client *i2c = container_of(dev, struct i2c_client, dev);
+	struct max8997_dev *max8997 = i2c_get_clientdata(i2c);
+
+	if (device_may_wakeup(dev))
+		irq_set_irq_wake(max8997->irq, 0);
+	return max8997_irq_resume(max8997);
+}
+
+const struct dev_pm_ops max8997_pm = {
+	.suspend = max8997_suspend,
+	.resume = max8997_resume,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.freeze = max8997_freeze,
 	.restore = max8997_restore,
 };

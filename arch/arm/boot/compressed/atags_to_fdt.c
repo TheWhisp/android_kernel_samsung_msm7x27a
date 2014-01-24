@@ -77,6 +77,11 @@ int atags_to_fdt(void *atag_list, void *fdt, int total_space)
 		} else if (atag->hdr.tag == ATAG_MEM) {
 			if (memcount >= sizeof(mem_reg_property)/4)
 				continue;
+<<<<<<< HEAD
+=======
+			if (!atag->u.mem.size)
+				continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 			mem_reg_property[memcount++] = cpu_to_fdt32(atag->u.mem.start);
 			mem_reg_property[memcount++] = cpu_to_fdt32(atag->u.mem.size);
 		} else if (atag->hdr.tag == ATAG_INITRD2) {

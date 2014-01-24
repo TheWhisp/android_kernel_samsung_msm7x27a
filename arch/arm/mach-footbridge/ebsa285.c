@@ -15,11 +15,19 @@
 
 MACHINE_START(EBSA285, "EBSA285")
 	/* Maintainer: Russell King */
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.video_start	= 0x000a0000,
 	.video_end	= 0x000bffff,
 	.map_io		= footbridge_map_io,
 	.init_irq	= footbridge_init_irq,
 	.timer		= &footbridge_timer,
+<<<<<<< HEAD
+=======
+	.restart	= footbridge_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 

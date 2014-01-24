@@ -13,11 +13,16 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/serial_8250.h>
 #include <linux/clk.h>
 #include <linux/mbus.h>
 #include <linux/ata_platform.h>
 #include <linux/serial_8250.h>
+=======
+#include <linux/clk.h>
+#include <linux/ata_platform.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/gpio.h>
 #include <asm/page.h>
 #include <asm/setup.h>
@@ -33,6 +38,10 @@
 #include <plat/time.h>
 #include <plat/ehci-orion.h>
 #include <plat/common.h>
+<<<<<<< HEAD
+=======
+#include <plat/addr-map.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "common.h"
 
 static int get_tclk(void);
@@ -74,8 +83,12 @@ void __init dove_map_io(void)
  ****************************************************************************/
 void __init dove_ehci0_init(void)
 {
+<<<<<<< HEAD
 	orion_ehci_init(&dove_mbus_dram_info,
 			DOVE_USB0_PHYS_BASE, IRQ_DOVE_USB0, EHCI_PHY_NA);
+=======
+	orion_ehci_init(DOVE_USB0_PHYS_BASE, IRQ_DOVE_USB0, EHCI_PHY_NA);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*****************************************************************************
@@ -83,8 +96,12 @@ void __init dove_ehci0_init(void)
  ****************************************************************************/
 void __init dove_ehci1_init(void)
 {
+<<<<<<< HEAD
 	orion_ehci_1_init(&dove_mbus_dram_info,
 			  DOVE_USB1_PHYS_BASE, IRQ_DOVE_USB1);
+=======
+	orion_ehci_1_init(DOVE_USB1_PHYS_BASE, IRQ_DOVE_USB1);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*****************************************************************************
@@ -92,7 +109,11 @@ void __init dove_ehci1_init(void)
  ****************************************************************************/
 void __init dove_ge00_init(struct mv643xx_eth_platform_data *eth_data)
 {
+<<<<<<< HEAD
 	orion_ge00_init(eth_data, &dove_mbus_dram_info,
+=======
+	orion_ge00_init(eth_data,
+>>>>>>> refs/remotes/origin/cm-10.0
 			DOVE_GE00_PHYS_BASE, IRQ_DOVE_GE00_SUM,
 			0, get_tclk());
 }
@@ -110,8 +131,12 @@ void __init dove_rtc_init(void)
  ****************************************************************************/
 void __init dove_sata_init(struct mv_sata_platform_data *sata_data)
 {
+<<<<<<< HEAD
 	orion_sata_init(sata_data, &dove_mbus_dram_info,
 			DOVE_SATA_PHYS_BASE, IRQ_DOVE_SATA);
+=======
+	orion_sata_init(sata_data, DOVE_SATA_PHYS_BASE, IRQ_DOVE_SATA);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 }
 
@@ -201,8 +226,12 @@ struct sys_timer dove_timer = {
  ****************************************************************************/
 void __init dove_xor0_init(void)
 {
+<<<<<<< HEAD
 	orion_xor0_init(&dove_mbus_dram_info,
 			DOVE_XOR0_PHYS_BASE, DOVE_XOR0_HIGH_PHYS_BASE,
+=======
+	orion_xor0_init(DOVE_XOR0_PHYS_BASE, DOVE_XOR0_HIGH_PHYS_BASE,
+>>>>>>> refs/remotes/origin/cm-10.0
 			IRQ_DOVE_XOR_00, IRQ_DOVE_XOR_01);
 }
 
@@ -295,3 +324,22 @@ void __init dove_init(void)
 	dove_xor0_init();
 	dove_xor1_init();
 }
+<<<<<<< HEAD
+=======
+
+void dove_restart(char mode, const char *cmd)
+{
+	/*
+	 * Enable soft reset to assert RSTOUTn.
+	 */
+	writel(SOFT_RESET_OUT_EN, RSTOUTn_MASK);
+
+	/*
+	 * Assert soft reset.
+	 */
+	writel(SOFT_RESET, SYSTEM_SOFT_RESET);
+
+	while (1)
+		;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

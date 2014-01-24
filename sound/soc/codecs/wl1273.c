@@ -23,6 +23,10 @@
 
 #include <linux/mfd/wl1273-core.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
@@ -385,7 +389,11 @@ static int wl1273_hw_params(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wl1273_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wl1273_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.startup	= wl1273_startup,
 	.hw_params	= wl1273_hw_params,
 };
@@ -462,9 +470,14 @@ static int wl1273_probe(struct snd_soc_codec *codec)
 	wl1273->core = *core;
 
 	snd_soc_codec_set_drvdata(codec, wl1273);
+<<<<<<< HEAD
 	mutex_init(&codec->mutex);
 
 	r = snd_soc_add_controls(codec, wl1273_controls,
+=======
+
+	r = snd_soc_add_codec_controls(codec, wl1273_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 ARRAY_SIZE(wl1273_controls));
 	if (r)
 		kfree(wl1273);
@@ -510,6 +523,7 @@ static struct platform_driver wl1273_platform_driver = {
 	.remove		= __devexit_p(wl1273_platform_remove),
 };
 
+<<<<<<< HEAD
 static int __init wl1273_init(void)
 {
 	return platform_driver_register(&wl1273_platform_driver);
@@ -521,6 +535,9 @@ static void __exit wl1273_exit(void)
 	platform_driver_unregister(&wl1273_platform_driver);
 }
 module_exit(wl1273_exit);
+=======
+module_platform_driver(wl1273_platform_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Matti Aaltonen <matti.j.aaltonen@nokia.com>");
 MODULE_DESCRIPTION("ASoC WL1273 codec driver");

@@ -139,8 +139,12 @@ __start:
 	trap
 #endif /* CONFIG_PPC_PMAC */
 
+<<<<<<< HEAD
 1:	mr	r31,r3			/* save parameters */
 	mr	r30,r4
+=======
+1:	mr	r31,r3			/* save device tree ptr */
+>>>>>>> refs/remotes/origin/cm-10.0
 	li	r24,0			/* cpu # */
 
 /*
@@ -396,7 +400,11 @@ DataAccess:
 	bl	hash_page
 1:	lwz	r5,_DSISR(r11)		/* get DSISR value */
 	mfspr	r4,SPRN_DAR
+<<<<<<< HEAD
 	EXC_XFER_EE_LITE(0x300, handle_page_fault)
+=======
+	EXC_XFER_LITE(0x300, handle_page_fault)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /* Instruction access exception. */
@@ -411,7 +419,11 @@ InstructionAccess:
 	bl	hash_page
 1:	mr	r4,r12
 	mr	r5,r9
+<<<<<<< HEAD
 	EXC_XFER_EE_LITE(0x400, handle_page_fault)
+=======
+	EXC_XFER_LITE(0x400, handle_page_fault)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* External interrupt */
 	EXCEPTION(0x500, HardwareInterrupt, do_IRQ, EXC_XFER_LITE)
@@ -964,8 +976,13 @@ start_here:
  * Do early platform-specific initialization,
  * and set up the MMU.
  */
+<<<<<<< HEAD
 	mr	r3,r31
 	mr	r4,r30
+=======
+	li	r3,0
+	mr	r4,r31
+>>>>>>> refs/remotes/origin/cm-10.0
 	bl	machine_init
 	bl	__save_cpu_setup
 	bl	MMU_init

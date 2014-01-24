@@ -7,7 +7,11 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/string.h>
 #include <linux/cryptohash.h>
@@ -18,7 +22,10 @@
 #include <linux/io.h>
 
 #include <asm/checksum.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ftrace.h>
 
 /*
@@ -49,9 +56,12 @@ extern void __aeabi_ulcmp(void);
 
 extern void fpundefinstr(void);
 
+<<<<<<< HEAD
 
 EXPORT_SYMBOL(__backtrace);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* networking */
 EXPORT_SYMBOL(csum_partial);
 EXPORT_SYMBOL(csum_partial_copy_from_user);
@@ -108,9 +118,12 @@ EXPORT_SYMBOL(__put_user_4);
 EXPORT_SYMBOL(__put_user_8);
 #endif
 
+<<<<<<< HEAD
 	/* crypto hash */
 EXPORT_SYMBOL(sha_transform);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* gcc lib functions */
 EXPORT_SYMBOL(__ashldi3);
 EXPORT_SYMBOL(__ashrdi3);

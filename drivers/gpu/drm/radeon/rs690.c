@@ -31,7 +31,11 @@
 #include "atom.h"
 #include "rs690d.h"
 
+<<<<<<< HEAD
 static int rs690_mc_wait_for_idle(struct radeon_device *rdev)
+=======
+int rs690_mc_wait_for_idle(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned i;
 	uint32_t tmp;
@@ -621,7 +625,23 @@ static int rs690_startup(struct radeon_device *rdev)
 	if (r)
 		return r;
 
+<<<<<<< HEAD
 	/* Enable IRQ */
+=======
+	r = radeon_fence_driver_start_ring(rdev, RADEON_RING_TYPE_GFX_INDEX);
+	if (r) {
+		dev_err(rdev->dev, "failed initializing CP fences (%d).\n", r);
+		return r;
+	}
+
+	/* Enable IRQ */
+	if (!rdev->irq.installed) {
+		r = radeon_irq_kms_init(rdev);
+		if (r)
+			return r;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rs600_irq_set(rdev);
 	rdev->config.r300.hdp_cntl = RREG32(RADEON_HOST_PATH_CNTL);
 	/* 1M ring buffer */
@@ -630,6 +650,7 @@ static int rs690_startup(struct radeon_device *rdev)
 		dev_err(rdev->dev, "failed initializing CP (%d).\n", r);
 		return r;
 	}
+<<<<<<< HEAD
 	r = r100_ib_init(rdev);
 	if (r) {
 		dev_err(rdev->dev, "failed initializing IB (%d).\n", r);
@@ -639,6 +660,23 @@ static int rs690_startup(struct radeon_device *rdev)
 	r = r600_audio_init(rdev);
 	if (r) {
 		dev_err(rdev->dev, "failed initializing audio\n");
+=======
+
+	r = r600_audio_init(rdev);
+	if (r) {
+		dev_err(rdev->dev, "failed initializing audio\n");
+		return r;
+	}
+
+	r = radeon_ib_pool_start(rdev);
+	if (r)
+		return r;
+
+	r = radeon_ib_test(rdev, RADEON_RING_TYPE_GFX_INDEX, &rdev->ring[RADEON_RING_TYPE_GFX_INDEX]);
+	if (r) {
+		dev_err(rdev->dev, "failed testing IB (%d).\n", r);
+		rdev->accel_working = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 		return r;
 	}
 
@@ -647,6 +685,11 @@ static int rs690_startup(struct radeon_device *rdev)
 
 int rs690_resume(struct radeon_device *rdev)
 {
+<<<<<<< HEAD
+=======
+	int r;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Make sur GART are not working */
 	rs400_gart_disable(rdev);
 	/* Resume clock before doing reset */
@@ -663,11 +706,25 @@ int rs690_resume(struct radeon_device *rdev)
 	rv515_clock_startup(rdev);
 	/* Initialize surface registers */
 	radeon_surface_init(rdev);
+<<<<<<< HEAD
 	return rs690_startup(rdev);
+=======
+
+	rdev->accel_working = true;
+	r = rs690_startup(rdev);
+	if (r) {
+		rdev->accel_working = false;
+	}
+	return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int rs690_suspend(struct radeon_device *rdev)
 {
+<<<<<<< HEAD
+=======
+	radeon_ib_pool_suspend(rdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	r600_audio_fini(rdev);
 	r100_cp_disable(rdev);
 	radeon_wb_disable(rdev);
@@ -738,9 +795,12 @@ int rs690_init(struct radeon_device *rdev)
 	r = radeon_fence_driver_init(rdev);
 	if (r)
 		return r;
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Memory manager */
 	r = radeon_bo_init(rdev);
 	if (r)
@@ -749,7 +809,18 @@ int rs690_init(struct radeon_device *rdev)
 	if (r)
 		return r;
 	rs600_set_safe_registers(rdev);
+<<<<<<< HEAD
 	rdev->accel_working = true;
+=======
+
+	r = radeon_ib_pool_init(rdev);
+	rdev->accel_working = true;
+	if (r) {
+		dev_err(rdev->dev, "IB initialization failed (%d).\n", r);
+		rdev->accel_working = false;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = rs690_startup(rdev);
 	if (r) {
 		/* Somethings want wront with the accel init stop accel */

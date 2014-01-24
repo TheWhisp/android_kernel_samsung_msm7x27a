@@ -43,7 +43,13 @@ int mwifiex_process_rx_packet(struct mwifiex_adapter *adapter,
 {
 	int ret;
 	struct mwifiex_rxinfo *rx_info = MWIFIEX_SKB_RXCB(skb);
+<<<<<<< HEAD
 	struct mwifiex_private *priv = adapter->priv[rx_info->bss_index];
+=======
+	struct mwifiex_private *priv =
+			mwifiex_get_priv_by_id(adapter, rx_info->bss_num,
+					       rx_info->bss_type);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct rx_packet_hdr *rx_pkt_hdr;
 	struct rxpd *local_rx_pd;
 	int hdr_chop;
@@ -124,7 +130,16 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 	struct rx_packet_hdr *rx_pkt_hdr;
 	u8 ta[ETH_ALEN];
 	u16 rx_pkt_type;
+<<<<<<< HEAD
 	struct mwifiex_private *priv = adapter->priv[rx_info->bss_index];
+=======
+	struct mwifiex_private *priv =
+			mwifiex_get_priv_by_id(adapter, rx_info->bss_num,
+					       rx_info->bss_type);
+
+	if (!priv)
+		return -1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	local_rx_pd = (struct rxpd *) (skb->data);
 	rx_pkt_type = local_rx_pd->rx_pkt_type;
@@ -152,7 +167,11 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 		skb_trim(skb, local_rx_pd->rx_pkt_length);
 
 		ieee80211_amsdu_to_8023s(skb, &list, priv->curr_addr,
+<<<<<<< HEAD
 				priv->wdev->iftype, 0, false);
+=======
+					 priv->wdev->iftype, 0, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		while (!skb_queue_empty(&list)) {
 			rx_skb = __skb_dequeue(&list);
@@ -187,6 +206,7 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 	ret = mwifiex_11n_rx_reorder_pkt(priv, local_rx_pd->seq_num,
 					     local_rx_pd->priority, ta,
 					     (u8) local_rx_pd->rx_pkt_type,
+<<<<<<< HEAD
 						(void *) skb);
 
 	if (ret || (rx_pkt_type == PKT_TYPE_BAR)) {
@@ -195,6 +215,15 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_adapter *adapter,
 
 		dev_kfree_skb_any(skb);
 	}
+=======
+					     skb);
+
+	if (ret || (rx_pkt_type == PKT_TYPE_BAR))
+		dev_kfree_skb_any(skb);
+
+	if (ret)
+		priv->stats.rx_dropped++;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }

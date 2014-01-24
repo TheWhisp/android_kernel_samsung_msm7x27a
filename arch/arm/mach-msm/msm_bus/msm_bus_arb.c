@@ -9,6 +9,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) "AXI: %s(): " fmt, __func__
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -192,7 +198,11 @@ static int getpath(int src, int dest)
 		list_for_each_entry(fabnodeinfo, gateways, list) {
 		/* see if the destination is at a connected fabric */
 			if (_dst == (fabnodeinfo->info->node_info->priv_id /
+<<<<<<< HEAD
 				FABRIC_ID_KEY) && !(fabdev->visited)) {
+=======
+				FABRIC_ID_KEY)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				/* Found the fab on which the device exists */
 				info = fabnodeinfo->info;
 				trynextgw = false;

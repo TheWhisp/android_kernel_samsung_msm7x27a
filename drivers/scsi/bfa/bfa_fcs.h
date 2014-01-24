@@ -254,6 +254,12 @@ struct bfa_fcs_fabric_s;
 #define BFA_FCS_PORT_SYMBNAME_OSINFO_SZ			48
 #define BFA_FCS_PORT_SYMBNAME_OSPATCH_SZ		16
 
+<<<<<<< HEAD
+=======
+/* bb_scn value in 2^bb_scn */
+#define BFA_FCS_PORT_DEF_BB_SCN				3
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Get FC port ID for a logical port.
  */
@@ -379,6 +385,10 @@ void bfa_fcs_vport_online(struct bfa_fcs_vport_s *vport);
 void bfa_fcs_vport_offline(struct bfa_fcs_vport_s *vport);
 void bfa_fcs_vport_delete_comp(struct bfa_fcs_vport_s *vport);
 void bfa_fcs_vport_fcs_delete(struct bfa_fcs_vport_s *vport);
+<<<<<<< HEAD
+=======
+void bfa_fcs_vport_stop_comp(struct bfa_fcs_vport_s *vport);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define BFA_FCS_RPORT_DEF_DEL_TIMEOUT	90	/* in secs */
 #define BFA_FCS_RPORT_MAX_RETRIES	(5)
@@ -420,6 +430,10 @@ struct bfa_fcs_rport_s {
 	enum fc_cos	fc_cos;	/*  FC classes of service supp */
 	bfa_boolean_t	cisc;	/*  CISC capable device */
 	bfa_boolean_t	prlo;	/*  processing prlo or LOGO */
+<<<<<<< HEAD
+=======
+	bfa_boolean_t	plogi_pending;	/* Rx Plogi Pending */
+>>>>>>> refs/remotes/origin/cm-10.0
 	wwn_t	pwwn;	/*  port wwn of rport */
 	wwn_t	nwwn;	/*  node wwn of rport */
 	struct bfa_rport_symname_s psym_name; /*  port symbolic name  */
@@ -447,6 +461,11 @@ bfa_fcs_rport_get_halrport(struct bfa_fcs_rport_s *rport)
 /*
  * bfa fcs rport API functions
  */
+<<<<<<< HEAD
+=======
+void bfa_fcs_rport_get_attr(struct bfa_fcs_rport_s *rport,
+			struct bfa_rport_attr_s *attr);
+>>>>>>> refs/remotes/origin/cm-10.0
 struct bfa_fcs_rport_s *bfa_fcs_rport_lookup(struct bfa_fcs_lport_s *port,
 					     wwn_t rpwwn);
 struct bfa_fcs_rport_s *bfa_fcs_rport_lookup_by_nwwn(
@@ -591,10 +610,28 @@ void bfa_fcs_itnim_is_initiator(struct bfa_fcs_itnim_s *itnim);
 void bfa_fcs_fcpim_uf_recv(struct bfa_fcs_itnim_s *itnim,
 			struct fchs_s *fchs, u16 len);
 
+<<<<<<< HEAD
 #define	BFA_FCS_FDMI_SUPORTED_SPEEDS  (FDMI_TRANS_SPEED_1G  |	\
 				       FDMI_TRANS_SPEED_2G |	\
 				       FDMI_TRANS_SPEED_4G |	\
 				       FDMI_TRANS_SPEED_8G)
+=======
+#define BFA_FCS_FDMI_SUPP_SPEEDS_4G	(FDMI_TRANS_SPEED_1G  |	\
+				FDMI_TRANS_SPEED_2G |		\
+				FDMI_TRANS_SPEED_4G)
+
+#define BFA_FCS_FDMI_SUPP_SPEEDS_8G	(FDMI_TRANS_SPEED_1G  |	\
+				FDMI_TRANS_SPEED_2G |		\
+				FDMI_TRANS_SPEED_4G |		\
+				FDMI_TRANS_SPEED_8G)
+
+#define BFA_FCS_FDMI_SUPP_SPEEDS_16G	(FDMI_TRANS_SPEED_2G  |	\
+				FDMI_TRANS_SPEED_4G |		\
+				FDMI_TRANS_SPEED_8G |		\
+				FDMI_TRANS_SPEED_16G)
+
+#define BFA_FCS_FDMI_SUPP_SPEEDS_10G	FDMI_TRANS_SPEED_10G
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * HBA Attribute Block : BFA internal representation. Note : Some variable
@@ -649,12 +686,21 @@ struct bfa_fcs_s {
 	struct bfa_trc_mod_s  *trcmod;	/*  tracing module */
 	bfa_boolean_t	vf_enabled;	/*  VF mode is enabled */
 	bfa_boolean_t	fdmi_enabled;	/*  FDMI is enabled */
+<<<<<<< HEAD
+=======
+	bfa_boolean_t	bbscn_enabled;	/*  Driver Config Parameter */
+	bfa_boolean_t	bbscn_flogi_rjt;/*  FLOGI reject due to BB_SCN */
+>>>>>>> refs/remotes/origin/cm-10.0
 	bfa_boolean_t min_cfg;		/* min cfg enabled/disabled */
 	u16	port_vfid;	/*  port default VF ID */
 	struct bfa_fcs_driver_info_s driver_info;
 	struct bfa_fcs_fabric_s fabric; /*  base fabric state machine */
 	struct bfa_fcs_stats_s	stats;	/*  FCS statistics */
 	struct bfa_wc_s		wc;	/*  waiting counter */
+<<<<<<< HEAD
+=======
+	int			fcs_aen_seq;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -715,6 +761,11 @@ void bfa_fcs_attach(struct bfa_fcs_s *fcs, struct bfa_s *bfa,
 		    struct bfad_s *bfad,
 		    bfa_boolean_t min_cfg);
 void bfa_fcs_init(struct bfa_fcs_s *fcs);
+<<<<<<< HEAD
+=======
+void bfa_fcs_pbc_vport_init(struct bfa_fcs_s *fcs);
+void bfa_fcs_update_cfg(struct bfa_fcs_s *fcs);
+>>>>>>> refs/remotes/origin/cm-10.0
 void bfa_fcs_driver_info_init(struct bfa_fcs_s *fcs,
 			      struct bfa_fcs_driver_info_s *driver_info);
 void bfa_fcs_exit(struct bfa_fcs_s *fcs);
@@ -723,6 +774,10 @@ void bfa_fcs_exit(struct bfa_fcs_s *fcs);
  * bfa fcs vf public functions
  */
 bfa_fcs_vf_t *bfa_fcs_vf_lookup(struct bfa_fcs_s *fcs, u16 vf_id);
+<<<<<<< HEAD
+=======
+void bfa_fcs_vf_get_ports(bfa_fcs_vf_t *vf, wwn_t vpwwn[], int *nports);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * fabric protected interface functions

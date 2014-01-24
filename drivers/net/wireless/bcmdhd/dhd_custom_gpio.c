@@ -1,8 +1,14 @@
 /*
 * Customer code to add GPIO control during WLAN start/stop
+<<<<<<< HEAD
 * Copyright (C) 1999-2011, Broadcom Corporation
 * 
 *         Unless you and Broadcom execute a separate written software license
+=======
+* Copyright (C) 1999-2012, Broadcom Corporation
+* 
+*      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
 * agreement governing use of this software, this software is licensed to you
 * under the terms of the GNU General Public License version 2 (the "GPL"),
 * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -20,7 +26,11 @@
 * software in any way with any other Broadcom software provided under a license
 * other than the GPL, without Broadcom's express prior written consent.
 *
+<<<<<<< HEAD
 * $Id: dhd_custom_gpio.c,v 1.2.42.1 2010-10-19 00:41:09 Exp $
+=======
+* $Id: dhd_custom_gpio.c 291086 2011-10-21 01:17:24Z $
+>>>>>>> refs/remotes/origin/cm-10.0
 */
 
 #include <typedefs.h>
@@ -98,7 +108,11 @@ int dhd_customer_oob_irq_map(unsigned long *irq_flags_ptr)
 
 	if (dhd_oob_gpio_num < 0) {
 		WL_ERROR(("%s: ERROR customer specific Host GPIO is NOT defined \n",
+<<<<<<< HEAD
 			__FUNCTION__));
+=======
+		__FUNCTION__));
+>>>>>>> refs/remotes/origin/cm-10.0
 		return (dhd_oob_gpio_num);
 	}
 
@@ -289,5 +303,9 @@ void get_customized_country_code(char *country_iso_code, wl_country_t *cspec)
 	cspec->rev = translate_custom_table[0].custom_locale_rev;
 #endif /* EXMAPLE_TABLE */
 	return;
+<<<<<<< HEAD
 #endif /* defined(CUSTOMER_HW2) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 39)) */
+=======
+#endif /* defined(CUSTOMER_HW2) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 36)) */
+>>>>>>> refs/remotes/origin/cm-10.0
 }

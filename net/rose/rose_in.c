@@ -26,7 +26,10 @@
 #include <linux/skbuff.h>
 #include <net/sock.h>
 #include <net/tcp_states.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>

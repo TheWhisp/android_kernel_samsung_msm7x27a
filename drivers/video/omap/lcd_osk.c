@@ -23,7 +23,11 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/mux.h>
 #include "omapfb.h"
 
@@ -116,7 +120,11 @@ static int osk_panel_resume(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct platform_driver osk_panel_driver = {
+=======
+static struct platform_driver osk_panel_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.probe		= osk_panel_probe,
 	.remove		= osk_panel_remove,
 	.suspend	= osk_panel_suspend,
@@ -127,6 +135,7 @@ struct platform_driver osk_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init osk_panel_drv_init(void)
 {
 	return platform_driver_register(&osk_panel_driver);
@@ -140,3 +149,6 @@ static void __exit osk_panel_drv_cleanup(void)
 module_init(osk_panel_drv_init);
 module_exit(osk_panel_drv_cleanup);
 
+=======
+module_platform_driver(osk_panel_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

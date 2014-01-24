@@ -11,6 +11,11 @@
 #ifndef __S3C64XX_PLAT_SPI_H
 #define __S3C64XX_PLAT_SPI_H
 
+<<<<<<< HEAD
+=======
+struct platform_device;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct s3c64xx_spi_csinfo - ChipSelect description
  * @fb_delay: Slave specific feedback delay.
@@ -31,7 +36,10 @@ struct s3c64xx_spi_csinfo {
 /**
  * struct s3c64xx_spi_info - SPI Controller defining structure
  * @src_clk_nr: Clock source index for the CLK_CFG[SPI_CLKSEL] field.
+<<<<<<< HEAD
  * @src_clk_name: Platform name of the corresponding clock.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @clk_from_cmu: If the SPI clock/prescalar control block is present
  *     by the platform's clock-management-unit and not in SPI controller.
  * @num_cs: Number of CS this controller emulates.
@@ -43,7 +51,10 @@ struct s3c64xx_spi_csinfo {
  */
 struct s3c64xx_spi_info {
 	int src_clk_nr;
+<<<<<<< HEAD
 	char *src_clk_name;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool clk_from_cmu;
 
 	int num_cs;
@@ -58,18 +69,42 @@ struct s3c64xx_spi_info {
 };
 
 /**
+<<<<<<< HEAD
  * s3c64xx_spi_set_info - SPI Controller configure callback by the board
  *				initialization code.
  * @cntrlr: SPI controller number the configuration is for.
+=======
+ * s3c64xx_spi_set_platdata - SPI Controller configure callback by the board
+ *				initialization code.
+ * @pd: SPI platform data to set.
+>>>>>>> refs/remotes/origin/cm-10.0
  * @src_clk_nr: Clock the SPI controller is to use to generate SPI clocks.
  * @num_cs: Number of elements in the 'cs' array.
  *
  * Call this from machine init code for each SPI Controller that
  * has some chips attached to it.
  */
+<<<<<<< HEAD
 extern void s3c64xx_spi_set_info(int cntrlr, int src_clk_nr, int num_cs);
 extern void s5pc100_spi_set_info(int cntrlr, int src_clk_nr, int num_cs);
 extern void s5pv210_spi_set_info(int cntrlr, int src_clk_nr, int num_cs);
 extern void s5p64x0_spi_set_info(int cntrlr, int src_clk_nr, int num_cs);
 
+=======
+extern void s3c64xx_spi0_set_platdata(struct s3c64xx_spi_info *pd,
+				      int src_clk_nr, int num_cs);
+extern void s3c64xx_spi1_set_platdata(struct s3c64xx_spi_info *pd,
+				      int src_clk_nr, int num_cs);
+extern void s3c64xx_spi2_set_platdata(struct s3c64xx_spi_info *pd,
+				      int src_clk_nr, int num_cs);
+
+/* defined by architecture to configure gpio */
+extern int s3c64xx_spi0_cfg_gpio(struct platform_device *dev);
+extern int s3c64xx_spi1_cfg_gpio(struct platform_device *dev);
+extern int s3c64xx_spi2_cfg_gpio(struct platform_device *dev);
+
+extern struct s3c64xx_spi_info s3c64xx_spi0_pdata;
+extern struct s3c64xx_spi_info s3c64xx_spi1_pdata;
+extern struct s3c64xx_spi_info s3c64xx_spi2_pdata;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __S3C64XX_PLAT_SPI_H */

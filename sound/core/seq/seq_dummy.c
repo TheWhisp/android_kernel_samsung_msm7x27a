@@ -20,7 +20,11 @@
 
 #include <linux/init.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include "seq_clientmgr.h"
 #include <sound/initval.h>
@@ -46,7 +50,11 @@
 
   The number of ports to be created can be specified via the module
   parameter "ports".  For example, to create four ports, add the
+<<<<<<< HEAD
   following option in /etc/modprobe.conf:
+=======
+  following option in a configuration file under /etc/modprobe.d/:
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	option snd-seq-dummy ports=4
 
@@ -65,7 +73,11 @@ MODULE_LICENSE("GPL");
 MODULE_ALIAS("snd-seq-client-" __stringify(SNDRV_SEQ_CLIENT_DUMMY));
 
 static int ports = 1;
+<<<<<<< HEAD
 static int duplex;
+=======
+static bool duplex;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param(ports, int, 0444);
 MODULE_PARM_DESC(ports, "number of ports to be created");

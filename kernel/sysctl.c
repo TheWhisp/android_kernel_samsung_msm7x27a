@@ -23,6 +23,10 @@
 #include <linux/swap.h>
 #include <linux/slab.h>
 #include <linux/sysctl.h>
+<<<<<<< HEAD
+=======
+#include <linux/bitmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/signal.h>
 #include <linux/printk.h>
 #include <linux/proc_fs.h>
@@ -57,6 +61,11 @@
 #include <linux/pipe_fs_i.h>
 #include <linux/oom.h>
 #include <linux/kmod.h>
+<<<<<<< HEAD
+=======
+#include <linux/capability.h>
+#include <linux/binfmts.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/uaccess.h>
 #include <asm/processor.h>
@@ -66,6 +75,12 @@
 #include <asm/stacktrace.h>
 #include <asm/io.h>
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SPARC
+#include <asm/setup.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_BSD_PROCESS_ACCT
 #include <linux/acct.h>
 #endif
@@ -135,12 +150,19 @@ static int minolduid;
 static int min_percpu_pagelist_fract = 8;
 
 static int ngroups_max = NGROUPS_MAX;
+<<<<<<< HEAD
+=======
+static const int cap_last_cap = CAP_LAST_CAP;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_INOTIFY_USER
 #include <linux/inotify.h>
 #endif
 #ifdef CONFIG_SPARC
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_SPARC64
@@ -152,6 +174,7 @@ extern int pwrsw_enabled;
 extern int unaligned_enabled;
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_S390
 #ifdef CONFIG_MATHEMU
 extern int sysctl_ieee_emulation_warnings;
@@ -160,6 +183,8 @@ extern int sysctl_userprocess_debug;
 extern int spin_retry;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_IA64
 extern int no_unaligned_warning;
 extern int unaligned_dump_stack;
@@ -199,6 +224,7 @@ static int sysrq_sysctl_handler(ctl_table *table, int write,
 
 #endif
 
+<<<<<<< HEAD
 static struct ctl_table root_table[];
 static struct ctl_table_root sysctl_table_root;
 static struct ctl_table_header root_table_header = {
@@ -213,6 +239,8 @@ static struct ctl_table_root sysctl_table_root = {
 	.default_set.list = LIST_HEAD_INIT(root_table_header.ctl_entry),
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct ctl_table kern_table[];
 static struct ctl_table vm_table[];
 static struct ctl_table fs_table[];
@@ -229,7 +257,11 @@ int sysctl_legacy_va_layout;
 
 /* The default sysctl tables: */
 
+<<<<<<< HEAD
 static struct ctl_table root_table[] = {
+=======
+static struct ctl_table sysctl_base_table[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.procname	= "kernel",
 		.mode		= 0555,
@@ -380,6 +412,19 @@ static struct ctl_table kern_table[] = {
 		.extra2		= &one,
 	},
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CFS_BANDWIDTH
+	{
+		.procname	= "sched_cfs_bandwidth_slice_us",
+		.data		= &sysctl_sched_cfs_bandwidth_slice,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &one,
+	},
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PROVE_LOCKING
 	{
 		.procname	= "prove_locking",
@@ -731,6 +776,16 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0444,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.procname	= "cap_last_cap",
+		.data		= (void *)&cap_last_cap,
+		.maxlen		= sizeof(int),
+		.mode		= 0444,
+		.proc_handler	= proc_dointvec,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_LOCKUP_DETECTOR)
 	{
 		.procname       = "watchdog",
@@ -793,6 +848,18 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DEBUG_STACKOVERFLOW
+	{
+		.procname	= "panic_on_stackoverflow",
+		.data		= &sysctl_panic_on_stackoverflow,
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec,
+	},
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 		.procname	= "bootloader_type",
 		.data		= &bootloader_type,
@@ -1560,6 +1627,7 @@ static struct ctl_table dev_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(sysctl_lock);
 
 /* called under sysctl_lock */
@@ -2049,6 +2117,14 @@ void sysctl_head_put(struct ctl_table_header *head)
 {
 }
 
+=======
+int __init sysctl_init(void)
+{
+	register_sysctl_table(sysctl_base_table);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_SYSCTL */
 
 /*
@@ -2890,9 +2966,13 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
 				}
 			}
 
+<<<<<<< HEAD
 			while (val_a <= val_b)
 				set_bit(val_a++, tmp_bitmap);
 
+=======
+			bitmap_set(tmp_bitmap, val_a, val_b - val_a + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 			first = 0;
 			proc_skip_char(&kbuf, &left, '\n');
 		}
@@ -2935,8 +3015,12 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
 			if (*ppos)
 				bitmap_or(bitmap, bitmap, tmp_bitmap, bitmap_len);
 			else
+<<<<<<< HEAD
 				memcpy(bitmap, tmp_bitmap,
 					BITS_TO_LONGS(bitmap_len) * sizeof(unsigned long));
+=======
+				bitmap_copy(bitmap, tmp_bitmap, bitmap_len);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		kfree(tmp_bitmap);
 		*lenp -= left;
@@ -3014,6 +3098,9 @@ EXPORT_SYMBOL(proc_dointvec_ms_jiffies);
 EXPORT_SYMBOL(proc_dostring);
 EXPORT_SYMBOL(proc_doulongvec_minmax);
 EXPORT_SYMBOL(proc_doulongvec_ms_jiffies_minmax);
+<<<<<<< HEAD
 EXPORT_SYMBOL(register_sysctl_table);
 EXPORT_SYMBOL(register_sysctl_paths);
 EXPORT_SYMBOL(unregister_sysctl_table);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

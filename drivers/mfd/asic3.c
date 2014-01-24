@@ -20,6 +20,10 @@
 #include <linux/delay.h>
 #include <linux/irq.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
@@ -524,6 +528,16 @@ static void asic3_gpio_set(struct gpio_chip *chip,
 	return;
 }
 
+<<<<<<< HEAD
+=======
+static int asic3_gpio_to_irq(struct gpio_chip *chip, unsigned offset)
+{
+	struct asic3 *asic = container_of(chip, struct asic3, gpio);
+
+	return (offset < ASIC3_NUM_GPIOS) ? asic->irq_base + offset : -ENXIO;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static __init int asic3_gpio_probe(struct platform_device *pdev,
 				   u16 *gpio_config, int num)
 {
@@ -584,7 +598,11 @@ static int asic3_gpio_remove(struct platform_device *pdev)
 	return gpiochip_remove(&asic->gpio);
 }
 
+<<<<<<< HEAD
 static int asic3_clk_enable(struct asic3 *asic, struct asic3_clk *clk)
+=======
+static void asic3_clk_enable(struct asic3 *asic, struct asic3_clk *clk)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long flags;
 	u32 cdex;
@@ -596,8 +614,11 @@ static int asic3_clk_enable(struct asic3 *asic, struct asic3_clk *clk)
 		asic3_write_register(asic, ASIC3_OFFSET(CLOCK, CDEX), cdex);
 	}
 	spin_unlock_irqrestore(&asic->lock, flags);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void asic3_clk_disable(struct asic3 *asic, struct asic3_clk *clk)
@@ -779,6 +800,11 @@ static struct mfd_cell asic3_cell_mmc = {
 	.name          = "tmio-mmc",
 	.enable        = asic3_mmc_enable,
 	.disable       = asic3_mmc_disable,
+<<<<<<< HEAD
+=======
+	.suspend       = asic3_mmc_disable,
+	.resume        = asic3_mmc_enable,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.platform_data = &asic3_mmc_data,
 	.pdata_size    = sizeof(asic3_mmc_data),
 	.num_resources = ARRAY_SIZE(asic3_mmc_resources),
@@ -811,24 +837,55 @@ static int asic3_leds_disable(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int asic3_leds_suspend(struct platform_device *pdev)
+{
+	const struct mfd_cell *cell = mfd_get_cell(pdev);
+	struct asic3 *asic = dev_get_drvdata(pdev->dev.parent);
+
+	while (asic3_gpio_get(&asic->gpio, ASIC3_GPIO(C, cell->id)) != 0)
+		msleep(1);
+
+	asic3_clk_disable(asic, &asic->clocks[clock_ledn[cell->id]]);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct mfd_cell asic3_cell_leds[ASIC3_NUM_LEDS] = {
 	[0] = {
 		.name          = "leds-asic3",
 		.id            = 0,
 		.enable        = asic3_leds_enable,
 		.disable       = asic3_leds_disable,
+<<<<<<< HEAD
+=======
+		.suspend       = asic3_leds_suspend,
+		.resume        = asic3_leds_enable,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	[1] = {
 		.name          = "leds-asic3",
 		.id            = 1,
 		.enable        = asic3_leds_enable,
 		.disable       = asic3_leds_disable,
+<<<<<<< HEAD
+=======
+		.suspend       = asic3_leds_suspend,
+		.resume        = asic3_leds_enable,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	[2] = {
 		.name          = "leds-asic3",
 		.id            = 2,
 		.enable        = asic3_leds_enable,
 		.disable       = asic3_leds_disable,
+<<<<<<< HEAD
+=======
+		.suspend       = asic3_leds_suspend,
+		.resume        = asic3_leds_enable,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -949,12 +1006,20 @@ static int __init asic3_probe(struct platform_device *pdev)
 		goto out_unmap;
 	}
 
+<<<<<<< HEAD
+=======
+	asic->gpio.label = "asic3";
+>>>>>>> refs/remotes/origin/cm-10.0
 	asic->gpio.base = pdata->gpio_base;
 	asic->gpio.ngpio = ASIC3_NUM_GPIOS;
 	asic->gpio.get = asic3_gpio_get;
 	asic->gpio.set = asic3_gpio_set;
 	asic->gpio.direction_input = asic3_gpio_direction_input;
 	asic->gpio.direction_output = asic3_gpio_direction_output;
+<<<<<<< HEAD
+=======
+	asic->gpio.to_irq = asic3_gpio_to_irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = asic3_gpio_probe(pdev,
 			       pdata->gpio_config,

@@ -12,6 +12,10 @@
 #include <linux/blkdev.h>
 #include <linux/completion.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mempool.h>
 #include <linux/slab.h>
 #include <linux/init.h>
@@ -137,6 +141,10 @@ static int __scsi_queue_insert(struct scsi_cmnd *cmd, int reason, int unbusy)
 		host->host_blocked = host->max_host_blocked;
 		break;
 	case SCSI_MLQUEUE_DEVICE_BUSY:
+<<<<<<< HEAD
+=======
+	case SCSI_MLQUEUE_EH_RETRY:
+>>>>>>> refs/remotes/origin/cm-10.0
 		device->device_blocked = device->max_device_blocked;
 		break;
 	case SCSI_MLQUEUE_TARGET_BUSY:
@@ -404,10 +412,13 @@ static void scsi_run_queue(struct request_queue *q)
 	LIST_HEAD(starved_list);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	/* if the device is dead, sdev will be NULL, so no queue to run */
 	if (!sdev)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	shost = sdev->host;
 	if (scsi_target(sdev)->single_lun)
 		scsi_single_lun_run(sdev);
@@ -691,11 +702,19 @@ static int __scsi_error_from_host_byte(struct scsi_cmnd *cmd, int result)
 		error = -ENOLINK;
 		break;
 	case DID_TARGET_FAILURE:
+<<<<<<< HEAD
 		cmd->result |= (DID_OK << 16);
 		error = -EREMOTEIO;
 		break;
 	case DID_NEXUS_FAILURE:
 		cmd->result |= (DID_OK << 16);
+=======
+		set_host_byte(cmd, DID_OK);
+		error = -EREMOTEIO;
+		break;
+	case DID_NEXUS_FAILURE:
+		set_host_byte(cmd, DID_OK);
+>>>>>>> refs/remotes/origin/cm-10.0
 		error = -EBADE;
 		break;
 	default:
@@ -762,7 +781,10 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 	}
 
 	if (req->cmd_type == REQ_TYPE_BLOCK_PC) { /* SG_IO ioctl from block level */
+<<<<<<< HEAD
 		req->errors = result;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (result) {
 			if (sense_valid && req->sense) {
 				/*
@@ -778,6 +800,13 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 			if (!sense_deferred)
 				error = __scsi_error_from_host_byte(cmd, result);
 		}
+<<<<<<< HEAD
+=======
+		/*
+		 * __scsi_error_from_host_byte may have reset the host_byte
+		 */
+		req->errors = cmd->result;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		req->resid_len = scsi_get_resid(cmd);
 
@@ -889,6 +918,10 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 				    cmd->cmnd[0] == WRITE_SAME)) {
 				description = "Discard failure";
 				action = ACTION_FAIL;
+<<<<<<< HEAD
+=======
+				error = -EREMOTEIO;
+>>>>>>> refs/remotes/origin/cm-10.0
 			} else
 				action = ACTION_FAIL;
 			break;
@@ -1325,6 +1358,7 @@ static inline int scsi_target_queue_ready(struct Scsi_Host *shost,
 	}
 
 	if (scsi_target_is_busy(starget)) {
+<<<<<<< HEAD
 		if (list_empty(&sdev->starved_entry))
 			list_add_tail(&sdev->starved_entry,
 				      &shost->starved_list);
@@ -1334,6 +1368,12 @@ static inline int scsi_target_queue_ready(struct Scsi_Host *shost,
 	/* We're OK to process the command, so we can't be starved */
 	if (!list_empty(&sdev->starved_entry))
 		list_del_init(&sdev->starved_entry);
+=======
+		list_move_tail(&sdev->starved_entry, &shost->starved_list);
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 
@@ -1383,16 +1423,26 @@ static inline int scsi_host_queue_ready(struct request_queue *q,
  * may be changed after request stacking drivers call the function,
  * regardless of taking lock or not.
  *
+<<<<<<< HEAD
  * When scsi can't dispatch I/Os anymore and needs to kill I/Os
  * (e.g. !sdev), scsi needs to return 'not busy'.
  * Otherwise, request stacking drivers may hold requests forever.
+=======
+ * When scsi can't dispatch I/Os anymore and needs to kill I/Os scsi
+ * needs to return 'not busy'. Otherwise, request stacking drivers
+ * may hold requests forever.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int scsi_lld_busy(struct request_queue *q)
 {
 	struct scsi_device *sdev = q->queuedata;
 	struct Scsi_Host *shost;
 
+<<<<<<< HEAD
 	if (!sdev)
+=======
+	if (blk_queue_dead(q))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	shost = sdev->host;
@@ -1503,12 +1553,15 @@ static void scsi_request_fn(struct request_queue *q)
 	struct scsi_cmnd *cmd;
 	struct request *req;
 
+<<<<<<< HEAD
 	if (!sdev) {
 		while ((req = blk_peek_request(q)) != NULL)
 			scsi_kill_request(req, q);
 		return;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if(!get_device(&sdev->sdev_gendev))
 		/* We must be tearing the block queue down already */
 		return;
@@ -1654,7 +1707,11 @@ struct request_queue *__scsi_alloc_queue(struct Scsi_Host *shost,
 					 request_fn_proc *request_fn)
 {
 	struct request_queue *q;
+<<<<<<< HEAD
 	struct device *dev = shost->shost_gendev.parent;
+=======
+	struct device *dev = shost->dma_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	q = blk_init_queue(request_fn, NULL);
 	if (!q)
@@ -1710,6 +1767,7 @@ struct request_queue *scsi_alloc_queue(struct scsi_device *sdev)
 	return q;
 }
 
+<<<<<<< HEAD
 void scsi_free_queue(struct request_queue *q)
 {
 	unsigned long flags;
@@ -1724,6 +1782,8 @@ void scsi_free_queue(struct request_queue *q)
 	blk_cleanup_queue(q);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Function:    scsi_block_requests()
  *
@@ -2584,7 +2644,11 @@ void *scsi_kmap_atomic_sg(struct scatterlist *sgl, int sg_count,
 	if (*len > sg_len)
 		*len = sg_len;
 
+<<<<<<< HEAD
 	return kmap_atomic(page, KM_BIO_SRC_IRQ);
+=======
+	return kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(scsi_kmap_atomic_sg);
 
@@ -2594,6 +2658,10 @@ EXPORT_SYMBOL(scsi_kmap_atomic_sg);
  */
 void scsi_kunmap_atomic_sg(void *virt)
 {
+<<<<<<< HEAD
 	kunmap_atomic(virt, KM_BIO_SRC_IRQ);
+=======
+	kunmap_atomic(virt);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(scsi_kunmap_atomic_sg);

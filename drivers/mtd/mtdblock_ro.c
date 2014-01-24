@@ -23,13 +23,21 @@
 #include <linux/slab.h>
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/blktrans.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int mtdblock_readsect(struct mtd_blktrans_dev *dev,
 			      unsigned long block, char *buf)
 {
 	size_t retlen;
 
+<<<<<<< HEAD
 	if (dev->mtd->read(dev->mtd, (block * 512), 512, &retlen, buf))
+=======
+	if (mtd_read(dev->mtd, (block * 512), 512, &retlen, buf))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 	return 0;
 }
@@ -39,7 +47,11 @@ static int mtdblock_writesect(struct mtd_blktrans_dev *dev,
 {
 	size_t retlen;
 
+<<<<<<< HEAD
 	if (dev->mtd->write(dev->mtd, (block * 512), 512, &retlen, buf))
+=======
+	if (mtd_write(dev->mtd, (block * 512), 512, &retlen, buf))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 1;
 	return 0;
 }

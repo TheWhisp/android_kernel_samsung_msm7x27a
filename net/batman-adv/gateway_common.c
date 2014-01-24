@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2009-2011 B.A.T.M.A.N. contributors:
+=======
+ * Copyright (C) 2009-2012 B.A.T.M.A.N. contributors:
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Marek Lindner
  *
@@ -61,9 +65,15 @@ static void kbit_to_gw_bandwidth(int down, int up, long *gw_srv_class)
 /* returns the up and downspeeds in kbit, calculated from the class */
 void gw_bandwidth_to_kbit(uint8_t gw_srv_class, int *down, int *up)
 {
+<<<<<<< HEAD
 	char sbit = (gw_srv_class & 0x80) >> 7;
 	char dpart = (gw_srv_class & 0x78) >> 3;
 	char upart = (gw_srv_class & 0x07);
+=======
+	int sbit = (gw_srv_class & 0x80) >> 7;
+	int dpart = (gw_srv_class & 0x78) >> 3;
+	int upart = (gw_srv_class & 0x07);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!gw_srv_class) {
 		*down = 0;
@@ -76,10 +86,18 @@ void gw_bandwidth_to_kbit(uint8_t gw_srv_class, int *down, int *up)
 }
 
 static bool parse_gw_bandwidth(struct net_device *net_dev, char *buff,
+<<<<<<< HEAD
 			       long *up, long *down)
 {
 	int ret, multi = 1;
 	char *slash_ptr, *tmp_ptr;
+=======
+			       int *up, int *down)
+{
+	int ret, multi = 1;
+	char *slash_ptr, *tmp_ptr;
+	long ldown, lup;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	slash_ptr = strchr(buff, '/');
 	if (slash_ptr)
@@ -92,11 +110,19 @@ static bool parse_gw_bandwidth(struct net_device *net_dev, char *buff,
 			multi = 1024;
 
 		if ((strnicmp(tmp_ptr, "kbit", 4) == 0) ||
+<<<<<<< HEAD
 			(multi > 1))
 			*tmp_ptr = '\0';
 	}
 
 	ret = strict_strtoul(buff, 10, down);
+=======
+		    (multi > 1))
+			*tmp_ptr = '\0';
+	}
+
+	ret = kstrtol(buff, 10, &ldown);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		bat_err(net_dev,
 			"Download speed of gateway mode invalid: %s\n",
@@ -104,7 +130,11 @@ static bool parse_gw_bandwidth(struct net_device *net_dev, char *buff,
 		return false;
 	}
 
+<<<<<<< HEAD
 	*down *= multi;
+=======
+	*down = ldown * multi;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* we also got some upload info */
 	if (slash_ptr) {
@@ -117,6 +147,7 @@ static bool parse_gw_bandwidth(struct net_device *net_dev, char *buff,
 				multi = 1024;
 
 			if ((strnicmp(tmp_ptr, "kbit", 4) == 0) ||
+<<<<<<< HEAD
 				(multi > 1))
 				*tmp_ptr = '\0';
 		}
@@ -130,6 +161,21 @@ static bool parse_gw_bandwidth(struct net_device *net_dev, char *buff,
 		}
 
 		*up *= multi;
+=======
+			    (multi > 1))
+				*tmp_ptr = '\0';
+		}
+
+		ret = kstrtol(slash_ptr + 1, 10, &lup);
+		if (ret) {
+			bat_err(net_dev,
+				"Upload speed of gateway mode invalid: %s\n",
+				slash_ptr + 1);
+			return false;
+		}
+
+		*up = lup * multi;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return true;
@@ -138,7 +184,12 @@ static bool parse_gw_bandwidth(struct net_device *net_dev, char *buff,
 ssize_t gw_bandwidth_set(struct net_device *net_dev, char *buff, size_t count)
 {
 	struct bat_priv *bat_priv = netdev_priv(net_dev);
+<<<<<<< HEAD
 	long gw_bandwidth_tmp = 0, up = 0, down = 0;
+=======
+	long gw_bandwidth_tmp = 0;
+	int up = 0, down = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	bool ret;
 
 	ret = parse_gw_bandwidth(net_dev, buff, &up, &down);
@@ -158,12 +209,20 @@ ssize_t gw_bandwidth_set(struct net_device *net_dev, char *buff, size_t count)
 	 * speeds, hence we need to calculate it back to show the number
 	 * that is going to be propagated
 	 **/
+<<<<<<< HEAD
 	gw_bandwidth_to_kbit((uint8_t)gw_bandwidth_tmp,
 			     (int *)&down, (int *)&up);
 
 	gw_deselect(bat_priv);
 	bat_info(net_dev, "Changing gateway bandwidth from: '%i' to: '%ld' "
 		 "(propagating: %ld%s/%ld%s)\n",
+=======
+	gw_bandwidth_to_kbit((uint8_t)gw_bandwidth_tmp, &down, &up);
+
+	gw_deselect(bat_priv);
+	bat_info(net_dev,
+		 "Changing gateway bandwidth from: '%i' to: '%ld' (propagating: %d%s/%d%s)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		 atomic_read(&bat_priv->gw_bandwidth), gw_bandwidth_tmp,
 		 (down > 2048 ? down / 1024 : down),
 		 (down > 2048 ? "MBit" : "KBit"),

@@ -100,8 +100,12 @@ static int __devinit timeriomem_rng_probe(struct platform_device *pdev)
 
 	timeriomem_rng_data = pdev->dev.platform_data;
 
+<<<<<<< HEAD
 	timeriomem_rng_data->address = ioremap(res->start,
 						res->end - res->start + 1);
+=======
+	timeriomem_rng_data->address = ioremap(res->start, resource_size(res));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!timeriomem_rng_data->address)
 		return -EIO;
 
@@ -150,6 +154,7 @@ static struct platform_driver timeriomem_rng_driver = {
 	.remove		= __devexit_p(timeriomem_rng_remove),
 };
 
+<<<<<<< HEAD
 static int __init timeriomem_rng_init(void)
 {
 	return platform_driver_register(&timeriomem_rng_driver);
@@ -162,6 +167,9 @@ static void __exit timeriomem_rng_exit(void)
 
 module_init(timeriomem_rng_init);
 module_exit(timeriomem_rng_exit);
+=======
+module_platform_driver(timeriomem_rng_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Alexander Clouter <alex@digriz.org.uk>");

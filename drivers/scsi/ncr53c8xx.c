@@ -115,7 +115,10 @@
 
 #include <asm/dma.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>

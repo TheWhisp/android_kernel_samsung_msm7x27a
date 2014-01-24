@@ -1,6 +1,10 @@
 menuconfig MTD
 	tristate "Memory Technology Device (MTD) support"
+<<<<<<< HEAD
 	depends on HAS_IOMEM
+=======
+	depends on GENERIC_IO
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Memory Technology Devices are flash, RAM and similar chips, often
 	  used for solid state file systems on embedded devices. This option
@@ -12,6 +16,7 @@ menuconfig MTD
 
 if MTD
 
+<<<<<<< HEAD
 config MTD_DEBUG
 	bool "Debugging"
 	help
@@ -27,12 +32,22 @@ config MTD_DEBUG_VERBOSE
 
 config MTD_TESTS
 	tristate "MTD tests support"
+=======
+config MTD_TESTS
+	tristate "MTD tests support (DANGEROUS)"
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on m
 	help
 	  This option includes various MTD tests into compilation. The tests
 	  should normally be compiled as kernel modules. The modules perform
 	  various checks and verifications when loaded.
 
+<<<<<<< HEAD
+=======
+	  WARNING: some of the tests will ERASE entire MTD device which they
+	  test. Do not use these tests unless you really know what you do.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config MTD_REDBOOT_PARTS
 	tristate "RedBoot partition table parsing"
 	---help---
@@ -137,18 +152,38 @@ config MTD_AFS_PARTS
 	  'physmap' map driver (CONFIG_MTD_PHYSMAP) does this, for example.
 
 config MTD_OF_PARTS
+<<<<<<< HEAD
 	def_bool y
+=======
+	tristate "OpenFirmware partitioning information support"
+	default y
+>>>>>>> refs/remotes/origin/cm-10.0
 	depends on OF
 	help
 	  This provides a partition parsing function which derives
 	  the partition map from the children of the flash node,
+<<<<<<< HEAD
 	  as described in Documentation/powerpc/booting-without-of.txt.
+=======
+	  as described in Documentation/devicetree/booting-without-of.txt.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config MTD_AR7_PARTS
 	tristate "TI AR7 partitioning support"
 	---help---
 	  TI AR7 partitioning support
 
+<<<<<<< HEAD
+=======
+config MTD_BCM63XX_PARTS
+	tristate "BCM63XX CFE partitioning support"
+	depends on BCM63XX
+	select CRC32
+	help
+	  This provides partions parsing for BCM63xx devices with CFE
+	  bootloaders.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 comment "User Modules And Translation Layers"
 
 config MTD_CHAR
@@ -305,9 +340,12 @@ config MTD_OOPS
 	  buffer in a flash partition where it can be read back at some
 	  later point.
 
+<<<<<<< HEAD
 	  To use, add console=ttyMTDx to the kernel command line,
 	  where x is the MTD device number to use.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config MTD_SWAP
 	tristate "Swap on MTD device support"
 	depends on MTD && SWAP
@@ -318,6 +356,20 @@ config MTD_SWAP
 	  The driver provides wear leveling by storing erase counter into the
 	  OOB.
 
+<<<<<<< HEAD
+=======
+config MTD_LAZYECCSTATS
+	bool "MTD Lazy ECC Stats collection support"
+	default y
+	help
+	  Normally bad block counts for ECC stats are collected at boot time.
+	  This option delays the badblock stats collection until ECCGETSTATS
+	  ioctl is invoked on the partition.
+
+	  This can significantly decrease boot times depending on the size of
+	  the partition.  If unsure, say 'N'.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/mtd/chips/Kconfig"
 
 source "drivers/mtd/maps/Kconfig"

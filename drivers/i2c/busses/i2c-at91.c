@@ -295,9 +295,12 @@ static int at91_i2c_resume(struct platform_device *pdev)
 #define at91_i2c_resume		NULL
 #endif
 
+<<<<<<< HEAD
 /* work with "modprobe at91_i2c" from hotplugging or coldplugging */
 MODULE_ALIAS("platform:at91_i2c");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver at91_i2c_driver = {
 	.probe		= at91_i2c_probe,
 	.remove		= __devexit_p(at91_i2c_remove),
@@ -309,6 +312,7 @@ static struct platform_driver at91_i2c_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init at91_i2c_init(void)
 {
 	return platform_driver_register(&at91_i2c_driver);
@@ -321,7 +325,14 @@ static void __exit at91_i2c_exit(void)
 
 module_init(at91_i2c_init);
 module_exit(at91_i2c_exit);
+=======
+module_platform_driver(at91_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Rick Bronson");
 MODULE_DESCRIPTION("I2C (TWI) driver for Atmel AT91");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:at91_i2c");
+>>>>>>> refs/remotes/origin/cm-10.0

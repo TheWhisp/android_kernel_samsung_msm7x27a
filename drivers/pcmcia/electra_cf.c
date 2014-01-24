@@ -209,9 +209,15 @@ static int __devinit electra_cf_probe(struct platform_device *ofdev)
 
 	cf->ofdev = ofdev;
 	cf->mem_phys = mem.start;
+<<<<<<< HEAD
 	cf->mem_size = PAGE_ALIGN(mem.end - mem.start);
 	cf->mem_base = ioremap(cf->mem_phys, cf->mem_size);
 	cf->io_size = PAGE_ALIGN(io.end - io.start);
+=======
+	cf->mem_size = PAGE_ALIGN(resource_size(&mem));
+	cf->mem_base = ioremap(cf->mem_phys, cf->mem_size);
+	cf->io_size = PAGE_ALIGN(resource_size(&io));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	area = __get_vm_area(cf->io_size, 0, PHB_IO_BASE, PHB_IO_END);
 	if (area == NULL)
@@ -365,6 +371,7 @@ static struct platform_driver electra_cf_driver = {
 	.remove   = electra_cf_remove,
 };
 
+<<<<<<< HEAD
 static int __init electra_cf_init(void)
 {
 	return platform_driver_register(&electra_cf_driver);
@@ -376,6 +383,9 @@ static void __exit electra_cf_exit(void)
 	platform_driver_unregister(&electra_cf_driver);
 }
 module_exit(electra_cf_exit);
+=======
+module_platform_driver(electra_cf_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR ("Olof Johansson <olof@lixom.net>");

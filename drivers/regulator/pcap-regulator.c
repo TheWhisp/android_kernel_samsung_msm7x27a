@@ -277,7 +277,11 @@ static int __devinit pcap_regulator_probe(struct platform_device *pdev)
 	void *pcap = dev_get_drvdata(pdev->dev.parent);
 
 	rdev = regulator_register(&pcap_regulators[pdev->id], &pdev->dev,
+<<<<<<< HEAD
 				pdev->dev.platform_data, pcap);
+=======
+				pdev->dev.platform_data, pcap, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(rdev))
 		return PTR_ERR(rdev);
 

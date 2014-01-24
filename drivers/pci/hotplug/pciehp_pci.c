@@ -141,7 +141,11 @@ int pciehp_unconfigure_device(struct slot *p_slot)
 				break;
 			}
 		}
+<<<<<<< HEAD
 		pci_remove_bus_device(temp);
+=======
+		pci_stop_and_remove_bus_device(temp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * Ensure that no new Requests will be generated from
 		 * the device.

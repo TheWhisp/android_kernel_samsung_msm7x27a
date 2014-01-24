@@ -736,6 +736,7 @@ static struct platform_driver sc26xx_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init sc26xx_init(void)
 {
 	return platform_driver_register(&sc26xx_driver);
@@ -749,6 +750,9 @@ static void __exit sc26xx_exit(void)
 module_init(sc26xx_init);
 module_exit(sc26xx_exit);
 
+=======
+module_platform_driver(sc26xx_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Thomas Bogendörfer");
 MODULE_DESCRIPTION("SC681/SC2692 serial driver");

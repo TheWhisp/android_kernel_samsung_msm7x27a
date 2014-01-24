@@ -11,6 +11,10 @@
 #include <linux/slab.h>
 #include <linux/mutex.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "aoe.h"
 
 enum {
@@ -269,7 +273,11 @@ static const struct file_operations aoe_fops = {
 	.llseek = noop_llseek,
 };
 
+<<<<<<< HEAD
 static char *aoe_devnode(struct device *dev, mode_t *mode)
+=======
+static char *aoe_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return kasprintf(GFP_KERNEL, "etherd/%s", dev_name(dev));
 }

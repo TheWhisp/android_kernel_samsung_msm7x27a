@@ -1,7 +1,11 @@
 /*
  * slcan.c - serial line CAN interface driver (using tty line discipline)
  *
+<<<<<<< HEAD
  * This file is derived from linux/drivers/net/slip.c
+=======
+ * This file is derived from linux/drivers/net/slip/slip.c
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * slip.c Authors  : Laurence Culhane <loz@holmes.demon.co.uk>
  *                   Fred N. van Kempen <waltje@uwalt.nl.mugnet.org>
@@ -35,14 +39,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  *
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/uaccess.h>
 #include <linux/bitops.h>
 #include <linux/string.h>
@@ -56,6 +66,10 @@
 #include <linux/sched.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/can.h>
 
 static __initdata const char banner[] =
@@ -95,10 +109,13 @@ struct slcan {
 	unsigned long		flags;		/* Flag values/ mode etc     */
 #define SLF_INUSE		0		/* Channel in use            */
 #define SLF_ERROR		1               /* Parity, etc. error        */
+<<<<<<< HEAD
 
 	unsigned char		leased;
 	dev_t			line;
 	pid_t			pid;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct net_device **slcan_devs;
@@ -142,6 +159,7 @@ static struct net_device **slcan_devs;
   *			STANDARD SLCAN DECAPSULATION			 *
   ************************************************************************/
 
+<<<<<<< HEAD
 static int asc2nibble(char c)
 {
 
@@ -157,6 +175,8 @@ static int asc2nibble(char c)
 	return 16; /* error */
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Send one completely decapsulated can_frame to the network layer */
 static void slc_bump(struct slcan *sl)
 {
@@ -195,6 +215,7 @@ static void slc_bump(struct slcan *sl)
 	*(u64 *) (&cf.data) = 0; /* clear payload */
 
 	for (i = 0, dlc_pos++; i < cf.can_dlc; i++) {
+<<<<<<< HEAD
 
 		tmp = asc2nibble(sl->rbuff[dlc_pos++]);
 		if (tmp > 0x0F)
@@ -202,11 +223,22 @@ static void slc_bump(struct slcan *sl)
 		cf.data[i] = (tmp << 4);
 		tmp = asc2nibble(sl->rbuff[dlc_pos++]);
 		if (tmp > 0x0F)
+=======
+		tmp = hex_to_bin(sl->rbuff[dlc_pos++]);
+		if (tmp < 0)
+			return;
+		cf.data[i] = (tmp << 4);
+		tmp = hex_to_bin(sl->rbuff[dlc_pos++]);
+		if (tmp < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		cf.data[i] |= tmp;
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	skb = dev_alloc_skb(sizeof(struct can_frame));
 	if (!skb)
 		return;
@@ -217,7 +249,11 @@ static void slc_bump(struct slcan *sl)
 	skb->ip_summed = CHECKSUM_UNNECESSARY;
 	memcpy(skb_put(skb, sizeof(struct can_frame)),
 	       &cf, sizeof(struct can_frame));
+<<<<<<< HEAD
 	netif_rx(skb);
+=======
+	netif_rx_ni(skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	sl->dev->stats.rx_packets++;
 	sl->dev->stats.rx_bytes += cf.can_dlc;
@@ -409,7 +445,11 @@ static void slc_setup(struct net_device *dev)
 
 	/* New-style flags. */
 	dev->flags		= IFF_NOARP;
+<<<<<<< HEAD
 	dev->features           = NETIF_F_NO_CSUM;
+=======
+	dev->features           = NETIF_F_HW_CSUM;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /******************************************
@@ -462,7 +502,11 @@ static void slc_sync(void)
 			break;
 
 		sl = netdev_priv(dev);
+<<<<<<< HEAD
 		if (sl->tty || sl->leased)
+=======
+		if (sl->tty)
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 		if (dev->flags & IFF_UP)
 			dev_close(dev);
@@ -473,12 +517,19 @@ static void slc_sync(void)
 static struct slcan *slc_alloc(dev_t line)
 {
 	int i;
+<<<<<<< HEAD
 	struct net_device *dev = NULL;
 	struct slcan       *sl;
 
 	if (slcan_devs == NULL)
 		return NULL;	/* Master array missing ! */
 
+=======
+	char name[IFNAMSIZ];
+	struct net_device *dev = NULL;
+	struct slcan       *sl;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < maxdev; i++) {
 		dev = slcan_devs[i];
 		if (dev == NULL)
@@ -490,6 +541,7 @@ static struct slcan *slc_alloc(dev_t line)
 	if (i >= maxdev)
 		return NULL;
 
+<<<<<<< HEAD
 	if (dev) {
 		sl = netdev_priv(dev);
 		if (test_bit(SLF_INUSE, &sl->flags)) {
@@ -509,6 +561,14 @@ static struct slcan *slc_alloc(dev_t line)
 		dev->base_addr  = i;
 	}
 
+=======
+	sprintf(name, "slcan%d", i);
+	dev = alloc_netdev(sizeof(*sl), name, slc_setup);
+	if (!dev)
+		return NULL;
+
+	dev->base_addr  = i;
+>>>>>>> refs/remotes/origin/cm-10.0
 	sl = netdev_priv(dev);
 
 	/* Initialize channel control data */
@@ -565,8 +625,11 @@ static int slcan_open(struct tty_struct *tty)
 
 	sl->tty = tty;
 	tty->disc_data = sl;
+<<<<<<< HEAD
 	sl->line = tty_devnum(tty);
 	sl->pid = current->pid;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!test_bit(SLF_INUSE, &sl->flags)) {
 		/* Perform the low-level SLCAN initialization. */
@@ -617,8 +680,11 @@ static void slcan_close(struct tty_struct *tty)
 
 	tty->disc_data = NULL;
 	sl->tty = NULL;
+<<<<<<< HEAD
 	if (!sl->leased)
 		sl->line = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Flush network side */
 	unregister_netdev(sl->dev);
@@ -680,10 +746,15 @@ static int __init slcan_init(void)
 	printk(KERN_INFO "slcan: %d dynamic interface channels.\n", maxdev);
 
 	slcan_devs = kzalloc(sizeof(struct net_device *)*maxdev, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!slcan_devs) {
 		printk(KERN_ERR "slcan: can't allocate slcan device array!\n");
 		return -ENOMEM;
 	}
+=======
+	if (!slcan_devs)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Fill in our line protocol discipline, and register it */
 	status = tty_register_ldisc(N_SLCAN, &slc_ldisc);

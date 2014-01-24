@@ -22,7 +22,14 @@
 #include <linux/sched.h>
 #include <linux/spinlock.h>
 #include <linux/msm_audio_mvs.h>
+<<<<<<< HEAD
 #include <mach/qdsp6v2/q6voice.h>
+=======
+#include <linux/pm_qos.h>
+
+#include <mach/qdsp6v2/q6voice.h>
+#include <mach/cpuidle.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Each buffer is 20 ms, queue holds 200 ms of data. */
 #define MVS_MAX_Q_LEN 10
@@ -65,7 +72,11 @@ struct audio_mvs_info_type {
 	spinlock_t dsp_lock;
 
 	struct wake_lock suspend_lock;
+<<<<<<< HEAD
 	struct wake_lock idle_lock;
+=======
+	struct pm_qos_request pm_qos_req;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	void *memory_chunk;
 };
@@ -712,7 +723,12 @@ static int audio_mvs_start(struct audio_mvs_info_type *audio)
 
 	/* Prevent sleep. */
 	wake_lock(&audio->suspend_lock);
+<<<<<<< HEAD
 	wake_lock(&audio->idle_lock);
+=======
+	pm_qos_update_request(&audio->pm_qos_req,
+			msm_cpuidle_get_deep_idle_latency());
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rc = voice_set_voc_path_full(1);
 
@@ -747,8 +763,13 @@ static int audio_mvs_stop(struct audio_mvs_info_type *audio)
 	audio->state = AUDIO_MVS_STOPPED;
 
 	/* Allow sleep. */
+<<<<<<< HEAD
 	wake_unlock(&audio->suspend_lock);
 	wake_unlock(&audio->idle_lock);
+=======
+	pm_qos_update_request(&audio->pm_qos_req, PM_QOS_DEFAULT_VALUE);
+	wake_unlock(&audio->suspend_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return rc;
 }
@@ -1145,9 +1166,14 @@ static int __init audio_mvs_init(void)
 	wake_lock_init(&audio_mvs_info.suspend_lock,
 		       WAKE_LOCK_SUSPEND,
 		       "audio_mvs_suspend");
+<<<<<<< HEAD
 	wake_lock_init(&audio_mvs_info.idle_lock,
 		       WAKE_LOCK_IDLE,
 		       "audio_mvs_idle");
+=======
+	pm_qos_add_request(&audio_mvs_info.pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
+				PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rc = misc_register(&audio_mvs_misc);
 

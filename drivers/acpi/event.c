@@ -7,6 +7,10 @@
  */
 
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/proc_fs.h>
 #include <linux/init.h>
 #include <linux/poll.h>

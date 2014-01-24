@@ -32,12 +32,19 @@
 
 #include <linux/module.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ioport.h>
 #include <linux/init.h>
 #include <linux/console.h>
 #include <linux/sysrq.h>
 #include <linux/serial.h>
+<<<<<<< HEAD
 #include <linux/serialP.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 
 #include <asm/m32r.h>
@@ -69,6 +76,7 @@
 
 #define PASS_LIMIT	256
 
+<<<<<<< HEAD
 /*
  * We default to IRQ0 for the "no irq" hack.   Some
  * machine types want others as well - they're free
@@ -76,6 +84,8 @@
  */
 #define is_real_interrupt(irq)	((irq) != 0)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define BASE_BAUD	115200
 
 /* Standard COM flags */
@@ -639,7 +649,11 @@ static int m32r_sio_startup(struct uart_port *port)
 	 * hardware interrupt, we use a timer-based system.  The original
 	 * driver used to do this with IRQ0.
 	 */
+<<<<<<< HEAD
 	if (!is_real_interrupt(up->port.irq)) {
+=======
+	if (!up->port.irq) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned int timeout = up->port.timeout;
 
 		timeout = timeout > 6 ? (timeout / 2 - 2) : 1;
@@ -686,7 +700,11 @@ static void m32r_sio_shutdown(struct uart_port *port)
 
 	sio_init();
 
+<<<<<<< HEAD
 	if (!is_real_interrupt(up->port.irq))
+=======
+	if (!up->port.irq)
+>>>>>>> refs/remotes/origin/cm-10.0
 		del_timer_sync(&up->timer);
 	else
 		serial_unlink_irq_chain(up);
@@ -892,7 +910,11 @@ static int m32r_sio_request_port(struct uart_port *port)
 	 * If we have a mapbase, then request that as well.
 	 */
 	if (ret == 0 && up->port.flags & UPF_IOREMAP) {
+<<<<<<< HEAD
 		int size = res->end - res->start + 1;
+=======
+		int size = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		up->port.membase = ioremap(up->port.mapbase, size);
 		if (!up->port.membase)
@@ -999,11 +1021,16 @@ static void __init m32r_sio_register_ports(struct uart_driver *drv)
 		init_timer(&up->timer);
 		up->timer.function = m32r_sio_timeout;
 
+<<<<<<< HEAD
 		/*
 		 * ALPHA_KLUDGE_MCR needs to be killed.
 		 */
 		up->mcr_mask = ~ALPHA_KLUDGE_MCR;
 		up->mcr_force = ALPHA_KLUDGE_MCR;
+=======
+		up->mcr_mask = ~0;
+		up->mcr_force = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		uart_add_one_port(drv, &up->port);
 	}

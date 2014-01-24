@@ -2,13 +2,21 @@
  * IRQ chip definitions for INTC IRQs.
  *
  * Copyright (C) 2007, 2008 Magnus Damm
+<<<<<<< HEAD
  * Copyright (C) 2009, 2010 Paul Mundt
+=======
+ * Copyright (C) 2009 - 2012 Paul Mundt
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This file is subject to the terms and conditions of the GNU General Public
  * License.  See the file "COPYING" in the main directory of this archive
  * for more details.
  */
 #include <linux/cpumask.h>
+<<<<<<< HEAD
+=======
+#include <linux/bsearch.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/io.h>
 #include "internals.h"
 
@@ -58,11 +66,14 @@ static void intc_disable(struct irq_data *data)
 	}
 }
 
+<<<<<<< HEAD
 static int intc_set_wake(struct irq_data *data, unsigned int on)
 {
 	return 0; /* allow wakeup, but setup hardware in intc_suspend() */
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SMP
 /*
  * This is held with the irq desc lock held, so we don't require any
@@ -78,7 +89,11 @@ static int intc_set_affinity(struct irq_data *data,
 
 	cpumask_copy(data->affinity, cpumask);
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return IRQ_SET_MASK_OK_NOCOPY;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 
@@ -122,6 +137,7 @@ static struct intc_handle_int *intc_find_irq(struct intc_handle_int *hp,
 					     unsigned int nr_hp,
 					     unsigned int irq)
 {
+<<<<<<< HEAD
 	int i;
 
 	/*
@@ -144,6 +160,14 @@ static struct intc_handle_int *intc_find_irq(struct intc_handle_int *hp,
 	}
 
 	return NULL;
+=======
+	struct intc_handle_int key;
+
+	key.irq = irq;
+	key.handle = 0;
+
+	return bsearch(&key, hp, nr_hp, sizeof(*hp), intc_handle_int_cmp);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int intc_set_priority(unsigned int irq, unsigned int prio)
@@ -186,6 +210,12 @@ static unsigned char intc_irq_sense_table[IRQ_TYPE_SENSE_MASK + 1] = {
     !defined(CONFIG_CPU_SUBTYPE_SH7709)
 	[IRQ_TYPE_LEVEL_HIGH] = VALID(3),
 #endif
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_ARM) /* all recent SH-Mobile / R-Mobile ARM support this */
+	[IRQ_TYPE_EDGE_BOTH] = VALID(4),
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int intc_set_type(struct irq_data *data, unsigned int type)
@@ -199,11 +229,24 @@ static int intc_set_type(struct irq_data *data, unsigned int type)
 	if (!value)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ihp = intc_find_irq(d->sense, d->nr_sense, irq);
 	if (ihp) {
 		addr = INTC_REG(d, _INTC_ADDR_E(ihp->handle), 0);
 		intc_reg_fns[_INTC_FN(ihp->handle)](addr, ihp->handle,
 						    value & ~SENSE_VALID_FLAG);
+=======
+	value &= ~SENSE_VALID_FLAG;
+
+	ihp = intc_find_irq(d->sense, d->nr_sense, irq);
+	if (ihp) {
+		/* PINT has 2-bit sense registers, should fail on EDGE_BOTH */
+		if (value >= (1 << _INTC_WIDTH(ihp->handle)))
+			return -EINVAL;
+
+		addr = INTC_REG(d, _INTC_ADDR_E(ihp->handle), 0);
+		intc_reg_fns[_INTC_FN(ihp->handle)](addr, ihp->handle, value);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
@@ -215,10 +258,18 @@ struct irq_chip intc_irq_chip	= {
 	.irq_mask_ack		= intc_mask_ack,
 	.irq_enable		= intc_enable,
 	.irq_disable		= intc_disable,
+<<<<<<< HEAD
 	.irq_shutdown		= intc_disable,
 	.irq_set_type		= intc_set_type,
 	.irq_set_wake		= intc_set_wake,
 #ifdef CONFIG_SMP
 	.irq_set_affinity	= intc_set_affinity,
 #endif
+=======
+	.irq_set_type		= intc_set_type,
+#ifdef CONFIG_SMP
+	.irq_set_affinity	= intc_set_affinity,
+#endif
+	.flags			= IRQCHIP_SKIP_SET_WAKE,
+>>>>>>> refs/remotes/origin/cm-10.0
 };

@@ -13,7 +13,11 @@
  *
  *	Added conditional policy language extensions
  *
+<<<<<<< HEAD
  * Updated: Hewlett-Packard <paul.moore@hp.com>
+=======
+ * Updated: Hewlett-Packard <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *      Added support for the policy capability bitmap
  *
@@ -1743,8 +1747,11 @@ static int policydb_bounds_sanity_check(struct policydb *p)
 	return 0;
 }
 
+<<<<<<< HEAD
 extern int ss_initialized;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 u16 string_to_security_class(struct policydb *p, const char *name)
 {
 	struct class_datum *cladatum;

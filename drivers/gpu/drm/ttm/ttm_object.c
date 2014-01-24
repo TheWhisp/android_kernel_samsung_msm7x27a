@@ -49,13 +49,22 @@
  * for fast lookup of ref objects given a base object.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "[TTM] " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ttm/ttm_object.h"
 #include "ttm/ttm_module.h"
 #include <linux/list.h>
 #include <linux/spinlock.h>
 #include <linux/slab.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct ttm_object_file {
 	struct ttm_object_device *tdev;
@@ -232,8 +241,12 @@ struct ttm_base_object *ttm_base_object_lookup(struct ttm_object_file *tfile,
 		return NULL;
 
 	if (tfile != base->tfile && !base->shareable) {
+<<<<<<< HEAD
 		printk(KERN_ERR TTM_PFX
 		       "Attempted access of non-shareable object.\n");
+=======
+		pr_err("Attempted access of non-shareable object\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ttm_base_object_unref(&base);
 		return NULL;
 	}

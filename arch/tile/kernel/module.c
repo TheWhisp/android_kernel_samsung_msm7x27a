@@ -20,9 +20,15 @@
 #include <linux/fs.h>
 #include <linux/string.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <asm/opcode-tile.h>
 #include <asm/pgtable.h>
 #include <asm/homecache.h>
+=======
+#include <asm/pgtable.h>
+#include <asm/homecache.h>
+#include <arch/opcode.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __tilegx__
 # define Elf_Rela Elf64_Rela
@@ -67,6 +73,11 @@ void *module_alloc(unsigned long size)
 	area = __get_vm_area(size, VM_ALLOC, MEM_MODULE_START, MEM_MODULE_END);
 	if (!area)
 		goto error;
+<<<<<<< HEAD
+=======
+	area->nr_pages = npages;
+	area->pages = pages;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (map_vm_area(area, prot_rwx, &pages)) {
 		vunmap(area->addr);
@@ -98,6 +109,7 @@ void module_free(struct module *mod, void *module_region)
 	 */
 }
 
+<<<<<<< HEAD
 /* We don't need anything special. */
 int module_frob_arch_sections(Elf_Ehdr *hdr,
 			      Elf_Shdr *sechdrs,
@@ -117,6 +129,8 @@ int apply_relocate(Elf_Shdr *sechdrs,
 	return -ENOEXEC;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef __tilegx__
 /*
  * Validate that the high 16 bits of "value" is just the sign-extension of
@@ -249,6 +263,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 
 int module_finalize(const Elf_Ehdr *hdr,
 		    const Elf_Shdr *sechdrs,
@@ -261,3 +276,5 @@ int module_finalize(const Elf_Ehdr *hdr,
 void module_arch_cleanup(struct module *mod)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

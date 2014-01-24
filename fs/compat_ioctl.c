@@ -34,7 +34,11 @@
 #include <linux/fs.h>
 #include <linux/file.h>
 #include <linux/ppp_defs.h>
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/if_pppox.h>
 #include <linux/mtio.h>
 #include <linux/auto_fs.h>
@@ -49,7 +53,10 @@
 #include <linux/elevator.h>
 #include <linux/rtc.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/serial.h>
 #include <linux/if_tun.h>
 #include <linux/ctype.h>
@@ -68,6 +75,11 @@
 
 #ifdef CONFIG_BLOCK
 #include <linux/loop.h>
+<<<<<<< HEAD
+=======
+#include <linux/cdrom.h>
+#include <linux/fd.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <scsi/scsi.h>
 #include <scsi/scsi_ioctl.h>
 #include <scsi/sg.h>
@@ -103,6 +115,10 @@
 
 #include <linux/hiddev.h>
 
+<<<<<<< HEAD
+=======
+#define __DVB_CORE__
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/dvb/audio.h>
 #include <linux/dvb/dmx.h>
 #include <linux/dvb/frontend.h>
@@ -946,6 +962,12 @@ COMPATIBLE_IOCTL(FIOQSIZE)
 IGNORE_IOCTL(LOOP_CLR_FD)
 /* md calls this on random blockdevs */
 IGNORE_IOCTL(RAID_VERSION)
+<<<<<<< HEAD
+=======
+/* qemu/qemu-img might call these two on plain files for probing */
+IGNORE_IOCTL(CDROM_DRIVE_STATUS)
+IGNORE_IOCTL(FDGETPRM32)
+>>>>>>> refs/remotes/origin/cm-10.0
 /* SG stuff */
 COMPATIBLE_IOCTL(SG_SET_TIMEOUT)
 COMPATIBLE_IOCTL(SG_GET_TIMEOUT)
@@ -1000,6 +1022,10 @@ COMPATIBLE_IOCTL(PPPIOCCONNECT)
 COMPATIBLE_IOCTL(PPPIOCDISCONN)
 COMPATIBLE_IOCTL(PPPIOCATTCHAN)
 COMPATIBLE_IOCTL(PPPIOCGCHAN)
+<<<<<<< HEAD
+=======
+COMPATIBLE_IOCTL(PPPIOCGL2TPSTATS)
+>>>>>>> refs/remotes/origin/cm-10.0
 /* PPPOX */
 COMPATIBLE_IOCTL(PPPOEIOCSFWD)
 COMPATIBLE_IOCTL(PPPOEIOCDFWD)
@@ -1503,6 +1529,7 @@ static long do_ioctl_trans(int fd, unsigned int cmd,
 	return -ENOIOCTLCMD;
 }
 
+<<<<<<< HEAD
 static void compat_ioctl_error(struct file *filp, unsigned int fd,
 		unsigned int cmd, unsigned long arg)
 {
@@ -1532,6 +1559,8 @@ static void compat_ioctl_error(struct file *filp, unsigned int fd,
 		free_page((unsigned long)path);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int compat_ioctl_check_table(unsigned int xcmd)
 {
 	int i;
@@ -1618,6 +1647,7 @@ asmlinkage long compat_sys_ioctl(unsigned int fd, unsigned int cmd,
 		goto found_handler;
 
 	error = do_ioctl_trans(fd, cmd, arg, filp);
+<<<<<<< HEAD
 	if (error == -ENOIOCTLCMD) {
 		static int count;
 
@@ -1625,6 +1655,10 @@ asmlinkage long compat_sys_ioctl(unsigned int fd, unsigned int cmd,
 			compat_ioctl_error(filp, fd, cmd, arg);
 		error = -EINVAL;
 	}
+=======
+	if (error == -ENOIOCTLCMD)
+		error = -ENOTTY;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	goto out_fput;
 

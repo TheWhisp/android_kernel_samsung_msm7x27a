@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
+<<<<<<< HEAD
 
 static uint32_t getle32(const void *p)
 {
@@ -37,6 +38,9 @@ static uint32_t getle32(const void *p)
 	return (uint32_t)cp[0] + ((uint32_t)cp[1] << 8) +
 		((uint32_t)cp[2] << 16) + ((uint32_t)cp[3] << 24);
 }
+=======
+#include <tools/le_byteshift.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int main(int argc, char *argv[])
 {
@@ -69,7 +73,11 @@ int main(int argc, char *argv[])
 	}
 
 	ilen = ftell(f);
+<<<<<<< HEAD
 	olen = getle32(&olen);
+=======
+	olen = get_unaligned_le32(&olen);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fclose(f);
 
 	/*

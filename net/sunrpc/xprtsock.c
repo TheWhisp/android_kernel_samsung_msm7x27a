@@ -37,7 +37,11 @@
 #include <linux/sunrpc/svcsock.h>
 #include <linux/sunrpc/xprtsock.h>
 #include <linux/file.h>
+<<<<<<< HEAD
 #ifdef CONFIG_NFS_V4_1
+=======
+#ifdef CONFIG_SUNRPC_BACKCHANNEL
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sunrpc/bc_xprt.h>
 #endif
 
@@ -53,11 +57,20 @@ static void xs_close(struct rpc_xprt *xprt);
 /*
  * xprtsock tunables
  */
+<<<<<<< HEAD
 unsigned int xprt_udp_slot_table_entries = RPC_DEF_SLOT_TABLE;
 unsigned int xprt_tcp_slot_table_entries = RPC_DEF_SLOT_TABLE;
 
 unsigned int xprt_min_resvport = RPC_DEF_MIN_RESVPORT;
 unsigned int xprt_max_resvport = RPC_DEF_MAX_RESVPORT;
+=======
+static unsigned int xprt_udp_slot_table_entries = RPC_DEF_SLOT_TABLE;
+static unsigned int xprt_tcp_slot_table_entries = RPC_MIN_SLOT_TABLE;
+static unsigned int xprt_max_tcp_slot_table_entries = RPC_MAX_SLOT_TABLE;
+
+static unsigned int xprt_min_resvport = RPC_DEF_MIN_RESVPORT;
+static unsigned int xprt_max_resvport = RPC_DEF_MAX_RESVPORT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define XS_TCP_LINGER_TO	(15U * HZ)
 static unsigned int xs_tcp_fin_timeout __read_mostly = XS_TCP_LINGER_TO;
@@ -75,6 +88,10 @@ static unsigned int xs_tcp_fin_timeout __read_mostly = XS_TCP_LINGER_TO;
 
 static unsigned int min_slot_table_size = RPC_MIN_SLOT_TABLE;
 static unsigned int max_slot_table_size = RPC_MAX_SLOT_TABLE;
+<<<<<<< HEAD
+=======
+static unsigned int max_tcp_slot_table_limit = RPC_MAX_SLOT_TABLE_LIMIT;
+>>>>>>> refs/remotes/origin/cm-10.0
 static unsigned int xprt_min_resvport_limit = RPC_MIN_RESVPORT;
 static unsigned int xprt_max_resvport_limit = RPC_MAX_RESVPORT;
 
@@ -104,6 +121,18 @@ static ctl_table xs_tunables_table[] = {
 		.extra2		= &max_slot_table_size
 	},
 	{
+<<<<<<< HEAD
+=======
+		.procname	= "tcp_max_slot_table_entries",
+		.data		= &xprt_max_tcp_slot_table_entries,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &min_slot_table_size,
+		.extra2		= &max_tcp_slot_table_limit
+	},
+	{
+>>>>>>> refs/remotes/origin/cm-10.0
 		.procname	= "min_resvport",
 		.data		= &xprt_min_resvport,
 		.maxlen		= sizeof(unsigned int),
@@ -753,6 +782,11 @@ static void xs_tcp_release_xprt(struct rpc_xprt *xprt, struct rpc_task *task)
 	if (task == NULL)
 		goto out_release;
 	req = task->tk_rqstp;
+<<<<<<< HEAD
+=======
+	if (req == NULL)
+		goto out_release;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (req->rq_bytes_sent == 0)
 		goto out_release;
 	if (req->rq_bytes_sent == req->rq_snd_buf.len)
@@ -1242,7 +1276,11 @@ static inline int xs_tcp_read_reply(struct rpc_xprt *xprt,
 	return 0;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_NFS_V4_1)
+=======
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Obtains an rpc_rqst previously allocated and invokes the common
  * tcp read code to read the data.  The result is placed in the callback
@@ -1305,7 +1343,11 @@ static inline int _xs_tcp_read_data(struct rpc_xprt *xprt,
 {
 	return xs_tcp_read_reply(xprt, desc);
 }
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_V4_1 */
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Read data off the transport.  This can be either an RPC_CALL or an
@@ -2214,7 +2256,11 @@ static void xs_local_print_stats(struct rpc_xprt *xprt, struct seq_file *seq)
 		idle_time = (long)(jiffies - xprt->last_used) / HZ;
 
 	seq_printf(seq, "\txprt:\tlocal %lu %lu %lu %ld %lu %lu %lu "
+<<<<<<< HEAD
 			"%llu %llu\n",
+=======
+			"%llu %llu %lu %llu %llu\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			xprt->stat.bind_count,
 			xprt->stat.connect_count,
 			xprt->stat.connect_time,
@@ -2223,7 +2269,14 @@ static void xs_local_print_stats(struct rpc_xprt *xprt, struct seq_file *seq)
 			xprt->stat.recvs,
 			xprt->stat.bad_xids,
 			xprt->stat.req_u,
+<<<<<<< HEAD
 			xprt->stat.bklog_u);
+=======
+			xprt->stat.bklog_u,
+			xprt->stat.max_slots,
+			xprt->stat.sending_u,
+			xprt->stat.pending_u);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -2236,14 +2289,26 @@ static void xs_udp_print_stats(struct rpc_xprt *xprt, struct seq_file *seq)
 {
 	struct sock_xprt *transport = container_of(xprt, struct sock_xprt, xprt);
 
+<<<<<<< HEAD
 	seq_printf(seq, "\txprt:\tudp %u %lu %lu %lu %lu %Lu %Lu\n",
+=======
+	seq_printf(seq, "\txprt:\tudp %u %lu %lu %lu %lu %llu %llu "
+			"%lu %llu %llu\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			transport->srcport,
 			xprt->stat.bind_count,
 			xprt->stat.sends,
 			xprt->stat.recvs,
 			xprt->stat.bad_xids,
 			xprt->stat.req_u,
+<<<<<<< HEAD
 			xprt->stat.bklog_u);
+=======
+			xprt->stat.bklog_u,
+			xprt->stat.max_slots,
+			xprt->stat.sending_u,
+			xprt->stat.pending_u);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -2260,7 +2325,12 @@ static void xs_tcp_print_stats(struct rpc_xprt *xprt, struct seq_file *seq)
 	if (xprt_connected(xprt))
 		idle_time = (long)(jiffies - xprt->last_used) / HZ;
 
+<<<<<<< HEAD
 	seq_printf(seq, "\txprt:\ttcp %u %lu %lu %lu %ld %lu %lu %lu %Lu %Lu\n",
+=======
+	seq_printf(seq, "\txprt:\ttcp %u %lu %lu %lu %ld %lu %lu %lu "
+			"%llu %llu %lu %llu %llu\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			transport->srcport,
 			xprt->stat.bind_count,
 			xprt->stat.connect_count,
@@ -2270,7 +2340,14 @@ static void xs_tcp_print_stats(struct rpc_xprt *xprt, struct seq_file *seq)
 			xprt->stat.recvs,
 			xprt->stat.bad_xids,
 			xprt->stat.req_u,
+<<<<<<< HEAD
 			xprt->stat.bklog_u);
+=======
+			xprt->stat.bklog_u,
+			xprt->stat.max_slots,
+			xprt->stat.sending_u,
+			xprt->stat.pending_u);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -2399,6 +2476,10 @@ static void bc_destroy(struct rpc_xprt *xprt)
 static struct rpc_xprt_ops xs_local_ops = {
 	.reserve_xprt		= xprt_reserve_xprt,
 	.release_xprt		= xs_tcp_release_xprt,
+<<<<<<< HEAD
+=======
+	.alloc_slot		= xprt_alloc_slot,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rpcbind		= xs_local_rpcbind,
 	.set_port		= xs_local_set_port,
 	.connect		= xs_connect,
@@ -2415,6 +2496,10 @@ static struct rpc_xprt_ops xs_udp_ops = {
 	.set_buffer_size	= xs_udp_set_buffer_size,
 	.reserve_xprt		= xprt_reserve_xprt_cong,
 	.release_xprt		= xprt_release_xprt_cong,
+<<<<<<< HEAD
+=======
+	.alloc_slot		= xprt_alloc_slot,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rpcbind		= rpcb_getport_async,
 	.set_port		= xs_set_port,
 	.connect		= xs_connect,
@@ -2432,6 +2517,10 @@ static struct rpc_xprt_ops xs_udp_ops = {
 static struct rpc_xprt_ops xs_tcp_ops = {
 	.reserve_xprt		= xprt_reserve_xprt,
 	.release_xprt		= xs_tcp_release_xprt,
+<<<<<<< HEAD
+=======
+	.alloc_slot		= xprt_lock_and_alloc_slot,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.rpcbind		= rpcb_getport_async,
 	.set_port		= xs_set_port,
 	.connect		= xs_connect,
@@ -2451,6 +2540,11 @@ static struct rpc_xprt_ops xs_tcp_ops = {
 static struct rpc_xprt_ops bc_tcp_ops = {
 	.reserve_xprt		= xprt_reserve_xprt,
 	.release_xprt		= xprt_release_xprt,
+<<<<<<< HEAD
+=======
+	.alloc_slot		= xprt_alloc_slot,
+	.rpcbind		= xs_local_rpcbind,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.buf_alloc		= bc_malloc,
 	.buf_free		= bc_free,
 	.send_request		= bc_send_request,
@@ -2488,7 +2582,12 @@ static int xs_init_anyaddr(const int family, struct sockaddr *sap)
 }
 
 static struct rpc_xprt *xs_setup_xprt(struct xprt_create *args,
+<<<<<<< HEAD
 				      unsigned int slot_table_size)
+=======
+				      unsigned int slot_table_size,
+				      unsigned int max_slot_table_size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct rpc_xprt *xprt;
 	struct sock_xprt *new;
@@ -2498,7 +2597,12 @@ static struct rpc_xprt *xs_setup_xprt(struct xprt_create *args,
 		return ERR_PTR(-EBADF);
 	}
 
+<<<<<<< HEAD
 	xprt = xprt_alloc(args->net, sizeof(*new), slot_table_size);
+=======
+	xprt = xprt_alloc(args->net, sizeof(*new), slot_table_size,
+			max_slot_table_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (xprt == NULL) {
 		dprintk("RPC:       xs_setup_xprt: couldn't allocate "
 				"rpc_xprt\n");
@@ -2514,8 +2618,15 @@ static struct rpc_xprt *xs_setup_xprt(struct xprt_create *args,
 		int err;
 		err = xs_init_anyaddr(args->dstaddr->sa_family,
 					(struct sockaddr *)&new->srcaddr);
+<<<<<<< HEAD
 		if (err != 0)
 			return ERR_PTR(err);
+=======
+		if (err != 0) {
+			xprt_free(xprt);
+			return ERR_PTR(err);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return xprt;
@@ -2540,7 +2651,12 @@ static struct rpc_xprt *xs_setup_local(struct xprt_create *args)
 	struct rpc_xprt *xprt;
 	struct rpc_xprt *ret;
 
+<<<<<<< HEAD
 	xprt = xs_setup_xprt(args, xprt_tcp_slot_table_entries);
+=======
+	xprt = xs_setup_xprt(args, xprt_tcp_slot_table_entries,
+			xprt_max_tcp_slot_table_entries);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(xprt))
 		return xprt;
 	transport = container_of(xprt, struct sock_xprt, xprt);
@@ -2604,7 +2720,12 @@ static struct rpc_xprt *xs_setup_udp(struct xprt_create *args)
 	struct sock_xprt *transport;
 	struct rpc_xprt *ret;
 
+<<<<<<< HEAD
 	xprt = xs_setup_xprt(args, xprt_udp_slot_table_entries);
+=======
+	xprt = xs_setup_xprt(args, xprt_udp_slot_table_entries,
+			xprt_udp_slot_table_entries);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(xprt))
 		return xprt;
 	transport = container_of(xprt, struct sock_xprt, xprt);
@@ -2680,7 +2801,12 @@ static struct rpc_xprt *xs_setup_tcp(struct xprt_create *args)
 	struct sock_xprt *transport;
 	struct rpc_xprt *ret;
 
+<<<<<<< HEAD
 	xprt = xs_setup_xprt(args, xprt_tcp_slot_table_entries);
+=======
+	xprt = xs_setup_xprt(args, xprt_tcp_slot_table_entries,
+			xprt_max_tcp_slot_table_entries);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(xprt))
 		return xprt;
 	transport = container_of(xprt, struct sock_xprt, xprt);
@@ -2759,7 +2885,12 @@ static struct rpc_xprt *xs_setup_bc_tcp(struct xprt_create *args)
 		 */
 		 return args->bc_xprt->xpt_bc_xprt;
 	}
+<<<<<<< HEAD
 	xprt = xs_setup_xprt(args, xprt_tcp_slot_table_entries);
+=======
+	xprt = xs_setup_xprt(args, xprt_tcp_slot_table_entries,
+			xprt_tcp_slot_table_entries);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(xprt))
 		return xprt;
 	transport = container_of(xprt, struct sock_xprt, xprt);
@@ -2946,8 +3077,31 @@ static struct kernel_param_ops param_ops_slot_table_size = {
 #define param_check_slot_table_size(name, p) \
 	__param_check(name, p, unsigned int);
 
+<<<<<<< HEAD
 module_param_named(tcp_slot_table_entries, xprt_tcp_slot_table_entries,
 		   slot_table_size, 0644);
+=======
+static int param_set_max_slot_table_size(const char *val,
+				     const struct kernel_param *kp)
+{
+	return param_set_uint_minmax(val, kp,
+			RPC_MIN_SLOT_TABLE,
+			RPC_MAX_SLOT_TABLE_LIMIT);
+}
+
+static struct kernel_param_ops param_ops_max_slot_table_size = {
+	.set = param_set_max_slot_table_size,
+	.get = param_get_uint,
+};
+
+#define param_check_max_slot_table_size(name, p) \
+	__param_check(name, p, unsigned int);
+
+module_param_named(tcp_slot_table_entries, xprt_tcp_slot_table_entries,
+		   slot_table_size, 0644);
+module_param_named(tcp_max_slot_table_entries, xprt_max_tcp_slot_table_entries,
+		   max_slot_table_size, 0644);
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(udp_slot_table_entries, xprt_udp_slot_table_entries,
 		   slot_table_size, 0644);
 

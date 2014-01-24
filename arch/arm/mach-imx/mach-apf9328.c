@@ -18,6 +18,10 @@
 #include <linux/platform_device.h>
 #include <linux/mtd/physmap.h>
 #include <linux/dm9000.h>
+<<<<<<< HEAD
+=======
+#include <linux/i2c.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
@@ -41,6 +45,12 @@ static const int apf9328_pins[] __initconst = {
 	PB29_PF_UART2_RTS,
 	PB30_PF_UART2_TXD,
 	PB31_PF_UART2_RXD,
+<<<<<<< HEAD
+=======
+	/* I2C */
+	PA15_PF_I2C_SDA,
+	PA16_PF_I2C_SCL,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -99,15 +109,25 @@ static struct platform_device dm9000x_device = {
 	}
 };
 
+<<<<<<< HEAD
 /* --- SERIAL RESSOURCE --- */
 static const struct imxuart_platform_data uart0_pdata __initconst = {
 	.flags = 0,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct imxuart_platform_data uart1_pdata __initconst = {
 	.flags = IMXUART_HAVE_RTSCTS,
 };
 
+<<<<<<< HEAD
+=======
+static const struct imxi2c_platform_data apf9328_i2c_data __initconst = {
+	.bitrate = 100000,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device *devices[] __initdata = {
 	&apf9328_flash_device,
 	&dm9000x_device,
@@ -115,13 +135,26 @@ static struct platform_device *devices[] __initdata = {
 
 static void __init apf9328_init(void)
 {
+<<<<<<< HEAD
+=======
+	imx1_soc_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mxc_gpio_setup_multiple_pins(apf9328_pins,
 			ARRAY_SIZE(apf9328_pins),
 			"APF9328");
 
+<<<<<<< HEAD
 	imx1_add_imx_uart0(&uart0_pdata);
 	imx1_add_imx_uart1(&uart1_pdata);
 
+=======
+	imx1_add_imx_uart0(NULL);
+	imx1_add_imx_uart1(&uart1_pdata);
+
+	imx1_add_imx_i2c(&apf9328_i2c_data);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 }
 
@@ -139,6 +172,13 @@ MACHINE_START(APF9328, "Armadeus APF9328")
 	.map_io       = mx1_map_io,
 	.init_early   = imx1_init_early,
 	.init_irq     = mx1_init_irq,
+<<<<<<< HEAD
 	.timer        = &apf9328_timer,
 	.init_machine = apf9328_init,
+=======
+	.handle_irq   = imx1_handle_irq,
+	.timer        = &apf9328_timer,
+	.init_machine = apf9328_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -24,7 +24,10 @@ struct sysv_sb_info {
 	char	       s_bytesex;	/* bytesex (le/be/pdp) */
 	char	       s_truncate;	/* if 1: names > SYSV_NAMELEN chars are truncated */
 					/* if 0: they are disallowed (ENAMETOOLONG) */
+<<<<<<< HEAD
 	nlink_t        s_link_max;	/* max number of hard links to a file */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int   s_inodes_per_block;	/* number of inodes per block */
 	unsigned int   s_inodes_per_block_1;	/* inodes_per_block - 1 */
 	unsigned int   s_inodes_per_block_bits;	/* log2(inodes_per_block) */
@@ -125,7 +128,11 @@ static inline void dirty_sb(struct super_block *sb)
 /* ialloc.c */
 extern struct sysv_inode *sysv_raw_inode(struct super_block *, unsigned,
 			struct buffer_head **);
+<<<<<<< HEAD
 extern struct inode * sysv_new_inode(const struct inode *, mode_t);
+=======
+extern struct inode * sysv_new_inode(const struct inode *, umode_t);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void sysv_free_inode(struct inode *);
 extern unsigned long sysv_count_free_inodes(struct super_block *);
 

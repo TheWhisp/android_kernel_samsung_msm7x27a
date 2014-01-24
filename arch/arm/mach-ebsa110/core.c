@@ -22,7 +22,11 @@
 #include <asm/mach-types.h>
 #include <asm/pgtable.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/arch.h>
 #include <asm/mach/irq.h>
@@ -30,10 +34,14 @@
 
 #include <asm/mach/time.h>
 
+<<<<<<< HEAD
 #define IRQ_MASK		0xfe000000	/* read */
 #define IRQ_MSET		0xfe000000	/* write */
 #define IRQ_STAT		0xff000000	/* read */
 #define IRQ_MCLR		0xff000000	/* write */
+=======
+#include "core.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void ebsa110_mask_irq(struct irq_data *d)
 {
@@ -79,22 +87,38 @@ static struct map_desc ebsa110_io_desc[] __initdata = {
 	{	/* IRQ_STAT/IRQ_MCLR */
 		.virtual	= IRQ_STAT,
 		.pfn		= __phys_to_pfn(TRICK4_PHYS),
+<<<<<<< HEAD
 		.length		= PGDIR_SIZE,
+=======
+		.length		= TRICK4_SIZE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.type		= MT_DEVICE
 	}, {	/* IRQ_MASK/IRQ_MSET */
 		.virtual	= IRQ_MASK,
 		.pfn		= __phys_to_pfn(TRICK3_PHYS),
+<<<<<<< HEAD
 		.length		= PGDIR_SIZE,
+=======
+		.length		= TRICK3_SIZE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.type		= MT_DEVICE
 	}, {	/* SOFT_BASE */
 		.virtual	= SOFT_BASE,
 		.pfn		= __phys_to_pfn(TRICK1_PHYS),
+<<<<<<< HEAD
 		.length		= PGDIR_SIZE,
+=======
+		.length		= TRICK1_SIZE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.type		= MT_DEVICE
 	}, {	/* PIT_BASE */
 		.virtual	= PIT_BASE,
 		.pfn		= __phys_to_pfn(TRICK0_PHYS),
+<<<<<<< HEAD
 		.length		= PGDIR_SIZE,
+=======
+		.length		= TRICK0_SIZE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.type		= MT_DEVICE
 	},
 
@@ -119,6 +143,23 @@ static void __init ebsa110_map_io(void)
 	iotable_init(ebsa110_io_desc, ARRAY_SIZE(ebsa110_io_desc));
 }
 
+<<<<<<< HEAD
+=======
+static void __iomem *ebsa110_ioremap_caller(unsigned long cookie, size_t size,
+					    unsigned int flags, void *caller)
+{
+	return (void __iomem *)cookie;
+}
+
+static void ebsa110_iounmap(volatile void __iomem *io_addr)
+{}
+
+static void __init ebsa110_init_early(void)
+{
+	arch_ioremap_caller = ebsa110_ioremap_caller;
+	arch_iounmap = ebsa110_iounmap;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PIT_CTRL		(PIT_BASE + 0x0d)
 #define PIT_T2			(PIT_BASE + 0x09)
@@ -271,13 +312,44 @@ static struct platform_device *ebsa110_devices[] = {
 	&am79c961_device,
 };
 
+<<<<<<< HEAD
 static int __init ebsa110_init(void)
 {
+=======
+/*
+ * EBSA110 idling methodology:
+ *
+ * We can not execute the "wait for interrupt" instruction since that
+ * will stop our MCLK signal (which provides the clock for the glue
+ * logic, and therefore the timer interrupt).
+ *
+ * Instead, we spin, polling the IRQ_STAT register for the occurrence
+ * of any interrupt with core clock down to the memory clock.
+ */
+static void ebsa110_idle(void)
+{
+	const char *irq_stat = (char *)0xff000000;
+
+	/* disable clock switching */
+	asm volatile ("mcr p15, 0, ip, c15, c2, 2" : : : "cc");
+
+	/* wait for an interrupt to occur */
+	while (!*irq_stat);
+
+	/* enable clock switching */
+	asm volatile ("mcr p15, 0, ip, c15, c1, 2" : : : "cc");
+}
+
+static int __init ebsa110_init(void)
+{
+	arm_pm_idle = ebsa110_idle;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return platform_add_devices(ebsa110_devices, ARRAY_SIZE(ebsa110_devices));
 }
 
 arch_initcall(ebsa110_init);
 
+<<<<<<< HEAD
 MACHINE_START(EBSA110, "EBSA110")
 	/* Maintainer: Russell King */
 	.boot_params	= 0x00000400,
@@ -287,4 +359,22 @@ MACHINE_START(EBSA110, "EBSA110")
 	.map_io		= ebsa110_map_io,
 	.init_irq	= ebsa110_init_irq,
 	.timer		= &ebsa110_timer,
+=======
+static void ebsa110_restart(char mode, const char *cmd)
+{
+	soft_restart(0x80000000);
+}
+
+MACHINE_START(EBSA110, "EBSA110")
+	/* Maintainer: Russell King */
+	.atag_offset	= 0x400,
+	.reserve_lp0	= 1,
+	.reserve_lp2	= 1,
+	.restart_mode	= 's',
+	.map_io		= ebsa110_map_io,
+	.init_early	= ebsa110_init_early,
+	.init_irq	= ebsa110_init_irq,
+	.timer		= &ebsa110_timer,
+	.restart	= ebsa110_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

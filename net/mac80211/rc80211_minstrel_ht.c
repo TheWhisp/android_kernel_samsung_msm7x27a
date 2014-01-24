@@ -36,8 +36,22 @@
 /* Transmit duration for the raw data part of an average sized packet */
 #define MCS_DURATION(streams, sgi, bps) MCS_SYMBOL_TIME(sgi, MCS_NSYMS((streams) * (bps)))
 
+<<<<<<< HEAD
 /* MCS rate information for an MCS group */
 #define MCS_GROUP(_streams, _sgi, _ht40) {				\
+=======
+/*
+ * Define group sort order: HT40 -> SGI -> #streams
+ */
+#define GROUP_IDX(_streams, _sgi, _ht40)	\
+	MINSTREL_MAX_STREAMS * 2 * _ht40 +	\
+	MINSTREL_MAX_STREAMS * _sgi +		\
+	_streams - 1
+
+/* MCS rate information for an MCS group */
+#define MCS_GROUP(_streams, _sgi, _ht40)				\
+	[GROUP_IDX(_streams, _sgi, _ht40)] = {				\
+>>>>>>> refs/remotes/origin/cm-10.0
 	.streams = _streams,						\
 	.flags =							\
 		(_sgi ? IEEE80211_TX_RC_SHORT_GI : 0) |			\
@@ -58,6 +72,12 @@
  * To enable sufficiently targeted rate sampling, MCS rates are divided into
  * groups, based on the number of streams and flags (HT40, SGI) that they
  * use.
+<<<<<<< HEAD
+=======
+ *
+ * Sortorder has to be fixed for GROUP_IDX macro to be applicable:
+ * HT40 -> SGI -> #streams
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 const struct mcs_group minstrel_mcs_groups[] = {
 	MCS_GROUP(1, 0, 0),
@@ -102,6 +122,7 @@ minstrel_ewma(int old, int new, int weight)
 static int
 minstrel_ht_get_group_idx(struct ieee80211_tx_rate *rate)
 {
+<<<<<<< HEAD
 	int streams = (rate->idx / MCS_GROUP_RATES) + 1;
 	u32 flags = IEEE80211_TX_RC_SHORT_GI | IEEE80211_TX_RC_40_MHZ_WIDTH;
 	int i;
@@ -117,6 +138,11 @@ minstrel_ht_get_group_idx(struct ieee80211_tx_rate *rate)
 
 	WARN_ON(1);
 	return 0;
+=======
+	return GROUP_IDX((rate->idx / MCS_GROUP_RATES) + 1,
+			 !!(rate->flags & IEEE80211_TX_RC_SHORT_GI),
+			 !!(rate->flags & IEEE80211_TX_RC_40_MHZ_WIDTH));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline struct minstrel_rate_stats *
@@ -130,7 +156,11 @@ minstrel_get_ratestats(struct minstrel_ht_sta *mi, int index)
  * Recalculate success probabilities and counters for a rate using EWMA
  */
 static void
+<<<<<<< HEAD
 minstrel_calc_rate_ewma(struct minstrel_priv *mp, struct minstrel_rate_stats *mr)
+=======
+minstrel_calc_rate_ewma(struct minstrel_rate_stats *mr)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (unlikely(mr->attempts > 0)) {
 		mr->sample_skipped = 0;
@@ -156,8 +186,12 @@ minstrel_calc_rate_ewma(struct minstrel_priv *mp, struct minstrel_rate_stats *mr
  * the expected number of retransmissions and their expected length
  */
 static void
+<<<<<<< HEAD
 minstrel_ht_calc_tp(struct minstrel_priv *mp, struct minstrel_ht_sta *mi,
                     int group, int rate)
+=======
+minstrel_ht_calc_tp(struct minstrel_ht_sta *mi, int group, int rate)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct minstrel_rate_stats *mr;
 	unsigned int usecs;
@@ -226,8 +260,13 @@ minstrel_ht_update_stats(struct minstrel_priv *mp, struct minstrel_ht_sta *mi)
 			mr = &mg->rates[i];
 			mr->retry_updated = false;
 			index = MCS_GROUP_RATES * group + i;
+<<<<<<< HEAD
 			minstrel_calc_rate_ewma(mp, mr);
 			minstrel_ht_calc_tp(mp, mi, group, i);
+=======
+			minstrel_calc_rate_ewma(mr);
+			minstrel_ht_calc_tp(mi, group, i);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (!mr->cur_tp)
 				continue;
@@ -281,6 +320,11 @@ minstrel_ht_update_stats(struct minstrel_priv *mp, struct minstrel_ht_sta *mi)
 
 		mr = minstrel_get_ratestats(mi, mg->max_tp_rate);
 		if (cur_tp < mr->cur_tp) {
+<<<<<<< HEAD
+=======
+			mi->max_tp_rate2 = mi->max_tp_rate;
+			cur_tp2 = cur_tp;
+>>>>>>> refs/remotes/origin/cm-10.0
 			mi->max_tp_rate = mg->max_tp_rate;
 			cur_tp = mr->cur_tp;
 		}
@@ -298,10 +342,17 @@ minstrel_ht_update_stats(struct minstrel_priv *mp, struct minstrel_ht_sta *mi)
 static bool
 minstrel_ht_txstat_valid(struct ieee80211_tx_rate *rate)
 {
+<<<<<<< HEAD
 	if (!rate->count)
 		return false;
 
 	if (rate->idx < 0)
+=======
+	if (rate->idx < 0)
+		return false;
+
+	if (!rate->count)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return false;
 
 	return !!(rate->flags & IEEE80211_TX_RC_MCS);
@@ -355,7 +406,11 @@ minstrel_downgrade_rate(struct minstrel_ht_sta *mi, unsigned int *idx,
 }
 
 static void
+<<<<<<< HEAD
 minstrel_aggr_check(struct minstrel_priv *mp, struct ieee80211_sta *pubsta, struct sk_buff *skb)
+=======
+minstrel_aggr_check(struct ieee80211_sta *pubsta, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
 	struct sta_info *sta = container_of(pubsta, struct sta_info, sta);
@@ -452,7 +507,12 @@ minstrel_ht_tx_status(void *priv, struct ieee80211_supported_band *sband,
 
 	if (time_after(jiffies, mi->stats_update + (mp->update_interval / 2 * HZ) / 1000)) {
 		minstrel_ht_update_stats(mp, mi);
+<<<<<<< HEAD
 		minstrel_aggr_check(mp, sta, skb);
+=======
+		if (!(info->flags & IEEE80211_TX_CTL_AMPDU))
+			minstrel_aggr_check(sta, skb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -512,7 +572,10 @@ minstrel_calc_retransmit(struct minstrel_priv *mp, struct minstrel_ht_sta *mi,
 static void
 minstrel_ht_set_rate(struct minstrel_priv *mp, struct minstrel_ht_sta *mi,
                      struct ieee80211_tx_rate *rate, int index,
+<<<<<<< HEAD
                      struct ieee80211_tx_rate_control *txrc,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
                      bool sample, bool rtscts)
 {
 	const struct mcs_group *group = &minstrel_mcs_groups[index / MCS_GROUP_RATES];
@@ -567,6 +630,16 @@ minstrel_get_sample_rate(struct minstrel_priv *mp, struct minstrel_ht_sta *mi)
 	minstrel_next_sample_idx(mi);
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Sampling might add some overhead (RTS, no aggregation)
+	 * to the frame. Hence, don't use sampling for the currently
+	 * used max TP rate.
+	 */
+	if (sample_idx == mi->max_tp_rate)
+		return -1;
+	/*
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * When not using MRR, do not sample if the probability is already
 	 * higher than 95% to avoid wasting airtime
 	 */
@@ -608,6 +681,7 @@ minstrel_ht_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 		return mac80211_minstrel.get_rate(priv, sta, &msp->legacy, txrc);
 
 	info->flags |= mi->tx_flags;
+<<<<<<< HEAD
 	sample_idx = minstrel_get_sample_rate(mp, mi);
 	if (sample_idx >= 0) {
 		sample = true;
@@ -617,6 +691,30 @@ minstrel_ht_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 	} else {
 		minstrel_ht_set_rate(mp, mi, &ar[0], mi->max_tp_rate,
 			txrc, false, false);
+=======
+
+	/* Don't use EAPOL frames for sampling on non-mrr hw */
+	if (mp->hw->max_rates == 1 &&
+	    txrc->skb->protocol == cpu_to_be16(ETH_P_PAE))
+		sample_idx = -1;
+	else
+		sample_idx = minstrel_get_sample_rate(mp, mi);
+
+#ifdef CONFIG_MAC80211_DEBUGFS
+	/* use fixed index if set */
+	if (mp->fixed_rate_idx != -1)
+		sample_idx = mp->fixed_rate_idx;
+#endif
+
+	if (sample_idx >= 0) {
+		sample = true;
+		minstrel_ht_set_rate(mp, mi, &ar[0], sample_idx,
+			true, false);
+		info->flags |= IEEE80211_TX_CTL_RATE_CTRL_PROBE;
+	} else {
+		minstrel_ht_set_rate(mp, mi, &ar[0], mi->max_tp_rate,
+			false, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (mp->hw->max_rates >= 3) {
@@ -627,6 +725,7 @@ minstrel_ht_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 		 */
 		if (sample_idx >= 0)
 			minstrel_ht_set_rate(mp, mi, &ar[1], mi->max_tp_rate,
+<<<<<<< HEAD
 				txrc, false, false);
 		else
 			minstrel_ht_set_rate(mp, mi, &ar[1], mi->max_tp_rate2,
@@ -634,6 +733,15 @@ minstrel_ht_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 
 		minstrel_ht_set_rate(mp, mi, &ar[2], mi->max_prob_rate,
 				     txrc, false, !sample);
+=======
+				false, false);
+		else
+			minstrel_ht_set_rate(mp, mi, &ar[1], mi->max_tp_rate2,
+				false, true);
+
+		minstrel_ht_set_rate(mp, mi, &ar[2], mi->max_prob_rate,
+				     false, !sample);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ar[3].count = 0;
 		ar[3].idx = -1;
@@ -644,7 +752,11 @@ minstrel_ht_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 		 * max_tp_rate -> max_prob_rate by default.
 		 */
 		minstrel_ht_set_rate(mp, mi, &ar[1], mi->max_prob_rate,
+<<<<<<< HEAD
 				     txrc, false, !sample);
+=======
+				     false, !sample);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ar[2].count = 0;
 		ar[2].idx = -1;
@@ -678,6 +790,10 @@ minstrel_ht_update_caps(void *priv, struct ieee80211_supported_band *sband,
 	int ack_dur;
 	int stbc;
 	int i;
+<<<<<<< HEAD
+=======
+	unsigned int smps;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* fall back to the old minstrel for legacy stations */
 	if (!sta->ht_cap.ht_supported)
@@ -717,6 +833,12 @@ minstrel_ht_update_caps(void *priv, struct ieee80211_supported_band *sband,
 	    oper_chan_type != NL80211_CHAN_HT40PLUS)
 		sta_cap &= ~IEEE80211_HT_CAP_SUP_WIDTH_20_40;
 
+<<<<<<< HEAD
+=======
+	smps = (sta_cap & IEEE80211_HT_CAP_SM_PS) >>
+		IEEE80211_HT_CAP_SM_PS_SHIFT;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < ARRAY_SIZE(mi->groups); i++) {
 		u16 req = 0;
 
@@ -734,6 +856,14 @@ minstrel_ht_update_caps(void *priv, struct ieee80211_supported_band *sband,
 		if ((sta_cap & req) != req)
 			continue;
 
+<<<<<<< HEAD
+=======
+		/* Mark MCS > 7 as unsupported if STA is in static SMPS mode */
+		if (smps == WLAN_HT_CAP_SM_PS_STATIC &&
+		    minstrel_mcs_groups[i].streams > 1)
+			continue;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		mi->groups[i].supported =
 			mcs->rx_mask[minstrel_mcs_groups[i].streams - 1];
 

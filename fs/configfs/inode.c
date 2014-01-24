@@ -23,7 +23,12 @@
  *
  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
  *
+<<<<<<< HEAD
  * Please see Documentation/filesystems/configfs.txt for more information.
+=======
+ * Please see Documentation/filesystems/configfs/configfs.txt for more
+ * information.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #undef DEBUG
@@ -43,8 +48,11 @@
 static struct lock_class_key default_group_class[MAX_LOCK_DEPTH];
 #endif
 
+<<<<<<< HEAD
 extern struct super_block * configfs_sb;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct address_space_operations configfs_aops = {
 	.readpage	= simple_readpage,
 	.write_begin	= simple_write_begin,
@@ -115,7 +123,11 @@ int configfs_setattr(struct dentry * dentry, struct iattr * iattr)
 	return error;
 }
 
+<<<<<<< HEAD
 static inline void set_default_inode_attr(struct inode * inode, mode_t mode)
+=======
+static inline void set_default_inode_attr(struct inode * inode, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	inode->i_mode = mode;
 	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
@@ -131,9 +143,16 @@ static inline void set_inode_attr(struct inode * inode, struct iattr * iattr)
 	inode->i_ctime = iattr->ia_ctime;
 }
 
+<<<<<<< HEAD
 struct inode * configfs_new_inode(mode_t mode, struct configfs_dirent * sd)
 {
 	struct inode * inode = new_inode(configfs_sb);
+=======
+struct inode *configfs_new_inode(umode_t mode, struct configfs_dirent *sd,
+				 struct super_block *s)
+{
+	struct inode * inode = new_inode(s);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (inode) {
 		inode->i_ino = get_next_ino();
 		inode->i_mapping->a_ops = &configfs_aops;
@@ -184,6 +203,7 @@ static void configfs_set_inode_lock_class(struct configfs_dirent *sd,
 
 #endif /* CONFIG_LOCKDEP */
 
+<<<<<<< HEAD
 int configfs_create(struct dentry * dentry, int mode, int (*init)(struct inode *))
 {
 	int error = 0;
@@ -217,6 +237,40 @@ int configfs_create(struct dentry * dentry, int mode, int (*init)(struct inode *
 	} else
 		iput(inode);
  Done:
+=======
+int configfs_create(struct dentry * dentry, umode_t mode, int (*init)(struct inode *))
+{
+	int error = 0;
+	struct inode *inode = NULL;
+	struct configfs_dirent *sd;
+	struct inode *p_inode;
+
+	if (!dentry)
+		return -ENOENT;
+
+	if (dentry->d_inode)
+		return -EEXIST;
+
+	sd = dentry->d_fsdata;
+	inode = configfs_new_inode(mode, sd, dentry->d_sb);
+	if (!inode)
+		return -ENOMEM;
+
+	p_inode = dentry->d_parent->d_inode;
+	p_inode->i_mtime = p_inode->i_ctime = CURRENT_TIME;
+	configfs_set_inode_lock_class(sd, inode);
+
+	if (init) {
+		error = init(inode);
+		if (error) {
+			iput(inode);
+			return error;
+		}
+	}
+	d_instantiate(dentry, inode);
+	if (S_ISDIR(mode) || S_ISLNK(mode))
+		dget(dentry);  /* pin link and directory dentries in core */
+>>>>>>> refs/remotes/origin/cm-10.0
 	return error;
 }
 
@@ -291,7 +345,11 @@ int __init configfs_inode_init(void)
 	return bdi_init(&configfs_backing_dev_info);
 }
 
+<<<<<<< HEAD
 void __exit configfs_inode_exit(void)
+=======
+void configfs_inode_exit(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	bdi_destroy(&configfs_backing_dev_info);
 }

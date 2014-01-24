@@ -151,6 +151,10 @@ extern int ec_write(u8 addr, u8 val);
 extern int ec_transaction(u8 command,
                           const u8 *wdata, unsigned wdata_len,
                           u8 *rdata, unsigned rdata_len);
+<<<<<<< HEAD
+=======
+extern acpi_handle ec_get_handle(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_ACPI_WMI) || defined(CONFIG_ACPI_WMI_MODULE)
 
@@ -238,7 +242,10 @@ extern int acpi_paddr_to_node(u64 start_addr, u64 size);
 extern int pnpacpi_disabled;
 
 #define PXM_INVAL	(-1)
+<<<<<<< HEAD
 #define NID_INVAL	(-1)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int acpi_check_resource_conflict(const struct resource *res);
 
@@ -280,6 +287,11 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context);
 #define OSC_SB_CPUHP_OST_SUPPORT	8
 #define OSC_SB_APEI_SUPPORT		16
 
+<<<<<<< HEAD
+=======
+extern bool osc_sb_apei_support_acked;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* PCI defined _OSC bits */
 /* _OSC DW1 Definition (OS Support Fields) */
 #define OSC_EXT_PCI_CONFIG_SUPPORT		1
@@ -301,10 +313,25 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context);
 				OSC_PCI_EXPRESS_PME_CONTROL |		\
 				OSC_PCI_EXPRESS_AER_CONTROL |		\
 				OSC_PCI_EXPRESS_CAP_STRUCTURE_CONTROL)
+<<<<<<< HEAD
+=======
+
+#define OSC_PCI_NATIVE_HOTPLUG	(OSC_PCI_EXPRESS_NATIVE_HP_CONTROL |	\
+				OSC_SHPC_NATIVE_HP_CONTROL)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 extern acpi_status acpi_pci_osc_control_set(acpi_handle handle,
 					     u32 *mask, u32 req);
 extern void acpi_early_init(void);
 
+<<<<<<< HEAD
+=======
+extern int acpi_nvs_register(__u64 start, __u64 size);
+
+extern int acpi_nvs_for_each_region(int (*func)(__u64, __u64, void *),
+				    void *data);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #else	/* !CONFIG_ACPI */
 
 #define acpi_disabled 1
@@ -347,6 +374,7 @@ static inline int acpi_table_parse(char *id,
 {
 	return -1;
 }
+<<<<<<< HEAD
 #endif	/* !CONFIG_ACPI */
 
 #ifdef CONFIG_ACPI_SLEEP
@@ -356,6 +384,30 @@ static inline int suspend_nvs_register(unsigned long a, unsigned long b)
 {
 	return 0;
 }
+=======
+
+static inline int acpi_nvs_register(__u64 start, __u64 size)
+{
+	return 0;
+}
+
+static inline int acpi_nvs_for_each_region(int (*func)(__u64, __u64, void *),
+					   void *data)
+{
+	return 0;
+}
+
+#endif	/* !CONFIG_ACPI */
+
+#ifdef CONFIG_ACPI
+void acpi_os_set_prepare_sleep(int (*func)(u8 sleep_state,
+			       u32 pm1a_ctrl,  u32 pm1b_ctrl));
+
+acpi_status acpi_os_prepare_sleep(u8 sleep_state,
+				  u32 pm1a_control, u32 pm1b_control);
+#else
+#define acpi_os_set_prepare_sleep(func, pm1a_ctrl, pm1b_ctrl) do { } while (0)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #endif	/*_LINUX_ACPI_H*/

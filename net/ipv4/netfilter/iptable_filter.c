@@ -52,7 +52,11 @@ iptable_filter_hook(unsigned int hook, struct sk_buff *skb,
 static struct nf_hook_ops *filter_ops __read_mostly;
 
 /* Default to forward because I got too much mail already. */
+<<<<<<< HEAD
 static int forward = NF_ACCEPT;
+=======
+static bool forward = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(forward, bool, 0000);
 
 static int __net_init iptable_filter_net_init(struct net *net)
@@ -64,7 +68,11 @@ static int __net_init iptable_filter_net_init(struct net *net)
 		return -ENOMEM;
 	/* Entry 1 is the FORWARD hook */
 	((struct ipt_standard *)repl->entries)[1].target.verdict =
+<<<<<<< HEAD
 		-forward - 1;
+=======
+		forward ? -NF_ACCEPT - 1 : -NF_DROP - 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	net->ipv4.iptable_filter =
 		ipt_register_table(net, &packet_filter, repl);
@@ -88,11 +96,14 @@ static int __init iptable_filter_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (forward < 0 || forward > NF_MAX_VERDICT) {
 		pr_err("iptables forward must be 0 or 1\n");
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = register_pernet_subsys(&iptable_filter_net_ops);
 	if (ret < 0)
 		return ret;

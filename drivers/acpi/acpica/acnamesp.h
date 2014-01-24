@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -283,8 +287,14 @@ acpi_ns_repair_object(struct acpi_predefined_data *data,
 		      union acpi_operand_object **return_object_ptr);
 
 acpi_status
+<<<<<<< HEAD
 acpi_ns_repair_package_list(struct acpi_predefined_data *data,
 			    union acpi_operand_object **obj_desc_ptr);
+=======
+acpi_ns_wrap_with_package(struct acpi_predefined_data *data,
+			  union acpi_operand_object *original_object,
+			  union acpi_operand_object **obj_desc_ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 acpi_status
 acpi_ns_repair_null_element(struct acpi_predefined_data *data,

@@ -189,7 +189,11 @@ ENTRY(sys_call_table)
 	.long sys_getpagesize
 	.long sys_ni_syscall		/* old "query_module" */
 	.long sys_poll
+<<<<<<< HEAD
 	.long sys_nfsservctl
+=======
+	.long sys_ni_syscall		/* old nfsservctl */
+>>>>>>> refs/remotes/origin/cm-10.0
 	.long sys_setresgid16		/* 170 */
 	.long sys_getresgid16
 	.long sys_prctl
@@ -365,4 +369,9 @@ ENTRY(sys_call_table)
 	.long sys_clock_adjtime
 	.long sys_syncfs
 	.long sys_setns
+<<<<<<< HEAD
+=======
+	.long sys_process_vm_readv	/* 345 */
+	.long sys_process_vm_writev
+>>>>>>> refs/remotes/origin/cm-10.0
 

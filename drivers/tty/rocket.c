@@ -83,7 +83,11 @@
 #include <linux/wait.h>
 #include <linux/pci.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 #include <linux/bitops.h>
 #include <linux/spinlock.h>
@@ -118,7 +122,11 @@ static unsigned long board2;
 static unsigned long board3;
 static unsigned long board4;
 static unsigned long controller;
+<<<<<<< HEAD
 static int support_low_speed;
+=======
+static bool support_low_speed;
+>>>>>>> refs/remotes/origin/cm-10.0
 static unsigned long modem1;
 static unsigned long modem2;
 static unsigned long modem3;
@@ -892,12 +900,21 @@ static int rp_open(struct tty_struct *tty, struct file *filp)
 {
 	struct r_port *info;
 	struct tty_port *port;
+<<<<<<< HEAD
 	int line = 0, retval;
 	CHANNEL_t *cp;
 	unsigned long page;
 
 	line = tty->index;
 	if (line < 0 || line >= MAX_RP_PORTS || ((info = rp_table[line]) == NULL))
+=======
+	int retval;
+	CHANNEL_t *cp;
+	unsigned long page;
+
+	info = rp_table[tty->index];
+	if (info == NULL)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENXIO;
 	port = &info->port;
 	
@@ -2277,7 +2294,10 @@ static int __init rp_init(void)
 	 * driver with the tty layer.
 	 */
 
+<<<<<<< HEAD
 	rocket_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	rocket_driver->flags = TTY_DRIVER_DYNAMIC_DEV;
 	rocket_driver->name = "ttyR";
 	rocket_driver->driver_name = "Comtrol RocketPort";

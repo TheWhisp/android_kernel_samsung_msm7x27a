@@ -166,7 +166,11 @@ enum kone_mouse_events {
 	/* osd events are thought to be display on screen */
 	kone_mouse_event_osd_dpi = 0xa0,
 	kone_mouse_event_osd_profile = 0xb0,
+<<<<<<< HEAD
 	/* TODO clarify meaning and occurrence of kone_mouse_event_calibration */
+=======
+	/* TODO clarify meaning and occurence of kone_mouse_event_calibration */
+>>>>>>> refs/remotes/origin/cm-10.0
 	kone_mouse_event_calibration = 0xc0,
 	kone_mouse_event_call_overlong_macro = 0xe0,
 	/* switch events notify if user changed values with mousebutton click */

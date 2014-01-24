@@ -8,6 +8,10 @@
  */
 
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/etherdevice.h>
 #include <linux/platform_device.h>
 #include <linux/mtd/mtd.h>
@@ -30,7 +34,11 @@
  */
 const char bfin_board_name[] = "Bluetechnix CM BF537E";
 
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 /* all SPI peripherals info goes here */
 
 #if defined(CONFIG_MTD_M25P80) || defined(CONFIG_MTD_M25P80_MODULE)
@@ -61,6 +69,7 @@ static struct flash_platform_data bfin_spi_flash_data = {
 /* SPI flash chip (m25p64) */
 static struct bfin5xx_spi_chip spi_flash_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -77,13 +86,18 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
 static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
 	.enable_dma = 0,
 	.bits_per_word = 16,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
 #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
 static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -101,6 +115,7 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 	},
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_BFIN_SPI_ADC) || defined(CONFIG_BFIN_SPI_ADC_MODULE)
 	{
 		.modalias = "bfin_spi_adc", /* Name of spi_driver for this device */
@@ -112,13 +127,18 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 	},
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
 	{
 		.modalias = "ad183x",
 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num = 0,
 		.chip_select = 4,
+<<<<<<< HEAD
 		.controller_data = &ad1836_spi_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 #endif
 
@@ -334,8 +354,18 @@ static struct resource bfin_uart0_resources[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX+1,
+=======
+		.start = IRQ_UART0_TX,
+		.end = IRQ_UART0_TX,
+		.flags = IORESOURCE_IRQ,
+	},
+	{
+		.start = IRQ_UART0_RX,
+		.end = IRQ_UART0_RX,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -395,8 +425,18 @@ static struct resource bfin_uart1_resources[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start = IRQ_UART1_RX,
 		.end = IRQ_UART1_RX+1,
+=======
+		.start = IRQ_UART1_TX,
+		.end = IRQ_UART1_TX,
+		.flags = IORESOURCE_IRQ,
+	},
+	{
+		.start = IRQ_UART1_RX,
+		.end = IRQ_UART1_RX,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -634,7 +674,11 @@ static struct platform_device bfin_mac_device = {
 
 static struct pata_platform_info bfin_pata_platform_data = {
 	.ioport_shift = 2,
+<<<<<<< HEAD
 	.irq_type = IRQF_TRIGGER_HIGH | IRQF_DISABLED,
+=======
+	.irq_type = IRQF_TRIGGER_HIGH,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct resource bfin_pata_resources[] = {
@@ -753,7 +797,11 @@ static struct platform_device *cm_bf537e_devices[] __initdata = {
 	&net2272_bfin_device,
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	&bfin_spi0_device,
 #endif
 
@@ -766,17 +814,49 @@ static struct platform_device *cm_bf537e_devices[] __initdata = {
 #endif
 };
 
+<<<<<<< HEAD
+=======
+static int __init net2272_init(void)
+{
+#if defined(CONFIG_USB_NET2272) || defined(CONFIG_USB_NET2272_MODULE)
+	int ret;
+
+	ret = gpio_request(GPIO_PG14, "net2272");
+	if (ret)
+		return ret;
+
+	/* Reset USB Chip, PG14 */
+	gpio_direction_output(GPIO_PG14, 0);
+	mdelay(2);
+	gpio_set_value(GPIO_PG14, 1);
+#endif
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init cm_bf537e_init(void)
 {
 	printk(KERN_INFO "%s(): registering device resources\n", __func__);
 	platform_add_devices(cm_bf537e_devices, ARRAY_SIZE(cm_bf537e_devices));
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	spi_register_board_info(bfin_spi_board_info, ARRAY_SIZE(bfin_spi_board_info));
 #endif
 
 #if defined(CONFIG_PATA_PLATFORM) || defined(CONFIG_PATA_PLATFORM_MODULE)
 	irq_set_status_flags(PATA_INT, IRQ_NOAUTOEN);
 #endif
+<<<<<<< HEAD
+=======
+
+	if (net2272_init())
+		pr_warning("unable to configure net2272; it probably won't work\n");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -809,9 +889,15 @@ void __init native_machine_early_platform_add_devices(void)
 		ARRAY_SIZE(cm_bf537e_early_devices));
 }
 
+<<<<<<< HEAD
 void bfin_get_ether_addr(char *addr)
 {
 	random_ether_addr(addr);
 	printk(KERN_WARNING "%s:%s: Setting Ethernet MAC to a random one\n", __FILE__, __func__);
+=======
+int bfin_get_ether_addr(char *addr)
+{
+	return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(bfin_get_ether_addr);

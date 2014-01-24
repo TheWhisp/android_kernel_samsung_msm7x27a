@@ -24,7 +24,10 @@
  *
  ********************************************************************/
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/delay.h>
 
 #include <net/irda/timer.h>

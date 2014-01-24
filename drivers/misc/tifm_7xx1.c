@@ -11,6 +11,10 @@
 
 #include <linux/tifm.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVER_NAME "tifm_7xx1"
 #define DRIVER_VERSION "0.8"

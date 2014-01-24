@@ -65,12 +65,22 @@ void radeon_driver_irq_preinstall_kms(struct drm_device *dev)
 	unsigned i;
 
 	/* Disable *all* interrupts */
+<<<<<<< HEAD
 	rdev->irq.sw_int = false;
 	rdev->irq.gui_idle = false;
 	for (i = 0; i < rdev->num_crtc; i++)
 		rdev->irq.crtc_vblank_int[i] = false;
 	for (i = 0; i < 6; i++) {
 		rdev->irq.hpd[i] = false;
+=======
+	for (i = 0; i < RADEON_NUM_RINGS; i++)
+		rdev->irq.sw_int[i] = false;
+	rdev->irq.gui_idle = false;
+	for (i = 0; i < RADEON_MAX_HPD_PINS; i++)
+		rdev->irq.hpd[i] = false;
+	for (i = 0; i < RADEON_MAX_CRTCS; i++) {
+		rdev->irq.crtc_vblank_int[i] = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 		rdev->irq.pflip[i] = false;
 	}
 	radeon_irq_set(rdev);
@@ -81,9 +91,17 @@ void radeon_driver_irq_preinstall_kms(struct drm_device *dev)
 int radeon_driver_irq_postinstall_kms(struct drm_device *dev)
 {
 	struct radeon_device *rdev = dev->dev_private;
+<<<<<<< HEAD
 
 	dev->max_vblank_count = 0x001fffff;
 	rdev->irq.sw_int = true;
+=======
+	unsigned i;
+
+	dev->max_vblank_count = 0x001fffff;
+	for (i = 0; i < RADEON_NUM_RINGS; i++)
+		rdev->irq.sw_int[i] = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 	radeon_irq_set(rdev);
 	return 0;
 }
@@ -97,12 +115,22 @@ void radeon_driver_irq_uninstall_kms(struct drm_device *dev)
 		return;
 	}
 	/* Disable *all* interrupts */
+<<<<<<< HEAD
 	rdev->irq.sw_int = false;
 	rdev->irq.gui_idle = false;
 	for (i = 0; i < rdev->num_crtc; i++)
 		rdev->irq.crtc_vblank_int[i] = false;
 	for (i = 0; i < 6; i++) {
 		rdev->irq.hpd[i] = false;
+=======
+	for (i = 0; i < RADEON_NUM_RINGS; i++)
+		rdev->irq.sw_int[i] = false;
+	rdev->irq.gui_idle = false;
+	for (i = 0; i < RADEON_MAX_HPD_PINS; i++)
+		rdev->irq.hpd[i] = false;
+	for (i = 0; i < RADEON_MAX_CRTCS; i++) {
+		rdev->irq.crtc_vblank_int[i] = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 		rdev->irq.pflip[i] = false;
 	}
 	radeon_irq_set(rdev);
@@ -216,26 +244,45 @@ void radeon_irq_kms_fini(struct radeon_device *rdev)
 	flush_work_sync(&rdev->hotplug_work);
 }
 
+<<<<<<< HEAD
 void radeon_irq_kms_sw_irq_get(struct radeon_device *rdev)
+=======
+void radeon_irq_kms_sw_irq_get(struct radeon_device *rdev, int ring)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long irqflags;
 
 	spin_lock_irqsave(&rdev->irq.sw_lock, irqflags);
+<<<<<<< HEAD
 	if (rdev->ddev->irq_enabled && (++rdev->irq.sw_refcount == 1)) {
 		rdev->irq.sw_int = true;
+=======
+	if (rdev->ddev->irq_enabled && (++rdev->irq.sw_refcount[ring] == 1)) {
+		rdev->irq.sw_int[ring] = true;
+>>>>>>> refs/remotes/origin/cm-10.0
 		radeon_irq_set(rdev);
 	}
 	spin_unlock_irqrestore(&rdev->irq.sw_lock, irqflags);
 }
 
+<<<<<<< HEAD
 void radeon_irq_kms_sw_irq_put(struct radeon_device *rdev)
+=======
+void radeon_irq_kms_sw_irq_put(struct radeon_device *rdev, int ring)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long irqflags;
 
 	spin_lock_irqsave(&rdev->irq.sw_lock, irqflags);
+<<<<<<< HEAD
 	BUG_ON(rdev->ddev->irq_enabled && rdev->irq.sw_refcount <= 0);
 	if (rdev->ddev->irq_enabled && (--rdev->irq.sw_refcount == 0)) {
 		rdev->irq.sw_int = false;
+=======
+	BUG_ON(rdev->ddev->irq_enabled && rdev->irq.sw_refcount[ring] <= 0);
+	if (rdev->ddev->irq_enabled && (--rdev->irq.sw_refcount[ring] == 0)) {
+		rdev->irq.sw_int[ring] = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 		radeon_irq_set(rdev);
 	}
 	spin_unlock_irqrestore(&rdev->irq.sw_lock, irqflags);

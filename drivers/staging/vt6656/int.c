@@ -92,9 +92,14 @@ void INTvWorkItem(void *Context)
 	spin_unlock_irq(&pDevice->lock);
 }
 
+<<<<<<< HEAD
 int INTnsProcessData(PSDevice pDevice)
 {
 	int status = STATUS_SUCCESS;
+=======
+void INTnsProcessData(PSDevice pDevice)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	PSINTData	pINTData;
 	PSMgmtObject	pMgmt = &(pDevice->sMgmtObj);
 	struct net_device_stats *pStats = &pDevice->stats;
@@ -218,6 +223,9 @@ int INTnsProcessData(PSDevice pDevice)
 			pDevice->scStatistic.ullTxBroadcastBytes;
 	pStats->tx_errors = pDevice->scStatistic.dwTsrErr;
 	pStats->tx_dropped = pDevice->scStatistic.dwTsrErr;
+<<<<<<< HEAD
 
 	return status;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }

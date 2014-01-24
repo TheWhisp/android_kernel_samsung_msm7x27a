@@ -3427,17 +3427,30 @@ err:
 	return -1;
 }
 
+<<<<<<< HEAD
 static enum dvbfe_search stv090x_search(struct dvb_frontend *fe, struct dvb_frontend_parameters *p)
+=======
+static enum dvbfe_search stv090x_search(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct stv090x_state *state = fe->demodulator_priv;
 	struct dtv_frontend_properties *props = &fe->dtv_property_cache;
 
+<<<<<<< HEAD
 	if (p->frequency == 0)
 		return DVBFE_ALGO_SEARCH_INVALID;
 
 	state->delsys = props->delivery_system;
 	state->frequency = p->frequency;
 	state->srate = p->u.qpsk.symbol_rate;
+=======
+	if (props->frequency == 0)
+		return DVBFE_ALGO_SEARCH_INVALID;
+
+	state->delsys = props->delivery_system;
+	state->frequency = props->frequency;
+	state->srate = props->symbol_rate;
+>>>>>>> refs/remotes/origin/cm-10.0
 	state->search_mode = STV090x_SEARCH_AUTO;
 	state->algo = STV090x_COLD_SEARCH;
 	state->fec = STV090x_PRERR;
@@ -3463,9 +3476,21 @@ static enum dvbfe_search stv090x_search(struct dvb_frontend *fe, struct dvb_fron
 static int stv090x_read_status(struct dvb_frontend *fe, enum fe_status *status)
 {
 	struct stv090x_state *state = fe->demodulator_priv;
+<<<<<<< HEAD
 	u32 reg;
 	u8 search_state;
 
+=======
+	u32 reg, dstatus;
+	u8 search_state;
+
+	*status = 0;
+
+	dstatus = STV090x_READ_DEMOD(state, DSTATUS);
+	if (STV090x_GETFIELD_Px(dstatus, CAR_LOCK_FIELD))
+		*status |= FE_HAS_SIGNAL | FE_HAS_CARRIER;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	reg = STV090x_READ_DEMOD(state, DMDSTATE);
 	search_state = STV090x_GETFIELD_Px(reg, HEADER_MODE_FIELD);
 
@@ -3474,11 +3499,15 @@ static int stv090x_read_status(struct dvb_frontend *fe, enum fe_status *status)
 	case 1: /* first PLH detected */
 	default:
 		dprintk(FE_DEBUG, 1, "Status: Unlocked (Searching ..)");
+<<<<<<< HEAD
 		*status = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case 2: /* DVB-S2 mode */
 		dprintk(FE_DEBUG, 1, "Delivery system: DVB-S2");
+<<<<<<< HEAD
 		reg = STV090x_READ_DEMOD(state, DSTATUS);
 		if (STV090x_GETFIELD_Px(reg, LOCK_DEFINITIF_FIELD)) {
 			reg = STV090x_READ_DEMOD(state, PDELSTATUS1);
@@ -3491,12 +3520,22 @@ static int stv090x_read_status(struct dvb_frontend *fe, enum fe_status *status)
 						  FE_HAS_SYNC |
 						  FE_HAS_LOCK;
 				}
+=======
+		if (STV090x_GETFIELD_Px(dstatus, LOCK_DEFINITIF_FIELD)) {
+			reg = STV090x_READ_DEMOD(state, PDELSTATUS1);
+			if (STV090x_GETFIELD_Px(reg, PKTDELIN_LOCK_FIELD)) {
+				*status |= FE_HAS_VITERBI;
+				reg = STV090x_READ_DEMOD(state, TSSTATUS);
+				if (STV090x_GETFIELD_Px(reg, TSFIFO_LINEOK_FIELD))
+					*status |= FE_HAS_SYNC | FE_HAS_LOCK;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 		break;
 
 	case 3: /* DVB-S1/legacy mode */
 		dprintk(FE_DEBUG, 1, "Delivery system: DVB-S");
+<<<<<<< HEAD
 		reg = STV090x_READ_DEMOD(state, DSTATUS);
 		if (STV090x_GETFIELD_Px(reg, LOCK_DEFINITIF_FIELD)) {
 			reg = STV090x_READ_DEMOD(state, VSTATUSVIT);
@@ -3509,6 +3548,15 @@ static int stv090x_read_status(struct dvb_frontend *fe, enum fe_status *status)
 						  FE_HAS_SYNC |
 						  FE_HAS_LOCK;
 				}
+=======
+		if (STV090x_GETFIELD_Px(dstatus, LOCK_DEFINITIF_FIELD)) {
+			reg = STV090x_READ_DEMOD(state, VSTATUSVIT);
+			if (STV090x_GETFIELD_Px(reg, LOCKEDVIT_FIELD)) {
+				*status |= FE_HAS_VITERBI;
+				reg = STV090x_READ_DEMOD(state, TSSTATUS);
+				if (STV090x_GETFIELD_Px(reg, TSFIFO_LINEOK_FIELD))
+					*status |= FE_HAS_SYNC | FE_HAS_LOCK;
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 		break;
@@ -4717,10 +4765,16 @@ int stv090x_set_gpio(struct dvb_frontend *fe, u8 gpio, u8 dir, u8 value,
 EXPORT_SYMBOL(stv090x_set_gpio);
 
 static struct dvb_frontend_ops stv090x_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		.name			= "STV090x Multistandard",
 		.type			= FE_QPSK,
+=======
+	.delsys = { SYS_DVBS, SYS_DVBS2, SYS_DSS },
+	.info = {
+		.name			= "STV090x Multistandard",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min		= 950000,
 		.frequency_max 		= 2150000,
 		.frequency_stepsize	= 0,
@@ -4748,7 +4802,11 @@ static struct dvb_frontend_ops stv090x_ops = {
 	.read_status			= stv090x_read_status,
 	.read_ber			= stv090x_read_per,
 	.read_signal_strength		= stv090x_read_signal_strength,
+<<<<<<< HEAD
 	.read_snr			= stv090x_read_cnr
+=======
+	.read_snr			= stv090x_read_cnr,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 

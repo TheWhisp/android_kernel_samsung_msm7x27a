@@ -45,7 +45,11 @@ struct journal_head {
 	 * has been cowed
 	 * [jbd_lock_bh_state()]
 	 */
+<<<<<<< HEAD
 	unsigned b_cow_tid;
+=======
+	tid_t b_cow_tid;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Copy of the buffer data frozen for writing to the log.
@@ -66,6 +70,11 @@ struct journal_head {
 	 * transaction (if there is one).  Only applies to buffers on a
 	 * transaction's data or metadata journaling list.
 	 * [j_list_lock] [jbd_lock_bh_state()]
+<<<<<<< HEAD
+=======
+	 * Either of these locks is enough for reading, both are needed for
+	 * changes.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	transaction_t *b_transaction;
 

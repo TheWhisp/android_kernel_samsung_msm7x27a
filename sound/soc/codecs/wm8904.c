@@ -17,7 +17,11 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
 #include <sound/core.h>
@@ -48,9 +52,15 @@ static const char *wm8904_supply_names[WM8904_NUM_SUPPLIES] = {
 
 /* codec private data */
 struct wm8904_priv {
+<<<<<<< HEAD
 
 	enum wm8904_type devtype;
 	void *control_data;
+=======
+	struct regmap *regmap;
+
+	enum wm8904_type devtype;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct regulator_bulk_data supplies[WM8904_NUM_SUPPLIES];
 
@@ -88,6 +98,7 @@ struct wm8904_priv {
 	int dcs_state[WM8904_NUM_DCS_CHANNELS];
 };
 
+<<<<<<< HEAD
 static const u16 wm8904_reg[WM8904_MAX_REGISTER + 1] = {
 	0x8904,     /* R0   - SW Reset and ID */
 	0x0000,     /* R1   - Revision */
@@ -599,6 +610,232 @@ static struct {
 static int wm8904_volatile_register(struct snd_soc_codec *codec, unsigned int reg)
 {
 	return wm8904_access[reg].vol;
+=======
+static const struct reg_default wm8904_reg_defaults[] = {
+	{ 4,   0x0018 },     /* R4   - Bias Control 0 */
+	{ 5,   0x0000 },     /* R5   - VMID Control 0 */
+	{ 6,   0x0000 },     /* R6   - Mic Bias Control 0 */
+	{ 7,   0x0000 },     /* R7   - Mic Bias Control 1 */
+	{ 8,   0x0001 },     /* R8   - Analogue DAC 0 */
+	{ 9,   0x9696 },     /* R9   - mic Filter Control */
+	{ 10,  0x0001 },     /* R10  - Analogue ADC 0 */
+	{ 12,  0x0000 },     /* R12  - Power Management 0 */
+	{ 14,  0x0000 },     /* R14  - Power Management 2 */
+	{ 15,  0x0000 },     /* R15  - Power Management 3 */
+	{ 18,  0x0000 },     /* R18  - Power Management 6 */
+	{ 19,  0x945E },     /* R20  - Clock Rates 0 */
+	{ 21,  0x0C05 },     /* R21  - Clock Rates 1 */
+	{ 22,  0x0006 },     /* R22  - Clock Rates 2 */
+	{ 24,  0x0050 },     /* R24  - Audio Interface 0 */
+	{ 25,  0x000A },     /* R25  - Audio Interface 1 */
+	{ 26,  0x00E4 },     /* R26  - Audio Interface 2 */
+	{ 27,  0x0040 },     /* R27  - Audio Interface 3 */
+	{ 30,  0x00C0 },     /* R30  - DAC Digital Volume Left */
+	{ 31,  0x00C0 },     /* R31  - DAC Digital Volume Right */
+	{ 32,  0x0000 },     /* R32  - DAC Digital 0 */
+	{ 33,  0x0008 },     /* R33  - DAC Digital 1 */
+	{ 36,  0x00C0 },     /* R36  - ADC Digital Volume Left */
+	{ 37,  0x00C0 },     /* R37  - ADC Digital Volume Right */
+	{ 38,  0x0010 },     /* R38  - ADC Digital 0 */
+	{ 39,  0x0000 },     /* R39  - Digital Microphone 0 */
+	{ 40,  0x01AF },     /* R40  - DRC 0 */
+	{ 41,  0x3248 },     /* R41  - DRC 1 */
+	{ 42,  0x0000 },     /* R42  - DRC 2 */
+	{ 43,  0x0000 },     /* R43  - DRC 3 */
+	{ 44,  0x0085 },     /* R44  - Analogue Left Input 0 */
+	{ 45,  0x0085 },     /* R45  - Analogue Right Input 0 */
+	{ 46,  0x0044 },     /* R46  - Analogue Left Input 1 */
+	{ 47,  0x0044 },     /* R47  - Analogue Right Input 1 */
+	{ 57,  0x002D },     /* R57  - Analogue OUT1 Left */
+	{ 58,  0x002D },     /* R58  - Analogue OUT1 Right */
+	{ 59,  0x0039 },     /* R59  - Analogue OUT2 Left */
+	{ 60,  0x0039 },     /* R60  - Analogue OUT2 Right */
+	{ 61,  0x0000 },     /* R61  - Analogue OUT12 ZC */
+	{ 67,  0x0000 },     /* R67  - DC Servo 0 */
+	{ 69,  0xAAAA },     /* R69  - DC Servo 2 */
+	{ 71,  0xAAAA },     /* R71  - DC Servo 4 */
+	{ 72,  0xAAAA },     /* R72  - DC Servo 5 */
+	{ 90,  0x0000 },     /* R90  - Analogue HP 0 */
+	{ 94,  0x0000 },     /* R94  - Analogue Lineout 0 */
+	{ 98,  0x0000 },     /* R98  - Charge Pump 0 */
+	{ 104, 0x0004 },     /* R104 - Class W 0 */
+	{ 108, 0x0000 },     /* R108 - Write Sequencer 0 */
+	{ 109, 0x0000 },     /* R109 - Write Sequencer 1 */
+	{ 110, 0x0000 },     /* R110 - Write Sequencer 2 */
+	{ 111, 0x0000 },     /* R111 - Write Sequencer 3 */
+	{ 112, 0x0000 },     /* R112 - Write Sequencer 4 */
+	{ 116, 0x0000 },     /* R116 - FLL Control 1 */
+	{ 117, 0x0007 },     /* R117 - FLL Control 2 */
+	{ 118, 0x0000 },     /* R118 - FLL Control 3 */
+	{ 119, 0x2EE0 },     /* R119 - FLL Control 4 */
+	{ 120, 0x0004 },     /* R120 - FLL Control 5 */
+	{ 121, 0x0014 },     /* R121 - GPIO Control 1 */
+	{ 122, 0x0010 },     /* R122 - GPIO Control 2 */
+	{ 123, 0x0010 },     /* R123 - GPIO Control 3 */
+	{ 124, 0x0000 },     /* R124 - GPIO Control 4 */
+	{ 126, 0x0000 },     /* R126 - Digital Pulls */
+	{ 128, 0xFFFF },     /* R128 - Interrupt Status Mask */
+	{ 129, 0x0000 },     /* R129 - Interrupt Polarity */
+	{ 130, 0x0000 },     /* R130 - Interrupt Debounce */
+	{ 134, 0x0000 },     /* R134 - EQ1 */
+	{ 135, 0x000C },     /* R135 - EQ2 */
+	{ 136, 0x000C },     /* R136 - EQ3 */
+	{ 137, 0x000C },     /* R137 - EQ4 */
+	{ 138, 0x000C },     /* R138 - EQ5 */
+	{ 139, 0x000C },     /* R139 - EQ6 */
+	{ 140, 0x0FCA },     /* R140 - EQ7 */
+	{ 141, 0x0400 },     /* R141 - EQ8 */
+	{ 142, 0x00D8 },     /* R142 - EQ9 */
+	{ 143, 0x1EB5 },     /* R143 - EQ10 */
+	{ 144, 0xF145 },     /* R144 - EQ11 */
+	{ 145, 0x0B75 },     /* R145 - EQ12 */
+	{ 146, 0x01C5 },     /* R146 - EQ13 */
+	{ 147, 0x1C58 },     /* R147 - EQ14 */
+	{ 148, 0xF373 },     /* R148 - EQ15 */
+	{ 149, 0x0A54 },     /* R149 - EQ16 */
+	{ 150, 0x0558 },     /* R150 - EQ17 */
+	{ 151, 0x168E },     /* R151 - EQ18 */
+	{ 152, 0xF829 },     /* R152 - EQ19 */
+	{ 153, 0x07AD },     /* R153 - EQ20 */
+	{ 154, 0x1103 },     /* R154 - EQ21 */
+	{ 155, 0x0564 },     /* R155 - EQ22 */
+	{ 156, 0x0559 },     /* R156 - EQ23 */
+	{ 157, 0x4000 },     /* R157 - EQ24 */
+	{ 161, 0x0000 },     /* R161 - Control Interface Test 1 */
+	{ 204, 0x0000 },     /* R204 - Analogue Output Bias 0 */
+	{ 247, 0x0000 },     /* R247 - FLL NCO Test 0 */
+	{ 248, 0x0019 },     /* R248 - FLL NCO Test 1 */
+};
+
+static bool wm8904_volatile_register(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8904_SW_RESET_AND_ID:
+	case WM8904_REVISION:
+	case WM8904_DC_SERVO_1:
+	case WM8904_DC_SERVO_6:
+	case WM8904_DC_SERVO_7:
+	case WM8904_DC_SERVO_8:
+	case WM8904_DC_SERVO_9:
+	case WM8904_DC_SERVO_READBACK_0:
+	case WM8904_INTERRUPT_STATUS:
+		return true;
+	default:
+		return false;
+	}
+}
+
+static bool wm8904_readable_register(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8904_SW_RESET_AND_ID:
+	case WM8904_REVISION:
+	case WM8904_BIAS_CONTROL_0:
+	case WM8904_VMID_CONTROL_0:
+	case WM8904_MIC_BIAS_CONTROL_0:
+	case WM8904_MIC_BIAS_CONTROL_1:
+	case WM8904_ANALOGUE_DAC_0:
+	case WM8904_MIC_FILTER_CONTROL:
+	case WM8904_ANALOGUE_ADC_0:
+	case WM8904_POWER_MANAGEMENT_0:
+	case WM8904_POWER_MANAGEMENT_2:
+	case WM8904_POWER_MANAGEMENT_3:
+	case WM8904_POWER_MANAGEMENT_6:
+	case WM8904_CLOCK_RATES_0:
+	case WM8904_CLOCK_RATES_1:
+	case WM8904_CLOCK_RATES_2:
+	case WM8904_AUDIO_INTERFACE_0:
+	case WM8904_AUDIO_INTERFACE_1:
+	case WM8904_AUDIO_INTERFACE_2:
+	case WM8904_AUDIO_INTERFACE_3:
+	case WM8904_DAC_DIGITAL_VOLUME_LEFT:
+	case WM8904_DAC_DIGITAL_VOLUME_RIGHT:
+	case WM8904_DAC_DIGITAL_0:
+	case WM8904_DAC_DIGITAL_1:
+	case WM8904_ADC_DIGITAL_VOLUME_LEFT:
+	case WM8904_ADC_DIGITAL_VOLUME_RIGHT:
+	case WM8904_ADC_DIGITAL_0:
+	case WM8904_DIGITAL_MICROPHONE_0:
+	case WM8904_DRC_0:
+	case WM8904_DRC_1:
+	case WM8904_DRC_2:
+	case WM8904_DRC_3:
+	case WM8904_ANALOGUE_LEFT_INPUT_0:
+	case WM8904_ANALOGUE_RIGHT_INPUT_0:
+	case WM8904_ANALOGUE_LEFT_INPUT_1:
+	case WM8904_ANALOGUE_RIGHT_INPUT_1:
+	case WM8904_ANALOGUE_OUT1_LEFT:
+	case WM8904_ANALOGUE_OUT1_RIGHT:
+	case WM8904_ANALOGUE_OUT2_LEFT:
+	case WM8904_ANALOGUE_OUT2_RIGHT:
+	case WM8904_ANALOGUE_OUT12_ZC:
+	case WM8904_DC_SERVO_0:
+	case WM8904_DC_SERVO_1:
+	case WM8904_DC_SERVO_2:
+	case WM8904_DC_SERVO_4:
+	case WM8904_DC_SERVO_5:
+	case WM8904_DC_SERVO_6:
+	case WM8904_DC_SERVO_7:
+	case WM8904_DC_SERVO_8:
+	case WM8904_DC_SERVO_9:
+	case WM8904_DC_SERVO_READBACK_0:
+	case WM8904_ANALOGUE_HP_0:
+	case WM8904_ANALOGUE_LINEOUT_0:
+	case WM8904_CHARGE_PUMP_0:
+	case WM8904_CLASS_W_0:
+	case WM8904_WRITE_SEQUENCER_0:
+	case WM8904_WRITE_SEQUENCER_1:
+	case WM8904_WRITE_SEQUENCER_2:
+	case WM8904_WRITE_SEQUENCER_3:
+	case WM8904_WRITE_SEQUENCER_4:
+	case WM8904_FLL_CONTROL_1:
+	case WM8904_FLL_CONTROL_2:
+	case WM8904_FLL_CONTROL_3:
+	case WM8904_FLL_CONTROL_4:
+	case WM8904_FLL_CONTROL_5:
+	case WM8904_GPIO_CONTROL_1:
+	case WM8904_GPIO_CONTROL_2:
+	case WM8904_GPIO_CONTROL_3:
+	case WM8904_GPIO_CONTROL_4:
+	case WM8904_DIGITAL_PULLS:
+	case WM8904_INTERRUPT_STATUS:
+	case WM8904_INTERRUPT_STATUS_MASK:
+	case WM8904_INTERRUPT_POLARITY:
+	case WM8904_INTERRUPT_DEBOUNCE:
+	case WM8904_EQ1:
+	case WM8904_EQ2:
+	case WM8904_EQ3:
+	case WM8904_EQ4:
+	case WM8904_EQ5:
+	case WM8904_EQ6:
+	case WM8904_EQ7:
+	case WM8904_EQ8:
+	case WM8904_EQ9:
+	case WM8904_EQ10:
+	case WM8904_EQ11:
+	case WM8904_EQ12:
+	case WM8904_EQ13:
+	case WM8904_EQ14:
+	case WM8904_EQ15:
+	case WM8904_EQ16:
+	case WM8904_EQ17:
+	case WM8904_EQ18:
+	case WM8904_EQ19:
+	case WM8904_EQ20:
+	case WM8904_EQ21:
+	case WM8904_EQ22:
+	case WM8904_EQ23:
+	case WM8904_EQ24:
+	case WM8904_CONTROL_INTERFACE_TEST_1:
+	case WM8904_ADC_TEST_0:
+	case WM8904_ANALOGUE_OUTPUT_BIAS_0:
+	case WM8904_FLL_NCO_TEST_0:
+	case WM8904_FLL_NCO_TEST_1:
+		return true;
+	default:
+		return true;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int wm8904_reset(struct snd_soc_codec *codec)
@@ -857,6 +1094,32 @@ static const char *hpf_mode_text[] = {
 static const struct soc_enum hpf_mode =
 	SOC_ENUM_SINGLE(WM8904_ADC_DIGITAL_0, 5, 4, hpf_mode_text);
 
+<<<<<<< HEAD
+=======
+static int wm8904_adc_osr_put(struct snd_kcontrol *kcontrol,
+			      struct snd_ctl_elem_value *ucontrol)
+{
+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+	unsigned int val;
+	int ret;
+
+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+	if (ret < 0)
+		return ret;
+
+	if (ucontrol->value.integer.value[0])
+		val = 0;
+	else
+		val = WM8904_ADC_128_OSR_TST_MODE | WM8904_ADC_BIASX1P5;
+
+	snd_soc_update_bits(codec, WM8904_ADC_TEST_0,
+			    WM8904_ADC_128_OSR_TST_MODE | WM8904_ADC_BIASX1P5,
+			    val);
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct snd_kcontrol_new wm8904_adc_snd_controls[] = {
 SOC_DOUBLE_R_TLV("Digital Capture Volume", WM8904_ADC_DIGITAL_VOLUME_LEFT,
 		 WM8904_ADC_DIGITAL_VOLUME_RIGHT, 1, 119, 0, digital_tlv),
@@ -873,7 +1136,16 @@ SOC_DOUBLE_R("Capture Switch", WM8904_ANALOGUE_LEFT_INPUT_0,
 SOC_SINGLE("High Pass Filter Switch", WM8904_ADC_DIGITAL_0, 4, 1, 0),
 SOC_ENUM("High Pass Filter Mode", hpf_mode),
 
+<<<<<<< HEAD
 SOC_SINGLE("ADC 128x OSR Switch", WM8904_ANALOGUE_ADC_0, 0, 1, 0),
+=======
+{       .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+	.name = "ADC 128x OSR Switch",
+	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,
+	.put = wm8904_adc_osr_put,
+	.private_value = SOC_SINGLE_VALUE(WM8904_ANALOGUE_ADC_0, 0, 1, 0),
+},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const char *drc_path_text[] = {
@@ -1197,7 +1469,11 @@ SND_SOC_DAPM_INPUT("IN2R"),
 SND_SOC_DAPM_INPUT("IN3L"),
 SND_SOC_DAPM_INPUT("IN3R"),
 
+<<<<<<< HEAD
 SND_SOC_DAPM_MICBIAS("MICBIAS", WM8904_MIC_BIAS_CONTROL_0, 0, 0),
+=======
+SND_SOC_DAPM_SUPPLY("MICBIAS", WM8904_MIC_BIAS_CONTROL_0, 0, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/cm-10.0
 
 SND_SOC_DAPM_MUX("Left Capture Mux", SND_SOC_NOPM, 0, 0, &lin_mux),
 SND_SOC_DAPM_MUX("Left Capture Inverting Mux", SND_SOC_NOPM, 0, 0,
@@ -1435,11 +1711,19 @@ static int wm8904_add_widgets(struct snd_soc_codec *codec)
 
 	switch (wm8904->devtype) {
 	case WM8904:
+<<<<<<< HEAD
 		snd_soc_add_controls(codec, wm8904_adc_snd_controls,
 				     ARRAY_SIZE(wm8904_adc_snd_controls));
 		snd_soc_add_controls(codec, wm8904_dac_snd_controls,
 				     ARRAY_SIZE(wm8904_dac_snd_controls));
 		snd_soc_add_controls(codec, wm8904_snd_controls,
+=======
+		snd_soc_add_codec_controls(codec, wm8904_adc_snd_controls,
+				     ARRAY_SIZE(wm8904_adc_snd_controls));
+		snd_soc_add_codec_controls(codec, wm8904_dac_snd_controls,
+				     ARRAY_SIZE(wm8904_dac_snd_controls));
+		snd_soc_add_codec_controls(codec, wm8904_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     ARRAY_SIZE(wm8904_snd_controls));
 
 		snd_soc_dapm_new_controls(dapm, wm8904_adc_dapm_widgets,
@@ -1460,7 +1744,11 @@ static int wm8904_add_widgets(struct snd_soc_codec *codec)
 		break;
 
 	case WM8912:
+<<<<<<< HEAD
 		snd_soc_add_controls(codec, wm8904_dac_snd_controls,
+=======
+		snd_soc_add_codec_controls(codec, wm8904_dac_snd_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     ARRAY_SIZE(wm8904_dac_snd_controls));
 
 		snd_soc_dapm_new_controls(dapm, wm8904_dac_dapm_widgets,
@@ -1715,7 +2003,11 @@ static int wm8904_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 
 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 	case SND_SOC_DAIFMT_DSP_B:
+<<<<<<< HEAD
 		aif1 |= 0x3 | WM8904_AIF_LRCLK_INV;
+=======
+		aif1 |= WM8904_AIF_LRCLK_INV;
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SND_SOC_DAIFMT_DSP_A:
 		aif1 |= 0x3;
 		break;
@@ -2090,6 +2382,7 @@ static int wm8904_digital_mute(struct snd_soc_dai *codec_dai, int mute)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void wm8904_sync_cache(struct snd_soc_codec *codec)
 {
 	u16 *reg_cache = codec->reg_cache;
@@ -2116,6 +2409,8 @@ static void wm8904_sync_cache(struct snd_soc_codec *codec)
 	codec->cache_sync = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int wm8904_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
@@ -2148,7 +2443,11 @@ static int wm8904_set_bias_level(struct snd_soc_codec *codec,
 				return ret;
 			}
 
+<<<<<<< HEAD
 			wm8904_sync_cache(codec);
+=======
+			regcache_sync(wm8904->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			/* Enable bias */
 			snd_soc_update_bits(codec, WM8904_BIAS_CONTROL_0,
@@ -2206,7 +2505,11 @@ static int wm8904_set_bias_level(struct snd_soc_codec *codec,
 #define WM8904_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8904_dai_ops = {
+=======
+static const struct snd_soc_dai_ops wm8904_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.set_sysclk = wm8904_set_sysclk,
 	.set_fmt = wm8904_set_fmt,
 	.set_tdm_slot = wm8904_set_tdm_slot,
@@ -2236,7 +2539,11 @@ static struct snd_soc_dai_driver wm8904_dai = {
 };
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 static int wm8904_suspend(struct snd_soc_codec *codec, pm_message_t state)
+=======
+static int wm8904_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	wm8904_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -2305,7 +2612,11 @@ static void wm8904_handle_retune_mobile_pdata(struct snd_soc_codec *codec)
 	wm8904->retune_mobile_enum.max = wm8904->num_retune_mobile_texts;
 	wm8904->retune_mobile_enum.texts = wm8904->retune_mobile_texts;
 
+<<<<<<< HEAD
 	ret = snd_soc_add_controls(codec, &control, 1);
+=======
+	ret = snd_soc_add_codec_controls(codec, &control, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret != 0)
 		dev_err(codec->dev,
 			"Failed to add ReTune Mobile control: %d\n", ret);
@@ -2318,7 +2629,11 @@ static void wm8904_handle_pdata(struct snd_soc_codec *codec)
 	int ret, i;
 
 	if (!pdata) {
+<<<<<<< HEAD
 		snd_soc_add_controls(codec, wm8904_eq_controls,
+=======
+		snd_soc_add_codec_controls(codec, wm8904_eq_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     ARRAY_SIZE(wm8904_eq_controls));
 		return;
 	}
@@ -2346,7 +2661,11 @@ static void wm8904_handle_pdata(struct snd_soc_codec *codec)
 		wm8904->drc_enum.max = pdata->num_drc_cfgs;
 		wm8904->drc_enum.texts = wm8904->drc_texts;
 
+<<<<<<< HEAD
 		ret = snd_soc_add_controls(codec, &control, 1);
+=======
+		ret = snd_soc_add_codec_controls(codec, &control, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret != 0)
 			dev_err(codec->dev,
 				"Failed to add DRC mode control: %d\n", ret);
@@ -2360,7 +2679,11 @@ static void wm8904_handle_pdata(struct snd_soc_codec *codec)
 	if (pdata->num_retune_mobile_cfgs)
 		wm8904_handle_retune_mobile_pdata(codec);
 	else
+<<<<<<< HEAD
 		snd_soc_add_controls(codec, wm8904_eq_controls,
+=======
+		snd_soc_add_codec_controls(codec, wm8904_eq_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				     ARRAY_SIZE(wm8904_eq_controls));
 }
 
@@ -2369,11 +2692,18 @@ static int wm8904_probe(struct snd_soc_codec *codec)
 {
 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
 	struct wm8904_pdata *pdata = wm8904->pdata;
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
 	int ret, i;
 
 	codec->cache_sync = 1;
 	codec->dapm.idle_bias_off = 1;
+=======
+	int ret, i;
+
+	codec->cache_sync = 1;
+	codec->control_data = wm8904->regmap;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (wm8904->devtype) {
 	case WM8904:
@@ -2387,7 +2717,11 @@ static int wm8904_probe(struct snd_soc_codec *codec)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
+=======
+	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -2415,7 +2749,11 @@ static int wm8904_probe(struct snd_soc_codec *codec)
 		dev_err(codec->dev, "Failed to read ID register\n");
 		goto err_enable;
 	}
+<<<<<<< HEAD
 	if (ret != wm8904_reg[WM8904_SW_RESET_AND_ID]) {
+=======
+	if (ret != 0x8904) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_err(codec->dev, "Device is not a WM8904, ID is %x\n", ret);
 		ret = -EINVAL;
 		goto err_enable;
@@ -2465,14 +2803,28 @@ static int wm8904_probe(struct snd_soc_codec *codec)
 			if (!pdata->gpio_cfg[i])
 				continue;
 
+<<<<<<< HEAD
 			reg_cache[WM8904_GPIO_CONTROL_1 + i]
 				= pdata->gpio_cfg[i] & 0xffff;
+=======
+			regmap_update_bits(wm8904->regmap,
+					   WM8904_GPIO_CONTROL_1 + i,
+					   0xffff,
+					   pdata->gpio_cfg[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* Zero is the default value for these anyway */
 		for (i = 0; i < WM8904_MIC_REGS; i++)
+<<<<<<< HEAD
 			reg_cache[WM8904_MIC_BIAS_CONTROL_0 + i]
 				= pdata->mic_cfg[i];
+=======
+			regmap_update_bits(wm8904->regmap,
+					   WM8904_MIC_BIAS_CONTROL_0 + i,
+					   0xffff,
+					   pdata->mic_cfg[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Set Class W by default - this will be managed by the Class
@@ -2521,6 +2873,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8904 = {
 	.suspend =	wm8904_suspend,
 	.resume =	wm8904_resume,
 	.set_bias_level = wm8904_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8904_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8904_reg,
@@ -2528,12 +2881,31 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8904 = {
 };
 
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+	.idle_bias_off = true,
+};
+
+static const struct regmap_config wm8904_regmap = {
+	.reg_bits = 8,
+	.val_bits = 16,
+
+	.max_register = WM8904_MAX_REGISTER,
+	.volatile_reg = wm8904_volatile_register,
+	.readable_reg = wm8904_readable_register,
+
+	.cache_type = REGCACHE_RBTREE,
+	.reg_defaults = wm8904_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8904_reg_defaults),
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static __devinit int wm8904_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
 {
 	struct wm8904_priv *wm8904;
 	int ret;
 
+<<<<<<< HEAD
 	wm8904 = kzalloc(sizeof(struct wm8904_priv), GFP_KERNEL);
 	if (wm8904 == NULL)
 		return -ENOMEM;
@@ -2541,59 +2913,113 @@ static __devinit int wm8904_i2c_probe(struct i2c_client *i2c,
 	wm8904->devtype = id->driver_data;
 	i2c_set_clientdata(i2c, wm8904);
 	wm8904->control_data = i2c;
+=======
+	wm8904 = devm_kzalloc(&i2c->dev, sizeof(struct wm8904_priv),
+			      GFP_KERNEL);
+	if (wm8904 == NULL)
+		return -ENOMEM;
+
+	wm8904->regmap = regmap_init_i2c(i2c, &wm8904_regmap);
+	if (IS_ERR(wm8904->regmap)) {
+		ret = PTR_ERR(wm8904->regmap);
+		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+			ret);
+		return ret;
+	}
+
+	wm8904->devtype = id->driver_data;
+	i2c_set_clientdata(i2c, wm8904);
+>>>>>>> refs/remotes/origin/cm-10.0
 	wm8904->pdata = i2c->dev.platform_data;
 
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8904, &wm8904_dai, 1);
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8904);
+=======
+	if (ret != 0)
+		goto err;
+
+	return 0;
+
+err:
+	regmap_exit(wm8904->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int wm8904_i2c_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+	struct wm8904_priv *wm8904 = i2c_get_clientdata(client);
+	snd_soc_unregister_codec(&client->dev);
+	regmap_exit(wm8904->regmap);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static const struct i2c_device_id wm8904_i2c_id[] = {
 	{ "wm8904", WM8904 },
 	{ "wm8912", WM8912 },
+<<<<<<< HEAD
+=======
+	{ "wm8918", WM8904 },   /* Actually a subset, updates to follow */
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, wm8904_i2c_id);
 
 static struct i2c_driver wm8904_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name = "wm8904-codec",
+=======
+		.name = "wm8904",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8904_i2c_probe,
 	.remove =   __devexit_p(wm8904_i2c_remove),
 	.id_table = wm8904_i2c_id,
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init wm8904_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = i2c_add_driver(&wm8904_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register wm8904 I2C driver: %d\n",
 		       ret);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 module_init(wm8904_modinit);
 
 static void __exit wm8904_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 	i2c_del_driver(&wm8904_i2c_driver);
 #endif
+=======
+	i2c_del_driver(&wm8904_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 module_exit(wm8904_exit);
 

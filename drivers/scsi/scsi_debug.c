@@ -101,6 +101,10 @@ static const char * scsi_debug_version_date = "20100324";
 #define DEF_LBPU 0
 #define DEF_LBPWS 0
 #define DEF_LBPWS10 0
+<<<<<<< HEAD
+=======
+#define DEF_LBPRZ 1
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DEF_LOWEST_ALIGNED 0
 #define DEF_NO_LUN_0   0
 #define DEF_NUM_PARTS   0
@@ -126,6 +130,10 @@ static const char * scsi_debug_version_date = "20100324";
 #define SCSI_DEBUG_OPT_TRANSPORT_ERR   16
 #define SCSI_DEBUG_OPT_DIF_ERR   32
 #define SCSI_DEBUG_OPT_DIX_ERR   64
+<<<<<<< HEAD
+=======
+#define SCSI_DEBUG_OPT_MAC_TIMEOUT  128
+>>>>>>> refs/remotes/origin/cm-10.0
 /* When "every_nth" > 0 then modulo "every_nth" commands:
  *   - a no response is simulated if SCSI_DEBUG_OPT_TIMEOUT is set
  *   - a RECOVERED_ERROR is simulated on successful read and write
@@ -185,6 +193,10 @@ static int scsi_debug_vpd_use_hostno = DEF_VPD_USE_HOSTNO;
 static unsigned int scsi_debug_lbpu = DEF_LBPU;
 static unsigned int scsi_debug_lbpws = DEF_LBPWS;
 static unsigned int scsi_debug_lbpws10 = DEF_LBPWS10;
+<<<<<<< HEAD
+=======
+static unsigned int scsi_debug_lbprz = DEF_LBPRZ;
+>>>>>>> refs/remotes/origin/cm-10.0
 static unsigned int scsi_debug_unmap_alignment = DEF_UNMAP_ALIGNMENT;
 static unsigned int scsi_debug_unmap_granularity = DEF_UNMAP_GRANULARITY;
 static unsigned int scsi_debug_unmap_max_blocks = DEF_UNMAP_MAX_BLOCKS;
@@ -774,10 +786,17 @@ static int inquiry_evpd_b1(unsigned char *arr)
 	return 0x3c;
 }
 
+<<<<<<< HEAD
 /* Thin provisioning VPD page (SBC-3) */
 static int inquiry_evpd_b2(unsigned char *arr)
 {
 	memset(arr, 0, 0x8);
+=======
+/* Logical block provisioning VPD page (SBC-3) */
+static int inquiry_evpd_b2(unsigned char *arr)
+{
+	memset(arr, 0, 0x4);
+>>>>>>> refs/remotes/origin/cm-10.0
 	arr[0] = 0;			/* threshold exponent */
 
 	if (scsi_debug_lbpu)
@@ -789,7 +808,14 @@ static int inquiry_evpd_b2(unsigned char *arr)
 	if (scsi_debug_lbpws10)
 		arr[1] |= 1 << 5;
 
+<<<<<<< HEAD
 	return 0x8;
+=======
+	if (scsi_debug_lbprz)
+		arr[1] |= 1 << 2;
+
+	return 0x4;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #define SDEBUG_LONG_INQ_SZ 96
@@ -1070,8 +1096,16 @@ static int resp_readcap16(struct scsi_cmnd * scp,
 	arr[13] = scsi_debug_physblk_exp & 0xf;
 	arr[14] = (scsi_debug_lowest_aligned >> 8) & 0x3f;
 
+<<<<<<< HEAD
 	if (scsi_debug_lbp())
 		arr[14] |= 0x80; /* LBPME */
+=======
+	if (scsi_debug_lbp()) {
+		arr[14] |= 0x80; /* LBPME */
+		if (scsi_debug_lbprz)
+			arr[14] |= 0x40; /* LBPRZ */
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	arr[15] = scsi_debug_lowest_aligned & 0xff;
 
@@ -1778,7 +1812,11 @@ static int prot_verify_read(struct scsi_cmnd *SCpnt, sector_t start_sec,
 	scsi_for_each_prot_sg(SCpnt, psgl, scsi_prot_sg_count(SCpnt), i) {
 		int len = min(psgl->length, resid);
 
+<<<<<<< HEAD
 		paddr = kmap_atomic(sg_page(psgl), KM_IRQ0) + psgl->offset;
+=======
+		paddr = kmap_atomic(sg_page(psgl)) + psgl->offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 		memcpy(paddr, dif_storep + dif_offset(sector), len);
 
 		sector += len >> 3;
@@ -1788,7 +1826,11 @@ static int prot_verify_read(struct scsi_cmnd *SCpnt, sector_t start_sec,
 			sector = do_div(tmp_sec, sdebug_store_sectors);
 		}
 		resid -= len;
+<<<<<<< HEAD
 		kunmap_atomic(paddr, KM_IRQ0);
+=======
+		kunmap_atomic(paddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dix_reads++;
@@ -1881,12 +1923,20 @@ static int prot_verify_write(struct scsi_cmnd *SCpnt, sector_t start_sec,
 	BUG_ON(scsi_sg_count(SCpnt) == 0);
 	BUG_ON(scsi_prot_sg_count(SCpnt) == 0);
 
+<<<<<<< HEAD
 	paddr = kmap_atomic(sg_page(psgl), KM_IRQ1) + psgl->offset;
+=======
+	paddr = kmap_atomic(sg_page(psgl)) + psgl->offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ppage_offset = 0;
 
 	/* For each data page */
 	scsi_for_each_sg(SCpnt, dsgl, scsi_sg_count(SCpnt), i) {
+<<<<<<< HEAD
 		daddr = kmap_atomic(sg_page(dsgl), KM_IRQ0) + dsgl->offset;
+=======
+		daddr = kmap_atomic(sg_page(dsgl)) + dsgl->offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* For each sector-sized chunk in data page */
 		for (j = 0 ; j < dsgl->length ; j += scsi_debug_sector_size) {
@@ -1895,10 +1945,17 @@ static int prot_verify_write(struct scsi_cmnd *SCpnt, sector_t start_sec,
 			 * protection page advance to the next one
 			 */
 			if (ppage_offset >= psgl->length) {
+<<<<<<< HEAD
 				kunmap_atomic(paddr, KM_IRQ1);
 				psgl = sg_next(psgl);
 				BUG_ON(psgl == NULL);
 				paddr = kmap_atomic(sg_page(psgl), KM_IRQ1)
+=======
+				kunmap_atomic(paddr);
+				psgl = sg_next(psgl);
+				BUG_ON(psgl == NULL);
+				paddr = kmap_atomic(sg_page(psgl))
+>>>>>>> refs/remotes/origin/cm-10.0
 					+ psgl->offset;
 				ppage_offset = 0;
 			}
@@ -1971,10 +2028,17 @@ static int prot_verify_write(struct scsi_cmnd *SCpnt, sector_t start_sec,
 			ppage_offset += sizeof(struct sd_dif_tuple);
 		}
 
+<<<<<<< HEAD
 		kunmap_atomic(daddr, KM_IRQ0);
 	}
 
 	kunmap_atomic(paddr, KM_IRQ1);
+=======
+		kunmap_atomic(daddr);
+	}
+
+	kunmap_atomic(paddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dix_writes++;
 
@@ -1982,8 +2046,13 @@ static int prot_verify_write(struct scsi_cmnd *SCpnt, sector_t start_sec,
 
 out:
 	dif_errors++;
+<<<<<<< HEAD
 	kunmap_atomic(daddr, KM_IRQ0);
 	kunmap_atomic(paddr, KM_IRQ1);
+=======
+	kunmap_atomic(daddr);
+	kunmap_atomic(paddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -2045,10 +2114,20 @@ static void unmap_region(sector_t lba, unsigned int len)
 		block = lba + alignment;
 		rem = do_div(block, granularity);
 
+<<<<<<< HEAD
 		if (rem == 0 && lba + granularity <= end &&
 		    block < map_size)
 			clear_bit(block, map_storep);
 
+=======
+		if (rem == 0 && lba + granularity < end && block < map_size) {
+			clear_bit(block, map_storep);
+			if (scsi_debug_lbprz)
+				memset(fake_storep +
+				       block * scsi_debug_sector_size, 0,
+				       scsi_debug_sector_size);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		lba += granularity - rem;
 	}
 }
@@ -2220,7 +2299,11 @@ static int resp_get_lba_status(struct scsi_cmnd * scmd,
 	mapped = map_state(lba, &num);
 
 	memset(arr, 0, SDEBUG_GET_LBA_STATUS_LEN);
+<<<<<<< HEAD
 	put_unaligned_be32(16, &arr[0]);	/* Parameter Data Length */
+=======
+	put_unaligned_be32(20, &arr[0]);	/* Parameter Data Length */
+>>>>>>> refs/remotes/origin/cm-10.0
 	put_unaligned_be64(lba, &arr[8]);	/* LBA */
 	put_unaligned_be32(num, &arr[16]);	/* Number of blocks */
 	arr[20] = !mapped;			/* mapped = 0, unmapped = 1 */
@@ -2303,7 +2386,11 @@ static int resp_xdwriteread(struct scsi_cmnd *scp, unsigned long long lba,
 
 	offset = 0;
 	for_each_sg(sdb->table.sgl, sg, sdb->table.nents, i) {
+<<<<<<< HEAD
 		kaddr = (unsigned char *)kmap_atomic(sg_page(sg), KM_USER0);
+=======
+		kaddr = (unsigned char *)kmap_atomic(sg_page(sg));
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!kaddr)
 			goto out;
 
@@ -2311,7 +2398,11 @@ static int resp_xdwriteread(struct scsi_cmnd *scp, unsigned long long lba,
 			*(kaddr + sg->offset + j) ^= *(buf + offset + j);
 
 		offset += sg->length;
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	ret = 0;
 out:
@@ -2730,6 +2821,10 @@ module_param_named(guard, scsi_debug_guard, int, S_IRUGO);
 module_param_named(lbpu, scsi_debug_lbpu, int, S_IRUGO);
 module_param_named(lbpws, scsi_debug_lbpws, int, S_IRUGO);
 module_param_named(lbpws10, scsi_debug_lbpws10, int, S_IRUGO);
+<<<<<<< HEAD
+=======
+module_param_named(lbprz, scsi_debug_lbprz, int, S_IRUGO);
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(lowest_aligned, scsi_debug_lowest_aligned, int, S_IRUGO);
 module_param_named(max_luns, scsi_debug_max_luns, int, S_IRUGO | S_IWUSR);
 module_param_named(max_queue, scsi_debug_max_queue, int, S_IRUGO | S_IWUSR);
@@ -2771,6 +2866,10 @@ MODULE_PARM_DESC(guard, "protection checksum: 0=crc, 1=ip (def=0)");
 MODULE_PARM_DESC(lbpu, "enable LBP, support UNMAP command (def=0)");
 MODULE_PARM_DESC(lbpws, "enable LBP, support WRITE SAME(16) with UNMAP bit (def=0)");
 MODULE_PARM_DESC(lbpws10, "enable LBP, support WRITE SAME(10) with UNMAP bit (def=0)");
+<<<<<<< HEAD
+=======
+MODULE_PARM_DESC(lbprz, "unmapped blocks return 0 on read (def=1)");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(lowest_aligned, "lowest aligned lba (def=0)");
 MODULE_PARM_DESC(max_luns, "number of LUNs per target to simulate(def=1)");
 MODULE_PARM_DESC(max_queue, "max number of queued commands (1 to 255(def))");
@@ -3615,6 +3714,12 @@ int scsi_debug_queuecommand_lck(struct scsi_cmnd *SCpnt, done_funct_t done)
 			scsi_debug_every_nth = -1;
 		if (SCSI_DEBUG_OPT_TIMEOUT & scsi_debug_opts)
 			return 0; /* ignore command causing timeout */
+<<<<<<< HEAD
+=======
+		else if (SCSI_DEBUG_OPT_MAC_TIMEOUT & scsi_debug_opts &&
+			 scsi_medium_access_command(SCpnt))
+			return 0; /* time out reads and writes */
+>>>>>>> refs/remotes/origin/cm-10.0
 		else if (SCSI_DEBUG_OPT_RECOVERED_ERR & scsi_debug_opts)
 			inj_recovered = 1; /* to reads and writes below */
 		else if (SCSI_DEBUG_OPT_TRANSPORT_ERR & scsi_debug_opts)

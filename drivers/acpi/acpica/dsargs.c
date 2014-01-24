@@ -6,7 +6,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -250,6 +254,16 @@ acpi_ds_get_bank_field_arguments(union acpi_operand_object *obj_desc)
 	status = acpi_ds_execute_arguments(node, node->parent,
 					   extra_desc->extra.aml_length,
 					   extra_desc->extra.aml_start);
+<<<<<<< HEAD
+=======
+	if (ACPI_FAILURE(status)) {
+		return_ACPI_STATUS(status);
+	}
+
+	status = acpi_ut_add_address_range(obj_desc->region.space_id,
+					   obj_desc->region.address,
+					   obj_desc->region.length, node);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return_ACPI_STATUS(status);
 }
 
@@ -391,6 +405,7 @@ acpi_status acpi_ds_get_region_arguments(union acpi_operand_object *obj_desc)
 		return_ACPI_STATUS(status);
 	}
 
+<<<<<<< HEAD
 	/* Validate the region address/length via the host OS */
 
 	status = acpi_os_validate_address(obj_desc->region.space_id,
@@ -411,5 +426,10 @@ acpi_status acpi_ds_get_region_arguments(union acpi_operand_object *obj_desc)
 		status = AE_OK;
 	}
 
+=======
+	status = acpi_ut_add_address_range(obj_desc->region.space_id,
+					   obj_desc->region.address,
+					   obj_desc->region.length, node);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return_ACPI_STATUS(status);
 }

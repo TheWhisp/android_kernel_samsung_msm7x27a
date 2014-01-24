@@ -565,9 +565,14 @@ static ssize_t mtp_write(struct file *fp, const char __user *buf,
 	/* we need to send a zero length packet to signal the end of transfer
 	 * if the transfer size is aligned to a packet boundary.
 	 */
+<<<<<<< HEAD
 	if ((count & (dev->ep_in->maxpacket - 1)) == 0) {
 		sendZLP = 1;
 	}
+=======
+	if ((count & (dev->ep_in->maxpacket - 1)) == 0)
+		sendZLP = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	while (count > 0 || sendZLP) {
 		/* so we exit after sending ZLP */
@@ -629,8 +634,15 @@ static ssize_t mtp_write(struct file *fp, const char __user *buf,
 }
 
 /* read from a local file and write to USB */
+<<<<<<< HEAD
 static void send_file_work(struct work_struct *data) {
 	struct mtp_dev	*dev = container_of(data, struct mtp_dev, send_file_work);
+=======
+static void send_file_work(struct work_struct *data)
+{
+	struct mtp_dev *dev = container_of(data, struct mtp_dev,
+						send_file_work);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct usb_composite_dev *cdev = dev->cdev;
 	struct usb_request *req = 0;
 	struct mtp_data_header *header;
@@ -659,9 +671,14 @@ static void send_file_work(struct work_struct *data) {
 	/* we need to send a zero length packet to signal the end of transfer
 	 * if the transfer size is aligned to a packet boundary.
 	 */
+<<<<<<< HEAD
 	if ((count & (dev->ep_in->maxpacket - 1)) == 0) {
 		sendZLP = 1;
 	}
+=======
+	if ((count & (dev->ep_in->maxpacket - 1)) == 0)
+		sendZLP = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	while (count > 0 || sendZLP) {
 		/* so we exit after sending ZLP */
@@ -693,10 +710,19 @@ static void send_file_work(struct work_struct *data) {
 			header->length = __cpu_to_le32(count);
 			header->type = __cpu_to_le16(2); /* data packet */
 			header->command = __cpu_to_le16(dev->xfer_command);
+<<<<<<< HEAD
 			header->transaction_id = __cpu_to_le32(dev->xfer_transaction_id);
 		}
 
 		ret = vfs_read(filp, req->buf + hdr_size, xfer - hdr_size, &offset);
+=======
+			header->transaction_id =
+					__cpu_to_le32(dev->xfer_transaction_id);
+		}
+
+		ret = vfs_read(filp, req->buf + hdr_size, xfer - hdr_size,
+								&offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret < 0) {
 			r = ret;
 			break;
@@ -708,7 +734,12 @@ static void send_file_work(struct work_struct *data) {
 		ret = usb_ep_queue(dev->ep_in, req, GFP_KERNEL);
 		if (ret < 0) {
 			DBG(cdev, "send_file_work: xfer error %d\n", ret);
+<<<<<<< HEAD
 			dev->state = STATE_ERROR;
+=======
+			if (dev->state != STATE_OFFLINE)
+				dev->state = STATE_ERROR;
+>>>>>>> refs/remotes/origin/cm-10.0
 			r = -EIO;
 			break;
 		}
@@ -731,7 +762,12 @@ static void send_file_work(struct work_struct *data) {
 /* read from USB and write to a local file */
 static void receive_file_work(struct work_struct *data)
 {
+<<<<<<< HEAD
 	struct mtp_dev	*dev = container_of(data, struct mtp_dev, receive_file_work);
+=======
+	struct mtp_dev *dev = container_of(data, struct mtp_dev,
+						receive_file_work);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct usb_composite_dev *cdev = dev->cdev;
 	struct usb_request *read_req = NULL, *write_req = NULL;
 	struct file *filp;
@@ -760,7 +796,12 @@ static void receive_file_work(struct work_struct *data)
 			ret = usb_ep_queue(dev->ep_out, read_req, GFP_KERNEL);
 			if (ret < 0) {
 				r = -EIO;
+<<<<<<< HEAD
 				dev->state = STATE_ERROR;
+=======
+				if (dev->state != STATE_OFFLINE)
+					dev->state = STATE_ERROR;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 		}
@@ -772,7 +813,12 @@ static void receive_file_work(struct work_struct *data)
 			DBG(cdev, "vfs_write %d\n", ret);
 			if (ret != write_req->actual) {
 				r = -EIO;
+<<<<<<< HEAD
 				dev->state = STATE_ERROR;
+=======
+				if (dev->state != STATE_OFFLINE)
+					dev->state = STATE_ERROR;
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 			write_req = NULL;
@@ -782,7 +828,12 @@ static void receive_file_work(struct work_struct *data)
 			/* wait for our last read to complete */
 			ret = wait_event_interruptible(dev->read_wq,
 				dev->rx_done || dev->state != STATE_BUSY);
+<<<<<<< HEAD
 			if (dev->state == STATE_CANCELED) {
+=======
+			if (dev->state == STATE_CANCELED
+					|| dev->state == STATE_OFFLINE) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				r = -ECANCELED;
 				if (!dev->rx_done)
 					usb_ep_dequeue(dev->ep_out, read_req);
@@ -794,7 +845,14 @@ static void receive_file_work(struct work_struct *data)
 			if (count != 0xFFFFFFFF)
 				count -= read_req->actual;
 			if (read_req->actual < read_req->length) {
+<<<<<<< HEAD
 				/* short packet is used to signal EOF for sizes > 4 gig */
+=======
+				/*
+				 * short packet is used to signal EOF for
+				 * sizes > 4 gig
+				 */
+>>>>>>> refs/remotes/origin/cm-10.0
 				DBG(cdev, "got short packet\n");
 				count = 0;
 			}
@@ -812,7 +870,11 @@ static void receive_file_work(struct work_struct *data)
 
 static int mtp_send_event(struct mtp_dev *dev, struct mtp_event *event)
 {
+<<<<<<< HEAD
 	struct usb_request *req= NULL;
+=======
+	struct usb_request *req = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	int length = event->length;
 
@@ -824,9 +886,16 @@ static int mtp_send_event(struct mtp_dev *dev, struct mtp_event *event)
 		return -ENODEV;
 
 	ret = wait_event_interruptible_timeout(dev->intr_wq,
+<<<<<<< HEAD
 		(req = mtp_req_get(dev, &dev->intr_idle)), msecs_to_jiffies(1000));
 	if (!req)
 	    return -ETIME;
+=======
+			(req = mtp_req_get(dev, &dev->intr_idle)),
+			msecs_to_jiffies(1000));
+	if (!req)
+		return -ETIME;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (copy_from_user(req->buf, (void __user *)event->data, length)) {
 		mtp_req_put(dev, &dev->intr_idle, req);
@@ -1067,7 +1136,11 @@ static int mtp_ctrlrequest(struct usb_composite_dev *cdev,
 		cdev->req->length = value;
 		rc = usb_ep_queue(cdev->gadget->ep0, cdev->req, GFP_ATOMIC);
 		if (rc < 0)
+<<<<<<< HEAD
 			ERROR(cdev, "%s setup response queue error\n", __func__);
+=======
+			ERROR(cdev, "%s: response queue error\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return value;
 }
@@ -1133,6 +1206,7 @@ static int mtp_function_set_alt(struct usb_function *f,
 	int ret;
 
 	DBG(cdev, "mtp_function_set_alt intf: %d alt: %d\n", intf, alt);
+<<<<<<< HEAD
 	ret = usb_ep_enable(dev->ep_in,
 			ep_choose(cdev->gadget,
 				&mtp_highspeed_in_desc,
@@ -1148,6 +1222,40 @@ static int mtp_function_set_alt(struct usb_function *f,
 		return ret;
 	}
 	ret = usb_ep_enable(dev->ep_intr, &mtp_intr_desc);
+=======
+
+	ret = config_ep_by_speed(cdev->gadget, f, dev->ep_in);
+	if (ret) {
+		dev->ep_in->desc = NULL;
+		ERROR(cdev, "config_ep_by_speed failes for ep %s, result %d\n",
+			dev->ep_in->name, ret);
+		return ret;
+	}
+	ret = usb_ep_enable(dev->ep_in);
+	if (ret) {
+		ERROR(cdev, "failed to enable ep %s, result %d\n",
+			dev->ep_in->name, ret);
+		return ret;
+	}
+
+	ret = config_ep_by_speed(cdev->gadget, f, dev->ep_out);
+	if (ret) {
+		dev->ep_out->desc = NULL;
+		ERROR(cdev, "config_ep_by_speed failes for ep %s, result %d\n",
+			dev->ep_out->name, ret);
+		usb_ep_disable(dev->ep_in);
+		return ret;
+	}
+	ret = usb_ep_enable(dev->ep_out);
+	if (ret) {
+		ERROR(cdev, "failed to enable ep %s, result %d\n",
+			dev->ep_out->name, ret);
+		usb_ep_disable(dev->ep_in);
+		return ret;
+	}
+	dev->ep_intr->desc = &mtp_intr_desc;
+	ret = usb_ep_enable(dev->ep_intr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		usb_ep_disable(dev->ep_out);
 		usb_ep_disable(dev->ep_in);

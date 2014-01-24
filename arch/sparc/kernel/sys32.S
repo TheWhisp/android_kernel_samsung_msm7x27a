@@ -81,7 +81,10 @@ SIGN2(sys32_fadvise64, compat_sys_fadvise64, %o0, %o4)
 SIGN2(sys32_fadvise64_64, compat_sys_fadvise64_64, %o0, %o5)
 SIGN2(sys32_bdflush, sys_bdflush, %o0, %o1)
 SIGN1(sys32_mlockall, sys_mlockall, %o0)
+<<<<<<< HEAD
 SIGN1(sys32_nfsservctl, compat_sys_nfsservctl, %o0)
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 SIGN1(sys32_clock_nanosleep, compat_sys_clock_nanosleep, %o1)
 SIGN1(sys32_timer_settime, compat_sys_timer_settime, %o1)
 SIGN1(sys32_io_submit, compat_sys_io_submit, %o1)

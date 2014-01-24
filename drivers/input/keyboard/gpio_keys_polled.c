@@ -241,6 +241,7 @@ static struct platform_driver gpio_keys_polled_driver = {
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 
 static int __init gpio_keys_polled_init(void)
 {
@@ -254,6 +255,9 @@ static void __exit gpio_keys_polled_exit(void)
 
 module_init(gpio_keys_polled_init);
 module_exit(gpio_keys_polled_exit);
+=======
+module_platform_driver(gpio_keys_polled_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Gabor Juhos <juhosg@openwrt.org>");

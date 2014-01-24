@@ -21,7 +21,10 @@
 #include <asm/thread_info.h>
 #include <asm/sal.h>
 #include <asm/signal.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unistd.h>
 
 #include "entry.h"
@@ -174,7 +177,11 @@ ENTRY(fsys_set_tid_address)
 	FSYS_RETURN
 END(fsys_set_tid_address)
 
+<<<<<<< HEAD
 #if IA64_GTOD_LOCK_OFFSET !=0
+=======
+#if IA64_GTOD_SEQ_OFFSET !=0
+>>>>>>> refs/remotes/origin/cm-10.0
 #error fsys_gettimeofday incompatible with changes to struct fsyscall_gtod_data_t
 #endif
 #if IA64_ITC_JITTER_OFFSET !=0

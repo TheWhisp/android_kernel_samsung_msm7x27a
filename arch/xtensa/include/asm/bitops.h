@@ -21,7 +21,10 @@
 
 #include <asm/processor.h>
 #include <asm/byteorder.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_SMP
 # error SMP not supported on this architecture
@@ -108,6 +111,7 @@ static inline unsigned long __fls(unsigned long word)
 #include <asm-generic/bitops/find.h>
 #include <asm-generic/bitops/le.h>
 
+<<<<<<< HEAD
 #ifdef __XTENSA_EL__
 # define ext2_set_bit_atomic(lock,nr,addr)				\
 	test_and_set_bit((nr), (unsigned long*)(addr))
@@ -121,6 +125,9 @@ static inline unsigned long __fls(unsigned long word)
 #else
 # error processor byte order undefined!
 #endif
+=======
+#include <asm-generic/bitops/ext2-atomic-setbit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm-generic/bitops/hweight.h>
 #include <asm-generic/bitops/lock.h>

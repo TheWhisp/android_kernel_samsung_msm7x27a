@@ -8,7 +8,11 @@
  * Copyright 2005 Andrea Merello <andreamrl@tiscali.it>, et al.
  *
  * The driver was extended to the RTL8187B in 2008 by:
+<<<<<<< HEAD
  * 	Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+=======
+ *	Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+>>>>>>> refs/remotes/origin/cm-10.0
  *	Hin-Tak Leung <htl10@users.sourceforge.net>
  *	Larry Finger <Larry.Finger@lwfinger.net>
  *
@@ -26,6 +30,10 @@
 #include <linux/delay.h>
 #include <linux/etherdevice.h>
 #include <linux/eeprom_93cx6.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/mac80211.h>
 
 #include "rtl8187.h"
@@ -231,6 +239,10 @@ static void rtl8187_tx(struct ieee80211_hw *dev, struct sk_buff *skb)
 {
 	struct rtl8187_priv *priv = dev->priv;
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+<<<<<<< HEAD
+=======
+	struct ieee80211_hdr *tx_hdr =	(struct ieee80211_hdr *)(skb->data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int ep;
 	void *buf;
 	struct urb *urb;
@@ -248,7 +260,11 @@ static void rtl8187_tx(struct ieee80211_hw *dev, struct sk_buff *skb)
 	flags |= RTL818X_TX_DESC_FLAG_NO_ENC;
 
 	flags |= ieee80211_get_tx_rate(dev, info)->hw_value << 24;
+<<<<<<< HEAD
 	if (ieee80211_has_morefrags(((struct ieee80211_hdr *)skb->data)->frame_control))
+=======
+	if (ieee80211_has_morefrags(tx_hdr->frame_control))
+>>>>>>> refs/remotes/origin/cm-10.0
 		flags |= RTL818X_TX_DESC_FLAG_MOREFRAG;
 	if (info->control.rates[0].flags & IEEE80211_TX_RC_USE_RTS_CTS) {
 		flags |= RTL818X_TX_DESC_FLAG_RTS;
@@ -260,6 +276,16 @@ static void rtl8187_tx(struct ieee80211_hw *dev, struct sk_buff *skb)
 		flags |= ieee80211_get_rts_cts_rate(dev, info)->hw_value << 19;
 	}
 
+<<<<<<< HEAD
+=======
+	if (info->flags & IEEE80211_TX_CTL_ASSIGN_SEQ) {
+		if (info->flags & IEEE80211_TX_CTL_FIRST_FRAGMENT)
+			priv->seqno += 0x10;
+		tx_hdr->seq_ctrl &= cpu_to_le16(IEEE80211_SCTL_FRAG);
+		tx_hdr->seq_ctrl |= cpu_to_le16(priv->seqno);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!priv->is_rtl8187b) {
 		struct rtl8187_tx_hdr *hdr =
 			(struct rtl8187_tx_hdr *)skb_push(skb, sizeof(*hdr));
@@ -273,8 +299,11 @@ static void rtl8187_tx(struct ieee80211_hw *dev, struct sk_buff *skb)
 	} else {
 		/* fc needs to be calculated before skb_push() */
 		unsigned int epmap[4] = { 6, 7, 5, 4 };
+<<<<<<< HEAD
 		struct ieee80211_hdr *tx_hdr =
 			(struct ieee80211_hdr *)(skb->data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		u16 fc = le16_to_cpu(tx_hdr->frame_control);
 
 		struct rtl8187b_tx_hdr *hdr =
@@ -1030,10 +1059,67 @@ static void rtl8187_stop(struct ieee80211_hw *dev)
 		cancel_delayed_work_sync(&priv->work);
 }
 
+<<<<<<< HEAD
+=======
+static u64 rtl8187_get_tsf(struct ieee80211_hw *dev, struct ieee80211_vif *vif)
+{
+	struct rtl8187_priv *priv = dev->priv;
+
+	return rtl818x_ioread32(priv, &priv->map->TSFT[0]) |
+	       (u64)(rtl818x_ioread32(priv, &priv->map->TSFT[1])) << 32;
+}
+
+
+static void rtl8187_beacon_work(struct work_struct *work)
+{
+	struct rtl8187_vif *vif_priv =
+		container_of(work, struct rtl8187_vif, beacon_work.work);
+	struct ieee80211_vif *vif =
+		container_of((void *)vif_priv, struct ieee80211_vif, drv_priv);
+	struct ieee80211_hw *dev = vif_priv->dev;
+	struct ieee80211_mgmt *mgmt;
+	struct sk_buff *skb;
+
+	/* don't overflow the tx ring */
+	if (ieee80211_queue_stopped(dev, 0))
+		goto resched;
+
+	/* grab a fresh beacon */
+	skb = ieee80211_beacon_get(dev, vif);
+	if (!skb)
+		goto resched;
+
+	/*
+	 * update beacon timestamp w/ TSF value
+	 * TODO: make hardware update beacon timestamp
+	 */
+	mgmt = (struct ieee80211_mgmt *)skb->data;
+	mgmt->u.beacon.timestamp = cpu_to_le64(rtl8187_get_tsf(dev, vif));
+
+	/* TODO: use actual beacon queue */
+	skb_set_queue_mapping(skb, 0);
+
+	rtl8187_tx(dev, skb);
+
+resched:
+	/*
+	 * schedule next beacon
+	 * TODO: use hardware support for beacon timing
+	 */
+	schedule_delayed_work(&vif_priv->beacon_work,
+			usecs_to_jiffies(1024 * vif->bss_conf.beacon_int));
+}
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int rtl8187_add_interface(struct ieee80211_hw *dev,
 				 struct ieee80211_vif *vif)
 {
 	struct rtl8187_priv *priv = dev->priv;
+<<<<<<< HEAD
+=======
+	struct rtl8187_vif *vif_priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 	int ret = -EOPNOTSUPP;
 
@@ -1043,6 +1129,10 @@ static int rtl8187_add_interface(struct ieee80211_hw *dev,
 
 	switch (vif->type) {
 	case NL80211_IFTYPE_STATION:
+<<<<<<< HEAD
+=======
+	case NL80211_IFTYPE_ADHOC:
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		goto exit;
@@ -1051,6 +1141,16 @@ static int rtl8187_add_interface(struct ieee80211_hw *dev,
 	ret = 0;
 	priv->vif = vif;
 
+<<<<<<< HEAD
+=======
+	/* Initialize driver private area */
+	vif_priv = (struct rtl8187_vif *)&vif->drv_priv;
+	vif_priv->dev = dev;
+	INIT_DELAYED_WORK(&vif_priv->beacon_work, rtl8187_beacon_work);
+	vif_priv->enable_beacon = false;
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rtl818x_iowrite8(priv, &priv->map->EEPROM_CMD, RTL818X_EEPROM_CMD_CONFIG);
 	for (i = 0; i < ETH_ALEN; i++)
 		rtl818x_iowrite8(priv, &priv->map->MAC[i],
@@ -1174,9 +1274,18 @@ static void rtl8187_bss_info_changed(struct ieee80211_hw *dev,
 				     u32 changed)
 {
 	struct rtl8187_priv *priv = dev->priv;
+<<<<<<< HEAD
 	int i;
 	u8 reg;
 
+=======
+	struct rtl8187_vif *vif_priv;
+	int i;
+	u8 reg;
+
+	vif_priv = (struct rtl8187_vif *)&vif->drv_priv;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (changed & BSS_CHANGED_BSSID) {
 		mutex_lock(&priv->conf_mutex);
 		for (i = 0; i < ETH_ALEN; i++)
@@ -1188,8 +1297,17 @@ static void rtl8187_bss_info_changed(struct ieee80211_hw *dev,
 		else
 			reg = 0;
 
+<<<<<<< HEAD
 		if (is_valid_ether_addr(info->bssid))
 			reg |= RTL818X_MSR_INFRA;
+=======
+		if (is_valid_ether_addr(info->bssid)) {
+			if (vif->type == NL80211_IFTYPE_ADHOC)
+				reg |= RTL818X_MSR_ADHOC;
+			else
+				reg |= RTL818X_MSR_INFRA;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			reg |= RTL818X_MSR_NO_LINK;
 
@@ -1201,6 +1319,19 @@ static void rtl8187_bss_info_changed(struct ieee80211_hw *dev,
 	if (changed & (BSS_CHANGED_ERP_SLOT | BSS_CHANGED_ERP_PREAMBLE))
 		rtl8187_conf_erp(priv, info->use_short_slot,
 				 info->use_short_preamble);
+<<<<<<< HEAD
+=======
+
+	if (changed & BSS_CHANGED_BEACON_ENABLED)
+		vif_priv->enable_beacon = info->enable_beacon;
+
+	if (changed & (BSS_CHANGED_BEACON_ENABLED | BSS_CHANGED_BEACON)) {
+		cancel_delayed_work_sync(&vif_priv->beacon_work);
+		if (vif_priv->enable_beacon)
+			schedule_work(&vif_priv->beacon_work.work);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static u64 rtl8187_prepare_multicast(struct ieee80211_hw *dev,
@@ -1241,7 +1372,12 @@ static void rtl8187_configure_filter(struct ieee80211_hw *dev,
 	rtl818x_iowrite32_async(priv, &priv->map->RX_CONF, priv->rx_conf);
 }
 
+<<<<<<< HEAD
 static int rtl8187_conf_tx(struct ieee80211_hw *dev, u16 queue,
+=======
+static int rtl8187_conf_tx(struct ieee80211_hw *dev,
+			   struct ieee80211_vif *vif, u16 queue,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   const struct ieee80211_tx_queue_params *params)
 {
 	struct rtl8187_priv *priv = dev->priv;
@@ -1277,6 +1413,7 @@ static int rtl8187_conf_tx(struct ieee80211_hw *dev, u16 queue,
 	return 0;
 }
 
+<<<<<<< HEAD
 static u64 rtl8187_get_tsf(struct ieee80211_hw *dev)
 {
 	struct rtl8187_priv *priv = dev->priv;
@@ -1284,6 +1421,8 @@ static u64 rtl8187_get_tsf(struct ieee80211_hw *dev)
 	return rtl818x_ioread32(priv, &priv->map->TSFT[0]) |
 	       (u64)(rtl818x_ioread32(priv, &priv->map->TSFT[1])) << 32;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct ieee80211_ops rtl8187_ops = {
 	.tx			= rtl8187_tx,
@@ -1512,12 +1651,18 @@ static int __devinit rtl8187_probe(struct usb_interface *intf,
 		if (reg & 0xFF00)
 			priv->rfkill_mask = RFKILL_MASK_8198;
 	}
+<<<<<<< HEAD
 
 	/*
 	 * XXX: Once this driver supports anything that requires
 	 *	beacons it must implement IEEE80211_TX_CTL_ASSIGN_SEQ.
 	 */
 	dev->wiphy->interface_modes = BIT(NL80211_IFTYPE_STATION);
+=======
+	dev->vif_data_size = sizeof(struct rtl8187_vif);
+	dev->wiphy->interface_modes = BIT(NL80211_IFTYPE_STATION) |
+				      BIT(NL80211_IFTYPE_ADHOC) ;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((id->driver_info == DEVICE_RTL8187) && priv->is_rtl8187b)
 		printk(KERN_INFO "rtl8187: inconsistency between id with OEM"
@@ -1590,6 +1735,7 @@ static struct usb_driver rtl8187_driver = {
 	.disconnect	= __devexit_p(rtl8187_disconnect),
 };
 
+<<<<<<< HEAD
 static int __init rtl8187_init(void)
 {
 	return usb_register(&rtl8187_driver);
@@ -1602,3 +1748,6 @@ static void __exit rtl8187_exit(void)
 
 module_init(rtl8187_init);
 module_exit(rtl8187_exit);
+=======
+module_usb_driver(rtl8187_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

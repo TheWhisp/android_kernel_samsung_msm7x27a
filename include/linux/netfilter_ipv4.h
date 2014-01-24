@@ -9,6 +9,12 @@
 
 /* only for userspace compatibility */
 #ifndef __KERNEL__
+<<<<<<< HEAD
+=======
+
+#include <limits.h> /* for INT_MIN, INT_MAX */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* IP Cache bits. */
 /* Src IP address. */
 #define NFC_IP_SRC		0x0001

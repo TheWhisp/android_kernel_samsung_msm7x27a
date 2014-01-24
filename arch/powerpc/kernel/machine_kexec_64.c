@@ -74,8 +74,12 @@ int default_machine_kexec_prepare(struct kimage *image)
 	}
 
 	/* We also should not overwrite the tce tables */
+<<<<<<< HEAD
 	for (node = of_find_node_by_type(NULL, "pci"); node != NULL;
 			node = of_find_node_by_type(node, "pci")) {
+=======
+	for_each_node_by_type(node, "pci") {
+>>>>>>> refs/remotes/origin/cm-10.0
 		basep = of_get_property(node, "linux,tce-base", NULL);
 		sizep = of_get_property(node, "linux,tce-size", NULL);
 		if (basep == NULL || sizep == NULL)
@@ -313,9 +317,15 @@ static union thread_union kexec_stack __init_task_data =
 struct paca_struct kexec_paca;
 
 /* Our assembly helper, in kexec_stub.S */
+<<<<<<< HEAD
 extern NORET_TYPE void kexec_sequence(void *newstack, unsigned long start,
 					void *image, void *control,
 					void (*clear_all)(void)) ATTRIB_NORET;
+=======
+extern void kexec_sequence(void *newstack, unsigned long start,
+			   void *image, void *control,
+			   void (*clear_all)(void)) __noreturn;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* too late to fail here */
 void default_machine_kexec(struct kimage *image)

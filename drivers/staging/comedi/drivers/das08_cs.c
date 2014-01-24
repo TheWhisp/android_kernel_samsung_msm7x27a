@@ -79,22 +79,37 @@ static int das08_cs_attach(struct comedi_device *dev,
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	printk("comedi%d: das08_cs: ", dev->minor);
+=======
+	dev_info(dev->hw_dev, "comedi%d: das08_cs:\n", dev->minor);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*  deal with a pci board */
 
 	if (thisboard->bustype == pcmcia) {
 		if (link == NULL) {
+<<<<<<< HEAD
 			printk(" no pcmcia cards found\n");
+=======
+			dev_err(dev->hw_dev, "no pcmcia cards found\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EIO;
 		}
 		iobase = link->resource[0]->start;
 	} else {
+<<<<<<< HEAD
 		printk(" bug! board does not have PCMCIA bustype\n");
 		return -EINVAL;
 	}
 
 	printk("\n");
 
+=======
+		dev_err(dev->hw_dev, "bug! board does not have PCMCIA bustype\n");
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return das08_common_attach(dev, iobase);
 }
 

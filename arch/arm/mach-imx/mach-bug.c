@@ -42,6 +42,11 @@ static const unsigned int bug_pins[] __initconst = {
 
 static void __init bug_board_init(void)
 {
+<<<<<<< HEAD
+=======
+	imx31_soc_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mxc_iomux_setup_multiple_pins(bug_pins,
 				      ARRAY_SIZE(bug_pins), "uart-4");
 	imx31_add_imx_uart4(&uart_pdata);
@@ -60,6 +65,13 @@ MACHINE_START(BUG, "BugLabs BUGBase")
 	.map_io = mx31_map_io,
 	.init_early = imx31_init_early,
 	.init_irq = mx31_init_irq,
+<<<<<<< HEAD
 	.timer = &bug_timer,
 	.init_machine = bug_board_init,
+=======
+	.handle_irq = imx31_handle_irq,
+	.timer = &bug_timer,
+	.init_machine = bug_board_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

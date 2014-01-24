@@ -22,9 +22,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+<<<<<<< HEAD
 #include <linux/timerqueue.h>
 #include <linux/rbtree.h>
 #include <linux/module.h>
+=======
+#include <linux/bug.h>
+#include <linux/timerqueue.h>
+#include <linux/rbtree.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * timerqueue_add - Adds timer to timerqueue.

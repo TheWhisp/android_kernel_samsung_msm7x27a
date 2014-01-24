@@ -17,7 +17,10 @@
 #include <linux/init.h>
 #include <linux/tty.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/gdb-stub.h>
 #include <asm/exceptions.h>
 #include <unit/clock.h>

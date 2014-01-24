@@ -26,7 +26,10 @@
 #include <linux/highuid.h>
 #include <linux/pagemap.h>
 #include <linux/quotaops.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/writeback.h>
 #include <linux/buffer_head.h>
 #include <linux/mpage.h>
@@ -36,10 +39,13 @@
 #include "acl.h"
 #include "xip.h"
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Remy Card and others");
 MODULE_DESCRIPTION("Second Extended Filesystem");
 MODULE_LICENSE("GPL");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __ext2_write_inode(struct inode *inode, int do_sync);
 
 /*
@@ -843,8 +849,13 @@ ext2_direct_IO(int rw, struct kiocb *iocb, const struct iovec *iov,
 	struct inode *inode = mapping->host;
 	ssize_t ret;
 
+<<<<<<< HEAD
 	ret = blockdev_direct_IO(rw, iocb, inode, inode->i_sb->s_bdev,
 				iov, offset, nr_segs, ext2_get_block, NULL);
+=======
+	ret = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
+				 ext2_get_block);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0 && (rw & WRITE))
 		ext2_write_failed(mapping, offset + iov_length(iov, nr_segs));
 	return ret;
@@ -1184,6 +1195,11 @@ static int ext2_setsize(struct inode *inode, loff_t newsize)
 	if (IS_APPEND(inode) || IS_IMMUTABLE(inode))
 		return -EPERM;
 
+<<<<<<< HEAD
+=======
+	inode_dio_wait(inode);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (mapping_is_xip(inode->i_mapping))
 		error = xip_truncate_page(inode->i_mapping, newsize);
 	else if (test_opt(inode->i_sb, NOBH))
@@ -1319,7 +1335,11 @@ struct inode *ext2_iget (struct super_block *sb, unsigned long ino)
 		inode->i_uid |= le16_to_cpu(raw_inode->i_uid_high) << 16;
 		inode->i_gid |= le16_to_cpu(raw_inode->i_gid_high) << 16;
 	}
+<<<<<<< HEAD
 	inode->i_nlink = le16_to_cpu(raw_inode->i_links_count);
+=======
+	set_nlink(inode, le16_to_cpu(raw_inode->i_links_count));
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_size = le32_to_cpu(raw_inode->i_size);
 	inode->i_atime.tv_sec = (signed)le32_to_cpu(raw_inode->i_atime);
 	inode->i_ctime.tv_sec = (signed)le32_to_cpu(raw_inode->i_ctime);

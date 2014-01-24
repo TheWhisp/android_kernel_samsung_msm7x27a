@@ -8,6 +8,11 @@
 # conmakehash:	 Create arrays for initializing the kernel console tables
 # docproc:       Used in Documentation/DocBook
 
+<<<<<<< HEAD
+=======
+HOST_EXTRACFLAGS += -I$(srctree)/tools/include
+
+>>>>>>> refs/remotes/origin/cm-10.0
 hostprogs-$(CONFIG_KALLSYMS)     += kallsyms
 hostprogs-$(CONFIG_LOGO)         += pnmtologo
 hostprogs-$(CONFIG_VT)           += conmakehash

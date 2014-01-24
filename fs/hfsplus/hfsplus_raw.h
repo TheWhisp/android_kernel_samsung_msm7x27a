@@ -117,7 +117,11 @@ struct hfsplus_vh {
 	__be32 write_count;
 	__be64 encodings_bmp;
 
+<<<<<<< HEAD
 	u8 finder_info[32];
+=======
+	u32 finder_info[8];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct hfsplus_fork_raw alloc_file;
 	struct hfsplus_fork_raw ext_file;

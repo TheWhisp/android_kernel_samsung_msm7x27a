@@ -7,12 +7,19 @@
 #include "linux/bootmem.h"
 #include "linux/initrd.h"
 #include "asm/types.h"
+<<<<<<< HEAD
 #include "initrd.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "init.h"
 #include "os.h"
 
 /* Changed by uml_initrd_setup, which is a setup */
 static char *initrd __initdata = NULL;
+<<<<<<< HEAD
+=======
+static int load_initrd(char *filename, void *buf, int size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init read_initrd(void)
 {
@@ -62,7 +69,11 @@ __uml_setup("initrd=", uml_initrd_setup,
 "    name of the file containing the image.\n\n"
 );
 
+<<<<<<< HEAD
 int load_initrd(char *filename, void *buf, int size)
+=======
+static int load_initrd(char *filename, void *buf, int size)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int fd, n;
 

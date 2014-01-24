@@ -152,10 +152,17 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/pci.h>
 #include <linux/rtnetlink.h>
 
 #include <asm/system.h>
+=======
+#include <linux/interrupt.h>
+#include <linux/pci.h>
+#include <linux/rtnetlink.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 
 #include <net/irda/wrapper.h>
@@ -196,7 +203,11 @@ static char *driver_name = DRIVER_NAME;
 
 static int max_baud = 4000000;
 #ifdef USE_PROBE
+<<<<<<< HEAD
 static int do_probe = 0;
+=======
+static bool do_probe = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 
@@ -1607,7 +1618,10 @@ toshoboe_open (struct pci_dev *pci_dev, const struct pci_device_id *pdid)
   self->ringbuf = kmalloc(OBOE_RING_LEN << 1, GFP_KERNEL);
   if (!self->ringbuf)
     {
+<<<<<<< HEAD
       printk (KERN_ERR DRIVER_NAME ": can't allocate DMA buffers\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
       err = -ENOMEM;
       goto freeregion;
     }
@@ -1646,7 +1660,10 @@ toshoboe_open (struct pci_dev *pci_dev, const struct pci_device_id *pdid)
 
   if (!ok)
     {
+<<<<<<< HEAD
       printk (KERN_ERR DRIVER_NAME ": can't allocate rx/tx buffers\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
       err = -ENOMEM;
       goto freebufs;
     }

@@ -165,6 +165,10 @@ struct housekeeping {
 
 struct beacon {
 	struct delayed_work watchdog_work;
+<<<<<<< HEAD
+=======
+	struct sk_buff *cur_beacon;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long last_update;
 	u16 interval;
 	u8 period;

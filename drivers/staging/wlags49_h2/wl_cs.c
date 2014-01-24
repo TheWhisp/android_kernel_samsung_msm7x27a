@@ -74,7 +74,10 @@
 #include <linux/in.h>
 #include <linux/delay.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/bitops.h>
 
 #include <linux/netdevice.h>
@@ -82,6 +85,10 @@
 #include <linux/skbuff.h>
 #include <linux/if_arp.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/cisreg.h>
@@ -228,7 +235,10 @@ static int wl_adapter_resume(struct pcmcia_device *link)
 void wl_adapter_insert(struct pcmcia_device *link)
 {
 	struct net_device *dev;
+<<<<<<< HEAD
 	int i;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	/*--------------------------------------------------------------------*/
 
@@ -265,10 +275,15 @@ void wl_adapter_insert(struct pcmcia_device *link)
 
 	register_wlags_sysfs(dev);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: Wireless, io_addr %#03lx, irq %d, ""mac_address ",
 		dev->name, dev->base_addr, dev->irq);
 	for (i = 0; i < ETH_ALEN; i++)
 		printk("%02X%c", dev->dev_addr[i], ((i < (ETH_ALEN-1)) ? ':' : '\n'));
+=======
+	printk(KERN_INFO "%s: Wireless, io_addr %#03lx, irq %d, mac_address"
+		" %pM\n", dev->name, dev->base_addr, dev->irq, dev->dev_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	DBG_LEAVE(DbgInfo);
 	return;
@@ -501,6 +516,7 @@ int wl_adapter_is_open(struct net_device *dev)
 	return link->open;
 } /* wl_adapter_is_open */
 /*============================================================================*/
+<<<<<<< HEAD
 
 
 #if DBG
@@ -615,3 +631,5 @@ const char *DbgEvent(int mask)
 /*============================================================================*/
 
 #endif  /* DBG */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -42,7 +42,10 @@
 #include <linux/seq_file.h>
 #include <linux/module.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 
 #include <asm/atarihw.h>
@@ -60,6 +63,7 @@
  * <asm/atariints.h>): Autovector interrupts are 1..7, then follow ST-MFP,
  * TT-MFP, SCC, and finally VME interrupts. Vector numbers for the latter can
  * be allocated by atari_register_vme_int().
+<<<<<<< HEAD
  *
  * Each interrupt can be of three types:
  *
@@ -297,6 +301,9 @@ __asm__ (__ALIGN_STR "\n"
 	for (;;);
 }
 #endif
+=======
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Bitmap for free interrupt vector numbers
@@ -318,26 +325,45 @@ __ALIGN_STR "\n\t"
 
 extern void atari_microwire_cmd(int cmd);
 
+<<<<<<< HEAD
 extern int atari_SCC_reset_done;
 
 static int atari_startup_irq(unsigned int irq)
 {
 	m68k_irq_startup(irq);
+=======
+static unsigned int atari_irq_startup(struct irq_data *data)
+{
+	unsigned int irq = data->irq;
+
+	m68k_irq_startup(data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	atari_turnon_irq(irq);
 	atari_enable_irq(irq);
 	return 0;
 }
 
+<<<<<<< HEAD
 static void atari_shutdown_irq(unsigned int irq)
 {
 	atari_disable_irq(irq);
 	atari_turnoff_irq(irq);
 	m68k_irq_shutdown(irq);
+=======
+static void atari_irq_shutdown(struct irq_data *data)
+{
+	unsigned int irq = data->irq;
+
+	atari_disable_irq(irq);
+	atari_turnoff_irq(irq);
+	m68k_irq_shutdown(data);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (irq == IRQ_AUTO_4)
 	    vectors[VEC_INT4] = falcon_hblhandler;
 }
 
+<<<<<<< HEAD
 static struct irq_controller atari_irq_controller = {
 	.name		= "atari",
 	.lock		= __SPIN_LOCK_UNLOCKED(atari_irq_controller.lock),
@@ -345,6 +371,24 @@ static struct irq_controller atari_irq_controller = {
 	.shutdown	= atari_shutdown_irq,
 	.enable		= atari_enable_irq,
 	.disable	= atari_disable_irq,
+=======
+static void atari_irq_enable(struct irq_data *data)
+{
+	atari_enable_irq(data->irq);
+}
+
+static void atari_irq_disable(struct irq_data *data)
+{
+	atari_disable_irq(data->irq);
+}
+
+static struct irq_chip atari_irq_chip = {
+	.name		= "atari",
+	.irq_startup	= atari_irq_startup,
+	.irq_shutdown	= atari_irq_shutdown,
+	.irq_enable	= atari_irq_enable,
+	.irq_disable	= atari_irq_disable,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -360,8 +404,14 @@ static struct irq_controller atari_irq_controller = {
 
 void __init atari_init_IRQ(void)
 {
+<<<<<<< HEAD
 	m68k_setup_user_interrupt(VEC_USER, NUM_ATARI_SOURCES - IRQ_USER, NULL);
 	m68k_setup_irq_controller(&atari_irq_controller, 1, NUM_ATARI_SOURCES - 1);
+=======
+	m68k_setup_user_interrupt(VEC_USER, NUM_ATARI_SOURCES - IRQ_USER);
+	m68k_setup_irq_controller(&atari_irq_chip, handle_simple_irq, 1,
+				  NUM_ATARI_SOURCES - 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Initialize the MFP(s) */
 

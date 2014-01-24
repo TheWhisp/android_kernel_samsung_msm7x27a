@@ -161,7 +161,10 @@ struct expansion_card {
 
 	/* Private internal data */
 	const char		*card_desc;	/* Card description		*/
+<<<<<<< HEAD
 	CONST unsigned int	podaddr;	/* Base Linux address for card	*/
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	CONST loader_t		loader;		/* loader program */
 	u64			dma_mask;
 };

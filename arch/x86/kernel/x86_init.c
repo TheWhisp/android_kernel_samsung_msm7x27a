@@ -21,12 +21,20 @@
 #include <asm/pat.h>
 #include <asm/tsc.h>
 #include <asm/iommu.h>
+<<<<<<< HEAD
+=======
+#include <asm/mach_traps.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __cpuinit x86_init_noop(void) { }
 void __init x86_init_uint_noop(unsigned int unused) { }
 void __init x86_init_pgd_noop(pgd_t *unused) { }
 int __init iommu_init_noop(void) { return 0; }
 void iommu_shutdown_noop(void) { }
+<<<<<<< HEAD
+=======
+void wallclock_init_noop(void) { }
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The platform setup functions are preset with the default functions
@@ -89,6 +97,10 @@ struct x86_init_ops x86_init __initdata = {
 };
 
 struct x86_cpuinit_ops x86_cpuinit __cpuinitdata = {
+<<<<<<< HEAD
+=======
+	.early_percpu_clock_init	= x86_init_noop,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.setup_percpu_clockev		= setup_secondary_APIC_clock,
 };
 
@@ -97,12 +109,23 @@ static int default_i8042_detect(void) { return 1; };
 
 struct x86_platform_ops x86_platform = {
 	.calibrate_tsc			= native_calibrate_tsc,
+<<<<<<< HEAD
+=======
+	.wallclock_init			= wallclock_init_noop,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_wallclock			= mach_get_cmos_time,
 	.set_wallclock			= mach_set_rtc_mmss,
 	.iommu_shutdown			= iommu_shutdown_noop,
 	.is_untracked_pat_range		= is_ISA_range,
 	.nmi_init			= default_nmi_init,
+<<<<<<< HEAD
 	.i8042_detect			= default_i8042_detect
+=======
+	.get_nmi_reason			= default_get_nmi_reason,
+	.i8042_detect			= default_i8042_detect,
+	.save_sched_clock_state 	= tsc_save_sched_clock_state,
+	.restore_sched_clock_state 	= tsc_restore_sched_clock_state,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 EXPORT_SYMBOL_GPL(x86_platform);
@@ -110,4 +133,8 @@ struct x86_msi_ops x86_msi = {
 	.setup_msi_irqs = native_setup_msi_irqs,
 	.teardown_msi_irq = native_teardown_msi_irq,
 	.teardown_msi_irqs = default_teardown_msi_irqs,
+<<<<<<< HEAD
+=======
+	.restore_msi_irqs = default_restore_msi_irqs,
+>>>>>>> refs/remotes/origin/cm-10.0
 };

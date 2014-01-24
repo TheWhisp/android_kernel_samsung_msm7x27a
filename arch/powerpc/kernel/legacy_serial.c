@@ -6,6 +6,10 @@
 #include <linux/pci.h>
 #include <linux/of_address.h>
 #include <linux/of_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/serial_reg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/mmu.h>
 #include <asm/prom.h>
@@ -47,6 +51,27 @@ static struct __initdata of_device_id legacy_serial_parents[] = {
 static unsigned int legacy_serial_count;
 static int legacy_serial_console = -1;
 
+<<<<<<< HEAD
+=======
+static unsigned int tsi_serial_in(struct uart_port *p, int offset)
+{
+	unsigned int tmp;
+	offset = offset << p->regshift;
+	if (offset == UART_IIR) {
+		tmp = readl(p->membase + (UART_IIR & ~3));
+		return (tmp >> 16) & 0xff; /* UART_IIR % 4 == 2 */
+	} else
+		return readb(p->membase + offset);
+}
+
+static void tsi_serial_out(struct uart_port *p, int offset, int value)
+{
+	offset = offset << p->regshift;
+	if (!((offset == UART_IER) && (value & UART_IER_UUE)))
+		writeb(value, p->membase + offset);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init add_legacy_port(struct device_node *np, int want_index,
 				  int iotype, phys_addr_t base,
 				  phys_addr_t taddr, unsigned long irq,
@@ -102,6 +127,10 @@ static int __init add_legacy_port(struct device_node *np, int want_index,
 		legacy_serial_ports[index].iobase = base;
 	else
 		legacy_serial_ports[index].mapbase = base;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	legacy_serial_ports[index].iotype = iotype;
 	legacy_serial_ports[index].uartclk = clock;
 	legacy_serial_ports[index].irq = irq;
@@ -112,6 +141,14 @@ static int __init add_legacy_port(struct device_node *np, int want_index,
 	legacy_serial_infos[index].speed = spd ? be32_to_cpup(spd) : 0;
 	legacy_serial_infos[index].irq_check_parent = irq_check_parent;
 
+<<<<<<< HEAD
+=======
+	if (iotype == UPIO_TSI) {
+		legacy_serial_ports[index].serial_in = tsi_serial_in;
+		legacy_serial_ports[index].serial_out = tsi_serial_out;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_DEBUG "Found legacy serial port %d for %s\n",
 	       index, np->full_name);
 	printk(KERN_DEBUG "  %s=%llx, taddr=%llx, irq=%lx, clk=%d, speed=%d\n",
@@ -416,6 +453,14 @@ static void __init fixup_port_irq(int index,
 		return;
 
 	port->irq = virq;
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_SERIAL_8250_FSL
+	if (of_device_is_compatible(np, "fsl,ns16550"))
+		port->handle_irq = fsl8250_handle_irq;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __init fixup_port_pio(int index,

@@ -766,6 +766,10 @@ void print_core_recoverable_errors(u32 error_code)
 	break;
 	}
 	if (string)
+<<<<<<< HEAD
 		DDL_MSG_LOW("Recoverable Error code = 0x%x : %s",
+=======
+		DDL_MSG_ERROR("Recoverable Error code = 0x%x : %s",
+>>>>>>> refs/remotes/origin/cm-10.0
 					  error_code, string);
 }

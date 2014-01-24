@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -111,7 +115,11 @@ acpi_status acpi_db_find_name_in_namespace(char *name_arg);
 
 void acpi_db_set_scope(char *name);
 
+<<<<<<< HEAD
 acpi_status acpi_db_sleep(char *object_arg);
+=======
+ACPI_HW_DEPENDENT_RETURN_OK(acpi_status acpi_db_sleep(char *object_arg))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void acpi_db_find_references(char *object_arg);
 
@@ -119,11 +127,21 @@ void acpi_db_display_locks(void);
 
 void acpi_db_display_resources(char *object_arg);
 
+<<<<<<< HEAD
 void acpi_db_display_gpes(void);
 
 void acpi_db_check_integrity(void);
 
 void acpi_db_generate_gpe(char *gpe_arg, char *block_arg);
+=======
+ACPI_HW_DEPENDENT_RETURN_VOID(void acpi_db_display_gpes(void))
+
+void acpi_db_check_integrity(void);
+
+ACPI_HW_DEPENDENT_RETURN_VOID(void
+			      acpi_db_generate_gpe(char *gpe_arg,
+						   char *block_arg))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void acpi_db_check_predefined_names(void);
 

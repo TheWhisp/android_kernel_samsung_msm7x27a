@@ -13,6 +13,10 @@
 #include <linux/input/bu21013.h>
 #include <linux/slab.h>
 #include <linux/regulator/consumer.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PEN_DOWN_INTR	0
 #define MAX_FINGERS	2
@@ -651,6 +655,7 @@ static struct i2c_driver bu21013_driver = {
 	.id_table	=	bu21013_id,
 };
 
+<<<<<<< HEAD
 /**
  * bu21013_init() - initializes the bu21013 touchscreen driver
  *
@@ -675,6 +680,9 @@ static void __exit bu21013_exit(void)
 
 module_init(bu21013_init);
 module_exit(bu21013_exit);
+=======
+module_i2c_driver(bu21013_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Naveen Kumar G <naveen.gaddipati@stericsson.com>");

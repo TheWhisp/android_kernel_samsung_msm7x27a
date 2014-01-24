@@ -61,6 +61,7 @@ u64 op_x86_get_ctrl(struct op_x86_model_spec const *model,
 }
 
 
+<<<<<<< HEAD
 static int profile_exceptions_notify(struct notifier_block *self,
 				     unsigned long val, void *data)
 {
@@ -81,6 +82,17 @@ static int profile_exceptions_notify(struct notifier_block *self,
 		break;
 	}
 	return ret;
+=======
+static int profile_exceptions_notify(unsigned int val, struct pt_regs *regs)
+{
+	if (ctr_running)
+		model->check_ctrs(regs, &__get_cpu_var(cpu_msrs));
+	else if (!nmi_enabled)
+		return NMI_DONE;
+	else
+		model->stop(&__get_cpu_var(cpu_msrs));
+	return NMI_HANDLED;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void nmi_cpu_save_registers(struct op_msrs *msrs)
@@ -355,20 +367,30 @@ static void nmi_cpu_setup(void *dummy)
 	int cpu = smp_processor_id();
 	struct op_msrs *msrs = &per_cpu(cpu_msrs, cpu);
 	nmi_cpu_save_registers(msrs);
+<<<<<<< HEAD
 	spin_lock(&oprofilefs_lock);
 	model->setup_ctrs(model, msrs);
 	nmi_cpu_setup_mux(cpu, msrs);
 	spin_unlock(&oprofilefs_lock);
+=======
+	raw_spin_lock(&oprofilefs_lock);
+	model->setup_ctrs(model, msrs);
+	nmi_cpu_setup_mux(cpu, msrs);
+	raw_spin_unlock(&oprofilefs_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	per_cpu(saved_lvtpc, cpu) = apic_read(APIC_LVTPC);
 	apic_write(APIC_LVTPC, APIC_DM_NMI);
 }
 
+<<<<<<< HEAD
 static struct notifier_block profile_exceptions_nb = {
 	.notifier_call = profile_exceptions_notify,
 	.next = NULL,
 	.priority = NMI_LOCAL_LOW_PRIOR,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void nmi_cpu_restore_registers(struct op_msrs *msrs)
 {
 	struct op_msr *counters = msrs->counters;
@@ -402,8 +424,11 @@ static void nmi_cpu_shutdown(void *dummy)
 	apic_write(APIC_LVTPC, per_cpu(saved_lvtpc, cpu));
 	apic_write(APIC_LVTERR, v);
 	nmi_cpu_restore_registers(msrs);
+<<<<<<< HEAD
 	if (model->cpu_down)
 		model->cpu_down();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void nmi_cpu_up(void *dummy)
@@ -508,7 +533,12 @@ static int nmi_setup(void)
 	ctr_running = 0;
 	/* make variables visible to the nmi handler: */
 	smp_mb();
+<<<<<<< HEAD
 	err = register_die_notifier(&profile_exceptions_nb);
+=======
+	err = register_nmi_handler(NMI_LOCAL, profile_exceptions_notify,
+					0, "oprofile");
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		goto fail;
 
@@ -538,7 +568,11 @@ static void nmi_shutdown(void)
 	put_online_cpus();
 	/* make variables visible to the nmi handler: */
 	smp_mb();
+<<<<<<< HEAD
 	unregister_die_notifier(&profile_exceptions_nb);
+=======
+	unregister_nmi_handler(NMI_LOCAL, "oprofile");
+>>>>>>> refs/remotes/origin/cm-10.0
 	msrs = &get_cpu_var(cpu_msrs);
 	model->shutdown(msrs);
 	free_msrs();
@@ -613,24 +647,53 @@ static int __init p4_init(char **cpu_type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int force_arch_perfmon;
 static int force_cpu_type(const char *str, struct kernel_param *kp)
 {
 	if (!strcmp(str, "arch_perfmon")) {
 		force_arch_perfmon = 1;
 		printk(KERN_INFO "oprofile: forcing architectural perfmon\n");
+=======
+enum __force_cpu_type {
+	reserved = 0,		/* do not force */
+	timer,
+	arch_perfmon,
+};
+
+static int force_cpu_type;
+
+static int set_cpu_type(const char *str, struct kernel_param *kp)
+{
+	if (!strcmp(str, "timer")) {
+		force_cpu_type = timer;
+		printk(KERN_INFO "oprofile: forcing NMI timer mode\n");
+	} else if (!strcmp(str, "arch_perfmon")) {
+		force_cpu_type = arch_perfmon;
+		printk(KERN_INFO "oprofile: forcing architectural perfmon\n");
+	} else {
+		force_cpu_type = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
 }
+<<<<<<< HEAD
 module_param_call(cpu_type, force_cpu_type, NULL, NULL, 0);
+=======
+module_param_call(cpu_type, set_cpu_type, NULL, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init ppro_init(char **cpu_type)
 {
 	__u8 cpu_model = boot_cpu_data.x86_model;
 	struct op_x86_model_spec *spec = &op_ppro_spec;	/* default */
 
+<<<<<<< HEAD
 	if (force_arch_perfmon && cpu_has_arch_perfmon)
+=======
+	if (force_cpu_type == arch_perfmon && cpu_has_arch_perfmon)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	/*
@@ -697,6 +760,12 @@ int __init op_nmi_init(struct oprofile_operations *ops)
 	if (!cpu_has_apic)
 		return -ENODEV;
 
+<<<<<<< HEAD
+=======
+	if (force_cpu_type == timer)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (vendor) {
 	case X86_VENDOR_AMD:
 		/* Needs to be at least an Athlon (or hammer in 32bit mode) */

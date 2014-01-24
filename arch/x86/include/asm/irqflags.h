@@ -60,23 +60,41 @@ static inline void native_halt(void)
 #include <asm/paravirt.h>
 #else
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 
 static inline unsigned long arch_local_save_flags(void)
+=======
+#include <linux/types.h>
+
+static inline notrace unsigned long arch_local_save_flags(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return native_save_fl();
 }
 
+<<<<<<< HEAD
 static inline void arch_local_irq_restore(unsigned long flags)
+=======
+static inline notrace void arch_local_irq_restore(unsigned long flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	native_restore_fl(flags);
 }
 
+<<<<<<< HEAD
 static inline void arch_local_irq_disable(void)
+=======
+static inline notrace void arch_local_irq_disable(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	native_irq_disable();
 }
 
+<<<<<<< HEAD
 static inline void arch_local_irq_enable(void)
+=======
+static inline notrace void arch_local_irq_enable(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	native_irq_enable();
 }
@@ -102,7 +120,11 @@ static inline void halt(void)
 /*
  * For spinlocks, etc:
  */
+<<<<<<< HEAD
 static inline unsigned long arch_local_irq_save(void)
+=======
+static inline notrace unsigned long arch_local_irq_save(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long flags = arch_local_save_flags();
 	arch_local_irq_disable();

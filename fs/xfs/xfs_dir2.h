@@ -16,6 +16,7 @@
  * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 #ifndef __XFS_DIR2_H__
+<<<<<<< HEAD
 #define	__XFS_DIR2_H__
 
 struct uio;
@@ -23,10 +24,17 @@ struct xfs_dabuf;
 struct xfs_da_args;
 struct xfs_dir2_put_args;
 struct xfs_bmap_free;
+=======
+#define __XFS_DIR2_H__
+
+struct xfs_bmap_free;
+struct xfs_da_args;
+>>>>>>> refs/remotes/origin/cm-10.0
 struct xfs_inode;
 struct xfs_mount;
 struct xfs_trans;
 
+<<<<<<< HEAD
 /*
  * Directory version 2.
  * There are 4 possible formats:
@@ -59,6 +67,8 @@ typedef	__uint32_t	xfs_dir2_db_t;
  */
 typedef	xfs_off_t	xfs_dir2_off_t;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct xfs_name	xfs_name_dotdot;
 
 /*
@@ -86,6 +96,7 @@ extern int xfs_dir_replace(struct xfs_trans *tp, struct xfs_inode *dp,
 				struct xfs_bmap_free *flist, xfs_extlen_t tot);
 extern int xfs_dir_canenter(struct xfs_trans *tp, struct xfs_inode *dp,
 				struct xfs_name *name, uint resblks);
+<<<<<<< HEAD
 extern int xfs_dir_ino_validate(struct xfs_mount *mp, xfs_ino_t ino);
 
 /*
@@ -102,5 +113,12 @@ extern int xfs_dir2_shrink_inode(struct xfs_da_args *args, xfs_dir2_db_t db,
 
 extern int xfs_dir_cilookup_result(struct xfs_da_args *args,
 				const unsigned char *name, int len);
+=======
+
+/*
+ * Direct call from the bmap code, bypassing the generic directory layer.
+ */
+extern int xfs_dir2_sf_to_block(struct xfs_da_args *args);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif	/* __XFS_DIR2_H__ */

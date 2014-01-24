@@ -19,6 +19,10 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/leds.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <asm/io.h>
 
@@ -223,6 +227,7 @@ static struct platform_driver fsg_led_driver = {
 	},
 };
 
+<<<<<<< HEAD
 
 static int __init fsg_led_init(void)
 {
@@ -237,6 +242,9 @@ static void __exit fsg_led_exit(void)
 
 module_init(fsg_led_init);
 module_exit(fsg_led_exit);
+=======
+module_platform_driver(fsg_led_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Rod Whitby <rod@whitby.id.au>");
 MODULE_DESCRIPTION("Freecom FSG-3 LED driver");

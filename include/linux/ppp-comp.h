@@ -1,6 +1,7 @@
 /*
  * ppp-comp.h - Definitions for doing PPP packet compression.
  *
+<<<<<<< HEAD
  * Copyright (c) 1994 The Australian National University.
  * All rights reserved.
  *
@@ -37,6 +38,14 @@
  *     installation script can recognize it.
  */
 
+=======
+ * Copyright 1994-1998 Paul Mackerras.
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  version 2 as published by the Free Software Foundation.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _NET_PPP_COMP_H
 #define _NET_PPP_COMP_H
 

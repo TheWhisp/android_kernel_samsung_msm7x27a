@@ -1,5 +1,9 @@
 #include <linux/bcd.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned bcd2bin(unsigned char val)
 {

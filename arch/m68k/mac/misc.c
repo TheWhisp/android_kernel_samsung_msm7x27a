@@ -19,7 +19,10 @@
 #include <asm/uaccess.h>
 #include <asm/io.h>
 #include <asm/rtc.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/segment.h>
 #include <asm/setup.h>
 #include <asm/macintosh.h>
@@ -304,16 +307,29 @@ static void via_write_pram(int offset, __u8 data)
 static long via_read_time(void)
 {
 	union {
+<<<<<<< HEAD
 		__u8  cdata[4];
 		long  idata;
 	} result, last_result;
 	int	ct;
+=======
+		__u8 cdata[4];
+		long idata;
+	} result, last_result;
+	int count = 1;
+
+	via_pram_command(0x81, &last_result.cdata[3]);
+	via_pram_command(0x85, &last_result.cdata[2]);
+	via_pram_command(0x89, &last_result.cdata[1]);
+	via_pram_command(0x8D, &last_result.cdata[0]);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * The NetBSD guys say to loop until you get the same reading
 	 * twice in a row.
 	 */
 
+<<<<<<< HEAD
 	ct = 0;
 	do {
 		if (++ct > 10) {
@@ -326,13 +342,34 @@ static long via_read_time(void)
 		last_result.idata = result.idata;
 		result.idata = 0;
 
+=======
+	while (1) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		via_pram_command(0x81, &result.cdata[3]);
 		via_pram_command(0x85, &result.cdata[2]);
 		via_pram_command(0x89, &result.cdata[1]);
 		via_pram_command(0x8D, &result.cdata[0]);
+<<<<<<< HEAD
 	} while (result.idata != last_result.idata);
 
 	return result.idata - RTC_OFFSET;
+=======
+
+		if (result.idata == last_result.idata)
+			return result.idata - RTC_OFFSET;
+
+		if (++count > 10)
+			break;
+
+		last_result.idata = result.idata;
+	}
+
+	pr_err("via_read_time: failed to read a stable value; "
+	       "got 0x%08lx then 0x%08lx\n",
+	       last_result.idata, result.idata);
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*

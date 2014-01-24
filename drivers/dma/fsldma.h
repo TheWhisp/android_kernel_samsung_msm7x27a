@@ -137,7 +137,10 @@ struct fsldma_device {
 struct fsldma_chan {
 	char name[8];			/* Channel name */
 	struct fsldma_chan_regs __iomem *regs;
+<<<<<<< HEAD
 	dma_cookie_t completed_cookie;	/* The maximum cookie completed */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spinlock_t desc_lock;		/* Descriptor operation lock */
 	struct list_head ld_pending;	/* Link descriptors queue */
 	struct list_head ld_running;	/* Link descriptors queue */

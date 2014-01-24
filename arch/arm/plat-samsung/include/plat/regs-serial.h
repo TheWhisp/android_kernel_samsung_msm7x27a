@@ -71,6 +71,10 @@
 #define S3C2410_LCON_IRM          (1<<6)
 
 #define S3C2440_UCON_CLKMASK	  (3<<10)
+<<<<<<< HEAD
+=======
+#define S3C2440_UCON_CLKSHIFT	  (10)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define S3C2440_UCON_PCLK	  (0<<10)
 #define S3C2440_UCON_UCLK	  (1<<10)
 #define S3C2440_UCON_PCLK2	  (2<<10)
@@ -78,6 +82,10 @@
 #define S3C2443_UCON_EPLL	  (3<<10)
 
 #define S3C6400_UCON_CLKMASK	(3<<10)
+<<<<<<< HEAD
+=======
+#define S3C6400_UCON_CLKSHIFT	(10)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define S3C6400_UCON_PCLK	(0<<10)
 #define S3C6400_UCON_PCLK2	(2<<10)
 #define S3C6400_UCON_UCLK0	(1<<10)
@@ -90,11 +98,20 @@
 #define S3C2440_UCON_DIVSHIFT	  (12)
 
 #define S3C2412_UCON_CLKMASK	(3<<10)
+<<<<<<< HEAD
+=======
+#define S3C2412_UCON_CLKSHIFT	(10)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define S3C2412_UCON_UCLK	(1<<10)
 #define S3C2412_UCON_USYSCLK	(3<<10)
 #define S3C2412_UCON_PCLK	(0<<10)
 #define S3C2412_UCON_PCLK2	(2<<10)
 
+<<<<<<< HEAD
+=======
+#define S3C2410_UCON_CLKMASK	(1 << 10)
+#define S3C2410_UCON_CLKSHIFT	(10)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define S3C2410_UCON_UCLK	  (1<<10)
 #define S3C2410_UCON_SBREAK	  (1<<4)
 
@@ -155,6 +172,7 @@
 #define S3C2410_UFSTAT_RXMASK	  (15<<0)
 #define S3C2410_UFSTAT_RXSHIFT	  (0)
 
+<<<<<<< HEAD
 /* UFSTAT S3C24A0 */
 #define S3C24A0_UFSTAT_TXFULL	  (1 << 14)
 #define S3C24A0_UFSTAT_RXFULL	  (1 << 6)
@@ -163,6 +181,8 @@
 #define S3C24A0_UFSTAT_RXMASK	  (63)
 #define S3C24A0_UFSTAT_RXSHIFT	  (0)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* UFSTAT S3C2443 same as S3C2440 */
 #define S3C2440_UFSTAT_TXFULL	  (1<<14)
 #define S3C2440_UFSTAT_RXFULL	  (1<<6)
@@ -194,8 +214,19 @@
 #define S3C64XX_UINTSP		0x34
 #define S3C64XX_UINTM		0x38
 
+<<<<<<< HEAD
 /* Following are specific to S5PV210 */
 #define S5PV210_UCON_CLKMASK	(1<<10)
+=======
+#define S3C64XX_UINTM_RXD	(0)
+#define S3C64XX_UINTM_TXD	(2)
+#define S3C64XX_UINTM_RXD_MSK	(1 << S3C64XX_UINTM_RXD)
+#define S3C64XX_UINTM_TXD_MSK	(1 << S3C64XX_UINTM_TXD)
+
+/* Following are specific to S5PV210 */
+#define S5PV210_UCON_CLKMASK	(1<<10)
+#define S5PV210_UCON_CLKSHIFT	(10)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define S5PV210_UCON_PCLK	(0<<10)
 #define S5PV210_UCON_UCLK	(1<<10)
 
@@ -224,6 +255,7 @@
 #define S5PV210_UFSTAT_RXMASK	(255<<0)
 #define S5PV210_UFSTAT_RXSHIFT	(0)
 
+<<<<<<< HEAD
 #define NO_NEED_CHECK_CLKSRC	1
 
 #ifndef __ASSEMBLY__
@@ -247,6 +279,26 @@ struct s3c24xx_uart_clksrc {
 	unsigned int	 min_baud;
 	unsigned int	 max_baud;
 };
+=======
+#define S3C2410_UCON_CLKSEL0	(1 << 0)
+#define S3C2410_UCON_CLKSEL1	(1 << 1)
+#define S3C2410_UCON_CLKSEL2	(1 << 2)
+#define S3C2410_UCON_CLKSEL3	(1 << 3)
+
+/* Default values for s5pv210 UCON and UFCON uart registers */
+#define S5PV210_UCON_DEFAULT	(S3C2410_UCON_TXILEVEL |	\
+				 S3C2410_UCON_RXILEVEL |	\
+				 S3C2410_UCON_TXIRQMODE |	\
+				 S3C2410_UCON_RXIRQMODE |	\
+				 S3C2410_UCON_RXFIFO_TOI |	\
+				 S3C2443_UCON_RXERR_IRQEN)
+
+#define S5PV210_UFCON_DEFAULT	(S3C2410_UFCON_FIFOMODE |	\
+				 S5PV210_UFCON_TXTRIG4 |	\
+				 S5PV210_UFCON_RXTRIG4)
+
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* configuration structure for per-machine configurations for the
  * serial port
@@ -260,15 +312,22 @@ struct s3c2410_uartcfg {
 	unsigned char	   unused;
 	unsigned short	   flags;
 	upf_t		   uart_flags;	 /* default uart flags */
+<<<<<<< HEAD
+=======
+	unsigned int	   clk_sel;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	unsigned int	   has_fracval;
 
 	unsigned long	   ucon;	 /* value of ucon for port */
 	unsigned long	   ulcon;	 /* value of ulcon for port */
 	unsigned long	   ufcon;	 /* value of ufcon for port */
+<<<<<<< HEAD
 
 	struct s3c24xx_uart_clksrc *clocks;
 	unsigned int		    clocks_size;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* s3c24xx_uart_devs

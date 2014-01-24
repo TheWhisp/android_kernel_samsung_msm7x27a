@@ -107,11 +107,19 @@ static int sctp_inet6addr_event(struct notifier_block *this, unsigned long ev,
 		if (addr) {
 			addr->a.v6.sin6_family = AF_INET6;
 			addr->a.v6.sin6_port = 0;
+<<<<<<< HEAD
 			ipv6_addr_copy(&addr->a.v6.sin6_addr, &ifa->addr);
+=======
+			addr->a.v6.sin6_addr = ifa->addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 			addr->a.v6.sin6_scope_id = ifa->idev->dev->ifindex;
 			addr->valid = 1;
 			spin_lock_bh(&sctp_local_addr_lock);
 			list_add_tail_rcu(&addr->list, &sctp_local_addr_list);
+<<<<<<< HEAD
+=======
+			sctp_addr_wq_mgmt(addr, SCTP_ADDR_NEW);
+>>>>>>> refs/remotes/origin/cm-10.0
 			spin_unlock_bh(&sctp_local_addr_lock);
 		}
 		break;
@@ -122,6 +130,10 @@ static int sctp_inet6addr_event(struct notifier_block *this, unsigned long ev,
 			if (addr->a.sa.sa_family == AF_INET6 &&
 					ipv6_addr_equal(&addr->a.v6.sin6_addr,
 						&ifa->addr)) {
+<<<<<<< HEAD
+=======
+				sctp_addr_wq_mgmt(addr, SCTP_ADDR_DEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 				found = 1;
 				addr->valid = 0;
 				list_del_rcu(&addr->list);
@@ -213,12 +225,21 @@ static int sctp_v6_xmit(struct sk_buff *skb, struct sctp_transport *transport)
 			  __func__, skb, skb->len,
 			  &fl6->saddr, &fl6->daddr);
 
+<<<<<<< HEAD
+=======
+	IP6_ECN_flow_xmit(sk, fl6->flowlabel);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!(transport->param_flags & SPP_PMTUD_ENABLE))
 		skb->local_df = 1;
 
 	SCTP_INC_STATS(SCTP_MIB_OUTSCTPPACKS);
 
+<<<<<<< HEAD
 	return ip6_xmit(sk, skb, fl6, np->opt);
+=======
+	return ip6_xmit(sk, skb, fl6, np->opt, np->tclass);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Returns the dst cache entry for the given source and destination ip
@@ -242,7 +263,11 @@ static void sctp_v6_get_dst(struct sctp_transport *t, union sctp_addr *saddr,
 	sctp_scope_t scope;
 
 	memset(fl6, 0, sizeof(struct flowi6));
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6->daddr, &daddr->v6.sin6_addr);
+=======
+	fl6->daddr = daddr->v6.sin6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	fl6->fl6_dport = daddr->v6.sin6_port;
 	fl6->flowi6_proto = IPPROTO_SCTP;
 	if (ipv6_addr_type(&daddr->v6.sin6_addr) & IPV6_ADDR_LINKLOCAL)
@@ -254,7 +279,11 @@ static void sctp_v6_get_dst(struct sctp_transport *t, union sctp_addr *saddr,
 		fl6->fl6_sport = htons(asoc->base.bind_addr.port);
 
 	if (saddr) {
+<<<<<<< HEAD
 		ipv6_addr_copy(&fl6->saddr, &saddr->v6.sin6_addr);
+=======
+		fl6->saddr = saddr->v6.sin6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		fl6->fl6_sport = saddr->v6.sin6_port;
 		SCTP_DEBUG_PRINTK("SRC=%pI6 - ", &fl6->saddr);
 	}
@@ -313,7 +342,11 @@ static void sctp_v6_get_dst(struct sctp_transport *t, union sctp_addr *saddr,
 	rcu_read_unlock();
 
 	if (baddr) {
+<<<<<<< HEAD
 		ipv6_addr_copy(&fl6->saddr, &baddr->v6.sin6_addr);
+=======
+		fl6->saddr = baddr->v6.sin6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		fl6->fl6_sport = baddr->v6.sin6_port;
 		final_p = fl6_update_dst(fl6, np->opt, &final);
 		dst = ip6_dst_lookup_flow(sk, fl6, final_p, false);
@@ -355,7 +388,11 @@ static void sctp_v6_get_saddr(struct sctp_sock *sk,
 
 	if (t->dst) {
 		saddr->v6.sin6_family = AF_INET6;
+<<<<<<< HEAD
 		ipv6_addr_copy(&saddr->v6.sin6_addr, &fl6->saddr);
+=======
+		saddr->v6.sin6_addr = fl6->saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -380,7 +417,11 @@ static void sctp_v6_copy_addrlist(struct list_head *addrlist,
 		if (addr) {
 			addr->a.v6.sin6_family = AF_INET6;
 			addr->a.v6.sin6_port = 0;
+<<<<<<< HEAD
 			ipv6_addr_copy(&addr->a.v6.sin6_addr, &ifp->addr);
+=======
+			addr->a.v6.sin6_addr = ifp->addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 			addr->a.v6.sin6_scope_id = dev->ifindex;
 			addr->valid = 1;
 			INIT_LIST_HEAD(&addr->list);
@@ -396,7 +437,10 @@ static void sctp_v6_copy_addrlist(struct list_head *addrlist,
 static void sctp_v6_from_skb(union sctp_addr *addr,struct sk_buff *skb,
 			     int is_saddr)
 {
+<<<<<<< HEAD
 	void *from;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	__be16 *port;
 	struct sctphdr *sh;
 
@@ -408,12 +452,20 @@ static void sctp_v6_from_skb(union sctp_addr *addr,struct sk_buff *skb,
 	sh = sctp_hdr(skb);
 	if (is_saddr) {
 		*port  = sh->source;
+<<<<<<< HEAD
 		from = &ipv6_hdr(skb)->saddr;
 	} else {
 		*port = sh->dest;
 		from = &ipv6_hdr(skb)->daddr;
 	}
 	ipv6_addr_copy(&addr->v6.sin6_addr, from);
+=======
+		addr->v6.sin6_addr = ipv6_hdr(skb)->saddr;
+	} else {
+		*port = sh->dest;
+		addr->v6.sin6_addr = ipv6_hdr(skb)->daddr;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Initialize an sctp_addr from a socket. */
@@ -421,7 +473,11 @@ static void sctp_v6_from_sk(union sctp_addr *addr, struct sock *sk)
 {
 	addr->v6.sin6_family = AF_INET6;
 	addr->v6.sin6_port = 0;
+<<<<<<< HEAD
 	ipv6_addr_copy(&addr->v6.sin6_addr, &inet6_sk(sk)->rcv_saddr);
+=======
+	addr->v6.sin6_addr = inet6_sk(sk)->rcv_saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Initialize sk->sk_rcv_saddr from sctp_addr. */
@@ -434,7 +490,11 @@ static void sctp_v6_to_sk_saddr(union sctp_addr *addr, struct sock *sk)
 		inet6_sk(sk)->rcv_saddr.s6_addr32[3] =
 			addr->v4.sin_addr.s_addr;
 	} else {
+<<<<<<< HEAD
 		ipv6_addr_copy(&inet6_sk(sk)->rcv_saddr, &addr->v6.sin6_addr);
+=======
+		inet6_sk(sk)->rcv_saddr = addr->v6.sin6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -447,7 +507,11 @@ static void sctp_v6_to_sk_daddr(union sctp_addr *addr, struct sock *sk)
 		inet6_sk(sk)->daddr.s6_addr32[2] = htonl(0x0000ffff);
 		inet6_sk(sk)->daddr.s6_addr32[3] = addr->v4.sin_addr.s_addr;
 	} else {
+<<<<<<< HEAD
 		ipv6_addr_copy(&inet6_sk(sk)->daddr, &addr->v6.sin6_addr);
+=======
+		inet6_sk(sk)->daddr = addr->v6.sin6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -459,7 +523,11 @@ static void sctp_v6_from_addr_param(union sctp_addr *addr,
 	addr->v6.sin6_family = AF_INET6;
 	addr->v6.sin6_port = port;
 	addr->v6.sin6_flowinfo = 0; /* BUG */
+<<<<<<< HEAD
 	ipv6_addr_copy(&addr->v6.sin6_addr, &param->v6.addr);
+=======
+	addr->v6.sin6_addr = param->v6.addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	addr->v6.sin6_scope_id = iif;
 }
 
@@ -473,7 +541,11 @@ static int sctp_v6_to_addr_param(const union sctp_addr *addr,
 
 	param->v6.param_hdr.type = SCTP_PARAM_IPV6_ADDRESS;
 	param->v6.param_hdr.length = htons(length);
+<<<<<<< HEAD
 	ipv6_addr_copy(&param->v6.addr, &addr->v6.sin6_addr);
+=======
+	param->v6.addr = addr->v6.sin6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return length;
 }
@@ -484,7 +556,11 @@ static void sctp_v6_to_addr(union sctp_addr *addr, struct in6_addr *saddr,
 {
 	addr->sa.sa_family = AF_INET6;
 	addr->v6.sin6_port = port;
+<<<<<<< HEAD
 	ipv6_addr_copy(&addr->v6.sin6_addr, saddr);
+=======
+	addr->v6.sin6_addr = *saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* Compare addresses exactly.
@@ -739,7 +815,11 @@ static void sctp_inet6_event_msgname(struct sctp_ulpevent *event,
 		}
 
 		sin6from = &asoc->peer.primary_addr.v6;
+<<<<<<< HEAD
 		ipv6_addr_copy(&sin6->sin6_addr, &sin6from->sin6_addr);
+=======
+		sin6->sin6_addr = sin6from->sin6_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ipv6_addr_type(&sin6->sin6_addr) & IPV6_ADDR_LINKLOCAL)
 			sin6->sin6_scope_id = sin6from->sin6_scope_id;
 	}
@@ -767,7 +847,11 @@ static void sctp_inet6_skb_msgname(struct sk_buff *skb, char *msgname,
 		}
 
 		/* Otherwise, just copy the v6 address. */
+<<<<<<< HEAD
 		ipv6_addr_copy(&sin6->sin6_addr, &ipv6_hdr(skb)->saddr);
+=======
+		sin6->sin6_addr = ipv6_hdr(skb)->saddr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ipv6_addr_type(&sin6->sin6_addr) & IPV6_ADDR_LINKLOCAL) {
 			struct sctp_ulpevent *ev = sctp_skb2event(skb);
 			sin6->sin6_scope_id = ev->iif;

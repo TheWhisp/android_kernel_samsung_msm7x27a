@@ -144,7 +144,11 @@ struct pm8xxx_adc {
 	struct wake_lock			adc_wakelock;
 	int					msm_suspend_check;
 	struct pm8xxx_adc_amux_properties	*conv;
+<<<<<<< HEAD
 	struct pm8xxx_adc_arb_btm_param		batt[0];
+=======
+	struct pm8xxx_adc_arb_btm_param		batt;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sensor_device_attribute		sens_attr[0];
 };
 
@@ -454,8 +458,13 @@ static void pm8xxx_adc_btm_warm_scheduler_fn(struct work_struct *work)
 
 	spin_lock_irqsave(&adc_pmic->btm_lock, flags);
 	warm_status = irq_read_line(adc_pmic->btm_warm_irq);
+<<<<<<< HEAD
 	if (adc_pmic->batt->btm_warm_fn != NULL)
 		adc_pmic->batt->btm_warm_fn(warm_status);
+=======
+	if (adc_pmic->batt.btm_warm_fn != NULL)
+		adc_pmic->batt.btm_warm_fn(warm_status);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&adc_pmic->btm_lock, flags);
 }
 
@@ -468,8 +477,13 @@ static void pm8xxx_adc_btm_cool_scheduler_fn(struct work_struct *work)
 
 	spin_lock_irqsave(&adc_pmic->btm_lock, flags);
 	cool_status = irq_read_line(adc_pmic->btm_cool_irq);
+<<<<<<< HEAD
 	if (adc_pmic->batt->btm_cool_fn != NULL)
 		adc_pmic->batt->btm_cool_fn(cool_status);
+=======
+	if (adc_pmic->batt.btm_cool_fn != NULL)
+		adc_pmic->batt.btm_cool_fn(cool_status);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&adc_pmic->btm_lock, flags);
 }
 
@@ -872,7 +886,11 @@ uint32_t pm8xxx_adc_btm_configure(struct pm8xxx_adc_arb_btm_param *btm_param)
 		if (rc < 0)
 			goto write_err;
 
+<<<<<<< HEAD
 		adc_pmic->batt->btm_cool_fn = btm_param->btm_cool_fn;
+=======
+		adc_pmic->batt.btm_cool_fn = btm_param->btm_cool_fn;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (btm_param->btm_warm_fn != NULL) {
@@ -886,7 +904,11 @@ uint32_t pm8xxx_adc_btm_configure(struct pm8xxx_adc_arb_btm_param *btm_param)
 		if (rc < 0)
 			goto write_err;
 
+<<<<<<< HEAD
 		adc_pmic->batt->btm_warm_fn = btm_param->btm_warm_fn;
+=======
+		adc_pmic->batt.btm_warm_fn = btm_param->btm_warm_fn;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	rc = pm8xxx_adc_read_reg(PM8XXX_ADC_ARB_BTM_CNTRL1, &arb_btm_cntrl1);
@@ -964,10 +986,17 @@ static uint32_t pm8xxx_adc_btm_read(uint32_t channel)
 	if (rc < 0)
 		goto write_err;
 
+<<<<<<< HEAD
 	if (pmic_adc->batt->btm_warm_fn != NULL)
 		enable_irq(adc_pmic->btm_warm_irq);
 
 	if (pmic_adc->batt->btm_cool_fn != NULL)
+=======
+	if (pmic_adc->batt.btm_warm_fn != NULL)
+		enable_irq(adc_pmic->btm_warm_irq);
+
+	if (pmic_adc->batt.btm_cool_fn != NULL)
+>>>>>>> refs/remotes/origin/cm-10.0
 		enable_irq(adc_pmic->btm_cool_irq);
 
 write_err:
@@ -1042,6 +1071,7 @@ static int get_adc(void *data, u64 *val)
 }
 DEFINE_SIMPLE_ATTRIBUTE(reg_fops, get_adc, NULL, "%llu\n");
 
+<<<<<<< HEAD
 static int get_mpp_adc(void *data, u64 *val)
 {
 	struct pm8xxx_adc_chan_result result;
@@ -1059,6 +1089,8 @@ static int get_mpp_adc(void *data, u64 *val)
 }
 DEFINE_SIMPLE_ATTRIBUTE(reg_mpp_fops, get_mpp_adc, NULL, "%llu\n");
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_DEBUG_FS
 static void create_debugfs_entries(void)
 {
@@ -1100,6 +1132,10 @@ static int32_t pm8xxx_adc_init_hwmon(struct platform_device *pdev)
 						adc_pmic->adc_channel[i].name;
 		memcpy(&adc_pmic->sens_attr[i], &pm8xxx_adc_attr,
 						sizeof(pm8xxx_adc_attr));
+<<<<<<< HEAD
+=======
+		sysfs_attr_init(&adc_pmic->sens_attr[i].dev_attr.attr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		rc = device_create_file(&pdev->dev,
 				&adc_pmic->sens_attr[i].dev_attr);
 		if (rc) {
@@ -1178,7 +1214,10 @@ static int __devinit pm8xxx_adc_probe(struct platform_device *pdev)
 	}
 
 	adc_pmic = devm_kzalloc(&pdev->dev, sizeof(struct pm8xxx_adc) +
+<<<<<<< HEAD
 			sizeof(struct pm8xxx_adc_arb_btm_param) +
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			(sizeof(struct sensor_device_attribute) *
 			pdata->adc_num_board_channel), GFP_KERNEL);
 	if (!adc_pmic) {

@@ -43,7 +43,10 @@
 /* For SCSI -> ATAPI command conversion */
 #include <scsi/scsi.h>
 
+<<<<<<< HEAD
 #include <linux/irq.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/io.h>
 #include <asm/byteorder.h>
 #include <linux/uaccess.h>

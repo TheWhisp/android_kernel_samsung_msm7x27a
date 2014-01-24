@@ -7,11 +7,17 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/wait.h>
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "net_user.h"
 #include "os.h"
 #include "slirp.h"
 #include "user.h"
+=======
+#include "net_user.h"
+#include "os.h"
+#include "slirp.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int slirp_user_init(void *data, void *dev)
 {

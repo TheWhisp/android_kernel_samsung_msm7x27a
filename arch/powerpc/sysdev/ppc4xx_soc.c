@@ -115,7 +115,11 @@ static int __init ppc4xx_l2c_probe(void)
 	}
 
 	/* Install error handler */
+<<<<<<< HEAD
 	if (request_irq(irq, l2c_error_handler, IRQF_DISABLED, "L2C", 0) < 0) {
+=======
+	if (request_irq(irq, l2c_error_handler, 0, "L2C", 0) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "Cannot install L2C error handler"
 		       ", cache is not enabled\n");
 		of_node_put(np);

@@ -2,7 +2,11 @@
  *
  * amrnb audio decoder device
  *
+<<<<<<< HEAD
  * Copyright (c) 2008-2009, 2011 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2009, 2011-2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Based on the mp3 native driver in arch/arm/mach-msm/qdsp5/audio_mp3.c
  *
@@ -39,19 +43,33 @@
 #include <linux/delay.h>
 #include <linux/list.h>
 #include <linux/earlysuspend.h>
+<<<<<<< HEAD
 #include <linux/android_pmem.h>
 #include <linux/slab.h>
 #include <linux/msm_audio.h>
 #include <linux/memory_alloc.h>
+=======
+#include <linux/slab.h>
+#include <linux/msm_audio.h>
+#include <linux/memory_alloc.h>
+#include <linux/ion.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/msm_adsp.h>
 #include <mach/iommu.h>
 #include <mach/iommu_domains.h>
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/qdsp5/qdsp5audppcmdi.h>
 #include <mach/qdsp5/qdsp5audppmsg.h>
 #include <mach/qdsp5/qdsp5audplaycmdi.h>
 #include <mach/qdsp5/qdsp5audplaymsg.h>
+<<<<<<< HEAD
+=======
+#include <mach/qdsp5/qdsp5audpp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/qdsp5/qdsp5rmtcmdi.h>
 #include <mach/debug_mm.h>
 #include <mach/msm_memtypes.h>
@@ -138,8 +156,13 @@ struct audio {
 	/* data allocated for various buffers */
 	char *data;
 	int32_t phys; /* physical address of write buffer */
+<<<<<<< HEAD
 	struct msm_mapped_buffer *map_v_read;
 	struct msm_mapped_buffer *map_v_write;
+=======
+	void *map_v_read;
+	void *map_v_write;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 	int mfield; /* meta field embedded in data */
@@ -180,6 +203,12 @@ struct audio {
 	int eq_needs_commit;
 	audpp_cmd_cfg_object_params_eqalizer eq;
 	audpp_cmd_cfg_object_params_volume vol_pan;
+<<<<<<< HEAD
+=======
+	struct ion_client *client;
+	struct ion_handle *input_buff_handle;
+	struct ion_handle *output_buff_handle;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct audpp_cmd_cfg_adec_params_amrnb {
@@ -262,8 +291,15 @@ static int audamrnb_enable(struct audio *audio)
 		cfg.snd_method = RPC_SND_METHOD_MIDI;
 
 		rc = audmgr_enable(&audio->audmgr, &cfg);
+<<<<<<< HEAD
 		if (rc < 0)
 			return rc;
+=======
+		if (rc < 0) {
+			msm_adsp_dump(audio->audplay);
+			return rc;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (msm_adsp_enable(audio->audplay)) {
@@ -302,12 +338,24 @@ static int audamrnb_disable(struct audio *audio)
 			rc = -EFAULT;
 		else
 			rc = 0;
+<<<<<<< HEAD
+=======
+		audio->stopped = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 		wake_up(&audio->write_wait);
 		wake_up(&audio->read_wait);
 		msm_adsp_disable(audio->audplay);
 		audpp_disable(audio->dec_id, audio);
+<<<<<<< HEAD
 		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK)
 			audmgr_disable(&audio->audmgr);
+=======
+		if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK) {
+			rc = audmgr_disable(&audio->audmgr);
+			if (rc < 0)
+				msm_adsp_dump(audio->audplay);
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		audio->out_needed = 0;
 		rmt_put_resource(audio);
 		audio->rmt_resource_released = 1;
@@ -628,24 +676,44 @@ static void audamrnb_send_data(struct audio *audio, unsigned needed)
 
 static void audamrnb_flush(struct audio *audio)
 {
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	audio->out[0].used = 0;
 	audio->out[1].used = 0;
 	audio->out_head = 0;
 	audio->out_tail = 0;
 	audio->out_needed = 0;
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	atomic_set(&audio->out_bytes, 0);
 }
 
 static void audamrnb_flush_pcm_buf(struct audio *audio)
 {
 	uint8_t index;
+<<<<<<< HEAD
 
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (index = 0; index < PCM_BUF_MAX_COUNT; index++)
 		audio->in[index].used = 0;
 
 	audio->buf_refresh = 0;
 	audio->read_next = 0;
 	audio->fill_next = 0;
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&audio->dsp_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void audamrnb_ioport_reset(struct audio *audio)
@@ -777,6 +845,13 @@ static long audamrnb_ioctl(struct file *file, unsigned int cmd,
 	uint16_t enable_mask;
 	int enable;
 	int prev_state;
+<<<<<<< HEAD
+=======
+	unsigned long ionflag = 0;
+	ion_phys_addr_t addr = 0;
+	struct ion_handle *handle = NULL;
+	int len = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	MM_DBG("cmd = %d\n", cmd);
 
@@ -876,7 +951,10 @@ static long audamrnb_ioctl(struct file *file, unsigned int cmd,
 	case AUDIO_STOP:
 		MM_DBG("AUDIO_STOP\n");
 		rc = audamrnb_disable(audio);
+<<<<<<< HEAD
 		audio->stopped = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		audamrnb_ioport_reset(audio);
 		audio->stopped = 0;
 		break;
@@ -964,6 +1042,7 @@ static long audamrnb_ioctl(struct file *file, unsigned int cmd,
 			MM_DBG("allocate PCM buf %d\n",
 					config.buffer_count *
 					config.buffer_size);
+<<<<<<< HEAD
 			audio->read_phys = allocate_contiguous_ebi_nomap(
 						config.buffer_size *
 						config.buffer_count,
@@ -983,11 +1062,64 @@ static long audamrnb_ioctl(struct file *file, unsigned int cmd,
 				rc = -ENOMEM;
 				free_contiguous_memory_by_paddr(
 							audio->read_phys);
+=======
+				handle = ion_alloc(audio->client,
+					(config.buffer_size *
+					config.buffer_count),
+					SZ_4K, ION_HEAP(ION_AUDIO_HEAP_ID));
+				if (IS_ERR_OR_NULL(handle)) {
+					MM_ERR("Unable to alloc I/P buffs\n");
+					audio->input_buff_handle = NULL;
+					rc = -ENOMEM;
+					break;
+				}
+
+				audio->input_buff_handle = handle;
+
+				rc = ion_phys(audio->client ,
+					handle, &addr, &len);
+				if (rc) {
+					MM_ERR("Invalid phy: %x sz: %x\n",
+						(unsigned int) addr,
+						(unsigned int) len);
+					ion_free(audio->client, handle);
+					audio->input_buff_handle = NULL;
+					rc = -ENOMEM;
+					break;
+				} else {
+					MM_INFO("Got valid phy: %x sz: %x\n",
+						(unsigned int) audio->read_phys,
+						(unsigned int) len);
+				}
+				audio->read_phys = (int32_t)addr;
+
+				rc = ion_handle_get_flags(audio->client,
+					handle, &ionflag);
+				if (rc) {
+					MM_ERR("could not get flags\n");
+					ion_free(audio->client, handle);
+					audio->input_buff_handle = NULL;
+					rc = -ENOMEM;
+					break;
+				}
+				audio->map_v_read = ion_map_kernel(
+					audio->client,
+					handle, ionflag);
+			if (IS_ERR(audio->map_v_read)) {
+				MM_ERR("failed to map read buf\n");
+				ion_free(audio->client, handle);
+				audio->input_buff_handle = NULL;
+				rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 			} else {
 				uint8_t index;
 				uint32_t offset = 0;
 				audio->read_data =
+<<<<<<< HEAD
 						audio->map_v_read->vaddr;
+=======
+						audio->map_v_read;
+>>>>>>> refs/remotes/origin/cm-10.0
 				audio->buf_refresh = 0;
 				audio->pcm_buf_count =
 					config.buffer_count;
@@ -1023,7 +1155,11 @@ static long audamrnb_ioctl(struct file *file, unsigned int cmd,
 }
 
 /* Only useful in tunnel-mode */
+<<<<<<< HEAD
 static int audamrnb_fsync(struct file *file, int datasync)
+=======
+static int audamrnb_fsync(struct file *file, loff_t a, loff_t b, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct audio *audio = file->private_data;
 	int rc = 0;
@@ -1291,12 +1427,22 @@ static int audamrnb_release(struct inode *inode, struct file *file)
 	audio->event_abort = 1;
 	wake_up(&audio->event_wait);
 	audamrnb_reset_event_queue(audio);
+<<<<<<< HEAD
 	msm_subsystem_unmap_buffer(audio->map_v_write);
 	free_contiguous_memory_by_paddr(audio->phys);
 	if (audio->read_data) {
 		msm_subsystem_unmap_buffer(audio->map_v_read);
 		free_contiguous_memory_by_paddr(audio->read_phys);
 	}
+=======
+	ion_unmap_kernel(audio->client, audio->output_buff_handle);
+	ion_free(audio->client, audio->output_buff_handle);
+	if (audio->input_buff_handle != NULL) {
+		ion_unmap_kernel(audio->client, audio->input_buff_handle);
+		ion_free(audio->client, audio->input_buff_handle);
+	}
+	ion_client_destroy(audio->client);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&audio->lock);
 #ifdef CONFIG_DEBUG_FS
 	if (audio->dentry)
@@ -1435,6 +1581,15 @@ static int audamrnb_open(struct inode *inode, struct file *file)
 	struct audio *audio = NULL;
 	int rc, dec_attrb, decid, i;
 	struct audamrnb_event *e_node = NULL;
+<<<<<<< HEAD
+=======
+	unsigned mem_sz = DMASZ;
+	unsigned long ionflag = 0;
+	ion_phys_addr_t addr = 0;
+	struct ion_handle *handle = NULL;
+	struct ion_client *client = NULL;
+	int len = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_DEBUG_FS
 	/* 4 bytes represents decoder number, 1 byte for terminate string */
 	char name[sizeof "msm_amrnb_" + 5];
@@ -1478,6 +1633,7 @@ static int audamrnb_open(struct inode *inode, struct file *file)
 
 	audio->dec_id = decid & MSM_AUD_DECODER_MASK;
 
+<<<<<<< HEAD
 	audio->phys = allocate_contiguous_ebi_nomap(DMASZ, SZ_4K);
 	if (!audio->phys) {
 		MM_ERR("could not allocate write buffers, freeing instance \
@@ -1505,6 +1661,53 @@ static int audamrnb_open(struct inode *inode, struct file *file)
 				0x%08x\n", audio->phys, (int)audio->data);
 	}
 
+=======
+	client = msm_ion_client_create(UINT_MAX, "Audio_AMR_NB_Client");
+	if (IS_ERR_OR_NULL(client)) {
+		pr_err("Unable to create ION client\n");
+		rc = -ENOMEM;
+		goto client_create_error;
+	}
+	audio->client = client;
+
+	handle = ion_alloc(client, mem_sz, SZ_4K,
+		ION_HEAP(ION_AUDIO_HEAP_ID));
+	if (IS_ERR_OR_NULL(handle)) {
+		MM_ERR("Unable to create allocate O/P buffers\n");
+		rc = -ENOMEM;
+		goto output_buff_alloc_error;
+	}
+	audio->output_buff_handle = handle;
+
+	rc = ion_phys(client, handle, &addr, &len);
+	if (rc) {
+		MM_ERR("O/P buffers:Invalid phy: %x sz: %x\n",
+			(unsigned int) addr, (unsigned int) len);
+		goto output_buff_get_phys_error;
+	} else {
+		MM_INFO("O/P buffers:valid phy: %x sz: %x\n",
+			(unsigned int) addr, (unsigned int) len);
+	}
+	audio->phys = (int32_t)addr;
+
+
+	rc = ion_handle_get_flags(client, handle, &ionflag);
+	if (rc) {
+		MM_ERR("could not get flags for the handle\n");
+		goto output_buff_get_flags_error;
+	}
+
+	audio->map_v_write = ion_map_kernel(client, handle, ionflag);
+	if (IS_ERR(audio->map_v_write)) {
+		MM_ERR("could not map write buffers\n");
+		rc = -ENOMEM;
+		goto output_buff_map_error;
+	}
+	audio->data = audio->map_v_write;
+	MM_DBG("write buf: phy addr 0x%08x kernel addr 0x%08x\n",
+		audio->phys, (int)audio->data);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (audio->pcm_feedback == TUNNEL_MODE_PLAYBACK) {
 		rc = audmgr_open(&audio->audmgr);
 		if (rc) {
@@ -1534,6 +1737,11 @@ static int audamrnb_open(struct inode *inode, struct file *file)
 		goto err;
 	}
 
+<<<<<<< HEAD
+=======
+	audio->input_buff_handle = NULL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_init(&audio->lock);
 	mutex_init(&audio->write_lock);
 	mutex_init(&audio->read_lock);
@@ -1588,8 +1796,19 @@ static int audamrnb_open(struct inode *inode, struct file *file)
 done:
 	return rc;
 err:
+<<<<<<< HEAD
 	msm_subsystem_unmap_buffer(audio->map_v_write);
 	free_contiguous_memory_by_paddr(audio->phys);
+=======
+	ion_unmap_kernel(client, audio->output_buff_handle);
+output_buff_map_error:
+output_buff_get_phys_error:
+output_buff_get_flags_error:
+	ion_free(client, audio->output_buff_handle);
+output_buff_alloc_error:
+	ion_client_destroy(client);
+client_create_error:
+>>>>>>> refs/remotes/origin/cm-10.0
 	audpp_adec_free(audio->dec_id);
 	kfree(audio);
 	return rc;

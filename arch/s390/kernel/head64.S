@@ -11,13 +11,21 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/asm-offsets.h>
 #include <asm/thread_info.h>
 #include <asm/page.h>
 
 __HEAD
+<<<<<<< HEAD
 	.globl	startup_continue
 startup_continue:
+=======
+ENTRY(startup_continue)
+>>>>>>> refs/remotes/origin/cm-10.0
 	larl	%r1,sched_clock_base_cc
 	mvc	0(8,%r1),__LC_LAST_UPDATE_CLOCK
 	larl	%r13,.LPG1		# get base
@@ -46,7 +54,11 @@ startup_continue:
 	.align	16
 .LPG1:
 .Lentry:.quad	0x0000000180000000,_stext
+<<<<<<< HEAD
 .Lctl:	.quad	0x04350002		# cr0: various things
+=======
+.Lctl:	.quad	0x04040000		# cr0: AFP registers & secondary space
+>>>>>>> refs/remotes/origin/cm-10.0
 	.quad	0			# cr1: primary space segment table
 	.quad	.Lduct			# cr2: dispatchable unit control table
 	.quad	0			# cr3: instruction authorization
@@ -76,8 +88,12 @@ startup_continue:
 	.long	0x80000000,0,0,0	# invalid access-list entries
 	.endr
 
+<<<<<<< HEAD
 	.globl	_ehead
 _ehead:
+=======
+ENTRY(_ehead)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_SHARED_KERNEL
 	.org	0x100000 - 0x11000	# head.o ends at 0x11000
@@ -86,12 +102,21 @@ _ehead:
 #
 # startup-code, running in absolute addressing mode
 #
+<<<<<<< HEAD
 	.globl	_stext
 _stext:	basr	%r13,0			# get base
 .LPG3:
 # check control registers
 	stctg	%c0,%c15,0(%r15)
 	oi	6(%r15),0x40		# enable sigp emergency signal
+=======
+ENTRY(_stext)
+	basr	%r13,0			# get base
+.LPG3:
+# check control registers
+	stctg	%c0,%c15,0(%r15)
+	oi	6(%r15),0x60		# enable sigp emergency & external call
+>>>>>>> refs/remotes/origin/cm-10.0
 	oi	4(%r15),0x10		# switch on low address proctection
 	lctlg	%c0,%c15,0(%r15)
 

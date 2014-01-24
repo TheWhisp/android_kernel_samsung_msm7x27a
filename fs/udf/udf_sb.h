@@ -50,17 +50,31 @@
 #define UDF_SPARABLE_MAP15		0x1522U
 #define UDF_METADATA_MAP25		0x2511U
 
+<<<<<<< HEAD
 #define UDF_INVALID_MODE		((mode_t)-1)
 
 #pragma pack(1) /* XXX(hch): Why?  This file just defines in-core structures */
 
+=======
+#define UDF_INVALID_MODE		((umode_t)-1)
+
+#pragma pack(1) /* XXX(hch): Why?  This file just defines in-core structures */
+
+#define MF_DUPLICATE_MD		0x01
+#define MF_MIRROR_FE_LOADED	0x02
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct udf_meta_data {
 	__u32	s_meta_file_loc;
 	__u32	s_mirror_file_loc;
 	__u32	s_bitmap_file_loc;
 	__u32	s_alloc_unit_size;
 	__u16	s_align_unit_size;
+<<<<<<< HEAD
 	__u8 	s_dup_md_flag;
+=======
+	int	s_flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct inode *s_metadata_fe;
 	struct inode *s_mirror_fe;
 	struct inode *s_bitmap_fe;
@@ -124,11 +138,19 @@ struct udf_sb_info {
 	struct buffer_head	*s_lvid_bh;
 
 	/* Default permissions */
+<<<<<<< HEAD
 	mode_t			s_umask;
 	gid_t			s_gid;
 	uid_t			s_uid;
 	mode_t			s_fmode;
 	mode_t			s_dmode;
+=======
+	umode_t			s_umask;
+	gid_t			s_gid;
+	uid_t			s_uid;
+	umode_t			s_fmode;
+	umode_t			s_dmode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Lock protecting consistency of above permission settings */
 	rwlock_t		s_cred_lock;
 

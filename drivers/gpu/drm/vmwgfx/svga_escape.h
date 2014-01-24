@@ -75,7 +75,11 @@
  */
 
 #define SVGA_ESCAPE_VMWARE_HINT               0x00030000
+<<<<<<< HEAD
 #define SVGA_ESCAPE_VMWARE_HINT_FULLSCREEN    0x00030001  // Deprecated
+=======
+#define SVGA_ESCAPE_VMWARE_HINT_FULLSCREEN    0x00030001  /* Deprecated */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 typedef
 struct {

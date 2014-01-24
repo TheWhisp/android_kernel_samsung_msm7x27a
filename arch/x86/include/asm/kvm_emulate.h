@@ -176,11 +176,19 @@ struct x86_emulate_ops {
 	void (*set_idt)(struct x86_emulate_ctxt *ctxt, struct desc_ptr *dt);
 	ulong (*get_cr)(struct x86_emulate_ctxt *ctxt, int cr);
 	int (*set_cr)(struct x86_emulate_ctxt *ctxt, int cr, ulong val);
+<<<<<<< HEAD
+=======
+	void (*set_rflags)(struct x86_emulate_ctxt *ctxt, ulong val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int (*cpl)(struct x86_emulate_ctxt *ctxt);
 	int (*get_dr)(struct x86_emulate_ctxt *ctxt, int dr, ulong *dest);
 	int (*set_dr)(struct x86_emulate_ctxt *ctxt, int dr, ulong value);
 	int (*set_msr)(struct x86_emulate_ctxt *ctxt, u32 msr_index, u64 data);
 	int (*get_msr)(struct x86_emulate_ctxt *ctxt, u32 msr_index, u64 *pdata);
+<<<<<<< HEAD
+=======
+	int (*read_pmc)(struct x86_emulate_ctxt *ctxt, u32 pmc, u64 *pdata);
+>>>>>>> refs/remotes/origin/cm-10.0
 	void (*halt)(struct x86_emulate_ctxt *ctxt);
 	void (*wbinvd)(struct x86_emulate_ctxt *ctxt);
 	int (*fix_hypercall)(struct x86_emulate_ctxt *ctxt);
@@ -232,7 +240,30 @@ struct read_cache {
 	unsigned long end;
 };
 
+<<<<<<< HEAD
 struct decode_cache {
+=======
+struct x86_emulate_ctxt {
+	struct x86_emulate_ops *ops;
+
+	/* Register state before/after emulation. */
+	unsigned long eflags;
+	unsigned long eip; /* eip before instruction emulation */
+	/* Emulated execution mode, represented by an X86EMUL_MODE value. */
+	int mode;
+
+	/* interruptibility state, as a result of execution of STI or MOV SS */
+	int interruptibility;
+
+	bool guest_mode; /* guest running a nested guest */
+	bool perm_ok; /* do not check permissions if true */
+	bool only_vendor_specific_insn;
+
+	bool have_exception;
+	struct x86_exception exception;
+
+	/* decode cache */
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 twobyte;
 	u8 b;
 	u8 intercept;
@@ -246,11 +277,17 @@ struct decode_cache {
 	struct operand dst;
 	bool has_seg_override;
 	u8 seg_override;
+<<<<<<< HEAD
 	unsigned int d;
 	int (*execute)(struct x86_emulate_ctxt *ctxt);
 	int (*check_perm)(struct x86_emulate_ctxt *ctxt);
 	unsigned long regs[NR_VCPU_REGS];
 	unsigned long eip;
+=======
+	u64 d;
+	int (*execute)(struct x86_emulate_ctxt *ctxt);
+	int (*check_perm)(struct x86_emulate_ctxt *ctxt);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* modrm */
 	u8 modrm;
 	u8 modrm_mod;
@@ -258,11 +295,20 @@ struct decode_cache {
 	u8 modrm_rm;
 	u8 modrm_seg;
 	bool rip_relative;
+<<<<<<< HEAD
+=======
+	unsigned long _eip;
+	/* Fields above regs are cleared together. */
+	unsigned long regs[NR_VCPU_REGS];
+	struct operand memop;
+	struct operand *memopp;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct fetch_cache fetch;
 	struct read_cache io_read;
 	struct read_cache mem_read;
 };
 
+<<<<<<< HEAD
 struct x86_emulate_ctxt {
 	struct x86_emulate_ops *ops;
 
@@ -286,6 +332,8 @@ struct x86_emulate_ctxt {
 	struct decode_cache decode;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Repeat String Operation Prefix */
 #define REPE_PREFIX	0xf3
 #define REPNE_PREFIX	0xf2
@@ -381,14 +429,24 @@ enum x86_intercept {
 #endif
 
 int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len);
+<<<<<<< HEAD
+=======
+bool x86_page_table_writing_insn(struct x86_emulate_ctxt *ctxt);
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EMULATION_FAILED -1
 #define EMULATION_OK 0
 #define EMULATION_RESTART 1
 #define EMULATION_INTERCEPTED 2
 int x86_emulate_insn(struct x86_emulate_ctxt *ctxt);
 int emulator_task_switch(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 			 u16 tss_selector, int reason,
 			 bool has_error_code, u32 error_code);
 int emulate_int_real(struct x86_emulate_ctxt *ctxt,
 		     struct x86_emulate_ops *ops, int irq);
+=======
+			 u16 tss_selector, int idt_index, int reason,
+			 bool has_error_code, u32 error_code);
+int emulate_int_real(struct x86_emulate_ctxt *ctxt, int irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_X86_KVM_X86_EMULATE_H */

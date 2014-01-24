@@ -14,7 +14,11 @@
 static struct of_bus *of_match_bus(struct device_node *np);
 static int __of_address_to_resource(struct device_node *dev,
 		const __be32 *addrp, u64 size, unsigned int flags,
+<<<<<<< HEAD
 				    struct resource *r);
+=======
+		const char *name, struct resource *r);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Debug utility */
 #ifdef DEBUG
@@ -215,7 +219,11 @@ int of_pci_address_to_resource(struct device_node *dev, int bar,
 	addrp = of_get_pci_address(dev, bar, &size, &flags);
 	if (addrp == NULL)
 		return -EINVAL;
+<<<<<<< HEAD
 	return __of_address_to_resource(dev, addrp, size, flags, r);
+=======
+	return __of_address_to_resource(dev, addrp, size, flags, NULL, r);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(of_pci_address_to_resource);
 #endif /* CONFIG_PCI */
@@ -529,7 +537,11 @@ EXPORT_SYMBOL(of_get_address);
 
 static int __of_address_to_resource(struct device_node *dev,
 		const __be32 *addrp, u64 size, unsigned int flags,
+<<<<<<< HEAD
 				    struct resource *r)
+=======
+		const char *name, struct resource *r)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u64 taddr;
 
@@ -551,7 +563,12 @@ static int __of_address_to_resource(struct device_node *dev,
 		r->end = taddr + size - 1;
 	}
 	r->flags = flags;
+<<<<<<< HEAD
 	r->name = dev->full_name;
+=======
+	r->name = name ? name : dev->full_name;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -569,11 +586,23 @@ int of_address_to_resource(struct device_node *dev, int index,
 	const __be32	*addrp;
 	u64		size;
 	unsigned int	flags;
+<<<<<<< HEAD
+=======
+	const char	*name = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	addrp = of_get_address(dev, index, &size, &flags);
 	if (addrp == NULL)
 		return -EINVAL;
+<<<<<<< HEAD
 	return __of_address_to_resource(dev, addrp, size, flags, r);
+=======
+
+	/* Get optional "reg-names" property to add a name to a resource */
+	of_property_read_string_index(dev, "reg-names",	index, &name);
+
+	return __of_address_to_resource(dev, addrp, size, flags, name, r);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(of_address_to_resource);
 
@@ -610,6 +639,10 @@ void __iomem *of_iomap(struct device_node *np, int index)
 	if (of_address_to_resource(np, index, &res))
 		return NULL;
 
+<<<<<<< HEAD
 	return ioremap(res.start, 1 + res.end - res.start);
+=======
+	return ioremap(res.start, resource_size(&res));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(of_iomap);

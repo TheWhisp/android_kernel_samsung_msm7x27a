@@ -9,6 +9,11 @@
 #include <linux/sunrpc/svc.h>
 #include <linux/nfs4.h>
 #include <linux/nfs_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+#include <linux/printk.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/sunrpc/bc_xprt.h>
 #include "nfs4_fs.h"
@@ -73,7 +78,11 @@ static __be32 *read_buf(struct xdr_stream *xdr, int nbytes)
 
 	p = xdr_inline_decode(xdr, nbytes);
 	if (unlikely(p == NULL))
+<<<<<<< HEAD
 		printk(KERN_WARNING "NFSv4 callback reply buffer overflowed!\n");
+=======
+		printk(KERN_WARNING "NFS: NFSv4 callback reply buffer overflowed!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return p;
 }
 
@@ -138,10 +147,17 @@ static __be32 decode_stateid(struct xdr_stream *xdr, nfs4_stateid *stateid)
 {
 	__be32 *p;
 
+<<<<<<< HEAD
 	p = read_buf(xdr, 16);
 	if (unlikely(p == NULL))
 		return htonl(NFS4ERR_RESOURCE);
 	memcpy(stateid->data, p, 16);
+=======
+	p = read_buf(xdr, NFS4_STATEID_SIZE);
+	if (unlikely(p == NULL))
+		return htonl(NFS4ERR_RESOURCE);
+	memcpy(stateid, p, NFS4_STATEID_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -155,7 +171,11 @@ static __be32 decode_compound_hdr_arg(struct xdr_stream *xdr, struct cb_compound
 		return status;
 	/* We do not like overly long tags! */
 	if (hdr->taglen > CB_OP_TAGLEN_MAXSZ - 12) {
+<<<<<<< HEAD
 		printk("NFSv4 CALLBACK %s: client sent tag of length %u\n",
+=======
+		printk("NFS: NFSv4 CALLBACK %s: client sent tag of length %u\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				__func__, hdr->taglen);
 		return htonl(NFS4ERR_RESOURCE);
 	}
@@ -167,7 +187,11 @@ static __be32 decode_compound_hdr_arg(struct xdr_stream *xdr, struct cb_compound
 	if (hdr->minorversion <= 1) {
 		hdr->cb_ident = ntohl(*p++); /* ignored by v4.1 */
 	} else {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: NFSv4 server callback with "
+=======
+		pr_warn_ratelimited("NFS: %s: NFSv4 server callback with "
+>>>>>>> refs/remotes/origin/cm-10.0
 			"illegal minor version %u!\n",
 			__func__, hdr->minorversion);
 		return htonl(NFS4ERR_MINOR_VERS_MISMATCH);
@@ -305,6 +329,13 @@ __be32 decode_devicenotify_args(struct svc_rqst *rqstp,
 	n = ntohl(*p++);
 	if (n <= 0)
 		goto out;
+<<<<<<< HEAD
+=======
+	if (n > ULONG_MAX / sizeof(*args->devs)) {
+		status = htonl(NFS4ERR_BADXDR);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	args->devs = kmalloc(n * sizeof(*args->devs), GFP_KERNEL);
 	if (!args->devs) {
@@ -488,17 +519,29 @@ static __be32 decode_recallany_args(struct svc_rqst *rqstp,
 				      struct xdr_stream *xdr,
 				      struct cb_recallanyargs *args)
 {
+<<<<<<< HEAD
 	__be32 *p;
+=======
+	uint32_t bitmap[2];
+	__be32 *p, status;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	args->craa_addr = svc_addr(rqstp);
 	p = read_buf(xdr, 4);
 	if (unlikely(p == NULL))
 		return htonl(NFS4ERR_BADXDR);
 	args->craa_objs_to_keep = ntohl(*p++);
+<<<<<<< HEAD
 	p = read_buf(xdr, 4);
 	if (unlikely(p == NULL))
 		return htonl(NFS4ERR_BADXDR);
 	args->craa_type_mask = ntohl(*p);
+=======
+	status = decode_bitmap(xdr, bitmap);
+	if (unlikely(status))
+		return status;
+	args->craa_type_mask = bitmap[0];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -754,14 +797,22 @@ static void nfs4_callback_free_slot(struct nfs4_session *session)
 	 * Let the state manager know callback processing done.
 	 * A single slot, so highest used slotid is either 0 or -1
 	 */
+<<<<<<< HEAD
 	tbl->highest_used_slotid = -1;
+=======
+	tbl->highest_used_slotid = NFS4_NO_SLOT;
+>>>>>>> refs/remotes/origin/cm-10.0
 	nfs4_check_drain_bc_complete(session);
 	spin_unlock(&tbl->slot_tbl_lock);
 }
 
 static void nfs4_cb_free_slot(struct cb_process_state *cps)
 {
+<<<<<<< HEAD
 	if (cps->slotid != -1)
+=======
+	if (cps->slotid != NFS4_NO_SLOT)
+>>>>>>> refs/remotes/origin/cm-10.0
 		nfs4_callback_free_slot(cps->clp->cl_session);
 }
 
@@ -855,7 +906,12 @@ static __be32 nfs4_callback_compound(struct svc_rqst *rqstp, void *argp, void *r
 	struct cb_process_state cps = {
 		.drc_status = 0,
 		.clp = NULL,
+<<<<<<< HEAD
 		.slotid = -1,
+=======
+		.slotid = NFS4_NO_SLOT,
+		.net = rqstp->rq_xprt->xpt_net,
+>>>>>>> refs/remotes/origin/cm-10.0
 	};
 	unsigned int nops = 0;
 
@@ -871,7 +927,11 @@ static __be32 nfs4_callback_compound(struct svc_rqst *rqstp, void *argp, void *r
 		return rpc_garbage_args;
 
 	if (hdr_arg.minorversion == 0) {
+<<<<<<< HEAD
 		cps.clp = nfs4_find_client_ident(hdr_arg.cb_ident);
+=======
+		cps.clp = nfs4_find_client_ident(rqstp->rq_xprt->xpt_net, hdr_arg.cb_ident);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (!cps.clp || !check_gss_callback_principal(cps.clp, rqstp))
 			return rpc_drop_reply;
 	}
@@ -986,4 +1046,8 @@ struct svc_version nfs4_callback_version4 = {
 	.vs_proc = nfs4_callback_procedures1,
 	.vs_xdrsize = NFS4_CALLBACK_XDRSIZE,
 	.vs_dispatch = NULL,
+<<<<<<< HEAD
+=======
+	.vs_hidden = 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 };

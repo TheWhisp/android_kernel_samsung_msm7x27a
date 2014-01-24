@@ -99,7 +99,10 @@ struct qt1010_priv {
 	u8 reg25_init_val;
 
 	u32 frequency;
+<<<<<<< HEAD
 	u32 bandwidth;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif

@@ -11,6 +11,10 @@
 
 #include <linux/usb/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVER_DESC    "ATI/Philips USB RF remote driver"
 #define DRIVER_VERSION "0.3"
@@ -41,13 +45,21 @@ static int ati_remote2_set_mask(const char *val,
 				const struct kernel_param *kp,
 				unsigned int max)
 {
+<<<<<<< HEAD
 	unsigned long mask;
+=======
+	unsigned int mask;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 
 	if (!val)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(val, 0, &mask);
+=======
+	ret = kstrtouint(val, 0, &mask);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		return ret;
 
@@ -719,11 +731,20 @@ static ssize_t ati_remote2_store_channel_mask(struct device *dev,
 	struct usb_device *udev = to_usb_device(dev);
 	struct usb_interface *intf = usb_ifnum_to_if(udev, 0);
 	struct ati_remote2 *ar2 = usb_get_intfdata(intf);
+<<<<<<< HEAD
 	unsigned long mask;
 	int r;
 
 	if (strict_strtoul(buf, 0, &mask))
 		return -EINVAL;
+=======
+	unsigned int mask;
+	int r;
+
+	r = kstrtouint(buf, 0, &mask);
+	if (r)
+		return r;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (mask & ~ATI_REMOTE2_MAX_CHANNEL_MASK)
 		return -EINVAL;
@@ -768,10 +789,19 @@ static ssize_t ati_remote2_store_mode_mask(struct device *dev,
 	struct usb_device *udev = to_usb_device(dev);
 	struct usb_interface *intf = usb_ifnum_to_if(udev, 0);
 	struct ati_remote2 *ar2 = usb_get_intfdata(intf);
+<<<<<<< HEAD
 	unsigned long mask;
 
 	if (strict_strtoul(buf, 0, &mask))
 		return -EINVAL;
+=======
+	unsigned int mask;
+	int err;
+
+	err = kstrtouint(buf, 0, &mask);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (mask & ~ATI_REMOTE2_MAX_MODE_MASK)
 		return -EINVAL;
@@ -1009,6 +1039,7 @@ static int ati_remote2_post_reset(struct usb_interface *interface)
 	return r;
 }
 
+<<<<<<< HEAD
 static int __init ati_remote2_init(void)
 {
 	int r;
@@ -1029,3 +1060,6 @@ static void __exit ati_remote2_exit(void)
 
 module_init(ati_remote2_init);
 module_exit(ati_remote2_exit);
+=======
+module_usb_driver(ati_remote2_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

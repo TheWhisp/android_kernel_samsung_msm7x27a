@@ -30,7 +30,11 @@
 #include <linux/clk.h>
 #include <linux/gfp.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "sdum.h"
 #include "fbcommon.h"
@@ -856,6 +860,7 @@ static struct platform_driver sdum_driver = {
 	.resume = sdum_resume,
 };
 
+<<<<<<< HEAD
 int __init sdum_init(void)
 {
 	return platform_driver_register(&sdum_driver);
@@ -868,5 +873,8 @@ static void __exit sdum_exit(void)
 
 module_init(sdum_init);
 module_exit(sdum_exit);
+=======
+module_platform_driver(sdum_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");

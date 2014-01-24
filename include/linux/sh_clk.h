@@ -18,7 +18,12 @@ struct clk_mapping {
 	struct kref		ref;
 };
 
+<<<<<<< HEAD
 struct clk_ops {
+=======
+
+struct sh_clk_ops {
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SH_CLK_CPG_LEGACY
 	void (*init)(struct clk *clk);
 #endif
@@ -37,7 +42,11 @@ struct clk {
 	unsigned short		parent_num;	/* choose between */
 	unsigned char		src_shift;	/* source clock field in the */
 	unsigned char		src_width;	/* configuration register */
+<<<<<<< HEAD
 	struct clk_ops		*ops;
+=======
+	struct sh_clk_ops	*ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct list_head	children;
 	struct list_head	sibling;	/* node for children */
@@ -49,10 +58,17 @@ struct clk {
 
 	void __iomem		*enable_reg;
 	unsigned int		enable_bit;
+<<<<<<< HEAD
 
 	unsigned long		arch_flags;
 	void			*priv;
 	struct dentry		*dentry;
+=======
+	void __iomem		*mapped_reg;
+
+	unsigned long		arch_flags;
+	void			*priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct clk_mapping	*mapping;
 	struct cpufreq_frequency_table *freq_table;
 	unsigned int		nr_freqs;
@@ -94,6 +110,12 @@ int clk_rate_table_find(struct clk *clk,
 long clk_rate_div_range_round(struct clk *clk, unsigned int div_min,
 			      unsigned int div_max, unsigned long rate);
 
+<<<<<<< HEAD
+=======
+long clk_rate_mult_range_round(struct clk *clk, unsigned int mult_min,
+			       unsigned int mult_max, unsigned long rate);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 long clk_round_parent(struct clk *clk, unsigned long target,
 		      unsigned long *best_freq, unsigned long *parent_freq,
 		      unsigned int div_min, unsigned int div_max);
@@ -129,10 +151,16 @@ int sh_clk_div4_enable_register(struct clk *clks, int nr,
 int sh_clk_div4_reparent_register(struct clk *clks, int nr,
 			 struct clk_div4_table *table);
 
+<<<<<<< HEAD
 #define SH_CLK_DIV6_EXT(_parent, _reg, _flags, _parents,	\
 			_num_parents, _src_shift, _src_width)	\
 {								\
 	.parent = _parent,					\
+=======
+#define SH_CLK_DIV6_EXT(_reg, _flags, _parents,			\
+			_num_parents, _src_shift, _src_width)	\
+{								\
+>>>>>>> refs/remotes/origin/cm-10.0
 	.enable_reg = (void __iomem *)_reg,			\
 	.flags = _flags,					\
 	.parent_table = _parents,				\
@@ -142,9 +170,24 @@ int sh_clk_div4_reparent_register(struct clk *clks, int nr,
 }
 
 #define SH_CLK_DIV6(_parent, _reg, _flags)			\
+<<<<<<< HEAD
 	SH_CLK_DIV6_EXT(_parent, _reg, _flags, NULL, 0, 0, 0)
+=======
+{								\
+	.parent		= _parent,				\
+	.enable_reg	= (void __iomem *)_reg,			\
+	.flags		= _flags,				\
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int sh_clk_div6_register(struct clk *clks, int nr);
 int sh_clk_div6_reparent_register(struct clk *clks, int nr);
 
+<<<<<<< HEAD
+=======
+#define CLKDEV_CON_ID(_id, _clk) { .con_id = _id, .clk = _clk }
+#define CLKDEV_DEV_ID(_id, _clk) { .dev_id = _id, .clk = _clk }
+#define CLKDEV_ICK_ID(_cid, _did, _clk) { .con_id = _cid, .dev_id = _did, .clk = _clk }
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __SH_CLOCK_H */

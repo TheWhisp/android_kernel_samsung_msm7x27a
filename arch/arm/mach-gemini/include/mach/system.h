@@ -14,6 +14,7 @@
 #include <mach/hardware.h>
 #include <mach/global_reg.h>
 
+<<<<<<< HEAD
 static inline void arch_idle(void)
 {
 	/*
@@ -28,6 +29,8 @@ static inline void arch_idle(void)
 	cpu_do_idle();
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void arch_reset(char mode, const char *cmd)
 {
 	__raw_writel(RESET_GLOBAL | RESET_CPU1,

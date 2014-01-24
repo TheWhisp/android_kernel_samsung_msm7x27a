@@ -70,6 +70,10 @@
  * wusbhc_rh_start_port_reset() ??? unimplemented
  */
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "wusbhc.h"
 
 /*

@@ -10,6 +10,10 @@ obj-$(CONFIG_SMP)		+= ipi.o
 
 ifeq ($(CONFIG_X86_64),y)
 # APIC probe will depend on the listing order here
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_X86_NUMACHIP)	+= apic_numachip.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_X86_UV)		+= x2apic_uv_x.o
 obj-$(CONFIG_X86_X2APIC)	+= x2apic_phys.o
 obj-$(CONFIG_X86_X2APIC)	+= x2apic_cluster.o

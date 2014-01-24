@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 menuconfig NET_DSA
 	bool "Distributed Switch Architecture support"
+=======
+config NET_DSA
+	tristate "Distributed Switch Architecture support"
+>>>>>>> refs/remotes/origin/cm-10.0
 	default n
 	depends on EXPERIMENTAL && NETDEVICES && !S390
 	select PHYLIB
@@ -23,6 +28,7 @@ config NET_DSA_TAG_TRAILER
 	bool
 	default n
 
+<<<<<<< HEAD
 
 # switch drivers
 config NET_DSA_MV88E6XXX
@@ -57,4 +63,6 @@ config NET_DSA_MV88E6123_61_65
 	  This enables support for the Marvell 88E6123/6161/6165
 	  ethernet switch chips.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 endif

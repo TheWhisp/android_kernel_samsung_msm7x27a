@@ -133,7 +133,11 @@ static struct fb_fix_screeninfo hga_fix __devinitdata = {
 /* Don't assume that tty1 will be the initial current console. */
 static int release_io_port = 0;
 static int release_io_ports = 0;
+<<<<<<< HEAD
 static int nologo = 0;
+=======
+static bool nologo = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* -------------------------------------------------------------------------
  *
@@ -422,8 +426,13 @@ static int hgafb_pan_display(struct fb_var_screeninfo *var,
 		    var->xoffset)
 			return -EINVAL;
 	} else {
+<<<<<<< HEAD
 		if (var->xoffset + var->xres > info->var.xres_virtual
 		 || var->yoffset + var->yres > info->var.yres_virtual
+=======
+		if (var->xoffset + info->var.xres > info->var.xres_virtual
+		 || var->yoffset + info->var.yres > info->var.yres_virtual
+>>>>>>> refs/remotes/origin/cm-10.0
 		 || var->yoffset % 8)
 			return -EINVAL;
 	}

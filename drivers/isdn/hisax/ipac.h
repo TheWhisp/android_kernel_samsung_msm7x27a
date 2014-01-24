@@ -4,7 +4,11 @@
  *
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *

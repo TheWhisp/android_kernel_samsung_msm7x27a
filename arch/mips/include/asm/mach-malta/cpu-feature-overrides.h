@@ -32,6 +32,10 @@
 /* #define cpu_has_vtag_icache	? */
 /* #define cpu_has_dc_aliases	? */
 /* #define cpu_has_ic_fills_f_dc ? */
+<<<<<<< HEAD
+=======
+#define cpu_has_clo_clz		1
+>>>>>>> refs/remotes/origin/cm-10.0
 #define cpu_has_nofpuex		0
 /* #define cpu_has_64bits	? */
 /* #define cpu_has_64bit_zero_reg ? */
@@ -58,6 +62,10 @@
 /* #define cpu_has_vtag_icache	? */
 /* #define cpu_has_dc_aliases	? */
 /* #define cpu_has_ic_fills_f_dc ? */
+<<<<<<< HEAD
+=======
+#define cpu_has_clo_clz		1
+>>>>>>> refs/remotes/origin/cm-10.0
 #define cpu_has_nofpuex		0
 /* #define cpu_has_64bits	? */
 /* #define cpu_has_64bit_zero_reg ? */

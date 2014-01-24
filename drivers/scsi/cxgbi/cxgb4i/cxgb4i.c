@@ -13,7 +13,10 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ":%s: " fmt, __func__
 
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <scsi/scsi_host.h>
@@ -107,6 +110,7 @@ static struct iscsi_transport cxgb4i_iscsi_transport = {
 	.caps		= CAP_RECOVERY_L0 | CAP_MULTI_R2T | CAP_HDRDGST |
 				CAP_DATADGST | CAP_DIGEST_OFFLOAD |
 				CAP_PADDING_OFFLOAD | CAP_TEXT_NEGO,
+<<<<<<< HEAD
 	.param_mask	= ISCSI_MAX_RECV_DLENGTH | ISCSI_MAX_XMIT_DLENGTH |
 				ISCSI_HDRDGST_EN | ISCSI_DATADGST_EN |
 				ISCSI_INITIAL_R2T_EN | ISCSI_MAX_R2T |
@@ -126,6 +130,9 @@ static struct iscsi_transport cxgb4i_iscsi_transport = {
 	.host_param_mask	= ISCSI_HOST_HWADDRESS | ISCSI_HOST_IPADDRESS |
 				ISCSI_HOST_INITIATOR_NAME |
 				ISCSI_HOST_NETDEV_NAME,
+=======
+	.attr_is_visible	= cxgbi_attr_is_visible,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_host_param	= cxgbi_get_host_param,
 	.set_host_param	= cxgbi_set_host_param,
 	/* session management */
@@ -1146,6 +1153,10 @@ static int init_act_open(struct cxgbi_sock *csk)
 	struct net_device *ndev = cdev->ports[csk->port_id];
 	struct port_info *pi = netdev_priv(ndev);
 	struct sk_buff *skb = NULL;
+<<<<<<< HEAD
+=======
+	struct neighbour *n;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int step;
 
 	log_debug(1 << CXGBI_DBG_TOE | 1 << CXGBI_DBG_SOCK,
@@ -1160,7 +1171,16 @@ static int init_act_open(struct cxgbi_sock *csk)
 	cxgbi_sock_set_flag(csk, CTPF_HAS_ATID);
 	cxgbi_sock_get(csk);
 
+<<<<<<< HEAD
 	csk->l2t = cxgb4_l2t_get(lldi->l2t, dst_get_neighbour(csk->dst), ndev, 0);
+=======
+	n = dst_get_neighbour_noref(csk->dst);
+	if (!n) {
+		pr_err("%s, can't get neighbour of csk->dst.\n", ndev->name);
+		goto rel_resource;
+	}
+	csk->l2t = cxgb4_l2t_get(lldi->l2t, n, ndev, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!csk->l2t) {
 		pr_err("%s, cannot alloc l2t.\n", ndev->name);
 		goto rel_resource;

@@ -21,6 +21,10 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/of_platform.h>
 #include <asm/io.h>
 
@@ -200,6 +204,12 @@ static struct of_device_id mpc85xx_l2ctlr_of_match[] = {
 	{
 		.compatible = "fsl,p1022-l2-cache-controller",
 	},
+<<<<<<< HEAD
+=======
+	{
+		.compatible = "fsl,mpc8548-l2-cache-controller",
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 	{},
 };
 

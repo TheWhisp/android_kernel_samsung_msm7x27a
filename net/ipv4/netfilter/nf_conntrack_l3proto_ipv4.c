@@ -74,12 +74,20 @@ static int ipv4_get_l4proto(const struct sk_buff *skb, unsigned int nhoff,
 
 	iph = skb_header_pointer(skb, nhoff, sizeof(_iph), &_iph);
 	if (iph == NULL)
+<<<<<<< HEAD
 		return -NF_DROP;
+=======
+		return -NF_ACCEPT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Conntrack defragments packets, we might still see fragments
 	 * inside ICMP packets though. */
 	if (iph->frag_off & htons(IP_OFFSET))
+<<<<<<< HEAD
 		return -NF_DROP;
+=======
+		return -NF_ACCEPT;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*dataoff = nhoff + (iph->ihl << 2);
 	*protonum = iph->protocol;

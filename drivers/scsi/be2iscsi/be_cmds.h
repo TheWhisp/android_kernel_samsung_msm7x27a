@@ -561,6 +561,11 @@ int be_cmd_iscsi_post_sgl_pages(struct be_ctrl_info *ctrl,
 				struct be_dma_mem *q_mem, u32 page_offset,
 				u32 num_pages);
 
+<<<<<<< HEAD
+=======
+int beiscsi_cmd_reset_function(struct beiscsi_hba *phba);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int be_cmd_wrbq_create(struct be_ctrl_info *ctrl, struct be_dma_mem *q_mem,
 		       struct be_queue_info *wrbq);
 

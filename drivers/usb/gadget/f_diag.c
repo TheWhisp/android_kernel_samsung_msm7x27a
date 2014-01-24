@@ -2,7 +2,11 @@
  * Diag Function Device - Route ARM9 and ARM11 DIAG messages
  * between HOST and DEVICE.
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Author: Brian Swetland <swetland@google.com>
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -18,6 +22,10 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/usbdiag.h>
 #include <mach/rpc_hsusb.h>
@@ -108,8 +116,11 @@ struct diag_context {
 	struct usb_function function;
 	struct usb_ep *out;
 	struct usb_ep *in;
+<<<<<<< HEAD
 	struct usb_endpoint_descriptor  *in_desc;
 	struct usb_endpoint_descriptor  *out_desc;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head read_pool;
 	struct list_head write_pool;
 	struct work_struct config_work;
@@ -387,6 +398,10 @@ int usb_diag_read(struct usb_diag_ch *ch, struct diag_request *d_req)
 	struct diag_context *ctxt = ch->priv_usb;
 	unsigned long flags;
 	struct usb_request *req;
+<<<<<<< HEAD
+=======
+	static DEFINE_RATELIMIT_STATE(rl, 10*HZ, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!ctxt)
 		return -ENODEV;
@@ -416,7 +431,13 @@ int usb_diag_read(struct usb_diag_ch *ch, struct diag_request *d_req)
 		spin_lock_irqsave(&ctxt->lock, flags);
 		list_add_tail(&req->list, &ctxt->read_pool);
 		spin_unlock_irqrestore(&ctxt->lock, flags);
+<<<<<<< HEAD
 		ERROR(ctxt->cdev, "%s: cannot queue"
+=======
+		/* 1 error message for every 10 sec */
+		if (__ratelimit(&rl))
+			ERROR(ctxt->cdev, "%s: cannot queue"
+>>>>>>> refs/remotes/origin/cm-10.0
 				" read request\n", __func__);
 		return -EIO;
 	}
@@ -443,6 +464,10 @@ int usb_diag_write(struct usb_diag_ch *ch, struct diag_request *d_req)
 	struct diag_context *ctxt = ch->priv_usb;
 	unsigned long flags;
 	struct usb_request *req = NULL;
+<<<<<<< HEAD
+=======
+	static DEFINE_RATELIMIT_STATE(rl, 10*HZ, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!ctxt)
 		return -ENODEV;
@@ -472,7 +497,13 @@ int usb_diag_write(struct usb_diag_ch *ch, struct diag_request *d_req)
 		spin_lock_irqsave(&ctxt->lock, flags);
 		list_add_tail(&req->list, &ctxt->write_pool);
 		spin_unlock_irqrestore(&ctxt->lock, flags);
+<<<<<<< HEAD
 		ERROR(ctxt->cdev, "%s: cannot queue"
+=======
+		/* 1 error message for every 10 sec */
+		if (__ratelimit(&rl))
+			ERROR(ctxt->cdev, "%s: cannot queue"
+>>>>>>> refs/remotes/origin/cm-10.0
 				" read request\n", __func__);
 		return -EIO;
 	}
@@ -514,6 +545,7 @@ static int diag_function_set_alt(struct usb_function *f,
 	unsigned long flags;
 	int rc = 0;
 
+<<<<<<< HEAD
 	dev->in_desc = ep_choose(cdev->gadget,
 			(struct usb_endpoint_descriptor *)f->hs_descriptors[1],
 			(struct usb_endpoint_descriptor *)f->descriptors[1]);
@@ -522,13 +554,28 @@ static int diag_function_set_alt(struct usb_function *f,
 			(struct usb_endpoint_descriptor *)f->descriptors[2]);
 	dev->in->driver_data = dev;
 	rc = usb_ep_enable(dev->in, dev->in_desc);
+=======
+	if (config_ep_by_speed(cdev->gadget, f, dev->in) ||
+	    config_ep_by_speed(cdev->gadget, f, dev->out)) {
+		dev->in->desc = NULL;
+		dev->out->desc = NULL;
+		return -EINVAL;
+	}
+
+	dev->in->driver_data = dev;
+	rc = usb_ep_enable(dev->in);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc) {
 		ERROR(dev->cdev, "can't enable %s, result %d\n",
 						dev->in->name, rc);
 		return rc;
 	}
 	dev->out->driver_data = dev;
+<<<<<<< HEAD
 	rc = usb_ep_enable(dev->out, dev->out_desc);
+=======
+	rc = usb_ep_enable(dev->out);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc) {
 		ERROR(dev->cdev, "can't enable %s, result %d\n",
 						dev->out->name, rc);
@@ -630,7 +677,11 @@ int diag_function_add(struct usb_configuration *c, const char *name,
 	/* claim the channel for this USB interface */
 	_ch->priv_usb = dev;
 
+<<<<<<< HEAD
 	dev->update_pid_and_serial_num = update_pid; 
+=======
+	dev->update_pid_and_serial_num = update_pid;
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev->cdev = c->cdev;
 	dev->function.name = _ch->name;
 	dev->function.descriptors = fs_diag_desc;
@@ -665,6 +716,7 @@ static ssize_t debug_read_stats(struct file *file, char __user *ubuf,
 	struct usb_diag_ch *ch;
 
 	list_for_each_entry(ch, &usb_diag_ch_list, list) {
+<<<<<<< HEAD
 		struct diag_context *ctxt;
 
 		ctxt = ch->priv_usb;
@@ -680,6 +732,22 @@ static ssize_t debug_read_stats(struct file *file, char __user *ubuf,
 				ctxt->dpkts_tolaptop,
 				ctxt->dpkts_tomodem,
 				ctxt->dpkts_tolaptop_pending);
+=======
+		struct diag_context *ctxt = ch->priv_usb;
+
+		if (ctxt)
+			temp += scnprintf(buf + temp, PAGE_SIZE - temp,
+					"---Name: %s---\n"
+					"endpoints: %s, %s\n"
+					"dpkts_tolaptop: %lu\n"
+					"dpkts_tomodem:  %lu\n"
+					"pkts_tolaptop_pending: %u\n",
+					ch->name,
+					ctxt->in->name, ctxt->out->name,
+					ctxt->dpkts_tolaptop,
+					ctxt->dpkts_tomodem,
+					ctxt->dpkts_tolaptop_pending);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return simple_read_from_buffer(ubuf, count, ppos, buf, temp);
@@ -691,6 +759,7 @@ static ssize_t debug_reset_stats(struct file *file, const char __user *buf,
 	struct usb_diag_ch *ch;
 
 	list_for_each_entry(ch, &usb_diag_ch_list, list) {
+<<<<<<< HEAD
 		struct diag_context *ctxt;
 
 		ctxt = ch->priv_usb;
@@ -698,6 +767,15 @@ static ssize_t debug_reset_stats(struct file *file, const char __user *buf,
 		ctxt->dpkts_tolaptop = 0;
 		ctxt->dpkts_tomodem = 0;
 		ctxt->dpkts_tolaptop_pending = 0;
+=======
+		struct diag_context *ctxt = ch->priv_usb;
+
+		if (ctxt) {
+			ctxt->dpkts_tolaptop = 0;
+			ctxt->dpkts_tomodem = 0;
+			ctxt->dpkts_tolaptop_pending = 0;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return count;

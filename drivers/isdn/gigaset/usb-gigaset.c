@@ -184,7 +184,11 @@ static int set_value(struct cardstate *cs, u8 req, u16 val)
 		(unsigned)req, (unsigned)val);
 	r = usb_control_msg(udev, usb_sndctrlpipe(udev, 0), 0x12, 0x41,
 			    0xf /*?*/, 0, NULL, 0, 2000 /*?*/);
+<<<<<<< HEAD
 			    /* no idea what this does */
+=======
+	/* no idea what this does */
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (r < 0) {
 		dev_err(&udev->dev, "error %d on request 0x12\n", -r);
 		return r;
@@ -365,7 +369,11 @@ static void gigaset_read_int_callback(struct urb *urb)
 			src = cs->hw.usb->rcvbuf;
 			if (unlikely(*src))
 				dev_warn(cs->dev,
+<<<<<<< HEAD
 				    "%s: There was no leading 0, but 0x%02x!\n",
+=======
+					 "%s: There was no leading 0, but 0x%02x!\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 					 __func__, (unsigned) *src);
 			++src; /* skip leading 0x00 */
 			--numbytes;
@@ -465,7 +473,11 @@ static int send_cb(struct cardstate *cs, struct cmdbuf_t *cb)
 
 			usb_fill_bulk_urb(ucs->bulk_out_urb, ucs->udev,
 					  usb_sndbulkpipe(ucs->udev,
+<<<<<<< HEAD
 					     ucs->bulk_out_endpointAddr & 0x0f),
+=======
+							  ucs->bulk_out_endpointAddr & 0x0f),
+>>>>>>> refs/remotes/origin/cm-10.0
 					  cb->buf + cb->offset, count,
 					  gigaset_write_bulk_callback, cs);
 
@@ -499,7 +511,11 @@ static int gigaset_write_cmd(struct cardstate *cs, struct cmdbuf_t *cb)
 	unsigned long flags;
 
 	gigaset_dbg_buffer(cs->mstate != MS_LOCKED ?
+<<<<<<< HEAD
 			     DEBUG_TRANSCMD : DEBUG_LOCKCMD,
+=======
+			   DEBUG_TRANSCMD : DEBUG_LOCKCMD,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   "CMD Transmit", cb->len, cb->buf);
 
 	spin_lock_irqsave(&cs->cmdlock, flags);

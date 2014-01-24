@@ -1,8 +1,17 @@
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <media/saa7146_vv.h>
 
 static u32 saa7146_i2c_func(struct i2c_adapter *adapter)
 {
+<<<<<<< HEAD
 //fm	DEB_I2C(("'%s'.\n", adapter->name));
+=======
+	/* DEB_I2C("'%s'\n", adapter->name); */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return	  I2C_FUNC_I2C
 		| I2C_FUNC_SMBUS_QUICK
@@ -14,9 +23,13 @@ static u32 saa7146_i2c_func(struct i2c_adapter *adapter)
 static inline u32 saa7146_i2c_status(struct saa7146_dev *dev)
 {
 	u32 iicsta = saa7146_read(dev, I2C_STATUS);
+<<<<<<< HEAD
 /*
 	DEB_I2C(("status: 0x%08x\n",iicsta));
 */
+=======
+	/* DEB_I2C("status: 0x%08x\n", iicsta); */
+>>>>>>> refs/remotes/origin/cm-10.0
 	return iicsta;
 }
 
@@ -39,10 +52,18 @@ static int saa7146_i2c_msg_prepare(const struct i2c_msg *m, int num, __le32 *op)
 	   plus one extra byte to address the device */
 	mem = 1 + ((mem-1) / 3);
 
+<<<<<<< HEAD
 	/* we assume that op points to a memory of at least SAA7146_I2C_MEM bytes
 	   size. if we exceed this limit... */
 	if ( (4*mem) > SAA7146_I2C_MEM ) {
 //fm		DEB_I2C(("cannot prepare i2c-message.\n"));
+=======
+	/* we assume that op points to a memory of at least
+	 * SAA7146_I2C_MEM bytes size. if we exceed this limit...
+	 */
+	if ((4 * mem) > SAA7146_I2C_MEM) {
+		/* DEB_I2C("cannot prepare i2c-message\n"); */
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 
@@ -123,7 +144,11 @@ static int saa7146_i2c_reset(struct saa7146_dev *dev)
 	if ( 0 != ( status & SAA7146_I2C_BUSY) ) {
 
 		/* yes, kill ongoing operation */
+<<<<<<< HEAD
 		DEB_I2C(("busy_state detected.\n"));
+=======
+		DEB_I2C("busy_state detected\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* set "ABORT-OPERATION"-bit (bit 7)*/
 		saa7146_write(dev, I2C_STATUS, (dev->i2c_bitrate | MASK_07));
@@ -141,7 +166,11 @@ static int saa7146_i2c_reset(struct saa7146_dev *dev)
 
 	if ( dev->i2c_bitrate != status ) {
 
+<<<<<<< HEAD
 		DEB_I2C(("error_state detected. status:0x%08x\n",status));
+=======
+		DEB_I2C("error_state detected. status:0x%08x\n", status);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* Repeat the abort operation. This seems to be necessary
 		   after serious protocol errors caused by e.g. the SAA7740 */
@@ -164,7 +193,11 @@ static int saa7146_i2c_reset(struct saa7146_dev *dev)
 	/* if any error is still present, a fatal error has occurred ... */
 	status = saa7146_i2c_status(dev);
 	if ( dev->i2c_bitrate != status ) {
+<<<<<<< HEAD
 		DEB_I2C(("fatal error. status:0x%08x\n",status));
+=======
+		DEB_I2C("fatal error. status:0x%08x\n", status);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
 	}
 
@@ -181,7 +214,12 @@ static int saa7146_i2c_writeout(struct saa7146_dev *dev, __le32 *dword, int shor
 	unsigned long timeout;
 
 	/* write out i2c-command */
+<<<<<<< HEAD
 	DEB_I2C(("before: 0x%08x (status: 0x%08x), %d\n",*dword,saa7146_read(dev, I2C_STATUS), dev->i2c_op));
+=======
+	DEB_I2C("before: 0x%08x (status: 0x%08x), %d\n",
+		*dword, saa7146_read(dev, I2C_STATUS), dev->i2c_op);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if( 0 != (SAA7146_USE_I2C_IRQ & dev->ext->flags)) {
 
@@ -202,7 +240,11 @@ static int saa7146_i2c_writeout(struct saa7146_dev *dev, __le32 *dword, int shor
 				/* a signal arrived */
 				return -ERESTARTSYS;
 
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s %s [irq]: timed out waiting for end of xfer\n",
+=======
+			pr_warn("%s %s [irq]: timed out waiting for end of xfer\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				dev->name, __func__);
 			return -EIO;
 		}
@@ -220,7 +262,11 @@ static int saa7146_i2c_writeout(struct saa7146_dev *dev, __le32 *dword, int shor
 				break;
 			}
 			if (time_after(jiffies,timeout)) {
+<<<<<<< HEAD
 				printk(KERN_WARNING "%s %s: timed out waiting for MC2\n",
+=======
+				pr_warn("%s %s: timed out waiting for MC2\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 					dev->name, __func__);
 				return -EIO;
 			}
@@ -237,7 +283,11 @@ static int saa7146_i2c_writeout(struct saa7146_dev *dev, __le32 *dword, int shor
 				/* this is normal when probing the bus
 				 * (no answer from nonexisistant device...)
 				 */
+<<<<<<< HEAD
 				printk(KERN_WARNING "%s %s [poll]: timed out waiting for end of xfer\n",
+=======
+				pr_warn("%s %s [poll]: timed out waiting for end of xfer\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 					dev->name, __func__);
 				return -EIO;
 			}
@@ -257,6 +307,7 @@ static int saa7146_i2c_writeout(struct saa7146_dev *dev, __le32 *dword, int shor
 		if ( 0 == (status & SAA7146_I2C_ERR) ||
 		     0 == (status & SAA7146_I2C_BUSY) ) {
 			/* it may take some time until ERR goes high - ignore */
+<<<<<<< HEAD
 			DEB_I2C(("unexpected i2c status %04x\n", status));
 		}
 		if( 0 != (status & SAA7146_I2C_SPERR) ) {
@@ -270,11 +321,30 @@ static int saa7146_i2c_writeout(struct saa7146_dev *dev, __le32 *dword, int shor
 		}
 		if( 0 != (status & SAA7146_I2C_AL) ) {
 			DEB_I2C(("error because arbitration lost.\n"));
+=======
+			DEB_I2C("unexpected i2c status %04x\n", status);
+		}
+		if( 0 != (status & SAA7146_I2C_SPERR) ) {
+			DEB_I2C("error due to invalid start/stop condition\n");
+		}
+		if( 0 != (status & SAA7146_I2C_DTERR) ) {
+			DEB_I2C("error in data transmission\n");
+		}
+		if( 0 != (status & SAA7146_I2C_DRERR) ) {
+			DEB_I2C("error when receiving data\n");
+		}
+		if( 0 != (status & SAA7146_I2C_AL) ) {
+			DEB_I2C("error because arbitration lost\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* we handle address-errors here */
 		if( 0 != (status & SAA7146_I2C_APERR) ) {
+<<<<<<< HEAD
 			DEB_I2C(("error in address phase.\n"));
+=======
+			DEB_I2C("error in address phase\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -EREMOTEIO;
 		}
 
@@ -284,7 +354,11 @@ static int saa7146_i2c_writeout(struct saa7146_dev *dev, __le32 *dword, int shor
 	/* read back data, just in case we were reading ... */
 	*dword = cpu_to_le32(saa7146_read(dev, I2C_TRANSFER));
 
+<<<<<<< HEAD
 	DEB_I2C(("after: 0x%08x\n",*dword));
+=======
+	DEB_I2C("after: 0x%08x\n", *dword);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -299,7 +373,11 @@ static int saa7146_i2c_transfer(struct saa7146_dev *dev, const struct i2c_msg *m
 		return -ERESTARTSYS;
 
 	for(i=0;i<num;i++) {
+<<<<<<< HEAD
 		DEB_I2C(("msg:%d/%d\n",i+1,num));
+=======
+		DEB_I2C("msg:%d/%d\n", i+1, num);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* prepare the message(s), get number of u32s to transfer */
@@ -316,7 +394,11 @@ static int saa7146_i2c_transfer(struct saa7146_dev *dev, const struct i2c_msg *m
 		/* reset the i2c-device if necessary */
 		err = saa7146_i2c_reset(dev);
 		if ( 0 > err ) {
+<<<<<<< HEAD
 			DEB_I2C(("could not reset i2c-device.\n"));
+=======
+			DEB_I2C("could not reset i2c-device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto out;
 		}
 
@@ -336,7 +418,11 @@ static int saa7146_i2c_transfer(struct saa7146_dev *dev, const struct i2c_msg *m
 				   address error and trust the saa7146 address error detection. */
 				if (-EREMOTEIO == err && 0 != (SAA7146_USE_I2C_IRQ & dev->ext->flags))
 					goto out;
+<<<<<<< HEAD
 				DEB_I2C(("error while sending message(s). starting again.\n"));
+=======
+				DEB_I2C("error while sending message(s). starting again\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 		}
@@ -356,13 +442,21 @@ static int saa7146_i2c_transfer(struct saa7146_dev *dev, const struct i2c_msg *m
 
 	/* if any things had to be read, get the results */
 	if ( 0 != saa7146_i2c_msg_cleanup(msgs, num, buffer)) {
+<<<<<<< HEAD
 		DEB_I2C(("could not cleanup i2c-message.\n"));
+=======
+		DEB_I2C("could not cleanup i2c-message\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = -1;
 		goto out;
 	}
 
 	/* return the number of delivered messages */
+<<<<<<< HEAD
 	DEB_I2C(("transmission successful. (msg:%d).\n",err));
+=======
+	DEB_I2C("transmission successful. (msg:%d)\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	/* another bug in revision 0: the i2c-registers get uploaded randomly by other
 	   uploads, so we better clear them out before continuing */
@@ -370,7 +464,11 @@ out:
 		__le32 zero = 0;
 		saa7146_i2c_reset(dev);
 		if( 0 != saa7146_i2c_writeout(dev, &zero, short_delay)) {
+<<<<<<< HEAD
 			INFO(("revision 0 error. this should never happen.\n"));
+=======
+			pr_info("revision 0 error. this should never happen\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -400,7 +498,11 @@ static struct i2c_algorithm saa7146_algo = {
 
 int saa7146_i2c_adapter_prepare(struct saa7146_dev *dev, struct i2c_adapter *i2c_adapter, u32 bitrate)
 {
+<<<<<<< HEAD
 	DEB_EE(("bitrate: 0x%08x\n",bitrate));
+=======
+	DEB_EE("bitrate: 0x%08x\n", bitrate);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* enable i2c-port pins */
 	saa7146_write(dev, MC1, (MASK_08 | MASK_24));

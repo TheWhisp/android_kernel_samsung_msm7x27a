@@ -17,7 +17,10 @@
 #include <linux/bitops.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -26,6 +29,10 @@
 #include <asm/core_cia.h>
 #include <asm/hwrpb.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/special_insns.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "proto.h"
 #include "irq_impl.h"
@@ -95,7 +102,11 @@ sx164_init_irq(void)
  */
 
 static int __init
+<<<<<<< HEAD
 sx164_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+sx164_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	static char irq_tab[5][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */

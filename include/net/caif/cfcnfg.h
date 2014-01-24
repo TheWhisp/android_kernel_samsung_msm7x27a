@@ -14,6 +14,7 @@
 struct cfcnfg;
 
 /**
+<<<<<<< HEAD
  * enum cfcnfg_phy_type -  Types of physical layers defined in CAIF Stack
  *
  * @CFPHYTYPE_FRAG:	Fragmented frames physical interface.
@@ -26,6 +27,8 @@ enum cfcnfg_phy_type {
 };
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * enum cfcnfg_phy_preference - Physical preference HW Abstraction
  *
  * @CFPHYPREF_UNSPECIFIED:	Default physical interface
@@ -66,12 +69,16 @@ void cfcnfg_remove(struct cfcnfg *cfg);
  * cfcnfg_add_phy_layer() - Adds a physical layer to the CAIF stack.
  * @cnfg:	Pointer to a CAIF configuration object, created by
  *		cfcnfg_create().
+<<<<<<< HEAD
  * @phy_type:	Specifies the type of physical interface, e.g.
  *			CFPHYTYPE_FRAG.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @dev:	Pointer to link layer device
  * @phy_layer:	Specify the physical layer. The transmit function
  *		MUST be set in the structure.
  * @pref:	The phy (link layer) preference.
+<<<<<<< HEAD
  * @fcs:	Specify if checksum is used in CAIF Framing Layer.
  * @stx:	Specify if Start Of Frame eXtention is used.
  */
@@ -81,6 +88,18 @@ cfcnfg_add_phy_layer(struct cfcnfg *cnfg, enum cfcnfg_phy_type phy_type,
 		     struct net_device *dev, struct cflayer *phy_layer,
 		     enum cfcnfg_phy_preference pref,
 		     bool fcs, bool stx);
+=======
+ * @link_support: Protocol implementation for link layer specific protocol.
+ * @fcs:	Specify if checksum is used in CAIF Framing Layer.
+ * @head_room:	Head space needed by link specific protocol.
+ */
+void
+cfcnfg_add_phy_layer(struct cfcnfg *cnfg,
+		     struct net_device *dev, struct cflayer *phy_layer,
+		     enum cfcnfg_phy_preference pref,
+		     struct cflayer *link_support,
+		     bool fcs, int head_room);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * cfcnfg_del_phy_layer - Deletes an phy layer from the CAIF stack.

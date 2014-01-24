@@ -49,6 +49,12 @@ struct cpm_pin {
 };
 
 static __initdata struct cpm_pin km82xx_pins[] = {
+<<<<<<< HEAD
+=======
+	/* SMC1 */
+	{2, 4, CPM_PIN_INPUT | CPM_PIN_PRIMARY},
+	{2, 5, CPM_PIN_OUTPUT | CPM_PIN_PRIMARY},
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* SMC2 */
 	{0, 8, CPM_PIN_INPUT | CPM_PIN_PRIMARY},
@@ -137,6 +143,10 @@ static void __init init_ioports(void)
 	}
 
 	cpm2_smc_clk_setup(CPM_CLK_SMC2, CPM_BRG8);
+<<<<<<< HEAD
+=======
+	cpm2_smc_clk_setup(CPM_CLK_SMC1, CPM_BRG7);
+>>>>>>> refs/remotes/origin/cm-10.0
 	cpm2_clk_setup(CPM_CLK_SCC1, CPM_CLK11, CPM_CLK_RX);
 	cpm2_clk_setup(CPM_CLK_SCC1, CPM_CLK11, CPM_CLK_TX);
 	cpm2_clk_setup(CPM_CLK_SCC3, CPM_CLK5, CPM_CLK_RTX);

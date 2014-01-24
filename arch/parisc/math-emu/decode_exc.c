@@ -56,7 +56,11 @@
 /* General definitions */
 #define DOESTRAP 1
 #define NOTRAP 0
+<<<<<<< HEAD
 #define SIGNALCODE(signal, code) ((signal) << 24 | (code));
+=======
+#define SIGNALCODE(signal, code) ((signal) << 24 | (code))
+>>>>>>> refs/remotes/origin/cm-10.0
 #define copropbit	1<<31-2	/* bit position 2 */
 #define opclass		9	/* bits 21 & 22 */
 #define fmt		11	/* bits 19 & 20 */

@@ -21,7 +21,11 @@
 */
 
 #include <linux/rbtree.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __rb_rotate_left(struct rb_node *node, struct rb_root *root)
 {

@@ -157,8 +157,19 @@ mdfour(unsigned char *md4_hash, unsigned char *link_str, int link_len)
 		cERROR(1, "%s: Could not init md4 shash\n", __func__);
 		goto mdfour_err;
 	}
+<<<<<<< HEAD
 	crypto_shash_update(&sdescmd4->shash, link_str, link_len);
 	rc = crypto_shash_final(&sdescmd4->shash, md4_hash);
+=======
+	rc = crypto_shash_update(&sdescmd4->shash, link_str, link_len);
+	if (rc) {
+		cERROR(1, "%s: Could not update with link_str\n", __func__);
+		goto mdfour_err;
+	}
+	rc = crypto_shash_final(&sdescmd4->shash, md4_hash);
+	if (rc)
+		cERROR(1, "%s: Could not genereate md4 hash\n", __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 mdfour_err:
 	crypto_free_shash(md4);
@@ -193,6 +204,7 @@ SMBencrypt(unsigned char *passwd, const unsigned char *c8, unsigned char *p24)
 	return rc;
 }
 
+<<<<<<< HEAD
 /* Routines for Windows NT MD4 Hash functions. */
 static int
 _my_wcslen(__u16 *str)
@@ -227,11 +239,14 @@ _my_mbstowcs(__u16 *dst, const unsigned char *src, int len)
 	return i;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Creates the MD4 Hash of the users password in NT UNICODE.
  */
 
 int
+<<<<<<< HEAD
 E_md4hash(const unsigned char *passwd, unsigned char *p16)
 {
 	int rc;
@@ -255,10 +270,30 @@ E_md4hash(const unsigned char *passwd, unsigned char *p16)
 
 	rc = mdfour(p16, (unsigned char *) wpwd, len);
 	memset(wpwd, 0, 129 * 2);
+=======
+E_md4hash(const unsigned char *passwd, unsigned char *p16,
+	const struct nls_table *codepage)
+{
+	int rc;
+	int len;
+	__le16 wpwd[129];
+
+	/* Password cannot be longer than 128 characters */
+	if (passwd) /* Password must be converted to NT unicode */
+		len = cifs_strtoUTF16(wpwd, passwd, 128, codepage);
+	else {
+		len = 0;
+		*wpwd = 0; /* Ensure string is null terminated */
+	}
+
+	rc = mdfour(p16, (unsigned char *) wpwd, len * sizeof(__le16));
+	memset(wpwd, 0, 129 * sizeof(__le16));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return rc;
 }
 
+<<<<<<< HEAD
 #if 0 /* currently unused */
 /* Does both the NT and LM owfs of a user's password */
 static void
@@ -347,6 +382,12 @@ NTLMSSPOWFencrypt(unsigned char passwd[8],
 /* Does the NT MD4 hash then des encryption. */
 int
 SMBNTencrypt(unsigned char *passwd, unsigned char *c8, unsigned char *p24)
+=======
+/* Does the NT MD4 hash then des encryption. */
+int
+SMBNTencrypt(unsigned char *passwd, unsigned char *c8, unsigned char *p24,
+		const struct nls_table *codepage)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int rc;
 	unsigned char p16[16], p21[21];
@@ -354,7 +395,11 @@ SMBNTencrypt(unsigned char *passwd, unsigned char *c8, unsigned char *p24)
 	memset(p16, '\0', 16);
 	memset(p21, '\0', 21);
 
+<<<<<<< HEAD
 	rc = E_md4hash(passwd, p16);
+=======
+	rc = E_md4hash(passwd, p16, codepage);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc) {
 		cFYI(1, "%s Can't generate NT hash, error: %d", __func__, rc);
 		return rc;
@@ -363,6 +408,7 @@ SMBNTencrypt(unsigned char *passwd, unsigned char *c8, unsigned char *p24)
 	rc = E_P24(p21, c8, p24);
 	return rc;
 }
+<<<<<<< HEAD
 
 
 /* Does the md5 encryption from the NT hash for NTLMv2. */
@@ -399,3 +445,5 @@ SMBsesskeygen_ntv1(const unsigned char kr[16],
 	mdfour((unsigned char *) sess_key, (unsigned char *) kr, 16);
 }
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

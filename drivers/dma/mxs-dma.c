@@ -22,12 +22,23 @@
 #include <linux/platform_device.h>
 #include <linux/dmaengine.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 
 #include <asm/irq.h>
 #include <mach/mxs.h>
 #include <mach/dma.h>
 #include <mach/common.h>
 
+=======
+#include <linux/fsl/mxs-dma.h>
+
+#include <asm/irq.h>
+#include <mach/mxs.h>
+#include <mach/common.h>
+
+#include "dmaengine.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * NOTE: The term "PIO" throughout the mxs-dma implementation means
  * PIO mode of mxs apbh-dma and apbx-dma.  With this working mode,
@@ -44,7 +55,10 @@
 #define HW_APBHX_CTRL0				0x000
 #define BM_APBH_CTRL0_APB_BURST8_EN		(1 << 29)
 #define BM_APBH_CTRL0_APB_BURST_EN		(1 << 28)
+<<<<<<< HEAD
 #define BP_APBH_CTRL0_CLKGATE_CHANNEL		8
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define BP_APBH_CTRL0_RESET_CHANNEL		16
 #define HW_APBHX_CTRL1				0x010
 #define HW_APBHX_CTRL2				0x020
@@ -111,7 +125,11 @@ struct mxs_dma_chan {
 	int				chan_irq;
 	struct mxs_dma_ccw		*ccw;
 	dma_addr_t			ccw_phys;
+<<<<<<< HEAD
 	dma_cookie_t			last_completed;
+=======
+	int				desc_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 	enum dma_status			status;
 	unsigned int			flags;
 #define MXS_DMA_SG_LOOP			(1 << 0)
@@ -152,6 +170,7 @@ static void mxs_dma_enable_chan(struct mxs_dma_chan *mxs_chan)
 	writel(mxs_chan->ccw_phys,
 		mxs_dma->base + HW_APBHX_CHn_NXTCMDAR(chan_id));
 
+<<<<<<< HEAD
 	/* enable apbh channel clock */
 	if (dma_is_apbh()) {
 		if (apbh_is_old())
@@ -162,12 +181,15 @@ static void mxs_dma_enable_chan(struct mxs_dma_chan *mxs_chan)
 				mxs_dma->base + HW_APBHX_CTRL0 + MXS_CLR_ADDR);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* write 1 to SEMA to kick off the channel */
 	writel(1, mxs_dma->base + HW_APBHX_CHn_SEMA(chan_id));
 }
 
 static void mxs_dma_disable_chan(struct mxs_dma_chan *mxs_chan)
 {
+<<<<<<< HEAD
 	struct mxs_dma_engine *mxs_dma = mxs_chan->mxs_dma;
 	int chan_id = mxs_chan->chan.chan_id;
 
@@ -181,6 +203,8 @@ static void mxs_dma_disable_chan(struct mxs_dma_chan *mxs_chan)
 				mxs_dma->base + HW_APBHX_CTRL0 + MXS_SET_ADDR);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mxs_chan->status = DMA_SUCCESS;
 }
 
@@ -216,6 +240,7 @@ static void mxs_dma_resume_chan(struct mxs_dma_chan *mxs_chan)
 	mxs_chan->status = DMA_IN_PROGRESS;
 }
 
+<<<<<<< HEAD
 static dma_cookie_t mxs_dma_assign_cookie(struct mxs_dma_chan *mxs_chan)
 {
 	dma_cookie_t cookie = mxs_chan->chan.cookie;
@@ -229,6 +254,8 @@ static dma_cookie_t mxs_dma_assign_cookie(struct mxs_dma_chan *mxs_chan)
 	return cookie;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct mxs_dma_chan *to_mxs_dma_chan(struct dma_chan *chan)
 {
 	return container_of(chan, struct mxs_dma_chan, chan);
@@ -236,11 +263,15 @@ static struct mxs_dma_chan *to_mxs_dma_chan(struct dma_chan *chan)
 
 static dma_cookie_t mxs_dma_tx_submit(struct dma_async_tx_descriptor *tx)
 {
+<<<<<<< HEAD
 	struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(tx->chan);
 
 	mxs_dma_enable_chan(mxs_chan);
 
 	return mxs_dma_assign_cookie(mxs_chan);
+=======
+	return dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void mxs_dma_tasklet(unsigned long data)
@@ -268,7 +299,11 @@ static irqreturn_t mxs_dma_int_handler(int irq, void *dev_id)
 	/*
 	 * When both completion and error of termination bits set at the
 	 * same time, we do not take it as an error.  IOW, it only becomes
+<<<<<<< HEAD
 	 * an error we need to handler here in case of ether it's (1) an bus
+=======
+	 * an error we need to handle here in case of either it's (1) a bus
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * error or (2) a termination error with no completion.
 	 */
 	stat2 = ((stat2 >> MXS_DMA_CHANNELS) & stat2) | /* (1) */
@@ -297,7 +332,11 @@ static irqreturn_t mxs_dma_int_handler(int irq, void *dev_id)
 		stat1 &= ~(1 << channel);
 
 		if (mxs_chan->status == DMA_SUCCESS)
+<<<<<<< HEAD
 			mxs_chan->last_completed = mxs_chan->desc.cookie;
+=======
+			dma_cookie_complete(&mxs_chan->desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* schedule tasklet on this channel */
 		tasklet_schedule(&mxs_chan->tasklet);
@@ -327,12 +366,23 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
 
 	memset(mxs_chan->ccw, 0, PAGE_SIZE);
 
+<<<<<<< HEAD
 	ret = request_irq(mxs_chan->chan_irq, mxs_dma_int_handler,
 				0, "mxs-dma", mxs_dma);
 	if (ret)
 		goto err_irq;
 
 	ret = clk_enable(mxs_dma->clk);
+=======
+	if (mxs_chan->chan_irq != NO_IRQ) {
+		ret = request_irq(mxs_chan->chan_irq, mxs_dma_int_handler,
+					0, "mxs-dma", mxs_dma);
+		if (ret)
+			goto err_irq;
+	}
+
+	ret = clk_prepare_enable(mxs_dma->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto err_clk;
 
@@ -367,6 +417,7 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
 	dma_free_coherent(mxs_dma->dma_device.dev, PAGE_SIZE,
 			mxs_chan->ccw, mxs_chan->ccw_phys);
 
+<<<<<<< HEAD
 	clk_disable(mxs_dma->clk);
 }
 
@@ -374,6 +425,37 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
 		struct dma_chan *chan, struct scatterlist *sgl,
 		unsigned int sg_len, enum dma_data_direction direction,
 		unsigned long append)
+=======
+	clk_disable_unprepare(mxs_dma->clk);
+}
+
+/*
+ * How to use the flags for ->device_prep_slave_sg() :
+ *    [1] If there is only one DMA command in the DMA chain, the code should be:
+ *            ......
+ *            ->device_prep_slave_sg(DMA_CTRL_ACK);
+ *            ......
+ *    [2] If there are two DMA commands in the DMA chain, the code should be
+ *            ......
+ *            ->device_prep_slave_sg(0);
+ *            ......
+ *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+ *            ......
+ *    [3] If there are more than two DMA commands in the DMA chain, the code
+ *        should be:
+ *            ......
+ *            ->device_prep_slave_sg(0);                                // First
+ *            ......
+ *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT [| DMA_CTRL_ACK]);
+ *            ......
+ *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT | DMA_CTRL_ACK); // Last
+ *            ......
+ */
+static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
+		struct dma_chan *chan, struct scatterlist *sgl,
+		unsigned int sg_len, enum dma_transfer_direction direction,
+		unsigned long flags, void *context)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(chan);
 	struct mxs_dma_engine *mxs_dma = mxs_chan->mxs_dma;
@@ -381,7 +463,12 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
 	struct scatterlist *sg;
 	int i, j;
 	u32 *pio;
+<<<<<<< HEAD
 	static int idx;
+=======
+	bool append = flags & DMA_PREP_INTERRUPT;
+	int idx = append ? mxs_chan->desc_count : 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (mxs_chan->status == DMA_IN_PROGRESS && !append)
 		return NULL;
@@ -407,12 +494,19 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
 		ccw->bits |= CCW_CHAIN;
 		ccw->bits &= ~CCW_IRQ;
 		ccw->bits &= ~CCW_DEC_SEM;
+<<<<<<< HEAD
 		ccw->bits &= ~CCW_WAIT4END;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		idx = 0;
 	}
 
+<<<<<<< HEAD
 	if (direction == DMA_NONE) {
+=======
+	if (direction == DMA_TRANS_NONE) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ccw = &mxs_chan->ccw[idx++];
 		pio = (u32 *) sgl;
 
@@ -422,7 +516,12 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
 		ccw->bits = 0;
 		ccw->bits |= CCW_IRQ;
 		ccw->bits |= CCW_DEC_SEM;
+<<<<<<< HEAD
 		ccw->bits |= CCW_WAIT4END;
+=======
+		if (flags & DMA_CTRL_ACK)
+			ccw->bits |= CCW_WAIT4END;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ccw->bits |= CCW_HALT_ON_TERM;
 		ccw->bits |= CCW_TERM_FLUSH;
 		ccw->bits |= BF_CCW(sg_len, PIO_NUM);
@@ -445,7 +544,11 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
 			ccw->bits |= CCW_CHAIN;
 			ccw->bits |= CCW_HALT_ON_TERM;
 			ccw->bits |= CCW_TERM_FLUSH;
+<<<<<<< HEAD
 			ccw->bits |= BF_CCW(direction == DMA_FROM_DEVICE ?
+=======
+			ccw->bits |= BF_CCW(direction == DMA_DEV_TO_MEM ?
+>>>>>>> refs/remotes/origin/cm-10.0
 					MXS_DMA_CMD_WRITE : MXS_DMA_CMD_READ,
 					COMMAND);
 
@@ -453,10 +556,19 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
 				ccw->bits &= ~CCW_CHAIN;
 				ccw->bits |= CCW_IRQ;
 				ccw->bits |= CCW_DEC_SEM;
+<<<<<<< HEAD
 				ccw->bits |= CCW_WAIT4END;
 			}
 		}
 	}
+=======
+				if (flags & DMA_CTRL_ACK)
+					ccw->bits |= CCW_WAIT4END;
+			}
+		}
+	}
+	mxs_chan->desc_count = idx;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return &mxs_chan->desc;
 
@@ -467,7 +579,12 @@ err_out:
 
 static struct dma_async_tx_descriptor *mxs_dma_prep_dma_cyclic(
 		struct dma_chan *chan, dma_addr_t dma_addr, size_t buf_len,
+<<<<<<< HEAD
 		size_t period_len, enum dma_data_direction direction)
+=======
+		size_t period_len, enum dma_transfer_direction direction,
+		void *context)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(chan);
 	struct mxs_dma_engine *mxs_dma = mxs_chan->mxs_dma;
@@ -510,7 +627,11 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_dma_cyclic(
 		ccw->bits |= CCW_IRQ;
 		ccw->bits |= CCW_HALT_ON_TERM;
 		ccw->bits |= CCW_TERM_FLUSH;
+<<<<<<< HEAD
 		ccw->bits |= BF_CCW(direction == DMA_FROM_DEVICE ?
+=======
+		ccw->bits |= BF_CCW(direction == DMA_DEV_TO_MEM ?
+>>>>>>> refs/remotes/origin/cm-10.0
 				MXS_DMA_CMD_WRITE : MXS_DMA_CMD_READ, COMMAND);
 
 		dma_addr += period_len;
@@ -518,6 +639,10 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_dma_cyclic(
 
 		i++;
 	}
+<<<<<<< HEAD
+=======
+	mxs_chan->desc_count = i;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return &mxs_chan->desc;
 
@@ -534,6 +659,10 @@ static int mxs_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 
 	switch (cmd) {
 	case DMA_TERMINATE_ALL:
+<<<<<<< HEAD
+=======
+		mxs_dma_reset_chan(mxs_chan);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mxs_dma_disable_chan(mxs_chan);
 		break;
 	case DMA_PAUSE:
@@ -556,25 +685,41 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
 	dma_cookie_t last_used;
 
 	last_used = chan->cookie;
+<<<<<<< HEAD
 	dma_set_tx_state(txstate, mxs_chan->last_completed, last_used, 0);
+=======
+	dma_set_tx_state(txstate, chan->completed_cookie, last_used, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return mxs_chan->status;
 }
 
 static void mxs_dma_issue_pending(struct dma_chan *chan)
 {
+<<<<<<< HEAD
 	/*
 	 * Nothing to do. We only have a single descriptor.
 	 */
+=======
+	struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(chan);
+
+	mxs_dma_enable_chan(mxs_chan);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = clk_enable(mxs_dma->clk);
 	if (ret)
 		goto err_out;
+=======
+	ret = clk_prepare_enable(mxs_dma->clk);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = mxs_reset_block(mxs_dma->base);
 	if (ret)
@@ -598,11 +743,16 @@ static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
 	writel(MXS_DMA_CHANNELS_MASK << MXS_DMA_CHANNELS,
 		mxs_dma->base + HW_APBHX_CTRL1 + MXS_SET_ADDR);
 
+<<<<<<< HEAD
 	clk_disable(mxs_dma->clk);
 
 	return 0;
 
 err_out:
+=======
+err_out:
+	clk_disable_unprepare(mxs_dma->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -651,6 +801,10 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
 
 		mxs_chan->mxs_dma = mxs_dma;
 		mxs_chan->chan.device = &mxs_dma->dma_device;
+<<<<<<< HEAD
+=======
+		dma_cookie_init(&mxs_chan->chan);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		tasklet_init(&mxs_chan->tasklet, mxs_dma_tasklet,
 			     (unsigned long) mxs_chan);
@@ -707,6 +861,11 @@ static struct platform_device_id mxs_dma_type[] = {
 	}, {
 		.name = "mxs-dma-apbx",
 		.driver_data = MXS_DMA_APBX,
+<<<<<<< HEAD
+=======
+	}, {
+		/* end of list */
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 };
 

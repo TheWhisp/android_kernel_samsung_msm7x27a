@@ -82,7 +82,11 @@ static unsigned int ipv4_conntrack_defrag(unsigned int hooknum,
 #endif
 #endif
 	/* Gather fragments. */
+<<<<<<< HEAD
 	if (ip_hdr(skb)->frag_off & htons(IP_MF | IP_OFFSET)) {
+=======
+	if (ip_is_fragment(ip_hdr(skb))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		enum ip_defrag_users user = nf_ct_defrag_user(hooknum, skb);
 		if (nf_ct_ipv4_gather_frags(skb, user))
 			return NF_STOLEN;

@@ -10,6 +10,10 @@
  */
 
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/sh_fsi.h>
 
 struct fsi_hdmi_data {
@@ -38,6 +42,10 @@ static struct snd_soc_dai_link fsi_dai_link = {
 };
 
 static struct snd_soc_card fsi_soc_card  = {
+<<<<<<< HEAD
+=======
+	.owner		= THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link	= &fsi_dai_link,
 	.num_links	= 1,
 };
@@ -109,6 +117,7 @@ static struct platform_driver fsi_hdmi = {
 	.id_table	= fsi_id_table,
 };
 
+<<<<<<< HEAD
 static int __init fsi_hdmi_init(void)
 {
 	return platform_driver_register(&fsi_hdmi);
@@ -121,6 +130,9 @@ static void __exit fsi_hdmi_exit(void)
 
 module_init(fsi_hdmi_init);
 module_exit(fsi_hdmi_exit);
+=======
+module_platform_driver(fsi_hdmi);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Generic SH4 FSI-HDMI sound card");

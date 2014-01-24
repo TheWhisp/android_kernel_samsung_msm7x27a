@@ -15,8 +15,13 @@
 #include <linux/list.h>
 #include <linux/errno.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <linux/clk.h>
 #include <linux/io.h>
+=======
+#include <linux/io.h>
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/clkdev.h>
 
 #include <asm/mach-types.h>
@@ -27,6 +32,12 @@
 #include <plat/sram.h>
 #include <plat/clkdev_omap.h>
 
+<<<<<<< HEAD
+=======
+#include <mach/hardware.h>
+
+#include "iomap.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "clock.h"
 #include "opp.h"
 
@@ -197,11 +208,18 @@ int omap1_select_table_rate(struct clk *clk, unsigned long rate)
 	ref_rate = ck_ref_p->rate;
 
 	for (ptr = omap1_rate_table; ptr->rate; ptr++) {
+<<<<<<< HEAD
 		if (ptr->xtal != ref_rate)
 			continue;
 
 		/* DPLL1 cannot be reprogrammed without risking system crash */
 		if (likely(dpll1_rate != 0) && ptr->pll_rate != dpll1_rate)
+=======
+		if (!(ptr->flags & cpu_mask))
+			continue;
+
+		if (ptr->xtal != ref_rate)
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 
 		/* Can check only after xtal frequency check */
@@ -215,12 +233,17 @@ int omap1_select_table_rate(struct clk *clk, unsigned long rate)
 	/*
 	 * In most cases we should not need to reprogram DPLL.
 	 * Reprogramming the DPLL is tricky, it must be done from SRAM.
+<<<<<<< HEAD
 	 * (on 730, bit 13 must always be 1)
 	 */
 	if (cpu_is_omap7xx())
 		omap_sram_reprogram_clock(ptr->dpllctl_val, ptr->ckctl_val | 0x2000);
 	else
 		omap_sram_reprogram_clock(ptr->dpllctl_val, ptr->ckctl_val);
+=======
+	 */
+	omap_sram_reprogram_clock(ptr->dpllctl_val, ptr->ckctl_val);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* XXX Do we need to recalculate the tree below DPLL1 at this point? */
 	ck_dpll1_p->rate = ptr->pll_rate;
@@ -290,6 +313,12 @@ long omap1_round_to_table_rate(struct clk *clk, unsigned long rate)
 	highest_rate = -EINVAL;
 
 	for (ptr = omap1_rate_table; ptr->rate; ptr++) {
+<<<<<<< HEAD
+=======
+		if (!(ptr->flags & cpu_mask))
+			continue;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ptr->xtal != ref_rate)
 			continue;
 

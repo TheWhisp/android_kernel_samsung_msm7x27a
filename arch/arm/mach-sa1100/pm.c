@@ -29,10 +29,17 @@
 
 #include <mach/hardware.h>
 #include <asm/memory.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/mach/time.h>
 
 extern void sa1100_cpu_suspend(long);
+=======
+#include <asm/suspend.h>
+#include <asm/mach/time.h>
+
+extern int sa1100_finish_suspend(unsigned long);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SAVE(x)		sleep_save[SLEEP_SAVE_##x] = x
 #define RESTORE(x)	x = sleep_save[SLEEP_SAVE_##x]
@@ -75,9 +82,13 @@ static int sa11x0_pm_enter(suspend_state_t state)
 	PSPR = virt_to_phys(cpu_resume);
 
 	/* go zzz */
+<<<<<<< HEAD
 	sa1100_cpu_suspend(PLAT_PHYS_OFFSET - PAGE_OFFSET);
 
 	cpu_init();
+=======
+	cpu_suspend(0, sa1100_finish_suspend);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Ensure not to come back here if it wasn't intended

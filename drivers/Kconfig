@@ -40,8 +40,11 @@ source "drivers/net/Kconfig"
 
 source "drivers/isdn/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/telephony/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 # input before char - char/joystick depends on it. As does USB.
 
 source "drivers/input/Kconfig"
@@ -52,12 +55,26 @@ source "drivers/i2c/Kconfig"
 
 source "drivers/spi/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/slimbus/Kconfig"
 
+=======
+source "drivers/spmi/Kconfig"
+
+source "drivers/slimbus/Kconfig"
+
+source "drivers/hsi/Kconfig"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/pps/Kconfig"
 
 source "drivers/ptp/Kconfig"
 
+<<<<<<< HEAD
+=======
+source "drivers/pinctrl/Kconfig"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/gpio/Kconfig"
 
 source "drivers/w1/Kconfig"
@@ -96,8 +113,11 @@ source "drivers/memstick/Kconfig"
 
 source "drivers/leds/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/nfc/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/switch/Kconfig"
 
 source "drivers/accessibility/Kconfig"
@@ -118,6 +138,13 @@ source "drivers/uio/Kconfig"
 
 source "drivers/vlynq/Kconfig"
 
+<<<<<<< HEAD
+=======
+source "drivers/virtio/Kconfig"
+
+source "drivers/hv/Kconfig"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/xen/Kconfig"
 
 source "drivers/staging/Kconfig"
@@ -130,6 +157,23 @@ source "drivers/hwspinlock/Kconfig"
 
 source "drivers/clocksource/Kconfig"
 
+<<<<<<< HEAD
+=======
+source "drivers/iommu/Kconfig"
+
+source "drivers/remoteproc/Kconfig"
+
+source "drivers/rpmsg/Kconfig"
+
+source "drivers/virt/Kconfig"
+
+source "drivers/devfreq/Kconfig"
+
+source "drivers/gud/Kconfig"
+
+source "drivers/coresight/Kconfig"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/dpram/Kconfig"
 
 source "drivers/sensors/Kconfig"

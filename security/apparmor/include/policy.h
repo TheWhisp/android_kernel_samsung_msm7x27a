@@ -29,7 +29,11 @@
 #include "file.h"
 #include "resource.h"
 
+<<<<<<< HEAD
 extern const char *profile_mode_names[];
+=======
+extern const char *const profile_mode_names[];
+>>>>>>> refs/remotes/origin/cm-10.0
 #define APPARMOR_NAMES_MAX_INDEX 3
 
 #define COMPLAIN_MODE(_profile)	\
@@ -129,6 +133,20 @@ struct aa_namespace {
 	struct list_head sub_ns;
 };
 
+<<<<<<< HEAD
+=======
+/* struct aa_policydb - match engine for a policy
+ * dfa: dfa pattern match
+ * start: set of start states for the different classes of data
+ */
+struct aa_policydb {
+	/* Generic policy DFA specific rule types will be subsections of it */
+	struct aa_dfa *dfa;
+	unsigned int start[AA_CLASS_LAST + 1];
+
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* struct aa_profile - basic confinement data
  * @base - base components of the profile (name, refcount, lists, lock ...)
  * @parent: parent of profile
@@ -143,6 +161,10 @@ struct aa_namespace {
  * @flags: flags controlling profile behavior
  * @path_flags: flags controlling path generation behavior
  * @size: the memory consumed by this profiles rules
+<<<<<<< HEAD
+=======
+ * @policy: general match rules governing policy
+>>>>>>> refs/remotes/origin/cm-10.0
  * @file: The set of rules governing basic file access and domain transitions
  * @caps: capabilities for the profile
  * @rlimits: rlimits for the profile
@@ -179,6 +201,10 @@ struct aa_profile {
 	u32 path_flags;
 	int size;
 
+<<<<<<< HEAD
+=======
+	struct aa_policydb policy;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct aa_file_rules file;
 	struct aa_caps caps;
 	struct aa_rlimit rlimits;

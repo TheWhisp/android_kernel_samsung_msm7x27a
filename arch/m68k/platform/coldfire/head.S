@@ -3,7 +3,11 @@
 /*
  *	head.S -- common startup code for ColdFire CPUs.
  *
+<<<<<<< HEAD
  *	(C) Copyright 1999-2010, Greg Ungerer <gerg@snapgear.com>.
+=======
+ *	(C) Copyright 1999-2011, Greg Ungerer <gerg@snapgear.com>.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 /*****************************************************************************/
@@ -13,6 +17,10 @@
 #include <asm/asm-offsets.h>
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
+<<<<<<< HEAD
+=======
+#include <asm/mcfmmu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/thread_info.h>
 
 /*****************************************************************************/
@@ -135,6 +143,17 @@ _init_sp:
 
 __HEAD
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MMU
+_start0:
+	jmp	_start
+.global kernel_pg_dir
+.equ	kernel_pg_dir,_start0
+.equ	.,_start0+0x1000
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *	This is the codes first entry point. This is where it all
  *	begins...
@@ -143,9 +162,22 @@ __HEAD
 _start:
 	nop					/* filler */
 	movew	#0x2700, %sr			/* no interrupts */
+<<<<<<< HEAD
 #if defined(CONFIG_UBOOT)
 	movel	%sp,_init_sp			/* save initial stack pointer */
 #endif
+=======
+	movel	#CACHE_INIT,%d0			/* disable cache */
+	movec	%d0,%CACR
+	nop
+#if defined(CONFIG_UBOOT)
+	movel	%sp,_init_sp			/* save initial stack pointer */
+#endif
+#ifdef CONFIG_MBAR
+	movel	#CONFIG_MBAR+1,%d0		/* configured MBAR address */
+	movec	%d0,%MBAR			/* set it */
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 *	Do any platform or board specific setup now. Most boards
@@ -176,9 +208,12 @@ _start:
 	 *	it is very similar. Define the exact settings in the headers
 	 *	then the code here is the same for all.
 	 */
+<<<<<<< HEAD
 	movel	#CACHE_INIT,%d0			/* invalidate whole cache */
 	movec	%d0,%CACR
 	nop
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	movel	#ACR0_MODE,%d0			/* set RAM region for caching */
 	movec	%d0,%ACR0
 	movel	#ACR1_MODE,%d0			/* anything else to cache? */
@@ -193,6 +228,29 @@ _start:
 	movec	%d0,%CACR
 	nop
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MMU
+	/*
+	 *	Identity mapping for the kernel region.
+	 */
+	movel	#(MMUBASE+1),%d0		/* enable MMUBAR registers */
+	movec	%d0,%MMUBAR
+	movel	#MMUOR_CA,%d0			/* clear TLB entries */
+	movel	%d0,MMUOR
+	movel	#0,%d0				/* set ASID to 0 */
+	movec	%d0,%asid
+
+	movel	#MMUCR_EN,%d0			/* Enable the identity map */
+	movel	%d0,MMUCR
+	nop					/* sync i-pipeline */
+
+	movel	#_vstart,%a0			/* jump to "virtual" space */
+	jmp	%a0@
+_vstart:
+#endif /* CONFIG_MMU */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_ROMFS_FS
 	/*
 	 *	Move ROM filesystem above bss :-)
@@ -238,6 +296,25 @@ _clear_bss:
 	lea	init_thread_union,%a0
 	lea	THREAD_SIZE(%a0),%sp
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MMU
+.global m68k_cputype
+.global m68k_mmutype
+.global m68k_fputype
+.global m68k_machtype
+	movel	#CPU_COLDFIRE,%d0
+	movel	%d0,m68k_cputype		/* Mark us as a ColdFire */
+	movel	#MMU_COLDFIRE,%d0
+	movel	%d0,m68k_mmutype
+	movel	#FPU_COLDFIRE,%d0
+	movel	%d0,m68k_fputype
+	movel	#MACH_M54XX,%d0
+	movel	%d0,m68k_machtype		/* Mark us as a 54xx machine */
+	lea	init_task,%a2			/* Set "current" init task */
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 *	Assember start up done, start code proper.
 	 */

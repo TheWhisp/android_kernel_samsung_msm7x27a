@@ -514,12 +514,23 @@
 			return 0x1 + pfi_channel;
 		else
 			return 0xb + pfi_channel;
+<<<<<<< HEAD
 	} static inline unsigned NI_USUAL_RTSI_SELECT(unsigned rtsi_channel) {
+=======
+	}
+
+	static inline unsigned NI_USUAL_RTSI_SELECT(unsigned rtsi_channel)
+	{
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (rtsi_channel < 7)
 			return 0xb + rtsi_channel;
 		else
 			return 0x1b;
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* mode bits for NI general-purpose counters, set with
  * INSN_CONFIG_SET_COUNTER_MODE */
 #define NI_GPCT_COUNTING_MODE_SHIFT 16

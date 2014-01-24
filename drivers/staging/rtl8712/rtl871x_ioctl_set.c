@@ -243,7 +243,11 @@ done:
 	spin_unlock_irqrestore(&pmlmepriv->lock, irqL);
 }
 
+<<<<<<< HEAD
 u8 r8712_set_802_11_infrastructure_mode(struct _adapter *padapter,
+=======
+void r8712_set_802_11_infrastructure_mode(struct _adapter *padapter,
+>>>>>>> refs/remotes/origin/cm-10.0
 	enum NDIS_802_11_NETWORK_INFRASTRUCTURE networktype)
 {
 	unsigned long irqL;
@@ -290,7 +294,10 @@ u8 r8712_set_802_11_infrastructure_mode(struct _adapter *padapter,
 		}
 		spin_unlock_irqrestore(&pmlmepriv->lock, irqL);
 	}
+<<<<<<< HEAD
 	return true;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 u8 r8712_set_802_11_disassociate(struct _adapter *padapter)

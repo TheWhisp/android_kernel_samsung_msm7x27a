@@ -139,7 +139,10 @@ void __init init_IRQ(void)
 {
 	int irq;
 
+<<<<<<< HEAD
 	init_vectors();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	mcf_maskimr(0xffffffff);
 
 	for (irq = 0; (irq < NR_IRQS); irq++) {

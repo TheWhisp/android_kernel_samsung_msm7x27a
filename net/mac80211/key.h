@@ -28,8 +28,14 @@
 #define CCMP_PN_LEN		6
 #define TKIP_IV_LEN		8
 #define TKIP_ICV_LEN		4
+<<<<<<< HEAD
 
 #define NUM_RX_DATA_QUEUES	17
+=======
+#define CMAC_PN_LEN		6
+
+#define NUM_RX_DATA_QUEUES	16
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct ieee80211_local;
 struct ieee80211_sub_if_data;
@@ -40,9 +46,17 @@ struct sta_info;
  *
  * @KEY_FLAG_UPLOADED_TO_HARDWARE: Indicates that this key is present
  *	in the hardware for TX crypto hardware acceleration.
+<<<<<<< HEAD
  */
 enum ieee80211_internal_key_flags {
 	KEY_FLAG_UPLOADED_TO_HARDWARE	= BIT(0),
+=======
+ * @KEY_FLAG_TAINTED: Key is tainted and packets should be dropped.
+ */
+enum ieee80211_internal_key_flags {
+	KEY_FLAG_UPLOADED_TO_HARDWARE	= BIT(0),
+	KEY_FLAG_TAINTED		= BIT(1),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum ieee80211_internal_tkip_state {
@@ -52,9 +66,16 @@ enum ieee80211_internal_tkip_state {
 };
 
 struct tkip_ctx {
+<<<<<<< HEAD
 	u32 iv32;
 	u16 iv16;
 	u16 p1k[5];
+=======
+	u32 iv32;	/* current iv32 */
+	u16 iv16;	/* current iv16 */
+	u16 p1k[5];	/* p1k cache */
+	u32 p1k_iv32;	/* iv32 for which p1k computed */
+>>>>>>> refs/remotes/origin/cm-10.0
 	enum ieee80211_internal_tkip_state state;
 };
 
@@ -71,6 +92,12 @@ struct ieee80211_key {
 
 	union {
 		struct {
+<<<<<<< HEAD
+=======
+			/* protects tx context */
+			spinlock_t txlock;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* last used TSC */
 			struct tkip_ctx tx;
 
@@ -78,13 +105,18 @@ struct ieee80211_key {
 			struct tkip_ctx rx[NUM_RX_DATA_QUEUES];
 		} tkip;
 		struct {
+<<<<<<< HEAD
 			u8 tx_pn[6];
+=======
+			atomic64_t tx_pn;
+>>>>>>> refs/remotes/origin/cm-10.0
 			/*
 			 * Last received packet number. The first
 			 * NUM_RX_DATA_QUEUES counters are used with Data
 			 * frames and the last counter is used with Robust
 			 * Management frames.
 			 */
+<<<<<<< HEAD
 			u8 rx_pn[NUM_RX_DATA_QUEUES + 1][6];
 			struct crypto_cipher *tfm;
 			u32 replays; /* dot11RSNAStatsCCMPReplays */
@@ -104,6 +136,18 @@ struct ieee80211_key {
 			/* scratch buffers for virt_to_page() (crypto API) */
 			u8 tx_crypto_buf[2 * AES_BLOCK_LEN];
 			u8 rx_crypto_buf[2 * AES_BLOCK_LEN];
+=======
+			u8 rx_pn[NUM_RX_DATA_QUEUES + 1][CCMP_PN_LEN];
+			struct crypto_cipher *tfm;
+			u32 replays; /* dot11RSNAStatsCCMPReplays */
+		} ccmp;
+		struct {
+			atomic64_t tx_pn;
+			u8 rx_pn[CMAC_PN_LEN];
+			struct crypto_cipher *tfm;
+			u32 replays; /* dot11RSNAStatsCMACReplays */
+			u32 icverrors; /* dot11RSNAStatsCMACICVErrors */
+>>>>>>> refs/remotes/origin/cm-10.0
 		} aes_cmac;
 	} u;
 

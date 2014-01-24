@@ -1,5 +1,9 @@
 #include <linux/syscalls.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 #include <linux/file.h>
 #include <linux/mount.h>
@@ -7,6 +11,10 @@
 #include <linux/statfs.h>
 #include <linux/security.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include "internal.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int flags_by_mnt(int mnt_flags)
 {
@@ -45,7 +53,11 @@ static int calculate_f_flags(struct vfsmount *mnt)
 		flags_by_sb(mnt->mnt_sb->s_flags);
 }
 
+<<<<<<< HEAD
 int statfs_by_dentry(struct dentry *dentry, struct kstatfs *buf)
+=======
+static int statfs_by_dentry(struct dentry *dentry, struct kstatfs *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int retval;
 
@@ -205,6 +217,7 @@ SYSCALL_DEFINE3(fstatfs64, unsigned int, fd, size_t, sz, struct statfs64 __user 
 	return error;
 }
 
+<<<<<<< HEAD
 SYSCALL_DEFINE2(ustat, unsigned, dev, struct ustat __user *, ubuf)
 {
 	struct super_block *s;
@@ -218,6 +231,25 @@ SYSCALL_DEFINE2(ustat, unsigned, dev, struct ustat __user *, ubuf)
 
 	err = statfs_by_dentry(s->s_root, &sbuf);
 	drop_super(s);
+=======
+int vfs_ustat(dev_t dev, struct kstatfs *sbuf)
+{
+	struct super_block *s = user_get_super(dev);
+	int err;
+	if (!s)
+		return -EINVAL;
+
+	err = statfs_by_dentry(s->s_root, sbuf);
+	drop_super(s);
+	return err;
+}
+
+SYSCALL_DEFINE2(ustat, unsigned, dev, struct ustat __user *, ubuf)
+{
+	struct ustat tmp;
+	struct kstatfs sbuf;
+	int err = vfs_ustat(new_decode_dev(dev), &sbuf);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err)
 		return err;
 

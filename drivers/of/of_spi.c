@@ -6,6 +6,10 @@
  * tree.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/of.h>
 #include <linux/device.h>
 #include <linux/spi/spi.h>

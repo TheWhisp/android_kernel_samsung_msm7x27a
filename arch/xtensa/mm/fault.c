@@ -19,7 +19,10 @@
 #include <asm/cacheflush.h>
 #include <asm/hardirq.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgalloc.h>
 
 unsigned long asid_cache = ASID_USER_FIRST;

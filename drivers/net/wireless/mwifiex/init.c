@@ -35,17 +35,26 @@ static int mwifiex_add_bss_prio_tbl(struct mwifiex_private *priv)
 {
 	struct mwifiex_adapter *adapter = priv->adapter;
 	struct mwifiex_bss_prio_node *bss_prio;
+<<<<<<< HEAD
+=======
+	struct mwifiex_bss_prio_tbl *tbl = adapter->bss_prio_tbl;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long flags;
 
 	bss_prio = kzalloc(sizeof(struct mwifiex_bss_prio_node), GFP_KERNEL);
 	if (!bss_prio) {
 		dev_err(adapter->dev, "%s: failed to alloc bss_prio\n",
+<<<<<<< HEAD
 						__func__);
+=======
+			__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 
 	bss_prio->priv = priv;
 	INIT_LIST_HEAD(&bss_prio->list);
+<<<<<<< HEAD
 	if (!adapter->bss_prio_tbl[priv->bss_priority].bss_prio_cur)
 		adapter->bss_prio_tbl[priv->bss_priority].bss_prio_cur =
 			bss_prio;
@@ -57,6 +66,14 @@ static int mwifiex_add_bss_prio_tbl(struct mwifiex_private *priv)
 			.bss_prio_head);
 	spin_unlock_irqrestore(&adapter->bss_prio_tbl[priv->bss_priority]
 			.bss_prio_lock, flags);
+=======
+	if (!tbl[priv->bss_priority].bss_prio_cur)
+		tbl[priv->bss_priority].bss_prio_cur = bss_prio;
+
+	spin_lock_irqsave(&tbl[priv->bss_priority].bss_prio_lock, flags);
+	list_add_tail(&bss_prio->list, &tbl[priv->bss_priority].bss_prio_head);
+	spin_unlock_irqrestore(&tbl[priv->bss_priority].bss_prio_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -76,13 +93,21 @@ static int mwifiex_init_priv(struct mwifiex_private *priv)
 	memset(priv->curr_addr, 0xff, ETH_ALEN);
 
 	priv->pkt_tx_ctrl = 0;
+<<<<<<< HEAD
 	priv->bss_mode = NL80211_IFTYPE_STATION;
+=======
+	priv->bss_mode = NL80211_IFTYPE_UNSPECIFIED;
+>>>>>>> refs/remotes/origin/cm-10.0
 	priv->data_rate = 0;	/* Initially indicate the rate as auto */
 	priv->is_data_rate_auto = true;
 	priv->bcn_avg_factor = DEFAULT_BCN_AVG_FACTOR;
 	priv->data_avg_factor = DEFAULT_DATA_AVG_FACTOR;
 
+<<<<<<< HEAD
 	priv->sec_info.wep_status = MWIFIEX_802_11_WEP_DISABLED;
+=======
+	priv->sec_info.wep_enabled = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	priv->sec_info.authentication_mode = NL80211_AUTHTYPE_OPEN_SYSTEM;
 	priv->sec_info.encryption_mode = 0;
 	for (i = 0; i < ARRAY_SIZE(priv->wep_key); i++)
@@ -152,6 +177,7 @@ static int mwifiex_init_priv(struct mwifiex_private *priv)
 static int mwifiex_allocate_adapter(struct mwifiex_adapter *adapter)
 {
 	int ret;
+<<<<<<< HEAD
 	u32 buf_size;
 	struct mwifiex_bssdescriptor *temp_scan_table;
 
@@ -165,18 +191,28 @@ static int mwifiex_allocate_adapter(struct mwifiex_adapter *adapter)
 	}
 
 	adapter->scan_table = temp_scan_table;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Allocate command buffer */
 	ret = mwifiex_alloc_cmd_buffer(adapter);
 	if (ret) {
 		dev_err(adapter->dev, "%s: failed to alloc cmd buffer\n",
+<<<<<<< HEAD
 		       __func__);
+=======
+			__func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
 	}
 
 	adapter->sleep_cfm =
 		dev_alloc_skb(sizeof(struct mwifiex_opt_sleep_confirm)
+<<<<<<< HEAD
 				+ INTF_HEADER_LEN);
+=======
+			      + INTF_HEADER_LEN);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!adapter->sleep_cfm) {
 		dev_err(adapter->dev, "%s: failed to alloc sleep cfm"
@@ -200,11 +236,22 @@ static void mwifiex_init_adapter(struct mwifiex_adapter *adapter)
 	struct mwifiex_opt_sleep_confirm *sleep_cfm_buf = NULL;
 
 	skb_put(adapter->sleep_cfm, sizeof(struct mwifiex_opt_sleep_confirm));
+<<<<<<< HEAD
 	sleep_cfm_buf = (struct mwifiex_opt_sleep_confirm *)
 						(adapter->sleep_cfm->data);
 
 	adapter->cmd_sent = false;
 	adapter->data_sent = true;
+=======
+
+	adapter->cmd_sent = false;
+
+	if (adapter->iface_type == MWIFIEX_PCIE)
+		adapter->data_sent = false;
+	else
+		adapter->data_sent = true;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	adapter->cmd_resp_received = false;
 	adapter->event_received = false;
 	adapter->data_received = false;
@@ -222,6 +269,7 @@ static void mwifiex_init_adapter(struct mwifiex_adapter *adapter)
 	adapter->active_scan_time = MWIFIEX_ACTIVE_SCAN_CHAN_TIME;
 	adapter->passive_scan_time = MWIFIEX_PASSIVE_SCAN_CHAN_TIME;
 
+<<<<<<< HEAD
 	adapter->num_in_scan_table = 0;
 	memset(adapter->scan_table, 0,
 	       (sizeof(struct mwifiex_bssdescriptor) * IW_MAX_AP));
@@ -230,6 +278,10 @@ static void mwifiex_init_adapter(struct mwifiex_adapter *adapter)
 	memset(adapter->bcn_buf, 0, sizeof(adapter->bcn_buf));
 	adapter->bcn_buf_end = adapter->bcn_buf;
 
+=======
+	adapter->scan_probes = 1;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	adapter->multiple_dtim = 1;
 
 	adapter->local_listen_interval = 0;	/* default value in firmware
@@ -262,12 +314,21 @@ static void mwifiex_init_adapter(struct mwifiex_adapter *adapter)
 	memset(adapter->event_body, 0, sizeof(adapter->event_body));
 	adapter->hw_dot_11n_dev_cap = 0;
 	adapter->hw_dev_mcs_support = 0;
+<<<<<<< HEAD
 	adapter->chan_offset = 0;
+=======
+	adapter->sec_chan_offset = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 	adapter->adhoc_11n_enabled = false;
 
 	mwifiex_wmm_init(adapter);
 
 	if (adapter->sleep_cfm) {
+<<<<<<< HEAD
+=======
+		sleep_cfm_buf = (struct mwifiex_opt_sleep_confirm *)
+						adapter->sleep_cfm->data;
+>>>>>>> refs/remotes/origin/cm-10.0
 		memset(sleep_cfm_buf, 0, adapter->sleep_cfm->len);
 		sleep_cfm_buf->command =
 				cpu_to_le16(HostCmd_CMD_802_11_PS_MODE_ENH);
@@ -294,6 +355,77 @@ static void mwifiex_init_adapter(struct mwifiex_adapter *adapter)
 	adapter->adhoc_awake_period = 0;
 	memset(&adapter->arp_filter, 0, sizeof(adapter->arp_filter));
 	adapter->arp_filter_size = 0;
+<<<<<<< HEAD
+=======
+	adapter->channel_type = NL80211_CHAN_HT20;
+}
+
+/*
+ * This function sets trans_start per tx_queue
+ */
+void mwifiex_set_trans_start(struct net_device *dev)
+{
+	int i;
+
+	for (i = 0; i < dev->num_tx_queues; i++)
+		netdev_get_tx_queue(dev, i)->trans_start = jiffies;
+
+	dev->trans_start = jiffies;
+}
+
+/*
+ * This function wakes up all queues in net_device
+ */
+void mwifiex_wake_up_net_dev_queue(struct net_device *netdev,
+					struct mwifiex_adapter *adapter)
+{
+	unsigned long dev_queue_flags;
+
+	spin_lock_irqsave(&adapter->queue_lock, dev_queue_flags);
+	netif_tx_wake_all_queues(netdev);
+	spin_unlock_irqrestore(&adapter->queue_lock, dev_queue_flags);
+}
+
+/*
+ * This function stops all queues in net_device
+ */
+void mwifiex_stop_net_dev_queue(struct net_device *netdev,
+					struct mwifiex_adapter *adapter)
+{
+	unsigned long dev_queue_flags;
+
+	spin_lock_irqsave(&adapter->queue_lock, dev_queue_flags);
+	netif_tx_stop_all_queues(netdev);
+	spin_unlock_irqrestore(&adapter->queue_lock, dev_queue_flags);
+}
+
+/*
+ *  This function releases the lock variables and frees the locks and
+ *  associated locks.
+ */
+static void mwifiex_free_lock_list(struct mwifiex_adapter *adapter)
+{
+	struct mwifiex_private *priv;
+	s32 i, j;
+
+	/* Free lists */
+	list_del(&adapter->cmd_free_q);
+	list_del(&adapter->cmd_pending_q);
+	list_del(&adapter->scan_pending_q);
+
+	for (i = 0; i < adapter->priv_num; i++)
+		list_del(&adapter->bss_prio_tbl[i].bss_prio_head);
+
+	for (i = 0; i < adapter->priv_num; i++) {
+		if (adapter->priv[i]) {
+			priv = adapter->priv[i];
+			for (j = 0; j < MAX_NUM_TID; ++j)
+				list_del(&priv->wmm.tid_tbl_ptr[j].ra_list);
+			list_del(&priv->tx_ba_stream_tbl_ptr);
+			list_del(&priv->rx_reorder_tbl_ptr);
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -326,12 +458,20 @@ mwifiex_free_adapter(struct mwifiex_adapter *adapter)
 	del_timer(&adapter->cmd_timer);
 
 	dev_dbg(adapter->dev, "info: free scan table\n");
+<<<<<<< HEAD
 	kfree(adapter->scan_table);
 	adapter->scan_table = NULL;
 
 	adapter->if_ops.cleanup_if(adapter);
 
 	dev_kfree_skb_any(adapter->sleep_cfm);
+=======
+
+	adapter->if_ops.cleanup_if(adapter);
+
+	if (adapter->sleep_cfm)
+		dev_kfree_skb_any(adapter->sleep_cfm);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -347,6 +487,10 @@ int mwifiex_init_lock_list(struct mwifiex_adapter *adapter)
 	spin_lock_init(&adapter->int_lock);
 	spin_lock_init(&adapter->main_proc_lock);
 	spin_lock_init(&adapter->mwifiex_cmd_lock);
+<<<<<<< HEAD
+=======
+	spin_lock_init(&adapter->queue_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < adapter->priv_num; i++) {
 		if (adapter->priv[i]) {
 			priv = adapter->priv[i];
@@ -392,6 +536,7 @@ int mwifiex_init_lock_list(struct mwifiex_adapter *adapter)
 }
 
 /*
+<<<<<<< HEAD
  *  This function releases the lock variables and frees the locks and
  *  associated locks.
  */
@@ -420,6 +565,8 @@ void mwifiex_free_lock_list(struct mwifiex_adapter *adapter)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * This function initializes the firmware.
  *
  * The following operations are performed sequentially -
@@ -494,7 +641,11 @@ static void mwifiex_delete_bss_prio_tbl(struct mwifiex_private *priv)
 	struct mwifiex_adapter *adapter = priv->adapter;
 	struct mwifiex_bss_prio_node *bssprio_node, *tmp_node, **cur;
 	struct list_head *head;
+<<<<<<< HEAD
 	spinlock_t *lock;
+=======
+	spinlock_t *lock; /* bss priority lock */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long flags;
 
 	for (i = 0; i < adapter->priv_num; ++i) {
@@ -502,8 +653,14 @@ static void mwifiex_delete_bss_prio_tbl(struct mwifiex_private *priv)
 		cur = &adapter->bss_prio_tbl[i].bss_prio_cur;
 		lock = &adapter->bss_prio_tbl[i].bss_prio_lock;
 		dev_dbg(adapter->dev, "info: delete BSS priority table,"
+<<<<<<< HEAD
 				" index = %d, i = %d, head = %p, cur = %p\n",
 			      priv->bss_index, i, head, *cur);
+=======
+				" bss_type = %d, bss_num = %d, i = %d,"
+				" head = %p, cur = %p\n",
+			      priv->bss_type, priv->bss_num, i, head, *cur);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (*cur) {
 			spin_lock_irqsave(lock, flags);
 			if (list_empty(head)) {
@@ -602,6 +759,7 @@ mwifiex_shutdown_drv(struct mwifiex_adapter *adapter)
 int mwifiex_dnld_fw(struct mwifiex_adapter *adapter,
 		    struct mwifiex_fw_image *pmfw)
 {
+<<<<<<< HEAD
 	int ret, winner;
 	u32 poll_num = 1;
 
@@ -610,15 +768,33 @@ int mwifiex_dnld_fw(struct mwifiex_adapter *adapter,
 	if (!ret) {
 		dev_notice(adapter->dev,
 				"WLAN FW already running! Skip FW download\n");
+=======
+	int ret;
+	u32 poll_num = 1;
+
+	adapter->winner = 0;
+
+	/* Check if firmware is already running */
+	ret = adapter->if_ops.check_fw_status(adapter, poll_num);
+	if (!ret) {
+		dev_notice(adapter->dev,
+			   "WLAN FW already running! Skip FW download\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto done;
 	}
 	poll_num = MAX_FIRMWARE_POLL_TRIES;
 
 	/* Check if we are the winner for downloading FW */
+<<<<<<< HEAD
 	if (!winner) {
 		dev_notice(adapter->dev,
 				"Other interface already running!"
 				" Skip FW download\n");
+=======
+	if (!adapter->winner) {
+		dev_notice(adapter->dev,
+			   "Other intf already running! Skip FW download\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		poll_num = MAX_MULTI_INTERFACE_POLL_TRIES;
 		goto poll_fw;
 	}
@@ -633,7 +809,11 @@ int mwifiex_dnld_fw(struct mwifiex_adapter *adapter,
 
 poll_fw:
 	/* Check if the firmware is downloaded successfully or not */
+<<<<<<< HEAD
 	ret = adapter->if_ops.check_fw_status(adapter, poll_num, NULL);
+=======
+	ret = adapter->if_ops.check_fw_status(adapter, poll_num);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(adapter->dev, "FW failed to be active in time\n");
 		return -1;

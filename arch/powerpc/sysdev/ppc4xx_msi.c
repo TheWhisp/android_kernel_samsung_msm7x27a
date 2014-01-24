@@ -27,6 +27,10 @@
 #include <linux/msi.h>
 #include <linux/of_platform.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/prom.h>
 #include <asm/hw_irq.h>
 #include <asm/ppc-pci.h>

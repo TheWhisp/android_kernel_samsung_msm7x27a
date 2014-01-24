@@ -167,6 +167,10 @@ mtrr_ioctl(struct file *file, unsigned int cmd, unsigned long __arg)
 {
 	int err = 0;
 	mtrr_type type;
+<<<<<<< HEAD
+=======
+	unsigned long base;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long size;
 	struct mtrr_sentry sentry;
 	struct mtrr_gentry gentry;
@@ -267,6 +271,7 @@ mtrr_ioctl(struct file *file, unsigned int cmd, unsigned long __arg)
 #endif
 		if (gentry.regnum >= num_var_ranges)
 			return -EINVAL;
+<<<<<<< HEAD
 		mtrr_if->get(gentry.regnum, &gentry.base, &size, &type);
 
 		/* Hide entries that go above 4GB */
@@ -275,6 +280,16 @@ mtrr_ioctl(struct file *file, unsigned int cmd, unsigned long __arg)
 			gentry.base = gentry.size = gentry.type = 0;
 		else {
 			gentry.base <<= PAGE_SHIFT;
+=======
+		mtrr_if->get(gentry.regnum, &base, &size, &type);
+
+		/* Hide entries that go above 4GB */
+		if (base + size - 1 >= (1UL << (8 * sizeof(gentry.size) - PAGE_SHIFT))
+		    || size >= (1UL << (8 * sizeof(gentry.size) - PAGE_SHIFT)))
+			gentry.base = gentry.size = gentry.type = 0;
+		else {
+			gentry.base = base << PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/cm-10.0
 			gentry.size = size << PAGE_SHIFT;
 			gentry.type = type;
 		}
@@ -321,11 +336,19 @@ mtrr_ioctl(struct file *file, unsigned int cmd, unsigned long __arg)
 #endif
 		if (gentry.regnum >= num_var_ranges)
 			return -EINVAL;
+<<<<<<< HEAD
 		mtrr_if->get(gentry.regnum, &gentry.base, &size, &type);
+=======
+		mtrr_if->get(gentry.regnum, &base, &size, &type);
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Hide entries that would overflow */
 		if (size != (__typeof__(gentry.size))size)
 			gentry.base = gentry.size = gentry.type = 0;
 		else {
+<<<<<<< HEAD
+=======
+			gentry.base = base;
+>>>>>>> refs/remotes/origin/cm-10.0
 			gentry.size = size;
 			gentry.type = type;
 		}

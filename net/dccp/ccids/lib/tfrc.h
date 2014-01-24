@@ -21,7 +21,11 @@
 #include "packet_history.h"
 
 #ifdef CONFIG_IP_DCCP_TFRC_DEBUG
+<<<<<<< HEAD
 extern int tfrc_debug;
+=======
+extern bool tfrc_debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 #define tfrc_pr_debug(format, a...)	DCCP_PR_DEBUG(tfrc_debug, format, ##a)
 #else
 #define tfrc_pr_debug(format, a...)

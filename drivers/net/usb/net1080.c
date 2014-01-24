@@ -589,6 +589,7 @@ static struct usb_driver net1080_driver = {
 	.resume =	usbnet_resume,
 };
 
+<<<<<<< HEAD
 static int __init net1080_init(void)
 {
  	return usb_register(&net1080_driver);
@@ -600,6 +601,9 @@ static void __exit net1080_exit(void)
  	usb_deregister(&net1080_driver);
 }
 module_exit(net1080_exit);
+=======
+module_usb_driver(net1080_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("David Brownell");
 MODULE_DESCRIPTION("NetChip 1080 based USB Host-to-Host Links");

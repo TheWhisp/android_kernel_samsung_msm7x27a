@@ -108,8 +108,11 @@ static int e740_ac97_init(struct snd_soc_pcm_runtime *rtd)
 
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -135,10 +138,15 @@ static struct snd_soc_dai_link e740_dai[] = {
 
 static struct snd_soc_card e740 = {
 	.name = "Toshiba e740",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = e740_dai,
 	.num_links = ARRAY_SIZE(e740_dai),
 };
 
+<<<<<<< HEAD
 static struct platform_device *e740_snd_device;
 
 static int __init e740_init(void)
@@ -205,8 +213,60 @@ static void __exit e740_exit(void)
 
 module_init(e740_init);
 module_exit(e740_exit);
+=======
+static struct gpio e740_audio_gpios[] = {
+	{ GPIO_E740_MIC_ON, GPIOF_OUT_INIT_LOW, "Mic amp" },
+	{ GPIO_E740_AMP_ON, GPIOF_OUT_INIT_LOW, "Output amp" },
+	{ GPIO_E740_WM9705_nAVDD2, GPIOF_OUT_INIT_HIGH, "Audio power" },
+};
+
+static int __devinit e740_probe(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = &e740;
+	int ret;
+
+	ret = gpio_request_array(e740_audio_gpios,
+				 ARRAY_SIZE(e740_audio_gpios));
+	if (ret)
+		return ret;
+
+	card->dev = &pdev->dev;
+
+	ret = snd_soc_register_card(card);
+	if (ret) {
+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+			ret);
+		gpio_free_array(e740_audio_gpios, ARRAY_SIZE(e740_audio_gpios));
+	}
+	return ret;
+}
+
+static int __devexit e740_remove(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = platform_get_drvdata(pdev);
+
+	gpio_free_array(e740_audio_gpios, ARRAY_SIZE(e740_audio_gpios));
+	snd_soc_unregister_card(card);
+	return 0;
+}
+
+static struct platform_driver e740_driver = {
+	.driver		= {
+		.name	= "e740-audio",
+		.owner	= THIS_MODULE,
+	},
+	.probe		= e740_probe,
+	.remove		= __devexit_p(e740_remove),
+};
+
+module_platform_driver(e740_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Module information */
 MODULE_AUTHOR("Ian Molton <spyro@f2s.com>");
 MODULE_DESCRIPTION("ALSA SoC driver for e740");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:e740-audio");
+>>>>>>> refs/remotes/origin/cm-10.0

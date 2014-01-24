@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 #ifndef __ASM_SH_UNISTD_H
 #define __ASM_SH_UNISTD_H
+=======
+#ifndef __ASM_SH_UNISTD_32_H
+#define __ASM_SH_UNISTD_32_H
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Copyright (C) 1999  Niibe Yutaka
@@ -26,7 +31,11 @@
 #define __NR_mknod		 14
 #define __NR_chmod		 15
 #define __NR_lchown		 16
+<<<<<<< HEAD
 #define __NR_break		 17
+=======
+				 /* 17 was sys_break */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_oldstat		 18
 #define __NR_lseek		 19
 #define __NR_getpid		 20
@@ -40,11 +49,19 @@
 #define __NR_oldfstat		 28
 #define __NR_pause		 29
 #define __NR_utime		 30
+<<<<<<< HEAD
 #define __NR_stty		 31
 #define __NR_gtty		 32
 #define __NR_access		 33
 #define __NR_nice		 34
 #define __NR_ftime		 35
+=======
+				 /* 31 was sys_stty */
+				 /* 32 was sys_gtty */
+#define __NR_access		 33
+#define __NR_nice		 34
+				 /* 35 was sys_ftime */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_sync		 36
 #define __NR_kill		 37
 #define __NR_rename		 38
@@ -53,7 +70,11 @@
 #define __NR_dup		 41
 #define __NR_pipe		 42
 #define __NR_times		 43
+<<<<<<< HEAD
 #define __NR_prof		 44
+=======
+				 /* 44 was sys_prof */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_brk		 45
 #define __NR_setgid		 46
 #define __NR_getgid		 47
@@ -62,6 +83,7 @@
 #define __NR_getegid		 50
 #define __NR_acct		 51
 #define __NR_umount2		 52
+<<<<<<< HEAD
 #define __NR_lock		 53
 #define __NR_ioctl		 54
 #define __NR_fcntl		 55
@@ -69,6 +91,15 @@
 #define __NR_setpgid		 57
 #define __NR_ulimit		 58
 #define __NR_oldolduname	 59
+=======
+				 /* 53 was sys_lock */
+#define __NR_ioctl		 54
+#define __NR_fcntl		 55
+				 /* 56 was sys_mpx */
+#define __NR_setpgid		 57
+				 /* 58 was sys_ulimit */
+				 /* 59 was sys_olduname */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_umask		 60
 #define __NR_chroot		 61
 #define __NR_ustat		 62
@@ -91,7 +122,11 @@
 #define __NR_settimeofday	 79
 #define __NR_getgroups		 80
 #define __NR_setgroups		 81
+<<<<<<< HEAD
 #define __NR_select		 82
+=======
+				 /* 82 was sys_oldselect */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_symlink		 83
 #define __NR_oldlstat		 84
 #define __NR_readlink		 85
@@ -107,10 +142,17 @@
 #define __NR_fchown		 95
 #define __NR_getpriority	 96
 #define __NR_setpriority	 97
+<<<<<<< HEAD
 #define __NR_profil		 98
 #define __NR_statfs		 99
 #define __NR_fstatfs		100
 #define __NR_ioperm		101
+=======
+				 /* 98 was sys_profil */
+#define __NR_statfs		 99
+#define __NR_fstatfs		100
+				/* 101 was sys_ioperm */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_socketcall		102
 #define __NR_syslog		103
 #define __NR_setitimer		104
@@ -119,10 +161,17 @@
 #define __NR_lstat		107
 #define __NR_fstat		108
 #define __NR_olduname		109
+<<<<<<< HEAD
 #define __NR_iopl		110
 #define __NR_vhangup		111
 #define __NR_idle		112
 #define __NR_vm86old		113
+=======
+				/* 110 was sys_iopl */
+#define __NR_vhangup		111
+				/* 112 was sys_idle */
+				/* 113 was sys_vm86old */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_wait4		114
 #define __NR_swapoff		115
 #define __NR_sysinfo		116
@@ -136,17 +185,28 @@
 #define __NR_adjtimex		124
 #define __NR_mprotect		125
 #define __NR_sigprocmask	126
+<<<<<<< HEAD
 #define __NR_create_module	127
 #define __NR_init_module	128
 #define __NR_delete_module	129
 #define __NR_get_kernel_syms	130
+=======
+				/* 127 was sys_create_module */
+#define __NR_init_module	128
+#define __NR_delete_module	129
+				/* 130 was sys_get_kernel_syms */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_quotactl		131
 #define __NR_getpgid		132
 #define __NR_fchdir		133
 #define __NR_bdflush		134
 #define __NR_sysfs		135
 #define __NR_personality	136
+<<<<<<< HEAD
 #define __NR_afs_syscall	137 /* Syscall for Andrew File System */
+=======
+				/* 137 was sys_afs_syscall */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_setfsuid		138
 #define __NR_setfsgid		139
 #define __NR__llseek		140
@@ -175,8 +235,13 @@
 #define __NR_mremap		163
 #define __NR_setresuid		164
 #define __NR_getresuid		165
+<<<<<<< HEAD
 #define __NR_vm86		166
 #define __NR_query_module	167
+=======
+				/* 166 was sys_vm86 */
+				/* 167 was sys_query_module */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_poll		168
 #define __NR_nfsservctl		169
 #define __NR_setresgid		170
@@ -197,8 +262,13 @@
 #define __NR_capset		185
 #define __NR_sigaltstack	186
 #define __NR_sendfile		187
+<<<<<<< HEAD
 #define __NR_streams1		188	/* some people actually want it */
 #define __NR_streams2		189	/* some people actually want it */
+=======
+				/* 188 reserved for sys_getpmsg */
+				/* 189 reserved for sys_putpmsg */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_vfork		190
 #define __NR_ugetrlimit		191	/* SuS compliant getrlimit */
 #define __NR_mmap2		192
@@ -231,7 +301,12 @@
 #define __NR_madvise		219
 #define __NR_getdents64		220
 #define __NR_fcntl64		221
+<<<<<<< HEAD
 /* 223 is unused */
+=======
+				/* 222 is reserved for tux */
+				/* 223 is unused */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_gettid		224
 #define __NR_readahead		225
 #define __NR_setxattr		226
@@ -251,15 +326,24 @@
 #define __NR_futex		240
 #define __NR_sched_setaffinity	241
 #define __NR_sched_getaffinity	242
+<<<<<<< HEAD
 #define __NR_set_thread_area	243
 #define __NR_get_thread_area	244
+=======
+				/* 243 is reserved for set_thread_area */
+				/* 244 is reserved for get_thread_area */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_io_setup		245
 #define __NR_io_destroy		246
 #define __NR_io_getevents	247
 #define __NR_io_submit		248
 #define __NR_io_cancel		249
 #define __NR_fadvise64		250
+<<<<<<< HEAD
 
+=======
+				/* 251 is unused */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_exit_group		252
 #define __NR_lookup_dcookie	253
 #define __NR_epoll_create	254
@@ -281,7 +365,11 @@
 #define __NR_tgkill		270
 #define __NR_utimes		271
 #define __NR_fadvise64_64	272
+<<<<<<< HEAD
 #define __NR_vserver		273
+=======
+				/* 273 is reserved for vserver */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_mbind              274
 #define __NR_get_mempolicy      275
 #define __NR_set_mempolicy      276
@@ -301,7 +389,11 @@
 #define __NR_inotify_init	290
 #define __NR_inotify_add_watch	291
 #define __NR_inotify_rm_watch	292
+<<<<<<< HEAD
 /* 293 is unused */
+=======
+				/* 293 is unused */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define __NR_migrate_pages	294
 #define __NR_openat		295
 #define __NR_mkdirat		296
@@ -375,6 +467,7 @@
 #define __NR_syncfs		362
 #define __NR_sendmmsg		363
 #define __NR_setns		364
+<<<<<<< HEAD
 
 #define NR_syscalls 365
 
@@ -418,3 +511,11 @@
 
 #endif /* __KERNEL__ */
 #endif /* __ASM_SH_UNISTD_H */
+=======
+#define __NR_process_vm_readv	365
+#define __NR_process_vm_writev	366
+
+#define NR_syscalls 367
+
+#endif /* __ASM_SH_UNISTD_32_H */
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -15,7 +15,10 @@
 #include <linux/list.h>
 #include <linux/spinlock.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/timer.h>
 #include <linux/err.h>
 #include <linux/ctype.h>
@@ -133,6 +136,7 @@ static void led_timer_function(unsigned long data)
 	mod_timer(&led_cdev->blink_timer, jiffies + msecs_to_jiffies(delay));
 }
 
+<<<<<<< HEAD
 static void led_stop_software_blink(struct led_classdev *led_cdev)
 {
 	/* deactivate previous settings */
@@ -177,6 +181,8 @@ static void led_set_software_blink(struct led_classdev *led_cdev,
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * led_classdev_suspend - suspend an led_classdev.
  * @led_cdev: the led_classdev to suspend.
@@ -285,6 +291,7 @@ void led_classdev_unregister(struct led_classdev *led_cdev)
 }
 EXPORT_SYMBOL_GPL(led_classdev_unregister);
 
+<<<<<<< HEAD
 void led_blink_set(struct led_classdev *led_cdev,
 		   unsigned long *delay_on,
 		   unsigned long *delay_off)
@@ -311,6 +318,8 @@ void led_brightness_set(struct led_classdev *led_cdev,
 }
 EXPORT_SYMBOL(led_brightness_set);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init leds_init(void)
 {
 	leds_class = class_create(THIS_MODULE, "leds");

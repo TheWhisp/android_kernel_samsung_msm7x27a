@@ -8,6 +8,11 @@
 #ifndef __ASM_BARRIER_H
 #define __ASM_BARRIER_H
 
+<<<<<<< HEAD
+=======
+#include <asm/addrspace.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * read_barrier_depends - Flush all pending reads that subsequents reads
  * depend on.

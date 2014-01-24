@@ -22,12 +22,19 @@
  */
 
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <scsi/scsi_dh.h>
 #include "../scsi_priv.h"
 
 static DEFINE_SPINLOCK(list_lock);
 static LIST_HEAD(scsi_dh_list);
+<<<<<<< HEAD
 static int scsi_dh_list_idx = 1;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct scsi_device_handler *get_device_handler(const char *name)
 {
@@ -44,6 +51,7 @@ static struct scsi_device_handler *get_device_handler(const char *name)
 	return found;
 }
 
+<<<<<<< HEAD
 static struct scsi_device_handler *get_device_handler_by_idx(int idx)
 {
 	struct scsi_device_handler *tmp, *found = NULL;
@@ -52,11 +60,33 @@ static struct scsi_device_handler *get_device_handler_by_idx(int idx)
 	list_for_each_entry(tmp, &scsi_dh_list, list) {
 		if (tmp->idx == idx) {
 			found = tmp;
+=======
+/*
+ * device_handler_match_function - Match a device handler to a device
+ * @sdev - SCSI device to be tested
+ *
+ * Tests @sdev against the match function of all registered device_handler.
+ * Returns the found device handler or NULL if not found.
+ */
+static struct scsi_device_handler *
+device_handler_match_function(struct scsi_device *sdev)
+{
+	struct scsi_device_handler *tmp_dh, *found_dh = NULL;
+
+	spin_lock(&list_lock);
+	list_for_each_entry(tmp_dh, &scsi_dh_list, list) {
+		if (tmp_dh->match && tmp_dh->match(sdev)) {
+			found_dh = tmp_dh;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 	}
 	spin_unlock(&list_lock);
+<<<<<<< HEAD
 	return found;
+=======
+	return found_dh;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -72,12 +102,18 @@ static struct scsi_device_handler *
 device_handler_match(struct scsi_device_handler *scsi_dh,
 		     struct scsi_device *sdev)
 {
+<<<<<<< HEAD
 	struct scsi_device_handler *found_dh = NULL;
 	int idx;
 
 	idx = scsi_get_device_flags_keyed(sdev, sdev->vendor, sdev->model,
 					  SCSI_DEVINFO_DH);
 	found_dh = get_device_handler_by_idx(idx);
+=======
+	struct scsi_device_handler *found_dh;
+
+	found_dh = device_handler_match_function(sdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (scsi_dh && found_dh != scsi_dh)
 		found_dh = NULL;
@@ -151,6 +187,13 @@ store_dh_state(struct device *dev, struct device_attribute *attr,
 	struct scsi_device_handler *scsi_dh;
 	int err = -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (sdev->sdev_state == SDEV_CANCEL ||
+	    sdev->sdev_state == SDEV_DEL)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!sdev->scsi_dh_data) {
 		/*
 		 * Attach to a device handler
@@ -317,12 +360,16 @@ static int scsi_dh_notifier_remove(struct device *dev, void *data)
  */
 int scsi_register_device_handler(struct scsi_device_handler *scsi_dh)
 {
+<<<<<<< HEAD
 	int i;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (get_device_handler(scsi_dh->name))
 		return -EBUSY;
 
 	spin_lock(&list_lock);
+<<<<<<< HEAD
 	scsi_dh->idx = scsi_dh_list_idx++;
 	list_add(&scsi_dh->list, &scsi_dh_list);
 	spin_unlock(&list_lock);
@@ -336,6 +383,11 @@ int scsi_register_device_handler(struct scsi_device_handler *scsi_dh)
 					SCSI_DEVINFO_DH);
 	}
 
+=======
+	list_add(&scsi_dh->list, &scsi_dh_list);
+	spin_unlock(&list_lock);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	bus_for_each_dev(&scsi_bus_type, NULL, scsi_dh, scsi_dh_notifier_add);
 	printk(KERN_INFO "%s: device handler registered\n", scsi_dh->name);
 
@@ -352,7 +404,10 @@ EXPORT_SYMBOL_GPL(scsi_register_device_handler);
  */
 int scsi_unregister_device_handler(struct scsi_device_handler *scsi_dh)
 {
+<<<<<<< HEAD
 	int i;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!get_device_handler(scsi_dh->name))
 		return -ENODEV;
@@ -360,12 +415,15 @@ int scsi_unregister_device_handler(struct scsi_device_handler *scsi_dh)
 	bus_for_each_dev(&scsi_bus_type, NULL, scsi_dh,
 			 scsi_dh_notifier_remove);
 
+<<<<<<< HEAD
 	for (i = 0; scsi_dh->devlist[i].vendor; i++) {
 		scsi_dev_info_list_del_keyed(scsi_dh->devlist[i].vendor,
 					     scsi_dh->devlist[i].model,
 					     SCSI_DEVINFO_DH);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock(&list_lock);
 	list_del(&scsi_dh->list);
 	spin_unlock(&list_lock);
@@ -476,7 +534,11 @@ int scsi_dh_handler_exist(const char *name)
 EXPORT_SYMBOL_GPL(scsi_dh_handler_exist);
 
 /*
+<<<<<<< HEAD
  * scsi_dh_handler_attach - Attach device handler
+=======
+ * scsi_dh_attach - Attach device handler
+>>>>>>> refs/remotes/origin/cm-10.0
  * @sdev - sdev the handler should be attached to
  * @name - name of the handler to attach
  */
@@ -506,7 +568,11 @@ int scsi_dh_attach(struct request_queue *q, const char *name)
 EXPORT_SYMBOL_GPL(scsi_dh_attach);
 
 /*
+<<<<<<< HEAD
  * scsi_dh_handler_detach - Detach device handler
+=======
+ * scsi_dh_detach - Detach device handler
+>>>>>>> refs/remotes/origin/cm-10.0
  * @sdev - sdev the handler should be detached from
  *
  * This function will detach the device handler only
@@ -544,10 +610,13 @@ static int __init scsi_dh_init(void)
 {
 	int r;
 
+<<<<<<< HEAD
 	r = scsi_dev_info_add_list(SCSI_DEVINFO_DH, "SCSI Device Handler");
 	if (r)
 		return r;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	r = bus_register_notifier(&scsi_bus_type, &scsi_dh_nb);
 
 	if (!r)
@@ -562,7 +631,10 @@ static void __exit scsi_dh_exit(void)
 	bus_for_each_dev(&scsi_bus_type, NULL, NULL,
 			 scsi_dh_sysfs_attr_remove);
 	bus_unregister_notifier(&scsi_bus_type, &scsi_dh_nb);
+<<<<<<< HEAD
 	scsi_dev_info_remove_list(SCSI_DEVINFO_DH);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 module_init(scsi_dh_init);

@@ -17,7 +17,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
+<<<<<<< HEAD
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.		     */
+=======
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301 USA.							     */
+>>>>>>> refs/remotes/origin/cm-10.0
 /* ------------------------------------------------------------------------- */
 
 /* With some changes from Kyösti Mälkki <kmalkki@cc.hut.fi> and
@@ -28,12 +33,19 @@
 
 #include <linux/types.h>
 #ifdef __KERNEL__
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mod_devicetable.h>
 #include <linux/device.h>	/* for struct device */
 #include <linux/sched.h>	/* for completion */
 #include <linux/mutex.h>
 #include <linux/of.h>		/* for struct device_node */
+<<<<<<< HEAD
+=======
+#include <linux/swab.h>		/* for swab16 */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern struct bus_type i2c_bus_type;
 extern struct device_type i2c_adapter_type;
@@ -48,6 +60,11 @@ struct i2c_driver;
 union i2c_smbus_data;
 struct i2c_board_info;
 
+<<<<<<< HEAD
+=======
+struct module;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 /*
  * The master routines are the ones normally used to transmit data to devices
@@ -88,6 +105,25 @@ extern s32 i2c_smbus_read_word_data(const struct i2c_client *client,
 				    u8 command);
 extern s32 i2c_smbus_write_word_data(const struct i2c_client *client,
 				     u8 command, u16 value);
+<<<<<<< HEAD
+=======
+
+static inline s32
+i2c_smbus_read_word_swapped(const struct i2c_client *client, u8 command)
+{
+	s32 value = i2c_smbus_read_word_data(client, command);
+
+	return (value < 0) ? value : swab16(value);
+}
+
+static inline s32
+i2c_smbus_write_word_swapped(const struct i2c_client *client,
+			     u8 command, u16 value)
+{
+	return i2c_smbus_write_word_data(client, command, swab16(value));
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Returns the number of read bytes */
 extern s32 i2c_smbus_read_block_data(const struct i2c_client *client,
 				     u8 command, u8 *values);
@@ -370,6 +406,10 @@ struct i2c_adapter {
 
 	struct mutex userspace_clients_lock;
 	struct list_head userspace_clients;
+<<<<<<< HEAD
+=======
+	int (*recover_bus)(struct i2c_adapter *);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #define to_i2c_adapter(d) container_of(d, struct i2c_adapter, dev)
 
@@ -414,9 +454,12 @@ void i2c_unlock_adapter(struct i2c_adapter *);
 /* Internal numbers to terminate lists */
 #define I2C_CLIENT_END		0xfffeU
 
+<<<<<<< HEAD
 /* The numbers to use to set I2C bus address */
 #define ANY_I2C_BUS		0xffff
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Construct an I2C_CLIENT_END-terminated array of i2c addresses */
 #define I2C_ADDRS(addr, addrs...) \
 	((const unsigned short []){ addr, ## addrs, I2C_CLIENT_END })
@@ -434,10 +477,16 @@ extern int i2c_add_numbered_adapter(struct i2c_adapter *);
 extern int i2c_register_driver(struct module *, struct i2c_driver *);
 extern void i2c_del_driver(struct i2c_driver *);
 
+<<<<<<< HEAD
 static inline int i2c_add_driver(struct i2c_driver *driver)
 {
 	return i2c_register_driver(THIS_MODULE, driver);
 }
+=======
+/* use a define to avoid include chaining to get THIS_MODULE */
+#define i2c_add_driver(driver) \
+	i2c_register_driver(THIS_MODULE, driver)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern struct i2c_client *i2c_use_client(struct i2c_client *client);
 extern void i2c_release_client(struct i2c_client *client);
@@ -468,6 +517,22 @@ static inline int i2c_adapter_id(struct i2c_adapter *adap)
 {
 	return adap->nr;
 }
+<<<<<<< HEAD
+=======
+
+/**
+ * module_i2c_driver() - Helper macro for registering a I2C driver
+ * @__i2c_driver: i2c_driver struct
+ *
+ * Helper macro for I2C drivers which do not do anything special in module
+ * init/exit. This eliminates a lot of boilerplate. Each module may only
+ * use this macro once, and calling it replaces module_init() and module_exit()
+ */
+#define module_i2c_driver(__i2c_driver) \
+	module_driver(__i2c_driver, i2c_add_driver, \
+			i2c_del_driver)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* I2C */
 #endif /* __KERNEL__ */
 

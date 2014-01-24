@@ -44,6 +44,7 @@ Configuration Options:
 #define PCI_DEVICE_ID_PCI7230 0x7230
 
 static DEFINE_PCI_DEVICE_TABLE(adl_pci7230_pci_table) = {
+<<<<<<< HEAD
 	{
 		PCI_VENDOR_ID_ADLINK,
 		PCI_DEVICE_ID_PCI7230,
@@ -53,6 +54,9 @@ static DEFINE_PCI_DEVICE_TABLE(adl_pci7230_pci_table) = {
 		0,
 		0
 	},
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_ADLINK, PCI_DEVICE_ID_PCI7230) },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{0}
 };
 

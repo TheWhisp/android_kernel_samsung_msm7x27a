@@ -38,8 +38,14 @@ static const char *gfs2_acl_name(int type)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static struct posix_acl *gfs2_acl_get(struct gfs2_inode *ip, int type)
 {
+=======
+struct posix_acl *gfs2_get_acl(struct inode *inode, int type)
+{
+	struct gfs2_inode *ip = GFS2_I(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct posix_acl *acl;
 	const char *name;
 	char *data;
@@ -67,6 +73,7 @@ static struct posix_acl *gfs2_acl_get(struct gfs2_inode *ip, int type)
 	return acl;
 }
 
+<<<<<<< HEAD
 /**
  * gfs2_check_acl - Check an ACL to see if we're allowed to do something
  * @inode: the file we want to do something to
@@ -100,6 +107,9 @@ int gfs2_check_acl(struct inode *inode, int mask, unsigned int flags)
 }
 
 static int gfs2_set_mode(struct inode *inode, mode_t mode)
+=======
+static int gfs2_set_mode(struct inode *inode, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int error = 0;
 
@@ -109,7 +119,11 @@ static int gfs2_set_mode(struct inode *inode, mode_t mode)
 		iattr.ia_valid = ATTR_MODE;
 		iattr.ia_mode = mode;
 
+<<<<<<< HEAD
 		error = gfs2_setattr_simple(GFS2_I(inode), &iattr);
+=======
+		error = gfs2_setattr_simple(inode, &iattr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return error;
@@ -143,8 +157,13 @@ out:
 int gfs2_acl_create(struct gfs2_inode *dip, struct inode *inode)
 {
 	struct gfs2_sbd *sdp = GFS2_SB(&dip->i_inode);
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
 	mode_t mode = inode->i_mode;
+=======
+	struct posix_acl *acl;
+	umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int error = 0;
 
 	if (!sdp->sd_args.ar_posix_acl)
@@ -152,7 +171,11 @@ int gfs2_acl_create(struct gfs2_inode *dip, struct inode *inode)
 	if (S_ISLNK(inode->i_mode))
 		return 0;
 
+<<<<<<< HEAD
 	acl = gfs2_acl_get(dip, ACL_TYPE_DEFAULT);
+=======
+	acl = gfs2_get_acl(&dip->i_inode, ACL_TYPE_DEFAULT);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(acl))
 		return PTR_ERR(acl);
 	if (!acl) {
@@ -168,6 +191,7 @@ int gfs2_acl_create(struct gfs2_inode *dip, struct inode *inode)
 			goto out;
 	}
 
+<<<<<<< HEAD
 	clone = posix_acl_clone(acl, GFP_NOFS);
 	error = -ENOMEM;
 	if (!clone)
@@ -178,6 +202,12 @@ int gfs2_acl_create(struct gfs2_inode *dip, struct inode *inode)
 	error = posix_acl_create_masq(acl, &mode);
 	if (error < 0)
 		goto out;
+=======
+	error = posix_acl_create(&acl, GFP_NOFS, &mode);
+	if (error < 0)
+		return error;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error == 0)
 		goto munge;
 
@@ -193,11 +223,17 @@ out:
 
 int gfs2_acl_chmod(struct gfs2_inode *ip, struct iattr *attr)
 {
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
+=======
+	struct inode *inode = &ip->i_inode;
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/cm-10.0
 	char *data;
 	unsigned int len;
 	int error;
 
+<<<<<<< HEAD
 	acl = gfs2_acl_get(ip, ACL_TYPE_ACCESS);
 	if (IS_ERR(acl))
 		return PTR_ERR(acl);
@@ -223,6 +259,27 @@ int gfs2_acl_chmod(struct gfs2_inode *ip, struct iattr *attr)
 		kfree(data);
 		set_cached_acl(&ip->i_inode, ACL_TYPE_ACCESS, acl);
 	}
+=======
+	acl = gfs2_get_acl(&ip->i_inode, ACL_TYPE_ACCESS);
+	if (IS_ERR(acl))
+		return PTR_ERR(acl);
+	if (!acl)
+		return gfs2_setattr_simple(inode, attr);
+
+	error = posix_acl_chmod(&acl, GFP_NOFS, attr->ia_mode);
+	if (error)
+		return error;
+
+	len = posix_acl_to_xattr(acl, NULL, 0);
+	data = kmalloc(len, GFP_NOFS);
+	error = -ENOMEM;
+	if (data == NULL)
+		goto out;
+	posix_acl_to_xattr(acl, data, len);
+	error = gfs2_xattr_acl_chmod(ip, attr, data);
+	kfree(data);
+	set_cached_acl(&ip->i_inode, ACL_TYPE_ACCESS, acl);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	posix_acl_release(acl);
@@ -254,7 +311,11 @@ static int gfs2_xattr_system_get(struct dentry *dentry, const char *name,
 	if (type < 0)
 		return type;
 
+<<<<<<< HEAD
 	acl = gfs2_acl_get(GFS2_I(inode), type);
+=======
+	acl = gfs2_get_acl(inode, type);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (IS_ERR(acl))
 		return PTR_ERR(acl);
 	if (acl == NULL)
@@ -315,7 +376,11 @@ static int gfs2_xattr_system_set(struct dentry *dentry, const char *name,
 		goto out_release;
 
 	if (type == ACL_TYPE_ACCESS) {
+<<<<<<< HEAD
 		mode_t mode = inode->i_mode;
+=======
+		umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 		error = posix_acl_equiv_mode(acl, &mode);
 
 		if (error <= 0) {

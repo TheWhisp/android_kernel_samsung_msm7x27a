@@ -20,8 +20,14 @@
 #include <linux/types.h>
 #include <asm/byteorder.h>
 
+<<<<<<< HEAD
 #ifdef  __KERNEL__
 #include <linux/if_ether.h>
+=======
+#include <linux/socket.h>
+#include <linux/if_ether.h>
+#ifdef  __KERNEL__
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/if.h>
 #include <linux/netdevice.h>
 #include <linux/ppp_channel.h>
@@ -67,7 +73,11 @@ struct pptp_addr {
 #define PX_MAX_PROTO   5
 
 struct sockaddr_pppox {
+<<<<<<< HEAD
 	sa_family_t     sa_family;            /* address family, AF_PPPOX */
+=======
+	__kernel_sa_family_t sa_family;       /* address family, AF_PPPOX */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int    sa_protocol;          /* protocol identifier */
 	union {
 		struct pppoe_addr  pppoe;
@@ -81,7 +91,11 @@ struct sockaddr_pppox {
  * type instead.
  */
 struct sockaddr_pppol2tp {
+<<<<<<< HEAD
 	sa_family_t     sa_family;      /* address family, AF_PPPOX */
+=======
+	__kernel_sa_family_t sa_family; /* address family, AF_PPPOX */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int    sa_protocol;    /* protocol identifier */
 	struct pppol2tp_addr pppol2tp;
 } __attribute__((packed));
@@ -90,7 +104,11 @@ struct sockaddr_pppol2tp {
  * bits. So we need a different sockaddr structure.
  */
 struct sockaddr_pppol2tpv3 {
+<<<<<<< HEAD
 	sa_family_t     sa_family;      /* address family, AF_PPPOX */
+=======
+	__kernel_sa_family_t sa_family; /* address family, AF_PPPOX */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int    sa_protocol;    /* protocol identifier */
 	struct pppol2tpv3_addr pppol2tp;
 } __attribute__((packed));

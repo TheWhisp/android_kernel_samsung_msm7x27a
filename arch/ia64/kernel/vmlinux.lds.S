@@ -1,7 +1,10 @@
 
 #include <asm/cache.h>
 #include <asm/ptrace.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgtable.h>
 
 #include <asm-generic/vmlinux.lds.h>

@@ -12,6 +12,10 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/list.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/net_namespace.h>
 #include <net/sock.h>
 #include <net/fib_rules.h>
@@ -475,8 +479,16 @@ static int fib_nl_delrule(struct sk_buff *skb, struct nlmsghdr* nlh, void *arg)
 
 		list_del_rcu(&rule->list);
 
+<<<<<<< HEAD
 		if (rule->action == FR_ACT_GOTO)
 			ops->nr_goto_rules--;
+=======
+		if (rule->action == FR_ACT_GOTO) {
+			ops->nr_goto_rules--;
+			if (rtnl_dereference(rule->ctarget) == NULL)
+				ops->unresolved_rules--;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
 		 * Check if this rule is a target to any of them. If so,
@@ -487,7 +499,11 @@ static int fib_nl_delrule(struct sk_buff *skb, struct nlmsghdr* nlh, void *arg)
 		if (ops->nr_goto_rules > 0) {
 			list_for_each_entry(tmp, &ops->rules_list, list) {
 				if (rtnl_dereference(tmp->ctarget) == rule) {
+<<<<<<< HEAD
 					rcu_assign_pointer(tmp->ctarget, NULL);
+=======
+					RCU_INIT_POINTER(tmp->ctarget, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 					ops->unresolved_rules++;
 				}
 			}
@@ -545,7 +561,11 @@ static int fib_nl_fill_rule(struct sk_buff *skb, struct fib_rule *rule,
 	frh->flags = rule->flags;
 
 	if (rule->action == FR_ACT_GOTO &&
+<<<<<<< HEAD
 	    rcu_dereference_raw(rule->ctarget) == NULL)
+=======
+	    rcu_access_pointer(rule->ctarget) == NULL)
+>>>>>>> refs/remotes/origin/cm-10.0
 		frh->flags |= FIB_RULE_UNRESOLVED;
 
 	if (rule->iifname[0]) {

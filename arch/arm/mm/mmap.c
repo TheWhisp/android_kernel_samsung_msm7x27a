@@ -9,8 +9,12 @@
 #include <linux/io.h>
 #include <linux/personality.h>
 #include <linux/random.h>
+<<<<<<< HEAD
 #include <asm/cputype.h>
 #include <asm/system.h>
+=======
+#include <asm/cachetype.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define COLOUR_ALIGN(addr,pgoff)		\
 	((((addr)+SHMLBA-1)&~(SHMLBA-1)) +	\
@@ -32,6 +36,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
 	unsigned long start_addr;
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_V6) || defined(CONFIG_CPU_V6K)
 	unsigned int cache_type;
 	int do_align = 0, aliasing = 0;
@@ -51,6 +56,17 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
 #define do_align 0
 #define aliasing 0
 #endif
+=======
+	int do_align = 0;
+	int aliasing = cache_is_vipt_aliasing();
+
+	/*
+	 * We only need to do colour alignment if either the I or D
+	 * caches alias.
+	 */
+	if (aliasing)
+		do_align = filp || (flags & MAP_SHARED);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * We enforce the MAP_FIXED case.
@@ -79,7 +95,11 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
 	if (len > mm->cached_hole_size) {
 	        start_addr = addr = mm->free_area_cache;
 	} else {
+<<<<<<< HEAD
 	        start_addr = addr = TASK_UNMAPPED_BASE;
+=======
+		start_addr = addr = TASK_UNMAPPED_BASE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	        mm->cached_hole_size = 0;
 	}
 	/* 8 bits of randomness in 20 address space bits */

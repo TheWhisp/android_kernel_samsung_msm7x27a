@@ -20,6 +20,11 @@
 #ifndef _LINUX_HWMON_SYSFS_H
 #define _LINUX_HWMON_SYSFS_H
 
+<<<<<<< HEAD
+=======
+#include <linux/device.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct sensor_device_attribute{
 	struct device_attribute dev_attr;
 	int index;

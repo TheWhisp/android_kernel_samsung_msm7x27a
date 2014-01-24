@@ -12,6 +12,7 @@
 int		init_socket_xprt(void);
 void		cleanup_socket_xprt(void);
 
+<<<<<<< HEAD
 /*
  * RPC slot table sizes for UDP, TCP transports
  */
@@ -24,6 +25,8 @@ extern unsigned int xprt_tcp_slot_table_entries;
 extern unsigned int xprt_min_resvport;
 extern unsigned int xprt_max_resvport;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define RPC_MIN_RESVPORT	(1U)
 #define RPC_MAX_RESVPORT	(65535U)
 #define RPC_DEF_MIN_RESVPORT	(665U)

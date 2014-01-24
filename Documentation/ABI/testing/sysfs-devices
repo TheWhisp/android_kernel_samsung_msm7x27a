@@ -1,6 +1,10 @@
 What:		/sys/devices
 Date:		February 2006
+<<<<<<< HEAD
 Contact:	Greg Kroah-Hartman <gregkh@suse.de>
+=======
+Contact:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>>>> refs/remotes/origin/cm-10.0
 Description:
 		The /sys/devices tree contains a snapshot of the
 		internal state of the kernel device tree.  Devices will

@@ -1,10 +1,18 @@
 #include <linux/capability.h>
 #include <linux/blkdev.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/gfp.h>
 #include <linux/blkpg.h>
 #include <linux/hdreg.h>
 #include <linux/backing-dev.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
+=======
+#include <linux/fs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/blktrace_api.h>
 #include <asm/uaccess.h>
 
@@ -101,7 +109,11 @@ static int blkdev_reread_part(struct block_device *bdev)
 	struct gendisk *disk = bdev->bd_disk;
 	int res;
 
+<<<<<<< HEAD
 	if (!disk_partitionable(disk) || bdev != bdev->bd_contains)
+=======
+	if (!disk_part_scan_enabled(disk) || bdev != bdev->bd_contains)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	if (!capable(CAP_SYS_ADMIN))
 		return -EACCES;
@@ -131,6 +143,14 @@ static int blk_ioctl_discard(struct block_device *bdev, uint64_t start,
 	return blkdev_issue_discard(bdev, start, len, GFP_KERNEL, flags);
 }
 
+<<<<<<< HEAD
+=======
+static int blk_ioctl_sanitize(struct block_device *bdev)
+{
+	return blkdev_issue_sanitize(bdev, GFP_KERNEL);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int put_ushort(unsigned long arg, unsigned short val)
 {
 	return put_user(val, (unsigned short __user *)arg);
@@ -179,6 +199,29 @@ int __blkdev_driver_ioctl(struct block_device *bdev, fmode_t mode,
 EXPORT_SYMBOL_GPL(__blkdev_driver_ioctl);
 
 /*
+<<<<<<< HEAD
+=======
+ * Is it an unrecognized ioctl? The correct returns are either
+ * ENOTTY (final) or ENOIOCTLCMD ("I don't know this one, try a
+ * fallback"). ENOIOCTLCMD gets turned into ENOTTY by the ioctl
+ * code before returning.
+ *
+ * Confused drivers sometimes return EINVAL, which is wrong. It
+ * means "I understood the ioctl command, but the parameters to
+ * it were wrong".
+ *
+ * We should aim to just fix the broken drivers, the EINVAL case
+ * should go away.
+ */
+static inline int is_unrecognized_ioctl(int ret)
+{
+	return	ret == -EINVAL ||
+		ret == -ENOTTY ||
+		ret == -ENOIOCTLCMD;
+}
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * always keep this in sync with compat_blkdev_ioctl()
  */
 int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
@@ -195,8 +238,12 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 			return -EACCES;
 
 		ret = __blkdev_driver_ioctl(bdev, mode, cmd, arg);
+<<<<<<< HEAD
 		/* -EINVAL to handle old uncorrected drivers */
 		if (ret != -EINVAL && ret != -ENOTTY)
+=======
+		if (!is_unrecognized_ioctl(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
 			return ret;
 
 		fsync_bdev(bdev);
@@ -205,8 +252,12 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 
 	case BLKROSET:
 		ret = __blkdev_driver_ioctl(bdev, mode, cmd, arg);
+<<<<<<< HEAD
 		/* -EINVAL to handle old uncorrected drivers */
 		if (ret != -EINVAL && ret != -ENOTTY)
+=======
+		if (!is_unrecognized_ioctl(ret))
+>>>>>>> refs/remotes/origin/cm-10.0
 			return ret;
 		if (!capable(CAP_SYS_ADMIN))
 			return -EACCES;
@@ -215,6 +266,13 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 		set_device_ro(bdev, n);
 		return 0;
 
+<<<<<<< HEAD
+=======
+	case BLKSANITIZE:
+		ret = blk_ioctl_sanitize(bdev);
+		break;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	case BLKDISCARD:
 	case BLKSECDISCARD: {
 		uint64_t range[2];
@@ -277,6 +335,11 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 		return put_uint(arg, bdev_discard_zeroes_data(bdev));
 	case BLKSECTGET:
 		return put_ushort(arg, queue_max_sectors(bdev_get_queue(bdev)));
+<<<<<<< HEAD
+=======
+	case BLKROTATIONAL:
+		return put_ushort(arg, !blk_queue_nonrot(bdev_get_queue(bdev)));
+>>>>>>> refs/remotes/origin/cm-10.0
 	case BLKRASET:
 	case BLKFRASET:
 		if(!capable(CAP_SYS_ADMIN))

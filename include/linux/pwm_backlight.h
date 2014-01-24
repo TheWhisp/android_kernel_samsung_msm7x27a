@@ -14,6 +14,10 @@ struct platform_pwm_backlight_data {
 	unsigned int pwm_period_ns;
 	int (*init)(struct device *dev);
 	int (*notify)(struct device *dev, int brightness);
+<<<<<<< HEAD
+=======
+	void (*notify_after)(struct device *dev, int brightness);
+>>>>>>> refs/remotes/origin/cm-10.0
 	void (*exit)(struct device *dev);
 	int (*check_fb)(struct device *dev, struct fb_info *info);
 };

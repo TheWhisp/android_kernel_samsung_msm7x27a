@@ -51,7 +51,11 @@
 
 #include "53c700.h"
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Thomas Bogendörfer");
+=======
+MODULE_AUTHOR("Thomas BogendÃ¶rfer");
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("SNI RM 53c710 SCSI Driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:snirm_53c710");

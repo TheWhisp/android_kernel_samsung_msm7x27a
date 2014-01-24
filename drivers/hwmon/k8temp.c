@@ -46,7 +46,11 @@ struct k8temp_data {
 	unsigned long last_updated;	/* in jiffies */
 
 	/* registers values */
+<<<<<<< HEAD
 	u8 sensorsp;		/* sensor presence bits - SEL_CORE & SEL_PLACE */
+=======
+	u8 sensorsp;		/* sensor presence bits - SEL_CORE, SEL_PLACE */
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 temp[2][2];		/* core, place */
 	u8 swap_core_select;    /* meaning of SEL_CORE is inverted */
 	u32 temp_offset;
@@ -63,7 +67,11 @@ static struct k8temp_data *k8temp_update_device(struct device *dev)
 	if (!data->valid
 	    || time_after(jiffies, data->last_updated + HZ)) {
 		pci_read_config_byte(pdev, REG_TEMP, &tmp);
+<<<<<<< HEAD
 		tmp &= ~(SEL_PLACE | SEL_CORE);		/* Select sensor 0, core0 */
+=======
+		tmp &= ~(SEL_PLACE | SEL_CORE);	/* Select sensor 0, core0 */
+>>>>>>> refs/remotes/origin/cm-10.0
 		pci_write_config_byte(pdev, REG_TEMP, tmp);
 		pci_read_config_dword(pdev, REG_TEMP, &data->temp[0][0]);
 
@@ -82,7 +90,11 @@ static struct k8temp_data *k8temp_update_device(struct device *dev)
 					      &data->temp[1][0]);
 
 			if (data->sensorsp & SEL_PLACE) {
+<<<<<<< HEAD
 				tmp |= SEL_PLACE;	/* Select sensor 1, core1 */
+=======
+				tmp |= SEL_PLACE; /* Select sensor 1, core1 */
+>>>>>>> refs/remotes/origin/cm-10.0
 				pci_write_config_byte(pdev, REG_TEMP, tmp);
 				pci_read_config_dword(pdev, REG_TEMP,
 						      &data->temp[1][1]);
@@ -136,7 +148,11 @@ static SENSOR_DEVICE_ATTR_2(temp3_input, S_IRUGO, show_temp, NULL, 1, 0);
 static SENSOR_DEVICE_ATTR_2(temp4_input, S_IRUGO, show_temp, NULL, 1, 1);
 static DEVICE_ATTR(name, S_IRUGO, show_name, NULL);
 
+<<<<<<< HEAD
 static const struct pci_device_id k8temp_ids[] = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(k8temp_ids) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_K8_NB_MISC) },
 	{ 0 },
 };
@@ -183,7 +199,12 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 	u8 model, stepping;
 	struct k8temp_data *data;
 
+<<<<<<< HEAD
 	if (!(data = kzalloc(sizeof(struct k8temp_data), GFP_KERNEL))) {
+=======
+	data = kzalloc(sizeof(struct k8temp_data), GFP_KERNEL);
+	if (!data) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = -ENOMEM;
 		goto exit;
 	}
@@ -217,7 +238,11 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 		data->temp_offset = 21000;
 
 	pci_read_config_byte(pdev, REG_TEMP, &scfg);
+<<<<<<< HEAD
 	scfg &= ~(SEL_PLACE | SEL_CORE);		/* Select sensor 0, core0 */
+=======
+	scfg &= ~(SEL_PLACE | SEL_CORE);	/* Select sensor 0, core0 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	pci_write_config_byte(pdev, REG_TEMP, scfg);
 	pci_read_config_byte(pdev, REG_TEMP, &scfg);
 
@@ -238,7 +263,11 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 		pci_write_config_byte(pdev, REG_TEMP, scfg);
 		pci_read_config_dword(pdev, REG_TEMP, &temp);
 		scfg |= SEL_CORE;	/* prepare for next selection */
+<<<<<<< HEAD
 		if (!((temp >> 16) & 0xff))	/* if temp is 0 -49C is not likely */
+=======
+		if (!((temp >> 16) & 0xff)) /* if temp is 0 -49C is unlikely */
+>>>>>>> refs/remotes/origin/cm-10.0
 			data->sensorsp &= ~SEL_PLACE;
 	}
 
@@ -246,7 +275,11 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 		scfg &= ~SEL_PLACE;	/* Select sensor 0, core1 */
 		pci_write_config_byte(pdev, REG_TEMP, scfg);
 		pci_read_config_dword(pdev, REG_TEMP, &temp);
+<<<<<<< HEAD
 		if (!((temp >> 16) & 0xff))	/* if temp is 0 -49C is not likely */
+=======
+		if (!((temp >> 16) & 0xff)) /* if temp is 0 -49C is unlikely */
+>>>>>>> refs/remotes/origin/cm-10.0
 			data->sensorsp &= ~SEL_CORE;
 	}
 

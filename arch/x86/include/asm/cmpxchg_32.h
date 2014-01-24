@@ -1,13 +1,17 @@
 #ifndef _ASM_X86_CMPXCHG_32_H
 #define _ASM_X86_CMPXCHG_32_H
 
+<<<<<<< HEAD
 #include <linux/bitops.h> /* for LOCK_PREFIX */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Note: if you use set64_bit(), __cmpxchg64(), or their variants, you
  *       you need to test for the feature in boot_cpu_data.
  */
 
+<<<<<<< HEAD
 extern void __xchg_wrong_size(void);
 
 /*
@@ -56,6 +60,8 @@ extern void __xchg_wrong_size(void);
 #define xchg(ptr, v)							\
 	__xchg((v), (ptr), sizeof(*ptr))
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * CMPXCHG8B only writes to the target if we had the previous
  * value in registers, otherwise it acts as a read and gives us the
@@ -84,6 +90,7 @@ static inline void set_64bit(volatile u64 *ptr, u64 value)
 		     : "memory");
 }
 
+<<<<<<< HEAD
 extern void __cmpxchg_wrong_size(void);
 
 /*
@@ -150,6 +157,10 @@ extern void __cmpxchg_wrong_size(void);
 
 #define cmpxchg_local(ptr, old, new)					\
 	__cmpxchg_local((ptr), (old), (new), sizeof(*ptr))
+=======
+#ifdef CONFIG_X86_CMPXCHG
+#define __HAVE_ARCH_CMPXCHG 1
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_X86_CMPXCHG64
@@ -280,4 +291,9 @@ static inline unsigned long cmpxchg_386(volatile void *ptr, unsigned long old,
 
 #endif
 
+<<<<<<< HEAD
+=======
+#define system_has_cmpxchg_double() cpu_has_cx8
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_X86_CMPXCHG_32_H */

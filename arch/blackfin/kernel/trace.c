@@ -21,6 +21,10 @@
 #include <asm/fixed_code.h>
 #include <asm/traps.h>
 #include <asm/irq_handler.h>
+<<<<<<< HEAD
+=======
+#include <asm/pda.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void decode_address(char *buf, unsigned long address)
 {

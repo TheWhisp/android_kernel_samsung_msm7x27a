@@ -437,6 +437,7 @@ static struct usb_driver sevseg_driver = {
 	.supports_autosuspend = 1,
 };
 
+<<<<<<< HEAD
 static int __init usb_sevseg_init(void)
 {
 	int rc = 0;
@@ -454,6 +455,9 @@ static void __exit usb_sevseg_exit(void)
 
 module_init(usb_sevseg_init);
 module_exit(usb_sevseg_exit);
+=======
+module_usb_driver(sevseg_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

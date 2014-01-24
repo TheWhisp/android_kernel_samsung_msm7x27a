@@ -1602,6 +1602,7 @@ static int ntty_install(struct tty_driver *driver, struct tty_struct *tty)
 	int ret;
 	if (!port || !dc || dc->state != NOZOMI_STATE_READY)
 		return -ENODEV;
+<<<<<<< HEAD
 	ret = tty_init_termios(tty);
 	if (ret == 0) {
 		tty_driver_kref_get(driver);
@@ -1609,6 +1610,11 @@ static int ntty_install(struct tty_driver *driver, struct tty_struct *tty)
 		tty->driver_data = port;
 		driver->ttys[tty->index] = tty;
 	}
+=======
+	ret = tty_standard_install(driver, tty);
+	if (ret == 0)
+		tty->driver_data = port;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -1920,7 +1926,10 @@ static __init int nozomi_init(void)
 	if (!ntty_driver)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	ntty_driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ntty_driver->driver_name = NOZOMI_NAME_TTY;
 	ntty_driver->name = "noz";
 	ntty_driver->major = 0;

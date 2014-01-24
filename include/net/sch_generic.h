@@ -4,7 +4,10 @@
 #include <linux/netdevice.h>
 #include <linux/types.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pkt_sched.h>
 #include <linux/pkt_cls.h>
 #include <net/gen_stats.h>
@@ -46,14 +49,22 @@ struct qdisc_size_table {
 struct Qdisc {
 	int 			(*enqueue)(struct sk_buff *skb, struct Qdisc *dev);
 	struct sk_buff *	(*dequeue)(struct Qdisc *dev);
+<<<<<<< HEAD
 	unsigned		flags;
+=======
+	unsigned int		flags;
+>>>>>>> refs/remotes/origin/cm-10.0
 #define TCQ_F_BUILTIN		1
 #define TCQ_F_INGRESS		2
 #define TCQ_F_CAN_BYPASS	4
 #define TCQ_F_MQROOT		8
 #define TCQ_F_WARN_NONWC	(1 << 16)
 	int			padded;
+<<<<<<< HEAD
 	struct Qdisc_ops	*ops;
+=======
+	const struct Qdisc_ops	*ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct qdisc_size_table	__rcu *stab;
 	struct list_head	list;
 	u32			handle;
@@ -181,8 +192,14 @@ struct tcf_proto_ops {
 	struct tcf_proto_ops	*next;
 	char			kind[IFNAMSIZ];
 
+<<<<<<< HEAD
 	int			(*classify)(struct sk_buff*, struct tcf_proto*,
 					struct tcf_result *);
+=======
+	int			(*classify)(struct sk_buff *,
+					    const struct tcf_proto *,
+					    struct tcf_result *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int			(*init)(struct tcf_proto*);
 	void			(*destroy)(struct tcf_proto*);
 
@@ -205,8 +222,14 @@ struct tcf_proto {
 	/* Fast access part */
 	struct tcf_proto	*next;
 	void			*root;
+<<<<<<< HEAD
 	int			(*classify)(struct sk_buff*, struct tcf_proto*,
 					struct tcf_result *);
+=======
+	int			(*classify)(struct sk_buff *,
+					    const struct tcf_proto *,
+					    struct tcf_result *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	__be16			protocol;
 
 	/* All the rest */
@@ -214,7 +237,11 @@ struct tcf_proto {
 	u32			classid;
 	struct Qdisc		*q;
 	void			*data;
+<<<<<<< HEAD
 	struct tcf_proto_ops	*ops;
+=======
+	const struct tcf_proto_ops	*ops;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct qdisc_skb_cb {
@@ -232,7 +259,11 @@ static inline void qdisc_cb_private_validate(const struct sk_buff *skb, int sz)
 	BUILD_BUG_ON(sizeof(qcb->data) < sz);
 }
 
+<<<<<<< HEAD
 static inline int qdisc_qlen(struct Qdisc *q)
+=======
+static inline int qdisc_qlen(const struct Qdisc *q)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return q->q.qlen;
 }
@@ -247,12 +278,20 @@ static inline spinlock_t *qdisc_lock(struct Qdisc *qdisc)
 	return &qdisc->q.lock;
 }
 
+<<<<<<< HEAD
 static inline struct Qdisc *qdisc_root(struct Qdisc *qdisc)
+=======
+static inline struct Qdisc *qdisc_root(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return qdisc->dev_queue->qdisc;
 }
 
+<<<<<<< HEAD
 static inline struct Qdisc *qdisc_root_sleeping(struct Qdisc *qdisc)
+=======
+static inline struct Qdisc *qdisc_root_sleeping(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return qdisc->dev_queue->qdisc_sleeping;
 }
@@ -268,7 +307,11 @@ static inline struct Qdisc *qdisc_root_sleeping(struct Qdisc *qdisc)
  * root.  This is enforced by holding the RTNL semaphore, which
  * all users of this lock accessor must do.
  */
+<<<<<<< HEAD
 static inline spinlock_t *qdisc_root_lock(struct Qdisc *qdisc)
+=======
+static inline spinlock_t *qdisc_root_lock(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct Qdisc *root = qdisc_root(qdisc);
 
@@ -276,7 +319,11 @@ static inline spinlock_t *qdisc_root_lock(struct Qdisc *qdisc)
 	return qdisc_lock(root);
 }
 
+<<<<<<< HEAD
 static inline spinlock_t *qdisc_root_sleeping_lock(struct Qdisc *qdisc)
+=======
+static inline spinlock_t *qdisc_root_sleeping_lock(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct Qdisc *root = qdisc_root_sleeping(qdisc);
 
@@ -284,17 +331,29 @@ static inline spinlock_t *qdisc_root_sleeping_lock(struct Qdisc *qdisc)
 	return qdisc_lock(root);
 }
 
+<<<<<<< HEAD
 static inline struct net_device *qdisc_dev(struct Qdisc *qdisc)
+=======
+static inline struct net_device *qdisc_dev(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return qdisc->dev_queue->dev;
 }
 
+<<<<<<< HEAD
 static inline void sch_tree_lock(struct Qdisc *q)
+=======
+static inline void sch_tree_lock(const struct Qdisc *q)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	spin_lock_bh(qdisc_root_sleeping_lock(q));
 }
 
+<<<<<<< HEAD
 static inline void sch_tree_unlock(struct Qdisc *q)
+=======
+static inline void sch_tree_unlock(const struct Qdisc *q)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	spin_unlock_bh(qdisc_root_sleeping_lock(q));
 }
@@ -327,7 +386,11 @@ static inline unsigned int qdisc_class_hash(u32 id, u32 mask)
 }
 
 static inline struct Qdisc_class_common *
+<<<<<<< HEAD
 qdisc_class_find(struct Qdisc_class_hash *hash, u32 id)
+=======
+qdisc_class_find(const struct Qdisc_class_hash *hash, u32 id)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct Qdisc_class_common *cl;
 	struct hlist_node *n;
@@ -401,7 +464,11 @@ static inline bool qdisc_all_tx_empty(const struct net_device *dev)
 }
 
 /* Are any of the TX qdiscs changing?  */
+<<<<<<< HEAD
 static inline bool qdisc_tx_changing(struct net_device *dev)
+=======
+static inline bool qdisc_tx_changing(const struct net_device *dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned int i;
 	for (i = 0; i < dev->num_tx_queues; i++) {

@@ -889,6 +889,7 @@ typedef struct ia_rtn_q {
 } IARTN_Q;
 
 #define SUNI_LOSV   	0x04
+<<<<<<< HEAD
 typedef struct {
         u32   suni_master_reset;      /* SUNI Master Reset and Identity     */
         u32   suni_master_config;     /* SUNI Master Configuration          */
@@ -962,6 +963,73 @@ typedef struct {
         u32   suni_reserved_test;     /* SUNI Reserved for Test             */
 } IA_SUNI;
 
+=======
+enum ia_suni {
+	SUNI_MASTER_RESET	= 0x000, /* SUNI Master Reset and Identity   */
+	SUNI_MASTER_CONFIG	= 0x004, /* SUNI Master Configuration        */
+	SUNI_MASTER_INTR_STAT	= 0x008, /* SUNI Master Interrupt Status     */
+	SUNI_RESERVED1		= 0x00c, /* Reserved                         */
+	SUNI_MASTER_CLK_MONITOR	= 0x010, /* SUNI Master Clock Monitor        */
+	SUNI_MASTER_CONTROL	= 0x014, /* SUNI Master Clock Monitor        */
+					 /* Reserved (10)                    */
+	SUNI_RSOP_CONTROL	= 0x040, /* RSOP Control/Interrupt Enable    */
+	SUNI_RSOP_STATUS	= 0x044, /* RSOP Status/Interrupt States     */
+	SUNI_RSOP_SECTION_BIP8L	= 0x048, /* RSOP Section BIP-8 LSB           */
+	SUNI_RSOP_SECTION_BIP8M	= 0x04c, /* RSOP Section BIP-8 MSB           */
+
+	SUNI_TSOP_CONTROL	= 0x050, /* TSOP Control                     */
+	SUNI_TSOP_DIAG		= 0x054, /* TSOP Disgnostics                 */
+					 /* Reserved (2)                     */
+	SUNI_RLOP_CS		= 0x060, /* RLOP Control/Status              */
+	SUNI_RLOP_INTR		= 0x064, /* RLOP Interrupt Enable/Status     */
+	SUNI_RLOP_LINE_BIP24L	= 0x068, /* RLOP Line BIP-24 LSB             */
+	SUNI_RLOP_LINE_BIP24	= 0x06c, /* RLOP Line BIP-24                 */
+	SUNI_RLOP_LINE_BIP24M	= 0x070, /* RLOP Line BIP-24 MSB             */
+	SUNI_RLOP_LINE_FEBEL	= 0x074, /* RLOP Line FEBE LSB               */
+	SUNI_RLOP_LINE_FEBE	= 0x078, /* RLOP Line FEBE                   */
+	SUNI_RLOP_LINE_FEBEM	= 0x07c, /* RLOP Line FEBE MSB               */
+
+	SUNI_TLOP_CONTROL	= 0x080, /* TLOP Control                     */
+	SUNI_TLOP_DISG		= 0x084, /* TLOP Disgnostics                 */
+					 /* Reserved (14)                    */
+	SUNI_RPOP_CS		= 0x0c0, /* RPOP Status/Control              */
+	SUNI_RPOP_INTR		= 0x0c4, /* RPOP Interrupt/Status            */
+	SUNI_RPOP_RESERVED	= 0x0c8, /* RPOP Reserved                    */
+	SUNI_RPOP_INTR_ENA	= 0x0cc, /* RPOP Interrupt Enable            */
+					 /* Reserved (3)                     */
+	SUNI_RPOP_PATH_SIG	= 0x0dc, /* RPOP Path Signal Label           */
+	SUNI_RPOP_BIP8L		= 0x0e0, /* RPOP Path BIP-8 LSB              */
+	SUNI_RPOP_BIP8M		= 0x0e4, /* RPOP Path BIP-8 MSB              */
+	SUNI_RPOP_FEBEL		= 0x0e8, /* RPOP Path FEBE LSB               */
+	SUNI_RPOP_FEBEM		= 0x0ec, /* RPOP Path FEBE MSB               */
+					 /* Reserved (4)                     */
+	SUNI_TPOP_CNTRL_DAIG	= 0x100, /* TPOP Control/Disgnostics         */
+	SUNI_TPOP_POINTER_CTRL	= 0x104, /* TPOP Pointer Control             */
+	SUNI_TPOP_SOURCER_CTRL	= 0x108, /* TPOP Source Control              */
+					 /* Reserved (2)                     */
+	SUNI_TPOP_ARB_PRTL	= 0x114, /* TPOP Arbitrary Pointer LSB       */
+	SUNI_TPOP_ARB_PRTM	= 0x118, /* TPOP Arbitrary Pointer MSB       */
+	SUNI_TPOP_RESERVED2	= 0x11c, /* TPOP Reserved                    */
+	SUNI_TPOP_PATH_SIG	= 0x120, /* TPOP Path Signal Lable           */
+	SUNI_TPOP_PATH_STATUS	= 0x124, /* TPOP Path Status                 */
+					 /* Reserved (6)                     */
+	SUNI_RACP_CS		= 0x140, /* RACP Control/Status              */
+	SUNI_RACP_INTR		= 0x144, /* RACP Interrupt Enable/Status     */
+	SUNI_RACP_HDR_PATTERN	= 0x148, /* RACP Match Header Pattern        */
+	SUNI_RACP_HDR_MASK	= 0x14c, /* RACP Match Header Mask           */
+	SUNI_RACP_CORR_HCS	= 0x150, /* RACP Correctable HCS Error Count */
+	SUNI_RACP_UNCORR_HCS	= 0x154, /* RACP Uncorrectable HCS Err Count */
+					 /* Reserved (10)                    */
+	SUNI_TACP_CONTROL	= 0x180, /* TACP Control                     */
+	SUNI_TACP_IDLE_HDR_PAT	= 0x184, /* TACP Idle Cell Header Pattern    */
+	SUNI_TACP_IDLE_PAY_PAY	= 0x188, /* TACP Idle Cell Payld Octet Patrn */
+					 /* Reserved (5)                     */
+					 /* Reserved (24)                    */
+	/* FIXME: unused but name conflicts.
+	 * SUNI_MASTER_TEST	= 0x200,    SUNI Master Test                 */
+	SUNI_RESERVED_TEST	= 0x204  /* SUNI Reserved for Test           */
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 typedef struct _SUNI_STATS_
 {
@@ -993,6 +1061,7 @@ typedef struct _SUNI_STATS_
    u32 racp_uchcs_count;            // uncorrectable HCS error count
 } IA_SUNI_STATS; 
 
+<<<<<<< HEAD
 typedef struct iadev_t {  
 	/*-----base pointers into (i)chipSAR+ address space */   
 	u32 __iomem *phy;		/* base pointer into phy(SUNI) */  
@@ -1000,6 +1069,13 @@ typedef struct iadev_t {
 						registers */  
 	u32 __iomem *reg;		/* base pointer to SAR registers  
 					   - Bus Interface Control Regs */  
+=======
+typedef struct iadev_priv {
+	/*-----base pointers into (i)chipSAR+ address space */   
+	u32 __iomem *phy;	/* Base pointer into phy (SUNI). */
+	u32 __iomem *dma;	/* Base pointer into DMA control registers. */
+	u32 __iomem *reg;	/* Base pointer to SAR registers. */
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 __iomem *seg_reg;		/* base pointer to segmentation engine  
 						internal registers */  
 	u32 __iomem *reass_reg;		/* base pointer to reassemble engine  
@@ -1071,6 +1147,7 @@ typedef struct iadev_t {
 #define INPH_IA_VCC(v) ((struct ia_vcc *) (v)->dev_data)  
 
 /******************* IDT77105 25MB/s PHY DEFINE *****************************/
+<<<<<<< HEAD
 typedef struct {
 	u_int	mb25_master_ctrl;	/* Master control		     */
 	u_int	mb25_intr_status;	/* Interrupt status		     */
@@ -1079,6 +1156,16 @@ typedef struct {
 	u_int	mb25_low_byte_counter;	/* Low byte counter		     */
 	u_int	mb25_high_byte_counter;	/* High byte counter		     */
 } ia_mb25_t;
+=======
+enum ia_mb25 {
+	MB25_MASTER_CTRL	= 0x00, /* Master control		     */
+	MB25_INTR_STATUS	= 0x04,	/* Interrupt status		     */
+	MB25_DIAG_CONTROL	= 0x08,	/* Diagnostic control		     */
+	MB25_LED_HEC		= 0x0c,	/* LED driver and HEC status/control */
+	MB25_LOW_BYTE_COUNTER	= 0x10,
+	MB25_HIGH_BYTE_COUNTER	= 0x14
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Master Control
@@ -1127,6 +1214,7 @@ typedef struct {
 #define FE_E3_PHY       0x0090          /* E3 */
 		     
 /*********************** SUNI_PM7345 PHY DEFINE HERE *********************/
+<<<<<<< HEAD
 typedef struct _suni_pm7345_t
 {
     u_int suni_config;     /* SUNI Configuration */
@@ -1243,6 +1331,123 @@ typedef struct _suni_pm7345_t
     u_int suni_master_test;
     u_int suni_pad6[0xff-0x80];
 }suni_pm7345_t;
+=======
+enum suni_pm7345 {
+	SUNI_CONFIG			= 0x000, /* SUNI Configuration */
+	SUNI_INTR_ENBL			= 0x004, /* SUNI Interrupt Enable */
+	SUNI_INTR_STAT			= 0x008, /* SUNI Interrupt Status */
+	SUNI_CONTROL			= 0x00c, /* SUNI Control */
+	SUNI_ID_RESET			= 0x010, /* SUNI Reset and Identity */
+	SUNI_DATA_LINK_CTRL		= 0x014,
+	SUNI_RBOC_CONF_INTR_ENBL	= 0x018,
+	SUNI_RBOC_STAT			= 0x01c,
+	SUNI_DS3_FRM_CFG		= 0x020,
+	SUNI_DS3_FRM_INTR_ENBL		= 0x024,
+	SUNI_DS3_FRM_INTR_STAT		= 0x028,
+	SUNI_DS3_FRM_STAT		= 0x02c,
+	SUNI_RFDL_CFG			= 0x030,
+	SUNI_RFDL_ENBL_STAT		= 0x034,
+	SUNI_RFDL_STAT			= 0x038,
+	SUNI_RFDL_DATA			= 0x03c,
+	SUNI_PMON_CHNG			= 0x040,
+	SUNI_PMON_INTR_ENBL_STAT	= 0x044,
+	/* SUNI_RESERVED1 (0x13 - 0x11) */
+	SUNI_PMON_LCV_EVT_CNT_LSB	= 0x050,
+	SUNI_PMON_LCV_EVT_CNT_MSB	= 0x054,
+	SUNI_PMON_FBE_EVT_CNT_LSB	= 0x058,
+	SUNI_PMON_FBE_EVT_CNT_MSB	= 0x05c,
+	SUNI_PMON_SEZ_DET_CNT_LSB	= 0x060,
+	SUNI_PMON_SEZ_DET_CNT_MSB	= 0x064,
+	SUNI_PMON_PE_EVT_CNT_LSB	= 0x068,
+	SUNI_PMON_PE_EVT_CNT_MSB	= 0x06c,
+	SUNI_PMON_PPE_EVT_CNT_LSB	= 0x070,
+	SUNI_PMON_PPE_EVT_CNT_MSB	= 0x074,
+	SUNI_PMON_FEBE_EVT_CNT_LSB	= 0x078,
+	SUNI_PMON_FEBE_EVT_CNT_MSB	= 0x07c,
+	SUNI_DS3_TRAN_CFG		= 0x080,
+	SUNI_DS3_TRAN_DIAG		= 0x084,
+	/* SUNI_RESERVED2 (0x23 - 0x21) */
+	SUNI_XFDL_CFG			= 0x090,
+	SUNI_XFDL_INTR_ST		= 0x094,
+	SUNI_XFDL_XMIT_DATA		= 0x098,
+	SUNI_XBOC_CODE			= 0x09c,
+	SUNI_SPLR_CFG			= 0x0a0,
+	SUNI_SPLR_INTR_EN		= 0x0a4,
+	SUNI_SPLR_INTR_ST		= 0x0a8,
+	SUNI_SPLR_STATUS		= 0x0ac,
+	SUNI_SPLT_CFG			= 0x0b0,
+	SUNI_SPLT_CNTL			= 0x0b4,
+	SUNI_SPLT_DIAG_G1		= 0x0b8,
+	SUNI_SPLT_F1			= 0x0bc,
+	SUNI_CPPM_LOC_METERS		= 0x0c0,
+	SUNI_CPPM_CHG_OF_CPPM_PERF_METR	= 0x0c4,
+	SUNI_CPPM_B1_ERR_CNT_LSB	= 0x0c8,
+	SUNI_CPPM_B1_ERR_CNT_MSB	= 0x0cc,
+	SUNI_CPPM_FRAMING_ERR_CNT_LSB	= 0x0d0,
+	SUNI_CPPM_FRAMING_ERR_CNT_MSB	= 0x0d4,
+	SUNI_CPPM_FEBE_CNT_LSB		= 0x0d8,
+	SUNI_CPPM_FEBE_CNT_MSB		= 0x0dc,
+	SUNI_CPPM_HCS_ERR_CNT_LSB	= 0x0e0,
+	SUNI_CPPM_HCS_ERR_CNT_MSB	= 0x0e4,
+	SUNI_CPPM_IDLE_UN_CELL_CNT_LSB	= 0x0e8,
+	SUNI_CPPM_IDLE_UN_CELL_CNT_MSB	= 0x0ec,
+	SUNI_CPPM_RCV_CELL_CNT_LSB	= 0x0f0,
+	SUNI_CPPM_RCV_CELL_CNT_MSB	= 0x0f4,
+	SUNI_CPPM_XMIT_CELL_CNT_LSB	= 0x0f8,
+	SUNI_CPPM_XMIT_CELL_CNT_MSB	= 0x0fc,
+	SUNI_RXCP_CTRL			= 0x100,
+	SUNI_RXCP_FCTRL			= 0x104,
+	SUNI_RXCP_INTR_EN_STS		= 0x108,
+	SUNI_RXCP_IDLE_PAT_H1		= 0x10c,
+	SUNI_RXCP_IDLE_PAT_H2		= 0x110,
+	SUNI_RXCP_IDLE_PAT_H3		= 0x114,
+	SUNI_RXCP_IDLE_PAT_H4		= 0x118,
+	SUNI_RXCP_IDLE_MASK_H1		= 0x11c,
+	SUNI_RXCP_IDLE_MASK_H2		= 0x120,
+	SUNI_RXCP_IDLE_MASK_H3		= 0x124,
+	SUNI_RXCP_IDLE_MASK_H4		= 0x128,
+	SUNI_RXCP_CELL_PAT_H1		= 0x12c,
+	SUNI_RXCP_CELL_PAT_H2		= 0x130,
+	SUNI_RXCP_CELL_PAT_H3		= 0x134,
+	SUNI_RXCP_CELL_PAT_H4		= 0x138,
+	SUNI_RXCP_CELL_MASK_H1		= 0x13c,
+	SUNI_RXCP_CELL_MASK_H2		= 0x140,
+	SUNI_RXCP_CELL_MASK_H3		= 0x144,
+	SUNI_RXCP_CELL_MASK_H4		= 0x148,
+	SUNI_RXCP_HCS_CS		= 0x14c,
+	SUNI_RXCP_LCD_CNT_THRESHOLD	= 0x150,
+	/* SUNI_RESERVED3 (0x57 - 0x54) */
+	SUNI_TXCP_CTRL			= 0x160,
+	SUNI_TXCP_INTR_EN_STS		= 0x164,
+	SUNI_TXCP_IDLE_PAT_H1		= 0x168,
+	SUNI_TXCP_IDLE_PAT_H2		= 0x16c,
+	SUNI_TXCP_IDLE_PAT_H3		= 0x170,
+	SUNI_TXCP_IDLE_PAT_H4		= 0x174,
+	SUNI_TXCP_IDLE_PAT_H5		= 0x178,
+	SUNI_TXCP_IDLE_PAYLOAD		= 0x17c,
+	SUNI_E3_FRM_FRAM_OPTIONS	= 0x180,
+	SUNI_E3_FRM_MAINT_OPTIONS	= 0x184,
+	SUNI_E3_FRM_FRAM_INTR_ENBL	= 0x188,
+	SUNI_E3_FRM_FRAM_INTR_IND_STAT	= 0x18c,
+	SUNI_E3_FRM_MAINT_INTR_ENBL	= 0x190,
+	SUNI_E3_FRM_MAINT_INTR_IND	= 0x194,
+	SUNI_E3_FRM_MAINT_STAT		= 0x198,
+	SUNI_RESERVED4			= 0x19c,
+	SUNI_E3_TRAN_FRAM_OPTIONS	= 0x1a0,
+	SUNI_E3_TRAN_STAT_DIAG_OPTIONS	= 0x1a4,
+	SUNI_E3_TRAN_BIP_8_ERR_MASK	= 0x1a8,
+	SUNI_E3_TRAN_MAINT_ADAPT_OPTS	= 0x1ac,
+	SUNI_TTB_CTRL			= 0x1b0,
+	SUNI_TTB_TRAIL_TRACE_ID_STAT	= 0x1b4,
+	SUNI_TTB_IND_ADDR		= 0x1b8,
+	SUNI_TTB_IND_DATA		= 0x1bc,
+	SUNI_TTB_EXP_PAYLOAD_TYPE	= 0x1c0,
+	SUNI_TTB_PAYLOAD_TYPE_CTRL_STAT	= 0x1c4,
+	/* SUNI_PAD5 (0x7f - 0x71) */
+	SUNI_MASTER_TEST		= 0x200,
+	/* SUNI_PAD6 (0xff - 0x80) */
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SUNI_PM7345_T suni_pm7345_t
 #define SUNI_PM7345     0x20            /* Suni chip type */

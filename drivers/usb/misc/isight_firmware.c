@@ -128,6 +128,7 @@ static struct usb_driver isight_firmware_driver = {
 	.id_table = id_table,
 };
 
+<<<<<<< HEAD
 static int __init isight_firmware_init(void)
 {
 	return usb_register(&isight_firmware_driver);
@@ -140,6 +141,9 @@ static void __exit isight_firmware_exit(void)
 
 module_init(isight_firmware_init);
 module_exit(isight_firmware_exit);
+=======
+module_usb_driver(isight_firmware_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Matthew Garrett <mjg@redhat.com>");

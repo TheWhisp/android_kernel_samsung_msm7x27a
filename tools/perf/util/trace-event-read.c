@@ -33,7 +33,10 @@
 #include <pthread.h>
 #include <fcntl.h>
 #include <unistd.h>
+<<<<<<< HEAD
 #include <ctype.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <errno.h>
 
 #include "../perf.h"

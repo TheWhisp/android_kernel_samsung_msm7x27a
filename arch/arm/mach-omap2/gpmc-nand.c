@@ -16,12 +16,19 @@
 
 #include <asm/mach/flash.h>
 
+<<<<<<< HEAD
+=======
+#include <plat/cpu.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/nand.h>
 #include <plat/board.h>
 #include <plat/gpmc.h>
 
+<<<<<<< HEAD
 static struct omap_nand_platform_data *gpmc_nand_data;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct resource gpmc_nand_resource = {
 	.flags		= IORESOURCE_MEM,
 };
@@ -33,7 +40,11 @@ static struct platform_device gpmc_nand_device = {
 	.resource	= &gpmc_nand_resource,
 };
 
+<<<<<<< HEAD
 static int omap2_nand_gpmc_retime(void)
+=======
+static int omap2_nand_gpmc_retime(struct omap_nand_platform_data *gpmc_nand_data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct gpmc_timings t;
 	int err;
@@ -83,13 +94,20 @@ static int omap2_nand_gpmc_retime(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 int __init gpmc_nand_init(struct omap_nand_platform_data *_nand_data)
+=======
+int __init gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int err	= 0;
 	struct device *dev = &gpmc_nand_device.dev;
 
+<<<<<<< HEAD
 	gpmc_nand_data = _nand_data;
 	gpmc_nand_data->nand_setup = omap2_nand_gpmc_retime;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	gpmc_nand_device.dev.platform_data = gpmc_nand_data;
 
 	err = gpmc_cs_request(gpmc_nand_data->cs, NAND_IO_SIZE,
@@ -100,7 +118,11 @@ int __init gpmc_nand_init(struct omap_nand_platform_data *_nand_data)
 	}
 
 	 /* Set timings in GPMC */
+<<<<<<< HEAD
 	err = omap2_nand_gpmc_retime();
+=======
+	err = omap2_nand_gpmc_retime(gpmc_nand_data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err < 0) {
 		dev_err(dev, "Unable to set gpmc timings: %d\n", err);
 		return err;

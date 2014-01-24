@@ -6,18 +6,53 @@
 #include "driver-ops.h"
 #include "led.h"
 
+<<<<<<< HEAD
+=======
+/* return value indicates whether the driver should be further notified */
+static bool ieee80211_quiesce(struct ieee80211_sub_if_data *sdata)
+{
+	switch (sdata->vif.type) {
+	case NL80211_IFTYPE_STATION:
+		ieee80211_sta_quiesce(sdata);
+		return true;
+	case NL80211_IFTYPE_ADHOC:
+		ieee80211_ibss_quiesce(sdata);
+		return true;
+	case NL80211_IFTYPE_MESH_POINT:
+		ieee80211_mesh_quiesce(sdata);
+		return true;
+	case NL80211_IFTYPE_AP_VLAN:
+	case NL80211_IFTYPE_MONITOR:
+		/* don't tell driver about this */
+		return false;
+	default:
+		return true;
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 {
 	struct ieee80211_local *local = hw_to_local(hw);
 	struct ieee80211_sub_if_data *sdata;
 	struct sta_info *sta;
 
+<<<<<<< HEAD
+=======
+	if (!local->open_count)
+		goto suspend;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ieee80211_scan_cancel(local);
 
 	if (hw->flags & IEEE80211_HW_AMPDU_AGGREGATION) {
 		mutex_lock(&local->sta_mtx);
 		list_for_each_entry(sta, &local->sta_list, list) {
+<<<<<<< HEAD
 			set_sta_flags(sta, WLAN_STA_BLOCK_BA);
+=======
+			set_sta_flag(sta, WLAN_STA_BLOCK_BA);
+>>>>>>> refs/remotes/origin/cm-10.0
 			ieee80211_sta_tear_down_BA_sessions(sta, true);
 		}
 		mutex_unlock(&local->sta_mtx);
@@ -50,11 +85,27 @@ int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 	local->wowlan = wowlan && local->open_count;
 	if (local->wowlan) {
 		int err = drv_suspend(local, wowlan);
+<<<<<<< HEAD
 		if (err) {
 			local->quiescing = false;
 			return err;
 		}
 		goto suspend;
+=======
+		if (err < 0) {
+			local->quiescing = false;
+			return err;
+		} else if (err > 0) {
+			WARN_ON(err != 1);
+			local->wowlan = false;
+		} else {
+			list_for_each_entry(sdata, &local->interfaces, list) {
+				cancel_work_sync(&sdata->work);
+				ieee80211_quiesce(sdata);
+			}
+			goto suspend;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* disable keys */
@@ -65,6 +116,7 @@ int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 	mutex_lock(&local->sta_mtx);
 	list_for_each_entry(sta, &local->sta_list, list) {
 		if (sta->uploaded) {
+<<<<<<< HEAD
 			sdata = sta->sdata;
 			if (sdata->vif.type == NL80211_IFTYPE_AP_VLAN)
 				sdata = container_of(sdata->bss,
@@ -72,6 +124,14 @@ int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 					     u.ap);
 
 			drv_sta_remove(local, sdata, &sta->sta);
+=======
+			enum ieee80211_sta_state state;
+
+			state = sta->sta_state;
+			for (; state > IEEE80211_STA_NOTEXIST; state--)
+				WARN_ON(drv_sta_state(local, sta->sdata, sta,
+						      state, state - 1));
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		mesh_plink_quiesce(sta);
@@ -82,6 +142,7 @@ int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 	list_for_each_entry(sdata, &local->interfaces, list) {
 		cancel_work_sync(&sdata->work);
 
+<<<<<<< HEAD
 		switch(sdata->vif.type) {
 		case NL80211_IFTYPE_STATION:
 			ieee80211_sta_quiesce(sdata);
@@ -99,6 +160,10 @@ int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 		default:
 			break;
 		}
+=======
+		if (!ieee80211_quiesce(sdata))
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (!ieee80211_sdata_running(sdata))
 			continue;
@@ -107,7 +172,11 @@ int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 		ieee80211_bss_info_change_notify(sdata,
 			BSS_CHANGED_BEACON_ENABLED);
 
+<<<<<<< HEAD
 		drv_remove_interface(local, &sdata->vif);
+=======
+		drv_remove_interface(local, sdata);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* stop hardware - this must stop RX */

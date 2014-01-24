@@ -27,6 +27,10 @@
 #include <linux/spi/spi.h>
 #include <linux/spi/flash.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
@@ -422,7 +426,11 @@ struct platform_device nuc900_device_kpi = {
 
 /* LCD controller*/
 
+<<<<<<< HEAD
 static struct nuc900fb_display __initdata nuc900_lcd_info[] = {
+=======
+static struct nuc900fb_display nuc900_lcd_info[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Giantplus Technology GPM1040A0 320x240 Color TFT LCD */
 	[0] = {
 		.type		= LCM_DCCS_VA_SRC_RGB565,
@@ -445,7 +453,11 @@ static struct nuc900fb_display __initdata nuc900_lcd_info[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct nuc900fb_mach_info nuc900_fb_info __initdata = {
+=======
+static struct nuc900fb_mach_info nuc900_fb_info = {
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_GPM1040A0_320X240)
 	.displays		= &nuc900_lcd_info[0],
 #else
@@ -501,8 +513,13 @@ static struct resource nuc900_ac97_resource[] = {
 
 };
 
+<<<<<<< HEAD
 struct platform_device nuc900_device_audio = {
 	.name		= "nuc900-audio",
+=======
+struct platform_device nuc900_device_ac97 = {
+	.name		= "nuc900-ac97",
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(nuc900_ac97_resource),
 	.resource	= nuc900_ac97_resource,
@@ -523,13 +540,21 @@ static struct platform_device *nuc900_public_dev[] __initdata = {
 	&nuc900_device_emc,
 	&nuc900_device_spi,
 	&nuc900_device_wdt,
+<<<<<<< HEAD
 	&nuc900_device_audio,
+=======
+	&nuc900_device_ac97,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Provide adding specific CPU platform devices API */
 
 void __init nuc900_board_init(struct platform_device **device, int size)
 {
+<<<<<<< HEAD
+=======
+	disable_hlt();
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(device, size);
 	platform_add_devices(nuc900_public_dev, ARRAY_SIZE(nuc900_public_dev));
 	spi_register_board_info(nuc900_spi_board_info,

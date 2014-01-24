@@ -28,6 +28,10 @@
 #include <linux/regset.h>
 
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/desc.h>
 #include <asm/user.h>
 #include <asm/i387.h>
@@ -269,7 +273,11 @@ void math_emulate(struct math_emu_info *info)
 			FPU_EIP = FPU_ORIG_EIP;	/* Point to current FPU instruction. */
 
 			RE_ENTRANT_CHECK_OFF;
+<<<<<<< HEAD
 			current->thread.trap_no = 16;
+=======
+			current->thread.trap_nr = X86_TRAP_MF;
+>>>>>>> refs/remotes/origin/cm-10.0
 			current->thread.error_code = 0;
 			send_sig(SIGFPE, current, 1);
 			return;
@@ -662,7 +670,11 @@ static int valid_prefix(u_char *Byte, u_char __user **fpu_eip,
 void math_abort(struct math_emu_info *info, unsigned int signal)
 {
 	FPU_EIP = FPU_ORIG_EIP;
+<<<<<<< HEAD
 	current->thread.trap_no = 16;
+=======
+	current->thread.trap_nr = X86_TRAP_MF;
+>>>>>>> refs/remotes/origin/cm-10.0
 	current->thread.error_code = 0;
 	send_sig(signal, current, 1);
 	RE_ENTRANT_CHECK_OFF;

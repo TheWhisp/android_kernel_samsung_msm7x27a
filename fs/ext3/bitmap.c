@@ -7,9 +7,13 @@
  * Universite Pierre et Marie Curie (Paris VI)
  */
 
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
 #include <linux/jbd.h>
 #include <linux/ext3_fs.h>
+=======
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef EXT3FS_DEBUG
 

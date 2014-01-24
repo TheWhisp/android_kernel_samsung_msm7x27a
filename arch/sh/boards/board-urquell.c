@@ -190,7 +190,11 @@ static int urquell_clk_init(void)
 		return -EINVAL;
 
 	clk = clk_get(NULL, "extal");
+<<<<<<< HEAD
 	if (!clk || IS_ERR(clk))
+=======
+	if (IS_ERR(clk))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return PTR_ERR(clk);
 	ret = clk_set_rate(clk, 33333333);
 	clk_put(clk);

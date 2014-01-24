@@ -18,7 +18,10 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 
+<<<<<<< HEAD
 #include <asm/irq.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <asm/setup.h>
 
@@ -30,6 +33,7 @@
 
 #include <mach/cerf.h>
 #include <mach/mcp.h>
+<<<<<<< HEAD
 #include "generic.h"
 
 static struct resource cerfuart2_resources[] = {
@@ -38,6 +42,13 @@ static struct resource cerfuart2_resources[] = {
 		.end	= 0x8003ffff,
 		.flags	= IORESOURCE_MEM,
 	},
+=======
+#include <mach/irqs.h>
+#include "generic.h"
+
+static struct resource cerfuart2_resources[] = {
+	[0] = DEFINE_RES_MEM(0x80030000, SZ_64K),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device cerfuart2_device = {
@@ -87,11 +98,16 @@ static struct flash_platform_data cerf_flash_data = {
 	.nr_parts	= ARRAY_SIZE(cerf_partitions),
 };
 
+<<<<<<< HEAD
 static struct resource cerf_flash_resource = {
 	.start		= SA1100_CS0_PHYS,
 	.end		= SA1100_CS0_PHYS + SZ_32M - 1,
 	.flags		= IORESOURCE_MEM,
 };
+=======
+static struct resource cerf_flash_resource =
+	DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_32M);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __init cerf_init_irq(void)
 {
@@ -128,6 +144,10 @@ static struct mcp_plat_data cerf_mcp_data = {
 
 static void __init cerf_init(void)
 {
+<<<<<<< HEAD
+=======
+	sa11x0_ppc_configure_mcp();
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(cerf_devices, ARRAY_SIZE(cerf_devices));
 	sa11x0_register_mtd(&cerf_flash_data, &cerf_flash_resource, 1);
 	sa11x0_register_mcp(&cerf_mcp_data);
@@ -136,7 +156,15 @@ static void __init cerf_init(void)
 MACHINE_START(CERF, "Intrinsyc CerfBoard/CerfCube")
 	/* Maintainer: support@intrinsyc.com */
 	.map_io		= cerf_map_io,
+<<<<<<< HEAD
 	.init_irq	= cerf_init_irq,
 	.timer		= &sa1100_timer,
 	.init_machine	= cerf_init,
+=======
+	.nr_irqs	= SA1100_NR_IRQS,
+	.init_irq	= cerf_init_irq,
+	.timer		= &sa1100_timer,
+	.init_machine	= cerf_init,
+	.restart	= sa11x0_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

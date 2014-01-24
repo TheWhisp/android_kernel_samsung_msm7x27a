@@ -25,7 +25,12 @@
 #ifdef __KERNEL__
 
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+#include <linux/mutex.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define LS_SIZE (256 * 1024)
 #define LS_ADDR_MASK (LS_SIZE - 1)
@@ -165,7 +170,11 @@ struct spu {
 	/* beat only */
 	u64 shadow_int_mask_RW[3];
 
+<<<<<<< HEAD
 	struct sys_device sysdev;
+=======
+	struct device dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int has_mem_affinity;
 	struct list_head aff_list;
@@ -236,7 +245,11 @@ extern long spu_sys_callback(struct spu_syscall_block *s);
 struct file;
 struct spufs_calls {
 	long (*create_thread)(const char __user *name,
+<<<<<<< HEAD
 					unsigned int flags, mode_t mode,
+=======
+					unsigned int flags, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 					struct file *neighbor);
 	long (*spu_run)(struct file *filp, __u32 __user *unpc,
 						__u32 __user *ustatus);
@@ -269,11 +282,19 @@ struct spufs_calls {
 int register_spu_syscalls(struct spufs_calls *calls);
 void unregister_spu_syscalls(struct spufs_calls *calls);
 
+<<<<<<< HEAD
 int spu_add_sysdev_attr(struct sysdev_attribute *attr);
 void spu_remove_sysdev_attr(struct sysdev_attribute *attr);
 
 int spu_add_sysdev_attr_group(struct attribute_group *attrs);
 void spu_remove_sysdev_attr_group(struct attribute_group *attrs);
+=======
+int spu_add_dev_attr(struct device_attribute *attr);
+void spu_remove_dev_attr(struct device_attribute *attr);
+
+int spu_add_dev_attr_group(struct attribute_group *attrs);
+void spu_remove_dev_attr_group(struct attribute_group *attrs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int spu_handle_mm_fault(struct mm_struct *mm, unsigned long ea,
 		unsigned long dsisr, unsigned *flt);

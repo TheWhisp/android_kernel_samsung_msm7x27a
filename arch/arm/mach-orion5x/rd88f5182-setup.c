@@ -9,7 +9,11 @@
  * License version 2.  This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -20,7 +24,10 @@
 #include <linux/ata_platform.h>
 #include <linux/i2c.h>
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/leds.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/pci.h>
@@ -150,7 +157,11 @@ void __init rd88f5182_pci_preinit(void)
 		if (gpio_direction_input(pin) == 0) {
 			irq_set_irq_type(gpio_to_irq(pin), IRQ_TYPE_LEVEL_LOW);
 		} else {
+<<<<<<< HEAD
 			printk(KERN_ERR "rd88f5182_pci_preinit faield to "
+=======
+			printk(KERN_ERR "rd88f5182_pci_preinit failed to "
+>>>>>>> refs/remotes/origin/cm-10.0
 					"set_irq_type pin %d\n", pin);
 			gpio_free(pin);
 		}
@@ -163,7 +174,11 @@ void __init rd88f5182_pci_preinit(void)
 		if (gpio_direction_input(pin) == 0) {
 			irq_set_irq_type(gpio_to_irq(pin), IRQ_TYPE_LEVEL_LOW);
 		} else {
+<<<<<<< HEAD
 			printk(KERN_ERR "rd88f5182_pci_preinit faield to "
+=======
+			printk(KERN_ERR "rd88f5182_pci_preinit failed to "
+>>>>>>> refs/remotes/origin/cm-10.0
 					"set_irq_type pin %d\n", pin);
 			gpio_free(pin);
 		}
@@ -172,7 +187,12 @@ void __init rd88f5182_pci_preinit(void)
 	}
 }
 
+<<<<<<< HEAD
 static int __init rd88f5182_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init rd88f5182_pci_map_irq(const struct pci_dev *dev, u8 slot,
+	u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int irq;
 
@@ -305,10 +325,18 @@ static void __init rd88f5182_init(void)
 
 MACHINE_START(RD88F5182, "Marvell Orion-NAS Reference Design")
 	/* Maintainer: Ronen Shitrit <rshitrit@marvell.com> */
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= rd88f5182_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
 	.timer		= &orion5x_timer,
+<<<<<<< HEAD
+=======
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -31,6 +31,10 @@
 #include <linux/spi/spi.h>
 #include <linux/spi/ads7846.h>
 #include <linux/regulator/consumer.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 
 /*
@@ -601,10 +605,19 @@ static ssize_t ads7846_disable_store(struct device *dev,
 				     const char *buf, size_t count)
 {
 	struct ads7846 *ts = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	unsigned long i;
 
 	if (strict_strtoul(buf, 10, &i))
 		return -EINVAL;
+=======
+	unsigned int i;
+	int err;
+
+	err = kstrtouint(buf, 10, &i);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (i)
 		ads7846_disable(ts);
@@ -967,6 +980,7 @@ static int __devinit ads7846_setup_pendown(struct spi_device *spi, struct ads784
 		ts->get_pendown_state = pdata->get_pendown_state;
 	} else if (gpio_is_valid(pdata->gpio_pendown)) {
 
+<<<<<<< HEAD
 		err = gpio_request(pdata->gpio_pendown, "ads7846_pendown");
 		if (err) {
 			dev_err(&spi->dev, "failed to request pendown GPIO%d\n",
@@ -978,6 +992,14 @@ static int __devinit ads7846_setup_pendown(struct spi_device *spi, struct ads784
 			dev_err(&spi->dev, "failed to setup pendown GPIO%d\n",
 				pdata->gpio_pendown);
 			gpio_free(pdata->gpio_pendown);
+=======
+		err = gpio_request_one(pdata->gpio_pendown, GPIOF_IN,
+				       "ads7846_pendown");
+		if (err) {
+			dev_err(&spi->dev,
+				"failed to request/setup pendown GPIO%d: %d\n",
+				pdata->gpio_pendown, err);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return err;
 		}
 
@@ -1428,7 +1450,10 @@ static int __devexit ads7846_remove(struct spi_device *spi)
 static struct spi_driver ads7846_driver = {
 	.driver = {
 		.name	= "ads7846",
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 		.pm	= &ads7846_pm,
 	},
@@ -1436,6 +1461,7 @@ static struct spi_driver ads7846_driver = {
 	.remove		= __devexit_p(ads7846_remove),
 };
 
+<<<<<<< HEAD
 static int __init ads7846_init(void)
 {
 	return spi_register_driver(&ads7846_driver);
@@ -1447,6 +1473,9 @@ static void __exit ads7846_exit(void)
 	spi_unregister_driver(&ads7846_driver);
 }
 module_exit(ads7846_exit);
+=======
+module_spi_driver(ads7846_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("ADS7846 TouchScreen Driver");
 MODULE_LICENSE("GPL");

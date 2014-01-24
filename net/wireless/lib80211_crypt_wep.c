@@ -50,16 +50,22 @@ static void *lib80211_wep_init(int keyidx)
 
 	priv->tx_tfm = crypto_alloc_blkcipher("ecb(arc4)", 0, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->tx_tfm)) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG "lib80211_crypt_wep: could not allocate "
 		       "crypto API arc4\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->tx_tfm = NULL;
 		goto fail;
 	}
 
 	priv->rx_tfm = crypto_alloc_blkcipher("ecb(arc4)", 0, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->rx_tfm)) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG "lib80211_crypt_wep: could not allocate "
 		       "crypto API arc4\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->rx_tfm = NULL;
 		goto fail;
 	}

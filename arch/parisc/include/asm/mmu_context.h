@@ -3,7 +3,11 @@
 
 #include <linux/mm.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgalloc.h>
 #include <asm/pgtable.h>
 #include <asm-generic/mm_hooks.h>

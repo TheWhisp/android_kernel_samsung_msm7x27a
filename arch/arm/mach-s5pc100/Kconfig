@@ -10,7 +10,11 @@ if ARCH_S5PC100
 config CPU_S5PC100
 	bool
 	select S5P_EXT_INT
+<<<<<<< HEAD
 	select S3C_PL330_DMA
+=======
+	select SAMSUNG_DMADEV
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Enable S5PC100 CPU support
 
@@ -45,6 +49,14 @@ config S5PC100_SETUP_SDHCI_GPIO
 	help
 	  Common setup code for SDHCI gpio.
 
+<<<<<<< HEAD
+=======
+config S5PC100_SETUP_SPI
+	bool
+	help
+	  Common setup code for SPI GPIO configurations.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config MACH_SMDKC100
 	bool "SMDKC100"
 	select CPU_S5PC100
@@ -56,6 +68,10 @@ config MACH_SMDKC100
 	select S3C_DEV_RTC
 	select S3C_DEV_WDT
 	select SAMSUNG_DEV_ADC
+<<<<<<< HEAD
+=======
+	select SAMSUNG_DEV_BACKLIGHT
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SAMSUNG_DEV_IDE
 	select SAMSUNG_DEV_KEYPAD
 	select SAMSUNG_DEV_PWM

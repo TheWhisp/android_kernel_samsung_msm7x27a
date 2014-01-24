@@ -8,7 +8,11 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/kobject.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "internal.h"
 
 #ifdef CONFIG_DEBUG_MEMORY_INIT

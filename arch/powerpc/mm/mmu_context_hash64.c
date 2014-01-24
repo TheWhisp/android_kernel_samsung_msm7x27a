@@ -18,12 +18,17 @@
 #include <linux/mm.h>
 #include <linux/spinlock.h>
 #include <linux/idr.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/gfp.h>
 #include <linux/slab.h>
 
 #include <asm/mmu_context.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ICSWX
 /*
  * The processor and its L2 cache cause the icswx instruction to
@@ -218,6 +223,9 @@ void drop_cop(unsigned long acop, struct mm_struct *mm)
 EXPORT_SYMBOL_GPL(drop_cop);
 
 #endif /* CONFIG_PPC_ICSWX */
+=======
+#include "icswx.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static DEFINE_SPINLOCK(mmu_context_lock);
 static DEFINE_IDA(mmu_context_ida);

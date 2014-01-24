@@ -34,6 +34,10 @@
 #include <linux/in.h>
 #include <linux/device.h>
 #include <linux/dmapool.h>
+<<<<<<< HEAD
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "rds.h"
 #include "ib.h"
@@ -207,8 +211,12 @@ static struct rds_message *rds_ib_send_unmap_op(struct rds_ib_connection *ic,
 		}
 		break;
 	default:
+<<<<<<< HEAD
 		if (printk_ratelimit())
 			printk(KERN_NOTICE
+=======
+		printk_ratelimited(KERN_NOTICE
+>>>>>>> refs/remotes/origin/cm-10.0
 			       "RDS/IB: %s: unexpected opcode 0x%x in WR!\n",
 			       __func__, send->s_wr.opcode);
 		break;

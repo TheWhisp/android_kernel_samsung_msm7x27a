@@ -410,7 +410,10 @@
 #include <linux/ioport.h>
 #include <linux/delay.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/byteorder.h>
 #include <linux/proc_fs.h>
 #include <linux/blkdev.h>

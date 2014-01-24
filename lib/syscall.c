@@ -1,6 +1,10 @@
 #include <linux/ptrace.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/syscall.h>
 
 static int collect_syscall(struct task_struct *target, long *callno,

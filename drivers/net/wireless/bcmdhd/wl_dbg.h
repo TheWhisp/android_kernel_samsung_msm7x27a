@@ -2,9 +2,15 @@
  * Minimal debug/trace/assert driver definitions for
  * Broadcom 802.11 Networking Adapter.
  *
+<<<<<<< HEAD
  * Copyright (C) 1999-2011, Broadcom Corporation
  * 
  *         Unless you and Broadcom execute a separate written software license
+=======
+ * Copyright (C) 1999-2012, Broadcom Corporation
+ * 
+ *      Unless you and Broadcom execute a separate written software license
+>>>>>>> refs/remotes/origin/cm-10.0
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
@@ -22,11 +28,18 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: wl_dbg.h,v 1.115.6.3 2010-12-15 21:42:23 Exp $
  */
 
 
 
+=======
+ * $Id: wl_dbg.h 326635 2012-04-10 03:15:29Z $
+ */
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _wl_dbg_h_
 #define _wl_dbg_h_
 
@@ -34,6 +47,7 @@
 extern uint32 wl_msg_level;
 extern uint32 wl_msg_level2;
 
+<<<<<<< HEAD
 #define WL_PRINT(args)      printf args
 
 
@@ -43,6 +57,32 @@ extern uint32 wl_msg_level2;
 #define WL_ERROR(args)
 #define WL_TRACE(args)
 
+=======
+#define WL_TIMESTAMP()
+
+#if 0 && (VERSION_MAJOR > 9)
+#include <IOKit/apple80211/IO8Log.h>
+#define WL_PRINT(args)		do { printf args; IO8Log args; } while (0)
+#else
+#define WL_PRINT(args)		do { WL_TIMESTAMP(); printf args; } while (0)
+#endif
+
+
+
+#define WL_NONE(args)
+
+#define	WL_ERROR(args)
+#define	WL_TRACE(args)
+#define WL_APSTA_UPDN(args)
+#define WL_APSTA_RX(args)
+#ifdef WLMSG_WSEC
+#define WL_WSEC(args)		WL_PRINT(args)
+#define WL_WSEC_DUMP(args)	WL_PRINT(args)
+#else
+#define WL_WSEC(args)
+#define WL_WSEC_DUMP(args)
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern uint32 wl_msg_level;
 extern uint32 wl_msg_level2;

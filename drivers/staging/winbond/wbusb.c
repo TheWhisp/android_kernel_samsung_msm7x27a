@@ -11,6 +11,10 @@
  */
 #include <net/mac80211.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "core.h"
 #include "mds_f.h"
@@ -277,7 +281,11 @@ static int wbsoft_config(struct ieee80211_hw *dev, u32 changed)
 	return 0;
 }
 
+<<<<<<< HEAD
 static u64 wbsoft_get_tsf(struct ieee80211_hw *dev)
+=======
+static u64 wbsoft_get_tsf(struct ieee80211_hw *dev, struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	printk("wbsoft_get_tsf called\n");
 	return 0;
@@ -864,6 +872,7 @@ static struct usb_driver wb35_driver = {
 	.disconnect	= wb35_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init wb35_init(void)
 {
 	return usb_register(&wb35_driver);
@@ -876,3 +885,6 @@ static void __exit wb35_exit(void)
 
 module_init(wb35_init);
 module_exit(wb35_exit);
+=======
+module_usb_driver(wb35_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

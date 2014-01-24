@@ -22,6 +22,10 @@
 
 #include <linux/usb.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "usb.h"
 #include "transport.h"

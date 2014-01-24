@@ -1511,6 +1511,7 @@ static int ips_is_passthru(struct scsi_cmnd *SC)
                 /* kmap_atomic() ensures addressability of the user buffer.*/
                 /* local_irq_save() protects the KM_IRQ0 address slot.     */
                 local_irq_save(flags);
+<<<<<<< HEAD
                 buffer = kmap_atomic(sg_page(sg), KM_IRQ0) + sg->offset;
                 if (buffer && buffer[0] == 'C' && buffer[1] == 'O' &&
                     buffer[2] == 'P' && buffer[3] == 'P') {
@@ -1519,6 +1520,16 @@ static int ips_is_passthru(struct scsi_cmnd *SC)
                         return 1;
                 }
                 kunmap_atomic(buffer - sg->offset, KM_IRQ0);
+=======
+                buffer = kmap_atomic(sg_page(sg)) + sg->offset;
+                if (buffer && buffer[0] == 'C' && buffer[1] == 'O' &&
+                    buffer[2] == 'P' && buffer[3] == 'P') {
+                        kunmap_atomic(buffer - sg->offset);
+                        local_irq_restore(flags);
+                        return 1;
+                }
+                kunmap_atomic(buffer - sg->offset);
+>>>>>>> refs/remotes/origin/cm-10.0
                 local_irq_restore(flags);
 	}
 	return 0;
@@ -4494,7 +4505,11 @@ ips_init_scb(ips_ha_t * ha, ips_scb_t * scb)
 /*                                                                          */
 /*   Initialize a CCB to default values                                     */
 /*                                                                          */
+<<<<<<< HEAD
 /* ASSUMED to be callled from within a lock                                 */
+=======
+/* ASSUMED to be called from within a lock                                 */
+>>>>>>> refs/remotes/origin/cm-10.0
 /*                                                                          */
 /****************************************************************************/
 static ips_scb_t *

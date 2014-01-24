@@ -105,7 +105,12 @@ struct compat_statfs {
 	__kernel_fsid_t	f_fsid;
 	s32		f_namelen;
 	s32		f_frsize;
+<<<<<<< HEAD
 	s32		f_spare[5];
+=======
+	s32		f_flags;
+	s32		f_spare[4];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct compat_sigcontext {

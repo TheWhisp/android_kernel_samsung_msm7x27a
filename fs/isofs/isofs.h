@@ -50,6 +50,7 @@ struct isofs_sb_info {
 	unsigned int  s_uid_set:1;
 	unsigned int  s_gid_set:1;
 
+<<<<<<< HEAD
 	mode_t s_fmode;
 	mode_t s_dmode;
 	gid_t s_gid;
@@ -59,6 +60,16 @@ struct isofs_sb_info {
 };
 
 #define ISOFS_INVALID_MODE ((mode_t) -1)
+=======
+	umode_t s_fmode;
+	umode_t s_dmode;
+	gid_t s_gid;
+	uid_t s_uid;
+	struct nls_table *s_nls_iocharset; /* Native language support table */
+};
+
+#define ISOFS_INVALID_MODE ((umode_t) -1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline struct isofs_sb_info *ISOFS_SB(struct super_block *sb)
 {

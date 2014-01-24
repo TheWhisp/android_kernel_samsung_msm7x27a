@@ -31,7 +31,10 @@
 #include "xfs_dinode.h"
 #include "xfs_inode.h"
 #include "xfs_btree.h"
+<<<<<<< HEAD
 #include "xfs_btree_trace.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xfs_alloc.h"
 #include "xfs_error.h"
 #include "xfs_trace.h"
@@ -311,6 +314,7 @@ xfs_allocbt_recs_inorder(
 }
 #endif	/* DEBUG */
 
+<<<<<<< HEAD
 #ifdef XFS_BTREE_TRACE
 ktrace_t	*xfs_allocbt_trace_buf;
 
@@ -377,6 +381,8 @@ xfs_allocbt_trace_record(
 }
 #endif /* XFS_BTREE_TRACE */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct xfs_btree_ops xfs_allocbt_ops = {
 	.rec_len		= sizeof(xfs_alloc_rec_t),
 	.key_len		= sizeof(xfs_alloc_key_t),
@@ -393,11 +399,15 @@ static const struct xfs_btree_ops xfs_allocbt_ops = {
 	.init_rec_from_cur	= xfs_allocbt_init_rec_from_cur,
 	.init_ptr_from_cur	= xfs_allocbt_init_ptr_from_cur,
 	.key_diff		= xfs_allocbt_key_diff,
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef DEBUG
 	.keys_inorder		= xfs_allocbt_keys_inorder,
 	.recs_inorder		= xfs_allocbt_recs_inorder,
 #endif
+<<<<<<< HEAD
 
 #ifdef XFS_BTREE_TRACE
 	.trace_enter		= xfs_allocbt_trace_enter,
@@ -405,6 +415,8 @@ static const struct xfs_btree_ops xfs_allocbt_ops = {
 	.trace_key		= xfs_allocbt_trace_key,
 	.trace_record		= xfs_allocbt_trace_record,
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -427,6 +439,7 @@ xfs_allocbt_init_cursor(
 
 	cur->bc_tp = tp;
 	cur->bc_mp = mp;
+<<<<<<< HEAD
 	cur->bc_nlevels = be32_to_cpu(agf->agf_levels[btnum]);
 	cur->bc_btnum = btnum;
 	cur->bc_blocklog = mp->m_sb.sb_blocklog;
@@ -434,6 +447,18 @@ xfs_allocbt_init_cursor(
 	cur->bc_ops = &xfs_allocbt_ops;
 	if (btnum == XFS_BTNUM_CNT)
 		cur->bc_flags = XFS_BTREE_LASTREC_UPDATE;
+=======
+	cur->bc_btnum = btnum;
+	cur->bc_blocklog = mp->m_sb.sb_blocklog;
+	cur->bc_ops = &xfs_allocbt_ops;
+
+	if (btnum == XFS_BTNUM_CNT) {
+		cur->bc_nlevels = be32_to_cpu(agf->agf_levels[XFS_BTNUM_CNT]);
+		cur->bc_flags = XFS_BTREE_LASTREC_UPDATE;
+	} else {
+		cur->bc_nlevels = be32_to_cpu(agf->agf_levels[XFS_BTNUM_BNO]);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cur->bc_private.a.agbp = agbp;
 	cur->bc_private.a.agno = agno;

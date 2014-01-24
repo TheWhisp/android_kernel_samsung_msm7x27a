@@ -16,6 +16,10 @@
 #include <mach/rpc_pmapp.h>
 #include <linux/err.h>
 #include <linux/qcomwlan7x27a_pwrif.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define WLAN_GPIO_EXT_POR_N     134
 

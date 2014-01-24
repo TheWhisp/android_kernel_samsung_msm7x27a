@@ -258,33 +258,57 @@ static void __init netspace_v2_init(void)
 
 #ifdef CONFIG_MACH_NETSPACE_V2
 MACHINE_START(NETSPACE_V2, "LaCie Network Space v2")
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= netspace_v2_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
 	.timer		= &kirkwood_timer,
+<<<<<<< HEAD
+=======
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_INETSPACE_V2
 MACHINE_START(INETSPACE_V2, "LaCie Internet Space v2")
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= netspace_v2_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
 	.timer		= &kirkwood_timer,
+<<<<<<< HEAD
+=======
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_NETSPACE_MAX_V2
 MACHINE_START(NETSPACE_MAX_V2, "LaCie Network Space Max v2")
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= netspace_v2_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
 	.timer		= &kirkwood_timer,
+<<<<<<< HEAD
+=======
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 #endif

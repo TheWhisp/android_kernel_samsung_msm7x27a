@@ -76,6 +76,10 @@ static void orinoco_add_hostscan_result(struct orinoco_private *priv,
 {
 	struct wiphy *wiphy = priv_to_wiphy(priv);
 	struct ieee80211_channel *channel;
+<<<<<<< HEAD
+=======
+	struct cfg80211_bss *cbss;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 *ie;
 	u8 ie_buf[46];
 	u64 timestamp;
@@ -121,9 +125,16 @@ static void orinoco_add_hostscan_result(struct orinoco_private *priv,
 	beacon_interval = le16_to_cpu(bss->a.beacon_interv);
 	signal = SIGNAL_TO_MBM(le16_to_cpu(bss->a.level));
 
+<<<<<<< HEAD
 	cfg80211_inform_bss(wiphy, channel, bss->a.bssid, timestamp,
 			    capability, beacon_interval, ie_buf, ie_len,
 			    signal, GFP_KERNEL);
+=======
+	cbss = cfg80211_inform_bss(wiphy, channel, bss->a.bssid, timestamp,
+				   capability, beacon_interval, ie_buf, ie_len,
+				   signal, GFP_KERNEL);
+	cfg80211_put_bss(cbss);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void orinoco_add_extscan_result(struct orinoco_private *priv,
@@ -132,6 +143,10 @@ void orinoco_add_extscan_result(struct orinoco_private *priv,
 {
 	struct wiphy *wiphy = priv_to_wiphy(priv);
 	struct ieee80211_channel *channel;
+<<<<<<< HEAD
+=======
+	struct cfg80211_bss *cbss;
+>>>>>>> refs/remotes/origin/cm-10.0
 	const u8 *ie;
 	u64 timestamp;
 	s32 signal;
@@ -152,9 +167,16 @@ void orinoco_add_extscan_result(struct orinoco_private *priv,
 	ie = bss->data;
 	signal = SIGNAL_TO_MBM(bss->level);
 
+<<<<<<< HEAD
 	cfg80211_inform_bss(wiphy, channel, bss->bssid, timestamp,
 			    capability, beacon_interval, ie, ie_len,
 			    signal, GFP_KERNEL);
+=======
+	cbss = cfg80211_inform_bss(wiphy, channel, bss->bssid, timestamp,
+				   capability, beacon_interval, ie, ie_len,
+				   signal, GFP_KERNEL);
+	cfg80211_put_bss(cbss);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void orinoco_add_hostscan_results(struct orinoco_private *priv,

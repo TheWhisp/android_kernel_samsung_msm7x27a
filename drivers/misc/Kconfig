@@ -2,14 +2,20 @@
 # Misc strange devices
 #
 
+<<<<<<< HEAD
 # This one has to live outside of the MISC_DEVICES conditional,
 # because it may be selected by drivers/platform/x86/hp_accel.
+=======
+menu "Misc devices"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config SENSORS_LIS3LV02D
 	tristate
 	depends on INPUT
 	select INPUT_POLLDEV
 	default n
 
+<<<<<<< HEAD
 menuconfig MISC_DEVICES
 	bool "Misc devices"
 	---help---
@@ -20,6 +26,8 @@ menuconfig MISC_DEVICES
 
 if MISC_DEVICES
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config AD525X_DPOT
 	tristate "Analog Devices Digital Potentiometers"
 	depends on (I2C || SPI) && SYSFS
@@ -62,12 +70,21 @@ config AD525X_DPOT_SPI
 	  module will be called ad525x_dpot-spi.
 
 config ANDROID_PMEM
+<<<<<<< HEAD
         bool "Android pmem allocator"
         default y
 
 config ATMEL_PWM
 	tristate "Atmel AT32/AT91 PWM support"
 	depends on AVR32 || ARCH_AT91SAM9263 || ARCH_AT91SAM9RL || ARCH_AT91CAP9
+=======
+	bool "Android pmem allocator"
+	default y
+
+config ATMEL_PWM
+	tristate "Atmel AT32/AT91 PWM support"
+	depends on HAVE_CLK
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This option enables device driver support for the PWM channels
 	  on certain Atmel processors.  Pulse Width Modulation is used for
@@ -150,6 +167,10 @@ config PHANTOM
 
 config INTEL_MID_PTI
 	tristate "Parallel Trace Interface for MIPI P1149.7 cJTAG standard"
+<<<<<<< HEAD
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/cm-10.0
 	default n
 	help
 	  The PTI (Parallel Trace Interface) driver directs
@@ -506,6 +527,26 @@ config PCH_PHUB
 	  To compile this driver as a module, choose M here: the module will
 	  be called pch_phub.
 
+<<<<<<< HEAD
+=======
+config USB_SWITCH_FSA9480
+	tristate "FSA9480 USB Switch"
+	depends on I2C
+	help
+	  The FSA9480 is a USB port accessory detector and switch.
+	  The FSA9480 is fully controlled using I2C and enables USB data,
+	  stereo and mono audio, video, microphone and UART data to use
+	  a common connector port.
+
+config MAX8997_MUIC
+	tristate "MAX8997 MUIC Support"
+	depends on MFD_MAX8997
+	help
+	  If you say yes here you get support for the MUIC device of
+	  Maxim MAX8997 PMIC.
+	  The MAX8997 MUIC is a USB port accessory detector and switch.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config WL127X_RFKILL
 	tristate "Bluetooth power control driver for TI wl127x"
 	depends on RFKILL
@@ -632,6 +673,7 @@ config FSAXXXX_USBSW
 	depends on I2C
 	default n
 
+<<<<<<< HEAD
 config TZCOM
 	tristate "Trustzone Communicator driver"
 	default n
@@ -640,6 +682,8 @@ config TZCOM
 	  TrustZone Operating Environment (TZBSP) using Secure Channel
 	  Manager (SCM) interface.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config QSEECOM
 	tristate "Qualcomm Secure Execution Communicator driver"
 	help
@@ -655,6 +699,19 @@ config QFP_FUSE
 	  to the fuse block. Currently this is supported only
 	  on FSM targets.
 
+<<<<<<< HEAD
+=======
+config USB_HSIC_SMSC_HUB
+	tristate "Support for HSIC based MSM on-chip SMSC3503 HUB"
+	depends on USB_EHCI_MSM_HSIC
+	help
+	  Enables support for the HSIC (High Speed Inter-Chip) based
+	  SMSC3503 hub controller present on the Qualcomm chipsets.
+
+	  This adds support for connecting devices like mouse in HSIC
+	  Host mode.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config SEC_MISC
 	bool "Samsung P series miscellaneous driver"
 	default n
@@ -680,5 +737,10 @@ source "drivers/misc/iwmc3200top/Kconfig"
 source "drivers/misc/ti-st/Kconfig"
 source "drivers/misc/lis3lv02d/Kconfig"
 source "drivers/misc/carma/Kconfig"
+<<<<<<< HEAD
 
 endif # MISC_DEVICES
+=======
+source "drivers/misc/altera-stapl/Kconfig"
+endmenu
+>>>>>>> refs/remotes/origin/cm-10.0

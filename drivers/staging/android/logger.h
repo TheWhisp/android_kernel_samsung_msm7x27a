@@ -20,12 +20,16 @@
 #include <linux/types.h>
 #include <linux/ioctl.h>
 
+<<<<<<< HEAD
 /*
  * The userspace structure for version 1 of the logger_entry ABI.
  * This structure is returned to userspace unless the caller requests
  * an upgrade to a newer ABI version.
  */
 struct user_logger_entry_compat {
+=======
+struct logger_entry {
+>>>>>>> refs/remotes/origin/cm-10.0
 	__u16		len;	/* length of the payload */
 	__u16		__pad;	/* no matter what, we get 2 bytes of padding */
 	__s32		pid;	/* generating process's pid */
@@ -35,6 +39,7 @@ struct user_logger_entry_compat {
 	char		msg[0];	/* the entry's payload */
 };
 
+<<<<<<< HEAD
 /*
  * The structure for version 2 of the logger_entry ABI.
  * This structure is returned to userspace if ioctl(LOGGER_SET_VERSION)
@@ -51,12 +56,20 @@ struct logger_entry {
 	char		msg[0];		/* the entry's payload */
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define LOGGER_LOG_RADIO	"log_radio"	/* radio-related messages */
 #define LOGGER_LOG_EVENTS	"log_events"	/* system/hardware events */
 #define LOGGER_LOG_SYSTEM	"log_system"	/* system/framework messages */
 #define LOGGER_LOG_MAIN		"log_main"	/* everything else */
 
+<<<<<<< HEAD
 #define LOGGER_ENTRY_MAX_PAYLOAD	4076
+=======
+#define LOGGER_ENTRY_MAX_LEN		(4*1024)
+#define LOGGER_ENTRY_MAX_PAYLOAD	\
+	(LOGGER_ENTRY_MAX_LEN - sizeof(struct logger_entry))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define __LOGGERIO	0xAE
 
@@ -64,7 +77,10 @@ struct logger_entry {
 #define LOGGER_GET_LOG_LEN		_IO(__LOGGERIO, 2) /* used log len */
 #define LOGGER_GET_NEXT_ENTRY_LEN	_IO(__LOGGERIO, 3) /* next entry len */
 #define LOGGER_FLUSH_LOG		_IO(__LOGGERIO, 4) /* flush log */
+<<<<<<< HEAD
 #define LOGGER_GET_VERSION		_IO(__LOGGERIO, 5) /* abi version */
 #define LOGGER_SET_VERSION		_IO(__LOGGERIO, 6) /* abi version */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* _LINUX_LOGGER_H */

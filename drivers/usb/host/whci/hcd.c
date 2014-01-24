@@ -17,6 +17,10 @@
  */
 #include <linux/kernel.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/uwb/umc.h>
 
 #include "../../wusbcore/wusbhc.h"

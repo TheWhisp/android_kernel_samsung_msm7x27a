@@ -2,7 +2,11 @@
 #include <linux/user-return-notifier.h>
 #include <linux/percpu.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static DEFINE_PER_CPU(struct hlist_head, return_notifier_list);
 

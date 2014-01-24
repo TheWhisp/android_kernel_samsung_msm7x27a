@@ -16,6 +16,11 @@
 #include <linux/interrupt.h>
 #include <linux/kernel_stat.h>
 
+<<<<<<< HEAD
+=======
+#include <trace/events/irq.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "internals.h"
 
 /**
@@ -525,6 +530,10 @@ handle_edge_irq(unsigned int irq, struct irq_desc *desc)
 out_unlock:
 	raw_spin_unlock(&desc->lock);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(handle_edge_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_IRQ_EDGE_EOI_HANDLER
 /**

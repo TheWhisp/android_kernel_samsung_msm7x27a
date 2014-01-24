@@ -22,6 +22,10 @@
  */
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -39,8 +43,13 @@
 
 #include <mach/hardware.h>
 #include <mach/board.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/at91rm9200_mc.h>
+=======
+#include <mach/at91rm9200_mc.h>
+#include <mach/at91_ramc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "generic.h"
 
@@ -48,7 +57,11 @@
 static void __init ek_init_early(void)
 {
 	/* Initialize processor: 18.432 MHz crystal */
+<<<<<<< HEAD
 	at91rm9200_initialize(18432000);
+=======
+	at91_initialize(18432000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Setup the LEDs */
 	at91_init_leds(AT91_PIN_PB1, AT91_PIN_PB2);
@@ -65,18 +78,27 @@ static void __init ek_init_early(void)
 	at91_set_serial_console(0);
 }
 
+<<<<<<< HEAD
 static void __init ek_init_irq(void)
 {
 	at91rm9200_init_interrupts(NULL);
 }
 
 static struct at91_eth_data __initdata ek_eth_data = {
+=======
+static struct macb_platform_data __initdata ek_eth_data = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.phy_irq_pin	= AT91_PIN_PC4,
 	.is_rmii	= 1,
 };
 
 static struct at91_usbh_data __initdata ek_usbh_data = {
 	.ports		= 2,
+<<<<<<< HEAD
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct at91_udc_data __initdata ek_udc_data = {
@@ -90,6 +112,10 @@ static struct at91_mmc_data __initdata ek_mmc_data = {
 	.slot_b		= 0,
 	.wire4		= 1,
 	.wp_pin		= AT91_PIN_PA17,
+<<<<<<< HEAD
+=======
+	.vcc_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -118,7 +144,11 @@ static struct i2c_board_info __initdata ek_i2c_devices[] = {
 };
 
 #define EK_FLASH_BASE	AT91_CHIPSELECT_0
+<<<<<<< HEAD
 #define EK_FLASH_SIZE	SZ_2M
+=======
+#define EK_FLASH_SIZE	SZ_8M
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct physmap_flash_data ek_flash_data = {
 	.width		= 2,
@@ -194,8 +224,14 @@ static void __init ek_board_init(void)
 MACHINE_START(AT91RM9200EK, "Atmel AT91RM9200-EK")
 	/* Maintainer: SAN People/Atmel */
 	.timer		= &at91rm9200_timer,
+<<<<<<< HEAD
 	.map_io		= at91rm9200_map_io,
 	.init_early	= ek_init_early,
 	.init_irq	= ek_init_irq,
+=======
+	.map_io		= at91_map_io,
+	.init_early	= ek_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.init_machine	= ek_board_init,
 MACHINE_END

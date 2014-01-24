@@ -17,7 +17,10 @@
 #include <asm/fw/arc/types.h>
 #include <asm/sgialib.h>
 #include <asm/bootinfo.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 VOID
 ArcHalt(VOID)

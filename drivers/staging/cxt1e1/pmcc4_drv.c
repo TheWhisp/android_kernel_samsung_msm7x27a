@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 /*
  * $Id: pmcc4_drv.c,v 3.1 2007/08/15 23:32:17 rickd PMCC4_3_1B $
  */
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*-----------------------------------------------------------------------------
  * pmcc4_drv.c -
  *
@@ -22,6 +25,7 @@
  * For further information, contact via email: support@onestopsystems.com
  * One Stop Systems, Inc.  Escondido, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 3.1 $
  * Last changed on $Date: 2007/08/15 23:32:17 $
@@ -90,6 +94,12 @@ char        OSSIid_pmcc4_drvc[] =
 #include <sys/systm.h>
 #include <sys/errno.h>
 #else
+=======
+ */
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include "pmcc4_sysdep.h"
 #include <linux/errno.h>
@@ -98,7 +108,10 @@ char        OSSIid_pmcc4_drvc[] =
 #include <linux/timer.h>        /* include for timer */
 #include <linux/hdlc.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "sbecom_inline_linux.h"
 #include "libsbew.h"

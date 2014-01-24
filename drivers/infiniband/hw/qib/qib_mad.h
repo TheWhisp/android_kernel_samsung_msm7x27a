@@ -32,6 +32,11 @@
  * SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#include <rdma/ib_pma.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IB_SMP_UNSUP_VERSION    cpu_to_be16(0x0004)
 #define IB_SMP_UNSUP_METHOD     cpu_to_be16(0x0008)
 #define IB_SMP_UNSUP_METH_ATTR  cpu_to_be16(0x000C)
@@ -180,6 +185,7 @@ struct ib_vl_weight_elem {
 #define IB_VLARB_HIGHPRI_0_31   3
 #define IB_VLARB_HIGHPRI_32_63  4
 
+<<<<<<< HEAD
 /*
  * PMA class portinfo capability mask bits
  */
@@ -283,6 +289,10 @@ struct ib_pma_portcounters {
 	__be32 port_rcv_packets;
 } __attribute__ ((packed));
 
+=======
+#define IB_PMA_PORT_COUNTERS_CONG       cpu_to_be16(0xFF00)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ib_pma_portcounters_cong {
 	u8 reserved;
 	u8 reserved1;
@@ -297,7 +307,11 @@ struct ib_pma_portcounters_cong {
 	u8 port_xmit_constraint_errors;
 	u8 port_rcv_constraint_errors;
 	u8 reserved2;
+<<<<<<< HEAD
 	u8 lli_ebor_errors;    /* 4, 4, bits */
+=======
+	u8 link_overrun_errors; /* LocalLink: 7:4, BufferOverrun: 3:0 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	__be16 reserved3;
 	__be16 vl15_dropped;
 	__be64 port_xmit_data;
@@ -316,6 +330,7 @@ struct ib_pma_portcounters_cong {
 /* number of 4nsec cycles equaling 2secs */
 #define QIB_CONG_TIMER_PSINTERVAL               0x1DCD64EC
 
+<<<<<<< HEAD
 #define IB_PMA_SEL_SYMBOL_ERROR                 cpu_to_be16(0x0001)
 #define IB_PMA_SEL_LINK_ERROR_RECOVERY          cpu_to_be16(0x0002)
 #define IB_PMA_SEL_LINK_DOWNED                  cpu_to_be16(0x0004)
@@ -330,11 +345,14 @@ struct ib_pma_portcounters_cong {
 #define IB_PMA_SEL_PORT_XMIT_PACKETS            cpu_to_be16(0x4000)
 #define IB_PMA_SEL_PORT_RCV_PACKETS             cpu_to_be16(0x8000)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define IB_PMA_SEL_CONG_ALL                     0x01
 #define IB_PMA_SEL_CONG_PORT_DATA               0x02
 #define IB_PMA_SEL_CONG_XMIT                    0x04
 #define IB_PMA_SEL_CONG_ROUTING                 0x08
 
+<<<<<<< HEAD
 struct ib_pma_portcounters_ext {
 	u8 reserved;
 	u8 port_select;
@@ -359,6 +377,8 @@ struct ib_pma_portcounters_ext {
 #define IB_PMA_SELX_PORT_MULTI_XMIT_PACKETS     cpu_to_be16(0x0040)
 #define IB_PMA_SELX_PORT_MULTI_RCV_PACKETS      cpu_to_be16(0x0080)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * The PortSamplesControl.CounterMasks field is an array of 3 bit fields
  * which specify the N'th counter's capabilities. See ch. 16.1.3.2.

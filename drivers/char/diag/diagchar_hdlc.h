@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2008-2009, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2008-2009, 2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -54,7 +58,10 @@ void diag_hdlc_encode(struct diag_send_desc_type *src_desc,
 int diag_hdlc_decode(struct diag_hdlc_decode_type *hdlc);
 
 #define ESC_CHAR     0x7D
+<<<<<<< HEAD
 #define CONTROL_CHAR 0x7E
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ESC_MASK     0x20
 
 #endif

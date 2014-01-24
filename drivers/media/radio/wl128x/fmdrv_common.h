@@ -368,6 +368,7 @@ struct fm_event_msg_hdr {
 #define FM_TX_ANT_IMP_500		2
 
 /* Functions exported by FM common sub-module */
+<<<<<<< HEAD
 u32 fmc_prepare(struct fmdev *);
 u32 fmc_release(struct fmdev *);
 
@@ -389,6 +390,29 @@ u32 fmc_set_rds_mode(struct fmdev *, u8);
 u32 fmc_get_freq(struct fmdev *, u32 *);
 u32 fmc_get_region(struct fmdev *, u8 *);
 u32 fmc_get_mode(struct fmdev *, u8 *);
+=======
+int fmc_prepare(struct fmdev *);
+int fmc_release(struct fmdev *);
+
+void fmc_update_region_info(struct fmdev *, u8);
+int fmc_send_cmd(struct fmdev *, u8, u16,
+				void *, unsigned int, void *, int *);
+int fmc_is_rds_data_available(struct fmdev *, struct file *,
+				struct poll_table_struct *);
+int fmc_transfer_rds_from_internal_buff(struct fmdev *, struct file *,
+					u8 __user *, size_t);
+
+int fmc_set_freq(struct fmdev *, u32);
+int fmc_set_mode(struct fmdev *, u8);
+int fmc_set_region(struct fmdev *, u8);
+int fmc_set_mute_mode(struct fmdev *, u8);
+int fmc_set_stereo_mono(struct fmdev *, u16);
+int fmc_set_rds_mode(struct fmdev *, u8);
+
+int fmc_get_freq(struct fmdev *, u32 *);
+int fmc_get_region(struct fmdev *, u8 *);
+int fmc_get_mode(struct fmdev *, u8 *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * channel spacing

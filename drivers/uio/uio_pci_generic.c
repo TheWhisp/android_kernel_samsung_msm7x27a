@@ -24,7 +24,10 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/uio_driver.h>
+<<<<<<< HEAD
 #include <linux/spinlock.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVER_VERSION	"0.01.0"
 #define DRIVER_AUTHOR	"Michael S. Tsirkin <mst@redhat.com>"
@@ -33,7 +36,10 @@
 struct uio_pci_generic_dev {
 	struct uio_info info;
 	struct pci_dev *pdev;
+<<<<<<< HEAD
 	spinlock_t lock; /* guards command register accesses */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static inline struct uio_pci_generic_dev *
@@ -47,6 +53,7 @@ to_uio_pci_generic_dev(struct uio_info *info)
 static irqreturn_t irqhandler(int irq, struct uio_info *info)
 {
 	struct uio_pci_generic_dev *gdev = to_uio_pci_generic_dev(info);
+<<<<<<< HEAD
 	struct pci_dev *pdev = gdev->pdev;
 	irqreturn_t ret = IRQ_NONE;
 	u32 cmd_status_dword;
@@ -120,6 +127,14 @@ static int __devinit verify_pci_2_3(struct pci_dev *pdev)
 err:
 	pci_unblock_user_cfg_access(pdev);
 	return err;
+=======
+
+	if (!pci_check_and_mask_intx(gdev->pdev))
+		return IRQ_NONE;
+
+	/* UIO core will signal the user process. */
+	return IRQ_HANDLED;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit probe(struct pci_dev *pdev,
@@ -142,9 +157,16 @@ static int __devinit probe(struct pci_dev *pdev,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	err = verify_pci_2_3(pdev);
 	if (err)
 		goto err_verify;
+=======
+	if (!pci_intx_mask_supported(pdev)) {
+		err = -ENODEV;
+		goto err_verify;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	gdev = kzalloc(sizeof(struct uio_pci_generic_dev), GFP_KERNEL);
 	if (!gdev) {
@@ -158,7 +180,10 @@ static int __devinit probe(struct pci_dev *pdev,
 	gdev->info.irq_flags = IRQF_SHARED;
 	gdev->info.handler = irqhandler;
 	gdev->pdev = pdev;
+<<<<<<< HEAD
 	spin_lock_init(&gdev->lock);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (uio_register_device(&pdev->dev, &gdev->info))
 		goto err_register;

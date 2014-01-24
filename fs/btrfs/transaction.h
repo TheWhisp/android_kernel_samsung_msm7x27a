@@ -43,6 +43,10 @@ struct btrfs_transaction {
 	wait_queue_head_t commit_wait;
 	struct list_head pending_snapshots;
 	struct btrfs_delayed_ref_root delayed_refs;
+<<<<<<< HEAD
+=======
+	int aborted;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct btrfs_trans_handle {
@@ -55,6 +59,10 @@ struct btrfs_trans_handle {
 	struct btrfs_transaction *transaction;
 	struct btrfs_block_rsv *block_rsv;
 	struct btrfs_block_rsv *orig_rsv;
+<<<<<<< HEAD
+=======
+	int aborted;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct btrfs_pending_snapshot {
@@ -114,4 +122,8 @@ int btrfs_wait_marked_extents(struct btrfs_root *root,
 				struct extent_io_tree *dirty_pages, int mark);
 int btrfs_transaction_blocked(struct btrfs_fs_info *info);
 int btrfs_transaction_in_commit(struct btrfs_fs_info *info);
+<<<<<<< HEAD
+=======
+void put_transaction(struct btrfs_transaction *transaction);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

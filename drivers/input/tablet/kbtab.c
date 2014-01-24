@@ -198,6 +198,7 @@ static struct usb_driver kbtab_driver = {
 	.id_table =	kbtab_ids,
 };
 
+<<<<<<< HEAD
 static int __init kbtab_init(void)
 {
 	int retval;
@@ -217,3 +218,6 @@ static void __exit kbtab_exit(void)
 
 module_init(kbtab_init);
 module_exit(kbtab_exit);
+=======
+module_usb_driver(kbtab_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

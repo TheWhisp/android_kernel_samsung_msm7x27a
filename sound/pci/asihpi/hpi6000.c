@@ -1,7 +1,11 @@
 /******************************************************************************
 
     AudioScience HPI driver
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/cm-10.0
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -231,6 +235,11 @@ static void subsys_message(struct hpi_message *phm, struct hpi_response *phr)
 static void control_message(struct hpi_adapter_obj *pao,
 	struct hpi_message *phm, struct hpi_response *phr)
 {
+<<<<<<< HEAD
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (phm->function) {
 	case HPI_CONTROL_GET_STATE:
 		if (pao->has_control_cache) {
@@ -248,17 +257,25 @@ static void control_message(struct hpi_adapter_obj *pao,
 				break;
 			}
 
+<<<<<<< HEAD
 			if (hpi_check_control_cache(((struct hpi_hw_obj *)
 						pao->priv)->p_cache, phm,
 					phr))
+=======
+			if (hpi_check_control_cache(phw->p_cache, phm, phr))
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 		}
 		hw_message(pao, phm, phr);
 		break;
 	case HPI_CONTROL_SET_STATE:
 		hw_message(pao, phm, phr);
+<<<<<<< HEAD
 		hpi_cmn_control_cache_sync_to_msg(((struct hpi_hw_obj *)pao->
 				priv)->p_cache, phm, phr);
+=======
+		hpi_cmn_control_cache_sync_to_msg(phw->p_cache, phm, phr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case HPI_CONTROL_GET_INFO:
@@ -359,7 +376,11 @@ void HPI_6000(struct hpi_message *phm, struct hpi_response *phr)
 			HPI_ERROR_PROCESSING_MESSAGE);
 
 	switch (phm->type) {
+<<<<<<< HEAD
 	case HPI_TYPE_MESSAGE:
+=======
+	case HPI_TYPE_REQUEST:
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch (phm->object) {
 		case HPI_OBJ_SUBSYSTEM:
 			subsys_message(phm, phr);
@@ -451,11 +472,19 @@ static void subsys_create_adapter(struct hpi_message *phm,
 	}
 
 	for (dsp_index = 0; dsp_index < MAX_DSPS; dsp_index++) {
+<<<<<<< HEAD
 		struct hpi_hw_obj *phw = (struct hpi_hw_obj *)pao->priv;
 		phw->ado[dsp_index].pa_parent_adapter = pao;
 	}
 
 	phr->u.s.adapter_type = ao.adapter_type;
+=======
+		struct hpi_hw_obj *phw = pao->priv;
+		phw->ado[dsp_index].pa_parent_adapter = pao;
+	}
+
+	phr->u.s.adapter_type = ao.type;
+>>>>>>> refs/remotes/origin/cm-10.0
 	phr->u.s.adapter_index = ao.index;
 	phr->error = 0;
 }
@@ -476,7 +505,11 @@ static short create_adapter_obj(struct hpi_adapter_obj *pao,
 	u32 dsp_index = 0;
 	u32 control_cache_size = 0;
 	u32 control_cache_count = 0;
+<<<<<<< HEAD
 	struct hpi_hw_obj *phw = (struct hpi_hw_obj *)pao->priv;
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* The PCI2040 has the following address map */
 	/* BAR0 - 4K = HPI control and status registers on PCI2040 (HPI CSR) */
@@ -538,7 +571,11 @@ static short create_adapter_obj(struct hpi_adapter_obj *pao,
 
 		HPI_DEBUG_LOG(VERBOSE, "send ADAPTER_GET_INFO\n");
 		memset(&hm, 0, sizeof(hm));
+<<<<<<< HEAD
 		hm.type = HPI_TYPE_MESSAGE;
+=======
+		hm.type = HPI_TYPE_REQUEST;
+>>>>>>> refs/remotes/origin/cm-10.0
 		hm.size = sizeof(struct hpi_message);
 		hm.object = HPI_OBJ_ADAPTER;
 		hm.function = HPI_ADAPTER_GET_INFO;
@@ -559,7 +596,11 @@ static short create_adapter_obj(struct hpi_adapter_obj *pao,
 			if (error)
 				return error;
 		}
+<<<<<<< HEAD
 		pao->adapter_type = hr0.u.ax.info.adapter_type;
+=======
+		pao->type = hr0.u.ax.info.adapter_type;
+>>>>>>> refs/remotes/origin/cm-10.0
 		pao->index = hr0.u.ax.info.adapter_index;
 	}
 
@@ -584,9 +625,14 @@ static short create_adapter_obj(struct hpi_adapter_obj *pao,
 			pao->has_control_cache = 1;
 	}
 
+<<<<<<< HEAD
 	HPI_DEBUG_LOG(DEBUG, "get adapter info ASI%04X index %d\n",
 		pao->adapter_type, pao->index);
 	pao->open = 0;	/* upon creation the adapter is closed */
+=======
+	HPI_DEBUG_LOG(DEBUG, "get adapter info ASI%04X index %d\n", pao->type,
+		pao->index);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (phw->p_cache)
 		phw->p_cache->adap_idx = pao->index;
@@ -596,7 +642,11 @@ static short create_adapter_obj(struct hpi_adapter_obj *pao,
 
 static void delete_adapter_obj(struct hpi_adapter_obj *pao)
 {
+<<<<<<< HEAD
 	struct hpi_hw_obj *phw = (struct hpi_hw_obj *)pao->priv;
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (pao->has_control_cache)
 		hpi_free_control_cache(phw->p_cache);
@@ -639,7 +689,11 @@ static void adapter_get_asserts(struct hpi_adapter_obj *pao,
 static short hpi6000_adapter_boot_load_dsp(struct hpi_adapter_obj *pao,
 	u32 *pos_error_code)
 {
+<<<<<<< HEAD
 	struct hpi_hw_obj *phw = (struct hpi_hw_obj *)pao->priv;
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	short error;
 	u32 timeout;
 	u32 read = 0;
@@ -946,11 +1000,16 @@ static short hpi6000_adapter_boot_load_dsp(struct hpi_adapter_obj *pao,
 		}
 
 		/* write the DSP code down into the DSPs memory */
+<<<<<<< HEAD
 		/*HpiDspCode_Open(nBootLoadFamily,&DspCode,pdwOsErrorCode); */
 		dsp_code.ps_dev = pao->pci.pci_dev;
 
 		error = hpi_dsp_code_open(boot_load_family, &dsp_code,
 			pos_error_code);
+=======
+		error = hpi_dsp_code_open(boot_load_family, pao->pci.pci_dev,
+			&dsp_code, pos_error_code);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (error)
 			return error;
@@ -1223,8 +1282,13 @@ static void hpi_read_block(struct dsp_obj *pdo, u32 address, u32 *pdata,
 static u16 hpi6000_dsp_block_write32(struct hpi_adapter_obj *pao,
 	u16 dsp_index, u32 hpi_address, u32 *source, u32 count)
 {
+<<<<<<< HEAD
 	struct dsp_obj *pdo =
 		&(*(struct hpi_hw_obj *)pao->priv).ado[dsp_index];
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+	struct dsp_obj *pdo = &phw->ado[dsp_index];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 time_out = PCI_TIMEOUT;
 	int c6711_burst_size = 128;
 	u32 local_hpi_address = hpi_address;
@@ -1261,8 +1325,13 @@ static u16 hpi6000_dsp_block_write32(struct hpi_adapter_obj *pao,
 static u16 hpi6000_dsp_block_read32(struct hpi_adapter_obj *pao,
 	u16 dsp_index, u32 hpi_address, u32 *dest, u32 count)
 {
+<<<<<<< HEAD
 	struct dsp_obj *pdo =
 		&(*(struct hpi_hw_obj *)pao->priv).ado[dsp_index];
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+	struct dsp_obj *pdo = &phw->ado[dsp_index];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 time_out = PCI_TIMEOUT;
 	int c6711_burst_size = 16;
 	u32 local_hpi_address = hpi_address;
@@ -1301,7 +1370,11 @@ static u16 hpi6000_dsp_block_read32(struct hpi_adapter_obj *pao,
 static short hpi6000_message_response_sequence(struct hpi_adapter_obj *pao,
 	u16 dsp_index, struct hpi_message *phm, struct hpi_response *phr)
 {
+<<<<<<< HEAD
 	struct hpi_hw_obj *phw = (struct hpi_hw_obj *)pao->priv;
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dsp_obj *pdo = &phw->ado[dsp_index];
 	u32 timeout;
 	u16 ack;
@@ -1417,8 +1490,13 @@ static short hpi6000_send_data_check_adr(u32 address, u32 length_in_dwords)
 static short hpi6000_send_data(struct hpi_adapter_obj *pao, u16 dsp_index,
 	struct hpi_message *phm, struct hpi_response *phr)
 {
+<<<<<<< HEAD
 	struct dsp_obj *pdo =
 		&(*(struct hpi_hw_obj *)pao->priv).ado[dsp_index];
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+	struct dsp_obj *pdo = &phw->ado[dsp_index];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 data_sent = 0;
 	u16 ack;
 	u32 length, address;
@@ -1490,8 +1568,13 @@ static short hpi6000_send_data(struct hpi_adapter_obj *pao, u16 dsp_index,
 static short hpi6000_get_data(struct hpi_adapter_obj *pao, u16 dsp_index,
 	struct hpi_message *phm, struct hpi_response *phr)
 {
+<<<<<<< HEAD
 	struct dsp_obj *pdo =
 		&(*(struct hpi_hw_obj *)pao->priv).ado[dsp_index];
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+	struct dsp_obj *pdo = &phw->ado[dsp_index];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 data_got = 0;
 	u16 ack;
 	u32 length, address;
@@ -1554,8 +1637,13 @@ static void hpi6000_send_dsp_interrupt(struct dsp_obj *pdo)
 static short hpi6000_send_host_command(struct hpi_adapter_obj *pao,
 	u16 dsp_index, u32 host_cmd)
 {
+<<<<<<< HEAD
 	struct dsp_obj *pdo =
 		&(*(struct hpi_hw_obj *)pao->priv).ado[dsp_index];
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+	struct dsp_obj *pdo = &phw->ado[dsp_index];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 timeout = TIMEOUT;
 
 	/* set command */
@@ -1580,7 +1668,11 @@ static short hpi6000_check_PCI2040_error_flag(struct hpi_adapter_obj *pao,
 {
 	u32 hPI_error;
 
+<<<<<<< HEAD
 	struct hpi_hw_obj *phw = (struct hpi_hw_obj *)pao->priv;
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* read the error bits from the PCI2040 */
 	hPI_error = ioread32(phw->dw2040_HPICSR + HPI_ERROR_REPORT);
@@ -1600,8 +1692,13 @@ static short hpi6000_check_PCI2040_error_flag(struct hpi_adapter_obj *pao,
 static short hpi6000_wait_dsp_ack(struct hpi_adapter_obj *pao, u16 dsp_index,
 	u32 ack_value)
 {
+<<<<<<< HEAD
 	struct dsp_obj *pdo =
 		&(*(struct hpi_hw_obj *)pao->priv).ado[dsp_index];
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+	struct dsp_obj *pdo = &phw->ado[dsp_index];
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 ack = 0L;
 	u32 timeout;
 	u32 hPIC = 0L;
@@ -1643,7 +1740,11 @@ static short hpi6000_update_control_cache(struct hpi_adapter_obj *pao,
 	struct hpi_message *phm)
 {
 	const u16 dsp_index = 0;
+<<<<<<< HEAD
 	struct hpi_hw_obj *phw = (struct hpi_hw_obj *)pao->priv;
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dsp_obj *pdo = &phw->ado[dsp_index];
 	u32 timeout;
 	u32 cache_dirty_flag;
@@ -1743,7 +1844,12 @@ static void hw_message(struct hpi_adapter_obj *pao, struct hpi_message *phm,
 {
 	u16 error = 0;
 	u16 dsp_index = 0;
+<<<<<<< HEAD
 	u16 num_dsp = ((struct hpi_hw_obj *)pao->priv)->num_dsp;
+=======
+	struct hpi_hw_obj *phw = pao->priv;
+	u16 num_dsp = phw->num_dsp;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (num_dsp < 2)
 		dsp_index = 0;

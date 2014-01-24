@@ -23,7 +23,11 @@ New accounting groups can be created under the parent group /sys/fs/cgroup.
 
 # cd /sys/fs/cgroup
 # mkdir g1
+<<<<<<< HEAD
 # echo $$ > g1
+=======
+# echo $$ > g1/tasks
+>>>>>>> refs/remotes/origin/cm-10.0
 
 The above steps create a new group g1 and move the current shell
 process (bash) into it. CPU time consumed by this bash and its children

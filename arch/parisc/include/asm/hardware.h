@@ -2,7 +2,10 @@
 #define _PARISC_HARDWARE_H
 
 #include <linux/mod_devicetable.h>
+<<<<<<< HEAD
 #include <asm/pdc.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define HWTYPE_ANY_ID		PA_HWTYPE_ANY_ID
 #define HVERSION_ANY_ID		PA_HVERSION_ANY_ID
@@ -95,12 +98,20 @@ struct bc_module {
 #define HPHW_MC	       15
 #define HPHW_FAULTY    31
 
+<<<<<<< HEAD
+=======
+struct parisc_device_id;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* hardware.c: */
 extern const char *parisc_hardware_description(struct parisc_device_id *id);
 extern enum cpu_type parisc_get_cpu_type(unsigned long hversion);
 
 struct pci_dev;
+<<<<<<< HEAD
+=======
+struct hardware_path;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* drivers.c: */
 extern struct parisc_device *alloc_pa_dev(unsigned long hpa,

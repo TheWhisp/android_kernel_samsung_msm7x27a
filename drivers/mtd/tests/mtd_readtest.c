@@ -29,7 +29,11 @@
 
 #define PRINT_PREF KERN_INFO "mtd_readtest: "
 
+<<<<<<< HEAD
 static int dev;
+=======
+static int dev = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(dev, int, S_IRUGO);
 MODULE_PARM_DESC(dev, "MTD device number to use");
 
@@ -44,7 +48,11 @@ static int pgcnt;
 
 static int read_eraseblock_by_page(int ebnum)
 {
+<<<<<<< HEAD
 	size_t read = 0;
+=======
+	size_t read;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i, ret, err = 0;
 	loff_t addr = ebnum * mtd->erasesize;
 	void *buf = iobuf;
@@ -52,7 +60,11 @@ static int read_eraseblock_by_page(int ebnum)
 
 	for (i = 0; i < pgcnt; i++) {
 		memset(buf, 0 , pgcnt);
+<<<<<<< HEAD
 		ret = mtd->read(mtd, addr, pgsize, &read, buf);
+=======
+		ret = mtd_read(mtd, addr, pgsize, &read, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret == -EUCLEAN)
 			ret = 0;
 		if (ret || read != pgsize) {
@@ -66,7 +78,11 @@ static int read_eraseblock_by_page(int ebnum)
 		if (mtd->oobsize) {
 			struct mtd_oob_ops ops;
 
+<<<<<<< HEAD
 			ops.mode      = MTD_OOB_PLACE;
+=======
+			ops.mode      = MTD_OPS_PLACE_OOB;
+>>>>>>> refs/remotes/origin/cm-10.0
 			ops.len       = 0;
 			ops.retlen    = 0;
 			ops.ooblen    = mtd->oobsize;
@@ -74,8 +90,14 @@ static int read_eraseblock_by_page(int ebnum)
 			ops.ooboffs   = 0;
 			ops.datbuf    = NULL;
 			ops.oobbuf    = oobbuf;
+<<<<<<< HEAD
 			ret = mtd->read_oob(mtd, addr, &ops);
 			if (ret || ops.oobretlen != mtd->oobsize) {
+=======
+			ret = mtd_read_oob(mtd, addr, &ops);
+			if ((ret && !mtd_is_bitflip(ret)) ||
+					ops.oobretlen != mtd->oobsize) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				printk(PRINT_PREF "error: read oob failed at "
 						  "%#llx\n", (long long)addr);
 				if (!err)
@@ -131,7 +153,11 @@ static int is_block_bad(int ebnum)
 	loff_t addr = ebnum * mtd->erasesize;
 	int ret;
 
+<<<<<<< HEAD
 	ret = mtd->block_isbad(mtd, addr);
+=======
+	ret = mtd_block_isbad(mtd, addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		printk(PRINT_PREF "block %d is bad\n", ebnum);
 	return ret;
@@ -147,8 +173,12 @@ static int scan_for_bad_eraseblocks(void)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	/* NOR flash does not implement block_isbad */
 	if (mtd->block_isbad == NULL)
+=======
+	if (!mtd_can_have_bb(mtd))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	printk(PRINT_PREF "scanning for bad eraseblocks\n");
@@ -169,6 +199,15 @@ static int __init mtd_readtest_init(void)
 
 	printk(KERN_INFO "\n");
 	printk(KERN_INFO "=================================================\n");
+<<<<<<< HEAD
+=======
+
+	if (dev < 0) {
+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(PRINT_PREF "MTD device: %d\n", dev);
 
 	mtd = get_mtd_device(NULL, dev);

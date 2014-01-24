@@ -21,8 +21,15 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <plat/clock.h>
 
+=======
+#include <plat/hardware.h>
+#include <plat/clock.h>
+
+#include "iomap.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "clock.h"
 #include "clock2xxx.h"
 #include "cm2xxx_3xxx.h"

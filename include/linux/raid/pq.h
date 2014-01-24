@@ -132,7 +132,11 @@ void raid6_dual_recov(int disks, size_t bytes, int faila, int failb,
 						     PROT_READ|PROT_WRITE,   \
 						     MAP_PRIVATE|MAP_ANONYMOUS,\
 						     0, 0))
+<<<<<<< HEAD
 # define free_pages(x, y)	munmap((void *)(x), (y)*PAGE_SIZE)
+=======
+# define free_pages(x, y)	munmap((void *)(x), PAGE_SIZE << (y))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void cpu_relax(void)
 {

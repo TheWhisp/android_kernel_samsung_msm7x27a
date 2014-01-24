@@ -150,7 +150,11 @@ static int dib0070_write_reg(struct dib0070_state *state, u8 reg, u16 val)
     } \
 } while (0)
 
+<<<<<<< HEAD
 static int dib0070_set_bandwidth(struct dvb_frontend *fe, struct dvb_frontend_parameters *ch)
+=======
+static int dib0070_set_bandwidth(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
     struct dib0070_state *state = fe->tuner_priv;
     u16 tmp = dib0070_read_reg(state, 0x02) & 0x3fff;
@@ -335,7 +339,11 @@ static const struct dib0070_lna_match dib0070_lna[] = {
 };
 
 #define LPF	100
+<<<<<<< HEAD
 static int dib0070_tune_digital(struct dvb_frontend *fe, struct dvb_frontend_parameters *ch)
+=======
+static int dib0070_tune_digital(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
     struct dib0070_state *state = fe->tuner_priv;
 
@@ -507,7 +515,11 @@ static int dib0070_tune_digital(struct dvb_frontend *fe, struct dvb_frontend_par
 
 	*tune_state = CT_TUNER_STEP_5;
     } else if (*tune_state == CT_TUNER_STEP_5) {
+<<<<<<< HEAD
 	dib0070_set_bandwidth(fe, ch);
+=======
+	dib0070_set_bandwidth(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*tune_state = CT_TUNER_STOP;
     } else {
 	ret = FE_CALLBACK_TIME_NEVER; /* tuner finished, time to call again infinite */
@@ -516,7 +528,11 @@ static int dib0070_tune_digital(struct dvb_frontend *fe, struct dvb_frontend_par
 }
 
 
+<<<<<<< HEAD
 static int dib0070_tune(struct dvb_frontend *fe, struct dvb_frontend_parameters *p)
+=======
+static int dib0070_tune(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
     struct dib0070_state *state = fe->tuner_priv;
     uint32_t ret;
@@ -524,7 +540,11 @@ static int dib0070_tune(struct dvb_frontend *fe, struct dvb_frontend_parameters 
     state->tune_state = CT_TUNER_START;
 
     do {
+<<<<<<< HEAD
 	ret = dib0070_tune_digital(fe, p);
+=======
+	ret = dib0070_tune_digital(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret != FE_CALLBACK_TIME_NEVER)
 		msleep(ret/10);
 	else

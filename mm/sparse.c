@@ -6,7 +6,11 @@
 #include <linux/mmzone.h>
 #include <linux/bootmem.h>
 #include <linux/highmem.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/spinlock.h>
 #include <linux/vmalloc.h>
 #include "internal.h"
@@ -40,7 +44,11 @@ static u8 section_to_node_table[NR_MEM_SECTIONS] __cacheline_aligned;
 static u16 section_to_node_table[NR_MEM_SECTIONS] __cacheline_aligned;
 #endif
 
+<<<<<<< HEAD
 int page_to_nid(struct page *page)
+=======
+int page_to_nid(const struct page *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return section_to_node_table[page_to_section(page)];
 }
@@ -488,9 +496,12 @@ void __init sparse_init(void)
 	struct page **map_map;
 #endif
 
+<<<<<<< HEAD
 	/* Setup pageblock_order for HUGETLB_PAGE_SIZE_VARIABLE */
 	set_pageblock_order();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * map is using big page (aka 2M in x86 64 bit)
 	 * usemap is less one page (aka 24 bytes)

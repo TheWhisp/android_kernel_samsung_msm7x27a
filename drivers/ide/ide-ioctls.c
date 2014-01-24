@@ -2,6 +2,10 @@
  * IDE ioctls handling.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/hdreg.h>
 #include <linux/ide.h>
 #include <linux/slab.h>

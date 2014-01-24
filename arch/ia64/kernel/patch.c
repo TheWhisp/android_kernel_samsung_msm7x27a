@@ -11,7 +11,10 @@
 #include <asm/patch.h>
 #include <asm/processor.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unistd.h>
 
 /*

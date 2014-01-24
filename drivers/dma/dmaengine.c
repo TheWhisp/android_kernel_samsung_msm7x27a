@@ -45,6 +45,10 @@
  * See Documentation/dmaengine.txt for more details
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/mm.h>
@@ -61,9 +65,15 @@
 #include <linux/slab.h>
 
 static DEFINE_MUTEX(dma_list_mutex);
+<<<<<<< HEAD
 static LIST_HEAD(dma_device_list);
 static long dmaengine_ref_count;
 static struct idr dma_idr;
+=======
+static DEFINE_IDR(dma_idr);
+static LIST_HEAD(dma_device_list);
+static long dmaengine_ref_count;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* --- sysfs implementation --- */
 
@@ -331,6 +341,23 @@ struct dma_chan *dma_find_channel(enum dma_transaction_type tx_type)
 }
 EXPORT_SYMBOL(dma_find_channel);
 
+<<<<<<< HEAD
+=======
+/*
+ * net_dma_find_channel - find a channel for net_dma
+ * net_dma has alignment requirements
+ */
+struct dma_chan *net_dma_find_channel(void)
+{
+	struct dma_chan *chan = dma_find_channel(DMA_MEMCPY);
+	if (chan && !is_dma_copy_aligned(chan->device, 1, 1, 1))
+		return NULL;
+
+	return chan;
+}
+EXPORT_SYMBOL(net_dma_find_channel);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * dma_issue_pending_all - flush all pending operations across all channels
  */
@@ -509,8 +536,13 @@ struct dma_chan *__dma_request_channel(dma_cap_mask_t *mask, dma_filter_fn fn, v
 					 dma_chan_name(chan));
 				list_del_rcu(&device->global_node);
 			} else if (err)
+<<<<<<< HEAD
 				pr_err("dmaengine: failed to get %s: (%d)\n",
 				       dma_chan_name(chan), err);
+=======
+				pr_debug("%s: failed to get %s: (%d)\n",
+					__func__, dma_chan_name(chan), err);
+>>>>>>> refs/remotes/origin/cm-10.0
 			else
 				break;
 			if (--device->privatecnt == 0)
@@ -563,8 +595,13 @@ void dmaengine_get(void)
 				list_del_rcu(&device->global_node);
 				break;
 			} else if (err)
+<<<<<<< HEAD
 				pr_err("dmaengine: failed to get %s: (%d)\n",
 				       dma_chan_name(chan), err);
+=======
+				pr_debug("%s: failed to get %s: (%d)\n",
+					__func__, dma_chan_name(chan), err);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -692,12 +729,20 @@ int dma_async_device_register(struct dma_device *device)
 		!device->device_prep_dma_interrupt);
 	BUG_ON(dma_has_cap(DMA_SG, device->cap_mask) &&
 		!device->device_prep_dma_sg);
+<<<<<<< HEAD
 	BUG_ON(dma_has_cap(DMA_SLAVE, device->cap_mask) &&
 		!device->device_prep_slave_sg);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(dma_has_cap(DMA_CYCLIC, device->cap_mask) &&
 		!device->device_prep_dma_cyclic);
 	BUG_ON(dma_has_cap(DMA_SLAVE, device->cap_mask) &&
 		!device->device_control);
+<<<<<<< HEAD
+=======
+	BUG_ON(dma_has_cap(DMA_INTERLEAVE, device->cap_mask) &&
+		!device->device_prep_interleaved_dma);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	BUG_ON(!device->device_alloc_chan_resources);
 	BUG_ON(!device->device_free_chan_resources);
@@ -1049,8 +1094,11 @@ EXPORT_SYMBOL_GPL(dma_run_dependencies);
 
 static int __init dma_bus_init(void)
 {
+<<<<<<< HEAD
 	idr_init(&dma_idr);
 	mutex_init(&dma_list_mutex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return class_register(&dma_devclass);
 }
 arch_initcall(dma_bus_init);

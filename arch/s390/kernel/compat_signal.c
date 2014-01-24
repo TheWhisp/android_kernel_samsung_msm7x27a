@@ -27,6 +27,10 @@
 #include <asm/ucontext.h>
 #include <asm/uaccess.h>
 #include <asm/lowcore.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "compat_linux.h"
 #include "compat_ptrace.h"
 #include "entry.h"
@@ -141,7 +145,12 @@ int copy_siginfo_from_user32(siginfo_t *to, compat_siginfo_t __user *from)
 			break;
 		case __SI_FAULT >> 16:
 			err |= __get_user(tmp, &from->si_addr);
+<<<<<<< HEAD
 			to->si_addr = (void __user *)(u64) (tmp & PSW32_ADDR_INSN);
+=======
+			to->si_addr = (void __force __user *)
+				(u64) (tmp & PSW32_ADDR_INSN);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case __SI_POLL >> 16:
 			err |= __get_user(to->si_band, &from->si_band);
@@ -213,6 +222,7 @@ sys32_rt_sigaction(int sig, const struct sigaction32 __user *act,
 		ret = get_user(sa_handler, &act->sa_handler);
 		ret |= __copy_from_user(&set32, &act->sa_mask,
 					sizeof(compat_sigset_t));
+<<<<<<< HEAD
 		switch (_NSIG_WORDS) {
 		case 4: new_ka.sa.sa_mask.sig[3] = set32.sig[6]
 				| (((long)set32.sig[7]) << 32);
@@ -223,6 +233,10 @@ sys32_rt_sigaction(int sig, const struct sigaction32 __user *act,
 		case 1: new_ka.sa.sa_mask.sig[0] = set32.sig[0]
 				| (((long)set32.sig[1]) << 32);
 		}
+=======
+		new_ka.sa.sa_mask.sig[0] =
+			set32.sig[0] | (((long)set32.sig[1]) << 32);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret |= __get_user(new_ka.sa.sa_flags, &act->sa_flags);
 		
 		if (ret)
@@ -233,6 +247,7 @@ sys32_rt_sigaction(int sig, const struct sigaction32 __user *act,
 	ret = do_sigaction(sig, act ? &new_ka : NULL, oact ? &old_ka : NULL);
 
 	if (!ret && oact) {
+<<<<<<< HEAD
 		switch (_NSIG_WORDS) {
 		case 4:
 			set32.sig[7] = (old_ka.sa.sa_mask.sig[3] >> 32);
@@ -247,6 +262,10 @@ sys32_rt_sigaction(int sig, const struct sigaction32 __user *act,
 			set32.sig[1] = (old_ka.sa.sa_mask.sig[0] >> 32);
 			set32.sig[0] = old_ka.sa.sa_mask.sig[0];
 		}
+=======
+		set32.sig[1] = (old_ka.sa.sa_mask.sig[0] >> 32);
+		set32.sig[0] = old_ka.sa.sa_mask.sig[0];
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = put_user((unsigned long)old_ka.sa.sa_handler, &oact->sa_handler);
 		ret |= __copy_to_user(&oact->sa_mask, &set32,
 				      sizeof(compat_sigset_t));
@@ -300,9 +319,16 @@ static int save_sigregs32(struct pt_regs *regs, _sigregs32 __user *sregs)
 	_s390_regs_common32 regs32;
 	int err, i;
 
+<<<<<<< HEAD
 	regs32.psw.mask = PSW32_MASK_MERGE(psw32_user_bits,
 					   (__u32)(regs->psw.mask >> 32));
 	regs32.psw.addr = PSW32_ADDR_AMODE31 | (__u32) regs->psw.addr;
+=======
+	regs32.psw.mask = psw32_user_bits |
+		((__u32)(regs->psw.mask >> 32) & PSW32_MASK_USER);
+	regs32.psw.addr = (__u32) regs->psw.addr |
+		(__u32)(regs->psw.mask & PSW_MASK_BA);
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < NUM_GPRS; i++)
 		regs32.gprs[i] = (__u32) regs->gprs[i];
 	save_access_regs(current->thread.acrs);
@@ -327,8 +353,18 @@ static int restore_sigregs32(struct pt_regs *regs,_sigregs32 __user *sregs)
 	err = __copy_from_user(&regs32, &sregs->regs, sizeof(regs32));
 	if (err)
 		return err;
+<<<<<<< HEAD
 	regs->psw.mask = PSW_MASK_MERGE(regs->psw.mask,
 				        (__u64)regs32.psw.mask << 32);
+=======
+	regs->psw.mask = (regs->psw.mask & ~PSW_MASK_USER) |
+		(__u64)(regs32.psw.mask & PSW32_MASK_USER) << 32 |
+		(__u64)(regs32.psw.addr & PSW32_ADDR_AMODE);
+	/* Check for invalid user address space control. */
+	if ((regs->psw.mask & PSW_MASK_ASC) >= (psw_kernel_bits & PSW_MASK_ASC))
+		regs->psw.mask = (psw_user_bits & PSW_MASK_ASC) |
+			(regs->psw.mask & ~PSW_MASK_ASC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	regs->psw.addr = (__u64)(regs32.psw.addr & PSW32_ADDR_INSN);
 	for (i = 0; i < NUM_GPRS; i++)
 		regs->gprs[i] = (__u64) regs32.gprs[i];
@@ -342,7 +378,11 @@ static int restore_sigregs32(struct pt_regs *regs,_sigregs32 __user *sregs)
 		return err;
 
 	restore_fp_regs(&current->thread.fp_regs);
+<<<<<<< HEAD
 	regs->svcnr = 0;	/* disable syscall checks */
+=======
+	clear_thread_flag(TIF_SYSCALL);	/* No longer in a system call */
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -380,6 +420,7 @@ asmlinkage long sys32_sigreturn(void)
 		goto badframe;
 	if (__copy_from_user(&set.sig, &frame->sc.oldmask, _SIGMASK_COPY_SIZE32))
 		goto badframe;
+<<<<<<< HEAD
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
@@ -387,13 +428,21 @@ asmlinkage long sys32_sigreturn(void)
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
 
+=======
+	sigdelsetmask(&set, ~_BLOCKABLE);
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (restore_sigregs32(regs, &frame->sregs))
 		goto badframe;
 	if (restore_sigregs_gprs_high(regs, frame->gprs_high))
 		goto badframe;
+<<<<<<< HEAD
 
 	return regs->gprs[2];
 
+=======
+	return regs->gprs[2];
+>>>>>>> refs/remotes/origin/cm-10.0
 badframe:
 	force_sig(SIGSEGV, current);
 	return 0;
@@ -413,6 +462,7 @@ asmlinkage long sys32_rt_sigreturn(void)
 		goto badframe;
 	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
 		goto badframe;
+<<<<<<< HEAD
 
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
@@ -420,17 +470,25 @@ asmlinkage long sys32_rt_sigreturn(void)
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
 
+=======
+	sigdelsetmask(&set, ~_BLOCKABLE);
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (restore_sigregs32(regs, &frame->uc.uc_mcontext))
 		goto badframe;
 	if (restore_sigregs_gprs_high(regs, frame->gprs_high))
 		goto badframe;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = __get_user(ss_sp, &frame->uc.uc_stack.ss_sp);
 	st.ss_sp = compat_ptr(ss_sp);
 	err |= __get_user(st.ss_size, &frame->uc.uc_stack.ss_size);
 	err |= __get_user(st.ss_flags, &frame->uc.uc_stack.ss_flags);
 	if (err)
 		goto badframe; 
+<<<<<<< HEAD
 
 	set_fs (KERNEL_DS);
 	do_sigaltstack((stack_t __force __user *)&st, NULL, regs->gprs[15]);
@@ -438,6 +496,12 @@ asmlinkage long sys32_rt_sigreturn(void)
 
 	return regs->gprs[2];
 
+=======
+	set_fs (KERNEL_DS);
+	do_sigaltstack((stack_t __force __user *)&st, NULL, regs->gprs[15]);
+	set_fs (old_fs);
+	return regs->gprs[2];
+>>>>>>> refs/remotes/origin/cm-10.0
 badframe:
 	force_sig(SIGSEGV, current);
 	return 0;
@@ -512,11 +576,19 @@ static int setup_frame32(int sig, struct k_sigaction *ka,
 	/* Set up to return from userspace.  If provided, use a stub
 	   already in userspace.  */
 	if (ka->sa.sa_flags & SA_RESTORER) {
+<<<<<<< HEAD
 		regs->gprs[14] = (__u64) ka->sa.sa_restorer;
 	} else {
 		regs->gprs[14] = (__u64) frame->retcode;
 		if (__put_user(S390_SYSCALL_OPCODE | __NR_sigreturn,
 		               (u16 __user *)(frame->retcode)))
+=======
+		regs->gprs[14] = (__u64) ka->sa.sa_restorer | PSW32_ADDR_AMODE;
+	} else {
+		regs->gprs[14] = (__u64) frame->retcode | PSW32_ADDR_AMODE;
+		if (__put_user(S390_SYSCALL_OPCODE | __NR_sigreturn,
+			       (u16 __force __user *)(frame->retcode)))
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto give_sigsegv;
         }
 
@@ -525,6 +597,7 @@ static int setup_frame32(int sig, struct k_sigaction *ka,
 		goto give_sigsegv;
 
 	/* Set up registers for signal handler */
+<<<<<<< HEAD
 	regs->gprs[15] = (__u64) frame;
 	regs->psw.addr = (__u64) ka->sa.sa_handler;
 
@@ -538,6 +611,29 @@ static int setup_frame32(int sig, struct k_sigaction *ka,
 
 	/* Place signal number on stack to allow backtrace from handler.  */
 	if (__put_user(regs->gprs[2], (int __user *) &frame->signo))
+=======
+	regs->gprs[15] = (__force __u64) frame;
+	/* Force 31 bit amode and default user address space control. */
+	regs->psw.mask = PSW_MASK_BA |
+		(psw_user_bits & PSW_MASK_ASC) |
+		(regs->psw.mask & ~PSW_MASK_ASC);
+	regs->psw.addr = (__force __u64) ka->sa.sa_handler;
+
+	regs->gprs[2] = map_signal(sig);
+	regs->gprs[3] = (__force __u64) &frame->sc;
+
+	/* We forgot to include these in the sigcontext.
+	   To avoid breaking binary compatibility, they are passed as args. */
+	if (sig == SIGSEGV || sig == SIGBUS || sig == SIGILL ||
+	    sig == SIGTRAP || sig == SIGFPE) {
+		/* set extra registers only for synchronous signals */
+		regs->gprs[4] = regs->int_code & 127;
+		regs->gprs[5] = regs->int_parm_long;
+	}
+
+	/* Place signal number on stack to allow backtrace from handler.  */
+	if (__put_user(regs->gprs[2], (int __force __user *) &frame->signo))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto give_sigsegv;
 	return 0;
 
@@ -576,6 +672,7 @@ static int setup_rt_frame32(int sig, struct k_sigaction *ka, siginfo_t *info,
 	/* Set up to return from userspace.  If provided, use a stub
 	   already in userspace.  */
 	if (ka->sa.sa_flags & SA_RESTORER) {
+<<<<<<< HEAD
 		regs->gprs[14] = (__u64) ka->sa.sa_restorer;
 	} else {
 		regs->gprs[14] = (__u64) frame->retcode;
@@ -594,6 +691,30 @@ static int setup_rt_frame32(int sig, struct k_sigaction *ka, siginfo_t *info,
 	regs->gprs[2] = map_signal(sig);
 	regs->gprs[3] = (__u64) &frame->info;
 	regs->gprs[4] = (__u64) &frame->uc;
+=======
+		regs->gprs[14] = (__u64) ka->sa.sa_restorer | PSW32_ADDR_AMODE;
+	} else {
+		regs->gprs[14] = (__u64) frame->retcode | PSW32_ADDR_AMODE;
+		err |= __put_user(S390_SYSCALL_OPCODE | __NR_rt_sigreturn,
+				  (u16 __force __user *)(frame->retcode));
+	}
+
+	/* Set up backchain. */
+	if (__put_user(regs->gprs[15], (unsigned int __force __user *) frame))
+		goto give_sigsegv;
+
+	/* Set up registers for signal handler */
+	regs->gprs[15] = (__force __u64) frame;
+	/* Force 31 bit amode and default user address space control. */
+	regs->psw.mask = PSW_MASK_BA |
+		(psw_user_bits & PSW_MASK_ASC) |
+		(regs->psw.mask & ~PSW_MASK_ASC);
+	regs->psw.addr = (__u64) ka->sa.sa_handler;
+
+	regs->gprs[2] = map_signal(sig);
+	regs->gprs[3] = (__force __u64) &frame->info;
+	regs->gprs[4] = (__force __u64) &frame->uc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 give_sigsegv:
@@ -605,9 +726,14 @@ give_sigsegv:
  * OK, we're invoking a handler
  */	
 
+<<<<<<< HEAD
 int
 handle_signal32(unsigned long sig, struct k_sigaction *ka,
 		siginfo_t *info, sigset_t *oldset, struct pt_regs * regs)
+=======
+int handle_signal32(unsigned long sig, struct k_sigaction *ka,
+		    siginfo_t *info, sigset_t *oldset, struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 
@@ -616,6 +742,7 @@ handle_signal32(unsigned long sig, struct k_sigaction *ka,
 		ret = setup_rt_frame32(sig, ka, info, oldset, regs);
 	else
 		ret = setup_frame32(sig, ka, oldset, regs);
+<<<<<<< HEAD
 
 	if (ret == 0) {
 		spin_lock_irq(&current->sighand->siglock);
@@ -626,5 +753,11 @@ handle_signal32(unsigned long sig, struct k_sigaction *ka,
 		spin_unlock_irq(&current->sighand->siglock);
 	}
 	return ret;
+=======
+	if (ret)
+		return ret;
+	block_sigmask(ka, sig);
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 

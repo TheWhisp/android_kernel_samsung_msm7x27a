@@ -11,8 +11,13 @@
  */
 
 /* This file should be up to date with:
+<<<<<<< HEAD
  *  - Revision E, 03/15/2010; ADSP-BF526 Blackfin Processor Anomaly List
  *  - Revision H, 04/29/2010; ADSP-BF527 Blackfin Processor Anomaly List
+=======
+ *  - Revision F, 05/23/2011; ADSP-BF526 Blackfin Processor Anomaly List
+ *  - Revision I, 05/23/2011; ADSP-BF527 Blackfin Processor Anomaly List
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef _MACH_ANOMALY_H_
@@ -57,7 +62,11 @@
 /* Incorrect Access of OTP_STATUS During otp_write() Function */
 #define ANOMALY_05000328 (_ANOMALY_BF527(< 2))
 /* Host DMA Boot Modes Are Not Functional */
+<<<<<<< HEAD
 #define ANOMALY_05000330 (__SILICON_REVISION__ < 2)
+=======
+#define ANOMALY_05000330 (_ANOMALY_BF527(< 2))
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Disallowed Configuration Prevents Subsequent Allowed Configuration on Host DMA Port */
 #define ANOMALY_05000337 (_ANOMALY_BF527(< 2))
 /* Ethernet MAC MDIO Reads Do Not Meet IEEE Specification */
@@ -135,7 +144,11 @@
 /* Incorrect Default Internal Voltage Regulator Setting */
 #define ANOMALY_05000410 (_ANOMALY_BF527(< 2))
 /* bfrom_SysControl() Firmware Function Cannot be Used to Enter Power Saving Modes */
+<<<<<<< HEAD
 #define ANOMALY_05000411 (_ANOMALY_BF526_BF527(< 1, < 2))
+=======
+#define ANOMALY_05000411 (_ANOMALY_BF526(< 1))
+>>>>>>> refs/remotes/origin/cm-10.0
 /* OTP_CHECK_FOR_PREV_WRITE Bit is Not Functional in bfrom_OtpWrite() API */
 #define ANOMALY_05000414 (_ANOMALY_BF526_BF527(< 1, < 2))
 /* DEB2_URGENT Bit Not Functional */
@@ -181,11 +194,19 @@
 /* IFLUSH Instruction at End of Hardware Loop Causes Infinite Stall */
 #define ANOMALY_05000443 (1)
 /* The WURESET Bit in the SYSCR Register is not Functional */
+<<<<<<< HEAD
 #define ANOMALY_05000445 (1)
 /* USB DMA Mode 1 Short Packet Data Corruption */
 #define ANOMALY_05000450 (1)
 /* BCODE_QUICKBOOT, BCODE_ALLBOOT, and BCODE_FULLBOOT Settings in SYSCR Register Not Functional */
 #define ANOMALY_05000451 (1)
+=======
+#define ANOMALY_05000445 (_ANOMALY_BF527(>= 0))
+/* USB DMA Short Packet Data Corruption */
+#define ANOMALY_05000450 (1)
+/* BCODE_QUICKBOOT, BCODE_ALLBOOT, and BCODE_FULLBOOT Settings in SYSCR Register Not Functional */
+#define ANOMALY_05000451 (_ANOMALY_BF527(>= 0))
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Incorrect Default Hysteresis Setting for RESET, NMI, and BMODE Signals */
 #define ANOMALY_05000452 (_ANOMALY_BF526_BF527(< 1, >= 0))
 /* USB Receive Interrupt Is Not Generated in DMA Mode 1 */
@@ -198,19 +219,33 @@
 #define ANOMALY_05000461 (1)
 /* Synchronization Problem at Startup May Cause SPORT Transmit Channels to Misalign */
 #define ANOMALY_05000462 (1)
+<<<<<<< HEAD
 /* USB Rx DMA hang */
 #define ANOMALY_05000465 (1)
 /* TxPktRdy Bit Not Set for Transmit Endpoint When Core and DMA Access USB Endpoint FIFOs Simultaneously */
 #define ANOMALY_05000466 (1)
 /* Possible RX data corruption when control & data EP FIFOs are accessed via the core */
+=======
+/* USB Rx DMA Hang */
+#define ANOMALY_05000465 (1)
+/* TxPktRdy Bit Not Set for Transmit Endpoint When Core and DMA Access USB Endpoint FIFOs Simultaneously */
+#define ANOMALY_05000466 (1)
+/* Possible USB RX Data Corruption When Control & Data EP FIFOs are Accessed via the Core */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ANOMALY_05000467 (1)
 /* PLL Latches Incorrect Settings During Reset */
 #define ANOMALY_05000469 (1)
 /* Incorrect Default MSEL Value in PLL_CTL */
 #define ANOMALY_05000472 (_ANOMALY_BF526(>= 0))
+<<<<<<< HEAD
 /* Interrupted 32-Bit SPORT Data Register Access Results In Underflow */
 #define ANOMALY_05000473 (1)
 /* Possible Lockup Condition whem Modifying PLL from External Memory */
+=======
+/* Interrupted SPORT Receive Data Register Read Results In Underflow when SLEN > 15 */
+#define ANOMALY_05000473 (1)
+/* Possible Lockup Condition when Modifying PLL from External Memory */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ANOMALY_05000475 (1)
 /* TESTSET Instruction Cannot Be Interrupted */
 #define ANOMALY_05000477 (1)
@@ -219,11 +254,27 @@
 /* Possible USB Data Corruption When Multiple Endpoints Are Accessed by the Core */
 #define ANOMALY_05000483 (1)
 /* PLL_CTL Change Using bfrom_SysControl() Can Result in Processor Overclocking */
+<<<<<<< HEAD
 #define ANOMALY_05000485 (_ANOMALY_BF526_BF527(< 2, < 3))
 /* The CODEC Zero-Cross Detect Feature is not Functional */
 #define ANOMALY_05000487 (1)
 /* IFLUSH sucks at life */
 #define ANOMALY_05000491 (1)
+=======
+#define ANOMALY_05000485 (_ANOMALY_BF526_BF527(< 2, >= 0))
+/* The CODEC Zero-Cross Detect Feature is not Functional */
+#define ANOMALY_05000487 (1)
+/* SPI Master Boot Can Fail Under Certain Conditions */
+#define ANOMALY_05000490 (1)
+/* Instruction Memory Stalls Can Cause IFLUSH to Fail */
+#define ANOMALY_05000491 (1)
+/* EXCPT Instruction May Be Lost If NMI Happens Simultaneously */
+#define ANOMALY_05000494 (1)
+/* CNT_COMMAND Functionality Depends on CNT_IMASK Configuration */
+#define ANOMALY_05000498 (1)
+/* RXS Bit in SPI_STAT May Become Stuck In RX DMA Modes */
+#define ANOMALY_05000501 (1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Anomalies that don't exist on this proc */
 #define ANOMALY_05000099 (0)

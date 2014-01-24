@@ -23,6 +23,10 @@
  * codec can't handle MJPEG data.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/list.h>
 #include <linux/module.h>
@@ -31,7 +35,11 @@
 #include <linux/videodev2.h>
 #include <linux/vmalloc.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/version.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 
 #include <media/v4l2-common.h>
@@ -113,6 +121,14 @@ static struct uvc_format_desc uvc_fmts[] = {
 		.guid		= UVC_GUID_FORMAT_RGBP,
 		.fcc		= V4L2_PIX_FMT_RGB565,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.name		= "H.264",
+		.guid		= UVC_GUID_FORMAT_H264,
+		.fcc		= V4L2_PIX_FMT_H264,
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* ------------------------------------------------------------------------
@@ -1669,6 +1685,11 @@ static void uvc_unregister_video(struct uvc_device *dev)
 
 		video_unregister_device(stream->vdev);
 		stream->vdev = NULL;
+<<<<<<< HEAD
+=======
+
+		uvc_debugfs_cleanup_stream(stream);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Decrement the stream count and call uvc_delete explicitly if there
@@ -1694,6 +1715,11 @@ static int uvc_register_video(struct uvc_device *dev,
 		return ret;
 	}
 
+<<<<<<< HEAD
+=======
+	uvc_debugfs_init_stream(stream);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Register the device with V4L. */
 	vdev = video_device_alloc();
 	if (vdev == NULL) {
@@ -1857,7 +1883,11 @@ static int uvc_probe(struct usb_interface *intf,
 			sizeof(dev->mdev.serial));
 	strcpy(dev->mdev.bus_info, udev->devpath);
 	dev->mdev.hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
+<<<<<<< HEAD
 	dev->mdev.driver_version = DRIVER_VERSION_NUMBER;
+=======
+	dev->mdev.driver_version = LINUX_VERSION_CODE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (media_device_register(&dev->mdev) < 0)
 		goto error;
 
@@ -2027,6 +2057,18 @@ MODULE_PARM_DESC(timeout, "Streaming control requests timeout");
  * though they are compliant.
  */
 static struct usb_device_id uvc_ids[] = {
+<<<<<<< HEAD
+=======
+	/* LogiLink Wireless Webcam */
+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+				| USB_DEVICE_ID_MATCH_INT_INFO,
+	  .idVendor		= 0x0416,
+	  .idProduct		= 0xa91a,
+	  .bInterfaceClass	= USB_CLASS_VIDEO,
+	  .bInterfaceSubClass	= 1,
+	  .bInterfaceProtocol	= 0,
+	  .driver_info		= UVC_QUIRK_PROBE_MINMAX },
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Genius eFace 2025 */
 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
 				| USB_DEVICE_ID_MATCH_INT_INFO,
@@ -2120,6 +2162,18 @@ static struct usb_device_id uvc_ids[] = {
 	  .bInterfaceSubClass	= 1,
 	  .bInterfaceProtocol	= 0,
 	  .driver_info		= UVC_QUIRK_PROBE_MINMAX },
+<<<<<<< HEAD
+=======
+	/* Dell XPS m1530 */
+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+				| USB_DEVICE_ID_MATCH_INT_INFO,
+	  .idVendor		= 0x05a9,
+	  .idProduct		= 0x2640,
+	  .bInterfaceClass	= USB_CLASS_VIDEO,
+	  .bInterfaceSubClass	= 1,
+	  .bInterfaceProtocol	= 0,
+	  .driver_info 		= UVC_QUIRK_PROBE_DEF },
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Apple Built-In iSight */
 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
 				| USB_DEVICE_ID_MATCH_INT_INFO,
@@ -2130,6 +2184,18 @@ static struct usb_device_id uvc_ids[] = {
 	  .bInterfaceProtocol	= 0,
 	  .driver_info 		= UVC_QUIRK_PROBE_MINMAX
 				| UVC_QUIRK_BUILTIN_ISIGHT },
+<<<<<<< HEAD
+=======
+	/* Foxlink ("HP Webcam" on HP Mini 5103) */
+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+				| USB_DEVICE_ID_MATCH_INT_INFO,
+	  .idVendor		= 0x05c8,
+	  .idProduct		= 0x0403,
+	  .bInterfaceClass	= USB_CLASS_VIDEO,
+	  .bInterfaceSubClass	= 1,
+	  .bInterfaceProtocol	= 0,
+	  .driver_info		= UVC_QUIRK_FIX_BANDWIDTH },
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Genesys Logic USB 2.0 PC Camera */
 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
 				| USB_DEVICE_ID_MATCH_INT_INFO,
@@ -2321,6 +2387,17 @@ static struct usb_device_id uvc_ids[] = {
 	  .bInterfaceSubClass	= 1,
 	  .bInterfaceProtocol	= 0,
 	  .driver_info		= UVC_QUIRK_PROBE_DEF },
+<<<<<<< HEAD
+=======
+	/* The Imaging Source USB CCD cameras */
+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+				| USB_DEVICE_ID_MATCH_INT_INFO,
+	  .idVendor		= 0x199e,
+	  .idProduct		= 0x8102,
+	  .bInterfaceClass	= USB_CLASS_VENDOR_SPEC,
+	  .bInterfaceSubClass	= 1,
+	  .bInterfaceProtocol	= 0 },
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Bodelin ProScopeHR */
 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
 				| USB_DEVICE_ID_MATCH_DEV_HI
@@ -2373,17 +2450,36 @@ struct uvc_driver uvc_driver = {
 
 static int __init uvc_init(void)
 {
+<<<<<<< HEAD
 	int result;
 
 	result = usb_register(&uvc_driver.driver);
 	if (result == 0)
 		printk(KERN_INFO DRIVER_DESC " (" DRIVER_VERSION ")\n");
 	return result;
+=======
+	int ret;
+
+	uvc_debugfs_init();
+
+	ret = usb_register(&uvc_driver.driver);
+	if (ret < 0) {
+		uvc_debugfs_cleanup();
+		return ret;
+	}
+
+	printk(KERN_INFO DRIVER_DESC " (" DRIVER_VERSION ")\n");
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __exit uvc_cleanup(void)
 {
 	usb_deregister(&uvc_driver.driver);
+<<<<<<< HEAD
+=======
+	uvc_debugfs_cleanup();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 module_init(uvc_init);

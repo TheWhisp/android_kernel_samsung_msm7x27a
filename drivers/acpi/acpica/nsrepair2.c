@@ -6,7 +6,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -467,11 +471,20 @@ acpi_ns_repair_HID(struct acpi_predefined_data *data,
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Copy and uppercase the string. From the ACPI specification:
 	 *
 	 * A valid PNP ID must be of the form "AAA####" where A is an uppercase
 	 * letter and # is a hex digit. A valid ACPI ID must be of the form
 	 * "ACPI####" where # is a hex digit.
+=======
+	 * Copy and uppercase the string. From the ACPI 5.0 specification:
+	 *
+	 * A valid PNP ID must be of the form "AAA####" where A is an uppercase
+	 * letter and # is a hex digit. A valid ACPI ID must be of the form
+	 * "NNNN####" where N is an uppercase letter or decimal digit, and
+	 * # is a hex digit.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	for (dest = new_string->string.pointer; *source; dest++, source++) {
 		*dest = (char)ACPI_TOUPPER(*source);

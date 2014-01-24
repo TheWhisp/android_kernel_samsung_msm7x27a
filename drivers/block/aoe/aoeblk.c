@@ -15,6 +15,10 @@
 #include <linux/genhd.h>
 #include <linux/netdevice.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "aoe.h"
 
 static DEFINE_MUTEX(aoeblk_mutex);
@@ -159,7 +163,11 @@ aoeblk_release(struct gendisk *disk, fmode_t mode)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int
+=======
+static void
+>>>>>>> refs/remotes/origin/cm-10.0
 aoeblk_make_request(struct request_queue *q, struct bio *bio)
 {
 	struct sk_buff_head queue;
@@ -172,25 +180,41 @@ aoeblk_make_request(struct request_queue *q, struct bio *bio)
 	if (bio == NULL) {
 		printk(KERN_ERR "aoe: bio is NULL\n");
 		BUG();
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	d = bio->bi_bdev->bd_disk->private_data;
 	if (d == NULL) {
 		printk(KERN_ERR "aoe: bd_disk->private_data is NULL\n");
 		BUG();
 		bio_endio(bio, -ENXIO);
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else if (bio->bi_io_vec == NULL) {
 		printk(KERN_ERR "aoe: bi_io_vec is NULL\n");
 		BUG();
 		bio_endio(bio, -ENXIO);
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	buf = mempool_alloc(d->bufpool, GFP_NOIO);
 	if (buf == NULL) {
 		printk(KERN_INFO "aoe: buf allocation failure\n");
 		bio_endio(bio, -ENOMEM);
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	memset(buf, 0, sizeof(*buf));
 	INIT_LIST_HEAD(&buf->bufs);
@@ -211,7 +235,11 @@ aoeblk_make_request(struct request_queue *q, struct bio *bio)
 		spin_unlock_irqrestore(&d->lock, flags);
 		mempool_free(buf, d->bufpool);
 		bio_endio(bio, -ENXIO);
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	list_add_tail(&buf->bufs, &d->bufq);
@@ -222,8 +250,11 @@ aoeblk_make_request(struct request_queue *q, struct bio *bio)
 
 	spin_unlock_irqrestore(&d->lock, flags);
 	aoenet_xmit(&queue);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int

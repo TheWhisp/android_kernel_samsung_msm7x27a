@@ -301,9 +301,15 @@ static struct fb_ops atyfb_ops = {
 	.fb_sync	= atyfb_sync,
 };
 
+<<<<<<< HEAD
 static int noaccel;
 #ifdef CONFIG_MTRR
 static int nomtrr;
+=======
+static bool noaccel;
+#ifdef CONFIG_MTRR
+static bool nomtrr;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 static int vram;
 static int pll;
@@ -3458,9 +3464,16 @@ static int __devinit atyfb_setup_generic(struct pci_dev *pdev,
 
 	raddr = addr + 0x7ff000UL;
 	rrp = &pdev->resource[2];
+<<<<<<< HEAD
 	if ((rrp->flags & IORESOURCE_MEM) && request_mem_region(rrp->start, rrp->end - rrp->start + 1, "atyfb")) {
 		par->aux_start = rrp->start;
 		par->aux_size = rrp->end - rrp->start + 1;
+=======
+	if ((rrp->flags & IORESOURCE_MEM) &&
+	    request_mem_region(rrp->start, resource_size(rrp), "atyfb")) {
+		par->aux_start = rrp->start;
+		par->aux_size = resource_size(rrp);
+>>>>>>> refs/remotes/origin/cm-10.0
 		raddr = rrp->start;
 		PRINTKI("using auxiliary register aperture\n");
 	}
@@ -3550,7 +3563,11 @@ static int __devinit atyfb_pci_probe(struct pci_dev *pdev,
 
 	/* Reserve space */
 	res_start = rp->start;
+<<<<<<< HEAD
 	res_size = rp->end - rp->start + 1;
+=======
+	res_size = resource_size(rp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!request_mem_region(res_start, res_size, "atyfb"))
 		return -EBUSY;
 

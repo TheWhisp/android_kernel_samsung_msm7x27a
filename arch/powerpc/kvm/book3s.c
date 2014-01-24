@@ -16,8 +16,13 @@
 
 #include <linux/kvm_host.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include "trace.h"
+=======
+#include <linux/export.h>
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/reg.h>
 #include <asm/cputable.h>
@@ -28,11 +33,16 @@
 #include <asm/kvm_ppc.h>
 #include <asm/kvm_book3s.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
+=======
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/gfp.h>
 #include <linux/sched.h>
 #include <linux/vmalloc.h>
 #include <linux/highmem.h>
 
+<<<<<<< HEAD
 #define VCPU_STAT(x) offsetof(struct kvm_vcpu, stat.x), KVM_STAT_VCPU
 
 /* #define EXIT_DEBUG */
@@ -47,6 +57,13 @@ static int kvmppc_handle_ext(struct kvm_vcpu *vcpu, unsigned int exit_nr,
 #define MSR_USER64 MSR_USER
 #define HW_PAGE_SIZE PAGE_SIZE
 #endif
+=======
+#include "trace.h"
+
+#define VCPU_STAT(x) offsetof(struct kvm_vcpu, stat.x), KVM_STAT_VCPU
+
+/* #define EXIT_DEBUG */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct kvm_stats_debugfs_item debugfs_entries[] = {
 	{ "exits",       VCPU_STAT(sum_exits) },
@@ -77,6 +94,7 @@ void kvmppc_core_load_guest_debugstate(struct kvm_vcpu *vcpu)
 {
 }
 
+<<<<<<< HEAD
 void kvmppc_core_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
 {
 #ifdef CONFIG_PPC_BOOK3S_64
@@ -166,11 +184,17 @@ void kvmppc_set_msr(struct kvm_vcpu *vcpu, u64 msr)
 		kvmppc_handle_ext(vcpu, BOOK3S_INTERRUPT_FP_UNAVAIL, MSR_FP);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void kvmppc_inject_interrupt(struct kvm_vcpu *vcpu, int vec, u64 flags)
 {
 	vcpu->arch.shared->srr0 = kvmppc_get_pc(vcpu);
 	vcpu->arch.shared->srr1 = vcpu->arch.shared->msr | flags;
+<<<<<<< HEAD
 	kvmppc_set_pc(vcpu, to_book3s(vcpu)->hior + vec);
+=======
+	kvmppc_set_pc(vcpu, kvmppc_interrupt_offset(vcpu) + vec);
+>>>>>>> refs/remotes/origin/cm-10.0
 	vcpu->arch.mmu.reset_msr(vcpu);
 }
 
@@ -204,11 +228,21 @@ static int kvmppc_book3s_vec2irqprio(unsigned int vec)
 static void kvmppc_book3s_dequeue_irqprio(struct kvm_vcpu *vcpu,
 					  unsigned int vec)
 {
+<<<<<<< HEAD
 	clear_bit(kvmppc_book3s_vec2irqprio(vec),
 		  &vcpu->arch.pending_exceptions);
 
 	if (!vcpu->arch.pending_exceptions)
 		vcpu->arch.shared->int_pending = 0;
+=======
+	unsigned long old_pending = vcpu->arch.pending_exceptions;
+
+	clear_bit(kvmppc_book3s_vec2irqprio(vec),
+		  &vcpu->arch.pending_exceptions);
+
+	kvmppc_update_int_pending(vcpu, vcpu->arch.pending_exceptions,
+				  old_pending);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void kvmppc_book3s_queue_irqprio(struct kvm_vcpu *vcpu, unsigned int vec)
@@ -225,8 +259,13 @@ void kvmppc_book3s_queue_irqprio(struct kvm_vcpu *vcpu, unsigned int vec)
 
 void kvmppc_core_queue_program(struct kvm_vcpu *vcpu, ulong flags)
 {
+<<<<<<< HEAD
 	to_book3s(vcpu)->prog_flags = flags;
 	kvmppc_book3s_queue_irqprio(vcpu, BOOK3S_INTERRUPT_PROGRAM);
+=======
+	/* might as well deliver this straight away */
+	kvmppc_inject_interrupt(vcpu, BOOK3S_INTERRUPT_PROGRAM, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void kvmppc_core_queue_dec(struct kvm_vcpu *vcpu)
@@ -266,6 +305,7 @@ int kvmppc_book3s_irqprio_deliver(struct kvm_vcpu *vcpu, unsigned int priority)
 {
 	int deliver = 1;
 	int vec = 0;
+<<<<<<< HEAD
 	ulong flags = 0ULL;
 	ulong crit_raw = vcpu->arch.shared->critical;
 	ulong crit_r1 = kvmppc_get_gpr(vcpu, 1);
@@ -281,6 +321,9 @@ int kvmppc_book3s_irqprio_deliver(struct kvm_vcpu *vcpu, unsigned int priority)
 	crit = (crit_raw == crit_r1);
 	/* ... and we're in supervisor mode */
 	crit = crit && !(vcpu->arch.shared->msr & MSR_PR);
+=======
+	bool crit = kvmppc_critical_section(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (priority) {
 	case BOOK3S_IRQPRIO_DECREMENTER:
@@ -315,7 +358,10 @@ int kvmppc_book3s_irqprio_deliver(struct kvm_vcpu *vcpu, unsigned int priority)
 		break;
 	case BOOK3S_IRQPRIO_PROGRAM:
 		vec = BOOK3S_INTERRUPT_PROGRAM;
+<<<<<<< HEAD
 		flags = to_book3s(vcpu)->prog_flags;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case BOOK3S_IRQPRIO_VSX:
 		vec = BOOK3S_INTERRUPT_VSX;
@@ -346,7 +392,11 @@ int kvmppc_book3s_irqprio_deliver(struct kvm_vcpu *vcpu, unsigned int priority)
 #endif
 
 	if (deliver)
+<<<<<<< HEAD
 		kvmppc_inject_interrupt(vcpu, vec, flags);
+=======
+		kvmppc_inject_interrupt(vcpu, vec, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return deliver;
 }
@@ -368,7 +418,11 @@ static bool clear_irqprio(struct kvm_vcpu *vcpu, unsigned int priority)
 	return true;
 }
 
+<<<<<<< HEAD
 void kvmppc_core_deliver_interrupts(struct kvm_vcpu *vcpu)
+=======
+void kvmppc_core_prepare_to_enter(struct kvm_vcpu *vcpu)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long *pending = &vcpu->arch.pending_exceptions;
 	unsigned long old_pending = vcpu->arch.pending_exceptions;
@@ -392,6 +446,7 @@ void kvmppc_core_deliver_interrupts(struct kvm_vcpu *vcpu)
 	}
 
 	/* Tell the guest about our interrupt status */
+<<<<<<< HEAD
 	if (*pending)
 		vcpu->arch.shared->int_pending = 1;
 	else if (old_pending)
@@ -450,6 +505,9 @@ void kvmppc_set_pvr(struct kvm_vcpu *vcpu, u32 pvr)
 		/* Enable HID2.PSE - in case we need it later */
 		mtspr(SPRN_HID2_GEKKO, mfspr(SPRN_HID2_GEKKO) | (1 << 29));
 	}
+=======
+	kvmppc_update_int_pending(vcpu, *pending, old_pending);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 pfn_t kvmppc_gfn_to_pfn(struct kvm_vcpu *vcpu, gfn_t gfn)
@@ -471,6 +529,7 @@ pfn_t kvmppc_gfn_to_pfn(struct kvm_vcpu *vcpu, gfn_t gfn)
 	return gfn_to_pfn(vcpu->kvm, gfn);
 }
 
+<<<<<<< HEAD
 /* Book3s_32 CPUs always have 32 bytes cache line size, which Linux assumes. To
  * make Book3s_32 Linux work on Book3s_64, we have to make sure we trap dcbz to
  * emulate 32 bytes dcbz length.
@@ -509,6 +568,8 @@ static void kvmppc_patch_dcbz(struct kvm_vcpu *vcpu, struct kvmppc_pte *pte)
 	put_page(hpage);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int kvmppc_xlate(struct kvm_vcpu *vcpu, ulong eaddr, bool data,
 			 struct kvmppc_pte *pte)
 {
@@ -606,6 +667,7 @@ mmio:
 	return EMULATE_DO_MMIO;
 }
 
+<<<<<<< HEAD
 static int kvmppc_visible_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
 {
 	ulong mp_pa = vcpu->arch.magic_page_pa;
@@ -1119,6 +1181,8 @@ program_interrupt:
 	return r;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int kvm_arch_vcpu_setup(struct kvm_vcpu *vcpu)
 {
 	return 0;
@@ -1141,10 +1205,17 @@ int kvm_arch_vcpu_ioctl_get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
 	regs->sprg1 = vcpu->arch.shared->sprg1;
 	regs->sprg2 = vcpu->arch.shared->sprg2;
 	regs->sprg3 = vcpu->arch.shared->sprg3;
+<<<<<<< HEAD
 	regs->sprg4 = vcpu->arch.sprg4;
 	regs->sprg5 = vcpu->arch.sprg5;
 	regs->sprg6 = vcpu->arch.sprg6;
 	regs->sprg7 = vcpu->arch.sprg7;
+=======
+	regs->sprg4 = vcpu->arch.shared->sprg4;
+	regs->sprg5 = vcpu->arch.shared->sprg5;
+	regs->sprg6 = vcpu->arch.shared->sprg6;
+	regs->sprg7 = vcpu->arch.shared->sprg7;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < ARRAY_SIZE(regs->gpr); i++)
 		regs->gpr[i] = kvmppc_get_gpr(vcpu, i);
@@ -1168,10 +1239,17 @@ int kvm_arch_vcpu_ioctl_set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
 	vcpu->arch.shared->sprg1 = regs->sprg1;
 	vcpu->arch.shared->sprg2 = regs->sprg2;
 	vcpu->arch.shared->sprg3 = regs->sprg3;
+<<<<<<< HEAD
 	vcpu->arch.sprg4 = regs->sprg4;
 	vcpu->arch.sprg5 = regs->sprg5;
 	vcpu->arch.sprg6 = regs->sprg6;
 	vcpu->arch.sprg7 = regs->sprg7;
+=======
+	vcpu->arch.shared->sprg4 = regs->sprg4;
+	vcpu->arch.shared->sprg5 = regs->sprg5;
+	vcpu->arch.shared->sprg6 = regs->sprg6;
+	vcpu->arch.shared->sprg7 = regs->sprg7;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (i = 0; i < ARRAY_SIZE(regs->gpr); i++)
 		kvmppc_set_gpr(vcpu, i, regs->gpr[i]);
@@ -1179,6 +1257,7 @@ int kvm_arch_vcpu_ioctl_set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
 	return 0;
 }
 
+<<<<<<< HEAD
 int kvm_arch_vcpu_ioctl_get_sregs(struct kvm_vcpu *vcpu,
                                   struct kvm_sregs *sregs)
 {
@@ -1242,6 +1321,8 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *vcpu,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int kvm_arch_vcpu_ioctl_get_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
 {
 	return -ENOTSUPP;
@@ -1258,6 +1339,7 @@ int kvm_arch_vcpu_ioctl_translate(struct kvm_vcpu *vcpu,
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Get (and clear) the dirty memory log for a memory slot.
  */
@@ -1495,3 +1577,12 @@ static void kvmppc_book3s_exit(void)
 
 module_init(kvmppc_book3s_init);
 module_exit(kvmppc_book3s_exit);
+=======
+void kvmppc_decrementer_func(unsigned long data)
+{
+	struct kvm_vcpu *vcpu = (struct kvm_vcpu *)data;
+
+	kvmppc_core_queue_dec(vcpu);
+	kvm_vcpu_kick(vcpu);
+}
+>>>>>>> refs/remotes/origin/cm-10.0

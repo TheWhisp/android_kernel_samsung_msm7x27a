@@ -2,6 +2,28 @@ menu "Kernel hacking"
 
 source "lib/Kconfig.debug"
 
+<<<<<<< HEAD
+=======
+config BOOTPARAM
+	bool 'Compiled-in Kernel Boot Parameter'
+
+config BOOTPARAM_STRING
+	string 'Kernel Boot Parameter'
+	default 'console=ttyS0,19200'
+	depends on BOOTPARAM
+
+config EARLY_PRINTK
+	bool "Early printk" if EMBEDDED
+	depends on MVME16x || MAC
+	default y
+	help
+          Write kernel log output directly to a serial port.
+
+          This is useful for kernel debugging when your machine crashes very
+          early before the console code is initialized.
+          You should normally say N here, unless you want to debug such a crash.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 if !MMU
 
 config FULLDEBUG
@@ -15,6 +37,7 @@ config HIGHPROFILE
 	help
 	  Use a fast secondary clock to produce profiling information.
 
+<<<<<<< HEAD
 config BOOTPARAM
 	bool 'Compiled-in Kernel Boot Parameter'
 
@@ -23,6 +46,8 @@ config BOOTPARAM_STRING
 	default 'console=ttyS0,19200'
 	depends on BOOTPARAM
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config NO_KERNEL_MSG
 	bool "Suppress Kernel BUG Messages"
 	help

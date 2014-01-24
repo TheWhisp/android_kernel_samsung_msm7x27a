@@ -10,7 +10,11 @@
  *	Remote softirq infrastructure is by Jens Axboe.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel_stat.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
@@ -297,7 +301,11 @@ void irq_enter(void)
 	int cpu = smp_processor_id();
 
 	rcu_irq_enter();
+<<<<<<< HEAD
 	if (idle_cpu(cpu) && !in_interrupt()) {
+=======
+	if (is_idle_task(current) && !in_interrupt()) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * Prevent raise_softirq from needlessly waking up ksoftirqd
 		 * here, as softirq will be serviced on return from interrupt.
@@ -310,6 +318,7 @@ void irq_enter(void)
 	__irq_enter();
 }
 
+<<<<<<< HEAD
 #ifdef __ARCH_IRQ_EXIT_IRQS_DISABLED
 static inline void invoke_softirq(void)
 {
@@ -328,13 +337,27 @@ static inline void invoke_softirq(void)
 	if (!force_irqthreads)
 		do_softirq();
 	else {
+=======
+static inline void invoke_softirq(void)
+{
+	if (!force_irqthreads) {
+#ifdef __ARCH_IRQ_EXIT_IRQS_DISABLED
+		__do_softirq();
+#else
+		do_softirq();
+#endif
+	} else {
+>>>>>>> refs/remotes/origin/cm-10.0
 		__local_bh_disable((unsigned long)__builtin_return_address(0),
 				SOFTIRQ_OFFSET);
 		wakeup_softirqd();
 		__local_bh_enable(SOFTIRQ_OFFSET);
 	}
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Exit an interrupt context. Process softirqs if needed and possible:
@@ -347,6 +370,7 @@ void irq_exit(void)
 	if (!in_interrupt() && local_softirq_pending())
 		invoke_softirq();
 
+<<<<<<< HEAD
 	rcu_irq_exit();
 #ifdef CONFIG_NO_HZ
 	/* Make sure that timer wheel updates are propagated */
@@ -354,6 +378,15 @@ void irq_exit(void)
 		tick_nohz_stop_sched_tick(0);
 #endif
 	preempt_enable_no_resched();
+=======
+#ifdef CONFIG_NO_HZ
+	/* Make sure that timer wheel updates are propagated */
+	if (idle_cpu(smp_processor_id()) && !in_interrupt() && !need_resched())
+		tick_nohz_irq_exit();
+#endif
+	rcu_irq_exit();
+	sched_preempt_enable_no_resched();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -385,6 +418,15 @@ void raise_softirq(unsigned int nr)
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
+=======
+void __raise_softirq_irqoff(unsigned int nr)
+{
+	trace_softirq_raise(nr);
+	or_softirq_pending(1UL << nr);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void open_softirq(int nr, void (*action)(struct softirq_action *))
 {
 	softirq_vec[nr].action = action;
@@ -744,9 +786,13 @@ static int run_ksoftirqd(void * __bind_cpu)
 	while (!kthread_should_stop()) {
 		preempt_disable();
 		if (!local_softirq_pending()) {
+<<<<<<< HEAD
 			preempt_enable_no_resched();
 			schedule();
 			preempt_disable();
+=======
+			schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		__set_current_state(TASK_RUNNING);
@@ -761,7 +807,11 @@ static int run_ksoftirqd(void * __bind_cpu)
 			if (local_softirq_pending())
 				__do_softirq();
 			local_irq_enable();
+<<<<<<< HEAD
 			preempt_enable_no_resched();
+=======
+			sched_preempt_enable_no_resched();
+>>>>>>> refs/remotes/origin/cm-10.0
 			cond_resched();
 			preempt_disable();
 			rcu_note_context_switch((long)__bind_cpu);

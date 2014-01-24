@@ -76,7 +76,11 @@ struct wl12xx_ie_header {
 
 struct wl12xx_ie_ssid {
 	struct wl12xx_ie_header header;
+<<<<<<< HEAD
 	char ssid[IW_ESSID_MAX_SIZE];
+=======
+	char ssid[IEEE80211_MAX_SSID_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
 } __packed;
 
 struct wl12xx_ie_rates {

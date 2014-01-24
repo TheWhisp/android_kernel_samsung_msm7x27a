@@ -7,6 +7,7 @@
 #include <asm/elf.h>
 #endif
 
+<<<<<<< HEAD
 struct file;
 
 #ifndef elf_read_implies_exec
@@ -16,6 +17,8 @@ struct file;
 # define elf_read_implies_exec(ex, have_pt_gnu_stack)	0
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* 32-bit ELF base types. */
 typedef __u32	Elf32_Addr;
 typedef __u16	Elf32_Half;
@@ -395,6 +398,10 @@ typedef struct elf64_shdr {
 #define NT_S390_CTRS	0x304		/* s390 control registers */
 #define NT_S390_PREFIX	0x305		/* s390 prefix register */
 #define NT_S390_LAST_BREAK	0x306	/* s390 breaking event address */
+<<<<<<< HEAD
+=======
+#define NT_S390_SYSTEM_CALL	0x307	/* s390 system call restart data */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NT_ARM_VFP	0x400		/* ARM VFP/NEON registers */
 
 
@@ -413,6 +420,16 @@ typedef struct elf64_note {
 } Elf64_Nhdr;
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
+=======
+#ifndef elf_read_implies_exec
+  /* Executables for which elf_read_implies_exec() returns TRUE will
+     have the READ_IMPLIES_EXEC personality flag set automatically.
+     Override in asm/elf.h as needed.  */
+# define elf_read_implies_exec(ex, have_pt_gnu_stack)	0
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #if ELF_CLASS == ELFCLASS32
 
 extern Elf32_Dyn _DYNAMIC [];
@@ -436,6 +453,11 @@ extern Elf64_Dyn _DYNAMIC [];
 #endif
 
 /* Optional callbacks to write extra ELF notes. */
+<<<<<<< HEAD
+=======
+struct file;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef ARCH_HAVE_EXTRA_ELF_NOTES
 static inline int elf_coredump_extra_notes_size(void) { return 0; }
 static inline int elf_coredump_extra_notes_write(struct file *file,

@@ -22,6 +22,10 @@
 
 #include <sound/core.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "seq_system.h"
 #include "seq_ports.h"
 #include "seq_clientmgr.h"

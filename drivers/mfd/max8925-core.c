@@ -18,12 +18,25 @@
 #include <linux/mfd/core.h>
 #include <linux/mfd/max8925.h>
 
+<<<<<<< HEAD
+=======
+static struct resource io_parent = {
+	.start = 0,
+	.end   = 0xffffffff,
+	.flags = IORESOURCE_IO,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct resource backlight_resources[] = {
 	{
 		.name	= "max8925-backlight",
 		.start	= MAX8925_WLED_MODE_CNTL,
 		.end	= MAX8925_WLED_CNTL,
 		.flags	= IORESOURCE_IO,
+<<<<<<< HEAD
+=======
+		.parent = &io_parent,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -42,6 +55,10 @@ static struct resource touch_resources[] = {
 		.start	= MAX8925_TSC_IRQ,
 		.end	= MAX8925_ADC_RES_END,
 		.flags	= IORESOURCE_IO,
+<<<<<<< HEAD
+=======
+		.parent = &io_parent,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -60,6 +77,10 @@ static struct resource power_supply_resources[] = {
 		.start	= MAX8925_CHG_IRQ1,
 		.end	= MAX8925_CHG_IRQ1_MASK,
 		.flags	= IORESOURCE_IO,
+<<<<<<< HEAD
+=======
+		.parent = &io_parent,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -118,6 +139,10 @@ static struct mfd_cell onkey_devs[] = {
 	.start	= MAX8925_##_start,		\
 	.end	= MAX8925_##_end,		\
 	.flags	= IORESOURCE_IO,		\
+<<<<<<< HEAD
+=======
+	.parent = &io_parent,			\
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct resource regulator_resources[] = {
@@ -210,6 +235,7 @@ static struct max8925_irq_data max8925_irqs[] = {
 		.mask_reg	= MAX8925_CHG_IRQ1_MASK,
 		.offs		= 1 << 2,
 	},
+<<<<<<< HEAD
 	[MAX8925_IRQ_VCHG_USB_OVP] = {
 		.reg		= MAX8925_CHG_IRQ1,
 		.mask_reg	= MAX8925_CHG_IRQ1_MASK,
@@ -225,6 +251,8 @@ static struct max8925_irq_data max8925_irqs[] = {
 		.mask_reg	= MAX8925_CHG_IRQ1_MASK,
 		.offs		= 1 << 5,
 	},
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	[MAX8925_IRQ_VCHG_THM_OK_R] = {
 		.reg		= MAX8925_CHG_IRQ2,
 		.mask_reg	= MAX8925_CHG_IRQ2_MASK,

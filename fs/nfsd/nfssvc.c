@@ -8,8 +8,15 @@
 
 #include <linux/sched.h>
 #include <linux/freezer.h>
+<<<<<<< HEAD
 #include <linux/fs_struct.h>
 #include <linux/swap.h>
+=======
+#include <linux/module.h>
+#include <linux/fs_struct.h>
+#include <linux/swap.h>
+#include <linux/nsproxy.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/sunrpc/stats.h>
 #include <linux/sunrpc/svcsock.h>
@@ -219,7 +226,11 @@ static int nfsd_startup(unsigned short port, int nrservs)
 	ret = nfsd_init_socks(port);
 	if (ret)
 		goto out_racache;
+<<<<<<< HEAD
 	ret = lockd_up();
+=======
+	ret = lockd_up(&init_net);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto out_racache;
 	ret = nfs4_state_start();
@@ -228,7 +239,11 @@ static int nfsd_startup(unsigned short port, int nrservs)
 	nfsd_up = true;
 	return 0;
 out_lockd:
+<<<<<<< HEAD
 	lockd_down();
+=======
+	lockd_down(&init_net);
+>>>>>>> refs/remotes/origin/cm-10.0
 out_racache:
 	nfsd_racache_shutdown();
 	return ret;
@@ -245,17 +260,30 @@ static void nfsd_shutdown(void)
 	if (!nfsd_up)
 		return;
 	nfs4_state_shutdown();
+<<<<<<< HEAD
 	lockd_down();
+=======
+	lockd_down(&init_net);
+>>>>>>> refs/remotes/origin/cm-10.0
 	nfsd_racache_shutdown();
 	nfsd_up = false;
 }
 
+<<<<<<< HEAD
 static void nfsd_last_thread(struct svc_serv *serv)
 {
 	/* When last nfsd thread exits we need to do some clean-up */
 	nfsd_serv = NULL;
 	nfsd_shutdown();
 
+=======
+static void nfsd_last_thread(struct svc_serv *serv, struct net *net)
+{
+	nfsd_shutdown();
+
+	svc_rpcb_cleanup(serv, net);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_WARNING "nfsd: last server has exited, flushing export "
 			    "cache\n");
 	nfsd_export_flush();
@@ -304,15 +332,44 @@ static void set_max_drc(void)
 	dprintk("%s nfsd_drc_max_mem %u \n", __func__, nfsd_drc_max_mem);
 }
 
+<<<<<<< HEAD
 int nfsd_create_serv(void)
 {
 	int err = 0;
+=======
+static int nfsd_get_default_max_blksize(void)
+{
+	struct sysinfo i;
+	unsigned long long target;
+	unsigned long ret;
+
+	si_meminfo(&i);
+	target = (i.totalram - i.totalhigh) << PAGE_SHIFT;
+	/*
+	 * Aim for 1/4096 of memory per thread This gives 1MB on 4Gig
+	 * machines, but only uses 32K on 128M machines.  Bottom out at
+	 * 8K on 32M and smaller.  Of course, this is only a default.
+	 */
+	target >>= 12;
+
+	ret = NFSSVC_MAXBLKSIZE;
+	while (ret > target && ret >= 8*1024*2)
+		ret /= 2;
+	return ret;
+}
+
+int nfsd_create_serv(void)
+{
+	int error;
+	struct net *net = current->nsproxy->net_ns;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	WARN_ON(!mutex_is_locked(&nfsd_mutex));
 	if (nfsd_serv) {
 		svc_get(nfsd_serv);
 		return 0;
 	}
+<<<<<<< HEAD
 	if (nfsd_max_blksize == 0) {
 		/* choose a suitable default */
 		struct sysinfo i;
@@ -331,14 +388,31 @@ int nfsd_create_serv(void)
 	}
 	nfsd_reset_versions();
 
+=======
+	if (nfsd_max_blksize == 0)
+		nfsd_max_blksize = nfsd_get_default_max_blksize();
+	nfsd_reset_versions();
+>>>>>>> refs/remotes/origin/cm-10.0
 	nfsd_serv = svc_create_pooled(&nfsd_program, nfsd_max_blksize,
 				      nfsd_last_thread, nfsd, THIS_MODULE);
 	if (nfsd_serv == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	set_max_drc();
 	do_gettimeofday(&nfssvc_boot);		/* record boot time */
 	return err;
+=======
+	error = svc_bind(nfsd_serv, net);
+	if (error < 0) {
+		svc_destroy(nfsd_serv);
+		return error;
+	}
+
+	set_max_drc();
+	do_gettimeofday(&nfssvc_boot);		/* record boot time */
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int nfsd_nrpools(void)
@@ -366,6 +440,10 @@ int nfsd_set_nrthreads(int n, int *nthreads)
 	int i = 0;
 	int tot = 0;
 	int err = 0;
+<<<<<<< HEAD
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	WARN_ON(!mutex_is_locked(&nfsd_mutex));
 
@@ -410,8 +488,12 @@ int nfsd_set_nrthreads(int n, int *nthreads)
 		if (err)
 			break;
 	}
+<<<<<<< HEAD
 	svc_destroy(nfsd_serv);
 
+=======
+	nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 
@@ -425,6 +507,10 @@ nfsd_svc(unsigned short port, int nrservs)
 {
 	int	error;
 	bool	nfsd_up_before;
+<<<<<<< HEAD
+=======
+	struct net *net = &init_net;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&nfsd_mutex);
 	dprintk("nfsd: creating service\n");
@@ -457,7 +543,11 @@ out_shutdown:
 	if (error < 0 && !nfsd_up_before)
 		nfsd_shutdown();
 out_destroy:
+<<<<<<< HEAD
 	svc_destroy(nfsd_serv);		/* Release server */
+=======
+	nfsd_destroy(net);		/* Release server */
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	mutex_unlock(&nfsd_mutex);
 	return error;
@@ -528,6 +618,7 @@ nfsd(void *vrqstp)
 			continue;
 		}
 
+<<<<<<< HEAD
 
 		/* Lock the export hash tables for reading. */
 		exp_readlock();
@@ -538,6 +629,11 @@ nfsd(void *vrqstp)
 
 		/* Unlock export hash tables */
 		exp_readunlock();
+=======
+		validate_process_creds();
+		svc_process(rqstp);
+		validate_process_creds();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Clear signals before calling svc_exit_thread() */
@@ -547,9 +643,19 @@ nfsd(void *vrqstp)
 	nfsdstats.th_cnt --;
 
 out:
+<<<<<<< HEAD
 	/* Release the thread */
 	svc_exit_thread(rqstp);
 
+=======
+	rqstp->rq_server = NULL;
+
+	/* Release the thread */
+	svc_exit_thread(rqstp);
+
+	nfsd_destroy(&init_net);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Release module */
 	mutex_unlock(&nfsd_mutex);
 	module_put_and_exit(0);
@@ -577,8 +683,27 @@ nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp)
 				rqstp->rq_vers, rqstp->rq_proc);
 	proc = rqstp->rq_procinfo;
 
+<<<<<<< HEAD
 	/* Check whether we have this call in the cache. */
 	switch (nfsd_cache_lookup(rqstp, proc->pc_cachetype)) {
+=======
+	/*
+	 * Give the xdr decoder a chance to change this if it wants
+	 * (necessary in the NFSv4.0 compound case)
+	 */
+	rqstp->rq_cachetype = proc->pc_cachetype;
+	/* Decode arguments */
+	xdr = proc->pc_decode;
+	if (xdr && !xdr(rqstp, (__be32*)rqstp->rq_arg.head[0].iov_base,
+			rqstp->rq_argp)) {
+		dprintk("nfsd: failed to decode arguments!\n");
+		*statp = rpc_garbage_args;
+		return 1;
+	}
+
+	/* Check whether we have this call in the cache. */
+	switch (nfsd_cache_lookup(rqstp)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case RC_INTR:
 	case RC_DROPIT:
 		return 0;
@@ -588,6 +713,7 @@ nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp)
 		/* do it */
 	}
 
+<<<<<<< HEAD
 	/* Decode arguments */
 	xdr = proc->pc_decode;
 	if (xdr && !xdr(rqstp, (__be32*)rqstp->rq_arg.head[0].iov_base,
@@ -598,6 +724,8 @@ nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp)
 		return 1;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* need to grab the location to store the status, as
 	 * nfsv4 does some encoding while processing 
 	 */
@@ -633,7 +761,11 @@ nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp)
 	}
 
 	/* Store reply in cache. */
+<<<<<<< HEAD
 	nfsd_cache_update(rqstp, proc->pc_cachetype, statp + 1);
+=======
+	nfsd_cache_update(rqstp, rqstp->rq_cachetype, statp + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 1;
 }
 
@@ -655,9 +787,17 @@ int nfsd_pool_stats_open(struct inode *inode, struct file *file)
 int nfsd_pool_stats_release(struct inode *inode, struct file *file)
 {
 	int ret = seq_release(inode, file);
+<<<<<<< HEAD
 	mutex_lock(&nfsd_mutex);
 	/* this function really, really should have been called svc_put() */
 	svc_destroy(nfsd_serv);
+=======
+	struct net *net = &init_net;
+
+	mutex_lock(&nfsd_mutex);
+	/* this function really, really should have been called svc_put() */
+	nfsd_destroy(net);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&nfsd_mutex);
 	return ret;
 }

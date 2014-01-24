@@ -21,16 +21,24 @@
 #include "rtc-core.h"
 
 
+<<<<<<< HEAD
 static DEFINE_IDR(rtc_idr);
 static DEFINE_MUTEX(idr_lock);
+=======
+static DEFINE_IDA(rtc_ida);
+>>>>>>> refs/remotes/origin/cm-10.0
 struct class *rtc_class;
 
 static void rtc_device_release(struct device *dev)
 {
 	struct rtc_device *rtc = to_rtc_device(dev);
+<<<<<<< HEAD
 	mutex_lock(&idr_lock);
 	idr_remove(&rtc_idr, rtc->id);
 	mutex_unlock(&idr_lock);
+=======
+	ida_simple_remove(&rtc_ida, rtc->id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(rtc);
 }
 
@@ -100,9 +108,14 @@ static int rtc_resume(struct device *dev)
 	rtc_tm_to_time(&tm, &new_rtc.tv_sec);
 	new_rtc.tv_nsec = 0;
 
+<<<<<<< HEAD
 	if (new_rtc.tv_sec <= old_rtc.tv_sec) {
 		if (new_rtc.tv_sec < old_rtc.tv_sec)
 			pr_debug("%s:  time travel!\n", dev_name(&rtc->dev));
+=======
+	if (new_rtc.tv_sec < old_rtc.tv_sec) {
+		pr_debug("%s:  time travel!\n", dev_name(&rtc->dev));
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	}
 
@@ -147,6 +160,7 @@ struct rtc_device *rtc_device_register(const char *name, struct device *dev,
 	struct rtc_wkalrm alrm;
 	int id, err;
 
+<<<<<<< HEAD
 	if (idr_pre_get(&rtc_idr, GFP_KERNEL) == 0) {
 		err = -ENOMEM;
 		goto exit;
@@ -166,6 +180,18 @@ struct rtc_device *rtc_device_register(const char *name, struct device *dev,
 	if (rtc == NULL) {
 		err = -ENOMEM;
 		goto exit_idr;
+=======
+	id = ida_simple_get(&rtc_ida, 0, 0, GFP_KERNEL);
+	if (id < 0) {
+		err = id;
+		goto exit;
+	}
+
+	rtc = kzalloc(sizeof(struct rtc_device), GFP_KERNEL);
+	if (rtc == NULL) {
+		err = -ENOMEM;
+		goto exit_ida;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	rtc->id = id;
@@ -223,10 +249,15 @@ struct rtc_device *rtc_device_register(const char *name, struct device *dev,
 exit_kfree:
 	kfree(rtc);
 
+<<<<<<< HEAD
 exit_idr:
 	mutex_lock(&idr_lock);
 	idr_remove(&rtc_idr, id);
 	mutex_unlock(&idr_lock);
+=======
+exit_ida:
+	ida_simple_remove(&rtc_ida, id);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 exit:
 	dev_err(dev, "rtc core: unable to register %s, err = %d\n",
@@ -277,7 +308,11 @@ static void __exit rtc_exit(void)
 {
 	rtc_dev_exit();
 	class_destroy(rtc_class);
+<<<<<<< HEAD
 	idr_destroy(&rtc_idr);
+=======
+	ida_destroy(&rtc_ida);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 subsys_initcall(rtc_init);

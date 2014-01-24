@@ -1,8 +1,19 @@
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/bitops.h>
 #include <linux/mm.h>
 
 #include <linux/io.h>
+=======
+#include <linux/export.h>
+#include <linux/init.h>
+#include <linux/bitops.h>
+#include <linux/elf.h>
+#include <linux/mm.h>
+
+#include <linux/io.h>
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/processor.h>
 #include <asm/apic.h>
 #include <asm/cpu.h>
@@ -23,7 +34,12 @@
  *	contact AMD for precise details and a CPU swap.
  *
  *	See	http://www.multimania.com/poulot/k6bug.html
+<<<<<<< HEAD
  *		http://www.amd.com/K6/k6docs/revgd.html
+=======
+ *	and	section 2.6.2 of "AMD-K6 Processor Revision Guide - Model 6"
+ *		(Publication # 21266  Issue Date: August 1998)
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  *	The following test is erm.. interesting. AMD neglected to up
  *	the chip setting when fixing the bug but they also tweaked some
@@ -91,7 +107,10 @@ static void __cpuinit init_amd_k6(struct cpuinfo_x86 *c)
 				"system stability may be impaired when more than 32 MB are used.\n");
 		else
 			printk(KERN_CONT "probably OK (after B9730xxxx).\n");
+<<<<<<< HEAD
 		printk(KERN_INFO "Please see http://membres.lycos.fr/poulot/k6bug.html\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* K6 with old style WHCR */
@@ -349,6 +368,17 @@ static void __cpuinit srat_detect_node(struct cpuinfo_x86 *c)
 	if (node == NUMA_NO_NODE)
 		node = per_cpu(cpu_llc_id, cpu);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * On multi-fabric platform (e.g. Numascale NumaChip) a
+	 * platform-specific handler needs to be called to fixup some
+	 * IDs of the CPU.
+	 */
+	if (x86_cpuinit.fixup_cpu_id)
+		x86_cpuinit.fixup_cpu_id(c, node);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!node_online(node)) {
 		/*
 		 * Two possibilities here:
@@ -408,6 +438,37 @@ static void __cpuinit early_init_amd_mc(struct cpuinfo_x86 *c)
 #endif
 }
 
+<<<<<<< HEAD
+=======
+static void __cpuinit bsp_init_amd(struct cpuinfo_x86 *c)
+{
+	if (cpu_has(c, X86_FEATURE_CONSTANT_TSC)) {
+
+		if (c->x86 > 0x10 ||
+		    (c->x86 == 0x10 && c->x86_model >= 0x2)) {
+			u64 val;
+
+			rdmsrl(MSR_K7_HWCR, val);
+			if (!(val & BIT(24)))
+				printk(KERN_WARNING FW_BUG "TSC doesn't count "
+					"with P0 frequency!\n");
+		}
+	}
+
+	if (c->x86 == 0x15) {
+		unsigned long upperbit;
+		u32 cpuid, assoc;
+
+		cpuid	 = cpuid_edx(0x80000005);
+		assoc	 = cpuid >> 16 & 0xff;
+		upperbit = ((cpuid >> 24) << 10) / assoc;
+
+		va_align.mask	  = (upperbit - 1) & PAGE_MASK;
+		va_align.flags    = ALIGN_VA_32 | ALIGN_VA_64;
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __cpuinit early_init_amd(struct cpuinfo_x86 *c)
 {
 	early_init_amd_mc(c);
@@ -419,6 +480,11 @@ static void __cpuinit early_init_amd(struct cpuinfo_x86 *c)
 	if (c->x86_power & (1 << 8)) {
 		set_cpu_cap(c, X86_FEATURE_CONSTANT_TSC);
 		set_cpu_cap(c, X86_FEATURE_NONSTOP_TSC);
+<<<<<<< HEAD
+=======
+		if (!check_tsc_unstable())
+			sched_clock_stable = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 #ifdef CONFIG_X86_64
@@ -439,6 +505,7 @@ static void __cpuinit early_init_amd(struct cpuinfo_x86 *c)
 			set_cpu_cap(c, X86_FEATURE_EXTD_APICID);
 	}
 #endif
+<<<<<<< HEAD
 
 	/* We need to do the following only once */
 	if (c != &boot_cpu_data)
@@ -456,10 +523,17 @@ static void __cpuinit early_init_amd(struct cpuinfo_x86 *c)
 					"with P0 frequency!\n");
 		}
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __cpuinit init_amd(struct cpuinfo_x86 *c)
 {
+<<<<<<< HEAD
+=======
+	u32 dummy;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SMP
 	unsigned long long value;
 
@@ -554,6 +628,41 @@ static void __cpuinit init_amd(struct cpuinfo_x86 *c)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* re-enable TopologyExtensions if switched off by BIOS */
+	if ((c->x86 == 0x15) &&
+	    (c->x86_model >= 0x10) && (c->x86_model <= 0x1f) &&
+	    !cpu_has(c, X86_FEATURE_TOPOEXT)) {
+		u64 val;
+
+		if (!rdmsrl_amd_safe(0xc0011005, &val)) {
+			val |= 1ULL << 54;
+			wrmsrl_amd_safe(0xc0011005, val);
+			rdmsrl(0xc0011005, val);
+			if (val & (1ULL << 54)) {
+				set_cpu_cap(c, X86_FEATURE_TOPOEXT);
+				printk(KERN_INFO FW_INFO "CPU: Re-enabling "
+				  "disabled Topology Extensions Support\n");
+			}
+		}
+	}
+
+	/*
+	 * The way access filter has a performance penalty on some workloads.
+	 * Disable it on the affected CPUs.
+	 */
+	if ((c->x86 == 0x15) &&
+	    (c->x86_model >= 0x02) && (c->x86_model < 0x20)) {
+		u64 val;
+
+		if (!rdmsrl_safe(0xc0011021, &val) && !(val & 0x1E)) {
+			val |= 0x1E;
+			checking_wrmsrl(0xc0011021, val);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * The way access filter has a performance penalty on some workloads.
 	 * Disable it on the affected CPUs.
@@ -652,6 +761,11 @@ static void __cpuinit init_amd(struct cpuinfo_x86 *c)
 			checking_wrmsrl(MSR_AMD64_MCx_MASK(4), mask);
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	rdmsr_safe(MSR_AMD64_PATCH_LEVEL, &c->microcode, &dummy);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_X86_32
@@ -691,6 +805,10 @@ static const struct cpu_dev __cpuinitconst amd_cpu_dev = {
 	.c_size_cache	= amd_size_cache,
 #endif
 	.c_early_init   = early_init_amd,
+<<<<<<< HEAD
+=======
+	.c_bsp_init	= bsp_init_amd,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.c_init		= init_amd,
 	.c_x86_vendor	= X86_VENDOR_AMD,
 };

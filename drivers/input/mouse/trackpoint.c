@@ -89,10 +89,19 @@ static ssize_t trackpoint_set_int_attr(struct psmouse *psmouse, void *data,
 	struct trackpoint_data *tp = psmouse->private;
 	struct trackpoint_attr_data *attr = data;
 	unsigned char *field = (unsigned char *)((char *)tp + attr->field_offset);
+<<<<<<< HEAD
 	unsigned long value;
 
 	if (strict_strtoul(buf, 10, &value) || value > 255)
 		return -EINVAL;
+=======
+	unsigned char value;
+	int err;
+
+	err = kstrtou8(buf, 10, &value);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*field = value;
 	trackpoint_write(&psmouse->ps2dev, attr->command, value);
@@ -115,9 +124,20 @@ static ssize_t trackpoint_set_bit_attr(struct psmouse *psmouse, void *data,
 	struct trackpoint_data *tp = psmouse->private;
 	struct trackpoint_attr_data *attr = data;
 	unsigned char *field = (unsigned char *)((char *)tp + attr->field_offset);
+<<<<<<< HEAD
 	unsigned long value;
 
 	if (strict_strtoul(buf, 10, &value) || value > 1)
+=======
+	unsigned int value;
+	int err;
+
+	err = kstrtouint(buf, 10, &value);
+	if (err)
+		return err;
+
+	if (value > 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	if (attr->inverted)
@@ -297,7 +317,11 @@ int trackpoint_detect(struct psmouse *psmouse, bool set_properties)
 		return 0;
 
 	if (trackpoint_read(&psmouse->ps2dev, TP_EXT_BTN, &button_info)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "trackpoint.c: failed to get extended button data\n");
+=======
+		psmouse_warn(psmouse, "failed to get extended button data\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		button_info = 0;
 	}
 
@@ -319,16 +343,29 @@ int trackpoint_detect(struct psmouse *psmouse, bool set_properties)
 
 	error = sysfs_create_group(&ps2dev->serio->dev.kobj, &trackpoint_attr_group);
 	if (error) {
+<<<<<<< HEAD
 		printk(KERN_ERR
 			"trackpoint.c: failed to create sysfs attributes, error: %d\n",
 			error);
+=======
+		psmouse_err(psmouse,
+			    "failed to create sysfs attributes, error: %d\n",
+			    error);
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(psmouse->private);
 		psmouse->private = NULL;
 		return -1;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "IBM TrackPoint firmware: 0x%02x, buttons: %d/%d\n",
 		firmware_id, (button_info & 0xf0) >> 4, button_info & 0x0f);
+=======
+	psmouse_info(psmouse,
+		     "IBM TrackPoint firmware: 0x%02x, buttons: %d/%d\n",
+		     firmware_id,
+		     (button_info & 0xf0) >> 4, button_info & 0x0f);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

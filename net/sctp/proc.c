@@ -37,6 +37,10 @@
 #include <linux/types.h>
 #include <linux/seq_file.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/sctp/sctp.h>
 #include <net/ip.h> /* for snmp_fold_field */
 

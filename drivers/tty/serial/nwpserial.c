@@ -10,11 +10,19 @@
  *
  */
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/console.h>
 #include <linux/serial.h>
 #include <linux/serial_reg.h>
 #include <linux/serial_core.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/irqreturn.h>
 #include <linux/mutex.h>
 #include <linux/of_platform.h>

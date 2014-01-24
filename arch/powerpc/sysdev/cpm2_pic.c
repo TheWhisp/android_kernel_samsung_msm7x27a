@@ -50,9 +50,14 @@
 
 static intctl_cpm2_t __iomem *cpm2_intctl;
 
+<<<<<<< HEAD
 static struct irq_host *cpm2_pic_host;
 #define NR_MASK_WORDS   ((NR_IRQS + 31) / 32)
 static unsigned long ppc_cached_irq_mask[NR_MASK_WORDS];
+=======
+static struct irq_domain *cpm2_pic_host;
+static unsigned long ppc_cached_irq_mask[2]; /* 2 32-bit registers */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const u_char irq_to_siureg[] = {
 	1, 1, 1, 1, 1, 1, 1, 1,
@@ -214,7 +219,11 @@ unsigned int cpm2_get_irq(void)
 	return irq_linear_revmap(cpm2_pic_host, irq);
 }
 
+<<<<<<< HEAD
 static int cpm2_pic_host_map(struct irq_host *h, unsigned int virq,
+=======
+static int cpm2_pic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  irq_hw_number_t hw)
 {
 	pr_debug("cpm2_pic_host_map(%d, 0x%lx)\n", virq, hw);
@@ -224,6 +233,7 @@ static int cpm2_pic_host_map(struct irq_host *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cpm2_pic_host_xlate(struct irq_host *h, struct device_node *ct,
 			    const u32 *intspec, unsigned int intsize,
 			    irq_hw_number_t *out_hwirq, unsigned int *out_flags)
@@ -239,6 +249,11 @@ static int cpm2_pic_host_xlate(struct irq_host *h, struct device_node *ct,
 static struct irq_host_ops cpm2_pic_host_ops = {
 	.map = cpm2_pic_host_map,
 	.xlate = cpm2_pic_host_xlate,
+=======
+static const struct irq_domain_ops cpm2_pic_host_ops = {
+	.map = cpm2_pic_host_map,
+	.xlate = irq_domain_xlate_onetwocell,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 void cpm2_pic_init(struct device_node *node)
@@ -275,8 +290,12 @@ void cpm2_pic_init(struct device_node *node)
 	out_be32(&cpm2_intctl->ic_scprrl, 0x05309770);
 
 	/* create a legacy host */
+<<<<<<< HEAD
 	cpm2_pic_host = irq_alloc_host(node, IRQ_HOST_MAP_LINEAR,
 				       64, &cpm2_pic_host_ops, 64);
+=======
+	cpm2_pic_host = irq_domain_add_linear(node, 64, &cpm2_pic_host_ops, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (cpm2_pic_host == NULL) {
 		printk(KERN_ERR "CPM2 PIC: failed to allocate irq host!\n");
 		return;

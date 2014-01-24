@@ -61,7 +61,11 @@
 static struct uart_port siu_uart_ports[SIU_PORTS_MAX] = {
 	[0 ... SIU_PORTS_MAX-1] = {
 		.lock	= __SPIN_LOCK_UNLOCKED(siu_uart_ports->lock),
+<<<<<<< HEAD
 		.irq	= -1,
+=======
+		.irq	= 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -171,7 +175,11 @@ static inline unsigned int siu_check_type(struct uart_port *port)
 {
 	if (port->line == 0)
 		return PORT_VR41XX_SIU;
+<<<<<<< HEAD
 	if (port->line == 1 && port->irq != -1)
+=======
+	if (port->line == 1 && port->irq)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return PORT_VR41XX_DSIU;
 
 	return PORT_UNKNOWN;
@@ -961,6 +969,7 @@ static struct platform_driver siu_device_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init vr41xx_siu_init(void)
 {
 	return platform_driver_register(&siu_device_driver);
@@ -973,6 +982,9 @@ static void __exit vr41xx_siu_exit(void)
 
 module_init(vr41xx_siu_init);
 module_exit(vr41xx_siu_exit);
+=======
+module_platform_driver(siu_device_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:SIU");

@@ -1,5 +1,9 @@
 #include <linux/etherdevice.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/lib80211.h>
 #include <linux/if_arp.h>
 

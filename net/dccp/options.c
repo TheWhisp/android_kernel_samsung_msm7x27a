@@ -544,7 +544,11 @@ int dccp_insert_fn_opt(struct sk_buff *skb, u8 type, u8 feat,
 	}
 
 	if (unlikely(val == NULL || len == 0))
+<<<<<<< HEAD
 		len = repeat_first = 0;
+=======
+		len = repeat_first = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 	tot_len = 3 + repeat_first + len;
 
 	if (DCCP_SKB_CB(skb)->dccpd_opt_len + tot_len > DCCP_MAX_OPT_LEN) {

@@ -14,7 +14,11 @@ static int vbi_workaround(struct saa7146_dev *dev)
 
 	DECLARE_WAITQUEUE(wait, current);
 
+<<<<<<< HEAD
 	DEB_VBI(("dev:%p\n",dev));
+=======
+	DEB_VBI("dev:%p\n", dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* once again, a bug in the saa7146: the brs acquisition
 	   is buggy and especially the BXO-counter does not work
@@ -40,14 +44,22 @@ static int vbi_workaround(struct saa7146_dev *dev)
 	WRITE_RPS1(0xc000008c);
 	/* wait for vbi_a or vbi_b*/
 	if ( 0 != (SAA7146_USE_PORT_B_FOR_VBI & dev->ext_vv_data->flags)) {
+<<<<<<< HEAD
 		DEB_D(("...using port b\n"));
+=======
+		DEB_D("...using port b\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		WRITE_RPS1(CMD_PAUSE | CMD_OAN | CMD_SIG1 | CMD_E_FID_B);
 		WRITE_RPS1(CMD_PAUSE | CMD_OAN | CMD_SIG1 | CMD_O_FID_B);
 /*
 		WRITE_RPS1(CMD_PAUSE | MASK_09);
 */
 	} else {
+<<<<<<< HEAD
 		DEB_D(("...using port a\n"));
+=======
+		DEB_D("...using port a\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		WRITE_RPS1(CMD_PAUSE | MASK_10);
 	}
 	/* upload brs */
@@ -103,7 +115,11 @@ static int vbi_workaround(struct saa7146_dev *dev)
 
 		schedule();
 
+<<<<<<< HEAD
 		DEB_VBI(("brs bug workaround %d/1.\n",i));
+=======
+		DEB_VBI("brs bug workaround %d/1\n", i);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		remove_wait_queue(&vv->vbi_wq, &wait);
 		current->state = TASK_RUNNING;
@@ -116,7 +132,12 @@ static int vbi_workaround(struct saa7146_dev *dev)
 
 		if(signal_pending(current)) {
 
+<<<<<<< HEAD
 			DEB_VBI(("aborted (rps:0x%08x).\n",saa7146_read(dev,RPS_ADDR1)));
+=======
+			DEB_VBI("aborted (rps:0x%08x)\n",
+				saa7146_read(dev, RPS_ADDR1));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			/* stop rps1 for sure */
 			saa7146_write(dev, MC1, MASK_29);
@@ -207,7 +228,11 @@ static int buffer_activate(struct saa7146_dev *dev,
 	struct saa7146_vv *vv = dev->vv_data;
 	buf->vb.state = VIDEOBUF_ACTIVE;
 
+<<<<<<< HEAD
 	DEB_VBI(("dev:%p, buf:%p, next:%p\n",dev,buf,next));
+=======
+	DEB_VBI("dev:%p, buf:%p, next:%p\n", dev, buf, next);
+>>>>>>> refs/remotes/origin/cm-10.0
 	saa7146_set_vbi_capture(dev,buf,next);
 
 	mod_timer(&vv->vbi_q.timeout, jiffies+BUFFER_TIMEOUT);
@@ -228,10 +253,17 @@ static int buffer_prepare(struct videobuf_queue *q, struct videobuf_buffer *vb,e
 	llength = vbi_pixel_to_capture;
 	size = lines * llength;
 
+<<<<<<< HEAD
 	DEB_VBI(("vb:%p\n",vb));
 
 	if (0 != buf->vb.baddr  &&  buf->vb.bsize < size) {
 		DEB_VBI(("size mismatch.\n"));
+=======
+	DEB_VBI("vb:%p\n", vb);
+
+	if (0 != buf->vb.baddr  &&  buf->vb.bsize < size) {
+		DEB_VBI("size mismatch\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -263,7 +295,11 @@ static int buffer_prepare(struct videobuf_queue *q, struct videobuf_buffer *vb,e
 	return 0;
 
  oops:
+<<<<<<< HEAD
 	DEB_VBI(("error out.\n"));
+=======
+	DEB_VBI("error out\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	saa7146_dma_free(dev,q,buf);
 
 	return err;
@@ -279,7 +315,11 @@ static int buffer_setup(struct videobuf_queue *q, unsigned int *count, unsigned 
 	*size = lines * llength;
 	*count = 2;
 
+<<<<<<< HEAD
 	DEB_VBI(("count:%d, size:%d\n",*count,*size));
+=======
+	DEB_VBI("count:%d, size:%d\n", *count, *size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -292,7 +332,11 @@ static void buffer_queue(struct videobuf_queue *q, struct videobuf_buffer *vb)
 	struct saa7146_vv *vv = dev->vv_data;
 	struct saa7146_buf *buf = (struct saa7146_buf *)vb;
 
+<<<<<<< HEAD
 	DEB_VBI(("vb:%p\n",vb));
+=======
+	DEB_VBI("vb:%p\n", vb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	saa7146_buffer_queue(dev,&vv->vbi_q,buf);
 }
 
@@ -303,7 +347,11 @@ static void buffer_release(struct videobuf_queue *q, struct videobuf_buffer *vb)
 	struct saa7146_dev *dev = fh->dev;
 	struct saa7146_buf *buf = (struct saa7146_buf *)vb;
 
+<<<<<<< HEAD
 	DEB_VBI(("vb:%p\n",vb));
+=======
+	DEB_VBI("vb:%p\n", vb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	saa7146_dma_free(dev,q,buf);
 }
 
@@ -321,7 +369,11 @@ static void vbi_stop(struct saa7146_fh *fh, struct file *file)
 	struct saa7146_dev *dev = fh->dev;
 	struct saa7146_vv *vv = dev->vv_data;
 	unsigned long flags;
+<<<<<<< HEAD
 	DEB_VBI(("dev:%p, fh:%p\n",dev, fh));
+=======
+	DEB_VBI("dev:%p, fh:%p\n", dev, fh);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_irqsave(&dev->slock,flags);
 
@@ -354,14 +406,22 @@ static void vbi_read_timeout(unsigned long data)
 	struct saa7146_fh *fh = file->private_data;
 	struct saa7146_dev *dev = fh->dev;
 
+<<<<<<< HEAD
 	DEB_VBI(("dev:%p, fh:%p\n",dev, fh));
+=======
+	DEB_VBI("dev:%p, fh:%p\n", dev, fh);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	vbi_stop(fh, file);
 }
 
 static void vbi_init(struct saa7146_dev *dev, struct saa7146_vv *vv)
 {
+<<<<<<< HEAD
 	DEB_VBI(("dev:%p\n",dev));
+=======
+	DEB_VBI("dev:%p\n", dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	INIT_LIST_HEAD(&vv->vbi_q.queue);
 
@@ -380,11 +440,19 @@ static int vbi_open(struct saa7146_dev *dev, struct file *file)
 	u32 arbtr_ctrl	= saa7146_read(dev, PCI_BT_V1);
 	int ret = 0;
 
+<<<<<<< HEAD
 	DEB_VBI(("dev:%p, fh:%p\n",dev,fh));
 
 	ret = saa7146_res_get(fh, RESOURCE_DMA3_BRS);
 	if (0 == ret) {
 		DEB_S(("cannot get vbi RESOURCE_DMA3_BRS resource\n"));
+=======
+	DEB_VBI("dev:%p, fh:%p\n", dev, fh);
+
+	ret = saa7146_res_get(fh, RESOURCE_DMA3_BRS);
+	if (0 == ret) {
+		DEB_S("cannot get vbi RESOURCE_DMA3_BRS resource\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EBUSY;
 	}
 
@@ -425,7 +493,11 @@ static int vbi_open(struct saa7146_dev *dev, struct file *file)
 		saa7146_write(dev, BRS_CTRL, 0x00000001);
 
 		if (0 != (ret = vbi_workaround(dev))) {
+<<<<<<< HEAD
 			DEB_VBI(("vbi workaround failed!\n"));
+=======
+			DEB_VBI("vbi workaround failed!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* return ret;*/
 		}
 	}
@@ -439,7 +511,11 @@ static void vbi_close(struct saa7146_dev *dev, struct file *file)
 {
 	struct saa7146_fh *fh = file->private_data;
 	struct saa7146_vv *vv = dev->vv_data;
+<<<<<<< HEAD
 	DEB_VBI(("dev:%p, fh:%p\n",dev,fh));
+=======
+	DEB_VBI("dev:%p, fh:%p\n", dev, fh);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if( fh == vv->vbi_streaming ) {
 		vbi_stop(fh, file);
@@ -453,13 +529,21 @@ static void vbi_irq_done(struct saa7146_dev *dev, unsigned long status)
 	spin_lock(&dev->slock);
 
 	if (vv->vbi_q.curr) {
+<<<<<<< HEAD
 		DEB_VBI(("dev:%p, curr:%p\n",dev,vv->vbi_q.curr));
+=======
+		DEB_VBI("dev:%p, curr:%p\n", dev, vv->vbi_q.curr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* this must be += 2, one count for each field */
 		vv->vbi_fieldcount+=2;
 		vv->vbi_q.curr->vb.field_count = vv->vbi_fieldcount;
 		saa7146_buffer_finish(dev,&vv->vbi_q,VIDEOBUF_DONE);
 	} else {
+<<<<<<< HEAD
 		DEB_VBI(("dev:%p\n",dev));
+=======
+		DEB_VBI("dev:%p\n", dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	saa7146_buffer_next(dev,&vv->vbi_q,1);
 
@@ -473,7 +557,11 @@ static ssize_t vbi_read(struct file *file, char __user *data, size_t count, loff
 	struct saa7146_vv *vv = dev->vv_data;
 	ssize_t ret = 0;
 
+<<<<<<< HEAD
 	DEB_VBI(("dev:%p, fh:%p\n",dev,fh));
+=======
+	DEB_VBI("dev:%p, fh:%p\n", dev, fh);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if( NULL == vv->vbi_streaming ) {
 		// fixme: check if dma3 is available
@@ -482,7 +570,12 @@ static ssize_t vbi_read(struct file *file, char __user *data, size_t count, loff
 	}
 
 	if( fh != vv->vbi_streaming ) {
+<<<<<<< HEAD
 		DEB_VBI(("open %p is already using vbi capture.",vv->vbi_streaming));
+=======
+		DEB_VBI("open %p is already using vbi capture\n",
+			vv->vbi_streaming);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EBUSY;
 	}
 

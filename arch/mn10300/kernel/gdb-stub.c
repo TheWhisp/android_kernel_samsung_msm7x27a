@@ -130,7 +130,10 @@
 #include <linux/bug.h>
 
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/gdb-stub.h>
 #include <asm/exceptions.h>
 #include <asm/debugger.h>
@@ -798,7 +801,11 @@ unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fault)
 	if ((u32) mem & 1 && count >= 1) {
 		if (gdbstub_read_byte(mem, ch) != 0)
 			return 0;
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
+=======
+		buf = hex_byte_pack(buf, ch[0]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mem++;
 		count--;
 	}
@@ -806,8 +813,13 @@ unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fault)
 	if ((u32) mem & 3 && count >= 2) {
 		if (gdbstub_read_word(mem, ch) != 0)
 			return 0;
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
 		buf = pack_hex_byte(buf, ch[1]);
+=======
+		buf = hex_byte_pack(buf, ch[0]);
+		buf = hex_byte_pack(buf, ch[1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mem += 2;
 		count -= 2;
 	}
@@ -815,10 +827,17 @@ unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fault)
 	while (count >= 4) {
 		if (gdbstub_read_dword(mem, ch) != 0)
 			return 0;
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
 		buf = pack_hex_byte(buf, ch[1]);
 		buf = pack_hex_byte(buf, ch[2]);
 		buf = pack_hex_byte(buf, ch[3]);
+=======
+		buf = hex_byte_pack(buf, ch[0]);
+		buf = hex_byte_pack(buf, ch[1]);
+		buf = hex_byte_pack(buf, ch[2]);
+		buf = hex_byte_pack(buf, ch[3]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mem += 4;
 		count -= 4;
 	}
@@ -826,8 +845,13 @@ unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fault)
 	if (count >= 2) {
 		if (gdbstub_read_word(mem, ch) != 0)
 			return 0;
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
 		buf = pack_hex_byte(buf, ch[1]);
+=======
+		buf = hex_byte_pack(buf, ch[0]);
+		buf = hex_byte_pack(buf, ch[1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mem += 2;
 		count -= 2;
 	}
@@ -835,7 +859,11 @@ unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fault)
 	if (count >= 1) {
 		if (gdbstub_read_byte(mem, ch) != 0)
 			return 0;
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
+=======
+		buf = hex_byte_pack(buf, ch[0]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	*buf = 0;
@@ -1273,6 +1301,7 @@ static int gdbstub(struct pt_regs *regs, enum exception_code excep)
 		ptr = mem2hex(title, ptr, sizeof(title) - 1, 0);
 
 		hx = hex_asc_hi(excep >> 8);
+<<<<<<< HEAD
 		ptr = pack_hex_byte(ptr, hx);
 		hx = hex_asc_lo(excep >> 8);
 		ptr = pack_hex_byte(ptr, hx);
@@ -1280,6 +1309,15 @@ static int gdbstub(struct pt_regs *regs, enum exception_code excep)
 		ptr = pack_hex_byte(ptr, hx);
 		hx = hex_asc_lo(excep);
 		ptr = pack_hex_byte(ptr, hx);
+=======
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_lo(excep >> 8);
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_hi(excep);
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_lo(excep);
+		ptr = hex_byte_pack(ptr, hx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ptr = mem2hex(crlf, ptr, sizeof(crlf) - 1, 0);
 		*ptr = 0;
@@ -1291,6 +1329,7 @@ static int gdbstub(struct pt_regs *regs, enum exception_code excep)
 		ptr = mem2hex(tbcberr, ptr, sizeof(tbcberr) - 1, 0);
 
 		hx = hex_asc_hi(bcberr >> 24);
+<<<<<<< HEAD
 		ptr = pack_hex_byte(ptr, hx);
 		hx = hex_asc_lo(bcberr >> 24);
 		ptr = pack_hex_byte(ptr, hx);
@@ -1306,6 +1345,23 @@ static int gdbstub(struct pt_regs *regs, enum exception_code excep)
 		ptr = pack_hex_byte(ptr, hx);
 		hx = hex_asc_lo(bcberr);
 		ptr = pack_hex_byte(ptr, hx);
+=======
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_lo(bcberr >> 24);
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_hi(bcberr >> 16);
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_lo(bcberr >> 16);
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_hi(bcberr >> 8);
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_lo(bcberr >> 8);
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_hi(bcberr);
+		ptr = hex_byte_pack(ptr, hx);
+		hx = hex_asc_lo(bcberr);
+		ptr = hex_byte_pack(ptr, hx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		ptr = mem2hex(crlf, ptr, sizeof(crlf) - 1, 0);
 		*ptr = 0;
@@ -1321,12 +1377,20 @@ static int gdbstub(struct pt_regs *regs, enum exception_code excep)
 	 * Send trap type (converted to signal)
 	 */
 	*ptr++ = 'T';
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, sigval);
+=======
+	ptr = hex_byte_pack(ptr, sigval);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Send Error PC
 	 */
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, GDB_REGID_PC);
+=======
+	ptr = hex_byte_pack(ptr, GDB_REGID_PC);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*ptr++ = ':';
 	ptr = mem2hex(&regs->pc, ptr, 4, 0);
 	*ptr++ = ';';
@@ -1334,7 +1398,11 @@ static int gdbstub(struct pt_regs *regs, enum exception_code excep)
 	/*
 	 * Send frame pointer
 	 */
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, GDB_REGID_FP);
+=======
+	ptr = hex_byte_pack(ptr, GDB_REGID_FP);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*ptr++ = ':';
 	ptr = mem2hex(&regs->a3, ptr, 4, 0);
 	*ptr++ = ';';
@@ -1343,7 +1411,11 @@ static int gdbstub(struct pt_regs *regs, enum exception_code excep)
 	 * Send stack pointer
 	 */
 	ssp = (unsigned long) (regs + 1);
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, GDB_REGID_SP);
+=======
+	ptr = hex_byte_pack(ptr, GDB_REGID_SP);
+>>>>>>> refs/remotes/origin/cm-10.0
 	*ptr++ = ':';
 	ptr = mem2hex(&ssp, ptr, 4, 0);
 	*ptr++ = ';';

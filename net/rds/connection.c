@@ -33,6 +33,10 @@
 #include <linux/kernel.h>
 #include <linux/list.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/inet_hashtables.h>
 
 #include "rds.h"

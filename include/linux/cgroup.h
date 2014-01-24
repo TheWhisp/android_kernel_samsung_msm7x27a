@@ -152,6 +152,7 @@ enum {
 	CGRP_CLONE_CHILDREN,
 };
 
+<<<<<<< HEAD
 /* which pidlist file are we talking about? */
 enum cgroup_filetype {
 	CGROUP_FILE_PROCS,
@@ -184,6 +185,8 @@ struct cgroup_pidlist {
 	struct rw_semaphore mutex;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct cgroup {
 	unsigned long flags;		/* "unsigned long" so bitops work */
 
@@ -312,7 +315,11 @@ struct cftype {
 	 * If not 0, file mode is set to this value, otherwise it will
 	 * be figured out automatically
 	 */
+<<<<<<< HEAD
 	mode_t mode;
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * If non-zero, defines the maximum length of string that can
@@ -450,11 +457,37 @@ void cgroup_exclude_rmdir(struct cgroup_subsys_state *css);
 void cgroup_release_and_wakeup_rmdir(struct cgroup_subsys_state *css);
 
 /*
+<<<<<<< HEAD
+=======
+ * Control Group taskset, used to pass around set of tasks to cgroup_subsys
+ * methods.
+ */
+struct cgroup_taskset;
+struct task_struct *cgroup_taskset_first(struct cgroup_taskset *tset);
+struct task_struct *cgroup_taskset_next(struct cgroup_taskset *tset);
+struct cgroup *cgroup_taskset_cur_cgroup(struct cgroup_taskset *tset);
+int cgroup_taskset_size(struct cgroup_taskset *tset);
+
+/**
+ * cgroup_taskset_for_each - iterate cgroup_taskset
+ * @task: the loop cursor
+ * @skip_cgrp: skip if task's cgroup matches this, %NULL to iterate through all
+ * @tset: taskset to iterate
+ */
+#define cgroup_taskset_for_each(task, skip_cgrp, tset)			\
+	for ((task) = cgroup_taskset_first((tset)); (task);		\
+	     (task) = cgroup_taskset_next((tset)))			\
+		if (!(skip_cgrp) ||					\
+		    cgroup_taskset_cur_cgroup((tset)) != (skip_cgrp))
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Control Group subsystem type.
  * See Documentation/cgroups/cgroups.txt for details
  */
 
 struct cgroup_subsys {
+<<<<<<< HEAD
 	struct cgroup_subsys_state *(*create)(struct cgroup_subsys *ss,
 						  struct cgroup *cgrp);
 	int (*pre_destroy)(struct cgroup_subsys *ss, struct cgroup *cgrp);
@@ -476,6 +509,21 @@ struct cgroup_subsys {
 			struct cgroup *cgrp);
 	void (*post_clone)(struct cgroup_subsys *ss, struct cgroup *cgrp);
 	void (*bind)(struct cgroup_subsys *ss, struct cgroup *root);
+=======
+	struct cgroup_subsys_state *(*create)(struct cgroup *cgrp);
+	int (*pre_destroy)(struct cgroup *cgrp);
+	void (*destroy)(struct cgroup *cgrp);
+	int (*allow_attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
+	int (*can_attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
+	void (*cancel_attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
+	void (*attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
+	void (*fork)(struct task_struct *task);
+	void (*exit)(struct cgroup *cgrp, struct cgroup *old_cgrp,
+		     struct task_struct *task);
+	int (*populate)(struct cgroup_subsys *ss, struct cgroup *cgrp);
+	void (*post_clone)(struct cgroup *cgrp);
+	void (*bind)(struct cgroup *root);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int subsys_id;
 	int active;
@@ -533,7 +581,10 @@ static inline struct cgroup_subsys_state *cgroup_subsys_state(
  */
 #define task_subsys_state_check(task, subsys_id, __c)			\
 	rcu_dereference_check(task->cgroups->subsys[subsys_id],		\
+<<<<<<< HEAD
 			      rcu_read_lock_held() ||			\
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			      lockdep_is_held(&task->alloc_lock) ||	\
 			      cgroup_lock_is_held() || (__c))
 
@@ -578,11 +629,14 @@ int cgroup_scan_tasks(struct cgroup_scanner *scan);
 int cgroup_attach_task(struct cgroup *, struct task_struct *);
 int cgroup_attach_task_all(struct task_struct *from, struct task_struct *);
 
+<<<<<<< HEAD
 static inline int cgroup_attach_task_current_cg(struct task_struct *tsk)
 {
 	return cgroup_attach_task_all(current, tsk);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * CSS ID is ID for cgroup_subsys_state structs under subsys. This only works
  * if cgroup_subsys.use_id == true. It can be used for looking up and scanning.
@@ -645,10 +699,13 @@ static inline int cgroup_attach_task_all(struct task_struct *from,
 {
 	return 0;
 }
+<<<<<<< HEAD
 static inline int cgroup_attach_task_current_cg(struct task_struct *t)
 {
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* !CONFIG_CGROUPS */
 

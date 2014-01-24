@@ -37,7 +37,11 @@
 				/* and pci_do_scan_bus */
 #include "rpaphp.h"
 
+<<<<<<< HEAD
 int rpaphp_debug;
+=======
+bool rpaphp_debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 LIST_HEAD(rpaphp_slot_head);
 
 #define DRIVER_VERSION	"0.1"

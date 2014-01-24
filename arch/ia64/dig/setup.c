@@ -22,7 +22,11 @@
 
 #include <asm/io.h>
 #include <asm/machvec.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __init
 dig_setup (char **cmdline_p)

@@ -71,13 +71,21 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 int btrfs_set_root_node(struct btrfs_root_item *item,
 			struct extent_buffer *node)
+=======
+void btrfs_set_root_node(struct btrfs_root_item *item,
+			 struct extent_buffer *node)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	btrfs_set_root_bytenr(item, node->start);
 	btrfs_set_root_level(item, btrfs_header_level(node));
 	btrfs_set_root_generation(item, btrfs_header_generation(node));
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -94,10 +102,21 @@ int btrfs_update_root(struct btrfs_trans_handle *trans, struct btrfs_root
 	unsigned long ptr;
 
 	path = btrfs_alloc_path();
+<<<<<<< HEAD
 	BUG_ON(!path);
 	ret = btrfs_search_slot(trans, root, key, path, 0, 1);
 	if (ret < 0)
 		goto out;
+=======
+	if (!path)
+		return -ENOMEM;
+
+	ret = btrfs_search_slot(trans, root, key, path, 0, 1);
+	if (ret < 0) {
+		btrfs_abort_transaction(trans, root, ret);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ret != 0) {
 		btrfs_print_leaf(root, path->nodes[0]);
@@ -117,6 +136,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 int btrfs_insert_root(struct btrfs_trans_handle *trans, struct btrfs_root
 		      *root, struct btrfs_key *key, struct btrfs_root_item
 		      *item)
@@ -124,6 +144,12 @@ int btrfs_insert_root(struct btrfs_trans_handle *trans, struct btrfs_root
 	int ret;
 	ret = btrfs_insert_item(trans, root, key, item, sizeof(*item));
 	return ret;
+=======
+int btrfs_insert_root(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+		      struct btrfs_key *key, struct btrfs_root_item *item)
+{
+	return btrfs_insert_item(trans, root, key, item, sizeof(*item));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -385,6 +411,11 @@ int btrfs_find_root_ref(struct btrfs_root *tree_root,
  *
  * For a back ref the root_id is the id of the subvol or snapshot and
  * ref_id is the id of the tree referencing it.
+<<<<<<< HEAD
+=======
+ *
+ * Will return 0, -ENOMEM, or anything from the CoW path
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 int btrfs_add_root_ref(struct btrfs_trans_handle *trans,
 		       struct btrfs_root *tree_root,
@@ -408,7 +439,15 @@ int btrfs_add_root_ref(struct btrfs_trans_handle *trans,
 again:
 	ret = btrfs_insert_empty_item(trans, tree_root, path, &key,
 				      sizeof(*ref) + name_len);
+<<<<<<< HEAD
 	BUG_ON(ret);
+=======
+	if (ret) {
+		btrfs_abort_transaction(trans, tree_root, ret);
+		btrfs_free_path(path);
+		return ret;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	leaf = path->nodes[0];
 	ref = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_root_ref);

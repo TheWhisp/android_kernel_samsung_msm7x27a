@@ -35,7 +35,10 @@
 
 #include <asm/processor.h>
 #include <asm/bios_ebda.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -608,12 +611,17 @@ kernel_physical_mapping_init(unsigned long start,
 #ifndef CONFIG_NUMA
 void __init initmem_init(void)
 {
+<<<<<<< HEAD
 	memblock_x86_register_active_regions(0, 0, max_pfn);
+=======
+	memblock_set_node(0, (phys_addr_t)ULLONG_MAX, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 
 void __init paging_init(void)
 {
+<<<<<<< HEAD
 	unsigned long max_zone_pfns[MAX_NR_ZONES];
 
 	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
@@ -623,6 +631,8 @@ void __init paging_init(void)
 	max_zone_pfns[ZONE_DMA32] = MAX_DMA32_PFN;
 	max_zone_pfns[ZONE_NORMAL] = max_pfn;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	sparse_memory_present_with_active_regions(MAX_NUMNODES);
 	sparse_init();
 
@@ -634,7 +644,11 @@ void __init paging_init(void)
 	 */
 	node_clear_state(0, N_NORMAL_MEMORY);
 
+<<<<<<< HEAD
 	free_area_init_nodes(max_zone_pfns);
+=======
+	zone_sizes_init();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*

@@ -21,8 +21,11 @@
 #ifndef _ASM_GT64120_H
 #define _ASM_GT64120_H
 
+<<<<<<< HEAD
 #include <linux/clocksource.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/addrspace.h>
 #include <asm/byteorder.h>
 

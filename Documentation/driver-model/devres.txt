@@ -233,6 +233,13 @@ certainly invest a bit more effort into libata core layer).
   6. List of managed interfaces
   -----------------------------
 
+<<<<<<< HEAD
+=======
+MEM
+  devm_kzalloc()
+  devm_kfree()
+
+>>>>>>> refs/remotes/origin/cm-10.0
 IO region
   devm_request_region()
   devm_request_mem_region()
@@ -262,7 +269,19 @@ IOMAP
   devm_ioremap()
   devm_ioremap_nocache()
   devm_iounmap()
+<<<<<<< HEAD
+=======
+  devm_request_and_ioremap() : checks resource, requests region, ioremaps
+>>>>>>> refs/remotes/origin/cm-10.0
   pcim_iomap()
   pcim_iounmap()
   pcim_iomap_table()	: array of mapped addresses indexed by BAR
   pcim_iomap_regions()	: do request_region() and iomap() on multiple BARs
+<<<<<<< HEAD
+=======
+
+REGULATOR
+  devm_regulator_get()
+  devm_regulator_put()
+  devm_regulator_bulk_get()
+>>>>>>> refs/remotes/origin/cm-10.0

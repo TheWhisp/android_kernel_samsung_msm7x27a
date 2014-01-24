@@ -3,7 +3,11 @@
  *
  * Copyright (C) 2008 Nokia Corporation
  *
+<<<<<<< HEAD
  * Contact: Jarkko Nikula <jhnikula@gmail.com>
+=======
+ * Contact: Jarkko Nikula <jarkko.nikula@bitmer.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *          Peter Ujfalusi <peter.ujfalusi@ti.com>
  *
  * This program is free software; you can redistribute it and/or
@@ -25,6 +29,11 @@
 #ifndef __OMAP_PCM_H__
 #define __OMAP_PCM_H__
 
+<<<<<<< HEAD
+=======
+struct snd_pcm_substream;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct omap_pcm_dma_data {
 	char		*name;		/* stream identifier */
 	int		dma_req;	/* DMA request line */

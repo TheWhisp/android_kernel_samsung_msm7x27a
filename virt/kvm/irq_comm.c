@@ -318,7 +318,10 @@ static int setup_routing_entry(struct kvm_irq_routing_table *rt,
 	 */
 	hlist_for_each_entry(ei, n, &rt->map[ue->gsi], link)
 		if (ei->type == KVM_IRQ_ROUTING_MSI ||
+<<<<<<< HEAD
 		    ue->type == KVM_IRQ_ROUTING_MSI ||
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		    ue->u.irqchip.irqchip == ei->irqchip.irqchip)
 			return r;
 

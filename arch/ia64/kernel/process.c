@@ -29,6 +29,10 @@
 #include <linux/kdebug.h>
 #include <linux/utsname.h>
 #include <linux/tracehook.h>
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/cpu.h>
 #include <asm/delay.h>
@@ -38,6 +42,10 @@
 #include <asm/pgalloc.h>
 #include <asm/processor.h>
 #include <asm/sal.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlbflush.h>
 #include <asm/uaccess.h>
 #include <asm/unwind.h>
@@ -300,6 +308,10 @@ cpu_idle (void)
 
 	/* endless idle loop with no priority at all */
 	while (1) {
+<<<<<<< HEAD
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (can_do_pal_halt) {
 			current_thread_info()->status &= ~TS_POLLING;
 			/*
@@ -330,9 +342,14 @@ cpu_idle (void)
 			normal_xtp();
 #endif
 		}
+<<<<<<< HEAD
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+		rcu_idle_exit();
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 		check_pgt_cache();
 		if (cpu_is_offline(cpu))
 			play_dead();

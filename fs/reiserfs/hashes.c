@@ -19,7 +19,11 @@
 //
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/types.h>
 
 #define DELTA 0x9E3779B9

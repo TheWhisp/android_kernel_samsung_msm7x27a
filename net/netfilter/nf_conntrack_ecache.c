@@ -19,6 +19,10 @@
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <net/netfilter/nf_conntrack.h>
 #include <net/netfilter/nf_conntrack_core.h>
@@ -26,22 +30,37 @@
 
 static DEFINE_MUTEX(nf_ct_ecache_mutex);
 
+<<<<<<< HEAD
 struct nf_ct_event_notifier __rcu *nf_conntrack_event_cb __read_mostly;
 EXPORT_SYMBOL_GPL(nf_conntrack_event_cb);
 
 struct nf_exp_event_notifier __rcu *nf_expect_event_cb __read_mostly;
 EXPORT_SYMBOL_GPL(nf_expect_event_cb);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* deliver cached events and clear cache entry - must be called with locally
  * disabled softirqs */
 void nf_ct_deliver_cached_events(struct nf_conn *ct)
 {
+<<<<<<< HEAD
 	unsigned long events;
 	struct nf_ct_event_notifier *notify;
 	struct nf_conntrack_ecache *e;
 
 	rcu_read_lock();
 	notify = rcu_dereference(nf_conntrack_event_cb);
+=======
+	struct net *net = nf_ct_net(ct);
+	unsigned long events, missed;
+	struct nf_ct_event_notifier *notify;
+	struct nf_conntrack_ecache *e;
+	struct nf_ct_event item;
+	int ret;
+
+	rcu_read_lock();
+	notify = rcu_dereference(net->ct.nf_conntrack_event_cb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (notify == NULL)
 		goto out_unlock;
 
@@ -51,6 +70,7 @@ void nf_ct_deliver_cached_events(struct nf_conn *ct)
 
 	events = xchg(&e->cache, 0);
 
+<<<<<<< HEAD
 	if (nf_ct_is_confirmed(ct) && !nf_ct_is_dying(ct) && events) {
 		struct nf_ct_event item = {
 			.ct	= ct,
@@ -76,25 +96,66 @@ void nf_ct_deliver_cached_events(struct nf_conn *ct)
 			spin_unlock_bh(&ct->lock);
 		} 
 	}
+=======
+	if (!nf_ct_is_confirmed(ct) || nf_ct_is_dying(ct) || !events)
+		goto out_unlock;
+
+	/* We make a copy of the missed event cache without taking
+	 * the lock, thus we may send missed events twice. However,
+	 * this does not harm and it happens very rarely. */
+	missed = e->missed;
+
+	if (!((events | missed) & e->ctmask))
+		goto out_unlock;
+
+	item.ct = ct;
+	item.pid = 0;
+	item.report = 0;
+
+	ret = notify->fcn(events | missed, &item);
+
+	if (likely(ret >= 0 && !missed))
+		goto out_unlock;
+
+	spin_lock_bh(&ct->lock);
+	if (ret < 0)
+		e->missed |= events;
+	else
+		e->missed &= ~missed;
+	spin_unlock_bh(&ct->lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out_unlock:
 	rcu_read_unlock();
 }
 EXPORT_SYMBOL_GPL(nf_ct_deliver_cached_events);
 
+<<<<<<< HEAD
 int nf_conntrack_register_notifier(struct nf_ct_event_notifier *new)
+=======
+int nf_conntrack_register_notifier(struct net *net,
+				   struct nf_ct_event_notifier *new)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = 0;
 	struct nf_ct_event_notifier *notify;
 
 	mutex_lock(&nf_ct_ecache_mutex);
+<<<<<<< HEAD
 	notify = rcu_dereference_protected(nf_conntrack_event_cb,
+=======
+	notify = rcu_dereference_protected(net->ct.nf_conntrack_event_cb,
+>>>>>>> refs/remotes/origin/cm-10.0
 					   lockdep_is_held(&nf_ct_ecache_mutex));
 	if (notify != NULL) {
 		ret = -EBUSY;
 		goto out_unlock;
 	}
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_conntrack_event_cb, new);
+=======
+	rcu_assign_pointer(net->ct.nf_conntrack_event_cb, new);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&nf_ct_ecache_mutex);
 	return ret;
 
@@ -104,32 +165,57 @@ out_unlock:
 }
 EXPORT_SYMBOL_GPL(nf_conntrack_register_notifier);
 
+<<<<<<< HEAD
 void nf_conntrack_unregister_notifier(struct nf_ct_event_notifier *new)
+=======
+void nf_conntrack_unregister_notifier(struct net *net,
+				      struct nf_ct_event_notifier *new)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct nf_ct_event_notifier *notify;
 
 	mutex_lock(&nf_ct_ecache_mutex);
+<<<<<<< HEAD
 	notify = rcu_dereference_protected(nf_conntrack_event_cb,
 					   lockdep_is_held(&nf_ct_ecache_mutex));
 	BUG_ON(notify != new);
 	rcu_assign_pointer(nf_conntrack_event_cb, NULL);
+=======
+	notify = rcu_dereference_protected(net->ct.nf_conntrack_event_cb,
+					   lockdep_is_held(&nf_ct_ecache_mutex));
+	BUG_ON(notify != new);
+	RCU_INIT_POINTER(net->ct.nf_conntrack_event_cb, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&nf_ct_ecache_mutex);
 }
 EXPORT_SYMBOL_GPL(nf_conntrack_unregister_notifier);
 
+<<<<<<< HEAD
 int nf_ct_expect_register_notifier(struct nf_exp_event_notifier *new)
+=======
+int nf_ct_expect_register_notifier(struct net *net,
+				   struct nf_exp_event_notifier *new)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = 0;
 	struct nf_exp_event_notifier *notify;
 
 	mutex_lock(&nf_ct_ecache_mutex);
+<<<<<<< HEAD
 	notify = rcu_dereference_protected(nf_expect_event_cb,
+=======
+	notify = rcu_dereference_protected(net->ct.nf_expect_event_cb,
+>>>>>>> refs/remotes/origin/cm-10.0
 					   lockdep_is_held(&nf_ct_ecache_mutex));
 	if (notify != NULL) {
 		ret = -EBUSY;
 		goto out_unlock;
 	}
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_expect_event_cb, new);
+=======
+	rcu_assign_pointer(net->ct.nf_expect_event_cb, new);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&nf_ct_ecache_mutex);
 	return ret;
 
@@ -139,15 +225,27 @@ out_unlock:
 }
 EXPORT_SYMBOL_GPL(nf_ct_expect_register_notifier);
 
+<<<<<<< HEAD
 void nf_ct_expect_unregister_notifier(struct nf_exp_event_notifier *new)
+=======
+void nf_ct_expect_unregister_notifier(struct net *net,
+				      struct nf_exp_event_notifier *new)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct nf_exp_event_notifier *notify;
 
 	mutex_lock(&nf_ct_ecache_mutex);
+<<<<<<< HEAD
 	notify = rcu_dereference_protected(nf_expect_event_cb,
 					   lockdep_is_held(&nf_ct_ecache_mutex));
 	BUG_ON(notify != new);
 	rcu_assign_pointer(nf_expect_event_cb, NULL);
+=======
+	notify = rcu_dereference_protected(net->ct.nf_expect_event_cb,
+					   lockdep_is_held(&nf_ct_ecache_mutex));
+	BUG_ON(notify != new);
+	RCU_INIT_POINTER(net->ct.nf_expect_event_cb, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&nf_ct_ecache_mutex);
 }
 EXPORT_SYMBOL_GPL(nf_ct_expect_unregister_notifier);

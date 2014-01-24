@@ -4,7 +4,11 @@
  * Author       Kai Germaschewski
  * Copyright    2001 by Kai Germaschewski  <kai.germaschewski@gmx.de>
  *              2001 by Karsten Keil       <keil@isdn4linux.de>
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * based upon Karsten Keil's original avm_pci.c driver
  *
  * This software may be used and distributed according to the terms
@@ -25,6 +29,10 @@
 
 #include <linux/module.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/isapnp.h>
 #include <linux/kmod.h>
@@ -70,7 +78,11 @@ MODULE_DEVICE_TABLE(pci, fcpci_ids);
 
 #ifdef CONFIG_PNP
 static struct pnp_device_id fcpnp_ids[] __devinitdata = {
+<<<<<<< HEAD
 	{ 
+=======
+	{
+>>>>>>> refs/remotes/origin/cm-10.0
 		.id		= "AVM0900",
 		.driver_data	= (unsigned long) "Fritz!Card PnP",
 	},
@@ -152,7 +164,11 @@ MODULE_LICENSE("GPL");
 static unsigned char fcpci_read_isac(struct isac *isac, unsigned char offset)
 {
 	struct fritz_adapter *adapter = isac->priv;
+<<<<<<< HEAD
 	unsigned char idx = (offset > 0x2f) ? 
+=======
+	unsigned char idx = (offset > 0x2f) ?
+>>>>>>> refs/remotes/origin/cm-10.0
 		AVM_IDX_ISAC_REG_HIGH : AVM_IDX_ISAC_REG_LOW;
 	unsigned char val;
 	unsigned long flags;
@@ -160,7 +176,11 @@ static unsigned char fcpci_read_isac(struct isac *isac, unsigned char offset)
 	spin_lock_irqsave(&adapter->hw_lock, flags);
 	outb(idx, adapter->io + AVM_INDEX);
 	val = inb(adapter->io + AVM_DATA + (offset & 0xf));
+<<<<<<< HEAD
  	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+=======
+	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	DBG(0x1000, " port %#x, value %#x",
 	    offset, val);
 	return val;
@@ -170,7 +190,11 @@ static void fcpci_write_isac(struct isac *isac, unsigned char offset,
 			     unsigned char value)
 {
 	struct fritz_adapter *adapter = isac->priv;
+<<<<<<< HEAD
 	unsigned char idx = (offset > 0x2f) ? 
+=======
+	unsigned char idx = (offset > 0x2f) ?
+>>>>>>> refs/remotes/origin/cm-10.0
 		AVM_IDX_ISAC_REG_HIGH : AVM_IDX_ISAC_REG_LOW;
 	unsigned long flags;
 
@@ -179,10 +203,17 @@ static void fcpci_write_isac(struct isac *isac, unsigned char offset,
 	spin_lock_irqsave(&adapter->hw_lock, flags);
 	outb(idx, adapter->io + AVM_INDEX);
 	outb(value, adapter->io + AVM_DATA + (offset & 0xf));
+<<<<<<< HEAD
  	spin_unlock_irqrestore(&adapter->hw_lock, flags);
 }
 
 static void fcpci_read_isac_fifo(struct isac *isac, unsigned char * data, 
+=======
+	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+}
+
+static void fcpci_read_isac_fifo(struct isac *isac, unsigned char *data,
+>>>>>>> refs/remotes/origin/cm-10.0
 				 int size)
 {
 	struct fritz_adapter *adapter = isac->priv;
@@ -191,10 +222,17 @@ static void fcpci_read_isac_fifo(struct isac *isac, unsigned char * data,
 	spin_lock_irqsave(&adapter->hw_lock, flags);
 	outb(AVM_IDX_ISAC_FIFO, adapter->io + AVM_INDEX);
 	insb(adapter->io + AVM_DATA, data, size);
+<<<<<<< HEAD
  	spin_unlock_irqrestore(&adapter->hw_lock, flags);
 }
 
 static void fcpci_write_isac_fifo(struct isac *isac, unsigned char * data, 
+=======
+	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+}
+
+static void fcpci_write_isac_fifo(struct isac *isac, unsigned char *data,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  int size)
 {
 	struct fritz_adapter *adapter = isac->priv;
@@ -203,7 +241,11 @@ static void fcpci_write_isac_fifo(struct isac *isac, unsigned char * data,
 	spin_lock_irqsave(&adapter->hw_lock, flags);
 	outb(AVM_IDX_ISAC_FIFO, adapter->io + AVM_INDEX);
 	outsb(adapter->io + AVM_DATA, data, size);
+<<<<<<< HEAD
  	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+=======
+	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static u32 fcpci_read_hdlc_status(struct fritz_adapter *adapter, int nr)
@@ -253,14 +295,22 @@ static unsigned char fcpci2_read_isac(struct isac *isac, unsigned char offset)
 	spin_lock_irqsave(&adapter->hw_lock, flags);
 	outl(offset, adapter->io + AVM_ISACSX_INDEX);
 	val = inl(adapter->io + AVM_ISACSX_DATA);
+<<<<<<< HEAD
  	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+=======
+	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	DBG(0x1000, " port %#x, value %#x",
 	    offset, val);
 
 	return val;
 }
 
+<<<<<<< HEAD
 static void fcpci2_write_isac(struct isac *isac, unsigned char offset, 
+=======
+static void fcpci2_write_isac(struct isac *isac, unsigned char offset,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      unsigned char value)
 {
 	struct fritz_adapter *adapter = isac->priv;
@@ -271,10 +321,17 @@ static void fcpci2_write_isac(struct isac *isac, unsigned char offset,
 	spin_lock_irqsave(&adapter->hw_lock, flags);
 	outl(offset, adapter->io + AVM_ISACSX_INDEX);
 	outl(value, adapter->io + AVM_ISACSX_DATA);
+<<<<<<< HEAD
  	spin_unlock_irqrestore(&adapter->hw_lock, flags);
 }
 
 static void fcpci2_read_isac_fifo(struct isac *isac, unsigned char * data, 
+=======
+	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+}
+
+static void fcpci2_read_isac_fifo(struct isac *isac, unsigned char *data,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  int size)
 {
 	struct fritz_adapter *adapter = isac->priv;
@@ -285,10 +342,17 @@ static void fcpci2_read_isac_fifo(struct isac *isac, unsigned char * data,
 	outl(0, adapter->io + AVM_ISACSX_INDEX);
 	for (i = 0; i < size; i++)
 		data[i] = inl(adapter->io + AVM_ISACSX_DATA);
+<<<<<<< HEAD
  	spin_unlock_irqrestore(&adapter->hw_lock, flags);
 }
 
 static void fcpci2_write_isac_fifo(struct isac *isac, unsigned char * data, 
+=======
+	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+}
+
+static void fcpci2_write_isac_fifo(struct isac *isac, unsigned char *data,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   int size)
 {
 	struct fritz_adapter *adapter = isac->priv;
@@ -299,7 +363,11 @@ static void fcpci2_write_isac_fifo(struct isac *isac, unsigned char * data,
 	outl(0, adapter->io + AVM_ISACSX_INDEX);
 	for (i = 0; i < size; i++)
 		outl(data[i], adapter->io + AVM_ISACSX_DATA);
+<<<<<<< HEAD
  	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+=======
+	spin_unlock_irqrestore(&adapter->hw_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static u32 fcpci2_read_hdlc_status(struct fritz_adapter *adapter, int nr)
@@ -348,10 +416,17 @@ static void __fcpnp_write_ctrl(struct fritz_bcs *bcs, int which)
 
 	outb(idx, adapter->io + AVM_INDEX);
 	if (which & 4)
+<<<<<<< HEAD
 		outb(bcs->ctrl.sr.mode, 
 		     adapter->io + AVM_DATA + HDLC_STATUS + 2);
 	if (which & 2)
 		outb(bcs->ctrl.sr.xml, 
+=======
+		outb(bcs->ctrl.sr.mode,
+		     adapter->io + AVM_DATA + HDLC_STATUS + 2);
+	if (which & 2)
+		outb(bcs->ctrl.sr.xml,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     adapter->io + AVM_DATA + HDLC_STATUS + 1);
 	if (which & 1)
 		outb(bcs->ctrl.sr.cmd,
@@ -415,7 +490,11 @@ static void hdlc_fill_fifo(struct fritz_bcs *bcs)
 		break;
 	case AVM_FRITZ_PCIV2:
 		fcpci2_write_ctrl(bcs, 3);
+<<<<<<< HEAD
 		outsl(adapter->io + 
+=======
+		outsl(adapter->io +
+>>>>>>> refs/remotes/origin/cm-10.0
 		      (bcs->channel ? AVM_HDLC_FIFO_2 : AVM_HDLC_FIFO_1),
 		      p, (count + 3) / 4);
 		break;
@@ -446,12 +525,20 @@ static inline void hdlc_empty_fifo(struct fritz_bcs *bcs, int count)
 	case AVM_FRITZ_PCI:
 		spin_lock(&adapter->hw_lock);
 		outl(idx, adapter->io + AVM_INDEX);
+<<<<<<< HEAD
 		insl(adapter->io + AVM_DATA + HDLC_FIFO, 
+=======
+		insl(adapter->io + AVM_DATA + HDLC_FIFO,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     p, (count + 3) / 4);
 		spin_unlock(&adapter->hw_lock);
 		break;
 	case AVM_FRITZ_PCIV2:
+<<<<<<< HEAD
 		insl(adapter->io + 
+=======
+		insl(adapter->io +
+>>>>>>> refs/remotes/origin/cm-10.0
 		     (bcs->channel ? AVM_HDLC_FIFO_2 : AVM_HDLC_FIFO_1),
 		     p, (count + 3) / 4);
 		break;
@@ -488,7 +575,11 @@ static inline void hdlc_rpr_irq(struct fritz_bcs *bcs, u32 stat)
 	hdlc_empty_fifo(bcs, len);
 
 	if ((stat & HDLC_STAT_RME) || (bcs->mode == L1_MODE_TRANS)) {
+<<<<<<< HEAD
 		if (((stat & HDLC_STAT_CRCVFRRAB)== HDLC_STAT_CRCVFR) ||
+=======
+		if (((stat & HDLC_STAT_CRCVFRRAB) == HDLC_STAT_CRCVFR) ||
+>>>>>>> refs/remotes/origin/cm-10.0
 		    (bcs->mode == L1_MODE_TRANS)) {
 			skb = dev_alloc_skb(bcs->rcvidx);
 			if (!skb) {
@@ -511,7 +602,11 @@ static inline void hdlc_rpr_irq(struct fritz_bcs *bcs, u32 stat)
 static inline void hdlc_xdu_irq(struct fritz_bcs *bcs)
 {
 	struct fritz_adapter *adapter = bcs->adapter;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Here we lost an TX interrupt, so
 	 * restart transmitting the whole frame.
@@ -586,7 +681,11 @@ static inline void hdlc_irq(struct fritz_adapter *adapter)
 static void modehdlc(struct fritz_bcs *bcs, int mode)
 {
 	struct fritz_adapter *adapter = bcs->adapter;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	DBG(0x40, "hdlc %c mode %d --> %d",
 	    'A' + bcs->channel, bcs->mode, mode);
 
@@ -637,12 +736,20 @@ static void fritz_b_l2l1(struct hisax_if *ifc, int pr, void *arg)
 		break;
 	case PH_ACTIVATE | REQUEST:
 		mode = (long) arg;
+<<<<<<< HEAD
 		DBG(4,"B%d,PH_ACTIVATE_REQUEST %d", bcs->channel + 1, mode);
+=======
+		DBG(4, "B%d,PH_ACTIVATE_REQUEST %d", bcs->channel + 1, mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		modehdlc(bcs, mode);
 		B_L1L2(bcs, PH_ACTIVATE | INDICATION, NULL);
 		break;
 	case PH_DEACTIVATE | REQUEST:
+<<<<<<< HEAD
 		DBG(4,"B%d,PH_DEACTIVATE_REQUEST", bcs->channel + 1);
+=======
+		DBG(4, "B%d,PH_DEACTIVATE_REQUEST", bcs->channel + 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 		modehdlc(bcs, L1_MODE_NULL);
 		B_L1L2(bcs, PH_DEACTIVATE | INDICATION, NULL);
 		break;
@@ -701,10 +808,17 @@ static inline void fcpci2_init(struct fritz_adapter *adapter)
 
 static inline void fcpci_init(struct fritz_adapter *adapter)
 {
+<<<<<<< HEAD
 	outb(AVM_STATUS0_DIS_TIMER | AVM_STATUS0_RES_TIMER | 
 	     AVM_STATUS0_ENA_IRQ, adapter->io + AVM_STATUS0);
 
 	outb(AVM_STATUS1_ENA_IOM | adapter->irq, 
+=======
+	outb(AVM_STATUS0_DIS_TIMER | AVM_STATUS0_RES_TIMER |
+	     AVM_STATUS0_ENA_IRQ, adapter->io + AVM_STATUS0);
+
+	outb(AVM_STATUS1_ENA_IOM | adapter->irq,
+>>>>>>> refs/remotes/origin/cm-10.0
 	     adapter->io + AVM_STATUS1);
 	mdelay(10);
 }
@@ -716,7 +830,11 @@ static int __devinit fcpcipnp_setup(struct fritz_adapter *adapter)
 	u32 val = 0;
 	int retval;
 
+<<<<<<< HEAD
 	DBG(1,"");
+=======
+	DBG(1, "");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	isac_init(&adapter->isac); // FIXME is this okay now
 
@@ -736,7 +854,11 @@ static int __devinit fcpcipnp_setup(struct fritz_adapter *adapter)
 	}
 
 	DBG(1, "stat %#x Class %X Rev %d",
+<<<<<<< HEAD
 	    val, val & 0xff, (val>>8) & 0xff);
+=======
+	    val, val & 0xff, (val >> 8) & 0xff);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_init(&adapter->hw_lock);
 	adapter->isac.priv = adapter;
@@ -818,15 +940,25 @@ static int __devinit fcpcipnp_setup(struct fritz_adapter *adapter)
 
 	return 0;
 
+<<<<<<< HEAD
  err_region:
 	release_region(adapter->io, 32);
  err:
+=======
+err_region:
+	release_region(adapter->io, 32);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
 static void __devexit fcpcipnp_release(struct fritz_adapter *adapter)
 {
+<<<<<<< HEAD
 	DBG(1,"");
+=======
+	DBG(1, "");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	outb(0, adapter->io + AVM_STATUS0);
 	free_irq(adapter->irq, adapter);
@@ -835,7 +967,11 @@ static void __devexit fcpcipnp_release(struct fritz_adapter *adapter)
 
 // ----------------------------------------------------------------------
 
+<<<<<<< HEAD
 static struct fritz_adapter * __devinit 
+=======
+static struct fritz_adapter * __devinit
+>>>>>>> refs/remotes/origin/cm-10.0
 new_adapter(void)
 {
 	struct fritz_adapter *adapter;
@@ -849,7 +985,11 @@ new_adapter(void)
 	adapter->isac.hisax_d_if.owner = THIS_MODULE;
 	adapter->isac.hisax_d_if.ifc.priv = &adapter->isac;
 	adapter->isac.hisax_d_if.ifc.l2l1 = isac_d_l2l1;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < 2; i++) {
 		adapter->bcs[i].adapter = adapter;
 		adapter->bcs[i].channel = i;
@@ -861,7 +1001,11 @@ new_adapter(void)
 		b_if[i] = &adapter->bcs[i].b_if;
 
 	if (hisax_register(&adapter->isac.hisax_d_if, b_if, "fcpcipnp",
+<<<<<<< HEAD
 			protocol) != 0) {
+=======
+			   protocol) != 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		kfree(adapter);
 		adapter = NULL;
 	}
@@ -888,7 +1032,11 @@ static int __devinit fcpci_probe(struct pci_dev *pdev,
 
 	pci_set_drvdata(pdev, adapter);
 
+<<<<<<< HEAD
 	if (pdev->device == PCI_DEVICE_ID_AVM_A1_V2) 
+=======
+	if (pdev->device == PCI_DEVICE_ID_AVM_A1_V2)
+>>>>>>> refs/remotes/origin/cm-10.0
 		adapter->type = AVM_FRITZ_PCIV2;
 	else
 		adapter->type = AVM_FRITZ_PCI;
@@ -908,10 +1056,17 @@ static int __devinit fcpci_probe(struct pci_dev *pdev,
 		goto err_free;
 
 	return 0;
+<<<<<<< HEAD
 	
  err_free:
 	delete_adapter(adapter);
  err:
+=======
+
+err_free:
+	delete_adapter(adapter);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
@@ -922,7 +1077,11 @@ static int __devinit fcpnp_probe(struct pnp_dev *pdev, const struct pnp_device_i
 	int retval;
 
 	if (!pdev)
+<<<<<<< HEAD
 		return(-ENODEV);
+=======
+		return (-ENODEV);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	retval = -ENOMEM;
 	adapter = new_adapter();
@@ -937,7 +1096,11 @@ static int __devinit fcpnp_probe(struct pnp_dev *pdev, const struct pnp_device_i
 	retval = pnp_activate_dev(pdev);
 	if (retval < 0) {
 		printk(KERN_WARNING "%s: pnp_activate_dev(%s) ret(%d)\n", __func__,
+<<<<<<< HEAD
 			(char *)dev_id->driver_data, retval);
+=======
+		       (char *)dev_id->driver_data, retval);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto err_free;
 	}
 	adapter->io = pnp_port_start(pdev, 0);
@@ -951,10 +1114,17 @@ static int __devinit fcpnp_probe(struct pnp_dev *pdev, const struct pnp_device_i
 		goto err_free;
 
 	return 0;
+<<<<<<< HEAD
 	
  err_free:
 	delete_adapter(adapter);
  err:
+=======
+
+err_free:
+	delete_adapter(adapter);
+err:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 

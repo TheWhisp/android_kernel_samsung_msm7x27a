@@ -11,6 +11,10 @@
 #include <asm/core_tsunami.h>
 #undef __EXTERN_INLINE
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include <linux/pci.h>
 #include <linux/sched.h>

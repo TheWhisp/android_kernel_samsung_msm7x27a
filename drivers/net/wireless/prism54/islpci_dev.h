@@ -22,6 +22,10 @@
 #ifndef _ISLPCI_DEV_H
 #define _ISLPCI_DEV_H
 
+<<<<<<< HEAD
+=======
+#include <linux/irqreturn.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/netdevice.h>
 #include <linux/wireless.h>
 #include <net/iw_handler.h>

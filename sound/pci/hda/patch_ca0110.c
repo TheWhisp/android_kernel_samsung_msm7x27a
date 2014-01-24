@@ -22,6 +22,10 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include "hda_codec.h"
 #include "hda_local.h"
@@ -40,7 +44,11 @@ struct ca0110_spec {
 	hda_nid_t dig_out;
 	hda_nid_t dig_in;
 	unsigned int num_inputs;
+<<<<<<< HEAD
 	const char *input_labels[AUTO_PIN_LAST];
+=======
+	char input_labels[AUTO_PIN_LAST][32];
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct hda_pcm pcm_rec[2];	/* PCM information */
 };
 
@@ -240,7 +248,12 @@ static int ca0110_build_controls(struct hda_codec *codec)
 	}
 
 	if (spec->dig_out) {
+<<<<<<< HEAD
 		err = snd_hda_create_spdif_out_ctls(codec, spec->dig_out);
+=======
+		err = snd_hda_create_spdif_out_ctls(codec, spec->dig_out,
+						    spec->dig_out);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err < 0)
 			return err;
 		err = snd_hda_create_spdif_share_sw(codec, &spec->multiout);
@@ -474,7 +487,13 @@ static void parse_input(struct hda_codec *codec)
 		if (j >= cfg->num_inputs)
 			continue;
 		spec->input_pins[n] = pin;
+<<<<<<< HEAD
 		spec->input_labels[n] = hda_get_input_pin_label(codec, pin, 1);
+=======
+		snd_hda_get_pin_label(codec, pin, cfg,
+				      spec->input_labels[n],
+				      sizeof(spec->input_labels[n]), NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		spec->adcs[n] = nid;
 		n++;
 	}

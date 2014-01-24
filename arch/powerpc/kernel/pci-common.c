@@ -21,6 +21,10 @@
 #include <linux/string.h>
 #include <linux/init.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/of_address.h>
 #include <linux/of_pci.h>
 #include <linux/mm.h>
@@ -37,7 +41,10 @@
 #include <asm/byteorder.h>
 #include <asm/machdep.h>
 #include <asm/ppc-pci.h>
+<<<<<<< HEAD
 #include <asm/firmware.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/eeh.h>
 
 static DEFINE_SPINLOCK(hose_spinlock);
@@ -49,9 +56,12 @@ static int global_phb_number;		/* Global phb counter */
 /* ISA Memory physical address */
 resource_size_t isa_mem_base;
 
+<<<<<<< HEAD
 /* Default PCI flags is 0 on ppc32, modified at boot on ppc64 */
 unsigned int ppc_pci_flags = 0;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct dma_map_ops *pci_dma_ops = &dma_direct_ops;
 
@@ -107,7 +117,11 @@ static resource_size_t pcibios_io_size(const struct pci_controller *hose)
 #ifdef CONFIG_PPC64
 	return hose->pci_io_size;
 #else
+<<<<<<< HEAD
 	return hose->io_resource.end - hose->io_resource.start + 1;
+=======
+	return resource_size(&hose->io_resource);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 }
 
@@ -213,11 +227,16 @@ char __devinit *pcibios_setup(char *str)
  * If the interrupt is used, then gets the interrupt line from the
  * openfirmware and sets it in the pci_dev and pci_config line.
  */
+<<<<<<< HEAD
 int pci_read_irq_line(struct pci_dev *pci_dev)
+=======
+static int pci_read_irq_line(struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct of_irq oirq;
 	unsigned int virq;
 
+<<<<<<< HEAD
 	/* The current device-tree that iSeries generates from the HV
 	 * PCI informations doesn't contain proper interrupt routing,
 	 * and all the fallback would do is print out crap, so we
@@ -232,6 +251,8 @@ int pci_read_irq_line(struct pci_dev *pci_dev)
 		return -1;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pr_debug("PCI: Try to map irq for %s...\n", pci_name(pci_dev));
 
 #ifdef DEBUG
@@ -282,7 +303,10 @@ int pci_read_irq_line(struct pci_dev *pci_dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(pci_read_irq_line);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Platform support for /proc/bus/pci/X/Y mmap()s,
@@ -842,13 +866,20 @@ int pci_proc_domain(struct pci_bus *bus)
 {
 	struct pci_controller *hose = pci_bus_to_host(bus);
 
+<<<<<<< HEAD
 	if (!(ppc_pci_flags & PPC_PCI_ENABLE_PROC_DOMAINS))
 		return 0;
 	if (ppc_pci_flags & PPC_PCI_COMPAT_DOMAIN_0)
+=======
+	if (!pci_has_flag(PCI_ENABLE_PROC_DOMAINS))
+		return 0;
+	if (pci_has_flag(PCI_COMPAT_DOMAIN_0))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return hose->global_number != 0;
 	return 1;
 }
 
+<<<<<<< HEAD
 void pcibios_resource_to_bus(struct pci_dev *dev, struct pci_bus_region *region,
 			     struct resource *res)
 {
@@ -903,6 +934,8 @@ static void __devinit fixup_resource(struct resource *res, struct pci_dev *dev)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* This header fixup will do the resource fixup for all devices as they are
  * probed, but not for bridge ranges
  */
@@ -920,6 +953,7 @@ static void __devinit pcibios_fixup_resources(struct pci_dev *dev)
 		struct resource *res = dev->resource + i;
 		if (!res->flags)
 			continue;
+<<<<<<< HEAD
 		/* On platforms that have PPC_PCI_PROBE_ONLY set, we don't
 		 * consider 0 as an unassigned BAR value. It's technically
 		 * a valid value, but linux doesn't like it... so when we can
@@ -932,17 +966,40 @@ static void __devinit pcibios_fixup_resources(struct pci_dev *dev)
 				 (unsigned long long)res->start,
 				 (unsigned long long)res->end,
 				 (unsigned int)res->flags);
+=======
+
+		/* If we're going to re-assign everything, we mark all resources
+		 * as unset (and 0-base them). In addition, we mark BARs starting
+		 * at 0 as unset as well, except if PCI_PROBE_ONLY is also set
+		 * since in that case, we don't want to re-assign anything
+		 */
+		if (pci_has_flag(PCI_REASSIGN_ALL_RSRC) ||
+		    (res->start == 0 && !pci_has_flag(PCI_PROBE_ONLY))) {
+			/* Only print message if not re-assigning */
+			if (!pci_has_flag(PCI_REASSIGN_ALL_RSRC))
+				pr_debug("PCI:%s Resource %d %016llx-%016llx [%x] "
+					 "is unassigned\n",
+					 pci_name(dev), i,
+					 (unsigned long long)res->start,
+					 (unsigned long long)res->end,
+					 (unsigned int)res->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 			res->end -= res->start;
 			res->start = 0;
 			res->flags |= IORESOURCE_UNSET;
 			continue;
 		}
 
+<<<<<<< HEAD
 		pr_debug("PCI:%s Resource %d %016llx-%016llx [%x] fixup...\n",
+=======
+		pr_debug("PCI:%s Resource %d %016llx-%016llx [%x]\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			 pci_name(dev), i,
 			 (unsigned long long)res->start,\
 			 (unsigned long long)res->end,
 			 (unsigned int)res->flags);
+<<<<<<< HEAD
 
 		fixup_resource(res, dev);
 
@@ -950,6 +1007,8 @@ static void __devinit pcibios_fixup_resources(struct pci_dev *dev)
 			 pci_name(dev),
 			 (unsigned long long)res->start,
 			 (unsigned long long)res->end);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* Call machine specific resource fixup */
@@ -973,7 +1032,11 @@ static int __devinit pcibios_uninitialized_bridge_resource(struct pci_bus *bus,
 	int i;
 
 	/* We don't do anything if PCI_PROBE_ONLY is set */
+<<<<<<< HEAD
 	if (ppc_pci_flags & PPC_PCI_PROBE_ONLY)
+=======
+	if (pci_has_flag(PCI_PROBE_ONLY))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	/* Job is a bit different between memory and IO */
@@ -1041,27 +1104,47 @@ static void __devinit pcibios_fixup_bridge(struct pci_bus *bus)
 		if (i >= 3 && bus->self->transparent)
 			continue;
 
+<<<<<<< HEAD
 		pr_debug("PCI:%s Bus rsrc %d %016llx-%016llx [%x] fixup...\n",
+=======
+		/* If we are going to re-assign everything, mark the resource
+		 * as unset and move it down to 0
+		 */
+		if (pci_has_flag(PCI_REASSIGN_ALL_RSRC)) {
+			res->flags |= IORESOURCE_UNSET;
+			res->end -= res->start;
+			res->start = 0;
+			continue;
+		}
+
+		pr_debug("PCI:%s Bus rsrc %d %016llx-%016llx [%x]\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			 pci_name(dev), i,
 			 (unsigned long long)res->start,\
 			 (unsigned long long)res->end,
 			 (unsigned int)res->flags);
 
+<<<<<<< HEAD
 		/* Perform fixup */
 		fixup_resource(res, dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Try to detect uninitialized P2P bridge resources,
 		 * and clear them out so they get re-assigned later
 		 */
 		if (pcibios_uninitialized_bridge_resource(bus, res)) {
 			res->flags = 0;
 			pr_debug("PCI:%s            (unassigned)\n", pci_name(dev));
+<<<<<<< HEAD
 		} else {
 
 			pr_debug("PCI:%s            %016llx-%016llx\n",
 				 pci_name(dev),
 				 (unsigned long long)res->start,
 				 (unsigned long long)res->end);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }
@@ -1097,9 +1180,12 @@ void __devinit pcibios_setup_bus_devices(struct pci_bus *bus)
 		if (dev->is_added)
 			continue;
 
+<<<<<<< HEAD
 		/* Setup OF node pointer in the device */
 		dev->dev.of_node = pci_device_to_OF_node(dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Fixup NUMA node as it may not be setup yet by the generic
 		 * code and is needed by the DMA init
 		 */
@@ -1120,6 +1206,14 @@ void __devinit pcibios_setup_bus_devices(struct pci_bus *bus)
 	}
 }
 
+<<<<<<< HEAD
+=======
+void pcibios_set_master(struct pci_dev *dev)
+{
+	/* No special bus mastering setup handling */
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void __devinit pcibios_fixup_bus(struct pci_bus *bus)
 {
 	/* When called from the generic PCI probe, read PCI<->PCI bridge
@@ -1146,7 +1240,11 @@ void __devinit pci_fixup_cardbus(struct pci_bus *bus)
 
 static int skip_isa_ioresource_align(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	if ((ppc_pci_flags & PPC_PCI_CAN_SKIP_ISA_ALIGN) &&
+=======
+	if (pci_has_flag(PCI_CAN_SKIP_ISA_ALIGN) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 	    !(dev->bus->bridge_ctl & PCI_BRIDGE_CTL_ISA))
 		return 1;
 	return 0;
@@ -1264,10 +1362,19 @@ void pcibios_allocate_bus_resources(struct pci_bus *bus)
 	pci_bus_for_each_resource(bus, res, i) {
 		if (!res || !res->flags || res->start > res->end || res->parent)
 			continue;
+<<<<<<< HEAD
+=======
+
+		/* If the resource was left unset at this point, we clear it */
+		if (res->flags & IORESOURCE_UNSET)
+			goto clear_resource;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (bus->parent == NULL)
 			pr = (res->flags & IORESOURCE_IO) ?
 				&ioport_resource : &iomem_resource;
 		else {
+<<<<<<< HEAD
 			/* Don't bother with non-root busses when
 			 * re-assigning all resources. We clear the
 			 * resource flags as if they were colliding
@@ -1276,6 +1383,8 @@ void pcibios_allocate_bus_resources(struct pci_bus *bus)
 			 */
 			if (ppc_pci_flags & PPC_PCI_REASSIGN_ALL_RSRC)
 				goto clear_resource;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			pr = pci_find_parent_resource(bus->self, res);
 			if (pr == res) {
 				/* this happens when the generic PCI
@@ -1306,9 +1415,15 @@ void pcibios_allocate_bus_resources(struct pci_bus *bus)
 			if (reparent_resources(pr, res) == 0)
 				continue;
 		}
+<<<<<<< HEAD
 		printk(KERN_WARNING "PCI: Cannot allocate resource region "
 		       "%d of PCI bridge %d, will remap\n", i, bus->number);
 clear_resource:
+=======
+		pr_warning("PCI: Cannot allocate resource region "
+			   "%d of PCI bridge %d, will remap\n", i, bus->number);
+	clear_resource:
+>>>>>>> refs/remotes/origin/cm-10.0
 		res->start = res->end = 0;
 		res->flags = 0;
 	}
@@ -1453,6 +1568,7 @@ void __init pcibios_resource_survey(void)
 {
 	struct pci_bus *b;
 
+<<<<<<< HEAD
 	/* Allocate and assign resources. If we re-assign everything, then
 	 * we skip the allocate phase
 	 */
@@ -1463,12 +1579,23 @@ void __init pcibios_resource_survey(void)
 		pcibios_allocate_resources(0);
 		pcibios_allocate_resources(1);
 	}
+=======
+	/* Allocate and assign resources */
+	list_for_each_entry(b, &pci_root_buses, node)
+		pcibios_allocate_bus_resources(b);
+	pcibios_allocate_resources(0);
+	pcibios_allocate_resources(1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Before we start assigning unassigned resource, we try to reserve
 	 * the low IO area and the VGA memory area if they intersect the
 	 * bus available resources to avoid allocating things on top of them
 	 */
+<<<<<<< HEAD
 	if (!(ppc_pci_flags & PPC_PCI_PROBE_ONLY)) {
+=======
+	if (!pci_has_flag(PCI_PROBE_ONLY)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		list_for_each_entry(b, &pci_root_buses, node)
 			pcibios_reserve_legacy_regions(b);
 	}
@@ -1476,7 +1603,11 @@ void __init pcibios_resource_survey(void)
 	/* Now, if the platform didn't decide to blindly trust the firmware,
 	 * we proceed to assigning things that were left unassigned
 	 */
+<<<<<<< HEAD
 	if (!(ppc_pci_flags & PPC_PCI_PROBE_ONLY)) {
+=======
+	if (!pci_has_flag(PCI_PROBE_ONLY)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_debug("PCI: Assigning unassigned resources...\n");
 		pci_assign_unassigned_resources();
 	}
@@ -1557,14 +1688,28 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
 	return pci_enable_resources(dev, mask);
 }
 
+<<<<<<< HEAD
 void __devinit pcibios_setup_phb_resources(struct pci_controller *hose)
 {
 	struct pci_bus *bus = hose->bus;
+=======
+resource_size_t pcibios_io_space_offset(struct pci_controller *hose)
+{
+	return (unsigned long) hose->io_base_virt - _IO_BASE;
+}
+
+static void __devinit pcibios_setup_phb_resources(struct pci_controller *hose, struct list_head *resources)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct resource *res;
 	int i;
 
 	/* Hookup PHB IO resource */
+<<<<<<< HEAD
 	bus->resource[0] = res = &hose->io_resource;
+=======
+	res = &hose->io_resource;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!res->flags) {
 		printk(KERN_WARNING "PCI: I/O resource not set for host"
@@ -1582,6 +1727,10 @@ void __devinit pcibios_setup_phb_resources(struct pci_controller *hose)
 		 (unsigned long long)res->start,
 		 (unsigned long long)res->end,
 		 (unsigned long)res->flags);
+<<<<<<< HEAD
+=======
+	pci_add_resource_offset(resources, res, pcibios_io_space_offset(hose));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Hookup PHB Memory resources */
 	for (i = 0; i < 3; ++i) {
@@ -1599,12 +1748,19 @@ void __devinit pcibios_setup_phb_resources(struct pci_controller *hose)
 			res->flags = IORESOURCE_MEM;
 #endif /* CONFIG_PPC32 */
 		}
+<<<<<<< HEAD
 		bus->resource[i+1] = res;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		pr_debug("PCI: PHB MEM resource %d = %016llx-%016llx [%lx]\n", i,
 			 (unsigned long long)res->start,
 			 (unsigned long long)res->end,
 			 (unsigned long)res->flags);
+<<<<<<< HEAD
+=======
+		pci_add_resource_offset(resources, res, hose->pci_mem_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	pr_debug("PCI: PHB MEM offset     = %016llx\n",
@@ -1685,12 +1841,26 @@ int early_find_capability(struct pci_controller *hose, int bus, int devfn,
 	return pci_bus_find_capability(fake_pci_bus(hose, bus), devfn, cap);
 }
 
+<<<<<<< HEAD
+=======
+struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+{
+	struct pci_controller *hose = bus->sysdata;
+
+	return of_node_get(hose->dn);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * pci_scan_phb - Given a pci_controller, setup and scan the PCI bus
  * @hose: Pointer to the PCI host controller instance structure
  */
 void __devinit pcibios_scan_phb(struct pci_controller *hose)
 {
+<<<<<<< HEAD
+=======
+	LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pci_bus *bus;
 	struct device_node *node = hose->dn;
 	int mode;
@@ -1698,6 +1868,7 @@ void __devinit pcibios_scan_phb(struct pci_controller *hose)
 	pr_debug("PCI: Scanning PHB %s\n",
 		 node ? node->full_name : "<NO NAME>");
 
+<<<<<<< HEAD
 	/* Create an empty bus for the toplevel */
 	bus = pci_create_bus(hose->parent, hose->first_busno, hose->ops, hose);
 	if (bus == NULL) {
@@ -1715,6 +1886,26 @@ void __devinit pcibios_scan_phb(struct pci_controller *hose)
 	/* Wire up PHB bus resources */
 	pcibios_setup_phb_resources(hose);
 
+=======
+	/* Get some IO space for the new PHB */
+	pcibios_setup_phb_io_space(hose);
+
+	/* Wire up PHB bus resources */
+	pcibios_setup_phb_resources(hose, &resources);
+
+	/* Create an empty bus for the toplevel */
+	bus = pci_create_root_bus(hose->parent, hose->first_busno,
+				  hose->ops, hose, &resources);
+	if (bus == NULL) {
+		pr_err("Failed to create bus for PCI domain %04x\n",
+			hose->global_number);
+		pci_free_resource_list(&resources);
+		return;
+	}
+	bus->secondary = hose->first_busno;
+	hose->bus = bus;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Get probe mode and perform scan */
 	mode = PCI_PROBE_NORMAL;
 	if (node && ppc_md.pci_probe_mode)
@@ -1727,4 +1918,46 @@ void __devinit pcibios_scan_phb(struct pci_controller *hose)
 
 	if (mode == PCI_PROBE_NORMAL)
 		hose->last_busno = bus->subordinate = pci_scan_child_bus(bus);
+<<<<<<< HEAD
 }
+=======
+
+	/* Platform gets a chance to do some global fixups before
+	 * we proceed to resource allocation
+	 */
+	if (ppc_md.pcibios_fixup_phb)
+		ppc_md.pcibios_fixup_phb(hose);
+
+	/* Configure PCI Express settings */
+	if (bus && !pci_has_flag(PCI_PROBE_ONLY)) {
+		struct pci_bus *child;
+		list_for_each_entry(child, &bus->children, node) {
+			struct pci_dev *self = child->self;
+			if (!self)
+				continue;
+			pcie_bus_configure_settings(child, self->pcie_mpss);
+		}
+	}
+}
+
+static void fixup_hide_host_resource_fsl(struct pci_dev *dev)
+{
+	int i, class = dev->class >> 8;
+	/* When configured as agent, programing interface = 1 */
+	int prog_if = dev->class & 0xf;
+
+	if ((class == PCI_CLASS_PROCESSOR_POWERPC ||
+	     class == PCI_CLASS_BRIDGE_OTHER) &&
+		(dev->hdr_type == PCI_HEADER_TYPE_NORMAL) &&
+		(prog_if == 0) &&
+		(dev->bus->parent == NULL)) {
+		for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
+			dev->resource[i].start = 0;
+			dev->resource[i].end = 0;
+			dev->resource[i].flags = 0;
+		}
+	}
+}
+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MOTOROLA, PCI_ANY_ID, fixup_hide_host_resource_fsl);
+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_FREESCALE, PCI_ANY_ID, fixup_hide_host_resource_fsl);
+>>>>>>> refs/remotes/origin/cm-10.0

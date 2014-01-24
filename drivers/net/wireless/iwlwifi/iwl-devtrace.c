@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2009 - 2011 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2009 - 2012 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -28,7 +32,11 @@
 
 /* sparse doesn't like tracepoint macros */
 #ifndef __CHECKER__
+<<<<<<< HEAD
 #include "iwl-dev.h"
+=======
+#include "iwl-trans.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CREATE_TRACE_POINTS
 #include "iwl-devtrace.h"

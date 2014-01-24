@@ -18,7 +18,11 @@
  *
  * Copyright (C) IBM Corporation, 2004
  *
+<<<<<<< HEAD
  * Author: Max Asbˆck <amax@us.ibm.com>
+=======
+ * Author: Max Asb√∂ck <amax@us.ibm.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This driver is based on code originally written by Pete Reynolds
  * and others.
@@ -211,6 +215,7 @@ static void __exit ibmasm_exit (void)
 
 static int __init ibmasm_init(void)
 {
+<<<<<<< HEAD
 	int result;
 
 	result = ibmasmfs_register();
@@ -223,6 +228,19 @@ static int __init ibmasm_init(void)
 		ibmasmfs_unregister();
 		return result;
 	}
+=======
+	int result = pci_register_driver(&ibmasm_driver);
+	if (result)
+		return result;
+
+	result = ibmasmfs_register();
+	if (result) {
+		pci_unregister_driver(&ibmasm_driver);
+		err("Failed to register ibmasmfs file system");
+		return result;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ibmasm_register_panic_notifier();
 	info(DRIVER_DESC " version " DRIVER_VERSION " loaded");
 	return 0;

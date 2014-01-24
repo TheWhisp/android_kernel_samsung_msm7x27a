@@ -2,7 +2,11 @@
  * OMAP1 Special OptimiSed Screen Interface support
  *
  * Copyright (C) 2004-2005 Nokia Corporation
+<<<<<<< HEAD
  * Author: Juha Yrjˆl‰ <juha.yrjola@nokia.com>
+=======
+ * Author: Juha Yrj√∂l√§ <juha.yrjola@nokia.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the

@@ -12,6 +12,10 @@
 #undef DEBUG
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched.h>	/* for init_mm */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/io.h>
 #include <asm/machdep.h>

@@ -1,7 +1,11 @@
 #include <linux/pci.h>
 #include <linux/io.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void devm_ioremap_release(struct device *dev, void *res)
 {
@@ -79,12 +83,72 @@ EXPORT_SYMBOL(devm_ioremap_nocache);
  */
 void devm_iounmap(struct device *dev, void __iomem *addr)
 {
+<<<<<<< HEAD
 	iounmap(addr);
 	WARN_ON(devres_destroy(dev, devm_ioremap_release, devm_ioremap_match,
 			       (void *)addr));
 }
 EXPORT_SYMBOL(devm_iounmap);
 
+=======
+	WARN_ON(devres_destroy(dev, devm_ioremap_release, devm_ioremap_match,
+			       (void *)addr));
+	iounmap(addr);
+}
+EXPORT_SYMBOL(devm_iounmap);
+
+/**
+ * devm_request_and_ioremap() - Check, request region, and ioremap resource
+ * @dev: Generic device to handle the resource for
+ * @res: resource to be handled
+ *
+ * Takes all necessary steps to ioremap a mem resource. Uses managed device, so
+ * everything is undone on driver detach. Checks arguments, so you can feed
+ * it the result from e.g. platform_get_resource() directly. Returns the
+ * remapped pointer or NULL on error. Usage example:
+ *
+ *	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ *	base = devm_request_and_ioremap(&pdev->dev, res);
+ *	if (!base)
+ *		return -EADDRNOTAVAIL;
+ */
+void __iomem *devm_request_and_ioremap(struct device *dev,
+			struct resource *res)
+{
+	resource_size_t size;
+	const char *name;
+	void __iomem *dest_ptr;
+
+	BUG_ON(!dev);
+
+	if (!res || resource_type(res) != IORESOURCE_MEM) {
+		dev_err(dev, "invalid resource\n");
+		return NULL;
+	}
+
+	size = resource_size(res);
+	name = res->name ?: dev_name(dev);
+
+	if (!devm_request_mem_region(dev, res->start, size, name)) {
+		dev_err(dev, "can't request region for resource %pR\n", res);
+		return NULL;
+	}
+
+	if (res->flags & IORESOURCE_CACHEABLE)
+		dest_ptr = devm_ioremap(dev, res->start, size);
+	else
+		dest_ptr = devm_ioremap_nocache(dev, res->start, size);
+
+	if (!dest_ptr) {
+		dev_err(dev, "ioremap failed for resource %pR\n", res);
+		devm_release_mem_region(dev, res->start, size);
+	}
+
+	return dest_ptr;
+}
+EXPORT_SYMBOL(devm_request_and_ioremap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_HAS_IOPORT
 /*
  * Generic iomap devres
@@ -253,7 +317,11 @@ EXPORT_SYMBOL(pcim_iounmap);
  *
  * Request and iomap regions specified by @mask.
  */
+<<<<<<< HEAD
 int pcim_iomap_regions(struct pci_dev *pdev, u16 mask, const char *name)
+=======
+int pcim_iomap_regions(struct pci_dev *pdev, int mask, const char *name)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void __iomem * const *iomap;
 	int i, rc;
@@ -306,7 +374,11 @@ EXPORT_SYMBOL(pcim_iomap_regions);
  *
  * Request all PCI BARs and iomap regions specified by @mask.
  */
+<<<<<<< HEAD
 int pcim_iomap_regions_request_all(struct pci_dev *pdev, u16 mask,
+=======
+int pcim_iomap_regions_request_all(struct pci_dev *pdev, int mask,
+>>>>>>> refs/remotes/origin/cm-10.0
 				   const char *name)
 {
 	int request_mask = ((1 << 6) - 1) & ~mask;
@@ -330,7 +402,11 @@ EXPORT_SYMBOL(pcim_iomap_regions_request_all);
  *
  * Unmap and release regions specified by @mask.
  */
+<<<<<<< HEAD
 void pcim_iounmap_regions(struct pci_dev *pdev, u16 mask)
+=======
+void pcim_iounmap_regions(struct pci_dev *pdev, int mask)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void __iomem * const *iomap;
 	int i;
@@ -348,5 +424,10 @@ void pcim_iounmap_regions(struct pci_dev *pdev, u16 mask)
 	}
 }
 EXPORT_SYMBOL(pcim_iounmap_regions);
+<<<<<<< HEAD
 #endif
 #endif
+=======
+#endif /* CONFIG_PCI */
+#endif /* CONFIG_HAS_IOPORT */
+>>>>>>> refs/remotes/origin/cm-10.0

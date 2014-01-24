@@ -155,7 +155,10 @@ static void keyring_destroy(struct key *keyring)
 	}
 
 	klist = rcu_dereference_check(keyring->payload.subscriptions,
+<<<<<<< HEAD
 				      rcu_read_lock_held() ||
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 				      atomic_read(&keyring->usage) == 0);
 	if (klist) {
 		for (loop = klist->nkeys - 1; loop >= 0; loop--)
@@ -320,7 +323,11 @@ key_ref_t keyring_search_aux(key_ref_t keyring_ref,
 	struct key *keyring, *key;
 	key_ref_t key_ref;
 	long err;
+<<<<<<< HEAD
 	int sp, kix;
+=======
+	int sp, nkeys, kix;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	keyring = key_ref_to_ptr(keyring_ref);
 	possessed = is_key_possessed(keyring_ref);
@@ -381,7 +388,13 @@ descend:
 		goto not_this_keyring;
 
 	/* iterate through the keys in this keyring first */
+<<<<<<< HEAD
 	for (kix = 0; kix < keylist->nkeys; kix++) {
+=======
+	nkeys = keylist->nkeys;
+	smp_rmb();
+	for (kix = 0; kix < nkeys; kix++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		key = keylist->keys[kix];
 		kflags = key->flags;
 
@@ -422,7 +435,13 @@ descend:
 	/* search through the keyrings nested in this one */
 	kix = 0;
 ascend:
+<<<<<<< HEAD
 	for (; kix < keylist->nkeys; kix++) {
+=======
+	nkeys = keylist->nkeys;
+	smp_rmb();
+	for (; kix < nkeys; kix++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		key = keylist->keys[kix];
 		if (key->type != &key_type_keyring)
 			continue;
@@ -516,7 +535,11 @@ key_ref_t __keyring_search_one(key_ref_t keyring_ref,
 	struct keyring_list *klist;
 	unsigned long possessed;
 	struct key *keyring, *key;
+<<<<<<< HEAD
 	int loop;
+=======
+	int nkeys, loop;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	keyring = key_ref_to_ptr(keyring_ref);
 	possessed = is_key_possessed(keyring_ref);
@@ -525,7 +548,13 @@ key_ref_t __keyring_search_one(key_ref_t keyring_ref,
 
 	klist = rcu_dereference(keyring->payload.subscriptions);
 	if (klist) {
+<<<<<<< HEAD
 		for (loop = 0; loop < klist->nkeys; loop++) {
+=======
+		nkeys = klist->nkeys;
+		smp_rmb();
+		for (loop = 0; loop < nkeys ; loop++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			key = klist->keys[loop];
 
 			if (key->type == ktype &&
@@ -623,7 +652,11 @@ static int keyring_detect_cycle(struct key *A, struct key *B)
 
 	struct keyring_list *keylist;
 	struct key *subtree, *key;
+<<<<<<< HEAD
 	int sp, kix, ret;
+=======
+	int sp, nkeys, kix, ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	rcu_read_lock();
 
@@ -646,7 +679,13 @@ descend:
 
 ascend:
 	/* iterate through the remaining keys in this keyring */
+<<<<<<< HEAD
 	for (; kix < keylist->nkeys; kix++) {
+=======
+	nkeys = keylist->nkeys;
+	smp_rmb();
+	for (; kix < nkeys; kix++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		key = keylist->keys[kix];
 
 		if (key == A)
@@ -861,8 +900,12 @@ void __key_link(struct key *keyring, struct key *key,
 
 	kenter("%d,%d,%p", keyring->serial, key->serial, nklist);
 
+<<<<<<< HEAD
 	klist = rcu_dereference_protected(keyring->payload.subscriptions,
 					  rwsem_is_locked(&keyring->sem));
+=======
+	klist = rcu_dereference_locked_keyring(keyring);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	atomic_inc(&key->usage);
 

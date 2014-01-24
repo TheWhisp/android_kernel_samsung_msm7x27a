@@ -1,7 +1,11 @@
 /*******************************************************************
  * This file is part of the Emulex Linux Device Driver for         *
  * Fibre Channel Host Bus Adapters.                                *
+<<<<<<< HEAD
  * Copyright (C) 2004-2011 Emulex.  All rights reserved.           *
+=======
+ * Copyright (C) 2004-2012 Emulex.  All rights reserved.           *
+>>>>>>> refs/remotes/origin/cm-10.0
  * EMULEX and SLI are trademarks of Emulex.                        *
  * www.emulex.com                                                  *
  * Portions Copyright (C) 2004-2005 Christoph Hellwig              *
@@ -23,6 +27,10 @@
 #include <linux/delay.h>
 #include <linux/pci.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/aer.h>
 #include <linux/gfp.h>
 #include <linux/kernel.h>
@@ -52,6 +60,16 @@
 #define LPFC_MIN_DEVLOSS_TMO 1
 #define LPFC_MAX_DEVLOSS_TMO 255
 
+<<<<<<< HEAD
+=======
+/*
+ * Write key size should be multiple of 4. If write key is changed
+ * make sure that library write key is also changed.
+ */
+#define LPFC_REG_WRITE_KEY_SIZE	4
+#define LPFC_REG_WRITE_KEY	"EMLX"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * lpfc_jedec_to_ascii - Hex to ascii convertor according to JEDEC rules
  * @incr: integer to convert.
@@ -343,10 +361,30 @@ lpfc_fwrev_show(struct device *dev, struct device_attribute *attr,
 	struct Scsi_Host  *shost = class_to_shost(dev);
 	struct lpfc_vport *vport = (struct lpfc_vport *) shost->hostdata;
 	struct lpfc_hba   *phba = vport->phba;
+<<<<<<< HEAD
 	char fwrev[32];
 
 	lpfc_decode_firmware_rev(phba, fwrev, 1);
 	return snprintf(buf, PAGE_SIZE, "%s, sli-%d\n", fwrev, phba->sli_rev);
+=======
+	uint32_t if_type;
+	uint8_t sli_family;
+	char fwrev[FW_REV_STR_SIZE];
+	int len;
+
+	lpfc_decode_firmware_rev(phba, fwrev, 1);
+	if_type = phba->sli4_hba.pc_sli4_params.if_type;
+	sli_family = phba->sli4_hba.pc_sli4_params.sli_family;
+
+	if (phba->sli_rev < LPFC_SLI_REV4)
+		len = snprintf(buf, PAGE_SIZE, "%s, sli-%d\n",
+			       fwrev, phba->sli_rev);
+	else
+		len = snprintf(buf, PAGE_SIZE, "%s, sli-%d:%d:%x\n",
+			       fwrev, phba->sli_rev, if_type, sli_family);
+
+	return len;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -480,6 +518,37 @@ lpfc_link_state_show(struct device *dev, struct device_attribute *attr,
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * lpfc_sli4_protocol_show - Return the fip mode of the HBA
+ * @dev: class unused variable.
+ * @attr: device attribute, not used.
+ * @buf: on return contains the module description text.
+ *
+ * Returns: size of formatted string.
+ **/
+static ssize_t
+lpfc_sli4_protocol_show(struct device *dev, struct device_attribute *attr,
+			char *buf)
+{
+	struct Scsi_Host *shost = class_to_shost(dev);
+	struct lpfc_vport *vport = (struct lpfc_vport *) shost->hostdata;
+	struct lpfc_hba *phba = vport->phba;
+
+	if (phba->sli_rev < LPFC_SLI_REV4)
+		return snprintf(buf, PAGE_SIZE, "fc\n");
+
+	if (phba->sli4_hba.lnk_info.lnk_dv == LPFC_LNK_DAT_VAL) {
+		if (phba->sli4_hba.lnk_info.lnk_tp == LPFC_LNK_TYPE_GE)
+			return snprintf(buf, PAGE_SIZE, "fcoe\n");
+		if (phba->sli4_hba.lnk_info.lnk_tp == LPFC_LNK_TYPE_FC)
+			return snprintf(buf, PAGE_SIZE, "fc\n");
+	}
+	return snprintf(buf, PAGE_SIZE, "unknown\n");
+}
+
+/**
+>>>>>>> refs/remotes/origin/cm-10.0
  * lpfc_link_state_store - Transition the link_state on an HBA port
  * @dev: class device that is converted into a Scsi_host.
  * @attr: device attribute, not used.
@@ -693,7 +762,11 @@ lpfc_selective_reset(struct lpfc_hba *phba)
 	int rc;
 
 	if (!phba->cfg_enable_hba_reset)
+<<<<<<< HEAD
 		return -EIO;
+=======
+		return -EACCES;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	status = lpfc_do_offline(phba, LPFC_EVT_OFFLINE);
 
@@ -742,9 +815,17 @@ lpfc_issue_reset(struct device *dev, struct device_attribute *attr,
 	struct Scsi_Host  *shost = class_to_shost(dev);
 	struct lpfc_vport *vport = (struct lpfc_vport *) shost->hostdata;
 	struct lpfc_hba   *phba = vport->phba;
+<<<<<<< HEAD
 
 	int status = -EINVAL;
 
+=======
+	int status = -EINVAL;
+
+	if (!phba->cfg_enable_hba_reset)
+		return -EACCES;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (strncmp(buf, "selective", sizeof("selective") - 1) == 0)
 		status = phba->lpfc_selective_reset(phba);
 
@@ -763,6 +844,7 @@ lpfc_issue_reset(struct device *dev, struct device_attribute *attr,
  * the readyness after performing a firmware reset.
  *
  * Returns:
+<<<<<<< HEAD
  * zero for success
  **/
 static int
@@ -775,6 +857,30 @@ lpfc_sli4_pdev_status_reg_wait(struct lpfc_hba *phba)
 	lpfc_readl(phba->sli4_hba.u.if_type2.STATUSregaddr,
 		   &portstat_reg.word0);
 
+=======
+ * zero for success, -EPERM when port does not have privilage to perform the
+ * reset, -EIO when port timeout from recovering from the reset.
+ *
+ * Note:
+ * As the caller will interpret the return code by value, be careful in making
+ * change or addition to return codes.
+ **/
+int
+lpfc_sli4_pdev_status_reg_wait(struct lpfc_hba *phba)
+{
+	struct lpfc_register portstat_reg = {0};
+	int i;
+
+	msleep(100);
+	lpfc_readl(phba->sli4_hba.u.if_type2.STATUSregaddr,
+		   &portstat_reg.word0);
+
+	/* verify if privilaged for the request operation */
+	if (!bf_get(lpfc_sliport_status_rn, &portstat_reg) &&
+	    !bf_get(lpfc_sliport_status_err, &portstat_reg))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* wait for the SLI port firmware ready after firmware reset */
 	for (i = 0; i < LPFC_FW_RESET_MAXIMUM_WAIT_10MS_CNT; i++) {
 		msleep(10);
@@ -810,18 +916,42 @@ static ssize_t
 lpfc_sli4_pdev_reg_request(struct lpfc_hba *phba, uint32_t opcode)
 {
 	struct completion online_compl;
+<<<<<<< HEAD
 	uint32_t reg_val;
 	int status = 0;
 	int rc;
 
 	if (!phba->cfg_enable_hba_reset)
 		return -EIO;
+=======
+	struct pci_dev *pdev = phba->pcidev;
+	uint32_t before_fc_flag;
+	uint32_t sriov_nr_virtfn;
+	uint32_t reg_val;
+	int status = 0, rc = 0;
+	int job_posted = 1, sriov_err;
+
+	if (!phba->cfg_enable_hba_reset)
+		return -EACCES;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((phba->sli_rev < LPFC_SLI_REV4) ||
 	    (bf_get(lpfc_sli_intf_if_type, &phba->sli4_hba.sli_intf) !=
 	     LPFC_SLI_INTF_IF_TYPE_2))
 		return -EPERM;
 
+<<<<<<< HEAD
+=======
+	/* Keep state if we need to restore back */
+	before_fc_flag = phba->pport->fc_flag;
+	sriov_nr_virtfn = phba->cfg_sriov_nr_virtfn;
+
+	/* Disable SR-IOV virtual functions if enabled */
+	if (phba->cfg_sriov_nr_virtfn) {
+		pci_disable_sriov(pdev);
+		phba->cfg_sriov_nr_virtfn = 0;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	status = lpfc_do_offline(phba, LPFC_EVT_OFFLINE);
 
 	if (status != 0)
@@ -848,6 +978,7 @@ lpfc_sli4_pdev_reg_request(struct lpfc_hba *phba, uint32_t opcode)
 	/* delay driver action following IF_TYPE_2 reset */
 	rc = lpfc_sli4_pdev_status_reg_wait(phba);
 
+<<<<<<< HEAD
 	if (rc)
 		return -EIO;
 
@@ -863,6 +994,50 @@ lpfc_sli4_pdev_reg_request(struct lpfc_hba *phba, uint32_t opcode)
 		return -EIO;
 
 	return 0;
+=======
+	if (rc == -EPERM) {
+		/* no privilage for reset */
+		lpfc_printf_log(phba, KERN_ERR, LOG_SLI,
+				"3150 No privilage to perform the requested "
+				"access: x%x\n", reg_val);
+	} else if (rc == -EIO) {
+		/* reset failed, there is nothing more we can do */
+		lpfc_printf_log(phba, KERN_ERR, LOG_SLI,
+				"3153 Fail to perform the requested "
+				"access: x%x\n", reg_val);
+		return rc;
+	}
+
+	/* keep the original port state */
+	if (before_fc_flag & FC_OFFLINE_MODE)
+		goto out;
+
+	init_completion(&online_compl);
+	job_posted = lpfc_workq_post_event(phba, &status, &online_compl,
+					   LPFC_EVT_ONLINE);
+	if (!job_posted)
+		goto out;
+
+	wait_for_completion(&online_compl);
+
+out:
+	/* in any case, restore the virtual functions enabled as before */
+	if (sriov_nr_virtfn) {
+		sriov_err =
+			lpfc_sli_probe_sriov_nr_virtfn(phba, sriov_nr_virtfn);
+		if (!sriov_err)
+			phba->cfg_sriov_nr_virtfn = sriov_nr_virtfn;
+	}
+
+	/* return proper error code */
+	if (!rc) {
+		if (!job_posted)
+			rc = -ENOMEM;
+		else if (status)
+			rc = -EIO;
+	}
+	return rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -934,6 +1109,7 @@ lpfc_board_mode_store(struct device *dev, struct device_attribute *attr,
 	struct lpfc_vport *vport = (struct lpfc_vport *) shost->hostdata;
 	struct lpfc_hba   *phba = vport->phba;
 	struct completion online_compl;
+<<<<<<< HEAD
 	int status=0;
 	int rc;
 
@@ -942,25 +1118,53 @@ lpfc_board_mode_store(struct device *dev, struct device_attribute *attr,
 
 	lpfc_printf_vlog(vport, KERN_ERR, LOG_INIT,
 		"3050 lpfc_board_mode set to %s\n", buf);
+=======
+	char *board_mode_str = NULL;
+	int status = 0;
+	int rc;
+
+	if (!phba->cfg_enable_hba_reset) {
+		status = -EACCES;
+		goto board_mode_out;
+	}
+
+	lpfc_printf_vlog(vport, KERN_ERR, LOG_INIT,
+			 "3050 lpfc_board_mode set to %s\n", buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	init_completion(&online_compl);
 
 	if(strncmp(buf, "online", sizeof("online") - 1) == 0) {
 		rc = lpfc_workq_post_event(phba, &status, &online_compl,
 				      LPFC_EVT_ONLINE);
+<<<<<<< HEAD
 		if (rc == 0)
 			return -ENOMEM;
+=======
+		if (rc == 0) {
+			status = -ENOMEM;
+			goto board_mode_out;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		wait_for_completion(&online_compl);
 	} else if (strncmp(buf, "offline", sizeof("offline") - 1) == 0)
 		status = lpfc_do_offline(phba, LPFC_EVT_OFFLINE);
 	else if (strncmp(buf, "warm", sizeof("warm") - 1) == 0)
 		if (phba->sli_rev == LPFC_SLI_REV4)
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			status = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			status = lpfc_do_offline(phba, LPFC_EVT_WARM_START);
 	else if (strncmp(buf, "error", sizeof("error") - 1) == 0)
 		if (phba->sli_rev == LPFC_SLI_REV4)
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			status = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			status = lpfc_do_offline(phba, LPFC_EVT_KILL);
 	else if (strncmp(buf, "dump", sizeof("dump") - 1) == 0)
@@ -970,12 +1174,30 @@ lpfc_board_mode_store(struct device *dev, struct device_attribute *attr,
 	else if (strncmp(buf, "dv_reset", sizeof("dv_reset") - 1) == 0)
 		status = lpfc_sli4_pdev_reg_request(phba, LPFC_DV_RESET);
 	else
+<<<<<<< HEAD
 		return -EINVAL;
 
 	if (!status)
 		return strlen(buf);
 	else
 		return -EIO;
+=======
+		status = -EINVAL;
+
+board_mode_out:
+	if (!status)
+		return strlen(buf);
+	else {
+		board_mode_str = strchr(buf, '\n');
+		if (board_mode_str)
+			*board_mode_str = '\0';
+		lpfc_printf_vlog(vport, KERN_ERR, LOG_INIT,
+				 "3097 Failed \"%s\", status(%d), "
+				 "fc_flag(x%x)\n",
+				 buf, status, phba->pport->fc_flag);
+		return status;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -1921,6 +2143,10 @@ static DEVICE_ATTR(lpfc_fips_rev, S_IRUGO, lpfc_fips_rev_show, NULL);
 static DEVICE_ATTR(lpfc_dss, S_IRUGO, lpfc_dss_show, NULL);
 static DEVICE_ATTR(lpfc_sriov_hw_max_virtfn, S_IRUGO,
 		   lpfc_sriov_hw_max_virtfn_show, NULL);
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(protocol, S_IRUGO, lpfc_sli4_protocol_show, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static char *lpfc_soft_wwn_key = "C99G71SL8032A";
 
@@ -2184,6 +2410,12 @@ lpfc_param_show(enable_npiv);
 lpfc_param_init(enable_npiv, 1, 0, 1);
 static DEVICE_ATTR(lpfc_enable_npiv, S_IRUGO, lpfc_enable_npiv_show, NULL);
 
+<<<<<<< HEAD
+=======
+LPFC_ATTR_R(fcf_failover_policy, 1, 1, 2,
+	"FCF Fast failover=1 Priority failover=2");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int lpfc_enable_rrq;
 module_param(lpfc_enable_rrq, int, S_IRUGO);
 MODULE_PARM_DESC(lpfc_enable_rrq, "Enable RRQ functionality");
@@ -2457,7 +2689,11 @@ LPFC_VPORT_ATTR_HEX_RW(log_verbose, 0x0, 0x0, 0xffffffff,
 # lpfc_enable_da_id: This turns on the DA_ID CT command that deregisters
 # objects that have been registered with the nameserver after login.
 */
+<<<<<<< HEAD
 LPFC_VPORT_ATTR_R(enable_da_id, 0, 0, 1,
+=======
+LPFC_VPORT_ATTR_R(enable_da_id, 1, 0, 1,
+>>>>>>> refs/remotes/origin/cm-10.0
 		  "Deregister nameserver objects before LOGO");
 
 /*
@@ -2663,6 +2899,17 @@ lpfc_topology_store(struct device *dev, struct device_attribute *attr,
 	if (val >= 0 && val <= 6) {
 		prev_val = phba->cfg_topology;
 		phba->cfg_topology = val;
+<<<<<<< HEAD
+=======
+		if (phba->cfg_link_speed == LPFC_USER_LINK_SPEED_16G &&
+			val == 4) {
+			lpfc_printf_vlog(vport, KERN_ERR, LOG_INIT,
+				"3113 Loop mode not supported at speed %d\n",
+				phba->cfg_link_speed);
+			phba->cfg_topology = prev_val;
+			return -EINVAL;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (nolip)
 			return strlen(buf);
 
@@ -3108,6 +3355,17 @@ lpfc_link_speed_store(struct device *dev, struct device_attribute *attr,
 				val);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
+=======
+	if (val == LPFC_USER_LINK_SPEED_16G &&
+		 phba->fc_topology == LPFC_TOPOLOGY_LOOP) {
+		lpfc_printf_log(phba, KERN_ERR, LOG_INIT,
+				"3112 lpfc_link_speed attribute cannot be set "
+				"to %d. Speed is not supported in loop mode.\n",
+				val);
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((val >= 0) && (val <= LPFC_USER_LINK_SPEED_MAX) &&
 	    (LPFC_USER_LINK_SPEED_BITMAP & (1 << val))) {
 		prev_val = phba->cfg_link_speed;
@@ -3152,6 +3410,16 @@ lpfc_param_show(link_speed)
 static int
 lpfc_link_speed_init(struct lpfc_hba *phba, int val)
 {
+<<<<<<< HEAD
+=======
+	if (val == LPFC_USER_LINK_SPEED_16G && phba->cfg_topology == 4) {
+		lpfc_printf_log(phba, KERN_ERR, LOG_INIT,
+			"3111 lpfc_link_speed of %d cannot "
+			"support loop mode, setting topology to default.\n",
+			 val);
+		phba->cfg_topology = 0;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((val >= 0) && (val <= LPFC_USER_LINK_SPEED_MAX) &&
 	    (LPFC_USER_LINK_SPEED_BITMAP & (1 << val))) {
 		phba->cfg_link_speed = val;
@@ -3766,6 +4034,10 @@ struct device_attribute *lpfc_hba_attrs[] = {
 	&dev_attr_lpfc_fdmi_on,
 	&dev_attr_lpfc_max_luns,
 	&dev_attr_lpfc_enable_npiv,
+<<<<<<< HEAD
+=======
+	&dev_attr_lpfc_fcf_failover_policy,
+>>>>>>> refs/remotes/origin/cm-10.0
 	&dev_attr_lpfc_enable_rrq,
 	&dev_attr_nport_evt_cnt,
 	&dev_attr_board_mode,
@@ -3805,6 +4077,10 @@ struct device_attribute *lpfc_hba_attrs[] = {
 	&dev_attr_lpfc_fips_rev,
 	&dev_attr_lpfc_dss,
 	&dev_attr_lpfc_sriov_hw_max_virtfn,
+<<<<<<< HEAD
+=======
+	&dev_attr_protocol,
+>>>>>>> refs/remotes/origin/cm-10.0
 	NULL,
 };
 
@@ -3872,11 +4148,17 @@ sysfs_ctlreg_write(struct file *filp, struct kobject *kobj,
 	if ((off + count) > FF_REG_AREA_SIZE)
 		return -ERANGE;
 
+<<<<<<< HEAD
 	if (count == 0) return 0;
+=======
+	if (count <= LPFC_REG_WRITE_KEY_SIZE)
+		return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (off % 4 || count % 4 || (unsigned long)buf % 4)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!(vport->fc_flag & FC_OFFLINE_MODE)) {
 		return -EPERM;
 	}
@@ -3884,6 +4166,19 @@ sysfs_ctlreg_write(struct file *filp, struct kobject *kobj,
 	spin_lock_irq(&phba->hbalock);
 	for (buf_off = 0; buf_off < count; buf_off += sizeof(uint32_t))
 		writel(*((uint32_t *)(buf + buf_off)),
+=======
+	/* This is to protect HBA registers from accidental writes. */
+	if (memcmp(buf, LPFC_REG_WRITE_KEY, LPFC_REG_WRITE_KEY_SIZE))
+		return -EINVAL;
+
+	if (!(vport->fc_flag & FC_OFFLINE_MODE))
+		return -EPERM;
+
+	spin_lock_irq(&phba->hbalock);
+	for (buf_off = 0; buf_off < count - LPFC_REG_WRITE_KEY_SIZE;
+			buf_off += sizeof(uint32_t))
+		writel(*((uint32_t *)(buf + buf_off + LPFC_REG_WRITE_KEY_SIZE)),
+>>>>>>> refs/remotes/origin/cm-10.0
 		       phba->ctrl_regs_memmap_p + off + buf_off);
 
 	spin_unlock_irq(&phba->hbalock);
@@ -3958,6 +4253,7 @@ static struct bin_attribute sysfs_ctlreg_attr = {
 };
 
 /**
+<<<<<<< HEAD
  * sysfs_mbox_idle - frees the sysfs mailbox
  * @phba: lpfc_hba pointer
  **/
@@ -3975,6 +4271,8 @@ sysfs_mbox_idle(struct lpfc_hba *phba)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * sysfs_mbox_write - Write method for writing information via mbox
  * @filp: open sysfs file
  * @kobj: kernel kobject that contains the kernel class device.
@@ -3984,6 +4282,7 @@ sysfs_mbox_idle(struct lpfc_hba *phba)
  * @count: bytes to transfer.
  *
  * Description:
+<<<<<<< HEAD
  * Accessed via /sys/class/scsi_host/hostxxx/mbox.
  * Uses the sysfs mbox to send buf contents to the adapter.
  *
@@ -3995,12 +4294,20 @@ sysfs_mbox_idle(struct lpfc_hba *phba)
  * -ENOMEM failed to allocate memory for the mail box
  * -EAGAIN offset, state or mbox is NULL
  * count number of bytes transferred
+=======
+ * Deprecated function. All mailbox access from user space is performed via the
+ * bsg interface.
+ *
+ * Returns:
+ * -EPERM operation not permitted
+>>>>>>> refs/remotes/origin/cm-10.0
  **/
 static ssize_t
 sysfs_mbox_write(struct file *filp, struct kobject *kobj,
 		 struct bin_attribute *bin_attr,
 		 char *buf, loff_t off, size_t count)
 {
+<<<<<<< HEAD
 	struct device *dev = container_of(kobj, struct device, kobj);
 	struct Scsi_Host  *shost = class_to_shost(dev);
 	struct lpfc_vport *vport = (struct lpfc_vport *) shost->hostdata;
@@ -4049,6 +4356,9 @@ sysfs_mbox_write(struct file *filp, struct kobject *kobj,
 	spin_unlock_irq(&phba->hbalock);
 
 	return count;
+=======
+	return -EPERM;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -4061,6 +4371,7 @@ sysfs_mbox_write(struct file *filp, struct kobject *kobj,
  * @count: bytes to transfer.
  *
  * Description:
+<<<<<<< HEAD
  * Accessed via /sys/class/scsi_host/hostxxx/mbox.
  * Uses the sysfs mbox to receive data from to the adapter.
  *
@@ -4074,12 +4385,20 @@ sysfs_mbox_write(struct file *filp, struct kobject *kobj,
  * -ETIME mailbox timeout
  * -ENODEV mailbox error
  * count number of bytes transferred
+=======
+ * Deprecated function. All mailbox access from user space is performed via the
+ * bsg interface.
+ *
+ * Returns:
+ * -EPERM operation not permitted
+>>>>>>> refs/remotes/origin/cm-10.0
  **/
 static ssize_t
 sysfs_mbox_read(struct file *filp, struct kobject *kobj,
 		struct bin_attribute *bin_attr,
 		char *buf, loff_t off, size_t count)
 {
+<<<<<<< HEAD
 	struct device *dev = container_of(kobj, struct device, kobj);
 	struct Scsi_Host  *shost = class_to_shost(dev);
 	struct lpfc_vport *vport = (struct lpfc_vport *) shost->hostdata;
@@ -4254,6 +4573,9 @@ sysfs_mbox_read(struct file *filp, struct kobject *kobj,
 	spin_unlock_irq(&phba->hbalock);
 
 	return count;
+=======
+	return -EPERM;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static struct bin_attribute sysfs_mbox_attr = {
@@ -4397,8 +4719,18 @@ lpfc_get_host_port_state(struct Scsi_Host *shost)
 		case LPFC_LINK_UP:
 		case LPFC_CLEAR_LA:
 		case LPFC_HBA_READY:
+<<<<<<< HEAD
 			/* Links up, beyond this port_type reports state */
 			fc_host_port_state(shost) = FC_PORTSTATE_ONLINE;
+=======
+			/* Links up, reports port state accordingly */
+			if (vport->port_state < LPFC_VPORT_READY)
+				fc_host_port_state(shost) =
+							FC_PORTSTATE_BYPASSED;
+			else
+				fc_host_port_state(shost) =
+							FC_PORTSTATE_ONLINE;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		case LPFC_HBA_ERROR:
 			fc_host_port_state(shost) = FC_PORTSTATE_ERROR;
@@ -4467,9 +4799,16 @@ lpfc_get_host_fabric_name (struct Scsi_Host *shost)
 
 	spin_lock_irq(shost->host_lock);
 
+<<<<<<< HEAD
 	if ((vport->fc_flag & FC_FABRIC) ||
 	    ((phba->fc_topology == LPFC_TOPOLOGY_LOOP) &&
 	     (vport->fc_flag & FC_PUBLIC_LOOP)))
+=======
+	if ((vport->port_state > LPFC_FLOGI) &&
+	    ((vport->fc_flag & FC_FABRIC) ||
+	     ((phba->fc_topology == LPFC_TOPOLOGY_LOOP) &&
+	      (vport->fc_flag & FC_PUBLIC_LOOP))))
+>>>>>>> refs/remotes/origin/cm-10.0
 		node_name = wwn_to_u64(phba->fc_fabparam.nodeName.u.wwn);
 	else
 		/* fabric is local port if there is no F/FL_Port */
@@ -4542,9 +4881,23 @@ lpfc_get_stats(struct Scsi_Host *shost)
 	memset(hs, 0, sizeof (struct fc_host_statistics));
 
 	hs->tx_frames = pmb->un.varRdStatus.xmitFrameCnt;
+<<<<<<< HEAD
 	hs->tx_words = (pmb->un.varRdStatus.xmitByteCnt * 256);
 	hs->rx_frames = pmb->un.varRdStatus.rcvFrameCnt;
 	hs->rx_words = (pmb->un.varRdStatus.rcvByteCnt * 256);
+=======
+	/*
+	 * The MBX_READ_STATUS returns tx_k_bytes which has to
+	 * converted to words
+	 */
+	hs->tx_words = (uint64_t)
+			((uint64_t)pmb->un.varRdStatus.xmitByteCnt
+			* (uint64_t)256);
+	hs->rx_frames = pmb->un.varRdStatus.rcvFrameCnt;
+	hs->rx_words = (uint64_t)
+			((uint64_t)pmb->un.varRdStatus.rcvByteCnt
+			 * (uint64_t)256);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	memset(pmboxq, 0, sizeof (LPFC_MBOXQ_t));
 	pmb->mbxCommand = MBX_READ_LNK_STAT;
@@ -4986,6 +5339,10 @@ lpfc_get_cfgparam(struct lpfc_hba *phba)
 	lpfc_link_speed_init(phba, lpfc_link_speed);
 	lpfc_poll_tmo_init(phba, lpfc_poll_tmo);
 	lpfc_enable_npiv_init(phba, lpfc_enable_npiv);
+<<<<<<< HEAD
+=======
+	lpfc_fcf_failover_policy_init(phba, lpfc_fcf_failover_policy);
+>>>>>>> refs/remotes/origin/cm-10.0
 	lpfc_enable_rrq_init(phba, lpfc_enable_rrq);
 	lpfc_use_msi_init(phba, lpfc_use_msi);
 	lpfc_fcp_imax_init(phba, lpfc_fcp_imax);

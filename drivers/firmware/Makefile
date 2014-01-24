@@ -12,6 +12,9 @@ obj-$(CONFIG_DMIID)		+= dmi-id.o
 obj-$(CONFIG_ISCSI_IBFT_FIND)	+= iscsi_ibft_find.o
 obj-$(CONFIG_ISCSI_IBFT)	+= iscsi_ibft.o
 obj-$(CONFIG_FIRMWARE_MEMMAP)	+= memmap.o
+<<<<<<< HEAD
 obj-$(CONFIG_SIGMA)		+= sigma.o
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 obj-$(CONFIG_GOOGLE_FIRMWARE)	+= google/

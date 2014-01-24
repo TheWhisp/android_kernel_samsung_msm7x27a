@@ -1,6 +1,7 @@
 #ifndef _INTEL_RINGBUFFER_H_
 #define _INTEL_RINGBUFFER_H_
 
+<<<<<<< HEAD
 enum {
     RCS = 0x0,
     VCS,
@@ -8,6 +9,8 @@ enum {
     I915_NUM_RINGS,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct  intel_hw_status_page {
 	u32	__iomem	*page_addr;
 	unsigned int	gfx_addr;
@@ -36,10 +39,18 @@ struct  intel_hw_status_page {
 struct  intel_ring_buffer {
 	const char	*name;
 	enum intel_ring_id {
+<<<<<<< HEAD
 		RING_RENDER = 0x1,
 		RING_BSD = 0x2,
 		RING_BLT = 0x4,
 	} id;
+=======
+		RCS = 0x0,
+		VCS,
+		BCS,
+	} id;
+#define I915_NUM_RINGS 3
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32		mmio_base;
 	void		__iomem *virtual_start;
 	struct		drm_device *dev;
@@ -52,6 +63,19 @@ struct  intel_ring_buffer {
 	int		effective_size;
 	struct intel_hw_status_page status_page;
 
+<<<<<<< HEAD
+=======
+	/** We track the position of the requests in the ring buffer, and
+	 * when each is retired we increment last_retired_head as the GPU
+	 * must have finished processing the request and so we know we
+	 * can advance the ringbuffer up to that position.
+	 *
+	 * last_retired_head is set to -1 after the value is consumed so
+	 * we can detect new retirements.
+	 */
+	u32		last_retired_head;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spinlock_t	irq_lock;
 	u32		irq_refcount;
 	u32		irq_mask;
@@ -75,7 +99,16 @@ struct  intel_ring_buffer {
 	int		(*dispatch_execbuffer)(struct intel_ring_buffer *ring,
 					       u32 offset, u32 length);
 	void		(*cleanup)(struct intel_ring_buffer *ring);
+<<<<<<< HEAD
 
+=======
+	int		(*sync_to)(struct intel_ring_buffer *ring,
+				   struct intel_ring_buffer *to,
+				   u32 seqno);
+
+	u32		semaphore_register[3]; /*our mbox written by others */
+	u32		signal_mbox[2]; /* mboxes this ring signals to */
+>>>>>>> refs/remotes/origin/cm-10.0
 	/**
 	 * List of objects currently involved in rendering from the
 	 * ringbuffer.
@@ -114,6 +147,15 @@ struct  intel_ring_buffer {
 	void *private;
 };
 
+<<<<<<< HEAD
+=======
+static inline unsigned
+intel_ring_flag(struct intel_ring_buffer *ring)
+{
+	return 1 << ring->id;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline u32
 intel_ring_sync_index(struct intel_ring_buffer *ring,
 		      struct intel_ring_buffer *other)
@@ -180,9 +222,12 @@ static inline void intel_ring_emit(struct intel_ring_buffer *ring,
 void intel_ring_advance(struct intel_ring_buffer *ring);
 
 u32 intel_ring_get_seqno(struct intel_ring_buffer *ring);
+<<<<<<< HEAD
 int intel_ring_sync(struct intel_ring_buffer *ring,
 		    struct intel_ring_buffer *to,
 		    u32 seqno);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int intel_init_render_ring_buffer(struct drm_device *dev);
 int intel_init_bsd_ring_buffer(struct drm_device *dev);
@@ -191,6 +236,14 @@ int intel_init_blt_ring_buffer(struct drm_device *dev);
 u32 intel_ring_get_active_head(struct intel_ring_buffer *ring);
 void intel_ring_setup_status_page(struct intel_ring_buffer *ring);
 
+<<<<<<< HEAD
+=======
+static inline u32 intel_ring_get_tail(struct intel_ring_buffer *ring)
+{
+	return ring->tail;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void i915_trace_irq_get(struct intel_ring_buffer *ring, u32 seqno)
 {
 	if (ring->trace_irq_seqno == 0 && ring->irq_get(ring))

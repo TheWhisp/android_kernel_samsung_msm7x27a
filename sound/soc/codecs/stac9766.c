@@ -256,8 +256,12 @@ static int stac9766_reset(struct snd_soc_codec *codec, int try_warm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int stac9766_codec_suspend(struct snd_soc_codec *codec,
 				  pm_message_t state)
+=======
+static int stac9766_codec_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	stac9766_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -286,11 +290,19 @@ reset:
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops stac9766_dai_ops_analog = {
 	.prepare = ac97_analog_prepare,
 };
 
 static struct snd_soc_dai_ops stac9766_dai_ops_digital = {
+=======
+static const struct snd_soc_dai_ops stac9766_dai_ops_analog = {
+	.prepare = ac97_analog_prepare,
+};
+
+static const struct snd_soc_dai_ops stac9766_dai_ops_digital = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.prepare = ac97_digital_prepare,
 };
 
@@ -356,7 +368,11 @@ static int stac9766_codec_probe(struct snd_soc_codec *codec)
 
 	stac9766_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, stac9766_snd_ac97_controls,
+=======
+	snd_soc_add_codec_controls(codec, stac9766_snd_ac97_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 			     ARRAY_SIZE(stac9766_snd_ac97_controls));
 
 	return 0;
@@ -380,7 +396,11 @@ static struct snd_soc_codec_driver soc_codec_dev_stac9766 = {
 	.remove = stac9766_codec_remove,
 	.suspend = stac9766_codec_suspend,
 	.resume = stac9766_codec_resume,
+<<<<<<< HEAD
 	.reg_cache_size = sizeof(stac9766_reg),
+=======
+	.reg_cache_size = ARRAY_SIZE(stac9766_reg),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.reg_word_size = sizeof(u16),
 	.reg_cache_step = 2,
 	.reg_cache_default = stac9766_reg,
@@ -408,6 +428,7 @@ static struct platform_driver stac9766_codec_driver = {
 	.remove = __devexit_p(stac9766_remove),
 };
 
+<<<<<<< HEAD
 static int __init stac9766_init(void)
 {
 	return platform_driver_register(&stac9766_codec_driver);
@@ -419,6 +440,9 @@ static void __exit stac9766_exit(void)
 	platform_driver_unregister(&stac9766_codec_driver);
 }
 module_exit(stac9766_exit);
+=======
+module_platform_driver(stac9766_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("ASoC stac9766 driver");
 MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");

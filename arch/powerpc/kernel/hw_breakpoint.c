@@ -27,7 +27,10 @@
 #include <linux/kprobes.h>
 #include <linux/percpu.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/init.h>
 #include <linux/smp.h>

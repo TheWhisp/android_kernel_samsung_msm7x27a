@@ -16,7 +16,10 @@
 #include <asm/machdep.h>
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
+<<<<<<< HEAD
 #include <asm/mcfuart.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mcfwdebug.h>
 
 /***************************************************************************/
@@ -29,6 +32,7 @@ unsigned char ledbank = 0xff;
 
 /***************************************************************************/
 
+<<<<<<< HEAD
 static struct mcf_platform_uart m5307_uart_platform[] = {
 	{
 		.mapbase	= MCF_MBAR + MCFUART_BASE1,
@@ -105,6 +109,8 @@ void m5307_cpu_reset(void)
 
 /***************************************************************************/
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init config_BSP(char *commandp, int size)
 {
 #if defined(CONFIG_NETtel) || \
@@ -114,9 +120,13 @@ void __init config_BSP(char *commandp, int size)
 	commandp[size-1] = 0;
 #endif
 
+<<<<<<< HEAD
 	mach_reset = m5307_cpu_reset;
 	m5307_timers_init();
 	m5307_uarts_init();
+=======
+	mach_sched_init = hw_timer_init;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Only support the external interrupts on their primary level */
 	mcf_mapirq2imr(25, MCFINTC_EINT1);
@@ -135,6 +145,7 @@ void __init config_BSP(char *commandp, int size)
 }
 
 /***************************************************************************/
+<<<<<<< HEAD
 
 static int __init init_BSP(void)
 {
@@ -145,3 +156,5 @@ static int __init init_BSP(void)
 arch_initcall(init_BSP);
 
 /***************************************************************************/
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

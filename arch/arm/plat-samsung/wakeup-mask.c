@@ -11,7 +11,11 @@
 
 #include <linux/kernel.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 #include <linux/irq.h>
 #include <linux/io.h>

@@ -14,7 +14,10 @@
 #define KMSG_COMPONENT "tape"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
+<<<<<<< HEAD
 #include <linux/kernel_stat.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/init.h>	     // for kernel parameters
 #include <linux/kmod.h>	     // for requesting modules
@@ -1115,7 +1118,10 @@ __tape_do_irq (struct ccw_device *cdev, unsigned long intparm, struct irb *irb)
 	struct tape_request *request;
 	int rc;
 
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[IOINT_TAP]++;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	device = dev_get_drvdata(&cdev->dev);
 	if (device == NULL) {
 		return;

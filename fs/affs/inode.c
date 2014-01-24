@@ -54,7 +54,11 @@ struct inode *affs_iget(struct super_block *sb, unsigned long ino)
 	prot = be32_to_cpu(tail->protect);
 
 	inode->i_size = 0;
+<<<<<<< HEAD
 	inode->i_nlink = 1;
+=======
+	set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_mode = 0;
 	AFFS_I(inode)->i_extcnt = 1;
 	AFFS_I(inode)->i_ext_last = ~1;
@@ -137,7 +141,11 @@ struct inode *affs_iget(struct super_block *sb, unsigned long ino)
 					       sbi->s_hashsize + 1;
 		}
 		if (tail->link_chain)
+<<<<<<< HEAD
 			inode->i_nlink = 2;
+=======
+			set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 		inode->i_mapping->a_ops = (sbi->s_flags & SF_OFS) ? &affs_aops_ofs : &affs_aops;
 		inode->i_op = &affs_file_inode_operations;
 		inode->i_fop = &affs_file_operations;
@@ -304,7 +312,11 @@ affs_new_inode(struct inode *dir)
 	inode->i_uid     = current_fsuid();
 	inode->i_gid     = current_fsgid();
 	inode->i_ino     = block;
+<<<<<<< HEAD
 	inode->i_nlink   = 1;
+=======
+	set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_mtime   = inode->i_atime = inode->i_ctime = CURRENT_TIME_SEC;
 	atomic_set(&AFFS_I(inode)->i_opencnt, 0);
 	AFFS_I(inode)->i_blkcnt = 0;
@@ -387,7 +399,11 @@ affs_add_entry(struct inode *dir, struct inode *inode, struct dentry *dentry, s3
 		AFFS_TAIL(sb, inode_bh)->link_chain = cpu_to_be32(block);
 		affs_adjust_checksum(inode_bh, block - be32_to_cpu(chain));
 		mark_buffer_dirty_inode(inode_bh, inode);
+<<<<<<< HEAD
 		inode->i_nlink = 2;
+=======
+		set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ihold(inode);
 	}
 	affs_fix_checksum(sb, bh);

@@ -21,6 +21,10 @@
 
 #include <linux/clk.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/soc.h>
@@ -38,6 +42,7 @@ static int igep2_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+<<<<<<< HEAD
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 	int ret;
 
@@ -61,6 +66,10 @@ static int igep2_hw_params(struct snd_pcm_substream *substream,
 		return ret;
 	}
 
+=======
+	int ret;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Set the codec system clock for DAC and ADC */
 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
 					    SND_SOC_CLOCK_IN);
@@ -80,16 +89,29 @@ static struct snd_soc_ops igep2_ops = {
 static struct snd_soc_dai_link igep2_dai = {
 	.name = "TWL4030",
 	.stream_name = "TWL4030",
+<<<<<<< HEAD
 	.cpu_dai_name = "omap-mcbsp-dai.1",
 	.codec_dai_name = "twl4030-hifi",
 	.platform_name = "omap-pcm-audio",
 	.codec_name = "twl4030-codec",
+=======
+	.cpu_dai_name = "omap-mcbsp.2",
+	.codec_dai_name = "twl4030-hifi",
+	.platform_name = "omap-pcm-audio",
+	.codec_name = "twl4030-codec",
+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+		   SND_SOC_DAIFMT_CBM_CFM,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.ops = &igep2_ops,
 };
 
 /* Audio machine driver */
 static struct snd_soc_card snd_soc_card_igep2 = {
 	.name = "igep2",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = &igep2_dai,
 	.num_links = 1,
 };

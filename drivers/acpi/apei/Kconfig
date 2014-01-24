@@ -10,9 +10,17 @@ config ACPI_APEI
 	  error injection.
 
 config ACPI_APEI_GHES
+<<<<<<< HEAD
 	tristate "APEI Generic Hardware Error Source"
 	depends on ACPI_APEI && X86
 	select ACPI_HED
+=======
+	bool "APEI Generic Hardware Error Source"
+	depends on ACPI_APEI && X86
+	select ACPI_HED
+	select IRQ_WORK
+	select GENERIC_ALLOCATOR
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Generic Hardware Error Source provides a way to report
 	  platform hardware errors (such as that from chipset). It
@@ -30,6 +38,16 @@ config ACPI_APEI_PCIEAER
 	  PCIe AER errors may be reported via APEI firmware first mode.
 	  Turn on this option to enable the corresponding support.
 
+<<<<<<< HEAD
+=======
+config ACPI_APEI_MEMORY_FAILURE
+	bool "APEI memory error recovering support"
+	depends on ACPI_APEI && MEMORY_FAILURE
+	help
+	  Memory errors may be reported via APEI firmware first mode.
+	  Turn on this option to enable the memory recovering support.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config ACPI_APEI_EINJ
 	tristate "APEI Error INJection (EINJ)"
 	depends on ACPI_APEI && DEBUG_FS

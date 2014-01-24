@@ -226,9 +226,16 @@ static int videobuf_dvb_register_frontend(struct dvb_adapter *adapter,
 	}
 
 	/* register network adapter */
+<<<<<<< HEAD
 	dvb_net_init(adapter, &dvb->net, &dvb->demux.dmx);
 	if (dvb->net.dvbdev == NULL) {
 		result = -ENOMEM;
+=======
+	result = dvb_net_init(adapter, &dvb->net, &dvb->demux.dmx);
+	if (result < 0) {
+		printk(KERN_WARNING "%s: dvb_net_init failed (errno = %d)\n",
+		       dvb->name, result);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto fail_fe_conn;
 	}
 	return 0;

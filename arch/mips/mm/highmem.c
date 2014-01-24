@@ -41,7 +41,11 @@ EXPORT_SYMBOL(kunmap);
  * kmaps are appropriate for short, tight code paths only.
  */
 
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
+=======
+void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long vaddr;
 	int idx, type;
@@ -62,7 +66,11 @@ void *__kmap_atomic(struct page *page)
 
 	return (void*) vaddr;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kmap_atomic);
+=======
+EXPORT_SYMBOL(kmap_atomic);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 void __kunmap_atomic(void *kvaddr)
 {

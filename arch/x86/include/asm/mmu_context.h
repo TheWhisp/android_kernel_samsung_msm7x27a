@@ -2,7 +2,11 @@
 #define _ASM_X86_MMU_CONTEXT_H
 
 #include <asm/desc.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/pgalloc.h>
 #include <asm/tlbflush.h>
 #include <asm/paravirt.h>

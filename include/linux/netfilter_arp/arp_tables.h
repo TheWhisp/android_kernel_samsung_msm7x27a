@@ -52,7 +52,11 @@ struct arpt_arp {
 	struct in_addr smsk, tmsk;
 
 	/* Device hw address length, src+target device addresses */
+<<<<<<< HEAD
 	u_int8_t arhln, arhln_mask;
+=======
+	__u8 arhln, arhln_mask;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct arpt_devaddr_info src_devaddr;
 	struct arpt_devaddr_info tgt_devaddr;
 
@@ -71,9 +75,15 @@ struct arpt_arp {
 	unsigned char iniface_mask[IFNAMSIZ], outiface_mask[IFNAMSIZ];
 
 	/* Flags word */
+<<<<<<< HEAD
 	u_int8_t flags;
 	/* Inverse flags */
 	u_int16_t invflags;
+=======
+	__u8 flags;
+	/* Inverse flags */
+	__u16 invflags;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Values for "flag" field in struct arpt_ip (general arp structure).
@@ -102,9 +112,15 @@ struct arpt_entry
 	struct arpt_arp arp;
 
 	/* Size of arpt_entry + matches */
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	/* Size of arpt_entry + matches + target */
 	u_int16_t next_offset;
+=======
+	__u16 target_offset;
+	/* Size of arpt_entry + matches + target */
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Back pointer */
 	unsigned int comefrom;
@@ -260,8 +276,13 @@ extern unsigned int arpt_do_table(struct sk_buff *skb,
 
 struct compat_arpt_entry {
 	struct arpt_arp arp;
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	u_int16_t next_offset;
+=======
+	__u16 target_offset;
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 	compat_uint_t comefrom;
 	struct compat_xt_counters counters;
 	unsigned char elems[0];

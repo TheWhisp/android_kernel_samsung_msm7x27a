@@ -39,8 +39,22 @@
 #include "rtl871x_ioctl_set.h"
 #include "rtl871x_mp_ioctl.h"
 #include "mlme_osdep.h"
+<<<<<<< HEAD
 
 #define RTL_IOCTL_WPA_SUPPLICANT	(SIOCIWFIRSTPRIV + 30)
+=======
+#include <linux/wireless.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/version.h>
+#include <linux/io.h>
+#include <linux/semaphore.h>
+#include <net/iw_handler.h>
+#include <linux/if_arp.h>
+
+#define RTL_IOCTL_WPA_SUPPLICANT	(SIOCIWFIRSTPRIV + 0x1E)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SCAN_ITEM_SIZE 768
 #define MAX_CUSTOM_LEN 64
@@ -160,10 +174,13 @@ static inline char *translate_scan(struct _adapter *padapter,
 	struct iw_event iwe;
 	struct ieee80211_ht_cap *pht_capie;
 	char *current_val;
+<<<<<<< HEAD
 	u8 *buf = (u8 *)_malloc(pnetwork->network.IELength * 2);
 	u8 *wpa_ie = (u8 *)_malloc(255);
 	u8 *rsn_ie = (u8 *)_malloc(255);
 	u8 *wps_ie = (u8 *)_malloc(MAX_WPS_IE_LEN);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	s8 *p;
 	u32 i = 0, ht_ielen = 0;
 	u16	cap, ht_cap = false, mcs_rate;
@@ -280,6 +297,11 @@ static inline char *translate_scan(struct _adapter *padapter,
 		start = current_val;
 	/* parsing WPA/WPA2 IE */
 	{
+<<<<<<< HEAD
+=======
+		u8 buf[MAX_WPA_IE_LEN];
+		u8 wpa_ie[255], rsn_ie[255];
+>>>>>>> refs/remotes/origin/cm-10.0
 		u16 wpa_len = 0, rsn_len = 0;
 		int n;
 		sint out_len = 0;
@@ -330,6 +352,10 @@ static inline char *translate_scan(struct _adapter *padapter,
 	}
 
 	{ /* parsing WPS IE */
+<<<<<<< HEAD
+=======
+		u8 wps_ie[512];
+>>>>>>> refs/remotes/origin/cm-10.0
 		uint wps_ielen;
 
 		if (r8712_get_wps_ie(pnetwork->network.IEs,
@@ -354,16 +380,23 @@ static inline char *translate_scan(struct _adapter *padapter,
 	iwe.u.qual.noise = 0; /* noise level */
 	start = iwe_stream_add_event(info, start, stop, &iwe, IW_EV_QUAL_LEN);
 	/* how to translate rssi to ?% */
+<<<<<<< HEAD
 	kfree(buf);
 	kfree(wpa_ie);
 	kfree(rsn_ie);
 	kfree(wps_ie);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return start;
 }
 
 static int wpa_set_auth_algs(struct net_device *dev, u32 value)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret = 0;
 
 	if ((value & AUTH_ALG_SHARED_KEY) && (value & AUTH_ALG_OPEN_SYSTEM)) {
@@ -395,7 +428,11 @@ static int wpa_set_encryption(struct net_device *dev, struct ieee_param *param,
 	int ret = 0;
 	u32 wep_key_idx, wep_key_len = 0;
 	struct NDIS_802_11_WEP	 *pwep = NULL;
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct security_priv *psecuritypriv = &padapter->securitypriv;
 
@@ -526,7 +563,11 @@ static int r871x_set_wpa_ie(struct _adapter *padapter, char *pie,
 		memcpy(buf, pie , ielen);
 		pos = buf;
 		if (ielen < RSN_HEADER_LEN) {
+<<<<<<< HEAD
 			ret  = -1;
+=======
+			ret  = -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto exit;
 		}
 		if (r8712_parse_wpa_ie(buf, ielen, &group_cipher,
@@ -637,7 +678,11 @@ static int r8711_wx_get_name(struct net_device *dev,
 			     struct iw_request_info *info,
 			     union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 ht_ielen = 0;
 	char *p;
 	u8 ht_cap = false;
@@ -693,7 +738,11 @@ static int r8711_wx_set_freq(struct net_device *dev,
 			     struct iw_request_info *info,
 			     union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iw_freq *fwrq = &wrqu->freq;
 	int rc = 0;
 
@@ -727,7 +776,11 @@ static int r8711_wx_get_freq(struct net_device *dev,
 			     struct iw_request_info *info,
 			     union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct ndis_wlan_bssid_ex *pcur_bss = &pmlmepriv->cur_network.network;
 
@@ -736,8 +789,14 @@ static int r8711_wx_get_freq(struct net_device *dev,
 			       pcur_bss->Configuration.DSConfig-1] * 100000;
 		wrqu->freq.e = 1;
 		wrqu->freq.i = pcur_bss->Configuration.DSConfig;
+<<<<<<< HEAD
 	} else
 		return -1;
+=======
+	} else {
+		return -ENOLINK;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -745,7 +804,11 @@ static int r8711_wx_set_mode(struct net_device *dev,
 			     struct iw_request_info *a,
 			     union iwreq_data *wrqu, char *b)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	enum NDIS_802_11_NETWORK_INFRASTRUCTURE networkType;
 
 	switch (wrqu->mode) {
@@ -768,15 +831,24 @@ static int r8711_wx_set_mode(struct net_device *dev,
 		r8712_setopmode_cmd(padapter, networkType);
 	else
 		r8712_setopmode_cmd(padapter, Ndis802_11AutoUnknown);
+<<<<<<< HEAD
 	if (!r8712_set_802_11_infrastructure_mode(padapter, networkType))
 		return -1;
+=======
+
+	r8712_set_802_11_infrastructure_mode(padapter, networkType);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static int r8711_wx_get_mode(struct net_device *dev, struct iw_request_info *a,
 			     union iwreq_data *wrqu, char *b)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 
 	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE) == true)
@@ -795,7 +867,11 @@ static int r871x_wx_set_pmkid(struct net_device *dev,
 			     struct iw_request_info *a,
 			     union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct security_priv *psecuritypriv = &padapter->securitypriv;
 	struct iw_pmksa *pPMK = (struct iw_pmksa *) extra;
 	u8 strZeroMacAddress[ETH_ALEN] = {0x00};
@@ -949,6 +1025,13 @@ static int r8711_wx_get_range(struct net_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int r8711_wx_get_rate(struct net_device *dev,
+			     struct iw_request_info *info,
+			     union iwreq_data *wrqu, char *extra);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int r871x_wx_set_priv(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *awrq,
@@ -956,6 +1039,10 @@ static int r871x_wx_set_priv(struct net_device *dev,
 {
 	int ret = 0, len = 0;
 	char *ext;
+<<<<<<< HEAD
+=======
+	struct _adapter *padapter = netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iw_point *dwrq = (struct iw_point *)awrq;
 
 	len = dwrq->length;
@@ -966,6 +1053,90 @@ static int r871x_wx_set_priv(struct net_device *dev,
 		kfree(ext);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
+=======
+
+	if (0 == strcasecmp(ext, "RSSI")) {
+		/*Return received signal strength indicator in -db for */
+		/* current AP */
+		/*<ssid> Rssi xx */
+		struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
+		struct wlan_network *pcur_network = &pmlmepriv->cur_network;
+		/*static u8 xxxx; */
+		if (check_fwstate(pmlmepriv, _FW_LINKED) == true) {
+			sprintf(ext, "%s rssi %d",
+				pcur_network->network.Ssid.Ssid,
+				/*(xxxx=xxxx+10) */
+				((padapter->recvpriv.fw_rssi)>>1)-95
+				/*pcur_network->network.Rssi */
+				);
+		} else {
+			sprintf(ext, "OK");
+		}
+	} else if (0 == strcasecmp(ext, "LINKSPEED")) {
+		/*Return link speed in MBPS */
+		/*LinkSpeed xx */
+		union iwreq_data wrqd;
+		int ret_inner;
+		int mbps;
+
+		ret_inner = r8711_wx_get_rate(dev, info, &wrqd, extra);
+		if (0 != ret_inner)
+			mbps = 0;
+		else
+			mbps = wrqd.bitrate.value / 1000000;
+		sprintf(ext, "LINKSPEED %d", mbps);
+	} else if (0 == strcasecmp(ext, "MACADDR")) {
+		/*Return mac address of the station */
+		/*Macaddr = xx.xx.xx.xx.xx.xx */
+		sprintf(ext,
+			"MACADDR = %02x.%02x.%02x.%02x.%02x.%02x",
+			*(dev->dev_addr), *(dev->dev_addr+1),
+			*(dev->dev_addr+2), *(dev->dev_addr+3),
+			*(dev->dev_addr+4), *(dev->dev_addr+5));
+	} else if (0 == strcasecmp(ext, "SCAN-ACTIVE")) {
+		/*Set scan type to active */
+		/*OK if successful */
+		struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+		pmlmepriv->passive_mode = 1;
+		sprintf(ext, "OK");
+	} else if (0 == strcasecmp(ext, "SCAN-PASSIVE")) {
+		/*Set scan type to passive */
+		/*OK if successful */
+		struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+		pmlmepriv->passive_mode = 0;
+		sprintf(ext, "OK");
+	} else if (0 == strncmp(ext, "DCE-E", 5)) {
+		/*Set scan type to passive */
+		/*OK if successful */
+		r8712_disconnectCtrlEx_cmd(padapter
+			, 1 /*u32 enableDrvCtrl */
+			, 5 /*u32 tryPktCnt */
+			, 100 /*u32 tryPktInterval */
+			, 5000 /*u32 firstStageTO */
+		);
+		sprintf(ext, "OK");
+	} else if (0 == strncmp(ext, "DCE-D", 5)) {
+		/*Set scan type to passive */
+		/*OK if successfu */
+		r8712_disconnectCtrlEx_cmd(padapter
+			, 0 /*u32 enableDrvCtrl */
+			, 5 /*u32 tryPktCnt */
+			, 100 /*u32 tryPktInterval */
+			, 5000 /*u32 firstStageTO */
+		);
+		sprintf(ext, "OK");
+	} else {
+		printk(KERN_INFO "r8712u: r871x_wx_set_priv: unknown Command"
+		       " %s.\n", ext);
+		goto FREE_EXT;
+	}
+	if (copy_to_user(dwrq->pointer, ext,
+				min(dwrq->length, (__u16)(strlen(ext)+1))))
+		ret = -EFAULT;
+
+FREE_EXT:
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(ext);
 	return ret;
 }
@@ -975,6 +1146,16 @@ static int r871x_wx_set_priv(struct net_device *dev,
  * s2. set_802_11_authentication_mode()
  * s3. set_802_11_encryption_mode()
  * s4. set_802_11_bssid()
+<<<<<<< HEAD
+=======
+ *
+ * This function intends to handle the Set AP command, which specifies the
+ * MAC# of a preferred Access Point.
+ * Currently, the request comes via Wireless Extensions' SIOCSIWAP ioctl.
+ *
+ * For this operation to succeed, there is no need for the interface to be Up.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int r8711_wx_set_wap(struct net_device *dev,
 			 struct iw_request_info *info,
@@ -982,7 +1163,11 @@ static int r8711_wx_set_wap(struct net_device *dev,
 			 char *extra)
 {
 	int ret = -EINPROGRESS;
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct  __queue *queue = &pmlmepriv->scanned_queue;
 	struct sockaddr *temp = (struct sockaddr *)awrq;
@@ -992,10 +1177,15 @@ static int r8711_wx_set_wap(struct net_device *dev,
 	struct wlan_network *pnetwork = NULL;
 	enum NDIS_802_11_AUTHENTICATION_MODE	authmode;
 
+<<<<<<< HEAD
 	if (padapter->bup == false)
 		return -1;
 	if (check_fwstate(pmlmepriv, _FW_UNDER_SURVEY) == true)
 		return -1;
+=======
+	if (check_fwstate(pmlmepriv, _FW_UNDER_SURVEY) == true)
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (check_fwstate(pmlmepriv, _FW_UNDER_LINKING) == true)
 		return ret;
 	if (temp->sa_family != ARPHRD_ETHER)
@@ -1012,16 +1202,25 @@ static int r8711_wx_set_wap(struct net_device *dev,
 		pmlmepriv->pscanned = get_next(pmlmepriv->pscanned);
 		dst_bssid = pnetwork->network.MacAddress;
 		if (!memcmp(dst_bssid, temp->sa_data, ETH_ALEN)) {
+<<<<<<< HEAD
 			if (r8712_set_802_11_infrastructure_mode(padapter,
 			    pnetwork->network.InfrastructureMode) == false)
 				ret = -1;
+=======
+			r8712_set_802_11_infrastructure_mode(padapter,
+			    pnetwork->network.InfrastructureMode);
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 	}
 	spin_unlock_irqrestore(&queue->lock, irqL);
 	if (!ret) {
 		if (!r8712_set_802_11_authentication_mode(padapter, authmode))
+<<<<<<< HEAD
 			ret = -1;
+=======
+			ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 		else {
 			if (!r8712_set_802_11_bssid(padapter, temp->sa_data))
 				ret = -1;
@@ -1034,7 +1233,11 @@ static int r8711_wx_get_wap(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct ndis_wlan_bssid_ex *pcur_bss = &pmlmepriv->cur_network.network;
 
@@ -1053,7 +1256,11 @@ static int r871x_wx_set_mlme(struct net_device *dev,
 {
 	int ret = 0;
 	u16 reason;
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iw_mlme *mlme = (struct iw_mlme *) extra;
 
 	if (mlme == NULL)
@@ -1074,11 +1281,26 @@ static int r871x_wx_set_mlme(struct net_device *dev,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ *
+ * This function intends to handle the Set Scan command.
+ * Currently, the request comes via Wireless Extensions' SIOCSIWSCAN ioctl.
+ *
+ * For this operation to succeed, the interface is brought Up beforehand.
+ *
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 static int r8711_wx_set_scan(struct net_device *dev,
 			struct iw_request_info *a,
 			union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	u8 status = true;
 
@@ -1088,7 +1310,11 @@ static int r8711_wx_set_scan(struct net_device *dev,
 		return -1;
 	}
 	if (padapter->bup == false)
+<<<<<<< HEAD
 		return -1;
+=======
+		return -ENETDOWN;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (padapter->hw_init_completed == false)
 		return -1;
 	if ((check_fwstate(pmlmepriv, _FW_UNDER_SURVEY|_FW_UNDER_LINKING)) ||
@@ -1126,7 +1352,11 @@ static int r8711_wx_get_scan(struct net_device *dev,
 				struct iw_request_info *a,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct  __queue *queue = &pmlmepriv->scanned_queue;
 	struct wlan_network *pnetwork = NULL;
@@ -1141,7 +1371,11 @@ static int r8711_wx_get_scan(struct net_device *dev,
 	while (check_fwstate(pmlmepriv, _FW_UNDER_SURVEY|_FW_UNDER_LINKING)) {
 		msleep(30);
 		cnt++;
+<<<<<<< HEAD
 		if (cnt > 1000)
+=======
+		if (cnt > 100)
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 	}
 	spin_lock_irqsave(&queue->lock, irqL);
@@ -1169,12 +1403,25 @@ static int r8711_wx_get_scan(struct net_device *dev,
  * s2. set_802_11_authenticaion_mode()
  * s3. set_802_11_encryption_mode()
  * s4. set_802_11_ssid()
+<<<<<<< HEAD
+=======
+ *
+ * This function intends to handle the Set ESSID command.
+ * Currently, the request comes via the Wireless Extensions' SIOCSIWESSID ioctl.
+ *
+ * For this operation to succeed, there is no need for the interface to be Up.
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int r8711_wx_set_essid(struct net_device *dev,
 				struct iw_request_info *a,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct  __queue *queue = &pmlmepriv->scanned_queue;
 	struct wlan_network *pnetwork = NULL;
@@ -1184,10 +1431,15 @@ static int r8711_wx_set_essid(struct net_device *dev,
 	struct list_head *phead;
 	u32 len;
 
+<<<<<<< HEAD
 	if (padapter->bup == false)
 		return -1;
 	if (check_fwstate(pmlmepriv, _FW_UNDER_SURVEY))
 		return -1;
+=======
+	if (check_fwstate(pmlmepriv, _FW_UNDER_SURVEY))
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (check_fwstate(pmlmepriv, _FW_UNDER_LINKING))
 		return 0;
 	if (wrqu->essid.length > IW_ESSID_MAX_SIZE)
@@ -1212,10 +1464,27 @@ static int r8711_wx_set_essid(struct net_device *dev,
 			if ((!memcmp(dst_ssid, src_ssid, ndis_ssid.SsidLength))
 			    && (pnetwork->network.Ssid.SsidLength ==
 			     ndis_ssid.SsidLength)) {
+<<<<<<< HEAD
 				if (!r8712_set_802_11_infrastructure_mode(
 				     padapter,
 				     pnetwork->network.InfrastructureMode))
 					return -1;
+=======
+				if (check_fwstate(pmlmepriv,
+							WIFI_ADHOC_STATE)) {
+					if (pnetwork->network.
+						InfrastructureMode
+						!=
+						padapter->mlmepriv.
+						cur_network.network.
+						InfrastructureMode)
+						continue;
+				}
+
+				r8712_set_802_11_infrastructure_mode(
+				     padapter,
+				     pnetwork->network.InfrastructureMode);
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 		}
@@ -1229,7 +1498,11 @@ static int r8711_wx_get_essid(struct net_device *dev,
 				struct iw_request_info *a,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct ndis_wlan_bssid_ex *pcur_bss = &pmlmepriv->cur_network.network;
 	u32 len, ret = 0;
@@ -1239,8 +1512,14 @@ static int r8711_wx_get_essid(struct net_device *dev,
 		wrqu->essid.length = len;
 		memcpy(extra, pcur_bss->Ssid.Ssid, len);
 		wrqu->essid.flags = 1;
+<<<<<<< HEAD
 	} else
 		ret = -1;
+=======
+	} else {
+		ret = -ENOLINK;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -1248,7 +1527,11 @@ static int r8711_wx_set_rate(struct net_device *dev,
 				struct iw_request_info *a,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 target_rate = wrqu->bitrate.value;
 	u32 fixed = wrqu->bitrate.fixed;
 	u32 ratevalue = 0;
@@ -1312,7 +1595,11 @@ set_rate:
 			datarates[i] = 0xff;
 	}
 	if (r8712_setdatarate_cmd(padapter, datarates) != _SUCCESS)
+<<<<<<< HEAD
 		ret = -1;
+=======
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -1320,10 +1607,18 @@ static int r8711_wx_get_rate(struct net_device *dev,
 			     struct iw_request_info *info,
 			     union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct ndis_wlan_bssid_ex *pcur_bss = &pmlmepriv->cur_network.network;
 	struct ieee80211_ht_cap *pht_capie;
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+	struct ndis_wlan_bssid_ex *pcur_bss = &pmlmepriv->cur_network.network;
+	struct ieee80211_ht_cap *pht_capie;
+	unsigned char rf_type = padapter->registrypriv.rf_config;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int i;
 	u8 *p;
 	u16 rate, max_rate = 0, ht_cap = false;
@@ -1356,7 +1651,13 @@ static int r8711_wx_get_rate(struct net_device *dev,
 			i++;
 		}
 		if (ht_cap == true) {
+<<<<<<< HEAD
 			if (mcs_rate & 0x8000) /* MCS15 */
+=======
+			if (mcs_rate & 0x8000 /* MCS15 */
+				&&
+				RTL8712_RF_2T2R == rf_type)
+>>>>>>> refs/remotes/origin/cm-10.0
 				max_rate = (bw_40MHz) ? ((short_GI) ? 300 :
 					    270) : ((short_GI) ? 144 : 130);
 			else if (mcs_rate & 0x0080) /* MCS7 */
@@ -1371,7 +1672,11 @@ static int r8711_wx_get_rate(struct net_device *dev,
 			wrqu->bitrate.value = max_rate * 500000;
 		}
 	} else
+<<<<<<< HEAD
 		return -1;
+=======
+		return -ENOLINK;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -1379,7 +1684,11 @@ static int r8711_wx_get_rts(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	wrqu->rts.value = padapter->registrypriv.rts_thresh;
 	wrqu->rts.fixed = 0;	/* no auto select */
@@ -1390,7 +1699,11 @@ static int r8711_wx_set_frag(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (wrqu->frag.disabled)
 		padapter->xmitpriv.frag_len = MAX_FRAG_THRESHOLD;
@@ -1407,7 +1720,11 @@ static int r8711_wx_get_frag(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	wrqu->frag.value = padapter->xmitpriv.frag_len;
 	wrqu->frag.fixed = 0;	/* no auto select */
@@ -1433,7 +1750,11 @@ static int r8711_wx_set_enc(struct net_device *dev,
 	struct NDIS_802_11_WEP	 wep;
 	enum NDIS_802_11_AUTHENTICATION_MODE authmode;
 	struct iw_point *erq = &(wrqu->encoding);
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	key = erq->flags & IW_ENCODE_INDEX;
 	memset(&wep, 0, sizeof(struct NDIS_802_11_WEP));
@@ -1527,7 +1848,11 @@ static int r8711_wx_get_enc(struct net_device *dev,
 				union iwreq_data *wrqu, char *keybuf)
 {
 	uint key, ret = 0;
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iw_point *erq = &(wrqu->encoding);
 	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
 
@@ -1599,7 +1924,11 @@ static int r871x_wx_set_gen_ie(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return r871x_set_wpa_ie(padapter, extra, wrqu->data.length);
 }
@@ -1608,7 +1937,11 @@ static int r871x_wx_set_auth(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iw_param *param = (struct iw_param *)&(wrqu->param);
 	int paramid;
 	int paramval;
@@ -1701,7 +2034,11 @@ static int r871x_wx_set_enc_ext(struct net_device *dev,
 	param_len = sizeof(struct ieee_param) + pext->key_len;
 	param = (struct ieee_param *)_malloc(param_len);
 	if (param == NULL)
+<<<<<<< HEAD
 		return -1;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 	memset(param, 0, param_len);
 	param->cmd = IEEE_CMD_SET_ENCRYPTION;
 	memset(param->sta_addr, 0xff, ETH_ALEN);
@@ -1719,7 +2056,11 @@ static int r871x_wx_set_enc_ext(struct net_device *dev,
 		alg_name = "CCMP";
 		break;
 	default:
+<<<<<<< HEAD
 		return -1;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	strncpy((char *)param->u.crypt.alg, alg_name, IEEE_CRYPT_ALG_NAME_LEN);
 	if (pext->ext_flags & IW_ENCODE_EXT_GROUP_KEY)
@@ -1754,7 +2095,11 @@ static int r8711_wx_read32(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *keybuf)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 addr;
 	u32 data32;
 
@@ -1771,7 +2116,11 @@ static int r8711_wx_write32(struct net_device *dev,
 				 struct iw_request_info *info,
 				 union iwreq_data *wrqu, char *keybuf)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 addr;
 	u32 data32;
 
@@ -1785,7 +2134,11 @@ static int dummy(struct net_device *dev,
 		struct iw_request_info *a,
 		union iwreq_data *wrqu, char *b)
 {
+<<<<<<< HEAD
 	return -1;
+=======
+	return -ENOSYS;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int r8711_drvext_hdl(struct net_device *dev,
@@ -1799,7 +2152,11 @@ static int r871x_mp_ioctl_hdl(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iw_point *p = &wrqu->data;
 	struct oid_par_priv oid_par;
 	struct mp_ioctl_handler *phandler;
@@ -1882,7 +2239,11 @@ static int r871x_get_ap_info(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct  __queue *queue = &pmlmepriv->scanned_queue;
 	struct iw_point *pdata = &wrqu->data;
@@ -1953,7 +2314,11 @@ static int r871x_set_pid(struct net_device *dev,
 				struct iw_request_info *info,
 				union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iw_point *pdata = &wrqu->data;
 
 	if ((padapter->bDriverStopped) || (pdata == NULL))
@@ -1963,11 +2328,39 @@ static int r871x_set_pid(struct net_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int r871x_set_chplan(struct net_device *dev,
+				struct iw_request_info *info,
+				union iwreq_data *wrqu, char *extra)
+{
+	int ret = 0;
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+	struct iw_point *pdata = &wrqu->data;
+	int ch_plan = -1;
+
+	if ((padapter->bDriverStopped) || (pdata == NULL)) {
+		ret = -EINVAL;
+		goto exit;
+	}
+	ch_plan = (int)*extra;
+	r8712_set_chplan_cmd(padapter, ch_plan);
+
+exit:
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int r871x_wps_start(struct net_device *dev,
 			   struct iw_request_info *info,
 			   union iwreq_data *wrqu, char *extra)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iw_point *pdata = &wrqu->data;
 	u32   u32wps_start = 0;
 
@@ -1991,7 +2384,11 @@ static int r871x_wps_start(struct net_device *dev,
 
 static int wpa_set_param(struct net_device *dev, u8 name, u32 value)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (name) {
 	case IEEE_PARAM_WPA_ENABLED:
@@ -2044,7 +2441,11 @@ static int wpa_set_param(struct net_device *dev, u8 name, u32 value)
 
 static int wpa_mlme(struct net_device *dev, u32 command, u32 reason)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (command) {
 	case IEEE_MLME_STA_DEAUTH:
@@ -2065,16 +2466,27 @@ static int wpa_supplicant_ioctl(struct net_device *dev, struct iw_point *p)
 {
 	struct ieee_param *param;
 	int ret = 0;
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (p->length < sizeof(struct ieee_param) || !p->pointer)
 		return -EINVAL;
 	param = (struct ieee_param *)_malloc(p->length);
 	if (param == NULL)
 		return -ENOMEM;
+<<<<<<< HEAD
 	if (copy_from_user(param, p->pointer, p->length))
 		kfree((u8 *)param);
 		return -EFAULT;
+=======
+	if (copy_from_user(param, p->pointer, p->length)) {
+		kfree((u8 *)param);
+		return -EFAULT;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (param->cmd) {
 	case IEEE_CMD_SET_WPA_PARAM:
 		ret = wpa_set_param(dev, param->u.wpa_param.name,
@@ -2201,6 +2613,13 @@ static const struct iw_priv_args r8711_private_args[] = {
 	{
 		SIOCIWFIRSTPRIV + 0x6,
 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "wps_start"
+<<<<<<< HEAD
+=======
+	},
+	{
+		SIOCIWFIRSTPRIV + 0x7,
+		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "chplan"
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 };
 
@@ -2211,12 +2630,21 @@ static iw_handler r8711_private_handler[] = {
 	r871x_mp_ioctl_hdl,
 	r871x_get_ap_info, /*for MM DTV platform*/
 	r871x_set_pid,
+<<<<<<< HEAD
 	 r871x_wps_start,
+=======
+	r871x_wps_start,
+	r871x_set_chplan
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct iw_statistics *r871x_get_wireless_stats(struct net_device *dev)
 {
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(dev);
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct iw_statistics *piwstats = &padapter->iwstats;
 	int tmp_level = 0;
 	int tmp_qual = 0;
@@ -2247,5 +2675,9 @@ struct iw_handler_def r871x_handlers_def = {
 	.num_private = sizeof(r8711_private_handler) / sizeof(iw_handler),
 	.num_private_args = sizeof(r8711_private_args) /
 			    sizeof(struct iw_priv_args),
+<<<<<<< HEAD
 	.get_wireless_stats = r871x_get_wireless_stats,
+=======
+	.get_wireless_stats = r871x_get_wireless_stats
+>>>>>>> refs/remotes/origin/cm-10.0
 };

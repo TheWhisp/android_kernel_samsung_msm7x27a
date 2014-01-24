@@ -401,7 +401,11 @@ static void __devexit pasemi_smb_remove(struct pci_dev *dev)
 	kfree(smbus);
 }
 
+<<<<<<< HEAD
 static const struct pci_device_id pasemi_smb_ids[] = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(pasemi_smb_ids) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ PCI_DEVICE(0x1959, 0xa003) },
 	{ 0, }
 };

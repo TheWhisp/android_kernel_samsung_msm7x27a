@@ -11,6 +11,10 @@
  */
 
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/sh_fsi.h>
 
 static int fsi_da7210_init(struct snd_soc_pcm_runtime *rtd)
@@ -43,6 +47,10 @@ static struct snd_soc_dai_link fsi_da7210_dai = {
 
 static struct snd_soc_card fsi_soc_card = {
 	.name		= "FSI-DA7210",
+<<<<<<< HEAD
+=======
+	.owner		= THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link	= &fsi_da7210_dai,
 	.num_links	= 1,
 };

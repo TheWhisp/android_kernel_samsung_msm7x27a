@@ -185,17 +185,29 @@
 #define NO_DATA_SLEEP_MSECS	(MSEC_PER_SEC / 4)
 
 /* Control touchpad's No Deceleration option */
+<<<<<<< HEAD
 static int no_decel = 1;
+=======
+static bool no_decel = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(no_decel, bool, 0644);
 MODULE_PARM_DESC(no_decel, "No Deceleration. Default = 1 (on)");
 
 /* Control touchpad's Reduced Reporting option */
+<<<<<<< HEAD
 static int reduce_report;
+=======
+static bool reduce_report;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(reduce_report, bool, 0644);
 MODULE_PARM_DESC(reduce_report, "Reduced Reporting. Default = 0 (off)");
 
 /* Control touchpad's No Filter option */
+<<<<<<< HEAD
 static int no_filter;
+=======
+static bool no_filter;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(no_filter, bool, 0644);
 MODULE_PARM_DESC(no_filter, "No Filter. Default = 0 (off)");
 
@@ -570,7 +582,11 @@ static int __devinit synaptics_i2c_probe(struct i2c_client *client,
 			 "Requesting IRQ: %d\n", touch->client->irq);
 
 		ret = request_irq(touch->client->irq, synaptics_i2c_irq,
+<<<<<<< HEAD
 				  IRQF_DISABLED|IRQ_TYPE_EDGE_FALLING,
+=======
+				  IRQ_TYPE_EDGE_FALLING,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  DRIVER_NAME, touch);
 		if (ret) {
 			dev_warn(&touch->client->dev,
@@ -619,7 +635,11 @@ static int __devexit synaptics_i2c_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/cm-10.0
 static int synaptics_i2c_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -672,6 +692,7 @@ static struct i2c_driver synaptics_i2c_driver = {
 	.id_table	= synaptics_i2c_id_table,
 };
 
+<<<<<<< HEAD
 static int __init synaptics_i2c_init(void)
 {
 	return i2c_add_driver(&synaptics_i2c_driver);
@@ -684,6 +705,9 @@ static void __exit synaptics_i2c_exit(void)
 
 module_init(synaptics_i2c_init);
 module_exit(synaptics_i2c_exit);
+=======
+module_i2c_driver(synaptics_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Synaptics I2C touchpad driver");
 MODULE_AUTHOR("Mike Rapoport, Igor Grinberg, Compulab");

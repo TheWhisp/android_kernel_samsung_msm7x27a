@@ -19,11 +19,22 @@
 #include <linux/err.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <asm/mach/irq.h>
 #include <asm/mach/time.h>
 #include <mach/cputype.h>
 #include <mach/time.h>
+=======
+#include <asm/sched_clock.h>
+#include <asm/mach/irq.h>
+#include <asm/mach/time.h>
+
+#include <mach/cputype.h>
+#include <mach/hardware.h>
+#include <mach/time.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "clock.h"
 
 static struct clock_event_device clockevent_davinci;
@@ -272,6 +283,7 @@ static cycle_t read_cycles(struct clocksource *cs)
 	return (cycles_t)timer32_read(t);
 }
 
+<<<<<<< HEAD
 /*
  * Kernel assumes that sched_clock can be called early but may not have
  * things ready yet.
@@ -285,6 +297,11 @@ static cycle_t read_dummy(struct clocksource *cs)
 static struct clocksource clocksource_davinci = {
 	.rating		= 300,
 	.read		= read_dummy,
+=======
+static struct clocksource clocksource_davinci = {
+	.rating		= 300,
+	.read		= read_cycles,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.mask		= CLOCKSOURCE_MASK(32),
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
 };
@@ -292,12 +309,18 @@ static struct clocksource clocksource_davinci = {
 /*
  * Overwrite weak default sched_clock with something more precise
  */
+<<<<<<< HEAD
 unsigned long long notrace sched_clock(void)
 {
 	const cycle_t cyc = clocksource_davinci.read(&clocksource_davinci);
 
 	return clocksource_cyc2ns(cyc, clocksource_davinci.mult,
 				clocksource_davinci.shift);
+=======
+static u32 notrace davinci_read_sched_clock(void)
+{
+	return timer32_read(&timers[TID_CLOCKSOURCE]);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -397,12 +420,21 @@ static void __init davinci_timer_init(void)
 	davinci_clock_tick_rate = clk_get_rate(timer_clk);
 
 	/* setup clocksource */
+<<<<<<< HEAD
 	clocksource_davinci.read = read_cycles;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	clocksource_davinci.name = id_to_name[clocksource_id];
 	if (clocksource_register_hz(&clocksource_davinci,
 				    davinci_clock_tick_rate))
 		printk(err, clocksource_davinci.name);
 
+<<<<<<< HEAD
+=======
+	setup_sched_clock(davinci_read_sched_clock, 32,
+			  davinci_clock_tick_rate);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* setup clockevent */
 	clockevent_davinci.name = id_to_name[timers[TID_CLOCKEVENT].id];
 	clockevent_davinci.mult = div_sc(davinci_clock_tick_rate, NSEC_PER_SEC,

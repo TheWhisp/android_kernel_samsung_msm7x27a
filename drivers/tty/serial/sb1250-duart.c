@@ -37,9 +37,16 @@
 #include <linux/spinlock.h>
 #include <linux/sysrq.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #include <asm/atomic.h>
+=======
+#include <linux/tty_flip.h>
+#include <linux/types.h>
+
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/war.h>
 

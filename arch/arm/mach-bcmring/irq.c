@@ -20,7 +20,10 @@
 #include <linux/stddef.h>
 #include <linux/list.h>
 #include <linux/timer.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/io.h>
 
 #include <mach/hardware.h>

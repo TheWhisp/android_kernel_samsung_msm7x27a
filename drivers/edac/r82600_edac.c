@@ -131,7 +131,11 @@ struct r82600_error_info {
 	u32 eapr;
 };
 
+<<<<<<< HEAD
 static unsigned int disable_hardware_scrub;
+=======
+static bool disable_hardware_scrub;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct edac_pci_ctl_info *r82600_pci;
 
@@ -373,7 +377,11 @@ static void __devexit r82600_remove_one(struct pci_dev *pdev)
 	edac_mc_free(mci);
 }
 
+<<<<<<< HEAD
 static const struct pci_device_id r82600_pci_tbl[] __devinitdata = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(r82600_pci_tbl) = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	{
 	 PCI_DEVICE(PCI_VENDOR_ID_RADISYS, R82600_BRIDGE_ID)
 	 },

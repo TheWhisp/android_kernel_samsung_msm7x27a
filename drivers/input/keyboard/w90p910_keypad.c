@@ -203,7 +203,11 @@ static int __devinit w90p910_keypad_probe(struct platform_device *pdev)
 				   input_dev->keycode, input_dev->keybit);
 
 	error = request_irq(keypad->irq, w90p910_keypad_irq_handler,
+<<<<<<< HEAD
 			    IRQF_DISABLED, pdev->name, keypad);
+=======
+			    0, pdev->name, keypad);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error) {
 		dev_err(&pdev->dev, "failed to request IRQ\n");
 		goto failed_put_clk;
@@ -262,6 +266,7 @@ static struct platform_driver w90p910_keypad_driver = {
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 
 static int __init w90p910_keypad_init(void)
 {
@@ -275,6 +280,9 @@ static void __exit w90p910_keypad_exit(void)
 
 module_init(w90p910_keypad_init);
 module_exit(w90p910_keypad_exit);
+=======
+module_platform_driver(w90p910_keypad_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
 MODULE_DESCRIPTION("w90p910 keypad driver");

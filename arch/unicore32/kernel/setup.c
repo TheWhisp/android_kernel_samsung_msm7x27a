@@ -37,6 +37,10 @@
 #include <asm/cacheflush.h>
 #include <asm/tlbflush.h>
 #include <asm/traps.h>
+<<<<<<< HEAD
+=======
+#include <asm/memblock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "setup.h"
 
@@ -64,7 +68,11 @@ static char default_command_line[COMMAND_LINE_SIZE] __initdata = CONFIG_CMDLINE;
  */
 static struct resource mem_res[] = {
 	{
+<<<<<<< HEAD
 		.name = "Kernel text",
+=======
+		.name = "Kernel code",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start = 0,
 		.end = 0,
 		.flags = IORESOURCE_MEM

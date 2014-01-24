@@ -11,6 +11,7 @@
 
 #include "orion5x.h"
 
+<<<<<<< HEAD
 #define pcibios_assign_all_busses()	1
 
 #define PCIBIOS_MIN_IO		0x00001000
@@ -18,4 +19,6 @@
 #define PCIMEM_BASE		ORION5X_PCIE_MEM_PHYS_BASE
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

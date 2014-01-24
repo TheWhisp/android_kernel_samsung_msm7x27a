@@ -52,22 +52,38 @@ static void get_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
 
 	cval = it->expires;
 	cinterval = it->incr;
+<<<<<<< HEAD
 	if (!cputime_eq(cval, cputime_zero)) {
+=======
+	if (cval) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct task_cputime cputime;
 		cputime_t t;
 
 		thread_group_cputimer(tsk, &cputime);
 		if (clock_id == CPUCLOCK_PROF)
+<<<<<<< HEAD
 			t = cputime_add(cputime.utime, cputime.stime);
+=======
+			t = cputime.utime + cputime.stime;
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			/* CPUCLOCK_VIRT */
 			t = cputime.utime;
 
+<<<<<<< HEAD
 		if (cputime_le(cval, t))
 			/* about to fire */
 			cval = cputime_one_jiffy;
 		else
 			cval = cputime_sub(cval, t);
+=======
+		if (cval < t)
+			/* about to fire */
+			cval = cputime_one_jiffy;
+		else
+			cval = cval - t;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	spin_unlock_irq(&tsk->sighand->siglock);
@@ -161,10 +177,16 @@ static void set_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
 
 	cval = it->expires;
 	cinterval = it->incr;
+<<<<<<< HEAD
 	if (!cputime_eq(cval, cputime_zero) ||
 	    !cputime_eq(nval, cputime_zero)) {
 		if (cputime_gt(nval, cputime_zero))
 			nval = cputime_add(nval, cputime_one_jiffy);
+=======
+	if (cval || nval) {
+		if (nval > 0)
+			nval += cputime_one_jiffy;
+>>>>>>> refs/remotes/origin/cm-10.0
 		set_process_cpu_timer(tsk, clock_id, &nval, &cval);
 	}
 	it->expires = nval;
@@ -285,8 +307,17 @@ SYSCALL_DEFINE3(setitimer, int, which, struct itimerval __user *, value,
 	if (value) {
 		if(copy_from_user(&set_buffer, value, sizeof(set_buffer)))
 			return -EFAULT;
+<<<<<<< HEAD
 	} else
 		memset((char *) &set_buffer, 0, sizeof(set_buffer));
+=======
+	} else {
+		memset(&set_buffer, 0, sizeof(set_buffer));
+		printk_once(KERN_WARNING "%s calls setitimer() with new_value NULL pointer."
+			    " Misfeature support will be removed\n",
+			    current->comm);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	error = do_setitimer(which, &set_buffer, ovalue ? &get_buffer : NULL);
 	if (error || !ovalue)

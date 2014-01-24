@@ -58,7 +58,11 @@ static int ulpi_poll(void __iomem *view, u32 bit)
 	return -ETIMEDOUT;
 }
 
+<<<<<<< HEAD
 static int ulpi_read(struct otg_transceiver *otg, u32 reg)
+=======
+static int ulpi_read(struct usb_phy *otg, u32 reg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 	void __iomem *view = otg->io_priv;
@@ -84,7 +88,11 @@ static int ulpi_read(struct otg_transceiver *otg, u32 reg)
 	return (__raw_readl(view) >> ULPIVW_RDATA_SHIFT) & ULPIVW_RDATA_MASK;
 }
 
+<<<<<<< HEAD
 static int ulpi_write(struct otg_transceiver *otg, u32 val, u32 reg)
+=======
+static int ulpi_write(struct usb_phy *otg, u32 val, u32 reg)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret;
 	void __iomem *view = otg->io_priv;
@@ -106,13 +114,21 @@ static int ulpi_write(struct otg_transceiver *otg, u32 val, u32 reg)
 	return ulpi_poll(view, ULPIVW_RUN);
 }
 
+<<<<<<< HEAD
 struct otg_io_access_ops mxc_ulpi_access_ops = {
+=======
+struct usb_phy_io_ops mxc_ulpi_access_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read	= ulpi_read,
 	.write	= ulpi_write,
 };
 EXPORT_SYMBOL_GPL(mxc_ulpi_access_ops);
 
+<<<<<<< HEAD
 struct otg_transceiver *imx_otg_ulpi_create(unsigned int flags)
+=======
+struct usb_phy *imx_otg_ulpi_create(unsigned int flags)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return otg_ulpi_create(&mxc_ulpi_access_ops, flags);
 }

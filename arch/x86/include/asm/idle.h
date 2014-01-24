@@ -7,6 +7,10 @@ void exit_idle(void);
 #else /* !CONFIG_X86_64 */
 static inline void enter_idle(void) { }
 static inline void exit_idle(void) { }
+<<<<<<< HEAD
+=======
+static inline void __exit_idle(void) { }
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_X86_64 */
 
 void amd_e400_remove_cpu(int cpu);

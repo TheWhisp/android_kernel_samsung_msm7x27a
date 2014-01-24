@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 [state: 17-04-2011]
+=======
+[state: 21-08-2011]
+>>>>>>> refs/remotes/origin/cm-10.0
 
 BATMAN-ADV
 ----------
@@ -68,9 +72,15 @@ All  mesh  wide  settings  can be found in batman's own interface
 folder:
 
 #  ls  /sys/class/net/bat0/mesh/
+<<<<<<< HEAD
 #  aggregated_ogms  gw_bandwidth  hop_penalty
 #  bonding          gw_mode       orig_interval
 #  fragmentation    gw_sel_class  vis_mode
+=======
+# aggregated_ogms   fragmentation gw_sel_class   vis_mode
+# ap_isolation      gw_bandwidth  hop_penalty
+# bonding           gw_mode       orig_interval
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 There is a special folder for debugging information:
@@ -200,15 +210,25 @@ abled  during run time. Following log_levels are defined:
 
 0 - All  debug  output  disabled
 1 - Enable messages related to routing / flooding / broadcasting
+<<<<<<< HEAD
 2 - Enable route or tt entry added / changed / deleted
 3 - Enable all messages
+=======
+2 - Enable messages related to route added / changed / deleted
+4 - Enable messages related to translation table operations
+7 - Enable all messages
+>>>>>>> refs/remotes/origin/cm-10.0
 
 The debug output can be changed at runtime  using  the  file
 /sys/class/net/bat0/mesh/log_level. e.g.
 
 # echo 2 > /sys/class/net/bat0/mesh/log_level
 
+<<<<<<< HEAD
 will enable debug messages for when routes or TTs change.
+=======
+will enable debug messages for when routes change.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 BATCTL

@@ -195,9 +195,15 @@
 		 * to cover the pipeline delay.
 		 */
 		.set	mips32
+<<<<<<< HEAD
 		mfc0	v1, CP0_TCSTATUS
 		.set	mips0
 		LONG_S	v1, PT_TCSTATUS(sp)
+=======
+		mfc0	k0, CP0_TCSTATUS
+		.set	mips0
+		LONG_S	k0, PT_TCSTATUS(sp)
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_MIPS_MT_SMTC */
 		LONG_S	$4, PT_R4(sp)
 		LONG_S	$5, PT_R5(sp)

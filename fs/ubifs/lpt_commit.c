@@ -27,6 +27,10 @@
 
 #include <linux/crc16.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/random.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ubifs.h"
 
 #ifdef CONFIG_UBIFS_FS_DEBUG
@@ -116,8 +120,13 @@ static int get_cnodes_to_commit(struct ubifs_info *c)
 		return 0;
 	cnt += 1;
 	while (1) {
+<<<<<<< HEAD
 		ubifs_assert(!test_bit(COW_ZNODE, &cnode->flags));
 		__set_bit(COW_ZNODE, &cnode->flags);
+=======
+		ubifs_assert(!test_bit(COW_CNODE, &cnode->flags));
+		__set_bit(COW_CNODE, &cnode->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		cnext = next_dirty_cnode(cnode);
 		if (!cnext) {
 			cnode->cnext = c->lpt_cnext;
@@ -465,7 +474,11 @@ static int write_cnodes(struct ubifs_info *c)
 		 */
 		clear_bit(DIRTY_CNODE, &cnode->flags);
 		smp_mb__before_clear_bit();
+<<<<<<< HEAD
 		clear_bit(COW_ZNODE, &cnode->flags);
+=======
+		clear_bit(COW_CNODE, &cnode->flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 		smp_mb__after_clear_bit();
 		offs += len;
 		dbg_chk_lpt_sz(c, 1, len);
@@ -1160,11 +1173,19 @@ static int lpt_gc_lnum(struct ubifs_info *c, int lnum)
 	void *buf = c->lpt_buf;
 
 	dbg_lp("LEB %d", lnum);
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
 	if (err) {
 		ubifs_err("cannot read LEB %d, error %d", lnum, err);
 		return err;
 	}
+=======
+
+	err = ubifs_leb_read(c, lnum, buf, 0, c->leb_size, 1);
+	if (err)
+		return err;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (1) {
 		if (!is_a_node(c, buf, len)) {
 			int pad_len;
@@ -1640,7 +1661,11 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
 	int ret;
 	void *buf, *p;
 
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	buf = p = __vmalloc(c->leb_size, GFP_NOFS, PAGE_KERNEL);
@@ -1650,11 +1675,19 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
 	}
 
 	dbg_lp("LEB %d", lnum);
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
 	if (err) {
 		dbg_msg("ubi_read failed, LEB %d, error %d", lnum, err);
 		goto out;
 	}
+=======
+
+	err = ubifs_leb_read(c, lnum, buf, 0, c->leb_size, 1);
+	if (err)
+		goto out;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (1) {
 		if (!is_a_node(c, p, len)) {
 			int i, pad_len;
@@ -1711,7 +1744,11 @@ int dbg_check_ltab(struct ubifs_info *c)
 {
 	int lnum, err, i, cnt;
 
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	/* Bring the entire tree into memory */
@@ -1754,7 +1791,11 @@ int dbg_chk_lpt_free_spc(struct ubifs_info *c)
 	long long free = 0;
 	int i;
 
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	for (i = 0; i < c->lpt_lebs; i++) {
@@ -1796,7 +1837,11 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
 	long long chk_lpt_sz, lpt_sz;
 	int err = 0;
 
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	switch (action) {
@@ -1901,11 +1946,18 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
 		return;
 	}
 
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
 	if (err) {
 		ubifs_err("cannot read LEB %d, error %d", lnum, err);
 		goto out;
 	}
+=======
+	err = ubifs_leb_read(c, lnum, buf, 0, c->leb_size, 1);
+	if (err)
+		goto out;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	while (1) {
 		offs = c->leb_size - len;
 		if (!is_a_node(c, p, len)) {
@@ -2019,7 +2071,11 @@ static int dbg_populate_lsave(struct ubifs_info *c)
 	struct ubifs_lpt_heap *heap;
 	int i;
 
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_GEN))
+=======
+	if (!dbg_is_chk_gen(c))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 	if (random32() & 3)
 		return 0;

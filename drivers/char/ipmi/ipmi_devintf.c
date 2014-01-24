@@ -34,7 +34,10 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/poll.h>
 #include <linux/sched.h>
 #include <linux/spinlock.h>

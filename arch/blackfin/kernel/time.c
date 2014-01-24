@@ -25,7 +25,10 @@
 
 static struct irqaction bfin_timer_irq = {
 	.name = "Blackfin Timer Tick",
+<<<<<<< HEAD
 	.flags = IRQF_DISABLED
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_IPIPE)
@@ -51,7 +54,11 @@ void __init setup_core_timer(void)
 	u32 tcount;
 
 	/* power up the timer, but don't enable it just yet */
+<<<<<<< HEAD
 	bfin_write_TCNTL(1);
+=======
+	bfin_write_TCNTL(TMPWR);
+>>>>>>> refs/remotes/origin/cm-10.0
 	CSYNC();
 
 	/* the TSCALE prescaler counter */
@@ -64,7 +71,11 @@ void __init setup_core_timer(void)
 	/* now enable the timer */
 	CSYNC();
 
+<<<<<<< HEAD
 	bfin_write_TCNTL(7);
+=======
+	bfin_write_TCNTL(TAUTORLD | TMREN | TMPWR);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 

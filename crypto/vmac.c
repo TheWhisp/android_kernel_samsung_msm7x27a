@@ -27,6 +27,10 @@
 #include <linux/init.h>
 #include <linux/types.h>
 #include <linux/crypto.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/scatterlist.h>
 #include <asm/byteorder.h>
 #include <crypto/scatterwalk.h>

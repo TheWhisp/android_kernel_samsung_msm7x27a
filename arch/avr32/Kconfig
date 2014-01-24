@@ -11,6 +11,10 @@ config AVR32
 	select GENERIC_ATOMIC64
 	select HARDIRQS_SW_RESEND
 	select GENERIC_IRQ_SHOW
+<<<<<<< HEAD
+=======
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  AVR32 is a high-performance 32-bit RISC microprocessor core,
 	  designed for cost-sensitive embedded applications, with particular

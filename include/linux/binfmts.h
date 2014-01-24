@@ -18,7 +18,11 @@ struct pt_regs;
 #define BINPRM_BUF_SIZE 128
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
 #include <linux/list.h>
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define CORENAME_MAX_SIZE 128
 
@@ -58,6 +62,10 @@ struct linux_binprm {
 	unsigned interp_flags;
 	unsigned interp_data;
 	unsigned long loader, exec;
+<<<<<<< HEAD
+=======
+	char tcomm[TASK_COMM_LEN];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define BINPRM_FLAGS_ENFORCE_NONDUMP_BIT 0
@@ -89,6 +97,7 @@ struct linux_binfmt {
 	unsigned long min_coredump;	/* minimal dump size */
 };
 
+<<<<<<< HEAD
 extern int __register_binfmt(struct linux_binfmt *fmt, int insert);
 
 /* Registration of default binfmt handlers */
@@ -100,6 +109,19 @@ static inline int register_binfmt(struct linux_binfmt *fmt)
 static inline int insert_binfmt(struct linux_binfmt *fmt)
 {
 	return __register_binfmt(fmt, 1);
+=======
+extern void __register_binfmt(struct linux_binfmt *fmt, int insert);
+
+/* Registration of default binfmt handlers */
+static inline void register_binfmt(struct linux_binfmt *fmt)
+{
+	__register_binfmt(fmt, 0);
+}
+/* Same as above, but adds a new binfmt at the top of the list */
+static inline void insert_binfmt(struct linux_binfmt *fmt)
+{
+	__register_binfmt(fmt, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 extern void unregister_binfmt(struct linux_binfmt *);
@@ -109,6 +131,10 @@ extern int __must_check remove_arg_zero(struct linux_binprm *);
 extern int search_binary_handler(struct linux_binprm *, struct pt_regs *);
 extern int flush_old_exec(struct linux_binprm * bprm);
 extern void setup_new_exec(struct linux_binprm * bprm);
+<<<<<<< HEAD
+=======
+extern void would_dump(struct linux_binprm *, struct file *);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int suid_dumpable;
 #define SUID_DUMP_DISABLE	0	/* No setuid dumping */

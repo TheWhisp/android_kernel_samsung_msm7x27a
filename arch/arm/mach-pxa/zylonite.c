@@ -24,7 +24,11 @@
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
+=======
+#include <mach/pxa3xx.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/audio.h>
 #include <mach/pxafb.h>
 #include <mach/zylonite.h>
@@ -366,8 +370,14 @@ static struct mtd_partition zylonite_nand_partitions[] = {
 
 static struct pxa3xx_nand_platform_data zylonite_nand_info = {
 	.enable_arbiter	= 1,
+<<<<<<< HEAD
 	.parts		= zylonite_nand_partitions,
 	.nr_parts	= ARRAY_SIZE(zylonite_nand_partitions),
+=======
+	.num_cs		= 1,
+	.parts[0]	= zylonite_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(zylonite_nand_partitions),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void __init zylonite_init_nand(void)
@@ -407,8 +417,13 @@ static void __init zylonite_init(void)
 	 * Note: We depend that the bootloader set
 	 * the correct value to MSC register for SMC91x.
 	 */
+<<<<<<< HEAD
 	smc91x_resources[1].start = gpio_to_irq(gpio_eth_irq);
 	smc91x_resources[1].end   = gpio_to_irq(gpio_eth_irq);
+=======
+	smc91x_resources[1].start = PXA_GPIO_TO_IRQ(gpio_eth_irq);
+	smc91x_resources[1].end   = PXA_GPIO_TO_IRQ(gpio_eth_irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 	platform_device_register(&smc91x_device);
 
 	pxa_set_ac97_info(NULL);
@@ -422,10 +437,21 @@ static void __init zylonite_init(void)
 }
 
 MACHINE_START(ZYLONITE, "PXA3xx Platform Development Kit (aka Zylonite)")
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= pxa3xx_map_io,
 	.nr_irqs	= ZYLONITE_NR_IRQS,
 	.init_irq	= pxa3xx_init_irq,
 	.timer		= &pxa_timer,
 	.init_machine	= zylonite_init,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= pxa3xx_map_io,
+	.nr_irqs	= ZYLONITE_NR_IRQS,
+	.init_irq	= pxa3xx_init_irq,
+	.handle_irq	= pxa3xx_handle_irq,
+	.timer		= &pxa_timer,
+	.init_machine	= zylonite_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

@@ -56,8 +56,12 @@ static struct map_desc p720t_io_desc[] __initdata = {
 };
 
 static void __init
+<<<<<<< HEAD
 fixup_p720t(struct machine_desc *desc, struct tag *tag,
 	    char **cmdline, struct meminfo *mi)
+=======
+fixup_p720t(struct tag *tag, char **cmdline, struct meminfo *mi)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	/*
 	 * Our bootloader doesn't setup any tags (yet).
@@ -89,11 +93,19 @@ static void __init p720t_map_io(void)
 
 MACHINE_START(P720T, "ARM-Prospector720T")
 	/* Maintainer: ARM Ltd/Deep Blue Solutions Ltd */
+<<<<<<< HEAD
 	.boot_params	= 0xc0000100,
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.fixup		= fixup_p720t,
 	.map_io		= p720t_map_io,
 	.init_irq	= clps711x_init_irq,
 	.timer		= &clps711x_timer,
+<<<<<<< HEAD
+=======
+	.restart	= clps711x_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
 
 static int p720t_hw_init(void)

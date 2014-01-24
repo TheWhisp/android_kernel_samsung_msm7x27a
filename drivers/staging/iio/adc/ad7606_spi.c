@@ -59,7 +59,11 @@ static int __devexit ad7606_spi_remove(struct spi_device *spi)
 {
 	struct iio_dev *indio_dev = dev_get_drvdata(&spi->dev);
 
+<<<<<<< HEAD
 	return ad7606_remove(indio_dev);
+=======
+	return ad7606_remove(indio_dev, spi->irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_PM
@@ -97,11 +101,18 @@ static const struct spi_device_id ad7606_id[] = {
 	{"ad7606-4", ID_AD7606_4},
 	{}
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(spi, ad7606_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct spi_driver ad7606_driver = {
 	.driver = {
 		.name = "ad7606",
+<<<<<<< HEAD
 		.bus = &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 		.pm    = AD7606_SPI_PM_OPS,
 	},
@@ -109,6 +120,7 @@ static struct spi_driver ad7606_driver = {
 	.remove = __devexit_p(ad7606_spi_remove),
 	.id_table = ad7606_id,
 };
+<<<<<<< HEAD
 
 static int __init ad7606_spi_init(void)
 {
@@ -121,8 +133,14 @@ static void __exit ad7606_spi_exit(void)
 	spi_unregister_driver(&ad7606_driver);
 }
 module_exit(ad7606_spi_exit);
+=======
+module_spi_driver(ad7606_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("Analog Devices AD7606 ADC");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 MODULE_ALIAS("spi:ad7606_spi");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

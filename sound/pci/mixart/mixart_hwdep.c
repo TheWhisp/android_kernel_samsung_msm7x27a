@@ -25,6 +25,10 @@
 #include <linux/firmware.h>
 #include <linux/vmalloc.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <sound/core.h>
 #include "mixart.h"

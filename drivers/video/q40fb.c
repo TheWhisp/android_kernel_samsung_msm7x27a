@@ -20,7 +20,10 @@
 
 #include <asm/uaccess.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/q40_master.h>
 #include <linux/fb.h>
 #include <linux/module.h>

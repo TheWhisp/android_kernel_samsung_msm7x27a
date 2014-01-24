@@ -18,20 +18,34 @@
  * This is very simple driver.
  * It can use headphone output / stereo input only
  *
+<<<<<<< HEAD
  * AK4642 is not tested.
  * AK4643 is tested.
+=======
+ * AK4642 is tested.
+ * AK4643 is tested.
+ * AK4648 is tested.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/delay.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+=======
+#include <linux/slab.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/soc.h>
 #include <sound/initval.h>
 #include <sound/tlv.h>
 
+<<<<<<< HEAD
 #define AK4642_VERSION "0.0.1"
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PW_MGMT1	0x00
 #define PW_MGMT2	0x01
 #define SG_SL1		0x02
@@ -70,8 +84,11 @@
 #define HP_MS		0x23
 #define SPK_MS		0x24
 
+<<<<<<< HEAD
 #define AK4642_CACHEREGNUM 	0x25
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* PW_MGMT1*/
 #define PMVCM		(1 << 6) /* VCOM Power Management */
 #define PMMIN		(1 << 5) /* MIN Input Power Management */
@@ -151,18 +168,73 @@ static const struct snd_kcontrol_new ak4642_snd_controls[] = {
 			 0, 0xFF, 1, out_tlv),
 };
 
+<<<<<<< HEAD
+=======
+static const struct snd_kcontrol_new ak4642_headphone_control =
+	SOC_DAPM_SINGLE("Switch", PW_MGMT2, 6, 1, 0);
+
+static const struct snd_kcontrol_new ak4642_lout_mixer_controls[] = {
+	SOC_DAPM_SINGLE("DACL", SG_SL1, 4, 1, 0),
+};
+
+static const struct snd_soc_dapm_widget ak4642_dapm_widgets[] = {
+
+	/* Outputs */
+	SND_SOC_DAPM_OUTPUT("HPOUTL"),
+	SND_SOC_DAPM_OUTPUT("HPOUTR"),
+	SND_SOC_DAPM_OUTPUT("LINEOUT"),
+
+	SND_SOC_DAPM_PGA("HPL Out", PW_MGMT2, 5, 0, NULL, 0),
+	SND_SOC_DAPM_PGA("HPR Out", PW_MGMT2, 4, 0, NULL, 0),
+	SND_SOC_DAPM_SWITCH("Headphone Enable", SND_SOC_NOPM, 0, 0,
+			    &ak4642_headphone_control),
+
+	SND_SOC_DAPM_PGA("DACH", MD_CTL4, 0, 0, NULL, 0),
+
+	SND_SOC_DAPM_MIXER("LINEOUT Mixer", PW_MGMT1, 3, 0,
+			   &ak4642_lout_mixer_controls[0],
+			   ARRAY_SIZE(ak4642_lout_mixer_controls)),
+
+	/* DAC */
+	SND_SOC_DAPM_DAC("DAC", "HiFi Playback", PW_MGMT1, 2, 0),
+};
+
+static const struct snd_soc_dapm_route ak4642_intercon[] = {
+
+	/* Outputs */
+	{"HPOUTL", NULL, "HPL Out"},
+	{"HPOUTR", NULL, "HPR Out"},
+	{"LINEOUT", NULL, "LINEOUT Mixer"},
+
+	{"HPL Out", NULL, "Headphone Enable"},
+	{"HPR Out", NULL, "Headphone Enable"},
+
+	{"Headphone Enable", "Switch", "DACH"},
+
+	{"DACH", NULL, "DAC"},
+
+	{"LINEOUT Mixer", "DACL", "DAC"},
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* codec private data */
 struct ak4642_priv {
 	unsigned int sysclk;
 	enum snd_soc_control_type control_type;
+<<<<<<< HEAD
 	void *control_data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
  * ak4642 register cache
  */
+<<<<<<< HEAD
 static const u8 ak4642_reg[AK4642_CACHEREGNUM] = {
+=======
+static const u8 ak4642_reg[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	0x00, 0x00, 0x01, 0x00,
 	0x02, 0x00, 0x00, 0x00,
 	0xe1, 0xe1, 0x18, 0x00,
@@ -175,6 +247,7 @@ static const u8 ak4642_reg[AK4642_CACHEREGNUM] = {
 	0x00,
 };
 
+<<<<<<< HEAD
 /*
  * read ak4642 register cache
  */
@@ -231,6 +304,19 @@ static int ak4642_sync(struct snd_soc_codec *codec)
 		r |= ak4642_write(codec, i, cache[i]);
 
 	return r;
+=======
+static const u8 ak4648_reg[] = {
+	0x00, 0x00, 0x01, 0x00,
+	0x02, 0x00, 0x00, 0x00,
+	0xe1, 0xe1, 0x18, 0x00,
+	0xe1, 0x18, 0x11, 0xb8,
+	0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00,
+	0x00, 0x88, 0x88, 0x08,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int ak4642_dai_startup(struct snd_pcm_substream *substream,
@@ -250,6 +336,7 @@ static int ak4642_dai_startup(struct snd_pcm_substream *substream,
 		 * This operation came from example code of
 		 * "ASAHI KASEI AK4642" (japanese) manual p97.
 		 */
+<<<<<<< HEAD
 		snd_soc_update_bits(codec, MD_CTL4, DACH, DACH);
 		snd_soc_update_bits(codec, MD_CTL3, BST1, BST1);
 		ak4642_write(codec, L_IVC, 0x91); /* volume */
@@ -258,6 +345,10 @@ static int ak4642_dai_startup(struct snd_pcm_substream *substream,
 						     PMVCM | PMMIN | PMDAC);
 		snd_soc_update_bits(codec, PW_MGMT2, PMHP_MASK,	PMHP);
 		snd_soc_update_bits(codec, PW_MGMT2, HPMTN,	HPMTN);
+=======
+		snd_soc_write(codec, L_IVC, 0x91); /* volume */
+		snd_soc_write(codec, R_IVC, 0x91); /* volume */
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		/*
 		 * start stereo input
@@ -272,11 +363,18 @@ static int ak4642_dai_startup(struct snd_pcm_substream *substream,
 		 * This operation came from example code of
 		 * "ASAHI KASEI AK4642" (japanese) manual p94.
 		 */
+<<<<<<< HEAD
 		ak4642_write(codec, SG_SL1, PMMP | MGAIN0);
 		ak4642_write(codec, TIMER, ZTM(0x3) | WTM(0x3));
 		ak4642_write(codec, ALC_CTL1, ALC | LMTH0);
 		snd_soc_update_bits(codec, PW_MGMT1, PMVCM | PMADL,
 						     PMVCM | PMADL);
+=======
+		snd_soc_write(codec, SG_SL1, PMMP | MGAIN0);
+		snd_soc_write(codec, TIMER, ZTM(0x3) | WTM(0x3));
+		snd_soc_write(codec, ALC_CTL1, ALC | LMTH0);
+		snd_soc_update_bits(codec, PW_MGMT1, PMADL, PMADL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_soc_update_bits(codec, PW_MGMT3, PMADR, PMADR);
 	}
 
@@ -290,12 +388,15 @@ static void ak4642_dai_shutdown(struct snd_pcm_substream *substream,
 	struct snd_soc_codec *codec = dai->codec;
 
 	if (is_play) {
+<<<<<<< HEAD
 		/* stop headphone output */
 		snd_soc_update_bits(codec, PW_MGMT2, HPMTN,	0);
 		snd_soc_update_bits(codec, PW_MGMT2, PMHP_MASK,	0);
 		snd_soc_update_bits(codec, PW_MGMT1, PMMIN | PMDAC, 0);
 		snd_soc_update_bits(codec, MD_CTL3, BST1, 0);
 		snd_soc_update_bits(codec, MD_CTL4, DACH, 0);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		/* stop stereo input */
 		snd_soc_update_bits(codec, PW_MGMT1, PMADL, 0);
@@ -434,7 +535,27 @@ static int ak4642_dai_hw_params(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops ak4642_dai_ops = {
+=======
+static int ak4642_set_bias_level(struct snd_soc_codec *codec,
+				 enum snd_soc_bias_level level)
+{
+	switch (level) {
+	case SND_SOC_BIAS_OFF:
+		snd_soc_write(codec, PW_MGMT1, 0x00);
+		break;
+	default:
+		snd_soc_update_bits(codec, PW_MGMT1, PMVCM, PMVCM);
+		break;
+	}
+	codec->dapm.bias_level = level;
+
+	return 0;
+}
+
+static const struct snd_soc_dai_ops ak4642_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.startup	= ak4642_dai_startup,
 	.shutdown	= ak4642_dai_shutdown,
 	.set_sysclk	= ak4642_dai_set_sysclk,
@@ -462,7 +583,11 @@ static struct snd_soc_dai_driver ak4642_dai = {
 
 static int ak4642_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	ak4642_sync(codec);
+=======
+	snd_soc_cache_sync(codec);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -470,6 +595,7 @@ static int ak4642_resume(struct snd_soc_codec *codec)
 static int ak4642_probe(struct snd_soc_codec *codec)
 {
 	struct ak4642_priv *ak4642 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 
 	dev_info(codec->dev, "AK4642 Audio Codec %s", AK4642_VERSION);
 
@@ -479,17 +605,65 @@ static int ak4642_probe(struct snd_soc_codec *codec)
 	snd_soc_add_controls(codec, ak4642_snd_controls,
 			     ARRAY_SIZE(ak4642_snd_controls));
 
+=======
+	int ret;
+
+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, ak4642->control_type);
+	if (ret < 0) {
+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+		return ret;
+	}
+
+	snd_soc_add_codec_controls(codec, ak4642_snd_controls,
+			     ARRAY_SIZE(ak4642_snd_controls));
+
+	ak4642_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+
+	return 0;
+}
+
+static int ak4642_remove(struct snd_soc_codec *codec)
+{
+	ak4642_set_bias_level(codec, SND_SOC_BIAS_OFF);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static struct snd_soc_codec_driver soc_codec_dev_ak4642 = {
 	.probe			= ak4642_probe,
+<<<<<<< HEAD
 	.resume			= ak4642_resume,
 	.read			= ak4642_read_reg_cache,
 	.write			= ak4642_write,
 	.reg_cache_size		= ARRAY_SIZE(ak4642_reg),
 	.reg_word_size		= sizeof(u8),
 	.reg_cache_default	= ak4642_reg,
+=======
+	.remove			= ak4642_remove,
+	.resume			= ak4642_resume,
+	.set_bias_level		= ak4642_set_bias_level,
+	.reg_cache_default	= ak4642_reg,			/* ak4642 reg */
+	.reg_cache_size		= ARRAY_SIZE(ak4642_reg),	/* ak4642 reg */
+	.reg_word_size		= sizeof(u8),
+	.dapm_widgets		= ak4642_dapm_widgets,
+	.num_dapm_widgets	= ARRAY_SIZE(ak4642_dapm_widgets),
+	.dapm_routes		= ak4642_intercon,
+	.num_dapm_routes	= ARRAY_SIZE(ak4642_intercon),
+};
+
+static struct snd_soc_codec_driver soc_codec_dev_ak4648 = {
+	.probe			= ak4642_probe,
+	.remove			= ak4642_remove,
+	.resume			= ak4642_resume,
+	.set_bias_level		= ak4642_set_bias_level,
+	.reg_cache_default	= ak4648_reg,			/* ak4648 reg */
+	.reg_cache_size		= ARRAY_SIZE(ak4648_reg),	/* ak4648 reg */
+	.reg_word_size		= sizeof(u8),
+	.dapm_widgets		= ak4642_dapm_widgets,
+	.num_dapm_widgets	= ARRAY_SIZE(ak4642_dapm_widgets),
+	.dapm_routes		= ak4642_intercon,
+	.num_dapm_routes	= ARRAY_SIZE(ak4642_intercon),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
@@ -499,11 +673,17 @@ static __devinit int ak4642_i2c_probe(struct i2c_client *i2c,
 	struct ak4642_priv *ak4642;
 	int ret;
 
+<<<<<<< HEAD
 	ak4642 = kzalloc(sizeof(struct ak4642_priv), GFP_KERNEL);
+=======
+	ak4642 = devm_kzalloc(&i2c->dev, sizeof(struct ak4642_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ak4642)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, ak4642);
+<<<<<<< HEAD
 	ak4642->control_data = i2c;
 	ak4642->control_type = SND_SOC_I2C;
 
@@ -511,19 +691,35 @@ static __devinit int ak4642_i2c_probe(struct i2c_client *i2c,
 			&soc_codec_dev_ak4642, &ak4642_dai, 1);
 	if (ret < 0)
 		kfree(ak4642);
+=======
+	ak4642->control_type = SND_SOC_I2C;
+
+	ret =  snd_soc_register_codec(&i2c->dev,
+				(struct snd_soc_codec_driver *)id->driver_data,
+				&ak4642_dai, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static __devexit int ak4642_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
+<<<<<<< HEAD
 	kfree(i2c_get_clientdata(client));
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static const struct i2c_device_id ak4642_i2c_id[] = {
+<<<<<<< HEAD
 	{ "ak4642", 0 },
 	{ "ak4643", 0 },
+=======
+	{ "ak4642", (kernel_ulong_t)&soc_codec_dev_ak4642 },
+	{ "ak4643", (kernel_ulong_t)&soc_codec_dev_ak4642 },
+	{ "ak4648", (kernel_ulong_t)&soc_codec_dev_ak4648 },
+>>>>>>> refs/remotes/origin/cm-10.0
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, ak4642_i2c_id);

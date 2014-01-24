@@ -35,7 +35,11 @@
 #include <linux/slab.h>
 
 #include <mach/hardware.h>	/* Pick up IXP2000-specific bits */
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#include <mach/gpio-ixp2000.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline int ixp2000_scl_pin(void *data)
 {
@@ -148,6 +152,7 @@ static struct platform_driver ixp2000_i2c_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init ixp2000_i2c_init(void)
 {
 	return platform_driver_register(&ixp2000_i2c_driver);
@@ -160,6 +165,9 @@ static void __exit ixp2000_i2c_exit(void)
 
 module_init(ixp2000_i2c_init);
 module_exit(ixp2000_i2c_exit);
+=======
+module_platform_driver(ixp2000_i2c_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR ("Deepak Saxena <dsaxena@plexity.net>");
 MODULE_DESCRIPTION("IXP2000 GPIO-based I2C bus driver");

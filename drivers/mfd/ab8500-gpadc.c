@@ -18,9 +18,15 @@
 #include <linux/err.h>
 #include <linux/slab.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/mfd/ab8500.h>
 #include <linux/mfd/abx500.h>
 #include <linux/mfd/ab8500/gpadc.h>
+=======
+#include <linux/mfd/abx500.h>
+#include <linux/mfd/abx500/ab8500.h>
+#include <linux/mfd/abx500/ab8500-gpadc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * GPADC register offsets
@@ -143,12 +149,23 @@ struct ab8500_gpadc *ab8500_gpadc_get(char *name)
 }
 EXPORT_SYMBOL(ab8500_gpadc_get);
 
+<<<<<<< HEAD
 static int ab8500_gpadc_ad_to_voltage(struct ab8500_gpadc *gpadc, u8 input,
+=======
+/**
+ * ab8500_gpadc_ad_to_voltage() - Convert a raw ADC value to a voltage
+ */
+int ab8500_gpadc_ad_to_voltage(struct ab8500_gpadc *gpadc, u8 channel,
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ad_value)
 {
 	int res;
 
+<<<<<<< HEAD
 	switch (input) {
+=======
+	switch (channel) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MAIN_CHARGER_V:
 		/* For some reason we don't have calibrated data */
 		if (!gpadc->cal_data[ADC_INPUT_VMAIN].gain) {
@@ -232,18 +249,60 @@ static int ab8500_gpadc_ad_to_voltage(struct ab8500_gpadc *gpadc, u8 input,
 	}
 	return res;
 }
+<<<<<<< HEAD
 
 /**
  * ab8500_gpadc_convert() - gpadc conversion
  * @input:	analog input to be converted to digital data
+=======
+EXPORT_SYMBOL(ab8500_gpadc_ad_to_voltage);
+
+/**
+ * ab8500_gpadc_convert() - gpadc conversion
+ * @channel:	analog channel to be converted to digital data
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This function converts the selected analog i/p to digital
  * data.
  */
+<<<<<<< HEAD
 int ab8500_gpadc_convert(struct ab8500_gpadc *gpadc, u8 input)
 {
 	int ret;
 	u16 data = 0;
+=======
+int ab8500_gpadc_convert(struct ab8500_gpadc *gpadc, u8 channel)
+{
+	int ad_value;
+	int voltage;
+
+	ad_value = ab8500_gpadc_read_raw(gpadc, channel);
+	if (ad_value < 0) {
+		dev_err(gpadc->dev, "GPADC raw value failed ch: %d\n", channel);
+		return ad_value;
+	}
+
+	voltage = ab8500_gpadc_ad_to_voltage(gpadc, channel, ad_value);
+
+	if (voltage < 0)
+		dev_err(gpadc->dev, "GPADC to voltage conversion failed ch:"
+			" %d AD: 0x%x\n", channel, ad_value);
+
+	return voltage;
+}
+EXPORT_SYMBOL(ab8500_gpadc_convert);
+
+/**
+ * ab8500_gpadc_read_raw() - gpadc read
+ * @channel:	analog channel to be read
+ *
+ * This function obtains the raw ADC value, this then needs
+ * to be converted by calling ab8500_gpadc_ad_to_voltage()
+ */
+int ab8500_gpadc_read_raw(struct ab8500_gpadc *gpadc, u8 channel)
+{
+	int ret;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int looplimit = 0;
 	u8 val, low_data, high_data;
 
@@ -278,9 +337,15 @@ int ab8500_gpadc_convert(struct ab8500_gpadc *gpadc, u8 input)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/* Select the input source and set average samples to 16 */
 	ret = abx500_set_register_interruptible(gpadc->dev, AB8500_GPADC,
 		AB8500_GPADC_CTRL2_REG, (input | SW_AVG_16));
+=======
+	/* Select the channel source and set average samples to 16 */
+	ret = abx500_set_register_interruptible(gpadc->dev, AB8500_GPADC,
+		AB8500_GPADC_CTRL2_REG, (channel | SW_AVG_16));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret < 0) {
 		dev_err(gpadc->dev,
 			"gpadc_conversion: set avg samples failed\n");
@@ -292,7 +357,11 @@ int ab8500_gpadc_convert(struct ab8500_gpadc *gpadc, u8 input)
 	 * charging current sense if it needed, ABB 3.0 needs some special
 	 * treatment too.
 	 */
+<<<<<<< HEAD
 	switch (input) {
+=======
+	switch (channel) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MAIN_CHARGER_C:
 	case USB_CHARGER_C:
 		ret = abx500_mask_and_set_register_interruptible(gpadc->dev,
@@ -359,7 +428,10 @@ int ab8500_gpadc_convert(struct ab8500_gpadc *gpadc, u8 input)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	data = (high_data << 8) | low_data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Disable GPADC */
 	ret = abx500_set_register_interruptible(gpadc->dev, AB8500_GPADC,
 		AB8500_GPADC_CTRL1_REG, DIS_GPADC);
@@ -370,8 +442,13 @@ int ab8500_gpadc_convert(struct ab8500_gpadc *gpadc, u8 input)
 	/* Disable VTVout LDO this is required for GPADC */
 	regulator_disable(gpadc->regu);
 	mutex_unlock(&gpadc->ab8500_gpadc_lock);
+<<<<<<< HEAD
 	ret = ab8500_gpadc_ad_to_voltage(gpadc, input, data);
 	return ret;
+=======
+
+	return (high_data << 8) | low_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	/*
@@ -385,10 +462,17 @@ out:
 	regulator_disable(gpadc->regu);
 	mutex_unlock(&gpadc->ab8500_gpadc_lock);
 	dev_err(gpadc->dev,
+<<<<<<< HEAD
 		"gpadc_conversion: Failed to AD convert channel %d\n", input);
 	return ret;
 }
 EXPORT_SYMBOL(ab8500_gpadc_convert);
+=======
+		"gpadc_conversion: Failed to AD convert channel %d\n", channel);
+	return ret;
+}
+EXPORT_SYMBOL(ab8500_gpadc_read_raw);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * ab8500_bm_gpswadcconvend_handler() - isr for s/w gpadc conversion completion

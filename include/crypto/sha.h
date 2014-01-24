@@ -82,4 +82,12 @@ struct sha512_state {
 	u8 buf[SHA512_BLOCK_SIZE];
 };
 
+<<<<<<< HEAD
+=======
+struct shash_desc;
+
+extern int crypto_sha1_update(struct shash_desc *desc, const u8 *data,
+			      unsigned int len);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

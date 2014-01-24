@@ -10,6 +10,10 @@
 #ifndef __LINUX_MDIO_H__
 #define __LINUX_MDIO_H__
 
+<<<<<<< HEAD
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mii.h>
 
 /* MDIO Manageable Devices (MMDs). */
@@ -273,6 +277,11 @@ static inline __u16 mdio_phy_id_c45(int prtad, int devad)
 	return MDIO_PHY_ID_C45 | (prtad << 5) | devad;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef __KERNEL__
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline bool mdio_phy_id_is_c45(int phy_id)
 {
 	return (phy_id & MDIO_PHY_ID_C45) && !(phy_id & ~MDIO_PHY_ID_C45_MASK);
@@ -288,11 +297,14 @@ static inline __u16 mdio_phy_id_devad(int phy_id)
 	return phy_id & MDIO_PHY_ID_DEVAD;
 }
 
+<<<<<<< HEAD
 #define MDIO_SUPPORTS_C22		1
 #define MDIO_SUPPORTS_C45		2
 
 #ifdef __KERNEL__ 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct mdio_if_info - Ethernet controller MDIO interface
  * @prtad: PRTAD of the PHY (%MDIO_PRTAD_NONE if not present/unknown)
@@ -321,6 +333,11 @@ struct mdio_if_info {
 
 #define MDIO_PRTAD_NONE			(-1)
 #define MDIO_DEVAD_NONE			(-1)
+<<<<<<< HEAD
+=======
+#define MDIO_SUPPORTS_C22		1
+#define MDIO_SUPPORTS_C45		2
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MDIO_EMULATE_C22		4
 
 struct ethtool_cmd;

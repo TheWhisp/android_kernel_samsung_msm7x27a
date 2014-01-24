@@ -44,7 +44,12 @@ static const struct dmi_system_id __initconst atk_force_new_if[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 /* Minimum time between readings, enforced in order to avoid
+=======
+/*
+ * Minimum time between readings, enforced in order to avoid
+>>>>>>> refs/remotes/origin/cm-10.0
  * hogging the CPU.
  */
 #define CACHE_TIME		HZ
@@ -167,7 +172,12 @@ struct atk_sensor_data {
 	char const *acpi_name;
 };
 
+<<<<<<< HEAD
 /* Return buffer format:
+=======
+/*
+ * Return buffer format:
+>>>>>>> refs/remotes/origin/cm-10.0
  * [0-3] "value" is valid flag
  * [4-7] value
  * [8- ] unknown stuff on newer mobos
@@ -316,7 +326,12 @@ static union acpi_object *atk_get_pack_member(struct atk_data *data,
 }
 
 
+<<<<<<< HEAD
 /* New package format is:
+=======
+/*
+ * New package format is:
+>>>>>>> refs/remotes/origin/cm-10.0
  * - flag (int)
  *	class - used for de-muxing the request to the correct GITn
  *	type (volt, temp, fan)
@@ -619,7 +634,12 @@ static int atk_read_value_new(struct atk_sensor_data *sensor, u64 *value)
 
 	buf = (struct atk_acpi_ret_buffer *)obj->buffer.pointer;
 	if (buf->flags == 0) {
+<<<<<<< HEAD
 		/* The reading is not valid, possible causes:
+=======
+		/*
+		 * The reading is not valid, possible causes:
+>>>>>>> refs/remotes/origin/cm-10.0
 		 * - sensor failure
 		 * - enumeration was FUBAR (and we didn't notice)
 		 */
@@ -1317,14 +1337,24 @@ static int atk_probe_if(struct atk_data *data)
 		dev_dbg(dev, "method " METHOD_WRITE " not found: %s\n",
 				 acpi_format_exception(status));
 
+<<<<<<< HEAD
 	/* Check for hwmon methods: first check "old" style methods; note that
+=======
+	/*
+	 * Check for hwmon methods: first check "old" style methods; note that
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * both may be present: in this case we stick to the old interface;
 	 * analysis of multiple DSDTs indicates that when both interfaces
 	 * are present the new one (GGRP/GITM) is not functional.
 	 */
 	if (new_if)
 		dev_info(dev, "Overriding interface detection\n");
+<<<<<<< HEAD
 	if (data->rtmp_handle && data->rvlt_handle && data->rfan_handle && !new_if)
+=======
+	if (data->rtmp_handle &&
+			data->rvlt_handle && data->rfan_handle && !new_if)
+>>>>>>> refs/remotes/origin/cm-10.0
 		data->old_interface = true;
 	else if (data->enumerate_handle && data->read_handle &&
 			data->write_handle)

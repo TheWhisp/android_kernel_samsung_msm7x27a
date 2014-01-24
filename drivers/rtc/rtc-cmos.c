@@ -164,7 +164,11 @@ static inline unsigned char cmos_read_bank2(unsigned char addr)
 static inline void cmos_write_bank2(unsigned char val, unsigned char addr)
 {
 	outb(addr, RTC_PORT(2));
+<<<<<<< HEAD
 	outb(val, RTC_PORT(2));
+=======
+	outb(val, RTC_PORT(3));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #else
@@ -606,7 +610,11 @@ cmos_do_probe(struct device *dev, struct resource *ports, int rtc_irq)
 	 * (needing ioremap etc), not i/o space resources like this ...
 	 */
 	ports = request_region(ports->start,
+<<<<<<< HEAD
 			ports->end + 1 - ports->start,
+=======
+			resource_size(ports),
+>>>>>>> refs/remotes/origin/cm-10.0
 			driver_name);
 	if (!ports) {
 		dev_dbg(dev, "i/o registers already in use\n");
@@ -714,7 +722,11 @@ cmos_do_probe(struct device *dev, struct resource *ports, int rtc_irq)
 			rtc_cmos_int_handler = cmos_interrupt;
 
 		retval = request_irq(rtc_irq, rtc_cmos_int_handler,
+<<<<<<< HEAD
 				IRQF_DISABLED, dev_name(&cmos_rtc.rtc->dev),
+=======
+				0, dev_name(&cmos_rtc.rtc->dev),
+>>>>>>> refs/remotes/origin/cm-10.0
 				cmos_rtc.rtc);
 		if (retval < 0) {
 			dev_dbg(dev, "IRQ %d is already in use\n", rtc_irq);
@@ -750,7 +762,11 @@ cleanup1:
 	cmos_rtc.dev = NULL;
 	rtc_device_unregister(cmos_rtc.rtc);
 cleanup0:
+<<<<<<< HEAD
 	release_region(ports->start, ports->end + 1 - ports->start);
+=======
+	release_region(ports->start, resource_size(ports));
+>>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
 
@@ -779,7 +795,11 @@ static void __exit cmos_do_remove(struct device *dev)
 	cmos->rtc = NULL;
 
 	ports = cmos->iomem;
+<<<<<<< HEAD
 	release_region(ports->start, ports->end + 1 - ports->start);
+=======
+	release_region(ports->start, resource_size(ports));
+>>>>>>> refs/remotes/origin/cm-10.0
 	cmos->iomem = NULL;
 
 	cmos->dev = NULL;

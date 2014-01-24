@@ -29,12 +29,30 @@
 
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
+=======
+#define ASUS_WMI_KEY_IGNORE (-1)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct module;
 struct key_entry;
 struct asus_wmi;
 
+<<<<<<< HEAD
 struct asus_wmi_driver {
 	bool			hotplug_wireless;
+=======
+struct quirk_entry {
+	bool hotplug_wireless;
+	bool scalar_panel_brightness;
+	bool store_backlight_power;
+	int wapf;
+};
+
+struct asus_wmi_driver {
+	int			brightness;
+	int			panel_power;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	const char		*name;
 	struct module		*owner;
@@ -44,9 +62,20 @@ struct asus_wmi_driver {
 	const struct key_entry	*keymap;
 	const char		*input_name;
 	const char		*input_phys;
+<<<<<<< HEAD
 
 	int (*probe) (struct platform_device *device);
 	void (*quirks) (struct asus_wmi_driver *driver);
+=======
+	struct quirk_entry	*quirks;
+	/* Returns new code, value, and autorelease values in arguments.
+	 * Return ASUS_WMI_KEY_IGNORE in code if event should be ignored. */
+	void (*key_filter) (struct asus_wmi_driver *driver, int *code,
+			    unsigned int *value, bool *autorelease);
+
+	int (*probe) (struct platform_device *device);
+	void (*detect_quirks) (struct asus_wmi_driver *driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct platform_driver	platform_driver;
 	struct platform_device *platform_device;

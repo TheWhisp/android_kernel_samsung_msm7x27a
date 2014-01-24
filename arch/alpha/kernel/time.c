@@ -46,7 +46,10 @@
 #include <asm/uaccess.h>
 #include <asm/io.h>
 #include <asm/hwrpb.h>
+<<<<<<< HEAD
 #include <asm/8253pit.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/rtc.h>
 
 #include <linux/mc146818rtc.h>

@@ -30,7 +30,10 @@
 #include <asm/io.h>
 #include <asm/processor.h>
 #include <asm/reboot.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PMU_TYPE1_BASE	0x0b0000a0UL
 #define PMU_TYPE1_SIZE	0x0eUL

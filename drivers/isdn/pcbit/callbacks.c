@@ -2,16 +2,27 @@
  * Callbacks for the FSM
  *
  * Copyright (C) 1996 Universidade de Lisboa
+<<<<<<< HEAD
  * 
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of 
+=======
+ *
+ * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
+ *
+ * This software may be used and distributed according to the terms of
+>>>>>>> refs/remotes/origin/cm-10.0
  * the GNU General Public License, incorporated herein by reference.
  */
 
 /*
  * Fix: 19981230 - Carlos Morgado <chbm@techie.com>
+<<<<<<< HEAD
  * Port of Nelson Escravana's <nelson.escravana@usa.net> fix to CalledPN 
+=======
+ * Port of Nelson Escravana's <nelson.escravana@usa.net> fix to CalledPN
+>>>>>>> refs/remotes/origin/cm-10.0
  * NULL pointer dereference in cb_in_1 (originally fixed in 2.0)
  */
 
@@ -39,6 +50,7 @@ ushort last_ref_num = 1;
  *
  */
 
+<<<<<<< HEAD
 void cb_out_1(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	      struct callb_data *cbdata) 
 {
@@ -72,12 +84,48 @@ void cb_out_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
         chan->s_refnum = refnum;
 
         pcbit_l2_write(dev, MSG_CONN_REQ, refnum, skb, len);
+=======
+void cb_out_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	      struct callb_data *cbdata)
+{
+	struct sk_buff *skb;
+	int len;
+	ushort refnum;
+
+
+#ifdef DEBUG
+	printk(KERN_DEBUG "Called Party Number: %s\n",
+	       cbdata->data.setup.CalledPN);
+#endif
+	/*
+	 * hdr - kmalloc in capi_conn_req
+	 *     - kfree   when msg has been sent
+	 */
+
+	if ((len = capi_conn_req(cbdata->data.setup.CalledPN, &skb,
+				 chan->proto)) < 0)
+	{
+		printk("capi_conn_req failed\n");
+		return;
+	}
+
+
+	refnum = last_ref_num++ & 0x7fffU;
+
+	chan->callref = 0;
+	chan->layer2link = 0;
+	chan->snum = 0;
+	chan->s_refnum = refnum;
+
+	pcbit_l2_write(dev, MSG_CONN_REQ, refnum, skb, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
  *  rcv CONNECT
  *  will go into ACTIVE state
  *  send CONN_ACTIVE_RESP
+<<<<<<< HEAD
  *  send Select protocol request 
  */
 
@@ -119,6 +167,49 @@ void cb_out_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
         chan->s_refnum = refnum;
 
         pcbit_l2_write(dev, MSG_SELP_REQ, refnum, skb, len);
+=======
+ *  send Select protocol request
+ */
+
+void cb_out_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	      struct callb_data *data)
+{
+	isdn_ctrl ictl;
+	struct sk_buff *skb;
+	int len;
+	ushort refnum;
+
+	if ((len = capi_conn_active_resp(chan, &skb)) < 0)
+	{
+		printk("capi_conn_active_req failed\n");
+		return;
+	}
+
+	refnum = last_ref_num++ & 0x7fffU;
+	chan->s_refnum = refnum;
+
+	pcbit_l2_write(dev, MSG_CONN_ACTV_RESP, refnum, skb, len);
+
+
+	ictl.command = ISDN_STAT_DCONN;
+	ictl.driver = dev->id;
+	ictl.arg = chan->id;
+	dev->dev_if->statcallb(&ictl);
+
+	/* ACTIVE D-channel */
+
+	/* Select protocol  */
+
+	if ((len = capi_select_proto_req(chan, &skb, 1 /*outgoing*/)) < 0) {
+		printk("capi_select_proto_req failed\n");
+		return;
+	}
+
+	refnum = last_ref_num++ & 0x7fffU;
+	chan->s_refnum = refnum;
+
+	pcbit_l2_write(dev, MSG_SELP_REQ, refnum, skb, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -127,6 +218,7 @@ void cb_out_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
  * inform user
  */
 
+<<<<<<< HEAD
 void cb_in_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
 	     struct callb_data *cbdata) 
 {
@@ -143,6 +235,24 @@ void cb_in_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
         /*
          *  ictl.num >= strlen() + strlen() + 5
          */
+=======
+void cb_in_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	     struct callb_data *cbdata)
+{
+	isdn_ctrl ictl;
+	unsigned short refnum;
+	struct sk_buff *skb;
+	int len;
+
+
+	ictl.command = ISDN_STAT_ICALL;
+	ictl.driver = dev->id;
+	ictl.arg = chan->id;
+
+	/*
+	 *  ictl.num >= strlen() + strlen() + 5
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (cbdata->data.setup.CallingPN == NULL) {
 		printk(KERN_DEBUG "NULL CallingPN to phone; using 0\n");
@@ -167,6 +277,7 @@ void cb_in_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
 	printk(KERN_DEBUG "statstr: %s\n", ictl.num);
 #endif
 
+<<<<<<< HEAD
         dev->dev_if->statcallb(&ictl);
 
         
@@ -179,6 +290,20 @@ void cb_in_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
         chan->s_refnum = refnum;
 
         pcbit_l2_write(dev, MSG_CONN_RESP, refnum, skb, len);
+=======
+	dev->dev_if->statcallb(&ictl);
+
+
+	if ((len = capi_conn_resp(chan, &skb)) < 0) {
+		printk(KERN_DEBUG "capi_conn_resp failed\n");
+		return;
+	}
+
+	refnum = last_ref_num++ & 0x7fffU;
+	chan->s_refnum = refnum;
+
+	pcbit_l2_write(dev, MSG_CONN_RESP, refnum, skb, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -187,6 +312,7 @@ void cb_in_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
  * send CONNECT message CONNECT_ACTIVE_REQ in CAPI
  */
 
+<<<<<<< HEAD
 void cb_in_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
 	     struct callb_data *data)
 {
@@ -205,6 +331,26 @@ void cb_in_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
 	printk(KERN_DEBUG "sending MSG_CONN_ACTV_REQ\n");
         pcbit_l2_write(dev, MSG_CONN_ACTV_REQ, refnum, skb, len);
+=======
+void cb_in_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	     struct callb_data *data)
+{
+	unsigned short refnum;
+	struct sk_buff *skb;
+	int len;
+
+	if ((len = capi_conn_active_req(chan, &skb)) < 0) {
+		printk(KERN_DEBUG "capi_conn_active_req failed\n");
+		return;
+	}
+
+
+	refnum = last_ref_num++ & 0x7fffU;
+	chan->s_refnum = refnum;
+
+	printk(KERN_DEBUG "sending MSG_CONN_ACTV_REQ\n");
+	pcbit_l2_write(dev, MSG_CONN_ACTV_REQ, refnum, skb, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -213,6 +359,7 @@ void cb_in_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
  *
  */
 
+<<<<<<< HEAD
 void cb_in_3(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	     struct callb_data *data)
 {
@@ -230,6 +377,25 @@ void cb_in_3(struct pcbit_dev * dev, struct pcbit_chan* chan,
         chan->s_refnum = refnum;
 
         pcbit_l2_write(dev, MSG_SELP_REQ, refnum, skb, len);
+=======
+void cb_in_3(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	     struct callb_data *data)
+{
+	unsigned short refnum;
+	struct sk_buff *skb;
+	int len;
+
+	if ((len = capi_select_proto_req(chan, &skb, 0 /*incoming*/)) < 0)
+	{
+		printk("capi_select_proto_req failed\n");
+		return;
+	}
+
+	refnum = last_ref_num++ & 0x7fffU;
+	chan->s_refnum = refnum;
+
+	pcbit_l2_write(dev, MSG_SELP_REQ, refnum, skb, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 }
 
@@ -239,6 +405,7 @@ void cb_in_3(struct pcbit_dev * dev, struct pcbit_chan* chan,
  * send disconnect resp
  * send msg to user
  */
+<<<<<<< HEAD
 void cb_disc_1(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	       struct callb_data *data)
 {
@@ -264,10 +431,38 @@ void cb_disc_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
 }
 
         
+=======
+void cb_disc_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	       struct callb_data *data)
+{
+	struct sk_buff *skb;
+	int len;
+	ushort refnum;
+	isdn_ctrl ictl;
+
+	if ((len = capi_disc_resp(chan, &skb)) < 0) {
+		printk("capi_disc_resp failed\n");
+		return;
+	}
+
+	refnum = last_ref_num++ & 0x7fffU;
+	chan->s_refnum = refnum;
+
+	pcbit_l2_write(dev, MSG_DISC_RESP, refnum, skb, len);
+
+	ictl.command = ISDN_STAT_BHUP;
+	ictl.driver = dev->id;
+	ictl.arg = chan->id;
+	dev->dev_if->statcallb(&ictl);
+}
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *  User HANGUP on active/call proceeding state
  *  send disc.req
  */
+<<<<<<< HEAD
 void cb_disc_2(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	       struct callb_data *data)
 {
@@ -285,6 +480,25 @@ void cb_disc_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
         chan->s_refnum = refnum;
 
         pcbit_l2_write(dev, MSG_DISC_REQ, refnum, skb, len);  
+=======
+void cb_disc_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	       struct callb_data *data)
+{
+	struct sk_buff *skb;
+	int len;
+	ushort refnum;
+
+	if ((len = capi_disc_req(chan->callref, &skb, CAUSE_NORMAL)) < 0)
+	{
+		printk("capi_disc_req failed\n");
+		return;
+	}
+
+	refnum = last_ref_num++ & 0x7fffU;
+	chan->s_refnum = refnum;
+
+	pcbit_l2_write(dev, MSG_DISC_REQ, refnum, skb, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -292,6 +506,7 @@ void cb_disc_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
  *  Problem: when the HL driver sends the disc req itself
  *           LL receives BHUP
  */
+<<<<<<< HEAD
 void cb_disc_3(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	       struct callb_data *data)
 {
@@ -304,6 +519,20 @@ void cb_disc_3(struct pcbit_dev * dev, struct pcbit_chan* chan,
 }
 
 void cb_notdone(struct pcbit_dev * dev, struct pcbit_chan* chan, 
+=======
+void cb_disc_3(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	       struct callb_data *data)
+{
+	isdn_ctrl ictl;
+
+	ictl.command = ISDN_STAT_BHUP;
+	ictl.driver = dev->id;
+	ictl.arg = chan->id;
+	dev->dev_if->statcallb(&ictl);
+}
+
+void cb_notdone(struct pcbit_dev *dev, struct pcbit_chan *chan,
+>>>>>>> refs/remotes/origin/cm-10.0
 		struct callb_data *data)
 {
 }
@@ -311,6 +540,7 @@ void cb_notdone(struct pcbit_dev * dev, struct pcbit_chan* chan,
 /*
  * send activate b-chan protocol
  */
+<<<<<<< HEAD
 void cb_selp_1(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	       struct callb_data *data) 
 {
@@ -328,11 +558,31 @@ void cb_selp_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
         chan->s_refnum = refnum;
 
         pcbit_l2_write(dev, MSG_ACT_TRANSP_REQ, refnum, skb, len);
+=======
+void cb_selp_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	       struct callb_data *data)
+{
+	struct sk_buff *skb;
+	int len;
+	ushort refnum;
+
+	if ((len = capi_activate_transp_req(chan, &skb)) < 0)
+	{
+		printk("capi_conn_activate_transp_req failed\n");
+		return;
+	}
+
+	refnum = last_ref_num++ & 0x7fffU;
+	chan->s_refnum = refnum;
+
+	pcbit_l2_write(dev, MSG_ACT_TRANSP_REQ, refnum, skb, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
  *  Inform User that the B-channel is available
  */
+<<<<<<< HEAD
 void cb_open(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	     struct callb_data *data) 
 {
@@ -346,3 +596,15 @@ void cb_open(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
 
 
+=======
+void cb_open(struct pcbit_dev *dev, struct pcbit_chan *chan,
+	     struct callb_data *data)
+{
+	isdn_ctrl ictl;
+
+	ictl.command = ISDN_STAT_BCONN;
+	ictl.driver = dev->id;
+	ictl.arg = chan->id;
+	dev->dev_if->statcallb(&ictl);
+}
+>>>>>>> refs/remotes/origin/cm-10.0

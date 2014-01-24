@@ -55,10 +55,13 @@ config TOUCHSCREEN_AD7877
 	  To compile this driver as a module, choose M here: the
 	  module will be called ad7877.
 
+<<<<<<< HEAD
 config TOUCHSCREEN_AD7879
 	tristate
 	default n
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_ATMEL_MAXTOUCH
        tristate "Atmel maXTouch based touchscreens"
        depends on I2C
@@ -114,6 +117,22 @@ config TOUCHSCREEN_ATMEL_MXT
 	  To compile this driver as a module, choose M here: the
 	  module will be called atmel_mxt_ts.
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_AUO_PIXCIR
+	tristate "AUO in-cell touchscreen using Pixcir ICs"
+	depends on I2C
+	depends on GPIOLIB
+	help
+	  Say Y here if you have a AUO display with in-cell touchscreen
+	  using Pixcir ICs.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called auo-pixcir-ts.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_BITSY
 	tristate "Compaq iPAQ H3600 (Bitsy) touchscreen"
 	depends on SA1100_BITSY
@@ -142,7 +161,10 @@ config TOUCHSCREEN_CY8CTMG110
 	tristate "cy8ctmg110 touchscreen"
 	depends on I2C
 	depends on GPIOLIB
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Say Y here if you have a cy8ctmg110 capacitive touchscreen on
 	  an AAVA device.
@@ -152,6 +174,40 @@ config TOUCHSCREEN_CY8CTMG110
 	  To compile this driver as a module, choose M here: the
 	  module will be called cy8ctmg110_ts.
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_CYTTSP_CORE
+	tristate "Cypress TTSP touchscreen"
+	help
+	  Say Y here if you have a touchscreen using controller from
+	  the Cypress TrueTouch(tm) Standard Product family connected
+	  to your system. You will also need to select appropriate
+	  bus connection below.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cyttsp_core.
+
+config TOUCHSCREEN_CYTTSP_I2C
+	tristate "support I2C bus connection"
+	depends on TOUCHSCREEN_CYTTSP_CORE && I2C
+	help
+	  Say Y here if the touchscreen is connected via I2C bus.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cyttsp_i2c.
+
+config TOUCHSCREEN_CYTTSP_SPI
+	tristate "support SPI bus connection"
+	depends on TOUCHSCREEN_CYTTSP_CORE && SPI_MASTER
+	help
+	  Say Y here if the touchscreen is connected via SPI bus.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cyttsp_spi.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_DA9034
 	tristate "Touchscreen support for Dialog Semiconductor DA9034"
 	depends on PMIC_DA903X
@@ -193,6 +249,19 @@ config TOUCHSCREEN_EETI
 	  To compile this driver as a module, choose M here: the
 	  module will be called eeti_ts.
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_EGALAX
+	tristate "EETI eGalax multi-touch panel support"
+	depends on I2C
+	help
+	  Say Y here to enable support for I2C connected EETI
+	  eGalax multi-touch panels.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called egalax_ts.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_FUJITSU
 	tristate "Fujitsu serial touchscreen"
 	select SERIO
@@ -206,9 +275,30 @@ config TOUCHSCREEN_FUJITSU
 	  To compile this driver as a module, choose M here: the
 	  module will be called fujitsu-ts.
 
+<<<<<<< HEAD
 config TOUCHSCREEN_S3C2410
 	tristate "Samsung S3C2410/generic touchscreen input driver"
 	depends on ARCH_S3C2410 || SAMSUNG_DEV_TS
+=======
+config TOUCHSCREEN_ILI210X
+	tristate "Ilitek ILI210X based touchscreen"
+	depends on I2C
+	help
+	  Say Y here if you have a ILI210X based touchscreen
+	  controller. This driver supports models ILI2102,
+	  ILI2102s, ILI2103, ILI2103s and ILI2105.
+	  Such kind of chipsets can be found in Amazon Kindle Fire
+	  touchscreens.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called ili210x.
+
+config TOUCHSCREEN_S3C2410
+	tristate "Samsung S3C2410/generic touchscreen input driver"
+	depends on ARCH_S3C24XX || SAMSUNG_DEV_TS
+>>>>>>> refs/remotes/origin/cm-10.0
 	select S3C_ADC
 	help
 	  Say Y here if you have the s3c2410 touchscreen.
@@ -426,12 +516,15 @@ config SYNA_MULTI_TOUCH
 	depends on TOUCHSCREEN_SYNAPTICS_RMI4_I2C
 	default y
 
+<<<<<<< HEAD
 config TOUCHSCREEN_ZINITIX_TREBON
 	tristate "Zinitix i2c touchscreen"
 	depends on I2C
 	help
 		This enable support for Zinitix over I2C based touchscreen.
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_MELFAS
 	tristate "Melfas i2c touchscreen"
 	depends on I2C
@@ -462,6 +555,21 @@ config TOUCHSCREEN_TOUCHWIN
 	  To compile this driver as a module, choose M here: the
 	  module will be called touchwin.
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_TI_TSCADC
+	tristate "TI Touchscreen Interface"
+	depends on ARCH_OMAP2PLUS
+	help
+	  Say Y here if you have 4/5/8 wire touchscreen controller
+	  to be connected to the ADC controller on your TI AM335x SoC.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called ti_tscadc.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_ATMEL_TSADCC
 	tristate "Atmel Touchscreen Interface"
 	depends on ARCH_AT91SAM9RL || ARCH_AT91SAM9G45
@@ -490,6 +598,21 @@ config TOUCHSCREEN_UCB1400
 	  To compile this driver as a module, choose M here: the
 	  module will be called ucb1400_ts.
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_PIXCIR
+	tristate "PIXCIR I2C touchscreens"
+	depends on I2C
+	help
+	  Say Y here if you have a pixcir i2c touchscreen
+	  controller.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called pixcir_i2c_ts.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_WM831X
 	tristate "Support for WM831x touchscreen controllers"
 	depends on MFD_WM831X
@@ -596,6 +719,11 @@ config TOUCHSCREEN_USB_COMPOSITE
 	  - GoTop Super_Q2/GogoPen/PenPower tablets
 	  - JASTEC USB Touch Controller/DigiTech DTR-02U
 	  - Zytronic controllers
+<<<<<<< HEAD
+=======
+	  - Elo TouchSystems 2700 IntelliTouch
+	  - EasyTouch USB Touch Controller from Data Modul
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	  Have a look at <http://linux.chapter7.ch/touchkit/> for
 	  a usage description and the required user-space stuff.
@@ -675,6 +803,14 @@ config TOUCHSCREEN_USB_JASTEC
 	bool "JASTEC/DigiTech DTR-02U USB touch controller device support" if EXPERT
 	depends on TOUCHSCREEN_USB_COMPOSITE
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_USB_ELO
+	default y
+	bool "Elo TouchSystems 2700 IntelliTouch controller device support" if EXPERT
+	depends on TOUCHSCREEN_USB_COMPOSITE
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_USB_E2I
 	default y
 	bool "e2i Touchscreen controller (e.g. from Mimo 740)"
@@ -695,6 +831,17 @@ config TOUCHSCREEN_USB_NEXIO
 	bool "NEXIO/iNexio device support" if EXPERT
 	depends on TOUCHSCREEN_USB_COMPOSITE
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_USB_EASYTOUCH
+	default y
+	bool "EasyTouch USB Touch controller device support" if EMBEDDED
+	depends on TOUCHSCREEN_USB_COMPOSITE
+	help
+	  Say Y here if you have a EasyTouch USB Touch controller device support.
+	  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_TOUCHIT213
 	tristate "Sahara TouchIT-213 touchscreen"
 	select SERIO
@@ -706,6 +853,21 @@ config TOUCHSCREEN_TOUCHIT213
 	  To compile this driver as a module, choose M here: the
 	  module will be called touchit213.
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_TSC_SERIO
+	tristate "TSC-10/25/40 serial touchscreen support"
+	select SERIO
+	help
+	  Say Y here if you have a TSC-10, 25 or 40 serial touchscreen connected
+	  to your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called tsc40.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_TSC2005
         tristate "TSC2005 based touchscreens"
         depends on SPI_MASTER && GENERIC_HARDIRQS
@@ -816,7 +978,11 @@ config TOUCHSCREEN_CY8C_TS
 	  To compile this driver as a module, choose M here: the
 	  module will be called cy8c_ts.
 
+<<<<<<< HEAD
 config TOUCHSCREEN_CYTTSP_I2C
+=======
+config TOUCHSCREEN_CYTTSP_I2C_QC
+>>>>>>> refs/remotes/origin/cm-10.0
        tristate "Cypress TTSP based touchscreens"
        depends on I2C
        default n
@@ -829,4 +995,63 @@ config TOUCHSCREEN_CYTTSP_I2C
 
          To compile this driver as a module, choose M here: the
          module will be called cyttsp-i2c.
+<<<<<<< HEAD
+=======
+
+config TOUCHSCREEN_FT5X06
+       tristate "FocalTech touchscreens"
+       depends on I2C
+       help
+         Say Y here if you have a ft5X06 touchscreen.
+	 Ft5x06 controllers are multi touch controllers which can
+	 report 5 touches at a time.
+
+         If unsure, say N.
+
+         To compile this driver as a module, choose M here: the
+         module will be called ft5x06_ts.
+
+config TOUCHSCREEN_SYNAPTICS_I2C_RMI4
+	tristate "Synaptics DSX I2C touchscreen"
+	depends on I2C
+	help
+	  Say Y here if you have a Synaptics DSX I2C touchscreen
+	  connected to your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_i2c_rmi4.
+
+config TOUCHSCREEN_SYNAPTICS_DSX_RMI4_DEV
+	tristate "Synaptics I2C touchscreen rmi device"
+	depends on TOUCHSCREEN_SYNAPTICS_I2C_RMI4
+	help
+	  This enables support for character device channel for Synaptics
+	  RMI4 touchscreens.
+
+	  Say Y here if you have a Synaptics DSX I2C touchscreen
+	  connected to your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_dsx_rmi4_dev.
+
+config TOUCHSCREEN_SYNAPTICS_DSX_FW_UPDATE
+	tristate "Synaptics I2C touchscreen firmware update"
+	depends on TOUCHSCREEN_SYNAPTICS_I2C_RMI4
+	help
+	  This enables support for firmware update for Synaptics RMI4
+	  touchscreens.
+
+	  Say Y here if you have a Synaptics DSX I2C touchscreen
+	  connected to your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_dsx_fw_update.
+
+>>>>>>> refs/remotes/origin/cm-10.0
 endif

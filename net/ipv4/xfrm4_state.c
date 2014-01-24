@@ -12,6 +12,10 @@
 #include <linux/pfkeyv2.h>
 #include <linux/ipsec.h>
 #include <linux/netfilter_ipv4.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int xfrm4_init_flags(struct xfrm_state *x)
 {

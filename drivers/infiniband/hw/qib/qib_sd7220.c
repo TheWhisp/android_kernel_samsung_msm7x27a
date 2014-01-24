@@ -38,6 +38,10 @@
 
 #include <linux/pci.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/firmware.h>
 
 #include "qib.h"
@@ -299,7 +303,11 @@ bail:
 }
 
 static void qib_sd_trimdone_monitor(struct qib_devdata *dd,
+<<<<<<< HEAD
        const char *where)
+=======
+	const char *where)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret, chn, baduns;
 	u64 val;

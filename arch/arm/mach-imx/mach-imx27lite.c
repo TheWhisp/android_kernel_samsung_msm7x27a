@@ -59,6 +59,11 @@ static const struct imxuart_platform_data uart_pdata __initconst = {
 
 static void __init mx27lite_init(void)
 {
+<<<<<<< HEAD
+=======
+	imx27_soc_init();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mxc_gpio_setup_multiple_pins(mx27lite_pins, ARRAY_SIZE(mx27lite_pins),
 		"imx27lite");
 	imx27_add_imx_uart0(&uart_pdata);
@@ -75,10 +80,21 @@ static struct sys_timer mx27lite_timer = {
 };
 
 MACHINE_START(IMX27LITE, "LogicPD i.MX27LITE")
+<<<<<<< HEAD
 	.boot_params = MX27_PHYS_OFFSET + 0x100,
 	.map_io = mx27_map_io,
 	.init_early = imx27_init_early,
 	.init_irq = mx27_init_irq,
 	.timer = &mx27lite_timer,
 	.init_machine = mx27lite_init,
+=======
+	.atag_offset = 0x100,
+	.map_io = mx27_map_io,
+	.init_early = imx27_init_early,
+	.init_irq = mx27_init_irq,
+	.handle_irq = imx27_handle_irq,
+	.timer = &mx27lite_timer,
+	.init_machine = mx27lite_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

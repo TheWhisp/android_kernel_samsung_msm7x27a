@@ -33,6 +33,7 @@ This document describes the Linux kernel Makefiles.
 
 	=== 6 Architecture Makefiles
 	   --- 6.1 Set variables to tweak the build to the architecture
+<<<<<<< HEAD
 	   --- 6.2 Add prerequisites to archprepare:
 	   --- 6.3 List directories to visit when descending
 	   --- 6.4 Architecture-specific boot images
@@ -41,6 +42,17 @@ This document describes the Linux kernel Makefiles.
 	   --- 6.7 Custom kbuild commands
 	   --- 6.8 Preprocessing linker scripts
 	   --- 6.9 Generic header files
+=======
+	   --- 6.2 Add prerequisites to archheaders:
+	   --- 6.3 Add prerequisites to archprepare:
+	   --- 6.4 List directories to visit when descending
+	   --- 6.5 Architecture-specific boot images
+	   --- 6.6 Building non-kbuild targets
+	   --- 6.7 Commands useful for building a boot image
+	   --- 6.8 Custom kbuild commands
+	   --- 6.9 Preprocessing linker scripts
+	   --- 6.10 Generic header files
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	=== 7 Kbuild syntax for exported headers
 		--- 7.1 header-y
@@ -252,7 +264,11 @@ more details, with real examples.
 	This will create a library lib.a based on delay.o. For kbuild to
 	actually recognize that there is a lib.a being built, the directory
 	shall be listed in libs-y.
+<<<<<<< HEAD
 	See also "6.3 List directories to visit when descending".
+=======
+	See also "6.4 List directories to visit when descending".
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	Use of lib-y is normally restricted to lib/ and arch/*/lib.
 
@@ -441,7 +457,11 @@ more details, with real examples.
 	specified if first option are not supported.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/kernel/Makefile
+=======
+		#arch/x86/kernel/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		vsyscall-flags += $(call cc-ldoption, -Wl$(comma)--hash-style=sysv)
 
 	In the above example, vsyscall-flags will be assigned the option
@@ -460,7 +480,11 @@ more details, with real examples.
 	supported to use an optional second option.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/Makefile
+=======
+		#arch/x86/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		cflags-y += $(call cc-option,-march=pentium-mmx,-march=i586)
 
 	In the above example, cflags-y will be assigned the option
@@ -522,7 +546,11 @@ more details, with real examples.
 	even though the option was accepted by gcc.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/Makefile
+=======
+		#arch/x86/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		cflags-y += $(shell \
 		if [ $(call cc-version) -ge 0300 ] ; then \
 			echo "-mregparm=3"; fi ;)
@@ -802,7 +830,11 @@ but in the architecture makefiles where the kbuild infrastructure
 is not sufficient this sometimes needs to be explicit.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/boot/Makefile
+=======
+		#arch/x86/boot/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		subdir- := compressed/
 
 The above assignment instructs kbuild to descend down in the
@@ -812,12 +844,21 @@ To support the clean infrastructure in the Makefiles that builds the
 final bootimage there is an optional target named archclean:
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/Makefile
 		archclean:
 			$(Q)$(MAKE) $(clean)=arch/i386/boot
 
 When "make clean" is executed, make will descend down in arch/i386/boot,
 and clean as usual. The Makefile located in arch/i386/boot/ may use
+=======
+		#arch/x86/Makefile
+		archclean:
+			$(Q)$(MAKE) $(clean)=arch/x86/boot
+
+When "make clean" is executed, make will descend down in arch/x86/boot,
+and clean as usual. The Makefile located in arch/x86/boot/ may use
+>>>>>>> refs/remotes/origin/cm-10.0
 the subdir- trick to descend further down.
 
 Note 1: arch/$(ARCH)/Makefile cannot use "subdir-", because that file is
@@ -882,7 +923,11 @@ When kbuild executes, the following steps are followed (roughly):
 	LDFLAGS_vmlinux uses the LDFLAGS_$@ support.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/Makefile
+=======
+		#arch/x86/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		LDFLAGS_vmlinux := -e stext
 
     OBJCOPYFLAGS	objcopy flags
@@ -920,14 +965,22 @@ When kbuild executes, the following steps are followed (roughly):
 	Often, the KBUILD_CFLAGS variable depends on the configuration.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/Makefile
+=======
+		#arch/x86/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		cflags-$(CONFIG_M386) += -march=i386
 		KBUILD_CFLAGS += $(cflags-y)
 
 	Many arch Makefiles dynamically run the target C compiler to
 	probe supported options:
 
+<<<<<<< HEAD
 		#arch/i386/Makefile
+=======
+		#arch/x86/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		...
 		cflags-$(CONFIG_MPENTIUMII)     += $(call cc-option,\
@@ -974,7 +1027,24 @@ When kbuild executes, the following steps are followed (roughly):
 	$(KBUILD_ARFLAGS) set by the top level Makefile to "D" (deterministic
 	mode) if this option is supported by $(AR).
 
+<<<<<<< HEAD
 --- 6.2 Add prerequisites to archprepare:
+=======
+--- 6.2 Add prerequisites to archheaders:
+
+	The archheaders: rule is used to generate header files that
+	may be installed into user space by "make header_install" or
+	"make headers_install_all".  In order to support
+	"make headers_install_all", this target has to be able to run
+	on an unconfigured tree, or a tree configured for another
+	architecture.
+
+	It is run before "make archprepare" when run on the
+	architecture itself.
+
+
+--- 6.3 Add prerequisites to archprepare:
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	The archprepare: rule is used to list prerequisites that need to be
 	built before starting to descend down in the subdirectories.
@@ -990,7 +1060,11 @@ When kbuild executes, the following steps are followed (roughly):
 	generating offset header files.
 
 
+<<<<<<< HEAD
 --- 6.3 List directories to visit when descending
+=======
+--- 6.4 List directories to visit when descending
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	An arch Makefile cooperates with the top Makefile to define variables
 	which specify how to build the vmlinux file.  Note that there is no
@@ -1019,7 +1093,11 @@ When kbuild executes, the following steps are followed (roughly):
 		drivers-$(CONFIG_OPROFILE)  += arch/sparc64/oprofile/
 
 
+<<<<<<< HEAD
 --- 6.4 Architecture-specific boot images
+=======
+--- 6.5 Architecture-specific boot images
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	An arch Makefile specifies goals that take the vmlinux file, compress
 	it, wrap it in bootstrapping code, and copy the resulting files
@@ -1038,8 +1116,13 @@ When kbuild executes, the following steps are followed (roughly):
 	into the arch/$(ARCH)/boot/Makefile.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/Makefile
 		boot := arch/i386/boot
+=======
+		#arch/x86/Makefile
+		boot := arch/x86/boot
+>>>>>>> refs/remotes/origin/cm-10.0
 		bzImage: vmlinux
 			$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
 
@@ -1051,7 +1134,11 @@ When kbuild executes, the following steps are followed (roughly):
 	To support this, $(archhelp) must be defined.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/Makefile
+=======
+		#arch/x86/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		define archhelp
 		  echo  '* bzImage      - Image (arch/$(ARCH)/boot/bzImage)'
 		endif
@@ -1065,12 +1152,20 @@ When kbuild executes, the following steps are followed (roughly):
 	from vmlinux.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/Makefile
+=======
+		#arch/x86/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		all: bzImage
 
 	When "make" is executed without arguments, bzImage will be built.
 
+<<<<<<< HEAD
 --- 6.5 Building non-kbuild targets
+=======
+--- 6.6 Building non-kbuild targets
+>>>>>>> refs/remotes/origin/cm-10.0
 
     extra-y
 
@@ -1083,14 +1178,22 @@ When kbuild executes, the following steps are followed (roughly):
 	2) kbuild knows what files to delete during "make clean"
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/kernel/Makefile
+=======
+		#arch/x86/kernel/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		extra-y := head.o init_task.o
 
 	In this example, extra-y is used to list object files that
 	shall be built, but shall not be linked as part of built-in.o.
 
 
+<<<<<<< HEAD
 --- 6.6 Commands useful for building a boot image
+=======
+--- 6.7 Commands useful for building a boot image
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	Kbuild provides a few macros that are useful when building a
 	boot image.
@@ -1112,7 +1215,11 @@ When kbuild executes, the following steps are followed (roughly):
 	always be built.
 	Assignments to $(targets) are without $(obj)/ prefix.
 	if_changed may be used in conjunction with custom commands as
+<<<<<<< HEAD
 	defined in 6.7 "Custom kbuild commands".
+=======
+	defined in 6.8 "Custom kbuild commands".
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	Note: It is a typical mistake to forget the FORCE prerequisite.
 	Another common pitfall is that whitespace is sometimes
@@ -1133,7 +1240,11 @@ When kbuild executes, the following steps are followed (roughly):
 	Compress target. Use maximum compression to compress target.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/boot/Makefile
+=======
+		#arch/x86/boot/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		LDFLAGS_bootsect := -Ttext 0x0 -s --oformat binary
 		LDFLAGS_setup    := -Ttext 0x0 -s --oformat binary -e begtext
 
@@ -1171,7 +1282,11 @@ When kbuild executes, the following steps are followed (roughly):
 		$(obj)/%.dtb: $(src)/%.dts
 			$(call cmd,dtc)
 
+<<<<<<< HEAD
 --- 6.7 Custom kbuild commands
+=======
+--- 6.8 Custom kbuild commands
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	When kbuild is executing with KBUILD_VERBOSE=0, then only a shorthand
 	of a command is normally displayed.
@@ -1193,12 +1308,20 @@ When kbuild executes, the following steps are followed (roughly):
 
 	When updating the $(obj)/bzImage target, the line
 
+<<<<<<< HEAD
 	BUILD    arch/i386/boot/bzImage
+=======
+	BUILD    arch/x86/boot/bzImage
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	will be displayed with "make KBUILD_VERBOSE=0".
 
 
+<<<<<<< HEAD
 --- 6.8 Preprocessing linker scripts
+=======
+--- 6.9 Preprocessing linker scripts
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	When the vmlinux image is built, the linker script
 	arch/$(ARCH)/kernel/vmlinux.lds is used.
@@ -1207,7 +1330,11 @@ When kbuild executes, the following steps are followed (roughly):
 	kbuild knows .lds files and includes a rule *lds.S -> *lds.
 
 	Example:
+<<<<<<< HEAD
 		#arch/i386/kernel/Makefile
+=======
+		#arch/x86/kernel/Makefile
+>>>>>>> refs/remotes/origin/cm-10.0
 		always := vmlinux.lds
 
 		#Makefile
@@ -1228,7 +1355,11 @@ When kbuild executes, the following steps are followed (roughly):
 	The kbuild infrastructure for *lds file are used in several
 	architecture-specific files.
 
+<<<<<<< HEAD
 --- 6.9 Generic header files
+=======
+--- 6.10 Generic header files
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	The directory include/asm-generic contains the header files
 	that may be shared between individual architectures.

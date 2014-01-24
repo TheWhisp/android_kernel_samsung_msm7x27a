@@ -31,7 +31,10 @@
 #include <hwregs/gio_defs.h>
 #include <hwregs/intr_vect_defs.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <mach/pinmux.h>
 

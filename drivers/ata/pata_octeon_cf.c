@@ -405,7 +405,11 @@ static int octeon_cf_softreset16(struct ata_link *link, unsigned int *classes,
 
 	rc = ata_sff_wait_after_reset(link, 1, deadline);
 	if (rc) {
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_ERR, "SRST failed (errno=%d)\n", rc);
+=======
+		ata_link_err(link, "SRST failed (errno=%d)\n", rc);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return rc;
 	}
 
@@ -807,6 +811,10 @@ static int __devinit octeon_cf_probe(struct platform_device *pdev)
 	irq_handler_t irq_handler = NULL;
 	void __iomem *base;
 	struct octeon_cf_port *cf_port;
+<<<<<<< HEAD
+=======
+	char version[32];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	res_cs0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
@@ -905,10 +913,18 @@ static int __devinit octeon_cf_probe(struct platform_device *pdev)
 	ata_port_desc(ap, "cmd %p ctl %p", base, ap->ioaddr.ctl_addr);
 
 
+<<<<<<< HEAD
 	dev_info(&pdev->dev, "version " DRV_VERSION" %d bit%s.\n",
 		 (ocd->is16bit) ? 16 : 8,
 		 (cs1) ? ", True IDE" : "");
 
+=======
+	snprintf(version, sizeof(version), "%s %d bit%s",
+		 DRV_VERSION,
+		 (ocd->is16bit) ? 16 : 8,
+		 (cs1) ? ", True IDE" : "");
+	ata_print_version_once(&pdev->dev, version);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ata_host_activate(host, irq, irq_handler, 0, &octeon_cf_sht);
 

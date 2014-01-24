@@ -57,8 +57,13 @@
  *	Note that *all* calls to CMOS_READ and CMOS_WRITE are done with
  *	interrupts disabled. Due to the index-port/data-port (0x70/0x71)
  *	design of the RTC, we don't want two different things trying to
+<<<<<<< HEAD
  *	get to it at once. (e.g. the periodic 11 min sync from time.c vs.
  *	this driver.)
+=======
+ *	get to it at once. (e.g. the periodic 11 min sync from
+ *      kernel/time/ntp.c vs. this driver.)
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #include <linux/interrupt.h>
@@ -80,9 +85,15 @@
 #include <linux/bcd.h>
 #include <linux/delay.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 
 #include <asm/current.h>
 #include <asm/system.h>
+=======
+#include <linux/ratelimit.h>
+
+#include <asm/current.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_X86
 #include <asm/hpet.h>
@@ -1195,10 +1206,15 @@ static void rtc_dropped_irq(unsigned long data)
 
 	spin_unlock_irq(&rtc_lock);
 
+<<<<<<< HEAD
 	if (printk_ratelimit()) {
 		printk(KERN_WARNING "rtc: lost some interrupts at %ldHz.\n",
 			freq);
 	}
+=======
+	printk_ratelimited(KERN_WARNING "rtc: lost some interrupts at %ldHz.\n",
+			   freq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Now we have new data */
 	wake_up_interruptible(&rtc_wait);

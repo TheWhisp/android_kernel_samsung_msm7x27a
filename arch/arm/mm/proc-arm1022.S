@@ -84,6 +84,10 @@ ENTRY(cpu_arm1022_proc_fin)
  * loc: location to jump to for soft reset
  */
 	.align	5
+<<<<<<< HEAD
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
 ENTRY(cpu_arm1022_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -96,6 +100,11 @@ ENTRY(cpu_arm1022_reset)
 	bic	ip, ip, #0x1100 		@ ...i...s........
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_arm1022_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * cpu_arm1022_do_idle()
@@ -339,6 +348,7 @@ ENTRY(arm1022_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(arm1022_dma_unmap_area)
 
+<<<<<<< HEAD
 ENTRY(arm1022_cache_fns)
 	.long	arm1022_flush_icache_all
 	.long	arm1022_flush_kern_cache_all
@@ -350,6 +360,10 @@ ENTRY(arm1022_cache_fns)
 	.long	arm1022_dma_map_area
 	.long	arm1022_dma_unmap_area
 	.long	arm1022_dma_flush_range
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm1022
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.align	5
 ENTRY(cpu_arm1022_dcache_clean_area)
@@ -441,6 +455,7 @@ arm1022_crval:
 	crval	clear=0x00007f3f, mmuset=0x00003935, ucset=0x00001930
 
 	__INITDATA
+<<<<<<< HEAD
 
 /*
  * Purpose : Function pointers used to access above functions - all calls
@@ -478,6 +493,16 @@ cpu_elf_name:
 cpu_arm1022_name:
 	.asciz	"ARM1022"
 	.size	cpu_arm1022_name, . - cpu_arm1022_name
+=======
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions arm1022, dabort=v4t_early_abort, pabort=legacy_pabort
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv5te"
+	string	cpu_elf_name, "v5"
+	string	cpu_arm1022_name, "ARM1022"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.align
 

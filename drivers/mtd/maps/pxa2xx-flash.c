@@ -41,8 +41,11 @@ static void pxa2xx_map_inval_cache(struct map_info *map, unsigned long from,
 }
 
 struct pxa2xx_flash_info {
+<<<<<<< HEAD
 	struct mtd_partition	*parts;
 	int			nr_parts;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct mtd_info		*mtd;
 	struct map_info		map;
 };
@@ -55,9 +58,13 @@ static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
 {
 	struct flash_platform_data *flash = pdev->dev.platform_data;
 	struct pxa2xx_flash_info *info;
+<<<<<<< HEAD
 	struct mtd_partition *parts;
 	struct resource *res;
 	int ret = 0;
+=======
+	struct resource *res;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
@@ -70,9 +77,13 @@ static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
 	info->map.name = (char *) flash->name;
 	info->map.bankwidth = flash->width;
 	info->map.phys = res->start;
+<<<<<<< HEAD
 	info->map.size = res->end - res->start + 1;
 	info->parts = flash->parts;
 	info->nr_parts = flash->nr_parts;
+=======
+	info->map.size = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	info->map.virt = ioremap(info->map.phys, info->map.size);
 	if (!info->map.virt) {
@@ -104,6 +115,7 @@ static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
 	}
 	info->mtd->owner = THIS_MODULE;
 
+<<<<<<< HEAD
 	ret = parse_mtd_partitions(info->mtd, probes, &parts, 0);
 
 	if (ret > 0) {
@@ -116,6 +128,10 @@ static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
 		       info->map.name);
 
 	mtd_device_register(info->mtd, info->parts, info->nr_parts);
+=======
+	mtd_device_parse_register(info->mtd, probes, NULL, flash->parts,
+				  flash->nr_parts);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	platform_set_drvdata(pdev, info);
 	return 0;
@@ -133,7 +149,10 @@ static int __devexit pxa2xx_flash_remove(struct platform_device *dev)
 	iounmap(info->map.virt);
 	if (info->map.cached)
 		iounmap(info->map.cached);
+<<<<<<< HEAD
 	kfree(info->parts);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(info);
 	return 0;
 }
@@ -143,8 +162,13 @@ static void pxa2xx_flash_shutdown(struct platform_device *dev)
 {
 	struct pxa2xx_flash_info *info = platform_get_drvdata(dev);
 
+<<<<<<< HEAD
 	if (info && info->mtd->suspend(info->mtd) == 0)
 		info->mtd->resume(info->mtd);
+=======
+	if (info && mtd_suspend(info->mtd) == 0)
+		mtd_resume(info->mtd);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #else
 #define pxa2xx_flash_shutdown NULL
@@ -160,6 +184,7 @@ static struct platform_driver pxa2xx_flash_driver = {
 	.shutdown	= pxa2xx_flash_shutdown,
 };
 
+<<<<<<< HEAD
 static int __init init_pxa2xx_flash(void)
 {
 	return platform_driver_register(&pxa2xx_flash_driver);
@@ -172,6 +197,9 @@ static void __exit cleanup_pxa2xx_flash(void)
 
 module_init(init_pxa2xx_flash);
 module_exit(cleanup_pxa2xx_flash);
+=======
+module_platform_driver(pxa2xx_flash_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Nicolas Pitre <nico@fluxnic.net>");

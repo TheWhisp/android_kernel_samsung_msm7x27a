@@ -18,7 +18,11 @@
 #include <linux/errno.h>
 #include <linux/stddef.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/irq.h>
 #include <asm/io.h>

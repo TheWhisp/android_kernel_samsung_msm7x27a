@@ -1,11 +1,19 @@
 #
 # Magnetometer sensors
 #
+<<<<<<< HEAD
 comment "Magnetometer sensors"
+=======
+menu "Magnetometer sensors"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config SENSORS_AK8975
 	tristate "Asahi Kasei AK8975 3-Axis Magnetometer"
 	depends on I2C
+<<<<<<< HEAD
+=======
+	depends on GENERIC_GPIO
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Say yes here to build support for Asahi Kasei AK8975 3-Axis
 	  Magnetometer.
@@ -23,3 +31,7 @@ config SENSORS_HMC5843
 	  To compile this driver as a module, choose M here: the module
 	  will be called hmc5843
 
+<<<<<<< HEAD
+=======
+endmenu
+>>>>>>> refs/remotes/origin/cm-10.0

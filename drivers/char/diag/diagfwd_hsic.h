@@ -17,7 +17,16 @@
 #define N_MDM_WRITE	1 /* Upgrade to 2 with ping pong buffer */
 #define N_MDM_READ	1
 
+<<<<<<< HEAD
 void __init diagfwd_hsic_init(void);
 void __exit diagfwd_hsic_exit(void);
+=======
+int diagfwd_connect_bridge(int);
+int diagfwd_disconnect_bridge(int);
+int diagfwd_write_complete_hsic(void);
+int diagfwd_cancel_hsic(void);
+void diagfwd_bridge_init(void);
+void diagfwd_bridge_exit(void);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

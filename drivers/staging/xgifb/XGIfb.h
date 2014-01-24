@@ -3,6 +3,7 @@
 #include <linux/ioctl.h>
 #include <linux/types.h>
 
+<<<<<<< HEAD
 #define DISPTYPE_CRT1       0x00000008L
 #define DISPTYPE_CRT2       0x00000004L
 #define DISPTYPE_LCD        0x00000002L
@@ -12,6 +13,17 @@
 #define DISPMODE_SINGLE	    0x00000020L
 #define DISPMODE_MIRROR	    0x00000010L
 #define DISPMODE_DUALVIEW   0x00000040L
+=======
+#include "vgatypes.h"
+#include "vb_struct.h"
+
+enum xgifb_display_type {
+	XGIFB_DISP_NONE = 0,
+	XGIFB_DISP_CRT,
+	XGIFB_DISP_LCD,
+	XGIFB_DISP_TV,
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define HASVB_NONE	    0x00
 #define HASVB_301	    0x01
@@ -19,6 +31,7 @@
 #define HASVB_TRUMPION	    0x04
 #define HASVB_LVDS_CHRONTEL 0x10
 #define HASVB_302	    0x20
+<<<<<<< HEAD
 #define HASVB_303	    0x40
 #define HASVB_CHRONTEL	    0x80
 
@@ -26,6 +39,10 @@
 #define XGIFB_ID	0x53495346 /* Identify myself with 'XGIF' */
 #endif
 
+=======
+#define HASVB_CHRONTEL	    0x80
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum XGI_CHIP_TYPE {
 	XG40 = 32,
 	XG41,
@@ -47,11 +64,14 @@ enum xgi_tvtype {
 };
 
 enum xgi_tv_plug { /* vicki@030226 */
+<<<<<<< HEAD
 /*	TVPLUG_Legacy = 0, */
 /*	TVPLUG_COMPOSITE,  */
 /*	TVPLUG_SVIDEO,	   */
 /*	TVPLUG_SCART,	   */
 /*	TVPLUG_TOTAL	   */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	TVPLUG_UNKNOWN = 0,
 	TVPLUG_COMPOSITE = 1,
 	TVPLUG_SVIDEO = 2,
@@ -64,6 +84,7 @@ enum xgi_tv_plug { /* vicki@030226 */
 	TVPLUG_TOTAL
 };
 
+<<<<<<< HEAD
 struct video_info {
 	int           chip_id;
 	unsigned int  video_size;
@@ -72,6 +93,25 @@ struct video_info {
 	unsigned long mmio_base;
 	unsigned long mmio_size;
 	char	      *mmio_vbase;
+=======
+struct xgifb_video_info {
+	struct fb_info *fb_info;
+	struct xgi_hw_device_info hw_info;
+	struct vb_device_info dev_info;
+
+	int mode_idx;
+	int rate_idx;
+
+	u32 pseudo_palette[17];
+
+	int           chip_id;
+	unsigned int  video_size;
+	unsigned long video_base;
+	void __iomem *video_vbase;
+	unsigned long mmio_base;
+	unsigned long mmio_size;
+	void __iomem *mmio_vbase;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long vga_base;
 	unsigned long mtrr;
 
@@ -86,11 +126,21 @@ struct video_info {
 	int    video_linelength;
 	unsigned int refresh_rate;
 
+<<<<<<< HEAD
 	unsigned long disp_state;
+=======
+	enum xgifb_display_type display2; /* the second display output type */
+	bool display2_force;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned char hasVB;
 	unsigned char TV_type;
 	unsigned char TV_plug;
 
+<<<<<<< HEAD
+=======
+	struct XGI21_LVDSCapStruct lvds_data;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	enum XGI_CHIP_TYPE chip;
 	unsigned char revision_id;
 
@@ -108,7 +158,10 @@ struct video_info {
 	char reserved[236];
 };
 
+<<<<<<< HEAD
 
 extern struct video_info xgi_video_info;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

@@ -27,11 +27,19 @@
 #include <linux/dmapool.h>
 #include <linux/kernel.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <linux/poison.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/spinlock.h>
 #include <linux/string.h>
 #include <linux/types.h>
@@ -483,7 +491,12 @@ void dmam_pool_destroy(struct dma_pool *pool)
 {
 	struct device *dev = pool->dev;
 
+<<<<<<< HEAD
 	dma_pool_destroy(pool);
 	WARN_ON(devres_destroy(dev, dmam_pool_release, dmam_pool_match, pool));
+=======
+	WARN_ON(devres_destroy(dev, dmam_pool_release, dmam_pool_match, pool));
+	dma_pool_destroy(pool);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(dmam_pool_destroy);

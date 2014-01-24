@@ -75,7 +75,10 @@ static int eucr_resume(struct usb_interface *iface)
          us->Power_IsResum = true;
 	//
 	//us->SD_Status.Ready = 0; //??
+<<<<<<< HEAD
     	us->MS_Status = *(PMS_STATUS)&tmp;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
     	us->SM_Status = *(PSM_STATUS)&tmp;
     	
 	return 0;
@@ -98,7 +101,10 @@ static int eucr_reset_resume(struct usb_interface *iface)
  	us->Power_IsResum = true;
 	//
 	//us->SD_Status.Ready = 0; //??
+<<<<<<< HEAD
     	us->MS_Status = *(PMS_STATUS)&tmp;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
     	us->SM_Status = *(PSM_STATUS)&tmp;
 	return 0;
 }
@@ -640,8 +646,12 @@ static int eucr_probe(struct usb_interface *intf, const struct usb_device_id *id
 
 	/* Start up the thread for delayed SCSI-device scanning */
 	th = kthread_create(usb_stor_scan_thread, us, "eucr-stor-scan");
+<<<<<<< HEAD
 	if (IS_ERR(th))
 	{
+=======
+	if (IS_ERR(th)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		pr_info("Unable to start the device-scanning thread\n");
 		complete(&us->scanning_done);
 		quiesce_and_remove_host(us);
@@ -704,6 +714,7 @@ static struct usb_driver usb_storage_driver = {
 	.soft_unbind =	1,
 };
 
+<<<<<<< HEAD
 //----- usb_stor_init() ---------------------
 static int __init usb_stor_init(void)
 {
@@ -727,3 +738,6 @@ static void __exit usb_stor_exit(void)
 
 module_init(usb_stor_init);
 module_exit(usb_stor_exit);
+=======
+module_usb_driver(usb_storage_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

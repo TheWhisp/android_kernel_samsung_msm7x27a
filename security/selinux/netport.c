@@ -5,7 +5,11 @@
  * mapping is maintained as part of the normal policy but a fast cache is
  * needed to reduce the lookup overhead.
  *
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This code is heavily based on the "netif" concept originally developed by
  * James Morris <jmorris@redhat.com>
@@ -68,6 +72,7 @@ static DEFINE_SPINLOCK(sel_netport_lock);
 static struct sel_netport_bkt sel_netport_hash[SEL_NETPORT_HASH_SIZE];
 
 /**
+<<<<<<< HEAD
  * sel_netport_free - Frees a port entry
  * @p: the entry's RCU field
  *
@@ -84,6 +89,8 @@ static void sel_netport_free(struct rcu_head *p)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * sel_netport_hashfn - Hashing function for the port table
  * @pnum: port number
  *
@@ -144,7 +151,11 @@ static void sel_netport_insert(struct sel_netport *port)
 				lockdep_is_held(&sel_netport_lock)),
 			struct sel_netport, list);
 		list_del_rcu(&tail->list);
+<<<<<<< HEAD
 		call_rcu(&tail->rcu, sel_netport_free);
+=======
+		kfree_rcu(tail, rcu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		sel_netport_hash[idx].size++;
 }
@@ -243,7 +254,11 @@ static void sel_netport_flush(void)
 		list_for_each_entry_safe(port, port_tmp,
 					 &sel_netport_hash[idx].list, list) {
 			list_del_rcu(&port->list);
+<<<<<<< HEAD
 			call_rcu(&port->rcu, sel_netport_free);
+=======
+			kfree_rcu(port, rcu);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		sel_netport_hash[idx].size = 0;
 	}

@@ -17,6 +17,7 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
+<<<<<<< HEAD
 #include <asm/io.h>
 
 #include <asm/mach-au1x00/au1xxx.h>
@@ -42,13 +43,32 @@ static const struct mtd_partition partition_info[] = {
 	 .name = "NAND FS 1",
 	 .offset = MTDPART_OFS_APPEND,
 	 .size = MTDPART_SIZ_FULL}
+=======
+#include <linux/platform_device.h>
+#include <asm/io.h>
+#include <asm/mach-au1x00/au1000.h>
+#include <asm/mach-au1x00/au1550nd.h>
+
+
+struct au1550nd_ctx {
+	struct mtd_info info;
+	struct nand_chip chip;
+
+	int cs;
+	void __iomem *base;
+	void (*write_byte)(struct mtd_info *, u_char);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /**
  * au_read_byte -  read one byte from the chip
  * @mtd:	MTD device structure
  *
+<<<<<<< HEAD
  *  read function for 8bit buswith
+=======
+ * read function for 8bit buswidth
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static u_char au_read_byte(struct mtd_info *mtd)
 {
@@ -63,7 +83,11 @@ static u_char au_read_byte(struct mtd_info *mtd)
  * @mtd:	MTD device structure
  * @byte:	pointer to data byte to write
  *
+<<<<<<< HEAD
  *  write function for 8it buswith
+=======
+ * write function for 8it buswidth
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void au_write_byte(struct mtd_info *mtd, u_char byte)
 {
@@ -73,11 +97,18 @@ static void au_write_byte(struct mtd_info *mtd, u_char byte)
 }
 
 /**
+<<<<<<< HEAD
  * au_read_byte16 -  read one byte endianess aware from the chip
  * @mtd:	MTD device structure
  *
  *  read function for 16bit buswith with
  * endianess conversion
+=======
+ * au_read_byte16 -  read one byte endianness aware from the chip
+ * @mtd:	MTD device structure
+ *
+ * read function for 16bit buswidth with endianness conversion
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static u_char au_read_byte16(struct mtd_info *mtd)
 {
@@ -88,12 +119,20 @@ static u_char au_read_byte16(struct mtd_info *mtd)
 }
 
 /**
+<<<<<<< HEAD
  * au_write_byte16 -  write one byte endianess aware to the chip
  * @mtd:	MTD device structure
  * @byte:	pointer to data byte to write
  *
  *  write function for 16bit buswith with
  * endianess conversion
+=======
+ * au_write_byte16 -  write one byte endianness aware to the chip
+ * @mtd:	MTD device structure
+ * @byte:	pointer to data byte to write
+ *
+ * write function for 16bit buswidth with endianness conversion
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void au_write_byte16(struct mtd_info *mtd, u_char byte)
 {
@@ -106,8 +145,12 @@ static void au_write_byte16(struct mtd_info *mtd, u_char byte)
  * au_read_word -  read one word from the chip
  * @mtd:	MTD device structure
  *
+<<<<<<< HEAD
  *  read function for 16bit buswith without
  * endianess conversion
+=======
+ * read function for 16bit buswidth without endianness conversion
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static u16 au_read_word(struct mtd_info *mtd)
 {
@@ -123,7 +166,11 @@ static u16 au_read_word(struct mtd_info *mtd)
  * @buf:	data buffer
  * @len:	number of bytes to write
  *
+<<<<<<< HEAD
  *  write function for 8bit buswith
+=======
+ * write function for 8bit buswidth
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void au_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
 {
@@ -142,7 +189,11 @@ static void au_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
  * @buf:	buffer to store date
  * @len:	number of bytes to read
  *
+<<<<<<< HEAD
  *  read function for 8bit buswith
+=======
+ * read function for 8bit buswidth
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void au_read_buf(struct mtd_info *mtd, u_char *buf, int len)
 {
@@ -161,7 +212,11 @@ static void au_read_buf(struct mtd_info *mtd, u_char *buf, int len)
  * @buf:	buffer containing the data to compare
  * @len:	number of bytes to compare
  *
+<<<<<<< HEAD
  *  verify function for 8bit buswith
+=======
+ * verify function for 8bit buswidth
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int au_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
 {
@@ -183,7 +238,11 @@ static int au_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
  * @buf:	data buffer
  * @len:	number of bytes to write
  *
+<<<<<<< HEAD
  *  write function for 16bit buswith
+=======
+ * write function for 16bit buswidth
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void au_write_buf16(struct mtd_info *mtd, const u_char *buf, int len)
 {
@@ -205,7 +264,11 @@ static void au_write_buf16(struct mtd_info *mtd, const u_char *buf, int len)
  * @buf:	buffer to store date
  * @len:	number of bytes to read
  *
+<<<<<<< HEAD
  *  read function for 16bit buswith
+=======
+ * read function for 16bit buswidth
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static void au_read_buf16(struct mtd_info *mtd, u_char *buf, int len)
 {
@@ -226,7 +289,11 @@ static void au_read_buf16(struct mtd_info *mtd, u_char *buf, int len)
  * @buf:	buffer containing the data to compare
  * @len:	number of bytes to compare
  *
+<<<<<<< HEAD
  *  verify function for 16bit buswith
+=======
+ * verify function for 16bit buswidth
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static int au_verify_buf16(struct mtd_info *mtd, const u_char *buf, int len)
 {
@@ -258,11 +325,17 @@ static int au_verify_buf16(struct mtd_info *mtd, const u_char *buf, int len)
 
 static void au1550_hwcontrol(struct mtd_info *mtd, int cmd)
 {
+<<<<<<< HEAD
 	register struct nand_chip *this = mtd->priv;
+=======
+	struct au1550nd_ctx *ctx = container_of(mtd, struct au1550nd_ctx, info);
+	struct nand_chip *this = mtd->priv;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (cmd) {
 
 	case NAND_CTL_SETCLE:
+<<<<<<< HEAD
 		this->IO_ADDR_W = p_nand + MEM_STNAND_CMD;
 		break;
 
@@ -276,6 +349,21 @@ static void au1550_hwcontrol(struct mtd_info *mtd, int cmd)
 
 	case NAND_CTL_CLRALE:
 		this->IO_ADDR_W = p_nand + MEM_STNAND_DATA;
+=======
+		this->IO_ADDR_W = ctx->base + MEM_STNAND_CMD;
+		break;
+
+	case NAND_CTL_CLRCLE:
+		this->IO_ADDR_W = ctx->base + MEM_STNAND_DATA;
+		break;
+
+	case NAND_CTL_SETALE:
+		this->IO_ADDR_W = ctx->base + MEM_STNAND_ADDR;
+		break;
+
+	case NAND_CTL_CLRALE:
+		this->IO_ADDR_W = ctx->base + MEM_STNAND_DATA;
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* FIXME: Nobody knows why this is necessary,
 		 * but it works only that way */
 		udelay(1);
@@ -283,7 +371,11 @@ static void au1550_hwcontrol(struct mtd_info *mtd, int cmd)
 
 	case NAND_CTL_SETNCE:
 		/* assert (force assert) chip enable */
+<<<<<<< HEAD
 		au_writel((1 << (4 + NAND_CS)), MEM_STNDCTL);
+=======
+		au_writel((1 << (4 + ctx->cs)), MEM_STNDCTL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 
 	case NAND_CTL_CLRNCE:
@@ -330,9 +422,16 @@ static void au1550_select_chip(struct mtd_info *mtd, int chip)
  */
 static void au1550_command(struct mtd_info *mtd, unsigned command, int column, int page_addr)
 {
+<<<<<<< HEAD
 	register struct nand_chip *this = mtd->priv;
 	int ce_override = 0, i;
 	ulong flags;
+=======
+	struct au1550nd_ctx *ctx = container_of(mtd, struct au1550nd_ctx, info);
+	struct nand_chip *this = mtd->priv;
+	int ce_override = 0, i;
+	unsigned long flags = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Begin command latch cycle */
 	au1550_hwcontrol(mtd, NAND_CTL_SETCLE);
@@ -353,9 +452,15 @@ static void au1550_command(struct mtd_info *mtd, unsigned command, int column, i
 			column -= 256;
 			readcmd = NAND_CMD_READ1;
 		}
+<<<<<<< HEAD
 		au1550_write_byte(mtd, readcmd);
 	}
 	au1550_write_byte(mtd, command);
+=======
+		ctx->write_byte(mtd, readcmd);
+	}
+	ctx->write_byte(mtd, command);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Set ALE and clear CLE to start address cycle */
 	au1550_hwcontrol(mtd, NAND_CTL_CLRCLE);
@@ -368,10 +473,17 @@ static void au1550_command(struct mtd_info *mtd, unsigned command, int column, i
 			/* Adjust columns for 16 bit buswidth */
 			if (this->options & NAND_BUSWIDTH_16)
 				column >>= 1;
+<<<<<<< HEAD
 			au1550_write_byte(mtd, column);
 		}
 		if (page_addr != -1) {
 			au1550_write_byte(mtd, (u8)(page_addr & 0xff));
+=======
+			ctx->write_byte(mtd, column);
+		}
+		if (page_addr != -1) {
+			ctx->write_byte(mtd, (u8)(page_addr & 0xff));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			if (command == NAND_CMD_READ0 ||
 			    command == NAND_CMD_READ1 ||
@@ -389,11 +501,20 @@ static void au1550_command(struct mtd_info *mtd, unsigned command, int column, i
 				au1550_hwcontrol(mtd, NAND_CTL_SETNCE);
 			}
 
+<<<<<<< HEAD
 			au1550_write_byte(mtd, (u8)(page_addr >> 8));
 
 			/* One more address cycle for devices > 32MiB */
 			if (this->chipsize > (32 << 20))
 				au1550_write_byte(mtd, (u8)((page_addr >> 16) & 0x0f));
+=======
+			ctx->write_byte(mtd, (u8)(page_addr >> 8));
+
+			/* One more address cycle for devices > 32MiB */
+			if (this->chipsize > (32 << 20))
+				ctx->write_byte(mtd,
+						((page_addr >> 16) & 0x0f));
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		/* Latch in address */
 		au1550_hwcontrol(mtd, NAND_CTL_CLRALE);
@@ -439,6 +560,7 @@ static void au1550_command(struct mtd_info *mtd, unsigned command, int column, i
 	while(!this->dev_ready(mtd));
 }
 
+<<<<<<< HEAD
 
 /*
  * Main initialization routine
@@ -554,6 +676,81 @@ static int __init au1xxx_nand_init(void)
 		nand_width = au_readl(MEM_STCFG3) & (1 << 22);
 
 	/* Set address of hardware control function */
+=======
+static int __devinit find_nand_cs(unsigned long nand_base)
+{
+	void __iomem *base =
+			(void __iomem *)KSEG1ADDR(AU1000_STATIC_MEM_PHYS_ADDR);
+	unsigned long addr, staddr, start, mask, end;
+	int i;
+
+	for (i = 0; i < 4; i++) {
+		addr = 0x1000 + (i * 0x10);			/* CSx */
+		staddr = __raw_readl(base + addr + 0x08);	/* STADDRx */
+		/* figure out the decoded range of this CS */
+		start = (staddr << 4) & 0xfffc0000;
+		mask = (staddr << 18) & 0xfffc0000;
+		end = (start | (start - 1)) & ~(start ^ mask);
+		if ((nand_base >= start) && (nand_base < end))
+			return i;
+	}
+
+	return -ENODEV;
+}
+
+static int __devinit au1550nd_probe(struct platform_device *pdev)
+{
+	struct au1550nd_platdata *pd;
+	struct au1550nd_ctx *ctx;
+	struct nand_chip *this;
+	struct resource *r;
+	int ret, cs;
+
+	pd = pdev->dev.platform_data;
+	if (!pd) {
+		dev_err(&pdev->dev, "missing platform data\n");
+		return -ENODEV;
+	}
+
+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+	if (!ctx) {
+		dev_err(&pdev->dev, "no memory for NAND context\n");
+		return -ENOMEM;
+	}
+
+	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!r) {
+		dev_err(&pdev->dev, "no NAND memory resource\n");
+		ret = -ENODEV;
+		goto out1;
+	}
+	if (request_mem_region(r->start, resource_size(r), "au1550-nand")) {
+		dev_err(&pdev->dev, "cannot claim NAND memory area\n");
+		ret = -ENOMEM;
+		goto out1;
+	}
+
+	ctx->base = ioremap_nocache(r->start, 0x1000);
+	if (!ctx->base) {
+		dev_err(&pdev->dev, "cannot remap NAND memory area\n");
+		ret = -ENODEV;
+		goto out2;
+	}
+
+	this = &ctx->chip;
+	ctx->info.priv = this;
+	ctx->info.owner = THIS_MODULE;
+
+	/* figure out which CS# r->start belongs to */
+	cs = find_nand_cs(r->start);
+	if (cs < 0) {
+		dev_err(&pdev->dev, "cannot detect NAND chipselect\n");
+		ret = -ENODEV;
+		goto out3;
+	}
+	ctx->cs = cs;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	this->dev_ready = au1550_device_ready;
 	this->select_chip = au1550_select_chip;
 	this->cmdfunc = au1550_command;
@@ -564,6 +761,7 @@ static int __init au1xxx_nand_init(void)
 
 	this->options = NAND_NO_AUTOINCR;
 
+<<<<<<< HEAD
 	if (!nand_width)
 		this->options |= NAND_BUSWIDTH_16;
 
@@ -612,6 +810,59 @@ static void __exit au1550_cleanup(void)
 }
 
 module_exit(au1550_cleanup);
+=======
+	if (pd->devwidth)
+		this->options |= NAND_BUSWIDTH_16;
+
+	this->read_byte = (pd->devwidth) ? au_read_byte16 : au_read_byte;
+	ctx->write_byte = (pd->devwidth) ? au_write_byte16 : au_write_byte;
+	this->read_word = au_read_word;
+	this->write_buf = (pd->devwidth) ? au_write_buf16 : au_write_buf;
+	this->read_buf = (pd->devwidth) ? au_read_buf16 : au_read_buf;
+	this->verify_buf = (pd->devwidth) ? au_verify_buf16 : au_verify_buf;
+
+	ret = nand_scan(&ctx->info, 1);
+	if (ret) {
+		dev_err(&pdev->dev, "NAND scan failed with %d\n", ret);
+		goto out3;
+	}
+
+	mtd_device_register(&ctx->info, pd->parts, pd->num_parts);
+
+	return 0;
+
+out3:
+	iounmap(ctx->base);
+out2:
+	release_mem_region(r->start, resource_size(r));
+out1:
+	kfree(ctx);
+	return ret;
+}
+
+static int __devexit au1550nd_remove(struct platform_device *pdev)
+{
+	struct au1550nd_ctx *ctx = platform_get_drvdata(pdev);
+	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+	nand_release(&ctx->info);
+	iounmap(ctx->base);
+	release_mem_region(r->start, 0x1000);
+	kfree(ctx);
+	return 0;
+}
+
+static struct platform_driver au1550nd_driver = {
+	.driver = {
+		.name	= "au1550-nand",
+		.owner	= THIS_MODULE,
+	},
+	.probe		= au1550nd_probe,
+	.remove		= __devexit_p(au1550nd_remove),
+};
+
+module_platform_driver(au1550nd_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Embedded Edge, LLC");

@@ -16,13 +16,17 @@
 #include <asm/cachetype.h>
 #include <asm/highmem.h>
 #include <asm/smp_plat.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlbflush.h>
 
 #include "mm.h"
 
 #ifdef CONFIG_CPU_CACHE_VIPT
 
+<<<<<<< HEAD
 #define ALIAS_FLUSH_START	0xffff4000
 
 static void flush_pfn_alias(unsigned long pfn, unsigned long vaddr)
@@ -32,6 +36,14 @@ static void flush_pfn_alias(unsigned long pfn, unsigned long vaddr)
 
 	set_pte_ext(TOP_PTE(to), pfn_pte(pfn, PAGE_KERNEL), 0);
 	flush_tlb_kernel_page(to);
+=======
+static void flush_pfn_alias(unsigned long pfn, unsigned long vaddr)
+{
+	unsigned long to = FLUSH_ALIAS_START + (CACHE_COLOUR(vaddr) << PAGE_SHIFT);
+	const int zero = 0;
+
+	set_top_pte(to, pfn_pte(pfn, PAGE_KERNEL));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	asm(	"mcrr	p15, 0, %1, %0, c14\n"
 	"	mcr	p15, 0, %2, c7, c10, 4"
@@ -42,6 +54,7 @@ static void flush_pfn_alias(unsigned long pfn, unsigned long vaddr)
 
 static void flush_icache_alias(unsigned long pfn, unsigned long vaddr, unsigned long len)
 {
+<<<<<<< HEAD
 	unsigned long colour = CACHE_COLOUR(vaddr);
 	unsigned long offset = vaddr & (PAGE_SIZE - 1);
 	unsigned long to;
@@ -49,6 +62,14 @@ static void flush_icache_alias(unsigned long pfn, unsigned long vaddr, unsigned 
 	set_pte_ext(TOP_PTE(ALIAS_FLUSH_START) + colour, pfn_pte(pfn, PAGE_KERNEL), 0);
 	to = ALIAS_FLUSH_START + (colour << PAGE_SHIFT) + offset;
 	flush_tlb_kernel_page(to);
+=======
+	unsigned long va = FLUSH_ALIAS_START + (CACHE_COLOUR(vaddr) << PAGE_SHIFT);
+	unsigned long offset = vaddr & (PAGE_SIZE - 1);
+	unsigned long to;
+
+	set_top_pte(va, pfn_pte(pfn, PAGE_KERNEL));
+	to = va + offset;
+>>>>>>> refs/remotes/origin/cm-10.0
 	flush_icache_range(to, to + len);
 }
 
@@ -304,6 +325,42 @@ void flush_dcache_page(struct page *page)
 EXPORT_SYMBOL(flush_dcache_page);
 
 /*
+<<<<<<< HEAD
+=======
+ * Ensure cache coherency for the kernel mapping of this page. We can
+ * assume that the page is pinned via kmap.
+ *
+ * If the page only exists in the page cache and there are no user
+ * space mappings, this is a no-op since the page was already marked
+ * dirty at creation.  Otherwise, we need to flush the dirty kernel
+ * cache lines directly.
+ */
+void flush_kernel_dcache_page(struct page *page)
+{
+	if (cache_is_vivt() || cache_is_vipt_aliasing()) {
+		struct address_space *mapping;
+
+		mapping = page_mapping(page);
+
+		if (!mapping || mapping_mapped(mapping)) {
+			void *addr;
+
+			addr = page_address(page);
+			/*
+			 * kmap_atomic() doesn't set the page virtual
+			 * address for highmem pages, and
+			 * kunmap_atomic() takes care of cache
+			 * flushing already.
+			 */
+			if (!IS_ENABLED(CONFIG_HIGHMEM) || addr)
+				__cpuc_flush_dcache_area(addr, PAGE_SIZE);
+		}
+	}
+}
+EXPORT_SYMBOL(flush_kernel_dcache_page);
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Flush an anonymous page so that users of get_user_pages()
  * can safely access the data.  The expected sequence is:
  *

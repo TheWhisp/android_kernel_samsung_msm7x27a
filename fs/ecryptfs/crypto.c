@@ -927,7 +927,11 @@ static void ecryptfs_set_default_crypt_stat_vals(
 
 /**
  * ecryptfs_new_file_context
+<<<<<<< HEAD
  * @ecryptfs_dentry: The eCryptfs dentry
+=======
+ * @ecryptfs_inode: The eCryptfs inode
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * If the crypto context for the file has not yet been established,
  * this is where we do that.  Establishing a new crypto context
@@ -944,6 +948,7 @@ static void ecryptfs_set_default_crypt_stat_vals(
  *
  * Returns zero on success; non-zero otherwise
  */
+<<<<<<< HEAD
 int ecryptfs_new_file_context(struct dentry *ecryptfs_dentry)
 {
 	struct ecryptfs_crypt_stat *crypt_stat =
@@ -951,6 +956,15 @@ int ecryptfs_new_file_context(struct dentry *ecryptfs_dentry)
 	struct ecryptfs_mount_crypt_stat *mount_crypt_stat =
 	    &ecryptfs_superblock_to_private(
 		    ecryptfs_dentry->d_sb)->mount_crypt_stat;
+=======
+int ecryptfs_new_file_context(struct inode *ecryptfs_inode)
+{
+	struct ecryptfs_crypt_stat *crypt_stat =
+	    &ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat;
+	struct ecryptfs_mount_crypt_stat *mount_crypt_stat =
+	    &ecryptfs_superblock_to_private(
+		    ecryptfs_inode->i_sb)->mount_crypt_stat;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int cipher_name_len;
 	int rc = 0;
 
@@ -1259,12 +1273,20 @@ static int ecryptfs_write_headers_virt(char *page_virt, size_t max,
 }
 
 static int
+<<<<<<< HEAD
 ecryptfs_write_metadata_to_contents(struct dentry *ecryptfs_dentry,
+=======
+ecryptfs_write_metadata_to_contents(struct inode *ecryptfs_inode,
+>>>>>>> refs/remotes/origin/cm-10.0
 				    char *virt, size_t virt_len)
 {
 	int rc;
 
+<<<<<<< HEAD
 	rc = ecryptfs_write_lower(ecryptfs_dentry->d_inode, virt,
+=======
+	rc = ecryptfs_write_lower(ecryptfs_inode, virt,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  0, virt_len);
 	if (rc < 0)
 		printk(KERN_ERR "%s: Error attempting to write header "
@@ -1298,7 +1320,12 @@ static unsigned long ecryptfs_get_zeroed_pages(gfp_t gfp_mask,
 
 /**
  * ecryptfs_write_metadata
+<<<<<<< HEAD
  * @ecryptfs_dentry: The eCryptfs dentry
+=======
+ * @ecryptfs_dentry: The eCryptfs dentry, which should be negative
+ * @ecryptfs_inode: The newly created eCryptfs inode
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Write the file headers out.  This will likely involve a userspace
  * callout, in which the session key is encrypted with one or more
@@ -1308,10 +1335,18 @@ static unsigned long ecryptfs_get_zeroed_pages(gfp_t gfp_mask,
  *
  * Returns zero on success; non-zero on error
  */
+<<<<<<< HEAD
 int ecryptfs_write_metadata(struct dentry *ecryptfs_dentry)
 {
 	struct ecryptfs_crypt_stat *crypt_stat =
 		&ecryptfs_inode_to_private(ecryptfs_dentry->d_inode)->crypt_stat;
+=======
+int ecryptfs_write_metadata(struct dentry *ecryptfs_dentry,
+			    struct inode *ecryptfs_inode)
+{
+	struct ecryptfs_crypt_stat *crypt_stat =
+		&ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int order;
 	char *virt;
 	size_t virt_len;
@@ -1351,7 +1386,11 @@ int ecryptfs_write_metadata(struct dentry *ecryptfs_dentry)
 		rc = ecryptfs_write_metadata_to_xattr(ecryptfs_dentry, virt,
 						      size);
 	else
+<<<<<<< HEAD
 		rc = ecryptfs_write_metadata_to_contents(ecryptfs_dentry, virt,
+=======
+		rc = ecryptfs_write_metadata_to_contents(ecryptfs_inode, virt,
+>>>>>>> refs/remotes/origin/cm-10.0
 							 virt_len);
 	if (rc) {
 		printk(KERN_ERR "%s: Error writing metadata out to lower file; "
@@ -1548,8 +1587,13 @@ int ecryptfs_read_and_validate_xattr_region(struct dentry *dentry,
  */
 int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
 {
+<<<<<<< HEAD
 	int rc = 0;
 	char *page_virt = NULL;
+=======
+	int rc;
+	char *page_virt;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct inode *ecryptfs_inode = ecryptfs_dentry->d_inode;
 	struct ecryptfs_crypt_stat *crypt_stat =
 	    &ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat;
@@ -1574,6 +1618,10 @@ int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
 						ecryptfs_dentry,
 						ECRYPTFS_VALIDATE_HEADER_SIZE);
 	if (rc) {
+<<<<<<< HEAD
+=======
+		/* metadata is not in the file header, so try xattrs */
+>>>>>>> refs/remotes/origin/cm-10.0
 		memset(page_virt, 0, PAGE_CACHE_SIZE);
 		rc = ecryptfs_read_xattr_region(page_virt, ecryptfs_inode);
 		if (rc) {
@@ -1987,6 +2035,20 @@ out:
 	return;
 }
 
+<<<<<<< HEAD
+=======
+static size_t ecryptfs_max_decoded_size(size_t encoded_size)
+{
+	/* Not exact; conservatively long. Every block of 4
+	 * encoded characters decodes into a block of 3
+	 * decoded characters. This segment of code provides
+	 * the caller with the maximum amount of allocated
+	 * space that @dst will need to point to in a
+	 * subsequent call. */
+	return ((encoded_size + 1) * 3) / 4;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * ecryptfs_decode_from_filename
  * @dst: If NULL, this function only sets @dst_size and returns. If
@@ -2005,6 +2067,7 @@ ecryptfs_decode_from_filename(unsigned char *dst, size_t *dst_size,
 	size_t dst_byte_offset = 0;
 
 	if (dst == NULL) {
+<<<<<<< HEAD
 		/* Not exact; conservatively long. Every block of 4
 		 * encoded characters decodes into a block of 3
 		 * decoded characters. This segment of code provides
@@ -2012,6 +2075,9 @@ ecryptfs_decode_from_filename(unsigned char *dst, size_t *dst_size,
 		 * space that @dst will need to point to in a
 		 * subsequent call. */
 		(*dst_size) = (((src_size + 1) * 3) / 4);
+=======
+		(*dst_size) = ecryptfs_max_decoded_size(src_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 	while (src_byte_offset < src_size) {
@@ -2236,3 +2302,55 @@ out_free:
 out:
 	return rc;
 }
+<<<<<<< HEAD
+=======
+
+#define ENC_NAME_MAX_BLOCKLEN_8_OR_16	143
+
+int ecryptfs_set_f_namelen(long *namelen, long lower_namelen,
+			   struct ecryptfs_mount_crypt_stat *mount_crypt_stat)
+{
+	struct blkcipher_desc desc;
+	struct mutex *tfm_mutex;
+	size_t cipher_blocksize;
+	int rc;
+
+	if (!(mount_crypt_stat->flags & ECRYPTFS_GLOBAL_ENCRYPT_FILENAMES)) {
+		(*namelen) = lower_namelen;
+		return 0;
+	}
+
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&desc.tfm, &tfm_mutex,
+			mount_crypt_stat->global_default_fn_cipher_name);
+	if (unlikely(rc)) {
+		(*namelen) = 0;
+		return rc;
+	}
+
+	mutex_lock(tfm_mutex);
+	cipher_blocksize = crypto_blkcipher_blocksize(desc.tfm);
+	mutex_unlock(tfm_mutex);
+
+	/* Return an exact amount for the common cases */
+	if (lower_namelen == NAME_MAX
+	    && (cipher_blocksize == 8 || cipher_blocksize == 16)) {
+		(*namelen) = ENC_NAME_MAX_BLOCKLEN_8_OR_16;
+		return 0;
+	}
+
+	/* Return a safe estimate for the uncommon cases */
+	(*namelen) = lower_namelen;
+	(*namelen) -= ECRYPTFS_FNEK_ENCRYPTED_FILENAME_PREFIX_SIZE;
+	/* Since this is the max decoded size, subtract 1 "decoded block" len */
+	(*namelen) = ecryptfs_max_decoded_size(*namelen) - 3;
+	(*namelen) -= ECRYPTFS_TAG_70_MAX_METADATA_SIZE;
+	(*namelen) -= ECRYPTFS_FILENAME_MIN_RANDOM_PREPEND_BYTES;
+	/* Worst case is that the filename is padded nearly a full block size */
+	(*namelen) -= cipher_blocksize - 1;
+
+	if ((*namelen) < 0)
+		(*namelen) = 0;
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0

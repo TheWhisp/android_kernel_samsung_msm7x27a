@@ -21,7 +21,13 @@
  */
 #include <linux/async_tx.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
 #include <linux/random.h>
+=======
+#include <linux/mm.h>
+#include <linux/random.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef pr
 #define pr(fmt, args...) pr_info("raid6test: " fmt, ##args)

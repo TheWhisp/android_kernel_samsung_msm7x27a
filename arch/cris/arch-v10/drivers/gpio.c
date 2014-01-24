@@ -24,7 +24,10 @@
 #include <asm/etraxgpio.h>
 #include <arch/svinto.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <arch/io_interface_mux.h>
 

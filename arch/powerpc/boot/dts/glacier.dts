@@ -130,12 +130,25 @@
 		};
 
 		CRYPTO: crypto@180000 {
+<<<<<<< HEAD
 			compatible = "amcc,ppc460gt-crypto", "amcc,ppc4xx-crypto";
+=======
+			compatible = "amcc,ppc460gt-crypto", "amcc,ppc460ex-crypto",
+				"amcc,ppc4xx-crypto";
+>>>>>>> refs/remotes/origin/cm-10.0
 			reg = <4 0x00180000 0x80400>;
 			interrupt-parent = <&UIC0>;
 			interrupts = <0x1d 0x4>;
 		};
 
+<<<<<<< HEAD
+=======
+		HWRNG: hwrng@110000 {
+			compatible = "amcc,ppc460ex-rng", "ppc4xx-rng";
+			reg = <4 0x00110000 0x50>;
+		};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		MAL0: mcmal {
 			compatible = "ibm,mcmal-460gt", "ibm,mcmal2";
 			dcr-reg = <0x180 0x062>;

@@ -1,9 +1,17 @@
 #include <linux/dcache.h>
 #include <linux/debugfs.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/mm.h>
 #include <linux/string.h>
 #include <linux/slab.h>
+=======
+#include <linux/hardirq.h>
+#include <linux/mm.h>
+#include <linux/string.h>
+#include <linux/slab.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "decl.h"
 #include "cmd.h"
@@ -19,12 +27,15 @@ static char *szStates[] = {
 static void lbs_debug_init(struct lbs_private *priv);
 #endif
 
+<<<<<<< HEAD
 static int open_file_generic(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t write_file_dummy(struct file *file, const char __user *buf,
                                 size_t count, loff_t *ppos)
 {
@@ -694,7 +705,11 @@ out_unlock:
 
 #define FOPS(fread, fwrite) { \
 	.owner = THIS_MODULE, \
+<<<<<<< HEAD
 	.open = open_file_generic, \
+=======
+	.open = simple_open, \
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read = (fread), \
 	.write = (fwrite), \
 	.llseek = generic_file_llseek, \
@@ -702,7 +717,11 @@ out_unlock:
 
 struct lbs_debugfs_files {
 	const char *name;
+<<<<<<< HEAD
 	int perm;
+=======
+	umode_t perm;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct file_operations fops;
 };
 
@@ -960,7 +979,11 @@ static ssize_t lbs_debugfs_write(struct file *f, const char __user *buf,
 
 static const struct file_operations lbs_debug_fops = {
 	.owner = THIS_MODULE,
+<<<<<<< HEAD
 	.open = open_file_generic,
+=======
+	.open = simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.write = lbs_debugfs_write,
 	.read = lbs_debugfs_read,
 	.llseek = default_llseek,

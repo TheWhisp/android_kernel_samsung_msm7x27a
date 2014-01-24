@@ -60,6 +60,10 @@ There are three components to pagemap:
     19. HWPOISON
     20. NOPAGE
     21. KSM
+<<<<<<< HEAD
+=======
+    22. THP
+>>>>>>> refs/remotes/origin/cm-10.0
 
 Short descriptions to the page flags:
 
@@ -97,6 +101,12 @@ Short descriptions to the page flags:
 21. KSM
     identical memory pages dynamically shared between one or more processes
 
+<<<<<<< HEAD
+=======
+22. THP
+    contiguous pages which construct transparent hugepages
+
+>>>>>>> refs/remotes/origin/cm-10.0
     [IO related page flags]
  1. ERROR     IO error occurred
  3. UPTODATE  page has up-to-date data

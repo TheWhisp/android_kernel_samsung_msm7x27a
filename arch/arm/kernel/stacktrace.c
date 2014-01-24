@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/stacktrace.h>
 
@@ -31,7 +35,11 @@ int notrace unwind_frame(struct stackframe *frame)
 	high = ALIGN(low, THREAD_SIZE);
 
 	/* check current frame pointer is within bounds */
+<<<<<<< HEAD
 	if (fp < low + 12 || fp > high - 4)
+=======
+	if (fp < (low + 12) || fp + 4 >= high)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	/* restore the registers from the stack frame */
@@ -92,11 +100,28 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
 	data.skip = trace->skip;
 
 	if (tsk != current) {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SMP
+		/*
+		 * What guarantees do we have here that 'tsk' is not
+		 * running on another CPU?  For now, ignore it as we
+		 * can't guarantee we won't explode.
+		 */
+		if (trace->nr_entries < trace->max_entries)
+			trace->entries[trace->nr_entries++] = ULONG_MAX;
+		return;
+#else
+>>>>>>> refs/remotes/origin/cm-10.0
 		data.no_sched_functions = 1;
 		frame.fp = thread_saved_fp(tsk);
 		frame.sp = thread_saved_sp(tsk);
 		frame.lr = 0;		/* recovered from the stack */
 		frame.pc = thread_saved_pc(tsk);
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		register unsigned long current_sp asm ("sp");
 

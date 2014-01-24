@@ -258,6 +258,10 @@ void deactivate_fd(int fd, int irqnum)
 
 	ignore_sigio_fd(fd);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(deactivate_fd);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Called just before shutdown in order to provide a clean exec

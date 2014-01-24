@@ -1,6 +1,10 @@
 menuconfig MTD_ONENAND
 	tristate "OneNAND Device Support"
 	depends on MTD
+<<<<<<< HEAD
+=======
+	depends on HAS_IOMEM
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  This enables support for accessing all type of OneNAND flash
 	  devices. For further information see

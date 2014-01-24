@@ -148,7 +148,11 @@ static int cs5535audio_build_dma_packets(struct cs5535audio *cs5535au,
 		struct cs5535audio_dma_desc *desc =
 			&((struct cs5535audio_dma_desc *) dma->desc_buf.area)[i];
 		desc->addr = cpu_to_le32(addr);
+<<<<<<< HEAD
 		desc->size = cpu_to_le32(period_bytes);
+=======
+		desc->size = cpu_to_le16(period_bytes);
+>>>>>>> refs/remotes/origin/cm-10.0
 		desc->ctlreserved = cpu_to_le16(PRD_EOP);
 		desc_addr += sizeof(struct cs5535audio_dma_desc);
 		addr += period_bytes;

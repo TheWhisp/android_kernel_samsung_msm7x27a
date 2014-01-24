@@ -244,6 +244,10 @@ typedef struct journal_superblock_s
 
 #include <linux/fs.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/jbd_common.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define J_ASSERT(assert)	BUG_ON(!(assert))
 
@@ -270,6 +274,7 @@ typedef struct journal_superblock_s
 #define J_EXPECT_JH(jh, expr, why...)	__journal_expect(expr, ## why)
 #endif
 
+<<<<<<< HEAD
 enum jbd_state_bits {
 	BH_JBD			/* Has an attached ext3 journal_head */
 	  = BH_PrivateStart,
@@ -333,6 +338,8 @@ static inline void jbd_unlock_bh_journal_head(struct buffer_head *bh)
 	bit_spin_unlock(BH_JournalHead, &bh->b_state);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct jbd_revoke_table_s;
 
 /**
@@ -559,7 +566,10 @@ struct transaction_s
  * @j_format_version: Version of the superblock format
  * @j_state_lock: Protect the various scalars in the journal
  * @j_barrier_count:  Number of processes waiting to create a barrier lock
+<<<<<<< HEAD
  * @j_barrier: The barrier lock itself
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @j_running_transaction: The current running transaction..
  * @j_committing_transaction: the transaction we are pushing to disk
  * @j_checkpoint_transactions: a linked circular list of all transactions
@@ -642,9 +652,12 @@ struct journal_s
 	 */
 	int			j_barrier_count;
 
+<<<<<<< HEAD
 	/* The barrier lock itself */
 	struct mutex		j_barrier;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Transactions: The current running transaction...
 	 * [j_state_lock] [caller holding open handle]
@@ -940,7 +953,10 @@ extern int	   journal_force_commit(journal_t *);
  */
 struct journal_head *journal_add_journal_head(struct buffer_head *bh);
 struct journal_head *journal_grab_journal_head(struct buffer_head *bh);
+<<<<<<< HEAD
 void journal_remove_journal_head(struct buffer_head *bh);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void journal_put_journal_head(struct journal_head *jh);
 
 /*
@@ -976,6 +992,10 @@ extern int	journal_set_revoke(journal_t *, unsigned int, tid_t);
 extern int	journal_test_revoke(journal_t *, unsigned int, tid_t);
 extern void	journal_clear_revoke(journal_t *);
 extern void	journal_switch_revoke_table(journal_t *journal);
+<<<<<<< HEAD
+=======
+extern void	journal_clear_buffer_revoked_flags(journal_t *journal);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The log thread user interface:

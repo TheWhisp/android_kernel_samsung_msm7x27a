@@ -98,7 +98,11 @@ static inline void fd_disable_irq(void)
 static inline int fd_request_irq(void)
 {
 	return request_irq(FLOPPY_IRQ, floppy_interrupt,
+<<<<<<< HEAD
 	                   IRQF_DISABLED, "floppy", NULL);
+=======
+	                   0, "floppy", NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline void fd_free_irq(void)

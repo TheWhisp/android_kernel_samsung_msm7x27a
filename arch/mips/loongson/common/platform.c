@@ -9,6 +9,10 @@
  */
 
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/smp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 
 static struct platform_device loongson2_cpufreq_device = {

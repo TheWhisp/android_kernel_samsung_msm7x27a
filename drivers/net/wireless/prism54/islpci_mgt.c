@@ -24,7 +24,10 @@
 #include <linux/slab.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/if_arp.h>
 
 #include "prismcompat.h"
@@ -192,11 +195,17 @@ islpci_mgt_transmit(struct net_device *ndev, int operation, unsigned long oid,
 
 	err = -ENOMEM;
 	p = buf.mem = kmalloc(frag_len, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!buf.mem) {
 		printk(KERN_DEBUG "%s: cannot allocate mgmt frame\n",
 		       ndev->name);
 		goto error;
 	}
+=======
+	if (!buf.mem)
+		goto error;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	buf.size = frag_len;
 
 	/* create the header directly in the fragment data area */

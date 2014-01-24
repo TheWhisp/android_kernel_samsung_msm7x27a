@@ -16,6 +16,10 @@ struct scsi_driver {
 
 	void (*rescan)(struct device *);
 	int (*done)(struct scsi_cmnd *);
+<<<<<<< HEAD
+=======
+	int (*eh_action)(struct scsi_cmnd *, unsigned char *, int, int);
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #define to_scsi_driver(drv) \
 	container_of((drv), struct scsi_driver, gendrv)

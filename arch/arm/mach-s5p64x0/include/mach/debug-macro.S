@@ -15,7 +15,11 @@
 
 #include <plat/regs-serial.h>
 
+<<<<<<< HEAD
 	.macro addruart, rp, rv
+=======
+	.macro addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 		mov	\rp, #0xE0000000
 		orr	\rp, \rp, #0x00100000
 		ldr	\rp, [\rp, #0x118 ]

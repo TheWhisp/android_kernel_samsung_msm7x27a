@@ -16,6 +16,7 @@
 #ifndef __ASM_ARCH_MXC_TIMEX_H__
 #define __ASM_ARCH_MXC_TIMEX_H__
 
+<<<<<<< HEAD
 #if defined CONFIG_ARCH_MX1
 #define CLOCK_TICK_RATE		16000000
 #elif defined CONFIG_ARCH_MX2
@@ -27,5 +28,9 @@
 #elif defined CONFIG_ARCH_MX5
 #define CLOCK_TICK_RATE		8000000
 #endif
+=======
+/* Bogus value */
+#define CLOCK_TICK_RATE	12345678
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif				/* __ASM_ARCH_MXC_TIMEX_H__ */

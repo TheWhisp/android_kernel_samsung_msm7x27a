@@ -12,6 +12,10 @@
  */
 #include <linux/init.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mm.h>
 #include <linux/mmzone.h>
 #include <linux/module.h>
@@ -381,8 +385,13 @@ static void __init szmem(void)
 				continue;
 			}
 			num_physpages += slot_psize;
+<<<<<<< HEAD
 			add_active_range(node, slot_getbasepfn(node, slot),
 					 slot_getbasepfn(node, slot) + slot_psize);
+=======
+			memblock_add_node(PFN_PHYS(slot_getbasepfn(node, slot)),
+					  PFN_PHYS(slot_psize), node);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 }

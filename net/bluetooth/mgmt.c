@@ -1,7 +1,11 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
    Copyright (C) 2010  Nokia Corporation
+<<<<<<< HEAD
    Copyright (c) 2011-2013 The Linux Foundation.  All rights reserved.
+=======
+   Copyright (c) 2011-2012 The Linux Foundation.  All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License version 2 as
@@ -229,8 +233,11 @@ static int read_controller_info(struct sock *sk, u16 index)
 
 	memcpy(rp.name, hdev->dev_name, sizeof(hdev->dev_name));
 
+<<<<<<< HEAD
 	rp.le_white_list_size = hdev->le_white_list_size;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	hci_dev_unlock_bh(hdev);
 	hci_dev_put(hdev);
 
@@ -383,6 +390,7 @@ static int set_powered(struct sock *sk, u16 index, unsigned char *data, u16 len)
 		err = cmd_status(sk, index, MGMT_OP_SET_POWERED, EBUSY);
 		goto failed;
 	}
+<<<<<<< HEAD
 	/* Avoid queing power_on/off when the set up is going on via
 	 * hci_register_dev
 	 */
@@ -408,6 +416,21 @@ static int set_powered(struct sock *sk, u16 index, unsigned char *data, u16 len)
 		goto failed;
 	}
 	return err;
+=======
+
+	cmd = mgmt_pending_add(sk, MGMT_OP_SET_POWERED, index, data, len);
+	if (!cmd) {
+		err = -ENOMEM;
+		goto failed;
+	}
+
+	if (cp->val)
+		queue_work(hdev->workqueue, &hdev->power_on);
+	else
+		queue_work(hdev->workqueue, &hdev->power_off);
+
+	err = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 failed:
 	hci_dev_unlock_bh(hdev);
@@ -1464,6 +1487,7 @@ failed:
 	return err;
 }
 
+<<<<<<< HEAD
 static int le_add_dev_white_list(struct sock *sk, u16 index,
 					unsigned char *data, u16 len)
 {
@@ -1643,6 +1667,8 @@ failed:
 	return err;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int set_io_capability(struct sock *sk, u16 index, unsigned char *data,
 									u16 len)
 {
@@ -1765,7 +1791,11 @@ static void pairing_connect_complete_cb(struct hci_conn *conn, u8 status)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (status || conn->pending_sec_level < BT_SECURITY_MEDIUM)
+=======
+	if (status)
+>>>>>>> refs/remotes/origin/cm-10.0
 		pairing_complete(cmd, status);
 
 	hci_conn_put(conn);
@@ -1968,6 +1998,7 @@ failed:
 	return err;
 }
 
+<<<<<<< HEAD
 static int cancel_resolve_name(struct sock *sk, u16 index, unsigned char *data,
 								u16 len)
 {
@@ -2000,6 +2031,8 @@ static int cancel_resolve_name(struct sock *sk, u16 index, unsigned char *data,
 	return err;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int set_connection_params(struct sock *sk, u16 index,
 				unsigned char *data, u16 len)
 {
@@ -2117,6 +2150,7 @@ failed:
 	return err;
 }
 
+<<<<<<< HEAD
 static int le_cancel_create_conn(struct sock *sk, u16 index,
 	unsigned char *data, u16 len)
 {
@@ -2151,6 +2185,8 @@ failed:
 return err;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static int set_local_name(struct sock *sk, u16 index, unsigned char *data,
 								u16 len)
 {
@@ -2233,10 +2269,16 @@ void mgmt_inquiry_complete_evt(u16 index, u8 status)
 	struct mgmt_mode cp = {0};
 	int err = -1;
 
+<<<<<<< HEAD
 	hdev = hci_dev_get(index);
 
 	if (hdev)
 		BT_DBG("disco_state: %d", hdev->disco_state);
+=======
+	BT_DBG("");
+
+	hdev = hci_dev_get(index);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!hdev || !lmp_le_capable(hdev)) {
 
@@ -2245,11 +2287,16 @@ void mgmt_inquiry_complete_evt(u16 index, u8 status)
 
 		mgmt_event(MGMT_EV_DISCOVERING, index, &cp, sizeof(cp), NULL);
 
+<<<<<<< HEAD
 		if (hdev) {
 			BT_DBG("Setting state to SCAN_IDLE\n");
 			hdev->disco_state = SCAN_IDLE;
 			goto done;
 		}
+=======
+		if (hdev)
+			goto done;
+>>>>>>> refs/remotes/origin/cm-10.0
 		else
 			return;
 	}
@@ -2363,7 +2410,10 @@ static int start_discovery(struct sock *sk, u16 index)
 	if (!hdev)
 		return cmd_status(sk, index, MGMT_OP_START_DISCOVERY, ENODEV);
 
+<<<<<<< HEAD
 	BT_DBG("disco_state: %d", hdev->disco_state);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	hci_dev_lock_bh(hdev);
 
 	if (hdev->disco_state && timer_pending(&hdev->disco_timer)) {
@@ -2444,8 +2494,11 @@ static int stop_discovery(struct sock *sk, u16 index)
 	if (!hdev)
 		return cmd_status(sk, index, MGMT_OP_STOP_DISCOVERY, ENODEV);
 
+<<<<<<< HEAD
 	BT_DBG("disco_state: %d", hdev->disco_state);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	hci_dev_lock_bh(hdev);
 
 	state = hdev->disco_state;
@@ -2710,9 +2763,12 @@ int mgmt_control(struct sock *sk, struct msghdr *msg, size_t msglen)
 	case MGMT_OP_RESOLVE_NAME:
 		err = resolve_name(sk, index, buf + sizeof(*hdr), len);
 		break;
+<<<<<<< HEAD
 	case MGMT_OP_CANCEL_RESOLVE_NAME:
 		err = cancel_resolve_name(sk, index, buf + sizeof(*hdr), len);
 		break;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MGMT_OP_SET_CONNECTION_PARAMS:
 		err = set_connection_params(sk, index, buf + sizeof(*hdr), len);
 		break;
@@ -2735,6 +2791,7 @@ int mgmt_control(struct sock *sk, struct msghdr *msg, size_t msglen)
 	case MGMT_OP_ENCRYPT_LINK:
 		err = encrypt_link(sk, index, buf + sizeof(*hdr), len);
 		break;
+<<<<<<< HEAD
 	case MGMT_OP_LE_ADD_DEV_WHITE_LIST:
 		err = le_add_dev_white_list(sk, index, buf + sizeof(*hdr),
 									len);
@@ -2755,6 +2812,9 @@ int mgmt_control(struct sock *sk, struct msghdr *msg, size_t msglen)
 	case MGMT_OP_LE_CANCEL_CREATE_CONN:
 		err = le_cancel_create_conn(sk, index, buf + sizeof(*hdr), len);
 		break;
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		BT_DBG("Unknown op %u", opcode);
 		err = cmd_status(sk, index, opcode, 0x01);
@@ -2914,6 +2974,7 @@ int mgmt_new_key(u16 index, struct link_key *key, u8 bonded)
 int mgmt_connected(u16 index, bdaddr_t *bdaddr, u8 le)
 {
 	struct mgmt_ev_connected ev;
+<<<<<<< HEAD
 	struct pending_cmd *cmd;
 	struct hci_dev *hdev;
 
@@ -2923,16 +2984,21 @@ int mgmt_connected(u16 index, bdaddr_t *bdaddr, u8 le)
 
 	if (!hdev)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bacpy(&ev.bdaddr, bdaddr);
 	ev.le = le;
 
+<<<<<<< HEAD
 	cmd = mgmt_pending_find(MGMT_OP_LE_CREATE_CONN_WHITE_LIST, index);
 	if (cmd) {
 		BT_ERR("mgmt_connected remove mgmt pending white_list");
 		mgmt_pending_remove(cmd);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return mgmt_event(MGMT_EV_CONNECTED, index, &ev, sizeof(ev), NULL);
 }
 
@@ -2966,22 +3032,35 @@ static void disconnect_rsp(struct pending_cmd *cmd, void *data)
 	mgmt_pending_remove(cmd);
 }
 
+<<<<<<< HEAD
 int mgmt_disconnected(u16 index, bdaddr_t *bdaddr, u8 reason)
+=======
+int mgmt_disconnected(u16 index, bdaddr_t *bdaddr)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct mgmt_ev_disconnected ev;
 	struct sock *sk = NULL;
 	int err;
 
+<<<<<<< HEAD
 	bacpy(&ev.bdaddr, bdaddr);
 	ev.reason = reason;
+=======
+	mgmt_pending_foreach(MGMT_OP_DISCONNECT, index, disconnect_rsp, &sk);
+
+	bacpy(&ev.bdaddr, bdaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = mgmt_event(MGMT_EV_DISCONNECTED, index, &ev, sizeof(ev), sk);
 
 	if (sk)
 		sock_put(sk);
 
+<<<<<<< HEAD
 	mgmt_pending_foreach(MGMT_OP_DISCONNECT, index, disconnect_rsp, &sk);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 
@@ -3102,12 +3181,15 @@ int mgmt_user_confirm_request(u16 index, u8 event,
 		goto no_auto_confirm;
 	}
 
+<<<<<<< HEAD
 	/* Show bonding dialog if neither side requires no bonding */
 	if ((conn->auth_type > 0x01) && (conn->remote_auth > 0x01)) {
 		if (!loc_mitm && !rem_mitm)
 			value = 0;
 		goto no_auto_confirm;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((!loc_mitm || rem_cap == 0x03) && (!rem_mitm || loc_cap == 0x03))
 		ev.auto_confirm = 1;

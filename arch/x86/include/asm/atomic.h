@@ -172,18 +172,27 @@ static inline int atomic_add_negative(int i, atomic_t *v)
  */
 static inline int atomic_add_return(int i, atomic_t *v)
 {
+<<<<<<< HEAD
 	int __i;
 #ifdef CONFIG_M386
+=======
+#ifdef CONFIG_M386
+	int __i;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long flags;
 	if (unlikely(boot_cpu_data.x86 <= 3))
 		goto no_xadd;
 #endif
 	/* Modern 486+ processor */
+<<<<<<< HEAD
 	__i = i;
 	asm volatile(LOCK_PREFIX "xaddl %0, %1"
 		     : "+r" (i), "+m" (v->counter)
 		     : : "memory");
 	return i + __i;
+=======
+	return i + xadd(&v->counter, i);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_M386
 no_xadd: /* Legacy 386 processor */
@@ -221,15 +230,25 @@ static inline int atomic_xchg(atomic_t *v, int new)
 }
 
 /**
+<<<<<<< HEAD
  * atomic_add_unless - add unless the number is already a given value
+=======
+ * __atomic_add_unless - add unless the number is already a given value
+>>>>>>> refs/remotes/origin/cm-10.0
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as @v was not already @u.
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
 static inline int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+ * Returns the old value of @v.
+ */
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int c, old;
 	c = atomic_read(v);
@@ -241,10 +260,16 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
 			break;
 		c = old;
 	}
+<<<<<<< HEAD
 	return c != (u);
 }
 
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+=======
+	return c;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * atomic_dec_if_positive - decrement by 1 if old value positive
@@ -319,5 +344,8 @@ static inline void atomic_or_long(unsigned long *v1, unsigned long v2)
 # include "atomic64_64.h"
 #endif
 
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_X86_ATOMIC_H */

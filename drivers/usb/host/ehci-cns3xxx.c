@@ -107,7 +107,11 @@ static int cns3xxx_ehci_probe(struct platform_device *pdev)
 	}
 
 	hcd->rsrc_start = res->start;
+<<<<<<< HEAD
 	hcd->rsrc_len = res->end - res->start + 1;
+=======
+	hcd->rsrc_len = resource_size(res);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len,
 				driver->description)) {

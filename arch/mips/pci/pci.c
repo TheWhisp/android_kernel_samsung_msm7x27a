@@ -4,15 +4,28 @@
  * Free Software Foundation;  either version 2 of the  License, or (at your
  * option) any later version.
  *
+<<<<<<< HEAD
  * Copyright (C) 2003, 04 Ralf Baechle (ralf@linux-mips.org)
  */
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/bootmem.h>
+=======
+ * Copyright (C) 2003, 04, 11 Ralf Baechle (ralf@linux-mips.org)
+ * Copyright (C) 2011 Wind River Systems,
+ *   written by Ralf Baechle (ralf@linux-mips.org)
+ */
+#include <linux/bug.h>
+#include <linux/kernel.h>
+#include <linux/mm.h>
+#include <linux/bootmem.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/types.h>
 #include <linux/pci.h>
 
+<<<<<<< HEAD
 /*
  * Indicate whether we respect the PCI setup left by the firmware.
  *
@@ -24,6 +37,14 @@ int pci_probe_only;
 #define PCI_ASSIGN_ALL_BUSSES	1
 
 unsigned int pci_probe = PCI_ASSIGN_ALL_BUSSES;
+=======
+#include <asm/cpu-info.h>
+
+/*
+ * If PCI_PROBE_ONLY in pci_flags is set, we don't change any PCI resource
+ * assignments.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * The PCI controller list.
@@ -80,15 +101,33 @@ static void __devinit pcibios_scanbus(struct pci_controller *hose)
 {
 	static int next_busno;
 	static int need_domain_info;
+<<<<<<< HEAD
+=======
+	LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pci_bus *bus;
 
 	if (!hose->iommu)
 		PCI_DMA_BUS_IS_PHYS = 1;
 
+<<<<<<< HEAD
 	if (hose->get_busno && pci_probe_only)
 		next_busno = (*hose->get_busno)();
 
 	bus = pci_scan_bus(next_busno, hose->pci_ops, hose);
+=======
+	if (hose->get_busno && pci_has_flag(PCI_PROBE_ONLY))
+		next_busno = (*hose->get_busno)();
+
+	pci_add_resource_offset(&resources,
+				hose->mem_resource, hose->mem_offset);
+	pci_add_resource_offset(&resources, hose->io_resource, hose->io_offset);
+	bus = pci_scan_root_bus(NULL, next_busno, hose->pci_ops, hose,
+				&resources);
+	if (!bus)
+		pci_free_resource_list(&resources);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	hose->bus = bus;
 
 	need_domain_info = need_domain_info || hose->index;
@@ -102,7 +141,11 @@ static void __devinit pcibios_scanbus(struct pci_controller *hose)
 			need_domain_info = 1;
 		}
 
+<<<<<<< HEAD
 		if (!pci_probe_only) {
+=======
+		if (!pci_has_flag(PCI_PROBE_ONLY)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			pci_bus_size_bridges(bus);
 			pci_bus_assign_resources(bus);
 			pci_enable_bridges(bus);
@@ -149,10 +192,38 @@ out:
 	       "Skipping PCI bus scan due to resource conflict\n");
 }
 
+<<<<<<< HEAD
+=======
+static void __init pcibios_set_cache_line_size(void)
+{
+	struct cpuinfo_mips *c = &current_cpu_data;
+	unsigned int lsize;
+
+	/*
+	 * Set PCI cacheline size to that of the highest level in the
+	 * cache hierarchy.
+	 */
+	lsize = c->dcache.linesz;
+	lsize = c->scache.linesz ? : lsize;
+	lsize = c->tcache.linesz ? : lsize;
+
+	BUG_ON(!lsize);
+
+	pci_dfl_cache_line_size = lsize >> 2;
+
+	pr_debug("PCI: pci_cache_line_size set to %d bytes\n", lsize);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init pcibios_init(void)
 {
 	struct pci_controller *hose;
 
+<<<<<<< HEAD
+=======
+	pcibios_set_cache_line_size();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Scan all of the recorded PCI controllers.  */
 	for (hose = hose_head; hose; hose = hose->next)
 		pcibios_scanbus(hose);
@@ -204,6 +275,7 @@ static int pcibios_enable_resources(struct pci_dev *dev, int mask)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  *  If we set up a device for bus mastering, we need to check the latency
  *  timer as certain crappy BIOSes forget to set it properly.
@@ -228,6 +300,11 @@ void pcibios_set_master(struct pci_dev *dev)
 unsigned int pcibios_assign_all_busses(void)
 {
 	return (pci_probe & PCI_ASSIGN_ALL_BUSSES) ? 1 : 0;
+=======
+unsigned int pcibios_assign_all_busses(void)
+{
+	return 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int pcibios_enable_device(struct pci_dev *dev, int mask)
@@ -240,6 +317,7 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
 	return pcibios_plat_dev_init(dev);
 }
 
+<<<<<<< HEAD
 static void pcibios_fixup_device_resources(struct pci_dev *dev,
 	struct pci_bus *bus)
 {
@@ -283,6 +361,15 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
 
 		if ((dev->class >> 8) != PCI_CLASS_BRIDGE_PCI)
 			pcibios_fixup_device_resources(dev, bus);
+=======
+void __devinit pcibios_fixup_bus(struct pci_bus *bus)
+{
+	struct pci_dev *dev = bus->self;
+
+	if (pci_has_flag(PCI_PROBE_ONLY) && dev &&
+	    (dev->class >> 8) == PCI_CLASS_BRIDGE_PCI) {
+		pci_read_bridge_bases(bus);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -292,6 +379,7 @@ pcibios_update_irq(struct pci_dev *dev, int irq)
 	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
 }
 
+<<<<<<< HEAD
 void pcibios_resource_to_bus(struct pci_dev *dev, struct pci_bus_region *region,
 			 struct resource *res)
 {
@@ -326,6 +414,9 @@ pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 #ifdef CONFIG_HOTPLUG
 EXPORT_SYMBOL(pcibios_resource_to_bus);
 EXPORT_SYMBOL(pcibios_bus_to_resource);
+=======
+#ifdef CONFIG_HOTPLUG
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(PCIBIOS_MIN_IO);
 EXPORT_SYMBOL(PCIBIOS_MIN_MEM);
 #endif

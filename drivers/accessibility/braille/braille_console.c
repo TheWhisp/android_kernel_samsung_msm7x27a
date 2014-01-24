@@ -44,7 +44,11 @@ MODULE_LICENSE("GPL");
  */
 
 /* Emit various sounds */
+<<<<<<< HEAD
 static int sound;
+=======
+static bool sound;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(sound, bool, 0);
 MODULE_PARM_DESC(sound, "emit sounds");
 
@@ -244,6 +248,7 @@ static int keyboard_notifier_call(struct notifier_block *blk,
 
 			switch (val) {
 			case KVAL(K_CAPS):
+<<<<<<< HEAD
 				on_off = vc_kbd_led(kbd_table + fg_console,
 						VC_CAPSLOCK);
 				break;
@@ -254,6 +259,15 @@ static int keyboard_notifier_call(struct notifier_block *blk,
 			case KVAL(K_HOLD):
 				on_off = vc_kbd_led(kbd_table + fg_console,
 						VC_SCROLLOCK);
+=======
+				on_off = vt_get_leds(fg_console, VC_CAPSLOCK);
+				break;
+			case KVAL(K_NUM):
+				on_off = vt_get_leds(fg_console, VC_NUMLOCK);
+				break;
+			case KVAL(K_HOLD):
+				on_off = vt_get_leds(fg_console, VC_SCROLLOCK);
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 			if (on_off == 1)

@@ -105,12 +105,20 @@
 #include <linux/delay.h>
 #include <linux/ide.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/io.h>
 
 #define DRV_NAME "cmd640"
 
+<<<<<<< HEAD
 static int cmd640_vlb;
+=======
+static bool cmd640_vlb;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * CMD640 specific registers definition.

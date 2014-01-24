@@ -30,6 +30,7 @@ struct physmap_flash_data {
 	unsigned int		pfow_base;
 	char                    *probe_type;
 	struct mtd_partition	*parts;
+<<<<<<< HEAD
 };
 
 /*
@@ -49,4 +50,9 @@ void physmap_configure(unsigned long addr, unsigned long size,
  */
 void physmap_set_partitions(struct mtd_partition *parts, int num_parts);
 
+=======
+	const char		**part_probe_types;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __LINUX_MTD_PHYSMAP__ */

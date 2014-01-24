@@ -211,13 +211,25 @@ void __init __add_active_range(unsigned int nid, unsigned long start_pfn,
 	}
 
 	/*
+<<<<<<< HEAD
 	 *  We don't know which RAM region contains kernel data,
 	 *  so we try it repeatedly and let the resource manager
 	 *  test it.
+=======
+	 * We don't know which RAM region contains kernel data or
+	 * the reserved crashkernel region, so try it repeatedly
+	 * and let the resource manager test it.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	request_resource(res, &code_resource);
 	request_resource(res, &data_resource);
 	request_resource(res, &bss_resource);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KEXEC
+	request_resource(res, &crashk_res);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Also make sure that there is a PMB mapping that covers this
@@ -227,7 +239,12 @@ void __init __add_active_range(unsigned int nid, unsigned long start_pfn,
 	pmb_bolt_mapping((unsigned long)__va(start), start, end - start,
 			 PAGE_KERNEL);
 
+<<<<<<< HEAD
 	add_active_range(nid, start_pfn, end_pfn);
+=======
+	memblock_set_node(PFN_PHYS(start_pfn),
+			  PFN_PHYS(end_pfn - start_pfn), nid);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void __init __weak plat_early_device_setup(void)

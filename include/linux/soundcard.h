@@ -198,7 +198,12 @@ typedef struct seq_event_rec {
 #  else
 #    error "could not determine byte order"
 #  endif
+<<<<<<< HEAD
 #elif defined(__BYTE_ORDER)
+=======
+#else
+# if defined(__BYTE_ORDER)
+>>>>>>> refs/remotes/origin/cm-10.0
 #  if __BYTE_ORDER == __BIG_ENDIAN
 #    define AFMT_S16_NE AFMT_S16_BE
 #  elif __BYTE_ORDER == __LITTLE_ENDIAN
@@ -206,6 +211,10 @@ typedef struct seq_event_rec {
 #  else
 #    error "could not determine byte order"
 #  endif
+<<<<<<< HEAD
+=======
+# endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*

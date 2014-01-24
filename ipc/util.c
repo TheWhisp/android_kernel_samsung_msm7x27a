@@ -579,6 +579,7 @@ static void ipc_schedule_free(struct rcu_head *head)
 	schedule_work(&sched->work);
 }
 
+<<<<<<< HEAD
 /**
  * ipc_immediate_free - free ipc + rcu space
  * @head: RCU callback structure that contains pointer to be freed
@@ -592,6 +593,8 @@ static void ipc_immediate_free(struct rcu_head *head)
 	kfree(free);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void ipc_rcu_putref(void *ptr)
 {
 	if (--container_of(ptr, struct ipc_rcu_hdr, data)->refcount > 0)
@@ -601,8 +604,12 @@ void ipc_rcu_putref(void *ptr)
 		call_rcu(&container_of(ptr, struct ipc_rcu_grace, data)->rcu,
 				ipc_schedule_free);
 	} else {
+<<<<<<< HEAD
 		call_rcu(&container_of(ptr, struct ipc_rcu_grace, data)->rcu,
 				ipc_immediate_free);
+=======
+		kfree_rcu(container_of(ptr, struct ipc_rcu_grace, data), rcu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 

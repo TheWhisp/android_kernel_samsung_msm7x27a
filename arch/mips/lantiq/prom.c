@@ -6,7 +6,11 @@
  * Copyright (C) 2010 John Crispin <blogic@openwrt.org>
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/clk.h>
 #include <asm/bootinfo.h>
 #include <asm/time.h>

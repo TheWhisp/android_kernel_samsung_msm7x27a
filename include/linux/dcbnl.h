@@ -203,6 +203,10 @@ struct dcbmsg {
  * @DCB_CMD_GFEATCFG: get DCBX features flags
  * @DCB_CMD_SFEATCFG: set DCBX features negotiation flags
  * @DCB_CMD_CEE_GET: get CEE aggregated configuration
+<<<<<<< HEAD
+=======
+ * @DCB_CMD_IEEE_DEL: delete IEEE 802.1Qaz configuration
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 enum dcbnl_commands {
 	DCB_CMD_UNDEFINED,
@@ -246,6 +250,10 @@ enum dcbnl_commands {
 	DCB_CMD_SFEATCFG,
 
 	DCB_CMD_CEE_GET,
+<<<<<<< HEAD
+=======
+	DCB_CMD_IEEE_DEL,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__DCB_CMD_ENUM_MAX,
 	DCB_CMD_MAX = __DCB_CMD_ENUM_MAX - 1,
@@ -331,18 +339,41 @@ enum ieee_attrs_app {
 #define DCB_ATTR_IEEE_APP_MAX (__DCB_ATTR_IEEE_APP_MAX - 1)
 
 /**
+<<<<<<< HEAD
  * enum cee_attrs - CEE DCBX get attributes
+=======
+ * enum cee_attrs - CEE DCBX get attributes.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * @DCB_ATTR_CEE_UNSPEC: unspecified
  * @DCB_ATTR_CEE_PEER_PG: peer PG configuration - get only
  * @DCB_ATTR_CEE_PEER_PFC: peer PFC configuration - get only
+<<<<<<< HEAD
  * @DCB_ATTR_CEE_PEER_APP: peer APP tlv - get only
+=======
+ * @DCB_ATTR_CEE_PEER_APP_TABLE: peer APP tlv - get only
+ * @DCB_ATTR_CEE_TX_PG: TX PG configuration (DCB_CMD_PGTX_GCFG)
+ * @DCB_ATTR_CEE_RX_PG: RX PG configuration (DCB_CMD_PGRX_GCFG)
+ * @DCB_ATTR_CEE_PFC: PFC configuration (DCB_CMD_PFC_GCFG)
+ * @DCB_ATTR_CEE_APP_TABLE: APP configuration (multi DCB_CMD_GAPP)
+ * @DCB_ATTR_CEE_FEAT: DCBX features flags (DCB_CMD_GFEATCFG)
+ *
+ * An aggregated collection of the cee std negotiated parameters.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 enum cee_attrs {
 	DCB_ATTR_CEE_UNSPEC,
 	DCB_ATTR_CEE_PEER_PG,
 	DCB_ATTR_CEE_PEER_PFC,
 	DCB_ATTR_CEE_PEER_APP_TABLE,
+<<<<<<< HEAD
+=======
+	DCB_ATTR_CEE_TX_PG,
+	DCB_ATTR_CEE_RX_PG,
+	DCB_ATTR_CEE_PFC,
+	DCB_ATTR_CEE_APP_TABLE,
+	DCB_ATTR_CEE_FEAT,
+>>>>>>> refs/remotes/origin/cm-10.0
 	__DCB_ATTR_CEE_MAX
 };
 #define DCB_ATTR_CEE_MAX (__DCB_ATTR_CEE_MAX - 1)
@@ -355,6 +386,16 @@ enum peer_app_attr {
 };
 #define DCB_ATTR_CEE_PEER_APP_MAX (__DCB_ATTR_CEE_PEER_APP_MAX - 1)
 
+<<<<<<< HEAD
+=======
+enum cee_attrs_app {
+	DCB_ATTR_CEE_APP_UNSPEC,
+	DCB_ATTR_CEE_APP,
+	__DCB_ATTR_CEE_APP_MAX
+};
+#define DCB_ATTR_CEE_APP_MAX (__DCB_ATTR_CEE_APP_MAX - 1)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * enum dcbnl_pfc_attrs - DCB Priority Flow Control user priority nested attrs
  *

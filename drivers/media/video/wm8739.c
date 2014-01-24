@@ -291,6 +291,7 @@ static struct i2c_driver wm8739_driver = {
 	.id_table	= wm8739_id,
 };
 
+<<<<<<< HEAD
 static __init int init_wm8739(void)
 {
 	return i2c_add_driver(&wm8739_driver);
@@ -303,3 +304,6 @@ static __exit void exit_wm8739(void)
 
 module_init(init_wm8739);
 module_exit(exit_wm8739);
+=======
+module_i2c_driver(wm8739_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

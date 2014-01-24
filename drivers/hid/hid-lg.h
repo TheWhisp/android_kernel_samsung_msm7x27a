@@ -19,10 +19,19 @@ int lg3ff_init(struct hid_device *hdev);
 static inline int lg3ff_init(struct hid_device *hdev) { return -1; }
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_LOGIWII_FF
 int lg4ff_init(struct hid_device *hdev);
 #else
 static inline int lg4ff_init(struct hid_device *hdev) { return -1; }
+=======
+#ifdef CONFIG_LOGIWHEELS_FF
+int lg4ff_init(struct hid_device *hdev);
+int lg4ff_deinit(struct hid_device *hdev);
+#else
+static inline int lg4ff_init(struct hid_device *hdev) { return -1; }
+static inline int lg4ff_deinit(struct hid_device *hdev) { return -1; }
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #endif

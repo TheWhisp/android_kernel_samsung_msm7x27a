@@ -209,13 +209,21 @@ static int sp887x_initial_setup (struct dvb_frontend* fe, const struct firmware 
 	return 0;
 };
 
+<<<<<<< HEAD
 static int configure_reg0xc05 (struct dvb_frontend_parameters *p, u16 *reg0xc05)
+=======
+static int configure_reg0xc05(struct dtv_frontend_properties *p, u16 *reg0xc05)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int known_parameters = 1;
 
 	*reg0xc05 = 0x000;
 
+<<<<<<< HEAD
 	switch (p->u.ofdm.constellation) {
+=======
+	switch (p->modulation) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case QPSK:
 		break;
 	case QAM_16:
@@ -231,7 +239,11 @@ static int configure_reg0xc05 (struct dvb_frontend_parameters *p, u16 *reg0xc05)
 		return -EINVAL;
 	};
 
+<<<<<<< HEAD
 	switch (p->u.ofdm.hierarchy_information) {
+=======
+	switch (p->hierarchy) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case HIERARCHY_NONE:
 		break;
 	case HIERARCHY_1:
@@ -250,7 +262,11 @@ static int configure_reg0xc05 (struct dvb_frontend_parameters *p, u16 *reg0xc05)
 		return -EINVAL;
 	};
 
+<<<<<<< HEAD
 	switch (p->u.ofdm.code_rate_HP) {
+=======
+	switch (p->code_rate_HP) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case FEC_1_2:
 		break;
 	case FEC_2_3:
@@ -303,17 +319,41 @@ static void divide (int n, int d, int *quotient_i, int *quotient_f)
 }
 
 static void sp887x_correct_offsets (struct sp887x_state* state,
+<<<<<<< HEAD
 				    struct dvb_frontend_parameters *p,
 				    int actual_freq)
 {
 	static const u32 srate_correction [] = { 1879617, 4544878, 8098561 };
 	int bw_index = p->u.ofdm.bandwidth - BANDWIDTH_8_MHZ;
+=======
+				    struct dtv_frontend_properties *p,
+				    int actual_freq)
+{
+	static const u32 srate_correction [] = { 1879617, 4544878, 8098561 };
+	int bw_index;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int freq_offset = actual_freq - p->frequency;
 	int sysclock = 61003; //[kHz]
 	int ifreq = 36000000;
 	int freq;
 	int frequency_shift;
 
+<<<<<<< HEAD
+=======
+	switch (p->bandwidth_hz) {
+	default:
+	case 8000000:
+		bw_index = 0;
+		break;
+	case 7000000:
+		bw_index = 1;
+		break;
+	case 6000000:
+		bw_index = 2;
+		break;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (p->inversion == INVERSION_ON)
 		freq = ifreq - freq_offset;
 	else
@@ -333,17 +373,29 @@ static void sp887x_correct_offsets (struct sp887x_state* state,
 	sp887x_writereg(state, 0x30a, frequency_shift & 0xfff);
 }
 
+<<<<<<< HEAD
 static int sp887x_setup_frontend_parameters (struct dvb_frontend* fe,
 					     struct dvb_frontend_parameters *p)
 {
+=======
+static int sp887x_setup_frontend_parameters(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sp887x_state* state = fe->demodulator_priv;
 	unsigned actual_freq;
 	int err;
 	u16 val, reg0xc05;
 
+<<<<<<< HEAD
 	if (p->u.ofdm.bandwidth != BANDWIDTH_8_MHZ &&
 	    p->u.ofdm.bandwidth != BANDWIDTH_7_MHZ &&
 	    p->u.ofdm.bandwidth != BANDWIDTH_6_MHZ)
+=======
+	if (p->bandwidth_hz != 8000000 &&
+	    p->bandwidth_hz != 7000000 &&
+	    p->bandwidth_hz != 6000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	if ((err = configure_reg0xc05(p, &reg0xc05)))
@@ -353,7 +405,11 @@ static int sp887x_setup_frontend_parameters (struct dvb_frontend* fe,
 
 	/* setup the PLL */
 	if (fe->ops.tuner_ops.set_params) {
+<<<<<<< HEAD
 		fe->ops.tuner_ops.set_params(fe, p);
+=======
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl) fe->ops.i2c_gate_ctrl(fe, 0);
 	}
 	if (fe->ops.tuner_ops.get_frequency) {
@@ -369,9 +425,15 @@ static int sp887x_setup_frontend_parameters (struct dvb_frontend* fe,
 	sp887x_correct_offsets(state, p, actual_freq);
 
 	/* filter for 6/7/8 Mhz channel */
+<<<<<<< HEAD
 	if (p->u.ofdm.bandwidth == BANDWIDTH_6_MHZ)
 		val = 2;
 	else if (p->u.ofdm.bandwidth == BANDWIDTH_7_MHZ)
+=======
+	if (p->bandwidth_hz == 6000000)
+		val = 2;
+	else if (p->bandwidth_hz == 7000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		val = 1;
 	else
 		val = 0;
@@ -379,16 +441,26 @@ static int sp887x_setup_frontend_parameters (struct dvb_frontend* fe,
 	sp887x_writereg(state, 0x311, val);
 
 	/* scan order: 2k first = 0, 8k first = 1 */
+<<<<<<< HEAD
 	if (p->u.ofdm.transmission_mode == TRANSMISSION_MODE_2K)
+=======
+	if (p->transmission_mode == TRANSMISSION_MODE_2K)
+>>>>>>> refs/remotes/origin/cm-10.0
 		sp887x_writereg(state, 0x338, 0x000);
 	else
 		sp887x_writereg(state, 0x338, 0x001);
 
 	sp887x_writereg(state, 0xc05, reg0xc05);
 
+<<<<<<< HEAD
 	if (p->u.ofdm.bandwidth == BANDWIDTH_6_MHZ)
 		val = 2 << 3;
 	else if (p->u.ofdm.bandwidth == BANDWIDTH_7_MHZ)
+=======
+	if (p->bandwidth_hz == 6000000)
+		val = 2 << 3;
+	else if (p->bandwidth_hz == 7000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		val = 3 << 3;
 	else
 		val = 0 << 3;
@@ -579,10 +651,16 @@ error:
 }
 
 static struct dvb_frontend_ops sp887x_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		.name = "Spase SP887x DVB-T",
 		.type = FE_OFDM,
+=======
+	.delsys = { SYS_DVBT },
+	.info = {
+		.name = "Spase SP887x DVB-T",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min =  50500000,
 		.frequency_max = 858000000,
 		.frequency_stepsize = 166666,

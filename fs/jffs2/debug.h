@@ -51,6 +51,10 @@
  * superseded by nicer dbg_xxx() macros...
  */
 #if CONFIG_JFFS2_FS_DEBUG > 0
+<<<<<<< HEAD
+=======
+#define DEBUG
+>>>>>>> refs/remotes/origin/cm-10.0
 #define D1(x) x
 #else
 #define D1(x)
@@ -62,6 +66,7 @@
 #define D2(x)
 #endif
 
+<<<<<<< HEAD
 /* The prefixes of JFFS2 messages */
 #define JFFS2_DBG_PREFIX	"[JFFS2 DBG]"
 #define JFFS2_ERR_PREFIX	"JFFS2 error:"
@@ -106,6 +111,35 @@
 			" (%d) %s: " fmt, task_pid_nr(current),		\
 			__func__ , ##__VA_ARGS__);			\
 	} while(0)
+=======
+#define jffs2_dbg(level, fmt, ...)		\
+do {						\
+	if (CONFIG_JFFS2_FS_DEBUG >= level)	\
+		pr_debug(fmt, ##__VA_ARGS__);	\
+} while (0)
+
+/* The prefixes of JFFS2 messages */
+#define JFFS2_DBG		KERN_DEBUG
+#define JFFS2_DBG_PREFIX	"[JFFS2 DBG]"
+#define JFFS2_DBG_MSG_PREFIX	JFFS2_DBG JFFS2_DBG_PREFIX
+
+/* JFFS2 message macros */
+#define JFFS2_ERROR(fmt, ...)					\
+	pr_err("error: (%d) %s: " fmt,				\
+	       task_pid_nr(current), __func__, ##__VA_ARGS__)
+
+#define JFFS2_WARNING(fmt, ...)						\
+	pr_warn("warning: (%d) %s: " fmt,				\
+		task_pid_nr(current), __func__, ##__VA_ARGS__)
+
+#define JFFS2_NOTICE(fmt, ...)						\
+	pr_notice("notice: (%d) %s: " fmt,				\
+		  task_pid_nr(current), __func__, ##__VA_ARGS__)
+
+#define JFFS2_DEBUG(fmt, ...)						\
+	printk(KERN_DEBUG "[JFFS2 DBG] (%d) %s: " fmt,			\
+	       task_pid_nr(current), __func__, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * We split our debugging messages on several parts, depending on the JFFS2

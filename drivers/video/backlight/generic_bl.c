@@ -56,7 +56,11 @@ static int genericbl_get_intensity(struct backlight_device *bd)
  * Called when the battery is low to limit the backlight intensity.
  * If limit==0 clear any limit, otherwise limit the intensity
  */
+<<<<<<< HEAD
 void corgibl_limit_intensity(int limit)
+=======
+void genericbl_limit_intensity(int limit)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct backlight_device *bd = generic_backlight_device;
 
@@ -68,7 +72,11 @@ void corgibl_limit_intensity(int limit)
 	backlight_update_status(generic_backlight_device);
 	mutex_unlock(&bd->ops_lock);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(corgibl_limit_intensity);
+=======
+EXPORT_SYMBOL(genericbl_limit_intensity);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static const struct backlight_ops genericbl_ops = {
 	.options = BL_CORE_SUSPENDRESUME,
@@ -132,6 +140,7 @@ static struct platform_driver genericbl_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init genericbl_init(void)
 {
 	return platform_driver_register(&genericbl_driver);
@@ -144,6 +153,9 @@ static void __exit genericbl_exit(void)
 
 module_init(genericbl_init);
 module_exit(genericbl_exit);
+=======
+module_platform_driver(genericbl_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Richard Purdie <rpurdie@rpsys.net>");
 MODULE_DESCRIPTION("Generic Backlight Driver");

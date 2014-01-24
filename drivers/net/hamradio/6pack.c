@@ -13,7 +13,10 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <linux/bitops.h>
 #include <linux/string.h>
@@ -36,7 +39,11 @@
 #include <linux/tcp.h>
 #include <linux/semaphore.h>
 #include <linux/compat.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define SIXPACK_VERSION    "Revision: 0.3.0"
 

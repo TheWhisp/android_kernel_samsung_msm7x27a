@@ -282,6 +282,7 @@ EXPORT_SYMBOL(blk_queue_resize_tags);
 void blk_queue_end_tag(struct request_queue *q, struct request *rq)
 {
 	struct blk_queue_tag *bqt = q->queue_tags;
+<<<<<<< HEAD
 	int tag = rq->tag;
 
 	BUG_ON(tag == -1);
@@ -292,6 +293,11 @@ void blk_queue_end_tag(struct request_queue *q, struct request *rq)
 		 * FIXME: how about a warning or info message here?
 		 */
 		return;
+=======
+	unsigned tag = rq->tag; /* negative tags invalid */
+
+	BUG_ON(tag >= bqt->real_max_depth);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	list_del_init(&rq->queuelist);
 	rq->cmd_flags &= ~REQ_QUEUED;

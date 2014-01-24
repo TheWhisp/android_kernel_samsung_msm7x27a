@@ -25,12 +25,53 @@
 #define HWLOCK_IRQSTATE	0x01	/* Disable interrupts, save state */
 #define HWLOCK_IRQ	0x02	/* Disable interrupts, don't save state */
 
+<<<<<<< HEAD
 struct hwspinlock;
 
 #if defined(CONFIG_HWSPINLOCK) || defined(CONFIG_HWSPINLOCK_MODULE)
 
 int hwspin_lock_register(struct hwspinlock *lock);
 struct hwspinlock *hwspin_lock_unregister(unsigned int id);
+=======
+struct device;
+struct hwspinlock;
+struct hwspinlock_device;
+struct hwspinlock_ops;
+
+/**
+ * struct hwspinlock_pdata - platform data for hwspinlock drivers
+ * @base_id: base id for this hwspinlock device
+ *
+ * hwspinlock devices provide system-wide hardware locks that are used
+ * by remote processors that have no other way to achieve synchronization.
+ *
+ * To achieve that, each physical lock must have a system-wide id number
+ * that is agreed upon, otherwise remote processors can't possibly assume
+ * they're using the same hardware lock.
+ *
+ * Usually boards have a single hwspinlock device, which provides several
+ * hwspinlocks, and in this case, they can be trivially numbered 0 to
+ * (num-of-locks - 1).
+ *
+ * In case boards have several hwspinlocks devices, a different base id
+ * should be used for each hwspinlock device (they can't all use 0 as
+ * a starting id!).
+ *
+ * This platform data structure should be used to provide the base id
+ * for each device (which is trivially 0 when only a single hwspinlock
+ * device exists). It can be shared between different platforms, hence
+ * its location.
+ */
+struct hwspinlock_pdata {
+	int base_id;
+};
+
+#if defined(CONFIG_HWSPINLOCK) || defined(CONFIG_HWSPINLOCK_MODULE)
+
+int hwspin_lock_register(struct hwspinlock_device *bank, struct device *dev,
+		const struct hwspinlock_ops *ops, int base_id, int num_locks);
+int hwspin_lock_unregister(struct hwspinlock_device *bank);
+>>>>>>> refs/remotes/origin/cm-10.0
 struct hwspinlock *hwspin_lock_request(void);
 struct hwspinlock *hwspin_lock_request_specific(unsigned int id);
 int hwspin_lock_free(struct hwspinlock *hwlock);
@@ -86,7 +127,10 @@ int __hwspin_trylock(struct hwspinlock *hwlock, int mode, unsigned long *flags)
 static inline
 void __hwspin_unlock(struct hwspinlock *hwlock, int mode, unsigned long *flags)
 {
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline int hwspin_lock_get_id(struct hwspinlock *hwlock)
@@ -94,6 +138,7 @@ static inline int hwspin_lock_get_id(struct hwspinlock *hwlock)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int hwspin_lock_register(struct hwspinlock *hwlock)
 {
 	return -ENODEV;
@@ -104,6 +149,8 @@ static inline struct hwspinlock *hwspin_lock_unregister(unsigned int id)
 	return NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !CONFIG_HWSPINLOCK */
 
 /**

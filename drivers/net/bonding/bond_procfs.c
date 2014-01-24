@@ -1,4 +1,8 @@
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
 #include "bonding.h"
@@ -125,6 +129,10 @@ static void bond_info_show_master(struct seq_file *seq)
 		seq_puts(seq, "\n802.3ad info\n");
 		seq_printf(seq, "LACP rate: %s\n",
 			   (bond->params.lacp_fast) ? "fast" : "slow");
+<<<<<<< HEAD
+=======
+		seq_printf(seq, "Min links: %d\n", bond->params.min_links);
+>>>>>>> refs/remotes/origin/cm-10.0
 		seq_printf(seq, "Aggregator selection policy (ad_select): %s\n",
 			   ad_select_tbl[bond->params.ad_select].modename);
 
@@ -156,8 +164,21 @@ static void bond_info_show_slave(struct seq_file *seq,
 	seq_printf(seq, "\nSlave Interface: %s\n", slave->dev->name);
 	seq_printf(seq, "MII Status: %s\n",
 		   (slave->link == BOND_LINK_UP) ?  "up" : "down");
+<<<<<<< HEAD
 	seq_printf(seq, "Speed: %d Mbps\n", slave->speed);
 	seq_printf(seq, "Duplex: %s\n", slave->duplex ? "full" : "half");
+=======
+	if (slave->speed == SPEED_UNKNOWN)
+		seq_printf(seq, "Speed: %s\n", "Unknown");
+	else
+		seq_printf(seq, "Speed: %d Mbps\n", slave->speed);
+
+	if (slave->duplex == DUPLEX_UNKNOWN)
+		seq_printf(seq, "Duplex: %s\n", "Unknown");
+	else
+		seq_printf(seq, "Duplex: %s\n", slave->duplex ? "full" : "half");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	seq_printf(seq, "Link Failure Count: %u\n",
 		   slave->link_failure_count);
 

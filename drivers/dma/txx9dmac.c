@@ -15,6 +15,11 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/scatterlist.h>
+<<<<<<< HEAD
+=======
+
+#include "dmaengine.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "txx9dmac.h"
 
 static struct txx9dmac_chan *to_txx9dmac_chan(struct dma_chan *chan)
@@ -279,6 +284,7 @@ static void txx9dmac_desc_put(struct txx9dmac_chan *dc,
 	}
 }
 
+<<<<<<< HEAD
 /* Called with dc->lock held and bh disabled */
 static dma_cookie_t
 txx9dmac_assign_cookie(struct txx9dmac_chan *dc, struct txx9dmac_desc *desc)
@@ -294,6 +300,8 @@ txx9dmac_assign_cookie(struct txx9dmac_chan *dc, struct txx9dmac_desc *desc)
 	return cookie;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*----------------------------------------------------------------------*/
 
 static void txx9dmac_dump_regs(struct txx9dmac_chan *dc)
@@ -424,7 +432,11 @@ txx9dmac_descriptor_complete(struct txx9dmac_chan *dc,
 	dev_vdbg(chan2dev(&dc->chan), "descriptor %u %p complete\n",
 		 txd->cookie, desc);
 
+<<<<<<< HEAD
 	dc->completed = txd->cookie;
+=======
+	dma_cookie_complete(txd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	callback = txd->callback;
 	param = txd->callback_param;
 
@@ -738,7 +750,11 @@ static dma_cookie_t txx9dmac_tx_submit(struct dma_async_tx_descriptor *tx)
 	dma_cookie_t cookie;
 
 	spin_lock_bh(&dc->lock);
+<<<<<<< HEAD
 	cookie = txx9dmac_assign_cookie(dc, desc);
+=======
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_vdbg(chan2dev(tx->chan), "tx_submit: queued %u %p\n",
 		 desc->txd.cookie, desc);
@@ -845,8 +861,13 @@ txx9dmac_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
 
 static struct dma_async_tx_descriptor *
 txx9dmac_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
+<<<<<<< HEAD
 		unsigned int sg_len, enum dma_data_direction direction,
 		unsigned long flags)
+=======
+		unsigned int sg_len, enum dma_transfer_direction direction,
+		unsigned long flags, void *context)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct txx9dmac_chan *dc = to_txx9dmac_chan(chan);
 	struct txx9dmac_dev *ddev = dc->ddev;
@@ -860,9 +881,15 @@ txx9dmac_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 
 	BUG_ON(!ds || !ds->reg_width);
 	if (ds->tx_reg)
+<<<<<<< HEAD
 		BUG_ON(direction != DMA_TO_DEVICE);
 	else
 		BUG_ON(direction != DMA_FROM_DEVICE);
+=======
+		BUG_ON(direction != DMA_MEM_TO_DEV);
+	else
+		BUG_ON(direction != DMA_DEV_TO_MEM);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(!sg_len))
 		return NULL;
 
@@ -882,7 +909,11 @@ txx9dmac_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 		mem = sg_dma_address(sg);
 
 		if (__is_dmac64(ddev)) {
+<<<<<<< HEAD
 			if (direction == DMA_TO_DEVICE) {
+=======
+			if (direction == DMA_MEM_TO_DEV) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				desc->hwdesc.SAR = mem;
 				desc->hwdesc.DAR = ds->tx_reg;
 			} else {
@@ -891,7 +922,11 @@ txx9dmac_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 			}
 			desc->hwdesc.CNTR = sg_dma_len(sg);
 		} else {
+<<<<<<< HEAD
 			if (direction == DMA_TO_DEVICE) {
+=======
+			if (direction == DMA_MEM_TO_DEV) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				desc->hwdesc32.SAR = mem;
 				desc->hwdesc32.DAR = ds->tx_reg;
 			} else {
@@ -900,7 +935,11 @@ txx9dmac_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 			}
 			desc->hwdesc32.CNTR = sg_dma_len(sg);
 		}
+<<<<<<< HEAD
 		if (direction == DMA_TO_DEVICE) {
+=======
+		if (direction == DMA_MEM_TO_DEV) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			sai = ds->reg_width;
 			dai = 0;
 		} else {
@@ -972,6 +1011,7 @@ txx9dmac_tx_status(struct dma_chan *chan, dma_cookie_t cookie,
 		   struct dma_tx_state *txstate)
 {
 	struct txx9dmac_chan *dc = to_txx9dmac_chan(chan);
+<<<<<<< HEAD
 	dma_cookie_t last_used;
 	dma_cookie_t last_complete;
 	int ret;
@@ -980,11 +1020,17 @@ txx9dmac_tx_status(struct dma_chan *chan, dma_cookie_t cookie,
 	last_used = chan->cookie;
 
 	ret = dma_async_is_complete(cookie, last_complete, last_used);
+=======
+	enum dma_status ret;
+
+	ret = dma_cookie_status(chan, cookie, txstate);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret != DMA_SUCCESS) {
 		spin_lock_bh(&dc->lock);
 		txx9dmac_scan_descriptors(dc);
 		spin_unlock_bh(&dc->lock);
 
+<<<<<<< HEAD
 		last_complete = dc->completed;
 		last_used = chan->cookie;
 
@@ -993,6 +1039,11 @@ txx9dmac_tx_status(struct dma_chan *chan, dma_cookie_t cookie,
 
 	dma_set_tx_state(txstate, last_complete, last_used, 0);
 
+=======
+		ret = dma_cookie_status(chan, cookie, txstate);
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
@@ -1057,7 +1108,11 @@ static int txx9dmac_alloc_chan_resources(struct dma_chan *chan)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	dc->completed = chan->cookie = 1;
+=======
+	dma_cookie_init(chan);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dc->ccr = TXX9_DMA_CCR_IMMCHN | TXX9_DMA_CCR_INTENE | CCR_LE;
 	txx9dmac_chan_set_SMPCHN(dc);
@@ -1186,7 +1241,11 @@ static int __init txx9dmac_chan_probe(struct platform_device *pdev)
 	dc->ddev->chan[ch] = dc;
 	dc->chan.device = &dc->dma;
 	list_add_tail(&dc->chan.device_node, &dc->chan.device->channels);
+<<<<<<< HEAD
 	dc->chan.cookie = dc->completed = 1;
+=======
+	dma_cookie_init(&dc->chan);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (is_dmac64(dc))
 		dc->ch_regs = &__txx9dmac_regs(dc->ddev)->CHAN[ch];

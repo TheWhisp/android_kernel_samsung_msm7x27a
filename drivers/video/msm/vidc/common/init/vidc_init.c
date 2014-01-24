@@ -388,10 +388,20 @@ u32 vidc_get_fd_info(struct video_client_ctx *client_ctx,
 	else
 		buf_addr_table = client_ctx->output_buf_addr_table;
 	if (buf_addr_table[index].pmem_fd == pmem_fd) {
+<<<<<<< HEAD
 		if (buf_addr_table[index].kernel_vaddr == kvaddr)
 			rc = buf_addr_table[index].buff_ion_flag;
 			*buff_handle = buf_addr_table[index].buff_ion_handle;
 	}
+=======
+		if (buf_addr_table[index].kernel_vaddr == kvaddr) {
+			rc = buf_addr_table[index].buff_ion_flag;
+			*buff_handle = buf_addr_table[index].buff_ion_handle;
+		} else
+			*buff_handle = NULL;
+	} else
+		*buff_handle = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 }
 EXPORT_SYMBOL(vidc_get_fd_info);
@@ -627,7 +637,11 @@ u32 vidc_insert_addr_table(struct video_client_ctx *client_ctx,
 			buf_addr_table[*num_of_buffers].dev_addr =
 				mapped_buffer->iova[0];
 		} else {
+<<<<<<< HEAD
 			buff_ion_handle = ion_import_fd(
+=======
+			buff_ion_handle = ion_import_dma_buf(
+>>>>>>> refs/remotes/origin/cm-10.0
 				client_ctx->user_ion_client, pmem_fd);
 			if (IS_ERR_OR_NULL(buff_ion_handle)) {
 				ERR("%s(): get_ION_handle failed\n",
@@ -677,9 +691,16 @@ u32 vidc_insert_addr_table(struct video_client_ctx *client_ctx,
 						(unsigned long *) &buffer_size,
 						UNCACHED,
 						ION_IOMMU_UNMAP_DELAYED);
+<<<<<<< HEAD
 				if (ret) {
 					ERR("%s():ION iommu map fail\n",
 					 __func__);
+=======
+				if (ret || !iova) {
+					ERR(
+					"%s():ION iommu map fail, ret = %d, iova = 0x%lx\n",
+						__func__, ret, iova);
+>>>>>>> refs/remotes/origin/cm-10.0
 					goto ion_map_error;
 				}
 				phys_addr = iova;

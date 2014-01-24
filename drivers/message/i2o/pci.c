@@ -31,6 +31,10 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/i2o.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "core.h"
 
 #define OSM_DESCRIPTION	"I2O-subsystem"

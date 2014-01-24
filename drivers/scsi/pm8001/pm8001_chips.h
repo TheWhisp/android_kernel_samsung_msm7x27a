@@ -46,9 +46,15 @@ static inline u32 pm8001_read_32(void *virt_addr)
 	return *((u32 *)virt_addr);
 }
 
+<<<<<<< HEAD
 static inline void pm8001_write_32(void *addr, u32 offset, u32 val)
 {
 	*((u32 *)(addr + offset)) = val;
+=======
+static inline void pm8001_write_32(void *addr, u32 offset, __le32 val)
+{
+	*((__le32 *)(addr + offset)) = val;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline u32 pm8001_cr32(struct pm8001_hba_info *pm8001_ha, u32 bar,

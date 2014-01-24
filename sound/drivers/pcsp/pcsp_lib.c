@@ -14,7 +14,11 @@
 #include <asm/io.h>
 #include "pcsp.h"
 
+<<<<<<< HEAD
 static int nforce_wa;
+=======
+static bool nforce_wa;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(nforce_wa, bool, 0444);
 MODULE_PARM_DESC(nforce_wa, "Apply NForce chipset workaround "
 		"(expect bad sound)");

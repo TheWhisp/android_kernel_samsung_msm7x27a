@@ -16,6 +16,10 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 #include <linux/input/adxl34x.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "adxl34x.h"
 
@@ -451,10 +455,17 @@ static ssize_t adxl34x_disable_store(struct device *dev,
 				     const char *buf, size_t count)
 {
 	struct adxl34x *ac = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	unsigned long val;
 	int error;
 
 	error = strict_strtoul(buf, 10, &val);
+=======
+	unsigned int val;
+	int error;
+
+	error = kstrtouint(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		return error;
 
@@ -540,10 +551,17 @@ static ssize_t adxl34x_rate_store(struct device *dev,
 				  const char *buf, size_t count)
 {
 	struct adxl34x *ac = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	unsigned long val;
 	int error;
 
 	error = strict_strtoul(buf, 10, &val);
+=======
+	unsigned char val;
+	int error;
+
+	error = kstrtou8(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		return error;
 
@@ -575,10 +593,17 @@ static ssize_t adxl34x_autosleep_store(struct device *dev,
 				  const char *buf, size_t count)
 {
 	struct adxl34x *ac = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	unsigned long val;
 	int error;
 
 	error = strict_strtoul(buf, 10, &val);
+=======
+	unsigned int val;
+	int error;
+
+	error = kstrtouint(buf, 10, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		return error;
 
@@ -622,13 +647,21 @@ static ssize_t adxl34x_write_store(struct device *dev,
 				   const char *buf, size_t count)
 {
 	struct adxl34x *ac = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	unsigned long val;
+=======
+	unsigned int val;
+>>>>>>> refs/remotes/origin/cm-10.0
 	int error;
 
 	/*
 	 * This allows basic ADXL register write access for debug purposes.
 	 */
+<<<<<<< HEAD
 	error = strict_strtoul(buf, 16, &val);
+=======
+	error = kstrtouint(buf, 16, &val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		return error;
 

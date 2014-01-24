@@ -95,7 +95,11 @@ struct lapb_cb {
 	struct sk_buff_head	write_queue;
 	struct sk_buff_head	ack_queue;
 	unsigned char		window;
+<<<<<<< HEAD
 	struct lapb_register_struct callbacks;
+=======
+	const struct lapb_register_struct *callbacks;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* FRMR control information */
 	struct lapb_frame	frmr_data;

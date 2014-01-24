@@ -202,6 +202,17 @@ static int mdiobb_write(struct mii_bus *bus, int phy, int reg, u16 val)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int mdiobb_reset(struct mii_bus *bus)
+{
+	struct mdiobb_ctrl *ctrl = bus->priv;
+	if (ctrl->reset)
+		ctrl->reset(bus);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mii_bus *alloc_mdio_bitbang(struct mdiobb_ctrl *ctrl)
 {
 	struct mii_bus *bus;
@@ -214,6 +225,10 @@ struct mii_bus *alloc_mdio_bitbang(struct mdiobb_ctrl *ctrl)
 
 	bus->read = mdiobb_read;
 	bus->write = mdiobb_write;
+<<<<<<< HEAD
+=======
+	bus->reset = mdiobb_reset;
+>>>>>>> refs/remotes/origin/cm-10.0
 	bus->priv = ctrl;
 
 	return bus;

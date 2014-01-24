@@ -15,7 +15,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/errno.h>
@@ -25,12 +28,15 @@
 #include <linux/slab.h>
 #include <linux/ctype.h>
 
+<<<<<<< HEAD
 #if 0
 #define DEBUGP printk
 #else
 #define DEBUGP(fmt, a...)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Protects all parameters, and incidentally kmalloced_param list. */
 static DEFINE_MUTEX(param_lock);
 
@@ -67,13 +73,18 @@ static void maybe_kfree_parameter(void *param)
 	}
 }
 
+<<<<<<< HEAD
 static inline char dash2underscore(char c)
+=======
+static char dash2underscore(char c)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (c == '-')
 		return '_';
 	return c;
 }
 
+<<<<<<< HEAD
 static inline int parameq(const char *input, const char *paramname)
 {
 	unsigned int i;
@@ -81,12 +92,33 @@ static inline int parameq(const char *input, const char *paramname)
 		if (input[i] == '\0')
 			return 1;
 	return 0;
+=======
+bool parameqn(const char *a, const char *b, size_t n)
+{
+	size_t i;
+
+	for (i = 0; i < n; i++) {
+		if (dash2underscore(a[i]) != dash2underscore(b[i]))
+			return false;
+	}
+	return true;
+}
+
+bool parameq(const char *a, const char *b)
+{
+	return parameqn(a, b, strlen(a)+1);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int parse_one(char *param,
 		     char *val,
 		     const struct kernel_param *params,
 		     unsigned num_params,
+<<<<<<< HEAD
+=======
+		     s16 min_level,
+		     s16 max_level,
+>>>>>>> refs/remotes/origin/cm-10.0
 		     int (*handle_unknown)(char *param, char *val))
 {
 	unsigned int i;
@@ -95,10 +127,21 @@ static int parse_one(char *param,
 	/* Find parameter */
 	for (i = 0; i < num_params; i++) {
 		if (parameq(param, params[i].name)) {
+<<<<<<< HEAD
 			/* No one handled NULL, so do it here. */
 			if (!val && params[i].ops->set != param_set_bool)
 				return -EINVAL;
 			DEBUGP("They are equal!  Calling %p\n",
+=======
+			if (params[i].level < min_level
+			    || params[i].level > max_level)
+				return 0;
+			/* No one handled NULL, so do it here. */
+			if (!val && params[i].ops->set != param_set_bool
+			    && params[i].ops->set != param_set_bint)
+				return -EINVAL;
+			pr_debug("They are equal!  Calling %p\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			       params[i].ops->set);
 			mutex_lock(&param_lock);
 			err = params[i].ops->set(val, &params[i]);
@@ -108,11 +151,19 @@ static int parse_one(char *param,
 	}
 
 	if (handle_unknown) {
+<<<<<<< HEAD
 		DEBUGP("Unknown argument: calling %p\n", handle_unknown);
 		return handle_unknown(param, val);
 	}
 
 	DEBUGP("Unknown argument `%s'\n", param);
+=======
+		pr_debug("Unknown argument: calling %p\n", handle_unknown);
+		return handle_unknown(param, val);
+	}
+
+	pr_debug("Unknown argument `%s'\n", param);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -ENOENT;
 }
 
@@ -173,11 +224,20 @@ int parse_args(const char *name,
 	       char *args,
 	       const struct kernel_param *params,
 	       unsigned num,
+<<<<<<< HEAD
+=======
+	       s16 min_level,
+	       s16 max_level,
+>>>>>>> refs/remotes/origin/cm-10.0
 	       int (*unknown)(char *param, char *val))
 {
 	char *param, *val;
 
+<<<<<<< HEAD
 	DEBUGP("Parsing ARGS: %s\n", args);
+=======
+	pr_debug("Parsing ARGS: %s\n", args);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Chew leading spaces */
 	args = skip_spaces(args);
@@ -188,7 +248,12 @@ int parse_args(const char *name,
 
 		args = next_arg(args, &param, &val);
 		irq_was_disabled = irqs_disabled();
+<<<<<<< HEAD
 		ret = parse_one(param, val, params, num, unknown);
+=======
+		ret = parse_one(param, val, params, num,
+				min_level, max_level, unknown);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (irq_was_disabled && !irqs_disabled()) {
 			printk(KERN_WARNING "parse_args(): option '%s' enabled "
 					"irq's!\n", param);
@@ -225,8 +290,13 @@ int parse_args(const char *name,
 		int ret;						\
 									\
 		ret = strtolfn(val, 0, &l);				\
+<<<<<<< HEAD
 		if (ret == -EINVAL || ((type)l != l))			\
 			return -EINVAL;					\
+=======
+		if (ret < 0 || ((type)l != l))				\
+			return ret < 0 ? ret : -EINVAL;			\
+>>>>>>> refs/remotes/origin/cm-10.0
 		*((type *)kp->arg) = l;					\
 		return 0;						\
 	}								\
@@ -296,13 +366,17 @@ EXPORT_SYMBOL(param_ops_charp);
 /* Actually could be a bool or an int, for historical reasons. */
 int param_set_bool(const char *val, const struct kernel_param *kp)
 {
+<<<<<<< HEAD
 	bool v;
 	int ret;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* No equals means "set"... */
 	if (!val) val = "1";
 
 	/* One of =[yYnN01] */
+<<<<<<< HEAD
 	ret = strtobool(val, &v);
 	if (ret)
 		return ret;
@@ -312,11 +386,15 @@ int param_set_bool(const char *val, const struct kernel_param *kp)
 	else
 		*(int *)kp->arg = v;
 	return 0;
+=======
+	return strtobool(val, kp->arg);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(param_set_bool);
 
 int param_get_bool(char *buffer, const struct kernel_param *kp)
 {
+<<<<<<< HEAD
 	bool val;
 	if (kp->flags & KPARAM_ISBOOL)
 		val = *(bool *)kp->arg;
@@ -325,6 +403,10 @@ int param_get_bool(char *buffer, const struct kernel_param *kp)
 
 	/* Y and N chosen as being relatively non-coder friendly */
 	return sprintf(buffer, "%c", val ? 'Y' : 'N');
+=======
+	/* Y and N chosen as being relatively non-coder friendly */
+	return sprintf(buffer, "%c", *(bool *)kp->arg ? 'Y' : 'N');
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(param_get_bool);
 
@@ -342,7 +424,10 @@ int param_set_invbool(const char *val, const struct kernel_param *kp)
 	struct kernel_param dummy;
 
 	dummy.arg = &boolval;
+<<<<<<< HEAD
 	dummy.flags = KPARAM_ISBOOL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = param_set_bool(val, &dummy);
 	if (ret == 0)
 		*(bool *)kp->arg = !boolval;
@@ -362,13 +447,43 @@ struct kernel_param_ops param_ops_invbool = {
 };
 EXPORT_SYMBOL(param_ops_invbool);
 
+<<<<<<< HEAD
+=======
+int param_set_bint(const char *val, const struct kernel_param *kp)
+{
+	struct kernel_param boolkp;
+	bool v;
+	int ret;
+
+	/* Match bool exactly, by re-using it. */
+	boolkp = *kp;
+	boolkp.arg = &v;
+
+	ret = param_set_bool(val, &boolkp);
+	if (ret == 0)
+		*(int *)kp->arg = v;
+	return ret;
+}
+EXPORT_SYMBOL(param_set_bint);
+
+struct kernel_param_ops param_ops_bint = {
+	.set = param_set_bint,
+	.get = param_get_int,
+};
+EXPORT_SYMBOL(param_ops_bint);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* We break the rule and mangle the string. */
 static int param_array(const char *name,
 		       const char *val,
 		       unsigned int min, unsigned int max,
 		       void *elem, int elemsize,
 		       int (*set)(const char *, const struct kernel_param *kp),
+<<<<<<< HEAD
 		       u16 flags,
+=======
+		       s16 level,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       unsigned int *num)
 {
 	int ret;
@@ -378,7 +493,11 @@ static int param_array(const char *name,
 	/* Get the name right for errors. */
 	kp.name = name;
 	kp.arg = elem;
+<<<<<<< HEAD
 	kp.flags = flags;
+=======
+	kp.level = level;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	*num = 0;
 	/* We expect a comma-separated list of values. */
@@ -419,7 +538,11 @@ static int param_array_set(const char *val, const struct kernel_param *kp)
 	unsigned int temp_num;
 
 	return param_array(kp->name, val, 1, arr->max, arr->elem,
+<<<<<<< HEAD
 			   arr->elemsize, arr->ops->set, kp->flags,
+=======
+			   arr->elemsize, arr->ops->set, kp->level,
+>>>>>>> refs/remotes/origin/cm-10.0
 			   arr->num ?: &temp_num);
 }
 
@@ -511,7 +634,11 @@ struct module_param_attrs
 #define to_param_attr(n) container_of(n, struct param_attribute, mattr)
 
 static ssize_t param_attr_show(struct module_attribute *mattr,
+<<<<<<< HEAD
 			       struct module *mod, char *buf)
+=======
+			       struct module_kobject *mk, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int count;
 	struct param_attribute *attribute = to_param_attr(mattr);
@@ -531,7 +658,11 @@ static ssize_t param_attr_show(struct module_attribute *mattr,
 
 /* sysfs always hands a nul-terminated string in buf.  We rely on that. */
 static ssize_t param_attr_store(struct module_attribute *mattr,
+<<<<<<< HEAD
 				struct module *owner,
+=======
+				struct module_kobject *km,
+>>>>>>> refs/remotes/origin/cm-10.0
 				const char *buf, size_t len)
 {
  	int err;
@@ -730,6 +861,13 @@ static struct module_kobject * __init locate_module_kobject(const char *name)
 		mk->kobj.kset = module_kset;
 		err = kobject_init_and_add(&mk->kobj, &module_ktype, NULL,
 					   "%s", name);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MODULES
+		if (!err)
+			err = sysfs_create_file(&mk->kobj, &module_uevent.attr);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err) {
 			kobject_put(&mk->kobj);
 			printk(KERN_ERR
@@ -807,7 +945,11 @@ static void __init param_sysfs_builtin(void)
 }
 
 ssize_t __modver_version_show(struct module_attribute *mattr,
+<<<<<<< HEAD
 			      struct module *mod, char *buf)
+=======
+			      struct module_kobject *mk, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct module_version_attribute *vattr =
 		container_of(mattr, struct module_version_attribute, mattr);
@@ -852,7 +994,11 @@ static ssize_t module_attr_show(struct kobject *kobj,
 	if (!attribute->show)
 		return -EIO;
 
+<<<<<<< HEAD
 	ret = attribute->show(attribute, mk->mod, buf);
+=======
+	ret = attribute->show(attribute, mk, buf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -871,7 +1017,11 @@ static ssize_t module_attr_store(struct kobject *kobj,
 	if (!attribute->store)
 		return -EIO;
 
+<<<<<<< HEAD
 	ret = attribute->store(attribute, mk->mod, buf, len);
+=======
+	ret = attribute->store(attribute, mk, buf, len);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }

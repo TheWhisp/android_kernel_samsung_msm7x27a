@@ -1,6 +1,10 @@
 #include <linux/kernel.h>
 #include <linux/gcd.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Greatest common divisor */
 unsigned long gcd(unsigned long a, unsigned long b)

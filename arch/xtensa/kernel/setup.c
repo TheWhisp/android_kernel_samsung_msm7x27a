@@ -34,7 +34,10 @@
 # include <linux/seq_file.h>
 #endif
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/bootparam.h>
 #include <asm/pgtable.h>
 #include <asm/processor.h>

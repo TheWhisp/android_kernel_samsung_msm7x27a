@@ -39,9 +39,12 @@
 #define LINE6_IMPULSE_DEFAULT_PERIOD 100
 #endif
 
+<<<<<<< HEAD
 #define LINE6_BACKUP_MONITOR_SIGNAL 0
 #define LINE6_REUSE_DMA_AREA_FOR_PLAYBACK 0
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
 	Get substream from Line6 PCM data structure
 */
@@ -49,6 +52,7 @@
 		(line6pcm->pcm->streams[stream].substream)
 
 /*
+<<<<<<< HEAD
 	PCM mode bits and masks.
 	"ALSA": operations triggered by applications via ALSA
 	"MONITOR": software monitoring
@@ -100,6 +104,133 @@ enum {
 	MASK_PLAYBACK = MASK_PCM_ALSA_PLAYBACK | MASK_PCM_MONITOR_PLAYBACK,
 	MASK_CAPTURE = MASK_PCM_ALSA_CAPTURE | MASK_PCM_MONITOR_CAPTURE
 #endif
+=======
+	PCM mode bits.
+
+	There are several features of the Line6 USB driver which require PCM
+	data to be exchanged with the device:
+	*) PCM playback and capture via ALSA
+	*) software monitoring (for devices without hardware monitoring)
+	*) optional impulse response measurement
+	However, from the device's point of view, there is just a single
+	capture and playback stream, which must be shared between these
+	subsystems. It is therefore necessary to maintain the state of the
+	subsystems with respect to PCM usage. We define several constants of
+	the form LINE6_BIT_PCM_<subsystem>_<direction>_<resource> with the
+	following meanings:
+	*) <subsystem> is one of
+	-) ALSA: PCM playback and capture via ALSA
+	-) MONITOR: software monitoring
+	-) IMPULSE: optional impulse response measurement
+	*) <direction> is one of
+	-) PLAYBACK: audio output (from host to device)
+	-) CAPTURE: audio input (from device to host)
+	*) <resource> is one of
+	-) BUFFER: buffer required by PCM data stream
+	-) STREAM: actual PCM data stream
+
+	The subsystems call line6_pcm_acquire() to acquire the (shared)
+	resources needed for a particular operation (e.g., allocate the buffer
+	for ALSA playback or start the capture stream for software monitoring).
+	When a resource is no longer needed, it is released by calling
+	line6_pcm_release(). Buffer allocation and stream startup are handled
+	separately to allow the ALSA kernel driver to perform them at
+	appropriate places (since the callback which starts a PCM stream is not
+	allowed to sleep).
+*/
+enum {
+	/* individual bit indices: */
+	LINE6_INDEX_PCM_ALSA_PLAYBACK_BUFFER,
+	LINE6_INDEX_PCM_ALSA_PLAYBACK_STREAM,
+	LINE6_INDEX_PCM_ALSA_CAPTURE_BUFFER,
+	LINE6_INDEX_PCM_ALSA_CAPTURE_STREAM,
+	LINE6_INDEX_PCM_MONITOR_PLAYBACK_BUFFER,
+	LINE6_INDEX_PCM_MONITOR_PLAYBACK_STREAM,
+	LINE6_INDEX_PCM_MONITOR_CAPTURE_BUFFER,
+	LINE6_INDEX_PCM_MONITOR_CAPTURE_STREAM,
+#ifdef CONFIG_LINE6_USB_IMPULSE_RESPONSE
+	LINE6_INDEX_PCM_IMPULSE_PLAYBACK_BUFFER,
+	LINE6_INDEX_PCM_IMPULSE_PLAYBACK_STREAM,
+	LINE6_INDEX_PCM_IMPULSE_CAPTURE_BUFFER,
+	LINE6_INDEX_PCM_IMPULSE_CAPTURE_STREAM,
+#endif
+	LINE6_INDEX_PAUSE_PLAYBACK,
+	LINE6_INDEX_PREPARED,
+
+	/* individual bit masks: */
+	LINE6_BIT(PCM_ALSA_PLAYBACK_BUFFER),
+	LINE6_BIT(PCM_ALSA_PLAYBACK_STREAM),
+	LINE6_BIT(PCM_ALSA_CAPTURE_BUFFER),
+	LINE6_BIT(PCM_ALSA_CAPTURE_STREAM),
+	LINE6_BIT(PCM_MONITOR_PLAYBACK_BUFFER),
+	LINE6_BIT(PCM_MONITOR_PLAYBACK_STREAM),
+	LINE6_BIT(PCM_MONITOR_CAPTURE_BUFFER),
+	LINE6_BIT(PCM_MONITOR_CAPTURE_STREAM),
+#ifdef CONFIG_LINE6_USB_IMPULSE_RESPONSE
+	LINE6_BIT(PCM_IMPULSE_PLAYBACK_BUFFER),
+	LINE6_BIT(PCM_IMPULSE_PLAYBACK_STREAM),
+	LINE6_BIT(PCM_IMPULSE_CAPTURE_BUFFER),
+	LINE6_BIT(PCM_IMPULSE_CAPTURE_STREAM),
+#endif
+	LINE6_BIT(PAUSE_PLAYBACK),
+	LINE6_BIT(PREPARED),
+
+	/* combined bit masks (by operation): */
+	LINE6_BITS_PCM_ALSA_BUFFER =
+	    LINE6_BIT_PCM_ALSA_PLAYBACK_BUFFER |
+	    LINE6_BIT_PCM_ALSA_CAPTURE_BUFFER,
+
+	LINE6_BITS_PCM_ALSA_STREAM =
+	    LINE6_BIT_PCM_ALSA_PLAYBACK_STREAM |
+	    LINE6_BIT_PCM_ALSA_CAPTURE_STREAM,
+
+	LINE6_BITS_PCM_MONITOR =
+	    LINE6_BIT_PCM_MONITOR_PLAYBACK_BUFFER |
+	    LINE6_BIT_PCM_MONITOR_PLAYBACK_STREAM |
+	    LINE6_BIT_PCM_MONITOR_CAPTURE_BUFFER |
+	    LINE6_BIT_PCM_MONITOR_CAPTURE_STREAM,
+
+#ifdef CONFIG_LINE6_USB_IMPULSE_RESPONSE
+	LINE6_BITS_PCM_IMPULSE =
+	    LINE6_BIT_PCM_IMPULSE_PLAYBACK_BUFFER |
+	    LINE6_BIT_PCM_IMPULSE_PLAYBACK_STREAM |
+	    LINE6_BIT_PCM_IMPULSE_CAPTURE_BUFFER |
+	    LINE6_BIT_PCM_IMPULSE_CAPTURE_STREAM,
+#endif
+
+	/* combined bit masks (by direction): */
+	LINE6_BITS_PLAYBACK_BUFFER =
+#ifdef CONFIG_LINE6_USB_IMPULSE_RESPONSE
+	    LINE6_BIT_PCM_IMPULSE_PLAYBACK_BUFFER |
+#endif
+	    LINE6_BIT_PCM_ALSA_PLAYBACK_BUFFER |
+	    LINE6_BIT_PCM_MONITOR_PLAYBACK_BUFFER ,
+
+	LINE6_BITS_PLAYBACK_STREAM =
+#ifdef CONFIG_LINE6_USB_IMPULSE_RESPONSE
+	    LINE6_BIT_PCM_IMPULSE_PLAYBACK_STREAM |
+#endif
+	    LINE6_BIT_PCM_ALSA_PLAYBACK_STREAM |
+	    LINE6_BIT_PCM_MONITOR_PLAYBACK_STREAM ,
+
+	LINE6_BITS_CAPTURE_BUFFER =
+#ifdef CONFIG_LINE6_USB_IMPULSE_RESPONSE
+	    LINE6_BIT_PCM_IMPULSE_CAPTURE_BUFFER |
+#endif
+	    LINE6_BIT_PCM_ALSA_CAPTURE_BUFFER |
+	    LINE6_BIT_PCM_MONITOR_CAPTURE_BUFFER ,
+
+	LINE6_BITS_CAPTURE_STREAM =
+#ifdef CONFIG_LINE6_USB_IMPULSE_RESPONSE
+	    LINE6_BIT_PCM_IMPULSE_CAPTURE_STREAM |
+#endif
+	    LINE6_BIT_PCM_ALSA_CAPTURE_STREAM |
+	    LINE6_BIT_PCM_MONITOR_CAPTURE_STREAM,
+	
+	LINE6_BITS_STREAM =
+	    LINE6_BITS_PLAYBACK_STREAM |
+	    LINE6_BITS_CAPTURE_STREAM
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct line6_pcm_properties {
@@ -149,11 +280,14 @@ struct snd_line6_pcm {
 	unsigned char *buffer_in;
 
 	/**
+<<<<<<< HEAD
 		 Temporary buffer index for playback.
 	*/
 	int index_out;
 
 	/**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		 Previously captured frame (for software monitoring).
 	*/
 	unsigned char *prev_fbuf;
@@ -298,7 +432,11 @@ struct snd_line6_pcm {
 #endif
 
 	/**
+<<<<<<< HEAD
 		 Several status bits (see BIT_*).
+=======
+		 Several status bits (see LINE6_BIT_*).
+>>>>>>> refs/remotes/origin/cm-10.0
 	*/
 	unsigned long flags;
 
@@ -310,6 +448,7 @@ extern int line6_init_pcm(struct usb_line6 *line6,
 extern int snd_line6_trigger(struct snd_pcm_substream *substream, int cmd);
 extern int snd_line6_prepare(struct snd_pcm_substream *substream);
 extern void line6_pcm_disconnect(struct snd_line6_pcm *line6pcm);
+<<<<<<< HEAD
 extern int line6_pcm_start(struct snd_line6_pcm *line6pcm, int channels);
 extern int line6_pcm_stop(struct snd_line6_pcm *line6pcm, int channels);
 
@@ -321,5 +460,9 @@ extern int line6_pcm_stop(struct snd_line6_pcm *line6pcm, int channels);
 		diff_prev = diff;					\
 	}								\
 }
+=======
+extern int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels);
+extern int line6_pcm_release(struct snd_line6_pcm *line6pcm, int channels);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

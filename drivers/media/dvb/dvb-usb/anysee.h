@@ -36,6 +36,10 @@
 
 #define DVB_USB_LOG_PREFIX "anysee"
 #include "dvb-usb.h"
+<<<<<<< HEAD
+=======
+#include "dvb_ca_en50221.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define deb_info(args...) dprintk(dvb_usb_anysee_debug, 0x01, args)
 #define deb_xfer(args...) dprintk(dvb_usb_anysee_debug, 0x02, args)
@@ -54,11 +58,16 @@ enum cmd {
 	CMD_GET_IR_CODE         = 0x41,
 	CMD_GET_HW_INFO         = 0x19,
 	CMD_SMARTCARD           = 0x34,
+<<<<<<< HEAD
+=======
+	CMD_CI                  = 0x37,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct anysee_state {
 	u8 hw; /* PCB ID */
 	u8 seq;
+<<<<<<< HEAD
 };
 
 #define ANYSEE_HW_02     2 /* E30 */
@@ -68,6 +77,24 @@ struct anysee_state {
 #define ANYSEE_HW_507FA 15 /* E30 Combo Plus / E30 C Plus */
 #define ANYSEE_HW_508TC 18 /* E7 TC */
 #define ANYSEE_HW_508S2 19 /* E7 S2 */
+=======
+	u8 fe_id:1; /* frondend ID */
+	u8 has_ci:1;
+	struct dvb_ca_en50221 ci;
+	unsigned long ci_cam_ready; /* jiffies */
+};
+
+#define ANYSEE_HW_507T    2 /* E30 */
+#define ANYSEE_HW_507CD   6 /* E30 Plus */
+#define ANYSEE_HW_507DC  10 /* E30 C Plus */
+#define ANYSEE_HW_507SI  11 /* E30 S2 Plus */
+#define ANYSEE_HW_507FA  15 /* E30 Combo Plus / E30 C Plus */
+#define ANYSEE_HW_508TC  18 /* E7 TC */
+#define ANYSEE_HW_508S2  19 /* E7 S2 */
+#define ANYSEE_HW_508T2C 20 /* E7 T2C */
+#define ANYSEE_HW_508PTC 21 /* E7 PTC Plus */
+#define ANYSEE_HW_508PS2 22 /* E7 PS2 Plus */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define REG_IOA       0x80 /* Port A (bit addressable) */
 #define REG_IOB       0x90 /* Port B (bit addressable) */

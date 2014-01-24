@@ -46,6 +46,10 @@
 #include <linux/skbuff.h>
 #include <linux/platform_device.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/can/dev.h>
 #include <linux/can/error.h>
@@ -305,7 +309,11 @@ static int ti_hecc_set_btc(struct ti_hecc_priv *priv)
 		if (bit_timing->brp > 4)
 			can_btc |= HECC_CANBTC_SAM;
 		else
+<<<<<<< HEAD
 			dev_warn(priv->ndev->dev.parent, "WARN: Triple" \
+=======
+			netdev_warn(priv->ndev, "WARN: Triple"
+>>>>>>> refs/remotes/origin/cm-10.0
 				"sampling not set due to h/w limitations");
 	}
 	can_btc |= ((bit_timing->sjw - 1) & 0x3) << 8;
@@ -314,7 +322,11 @@ static int ti_hecc_set_btc(struct ti_hecc_priv *priv)
 	/* ERM being set to 0 by default meaning resync at falling edge */
 
 	hecc_write(priv, HECC_CANBTC, can_btc);
+<<<<<<< HEAD
 	dev_info(priv->ndev->dev.parent, "setting CANBTC=%#x\n", can_btc);
+=======
+	netdev_info(priv->ndev, "setting CANBTC=%#x\n", can_btc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -331,7 +343,11 @@ static void ti_hecc_reset(struct net_device *ndev)
 	u32 cnt;
 	struct ti_hecc_priv *priv = netdev_priv(ndev);
 
+<<<<<<< HEAD
 	dev_dbg(ndev->dev.parent, "resetting hecc ...\n");
+=======
+	netdev_dbg(ndev, "resetting hecc ...\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	hecc_set_bit(priv, HECC_CANMC, HECC_CANMC_SRES);
 
 	/* Set change control request and wait till enabled */
@@ -457,6 +473,20 @@ static int ti_hecc_do_set_mode(struct net_device *ndev, enum can_mode mode)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int ti_hecc_get_berr_counter(const struct net_device *ndev,
+					struct can_berr_counter *bec)
+{
+	struct ti_hecc_priv *priv = netdev_priv(ndev);
+
+	bec->txerr = hecc_read(priv, HECC_CANTEC);
+	bec->rxerr = hecc_read(priv, HECC_CANREC);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * ti_hecc_xmit: HECC Transmit
  *
@@ -495,7 +525,11 @@ static netdev_tx_t ti_hecc_xmit(struct sk_buff *skb, struct net_device *ndev)
 	if (unlikely(hecc_read(priv, HECC_CANME) & mbx_mask)) {
 		spin_unlock_irqrestore(&priv->mbx_lock, flags);
 		netif_stop_queue(ndev);
+<<<<<<< HEAD
 		dev_err(priv->ndev->dev.parent,
+=======
+		netdev_err(priv->ndev,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"BUG: TX mbx not ready tx_head=%08X, tx_tail=%08X\n",
 			priv->tx_head, priv->tx_tail);
 		return NETDEV_TX_BUSY;
@@ -503,9 +537,15 @@ static netdev_tx_t ti_hecc_xmit(struct sk_buff *skb, struct net_device *ndev)
 	spin_unlock_irqrestore(&priv->mbx_lock, flags);
 
 	/* Prepare mailbox for transmission */
+<<<<<<< HEAD
 	if (cf->can_id & CAN_RTR_FLAG) /* Remote transmission request */
 		data |= HECC_CANMCF_RTR;
 	data |= get_tx_head_prio(priv) << 8;
+=======
+	data = cf->can_dlc | (get_tx_head_prio(priv) << 8);
+	if (cf->can_id & CAN_RTR_FLAG) /* Remote transmission request */
+		data |= HECC_CANMCF_RTR;
+>>>>>>> refs/remotes/origin/cm-10.0
 	hecc_write_mbx(priv, mbxno, HECC_CANMCF, data);
 
 	if (cf->can_id & CAN_EFF_FLAG) /* Extended frame format */
@@ -549,7 +589,11 @@ static int ti_hecc_rx_pkt(struct ti_hecc_priv *priv, int mbxno)
 	skb = alloc_can_skb(priv->ndev, &cf);
 	if (!skb) {
 		if (printk_ratelimit())
+<<<<<<< HEAD
 			dev_err(priv->ndev->dev.parent,
+=======
+			netdev_err(priv->ndev,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"ti_hecc_rx_pkt: alloc_can_skb() failed\n");
 		return -ENOMEM;
 	}
@@ -667,7 +711,11 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
 	skb = alloc_can_err_skb(ndev, &cf);
 	if (!skb) {
 		if (printk_ratelimit())
+<<<<<<< HEAD
 			dev_err(priv->ndev->dev.parent,
+=======
+			netdev_err(priv->ndev,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"ti_hecc_error: alloc_can_err_skb() failed\n");
 		return -ENOMEM;
 	}
@@ -683,7 +731,11 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
 				cf->data[1] |= CAN_ERR_CRTL_RX_WARNING;
 		}
 		hecc_set_bit(priv, HECC_CANES, HECC_CANES_EW);
+<<<<<<< HEAD
 		dev_dbg(priv->ndev->dev.parent, "Error Warning interrupt\n");
+=======
+		netdev_dbg(priv->ndev, "Error Warning interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		hecc_clear_bit(priv, HECC_CANMC, HECC_CANMC_CCR);
 	}
 
@@ -698,7 +750,11 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
 				cf->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
 		}
 		hecc_set_bit(priv, HECC_CANES, HECC_CANES_EP);
+<<<<<<< HEAD
 		dev_dbg(priv->ndev->dev.parent, "Error passive interrupt\n");
+=======
+		netdev_dbg(priv->ndev, "Error passive interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		hecc_clear_bit(priv, HECC_CANMC, HECC_CANMC_CCR);
 	}
 
@@ -744,9 +800,16 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
 		}
 	}
 
+<<<<<<< HEAD
 	netif_receive_skb(skb);
 	stats->rx_packets++;
 	stats->rx_bytes += cf->can_dlc;
+=======
+	netif_rx(skb);
+	stats->rx_packets++;
+	stats->rx_bytes += cf->can_dlc;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -823,7 +886,11 @@ static int ti_hecc_open(struct net_device *ndev)
 	err = request_irq(ndev->irq, ti_hecc_interrupt, IRQF_SHARED,
 			ndev->name, ndev);
 	if (err) {
+<<<<<<< HEAD
 		dev_err(ndev->dev.parent, "error requesting interrupt\n");
+=======
+		netdev_err(ndev, "error requesting interrupt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return err;
 	}
 
@@ -832,7 +899,11 @@ static int ti_hecc_open(struct net_device *ndev)
 	/* Open common can device */
 	err = open_candev(ndev);
 	if (err) {
+<<<<<<< HEAD
 		dev_err(ndev->dev.parent, "open_candev() failed %d\n", err);
+=======
+		netdev_err(ndev, "open_candev() failed %d\n", err);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ti_hecc_transceiver_switch(priv, 0);
 		free_irq(ndev->irq, ndev);
 		return err;
@@ -921,8 +992,15 @@ static int ti_hecc_probe(struct platform_device *pdev)
 	priv->can.bittiming_const = &ti_hecc_bittiming_const;
 	priv->can.do_set_mode = ti_hecc_do_set_mode;
 	priv->can.do_get_state = ti_hecc_get_state;
+<<<<<<< HEAD
 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
 
+=======
+	priv->can.do_get_berr_counter = ti_hecc_get_berr_counter;
+	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
+
+	spin_lock_init(&priv->mbx_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 	ndev->irq = irq->start;
 	ndev->flags |= IFF_ECHO;
 	platform_set_drvdata(pdev, ndev);
@@ -1035,6 +1113,7 @@ static struct platform_driver ti_hecc_driver = {
 	.resume = ti_hecc_resume,
 };
 
+<<<<<<< HEAD
 static int __init ti_hecc_init_driver(void)
 {
 	printk(KERN_INFO DRV_DESC "\n");
@@ -1049,6 +1128,9 @@ static void __exit ti_hecc_exit_driver(void)
 
 module_exit(ti_hecc_exit_driver);
 module_init(ti_hecc_init_driver);
+=======
+module_platform_driver(ti_hecc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Anant Gole <anantgole@ti.com>");
 MODULE_LICENSE("GPL v2");

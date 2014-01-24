@@ -321,4 +321,11 @@ struct kvm_xcrs {
 	__u64 padding[16];
 };
 
+<<<<<<< HEAD
+=======
+/* definition of registers in kvm_run */
+struct kvm_sync_regs {
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ASM_X86_KVM_H */

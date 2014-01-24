@@ -151,6 +151,7 @@ int iwctl_giwname(struct net_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 int iwctl_giwnwid(struct net_device *dev,
              struct iw_request_info *info,
 			 struct iw_param *wrq,
@@ -163,6 +164,8 @@ int iwctl_giwnwid(struct net_device *dev,
   return -EOPNOTSUPP;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Wireless Handler : set scan
  */

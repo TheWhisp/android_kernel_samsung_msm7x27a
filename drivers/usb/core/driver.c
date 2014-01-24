@@ -24,6 +24,10 @@
 
 #include <linux/device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/usb.h>
 #include <linux/usb/quirks.h>
 #include <linux/usb/hcd.h>
@@ -44,10 +48,19 @@ ssize_t usb_store_new_id(struct usb_dynids *dynids,
 	struct usb_dynid *dynid;
 	u32 idVendor = 0;
 	u32 idProduct = 0;
+<<<<<<< HEAD
 	int fields = 0;
 	int retval = 0;
 
 	fields = sscanf(buf, "%x %x", &idVendor, &idProduct);
+=======
+	unsigned int bInterfaceClass = 0;
+	int fields = 0;
+	int retval = 0;
+
+	fields = sscanf(buf, "%x %x %x", &idVendor, &idProduct,
+					&bInterfaceClass);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (fields < 2)
 		return -EINVAL;
 
@@ -59,15 +72,26 @@ ssize_t usb_store_new_id(struct usb_dynids *dynids,
 	dynid->id.idVendor = idVendor;
 	dynid->id.idProduct = idProduct;
 	dynid->id.match_flags = USB_DEVICE_ID_MATCH_DEVICE;
+<<<<<<< HEAD
+=======
+	if (fields == 3) {
+		dynid->id.bInterfaceClass = (u8)bInterfaceClass;
+		dynid->id.match_flags |= USB_DEVICE_ID_MATCH_INT_CLASS;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock(&dynids->lock);
 	list_add_tail(&dynid->node, &dynids->list);
 	spin_unlock(&dynids->lock);
 
+<<<<<<< HEAD
 	if (get_driver(driver)) {
 		retval = driver_attach(driver);
 		put_driver(driver);
 	}
+=======
+	retval = driver_attach(driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (retval)
 		return retval;
@@ -125,25 +149,48 @@ store_remove_id(struct device_driver *driver, const char *buf, size_t count)
 }
 static DRIVER_ATTR(remove_id, S_IWUSR, NULL, store_remove_id);
 
+<<<<<<< HEAD
 static int usb_create_newid_file(struct usb_driver *usb_drv)
+=======
+static int usb_create_newid_files(struct usb_driver *usb_drv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int error = 0;
 
 	if (usb_drv->no_dynamic_id)
 		goto exit;
 
+<<<<<<< HEAD
 	if (usb_drv->probe != NULL)
 		error = driver_create_file(&usb_drv->drvwrap.driver,
 					   &driver_attr_new_id);
+=======
+	if (usb_drv->probe != NULL) {
+		error = driver_create_file(&usb_drv->drvwrap.driver,
+					   &driver_attr_new_id);
+		if (error == 0) {
+			error = driver_create_file(&usb_drv->drvwrap.driver,
+					&driver_attr_remove_id);
+			if (error)
+				driver_remove_file(&usb_drv->drvwrap.driver,
+						&driver_attr_new_id);
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 exit:
 	return error;
 }
 
+<<<<<<< HEAD
 static void usb_remove_newid_file(struct usb_driver *usb_drv)
+=======
+static void usb_remove_newid_files(struct usb_driver *usb_drv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (usb_drv->no_dynamic_id)
 		return;
 
+<<<<<<< HEAD
 	if (usb_drv->probe != NULL)
 		driver_remove_file(&usb_drv->drvwrap.driver,
 				   &driver_attr_new_id);
@@ -162,6 +209,14 @@ usb_create_removeid_file(struct usb_driver *drv)
 static void usb_remove_removeid_file(struct usb_driver *drv)
 {
 	driver_remove_file(&drv->drvwrap.driver, &driver_attr_remove_id);
+=======
+	if (usb_drv->probe != NULL) {
+		driver_remove_file(&usb_drv->drvwrap.driver,
+				&driver_attr_remove_id);
+		driver_remove_file(&usb_drv->drvwrap.driver,
+				   &driver_attr_new_id);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void usb_free_dynids(struct usb_driver *usb_drv)
@@ -176,11 +231,16 @@ static void usb_free_dynids(struct usb_driver *usb_drv)
 	spin_unlock(&usb_drv->dynids.lock);
 }
 #else
+<<<<<<< HEAD
 static inline int usb_create_newid_file(struct usb_driver *usb_drv)
+=======
+static inline int usb_create_newid_files(struct usb_driver *usb_drv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static void usb_remove_newid_file(struct usb_driver *usb_drv)
 {
 }
@@ -192,6 +252,9 @@ usb_create_removeid_file(struct usb_driver *drv)
 }
 
 static void usb_remove_removeid_file(struct usb_driver *drv)
+=======
+static void usb_remove_newid_files(struct usb_driver *usb_drv)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 }
 
@@ -868,6 +931,7 @@ int usb_register_driver(struct usb_driver *new_driver, struct module *owner,
 
 	usbfs_update_special();
 
+<<<<<<< HEAD
 	retval = usb_create_newid_file(new_driver);
 	if (retval)
 		goto out_newid;
@@ -876,14 +940,23 @@ int usb_register_driver(struct usb_driver *new_driver, struct module *owner,
 	if (retval)
 		goto out_removeid;
 
+=======
+	retval = usb_create_newid_files(new_driver);
+	if (retval)
+		goto out_newid;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	pr_info("%s: registered new interface driver %s\n",
 			usbcore_name, new_driver->name);
 
 out:
 	return retval;
 
+<<<<<<< HEAD
 out_removeid:
 	usb_remove_newid_file(new_driver);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 out_newid:
 	driver_unregister(&new_driver->drvwrap.driver);
 
@@ -910,10 +983,16 @@ void usb_deregister(struct usb_driver *driver)
 	pr_info("%s: deregistering interface driver %s\n",
 			usbcore_name, driver->name);
 
+<<<<<<< HEAD
 	usb_remove_removeid_file(driver);
 	usb_remove_newid_file(driver);
 	usb_free_dynids(driver);
 	driver_unregister(&driver->drvwrap.driver);
+=======
+	usb_remove_newid_files(driver);
+	driver_unregister(&driver->drvwrap.driver);
+	usb_free_dynids(driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	usbfs_update_special();
 }
@@ -951,6 +1030,7 @@ void usb_rebind_intf(struct usb_interface *intf)
 	int rc;
 
 	/* Delayed unbind of an existing driver */
+<<<<<<< HEAD
 	if (intf->dev.driver) {
 		struct usb_driver *driver =
 				to_usb_driver(intf->dev.driver);
@@ -958,6 +1038,10 @@ void usb_rebind_intf(struct usb_interface *intf)
 		dev_dbg(&intf->dev, "forced unbind\n");
 		usb_driver_release_interface(driver, intf);
 	}
+=======
+	if (intf->dev.driver)
+		usb_forced_unbind_intf(intf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Try to rebind the interface */
 	if (!intf->dev.power.is_prepared) {
@@ -970,6 +1054,7 @@ void usb_rebind_intf(struct usb_interface *intf)
 
 #ifdef CONFIG_PM
 
+<<<<<<< HEAD
 #define DO_UNBIND	0
 #define DO_REBIND	1
 
@@ -979,6 +1064,15 @@ void usb_rebind_intf(struct usb_interface *intf)
  * The caller must hold @udev's device lock.
  */
 static void do_unbind_rebind(struct usb_device *udev, int action)
+=======
+/* Unbind drivers for @udev's interfaces that don't support suspend/resume
+ * There is no check for reset_resume here because it can be determined
+ * only during resume whether reset_resume is needed.
+ *
+ * The caller must hold @udev's device lock.
+ */
+static void unbind_no_pm_drivers_interfaces(struct usb_device *udev)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct usb_host_config	*config;
 	int			i;
@@ -989,6 +1083,7 @@ static void do_unbind_rebind(struct usb_device *udev, int action)
 	if (config) {
 		for (i = 0; i < config->desc.bNumInterfaces; ++i) {
 			intf = config->interface[i];
+<<<<<<< HEAD
 			switch (action) {
 			case DO_UNBIND:
 				if (intf->dev.driver) {
@@ -1001,11 +1096,58 @@ static void do_unbind_rebind(struct usb_device *udev, int action)
 				if (intf->needs_binding)
 					usb_rebind_intf(intf);
 				break;
+=======
+
+			if (intf->dev.driver) {
+				drv = to_usb_driver(intf->dev.driver);
+				if (!drv->suspend || !drv->resume)
+					usb_forced_unbind_intf(intf);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 	}
 }
 
+<<<<<<< HEAD
+=======
+/* Unbind drivers for @udev's interfaces that failed to support reset-resume.
+ * These interfaces have the needs_binding flag set by usb_resume_interface().
+ *
+ * The caller must hold @udev's device lock.
+ */
+static void unbind_no_reset_resume_drivers_interfaces(struct usb_device *udev)
+{
+	struct usb_host_config	*config;
+	int			i;
+	struct usb_interface	*intf;
+
+	config = udev->actconfig;
+	if (config) {
+		for (i = 0; i < config->desc.bNumInterfaces; ++i) {
+			intf = config->interface[i];
+			if (intf->dev.driver && intf->needs_binding)
+				usb_forced_unbind_intf(intf);
+		}
+	}
+}
+
+static void do_rebind_interfaces(struct usb_device *udev)
+{
+	struct usb_host_config	*config;
+	int			i;
+	struct usb_interface	*intf;
+
+	config = udev->actconfig;
+	if (config) {
+		for (i = 0; i < config->desc.bNumInterfaces; ++i) {
+			intf = config->interface[i];
+			if (intf->needs_binding)
+				usb_rebind_intf(intf);
+		}
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int usb_suspend_device(struct usb_device *udev, pm_message_t msg)
 {
 	struct usb_device_driver	*udriver;
@@ -1046,8 +1188,12 @@ static int usb_resume_device(struct usb_device *udev, pm_message_t msg)
 	/* Non-root devices on a full/low-speed bus must wait for their
 	 * companion high-speed root hub, in case a handoff is needed.
 	 */
+<<<<<<< HEAD
 	if (!(msg.event & PM_EVENT_AUTO) && udev->parent &&
 			udev->bus->hs_companion)
+=======
+	if (!PMSG_IS_AUTO(msg) && udev->parent && udev->bus->hs_companion)
+>>>>>>> refs/remotes/origin/cm-10.0
 		device_pm_wait_for_dev(&udev->dev,
 				&udev->bus->hs_companion->root_hub->dev);
 
@@ -1073,6 +1219,7 @@ static int usb_suspend_interface(struct usb_device *udev,
 		goto done;
 	driver = to_usb_driver(intf->dev.driver);
 
+<<<<<<< HEAD
 	if (driver->suspend) {
 		status = driver->suspend(intf, msg);
 		if (status && !(msg.event & PM_EVENT_AUTO))
@@ -1084,6 +1231,12 @@ static int usb_suspend_interface(struct usb_device *udev,
 		dev_warn(&intf->dev, "no %s for driver %s?\n",
 				"suspend", driver->name);
 	}
+=======
+	/* at this time we know the driver supports suspend */
+	status = driver->suspend(intf, msg);
+	if (status && !PMSG_IS_AUTO(msg))
+		dev_err(&intf->dev, "suspend error %d\n", status);
+>>>>>>> refs/remotes/origin/cm-10.0
 
  done:
 	dev_vdbg(&intf->dev, "%s: status %d\n", __func__, status);
@@ -1132,6 +1285,7 @@ static int usb_resume_interface(struct usb_device *udev,
 					"reset_resume", driver->name);
 		}
 	} else {
+<<<<<<< HEAD
 		if (driver->resume) {
 			status = driver->resume(intf);
 			if (status)
@@ -1142,6 +1296,11 @@ static int usb_resume_interface(struct usb_device *udev,
 			dev_warn(&intf->dev, "no %s for driver %s?\n",
 					"resume", driver->name);
 		}
+=======
+		status = driver->resume(intf);
+		if (status)
+			dev_err(&intf->dev, "resume error %d\n", status);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 done:
@@ -1189,7 +1348,11 @@ static int usb_suspend_both(struct usb_device *udev, pm_message_t msg)
 			status = usb_suspend_interface(udev, intf, msg);
 
 			/* Ignore errors during system sleep transitions */
+<<<<<<< HEAD
 			if (!(msg.event & PM_EVENT_AUTO))
+=======
+			if (!PMSG_IS_AUTO(msg))
+>>>>>>> refs/remotes/origin/cm-10.0
 				status = 0;
 			if (status != 0)
 				break;
@@ -1198,8 +1361,18 @@ static int usb_suspend_both(struct usb_device *udev, pm_message_t msg)
 	if (status == 0) {
 		status = usb_suspend_device(udev, msg);
 
+<<<<<<< HEAD
 		/* Again, ignore errors during system sleep transitions */
 		if (!(msg.event & PM_EVENT_AUTO))
+=======
+		/*
+		 * Ignore errors from non-root-hub devices during
+		 * system sleep transitions.  For the most part,
+		 * these devices should go to low power anyway when
+		 * the entire bus is suspended.
+		 */
+		if (udev->parent && !PMSG_IS_AUTO(msg))
+>>>>>>> refs/remotes/origin/cm-10.0
 			status = 0;
 	}
 
@@ -1285,10 +1458,27 @@ void usb_hnp_polling_work(struct work_struct *work)
 	struct usb_bus *bus =
 		container_of(work, struct usb_bus, hnp_polling.work);
 	struct usb_device *udev = bus->root_hub->children[bus->otg_port - 1];
+<<<<<<< HEAD
 	u8 *status = kmalloc(sizeof(*status), GFP_KERNEL);
 
 	if (!status)
 		return;
+=======
+	u8 *status = NULL;
+
+	/*
+	 * The OTG-B device must hand back the host role to OTG PET
+	 * within 100 msec irrespective of host_request flag.
+	 */
+	if (bus->quick_hnp) {
+		bus->quick_hnp = 0;
+		goto start_hnp;
+	}
+
+	status = kmalloc(sizeof(*status), GFP_KERNEL);
+	if (!status)
+		goto reschedule;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
 		USB_REQ_GET_STATUS, USB_DIR_IN | USB_RECIP_DEVICE,
@@ -1300,6 +1490,7 @@ void usb_hnp_polling_work(struct work_struct *work)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/* Spec says host must suspend the bus with in 2 sec. */
 	if (*status & (1 << HOST_REQUEST_FLAG)) {
 		do_unbind_rebind(udev, DO_UNBIND);
@@ -1311,6 +1502,22 @@ void usb_hnp_polling_work(struct work_struct *work)
 		schedule_delayed_work(&bus->hnp_polling,
 			msecs_to_jiffies(THOST_REQ_POLL));
 	}
+=======
+	if (!(*status & (1 << HOST_REQUEST_FLAG)))
+		goto reschedule;
+
+start_hnp:
+	do_unbind_rebind(udev, DO_UNBIND);
+	udev->do_remote_wakeup = device_may_wakeup(&udev->dev);
+	ret = usb_suspend_both(udev, PMSG_USER_SUSPEND);
+	if (ret)
+		dev_info(&udev->dev, "suspend failed\n");
+	goto out;
+
+reschedule:
+	schedule_delayed_work(&bus->hnp_polling,
+		msecs_to_jiffies(THOST_REQ_POLL));
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	kfree(status);
 }
@@ -1348,17 +1555,43 @@ int usb_suspend(struct device *dev, pm_message_t msg)
 {
 	struct usb_device	*udev = to_usb_device(dev);
 
+<<<<<<< HEAD
 	do_unbind_rebind(udev, DO_UNBIND);
+=======
+	unbind_no_pm_drivers_interfaces(udev);
+
+	/* From now on we are sure all drivers support suspend/resume
+	 * but not necessarily reset_resume()
+	 * so we may still need to unbind and rebind upon resume
+	 */
+>>>>>>> refs/remotes/origin/cm-10.0
 	choose_wakeup(udev, msg);
 	return usb_suspend_both(udev, msg);
 }
 
 /* The device lock is held by the PM core */
+<<<<<<< HEAD
+=======
+int usb_resume_complete(struct device *dev)
+{
+	struct usb_device *udev = to_usb_device(dev);
+
+	/* For PM complete calls, all we do is rebind interfaces
+	 * whose needs_binding flag is set
+	 */
+	if (udev->state != USB_STATE_NOTATTACHED)
+		do_rebind_interfaces(udev);
+	return 0;
+}
+
+/* The device lock is held by the PM core */
+>>>>>>> refs/remotes/origin/cm-10.0
 int usb_resume(struct device *dev, pm_message_t msg)
 {
 	struct usb_device	*udev = to_usb_device(dev);
 	int			status;
 
+<<<<<<< HEAD
 	/* For PM complete calls, all we do is rebind interfaces */
 	if (msg.event == PM_EVENT_ON) {
 		if (udev->state != USB_STATE_NOTATTACHED)
@@ -1378,6 +1611,24 @@ int usb_resume(struct device *dev, pm_message_t msg)
 			do_unbind_rebind(udev, DO_REBIND);
 		}
 	}
+=======
+	/* For all calls, take the device back to full power and
+	 * tell the PM core in case it was autosuspended previously.
+	 * Unbind the interfaces that will need rebinding later,
+	 * because they fail to support reset_resume.
+	 * (This can't be done in usb_resume_interface()
+	 * above because it doesn't own the right set of locks.)
+	 */
+	pm_runtime_get_sync(dev->parent);
+	status = usb_resume_both(udev, msg);
+	if (status == 0) {
+		pm_runtime_disable(dev);
+		pm_runtime_set_active(dev);
+		pm_runtime_enable(dev);
+		unbind_no_reset_resume_drivers_interfaces(udev);
+	}
+	pm_runtime_put_sync(dev->parent);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Avoid PM error messages for devices disconnected while suspended
 	 * as we'll display regular disconnect messages just a bit later.
@@ -1743,6 +1994,23 @@ int usb_runtime_idle(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+int usb_set_usb2_hardware_lpm(struct usb_device *udev, int enable)
+{
+	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
+	int ret = -EPERM;
+
+	if (hcd->driver->set_usb2_hw_lpm) {
+		ret = hcd->driver->set_usb2_hw_lpm(hcd, udev, enable);
+		if (!ret)
+			udev->usb2_hw_lpm_enabled = enable;
+	}
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_USB_SUSPEND */
 
 struct bus_type usb_bus_type = {

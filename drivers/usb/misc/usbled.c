@@ -31,12 +31,23 @@ static const struct usb_device_id id_table[] = {
 			.driver_info = DELCOM_VISUAL_SIGNAL_INDICATOR },
 	{ USB_DEVICE(0x1d34, 0x0004),
 			.driver_info = DREAM_CHEEKY_WEBMAIL_NOTIFIER },
+<<<<<<< HEAD
 	{ },
 };
 MODULE_DEVICE_TABLE (usb, id_table);
 
 struct usb_led {
 	struct usb_device *	udev;
+=======
+	{ USB_DEVICE(0x1d34, 0x000a),
+			.driver_info = DREAM_CHEEKY_WEBMAIL_NOTIFIER },
+	{ },
+};
+MODULE_DEVICE_TABLE(usb, id_table);
+
+struct usb_led {
+	struct usb_device	*udev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned char		blue;
 	unsigned char		red;
 	unsigned char		green;
@@ -113,14 +124,24 @@ static void change_color(struct usb_led *led)
 }
 
 #define show_set(value)	\
+<<<<<<< HEAD
 static ssize_t show_##value(struct device *dev, struct device_attribute *attr, char *buf)		\
+=======
+static ssize_t show_##value(struct device *dev, struct device_attribute *attr,\
+			    char *buf)					\
+>>>>>>> refs/remotes/origin/cm-10.0
 {									\
 	struct usb_interface *intf = to_usb_interface(dev);		\
 	struct usb_led *led = usb_get_intfdata(intf);			\
 									\
 	return sprintf(buf, "%d\n", led->value);			\
 }									\
+<<<<<<< HEAD
 static ssize_t set_##value(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)	\
+=======
+static ssize_t set_##value(struct device *dev, struct device_attribute *attr,\
+			   const char *buf, size_t count)		\
+>>>>>>> refs/remotes/origin/cm-10.0
 {									\
 	struct usb_interface *intf = to_usb_interface(dev);		\
 	struct usb_led *led = usb_get_intfdata(intf);			\
@@ -135,7 +156,12 @@ show_set(blue);
 show_set(red);
 show_set(green);
 
+<<<<<<< HEAD
 static int led_probe(struct usb_interface *interface, const struct usb_device_id *id)
+=======
+static int led_probe(struct usb_interface *interface,
+		     const struct usb_device_id *id)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct usb_device *udev = interface_to_usbdev(interface);
 	struct usb_led *dev = NULL;
@@ -150,7 +176,11 @@ static int led_probe(struct usb_interface *interface, const struct usb_device_id
 	dev->udev = usb_get_dev(udev);
 	dev->type = id->driver_info;
 
+<<<<<<< HEAD
 	usb_set_intfdata (interface, dev);
+=======
+	usb_set_intfdata(interface, dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	retval = device_create_file(&interface->dev, &dev_attr_blue);
 	if (retval)
@@ -194,7 +224,11 @@ error:
 	device_remove_file(&interface->dev, &dev_attr_blue);
 	device_remove_file(&interface->dev, &dev_attr_red);
 	device_remove_file(&interface->dev, &dev_attr_green);
+<<<<<<< HEAD
 	usb_set_intfdata (interface, NULL);
+=======
+	usb_set_intfdata(interface, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_put_dev(dev->udev);
 	kfree(dev);
 error_mem:
@@ -205,14 +239,22 @@ static void led_disconnect(struct usb_interface *interface)
 {
 	struct usb_led *dev;
 
+<<<<<<< HEAD
 	dev = usb_get_intfdata (interface);
+=======
+	dev = usb_get_intfdata(interface);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	device_remove_file(&interface->dev, &dev_attr_blue);
 	device_remove_file(&interface->dev, &dev_attr_red);
 	device_remove_file(&interface->dev, &dev_attr_green);
 
 	/* first remove the files, then set the pointer to NULL */
+<<<<<<< HEAD
 	usb_set_intfdata (interface, NULL);
+=======
+	usb_set_intfdata(interface, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	usb_put_dev(dev->udev);
 
@@ -228,6 +270,7 @@ static struct usb_driver led_driver = {
 	.id_table =	id_table,
 };
 
+<<<<<<< HEAD
 static int __init usb_led_init(void)
 {
 	int retval = 0;
@@ -245,6 +288,9 @@ static void __exit usb_led_exit(void)
 
 module_init (usb_led_init);
 module_exit (usb_led_exit);
+=======
+module_usb_driver(led_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

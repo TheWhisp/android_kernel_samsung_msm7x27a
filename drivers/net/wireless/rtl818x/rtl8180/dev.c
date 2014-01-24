@@ -16,11 +16,19 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
 #include <linux/etherdevice.h>
 #include <linux/eeprom_93cx6.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/mac80211.h>
 
 #include "rtl8180.h"
@@ -668,7 +676,12 @@ static void rtl8180_stop(struct ieee80211_hw *dev)
 		rtl8180_free_tx_ring(dev, i);
 }
 
+<<<<<<< HEAD
 static u64 rtl8180_get_tsf(struct ieee80211_hw *dev)
+=======
+static u64 rtl8180_get_tsf(struct ieee80211_hw *dev,
+			   struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct rtl8180_priv *priv = dev->priv;
 
@@ -700,7 +713,11 @@ static void rtl8180_beacon_work(struct work_struct *work)
 	 * TODO: make hardware update beacon timestamp
 	 */
 	mgmt = (struct ieee80211_mgmt *)skb->data;
+<<<<<<< HEAD
 	mgmt->u.beacon.timestamp = cpu_to_le64(rtl8180_get_tsf(dev));
+=======
+	mgmt->u.beacon.timestamp = cpu_to_le64(rtl8180_get_tsf(dev, vif));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* TODO: use actual beacon queue */
 	skb_set_queue_mapping(skb, 0);

@@ -46,8 +46,13 @@
    allocations > PAGE_SIZE and the number of packets in a page
    is an integer 512 is the largest possible packet on EHCI */
 
+<<<<<<< HEAD
 static int debug;
 static int nmea;
+=======
+static bool debug;
+static bool nmea;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Used in interface blacklisting */
 struct sierra_iface_info {
@@ -682,7 +687,10 @@ static void sierra_instat_callback(struct urb *urb)
 	/* Resubmit urb so we continue receiving IRQ data */
 	if (status != -ESHUTDOWN && status != -ENOENT) {
 		usb_mark_last_busy(serial->dev);
+<<<<<<< HEAD
 		urb->dev = serial->dev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = usb_submit_urb(urb, GFP_ATOMIC);
 		if (err && err != -EPERM)
 			dev_err(&port->dev, "%s: resubmit intr urb "
@@ -891,19 +899,26 @@ static int sierra_open(struct tty_struct *tty, struct usb_serial_port *port)
 
 static void sierra_dtr_rts(struct usb_serial_port *port, int on)
 {
+<<<<<<< HEAD
 	struct usb_serial *serial = port->serial;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sierra_port_private *portdata;
 
 	portdata = usb_get_serial_port_data(port);
 	portdata->rts_state = on;
 	portdata->dtr_state = on;
 
+<<<<<<< HEAD
 	if (serial->dev) {
 		mutex_lock(&serial->disc_mutex);
 		if (!serial->disconnected)
 			sierra_send_setup(port);
 		mutex_unlock(&serial->disc_mutex);
 	}
+=======
+	sierra_send_setup(port);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int sierra_startup(struct usb_serial *serial)
@@ -1028,7 +1043,11 @@ static int sierra_suspend(struct usb_serial *serial, pm_message_t message)
 	struct sierra_intf_private *intfdata;
 	int b;
 
+<<<<<<< HEAD
 	if (message.event & PM_EVENT_AUTO) {
+=======
+	if (PMSG_IS_AUTO(message)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		intfdata = serial->private;
 		spin_lock_irq(&intfdata->susp_lock);
 		b = intfdata->in_flight;
@@ -1104,7 +1123,10 @@ static struct usb_driver sierra_driver = {
 	.resume     = usb_serial_resume,
 	.reset_resume = sierra_reset_resume,
 	.id_table   = id_table,
+<<<<<<< HEAD
 	.no_dynamic_id = 	1,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.supports_autosuspend =	1,
 };
 
@@ -1115,7 +1137,10 @@ static struct usb_serial_driver sierra_device = {
 	},
 	.description       = "Sierra USB modem",
 	.id_table          = id_table,
+<<<<<<< HEAD
 	.usb_driver        = &sierra_driver,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.calc_num_ports	   = sierra_calc_num_ports,
 	.probe		   = sierra_probe,
 	.open              = sierra_open,
@@ -1133,6 +1158,7 @@ static struct usb_serial_driver sierra_device = {
 	.read_int_callback = sierra_instat_callback,
 };
 
+<<<<<<< HEAD
 /* Functions used by new usb-serial code. */
 static int __init sierra_init(void)
 {
@@ -1165,6 +1191,13 @@ static void __exit sierra_exit(void)
 
 module_init(sierra_init);
 module_exit(sierra_exit);
+=======
+static struct usb_serial_driver * const serial_drivers[] = {
+	&sierra_device, NULL
+};
+
+module_usb_serial_driver(sierra_driver, serial_drivers);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

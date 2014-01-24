@@ -22,6 +22,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "emux_voice.h"
 #include <sound/asoundef.h>
 

@@ -78,7 +78,11 @@ static int nothing_to_commit(struct ubifs_info *c)
 	 * If the root TNC node is dirty, we definitely have something to
 	 * commit.
 	 */
+<<<<<<< HEAD
 	if (c->zroot.znode && test_bit(DIRTY_ZNODE, &c->zroot.znode->flags))
+=======
+	if (c->zroot.znode && ubifs_zn_dirty(c->zroot.znode))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	/*
@@ -418,7 +422,11 @@ int ubifs_run_commit(struct ubifs_info *c)
 
 	spin_lock(&c->cs_lock);
 	if (c->cmt_state == COMMIT_BROKEN) {
+<<<<<<< HEAD
 		err = -EINVAL;
+=======
+		err = -EROFS;
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 	}
 
@@ -444,7 +452,11 @@ int ubifs_run_commit(struct ubifs_info *c)
 	 * re-check it.
 	 */
 	if (c->cmt_state == COMMIT_BROKEN) {
+<<<<<<< HEAD
 		err = -EINVAL;
+=======
+		err = -EROFS;
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_cmt_unlock;
 	}
 
@@ -576,7 +588,11 @@ int dbg_check_old_index(struct ubifs_info *c, struct ubifs_zbranch *zroot)
 	struct idx_node *i;
 	size_t sz;
 
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_OLD_IDX))
+=======
+	if (!dbg_is_chk_index(c))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	INIT_LIST_HEAD(&list);

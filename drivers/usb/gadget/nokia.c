@@ -241,6 +241,10 @@ static struct usb_composite_driver nokia_driver = {
 	.name		= "g_nokia",
 	.dev		= &device_desc,
 	.strings	= dev_strings,
+<<<<<<< HEAD
+=======
+	.max_speed	= USB_SPEED_HIGH,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.unbind		= __exit_p(nokia_unbind),
 };
 

@@ -20,12 +20,21 @@ void qla4xxx_dump_buffer(void *b, uint32_t size)
 	printk("------------------------------------------------------------"
 	       "--\n");
 	for (cnt = 0; cnt < size; c++) {
+<<<<<<< HEAD
 		printk(KERN_INFO "%02x", *c);
 		if (!(++cnt % 16))
 			printk(KERN_INFO "\n");
 
 		else
 			printk(KERN_INFO "  ");
+=======
+		printk("%02x", *c);
+		if (!(++cnt % 16))
+			printk("\n");
+
+		else
+			printk("  ");
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	printk(KERN_INFO "\n");
 }

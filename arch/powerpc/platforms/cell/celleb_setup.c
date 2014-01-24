@@ -30,6 +30,10 @@
 #include <linux/cpu.h>
 #include <linux/sched.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mm.h>
 #include <linux/stddef.h>
 #include <linux/unistd.h>

@@ -30,6 +30,7 @@
  */
 
 #include <linux/linkage.h>
+<<<<<<< HEAD
 #include <asm/assembler.h>
 
 #define SMFRAM 0xe6a70000
@@ -81,6 +82,26 @@ ENTRY(sh7372_cpu_suspend)
 	ldr	r1, kernel_flush
 	mov	lr, pc
 	bx	r1
+=======
+#include <linux/init.h>
+#include <asm/memory.h>
+#include <asm/assembler.h>
+
+#if defined(CONFIG_SUSPEND) || defined(CONFIG_CPU_IDLE)
+	.align	12
+	.text
+	.global sh7372_resume_core_standby_sysc
+sh7372_resume_core_standby_sysc:
+	ldr     pc, 1f
+1:	.long   cpu_resume - PAGE_OFFSET + PLAT_PHYS_OFFSET
+
+#define SPDCR 0xe6180008
+
+	/* A3SM & A4S power down */
+	.global	sh7372_do_idle_sysc
+sh7372_do_idle_sysc:
+	mov	r8, r0 /* sleep mode passed in r0 */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Clear the SCTLR.C bit to prevent further data cache
@@ -92,10 +113,20 @@ ENTRY(sh7372_cpu_suspend)
 	mcr	p15, 0, r0, c1, c0, 0
 	isb
 
+<<<<<<< HEAD
 	/*
 	 * Invalidate L1 data cache. Even though only invalidate is
 	 * necessary exported flush API is used here. Doing clean
 	 * on already clean cache would be almost NOP.
+=======
+	/* disable L2 cache in the aux control register */
+	mrc     p15, 0, r10, c1, c0, 1
+	bic     r10, r10, #2
+	mcr     p15, 0, r10, c1, c0, 1
+
+	/*
+	 * Invalidate data cache again.
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	ldr	r1, kernel_flush
 	blx	r1
@@ -115,6 +146,7 @@ ENTRY(sh7372_cpu_suspend)
 	dsb
 	dmb
 
+<<<<<<< HEAD
 /*
  * ===================================
  * == WFI instruction => Enter idle ==
@@ -258,3 +290,14 @@ usettbr0:
 restoremmu_on:
 
 	ldmfd	sp!, {r0-r12, pc}	@ restore regs and return
+=======
+	/* SYSC power down */
+	ldr     r0, =SPDCR
+	str     r8, [r0]
+1:
+	b      1b
+
+kernel_flush:
+	.word v7_flush_dcache_all
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0

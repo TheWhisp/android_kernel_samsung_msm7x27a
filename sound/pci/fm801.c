@@ -25,7 +25,11 @@
 #include <linux/interrupt.h>
 #include <linux/pci.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/tlv.h>
@@ -48,7 +52,11 @@ MODULE_SUPPORTED_DEVICE("{{ForteMedia,FM801},"
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *  Enable TEA575x tuner
  *    1 = MediaForte 256-PCS
@@ -58,6 +66,10 @@ static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card *
  *  High 16-bits are video (radio) device number + 1
  */
 static int tea575x_tuner[SNDRV_CARDS];
+<<<<<<< HEAD
+=======
+static int radio_nr[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = -1};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for the FM801 soundcard.");
@@ -67,6 +79,12 @@ module_param_array(enable, bool, NULL, 0444);
 MODULE_PARM_DESC(enable, "Enable FM801 soundcard.");
 module_param_array(tea575x_tuner, int, NULL, 0444);
 MODULE_PARM_DESC(tea575x_tuner, "TEA575x tuner access method (0 = auto, 1 = SF256-PCS, 2=SF256-PCP, 3=SF64-PCR, 8=disable, +16=tuner-only).");
+<<<<<<< HEAD
+=======
+module_param_array(radio_nr, int, NULL, 0444);
+MODULE_PARM_DESC(radio_nr, "Radio device numbers");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define TUNER_DISABLED		(1<<3)
 #define TUNER_ONLY		(1<<4)
@@ -197,6 +215,10 @@ struct fm801 {
 	struct snd_info_entry *proc_entry;
 
 #ifdef CONFIG_SND_FM801_TEA575X_BOOL
+<<<<<<< HEAD
+=======
+	struct v4l2_device v4l2_dev;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct snd_tea575x tea;
 #endif
 
@@ -729,11 +751,21 @@ static struct snd_fm801_tea575x_gpio snd_fm801_tea575x_gpios[] = {
 	{ .data = 2, .clk = 0, .wren = 1, .most = 3, .name = "SF64-PCR" },
 };
 
+<<<<<<< HEAD
+=======
+#define get_tea575x_gpio(chip) \
+	(&snd_fm801_tea575x_gpios[((chip)->tea575x_tuner & TUNER_TYPE_MASK) - 1])
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void snd_fm801_tea575x_set_pins(struct snd_tea575x *tea, u8 pins)
 {
 	struct fm801 *chip = tea->private_data;
 	unsigned short reg = inw(FM801_REG(chip, GPIO_CTRL));
+<<<<<<< HEAD
 	struct snd_fm801_tea575x_gpio gpio = snd_fm801_tea575x_gpios[(chip->tea575x_tuner & TUNER_TYPE_MASK) - 1];
+=======
+	struct snd_fm801_tea575x_gpio gpio = *get_tea575x_gpio(chip);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	reg &= ~(FM801_GPIO_GP(gpio.data) |
 		 FM801_GPIO_GP(gpio.clk) |
@@ -751,7 +783,11 @@ static u8 snd_fm801_tea575x_get_pins(struct snd_tea575x *tea)
 {
 	struct fm801 *chip = tea->private_data;
 	unsigned short reg = inw(FM801_REG(chip, GPIO_CTRL));
+<<<<<<< HEAD
 	struct snd_fm801_tea575x_gpio gpio = snd_fm801_tea575x_gpios[(chip->tea575x_tuner & TUNER_TYPE_MASK) - 1];
+=======
+	struct snd_fm801_tea575x_gpio gpio = *get_tea575x_gpio(chip);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return  (reg & FM801_GPIO_GP(gpio.data)) ? TEA575X_DATA : 0 |
 		(reg & FM801_GPIO_GP(gpio.most)) ? TEA575X_MOST : 0;
@@ -761,7 +797,11 @@ static void snd_fm801_tea575x_set_direction(struct snd_tea575x *tea, bool output
 {
 	struct fm801 *chip = tea->private_data;
 	unsigned short reg = inw(FM801_REG(chip, GPIO_CTRL));
+<<<<<<< HEAD
 	struct snd_fm801_tea575x_gpio gpio = snd_fm801_tea575x_gpios[(chip->tea575x_tuner & TUNER_TYPE_MASK) - 1];
+=======
+	struct snd_fm801_tea575x_gpio gpio = *get_tea575x_gpio(chip);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* use GPIO lines and set write enable bit */
 	reg |= FM801_GPIO_GS(gpio.data) |
@@ -1151,8 +1191,15 @@ static int snd_fm801_free(struct fm801 *chip)
 
       __end_hw:
 #ifdef CONFIG_SND_FM801_TEA575X_BOOL
+<<<<<<< HEAD
 	if (!(chip->tea575x_tuner & TUNER_DISABLED))
 		snd_tea575x_exit(&chip->tea);
+=======
+	if (!(chip->tea575x_tuner & TUNER_DISABLED)) {
+		snd_tea575x_exit(&chip->tea);
+		v4l2_device_unregister(&chip->v4l2_dev);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	if (chip->irq >= 0)
 		free_irq(chip->irq, chip);
@@ -1172,6 +1219,10 @@ static int snd_fm801_dev_free(struct snd_device *device)
 static int __devinit snd_fm801_create(struct snd_card *card,
 				      struct pci_dev * pci,
 				      int tea575x_tuner,
+<<<<<<< HEAD
+=======
+				      int radio_nr,
+>>>>>>> refs/remotes/origin/cm-10.0
 				      struct fm801 ** rchip)
 {
 	struct fm801 *chip;
@@ -1201,7 +1252,11 @@ static int __devinit snd_fm801_create(struct snd_card *card,
 	chip->port = pci_resource_start(pci, 0);
 	if ((tea575x_tuner & TUNER_ONLY) == 0) {
 		if (request_irq(pci->irq, snd_fm801_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
 				"FM801", chip)) {
+=======
+				KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			snd_printk(KERN_ERR "unable to grab IRQ %d\n", chip->irq);
 			snd_fm801_free(chip);
 			return -EBUSY;
@@ -1231,6 +1286,16 @@ static int __devinit snd_fm801_create(struct snd_card *card,
 	snd_card_set_dev(card, &pci->dev);
 
 #ifdef CONFIG_SND_FM801_TEA575X_BOOL
+<<<<<<< HEAD
+=======
+	err = v4l2_device_register(&pci->dev, &chip->v4l2_dev);
+	if (err < 0) {
+		snd_fm801_free(chip);
+		return err;
+	}
+	chip->tea.v4l2_dev = &chip->v4l2_dev;
+	chip->tea.radio_nr = radio_nr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	chip->tea.private_data = chip;
 	chip->tea.ops = &snd_fm801_tea_ops;
 	sprintf(chip->tea.bus_info, "PCI:%s", pci_name(pci));
@@ -1238,6 +1303,10 @@ static int __devinit snd_fm801_create(struct snd_card *card,
 	    (tea575x_tuner & TUNER_TYPE_MASK) < 4) {
 		if (snd_tea575x_init(&chip->tea)) {
 			snd_printk(KERN_ERR "TEA575x radio not found\n");
+<<<<<<< HEAD
+=======
+			snd_fm801_free(chip);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return -ENODEV;
 		}
 	} else if ((tea575x_tuner & TUNER_TYPE_MASK) == 0) {
@@ -1246,7 +1315,11 @@ static int __devinit snd_fm801_create(struct snd_card *card,
 			chip->tea575x_tuner = tea575x_tuner;
 			if (!snd_tea575x_init(&chip->tea)) {
 				snd_printk(KERN_INFO "detected TEA575x radio type %s\n",
+<<<<<<< HEAD
 					snd_fm801_tea575x_gpios[tea575x_tuner - 1].name);
+=======
+					   get_tea575x_gpio(chip)->name);
+>>>>>>> refs/remotes/origin/cm-10.0
 				break;
 			}
 		}
@@ -1256,9 +1329,13 @@ static int __devinit snd_fm801_create(struct snd_card *card,
 		}
 	}
 	if (!(chip->tea575x_tuner & TUNER_DISABLED)) {
+<<<<<<< HEAD
 		strlcpy(chip->tea.card,
 			snd_fm801_tea575x_gpios[(tea575x_tuner &
 						 TUNER_TYPE_MASK) - 1].name,
+=======
+		strlcpy(chip->tea.card, get_tea575x_gpio(chip)->name,
+>>>>>>> refs/remotes/origin/cm-10.0
 			sizeof(chip->tea.card));
 	}
 #endif
@@ -1286,7 +1363,11 @@ static int __devinit snd_card_fm801_probe(struct pci_dev *pci,
 	err = snd_card_create(index[dev], id[dev], THIS_MODULE, 0, &card);
 	if (err < 0)
 		return err;
+<<<<<<< HEAD
 	if ((err = snd_fm801_create(card, pci, tea575x_tuner[dev], &chip)) < 0) {
+=======
+	if ((err = snd_fm801_create(card, pci, tea575x_tuner[dev], radio_nr[dev], &chip)) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_card_free(card);
 		return err;
 	}
@@ -1311,8 +1392,14 @@ static int __devinit snd_card_fm801_probe(struct pci_dev *pci,
 	}
 	if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_FM801,
 				       FM801_REG(chip, MPU401_DATA),
+<<<<<<< HEAD
 				       MPU401_INFO_INTEGRATED,
 				       chip->irq, 0, &chip->rmidi)) < 0) {
+=======
+				       MPU401_INFO_INTEGRATED |
+				       MPU401_INFO_IRQ_HOOK,
+				       -1, &chip->rmidi)) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		snd_card_free(card);
 		return err;
 	}
@@ -1399,7 +1486,11 @@ static int snd_fm801_resume(struct pci_dev *pci)
 #endif
 
 static struct pci_driver driver = {
+<<<<<<< HEAD
 	.name = "FM801",
+=======
+	.name = KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.id_table = snd_fm801_ids,
 	.probe = snd_card_fm801_probe,
 	.remove = __devexit_p(snd_card_fm801_remove),

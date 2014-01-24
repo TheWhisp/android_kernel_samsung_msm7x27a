@@ -10,8 +10,11 @@
 #ifndef	__EDAC_MODULE_H__
 #define	__EDAC_MODULE_H__
 
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "edac_core.h"
 
 /*

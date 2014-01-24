@@ -13,11 +13,19 @@
 #ifndef __LINUX_POWER_SUPPLY_H__
 #define __LINUX_POWER_SUPPLY_H__
 
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/wakelock.h>
 #include <linux/workqueue.h>
 #include <linux/leds.h>
 
+<<<<<<< HEAD
+=======
+struct device;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * All voltages, currents, charges, energies, time and temperatures in uV,
  * µA, µAh, µWh, seconds and tenths of degree Celsius unless otherwise
@@ -75,6 +83,15 @@ enum {
 	POWER_SUPPLY_CAPACITY_LEVEL_FULL,
 };
 
+<<<<<<< HEAD
+=======
+enum {
+	POWER_SUPPLY_SCOPE_UNKNOWN = 0,
+	POWER_SUPPLY_SCOPE_SYSTEM,
+	POWER_SUPPLY_SCOPE_DEVICE,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum power_supply_property {
 	/* Properties of type `int' */
 	POWER_SUPPLY_PROP_STATUS = 0,
@@ -117,6 +134,10 @@ enum power_supply_property {
 	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
 	POWER_SUPPLY_PROP_TIME_TO_FULL_AVG,
 	POWER_SUPPLY_PROP_TYPE, /* use power_supply.type instead */
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_PROP_SCOPE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Properties of type `const char *' */
 	POWER_SUPPLY_PROP_MODEL_NAME,
 	POWER_SUPPLY_PROP_MANUFACTURER,
@@ -124,7 +145,12 @@ enum power_supply_property {
 };
 
 enum power_supply_type {
+<<<<<<< HEAD
 	POWER_SUPPLY_TYPE_BATTERY = 0,
+=======
+	POWER_SUPPLY_TYPE_UNKNOWN = 0,
+	POWER_SUPPLY_TYPE_BATTERY,
+>>>>>>> refs/remotes/origin/cm-10.0
 	POWER_SUPPLY_TYPE_UPS,
 	POWER_SUPPLY_TYPE_MAINS,
 	POWER_SUPPLY_TYPE_USB,		/* Standard Downstream Port */
@@ -207,6 +233,10 @@ extern int power_supply_am_i_supplied(struct power_supply *psy);
 extern int power_supply_set_battery_charged(struct power_supply *psy);
 extern int power_supply_set_current_limit(struct power_supply *psy, int limit);
 extern int power_supply_set_online(struct power_supply *psy, bool enable);
+<<<<<<< HEAD
+=======
+extern int power_supply_set_scope(struct power_supply *psy, int scope);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int power_supply_set_charge_type(struct power_supply *psy, int type);
 
 #if defined(CONFIG_POWER_SUPPLY) || defined(CONFIG_POWER_SUPPLY_MODULE)
@@ -218,6 +248,10 @@ static inline int power_supply_is_system_supplied(void) { return -ENOSYS; }
 extern int power_supply_register(struct device *parent,
 				 struct power_supply *psy);
 extern void power_supply_unregister(struct power_supply *psy);
+<<<<<<< HEAD
+=======
+extern int power_supply_powers(struct power_supply *psy, struct device *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* For APM emulation, think legacy userspace. */
 extern struct class *power_supply_class;

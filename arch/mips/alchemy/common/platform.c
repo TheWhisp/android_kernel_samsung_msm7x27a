@@ -18,7 +18,11 @@
 #include <linux/serial_8250.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 #include <asm/mach-au1x00/au1xxx.h>
+=======
+#include <asm/mach-au1x00/au1000.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach-au1x00/au1xxx_dbdma.h>
 #include <asm/mach-au1x00/au1100_mmc.h>
 #include <asm/mach-au1x00/au1xxx_eth.h>
@@ -82,6 +86,15 @@ static struct plat_serial8250_port au1x00_uart_data[][4] __initdata = {
 		PORT(AU1000_UART0_PHYS_ADDR, AU1200_UART0_INT),
 		PORT(AU1000_UART1_PHYS_ADDR, AU1200_UART1_INT),
 	},
+<<<<<<< HEAD
+=======
+	[ALCHEMY_CPU_AU1300] = {
+		PORT(AU1300_UART0_PHYS_ADDR, AU1300_UART0_INT),
+		PORT(AU1300_UART1_PHYS_ADDR, AU1300_UART1_INT),
+		PORT(AU1300_UART2_PHYS_ADDR, AU1300_UART2_INT),
+		PORT(AU1300_UART3_PHYS_ADDR, AU1300_UART3_INT),
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device au1xx0_uart_device = {
@@ -111,6 +124,7 @@ static void __init alchemy_setup_uarts(int ctype)
 		printk(KERN_INFO "Alchemy: failed to register UARTs\n");
 }
 
+<<<<<<< HEAD
 /* OHCI (USB full speed host controller) */
 static struct resource au1xxx_usb_ohci_resources[] = {
 	[0] = {
@@ -375,6 +389,110 @@ static struct platform_device pbdb_smbus_device = {
 /* Macro to help defining the Ethernet MAC resources */
 #define MAC_RES_COUNT	3	/* MAC regs base, MAC enable reg, MAC INT */
 #define MAC_RES(_base, _enable, _irq)			\
+=======
+
+/* The dmamask must be set for OHCI/EHCI to work */
+static u64 alchemy_ohci_dmamask = DMA_BIT_MASK(32);
+static u64 __maybe_unused alchemy_ehci_dmamask = DMA_BIT_MASK(32);
+
+static unsigned long alchemy_ohci_data[][2] __initdata = {
+	[ALCHEMY_CPU_AU1000] = { AU1000_USB_OHCI_PHYS_ADDR, AU1000_USB_HOST_INT },
+	[ALCHEMY_CPU_AU1500] = { AU1000_USB_OHCI_PHYS_ADDR, AU1500_USB_HOST_INT },
+	[ALCHEMY_CPU_AU1100] = { AU1000_USB_OHCI_PHYS_ADDR, AU1100_USB_HOST_INT },
+	[ALCHEMY_CPU_AU1550] = { AU1550_USB_OHCI_PHYS_ADDR, AU1550_USB_HOST_INT },
+	[ALCHEMY_CPU_AU1200] = { AU1200_USB_OHCI_PHYS_ADDR, AU1200_USB_INT },
+	[ALCHEMY_CPU_AU1300] = { AU1300_USB_OHCI0_PHYS_ADDR, AU1300_USB_INT },
+};
+
+static unsigned long alchemy_ehci_data[][2] __initdata = {
+	[ALCHEMY_CPU_AU1200] = { AU1200_USB_EHCI_PHYS_ADDR, AU1200_USB_INT },
+	[ALCHEMY_CPU_AU1300] = { AU1300_USB_EHCI_PHYS_ADDR, AU1300_USB_INT },
+};
+
+static int __init _new_usbres(struct resource **r, struct platform_device **d)
+{
+	*r = kzalloc(sizeof(struct resource) * 2, GFP_KERNEL);
+	if (!*r)
+		return -ENOMEM;
+	*d = kzalloc(sizeof(struct platform_device), GFP_KERNEL);
+	if (!*d) {
+		kfree(*r);
+		return -ENOMEM;
+	}
+
+	(*d)->dev.coherent_dma_mask = DMA_BIT_MASK(32);
+	(*d)->num_resources = 2;
+	(*d)->resource = *r;
+
+	return 0;
+}
+
+static void __init alchemy_setup_usb(int ctype)
+{
+	struct resource *res;
+	struct platform_device *pdev;
+
+	/* setup OHCI0.  Every variant has one */
+	if (_new_usbres(&res, &pdev))
+		return;
+
+	res[0].start = alchemy_ohci_data[ctype][0];
+	res[0].end = res[0].start + 0x100 - 1;
+	res[0].flags = IORESOURCE_MEM;
+	res[1].start = alchemy_ohci_data[ctype][1];
+	res[1].end = res[1].start;
+	res[1].flags = IORESOURCE_IRQ;
+	pdev->name = "au1xxx-ohci";
+	pdev->id = 0;
+	pdev->dev.dma_mask = &alchemy_ohci_dmamask;
+
+	if (platform_device_register(pdev))
+		printk(KERN_INFO "Alchemy USB: cannot add OHCI0\n");
+
+
+	/* setup EHCI0: Au1200/Au1300 */
+	if ((ctype == ALCHEMY_CPU_AU1200) || (ctype == ALCHEMY_CPU_AU1300)) {
+		if (_new_usbres(&res, &pdev))
+			return;
+
+		res[0].start = alchemy_ehci_data[ctype][0];
+		res[0].end = res[0].start + 0x100 - 1;
+		res[0].flags = IORESOURCE_MEM;
+		res[1].start = alchemy_ehci_data[ctype][1];
+		res[1].end = res[1].start;
+		res[1].flags = IORESOURCE_IRQ;
+		pdev->name = "au1xxx-ehci";
+		pdev->id = 0;
+		pdev->dev.dma_mask = &alchemy_ehci_dmamask;
+
+		if (platform_device_register(pdev))
+			printk(KERN_INFO "Alchemy USB: cannot add EHCI0\n");
+	}
+
+	/* Au1300: OHCI1 */
+	if (ctype == ALCHEMY_CPU_AU1300) {
+		if (_new_usbres(&res, &pdev))
+			return;
+
+		res[0].start = AU1300_USB_OHCI1_PHYS_ADDR;
+		res[0].end = res[0].start + 0x100 - 1;
+		res[0].flags = IORESOURCE_MEM;
+		res[1].start = AU1300_USB_INT;
+		res[1].end = res[1].start;
+		res[1].flags = IORESOURCE_IRQ;
+		pdev->name = "au1xxx-ohci";
+		pdev->id = 1;
+		pdev->dev.dma_mask = &alchemy_ohci_dmamask;
+
+		if (platform_device_register(pdev))
+			printk(KERN_INFO "Alchemy USB: cannot add OHCI1\n");
+	}
+}
+
+/* Macro to help defining the Ethernet MAC resources */
+#define MAC_RES_COUNT	4	/* MAC regs, MAC en, MAC INT, MACDMA regs */
+#define MAC_RES(_base, _enable, _irq, _macdma)		\
+>>>>>>> refs/remotes/origin/cm-10.0
 	{						\
 		.start	= _base,			\
 		.end	= _base + 0xffff,		\
@@ -389,28 +507,56 @@ static struct platform_device pbdb_smbus_device = {
 		.start	= _irq,				\
 		.end	= _irq,				\
 		.flags	= IORESOURCE_IRQ		\
+<<<<<<< HEAD
+=======
+	},						\
+	{						\
+		.start	= _macdma,			\
+		.end	= _macdma + 0x1ff,		\
+		.flags	= IORESOURCE_MEM,		\
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 static struct resource au1xxx_eth0_resources[][MAC_RES_COUNT] __initdata = {
 	[ALCHEMY_CPU_AU1000] = {
 		MAC_RES(AU1000_MAC0_PHYS_ADDR,
 			AU1000_MACEN_PHYS_ADDR,
+<<<<<<< HEAD
 			AU1000_MAC0_DMA_INT)
+=======
+			AU1000_MAC0_DMA_INT,
+			AU1000_MACDMA0_PHYS_ADDR)
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	[ALCHEMY_CPU_AU1500] = {
 		MAC_RES(AU1500_MAC0_PHYS_ADDR,
 			AU1500_MACEN_PHYS_ADDR,
+<<<<<<< HEAD
 			AU1500_MAC0_DMA_INT)
+=======
+			AU1500_MAC0_DMA_INT,
+			AU1000_MACDMA0_PHYS_ADDR)
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	[ALCHEMY_CPU_AU1100] = {
 		MAC_RES(AU1000_MAC0_PHYS_ADDR,
 			AU1000_MACEN_PHYS_ADDR,
+<<<<<<< HEAD
 			AU1100_MAC0_DMA_INT)
+=======
+			AU1100_MAC0_DMA_INT,
+			AU1000_MACDMA0_PHYS_ADDR)
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	[ALCHEMY_CPU_AU1550] = {
 		MAC_RES(AU1000_MAC0_PHYS_ADDR,
 			AU1000_MACEN_PHYS_ADDR,
+<<<<<<< HEAD
 			AU1550_MAC0_DMA_INT)
+=======
+			AU1550_MAC0_DMA_INT,
+			AU1000_MACDMA0_PHYS_ADDR)
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -429,17 +575,32 @@ static struct resource au1xxx_eth1_resources[][MAC_RES_COUNT] __initdata = {
 	[ALCHEMY_CPU_AU1000] = {
 		MAC_RES(AU1000_MAC1_PHYS_ADDR,
 			AU1000_MACEN_PHYS_ADDR + 4,
+<<<<<<< HEAD
 			AU1000_MAC1_DMA_INT)
+=======
+			AU1000_MAC1_DMA_INT,
+			AU1000_MACDMA1_PHYS_ADDR)
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	[ALCHEMY_CPU_AU1500] = {
 		MAC_RES(AU1500_MAC1_PHYS_ADDR,
 			AU1500_MACEN_PHYS_ADDR + 4,
+<<<<<<< HEAD
 			AU1500_MAC1_DMA_INT)
+=======
+			AU1500_MAC1_DMA_INT,
+			AU1000_MACDMA1_PHYS_ADDR)
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 	[ALCHEMY_CPU_AU1550] = {
 		MAC_RES(AU1000_MAC1_PHYS_ADDR,
 			AU1000_MACEN_PHYS_ADDR + 4,
+<<<<<<< HEAD
 			AU1550_MAC1_DMA_INT)
+=======
+			AU1550_MAC1_DMA_INT,
+			AU1000_MACDMA1_PHYS_ADDR)
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
 
@@ -492,7 +653,11 @@ static void __init alchemy_setup_macs(int ctype)
 		memcpy(au1xxx_eth0_platform_data.mac, ethaddr, 6);
 
 	ret = platform_device_register(&au1xxx_eth0_device);
+<<<<<<< HEAD
 	if (!ret)
+=======
+	if (ret)
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_INFO "Alchemy: failed to register MAC0\n");
 
 
@@ -521,6 +686,7 @@ static void __init alchemy_setup_macs(int ctype)
 	}
 }
 
+<<<<<<< HEAD
 static struct platform_device *au1xxx_platform_devices[] __initdata = {
 	&au1xxx_usb_ohci_device,
 #ifdef CONFIG_FB_AU1100
@@ -551,6 +717,17 @@ static int __init au1xxx_platform_init(void)
 	err = platform_add_devices(au1xxx_platform_devices,
 				   ARRAY_SIZE(au1xxx_platform_devices));
 	return err;
+=======
+static int __init au1xxx_platform_init(void)
+{
+	int ctype = alchemy_get_cputype();
+
+	alchemy_setup_uarts(ctype);
+	alchemy_setup_macs(ctype);
+	alchemy_setup_usb(ctype);
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 arch_initcall(au1xxx_platform_init);

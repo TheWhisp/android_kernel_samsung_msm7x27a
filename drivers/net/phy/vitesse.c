@@ -3,7 +3,11 @@
  *
  * Author: Kriston Carson
  *
+<<<<<<< HEAD
  * Copyright (c) 2005 Freescale Semiconductor, Inc.
+=======
+ * Copyright (c) 2005, 2009 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -61,6 +65,7 @@ MODULE_DESCRIPTION("Vitesse PHY driver");
 MODULE_AUTHOR("Kriston Carson");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static int vsc824x_config_init(struct phy_device *phydev)
 {
 	int extcon;
@@ -70,23 +75,57 @@ static int vsc824x_config_init(struct phy_device *phydev)
 			MII_VSC8244_AUXCONSTAT_INIT);
 	if (err < 0)
 		return err;
+=======
+int vsc824x_add_skew(struct phy_device *phydev)
+{
+	int err;
+	int extcon;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	extcon = phy_read(phydev, MII_VSC8244_EXT_CON1);
 
 	if (extcon < 0)
+<<<<<<< HEAD
 		return err;
+=======
+		return extcon;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	extcon &= ~(MII_VSC8244_EXTCON1_TX_SKEW_MASK |
 			MII_VSC8244_EXTCON1_RX_SKEW_MASK);
 
+<<<<<<< HEAD
 	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID)
 		extcon |= (MII_VSC8244_EXTCON1_TX_SKEW |
 				MII_VSC8244_EXTCON1_RX_SKEW);
+=======
+	extcon |= (MII_VSC8244_EXTCON1_TX_SKEW |
+			MII_VSC8244_EXTCON1_RX_SKEW);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	err = phy_write(phydev, MII_VSC8244_EXT_CON1, extcon);
 
 	return err;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(vsc824x_add_skew);
+
+static int vsc824x_config_init(struct phy_device *phydev)
+{
+	int err;
+
+	err = phy_write(phydev, MII_VSC8244_AUX_CONSTAT,
+			MII_VSC8244_AUXCONSTAT_INIT);
+	if (err < 0)
+		return err;
+
+	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID)
+		err = vsc824x_add_skew(phydev);
+
+	return err;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int vsc824x_ack_interrupt(struct phy_device *phydev)
 {

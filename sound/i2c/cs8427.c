@@ -24,6 +24,10 @@
 #include <linux/delay.h>
 #include <linux/init.h>
 #include <linux/bitrev.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
 #include <sound/core.h>
 #include <sound/control.h>

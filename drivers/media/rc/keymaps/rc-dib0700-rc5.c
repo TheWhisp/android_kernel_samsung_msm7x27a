@@ -16,6 +16,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct rc_map_table dib0700_rc5_table[] = {
 	/* Key codes for the tiny Pinnacle remote*/

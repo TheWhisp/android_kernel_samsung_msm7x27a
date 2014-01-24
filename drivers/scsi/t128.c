@@ -106,7 +106,10 @@
  * $Log: t128.c,v $
  */
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/signal.h>
 #include <linux/io.h>
 #include <linux/blkdev.h>

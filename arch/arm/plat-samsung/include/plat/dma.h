@@ -10,17 +10,28 @@
  * published by the Free Software Foundation.
 */
 
+<<<<<<< HEAD
+=======
+#ifndef __PLAT_DMA_H
+#define __PLAT_DMA_H
+
+#include <linux/dma-mapping.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum s3c2410_dma_buffresult {
 	S3C2410_RES_OK,
 	S3C2410_RES_ERR,
 	S3C2410_RES_ABORT
 };
 
+<<<<<<< HEAD
 enum s3c2410_dmasrc {
 	S3C2410_DMASRC_HW,		/* source is memory */
 	S3C2410_DMASRC_MEM		/* source is hardware */
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* enum s3c2410_chan_op
  *
  * operation codes passed to the DMA code by the user, and also used
@@ -112,7 +123,11 @@ extern int s3c2410_dma_config(enum dma_ch channel, int xferunit);
 */
 
 extern int s3c2410_dma_devconfig(enum dma_ch channel,
+<<<<<<< HEAD
 		enum s3c2410_dmasrc source, unsigned long devaddr);
+=======
+		enum dma_data_direction source, unsigned long devaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* s3c2410_dma_getposition
  *
@@ -125,4 +140,10 @@ extern int s3c2410_dma_getposition(enum dma_ch channel,
 extern int s3c2410_dma_set_opfn(enum dma_ch, s3c2410_dma_opfn_t rtn);
 extern int s3c2410_dma_set_buffdone_fn(enum dma_ch, s3c2410_dma_cbfn_t rtn);
 
+<<<<<<< HEAD
 
+=======
+#include <plat/dma-ops.h>
+
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0

@@ -3,18 +3,37 @@
  *
  * Copyright (c) 2003 Patrick Mochel
  * Copyright (c) 2003 Open Source Development Lab
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * This file is released under the GPLv2
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kobject.h>
 #include <linux/string.h>
 #include <linux/resume-trace.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 
 #include "power.h"
 
+=======
+#include <linux/debugfs.h>
+#include <linux/seq_file.h>
+#include <linux/hrtimer.h>
+
+#include "power.h"
+
+#define MAX_BUF 100
+
+>>>>>>> refs/remotes/origin/cm-10.0
 DEFINE_MUTEX(pm_mutex);
 
 #ifdef CONFIG_PM_SLEEP
@@ -23,6 +42,16 @@ DEFINE_MUTEX(pm_mutex);
 
 static BLOCKING_NOTIFIER_HEAD(pm_chain_head);
 
+<<<<<<< HEAD
+=======
+static void touch_event_fn(struct work_struct *work);
+static DECLARE_WORK(touch_event_struct, touch_event_fn);
+
+static struct hrtimer tc_ev_timer;
+static int tc_ev_processed;
+static ktime_t touch_evt_timer_val;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int register_pm_notifier(struct notifier_block *nb)
 {
 	return blocking_notifier_chain_register(&pm_chain_head, nb);
@@ -37,8 +66,14 @@ EXPORT_SYMBOL_GPL(unregister_pm_notifier);
 
 int pm_notifier_call_chain(unsigned long val)
 {
+<<<<<<< HEAD
 	return (blocking_notifier_call_chain(&pm_chain_head, val, NULL)
 			== NOTIFY_BAD) ? -EINVAL : 0;
+=======
+	int ret = blocking_notifier_call_chain(&pm_chain_head, val, NULL);
+
+	return notifier_to_errno(ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* If set, devices may be suspended and resumed asynchronously. */
@@ -67,6 +102,84 @@ static ssize_t pm_async_store(struct kobject *kobj, struct kobj_attribute *attr,
 
 power_attr(pm_async);
 
+<<<<<<< HEAD
+=======
+static ssize_t
+touch_event_show(struct kobject *kobj,
+		 struct kobj_attribute *attr, char *buf)
+{
+	if (tc_ev_processed == 0)
+		return snprintf(buf, strnlen("touch_event", MAX_BUF) + 1,
+				"touch_event");
+	else
+		return snprintf(buf, strnlen("null", MAX_BUF) + 1,
+				"null");
+}
+
+static ssize_t
+touch_event_store(struct kobject *kobj,
+		  struct kobj_attribute *attr,
+		  const char *buf, size_t n)
+{
+
+	hrtimer_cancel(&tc_ev_timer);
+	tc_ev_processed = 0;
+
+	/* set a timer to notify the userspace to stop processing
+	 * touch event
+	 */
+	hrtimer_start(&tc_ev_timer, touch_evt_timer_val, HRTIMER_MODE_REL);
+
+	/* wakeup the userspace poll */
+	sysfs_notify(kobj, NULL, "touch_event");
+
+	return n;
+}
+
+power_attr(touch_event);
+
+static ssize_t
+touch_event_timer_show(struct kobject *kobj,
+		 struct kobj_attribute *attr, char *buf)
+{
+	return snprintf(buf, MAX_BUF, "%lld", touch_evt_timer_val.tv64);
+}
+
+static ssize_t
+touch_event_timer_store(struct kobject *kobj,
+			struct kobj_attribute *attr,
+			const char *buf, size_t n)
+{
+	unsigned long val;
+
+	if (strict_strtoul(buf, 10, &val))
+		return -EINVAL;
+
+	touch_evt_timer_val = ktime_set(0, val*1000);
+
+	return n;
+}
+
+power_attr(touch_event_timer);
+
+static void touch_event_fn(struct work_struct *work)
+{
+	/* wakeup the userspace poll */
+	tc_ev_processed = 1;
+	sysfs_notify(power_kobj, NULL, "touch_event");
+
+	return;
+}
+
+static enum hrtimer_restart tc_ev_stop(struct hrtimer *hrtimer)
+{
+
+	schedule_work(&touch_event_struct);
+
+	return HRTIMER_NORESTART;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PM_DEBUG
 int pm_test_level = TEST_NONE;
 
@@ -112,7 +225,11 @@ static ssize_t pm_test_store(struct kobject *kobj, struct kobj_attribute *attr,
 	p = memchr(buf, '\n', n);
 	len = p ? p - buf : n;
 
+<<<<<<< HEAD
 	mutex_lock(&pm_mutex);
+=======
+	lock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	level = TEST_FIRST;
 	for (s = &pm_tests[level]; level <= TEST_MAX; s++, level++)
@@ -122,7 +239,11 @@ static ssize_t pm_test_store(struct kobject *kobj, struct kobj_attribute *attr,
 			break;
 		}
 
+<<<<<<< HEAD
 	mutex_unlock(&pm_mutex);
+=======
+	unlock_system_sleep();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return error ? error : n;
 }
@@ -130,6 +251,108 @@ static ssize_t pm_test_store(struct kobject *kobj, struct kobj_attribute *attr,
 power_attr(pm_test);
 #endif /* CONFIG_PM_DEBUG */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DEBUG_FS
+static char *suspend_step_name(enum suspend_stat_step step)
+{
+	switch (step) {
+	case SUSPEND_FREEZE:
+		return "freeze";
+	case SUSPEND_PREPARE:
+		return "prepare";
+	case SUSPEND_SUSPEND:
+		return "suspend";
+	case SUSPEND_SUSPEND_NOIRQ:
+		return "suspend_noirq";
+	case SUSPEND_RESUME_NOIRQ:
+		return "resume_noirq";
+	case SUSPEND_RESUME:
+		return "resume";
+	default:
+		return "";
+	}
+}
+
+static int suspend_stats_show(struct seq_file *s, void *unused)
+{
+	int i, index, last_dev, last_errno, last_step;
+
+	last_dev = suspend_stats.last_failed_dev + REC_FAILED_NUM - 1;
+	last_dev %= REC_FAILED_NUM;
+	last_errno = suspend_stats.last_failed_errno + REC_FAILED_NUM - 1;
+	last_errno %= REC_FAILED_NUM;
+	last_step = suspend_stats.last_failed_step + REC_FAILED_NUM - 1;
+	last_step %= REC_FAILED_NUM;
+	seq_printf(s, "%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n"
+			"%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n",
+			"success", suspend_stats.success,
+			"fail", suspend_stats.fail,
+			"failed_freeze", suspend_stats.failed_freeze,
+			"failed_prepare", suspend_stats.failed_prepare,
+			"failed_suspend", suspend_stats.failed_suspend,
+			"failed_suspend_late",
+				suspend_stats.failed_suspend_late,
+			"failed_suspend_noirq",
+				suspend_stats.failed_suspend_noirq,
+			"failed_resume", suspend_stats.failed_resume,
+			"failed_resume_early",
+				suspend_stats.failed_resume_early,
+			"failed_resume_noirq",
+				suspend_stats.failed_resume_noirq);
+	seq_printf(s,	"failures:\n  last_failed_dev:\t%-s\n",
+			suspend_stats.failed_devs[last_dev]);
+	for (i = 1; i < REC_FAILED_NUM; i++) {
+		index = last_dev + REC_FAILED_NUM - i;
+		index %= REC_FAILED_NUM;
+		seq_printf(s, "\t\t\t%-s\n",
+			suspend_stats.failed_devs[index]);
+	}
+	seq_printf(s,	"  last_failed_errno:\t%-d\n",
+			suspend_stats.errno[last_errno]);
+	for (i = 1; i < REC_FAILED_NUM; i++) {
+		index = last_errno + REC_FAILED_NUM - i;
+		index %= REC_FAILED_NUM;
+		seq_printf(s, "\t\t\t%-d\n",
+			suspend_stats.errno[index]);
+	}
+	seq_printf(s,	"  last_failed_step:\t%-s\n",
+			suspend_step_name(
+				suspend_stats.failed_steps[last_step]));
+	for (i = 1; i < REC_FAILED_NUM; i++) {
+		index = last_step + REC_FAILED_NUM - i;
+		index %= REC_FAILED_NUM;
+		seq_printf(s, "\t\t\t%-s\n",
+			suspend_step_name(
+				suspend_stats.failed_steps[index]));
+	}
+
+	return 0;
+}
+
+static int suspend_stats_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, suspend_stats_show, NULL);
+}
+
+static const struct file_operations suspend_stats_operations = {
+	.open           = suspend_stats_open,
+	.read           = seq_read,
+	.llseek         = seq_lseek,
+	.release        = single_release,
+};
+
+static int __init pm_debugfs_init(void)
+{
+	debugfs_create_file("suspend_stats", S_IFREG | S_IRUGO,
+			NULL, NULL, &suspend_stats_operations);
+	return 0;
+}
+
+late_initcall(pm_debugfs_init);
+#endif /* CONFIG_DEBUG_FS */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_PM_SLEEP */
 
 struct kobject *power_kobj;
@@ -141,7 +364,11 @@ struct kobject *power_kobj;
  *	'standby' (Power-On Suspend), 'mem' (Suspend-to-RAM), and
  *	'disk' (Suspend-to-Disk).
  *
+<<<<<<< HEAD
  *	store() accepts one of those strings, translates it into the 
+=======
+ *	store() accepts one of those strings, translates it into the
+>>>>>>> refs/remotes/origin/cm-10.0
  *	proper enumerated value, and initiates a suspend transition.
  */
 static ssize_t state_show(struct kobject *kobj, struct kobj_attribute *attr,
@@ -187,11 +414,16 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 	/* First, check if we are requested to hibernate */
 	if (len == 4 && !strncmp(buf, "disk", len)) {
 		error = hibernate();
+<<<<<<< HEAD
   goto Exit;
+=======
+		goto Exit;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 #ifdef CONFIG_SUSPEND
 	for (s = &pm_states[state]; state < PM_SUSPEND_MAX; s++, state++) {
+<<<<<<< HEAD
 		if (*s && len == strlen(*s) && !strncmp(buf, *s, len))
 			break;
 	}
@@ -204,6 +436,20 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 #else
 		error = enter_state(state);
 #endif
+=======
+		if (*s && len == strlen(*s) && !strncmp(buf, *s, len)) {
+#ifdef CONFIG_EARLYSUSPEND
+			if (state == PM_SUSPEND_ON || valid_state(state)) {
+				error = 0;
+				request_suspend_state(state);
+				break;
+			}
+#else
+			error = pm_suspend(state);
+#endif
+		}
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
  Exit:
@@ -313,7 +559,11 @@ power_attr(wake_lock);
 power_attr(wake_unlock);
 #endif
 
+<<<<<<< HEAD
 static struct attribute * g[] = {
+=======
+static struct attribute *g[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	&state_attr.attr,
 #ifdef CONFIG_PM_TRACE
 	&pm_trace_attr.attr,
@@ -322,6 +572,11 @@ static struct attribute * g[] = {
 #ifdef CONFIG_PM_SLEEP
 	&pm_async_attr.attr,
 	&wakeup_count_attr.attr,
+<<<<<<< HEAD
+=======
+	&touch_event_attr.attr,
+	&touch_event_timer_attr.attr,
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PM_DEBUG
 	&pm_test_attr.attr,
 #endif
@@ -358,6 +613,16 @@ static int __init pm_init(void)
 		return error;
 	hibernate_image_size_init();
 	hibernate_reserved_size_init();
+<<<<<<< HEAD
+=======
+
+	touch_evt_timer_val = ktime_set(2, 0);
+	hrtimer_init(&tc_ev_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+	tc_ev_timer.function = &tc_ev_stop;
+	tc_ev_processed = 1;
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	power_kobj = kobject_create_and_add("power", NULL);
 	if (!power_kobj)
 		return -ENOMEM;

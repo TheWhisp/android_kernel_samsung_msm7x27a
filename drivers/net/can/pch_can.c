@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 1999 - 2010 Intel Corporation.
+<<<<<<< HEAD
  * Copyright (C) 2010 OKI SEMICONDUCTOR CO., LTD.
+=======
+ * Copyright (C) 2010 LAPIS SEMICONDUCTOR CO., LTD.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +70,10 @@
 #define PCH_IF_CREQ_BUSY	BIT(15)
 
 #define PCH_STATUS_INT		0x8000
+<<<<<<< HEAD
+=======
+#define PCH_RP			0x00008000
+>>>>>>> refs/remotes/origin/cm-10.0
 #define PCH_REC			0x00007f00
 #define PCH_TEC			0x000000ff
 
@@ -527,7 +535,11 @@ static void pch_can_error(struct net_device *ndev, u32 status)
 		priv->can.can_stats.error_passive++;
 		state = CAN_STATE_ERROR_PASSIVE;
 		cf->can_id |= CAN_ERR_CRTL;
+<<<<<<< HEAD
 		if (((errc & PCH_REC) >> 8) > 127)
+=======
+		if (errc & PCH_RP)
+>>>>>>> refs/remotes/origin/cm-10.0
 			cf->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
 		if ((errc & PCH_TEC) > 127)
 			cf->data[1] |= CAN_ERR_CRTL_TX_PASSIVE;

@@ -9,7 +9,10 @@
  * Author: Linus Walleij <linus.walleij@stericsson.com>
  */
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/sched.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/time.h>
 #include <linux/timex.h>
 #include <linux/clockchips.h>
@@ -27,9 +30,12 @@
 #include <asm/mach/time.h>
 #include <asm/mach/irq.h>
 
+<<<<<<< HEAD
 /* Be able to sleep for atleast 4 seconds (usually more) */
 #define APPTIMER_MIN_RANGE 4
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * APP side special timer registers
  * This timer contains four timers which can fire an interrupt each.
@@ -309,11 +315,19 @@ static int u300_set_next_event(unsigned long cycles,
 
 /* Use general purpose timer 1 as clock event */
 static struct clock_event_device clockevent_u300_1mhz = {
+<<<<<<< HEAD
 	.name           = "GPT1",
 	.rating         = 300, /* Reasonably fast and accurate clock event */
 	.features       = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
 	.set_next_event = u300_set_next_event,
 	.set_mode       = u300_set_mode,
+=======
+	.name		= "GPT1",
+	.rating		= 300, /* Reasonably fast and accurate clock event */
+	.features	= CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
+	.set_next_event	= u300_set_next_event,
+	.set_mode	= u300_set_mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Clock event timer interrupt handler */
@@ -328,9 +342,15 @@ static irqreturn_t u300_timer_interrupt(int irq, void *dev_id)
 }
 
 static struct irqaction u300_timer_irq = {
+<<<<<<< HEAD
 	.name           = "U300 Timer Tick",
 	.flags          = IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL,
 	.handler        = u300_timer_interrupt,
+=======
+	.name		= "U300 Timer Tick",
+	.flags		= IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL,
+	.handler	= u300_timer_interrupt,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -340,6 +360,7 @@ static struct irqaction u300_timer_irq = {
  * this wraps around for now, since it is just a relative time
  * stamp. (Inspired by OMAP implementation.)
  */
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 
 unsigned long long notrace sched_clock(void)
@@ -352,6 +373,12 @@ static void notrace u300_update_sched_clock(void)
 {
 	u32 cyc = readl(U300_TIMER_APP_VBASE + U300_TIMER_APP_GPT2CC);
 	update_sched_clock(&cd, cyc, (u32)~0);
+=======
+
+static u32 notrace u300_read_sched_clock(void)
+{
+	return readl(U300_TIMER_APP_VBASE + U300_TIMER_APP_GPT2CC);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
@@ -369,7 +396,11 @@ static void __init u300_timer_init(void)
 	clk_enable(clk);
 	rate = clk_get_rate(clk);
 
+<<<<<<< HEAD
 	init_sched_clock(&cd, u300_update_sched_clock, 32, rate);
+=======
+	setup_sched_clock(u300_read_sched_clock, 32, rate);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Disable the "OS" and "DD" timers - these are designed for Symbian!
@@ -413,6 +444,7 @@ static void __init u300_timer_init(void)
 			"GPT2", rate, 300, 32, clocksource_mmio_readl_up))
 		pr_err("timer: failed to initialize U300 clock source\n");
 
+<<<<<<< HEAD
 	clockevents_calc_mult_shift(&clockevent_u300_1mhz,
 				    rate, APPTIMER_MIN_RANGE);
 	/* 32bit counter, so 32bits delta is max */
@@ -423,6 +455,12 @@ static void __init u300_timer_init(void)
 		clockevent_delta2ns(1, &clockevent_u300_1mhz);
 	clockevent_u300_1mhz.cpumask = cpumask_of(0);
 	clockevents_register_device(&clockevent_u300_1mhz);
+=======
+	/* Configure and register the clockevent */
+	clockevents_config_and_register(&clockevent_u300_1mhz, rate,
+					1, 0xffffffff);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * TODO: init and register the rest of the timers too, they can be
 	 * used by hrtimers!

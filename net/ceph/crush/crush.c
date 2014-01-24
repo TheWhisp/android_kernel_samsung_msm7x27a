@@ -26,9 +26,15 @@ const char *crush_bucket_alg_name(int alg)
  * @b: bucket pointer
  * @p: item index in bucket
  */
+<<<<<<< HEAD
 int crush_get_bucket_item_weight(struct crush_bucket *b, int p)
 {
 	if (p >= b->size)
+=======
+int crush_get_bucket_item_weight(const struct crush_bucket *b, int p)
+{
+	if ((__u32)p >= b->size)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	switch (b->alg) {
@@ -37,9 +43,13 @@ int crush_get_bucket_item_weight(struct crush_bucket *b, int p)
 	case CRUSH_BUCKET_LIST:
 		return ((struct crush_bucket_list *)b)->item_weights[p];
 	case CRUSH_BUCKET_TREE:
+<<<<<<< HEAD
 		if (p & 1)
 			return ((struct crush_bucket_tree *)b)->node_weights[p];
 		return 0;
+=======
+		return ((struct crush_bucket_tree *)b)->node_weights[crush_calc_tree_node(p)];
+>>>>>>> refs/remotes/origin/cm-10.0
 	case CRUSH_BUCKET_STRAW:
 		return ((struct crush_bucket_straw *)b)->item_weights[p];
 	}
@@ -87,6 +97,11 @@ void crush_destroy_bucket_list(struct crush_bucket_list *b)
 
 void crush_destroy_bucket_tree(struct crush_bucket_tree *b)
 {
+<<<<<<< HEAD
+=======
+	kfree(b->h.perm);
+	kfree(b->h.items);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(b->node_weights);
 	kfree(b);
 }
@@ -124,10 +139,16 @@ void crush_destroy_bucket(struct crush_bucket *b)
  */
 void crush_destroy(struct crush_map *map)
 {
+<<<<<<< HEAD
 	int b;
 
 	/* buckets */
 	if (map->buckets) {
+=======
+	/* buckets */
+	if (map->buckets) {
+		__s32 b;
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (b = 0; b < map->max_buckets; b++) {
 			if (map->buckets[b] == NULL)
 				continue;
@@ -138,6 +159,10 @@ void crush_destroy(struct crush_map *map)
 
 	/* rules */
 	if (map->rules) {
+<<<<<<< HEAD
+=======
+		__u32 b;
+>>>>>>> refs/remotes/origin/cm-10.0
 		for (b = 0; b < map->max_rules; b++)
 			kfree(map->rules[b]);
 		kfree(map->rules);

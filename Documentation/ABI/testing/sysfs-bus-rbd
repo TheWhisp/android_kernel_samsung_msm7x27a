@@ -51,6 +51,7 @@ current_snap
 
 	The current snapshot for which the device is mapped.
 
+<<<<<<< HEAD
 create_snap
 
 	Create a snapshot:
@@ -70,6 +71,8 @@ create_snap
 
 	 $ echo <snap-name> > /sys/bus/rbd/devices/<dev-id>/snap_create
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 snap_*
 
 	A directory per each snapshot

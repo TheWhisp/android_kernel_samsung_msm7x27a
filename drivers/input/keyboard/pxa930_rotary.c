@@ -148,7 +148,11 @@ static int __devinit pxa930_rotary_probe(struct platform_device *pdev)
 	r->input_dev = input_dev;
 	input_set_drvdata(input_dev, r);
 
+<<<<<<< HEAD
 	err = request_irq(irq, rotary_irq, IRQF_DISABLED,
+=======
+	err = request_irq(irq, rotary_irq, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			"enhanced rotary", r);
 	if (err) {
 		dev_err(&pdev->dev, "failed to request IRQ\n");
@@ -195,6 +199,7 @@ static struct platform_driver pxa930_rotary_driver = {
 	.probe		= pxa930_rotary_probe,
 	.remove		= __devexit_p(pxa930_rotary_remove),
 };
+<<<<<<< HEAD
 
 static int __init pxa930_rotary_init(void)
 {
@@ -207,6 +212,9 @@ static void __exit pxa930_rotary_exit(void)
 	platform_driver_unregister(&pxa930_rotary_driver);
 }
 module_exit(pxa930_rotary_exit);
+=======
+module_platform_driver(pxa930_rotary_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Driver for PXA93x Enhanced Rotary Controller");

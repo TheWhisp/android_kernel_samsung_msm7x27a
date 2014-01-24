@@ -65,8 +65,13 @@ static inline void spufs_calls_put(struct spufs_calls *calls) { }
 
 #endif /* CONFIG_SPU_FS_MODULE */
 
+<<<<<<< HEAD
 asmlinkage long sys_spu_create(const char __user *name,
 		unsigned int flags, mode_t mode, int neighbor_fd)
+=======
+SYSCALL_DEFINE4(spu_create, const char __user *, name, unsigned int, flags,
+	umode_t, mode, int, neighbor_fd)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	long ret;
 	struct file *neighbor;

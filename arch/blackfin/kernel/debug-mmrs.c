@@ -27,7 +27,11 @@
 #define PORT_MUX BFIN_PORT_MUX
 #endif
 
+<<<<<<< HEAD
 #define _d(name, bits, addr, perms) debugfs_create_x##bits(name, perms, parent, (u##bits *)addr)
+=======
+#define _d(name, bits, addr, perms) debugfs_create_x##bits(name, perms, parent, (u##bits *)(addr))
+>>>>>>> refs/remotes/origin/cm-10.0
 #define d(name, bits, addr)         _d(name, bits, addr, S_IRUSR|S_IWUSR)
 #define d_RO(name, bits, addr)      _d(name, bits, addr, S_IRUSR)
 #define d_WO(name, bits, addr)      _d(name, bits, addr, S_IWUSR)
@@ -223,7 +227,12 @@ bfin_debug_mmrs_dma(struct dentry *parent, unsigned long base, int num, char mdm
 	__DMA(CURR_DESC_PTR, curr_desc_ptr);
 	__DMA(CURR_ADDR, curr_addr);
 	__DMA(IRQ_STATUS, irq_status);
+<<<<<<< HEAD
 	__DMA(PERIPHERAL_MAP, peripheral_map);
+=======
+	if (strcmp(pfx, "IMDMA") != 0)
+		__DMA(PERIPHERAL_MAP, peripheral_map);
+>>>>>>> refs/remotes/origin/cm-10.0
 	__DMA(CURR_X_COUNT, curr_x_count);
 	__DMA(CURR_Y_COUNT, curr_y_count);
 }
@@ -277,6 +286,35 @@ bfin_debug_mmrs_gptimer(struct dentry *parent, unsigned long base, int num)
 }
 #define GPTIMER(num) bfin_debug_mmrs_gptimer(parent, TIMER##num##_CONFIG, num)
 
+<<<<<<< HEAD
+=======
+#define GPTIMER_GROUP_OFF(mmr) REGS_OFF(gptimer_group, mmr)
+#define __GPTIMER_GROUP(uname, lname) __REGS(gptimer_group, #uname, lname)
+static void __init __maybe_unused
+bfin_debug_mmrs_gptimer_group(struct dentry *parent, unsigned long base, int num)
+{
+	char buf[32], *_buf;
+
+	if (num == -1) {
+		_buf = buf + sprintf(buf, "TIMER_");
+		__GPTIMER_GROUP(ENABLE, enable);
+		__GPTIMER_GROUP(DISABLE, disable);
+		__GPTIMER_GROUP(STATUS, status);
+	} else {
+		/* These MMRs are a bit odd as the group # is a suffix */
+		_buf = buf + sprintf(buf, "TIMER_ENABLE%i", num);
+		d(buf, 16, base + GPTIMER_GROUP_OFF(enable));
+
+		_buf = buf + sprintf(buf, "TIMER_DISABLE%i", num);
+		d(buf, 16, base + GPTIMER_GROUP_OFF(disable));
+
+		_buf = buf + sprintf(buf, "TIMER_STATUS%i", num);
+		d(buf, 32, base + GPTIMER_GROUP_OFF(status));
+	}
+}
+#define GPTIMER_GROUP(mmr, num) bfin_debug_mmrs_gptimer_group(parent, mmr, num)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Handshake MDMA
  */
@@ -296,6 +334,32 @@ bfin_debug_mmrs_hmdma(struct dentry *parent, unsigned long base, int num)
 #define HMDMA(num) bfin_debug_mmrs_hmdma(parent, HMDMA##num##_CONTROL, num)
 
 /*
+<<<<<<< HEAD
+=======
+ * Peripheral Interrupts (PINT/GPIO)
+ */
+#ifdef PINT0_MASK_SET
+#define __PINT(uname, lname) __REGS(pint, #uname, lname)
+static void __init __maybe_unused
+bfin_debug_mmrs_pint(struct dentry *parent, unsigned long base, int num)
+{
+	char buf[32], *_buf = REGS_STR_PFX(buf, PINT, num);
+	__PINT(MASK_SET, mask_set);
+	__PINT(MASK_CLEAR, mask_clear);
+	__PINT(REQUEST, request);
+	__PINT(ASSIGN, assign);
+	__PINT(EDGE_SET, edge_set);
+	__PINT(EDGE_CLEAR, edge_clear);
+	__PINT(INVERT_SET, invert_set);
+	__PINT(INVERT_CLEAR, invert_clear);
+	__PINT(PINSTATE, pinstate);
+	__PINT(LATCH, latch);
+}
+#define PINT(num) bfin_debug_mmrs_pint(parent, PINT##num##_MASK_SET, num)
+#endif
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Port/GPIO
  */
 #define bfin_gpio_regs gpio_port_t
@@ -747,7 +811,11 @@ static int __init bfin_debug_mmrs_init(void)
 #endif
 
 	parent = debugfs_create_dir("dmac", top);
+<<<<<<< HEAD
 #ifdef DMA_TC_CNT
+=======
+#ifdef DMAC_TC_CNT
+>>>>>>> refs/remotes/origin/cm-10.0
 	D16(DMAC_TC_CNT);
 	D16(DMAC_TC_PER);
 #endif
@@ -1005,6 +1073,7 @@ static int __init bfin_debug_mmrs_init(void)
 #endif
 
 	parent = debugfs_create_dir("gptimer", top);
+<<<<<<< HEAD
 #ifdef TIMER_DISABLE
 	D16(TIMER_DISABLE);
 	D16(TIMER_ENABLE);
@@ -1028,6 +1097,21 @@ static int __init bfin_debug_mmrs_init(void)
 	D16(TMRS8_DISABLE);
 	D16(TMRS8_ENABLE);
 	D32(TMRS8_STATUS);
+=======
+#ifdef TIMER_ENABLE
+	GPTIMER_GROUP(TIMER_ENABLE, -1);
+#endif
+#ifdef TIMER_ENABLE0
+	GPTIMER_GROUP(TIMER_ENABLE0, 0);
+#endif
+#ifdef TIMER_ENABLE1
+	GPTIMER_GROUP(TIMER_ENABLE1, 1);
+#endif
+	/* XXX: Should convert BF561 MMR names */
+#ifdef TMRS4_DISABLE
+	GPTIMER_GROUP(TMRS4_ENABLE, 0);
+	GPTIMER_GROUP(TMRS8_ENABLE, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	GPTIMER(0);
 	GPTIMER(1);
@@ -1253,6 +1337,17 @@ static int __init bfin_debug_mmrs_init(void)
 	D32(OTP_DATA3);
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef PINT0_MASK_SET
+	parent = debugfs_create_dir("pint", top);
+	PINT(0);
+	PINT(1);
+	PINT(2);
+	PINT(3);
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef PIXC_CTL
 	parent = debugfs_create_dir("pixc", top);
 	D16(PIXC_CTL);
@@ -1816,7 +1911,10 @@ static int __init bfin_debug_mmrs_init(void)
 	{
 		int num;
 		unsigned long base;
+<<<<<<< HEAD
 		char *_buf, buf[32];
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		base = PORTA_FER;
 		for (num = 0; num < 10; ++num) {
@@ -1824,6 +1922,7 @@ static int __init bfin_debug_mmrs_init(void)
 			base += sizeof(struct bfin_gpio_regs);
 		}
 
+<<<<<<< HEAD
 #define __PINT(uname, lname) __REGS(pint, #uname, lname)
 		parent = debugfs_create_dir("pint", top);
 		base = PINT0_MASK_SET;
@@ -1842,6 +1941,8 @@ static int __init bfin_debug_mmrs_init(void)
 			base += sizeof(struct bfin_pint_regs);
 		}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 #endif	/* BF54x */
 

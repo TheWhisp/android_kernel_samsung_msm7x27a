@@ -36,8 +36,11 @@ extern unsigned long kern_locked_tte_data;
 
 extern void prom_world(int enter);
 
+<<<<<<< HEAD
 extern void free_initmem(void);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SPARSEMEM_VMEMMAP
 #define VMEMMAP_CHUNK_SHIFT	22
 #define VMEMMAP_CHUNK		(1UL << VMEMMAP_CHUNK_SHIFT)

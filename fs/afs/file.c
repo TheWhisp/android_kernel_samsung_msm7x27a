@@ -251,7 +251,11 @@ static int afs_readpages(struct file *file, struct address_space *mapping,
 	ASSERT(key != NULL);
 
 	vnode = AFS_FS_I(mapping->host);
+<<<<<<< HEAD
 	if (vnode->flags & AFS_VNODE_DELETED) {
+=======
+	if (test_bit(AFS_VNODE_DELETED, &vnode->flags)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		_leave(" = -ESTALE");
 		return -ESTALE;
 	}

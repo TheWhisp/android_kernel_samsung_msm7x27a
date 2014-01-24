@@ -36,7 +36,10 @@
 #include "dir.h"
 #include "buffer_head_io.h"
 #include "sysfile.h"
+<<<<<<< HEAD
 #include "suballoc.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "refcounttree.h"
 #include "move_extents.h"
 
@@ -746,7 +749,11 @@ static int ocfs2_move_extent(struct ocfs2_move_extents_context *context,
 	 */
 	ocfs2_probe_alloc_group(inode, gd_bh, &goal_bit, len, move_max_hop,
 				new_phys_cpos);
+<<<<<<< HEAD
 	if (!new_phys_cpos) {
+=======
+	if (!*new_phys_cpos) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENOSPC;
 		goto out_commit;
 	}
@@ -1060,7 +1067,11 @@ int ocfs2_ioctl_move_extents(struct file *filp, void __user *argp)
 	struct ocfs2_move_extents range;
 	struct ocfs2_move_extents_context *context = NULL;
 
+<<<<<<< HEAD
 	status = mnt_want_write(filp->f_path.mnt);
+=======
+	status = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (status)
 		return status;
 
@@ -1146,7 +1157,11 @@ out:
 
 	kfree(context);
 
+<<<<<<< HEAD
 	mnt_drop_write(filp->f_path.mnt);
+=======
+	mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return status;
 }

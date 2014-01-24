@@ -23,6 +23,10 @@
 #include <linux/bootmem.h>
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+=======
+#include <asm/mce.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "proto.h"
 #include "pci_impl.h"

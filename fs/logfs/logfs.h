@@ -506,7 +506,11 @@ extern const struct file_operations logfs_reg_fops;
 extern const struct address_space_operations logfs_reg_aops;
 int logfs_readpage(struct file *file, struct page *page);
 long logfs_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+<<<<<<< HEAD
 int logfs_fsync(struct file *file, int datasync);
+=======
+int logfs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* gc.c */
 u32 get_best_cand(struct super_block *sb, struct candidate_list *list, u32 *ec);
@@ -520,7 +524,11 @@ extern const struct super_operations logfs_super_operations;
 struct inode *logfs_iget(struct super_block *sb, ino_t ino);
 struct inode *logfs_safe_iget(struct super_block *sb, ino_t ino, int *cookie);
 void logfs_safe_iput(struct inode *inode, int cookie);
+<<<<<<< HEAD
 struct inode *logfs_new_inode(struct inode *dir, int mode);
+=======
+struct inode *logfs_new_inode(struct inode *dir, umode_t mode);
+>>>>>>> refs/remotes/origin/cm-10.0
 struct inode *logfs_new_meta_inode(struct super_block *sb, u64 ino);
 struct inode *logfs_read_meta_inode(struct super_block *sb, u64 ino);
 int logfs_init_inode_cache(void);
@@ -528,7 +536,11 @@ void logfs_destroy_inode_cache(void);
 void logfs_set_blocks(struct inode *inode, u64 no);
 /* these logically belong into inode.c but actually reside in readwrite.c */
 int logfs_read_inode(struct inode *inode);
+<<<<<<< HEAD
 int __logfs_write_inode(struct inode *inode, long flags);
+=======
+int __logfs_write_inode(struct inode *inode, struct page *, long flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 void logfs_evict_inode(struct inode *inode);
 
 /* journal.c */
@@ -577,6 +589,11 @@ void initialize_block_counters(struct page *page, struct logfs_block *block,
 		__be64 *array, int page_is_empty);
 int logfs_exist_block(struct inode *inode, u64 bix);
 int get_page_reserve(struct inode *inode, struct page *page);
+<<<<<<< HEAD
+=======
+void logfs_get_wblocks(struct super_block *sb, struct page *page, int lock);
+void logfs_put_wblocks(struct super_block *sb, struct page *page, int lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct logfs_block_ops indirect_block_ops;
 
 /* segment.c */
@@ -594,6 +611,10 @@ int logfs_init_mapping(struct super_block *sb);
 void logfs_sync_area(struct logfs_area *area);
 void logfs_sync_segments(struct super_block *sb);
 void freeseg(struct super_block *sb, u32 segno);
+<<<<<<< HEAD
+=======
+void free_areas(struct super_block *sb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* area handling */
 int logfs_init_areas(struct super_block *sb);
@@ -618,7 +639,10 @@ static inline int logfs_buf_recover(struct logfs_area *area, u64 ofs,
 struct page *emergency_read_begin(struct address_space *mapping, pgoff_t index);
 void emergency_read_end(struct page *page);
 void logfs_crash_dump(struct super_block *sb);
+<<<<<<< HEAD
 void *memchr_inv(const void *s, int c, size_t n);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int logfs_statfs(struct dentry *dentry, struct kstatfs *stats);
 int logfs_check_ds(struct logfs_disk_super *ds);
 int logfs_write_sb(struct super_block *sb);

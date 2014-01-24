@@ -2,7 +2,11 @@
  * Supplementary group IDs
  */
 #include <linux/cred.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/security.h>
 #include <linux/syscalls.h>

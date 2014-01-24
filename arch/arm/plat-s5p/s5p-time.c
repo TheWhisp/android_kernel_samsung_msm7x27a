@@ -10,7 +10,10 @@
  * published by the Free Software Foundation.
 */
 
+<<<<<<< HEAD
 #include <linux/sched.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/err.h>
@@ -314,6 +317,7 @@ static void __iomem *s5p_timer_reg(void)
 	return S3C_TIMERREG(offset);
 }
 
+<<<<<<< HEAD
 static cycle_t s5p_timer_read(struct clocksource *cs)
 {
 	void __iomem *reg = s5p_timer_reg();
@@ -321,6 +325,8 @@ static cycle_t s5p_timer_read(struct clocksource *cs)
 	return (cycle_t) (reg ? ~__raw_readl(reg) : 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Override the global weak sched_clock symbol with this
  * local implementation which uses the clocksource to get some
@@ -328,15 +334,20 @@ static cycle_t s5p_timer_read(struct clocksource *cs)
  * this wraps around for now, since it is just a relative time
  * stamp. (Inspired by U300 implementation.)
  */
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 
 unsigned long long notrace sched_clock(void)
+=======
+static u32 notrace s5p_read_sched_clock(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	void __iomem *reg = s5p_timer_reg();
 
 	if (!reg)
 		return 0;
 
+<<<<<<< HEAD
 	return cyc_to_sched_clock(&cd, ~__raw_readl(reg), (u32)~0);
 }
 
@@ -358,6 +369,11 @@ struct clocksource time_clocksource = {
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
 };
 
+=======
+	return ~__raw_readl(reg);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init s5p_clocksource_init(void)
 {
 	unsigned long pclk;
@@ -373,10 +389,18 @@ static void __init s5p_clocksource_init(void)
 	s5p_time_setup(timer_source.source_id, TCNT_MAX);
 	s5p_time_start(timer_source.source_id, PERIODIC);
 
+<<<<<<< HEAD
 	init_sched_clock(&cd, s5p_update_sched_clock, 32, clock_rate);
 
 	if (clocksource_register_hz(&time_clocksource, clock_rate))
 		panic("%s: can't register clocksource\n", time_clocksource.name);
+=======
+	setup_sched_clock(s5p_read_sched_clock, 32, clock_rate);
+
+	if (clocksource_mmio_init(s5p_timer_reg(), "s5p_clocksource_timer",
+			clock_rate, 250, 32, clocksource_mmio_readl_down))
+		panic("s5p_clocksource_timer: can't register clocksource\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __init s5p_timer_resources(void)
@@ -384,6 +408,10 @@ static void __init s5p_timer_resources(void)
 
 	unsigned long event_id = timer_source.event_id;
 	unsigned long source_id = timer_source.source_id;
+<<<<<<< HEAD
+=======
+	char devname[15];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	timerclk = clk_get(NULL, "timers");
 	if (IS_ERR(timerclk))
@@ -391,6 +419,13 @@ static void __init s5p_timer_resources(void)
 
 	clk_enable(timerclk);
 
+<<<<<<< HEAD
+=======
+	sprintf(devname, "s3c24xx-pwm.%lu", event_id);
+	s3c_device_timer[event_id].id = event_id;
+	s3c_device_timer[event_id].dev.init_name = devname;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	tin_event = clk_get(&s3c_device_timer[event_id].dev, "pwm-tin");
 	if (IS_ERR(tin_event))
 		panic("failed to get pwm-tin clock for event timer");
@@ -401,6 +436,13 @@ static void __init s5p_timer_resources(void)
 
 	clk_enable(tin_event);
 
+<<<<<<< HEAD
+=======
+	sprintf(devname, "s3c24xx-pwm.%lu", source_id);
+	s3c_device_timer[source_id].id = source_id;
+	s3c_device_timer[source_id].dev.init_name = devname;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	tin_source = clk_get(&s3c_device_timer[source_id].dev, "pwm-tin");
 	if (IS_ERR(tin_source))
 		panic("failed to get pwm-tin clock for source timer");

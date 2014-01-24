@@ -1150,7 +1150,11 @@ struct rpc_procinfo	nfs_procedures[] = {
 	PROC(STATFS,	fhandle,	statfsres,	0),
 };
 
+<<<<<<< HEAD
 struct rpc_version		nfs_version2 = {
+=======
+const struct rpc_version nfs_version2 = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.number			= 2,
 	.nrprocs		= ARRAY_SIZE(nfs_procedures),
 	.procs			= nfs_procedures

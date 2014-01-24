@@ -15,7 +15,11 @@
  *
  */
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/err.h>
 #include <linux/genalloc.h>
 #include <linux/io.h>
@@ -28,14 +32,30 @@
 #include <linux/seq_file.h>
 #include <linux/fmem.h>
 #include <linux/iommu.h>
+<<<<<<< HEAD
 #include <mach/msm_memtypes.h>
 #include <mach/scm.h>
 #include <mach/iommu_domains.h>
  #include "ion_priv.h"
+=======
+#include <linux/dma-mapping.h>
+
+#include <asm/mach/map.h>
+
+#include <mach/msm_memtypes.h>
+#include <mach/scm.h>
+#include <mach/iommu_domains.h>
+
+#include "ion_priv.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/map.h>
 #include <asm/cacheflush.h>
 
+<<<<<<< HEAD
+=======
+#include "msm/ion_cp_common.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct ion_cp_heap - container for the heap and shared heap data
 
@@ -80,8 +100,13 @@ struct ion_cp_heap {
 	unsigned int heap_protected;
 	unsigned long allocated_bytes;
 	unsigned long total_size;
+<<<<<<< HEAD
 	int (*request_region)(void *);
 	int (*release_region)(void *);
+=======
+	int (*heap_request_region)(void *);
+	int (*heap_release_region)(void *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *bus_id;
 	unsigned long kmap_cached_count;
 	unsigned long kmap_uncached_count;
@@ -94,6 +119,13 @@ struct ion_cp_heap {
 	int iommu_2x_map_domain;
 	unsigned int has_outer_cache;
 	atomic_t protect_cnt;
+<<<<<<< HEAD
+=======
+	void *cpu_addr;
+	size_t heap_size;
+	dma_addr_t handle;
+	int cma;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 enum {
@@ -102,10 +134,81 @@ enum {
 };
 
 static int ion_cp_protect_mem(unsigned int phy_base, unsigned int size,
+<<<<<<< HEAD
 			unsigned int permission_type);
 
 static int ion_cp_unprotect_mem(unsigned int phy_base, unsigned int size,
 				unsigned int permission_type);
+=======
+			unsigned int permission_type, int version,
+			void *data);
+
+static int ion_cp_unprotect_mem(unsigned int phy_base, unsigned int size,
+				unsigned int permission_type, int version,
+				void *data);
+
+static int allocate_heap_memory(struct ion_heap *heap)
+{
+	struct device *dev = heap->priv;
+	struct ion_cp_heap *cp_heap =
+		container_of(heap, struct ion_cp_heap, heap);
+	int ret;
+	int tries = 0;
+
+
+	if (cp_heap->cpu_addr)
+		return 0;
+
+	while (!cp_heap->cpu_addr && (++tries < 500)) {
+		cp_heap->cpu_addr = dma_alloc_writecombine(dev,
+							cp_heap->heap_size,
+							&(cp_heap->handle),
+							0);
+		if (!cp_heap->cpu_addr)
+			msleep(20);
+	}
+
+	if (!cp_heap->cpu_addr)
+		goto out;
+
+	cp_heap->base = cp_heap->handle;
+
+	cp_heap->pool = gen_pool_create(12, -1);
+	if (!cp_heap->pool)
+		goto out_free;
+
+	ret = gen_pool_add(cp_heap->pool, cp_heap->base,
+				cp_heap->heap_size, -1);
+	if (ret < 0)
+		goto out_pool;
+
+	return 0;
+
+out_pool:
+	gen_pool_destroy(cp_heap->pool);
+out_free:
+	dma_free_coherent(dev, cp_heap->heap_size, cp_heap->cpu_addr,
+				cp_heap->handle);
+out:
+	return ION_CP_ALLOCATE_FAIL;
+}
+
+static void free_heap_memory(struct ion_heap *heap)
+{
+	struct device *dev = heap->priv;
+	struct ion_cp_heap *cp_heap =
+		container_of(heap, struct ion_cp_heap, heap);
+
+	/* release memory */
+	dma_free_coherent(dev, cp_heap->heap_size, cp_heap->cpu_addr,
+				cp_heap->handle);
+	gen_pool_destroy(cp_heap->pool);
+	cp_heap->pool = NULL;
+	cp_heap->cpu_addr = 0;
+}
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * Get the total number of kernel mappings.
@@ -117,12 +220,53 @@ static unsigned long ion_cp_get_total_kmap_count(
 	return cp_heap->kmap_cached_count + cp_heap->kmap_uncached_count;
 }
 
+<<<<<<< HEAD
+=======
+static int ion_on_first_alloc(struct ion_heap *heap)
+{
+	struct ion_cp_heap *cp_heap =
+		container_of(heap, struct ion_cp_heap, heap);
+	int ret_value;
+
+	if (cp_heap->reusable) {
+		ret_value = fmem_set_state(FMEM_C_STATE);
+		if (ret_value)
+			return 1;
+	}
+
+	if (cp_heap->cma) {
+		ret_value = allocate_heap_memory(heap);
+		if (ret_value)
+			return 1;
+	}
+	return 0;
+}
+
+static void ion_on_last_free(struct ion_heap *heap)
+{
+	struct ion_cp_heap *cp_heap =
+		container_of(heap, struct ion_cp_heap, heap);
+
+	if (cp_heap->reusable)
+		if (fmem_set_state(FMEM_T_STATE) != 0)
+			pr_err("%s: unable to transition heap to T-state\n",
+				__func__);
+
+	if (cp_heap->cma)
+		free_heap_memory(heap);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * Protects memory if heap is unsecured heap. Also ensures that we are in
  * the correct FMEM state if this heap is a reusable heap.
  * Must be called with heap->lock locked.
  */
+<<<<<<< HEAD
 static int ion_cp_protect(struct ion_heap *heap)
+=======
+static int ion_cp_protect(struct ion_heap *heap, int version, void *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ion_cp_heap *cp_heap =
 		container_of(heap, struct ion_cp_heap, heap);
@@ -130,6 +274,7 @@ static int ion_cp_protect(struct ion_heap *heap)
 
 	if (atomic_inc_return(&cp_heap->protect_cnt) == 1) {
 		/* Make sure we are in C state when the heap is protected. */
+<<<<<<< HEAD
 		if (cp_heap->reusable && !cp_heap->allocated_bytes) {
 			ret_value = fmem_set_state(FMEM_C_STATE);
 			if (ret_value)
@@ -138,15 +283,30 @@ static int ion_cp_protect(struct ion_heap *heap)
 
 		ret_value = ion_cp_protect_mem(cp_heap->secure_base,
 				cp_heap->secure_size, cp_heap->permission_type);
+=======
+		if (!cp_heap->allocated_bytes)
+			if (ion_on_first_alloc(heap))
+				goto out;
+
+		ret_value = ion_cp_protect_mem(cp_heap->secure_base,
+				cp_heap->secure_size, cp_heap->permission_type,
+				version, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret_value) {
 			pr_err("Failed to protect memory for heap %s - "
 				"error code: %d\n", heap->name, ret_value);
 
+<<<<<<< HEAD
 			if (cp_heap->reusable && !cp_heap->allocated_bytes) {
 				if (fmem_set_state(FMEM_T_STATE) != 0)
 					pr_err("%s: unable to transition heap to T-state\n",
 						__func__);
 			}
+=======
+			if (!cp_heap->allocated_bytes)
+				ion_on_last_free(heap);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 			atomic_dec(&cp_heap->protect_cnt);
 		} else {
 			cp_heap->heap_protected = HEAP_PROTECTED;
@@ -157,7 +317,11 @@ static int ion_cp_protect(struct ion_heap *heap)
 out:
 	pr_debug("%s: protect count is %d\n", __func__,
 		atomic_read(&cp_heap->protect_cnt));
+<<<<<<< HEAD
 	BUG_ON(atomic_read(&cp_heap->protect_cnt) < 0);
+=======
+	WARN_ON(atomic_read(&cp_heap->protect_cnt) < 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret_value;
 }
 
@@ -166,7 +330,11 @@ out:
  * the correct FMEM state if this heap is a reusable heap.
  * Must be called with heap->lock locked.
  */
+<<<<<<< HEAD
 static void ion_cp_unprotect(struct ion_heap *heap)
+=======
+static void ion_cp_unprotect(struct ion_heap *heap, int version, void *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ion_cp_heap *cp_heap =
 		container_of(heap, struct ion_cp_heap, heap);
@@ -174,7 +342,11 @@ static void ion_cp_unprotect(struct ion_heap *heap)
 	if (atomic_dec_and_test(&cp_heap->protect_cnt)) {
 		int error_code = ion_cp_unprotect_mem(
 			cp_heap->secure_base, cp_heap->secure_size,
+<<<<<<< HEAD
 			cp_heap->permission_type);
+=======
+			cp_heap->permission_type, version, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error_code) {
 			pr_err("Failed to un-protect memory for heap %s - "
 				"error code: %d\n", heap->name, error_code);
@@ -183,16 +355,25 @@ static void ion_cp_unprotect(struct ion_heap *heap)
 			pr_debug("Un-protected heap %s @ 0x%x\n", heap->name,
 				(unsigned int) cp_heap->base);
 
+<<<<<<< HEAD
 			if (cp_heap->reusable && !cp_heap->allocated_bytes) {
 				if (fmem_set_state(FMEM_T_STATE) != 0)
 					pr_err("%s: unable to transition heap to T-state",
 						__func__);
 			}
+=======
+			if (!cp_heap->allocated_bytes)
+				ion_on_last_free(heap);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	pr_debug("%s: protect count is %d\n", __func__,
 		atomic_read(&cp_heap->protect_cnt));
+<<<<<<< HEAD
 	BUG_ON(atomic_read(&cp_heap->protect_cnt) < 0);
+=======
+	WARN_ON(atomic_read(&cp_heap->protect_cnt) < 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 ion_phys_addr_t ion_cp_allocate(struct ion_heap *heap,
@@ -228,12 +409,20 @@ ion_phys_addr_t ion_cp_allocate(struct ion_heap *heap,
 	 * if this is the first reusable allocation, transition
 	 * the heap
 	 */
+<<<<<<< HEAD
 	if (cp_heap->reusable && !cp_heap->allocated_bytes) {
 		if (fmem_set_state(FMEM_C_STATE) != 0) {
 			mutex_unlock(&cp_heap->lock);
 			return ION_RESERVED_ALLOCATE_FAIL;
 		}
 	}
+=======
+	if (!cp_heap->allocated_bytes)
+		if (ion_on_first_alloc(heap)) {
+			mutex_unlock(&cp_heap->lock);
+			return ION_RESERVED_ALLOCATE_FAIL;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	cp_heap->allocated_bytes += size;
 	mutex_unlock(&cp_heap->lock);
@@ -252,6 +441,7 @@ ion_phys_addr_t ion_cp_allocate(struct ion_heap *heap,
 				__func__, heap->name,
 				cp_heap->total_size -
 				cp_heap->allocated_bytes, size);
+<<<<<<< HEAD
 
 		if (cp_heap->reusable && !cp_heap->allocated_bytes &&
 		    cp_heap->heap_protected == HEAP_NOT_PROTECTED) {
@@ -259,6 +449,11 @@ ion_phys_addr_t ion_cp_allocate(struct ion_heap *heap,
 				pr_err("%s: unable to transition heap to T-state\n",
 					__func__);
 		}
+=======
+		if (!cp_heap->allocated_bytes &&
+			cp_heap->heap_protected == HEAP_NOT_PROTECTED)
+			ion_on_last_free(heap);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mutex_unlock(&cp_heap->lock);
 
 		return ION_CP_ALLOCATE_FAIL;
@@ -271,7 +466,10 @@ static void iommu_unmap_all(unsigned long domain_num,
 			    struct ion_cp_heap *cp_heap)
 {
 	unsigned long left_to_unmap = cp_heap->total_size;
+<<<<<<< HEAD
 	unsigned long order = get_order(SZ_64K);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long page_size = SZ_64K;
 
 	struct iommu_domain *domain = msm_get_iommu_domain(domain_num);
@@ -279,7 +477,11 @@ static void iommu_unmap_all(unsigned long domain_num,
 		unsigned long temp_iova = cp_heap->iommu_iova[domain_num];
 
 		while (left_to_unmap) {
+<<<<<<< HEAD
 			iommu_unmap(domain, temp_iova, order);
+=======
+			iommu_unmap(domain, temp_iova, page_size);
+>>>>>>> refs/remotes/origin/cm-10.0
 			temp_iova += page_size;
 			left_to_unmap -= page_size;
 		}
@@ -304,12 +506,18 @@ void ion_cp_free(struct ion_heap *heap, ion_phys_addr_t addr,
 	mutex_lock(&cp_heap->lock);
 	cp_heap->allocated_bytes -= size;
 
+<<<<<<< HEAD
 	if (cp_heap->reusable && !cp_heap->allocated_bytes &&
 	    cp_heap->heap_protected == HEAP_NOT_PROTECTED) {
 		if (fmem_set_state(FMEM_T_STATE) != 0)
 			pr_err("%s: unable to transition heap to T-state\n",
 				__func__);
 	}
+=======
+	if (!cp_heap->allocated_bytes &&
+		cp_heap->heap_protected == HEAP_NOT_PROTECTED)
+		ion_on_last_free(heap);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Unmap everything if we previously mapped the whole heap at once. */
 	if (!cp_heap->allocated_bytes) {
@@ -359,6 +567,7 @@ static void ion_cp_heap_free(struct ion_buffer *buffer)
 	buffer->priv_phys = ION_CP_ALLOCATE_FAIL;
 }
 
+<<<<<<< HEAD
 struct scatterlist *ion_cp_heap_create_sglist(struct ion_buffer *buffer)
 {
 	struct scatterlist *sglist;
@@ -379,13 +588,49 @@ struct scatterlist *ion_cp_heap_map_dma(struct ion_heap *heap,
 					      struct ion_buffer *buffer)
 {
 	return ion_cp_heap_create_sglist(buffer);
+=======
+struct sg_table *ion_cp_heap_create_sg_table(struct ion_buffer *buffer)
+{
+	struct sg_table *table;
+	int ret;
+
+	table = kzalloc(sizeof(struct sg_table), GFP_KERNEL);
+	if (!table)
+		return ERR_PTR(-ENOMEM);
+
+	ret = sg_alloc_table(table, 1, GFP_KERNEL);
+	if (ret)
+		goto err0;
+
+	table->sgl->length = buffer->size;
+	table->sgl->offset = 0;
+	table->sgl->dma_address = buffer->priv_phys;
+
+	return table;
+err0:
+	kfree(table);
+	return ERR_PTR(ret);
+}
+
+struct sg_table *ion_cp_heap_map_dma(struct ion_heap *heap,
+					      struct ion_buffer *buffer)
+{
+	return ion_cp_heap_create_sg_table(buffer);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void ion_cp_heap_unmap_dma(struct ion_heap *heap,
 				 struct ion_buffer *buffer)
 {
+<<<<<<< HEAD
 	if (buffer->sglist)
 		vfree(buffer->sglist);
+=======
+	if (buffer->sg_table)
+		sg_free_table(buffer->sg_table);
+	kfree(buffer->sg_table);
+	buffer->sg_table = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -395,8 +640,15 @@ static int ion_cp_request_region(struct ion_cp_heap *cp_heap)
 {
 	int ret_value = 0;
 	if ((cp_heap->umap_count + ion_cp_get_total_kmap_count(cp_heap)) == 0)
+<<<<<<< HEAD
 		if (cp_heap->request_region)
 			ret_value = cp_heap->request_region(cp_heap->bus_id);
+=======
+		if (cp_heap->heap_request_region)
+			ret_value = cp_heap->heap_request_region(
+					cp_heap->bus_id);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret_value;
 }
 
@@ -407,8 +659,14 @@ static int ion_cp_release_region(struct ion_cp_heap *cp_heap)
 {
 	int ret_value = 0;
 	if ((cp_heap->umap_count + ion_cp_get_total_kmap_count(cp_heap)) == 0)
+<<<<<<< HEAD
 		if (cp_heap->release_region)
 			ret_value = cp_heap->release_region(cp_heap->bus_id);
+=======
+		if (cp_heap->heap_release_region)
+			ret_value = cp_heap->heap_release_region(
+					cp_heap->bus_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret_value;
 }
 
@@ -426,8 +684,12 @@ void *ion_map_fmem_buffer(struct ion_buffer *buffer, unsigned long phys_base,
 		return NULL;
 
 
+<<<<<<< HEAD
 	ret = ioremap_page_range(start, start + buffer->size,
 			buffer->priv_phys, __pgprot(type->prot_pte));
+=======
+	ret = ioremap_pages(start, buffer->priv_phys, buffer->size, type);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!ret)
 		return (void *)start;
@@ -435,18 +697,30 @@ void *ion_map_fmem_buffer(struct ion_buffer *buffer, unsigned long phys_base,
 		return NULL;
 }
 
+<<<<<<< HEAD
 void *ion_cp_heap_map_kernel(struct ion_heap *heap,
 				   struct ion_buffer *buffer,
 				   unsigned long flags)
+=======
+void *ion_cp_heap_map_kernel(struct ion_heap *heap, struct ion_buffer *buffer)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ion_cp_heap *cp_heap =
 		container_of(heap, struct ion_cp_heap, heap);
 	void *ret_value = NULL;
+<<<<<<< HEAD
+=======
+	unsigned long start_phys = cp_heap->base;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&cp_heap->lock);
 	if ((cp_heap->heap_protected == HEAP_NOT_PROTECTED) ||
 	    ((cp_heap->heap_protected == HEAP_PROTECTED) &&
+<<<<<<< HEAD
 	      !ION_IS_CACHED(flags))) {
+=======
+	      !ION_IS_CACHED(buffer->flags))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (ion_cp_request_region(cp_heap)) {
 			mutex_unlock(&cp_heap->lock);
@@ -455,10 +729,19 @@ void *ion_cp_heap_map_kernel(struct ion_heap *heap,
 
 		if (cp_heap->reusable) {
 			ret_value = ion_map_fmem_buffer(buffer, cp_heap->base,
+<<<<<<< HEAD
 					cp_heap->reserved_vrange, flags);
 
 		} else {
 			if (ION_IS_CACHED(flags))
+=======
+				cp_heap->reserved_vrange, buffer->flags);
+		} else if (cp_heap->cma) {
+			ret_value = cp_heap->cpu_addr +
+					(buffer->priv_phys - start_phys);
+		} else {
+			if (ION_IS_CACHED(buffer->flags))
+>>>>>>> refs/remotes/origin/cm-10.0
 				ret_value = ioremap_cached(buffer->priv_phys,
 							   buffer->size);
 			else
@@ -475,6 +758,10 @@ void *ion_cp_heap_map_kernel(struct ion_heap *heap,
 				++cp_heap->kmap_uncached_count;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&cp_heap->lock);
 	return ret_value;
 }
@@ -487,8 +774,13 @@ void ion_cp_heap_unmap_kernel(struct ion_heap *heap,
 
 	if (cp_heap->reusable)
 		unmap_kernel_range((unsigned long)buffer->vaddr, buffer->size);
+<<<<<<< HEAD
 	else
 		__arch_iounmap(buffer->vaddr);
+=======
+	else if (!cp_heap->cma)
+		__arm_iounmap(buffer->vaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	buffer->vaddr = NULL;
 
@@ -504,7 +796,11 @@ void ion_cp_heap_unmap_kernel(struct ion_heap *heap,
 }
 
 int ion_cp_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
+<<<<<<< HEAD
 			struct vm_area_struct *vma, unsigned long flags)
+=======
+			struct vm_area_struct *vma)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret_value = -EAGAIN;
 	struct ion_cp_heap *cp_heap =
@@ -517,7 +813,11 @@ int ion_cp_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
 			return -EINVAL;
 		}
 
+<<<<<<< HEAD
 		if (!ION_IS_CACHED(flags))
+=======
+		if (!ION_IS_CACHED(buffer->flags))
+>>>>>>> refs/remotes/origin/cm-10.0
 			vma->vm_page_prot = pgprot_writecombine(
 							vma->vm_page_prot);
 
@@ -579,7 +879,12 @@ int ion_cp_cache_ops(struct ion_heap *heap, struct ion_buffer *buffer,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ion_cp_print_debug(struct ion_heap *heap, struct seq_file *s)
+=======
+static int ion_cp_print_debug(struct ion_heap *heap, struct seq_file *s,
+			      const struct rb_root *mem_map)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long total_alloc;
 	unsigned long total_size;
@@ -604,17 +909,67 @@ static int ion_cp_print_debug(struct ion_heap *heap, struct seq_file *s)
 	seq_printf(s, "heap protected: %s\n", heap_protected ? "Yes" : "No");
 	seq_printf(s, "reusable: %s\n", cp_heap->reusable  ? "Yes" : "No");
 
+<<<<<<< HEAD
 	return 0;
 }
 
 int ion_cp_secure_heap(struct ion_heap *heap)
+=======
+	if (mem_map) {
+		unsigned long base = cp_heap->base;
+		unsigned long size = cp_heap->total_size;
+		unsigned long end = base+size;
+		unsigned long last_end = base;
+		struct rb_node *n;
+
+		seq_printf(s, "\nMemory Map\n");
+		seq_printf(s, "%16.s %14.s %14.s %14.s\n",
+			   "client", "start address", "end address",
+			   "size (hex)");
+
+		for (n = rb_first(mem_map); n; n = rb_next(n)) {
+			struct mem_map_data *data =
+					rb_entry(n, struct mem_map_data, node);
+			const char *client_name = "(null)";
+
+			if (last_end < data->addr) {
+				seq_printf(s, "%16.s %14lx %14lx %14lu (%lx)\n",
+					   "FREE", last_end, data->addr-1,
+					   data->addr-last_end,
+					   data->addr-last_end);
+			}
+
+			if (data->client_name)
+				client_name = data->client_name;
+
+			seq_printf(s, "%16.s %14lx %14lx %14lu (%lx)\n",
+				   client_name, data->addr,
+				   data->addr_end,
+				   data->size, data->size);
+			last_end = data->addr_end+1;
+		}
+		if (last_end < end) {
+			seq_printf(s, "%16.s %14lx %14lx %14lu (%lx)\n", "FREE",
+				last_end, end-1, end-last_end, end-last_end);
+		}
+	}
+
+	return 0;
+}
+
+int ion_cp_secure_heap(struct ion_heap *heap, int version, void *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret_value;
 	struct ion_cp_heap *cp_heap =
 		container_of(heap, struct ion_cp_heap, heap);
 	mutex_lock(&cp_heap->lock);
 	if (cp_heap->umap_count == 0 && cp_heap->kmap_cached_count == 0) {
+<<<<<<< HEAD
 		ret_value = ion_cp_protect(heap);
+=======
+		ret_value = ion_cp_protect(heap, version, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		pr_err("ION cannot secure heap with outstanding mappings: "
 		       "User space: %lu, kernel space (cached): %lu\n",
@@ -626,13 +981,21 @@ int ion_cp_secure_heap(struct ion_heap *heap)
 	return ret_value;
 }
 
+<<<<<<< HEAD
 int ion_cp_unsecure_heap(struct ion_heap *heap)
+=======
+int ion_cp_unsecure_heap(struct ion_heap *heap, int version, void *data)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret_value = 0;
 	struct ion_cp_heap *cp_heap =
 		container_of(heap, struct ion_cp_heap, heap);
 	mutex_lock(&cp_heap->lock);
+<<<<<<< HEAD
 	ion_cp_unprotect(heap);
+=======
+	ion_cp_unprotect(heap, version, data);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&cp_heap->lock);
 	return ret_value;
 }
@@ -641,7 +1004,10 @@ static int iommu_map_all(unsigned long domain_num, struct ion_cp_heap *cp_heap,
 			int partition, unsigned long prot)
 {
 	unsigned long left_to_map = cp_heap->total_size;
+<<<<<<< HEAD
 	unsigned long order = get_order(SZ_64K);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long page_size = SZ_64K;
 	int ret_value = 0;
 	unsigned long virt_addr_len = cp_heap->total_size;
@@ -663,6 +1029,7 @@ static int iommu_map_all(unsigned long domain_num, struct ion_cp_heap *cp_heap,
 	}
 	if (!ret_value && domain) {
 		unsigned long temp_phys = cp_heap->base;
+<<<<<<< HEAD
 		unsigned long temp_iova =
 				msm_allocate_iova_address(domain_num, partition,
 						virt_addr_len, SZ_64K);
@@ -670,13 +1037,28 @@ static int iommu_map_all(unsigned long domain_num, struct ion_cp_heap *cp_heap,
 			pr_err("%s: could not allocate iova from domain %lu, partition %d\n",
 				__func__, domain_num, partition);
 			ret_value = -ENOMEM;
+=======
+		unsigned long temp_iova;
+
+		ret_value = msm_allocate_iova_address(domain_num, partition,
+						virt_addr_len, SZ_64K,
+						&temp_iova);
+
+		if (ret_value) {
+			pr_err("%s: could not allocate iova from domain %lu, partition %d\n",
+				__func__, domain_num, partition);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto out;
 		}
 		cp_heap->iommu_iova[domain_num] = temp_iova;
 
 		while (left_to_map) {
 			int ret = iommu_map(domain, temp_iova, temp_phys,
+<<<<<<< HEAD
 					    order, prot);
+=======
+					page_size, prot);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (ret) {
 				pr_err("%s: could not map %lx in domain %p, error: %d\n",
 					__func__, temp_iova, domain, ret);
@@ -717,7 +1099,10 @@ static int ion_cp_heap_map_iommu(struct ion_buffer *buffer,
 	struct iommu_domain *domain;
 	int ret = 0;
 	unsigned long extra;
+<<<<<<< HEAD
 	struct scatterlist *sglist = 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ion_cp_heap *cp_heap =
 		container_of(buffer->heap, struct ion_cp_heap, heap);
 	int prot = IOMMU_WRITE | IOMMU_READ;
@@ -758,6 +1143,7 @@ static int ion_cp_heap_map_iommu(struct ion_buffer *buffer,
 
 	extra = iova_length - buffer->size;
 
+<<<<<<< HEAD
 	data->iova_addr = msm_allocate_iova_address(domain_num, partition_num,
 						data->mapped_size, align);
 
@@ -765,6 +1151,14 @@ static int ion_cp_heap_map_iommu(struct ion_buffer *buffer,
 		ret = -ENOMEM;
 		goto out;
 	}
+=======
+	ret = msm_allocate_iova_address(domain_num, partition_num,
+						data->mapped_size, align,
+						&data->iova_addr);
+
+	if (ret)
+		goto out;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	domain = msm_get_iommu_domain(domain_num);
 
@@ -773,12 +1167,16 @@ static int ion_cp_heap_map_iommu(struct ion_buffer *buffer,
 		goto out1;
 	}
 
+<<<<<<< HEAD
 	sglist = ion_cp_heap_create_sglist(buffer);
 	if (IS_ERR_OR_NULL(sglist)) {
 		ret = -ENOMEM;
 		goto out1;
 	}
 	ret = iommu_map_range(domain, data->iova_addr, sglist,
+=======
+	ret = iommu_map_range(domain, data->iova_addr, buffer->sg_table->sgl,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      buffer->size, prot);
 	if (ret) {
 		pr_err("%s: could not map %lx in domain %p\n",
@@ -793,14 +1191,20 @@ static int ion_cp_heap_map_iommu(struct ion_buffer *buffer,
 		if (ret)
 			goto out2;
 	}
+<<<<<<< HEAD
 	vfree(sglist);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 
 out2:
 	iommu_unmap_range(domain, data->iova_addr, buffer->size);
 out1:
+<<<<<<< HEAD
 	if (!IS_ERR_OR_NULL(sglist))
 		vfree(sglist);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	msm_free_iova_address(data->iova_addr, domain_num, partition_num,
 				data->mapped_size);
 out:
@@ -888,9 +1292,17 @@ struct ion_heap *ion_cp_heap_create(struct ion_platform_heap *heap_data)
 	cp_heap->heap.ops = &cp_heap_ops;
 	cp_heap->heap.type = ION_HEAP_TYPE_CP;
 	cp_heap->heap_protected = HEAP_NOT_PROTECTED;
+<<<<<<< HEAD
 	cp_heap->secure_base = cp_heap->base;
 	cp_heap->secure_size = heap_data->size;
 	cp_heap->has_outer_cache = heap_data->has_outer_cache;
+=======
+	cp_heap->secure_base = heap_data->base;
+	cp_heap->secure_size = heap_data->size;
+	cp_heap->has_outer_cache = heap_data->has_outer_cache;
+	cp_heap->heap_size = heap_data->size;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	atomic_set(&cp_heap->protect_cnt, 0);
 	if (heap_data->extra_data) {
 		struct ion_cp_heap_pdata *extra_data =
@@ -905,14 +1317,25 @@ struct ion_heap *ion_cp_heap_create(struct ion_platform_heap *heap_data)
 		if (extra_data->setup_region)
 			cp_heap->bus_id = extra_data->setup_region();
 		if (extra_data->request_region)
+<<<<<<< HEAD
 			cp_heap->request_region = extra_data->request_region;
 		if (extra_data->release_region)
 			cp_heap->release_region = extra_data->release_region;
+=======
+			cp_heap->heap_request_region =
+				extra_data->request_region;
+		if (extra_data->release_region)
+			cp_heap->heap_release_region =
+				extra_data->release_region;
+>>>>>>> refs/remotes/origin/cm-10.0
 		cp_heap->iommu_map_all =
 				extra_data->iommu_map_all;
 		cp_heap->iommu_2x_map_domain =
 				extra_data->iommu_2x_map_domain;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return &cp_heap->heap;
@@ -936,6 +1359,17 @@ void ion_cp_heap_destroy(struct ion_heap *heap)
 	cp_heap = NULL;
 }
 
+<<<<<<< HEAD
+=======
+void ion_cp_heap_get_base(struct ion_heap *heap, unsigned long *base,
+		unsigned long *size) \
+{
+	struct ion_cp_heap *cp_heap =
+	     container_of(heap, struct  ion_cp_heap, heap);
+	*base = cp_heap->base;
+	*size = cp_heap->total_size;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*  SCM related code for locking down memory for content protection */
 
@@ -950,8 +1384,12 @@ struct cp_lock_msg {
 	unsigned char lock;
 } __attribute__ ((__packed__));
 
+<<<<<<< HEAD
 
 static int ion_cp_protect_mem(unsigned int phy_base, unsigned int size,
+=======
+static int ion_cp_protect_mem_v1(unsigned int phy_base, unsigned int size,
+>>>>>>> refs/remotes/origin/cm-10.0
 			      unsigned int permission_type)
 {
 	struct cp_lock_msg cmd;
@@ -964,7 +1402,11 @@ static int ion_cp_protect_mem(unsigned int phy_base, unsigned int size,
 			&cmd, sizeof(cmd), NULL, 0);
 }
 
+<<<<<<< HEAD
 static int ion_cp_unprotect_mem(unsigned int phy_base, unsigned int size,
+=======
+static int ion_cp_unprotect_mem_v1(unsigned int phy_base, unsigned int size,
+>>>>>>> refs/remotes/origin/cm-10.0
 				unsigned int permission_type)
 {
 	struct cp_lock_msg cmd;
@@ -976,3 +1418,73 @@ static int ion_cp_unprotect_mem(unsigned int phy_base, unsigned int size,
 	return scm_call(SCM_SVC_CP, SCM_CP_LOCK_CMD_ID,
 			&cmd, sizeof(cmd), NULL, 0);
 }
+<<<<<<< HEAD
+=======
+
+#define V2_CHUNK_SIZE	SZ_1M
+
+static int ion_cp_change_mem_v2(unsigned int phy_base, unsigned int size,
+			      void *data, int lock)
+{
+	enum cp_mem_usage usage = (enum cp_mem_usage) data;
+	unsigned long *chunk_list;
+	int nchunks;
+	int ret;
+	int i;
+
+	if (usage < 0 || usage >= MAX_USAGE)
+		return -EINVAL;
+
+	if (!IS_ALIGNED(size, V2_CHUNK_SIZE)) {
+		pr_err("%s: heap size is not aligned to %x\n",
+			__func__, V2_CHUNK_SIZE);
+		return -EINVAL;
+	}
+
+	nchunks = size / V2_CHUNK_SIZE;
+
+	chunk_list = allocate_contiguous_ebi(sizeof(unsigned long)*nchunks,
+						SZ_4K, 0);
+	if (!chunk_list)
+		return -ENOMEM;
+
+	for (i = 0; i < nchunks; i++)
+		chunk_list[i] = phy_base + i * V2_CHUNK_SIZE;
+
+	ret = ion_cp_change_chunks_state(memory_pool_node_paddr(chunk_list),
+					nchunks, V2_CHUNK_SIZE, usage, lock);
+
+	free_contiguous_memory(chunk_list);
+	return ret;
+}
+
+static int ion_cp_protect_mem(unsigned int phy_base, unsigned int size,
+			      unsigned int permission_type, int version,
+			      void *data)
+{
+	switch (version) {
+	case ION_CP_V1:
+		return ion_cp_protect_mem_v1(phy_base, size, permission_type);
+	case ION_CP_V2:
+		return ion_cp_change_mem_v2(phy_base, size, data,
+						SCM_CP_PROTECT);
+	default:
+		return -EINVAL;
+	}
+}
+
+static int ion_cp_unprotect_mem(unsigned int phy_base, unsigned int size,
+			      unsigned int permission_type, int version,
+			      void *data)
+{
+	switch (version) {
+	case ION_CP_V1:
+		return ion_cp_unprotect_mem_v1(phy_base, size, permission_type);
+	case ION_CP_V2:
+		return ion_cp_change_mem_v2(phy_base, size, data,
+						SCM_CP_UNPROTECT);
+	default:
+		return -EINVAL;
+	}
+}
+>>>>>>> refs/remotes/origin/cm-10.0

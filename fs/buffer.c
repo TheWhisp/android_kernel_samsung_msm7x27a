@@ -29,7 +29,11 @@
 #include <linux/file.h>
 #include <linux/quotaops.h>
 #include <linux/highmem.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/writeback.h>
 #include <linux/hash.h>
 #include <linux/suspend.h>
@@ -41,7 +45,10 @@
 #include <linux/bitops.h>
 #include <linux/mpage.h>
 #include <linux/bit_spinlock.h>
+<<<<<<< HEAD
 #include <linux/cleancache.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int fsync_buffers_list(spinlock_t *lock, struct list_head *list);
 
@@ -213,13 +220,23 @@ __find_get_block_slow(struct block_device *bdev, sector_t block)
 	 * elsewhere, don't buffer_error if we had some unmapped buffers
 	 */
 	if (all_mapped) {
+<<<<<<< HEAD
+=======
+		char b[BDEVNAME_SIZE];
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk("__find_get_block_slow() failed. "
 			"block=%llu, b_blocknr=%llu\n",
 			(unsigned long long)block,
 			(unsigned long long)bh->b_blocknr);
 		printk("b_state=0x%08lx, b_size=%zu\n",
 			bh->b_state, bh->b_size);
+<<<<<<< HEAD
 		printk("device blocksize: %d\n", 1 << bd_inode->i_blkbits);
+=======
+		printk("device %s blocksize: %d\n", bdevname(bdev, b),
+			1 << bd_inode->i_blkbits);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 out_unlock:
 	spin_unlock(&bd_mapping->private_lock);
@@ -228,6 +245,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 /* If invalidate_buffers() will trash dirty buffers, it means some kind
    of fs corruption is going on. Trashing dirty data always imply losing
    information that was supposed to be just stored on the physical layer
@@ -277,6 +295,8 @@ void invalidate_bdev(struct block_device *bdev)
 }
 EXPORT_SYMBOL(invalidate_bdev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Kick the writeback threads then try to free up some ZONE_NORMAL memory.
  */
@@ -285,7 +305,11 @@ static void free_more_memory(void)
 	struct zone *zone;
 	int nid;
 
+<<<<<<< HEAD
 	wakeup_flusher_threads(1024);
+=======
+	wakeup_flusher_threads(1024, WB_REASON_FREE_MORE_MEM);
+>>>>>>> refs/remotes/origin/cm-10.0
 	yield();
 
 	for_each_online_node(nid) {
@@ -1041,7 +1065,10 @@ grow_dev_page(struct block_device *bdev, sector_t block,
 	spin_unlock(&inode->i_mapping->private_lock);
 done:
 	ret = (block < end_block) ? 1 : -ENXIO;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 failed:
 	unlock_page(page);
 	page_cache_release(page);
@@ -1431,6 +1458,7 @@ static void invalidate_bh_lru(void *arg)
 	}
 	put_cpu_var(bh_lrus);
 }
+<<<<<<< HEAD
 	
 void invalidate_bh_lrus(void)
 {
@@ -1438,6 +1466,65 @@ void invalidate_bh_lrus(void)
 }
 EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
 
+=======
+
+static bool has_bh_in_lru(int cpu, void *dummy)
+{
+	struct bh_lru *b = per_cpu_ptr(&bh_lrus, cpu);
+	int i;
+	
+	for (i = 0; i < BH_LRU_SIZE; i++) {
+		if (b->bhs[i])
+			return 1;
+	}
+
+	return 0;
+}
+
+static void __evict_bh_lru(void *arg)
+{
+	struct bh_lru *b = &get_cpu_var(bh_lrus);
+	struct buffer_head *bh = arg;
+	int i;
+
+	for (i = 0; i < BH_LRU_SIZE; i++) {
+		if (b->bhs[i] == bh) {
+			brelse(b->bhs[i]);
+			b->bhs[i] = NULL;
+			goto out;
+		}
+	}
+out:
+	put_cpu_var(bh_lrus);
+}
+
+static bool bh_exists_in_lru(int cpu, void *arg)
+{
+	struct bh_lru *b = per_cpu_ptr(&bh_lrus, cpu);
+	struct buffer_head *bh = arg;
+	int i;
+
+	for (i = 0; i < BH_LRU_SIZE; i++) {
+		if (b->bhs[i] == bh)
+			return 1;
+	}
+
+	return 0;
+
+}
+void invalidate_bh_lrus(void)
+{
+	on_each_cpu_cond(has_bh_in_lru, invalidate_bh_lru, NULL, 1, GFP_KERNEL);
+}
+EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
+
+void evict_bh_lrus(struct buffer_head *bh)
+{
+	on_each_cpu_cond(bh_exists_in_lru, __evict_bh_lru, bh, 1, GFP_ATOMIC);
+}
+EXPORT_SYMBOL_GPL(evict_bh_lrus);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void set_bh_page(struct buffer_head *bh,
 		struct page *page, unsigned long offset)
 {
@@ -1470,13 +1557,21 @@ static void discard_buffer(struct buffer_head * bh)
 }
 
 /**
+<<<<<<< HEAD
  * block_invalidatepage - invalidate part of all of a buffer-backed page
+=======
+ * block_invalidatepage - invalidate part or all of a buffer-backed page
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * @page: the page which is affected
  * @offset: the index of the truncation point
  *
  * block_invalidatepage() is called when all or part of the page has become
+<<<<<<< HEAD
  * invalidatedby a truncate operation.
+=======
+ * invalidated by a truncate operation.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * block_invalidatepage() does not have to release all buffers, but it must
  * ensure that no dirty buffer is left outside @offset and that no I/O
@@ -3087,8 +3182,20 @@ drop_buffers(struct page *page, struct buffer_head **buffers_to_free)
 	do {
 		if (buffer_write_io_error(bh) && page->mapping)
 			set_bit(AS_EIO, &page->mapping->flags);
+<<<<<<< HEAD
 		if (buffer_busy(bh))
 			goto failed;
+=======
+		if (buffer_busy(bh)) {
+			/*
+			 * Check if the busy failure was due to an
+			 * outstanding LRU reference
+			 */
+			evict_bh_lrus(bh);
+			if (buffer_busy(bh))
+				goto failed;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		bh = bh->b_this_page;
 	} while (bh != head);
 

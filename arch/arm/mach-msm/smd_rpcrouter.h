@@ -1,7 +1,11 @@
 /** arch/arm/mach-msm/smd_rpcrouter.h
  *
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  * Author: San Mehat <san@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -240,7 +244,10 @@ int __msm_rpc_read(struct msm_rpc_endpoint *ept,
 		   struct rr_fragment **frag,
 		   unsigned len, long timeout);
 
+<<<<<<< HEAD
 int msm_rpcrouter_close(void);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct msm_rpc_endpoint *msm_rpcrouter_create_local_endpoint(dev_t dev);
 int msm_rpcrouter_destroy_local_endpoint(struct msm_rpc_endpoint *ept);
 

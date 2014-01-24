@@ -11,12 +11,18 @@
 #include <string.h>
 #include <sys/termios.h>
 #include <sys/wait.h>
+<<<<<<< HEAD
 #include "kern_constants.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "net_user.h"
 #include "os.h"
 #include "slip.h"
 #include "um_malloc.h"
+<<<<<<< HEAD
 #include "user.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int slip_user_init(void *data, void *dev)
 {
@@ -102,7 +108,11 @@ static int slip_tramp(char **argv, int fd)
 		       "buffer\n");
 		os_kill_process(pid, 1);
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto out_free;
+=======
+		goto out_close;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	close(fds[1]);
@@ -112,7 +122,10 @@ static int slip_tramp(char **argv, int fd)
 	err = helper_wait(pid);
 	close(fds[0]);
 
+<<<<<<< HEAD
 out_free:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(output);
 	return err;
 

@@ -24,7 +24,11 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <linux/percpu.h>
 #include <linux/preempt.h>
@@ -172,6 +176,15 @@ static void __synchronize_srcu(struct srcu_struct *sp, void (*sync_func)(void))
 {
 	int idx;
 
+<<<<<<< HEAD
+=======
+	rcu_lockdep_assert(!lock_is_held(&sp->dep_map) &&
+			   !lock_is_held(&rcu_bh_lock_map) &&
+			   !lock_is_held(&rcu_lock_map) &&
+			   !lock_is_held(&rcu_sched_lock_map),
+			   "Illegal synchronize_srcu() in same-type SRCU (or RCU) read-side critical section");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	idx = sp->completed;
 	mutex_lock(&sp->mutex);
 
@@ -280,6 +293,7 @@ void synchronize_srcu(struct srcu_struct *sp)
 EXPORT_SYMBOL_GPL(synchronize_srcu);
 
 /**
+<<<<<<< HEAD
  * synchronize_srcu_expedited - like synchronize_srcu, but less patient
  * @sp: srcu_struct with which to synchronize.
  *
@@ -293,6 +307,28 @@ EXPORT_SYMBOL_GPL(synchronize_srcu);
  * will result in deadlock.  However, it is perfectly legal to call
  * synchronize_srcu_expedited() on one srcu_struct from some other
  * srcu_struct's read-side critical section.
+=======
+ * synchronize_srcu_expedited - Brute-force SRCU grace period
+ * @sp: srcu_struct with which to synchronize.
+ *
+ * Wait for an SRCU grace period to elapse, but use a "big hammer"
+ * approach to force the grace period to end quickly.  This consumes
+ * significant time on all CPUs and is unfriendly to real-time workloads,
+ * so is thus not recommended for any sort of common-case code.  In fact,
+ * if you are using synchronize_srcu_expedited() in a loop, please
+ * restructure your code to batch your updates, and then use a single
+ * synchronize_srcu() instead.
+ *
+ * Note that it is illegal to call this function while holding any lock
+ * that is acquired by a CPU-hotplug notifier.  And yes, it is also illegal
+ * to call this function from a CPU-hotplug notifier.  Failing to observe
+ * these restriction will result in deadlock.  It is also illegal to call
+ * synchronize_srcu_expedited() from the corresponding SRCU read-side
+ * critical section; doing so will result in deadlock.  However, it is
+ * perfectly legal to call synchronize_srcu_expedited() on one srcu_struct
+ * from some other srcu_struct's read-side critical section, as long as
+ * the resulting graph of srcu_structs is acyclic.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 void synchronize_srcu_expedited(struct srcu_struct *sp)
 {

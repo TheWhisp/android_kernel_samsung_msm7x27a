@@ -56,6 +56,15 @@ typedef struct _SEGREG {
 
 extern void _tlbie(unsigned long va);	/* invalidate a TLB entry */
 extern void _tlbia(void);		/* invalidate all TLB entries */
+<<<<<<< HEAD
+=======
+
+/*
+ * tlb_skip size stores actual number skipped TLBs from TLB0 - every directy TLB
+ * mapping has to increase tlb_skip size.
+ */
+extern u32 tlb_skip;
+>>>>>>> refs/remotes/origin/cm-10.0
 #   endif /* __ASSEMBLY__ */
 
 /*
@@ -69,6 +78,15 @@ extern void _tlbia(void);		/* invalidate all TLB entries */
 
 #  define MICROBLAZE_TLB_SIZE 64
 
+<<<<<<< HEAD
+=======
+/* For cases when you want to skip some TLB entries */
+#  define MICROBLAZE_TLB_SKIP 0
+
+/* Use the last TLB for temporary access to LMB */
+#  define MICROBLAZE_LMB_TLB_ID 63
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * TLB entries are defined by a "high" tag portion and a "low" data
  * portion. The data portion is 32-bits.

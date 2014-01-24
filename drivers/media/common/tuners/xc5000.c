@@ -49,19 +49,31 @@ static LIST_HEAD(hybrid_tuner_instance_list);
 #define dprintk(level, fmt, arg...) if (debug >= level) \
 	printk(KERN_INFO "%s: " fmt, "xc5000", ## arg)
 
+<<<<<<< HEAD
 #define XC5000_DEFAULT_FIRMWARE "dvb-fe-xc5000-1.6.114.fw"
 #define XC5000_DEFAULT_FIRMWARE_SIZE 12401
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct xc5000_priv {
 	struct tuner_i2c_props i2c_props;
 	struct list_head hybrid_tuner_instance_list;
 
 	u32 if_khz;
+<<<<<<< HEAD
+=======
+	u32 xtal_khz;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u32 freq_hz;
 	u32 bandwidth;
 	u8  video_standard;
 	u8  rf_mode;
 	u8  radio_input;
+<<<<<<< HEAD
+=======
+
+	int chip_id;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Misc Defines */
@@ -204,6 +216,36 @@ static struct XC_TV_STANDARD XC5000_Standard[MAX_TV_STANDARD] = {
 	{"FM Radio-INPUT1_MONO", 0x0278, 0x9002}
 };
 
+<<<<<<< HEAD
+=======
+
+struct xc5000_fw_cfg {
+	char *name;
+	u16 size;
+};
+
+static const struct xc5000_fw_cfg xc5000a_1_6_114 = {
+	.name = "dvb-fe-xc5000-1.6.114.fw",
+	.size = 12401,
+};
+
+static const struct xc5000_fw_cfg xc5000c_41_024_5 = {
+	.name = "dvb-fe-xc5000c-41.024.5.fw",
+	.size = 16497,
+};
+
+static inline const struct xc5000_fw_cfg *xc5000_assign_firmware(int chip_id)
+{
+	switch (chip_id) {
+	default:
+	case XC5000A:
+		return &xc5000a_1_6_114;
+	case XC5000C:
+		return &xc5000c_41_024_5;
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int xc_load_fw_and_init_tuner(struct dvb_frontend *fe);
 static int xc5000_is_firmware_loaded(struct dvb_frontend *fe);
 static int xc5000_readreg(struct xc5000_priv *priv, u16 reg, u16 *val);
@@ -546,18 +588,57 @@ static int xc_tune_channel(struct xc5000_priv *priv, u32 freq_hz, int mode)
 	return found;
 }
 
+<<<<<<< HEAD
+=======
+static int xc_set_xtal(struct dvb_frontend *fe)
+{
+	struct xc5000_priv *priv = fe->tuner_priv;
+	int ret = XC_RESULT_SUCCESS;
+
+	switch (priv->chip_id) {
+	default:
+	case XC5000A:
+		/* 32.000 MHz xtal is default */
+		break;
+	case XC5000C:
+		switch (priv->xtal_khz) {
+		default:
+		case 32000:
+			/* 32.000 MHz xtal is default */
+			break;
+		case 31875:
+			/* 31.875 MHz xtal configuration */
+			ret = xc_write_reg(priv, 0x000f, 0x8081);
+			break;
+		}
+		break;
+	}
+	return ret;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int xc5000_fwupload(struct dvb_frontend *fe)
 {
 	struct xc5000_priv *priv = fe->tuner_priv;
 	const struct firmware *fw;
 	int ret;
+<<<<<<< HEAD
 
 	/* request the firmware, this will block and timeout */
 	printk(KERN_INFO "xc5000: waiting for firmware upload (%s)...\n",
 		XC5000_DEFAULT_FIRMWARE);
 
 	ret = request_firmware(&fw, XC5000_DEFAULT_FIRMWARE,
+=======
+	const struct xc5000_fw_cfg *desired_fw =
+		xc5000_assign_firmware(priv->chip_id);
+
+	/* request the firmware, this will block and timeout */
+	printk(KERN_INFO "xc5000: waiting for firmware upload (%s)...\n",
+		desired_fw->name);
+
+	ret = request_firmware(&fw, desired_fw->name,
+>>>>>>> refs/remotes/origin/cm-10.0
 		priv->i2c_props.adap->dev.parent);
 	if (ret) {
 		printk(KERN_ERR "xc5000: Upload failed. (file not found?)\n");
@@ -569,12 +650,21 @@ static int xc5000_fwupload(struct dvb_frontend *fe)
 		ret = XC_RESULT_SUCCESS;
 	}
 
+<<<<<<< HEAD
 	if (fw->size != XC5000_DEFAULT_FIRMWARE_SIZE) {
+=======
+	if (fw->size != desired_fw->size) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "xc5000: firmware incorrect size\n");
 		ret = XC_RESULT_RESET_FAILURE;
 	} else {
 		printk(KERN_INFO "xc5000: firmware uploading...\n");
 		ret = xc_load_i2c_sequence(fe,  fw->data);
+<<<<<<< HEAD
+=======
+		if (XC_RESULT_SUCCESS == ret)
+			ret = xc_set_xtal(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_INFO "xc5000: firmware upload complete...\n");
 	}
 
@@ -628,6 +718,7 @@ static void xc_debug_dump(struct xc5000_priv *priv)
 	dprintk(1, "*** Quality (0:<8dB, 7:>56dB) = %d\n", quality);
 }
 
+<<<<<<< HEAD
 /*
  * As defined on EN 300 429, the DVB-C roll-off factor is 0.15.
  * So, the amount of the needed bandwith is given by:
@@ -642,6 +733,15 @@ static int xc5000_set_params(struct dvb_frontend *fe,
 {
 	struct xc5000_priv *priv = fe->tuner_priv;
 	int ret;
+=======
+static int xc5000_set_params(struct dvb_frontend *fe)
+{
+	int ret, b;
+	struct xc5000_priv *priv = fe->tuner_priv;
+	u32 bw = fe->dtv_property_cache.bandwidth_hz;
+	u32 freq = fe->dtv_property_cache.frequency;
+	u32 delsys  = fe->dtv_property_cache.delivery_system;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (xc5000_is_firmware_loaded(fe) != XC_RESULT_SUCCESS) {
 		if (xc_load_fw_and_init_tuner(fe) != XC_RESULT_SUCCESS) {
@@ -650,6 +750,7 @@ static int xc5000_set_params(struct dvb_frontend *fe,
 		}
 	}
 
+<<<<<<< HEAD
 	dprintk(1, "%s() frequency=%d (Hz)\n", __func__, params->frequency);
 
 	if (fe->ops.info.type == FE_ATSC) {
@@ -690,12 +791,45 @@ static int xc5000_set_params(struct dvb_frontend *fe,
 			priv->bandwidth = BANDWIDTH_8_MHZ;
 			priv->video_standard = DTV8;
 			priv->freq_hz = params->frequency - 2750000;
+=======
+	dprintk(1, "%s() frequency=%d (Hz)\n", __func__, freq);
+
+	switch (delsys) {
+	case SYS_ATSC:
+		dprintk(1, "%s() VSB modulation\n", __func__);
+		priv->rf_mode = XC_RF_MODE_AIR;
+		priv->freq_hz = freq - 1750000;
+		priv->video_standard = DTV6;
+		break;
+	case SYS_DVBC_ANNEX_B:
+		dprintk(1, "%s() QAM modulation\n", __func__);
+		priv->rf_mode = XC_RF_MODE_CABLE;
+		priv->freq_hz = freq - 1750000;
+		priv->video_standard = DTV6;
+		break;
+	case SYS_DVBT:
+	case SYS_DVBT2:
+		dprintk(1, "%s() OFDM\n", __func__);
+		switch (bw) {
+		case 6000000:
+			priv->video_standard = DTV6;
+			priv->freq_hz = freq - 1750000;
+			break;
+		case 7000000:
+			priv->video_standard = DTV7;
+			priv->freq_hz = freq - 2250000;
+			break;
+		case 8000000:
+			priv->video_standard = DTV8;
+			priv->freq_hz = freq - 2750000;
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		default:
 			printk(KERN_ERR "xc5000 bandwidth not set!\n");
 			return -EINVAL;
 		}
 		priv->rf_mode = XC_RF_MODE_AIR;
+<<<<<<< HEAD
 	} else if (fe->ops.info.type == FE_QAM) {
 		switch (params->u.qam.modulation) {
 		case QAM_256:
@@ -732,6 +866,35 @@ static int xc5000_set_params(struct dvb_frontend *fe,
 
 	dprintk(1, "%s() frequency=%d (compensated)\n",
 		__func__, priv->freq_hz);
+=======
+	case SYS_DVBC_ANNEX_A:
+	case SYS_DVBC_ANNEX_C:
+		dprintk(1, "%s() QAM modulation\n", __func__);
+		priv->rf_mode = XC_RF_MODE_CABLE;
+		if (bw <= 6000000) {
+			priv->video_standard = DTV6;
+			priv->freq_hz = freq - 1750000;
+			b = 6;
+		} else if (bw <= 7000000) {
+			priv->video_standard = DTV7;
+			priv->freq_hz = freq - 2250000;
+			b = 7;
+		} else {
+			priv->video_standard = DTV7_8;
+			priv->freq_hz = freq - 2750000;
+			b = 8;
+		}
+		dprintk(1, "%s() Bandwidth %dMHz (%d)\n", __func__,
+			b, bw);
+		break;
+	default:
+		printk(KERN_ERR "xc5000: delivery system is not supported!\n");
+		return -EINVAL;
+	}
+
+	dprintk(1, "%s() frequency=%d (compensated to %d)\n",
+		__func__, freq, priv->freq_hz);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = xc_SetSignalSource(priv, priv->rf_mode);
 	if (ret != XC_RESULT_SUCCESS) {
@@ -763,6 +926,11 @@ static int xc5000_set_params(struct dvb_frontend *fe,
 	if (debug)
 		xc_debug_dump(priv);
 
+<<<<<<< HEAD
+=======
+	priv->bandwidth = bw;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -968,6 +1136,17 @@ static int xc5000_get_frequency(struct dvb_frontend *fe, u32 *freq)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int xc5000_get_if_frequency(struct dvb_frontend *fe, u32 *freq)
+{
+	struct xc5000_priv *priv = fe->tuner_priv;
+	dprintk(1, "%s()\n", __func__);
+	*freq = priv->if_khz * 1000;
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int xc5000_get_bandwidth(struct dvb_frontend *fe, u32 *bw)
 {
 	struct xc5000_priv *priv = fe->tuner_priv;
@@ -1108,6 +1287,10 @@ static const struct dvb_tuner_ops xc5000_tuner_ops = {
 	.set_params	   = xc5000_set_params,
 	.set_analog_params = xc5000_set_analog_params,
 	.get_frequency	   = xc5000_get_frequency,
+<<<<<<< HEAD
+=======
+	.get_if_frequency  = xc5000_get_if_frequency,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_bandwidth	   = xc5000_get_bandwidth,
 	.get_status	   = xc5000_get_status
 };
@@ -1135,7 +1318,11 @@ struct dvb_frontend *xc5000_attach(struct dvb_frontend *fe,
 		break;
 	case 1:
 		/* new tuner instance */
+<<<<<<< HEAD
 		priv->bandwidth = BANDWIDTH_6_MHZ;
+=======
+		priv->bandwidth = 6000000;
+>>>>>>> refs/remotes/origin/cm-10.0
 		fe->tuner_priv = priv;
 		break;
 	default:
@@ -1151,9 +1338,25 @@ struct dvb_frontend *xc5000_attach(struct dvb_frontend *fe,
 		priv->if_khz = cfg->if_khz;
 	}
 
+<<<<<<< HEAD
 	if (priv->radio_input == 0)
 		priv->radio_input = cfg->radio_input;
 
+=======
+	if (priv->xtal_khz == 0)
+		priv->xtal_khz = cfg->xtal_khz;
+
+	if (priv->radio_input == 0)
+		priv->radio_input = cfg->radio_input;
+
+	/* don't override chip id if it's already been set
+	   unless explicitly specified */
+	if ((priv->chip_id == 0) || (cfg->chip_id))
+		/* use default chip id if none specified, set to 0 so
+		   it can be overridden if this is a hybrid driver */
+		priv->chip_id = (cfg->chip_id) ? cfg->chip_id : 0;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Check if firmware has been loaded. It is possible that another
 	   instance of the driver has loaded the firmware.
 	 */

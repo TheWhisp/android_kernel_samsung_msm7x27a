@@ -565,8 +565,11 @@ static int cb_pcidas_attach(struct comedi_device *dev,
 	int index;
 	int i;
 
+<<<<<<< HEAD
 	printk("comedi%d: cb_pcidas: ", dev->minor);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Allocate the private structure area.
  */
@@ -576,7 +579,10 @@ static int cb_pcidas_attach(struct comedi_device *dev,
 /*
  * Probe the device to determine what device in the series it is.
  */
+<<<<<<< HEAD
 	printk("\n");
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for_each_pci_dev(pcidev) {
 		/*  is it not a computer boards card? */
@@ -600,20 +606,34 @@ static int cb_pcidas_attach(struct comedi_device *dev,
 		}
 	}
 
+<<<<<<< HEAD
 	printk("No supported ComputerBoards/MeasurementComputing card found on "
 	       "requested position\n");
+=======
+	dev_err(dev->hw_dev, "No supported ComputerBoards/MeasurementComputing card found on requested position\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 	return -EIO;
 
 found:
 
+<<<<<<< HEAD
 	printk("Found %s on bus %i, slot %i\n", cb_pcidas_boards[index].name,
 	       pcidev->bus->number, PCI_SLOT(pcidev->devfn));
+=======
+	dev_dbg(dev->hw_dev, "Found %s on bus %i, slot %i\n",
+		cb_pcidas_boards[index].name, pcidev->bus->number,
+		PCI_SLOT(pcidev->devfn));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Enable PCI device and reserve I/O ports.
 	 */
 	if (comedi_pci_enable(pcidev, "cb_pcidas")) {
+<<<<<<< HEAD
 		printk(" Failed to enable PCI device and request regions\n");
+=======
+		dev_err(dev->hw_dev, "Failed to enable PCI device and request regions\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 	/*
@@ -639,7 +659,12 @@ found:
 	/*  get irq */
 	if (request_irq(devpriv->pci_dev->irq, cb_pcidas_interrupt,
 			IRQF_SHARED, "cb_pcidas", dev)) {
+<<<<<<< HEAD
 		printk(" unable to allocate irq %d\n", devpriv->pci_dev->irq);
+=======
+		dev_dbg(dev->hw_dev, "unable to allocate irq %d\n",
+			devpriv->pci_dev->irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 	dev->irq = devpriv->pci_dev->irq;
@@ -768,7 +793,10 @@ found:
  */
 static int cb_pcidas_detach(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 	printk("comedi%d: cb_pcidas: remove\n", dev->minor);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (devpriv) {
 		if (devpriv->s5933_config) {
@@ -776,8 +804,13 @@ static int cb_pcidas_detach(struct comedi_device *dev)
 			outl(INTCSR_INBOX_INTR_STATUS,
 			     devpriv->s5933_config + AMCC_OP_REG_INTCSR);
 #ifdef CB_PCIDAS_DEBUG
+<<<<<<< HEAD
 			printk("detaching, incsr is 0x%x\n",
 			       inl(devpriv->s5933_config + AMCC_OP_REG_INTCSR));
+=======
+			dev_dbg(dev->hw_dev, "detaching, incsr is 0x%x\n",
+				inl(devpriv->s5933_config + AMCC_OP_REG_INTCSR));
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 		}
 	}
@@ -858,7 +891,12 @@ static int ai_config_calibration_source(struct comedi_device *dev,
 	unsigned int source = data[1];
 
 	if (source >= num_calibration_sources) {
+<<<<<<< HEAD
 		printk("invalid calibration source: %i\n", source);
+=======
+		dev_err(dev->hw_dev, "invalid calibration source: %i\n",
+			source);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
 
@@ -1279,7 +1317,11 @@ static int cb_pcidas_ai_cmd(struct comedi_device *dev,
 	outw(bits, devpriv->control_status + ADCMUX_CONT);
 
 #ifdef CB_PCIDAS_DEBUG
+<<<<<<< HEAD
 	printk("comedi: sent 0x%x to adcmux control\n", bits);
+=======
+	dev_dbg(dev->hw_dev, "comedi: sent 0x%x to adcmux control\n", bits);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	/*  load counters */
@@ -1306,7 +1348,12 @@ static int cb_pcidas_ai_cmd(struct comedi_device *dev,
 		devpriv->adc_fifo_bits |= INT_FHF;	/* interrupt fifo half full */
 	}
 #ifdef CB_PCIDAS_DEBUG
+<<<<<<< HEAD
 	printk("comedi: adc_fifo_bits are 0x%x\n", devpriv->adc_fifo_bits);
+=======
+	dev_dbg(dev->hw_dev, "comedi: adc_fifo_bits are 0x%x\n",
+		devpriv->adc_fifo_bits);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	/*  enable (and clear) interrupts */
 	outw(devpriv->adc_fifo_bits | EOAI | INT | LADFUL,
@@ -1332,7 +1379,11 @@ static int cb_pcidas_ai_cmd(struct comedi_device *dev,
 		bits |= BURSTE;
 	outw(bits, devpriv->control_status + TRIG_CONTSTAT);
 #ifdef CB_PCIDAS_DEBUG
+<<<<<<< HEAD
 	printk("comedi: sent 0x%x to trig control\n", bits);
+=======
+	dev_dbg(dev->hw_dev, "comedi: sent 0x%x to trig control\n", bits);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	return 0;
@@ -1549,7 +1600,12 @@ static int cb_pcidas_ao_inttrig(struct comedi_device *dev,
 	spin_lock_irqsave(&dev->spinlock, flags);
 	devpriv->adc_fifo_bits |= DAEMIE | DAHFIE;
 #ifdef CB_PCIDAS_DEBUG
+<<<<<<< HEAD
 	printk("comedi: adc_fifo_bits are 0x%x\n", devpriv->adc_fifo_bits);
+=======
+	dev_dbg(dev->hw_dev, "comedi: adc_fifo_bits are 0x%x\n",
+		devpriv->adc_fifo_bits);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	/*  enable and clear interrupts */
 	outw(devpriv->adc_fifo_bits | DAEMI | DAHFI,
@@ -1559,7 +1615,12 @@ static int cb_pcidas_ao_inttrig(struct comedi_device *dev,
 	devpriv->ao_control_bits |= DAC_START | DACEN | DAC_EMPTY;
 	outw(devpriv->ao_control_bits, devpriv->control_status + DAC_CSR);
 #ifdef CB_PCIDAS_DEBUG
+<<<<<<< HEAD
 	printk("comedi: sent 0x%x to dac control\n", devpriv->ao_control_bits);
+=======
+	dev_dbg(dev->hw_dev, "comedi: sent 0x%x to dac control\n",
+		devpriv->ao_control_bits);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	spin_unlock_irqrestore(&dev->spinlock, flags);
 
@@ -1587,8 +1648,14 @@ static irqreturn_t cb_pcidas_interrupt(int irq, void *d)
 
 	s5933_status = inl(devpriv->s5933_config + AMCC_OP_REG_INTCSR);
 #ifdef CB_PCIDAS_DEBUG
+<<<<<<< HEAD
 	printk("intcsr 0x%x\n", s5933_status);
 	printk("mbef 0x%x\n", inl(devpriv->s5933_config + AMCC_OP_REG_MBEF));
+=======
+	dev_dbg(dev->hw_dev, "intcsr 0x%x\n", s5933_status);
+	dev_dbg(dev->hw_dev, "mbef 0x%x\n",
+		inl(devpriv->s5933_config + AMCC_OP_REG_MBEF));
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	if ((INTCSR_INTR_ASSERTED & s5933_status) == 0)

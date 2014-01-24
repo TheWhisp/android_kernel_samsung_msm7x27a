@@ -14,8 +14,16 @@
 #define _AUDIO_ACDB_H
 
 #include <linux/msm_audio_acdb.h>
+<<<<<<< HEAD
 #include <sound/q6adm.h>
 
+=======
+#ifdef CONFIG_ARCH_MSM8974
+#include <sound/q6adm-v2.h>
+#else
+#include <sound/q6adm.h>
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 enum {
 	RX_CAL,
 	TX_CAL,

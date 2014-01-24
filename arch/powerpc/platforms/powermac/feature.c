@@ -27,6 +27,10 @@
 #include <linux/adb.h>
 #include <linux/pmu.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <asm/sections.h>
 #include <asm/errno.h>

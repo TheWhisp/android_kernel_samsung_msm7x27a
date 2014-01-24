@@ -44,7 +44,11 @@ static inline void set_bios_x(void)
 	pcibios_enabled = 1;
 	set_memory_x(PAGE_OFFSET + BIOS_BEGIN, (BIOS_END - BIOS_BEGIN) >> PAGE_SHIFT);
 	if (__supported_pte_mask & _PAGE_NX)
+<<<<<<< HEAD
 		printk(KERN_INFO "PCI : PCI BIOS aera is rw and x. Use pci=nobios if you want it NX.\n");
+=======
+		printk(KERN_INFO "PCI : PCI BIOS area is rw and x. Use pci=nobios if you want it NX.\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -181,6 +185,10 @@ static int pci_bios_read(unsigned int seg, unsigned int bus,
 	unsigned long flags;
 	unsigned long bx = (bus << 8) | devfn;
 
+<<<<<<< HEAD
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!value || (bus > 255) || (devfn > 255) || (reg > 255))
 		return -EINVAL;
 
@@ -247,6 +255,10 @@ static int pci_bios_write(unsigned int seg, unsigned int bus,
 	unsigned long flags;
 	unsigned long bx = (bus << 8) | devfn;
 
+<<<<<<< HEAD
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if ((bus > 255) || (devfn > 255) || (reg > 255)) 
 		return -EINVAL;
 
@@ -301,7 +313,11 @@ static int pci_bios_write(unsigned int seg, unsigned int bus,
  * Function table for BIOS32 access
  */
 
+<<<<<<< HEAD
 static struct pci_raw_ops pci_bios_access = {
+=======
+static const struct pci_raw_ops pci_bios_access = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read =		pci_bios_read,
 	.write =	pci_bios_write
 };
@@ -310,7 +326,11 @@ static struct pci_raw_ops pci_bios_access = {
  * Try to find PCI BIOS.
  */
 
+<<<<<<< HEAD
 static struct pci_raw_ops * __devinit pci_find_bios(void)
+=======
+static const struct pci_raw_ops * __devinit pci_find_bios(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	union bios32 *check;
 	unsigned char sum;

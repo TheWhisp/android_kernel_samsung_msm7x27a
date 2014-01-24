@@ -18,6 +18,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/delay.h>
@@ -36,9 +41,16 @@ static int ir_rc5_remote_gap = 885;
 module_param(ir_rc5_remote_gap, int, 0644);
 
 #undef dprintk
+<<<<<<< HEAD
 #define dprintk(arg...) do {	\
 	if (ir_debug >= 1)	\
 		printk(arg);	\
+=======
+#define dprintk(fmt, ...)			\
+do {						\
+	if (ir_debug >= 1)			\
+		pr_info(fmt, ##__VA_ARGS__);	\
+>>>>>>> refs/remotes/origin/cm-10.0
 } while (0)
 
 #define DEVNAME "bttv-input"
@@ -62,7 +74,11 @@ static void ir_handle_key(struct bttv *btv)
 
 	/* extract data */
 	data = ir_extract_bits(gpio, ir->mask_keycode);
+<<<<<<< HEAD
 	dprintk(KERN_INFO DEVNAME ": irq gpio=0x%x code=%d | %s%s%s\n",
+=======
+	dprintk("irq gpio=0x%x code=%d | %s%s%s\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		gpio, data,
 		ir->polling               ? "poll"  : "irq",
 		(gpio & ir->mask_keydown) ? " down" : "",
@@ -96,7 +112,11 @@ static void ir_enltv_handle_key(struct bttv *btv)
 	keyup = (gpio & ir->mask_keyup) ? 1 << 31 : 0;
 
 	if ((ir->last_gpio & 0x7f) != data) {
+<<<<<<< HEAD
 		dprintk(KERN_INFO DEVNAME ": gpio=0x%x code=%d | %s\n",
+=======
+		dprintk("gpio=0x%x code=%d | %s\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			gpio, data,
 			(gpio & ir->mask_keyup) ? " up" : "up/down");
 
@@ -107,7 +127,11 @@ static void ir_enltv_handle_key(struct bttv *btv)
 		if ((ir->last_gpio & 1 << 31) == keyup)
 			return;
 
+<<<<<<< HEAD
 		dprintk(KERN_INFO DEVNAME ":(cnt) gpio=0x%x code=%d | %s\n",
+=======
+		dprintk("(cnt) gpio=0x%x code=%d | %s\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			gpio, data,
 			(gpio & ir->mask_keyup) ? " up" : "down");
 
@@ -177,13 +201,21 @@ static u32 bttv_rc5_decode(unsigned int code)
 			rc5 |= 1;
 		break;
 		case 3:
+<<<<<<< HEAD
 			dprintk(KERN_INFO DEVNAME ":rc5_decode(%x) bad code\n",
+=======
+			dprintk("rc5_decode(%x) bad code\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				org_code);
 			return 0;
 		}
 	}
+<<<<<<< HEAD
 	dprintk(KERN_INFO DEVNAME ":"
 		"code=%x, rc5=%x, start=%x, toggle=%x, address=%x, "
+=======
+	dprintk("code=%x, rc5=%x, start=%x, toggle=%x, address=%x, "
+>>>>>>> refs/remotes/origin/cm-10.0
 		"instr=%x\n", rc5, org_code, RC5_START(rc5),
 		RC5_TOGGLE(rc5), RC5_ADDR(rc5), RC5_INSTR(rc5));
 	return rc5;
@@ -212,20 +244,32 @@ static void bttv_rc5_timer_end(unsigned long data)
 
 	/* Allow some timer jitter (RC5 is ~24ms anyway so this is ok) */
 	if (gap < 28000) {
+<<<<<<< HEAD
 		dprintk(KERN_INFO DEVNAME ": spurious timer_end\n");
+=======
+		dprintk("spurious timer_end\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	}
 
 	if (ir->last_bit < 20) {
 		/* ignore spurious codes (caused by light/other remotes) */
+<<<<<<< HEAD
 		dprintk(KERN_INFO DEVNAME ": short code: %x\n", ir->code);
+=======
+		dprintk("short code: %x\n", ir->code);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		ir->code = (ir->code << ir->shift_by) | 1;
 		rc5 = bttv_rc5_decode(ir->code);
 
 		/* two start bits? */
 		if (RC5_START(rc5) != ir->start) {
+<<<<<<< HEAD
 			printk(KERN_INFO DEVNAME ":"
+=======
+			pr_info(DEVNAME ":"
+>>>>>>> refs/remotes/origin/cm-10.0
 			       " rc5 start bits invalid: %u\n", RC5_START(rc5));
 
 			/* right address? */
@@ -235,8 +279,12 @@ static void bttv_rc5_timer_end(unsigned long data)
 
 			/* Good code */
 			rc_keydown(ir->dev, instr, toggle);
+<<<<<<< HEAD
 			dprintk(KERN_INFO DEVNAME ":"
 				" instruction %x, toggle %x\n",
+=======
+			dprintk("instruction %x, toggle %x\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 				instr, toggle);
 		}
 	}
@@ -265,7 +313,11 @@ static int bttv_rc5_irq(struct bttv *btv)
 		    tv.tv_usec - ir->base_time.tv_usec;
 	}
 
+<<<<<<< HEAD
 	dprintk(KERN_INFO DEVNAME ": RC5 IRQ: gap %d us for %s\n",
+=======
+	dprintk("RC5 IRQ: gap %d us for %s\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		gap, (gpio & 0x20) ? "mark" : "space");
 
 	/* remote IRQ? */
@@ -340,14 +392,22 @@ static int get_key_pv951(struct IR_i2c *ir, u32 *ir_key, u32 *ir_raw)
 
 	/* poll IR chip */
 	if (1 != i2c_master_recv(ir->c, &b, 1)) {
+<<<<<<< HEAD
 		dprintk(KERN_INFO DEVNAME ": read error\n");
+=======
+		dprintk("read error\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
 	}
 
 	/* ignore 0xaa */
 	if (b==0xaa)
 		return 0;
+<<<<<<< HEAD
 	dprintk(KERN_INFO DEVNAME ": key %02x\n", b);
+=======
+	dprintk("key %02x\n", b);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * NOTE:
@@ -517,7 +577,11 @@ int bttv_input_init(struct bttv *btv)
 		break;
 	}
 	if (NULL == ir_codes) {
+<<<<<<< HEAD
 		dprintk(KERN_INFO "Ooops: IR config error [card=%d]\n", btv->c.type);
+=======
+		dprintk("Ooops: IR config error [card=%d]\n", btv->c.type);
+>>>>>>> refs/remotes/origin/cm-10.0
 		err = -ENODEV;
 		goto err_out_free;
 	}

@@ -32,7 +32,11 @@
 
 #include "ethernet-defines.h"
 
+<<<<<<< HEAD
 #include "cvmx-fpa.h"
+=======
+#include <asm/octeon/cvmx-fpa.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * cvm_oct_fill_hw_skbuff - fill the supplied hardware pool with skbuffs

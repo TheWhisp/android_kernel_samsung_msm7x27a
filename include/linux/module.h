@@ -21,8 +21,11 @@
 #include <linux/percpu.h>
 #include <asm/module.h>
 
+<<<<<<< HEAD
 #include <trace/events/module.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Not Yet Implemented */
 #define MODULE_SUPPORTED_DEVICE(name)
 
@@ -36,10 +39,25 @@ struct modversion_info
 
 struct module;
 
+<<<<<<< HEAD
 struct module_attribute {
         struct attribute attr;
         ssize_t (*show)(struct module_attribute *, struct module *, char *);
         ssize_t (*store)(struct module_attribute *, struct module *,
+=======
+struct module_kobject {
+	struct kobject kobj;
+	struct module *mod;
+	struct kobject *drivers_dir;
+	struct module_param_attrs *mp;
+};
+
+struct module_attribute {
+	struct attribute attr;
+	ssize_t (*show)(struct module_attribute *, struct module_kobject *,
+			char *);
+	ssize_t (*store)(struct module_attribute *, struct module_kobject *,
+>>>>>>> refs/remotes/origin/cm-10.0
 			 const char *, size_t count);
 	void (*setup)(struct module *, const char *);
 	int (*test)(struct module *);
@@ -53,6 +71,7 @@ struct module_version_attribute {
 } __attribute__ ((__aligned__(sizeof(void *))));
 
 extern ssize_t __modver_version_show(struct module_attribute *,
+<<<<<<< HEAD
 				     struct module *, char *);
 
 struct module_kobject
@@ -62,6 +81,11 @@ struct module_kobject
 	struct kobject *drivers_dir;
 	struct module_param_attrs *mp;
 };
+=======
+				     struct module_kobject *, char *);
+
+extern struct module_attribute module_uevent;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* These are either module local, or the kernel's dummy ones. */
 extern int init_module(void);
@@ -133,11 +157,14 @@ extern const struct gtype##_id __mod_##gtype##_table		\
 /* What your module does. */
 #define MODULE_DESCRIPTION(_description) MODULE_INFO(description, _description)
 
+<<<<<<< HEAD
 /* One for each parameter, describing how to use it.  Some files do
    multiple of these per line, so can't just use MODULE_INFO. */
 #define MODULE_PARM_DESC(_parm, desc) \
 	__MODULE_INFO(parm, _parm, #_parm ":" desc)
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MODULE_DEVICE_TABLE(type,name)		\
   MODULE_GENERIC_TABLE(type##_device,name)
 
@@ -208,6 +235,23 @@ enum module_state
 	MODULE_STATE_GOING,
 };
 
+<<<<<<< HEAD
+=======
+/**
+ * struct module_ref - per cpu module reference counts
+ * @incs: number of module get on this cpu
+ * @decs: number of module put on this cpu
+ *
+ * We force an alignment on 8 or 16 bytes, so that alloc_percpu()
+ * put @incs/@decs in same cache line, with no extra memory cost,
+ * since alloc_percpu() is fine grained.
+ */
+struct module_ref {
+	unsigned long incs;
+	unsigned long decs;
+} __attribute((aligned(2 * sizeof(unsigned long))));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct module
 {
 	enum module_state state;
@@ -350,10 +394,14 @@ struct module
 	/* Destruction function. */
 	void (*exit)(void);
 
+<<<<<<< HEAD
 	struct module_ref {
 		unsigned int incs;
 		unsigned int decs;
 	} __percpu *refptr;
+=======
+	struct module_ref __percpu *refptr;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_CONSTRUCTORS
@@ -437,13 +485,18 @@ extern void __module_put_and_exit(struct module *mod, long code)
 #define module_put_and_exit(code) __module_put_and_exit(THIS_MODULE, code);
 
 #ifdef CONFIG_MODULE_UNLOAD
+<<<<<<< HEAD
 unsigned int module_refcount(struct module *mod);
+=======
+unsigned long module_refcount(struct module *mod);
+>>>>>>> refs/remotes/origin/cm-10.0
 void __symbol_put(const char *symbol);
 #define symbol_put(x) __symbol_put(MODULE_SYMBOL_PREFIX #x)
 void symbol_put_addr(void *addr);
 
 /* Sometimes we know we already have a refcount, and it's easier not
    to handle the error case (which only happens with rmmod --wait). */
+<<<<<<< HEAD
 static inline void __module_get(struct module *module)
 {
 	if (module) {
@@ -471,6 +524,13 @@ static inline int try_module_get(struct module *module)
 	}
 	return ret;
 }
+=======
+extern void __module_get(struct module *module);
+
+/* This is the Right Way to get a module: if it fails, it's being removed,
+ * so pretend it's not there. */
+extern bool try_module_get(struct module *module);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern void module_put(struct module *module);
 
@@ -517,9 +577,12 @@ int unregister_module_notifier(struct notifier_block * nb);
 
 extern void print_modules(void);
 
+<<<<<<< HEAD
 extern void module_update_tracepoints(void);
 extern int module_get_iter_tracepoints(struct tracepoint_iter *iter);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #else /* !CONFIG_MODULES... */
 
 /* Given an address, look for it in the exception tables. */
@@ -630,6 +693,7 @@ static inline int unregister_module_notifier(struct notifier_block * nb)
 static inline void print_modules(void)
 {
 }
+<<<<<<< HEAD
 
 static inline void module_update_tracepoints(void)
 {
@@ -639,6 +703,8 @@ static inline int module_get_iter_tracepoints(struct tracepoint_iter *iter)
 {
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_MODULES */
 
 #ifdef CONFIG_SYSFS

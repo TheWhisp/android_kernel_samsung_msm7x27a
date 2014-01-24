@@ -14,7 +14,11 @@
 #ifndef _HWMON_H_
 #define _HWMON_H_
 
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct device *hwmon_device_register(struct device *dev);
 

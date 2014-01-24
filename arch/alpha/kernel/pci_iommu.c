@@ -7,6 +7,10 @@
 #include <linux/pci.h>
 #include <linux/gfp.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/scatterlist.h>
 #include <linux/log2.h>
 #include <linux/dma-mapping.h>
@@ -433,7 +437,12 @@ static void alpha_pci_unmap_page(struct device *dev, dma_addr_t dma_addr,
    else DMA_ADDRP is undefined.  */
 
 static void *alpha_pci_alloc_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
 				      dma_addr_t *dma_addrp, gfp_t gfp)
+=======
+				      dma_addr_t *dma_addrp, gfp_t gfp,
+				      struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pci_dev *pdev = alpha_gendev_to_pci(dev);
 	void *cpu_addr;
@@ -477,7 +486,12 @@ try_again:
    DMA_ADDR past this call are illegal.  */
 
 static void alpha_pci_free_coherent(struct device *dev, size_t size,
+<<<<<<< HEAD
 				    void *cpu_addr, dma_addr_t dma_addr)
+=======
+				    void *cpu_addr, dma_addr_t dma_addr,
+				    struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pci_dev *pdev = alpha_gendev_to_pci(dev);
 	pci_unmap_single(pdev, dma_addr, size, PCI_DMA_BIDIRECTIONAL);
@@ -951,8 +965,13 @@ static int alpha_pci_set_mask(struct device *dev, u64 mask)
 }
 
 struct dma_map_ops alpha_pci_ops = {
+<<<<<<< HEAD
 	.alloc_coherent		= alpha_pci_alloc_coherent,
 	.free_coherent		= alpha_pci_free_coherent,
+=======
+	.alloc			= alpha_pci_alloc_coherent,
+	.free			= alpha_pci_free_coherent,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.map_page		= alpha_pci_map_page,
 	.unmap_page		= alpha_pci_unmap_page,
 	.map_sg			= alpha_pci_map_sg,

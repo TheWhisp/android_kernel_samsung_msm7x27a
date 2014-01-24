@@ -18,7 +18,10 @@
 #include <linux/major.h>
 #include <linux/delay.h>
 #include <linux/tty.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <arch/svinto.h>
 #include <asm/io.h>             /* Get SIMCOUT. */
 

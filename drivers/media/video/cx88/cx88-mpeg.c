@@ -39,6 +39,10 @@ MODULE_AUTHOR("Jelle Foks <jelle@foks.us>");
 MODULE_AUTHOR("Chris Pascoe <c.pascoe@itee.uq.edu.au>");
 MODULE_AUTHOR("Gerd Knorr <kraxel@bytesex.org> [SuSE Labs]");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_VERSION(CX88_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static unsigned int debug;
 module_param(debug,int,0644);
@@ -613,6 +617,7 @@ static int cx8802_request_acquire(struct cx8802_driver *drv)
 	    core->active_type_id != drv->type_id)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	core->input = 0;
 	for (i = 0;
 	     i < (sizeof(core->board.input) / sizeof(struct cx88_input));
@@ -620,6 +625,19 @@ static int cx8802_request_acquire(struct cx8802_driver *drv)
 		if (core->board.input[i].type == CX88_VMUX_DVB) {
 			core->input = i;
 			break;
+=======
+	if (drv->type_id == CX88_MPEG_DVB) {
+		/* When switching to DVB, always set the input to the tuner */
+		core->last_analog_input = core->input;
+		core->input = 0;
+		for (i = 0;
+		     i < (sizeof(core->board.input) / sizeof(struct cx88_input));
+		     i++) {
+			if (core->board.input[i].type == CX88_VMUX_DVB) {
+				core->input = i;
+				break;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -644,6 +662,15 @@ static int cx8802_request_release(struct cx8802_driver *drv)
 
 	if (drv->advise_release && --core->active_ref == 0)
 	{
+<<<<<<< HEAD
+=======
+		if (drv->type_id == CX88_MPEG_DVB) {
+			/* If the DVB driver is releasing, reset the input
+			   state to the last configured analog input */
+			core->input = core->last_analog_input;
+		}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		drv->advise_release(drv);
 		core->active_type_id = CX88_BOARD_NONE;
 		mpeg_dbg(1,"%s() Post release GPIO=%x\n", __func__, cx_read(MO_GP0_IO));
@@ -890,6 +917,7 @@ static struct pci_driver cx8802_pci_driver = {
 
 static int __init cx8802_init(void)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO "cx88/2: cx2388x MPEG-TS Driver Manager version %d.%d.%d loaded\n",
 	       (CX88_VERSION_CODE >> 16) & 0xff,
 	       (CX88_VERSION_CODE >>  8) & 0xff,
@@ -898,6 +926,10 @@ static int __init cx8802_init(void)
 	printk(KERN_INFO "cx2388x: snapshot date %04d-%02d-%02d\n",
 	       SNAPSHOT/10000, (SNAPSHOT/100)%100, SNAPSHOT%100);
 #endif
+=======
+	printk(KERN_INFO "cx88/2: cx2388x MPEG-TS Driver Manager version %s loaded\n",
+	       CX88_VERSION);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return pci_register_driver(&cx8802_pci_driver);
 }
 

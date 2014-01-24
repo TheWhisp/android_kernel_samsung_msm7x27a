@@ -13,14 +13,38 @@
 #define __QDSP6VOICE_H__
 
 #include <mach/qdsp6v2/apr.h>
+<<<<<<< HEAD
 
 #define MAX_VOC_PKT_SIZE 642
 #define SESSION_NAME_LEN 20
+=======
+#include <linux/ion.h>
+
+#define MAX_VOC_PKT_SIZE 642
+#define SESSION_NAME_LEN 21
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define VOC_REC_UPLINK		0x00
 #define VOC_REC_DOWNLINK	0x01
 #define VOC_REC_BOTH		0x02
 
+<<<<<<< HEAD
+=======
+/* Needed for VOIP & VOLTE support */
+/* Due to Q6 memory map issue */
+enum {
+	VOIP_CAL,
+	VOLTE_CAL,
+	NUM_VOICE_CAL_BUFFERS
+};
+
+enum {
+	CVP_CAL,
+	CVS_CAL,
+	NUM_VOICE_CAL_TYPES
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct voice_header {
 	uint32_t id;
 	uint32_t data_len;
@@ -57,6 +81,10 @@ enum {
 	VOC_RUN,
 	VOC_CHANGE,
 	VOC_RELEASE,
+<<<<<<< HEAD
+=======
+	VOC_STANDBY,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* Common */
@@ -106,6 +134,18 @@ struct vss_unmap_memory_cmd {
 #define VSS_IMVM_CMD_CREATE_PASSIVE_CONTROL_SESSION	0x000110FF
 /**< No payload. Wait for APRV2_IBASIC_RSP_RESULT response. */
 
+<<<<<<< HEAD
+=======
+#define VSS_IMVM_CMD_SET_POLICY_DUAL_CONTROL	0x00011327
+/*
+ * VSS_IMVM_CMD_SET_POLICY_DUAL_CONTROL
+ * Description: This command is required to let MVM know
+ * who is in control of session.
+ * Payload: Defined by vss_imvm_cmd_set_policy_dual_control_t.
+ * Result: Wait for APRV2_IBASIC_RSP_RESULT response.
+ */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define VSS_IMVM_CMD_CREATE_FULL_CONTROL_SESSION	0x000110FE
 /* Create a new full control MVM session. */
 
@@ -129,7 +169,18 @@ struct vss_unmap_memory_cmd {
 */
 
 #define VSS_IMVM_CMD_START_VOICE			0x00011190
+<<<<<<< HEAD
 /**< No payload. Wait for APRV2_IBASIC_RSP_RESULT response. */
+=======
+/*
+ * Start Voice call command.
+ * Wait for APRV2_IBASIC_RSP_RESULT response.
+ * No pay load.
+ */
+
+#define VSS_IMVM_CMD_STANDBY_VOICE	0x00011191
+/* No payload. Wait for APRV2_IBASIC_RSP_RESULT response. */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define VSS_IMVM_CMD_STOP_VOICE				0x00011192
 /**< No payload. Wait for APRV2_IBASIC_RSP_RESULT response. */
@@ -153,6 +204,17 @@ struct vss_unmap_memory_cmd {
 #define VSS_IWIDEVOICE_CMD_SET_WIDEVOICE                0x00011243
 /* Enable/disable WideVoice */
 
+<<<<<<< HEAD
+=======
+enum msm_audio_voc_rate {
+		VOC_0_RATE, /* Blank frame */
+		VOC_8_RATE, /* 1/8 rate    */
+		VOC_4_RATE, /* 1/4 rate    */
+		VOC_2_RATE, /* 1/2 rate    */
+		VOC_1_RATE  /* Full rate   */
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct vss_istream_cmd_set_tty_mode_t {
 	uint32_t mode;
 	/**<
@@ -227,6 +289,15 @@ struct vss_imvm_cmd_create_control_session_t {
 	*/
 } __packed;
 
+<<<<<<< HEAD
+=======
+
+struct vss_imvm_cmd_set_policy_dual_control_t {
+	bool enable_flag;
+	/* Set to TRUE to enable modem state machine control */
+} __packed;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct vss_iwidevoice_cmd_set_widevoice_t {
 	uint32_t enable;
 	/* WideVoice enable/disable; possible values:
@@ -250,6 +321,14 @@ struct mvm_create_ctl_session_cmd {
 	struct vss_imvm_cmd_create_control_session_t mvm_session;
 } __packed;
 
+<<<<<<< HEAD
+=======
+struct mvm_modem_dual_control_session_cmd {
+	struct apr_hdr hdr;
+	struct vss_imvm_cmd_set_policy_dual_control_t voice_ctl;
+} __packed;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct mvm_set_tty_mode_cmd {
 	struct apr_hdr hdr;
 	struct vss_istream_cmd_set_tty_mode_t tty_mode;
@@ -636,6 +715,13 @@ struct cvs_start_record_cmd {
 /* G.711 mu-law (contains two 10ms vocoder frames). */
 #define VSS_MEDIA_ID_G729		0x00010FD0
 /* G.729AB (contains two 10ms vocoder frames. */
+<<<<<<< HEAD
+=======
+#define VSS_MEDIA_ID_4GV_NB_MODEM	0x00010FC3
+/*CDMA EVRC-B vocoder modem format */
+#define VSS_MEDIA_ID_4GV_WB_MODEM	0x00010FC4
+/*CDMA EVRC-WB vocoder modem format */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define VSS_IVOCPROC_CMD_SET_MUTE			0x000110EF
 
@@ -872,11 +958,25 @@ struct voice_data {
 };
 
 struct cal_mem {
+<<<<<<< HEAD
 	uint32_t phy;
 	void *buf;
 };
 
 #define MAX_VOC_SESSIONS 2
+=======
+	/* Physical Address */
+	uint32_t paddr;
+	/* Kernel Virtual Address */
+	uint32_t kvaddr;
+};
+
+struct cal_data {
+	struct cal_mem	cal_data[NUM_VOICE_CAL_TYPES];
+};
+
+#define MAX_VOC_SESSIONS 4
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SESSION_ID_BASE 0xFFF0
 
 struct common_data {
@@ -892,8 +992,14 @@ struct common_data {
 	/* APR to CVP in the Q6 */
 	void *apr_q6_cvp;
 
+<<<<<<< HEAD
 	struct cal_mem cvp_cal;
 	struct cal_mem cvs_cal;
+=======
+	struct ion_client *ion_client;
+	struct ion_handle *ion_handle;
+	struct cal_data voice_cal[NUM_VOICE_CAL_BUFFERS];
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct mutex common_lock;
 
@@ -929,6 +1035,11 @@ uint32_t voc_get_widevoice_enable(uint16_t session_id);
 uint8_t voc_get_tty_mode(uint16_t session_id);
 int voc_set_tty_mode(uint16_t session_id, uint8_t tty_mode);
 int voc_start_voice_call(uint16_t session_id);
+<<<<<<< HEAD
+=======
+int voc_standby_voice_call(uint16_t session_id);
+int voc_resume_voice_call(uint16_t session_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 int voc_end_voice_call(uint16_t session_id);
 int voc_set_rxtx_port(uint16_t session_id,
 		      uint32_t dev_port_id,
@@ -944,6 +1055,11 @@ uint8_t voc_get_route_flag(uint16_t session_id, uint8_t path_dir);
 
 #define VOICE_SESSION_NAME "Voice session"
 #define VOIP_SESSION_NAME "VoIP session"
+<<<<<<< HEAD
+=======
+#define VOLTE_SESSION_NAME "VoLTE session"
+#define SGLTE_SESSION_NAME "SGLTE session"
+>>>>>>> refs/remotes/origin/cm-10.0
 uint16_t voc_get_session_id(char *name);
 
 int voc_start_playback(uint32_t set);

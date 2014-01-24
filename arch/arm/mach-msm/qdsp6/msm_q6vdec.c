@@ -30,10 +30,19 @@
 #include <linux/spinlock.h>
 #include <linux/uaccess.h>
 #include <linux/wakelock.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/android_pmem.h>
 #include <linux/msm_q6vdec.h>
 
+<<<<<<< HEAD
+=======
+#include <mach/cpuidle.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "dal.h"
 
 #define DALDEVICEID_VDEC_DEVICE		0x02000026
@@ -257,13 +266,22 @@ static DEFINE_MUTEX(vdec_rm_lock);
 
 static int idlecount;
 static struct wake_lock wakelock;
+<<<<<<< HEAD
 static struct wake_lock idlelock;
+=======
+static struct pm_qos_request pm_qos_req;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void prevent_sleep(void)
 {
 	mutex_lock(&idlecount_lock);
 	if (++idlecount == 1) {
+<<<<<<< HEAD
 		wake_lock(&idlelock);
+=======
+		pm_qos_update_request(&pm_qos_req,
+				      msm_cpuidle_get_deep_idle_latency());
+>>>>>>> refs/remotes/origin/cm-10.0
 		wake_lock(&wakelock);
 	}
 	mutex_unlock(&idlecount_lock);
@@ -273,8 +291,13 @@ static void allow_sleep(void)
 {
 	mutex_lock(&idlecount_lock);
 	if (--idlecount == 0) {
+<<<<<<< HEAD
 		wake_unlock(&idlelock);
 		wake_unlock(&wakelock);
+=======
+		wake_unlock(&wakelock);
+		pm_qos_update_request(&pm_qos_req, PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	mutex_unlock(&idlecount_lock);
 }
@@ -1444,7 +1467,12 @@ static int __init vdec_init(void)
 	struct device *class_dev;
 	int rc = 0;
 
+<<<<<<< HEAD
 	wake_lock_init(&idlelock, WAKE_LOCK_IDLE, "vdec_idle");
+=======
+	pm_qos_add_request(&pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
+				PM_QOS_DEFAULT_VALUE);
+>>>>>>> refs/remotes/origin/cm-10.0
 	wake_lock_init(&wakelock, WAKE_LOCK_SUSPEND, "vdec_suspend");
 
 	rc = alloc_chrdev_region(&vdec_device_no, 0, 1, "vdec");

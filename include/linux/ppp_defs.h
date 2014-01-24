@@ -1,6 +1,7 @@
 /*
  * ppp_defs.h - PPP definitions.
  *
+<<<<<<< HEAD
  * Copyright (c) 1994 The Australian National University.
  * All rights reserved.
  *
@@ -39,6 +40,16 @@
  *     installation script can recognize it.
  */
 
+=======
+ * Copyright 1994-2000 Paul Mackerras.
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  version 2 as published by the Free Software Foundation.
+ */
+#include <linux/types.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef _PPP_DEFS_H_
 #define _PPP_DEFS_H_
 

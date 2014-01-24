@@ -17,6 +17,10 @@
 
 #include <linux/spi/spi.h>
 #include <linux/spi/lms283gf05.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct lms283gf05_state {
 	struct spi_device	*spi;
@@ -225,6 +229,7 @@ static struct spi_driver lms283gf05_driver = {
 	.remove		= __devexit_p(lms283gf05_remove),
 };
 
+<<<<<<< HEAD
 static __init int lms283gf05_init(void)
 {
 	return spi_register_driver(&lms283gf05_driver);
@@ -237,6 +242,9 @@ static __exit void lms283gf05_exit(void)
 
 module_init(lms283gf05_init);
 module_exit(lms283gf05_exit);
+=======
+module_spi_driver(lms283gf05_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");
 MODULE_DESCRIPTION("LCD283GF05 LCD");

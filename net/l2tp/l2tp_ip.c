@@ -232,7 +232,11 @@ static void l2tp_ip_close(struct sock *sk, long timeout)
 {
 	write_lock_bh(&l2tp_ip_lock);
 	hlist_del_init(&sk->sk_bind_node);
+<<<<<<< HEAD
 	hlist_del_init(&sk->sk_node);
+=======
+	sk_del_node_init(sk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	write_unlock_bh(&l2tp_ip_lock);
 	sk_common_release(sk);
 }
@@ -278,7 +282,12 @@ static int l2tp_ip_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 	    chk_addr_ret != RTN_MULTICAST && chk_addr_ret != RTN_BROADCAST)
 		goto out;
 
+<<<<<<< HEAD
 	inet->inet_rcv_saddr = inet->inet_saddr = addr->l2tp_addr.s_addr;
+=======
+	if (addr->l2tp_addr.s_addr)
+		inet->inet_rcv_saddr = inet->inet_saddr = addr->l2tp_addr.s_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (chk_addr_ret == RTN_MULTICAST || chk_addr_ret == RTN_BROADCAST)
 		inet->inet_saddr = 0;  /* Use device */
 	sk_dst_reset(sk);
@@ -494,18 +503,28 @@ static int l2tp_ip_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 	if (connected)
 		rt = (struct rtable *) __sk_dst_check(sk, 0);
 
+<<<<<<< HEAD
 	if (rt == NULL) {
 		struct ip_options_rcu *inet_opt;
 
 		rcu_read_lock();
+=======
+	rcu_read_lock();
+	if (rt == NULL) {
+		const struct ip_options_rcu *inet_opt;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		inet_opt = rcu_dereference(inet->inet_opt);
 
 		/* Use correct destination address if we have options. */
 		if (inet_opt && inet_opt->opt.srr)
 			daddr = inet_opt->opt.faddr;
 
+<<<<<<< HEAD
 		rcu_read_unlock();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* If this fails, retransmit mechanism of transport layer will
 		 * keep trying until route appears or the connection times
 		 * itself out.
@@ -517,12 +536,32 @@ static int l2tp_ip_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *m
 					   sk->sk_bound_dev_if);
 		if (IS_ERR(rt))
 			goto no_route;
+<<<<<<< HEAD
 		sk_setup_caps(sk, &rt->dst);
 	}
 	skb_dst_set(skb, dst_clone(&rt->dst));
 
 	/* Queue the packet to IP for output */
 	rc = ip_queue_xmit(skb, &inet->cork.fl);
+=======
+		if (connected) {
+			sk_setup_caps(sk, &rt->dst);
+		} else {
+			skb_dst_set(skb, &rt->dst);
+			goto xmit;
+		}
+	}
+
+	/* We dont need to clone dst here, it is guaranteed to not disappear.
+	 *  __dev_xmit_skb() might force a refcount if needed.
+	 */
+	skb_dst_set_noref(skb, &rt->dst);
+
+xmit:
+	/* Queue the packet to IP for output */
+	rc = ip_queue_xmit(skb, &inet->cork.fl);
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 error:
 	/* Update stats */
@@ -539,6 +578,10 @@ out:
 	return rc;
 
 no_route:
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 	IP_INC_STATS(sock_net(sk), IPSTATS_MIB_OUTNOROUTES);
 	kfree_skb(skb);
 	rc = -EHOSTUNREACH;

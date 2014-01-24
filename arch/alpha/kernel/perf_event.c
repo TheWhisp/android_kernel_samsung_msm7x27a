@@ -17,7 +17,11 @@
 #include <linux/init.h>
 
 #include <asm/hwrpb.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <asm/irq_regs.h>
 #include <asm/pal.h>
@@ -685,6 +689,13 @@ static int alpha_pmu_event_init(struct perf_event *event)
 {
 	int err;
 
+<<<<<<< HEAD
+=======
+	/* does not support taken branch sampling */
+	if (has_branch_stack(event))
+		return -EOPNOTSUPP;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	switch (event->attr.type) {
 	case PERF_TYPE_RAW:
 	case PERF_TYPE_HARDWARE:
@@ -847,7 +858,11 @@ static void alpha_perf_event_irq_handler(unsigned long la_ptr,
 	data.period = event->hw.last_period;
 
 	if (alpha_perf_event_set_period(event, hwc, idx)) {
+<<<<<<< HEAD
 		if (perf_event_overflow(event, 1, &data, regs)) {
+=======
+		if (perf_event_overflow(event, &data, regs)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			/* Interrupts coming too quickly; "throttle" the
 			 * counter, i.e., disable it for a little while.
 			 */

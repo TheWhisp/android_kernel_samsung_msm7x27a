@@ -24,6 +24,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 #include "drm_crtc_helper.h"
 #include "drm_encoder_slave.h"

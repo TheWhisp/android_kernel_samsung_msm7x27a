@@ -20,6 +20,10 @@
 #include <linux/statfs.h>
 #include <linux/cdrom.h>
 #include <linux/parser.h>
+<<<<<<< HEAD
+=======
+#include <linux/mpage.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "isofs.h"
 #include "zisofs.h"
@@ -84,7 +88,10 @@ static struct inode *isofs_alloc_inode(struct super_block *sb)
 static void isofs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kmem_cache_free(isofs_inode_cachep, ISOFS_I(inode));
 }
 
@@ -169,8 +176,13 @@ struct iso9660_options{
 	unsigned char map;
 	unsigned char check;
 	unsigned int blocksize;
+<<<<<<< HEAD
 	mode_t fmode;
 	mode_t dmode;
+=======
+	umode_t fmode;
+	umode_t dmode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	gid_t gid;
 	uid_t uid;
 	char *iocharset;
@@ -854,7 +866,10 @@ root_found:
 	sbi->s_utf8 = opt.utf8;
 	sbi->s_nocompress = opt.nocompress;
 	sbi->s_overriderockperm = opt.overriderockperm;
+<<<<<<< HEAD
 	mutex_init(&sbi->s_mutex);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * It would be incredibly stupid to allow people to mark every file
 	 * on the disk as suid, so we merely allow them to set the default
@@ -939,9 +954,17 @@ root_found:
 	s->s_d_op = &isofs_dentry_ops[table];
 
 	/* get the root dentry */
+<<<<<<< HEAD
 	s->s_root = d_alloc_root(inode);
 	if (!(s->s_root))
 		goto out_no_root;
+=======
+	s->s_root = d_make_root(inode);
+	if (!(s->s_root)) {
+		error = -ENOMEM;
+		goto out_no_inode;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree(opt.iocharset);
 
@@ -1140,7 +1163,17 @@ struct buffer_head *isofs_bread(struct inode *inode, sector_t block)
 
 static int isofs_readpage(struct file *file, struct page *page)
 {
+<<<<<<< HEAD
 	return block_read_full_page(page,isofs_get_block);
+=======
+	return mpage_readpage(page, isofs_get_block);
+}
+
+static int isofs_readpages(struct file *file, struct address_space *mapping,
+			struct list_head *pages, unsigned nr_pages)
+{
+	return mpage_readpages(mapping, pages, nr_pages, isofs_get_block);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static sector_t _isofs_bmap(struct address_space *mapping, sector_t block)
@@ -1150,6 +1183,10 @@ static sector_t _isofs_bmap(struct address_space *mapping, sector_t block)
 
 static const struct address_space_operations isofs_aops = {
 	.readpage = isofs_readpage,
+<<<<<<< HEAD
+=======
+	.readpages = isofs_readpages,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.bmap = _isofs_bmap
 };
 
@@ -1311,7 +1348,11 @@ static int isofs_read_inode(struct inode *inode)
 			inode->i_mode = S_IFDIR | sbi->s_dmode;
 		else
 			inode->i_mode = S_IFDIR | S_IRUGO | S_IXUGO;
+<<<<<<< HEAD
 		inode->i_nlink = 1;	/*
+=======
+		set_nlink(inode, 1);	/*
+>>>>>>> refs/remotes/origin/cm-10.0
 					 * Set to 1.  We know there are 2, but
 					 * the find utility tries to optimize
 					 * if it is 2, and it screws up.  It is
@@ -1329,7 +1370,11 @@ static int isofs_read_inode(struct inode *inode)
 			 */
 			inode->i_mode = S_IFREG | S_IRUGO | S_IXUGO;
 		}
+<<<<<<< HEAD
 		inode->i_nlink = 1;
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	inode->i_uid = sbi->s_uid;
 	inode->i_gid = sbi->s_gid;

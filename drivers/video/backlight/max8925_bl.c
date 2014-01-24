@@ -17,6 +17,10 @@
 #include <linux/backlight.h>
 #include <linux/mfd/max8925.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MAX_BRIGHTNESS		(0xff)
 #define MIN_BRIGHTNESS		(0)
@@ -128,7 +132,12 @@ static int __devinit max8925_backlight_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct max8925_backlight_data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(struct max8925_backlight_data),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (data == NULL)
 		return -ENOMEM;
 	strncpy(name, res->name, MAX8925_NAME_SIZE);
@@ -142,7 +151,10 @@ static int __devinit max8925_backlight_probe(struct platform_device *pdev)
 					&max8925_backlight_ops, &props);
 	if (IS_ERR(bl)) {
 		dev_err(&pdev->dev, "failed to register backlight\n");
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		return PTR_ERR(bl);
 	}
 	bl->props.brightness = MAX_BRIGHTNESS;
@@ -164,17 +176,25 @@ static int __devinit max8925_backlight_probe(struct platform_device *pdev)
 	return 0;
 out:
 	backlight_device_unregister(bl);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int __devexit max8925_backlight_remove(struct platform_device *pdev)
 {
 	struct backlight_device *bl = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	struct max8925_backlight_data *data = bl_get_data(bl);
 
 	backlight_device_unregister(bl);
 	kfree(data);
+=======
+
+	backlight_device_unregister(bl);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -187,6 +207,7 @@ static struct platform_driver max8925_backlight_driver = {
 	.remove		= __devexit_p(max8925_backlight_remove),
 };
 
+<<<<<<< HEAD
 static int __init max8925_backlight_init(void)
 {
 	return platform_driver_register(&max8925_backlight_driver);
@@ -198,6 +219,9 @@ static void __exit max8925_backlight_exit(void)
 	platform_driver_unregister(&max8925_backlight_driver);
 };
 module_exit(max8925_backlight_exit);
+=======
+module_platform_driver(max8925_backlight_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Backlight Driver for Maxim MAX8925");
 MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");

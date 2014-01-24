@@ -2,6 +2,30 @@ if ARCH_PXA
 
 menu "Intel PXA2xx/PXA3xx Implementations"
 
+<<<<<<< HEAD
+=======
+config ARCH_PXA_V7
+	bool "ARMv7 (PXA95x) based systems"
+
+if ARCH_PXA_V7
+comment "Marvell Dev Platforms (sorted by hardware release time)"
+config MACH_TAVOREVB3
+	bool "PXA95x Development Platform (aka TavorEVB III)"
+	select CPU_PXA955
+
+config MACH_SAARB
+	bool "PXA955 Handheld Platform (aka SAARB)"
+	select CPU_PXA955
+endif
+
+config PXA_V7_MACH_AUTO
+	def_bool y
+	depends on ARCH_PXA_V7
+	depends on !MACH_SAARB
+	select MACH_TAVOREVB3
+
+if !ARCH_PXA_V7
+>>>>>>> refs/remotes/origin/cm-10.0
 comment "Intel/Marvell Dev Platforms (sorted by hardware release time)"
 
 config ARCH_LUBBOCK
@@ -41,19 +65,25 @@ config MACH_TAVOREVB
 	select PXA3xx
 	select CPU_PXA930
 
+<<<<<<< HEAD
 config MACH_TAVOREVB3
 	bool "PXA95x Development Platform (aka TavorEVB III)"
 	select CPU_PXA950
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 config MACH_SAAR
 	bool "PXA930 Handheld Platform (aka SAAR)"
 	select PXA3xx
 	select CPU_PXA930
 
+<<<<<<< HEAD
 config MACH_SAARB
 	bool "PXA955 Handheld Platform (aka SAARB)"
 	select CPU_PXA955
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 comment "Third Party Dev Platforms (sorted by vendor name)"
 
 config ARCH_PXA_IDP
@@ -95,10 +125,18 @@ config CSB726_CSB701
 
 config MACH_ARMCORE
 	bool "CompuLab CM-X255/CM-X270 modules"
+<<<<<<< HEAD
+=======
+	select ARCH_HAS_DMA_SET_COHERENT_MASK if PCI
+>>>>>>> refs/remotes/origin/cm-10.0
 	select PXA27x
 	select IWMMXT
 	select PXA25x
 	select MIGHT_HAVE_PCI
+<<<<<<< HEAD
+=======
+	select NEED_MACH_IO_H if PCI
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config MACH_EM_X270
 	bool "CompuLab EM-x270 platform"
@@ -414,6 +452,10 @@ config MACH_CENTRO
 	bool "Palm Centro 685 (GSM)"
 	default y
 	depends on ARCH_PXA_PALM
+<<<<<<< HEAD
+=======
+	select MACH_PALM27X
+>>>>>>> refs/remotes/origin/cm-10.0
 	select PXA27x
 	select IWMMXT
 	select PALM_TREO
@@ -425,6 +467,10 @@ config MACH_TREO680
 	bool "Palm Treo 680"
 	default y
 	depends on ARCH_PXA_PALM
+<<<<<<< HEAD
+=======
+	select MACH_PALM27X
+>>>>>>> refs/remotes/origin/cm-10.0
 	select PXA27x
 	select IWMMXT
 	select PALM_TREO
@@ -436,15 +482,27 @@ config MACH_RAUMFELD_RC
 	bool "Raumfeld Controller"
 	select PXA3xx
 	select CPU_PXA300
+<<<<<<< HEAD
+=======
+	select POWER_SUPPLY
+>>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_PWM
 
 config MACH_RAUMFELD_CONNECTOR
 	bool "Raumfeld Connector"
+<<<<<<< HEAD
+=======
+	select POWER_SUPPLY
+>>>>>>> refs/remotes/origin/cm-10.0
 	select PXA3xx
 	select CPU_PXA300
 
 config MACH_RAUMFELD_SPEAKER
 	bool "Raumfeld Speaker"
+<<<<<<< HEAD
+=======
+	select POWER_SUPPLY
+>>>>>>> refs/remotes/origin/cm-10.0
 	select PXA3xx
 	select CPU_PXA300
 
@@ -598,7 +656,11 @@ config MACH_ZIPIT2
 	bool "Zipit Z2 Handheld"
 	select PXA27x
 	select HAVE_PWM
+<<<<<<< HEAD
 
+=======
+endif
+>>>>>>> refs/remotes/origin/cm-10.0
 endmenu
 
 config PXA25x
@@ -688,6 +750,11 @@ config SHARPSL_PM
 config SHARPSL_PM_MAX1111
 	bool
 	select HWMON
+<<<<<<< HEAD
+=======
+	select SPI
+	select SPI_MASTER
+>>>>>>> refs/remotes/origin/cm-10.0
 	select SENSORS_MAX1111
 
 config PXA_HAVE_ISA_IRQS

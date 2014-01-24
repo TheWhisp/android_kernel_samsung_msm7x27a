@@ -24,8 +24,14 @@ union jump_code_union {
 	} __attribute__((packed));
 };
 
+<<<<<<< HEAD
 void arch_jump_label_transform(struct jump_entry *entry,
 			       enum jump_label_type type)
+=======
+static void __jump_label_transform(struct jump_entry *entry,
+				   enum jump_label_type type,
+				   void *(*poker)(void *, const void *, size_t))
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	union jump_code_union code;
 
@@ -35,17 +41,37 @@ void arch_jump_label_transform(struct jump_entry *entry,
 				(entry->code + JUMP_LABEL_NOP_SIZE);
 	} else
 		memcpy(&code, ideal_nops[NOP_ATOMIC5], JUMP_LABEL_NOP_SIZE);
+<<<<<<< HEAD
 	get_online_cpus();
 	mutex_lock(&text_mutex);
 	text_poke_smp((void *)entry->code, &code, JUMP_LABEL_NOP_SIZE);
+=======
+
+	(*poker)((void *)entry->code, &code, JUMP_LABEL_NOP_SIZE);
+}
+
+void arch_jump_label_transform(struct jump_entry *entry,
+			       enum jump_label_type type)
+{
+	get_online_cpus();
+	mutex_lock(&text_mutex);
+	__jump_label_transform(entry, type, text_poke_smp);
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&text_mutex);
 	put_online_cpus();
 }
 
+<<<<<<< HEAD
 void arch_jump_label_text_poke_early(jump_label_t addr)
 {
 	text_poke_early((void *)addr, ideal_nops[NOP_ATOMIC5],
 			JUMP_LABEL_NOP_SIZE);
+=======
+__init_or_module void arch_jump_label_transform_static(struct jump_entry *entry,
+				      enum jump_label_type type)
+{
+	__jump_label_transform(entry, type, text_poke_early);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #endif

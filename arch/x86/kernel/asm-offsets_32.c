@@ -3,6 +3,14 @@
 #include <linux/lguest.h>
 #include "../../../drivers/lguest/lg.h"
 
+<<<<<<< HEAD
+=======
+#define __SYSCALL_I386(nr, sym, compat) [nr] = 1,
+static char syscalls[] = {
+#include <asm/syscalls_32.h>
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* workaround for a warning with -Wmissing-prototypes */
 void foo(void);
 
@@ -63,7 +71,10 @@ void foo(void)
 	BLANK();
 	OFFSET(LGUEST_DATA_irq_enabled, lguest_data, irq_enabled);
 	OFFSET(LGUEST_DATA_irq_pending, lguest_data, irq_pending);
+<<<<<<< HEAD
 	OFFSET(LGUEST_DATA_pgdir, lguest_data, pgdir);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	BLANK();
 	OFFSET(LGUEST_PAGES_host_gdt_desc, lguest_pages, state.host_gdt_desc);
@@ -77,4 +88,10 @@ void foo(void)
 	OFFSET(LGUEST_PAGES_regs_errcode, lguest_pages, regs.errcode);
 	OFFSET(LGUEST_PAGES_regs, lguest_pages, regs);
 #endif
+<<<<<<< HEAD
+=======
+	BLANK();
+	DEFINE(__NR_syscall_max, sizeof(syscalls) - 1);
+	DEFINE(NR_syscalls, sizeof(syscalls));
+>>>>>>> refs/remotes/origin/cm-10.0
 }

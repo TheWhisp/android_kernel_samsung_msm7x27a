@@ -18,7 +18,10 @@
 #include <asm/cacheflush.h>
 #include <linux/io.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ftrace.h>
 #include <linux/uaccess.h>
 

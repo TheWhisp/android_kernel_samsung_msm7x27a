@@ -206,9 +206,15 @@ done:
 	return 1;
 }
 
+<<<<<<< HEAD
 int hfsplus_show_options(struct seq_file *seq, struct vfsmount *mnt)
 {
 	struct hfsplus_sb_info *sbi = HFSPLUS_SB(mnt->mnt_sb);
+=======
+int hfsplus_show_options(struct seq_file *seq, struct dentry *root)
+{
+	struct hfsplus_sb_info *sbi = HFSPLUS_SB(root->d_sb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (sbi->creator != HFSPLUS_DEF_CR_TYPE)
 		seq_printf(seq, ",creator=%.4s", (char *)&sbi->creator);

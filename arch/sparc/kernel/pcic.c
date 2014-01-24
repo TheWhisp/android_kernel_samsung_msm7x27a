@@ -25,6 +25,10 @@
 #include <linux/time.h>
 #include <linux/timex.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/irq.h>
 #include <asm/oplib.h>
@@ -885,6 +889,7 @@ int pcibios_assign_resource(struct pci_dev *pdev, int resource)
 	return -ENXIO;
 }
 
+<<<<<<< HEAD
 struct device_node *pci_device_to_OF_node(struct pci_dev *pdev)
 {
 	struct pcidev_cookie *pc = pdev->sysdata;
@@ -893,6 +898,8 @@ struct device_node *pci_device_to_OF_node(struct pci_dev *pdev)
 }
 EXPORT_SYMBOL(pci_device_to_OF_node);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This probably belongs here rather than ioport.c because
  * we do not want this crud linked into SBus kernels.

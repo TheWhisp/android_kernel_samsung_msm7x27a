@@ -27,7 +27,10 @@
 #include <linux/bitops.h>
 #include <linux/mutex.h>
 
+<<<<<<< HEAD
 #include <mach/io.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/vrfb.h>
 #include <plat/sdrc.h>
 

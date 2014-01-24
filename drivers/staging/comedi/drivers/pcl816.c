@@ -38,6 +38,10 @@ Configuration Options:
 #include <linux/mc146818rtc.h>
 #include <linux/gfp.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 
 #include "8253.h"
@@ -154,8 +158,13 @@ static int pcl816_attach(struct comedi_device *dev,
 static int pcl816_detach(struct comedi_device *dev);
 
 #ifdef unused
+<<<<<<< HEAD
 static int RTC_lock = 0;	/* RTC lock */
 static int RTC_timer_lock = 0;	/* RTC int lock */
+=======
+static int RTC_lock;	/* RTC lock */
+static int RTC_timer_lock;	/* RTC int lock */
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static struct comedi_driver driver_pcl816 = {

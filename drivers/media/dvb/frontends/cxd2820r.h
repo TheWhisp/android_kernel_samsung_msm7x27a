@@ -55,12 +55,17 @@ struct cxd2820r_config {
 	 * Default: 0
 	 * Values: 0, 1
 	 */
+<<<<<<< HEAD
 	int if_agc_polarity:1;
+=======
+	bool if_agc_polarity;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Spectrum inversion.
 	 * Default: 0
 	 * Values: 0, 1
 	 */
+<<<<<<< HEAD
 	int spec_inv:1;
 
 	/* IFs for all used modes.
@@ -75,6 +80,9 @@ struct cxd2820r_config {
 	u16 if_dvbt2_7;
 	u16 if_dvbt2_8;
 	u16 if_dvbc;
+=======
+	bool spec_inv;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* GPIOs for all used modes.
 	 * Default: none, disabled
@@ -90,28 +98,39 @@ struct cxd2820r_config {
 	(defined(CONFIG_DVB_CXD2820R_MODULE) && defined(MODULE))
 extern struct dvb_frontend *cxd2820r_attach(
 	const struct cxd2820r_config *config,
+<<<<<<< HEAD
 	struct i2c_adapter *i2c,
 	struct dvb_frontend *fe
 );
 extern struct i2c_adapter *cxd2820r_get_tuner_i2c_adapter(
 	struct dvb_frontend *fe
+=======
+	struct i2c_adapter *i2c
+>>>>>>> refs/remotes/origin/cm-10.0
 );
 #else
 static inline struct dvb_frontend *cxd2820r_attach(
 	const struct cxd2820r_config *config,
+<<<<<<< HEAD
 	struct i2c_adapter *i2c,
 	struct dvb_frontend *fe
+=======
+	struct i2c_adapter *i2c
+>>>>>>> refs/remotes/origin/cm-10.0
 )
 {
 	printk(KERN_WARNING "%s: driver disabled by Kconfig\n", __func__);
 	return NULL;
 }
+<<<<<<< HEAD
 static inline struct i2c_adapter *cxd2820r_get_tuner_i2c_adapter(
 	struct dvb_frontend *fe
 )
 {
 	return NULL;
 }
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif
 

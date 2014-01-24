@@ -26,6 +26,11 @@
  * This is technically part of the OMAP2xxx clock code.
  */
 
+<<<<<<< HEAD
+=======
+#include <plat/hardware.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "opp2xxx.h"
 #include "sdrc.h"
 #include "clock.h"

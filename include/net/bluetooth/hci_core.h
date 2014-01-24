@@ -1,7 +1,11 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
+<<<<<<< HEAD
    Copyright (c) 2000-2001, The Linux Foundation. All rights reserved.
    Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+=======
+   Copyright (c) 2000-2001, 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -27,6 +31,10 @@
 #define __HCI_CORE_H
 
 #include <net/bluetooth/hci.h>
+<<<<<<< HEAD
+=======
+#include <linux/wakelock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 /* HCI upper protocols */
 #define HCI_PROTO_L2CAP	0
 #define HCI_PROTO_SCO	1
@@ -191,7 +199,10 @@ struct hci_dev {
 	unsigned int	acl_pkts;
 	unsigned int	sco_pkts;
 	unsigned int	le_pkts;
+<<<<<<< HEAD
 	unsigned int	le_white_list_size;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	unsigned int	data_block_len;
 
@@ -327,6 +338,10 @@ struct hci_conn {
 
 	struct work_struct work_add;
 	struct work_struct work_del;
+<<<<<<< HEAD
+=======
+	struct wake_lock idle_lock;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct device	dev;
 	atomic_t	devref;
 
@@ -355,7 +370,10 @@ struct hci_conn {
 	void		*smp_conn;
 	struct timer_list smp_timer;
 	__u8		conn_valid;
+<<<<<<< HEAD
 	__u8		hidp_session_valid;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 	void (*connect_cfm_cb)	(struct hci_conn *conn, u8 status);
@@ -383,7 +401,11 @@ extern rwlock_t hci_cb_list_lock;
 
 /* ----- Inquiry cache ----- */
 #define INQUIRY_CACHE_AGE_MAX   (HZ*30)   /* 30 seconds */
+<<<<<<< HEAD
 #define INQUIRY_ENTRY_AGE_MAX   (HZ*60*60)   /* 1 Hour */
+=======
+#define INQUIRY_ENTRY_AGE_MAX   (HZ*60)   /* 60 seconds */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define inquiry_cache_lock(c)		spin_lock(&c->lock)
 #define inquiry_cache_unlock(c)		spin_unlock(&c->lock)
@@ -604,9 +626,12 @@ struct hci_conn *hci_le_connect(struct hci_dev *hdev, __u16 pkt_type,
 					bdaddr_t *dst, __u8 sec_level,
 					__u8 auth_type,
 					struct bt_le_params *le_params);
+<<<<<<< HEAD
 void hci_le_add_dev_white_list(struct hci_dev *hdev, bdaddr_t *dst);
 void hci_le_remove_dev_white_list(struct hci_dev *hdev, bdaddr_t *dst);
 void hci_le_cancel_create_connect(struct hci_dev *hdev, bdaddr_t *dst);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int hci_conn_check_link_mode(struct hci_conn *conn);
 int hci_conn_security(struct hci_conn *conn, __u8 sec_level, __u8 auth_type);
 int hci_conn_change_link_key(struct hci_conn *conn);
@@ -1040,7 +1065,11 @@ int mgmt_new_key(u16 index, struct link_key *key, u8 bonded);
 int mgmt_connected(u16 index, bdaddr_t *bdaddr, u8 le);
 int mgmt_le_conn_params(u16 index, bdaddr_t *bdaddr, u16 interval,
 						u16 latency, u16 timeout);
+<<<<<<< HEAD
 int mgmt_disconnected(u16 index, bdaddr_t *bdaddr, u8 reason);
+=======
+int mgmt_disconnected(u16 index, bdaddr_t *bdaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 int mgmt_disconnect_failed(u16 index);
 int mgmt_connect_failed(u16 index, bdaddr_t *bdaddr, u8 status);
 int mgmt_pin_code_request(u16 index, bdaddr_t *bdaddr);

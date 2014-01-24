@@ -13,6 +13,16 @@
 #include <asm/reboot.h>
 #include <asm/mach-db1x00/bcsr.h>
 
+<<<<<<< HEAD
+=======
+
+static struct platform_device db1x00_rtc_dev = {
+	.name	= "rtc-au1xxx",
+	.id	= -1,
+};
+
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void db1x_power_off(void)
 {
 	bcsr_write(BCSR_RESETS, 0);
@@ -25,7 +35,11 @@ static void db1x_reset(char *c)
 	bcsr_write(BCSR_SYSTEM, 0);
 }
 
+<<<<<<< HEAD
 static int __init db1x_poweroff_setup(void)
+=======
+static int __init db1x_late_setup(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (!pm_power_off)
 		pm_power_off = db1x_power_off;
@@ -34,9 +48,17 @@ static int __init db1x_poweroff_setup(void)
 	if (!_machine_restart)
 		_machine_restart = db1x_reset;
 
+<<<<<<< HEAD
 	return 0;
 }
 late_initcall(db1x_poweroff_setup);
+=======
+	platform_device_register(&db1x00_rtc_dev);
+
+	return 0;
+}
+device_initcall(db1x_late_setup);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* register a pcmcia socket */
 int __init db1x_register_pcmcia_socket(phys_addr_t pcmcia_attr_start,

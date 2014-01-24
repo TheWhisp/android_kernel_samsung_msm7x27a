@@ -38,8 +38,14 @@
 #include <linux/nfs_xdr.h>
 #include <linux/slab.h>
 #include <linux/compat.h>
+<<<<<<< HEAD
 
 #include <asm/system.h>
+=======
+#include <linux/freezer.h>
+#include <linux/crc32.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 
 #include "nfs4_fs.h"
@@ -50,13 +56,21 @@
 #include "fscache.h"
 #include "dns_resolve.h"
 #include "pnfs.h"
+<<<<<<< HEAD
+=======
+#include "netns.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define NFSDBG_FACILITY		NFSDBG_VFS
 
 #define NFS_64_BIT_INODE_NUMBERS_ENABLED	1
 
 /* Default is to see 64-bit inode numbers */
+<<<<<<< HEAD
 static int enable_ino64 = NFS_64_BIT_INODE_NUMBERS_ENABLED;
+=======
+static bool enable_ino64 = NFS_64_BIT_INODE_NUMBERS_ENABLED;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void nfs_invalidate_inode(struct inode *);
 static int nfs_update_inode(struct inode *, struct nfs_fattr *);
@@ -77,7 +91,11 @@ int nfs_wait_bit_killable(void *word)
 {
 	if (fatal_signal_pending(current))
 		return -ERESTARTSYS;
+<<<<<<< HEAD
 	schedule();
+=======
+	freezable_schedule();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -318,9 +336,15 @@ nfs_fhget(struct super_block *sb, struct nfs_fh *fh, struct nfs_fattr *fattr)
 		memset(&inode->i_atime, 0, sizeof(inode->i_atime));
 		memset(&inode->i_mtime, 0, sizeof(inode->i_mtime));
 		memset(&inode->i_ctime, 0, sizeof(inode->i_ctime));
+<<<<<<< HEAD
 		nfsi->change_attr = 0;
 		inode->i_size = 0;
 		inode->i_nlink = 0;
+=======
+		inode->i_version = 0;
+		inode->i_size = 0;
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/cm-10.0
 		inode->i_uid = -2;
 		inode->i_gid = -2;
 		inode->i_blocks = 0;
@@ -344,7 +368,11 @@ nfs_fhget(struct super_block *sb, struct nfs_fh *fh, struct nfs_fattr *fattr)
 				| NFS_INO_INVALID_ACCESS
 				| NFS_INO_INVALID_ACL;
 		if (fattr->valid & NFS_ATTR_FATTR_CHANGE)
+<<<<<<< HEAD
 			nfsi->change_attr = fattr->change_attr;
+=======
+			inode->i_version = fattr->change_attr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		else if (nfs_server_capable(inode, NFS_CAP_CHANGE_ATTR))
 			nfsi->cache_validity |= NFS_INO_INVALID_ATTR
 				| NFS_INO_INVALID_DATA;
@@ -355,7 +383,11 @@ nfs_fhget(struct super_block *sb, struct nfs_fh *fh, struct nfs_fattr *fattr)
 				| NFS_INO_INVALID_DATA
 				| NFS_INO_REVAL_PAGECACHE;
 		if (fattr->valid & NFS_ATTR_FATTR_NLINK)
+<<<<<<< HEAD
 			inode->i_nlink = fattr->nlink;
+=======
+			set_nlink(inode, fattr->nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
 		else if (nfs_server_capable(inode, NFS_CAP_NLINK))
 			nfsi->cache_validity |= NFS_INO_INVALID_ATTR;
 		if (fattr->valid & NFS_ATTR_FATTR_OWNER)
@@ -387,9 +419,16 @@ nfs_fhget(struct super_block *sb, struct nfs_fh *fh, struct nfs_fattr *fattr)
 		unlock_new_inode(inode);
 	} else
 		nfs_refresh_inode(inode, fattr);
+<<<<<<< HEAD
 	dprintk("NFS: nfs_fhget(%s/%Ld ct=%d)\n",
 		inode->i_sb->s_id,
 		(long long)NFS_FILEID(inode),
+=======
+	dprintk("NFS: nfs_fhget(%s/%Ld fh_crc=0x%08x ct=%d)\n",
+		inode->i_sb->s_id,
+		(long long)NFS_FILEID(inode),
+		nfs_display_fhandle_hash(fh),
+>>>>>>> refs/remotes/origin/cm-10.0
 		atomic_read(&inode->i_count));
 
 out:
@@ -400,7 +439,11 @@ out_no_inode:
 	goto out;
 }
 
+<<<<<<< HEAD
 #define NFS_VALID_ATTRS (ATTR_MODE|ATTR_UID|ATTR_GID|ATTR_SIZE|ATTR_ATIME|ATTR_ATIME_SET|ATTR_MTIME|ATTR_MTIME_SET|ATTR_FILE)
+=======
+#define NFS_VALID_ATTRS (ATTR_MODE|ATTR_UID|ATTR_GID|ATTR_SIZE|ATTR_ATIME|ATTR_ATIME_SET|ATTR_MTIME|ATTR_MTIME_SET|ATTR_FILE|ATTR_OPEN)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int
 nfs_setattr(struct dentry *dentry, struct iattr *attr)
@@ -422,7 +465,11 @@ nfs_setattr(struct dentry *dentry, struct iattr *attr)
 
 	/* Optimization: if the end result is no change, don't RPC */
 	attr->ia_valid &= NFS_VALID_ATTRS;
+<<<<<<< HEAD
 	if ((attr->ia_valid & ~ATTR_FILE) == 0)
+=======
+	if ((attr->ia_valid & ~(ATTR_FILE|ATTR_OPEN)) == 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	/* Write all dirty data */
@@ -567,7 +614,11 @@ static struct nfs_lock_context *__nfs_find_lock_context(struct nfs_open_context 
 struct nfs_lock_context *nfs_get_lock_context(struct nfs_open_context *ctx)
 {
 	struct nfs_lock_context *res, *new = NULL;
+<<<<<<< HEAD
 	struct inode *inode = ctx->path.dentry->d_inode;
+=======
+	struct inode *inode = ctx->dentry->d_inode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock(&inode->i_lock);
 	res = __nfs_find_lock_context(ctx);
@@ -594,7 +645,11 @@ struct nfs_lock_context *nfs_get_lock_context(struct nfs_open_context *ctx)
 void nfs_put_lock_context(struct nfs_lock_context *l_ctx)
 {
 	struct nfs_open_context *ctx = l_ctx->open_context;
+<<<<<<< HEAD
 	struct inode *inode = ctx->path.dentry->d_inode;
+=======
+	struct inode *inode = ctx->dentry->d_inode;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!atomic_dec_and_lock(&l_ctx->count, &inode->i_lock))
 		return;
@@ -620,7 +675,11 @@ void nfs_close_context(struct nfs_open_context *ctx, int is_sync)
 		return;
 	if (!is_sync)
 		return;
+<<<<<<< HEAD
 	inode = ctx->path.dentry->d_inode;
+=======
+	inode = ctx->dentry->d_inode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!list_empty(&NFS_I(inode)->open_files))
 		return;
 	server = NFS_SERVER(inode);
@@ -629,6 +688,7 @@ void nfs_close_context(struct nfs_open_context *ctx, int is_sync)
 	nfs_revalidate_inode(server, inode);
 }
 
+<<<<<<< HEAD
 struct nfs_open_context *alloc_nfs_open_context(struct path *path, struct rpc_cred *cred, fmode_t f_mode)
 {
 	struct nfs_open_context *ctx;
@@ -646,6 +706,30 @@ struct nfs_open_context *alloc_nfs_open_context(struct path *path, struct rpc_cr
 		ctx->lock_context.open_context = ctx;
 		INIT_LIST_HEAD(&ctx->list);
 	}
+=======
+struct nfs_open_context *alloc_nfs_open_context(struct dentry *dentry, fmode_t f_mode)
+{
+	struct nfs_open_context *ctx;
+	struct rpc_cred *cred = rpc_lookup_cred();
+	if (IS_ERR(cred))
+		return ERR_CAST(cred);
+
+	ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
+	if (!ctx) {
+		put_rpccred(cred);
+		return ERR_PTR(-ENOMEM);
+	}
+	nfs_sb_active(dentry->d_sb);
+	ctx->dentry = dget(dentry);
+	ctx->cred = cred;
+	ctx->state = NULL;
+	ctx->mode = f_mode;
+	ctx->flags = 0;
+	ctx->error = 0;
+	nfs_init_lock_context(&ctx->lock_context);
+	ctx->lock_context.open_context = ctx;
+	INIT_LIST_HEAD(&ctx->list);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ctx;
 }
 
@@ -658,7 +742,12 @@ struct nfs_open_context *get_nfs_open_context(struct nfs_open_context *ctx)
 
 static void __put_nfs_open_context(struct nfs_open_context *ctx, int is_sync)
 {
+<<<<<<< HEAD
 	struct inode *inode = ctx->path.dentry->d_inode;
+=======
+	struct inode *inode = ctx->dentry->d_inode;
+	struct super_block *sb = ctx->dentry->d_sb;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!list_empty(&ctx->list)) {
 		if (!atomic_dec_and_lock(&ctx->lock_context.count, &inode->i_lock))
@@ -671,7 +760,12 @@ static void __put_nfs_open_context(struct nfs_open_context *ctx, int is_sync)
 		NFS_PROTO(inode)->close_context(ctx, is_sync);
 	if (ctx->cred != NULL)
 		put_rpccred(ctx->cred);
+<<<<<<< HEAD
 	path_put(&ctx->path);
+=======
+	dput(ctx->dentry);
+	nfs_sb_deactive(sb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(ctx);
 }
 
@@ -736,6 +830,7 @@ static void nfs_file_clear_open_context(struct file *filp)
 int nfs_open(struct inode *inode, struct file *filp)
 {
 	struct nfs_open_context *ctx;
+<<<<<<< HEAD
 	struct rpc_cred *cred;
 
 	cred = rpc_lookup_cred();
@@ -745,6 +840,12 @@ int nfs_open(struct inode *inode, struct file *filp)
 	put_rpccred(cred);
 	if (ctx == NULL)
 		return -ENOMEM;
+=======
+
+	ctx = alloc_nfs_open_context(filp->f_path.dentry, filp->f_mode);
+	if (IS_ERR(ctx))
+		return PTR_ERR(ctx);
+>>>>>>> refs/remotes/origin/cm-10.0
 	nfs_file_set_open_context(filp, ctx);
 	put_nfs_open_context(ctx);
 	nfs_fscache_set_inode_cookie(inode, filp);
@@ -895,8 +996,13 @@ static unsigned long nfs_wcc_update_inode(struct inode *inode, struct nfs_fattr 
 
 	if ((fattr->valid & NFS_ATTR_FATTR_PRECHANGE)
 			&& (fattr->valid & NFS_ATTR_FATTR_CHANGE)
+<<<<<<< HEAD
 			&& nfsi->change_attr == fattr->pre_change_attr) {
 		nfsi->change_attr = fattr->change_attr;
+=======
+			&& inode->i_version == fattr->pre_change_attr) {
+		inode->i_version = fattr->change_attr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (S_ISDIR(inode->i_mode))
 			nfsi->cache_validity |= NFS_INO_INVALID_DATA;
 		ret |= NFS_INO_INVALID_ATTR;
@@ -950,7 +1056,11 @@ static int nfs_check_inode_attributes(struct inode *inode, struct nfs_fattr *fat
 		return -EIO;
 
 	if ((fattr->valid & NFS_ATTR_FATTR_CHANGE) != 0 &&
+<<<<<<< HEAD
 			nfsi->change_attr != fattr->change_attr)
+=======
+			inode->i_version != fattr->change_attr)
+>>>>>>> refs/remotes/origin/cm-10.0
 		invalid |= NFS_INO_INVALID_ATTR|NFS_INO_REVAL_PAGECACHE;
 
 	/* Verify a few of the more important attributes */
@@ -1017,6 +1127,11 @@ void nfs_fattr_init(struct nfs_fattr *fattr)
 	fattr->valid = 0;
 	fattr->time_start = jiffies;
 	fattr->gencount = nfs_inc_attr_generation_counter();
+<<<<<<< HEAD
+=======
+	fattr->owner_name = NULL;
+	fattr->group_name = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct nfs_fattr *nfs_alloc_fattr(void)
@@ -1039,6 +1154,70 @@ struct nfs_fh *nfs_alloc_fhandle(void)
 	return fh;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef NFS_DEBUG
+/*
+ * _nfs_display_fhandle_hash - calculate the crc32 hash for the filehandle
+ *                             in the same way that wireshark does
+ *
+ * @fh: file handle
+ *
+ * For debugging only.
+ */
+u32 _nfs_display_fhandle_hash(const struct nfs_fh *fh)
+{
+	/* wireshark uses 32-bit AUTODIN crc and does a bitwise
+	 * not on the result */
+	return ~crc32(0xFFFFFFFF, &fh->data[0], fh->size);
+}
+
+/*
+ * _nfs_display_fhandle - display an NFS file handle on the console
+ *
+ * @fh: file handle to display
+ * @caption: display caption
+ *
+ * For debugging only.
+ */
+void _nfs_display_fhandle(const struct nfs_fh *fh, const char *caption)
+{
+	unsigned short i;
+
+	if (fh == NULL || fh->size == 0) {
+		printk(KERN_DEFAULT "%s at %p is empty\n", caption, fh);
+		return;
+	}
+
+	printk(KERN_DEFAULT "%s at %p is %u bytes, crc: 0x%08x:\n",
+	       caption, fh, fh->size, _nfs_display_fhandle_hash(fh));
+	for (i = 0; i < fh->size; i += 16) {
+		__be32 *pos = (__be32 *)&fh->data[i];
+
+		switch ((fh->size - i - 1) >> 2) {
+		case 0:
+			printk(KERN_DEFAULT " %08x\n",
+				be32_to_cpup(pos));
+			break;
+		case 1:
+			printk(KERN_DEFAULT " %08x %08x\n",
+				be32_to_cpup(pos), be32_to_cpup(pos + 1));
+			break;
+		case 2:
+			printk(KERN_DEFAULT " %08x %08x %08x\n",
+				be32_to_cpup(pos), be32_to_cpup(pos + 1),
+				be32_to_cpup(pos + 2));
+			break;
+		default:
+			printk(KERN_DEFAULT " %08x %08x %08x %08x\n",
+				be32_to_cpup(pos), be32_to_cpup(pos + 1),
+				be32_to_cpup(pos + 2), be32_to_cpup(pos + 3));
+		}
+	}
+}
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * nfs_inode_attrs_need_update - check if the inode attributes need updating
  * @inode - pointer to inode
@@ -1161,7 +1340,11 @@ int nfs_post_op_update_inode_force_wcc(struct inode *inode, struct nfs_fattr *fa
 	}
 	if ((fattr->valid & NFS_ATTR_FATTR_CHANGE) != 0 &&
 			(fattr->valid & NFS_ATTR_FATTR_PRECHANGE) == 0) {
+<<<<<<< HEAD
 		fattr->pre_change_attr = NFS_I(inode)->change_attr;
+=======
+		fattr->pre_change_attr = inode->i_version;
+>>>>>>> refs/remotes/origin/cm-10.0
 		fattr->valid |= NFS_ATTR_FATTR_PRECHANGE;
 	}
 	if ((fattr->valid & NFS_ATTR_FATTR_CTIME) != 0 &&
@@ -1206,8 +1389,14 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
 	unsigned long now = jiffies;
 	unsigned long save_cache_validity;
 
+<<<<<<< HEAD
 	dfprintk(VFS, "NFS: %s(%s/%ld ct=%d info=0x%x)\n",
 			__func__, inode->i_sb->s_id, inode->i_ino,
+=======
+	dfprintk(VFS, "NFS: %s(%s/%ld fh_crc=0x%08x ct=%d info=0x%x)\n",
+			__func__, inode->i_sb->s_id, inode->i_ino,
+			nfs_display_fhandle_hash(NFS_FH(inode)),
+>>>>>>> refs/remotes/origin/cm-10.0
 			atomic_read(&inode->i_count), fattr->valid);
 
 	if ((fattr->valid & NFS_ATTR_FATTR_FILEID) && nfsi->fileid != fattr->fileid)
@@ -1242,13 +1431,21 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
 
 	/* More cache consistency checks */
 	if (fattr->valid & NFS_ATTR_FATTR_CHANGE) {
+<<<<<<< HEAD
 		if (nfsi->change_attr != fattr->change_attr) {
+=======
+		if (inode->i_version != fattr->change_attr) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			dprintk("NFS: change_attr change on server for file %s/%ld\n",
 					inode->i_sb->s_id, inode->i_ino);
 			invalid |= NFS_INO_INVALID_ATTR|NFS_INO_INVALID_DATA|NFS_INO_INVALID_ACCESS|NFS_INO_INVALID_ACL;
 			if (S_ISDIR(inode->i_mode))
 				nfs_force_lookup_revalidate(inode);
+<<<<<<< HEAD
 			nfsi->change_attr = fattr->change_attr;
+=======
+			inode->i_version = fattr->change_attr;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	} else if (server->caps & NFS_CAP_CHANGE_ATTR)
 		invalid |= save_cache_validity;
@@ -1359,7 +1556,11 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
 			invalid |= NFS_INO_INVALID_ATTR;
 			if (S_ISDIR(inode->i_mode))
 				invalid |= NFS_INO_INVALID_DATA;
+<<<<<<< HEAD
 			inode->i_nlink = fattr->nlink;
+=======
+			set_nlink(inode, fattr->nlink);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	} else if (server->caps & NFS_CAP_NLINK)
 		invalid |= save_cache_validity & (NFS_INO_INVALID_ATTR
@@ -1401,7 +1602,11 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
 	/*
 	 * Big trouble! The inode has become a different object.
 	 */
+<<<<<<< HEAD
 	printk(KERN_DEBUG "%s: inode %ld mode changed, %07o to %07o\n",
+=======
+	printk(KERN_DEBUG "NFS: %s: inode %ld mode changed, %07o to %07o\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			__func__, inode->i_ino, inode->i_mode, fattr->mode);
  out_err:
 	/*
@@ -1462,7 +1667,10 @@ struct inode *nfs_alloc_inode(struct super_block *sb)
 static void nfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	kmem_cache_free(nfs_inode_cachep, NFS_I(inode));
 }
 
@@ -1491,7 +1699,11 @@ static void init_once(void *foo)
 	INIT_LIST_HEAD(&nfsi->open_files);
 	INIT_LIST_HEAD(&nfsi->access_cache_entry_lru);
 	INIT_LIST_HEAD(&nfsi->access_cache_inode_lru);
+<<<<<<< HEAD
 	INIT_RADIX_TREE(&nfsi->nfs_page_tree, GFP_ATOMIC);
+=======
+	INIT_LIST_HEAD(&nfsi->commit_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 	nfsi->npages = 0;
 	nfsi->ncommit = 0;
 	atomic_set(&nfsi->silly_count, 1);
@@ -1548,6 +1760,31 @@ static void nfsiod_stop(void)
 	destroy_workqueue(wq);
 }
 
+<<<<<<< HEAD
+=======
+int nfs_net_id;
+EXPORT_SYMBOL_GPL(nfs_net_id);
+
+static int nfs_net_init(struct net *net)
+{
+	nfs_clients_init(net);
+	return nfs_dns_resolver_cache_init(net);
+}
+
+static void nfs_net_exit(struct net *net)
+{
+	nfs_dns_resolver_cache_destroy(net);
+	nfs_cleanup_cb_ident_idr(net);
+}
+
+static struct pernet_operations nfs_net_ops = {
+	.init = nfs_net_init,
+	.exit = nfs_net_exit,
+	.id   = &nfs_net_id,
+	.size = sizeof(struct nfs_net),
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Initialize NFS
  */
@@ -1557,10 +1794,21 @@ static int __init init_nfs_fs(void)
 
 	err = nfs_idmap_init();
 	if (err < 0)
+<<<<<<< HEAD
 		goto out9;
 
 	err = nfs_dns_resolver_init();
 	if (err < 0)
+=======
+		goto out10;
+
+	err = nfs_dns_resolver_init();
+	if (err < 0)
+		goto out9;
+
+	err = register_pernet_subsys(&nfs_net_ops);
+	if (err < 0)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out8;
 
 	err = nfs_fscache_register();
@@ -1596,14 +1844,22 @@ static int __init init_nfs_fs(void)
 		goto out0;
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 	rpc_proc_register(&nfs_rpcstat);
+=======
+	rpc_proc_register(&init_net, &nfs_rpcstat);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	if ((err = register_nfs_fs()) != 0)
 		goto out;
 	return 0;
 out:
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 	rpc_proc_unregister("nfs");
+=======
+	rpc_proc_unregister(&init_net, "nfs");
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	nfs_destroy_directcache();
 out0:
@@ -1621,10 +1877,19 @@ out5:
 out6:
 	nfs_fscache_unregister();
 out7:
+<<<<<<< HEAD
 	nfs_dns_resolver_destroy();
 out8:
 	nfs_idmap_quit();
 out9:
+=======
+	unregister_pernet_subsys(&nfs_net_ops);
+out8:
+	nfs_dns_resolver_destroy();
+out9:
+	nfs_idmap_quit();
+out10:
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 
@@ -1636,12 +1901,21 @@ static void __exit exit_nfs_fs(void)
 	nfs_destroy_inodecache();
 	nfs_destroy_nfspagecache();
 	nfs_fscache_unregister();
+<<<<<<< HEAD
 	nfs_dns_resolver_destroy();
 	nfs_idmap_quit();
 #ifdef CONFIG_PROC_FS
 	rpc_proc_unregister("nfs");
 #endif
 	nfs_cleanup_cb_ident_idr();
+=======
+	unregister_pernet_subsys(&nfs_net_ops);
+	nfs_dns_resolver_destroy();
+	nfs_idmap_quit();
+#ifdef CONFIG_PROC_FS
+	rpc_proc_unregister(&init_net, "nfs");
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	unregister_nfs_fs();
 	nfs_fs_proc_exit();
 	nfsiod_stop();

@@ -93,6 +93,10 @@ static struct snd_soc_dai_link sffsdr_dai = {
 /* davinci-sffsdr audio machine driver */
 static struct snd_soc_card snd_soc_sffsdr = {
 	.name = "DaVinci SFFSDR",
+<<<<<<< HEAD
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dai_link = &sffsdr_dai,
 	.num_links = 1,
 };

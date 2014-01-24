@@ -28,7 +28,10 @@
 #include <linux/mm.h>
 #include <linux/ioport.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <linux/uaccess.h>
 #include <asm/io.h>
@@ -39,7 +42,11 @@
 #include <media/v4l2-device.h>
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
+=======
+MODULE_VERSION("0.0.4");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MOTOROLA	1
 #define PHILIPS2	2               /* SAA7191 */
@@ -678,7 +685,10 @@ static int pms_querycap(struct file *file, void  *priv,
 	strlcpy(vcap->driver, dev->v4l2_dev.name, sizeof(vcap->driver));
 	strlcpy(vcap->card, "Mediavision PMS", sizeof(vcap->card));
 	strlcpy(vcap->bus_info, "ISA", sizeof(vcap->bus_info));
+<<<<<<< HEAD
 	vcap->version = KERNEL_VERSION(0, 0, 3);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	vcap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE;
 	return 0;
 }

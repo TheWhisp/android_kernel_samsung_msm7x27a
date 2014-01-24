@@ -28,6 +28,7 @@
 /* parity check flag */
 #define RELEVANT_IFLAG(iflag)	(iflag & (IGNBRK|BRKINT|IGNPAR|PARMRK|INPCK))
 
+<<<<<<< HEAD
 enum port_dev_state {
 	PORT_UNREGISTERED,
 	PORT_REGISTERING,
@@ -35,6 +36,8 @@ enum port_dev_state {
 	PORT_UNREGISTERING,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* USB serial flags */
 #define USB_SERIAL_WRITE_BUSY	0
 
@@ -58,11 +61,20 @@ enum port_dev_state {
  * @read_urb: pointer to the bulk in struct urb for this port.
  * @bulk_in_endpointAddress: endpoint address for the bulk in pipe for this
  *	port.
+<<<<<<< HEAD
+=======
+ * @bulk_in_buffers: pointers to the bulk in buffers for this port
+ * @read_urbs: pointers to the bulk in urbs for this port
+ * @read_urbs_free: status bitmap the for bulk in urbs
+>>>>>>> refs/remotes/origin/cm-10.0
  * @bulk_out_buffer: pointer to the bulk out buffer for this port.
  * @bulk_out_size: the size of the bulk_out_buffer, in bytes.
  * @write_urb: pointer to the bulk out struct urb for this port.
  * @write_fifo: kfifo used to buffer outgoing data
+<<<<<<< HEAD
  * @write_urb_busy: port`s writing status
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * @bulk_out_buffers: pointers to the bulk out buffers for this port
  * @write_urbs: pointers to the bulk out urbs for this port
  * @write_urbs_free: status bitmap the for bulk out urbs
@@ -99,11 +111,21 @@ struct usb_serial_port {
 	struct urb		*read_urb;
 	__u8			bulk_in_endpointAddress;
 
+<<<<<<< HEAD
+=======
+	unsigned char		*bulk_in_buffers[2];
+	struct urb		*read_urbs[2];
+	unsigned long		read_urbs_free;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned char		*bulk_out_buffer;
 	int			bulk_out_size;
 	struct urb		*write_urb;
 	struct kfifo		write_fifo;
+<<<<<<< HEAD
 	int			write_urb_busy;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	unsigned char		*bulk_out_buffers[2];
 	struct urb		*write_urbs[2];
@@ -119,7 +141,10 @@ struct usb_serial_port {
 	char			throttle_req;
 	unsigned long		sysrq; /* sysrq timeout */
 	struct device		dev;
+<<<<<<< HEAD
 	enum port_dev_state	dev_state;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #define to_usb_serial_port(d) container_of(d, struct usb_serial_port, dev)
 
@@ -295,8 +320,15 @@ struct usb_serial_driver {
 #define to_usb_serial_driver(d) \
 	container_of(d, struct usb_serial_driver, driver)
 
+<<<<<<< HEAD
 extern int  usb_serial_register(struct usb_serial_driver *driver);
 extern void usb_serial_deregister(struct usb_serial_driver *driver);
+=======
+extern int usb_serial_register_drivers(struct usb_driver *udriver,
+		struct usb_serial_driver * const serial_drivers[]);
+extern void usb_serial_deregister_drivers(struct usb_driver *udriver,
+		struct usb_serial_driver * const serial_drivers[]);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern void usb_serial_port_softint(struct usb_serial_port *port);
 
 extern int usb_serial_probe(struct usb_interface *iface,
@@ -340,7 +372,11 @@ extern void usb_serial_generic_disconnect(struct usb_serial *serial);
 extern void usb_serial_generic_release(struct usb_serial *serial);
 extern int usb_serial_generic_register(int debug);
 extern void usb_serial_generic_deregister(void);
+<<<<<<< HEAD
 extern int usb_serial_generic_submit_read_urb(struct usb_serial_port *port,
+=======
+extern int usb_serial_generic_submit_read_urbs(struct usb_serial_port *port,
+>>>>>>> refs/remotes/origin/cm-10.0
 						 gfp_t mem_flags);
 extern void usb_serial_generic_process_read_urb(struct urb *urb);
 extern int usb_serial_generic_prepare_write_buffer(struct usb_serial_port *port,
@@ -384,5 +420,38 @@ do {									\
 		printk(KERN_DEBUG "%s: " format "\n", __FILE__, ##arg);	\
 } while (0)
 
+<<<<<<< HEAD
+=======
+/*
+ * Macro for reporting errors in write path to avoid inifinite loop
+ * when port is used as a console.
+ */
+#define dev_err_console(usport, fmt, ...)				\
+do {									\
+	static bool __print_once;					\
+	struct usb_serial_port *__port = (usport);			\
+									\
+	if (!__port->port.console || !__print_once) {			\
+		__print_once = true;					\
+		dev_err(&__port->dev, fmt, ##__VA_ARGS__);		\
+	}								\
+} while (0)
+
+/*
+ * module_usb_serial_driver() - Helper macro for registering a USB Serial driver
+ * @__usb_driver: usb_driver struct to register
+ * @__serial_drivers: list of usb_serial drivers to register
+ *
+ * Helper macro for USB serial drivers which do not do anything special
+ * in module init/exit. This eliminates a lot of boilerplate. Each
+ * module may only use this macro once, and calling it replaces
+ * module_init() and module_exit()
+ *
+ */
+#define module_usb_serial_driver(__usb_driver, __serial_drivers)	\
+	module_driver(__usb_driver, usb_serial_register_drivers,	\
+		       usb_serial_deregister_drivers, __serial_drivers)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __LINUX_USB_SERIAL_H */
 

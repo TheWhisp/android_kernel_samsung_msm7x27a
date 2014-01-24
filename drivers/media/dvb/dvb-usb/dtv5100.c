@@ -115,6 +115,7 @@ static struct zl10353_config dtv5100_zl10353_config = {
 
 static int dtv5100_frontend_attach(struct dvb_usb_adapter *adap)
 {
+<<<<<<< HEAD
 	adap->fe = dvb_attach(zl10353_attach, &dtv5100_zl10353_config,
 			      &adap->dev->i2c_adap);
 	if (adap->fe == NULL)
@@ -122,6 +123,15 @@ static int dtv5100_frontend_attach(struct dvb_usb_adapter *adap)
 
 	/* disable i2c gate, or it won't work... is this safe? */
 	adap->fe->ops.i2c_gate_ctrl = NULL;
+=======
+	adap->fe_adap[0].fe = dvb_attach(zl10353_attach, &dtv5100_zl10353_config,
+			      &adap->dev->i2c_adap);
+	if (adap->fe_adap[0].fe == NULL)
+		return -EIO;
+
+	/* disable i2c gate, or it won't work... is this safe? */
+	adap->fe_adap[0].fe->ops.i2c_gate_ctrl = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -133,7 +143,11 @@ static struct qt1010_config dtv5100_qt1010_config = {
 static int dtv5100_tuner_attach(struct dvb_usb_adapter *adap)
 {
 	return dvb_attach(qt1010_attach,
+<<<<<<< HEAD
 			  adap->fe, &adap->dev->i2c_adap,
+=======
+			  adap->fe_adap[0].fe, &adap->dev->i2c_adap,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  &dtv5100_qt1010_config) == NULL ? -ENODEV : 0;
 }
 
@@ -180,6 +194,11 @@ static struct dvb_usb_device_properties dtv5100_properties = {
 
 	.num_adapters = 1,
 	.adapter = {{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frontend_attach = dtv5100_frontend_attach,
 		.tuner_attach    = dtv5100_tuner_attach,
 
@@ -193,6 +212,10 @@ static struct dvb_usb_device_properties dtv5100_properties = {
 				}
 			}
 		},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 	} },
 
 	.i2c_algo = &dtv5100_i2c_algo,
@@ -214,6 +237,7 @@ static struct usb_driver dtv5100_driver = {
 	.id_table	= dtv5100_table,
 };
 
+<<<<<<< HEAD
 /* module stuff */
 static int __init dtv5100_module_init(void)
 {
@@ -234,6 +258,9 @@ static void __exit dtv5100_module_exit(void)
 
 module_init(dtv5100_module_init);
 module_exit(dtv5100_module_exit);
+=======
+module_usb_driver(dtv5100_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

@@ -36,6 +36,10 @@
 #include <linux/resource.h>
 #include <linux/notifier.h>
 #include <linux/suspend.h>
+<<<<<<< HEAD
+=======
+#include <linux/rwsem.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 
 #include <trace/events/module.h>
@@ -50,6 +54,10 @@ static struct workqueue_struct *khelper_wq;
 static kernel_cap_t usermodehelper_bset = CAP_FULL_SET;
 static kernel_cap_t usermodehelper_inheritable = CAP_FULL_SET;
 static DEFINE_SPINLOCK(umh_sysctl_lock);
+<<<<<<< HEAD
+=======
+static DECLARE_RWSEM(umhelper_sem);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_MODULES
 
@@ -58,6 +66,46 @@ static DEFINE_SPINLOCK(umh_sysctl_lock);
 */
 char modprobe_path[KMOD_PATH_LEN] = "/sbin/modprobe";
 
+<<<<<<< HEAD
+=======
+static void free_modprobe_argv(struct subprocess_info *info)
+{
+	kfree(info->argv[3]); /* check call_modprobe() */
+	kfree(info->argv);
+}
+
+static int call_modprobe(char *module_name, int wait)
+{
+	static char *envp[] = {
+		"HOME=/",
+		"TERM=linux",
+		"PATH=/sbin:/usr/sbin:/bin:/usr/bin",
+		NULL
+	};
+
+	char **argv = kmalloc(sizeof(char *[5]), GFP_KERNEL);
+	if (!argv)
+		goto out;
+
+	module_name = kstrdup(module_name, GFP_KERNEL);
+	if (!module_name)
+		goto free_argv;
+
+	argv[0] = modprobe_path;
+	argv[1] = "-q";
+	argv[2] = "--";
+	argv[3] = module_name;	/* check free_modprobe_argv() */
+	argv[4] = NULL;
+
+	return call_usermodehelper_fns(modprobe_path, argv, envp,
+		wait | UMH_KILLABLE, NULL, free_modprobe_argv, NULL);
+free_argv:
+	kfree(argv);
+out:
+	return -ENOMEM;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * __request_module - try to load a kernel module
  * @wait: wait (or not) for the operation to complete
@@ -79,11 +127,14 @@ int __request_module(bool wait, const char *fmt, ...)
 	char module_name[MODULE_NAME_LEN];
 	unsigned int max_modprobes;
 	int ret;
+<<<<<<< HEAD
 	char *argv[] = { modprobe_path, "-q", "--", module_name, NULL };
 	static char *envp[] = { "HOME=/",
 				"TERM=linux",
 				"PATH=/sbin:/usr/sbin:/bin:/usr/bin",
 				NULL };
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	static atomic_t kmod_concurrent = ATOMIC_INIT(0);
 #define MAX_KMOD_CONCURRENT 50	/* Completely arbitrary value - KAO */
 	static int kmod_loop_msg;
@@ -126,9 +177,13 @@ int __request_module(bool wait, const char *fmt, ...)
 
 	trace_module_request(module_name, wait, _RET_IP_);
 
+<<<<<<< HEAD
 	ret = call_usermodehelper_fns(modprobe_path, argv, envp,
 			wait ? UMH_WAIT_PROC : UMH_WAIT_EXEC,
 			NULL, NULL, NULL);
+=======
+	ret = call_modprobe(module_name, wait ? UMH_WAIT_PROC : UMH_WAIT_EXEC);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	atomic_dec(&kmod_concurrent);
 	return ret;
@@ -186,7 +241,11 @@ static int ____call_usermodehelper(void *data)
 	/* Exec failed? */
 fail:
 	sub_info->retval = retval;
+<<<<<<< HEAD
 	do_exit(0);
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void call_usermodehelper_freeinfo(struct subprocess_info *info)
@@ -197,6 +256,22 @@ void call_usermodehelper_freeinfo(struct subprocess_info *info)
 }
 EXPORT_SYMBOL(call_usermodehelper_freeinfo);
 
+<<<<<<< HEAD
+=======
+static void umh_complete(struct subprocess_info *sub_info)
+{
+	struct completion *comp = xchg(&sub_info->complete, NULL);
+	/*
+	 * See call_usermodehelper_exec(). If xchg() returns NULL
+	 * we own sub_info, the UMH_KILLABLE caller has gone away.
+	 */
+	if (comp)
+		complete(comp);
+	else
+		call_usermodehelper_freeinfo(sub_info);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Keventd can't block, but this (a child) can. */
 static int wait_for_helper(void *data)
 {
@@ -233,7 +308,11 @@ static int wait_for_helper(void *data)
 			sub_info->retval = ret;
 	}
 
+<<<<<<< HEAD
 	complete(sub_info->complete);
+=======
+	umh_complete(sub_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -242,7 +321,11 @@ static void __call_usermodehelper(struct work_struct *work)
 {
 	struct subprocess_info *sub_info =
 		container_of(work, struct subprocess_info, work);
+<<<<<<< HEAD
 	enum umh_wait wait = sub_info->wait;
+=======
+	int wait = sub_info->wait & ~UMH_KILLABLE;
+>>>>>>> refs/remotes/origin/cm-10.0
 	pid_t pid;
 
 	/* CLONE_VFORK: wait until the usermode helper has execve'd
@@ -267,7 +350,11 @@ static void __call_usermodehelper(struct work_struct *work)
 	case UMH_WAIT_EXEC:
 		if (pid < 0)
 			sub_info->retval = pid;
+<<<<<<< HEAD
 		complete(sub_info->complete);
+=======
+		umh_complete(sub_info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -275,19 +362,30 @@ static void __call_usermodehelper(struct work_struct *work)
  * If set, call_usermodehelper_exec() will exit immediately returning -EBUSY
  * (used for preventing user land processes from being created after the user
  * land has been frozen during a system-wide hibernation or suspend operation).
+<<<<<<< HEAD
  */
 static int usermodehelper_disabled;
+=======
+ * Should always be manipulated under umhelper_sem acquired for write.
+ */
+static enum umh_disable_depth usermodehelper_disabled = UMH_DISABLED;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Number of helpers running */
 static atomic_t running_helpers = ATOMIC_INIT(0);
 
 /*
+<<<<<<< HEAD
  * Wait queue head used by usermodehelper_pm_callback() to wait for all running
+=======
+ * Wait queue head used by usermodehelper_disable() to wait for all running
+>>>>>>> refs/remotes/origin/cm-10.0
  * helpers to finish.
  */
 static DECLARE_WAIT_QUEUE_HEAD(running_helpers_waitq);
 
 /*
+<<<<<<< HEAD
  * Time to wait for running_helpers to become zero before the setting of
  * usermodehelper_disabled in usermodehelper_pm_callback() fails
  */
@@ -302,6 +400,114 @@ int usermodehelper_disable(void)
 
 	usermodehelper_disabled = 1;
 	smp_mb();
+=======
+ * Used by usermodehelper_read_lock_wait() to wait for usermodehelper_disabled
+ * to become 'false'.
+ */
+static DECLARE_WAIT_QUEUE_HEAD(usermodehelper_disabled_waitq);
+
+/*
+ * Time to wait for running_helpers to become zero before the setting of
+ * usermodehelper_disabled in usermodehelper_disable() fails
+ */
+#define RUNNING_HELPERS_TIMEOUT	(5 * HZ)
+
+int usermodehelper_read_trylock(void)
+{
+	DEFINE_WAIT(wait);
+	int ret = 0;
+
+	down_read(&umhelper_sem);
+	for (;;) {
+		prepare_to_wait(&usermodehelper_disabled_waitq, &wait,
+				TASK_INTERRUPTIBLE);
+		if (!usermodehelper_disabled)
+			break;
+
+		if (usermodehelper_disabled == UMH_DISABLED)
+			ret = -EAGAIN;
+
+		up_read(&umhelper_sem);
+
+		if (ret)
+			break;
+
+		schedule();
+		try_to_freeze();
+
+		down_read(&umhelper_sem);
+	}
+	finish_wait(&usermodehelper_disabled_waitq, &wait);
+	return ret;
+}
+EXPORT_SYMBOL_GPL(usermodehelper_read_trylock);
+
+long usermodehelper_read_lock_wait(long timeout)
+{
+	DEFINE_WAIT(wait);
+
+	if (timeout < 0)
+		return -EINVAL;
+
+	down_read(&umhelper_sem);
+	for (;;) {
+		prepare_to_wait(&usermodehelper_disabled_waitq, &wait,
+				TASK_UNINTERRUPTIBLE);
+		if (!usermodehelper_disabled)
+			break;
+
+		up_read(&umhelper_sem);
+
+		timeout = schedule_timeout(timeout);
+		if (!timeout)
+			break;
+
+		down_read(&umhelper_sem);
+	}
+	finish_wait(&usermodehelper_disabled_waitq, &wait);
+	return timeout;
+}
+EXPORT_SYMBOL_GPL(usermodehelper_read_lock_wait);
+
+void usermodehelper_read_unlock(void)
+{
+	up_read(&umhelper_sem);
+}
+EXPORT_SYMBOL_GPL(usermodehelper_read_unlock);
+
+/**
+ * __usermodehelper_set_disable_depth - Modify usermodehelper_disabled.
+ * depth: New value to assign to usermodehelper_disabled.
+ *
+ * Change the value of usermodehelper_disabled (under umhelper_sem locked for
+ * writing) and wakeup tasks waiting for it to change.
+ */
+void __usermodehelper_set_disable_depth(enum umh_disable_depth depth)
+{
+	down_write(&umhelper_sem);
+	usermodehelper_disabled = depth;
+	wake_up(&usermodehelper_disabled_waitq);
+	up_write(&umhelper_sem);
+}
+
+/**
+ * __usermodehelper_disable - Prevent new helpers from being started.
+ * @depth: New value to assign to usermodehelper_disabled.
+ *
+ * Set usermodehelper_disabled to @depth and wait for running helpers to exit.
+ */
+int __usermodehelper_disable(enum umh_disable_depth depth)
+{
+	long retval;
+
+	if (!depth)
+		return -EINVAL;
+
+	down_write(&umhelper_sem);
+	usermodehelper_disabled = depth;
+	up_write(&umhelper_sem);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * From now on call_usermodehelper_exec() won't start any new
 	 * helpers, so it is sufficient if running_helpers turns out to
@@ -314,6 +520,7 @@ int usermodehelper_disable(void)
 	if (retval)
 		return 0;
 
+<<<<<<< HEAD
 	usermodehelper_disabled = 0;
 	return -EAGAIN;
 }
@@ -335,6 +542,12 @@ bool usermodehelper_is_disabled(void)
 }
 EXPORT_SYMBOL_GPL(usermodehelper_is_disabled);
 
+=======
+	__usermodehelper_set_disable_depth(UMH_ENABLED);
+	return -EAGAIN;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void helper_lock(void)
 {
 	atomic_inc(&running_helpers);
@@ -414,8 +627,12 @@ EXPORT_SYMBOL(call_usermodehelper_setfns);
  * asynchronously if wait is not set, and runs as a child of keventd.
  * (ie. it runs with full root capabilities).
  */
+<<<<<<< HEAD
 int call_usermodehelper_exec(struct subprocess_info *sub_info,
 			     enum umh_wait wait)
+=======
+int call_usermodehelper_exec(struct subprocess_info *sub_info, int wait)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	DECLARE_COMPLETION_ONSTACK(done);
 	int retval = 0;
@@ -440,9 +657,27 @@ int call_usermodehelper_exec(struct subprocess_info *sub_info,
 	queue_work(khelper_wq, &sub_info->work);
 	if (wait == UMH_NO_WAIT)	/* task has freed sub_info */
 		goto unlock;
+<<<<<<< HEAD
 	wait_for_completion(&done);
 	retval = sub_info->retval;
 
+=======
+
+	if (wait & UMH_KILLABLE) {
+		retval = wait_for_completion_killable(&done);
+		if (!retval)
+			goto wait_done;
+
+		/* umh_complete() will see NULL and free sub_info */
+		if (xchg(&sub_info->complete, NULL))
+			goto unlock;
+		/* fallthrough, umh_complete() was already called */
+	}
+
+	wait_for_completion(&done);
+wait_done:
+	retval = sub_info->retval;
+>>>>>>> refs/remotes/origin/cm-10.0
 out:
 	call_usermodehelper_freeinfo(sub_info);
 unlock:

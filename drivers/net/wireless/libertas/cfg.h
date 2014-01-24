@@ -16,6 +16,12 @@ int lbs_reg_notifier(struct wiphy *wiphy,
 void lbs_send_disconnect_notification(struct lbs_private *priv);
 void lbs_send_mic_failureevent(struct lbs_private *priv, u32 event);
 
+<<<<<<< HEAD
 void lbs_scan_deinit(struct lbs_private *priv);
+=======
+void lbs_scan_done(struct lbs_private *priv);
+void lbs_scan_deinit(struct lbs_private *priv);
+int lbs_disconnect(struct lbs_private *priv, u16 reason);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

@@ -18,7 +18,11 @@
  */
 #include <linux/sched.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/spinlock.h>
 #include <linux/kallsyms.h>
 #include <linux/syscalls.h>
@@ -29,6 +33,7 @@
 
 #include "rtmutex_common.h"
 
+<<<<<<< HEAD
 # define TRACE_WARN_ON(x)			WARN_ON(x)
 # define TRACE_BUG_ON(x)			BUG_ON(x)
 
@@ -84,6 +89,8 @@ do {						\
  */
 static int rt_trace_on = 1;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void printk_task(struct task_struct *p)
 {
 	if (p)
@@ -111,8 +118,13 @@ static void printk_lock(struct rt_mutex *lock, int print_owner)
 
 void rt_mutex_debug_task_free(struct task_struct *task)
 {
+<<<<<<< HEAD
 	WARN_ON(!plist_head_empty(&task->pi_waiters));
 	WARN_ON(task->pi_blocked_on);
+=======
+	DEBUG_LOCKS_WARN_ON(!plist_head_empty(&task->pi_waiters));
+	DEBUG_LOCKS_WARN_ON(task->pi_blocked_on);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -125,7 +137,11 @@ void debug_rt_mutex_deadlock(int detect, struct rt_mutex_waiter *act_waiter,
 {
 	struct task_struct *task;
 
+<<<<<<< HEAD
 	if (!rt_trace_on || detect || !act_waiter)
+=======
+	if (!debug_locks || detect || !act_waiter)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	task = rt_mutex_owner(act_waiter->lock);
@@ -139,7 +155,11 @@ void debug_rt_mutex_print_deadlock(struct rt_mutex_waiter *waiter)
 {
 	struct task_struct *task;
 
+<<<<<<< HEAD
 	if (!waiter->deadlock_lock || !rt_trace_on)
+=======
+	if (!waiter->deadlock_lock || !debug_locks)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return;
 
 	rcu_read_lock();
@@ -149,10 +169,21 @@ void debug_rt_mutex_print_deadlock(struct rt_mutex_waiter *waiter)
 		return;
 	}
 
+<<<<<<< HEAD
 	TRACE_OFF_NOLOCK();
 
 	printk("\n============================================\n");
 	printk(  "[ BUG: circular locking deadlock detected! ]\n");
+=======
+	if (!debug_locks_off()) {
+		rcu_read_unlock();
+		return;
+	}
+
+	printk("\n============================================\n");
+	printk(  "[ BUG: circular locking deadlock detected! ]\n");
+	printk("%s\n", print_tainted());
+>>>>>>> refs/remotes/origin/cm-10.0
 	printk(  "--------------------------------------------\n");
 	printk("%s/%d is deadlocking current task %s/%d\n\n",
 	       task->comm, task_pid_nr(task),
@@ -180,7 +211,10 @@ void debug_rt_mutex_print_deadlock(struct rt_mutex_waiter *waiter)
 
 	printk("[ turning off deadlock detection."
 	       "Please report this trace. ]\n\n");
+<<<<<<< HEAD
 	local_irq_disable();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void debug_rt_mutex_lock(struct rt_mutex *lock)
@@ -189,7 +223,11 @@ void debug_rt_mutex_lock(struct rt_mutex *lock)
 
 void debug_rt_mutex_unlock(struct rt_mutex *lock)
 {
+<<<<<<< HEAD
 	TRACE_WARN_ON_LOCKED(rt_mutex_owner(lock) != current);
+=======
+	DEBUG_LOCKS_WARN_ON(rt_mutex_owner(lock) != current);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void
@@ -199,7 +237,11 @@ debug_rt_mutex_proxy_lock(struct rt_mutex *lock, struct task_struct *powner)
 
 void debug_rt_mutex_proxy_unlock(struct rt_mutex *lock)
 {
+<<<<<<< HEAD
 	TRACE_WARN_ON_LOCKED(!rt_mutex_owner(lock));
+=======
+	DEBUG_LOCKS_WARN_ON(!rt_mutex_owner(lock));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void debug_rt_mutex_init_waiter(struct rt_mutex_waiter *waiter)
@@ -213,8 +255,13 @@ void debug_rt_mutex_init_waiter(struct rt_mutex_waiter *waiter)
 void debug_rt_mutex_free_waiter(struct rt_mutex_waiter *waiter)
 {
 	put_pid(waiter->deadlock_task_pid);
+<<<<<<< HEAD
 	TRACE_WARN_ON(!plist_node_empty(&waiter->list_entry));
 	TRACE_WARN_ON(!plist_node_empty(&waiter->pi_list_entry));
+=======
+	DEBUG_LOCKS_WARN_ON(!plist_node_empty(&waiter->list_entry));
+	DEBUG_LOCKS_WARN_ON(!plist_node_empty(&waiter->pi_list_entry));
+>>>>>>> refs/remotes/origin/cm-10.0
 	memset(waiter, 0x22, sizeof(*waiter));
 }
 

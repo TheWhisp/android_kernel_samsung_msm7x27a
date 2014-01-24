@@ -6,11 +6,17 @@
  * Copyright (C) 2009 ST Microelectronics
  * Rajeev Kumar<rajeev-dlh.kumar@st.com>
  *
+<<<<<<< HEAD
+=======
+ * Copyright 2012 Stefan Roese <sr@denx.de>
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
  * This file is licensed under the terms of the GNU General Public
  * License version 2. This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
  */
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/amba/pl061.h>
 #include <linux/ptrace.h>
@@ -111,6 +117,16 @@ void __init spear6xx_init_irq(void)
 	vic_init((void __iomem *)VA_SPEAR6XX_CPU_VIC_PRI_BASE, 0, ~0, 0);
 	vic_init((void __iomem *)VA_SPEAR6XX_CPU_VIC_SEC_BASE, 32, ~0, 0);
 }
+=======
+#include <linux/of.h>
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/of_platform.h>
+#include <asm/hardware/vic.h>
+#include <asm/mach/arch.h>
+#include <mach/generic.h>
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Following will create static virtual/physical mappings */
 static struct map_desc spear6xx_io_desc[] __initdata = {
@@ -181,3 +197,36 @@ static void __init spear6xx_timer_init(void)
 struct sys_timer spear6xx_timer = {
 	.init = spear6xx_timer_init,
 };
+<<<<<<< HEAD
+=======
+
+static void __init spear600_dt_init(void)
+{
+	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+}
+
+static const char *spear600_dt_board_compat[] = {
+	"st,spear600",
+	NULL
+};
+
+static const struct of_device_id vic_of_match[] __initconst = {
+	{ .compatible = "arm,pl190-vic", .data = vic_of_init, },
+	{ /* Sentinel */ }
+};
+
+static void __init spear6xx_dt_init_irq(void)
+{
+	of_irq_init(vic_of_match);
+}
+
+DT_MACHINE_START(SPEAR600_DT, "ST SPEAr600 (Flattened Device Tree)")
+	.map_io		=	spear6xx_map_io,
+	.init_irq	=	spear6xx_dt_init_irq,
+	.handle_irq	=	vic_handle_irq,
+	.timer		=	&spear6xx_timer,
+	.init_machine	=	spear600_dt_init,
+	.restart	=	spear_restart,
+	.dt_compat	=	spear600_dt_board_compat,
+MACHINE_END
+>>>>>>> refs/remotes/origin/cm-10.0

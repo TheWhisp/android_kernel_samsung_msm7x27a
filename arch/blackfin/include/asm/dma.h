@@ -10,7 +10,11 @@
 
 #include <linux/interrupt.h>
 #include <mach/dma.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/blackfin.h>
 #include <asm/page.h>
 #include <asm-generic/dma.h>

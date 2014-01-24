@@ -405,7 +405,11 @@ int msp_pcibios_config_access(unsigned char access_type,
 	if (pciirqflag == 0) {
 		ret = request_irq(MSP_INT_PCI,/* Hardcoded internal MSP7120 wiring */
 				bpci_interrupt,
+<<<<<<< HEAD
 				IRQF_SHARED | IRQF_DISABLED,
+=======
+				IRQF_SHARED,
+>>>>>>> refs/remotes/origin/cm-10.0
 				"PMC MSP PCI Host",
 				preg);
 		if (ret != 0)

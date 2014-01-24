@@ -52,7 +52,10 @@
 #include <linux/io.h>
 #include <linux/gfp.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/dma.h>
 
@@ -148,7 +151,11 @@ static volatile int xdc_busy;
 static struct timer_list xd_watchdog_int;
 
 static volatile u_char xd_error;
+<<<<<<< HEAD
 static int nodma = XD_DONT_USE_DMA;
+=======
+static bool nodma = XD_DONT_USE_DMA;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct request_queue *xd_queue;
 

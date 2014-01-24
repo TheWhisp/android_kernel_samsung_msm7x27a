@@ -28,12 +28,19 @@
 #include <linux/mm.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/dma.h>
 
 #include "omapfb.h"
 #include "lcdc.h"
+<<<<<<< HEAD
 #include "dispc.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MODULE_NAME	"omapfb"
 
@@ -46,9 +53,15 @@ static unsigned int	def_rotate;
 static unsigned int	def_mirror;
 
 #ifdef CONFIG_FB_OMAP_MANUAL_UPDATE
+<<<<<<< HEAD
 static int		manual_update = 1;
 #else
 static int		manual_update;
+=======
+static bool		manual_update = 1;
+#else
+static bool		manual_update;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static struct platform_device	*fbdev_pdev;
@@ -103,6 +116,7 @@ static struct platform_device omapdss_device = {
  * ---------------------------------------------------------------------------
  */
 extern struct lcd_ctrl hwa742_ctrl;
+<<<<<<< HEAD
 extern struct lcd_ctrl blizzard_ctrl;
 
 static const struct lcd_ctrl *ctrls[] = {
@@ -111,10 +125,16 @@ static const struct lcd_ctrl *ctrls[] = {
 #else
 	&omap2_int_ctrl,
 #endif
+=======
+
+static const struct lcd_ctrl *ctrls[] = {
+	&omap1_int_ctrl,
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_FB_OMAP_LCDC_HWA742
 	&hwa742_ctrl,
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_FB_OMAP_LCDC_BLIZZARD
 	&blizzard_ctrl,
 #endif
@@ -126,6 +146,12 @@ extern struct lcd_ctrl_extif omap1_ext_if;
 #else
 extern struct lcd_ctrl_extif omap2_ext_if;
 #endif
+=======
+};
+
+#ifdef CONFIG_FB_OMAP_LCDC_EXTERNAL
+extern struct lcd_ctrl_extif omap1_ext_if;
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 static void omapfb_rqueue_lock(struct omapfb_device *fbdev)
@@ -169,11 +195,14 @@ static int ctrl_init(struct omapfb_device *fbdev)
 			fbdev->mem_desc.region[i].size =
 				PAGE_ALIGN(def_vram[i]);
 		fbdev->mem_desc.region_cnt = i;
+<<<<<<< HEAD
 	} else {
 		struct omapfb_platform_data *conf;
 
 		conf = fbdev->dev->platform_data;
 		fbdev->mem_desc = conf->mem_desc;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (!fbdev->mem_desc.region_cnt) {
@@ -879,7 +908,11 @@ static int omapfb_setup_mem(struct fb_info *fbi, struct omapfb_mem_info *mi)
 
 	if (fbdev->ctrl->setup_mem == NULL)
 		return -ENODEV;
+<<<<<<< HEAD
 	if (mi->type > OMAPFB_MEMTYPE_MAX)
+=======
+	if (mi->type != OMAPFB_MEMTYPE_SDRAM)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 
 	size = PAGE_ALIGN(mi->size);
@@ -1720,17 +1753,23 @@ static int omapfb_do_probe(struct platform_device *pdev,
 
 	mutex_init(&fbdev->rqueue_mutex);
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_OMAP1
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	fbdev->int_ctrl = &omap1_int_ctrl;
 #ifdef CONFIG_FB_OMAP_LCDC_EXTERNAL
 	fbdev->ext_if = &omap1_ext_if;
 #endif
+<<<<<<< HEAD
 #else	/* OMAP2 */
 	fbdev->int_ctrl = &omap2_int_ctrl;
 #ifdef CONFIG_FB_OMAP_LCDC_EXTERNAL
 	fbdev->ext_if = &omap2_ext_if;
 #endif
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (omapfb_find_ctrl(fbdev) < 0) {
 		dev_err(fbdev->dev,
 			"LCD controller not found, board not supported\n");
@@ -1765,8 +1804,12 @@ static int omapfb_do_probe(struct platform_device *pdev,
 
 #ifdef CONFIG_FB_OMAP_DMA_TUNE
 	/* Set DMA priority for EMIFF access to highest */
+<<<<<<< HEAD
 	if (cpu_class_is_omap1())
 		omap_set_dma_priority(0, OMAP_DMA_PORT_EMIFF, 15);
+=======
+	omap_set_dma_priority(0, OMAP_DMA_PORT_EMIFF, 15);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	r = ctrl_change_mode(fbdev->fb_info[0]);

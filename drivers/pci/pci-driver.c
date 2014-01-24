@@ -18,6 +18,10 @@
 #include <linux/sched.h>
 #include <linux/cpu.h>
 #include <linux/pm_runtime.h>
+<<<<<<< HEAD
+=======
+#include <linux/suspend.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "pci.h"
 
 struct pci_dynid {
@@ -71,9 +75,13 @@ int pci_add_dynid(struct pci_driver *drv,
 	list_add_tail(&dynid->node, &drv->dynids.list);
 	spin_unlock(&drv->dynids.lock);
 
+<<<<<<< HEAD
 	get_driver(&drv->driver);
 	retval = driver_attach(&drv->driver);
 	put_driver(&drv->driver);
+=======
+	retval = driver_attach(&drv->driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return retval;
 }
@@ -189,6 +197,7 @@ store_remove_id(struct device_driver *driver, const char *buf, size_t count)
 static DRIVER_ATTR(remove_id, S_IWUSR, NULL, store_remove_id);
 
 static int
+<<<<<<< HEAD
 pci_create_newid_file(struct pci_driver *drv)
 {
 	int error = 0;
@@ -226,6 +235,36 @@ static inline int pci_create_removeid_file(struct pci_driver *drv)
 	return 0;
 }
 static inline void pci_remove_removeid_file(struct pci_driver *drv) {}
+=======
+pci_create_newid_files(struct pci_driver *drv)
+{
+	int error = 0;
+
+	if (drv->probe != NULL) {
+		error = driver_create_file(&drv->driver, &driver_attr_new_id);
+		if (error == 0) {
+			error = driver_create_file(&drv->driver,
+					&driver_attr_remove_id);
+			if (error)
+				driver_remove_file(&drv->driver,
+						&driver_attr_new_id);
+		}
+	}
+	return error;
+}
+
+static void pci_remove_newid_files(struct pci_driver *drv)
+{
+	driver_remove_file(&drv->driver, &driver_attr_remove_id);
+	driver_remove_file(&drv->driver, &driver_attr_new_id);
+}
+#else /* !CONFIG_HOTPLUG */
+static inline int pci_create_newid_files(struct pci_driver *drv)
+{
+	return 0;
+}
+static inline void pci_remove_newid_files(struct pci_driver *drv) {}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /**
@@ -429,6 +468,19 @@ static void pci_device_shutdown(struct device *dev)
 		drv->shutdown(pci_dev);
 	pci_msi_shutdown(pci_dev);
 	pci_msix_shutdown(pci_dev);
+<<<<<<< HEAD
+=======
+
+	/*
+	 * Devices may be enabled to wake up by runtime PM, but they need not
+	 * be supposed to wake up the system from its "power off" state (e.g.
+	 * ACPI S5).  Therefore disable wakeup for all devices that aren't
+	 * supposed to wake up the system at this point.  The state argument
+	 * will be ignored by pci_enable_wake().
+	 */
+	if (!device_may_wakeup(dev))
+		pci_enable_wake(pci_dev, PCI_UNKNOWN, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_PM
@@ -603,7 +655,12 @@ static bool pci_has_legacy_pm_support(struct pci_dev *pci_dev)
 	 * supported as well.  Drivers are supposed to support either the
 	 * former, or the latter, but not both at the same time.
 	 */
+<<<<<<< HEAD
 	WARN_ON(ret && drv->driver.pm);
+=======
+	WARN(ret && drv->driver.pm, "driver %s device %04x:%04x\n",
+		drv->name, pci_dev->vendor, pci_dev->device);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -616,6 +673,24 @@ static int pci_pm_prepare(struct device *dev)
 	int error = 0;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * If a PCI device configured to wake up the system from sleep states
+	 * has been suspended at run time and there's a resume request pending
+	 * for it, this is equivalent to the device signaling wakeup, so the
+	 * system suspend operation should be aborted.
+	 */
+	pm_runtime_get_noresume(dev);
+	if (pm_runtime_barrier(dev) && device_may_wakeup(dev))
+		pm_wakeup_event(dev, 0);
+
+	if (pm_wakeup_pending()) {
+		pm_runtime_put_sync(dev);
+		return -EBUSY;
+	}
+
+	/*
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * PCI devices suspended at run time need to be resumed at this
 	 * point, because in general it is necessary to reconfigure them for
 	 * system suspend.  Namely, if the device is supposed to wake up the
@@ -624,7 +699,11 @@ static int pci_pm_prepare(struct device *dev)
 	 * system from the sleep state, we'll have to prevent it from signaling
 	 * wake-up.
 	 */
+<<<<<<< HEAD
 	pm_runtime_get_sync(dev);
+=======
+	pm_runtime_resume(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (drv && drv->pm && drv->pm->prepare)
 		error = drv->pm->prepare(dev);
@@ -664,6 +743,10 @@ static int pci_pm_suspend(struct device *dev)
 		goto Fixup;
 	}
 
+<<<<<<< HEAD
+=======
+	pci_dev->state_saved = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pm->suspend) {
 		pci_power_t prev = pci_dev->current_state;
 		int error;
@@ -810,6 +893,10 @@ static int pci_pm_freeze(struct device *dev)
 		return 0;
 	}
 
+<<<<<<< HEAD
+=======
+	pci_dev->state_saved = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pm->freeze) {
 		int error;
 
@@ -898,6 +985,10 @@ static int pci_pm_poweroff(struct device *dev)
 		goto Fixup;
 	}
 
+<<<<<<< HEAD
+=======
+	pci_dev->state_saved = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pm->poweroff) {
 		int error;
 
@@ -1016,6 +1107,10 @@ static int pci_pm_runtime_suspend(struct device *dev)
 	if (!pm || !pm->runtime_suspend)
 		return -ENOSYS;
 
+<<<<<<< HEAD
+=======
+	pci_dev->state_saved = false;
+>>>>>>> refs/remotes/origin/cm-10.0
 	error = pm->runtime_suspend(dev);
 	suspend_report_result(pm->runtime_suspend, error);
 	if (error)
@@ -1140,6 +1235,7 @@ int __pci_register_driver(struct pci_driver *drv, struct module *owner,
 	if (error)
 		goto out;
 
+<<<<<<< HEAD
 	error = pci_create_newid_file(drv);
 	if (error)
 		goto out_newid;
@@ -1152,6 +1248,14 @@ out:
 
 out_removeid:
 	pci_remove_newid_file(drv);
+=======
+	error = pci_create_newid_files(drv);
+	if (error)
+		goto out_newid;
+out:
+	return error;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 out_newid:
 	driver_unregister(&drv->driver);
 	goto out;
@@ -1170,8 +1274,12 @@ out_newid:
 void
 pci_unregister_driver(struct pci_driver *drv)
 {
+<<<<<<< HEAD
 	pci_remove_removeid_file(drv);
 	pci_remove_newid_file(drv);
+=======
+	pci_remove_newid_files(drv);
+>>>>>>> refs/remotes/origin/cm-10.0
 	driver_unregister(&drv->driver);
 	pci_free_dynids(drv);
 }

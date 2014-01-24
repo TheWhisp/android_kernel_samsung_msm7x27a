@@ -23,6 +23,7 @@
 
 void machine_kexec_mask_interrupts(void) {
 	unsigned int i;
+<<<<<<< HEAD
 
 	for_each_irq(i) {
 		struct irq_desc *desc = irq_to_desc(i);
@@ -31,6 +32,13 @@ void machine_kexec_mask_interrupts(void) {
 		if (!desc)
 			continue;
 
+=======
+	struct irq_desc *desc;
+
+	for_each_irq_desc(i, desc) {
+		struct irq_chip *chip;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		chip = irq_desc_get_chip(desc);
 		if (!chip)
 			continue;
@@ -107,9 +115,12 @@ void __init reserve_crashkernel(void)
 	unsigned long long crash_size, crash_base;
 	int ret;
 
+<<<<<<< HEAD
 	/* this is necessary because of memblock_phys_mem_size() */
 	memblock_analyze();
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* use common parsing */
 	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
 			&crash_size, &crash_base);
@@ -126,9 +137,15 @@ void __init reserve_crashkernel(void)
 	/* We might have got these values via the command line or the
 	 * device tree, either way sanitise them now. */
 
+<<<<<<< HEAD
 	crash_size = crashk_res.end - crashk_res.start + 1;
 
 #ifndef CONFIG_RELOCATABLE
+=======
+	crash_size = resource_size(&crashk_res);
+
+#ifndef CONFIG_NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (crashk_res.start != KDUMP_KERNELBASE)
 		printk("Crash kernel location must be 0x%x\n",
 				KDUMP_KERNELBASE);
@@ -136,12 +153,25 @@ void __init reserve_crashkernel(void)
 	crashk_res.start = KDUMP_KERNELBASE;
 #else
 	if (!crashk_res.start) {
+<<<<<<< HEAD
 		/*
 		 * unspecified address, choose a region of specified size
 		 * can overlap with initrd (ignoring corruption when retained)
 		 * ppc64 requires kernel and some stacks to be in first segemnt
 		 */
 		crashk_res.start = KDUMP_KERNELBASE;
+=======
+#ifdef CONFIG_PPC64
+		/*
+		 * On 64bit we split the RMO in half but cap it at half of
+		 * a small SLB (128MB) since the crash kernel needs to place
+		 * itself and some stacks to be in the first segment.
+		 */
+		crashk_res.start = min(0x80000000ULL, (ppc64_rma_size / 2));
+#else
+		crashk_res.start = KDUMP_KERNELBASE;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	crash_base = PAGE_ALIGN(crashk_res.start);
@@ -222,7 +252,11 @@ static void __init export_crashk_values(struct device_node *node)
 
 	if (crashk_res.start != 0) {
 		prom_add_property(node, &crashk_base_prop);
+<<<<<<< HEAD
 		crashk_size = crashk_res.end - crashk_res.start + 1;
+=======
+		crashk_size = resource_size(&crashk_res);
+>>>>>>> refs/remotes/origin/cm-10.0
 		prom_add_property(node, &crashk_size_prop);
 	}
 }

@@ -60,7 +60,10 @@ struct mgmt_rp_read_info {
 	__u8 hci_ver;
 	__u16 hci_rev;
 	__u8 name[MGMT_MAX_NAME_LENGTH];
+<<<<<<< HEAD
 	__u8 le_white_list_size;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 } __packed;
 
 struct mgmt_mode {
@@ -247,6 +250,7 @@ struct mgmt_cp_unset_rssi_reporter {
 	bdaddr_t	bdaddr;
 } __packed;
 
+<<<<<<< HEAD
 #define MGMT_OP_CANCEL_RESOLVE_NAME	0x0024
 struct mgmt_cp_cancel_resolve_name {
 	bdaddr_t bdaddr;
@@ -277,6 +281,8 @@ struct mgmt_cp_le_cancel_create_conn {
 	bdaddr_t	bdaddr;
 } __packed;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MGMT_EV_CMD_COMPLETE		0x0001
 struct mgmt_ev_cmd_complete {
 	__le16 opcode;
@@ -321,7 +327,10 @@ struct mgmt_ev_connected {
 #define MGMT_EV_DISCONNECTED		0x000C
 struct mgmt_ev_disconnected {
 	bdaddr_t bdaddr;
+<<<<<<< HEAD
 	__u8     reason;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 } __packed;
 
 #define MGMT_EV_CONNECT_FAILED		0x000D

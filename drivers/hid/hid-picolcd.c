@@ -36,6 +36,10 @@
 
 #include <linux/completion.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define PICOLCD_NAME "PicoLCD (graphic)"
 
@@ -632,7 +636,11 @@ struct picolcd_fb_cleanup_item {
 	struct picolcd_fb_cleanup_item *next;
 };
 static struct picolcd_fb_cleanup_item *fb_pending;
+<<<<<<< HEAD
 DEFINE_SPINLOCK(fb_pending_lock);
+=======
+static DEFINE_SPINLOCK(fb_pending_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void picolcd_fb_do_cleanup(struct work_struct *data)
 {
@@ -657,7 +665,11 @@ static void picolcd_fb_do_cleanup(struct work_struct *data)
 	} while (item);
 }
 
+<<<<<<< HEAD
 DECLARE_WORK(picolcd_fb_cleanup, picolcd_fb_do_cleanup);
+=======
+static DECLARE_WORK(picolcd_fb_cleanup, picolcd_fb_do_cleanup);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int picolcd_fb_open(struct fb_info *info, int u)
 {
@@ -1524,12 +1536,15 @@ static const struct file_operations picolcd_debug_reset_fops = {
 /*
  * The "eeprom" file
  */
+<<<<<<< HEAD
 static int picolcd_debug_eeprom_open(struct inode *i, struct file *f)
 {
 	f->private_data = i->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static ssize_t picolcd_debug_eeprom_read(struct file *f, char __user *u,
 		size_t s, loff_t *off)
 {
@@ -1617,7 +1632,11 @@ static ssize_t picolcd_debug_eeprom_write(struct file *f, const char __user *u,
  */
 static const struct file_operations picolcd_debug_eeprom_fops = {
 	.owner    = THIS_MODULE,
+<<<<<<< HEAD
 	.open     = picolcd_debug_eeprom_open,
+=======
+	.open     = simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read     = picolcd_debug_eeprom_read,
 	.write    = picolcd_debug_eeprom_write,
 	.llseek   = generic_file_llseek,
@@ -1626,12 +1645,15 @@ static const struct file_operations picolcd_debug_eeprom_fops = {
 /*
  * The "flash" file
  */
+<<<<<<< HEAD
 static int picolcd_debug_flash_open(struct inode *i, struct file *f)
 {
 	f->private_data = i->i_private;
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* record a flash address to buf (bounds check to be done by caller) */
 static int _picolcd_flash_setaddr(struct picolcd_data *data, u8 *buf, long off)
 {
@@ -1816,7 +1838,11 @@ static ssize_t picolcd_debug_flash_write(struct file *f, const char __user *u,
  */
 static const struct file_operations picolcd_debug_flash_fops = {
 	.owner    = THIS_MODULE,
+<<<<<<< HEAD
 	.open     = picolcd_debug_flash_open,
+=======
+	.open     = simple_open,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.read     = picolcd_debug_flash_read,
 	.write    = picolcd_debug_flash_write,
 	.llseek   = generic_file_llseek,
@@ -2409,7 +2435,11 @@ static int picolcd_raw_event(struct hid_device *hdev,
 #ifdef CONFIG_PM
 static int picolcd_suspend(struct hid_device *hdev, pm_message_t message)
 {
+<<<<<<< HEAD
 	if (message.event & PM_EVENT_AUTO)
+=======
+	if (PMSG_IS_AUTO(message))
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	picolcd_suspend_backlight(hid_get_drvdata(hdev));

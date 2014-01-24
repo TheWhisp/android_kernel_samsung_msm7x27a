@@ -42,8 +42,11 @@ xfs_fsb_to_db(struct xfs_inode *ip, xfs_fsblock_t fsb)
 extern int xfs_read_buf(struct xfs_mount *mp, xfs_buftarg_t *btp,
 			xfs_daddr_t blkno, int len, uint flags,
 			struct xfs_buf **bpp);
+<<<<<<< HEAD
 extern void xfs_ioerror_alert(char *func, struct xfs_mount *mp,
 				xfs_buf_t *bp, xfs_daddr_t blkno);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern xfs_extlen_t xfs_get_extsz_hint(struct xfs_inode *ip);
 
 #endif /* __XFS_RW_H__ */

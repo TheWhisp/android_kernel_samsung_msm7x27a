@@ -20,6 +20,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/irqreturn.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/mISDNhw.h>
@@ -128,7 +132,11 @@ isac_empty_fifo(struct isac_hw *isac, int count)
 	}
 	if ((isac->dch.rx_skb->len + count) >= isac->dch.maxlen) {
 		pr_debug("%s: %s overrun %d\n", isac->name, __func__,
+<<<<<<< HEAD
 			    isac->dch.rx_skb->len + count);
+=======
+			 isac->dch.rx_skb->len + count);
+>>>>>>> refs/remotes/origin/cm-10.0
 		WriteISAC(isac, ISAC_CMDR, 0x80);
 		return;
 	}
@@ -139,7 +147,11 @@ isac_empty_fifo(struct isac_hw *isac, int count)
 		char	pfx[MISDN_MAX_IDLEN + 16];
 
 		snprintf(pfx, MISDN_MAX_IDLEN + 15, "D-recv %s %d ",
+<<<<<<< HEAD
 			isac->name, count);
+=======
+			 isac->name, count);
+>>>>>>> refs/remotes/origin/cm-10.0
 		print_hex_dump_bytes(pfx, DUMP_PREFIX_OFFSET, ptr, count);
 	}
 }
@@ -177,7 +189,11 @@ isac_fill_fifo(struct isac_hw *isac)
 		char	pfx[MISDN_MAX_IDLEN + 16];
 
 		snprintf(pfx, MISDN_MAX_IDLEN + 15, "D-send %s %d ",
+<<<<<<< HEAD
 			isac->name, count);
+=======
+			 isac->name, count);
+>>>>>>> refs/remotes/origin/cm-10.0
 		print_hex_dump_bytes(pfx, DUMP_PREFIX_OFFSET, ptr, count);
 	}
 }
@@ -282,7 +298,11 @@ isac_mos_irq(struct isac_hw *isac)
 		}
 		isac->mon_rx[isac->mon_rxp++] = ReadISAC(isac, ISAC_MOR0);
 		pr_debug("%s: ISAC MOR0 %02x\n", isac->name,
+<<<<<<< HEAD
 			isac->mon_rx[isac->mon_rxp - 1]);
+=======
+			 isac->mon_rx[isac->mon_rxp - 1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (isac->mon_rxp == 1) {
 			isac->mocr |= 0x04;
 			WriteISAC(isac, ISAC_MOCR, isac->mocr);
@@ -312,7 +332,11 @@ afterMONR0:
 		}
 		isac->mon_rx[isac->mon_rxp++] = ReadISAC(isac, ISAC_MOR1);
 		pr_debug("%s: ISAC MOR1 %02x\n", isac->name,
+<<<<<<< HEAD
 			isac->mon_rx[isac->mon_rxp - 1]);
+=======
+			 isac->mon_rx[isac->mon_rxp - 1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		isac->mocr |= 0x40;
 		WriteISAC(isac, ISAC_MOCR, isac->mocr);
 	}
@@ -324,7 +348,11 @@ afterMONR1:
 		WriteISAC(isac, ISAC_MOCR, isac->mocr);
 		if (isac->monitor) {
 			ret = isac->monitor(isac->dch.hw, MONITOR_RX_0,
+<<<<<<< HEAD
 				isac->mon_rx, isac->mon_rxp);
+=======
+					    isac->mon_rx, isac->mon_rxp);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (ret)
 				kfree(isac->mon_rx);
 		} else {
@@ -342,7 +370,11 @@ afterMONR1:
 		WriteISAC(isac, ISAC_MOCR, isac->mocr);
 		if (isac->monitor) {
 			ret = isac->monitor(isac->dch.hw, MONITOR_RX_1,
+<<<<<<< HEAD
 				isac->mon_rx, isac->mon_rxp);
+=======
+					    isac->mon_rx, isac->mon_rxp);
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (ret)
 				kfree(isac->mon_rx);
 		} else {
@@ -355,7 +387,11 @@ afterMONR1:
 	}
 	if (val & 0x02) {
 		if ((!isac->mon_tx) || (isac->mon_txc &&
+<<<<<<< HEAD
 			(isac->mon_txp >= isac->mon_txc) && !(val & 0x08))) {
+=======
+					(isac->mon_txp >= isac->mon_txc) && !(val & 0x08))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			isac->mocr &= 0xf0;
 			WriteISAC(isac, ISAC_MOCR, isac->mocr);
 			isac->mocr |= 0x0a;
@@ -363,7 +399,11 @@ afterMONR1:
 			if (isac->mon_txc && (isac->mon_txp >= isac->mon_txc)) {
 				if (isac->monitor)
 					ret = isac->monitor(isac->dch.hw,
+<<<<<<< HEAD
 						MONITOR_TX_0, NULL, 0);
+=======
+							    MONITOR_TX_0, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			kfree(isac->mon_tx);
 			isac->mon_tx = NULL;
@@ -374,7 +414,11 @@ afterMONR1:
 		if (isac->mon_txc && (isac->mon_txp >= isac->mon_txc)) {
 			if (isac->monitor)
 				ret = isac->monitor(isac->dch.hw,
+<<<<<<< HEAD
 					MONITOR_TX_0, NULL, 0);
+=======
+						    MONITOR_TX_0, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 			kfree(isac->mon_tx);
 			isac->mon_tx = NULL;
 			isac->mon_txc = 0;
@@ -383,12 +427,20 @@ afterMONR1:
 		}
 		WriteISAC(isac, ISAC_MOX0, isac->mon_tx[isac->mon_txp++]);
 		pr_debug("%s: ISAC %02x -> MOX0\n", isac->name,
+<<<<<<< HEAD
 			isac->mon_tx[isac->mon_txp - 1]);
+=======
+			 isac->mon_tx[isac->mon_txp - 1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 AfterMOX0:
 	if (val & 0x20) {
 		if ((!isac->mon_tx) || (isac->mon_txc &&
+<<<<<<< HEAD
 			(isac->mon_txp >= isac->mon_txc) && !(val & 0x80))) {
+=======
+					(isac->mon_txp >= isac->mon_txc) && !(val & 0x80))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			isac->mocr &= 0x0f;
 			WriteISAC(isac, ISAC_MOCR, isac->mocr);
 			isac->mocr |= 0xa0;
@@ -396,7 +448,11 @@ AfterMOX0:
 			if (isac->mon_txc && (isac->mon_txp >= isac->mon_txc)) {
 				if (isac->monitor)
 					ret = isac->monitor(isac->dch.hw,
+<<<<<<< HEAD
 						MONITOR_TX_1, NULL, 0);
+=======
+							    MONITOR_TX_1, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 			}
 			kfree(isac->mon_tx);
 			isac->mon_tx = NULL;
@@ -407,7 +463,11 @@ AfterMOX0:
 		if (isac->mon_txc && (isac->mon_txp >= isac->mon_txc)) {
 			if (isac->monitor)
 				ret = isac->monitor(isac->dch.hw,
+<<<<<<< HEAD
 					MONITOR_TX_1, NULL, 0);
+=======
+						    MONITOR_TX_1, NULL, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 			kfree(isac->mon_tx);
 			isac->mon_tx = NULL;
 			isac->mon_txc = 0;
@@ -416,7 +476,11 @@ AfterMOX0:
 		}
 		WriteISAC(isac, ISAC_MOX1, isac->mon_tx[isac->mon_txp++]);
 		pr_debug("%s: ISAC %02x -> MOX1\n", isac->name,
+<<<<<<< HEAD
 			isac->mon_tx[isac->mon_txp - 1]);
+=======
+			 isac->mon_tx[isac->mon_txp - 1]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 AfterMOX1:
 	val = 0; /* dummy to avoid warning */
@@ -431,7 +495,11 @@ isac_cisq_irq(struct isac_hw *isac) {
 	pr_debug("%s: ISAC CIR0 %02X\n", isac->name, val);
 	if (val & 2) {
 		pr_debug("%s: ph_state change %x->%x\n", isac->name,
+<<<<<<< HEAD
 			isac->state, (val >> 2) & 0xf);
+=======
+			 isac->state, (val >> 2) & 0xf);
+>>>>>>> refs/remotes/origin/cm-10.0
 		isac->state = (val >> 2) & 0xf;
 		isac_ph_state_change(isac);
 	}
@@ -450,7 +518,11 @@ isacsx_cic_irq(struct isac_hw *isac)
 	pr_debug("%s: ISACX CIR0 %02X\n", isac->name, val);
 	if (val & ISACX_CIR0_CIC0) {
 		pr_debug("%s: ph_state change %x->%x\n", isac->name,
+<<<<<<< HEAD
 			isac->state, val >> 4);
+=======
+			 isac->state, val >> 4);
+>>>>>>> refs/remotes/origin/cm-10.0
 		isac->state = val >> 4;
 		isac_ph_state_change(isac);
 	}
@@ -487,7 +559,11 @@ isacsx_rme_irq(struct isac_hw *isac)
 		if (isac->dch.rx_skb) {
 			skb_trim(isac->dch.rx_skb, isac->dch.rx_skb->len - 1);
 			pr_debug("%s: dchannel received %d\n", isac->name,
+<<<<<<< HEAD
 				isac->dch.rx_skb->len);
+=======
+				 isac->dch.rx_skb->len);
+>>>>>>> refs/remotes/origin/cm-10.0
 			recv_Dchannel(&isac->dch);
 		}
 	}
@@ -627,7 +703,11 @@ isac_ctrl(struct isac_hw *isac, u32 cmd, u_long para)
 		break;
 	default:
 		pr_debug("%s: %s unknown command %x %lx\n", isac->name,
+<<<<<<< HEAD
 			__func__, cmd, para);
+=======
+			 __func__, cmd, para);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
 	}
 	return 0;
@@ -684,16 +764,28 @@ isac_l1cmd(struct dchannel *dch, u32 cmd)
 	case PH_ACTIVATE_IND:
 		test_and_set_bit(FLG_ACTIVE, &dch->Flags);
 		_queue_data(&dch->dev.D, cmd, MISDN_ID_ANY, 0, NULL,
+<<<<<<< HEAD
 			GFP_ATOMIC);
+=======
+			    GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case PH_DEACTIVATE_IND:
 		test_and_clear_bit(FLG_ACTIVE, &dch->Flags);
 		_queue_data(&dch->dev.D, cmd, MISDN_ID_ANY, 0, NULL,
+<<<<<<< HEAD
 			GFP_ATOMIC);
 		break;
 	default:
 		pr_debug("%s: %s unknown command %x\n", isac->name,
 			__func__, cmd);
+=======
+			    GFP_ATOMIC);
+		break;
+	default:
+		pr_debug("%s: %s unknown command %x\n", isac->name,
+			 __func__, cmd);
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
 	}
 	return 0;
@@ -730,7 +822,11 @@ dbusy_timer_handler(struct isac_hw *isac)
 		rbch = ReadISAC(isac, ISAC_RBCH);
 		star = ReadISAC(isac, ISAC_STAR);
 		pr_debug("%s: D-Channel Busy RBCH %02x STAR %02x\n",
+<<<<<<< HEAD
 			isac->name, rbch, star);
+=======
+			 isac->name, rbch, star);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (rbch & ISAC_RBCH_XAC) /* D-Channel Busy */
 			test_and_set_bit(FLG_L1_BUSY, &isac->dch.Flags);
 		else {
@@ -752,7 +848,11 @@ static int
 open_dchannel(struct isac_hw *isac, struct channel_req *rq)
 {
 	pr_debug("%s: %s dev(%d) open from %p\n", isac->name, __func__,
+<<<<<<< HEAD
 		isac->dch.dev.id, __builtin_return_address(1));
+=======
+		 isac->dch.dev.id, __builtin_return_address(1));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rq->protocol != ISDN_P_TE_S0)
 		return -EINVAL;
 	if (rq->adr.channel == 1)
@@ -762,7 +862,11 @@ open_dchannel(struct isac_hw *isac, struct channel_req *rq)
 	rq->ch->protocol = rq->protocol;
 	if (isac->dch.state == 7)
 		_queue_data(rq->ch, PH_ACTIVATE_IND, MISDN_ID_ANY,
+<<<<<<< HEAD
 		    0, NULL, GFP_KERNEL);
+=======
+			    0, NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -806,7 +910,11 @@ isac_init(struct isac_hw *isac)
 		val = ReadISAC(isac, ISACX_ID);
 		if (isac->dch.debug & DEBUG_HW)
 			pr_notice("%s: ISACX Design ID %x\n",
+<<<<<<< HEAD
 				isac->name, val & 0x3f);
+=======
+				  isac->name, val & 0x3f);
+>>>>>>> refs/remotes/origin/cm-10.0
 		val = ReadISAC(isac, ISACX_CIR0);
 		pr_debug("%s: ISACX CIR0 %02X\n", isac->name, val);
 		isac->state = val >> 4;
@@ -831,7 +939,11 @@ isac_init(struct isac_hw *isac)
 		val = ReadISAC(isac, ISAC_RBCH);
 		if (isac->dch.debug & DEBUG_HW)
 			pr_notice("%s: ISAC version (%x): %s\n", isac->name,
+<<<<<<< HEAD
 				val, ISACVer[(val >> 5) & 3]);
+=======
+				  val, ISACVer[(val >> 5) & 3]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		isac->type |= ((val >> 5) & 3);
 		if (!isac->adf2)
 			isac->adf2 = 0x80;
@@ -888,7 +1000,11 @@ waitforCEC(struct hscx_hw *hx)
 	}
 	if (to < 50)
 		pr_debug("%s: B%1d CEC %d us\n", hx->ip->name, hx->bch.nr,
+<<<<<<< HEAD
 			50 - to);
+=======
+			 50 - to);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!to)
 		pr_info("%s: B%1d CEC timeout\n", hx->ip->name, hx->bch.nr);
 }
@@ -908,7 +1024,11 @@ waitforXFW(struct hscx_hw *hx)
 	}
 	if (to < 50)
 		pr_debug("%s: B%1d XFW %d us\n", hx->ip->name, hx->bch.nr,
+<<<<<<< HEAD
 			50 - to);
+=======
+			 50 - to);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!to)
 		pr_info("%s: B%1d XFW timeout\n", hx->ip->name, hx->bch.nr);
 }
@@ -941,7 +1061,11 @@ hscx_empty_fifo(struct hscx_hw *hscx, u8 count)
 	}
 	if ((hscx->bch.rx_skb->len + count) > hscx->bch.maxlen) {
 		pr_debug("%s: overrun %d\n", hscx->ip->name,
+<<<<<<< HEAD
 			hscx->bch.rx_skb->len + count);
+=======
+			 hscx->bch.rx_skb->len + count);
+>>>>>>> refs/remotes/origin/cm-10.0
 		skb_trim(hscx->bch.rx_skb, 0);
 		hscx_cmdr(hscx, 0x80); /* RMC */
 		return;
@@ -950,16 +1074,27 @@ hscx_empty_fifo(struct hscx_hw *hscx, u8 count)
 
 	if (hscx->ip->type & IPAC_TYPE_IPACX)
 		hscx->ip->read_fifo(hscx->ip->hw,
+<<<<<<< HEAD
 			hscx->off + IPACX_RFIFOB, p, count);
 	else
 		hscx->ip->read_fifo(hscx->ip->hw,
 			hscx->off, p, count);
+=======
+				    hscx->off + IPACX_RFIFOB, p, count);
+	else
+		hscx->ip->read_fifo(hscx->ip->hw,
+				    hscx->off, p, count);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	hscx_cmdr(hscx, 0x80); /* RMC */
 
 	if (hscx->bch.debug & DEBUG_HW_BFIFO) {
 		snprintf(hscx->log, 64, "B%1d-recv %s %d ",
+<<<<<<< HEAD
 			hscx->bch.nr, hscx->ip->name, count);
+=======
+			 hscx->bch.nr, hscx->ip->name, count);
+>>>>>>> refs/remotes/origin/cm-10.0
 		print_hex_dump_bytes(hscx->log, DUMP_PREFIX_OFFSET, p, count);
 	}
 }
@@ -983,22 +1118,38 @@ hscx_fill_fifo(struct hscx_hw *hscx)
 		more = 1;
 	}
 	pr_debug("%s: B%1d %d/%d/%d\n", hscx->ip->name, hscx->bch.nr, count,
+<<<<<<< HEAD
 		hscx->bch.tx_idx, hscx->bch.tx_skb->len);
+=======
+		 hscx->bch.tx_idx, hscx->bch.tx_skb->len);
+>>>>>>> refs/remotes/origin/cm-10.0
 	hscx->bch.tx_idx += count;
 
 	if (hscx->ip->type & IPAC_TYPE_IPACX)
 		hscx->ip->write_fifo(hscx->ip->hw,
+<<<<<<< HEAD
 			hscx->off + IPACX_XFIFOB, p, count);
 	else {
 		waitforXFW(hscx);
 		hscx->ip->write_fifo(hscx->ip->hw,
 			hscx->off, p, count);
+=======
+				     hscx->off + IPACX_XFIFOB, p, count);
+	else {
+		waitforXFW(hscx);
+		hscx->ip->write_fifo(hscx->ip->hw,
+				     hscx->off, p, count);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	hscx_cmdr(hscx, more ? 0x08 : 0x0a);
 
 	if (hscx->bch.debug & DEBUG_HW_BFIFO) {
 		snprintf(hscx->log, 64, "B%1d-send %s %d ",
+<<<<<<< HEAD
 			hscx->bch.nr, hscx->ip->name, count);
+=======
+			 hscx->bch.nr, hscx->ip->name, count);
+>>>>>>> refs/remotes/origin/cm-10.0
 		print_hex_dump_bytes(hscx->log, DUMP_PREFIX_OFFSET, p, count);
 	}
 }
@@ -1036,18 +1187,31 @@ ipac_rme(struct hscx_hw *hx)
 		if (!(rstab & 0x80)) {
 			if (hx->bch.debug & DEBUG_HW_BCHANNEL)
 				pr_notice("%s: B%1d invalid frame\n",
+<<<<<<< HEAD
 					hx->ip->name, hx->bch.nr);
+=======
+					  hx->ip->name, hx->bch.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		if (rstab & 0x40) {
 			if (hx->bch.debug & DEBUG_HW_BCHANNEL)
 				pr_notice("%s: B%1d RDO proto=%x\n",
+<<<<<<< HEAD
 					hx->ip->name, hx->bch.nr,
 					hx->bch.state);
+=======
+					  hx->ip->name, hx->bch.nr,
+					  hx->bch.state);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		if (!(rstab & 0x20)) {
 			if (hx->bch.debug & DEBUG_HW_BCHANNEL)
 				pr_notice("%s: B%1d CRC error\n",
+<<<<<<< HEAD
 					hx->ip->name, hx->bch.nr);
+=======
+					  hx->ip->name, hx->bch.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		hscx_cmdr(hx, 0x80); /* Do RMC */
 		return;
@@ -1064,7 +1228,11 @@ ipac_rme(struct hscx_hw *hx)
 		return;
 	if (hx->bch.rx_skb->len < 2) {
 		pr_debug("%s: B%1d frame to short %d\n",
+<<<<<<< HEAD
 			hx->ip->name, hx->bch.nr, hx->bch.rx_skb->len);
+=======
+			 hx->ip->name, hx->bch.nr, hx->bch.rx_skb->len);
+>>>>>>> refs/remotes/origin/cm-10.0
 		skb_trim(hx->bch.rx_skb, 0);
 	} else {
 		skb_trim(hx->bch.rx_skb, hx->bch.rx_skb->len - 1);
@@ -1085,7 +1253,11 @@ ipac_irq(struct hscx_hw *hx, u8 ista)
 		if (m & ista) {
 			exirb = ReadHSCX(hx, IPAC_EXIRB);
 			pr_debug("%s: B%1d EXIRB %02x\n", hx->ip->name,
+<<<<<<< HEAD
 				hx->bch.nr, exirb);
+=======
+				 hx->bch.nr, exirb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	} else if (hx->bch.nr & 2) { /* HSCX B */
 		if (ista & (HSCX__EXA | HSCX__ICA))
@@ -1093,7 +1265,11 @@ ipac_irq(struct hscx_hw *hx, u8 ista)
 		if (ista & HSCX__EXB) {
 			exirb = ReadHSCX(hx, IPAC_EXIRB);
 			pr_debug("%s: B%1d EXIRB %02x\n", hx->ip->name,
+<<<<<<< HEAD
 				hx->bch.nr, exirb);
+=======
+				 hx->bch.nr, exirb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		istab = ista & 0xF8;
 	} else { /* HSCX A */
@@ -1101,7 +1277,11 @@ ipac_irq(struct hscx_hw *hx, u8 ista)
 		if (ista & HSCX__EXA) {
 			exirb = ReadHSCX(hx, IPAC_EXIRB);
 			pr_debug("%s: B%1d EXIRB %02x\n", hx->ip->name,
+<<<<<<< HEAD
 				hx->bch.nr, exirb);
+=======
+				 hx->bch.nr, exirb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		istab = istab & 0xF8;
 	}
@@ -1140,7 +1320,11 @@ ipac_irq(struct hscx_hw *hx, u8 ista)
 			return;
 		}
 		pr_debug("%s: B%1d XDU error at len %d\n", hx->ip->name,
+<<<<<<< HEAD
 			hx->bch.nr, hx->bch.tx_idx);
+=======
+			 hx->bch.nr, hx->bch.tx_idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 		hx->bch.tx_idx = 0;
 		hscx_cmdr(hx, 0x01);	/* XRES */
 	}
@@ -1203,10 +1387,17 @@ mISDNipac_irq(struct ipac_hw *ipac, int maxloop)
 		return IRQ_NONE;
 	if (cnt < maxloop)
 		pr_debug("%s: %d irqloops cpu%d\n", ipac->name,
+<<<<<<< HEAD
 			maxloop - cnt, smp_processor_id());
 	if (maxloop && !cnt)
 		pr_notice("%s: %d IRQ LOOP cpu%d\n", ipac->name,
 			maxloop, smp_processor_id());
+=======
+			 maxloop - cnt, smp_processor_id());
+	if (maxloop && !cnt)
+		pr_notice("%s: %d IRQ LOOP cpu%d\n", ipac->name,
+			  maxloop, smp_processor_id());
+>>>>>>> refs/remotes/origin/cm-10.0
 	return IRQ_HANDLED;
 }
 EXPORT_SYMBOL(mISDNipac_irq);
@@ -1215,7 +1406,11 @@ static int
 hscx_mode(struct hscx_hw *hscx, u32 bprotocol)
 {
 	pr_debug("%s: HSCX %c protocol %x-->%x ch %d\n", hscx->ip->name,
+<<<<<<< HEAD
 		'@' + hscx->bch.nr, hscx->bch.state, bprotocol, hscx->bch.nr);
+=======
+		 '@' + hscx->bch.nr, hscx->bch.state, bprotocol, hscx->bch.nr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (hscx->ip->type & IPAC_TYPE_IPACX) {
 		if (hscx->bch.nr & 1) { /* B1 and ICA */
 			WriteIPAC(hscx->ip, ISACX_BCHA_TSDP_BC1, 0x80);
@@ -1363,7 +1558,11 @@ hscx_l2l1(struct mISDNchannel *ch, struct sk_buff *skb)
 		spin_unlock_irqrestore(hx->ip->hwlock, flags);
 		if (!ret)
 			_queue_data(ch, PH_ACTIVATE_IND, MISDN_ID_ANY, 0,
+<<<<<<< HEAD
 				NULL, GFP_KERNEL);
+=======
+				    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case PH_DEACTIVATE_REQ:
 		spin_lock_irqsave(hx->ip->hwlock, flags);
@@ -1371,7 +1570,11 @@ hscx_l2l1(struct mISDNchannel *ch, struct sk_buff *skb)
 		hscx_mode(hx, ISDN_P_NONE);
 		spin_unlock_irqrestore(hx->ip->hwlock, flags);
 		_queue_data(ch, PH_DEACTIVATE_IND, MISDN_ID_ANY, 0,
+<<<<<<< HEAD
 			NULL, GFP_KERNEL);
+=======
+			    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = 0;
 		break;
 	default:
@@ -1393,7 +1596,11 @@ channel_bctrl(struct bchannel *bch, struct mISDN_ctrl_req *cq)
 	case MISDN_CTRL_GETOP:
 		cq->op = 0;
 		break;
+<<<<<<< HEAD
 	/* Nothing implemented yet */
+=======
+		/* Nothing implemented yet */
+>>>>>>> refs/remotes/origin/cm-10.0
 	case MISDN_CTRL_FILL_EMPTY:
 	default:
 		pr_info("%s: unknown Op %x\n", __func__, cq->op);
@@ -1466,7 +1673,11 @@ hscx_init(struct hscx_hw *hx)
 		pr_debug("%s: HSCX VSTR %02x\n", hx->ip->name, val);
 		if (hx->bch.debug & DEBUG_HW)
 			pr_notice("%s: HSCX version %s\n", hx->ip->name,
+<<<<<<< HEAD
 				HSCXVer[val & 0x0f]);
+=======
+				  HSCXVer[val & 0x0f]);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		WriteHSCX(hx, IPAC_CCR1, 0x82);
 	WriteHSCX(hx, IPAC_CCR2, 0x30);
@@ -1490,7 +1701,11 @@ ipac_init(struct ipac_hw *ipac)
 		val = ReadIPAC(ipac, IPAC_CONF);
 		/* conf is default 0, but can be overwritten by card setup */
 		pr_debug("%s: IPAC CONF %02x/%02x\n", ipac->name,
+<<<<<<< HEAD
 			val, ipac->conf);
+=======
+			 val, ipac->conf);
+>>>>>>> refs/remotes/origin/cm-10.0
 		WriteIPAC(ipac, IPAC_CONF, ipac->conf);
 		val = ReadIPAC(ipac, IPAC_ID);
 		if (ipac->hscx[0].bch.debug & DEBUG_HW)
@@ -1505,7 +1720,11 @@ open_bchannel(struct ipac_hw *ipac, struct channel_req *rq)
 {
 	struct bchannel		*bch;
 
+<<<<<<< HEAD
 	if (rq->adr.channel > 2)
+=======
+	if (rq->adr.channel == 0 || rq->adr.channel > 2)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	if (rq->protocol == ISDN_P_NONE)
 		return -EINVAL;
@@ -1568,7 +1787,11 @@ ipac_dctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 		break;
 	case CLOSE_CHANNEL:
 		pr_debug("%s: dev(%d) close from %p\n", ipac->name,
+<<<<<<< HEAD
 			dch->dev.id, __builtin_return_address(0));
+=======
+			 dch->dev.id, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/cm-10.0
 		module_put(ipac->owner);
 		break;
 	case CONTROL_CHANNEL:
@@ -1619,7 +1842,11 @@ mISDNipac_init(struct ipac_hw *ipac, void *hw)
 		ipac->hscx[i].bch.nr = i + 1;
 		set_channelmap(i + 1, ipac->isac.dch.dev.channelmap);
 		list_add(&ipac->hscx[i].bch.ch.list,
+<<<<<<< HEAD
 			&ipac->isac.dch.dev.bchannels);
+=======
+			 &ipac->isac.dch.dev.bchannels);
+>>>>>>> refs/remotes/origin/cm-10.0
 		mISDN_initbchannel(&ipac->hscx[i].bch, MAX_DATA_MEM);
 		ipac->hscx[i].bch.ch.nr = i + 1;
 		ipac->hscx[i].bch.ch.send = &hscx_l2l1;

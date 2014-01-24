@@ -11,7 +11,11 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 		.macro	addruart, rp, rv
+=======
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/cm-10.0
 		mov	\rp, #0xfe000000	@ physical as well as virtual
 		orr	\rp, \rp, #0x00800000	@ location of the UART
 		mov	\rv, \rp

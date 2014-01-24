@@ -540,7 +540,11 @@ static int qe_ep_init(struct qe_udc *udc,
 	int reval = 0;
 	u16 max = 0;
 
+<<<<<<< HEAD
 	max = le16_to_cpu(desc->wMaxPacketSize);
+=======
+	max = usb_endpoint_maxp(desc);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* check the max package size validate for this endpoint */
 	/* Refer to USB2.0 spec table 9-13,
@@ -1638,6 +1642,10 @@ static int qe_ep_disable(struct usb_ep *_ep)
 	/* Nuke all pending requests (does flush) */
 	nuke(ep, -ESHUTDOWN);
 	ep->desc = NULL;
+<<<<<<< HEAD
+=======
+	ep->ep.desc = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 	ep->stopped = 1;
 	ep->tx_req = NULL;
 	qe_ep_reset(udc, ep->epnum);
@@ -1927,6 +1935,13 @@ static int qe_pullup(struct usb_gadget *gadget, int is_on)
 	return -ENOTSUPP;
 }
 
+<<<<<<< HEAD
+=======
+static int fsl_qe_start(struct usb_gadget_driver *driver,
+		int (*bind)(struct usb_gadget *));
+static int fsl_qe_stop(struct usb_gadget_driver *driver);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* defined in usb_gadget.h */
 static struct usb_gadget_ops qe_gadget_ops = {
 	.get_frame = qe_get_frame,
@@ -1935,6 +1950,11 @@ static struct usb_gadget_ops qe_gadget_ops = {
 	.vbus_session = qe_vbus_session,
 	.vbus_draw = qe_vbus_draw,
 	.pullup = qe_pullup,
+<<<<<<< HEAD
+=======
+	.start = fsl_qe_start,
+	.stop = fsl_qe_stop,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*-------------------------------------------------------------------------
@@ -2320,7 +2340,11 @@ static irqreturn_t qe_udc_irq(int irq, void *_udc)
 /*-------------------------------------------------------------------------
 	Gadget driver probe and unregister.
  --------------------------------------------------------------------------*/
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
+=======
+static int fsl_qe_start(struct usb_gadget_driver *driver,
+>>>>>>> refs/remotes/origin/cm-10.0
 		int (*bind)(struct usb_gadget *))
 {
 	int retval;
@@ -2330,8 +2354,12 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 	if (!udc_controller)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (!driver || (driver->speed != USB_SPEED_FULL
 			&& driver->speed != USB_SPEED_HIGH)
+=======
+	if (!driver || driver->max_speed < USB_SPEED_FULL
+>>>>>>> refs/remotes/origin/cm-10.0
 			|| !bind || !driver->disconnect || !driver->setup)
 		return -EINVAL;
 
@@ -2345,7 +2373,11 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 	/* hook up the driver */
 	udc_controller->driver = driver;
 	udc_controller->gadget.dev.driver = &driver->driver;
+<<<<<<< HEAD
 	udc_controller->gadget.speed = (enum usb_device_speed)(driver->speed);
+=======
+	udc_controller->gadget.speed = driver->max_speed;
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock_irqrestore(&udc_controller->lock, flags);
 
 	retval = bind(&udc_controller->gadget);
@@ -2369,9 +2401,14 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		udc_controller->gadget.name, driver->driver.name);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_probe_driver);
 
 int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
+=======
+
+static int fsl_qe_stop(struct usb_gadget_driver *driver)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct qe_ep *loop_ep;
 	unsigned long flags;
@@ -2411,7 +2448,10 @@ int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
 			driver->driver.name);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* udc structure's alloc and setup, include ep-param alloc */
 static struct qe_udc __devinit *qe_udc_config(struct platform_device *ofdev)
@@ -2662,11 +2702,23 @@ static int __devinit qe_udc_probe(struct platform_device *ofdev)
 	if (ret)
 		goto err6;
 
+<<<<<<< HEAD
+=======
+	ret = usb_add_gadget_udc(&ofdev->dev, &udc_controller->gadget);
+	if (ret)
+		goto err7;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev_info(udc_controller->dev,
 			"%s USB controller initialized as device\n",
 			(udc_controller->soc_type == PORT_QE) ? "QE" : "CPM");
 	return 0;
 
+<<<<<<< HEAD
+=======
+err7:
+	device_unregister(&udc_controller->gadget.dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 err6:
 	free_irq(udc_controller->usb_irq, udc_controller);
 err5:
@@ -2721,6 +2773,11 @@ static int __devexit qe_udc_remove(struct platform_device *ofdev)
 	if (!udc_controller)
 		return -ENODEV;
 
+<<<<<<< HEAD
+=======
+	usb_del_gadget_udc(&udc_controller->gadget);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	udc_controller->done = &done;
 	tasklet_disable(&udc_controller->rx_tasklet);
 
@@ -2803,6 +2860,7 @@ static struct platform_driver udc_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init qe_udc_init(void)
 {
 	printk(KERN_INFO "%s: %s, %s\n", driver_name, driver_desc,
@@ -2817,6 +2875,9 @@ static void __exit qe_udc_exit(void)
 
 module_init(qe_udc_init);
 module_exit(qe_udc_exit);
+=======
+module_platform_driver(udc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_AUTHOR(DRIVER_AUTHOR);

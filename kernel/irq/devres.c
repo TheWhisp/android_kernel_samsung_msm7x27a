@@ -87,8 +87,14 @@ void devm_free_irq(struct device *dev, unsigned int irq, void *dev_id)
 {
 	struct irq_devres match_data = { irq, dev_id };
 
+<<<<<<< HEAD
 	free_irq(irq, dev_id);
 	WARN_ON(devres_destroy(dev, devm_irq_release, devm_irq_match,
 			       &match_data));
+=======
+	WARN_ON(devres_destroy(dev, devm_irq_release, devm_irq_match,
+			       &match_data));
+	free_irq(irq, dev_id);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(devm_free_irq);

@@ -11,6 +11,10 @@
 #include <linux/types.h>
 #include <linux/fs.h>
 #include <linux/cdev.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/usb.h>
 #include <linux/poll.h>
 #include <linux/compat.h>

@@ -459,6 +459,12 @@ struct kvm_sal_data {
 	unsigned long boot_gp;
 };
 
+<<<<<<< HEAD
+=======
+struct kvm_arch_memory_slot {
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct kvm_arch {
 	spinlock_t dirty_log_lock;
 

@@ -13,8 +13,11 @@
 #define BITMAP_MAJOR_HI 4
 #define	BITMAP_MAJOR_HOSTENDIAN 3
 
+<<<<<<< HEAD
 #define BITMAP_MINOR 39
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * in-memory bitmap:
  *
@@ -101,6 +104,7 @@ typedef __u16 bitmap_counter_t;
 /* same, except a mask value for more efficient bitops */
 #define PAGE_COUNTER_MASK  (PAGE_COUNTER_RATIO - 1)
 
+<<<<<<< HEAD
 #define BITMAP_BLOCK_SIZE 512
 #define BITMAP_BLOCK_SHIFT 9
 
@@ -117,6 +121,10 @@ typedef __u16 bitmap_counter_t;
 			(CHUNK_BLOCK_SHIFT(bitmap) + PAGE_COUNTER_SHIFT - 1)
 #define PAGEPTR_BLOCK_MASK(bitmap) (PAGEPTR_BLOCK_RATIO(bitmap) - 1)
 
+=======
+#define BITMAP_BLOCK_SHIFT 9
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*
@@ -181,22 +189,32 @@ struct bitmap_page {
 	unsigned int  count:31;
 };
 
+<<<<<<< HEAD
 /* keep track of bitmap file pages that have pending writes on them */
 struct page_list {
 	struct list_head list;
 	struct page *page;
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* the main bitmap structure - one per mddev */
 struct bitmap {
 	struct bitmap_page *bp;
 	unsigned long pages; /* total number of pages in the bitmap */
 	unsigned long missing_pages; /* number of pages not yet allocated */
 
+<<<<<<< HEAD
 	mddev_t *mddev; /* the md device that the bitmap is for */
 
 	/* bitmap chunksize -- how much data does each bit represent? */
 	unsigned long chunkshift; /* chunksize = 2^chunkshift (for bitops) */
+=======
+	struct mddev *mddev; /* the md device that the bitmap is for */
+
+	/* bitmap chunksize -- how much data does each bit represent? */
+	unsigned long chunkshift; /* chunksize = 2^(chunkshift+9) (for bitops) */
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long chunks; /* total number of data chunks for the array */
 
 	__u64	events_cleared;
@@ -212,10 +230,13 @@ struct bitmap {
 	unsigned long file_pages; /* number of pages in the file */
 	int last_page_size; /* bytes in the last page */
 
+<<<<<<< HEAD
 	unsigned long logattrs; /* used when filemap_attr doesn't exist
 				 * because we are working with a dirty_log
 				 */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long flags;
 
 	int allclean;
@@ -237,12 +258,16 @@ struct bitmap {
 	wait_queue_head_t behind_wait;
 
 	struct sysfs_dirent *sysfs_can_clear;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* the bitmap API */
 
 /* these are used only by md/bitmap */
+<<<<<<< HEAD
 int  bitmap_create(mddev_t *mddev);
 int bitmap_load(mddev_t *mddev);
 void bitmap_flush(mddev_t *mddev);
@@ -250,6 +275,16 @@ void bitmap_destroy(mddev_t *mddev);
 
 void bitmap_print_sb(struct bitmap *bitmap);
 void bitmap_update_sb(struct bitmap *bitmap);
+=======
+int  bitmap_create(struct mddev *mddev);
+int bitmap_load(struct mddev *mddev);
+void bitmap_flush(struct mddev *mddev);
+void bitmap_destroy(struct mddev *mddev);
+
+void bitmap_print_sb(struct bitmap *bitmap);
+void bitmap_update_sb(struct bitmap *bitmap);
+void bitmap_status(struct seq_file *seq, struct bitmap *bitmap);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int  bitmap_setallbits(struct bitmap *bitmap);
 void bitmap_write_all(struct bitmap *bitmap);
@@ -267,7 +302,11 @@ void bitmap_close_sync(struct bitmap *bitmap);
 void bitmap_cond_end_sync(struct bitmap *bitmap, sector_t sector);
 
 void bitmap_unplug(struct bitmap *bitmap);
+<<<<<<< HEAD
 void bitmap_daemon_work(mddev_t *mddev);
+=======
+void bitmap_daemon_work(struct mddev *mddev);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #endif

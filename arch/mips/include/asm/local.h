@@ -3,7 +3,11 @@
 
 #include <linux/percpu.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/cmpxchg.h>
 #include <asm/war.h>
 

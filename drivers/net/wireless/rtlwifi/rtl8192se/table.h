@@ -1,5 +1,9 @@
 /******************************************************************************
+<<<<<<< HEAD
  * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
+=======
+ * Copyright(c) 2008 - 2012 Realtek Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or

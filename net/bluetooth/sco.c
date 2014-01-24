@@ -397,15 +397,23 @@ static void __sco_sock_close(struct sock *sk)
 		if (sco_pi(sk)->conn) {
 			sk->sk_state = BT_DISCONN;
 			sco_sock_set_timer(sk, SCO_DISCONN_TIMEOUT);
+<<<<<<< HEAD
 			if (sco_pi(sk)->conn->hcon != NULL) {
 				hci_conn_put(sco_pi(sk)->conn->hcon);
 				sco_pi(sk)->conn->hcon = NULL;
 			}
+=======
+			hci_conn_put(sco_pi(sk)->conn->hcon);
+			sco_pi(sk)->conn->hcon = NULL;
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else
 			sco_chan_del(sk, ECONNRESET);
 		break;
 
+<<<<<<< HEAD
 	case BT_CONNECT2:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	case BT_CONNECT:
 	case BT_DISCONN:
 		sco_chan_del(sk, ECONNRESET);
@@ -815,9 +823,12 @@ static int sco_sock_shutdown(struct socket *sock, int how)
 		if (sock_flag(sk, SOCK_LINGER) && sk->sk_lingertime)
 			err = bt_sock_wait_state(sk, BT_CLOSED,
 							sk->sk_lingertime);
+<<<<<<< HEAD
 		else
 			err = bt_sock_wait_state(sk, BT_CLOSED,
 							SCO_DISCONN_TIMEOUT);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 	release_sock(sk);
 	return err;
@@ -839,11 +850,14 @@ static int sco_sock_release(struct socket *sock)
 		lock_sock(sk);
 		err = bt_sock_wait_state(sk, BT_CLOSED, sk->sk_lingertime);
 		release_sock(sk);
+<<<<<<< HEAD
 	} else {
 		lock_sock(sk);
 		err = bt_sock_wait_state(sk, BT_CLOSED,
 							SCO_DISCONN_TIMEOUT);
 		release_sock(sk);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	sock_orphan(sk);

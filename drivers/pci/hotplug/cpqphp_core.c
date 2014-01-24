@@ -57,8 +57,13 @@ struct irq_routing_table *cpqhp_routing_table;
 static void __iomem *smbios_table;
 static void __iomem *smbios_start;
 static void __iomem *cpqhp_rom_start;
+<<<<<<< HEAD
 static int power_mode;
 static int debug;
+=======
+static bool power_mode;
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 static int initialized;
 
 #define DRIVER_VERSION	"0.9.8"
@@ -840,8 +845,14 @@ static int cpqhpc_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* Need to read VID early b/c it's used to differentiate CPQ and INTC
 	 * discovery
 	 */
+<<<<<<< HEAD
 	rc = pci_read_config_word(pdev, PCI_VENDOR_ID, &vendor_id);
 	if (rc || ((vendor_id != PCI_VENDOR_ID_COMPAQ) && (vendor_id != PCI_VENDOR_ID_INTEL))) {
+=======
+	vendor_id = pdev->vendor;
+	if ((vendor_id != PCI_VENDOR_ID_COMPAQ) &&
+	    (vendor_id != PCI_VENDOR_ID_INTEL)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		err(msg_HPC_non_compaq_or_intel);
 		rc = -ENODEV;
 		goto err_disable_device;
@@ -868,11 +879,15 @@ static int cpqhpc_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* TODO: This code can be made to support non-Compaq or Intel
 	 * subsystem IDs
 	 */
+<<<<<<< HEAD
 	rc = pci_read_config_word(pdev, PCI_SUBSYSTEM_VENDOR_ID, &subsystem_vid);
 	if (rc) {
 		err("%s : pci_read_config_word failed\n", __func__);
 		goto err_disable_device;
 	}
+=======
+	subsystem_vid = pdev->subsystem_vendor;
+>>>>>>> refs/remotes/origin/cm-10.0
 	dbg("Subsystem Vendor ID: %x\n", subsystem_vid);
 	if ((subsystem_vid != PCI_VENDOR_ID_COMPAQ) && (subsystem_vid != PCI_VENDOR_ID_INTEL)) {
 		err(msg_HPC_non_compaq_or_intel);
@@ -887,11 +902,15 @@ static int cpqhpc_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		goto err_disable_device;
 	}
 
+<<<<<<< HEAD
 	rc = pci_read_config_word(pdev, PCI_SUBSYSTEM_ID, &subsystem_deviceid);
 	if (rc) {
 		err("%s : pci_read_config_word failed\n", __func__);
 		goto err_free_ctrl;
 	}
+=======
+	subsystem_deviceid = pdev->subsystem_device;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	info("Hot Plug Subsystem Device ID: %x\n", subsystem_deviceid);
 

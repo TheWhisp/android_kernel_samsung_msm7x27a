@@ -32,5 +32,10 @@ ieee80211_tx_result
 ieee80211_crypto_aes_cmac_encrypt(struct ieee80211_tx_data *tx);
 ieee80211_rx_result
 ieee80211_crypto_aes_cmac_decrypt(struct ieee80211_rx_data *rx);
+<<<<<<< HEAD
+=======
+ieee80211_tx_result
+ieee80211_crypto_hw_encrypt(struct ieee80211_tx_data *tx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* WPA_H */

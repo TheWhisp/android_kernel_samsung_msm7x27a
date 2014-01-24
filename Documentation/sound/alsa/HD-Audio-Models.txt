@@ -8,6 +8,7 @@ ALC880
   5stack-digout	5-jack in back, 2-jack in front, a SPDIF out
   6stack	6-jack in back, 2-jack in front
   6stack-digout	6-jack with a SPDIF out
+<<<<<<< HEAD
   w810		3-jack
   z71v		3-jack (HP shared SPDIF)
   asus		3-jack (ASUS Mobo)
@@ -103,6 +104,29 @@ ALC662/663/272
   g71v		ASUS G71V
   h13		ASUS H13
   g50v		ASUS G50V
+=======
+
+ALC260
+======
+  N/A
+
+ALC262
+======
+  N/A
+
+ALC267/268
+==========
+  N/A
+
+ALC269/270/275/276/280/282
+======
+  laptop-amic	Laptops with analog-mic input
+  laptop-dmic	Laptops with digital-mic input
+  lenovo-dock   Enables docking station I/O for some Lenovos
+
+ALC662/663/272
+==============
+>>>>>>> refs/remotes/origin/cm-10.0
   asus-mode1	ASUS
   asus-mode2	ASUS
   asus-mode3	ASUS
@@ -111,6 +135,7 @@ ALC662/663/272
   asus-mode6	ASUS
   asus-mode7	ASUS
   asus-mode8	ASUS
+<<<<<<< HEAD
   dell		Dell with ALC272
   dell-zm1	Dell ZM1 with ALC272
   samsung-nc10	Samsung NC10 mini notebook
@@ -197,6 +222,27 @@ ALC861VD/660VD
   hp		HP TX1000
   asus-v1s	ASUS V1Sn
   auto		auto-config reading BIOS (default)
+=======
+
+ALC680
+======
+  N/A
+
+ALC882/883/885/888/889
+======================
+  acer-aspire-4930g	Acer Aspire 4930G/5930G/6530G/6930G/7730G
+  acer-aspire-8930g	Acer Aspire 8330G/6935G
+  acer-aspire		Acer Aspire others
+  no-primary-hp		VAIO Z workaround (for fixed speaker DAC)
+
+ALC861/660
+==========
+  N/A
+
+ALC861VD/660VD
+==============
+  N/A
+>>>>>>> refs/remotes/origin/cm-10.0
 
 CMI9880
 =======
@@ -289,7 +335,10 @@ Conexant 5051
   hp-dv6736	HP dv6736
   hp-f700	HP Compaq Presario F700
   ideapad	Lenovo IdeaPad laptop
+<<<<<<< HEAD
   lenovo-x200	Lenovo X200 laptop
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
   toshiba	Toshiba Satellite M300
 
 Conexant 5066
@@ -408,7 +457,11 @@ STAC92HD83*
   ref		Reference board
   mic-ref	Reference board with power management for ports
   dell-s14	Dell laptop
+<<<<<<< HEAD
   hp		HP laptops with (inverted) mute-LED
+=======
+  dell-vostro-3500	Dell Vostro 3500 laptop
+>>>>>>> refs/remotes/origin/cm-10.0
   hp-dv7-4000	HP dv-7 4000
   auto		BIOS setup (default)
 

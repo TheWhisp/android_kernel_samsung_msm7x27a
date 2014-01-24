@@ -176,7 +176,11 @@ static void snd_free_dev_pages(struct device *dev, size_t size, void *ptr,
  * Calls the memory-allocator function for the corresponding
  * buffer type.
  * 
+<<<<<<< HEAD
  * Returns zero if the buffer with the given size is allocated successfuly,
+=======
+ * Returns zero if the buffer with the given size is allocated successfully,
+>>>>>>> refs/remotes/origin/cm-10.0
  * other a negative value at error.
  */
 int snd_dma_alloc_pages(int type, struct device *device, size_t size,
@@ -230,7 +234,11 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
  * tries to allocate again.  The size actually allocated is stored in
  * res_size argument.
  * 
+<<<<<<< HEAD
  * Returns zero if the buffer with the given size is allocated successfuly,
+=======
+ * Returns zero if the buffer with the given size is allocated successfully,
+>>>>>>> refs/remotes/origin/cm-10.0
  * other a negative value at error.
  */
 int snd_dma_alloc_pages_fallback(int type, struct device *device, size_t size,

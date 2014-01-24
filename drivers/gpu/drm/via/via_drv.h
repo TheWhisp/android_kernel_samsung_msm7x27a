@@ -24,7 +24,11 @@
 #ifndef _VIA_DRV_H_
 #define _VIA_DRV_H_
 
+<<<<<<< HEAD
 #include "drm_sman.h"
+=======
+#include "drm_mm.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #define DRIVER_AUTHOR	"Various"
 
 #define DRIVER_NAME		"via"
@@ -88,9 +92,18 @@ typedef struct drm_via_private {
 	uint32_t irq_pending_mask;
 	int *irq_map;
 	unsigned int idle_fault;
+<<<<<<< HEAD
 	struct drm_sman sman;
 	int vram_initialized;
 	int agp_initialized;
+=======
+	int vram_initialized;
+	struct drm_mm vram_mm;
+	int agp_initialized;
+	struct drm_mm agp_mm;
+	/** Mapping of userspace keys to mm objects */
+	struct idr object_idr;
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long vram_offset;
 	unsigned long agp_offset;
 	drm_via_blitq_t blit_queues[VIA_NUM_BLIT_ENGINES];

@@ -24,7 +24,10 @@
 #include <linux/io.h>
 #include <linux/gfp.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <mach/dma.h>
 #include <asm/dma-mapping.h>

@@ -16,6 +16,10 @@
 #include <linux/spinlock.h>
 #include <linux/atmel-ssc.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Serialize access to ssc_list and user count */
 static DEFINE_SPINLOCK(user_lock);
@@ -95,7 +99,11 @@ static int __init ssc_probe(struct platform_device *pdev)
 	}
 
 	ssc->pdev = pdev;
+<<<<<<< HEAD
 	ssc->regs = ioremap(regs->start, regs->end - regs->start + 1);
+=======
+	ssc->regs = ioremap(regs->start, resource_size(regs));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!ssc->regs) {
 		dev_dbg(&pdev->dev, "ioremap failed\n");
 		retval = -EINVAL;

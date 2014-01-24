@@ -25,6 +25,10 @@
 #include <asm/setup.h>
 #include <asm/sizes.h>
 #include <asm/tlb.h>
+<<<<<<< HEAD
+=======
+#include <asm/memblock.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/map.h>
 

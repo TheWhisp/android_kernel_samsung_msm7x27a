@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/personality.h>
 #include <linux/binfmts.h>
 #include <linux/elf.h>
+<<<<<<< HEAD
+=======
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int elf_check_arch(const struct elf32_hdr *x)
 {

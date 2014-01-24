@@ -370,16 +370,28 @@ nf_ct_frag6_reasm(struct nf_ct_frag6_queue *fq, struct net_device *dev)
 		struct sk_buff *clone;
 		int i, plen = 0;
 
+<<<<<<< HEAD
 		if ((clone = alloc_skb(0, GFP_ATOMIC)) == NULL) {
 			pr_debug("Can't alloc skb\n");
 			goto out_oom;
 		}
+=======
+		clone = alloc_skb(0, GFP_ATOMIC);
+		if (clone == NULL)
+			goto out_oom;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		clone->next = head->next;
 		head->next = clone;
 		skb_shinfo(clone)->frag_list = skb_shinfo(head)->frag_list;
 		skb_frag_list_init(head);
+<<<<<<< HEAD
 		for (i=0; i<skb_shinfo(head)->nr_frags; i++)
 			plen += skb_shinfo(head)->frags[i].size;
+=======
+		for (i = 0; i < skb_shinfo(head)->nr_frags; i++)
+			plen += skb_frag_size(&skb_shinfo(head)->frags[i]);
+>>>>>>> refs/remotes/origin/cm-10.0
 		clone->len = clone->data_len = head->data_len - plen;
 		head->data_len -= clone->len;
 		head->len -= clone->len;

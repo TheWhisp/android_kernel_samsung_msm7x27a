@@ -2472,7 +2472,11 @@ static int nilfs_segctor_thread(void *arg)
 
 	if (freezing(current)) {
 		spin_unlock(&sci->sc_state_lock);
+<<<<<<< HEAD
 		refrigerator();
+=======
+		try_to_freeze();
+>>>>>>> refs/remotes/origin/cm-10.0
 		spin_lock(&sci->sc_state_lock);
 	} else {
 		DEFINE_WAIT(wait);

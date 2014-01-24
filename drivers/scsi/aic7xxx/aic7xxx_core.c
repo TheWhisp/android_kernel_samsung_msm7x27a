@@ -1049,7 +1049,11 @@ ahc_handle_seqint(struct ahc_softc *ahc, u_int intstat)
 		ahc_set_scsi_status(scb, hscb->shared_data.status.scsi_status);
 		switch (hscb->shared_data.status.scsi_status) {
 		case SCSI_STATUS_OK:
+<<<<<<< HEAD
 			printk("%s: Interrupted for staus of 0???\n",
+=======
+			printk("%s: Interrupted for status of 0???\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			       ahc_name(ahc));
 			break;
 		case SCSI_STATUS_CMD_TERMINATED:

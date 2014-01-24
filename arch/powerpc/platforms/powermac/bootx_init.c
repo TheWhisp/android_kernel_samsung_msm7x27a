@@ -19,6 +19,10 @@
 #include <asm/bootx.h>
 #include <asm/btext.h>
 #include <asm/io.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #undef DEBUG
 #define SET_BOOT_BAT

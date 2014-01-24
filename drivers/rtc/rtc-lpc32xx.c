@@ -287,7 +287,11 @@ static int __devinit lpc32xx_rtc_probe(struct platform_device *pdev)
 	if (rtc->irq >= 0) {
 		if (devm_request_irq(&pdev->dev, rtc->irq,
 				     lpc32xx_rtc_alarm_interrupt,
+<<<<<<< HEAD
 				     IRQF_DISABLED, pdev->name, rtc) < 0) {
+=======
+				     0, pdev->name, rtc) < 0) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			dev_warn(&pdev->dev, "Can't request interrupt.\n");
 			rtc->irq = -1;
 		} else {
@@ -396,6 +400,7 @@ static struct platform_driver lpc32xx_rtc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init lpc32xx_rtc_init(void)
 {
 	return platform_driver_register(&lpc32xx_rtc_driver);
@@ -407,6 +412,9 @@ static void __exit lpc32xx_rtc_exit(void)
 	platform_driver_unregister(&lpc32xx_rtc_driver);
 }
 module_exit(lpc32xx_rtc_exit);
+=======
+module_platform_driver(lpc32xx_rtc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Kevin Wells <wellsk40@gmail.com");
 MODULE_DESCRIPTION("RTC driver for the LPC32xx SoC");

@@ -23,7 +23,10 @@
 #include <asm/asm-offsets.h>
 #include <asm/setup.h>
 #include <asm/fpu.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/siginfo.h>

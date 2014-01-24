@@ -47,7 +47,11 @@
 /* name size which is used for entries in pcihpfs */
 #define SLOT_NAME_SIZE  21              /* {_SUN} */
 
+<<<<<<< HEAD
 static int debug;
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/cm-10.0
 int acpiphp_debug;
 
 /* local variables */

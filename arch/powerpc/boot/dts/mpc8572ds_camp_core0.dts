@@ -14,6 +14,7 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
 /dts-v1/;
 / {
 	model = "fsl,MPC8572DS";
@@ -218,12 +219,66 @@
 		msi@41600 {
 			compatible = "fsl,mpc8572-msi", "fsl,mpic-msi";
 			reg = <0x41600 0x80>;
+=======
+/include/ "mpc8572ds.dts"
+
+/ {
+	model = "fsl,MPC8572DS";
+	compatible = "fsl,MPC8572DS", "fsl,MPC8572DS-CAMP";
+
+	cpus {
+		PowerPC,8572@0 {
+		};
+		PowerPC,8572@1 {
+			status = "disabled";
+		};
+	};
+
+	localbus@ffe05000 {
+		status = "disabled";
+	};
+
+	soc8572@ffe00000 {
+		serial@4600 {
+			status = "disabled";
+		};
+		dma@c300 {
+			status = "disabled";
+		};
+		gpio-controller@f000 {
+		};
+		l2-cache-controller@20000 {
+			cache-size = <0x80000>;	// L2, 512K
+		};
+		ethernet@26000 {
+			status = "disabled";
+		};
+		mdio@26520 {
+			status = "disabled";
+		};
+		ethernet@27000 {
+			status = "disabled";
+		};
+		mdio@27520 {
+			status = "disabled";
+		};
+		pic@40000 {
+			protected-sources = <
+			31 32 33 37 38 39       /* enet2 enet3 */
+			76 77 78 79 26 42	/* dma2 pci2 serial*/
+			0xe4 0xe5 0xe6 0xe7	/* msi */
+			>;
+		};
+
+		msi@41600 {
+>>>>>>> refs/remotes/origin/cm-10.0
 			msi-available-ranges = <0 0x80>;
 			interrupts = <
 				0xe0 0
 				0xe1 0
 				0xe2 0
 				0xe3 0>;
+<<<<<<< HEAD
 			interrupt-parent = <&mpic>;
 		};
 
@@ -503,5 +558,14 @@
 				  0x1000000 0x0 0x0
 				  0x0 0x10000>;
 		};
+=======
+		};
+		timer@42100 {
+			status = "disabled";
+		};
+	};
+	pcie@ffe0a000 {
+		status = "disabled";
+>>>>>>> refs/remotes/origin/cm-10.0
 	};
 };

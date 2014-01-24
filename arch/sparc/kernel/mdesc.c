@@ -11,11 +11,19 @@
 #include <linux/mm.h>
 #include <linux/miscdevice.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/cpudata.h>
 #include <asm/hypervisor.h>
 #include <asm/mdesc.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
+=======
+#include <asm/uaccess.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/oplib.h>
 #include <asm/smp.h>
 

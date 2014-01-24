@@ -1,7 +1,11 @@
 #ifndef __ALPHA_IRQFLAGS_H
 #define __ALPHA_IRQFLAGS_H
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/pal.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define IPL_MIN		0
 #define IPL_SW0		1

@@ -17,6 +17,7 @@
 #include <linux/spinlock.h>
 #include "clock.h"
 
+<<<<<<< HEAD
 /*
  * Bit manipulation macros
  */
@@ -32,13 +33,73 @@
 #define ENABLE		3	/* Bit pol: 1 = running */
 #define ENABLE_VOTED	4	/* Bit pol: 1 = running; delay on disable */
 #define DELAY		5	/* No bit to check, just delay */
+=======
+#define MN_MODE_DUAL_EDGE 0x2
+
+/* MD Registers */
+#define MD4(m_lsb, m, n_lsb, n) \
+		((BVAL((m_lsb+3), m_lsb, m) | BVAL((n_lsb+3), n_lsb, ~(n))) \
+		* !!(n))
+#define MD8(m_lsb, m, n_lsb, n) \
+		((BVAL((m_lsb+7), m_lsb, m) | BVAL((n_lsb+7), n_lsb, ~(n))) \
+		* !!(n))
+#define MD16(m, n) ((BVAL(31, 16, m) | BVAL(15, 0, ~(n))) * !!(n))
+
+/* NS Registers */
+#define NS(n_msb, n_lsb, n, m, mde_lsb, d_msb, d_lsb, d, s_msb, s_lsb, s) \
+		(BVAL(n_msb, n_lsb, ~(n-m) * !!(n)) \
+		| (BVAL((mde_lsb+1), mde_lsb, MN_MODE_DUAL_EDGE) * !!(n)) \
+		| BVAL(d_msb, d_lsb, (d-1)) | BVAL(s_msb, s_lsb, s))
+
+#define NS_MM(n_msb, n_lsb, n, m, d_msb, d_lsb, d, s_msb, s_lsb, s) \
+		(BVAL(n_msb, n_lsb, ~(n-m) * !!(n))|BVAL(d_msb, d_lsb, (d-1)) \
+		| BVAL(s_msb, s_lsb, s))
+
+#define NS_DIVSRC(d_msb, d_lsb, d, s_msb, s_lsb, s) \
+		(BVAL(d_msb, d_lsb, (d-1)) | BVAL(s_msb, s_lsb, s))
+
+#define NS_DIV(d_msb, d_lsb, d) \
+		BVAL(d_msb, d_lsb, (d-1))
+
+#define NS_SRC_SEL(s_msb, s_lsb, s) \
+		BVAL(s_msb, s_lsb, s)
+
+#define NS_MND_BANKED4(n0_lsb, n1_lsb, n, m, s0_lsb, s1_lsb, s) \
+		 (BVAL((n0_lsb+3), n0_lsb, ~(n-m) * !!(n)) \
+		| BVAL((n1_lsb+3), n1_lsb, ~(n-m) * !!(n)) \
+		| BVAL((s0_lsb+2), s0_lsb, s) \
+		| BVAL((s1_lsb+2), s1_lsb, s))
+
+#define NS_MND_BANKED8(n0_lsb, n1_lsb, n, m, s0_lsb, s1_lsb, s) \
+		 (BVAL((n0_lsb+7), n0_lsb, ~(n-m) * !!(n)) \
+		| BVAL((n1_lsb+7), n1_lsb, ~(n-m) * !!(n)) \
+		| BVAL((s0_lsb+2), s0_lsb, s) \
+		| BVAL((s1_lsb+2), s1_lsb, s))
+
+#define NS_DIVSRC_BANKED(d0_msb, d0_lsb, d1_msb, d1_lsb, d, \
+	s0_msb, s0_lsb, s1_msb, s1_lsb, s) \
+		 (BVAL(d0_msb, d0_lsb, (d-1)) | BVAL(d1_msb, d1_lsb, (d-1)) \
+		| BVAL(s0_msb, s0_lsb, s) \
+		| BVAL(s1_msb, s1_lsb, s))
+
+/* CC Registers */
+#define CC(mde_lsb, n) (BVAL((mde_lsb+1), mde_lsb, MN_MODE_DUAL_EDGE) * !!(n))
+#define CC_BANKED(mde0_lsb, mde1_lsb, n) \
+		((BVAL((mde0_lsb+1), mde0_lsb, MN_MODE_DUAL_EDGE) \
+		| BVAL((mde1_lsb+1), mde1_lsb, MN_MODE_DUAL_EDGE)) \
+		* !!(n))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Clock Definition Macros
  */
 #define DEFINE_CLK_MEASURE(name) \
 	struct clk name = { \
+<<<<<<< HEAD
 		.ops = &clk_ops_measure, \
+=======
+		.ops = &clk_ops_empty, \
+>>>>>>> refs/remotes/origin/cm-10.0
 		.dbg_name = #name, \
 		CLK_INIT(name), \
 	}; \
@@ -48,12 +109,19 @@
  */
 struct clk_freq_tbl {
 	const uint32_t	freq_hz;
+<<<<<<< HEAD
 	struct clk	*src_clk;
 	const uint32_t	md_val;
 	const uint32_t	ns_val;
 	const uint32_t	ctl_val;
 	uint32_t	mnd_en_mask;
 	const unsigned	sys_vdd;
+=======
+	struct clk	*const src_clk;
+	const uint32_t	md_val;
+	const uint32_t	ns_val;
+	const uint32_t	ctl_val;
+>>>>>>> refs/remotes/origin/cm-10.0
 	void		*const extra_freq_data;
 };
 
@@ -74,13 +142,20 @@ struct bank_masks {
 	const struct bank_mask_info	bank1_mask;
 };
 
+<<<<<<< HEAD
 #define F_RAW(f, sc, m_v, n_v, c_v, m_m, e) { \
+=======
+#define F_RAW(f, sc, m_v, n_v, c_v, e) { \
+>>>>>>> refs/remotes/origin/cm-10.0
 	.freq_hz = f, \
 	.src_clk = sc, \
 	.md_val = m_v, \
 	.ns_val = n_v, \
 	.ctl_val = c_v, \
+<<<<<<< HEAD
 	.mnd_en_mask = m_m, \
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.extra_freq_data = e, \
 	}
 #define FREQ_END	(UINT_MAX-1)
@@ -116,11 +191,21 @@ struct branch {
 	const u32 retain_mask;
 };
 
+<<<<<<< HEAD
 int branch_reset(struct branch *b, enum clk_reset_action action);
 void __branch_clk_enable_reg(const struct branch *clk, const char *name);
 u32 __branch_clk_disable_reg(const struct branch *clk, const char *name);
 int branch_clk_handoff(struct clk *c);
 int branch_clk_set_flags(struct clk *clk, unsigned flags);
+=======
+extern struct clk_ops clk_ops_branch;
+extern struct clk_ops clk_ops_reset;
+
+int branch_reset(struct branch *b, enum clk_reset_action action);
+void __branch_enable_reg(const struct branch *b, const char *name);
+u32 __branch_disable_reg(const struct branch *b, const char *name);
+enum handoff branch_handoff(struct branch *b, struct clk *c);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Generic clock-definition struct and macros
@@ -133,6 +218,10 @@ struct rcg_clk {
 	const uint32_t	root_en_mask;
 	uint32_t	ns_mask;
 	const uint32_t	ctl_mask;
+<<<<<<< HEAD
+=======
+	uint32_t	mnd_en_mask;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	void		*bank_info;
 	void   (*set_rate)(struct rcg_clk *, struct clk_freq_tbl *);
@@ -144,6 +233,7 @@ struct rcg_clk {
 	struct clk	c;
 };
 
+<<<<<<< HEAD
 static inline struct rcg_clk *to_rcg_clk(struct clk *clk)
 {
 	return container_of(clk, struct rcg_clk, c);
@@ -165,6 +255,16 @@ void rcg_clk_enable_hwcg(struct clk *clk);
 void rcg_clk_disable_hwcg(struct clk *clk);
 int rcg_clk_in_hwcg_mode(struct clk *c);
 int rcg_clk_set_flags(struct clk *clk, unsigned flags);
+=======
+static inline struct rcg_clk *to_rcg_clk(struct clk *c)
+{
+	return container_of(c, struct rcg_clk, c);
+}
+
+extern struct clk_ops clk_ops_rcg;
+
+extern struct clk_freq_tbl rcg_dummy_freq;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * struct cdiv_clk - integer divider clock with external source selection
@@ -188,15 +288,22 @@ struct cdiv_clk {
 	struct clk c;
 };
 
+<<<<<<< HEAD
 static inline struct cdiv_clk *to_cdiv_clk(struct clk *clk)
 {
 	return container_of(clk, struct cdiv_clk, c);
+=======
+static inline struct cdiv_clk *to_cdiv_clk(struct clk *c)
+{
+	return container_of(c, struct cdiv_clk, c);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 extern struct clk_ops clk_ops_cdiv;
 
 /**
  * struct fixed_clk - fixed rate clock (used for crystal oscillators)
+<<<<<<< HEAD
  * @rate: output rate
  * @c: clk
  */
@@ -274,12 +381,24 @@ static inline struct pll_clk *to_pll_clk(struct clk *clk)
 
 int sr_pll_clk_enable(struct clk *clk);
 
+=======
+ * @c: clk
+ */
+struct fixed_clk {
+	struct clk c;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct branch_clk - branch
  * @enabled: true if clock is on, false otherwise
  * @b: branch
  * @parent: clock source
+<<<<<<< HEAD
  * @c: clk
+=======
+ * @c: clock
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * An on/off switch with a rate derived from the parent.
  */
@@ -290,6 +409,7 @@ struct branch_clk {
 	struct clk c;
 };
 
+<<<<<<< HEAD
 static inline struct branch_clk *to_branch_clk(struct clk *clk)
 {
 	return container_of(clk, struct branch_clk, c);
@@ -305,12 +425,23 @@ void branch_clk_enable_hwcg(struct clk *clk);
 void branch_clk_disable_hwcg(struct clk *clk);
 int branch_clk_in_hwcg_mode(struct clk *c);
 
+=======
+static inline struct branch_clk *to_branch_clk(struct clk *c)
+{
+	return container_of(c, struct branch_clk, c);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct measure_clk - for rate measurement debug use
  * @sample_ticks: sample period in reference clock ticks
  * @multiplier: measurement scale-up factor
  * @divider: measurement scale-down factor
+<<<<<<< HEAD
  * @c: clk
+=======
+ * @c: clock
+>>>>>>> refs/remotes/origin/cm-10.0
 */
 struct measure_clk {
 	u64 sample_ticks;
@@ -319,11 +450,19 @@ struct measure_clk {
 	struct clk c;
 };
 
+<<<<<<< HEAD
 extern struct clk_ops clk_ops_measure;
 
 static inline struct measure_clk *to_measure_clk(struct clk *clk)
 {
 	return container_of(clk, struct measure_clk, c);
+=======
+extern struct clk_ops clk_ops_empty;
+
+static inline struct measure_clk *to_measure_clk(struct clk *c)
+{
+	return container_of(c, struct measure_clk, c);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -333,6 +472,7 @@ extern spinlock_t		local_clock_reg_lock;
 extern struct fixed_clk		gnd_clk;
 
 /*
+<<<<<<< HEAD
  * Local-clock APIs
  */
 bool local_clk_is_local(struct clk *clk);
@@ -354,6 +494,15 @@ void set_rate_nop(struct rcg_clk *clk, struct clk_freq_tbl *nf);
 void set_rate_mnd_8(struct rcg_clk *clk, struct clk_freq_tbl *nf);
 void set_rate_mnd_banked(struct rcg_clk *clk, struct clk_freq_tbl *nf);
 void set_rate_div_banked(struct rcg_clk *clk, struct clk_freq_tbl *nf);
+=======
+ * Generic set-rate implementations
+ */
+void set_rate_mnd(struct rcg_clk *rcg, struct clk_freq_tbl *nf);
+void set_rate_nop(struct rcg_clk *rcg, struct clk_freq_tbl *nf);
+void set_rate_mnd_8(struct rcg_clk *rcg, struct clk_freq_tbl *nf);
+void set_rate_mnd_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf);
+void set_rate_div_banked(struct rcg_clk *rcg, struct clk_freq_tbl *nf);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __ARCH_ARM_MACH_MSM_CLOCK_LOCAL_H */
 

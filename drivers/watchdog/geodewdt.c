@@ -9,6 +9,10 @@
  * 2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -39,8 +43,13 @@ MODULE_PARM_DESC(timeout,
 	"Watchdog timeout in seconds. 1<= timeout <=131, default="
 				__MODULE_STRING(WATCHDOG_TIMEOUT) ".");
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -100,7 +109,11 @@ static int geodewdt_release(struct inode *inode, struct file *file)
 		geodewdt_disable();
 		module_put(THIS_MODULE);
 	} else {
+<<<<<<< HEAD
 		printk(KERN_CRIT "Unexpected close - watchdog is not stopping.\n");
+=======
+		pr_crit("Unexpected close - watchdog is not stopping\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		geodewdt_ping();
 
 		set_bit(WDT_FLAGS_ORPHAN, &wdt_flags);
@@ -220,7 +233,11 @@ static int __devinit geodewdt_probe(struct platform_device *dev)
 
 	wdt_timer = cs5535_mfgpt_alloc_timer(MFGPT_TIMER_ANY, MFGPT_DOMAIN_WORKING);
 	if (!wdt_timer) {
+<<<<<<< HEAD
 		printk(KERN_ERR "geodewdt:  No timers were available\n");
+=======
+		pr_err("No timers were available\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 

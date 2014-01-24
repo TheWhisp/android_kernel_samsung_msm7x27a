@@ -43,6 +43,10 @@
 #include <asm/syscalls.h>
 #include <asm/sigcontext.h>
 #include <asm/vdso.h>
+<<<<<<< HEAD
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PPC64
 #include "ppc32.h"
 #include <asm/unistd.h>
@@ -97,7 +101,11 @@ static inline int put_sigset_t(compat_sigset_t __user *uset, sigset_t *set)
 	compat_sigset_t	cset;
 
 	switch (_NSIG_WORDS) {
+<<<<<<< HEAD
 	case 4: cset.sig[5] = set->sig[3] & 0xffffffffull;
+=======
+	case 4: cset.sig[6] = set->sig[3] & 0xffffffffull;
+>>>>>>> refs/remotes/origin/cm-10.0
 		cset.sig[7] = set->sig[3] >> 32;
 	case 3: cset.sig[4] = set->sig[2] & 0xffffffffull;
 		cset.sig[5] = set->sig[2] >> 32;
@@ -242,12 +250,22 @@ static inline int restore_general_regs(struct pt_regs *regs,
  */
 long sys_sigsuspend(old_sigset_t mask)
 {
+<<<<<<< HEAD
 	mask &= _BLOCKABLE;
 	spin_lock_irq(&current->sighand->siglock);
 	current->saved_sigmask = current->blocked;
 	siginitset(&current->blocked, mask);
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	sigset_t blocked;
+
+	current->saved_sigmask = current->blocked;
+
+	mask &= _BLOCKABLE;
+	siginitset(&blocked, mask);
+	set_current_blocked(&blocked);
+>>>>>>> refs/remotes/origin/cm-10.0
 
  	current->state = TASK_INTERRUPTIBLE;
  	schedule();

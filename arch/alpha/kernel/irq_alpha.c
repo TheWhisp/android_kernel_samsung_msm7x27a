@@ -11,6 +11,10 @@
 #include <asm/machvec.h>
 #include <asm/dma.h>
 #include <asm/perf_event.h>
+<<<<<<< HEAD
+=======
+#include <asm/mce.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "proto.h"
 #include "irq_impl.h"

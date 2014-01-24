@@ -3,9 +3,17 @@ config M68K
 	default y
 	select HAVE_IDE
 	select HAVE_AOUT if MMU
+<<<<<<< HEAD
 	select GENERIC_ATOMIC64 if MMU
 	select HAVE_GENERIC_HARDIRQS if !MMU
 	select GENERIC_IRQ_SHOW if !MMU
+=======
+	select HAVE_GENERIC_HARDIRQS
+	select GENERIC_IRQ_SHOW
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+	select GENERIC_CPU_DEVICES
+	select FPU if MMU
+>>>>>>> refs/remotes/origin/cm-10.0
 
 config RWSEM_GENERIC_SPINLOCK
 	bool
@@ -20,6 +28,15 @@ config ARCH_HAS_ILOG2_U32
 config ARCH_HAS_ILOG2_U64
 	bool
 
+<<<<<<< HEAD
+=======
+config GENERIC_CLOCKEVENTS
+	bool
+
+config GENERIC_GPIO
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config GENERIC_HWEIGHT
 	bool
 	default y
@@ -28,10 +45,22 @@ config GENERIC_CALIBRATE_DELAY
 	bool
 	default y
 
+<<<<<<< HEAD
+=======
+config GENERIC_CSUM
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config TIME_LOW_RES
 	bool
 	default y
 
+<<<<<<< HEAD
+=======
+config ARCH_USES_GETTIMEOFFSET
+	def_bool MMU && !COLDFIRE
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config NO_IOPORT
 	def_bool y
 
@@ -41,6 +70,22 @@ config NO_DMA
 config ZONE_DMA
 	bool
 	default y
+<<<<<<< HEAD
+=======
+
+config CPU_HAS_NO_BITFIELDS
+	bool
+
+config CPU_HAS_NO_MULDIV64
+	bool
+
+config CPU_HAS_ADDRESS_SPACES
+	bool
+
+config FPU
+	bool
+
+>>>>>>> refs/remotes/origin/cm-10.0
 config HZ
 	int
 	default 1000 if CLEOPATRA
@@ -53,10 +98,15 @@ source "kernel/Kconfig.freezer"
 config MMU
 	bool "MMU-based Paged Memory Management Support"
 	default y
+<<<<<<< HEAD
+=======
+	select GENERIC_IOMAP
+>>>>>>> refs/remotes/origin/cm-10.0
 	help
 	  Select if you want MMU-based virtualised addressing space
 	  support by paged memory management. If unsure, say 'Y'.
 
+<<<<<<< HEAD
 menu "Platform dependent setup"
 
 if MMU
@@ -64,6 +114,36 @@ source arch/m68k/Kconfig.mmu
 endif
 if !MMU
 source arch/m68k/Kconfig.nommu
+=======
+config MMU_MOTOROLA
+	bool
+
+config MMU_COLDFIRE
+	bool
+
+config MMU_SUN3
+	bool
+	depends on MMU && !MMU_MOTOROLA && !MMU_COLDFIRE
+
+menu "Platform setup"
+
+source arch/m68k/Kconfig.cpu
+
+source arch/m68k/Kconfig.machine
+
+source arch/m68k/Kconfig.bus
+
+endmenu
+
+menu "Kernel Features"
+
+if COLDFIRE
+source "kernel/Kconfig.preempt"
+endif
+
+if !MMU || COLDFIRE
+source "kernel/time/Kconfig"
+>>>>>>> refs/remotes/origin/cm-10.0
 endif
 
 source "mm/Kconfig"
@@ -80,9 +160,15 @@ if !MMU
 menu "Power management options"
 
 config PM
+<<<<<<< HEAD
         bool "Power Management support"
         help
           Support processor power management modes
+=======
+	bool "Power Management support"
+	help
+	  Support processor power management modes
+>>>>>>> refs/remotes/origin/cm-10.0
 
 endmenu
 endif
@@ -91,6 +177,7 @@ source "net/Kconfig"
 
 source "drivers/Kconfig"
 
+<<<<<<< HEAD
 if MMU
 
 menu "Character devices"
@@ -236,6 +323,9 @@ config SERIAL_CONSOLE
 endmenu
 
 endif
+=======
+source "arch/m68k/Kconfig.devices"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 source "fs/Kconfig"
 

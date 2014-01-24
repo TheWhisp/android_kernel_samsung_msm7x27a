@@ -19,7 +19,11 @@
 #include <asm/backlight.h>
 #endif
 
+<<<<<<< HEAD
 static const char const *backlight_types[] = {
+=======
+static const char *const backlight_types[] = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	[BACKLIGHT_RAW] = "raw",
 	[BACKLIGHT_PLATFORM] = "platform",
 	[BACKLIGHT_FIRMWARE] = "firmware",
@@ -102,7 +106,11 @@ static void backlight_generate_event(struct backlight_device *bd,
 }
 
 static ssize_t backlight_show_power(struct device *dev,
+<<<<<<< HEAD
 		struct device_attribute *attr,char *buf)
+=======
+		struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct backlight_device *bd = to_backlight_device(dev);
 
@@ -116,7 +124,11 @@ static ssize_t backlight_store_power(struct device *dev,
 	struct backlight_device *bd = to_backlight_device(dev);
 	unsigned long power;
 
+<<<<<<< HEAD
 	rc = strict_strtoul(buf, 0, &power);
+=======
+	rc = kstrtoul(buf, 0, &power);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc)
 		return rc;
 
@@ -150,7 +162,11 @@ static ssize_t backlight_store_brightness(struct device *dev,
 	struct backlight_device *bd = to_backlight_device(dev);
 	unsigned long brightness;
 
+<<<<<<< HEAD
 	rc = strict_strtoul(buf, 0, &brightness);
+=======
+	rc = kstrtoul(buf, 0, &brightness);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rc)
 		return rc;
 

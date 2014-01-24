@@ -19,6 +19,10 @@
 
 #include <linux/delay.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/mpu401.h>
 #include <asm/io.h>

@@ -114,14 +114,48 @@ struct input_keymap_entry {
 #define EVIOCGUNIQ(len)		_IOC(_IOC_READ, 'E', 0x08, len)		/* get unique identifier */
 #define EVIOCGPROP(len)		_IOC(_IOC_READ, 'E', 0x09, len)		/* get device properties */
 
+<<<<<<< HEAD
+=======
+/**
+ * EVIOCGMTSLOTS(len) - get MT slot values
+ *
+ * The ioctl buffer argument should be binary equivalent to
+ *
+ * struct input_mt_request_layout {
+ *	__u32 code;
+ *	__s32 values[num_slots];
+ * };
+ *
+ * where num_slots is the (arbitrary) number of MT slots to extract.
+ *
+ * The ioctl size argument (len) is the size of the buffer, which
+ * should satisfy len = (num_slots + 1) * sizeof(__s32).  If len is
+ * too small to fit all available slots, the first num_slots are
+ * returned.
+ *
+ * Before the call, code is set to the wanted ABS_MT event type. On
+ * return, values[] is filled with the slot values for the specified
+ * ABS_MT code.
+ *
+ * If the request code is not an ABS_MT value, -EINVAL is returned.
+ */
+#define EVIOCGMTSLOTS(len)	_IOC(_IOC_READ, 'E', 0x0a, len)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EVIOCGKEY(len)		_IOC(_IOC_READ, 'E', 0x18, len)		/* get global key state */
 #define EVIOCGLED(len)		_IOC(_IOC_READ, 'E', 0x19, len)		/* get all LEDs */
 #define EVIOCGSND(len)		_IOC(_IOC_READ, 'E', 0x1a, len)		/* get all sounds status */
 #define EVIOCGSW(len)		_IOC(_IOC_READ, 'E', 0x1b, len)		/* get all switch states */
 
+<<<<<<< HEAD
 #define EVIOCGBIT(ev,len)	_IOC(_IOC_READ, 'E', 0x20 + ev, len)	/* get event bits */
 #define EVIOCGABS(abs)		_IOR('E', 0x40 + abs, struct input_absinfo)	/* get abs value/limits */
 #define EVIOCSABS(abs)		_IOW('E', 0xc0 + abs, struct input_absinfo)	/* set abs value/limits */
+=======
+#define EVIOCGBIT(ev,len)	_IOC(_IOC_READ, 'E', 0x20 + (ev), len)	/* get event bits */
+#define EVIOCGABS(abs)		_IOR('E', 0x40 + (abs), struct input_absinfo)	/* get abs value/limits */
+#define EVIOCSABS(abs)		_IOW('E', 0xc0 + (abs), struct input_absinfo)	/* set abs value/limits */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define EVIOCSFF		_IOC(_IOC_WRITE, 'E', 0x80, sizeof(struct ff_effect))	/* send a force effect to a force feedback device */
 #define EVIOCRMFF		_IOW('E', 0x81, int)			/* Erase a force effect */
@@ -132,6 +166,11 @@ struct input_keymap_entry {
 #define EVIOCGSUSPENDBLOCK	_IOR('E', 0x91, int)			/* get suspend block enable */
 #define EVIOCSSUSPENDBLOCK	_IOW('E', 0x91, int)			/* set suspend block enable */
 
+<<<<<<< HEAD
+=======
+#define EVIOCSCLOCKID		_IOW('E', 0xa0, int)			/* Set clockid to be used for timestamps */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Device properties and quirks
  */
@@ -441,6 +480,11 @@ struct input_keymap_entry {
 #define KEY_WIMAX		246
 #define KEY_RFKILL		247	/* Key that controls all radios */
 
+<<<<<<< HEAD
+=======
+#define KEY_MICMUTE		248	/* Mute / unmute the microphone */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Code 255 is reserved for special needs of AT keyboard driver */
 
 #define BTN_MISC		0x100
@@ -506,6 +550,10 @@ struct input_keymap_entry {
 #define BTN_TOOL_FINGER		0x145
 #define BTN_TOOL_MOUSE		0x146
 #define BTN_TOOL_LENS		0x147
+<<<<<<< HEAD
+=======
+#define BTN_TOOL_QUINTTAP	0x148	/* Five fingers on trackpad */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define BTN_TOUCH		0x14a
 #define BTN_STYLUS		0x14b
 #define BTN_STYLUS2		0x14c
@@ -815,9 +863,17 @@ struct input_keymap_entry {
 #define SW_KEYPAD_SLIDE		0x0a  /* set = keypad slide out */
 #define SW_FRONT_PROXIMITY	0x0b  /* set = front proximity sensor active */
 #define SW_ROTATE_LOCK		0x0c  /* set = rotate locked/disabled */
+<<<<<<< HEAD
 #define SW_HPHL_OVERCURRENT	0x0d  /* set = over current on left hph */
 #define SW_HPHR_OVERCURRENT	0x0e  /* set = over current on right hph */
 #define SW_MAX			0x0f
+=======
+#define SW_LINEIN_INSERT	0x0d  /* set = inserted */
+#define SW_HPHL_OVERCURRENT    0x0e  /* set = over current on left hph */
+#define SW_HPHR_OVERCURRENT    0x0f  /* set = over current on right hph */
+#define SW_UNSUPPORT_INSERT	0x10  /* set = unsupported device inserted */
+#define SW_MAX			0x20
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SW_CNT			(SW_MAX+1)
 
 /*
@@ -1612,7 +1668,11 @@ struct ff_device {
 	struct file *effect_owners[];
 };
 
+<<<<<<< HEAD
 int input_ff_create(struct input_dev *dev, int max_effects);
+=======
+int input_ff_create(struct input_dev *dev, unsigned int max_effects);
+>>>>>>> refs/remotes/origin/cm-10.0
 void input_ff_destroy(struct input_dev *dev);
 
 int input_ff_event(struct input_dev *dev, unsigned int type, unsigned int code, int value);

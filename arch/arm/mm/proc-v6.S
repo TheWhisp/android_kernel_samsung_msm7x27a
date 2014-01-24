@@ -55,8 +55,21 @@ ENTRY(cpu_v6_proc_fin)
  *	- loc   - location to jump to for soft reset
  */
 	.align	5
+<<<<<<< HEAD
 ENTRY(cpu_v6_reset)
 	mov	pc, r0
+=======
+	.pushsection	.idmap.text, "ax"
+ENTRY(cpu_v6_reset)
+	mrc	p15, 0, r1, c1, c0, 0		@ ctrl register
+	bic	r1, r1, #0x1			@ ...............m
+	mcr	p15, 0, r1, c1, c0, 0		@ disable MMU
+	mov	r1, #0
+	mcr	p15, 0, r1, c7, c5, 4		@ ISB
+	mov	pc, r0
+ENDPROC(cpu_v6_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  *	cpu_v6_do_idle()
@@ -129,6 +142,7 @@ ENTRY(cpu_v6_set_pte_ext)
 
 /* Suspend/resume support: taken from arch/arm/mach-s3c64xx/sleep.S */
 .globl	cpu_v6_suspend_size
+<<<<<<< HEAD
 .equ	cpu_v6_suspend_size, 4 * 8
 #ifdef CONFIG_PM_SLEEP
 ENTRY(cpu_v6_do_suspend)
@@ -143,6 +157,20 @@ ENTRY(cpu_v6_do_suspend)
 	mrc	p15, 0, r11, c1, c0, 0	@ control register
 	stmia	r0, {r4 - r11}
 	ldmfd	sp!, {r4- r11, pc}
+=======
+.equ	cpu_v6_suspend_size, 4 * 6
+#ifdef CONFIG_ARM_CPU_SUSPEND
+ENTRY(cpu_v6_do_suspend)
+	stmfd	sp!, {r4 - r9, lr}
+	mrc	p15, 0, r4, c13, c0, 0	@ FCSE/PID
+	mrc	p15, 0, r5, c3, c0, 0	@ Domain ID
+	mrc	p15, 0, r6, c2, c0, 1	@ Translation table base 1
+	mrc	p15, 0, r7, c1, c0, 1	@ auxiliary control register
+	mrc	p15, 0, r8, c1, c0, 2	@ co-processor access control
+	mrc	p15, 0, r9, c1, c0, 0	@ control register
+	stmia	r0, {r4 - r9}
+	ldmfd	sp!, {r4- r9, pc}
+>>>>>>> refs/remotes/origin/cm-10.0
 ENDPROC(cpu_v6_do_suspend)
 
 ENTRY(cpu_v6_do_resume)
@@ -151,6 +179,7 @@ ENTRY(cpu_v6_do_resume)
 	mcr	p15, 0, ip, c7, c5, 0	@ invalidate I cache
 	mcr	p15, 0, ip, c7, c15, 0	@ clean+invalidate cache
 	mcr	p15, 0, ip, c7, c10, 4	@ drain write buffer
+<<<<<<< HEAD
 	ldmia	r0, {r4 - r11}
 	mcr	p15, 0, r4, c13, c0, 0	@ FCSE/PID
 	mcr	p15, 0, r5, c13, c0, 1	@ Context ID
@@ -180,6 +209,26 @@ cpu_resume_l1_flags:
 cpu_v6_name:
 	.asciz	"ARMv6-compatible processor"
 	.size	cpu_v6_name, . - cpu_v6_name
+=======
+	mcr	p15, 0, ip, c13, c0, 1	@ set reserved context ID
+	ldmia	r0, {r4 - r9}
+	mcr	p15, 0, r4, c13, c0, 0	@ FCSE/PID
+	mcr	p15, 0, r5, c3, c0, 0	@ Domain ID
+	ALT_SMP(orr	r1, r1, #TTB_FLAGS_SMP)
+	ALT_UP(orr	r1, r1, #TTB_FLAGS_UP)
+	mcr	p15, 0, r1, c2, c0, 0	@ Translation table base 0
+	mcr	p15, 0, r6, c2, c0, 1	@ Translation table base 1
+	mcr	p15, 0, r7, c1, c0, 1	@ auxiliary control register
+	mcr	p15, 0, r8, c1, c0, 2	@ co-processor access control
+	mcr	p15, 0, ip, c2, c0, 2	@ TTB control register
+	mcr	p15, 0, ip, c7, c5, 4	@ ISB
+	mov	r0, r9			@ control register
+	b	cpu_resume_mmu
+ENDPROC(cpu_v6_do_resume)
+#endif
+
+	string	cpu_v6_name, "ARMv6-compatible processor"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.align
 
@@ -231,6 +280,25 @@ __v6_setup:
 	mrc	p15, 0, r0, c1, c0, 0		@ read control register
 	bic	r0, r0, r5			@ clear bits them
 	orr	r0, r0, r6			@ set them
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARM_ERRATA_364296
+	/*
+	 * Workaround for the 364296 ARM1136 r0p2 erratum (possible cache data
+	 * corruption with hit-under-miss enabled). The conditional code below
+	 * (setting the undocumented bit 31 in the auxiliary control register
+	 * and the FI bit in the control register) disables hit-under-miss
+	 * without putting the processor into full low interrupt latency mode.
+	 */
+	ldr	r6, =0x4107b362			@ id for ARM1136 r0p2
+	mrc	p15, 0, r5, c0, c0, 0		@ get processor id
+	teq	r5, r6				@ check for the faulty core
+	mrceq	p15, 0, r5, c1, c0, 1		@ load aux control reg
+	orreq	r5, r5, #(1 << 31)		@ set the undocumented bit 31
+	mcreq	p15, 0, r5, c1, c0, 1		@ write aux control reg
+	orreq	r0, r0, #(1 << 21)		@ low interrupt latency configuration
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 	mov	pc, lr				@ return to head.S:__ret
 
 	/*
@@ -245,6 +313,7 @@ v6_crval:
 
 	__INITDATA
 
+<<<<<<< HEAD
 	.type	v6_processor_functions, #object
 ENTRY(v6_processor_functions)
 	.word	v6_early_abort
@@ -272,6 +341,15 @@ cpu_arch_name:
 cpu_elf_name:
 	.asciz	"v6"
 	.size	cpu_elf_name, . - cpu_elf_name
+=======
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions v6, dabort=v6_early_abort, pabort=v6_pabort, suspend=1
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv6"
+	string	cpu_elf_name, "v6"
+>>>>>>> refs/remotes/origin/cm-10.0
 	.align
 
 	.section ".proc.info.init", #alloc, #execinstr

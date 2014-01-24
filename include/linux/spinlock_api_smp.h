@@ -67,7 +67,11 @@ _raw_spin_unlock_irqrestore(raw_spinlock_t *lock, unsigned long flags)
 #define _raw_spin_trylock_bh(lock) __raw_spin_trylock_bh(lock)
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_INLINE_SPIN_UNLOCK
+=======
+#ifndef CONFIG_UNINLINE_SPIN_UNLOCK
+>>>>>>> refs/remotes/origin/cm-10.0
 #define _raw_spin_unlock(lock) __raw_spin_unlock(lock)
 #endif
 

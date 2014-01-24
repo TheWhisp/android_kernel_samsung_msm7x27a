@@ -5,12 +5,20 @@
  * because of its small size we include it in the SSB core
  * instead of creating a standalone module.
  *
+<<<<<<< HEAD
  * Copyright 2007  Michael Buesch <mb@bu3sch.de>
+=======
+ * Copyright 2007  Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  */
 
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ssb/ssb.h>
 
 #include "ssb_private.h"

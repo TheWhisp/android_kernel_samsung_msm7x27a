@@ -9,6 +9,10 @@
  * your option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mmc/host.h>
 #include <linux/mmc/card.h>
 #include <linux/mmc/sdio.h>
@@ -195,6 +199,12 @@ static inline unsigned int sdio_max_byte_size(struct sdio_func *func)
 	else
 		mval = min(mval, func->max_blksize);
 
+<<<<<<< HEAD
+=======
+	if (mmc_card_broken_byte_mode_512(func->card))
+		return min(mval, 511u);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	return min(mval, 512u); /* maximum size for byte mode */
 }
 
@@ -313,7 +323,11 @@ static int sdio_io_rw_ext_helper(struct sdio_func *func, int write,
 			func->card->host->max_seg_size / func->cur_blksize);
 		max_blocks = min(max_blocks, 511u);
 
+<<<<<<< HEAD
 		while (remainder > func->cur_blksize) {
+=======
+		while (remainder >= func->cur_blksize) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			unsigned blocks;
 
 			blocks = remainder / func->cur_blksize;
@@ -338,8 +352,14 @@ static int sdio_io_rw_ext_helper(struct sdio_func *func, int write,
 	while (remainder > 0) {
 		size = min(remainder, sdio_max_byte_size(func));
 
+<<<<<<< HEAD
 		ret = mmc_io_rw_extended(func->card, write, func->num, addr,
 			 incr_addr, buf, 1, size);
+=======
+		/* Indicate byte mode by setting "blocks" = 0 */
+		ret = mmc_io_rw_extended(func->card, write, func->num, addr,
+			 incr_addr, buf, 0, size);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret)
 			return ret;
 

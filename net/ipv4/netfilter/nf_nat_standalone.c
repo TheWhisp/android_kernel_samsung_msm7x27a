@@ -88,7 +88,11 @@ nf_nat_fn(unsigned int hooknum,
 
 	/* We never see fragments: conntrack defrags on pre-routing
 	   and local-out, and nf_nat_out protects post-routing. */
+<<<<<<< HEAD
 	NF_CT_ASSERT(!(ip_hdr(skb)->frag_off & htons(IP_MF | IP_OFFSET)));
+=======
+	NF_CT_ASSERT(!ip_is_fragment(ip_hdr(skb)));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ct = nf_ct_get(skb, &ctinfo);
 	/* Can't track?  It's not due to stress, or conntrack would
@@ -137,7 +141,11 @@ nf_nat_fn(unsigned int hooknum,
 				return ret;
 		} else
 			pr_debug("Already setup manip %s for ct %p\n",
+<<<<<<< HEAD
 				 maniptype == IP_NAT_MANIP_SRC ? "SRC" : "DST",
+=======
+				 maniptype == NF_NAT_MANIP_SRC ? "SRC" : "DST",
+>>>>>>> refs/remotes/origin/cm-10.0
 				 ct);
 		break;
 
@@ -286,7 +294,11 @@ static int __init nf_nat_standalone_init(void)
 
 #ifdef CONFIG_XFRM
 	BUG_ON(ip_nat_decode_session != NULL);
+<<<<<<< HEAD
 	rcu_assign_pointer(ip_nat_decode_session, nat_decode_session);
+=======
+	RCU_INIT_POINTER(ip_nat_decode_session, nat_decode_session);
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 	ret = nf_nat_rule_init();
 	if (ret < 0) {
@@ -304,7 +316,11 @@ static int __init nf_nat_standalone_init(void)
 	nf_nat_rule_cleanup();
  cleanup_decode_session:
 #ifdef CONFIG_XFRM
+<<<<<<< HEAD
 	rcu_assign_pointer(ip_nat_decode_session, NULL);
+=======
+	RCU_INIT_POINTER(ip_nat_decode_session, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	synchronize_net();
 #endif
 	return ret;
@@ -315,7 +331,11 @@ static void __exit nf_nat_standalone_fini(void)
 	nf_unregister_hooks(nf_nat_ops, ARRAY_SIZE(nf_nat_ops));
 	nf_nat_rule_cleanup();
 #ifdef CONFIG_XFRM
+<<<<<<< HEAD
 	rcu_assign_pointer(ip_nat_decode_session, NULL);
+=======
+	RCU_INIT_POINTER(ip_nat_decode_session, NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	synchronize_net();
 #endif
 	/* Conntrack caches are unregistered in nf_conntrack_cleanup */

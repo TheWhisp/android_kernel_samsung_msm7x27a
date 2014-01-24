@@ -186,9 +186,15 @@ static struct zl10353_config ce6230_zl10353_config = {
 static int ce6230_zl10353_frontend_attach(struct dvb_usb_adapter *adap)
 {
 	deb_info("%s:\n", __func__);
+<<<<<<< HEAD
 	adap->fe = dvb_attach(zl10353_attach, &ce6230_zl10353_config,
 		&adap->dev->i2c_adap);
 	if (adap->fe == NULL)
+=======
+	adap->fe_adap[0].fe = dvb_attach(zl10353_attach, &ce6230_zl10353_config,
+		&adap->dev->i2c_adap);
+	if (adap->fe_adap[0].fe == NULL)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	return 0;
 }
@@ -214,7 +220,11 @@ static int ce6230_mxl5003s_tuner_attach(struct dvb_usb_adapter *adap)
 {
 	int ret;
 	deb_info("%s:\n", __func__);
+<<<<<<< HEAD
 	ret = dvb_attach(mxl5005s_attach, adap->fe, &adap->dev->i2c_adap,
+=======
+	ret = dvb_attach(mxl5005s_attach, adap->fe_adap[0].fe, &adap->dev->i2c_adap,
+>>>>>>> refs/remotes/origin/cm-10.0
 			&ce6230_mxl5003s_config) == NULL ? -ENODEV : 0;
 	return ret;
 }
@@ -273,6 +283,11 @@ static struct dvb_usb_device_properties ce6230_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.frontend_attach  = ce6230_zl10353_frontend_attach,
 			.tuner_attach     = ce6230_mxl5003s_tuner_attach,
 			.stream = {
@@ -285,6 +300,10 @@ static struct dvb_usb_device_properties ce6230_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 
@@ -314,6 +333,7 @@ static struct usb_driver ce6230_driver = {
 	.id_table   = ce6230_table,
 };
 
+<<<<<<< HEAD
 /* module stuff */
 static int __init ce6230_module_init(void)
 {
@@ -335,6 +355,9 @@ static void __exit ce6230_module_exit(void)
 
 module_init(ce6230_module_init);
 module_exit(ce6230_module_exit);
+=======
+module_usb_driver(ce6230_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Antti Palosaari <crope@iki.fi>");
 MODULE_DESCRIPTION("Driver for Intel CE6230 DVB-T USB2.0");

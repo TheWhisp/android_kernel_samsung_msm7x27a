@@ -8,6 +8,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * moves the new kernel to its destination...
  * %r2 = pointer to first kimage_entry_t
@@ -23,8 +28,12 @@
  */
 
 	.text
+<<<<<<< HEAD
 	.globl		relocate_kernel
 	relocate_kernel:
+=======
+ENTRY(relocate_kernel)
+>>>>>>> refs/remotes/origin/cm-10.0
 		basr	%r13,0		# base address
 	.base:
 		stnsm	sys_msk-.base(%r13),0xfb	# disable DAT
@@ -115,6 +124,10 @@
 		.byte	0
 		.align	8
 	relocate_kernel_end:
+<<<<<<< HEAD
+=======
+	.align 8
+>>>>>>> refs/remotes/origin/cm-10.0
 	.globl	relocate_kernel_len
 	relocate_kernel_len:
 		.quad	relocate_kernel_end - relocate_kernel

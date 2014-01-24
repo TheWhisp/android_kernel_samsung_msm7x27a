@@ -7,6 +7,10 @@
 
 #include <linux/types.h>
 #include <asm/compiler.h>
+<<<<<<< HEAD
+=======
+#include <asm/mce.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * MCPCIA is the internal name for a core logic chipset which provides

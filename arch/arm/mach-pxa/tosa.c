@@ -404,8 +404,13 @@ static struct pda_power_pdata tosa_power_data = {
 static struct resource tosa_power_resource[] = {
 	{
 		.name		= "ac",
+<<<<<<< HEAD
 		.start		= gpio_to_irq(TOSA_GPIO_AC_IN),
 		.end		= gpio_to_irq(TOSA_GPIO_AC_IN),
+=======
+		.start		= PXA_GPIO_TO_IRQ(TOSA_GPIO_AC_IN),
+		.end		= PXA_GPIO_TO_IRQ(TOSA_GPIO_AC_IN),
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags		= IORESOURCE_IRQ |
 				  IORESOURCE_IRQ_HIGHEDGE |
 				  IORESOURCE_IRQ_LOWEDGE,
@@ -424,6 +429,7 @@ static struct platform_device tosa_power_device = {
  * Tosa Keyboard
  */
 static const uint32_t tosakbd_keymap[] = {
+<<<<<<< HEAD
 	KEY(0, 1, KEY_W),
 	KEY(0, 5, KEY_K),
 	KEY(0, 6, KEY_BACKSPACE),
@@ -475,6 +481,59 @@ static const uint32_t tosakbd_keymap[] = {
 	KEY(6, 5, KEY_LEFT),
 	KEY(6, 6, KEY_DOWN),
 	KEY(6, 7, KEY_RIGHT),
+=======
+	KEY(0, 2, KEY_W),
+	KEY(0, 6, KEY_K),
+	KEY(0, 7, KEY_BACKSPACE),
+	KEY(0, 8, KEY_P),
+	KEY(1, 1, KEY_Q),
+	KEY(1, 2, KEY_E),
+	KEY(1, 3, KEY_T),
+	KEY(1, 4, KEY_Y),
+	KEY(1, 6, KEY_O),
+	KEY(1, 7, KEY_I),
+	KEY(1, 8, KEY_COMMA),
+	KEY(2, 1, KEY_A),
+	KEY(2, 2, KEY_D),
+	KEY(2, 3, KEY_G),
+	KEY(2, 4, KEY_U),
+	KEY(2, 6, KEY_L),
+	KEY(2, 7, KEY_ENTER),
+	KEY(2, 8, KEY_DOT),
+	KEY(3, 1, KEY_Z),
+	KEY(3, 2, KEY_C),
+	KEY(3, 3, KEY_V),
+	KEY(3, 4, KEY_J),
+	KEY(3, 5, TOSA_KEY_ADDRESSBOOK),
+	KEY(3, 6, TOSA_KEY_CANCEL),
+	KEY(3, 7, TOSA_KEY_CENTER),
+	KEY(3, 8, TOSA_KEY_OK),
+	KEY(3, 9, KEY_LEFTSHIFT),
+	KEY(4, 1, KEY_S),
+	KEY(4, 2, KEY_R),
+	KEY(4, 3, KEY_B),
+	KEY(4, 4, KEY_N),
+	KEY(4, 5, TOSA_KEY_CALENDAR),
+	KEY(4, 6, TOSA_KEY_HOMEPAGE),
+	KEY(4, 7, KEY_LEFTCTRL),
+	KEY(4, 8, TOSA_KEY_LIGHT),
+	KEY(4, 10, KEY_RIGHTSHIFT),
+	KEY(5, 1, KEY_TAB),
+	KEY(5, 2, KEY_SLASH),
+	KEY(5, 3, KEY_H),
+	KEY(5, 4, KEY_M),
+	KEY(5, 5, TOSA_KEY_MENU),
+	KEY(5, 7, KEY_UP),
+	KEY(5, 11, TOSA_KEY_FN),
+	KEY(6, 1, KEY_X),
+	KEY(6, 2, KEY_F),
+	KEY(6, 3, KEY_SPACE),
+	KEY(6, 4, KEY_APOSTROPHE),
+	KEY(6, 5, TOSA_KEY_MAIL),
+	KEY(6, 6, KEY_LEFT),
+	KEY(6, 7, KEY_DOWN),
+	KEY(6, 8, KEY_RIGHT),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct matrix_keymap_data tosakbd_keymap_data = {
@@ -889,6 +948,14 @@ static struct platform_device wm9712_device = {
 	.id	= -1,
 };
 
+<<<<<<< HEAD
+=======
+static struct platform_device tosa_audio_device = {
+	.name	= "tosa-audio",
+	.id	= -1,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_device *devices[] __initdata = {
 	&tosascoop_device,
 	&tosascoop_jc_device,
@@ -901,11 +968,19 @@ static struct platform_device *devices[] __initdata = {
 	&sharpsl_rom_device,
 	&wm9712_device,
 	&tosa_gpio_vbus,
+<<<<<<< HEAD
+=======
+	&tosa_audio_device,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static void tosa_poweroff(void)
 {
+<<<<<<< HEAD
 	arm_machine_restart('g', NULL);
+=======
+	pxa_restart('g', NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void tosa_restart(char mode, const char *cmd)
@@ -935,7 +1010,10 @@ static void __init tosa_init(void)
 	init_gpio_reset(TOSA_GPIO_ON_RESET, 0, 0);
 
 	pm_power_off = tosa_poweroff;
+<<<<<<< HEAD
 	arm_pm_restart = tosa_restart;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	PCFR |= PCFR_OPDE;
 
@@ -960,8 +1038,13 @@ static void __init tosa_init(void)
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 }
 
+<<<<<<< HEAD
 static void __init fixup_tosa(struct machine_desc *desc,
 		struct tag *tags, char **cmdline, struct meminfo *mi)
+=======
+static void __init fixup_tosa(struct tag *tags, char **cmdline,
+			      struct meminfo *mi)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	sharpsl_save_param();
 	mi->nr_banks=1;
@@ -970,10 +1053,21 @@ static void __init fixup_tosa(struct machine_desc *desc,
 }
 
 MACHINE_START(TOSA, "SHARP Tosa")
+<<<<<<< HEAD
+=======
+	.restart_mode	= 'g',
+>>>>>>> refs/remotes/origin/cm-10.0
 	.fixup          = fixup_tosa,
 	.map_io         = pxa25x_map_io,
 	.nr_irqs	= TOSA_NR_IRQS,
 	.init_irq       = pxa25x_init_irq,
+<<<<<<< HEAD
 	.init_machine   = tosa_init,
 	.timer          = &pxa_timer,
+=======
+	.handle_irq       = pxa25x_handle_irq,
+	.init_machine   = tosa_init,
+	.timer          = &pxa_timer,
+	.restart	= tosa_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

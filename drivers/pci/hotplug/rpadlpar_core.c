@@ -18,6 +18,10 @@
 #undef DEBUG
 
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/pci.h>
 #include <linux/string.h>
 #include <linux/vmalloc.h>
@@ -158,7 +162,11 @@ static void dlpar_pci_add_bus(struct device_node *dn)
 	/* Scan below the new bridge */
 	if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE ||
 	    dev->hdr_type == PCI_HEADER_TYPE_CARDBUS)
+<<<<<<< HEAD
 		of_scan_pci_bridge(dn, dev);
+=======
+		of_scan_pci_bridge(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Map IO space for child bus, which may or may not succeed */
 	pcibios_map_io_space(dev->subordinate);
@@ -388,7 +396,11 @@ int dlpar_remove_pci_slot(char *drc_name, struct device_node *dn)
 	BUG_ON(!bus->self);
 	pr_debug("PCI: Now removing bridge device %s\n", pci_name(bus->self));
 	eeh_remove_bus_device(bus->self);
+<<<<<<< HEAD
 	pci_remove_bus_device(bus->self);
+=======
+	pci_stop_and_remove_bus_device(bus->self);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

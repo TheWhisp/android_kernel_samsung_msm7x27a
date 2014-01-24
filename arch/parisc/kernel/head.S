@@ -195,6 +195,11 @@ common_stext:
 	ldw             MEM_PDC_HI(%r0),%r6
 	depd            %r6, 31, 32, %r3        /* move to upper word */
 
+<<<<<<< HEAD
+=======
+	mfctl		%cr30,%r6		/* PCX-W2 firmware bug */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	ldo             PDC_PSW(%r0),%arg0              /* 21 */
 	ldo             PDC_PSW_SET_DEFAULTS(%r0),%arg1 /* 2 */
 	ldo             PDC_PSW_WIDE_BIT(%r0),%arg2     /* 2 */
@@ -203,6 +208,11 @@ common_stext:
 	copy            %r0,%arg3
 
 stext_pdc_ret:
+<<<<<<< HEAD
+=======
+	mtctl		%r6,%cr30		/* restore task thread info */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* restore rfi target address*/
 	ldd             TI_TASK-THREAD_SZ_ALGN(%sp), %r10
 	tophys_r1       %r10

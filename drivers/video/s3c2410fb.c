@@ -26,8 +26,13 @@
 #include <linux/platform_device.h>
 #include <linux/clk.h>
 #include <linux/cpufreq.h>
+<<<<<<< HEAD
 
 #include <asm/io.h>
+=======
+#include <linux/io.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/div64.h>
 
 #include <asm/mach/map.h>
@@ -45,10 +50,17 @@
 #ifdef CONFIG_FB_S3C2410_DEBUG
 static int debug	= 1;
 #else
+<<<<<<< HEAD
 static int debug	= 0;
 #endif
 
 #define dprintk(msg...)	if (debug) { printk(KERN_DEBUG "s3c2410fb: " msg); }
+=======
+static int debug;
+#endif
+
+#define dprintk(msg...)	if (debug) printk(KERN_DEBUG "s3c2410fb: " msg);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* useful functions */
 
@@ -567,11 +579,18 @@ static int s3c2410fb_blank(int blank_mode, struct fb_info *info)
 
 	tpal_reg += is_s3c2412(fbi) ? S3C2412_TPAL : S3C2410_TPAL;
 
+<<<<<<< HEAD
 	if (blank_mode == FB_BLANK_POWERDOWN) {
 		s3c2410fb_lcd_enable(fbi, 0);
 	} else {
 		s3c2410fb_lcd_enable(fbi, 1);
 	}
+=======
+	if (blank_mode == FB_BLANK_POWERDOWN)
+		s3c2410fb_lcd_enable(fbi, 0);
+	else
+		s3c2410fb_lcd_enable(fbi, 1);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (blank_mode == FB_BLANK_UNBLANK)
 		writel(0x0, tpal_reg);
@@ -767,7 +786,10 @@ static irqreturn_t s3c2410fb_irq(int irq, void *dev_id)
 static int s3c2410fb_cpufreq_transition(struct notifier_block *nb,
 					unsigned long val, void *data)
 {
+<<<<<<< HEAD
 	struct cpufreq_freqs *freqs = data;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct s3c2410fb_info *info;
 	struct fb_info *fbinfo;
 	long delta_f;
@@ -813,7 +835,11 @@ static inline void s3c2410fb_cpufreq_deregister(struct s3c2410fb_info *info)
 #endif
 
 
+<<<<<<< HEAD
 static char driver_name[] = "s3c2410fb";
+=======
+static const char driver_name[] = "s3c2410fb";
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 				  enum s3c_drv_type drv_type)
@@ -882,7 +908,14 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 		goto release_mem;
 	}
 
+<<<<<<< HEAD
 	info->irq_base = info->io + ((drv_type == DRV_S3C2412) ? S3C2412_LCDINTBASE : S3C2410_LCDINTBASE);
+=======
+	if (drv_type == DRV_S3C2412)
+		info->irq_base = info->io + S3C2412_LCDINTBASE;
+	else
+		info->irq_base = info->io + S3C2410_LCDINTBASE;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	dprintk("devinit\n");
 
@@ -911,7 +944,11 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 	for (i = 0; i < 256; i++)
 		info->palette_buffer[i] = PALETTE_BUFF_CLEAR;
 
+<<<<<<< HEAD
 	ret = request_irq(irq, s3c2410fb_irq, IRQF_DISABLED, pdev->name, info);
+=======
+	ret = request_irq(irq, s3c2410fb_irq, 0, pdev->name, info);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(&pdev->dev, "cannot get irq %d - err %d\n", irq, ret);
 		ret = -EBUSY;
@@ -928,7 +965,11 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 	clk_enable(info->clk);
 	dprintk("got and enabled clock\n");
 
+<<<<<<< HEAD
 	msleep(1);
+=======
+	usleep_range(1000, 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	info->clk_rate = clk_get_rate(info->clk);
 
@@ -976,9 +1017,14 @@ static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
 
 	/* create device files */
 	ret = device_create_file(&pdev->dev, &dev_attr_debug);
+<<<<<<< HEAD
 	if (ret) {
 		printk(KERN_ERR "failed to add debug attribute\n");
 	}
+=======
+	if (ret)
+		printk(KERN_ERR "failed to add debug attribute\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
 		fbinfo->node, fbinfo->fix.id);
@@ -1028,7 +1074,11 @@ static int __devexit s3c2410fb_remove(struct platform_device *pdev)
 	s3c2410fb_cpufreq_deregister(info);
 
 	s3c2410fb_lcd_enable(info, 0);
+<<<<<<< HEAD
 	msleep(1);
+=======
+	usleep_range(1000, 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	s3c2410fb_unmap_video_memory(fbinfo);
 
@@ -1065,7 +1115,11 @@ static int s3c2410fb_suspend(struct platform_device *dev, pm_message_t state)
 	 * the LCD DMA engine is not going to get back on the bus
 	 * before the clock goes off again (bjd) */
 
+<<<<<<< HEAD
 	msleep(1);
+=======
+	usleep_range(1000, 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_disable(info->clk);
 
 	return 0;
@@ -1077,7 +1131,11 @@ static int s3c2410fb_resume(struct platform_device *dev)
 	struct s3c2410fb_info *info = fbinfo->par;
 
 	clk_enable(info->clk);
+<<<<<<< HEAD
 	msleep(1);
+=======
+	usleep_range(1000, 1000);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	s3c2410fb_init_registers(fbinfo);
 

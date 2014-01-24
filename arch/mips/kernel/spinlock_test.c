@@ -3,7 +3,11 @@
 #include <linux/hrtimer.h>
 #include <linux/fs.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/spinlock.h>
 
 

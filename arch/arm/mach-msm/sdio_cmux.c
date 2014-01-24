@@ -12,6 +12,10 @@
 
 #define DEBUG
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/fs.h>
 #include <linux/device.h>
 #include <linux/delay.h>
@@ -24,6 +28,10 @@
 #include <linux/slab.h>
 #include <linux/termios.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/sdio_al.h>
 #include <mach/sdio_cmux.h>

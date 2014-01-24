@@ -9,7 +9,11 @@
  */
 
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/param.h>

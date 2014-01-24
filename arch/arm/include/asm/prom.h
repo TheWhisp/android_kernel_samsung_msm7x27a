@@ -13,9 +13,12 @@
 
 #ifdef CONFIG_OF
 
+<<<<<<< HEAD
 #include <asm/setup.h>
 #include <asm/irq.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct machine_desc *setup_machine_fdt(unsigned int dt_phys);
 extern void arm_dt_memblock_reserve(void);
 

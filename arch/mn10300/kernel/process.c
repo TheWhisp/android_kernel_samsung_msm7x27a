@@ -25,9 +25,15 @@
 #include <linux/err.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/system.h>
+=======
+#include <linux/rcupdate.h>
+#include <asm/uaccess.h>
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/io.h>
 #include <asm/processor.h>
 #include <asm/mmu_context.h>
@@ -108,6 +114,10 @@ void cpu_idle(void)
 {
 	/* endless idle loop with no priority at all */
 	for (;;) {
+<<<<<<< HEAD
+=======
+		rcu_idle_enter();
+>>>>>>> refs/remotes/origin/cm-10.0
 		while (!need_resched()) {
 			void (*idle)(void);
 
@@ -122,10 +132,16 @@ void cpu_idle(void)
 			}
 			idle();
 		}
+<<<<<<< HEAD
 
 		preempt_enable_no_resched();
 		schedule();
 		preempt_disable();
+=======
+		rcu_idle_exit();
+
+		schedule_preempt_disabled();
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 

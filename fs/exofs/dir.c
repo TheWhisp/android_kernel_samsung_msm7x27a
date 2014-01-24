@@ -234,7 +234,11 @@ static unsigned char exofs_type_by_mode[S_IFMT >> S_SHIFT] = {
 static inline
 void exofs_set_de_type(struct exofs_dir_entry *de, struct inode *inode)
 {
+<<<<<<< HEAD
 	mode_t mode = inode->i_mode;
+=======
+	umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/cm-10.0
 	de->file_type = exofs_type_by_mode[(mode & S_IFMT) >> S_SHIFT];
 }
 
@@ -597,7 +601,11 @@ int exofs_make_empty(struct inode *inode, struct inode *parent)
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	kaddr = kmap_atomic(page, KM_USER0);
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
 	de = (struct exofs_dir_entry *)kaddr;
 	de->name_len = 1;
 	de->rec_len = cpu_to_le16(EXOFS_DIR_REC_LEN(1));
@@ -611,7 +619,11 @@ int exofs_make_empty(struct inode *inode, struct inode *parent)
 	de->inode_no = cpu_to_le64(parent->i_ino);
 	memcpy(de->name, PARENT_DIR, sizeof(PARENT_DIR));
 	exofs_set_de_type(de, inode);
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/cm-10.0
 	err = exofs_commit_chunk(page, 0, chunk_size);
 fail:
 	page_cache_release(page);

@@ -20,7 +20,13 @@
 
 #include <linux/types.h>
 #include <linux/ioctl.h>
+<<<<<<< HEAD
 #include <linux/i2c.h>
+=======
+#include <linux/module.h>
+#include <linux/i2c.h>
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_SPI)
 #include <linux/spi/spi.h>
 #endif
@@ -38,6 +44,10 @@ int v4l2_device_register(struct device *dev, struct v4l2_device *v4l2_dev)
 	mutex_init(&v4l2_dev->ioctl_lock);
 	v4l2_prio_init(&v4l2_dev->prio);
 	kref_init(&v4l2_dev->ref);
+<<<<<<< HEAD
+=======
+	get_device(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	v4l2_dev->dev = dev;
 	if (dev == NULL) {
 		/* If dev == NULL, then name must be filled in by the caller */
@@ -93,6 +103,10 @@ void v4l2_device_disconnect(struct v4l2_device *v4l2_dev)
 
 	if (dev_get_drvdata(v4l2_dev->dev) == v4l2_dev)
 		dev_set_drvdata(v4l2_dev->dev, NULL);
+<<<<<<< HEAD
+=======
+	put_device(v4l2_dev->dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	v4l2_dev->dev = NULL;
 }
 EXPORT_SYMBOL_GPL(v4l2_device_disconnect);
@@ -191,6 +205,16 @@ int v4l2_device_register_subdev(struct v4l2_device *v4l2_dev,
 }
 EXPORT_SYMBOL_GPL(v4l2_device_register_subdev);
 
+<<<<<<< HEAD
+=======
+static void v4l2_device_release_subdev_node(struct video_device *vdev)
+{
+	struct v4l2_subdev *sd = video_get_drvdata(vdev);
+	sd->devnode = NULL;
+	kfree(vdev);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 int v4l2_device_register_subdev_nodes(struct v4l2_device *v4l2_dev)
 {
 	struct video_device *vdev;
@@ -204,6 +228,7 @@ int v4l2_device_register_subdev_nodes(struct v4l2_device *v4l2_dev)
 		if (!(sd->flags & V4L2_SUBDEV_FL_HAS_DEVNODE))
 			continue;
 
+<<<<<<< HEAD
 		vdev = &sd->devnode;
 		strlcpy(vdev->name, sd->name, sizeof(vdev->name));
 		vdev->v4l2_dev = v4l2_dev;
@@ -219,6 +244,42 @@ int v4l2_device_register_subdev_nodes(struct v4l2_device *v4l2_dev)
 #endif
 	}
 	return 0;
+=======
+		vdev = kzalloc(sizeof(*vdev), GFP_KERNEL);
+		if (!vdev) {
+			err = -ENOMEM;
+			goto clean_up;
+		}
+
+		video_set_drvdata(vdev, sd);
+		strlcpy(vdev->name, sd->name, sizeof(vdev->name));
+		vdev->v4l2_dev = v4l2_dev;
+		vdev->fops = &v4l2_subdev_fops;
+		vdev->release = v4l2_device_release_subdev_node;
+		vdev->ctrl_handler = sd->ctrl_handler;
+		err = __video_register_device(vdev, VFL_TYPE_SUBDEV, -1, 1,
+					      sd->owner);
+		if (err < 0) {
+			kfree(vdev);
+			goto clean_up;
+		}
+#if defined(CONFIG_MEDIA_CONTROLLER)
+		sd->entity.info.v4l.major = VIDEO_MAJOR;
+		sd->entity.info.v4l.minor = vdev->minor;
+#endif
+		sd->devnode = vdev;
+	}
+	return 0;
+
+clean_up:
+	list_for_each_entry(sd, &v4l2_dev->subdevs, list) {
+		if (!sd->devnode)
+			break;
+		video_unregister_device(sd->devnode);
+	}
+
+	return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL_GPL(v4l2_device_register_subdev_nodes);
 
@@ -244,7 +305,11 @@ void v4l2_device_unregister_subdev(struct v4l2_subdev *sd)
 	if (v4l2_dev->mdev)
 		media_device_unregister_entity(&sd->entity);
 #endif
+<<<<<<< HEAD
 	video_unregister_device(&sd->devnode);
+=======
+	video_unregister_device(sd->devnode);
+>>>>>>> refs/remotes/origin/cm-10.0
 	module_put(sd->owner);
 }
 EXPORT_SYMBOL_GPL(v4l2_device_unregister_subdev);

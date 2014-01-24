@@ -224,9 +224,14 @@ static int vxfs_fill_super(struct super_block *sbp, void *dp, int silent)
 		ret = PTR_ERR(root);
 		goto out;
 	}
+<<<<<<< HEAD
 	sbp->s_root = d_alloc_root(root);
 	if (!sbp->s_root) {
 		iput(root);
+=======
+	sbp->s_root = d_make_root(root);
+	if (!sbp->s_root) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_WARNING "vxfs: unable to get root dentry.\n");
 		goto out_free_ilist;
 	}

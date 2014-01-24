@@ -19,7 +19,11 @@
 	Copyright 2000,2001 Philipp Rumpf <prumpf@mandrakesoft.com>
 
 	Added generic RNG API
+<<<<<<< HEAD
 	Copyright 2006 Michael Buesch <mbuesch@freenet.de>
+=======
+	Copyright 2006 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/cm-10.0
 	Copyright 2005 (c) MontaVista Software, Inc.
 
 	Please read Documentation/hw_random.txt for details on use.

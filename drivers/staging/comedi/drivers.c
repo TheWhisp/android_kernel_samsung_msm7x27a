@@ -42,7 +42,10 @@
 #include <linux/cdev.h>
 #include <linux/dma-mapping.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "comedidev.h"
 #include "internal.h"
@@ -502,7 +505,15 @@ int comedi_buf_alloc(struct comedi_device *dev, struct comedi_subdevice *s,
 		}
 		if (i == n_pages) {
 			async->prealloc_buf =
+<<<<<<< HEAD
 			    vmap(pages, n_pages, VM_MAP, PAGE_KERNEL_NOCACHE);
+=======
+#ifdef PAGE_KERNEL_NOCACHE
+			    vmap(pages, n_pages, VM_MAP, PAGE_KERNEL_NOCACHE);
+#else
+			    vmap(pages, n_pages, VM_MAP, PAGE_KERNEL);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		vfree(pages);
 

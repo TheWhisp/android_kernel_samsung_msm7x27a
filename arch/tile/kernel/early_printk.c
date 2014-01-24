@@ -16,6 +16,10 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqflags.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/setup.h>
 #include <hv/hypervisor.h>
 

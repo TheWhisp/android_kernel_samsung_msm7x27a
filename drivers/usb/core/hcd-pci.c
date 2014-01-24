@@ -173,6 +173,10 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	struct hc_driver	*driver;
 	struct usb_hcd		*hcd;
 	int			retval;
+<<<<<<< HEAD
+=======
+	int			hcd_irq = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (usb_disabled())
 		return -ENODEV;
@@ -187,6 +191,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		return -ENODEV;
 	dev->current_state = PCI_D0;
 
+<<<<<<< HEAD
 	/* The xHCI driver supports MSI and MSI-X,
 	 * so don't fail if the BIOS doesn't provide a legacy IRQ.
 	 */
@@ -196,6 +201,21 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 			pci_name(dev));
 		retval = -ENODEV;
 		goto disable_pci;
+=======
+	/*
+	 * The xHCI driver has its own irq management
+	 * make sure irq setup is not touched for xhci in generic hcd code
+	 */
+	if ((driver->flags & HCD_MASK) != HCD_USB3) {
+		if (!dev->irq) {
+			dev_err(&dev->dev,
+			"Found HC with no IRQ. Check BIOS/PCI %s setup!\n",
+				pci_name(dev));
+			retval = -ENODEV;
+			goto disable_pci;
+		}
+		hcd_irq = dev->irq;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	hcd = usb_create_hcd(driver, &dev->dev, pci_name(dev));
@@ -245,7 +265,11 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 
 	pci_set_master(dev);
 
+<<<<<<< HEAD
 	retval = usb_add_hcd(hcd, dev->irq, IRQF_DISABLED | IRQF_SHARED);
+=======
+	retval = usb_add_hcd(hcd, hcd_irq, IRQF_SHARED);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (retval != 0)
 		goto unmap_registers;
 	set_hs_companion(dev, hcd);
@@ -380,6 +404,10 @@ static int check_root_hub_suspended(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_PM_SLEEP) || defined(CONFIG_PM_RUNTIME)
+>>>>>>> refs/remotes/origin/cm-10.0
 static int suspend_common(struct device *dev, bool do_wakeup)
 {
 	struct pci_dev		*pci_dev = to_pci_dev(dev);
@@ -456,10 +484,13 @@ static int resume_common(struct device *dev, int event)
 
 	pci_set_master(pci_dev);
 
+<<<<<<< HEAD
 	clear_bit(HCD_FLAG_SAW_IRQ, &hcd->flags);
 	if (hcd->shared_hcd)
 		clear_bit(HCD_FLAG_SAW_IRQ, &hcd->shared_hcd->flags);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (hcd->driver->pci_resume && !HCD_DEAD(hcd)) {
 		if (event != PM_EVENT_AUTO_RESUME)
 			wait_for_companions(pci_dev, hcd);
@@ -475,6 +506,10 @@ static int resume_common(struct device *dev, int event)
 	}
 	return retval;
 }
+<<<<<<< HEAD
+=======
+#endif	/* SLEEP || RUNTIME */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef	CONFIG_PM_SLEEP
 

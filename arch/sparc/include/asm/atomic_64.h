@@ -8,7 +8,11 @@
 #define __ARCH_SPARC64_ATOMIC__
 
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define ATOMIC_INIT(i)		{ (i) }
 #define ATOMIC64_INIT(i)	{ (i) }
@@ -70,7 +74,11 @@ extern long atomic64_sub_ret(long, atomic64_t *);
 #define atomic_cmpxchg(v, o, n) (cmpxchg(&((v)->counter), (o), (n)))
 #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
 
+<<<<<<< HEAD
 static inline int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int c, old;
 	c = atomic_read(v);
@@ -82,11 +90,17 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
 			break;
 		c = old;
 	}
+<<<<<<< HEAD
 	return c != (u);
 }
 
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
 
+=======
+	return c;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define atomic64_cmpxchg(v, o, n) \
 	((__typeof__((v)->counter))cmpxchg(&((v)->counter), (o), (n)))
 #define atomic64_xchg(v, new) (xchg(&((v)->counter), new))
@@ -114,5 +128,8 @@ static inline long atomic64_add_unless(atomic64_t *v, long a, long u)
 #define smp_mb__before_atomic_inc()	barrier()
 #define smp_mb__after_atomic_inc()	barrier()
 
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* !(__ARCH_SPARC64_ATOMIC__) */

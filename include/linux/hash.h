@@ -63,7 +63,11 @@ static inline u32 hash_32(u32 val, unsigned int bits)
 	return hash >> (32 - bits);
 }
 
+<<<<<<< HEAD
 static inline unsigned long hash_ptr(void *ptr, unsigned int bits)
+=======
+static inline unsigned long hash_ptr(const void *ptr, unsigned int bits)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return hash_long((unsigned long)ptr, bits);
 }

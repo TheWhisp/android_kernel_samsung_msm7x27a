@@ -84,7 +84,11 @@ out:
 
 struct irqaction c0_compare_irqaction = {
 	.handler = c0_compare_interrupt,
+<<<<<<< HEAD
 	.flags = IRQF_DISABLED | IRQF_PERCPU | IRQF_TIMER,
+=======
+	.flags = IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name = "timer",
 };
 
@@ -103,6 +107,7 @@ static int c0_compare_int_pending(void)
 
 /*
  * Compare interrupt can be routed and latched outside the core,
+<<<<<<< HEAD
  * so a single execution hazard barrier may not be enough to give
  * it time to clear as seen in the Cause register.  4 time the
  * pipeline depth seems reasonably conservative, and empirically
@@ -116,6 +121,12 @@ static int c0_compare_int_pending(void)
 		irq_disable_hazard(); \
 		irq_disable_hazard(); \
 	} while (0)
+=======
+ * so wait up to worst case number of cycle counter ticks for timer interrupt
+ * changes to propagate to the cause register.
+ */
+#define COMPARE_INT_SEEN_TICKS 50
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int c0_compare_int_usable(void)
 {
@@ -126,8 +137,17 @@ int c0_compare_int_usable(void)
 	 * IP7 already pending?  Try to clear it by acking the timer.
 	 */
 	if (c0_compare_int_pending()) {
+<<<<<<< HEAD
 		write_c0_compare(read_c0_count());
 		compare_change_hazard();
+=======
+		cnt = read_c0_count();
+		write_c0_compare(cnt);
+		back_to_back_c0_hazard();
+		while (read_c0_count() < (cnt  + COMPARE_INT_SEEN_TICKS))
+			if (!c0_compare_int_pending())
+				break;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (c0_compare_int_pending())
 			return 0;
 	}
@@ -136,7 +156,11 @@ int c0_compare_int_usable(void)
 		cnt = read_c0_count();
 		cnt += delta;
 		write_c0_compare(cnt);
+<<<<<<< HEAD
 		compare_change_hazard();
+=======
+		back_to_back_c0_hazard();
+>>>>>>> refs/remotes/origin/cm-10.0
 		if ((int)(read_c0_count() - cnt) < 0)
 		    break;
 		/* increase delta if the timer was already expired */
@@ -145,12 +169,26 @@ int c0_compare_int_usable(void)
 	while ((int)(read_c0_count() - cnt) <= 0)
 		;	/* Wait for expiry  */
 
+<<<<<<< HEAD
 	compare_change_hazard();
 	if (!c0_compare_int_pending())
 		return 0;
 
 	write_c0_compare(read_c0_count());
 	compare_change_hazard();
+=======
+	while (read_c0_count() < (cnt + COMPARE_INT_SEEN_TICKS))
+		if (c0_compare_int_pending())
+			break;
+	if (!c0_compare_int_pending())
+		return 0;
+	cnt = read_c0_count();
+	write_c0_compare(cnt);
+	back_to_back_c0_hazard();
+	while (read_c0_count() < (cnt + COMPARE_INT_SEEN_TICKS))
+		if (!c0_compare_int_pending())
+			break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (c0_compare_int_pending())
 		return 0;
 

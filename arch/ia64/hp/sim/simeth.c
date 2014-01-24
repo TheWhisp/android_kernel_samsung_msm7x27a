@@ -20,7 +20,10 @@
 #include <linux/skbuff.h>
 #include <linux/notifier.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <asm/hpsim.h>
 
@@ -129,6 +132,7 @@ netdev_probe(char *name, unsigned char *ether)
 
 
 static inline int
+<<<<<<< HEAD
 netdev_connect(int irq)
 {
 	/* XXX Fix me
@@ -140,6 +144,8 @@ netdev_connect(int irq)
 }
 
 static inline int
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 netdev_attach(int fd, int irq, unsigned int ipaddr)
 {
 	/* this puts the host interface in the right mode (start interrupting) */
@@ -172,7 +178,11 @@ static const struct net_device_ops simeth_netdev_ops = {
 	.ndo_stop		= simeth_close,
 	.ndo_start_xmit		= simeth_tx,
 	.ndo_get_stats		= simeth_get_stats,
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= set_multicast_list, /* not yet used */
+=======
+	.ndo_set_rx_mode	= set_multicast_list, /* not yet used */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 };
 
@@ -193,7 +203,11 @@ simeth_probe1(void)
 	unsigned char mac_addr[ETH_ALEN];
 	struct simeth_local *local;
 	struct net_device *dev;
+<<<<<<< HEAD
 	int fd, i, err, rc;
+=======
+	int fd, err, rc;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * XXX Fix me
@@ -226,14 +240,18 @@ simeth_probe1(void)
 		return err;
 	}
 
+<<<<<<< HEAD
 	if ((rc = assign_irq_vector(AUTO_ASSIGN)) < 0)
 		panic("%s: out of interrupt vectors!\n", __func__);
 	dev->irq = rc;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * attach the interrupt in the simulator, this does enable interrupts
 	 * until a netdev_attach() is called
 	 */
+<<<<<<< HEAD
 	netdev_connect(dev->irq);
 
 	printk(KERN_INFO "%s: hosteth=%s simfd=%d, HwAddr",
@@ -242,6 +260,14 @@ simeth_probe1(void)
 		printk(" %2.2x", dev->dev_addr[i]);
 	}
 	printk(", IRQ %d\n", dev->irq);
+=======
+	if ((rc = hpsim_get_irq(NETWORK_INTR)) < 0)
+		panic("%s: out of interrupt vectors!\n", __func__);
+	dev->irq = rc;
+
+	printk(KERN_INFO "%s: hosteth=%s simfd=%d, HwAddr=%pm, IRQ %d\n",
+	       dev->name, simeth_device, local->simfd, dev->dev_addr, dev->irq);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }

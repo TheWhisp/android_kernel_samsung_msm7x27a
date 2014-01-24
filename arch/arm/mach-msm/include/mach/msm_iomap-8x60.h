@@ -131,4 +131,11 @@
 #define MSM_DEBUG_UART_PHYS	0x19C40000
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef __ASSEMBLY__
+extern void msm_map_msm8x60_io(void);
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

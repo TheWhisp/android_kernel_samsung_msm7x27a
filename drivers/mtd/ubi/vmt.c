@@ -26,6 +26,10 @@
 #include <linux/err.h>
 #include <linux/math64.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ubi.h"
 
 #ifdef CONFIG_MTD_UBI_DEBUG
@@ -871,7 +875,11 @@ static int paranoid_check_volumes(struct ubi_device *ubi)
 {
 	int i, err = 0;
 
+<<<<<<< HEAD
 	if (!(ubi_chk_flags & UBI_CHK_GEN))
+=======
+	if (!ubi->dbg->chk_gen)
+>>>>>>> refs/remotes/origin/cm-10.0
 		return 0;
 
 	for (i = 0; i < ubi->vtbl_slots; i++) {

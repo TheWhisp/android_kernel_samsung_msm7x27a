@@ -7,11 +7,18 @@
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/rwsem.h>
 
 #include <asm/system.h>
 #include <asm/atomic.h>
+=======
+#include <linux/export.h>
+#include <linux/rwsem.h>
+
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * lock for reading
@@ -117,6 +124,7 @@ void down_read_nested(struct rw_semaphore *sem, int subclass)
 
 EXPORT_SYMBOL(down_read_nested);
 
+<<<<<<< HEAD
 void down_read_non_owner(struct rw_semaphore *sem)
 {
 	might_sleep();
@@ -126,6 +134,8 @@ void down_read_non_owner(struct rw_semaphore *sem)
 
 EXPORT_SYMBOL(down_read_non_owner);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void down_write_nested(struct rw_semaphore *sem, int subclass)
 {
 	might_sleep();
@@ -136,6 +146,7 @@ void down_write_nested(struct rw_semaphore *sem, int subclass)
 
 EXPORT_SYMBOL(down_write_nested);
 
+<<<<<<< HEAD
 void up_read_non_owner(struct rw_semaphore *sem)
 {
 	__up_read(sem);
@@ -143,6 +154,8 @@ void up_read_non_owner(struct rw_semaphore *sem)
 
 EXPORT_SYMBOL(up_read_non_owner);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 

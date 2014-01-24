@@ -28,6 +28,11 @@ extern int usb_remove_device(struct usb_device *udev);
 
 extern int usb_get_device_descriptor(struct usb_device *dev,
 		unsigned int size);
+<<<<<<< HEAD
+=======
+extern int usb_get_bos_descriptor(struct usb_device *dev);
+extern void usb_release_bos_descriptor(struct usb_device *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern char *usb_cache_string(struct usb_device *udev, int index);
 extern int usb_set_configuration(struct usb_device *dev, int configuration);
 extern int usb_choose_configuration(struct usb_device *udev);
@@ -54,6 +59,10 @@ extern void usb_major_cleanup(void);
 
 extern int usb_suspend(struct device *dev, pm_message_t msg);
 extern int usb_resume(struct device *dev, pm_message_t msg);
+<<<<<<< HEAD
+=======
+extern int usb_resume_complete(struct device *dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int usb_port_suspend(struct usb_device *dev, pm_message_t msg);
 extern int usb_port_resume(struct usb_device *dev, pm_message_t msg);
@@ -80,6 +89,10 @@ extern int usb_remote_wakeup(struct usb_device *dev);
 extern int usb_runtime_suspend(struct device *dev);
 extern int usb_runtime_resume(struct device *dev);
 extern int usb_runtime_idle(struct device *dev);
+<<<<<<< HEAD
+=======
+extern int usb_set_usb2_hardware_lpm(struct usb_device *udev, int enable);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #else
 
@@ -94,6 +107,13 @@ static inline int usb_remote_wakeup(struct usb_device *udev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static inline int usb_set_usb2_hardware_lpm(struct usb_device *udev, int enable)
+{
+	return 0;
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef CONFIG_USB_OTG
@@ -129,6 +149,7 @@ static inline int is_usb_device_driver(struct device_driver *drv)
 			for_devices;
 }
 
+<<<<<<< HEAD
 /* translate USB error codes to codes user space understands */
 static inline int usb_translate_errors(int error_code)
 {
@@ -143,6 +164,8 @@ static inline int usb_translate_errors(int error_code)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* for labeling diagnostics */
 extern const char *usbcore_name;
 

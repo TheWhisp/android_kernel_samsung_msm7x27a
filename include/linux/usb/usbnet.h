@@ -56,7 +56,11 @@ struct usbnet {
 	struct sk_buff_head	rxq_pause;
 	struct urb		*interrupt;
 	struct usb_anchor	deferred;
+<<<<<<< HEAD
 	struct tasklet_struct	bh;
+=======
+	struct work_struct	bh_w;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	struct work_struct	kevent;
 	unsigned long		flags;

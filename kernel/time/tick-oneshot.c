@@ -21,6 +21,7 @@
 
 #include "tick-internal.h"
 
+<<<<<<< HEAD
 /* Limit min_delta to a jiffie */
 #define MIN_DELTA_LIMIT		(NSEC_PER_SEC / HZ)
 
@@ -89,6 +90,8 @@ int tick_dev_program_event(struct clock_event_device *dev, ktime_t expires,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * tick_program_event
  */
@@ -96,7 +99,11 @@ int tick_program_event(ktime_t expires, int force)
 {
 	struct clock_event_device *dev = __this_cpu_read(tick_cpu_device.evtdev);
 
+<<<<<<< HEAD
 	return tick_dev_program_event(dev, expires, force);
+=======
+	return clockevents_program_event(dev, expires, force);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -104,11 +111,18 @@ int tick_program_event(ktime_t expires, int force)
  */
 void tick_resume_oneshot(void)
 {
+<<<<<<< HEAD
 	struct tick_device *td = &__get_cpu_var(tick_cpu_device);
 	struct clock_event_device *dev = td->evtdev;
 
 	clockevents_set_mode(dev, CLOCK_EVT_MODE_ONESHOT);
 	tick_program_event(ktime_get(), 1);
+=======
+	struct clock_event_device *dev = __this_cpu_read(tick_cpu_device.evtdev);
+
+	clockevents_set_mode(dev, CLOCK_EVT_MODE_ONESHOT);
+	clockevents_program_event(dev, ktime_get(), true);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**
@@ -120,7 +134,11 @@ void tick_setup_oneshot(struct clock_event_device *newdev,
 {
 	newdev->event_handler = handler;
 	clockevents_set_mode(newdev, CLOCK_EVT_MODE_ONESHOT);
+<<<<<<< HEAD
 	tick_dev_program_event(newdev, next_event, 1);
+=======
+	clockevents_program_event(newdev, next_event, true);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /**

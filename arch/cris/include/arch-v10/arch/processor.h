@@ -53,7 +53,10 @@ struct thread_struct {
  */
 
 #define start_thread(regs, ip, usp) do { \
+<<<<<<< HEAD
 	set_fs(USER_DS);      \
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	regs->irp = ip;       \
 	regs->dccr |= 1 << U_DCCR_BITNR; \
 	wrusp(usp);           \

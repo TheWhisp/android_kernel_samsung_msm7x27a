@@ -1,14 +1,22 @@
 #ifndef __LINUX_NETLINK_H
 #define __LINUX_NETLINK_H
 
+<<<<<<< HEAD
 #include <linux/socket.h> /* for sa_family_t */
+=======
+#include <linux/socket.h> /* for __kernel_sa_family_t */
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/types.h>
 
 #define NETLINK_ROUTE		0	/* Routing/device hook				*/
 #define NETLINK_UNUSED		1	/* Unused number				*/
 #define NETLINK_USERSOCK	2	/* Reserved for user mode socket protocols 	*/
 #define NETLINK_FIREWALL	3	/* Firewalling hook				*/
+<<<<<<< HEAD
 #define NETLINK_INET_DIAG	4	/* INET socket monitoring			*/
+=======
+#define NETLINK_SOCK_DIAG	4	/* socket monitoring				*/
+>>>>>>> refs/remotes/origin/cm-10.0
 #define NETLINK_NFLOG		5	/* netfilter/iptables ULOG */
 #define NETLINK_XFRM		6	/* ipsec */
 #define NETLINK_SELINUX		7	/* SELinux event notifications */
@@ -25,12 +33,22 @@
 #define NETLINK_SCSITRANSPORT	18	/* SCSI Transports */
 #define NETLINK_ECRYPTFS	19
 #define NETLINK_RDMA		20
+<<<<<<< HEAD
 
+=======
+#define NETLINK_CRYPTO		21	/* Crypto layer */
+
+#define NETLINK_INET_DIAG	NETLINK_SOCK_DIAG
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define MAX_LINKS 32		
 
 struct sockaddr_nl {
+<<<<<<< HEAD
 	sa_family_t	nl_family;	/* AF_NETLINK	*/
+=======
+	__kernel_sa_family_t	nl_family;	/* AF_NETLINK	*/
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned short	nl_pad;		/* zero		*/
 	__u32		nl_pid;		/* port ID	*/
        	__u32		nl_groups;	/* multicast groups mask */
@@ -50,6 +68,10 @@ struct nlmsghdr {
 #define NLM_F_MULTI		2	/* Multipart message, terminated by NLMSG_DONE */
 #define NLM_F_ACK		4	/* Reply with ack, with zero or error code */
 #define NLM_F_ECHO		8	/* Echo this request 		*/
+<<<<<<< HEAD
+=======
+#define NLM_F_DUMP_INTR		16	/* Dump was inconsistent due to sequence change */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Modifiers to GET request */
 #define NLM_F_ROOT	0x100	/* specify tree	root	*/
@@ -150,6 +172,10 @@ struct nlattr {
 
 #include <linux/capability.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct net;
 
@@ -222,8 +248,17 @@ struct netlink_callback {
 	int			(*dump)(struct sk_buff * skb,
 					struct netlink_callback *cb);
 	int			(*done)(struct netlink_callback *cb);
+<<<<<<< HEAD
 	u16			family;
 	u16			min_dump_alloc;
+=======
+	void			*data;
+	/* the module that dump function belong to */
+	struct module		*module;
+	u16			family;
+	u16			min_dump_alloc;
+	unsigned int		prev_seq, seq;
+>>>>>>> refs/remotes/origin/cm-10.0
 	long			args[6];
 };
 
@@ -233,6 +268,7 @@ struct netlink_notify {
 	int protocol;
 };
 
+<<<<<<< HEAD
 static __inline__ struct nlmsghdr *
 __nlmsg_put(struct sk_buff *skb, u32 pid, u32 seq, int type, int len, int flags)
 {
@@ -249,6 +285,10 @@ __nlmsg_put(struct sk_buff *skb, u32 pid, u32 seq, int type, int len, int flags)
 		memset(NLMSG_DATA(nlh) + len, 0, NLMSG_ALIGN(size) - size);
 	return nlh;
 }
+=======
+struct nlmsghdr *
+__nlmsg_put(struct sk_buff *skb, u32 pid, u32 seq, int type, int len, int flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define NLMSG_NEW(skb, pid, seq, type, len, flags) \
 ({	if (unlikely(skb_tailroom(skb) < (int)NLMSG_SPACE(len))) \
@@ -258,11 +298,34 @@ __nlmsg_put(struct sk_buff *skb, u32 pid, u32 seq, int type, int len, int flags)
 #define NLMSG_PUT(skb, pid, seq, type, len) \
 	NLMSG_NEW(skb, pid, seq, type, len, 0)
 
+<<<<<<< HEAD
 extern int netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
 			      const struct nlmsghdr *nlh,
 			      int (*dump)(struct sk_buff *skb, struct netlink_callback*),
 			      int (*done)(struct netlink_callback*),
 			      u16 min_dump_alloc);
+=======
+struct netlink_dump_control {
+	int (*dump)(struct sk_buff *skb, struct netlink_callback *);
+	int (*done)(struct netlink_callback *);
+	void *data;
+	struct module *module;
+	u16 min_dump_alloc;
+};
+
+extern int __netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
+				const struct nlmsghdr *nlh,
+				struct netlink_dump_control *control);
+static inline int netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
+				     const struct nlmsghdr *nlh,
+				     struct netlink_dump_control *control)
+{
+	if (!control->module)
+		control->module = THIS_MODULE;
+
+	return __netlink_dump_start(ssk, skb, nlh, control);
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 #define NL_NONROOT_RECV 0x1

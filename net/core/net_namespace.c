@@ -10,6 +10,10 @@
 #include <linux/nsproxy.h>
 #include <linux/proc_fs.h>
 #include <linux/file.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
 
@@ -151,6 +155,10 @@ static __net_init int setup_net(struct net *net)
 
 	atomic_set(&net->count, 1);
 	atomic_set(&net->passive, 1);
+<<<<<<< HEAD
+=======
+	net->dev_base_seq = 1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef NETNS_REFCNT_DEBUG
 	atomic_set(&net->use_count, 0);

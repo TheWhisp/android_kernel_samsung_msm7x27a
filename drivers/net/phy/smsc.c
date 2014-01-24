@@ -22,6 +22,7 @@
 #include <linux/ethtool.h>
 #include <linux/phy.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
 
 #define MII_LAN83C185_ISF 29 /* Interrupt Source Flags */
 #define MII_LAN83C185_IM  30 /* Interrupt Mask */
@@ -42,6 +43,9 @@
 	 MII_LAN83C185_ISF_INT7)
 
 #define MII_LAN83C185_EDPWRDOWN	(1 << 13) /* EDPWRDOWN */
+=======
+#include <linux/smscphy.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int smsc_phy_config_intr(struct phy_device *phydev)
 {

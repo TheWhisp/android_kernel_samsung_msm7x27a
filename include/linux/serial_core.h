@@ -46,7 +46,12 @@
 #define PORT_AR7	18	/* Texas Instruments AR7 internal UART */
 #define PORT_U6_16550A	19	/* ST-Ericsson U6xxx internal UART */
 #define PORT_TEGRA	20	/* NVIDIA Tegra internal UART */
+<<<<<<< HEAD
 #define PORT_MAX_8250	20	/* max port ID */
+=======
+#define PORT_XR17D15X	21	/* Exar XR17D15x UART */
+#define PORT_MAX_8250	21	/* max port ID */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * ARM specific type numbers.  These are not currently guaranteed
@@ -206,6 +211,15 @@
 /* Xilinx PSS UART */
 #define PORT_XUARTPS	98
 
+<<<<<<< HEAD
+=======
+/* Atheros AR933X SoC */
+#define PORT_AR933X	99
+
+/* Energy Micro efm32 SoC */
+#define PORT_EFMUART   100
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef __KERNEL__
 
 #include <linux/compiler.h>
@@ -301,6 +315,10 @@ struct uart_port {
 	void			(*set_termios)(struct uart_port *,
 				               struct ktermios *new,
 				               struct ktermios *old);
+<<<<<<< HEAD
+=======
+	int			(*handle_irq)(struct uart_port *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	void			(*pm)(struct uart_port *, unsigned int state,
 				      unsigned int old);
 	unsigned int		irq;			/* irq number */
@@ -318,9 +336,13 @@ struct uart_port {
 #define UPIO_MEM32		(3)
 #define UPIO_AU			(4)			/* Au1x00 type IO */
 #define UPIO_TSI		(5)			/* Tsi108/109 type IO */
+<<<<<<< HEAD
 #define UPIO_DWAPB		(6)			/* DesignWare APB UART */
 #define UPIO_RM9000		(7)			/* RM9000 type IO */
 #define UPIO_DWAPB32		(8)			/* DesignWare APB UART (32 bit accesses) */
+=======
+#define UPIO_RM9000		(6)			/* RM9000 type IO */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	unsigned int		read_status_mask;	/* driver specific */
 	unsigned int		ignore_status_mask;	/* driver specific */
@@ -351,6 +373,11 @@ struct uart_port {
 #define UPF_MAGIC_MULTIPLIER	((__force upf_t) (1 << 16))
 #define UPF_CONS_FLOW		((__force upf_t) (1 << 23))
 #define UPF_SHARE_IRQ		((__force upf_t) (1 << 24))
+<<<<<<< HEAD
+=======
+#define UPF_EXAR_EFR		((__force upf_t) (1 << 25))
+#define UPF_BUG_THRE		((__force upf_t) (1 << 26))
+>>>>>>> refs/remotes/origin/cm-10.0
 /* The exact UART type is known and should not be probed.  */
 #define UPF_FIXED_TYPE		((__force upf_t) (1 << 27))
 #define UPF_BOOT_AUTOCONF	((__force upf_t) (1 << 28))
@@ -376,6 +403,19 @@ struct uart_port {
 	void			*private_data;		/* generic platform data pointer */
 };
 
+<<<<<<< HEAD
+=======
+static inline int serial_port_in(struct uart_port *up, int offset)
+{
+	return up->serial_in(up, offset);
+}
+
+static inline void serial_port_out(struct uart_port *up, int offset, int value)
+{
+	up->serial_out(up, offset, value);
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This is the state information which is persistent across opens.
  */
@@ -385,7 +425,10 @@ struct uart_state {
 	int			pm_state;
 	struct circ_buf		xmit;
 
+<<<<<<< HEAD
 	struct tasklet_struct	tlet;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct uart_port	*uart_port;
 };
 
@@ -484,10 +527,26 @@ static inline int uart_tx_stopped(struct uart_port *port)
 /*
  * The following are helper functions for the low level drivers.
  */
+<<<<<<< HEAD
 static inline int
 uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
 {
 #ifdef SUPPORT_SYSRQ
+=======
+
+extern void uart_handle_dcd_change(struct uart_port *uport,
+		unsigned int status);
+extern void uart_handle_cts_change(struct uart_port *uport,
+		unsigned int status);
+
+extern void uart_insert_char(struct uart_port *port, unsigned int status,
+		 unsigned int overrun, unsigned int ch, unsigned int flag);
+
+#ifdef SUPPORT_SYSRQ
+static inline int
+uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (port->sysrq) {
 		if (ch && time_before(jiffies, port->sysrq)) {
 			handle_sysrq(ch);
@@ -496,11 +555,18 @@ uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
 		}
 		port->sysrq = 0;
 	}
+<<<<<<< HEAD
 #endif
 	return 0;
 }
 #ifndef SUPPORT_SYSRQ
 #define uart_handle_sysrq_char(port,ch) uart_handle_sysrq_char(port, 0)
+=======
+	return 0;
+}
+#else
+#define uart_handle_sysrq_char(port,ch) ({ (void)port; 0; })
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /*
@@ -523,6 +589,7 @@ static inline int uart_handle_break(struct uart_port *port)
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  *	uart_handle_dcd_change - handle a change of carrier detect state
  *	@uport: uart_port structure for the open port
@@ -606,6 +673,8 @@ uart_insert_char(struct uart_port *port, unsigned int status,
 		tty_insert_flip_char(tty, 0, TTY_OVERRUN);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  *	UART_ENABLE_MS - determine if port should enable modem status irqs
  */

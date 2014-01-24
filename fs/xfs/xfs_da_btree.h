@@ -145,6 +145,7 @@ typedef struct xfs_dabuf {
 	short		dirty;		/* data needs to be copied back */
 	short		bbcount;	/* how large is data in bbs */
 	void		*data;		/* pointer for buffers' data */
+<<<<<<< HEAD
 #ifdef XFS_DABUF_DEBUG
 	inst_t		*ra;		/* return address of caller to make */
 	struct xfs_dabuf *next;		/* next in global chain */
@@ -152,15 +153,20 @@ typedef struct xfs_dabuf {
 	struct xfs_buftarg *target;	/* device for buffer */
 	xfs_daddr_t	blkno;		/* daddr first in bps[0] */
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct xfs_buf	*bps[1];	/* actually nbuf of these */
 } xfs_dabuf_t;
 #define	XFS_DA_BUF_SIZE(n)	\
 	(sizeof(xfs_dabuf_t) + sizeof(struct xfs_buf *) * ((n) - 1))
 
+<<<<<<< HEAD
 #ifdef XFS_DABUF_DEBUG
 extern xfs_dabuf_t	*xfs_dabuf_global_list;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Storage for holding state during Btree searches and split/join ops.
  *
@@ -248,6 +254,11 @@ int	xfs_da_blk_link(xfs_da_state_t *state, xfs_da_state_blk_t *old_blk,
  * Utility routines.
  */
 int	xfs_da_grow_inode(xfs_da_args_t *args, xfs_dablk_t *new_blkno);
+<<<<<<< HEAD
+=======
+int	xfs_da_grow_inode_int(struct xfs_da_args *args, xfs_fileoff_t *bno,
+			      int count);
+>>>>>>> refs/remotes/origin/cm-10.0
 int	xfs_da_get_buf(struct xfs_trans *trans, struct xfs_inode *dp,
 			      xfs_dablk_t bno, xfs_daddr_t mappedbno,
 			      xfs_dabuf_t **bp, int whichfork);

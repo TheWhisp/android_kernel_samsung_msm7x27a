@@ -1,6 +1,10 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -170,9 +174,15 @@ static void _rtl92s_dm_txpowertracking_callback_thermalmeter(
 	thermalvalue = (u8)rtl_get_rfreg(hw, RF90_PATH_A, RF_T_METER, 0x1f);
 
 	RT_TRACE(rtlpriv, COMP_POWER_TRACKING, DBG_LOUD,
+<<<<<<< HEAD
 		 ("Readback Thermal Meter = 0x%x pre thermal meter 0x%x "
 		  "eeprom_thermalmeter 0x%x\n", thermalvalue,
 		  rtlpriv->dm.thermalvalue, rtlefuse->eeprom_thermalmeter));
+=======
+		 "Readback Thermal Meter = 0x%x pre thermal meter 0x%x eeprom_thermal meter 0x%x\n",
+		 thermalvalue,
+		 rtlpriv->dm.thermalvalue, rtlefuse->eeprom_thermalmeter);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (thermalvalue) {
 		rtlpriv->dm.thermalvalue = thermalvalue;
@@ -222,7 +232,10 @@ static void _rtl92s_dm_refresh_rateadaptive_mask(struct ieee80211_hw *hw)
 	u32 low_rssi_thresh = 0;
 	u32 middle_rssi_thresh = 0;
 	u32 high_rssi_thresh = 0;
+<<<<<<< HEAD
 	u8 rssi_level;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct ieee80211_sta *sta = NULL;
 
 	if (is_hal_stop(rtlhal))
@@ -272,6 +285,7 @@ static void _rtl92s_dm_refresh_rateadaptive_mask(struct ieee80211_hw *hw)
 		if (rtlpriv->dm.undecorated_smoothed_pwdb >
 		    (long)high_rssi_thresh) {
 			ra->ratr_state = DM_RATR_STA_HIGH;
+<<<<<<< HEAD
 			rssi_level = 1;
 		} else if (rtlpriv->dm.undecorated_smoothed_pwdb >
 			   (long)middle_rssi_thresh) {
@@ -292,6 +306,24 @@ static void _rtl92s_dm_refresh_rateadaptive_mask(struct ieee80211_hw *hw)
 				rtlpriv->dm.undecorated_smoothed_pwdb,
 				ra->ratr_state,
 				ra->pre_ratr_state, ra->ratr_state));
+=======
+		} else if (rtlpriv->dm.undecorated_smoothed_pwdb >
+			   (long)middle_rssi_thresh) {
+			ra->ratr_state = DM_RATR_STA_LOW;
+		} else if (rtlpriv->dm.undecorated_smoothed_pwdb >
+			   (long)low_rssi_thresh) {
+			ra->ratr_state = DM_RATR_STA_LOW;
+		} else {
+			ra->ratr_state = DM_RATR_STA_ULTRALOW;
+		}
+
+		if (ra->pre_ratr_state != ra->ratr_state) {
+			RT_TRACE(rtlpriv, COMP_RATE, DBG_LOUD,
+				 "RSSI = %ld RSSI_LEVEL = %d PreState = %d, CurState = %d\n",
+				 rtlpriv->dm.undecorated_smoothed_pwdb,
+				 ra->ratr_state,
+				 ra->pre_ratr_state, ra->ratr_state);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			rtlpriv->cfg->ops->update_rate_tbl(hw, sta,
 							   ra->ratr_state);
@@ -457,7 +489,11 @@ static void _rtl92s_dm_initial_gain_sta_beforeconnect(struct ieee80211_hw *hw)
 			if (rtlpriv->psc.rfpwr_state != ERFON)
 				return;
 
+<<<<<<< HEAD
 			if (digtable.backoff_enable_flag == true)
+=======
+			if (digtable.backoff_enable_flag)
+>>>>>>> refs/remotes/origin/cm-10.0
 				rtl92s_backoff_enable_flag(hw);
 			else
 				digtable.backoff_val = DM_DIG_BACKOFF;
@@ -591,7 +627,11 @@ static void _rtl92s_dm_dynamic_txpower(struct ieee80211_hw *hw)
 	if ((mac->link_state < MAC80211_LINKED) &&
 	    (rtlpriv->dm.entry_min_undecoratedsmoothed_pwdb == 0)) {
 		RT_TRACE(rtlpriv, COMP_POWER, DBG_TRACE,
+<<<<<<< HEAD
 			 ("Not connected to any\n"));
+=======
+			 "Not connected to any\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		rtlpriv->dm.dynamic_txhighpower_lvl = TX_HIGHPWR_LEVEL_NORMAL;
 
@@ -604,22 +644,37 @@ static void _rtl92s_dm_dynamic_txpower(struct ieee80211_hw *hw)
 			undecorated_smoothed_pwdb =
 			    rtlpriv->dm.entry_min_undecoratedsmoothed_pwdb;
 			RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+<<<<<<< HEAD
 				 ("AP Client PWDB = 0x%lx\n",
 				  undecorated_smoothed_pwdb));
+=======
+				 "AP Client PWDB = 0x%lx\n",
+				 undecorated_smoothed_pwdb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else {
 			undecorated_smoothed_pwdb =
 			    rtlpriv->dm.undecorated_smoothed_pwdb;
 			RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+<<<<<<< HEAD
 				 ("STA Default Port PWDB = 0x%lx\n",
 				  undecorated_smoothed_pwdb));
+=======
+				 "STA Default Port PWDB = 0x%lx\n",
+				 undecorated_smoothed_pwdb);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	} else {
 		undecorated_smoothed_pwdb =
 		    rtlpriv->dm.entry_min_undecoratedsmoothed_pwdb;
 
 		RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+<<<<<<< HEAD
 			 ("AP Ext Port PWDB = 0x%lx\n",
 			  undecorated_smoothed_pwdb));
+=======
+			 "AP Ext Port PWDB = 0x%lx\n",
+			 undecorated_smoothed_pwdb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	txpwr_threshold_lv2 = TX_POWER_NEAR_FIELD_THRESH_LVL2;

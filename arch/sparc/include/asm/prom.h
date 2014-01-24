@@ -21,7 +21,12 @@
 #include <linux/of_pdt.h>
 #include <linux/proc_fs.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define OF_ROOT_NODE_ADDR_CELLS_DEFAULT	2
 #define OF_ROOT_NODE_SIZE_CELLS_DEFAULT	1
@@ -55,6 +60,7 @@ struct resource;
 extern void __iomem *of_ioremap(struct resource *res, unsigned long offset, unsigned long size, char *name);
 extern void of_iounmap(struct resource *res, void __iomem *base, unsigned long size);
 
+<<<<<<< HEAD
 /* These routines are here to provide compatibility with how powerpc
  * handles IRQ mapping for OF device nodes.  We precompute and permanently
  * register them in the platform_device objects, whereas powerpc computes them
@@ -64,6 +70,8 @@ static inline void irq_dispose_mapping(unsigned int virq)
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct device_node *of_console_device;
 extern char *of_console_path;
 extern char *of_console_options;

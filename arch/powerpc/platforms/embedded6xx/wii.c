@@ -79,6 +79,7 @@ void __init wii_memory_fixups(void)
 	BUG_ON(memblock.memory.cnt != 2);
 	BUG_ON(!page_aligned(p[0].base) || !page_aligned(p[1].base));
 
+<<<<<<< HEAD
 	p[0].size = _ALIGN_DOWN(p[0].size, PAGE_SIZE);
 	p[1].size = _ALIGN_DOWN(p[1].size, PAGE_SIZE);
 
@@ -99,6 +100,21 @@ void __init wii_memory_fixups(void)
 	/* reserve the hole */
 	memblock_reserve(wii_hole_start, wii_hole_size);
 
+=======
+	/* trim unaligned tail */
+	memblock_remove(ALIGN(p[1].base + p[1].size, PAGE_SIZE),
+			(phys_addr_t)ULLONG_MAX);
+
+	/* determine hole, add & reserve them */
+	wii_hole_start = ALIGN(p[0].base + p[0].size, PAGE_SIZE);
+	wii_hole_size = p[1].base - wii_hole_start;
+	memblock_add(wii_hole_start, wii_hole_size);
+	memblock_reserve(wii_hole_start, wii_hole_size);
+
+	BUG_ON(memblock.memory.cnt != 1);
+	__memblock_dump_all();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* allow ioremapping the address space in the hole */
 	__allow_ioremap_reserved = 1;
 }

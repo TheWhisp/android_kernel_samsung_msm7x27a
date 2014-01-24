@@ -24,7 +24,11 @@
 #include <linux/isa.h>
 #include <linux/delay.h>
 #include <linux/time.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/dma.h>
 #include <sound/core.h>
 #include <sound/gus.h>
@@ -46,7 +50,11 @@ MODULE_SUPPORTED_DEVICE("{{Gravis,UltraSound Extreme}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/cm-10.0
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x220,0x240,0x260 */
 static long gf1_port[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS) - 1] = -1}; /* 0x210,0x220,0x230,0x240,0x250,0x260,0x270 */
 static long mpu_port[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS) - 1] = -1}; /* 0x300,0x310,0x320 */
@@ -317,8 +325,12 @@ static int __devinit snd_gusextreme_probe(struct device *dev, unsigned int n)
 
 	if (es1688->mpu_port >= 0x300) {
 		error = snd_mpu401_uart_new(card, 0, MPU401_HW_ES1688,
+<<<<<<< HEAD
 				es1688->mpu_port, 0,
 				mpu_irq[n], IRQF_DISABLED, NULL);
+=======
+				es1688->mpu_port, 0, mpu_irq[n], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error < 0)
 			goto out;
 	}

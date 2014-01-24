@@ -67,20 +67,37 @@ int msm_bam_dmux_ul_power_unvote(void);
 int msm_bam_dmux_is_ch_full(uint32_t id);
 
 int msm_bam_dmux_is_ch_low(uint32_t id);
+<<<<<<< HEAD
 #else
 int msm_bam_dmux_open(uint32_t id, void *priv,
+=======
+
+int msm_bam_dmux_reg_notify(void *priv,
+		       void (*notify)(void *priv, int event_type,
+						unsigned long data));
+#else
+static inline int msm_bam_dmux_open(uint32_t id, void *priv,
+>>>>>>> refs/remotes/origin/cm-10.0
 		       void (*notify)(void *priv, int event_type,
 						unsigned long data))
 {
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 int msm_bam_dmux_close(uint32_t id)
+=======
+static inline int msm_bam_dmux_close(uint32_t id)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 int msm_bam_dmux_write(uint32_t id, struct sk_buff *skb)
+=======
+static inline int msm_bam_dmux_write(uint32_t id, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return -ENODEV;
 }
@@ -100,12 +117,27 @@ static inline int msm_bam_dmux_ul_power_unvote(void)
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 int msm_bam_dmux_is_ch_full(uint32_t id)
+=======
+static inline int msm_bam_dmux_is_ch_full(uint32_t id)
 {
 	return -ENODEV;
 }
 
+static inline int msm_bam_dmux_is_ch_low(uint32_t id)
+>>>>>>> refs/remotes/origin/cm-10.0
+{
+	return -ENODEV;
+}
+
+<<<<<<< HEAD
 int msm_bam_dmux_is_ch_low(uint32_t id)
+=======
+static inline int msm_bam_dmux_reg_notify(void *priv,
+		       void (*notify)(void *priv, int event_type,
+						unsigned long data))
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return -ENODEV;
 }

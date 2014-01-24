@@ -40,6 +40,10 @@
 #include <linux/gfp.h>
 #include <linux/clk.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <media/davinci/dm644x_ccdc.h>
 #include <media/davinci/vpss.h>
@@ -1077,6 +1081,7 @@ static struct platform_driver dm644x_ccdc_driver = {
 	.probe = dm644x_ccdc_probe,
 };
 
+<<<<<<< HEAD
 static int __init dm644x_ccdc_init(void)
 {
 	return platform_driver_register(&dm644x_ccdc_driver);
@@ -1089,3 +1094,6 @@ static void __exit dm644x_ccdc_exit(void)
 
 module_init(dm644x_ccdc_init);
 module_exit(dm644x_ccdc_exit);
+=======
+module_platform_driver(dm644x_ccdc_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

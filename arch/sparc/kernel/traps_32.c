@@ -14,9 +14,15 @@
 #include <linux/signal.h>
 #include <linux/smp.h>
 #include <linux/kdebug.h>
+<<<<<<< HEAD
 
 #include <asm/delay.h>
 #include <asm/system.h>
+=======
+#include <linux/export.h>
+
+#include <asm/delay.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ptrace.h>
 #include <asm/oplib.h>
 #include <asm/page.h>

@@ -194,7 +194,11 @@ static int find_autofs_mount(const char *pathname,
 		return err;
 	err = -ENOENT;
 	while (path.dentry == path.mnt->mnt_root) {
+<<<<<<< HEAD
 		if (path.mnt->mnt_sb->s_magic == AUTOFS_SUPER_MAGIC) {
+=======
+		if (path.dentry->d_sb->s_magic == AUTOFS_SUPER_MAGIC) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (test(&path, data)) {
 				path_get(&path);
 				if (!err) /* already found some */
@@ -212,7 +216,11 @@ static int find_autofs_mount(const char *pathname,
 
 static int test_by_dev(struct path *path, void *p)
 {
+<<<<<<< HEAD
 	return path->mnt->mnt_sb->s_dev == *(dev_t *)p;
+=======
+	return path->dentry->d_sb->s_dev == *(dev_t *)p;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int test_by_type(struct path *path, void *p)
@@ -230,7 +238,11 @@ static void autofs_dev_ioctl_fd_install(unsigned int fd, struct file *file)
 	fdt = files_fdtable(files);
 	BUG_ON(fdt->fd[fd] != NULL);
 	rcu_assign_pointer(fdt->fd[fd], file);
+<<<<<<< HEAD
 	FD_SET(fd, fdt->close_on_exec);
+=======
+	__set_close_on_exec(fd, fdt);
+>>>>>>> refs/remotes/origin/cm-10.0
 	spin_unlock(&files->file_lock);
 }
 
@@ -538,11 +550,19 @@ static int autofs_dev_ioctl_ismountpoint(struct file *fp,
 			err = find_autofs_mount(name, &path, test_by_type, &type);
 		if (err)
 			goto out;
+<<<<<<< HEAD
 		devid = new_encode_dev(path.mnt->mnt_sb->s_dev);
 		err = 0;
 		if (path.mnt->mnt_root == path.dentry) {
 			err = 1;
 			magic = path.mnt->mnt_sb->s_magic;
+=======
+		devid = new_encode_dev(path.dentry->d_sb->s_dev);
+		err = 0;
+		if (path.mnt->mnt_root == path.dentry) {
+			err = 1;
+			magic = path.dentry->d_sb->s_magic;
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	} else {
 		dev_t dev = sbi->sb->s_dev;
@@ -556,7 +576,11 @@ static int autofs_dev_ioctl_ismountpoint(struct file *fp,
 		err = have_submounts(path.dentry);
 
 		if (follow_down_one(&path))
+<<<<<<< HEAD
 			magic = path.mnt->mnt_sb->s_magic;
+=======
+			magic = path.dentry->d_sb->s_magic;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	param->ismountpoint.out.devid = devid;

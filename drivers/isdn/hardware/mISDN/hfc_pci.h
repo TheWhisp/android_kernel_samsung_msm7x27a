@@ -58,7 +58,11 @@
 /* GCI/IOM bus configuration registers */
 #define HFCPCI_MST_EMOD		0xB4
 #define HFCPCI_MST_MODE		0xB8
+<<<<<<< HEAD
 #define HFCPCI_CONNECT 		0xBC
+=======
+#define HFCPCI_CONNECT		0xBC
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /* Interrupt and status registers */
@@ -189,6 +193,7 @@ struct zt {
 
 struct dfifo {
 	u_char data[D_FIFO_SIZE]; /* FIFO data space */
+<<<<<<< HEAD
 	u_char fill1[0x20A0-D_FIFO_SIZE]; /* reserved, do not use */
 	u_char f1, f2; /* f pointers */
 	u_char fill2[0x20C0-0x20A2]; /* reserved, do not use */
@@ -201,6 +206,20 @@ struct bzfifo {
 	struct zt	za[MAX_B_FRAMES+1]; /* only range 0x0..0x1F allowed */
 	u_char		f1, f2; /* f pointers */
 	u_char		fill[0x2100-0x2082]; /* alignment */
+=======
+	u_char fill1[0x20A0 - D_FIFO_SIZE]; /* reserved, do not use */
+	u_char f1, f2; /* f pointers */
+	u_char fill2[0x20C0 - 0x20A2]; /* reserved, do not use */
+	/* mask index with D_FREG_MASK for access */
+	struct zt za[MAX_D_FRAMES + 1];
+	u_char fill3[0x4000 - 0x2100]; /* align 16K */
+};
+
+struct bzfifo {
+	struct zt	za[MAX_B_FRAMES + 1]; /* only range 0x0..0x1F allowed */
+	u_char		f1, f2; /* f pointers */
+	u_char		fill[0x2100 - 0x2082]; /* alignment */
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 
@@ -224,5 +243,10 @@ union fifo_area {
 	u_char fill[32768];
 };
 
+<<<<<<< HEAD
 #define Write_hfc(a, b, c) (writeb(c, (a->hw.pci_io)+b))
 #define Read_hfc(a, b) (readb((a->hw.pci_io)+b))
+=======
+#define Write_hfc(a, b, c) (writeb(c, (a->hw.pci_io) + b))
+#define Read_hfc(a, b) (readb((a->hw.pci_io) + b))
+>>>>>>> refs/remotes/origin/cm-10.0

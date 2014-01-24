@@ -17,7 +17,11 @@
 #include <linux/highmem.h>
 #include <linux/mutex.h>
 #include <linux/radix-tree.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h> /* invalidate_bh_lrus() */
+=======
+#include <linux/fs.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 
 #include <asm/uaccess.h>
@@ -242,9 +246,15 @@ static void copy_to_brd(struct brd_device *brd, const void *src,
 	page = brd_lookup_page(brd, sector);
 	BUG_ON(!page);
 
+<<<<<<< HEAD
 	dst = kmap_atomic(page, KM_USER1);
 	memcpy(dst + offset, src, copy);
 	kunmap_atomic(dst, KM_USER1);
+=======
+	dst = kmap_atomic(page);
+	memcpy(dst + offset, src, copy);
+	kunmap_atomic(dst);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (copy < n) {
 		src += copy;
@@ -253,9 +263,15 @@ static void copy_to_brd(struct brd_device *brd, const void *src,
 		page = brd_lookup_page(brd, sector);
 		BUG_ON(!page);
 
+<<<<<<< HEAD
 		dst = kmap_atomic(page, KM_USER1);
 		memcpy(dst, src, copy);
 		kunmap_atomic(dst, KM_USER1);
+=======
+		dst = kmap_atomic(page);
+		memcpy(dst, src, copy);
+		kunmap_atomic(dst);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -273,9 +289,15 @@ static void copy_from_brd(void *dst, struct brd_device *brd,
 	copy = min_t(size_t, n, PAGE_SIZE - offset);
 	page = brd_lookup_page(brd, sector);
 	if (page) {
+<<<<<<< HEAD
 		src = kmap_atomic(page, KM_USER1);
 		memcpy(dst, src + offset, copy);
 		kunmap_atomic(src, KM_USER1);
+=======
+		src = kmap_atomic(page);
+		memcpy(dst, src + offset, copy);
+		kunmap_atomic(src);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		memset(dst, 0, copy);
 
@@ -285,9 +307,15 @@ static void copy_from_brd(void *dst, struct brd_device *brd,
 		copy = n - copy;
 		page = brd_lookup_page(brd, sector);
 		if (page) {
+<<<<<<< HEAD
 			src = kmap_atomic(page, KM_USER1);
 			memcpy(dst, src, copy);
 			kunmap_atomic(src, KM_USER1);
+=======
+			src = kmap_atomic(page);
+			memcpy(dst, src, copy);
+			kunmap_atomic(src);
+>>>>>>> refs/remotes/origin/cm-10.0
 		} else
 			memset(dst, 0, copy);
 	}
@@ -309,7 +337,11 @@ static int brd_do_bvec(struct brd_device *brd, struct page *page,
 			goto out;
 	}
 
+<<<<<<< HEAD
 	mem = kmap_atomic(page, KM_USER0);
+=======
+	mem = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (rw == READ) {
 		copy_from_brd(mem + off, brd, sector, len);
 		flush_dcache_page(page);
@@ -317,13 +349,21 @@ static int brd_do_bvec(struct brd_device *brd, struct page *page,
 		flush_dcache_page(page);
 		copy_to_brd(brd, mem + off, sector, len);
 	}
+<<<<<<< HEAD
 	kunmap_atomic(mem, KM_USER0);
+=======
+	kunmap_atomic(mem);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int brd_make_request(struct request_queue *q, struct bio *bio)
+=======
+static void brd_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct block_device *bdev = bio->bi_bdev;
 	struct brd_device *brd = bdev->bd_disk->private_data;
@@ -359,8 +399,11 @@ static int brd_make_request(struct request_queue *q, struct bio *bio)
 
 out:
 	bio_endio(bio, err);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #ifdef CONFIG_BLK_DEV_XIP
@@ -404,14 +447,23 @@ static int brd_ioctl(struct block_device *bdev, fmode_t mode,
 	error = -EBUSY;
 	if (bdev->bd_openers <= 1) {
 		/*
+<<<<<<< HEAD
 		 * Invalidate the cache first, so it isn't written
 		 * back to the device.
+=======
+		 * Kill the cache first, so it isn't written back to the
+		 * device.
+>>>>>>> refs/remotes/origin/cm-10.0
 		 *
 		 * Another thread might instantiate more buffercache here,
 		 * but there is not much we can do to close that race.
 		 */
+<<<<<<< HEAD
 		invalidate_bh_lrus();
 		truncate_inode_pages(bdev->bd_inode->i_mapping, 0);
+=======
+		kill_bdev(bdev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		brd_free_pages(brd);
 		error = 0;
 	}

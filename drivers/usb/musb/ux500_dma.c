@@ -37,7 +37,10 @@ struct ux500_dma_channel {
 	struct dma_channel channel;
 	struct ux500_dma_controller *controller;
 	struct musb_hw_ep *hw_ep;
+<<<<<<< HEAD
 	struct work_struct channel_work;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct dma_chan *dma_chan;
 	unsigned int cur_len;
 	dma_cookie_t cookie;
@@ -56,6 +59,7 @@ struct ux500_dma_controller {
 	dma_addr_t phy_base;
 };
 
+<<<<<<< HEAD
 /* Work function invoked from DMA callback to handle tx transfers. */
 static void ux500_tx_work(struct work_struct *data)
 {
@@ -80,11 +84,23 @@ static void ux500_rx_work(struct work_struct *data)
 {
 	struct ux500_dma_channel *ux500_channel = container_of(data,
 		struct ux500_dma_channel, channel_work);
+=======
+/* Work function invoked from DMA callback to handle rx transfers. */
+void ux500_dma_callback(void *private_data)
+{
+	struct dma_channel *channel = private_data;
+	struct ux500_dma_channel *ux500_channel = channel->private_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct musb_hw_ep       *hw_ep = ux500_channel->hw_ep;
 	struct musb *musb = hw_ep->musb;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	DBG(4, "DMA rx transfer done on hw_ep=%d\n", hw_ep->epnum);
+=======
+	dev_dbg(musb->controller, "DMA rx transfer done on hw_ep=%d\n",
+		hw_ep->epnum);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_irqsave(&musb->lock, flags);
 	ux500_channel->channel.actual_len = ux500_channel->cur_len;
@@ -92,6 +108,7 @@ static void ux500_rx_work(struct work_struct *data)
 	musb_dma_completion(musb, hw_ep->epnum,
 		ux500_channel->is_tx);
 	spin_unlock_irqrestore(&musb->lock, flags);
+<<<<<<< HEAD
 }
 
 void ux500_dma_callback(void *private_data)
@@ -100,6 +117,9 @@ void ux500_dma_callback(void *private_data)
 	struct ux500_dma_channel *ux500_channel = channel->private_data;
 
 	schedule_work(&ux500_channel->channel_work);
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static bool ux500_configure_channel(struct dma_channel *channel,
@@ -110,15 +130,27 @@ static bool ux500_configure_channel(struct dma_channel *channel,
 	struct musb_hw_ep *hw_ep = ux500_channel->hw_ep;
 	struct dma_chan *dma_chan = ux500_channel->dma_chan;
 	struct dma_async_tx_descriptor *dma_desc;
+<<<<<<< HEAD
 	enum dma_data_direction direction;
+=======
+	enum dma_transfer_direction direction;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct scatterlist sg;
 	struct dma_slave_config slave_conf;
 	enum dma_slave_buswidth addr_width;
 	dma_addr_t usb_fifo_addr = (MUSB_FIFO_OFFSET(hw_ep->epnum) +
 					ux500_channel->controller->phy_base);
+<<<<<<< HEAD
 
 	DBG(4, "packet_sz=%d, mode=%d, dma_addr=0x%x, len=%d is_tx=%d\n",
 			packet_sz, mode, dma_addr, len, ux500_channel->is_tx);
+=======
+	struct musb *musb = ux500_channel->controller->private_data;
+
+	dev_dbg(musb->controller,
+		"packet_sz=%d, mode=%d, dma_addr=0x%x, len=%d is_tx=%d\n",
+		packet_sz, mode, dma_addr, len, ux500_channel->is_tx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ux500_channel->cur_len = len;
 
@@ -128,11 +160,16 @@ static bool ux500_configure_channel(struct dma_channel *channel,
 	sg_dma_address(&sg) = dma_addr;
 	sg_dma_len(&sg) = len;
 
+<<<<<<< HEAD
 	direction = ux500_channel->is_tx ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
+=======
+	direction = ux500_channel->is_tx ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
+>>>>>>> refs/remotes/origin/cm-10.0
 	addr_width = (len & 0x3) ? DMA_SLAVE_BUSWIDTH_1_BYTE :
 					DMA_SLAVE_BUSWIDTH_4_BYTES;
 
 	slave_conf.direction = direction;
+<<<<<<< HEAD
 	if (direction == DMA_FROM_DEVICE) {
 		slave_conf.src_addr = usb_fifo_addr;
 		slave_conf.src_addr_width = addr_width;
@@ -147,6 +184,20 @@ static bool ux500_configure_channel(struct dma_channel *channel,
 
 	dma_desc = dma_chan->device->
 			device_prep_slave_sg(dma_chan, &sg, 1, direction,
+=======
+	slave_conf.src_addr = usb_fifo_addr;
+	slave_conf.src_addr_width = addr_width;
+	slave_conf.src_maxburst = 16;
+	slave_conf.dst_addr = usb_fifo_addr;
+	slave_conf.dst_addr_width = addr_width;
+	slave_conf.dst_maxburst = 16;
+	slave_conf.device_fc = false;
+
+	dma_chan->device->device_control(dma_chan, DMA_SLAVE_CONFIG,
+					     (unsigned long) &slave_conf);
+
+	dma_desc = dmaengine_prep_slave_sg(dma_chan, &sg, 1, direction,
+>>>>>>> refs/remotes/origin/cm-10.0
 					     DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
 	if (!dma_desc)
 		return false;
@@ -166,6 +217,10 @@ static struct dma_channel *ux500_dma_channel_allocate(struct dma_controller *c,
 	struct ux500_dma_controller *controller = container_of(c,
 			struct ux500_dma_controller, controller);
 	struct ux500_dma_channel *ux500_channel = NULL;
+<<<<<<< HEAD
+=======
+	struct musb *musb = controller->private_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8 ch_num = hw_ep->epnum - 1;
 	u32 max_ch;
 
@@ -192,7 +247,11 @@ static struct dma_channel *ux500_dma_channel_allocate(struct dma_controller *c,
 	ux500_channel->hw_ep = hw_ep;
 	ux500_channel->is_allocated = 1;
 
+<<<<<<< HEAD
 	DBG(7, "hw_ep=%d, is_tx=0x%x, channel=%d\n",
+=======
+	dev_dbg(musb->controller, "hw_ep=%d, is_tx=0x%x, channel=%d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		hw_ep->epnum, is_tx, ch_num);
 
 	return &(ux500_channel->channel);
@@ -201,8 +260,14 @@ static struct dma_channel *ux500_dma_channel_allocate(struct dma_controller *c,
 static void ux500_dma_channel_release(struct dma_channel *channel)
 {
 	struct ux500_dma_channel *ux500_channel = channel->private_data;
+<<<<<<< HEAD
 
 	DBG(7, "channel=%d\n", ux500_channel->ch_num);
+=======
+	struct musb *musb = ux500_channel->controller->private_data;
+
+	dev_dbg(musb->controller, "channel=%d\n", ux500_channel->ch_num);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ux500_channel->is_allocated) {
 		ux500_channel->is_allocated = 0;
@@ -252,8 +317,13 @@ static int ux500_dma_channel_abort(struct dma_channel *channel)
 	void __iomem *epio = musb->endpoints[ux500_channel->hw_ep->epnum].regs;
 	u16 csr;
 
+<<<<<<< HEAD
 	DBG(4, "channel=%d, is_tx=%d\n", ux500_channel->ch_num,
 						ux500_channel->is_tx);
+=======
+	dev_dbg(musb->controller, "channel=%d, is_tx=%d\n",
+		ux500_channel->ch_num, ux500_channel->is_tx);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (channel->status == MUSB_DMA_STATUS_BUSY) {
 		if (ux500_channel->is_tx) {
@@ -326,7 +396,10 @@ static int ux500_dma_controller_start(struct dma_controller *c)
 	void **param_array;
 	struct ux500_dma_channel *channel_array;
 	u32 ch_count;
+<<<<<<< HEAD
 	void (*musb_channel_work)(struct work_struct *);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	dma_cap_mask_t mask;
 
 	if ((data->num_rx_channels > UX500_MUSB_DMA_NUM_RX_CHANNELS) ||
@@ -343,7 +416,10 @@ static int ux500_dma_controller_start(struct dma_controller *c)
 	channel_array = controller->rx_channel;
 	ch_count = data->num_rx_channels;
 	param_array = data->dma_rx_param_array;
+<<<<<<< HEAD
 	musb_channel_work = ux500_rx_work;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	for (dir = 0; dir < 2; dir++) {
 		for (ch_num = 0; ch_num < ch_count; ch_num++) {
@@ -370,15 +446,21 @@ static int ux500_dma_controller_start(struct dma_controller *c)
 				return -EBUSY;
 			}
 
+<<<<<<< HEAD
 			INIT_WORK(&ux500_channel->channel_work,
 				musb_channel_work);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 
 		/* Prepare the loop for TX channels */
 		channel_array = controller->tx_channel;
 		ch_count = data->num_tx_channels;
 		param_array = data->dma_tx_param_array;
+<<<<<<< HEAD
 		musb_channel_work = ux500_tx_work;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		is_tx = 1;
 	}
 

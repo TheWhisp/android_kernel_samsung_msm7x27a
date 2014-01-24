@@ -27,6 +27,7 @@
 
 #include "mpc83xx.h"
 
+<<<<<<< HEAD
 static struct of_device_id __initdata mpc836x_rdk_ids[] = {
 	{ .compatible = "simple-bus", },
 	{},
@@ -51,11 +52,22 @@ static void __init mpc836x_rdk_setup_arch(void)
 	for_each_compatible_node(np, "pci", "fsl,mpc8349-pci")
 		mpc83xx_add_bridge(np);
 #endif
+=======
+machine_device_initcall(mpc836x_rdk, mpc83xx_declare_of_platform_devices);
+
+static void __init mpc836x_rdk_setup_arch(void)
+{
+	if (ppc_md.progress)
+		ppc_md.progress("mpc836x_rdk_setup_arch()", 0);
+
+	mpc83xx_setup_pci();
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_QUICC_ENGINE
 	qe_reset();
 #endif
 }
 
+<<<<<<< HEAD
 static void __init mpc836x_rdk_init_IRQ(void)
 {
 	struct device_node *np;
@@ -82,6 +94,8 @@ static void __init mpc836x_rdk_init_IRQ(void)
 #endif
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Called very early, MMU is off, device-tree isn't unflattened.
  */
@@ -96,7 +110,11 @@ define_machine(mpc836x_rdk) {
 	.name		= "MPC836x RDK",
 	.probe		= mpc836x_rdk_probe,
 	.setup_arch	= mpc836x_rdk_setup_arch,
+<<<<<<< HEAD
 	.init_IRQ	= mpc836x_rdk_init_IRQ,
+=======
+	.init_IRQ	= mpc83xx_ipic_and_qe_init_IRQ,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.get_irq	= ipic_get_irq,
 	.restart	= mpc83xx_restart,
 	.time_init	= mpc83xx_time_init,

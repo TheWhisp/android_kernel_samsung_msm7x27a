@@ -33,6 +33,10 @@
 #include <linux/wait.h>
 #include <linux/workqueue.h>
 #include <linux/uwb/spec.h>
+<<<<<<< HEAD
+=======
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct uwb_dev;
 struct uwb_beca_e;

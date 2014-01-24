@@ -389,7 +389,11 @@ static ssize_t bios_enabled_show(struct device *dev,
 	return sprintf(buf, "%s\n", bios_enabled ? "enabled" : "disabled");
 }
 
+<<<<<<< HEAD
 static int intel_menlow_add_one_attribute(char *name, int mode, void *show,
+=======
+static int intel_menlow_add_one_attribute(char *name, umode_t mode, void *show,
+>>>>>>> refs/remotes/origin/cm-10.0
 					  void *store, struct device *dev,
 					  acpi_handle handle)
 {
@@ -477,6 +481,11 @@ static acpi_status intel_menlow_register_sensor(acpi_handle handle, u32 lvl,
 		return AE_ERROR;
 	}
 
+<<<<<<< HEAD
+=======
+	return AE_OK;
+
+>>>>>>> refs/remotes/origin/cm-10.0
  aux1_not_found:
 	if (status == AE_NOT_FOUND)
 		return AE_OK;

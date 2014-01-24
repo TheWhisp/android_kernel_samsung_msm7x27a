@@ -31,7 +31,11 @@
 
 #define MSR_		MSR_ME | MSR_CE
 #define MSR_KERNEL	MSR_ | MSR_64BIT
+<<<<<<< HEAD
 #define MSR_USER32	MSR_ | MSR_PR | MSR_EE | MSR_DE
+=======
+#define MSR_USER32	MSR_ | MSR_PR | MSR_EE
+>>>>>>> refs/remotes/origin/cm-10.0
 #define MSR_USER64	MSR_USER32 | MSR_64BIT
 #elif defined (CONFIG_40x)
 #define MSR_KERNEL	(MSR_ME|MSR_RI|MSR_IR|MSR_DR|MSR_CE)
@@ -62,6 +66,10 @@
 #define SPRN_DVC2	0x13F	/* Data Value Compare Register 2 */
 #define SPRN_MAS8	0x155	/* MMU Assist Register 8 */
 #define SPRN_TLB0PS	0x158	/* TLB 0 Page Size Register */
+<<<<<<< HEAD
+=======
+#define SPRN_TLB1PS	0x159	/* TLB 1 Page Size Register */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define SPRN_MAS5_MAS6	0x15c	/* MMU Assist Register 5 || 6 */
 #define SPRN_MAS8_MAS1	0x15d	/* MMU Assist Register 8 || 1 */
 #define SPRN_EPTCFG	0x15e	/* Embedded Page Table Config */
@@ -187,6 +195,13 @@
 #define SPRN_CSRR1	SPRN_SRR3 /* Critical Save and Restore Register 1 */
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_ICSWX
+#define SPRN_HACOP	0x15F	/* Hypervisor Available Coprocessor Register */
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Bit definitions for CCR1. */
 #define	CCR1_DPC	0x00000100 /* Disable L1 I-Cache/D-Cache parity checking */
 #define	CCR1_TCS	0x00000080 /* Timer Clock Select */
@@ -318,6 +333,10 @@
 #define ESR_ILK		0x00100000	/* Instr. Cache Locking */
 #define ESR_PUO		0x00040000	/* Unimplemented Operation exception */
 #define ESR_BO		0x00020000	/* Byte Ordering */
+<<<<<<< HEAD
+=======
+#define ESR_SPV		0x00000080	/* Signal Processing operation */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Bit definitions related to the DBCR0. */
 #if defined(CONFIG_40x)
@@ -547,6 +566,12 @@
 #define L1CSR1_ICFI	0x00000002	/* Instr Cache Flash Invalidate */
 #define L1CSR1_ICE	0x00000001	/* Instr Cache Enable */
 
+<<<<<<< HEAD
+=======
+/* Bit definitions for L1CSR2. */
+#define L1CSR2_DCWS	0x40000000	/* Data Cache write shadow */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Bit definitions for L2CSR0. */
 #define L2CSR0_L2E	0x80000000	/* L2 Cache Enable */
 #define L2CSR0_L2PE	0x40000000	/* L2 Cache Parity/ECC Enable */

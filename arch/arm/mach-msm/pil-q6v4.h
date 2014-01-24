@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,7 +22,10 @@ struct pil_q6v4_pdata {
 	const unsigned long strap_ahb_lower;
 	void __iomem *aclk_reg;
 	void __iomem *jtag_clk_reg;
+<<<<<<< HEAD
 	const int xo_id;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	const char *name;
 	const char *depends;
 	const unsigned pas_id;

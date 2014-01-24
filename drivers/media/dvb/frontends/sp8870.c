@@ -168,13 +168,21 @@ static int sp8870_read_data_valid_signal(struct sp8870_state* state)
 	return (sp8870_readreg(state, 0x0D02) > 0);
 }
 
+<<<<<<< HEAD
 static int configure_reg0xc05 (struct dvb_frontend_parameters *p, u16 *reg0xc05)
+=======
+static int configure_reg0xc05 (struct dtv_frontend_properties *p, u16 *reg0xc05)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int known_parameters = 1;
 
 	*reg0xc05 = 0x000;
 
+<<<<<<< HEAD
 	switch (p->u.ofdm.constellation) {
+=======
+	switch (p->modulation) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case QPSK:
 		break;
 	case QAM_16:
@@ -190,7 +198,11 @@ static int configure_reg0xc05 (struct dvb_frontend_parameters *p, u16 *reg0xc05)
 		return -EINVAL;
 	};
 
+<<<<<<< HEAD
 	switch (p->u.ofdm.hierarchy_information) {
+=======
+	switch (p->hierarchy) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case HIERARCHY_NONE:
 		break;
 	case HIERARCHY_1:
@@ -209,7 +221,11 @@ static int configure_reg0xc05 (struct dvb_frontend_parameters *p, u16 *reg0xc05)
 		return -EINVAL;
 	};
 
+<<<<<<< HEAD
 	switch (p->u.ofdm.code_rate_HP) {
+=======
+	switch (p->code_rate_HP) {
+>>>>>>> refs/remotes/origin/cm-10.0
 	case FEC_1_2:
 		break;
 	case FEC_2_3:
@@ -245,9 +261,15 @@ static int sp8870_wake_up(struct sp8870_state* state)
 	return sp8870_writereg(state, 0xC18, 0x00D);
 }
 
+<<<<<<< HEAD
 static int sp8870_set_frontend_parameters (struct dvb_frontend* fe,
 					   struct dvb_frontend_parameters *p)
 {
+=======
+static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sp8870_state* state = fe->demodulator_priv;
 	int  err;
 	u16 reg0xc05;
@@ -260,7 +282,11 @@ static int sp8870_set_frontend_parameters (struct dvb_frontend* fe,
 
 	// set tuner parameters
 	if (fe->ops.tuner_ops.set_params) {
+<<<<<<< HEAD
 		fe->ops.tuner_ops.set_params(fe, p);
+=======
+		fe->ops.tuner_ops.set_params(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (fe->ops.i2c_gate_ctrl) fe->ops.i2c_gate_ctrl(fe, 0);
 	}
 
@@ -277,15 +303,25 @@ static int sp8870_set_frontend_parameters (struct dvb_frontend* fe,
 	sp8870_writereg(state, 0x030A, 0x0000);
 
 	// filter for 6/7/8 Mhz channel
+<<<<<<< HEAD
 	if (p->u.ofdm.bandwidth == BANDWIDTH_6_MHZ)
 		sp8870_writereg(state, 0x0311, 0x0002);
 	else if (p->u.ofdm.bandwidth == BANDWIDTH_7_MHZ)
+=======
+	if (p->bandwidth_hz == 6000000)
+		sp8870_writereg(state, 0x0311, 0x0002);
+	else if (p->bandwidth_hz == 7000000)
+>>>>>>> refs/remotes/origin/cm-10.0
 		sp8870_writereg(state, 0x0311, 0x0001);
 	else
 		sp8870_writereg(state, 0x0311, 0x0000);
 
 	// scan order: 2k first = 0x0000, 8k first = 0x0001
+<<<<<<< HEAD
 	if (p->u.ofdm.transmission_mode == TRANSMISSION_MODE_2K)
+=======
+	if (p->transmission_mode == TRANSMISSION_MODE_2K)
+>>>>>>> refs/remotes/origin/cm-10.0
 		sp8870_writereg(state, 0x0338, 0x0000);
 	else
 		sp8870_writereg(state, 0x0338, 0x0001);
@@ -459,8 +495,14 @@ static int lockups;
 /* only for debugging: counter for channel switches */
 static int switches;
 
+<<<<<<< HEAD
 static int sp8870_set_frontend (struct dvb_frontend* fe, struct dvb_frontend_parameters *p)
 {
+=======
+static int sp8870_set_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct sp8870_state* state = fe->demodulator_priv;
 
 	/*
@@ -479,7 +521,12 @@ static int sp8870_set_frontend (struct dvb_frontend* fe, struct dvb_frontend_par
 
 	for (trials = 1; trials <= MAXTRIALS; trials++) {
 
+<<<<<<< HEAD
 		if ((err = sp8870_set_frontend_parameters(fe, p)))
+=======
+		err = sp8870_set_frontend_parameters(fe);
+		if (err)
+>>>>>>> refs/remotes/origin/cm-10.0
 			return err;
 
 		for (check_count = 0; check_count < MAXCHECKS; check_count++) {
@@ -579,10 +626,16 @@ error:
 }
 
 static struct dvb_frontend_ops sp8870_ops = {
+<<<<<<< HEAD
 
 	.info = {
 		.name			= "Spase SP8870 DVB-T",
 		.type			= FE_OFDM,
+=======
+	.delsys = { SYS_DVBT },
+	.info = {
+		.name			= "Spase SP8870 DVB-T",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.frequency_min		= 470000000,
 		.frequency_max		= 860000000,
 		.frequency_stepsize	= 166666,

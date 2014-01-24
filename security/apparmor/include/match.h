@@ -116,6 +116,12 @@ unsigned int aa_dfa_match_len(struct aa_dfa *dfa, unsigned int start,
 			      const char *str, int len);
 unsigned int aa_dfa_match(struct aa_dfa *dfa, unsigned int start,
 			  const char *str);
+<<<<<<< HEAD
+=======
+unsigned int aa_dfa_next(struct aa_dfa *dfa, unsigned int state,
+			 const char c);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 void aa_dfa_free_kref(struct kref *kref);
 
 /**

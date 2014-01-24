@@ -7,6 +7,10 @@
  *	Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>
  *	- Added _PDC for platforms with Intel CPUs
  */
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/dmi.h>
 #include <linux/slab.h>
 

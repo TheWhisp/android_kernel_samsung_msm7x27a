@@ -15,10 +15,18 @@
   along with this driver.  If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
+<<<<<<< HEAD
 #include <linux/mutex.h>
 #include <linux/slab.h>
 
 #include "crystalhd_lnx.h"
+=======
+#include "crystalhd.h"
+
+#include <linux/mutex.h>
+#include <linux/slab.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static DEFINE_MUTEX(chd_dec_mutex);
 static struct class *crystalhd_class;
@@ -298,7 +306,10 @@ static int chd_dec_open(struct inode *in, struct file *fd)
 	enum BC_STATUS sts = BC_STS_SUCCESS;
 	struct crystalhd_user *uc = NULL;
 
+<<<<<<< HEAD
 	BCMLOG_ENTER;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!adp) {
 		BCMLOG_ERR("Invalid adp\n");
 		return -EINVAL;
@@ -327,7 +338,10 @@ static int chd_dec_close(struct inode *in, struct file *fd)
 	struct crystalhd_adp *adp = chd_get_adp();
 	struct crystalhd_user *uc;
 
+<<<<<<< HEAD
 	BCMLOG_ENTER;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!adp) {
 		BCMLOG_ERR("Invalid adp\n");
 		return -EINVAL;
@@ -513,8 +527,11 @@ static void __devexit chd_dec_pci_remove(struct pci_dev *pdev)
 	struct crystalhd_adp *pinfo;
 	enum BC_STATUS sts = BC_STS_SUCCESS;
 
+<<<<<<< HEAD
 	BCMLOG_ENTER;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	pinfo = pci_get_drvdata(pdev);
 	if (!pinfo) {
 		BCMLOG_ERR("could not get adp\n");

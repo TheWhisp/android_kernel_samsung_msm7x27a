@@ -1,6 +1,10 @@
 #ifndef _RDS_IW_H
 #define _RDS_IW_H
 
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <rdma/ib_verbs.h>
 #include <rdma/rdma_cm.h>
 #include "rds.h"

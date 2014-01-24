@@ -55,6 +55,7 @@ struct wl1271_static_data {
 #define OCP_REG_CLK_POLARITY 0x0cb2
 #define OCP_REG_CLK_PULL     0x0cb4
 
+<<<<<<< HEAD
 #define REG_FUSE_DATA_2_1    0x050a
 #define PG_VER_MASK          0x3c
 #define PG_VER_OFFSET        2
@@ -64,6 +65,8 @@ struct wl1271_static_data {
 #define PG_MINOR_VER_MASK    0xc
 #define PG_MINOR_VER_OFFSET  0x2
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define CMD_MBOX_ADDRESS     0x407B4
 
 #define POLARITY_LOW         BIT(1)

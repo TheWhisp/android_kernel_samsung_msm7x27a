@@ -41,9 +41,12 @@
 
 #include <linux/nfs_fs.h>
 #include <linux/nfs_page.h>
+<<<<<<< HEAD
 #include <scsi/osd_protocol.h>
 
 #define PNFS_OSD_OSDNAME_MAXSIZE 256
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * draft-ietf-nfsv4-minorversion-22
@@ -99,12 +102,15 @@ struct pnfs_osd_objid {
 #define _DEVID_HI(oid_device_id) \
 	(unsigned long long)be64_to_cpup(((__be64 *)(oid_device_id)->data) + 1)
 
+<<<<<<< HEAD
 static inline int
 pnfs_osd_objid_xdr_sz(void)
 {
 	return (NFS4_DEVICEID4_SIZE / 4) + 2 + 2;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 enum pnfs_osd_version {
 	PNFS_OSD_MISSING              = 0,
 	PNFS_OSD_VERSION_1            = 1,
@@ -189,8 +195,11 @@ struct pnfs_osd_targetid {
 	struct nfs4_string		oti_scsi_device_id;
 };
 
+<<<<<<< HEAD
 enum { PNFS_OSD_TARGETID_MAX = 1 + PNFS_OSD_OSDNAME_MAXSIZE / 4 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*   struct netaddr4 {
  *       // see struct rpcb in RFC1833
  *       string r_netid<>;    // network id
@@ -207,12 +216,15 @@ struct pnfs_osd_targetaddr {
 	struct pnfs_osd_net_addr	ota_netaddr;
 };
 
+<<<<<<< HEAD
 enum {
 	NETWORK_ID_MAX = 16 / 4,
 	UNIVERSAL_ADDRESS_MAX = 64 / 4,
 	PNFS_OSD_TARGETADDR_MAX = 3 +  NETWORK_ID_MAX + UNIVERSAL_ADDRESS_MAX,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 struct pnfs_osd_deviceaddr {
 	struct pnfs_osd_targetid	oda_targetid;
 	struct pnfs_osd_targetaddr	oda_targetaddr;
@@ -222,6 +234,7 @@ struct pnfs_osd_deviceaddr {
 	struct nfs4_string		oda_osdname;
 };
 
+<<<<<<< HEAD
 enum {
 	ODA_OSDNAME_MAX = PNFS_OSD_OSDNAME_MAXSIZE / 4,
 	PNFS_OSD_DEVICEADDR_MAX =
@@ -231,6 +244,8 @@ enum {
 		1 + ODA_OSDNAME_MAX,
 };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* LAYOUTCOMMIT: layoutupdate */
 
 /*   union pnfs_osd_deltaspaceused4 switch (bool dsu_valid) {
@@ -279,7 +294,11 @@ struct pnfs_osd_ioerr {
 	u32			oer_errno;
 };
 
+<<<<<<< HEAD
 /* OSD XDR API */
+=======
+/* OSD XDR Client API */
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Layout helpers */
 /* Layout decoding is done in two parts:
  * 1. First Call pnfs_osd_xdr_decode_layout_map to read in only the header part
@@ -337,8 +356,12 @@ extern int
 pnfs_osd_xdr_encode_layoutupdate(struct xdr_stream *xdr,
 				 struct pnfs_osd_layoutupdate *lou);
 
+<<<<<<< HEAD
 /* osd_ioerror encoding/decoding (layout_return) */
 /* Client */
+=======
+/* osd_ioerror encoding (layout_return) */
+>>>>>>> refs/remotes/origin/cm-10.0
 extern __be32 *pnfs_osd_xdr_ioerr_reserve_space(struct xdr_stream *xdr);
 extern void pnfs_osd_xdr_encode_ioerr(__be32 *p, struct pnfs_osd_ioerr *ioerr);
 

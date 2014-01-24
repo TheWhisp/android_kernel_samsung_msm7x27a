@@ -39,12 +39,21 @@ struct nf_conntrack_l4proto {
 		      unsigned int dataoff,
 		      enum ip_conntrack_info ctinfo,
 		      u_int8_t pf,
+<<<<<<< HEAD
 		      unsigned int hooknum);
+=======
+		      unsigned int hooknum,
+		      unsigned int *timeouts);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Called when a new connection for this protocol found;
 	 * returns TRUE if it's OK.  If so, packet() called next. */
 	bool (*new)(struct nf_conn *ct, const struct sk_buff *skb,
+<<<<<<< HEAD
 		    unsigned int dataoff);
+=======
+		    unsigned int dataoff, unsigned int *timeouts);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Called when a conntrack entry is destroyed */
 	void (*destroy)(struct nf_conn *ct);
@@ -60,6 +69,12 @@ struct nf_conntrack_l4proto {
 	/* Print out the private part of the conntrack. */
 	int (*print_conntrack)(struct seq_file *s, struct nf_conn *);
 
+<<<<<<< HEAD
+=======
+	/* Return the array of timeouts for this protocol. */
+	unsigned int *(*get_timeouts)(struct net *net);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* convert protoinfo to nfnetink attributes */
 	int (*to_nlattr)(struct sk_buff *skb, struct nlattr *nla,
 			 struct nf_conn *ct);
@@ -79,6 +94,20 @@ struct nf_conntrack_l4proto {
 
 	size_t nla_size;
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
+	struct {
+		size_t obj_size;
+		int (*nlattr_to_obj)(struct nlattr *tb[], void *data);
+		int (*obj_to_nlattr)(struct sk_buff *skb, const void *data);
+
+		unsigned int nlattr_max;
+		const struct nla_policy *nla_policy;
+	} ctnl_timeout;
+#endif
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SYSCTL
 	struct ctl_table_header	**ctl_table_header;
 	struct ctl_table	*ctl_table;
@@ -103,6 +132,13 @@ extern struct nf_conntrack_l4proto nf_conntrack_l4proto_generic;
 extern struct nf_conntrack_l4proto *
 __nf_ct_l4proto_find(u_int16_t l3proto, u_int8_t l4proto);
 
+<<<<<<< HEAD
+=======
+extern struct nf_conntrack_l4proto *
+nf_ct_l4proto_find_get(u_int16_t l3proto, u_int8_t l4proto);
+extern void nf_ct_l4proto_put(struct nf_conntrack_l4proto *p);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Protocol registration. */
 extern int nf_conntrack_l4proto_register(struct nf_conntrack_l4proto *proto);
 extern void nf_conntrack_l4proto_unregister(struct nf_conntrack_l4proto *proto);

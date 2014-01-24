@@ -114,6 +114,7 @@ static struct bin_attribute w1_ds2760_bin_attr = {
 	.read = w1_ds2760_read_bin,
 };
 
+<<<<<<< HEAD
 static DEFINE_IDR(bat_idr);
 static DEFINE_MUTEX(bat_idr_lock);
 
@@ -151,6 +152,9 @@ static void release_bat_id(int id)
 	idr_remove(&bat_idr, id);
 	mutex_unlock(&bat_idr_lock);
 }
+=======
+static DEFINE_IDA(bat_ida);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int w1_ds2760_add_slave(struct w1_slave *sl)
 {
@@ -158,7 +162,11 @@ static int w1_ds2760_add_slave(struct w1_slave *sl)
 	int id;
 	struct platform_device *pdev;
 
+<<<<<<< HEAD
 	id = new_bat_id();
+=======
+	id = ida_simple_get(&bat_ida, 0, 0, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (id < 0) {
 		ret = id;
 		goto noid;
@@ -187,7 +195,11 @@ bin_attr_failed:
 pdev_add_failed:
 	platform_device_unregister(pdev);
 pdev_alloc_failed:
+<<<<<<< HEAD
 	release_bat_id(id);
+=======
+	ida_simple_remove(&bat_ida, id);
+>>>>>>> refs/remotes/origin/cm-10.0
 noid:
 success:
 	return ret;
@@ -199,7 +211,11 @@ static void w1_ds2760_remove_slave(struct w1_slave *sl)
 	int id = pdev->id;
 
 	platform_device_unregister(pdev);
+<<<<<<< HEAD
 	release_bat_id(id);
+=======
+	ida_simple_remove(&bat_ida, id);
+>>>>>>> refs/remotes/origin/cm-10.0
 	sysfs_remove_bin_file(&sl->dev.kobj, &w1_ds2760_bin_attr);
 }
 
@@ -217,14 +233,22 @@ static int __init w1_ds2760_init(void)
 {
 	printk(KERN_INFO "1-Wire driver for the DS2760 battery monitor "
 	       " chip  - (c) 2004-2005, Szabolcs Gyurko\n");
+<<<<<<< HEAD
 	idr_init(&bat_idr);
+=======
+	ida_init(&bat_ida);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return w1_register_family(&w1_ds2760_family);
 }
 
 static void __exit w1_ds2760_exit(void)
 {
 	w1_unregister_family(&w1_ds2760_family);
+<<<<<<< HEAD
 	idr_destroy(&bat_idr);
+=======
+	ida_destroy(&bat_ida);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 EXPORT_SYMBOL(w1_ds2760_read);

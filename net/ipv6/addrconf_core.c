@@ -3,6 +3,10 @@
  * not configured or static.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/ipv6.h>
 
 #define IPV6_ADDR_SCOPE_TYPE(scope)	((scope) << 16)

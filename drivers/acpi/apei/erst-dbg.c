@@ -33,7 +33,11 @@
 
 #define ERST_DBG_PFX			"ERST DBG: "
 
+<<<<<<< HEAD
 #define ERST_DBG_RECORD_LEN_MAX		4096
+=======
+#define ERST_DBG_RECORD_LEN_MAX		0x4000
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void *erst_dbg_buf;
 static unsigned int erst_dbg_buf_len;
@@ -213,6 +217,13 @@ static struct miscdevice erst_dbg_dev = {
 
 static __init int erst_dbg_init(void)
 {
+<<<<<<< HEAD
+=======
+	if (erst_disable) {
+		pr_info(ERST_DBG_PFX "ERST support is disabled.\n");
+		return -ENODEV;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return misc_register(&erst_dbg_dev);
 }
 

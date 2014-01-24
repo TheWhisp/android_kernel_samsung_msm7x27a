@@ -33,7 +33,10 @@
 #include <asm/io.h>
 #include <asm/pgtable.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/irq.h>
 #include <asm/hydra.h>
 #include <asm/processor.h>

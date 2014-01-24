@@ -1,7 +1,11 @@
 /*
  * diag.c - handling diagnose instructions
  *
+<<<<<<< HEAD
  * Copyright IBM Corp. 2008
+=======
+ * Copyright IBM Corp. 2008,2011
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License (version 2 only)
@@ -15,6 +19,37 @@
 #include <linux/kvm_host.h>
 #include "kvm-s390.h"
 
+<<<<<<< HEAD
+=======
+static int diag_release_pages(struct kvm_vcpu *vcpu)
+{
+	unsigned long start, end;
+	unsigned long prefix  = vcpu->arch.sie_block->prefix;
+
+	start = vcpu->run->s.regs.gprs[(vcpu->arch.sie_block->ipa & 0xf0) >> 4];
+	end = vcpu->run->s.regs.gprs[vcpu->arch.sie_block->ipa & 0xf] + 4096;
+
+	if (start & ~PAGE_MASK || end & ~PAGE_MASK || start > end
+	    || start < 2 * PAGE_SIZE)
+		return kvm_s390_inject_program_int(vcpu, PGM_SPECIFICATION);
+
+	VCPU_EVENT(vcpu, 5, "diag release pages %lX %lX", start, end);
+	vcpu->stat.diagnose_10++;
+
+	/* we checked for start > end above */
+	if (end < prefix || start >= prefix + 2 * PAGE_SIZE) {
+		gmap_discard(start, end, vcpu->arch.gmap);
+	} else {
+		if (start < prefix)
+			gmap_discard(start, prefix, vcpu->arch.gmap);
+		if (end >= prefix)
+			gmap_discard(prefix + 2 * PAGE_SIZE,
+				     end, vcpu->arch.gmap);
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __diag_time_slice_end(struct kvm_vcpu *vcpu)
 {
 	VCPU_EVENT(vcpu, 5, "%s", "diag time slice end");
@@ -28,7 +63,11 @@ static int __diag_time_slice_end(struct kvm_vcpu *vcpu)
 static int __diag_ipl_functions(struct kvm_vcpu *vcpu)
 {
 	unsigned int reg = vcpu->arch.sie_block->ipa & 0xf;
+<<<<<<< HEAD
 	unsigned long subcode = vcpu->arch.guest_gprs[reg] & 0xffff;
+=======
+	unsigned long subcode = vcpu->run->s.regs.gprs[reg] & 0xffff;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	VCPU_EVENT(vcpu, 5, "diag ipl functions, subcode %lx", subcode);
 	switch (subcode) {
@@ -42,7 +81,11 @@ static int __diag_ipl_functions(struct kvm_vcpu *vcpu)
 		return -EOPNOTSUPP;
 	}
 
+<<<<<<< HEAD
 	atomic_clear_mask(CPUSTAT_RUNNING, &vcpu->arch.sie_block->cpuflags);
+=======
+	atomic_set_mask(CPUSTAT_STOPPED, &vcpu->arch.sie_block->cpuflags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	vcpu->run->s390_reset_flags |= KVM_S390_RESET_SUBSYSTEM;
 	vcpu->run->s390_reset_flags |= KVM_S390_RESET_IPL;
 	vcpu->run->s390_reset_flags |= KVM_S390_RESET_CPU_INIT;
@@ -57,6 +100,11 @@ int kvm_s390_handle_diag(struct kvm_vcpu *vcpu)
 	int code = (vcpu->arch.sie_block->ipb & 0xfff0000) >> 16;
 
 	switch (code) {
+<<<<<<< HEAD
+=======
+	case 0x10:
+		return diag_release_pages(vcpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 	case 0x44:
 		return __diag_time_slice_end(vcpu);
 	case 0x308:

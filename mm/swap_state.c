@@ -6,7 +6,10 @@
  *
  *  Rewritten to use page cache, (C) 1998 Stephen Tweedie
  */
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mm.h>
 #include <linux/gfp.h>
 #include <linux/kernel_stat.h>
@@ -14,7 +17,10 @@
 #include <linux/swapops.h>
 #include <linux/init.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/backing-dev.h>
 #include <linux/pagevec.h>
 #include <linux/migrate.h>
@@ -390,6 +396,7 @@ struct page *read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
 struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
 			struct vm_area_struct *vma, unsigned long addr)
 {
+<<<<<<< HEAD
 	int nr_pages;
 	struct page *page;
 	unsigned long offset;
@@ -404,11 +411,29 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
 	 */
 	nr_pages = valid_swaphandles(entry, &offset);
 	for (end_offset = offset + nr_pages; offset < end_offset; offset++) {
+=======
+	struct page *page;
+	unsigned long offset = swp_offset(entry);
+	unsigned long start_offset, end_offset;
+	unsigned long mask = (1UL << page_cluster) - 1;
+
+	/* Read a page_cluster sized and aligned cluster around offset. */
+	start_offset = offset & ~mask;
+	end_offset = offset | mask;
+	if (!start_offset)	/* First page is swap header. */
+		start_offset++;
+
+	for (offset = start_offset; offset <= end_offset ; offset++) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Ok, do the async read-ahead now */
 		page = read_swap_cache_async(swp_entry(swp_type(entry), offset),
 						gfp_mask, vma, addr);
 		if (!page)
+<<<<<<< HEAD
 			break;
+=======
+			continue;
+>>>>>>> refs/remotes/origin/cm-10.0
 		page_cache_release(page);
 	}
 	lru_add_drain();	/* Push any new pages onto the LRU now */

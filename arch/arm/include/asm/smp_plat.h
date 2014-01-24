@@ -43,4 +43,13 @@ static inline int cache_ops_need_broadcast(void)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+/*
+ * Logical CPU mapping.
+ */
+extern int __cpu_logical_map[];
+#define cpu_logical_map(cpu)	__cpu_logical_map[cpu]
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

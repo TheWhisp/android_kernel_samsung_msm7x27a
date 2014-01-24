@@ -3,6 +3,7 @@
 
 #include <linux/mm.h>
 #include <linux/mempolicy.h>
+<<<<<<< HEAD
 
 typedef struct page *new_page_t(struct page *, unsigned long private, int **);
 
@@ -21,6 +22,13 @@ enum migrate_mode {
 
 #ifdef CONFIG_MIGRATION
 #define PAGE_MIGRATION 1
+=======
+#include <linux/migrate_mode.h>
+
+typedef struct page *new_page_t(struct page *, unsigned long private, int **);
+
+#ifdef CONFIG_MIGRATION
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern void putback_lru_pages(struct list_head *l);
 extern int migrate_page(struct address_space *,
@@ -44,7 +52,10 @@ extern void migrate_page_copy(struct page *newpage, struct page *page);
 extern int migrate_huge_page_move_mapping(struct address_space *mapping,
 				  struct page *newpage, struct page *page);
 #else
+<<<<<<< HEAD
 #define PAGE_MIGRATION 0
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static inline void putback_lru_pages(struct list_head *l) {}
 static inline int migrate_pages(struct list_head *l, new_page_t x,

@@ -7,6 +7,10 @@ rng-core-y := core.o
 obj-$(CONFIG_HW_RANDOM_TIMERIOMEM) += timeriomem-rng.o
 obj-$(CONFIG_HW_RANDOM_INTEL) += intel-rng.o
 obj-$(CONFIG_HW_RANDOM_AMD) += amd-rng.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_HW_RANDOM_ATMEL) += atmel-rng.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_HW_RANDOM_GEODE) += geode-rng.o
 obj-$(CONFIG_HW_RANDOM_N2RNG) += n2-rng.o
 n2-rng-y := n2-drv.o n2-asm.o
@@ -20,4 +24,8 @@ obj-$(CONFIG_HW_RANDOM_MXC_RNGA) += mxc-rnga.o
 obj-$(CONFIG_HW_RANDOM_OCTEON) += octeon-rng.o
 obj-$(CONFIG_HW_RANDOM_NOMADIK) += nomadik-rng.o
 obj-$(CONFIG_HW_RANDOM_PICOXCELL) += picoxcell-rng.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_HW_RANDOM_PPC4XX) += ppc4xx-rng.o
+>>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_HW_RANDOM_MSM) += msm_rng.o

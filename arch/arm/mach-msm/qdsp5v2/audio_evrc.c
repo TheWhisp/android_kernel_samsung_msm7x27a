@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This code also borrows from audio_aac.c, which is
  * Copyright (C) 2008 Google, Inc.
@@ -40,7 +44,10 @@
 #include <mach/msm_adsp.h>
 #include <mach/iommu.h>
 #include <mach/iommu_domains.h>
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/qdsp5v2/audio_dev_ctl.h>
 #include <mach/qdsp5v2/qdsp5audppmsg.h>
 #include <mach/qdsp5v2/qdsp5audplaycmdi.h>
@@ -132,8 +139,13 @@ struct audio {
 	/* data allocated for various buffers */
 	char *data;
 	int32_t phys;  /* physical address of write buffer */
+<<<<<<< HEAD
 	struct msm_mapped_buffer *map_v_read;
 	struct msm_mapped_buffer *map_v_write;
+=======
+	void *map_v_read;
+	void *map_v_write;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int mfield; /* meta field embedded in data */
 	int rflush; /* Read  flush */
@@ -189,8 +201,15 @@ static void audevrc_send_data(struct audio *audio, unsigned needed);
 static void audevrc_dsp_event(void *private, unsigned id, uint16_t *msg);
 static void audevrc_config_hostpcm(struct audio *audio);
 static void audevrc_buffer_refresh(struct audio *audio);
+<<<<<<< HEAD
 static void audevrc_post_event(struct audio *audio, int type,
 		union msm_audio_event_payload payload);
+=======
+#ifdef CONFIG_HAS_EARLYSUSPEND
+static void audevrc_post_event(struct audio *audio, int type,
+		union msm_audio_event_payload payload);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* must be called with audio->lock held */
 static int audevrc_enable(struct audio *audio)
@@ -980,12 +999,19 @@ static long audevrc_ioctl(struct file *file, unsigned int cmd,
 					rc = -ENOMEM;
 					break;
 				}
+<<<<<<< HEAD
 				audio->map_v_read = msm_subsystem_map_buffer(
 							audio->read_phys,
 							config.buffer_size *
 							config.buffer_count,
 							MSM_SUBSYSTEM_MAP_KADDR
 							, NULL, 0);
+=======
+				audio->map_v_read = ioremap(
+							audio->read_phys,
+							config.buffer_size *
+							config.buffer_count);
+>>>>>>> refs/remotes/origin/cm-10.0
 				if (IS_ERR(audio->map_v_read)) {
 					MM_ERR("failed to map read"
 							" phy address\n");
@@ -996,7 +1022,11 @@ static long audevrc_ioctl(struct file *file, unsigned int cmd,
 					uint8_t index;
 					uint32_t offset = 0;
 					audio->read_data =
+<<<<<<< HEAD
 						audio->map_v_read->vaddr;
+=======
+						audio->map_v_read;
+>>>>>>> refs/remotes/origin/cm-10.0
 					audio->buf_refresh = 0;
 					audio->pcm_buf_count =
 					    config.buffer_count;
@@ -1045,7 +1075,11 @@ static long audevrc_ioctl(struct file *file, unsigned int cmd,
 }
 
 /* Only useful in tunnel-mode */
+<<<<<<< HEAD
 static int audevrc_fsync(struct file *file,	int datasync)
+=======
+static int audevrc_fsync(struct file *file, loff_t ppos1, loff_t ppos2, int datasync)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct audio *audio = file->private_data;
 	int rc = 0;
@@ -1309,10 +1343,17 @@ static int audevrc_release(struct inode *inode, struct file *file)
 	audio->event_abort = 1;
 	wake_up(&audio->event_wait);
 	audevrc_reset_event_queue(audio);
+<<<<<<< HEAD
 	msm_subsystem_unmap_buffer(audio->map_v_write);
 	free_contiguous_memory_by_paddr(audio->phys);
 	if (audio->read_data) {
 		msm_subsystem_unmap_buffer(audio->map_v_read);
+=======
+	iounmap(audio->map_v_write);
+	free_contiguous_memory_by_paddr(audio->phys);
+	if (audio->read_data) {
+		iounmap(audio->map_v_read);
+>>>>>>> refs/remotes/origin/cm-10.0
 		free_contiguous_memory_by_paddr(audio->read_phys);
 	}
 	mutex_unlock(&audio->lock);
@@ -1324,6 +1365,10 @@ static int audevrc_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HAS_EARLYSUSPEND
+>>>>>>> refs/remotes/origin/cm-10.0
 static void audevrc_post_event(struct audio *audio, int type,
 		union msm_audio_event_payload payload)
 {
@@ -1352,7 +1397,10 @@ static void audevrc_post_event(struct audio *audio, int type,
 	wake_up(&audio->event_wait);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAS_EARLYSUSPEND
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void audevrc_suspend(struct early_suspend *h)
 {
 	struct audevrc_suspend_ctl *ctl =
@@ -1503,9 +1551,13 @@ static int audevrc_open(struct inode *inode, struct file *file)
 		kfree(audio);
 		goto done;
 	} else {
+<<<<<<< HEAD
 		audio->map_v_write = msm_subsystem_map_buffer(
 					audio->phys, DMASZ,
 					MSM_SUBSYSTEM_MAP_KADDR, NULL, 0);
+=======
+		audio->map_v_write = ioremap(audio->phys, DMASZ);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (IS_ERR(audio->map_v_write)) {
 			MM_ERR("failed to map write physical address, freeing \
 					instance 0x%08x\n", (int)audio);
@@ -1515,7 +1567,11 @@ static int audevrc_open(struct inode *inode, struct file *file)
 			kfree(audio);
 			goto done;
 		}
+<<<<<<< HEAD
 		audio->data = audio->map_v_write->vaddr;
+=======
+		audio->data = audio->map_v_write;
+>>>>>>> refs/remotes/origin/cm-10.0
 		MM_DBG("write buf: phy addr 0x%08x kernel addr 0x%08x\n",
 				audio->phys, (int)audio->data);
 	}
@@ -1602,7 +1658,11 @@ done:
 event_err:
 	msm_adsp_put(audio->audplay);
 err:
+<<<<<<< HEAD
 	msm_subsystem_unmap_buffer(audio->map_v_write);
+=======
+	iounmap(audio->map_v_write);
+>>>>>>> refs/remotes/origin/cm-10.0
 	free_contiguous_memory_by_paddr(audio->phys);
 	audpp_adec_free(audio->dec_id);
 	kfree(audio);

@@ -13,7 +13,11 @@
 #include <linux/kernel.h>
 #include <linux/io.h>
 #include <mach/gpiomux.h>
+<<<<<<< HEAD
 #include "proc_comm.h"
+=======
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "gpio.h"
 
 void __msm_gpiomux_write(unsigned gpio, struct gpiomux_setting val)

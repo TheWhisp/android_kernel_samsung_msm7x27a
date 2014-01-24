@@ -116,6 +116,14 @@
 
 #define SSM2602_CACHEREGNUM 	10
 
+<<<<<<< HEAD
 #define SSM2602_SYSCLK	0
+=======
+enum ssm2602_clk {
+	SSM2602_SYSCLK,
+	SSM2602_CLK_CLKOUT,
+	SSM2602_CLK_XTO
+};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

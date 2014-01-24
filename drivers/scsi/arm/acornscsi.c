@@ -138,7 +138,10 @@
 #include <linux/stringify.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/ecard.h>
 
 #include "../scsi.h"

@@ -3,7 +3,11 @@
 
 #include <linux/types.h>
 #include <asm/barrier.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Atomic operations that C can't guarantee us.  Useful for
@@ -176,15 +180,25 @@ static __inline__ long atomic64_sub_return(long i, atomic64_t * v)
 #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
 
 /**
+<<<<<<< HEAD
  * atomic_add_unless - add unless the number is a given value
+=======
+ * __atomic_add_unless - add unless the number is a given value
+>>>>>>> refs/remotes/origin/cm-10.0
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
 static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
+=======
+ * Returns the old value of @v.
+ */
+static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int c, old;
 	c = atomic_read(v);
@@ -196,10 +210,16 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
 			break;
 		c = old;
 	}
+<<<<<<< HEAD
 	return c != (u);
 }
 
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+=======
+	return c;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * atomic64_add_unless - add unless the number is a given value
@@ -208,7 +228,11 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
+=======
+ * Returns the old value of @v.
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 {
@@ -256,5 +280,8 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 #define smp_mb__before_atomic_inc()	smp_mb()
 #define smp_mb__after_atomic_inc()	smp_mb()
 
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif /* _ALPHA_ATOMIC_H */

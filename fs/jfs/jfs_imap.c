@@ -457,7 +457,11 @@ struct inode *diReadSpecial(struct super_block *sb, ino_t inum, int secondary)
 	/* read the page of fixed disk inode (AIT) in raw mode */
 	mp = read_metapage(ip, address << sbi->l2nbperpage, PSIZE, 1);
 	if (mp == NULL) {
+<<<<<<< HEAD
 		ip->i_nlink = 1;	/* Don't want iput() deleting it */
+=======
+		set_nlink(ip, 1);	/* Don't want iput() deleting it */
+>>>>>>> refs/remotes/origin/cm-10.0
 		iput(ip);
 		return (NULL);
 	}
@@ -469,7 +473,11 @@ struct inode *diReadSpecial(struct super_block *sb, ino_t inum, int secondary)
 	/* copy on-disk inode to in-memory inode */
 	if ((copy_from_dinode(dp, ip)) != 0) {
 		/* handle bad return by returning NULL for ip */
+<<<<<<< HEAD
 		ip->i_nlink = 1;	/* Don't want iput() deleting it */
+=======
+		set_nlink(ip, 1);	/* Don't want iput() deleting it */
+>>>>>>> refs/remotes/origin/cm-10.0
 		iput(ip);
 		/* release the page */
 		release_metapage(mp);
@@ -3076,7 +3084,11 @@ static int copy_from_dinode(struct dinode * dip, struct inode *ip)
 				ip->i_mode |= 0001;
 		}
 	}
+<<<<<<< HEAD
 	ip->i_nlink = le32_to_cpu(dip->di_nlink);
+=======
+	set_nlink(ip, le32_to_cpu(dip->di_nlink));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	jfs_ip->saved_uid = le32_to_cpu(dip->di_uid);
 	if (sbi->uid == -1)

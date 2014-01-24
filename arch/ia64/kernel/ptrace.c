@@ -26,7 +26,10 @@
 #include <asm/processor.h>
 #include <asm/ptrace_offsets.h>
 #include <asm/rse.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/uaccess.h>
 #include <asm/unwind.h>
 #ifdef CONFIG_PERFMON
@@ -1246,6 +1249,7 @@ syscall_trace_enter (long arg0, long arg1, long arg2, long arg3,
 	if (test_thread_flag(TIF_RESTORE_RSE))
 		ia64_sync_krbs();
 
+<<<<<<< HEAD
 	if (unlikely(current->audit_context)) {
 		long syscall;
 		int arch;
@@ -1255,6 +1259,10 @@ syscall_trace_enter (long arg0, long arg1, long arg2, long arg3,
 
 		audit_syscall_entry(arch, syscall, arg0, arg1, arg2, arg3);
 	}
+=======
+
+	audit_syscall_entry(AUDIT_ARCH_IA64, regs.r15, arg0, arg1, arg2, arg3);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -1268,6 +1276,7 @@ syscall_trace_leave (long arg0, long arg1, long arg2, long arg3,
 {
 	int step;
 
+<<<<<<< HEAD
 	if (unlikely(current->audit_context)) {
 		int success = AUDITSC_RESULT(regs.r10);
 		long result = regs.r8;
@@ -1276,6 +1285,9 @@ syscall_trace_leave (long arg0, long arg1, long arg2, long arg3,
 			result = -result;
 		audit_syscall_exit(success, result);
 	}
+=======
+	audit_syscall_exit(&regs);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	step = test_thread_flag(TIF_SINGLESTEP);
 	if (step || test_thread_flag(TIF_SYSCALL_TRACE))

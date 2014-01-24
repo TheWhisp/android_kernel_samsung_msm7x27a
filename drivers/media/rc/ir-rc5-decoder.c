@@ -21,6 +21,10 @@
  */
 
 #include "rc-core-priv.h"
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define RC5_NBITS		14
 #define RC5X_NBITS		20

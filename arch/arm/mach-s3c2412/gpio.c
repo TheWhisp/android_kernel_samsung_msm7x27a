@@ -28,7 +28,11 @@
 
 int s3c2412_gpio_set_sleepcfg(unsigned int pin, unsigned int state)
 {
+<<<<<<< HEAD
 	struct s3c_gpio_chip *chip = s3c_gpiolib_getchip(pin);
+=======
+	struct samsung_gpio_chip *chip = samsung_gpiolib_getchip(pin);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long offs = pin - chip->chip.base;
 	unsigned long flags;
 	unsigned long slpcon;

@@ -361,19 +361,31 @@ static const struct xenbus_device_id xenkbd_ids[] = {
 	{ "" }
 };
 
+<<<<<<< HEAD
 static struct xenbus_driver xenkbd_driver = {
 	.name = "vkbd",
 	.owner = THIS_MODULE,
 	.ids = xenkbd_ids,
+=======
+static DEFINE_XENBUS_DRIVER(xenkbd, ,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.probe = xenkbd_probe,
 	.remove = xenkbd_remove,
 	.resume = xenkbd_resume,
 	.otherend_changed = xenkbd_backend_changed,
+<<<<<<< HEAD
 };
 
 static int __init xenkbd_init(void)
 {
 	if (!xen_pv_domain())
+=======
+);
+
+static int __init xenkbd_init(void)
+{
+	if (!xen_domain())
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 
 	/* Nothing to do if running in dom0. */

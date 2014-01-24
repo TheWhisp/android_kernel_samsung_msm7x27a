@@ -1,6 +1,10 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2013 The Linux Foundation. All rights reserved.
+=======
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -426,6 +430,7 @@ static void hci_cc_host_buffer_size(struct hci_dev *hdev, struct sk_buff *skb)
 	hci_req_complete(hdev, HCI_OP_HOST_BUFFER_SIZE, status);
 }
 
+<<<<<<< HEAD
 static void hci_cc_le_clear_white_list(struct hci_dev *hdev,
 							struct sk_buff *skb)
 {
@@ -436,6 +441,8 @@ static void hci_cc_le_clear_white_list(struct hci_dev *hdev,
 	hci_req_complete(hdev, HCI_OP_LE_CLEAR_WHITE_LIST, status);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void hci_cc_read_ssp_mode(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_rp_read_ssp_mode *rp = (void *) skb->data;
@@ -923,6 +930,7 @@ static void hci_cc_le_read_buffer_size(struct hci_dev *hdev,
 	hci_req_complete(hdev, HCI_OP_LE_READ_BUFFER_SIZE, rp->status);
 }
 
+<<<<<<< HEAD
 static void hci_cc_le_read_white_list_size(struct hci_dev *hdev,
 				       struct sk_buff *skb)
 {
@@ -940,6 +948,8 @@ static void hci_cc_le_read_white_list_size(struct hci_dev *hdev,
 	hci_req_complete(hdev, HCI_OP_LE_READ_WHITE_LIST_SIZE, rp->status);
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static void hci_cc_user_confirm_reply(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_rp_user_confirm_reply *rp = (void *) skb->data;
@@ -1669,8 +1679,11 @@ static inline void hci_conn_complete_evt(struct hci_dev *hdev, struct sk_buff *s
 		if (conn->type == ACL_LINK) {
 			struct hci_cp_read_remote_version cp;
 			cp.handle = ev->handle;
+<<<<<<< HEAD
 			hci_send_cmd(hdev, HCI_OP_READ_CLOCK_OFFSET,
 				sizeof(cp), &cp);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			hci_send_cmd(hdev, HCI_OP_READ_REMOTE_VERSION,
 				sizeof(cp), &cp);
 		}
@@ -1796,7 +1809,11 @@ static inline void hci_disconn_complete_evt(struct hci_dev *hdev, struct sk_buff
 	struct hci_ev_disconn_complete *ev = (void *) skb->data;
 	struct hci_conn *conn;
 
+<<<<<<< HEAD
 	BT_DBG("%s status %d reason %d", hdev->name, ev->status, ev->reason);
+=======
+	BT_DBG("%s status %d", hdev->name, ev->status);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ev->status) {
 		hci_dev_lock(hdev);
@@ -1814,7 +1831,11 @@ static inline void hci_disconn_complete_evt(struct hci_dev *hdev, struct sk_buff
 	conn->state = BT_CLOSED;
 
 	if (conn->type == ACL_LINK || conn->type == LE_LINK)
+<<<<<<< HEAD
 		mgmt_disconnected(hdev->id, &conn->dst, ev->reason);
+=======
+		mgmt_disconnected(hdev->id, &conn->dst);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (conn->type == LE_LINK)
 		del_timer(&conn->smp_timer);
@@ -1840,8 +1861,29 @@ static inline void hci_auth_complete_evt(struct hci_dev *hdev, struct sk_buff *s
 		if (ev->status == 0x06 && hdev->ssp_mode > 0 &&
 							conn->ssp_mode > 0) {
 			struct hci_cp_auth_requested cp;
+<<<<<<< HEAD
 			hci_remove_link_key(hdev, &conn->dst);
 			cp.handle = cpu_to_le16(conn->handle);
+=======
+			struct link_key *key;
+			key = hci_find_link_key(hdev, &conn->dst);
+			if (key && key->key_type == 0x05) {
+				BT_INFO("Previous key was authenticated, "
+					"updating the auth type for outgoing connection");
+				conn->auth_type = HCI_AT_DEDICATED_BONDING_MITM;
+			}
+			hci_remove_link_key(hdev, &conn->dst);
+			cp.handle = cpu_to_le16(conn->handle);
+			/*Initiates dedicated bonding as pin or key is missing
+			on remote device*/
+			/*In case if remote device is ssp supported,
+			reduce the security level to MEDIUM if it is HIGH*/
+			if (conn->ssp_mode && conn->auth_initiator &&
+				conn->io_capability != 0x03) {
+				conn->pending_sec_level = BT_SECURITY_HIGH;
+				conn->auth_type = HCI_AT_DEDICATED_BONDING_MITM;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 			hci_send_cmd(conn->hdev, HCI_OP_AUTH_REQUESTED,
 							sizeof(cp), &cp);
 			hci_dev_unlock(hdev);
@@ -2046,7 +2088,11 @@ static inline void hci_remote_features_evt(struct hci_dev *hdev, struct sk_buff 
 							sizeof(cp), &cp);
 		goto unlock;
 	} else  if (!(lmp_ssp_capable(conn)) && conn->auth_initiator &&
+<<<<<<< HEAD
 		(conn->pending_sec_level == BT_SECURITY_VERY_HIGH)) {
+=======
+		(conn->pending_sec_level == BT_SECURITY_HIGH)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		conn->pending_sec_level = BT_SECURITY_MEDIUM;
 	}
 
@@ -2273,6 +2319,7 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_le_read_buffer_size(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_OP_LE_READ_WHITE_LIST_SIZE:
 		hci_cc_le_read_white_list_size(hdev, skb);
 		break;
@@ -2281,6 +2328,8 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_le_clear_white_list(hdev, skb);
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	case HCI_OP_READ_RSSI:
 		hci_cc_read_rssi(hdev, skb);
 		break;
@@ -2426,6 +2475,7 @@ static inline void hci_cmd_status_evt(struct hci_dev *hdev, struct sk_buff *skb)
 	}
 }
 
+<<<<<<< HEAD
 static inline void hci_hardware_error_evt(struct hci_dev *hdev,
 					struct sk_buff *skb)
 {
@@ -2441,6 +2491,8 @@ static inline void hci_hardware_error_evt(struct hci_dev *hdev,
 
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static inline void hci_role_change_evt(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_ev_role_change *ev = (void *) skb->data;
@@ -2611,6 +2663,12 @@ static inline void hci_mode_change_evt(struct hci_dev *hdev, struct sk_buff *skb
 			else
 				conn->power_save = 0;
 		}
+<<<<<<< HEAD
+=======
+		if (conn->mode == HCI_CM_SNIFF)
+			if (wake_lock_active(&conn->idle_lock))
+				wake_unlock(&conn->idle_lock);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (test_and_clear_bit(HCI_CONN_SCO_SETUP_PEND, &conn->pend))
 			hci_sco_setup(conn, ev->status);
@@ -2681,12 +2739,15 @@ static inline void hci_link_key_request_evt(struct hci_dev *hdev, struct sk_buff
 		BT_DBG("Conn pending sec level is %d, ssp is %d, key len is %d",
 			conn->pending_sec_level, conn->ssp_mode, key->pin_len);
 	}
+<<<<<<< HEAD
 	if (conn && (conn->ssp_mode == 0) &&
 		(conn->pending_sec_level == BT_SECURITY_VERY_HIGH) &&
 		(key->pin_len != 16)) {
 		BT_DBG("Security is high ignoring this key");
 		goto not_found;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (key->key_type == 0x04 && conn && conn->auth_type != 0xff &&
 						(conn->auth_type & 0x01)) {
@@ -2871,14 +2932,24 @@ static inline void hci_remote_ext_features_evt(struct hci_dev *hdev, struct sk_b
 
 		conn->ssp_mode = (ev->features[0] & 0x01);
 		/*In case if remote device ssp supported/2.0 device
+<<<<<<< HEAD
 		reduce the security level to MEDIUM if it is VERY HIGH*/
 		if (!conn->ssp_mode && conn->auth_initiator &&
 			(conn->pending_sec_level == BT_SECURITY_VERY_HIGH))
+=======
+		reduce the security level to MEDIUM if it is HIGH*/
+		if (!conn->ssp_mode && conn->auth_initiator &&
+			(conn->pending_sec_level == BT_SECURITY_HIGH))
+>>>>>>> refs/remotes/origin/cm-10.0
 			conn->pending_sec_level = BT_SECURITY_MEDIUM;
 
 		if (conn->ssp_mode && conn->auth_initiator &&
 			conn->io_capability != 0x03) {
+<<<<<<< HEAD
 			conn->pending_sec_level = BT_SECURITY_VERY_HIGH;
+=======
+			conn->pending_sec_level = BT_SECURITY_HIGH;
+>>>>>>> refs/remotes/origin/cm-10.0
 			conn->auth_type = HCI_AT_DEDICATED_BONDING_MITM;
 		}
 	}
@@ -3212,12 +3283,16 @@ static inline void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff
 {
 	struct hci_ev_le_conn_complete *ev = (void *) skb->data;
 	struct hci_conn *conn;
+<<<<<<< HEAD
 	u8 white_list;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	BT_DBG("%s status %d", hdev->name, ev->status);
 
 	hci_dev_lock(hdev);
 
+<<<<<<< HEAD
 	/* Ignore event for LE cancel create conn whitelist */
 	if (ev->status && !bacmp(&ev->bdaddr, BDADDR_ANY))
 		goto unlock;
@@ -3229,6 +3304,8 @@ static inline void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff
 
 	BT_DBG("w_list %d", white_list);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	conn = hci_conn_hash_lookup_ba(hdev, LE_LINK, &ev->bdaddr);
 	if (!conn) {
 		conn = hci_le_conn_add(hdev, &ev->bdaddr, ev->bdaddr_type);
@@ -3260,8 +3337,12 @@ static inline void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff
 	hci_conn_hold_device(conn);
 	hci_conn_add_sysfs(conn);
 
+<<<<<<< HEAD
 	if (!white_list)
 		hci_proto_connect_cfm(conn, ev->status);
+=======
+	hci_proto_connect_cfm(conn, ev->status);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 unlock:
 	hci_dev_unlock(hdev);
@@ -3570,10 +3651,13 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 		hci_cmd_status_evt(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_EV_HARDWARE_ERROR:
 		hci_hardware_error_evt(hdev, skb);
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	case HCI_EV_ROLE_CHANGE:
 		hci_role_change_evt(hdev, skb);
 		break;

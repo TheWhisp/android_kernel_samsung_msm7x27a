@@ -10,6 +10,10 @@
  */
 
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/pci.h>
 

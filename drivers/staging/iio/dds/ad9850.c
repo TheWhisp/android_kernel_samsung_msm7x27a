@@ -14,6 +14,10 @@
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "../iio.h"
 #include "../sysfs.h"
@@ -30,7 +34,10 @@ struct ad9850_config {
 
 struct ad9850_state {
 	struct mutex lock;
+<<<<<<< HEAD
 	struct iio_dev *idev;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct spi_device *sdev;
 };
 
@@ -44,7 +51,11 @@ static ssize_t ad9850_set_parameter(struct device *dev,
 	int ret;
 	struct ad9850_config *config = (struct ad9850_config *)buf;
 	struct iio_dev *idev = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct ad9850_state *st = idev->dev_data;
+=======
+	struct ad9850_state *st = iio_priv(idev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	xfer.len = len;
 	xfer.tx_buf = config;
@@ -69,7 +80,10 @@ static struct attribute *ad9850_attributes[] = {
 };
 
 static const struct attribute_group ad9850_attribute_group = {
+<<<<<<< HEAD
 	.name = DRV_NAME,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.attrs = ad9850_attributes,
 };
 
@@ -81,6 +95,7 @@ static const struct iio_info ad9850_info = {
 static int __devinit ad9850_probe(struct spi_device *spi)
 {
 	struct ad9850_state *st;
+<<<<<<< HEAD
 	int ret = 0;
 
 	st = kzalloc(sizeof(*st), GFP_KERNEL);
@@ -105,6 +120,26 @@ static int __devinit ad9850_probe(struct spi_device *spi)
 	st->idev->modes = INDIO_DIRECT_MODE;
 
 	ret = iio_device_register(st->idev);
+=======
+	struct iio_dev *idev;
+	int ret = 0;
+
+	idev = iio_allocate_device(sizeof(*st));
+	if (idev == NULL) {
+		ret = -ENOMEM;
+		goto error_ret;
+	}
+	spi_set_drvdata(spi, idev);
+	st = iio_priv(idev);
+	mutex_init(&st->lock);
+	st->sdev = spi;
+
+	idev->dev.parent = &spi->dev;
+	idev->info = &ad9850_info;
+	idev->modes = INDIO_DIRECT_MODE;
+
+	ret = iio_device_register(idev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto error_free_dev;
 	spi->max_speed_hz = 2000000;
@@ -115,19 +150,28 @@ static int __devinit ad9850_probe(struct spi_device *spi)
 	return 0;
 
 error_free_dev:
+<<<<<<< HEAD
 	iio_free_device(st->idev);
 error_free_st:
 	kfree(st);
+=======
+	iio_free_device(idev);
+>>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
 	return ret;
 }
 
 static int __devexit ad9850_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	struct ad9850_state *st = spi_get_drvdata(spi);
 
 	iio_device_unregister(st->idev);
 	kfree(st);
+=======
+	iio_device_unregister(spi_get_drvdata(spi));
+	iio_free_device(spi_get_drvdata(spi));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -140,6 +184,7 @@ static struct spi_driver ad9850_driver = {
 	.probe = ad9850_probe,
 	.remove = __devexit_p(ad9850_remove),
 };
+<<<<<<< HEAD
 
 static __init int ad9850_spi_init(void)
 {
@@ -152,7 +197,14 @@ static __exit void ad9850_spi_exit(void)
 	spi_unregister_driver(&ad9850_driver);
 }
 module_exit(ad9850_spi_exit);
+=======
+module_spi_driver(ad9850_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Cliff Cai");
 MODULE_DESCRIPTION("Analog Devices ad9850 driver");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("spi:" DRV_NAME);
+>>>>>>> refs/remotes/origin/cm-10.0

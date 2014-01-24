@@ -14,7 +14,10 @@
 #include <linux/pagemap.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlbflush.h>
 
 void flush_cache_mm(struct mm_struct *mm)

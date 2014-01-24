@@ -29,7 +29,10 @@
 #include <linux/spinlock.h>
 #include <asm/processor.h>
 #include <asm/fixmap.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 struct mm_struct;
 struct vm_area_struct;

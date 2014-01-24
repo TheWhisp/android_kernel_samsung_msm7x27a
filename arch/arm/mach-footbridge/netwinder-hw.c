@@ -17,6 +17,10 @@
 #include <asm/leds.h>
 #include <asm/mach-types.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/arch.h>
 
@@ -631,8 +635,12 @@ __initcall(nw_hw_init);
  * the parameter page.
  */
 static void __init
+<<<<<<< HEAD
 fixup_netwinder(struct machine_desc *desc, struct tag *tags,
 		char **cmdline, struct meminfo *mi)
+=======
+fixup_netwinder(struct tag *tags, char **cmdline, struct meminfo *mi)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 #ifdef CONFIG_ISAPNP
 	extern int isapnp_disable;
@@ -646,9 +654,41 @@ fixup_netwinder(struct machine_desc *desc, struct tag *tags,
 #endif
 }
 
+<<<<<<< HEAD
 MACHINE_START(NETWINDER, "Rebel-NetWinder")
 	/* Maintainer: Russell King/Rebel.com */
 	.boot_params	= 0x00000100,
+=======
+static void netwinder_restart(char mode, const char *cmd)
+{
+	if (mode == 's') {
+		/* Jump into the ROM */
+		soft_restart(0x41000000);
+	} else {
+		local_irq_disable();
+		local_fiq_disable();
+
+		/* open up the SuperIO chip */
+		outb(0x87, 0x370);
+		outb(0x87, 0x370);
+
+		/* aux function group 1 (logical device 7) */
+		outb(0x07, 0x370);
+		outb(0x07, 0x371);
+
+		/* set GP16 for WD-TIMER output */
+		outb(0xe6, 0x370);
+		outb(0x00, 0x371);
+
+		/* set a RED LED and toggle WD_TIMER for rebooting */
+		outb(0xc4, 0x338);
+	}
+}
+
+MACHINE_START(NETWINDER, "Rebel-NetWinder")
+	/* Maintainer: Russell King/Rebel.com */
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.video_start	= 0x000a0000,
 	.video_end	= 0x000bffff,
 	.reserve_lp0	= 1,
@@ -657,4 +697,8 @@ MACHINE_START(NETWINDER, "Rebel-NetWinder")
 	.map_io		= footbridge_map_io,
 	.init_irq	= footbridge_init_irq,
 	.timer		= &isa_timer,
+<<<<<<< HEAD
+=======
+	.restart	= netwinder_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END

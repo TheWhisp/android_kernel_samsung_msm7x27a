@@ -43,6 +43,7 @@
 #define RISC_IRQ		(0x01 << 24)
 
 #define RISC_STATUS(status)	((((~status) & 0x0f) << 20) | ((status & 0x0f) << 16))
+<<<<<<< HEAD
 #define RISC_FLUSH()		(mantis->risc_pos = 0)
 #define RISC_INSTR(opcode)	(mantis->risc_cpu[mantis->risc_pos++] = cpu_to_le32(opcode))
 
@@ -50,6 +51,19 @@
 #define MANTIS_BLOCK_BYTES	(MANTIS_BUF_SIZE >> 4)
 #define MANTIS_BLOCK_COUNT	(1 << 4)
 #define MANTIS_RISC_SIZE	PAGE_SIZE
+=======
+#define RISC_FLUSH(risc_pos)		(risc_pos = 0)
+#define RISC_INSTR(risc_pos, opcode)	(mantis->risc_cpu[risc_pos++] = cpu_to_le32(opcode))
+
+#define MANTIS_BUF_SIZE		(64 * 1024)
+#define MANTIS_BLOCK_BYTES      (MANTIS_BUF_SIZE / 4)
+#define MANTIS_DMA_TR_BYTES     (2 * 1024) /* upper limit: 4095 bytes. */
+#define MANTIS_BLOCK_COUNT	(MANTIS_BUF_SIZE / MANTIS_BLOCK_BYTES)
+
+#define MANTIS_DMA_TR_UNITS     (MANTIS_BLOCK_BYTES / MANTIS_DMA_TR_BYTES)
+/* MANTIS_BUF_SIZE / MANTIS_DMA_TR_UNITS must not exceed MANTIS_RISC_SIZE (4k RISC cmd buffer) */
+#define MANTIS_RISC_SIZE	PAGE_SIZE /* RISC program must fit here. */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int mantis_dma_exit(struct mantis_pci *mantis)
 {
@@ -124,6 +138,7 @@ err:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static inline int mantis_calc_lines(struct mantis_pci *mantis)
 {
 	mantis->line_bytes = MANTIS_BLOCK_BYTES;
@@ -145,6 +160,8 @@ static inline int mantis_calc_lines(struct mantis_pci *mantis)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 int mantis_dma_init(struct mantis_pci *mantis)
 {
 	int err = 0;
@@ -158,12 +175,15 @@ int mantis_dma_init(struct mantis_pci *mantis)
 
 		goto err;
 	}
+<<<<<<< HEAD
 	err = mantis_calc_lines(mantis);
 	if (err < 0) {
 		dprintk(MANTIS_ERROR, 1, "Mantis calc lines failed");
 
 		goto err;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 err:
@@ -174,6 +194,7 @@ EXPORT_SYMBOL_GPL(mantis_dma_init);
 static inline void mantis_risc_program(struct mantis_pci *mantis)
 {
 	u32 buf_pos = 0;
+<<<<<<< HEAD
 	u32 line;
 
 	dprintk(MANTIS_DEBUG, 1, "Mantis create RISC program");
@@ -199,6 +220,34 @@ static inline void mantis_risc_program(struct mantis_pci *mantis)
 	}
 	RISC_INSTR(RISC_JUMP);
 	RISC_INSTR(mantis->risc_dma);
+=======
+	u32 line, step;
+	u32 risc_pos;
+
+	dprintk(MANTIS_DEBUG, 1, "Mantis create RISC program");
+	RISC_FLUSH(risc_pos);
+
+	dprintk(MANTIS_DEBUG, 1, "risc len lines %u, bytes per line %u, bytes per DMA tr %u",
+		MANTIS_BLOCK_COUNT, MANTIS_BLOCK_BYTES, MANTIS_DMA_TR_BYTES);
+
+	for (line = 0; line < MANTIS_BLOCK_COUNT; line++) {
+		for (step = 0; step < MANTIS_DMA_TR_UNITS; step++) {
+			dprintk(MANTIS_DEBUG, 1, "RISC PROG line=[%d], step=[%d]", line, step);
+			if (step == 0) {
+				RISC_INSTR(risc_pos, RISC_WRITE	|
+					   RISC_IRQ	|
+					   RISC_STATUS(line) |
+					   MANTIS_DMA_TR_BYTES);
+			} else {
+				RISC_INSTR(risc_pos, RISC_WRITE | MANTIS_DMA_TR_BYTES);
+			}
+			RISC_INSTR(risc_pos, mantis->buf_dma + buf_pos);
+			buf_pos += MANTIS_DMA_TR_BYTES;
+		  }
+	}
+	RISC_INSTR(risc_pos, RISC_JUMP);
+	RISC_INSTR(risc_pos, mantis->risc_dma);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void mantis_dma_start(struct mantis_pci *mantis)
@@ -210,7 +259,11 @@ void mantis_dma_start(struct mantis_pci *mantis)
 	mmwrite(mmread(MANTIS_GPIF_ADDR) | MANTIS_GPIF_HIFRDWRN, MANTIS_GPIF_ADDR);
 
 	mmwrite(0, MANTIS_DMA_CTL);
+<<<<<<< HEAD
 	mantis->last_block = mantis->finished_block = 0;
+=======
+	mantis->last_block = mantis->busy_block = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mmwrite(mmread(MANTIS_INT_MASK) | MANTIS_INT_RISCI, MANTIS_INT_MASK);
 
@@ -245,9 +298,15 @@ void mantis_dma_xfer(unsigned long data)
 	struct mantis_pci *mantis = (struct mantis_pci *) data;
 	struct mantis_hwconfig *config = mantis->hwconfig;
 
+<<<<<<< HEAD
 	while (mantis->last_block != mantis->finished_block) {
 		dprintk(MANTIS_DEBUG, 1, "last block=[%d] finished block=[%d]",
 			mantis->last_block, mantis->finished_block);
+=======
+	while (mantis->last_block != mantis->busy_block) {
+		dprintk(MANTIS_DEBUG, 1, "last block=[%d] finished block=[%d]",
+			mantis->last_block, mantis->busy_block);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		(config->ts_size ? dvb_dmx_swfilter_204 : dvb_dmx_swfilter)
 		(&mantis->demux, &mantis->buf_cpu[mantis->last_block * MANTIS_BLOCK_BYTES], MANTIS_BLOCK_BYTES);

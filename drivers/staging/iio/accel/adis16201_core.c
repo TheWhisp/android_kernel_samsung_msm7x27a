@@ -13,6 +13,7 @@
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
 
 #include "../iio.h"
 #include "../sysfs.h"
@@ -26,6 +27,16 @@
 
 #define DRIVER_NAME		"adis16201"
 
+=======
+#include <linux/module.h>
+
+#include "../iio.h"
+#include "../sysfs.h"
+#include "../buffer.h"
+
+#include "adis16201.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 enum adis16201_chan {
 	in_supply,
 	temp,
@@ -42,13 +53,21 @@ enum adis16201_chan {
  * @reg_address: the address of the register to be written
  * @val: the value to write
  **/
+<<<<<<< HEAD
 static int adis16201_spi_write_reg_8(struct device *dev,
+=======
+static int adis16201_spi_write_reg_8(struct iio_dev *indio_dev,
+>>>>>>> refs/remotes/origin/cm-10.0
 		u8 reg_address,
 		u8 val)
 {
 	int ret;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	struct adis16201_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct adis16201_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&st->buf_lock);
 	st->tx[0] = ADIS16201_WRITE_REG(reg_address);
@@ -73,7 +92,11 @@ static int adis16201_spi_write_reg_16(struct iio_dev *indio_dev,
 {
 	int ret;
 	struct spi_message msg;
+<<<<<<< HEAD
 	struct adis16201_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct adis16201_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct spi_transfer xfers[] = {
 		{
 			.tx_buf = st->tx,
@@ -114,7 +137,11 @@ static int adis16201_spi_read_reg_16(struct iio_dev *indio_dev,
 		u16 *val)
 {
 	struct spi_message msg;
+<<<<<<< HEAD
 	struct adis16201_state *st = iio_dev_get_devdata(indio_dev);
+=======
+	struct adis16201_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
 	struct spi_transfer xfers[] = {
 		{
@@ -151,6 +178,7 @@ error_ret:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int adis16201_reset(struct device *dev)
 {
 	int ret;
@@ -159,6 +187,18 @@ static int adis16201_reset(struct device *dev)
 			ADIS16201_GLOB_CMD_SW_RESET);
 	if (ret)
 		dev_err(dev, "problem resetting device");
+=======
+static int adis16201_reset(struct iio_dev *indio_dev)
+{
+	int ret;
+	struct adis16201_state *st = iio_priv(indio_dev);
+
+	ret = adis16201_spi_write_reg_8(indio_dev,
+			ADIS16201_GLOB_CMD,
+			ADIS16201_GLOB_CMD_SW_RESET);
+	if (ret)
+		dev_err(&st->us->dev, "problem resetting device");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -167,6 +207,7 @@ static ssize_t adis16201_write_reset(struct device *dev,
 		struct device_attribute *attr,
 		const char *buf, size_t len)
 {
+<<<<<<< HEAD
 	if (len < 1)
 		return -EINVAL;
 	switch (buf[0]) {
@@ -176,6 +217,17 @@ static ssize_t adis16201_write_reset(struct device *dev,
 		return adis16201_reset(dev);
 	}
 	return -EINVAL;
+=======
+	int ret;
+	bool res;
+
+	if (len < 1)
+		return -EINVAL;
+	ret = strtobool(buf, &res);
+	if (ret || !res)
+		return ret;
+	return adis16201_reset(dev_get_drvdata(dev));
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int adis16201_set_irq(struct iio_dev *indio_dev, bool enable)
@@ -245,6 +297,7 @@ err_ret:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int adis16201_initial_setup(struct adis16201_state *st)
 {
 	int ret;
@@ -252,34 +305,59 @@ static int adis16201_initial_setup(struct adis16201_state *st)
 
 	/* Disable IRQ */
 	ret = adis16201_set_irq(st->indio_dev, false);
+=======
+static int adis16201_initial_setup(struct iio_dev *indio_dev)
+{
+	int ret;
+	struct device *dev = &indio_dev->dev;
+
+	/* Disable IRQ */
+	ret = adis16201_set_irq(indio_dev, false);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(dev, "disable irq failed");
 		goto err_ret;
 	}
 
 	/* Do self test */
+<<<<<<< HEAD
 	ret = adis16201_self_test(st->indio_dev);
+=======
+	ret = adis16201_self_test(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_err(dev, "self test failure");
 		goto err_ret;
 	}
 
 	/* Read status register to check the result */
+<<<<<<< HEAD
 	ret = adis16201_check_status(st->indio_dev);
 	if (ret) {
 		adis16201_reset(dev);
 		dev_err(dev, "device not playing ball -> reset");
 		msleep(ADIS16201_STARTUP_DELAY);
 		ret = adis16201_check_status(st->indio_dev);
+=======
+	ret = adis16201_check_status(indio_dev);
+	if (ret) {
+		adis16201_reset(indio_dev);
+		dev_err(dev, "device not playing ball -> reset");
+		msleep(ADIS16201_STARTUP_DELAY);
+		ret = adis16201_check_status(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret) {
 			dev_err(dev, "giving up");
 			goto err_ret;
 		}
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO DRIVER_NAME ": at CS%d (irq %d)\n",
 			st->us->chip_select, st->us->irq);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 err_ret:
 	return ret;
 }
@@ -309,6 +387,7 @@ static int adis16201_read_raw(struct iio_dev *indio_dev,
 		mutex_lock(&indio_dev->mlock);
 		addr = adis16201_addresses[chan->address][0];
 		ret = adis16201_spi_read_reg_16(indio_dev, addr, &val16);
+<<<<<<< HEAD
 		if (ret)
 			return ret;
 
@@ -316,6 +395,19 @@ static int adis16201_read_raw(struct iio_dev *indio_dev,
 			ret = adis16201_check_status(indio_dev);
 			if (ret)
 				return ret;
+=======
+		if (ret) {
+			mutex_unlock(&indio_dev->mlock);
+			return ret;
+		}
+
+		if (val16 & ADIS16201_ERROR_ACTIVE) {
+			ret = adis16201_check_status(indio_dev);
+			if (ret) {
+				mutex_unlock(&indio_dev->mlock);
+				return ret;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		val16 = val16 & ((1 << chan->scan_type.realbits) - 1);
 		if (chan->scan_type.sign == 's')
@@ -325,10 +417,16 @@ static int adis16201_read_raw(struct iio_dev *indio_dev,
 		*val = val16;
 		mutex_unlock(&indio_dev->mlock);
 		return IIO_VAL_INT;
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_SCALE_SEPARATE):
 	case (1 << IIO_CHAN_INFO_SCALE_SHARED):
 		switch (chan->type) {
 		case IIO_IN:
+=======
+	case IIO_CHAN_INFO_SCALE:
+		switch (chan->type) {
+		case IIO_VOLTAGE:
+>>>>>>> refs/remotes/origin/cm-10.0
 			*val = 0;
 			if (chan->channel == 0)
 				*val2 = 1220;
@@ -351,10 +449,17 @@ static int adis16201_read_raw(struct iio_dev *indio_dev,
 			return -EINVAL;
 		}
 		break;
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_OFFSET_SEPARATE):
 		*val = 25;
 		return IIO_VAL_INT;
 	case (1 << IIO_CHAN_INFO_CALIBBIAS_SEPARATE):
+=======
+	case IIO_CHAN_INFO_OFFSET:
+		*val = 25;
+		return IIO_VAL_INT;
+	case IIO_CHAN_INFO_CALIBBIAS:
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch (chan->type) {
 		case IIO_ACCEL:
 			bits = 12;
@@ -391,7 +496,11 @@ static int adis16201_write_raw(struct iio_dev *indio_dev,
 	s16 val16;
 	u8 addr;
 	switch (mask) {
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_CALIBBIAS_SEPARATE):
+=======
+	case IIO_CHAN_INFO_CALIBBIAS:
+>>>>>>> refs/remotes/origin/cm-10.0
 		switch (chan->type) {
 		case IIO_ACCEL:
 			bits = 12;
@@ -410,6 +519,7 @@ static int adis16201_write_raw(struct iio_dev *indio_dev,
 }
 
 static struct iio_chan_spec adis16201_channels[] = {
+<<<<<<< HEAD
 	IIO_CHAN(IIO_IN, 0, 1, 0, "supply", 0, 0,
 		 (1 << IIO_CHAN_INFO_SCALE_SEPARATE),
 		 in_supply, ADIS16201_SCAN_SUPPLY,
@@ -441,6 +551,39 @@ static struct iio_chan_spec adis16201_channels[] = {
 	IIO_CHAN(IIO_INCLI, 1, 0, 0, NULL, 0, IIO_MOD_Y,
 		 (1 << IIO_CHAN_INFO_SCALE_SHARED) |
 		 (1 << IIO_CHAN_INFO_CALIBBIAS_SEPARATE),
+=======
+	IIO_CHAN(IIO_VOLTAGE, 0, 1, 0, "supply", 0, 0,
+		 IIO_CHAN_INFO_SCALE_SEPARATE_BIT,
+		 in_supply, ADIS16201_SCAN_SUPPLY,
+		 IIO_ST('u', 12, 16, 0), 0),
+	IIO_CHAN(IIO_TEMP, 0, 1, 0, NULL, 0, 0,
+		 IIO_CHAN_INFO_SCALE_SEPARATE_BIT |
+		 IIO_CHAN_INFO_OFFSET_SEPARATE_BIT,
+		 temp, ADIS16201_SCAN_TEMP,
+		 IIO_ST('u', 12, 16, 0), 0),
+	IIO_CHAN(IIO_ACCEL, 1, 0, 0, NULL, 0, IIO_MOD_X,
+		 IIO_CHAN_INFO_SCALE_SHARED_BIT |
+		 IIO_CHAN_INFO_CALIBBIAS_SEPARATE_BIT,
+		 accel_x, ADIS16201_SCAN_ACC_X,
+		 IIO_ST('s', 14, 16, 0), 0),
+	IIO_CHAN(IIO_ACCEL, 1, 0, 0, NULL, 0, IIO_MOD_Y,
+		 IIO_CHAN_INFO_SCALE_SHARED_BIT |
+		 IIO_CHAN_INFO_CALIBBIAS_SEPARATE_BIT,
+		 accel_y, ADIS16201_SCAN_ACC_Y,
+		 IIO_ST('s', 14, 16, 0), 0),
+	IIO_CHAN(IIO_VOLTAGE, 0, 1, 0, NULL, 1, 0,
+		 IIO_CHAN_INFO_SCALE_SEPARATE_BIT,
+		 in_aux, ADIS16201_SCAN_AUX_ADC,
+		 IIO_ST('u', 12, 16, 0), 0),
+	IIO_CHAN(IIO_INCLI, 1, 0, 0, NULL, 0, IIO_MOD_X,
+		 IIO_CHAN_INFO_SCALE_SHARED_BIT |
+		 IIO_CHAN_INFO_CALIBBIAS_SEPARATE_BIT,
+		 incli_x, ADIS16201_SCAN_INCLI_X,
+		 IIO_ST('s', 14, 16, 0), 0),
+	IIO_CHAN(IIO_INCLI, 1, 0, 0, NULL, 0, IIO_MOD_Y,
+		 IIO_CHAN_INFO_SCALE_SHARED_BIT |
+		 IIO_CHAN_INFO_CALIBBIAS_SEPARATE_BIT,
+>>>>>>> refs/remotes/origin/cm-10.0
 		 incli_y, ADIS16201_SCAN_INCLI_Y,
 		 IIO_ST('s', 14, 16, 0), 0),
 	IIO_CHAN_SOFT_TIMESTAMP(7)
@@ -466,6 +609,7 @@ static const struct iio_info adis16201_info = {
 
 static int __devinit adis16201_probe(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	int ret, regdone = 0;
 	struct adis16201_state *st = kzalloc(sizeof *st, GFP_KERNEL);
 	if (!st) {
@@ -516,18 +660,57 @@ static int __devinit adis16201_probe(struct spi_device *spi)
 	ret = iio_ring_buffer_register_ex(st->indio_dev->ring, 0,
 					  adis16201_channels,
 					  ARRAY_SIZE(adis16201_channels));
+=======
+	int ret;
+	struct adis16201_state *st;
+	struct iio_dev *indio_dev;
+
+	/* setup the industrialio driver allocated elements */
+	indio_dev = iio_allocate_device(sizeof(*st));
+	if (indio_dev == NULL) {
+		ret = -ENOMEM;
+		goto error_ret;
+	}
+	st = iio_priv(indio_dev);
+	/* this is only used for removal purposes */
+	spi_set_drvdata(spi, indio_dev);
+
+	st->us = spi;
+	mutex_init(&st->buf_lock);
+
+	indio_dev->name = spi->dev.driver->name;
+	indio_dev->dev.parent = &spi->dev;
+	indio_dev->info = &adis16201_info;
+
+	indio_dev->channels = adis16201_channels;
+	indio_dev->num_channels = ARRAY_SIZE(adis16201_channels);
+	indio_dev->modes = INDIO_DIRECT_MODE;
+
+	ret = adis16201_configure_ring(indio_dev);
+	if (ret)
+		goto error_free_dev;
+
+	ret = iio_buffer_register(indio_dev,
+				  adis16201_channels,
+				  ARRAY_SIZE(adis16201_channels));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		printk(KERN_ERR "failed to initialize the ring\n");
 		goto error_unreg_ring_funcs;
 	}
 
 	if (spi->irq) {
+<<<<<<< HEAD
 		ret = adis16201_probe_trigger(st->indio_dev);
+=======
+		ret = adis16201_probe_trigger(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret)
 			goto error_uninitialize_ring;
 	}
 
 	/* Get the device into a sane initial state */
+<<<<<<< HEAD
 	ret = adis16201_initial_setup(st);
 	if (ret)
 		goto error_remove_trigger;
@@ -550,12 +733,32 @@ error_free_rx:
 	kfree(st->rx);
 error_free_st:
 	kfree(st);
+=======
+	ret = adis16201_initial_setup(indio_dev);
+	if (ret)
+		goto error_remove_trigger;
+
+	ret = iio_device_register(indio_dev);
+	if (ret < 0)
+		goto error_remove_trigger;
+	return 0;
+
+error_remove_trigger:
+	adis16201_remove_trigger(indio_dev);
+error_uninitialize_ring:
+	iio_buffer_unregister(indio_dev);
+error_unreg_ring_funcs:
+	adis16201_unconfigure_ring(indio_dev);
+error_free_dev:
+	iio_free_device(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
 	return ret;
 }
 
 static int adis16201_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	struct adis16201_state *st = spi_get_drvdata(spi);
 	struct iio_dev *indio_dev = st->indio_dev;
 
@@ -566,6 +769,15 @@ static int adis16201_remove(struct spi_device *spi)
 	kfree(st->tx);
 	kfree(st->rx);
 	kfree(st);
+=======
+	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+
+	iio_device_unregister(indio_dev);
+	adis16201_remove_trigger(indio_dev);
+	iio_buffer_unregister(indio_dev);
+	adis16201_unconfigure_ring(indio_dev);
+	iio_free_device(indio_dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -578,6 +790,7 @@ static struct spi_driver adis16201_driver = {
 	.probe = adis16201_probe,
 	.remove = __devexit_p(adis16201_remove),
 };
+<<<<<<< HEAD
 
 static __init int adis16201_init(void)
 {
@@ -590,7 +803,14 @@ static __exit void adis16201_exit(void)
 	spi_unregister_driver(&adis16201_driver);
 }
 module_exit(adis16201_exit);
+=======
+module_spi_driver(adis16201_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
 MODULE_DESCRIPTION("Analog Devices ADIS16201 Programmable Digital Vibration Sensor driver");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("spi:adis16201");
+>>>>>>> refs/remotes/origin/cm-10.0

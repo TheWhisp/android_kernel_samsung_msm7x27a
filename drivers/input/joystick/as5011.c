@@ -30,6 +30,10 @@
 #include <linux/delay.h>
 #include <linux/input/as5011.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define DRIVER_DESC "Driver for Austria Microsystems AS5011 joystick"
 #define MODULE_DEVICE_ALIAS "as5011"
@@ -354,6 +358,7 @@ static struct i2c_driver as5011_driver = {
 	.id_table	= as5011_id,
 };
 
+<<<<<<< HEAD
 static int __init as5011_init(void)
 {
 	return i2c_add_driver(&as5011_driver);
@@ -365,3 +370,6 @@ static void __exit as5011_exit(void)
 	i2c_del_driver(&as5011_driver);
 }
 module_exit(as5011_exit);
+=======
+module_i2c_driver(as5011_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

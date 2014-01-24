@@ -57,6 +57,10 @@
 #define APBC_PXA910_SSP1	APBC_REG(0x01c)
 #define APBC_PXA910_SSP2	APBC_REG(0x020)
 #define APBC_PXA910_IPC		APBC_REG(0x024)
+<<<<<<< HEAD
+=======
+#define APBC_PXA910_RTC		APBC_REG(0x028)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define APBC_PXA910_TWSI0	APBC_REG(0x02c)
 #define APBC_PXA910_KPC		APBC_REG(0x030)
 #define APBC_PXA910_TIMERS	APBC_REG(0x034)

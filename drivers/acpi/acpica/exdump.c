@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -192,10 +196,20 @@ static struct acpi_exdump_info acpi_ex_dump_buffer_field[3] = {
 	 "Buffer Object"}
 };
 
+<<<<<<< HEAD
 static struct acpi_exdump_info acpi_ex_dump_region_field[3] = {
 	{ACPI_EXD_INIT, ACPI_EXD_TABLE_SIZE(acpi_ex_dump_region_field), NULL},
 	{ACPI_EXD_FIELD, 0, NULL},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(field.region_obj), "Region Object"}
+=======
+static struct acpi_exdump_info acpi_ex_dump_region_field[5] = {
+	{ACPI_EXD_INIT, ACPI_EXD_TABLE_SIZE(acpi_ex_dump_region_field), NULL},
+	{ACPI_EXD_FIELD, 0, NULL},
+	{ACPI_EXD_UINT8, ACPI_EXD_OFFSET(field.access_length), "AccessLength"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(field.region_obj), "Region Object"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(field.resource_buffer),
+	 "ResourceBuffer"}
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct acpi_exdump_info acpi_ex_dump_bank_field[5] = {

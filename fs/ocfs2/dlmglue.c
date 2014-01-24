@@ -1692,7 +1692,11 @@ int ocfs2_open_lock(struct inode *inode)
 	mlog(0, "inode %llu take PRMODE open lock\n",
 	     (unsigned long long)OCFS2_I(inode)->ip_blkno);
 
+<<<<<<< HEAD
 	if (ocfs2_mount_local(osb))
+=======
+	if (ocfs2_is_hard_readonly(osb) || ocfs2_mount_local(osb))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
 
 	lockres = &OCFS2_I(inode)->ip_open_lockres;
@@ -1718,6 +1722,15 @@ int ocfs2_try_open_lock(struct inode *inode, int write)
 	     (unsigned long long)OCFS2_I(inode)->ip_blkno,
 	     write ? "EXMODE" : "PRMODE");
 
+<<<<<<< HEAD
+=======
+	if (ocfs2_is_hard_readonly(osb)) {
+		if (write)
+			status = -EROFS;
+		goto out;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ocfs2_mount_local(osb))
 		goto out;
 
@@ -2092,7 +2105,11 @@ static void ocfs2_refresh_inode_from_lvb(struct inode *inode)
 	inode->i_uid     = be32_to_cpu(lvb->lvb_iuid);
 	inode->i_gid     = be32_to_cpu(lvb->lvb_igid);
 	inode->i_mode    = be16_to_cpu(lvb->lvb_imode);
+<<<<<<< HEAD
 	inode->i_nlink   = be16_to_cpu(lvb->lvb_inlink);
+=======
+	set_nlink(inode, be16_to_cpu(lvb->lvb_inlink));
+>>>>>>> refs/remotes/origin/cm-10.0
 	ocfs2_unpack_timespec(&inode->i_atime,
 			      be64_to_cpu(lvb->lvb_iatime_packed));
 	ocfs2_unpack_timespec(&inode->i_mtime,
@@ -2298,7 +2315,11 @@ int ocfs2_inode_lock_full_nested(struct inode *inode,
 	if (ocfs2_is_hard_readonly(osb)) {
 		if (ex)
 			status = -EROFS;
+<<<<<<< HEAD
 		goto bail;
+=======
+		goto getbh;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (ocfs2_mount_local(osb))
@@ -2356,7 +2377,11 @@ local:
 			mlog_errno(status);
 		goto bail;
 	}
+<<<<<<< HEAD
 
+=======
+getbh:
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret_bh) {
 		status = ocfs2_assign_bh(inode, ret_bh, local_bh);
 		if (status < 0) {
@@ -2631,8 +2656,16 @@ int ocfs2_dentry_lock(struct dentry *dentry, int ex)
 
 	BUG_ON(!dl);
 
+<<<<<<< HEAD
 	if (ocfs2_is_hard_readonly(osb))
 		return -EROFS;
+=======
+	if (ocfs2_is_hard_readonly(osb)) {
+		if (ex)
+			return -EROFS;
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (ocfs2_mount_local(osb))
 		return 0;
@@ -2650,7 +2683,11 @@ void ocfs2_dentry_unlock(struct dentry *dentry, int ex)
 	struct ocfs2_dentry_lock *dl = dentry->d_fsdata;
 	struct ocfs2_super *osb = OCFS2_SB(dentry->d_sb);
 
+<<<<<<< HEAD
 	if (!ocfs2_mount_local(osb))
+=======
+	if (!ocfs2_is_hard_readonly(osb) && !ocfs2_mount_local(osb))
+>>>>>>> refs/remotes/origin/cm-10.0
 		ocfs2_cluster_unlock(osb, &dl->dl_lockres, level);
 }
 

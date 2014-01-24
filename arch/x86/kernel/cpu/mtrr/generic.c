@@ -12,7 +12,10 @@
 #include <asm/processor-flags.h>
 #include <asm/cpufeature.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mtrr.h>
 #include <asm/msr.h>
 #include <asm/pat.h>
@@ -547,6 +550,10 @@ static void generic_get_mtrr(unsigned int reg, unsigned long *base,
 
 		if (tmp != mask_lo) {
 			printk(KERN_WARNING "mtrr: your BIOS has configured an incorrect mask, fixing it.\n");
+<<<<<<< HEAD
+=======
+			add_taint(TAINT_FIRMWARE_WORKAROUND);
+>>>>>>> refs/remotes/origin/cm-10.0
 			mask_lo = tmp;
 		}
 	}
@@ -693,6 +700,10 @@ static void prepare_set(void) __acquires(set_atomicity_lock)
 
 	/* Disable MTRRs, and set the default type to uncached */
 	mtrr_wrmsr(MSR_MTRRdefType, deftype_lo & ~0xcff, deftype_hi);
+<<<<<<< HEAD
+=======
+	wbinvd();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void post_set(void) __releases(set_atomicity_lock)

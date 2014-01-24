@@ -23,6 +23,10 @@
 #include <linux/mutex.h>
 #include <linux/slab.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
 #include <mach/irqs.h>

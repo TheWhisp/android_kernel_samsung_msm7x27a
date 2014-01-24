@@ -26,15 +26,46 @@
 /* See Documentation/leds/leds-lp5521.txt */
 
 struct lp5521_led_config {
+<<<<<<< HEAD
+=======
+	char		*name;
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8		chan_nr;
 	u8		led_current; /* mA x10, 0 if led is not connected */
 	u8		max_current;
 };
 
+<<<<<<< HEAD
+=======
+struct lp5521_led_pattern {
+	u8 *r;
+	u8 *g;
+	u8 *b;
+	u8 size_r;
+	u8 size_g;
+	u8 size_b;
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define LP5521_CLOCK_AUTO	0
 #define LP5521_CLOCK_INT	1
 #define LP5521_CLOCK_EXT	2
 
+<<<<<<< HEAD
+=======
+/* Bits in CONFIG register */
+#define LP5521_PWM_HF			0x40	/* PWM: 0 = 256Hz, 1 = 558Hz */
+#define LP5521_PWRSAVE_EN		0x20	/* 1 = Power save mode */
+#define LP5521_CP_MODE_OFF		0	/* Charge pump (CP) off */
+#define LP5521_CP_MODE_BYPASS		8	/* CP forced to bypass mode */
+#define LP5521_CP_MODE_1X5		0x10	/* CP forced to 1.5x mode */
+#define LP5521_CP_MODE_AUTO		0x18	/* Automatic mode selection */
+#define LP5521_R_TO_BATT		4	/* R out: 0 = CP, 1 = Vbat */
+#define LP5521_CLK_SRC_EXT		0	/* Ext-clk source (CLK_32K) */
+#define LP5521_CLK_INT			1	/* Internal clock */
+#define LP5521_CLK_AUTO			2	/* Automatic clock selection */
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct lp5521_platform_data {
 	struct lp5521_led_config *led_config;
 	u8	num_channels;
@@ -43,6 +74,12 @@ struct lp5521_platform_data {
 	void	(*release_resources)(void);
 	void	(*enable)(bool state);
 	const char *label;
+<<<<<<< HEAD
+=======
+	u8	update_config;
+	struct lp5521_led_pattern *patterns;
+	int num_patterns;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif /* __LINUX_LP5521_H */

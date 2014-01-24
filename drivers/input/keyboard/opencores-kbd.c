@@ -163,6 +163,7 @@ static struct platform_driver opencores_kbd_device_driver = {
 		.name = "opencores-kbd",
 	},
 };
+<<<<<<< HEAD
 
 static int __init opencores_kbd_init(void)
 {
@@ -175,6 +176,9 @@ static void __exit opencores_kbd_exit(void)
 	platform_driver_unregister(&opencores_kbd_device_driver);
 }
 module_exit(opencores_kbd_exit);
+=======
+module_platform_driver(opencores_kbd_device_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Javier Herrero <jherrero@hvsistemas.es>");

@@ -245,7 +245,11 @@ static void gsmd_rx_push(struct work_struct *w)
 			char		*packet = req->buf;
 			unsigned	size = req->actual;
 			unsigned	n;
+<<<<<<< HEAD
 			unsigned	count;
+=======
+			int		count;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			n = port->n_read;
 			if (n) {
@@ -663,7 +667,11 @@ int gsmd_connect(struct gserial *gser, u8 portno)
 	port->nbytes_tolaptop = 0;
 	spin_unlock_irqrestore(&port->port_lock, flags);
 
+<<<<<<< HEAD
 	ret = usb_ep_enable(gser->in, gser->in_desc);
+=======
+	ret = usb_ep_enable(gser->in);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		pr_err("%s: usb_ep_enable failed eptype:IN ep:%p",
 				__func__, gser->in);
@@ -672,7 +680,11 @@ int gsmd_connect(struct gserial *gser, u8 portno)
 	}
 	gser->in->driver_data = port;
 
+<<<<<<< HEAD
 	ret = usb_ep_enable(gser->out, gser->out_desc);
+=======
+	ret = usb_ep_enable(gser->out);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		pr_err("%s: usb_ep_enable failed eptype:OUT ep:%p",
 				__func__, gser->out);

@@ -9,6 +9,10 @@
 #include <linux/stop_machine.h>
 #include <linux/freezer.h>
 #include <linux/syscore_ops.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <xen/xen.h>
 #include <xen/xenbus.h>
@@ -128,9 +132,16 @@ static void do_suspend(void)
 	printk(KERN_DEBUG "suspending xenstore...\n");
 	xs_suspend();
 
+<<<<<<< HEAD
 	err = dpm_suspend_noirq(PMSG_FREEZE);
 	if (err) {
 		printk(KERN_ERR "dpm_suspend_noirq failed: %d\n", err);
+=======
+	err = dpm_suspend_end(PMSG_FREEZE);
+	if (err) {
+		printk(KERN_ERR "dpm_suspend_end failed: %d\n", err);
+		si.cancelled = 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto out_resume;
 	}
 
@@ -148,7 +159,11 @@ static void do_suspend(void)
 
 	err = stop_machine(xen_suspend, &si, cpumask_of(0));
 
+<<<<<<< HEAD
 	dpm_resume_noirq(si.cancelled ? PMSG_THAW : PMSG_RESTORE);
+=======
+	dpm_resume_start(si.cancelled ? PMSG_THAW : PMSG_RESTORE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (err) {
 		printk(KERN_ERR "failed to start xen_suspend: %d\n", err);

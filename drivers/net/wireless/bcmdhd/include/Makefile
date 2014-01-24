@@ -10,7 +10,11 @@
 #
 # Copyright 2005, Broadcom, Inc.
 #
+<<<<<<< HEAD
 # $Id: Makefile 241702 2011-02-19 00:41:03Z $
+=======
+# $Id: Makefile 241686 2011-02-19 00:22:45Z $
+>>>>>>> refs/remotes/origin/cm-10.0
 #
 
 SRCBASE := ..

@@ -144,7 +144,11 @@ void __cpuinit sb1250_clockevent_init(void)
 	sb1250_unmask_irq(cpu, irq);
 
 	action->handler	= sibyte_counter_handler;
+<<<<<<< HEAD
 	action->flags	= IRQF_DISABLED | IRQF_PERCPU | IRQF_TIMER;
+=======
+	action->flags	= IRQF_PERCPU | IRQF_TIMER;
+>>>>>>> refs/remotes/origin/cm-10.0
 	action->name	= name;
 	action->dev_id	= cd;
 

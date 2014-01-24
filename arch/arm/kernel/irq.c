@@ -22,7 +22,10 @@
  *  Naturally it's not a 1:1 relation, but there are similarities.
  */
 #include <linux/kernel_stat.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/signal.h>
 #include <linux/ioport.h>
 #include <linux/interrupt.h>
@@ -37,7 +40,10 @@
 #include <linux/proc_fs.h>
 
 #include <asm/exception.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach/arch.h>
 #include <asm/mach/irq.h>
 #include <asm/mach/time.h>
@@ -111,7 +117,11 @@ void set_irq_flags(unsigned int irq, unsigned int iflags)
 {
 	unsigned long clr = 0, set = IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_NOAUTOEN;
 
+<<<<<<< HEAD
 	if (irq >= NR_IRQS) {
+=======
+	if (irq >= nr_irqs) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "Trying to set irq flags for IRQ%d\n", irq);
 		return;
 	}
@@ -161,10 +171,17 @@ static bool migrate_one_irq(struct irq_desc *desc)
 	}
 
 	c = irq_data_get_irq_chip(d);
+<<<<<<< HEAD
 	if (c->irq_set_affinity)
 		c->irq_set_affinity(d, affinity, true);
 	else
 		pr_debug("IRQ%u: unable to set affinity\n", d->irq);
+=======
+	if (!c->irq_set_affinity)
+		pr_debug("IRQ%u: unable to set affinity\n", d->irq);
+	else if (c->irq_set_affinity(d, affinity, true) == IRQ_SET_MASK_OK && ret)
+		cpumask_copy(d->affinity, affinity);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
@@ -186,10 +203,14 @@ void migrate_irqs(void)
 	local_irq_save(flags);
 
 	for_each_irq_desc(i, desc) {
+<<<<<<< HEAD
 		bool affinity_broken = false;
 
 		if (!desc)
 			continue;
+=======
+		bool affinity_broken;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		raw_spin_lock(&desc->lock);
 		affinity_broken = migrate_one_irq(desc);

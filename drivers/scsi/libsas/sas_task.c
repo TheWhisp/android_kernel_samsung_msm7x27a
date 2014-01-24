@@ -1,4 +1,8 @@
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <scsi/sas.h>
 #include <scsi/libsas.h>
 

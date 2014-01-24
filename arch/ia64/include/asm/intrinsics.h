@@ -18,6 +18,10 @@
 #else
 # include <asm/gcc_intrin.h>
 #endif
+<<<<<<< HEAD
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define ia64_native_get_psr_i()	(ia64_native_getreg(_IA64_REG_PSR) & IA64_PSR_I)
 
@@ -81,6 +85,7 @@ extern unsigned long __bad_increment_for_ia64_fetch_and_add (void);
 
 #define ia64_fetch_and_add(i,v)	(ia64_fetchadd(i, v, rel) + (i)) /* return new value */
 
+<<<<<<< HEAD
 /*
  * This function doesn't exist, so you'll get a linker error if
  * something tries to do an invalid xchg().
@@ -194,6 +199,8 @@ extern long ia64_cmpxchg_called_with_bad_pointer (void);
 # define CMPXCHG_BUGCHECK(v)
 #endif /* !CONFIG_IA64_DEBUG_CMPXCHG */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 #ifdef __KERNEL__
@@ -201,6 +208,7 @@ extern long ia64_cmpxchg_called_with_bad_pointer (void);
 #endif
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 #if defined(CONFIG_PARAVIRT) && defined(__KERNEL__)
 #ifdef ASM_SUPPORTED
 # define IA64_INTRINSIC_API(name)	paravirt_ ## name
@@ -211,6 +219,23 @@ extern long ia64_cmpxchg_called_with_bad_pointer (void);
 #else
 #define IA64_INTRINSIC_API(name)	ia64_native_ ## name
 #define IA64_INTRINSIC_MACRO(name)	ia64_native_ ## name
+=======
+
+#define IA64_INTRINSIC_API(name)	ia64_native_ ## name
+#define IA64_INTRINSIC_MACRO(name)	ia64_native_ ## name
+
+#if defined(__KERNEL__)
+#if defined(CONFIG_PARAVIRT)
+# undef IA64_INTRINSIC_API
+# undef IA64_INTRINSIC_MACRO
+# ifdef ASM_SUPPORTED
+#  define IA64_INTRINSIC_API(name)	paravirt_ ## name
+# else
+#  define IA64_INTRINSIC_API(name)	pv_cpu_ops.name
+# endif
+#define IA64_INTRINSIC_MACRO(name)	paravirt_ ## name
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /************************************************/

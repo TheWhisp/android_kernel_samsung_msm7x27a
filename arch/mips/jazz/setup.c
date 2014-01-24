@@ -21,6 +21,10 @@
 #include <asm/jazzdma.h>
 #include <asm/reboot.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
+=======
+#include <asm/tlbmisc.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern asmlinkage void jazz_handle_int(void);
 

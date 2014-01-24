@@ -9,11 +9,16 @@
 #include <linux/of_device.h>
 #include <linux/kernel.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/leon.h>
 #include <asm/leon_pci.h>
 
 /* The LEON architecture does not rely on a BIOS or bootloader to setup
  * PCI for us. The Linux generic routines are used to setup resources,
+<<<<<<< HEAD
  * reset values of confuration-space registers settings ae preseved.
  */
 void leon_pci_init(struct platform_device *ofdev, struct leon_pci_info *info)
@@ -29,11 +34,32 @@ void leon_pci_init(struct platform_device *ofdev, struct leon_pci_info *info)
 		/* Init all PCI devices into PCI tree */
 		pci_bus_add_devices(root_bus);
 
+=======
+ * reset values of configuration-space register settings are preserved.
+ *
+ * PCI Memory and Prefetchable Memory is direct-mapped. However I/O Space is
+ * accessed through a Window which is translated to low 64KB in PCI space, the
+ * first 4KB is not used so 60KB is available.
+ */
+void leon_pci_init(struct platform_device *ofdev, struct leon_pci_info *info)
+{
+	LIST_HEAD(resources);
+	struct pci_bus *root_bus;
+
+	pci_add_resource_offset(&resources, &info->io_space,
+				info->io_space.start - 0x1000);
+	pci_add_resource(&resources, &info->mem_space);
+
+	root_bus = pci_scan_root_bus(&ofdev->dev, 0, info->ops, info,
+				     &resources);
+	if (root_bus) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		/* Setup IRQs of all devices using custom routines */
 		pci_fixup_irqs(pci_common_swizzle, info->map_irq);
 
 		/* Assign devices with resources */
 		pci_assign_unassigned_resources();
+<<<<<<< HEAD
 	}
 }
 
@@ -78,10 +104,20 @@ EXPORT_SYMBOL(pcibios_bus_to_resource);
 void __devinit pcibios_fixup_bus(struct pci_bus *pbus)
 {
 	struct leon_pci_info *info = pbus->sysdata;
+=======
+	} else {
+		pci_free_resource_list(&resources);
+	}
+}
+
+void __devinit pcibios_fixup_bus(struct pci_bus *pbus)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pci_dev *dev;
 	int i, has_io, has_mem;
 	u16 cmd;
 
+<<<<<<< HEAD
 	/* Generic PCI bus probing sets these to point at
 	 * &io{port,mem}_resouce which is wrong for us.
 	 */
@@ -91,6 +127,8 @@ void __devinit pcibios_fixup_bus(struct pci_bus *pbus)
 		pbus->resource[2] = NULL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	list_for_each_entry(dev, &pbus->devices, bus_list) {
 		/*
 		 * We can not rely on that the bootloader has enabled I/O
@@ -152,6 +190,7 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
 	return pci_enable_resources(dev, mask);
 }
 
+<<<<<<< HEAD
 struct device_node *pci_device_to_OF_node(struct pci_dev *pdev)
 {
 	/*
@@ -164,6 +203,8 @@ struct device_node *pci_device_to_OF_node(struct pci_dev *pdev)
 }
 EXPORT_SYMBOL(pci_device_to_OF_node);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void __devinit pcibios_update_irq(struct pci_dev *dev, int irq)
 {
 #ifdef CONFIG_PCI_DEBUG

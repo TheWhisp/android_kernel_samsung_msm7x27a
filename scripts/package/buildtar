@@ -109,7 +109,11 @@ esac
 	if tar --owner=root --group=root --help >/dev/null 2>&1; then
 		opts="--owner=root --group=root"
 	fi
+<<<<<<< HEAD
 	tar cf - . $opts | ${compress} > "${tarball}${file_ext}"
+=======
+	tar cf - boot/* lib/* $opts | ${compress} > "${tarball}${file_ext}"
+>>>>>>> refs/remotes/origin/cm-10.0
 )
 
 echo "Tarball successfully created in ${tarball}${file_ext}"

@@ -32,6 +32,11 @@
  *	Includes, defines, variables, module parameters, ...
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>	/* For module specific items */
 #include <linux/moduleparam.h>	/* For new moduleparam's */
 #include <linux/types.h>	/* For standard types (like size_t) */
@@ -54,8 +59,12 @@
 #define WATCHDOG_VERSION "1.03"
 #define WATCHDOG_DRIVER_NAME "PCI-PC Watchdog"
 #define WATCHDOG_NAME "pcwd_pci"
+<<<<<<< HEAD
 #define PFX WATCHDOG_NAME ": "
 #define DRIVER_VERSION WATCHDOG_DRIVER_NAME " driver, v" WATCHDOG_VERSION "\n"
+=======
+#define DRIVER_VERSION WATCHDOG_DRIVER_NAME " driver, v" WATCHDOG_VERSION
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /* Stuff for the PCI ID's  */
 #ifndef PCI_VENDOR_ID_QUICKLOGIC
@@ -145,8 +154,13 @@ MODULE_PARM_DESC(heartbeat, "Watchdog heartbeat in seconds. "
 	"(0<heartbeat<65536 or 0=delay-time from dip-switches, default="
 				__MODULE_STRING(WATCHDOG_HEARTBEAT) ")");
 
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 					__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -159,8 +173,13 @@ static int send_command(int cmd, int *msb, int *lsb)
 	int got_response, count;
 
 	if (debug >= DEBUG)
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "sending following data "
 		"cmd=0x%02x msb=0x%02x lsb=0x%02x\n", cmd, *msb, *lsb);
+=======
+		pr_debug("sending following data cmd=0x%02x msb=0x%02x lsb=0x%02x\n",
+			 cmd, *msb, *lsb);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock(&pcipcwd_private.io_lock);
 	/* If a command requires data it should be written first.
@@ -185,12 +204,19 @@ static int send_command(int cmd, int *msb, int *lsb)
 
 	if (debug >= DEBUG) {
 		if (got_response) {
+<<<<<<< HEAD
 			printk(KERN_DEBUG PFX
 				"time to process command was: %d ms\n",
 				count);
 		} else {
 			printk(KERN_DEBUG PFX
 				"card did not respond on command!\n");
+=======
+			pr_debug("time to process command was: %d ms\n",
+				 count);
+		} else {
+			pr_debug("card did not respond on command!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 
@@ -203,9 +229,14 @@ static int send_command(int cmd, int *msb, int *lsb)
 		inb_p(pcipcwd_private.io_addr + 6);
 
 		if (debug >= DEBUG)
+<<<<<<< HEAD
 			printk(KERN_DEBUG PFX "received following data for "
 				"cmd=0x%02x: msb=0x%02x lsb=0x%02x\n",
 				cmd, *msb, *lsb);
+=======
+			pr_debug("received following data for cmd=0x%02x: msb=0x%02x lsb=0x%02x\n",
+				 cmd, *msb, *lsb);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	spin_unlock(&pcipcwd_private.io_lock);
@@ -243,6 +274,7 @@ static void pcipcwd_show_card_info(void)
 	/* Get switch settings */
 	option_switches = pcipcwd_get_option_switches();
 
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Found card at port "
 		"0x%04x (Firmware: %s) %s temp option\n",
 		(int) pcipcwd_private.io_addr, fw_ver_str,
@@ -250,11 +282,19 @@ static void pcipcwd_show_card_info(void)
 
 	printk(KERN_INFO PFX "Option switches (0x%02x): "
 		"Temperature Reset Enable=%s, Power On Delay=%s\n",
+=======
+	pr_info("Found card at port 0x%04x (Firmware: %s) %s temp option\n",
+		(int) pcipcwd_private.io_addr, fw_ver_str,
+		(pcipcwd_private.supports_temp ? "with" : "without"));
+
+	pr_info("Option switches (0x%02x): Temperature Reset Enable=%s, Power On Delay=%s\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		option_switches,
 		((option_switches & 0x10) ? "ON" : "OFF"),
 		((option_switches & 0x08) ? "ON" : "OFF"));
 
 	if (pcipcwd_private.boot_status & WDIOF_CARDRESET)
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"Previous reset was caused by the Watchdog card\n");
 
@@ -264,6 +304,15 @@ static void pcipcwd_show_card_info(void)
 	if (pcipcwd_private.boot_status == 0)
 		printk(KERN_INFO PFX
 			"No previous trip detected - Cold boot or reset\n");
+=======
+		pr_info("Previous reset was caused by the Watchdog card\n");
+
+	if (pcipcwd_private.boot_status & WDIOF_OVERHEAT)
+		pr_info("Card sensed a CPU Overheat\n");
+
+	if (pcipcwd_private.boot_status == 0)
+		pr_info("No previous trip detected - Cold boot or reset\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int pcipcwd_start(void)
@@ -278,12 +327,20 @@ static int pcipcwd_start(void)
 	spin_unlock(&pcipcwd_private.io_lock);
 
 	if (stat_reg & WD_PCI_WDIS) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Card timer not enabled\n");
+=======
+		pr_err("Card timer not enabled\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
 	}
 
 	if (debug >= VERBOSE)
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "Watchdog started\n");
+=======
+		pr_debug("Watchdog started\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -303,13 +360,21 @@ static int pcipcwd_stop(void)
 	spin_unlock(&pcipcwd_private.io_lock);
 
 	if (!(stat_reg & WD_PCI_WDIS)) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"Card did not acknowledge disable attempt\n");
+=======
+		pr_err("Card did not acknowledge disable attempt\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -1;
 	}
 
 	if (debug >= VERBOSE)
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "Watchdog stopped\n");
+=======
+		pr_debug("Watchdog stopped\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -322,7 +387,11 @@ static int pcipcwd_keepalive(void)
 	spin_unlock(&pcipcwd_private.io_lock);
 
 	if (debug >= DEBUG)
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "Watchdog keepalive signal send\n");
+=======
+		pr_debug("Watchdog keepalive signal send\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -340,8 +409,12 @@ static int pcipcwd_set_heartbeat(int t)
 
 	heartbeat = t;
 	if (debug >= VERBOSE)
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "New heartbeat: %d\n",
 		       heartbeat);
+=======
+		pr_debug("New heartbeat: %d\n", heartbeat);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -357,12 +430,20 @@ static int pcipcwd_get_status(int *status)
 	if (control_status & WD_PCI_TTRP) {
 		*status |= WDIOF_OVERHEAT;
 		if (temp_panic)
+<<<<<<< HEAD
 			panic(PFX "Temperature overheat trip!\n");
 	}
 
 	if (debug >= DEBUG)
 		printk(KERN_DEBUG PFX "Control Status #1: 0x%02x\n",
 		       control_status);
+=======
+			panic(KBUILD_MODNAME ": Temperature overheat trip!\n");
+	}
+
+	if (debug >= DEBUG)
+		pr_debug("Control Status #1: 0x%02x\n", control_status);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -374,14 +455,24 @@ static int pcipcwd_clear_status(void)
 	int reset_counter;
 
 	if (debug >= VERBOSE)
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "clearing watchdog trip status & LED\n");
+=======
+		pr_info("clearing watchdog trip status & LED\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	control_status = inb_p(pcipcwd_private.io_addr + 1);
 
 	if (debug >= DEBUG) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "status was: 0x%02x\n", control_status);
 		printk(KERN_DEBUG PFX "sending: 0x%02x\n",
 		       (control_status & WD_PCI_R2DS) | WD_PCI_WTRP);
+=======
+		pr_debug("status was: 0x%02x\n", control_status);
+		pr_debug("sending: 0x%02x\n",
+			 (control_status & WD_PCI_R2DS) | WD_PCI_WTRP);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* clear trip status & LED and keep mode of relay 2 */
@@ -394,8 +485,12 @@ static int pcipcwd_clear_status(void)
 	send_command(CMD_GET_CLEAR_RESET_COUNT, &msb, &reset_counter);
 
 	if (debug >= DEBUG) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "reset count was: 0x%02x\n",
 		       reset_counter);
+=======
+		pr_debug("reset count was: 0x%02x\n", reset_counter);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
@@ -418,8 +513,12 @@ static int pcipcwd_get_temperature(int *temperature)
 	*temperature = (*temperature * 9 / 5) + 32;
 
 	if (debug >= DEBUG) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "temperature is: %d F\n",
 		       *temperature);
+=======
+		pr_debug("temperature is: %d F\n", *temperature);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	return 0;
@@ -437,8 +536,12 @@ static int pcipcwd_get_timeleft(int *time_left)
 	*time_left = (msb << 8) + lsb;
 
 	if (debug >= VERBOSE)
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "Time left before next reboot: %d\n",
 		       *time_left);
+=======
+		pr_debug("Time left before next reboot: %d\n", *time_left);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -583,8 +686,12 @@ static int pcipcwd_open(struct inode *inode, struct file *file)
 	/* /dev/watchdog can only be opened once */
 	if (test_and_set_bit(0, &is_active)) {
 		if (debug >= VERBOSE)
+<<<<<<< HEAD
 			printk(KERN_ERR PFX
 				"Attempt to open already opened device.\n");
+=======
+			pr_err("Attempt to open already opened device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -EBUSY;
 	}
 
@@ -602,8 +709,12 @@ static int pcipcwd_release(struct inode *inode, struct file *file)
 	if (expect_release == 42) {
 		pcipcwd_stop();
 	} else {
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 			"Unexpected close, not stopping watchdog!\n");
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		pcipcwd_keepalive();
 	}
 	expect_release = 0;
@@ -703,20 +814,35 @@ static int __devinit pcipcwd_card_init(struct pci_dev *pdev,
 
 	cards_found++;
 	if (cards_found == 1)
+<<<<<<< HEAD
 		printk(KERN_INFO PFX DRIVER_VERSION);
 
 	if (cards_found > 1) {
 		printk(KERN_ERR PFX "This driver only supports 1 device\n");
+=======
+		pr_info("%s\n", DRIVER_VERSION);
+
+	if (cards_found > 1) {
+		pr_err("This driver only supports 1 device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
 	if (pci_enable_device(pdev)) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Not possible to enable PCI Device\n");
+=======
+		pr_err("Not possible to enable PCI Device\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 	}
 
 	if (pci_resource_start(pdev, 0) == 0x0000) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "No I/O-Address for card detected\n");
+=======
+		pr_err("No I/O-Address for card detected\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -ENODEV;
 		goto err_out_disable_device;
 	}
@@ -725,8 +851,13 @@ static int __devinit pcipcwd_card_init(struct pci_dev *pdev,
 	pcipcwd_private.io_addr = pci_resource_start(pdev, 0);
 
 	if (pci_request_regions(pdev, WATCHDOG_NAME)) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "I/O address 0x%04x already in use\n",
 			(int) pcipcwd_private.io_addr);
+=======
+		pr_err("I/O address 0x%04x already in use\n",
+		       (int) pcipcwd_private.io_addr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		ret = -EIO;
 		goto err_out_disable_device;
 	}
@@ -755,29 +886,43 @@ static int __devinit pcipcwd_card_init(struct pci_dev *pdev,
 	 * if not reset to the default */
 	if (pcipcwd_set_heartbeat(heartbeat)) {
 		pcipcwd_set_heartbeat(WATCHDOG_HEARTBEAT);
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"heartbeat value must be 0<heartbeat<65536, using %d\n",
+=======
+		pr_info("heartbeat value must be 0<heartbeat<65536, using %d\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 			WATCHDOG_HEARTBEAT);
 	}
 
 	ret = register_reboot_notifier(&pcipcwd_notifier);
 	if (ret != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", ret);
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto err_out_release_region;
 	}
 
 	if (pcipcwd_private.supports_temp) {
 		ret = misc_register(&pcipcwd_temp_miscdev);
 		if (ret != 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR PFX "cannot register miscdev on "
 				"minor=%d (err=%d)\n", TEMP_MINOR, ret);
+=======
+			pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+			       TEMP_MINOR, ret);
+>>>>>>> refs/remotes/origin/cm-10.0
 			goto err_out_unregister_reboot;
 		}
 	}
 
 	ret = misc_register(&pcipcwd_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
 			WATCHDOG_MINOR, ret);
@@ -785,6 +930,14 @@ static int __devinit pcipcwd_card_init(struct pci_dev *pdev,
 	}
 
 	printk(KERN_INFO PFX "initialized. heartbeat=%d sec (nowayout=%d)\n",
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+		goto err_out_misc_deregister;
+	}
+
+	pr_info("initialized. heartbeat=%d sec (nowayout=%d)\n",
+>>>>>>> refs/remotes/origin/cm-10.0
 		heartbeat, nowayout);
 
 	return 0;
@@ -842,7 +995,11 @@ static void __exit pcipcwd_cleanup_module(void)
 {
 	pci_unregister_driver(&pcipcwd_driver);
 
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog Module Unloaded.\n");
+=======
+	pr_info("Watchdog Module Unloaded\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 module_init(pcipcwd_init_module);

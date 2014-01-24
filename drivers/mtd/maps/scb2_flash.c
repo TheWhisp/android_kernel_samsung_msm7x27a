@@ -204,8 +204,12 @@ scb2_flash_remove(struct pci_dev *dev)
 		return;
 
 	/* disable flash writes */
+<<<<<<< HEAD
 	if (scb2_mtd->lock)
 		scb2_mtd->lock(scb2_mtd, 0, scb2_mtd->size);
+=======
+	mtd_lock(scb2_mtd, 0, scb2_mtd->size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mtd_device_unregister(scb2_mtd);
 	map_destroy(scb2_mtd);

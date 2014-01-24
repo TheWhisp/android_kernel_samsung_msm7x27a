@@ -50,6 +50,7 @@
 #include "xfs_vnodeops.h"
 #include "xfs_trace.h"
 
+<<<<<<< HEAD
 int
 xfs_setattr(
 	struct xfs_inode	*ip,
@@ -474,6 +475,8 @@ xfs_setattr(
 	return code;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * The maximum pathlen is 1024 bytes. Since the minimum file system
  * blocksize is 512 bytes, we can get a max of 2 extents back from
@@ -496,8 +499,13 @@ xfs_readlink_bmap(
 	xfs_buf_t	*bp;
 	int		error = 0;
 
+<<<<<<< HEAD
 	error = xfs_bmapi(NULL, ip, 0, XFS_B_TO_FSB(mp, pathlen), 0, NULL, 0,
 			mval, &nmaps, NULL);
+=======
+	error = xfs_bmapi_read(ip, 0, XFS_B_TO_FSB(mp, pathlen), mval, &nmaps,
+			       0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (error)
 		goto out;
 
@@ -507,10 +515,18 @@ xfs_readlink_bmap(
 
 		bp = xfs_buf_read(mp->m_ddev_targp, d, BTOBB(byte_cnt),
 				  XBF_LOCK | XBF_MAPPED | XBF_DONT_BLOCK);
+<<<<<<< HEAD
 		error = XFS_BUF_GETERROR(bp);
 		if (error) {
 			xfs_ioerror_alert("xfs_readlink",
 				  ip->i_mount, bp, XFS_BUF_ADDR(bp));
+=======
+		if (!bp)
+			return XFS_ERROR(ENOMEM);
+		error = bp->b_error;
+		if (error) {
+			xfs_buf_ioerror_alert(bp, __func__);
+>>>>>>> refs/remotes/origin/cm-10.0
 			xfs_buf_relse(bp);
 			goto out;
 		}
@@ -518,7 +534,11 @@ xfs_readlink_bmap(
 			byte_cnt = pathlen;
 		pathlen -= byte_cnt;
 
+<<<<<<< HEAD
 		memcpy(link, XFS_BUF_PTR(bp), byte_cnt);
+=======
+		memcpy(link, bp->b_addr, byte_cnt);
+>>>>>>> refs/remotes/origin/cm-10.0
 		xfs_buf_relse(bp);
 	}
 
@@ -599,7 +619,11 @@ xfs_free_eofblocks(
 	 * Figure out if there are any blocks beyond the end
 	 * of the file.  If not, then there is nothing to do.
 	 */
+<<<<<<< HEAD
 	end_fsb = XFS_B_TO_FSB(mp, ((xfs_ufsize_t)ip->i_size));
+=======
+	end_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)XFS_ISIZE(ip));
+>>>>>>> refs/remotes/origin/cm-10.0
 	last_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)XFS_MAXIOFFSET(mp));
 	if (last_fsb <= end_fsb)
 		return 0;
@@ -607,8 +631,12 @@ xfs_free_eofblocks(
 
 	nimaps = 1;
 	xfs_ilock(ip, XFS_ILOCK_SHARED);
+<<<<<<< HEAD
 	error = xfs_bmapi(NULL, ip, end_fsb, map_len, 0,
 			  NULL, 0, &imap, &nimaps, NULL);
+=======
+	error = xfs_bmapi_read(ip, end_fsb, map_len, &imap, &nimaps, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_iunlock(ip, XFS_ILOCK_SHARED);
 
 	if (!error && (nimaps != 0) &&
@@ -628,6 +656,7 @@ xfs_free_eofblocks(
 		 */
 		tp = xfs_trans_alloc(mp, XFS_TRANS_INACTIVE);
 
+<<<<<<< HEAD
 		/*
 		 * Do the xfs_itruncate_start() call before
 		 * reserving any log space because
@@ -635,6 +664,8 @@ xfs_free_eofblocks(
 		 * cache and we can't
 		 * do that within a transaction.
 		 */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (flags & XFS_FREE_EOF_TRYLOCK) {
 			if (!xfs_ilock_nowait(ip, XFS_IOLOCK_EXCL)) {
 				xfs_trans_cancel(tp, 0);
@@ -643,6 +674,7 @@ xfs_free_eofblocks(
 		} else {
 			xfs_ilock(ip, XFS_IOLOCK_EXCL);
 		}
+<<<<<<< HEAD
 		error = xfs_itruncate_start(ip, XFS_ITRUNC_DEFINITE,
 				    ip->i_size);
 		if (error) {
@@ -650,6 +682,8 @@ xfs_free_eofblocks(
 			xfs_iunlock(ip, XFS_IOLOCK_EXCL);
 			return error;
 		}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		error = xfs_trans_reserve(tp, 0,
 					  XFS_ITRUNCATE_LOG_RES(mp),
@@ -663,6 +697,7 @@ xfs_free_eofblocks(
 		}
 
 		xfs_ilock(ip, XFS_ILOCK_EXCL);
+<<<<<<< HEAD
 		xfs_trans_ijoin(tp, ip);
 
 		error = xfs_itruncate_finish(&tp, ip,
@@ -674,6 +709,23 @@ xfs_free_eofblocks(
 		 * simply don't bother truncating the file.
 		 */
 		if (error) {
+=======
+		xfs_trans_ijoin(tp, ip, 0);
+
+		/*
+		 * Do not update the on-disk file size.  If we update the
+		 * on-disk file size and then the system crashes before the
+		 * contents of the file are flushed to disk then the files
+		 * may be full of holes (ie NULL files bug).
+		 */
+		error = xfs_itruncate_extents(&tp, ip, XFS_DATA_FORK,
+					      XFS_ISIZE(ip));
+		if (error) {
+			/*
+			 * If we get an error at this point we simply don't
+			 * bother truncating the file.
+			 */
+>>>>>>> refs/remotes/origin/cm-10.0
 			xfs_trans_cancel(tp,
 					 (XFS_TRANS_RELEASE_LOG_RES |
 					  XFS_TRANS_ABORT));
@@ -735,7 +787,11 @@ xfs_inactive_symlink_rmt(
 	xfs_ilock(ip, XFS_IOLOCK_EXCL | XFS_ILOCK_EXCL);
 	size = (int)ip->i_d.di_size;
 	ip->i_d.di_size = 0;
+<<<<<<< HEAD
 	xfs_trans_ijoin(tp, ip);
+=======
+	xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_trans_log_inode(tp, ip, XFS_ILOG_CORE);
 	/*
 	 * Find the block(s) so we can inval and unmap them.
@@ -743,9 +799,15 @@ xfs_inactive_symlink_rmt(
 	done = 0;
 	xfs_bmap_init(&free_list, &first_block);
 	nmaps = ARRAY_SIZE(mval);
+<<<<<<< HEAD
 	if ((error = xfs_bmapi(tp, ip, 0, XFS_B_TO_FSB(mp, size),
 			XFS_BMAPI_METADATA, &first_block, 0, mval, &nmaps,
 			&free_list)))
+=======
+	error = xfs_bmapi_read(ip, 0, XFS_B_TO_FSB(mp, size),
+				mval, &nmaps, 0);
+	if (error)
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto error0;
 	/*
 	 * Invalidate the block(s).
@@ -754,6 +816,13 @@ xfs_inactive_symlink_rmt(
 		bp = xfs_trans_get_buf(tp, mp->m_ddev_targp,
 			XFS_FSB_TO_DADDR(mp, mval[i].br_startblock),
 			XFS_FSB_TO_BB(mp, mval[i].br_blockcount), 0);
+<<<<<<< HEAD
+=======
+		if (!bp) {
+			error = ENOMEM;
+			goto error1;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 		xfs_trans_binval(tp, bp);
 	}
 	/*
@@ -779,7 +848,11 @@ xfs_inactive_symlink_rmt(
 	 * Mark it dirty so it will be logged and moved forward in the log as
 	 * part of every commit.
 	 */
+<<<<<<< HEAD
 	xfs_trans_ijoin(tp, ip);
+=======
+	xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_trans_log_inode(tp, ip, XFS_ILOG_CORE);
 	/*
 	 * Get a new, empty transaction to return to our caller.
@@ -912,7 +985,11 @@ xfs_inactive_attrs(
 		goto error_cancel;
 
 	xfs_ilock(ip, XFS_ILOCK_EXCL);
+<<<<<<< HEAD
 	xfs_trans_ijoin(tp, ip);
+=======
+	xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_idestroy_fork(ip, XFS_ATTR_FORK);
 
 	ASSERT(ip->i_d.di_anextents == 0);
@@ -977,9 +1054,15 @@ xfs_release(
 	if (ip->i_d.di_nlink == 0)
 		return 0;
 
+<<<<<<< HEAD
 	if ((((ip->i_d.di_mode & S_IFMT) == S_IFREG) &&
 	     ((ip->i_size > 0) || (VN_CACHED(VFS_I(ip)) > 0 ||
 	       ip->i_delayed_blks > 0)) &&
+=======
+	if ((S_ISREG(ip->i_d.di_mode) &&
+	     (VFS_I(ip)->i_size > 0 ||
+	      (VN_CACHED(VFS_I(ip)) > 0 || ip->i_delayed_blks > 0)) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 	     (ip->i_df.if_flags & XFS_IFEXTENTS))  &&
 	    (!(ip->i_d.di_flags & (XFS_DIFLAG_PREALLOC | XFS_DIFLAG_APPEND)))) {
 
@@ -1056,9 +1139,15 @@ xfs_inactive(
 	 * only one with a reference to the inode.
 	 */
 	truncate = ((ip->i_d.di_nlink == 0) &&
+<<<<<<< HEAD
 	    ((ip->i_d.di_size != 0) || (ip->i_size != 0) ||
 	     (ip->i_d.di_nextents > 0) || (ip->i_delayed_blks > 0)) &&
 	    ((ip->i_d.di_mode & S_IFMT) == S_IFREG));
+=======
+	    ((ip->i_d.di_size != 0) || XFS_ISIZE(ip) != 0 ||
+	     (ip->i_d.di_nextents > 0) || (ip->i_delayed_blks > 0)) &&
+	    S_ISREG(ip->i_d.di_mode));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mp = ip->i_mount;
 
@@ -1069,6 +1158,7 @@ xfs_inactive(
 		goto out;
 
 	if (ip->i_d.di_nlink != 0) {
+<<<<<<< HEAD
 		if ((((ip->i_d.di_mode & S_IFMT) == S_IFREG) &&
                      ((ip->i_size > 0) || (VN_CACHED(VFS_I(ip)) > 0 ||
                        ip->i_delayed_blks > 0)) &&
@@ -1076,6 +1166,15 @@ xfs_inactive(
 		     (!(ip->i_d.di_flags &
 				(XFS_DIFLAG_PREALLOC | XFS_DIFLAG_APPEND)) ||
 		      (ip->i_delayed_blks != 0)))) {
+=======
+		if ((S_ISREG(ip->i_d.di_mode) &&
+		    (VFS_I(ip)->i_size > 0 ||
+		     (VN_CACHED(VFS_I(ip)) > 0 || ip->i_delayed_blks > 0)) &&
+		    (ip->i_df.if_flags & XFS_IFEXTENTS) &&
+		    (!(ip->i_d.di_flags &
+				(XFS_DIFLAG_PREALLOC | XFS_DIFLAG_APPEND)) ||
+		     ip->i_delayed_blks != 0))) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			error = xfs_free_eofblocks(mp, ip, 0);
 			if (error)
 				return VN_INACTIVE_CACHE;
@@ -1091,6 +1190,7 @@ xfs_inactive(
 
 	tp = xfs_trans_alloc(mp, XFS_TRANS_INACTIVE);
 	if (truncate) {
+<<<<<<< HEAD
 		/*
 		 * Do the xfs_itruncate_start() call before
 		 * reserving any log space because itruncate_start
@@ -1106,6 +1206,10 @@ xfs_inactive(
 			return VN_INACTIVE_CACHE;
 		}
 
+=======
+		xfs_ilock(ip, XFS_IOLOCK_EXCL);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		error = xfs_trans_reserve(tp, 0,
 					  XFS_ITRUNCATE_LOG_RES(mp),
 					  0, XFS_TRANS_PERM_LOG_RES,
@@ -1119,6 +1223,7 @@ xfs_inactive(
 		}
 
 		xfs_ilock(ip, XFS_ILOCK_EXCL);
+<<<<<<< HEAD
 		xfs_trans_ijoin(tp, ip);
 
 		/*
@@ -1131,13 +1236,27 @@ xfs_inactive(
 		error = xfs_itruncate_finish(&tp, ip, 0, XFS_DATA_FORK,
 				(!(mp->m_flags & XFS_MOUNT_WSYNC) ? 1 : 0));
 
+=======
+		xfs_trans_ijoin(tp, ip, 0);
+
+		ip->i_d.di_size = 0;
+		xfs_trans_log_inode(tp, ip, XFS_ILOG_CORE);
+
+		error = xfs_itruncate_extents(&tp, ip, XFS_DATA_FORK, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error) {
 			xfs_trans_cancel(tp,
 				XFS_TRANS_RELEASE_LOG_RES | XFS_TRANS_ABORT);
 			xfs_iunlock(ip, XFS_IOLOCK_EXCL | XFS_ILOCK_EXCL);
 			return VN_INACTIVE_CACHE;
 		}
+<<<<<<< HEAD
 	} else if ((ip->i_d.di_mode & S_IFMT) == S_IFLNK) {
+=======
+
+		ASSERT(ip->i_d.di_nextents == 0);
+	} else if (S_ISLNK(ip->i_d.di_mode)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
 		 * If we get an error while cleaning up a
@@ -1152,7 +1271,11 @@ xfs_inactive(
 			return VN_INACTIVE_CACHE;
 		}
 
+<<<<<<< HEAD
 		xfs_trans_ijoin(tp, ip);
+=======
+		xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		error = xfs_trans_reserve(tp, 0,
 					  XFS_IFREE_LOG_RES(mp),
@@ -1165,7 +1288,11 @@ xfs_inactive(
 		}
 
 		xfs_ilock(ip, XFS_ILOCK_EXCL | XFS_IOLOCK_EXCL);
+<<<<<<< HEAD
 		xfs_trans_ijoin(tp, ip);
+=======
+		xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -1282,7 +1409,11 @@ int
 xfs_create(
 	xfs_inode_t		*dp,
 	struct xfs_name		*name,
+<<<<<<< HEAD
 	mode_t			mode,
+=======
+	umode_t			mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_dev_t		rdev,
 	xfs_inode_t		**ipp)
 {
@@ -1364,6 +1495,7 @@ xfs_create(
 	xfs_ilock(dp, XFS_ILOCK_EXCL | XFS_ILOCK_PARENT);
 	unlock_dp_on_error = B_TRUE;
 
+<<<<<<< HEAD
 	/*
 	 * Check for directory link count overflow.
 	 */
@@ -1372,6 +1504,8 @@ xfs_create(
 		goto out_trans_cancel;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_bmap_init(&free_list, &first_block);
 
 	/*
@@ -1405,7 +1539,11 @@ xfs_create(
 	 * the transaction cancel unlocking dp so don't do it explicitly in the
 	 * error path.
 	 */
+<<<<<<< HEAD
 	xfs_trans_ijoin_ref(tp, dp, XFS_ILOCK_EXCL);
+=======
+	xfs_trans_ijoin(tp, dp, XFS_ILOCK_EXCL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unlock_dp_on_error = B_FALSE;
 
 	error = xfs_dir_createname(tp, dp, name, ip->i_ino,
@@ -1726,8 +1864,13 @@ xfs_remove(
 
 	xfs_lock_two_inodes(dp, ip, XFS_ILOCK_EXCL);
 
+<<<<<<< HEAD
 	xfs_trans_ijoin_ref(tp, dp, XFS_ILOCK_EXCL);
 	xfs_trans_ijoin_ref(tp, ip, XFS_ILOCK_EXCL);
+=======
+	xfs_trans_ijoin(tp, dp, XFS_ILOCK_EXCL);
+	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * If we're removing a directory perform some additional validation.
@@ -1872,6 +2015,7 @@ xfs_link(
 
 	xfs_lock_two_inodes(sip, tdp, XFS_ILOCK_EXCL);
 
+<<<<<<< HEAD
 	xfs_trans_ijoin_ref(tp, sip, XFS_ILOCK_EXCL);
 	xfs_trans_ijoin_ref(tp, tdp, XFS_ILOCK_EXCL);
 
@@ -1882,6 +2026,10 @@ xfs_link(
 		error = XFS_ERROR(EMLINK);
 		goto error_return;
 	}
+=======
+	xfs_trans_ijoin(tp, sip, XFS_ILOCK_EXCL);
+	xfs_trans_ijoin(tp, tdp, XFS_ILOCK_EXCL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * If we are using project inheritance, we only allow hard link
@@ -1941,7 +2089,11 @@ xfs_symlink(
 	xfs_inode_t		*dp,
 	struct xfs_name		*link_name,
 	const char		*target_path,
+<<<<<<< HEAD
 	mode_t			mode,
+=======
+	umode_t			mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 	xfs_inode_t		**ipp)
 {
 	xfs_mount_t		*mp = dp->i_mount;
@@ -2067,7 +2219,11 @@ xfs_symlink(
 	 * transaction cancel unlocking dp so don't do it explicitly in the
 	 * error path.
 	 */
+<<<<<<< HEAD
 	xfs_trans_ijoin_ref(tp, dp, XFS_ILOCK_EXCL);
+=======
+	xfs_trans_ijoin(tp, dp, XFS_ILOCK_EXCL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	unlock_dp_on_error = B_FALSE;
 
 	/*
@@ -2098,10 +2254,16 @@ xfs_symlink(
 		first_fsb = 0;
 		nmaps = SYMLINK_MAPS;
 
+<<<<<<< HEAD
 		error = xfs_bmapi(tp, ip, first_fsb, fs_blocks,
 				  XFS_BMAPI_WRITE | XFS_BMAPI_METADATA,
 				  &first_block, resblks, mval, &nmaps,
 				  &free_list);
+=======
+		error = xfs_bmapi_write(tp, ip, first_fsb, fs_blocks,
+				  XFS_BMAPI_METADATA, &first_block, resblks,
+				  mval, &nmaps, &free_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error)
 			goto error2;
 
@@ -2116,13 +2278,24 @@ xfs_symlink(
 			byte_cnt = XFS_FSB_TO_B(mp, mval[n].br_blockcount);
 			bp = xfs_trans_get_buf(tp, mp->m_ddev_targp, d,
 					       BTOBB(byte_cnt), 0);
+<<<<<<< HEAD
 			ASSERT(bp && !XFS_BUF_GETERROR(bp));
+=======
+			if (!bp) {
+				error = ENOMEM;
+				goto error2;
+			}
+>>>>>>> refs/remotes/origin/cm-10.0
 			if (pathlen < byte_cnt) {
 				byte_cnt = pathlen;
 			}
 			pathlen -= byte_cnt;
 
+<<<<<<< HEAD
 			memcpy(XFS_BUF_PTR(bp), cur_chunk, byte_cnt);
+=======
+			memcpy(bp->b_addr, cur_chunk, byte_cnt);
+>>>>>>> refs/remotes/origin/cm-10.0
 			cur_chunk += byte_cnt;
 
 			xfs_trans_log_buf(tp, bp, 0, byte_cnt - 1);
@@ -2198,7 +2371,11 @@ xfs_set_dmattrs(
 		return error;
 	}
 	xfs_ilock(ip, XFS_ILOCK_EXCL);
+<<<<<<< HEAD
 	xfs_trans_ijoin_ref(tp, ip, XFS_ILOCK_EXCL);
+=======
+	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	ip->i_d.di_dmevmask = evmask;
 	ip->i_d.di_dmstate  = state;
@@ -2244,7 +2421,10 @@ xfs_alloc_file_space(
 	xfs_fileoff_t		startoffset_fsb;
 	xfs_fsblock_t		firstfsb;
 	int			nimaps;
+<<<<<<< HEAD
 	int			bmapi_flag;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	int			quota_flag;
 	int			rt;
 	xfs_trans_t		*tp;
@@ -2272,7 +2452,10 @@ xfs_alloc_file_space(
 	count = len;
 	imapp = &imaps[0];
 	nimaps = 1;
+<<<<<<< HEAD
 	bmapi_flag = XFS_BMAPI_WRITE | alloc_type;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	startoffset_fsb	= XFS_B_TO_FSBT(mp, offset);
 	allocatesize_fsb = XFS_B_TO_FSB(mp, count);
 
@@ -2343,6 +2526,7 @@ xfs_alloc_file_space(
 		if (error)
 			goto error1;
 
+<<<<<<< HEAD
 		xfs_trans_ijoin(tp, ip);
 
 		/*
@@ -2353,6 +2537,14 @@ xfs_alloc_file_space(
 				  allocatesize_fsb, bmapi_flag,
 				  &firstfsb, 0, imapp, &nimaps,
 				  &free_list);
+=======
+		xfs_trans_ijoin(tp, ip, 0);
+
+		xfs_bmap_init(&free_list, &firstfsb);
+		error = xfs_bmapi_write(tp, ip, startoffset_fsb,
+					allocatesize_fsb, alloc_type, &firstfsb,
+					0, imapp, &nimaps, &free_list);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error) {
 			goto error0;
 		}
@@ -2425,11 +2617,19 @@ xfs_zero_remaining_bytes(
 	 * since nothing can read beyond eof.  The space will
 	 * be zeroed when the file is extended anyway.
 	 */
+<<<<<<< HEAD
 	if (startoff >= ip->i_size)
 		return 0;
 
 	if (endoff > ip->i_size)
 		endoff = ip->i_size;
+=======
+	if (startoff >= XFS_ISIZE(ip))
+		return 0;
+
+	if (endoff > XFS_ISIZE(ip))
+		endoff = XFS_ISIZE(ip);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	bp = xfs_buf_get_uncached(XFS_IS_REALTIME_INODE(ip) ?
 					mp->m_rtdev_targp : mp->m_ddev_targp,
@@ -2437,11 +2637,20 @@ xfs_zero_remaining_bytes(
 	if (!bp)
 		return XFS_ERROR(ENOMEM);
 
+<<<<<<< HEAD
 	for (offset = startoff; offset <= endoff; offset = lastoffset + 1) {
 		offset_fsb = XFS_B_TO_FSBT(mp, offset);
 		nimap = 1;
 		error = xfs_bmapi(NULL, ip, offset_fsb, 1, 0,
 			NULL, 0, &imap, &nimap, NULL);
+=======
+	xfs_buf_unlock(bp);
+
+	for (offset = startoff; offset <= endoff; offset = lastoffset + 1) {
+		offset_fsb = XFS_B_TO_FSBT(mp, offset);
+		nimap = 1;
+		error = xfs_bmapi_read(ip, offset_fsb, 1, &imap, &nimap, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error || nimap < 1)
 			break;
 		ASSERT(imap.br_blockcount >= 1);
@@ -2461,11 +2670,19 @@ xfs_zero_remaining_bytes(
 		xfsbdstrat(mp, bp);
 		error = xfs_buf_iowait(bp);
 		if (error) {
+<<<<<<< HEAD
 			xfs_ioerror_alert("xfs_zero_remaining_bytes(read)",
 					  mp, bp, XFS_BUF_ADDR(bp));
 			break;
 		}
 		memset(XFS_BUF_PTR(bp) +
+=======
+			xfs_buf_ioerror_alert(bp,
+					"xfs_zero_remaining_bytes(read)");
+			break;
+		}
+		memset(bp->b_addr +
+>>>>>>> refs/remotes/origin/cm-10.0
 			(offset - XFS_FSB_TO_B(mp, imap.br_startoff)),
 		      0, lastoffset - offset + 1);
 		XFS_BUF_UNDONE(bp);
@@ -2474,8 +2691,13 @@ xfs_zero_remaining_bytes(
 		xfsbdstrat(mp, bp);
 		error = xfs_buf_iowait(bp);
 		if (error) {
+<<<<<<< HEAD
 			xfs_ioerror_alert("xfs_zero_remaining_bytes(write)",
 					  mp, bp, XFS_BUF_ADDR(bp));
+=======
+			xfs_buf_ioerror_alert(bp,
+					"xfs_zero_remaining_bytes(write)");
+>>>>>>> refs/remotes/origin/cm-10.0
 			break;
 		}
 	}
@@ -2540,7 +2762,11 @@ xfs_free_file_space(
 	if (need_iolock) {
 		xfs_ilock(ip, XFS_IOLOCK_EXCL);
 		/* wait for the completion of any pending DIOs */
+<<<<<<< HEAD
 		xfs_ioend_wait(ip);
+=======
+		inode_dio_wait(VFS_I(ip));
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	rounding = max_t(uint, 1 << mp->m_sb.sb_blocklog, PAGE_CACHE_SIZE);
@@ -2560,8 +2786,13 @@ xfs_free_file_space(
 	 */
 	if (rt && !xfs_sb_version_hasextflgbit(&mp->m_sb)) {
 		nimap = 1;
+<<<<<<< HEAD
 		error = xfs_bmapi(NULL, ip, startoffset_fsb,
 			1, 0, NULL, 0, &imap, &nimap, NULL);
+=======
+		error = xfs_bmapi_read(ip, startoffset_fsb, 1,
+					&imap, &nimap, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error)
 			goto out_unlock_iolock;
 		ASSERT(nimap == 0 || nimap == 1);
@@ -2575,8 +2806,13 @@ xfs_free_file_space(
 				startoffset_fsb += mp->m_sb.sb_rextsize - mod;
 		}
 		nimap = 1;
+<<<<<<< HEAD
 		error = xfs_bmapi(NULL, ip, endoffset_fsb - 1,
 			1, 0, NULL, 0, &imap, &nimap, NULL);
+=======
+		error = xfs_bmapi_read(ip, endoffset_fsb - 1, 1,
+					&imap, &nimap, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (error)
 			goto out_unlock_iolock;
 		ASSERT(nimap == 0 || nimap == 1);
@@ -2644,7 +2880,11 @@ xfs_free_file_space(
 		if (error)
 			goto error1;
 
+<<<<<<< HEAD
 		xfs_trans_ijoin(tp, ip);
+=======
+		xfs_trans_ijoin(tp, ip, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
 		 * issue the bunmapi() call to free the blocks
@@ -2723,7 +2963,11 @@ xfs_change_file_space(
 		bf->l_start += offset;
 		break;
 	case 2: /*SEEK_END*/
+<<<<<<< HEAD
 		bf->l_start += ip->i_size;
+=======
+		bf->l_start += XFS_ISIZE(ip);
+>>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		return XFS_ERROR(EINVAL);
@@ -2740,7 +2984,11 @@ xfs_change_file_space(
 	bf->l_whence = 0;
 
 	startoffset = bf->l_start;
+<<<<<<< HEAD
 	fsize = ip->i_size;
+=======
+	fsize = XFS_ISIZE(ip);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * XFS_IOC_RESVSP and XFS_IOC_UNRESVSP will reserve or unreserve
@@ -2791,7 +3039,11 @@ xfs_change_file_space(
 		iattr.ia_valid = ATTR_SIZE;
 		iattr.ia_size = startoffset;
 
+<<<<<<< HEAD
 		error = xfs_setattr(ip, &iattr, attr_flags);
+=======
+		error = xfs_setattr_size(ip, &iattr, attr_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (error)
 			return error;
@@ -2817,8 +3069,12 @@ xfs_change_file_space(
 	}
 
 	xfs_ilock(ip, XFS_ILOCK_EXCL);
+<<<<<<< HEAD
 
 	xfs_trans_ijoin(tp, ip);
+=======
+	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((attr_flags & XFS_ATTR_DMI) == 0) {
 		ip->i_d.di_mode &= ~S_ISUID;
@@ -2843,10 +3099,14 @@ xfs_change_file_space(
 	xfs_trans_log_inode(tp, ip, XFS_ILOG_CORE);
 	if (attr_flags & XFS_ATTR_SYNC)
 		xfs_trans_set_sync(tp);
+<<<<<<< HEAD
 
 	error = xfs_trans_commit(tp, 0);
 
 	xfs_iunlock(ip, XFS_ILOCK_EXCL);
 
 	return error;
+=======
+	return xfs_trans_commit(tp, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 }

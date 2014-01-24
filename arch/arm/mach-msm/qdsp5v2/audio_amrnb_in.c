@@ -3,7 +3,11 @@
  *
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/cm-10.0
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -27,12 +31,19 @@
 #include <linux/wait.h>
 #include <linux/dma-mapping.h>
 #include <linux/msm_audio_amrnb.h>
+<<<<<<< HEAD
 #include <linux/ion.h>
+=======
+#include <linux/android_pmem.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/memory_alloc.h>
 
 #include <mach/iommu.h>
 #include <mach/iommu_domains.h>
+<<<<<<< HEAD
 #include <mach/msm_subsystem_map.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/msm_adsp.h>
 #include <mach/socinfo.h>
 #include <mach/qdsp5v2/qdsp5audreccmdi.h>
@@ -99,15 +110,22 @@ struct audio_in {
 	/* data allocated for various buffers */
 	char *data;
 	dma_addr_t phys;
+<<<<<<< HEAD
 	struct msm_mapped_buffer *map_v_read;
+=======
+	void *map_v_read;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	int opened;
 	int enabled;
 	int running;
 	int stopped; /* set when stopped, cleared on flush */
 	char *build_id;
+<<<<<<< HEAD
 	struct ion_client *client;
 	struct ion_handle *buff_handle;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct audio_frame {
@@ -769,9 +787,14 @@ static int audamrnb_in_release(struct inode *inode, struct file *file)
 	audio->audrec = NULL;
 	audio->opened = 0;
 	if (audio->data) {
+<<<<<<< HEAD
 		ion_unmap_kernel(audio->client, audio->buff_handle);
 		ion_free(audio->client, audio->buff_handle);
 		ion_client_destroy(audio->client);
+=======
+		iounmap(audio->map_v_read);
+		free_contiguous_memory_by_paddr(audio->phys);
+>>>>>>> refs/remotes/origin/cm-10.0
 		audio->data = NULL;
 	}
 	mutex_unlock(&audio->lock);
@@ -783,17 +806,21 @@ static int audamrnb_in_open(struct inode *inode, struct file *file)
 	struct audio_in *audio = &the_audio_amrnb_in;
 	int rc;
 	int encid;
+<<<<<<< HEAD
 	int len = 0;
 	unsigned long ionflag = 0;
 	ion_phys_addr_t addr = 0;
 	struct ion_handle *handle = NULL;
 	struct ion_client *client = NULL;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&audio->lock);
 	if (audio->opened) {
 		rc = -EBUSY;
 		goto done;
 	}
+<<<<<<< HEAD
 
 	client = msm_ion_client_create(UINT_MAX, "Audio_AMR_In_Client");
 	if (IS_ERR_OR_NULL(client)) {
@@ -839,6 +866,23 @@ static int audamrnb_in_open(struct inode *inode, struct file *file)
 	MM_DBG("write buf: phy addr 0x%08x kernel addr 0x%08x\n",
 		audio->phys, (int)audio->data);
 
+=======
+	audio->phys = allocate_contiguous_ebi_nomap(DMASZ, SZ_4K);
+	if (audio->phys) {
+		audio->map_v_read = ioremap(audio->phys, DMASZ);
+		if (IS_ERR(audio->map_v_read)) {
+			MM_ERR("could not map DMA buffers\n");
+			rc = -ENOMEM;
+			free_contiguous_memory_by_paddr(audio->phys);
+			goto done;
+		}
+		audio->data = audio->map_v_read;
+	} else {
+		MM_ERR("could not allocate DMA buffers\n");
+		rc = -ENOMEM;
+		goto done;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	MM_DBG("Memory addr = 0x%8x  phy addr = 0x%8x\n",\
 		(int) audio->data, (int) audio->phys);
 	if ((file->f_mode & FMODE_WRITE) &&
@@ -910,6 +954,7 @@ evt_error:
 	msm_adsp_put(audio->audrec);
 	audpreproc_aenc_free(audio->enc_id);
 	mutex_unlock(&audio->lock);
+<<<<<<< HEAD
 	ion_unmap_kernel(client, audio->buff_handle);
 buff_map_error:
 buff_get_phys_error:
@@ -918,6 +963,8 @@ buff_get_flags_error:
 buff_alloc_error:
 	ion_client_destroy(client);
 client_create_error:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return rc;
 }
 

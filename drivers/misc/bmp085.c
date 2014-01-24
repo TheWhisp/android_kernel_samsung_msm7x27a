@@ -87,7 +87,11 @@ struct bmp085_data {
 	u32 raw_temperature;
 	u32 raw_pressure;
 	unsigned char oversampling_setting;
+<<<<<<< HEAD
 	u32 last_temp_measurement;
+=======
+	unsigned long last_temp_measurement;
+>>>>>>> refs/remotes/origin/cm-10.0
 	s32 b6; /* calculated temperature correction coefficient */
 };
 
@@ -216,7 +220,11 @@ static s32 bmp085_get_temperature(struct bmp085_data *data, int *temperature)
 		*temperature = (x1+x2+8) >> 4;
 
 exit:
+<<<<<<< HEAD
 	return status;;
+=======
+	return status;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*
@@ -234,7 +242,12 @@ static s32 bmp085_get_pressure(struct bmp085_data *data, int *pressure)
 	int status;
 
 	/* alt least every second force an update of the ambient temperature */
+<<<<<<< HEAD
 	if (data->last_temp_measurement + 1*HZ < jiffies) {
+=======
+	if (data->last_temp_measurement == 0 ||
+			time_is_before_jiffies(data->last_temp_measurement + 1*HZ)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		status = bmp085_get_temperature(data, NULL);
 		if (status != 0)
 			goto exit;
@@ -464,6 +477,7 @@ static struct i2c_driver bmp085_driver = {
 	.address_list	= normal_i2c
 };
 
+<<<<<<< HEAD
 static int __init bmp085_init(void)
 {
 	return i2c_add_driver(&bmp085_driver);
@@ -474,10 +488,16 @@ static void __exit bmp085_exit(void)
 	i2c_del_driver(&bmp085_driver);
 }
 
+=======
+module_i2c_driver(bmp085_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Christoph Mair <christoph.mair@gmail.com");
 MODULE_DESCRIPTION("BMP085 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(bmp085_init);
 module_exit(bmp085_exit);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0

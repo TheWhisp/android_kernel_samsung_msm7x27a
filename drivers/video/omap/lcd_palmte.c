@@ -97,7 +97,11 @@ static int palmte_panel_resume(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct platform_driver palmte_panel_driver = {
+=======
+static struct platform_driver palmte_panel_driver = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.probe		= palmte_panel_probe,
 	.remove		= palmte_panel_remove,
 	.suspend	= palmte_panel_suspend,
@@ -108,6 +112,7 @@ struct platform_driver palmte_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init palmte_panel_drv_init(void)
 {
 	return platform_driver_register(&palmte_panel_driver);
@@ -121,3 +126,6 @@ static void __exit palmte_panel_drv_cleanup(void)
 module_init(palmte_panel_drv_init);
 module_exit(palmte_panel_drv_cleanup);
 
+=======
+module_platform_driver(palmte_panel_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

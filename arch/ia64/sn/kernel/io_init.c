@@ -7,6 +7,10 @@
  */
 
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sn/types.h>
 #include <asm/sn/addrs.h>
 #include <asm/sn/io.h>
@@ -296,7 +300,12 @@ sn_pci_controller_fixup(int segment, int busnum, struct pci_bus *bus)
 	s64 status = 0;
 	struct pci_controller *controller;
 	struct pcibus_bussoft *prom_bussoft_ptr;
+<<<<<<< HEAD
 
+=======
+	LIST_HEAD(resources);
+	int i;
+>>>>>>> refs/remotes/origin/cm-10.0
 
  	status = sal_get_pcibus_info((u64) segment, (u64) busnum,
  				     (u64) ia64_tpa(&prom_bussoft_ptr));
@@ -314,7 +323,19 @@ sn_pci_controller_fixup(int segment, int busnum, struct pci_bus *bus)
 	 */
 	controller->platform_data = prom_bussoft_ptr;
 
+<<<<<<< HEAD
 	bus = pci_scan_bus(busnum, &pci_root_ops, controller);
+=======
+	sn_legacy_pci_window_fixup(controller,
+				   prom_bussoft_ptr->bs_legacy_io,
+				   prom_bussoft_ptr->bs_legacy_mem);
+	for (i = 0; i < controller->windows; i++)
+		pci_add_resource_offset(&resources,
+					&controller->window[i].resource,
+					controller->window[i].offset);
+	bus = pci_scan_root_bus(NULL, busnum, &pci_root_ops, controller,
+				&resources);
+>>>>>>> refs/remotes/origin/cm-10.0
  	if (bus == NULL)
  		goto error_return; /* error, or bus already scanned */
 
@@ -347,9 +368,12 @@ sn_bus_fixup(struct pci_bus *bus)
 			return;
 		}
 		sn_common_bus_fixup(bus, prom_bussoft_ptr);
+<<<<<<< HEAD
 		sn_legacy_pci_window_fixup(PCI_CONTROLLER(bus),
 					   prom_bussoft_ptr->bs_legacy_io,
 					   prom_bussoft_ptr->bs_legacy_mem);
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
         }
         list_for_each_entry(pci_dev, &bus->devices, bus_list) {
                 sn_io_slot_fixup(pci_dev);

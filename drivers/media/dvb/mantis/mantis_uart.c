@@ -20,6 +20,10 @@
 
 #include <linux/kernel.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/signal.h>
 #include <linux/sched.h>

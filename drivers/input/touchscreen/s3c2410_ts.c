@@ -328,7 +328,11 @@ static int __devinit s3c2410ts_probe(struct platform_device *pdev)
 	ts.shift = info->oversampling_shift;
 	ts.features = platform_get_device_id(pdev)->driver_data;
 
+<<<<<<< HEAD
 	ret = request_irq(ts.irq_tc, stylus_irq, IRQF_DISABLED,
+=======
+	ret = request_irq(ts.irq_tc, stylus_irq, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 			  "s3c2410_ts_pen", ts.input);
 	if (ret) {
 		dev_err(dev, "cannot get TC interrupt\n");
@@ -432,6 +436,7 @@ static struct platform_driver s3c_ts_driver = {
 	.probe		= s3c2410ts_probe,
 	.remove		= __devexit_p(s3c2410ts_remove),
 };
+<<<<<<< HEAD
 
 static int __init s3c2410ts_init(void)
 {
@@ -445,6 +450,9 @@ static void __exit s3c2410ts_exit(void)
 
 module_init(s3c2410ts_init);
 module_exit(s3c2410ts_exit);
+=======
+module_platform_driver(s3c_ts_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>, "
 	      "Ben Dooks <ben@simtec.co.uk>, "

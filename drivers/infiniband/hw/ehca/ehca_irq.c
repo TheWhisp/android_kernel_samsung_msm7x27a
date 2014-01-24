@@ -786,7 +786,12 @@ static struct task_struct *create_comp_task(struct ehca_comp_pool *pool,
 	spin_lock_init(&cct->task_lock);
 	INIT_LIST_HEAD(&cct->cq_list);
 	init_waitqueue_head(&cct->wait_queue);
+<<<<<<< HEAD
 	cct->task = kthread_create(comp_task, cct, "ehca_comp/%d", cpu);
+=======
+	cct->task = kthread_create_on_node(comp_task, cct, cpu_to_node(cpu),
+					   "ehca_comp/%d", cpu);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return cct->task;
 }

@@ -1,4 +1,8 @@
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include "hostap_80211.h"
 #include "hostap_common.h"

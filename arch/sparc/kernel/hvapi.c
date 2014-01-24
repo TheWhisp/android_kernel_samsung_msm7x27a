@@ -3,7 +3,11 @@
  * Copyright (C) 2007 David S. Miller <davem@davemloft.net>
  */
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 
 #include <asm/hypervisor.h>

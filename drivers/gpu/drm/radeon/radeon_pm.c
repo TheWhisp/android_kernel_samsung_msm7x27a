@@ -53,6 +53,27 @@ static void radeon_pm_set_clocks(struct radeon_device *rdev);
 
 #define ACPI_AC_CLASS           "ac_adapter"
 
+<<<<<<< HEAD
+=======
+int radeon_pm_get_type_index(struct radeon_device *rdev,
+			     enum radeon_pm_state_type ps_type,
+			     int instance)
+{
+	int i;
+	int found_instance = -1;
+
+	for (i = 0; i < rdev->pm.num_power_states; i++) {
+		if (rdev->pm.power_state[i].type == ps_type) {
+			found_instance++;
+			if (found_instance == instance)
+				return i;
+		}
+	}
+	/* return default if no match */
+	return rdev->pm.default_power_state_index;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_ACPI
 static int radeon_acpi_event(struct notifier_block *nb,
 			     unsigned long val,
@@ -203,7 +224,11 @@ static void radeon_set_power_state(struct radeon_device *rdev)
 		}
 
 		/* set memory clock */
+<<<<<<< HEAD
 		if (rdev->asic->set_memory_clock && (mclk != rdev->pm.current_mclk)) {
+=======
+		if (rdev->asic->pm.set_memory_clock && (mclk != rdev->pm.current_mclk)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 			radeon_pm_debug_check_in_vbl(rdev, false);
 			radeon_set_memory_clock(rdev, mclk);
 			radeon_pm_debug_check_in_vbl(rdev, true);
@@ -234,7 +259,14 @@ static void radeon_pm_set_clocks(struct radeon_device *rdev)
 
 	mutex_lock(&rdev->ddev->struct_mutex);
 	mutex_lock(&rdev->vram_mutex);
+<<<<<<< HEAD
 	mutex_lock(&rdev->cp.mutex);
+=======
+	for (i = 0; i < RADEON_NUM_RINGS; ++i) {
+		if (rdev->ring[i].ring_obj)
+			mutex_lock(&rdev->ring[i].mutex);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* gui idle int has issues on older chips it seems */
 	if (rdev->family >= CHIP_R600) {
@@ -250,12 +282,22 @@ static void radeon_pm_set_clocks(struct radeon_device *rdev)
 			radeon_irq_set(rdev);
 		}
 	} else {
+<<<<<<< HEAD
 		if (rdev->cp.ready) {
 			struct radeon_fence *fence;
 			radeon_ring_alloc(rdev, 64);
 			radeon_fence_create(rdev, &fence);
 			radeon_fence_emit(rdev, fence);
 			radeon_ring_commit(rdev);
+=======
+		struct radeon_ring *ring = &rdev->ring[RADEON_RING_TYPE_GFX_INDEX];
+		if (ring->ready) {
+			struct radeon_fence *fence;
+			radeon_ring_alloc(rdev, ring, 64);
+			radeon_fence_create(rdev, &fence, radeon_ring_index(rdev, ring));
+			radeon_fence_emit(rdev, fence);
+			radeon_ring_commit(rdev, ring);
+>>>>>>> refs/remotes/origin/cm-10.0
 			radeon_fence_wait(fence, false);
 			radeon_fence_unref(&fence);
 		}
@@ -289,7 +331,14 @@ static void radeon_pm_set_clocks(struct radeon_device *rdev)
 
 	rdev->pm.dynpm_planned_action = DYNPM_ACTION_NONE;
 
+<<<<<<< HEAD
 	mutex_unlock(&rdev->cp.mutex);
+=======
+	for (i = 0; i < RADEON_NUM_RINGS; ++i) {
+		if (rdev->ring[i].ring_obj)
+			mutex_unlock(&rdev->ring[i].mutex);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&rdev->vram_mutex);
 	mutex_unlock(&rdev->ddev->struct_mutex);
 }
@@ -449,6 +498,12 @@ static ssize_t radeon_hwmon_show_temp(struct device *dev,
 	case THERMAL_TYPE_SUMO:
 		temp = sumo_get_temp(rdev);
 		break;
+<<<<<<< HEAD
+=======
+	case THERMAL_TYPE_SI:
+		temp = si_get_temp(rdev);
+		break;
+>>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		temp = 0;
 		break;
@@ -489,6 +544,13 @@ static int radeon_hwmon_init(struct radeon_device *rdev)
 	case THERMAL_TYPE_EVERGREEN:
 	case THERMAL_TYPE_NI:
 	case THERMAL_TYPE_SUMO:
+<<<<<<< HEAD
+=======
+	case THERMAL_TYPE_SI:
+		/* No support for TN yet */
+		if (rdev->family == CHIP_ARUBA)
+			return err;
+>>>>>>> refs/remotes/origin/cm-10.0
 		rdev->pm.int_hwmon_dev = hwmon_device_register(rdev->dev);
 		if (IS_ERR(rdev->pm.int_hwmon_dev)) {
 			err = PTR_ERR(rdev->pm.int_hwmon_dev);
@@ -781,6 +843,7 @@ static void radeon_dynpm_idle_work_handler(struct work_struct *work)
 	resched = ttm_bo_lock_delayed_workqueue(&rdev->mman.bdev);
 	mutex_lock(&rdev->pm.mutex);
 	if (rdev->pm.dynpm_state == DYNPM_STATE_ACTIVE) {
+<<<<<<< HEAD
 		unsigned long irq_flags;
 		int not_processed = 0;
 
@@ -794,6 +857,16 @@ static void radeon_dynpm_idle_work_handler(struct work_struct *work)
 			}
 		}
 		read_unlock_irqrestore(&rdev->fence_drv.lock, irq_flags);
+=======
+		int not_processed = 0;
+		int i;
+
+		for (i = 0; i < RADEON_NUM_RINGS; ++i) {
+			not_processed += radeon_fence_count_emitted(rdev, i);
+			if (not_processed >= 3)
+				break;
+		}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		if (not_processed >= 3) { /* should upclock */
 			if (rdev->pm.dynpm_planned_action == DYNPM_ACTION_DOWNCLOCK) {
@@ -851,11 +924,19 @@ static int radeon_debugfs_pm_info(struct seq_file *m, void *data)
 	else
 		seq_printf(m, "current engine clock: %u0 kHz\n", radeon_get_engine_clock(rdev));
 	seq_printf(m, "default memory clock: %u0 kHz\n", rdev->pm.default_mclk);
+<<<<<<< HEAD
 	if (rdev->asic->get_memory_clock)
 		seq_printf(m, "current memory clock: %u0 kHz\n", radeon_get_memory_clock(rdev));
 	if (rdev->pm.current_vddc)
 		seq_printf(m, "voltage: %u mV\n", rdev->pm.current_vddc);
 	if (rdev->asic->get_pcie_lanes)
+=======
+	if (rdev->asic->pm.get_memory_clock)
+		seq_printf(m, "current memory clock: %u0 kHz\n", radeon_get_memory_clock(rdev));
+	if (rdev->pm.current_vddc)
+		seq_printf(m, "voltage: %u mV\n", rdev->pm.current_vddc);
+	if (rdev->asic->pm.get_pcie_lanes)
+>>>>>>> refs/remotes/origin/cm-10.0
 		seq_printf(m, "PCIE lanes: %d\n", radeon_get_pcie_lanes(rdev));
 
 	return 0;

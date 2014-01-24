@@ -1,5 +1,8 @@
 #ifndef ARCH_X86_CPU_H
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ARCH_X86_CPU_H
 
 struct cpu_model_info {
@@ -18,6 +21,10 @@ struct cpu_dev {
 	struct		cpu_model_info c_models[4];
 
 	void            (*c_early_init)(struct cpuinfo_x86 *);
+<<<<<<< HEAD
+=======
+	void		(*c_bsp_init)(struct cpuinfo_x86 *);
+>>>>>>> refs/remotes/origin/cm-10.0
 	void		(*c_init)(struct cpuinfo_x86 *);
 	void		(*c_identify)(struct cpuinfo_x86 *);
 	unsigned int	(*c_size_cache)(struct cpuinfo_x86 *, unsigned int);
@@ -34,6 +41,10 @@ extern const struct cpu_dev *const __x86_cpu_dev_start[],
 
 extern void get_cpu_cap(struct cpuinfo_x86 *c);
 extern void cpu_detect_cache_sizes(struct cpuinfo_x86 *c);
+<<<<<<< HEAD
 extern void get_cpu_cap(struct cpuinfo_x86 *c);
 
 #endif
+=======
+#endif /* ARCH_X86_CPU_H */
+>>>>>>> refs/remotes/origin/cm-10.0

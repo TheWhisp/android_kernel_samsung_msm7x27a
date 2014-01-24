@@ -132,6 +132,7 @@ static inline int is_zero_pfn(unsigned long pfn)
  * effect, this also makes sure that 64 bit module code cannot be used
  * as system call address.
  */
+<<<<<<< HEAD
 
 extern unsigned long VMALLOC_START;
 
@@ -154,6 +155,13 @@ extern unsigned long VMALLOC_START;
 #define VMEM_MAX_PFN	min(VMALLOC_START >> PAGE_SHIFT, VMEM_MAX_PAGES)
 #define VMEM_MAX_PHYS	((VMEM_MAX_PFN << PAGE_SHIFT) & ~((16 << 20) - 1))
 #define vmemmap		((struct page *) VMALLOC_END)
+=======
+extern unsigned long VMALLOC_START;
+extern unsigned long VMALLOC_END;
+extern struct page *vmemmap;
+
+#define VMEM_MAX_PHYS ((unsigned long) vmemmap)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * A 31 bit pagetable entry of S390 has following format:
@@ -597,14 +605,26 @@ static inline pgste_t pgste_update_all(pte_t *ptep, pgste_t pgste)
 	unsigned long address, bits;
 	unsigned char skey;
 
+<<<<<<< HEAD
+=======
+	if (!pte_present(*ptep))
+		return pgste;
+>>>>>>> refs/remotes/origin/cm-10.0
 	address = pte_val(*ptep) & PAGE_MASK;
 	skey = page_get_storage_key(address);
 	bits = skey & (_PAGE_CHANGED | _PAGE_REFERENCED);
 	/* Clear page changed & referenced bit in the storage key */
+<<<<<<< HEAD
 	if (bits) {
 		skey ^= bits;
 		page_set_storage_key(address, skey, 1);
 	}
+=======
+	if (bits & _PAGE_CHANGED)
+		page_set_storage_key(address, skey ^ bits, 1);
+	else if (bits)
+		page_reset_referenced(address);
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* Transfer page changed & referenced bit to guest bits in pgste */
 	pgste_val(pgste) |= bits << 48;		/* RCP_GR_BIT & RCP_GC_BIT */
 	/* Get host changed & referenced bits from pgste */
@@ -629,6 +649,11 @@ static inline pgste_t pgste_update_young(pte_t *ptep, pgste_t pgste)
 #ifdef CONFIG_PGSTE
 	int young;
 
+<<<<<<< HEAD
+=======
+	if (!pte_present(*ptep))
+		return pgste;
+>>>>>>> refs/remotes/origin/cm-10.0
 	young = page_reset_referenced(pte_val(*ptep) & PAGE_MASK);
 	/* Transfer page referenced bit to pte software bit (host view) */
 	if (young || (pgste_val(pgste) & RCP_HR_BIT))
@@ -642,13 +667,23 @@ static inline pgste_t pgste_update_young(pte_t *ptep, pgste_t pgste)
 
 }
 
+<<<<<<< HEAD
 static inline void pgste_set_pte(pte_t *ptep, pgste_t pgste)
+=======
+static inline void pgste_set_pte(pte_t *ptep, pgste_t pgste, pte_t entry)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 #ifdef CONFIG_PGSTE
 	unsigned long address;
 	unsigned long okey, nkey;
 
+<<<<<<< HEAD
 	address = pte_val(*ptep) & PAGE_MASK;
+=======
+	if (!pte_present(entry))
+		return;
+	address = pte_val(entry) & PAGE_MASK;
+>>>>>>> refs/remotes/origin/cm-10.0
 	okey = nkey = page_get_storage_key(address);
 	nkey &= ~(_PAGE_ACC_BITS | _PAGE_FP_BIT);
 	/* Set page access key and fetch protection bit from pgste */
@@ -658,6 +693,55 @@ static inline void pgste_set_pte(pte_t *ptep, pgste_t pgste)
 #endif
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * struct gmap_struct - guest address space
+ * @mm: pointer to the parent mm_struct
+ * @table: pointer to the page directory
+ * @asce: address space control element for gmap page table
+ * @crst_list: list of all crst tables used in the guest address space
+ */
+struct gmap {
+	struct list_head list;
+	struct mm_struct *mm;
+	unsigned long *table;
+	unsigned long asce;
+	struct list_head crst_list;
+};
+
+/**
+ * struct gmap_rmap - reverse mapping for segment table entries
+ * @next: pointer to the next gmap_rmap structure in the list
+ * @entry: pointer to a segment table entry
+ */
+struct gmap_rmap {
+	struct list_head list;
+	unsigned long *entry;
+};
+
+/**
+ * struct gmap_pgtable - gmap information attached to a page table
+ * @vmaddr: address of the 1MB segment in the process virtual memory
+ * @mapper: list of segment table entries maping a page table
+ */
+struct gmap_pgtable {
+	unsigned long vmaddr;
+	struct list_head mapper;
+};
+
+struct gmap *gmap_alloc(struct mm_struct *mm);
+void gmap_free(struct gmap *gmap);
+void gmap_enable(struct gmap *gmap);
+void gmap_disable(struct gmap *gmap);
+int gmap_map_segment(struct gmap *gmap, unsigned long from,
+		     unsigned long to, unsigned long length);
+int gmap_unmap_segment(struct gmap *gmap, unsigned long to, unsigned long len);
+unsigned long __gmap_fault(unsigned long address, struct gmap *);
+unsigned long gmap_fault(unsigned long address, struct gmap *);
+void gmap_discard(unsigned long from, unsigned long to, struct gmap *);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Certain architectures need to do special things when PTEs
  * within a page table are directly modified.  Thus, the following
@@ -670,7 +754,11 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
 
 	if (mm_has_pgste(mm)) {
 		pgste = pgste_get_lock(ptep);
+<<<<<<< HEAD
 		pgste_set_pte(ptep, pgste);
+=======
+		pgste_set_pte(ptep, pgste, entry);
+>>>>>>> refs/remotes/origin/cm-10.0
 		*ptep = entry;
 		pgste_set_unlock(ptep, pgste);
 	} else

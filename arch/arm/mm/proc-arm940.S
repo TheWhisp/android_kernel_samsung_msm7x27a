@@ -48,6 +48,10 @@ ENTRY(cpu_arm940_proc_fin)
  * Params  : r0 = address to jump to
  * Notes   : This sets up everything for a reset
  */
+<<<<<<< HEAD
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/cm-10.0
 ENTRY(cpu_arm940_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c5, 0		@ flush I cache
@@ -58,6 +62,11 @@ ENTRY(cpu_arm940_reset)
 	bic	ip, ip, #0x00001000		@ i-cache
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
+<<<<<<< HEAD
+=======
+ENDPROC(cpu_arm940_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * cpu_arm940_do_idle()
@@ -264,6 +273,7 @@ ENTRY(arm940_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(arm940_dma_unmap_area)
 
+<<<<<<< HEAD
 ENTRY(arm940_cache_fns)
 	.long	arm940_flush_icache_all
 	.long	arm940_flush_kern_cache_all
@@ -275,6 +285,10 @@ ENTRY(arm940_cache_fns)
 	.long	arm940_dma_map_area
 	.long	arm940_dma_unmap_area
 	.long	arm940_dma_flush_range
+=======
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm940
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	__CPUINIT
 
@@ -348,6 +362,7 @@ __arm940_setup:
 
 	__INITDATA
 
+<<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
  *	     come through these
@@ -384,6 +399,16 @@ cpu_elf_name:
 cpu_arm940_name:
 	.ascii	"ARM940T"
 	.size	cpu_arm940_name, . - cpu_arm940_name
+=======
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions arm940, dabort=nommu_early_abort, pabort=legacy_pabort, nommu=1
+
+	.section ".rodata"
+
+	string	cpu_arch_name, "armv4t"
+	string	cpu_elf_name, "v4"
+	string	cpu_arm940_name, "ARM940T"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	.align
 

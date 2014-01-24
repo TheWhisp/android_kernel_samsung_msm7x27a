@@ -10,7 +10,11 @@ struct dev_archdata {
 #ifdef CONFIG_ACPI
 	void	*acpi_handle;
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_DMAR
+=======
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/cm-10.0
 	void *iommu; /* hook for IOMMU specific extension */
 #endif
 };

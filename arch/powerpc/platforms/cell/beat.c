@@ -18,7 +18,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/err.h>
 #include <linux/rtc.h>
@@ -230,7 +234,11 @@ static int __init beat_register_event(void)
 		}
 		ev->virq = virq;
 
+<<<<<<< HEAD
 		rc = request_irq(virq, ev->handler, IRQF_DISABLED,
+=======
+		rc = request_irq(virq, ev->handler, 0,
+>>>>>>> refs/remotes/origin/cm-10.0
 				      ev->typecode, NULL);
 		if (rc != 0) {
 			printk(KERN_ERR "Beat: failed to request virtual IRQ"

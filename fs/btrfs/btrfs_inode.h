@@ -34,6 +34,12 @@ struct btrfs_inode {
 	 */
 	struct btrfs_key location;
 
+<<<<<<< HEAD
+=======
+	/* Lock for counters */
+	spinlock_t lock;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* the extent_tree has caches of all the extent mappings to disk */
 	struct extent_map_tree extent_tree;
 
@@ -48,6 +54,12 @@ struct btrfs_inode {
 	/* held while logging the inode in tree-log.c */
 	struct mutex log_mutex;
 
+<<<<<<< HEAD
+=======
+	/* held while doing delalloc reservations */
+	struct mutex delalloc_mutex;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* used to order data wrt metadata */
 	struct btrfs_ordered_inode_tree ordered_tree;
 
@@ -100,11 +112,14 @@ struct btrfs_inode {
 	 */
 	u64 delalloc_bytes;
 
+<<<<<<< HEAD
 	/* total number of bytes that may be used for this inode for
 	 * delalloc
 	 */
 	u64 reserved_bytes;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * the size of the file stored in the metadata on disk.  data=ordered
 	 * means the in-memory i_size might be larger than the size on disk
@@ -112,9 +127,12 @@ struct btrfs_inode {
 	 */
 	u64 disk_i_size;
 
+<<<<<<< HEAD
 	/* flags field from the on disk inode */
 	u32 flags;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * if this is a directory then index_cnt is the counter for the index
 	 * number for new files that are created
@@ -129,13 +147,30 @@ struct btrfs_inode {
 	u64 last_unlink_trans;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Number of bytes outstanding that are going to need csums.  This is
+	 * used in ENOSPC accounting.
+	 */
+	u64 csum_bytes;
+
+	/* flags field from the on disk inode */
+	u32 flags;
+
+	/*
+>>>>>>> refs/remotes/origin/cm-10.0
 	 * Counters to keep track of the number of extent item's we may use due
 	 * to delalloc and such.  outstanding_extents is the number of extent
 	 * items we think we'll end up using, and reserved_extents is the number
 	 * of extent items we've reserved metadata for.
 	 */
+<<<<<<< HEAD
 	atomic_t outstanding_extents;
 	atomic_t reserved_extents;
+=======
+	unsigned outstanding_extents;
+	unsigned reserved_extents;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * ordered_data_close is set by truncate when a file that used
@@ -143,14 +178,21 @@ struct btrfs_inode {
 	 * the btrfs file release call will add this inode to the
 	 * ordered operations list so that we make sure to flush out any
 	 * new data the application may have written before commit.
+<<<<<<< HEAD
 	 *
 	 * yes, its silly to have a single bitflag, but we might grow more
 	 * of these.
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	 */
 	unsigned ordered_data_close:1;
 	unsigned orphan_meta_reserved:1;
 	unsigned dummy_inode:1;
 	unsigned in_defrag:1;
+<<<<<<< HEAD
+=======
+	unsigned delalloc_meta_reserved:1;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * always compress this one file
@@ -173,7 +215,15 @@ static inline u64 btrfs_ino(struct inode *inode)
 {
 	u64 ino = BTRFS_I(inode)->location.objectid;
 
+<<<<<<< HEAD
 	if (ino <= BTRFS_FIRST_FREE_OBJECTID)
+=======
+	/*
+	 * !ino: btree_inode
+	 * type == BTRFS_ROOT_ITEM_KEY: subvol dir
+	 */
+	if (!ino || BTRFS_I(inode)->location.type == BTRFS_ROOT_ITEM_KEY)
+>>>>>>> refs/remotes/origin/cm-10.0
 		ino = inode->i_ino;
 	return ino;
 }
@@ -184,4 +234,16 @@ static inline void btrfs_i_size_write(struct inode *inode, u64 size)
 	BTRFS_I(inode)->disk_i_size = size;
 }
 
+<<<<<<< HEAD
+=======
+static inline bool btrfs_is_free_space_inode(struct btrfs_root *root,
+				       struct inode *inode)
+{
+	if (root == root->fs_info->tree_root ||
+	    BTRFS_I(inode)->location.objectid == BTRFS_FREE_INO_OBJECTID)
+		return true;
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #endif

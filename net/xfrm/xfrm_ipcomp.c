@@ -70,26 +70,48 @@ static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
 
 	while ((scratch += len, dlen -= len) > 0) {
 		skb_frag_t *frag;
+<<<<<<< HEAD
+=======
+		struct page *page;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		err = -EMSGSIZE;
 		if (WARN_ON(skb_shinfo(skb)->nr_frags >= MAX_SKB_FRAGS))
 			goto out;
 
 		frag = skb_shinfo(skb)->frags + skb_shinfo(skb)->nr_frags;
+<<<<<<< HEAD
 		frag->page = alloc_page(GFP_ATOMIC);
 
 		err = -ENOMEM;
 		if (!frag->page)
 			goto out;
 
+=======
+		page = alloc_page(GFP_ATOMIC);
+
+		err = -ENOMEM;
+		if (!page)
+			goto out;
+
+		__skb_frag_set_page(frag, page);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		len = PAGE_SIZE;
 		if (dlen < len)
 			len = dlen;
 
+<<<<<<< HEAD
 		memcpy(page_address(frag->page), scratch, len);
 
 		frag->page_offset = 0;
 		frag->size = len;
+=======
+		frag->page_offset = 0;
+		skb_frag_size_set(frag, len);
+		memcpy(skb_frag_address(frag), scratch, len);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		skb->truesize += len;
 		skb->data_len += len;
 		skb->len += len;

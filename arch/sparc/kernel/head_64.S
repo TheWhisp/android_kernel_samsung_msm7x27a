@@ -133,7 +133,11 @@ prom_sun4v_name:
 prom_niagara_prefix:
 	.asciz	"SUNW,UltraSPARC-T"
 prom_sparc_prefix:
+<<<<<<< HEAD
 	.asciz	"SPARC-T"
+=======
+	.asciz	"SPARC-"
+>>>>>>> refs/remotes/origin/cm-10.0
 	.align	4
 prom_root_compatible:
 	.skip	64
@@ -396,7 +400,11 @@ sun4v_chip_type:
 	or	%g1, %lo(prom_cpu_compatible), %g1
 	sethi	%hi(prom_sparc_prefix), %g7
 	or	%g7, %lo(prom_sparc_prefix), %g7
+<<<<<<< HEAD
 	mov	7, %g3
+=======
+	mov	6, %g3
+>>>>>>> refs/remotes/origin/cm-10.0
 90:	ldub	[%g7], %g2
 	ldub	[%g1], %g4
 	cmp	%g2, %g4
@@ -408,10 +416,30 @@ sun4v_chip_type:
 
 	sethi	%hi(prom_cpu_compatible), %g1
 	or	%g1, %lo(prom_cpu_compatible), %g1
+<<<<<<< HEAD
 	ldub	[%g1 + 7], %g2
 	cmp	%g2, '3'
 	be,pt	%xcc, 5f
 	 mov	SUN4V_CHIP_NIAGARA3, %g4
+=======
+	ldub	[%g1 + 6], %g2
+	cmp	%g2, 'T'
+	be,pt	%xcc, 70f
+	 cmp	%g2, 'M'
+	bne,pn	%xcc, 4f
+	 nop
+
+70:	ldub	[%g1 + 7], %g2
+	cmp	%g2, '3'
+	be,pt	%xcc, 5f
+	 mov	SUN4V_CHIP_NIAGARA3, %g4
+	cmp	%g2, '4'
+	be,pt	%xcc, 5f
+	 mov	SUN4V_CHIP_NIAGARA4, %g4
+	cmp	%g2, '5'
+	be,pt	%xcc, 5f
+	 mov	SUN4V_CHIP_NIAGARA5, %g4
+>>>>>>> refs/remotes/origin/cm-10.0
 	ba,pt	%xcc, 4f
 	 nop
 
@@ -424,7 +452,11 @@ sun4v_chip_type:
 	cmp	%g2, '2'
 	be,pt	%xcc, 5f
 	 mov	SUN4V_CHIP_NIAGARA2, %g4
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> refs/remotes/origin/cm-10.0
 4:
 	mov	SUN4V_CHIP_UNKNOWN, %g4
 5:	sethi	%hi(sun4v_chip_type), %g2
@@ -545,6 +577,15 @@ niagara_tlb_fixup:
 	cmp	%g1, SUN4V_CHIP_NIAGARA3
 	be,pt	%xcc, niagara2_patch
 	 nop
+<<<<<<< HEAD
+=======
+	cmp	%g1, SUN4V_CHIP_NIAGARA4
+	be,pt	%xcc, niagara2_patch
+	 nop
+	cmp	%g1, SUN4V_CHIP_NIAGARA5
+	be,pt	%xcc, niagara2_patch
+	 nop
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	call	generic_patch_copyops
 	 nop

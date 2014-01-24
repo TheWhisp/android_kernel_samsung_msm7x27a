@@ -153,6 +153,11 @@ void __init ath79_gpio_init(void)
 		ath79_gpio_count = AR724X_GPIO_COUNT;
 	else if (soc_is_ar913x())
 		ath79_gpio_count = AR913X_GPIO_COUNT;
+<<<<<<< HEAD
+=======
+	else if (soc_is_ar933x())
+		ath79_gpio_count = AR933X_GPIO_COUNT;
+>>>>>>> refs/remotes/origin/cm-10.0
 	else
 		BUG();
 

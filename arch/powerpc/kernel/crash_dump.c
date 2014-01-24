@@ -28,7 +28,11 @@
 #define DBG(fmt...)
 #endif
 
+<<<<<<< HEAD
 #ifndef CONFIG_RELOCATABLE
+=======
+#ifndef CONFIG_NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/cm-10.0
 void __init reserve_kdump_trampoline(void)
 {
 	memblock_reserve(0, KDUMP_RESERVE_LIMIT);
@@ -67,7 +71,11 @@ void __init setup_kdump_trampoline(void)
 
 	DBG(" <- setup_kdump_trampoline()\n");
 }
+<<<<<<< HEAD
 #endif /* CONFIG_RELOCATABLE */
+=======
+#endif /* CONFIG_NONSTATIC_KERNEL */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static int __init parse_savemaxmem(char *p)
 {

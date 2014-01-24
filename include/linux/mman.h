@@ -14,7 +14,11 @@
 #include <linux/mm.h>
 #include <linux/percpu_counter.h>
 
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern int sysctl_overcommit_memory;
 extern int sysctl_overcommit_ratio;

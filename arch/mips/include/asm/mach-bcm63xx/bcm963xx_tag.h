@@ -16,7 +16,10 @@
 #define TAGINFO1_LEN		30	/* Length of vendor information field1 in tag */
 #define FLASHLAYOUTVER_LEN	4	/* Length of Flash Layout Version String tag */
 #define TAGINFO2_LEN		16	/* Length of vendor information field2 in tag */
+<<<<<<< HEAD
 #define CRC_LEN			4	/* Length of CRC in bytes */
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define ALTTAGINFO_LEN		54	/* Alternate length for vendor information; Pirelli */
 
 #define NUM_PIRELLI		2
@@ -77,6 +80,7 @@ struct bcm_tag {
 	/* 192-195: Version flash layout */
 	char flash_layout_ver[FLASHLAYOUTVER_LEN];
 	/* 196-199: kernel+rootfs CRC32 */
+<<<<<<< HEAD
 	char fskernel_crc[CRC_LEN];
 	/* 200-215: Unused except on Alice Gate where is is information */
 	char information2[TAGINFO2_LEN];
@@ -90,6 +94,21 @@ struct bcm_tag {
 	char reserved1[8];
 	/* 236-239: CRC32 of header excluding last 20 bytes */
 	char header_crc[CRC_LEN];
+=======
+	__u32 fskernel_crc;
+	/* 200-215: Unused except on Alice Gate where is is information */
+	char information2[TAGINFO2_LEN];
+	/* 216-219: CRC32 of image less imagetag (kernel for Alice Gate) */
+	__u32 image_crc;
+	/* 220-223: CRC32 of rootfs partition */
+	__u32 rootfs_crc;
+	/* 224-227: CRC32 of kernel partition */
+	__u32 kernel_crc;
+	/* 228-235: Unused at present */
+	char reserved1[8];
+	/* 236-239: CRC32 of header excluding last 20 bytes */
+	__u32 header_crc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	/* 240-255: Unused at present */
 	char reserved2[16];
 };

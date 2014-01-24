@@ -55,9 +55,16 @@ ebt_ip6_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		return false;
 	if (info->bitmask & EBT_IP6_PROTO) {
 		uint8_t nexthdr = ih6->nexthdr;
+<<<<<<< HEAD
 		int offset_ph;
 
 		offset_ph = ipv6_skip_exthdr(skb, sizeof(_ip6h), &nexthdr);
+=======
+		__be16 frag_off;
+		int offset_ph;
+
+		offset_ph = ipv6_skip_exthdr(skb, sizeof(_ip6h), &nexthdr, &frag_off);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (offset_ph == -1)
 			return false;
 		if (FWINV(info->protocol != nexthdr, EBT_IP6_PROTO))

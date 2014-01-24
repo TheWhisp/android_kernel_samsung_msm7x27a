@@ -29,8 +29,16 @@
  *          Keith Packard.
  */
 
+<<<<<<< HEAD
 #include "ttm/ttm_module.h"
 #include "ttm/ttm_bo_driver.h"
+=======
+#define pr_fmt(fmt) "[TTM] " fmt
+
+#include "ttm/ttm_module.h"
+#include "ttm/ttm_bo_driver.h"
+#include "ttm/ttm_page_alloc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef TTM_HAS_AGP
 #include "ttm/ttm_placement.h"
 #include <linux/agp_backend.h>
@@ -40,11 +48,16 @@
 #include <asm/agp.h>
 
 struct ttm_agp_backend {
+<<<<<<< HEAD
 	struct ttm_backend backend;
+=======
+	struct ttm_tt ttm;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct agp_memory *mem;
 	struct agp_bridge_data *bridge;
 };
 
+<<<<<<< HEAD
 static int ttm_agp_populate(struct ttm_backend *backend,
 			    unsigned long num_pages, struct page **pages,
 			    struct page *dummy_read_page,
@@ -56,18 +69,38 @@ static int ttm_agp_populate(struct ttm_backend *backend,
 	struct agp_memory *mem;
 
 	mem = agp_allocate_memory(agp_be->bridge, num_pages, AGP_USER_MEMORY);
+=======
+static int ttm_agp_bind(struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem)
+{
+	struct ttm_agp_backend *agp_be = container_of(ttm, struct ttm_agp_backend, ttm);
+	struct drm_mm_node *node = bo_mem->mm_node;
+	struct agp_memory *mem;
+	int ret, cached = (bo_mem->placement & TTM_PL_FLAG_CACHED);
+	unsigned i;
+
+	mem = agp_allocate_memory(agp_be->bridge, ttm->num_pages, AGP_USER_MEMORY);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(mem == NULL))
 		return -ENOMEM;
 
 	mem->page_count = 0;
+<<<<<<< HEAD
 	for (cur_page = pages; cur_page < last_page; ++cur_page) {
 		struct page *page = *cur_page;
 		if (!page)
 			page = dummy_read_page;
+=======
+	for (i = 0; i < ttm->num_pages; i++) {
+		struct page *page = ttm->pages[i];
+
+		if (!page)
+			page = ttm->dummy_read_page;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		mem->pages[mem->page_count++] = page;
 	}
 	agp_be->mem = mem;
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -79,17 +112,24 @@ static int ttm_agp_bind(struct ttm_backend *backend, struct ttm_mem_reg *bo_mem)
 	struct agp_memory *mem = agp_be->mem;
 	int cached = (bo_mem->placement & TTM_PL_FLAG_CACHED);
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mem->is_flushed = 1;
 	mem->type = (cached) ? AGP_USER_CACHED_MEMORY : AGP_USER_MEMORY;
 
 	ret = agp_bind_memory(mem, node->start);
 	if (ret)
+<<<<<<< HEAD
 		printk(KERN_ERR TTM_PFX "AGP Bind memory failed.\n");
+=======
+		pr_err("AGP Bind memory failed\n");
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int ttm_agp_unbind(struct ttm_backend *backend)
 {
 	struct ttm_agp_backend *agp_be =
@@ -121,19 +161,51 @@ static void ttm_agp_destroy(struct ttm_backend *backend)
 
 	if (agp_be->mem)
 		ttm_agp_clear(backend);
+=======
+static int ttm_agp_unbind(struct ttm_tt *ttm)
+{
+	struct ttm_agp_backend *agp_be = container_of(ttm, struct ttm_agp_backend, ttm);
+
+	if (agp_be->mem) {
+		if (agp_be->mem->is_bound)
+			return agp_unbind_memory(agp_be->mem);
+		agp_free_memory(agp_be->mem);
+		agp_be->mem = NULL;
+	}
+	return 0;
+}
+
+static void ttm_agp_destroy(struct ttm_tt *ttm)
+{
+	struct ttm_agp_backend *agp_be = container_of(ttm, struct ttm_agp_backend, ttm);
+
+	if (agp_be->mem)
+		ttm_agp_unbind(ttm);
+	ttm_tt_fini(ttm);
+>>>>>>> refs/remotes/origin/cm-10.0
 	kfree(agp_be);
 }
 
 static struct ttm_backend_func ttm_agp_func = {
+<<<<<<< HEAD
 	.populate = ttm_agp_populate,
 	.clear = ttm_agp_clear,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.bind = ttm_agp_bind,
 	.unbind = ttm_agp_unbind,
 	.destroy = ttm_agp_destroy,
 };
 
+<<<<<<< HEAD
 struct ttm_backend *ttm_agp_backend_init(struct ttm_bo_device *bdev,
 					 struct agp_bridge_data *bridge)
+=======
+struct ttm_tt *ttm_agp_tt_create(struct ttm_bo_device *bdev,
+				 struct agp_bridge_data *bridge,
+				 unsigned long size, uint32_t page_flags,
+				 struct page *dummy_read_page)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ttm_agp_backend *agp_be;
 
@@ -143,10 +215,37 @@ struct ttm_backend *ttm_agp_backend_init(struct ttm_bo_device *bdev,
 
 	agp_be->mem = NULL;
 	agp_be->bridge = bridge;
+<<<<<<< HEAD
 	agp_be->backend.func = &ttm_agp_func;
 	agp_be->backend.bdev = bdev;
 	return &agp_be->backend;
 }
 EXPORT_SYMBOL(ttm_agp_backend_init);
+=======
+	agp_be->ttm.func = &ttm_agp_func;
+
+	if (ttm_tt_init(&agp_be->ttm, bdev, size, page_flags, dummy_read_page)) {
+		return NULL;
+	}
+
+	return &agp_be->ttm;
+}
+EXPORT_SYMBOL(ttm_agp_tt_create);
+
+int ttm_agp_tt_populate(struct ttm_tt *ttm)
+{
+	if (ttm->state != tt_unpopulated)
+		return 0;
+
+	return ttm_pool_populate(ttm);
+}
+EXPORT_SYMBOL(ttm_agp_tt_populate);
+
+void ttm_agp_tt_unpopulate(struct ttm_tt *ttm)
+{
+	ttm_pool_unpopulate(ttm);
+}
+EXPORT_SYMBOL(ttm_agp_tt_unpopulate);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #endif

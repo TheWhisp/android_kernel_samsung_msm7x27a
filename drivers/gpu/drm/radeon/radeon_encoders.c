@@ -29,12 +29,15 @@
 #include "radeon.h"
 #include "atom.h"
 
+<<<<<<< HEAD
 extern int atom_debug;
 
 /* evil but including atombios.h is much worse */
 bool radeon_atom_get_tv_timings(struct radeon_device *rdev, int index,
 				struct drm_display_mode *mode);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static uint32_t radeon_encoder_clones(struct drm_encoder *encoder)
 {
 	struct drm_device *dev = encoder->dev;
@@ -156,6 +159,7 @@ radeon_get_encoder_enum(struct drm_device *dev, uint32_t supported_device, uint8
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline bool radeon_encoder_is_digital(struct drm_encoder *encoder)
 {
 	struct radeon_encoder *radeon_encoder = to_radeon_encoder(encoder);
@@ -177,6 +181,8 @@ static inline bool radeon_encoder_is_digital(struct drm_encoder *encoder)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 void
 radeon_link_encoder_connector(struct drm_device *dev)
 {
@@ -229,7 +235,11 @@ radeon_get_connector_for_encoder(struct drm_encoder *encoder)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static struct drm_connector *
+=======
+struct drm_connector *
+>>>>>>> refs/remotes/origin/cm-10.0
 radeon_get_connector_for_encoder_init(struct drm_encoder *encoder)
 {
 	struct drm_device *dev = encoder->dev;
@@ -245,7 +255,11 @@ radeon_get_connector_for_encoder_init(struct drm_encoder *encoder)
 	return NULL;
 }
 
+<<<<<<< HEAD
 struct drm_encoder *radeon_atom_get_external_encoder(struct drm_encoder *encoder)
+=======
+struct drm_encoder *radeon_get_external_encoder(struct drm_encoder *encoder)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct drm_device *dev = encoder->dev;
 	struct radeon_encoder *radeon_encoder = to_radeon_encoder(encoder);
@@ -266,9 +280,15 @@ struct drm_encoder *radeon_atom_get_external_encoder(struct drm_encoder *encoder
 	return NULL;
 }
 
+<<<<<<< HEAD
 bool radeon_encoder_is_dp_bridge(struct drm_encoder *encoder)
 {
 	struct drm_encoder *other_encoder = radeon_atom_get_external_encoder(encoder);
+=======
+u16 radeon_encoder_get_dp_bridge_encoder_id(struct drm_encoder *encoder)
+{
+	struct drm_encoder *other_encoder = radeon_get_external_encoder(encoder);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (other_encoder) {
 		struct radeon_encoder *radeon_encoder = to_radeon_encoder(other_encoder);
@@ -276,6 +296,7 @@ bool radeon_encoder_is_dp_bridge(struct drm_encoder *encoder)
 		switch (radeon_encoder->encoder_id) {
 		case ENCODER_OBJECT_ID_TRAVIS:
 		case ENCODER_OBJECT_ID_NUTMEG:
+<<<<<<< HEAD
 			return true;
 		default:
 			return false;
@@ -283,6 +304,14 @@ bool radeon_encoder_is_dp_bridge(struct drm_encoder *encoder)
 	}
 
 	return false;
+=======
+			return radeon_encoder->encoder_id;
+		default:
+			return ENCODER_OBJECT_ID_NONE;
+		}
+	}
+	return ENCODER_OBJECT_ID_NONE;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 void radeon_panel_mode_fixup(struct drm_encoder *encoder,
@@ -332,6 +361,7 @@ void radeon_panel_mode_fixup(struct drm_encoder *encoder,
 
 }
 
+<<<<<<< HEAD
 static bool radeon_atom_mode_fixup(struct drm_encoder *encoder,
 				   struct drm_display_mode *mode,
 				   struct drm_display_mode *adjusted_mode)
@@ -651,12 +681,18 @@ int
 atombios_get_encoder_mode(struct drm_encoder *encoder)
 {
 	struct radeon_encoder *radeon_encoder = to_radeon_encoder(encoder);
+=======
+bool radeon_dig_monitor_is_duallink(struct drm_encoder *encoder,
+				    u32 pixel_clock)
+{
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct drm_device *dev = encoder->dev;
 	struct radeon_device *rdev = dev->dev_private;
 	struct drm_connector *connector;
 	struct radeon_connector *radeon_connector;
 	struct radeon_connector_atom_dig *dig_connector;
 
+<<<<<<< HEAD
 	/* dp bridges are always DP */
 	if (radeon_encoder_is_dp_bridge(encoder))
 		return ATOM_ENCODER_MODE_DP;
@@ -665,6 +701,8 @@ atombios_get_encoder_mode(struct drm_encoder *encoder)
 	if (radeon_encoder->encoder_id == ATOM_ENCODER_MODE_DVO)
 		return ATOM_ENCODER_MODE_DVO;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	connector = radeon_get_connector_for_encoder(encoder);
 	/* if we don't have an active device yet, just use one of
 	 * the connectors tied to the encoder.
@@ -675,6 +713,7 @@ atombios_get_encoder_mode(struct drm_encoder *encoder)
 
 	switch (connector->connector_type) {
 	case DRM_MODE_CONNECTOR_DVII:
+<<<<<<< HEAD
 	case DRM_MODE_CONNECTOR_HDMIB: /* HDMI-B is basically DL-DVI; analog works fine */
 		if (drm_detect_monitor_audio(radeon_connector->edid) && radeon_audio) {
 			/* fix me */
@@ -702,10 +741,31 @@ atombios_get_encoder_mode(struct drm_encoder *encoder)
 	case DRM_MODE_CONNECTOR_LVDS:
 		return ATOM_ENCODER_MODE_LVDS;
 		break;
+=======
+	case DRM_MODE_CONNECTOR_HDMIB:
+		if (radeon_connector->use_digital) {
+			/* HDMI 1.3 supports up to 340 Mhz over single link */
+			if (ASIC_IS_DCE6(rdev) && drm_detect_hdmi_monitor(radeon_connector->edid)) {
+				if (pixel_clock > 340000)
+					return true;
+				else
+					return false;
+			} else {
+				if (pixel_clock > 165000)
+					return true;
+				else
+					return false;
+			}
+		} else
+			return false;
+	case DRM_MODE_CONNECTOR_DVID:
+	case DRM_MODE_CONNECTOR_HDMIA:
+>>>>>>> refs/remotes/origin/cm-10.0
 	case DRM_MODE_CONNECTOR_DisplayPort:
 		dig_connector = radeon_connector->con_priv;
 		if ((dig_connector->dp_sink_type == CONNECTOR_OBJECT_ID_DISPLAYPORT) ||
 		    (dig_connector->dp_sink_type == CONNECTOR_OBJECT_ID_eDP))
+<<<<<<< HEAD
 			return ATOM_ENCODER_MODE_DP;
 		else if (drm_detect_monitor_audio(radeon_connector->edid) && radeon_audio) {
 			/* fix me */
@@ -2419,3 +2479,25 @@ radeon_add_atom_encoder(struct drm_device *dev,
 		break;
 	}
 }
+=======
+			return false;
+		else {
+			/* HDMI 1.3 supports up to 340 Mhz over single link */
+			if (ASIC_IS_DCE6(rdev) && drm_detect_hdmi_monitor(radeon_connector->edid)) {
+				if (pixel_clock > 340000)
+					return true;
+				else
+					return false;
+			} else {
+				if (pixel_clock > 165000)
+					return true;
+				else
+					return false;
+			}
+		}
+	default:
+		return false;
+	}
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0

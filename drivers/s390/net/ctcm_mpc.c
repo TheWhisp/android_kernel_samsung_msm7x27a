@@ -53,8 +53,13 @@
 #include <linux/moduleparam.h>
 #include <asm/idals.h>
 
+<<<<<<< HEAD
 #include "ctcm_mpc.h"
 #include "ctcm_main.h"
+=======
+#include "ctcm_main.h"
+#include "ctcm_mpc.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "ctcm_fsms.h"
 
 static const struct xid2 init_xid = {
@@ -132,7 +137,11 @@ void ctcmpc_dumpit(char *buf, int len)
 	__u32	ct, sw, rm, dup;
 	char	*ptr, *rptr;
 	char	tbuf[82], tdup[82];
+<<<<<<< HEAD
 	#if (UTS_MACHINE == s390x)
+=======
+	#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/cm-10.0
 	char	addr[22];
 	#else
 	char	addr[12];
@@ -149,8 +158,13 @@ void ctcmpc_dumpit(char *buf, int len)
 
 	for (ct = 0; ct < len; ct++, ptr++, rptr++) {
 		if (sw == 0) {
+<<<<<<< HEAD
 			#if (UTS_MACHINE == s390x)
 			sprintf(addr, "%16.16lx", (__u64)rptr);
+=======
+			#ifdef CONFIG_64BIT
+			sprintf(addr, "%16.16llx", (__u64)rptr);
+>>>>>>> refs/remotes/origin/cm-10.0
 			#else
 			sprintf(addr, "%8.8X", (__u32)rptr);
 			#endif
@@ -164,8 +178,13 @@ void ctcmpc_dumpit(char *buf, int len)
 		if (sw == 8)
 			strcat(bhex, "	");
 
+<<<<<<< HEAD
 		#if (UTS_MACHINE == s390x)
 		sprintf(tbuf, "%2.2lX", (__u64)*ptr);
+=======
+		#if CONFIG_64BIT
+		sprintf(tbuf, "%2.2llX", (__u64)*ptr);
+>>>>>>> refs/remotes/origin/cm-10.0
 		#else
 		sprintf(tbuf, "%2.2X", (__u32)*ptr);
 		#endif

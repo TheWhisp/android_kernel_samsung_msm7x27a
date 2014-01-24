@@ -488,6 +488,17 @@ int wiphy_register(struct wiphy *wiphy)
 	int i;
 	u16 ifmodes = wiphy->interface_modes;
 
+<<<<<<< HEAD
+=======
+	if (WARN_ON((wiphy->wowlan.flags & WIPHY_WOWLAN_GTK_REKEY_FAILURE) &&
+		    !(wiphy->wowlan.flags & WIPHY_WOWLAN_SUPPORTS_GTK_REKEY)))
+		return -EINVAL;
+
+	if (WARN_ON(wiphy->ap_sme_capa &&
+		    !(wiphy->flags & WIPHY_FLAG_HAVE_AP_SME)))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (WARN_ON(wiphy->addresses && !wiphy->n_addresses))
 		return -EINVAL;
 
@@ -577,7 +588,11 @@ int wiphy_register(struct wiphy *wiphy)
 	}
 
 	/* set up regulatory info */
+<<<<<<< HEAD
 	wiphy_update_regulatory(wiphy, NL80211_REGDOM_SET_BY_CORE);
+=======
+	regulatory_update(wiphy, NL80211_REGDOM_SET_BY_CORE);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	list_add_rcu(&rdev->list, &cfg80211_rdev_list);
 	cfg80211_rdev_list_generation++;
@@ -611,6 +626,12 @@ int wiphy_register(struct wiphy *wiphy)
 	if (res)
 		goto out_rm_dev;
 
+<<<<<<< HEAD
+=======
+	rtnl_lock();
+	rdev->wiphy.registered = true;
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
 out_rm_dev:
@@ -642,6 +663,13 @@ void wiphy_unregister(struct wiphy *wiphy)
 {
 	struct cfg80211_registered_device *rdev = wiphy_to_dev(wiphy);
 
+<<<<<<< HEAD
+=======
+	rtnl_lock();
+	rdev->wiphy.registered = false;
+	rtnl_unlock();
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	rfkill_unregister(rdev->rfkill);
 
 	/* protect the device list */
@@ -917,7 +945,12 @@ static int cfg80211_netdev_notifier_call(struct notifier_block * nb,
 		 * Configure power management to the driver here so that its
 		 * correctly set also after interface type changes etc.
 		 */
+<<<<<<< HEAD
 		if (wdev->iftype == NL80211_IFTYPE_STATION &&
+=======
+		if ((wdev->iftype == NL80211_IFTYPE_STATION ||
+		     wdev->iftype == NL80211_IFTYPE_P2P_CLIENT) &&
+>>>>>>> refs/remotes/origin/cm-10.0
 		    rdev->ops->set_power_mgmt)
 			if (rdev->ops->set_power_mgmt(wdev->wiphy, dev,
 						      wdev->ps,

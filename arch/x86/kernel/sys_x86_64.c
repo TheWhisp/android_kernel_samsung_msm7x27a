@@ -14,10 +14,79 @@
 #include <linux/personality.h>
 #include <linux/random.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/elf.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/ia32.h>
 #include <asm/syscalls.h>
 
+<<<<<<< HEAD
+=======
+/*
+ * Align a virtual address to avoid aliasing in the I$ on AMD F15h.
+ *
+ * @flags denotes the allocation direction - bottomup or topdown -
+ * or vDSO; see call sites below.
+ */
+unsigned long align_addr(unsigned long addr, struct file *filp,
+			 enum align_flags flags)
+{
+	unsigned long tmp_addr;
+
+	/* handle 32- and 64-bit case with a single conditional */
+	if (va_align.flags < 0 || !(va_align.flags & (2 - mmap_is_ia32())))
+		return addr;
+
+	if (!(current->flags & PF_RANDOMIZE))
+		return addr;
+
+	if (!((flags & ALIGN_VDSO) || filp))
+		return addr;
+
+	tmp_addr = addr;
+
+	/*
+	 * We need an address which is <= than the original
+	 * one only when in topdown direction.
+	 */
+	if (!(flags & ALIGN_TOPDOWN))
+		tmp_addr += va_align.mask;
+
+	tmp_addr &= ~va_align.mask;
+
+	return tmp_addr;
+}
+
+static int __init control_va_addr_alignment(char *str)
+{
+	/* guard against enabling this on other CPU families */
+	if (va_align.flags < 0)
+		return 1;
+
+	if (*str == 0)
+		return 1;
+
+	if (*str == '=')
+		str++;
+
+	if (!strcmp(str, "32"))
+		va_align.flags = ALIGN_VA_32;
+	else if (!strcmp(str, "64"))
+		va_align.flags = ALIGN_VA_64;
+	else if (!strcmp(str, "off"))
+		va_align.flags = 0;
+	else if (!strcmp(str, "on"))
+		va_align.flags = ALIGN_VA_32 | ALIGN_VA_64;
+	else
+		return 0;
+
+	return 1;
+}
+__setup("align_va_addr", control_va_addr_alignment);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
 		unsigned long, prot, unsigned long, flags,
 		unsigned long, fd, unsigned long, off)
@@ -35,7 +104,11 @@ out:
 static void find_start_end(unsigned long flags, unsigned long *begin,
 			   unsigned long *end)
 {
+<<<<<<< HEAD
 	if (!test_thread_flag(TIF_IA32) && (flags & MAP_32BIT)) {
+=======
+	if (!test_thread_flag(TIF_ADDR32) && (flags & MAP_32BIT)) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		unsigned long new_begin;
 		/* This is usually used needed to map code in small
 		   model, so it needs to be in the first 31bit. Limit
@@ -81,7 +154,11 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
 		    (!vma || addr + len <= vma->vm_start))
 			return addr;
 	}
+<<<<<<< HEAD
 	if (((flags & MAP_32BIT) || test_thread_flag(TIF_IA32))
+=======
+	if (((flags & MAP_32BIT) || test_thread_flag(TIF_ADDR32))
+>>>>>>> refs/remotes/origin/cm-10.0
 	    && len <= mm->cached_hole_size) {
 		mm->cached_hole_size = 0;
 		mm->free_area_cache = begin;
@@ -92,6 +169,12 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
 	start_addr = addr;
 
 full_search:
+<<<<<<< HEAD
+=======
+
+	addr = align_addr(addr, filp, 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	for (vma = find_vma(mm, addr); ; vma = vma->vm_next) {
 		/* At this point:  (!vma || addr < vma->vm_end). */
 		if (end - len < addr) {
@@ -117,6 +200,10 @@ full_search:
 			mm->cached_hole_size = vma->vm_start - addr;
 
 		addr = vma->vm_end;
+<<<<<<< HEAD
+=======
+		addr = align_addr(addr, filp, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
@@ -128,7 +215,11 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 {
 	struct vm_area_struct *vma;
 	struct mm_struct *mm = current->mm;
+<<<<<<< HEAD
 	unsigned long addr = addr0;
+=======
+	unsigned long addr = addr0, start_addr;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/* requested length too big for entire address space */
 	if (len > TASK_SIZE)
@@ -138,7 +229,11 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 		return addr;
 
 	/* for MAP_32BIT mappings we force the legact mmap base */
+<<<<<<< HEAD
 	if (!test_thread_flag(TIF_IA32) && (flags & MAP_32BIT))
+=======
+	if (!test_thread_flag(TIF_ADDR32) && (flags & MAP_32BIT))
+>>>>>>> refs/remotes/origin/cm-10.0
 		goto bottomup;
 
 	/* requesting a specific address */
@@ -156,6 +251,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 		mm->free_area_cache = mm->mmap_base;
 	}
 
+<<<<<<< HEAD
 	/* either no address requested or can't fit in requested address hole */
 	addr = mm->free_area_cache;
 
@@ -173,6 +269,19 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 	addr = mm->mmap_base-len;
 
 	do {
+=======
+try_again:
+	/* either no address requested or can't fit in requested address hole */
+	start_addr = addr = mm->free_area_cache;
+
+	if (addr < len)
+		goto fail;
+
+	addr -= len;
+	do {
+		addr = align_addr(addr, filp, ALIGN_TOPDOWN);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 		/*
 		 * Lookup failure means no vma is above this address,
 		 * else if new region fits below vma->vm_start,
@@ -191,6 +300,20 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 		addr = vma->vm_start-len;
 	} while (len < vma->vm_start);
 
+<<<<<<< HEAD
+=======
+fail:
+	/*
+	 * if hint left us with no space for the requested
+	 * mapping then try again:
+	 */
+	if (start_addr != mm->mmap_base) {
+		mm->free_area_cache = mm->mmap_base;
+		mm->cached_hole_size = 0;
+		goto try_again;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 bottomup:
 	/*
 	 * A failed mmap() very likely causes application failure,

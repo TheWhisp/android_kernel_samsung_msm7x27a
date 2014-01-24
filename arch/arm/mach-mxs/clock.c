@@ -74,10 +74,22 @@ static int __clk_enable(struct clk *clk)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* This function increments the reference count on the clock and enables the
  * clock if not already enabled. The parent clock tree is recursively enabled
  */
 int clk_enable(struct clk *clk)
+=======
+/*
+ * The clk_enable/clk_disable could be called by drivers in atomic context,
+ * so they should not really hold mutex.  Instead, clk_prepare/clk_unprepare
+ * can hold a mutex, as the pair will only be called in non-atomic context.
+ * Before migrating to common clk framework, we can have __clk_enable and
+ * __clk_disable called in clk_prepare/clk_unprepare with mutex held and
+ * leave clk_enable/clk_disable as the dummy functions.
+ */
+int clk_prepare(struct clk *clk)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int ret = 0;
 
@@ -90,6 +102,7 @@ int clk_enable(struct clk *clk)
 
 	return ret;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(clk_enable);
 
 /* This function decrements the reference count on the clock and disables
@@ -97,6 +110,11 @@ EXPORT_SYMBOL(clk_enable);
  * recursively disabled
  */
 void clk_disable(struct clk *clk)
+=======
+EXPORT_SYMBOL(clk_prepare);
+
+void clk_unprepare(struct clk *clk)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (clk == NULL || IS_ERR(clk))
 		return;
@@ -105,6 +123,21 @@ void clk_disable(struct clk *clk)
 	__clk_disable(clk);
 	mutex_unlock(&clocks_mutex);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(clk_unprepare);
+
+int clk_enable(struct clk *clk)
+{
+	return 0;
+}
+EXPORT_SYMBOL(clk_enable);
+
+void clk_disable(struct clk *clk)
+{
+	/* nothing to do */
+}
+>>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(clk_disable);
 
 /* Retrieve the *current* clock rate. If the clock itself
@@ -166,7 +199,11 @@ int clk_set_parent(struct clk *clk, struct clk *parent)
 		return ret;
 
 	if (clk->usecount)
+<<<<<<< HEAD
 		clk_enable(parent);
+=======
+		clk_prepare_enable(parent);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&clocks_mutex);
 	ret = clk->set_parent(clk, parent);

@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2012, Intel Corp.
+>>>>>>> refs/remotes/origin/cm-10.0
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -297,9 +301,15 @@ acpi_ex_region_read(union acpi_operand_object *obj_desc, u32 length, u8 *buffer)
 	/* Bytewise reads */
 
 	for (i = 0; i < length; i++) {
+<<<<<<< HEAD
 		status = acpi_ev_address_space_dispatch(obj_desc, ACPI_READ,
 							region_offset, 8,
 							&value);
+=======
+		status =
+		    acpi_ev_address_space_dispatch(obj_desc, NULL, ACPI_READ,
+						   region_offset, 8, &value);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ACPI_FAILURE(status)) {
 			return status;
 		}

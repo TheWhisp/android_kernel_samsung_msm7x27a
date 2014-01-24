@@ -60,7 +60,11 @@ static int snddev_ecodec_open_rx(struct snddev_ecodec_state *ecodec)
 			goto done;
 		}
 		/* config clocks */
+<<<<<<< HEAD
 		clk_enable(drv->lpa_core_clk);
+=======
+		clk_prepare_enable(drv->lpa_core_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*if long sync is selected in aux PCM interface
 		ecodec clock is updated to work with 128KHz,
@@ -96,7 +100,11 @@ static int snddev_ecodec_open_rx(struct snddev_ecodec_state *ecodec)
 		}
 
 		/* enable ecodec clk */
+<<<<<<< HEAD
 		clk_enable(drv->ecodec_clk);
+=======
+		clk_prepare_enable(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* let ADSP confiure AUX PCM regs */
 		aux_codec_adsp_codec_ctl_en(ADSP_CTL);
@@ -109,7 +117,11 @@ static int snddev_ecodec_open_rx(struct snddev_ecodec_state *ecodec)
 		audio_interct_tpcm_source(AUDIO_ADSP_A);
 		audio_interct_rpcm_source(AUDIO_ADSP_A);
 
+<<<<<<< HEAD
 		clk_disable(drv->lpa_core_clk);
+=======
+		clk_disable_unprepare(drv->lpa_core_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* send AUX_CODEC_CONFIG to AFE */
 		rc = afe_config_aux_codec(ecodec->data->conf_pcm_ctl_val,
@@ -126,7 +138,11 @@ static int snddev_ecodec_open_rx(struct snddev_ecodec_state *ecodec)
 	if (IS_ERR_VALUE(rc)) {
 		if (!drv->tx_active) {
 			aux_pcm_gpios_free();
+<<<<<<< HEAD
 			clk_disable(drv->ecodec_clk);
+=======
+			clk_disable_unprepare(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		goto done;
 	}
@@ -136,7 +152,11 @@ static int snddev_ecodec_open_rx(struct snddev_ecodec_state *ecodec)
 
 error:
 	aux_pcm_gpios_free();
+<<<<<<< HEAD
 	clk_disable(drv->ecodec_clk);
+=======
+	clk_disable_unprepare(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 done:
 	return rc;
 }
@@ -148,7 +168,11 @@ static int snddev_ecodec_close_rx(struct snddev_ecodec_state *ecodec)
 	/* free GPIO */
 	if (!drv->tx_active) {
 		aux_pcm_gpios_free();
+<<<<<<< HEAD
 		clk_disable(drv->ecodec_clk);
+=======
+		clk_disable_unprepare(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* disable AFE */
@@ -176,7 +200,11 @@ static int snddev_ecodec_open_tx(struct snddev_ecodec_state *ecodec)
 			goto done;
 		}
 		/* config clocks */
+<<<<<<< HEAD
 		clk_enable(drv->lpa_core_clk);
+=======
+		clk_prepare_enable(drv->lpa_core_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/*if long sync is selected in aux PCM interface
 		ecodec clock is updated to work with 128KHz,
@@ -212,7 +240,11 @@ static int snddev_ecodec_open_tx(struct snddev_ecodec_state *ecodec)
 		}
 
 		/* enable ecodec clk */
+<<<<<<< HEAD
 		clk_enable(drv->ecodec_clk);
+=======
+		clk_prepare_enable(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* let ADSP confiure AUX PCM regs */
 		aux_codec_adsp_codec_ctl_en(ADSP_CTL);
@@ -225,7 +257,11 @@ static int snddev_ecodec_open_tx(struct snddev_ecodec_state *ecodec)
 		audio_interct_tpcm_source(AUDIO_ADSP_A);
 		audio_interct_rpcm_source(AUDIO_ADSP_A);
 
+<<<<<<< HEAD
 		clk_disable(drv->lpa_core_clk);
+=======
+		clk_disable_unprepare(drv->lpa_core_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		/* send AUX_CODEC_CONFIG to AFE */
 		rc = afe_config_aux_codec(ecodec->data->conf_pcm_ctl_val,
@@ -242,7 +278,11 @@ static int snddev_ecodec_open_tx(struct snddev_ecodec_state *ecodec)
 	if (IS_ERR_VALUE(rc)) {
 		if (!drv->rx_active) {
 			aux_pcm_gpios_free();
+<<<<<<< HEAD
 			clk_disable(drv->ecodec_clk);
+=======
+			clk_disable_unprepare(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		goto done;
 	}
@@ -251,7 +291,11 @@ static int snddev_ecodec_open_tx(struct snddev_ecodec_state *ecodec)
 	return 0;
 
 error:
+<<<<<<< HEAD
 	clk_disable(drv->ecodec_clk);
+=======
+	clk_disable_unprepare(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	aux_pcm_gpios_free();
 done:
 	return rc;
@@ -264,7 +308,11 @@ static int snddev_ecodec_close_tx(struct snddev_ecodec_state *ecodec)
 	/* free GPIO */
 	if (!drv->rx_active) {
 		aux_pcm_gpios_free();
+<<<<<<< HEAD
 		clk_disable(drv->ecodec_clk);
+=======
+		clk_disable_unprepare(drv->ecodec_clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/* disable AFE */

@@ -254,7 +254,11 @@
 #include <linux/init.h>
 
 #include <linux/ppp_defs.h>
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ppp_channel.h>
 
 #include <net/irda/irda.h>

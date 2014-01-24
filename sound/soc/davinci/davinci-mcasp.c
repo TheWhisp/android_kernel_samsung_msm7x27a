@@ -732,16 +732,28 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
 		davinci_hw_param(dev, substream->stream);
 
 	switch (params_format(params)) {
+<<<<<<< HEAD
+=======
+	case SNDRV_PCM_FORMAT_U8:
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SNDRV_PCM_FORMAT_S8:
 		dma_params->data_type = 1;
 		word_length = DAVINCI_AUDIO_WORD_8;
 		break;
 
+<<<<<<< HEAD
+=======
+	case SNDRV_PCM_FORMAT_U16_LE:
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SNDRV_PCM_FORMAT_S16_LE:
 		dma_params->data_type = 2;
 		word_length = DAVINCI_AUDIO_WORD_16;
 		break;
 
+<<<<<<< HEAD
+=======
+	case SNDRV_PCM_FORMAT_U32_LE:
+>>>>>>> refs/remotes/origin/cm-10.0
 	case SNDRV_PCM_FORMAT_S32_LE:
 		dma_params->data_type = 4;
 		word_length = DAVINCI_AUDIO_WORD_32;
@@ -810,7 +822,11 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
+=======
+static const struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.startup	= davinci_mcasp_startup,
 	.trigger	= davinci_mcasp_trigger,
 	.hw_params	= davinci_mcasp_hw_params,
@@ -818,6 +834,16 @@ static struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
 
 };
 
+<<<<<<< HEAD
+=======
+#define DAVINCI_MCASP_PCM_FMTS (SNDRV_PCM_FMTBIT_S8 | \
+				SNDRV_PCM_FMTBIT_U8 | \
+				SNDRV_PCM_FMTBIT_S16_LE | \
+				SNDRV_PCM_FMTBIT_U16_LE | \
+				SNDRV_PCM_FMTBIT_S32_LE | \
+				SNDRV_PCM_FMTBIT_U32_LE)
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct snd_soc_dai_driver davinci_mcasp_dai[] = {
 	{
 		.name		= "davinci-mcasp.0",
@@ -825,17 +851,25 @@ static struct snd_soc_dai_driver davinci_mcasp_dai[] = {
 			.channels_min	= 2,
 			.channels_max 	= 2,
 			.rates 		= DAVINCI_MCASP_RATES,
+<<<<<<< HEAD
 			.formats 	= SNDRV_PCM_FMTBIT_S8 |
 						SNDRV_PCM_FMTBIT_S16_LE |
 						SNDRV_PCM_FMTBIT_S32_LE,
+=======
+			.formats	= DAVINCI_MCASP_PCM_FMTS,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		.capture 	= {
 			.channels_min 	= 2,
 			.channels_max 	= 2,
 			.rates 		= DAVINCI_MCASP_RATES,
+<<<<<<< HEAD
 			.formats	= SNDRV_PCM_FMTBIT_S8 |
 						SNDRV_PCM_FMTBIT_S16_LE |
 						SNDRV_PCM_FMTBIT_S32_LE,
+=======
+			.formats	= DAVINCI_MCASP_PCM_FMTS,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		.ops 		= &davinci_mcasp_dai_ops,
 
@@ -846,7 +880,11 @@ static struct snd_soc_dai_driver davinci_mcasp_dai[] = {
 			.channels_min	= 1,
 			.channels_max	= 384,
 			.rates		= DAVINCI_MCASP_RATES,
+<<<<<<< HEAD
 			.formats	= SNDRV_PCM_FMTBIT_S16_LE,
+=======
+			.formats	= DAVINCI_MCASP_PCM_FMTS,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		.ops 		= &davinci_mcasp_dai_ops,
 	},
@@ -859,15 +897,23 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
 	struct resource *mem, *ioarea, *res;
 	struct snd_platform_data *pdata;
 	struct davinci_audio_dev *dev;
+<<<<<<< HEAD
 	int ret = 0;
 
 	dev = kzalloc(sizeof(struct davinci_audio_dev), GFP_KERNEL);
+=======
+	int ret;
+
+	dev = devm_kzalloc(&pdev->dev, sizeof(struct davinci_audio_dev),
+			   GFP_KERNEL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!dev)
 		return	-ENOMEM;
 
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!mem) {
 		dev_err(&pdev->dev, "no mem resource?\n");
+<<<<<<< HEAD
 		ret = -ENODEV;
 		goto err_release_data;
 	}
@@ -878,19 +924,38 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Audio region already claimed\n");
 		ret = -EBUSY;
 		goto err_release_data;
+=======
+		return -ENODEV;
+	}
+
+	ioarea = devm_request_mem_region(&pdev->dev, mem->start,
+			resource_size(mem), pdev->name);
+	if (!ioarea) {
+		dev_err(&pdev->dev, "Audio region already claimed\n");
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	pdata = pdev->dev.platform_data;
 	dev->clk = clk_get(&pdev->dev, NULL);
+<<<<<<< HEAD
 	if (IS_ERR(dev->clk)) {
 		ret = -ENODEV;
 		goto err_release_region;
 	}
+=======
+	if (IS_ERR(dev->clk))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	clk_enable(dev->clk);
 	dev->clk_active = 1;
 
+<<<<<<< HEAD
 	dev->base = ioremap(mem->start, resource_size(mem));
+=======
+	dev->base = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!dev->base) {
 		dev_err(&pdev->dev, "ioremap failed\n");
 		ret = -ENOMEM;
@@ -918,7 +983,11 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
 	if (!res) {
 		dev_err(&pdev->dev, "no DMA resource\n");
 		ret = -ENODEV;
+<<<<<<< HEAD
 		goto err_iounmap;
+=======
+		goto err_release_clk;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dma_data->channel = res->start;
@@ -934,7 +1003,11 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
 	if (!res) {
 		dev_err(&pdev->dev, "no DMA resource\n");
 		ret = -ENODEV;
+<<<<<<< HEAD
 		goto err_iounmap;
+=======
+		goto err_release_clk;
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	dma_data->channel = res->start;
@@ -942,6 +1015,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
 	ret = snd_soc_register_dai(&pdev->dev, &davinci_mcasp_dai[pdata->op_mode]);
 
 	if (ret != 0)
+<<<<<<< HEAD
 		goto err_iounmap;
 	return 0;
 
@@ -955,24 +1029,38 @@ err_release_region:
 err_release_data:
 	kfree(dev);
 
+=======
+		goto err_release_clk;
+	return 0;
+
+err_release_clk:
+	clk_disable(dev->clk);
+	clk_put(dev->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int davinci_mcasp_remove(struct platform_device *pdev)
 {
 	struct davinci_audio_dev *dev = dev_get_drvdata(&pdev->dev);
+<<<<<<< HEAD
 	struct resource *mem;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	snd_soc_unregister_dai(&pdev->dev);
 	clk_disable(dev->clk);
 	clk_put(dev->clk);
 	dev->clk = NULL;
 
+<<<<<<< HEAD
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	release_mem_region(mem->start, resource_size(mem));
 
 	kfree(dev);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
@@ -985,6 +1073,7 @@ static struct platform_driver davinci_mcasp_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init davinci_mcasp_init(void)
 {
 	return platform_driver_register(&davinci_mcasp_driver);
@@ -996,6 +1085,9 @@ static void __exit davinci_mcasp_exit(void)
 	platform_driver_unregister(&davinci_mcasp_driver);
 }
 module_exit(davinci_mcasp_exit);
+=======
+module_platform_driver(davinci_mcasp_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Steve Chen");
 MODULE_DESCRIPTION("TI DAVINCI McASP SoC Interface");

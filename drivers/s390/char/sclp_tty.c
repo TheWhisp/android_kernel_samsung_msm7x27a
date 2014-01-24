@@ -551,7 +551,10 @@ sclp_tty_init(void)
 		return rc;
 	}
 
+<<<<<<< HEAD
 	driver->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	driver->driver_name = "sclp_line";
 	driver->name = "sclp_line";
 	driver->major = TTY_MAJOR;

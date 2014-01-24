@@ -30,6 +30,10 @@
  */
 
 #include <media/rc-map.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static struct rc_map_table technisat_usb2[] = {
 	{0x0a0c, KEY_POWER},

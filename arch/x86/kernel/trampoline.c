@@ -14,11 +14,19 @@ void __init setup_trampolines(void)
 
 	/* Has to be in very low memory so we can execute real-mode AP code. */
 	mem = memblock_find_in_range(0, 1<<20, size, PAGE_SIZE);
+<<<<<<< HEAD
 	if (mem == MEMBLOCK_ERROR)
 		panic("Cannot allocate trampoline\n");
 
 	x86_trampoline_base = __va(mem);
 	memblock_x86_reserve_range(mem, mem + size, "TRAMPOLINE");
+=======
+	if (!mem)
+		panic("Cannot allocate trampoline\n");
+
+	x86_trampoline_base = __va(mem);
+	memblock_reserve(mem, size);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_DEBUG "Base memory trampoline at [%p] %llx size %zu\n",
 	       x86_trampoline_base, (unsigned long long)mem, size);

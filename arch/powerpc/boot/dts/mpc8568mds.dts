@@ -9,11 +9,16 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
 /dts-v1/;
+=======
+/include/ "fsl/mpc8568si-pre.dtsi"
+>>>>>>> refs/remotes/origin/cm-10.0
 
 / {
 	model = "MPC8568EMDS";
 	compatible = "MPC8568EMDS", "MPC85xxMDS";
+<<<<<<< HEAD
 	#address-cells = <1>;
 	#size-cells = <1>;
 
@@ -47,10 +52,18 @@
 			clock-frequency = <0>;
 			next-level-cache = <&L2>;
 		};
+=======
+
+	aliases {
+		pci0 = &pci0;
+		pci1 = &pci1;
+		rapidio0 = &rio;
+>>>>>>> refs/remotes/origin/cm-10.0
 	};
 
 	memory {
 		device_type = "memory";
+<<<<<<< HEAD
 		reg = <0x0 0x10000000>;
 	};
 
@@ -61,6 +74,13 @@
 			     "simple-bus";
 		reg = <0xe0005000 0x1000>;
 
+=======
+		reg = <0x0 0x0 0x0 0x0>;
+	};
+
+	lbc: localbus@e0005000 {
+		reg = <0x0 0xe0005000 0x0 0x1000>;
+>>>>>>> refs/remotes/origin/cm-10.0
 		ranges = <0x0 0x0 0xfe000000 0x02000000
 			  0x1 0x0 0xf8000000 0x00008000
 			  0x2 0x0 0xf0000000 0x04000000
@@ -102,6 +122,7 @@
 		};
 	};
 
+<<<<<<< HEAD
 	soc8568@e0000000 {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -269,10 +290,55 @@
 					reg = <0x11>;
 					device_type = "tbi-phy";
 				};
+=======
+	soc: soc8568@e0000000 {
+		ranges = <0x0 0x0 0xe0000000 0x100000>;
+
+		i2c-sleep-nexus {
+			i2c@3000 {
+				rtc@68 {
+					compatible = "dallas,ds1374";
+					reg = <0x68>;
+					interrupts = <3 1 0 0>;
+				};
+			};
+		};
+
+		enet0: ethernet@24000 {
+			tbi-handle = <&tbi0>;
+			phy-handle = <&phy2>;
+		};
+
+		mdio@24520 {
+			phy0: ethernet-phy@7 {
+				interrupts = <1 1 0 0>;
+				reg = <0x7>;
+				device_type = "ethernet-phy";
+			};
+			phy1: ethernet-phy@1 {
+				interrupts = <2 1 0 0>;
+				reg = <0x1>;
+				device_type = "ethernet-phy";
+			};
+			phy2: ethernet-phy@2 {
+				interrupts = <1 1 0 0>;
+				reg = <0x2>;
+				device_type = "ethernet-phy";
+			};
+			phy3: ethernet-phy@3 {
+				interrupts = <2 1 0 0>;
+				reg = <0x3>;
+				device_type = "ethernet-phy";
+			};
+			tbi0: tbi-phy@11 {
+				reg = <0x11>;
+				device_type = "tbi-phy";
+>>>>>>> refs/remotes/origin/cm-10.0
 			};
 		};
 
 		enet1: ethernet@25000 {
+<<<<<<< HEAD
 			#address-cells = <1>;
 			#size-cells = <1>;
 			cell-index = <1>;
@@ -384,6 +450,21 @@
 		par_io@e0100 {
 			reg = <0xe0100 0x100>;
 			device_type = "par_io";
+=======
+			tbi-handle = <&tbi1>;
+			phy-handle = <&phy3>;
+			sleep = <&pmc 0x00000040>;
+		};
+
+		mdio@25520 {
+			tbi1: tbi-phy@11 {
+				reg = <0x11>;
+				device_type = "tbi-phy";
+			};
+		};
+
+		par_io@e0100 {
+>>>>>>> refs/remotes/origin/cm-10.0
 			num-ports = <7>;
 
 			pio1: ucc_pin@01 {
@@ -446,6 +527,7 @@
 		};
 	};
 
+<<<<<<< HEAD
 	qe@e0080000 {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -478,25 +560,38 @@
 			reg = <0x4c0 0x40>;
 			interrupts = <2>;
 			interrupt-parent = <&qeic>;
+=======
+	qe: qe@e0080000 {
+		ranges = <0x0 0x0 0xe0080000 0x40000>;
+		reg = <0x0 0xe0080000 0x0 0x480>;
+
+		spi@4c0 {
+>>>>>>> refs/remotes/origin/cm-10.0
 			mode = "cpu";
 		};
 
 		spi@500 {
+<<<<<<< HEAD
 			cell-index = <1>;
 			compatible = "fsl,spi";
 			reg = <0x500 0x40>;
 			interrupts = <1>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			mode = "cpu";
 		};
 
 		enet2: ucc@2000 {
 			device_type = "network";
 			compatible = "ucc_geth";
+<<<<<<< HEAD
 			cell-index = <1>;
 			reg = <0x2000 0x200>;
 			interrupts = <32>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			rx-clock-name = "none";
 			tx-clock-name = "clk16";
@@ -508,10 +603,13 @@
 		enet3: ucc@3000 {
 			device_type = "network";
 			compatible = "ucc_geth";
+<<<<<<< HEAD
 			cell-index = <2>;
 			reg = <0x3000 0x200>;
 			interrupts = <33>;
 			interrupt-parent = <&qeic>;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			rx-clock-name = "none";
 			tx-clock-name = "clk16";
@@ -530,29 +628,46 @@
 			 * gianfar's MDIO bus */
 			qe_phy0: ethernet-phy@07 {
 				interrupt-parent = <&mpic>;
+<<<<<<< HEAD
 				interrupts = <1 1>;
+=======
+				interrupts = <1 1 0 0>;
+>>>>>>> refs/remotes/origin/cm-10.0
 				reg = <0x7>;
 				device_type = "ethernet-phy";
 			};
 			qe_phy1: ethernet-phy@01 {
 				interrupt-parent = <&mpic>;
+<<<<<<< HEAD
 				interrupts = <2 1>;
+=======
+				interrupts = <2 1 0 0>;
+>>>>>>> refs/remotes/origin/cm-10.0
 				reg = <0x1>;
 				device_type = "ethernet-phy";
 			};
 			qe_phy2: ethernet-phy@02 {
 				interrupt-parent = <&mpic>;
+<<<<<<< HEAD
 				interrupts = <1 1>;
+=======
+				interrupts = <1 1 0 0>;
+>>>>>>> refs/remotes/origin/cm-10.0
 				reg = <0x2>;
 				device_type = "ethernet-phy";
 			};
 			qe_phy3: ethernet-phy@03 {
 				interrupt-parent = <&mpic>;
+<<<<<<< HEAD
 				interrupts = <2 1>;
+=======
+				interrupts = <2 1 0 0>;
+>>>>>>> refs/remotes/origin/cm-10.0
 				reg = <0x3>;
 				device_type = "ethernet-phy";
 			};
 		};
+<<<<<<< HEAD
 
 		qeic: interrupt-controller@80 {
 			interrupt-controller;
@@ -595,10 +710,33 @@
 		reg = <0xe0008000 0x1000>;
 		compatible = "fsl,mpc8540-pci";
 		device_type = "pci";
+=======
+	};
+
+	pci0: pci@e0008000 {
+		reg = <0x0 0xe0008000 0x0 0x1000>;
+		ranges = <0x2000000 0x0 0x80000000 0x0 0x80000000 0x0 0x20000000
+			  0x1000000 0x0 0x00000000 0x0 0xe2000000 0x0 0x800000>;
+		clock-frequency = <66666666>;
+		interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
+		interrupt-map = <
+			/* IDSEL 0x12 AD18 */
+			0x9000 0x0 0x0 0x1 &mpic 0x5 0x1 0 0
+			0x9000 0x0 0x0 0x2 &mpic 0x6 0x1 0 0
+			0x9000 0x0 0x0 0x3 &mpic 0x7 0x1 0 0
+			0x9000 0x0 0x0 0x4 &mpic 0x4 0x1 0 0
+
+			/* IDSEL 0x13 AD19 */
+			0x9800 0x0 0x0 0x1 &mpic 0x6 0x1 0 0
+			0x9800 0x0 0x0 0x2 &mpic 0x7 0x1 0 0
+			0x9800 0x0 0x0 0x3 &mpic 0x4 0x1 0 0
+			0x9800 0x0 0x0 0x4 &mpic 0x5 0x1 0 0>;
+>>>>>>> refs/remotes/origin/cm-10.0
 	};
 
 	/* PCI Express */
 	pci1: pcie@e000a000 {
+<<<<<<< HEAD
 		interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
 		interrupt-map = <
 
@@ -626,6 +764,12 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
+=======
+		ranges = <0x2000000 0x0 0xa0000000 0x0 0xa0000000 0x0 0x10000000
+			  0x1000000 0x0 0x00000000 0x0 0xe2800000 0x0 0x800000>;
+		reg = <0x0 0xe000a000 0x0 0x1000>;
+		pcie@0 {
+>>>>>>> refs/remotes/origin/cm-10.0
 			ranges = <0x2000000 0x0 0xa0000000
 				  0x2000000 0x0 0xa0000000
 				  0x0 0x10000000
@@ -636,6 +780,7 @@
 		};
 	};
 
+<<<<<<< HEAD
 	rio0: rapidio@e00c00000 {
 		#address-cells = <2>;
 		#size-cells = <2>;
@@ -652,6 +797,13 @@
 		interrupt-parent = <&mpic>;
 		sleep = <&pmc 0x00080000   /* controller */
 			 &pmc 0x00040000>; /* message unit */
+=======
+	rio: rapidio@e00c00000 {
+		reg = <0x0 0xe00c0000 0x0 0x20000>;
+		port1 {
+			ranges = <0x0 0x0 0x0 0xc0000000 0x0 0x20000000>;
+		};
+>>>>>>> refs/remotes/origin/cm-10.0
 	};
 
 	leds {
@@ -670,3 +822,8 @@
 		};
 	};
 };
+<<<<<<< HEAD
+=======
+
+/include/ "fsl/mpc8568si-post.dtsi"
+>>>>>>> refs/remotes/origin/cm-10.0

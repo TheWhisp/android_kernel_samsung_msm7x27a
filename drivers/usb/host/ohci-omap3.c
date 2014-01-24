@@ -31,6 +31,10 @@
 
 #include <linux/platform_device.h>
 #include <plat/usb.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*-------------------------------------------------------------------------*/
 
@@ -134,7 +138,11 @@ static int __devinit ohci_hcd_omap3_probe(struct platform_device *pdev)
 	int			irq;
 
 	if (usb_disabled())
+<<<<<<< HEAD
 		goto err_end;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!dev->parent) {
 		dev_err(dev, "Missing parent device\n");
@@ -149,7 +157,11 @@ static int __devinit ohci_hcd_omap3_probe(struct platform_device *pdev)
 
 	res = platform_get_resource_byname(pdev,
 				IORESOURCE_MEM, "ohci");
+<<<<<<< HEAD
 	if (!ret) {
+=======
+	if (!res) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		dev_err(dev, "UHH OHCI get resource failed\n");
 		return -ENOMEM;
 	}
@@ -172,6 +184,7 @@ static int __devinit ohci_hcd_omap3_probe(struct platform_device *pdev)
 	hcd->rsrc_len = resource_size(res);
 	hcd->regs =  regs;
 
+<<<<<<< HEAD
 	ret = omap_usbhs_enable(dev);
 	if (ret) {
 		dev_dbg(dev, "failed to start ohci\n");
@@ -181,6 +194,14 @@ static int __devinit ohci_hcd_omap3_probe(struct platform_device *pdev)
 	ohci_hcd_init(hcd_to_ohci(hcd));
 
 	ret = usb_add_hcd(hcd, irq, IRQF_DISABLED);
+=======
+	pm_runtime_enable(dev);
+	pm_runtime_get_sync(dev);
+
+	ohci_hcd_init(hcd_to_ohci(hcd));
+
+	ret = usb_add_hcd(hcd, irq, 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret) {
 		dev_dbg(dev, "failed to add hcd with err %d\n", ret);
 		goto err_add_hcd;
@@ -189,9 +210,13 @@ static int __devinit ohci_hcd_omap3_probe(struct platform_device *pdev)
 	return 0;
 
 err_add_hcd:
+<<<<<<< HEAD
 	omap_usbhs_disable(dev);
 
 err_end:
+=======
+	pm_runtime_put_sync(dev);
+>>>>>>> refs/remotes/origin/cm-10.0
 	usb_put_hcd(hcd);
 
 err_io:
@@ -220,9 +245,15 @@ static int __devexit ohci_hcd_omap3_remove(struct platform_device *pdev)
 
 	iounmap(hcd->regs);
 	usb_remove_hcd(hcd);
+<<<<<<< HEAD
 	omap_usbhs_disable(dev);
 	usb_put_hcd(hcd);
 
+=======
+	pm_runtime_put_sync(dev);
+	pm_runtime_disable(dev);
+	usb_put_hcd(hcd);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 

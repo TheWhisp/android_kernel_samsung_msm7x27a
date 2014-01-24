@@ -145,11 +145,21 @@ static void clockevent_set_mode(enum clock_event_mode mode,
 static int clockevent_next_event(unsigned long cycles,
 				 struct clock_event_device *clk_event_dev)
 {
+<<<<<<< HEAD
 	u16 val;
 
 	writew(cycles, gpt_base + LOAD(CLKEVT));
 
 	val = readw(gpt_base + CR(CLKEVT));
+=======
+	u16 val = readw(gpt_base + CR(CLKEVT));
+
+	if (val & CTRL_ENABLE)
+		writew(val & ~CTRL_ENABLE, gpt_base + CR(CLKEVT));
+
+	writew(cycles, gpt_base + LOAD(CLKEVT));
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	val |= CTRL_ENABLE | CTRL_INT_ENABLE;
 	writew(val, gpt_base + CR(CLKEVT));
 

@@ -85,8 +85,11 @@ using enter_critical section to protect
 */
 struct recv_priv {
 	spinlock_t lock;
+<<<<<<< HEAD
 	struct semaphore recv_sema;
 	struct semaphore terminate_recvthread_sema;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct  __queue	free_recv_queue;
 	struct  __queue	recv_pending_queue;
 	u8 *pallocated_frame_buf;
@@ -100,7 +103,10 @@ struct recv_priv {
 	uint  rx_largepacket_crcerr;
 	uint  rx_smallpacket_crcerr;
 	uint  rx_middlepacket_crcerr;
+<<<<<<< HEAD
 	struct semaphore allrxreturnevt;
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	u8  rx_pending_cnt;
 	uint	ff_hwaddr;
 	struct tasklet_struct recv_tasklet;

@@ -21,8 +21,13 @@ struct ad7879_bus_ops {
 	int (*write)(struct device *dev, u8 reg, u16 val);
 };
 
+<<<<<<< HEAD
 void ad7879_suspend(struct ad7879 *);
 void ad7879_resume(struct ad7879 *);
+=======
+extern const struct dev_pm_ops ad7879_pm_ops;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 struct ad7879 *ad7879_probe(struct device *dev, u8 devid, unsigned irq,
 			    const struct ad7879_bus_ops *bops);
 void ad7879_remove(struct ad7879 *);

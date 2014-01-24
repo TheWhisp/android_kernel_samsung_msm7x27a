@@ -8,7 +8,10 @@
  *
  * Copyright (C) 2008 Wolfgang Grandegger <wg@grandegger.com>
  *
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef CAN_DEV_H
@@ -93,7 +96,11 @@ void can_bus_off(struct net_device *dev);
 
 void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
 		      unsigned int idx);
+<<<<<<< HEAD
 void can_get_echo_skb(struct net_device *dev, unsigned int idx);
+=======
+unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 void can_free_echo_skb(struct net_device *dev, unsigned int idx);
 
 struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf);

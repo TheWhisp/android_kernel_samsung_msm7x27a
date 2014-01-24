@@ -30,6 +30,10 @@ struct srcfile_state {
 	struct srcfile_state *prev;
 };
 
+<<<<<<< HEAD
+=======
+extern FILE *depfile; /* = NULL */
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct srcfile_state *current_srcfile; /* = NULL */
 
 FILE *srcfile_relative_open(const char *fname, char **fullnamep);

@@ -24,7 +24,11 @@
 #include <linux/pnp.h>
 #include <linux/err.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/core.h>
 #include <sound/mpu401.h>
 #include <sound/initval.h>
@@ -35,6 +39,7 @@ MODULE_LICENSE("GPL");
 
 static int index[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = -2}; /* exclude the first card */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
 #ifdef CONFIG_PNP
 static int pnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
@@ -42,6 +47,15 @@ static int pnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* MPU-401 port number */
 static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* MPU-401 IRQ */
 static int uart_enter[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+#ifdef CONFIG_PNP
+static bool pnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+#endif
+static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* MPU-401 port number */
+static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* MPU-401 IRQ */
+static bool uart_enter[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+>>>>>>> refs/remotes/origin/cm-10.0
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for MPU-401 device.");
@@ -86,8 +100,12 @@ static int snd_mpu401_create(int dev, struct snd_card **rcard)
 	}
 
 	err = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401, port[dev], 0,
+<<<<<<< HEAD
 				  irq[dev], irq[dev] >= 0 ? IRQF_DISABLED : 0,
 				  NULL);
+=======
+				  irq[dev], NULL);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (err < 0) {
 		printk(KERN_ERR "MPU401 not detected at 0x%lx\n", port[dev]);
 		goto _err;

@@ -7,12 +7,19 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/mach/time.h>
 #include <mach/addr-map.h>
@@ -20,7 +27,10 @@
 #include <mach/regs-apmu.h>
 #include <mach/cputype.h>
 #include <mach/irqs.h>
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/dma.h>
 #include <mach/mfp.h>
 #include <mach/devices.h>
@@ -78,6 +88,7 @@ static struct mfp_addr_map pxa910_mfp_addr_map[] __initdata =
 	MFP_ADDR_END,
 };
 
+<<<<<<< HEAD
 #define APMASK(i)	(GPIO_REGS_VIRT + BANK_OFF(i) + 0x09c)
 
 static void __init pxa910_init_gpio(void)
@@ -98,6 +109,11 @@ void __init pxa910_init_irq(void)
 {
 	icu_init_irq();
 	pxa910_init_gpio();
+=======
+void __init pxa910_init_irq(void)
+{
+	icu_init_irq();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* APB peripheral clocks */
@@ -109,6 +125,11 @@ static APBC_CLK(pwm1, PXA910_PWM1, 1, 13000000);
 static APBC_CLK(pwm2, PXA910_PWM2, 1, 13000000);
 static APBC_CLK(pwm3, PXA910_PWM3, 1, 13000000);
 static APBC_CLK(pwm4, PXA910_PWM4, 1, 13000000);
+<<<<<<< HEAD
+=======
+static APBC_CLK(gpio, PXA910_GPIO, 0, 13000000);
+static APBC_CLK(rtc, PXA910_RTC, 8, 32768);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static APMU_CLK(nand, NAND, 0x19b, 156000000);
 static APMU_CLK(u2o, USB, 0x1b, 480000000);
@@ -124,7 +145,13 @@ static struct clk_lookup pxa910_clkregs[] = {
 	INIT_CLKREG(&clk_pwm3, "pxa910-pwm.2", NULL),
 	INIT_CLKREG(&clk_pwm4, "pxa910-pwm.3", NULL),
 	INIT_CLKREG(&clk_nand, "pxa3xx-nand", NULL),
+<<<<<<< HEAD
 	INIT_CLKREG(&clk_u2o, "pxa-u2o", "U2OCLK"),
+=======
+	INIT_CLKREG(&clk_gpio, "pxa-gpio", NULL),
+	INIT_CLKREG(&clk_u2o, "pxa-u2o", "U2OCLK"),
+	INIT_CLKREG(&clk_rtc, "sa1100-rtc", NULL),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static int __init pxa910_init(void)
@@ -180,3 +207,51 @@ PXA910_DEVICE(pwm2, "pxa910-pwm", 1, NONE, 0xd401a400, 0x10);
 PXA910_DEVICE(pwm3, "pxa910-pwm", 2, NONE, 0xd401a800, 0x10);
 PXA910_DEVICE(pwm4, "pxa910-pwm", 3, NONE, 0xd401ac00, 0x10);
 PXA910_DEVICE(nand, "pxa3xx-nand", -1, NAND, 0xd4283000, 0x80, 97, 99);
+<<<<<<< HEAD
+=======
+
+struct resource pxa910_resource_gpio[] = {
+	{
+		.start	= 0xd4019000,
+		.end	= 0xd4019fff,
+		.flags	= IORESOURCE_MEM,
+	}, {
+		.start	= IRQ_PXA910_AP_GPIO,
+		.end	= IRQ_PXA910_AP_GPIO,
+		.name	= "gpio_mux",
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+struct platform_device pxa910_device_gpio = {
+	.name		= "pxa-gpio",
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(pxa910_resource_gpio),
+	.resource	= pxa910_resource_gpio,
+};
+
+static struct resource pxa910_resource_rtc[] = {
+	{
+		.start	= 0xd4010000,
+		.end	= 0xd401003f,
+		.flags	= IORESOURCE_MEM,
+	}, {
+		.start	= IRQ_PXA910_RTC_INT,
+		.end	= IRQ_PXA910_RTC_INT,
+		.name	= "rtc 1Hz",
+		.flags	= IORESOURCE_IRQ,
+	}, {
+		.start	= IRQ_PXA910_RTC_ALARM,
+		.end	= IRQ_PXA910_RTC_ALARM,
+		.name	= "rtc alarm",
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+struct platform_device pxa910_device_rtc = {
+	.name		= "sa1100-rtc",
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(pxa910_resource_rtc),
+	.resource	= pxa910_resource_rtc,
+};
+>>>>>>> refs/remotes/origin/cm-10.0

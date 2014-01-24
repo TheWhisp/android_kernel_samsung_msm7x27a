@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * if_ppp.h - Point-to-Point Protocol definitions.
  *
@@ -171,3 +172,6 @@ struct pppol2tp_ioc_stats {
 #endif
 
 #endif /* _IF_PPP_H_ */
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/cm-10.0

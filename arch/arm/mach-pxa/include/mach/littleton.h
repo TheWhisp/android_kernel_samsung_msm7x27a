@@ -1,13 +1,20 @@
 #ifndef __ASM_ARCH_LITTLETON_H
 #define __ASM_ARCH_LITTLETON_H
 
+<<<<<<< HEAD
 #include <mach/gpio.h>
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #define LITTLETON_ETH_PHYS	0x30000000
 
 #define LITTLETON_GPIO_LCD_CS	(17)
 
+<<<<<<< HEAD
 #define EXT0_GPIO_BASE	(NR_BUILTIN_GPIO)
+=======
+#define EXT0_GPIO_BASE	(PXA_NR_BUILTIN_GPIO)
+>>>>>>> refs/remotes/origin/cm-10.0
 #define EXT0_GPIO(x)	(EXT0_GPIO_BASE + (x))
 
 #define LITTLETON_NR_IRQS	(IRQ_BOARD_START + 8)

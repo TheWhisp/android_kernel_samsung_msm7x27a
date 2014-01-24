@@ -1777,10 +1777,24 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
 		return adc_init_SBx(hw, info->input, info->mic20db);
 }
 
+<<<<<<< HEAD
 static int hw_have_digit_io_switch(struct hw *hw)
 {
 	/* SB073x and Vista compatible cards have no digit IO switch */
 	return !(hw->model == CTSB073X || hw->model == CTUAA);
+=======
+static struct capabilities hw_capabilities(struct hw *hw)
+{
+	struct capabilities cap;
+
+	/* SB073x and Vista compatible cards have no digit IO switch */
+	cap.digit_io_switch = !(hw->model == CTSB073X || hw->model == CTUAA);
+	cap.dedicated_mic = 0;
+	cap.output_switch = 0;
+	cap.mic_source_switch = 0;
+
+	return cap;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #define CTLBITS(a, b, c, d)	(((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
@@ -1933,7 +1947,11 @@ static int hw_card_start(struct hw *hw)
 
 	if (hw->irq < 0) {
 		err = request_irq(pci->irq, ct_20k1_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
 				  "ctxfi", hw);
+=======
+				  KBUILD_MODNAME, hw);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (err < 0) {
 			printk(KERN_ERR "XFi: Cannot get irq %d\n", pci->irq);
 			goto error2;
@@ -2172,7 +2190,11 @@ static struct hw ct20k1_preset __devinitdata = {
 	.pll_init = hw_pll_init,
 	.is_adc_source_selected = hw_is_adc_input_selected,
 	.select_adc_source = hw_adc_input_select,
+<<<<<<< HEAD
 	.have_digit_io_switch = hw_have_digit_io_switch,
+=======
+	.capabilities = hw_capabilities,
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PM
 	.suspend = hw_suspend,
 	.resume = hw_resume,

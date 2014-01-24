@@ -285,8 +285,13 @@ struct ebt_table {
 	struct module *me;
 };
 
+<<<<<<< HEAD
 #define EBT_ALIGN(s) (((s) + (__alignof__(struct ebt_replace)-1)) & \
 		     ~(__alignof__(struct ebt_replace)-1))
+=======
+#define EBT_ALIGN(s) (((s) + (__alignof__(struct _xt_align)-1)) & \
+		     ~(__alignof__(struct _xt_align)-1))
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct ebt_table *ebt_register_table(struct net *net,
 					    const struct ebt_table *table);
 extern void ebt_unregister_table(struct net *net, struct ebt_table *table);

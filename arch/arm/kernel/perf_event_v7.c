@@ -17,6 +17,12 @@
  */
 
 #ifdef CONFIG_CPU_V7
+<<<<<<< HEAD
+=======
+
+static struct arm_pmu armv7pmu;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Common ARMv7 event types
  *
@@ -25,6 +31,7 @@
  * they are not available.
  */
 enum armv7_perf_types {
+<<<<<<< HEAD
 	ARMV7_PERFCTR_PMNC_SW_INCR		= 0x00,
 	ARMV7_PERFCTR_IFETCH_MISS		= 0x01,
 	ARMV7_PERFCTR_ITLB_MISS			= 0x02,
@@ -65,10 +72,55 @@ enum armv7_perf_types {
 	ARMV7_PERFCTR_BUS_CYCLES		= 0x1D,
 
 	ARMV7_PERFCTR_CPU_CYCLES		= 0xFF
+=======
+	ARMV7_PERFCTR_PMNC_SW_INCR			= 0x00,
+	ARMV7_PERFCTR_L1_ICACHE_REFILL			= 0x01,
+	ARMV7_PERFCTR_ITLB_REFILL			= 0x02,
+	ARMV7_PERFCTR_L1_DCACHE_REFILL			= 0x03,
+	ARMV7_PERFCTR_L1_DCACHE_ACCESS			= 0x04,
+	ARMV7_PERFCTR_DTLB_REFILL			= 0x05,
+	ARMV7_PERFCTR_MEM_READ				= 0x06,
+	ARMV7_PERFCTR_MEM_WRITE				= 0x07,
+	ARMV7_PERFCTR_INSTR_EXECUTED			= 0x08,
+	ARMV7_PERFCTR_EXC_TAKEN				= 0x09,
+	ARMV7_PERFCTR_EXC_EXECUTED			= 0x0A,
+	ARMV7_PERFCTR_CID_WRITE				= 0x0B,
+
+	/*
+	 * ARMV7_PERFCTR_PC_WRITE is equivalent to HW_BRANCH_INSTRUCTIONS.
+	 * It counts:
+	 *  - all (taken) branch instructions,
+	 *  - instructions that explicitly write the PC,
+	 *  - exception generating instructions.
+	 */
+	ARMV7_PERFCTR_PC_WRITE				= 0x0C,
+	ARMV7_PERFCTR_PC_IMM_BRANCH			= 0x0D,
+	ARMV7_PERFCTR_PC_PROC_RETURN			= 0x0E,
+	ARMV7_PERFCTR_MEM_UNALIGNED_ACCESS		= 0x0F,
+	ARMV7_PERFCTR_PC_BRANCH_MIS_PRED		= 0x10,
+	ARMV7_PERFCTR_CLOCK_CYCLES			= 0x11,
+	ARMV7_PERFCTR_PC_BRANCH_PRED			= 0x12,
+
+	/* These events are defined by the PMUv2 supplement (ARM DDI 0457A). */
+	ARMV7_PERFCTR_MEM_ACCESS			= 0x13,
+	ARMV7_PERFCTR_L1_ICACHE_ACCESS			= 0x14,
+	ARMV7_PERFCTR_L1_DCACHE_WB			= 0x15,
+	ARMV7_PERFCTR_L2_CACHE_ACCESS			= 0x16,
+	ARMV7_PERFCTR_L2_CACHE_REFILL			= 0x17,
+	ARMV7_PERFCTR_L2_CACHE_WB			= 0x18,
+	ARMV7_PERFCTR_BUS_ACCESS			= 0x19,
+	ARMV7_PERFCTR_MEM_ERROR				= 0x1A,
+	ARMV7_PERFCTR_INSTR_SPEC			= 0x1B,
+	ARMV7_PERFCTR_TTBR_WRITE			= 0x1C,
+	ARMV7_PERFCTR_BUS_CYCLES			= 0x1D,
+
+	ARMV7_PERFCTR_CPU_CYCLES			= 0xFF
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* ARMv7 Cortex-A8 specific event types */
 enum armv7_a8_perf_types {
+<<<<<<< HEAD
 	ARMV7_PERFCTR_WRITE_BUFFER_FULL		= 0x40,
 	ARMV7_PERFCTR_L2_STORE_MERGED		= 0x41,
 	ARMV7_PERFCTR_L2_STORE_BUFF		= 0x42,
@@ -100,10 +152,17 @@ enum armv7_a8_perf_types {
 	ARMV7_PERFCTR_PMU0_EVENTS		= 0x70,
 	ARMV7_PERFCTR_PMU1_EVENTS		= 0x71,
 	ARMV7_PERFCTR_PMU_EVENTS		= 0x72,
+=======
+	ARMV7_A8_PERFCTR_L2_CACHE_ACCESS		= 0x43,
+	ARMV7_A8_PERFCTR_L2_CACHE_REFILL		= 0x44,
+	ARMV7_A8_PERFCTR_L1_ICACHE_ACCESS		= 0x50,
+	ARMV7_A8_PERFCTR_STALL_ISIDE			= 0x56,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* ARMv7 Cortex-A9 specific event types */
 enum armv7_a9_perf_types {
+<<<<<<< HEAD
 	ARMV7_PERFCTR_JAVA_HW_BYTECODE_EXEC	= 0x40,
 	ARMV7_PERFCTR_JAVA_SW_BYTECODE_EXEC	= 0x41,
 	ARMV7_PERFCTR_JAZELLE_BRANCH_EXEC	= 0x42,
@@ -151,10 +210,16 @@ enum armv7_a9_perf_types {
 	ARMV7_PERFCTR_PLE_RQST_COMPLETED	= 0xA3,
 	ARMV7_PERFCTR_PLE_FIFO_OVERFLOW		= 0xA4,
 	ARMV7_PERFCTR_PLE_RQST_PROG		= 0xA5
+=======
+	ARMV7_A9_PERFCTR_INSTR_CORE_RENAME		= 0x68,
+	ARMV7_A9_PERFCTR_STALL_ICACHE			= 0x60,
+	ARMV7_A9_PERFCTR_STALL_DISPATCH			= 0x66,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* ARMv7 Cortex-A5 specific event types */
 enum armv7_a5_perf_types {
+<<<<<<< HEAD
 	ARMV7_PERFCTR_IRQ_TAKEN			= 0x86,
 	ARMV7_PERFCTR_FIQ_TAKEN			= 0x87,
 
@@ -166,10 +231,15 @@ enum armv7_a5_perf_types {
 	ARMV7_PERFCTR_READ_ALLOC		= 0xc5,
 
 	ARMV7_PERFCTR_STALL_SB_FULL		= 0xc9,
+=======
+	ARMV7_A5_PERFCTR_PREFETCH_LINEFILL		= 0xc2,
+	ARMV7_A5_PERFCTR_PREFETCH_LINEFILL_DROP		= 0xc3,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* ARMv7 Cortex-A15 specific event types */
 enum armv7_a15_perf_types {
+<<<<<<< HEAD
 	ARMV7_PERFCTR_L1_DCACHE_READ_ACCESS	= 0x40,
 	ARMV7_PERFCTR_L1_DCACHE_WRITE_ACCESS	= 0x41,
 	ARMV7_PERFCTR_L1_DCACHE_READ_REFILL	= 0x42,
@@ -184,6 +254,22 @@ enum armv7_a15_perf_types {
 	ARMV7_PERFCTR_L2_DCACHE_WRITE_REFILL	= 0x53,
 
 	ARMV7_PERFCTR_SPEC_PC_WRITE		= 0x76,
+=======
+	ARMV7_A15_PERFCTR_L1_DCACHE_ACCESS_READ		= 0x40,
+	ARMV7_A15_PERFCTR_L1_DCACHE_ACCESS_WRITE	= 0x41,
+	ARMV7_A15_PERFCTR_L1_DCACHE_REFILL_READ		= 0x42,
+	ARMV7_A15_PERFCTR_L1_DCACHE_REFILL_WRITE	= 0x43,
+
+	ARMV7_A15_PERFCTR_DTLB_REFILL_L1_READ		= 0x4C,
+	ARMV7_A15_PERFCTR_DTLB_REFILL_L1_WRITE		= 0x4D,
+
+	ARMV7_A15_PERFCTR_L2_CACHE_ACCESS_READ		= 0x50,
+	ARMV7_A15_PERFCTR_L2_CACHE_ACCESS_WRITE		= 0x51,
+	ARMV7_A15_PERFCTR_L2_CACHE_REFILL_READ		= 0x52,
+	ARMV7_A15_PERFCTR_L2_CACHE_REFILL_WRITE		= 0x53,
+
+	ARMV7_A15_PERFCTR_PC_WRITE_SPEC			= 0x76,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*
@@ -194,6 +280,7 @@ enum armv7_a15_perf_types {
  * accesses/misses in hardware.
  */
 static const unsigned armv7_a8_perf_map[PERF_COUNT_HW_MAX] = {
+<<<<<<< HEAD
 	[PERF_COUNT_HW_CPU_CYCLES]	    = ARMV7_PERFCTR_CPU_CYCLES,
 	[PERF_COUNT_HW_INSTRUCTIONS]	    = ARMV7_PERFCTR_INSTR_EXECUTED,
 	[PERF_COUNT_HW_CACHE_REFERENCES]    = HW_OP_UNSUPPORTED,
@@ -201,6 +288,17 @@ static const unsigned armv7_a8_perf_map[PERF_COUNT_HW_MAX] = {
 	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = ARMV7_PERFCTR_PC_WRITE,
 	[PERF_COUNT_HW_BRANCH_MISSES]	    = ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
 	[PERF_COUNT_HW_BUS_CYCLES]	    = ARMV7_PERFCTR_CLOCK_CYCLES,
+=======
+	[PERF_COUNT_HW_CPU_CYCLES]		= ARMV7_PERFCTR_CPU_CYCLES,
+	[PERF_COUNT_HW_INSTRUCTIONS]		= ARMV7_PERFCTR_INSTR_EXECUTED,
+	[PERF_COUNT_HW_CACHE_REFERENCES]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+	[PERF_COUNT_HW_CACHE_MISSES]		= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= ARMV7_PERFCTR_PC_WRITE,
+	[PERF_COUNT_HW_BRANCH_MISSES]		= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+	[PERF_COUNT_HW_BUS_CYCLES]		= HW_OP_UNSUPPORTED,
+	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND]	= ARMV7_A8_PERFCTR_STALL_ISIDE,
+	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND]	= HW_OP_UNSUPPORTED,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
@@ -214,12 +312,21 @@ static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 		 * combined.
 		 */
 		[C(OP_READ)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -228,12 +335,21 @@ static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	},
 	[C(L1I)] = {
 		[C(OP_READ)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_INST,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_INST_MISS,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_INST,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_INST_MISS,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_A8_PERFCTR_L1_ICACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_A8_PERFCTR_L1_ICACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -242,12 +358,21 @@ static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	},
 	[C(LL)] = {
 		[C(OP_READ)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L2_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L2_CACH_MISS,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L2_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L2_CACH_MISS,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_A8_PERFCTR_L2_CACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_A8_PERFCTR_L2_CACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_A8_PERFCTR_L2_CACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_A8_PERFCTR_L2_CACHE_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -271,11 +396,19 @@ static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	[C(ITLB)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_MISS,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_MISS,
+=======
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -284,6 +417,7 @@ static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	},
 	[C(BPU)] = {
 		[C(OP_READ)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_WRITE,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
@@ -292,6 +426,28 @@ static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_WRITE,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(NODE)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -304,6 +460,7 @@ static unsigned armv7_a8_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
  * Cortex-A9 HW events mapping
  */
 static const unsigned armv7_a9_perf_map[PERF_COUNT_HW_MAX] = {
+<<<<<<< HEAD
 	[PERF_COUNT_HW_CPU_CYCLES]	    = ARMV7_PERFCTR_CPU_CYCLES,
 	[PERF_COUNT_HW_INSTRUCTIONS]	    =
 					ARMV7_PERFCTR_INST_OUT_OF_RENAME_STAGE,
@@ -315,6 +472,20 @@ static const unsigned armv7_a9_perf_map[PERF_COUNT_HW_MAX] = {
 };
 
 static  unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+=======
+	[PERF_COUNT_HW_CPU_CYCLES]		= ARMV7_PERFCTR_CPU_CYCLES,
+	[PERF_COUNT_HW_INSTRUCTIONS]		= ARMV7_A9_PERFCTR_INSTR_CORE_RENAME,
+	[PERF_COUNT_HW_CACHE_REFERENCES]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+	[PERF_COUNT_HW_CACHE_MISSES]		= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= ARMV7_PERFCTR_PC_WRITE,
+	[PERF_COUNT_HW_BRANCH_MISSES]		= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+	[PERF_COUNT_HW_BUS_CYCLES]		= HW_OP_UNSUPPORTED,
+	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND]	= ARMV7_A9_PERFCTR_STALL_ICACHE,
+	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND]	= ARMV7_A9_PERFCTR_STALL_DISPATCH,
+};
+
+static unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+>>>>>>> refs/remotes/origin/cm-10.0
 					  [PERF_COUNT_HW_CACHE_OP_MAX]
 					  [PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
@@ -325,12 +496,21 @@ static  unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 		 * combined.
 		 */
 		[C(OP_READ)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DCACHE_REFILL,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -340,11 +520,19 @@ static  unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	[C(L1I)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_IFETCH_MISS,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_IFETCH_MISS,
+=======
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -382,11 +570,19 @@ static  unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	[C(ITLB)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_MISS,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_MISS,
+=======
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -395,6 +591,7 @@ static  unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	},
 	[C(BPU)] = {
 		[C(OP_READ)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_WRITE,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
@@ -403,6 +600,28 @@ static  unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_WRITE,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(NODE)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -415,6 +634,7 @@ static  unsigned armv7_a9_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
  * Cortex-A5 HW events mapping
  */
 static const unsigned armv7_a5_perf_map[PERF_COUNT_HW_MAX] = {
+<<<<<<< HEAD
 	[PERF_COUNT_HW_CPU_CYCLES]	    = ARMV7_PERFCTR_CPU_CYCLES,
 	[PERF_COUNT_HW_INSTRUCTIONS]	    = ARMV7_PERFCTR_INSTR_EXECUTED,
 	[PERF_COUNT_HW_CACHE_REFERENCES]    = HW_OP_UNSUPPORTED,
@@ -422,6 +642,17 @@ static const unsigned armv7_a5_perf_map[PERF_COUNT_HW_MAX] = {
 	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = ARMV7_PERFCTR_PC_WRITE,
 	[PERF_COUNT_HW_BRANCH_MISSES]	    = ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
 	[PERF_COUNT_HW_BUS_CYCLES]	    = HW_OP_UNSUPPORTED,
+=======
+	[PERF_COUNT_HW_CPU_CYCLES]		= ARMV7_PERFCTR_CPU_CYCLES,
+	[PERF_COUNT_HW_INSTRUCTIONS]		= ARMV7_PERFCTR_INSTR_EXECUTED,
+	[PERF_COUNT_HW_CACHE_REFERENCES]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+	[PERF_COUNT_HW_CACHE_MISSES]		= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= ARMV7_PERFCTR_PC_WRITE,
+	[PERF_COUNT_HW_BRANCH_MISSES]		= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+	[PERF_COUNT_HW_BUS_CYCLES]		= HW_OP_UNSUPPORTED,
+	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND]	= HW_OP_UNSUPPORTED,
+	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND]	= HW_OP_UNSUPPORTED,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
@@ -429,6 +660,7 @@ static unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 					[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
 		[C(OP_READ)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]
 					= ARMV7_PERFCTR_DCACHE_ACCESS,
 			[C(RESULT_MISS)]
@@ -445,26 +677,51 @@ static unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 					= ARMV7_PERFCTR_PREFETCH_LINEFILL,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PREFETCH_LINEFILL_DROP,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_A5_PERFCTR_PREFETCH_LINEFILL,
+			[C(RESULT_MISS)]	= ARMV7_A5_PERFCTR_PREFETCH_LINEFILL_DROP,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 	},
 	[C(L1I)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_ICACHE_ACCESS,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_IFETCH_MISS,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_ICACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_IFETCH_MISS,
+=======
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_ICACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		/*
 		 * The prefetch counters don't differentiate between the I
 		 * side and the D side.
 		 */
 		[C(OP_PREFETCH)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]
 					= ARMV7_PERFCTR_PREFETCH_LINEFILL,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PREFETCH_LINEFILL_DROP,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_A5_PERFCTR_PREFETCH_LINEFILL,
+			[C(RESULT_MISS)]	= ARMV7_A5_PERFCTR_PREFETCH_LINEFILL_DROP,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 	},
 	[C(LL)] = {
@@ -498,11 +755,19 @@ static unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	[C(ITLB)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_MISS,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_MISS,
+=======
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -512,6 +777,7 @@ static unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	[C(BPU)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
 		},
@@ -519,6 +785,27 @@ static unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+=======
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(NODE)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -531,6 +818,7 @@ static unsigned armv7_a5_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
  * Cortex-A15 HW events mapping
  */
 static const unsigned armv7_a15_perf_map[PERF_COUNT_HW_MAX] = {
+<<<<<<< HEAD
 	[PERF_COUNT_HW_CPU_CYCLES]	    = ARMV7_PERFCTR_CPU_CYCLES,
 	[PERF_COUNT_HW_INSTRUCTIONS]	    = ARMV7_PERFCTR_INSTR_EXECUTED,
 	[PERF_COUNT_HW_CACHE_REFERENCES]    = HW_OP_UNSUPPORTED,
@@ -538,6 +826,17 @@ static const unsigned armv7_a15_perf_map[PERF_COUNT_HW_MAX] = {
 	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = ARMV7_PERFCTR_SPEC_PC_WRITE,
 	[PERF_COUNT_HW_BRANCH_MISSES]	    = ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
 	[PERF_COUNT_HW_BUS_CYCLES]	    = ARMV7_PERFCTR_BUS_CYCLES,
+=======
+	[PERF_COUNT_HW_CPU_CYCLES]		= ARMV7_PERFCTR_CPU_CYCLES,
+	[PERF_COUNT_HW_INSTRUCTIONS]		= ARMV7_PERFCTR_INSTR_EXECUTED,
+	[PERF_COUNT_HW_CACHE_REFERENCES]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+	[PERF_COUNT_HW_CACHE_MISSES]		= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= ARMV7_A15_PERFCTR_PC_WRITE_SPEC,
+	[PERF_COUNT_HW_BRANCH_MISSES]		= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+	[PERF_COUNT_HW_BUS_CYCLES]		= ARMV7_PERFCTR_BUS_CYCLES,
+	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND]	= HW_OP_UNSUPPORTED,
+	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND]	= HW_OP_UNSUPPORTED,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
@@ -545,6 +844,7 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 					[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
 		[C(OP_READ)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]
 					= ARMV7_PERFCTR_L1_DCACHE_READ_ACCESS,
 			[C(RESULT_MISS)]
@@ -555,6 +855,14 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 					= ARMV7_PERFCTR_L1_DCACHE_WRITE_ACCESS,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_L1_DCACHE_WRITE_REFILL,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_A15_PERFCTR_L1_DCACHE_ACCESS_READ,
+			[C(RESULT_MISS)]	= ARMV7_A15_PERFCTR_L1_DCACHE_REFILL_READ,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_A15_PERFCTR_L1_DCACHE_ACCESS_WRITE,
+			[C(RESULT_MISS)]	= ARMV7_A15_PERFCTR_L1_DCACHE_REFILL_WRITE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -570,11 +878,19 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 		 */
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_ICACHE_ACCESS,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_IFETCH_MISS,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_ICACHE_ACCESS,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_IFETCH_MISS,
+=======
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_ICACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -583,6 +899,7 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	},
 	[C(LL)] = {
 		[C(OP_READ)] = {
+<<<<<<< HEAD
 			[C(RESULT_ACCESS)]
 					= ARMV7_PERFCTR_L2_DCACHE_READ_ACCESS,
 			[C(RESULT_MISS)]
@@ -593,6 +910,14 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 					= ARMV7_PERFCTR_L2_DCACHE_WRITE_ACCESS,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_L2_DCACHE_WRITE_REFILL,
+=======
+			[C(RESULT_ACCESS)]	= ARMV7_A15_PERFCTR_L2_CACHE_ACCESS_READ,
+			[C(RESULT_MISS)]	= ARMV7_A15_PERFCTR_L2_CACHE_REFILL_READ,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_A15_PERFCTR_L2_CACHE_ACCESS_WRITE,
+			[C(RESULT_MISS)]	= ARMV7_A15_PERFCTR_L2_CACHE_REFILL_WRITE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -602,6 +927,7 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	[C(DTLB)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_L1_DTLB_READ_REFILL,
 		},
@@ -609,6 +935,13 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_L1_DTLB_WRITE_REFILL,
+=======
+			[C(RESULT_MISS)]	= ARMV7_A15_PERFCTR_DTLB_REFILL_L1_READ,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_A15_PERFCTR_DTLB_REFILL_L1_WRITE,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -618,11 +951,19 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	[C(ITLB)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_MISS,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
 			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_MISS,
+=======
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -632,6 +973,7 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	[C(BPU)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
 		},
@@ -639,6 +981,27 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
 			[C(RESULT_MISS)]
 					= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+=======
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(NODE)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+>>>>>>> refs/remotes/origin/cm-10.0
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -648,6 +1011,7 @@ static unsigned armv7_a15_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 };
 
 /*
+<<<<<<< HEAD
  * Perf Events counters
  */
 enum armv7_counters {
@@ -661,12 +1025,155 @@ enum armv7_counters {
  * The last event counter is (ARMV7_COUNTER0 + armpmu->num_events - 1).
  */
 #define	ARMV7_COUNTER_LAST	(ARMV7_COUNTER0 + armpmu->num_events - 1)
+=======
+ * Cortex-A7 HW events mapping
+ */
+static const unsigned armv7_a7_perf_map[PERF_COUNT_HW_MAX] = {
+	[PERF_COUNT_HW_CPU_CYCLES]		= ARMV7_PERFCTR_CPU_CYCLES,
+	[PERF_COUNT_HW_INSTRUCTIONS]		= ARMV7_PERFCTR_INSTR_EXECUTED,
+	[PERF_COUNT_HW_CACHE_REFERENCES]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+	[PERF_COUNT_HW_CACHE_MISSES]		= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= ARMV7_PERFCTR_PC_WRITE,
+	[PERF_COUNT_HW_BRANCH_MISSES]		= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+	[PERF_COUNT_HW_BUS_CYCLES]		= ARMV7_PERFCTR_BUS_CYCLES,
+	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND]	= HW_OP_UNSUPPORTED,
+	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND]	= HW_OP_UNSUPPORTED,
+};
+
+static unsigned armv7_a7_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+					[PERF_COUNT_HW_CACHE_OP_MAX]
+					[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
+	[C(L1D)] = {
+		/*
+		 * The performance counters don't differentiate between read
+		 * and write accesses/misses so this isn't strictly correct,
+		 * but it's the best we can do. Writes and reads get
+		 * combined.
+		 */
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_DCACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_DCACHE_REFILL,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(L1I)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_ICACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L1_ICACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L1_ICACHE_REFILL,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(LL)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L2_CACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L2_CACHE_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_L2_CACHE_ACCESS,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_L2_CACHE_REFILL,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(DTLB)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DTLB_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_DTLB_REFILL,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(ITLB)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_ITLB_REFILL,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(BPU)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= ARMV7_PERFCTR_PC_BRANCH_PRED,
+			[C(RESULT_MISS)]	= ARMV7_PERFCTR_PC_BRANCH_MIS_PRED,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+	[C(NODE)] = {
+		[C(OP_READ)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+		[C(OP_WRITE)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+		[C(OP_PREFETCH)] = {
+			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+		},
+	},
+};
+
+/*
+ * Perf Events' indices
+ */
+#define	ARMV7_IDX_CYCLE_COUNTER	0
+#define	ARMV7_IDX_COUNTER0	1
+#define	ARMV7_IDX_COUNTER_LAST	(ARMV7_IDX_CYCLE_COUNTER + cpu_pmu->num_events - 1)
+
+#define	ARMV7_MAX_COUNTERS	32
+#define	ARMV7_COUNTER_MASK	(ARMV7_MAX_COUNTERS - 1)
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * ARMv7 low level PMNC access
  */
 
 /*
+<<<<<<< HEAD
+=======
+ * Perf Event to low level counters mapping
+ */
+#define	ARMV7_IDX_TO_COUNTER(x)	\
+	(((x) - ARMV7_IDX_COUNTER0) & ARMV7_COUNTER_MASK)
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Per-CPU PMNC: config reg
  */
 #define ARMV7_PMNC_E		(1 << 0) /* Enable all counters */
@@ -680,6 +1187,7 @@ enum armv7_counters {
 #define	ARMV7_PMNC_MASK		0x3f	 /* Mask for writable bits */
 
 /*
+<<<<<<< HEAD
  * Available counters
  */
 #define ARMV7_CNT0		0	/* First event counter */
@@ -728,10 +1236,15 @@ enum armv7_counters {
  */
 #define ARMV7_FLAG_P(idx)	(1 << (idx - ARMV7_EVENT_CNT_TO_CNTx))
 #define ARMV7_FLAG_C		(1 << ARMV7_CCNT)
+=======
+ * FLAG: counters overflow flag status reg
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 #define	ARMV7_FLAG_MASK		0xffffffff	/* Mask for writable bits */
 #define	ARMV7_OVERFLOWED_MASK	ARMV7_FLAG_MASK
 
 /*
+<<<<<<< HEAD
  * Event filters for PMUv2
  */
 #define        ARMV7_EXCLUDE_PL1       (1 << 31)
@@ -769,24 +1282,48 @@ int armv7pmu_set_event_filter(struct hw_perf_event *event,
 }
 
 static inline unsigned long armv7_pmnc_read(void)
+=======
+ * PMXEVTYPER: Event selection reg
+ */
+#define	ARMV7_EVTYPE_MASK	0xc80000ff	/* Mask for writable bits */
+#define	ARMV7_EVTYPE_EVENT	0xff		/* Mask for EVENT bits */
+
+/*
+ * Event filters for PMUv2
+ */
+#define	ARMV7_EXCLUDE_PL1	(1 << 31)
+#define	ARMV7_EXCLUDE_USER	(1 << 30)
+#define	ARMV7_INCLUDE_HYP	(1 << 27)
+
+static inline u32 armv7_pmnc_read(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	u32 val;
 	asm volatile("mrc p15, 0, %0, c9, c12, 0" : "=r"(val));
 	return val;
 }
 
+<<<<<<< HEAD
 static inline void armv7_pmnc_write(unsigned long val)
+=======
+static inline void armv7_pmnc_write(u32 val)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	val &= ARMV7_PMNC_MASK;
 	isb();
 	asm volatile("mcr p15, 0, %0, c9, c12, 0" : : "r"(val));
 }
 
+<<<<<<< HEAD
 static inline int armv7_pmnc_has_overflowed(unsigned long pmnc)
+=======
+static inline int armv7_pmnc_has_overflowed(u32 pmnc)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return pmnc & ARMV7_OVERFLOWED_MASK;
 }
 
+<<<<<<< HEAD
 static inline int armv7_pmnc_counter_has_overflowed(unsigned long pmnc,
 					enum armv7_counters counter)
 {
@@ -799,10 +1336,30 @@ static inline int armv7_pmnc_counter_has_overflowed(unsigned long pmnc,
 	else
 		pr_err("CPU%u checking wrong counter %d overflow status\n",
 			smp_processor_id(), counter);
+=======
+static inline int armv7_pmnc_counter_valid(int idx)
+{
+	return idx >= ARMV7_IDX_CYCLE_COUNTER && idx <= ARMV7_IDX_COUNTER_LAST;
+}
+
+static inline int armv7_pmnc_counter_has_overflowed(u32 pmnc, int idx)
+{
+	int ret = 0;
+	u32 counter;
+
+	if (!armv7_pmnc_counter_valid(idx)) {
+		pr_err("CPU%u checking wrong counter %d overflow status\n",
+			smp_processor_id(), idx);
+	} else {
+		counter = ARMV7_IDX_TO_COUNTER(idx);
+		ret = pmnc & BIT(counter);
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline int armv7_pmnc_select_counter(unsigned int idx)
 {
 	u32 val;
@@ -815,6 +1372,20 @@ static inline int armv7_pmnc_select_counter(unsigned int idx)
 
 	val = (idx - ARMV7_EVENT_CNT_TO_CNTx) & ARMV7_SELECT_MASK;
 	asm volatile("mcr p15, 0, %0, c9, c12, 5" : : "r" (val));
+=======
+static inline int armv7_pmnc_select_counter(int idx)
+{
+	u32 counter;
+
+	if (!armv7_pmnc_counter_valid(idx)) {
+		pr_err("CPU%u selecting wrong PMNC counter %d\n",
+			smp_processor_id(), idx);
+		return -EINVAL;
+	}
+
+	counter = ARMV7_IDX_TO_COUNTER(idx);
+	asm volatile("mcr p15, 0, %0, c9, c12, 5" : : "r" (counter));
+>>>>>>> refs/remotes/origin/cm-10.0
 	isb();
 
 	return idx;
@@ -822,6 +1393,7 @@ static inline int armv7_pmnc_select_counter(unsigned int idx)
 
 static inline u32 armv7pmu_read_counter(int idx)
 {
+<<<<<<< HEAD
 	unsigned long value = 0;
 
 	if (idx == ARMV7_CYCLE_COUNTER)
@@ -833,12 +1405,24 @@ static inline u32 armv7pmu_read_counter(int idx)
 	} else
 		pr_err("CPU%u reading wrong counter %d\n",
 			smp_processor_id(), idx);
+=======
+	u32 value = 0;
+
+	if (!armv7_pmnc_counter_valid(idx))
+		pr_err("CPU%u reading wrong counter %d\n",
+			smp_processor_id(), idx);
+	else if (idx == ARMV7_IDX_CYCLE_COUNTER)
+		asm volatile("mrc p15, 0, %0, c9, c13, 0" : "=r" (value));
+	else if (armv7_pmnc_select_counter(idx) == idx)
+		asm volatile("mrc p15, 0, %0, c9, c13, 2" : "=r" (value));
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return value;
 }
 
 static inline void armv7pmu_write_counter(int idx, u32 value)
 {
+<<<<<<< HEAD
 	if (idx == ARMV7_CYCLE_COUNTER)
 		asm volatile("mcr p15, 0, %0, c9, c13, 0" : : "r" (value));
 	else if ((idx >= ARMV7_COUNTER0) && (idx <= ARMV7_COUNTER_LAST)) {
@@ -855,10 +1439,26 @@ static inline void armv7_pmnc_write_evtsel(unsigned int idx, u32 val)
 	if (armv7_pmnc_select_counter(idx) == idx) {
 		val &= ARMV7_EVTYPE_MASK;
 
+=======
+	if (!armv7_pmnc_counter_valid(idx))
+		pr_err("CPU%u writing wrong counter %d\n",
+			smp_processor_id(), idx);
+	else if (idx == ARMV7_IDX_CYCLE_COUNTER)
+		asm volatile("mcr p15, 0, %0, c9, c13, 0" : : "r" (value));
+	else if (armv7_pmnc_select_counter(idx) == idx)
+		asm volatile("mcr p15, 0, %0, c9, c13, 2" : : "r" (value));
+}
+
+static inline void armv7_pmnc_write_evtsel(int idx, u32 val)
+{
+	if (armv7_pmnc_select_counter(idx) == idx) {
+		val &= ARMV7_EVTYPE_MASK;
+>>>>>>> refs/remotes/origin/cm-10.0
 		asm volatile("mcr p15, 0, %0, c9, c13, 1" : : "r" (val));
 	}
 }
 
+<<<<<<< HEAD
 static inline u32 armv7_pmnc_enable_counter(unsigned int idx)
 {
 	u32 val;
@@ -940,6 +1540,69 @@ static inline u32 armv7_pmnc_disable_intens(unsigned int idx)
 		val = ARMV7_INTENC_P(idx);
 
 	asm volatile("mcr p15, 0, %0, c9, c14, 2" : : "r" (val));
+=======
+static inline int armv7_pmnc_enable_counter(int idx)
+{
+	u32 counter;
+
+	if (!armv7_pmnc_counter_valid(idx)) {
+		pr_err("CPU%u enabling wrong PMNC counter %d\n",
+			smp_processor_id(), idx);
+		return -EINVAL;
+	}
+
+	counter = ARMV7_IDX_TO_COUNTER(idx);
+	asm volatile("mcr p15, 0, %0, c9, c12, 1" : : "r" (BIT(counter)));
+	return idx;
+}
+
+static inline int armv7_pmnc_disable_counter(int idx)
+{
+	u32 counter;
+
+	if (!armv7_pmnc_counter_valid(idx)) {
+		pr_err("CPU%u disabling wrong PMNC counter %d\n",
+			smp_processor_id(), idx);
+		return -EINVAL;
+	}
+
+	counter = ARMV7_IDX_TO_COUNTER(idx);
+	asm volatile("mcr p15, 0, %0, c9, c12, 2" : : "r" (BIT(counter)));
+	return idx;
+}
+
+static inline int armv7_pmnc_enable_intens(int idx)
+{
+	u32 counter;
+
+	if (!armv7_pmnc_counter_valid(idx)) {
+		pr_err("CPU%u enabling wrong PMNC counter IRQ enable %d\n",
+			smp_processor_id(), idx);
+		return -EINVAL;
+	}
+
+	counter = ARMV7_IDX_TO_COUNTER(idx);
+	asm volatile("mcr p15, 0, %0, c9, c14, 1" : : "r" (BIT(counter)));
+	return idx;
+}
+
+static inline int armv7_pmnc_disable_intens(int idx)
+{
+	u32 counter;
+
+	if (!armv7_pmnc_counter_valid(idx)) {
+		pr_err("CPU%u disabling wrong PMNC counter IRQ enable %d\n",
+			smp_processor_id(), idx);
+		return -EINVAL;
+	}
+
+	counter = ARMV7_IDX_TO_COUNTER(idx);
+	asm volatile("mcr p15, 0, %0, c9, c14, 2" : : "r" (BIT(counter)));
+	isb();
+	/* Clear the overflow flag in case an interrupt is pending. */
+	asm volatile("mcr p15, 0, %0, c9, c12, 3" : : "r" (BIT(counter)));
+	isb();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return idx;
 }
@@ -984,6 +1647,7 @@ static void armv7_pmnc_dump_regs(void)
 	asm volatile("mrc p15, 0, %0, c9, c13, 0" : "=r" (val));
 	printk(KERN_INFO "CCNT  =0x%08x\n", val);
 
+<<<<<<< HEAD
 	for (cnt = ARMV7_COUNTER0; cnt < ARMV7_COUNTER_LAST; cnt++) {
 		armv7_pmnc_select_counter(cnt);
 		asm volatile("mrc p15, 0, %0, c9, c13, 2" : "=r" (val));
@@ -992,19 +1656,40 @@ static void armv7_pmnc_dump_regs(void)
 		asm volatile("mrc p15, 0, %0, c9, c13, 1" : "=r" (val));
 		printk(KERN_INFO "CNT[%d] evtsel=0x%08x\n",
 			cnt-ARMV7_EVENT_CNT_TO_CNTx, val);
+=======
+	for (cnt = ARMV7_IDX_COUNTER0; cnt <= ARMV7_IDX_COUNTER_LAST; cnt++) {
+		armv7_pmnc_select_counter(cnt);
+		asm volatile("mrc p15, 0, %0, c9, c13, 2" : "=r" (val));
+		printk(KERN_INFO "CNT[%d] count =0x%08x\n",
+			ARMV7_IDX_TO_COUNTER(cnt), val);
+		asm volatile("mrc p15, 0, %0, c9, c13, 1" : "=r" (val));
+		printk(KERN_INFO "CNT[%d] evtsel=0x%08x\n",
+			ARMV7_IDX_TO_COUNTER(cnt), val);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 #endif
 
+<<<<<<< HEAD
 static void armv7pmu_enable_event(struct hw_perf_event *hwc, int idx)
 {
 	unsigned long flags;
+=======
+static void armv7pmu_enable_event(struct hw_perf_event *hwc, int idx, int cpu)
+{
+	unsigned long flags;
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Enable counter and interrupt, and set the counter to count
 	 * the event that we're interested in.
 	 */
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
+=======
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Disable counter
@@ -1013,9 +1698,16 @@ static void armv7pmu_enable_event(struct hw_perf_event *hwc, int idx)
 
 	/*
 	 * Set event (if destined for PMNx counters)
+<<<<<<< HEAD
 	 * We don't need to set the event if it's a cycle count
 	 */
 	if (armpmu->set_event_filter || idx != ARMV7_CYCLE_COUNTER)
+=======
+	 * We only need to set the event for the cycle counter if we
+	 * have the ability to perform event filtering.
+	 */
+	if (armv7pmu.set_event_filter || idx != ARMV7_IDX_CYCLE_COUNTER)
+>>>>>>> refs/remotes/origin/cm-10.0
 		armv7_pmnc_write_evtsel(idx, hwc->config_base);
 
 	/*
@@ -1028,17 +1720,29 @@ static void armv7pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	 */
 	armv7_pmnc_enable_counter(idx);
 
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void armv7pmu_disable_event(struct hw_perf_event *hwc, int idx)
 {
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Disable counter and interrupt
 	 */
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
+=======
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * Disable counter
@@ -1050,14 +1754,24 @@ static void armv7pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	 */
 	armv7_pmnc_disable_intens(idx);
 
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static irqreturn_t armv7pmu_handle_irq(int irq_num, void *dev)
 {
+<<<<<<< HEAD
 	unsigned long pmnc;
 	struct perf_sample_data data;
 	struct cpu_hw_events *cpuc;
+=======
+	u32 pmnc;
+	struct perf_sample_data data;
+	struct pmu_hw_events *cpuc;
+>>>>>>> refs/remotes/origin/cm-10.0
 	struct pt_regs *regs;
 	int idx;
 
@@ -1080,11 +1794,20 @@ static irqreturn_t armv7pmu_handle_irq(int irq_num, void *dev)
 	perf_sample_data_init(&data, 0);
 
 	cpuc = &__get_cpu_var(cpu_hw_events);
+<<<<<<< HEAD
 	for (idx = 0; idx <= armpmu->num_events; ++idx) {
 		struct perf_event *event = cpuc->events[idx];
 		struct hw_perf_event *hwc;
 
 		if (!test_bit(idx, cpuc->active_mask))
+=======
+	for (idx = 0; idx < cpu_pmu->num_events; ++idx) {
+		struct perf_event *event = cpuc->events[idx];
+		struct hw_perf_event *hwc;
+
+		/* Ignore if we don't have an event. */
+		if (!event)
+>>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 
 		/*
@@ -1095,13 +1818,22 @@ static irqreturn_t armv7pmu_handle_irq(int irq_num, void *dev)
 			continue;
 
 		hwc = &event->hw;
+<<<<<<< HEAD
 		armpmu_event_update(event, hwc, idx, 1);
+=======
+		armpmu_event_update(event, hwc, idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 		data.period = event->hw.last_period;
 		if (!armpmu_event_set_period(event, hwc, idx))
 			continue;
 
+<<<<<<< HEAD
 		if (perf_event_overflow(event, 0, &data, regs))
 			armpmu->disable(hwc, idx);
+=======
+		if (perf_event_overflow(event, &data, regs))
+			cpu_pmu->disable(hwc, idx);
+>>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	/*
@@ -1119,16 +1851,26 @@ static irqreturn_t armv7pmu_handle_irq(int irq_num, void *dev)
 static void armv7pmu_start(void)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 
 	raw_spin_lock_irqsave(&pmu_lock, flags);
 	/* Enable all counters */
 	armv7_pmnc_write(armv7_pmnc_read() | ARMV7_PMNC_E);
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
+=======
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+	/* Enable all counters */
+	armv7_pmnc_write(armv7_pmnc_read() | ARMV7_PMNC_E);
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void armv7pmu_stop(void)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 
 	raw_spin_lock_irqsave(&pmu_lock, flags);
 	/* Disable all counters */
@@ -1137,11 +1879,23 @@ static void armv7pmu_stop(void)
 }
 
 static int armv7pmu_get_event_idx(struct cpu_hw_events *cpuc,
+=======
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+	/* Disable all counters */
+	armv7_pmnc_write(armv7_pmnc_read() & ~ARMV7_PMNC_E);
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+}
+
+static int armv7pmu_get_event_idx(struct pmu_hw_events *cpuc,
+>>>>>>> refs/remotes/origin/cm-10.0
 				  struct hw_perf_event *event)
 {
 	int idx;
 	unsigned long evtype = event->config_base & ARMV7_EVTYPE_EVENT;
 
+<<<<<<< HEAD
 
 	/* Always place a cycle counter into the cycle counter. */
 	if (evtype == ARMV7_PERFCTR_CPU_CYCLES) {
@@ -1162,24 +1916,113 @@ static int armv7pmu_get_event_idx(struct cpu_hw_events *cpuc,
 		/* The counters are all in use. */
 		return -EAGAIN;
 	}
+=======
+	/* Always place a cycle counter into the cycle counter. */
+	if (evtype == ARMV7_PERFCTR_CPU_CYCLES) {
+		if (test_and_set_bit(ARMV7_IDX_CYCLE_COUNTER, cpuc->used_mask))
+			return -EAGAIN;
+
+		return ARMV7_IDX_CYCLE_COUNTER;
+	}
+
+	/*
+	 * For anything other than a cycle counter, try and use
+	 * the events counters
+	 */
+	for (idx = ARMV7_IDX_COUNTER0; idx < cpu_pmu->num_events; ++idx) {
+		if (!test_and_set_bit(idx, cpuc->used_mask))
+			return idx;
+	}
+
+	/* The counters are all in use. */
+	return -EAGAIN;
+}
+
+/*
+ * Add an event filter to a given event. This will only work for PMUv2 PMUs.
+ */
+static int armv7pmu_set_event_filter(struct hw_perf_event *event,
+				     struct perf_event_attr *attr)
+{
+	unsigned long config_base = 0;
+
+	if (attr->exclude_idle)
+		return -EPERM;
+	if (attr->exclude_user)
+		config_base |= ARMV7_EXCLUDE_USER;
+	if (attr->exclude_kernel)
+		config_base |= ARMV7_EXCLUDE_PL1;
+	if (!attr->exclude_hv)
+		config_base |= ARMV7_INCLUDE_HYP;
+
+	/*
+	 * Install the filter into config_base as this is used to
+	 * construct the event type.
+	 */
+	event->config_base = config_base;
+
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void armv7pmu_reset(void *info)
 {
+<<<<<<< HEAD
 	u32 idx, nb_cnt = armpmu->num_events;
 
 	/* The counter and interrupt enable registers are unknown at reset. */
 	for (idx = 1; idx < nb_cnt; ++idx)
+=======
+	u32 idx, nb_cnt = cpu_pmu->num_events;
+
+	/* The counter and interrupt enable registers are unknown at reset. */
+	for (idx = ARMV7_IDX_CYCLE_COUNTER; idx < nb_cnt; ++idx)
+>>>>>>> refs/remotes/origin/cm-10.0
 		armv7pmu_disable_event(NULL, idx);
 
 	/* Initialize & Reset PMNC: C and P bits */
 	armv7_pmnc_write(ARMV7_PMNC_P | ARMV7_PMNC_C);
 }
 
+<<<<<<< HEAD
 static struct arm_pmu armv7pmu = {
 	.handle_irq		= armv7pmu_handle_irq,
 	.request_pmu_irq	= armpmu_generic_request_irq,
 	.free_pmu_irq		= armpmu_generic_free_irq,
+=======
+static int armv7_a8_map_event(struct perf_event *event)
+{
+	return map_cpu_event(event, &armv7_a8_perf_map,
+				&armv7_a8_perf_cache_map, 0xFF);
+}
+
+static int armv7_a9_map_event(struct perf_event *event)
+{
+	return map_cpu_event(event, &armv7_a9_perf_map,
+				&armv7_a9_perf_cache_map, 0xFF);
+}
+
+static int armv7_a5_map_event(struct perf_event *event)
+{
+	return map_cpu_event(event, &armv7_a5_perf_map,
+				&armv7_a5_perf_cache_map, 0xFF);
+}
+
+static int armv7_a15_map_event(struct perf_event *event)
+{
+	return map_cpu_event(event, &armv7_a15_perf_map,
+				&armv7_a15_perf_cache_map, 0xFF);
+}
+
+static int armv7_a7_map_event(struct perf_event *event)
+{
+	return map_cpu_event(event, &armv7_a7_perf_map,
+				&armv7_a7_perf_cache_map, 0xFF);
+}
+
+static struct arm_pmu armv7pmu = {
+	.handle_irq		= armv7pmu_handle_irq,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.enable			= armv7pmu_enable_event,
 	.disable		= armv7pmu_disable_event,
 	.read_counter		= armv7pmu_read_counter,
@@ -1188,7 +2031,10 @@ static struct arm_pmu armv7pmu = {
 	.start			= armv7pmu_start,
 	.stop			= armv7pmu_stop,
 	.reset			= armv7pmu_reset,
+<<<<<<< HEAD
 	.raw_event_mask		= 0xFF,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.max_period		= (1LLU << 32) - 1,
 };
 
@@ -1203,36 +2049,61 @@ static u32 __init armv7_read_num_pmnc_events(void)
 	return nb_cnt + 1;
 }
 
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_a8_pmu_init(void)
 {
 	armv7pmu.id		= ARM_PERF_PMU_ID_CA8;
 	armv7pmu.name		= "ARMv7 Cortex-A8";
 	armv7pmu.cache_map	= &armv7_a8_perf_cache_map;
 	armv7pmu.event_map	= &armv7_a8_perf_map;
+=======
+static struct arm_pmu *__init armv7_a8_pmu_init(void)
+{
+	armv7pmu.id		= ARM_PERF_PMU_ID_CA8;
+	armv7pmu.name		= "ARMv7 Cortex-A8";
+	armv7pmu.map_event	= armv7_a8_map_event;
+>>>>>>> refs/remotes/origin/cm-10.0
 	armv7pmu.num_events	= armv7_read_num_pmnc_events();
 	return &armv7pmu;
 }
 
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_a9_pmu_init(void)
 {
 	armv7pmu.id		= ARM_PERF_PMU_ID_CA9;
 	armv7pmu.name		= "ARMv7 Cortex-A9";
 	armv7pmu.cache_map	= &armv7_a9_perf_cache_map;
 	armv7pmu.event_map	= &armv7_a9_perf_map;
+=======
+static struct arm_pmu *__init armv7_a9_pmu_init(void)
+{
+	armv7pmu.id		= ARM_PERF_PMU_ID_CA9;
+	armv7pmu.name		= "ARMv7 Cortex-A9";
+	armv7pmu.map_event	= armv7_a9_map_event;
+>>>>>>> refs/remotes/origin/cm-10.0
 	armv7pmu.num_events	= armv7_read_num_pmnc_events();
 	return &armv7pmu;
 }
 
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_a5_pmu_init(void)
 {
 	armv7pmu.id		= ARM_PERF_PMU_ID_CA5;
 	armv7pmu.name		= "ARMv7 Cortex-A5";
 	armv7pmu.cache_map	= &armv7_a5_perf_cache_map;
 	armv7pmu.event_map	= &armv7_a5_perf_map;
+=======
+static struct arm_pmu *__init armv7_a5_pmu_init(void)
+{
+	armv7pmu.id		= ARM_PERF_PMU_ID_CA5;
+	armv7pmu.name		= "ARMv7 Cortex-A5";
+	armv7pmu.map_event	= armv7_a5_map_event;
+>>>>>>> refs/remotes/origin/cm-10.0
 	armv7pmu.num_events	= armv7_read_num_pmnc_events();
 	return &armv7pmu;
 }
 
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_a15_pmu_init(void)
 {
 	armv7pmu.id		= ARM_PERF_PMU_ID_CA15;
@@ -1244,21 +2115,61 @@ static const struct arm_pmu *__init armv7_a15_pmu_init(void)
 }
 #else
 static const struct arm_pmu *__init armv7_a8_pmu_init(void)
+=======
+static struct arm_pmu *__init armv7_a15_pmu_init(void)
+{
+	armv7pmu.id		= ARM_PERF_PMU_ID_CA15;
+	armv7pmu.name		= "ARMv7 Cortex-A15";
+	armv7pmu.map_event	= armv7_a15_map_event;
+	armv7pmu.num_events	= armv7_read_num_pmnc_events();
+	armv7pmu.set_event_filter = armv7pmu_set_event_filter;
+	return &armv7pmu;
+}
+
+static struct arm_pmu *__init armv7_a7_pmu_init(void)
+{
+	armv7pmu.id		= ARM_PERF_PMU_ID_CA7;
+	armv7pmu.name		= "ARMv7 Cortex-A7";
+	armv7pmu.map_event	= armv7_a7_map_event;
+	armv7pmu.num_events	= armv7_read_num_pmnc_events();
+	armv7pmu.set_event_filter = armv7pmu_set_event_filter;
+	return &armv7pmu;
+}
+#else
+static struct arm_pmu *__init armv7_a8_pmu_init(void)
 {
 	return NULL;
 }
 
+static struct arm_pmu *__init armv7_a9_pmu_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
+{
+	return NULL;
+}
+
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_a9_pmu_init(void)
+=======
+static struct arm_pmu *__init armv7_a5_pmu_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return NULL;
 }
 
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_a5_pmu_init(void)
+=======
+static struct arm_pmu *__init armv7_a15_pmu_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return NULL;
 }
 
+<<<<<<< HEAD
 static const struct arm_pmu *__init armv7_a15_pmu_init(void)
+=======
+static struct arm_pmu *__init armv7_a7_pmu_init(void)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	return NULL;
 }

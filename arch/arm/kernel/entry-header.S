@@ -121,6 +121,7 @@
 	.endm
 #else	/* CONFIG_THUMB2_KERNEL */
 	.macro	svc_exit, rpsr
+<<<<<<< HEAD
 	clrex					@ clear the exclusive monitor
 	ldr	r0, [sp, #S_SP]			@ top of the stack
 	ldr	r1, [sp, #S_PC]			@ return address
@@ -130,6 +131,15 @@
 	ldr	lr, [sp, #S_LR]
 	addeq	sp, sp, #S_FRAME_SIZE - 8	@ aligned
 	addne	sp, sp, #S_FRAME_SIZE - 4	@ not aligned
+=======
+	ldr	lr, [sp, #S_SP]			@ top of the stack
+	ldrd	r0, r1, [sp, #S_LR]		@ calling lr and pc
+	clrex					@ clear the exclusive monitor
+	stmdb	lr!, {r0, r1, \rpsr}		@ calling lr and rfe context
+	ldmia	sp, {r0 - r12}
+	mov	sp, lr
+	ldr	lr, [sp], #4
+>>>>>>> refs/remotes/origin/cm-10.0
 	rfeia	sp!
 	.endm
 
@@ -165,6 +175,7 @@
 	.endm
 #endif	/* !CONFIG_THUMB2_KERNEL */
 
+<<<<<<< HEAD
 	@
 	@ Debug exceptions are taken as prefetch or data aborts.
 	@ We must disable preemption during the handler so that
@@ -184,6 +195,8 @@
 #endif
 	.endm
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * These are the registers used in the syscall handler, and allow us to
  * have in theory up to 7 arguments to a function - r0 to r6.

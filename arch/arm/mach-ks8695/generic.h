@@ -12,4 +12,8 @@
 
 extern __init void ks8695_map_io(void);
 extern __init void ks8695_init_irq(void);
+<<<<<<< HEAD
+=======
+extern void ks8695_restart(char, const char *);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern struct sys_timer ks8695_timer;

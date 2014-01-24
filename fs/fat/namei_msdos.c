@@ -209,6 +209,7 @@ static struct dentry *msdos_lookup(struct inode *dir, struct dentry *dentry,
 	int err;
 
 	lock_super(sb);
+<<<<<<< HEAD
 
 	err = msdos_find(dir, dentry->d_name.name, dentry->d_name.len, &sinfo);
 	if (err) {
@@ -232,6 +233,22 @@ out:
 error:
 	unlock_super(sb);
 	return ERR_PTR(err);
+=======
+	err = msdos_find(dir, dentry->d_name.name, dentry->d_name.len, &sinfo);
+	switch (err) {
+	case -ENOENT:
+		inode = NULL;
+		break;
+	case 0:
+		inode = fat_build_inode(sb, sinfo.de, sinfo.i_pos);
+		brelse(sinfo.bh);
+		break;
+	default:
+		inode = ERR_PTR(err);
+	}
+	unlock_super(sb);
+	return d_splice_alias(inode, dentry);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /***** Creates a directory entry (name is already formatted). */
@@ -273,7 +290,11 @@ static int msdos_add_entry(struct inode *dir, const unsigned char *name,
 }
 
 /***** Create a file */
+<<<<<<< HEAD
 static int msdos_create(struct inode *dir, struct dentry *dentry, int mode,
+=======
+static int msdos_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/cm-10.0
 			struct nameidata *nd)
 {
 	struct super_block *sb = dir->i_sb;
@@ -355,7 +376,11 @@ out:
 }
 
 /***** Make a directory */
+<<<<<<< HEAD
 static int msdos_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+=======
+static int msdos_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct super_block *sb = dir->i_sb;
 	struct fat_slot_info sinfo;
@@ -396,7 +421,11 @@ static int msdos_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 		/* the directory was completed, just return a error */
 		goto out;
 	}
+<<<<<<< HEAD
 	inode->i_nlink = 2;
+=======
+	set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_mtime = inode->i_atime = inode->i_ctime = ts;
 	/* timestamp is already written, so mark_inode_dirty() is unneeded. */
 

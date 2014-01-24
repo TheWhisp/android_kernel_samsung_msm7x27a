@@ -11,27 +11,45 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
 */
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/input.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 
 #include <linux/delay.h>
 
 #include <asm/gpio.h>
+=======
+#include <linux/device.h>
+
+#include <linux/delay.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/flash.h>
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <mach/system.h>
 #include <mach/vreg.h>
 #include <mach/board.h>
+=======
+#include <mach/system.h>
+#include <mach/vreg.h>
+#include <mach/board.h>
+#include <mach/proc_comm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/io.h>
 #include <asm/delay.h>
@@ -42,7 +60,10 @@
 
 #include "gpio_chip.h"
 #include "board-sapphire.h"
+<<<<<<< HEAD
 #include "proc_comm.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "devices.h"
 
 void msm_init_irq(void);
@@ -77,8 +98,13 @@ static struct map_desc sapphire_io_desc[] __initdata = {
 	}
 };
 
+<<<<<<< HEAD
 static void __init sapphire_fixup(struct machine_desc *desc, struct tag *tags,
 				  char **cmdline, struct meminfo *mi)
+=======
+static void __init sapphire_fixup(struct tag *tags, char **cmdline,
+				  struct meminfo *mi)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	int smi_sz = parse_tag_smi((const struct tag *)tags);
 
@@ -105,7 +131,11 @@ static void __init sapphire_map_io(void)
 
 MACHINE_START(SAPPHIRE, "sapphire")
 /* Maintainer: Brian Swetland <swetland@google.com> */
+<<<<<<< HEAD
 	.boot_params    = PLAT_PHYS_OFFSET + 0x100,
+=======
+	.atag_offset    = 0x100,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.fixup          = sapphire_fixup,
 	.map_io         = sapphire_map_io,
 	.init_irq       = sapphire_init_irq,

@@ -31,7 +31,11 @@
 /* There is only one motion sensor per machine */
 struct ams ams_info;
 
+<<<<<<< HEAD
 static unsigned int verbose;
+=======
+static bool verbose;
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param(verbose, bool, 0644);
 MODULE_PARM_DESC(verbose, "Show free falls and shocks in kernel output");
 

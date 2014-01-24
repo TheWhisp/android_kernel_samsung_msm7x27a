@@ -26,7 +26,10 @@
 #include <asm/mac_via.h>
 #endif
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 
 static volatile unsigned char __iomem *via;

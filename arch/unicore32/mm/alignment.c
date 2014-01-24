@@ -24,6 +24,11 @@
 #include <asm/tlbflush.h>
 #include <asm/unaligned.h>
 
+<<<<<<< HEAD
+=======
+#include "mm.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #define CODING_BITS(i)	(i & 0xe0000120)
 
 #define LDST_P_BIT(i)	(i & (1 << 28))	/* Preindex             */

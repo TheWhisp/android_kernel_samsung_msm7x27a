@@ -240,6 +240,7 @@ error:
 	return ret;
 }
 
+<<<<<<< HEAD
 /* lock FE */
 static int cxd2820r_lock(struct cxd2820r_priv *priv, int active_fe)
 {
@@ -277,12 +278,15 @@ static void cxd2820r_unlock(struct cxd2820r_priv *priv, int active_fe)
 	return;
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* 64 bit div with round closest, like DIV_ROUND_CLOSEST but 64 bit */
 u32 cxd2820r_div_u64_round_closest(u64 dividend, u32 divisor)
 {
 	return div_u64(dividend + (divisor / 2), divisor);
 }
 
+<<<<<<< HEAD
 static int cxd2820r_set_frontend(struct dvb_frontend *fe,
 	struct dvb_frontend_parameters *p)
 {
@@ -410,11 +414,99 @@ static int cxd2820r_get_frontend(struct dvb_frontend *fe,
 		ret = cxd2820r_get_frontend_c(fe, p);
 	}
 
+=======
+static int cxd2820r_set_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+	int ret;
+
+	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
+	switch (c->delivery_system) {
+	case SYS_DVBT:
+		ret = cxd2820r_init_t(fe);
+		if (ret < 0)
+			goto err;
+		ret = cxd2820r_set_frontend_t(fe);
+		if (ret < 0)
+			goto err;
+		break;
+	case SYS_DVBT2:
+		ret = cxd2820r_init_t(fe);
+		if (ret < 0)
+			goto err;
+		ret = cxd2820r_set_frontend_t2(fe);
+		if (ret < 0)
+			goto err;
+		break;
+	case SYS_DVBC_ANNEX_A:
+		ret = cxd2820r_init_c(fe);
+		if (ret < 0)
+			goto err;
+		ret = cxd2820r_set_frontend_c(fe);
+		if (ret < 0)
+			goto err;
+		break;
+	default:
+		dbg("%s: error state=%d", __func__, fe->dtv_property_cache.delivery_system);
+		ret = -EINVAL;
+		break;
+	}
+err:
+	return ret;
+}
+static int cxd2820r_read_status(struct dvb_frontend *fe, fe_status_t *status)
+{
+	int ret;
+
+	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
+	switch (fe->dtv_property_cache.delivery_system) {
+	case SYS_DVBT:
+		ret = cxd2820r_read_status_t(fe, status);
+		break;
+	case SYS_DVBT2:
+		ret = cxd2820r_read_status_t2(fe, status);
+		break;
+	case SYS_DVBC_ANNEX_A:
+		ret = cxd2820r_read_status_c(fe, status);
+		break;
+	default:
+		ret = -EINVAL;
+		break;
+	}
+	return ret;
+}
+
+static int cxd2820r_get_frontend(struct dvb_frontend *fe)
+{
+	struct cxd2820r_priv *priv = fe->demodulator_priv;
+	int ret;
+
+	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
+
+	if (priv->delivery_system == SYS_UNDEFINED)
+		return 0;
+
+	switch (fe->dtv_property_cache.delivery_system) {
+	case SYS_DVBT:
+		ret = cxd2820r_get_frontend_t(fe);
+		break;
+	case SYS_DVBT2:
+		ret = cxd2820r_get_frontend_t2(fe);
+		break;
+	case SYS_DVBC_ANNEX_A:
+		ret = cxd2820r_get_frontend_c(fe);
+		break;
+	default:
+		ret = -EINVAL;
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int cxd2820r_read_ber(struct dvb_frontend *fe, u32 *ber)
 {
+<<<<<<< HEAD
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	int ret;
 	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
@@ -444,11 +536,31 @@ static int cxd2820r_read_ber(struct dvb_frontend *fe, u32 *ber)
 		ret = cxd2820r_read_ber_c(fe, ber);
 	}
 
+=======
+	int ret;
+
+	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
+	switch (fe->dtv_property_cache.delivery_system) {
+	case SYS_DVBT:
+		ret = cxd2820r_read_ber_t(fe, ber);
+		break;
+	case SYS_DVBT2:
+		ret = cxd2820r_read_ber_t2(fe, ber);
+		break;
+	case SYS_DVBC_ANNEX_A:
+		ret = cxd2820r_read_ber_c(fe, ber);
+		break;
+	default:
+		ret = -EINVAL;
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int cxd2820r_read_signal_strength(struct dvb_frontend *fe, u16 *strength)
 {
+<<<<<<< HEAD
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	int ret;
 	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
@@ -478,11 +590,31 @@ static int cxd2820r_read_signal_strength(struct dvb_frontend *fe, u16 *strength)
 		ret = cxd2820r_read_signal_strength_c(fe, strength);
 	}
 
+=======
+	int ret;
+
+	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
+	switch (fe->dtv_property_cache.delivery_system) {
+	case SYS_DVBT:
+		ret = cxd2820r_read_signal_strength_t(fe, strength);
+		break;
+	case SYS_DVBT2:
+		ret = cxd2820r_read_signal_strength_t2(fe, strength);
+		break;
+	case SYS_DVBC_ANNEX_A:
+		ret = cxd2820r_read_signal_strength_c(fe, strength);
+		break;
+	default:
+		ret = -EINVAL;
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int cxd2820r_read_snr(struct dvb_frontend *fe, u16 *snr)
 {
+<<<<<<< HEAD
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	int ret;
 	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
@@ -512,11 +644,31 @@ static int cxd2820r_read_snr(struct dvb_frontend *fe, u16 *snr)
 		ret = cxd2820r_read_snr_c(fe, snr);
 	}
 
+=======
+	int ret;
+
+	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
+	switch (fe->dtv_property_cache.delivery_system) {
+	case SYS_DVBT:
+		ret = cxd2820r_read_snr_t(fe, snr);
+		break;
+	case SYS_DVBT2:
+		ret = cxd2820r_read_snr_t2(fe, snr);
+		break;
+	case SYS_DVBC_ANNEX_A:
+		ret = cxd2820r_read_snr_c(fe, snr);
+		break;
+	default:
+		ret = -EINVAL;
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int cxd2820r_read_ucblocks(struct dvb_frontend *fe, u32 *ucblocks)
 {
+<<<<<<< HEAD
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	int ret;
 	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
@@ -546,11 +698,31 @@ static int cxd2820r_read_ucblocks(struct dvb_frontend *fe, u32 *ucblocks)
 		ret = cxd2820r_read_ucblocks_c(fe, ucblocks);
 	}
 
+=======
+	int ret;
+
+	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
+	switch (fe->dtv_property_cache.delivery_system) {
+	case SYS_DVBT:
+		ret = cxd2820r_read_ucblocks_t(fe, ucblocks);
+		break;
+	case SYS_DVBT2:
+		ret = cxd2820r_read_ucblocks_t2(fe, ucblocks);
+		break;
+	case SYS_DVBC_ANNEX_A:
+		ret = cxd2820r_read_ucblocks_c(fe, ucblocks);
+		break;
+	default:
+		ret = -EINVAL;
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int cxd2820r_init(struct dvb_frontend *fe)
 {
+<<<<<<< HEAD
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	int ret;
 	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
@@ -575,10 +747,14 @@ static int cxd2820r_init(struct dvb_frontend *fe)
 	}
 
 	return ret;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int cxd2820r_sleep(struct dvb_frontend *fe)
 {
+<<<<<<< HEAD
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	int ret;
 	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
@@ -612,10 +788,30 @@ static int cxd2820r_sleep(struct dvb_frontend *fe)
 		cxd2820r_unlock(priv, 1);
 	}
 
+=======
+	int ret;
+
+	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
+	switch (fe->dtv_property_cache.delivery_system) {
+	case SYS_DVBT:
+		ret = cxd2820r_sleep_t(fe);
+		break;
+	case SYS_DVBT2:
+		ret = cxd2820r_sleep_t2(fe);
+		break;
+	case SYS_DVBC_ANNEX_A:
+		ret = cxd2820r_sleep_c(fe);
+		break;
+	default:
+		ret = -EINVAL;
+		break;
+	}
+>>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 static int cxd2820r_get_tune_settings(struct dvb_frontend *fe,
+<<<<<<< HEAD
 	struct dvb_frontend_tune_settings *s)
 {
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
@@ -652,6 +848,31 @@ static int cxd2820r_get_tune_settings(struct dvb_frontend *fe,
 
 static enum dvbfe_search cxd2820r_search(struct dvb_frontend *fe,
 	struct dvb_frontend_parameters *p)
+=======
+				      struct dvb_frontend_tune_settings *s)
+{
+	int ret;
+
+	dbg("%s: delsys=%d", __func__, fe->dtv_property_cache.delivery_system);
+	switch (fe->dtv_property_cache.delivery_system) {
+	case SYS_DVBT:
+		ret = cxd2820r_get_tune_settings_t(fe, s);
+		break;
+	case SYS_DVBT2:
+		ret = cxd2820r_get_tune_settings_t2(fe, s);
+		break;
+	case SYS_DVBC_ANNEX_A:
+		ret = cxd2820r_get_tune_settings_c(fe, s);
+		break;
+	default:
+		ret = -EINVAL;
+		break;
+	}
+	return ret;
+}
+
+static enum dvbfe_search cxd2820r_search(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
@@ -661,6 +882,7 @@ static enum dvbfe_search cxd2820r_search(struct dvb_frontend *fe,
 
 	/* switch between DVB-T and DVB-T2 when tune fails */
 	if (priv->last_tune_failed) {
+<<<<<<< HEAD
 		if (priv->delivery_system == SYS_DVBT)
 			c->delivery_system = SYS_DVBT2;
 		else
@@ -669,6 +891,25 @@ static enum dvbfe_search cxd2820r_search(struct dvb_frontend *fe,
 
 	/* set frontend */
 	ret = cxd2820r_set_frontend(fe, p);
+=======
+		if (priv->delivery_system == SYS_DVBT) {
+			ret = cxd2820r_sleep_t(fe);
+			if (ret)
+				goto error;
+
+			c->delivery_system = SYS_DVBT2;
+		} else if (priv->delivery_system == SYS_DVBT2) {
+			ret = cxd2820r_sleep_t2(fe);
+			if (ret)
+				goto error;
+
+			c->delivery_system = SYS_DVBT;
+		}
+	}
+
+	/* set frontend */
+	ret = cxd2820r_set_frontend(fe);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto error;
 
@@ -676,6 +917,10 @@ static enum dvbfe_search cxd2820r_search(struct dvb_frontend *fe,
 	/* frontend lock wait loop count */
 	switch (priv->delivery_system) {
 	case SYS_DVBT:
+<<<<<<< HEAD
+=======
+	case SYS_DVBC_ANNEX_A:
+>>>>>>> refs/remotes/origin/cm-10.0
 		i = 20;
 		break;
 	case SYS_DVBT2:
@@ -723,6 +968,7 @@ static void cxd2820r_release(struct dvb_frontend *fe)
 	struct cxd2820r_priv *priv = fe->demodulator_priv;
 	dbg("%s", __func__);
 
+<<<<<<< HEAD
 	if (fe->ops.info.type == FE_OFDM) {
 		i2c_del_adapter(&priv->tuner_i2c_adapter);
 		kfree(priv);
@@ -838,12 +1084,96 @@ struct dvb_frontend *cxd2820r_attach(const struct cxd2820r_config *cfg,
 		return &priv->fe[1];
 	}
 
+=======
+	kfree(priv);
+	return;
+}
+
+static int cxd2820r_i2c_gate_ctrl(struct dvb_frontend *fe, int enable)
+{
+	struct cxd2820r_priv *priv = fe->demodulator_priv;
+	dbg("%s: %d", __func__, enable);
+
+	/* Bit 0 of reg 0xdb in bank 0x00 controls I2C repeater */
+	return cxd2820r_wr_reg_mask(priv, 0xdb, enable ? 1 : 0, 0x1);
+}
+
+static const struct dvb_frontend_ops cxd2820r_ops = {
+	.delsys = { SYS_DVBT, SYS_DVBT2, SYS_DVBC_ANNEX_A },
+	/* default: DVB-T/T2 */
+	.info = {
+		.name = "Sony CXD2820R",
+
+		.caps =	FE_CAN_FEC_1_2			|
+			FE_CAN_FEC_2_3			|
+			FE_CAN_FEC_3_4			|
+			FE_CAN_FEC_5_6			|
+			FE_CAN_FEC_7_8			|
+			FE_CAN_FEC_AUTO			|
+			FE_CAN_QPSK			|
+			FE_CAN_QAM_16			|
+			FE_CAN_QAM_32			|
+			FE_CAN_QAM_64			|
+			FE_CAN_QAM_128			|
+			FE_CAN_QAM_256			|
+			FE_CAN_QAM_AUTO			|
+			FE_CAN_TRANSMISSION_MODE_AUTO	|
+			FE_CAN_GUARD_INTERVAL_AUTO	|
+			FE_CAN_HIERARCHY_AUTO		|
+			FE_CAN_MUTE_TS			|
+			FE_CAN_2G_MODULATION
+		},
+
+	.release		= cxd2820r_release,
+	.init			= cxd2820r_init,
+	.sleep			= cxd2820r_sleep,
+
+	.get_tune_settings	= cxd2820r_get_tune_settings,
+	.i2c_gate_ctrl		= cxd2820r_i2c_gate_ctrl,
+
+	.get_frontend		= cxd2820r_get_frontend,
+
+	.get_frontend_algo	= cxd2820r_get_frontend_algo,
+	.search			= cxd2820r_search,
+
+	.read_status		= cxd2820r_read_status,
+	.read_snr		= cxd2820r_read_snr,
+	.read_ber		= cxd2820r_read_ber,
+	.read_ucblocks		= cxd2820r_read_ucblocks,
+	.read_signal_strength	= cxd2820r_read_signal_strength,
+};
+
+struct dvb_frontend *cxd2820r_attach(const struct cxd2820r_config *cfg,
+		struct i2c_adapter *i2c)
+{
+	struct cxd2820r_priv *priv = NULL;
+	int ret;
+	u8 tmp;
+
+	priv = kzalloc(sizeof (struct cxd2820r_priv), GFP_KERNEL);
+	if (!priv)
+		goto error;
+
+	priv->i2c = i2c;
+	memcpy(&priv->cfg, cfg, sizeof (struct cxd2820r_config));
+
+	priv->bank[0] = priv->bank[1] = 0xff;
+	ret = cxd2820r_rd_reg(priv, 0x000fd, &tmp);
+	dbg("%s: chip id=%02x", __func__, tmp);
+	if (ret || tmp != 0xe1)
+		goto error;
+
+	memcpy(&priv->fe.ops, &cxd2820r_ops, sizeof (struct dvb_frontend_ops));
+	priv->fe.demodulator_priv = priv;
+	return &priv->fe;
+>>>>>>> refs/remotes/origin/cm-10.0
 error:
 	kfree(priv);
 	return NULL;
 }
 EXPORT_SYMBOL(cxd2820r_attach);
 
+<<<<<<< HEAD
 static struct dvb_frontend_ops cxd2820r_ops[2] = {
 	{
 		/* DVB-T/T2 */
@@ -910,6 +1240,8 @@ static struct dvb_frontend_ops cxd2820r_ops[2] = {
 };
 
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 MODULE_AUTHOR("Antti Palosaari <crope@iki.fi>");
 MODULE_DESCRIPTION("Sony CXD2820R demodulator driver");
 MODULE_LICENSE("GPL");

@@ -10,7 +10,10 @@
  */
 
 //#include <linux/config.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/slab.h>

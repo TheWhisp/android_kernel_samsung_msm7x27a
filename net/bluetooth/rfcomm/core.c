@@ -138,6 +138,7 @@ static inline void rfcomm_schedule(void)
 
 static inline void rfcomm_session_put(struct rfcomm_session *s)
 {
+<<<<<<< HEAD
 	bool match = false;
 	struct rfcomm_session *sess;
 	struct list_head *p, *n;
@@ -153,6 +154,8 @@ static inline void rfcomm_session_put(struct rfcomm_session *s)
 		dump_stack();
 		return;
 	}
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (atomic_dec_and_test(&s->refcnt))
 		rfcomm_session_del(s);
 }
@@ -262,7 +265,10 @@ static inline int rfcomm_check_security(struct rfcomm_dlc *d)
 	__u8 auth_type;
 
 	switch (d->sec_level) {
+<<<<<<< HEAD
 	case BT_SECURITY_VERY_HIGH:
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	case BT_SECURITY_HIGH:
 		auth_type = HCI_AT_GENERAL_BONDING_MITM;
 		break;
@@ -2164,8 +2170,12 @@ static void rfcomm_security_cfm(struct hci_conn *conn, u8 status, u8 encrypt)
 				set_bit(RFCOMM_SEC_PENDING, &d->flags);
 				rfcomm_dlc_set_timer(d, RFCOMM_AUTH_TIMEOUT);
 				continue;
+<<<<<<< HEAD
 			} else if (d->sec_level == BT_SECURITY_HIGH ||
 				d->sec_level == BT_SECURITY_VERY_HIGH) {
+=======
+			} else if (d->sec_level == BT_SECURITY_HIGH) {
+>>>>>>> refs/remotes/origin/cm-10.0
 				__rfcomm_dlc_close(d, ECONNREFUSED);
 				continue;
 			}

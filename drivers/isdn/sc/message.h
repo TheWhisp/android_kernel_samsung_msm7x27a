@@ -21,7 +21,11 @@
 /*
  * Board message macros, defines and structures
  */
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
@@ -36,19 +40,33 @@
  * Macro to determine if a message is a loader message
  */
 #define IS_CM_MESSAGE(mesg, tx, cx, dx)		\
+<<<<<<< HEAD
 		((mesg.type == cmRspType##tx)		\
 		&&(mesg.class == cmRspClass##cx)	\
 		&&(mesg.code == cmRsp##dx))
+=======
+	((mesg.type == cmRspType##tx)		\
+	 && (mesg.class == cmRspClass##cx)	\
+	 && (mesg.code == cmRsp##dx))
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * Macro to determine if a message is a firmware message
  */
 #define IS_CE_MESSAGE(mesg, tx, cx, dx)		\
+<<<<<<< HEAD
 		((mesg.type == ceRspType##tx)		\
 		&&(mesg.class == ceRspClass##cx)	\
 		&&(mesg.code == ceRsp##tx##dx))
 
 /* 
+=======
+	((mesg.type == ceRspType##tx)		\
+	 && (mesg.class == ceRspClass##cx)	\
+	 && (mesg.code == ceRsp##tx##dx))
+
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Loader Request and Response Messages
  */
 
@@ -186,7 +204,11 @@ typedef struct {
 } LLData;
 
 
+<<<<<<< HEAD
 /* 
+=======
+/*
+>>>>>>> refs/remotes/origin/cm-10.0
  * Message payload template for an HWConfig message
  */
 typedef struct {

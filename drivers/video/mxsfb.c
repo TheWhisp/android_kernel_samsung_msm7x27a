@@ -39,6 +39,10 @@
  * the required value in the imx_fb_videomode structure.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/clk.h>
@@ -327,7 +331,11 @@ static void mxsfb_enable_controller(struct fb_info *fb_info)
 
 	dev_dbg(&host->pdev->dev, "%s\n", __func__);
 
+<<<<<<< HEAD
 	clk_enable(host->clk);
+=======
+	clk_prepare_enable(host->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	clk_set_rate(host->clk, PICOS2KHZ(fb_info->var.pixclock) * 1000U);
 
 	/* if it was disabled, re-enable the mode again */
@@ -368,7 +376,11 @@ static void mxsfb_disable_controller(struct fb_info *fb_info)
 	reg = readl(host->base + LCDC_VDCTRL4);
 	writel(reg & ~VDCTRL4_SYNC_SIGNALS_ON, host->base + LCDC_VDCTRL4);
 
+<<<<<<< HEAD
 	clk_disable(host->clk);
+=======
+	clk_disable_unprepare(host->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	host->enabled = 0;
 }
@@ -668,7 +680,11 @@ static int __devinit mxsfb_restore_mode(struct mxsfb_info *host)
 	line_count = fb_info->fix.smem_len / fb_info->fix.line_length;
 	fb_info->fix.ypanstep = 1;
 
+<<<<<<< HEAD
 	clk_enable(host->clk);
+=======
+	clk_prepare_enable(host->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	host->enabled = 1;
 
 	return 0;
@@ -841,7 +857,11 @@ static int __devinit mxsfb_probe(struct platform_device *pdev)
 
 error_register:
 	if (host->enabled)
+<<<<<<< HEAD
 		clk_disable(host->clk);
+=======
+		clk_disable_unprepare(host->clk);
+>>>>>>> refs/remotes/origin/cm-10.0
 	fb_destroy_modelist(&fb_info->modelist);
 error_init_fb:
 	kfree(fb_info->pseudo_palette);
@@ -902,6 +922,7 @@ static struct platform_driver mxsfb_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init mxsfb_init(void)
 {
 	return platform_driver_register(&mxsfb_driver);
@@ -914,6 +935,9 @@ static void __exit mxsfb_exit(void)
 
 module_init(mxsfb_init);
 module_exit(mxsfb_exit);
+=======
+module_platform_driver(mxsfb_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("Freescale mxs framebuffer driver");
 MODULE_AUTHOR("Sascha Hauer, Pengutronix");

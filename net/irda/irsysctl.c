@@ -40,9 +40,15 @@ extern int  sysctl_slot_timeout;
 extern int  sysctl_fast_poll_increase;
 extern char sysctl_devname[];
 extern int  sysctl_max_baud_rate;
+<<<<<<< HEAD
 extern int  sysctl_min_tx_turn_time;
 extern int  sysctl_max_tx_data_size;
 extern int  sysctl_max_tx_window;
+=======
+extern unsigned int sysctl_min_tx_turn_time;
+extern unsigned int sysctl_max_tx_data_size;
+extern unsigned int sysctl_max_tx_window;
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int  sysctl_max_noreply_time;
 extern int  sysctl_warn_noreply_time;
 extern int  sysctl_lap_keepalive_time;

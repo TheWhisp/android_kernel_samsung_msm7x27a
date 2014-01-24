@@ -8,6 +8,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * version 2 as published by the Free Software Foundation.
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,6 +21,11 @@
  * 02110-1301 USA
  */
 
+=======
+ */
+
+#include <linux/mm.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
@@ -307,11 +313,18 @@ static void pn_net_setup(struct net_device *dev)
 static int
 pn_rx_submit(struct f_phonet *fp, struct usb_request *req, gfp_t gfp_flags)
 {
+<<<<<<< HEAD
 	struct net_device *dev = fp->dev;
 	struct page *page;
 	int err;
 
 	page = __netdev_alloc_page(dev, gfp_flags);
+=======
+	struct page *page;
+	int err;
+
+	page = alloc_page(gfp_flags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (!page)
 		return -ENOMEM;
 
@@ -321,7 +334,11 @@ pn_rx_submit(struct f_phonet *fp, struct usb_request *req, gfp_t gfp_flags)
 
 	err = usb_ep_queue(fp->out_ep, req, gfp_flags);
 	if (unlikely(err))
+<<<<<<< HEAD
 		netdev_free_page(dev, page);
+=======
+		put_page(page);
+>>>>>>> refs/remotes/origin/cm-10.0
 	return err;
 }
 
@@ -355,7 +372,11 @@ static void pn_rx_complete(struct usb_ep *ep, struct usb_request *req)
 		}
 
 		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, page,
+<<<<<<< HEAD
 				skb->len == 0, req->actual);
+=======
+				skb->len <= 1, req->actual, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/cm-10.0
 		page = NULL;
 
 		if (req->actual < req->length) { /* Last fragment */
@@ -383,9 +404,15 @@ static void pn_rx_complete(struct usb_ep *ep, struct usb_request *req)
 	}
 
 	if (page)
+<<<<<<< HEAD
 		netdev_free_page(dev, page);
 	if (req)
 		pn_rx_submit(fp, req, GFP_ATOMIC);
+=======
+		put_page(page);
+	if (req)
+		pn_rx_submit(fp, req, GFP_ATOMIC | __GFP_COLD);
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /*-------------------------------------------------------------------------*/
@@ -427,6 +454,7 @@ static int pn_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		spin_lock(&port->lock);
 		__pn_reset(f);
 		if (alt == 1) {
+<<<<<<< HEAD
 			struct usb_endpoint_descriptor *out, *in;
 			int i;
 
@@ -438,6 +466,19 @@ static int pn_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 					&pn_fs_source_desc);
 			usb_ep_enable(fp->out_ep, out);
 			usb_ep_enable(fp->in_ep, in);
+=======
+			int i;
+
+			if (config_ep_by_speed(gadget, f, fp->in_ep) ||
+			    config_ep_by_speed(gadget, f, fp->out_ep)) {
+				fp->in_ep->desc = NULL;
+				fp->out_ep->desc = NULL;
+				spin_unlock(&port->lock);
+				return -EINVAL;
+			}
+			usb_ep_enable(fp->out_ep);
+			usb_ep_enable(fp->in_ep);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 			port->usb = fp;
 			fp->out_ep->driver_data = fp;
@@ -445,7 +486,11 @@ static int pn_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 
 			netif_carrier_on(dev);
 			for (i = 0; i < phonet_rxq_size; i++)
+<<<<<<< HEAD
 				pn_rx_submit(fp, fp->out_reqv[i], GFP_ATOMIC);
+=======
+				pn_rx_submit(fp, fp->out_reqv[i], GFP_ATOMIC | __GFP_COLD);
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 		spin_unlock(&port->lock);
 		return 0;

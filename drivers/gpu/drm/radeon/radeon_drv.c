@@ -36,6 +36,10 @@
 
 #include "drm_pciids.h"
 #include <linux/console.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /*
@@ -51,9 +55,21 @@
  *   2.8.0 - pageflip support, r500 US_FORMAT regs. r500 ARGB2101010 colorbuf, r300->r500 CMASK, clock crystal query
  *   2.9.0 - r600 tiling (s3tc,rgtc) working, SET_PREDICATION packet 3 on r600 + eg, backend query
  *   2.10.0 - fusion 2D tiling
+<<<<<<< HEAD
  */
 #define KMS_DRIVER_MAJOR	2
 #define KMS_DRIVER_MINOR	10
+=======
+ *   2.11.0 - backend map, initial compute support for the CS checker
+ *   2.12.0 - RADEON_CS_KEEP_TILING_FLAGS
+ *   2.13.0 - virtual memory support, streamout
+ *   2.14.0 - add evergreen tiling informations
+ *   2.15.0 - add max_pipes query
+ *   2.16.0 - fix evergreen 2D tiled surface calculation
+ */
+#define KMS_DRIVER_MAJOR	2
+#define KMS_DRIVER_MINOR	16
+>>>>>>> refs/remotes/origin/cm-10.0
 #define KMS_DRIVER_PATCHLEVEL	0
 int radeon_driver_load_kms(struct drm_device *dev, unsigned long flags);
 int radeon_driver_unload_kms(struct drm_device *dev);
@@ -81,6 +97,13 @@ int radeon_dma_ioctl_kms(struct drm_device *dev, void *data,
 			 struct drm_file *file_priv);
 int radeon_gem_object_init(struct drm_gem_object *obj);
 void radeon_gem_object_free(struct drm_gem_object *obj);
+<<<<<<< HEAD
+=======
+int radeon_gem_object_open(struct drm_gem_object *obj,
+				struct drm_file *file_priv);
+void radeon_gem_object_close(struct drm_gem_object *obj,
+				struct drm_file *file_priv);
+>>>>>>> refs/remotes/origin/cm-10.0
 extern int radeon_get_crtc_scanoutpos(struct drm_device *dev, int crtc,
 				      int *vpos, int *hpos);
 extern struct drm_ioctl_desc radeon_ioctls_kms[];
@@ -137,7 +160,11 @@ module_param_named(vramlimit, radeon_vram_limit, int, 0600);
 MODULE_PARM_DESC(agpmode, "AGP Mode (-1 == PCI)");
 module_param_named(agpmode, radeon_agpmode, int, 0444);
 
+<<<<<<< HEAD
 MODULE_PARM_DESC(gartsize, "Size of PCIE/IGP gart to setup in megabytes (32,64, etc)\n");
+=======
+MODULE_PARM_DESC(gartsize, "Size of PCIE/IGP gart to setup in megabytes (32, 64, etc)");
+>>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(gartsize, radeon_gart_size, int, 0600);
 
 MODULE_PARM_DESC(benchmark, "Run benchmark");
@@ -203,6 +230,24 @@ static struct pci_device_id pciidlist[] = {
 MODULE_DEVICE_TABLE(pci, pciidlist);
 #endif
 
+<<<<<<< HEAD
+=======
+static const struct file_operations radeon_driver_old_fops = {
+	.owner = THIS_MODULE,
+	.open = drm_open,
+	.release = drm_release,
+	.unlocked_ioctl = drm_ioctl,
+	.mmap = drm_mmap,
+	.poll = drm_poll,
+	.fasync = drm_fasync,
+	.read = drm_read,
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = radeon_compat_ioctl,
+#endif
+	.llseek = noop_llseek,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct drm_driver driver_old = {
 	.driver_features =
 	    DRIVER_USE_AGP | DRIVER_USE_MTRR | DRIVER_PCI_DMA | DRIVER_SG |
@@ -229,6 +274,7 @@ static struct drm_driver driver_old = {
 	.reclaim_buffers = drm_core_reclaim_buffers,
 	.ioctls = radeon_ioctls,
 	.dma_ioctl = radeon_cp_buffers,
+<<<<<<< HEAD
 	.fops = {
 		 .owner = THIS_MODULE,
 		 .open = drm_open,
@@ -244,6 +290,9 @@ static struct drm_driver driver_old = {
 		 .llseek = noop_llseek,
 	},
 
+=======
+	.fops = &radeon_driver_old_fops,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name = DRIVER_NAME,
 	.desc = DRIVER_DESC,
 	.date = DRIVER_DATE,
@@ -301,6 +350,23 @@ radeon_pci_resume(struct pci_dev *pdev)
 	return radeon_resume_kms(dev);
 }
 
+<<<<<<< HEAD
+=======
+static const struct file_operations radeon_driver_kms_fops = {
+	.owner = THIS_MODULE,
+	.open = drm_open,
+	.release = drm_release,
+	.unlocked_ioctl = drm_ioctl,
+	.mmap = radeon_mmap,
+	.poll = drm_poll,
+	.fasync = drm_fasync,
+	.read = drm_read,
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = radeon_kms_compat_ioctl,
+#endif
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct drm_driver kms_driver = {
 	.driver_features =
 	    DRIVER_USE_AGP | DRIVER_USE_MTRR | DRIVER_PCI_DMA | DRIVER_SG |
@@ -332,10 +398,16 @@ static struct drm_driver kms_driver = {
 	.ioctls = radeon_ioctls_kms,
 	.gem_init_object = radeon_gem_object_init,
 	.gem_free_object = radeon_gem_object_free,
+<<<<<<< HEAD
+=======
+	.gem_open_object = radeon_gem_object_open,
+	.gem_close_object = radeon_gem_object_close,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.dma_ioctl = radeon_dma_ioctl_kms,
 	.dumb_create = radeon_mode_dumb_create,
 	.dumb_map_offset = radeon_mode_dumb_mmap,
 	.dumb_destroy = radeon_mode_dumb_destroy,
+<<<<<<< HEAD
 	.fops = {
 		 .owner = THIS_MODULE,
 		 .open = drm_open,
@@ -350,6 +422,9 @@ static struct drm_driver kms_driver = {
 #endif
 	},
 
+=======
+	.fops = &radeon_driver_kms_fops,
+>>>>>>> refs/remotes/origin/cm-10.0
 	.name = DRIVER_NAME,
 	.desc = DRIVER_DESC,
 	.date = DRIVER_DATE,

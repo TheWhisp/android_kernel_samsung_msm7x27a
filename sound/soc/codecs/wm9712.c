@@ -20,10 +20,16 @@
 #include <sound/ac97_codec.h>
 #include <sound/initval.h>
 #include <sound/soc.h>
+<<<<<<< HEAD
 #include "wm9712.h"
 
 #define WM9712_VERSION "0.4"
 
+=======
+#include <sound/tlv.h>
+#include "wm9712.h"
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static unsigned int ac97_read(struct snd_soc_codec *codec,
 	unsigned int reg);
 static int ac97_write(struct snd_soc_codec *codec,
@@ -71,6 +77,12 @@ static const char *wm9712_rec_sel[] = {"Mic", "NC", "NC", "Speaker Mixer",
 static const char *wm9712_ng_type[] = {"Constant Gain", "Mute"};
 static const char *wm9712_diff_sel[] = {"Mic", "Line"};
 
+<<<<<<< HEAD
+=======
+static const DECLARE_TLV_DB_SCALE(main_tlv, -3450, 150, 0);
+static const DECLARE_TLV_DB_SCALE(boost_tlv, 0, 2000, 0);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct soc_enum wm9712_enum[] = {
 SOC_ENUM_SINGLE(AC97_PCI_SVID, 14, 4, wm9712_alc_select),
 SOC_ENUM_SINGLE(AC97_VIDEO, 12, 4, wm9712_alc_mux),
@@ -149,9 +161,15 @@ SOC_ENUM("Capture Volume Steps", wm9712_enum[6]),
 SOC_DOUBLE("Capture Volume", AC97_REC_GAIN, 8, 0, 63, 1),
 SOC_SINGLE("Capture ZC Switch", AC97_REC_GAIN, 7, 1, 0),
 
+<<<<<<< HEAD
 SOC_SINGLE("Mic 1 Volume", AC97_MIC, 8, 31, 1),
 SOC_SINGLE("Mic 2 Volume", AC97_MIC, 0, 31, 1),
 SOC_SINGLE("Mic 20dB Boost Switch", AC97_MIC, 7, 1, 0),
+=======
+SOC_SINGLE_TLV("Mic 1 Volume", AC97_MIC, 8, 31, 1, main_tlv),
+SOC_SINGLE_TLV("Mic 2 Volume", AC97_MIC, 0, 31, 1, main_tlv),
+SOC_SINGLE_TLV("Mic Boost Volume", AC97_MIC, 7, 1, 0, boost_tlv),
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* We have to create a fake left and right HP mixers because
@@ -520,11 +538,19 @@ static int ac97_aux_prepare(struct snd_pcm_substream *substream,
 		SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 |\
 		SNDRV_PCM_RATE_48000)
 
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm9712_dai_ops_hifi = {
 	.prepare	= ac97_prepare,
 };
 
 static struct snd_soc_dai_ops wm9712_dai_ops_aux = {
+=======
+static const struct snd_soc_dai_ops wm9712_dai_ops_hifi = {
+	.prepare	= ac97_prepare,
+};
+
+static const struct snd_soc_dai_ops wm9712_dai_ops_aux = {
+>>>>>>> refs/remotes/origin/cm-10.0
 	.prepare	= ac97_aux_prepare,
 };
 
@@ -598,8 +624,12 @@ err:
 	return -EIO;
 }
 
+<<<<<<< HEAD
 static int wm9712_soc_suspend(struct snd_soc_codec *codec,
 	pm_message_t state)
+=======
+static int wm9712_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	wm9712_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -635,8 +665,11 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "WM9711/WM9712 SoC Audio Codec %s\n", WM9712_VERSION);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
 	if (ret < 0) {
 		printk(KERN_ERR "wm9712: failed to register AC97 codec\n");
@@ -653,7 +686,11 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
 	ac97_write(codec, AC97_VIDEO, ac97_read(codec, AC97_VIDEO) | 0x3000);
 
 	wm9712_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm9712_snd_ac97_controls,
+=======
+	snd_soc_add_codec_controls(codec, wm9712_snd_ac97_controls,
+>>>>>>> refs/remotes/origin/cm-10.0
 				ARRAY_SIZE(wm9712_snd_ac97_controls));
 
 	return 0;
@@ -709,6 +746,7 @@ static struct platform_driver wm9712_codec_driver = {
 	.remove = __devexit_p(wm9712_remove),
 };
 
+<<<<<<< HEAD
 static int __init wm9712_init(void)
 {
 	return platform_driver_register(&wm9712_codec_driver);
@@ -720,6 +758,9 @@ static void __exit wm9712_exit(void)
 	platform_driver_unregister(&wm9712_codec_driver);
 }
 module_exit(wm9712_exit);
+=======
+module_platform_driver(wm9712_codec_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_DESCRIPTION("ASoC WM9711/WM9712 driver");
 MODULE_AUTHOR("Liam Girdwood");

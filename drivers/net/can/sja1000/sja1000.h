@@ -40,13 +40,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  *
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 
 #ifndef SJA1000_DEV_H
 #define SJA1000_DEV_H
 
+<<<<<<< HEAD
+=======
+#include <linux/irqreturn.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/can/dev.h>
 #include <linux/can/platform/sja1000.h>
 
@@ -57,7 +64,11 @@
 /* SJA1000 registers - manual section 6.4 (Pelican Mode) */
 #define REG_MOD		0x00
 #define REG_CMR		0x01
+<<<<<<< HEAD
 #define REG_SR		0x02
+=======
+#define SJA1000_REG_SR		0x02
+>>>>>>> refs/remotes/origin/cm-10.0
 #define REG_IR		0x03
 #define REG_IER		0x04
 #define REG_ALC		0x0B

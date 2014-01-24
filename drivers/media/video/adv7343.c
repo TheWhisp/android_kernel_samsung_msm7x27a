@@ -475,6 +475,7 @@ static struct i2c_driver adv7343_driver = {
 	.id_table	= adv7343_id,
 };
 
+<<<<<<< HEAD
 static __init int init_adv7343(void)
 {
 	return i2c_add_driver(&adv7343_driver);
@@ -487,3 +488,6 @@ static __exit void exit_adv7343(void)
 
 module_init(init_adv7343);
 module_exit(exit_adv7343);
+=======
+module_i2c_driver(adv7343_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

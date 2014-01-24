@@ -9,11 +9,19 @@
  * the Free Software Foundation
  */
 
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kmemcheck.h>
 
 #define C2PORT_NAME_LEN			32
 
+<<<<<<< HEAD
+=======
+struct device;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * C2 port basic structs
  */

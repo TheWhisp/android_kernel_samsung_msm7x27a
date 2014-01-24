@@ -11,7 +11,11 @@
 #include <linux/unistd.h>
 #include <linux/init.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <asm/atomic.h>
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/smp.h>
 #include <asm/time.h>
 

@@ -216,12 +216,20 @@ static void get_data_to_compute(struct crypto_cipher *tfm,
 			scatterwalk_start(&walk, sg_next(walk.sg));
 			n = scatterwalk_clamp(&walk, len);
 		}
+<<<<<<< HEAD
 		data_src = scatterwalk_map(&walk, 0);
+=======
+		data_src = scatterwalk_map(&walk);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 		compute_mac(tfm, data_src, n, pctx);
 		len -= n;
 
+<<<<<<< HEAD
 		scatterwalk_unmap(data_src, 0);
+=======
+		scatterwalk_unmap(data_src);
+>>>>>>> refs/remotes/origin/cm-10.0
 		scatterwalk_advance(&walk, n);
 		scatterwalk_done(&walk, 0, len);
 		if (len)
@@ -271,8 +279,12 @@ static int crypto_ccm_auth(struct aead_request *req, struct scatterlist *plain,
 	}
 
 	/* compute plaintext into mac */
+<<<<<<< HEAD
        if (cryptlen)
        get_data_to_compute(cipher, pctx, plain, cryptlen);
+=======
+	get_data_to_compute(cipher, pctx, plain, cryptlen);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 out:
 	return err;

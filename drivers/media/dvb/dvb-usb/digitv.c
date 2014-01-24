@@ -118,12 +118,20 @@ static struct mt352_config digitv_mt352_config = {
 	.demod_init = digitv_mt352_demod_init,
 };
 
+<<<<<<< HEAD
 static int digitv_nxt6000_tuner_set_params(struct dvb_frontend *fe, struct dvb_frontend_parameters *fep)
+=======
+static int digitv_nxt6000_tuner_set_params(struct dvb_frontend *fe)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct dvb_usb_adapter *adap = fe->dvb->priv;
 	u8 b[5];
 
+<<<<<<< HEAD
 	fe->ops.tuner_ops.calc_regs(fe, fep, b, sizeof(b));
+=======
+	fe->ops.tuner_ops.calc_regs(fe, b, sizeof(b));
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (fe->ops.i2c_gate_ctrl)
 		fe->ops.i2c_gate_ctrl(fe, 1);
 	return digitv_ctrl_msg(adap->dev, USB_WRITE_TUNER, 0, &b[1], 4, NULL, 0);
@@ -137,11 +145,24 @@ static int digitv_frontend_attach(struct dvb_usb_adapter *adap)
 {
 	struct digitv_state *st = adap->dev->priv;
 
+<<<<<<< HEAD
 	if ((adap->fe = dvb_attach(mt352_attach, &digitv_mt352_config, &adap->dev->i2c_adap)) != NULL) {
 		st->is_nxt6000 = 0;
 		return 0;
 	}
 	if ((adap->fe = dvb_attach(nxt6000_attach, &digitv_nxt6000_config, &adap->dev->i2c_adap)) != NULL) {
+=======
+	adap->fe_adap[0].fe = dvb_attach(mt352_attach, &digitv_mt352_config,
+					 &adap->dev->i2c_adap);
+	if ((adap->fe_adap[0].fe) != NULL) {
+		st->is_nxt6000 = 0;
+		return 0;
+	}
+	adap->fe_adap[0].fe = dvb_attach(nxt6000_attach,
+					 &digitv_nxt6000_config,
+					 &adap->dev->i2c_adap);
+	if ((adap->fe_adap[0].fe) != NULL) {
+>>>>>>> refs/remotes/origin/cm-10.0
 		st->is_nxt6000 = 1;
 		return 0;
 	}
@@ -152,11 +173,19 @@ static int digitv_tuner_attach(struct dvb_usb_adapter *adap)
 {
 	struct digitv_state *st = adap->dev->priv;
 
+<<<<<<< HEAD
 	if (!dvb_attach(dvb_pll_attach, adap->fe, 0x60, NULL, DVB_PLL_TDED4))
 		return -ENODEV;
 
 	if (st->is_nxt6000)
 		adap->fe->ops.tuner_ops.set_params = digitv_nxt6000_tuner_set_params;
+=======
+	if (!dvb_attach(dvb_pll_attach, adap->fe_adap[0].fe, 0x60, NULL, DVB_PLL_TDED4))
+		return -ENODEV;
+
+	if (st->is_nxt6000)
+		adap->fe_adap[0].fe->ops.tuner_ops.set_params = digitv_nxt6000_tuner_set_params;
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
@@ -292,6 +321,11 @@ static struct dvb_usb_device_properties digitv_properties = {
 	.num_adapters = 1,
 	.adapter = {
 		{
+<<<<<<< HEAD
+=======
+		.num_frontends = 1,
+		.fe = {{
+>>>>>>> refs/remotes/origin/cm-10.0
 			.frontend_attach  = digitv_frontend_attach,
 			.tuner_attach     = digitv_tuner_attach,
 
@@ -306,6 +340,10 @@ static struct dvb_usb_device_properties digitv_properties = {
 					}
 				}
 			},
+<<<<<<< HEAD
+=======
+		}},
+>>>>>>> refs/remotes/origin/cm-10.0
 		}
 	},
 	.identify_state   = digitv_identify_state,
@@ -338,6 +376,7 @@ static struct usb_driver digitv_driver = {
 	.id_table	= digitv_table,
 };
 
+<<<<<<< HEAD
 /* module stuff */
 static int __init digitv_module_init(void)
 {
@@ -358,6 +397,9 @@ static void __exit digitv_module_exit(void)
 
 module_init (digitv_module_init);
 module_exit (digitv_module_exit);
+=======
+module_usb_driver(digitv_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Patrick Boettcher <patrick.boettcher@desy.de>");
 MODULE_DESCRIPTION("Driver for Nebula Electronics uDigiTV DVB-T USB2.0");

@@ -10,7 +10,11 @@
 
 #include <linux/kernel.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/mbus.h>
+=======
+#include <video/vga.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mach/pci.h>
 #include <asm/mach/arch.h>
 #include <asm/setup.h>
@@ -18,6 +22,10 @@
 #include <plat/pcie.h>
 #include <mach/irqs.h>
 #include <mach/bridge-regs.h>
+<<<<<<< HEAD
+=======
+#include <plat/addr-map.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "common.h"
 
 struct pcie_port {
@@ -49,7 +57,11 @@ static int __init dove_pcie_setup(int nr, struct pci_sys_data *sys)
 	 */
 	orion_pcie_set_local_bus_nr(pp->base, sys->busnr);
 
+<<<<<<< HEAD
 	orion_pcie_setup(pp->base, &dove_mbus_dram_info);
+=======
+	orion_pcie_setup(pp->base);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * IORESOURCE_IO
@@ -68,7 +80,11 @@ static int __init dove_pcie_setup(int nr, struct pci_sys_data *sys)
 	pp->res[0].flags = IORESOURCE_IO;
 	if (request_resource(&ioport_resource, &pp->res[0]))
 		panic("Request PCIe IO resource failed\n");
+<<<<<<< HEAD
 	sys->resource[0] = &pp->res[0];
+=======
+	pci_add_resource_offset(&sys->resources, &pp->res[0], sys->io_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
 	 * IORESOURCE_MEM
@@ -87,9 +103,13 @@ static int __init dove_pcie_setup(int nr, struct pci_sys_data *sys)
 	pp->res[1].flags = IORESOURCE_MEM;
 	if (request_resource(&iomem_resource, &pp->res[1]))
 		panic("Request PCIe Memory resource failed\n");
+<<<<<<< HEAD
 	sys->resource[1] = &pp->res[1];
 
 	sys->resource[2] = NULL;
+=======
+	pci_add_resource_offset(&sys->resources, &pp->res[1], sys->mem_offset);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 	return 1;
 }
@@ -183,7 +203,12 @@ dove_pcie_scan_bus(int nr, struct pci_sys_data *sys)
 	struct pci_bus *bus;
 
 	if (nr < num_pcie_ports) {
+<<<<<<< HEAD
 		bus = pci_scan_bus(sys->busnr, &pcie_ops, sys);
+=======
+		bus = pci_scan_root_bus(NULL, sys->busnr, &pcie_ops, sys,
+					&sys->resources);
+>>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		bus = NULL;
 		BUG();
@@ -192,7 +217,11 @@ dove_pcie_scan_bus(int nr, struct pci_sys_data *sys)
 	return bus;
 }
 
+<<<<<<< HEAD
 static int __init dove_pcie_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int __init dove_pcie_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pcie_port *pp = bus_to_port(dev->bus->number);
 
@@ -228,6 +257,11 @@ static void __init add_pcie_port(int index, unsigned long base)
 
 void __init dove_pcie_init(int init_port0, int init_port1)
 {
+<<<<<<< HEAD
+=======
+	vga_base = DOVE_PCIE0_MEM_PHYS_BASE;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (init_port0)
 		add_pcie_port(0, DOVE_PCIE0_VIRT_BASE);
 

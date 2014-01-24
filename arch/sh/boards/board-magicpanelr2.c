@@ -25,9 +25,12 @@
 
 #define LAN9115_READY	(__raw_readl(0xA8000084UL) & 0x00000001UL)
 
+<<<<<<< HEAD
 /* Prefer cmdline over RedBoot */
 static const char *probes[] = { "cmdlinepart", "RedBoot", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /* Wait until reset finished. Timeout is 100ms. */
 static int __init ethernet_reset_finished(void)
 {
@@ -293,8 +296,11 @@ static struct platform_device heartbeat_device = {
 	.resource	= heartbeat_resources,
 };
 
+<<<<<<< HEAD
 static struct mtd_partition *parsed_partitions;
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static struct mtd_partition mpr2_partitions[] = {
 	/* Reserved for bootloader, read-only */
 	{
@@ -318,6 +324,11 @@ static struct mtd_partition mpr2_partitions[] = {
 };
 
 static struct physmap_flash_data flash_data = {
+<<<<<<< HEAD
+=======
+	.parts		= mpr2_partitions,
+	.nr_parts	= ARRAY_SIZE(mpr2_partitions),
+>>>>>>> refs/remotes/origin/cm-10.0
 	.width		= 2,
 };
 
@@ -337,6 +348,7 @@ static struct platform_device flash_device = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mtd_info *flash_mtd;
 
 static struct map_info mpr2_flash_map = {
@@ -363,6 +375,8 @@ static void __init set_mtd_partitions(void)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Add all resources to the platform_device
  */
@@ -376,7 +390,10 @@ static struct platform_device *mpr2_devices[] __initdata = {
 
 static int __init mpr2_devices_setup(void)
 {
+<<<<<<< HEAD
 	set_mtd_partitions();
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	return platform_add_devices(mpr2_devices, ARRAY_SIZE(mpr2_devices));
 }
 device_initcall(mpr2_devices_setup);

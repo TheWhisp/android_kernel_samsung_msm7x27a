@@ -80,6 +80,12 @@ static struct resource net2272_bfin_resources[] = {
 		.end = 0x20300000 + 0x100,
 		.flags = IORESOURCE_MEM,
 	}, {
+<<<<<<< HEAD
+=======
+		.start = 1,
+		.flags = IORESOURCE_BUS,
+	}, {
+>>>>>>> refs/remotes/origin/cm-10.0
 		.start = IRQ_PF10,
 		.end = IRQ_PF10,
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHLEVEL,
@@ -172,6 +178,7 @@ static struct flash_platform_data bfin_spi_flash_data = {
 /* SPI flash chip (m25p64) */
 static struct bfin5xx_spi_chip spi_flash_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -195,6 +202,8 @@ static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
 static struct bfin5xx_spi_chip spidev_chip_info = {
 	.enable_dma = 0,
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -221,7 +230,10 @@ static struct mmc_spi_platform_data bfin_mmc_spi_pdata = {
 
 static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 	.bits_per_word = 8,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	.pio_interrupt = 0,
 };
 #endif
@@ -240,6 +252,7 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 	},
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_BFIN_SPI_ADC) || defined(CONFIG_BFIN_SPI_ADC_MODULE)
 	{
 		.modalias = "bfin_spi_adc", /* Name of spi_driver for this device */
@@ -254,11 +267,20 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 #if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
 	{
 		.modalias = "ad183x",
+=======
+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) || \
+	defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
+	{
+		.modalias = "ad1836",
+>>>>>>> refs/remotes/origin/cm-10.0
 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num = 0,
 		.chip_select = 4,
 		.platform_data = "ad1836", /* only includes chip name for the moment */
+<<<<<<< HEAD
 		.controller_data = &ad1836_spi_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 		.mode = SPI_MODE_3,
 	},
 #endif
@@ -269,7 +291,10 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
 		.bus_num = 0,
 		.chip_select = 1,
+<<<<<<< HEAD
 		.controller_data = &spidev_chip_info,
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 	},
 #endif
 #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
@@ -285,7 +310,11 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 #endif
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 /* SPI (0) */
 static struct resource bfin_spi0_resource[] = {
 	[0] = {
@@ -332,8 +361,18 @@ static struct resource bfin_uart0_resources[] = {
 		.flags = IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX + 1,
+=======
+		.start = IRQ_UART0_TX,
+		.end = IRQ_UART0_TX,
+		.flags = IORESOURCE_IRQ,
+	},
+	{
+		.start = IRQ_UART0_RX,
+		.end = IRQ_UART0_RX,
+>>>>>>> refs/remotes/origin/cm-10.0
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -500,7 +539,11 @@ static struct i2c_gpio_platform_data i2c_gpio_data = {
 	.scl_pin		= GPIO_PF3,
 	.sda_is_open_drain	= 0,
 	.scl_is_open_drain	= 0,
+<<<<<<< HEAD
 	.udelay			= 40,
+=======
+	.udelay			= 10,
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static struct platform_device i2c_gpio_device = {
@@ -569,6 +612,7 @@ static struct platform_device bfin_dpmc = {
 	},
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE)
 static struct platform_device bfin_i2s = {
 	.name = "bfin-i2s",
@@ -590,6 +634,152 @@ static struct platform_device bfin_ac97 = {
 	.name = "bfin-ac97",
 	.id = CONFIG_SND_BF5XX_SPORT_NUM,
 	/* TODO: add platform data here */
+=======
+#if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE) || \
+	defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE) \
+	|| defined(CONFIG_SND_BF5XX_AC97) || \
+	defined(CONFIG_SND_BF5XX_AC97_MODULE)
+
+#include <asm/bfin_sport.h>
+
+#define SPORT_REQ(x) \
+	[x] = {P_SPORT##x##_TFS, P_SPORT##x##_DTPRI, P_SPORT##x##_TSCLK, \
+		P_SPORT##x##_RFS, P_SPORT##x##_DRPRI, P_SPORT##x##_RSCLK, 0}
+
+static const u16 bfin_snd_pin[][7] = {
+	SPORT_REQ(0),
+	SPORT_REQ(1),
+};
+
+static struct bfin_snd_platform_data bfin_snd_data[] = {
+	{
+		.pin_req = &bfin_snd_pin[0][0],
+	},
+	{
+		.pin_req = &bfin_snd_pin[1][0],
+	},
+};
+
+#define BFIN_SND_RES(x) \
+	[x] = { \
+		{ \
+			.start = SPORT##x##_TCR1, \
+			.end = SPORT##x##_TCR1, \
+			.flags = IORESOURCE_MEM \
+		}, \
+		{ \
+			.start = CH_SPORT##x##_RX, \
+			.end = CH_SPORT##x##_RX, \
+			.flags = IORESOURCE_DMA, \
+		}, \
+		{ \
+			.start = CH_SPORT##x##_TX, \
+			.end = CH_SPORT##x##_TX, \
+			.flags = IORESOURCE_DMA, \
+		}, \
+		{ \
+			.start = IRQ_SPORT##x##_ERROR, \
+			.end = IRQ_SPORT##x##_ERROR, \
+			.flags = IORESOURCE_IRQ, \
+		} \
+	}
+
+static struct resource bfin_snd_resources[][4] = {
+	BFIN_SND_RES(0),
+	BFIN_SND_RES(1),
+};
+#endif
+
+#if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE)
+static struct platform_device bfin_i2s_pcm = {
+	.name = "bfin-i2s-pcm-audio",
+	.id = -1,
+};
+#endif
+
+#if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
+static struct platform_device bfin_tdm_pcm = {
+	.name = "bfin-tdm-pcm-audio",
+	.id = -1,
+};
+#endif
+
+#if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
+static struct platform_device bfin_ac97_pcm = {
+	.name = "bfin-ac97-pcm-audio",
+	.id = -1,
+};
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_AD73311) || \
+	defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
+static const unsigned ad73311_gpio[] = {
+	GPIO_PF4,
+};
+
+static struct platform_device bfin_ad73311_machine = {
+	.name = "bfin-snd-ad73311",
+	.id = 1,
+	.dev = {
+		.platform_data = (void *)ad73311_gpio,
+	},
+};
+#endif
+
+#if defined(CONFIG_SND_SOC_AD73311) || defined(CONFIG_SND_SOC_AD73311_MODULE)
+static struct platform_device bfin_ad73311_codec_device = {
+	.name = "ad73311",
+	.id = -1,
+};
+#endif
+
+#if defined(CONFIG_SND_SOC_AD74111) || defined(CONFIG_SND_SOC_AD74111_MODULE)
+static struct platform_device bfin_ad74111_codec_device = {
+	.name = "ad74111",
+	.id = -1,
+};
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_I2S) || \
+	defined(CONFIG_SND_BF5XX_SOC_I2S_MODULE)
+static struct platform_device bfin_i2s = {
+	.name = "bfin-i2s",
+	.id = CONFIG_SND_BF5XX_SPORT_NUM,
+	.num_resources =
+		ARRAY_SIZE(bfin_snd_resources[CONFIG_SND_BF5XX_SPORT_NUM]),
+	.resource = bfin_snd_resources[CONFIG_SND_BF5XX_SPORT_NUM],
+	.dev = {
+		.platform_data = &bfin_snd_data[CONFIG_SND_BF5XX_SPORT_NUM],
+	},
+};
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_TDM) || \
+	defined(CONFIG_SND_BF5XX_SOC_TDM_MODULE)
+static struct platform_device bfin_tdm = {
+	.name = "bfin-tdm",
+	.id = CONFIG_SND_BF5XX_SPORT_NUM,
+	.num_resources =
+		ARRAY_SIZE(bfin_snd_resources[CONFIG_SND_BF5XX_SPORT_NUM]),
+	.resource = bfin_snd_resources[CONFIG_SND_BF5XX_SPORT_NUM],
+	.dev = {
+		.platform_data = &bfin_snd_data[CONFIG_SND_BF5XX_SPORT_NUM],
+	},
+};
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_AC97) || \
+	defined(CONFIG_SND_BF5XX_SOC_AC97_MODULE)
+static struct platform_device bfin_ac97 = {
+	.name = "bfin-ac97",
+	.id = CONFIG_SND_BF5XX_SPORT_NUM,
+	.num_resources =
+		ARRAY_SIZE(bfin_snd_resources[CONFIG_SND_BF5XX_SPORT_NUM]),
+	.resource = bfin_snd_resources[CONFIG_SND_BF5XX_SPORT_NUM],
+	.dev = {
+		.platform_data = &bfin_snd_data[CONFIG_SND_BF5XX_SPORT_NUM],
+	},
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif
 
@@ -609,7 +799,11 @@ static struct platform_device *stamp_devices[] __initdata = {
 	&net2272_bfin_device,
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	&bfin_spi0_device,
 #endif
 
@@ -625,7 +819,12 @@ static struct platform_device *stamp_devices[] __initdata = {
 #endif
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SERIAL_BFIN_SPORT) || defined(CONFIG_SERIAL_BFIN_SPORT_MODULE)
+=======
+#if defined(CONFIG_SERIAL_BFIN_SPORT) || \
+	defined(CONFIG_SERIAL_BFIN_SPORT_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SERIAL_BFIN_SPORT0_UART
 	&bfin_sport0_uart_device,
 #endif
@@ -647,6 +846,7 @@ static struct platform_device *stamp_devices[] __initdata = {
 #endif
 
 #if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE)
+<<<<<<< HEAD
 	&bfin_i2s,
 #endif
 
@@ -655,10 +855,86 @@ static struct platform_device *stamp_devices[] __initdata = {
 #endif
 
 #if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
+=======
+	&bfin_i2s_pcm,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
+	&bfin_tdm_pcm,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
+	&bfin_ac97_pcm,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_AD73311) || \
+	defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
+	&bfin_ad73311_machine,
+#endif
+
+#if defined(CONFIG_SND_SOC_AD73311) || defined(CONFIG_SND_SOC_AD73311_MODULE)
+	&bfin_ad73311_codec_device,
+#endif
+
+#if defined(CONFIG_SND_SOC_AD74111) || defined(CONFIG_SND_SOC_AD74111_MODULE)
+	&bfin_ad74111_codec_device,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_I2S) || \
+	defined(CONFIG_SND_BF5XX_SOC_I2S_MODULE)
+	&bfin_i2s,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_TDM) || \
+	defined(CONFIG_SND_BF5XX_SOC_TDM_MODULE)
+	&bfin_tdm,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_AC97) || \
+	defined(CONFIG_SND_BF5XX_SOC_AC97_MODULE)
+>>>>>>> refs/remotes/origin/cm-10.0
 	&bfin_ac97,
 #endif
 };
 
+<<<<<<< HEAD
+=======
+static int __init net2272_init(void)
+{
+#if defined(CONFIG_USB_NET2272) || defined(CONFIG_USB_NET2272_MODULE)
+	int ret;
+
+	/* Set PF0 to 0, PF1 to 1 make /AMS3 work properly */
+	ret = gpio_request(GPIO_PF0, "net2272");
+	if (ret)
+		return ret;
+
+	ret = gpio_request(GPIO_PF1, "net2272");
+	if (ret) {
+		gpio_free(GPIO_PF0);
+		return ret;
+	}
+
+	ret = gpio_request(GPIO_PF11, "net2272");
+	if (ret) {
+		gpio_free(GPIO_PF0);
+		gpio_free(GPIO_PF1);
+		return ret;
+	}
+
+	gpio_direction_output(GPIO_PF0, 0);
+	gpio_direction_output(GPIO_PF1, 1);
+
+	/* Reset the USB chip */
+	gpio_direction_output(GPIO_PF11, 0);
+	mdelay(2);
+	gpio_set_value(GPIO_PF11, 1);
+#endif
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int __init stamp_init(void)
 {
 	int ret;
@@ -685,6 +961,12 @@ static int __init stamp_init(void)
 	}
 #endif
 
+<<<<<<< HEAD
+=======
+	if (net2272_init())
+		pr_warning("unable to configure net2272; it probably won't work\n");
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	spi_register_board_info(bfin_spi_board_info, ARRAY_SIZE(bfin_spi_board_info));
 	return 0;
 }

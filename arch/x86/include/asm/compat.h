@@ -6,7 +6,13 @@
  */
 #include <linux/types.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <asm/user32.h>
+=======
+#include <asm/processor.h>
+#include <asm/user32.h>
+#include <asm/unistd.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define COMPAT_USER_HZ		100
 #define COMPAT_UTS_MACHINE	"i686\0\0"
@@ -108,7 +114,12 @@ struct compat_statfs {
 	compat_fsid_t	f_fsid;
 	int		f_namelen;	/* SunOS ignores this field. */
 	int		f_frsize;
+<<<<<<< HEAD
 	int		f_spare[5];
+=======
+	int		f_flags;
+	int		f_spare[4];
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #define COMPAT_RLIM_OLD_INFINITY	0x7fffffff
@@ -185,7 +196,24 @@ struct compat_shmid64_ds {
 /*
  * The type of struct elf_prstatus.pr_reg in compatible core dumps.
  */
+<<<<<<< HEAD
 typedef struct user_regs_struct32 compat_elf_gregset_t;
+=======
+#ifdef CONFIG_X86_X32_ABI
+typedef struct user_regs_struct compat_elf_gregset_t;
+
+#define PR_REG_SIZE(S) (test_thread_flag(TIF_IA32) ? 68 : 216)
+#define PRSTATUS_SIZE(S) (test_thread_flag(TIF_IA32) ? 144 : 296)
+#define SET_PR_FPVALID(S,V) \
+  do { *(int *) (((void *) &((S)->pr_reg)) + PR_REG_SIZE(0)) = (V); } \
+  while (0)
+
+#define COMPAT_USE_64BIT_TIME \
+	(!!(task_pt_regs(current)->orig_ax & __X32_SYSCALL_BIT))
+#else
+typedef struct user_regs_struct32 compat_elf_gregset_t;
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 
 /*
  * A pointer passed in from user mode. This should not
@@ -207,6 +235,7 @@ static inline compat_uptr_t ptr_to_compat(void __user *uptr)
 
 static inline void __user *arch_compat_alloc_user_space(long len)
 {
+<<<<<<< HEAD
 	struct pt_regs *regs = task_pt_regs(current);
 	return (void __user *)regs->sp - len;
 }
@@ -214,6 +243,32 @@ static inline void __user *arch_compat_alloc_user_space(long len)
 static inline int is_compat_task(void)
 {
 	return current_thread_info()->status & TS_COMPAT;
+=======
+	compat_uptr_t sp;
+
+	if (test_thread_flag(TIF_IA32)) {
+		sp = task_pt_regs(current)->sp;
+	} else {
+		/* -128 for the x32 ABI redzone */
+		sp = percpu_read(old_rsp) - 128;
+	}
+
+	return (void __user *)round_down(sp - len, 16);
+}
+
+static inline bool is_x32_task(void)
+{
+#ifdef CONFIG_X86_X32_ABI
+	if (task_pt_regs(current)->orig_ax & __X32_SYSCALL_BIT)
+		return true;
+#endif
+	return false;
+}
+
+static inline bool is_compat_task(void)
+{
+	return is_ia32_task() || is_x32_task();
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 
 #endif /* _ASM_X86_COMPAT_H */

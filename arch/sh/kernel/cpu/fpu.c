@@ -2,6 +2,10 @@
 #include <linux/slab.h>
 #include <asm/processor.h>
 #include <asm/fpu.h>
+<<<<<<< HEAD
+=======
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int init_fpu(struct task_struct *tsk)
 {

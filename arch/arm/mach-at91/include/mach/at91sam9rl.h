@@ -64,12 +64,16 @@
 #define AT91SAM9RL_BASE_TSC	0xfffd0000
 #define AT91SAM9RL_BASE_UDPHS	0xfffd4000
 #define AT91SAM9RL_BASE_AC97C	0xfffd8000
+<<<<<<< HEAD
 #define AT91_BASE_SYS		0xffffc000
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 
 /*
  * System Peripherals (offset from AT91_BASE_SYS)
  */
+<<<<<<< HEAD
 #define AT91_DMA	(0xffffe600 - AT91_BASE_SYS)
 #define AT91_ECC	(0xffffe800 - AT91_BASE_SYS)
 #define AT91_SDRAMC0	(0xffffea00 - AT91_BASE_SYS)
@@ -91,6 +95,27 @@
 #define AT91_SCKCR	(0xfffffd50 - AT91_BASE_SYS)
 #define AT91_GPBR	(0xfffffd60 - AT91_BASE_SYS)
 #define AT91_RTC	(0xfffffe00 - AT91_BASE_SYS)
+=======
+#define AT91_SCKCR	(0xfffffd50 - AT91_BASE_SYS)
+
+#define AT91SAM9RL_BASE_DMA	0xffffe600
+#define AT91SAM9RL_BASE_ECC	0xffffe800
+#define AT91SAM9RL_BASE_SDRAMC	0xffffea00
+#define AT91SAM9RL_BASE_SMC	0xffffec00
+#define AT91SAM9RL_BASE_MATRIX	0xffffee00
+#define AT91SAM9RL_BASE_DBGU	AT91_BASE_DBGU0
+#define AT91SAM9RL_BASE_PIOA	0xfffff400
+#define AT91SAM9RL_BASE_PIOB	0xfffff600
+#define AT91SAM9RL_BASE_PIOC	0xfffff800
+#define AT91SAM9RL_BASE_PIOD	0xfffffa00
+#define AT91SAM9RL_BASE_RSTC	0xfffffd00
+#define AT91SAM9RL_BASE_SHDWC	0xfffffd10
+#define AT91SAM9RL_BASE_RTT	0xfffffd20
+#define AT91SAM9RL_BASE_PIT	0xfffffd30
+#define AT91SAM9RL_BASE_WDT	0xfffffd40
+#define AT91SAM9RL_BASE_GPBR	0xfffffd60
+#define AT91SAM9RL_BASE_RTC	0xfffffe00
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define AT91_USART0	AT91SAM9RL_BASE_US0
 #define AT91_USART1	AT91SAM9RL_BASE_US1

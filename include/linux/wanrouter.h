@@ -309,7 +309,11 @@ typedef struct wandev_conf
 #define WANOPT_EVEN	2
 
 /* CHDLC Protocol Options */
+<<<<<<< HEAD
 /* DF Commmented out for now.
+=======
+/* DF Commented out for now.
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define WANOPT_CHDLC_NO_DCD		IGNORE_DCD_FOR_LINK_STAT
 #define WANOPT_CHDLC_NO_CTS		IGNORE_CTS_FOR_LINK_STAT

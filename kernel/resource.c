@@ -7,7 +7,11 @@
  * Arbitrary resource management.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/errno.h>
 #include <linux/ioport.h>
 #include <linux/init.h>
@@ -357,12 +361,26 @@ int walk_system_ram_range(unsigned long start_pfn, unsigned long nr_pages,
 	while ((res.start < res.end) &&
 		(find_next_system_ram(&res, "System RAM") >= 0)) {
 		pfn = (res.start + PAGE_SIZE - 1) >> PAGE_SHIFT;
+<<<<<<< HEAD
 		end_pfn = (res.end + 1) >> PAGE_SHIFT;
+=======
+		if (res.end + 1 <= 0)
+			end_pfn = res.end >> PAGE_SHIFT;
+		else
+			end_pfn = (res.end + 1) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (end_pfn > pfn)
 			ret = (*func)(pfn, end_pfn - pfn, arg);
 		if (ret)
 			break;
+<<<<<<< HEAD
 		res.start = res.end + 1;
+=======
+		if (res.end + 1 > res.start)
+			res.start = res.end + 1;
+		else
+			res.start = res.end;
+>>>>>>> refs/remotes/origin/cm-10.0
 		res.end = orig_end;
 	}
 	return ret;
@@ -576,6 +594,30 @@ int allocate_resource(struct resource *root, struct resource *new,
 
 EXPORT_SYMBOL(allocate_resource);
 
+<<<<<<< HEAD
+=======
+/**
+ * lookup_resource - find an existing resource by a resource start address
+ * @root: root resource descriptor
+ * @start: resource start address
+ *
+ * Returns a pointer to the resource if found, NULL otherwise
+ */
+struct resource *lookup_resource(struct resource *root, resource_size_t start)
+{
+	struct resource *res;
+
+	read_lock(&resource_lock);
+	for (res = root->child; res; res = res->sibling) {
+		if (res->start == start)
+			break;
+	}
+	read_unlock(&resource_lock);
+
+	return res;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Insert a resource into the resource tree. If successful, return NULL,
  * otherwise return the conflicting resource (compare to __request_resource())
@@ -746,6 +788,10 @@ int adjust_resource(struct resource *res, resource_size_t start, resource_size_t
 	write_unlock(&resource_lock);
 	return result;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(adjust_resource);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 static void __init __reserve_region_with_split(struct resource *root,
 		resource_size_t start, resource_size_t end,
@@ -815,8 +861,11 @@ void __init reserve_region_with_split(struct resource *root,
 	write_unlock(&resource_lock);
 }
 
+<<<<<<< HEAD
 EXPORT_SYMBOL(adjust_resource);
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * resource_alignment - calculate resource's alignment
  * @res: resource pointer

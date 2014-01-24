@@ -72,6 +72,15 @@ enum lm3530_als_mode {
 	LM3530_INPUT_CEIL,	/* Max of ALS1 and ALS2 */
 };
 
+<<<<<<< HEAD
+=======
+/* PWM Platform Specific Data */
+struct lm3530_pwm_data {
+	void (*pwm_set_intensity) (int brightness, int max_brightness);
+	int (*pwm_get_intensity) (int max_brightness);
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * struct lm3530_platform_data
  * @mode: mode of operation i.e. Manual, ALS or PWM
@@ -84,7 +93,14 @@ enum lm3530_als_mode {
  * @brt_ramp_rise: rate of rise of led current
  * @als1_resistor_sel: internal resistance from ALS1 input to ground
  * @als2_resistor_sel: internal resistance from ALS2 input to ground
+<<<<<<< HEAD
  * @brt_val: brightness value (0-255)
+=======
+ * @als_vmin: als input voltage calibrated for max brightness in mV
+ * @als_vmax: als input voltage calibrated for min brightness in mV
+ * @brt_val: brightness value (0-255)
+ * @pwm_data: PWM control functions (only valid when the mode is PWM)
+>>>>>>> refs/remotes/origin/cm-10.0
  */
 struct lm3530_platform_data {
 	enum lm3530_mode mode;
@@ -101,7 +117,16 @@ struct lm3530_platform_data {
 	u8 als1_resistor_sel;
 	u8 als2_resistor_sel;
 
+<<<<<<< HEAD
 	u8 brt_val;
+=======
+	u32 als_vmin;
+	u32 als_vmax;
+
+	u8 brt_val;
+
+	struct lm3530_pwm_data pwm_data;
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #endif	/* _LINUX_LED_LM3530_H__ */

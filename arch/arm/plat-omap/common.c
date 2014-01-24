@@ -14,13 +14,22 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/omapfb.h>
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/common.h>
 #include <plat/board.h>
 #include <plat/vram.h>
 #include <plat/dsp.h>
 
+<<<<<<< HEAD
+=======
+#include <plat/omap-secure.h>
+
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #define NO_LENGTH_CHECK 0xffffffff
 
@@ -62,7 +71,21 @@ const void *__init omap_get_var_config(u16 tag, size_t *len)
 
 void __init omap_reserve(void)
 {
+<<<<<<< HEAD
 	omapfb_reserve_sdram_memblock();
 	omap_vram_reserve_sdram_memblock();
 	omap_dsp_reserve_sdram_memblock();
+=======
+	omap_vram_reserve_sdram_memblock();
+	omap_dsp_reserve_sdram_memblock();
+	omap_secure_ram_reserve_memblock();
+	omap_barrier_reserve_memblock();
+}
+
+void __init omap_init_consistent_dma_size(void)
+{
+#ifdef CONFIG_FB_OMAP_CONSISTENT_DMA_SIZE
+	init_consistent_dma_size(CONFIG_FB_OMAP_CONSISTENT_DMA_SIZE << 20);
+#endif
+>>>>>>> refs/remotes/origin/cm-10.0
 }

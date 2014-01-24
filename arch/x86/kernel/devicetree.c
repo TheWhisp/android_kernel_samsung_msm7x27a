@@ -2,7 +2,13 @@
  * Architecture specific OF callbacks.
  */
 #include <linux/bootmem.h>
+<<<<<<< HEAD
 #include <linux/io.h>
+=======
+#include <linux/export.h>
+#include <linux/io.h>
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/interrupt.h>
 #include <linux/list.h>
 #include <linux/of.h>
@@ -16,12 +22,16 @@
 #include <linux/initrd.h>
 
 #include <asm/hpet.h>
+<<<<<<< HEAD
 #include <asm/irq_controller.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/apic.h>
 #include <asm/pci_x86.h>
 
 __initdata u64 initial_dtb;
 char __initdata cmd_line[COMMAND_LINE_SIZE];
+<<<<<<< HEAD
 static LIST_HEAD(irq_domains);
 static DEFINE_RAW_SPINLOCK(big_irq_lock);
 
@@ -74,6 +84,11 @@ unsigned int irq_create_of_mapping(struct device_node *controller,
 }
 EXPORT_SYMBOL_GPL(irq_create_of_mapping);
 
+=======
+
+int __initdata of_ioapic;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 unsigned long pci_address_to_pio(phys_addr_t address)
 {
 	/*
@@ -134,6 +149,27 @@ static int __init add_bus_probe(void)
 module_init(add_bus_probe);
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
+=======
+struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+{
+	struct device_node *np;
+
+	for_each_node_by_type(np, "pci") {
+		const void *prop;
+		unsigned int bus_min;
+
+		prop = of_get_property(np, "bus-range", NULL);
+		if (!prop)
+			continue;
+		bus_min = be32_to_cpup(prop);
+		if (bus->number == bus_min)
+			return np;
+	}
+	return NULL;
+}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static int x86_of_pci_irq_enable(struct pci_dev *dev)
 {
 	struct of_irq oirq;
@@ -165,6 +201,7 @@ static void x86_of_pci_irq_disable(struct pci_dev *dev)
 
 void __cpuinit x86_of_pci_init(void)
 {
+<<<<<<< HEAD
 	struct device_node *np;
 
 	pcibios_enable_irq = x86_of_pci_irq_enable;
@@ -209,6 +246,10 @@ void __cpuinit x86_of_pci_init(void)
 			pci_dev_put(dev);
 		}
 	}
+=======
+	pcibios_enable_irq = x86_of_pci_irq_enable;
+	pcibios_disable_irq = x86_of_pci_irq_disable;
+>>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif
 
@@ -377,6 +418,7 @@ static struct of_ioapic_type of_ioapic_type[] =
 	},
 };
 
+<<<<<<< HEAD
 static int ioapic_xlate(struct irq_domain *id, const u32 *intspec, u32 intsize,
 			u32 *out_hwirq, u32 *out_type)
 {
@@ -407,6 +449,45 @@ static int ioapic_xlate(struct irq_domain *id, const u32 *intspec, u32 intsize,
 	return io_apic_setup_irq_pin_once(*out_hwirq, cpu_to_node(0), &attr);
 }
 
+=======
+static int ioapic_xlate(struct irq_domain *domain,
+			struct device_node *controller,
+			const u32 *intspec, u32 intsize,
+			irq_hw_number_t *out_hwirq, u32 *out_type)
+{
+	struct io_apic_irq_attr attr;
+	struct of_ioapic_type *it;
+	u32 line, idx;
+	int rc;
+
+	if (WARN_ON(intsize < 2))
+		return -EINVAL;
+
+	line = intspec[0];
+
+	if (intspec[1] >= ARRAY_SIZE(of_ioapic_type))
+		return -EINVAL;
+
+	it = &of_ioapic_type[intspec[1]];
+
+	idx = (u32) domain->host_data;
+	set_io_apic_irq_attr(&attr, idx, line, it->trigger, it->polarity);
+
+	rc = io_apic_setup_irq_pin_once(irq_find_mapping(domain, line),
+					cpu_to_node(0), &attr);
+	if (rc)
+		return rc;
+
+	*out_hwirq = line;
+	*out_type = it->out_type;
+	return 0;
+}
+
+const struct irq_domain_ops ioapic_irq_domain_ops = {
+	.xlate = ioapic_xlate,
+};
+
+>>>>>>> refs/remotes/origin/cm-10.0
 static void __init ioapic_add_ofnode(struct device_node *np)
 {
 	struct resource r;
@@ -422,6 +503,7 @@ static void __init ioapic_add_ofnode(struct device_node *np)
 	for (i = 0; i < nr_ioapics; i++) {
 		if (r.start == mpc_ioapic_addr(i)) {
 			struct irq_domain *id;
+<<<<<<< HEAD
 
 			id = kzalloc(sizeof(*id), GFP_KERNEL);
 			BUG_ON(!id);
@@ -429,6 +511,16 @@ static void __init ioapic_add_ofnode(struct device_node *np)
 			id->xlate = ioapic_xlate;
 			id->priv = (void *)i;
 			add_interrupt_host(id);
+=======
+			struct mp_ioapic_gsi *gsi_cfg;
+
+			gsi_cfg = mp_ioapic_gsi_routing(i);
+
+			id = irq_domain_add_legacy(np, 32, gsi_cfg->gsi_base, 0,
+						   &ioapic_irq_domain_ops,
+						   (void*)i);
+			BUG_ON(!id);
+>>>>>>> refs/remotes/origin/cm-10.0
 			return;
 		}
 	}

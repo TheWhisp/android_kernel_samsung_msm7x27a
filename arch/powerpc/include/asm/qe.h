@@ -196,7 +196,11 @@ static inline int qe_alive_during_sleep(void)
 
 /* Structure that defines QE firmware binary files.
  *
+<<<<<<< HEAD
  * See Documentation/powerpc/qe-firmware.txt for a description of these
+=======
+ * See Documentation/powerpc/qe_firmware.txt for a description of these
+>>>>>>> refs/remotes/origin/cm-10.0
  * fields.
  */
 struct qe_firmware {

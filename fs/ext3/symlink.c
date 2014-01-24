@@ -17,10 +17,15 @@
  *  ext3 symlink handling code
  */
 
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/jbd.h>
 #include <linux/ext3_fs.h>
 #include <linux/namei.h>
+=======
+#include <linux/namei.h>
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xattr.h"
 
 static void * ext3_follow_link(struct dentry *dentry, struct nameidata *nd)

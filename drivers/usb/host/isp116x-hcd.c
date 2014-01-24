@@ -70,7 +70,10 @@
 
 #include <asm/io.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/byteorder.h>
 
 #include "isp116x.h"
@@ -1569,6 +1572,12 @@ static int __devinit isp116x_probe(struct platform_device *pdev)
 	int ret = 0;
 	unsigned long irqflags;
 
+<<<<<<< HEAD
+=======
+	if (usb_disabled())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (pdev->num_resources < 3) {
 		ret = -ENODEV;
 		goto err1;
@@ -1639,7 +1648,11 @@ static int __devinit isp116x_probe(struct platform_device *pdev)
 		goto err6;
 	}
 
+<<<<<<< HEAD
 	ret = usb_add_hcd(hcd, irq, irqflags | IRQF_DISABLED);
+=======
+	ret = usb_add_hcd(hcd, irq, irqflags);
+>>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto err6;
 
@@ -1708,6 +1721,7 @@ static struct platform_driver isp116x_driver = {
 	},
 };
 
+<<<<<<< HEAD
 /*-----------------------------------------------------------------*/
 
 static int __init isp116x_init(void)
@@ -1727,3 +1741,6 @@ static void __exit isp116x_cleanup(void)
 }
 
 module_exit(isp116x_cleanup);
+=======
+module_platform_driver(isp116x_driver);
+>>>>>>> refs/remotes/origin/cm-10.0

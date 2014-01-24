@@ -47,7 +47,10 @@
 #include <linux/bitops.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/system.h>
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 
 #include <pcmcia/ss.h>
 #include "tcic.h"

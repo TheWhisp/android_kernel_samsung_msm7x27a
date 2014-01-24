@@ -33,7 +33,13 @@
 
 #include <linux/pci.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
+=======
+#include <linux/moduleparam.h>
+#include <linux/slab.h>
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/vmalloc.h>
 
 #include "ipath_kernel.h"

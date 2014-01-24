@@ -117,10 +117,17 @@ enum rfkill_user_states {
 #include <linux/kernel.h>
 #include <linux/list.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/leds.h>
 #include <linux/err.h>
 
+=======
+#include <linux/leds.h>
+#include <linux/err.h>
+
+struct device;
+>>>>>>> refs/remotes/origin/cm-10.0
 /* this is opaque */
 struct rfkill;
 

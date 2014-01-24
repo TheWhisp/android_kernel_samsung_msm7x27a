@@ -24,6 +24,10 @@
 
 #include <linux/kernel.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/if_arp.h>
+>>>>>>> refs/remotes/origin/cm-10.0
 #include <net/netlink.h>
 #include <net/genetlink.h>
 #include <net/wpan-phy.h>
@@ -213,12 +217,43 @@ static int ieee802154_add_iface(struct sk_buff *skb,
 		goto nla_put_failure;
 	}
 
+<<<<<<< HEAD
+=======
+	if (info->attrs[IEEE802154_ATTR_HW_ADDR] &&
+	    nla_len(info->attrs[IEEE802154_ATTR_HW_ADDR]) !=
+			IEEE802154_ADDR_LEN) {
+		rc = -EINVAL;
+		goto nla_put_failure;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	dev = phy->add_iface(phy, devname);
 	if (IS_ERR(dev)) {
 		rc = PTR_ERR(dev);
 		goto nla_put_failure;
 	}
 
+<<<<<<< HEAD
+=======
+	if (info->attrs[IEEE802154_ATTR_HW_ADDR]) {
+		struct sockaddr addr;
+
+		addr.sa_family = ARPHRD_IEEE802154;
+		nla_memcpy(&addr.sa_data, info->attrs[IEEE802154_ATTR_HW_ADDR],
+				IEEE802154_ADDR_LEN);
+
+		/*
+		 * strangely enough, some callbacks (inetdev_event) from
+		 * dev_set_mac_address require RTNL_LOCK
+		 */
+		rtnl_lock();
+		rc = dev_set_mac_address(dev, &addr);
+		rtnl_unlock();
+		if (rc)
+			goto dev_unregister;
+	}
+
+>>>>>>> refs/remotes/origin/cm-10.0
 	NLA_PUT_STRING(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy));
 	NLA_PUT_STRING(msg, IEEE802154_ATTR_DEV_NAME, dev->name);
 
@@ -228,6 +263,14 @@ static int ieee802154_add_iface(struct sk_buff *skb,
 
 	return ieee802154_nl_reply(msg, info);
 
+<<<<<<< HEAD
+=======
+dev_unregister:
+	rtnl_lock(); /* del_iface must be called with RTNL lock */
+	phy->del_iface(phy, dev);
+	dev_put(dev);
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/cm-10.0
 nla_put_failure:
 	nlmsg_free(msg);
 out_dev:

@@ -33,7 +33,10 @@
 #include "xfs_inode_item.h"
 #include "xfs_alloc.h"
 #include "xfs_btree.h"
+<<<<<<< HEAD
 #include "xfs_btree_trace.h"
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #include "xfs_itable.h"
 #include "xfs_bmap.h"
 #include "xfs_error.h"
@@ -425,10 +428,17 @@ xfs_bmbt_to_bmdr(
 	xfs_bmbt_key_t		*tkp;
 	__be64			*tpp;
 
+<<<<<<< HEAD
 	ASSERT(be32_to_cpu(rblock->bb_magic) == XFS_BMAP_MAGIC);
 	ASSERT(be64_to_cpu(rblock->bb_u.l.bb_leftsib) == NULLDFSBNO);
 	ASSERT(be64_to_cpu(rblock->bb_u.l.bb_rightsib) == NULLDFSBNO);
 	ASSERT(be16_to_cpu(rblock->bb_level) > 0);
+=======
+	ASSERT(rblock->bb_magic == cpu_to_be32(XFS_BMAP_MAGIC));
+	ASSERT(rblock->bb_u.l.bb_leftsib == cpu_to_be64(NULLDFSBNO));
+	ASSERT(rblock->bb_u.l.bb_rightsib == cpu_to_be64(NULLDFSBNO));
+	ASSERT(rblock->bb_level != 0);
+>>>>>>> refs/remotes/origin/cm-10.0
 	dblock->bb_level = rblock->bb_level;
 	dblock->bb_numrecs = rblock->bb_numrecs;
 	dmxr = xfs_bmdr_maxrecs(mp, dblocklen, 0);
@@ -732,6 +742,7 @@ xfs_bmbt_recs_inorder(
 }
 #endif	/* DEBUG */
 
+<<<<<<< HEAD
 #ifdef XFS_BTREE_TRACE
 ktrace_t	*xfs_bmbt_trace_buf;
 
@@ -821,6 +832,8 @@ xfs_bmbt_trace_record(
 }
 #endif /* XFS_BTREE_TRACE */
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 static const struct xfs_btree_ops xfs_bmbt_ops = {
 	.rec_len		= sizeof(xfs_bmbt_rec_t),
 	.key_len		= sizeof(xfs_bmbt_key_t),
@@ -837,11 +850,15 @@ static const struct xfs_btree_ops xfs_bmbt_ops = {
 	.init_rec_from_cur	= xfs_bmbt_init_rec_from_cur,
 	.init_ptr_from_cur	= xfs_bmbt_init_ptr_from_cur,
 	.key_diff		= xfs_bmbt_key_diff,
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 #ifdef DEBUG
 	.keys_inorder		= xfs_bmbt_keys_inorder,
 	.recs_inorder		= xfs_bmbt_recs_inorder,
 #endif
+<<<<<<< HEAD
 
 #ifdef XFS_BTREE_TRACE
 	.trace_enter		= xfs_bmbt_trace_enter,
@@ -849,6 +866,8 @@ static const struct xfs_btree_ops xfs_bmbt_ops = {
 	.trace_key		= xfs_bmbt_trace_key,
 	.trace_record		= xfs_bmbt_trace_record,
 #endif
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /*

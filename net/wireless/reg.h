@@ -1,10 +1,32 @@
 #ifndef __NET_WIRELESS_REG_H
 #define __NET_WIRELESS_REG_H
+<<<<<<< HEAD
+=======
+/*
+ * Copyright 2008-2011	Luis R. Rodriguez <mcgrof@qca.qualcomm.com>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+>>>>>>> refs/remotes/origin/cm-10.0
 
 extern const struct ieee80211_regdomain *cfg80211_regdomain;
 
 bool is_world_regdom(const char *alpha2);
 bool reg_is_valid_request(const char *alpha2);
+<<<<<<< HEAD
+=======
+bool reg_supported_dfs_region(u8 dfs_region);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 int regulatory_hint_user(const char *alpha2);
 
@@ -16,6 +38,11 @@ void regulatory_exit(void);
 
 int set_regdom(const struct ieee80211_regdomain *rd);
 
+<<<<<<< HEAD
+=======
+void regulatory_update(struct wiphy *wiphy, enum nl80211_reg_initiator setby);
+
+>>>>>>> refs/remotes/origin/cm-10.0
 /**
  * regulatory_hint_found_beacon - hints a beacon was found on a channel
  * @wiphy: the wireless device where the beacon was found on

@@ -83,6 +83,7 @@ static inline int sht21_rh_ticks_to_per_cent_mille(int ticks)
 }
 
 /**
+<<<<<<< HEAD
  * sht21_read_word_data() - read word from register
  * @client: I2C client device
  * @reg: I2C command byte
@@ -102,6 +103,8 @@ static inline int sht21_read_word_data(struct i2c_client *client, u8 reg)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/cm-10.0
  * sht21_update_measurements() - get updated measurements from device
  * @client: I2C client device
  *
@@ -119,12 +122,22 @@ static int sht21_update_measurements(struct i2c_client *client)
 	 * maximum two measurements per second at 12bit accuracy shall be made.
 	 */
 	if (time_after(jiffies, sht21->last_update + HZ / 2) || !sht21->valid) {
+<<<<<<< HEAD
 		ret = sht21_read_word_data(client, SHT21_TRIG_T_MEASUREMENT_HM);
 		if (ret < 0)
 			goto out;
 		sht21->temperature = sht21_temp_ticks_to_millicelsius(ret);
 		ret = sht21_read_word_data(client,
 					SHT21_TRIG_RH_MEASUREMENT_HM);
+=======
+		ret = i2c_smbus_read_word_swapped(client,
+						  SHT21_TRIG_T_MEASUREMENT_HM);
+		if (ret < 0)
+			goto out;
+		sht21->temperature = sht21_temp_ticks_to_millicelsius(ret);
+		ret = i2c_smbus_read_word_swapped(client,
+						  SHT21_TRIG_RH_MEASUREMENT_HM);
+>>>>>>> refs/remotes/origin/cm-10.0
 		if (ret < 0)
 			goto out;
 		sht21->humidity = sht21_rh_ticks_to_per_cent_mille(ret);
@@ -279,6 +292,7 @@ static struct i2c_driver sht21_driver = {
 	.id_table    = sht21_id,
 };
 
+<<<<<<< HEAD
 /**
  * sht21_init() - initialize driver
  *
@@ -301,6 +315,9 @@ static void __exit sht21_exit(void)
 	i2c_del_driver(&sht21_driver);
 }
 module_exit(sht21_exit);
+=======
+module_i2c_driver(sht21_driver);
+>>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Urs Fleisch <urs.fleisch@sensirion.com>");
 MODULE_DESCRIPTION("Sensirion SHT21 humidity and temperature sensor driver");
